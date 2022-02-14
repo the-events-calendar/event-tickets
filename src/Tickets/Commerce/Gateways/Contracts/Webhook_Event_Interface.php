@@ -2,6 +2,8 @@
 
 namespace TEC\Tickets\Commerce\Gateways\Contracts;
 
+use TEC\Tickets\Commerce\Status\Status_Interface;
+
 /**
  * Interface for Webhook Event handler classes.
  */

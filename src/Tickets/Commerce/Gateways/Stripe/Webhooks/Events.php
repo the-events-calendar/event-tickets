@@ -102,6 +102,28 @@ class Events {
 	 */
 	public const ACCOUNT_APPLICATION_DEAUTHORIZED = 'account.application.deauthorized';
 
+	public static function get_event_handlers(): array {
+		$handlers = [
+			static::ACCOUNT_UPDATED                  => [ Account_Webhook::class, 'handle_default' ],
+			static::ACCOUNT_APPLICATION_DEAUTHORIZED => [ Account_Webhook::class, 'handle_account_deauthorized' ],
+			static::PAYMENT_INTENT_CREATED           => [ Payment_Intent_Webhook::class, 'handle' ],
+			static::PAYMENT_INTENT_PROCESSING        => [ Payment_Intent_Webhook::class, 'handle' ],
+			static::PAYMENT_INTENT_REQUIRES_ACTION   => [ Payment_Intent_Webhook::class, 'handle' ],
+			static::PAYMENT_INTENT_SUCCEEDED         => [ Payment_Intent_Webhook::class, 'handle' ],
+			static::PAYMENT_INTENT_PAYMENT_FAILED    => [ Payment_Intent_Webhook::class, 'handle' ],
+			static::PAYMENT_INTENT_CANCELED          => [ Payment_Intent_Webhook::class, 'handle' ],
+		];
+
+		/**
+		 * Allows filtering of the Webhook map of events-to-handler-functions for each one of the types we listen for.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $events The default map of event handler functions.
+		 */
+		return (array) apply_filters( 'tec_tickets_commerce_gateway_stripe_webhook_event_handlers', $handlers );
+	}
+
 	/**
 	 * Returns a list of all valid webhook events.
 	 * If it converts directly to a TC status it will be the status Class name, otherwise it will be callable.
@@ -110,10 +132,8 @@ class Events {
 	 *
 	 * @return callable[]|Commerce_Status\Status_Interface[]
 	 */
-	public static function get_events(): array {
+	public static function get_event_transition_status(): array {
 		$events = [
-			static::ACCOUNT_UPDATED                  => [ Handler::class, 'handle_default' ],
-			static::ACCOUNT_APPLICATION_DEAUTHORIZED => [ Handler::class, 'handle_account_deauthorized' ],
 			static::PAYMENT_INTENT_CANCELED          => Commerce_Status\Denied::class,
 			static::PAYMENT_INTENT_CREATED           => Commerce_Status\Created::class,
 			static::PAYMENT_INTENT_PAYMENT_FAILED    => Commerce_Status\Not_Completed::class,
@@ -123,15 +143,14 @@ class Events {
 		];
 
 		/**
-		 * Allows filtering of the Webhook map of events for each one of the types we listen for.
+		 * Allows filtering of the Webhook map of events-to-statuses for each one of the types we listen for.
 		 *
 		 * @since TBD
 		 *
-		 * @param array $events The default map of which event types.
+		 * @param array $events The default map of which event statuses.
 		 */
-		return (array) apply_filters( 'tec_tickets_commerce_gateway_stripe_webhook_events', $events );
+		return (array) apply_filters( 'tec_tickets_commerce_gateway_stripe_webhook_status', $events );
 	}
-
 
 	/**
 	 * Return webhook label's "Nice name", it's only applicable if the webhook converts to a status.
@@ -183,7 +202,7 @@ class Events {
 	 * @return bool
 	 */
 	public static function is_valid( string $event_name ): bool {
-		$events_map = static::get_events();
+		$events_map = static::get_event_transition_status();
 
 		return isset( $events_map[ $event_name ] );
 	}
@@ -201,7 +220,7 @@ class Events {
 		if ( ! static::is_valid( $event_name ) ) {
 			return false;
 		}
-		$events = static::get_events();
+		$events = static::get_event_transition_status();
 
 		return tribe( Commerce_Status\Status_Handler::class )->get_by_class( $events[ $event_name ] );
 	}

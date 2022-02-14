@@ -15,6 +15,7 @@ use TEC\Tickets\Commerce\Gateways\Stripe\REST\Webhook_Endpoint;
  * @package TEC\Tickets\Commerce\Gateways\Stripe
  */
 class Webhooks extends Abstract_Webhooks {
+
 	/**
 	 * Option key that determines if the webhooks are valid.
 	 *
@@ -73,8 +74,8 @@ class Webhooks extends Abstract_Webhooks {
 	 * @return void
 	 */
 	public function handle_validation(): void {
-		$nonce = tribe_get_request_var( 'tc_nonce' );
-		$status      = esc_html__( 'Webhooks not validated yet.', 'event-tickets' );
+		$nonce  = tribe_get_request_var( 'tc_nonce' );
+		$status = esc_html__( 'Webhooks not validated yet.', 'event-tickets' );
 
 		if ( ! wp_verify_nonce( $nonce, static::$nonce_key_handle_validation ) ) {
 			wp_send_json_error( [ 'updated' => false, 'status' => $status ] );
@@ -96,7 +97,7 @@ class Webhooks extends Abstract_Webhooks {
 
 		$account_data_update = [
 			'metadata' => [
-				'tec_tc_enabled_webhooks' => 1
+				'tec_tc_enabled_webhooks' => 1,
 			],
 		];
 
@@ -169,8 +170,8 @@ class Webhooks extends Abstract_Webhooks {
 			'tickets-commerce-gateway-settings-group-description-webhook' => [
 				'type' => 'html',
 				'html' => '<p class="tec-tickets__admin-settings-tickets-commerce-gateway-group-description-stripe-webhooks contained">'
-				          . esc_html__( 'To find your signing secret, head to https://dashboard.stripe.com/webhooks, click on the endpoint desired, and click to Reveal the Signing Secret', 'event-tickets' )
-				          . '</p><div class="clear"></div>',
+						  . esc_html__( 'To find your signing secret, head to https://dashboard.stripe.com/webhooks, click on the endpoint desired, and click to Reveal the Signing Secret', 'event-tickets' )
+						  . '</p><div class="clear"></div>',
 			],
 			static::$option_webhooks_value                                => [
 				'type'       => 'text',
@@ -180,8 +181,8 @@ class Webhooks extends Abstract_Webhooks {
 				'default'    => tribe( Webhook_Endpoint::class )->get_route_url(),
 				'attributes' => [
 					'readonly' => 'readonly',
-					'class'    => 'tribe-field-tickets-commerce-stripe-webhooks-copy-value'
-				]
+					'class'    => 'tribe-field-tickets-commerce-stripe-webhooks-copy-value',
+				],
 			],
 			static::$option_webhooks_signing_key                          => [
 				'type'                => 'text',
@@ -195,7 +196,7 @@ class Webhooks extends Abstract_Webhooks {
 					'data-ajax-nonce'   => wp_create_nonce( static::$nonce_key_handle_validation ),
 					'data-loading-text' => esc_attr__( 'Validating signing key with Stripe, please wait.', 'event-tickets' ),
 					'data-ajax-action'  => 'tec_tickets_commerce_gateway_stripe_test_webhooks',
-				]
+				],
 			],
 			'tickets-commerce-gateway-settings-group-end-webhook'         => [
 				'type' => 'html',

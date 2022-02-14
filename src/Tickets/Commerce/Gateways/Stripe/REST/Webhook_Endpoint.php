@@ -3,9 +3,6 @@
 namespace TEC\Tickets\Commerce\Gateways\Stripe\REST;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_REST_Endpoint;
-use TEC\Tickets\Commerce\Gateways\Stripe\Settings;
-
-use TEC\Tickets\Commerce\Gateways\Stripe\Status;
 use TEC\Tickets\Commerce\Gateways\Stripe\Webhooks;
 use WP_REST_Server;
 use WP_REST_Request;
@@ -75,9 +72,9 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
-	 * @return WP_REST_Response
+	 * @return WP_REST_Response|\WP_Error
 	 */
-	public function handle_incoming_request( WP_REST_Request $request ): WP_REST_Response {
+	public function handle_incoming_request( WP_REST_Request $request ) {
 		// Setup a base response.
 		$response = new WP_REST_Response( null, 200 );
 
@@ -118,7 +115,13 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 			return false;
 		}
 
-		$signing_secret = tribe_get_option( Webhooks::$option_webhooks_signing_key );
+		if ( defined( 'TEC_TC_STRIPE_SIGNING_SECRET' ) && TEC_TC_STRIPE_SIGNING_SECRET )  {
+			$signing_secret = TEC_TC_STRIPE_SIGNING_SECRET;
+		}
+
+		if ( empty ( $signing_secret ) ) {
+			$signing_secret = tribe_get_option( Webhooks::$option_webhooks_signing_key );
+		}
 
 		if ( empty( $signing_secret ) ) {
 			return false;

@@ -2,6 +2,8 @@
 
 namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
+use TEC\Tickets\Commerce\Gateways\Stripe\Webhooks\Payment_Intent_Webhook;
+
 /**
  * Class Provider
  *
@@ -24,6 +26,7 @@ class Provider extends \tad_DI52_ServiceProvider {
 		$this->container->singleton( Status::class );
 		$this->container->singleton( WhoDat::class );
 		$this->container->singleton( Webhooks::class );
+		$this->container->singleton( Payment_Intent_Webhook::class );
 
 		$this->register_hooks();
 		$this->register_assets();
