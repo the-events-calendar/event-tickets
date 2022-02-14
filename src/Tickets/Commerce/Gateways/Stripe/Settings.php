@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Settings;
+use TEC\Tickets\Commerce\Notice_Handler;
 use TEC\Tickets\Commerce\Utils\Currency;
 use Tribe__Tickets__Main;
 
@@ -139,8 +140,30 @@ class Settings extends Abstract_Settings {
 	 *
 	 * @since TBD
 	 */
-	private function set_connection_status() {
-		$this->connection_status = tribe( Merchant::class )->get_connection_status();
+	public function set_connection_status() {
+		$this->connection_status = tribe( Merchant::class )->check_account_status();
+	}
+
+	/**
+	 * Trigger a dismissible admin notice if Tickets Commerce and Stripe currencies are not the same.
+	 *
+	 * @since TBD
+	 */
+	public function alert_currency_mismatch() {
+		$stripe_currency = strtoupper( tribe( Merchant::class )->get_merchant_currency() );
+		$site_currency = strtoupper( Currency::get_currency_code() );
+
+		if ( $site_currency === $stripe_currency ) {
+			return;
+		}
+
+		tribe( Notice_Handler::class )->trigger_admin( 'tc-stripe-currency-mismatch', [
+			'content' =>
+				sprintf(
+				// Translators: %1$s The tickets commerce currency. %2$s: The currency from the Stripe account.
+					__( 'Tickets Commerce is configured to use %1$s as its currency but the default currency for the connected stripe account is %2$s. If you believe this is an error, you can modify the Tickets Commerce currency in the main Payments tab. Using different currencies for Tickets Commerce and Stripe may result in exchange rates and conversions being handled by Stripe.', 'event-tickets' ),
+					$site_currency, $stripe_currency ),
+		] );
 	}
 
 	/**
@@ -320,8 +343,8 @@ class Settings extends Abstract_Settings {
 
 	/**
 	 * Returns the list of available Payment Methods.
-	 * Methods and currencies sourced from
-	 * https://stripe.com/docs/payments/payment-methods/integration-options#payment-method-product-support
+	 *
+	 * @link https://stripe.com/docs/payments/payment-methods/integration-options#payment-method-product-support
 	 *
 	 * @since TBD
 	 *
@@ -330,28 +353,20 @@ class Settings extends Abstract_Settings {
 	private function get_payment_methods_available() {
 		$available_methods = [
 			'afterpay_clearpay' => [
-				'currencies' => [ 'AUD', 'CAD', 'GBP', 'NZD' ],
+				'currencies' => [ 'AUD', 'CAD', 'GBP', 'NZD', 'USD' ],
 				'label'      => esc_html__( 'AfterPay and ClearPay', 'event-tickets' ),
 			],
 			'alipay'            => [
 				'currencies' => [ 'AUD', 'CAD', 'CNY', 'EUR', 'GBP', 'HKD', 'JPY', 'MYR', 'NZD', 'SGD', 'USD' ],
 				'label'      => esc_html__( 'Alipay', 'event-tickets' ),
 			],
-			'bacs_debit'        => [
-				'currencies' => [ 'GBP' ],
-				'label'      => esc_html__( 'Bacs Direct Debit', 'event-tickets' ),
-			],
 			'giropay'           => [
 				'currencies' => [ 'EUR' ],
 				'label'      => esc_html__( 'Giropay', 'event-tickets' ),
 			],
 			'klarna'            => [
-				'currencies' => [ 'DKK', 'EUR', 'GBP', 'NOK', 'SEK' ],
+				'currencies' => [ 'DKK', 'EUR', 'GBP', 'NOK', 'SEK', 'USD' ],
 				'label'      => esc_html__( 'Klarna', 'event-tickets' ),
-			],
-			'acss_debit'        => [
-				'currencies' => [ 'CAD', 'USD' ],
-				'label'      => esc_html__( 'Pre-authorized debit in Canada', 'event-tickets' ),
 			],
 		];
 
@@ -374,6 +389,8 @@ class Settings extends Abstract_Settings {
 		if ( empty( $this->connection_status ) ) {
 			$this->set_connection_status();
 		}
+
+		update_option( Merchant::$merchant_default_currency_option_key, $this->connection_status['default_currency'] );
 
 		if ( empty( tribe_get_option( static::$option_checkout_element ) ) ) {
 			tribe_update_option( static::$option_checkout_element, static::PAYMENT_ELEMENT_SLUG );

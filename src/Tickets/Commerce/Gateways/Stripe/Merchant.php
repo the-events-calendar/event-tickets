@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Merchant;
+use Tribe__Utils__Array as Arr;
 
 /**
  * Class Merchant
@@ -30,6 +31,15 @@ class Merchant extends Abstract_Merchant {
 	 * @var string
 	 */
 	public static $merchant_unauthorized_option_key = 'tickets-commerce-merchant-unauthorized';
+
+	/**
+	 * Option key to save the information regarding merchant default currency.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $merchant_default_currency_option_key = 'tickets-commerce-merchant-currency';
 
 	/**
 	 * Determines if Merchant is active. For Stripe this is the same as being connected.
@@ -60,7 +70,7 @@ class Merchant extends Abstract_Merchant {
 		}
 
 		if ( $recheck ) {
-			$status = tribe( Client::class )->check_account_status( $client_data );
+			$status = $this->check_account_status( $client_data );
 
 			if ( false === $status['connected'] ) {
 				return false;
@@ -68,18 +78,6 @@ class Merchant extends Abstract_Merchant {
 		}
 
 		return true;
-	}
-
-	/**
-	 * Gather connections status from the Stripe API
-	 *
-	 * @since TBD
-	 *
-	 * @return array
-	 */
-	public function get_connection_status() {
-		$client_data = $this->to_array();
-		return tribe( Client::class )->check_account_status( $client_data );
 	}
 
 	/**
@@ -193,6 +191,90 @@ class Merchant extends Abstract_Merchant {
 	}
 
 	/**
+	 * Returns the list of enabled payment method types for the Payment Element, or the Card type
+	 * for the Card Element.
+	 *
+	 * @since TBD
+	 *
+	 * @return string[]
+	 */
+	public function get_payment_method_types( $fallback = false ) {
+
+		if ( $fallback || Settings::CARD_ELEMENT_SLUG === tribe_get_option( Settings::$option_checkout_element ) ) {
+			return [ 'card' ];
+		}
+
+		return tribe_get_option( Settings::$option_checkout_element_payment_methods, [ 'card' ] );
+	}
+
+	/**
+	 * Query the Stripe API to gather information about the current connected account.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $client_data Connection data from the database.
+	 *
+	 * @return array
+	 */
+	public function check_account_status( $client_data = [] ) {
+
+		if ( empty( $client_data ) ) {
+			$client_data = $this->to_array();
+		}
+
+		$return = [
+			'connected'       => false,
+			'charges_enabled' => false,
+			'errors'          => [],
+			'capabilities'    => [],
+		];
+
+		if ( empty( $client_data['client_id'] )
+			 || empty( $client_data['client_secret'] )
+			 || empty( $client_data['publishable_key'] )
+		) {
+			return $return;
+		}
+
+		$url = sprintf( '/accounts/%s', urlencode( $client_data['client_id'] ) );
+
+		$response = Requests::get( $url, [], [] );
+
+		if ( ! empty( $response['object'] ) && 'account' === $response['object'] ) {
+			$return['connected']            = true;
+			$return['charges_enabled']      = tribe_is_truthy( Arr::get( $response, 'charges_enabled', false ) );
+			$return['country']              = Arr::get( $response, 'country', false );
+			$return['default_currency']     = Arr::get( $response, 'default_currency', false );
+			$return['capabilities']         = Arr::get( $response, 'capabilities', false );
+			$return['statement_descriptor'] = Arr::get( $response, 'statement_descriptor', false );
+
+			if ( empty( $return['statement_descriptor'] ) && ! empty( $response['settings']['payments']['statement_descriptor'] ) ) {
+				$return['statement_descriptor'] = $response['settings']['payments']['statement_descriptor'];
+			}
+
+			if ( ! empty( $response['requirements']['errors'] ) ) {
+				$return['errors']['requirements'] = $response['requirements']['errors'];
+			}
+
+			if ( ! empty( $response['future_requirements']['errors'] ) ) {
+				$return['errors']['future_requirements'] = $response['future_requirements']['errors'];
+			}
+		}
+
+		if ( ! empty( $response['type'] ) && in_array( $response['type'], [
+				'api_error',
+				'card_error',
+				'idempotency_error',
+				'invalid_request_error',
+			], true ) ) {
+
+			$return['request_error'] = $response;
+		}
+
+		return $return;
+	}
+
+	/**
 	 * Empty the signup data option and void the connection.
 	 *
 	 * @since TBD
@@ -273,5 +355,16 @@ class Merchant extends Abstract_Merchant {
 	 */
 	public function unset_merchant_unauthorized() {
 		delete_option( static::$merchant_unauthorized_option_key );
+	}
+
+	/**
+	 * Get the merchant default currency.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_merchant_currency() {
+		return get_option( static::$merchant_default_currency_option_key );
 	}
 }
