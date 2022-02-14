@@ -179,7 +179,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.2.4] 2022-02-14 =
+= [5.2.4] 2022-02-15 =
 
 * Tweak - Compatibility with the Common Abstract for editor blocks registration.
 * Tweak - Remove the `wp.editor.InnerBlocks` gutenberg component in favor of `wp.blockEditor.InnerBlocks` which was deprecated since version 5.3. [ET-1367]
