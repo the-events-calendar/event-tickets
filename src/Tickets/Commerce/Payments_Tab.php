@@ -227,6 +227,10 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 			return $url;
 		}
 
+		if ( empty( $_SERVER['REQUEST_METHOD'] ) || 'POST' !== strtoupper( $_SERVER['REQUEST_METHOD'] ) ) {
+			return $url;
+		}
+
 		if ( Tribe__Settings::$parent_slug !== $page ) {
 			return $url;
 		}
