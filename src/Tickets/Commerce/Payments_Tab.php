@@ -138,7 +138,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	 */
 	public function get_url( array $args = [] ): string {
 		// Force the payment tab.
-		$args['tab'] = 'payments';
+		$args['tab'] = static::$slug;
 
 		// Use the settings page get_url to build the URL.
 		return Tribe__Settings::instance()->get_url( $args );
