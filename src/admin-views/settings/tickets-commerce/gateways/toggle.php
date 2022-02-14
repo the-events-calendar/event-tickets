@@ -17,7 +17,8 @@
 			name="tickets_commerce_enabled"
 			<?php checked( $checked, true ); ?>
 			id="tickets-commerce-enable-input"
-			class="tec-tickets__admin-settings-tickets-commerce-toggle-checkbox">
+			class="tec-tickets__admin-settings-tickets-commerce-toggle-checkbox"
+		/>
 		<span class="tec-tickets__admin-settings-tickets-commerce-toggle-switch"></span>
 	</label>
 </div>
