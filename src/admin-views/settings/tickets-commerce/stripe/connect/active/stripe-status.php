@@ -41,7 +41,7 @@ $capabilities = $merchant_status['capabilities'];
 					?>
 					<li>
 						<span <?php tribe_classes( $capability_classes ); ?> title="<?php echo esc_attr( $capability_title ); ?>"></span>
-						<?php echo esc_html( $capability ); ?>
+						<?php echo esc_html( str_replace( '_payments', '', $capability ) ); ?>
 					</li>
 				<?php endforeach; ?>
 			</ul>
