@@ -140,14 +140,11 @@ abstract class Abstract_Requests implements Requests_Interface {
 			return $response;
 		}
 
-		if ( ! empty( $response['response']['code'] )
-			 && 200 !== $response['response']['code'] ) {
-			if ( ! empty( $response['body'] ) ) {
-				$body = json_decode( $response['body'] );
+		if ( ! empty( $response['response']['code'] ) && 200 !== $response['response']['code'] && ! empty( $response['body'] ) ) {
+			$body = json_decode( $response['body'] );
 
-				if ( ! empty( $body->error ) ) {
-					return new \WP_Error( $response['response']['code'], $body->error->message, $body->error );
-				}
+			if ( ! empty( $body->error ) ) {
+				return new \WP_Error( $response['response']['code'], $body->error->message, $body->error );
 			}
 		}
 

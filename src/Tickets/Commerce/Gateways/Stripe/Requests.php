@@ -5,7 +5,9 @@ namespace TEC\Tickets\Commerce\Gateways\Stripe;
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Requests;
 
 /**
- * Stripe Requests
+ * Stripe Requests.
+ *
+ * @since TBD
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe;
  */

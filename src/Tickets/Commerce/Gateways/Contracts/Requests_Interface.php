@@ -3,7 +3,7 @@
 namespace TEC\Tickets\Commerce\Gateways\Contracts;
 
 /**
- * Requests Interface for gateways
+ * Requests Interface for gateways.
  *
  * @since TBD
  *
@@ -26,7 +26,7 @@ interface Requests_Interface {
 	public static function get( $endpoint, array $query_args = [], array $request_arguments = [], $raw = false );
 
 	/**
-	 * Send a POST request
+	 * Send a POST request.
 	 *
 	 * @since TBD
 	 *
@@ -89,7 +89,7 @@ interface Requests_Interface {
 	 *
 	 * @since TBD
 	 *
-	 * @param array|\WP_Error $response an array of server data
+	 * @param array|\WP_Error $response Array of server data.
 	 *
 	 * @return array|\WP_Error
 	 */
@@ -100,7 +100,7 @@ interface Requests_Interface {
 	 *
 	 * @since TBD
 	 *
-	 * @param \WP_Error $errors any WP_Error instance
+	 * @param \WP_Error $errors WP_Error instance.
 	 *
 	 * @return array[]
 	 */

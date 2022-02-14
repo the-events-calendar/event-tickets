@@ -5,7 +5,7 @@ namespace TEC\Tickets\Commerce\Gateways\Stripe;
 use TEC\Tickets\Commerce\Cart;
 
 /**
- * Class Client
+ * Class Payment Intent Handler
  *
  * @since   TBD
  *
@@ -14,7 +14,7 @@ use TEC\Tickets\Commerce\Cart;
 class Payment_Intent_Handler {
 
 	/**
-	 * Base string to use when composing payment intent transient names
+	 * Base string to use when composing payment intent transient names.
 	 *
 	 * @since TBD
 	 *
@@ -23,7 +23,7 @@ class Payment_Intent_Handler {
 	public $payment_intent_transient_prefix = 'paymentintent-';
 
 	/**
-	 * Transient name to store payment intents
+	 * Transient name to store payment intents.
 	 *
 	 * @since TBD
 	 *
@@ -32,7 +32,7 @@ class Payment_Intent_Handler {
 	public $payment_intent_transient_name;
 
 	/**
-	 * Counter for how many times we've re-tried creating a PaymentIntent
+	 * Counter for how many times we've re-tried creating a PaymentIntent.
 	 *
 	 * @since TBD
 	 *
@@ -41,7 +41,7 @@ class Payment_Intent_Handler {
 	protected $payment_element_fallback_retries = 0;
 
 	/**
-	 * Counter for how many times we've re-tried creating a PaymentIntent
+	 * Max number of retries to create a PaymentIntent.
 	 *
 	 * @since TBD
 	 *
@@ -50,9 +50,9 @@ class Payment_Intent_Handler {
 	protected $payment_intent_max_retries = 2;
 
 	/**
-	 * Increment the retry counter if under max_retries
+	 * Increment the retry counter if under max_retries.
 	 *
-	 * @return bool true if incremented, false if no more retries are allowed
+	 * @return bool True if incremented, false if no more retries are allowed.
 	 */
 	public function count_retries() {
 		if ( $this->payment_intent_max_retries <= $this->payment_element_fallback_retries ) {
@@ -71,7 +71,7 @@ class Payment_Intent_Handler {
 	 * @since TBD
 	 *
 	 * @param string $currency 3-letter ISO code for the desired currency. Not all currencies are supported.
-	 * @param int    $value    the payment value in the smallest currency unit (e.g: cents, if the purchase is in USD)
+	 * @param int    $value    The payment value in the smallest currency unit (e.g: cents, if the purchase is in USD).
 	 */
 	public function create_payment_intent_for_cart( $retry = false ) {
 		$this->set_payment_intent_transient_name();
@@ -84,7 +84,7 @@ class Payment_Intent_Handler {
 				return $this->create_payment_intent_for_cart( true );
 			}
 
-			// We're over the max retries, display an error to the end user and move on
+			// We're over the max retries, display an error to the end user and move on.
 			$payment_intent['errors'][0] = [
 				'et_could_not_create_stripe_order',
 				__( 'There was an error enabling Stripe on your cart. More information is available in the Event Tickets settings dashboard. Please contact the site administrator for support.', 'event-tickets' ),
@@ -99,7 +99,7 @@ class Payment_Intent_Handler {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $data the purchase data received from the front-end
+	 * @param array $data The purchase data received from the front-end.
 	 *
 	 * @return array|\WP_Error|null
 	 */
@@ -122,7 +122,7 @@ class Payment_Intent_Handler {
 	}
 
 	/**
-	 * Assembles basic data about the payment intent created at page-load to use in javascript
+	 * Assembles basic data about the payment intent created at page-load to use in javascript.
 	 *
 	 * @since TBD
 	 *
@@ -147,7 +147,7 @@ class Payment_Intent_Handler {
 	}
 
 	/**
-	 * Compose the transient name used for payment intent transients
+	 * Compose the transient name used for payment intent transients.
 	 *
 	 * @since TBD
 	 */
@@ -156,7 +156,7 @@ class Payment_Intent_Handler {
 	}
 
 	/**
-	 * Returns the transient name used for payment intent transients
+	 * Returns the transient name used for payment intent transients.
 	 *
 	 * @since TBD
 	 *
@@ -172,7 +172,7 @@ class Payment_Intent_Handler {
 	}
 
 	/**
-	 * Retrieve a stored payment intent referring to the current cart
+	 * Retrieve a stored payment intent referring to the current cart.
 	 *
 	 * @since TBD
 	 *
@@ -183,7 +183,7 @@ class Payment_Intent_Handler {
 	}
 
 	/**
-	 * Delete the payment intent transient
+	 * Delete the payment intent transient.
 	 *
 	 * @since TBD
 	 *
@@ -194,11 +194,11 @@ class Payment_Intent_Handler {
 	}
 
 	/**
-	 * Store a payment intent array in a transient
+	 * Store a payment intent array in a transient.
 	 *
 	 * @since TBD
 	 *
-	 * @param array $payment_intent payment intent data from Stripe
+	 * @param array $payment_intent Payment intent data from Stripe
 	 */
 	public function store_payment_intent( $payment_intent ) {
 		set_transient( $this->get_payment_intent_transient_name(), $payment_intent, 6 * HOUR_IN_SECONDS );

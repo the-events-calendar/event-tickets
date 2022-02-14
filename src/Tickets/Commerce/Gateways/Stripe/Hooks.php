@@ -122,8 +122,8 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 *
 	 * @since TBD
 	 *
-	 * @param mixed  $value    the new value.
-	 * @param string $field_id the field id in the options.
+	 * @param mixed  $value    The new value.
+	 * @param string $field_id The field id in the options.
 	 *
 	 * @return mixed
 	 */
@@ -149,10 +149,10 @@ class Hooks extends \tad_DI52_ServiceProvider {
 			return $value;
 		}
 
-		// Payment attempt failed. Provide an alert in the Dashboard
+		// Payment attempt failed. Provide an alert in the Dashboard.
 		\Tribe__Settings::instance()->errors[] = $payment_intent_test->get_error_message();
 
-		// Revert value to the previous configuration
+		// Revert value to the previous configuration.
 		return tribe_get_option( $field_id );
 	}
 }

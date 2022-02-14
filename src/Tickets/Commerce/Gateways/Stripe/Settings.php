@@ -140,12 +140,12 @@ class Settings extends Abstract_Settings {
 	 *
 	 * @since TBD
 	 */
-	private function set_connection_status() {
+	public function set_connection_status() {
 		$this->connection_status = tribe( Merchant::class )->check_account_status();
 	}
 
 	/**
-	 * Trigger a dismissable admin notice if Tickets Commerce and Stripe currencies are not the same.
+	 * Trigger a dismissible admin notice if Tickets Commerce and Stripe currencies are not the same.
 	 *
 	 * @since TBD
 	 */

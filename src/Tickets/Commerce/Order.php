@@ -303,7 +303,7 @@ class Order extends Abstract_Order {
 	 *
 	 * @since TBD
 	 *
-	 * @param Cart $cart the cart instance to get items from.
+	 * @param Cart $cart The cart instance to get items from.
 	 *
 	 * @return array
 	 */

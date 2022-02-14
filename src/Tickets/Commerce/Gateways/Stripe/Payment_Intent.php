@@ -9,6 +9,8 @@ use TEC\Tickets\Commerce\Utils\Value;
 /**
  * Stripe orders aka Payment Intents class.
  *
+ * @since TBD
+ *
  * @package TEC\Tickets\Commerce\Gateways\Stripe
  */
 class Payment_Intent {
@@ -80,8 +82,8 @@ class Payment_Intent {
 	 *
 	 * @since TBD
 	 *
-	 * @param Value $value the value object to create a payment intent for.
-	 * @param bool  $retry is this a retry?
+	 * @param Value $value The value object to create a payment intent for.
+	 * @param bool  $retry Is this a retry?
 	 *
 	 * @return mixed
 	 */
@@ -119,11 +121,11 @@ class Payment_Intent {
 	}
 
 	/**
-	 * Calls the Stripe API and returns an existing Payment Intent based ona PI Client Secret.
+	 * Calls the Stripe API and returns an existing Payment Intent.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $payment_intent_id Payment Intent ID formatted from client `pi_*`
+	 * @param string $payment_intent_id Payment Intent ID.
 	 *
 	 * @return array|\WP_Error
 	 */
@@ -135,9 +137,7 @@ class Payment_Intent {
 			'body' => $body,
 		];
 
-		$payment_intent_id = urlencode( $payment_intent_id );
-		$url               = '/payment_intents/{payment_intent_id}';
-		$url               = str_replace( '{payment_intent_id}', $payment_intent_id, $url );
+		$url = sprintf( '/payment_intents/%s', urlencode( $payment_intent_id ) );
 
 		return Requests::get( $url, $query_args, $args );
 	}
@@ -147,7 +147,7 @@ class Payment_Intent {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $data the purchase data received from the front-end
+	 * @param array $data The purchase data received from the front-end.
 	 *
 	 * @return array|\WP_Error|null
 	 */
@@ -172,9 +172,7 @@ class Payment_Intent {
 			'body' => $body,
 		];
 
-		$payment_intent_id = urlencode( $payment_intent['id'] );
-		$url               = '/payment_intents/{payment_intent_id}';
-		$url               = str_replace( '{payment_intent_id}', $payment_intent_id, $url );
+		$url = sprintf( '/payment_intents/%s', urlencode( $payment_intent_id ) );
 
 		return Requests::post( $url, $query_args, $args );
 	}
@@ -188,15 +186,12 @@ class Payment_Intent {
 	 */
 	public static function cancel( $payment_intent_id ) {
 		$query_args = [];
-		$body       = [
-		];
+		$body       = [];
 		$args       = [
 			'body' => $body,
 		];
 
-		$payment_intent_id = urlencode( $payment_intent_id );
-		$url               = '/payment_intents/{payment_intent_id}/cancel';
-		$url               = str_replace( '{payment_intent_id}', $payment_intent_id, $url );
+		$url = sprintf( '/payment_intents/%s/cancel', urlencode( $payment_intent_id ) );
 
 		Requests::post( $url, $query_args, $args );
 	}
@@ -206,7 +201,7 @@ class Payment_Intent {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $errors list of errors returned from Stripe.
+	 * @param array $errors List of errors returned from Stripe.
 	 *
 	 * @return string
 	 */

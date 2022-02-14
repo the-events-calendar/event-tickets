@@ -36,7 +36,7 @@ class Application_Fee {
 			return Value::create();
 		}
 
-		// otherwise, calculate it over the cart total.
+		// Otherwise, calculate it over the total value.
 		return Value::create( $value->get_decimal() * static::get_application_fee_percentage() );
 	}
 

@@ -212,7 +212,7 @@ class Merchant extends Abstract_Merchant {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $client_data connection data from the database
+	 * @param array $client_data Connection data from the database.
 	 *
 	 * @return array
 	 */
@@ -236,9 +236,7 @@ class Merchant extends Abstract_Merchant {
 			return $return;
 		}
 
-		$account_id = urlencode( $client_data['client_id'] );
-		$url        = '/accounts/{account_id}';
-		$url        = str_replace( '{account_id}', $account_id, $url );
+		$url = sprintf( '/accounts/%s', urlencode( $client_data['client_id'] ) );
 
 		$response = Requests::get( $url, [], [] );
 
