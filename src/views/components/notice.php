@@ -13,10 +13,10 @@
  *
  */
 
-$notice_classes  = [ 'tribe-tickets__notice' ];
+$notice_classes  = [ 'tribe-tickets__notice', 'tribe-common-a11y-hidden' ];
 $content_classes = [
 	'tribe-common-b2',
-	'tribe-tickets-notice__content'
+	'tribe-tickets-notice__content',
 ];
 $id              = $this->get( 'id' );
 $title           = $this->get( 'title' ) ?: '';
