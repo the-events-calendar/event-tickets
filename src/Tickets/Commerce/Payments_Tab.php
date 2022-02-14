@@ -279,7 +279,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 
 		$plus_message = sprintf(
 		// Translators: %1$s: The Event Tickets Plus link.
-			esc_html_x( 'Tickets Commerce provides a simple and flexible ecommerce checkout for purchasing tickets.  Just choose your payment gateway and configure checkout options and you\'re all set.  If you need more advanced features like custom attendee information, QR code check in, and stock sharing between tickets, take a look at %1$s for these features and more.', 'about Tickets Commerce', 'event-tickets' ),
+			esc_html_x( 'Tickets Commerce provides a simple and flexible ecommerce checkout for purchasing tickets. Just choose your payment gateway and configure checkout options and you\'re all set.  If you need more advanced features like custom attendee information, QR code check in, and stock sharing between tickets, take a look at %1$s for these features and more.', 'about Tickets Commerce', 'event-tickets' ),
 			$plus_link
 		);
 
