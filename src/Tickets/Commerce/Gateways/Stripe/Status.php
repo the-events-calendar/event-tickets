@@ -7,7 +7,7 @@ use TEC\Tickets\Commerce\Status as Commerce_Status;
 /**
  * Class Status.
  *
- * @todo Create a Contract between this and PayPal.
+ * @todo    Create a Contract between this and PayPal.
  *
  * @since   TBD
  *
@@ -22,7 +22,7 @@ class Status {
 	 *
 	 * @var string
 	 */
-	CONST REQUIRES_PAYMENT_METHOD = 'requires_payment_method';
+	const REQUIRES_PAYMENT_METHOD = 'requires_payment_method';
 
 	/**
 	 * Order Status in Stripe for when the payment intent is first created or when payment is denied.
@@ -31,7 +31,7 @@ class Status {
 	 *
 	 * @var string
 	 */
-	CONST REQUIRES_SOURCE = 'requires_source';
+	const REQUIRES_SOURCE = 'requires_source';
 
 	/**
 	 * Order Status in Stripe for created and waiting for automatic confirmation to start processing.
@@ -40,7 +40,7 @@ class Status {
 	 *
 	 * @var string
 	 */
-	CONST REQUIRES_CONFIRMATION = 'requires_confirmation';
+	const REQUIRES_CONFIRMATION = 'requires_confirmation';
 
 	/**
 	 * Order Status in Stripe for created and waiting for user confirmation to start processing.
@@ -49,7 +49,16 @@ class Status {
 	 *
 	 * @var string
 	 */
-	CONST REQUIRES_ACTION = 'requires_action';
+	const REQUIRES_ACTION = 'requires_action';
+
+	/**
+	 * Order Status in Stripe for created and waiting for user confirmation to start processing.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	const REQUIRES_SOURCE_ACTION = 'requires_source_action';
 
 	/**
 	 * Order Status in Stripe for processing.
@@ -58,7 +67,7 @@ class Status {
 	 *
 	 * @var string
 	 */
-	CONST PROCESSING = 'processing';
+	const PROCESSING = 'processing';
 
 	/**
 	 * Order Status in Stripe for a successful hold on funds, waiting for settlement.
@@ -67,8 +76,7 @@ class Status {
 	 *
 	 * @var string
 	 */
-	CONST REQUIRES_CAPTURE = 'requires_capture';
-
+	const REQUIRES_CAPTURE = 'requires_capture';
 
 	/**
 	 * Order Status in Stripe for completed with success.
@@ -77,7 +85,7 @@ class Status {
 	 *
 	 * @var string
 	 */
-	CONST SUCCEEDED = 'succeeded';
+	const SUCCEEDED = 'succeeded';
 
 	/**
 	 * Order Status in Stripe for manually cancelled and invalidated.
@@ -86,10 +94,15 @@ class Status {
 	 *
 	 * @var string
 	 */
-	CONST CANCELED = 'canceled';
+	const CANCELED = 'canceled';
 
 	/**
 	 * Default mapping from Stripe Status to Tickets Commerce
+	 *
+	 * This list MUST be kept in order of order stripe status progression, from creation to completion/refusal, as
+	 * described in the link below:
+	 *
+	 * @link  https://stripe.com/docs/payments/intents
 	 *
 	 * @since TBD
 	 *
@@ -100,6 +113,7 @@ class Status {
 		self::REQUIRES_SOURCE         => Commerce_Status\Created::SLUG,
 		self::REQUIRES_CONFIRMATION   => Commerce_Status\Action_Required::SLUG,
 		self::REQUIRES_ACTION         => Commerce_Status\Action_Required::SLUG,
+		self::REQUIRES_SOURCE_ACTION  => Commerce_Status\Action_Required::SLUG,
 		self::REQUIRES_CAPTURE        => Commerce_Status\Action_Required::SLUG,
 		self::PROCESSING              => Commerce_Status\Pending::SLUG,
 		self::SUCCEEDED               => Commerce_Status\Completed::SLUG,
@@ -128,6 +142,7 @@ class Status {
 	 */
 	public function is_valid_status( $status ) {
 		$statuses = $this->get_valid_statuses();
+
 		return isset( $statuses[ $status ] );
 	}
 

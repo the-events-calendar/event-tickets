@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Commerce\Gateways\Stripe\Webhooks;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Webhook_Event_Interface;
+use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Status\Status_Interface;
 
 /**
@@ -25,7 +26,7 @@ class Payment_Intent_Webhook implements Webhook_Event_Interface {
 	 *
 	 * @return bool
 	 */
-	public static function handle( array $event, Status_Interface $status, \WP_REST_Request $request ): bool {
+	public static function handle( array $event, Status_Interface $new_status, \WP_REST_Request $request ): bool {
 		$payment_intent    = static::get_payment_intent_data( $event );
 		$payment_intent_id = $payment_intent['id'];
 
@@ -35,12 +36,20 @@ class Payment_Intent_Webhook implements Webhook_Event_Interface {
 			return false;
 		}
 
+		if ( $order->gateway_payload['status'] === $payment_intent['status'] ) {
+			return false;
+		}
+
+		if ( ! Handler::should_order_status_be_updated( $order, $new_status, $event['type'] ) ) {
+			$new_status =  tribe( Status_Handler::class )->get_by_wp_slug( $order->post_status );
+		}
+
 		$meta = [
 			'gateway_payload'  => $payment_intent,
 			'gateway_order_id' => $payment_intent_id,
 		];
 
-		$updated = Handler::update_order_status( $order, $status, $meta );
+		$updated = Handler::update_order_status( $order, $new_status, $meta );
 
 		if ( is_wp_error( $updated ) ) {
 			return false;

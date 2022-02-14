@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Commerce\Gateways\Stripe\Webhooks;
 
 use TEC\Tickets\Commerce\Gateways\Stripe\Client;
+use TEC\Tickets\Commerce\Gateways\Stripe\Status;
 use TEC\Tickets\Commerce\Status as Commerce_Status;
 use TEC\Tickets\Commerce\Order;
 
@@ -133,6 +134,32 @@ class Handler {
 		}
 
 		return $name;
+	}
+
+	/**
+	 * Compares the current order status with the new status requested to determine if the post_status shuold be transitioned.
+	 *
+	 * @since TBD
+	 *
+	 * @param \WP_Post                         $order The Order post object.
+	 * @param Commerce_Status\Status_Interface $status The new Status object for the current event.
+	 * @param string                           $stripe_status
+	 *
+	 * @return bool
+	 */
+	public static function should_order_status_be_updated( \WP_Post $order, Commerce_Status\Status_Interface $status, string $stripe_status ) {
+		$valid_statuses = tribe( Status::class )->get_valid_statuses();
+
+		$current_pos = array_search( $order->post_status, $valid_statuses, true );
+		$next_pos = array_search( $status->get_slug(), $valid_statuses, true );
+
+		if ( $next_pos > $current_pos
+			 && $valid_statuses[ $current_pos ] !== $valid_statuses[ $next_pos ]
+		) {
+			return true;
+		}
+
+		return false;
 	}
 
 	/**

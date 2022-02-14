@@ -7,5 +7,5 @@ namespace TEC\Tickets\Commerce\Gateways\Contracts;
  */
 interface Webhook_Event_Interface {
 
-	public static function handle( array $event, Status_Interface $status, \WP_REST_Request $request );
+	public static function handle( array $event, Status_Interface $new_status, \WP_REST_Request $request );
 }
