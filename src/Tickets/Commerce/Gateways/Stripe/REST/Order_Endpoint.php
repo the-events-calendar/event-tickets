@@ -5,13 +5,10 @@ namespace TEC\Tickets\Commerce\Gateways\Stripe\REST;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_REST_Endpoint;
 use TEC\Tickets\Commerce\Gateways\Stripe\Gateway;
+use TEC\Tickets\Commerce\Gateways\Stripe\Payment_Intent;
+use TEC\Tickets\Commerce\Gateways\Stripe\Payment_Intent_Handler;
 use TEC\Tickets\Commerce\Gateways\Stripe\Status;
 use TEC\Tickets\Commerce\Order;
-
-use TEC\Tickets\Commerce\Gateways\Stripe\Client;
-use TEC\Tickets\Commerce\Status\Completed;
-use TEC\Tickets\Commerce\Status\Created;
-use TEC\Tickets\Commerce\Status\Pending;
 
 use TEC\Tickets\Commerce\Success;
 
@@ -110,8 +107,8 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			'success' => false,
 		];
 
-		$messages = $this->get_error_messages();
-		$data = $request->get_json_params();
+		$messages  = $this->get_error_messages();
+		$data      = $request->get_json_params();
 		$purchaser = tribe( Order::class )->get_purchaser_data( $data );
 
 		if ( is_wp_error( $purchaser ) ) {
@@ -119,8 +116,8 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		}
 
 		$order = tribe( Order::class )->create_from_cart( tribe( Gateway::class ), $purchaser );
-
-		$payment_intent = tribe( Client::class )->update_payment_intent( $data );
+	
+		$payment_intent = tribe( Payment_Intent_Handler::class )->update_payment_intent( $data );
 
 		if ( is_wp_error( $payment_intent ) ) {
 			return new WP_Error( 'tec-tc-gateway-stripe-failed-creating-payment-intent', $messages['failed-creating-payment-intent'], $order );
@@ -207,7 +204,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			'success' => false,
 		];
 
-		$messages = $this->get_error_messages();
+		$messages         = $this->get_error_messages();
 		$gateway_order_id = $request->get_param( 'order_id' );
 
 		$order = tec_tc_orders()->by_args( [
@@ -219,7 +216,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		}
 
 		$client_secret  = $request->get_param( 'client_secret' );
-		$payment_intent = tribe( Client::class )->get_payment_intent( $gateway_order_id );
+		$payment_intent = Payment_Intent::get( $gateway_order_id );
 
 		if ( is_wp_error( $payment_intent ) ) {
 			return new WP_Error( 'tec-tc-gateway-stripe-failed-getting-payment-intent', $messages['failed-getting-payment-intent'], $order );
