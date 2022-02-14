@@ -56,20 +56,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 *     messages.
 	 */
 	obj.handleErrorDisplay = ( errors ) => {
-		var errorEl = document.querySelector( obj.selectors.cardErrors );
-		var documentFragment = new DocumentFragment();
-
-		for ( var i = 0; i < errors.length; i++ ) {
-			var elp = document.createElement( 'p' );
-			var els = document.createElement( 'span' );
-			els.innerText = errors[i][0];
-			elp.innerText = errors[i][1]
-			documentFragment.appendChild( els );
-			documentFragment.appendChild( elp );
-		}
-
-		errorEl.innerHTML = '';
-		errorEl.append( documentFragment );
+		errors.map( e => obj.showNotice( {}, '', e[1] ) );
 	}
 
 	/**
