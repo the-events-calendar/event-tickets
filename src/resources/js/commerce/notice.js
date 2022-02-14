@@ -67,7 +67,7 @@ tribe.tickets.commerce.notice = tribe.tickets.commerce.notice || {};
 
 		$item.trigger( 'beforeShowNotice.tecTicketsCommerce', [ $container ] );
 
-		$item.show();
+		$item.removeClass( obj.selectors.hiddenElement.className() );
 
 		$item.trigger( 'aftershowNotice.tecTicketsCommerce', [ $container ] );
 	};
@@ -87,7 +87,7 @@ tribe.tickets.commerce.notice = tribe.tickets.commerce.notice || {};
 
 		$item.trigger( 'beforeHideNotice.tecTicketsCommerce', [ $container ] );
 
-		$item.hide();
+		$item.addClass( obj.selectors.hiddenElement.className() );
 
 		$item.trigger( 'afterHideNotice.tecTicketsCommerce', [ $container ] );
 	};
