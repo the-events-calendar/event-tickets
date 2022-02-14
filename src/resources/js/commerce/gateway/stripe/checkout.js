@@ -260,10 +260,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 			elements: obj.stripeElements,
 			redirect: 'if_required',
 			confirmParams: {
-				return_url: order.redirect_url,
-				payment_method_data: {
-					purchaser: obj.getPurchaserData()
-				}
+				return_url: order.redirect_url
 			}
 		} ).then( obj.handleConfirmPayment );
 	};
@@ -342,7 +339,8 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 			},
 			headers: {
 				'X-WP-Nonce': obj.checkout.nonce
-			}
+			},
+			throwHttpErrors: false
 		};
 		// Fetch Publishable API Key and Initialize Stripe Elements on Ready
 		let response = await ky.post( obj.checkout.orderEndpoint, args ).json();
@@ -364,6 +362,8 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 
 		const $container = $( event.target ).closest( tribe.tickets.commerce.selectors.checkoutContainer );
 
+		obj.hideNotice( $container );
+
 		tribe.tickets.loader.show( $container );
 
 		let order = await obj.handleCreateOrder();
@@ -375,9 +375,12 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 			} else {
 				obj.submitCardPayment();
 			}
+		} else {
+			obj.showNotice( {}, order.message, '' );
 		}
 
 		tribe.tickets.loader.hide( $container );
+		obj.submitButton( true );
 	};
 
 	/**
@@ -472,6 +475,41 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 */
 	obj.getPurchaserData = () => tribe.tickets.commerce.getPurchaserData( $( tribe.tickets.commerce.selectors.purchaserFormContainer ) );
 
+	/**
+	 * Shows the notice for the checkout container for Stripe.
+	 *
+	 * @since TBD
+	 *
+	 * @param {jQuery} $container Parent container of notice element.
+	 * @param {string} title Notice Title.
+	 * @param {string} content Notice message content.
+	 */
+	obj.showNotice = ( $container, title, content ) => {
+		if ( ! $container || ! $container.length ) {
+			$container = $( tribe.tickets.commerce.selectors.checkoutContainer );
+		}
+		const notice = tribe.tickets.commerce.notice;
+		const $item = $container.find( notice.selectors.item );
+		notice.populate( $item, title, content );
+		notice.show( $item );
+	};
+
+	/**
+	 * Hides the notice for the checkout container for Stripe.
+	 *
+	 * @since TBD
+	 *
+	 * @param {jQuery} $container Parent container of notice element.
+	 */
+	obj.hideNotice = ( $container ) => {
+		if ( ! $container.length ) {
+			$container = $( tribe.tickets.commerce.selectors.checkoutContainer );
+		}
+
+		const notice = tribe.tickets.commerce.notice;
+		const $item = $container.find( notice.selectors.item );
+		notice.hide( $item );
+	};
 	/**
 	 * Bind script loader to trigger script dependent methods.
 	 *
