@@ -28,7 +28,7 @@ if ( ! $gateway::should_show() ) {
 		<img
 			class="tec-tickets__admin-settings-tickets-commerce-gateways-item-brand-logo-image"
 			src="<?php echo esc_url( $gateway->get_logo_url() ); ?>"
-			alt="<?php echo esc_attr( $gateway->get_label() ); ?>" />
+			alt="<?php echo esc_attr( $gateway::get_label() ); ?>" />
 	</div>
 	<div class="tec-tickets__admin-settings-tickets-commerce-gateways-item-brand-subtitle">
 		<?php echo $gateway->get_subtitle(); ?>
