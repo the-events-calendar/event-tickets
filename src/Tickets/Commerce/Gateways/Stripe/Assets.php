@@ -72,7 +72,7 @@ class Assets extends \tad_DI52_ServiceProvider {
 							'paymentElement'    => tribe( Stripe_Elements::class )->include_payment_element(),
 							'cardElementType'   => tribe( Stripe_Elements::class )->card_element_type(),
 							'publishableKey'    => tribe( Merchant::class )->get_publishable_key(),
-							'paymentIntentData' => tribe( Client::class )->get_publishable_payment_intent_data(),
+							'paymentIntentData' => tribe( Payment_Intent_Handler::class )->get_publishable_payment_intent_data(),
 							'elementsAppearance' => [
 								'variables' => [
 									'borderRadius'   => '4px',
@@ -105,7 +105,7 @@ class Assets extends \tad_DI52_ServiceProvider {
 				],
 			]
 		);
-		
+
 		// Tickets Commerce PayPal main frontend styles.
 		tribe_asset(
 			$plugin,
