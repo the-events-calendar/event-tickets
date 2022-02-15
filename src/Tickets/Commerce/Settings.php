@@ -403,7 +403,7 @@ class Settings {
 		 */
 		$settings = apply_filters( 'tribe_tickets_commerce_settings', $settings );
 
-		return array_merge( tribe( Payments_Tab::class )->get_top_level_settings(), $this->apply_commerce_enabled_conditional( $settings ) );
+		return array_merge( tribe( Payments_Tab::class )->get_fields(), $this->apply_commerce_enabled_conditional( $settings ) );
 	}
 
 	/**

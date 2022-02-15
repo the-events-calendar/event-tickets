@@ -37,13 +37,12 @@ if ( $must_login || empty( $items ) || ! tribe_is_truthy( $gateways_active ) || 
 	<h4 class="tribe-common-h5 tribe-tickets__commerce-checkout-section-header">
 		<?php esc_html_e( 'Payment', 'event-tickets' ); ?>
 	</h4>
-<?php
-foreach ( $gateways as $gateway ) {
-	if ( ! $gateway->is_enabled() || ! $gateway->is_active() ) {
-		continue;
+	<?php
+	foreach ( $gateways as $gateway ) {
+		if ( ! $gateway::is_enabled() || ! $gateway::is_active() ) {
+			continue;
+		}
+		$gateway->render_checkout_template( $this );
 	}
-	$template_path = 'gateway/' . $gateway->get_key() . '/' . $gateway->get_checkout_container_template_name();
-	$this->template( $template_path, $gateway->get_checkout_template_vars() );
-}
-?>
+	?>
 </div>
