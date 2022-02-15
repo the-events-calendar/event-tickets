@@ -46,7 +46,8 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		cardErrors: '#tec-tc-gateway-stripe-errors',
 		paymentElement: '#tec-tc-gateway-stripe-payment-element',
 		paymentMessage: '#tec-tc-gateway-stripe-payment-message',
-		submitButton: '#tec-tc-gateway-stripe-checkout-button'
+		submitButton: '#tec-tc-gateway-stripe-checkout-button',
+		hiddenElement: '.tribe-common-a11y-hidden'
 	};
 
 	/**
@@ -525,6 +526,8 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	obj.setupStripe = async () => {
 
 		if ( obj.checkout.paymentIntentData.errors ) {
+			obj.submitButton( false );
+			$( obj.selectors.submitButton ).addClass( obj.selectors.hiddenElement.className() );
 			return obj.handleErrorDisplay( obj.checkout.paymentIntentData.errors );
 		}
 
