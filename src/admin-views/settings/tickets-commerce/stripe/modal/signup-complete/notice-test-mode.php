@@ -20,6 +20,6 @@ tribe( 'tickets.editor.template' )->template(
 			'tribe-tickets__notice--error',
 			'tec-tickets__admin-settings-tickets-commerce-gateway-modal-notice-error',
 		],
-		'content'        => __( 'You have connected your account for test mode. While in test mode no live transactions are processed.', 'event-tickets' ),
+		'content'        => __( 'Your connection is active, but Tickets Commerce is set to test mode. While in test mode no live transactions are processed.', 'event-tickets' ),
 	]
 );

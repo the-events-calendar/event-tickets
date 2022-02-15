@@ -21,7 +21,7 @@ $args = [
 	'append_target'           => '#stripe-connected-modal-target',
 	'button_id'               => 'stripe-connected-modal-button',
 	'content_wrapper_classes' => 'tribe-dialog__wrapper tribe-tickets__admin-container event-tickets tribe-common tribe-modal__wrapper--stripe-connected',
-	'title'                   => esc_html__( 'You are now connected to Stripe', 'event-tickets' ),
+	'title'                   => esc_html__( "You are now connected to Stripe! What's next?", 'event-tickets' ),
 	'title_classes'           => [
 		'tribe-dialog__title',
 		'tribe-modal__title',
@@ -35,7 +35,7 @@ $dialog_view->render_modal( $content, $args, 'stripe-connected-modal-id' );
 $modal_content = ob_get_clean();
 
 $modal  = '<div class="tribe-common event-tickets">';
-$modal .= '<span id="' . esc_attr( 'stripe-connected-modal-target' ) . '"></span>';
+$modal .= '<span id="stripe-connected-modal-target"></span>';
 $modal .= $modal_content;
 $modal .= '</div>';
 
