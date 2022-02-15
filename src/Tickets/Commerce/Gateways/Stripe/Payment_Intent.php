@@ -114,6 +114,16 @@ class Payment_Intent {
 		return Requests::post( $url, $query_args, $args );
 	}
 
+	/**
+	 * Creates a Payment Intent from cart.
+	 *
+	 * @since TBD
+	 *
+	 * @param Cart $cart
+	 * @param bool $retry
+	 *
+	 * @return array
+	 */
 	public static function create_from_cart( Cart $cart, $retry = false ) {
 		$items = tribe( Order::class )->prepare_cart_items_for_order( $cart );
 		$value = tribe( Order::class )->get_value_total( array_filter( $items ) );
@@ -153,22 +163,9 @@ class Payment_Intent {
 	 * @return array|\WP_Error|null
 	 */
 	public static function update( $payment_intent_id, $data ) {
-		$payment_intent = static::get( $payment_intent_id );
-
-		if ( empty( $payment_intent['id'] ) ) {
-			return;
-		}
-
-		$data = wp_parse_args( $data, $payment_intent );
-		$body = array_diff_assoc( $data, $payment_intent );
-
-		if ( empty( $body ) ) {
-			return;
-		}
-
 		$query_args = [];
 		$args       = [
-			'body' => $body,
+			'body' => $data,
 		];
 
 		$url = sprintf( '/payment_intents/%s', urlencode( $payment_intent_id ) );
