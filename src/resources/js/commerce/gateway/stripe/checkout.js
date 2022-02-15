@@ -77,7 +77,17 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		errors.map( e => obj.showNotice( {}, '', e[ 1 ] ) );
 	};
 
-	obj.getKyRequestArgs = ( data, headers ) => {
+	/**
+	 * Get the request arguments to setup the calls.
+	 *
+	 * @since TBD
+	 *
+	 * @param data
+	 * @param headers
+	 *
+	 * @return {{headers: {"X-WP-Nonce"}, throwHttpErrors: boolean, json, hooks: {beforeError: (function(*): *)[]}}}
+	 */
+	obj.getRequestArgs = ( data, headers ) => {
 		if ( 'undefined' === typeof headers ) {
 			headers = {
 				'X-WP-Nonce': obj.checkout.nonce
@@ -85,7 +95,6 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		}
 
 		const args = {
-			json: data,
 			headers: headers,
 			hooks: {
 				beforeError: [
@@ -95,11 +104,23 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 			throwHttpErrors: false
 		};
 
+		if ( data ) {
+			args.json = data;
+		}
+
 		return args;
 	};
 
+	/**
+	 * Preventing errors to be thrown when using Ky
+	 *
+	 * @since TBD
+	 *
+	 * @param {Object} error
+	 *
+	 * @return {*}
+	 */
 	obj.onBeforeError = ( error ) => {
-		const {response} = error;
 		console.log( error );
 
 		return ky.stop;
@@ -232,6 +253,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 
 		// Redirect the user to the success page.
 		window.location.replace( response.redirect_url );
+
 		return true;
 	};
 
@@ -245,7 +267,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * @return {Promise<*>}
 	 */
 	obj.handleUpdateOrder = async ( paymentIntent ) => {
-		const args = obj.getKyRequestArgs( {
+		const args = obj.getRequestArgs( {
 			client_secret: paymentIntent.client_secret
 		} );
 
@@ -342,7 +364,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * @return {Promise<*>}
 	 */
 	obj.handleCreateOrder = async () => {
-		const args = obj.getKyRequestArgs( {
+		const args = obj.getRequestArgs( {
 			purchaser: obj.getPurchaserData(),
 			payment_intent: obj.checkout.paymentIntentData
 		} );
