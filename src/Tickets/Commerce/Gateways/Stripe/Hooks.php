@@ -47,6 +47,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 		add_filter( 'tec_tickets_commerce_stripe_settings', [ $this, 'include_webhook_settings' ], 20 );
 		add_filter( 'tribe_field_div_end', [ $this, 'filter_include_webhooks_copy' ], 10, 2 );
 		add_filter( 'tribe_settings_save_field_value', [ $this, 'validate_payment_methods' ], 10, 2 );
+		add_filter( 'tribe_settings_validate_field_value', [ $this, 'provide_defaults_for_hidden_fields'], 10, 3 );
 	}
 
 	/**
@@ -200,5 +201,20 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 */
 	public function include_webhook_settings( $settings ) {
 		return array_merge( $settings, tribe( Webhooks::class )->get_fields() );
+	}
+
+	/**
+	 * Makes sure mandatory fields have values when hidden.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed  $value    Field value submitted.
+	 * @param string $field_id Field key in the settings array.
+	 * @param array  $field    Entire field array.
+	 *
+	 * @return mixed
+	 */
+	public function provide_defaults_for_hidden_fields( $value, $field_id, $field ) {
+		return tribe( Settings::class )->reset_hidden_field_values( $value, $field_id, $field );
 	}
 }
