@@ -195,9 +195,9 @@ class Settings extends Abstract_Settings {
 		);
 
 		$checkout_type_tooltip = sprintf(
-			// Translators: %1$s: Opening `<a>` tag for Stripe docs link. %2$s: Closing `<a>` tag for Stripe docs link.
-			__( 'Additional payment methods are available based on currency and location and must be enabled individually within your Stripe account.  Learn more about Stripe checkout and payment configuration %1$shere%2$s.', 'event-tickets' ),
-			'<a href="https://stripe.com/docs/payments/checkout/web#checkout-payment-method-options" target="_blank" rel="noopener noreferrer">', // @todo: @juanfra: Update this link with our KB article.
+			// Translators: %1$s: Opening `<a>` tag for KB article link. %2$s: Closing `<a>` tag for KB article link.
+			__( 'Additional payment methods are available based on currency and location and must be enabled individually within your Stripe account. Learn more about Stripe checkout and payment configuration %1$shere%2$s.', 'event-tickets' ),
+			'<a href="https://evnt.is/1axw" target="_blank" rel="noopener noreferrer">',
 			'</a>'
 		);
 
@@ -211,7 +211,6 @@ class Settings extends Abstract_Settings {
 			'</a>'
 		);
 
-		// @todo @fe @juanfra DQA note: Need adjustment on the wording.
 		$stripe_message = sprintf(
 			// Translators: %1$s: The Event Tickets Plus link.
 			esc_html__( 'You are using the free Stripe payment gateway integration. This includes an additional 2%% fee for processing ticket sales. This fee is removed by activating Event Tickets Plus. %1$s.', 'event-tickets' ),
