@@ -47,9 +47,9 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	 * @var string
 	 */
 	protected static $merchant;
-	
+
 	/**
-	 * The option name prefix that configured whether or not a gateway is enabled. 
+	 * The option name prefix that configured whether or not a gateway is enabled.
 	 * It is followed by the gateway 'key'
 	 *
 	 * @since TBD
@@ -57,7 +57,7 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	 * @var string
 	 */
 	public static $option_enabled_prefix = '_tickets_commerce_gateway_enabled_';
-	
+
 	/**
 	 * Default name for the checkout template.
 	 *
@@ -148,9 +148,9 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	 * @inheritDoc
 	 */
 	public function get_settings_url() {
-		return Tribe__Settings::instance()->get_url( [ 
-			'tab' => Payments_Tab::$slug, 
-			Payments_Tab::$key_current_section_get_var => $this->get_key() 
+		return Tribe__Settings::instance()->get_url( [
+			'tab' => Payments_Tab::$slug,
+			Payments_Tab::$key_current_section_get_var => $this->get_key()
 		] );
 	}
 
@@ -199,7 +199,7 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 		// Always limit it to 127 chars.
 		return substr( (string) $url, 0, 127 );
 	}
-	
+
 	/**
 	 * Get URL for the display logo.
 	 *
@@ -210,7 +210,7 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	public function get_logo_url() {
 		return '';
 	}
-	
+
 	/**
 	 * Get text to use a subtitle when listing gateways.
 	 *
@@ -221,7 +221,7 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	public function get_subtitle() {
 		return '';
 	}
-	
+
 	/**
 	 * Returns the enabled option key.
 	 *
@@ -232,7 +232,7 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	public static function get_enabled_option_key() {
 		return static::$option_enabled_prefix . self::get_key();
 	}
-	
+
 	/**
 	 * Returns if gateway is enabled.
 	 *
@@ -244,10 +244,10 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 		if ( ! static::should_show() ) {
 			return false;
 		}
-		
+
 		return (bool) tribe_get_option( static::get_enabled_option_key() );
 	}
-	
+
 	/**
 	 * Returns status text.
 	 *
@@ -255,14 +255,14 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	 *
 	 * @return string
 	 */
-	public static function get_status_text() {		
+	public static function get_status_text() {
 		if ( ! static::is_enabled() || ! static::is_active() ) {
 			return '';
 		}
-		
+
 		return __( 'Enabled for Checkout', 'event-tickets' );
 	}
-	
+
 	/**
 	 * Returns name of the container template within the `views/v2/commerce/gateway/{key}/` folder.
 	 *
@@ -270,10 +270,10 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	 *
 	 * @return string
 	 */
-	public static function get_checkout_container_template_name() {		
+	public static function get_checkout_container_template_name() {
 		return self::$checkout_container_template_name;
 	}
-	
+
 	/**
 	 * Returns variables to be included in the gateway's checkout template.
 	 *
@@ -281,7 +281,22 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	 *
 	 * @return string
 	 */
-	public static function get_checkout_template_vars() {		
+	public static function get_checkout_template_vars() {
 		return [];
+	}
+
+	/**
+	 * Disable the gateway toggle.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public static function disable() {
+		if ( ! static::is_enabled() ) {
+			return true;
+		}
+
+		return tribe_remove_option( static::get_enabled_option_key() );
 	}
 }

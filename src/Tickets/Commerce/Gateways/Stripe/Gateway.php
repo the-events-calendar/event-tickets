@@ -75,6 +75,12 @@ class Gateway extends Abstract_Gateway {
 				'type'    => 'error',
 				'dismiss' => true,
 			],
+			[
+				'slug'    => 'tc-stripe-account-disconnected',
+				'content' => __( 'Your stripe account was disconnected from the Stripe dashboard. If you believe this is an error, you can re-connect in the Event Tickets > Payment page.', 'event-tickets' ),
+				'type'    => 'error',
+				'dismiss' => true,
+			],
 		];
 
 		return $notices;

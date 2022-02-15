@@ -104,7 +104,7 @@ class Events {
 
 	public static function get_event_handlers(): array {
 		$handlers = [
-			static::ACCOUNT_UPDATED                  => [ Account_Webhook::class, 'handle_default' ],
+			static::ACCOUNT_UPDATED                  => [ Account_Webhook::class, 'handle_account_deauthorized' ],
 			static::ACCOUNT_APPLICATION_DEAUTHORIZED => [ Account_Webhook::class, 'handle_account_deauthorized' ],
 			static::PAYMENT_INTENT_CREATED           => [ Payment_Intent_Webhook::class, 'handle' ],
 			static::PAYMENT_INTENT_PROCESSING        => [ Payment_Intent_Webhook::class, 'handle' ],
@@ -134,12 +134,12 @@ class Events {
 	 */
 	public static function get_event_transition_status(): array {
 		$events = [
-			static::PAYMENT_INTENT_CANCELED          => Commerce_Status\Denied::class,
-			static::PAYMENT_INTENT_CREATED           => Commerce_Status\Created::class,
-			static::PAYMENT_INTENT_PAYMENT_FAILED    => Commerce_Status\Not_Completed::class,
-			static::PAYMENT_INTENT_PROCESSING        => Commerce_Status\Pending::class,
-			static::PAYMENT_INTENT_REQUIRES_ACTION   => Commerce_Status\Action_Required::class,
-			static::PAYMENT_INTENT_SUCCEEDED         => Commerce_Status\Completed::class,
+			static::PAYMENT_INTENT_CANCELED        => Commerce_Status\Denied::class,
+			static::PAYMENT_INTENT_CREATED         => Commerce_Status\Created::class,
+			static::PAYMENT_INTENT_PAYMENT_FAILED  => Commerce_Status\Not_Completed::class,
+			static::PAYMENT_INTENT_PROCESSING      => Commerce_Status\Pending::class,
+			static::PAYMENT_INTENT_REQUIRES_ACTION => Commerce_Status\Action_Required::class,
+			static::PAYMENT_INTENT_SUCCEEDED       => Commerce_Status\Completed::class,
 		];
 
 		/**
@@ -202,7 +202,7 @@ class Events {
 	 * @return bool
 	 */
 	public static function is_valid( string $event_name ): bool {
-		$events_map = static::get_event_transition_status();
+		$events_map = static::get_event_handlers();
 
 		return isset( $events_map[ $event_name ] );
 	}
@@ -220,7 +220,12 @@ class Events {
 		if ( ! static::is_valid( $event_name ) ) {
 			return false;
 		}
+
 		$events = static::get_event_transition_status();
+
+		if ( ! isset( $events[ $event_name ] ) ) {
+			return false;
+		}
 
 		return tribe( Commerce_Status\Status_Handler::class )->get_by_class( $events[ $event_name ] );
 	}

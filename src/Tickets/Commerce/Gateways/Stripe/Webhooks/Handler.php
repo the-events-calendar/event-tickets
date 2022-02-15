@@ -59,9 +59,9 @@ class Handler {
 
 		// When it's not a status we return with the callback.
 		if ( ! $new_status instanceof Commerce_Status\Status_Interface ) {
-			$events_map = Events::get_event_transition_status();
+			$handlers_map = Events::get_event_handlers();
 
-			return $events_map[ $type ]( $request, $response );
+			return $handlers_map[ $type ]( $request, $response );
 		}
 
 		// Define where this request should be processed and call that method
