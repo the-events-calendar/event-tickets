@@ -18,7 +18,7 @@ tribe.tickets.commerce.gateway.stripe = tribe.tickets.commerce.gateway.stripe ||
  */
 tribe.tickets.commerce.gateway.stripe.checkout = {};
 
-(( $, obj, Stripe, ky ) => {
+( ( $, obj, Stripe, ky ) => {
 	'use strict';
 
 	/**
@@ -50,16 +50,6 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	};
 
 	/**
-	 * Handle displaying errors to the end user in the cardErrors field
-	 *
-	 * @param array errors an array of arrays. Each base array is keyed with the error code and cotains a list of error
-	 *     messages.
-	 */
-	obj.handleErrorDisplay = ( errors ) => {
-		errors.map( e => obj.showNotice( {}, '', e[1] ) );
-	}
-
-	/**
 	 * Stripe JS library.
 	 *
 	 * @since TBD
@@ -78,15 +68,74 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	obj.stripeElements = null;
 
 	/**
+	 * Handle displaying errors to the end user in the cardErrors field
+	 *
+	 * @param array errors an array of arrays. Each base array is keyed with the error code and cotains a list of error
+	 *     messages.
+	 */
+	obj.handleErrorDisplay = ( errors ) => {
+		errors.map( e => obj.showNotice( {}, '', e[ 1 ] ) );
+	};
+
+	/**
+	 * Get the request arguments to setup the calls.
+	 *
+	 * @since TBD
+	 *
+	 * @param data
+	 * @param headers
+	 *
+	 * @return {{headers: {"X-WP-Nonce"}, throwHttpErrors: boolean, json, hooks: {beforeError: (function(*): *)[]}}}
+	 */
+	obj.getRequestArgs = ( data, headers ) => {
+		if ( 'undefined' === typeof headers ) {
+			headers = {
+				'X-WP-Nonce': obj.checkout.nonce
+			};
+		}
+
+		const args = {
+			headers: headers,
+			hooks: {
+				beforeError: [
+					obj.onBeforeError
+				]
+			},
+			throwHttpErrors: false
+		};
+
+		if ( data ) {
+			args.json = data;
+		}
+
+		return args;
+	};
+
+	/**
+	 * Preventing errors to be thrown when using Ky
+	 *
+	 * @since TBD
+	 *
+	 * @param {Object} error
+	 *
+	 * @return {*}
+	 */
+	obj.onBeforeError = ( error ) => {
+		console.log( error );
+
+		return ky.stop;
+	};
+
+	/**
 	 * Builds the wallets object to use when creating a Payment Element
 	 *
 	 * @returns {{apple_pay: string, google_pay: string}}
 	 */
 	obj.getWallets = () => {
-		let settings = {
+		const settings = {
 			apple_pay: 'never',
 			google_pay: 'never',
-		}
+		};
 
 		if ( ! obj.checkout.wallet_settings ) {
 			return settings;
@@ -103,7 +152,8 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		}
 
 		return settings;
-	}
+	};
+
 	/**
 	 * Handles the changing of the card field.
 	 *
@@ -111,7 +161,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 *
 	 * @param {Object} error Which error we are dealing with.
 	 */
-	obj.onCardChange = ( { error } ) => {
+	obj.onCardChange = ( {error} ) => {
 		tribe.tickets.debug.log( 'stripe', 'cardChange', error );
 		let displayError = $( obj.selectors.cardErrors );
 		if ( error ) {
@@ -146,7 +196,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		}
 
 		if ( 'succeeded' === result.paymentIntent.status ) {
-			return (await obj.handlePaymentSuccess( result ));
+			return ( await obj.handlePaymentSuccess( result ) );
 		}
 	};
 
@@ -203,6 +253,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 
 		// Redirect the user to the success page.
 		window.location.replace( response.redirect_url );
+
 		return true;
 	};
 
@@ -216,14 +267,9 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * @return {Promise<*>}
 	 */
 	obj.handleUpdateOrder = async ( paymentIntent ) => {
-		const args = {
-			json: {
-				client_secret: paymentIntent.client_secret
-			},
-			headers: {
-				'X-WP-Nonce': obj.checkout.nonce
-			}
-		};
+		const args = obj.getRequestArgs( {
+			client_secret: paymentIntent.client_secret
+		} );
 
 		const response = await ky.post( `${obj.checkout.orderEndpoint}/${paymentIntent.id}`, args ).json();
 
@@ -290,7 +336,6 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		} ).then( obj.handleConfirmCardPayment );
 	};
 
-
 	/**
 	 * Handle the confirmation of the Payment on CardElement.
 	 *
@@ -319,16 +364,11 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * @return {Promise<*>}
 	 */
 	obj.handleCreateOrder = async () => {
-		const args = {
-			json: {
-				purchaser: obj.getPurchaserData(),
-				payment_intent: obj.checkout.paymentIntentData
-			},
-			headers: {
-				'X-WP-Nonce': obj.checkout.nonce
-			},
-			throwHttpErrors: false
-		};
+		const args = obj.getRequestArgs( {
+			purchaser: obj.getPurchaserData(),
+			payment_intent: obj.checkout.paymentIntentData
+		} );
+
 		// Fetch Publishable API Key and Initialize Stripe Elements on Ready
 		let response = await ky.post( obj.checkout.orderEndpoint, args ).json();
 
@@ -378,12 +418,22 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * @since TBD
 	 */
 	obj.setupSeparateCardElement = () => {
-		// Instantiate the CardElement with individual fields
-		obj.cardElement = obj.stripeElements.create( 'cardNumber', { showIcon: true, iconStyle: 'default', style: obj.checkout.cardElementStyle } );
+		// Instantiate the CardElement with individual fields.
+		obj.cardElement = obj.stripeElements.create( 'cardNumber', {
+			showIcon: true,
+			iconStyle: 'default',
+			style: obj.checkout.cardElementStyle,
+		} );
 		obj.cardElement.mount( obj.selectors.cardNumber );
-		obj.cardExpiry = obj.stripeElements.create( 'cardExpiry', { style: obj.checkout.cardElementStyle } );
+
+		obj.cardExpiry = obj.stripeElements.create( 'cardExpiry', {
+			style: obj.checkout.cardElementStyle,
+		} );
 		obj.cardExpiry.mount( obj.selectors.cardExpiry );
-		obj.cardCvc = obj.stripeElements.create( 'cardCvc', { style: obj.checkout.cardElementStyle } );
+
+		obj.cardCvc = obj.stripeElements.create( 'cardCvc', {
+			style: obj.checkout.cardElementStyle,
+		} );
 		obj.cardCvc.mount( obj.selectors.cardCvc );
 	};
 
@@ -395,8 +445,10 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * @since TBD
 	 */
 	obj.setupCompactCardElement = () => {
-		// Instantiate the CardElement with a single field combo
-		obj.cardElement = obj.stripeElements.create( 'card', { style: obj.checkout.cardElementStyle } );
+		// Instantiate the CardElement with a single field combo.
+		obj.cardElement = obj.stripeElements.create( 'card', {
+			style: obj.checkout.cardElementStyle,
+		} );
 		obj.cardElement.mount( obj.selectors.cardElement );
 		obj.cardElement.on( 'change', obj.onCardChange );
 	};
@@ -409,7 +461,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * @since TBD
 	 */
 	obj.setupPaymentElement = () => {
-		let wallets = obj.getWallets();
+		const wallets = obj.getWallets();
 		// Instantiate the PaymentElement
 		obj.paymentElement = obj.stripeElements.create( 'payment', {
 			fields: {
@@ -517,4 +569,4 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	};
 
 	$( obj.ready );
-})( jQuery, tribe.tickets.commerce.gateway.stripe, Stripe, tribe.ky );
+} )( jQuery, tribe.tickets.commerce.gateway.stripe, Stripe, tribe.ky );
