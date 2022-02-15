@@ -66,6 +66,15 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * @type {Object|null}
 	 */
 	obj.stripeElements = null;
+	
+	/**
+	 * Loader container.
+	 *
+	 * @since TBD
+	 *
+	 * @type {Object|null}
+	 */
+	obj.loaderContainer = null;
 
 	/**
 	 * Handle displaying errors to the end user in the cardErrors field
@@ -231,6 +240,8 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	obj.handlePaymentError = ( data ) => {
 		$( obj.selectors.cardErrors ).val( data.error.message );
 		tribe.tickets.debug.log( 'stripe', 'handlePaymentError', data );
+
+		tribe.tickets.loader.hide( obj.loaderContainer );
 
 		return obj.handleErrorDisplay(
 			[
@@ -416,11 +427,11 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	obj.handlePayment = async ( event ) => {
 		event.preventDefault();
 
-		const $container = $( event.target ).closest( tribe.tickets.commerce.selectors.checkoutContainer );
+		obj.loaderContainer = $( event.target ).closest( tribe.tickets.commerce.selectors.checkoutContainer );
 
-		obj.hideNotice( $container );
+		obj.hideNotice( obj.loaderContainer );
 
-		tribe.tickets.loader.show( $container );
+		tribe.tickets.loader.show( obj.loaderContainer );
 
 		let order = await obj.handleCreateOrder();
 		obj.submitButton( false );
@@ -432,10 +443,10 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 				obj.submitCardPayment();
 			}
 		} else {
+			tribe.tickets.loader.hide( obj.loaderContainer );
 			obj.showNotice( {}, order.message, '' );
 		}
 
-		tribe.tickets.loader.hide( $container );
 		obj.submitButton( true );
 	};
 
