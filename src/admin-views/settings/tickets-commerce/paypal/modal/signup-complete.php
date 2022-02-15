@@ -20,7 +20,7 @@ $content     = $this->template( 'settings/tickets-commerce/paypal/modal/signup-c
 $args = [
 	'append_target'           => '#paypal-connected-modal-target',
 	'button_id'               => 'paypal-connected-modal-button',
-	'content_wrapper_classes' => 'tribe-dialog__wrapper tribe-tickets__admin-container event-tickets tribe-common tribe-modal__wrapper--paypal-connected',
+	'content_wrapper_classes' => 'tribe-dialog__wrapper tribe-tickets__admin-container event-tickets tribe-common tribe-modal__wrapper--gateway-connected',
 	'title'                   => esc_html__( "You are now connected to PayPal, here's what's next...", 'event-tickets' ),
 	'title_classes'           => [
 		'tribe-dialog__title',
