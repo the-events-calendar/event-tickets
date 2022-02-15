@@ -120,7 +120,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 *
 	 * @return {*}
 	 */
-	obj.onBeforeError = ( error ) => {
+	obj.onBeforeError = async ( error ) => {
 		console.log( error );
 
 		return ky.stop;
