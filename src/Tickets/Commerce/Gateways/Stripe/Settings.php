@@ -475,11 +475,11 @@ class Settings extends Abstract_Settings {
 		}
 
 		if ( $field_id === static::$option_checkout_element_payment_methods ) {
-			return self::DEFAULT_PAYMENT_ELEMENT_METHODS;
+			return tribe_get_option( static::$option_checkout_element_payment_methods, self::DEFAULT_PAYMENT_ELEMENT_METHODS );
 		}
 
 		if ( $field_id === static::$option_checkout_element_card_fields ) {
-			return self::COMPACT_CARD_ELEMENT_SLUG;
+			return tribe_get_option( static::$option_checkout_element_card_fields, self::COMPACT_CARD_ELEMENT_SLUG );
 		}
 
 		return $value;
