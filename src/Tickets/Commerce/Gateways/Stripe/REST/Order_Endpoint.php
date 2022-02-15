@@ -10,6 +10,7 @@ use TEC\Tickets\Commerce\Gateways\Stripe\Payment_Intent_Handler;
 use TEC\Tickets\Commerce\Gateways\Stripe\Status;
 use TEC\Tickets\Commerce\Order;
 
+use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Success;
 
 use Tribe__Utils__Array as Arr;
@@ -116,7 +117,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		}
 
 		$order = tribe( Order::class )->create_from_cart( tribe( Gateway::class ), $purchaser );
-	
+
 		$payment_intent = tribe( Payment_Intent_Handler::class )->update_payment_intent( $data );
 
 		if ( is_wp_error( $payment_intent ) ) {
@@ -127,14 +128,8 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			return new WP_Error( 'tec-tc-gateway-stripe-failed-creating-order', $messages['failed-creating-order'], $order );
 		}
 
-		$payment_intent_status = Arr::get( $payment_intent, [ 'status' ] );
-		$status                = tribe( Status::class )->convert_to_commerce_status( $payment_intent_status );
-
-		if ( ! $status ) {
-			return new WP_Error( 'tec-tc-gateway-stripe-invalid-payment-intent-status', $messages['invalid-payment-intent-status'], $payment_intent_status );
-		}
-
-		$updated = tribe( Order::class )->modify_status( $order->ID, $status->get_slug(), [
+		// Orders need to pass the Pending status always.
+		$updated = tribe( Order::class )->modify_status( $order->ID, Pending::SLUG, [
 			'gateway_payload'  => $payment_intent,
 			'gateway_order_id' => $payment_intent['id'],
 		] );
@@ -208,6 +203,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		$gateway_order_id = $request->get_param( 'order_id' );
 
 		$order = tec_tc_orders()->by_args( [
+			'status' => 'any',
 			'gateway_order_id' => $gateway_order_id,
 		] )->first();
 
