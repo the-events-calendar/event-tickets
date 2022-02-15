@@ -97,10 +97,14 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		const args = {
 			headers: headers,
 			hooks: {
+				beforeRetry: [
+					obj.onBeforeRetry
+				],
 				beforeError: [
 					obj.onBeforeError
 				]
 			},
+			timeout: 30000,
 			throwHttpErrors: false
 		};
 
@@ -120,7 +124,22 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 *
 	 * @return {*}
 	 */
-	obj.onBeforeError = ( error ) => {
+	obj.onBeforeRetry = async ( error ) => {
+		console.log( error );
+
+		return ky.stop;
+	};
+
+	/**
+	 * Preventing errors to be thrown when using Ky
+	 *
+	 * @since TBD
+	 *
+	 * @param {Object} error
+	 *
+	 * @return {*}
+	 */
+	obj.onBeforeError = async ( error ) => {
 		console.log( error );
 
 		return ky.stop;
@@ -270,8 +289,13 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		const args = obj.getRequestArgs( {
 			client_secret: paymentIntent.client_secret
 		} );
+		let response;
 
-		const response = await ky.post( `${obj.checkout.orderEndpoint}/${paymentIntent.id}`, args ).json();
+		try {
+			response = await ky.post( `${obj.checkout.orderEndpoint}/${paymentIntent.id}`, args ).json();
+		} catch( error ) {
+			response = error;
+		}
 
 		tribe.tickets.debug.log( 'stripe', 'updateOrder', response );
 
@@ -368,9 +392,14 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 			purchaser: obj.getPurchaserData(),
 			payment_intent: obj.checkout.paymentIntentData
 		} );
+		let response;
 
-		// Fetch Publishable API Key and Initialize Stripe Elements on Ready
-		let response = await ky.post( obj.checkout.orderEndpoint, args ).json();
+		try {
+			// Fetch Publishable API Key and Initialize Stripe Elements on Ready
+			response = await ky.post( obj.checkout.orderEndpoint, args ).json();
+		} catch( error ) {
+			response = error;
+		}
 
 		tribe.tickets.debug.log( 'stripe', 'createOrder', response );
 

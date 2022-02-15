@@ -76,14 +76,21 @@ tribe.tickets.admin.commerceSettings = {};
 		} );
 	}
 
-	obj.maybeShowPCINotice = function() {
+	obj.maybeShowModalAfterConnection = function() {
 
-		if ( ! window.location.search.match( /tc-status=paypal-signup-complete/i ) ) {
+		if (
+			! window.location.search.match( /tc-status=paypal-signup-complete/i )
+			&& ! window.location.search.match( /tc-status=stripe-signup-complete/i )
+		) {
 			return;
 		}
 
 		tribe.dialogs.dialogs.forEach( function( dialog ) {
 			if ( 'paypal-connected-modal-id' === dialog.id ) {
+				dialog.a11yInstance.show();
+			}
+
+			if ( 'stripe-connected-modal-id' === dialog.id ) {
 				dialog.a11yInstance.show();
 			}
 
@@ -253,7 +260,7 @@ tribe.tickets.admin.commerceSettings = {};
 			obj.disconnectButton.on( 'click', obj.handleDisconnectClick );
 		}
 
-		obj.maybeShowPCINotice();
+		obj.maybeShowModalAfterConnection();
 	};
 
 	// Configure on document ready.
