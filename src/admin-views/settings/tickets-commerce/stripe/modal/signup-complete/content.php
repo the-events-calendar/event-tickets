@@ -7,16 +7,64 @@
  * @since   TBD
  */
 
-// @todo: @juanfra: Add information about what to do with Webhooks and a Stripe user primer (currencies and such).
 ?>
 <div class="tec-tickets__admin-settings-tickets-commerce-stripe-modal-content tec-tickets__admin-modal tribe-common-b2">
 
 	<?php $this->template( 'settings/tickets-commerce/stripe/modal/signup-complete/notice-test-mode' ); ?>
 
+	<p>
+		<?php
+		$pci = sprintf(
+			// Translators: %1$s: opening `a` tag to the knowledge base article. %2$s: closing `a` tag to the knowledge base article.
+			esc_html__( 'Stripe allows you to accept credit or debit cards directly on your website. Because of this, your site needs to maintain %1$sPCI-DSS compliance%2$s.', 'event-tickets' ),
+			'<a href="https://theeventscalendar.com/knowledgebase/k/pci-compliance/" target="_blank" rel="noopener noreferrer" class="tribe-common-anchor-alt">',
+			'</a>'
+		);
+		?>
+	</p>
 
-	<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</p>
+	<div class="tec-tickets__admin-settings-tickets-commerce-stripe-modal-content-section">
+		<strong><?php esc_html_e( 'Currency', 'event-tickets' ); ?></strong> &mdash;
+		<?php
+			esc_html_e( 'Be sure that your Stripe currency matches the currency you have configured for Tickets Commerce, to avoid any issues or unexpected conversion fees.', 'event-tickets' );
+		?>
+	</div>
 
-	<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</p>
+	<div class="tec-tickets__admin-settings-tickets-commerce-stripe-modal-content-section">
+		<strong><?php esc_html_e( 'Payment methods', 'event-tickets' ); ?></strong> &mdash;
+		<?php
+		printf(
+			// Translators: %1$s: opening `a` tag to stripe's dashboard. %2$s: closing `a` tag to the knowledge base article.
+			esc_html__( 'You will have to confirm that the payments methods you have selected to sell tickets are enabled on the %1$sStripe payment methods section%2$s.', 'event-tickets' ),
+			'<a href="https://dashboard.stripe.com/settings/payment_methods" target="_blank" rel="noopener noreferrer" class="tribe-common-anchor-alt">',
+			'</a>'
+		);
+		?>
+	</div>
+
+	<div class="tec-tickets__admin-settings-tickets-commerce-stripe-modal-content-section">
+		<strong><?php esc_html_e( 'Webhooks', 'event-tickets' ); ?></strong> &mdash;
+		<?php
+		printf(
+			// Translators: %1$s: opening `a` tag to the knowledge base article. %2$s: closing `a` tag to the knowledge base article.
+			esc_html__( 'In order for ticket sales to be marked as complete for some payment methods on your Stripe gateway for your Event Tickets site, you must configure the webhook at Stripe. %1$sLearn how to set up webhooks here%2$s.', 'event-tickets' ),
+			'<a href="https://evnt.is/1b3p" target="_blank" rel="noopener noreferrer" class="tribe-common-anchor-alt">',
+			'</a>'
+		);
+		?>
+	</div>
+
+	<div class="tec-tickets__admin-settings-tickets-commerce-stripe-modal-content-section">
+		<strong><?php esc_html_e( 'PCI Compliance', 'event-tickets' ); ?></strong> &mdash;
+		<?php
+		printf(
+			// Translators: %1$s: opening `a` tag to the knowledge base article. %2$s: closing `a` tag to the knowledge base article.
+			esc_html__( 'Stripe allows you to accept credit or debit cards directly on your website. Because of this, your site needs to maintain %1$sPCI-DSS compliance%2$s.', 'event-tickets' ),
+			'<a href="https://theeventscalendar.com/knowledgebase/k/pci-compliance/" target="_blank" rel="noopener noreferrer" class="tribe-common-anchor-alt">',
+			'</a>'
+		);
+		?>
+	</div>
 
 
 	<div class="tec-tickets__admin-modal-buttons">
