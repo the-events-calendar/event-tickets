@@ -49,7 +49,7 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	protected static $merchant;
 
 	/**
-	 * The option name prefix that configured whether a gateway is enabled.
+	 * The option name prefix that configured whether or not a gateway is enabled.
 	 * It is followed by the gateway 'key'
 	 *
 	 * @since TBD
@@ -57,6 +57,15 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	 * @var string
 	 */
 	public static $option_enabled_prefix = '_tickets_commerce_gateway_enabled_';
+
+	/**
+	 * Default name for the checkout template.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $checkout_container_template_name = 'container';
 
 	/**
 	 * @inheritDoc
@@ -255,9 +264,42 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	}
 
 	/**
+	 * Returns name of the container template within the `views/v2/commerce/gateway/{key}/` folder.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_checkout_container_template_name() {
+		return self::$checkout_container_template_name;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static function get_checkout_template_vars() {
+		return [];
+	}
+
+	/**
 	 * @inheritDoc
 	 */
 	public function render_checkout_template( \Tribe__Template $template ): string {
 		return '';
+	}
+
+	/**
+	 * Disable the gateway toggle.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public static function disable() {
+		if ( ! static::is_enabled() ) {
+			return true;
+		}
+
+		return tribe_remove_option( static::get_enabled_option_key() );
 	}
 }

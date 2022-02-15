@@ -32,6 +32,8 @@ class Hooks extends \tad_DI52_ServiceProvider {
 		add_action( 'wp', [ $this, 'maybe_create_stripe_payment_intent' ] );
 
 		add_action( 'admin_init', [ $this, 'handle_stripe_errors' ] );
+
+		add_action( 'wp_ajax_tec_tickets_commerce_gateway_stripe_test_webhooks', [ $this, 'action_handle_testing_webhooks_field' ] );
 	}
 
 	/**
@@ -42,6 +44,8 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	protected function add_filters() {
 		add_filter( 'tec_tickets_commerce_gateways', [ $this, 'filter_add_gateway' ], 5, 2 );
 		add_filter( 'tec_tickets_commerce_notice_messages', [ $this, 'include_admin_notices' ] );
+		add_filter( 'tec_tickets_commerce_stripe_settings', [ $this, 'include_webhook_settings' ] );
+		add_filter( 'tribe_field_div_end', [ $this, 'filter_include_webhooks_copy' ], 10, 2 );
 		add_filter( 'tribe_settings_save_field_value', [ $this, 'validate_payment_methods' ], 10, 2 );
 	}
 
@@ -54,8 +58,22 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 *
 	 * @return array
 	 */
-	public function filter_add_gateway( array $gateways = [] ) {
+	public function filter_add_gateway( array $gateways = [] ) : array {
 		return $this->container->make( Gateway::class )->register_gateway( $gateways );
+	}
+
+	/**
+	 * Modify the HTML of the Webhooks field to include a copy button.
+	 *
+	 * @since TBD
+	 *
+	 * @param string        $html
+	 * @param \Tribe__Field $field
+	 *
+	 * @return string
+	 */
+	public function filter_include_webhooks_copy( string $html, \Tribe__Field $field ) : string {
+		return $this->container->make( Webhooks::class )->include_webhooks_copy_button( $html, $field );
 	}
 
 	/**
@@ -63,8 +81,17 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 *
 	 * @since TBD
 	 */
-	public function register_endpoints() {
+	public function register_endpoints() : void {
 		$this->container->make( REST::class )->register_endpoints();
+	}
+
+	/**
+	 * Handles the validation of the signing key on the settings page.
+	 *
+	 * @since TBD
+	 */
+	public function action_handle_testing_webhooks_field() : void {
+		$this->container->make( Webhooks::class )->handle_validation();
 	}
 
 	/**
@@ -78,6 +105,12 @@ class Hooks extends \tad_DI52_ServiceProvider {
 
 		if ( $merchant_denied ) {
 			return tribe( Notice_Handler::class )->trigger_admin( $merchant_denied );
+		}
+
+		$merchant_disconnected = tribe( Merchant::class )->is_merchant_deauthorized();
+
+		if ( $merchant_disconnected ) {
+			return tribe( Notice_Handler::class )->trigger_admin( $merchant_disconnected );
 		}
 
 		tribe( Settings::class )->alert_currency_mismatch();
@@ -154,5 +187,18 @@ class Hooks extends \tad_DI52_ServiceProvider {
 
 		// Revert value to the previous configuration.
 		return tribe_get_option( $field_id );
+	}
+
+	/**
+	 * Add Webhook settings fields
+	 *
+	 * @since TBD
+	 *
+	 * @param array $settings Array of settings for the Stripe gateway.
+	 *
+	 * @return mixed
+	 */
+	public function include_webhook_settings( $settings ) {
+		return array_merge( $settings, tribe( Webhooks::class )->get_fields() );
 	}
 }
