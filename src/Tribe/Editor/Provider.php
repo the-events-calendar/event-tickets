@@ -77,6 +77,22 @@ class Tribe__Tickets__Editor__Provider extends tad_DI52_ServiceProvider {
 	}
 
 	/**
+	 * Register the blocks after plugins are fully loaded.
+	 *
+	 * @since TBD
+	 */
+	public function register_blocks() {
+		// Register blocks.
+		add_action( 'tribe_editor_register_blocks', [ tribe( 'tickets.editor.blocks.rsvp' ), 'register' ] );
+
+		add_action( 'tribe_editor_register_blocks', [ tribe( 'tickets.editor.blocks.tickets' ), 'register' ] );
+
+		add_action( 'tribe_editor_register_blocks', [ tribe( 'tickets.editor.blocks.tickets-item' ), 'register' ] );
+
+		add_action( 'tribe_editor_register_blocks', [ tribe( 'tickets.editor.blocks.attendees' ), 'register' ] );
+	}
+
+	/**
 	 * Any hooking any class needs happen here.
 	 *
 	 * In place of delegating the hooking responsibility to the single classes they are all hooked here.
@@ -86,46 +102,22 @@ class Tribe__Tickets__Editor__Provider extends tad_DI52_ServiceProvider {
 	protected function hook() {
 		// Setup the Meta registration.
 		add_action( 'init', tribe_callback( 'tickets.editor.meta', 'register' ), 15 );
-		add_filter(
-			'register_meta_args',
-			tribe_callback( 'tickets.editor.meta', 'register_meta_args' ),
-			10,
-			4
-		);
+		add_filter( 'register_meta_args', tribe_callback( 'tickets.editor.meta', 'register_meta_args' ), 10, 4 );
+		add_action( 'tribe_plugins_loaded', [ $this, 'register_blocks' ], 300 );
 
 		// Handle REST specific meta filtering.
-		add_filter(
-			'rest_dispatch_request',
-			tribe_callback( 'tickets.editor.meta', 'filter_rest_dispatch_request' ),
-			10,
-			3
-		);
+		add_filter( 'rest_dispatch_request', tribe_callback( 'tickets.editor.meta', 'filter_rest_dispatch_request' ), 10, 3 );
 
 		// Setup the Rest compatibility layer for WP.
 		tribe( 'tickets.editor.rest.compatibility' );
 
-		// Register blocks.
-		add_action( 'tribe_editor_register_blocks', [ tribe( 'tickets.editor.blocks.rsvp' ), 'register' ] );
-
-		add_action( 'tribe_editor_register_blocks', [ tribe( 'tickets.editor.blocks.tickets' ), 'register' ] );
-
-		add_action( 'tribe_editor_register_blocks', [ tribe( 'tickets.editor.blocks.tickets-item' ), 'register' ] );
-
-		add_action( 'tribe_editor_register_blocks', [ tribe( 'tickets.editor.blocks.attendees' ), 'register' ] );
-
 		global $wp_version;
-		if( version_compare( $wp_version, '5.8', '<' ) ) {
+		if ( version_compare( $wp_version, '5.8', '<' ) ) {
 			// WP version is less then 5.8.
-			add_action(
-				'block_categories',
-				tribe_callback( 'tickets.editor', 'block_categories' )
-			);
+			add_action( 'block_categories', tribe_callback( 'tickets.editor', 'block_categories' ) );
 		} else {
 			// WP version is 5.8 or above.
-			add_action(
-				'block_categories_all',
-				tribe_callback( 'tickets.editor', 'block_categories' )
-			);
+			add_action( 'block_categories_all', tribe_callback( 'tickets.editor', 'block_categories' ) );
 		}
 
 	}
@@ -139,6 +131,7 @@ class Tribe__Tickets__Editor__Provider extends tad_DI52_ServiceProvider {
 	 */
 	private function load_compatibility_tickets() {
 		tribe( 'tickets.editor.compatibility.tickets' );
+
 		return true;
 	}
 
@@ -147,5 +140,6 @@ class Tribe__Tickets__Editor__Provider extends tad_DI52_ServiceProvider {
 	 *
 	 * @since 4.9
 	 */
-	public function boot() {}
+	public function boot() {
+	}
 }
