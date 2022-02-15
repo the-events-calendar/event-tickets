@@ -35,3 +35,5 @@ $classes = [
 	<?php $this->template( 'settings/tickets-commerce/stripe/connect/logo' ); ?>
 
 </div>
+
+<?php $this->template( 'settings/tickets-commerce/stripe/modal/signup-complete' ); ?>
