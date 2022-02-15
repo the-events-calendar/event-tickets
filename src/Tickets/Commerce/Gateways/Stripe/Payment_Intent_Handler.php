@@ -81,6 +81,7 @@ class Payment_Intent_Handler {
 
 			if ( $this->count_retries() ) {
 				$this->delete_payment_intent_transient();
+
 				return $this->create_payment_intent_for_cart( true );
 			}
 
@@ -107,6 +108,8 @@ class Payment_Intent_Handler {
 		$payment_intent_id = $data['payment_intent']['id'];
 
 		$stripe_receipt_emails = tribe_get_option( Settings::$option_stripe_receipt_emails );
+
+		$body = [];
 
 		// Currently this method is only used to add an email recipient for Stripe receipts. If this is not
 		// required, only return the payment intent object to store.
