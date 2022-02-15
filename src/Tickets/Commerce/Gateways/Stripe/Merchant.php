@@ -33,6 +33,15 @@ class Merchant extends Abstract_Merchant {
 	public static $merchant_unauthorized_option_key = 'tickets-commerce-merchant-unauthorized';
 
 	/**
+	 * Option key to save the information regarding merchant authorization.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $merchant_deauthorized_option_key = 'tickets-commerce-merchant-deauthorized';
+
+	/**
 	 * Option key to save the information regarding merchant default currency.
 	 *
 	 * @since TBD
@@ -317,7 +326,7 @@ class Merchant extends Abstract_Merchant {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $status the connection status array.
+	 * @param array $status The connection status array.
 	 *
 	 * @return bool
 	 */
@@ -327,6 +336,8 @@ class Merchant extends Abstract_Merchant {
 
 	/**
 	 * Check if merchant is set as unauthorized.
+	 *
+	 * Unauthorized accounts are accounts that cannot be authorized to connect, usually due to regulatory reasons.
 	 *
 	 * @since TBD
 	 *
@@ -341,7 +352,7 @@ class Merchant extends Abstract_Merchant {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $validation_key refusal reason, must be the same as the notice slug for the corresponding error.
+	 * @param string $validation_key Refusal reason, must be the same as the notice slug for the corresponding error.
 	 */
 	public function set_merchant_unauthorized( $validation_key ) {
 		\Tribe__Admin__Notices::instance()->undismiss_for_all( $validation_key );
@@ -355,6 +366,41 @@ class Merchant extends Abstract_Merchant {
 	 */
 	public function unset_merchant_unauthorized() {
 		delete_option( static::$merchant_unauthorized_option_key );
+	}
+
+	/**
+	 * Check if merchant is set as de-authorized.
+	 *
+	 * De-authorized accounts are accounts that were previously connected and whose connection has been revoked in the
+	 * Stripe Dashboard. These accounts can be re-connected with the proper credentials.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function is_merchant_deauthorized() {
+		return get_option( static::$merchant_deauthorized_option_key, false );
+	}
+
+	/**
+	 * Set merchant as de-authorized.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $validation_key De-authorization reason, must be the same as the notice slug for the corresponding error.
+	 */
+	public function set_merchant_deauthorized( $validation_key ) {
+		\Tribe__Admin__Notices::instance()->undismiss_for_all( $validation_key );
+		update_option( static::$merchant_deauthorized_option_key, $validation_key );
+	}
+
+	/**
+	 * Unset merchant as de-authorized.
+	 *
+	 * @since TBD
+	 */
+	public function unset_merchant_deauthorized() {
+		delete_option( static::$merchant_deauthorized_option_key );
 	}
 
 	/**

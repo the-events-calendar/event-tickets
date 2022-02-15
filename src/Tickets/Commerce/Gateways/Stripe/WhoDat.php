@@ -4,6 +4,7 @@ namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_WhoDat;
 use TEC\Tickets\Commerce\Gateways\Stripe\REST\On_Boarding_Endpoint;
+use TEC\Tickets\Commerce\Gateways\Stripe\REST\Webhook_Endpoint;
 
 /**
  * Class WhoDat. Handles connection to Stripe when the platform keys are needed.

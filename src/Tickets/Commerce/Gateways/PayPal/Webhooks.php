@@ -4,6 +4,10 @@ namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
 use TEC\Tickets\Commerce\Gateways\PayPal\REST\Webhook_Endpoint;
 use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Events;
+use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Gateway;
+use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Merchant;
+use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Webhooks;
+
 use Tribe__Utils__Array as Arr;
 
 /**
@@ -13,79 +17,20 @@ use Tribe__Utils__Array as Arr;
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
-class Webhooks {
+class Webhooks extends Abstract_Webhooks {
 
 	/**
-	 * Returns the options key for webhook settings in the merchant mode.
-	 *
-	 * @since 5.1.10
-	 *
-	 * @return string
+	 * @inheritDoc
 	 */
-	public function get_settings_key() {
-		$gateway_key   = Gateway::get_key();
-		$merchant_mode = tribe( Merchant::class )->get_mode();
-
-		return "tec_tickets_commerce_{$gateway_key}_{$merchant_mode}_webhooks_settings";
+	public function get_gateway(): Abstract_Gateway {
+		return tribe( Gateway::class );
 	}
 
 	/**
-	 * Retrieves the settings for the webhooks from the database.
-	 *
-	 * @since 5.1.10
-	 *
-	 * @param array|string $key       Specify each nested index in order.
-	 *                                Example: array( 'lvl1', 'lvl2' );
-	 * @param mixed        $default   Default value if the search finds nothing.
-	 *
-	 * @return mixed
+	 * @inheritDoc
 	 */
-	public function get_setting( $key, $default = null ) {
-		$settings = get_option( $this->get_settings_key(), null );
-
-		return Arr::get( $settings, $key, $default );
-	}
-
-	/**
-	 * Saves the webhook settings in the database.
-	 *
-	 * @since 5.1.10
-	 *
-	 * @param array $settings []
-	 *
-	 * @return bool
-	 */
-	public function update_settings( array $settings = [] ) {
-		return update_option( $this->get_settings_key(), $settings );
-	}
-
-	/**
-	 * Retrieves the settings for the webhooks from the database.
-	 *
-	 * @since 5.1.10
-	 *
-	 * @return array|null
-	 */
-	public function get_settings() {
-		$settings = get_option( $this->get_settings_key(), null );
-
-		// Without an ID, the webhook settings are invalid.
-		if ( empty( $settings['id'] ) ) {
-			return null;
-		}
-
-		return $settings;
-	}
-
-	/**
-	 * Deletes the stored webhook settings.
-	 *
-	 * @since 5.1.10
-	 *
-	 * @return bool
-	 */
-	public function delete_settings() {
-		return delete_option( $this->get_settings_key() );
+	public function get_merchant(): Abstract_Merchant {
+		return tribe( Merchant::class );
 	}
 
 	/**

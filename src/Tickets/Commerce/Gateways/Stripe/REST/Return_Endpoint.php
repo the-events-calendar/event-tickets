@@ -137,6 +137,7 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 		}
 
 		tribe( Merchant::class )->unset_merchant_unauthorized();
+		tribe( Merchant::class )->unset_merchant_deauthorized();
 		$url = Tribe__Settings::instance()->get_url( [ 'tab' => 'payments', 'tc-section' => 'stripe' ] );
 
 		wp_safe_redirect( $url );
