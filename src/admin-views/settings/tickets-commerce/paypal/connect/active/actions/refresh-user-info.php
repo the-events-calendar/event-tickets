@@ -6,6 +6,7 @@
  *
  * @since   5.2.0
  * @since TBD Added section param to URL.
+ * @since TBD Using generic CSS classes for gateway instead of PayPal.
  *
  * @var Tribe__Tickets__Admin__Views                  $this                  [Global] Template object.
  * @var string                                        $plugin_url            [Global] The plugin URL.

@@ -155,6 +155,11 @@ tribe.tickets.commerce.gateway.toggler = tribe.tickets.commerce.gateway.toggler 
 	 * @since TBD
 	 */
 	obj.showAdditional = () => {
+		// If additional options already open, let's close it and show default.
+		if ( obj.toggles.additional.hasClass( obj.selectors.toggleOpen.className() ) ) {
+			obj.showDefault();
+			return;
+		}
 		obj.hideGateway( obj.gateways[0] );
 		obj.gateways.each( ( x, gateway ) => {
 			if( 0 === x ){

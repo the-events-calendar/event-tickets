@@ -2,9 +2,10 @@
 /**
  * The Template for displaying the Tickets Commerce PayPal Settings when connected.
  *
- * @version 5.1.10
+ * @version TBD
  *
  * @since   5.1.10
+ * @since   TBD Using generic CSS classes for gateway instead of PayPal.
  *
  * @var Tribe__Tickets__Admin__Views                  $this                  [Global] Template object.
  * @var string                                        $plugin_url            [Global] The plugin URL.

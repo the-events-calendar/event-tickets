@@ -716,6 +716,11 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 		tribe.tickets.debug.log( 'handleHostedCaptureError', error );
 		tribe.tickets.loader.hide( $container );
 
+		if ( ! obj.isGenericError ) {
+			obj.isGenericError = true;
+			return;
+		}
+
 		let errorTitle = '';
 		let errorContent = '';
 
@@ -821,6 +826,8 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 			} else {
 				obj.showNotice( $container, '', data.message );
 			}
+		} else {
+			obj.showNotice( $container, '', data.message );
 		}
 
 		tribe.tickets.loader.hide( $container );

@@ -102,17 +102,17 @@ abstract class Abstract_Order {
 		}
 
 		if ( ! isset( $data['purchaser'] ) || empty( $data['purchaser'] ) ) {
-			return new \WP_Error( 'invalid-purchaser-info', __( 'Please provide a valid purchaser name and email.', 'event-tickets' ), [ 'title' => 'Invalid Purchaser innfo' ] );
+			return new \WP_Error( 'invalid-purchaser-info', __( 'Please provide a valid purchaser name and email.', 'event-tickets' ), [ 'status' => 400 ] );
 		}
 
 		$purchaser_data = array_map( 'sanitize_text_field', $data['purchaser'] );
 
 		if ( ! isset( $purchaser_data['name'] ) || empty( $purchaser_data['name'] ) ) {
-			return new \WP_Error( 'invalid-purchaser-info', __( 'Please provide a valid purchaser name.', 'event-tickets' ), [ 'title' => 'Invalid Purchaser innfo' ] );
+			return new \WP_Error( 'invalid-purchaser-info', __( 'Please provide a valid purchaser name.', 'event-tickets' ), [ 'status' => 400 ] );
 		}
 
 		if ( ! isset( $purchaser_data['email'] ) || empty( $purchaser_data['email'] ) || ! is_email( $purchaser_data['email'] ) ) {
-			return new \WP_Error( 'invalid-purchaser-info', __( 'Please provide a valid purchaser email.', 'event-tickets' ) );
+			return new \WP_Error( 'invalid-purchaser-info', __( 'Please provide a valid purchaser email.', 'event-tickets' ), [ 'status' => 400 ] );
 		}
 
 		$purchaser = [

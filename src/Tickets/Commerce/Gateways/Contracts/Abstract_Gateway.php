@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * @since TBD
+ * @since   TBD
  *
  * @package TEC\Tickets\Commerce\Gateways
  */
@@ -147,11 +147,12 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	/**
 	 * @inheritDoc
 	 */
-	public function get_settings_url() {
-		return Tribe__Settings::instance()->get_url( [
-			'tab' => Payments_Tab::$slug,
-			Payments_Tab::$key_current_section_get_var => $this->get_key()
-		] );
+	public static function get_settings_url( array $args = [] ) {
+		// Force the Tickets Commerce section to be this gateway.
+		$args[ Payments_Tab::$key_current_section_get_var ] = static::get_key();
+
+		// Pass it to the get_url of the payments tab.
+		return tribe( Payments_Tab::class )->get_url( $args );
 	}
 
 	/**
@@ -162,8 +163,8 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 		$notices = tribe( Notice_Handler::class );
 		$body    = (array) json_decode( wp_remote_retrieve_body( $response ) );
 
-		$error = isset( $body['error'] ) ? $body['error'] : __( 'Something went wrong!' , 'event-tickets' );
-		$error_message = isset( $body['error_description'] ) ? $body['error_description'] : __( 'Unexpected response recieved.' , 'event-tickets' );
+		$error         = isset( $body['error'] ) ? $body['error'] : __( 'Something went wrong!', 'event-tickets' );
+		$error_message = isset( $body['error_description'] ) ? $body['error_description'] : __( 'Unexpected response recieved.', 'event-tickets' );
 
 		$notices->trigger_admin(
 			$slug,
@@ -188,7 +189,6 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	 * @return string
 	 */
 	public function generate_unique_tracking_id() {
-		$gateway = static::$key;
 		$id      = wp_generate_password( 6, false, false );;
 		$url_frags = wp_parse_url( home_url() );
 		$url       = Arr::get( $url_frags, 'host' ) . Arr::get( $url_frags, 'path' );
@@ -197,7 +197,7 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 		], $url );
 
 		// Always limit it to 127 chars.
-		return substr( (string) $url, 0, 127 );
+		return substr( $url, 0, 127 );
 	}
 
 	/**
@@ -207,7 +207,7 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	 *
 	 * @return string
 	 */
-	public function get_logo_url() {
+	public function get_logo_url(): string {
 		return '';
 	}
 
@@ -218,7 +218,7 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	 *
 	 * @return string
 	 */
-	public function get_subtitle() {
+	public function get_subtitle(): string {
 		return '';
 	}
 
@@ -229,7 +229,7 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	 *
 	 * @return string
 	 */
-	public static function get_enabled_option_key() {
+	public static function get_enabled_option_key(): string {
 		return static::$option_enabled_prefix . self::get_key();
 	}
 
@@ -240,12 +240,12 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	 *
 	 * @return boolean
 	 */
-	public static function is_enabled() {
+	public static function is_enabled(): bool {
 		if ( ! static::should_show() ) {
 			return false;
 		}
 
-		return (bool) tribe_get_option( static::get_enabled_option_key() );
+		return tribe_is_truthy( tribe_get_option( static::get_enabled_option_key() ) );
 	}
 
 	/**
@@ -255,7 +255,7 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	 *
 	 * @return string
 	 */
-	public static function get_status_text() {
+	public static function get_status_text(): string {
 		if ( ! static::is_enabled() || ! static::is_active() ) {
 			return '';
 		}
@@ -275,14 +275,17 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	}
 
 	/**
-	 * Returns variables to be included in the gateway's checkout template.
-	 *
-	 * @since TBD
-	 *
-	 * @return string
+	 * @inheritDoc
 	 */
 	public static function get_checkout_template_vars() {
 		return [];
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function render_checkout_template( \Tribe__Template $template ): string {
+		return '';
 	}
 
 	/**

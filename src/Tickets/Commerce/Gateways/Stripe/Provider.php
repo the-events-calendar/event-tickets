@@ -27,6 +27,7 @@ class Provider extends \tad_DI52_ServiceProvider {
 		$this->container->singleton( Status::class );
 		$this->container->singleton( WhoDat::class );
 		$this->container->singleton( Webhooks::class );
+		$this->container->singleton( Payment_Intent_Handler::class );
 
 		// Webhooks
 		$this->container->singleton( Account_Webhook::class );

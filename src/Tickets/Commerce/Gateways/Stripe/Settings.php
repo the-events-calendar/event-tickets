@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Settings;
+use TEC\Tickets\Commerce\Notice_Handler;
 use TEC\Tickets\Commerce\Utils\Currency;
 use Tribe__Tickets__Main;
 
@@ -139,8 +140,47 @@ class Settings extends Abstract_Settings {
 	 *
 	 * @since TBD
 	 */
-	private function set_connection_status() {
-		$this->connection_status = tribe( Merchant::class )->get_connection_status();
+	public function set_connection_status() {
+		$this->connection_status = tribe( Merchant::class )->check_account_status();
+	}
+
+	/**
+	 * Trigger a dismissible admin notice if Tickets Commerce and Stripe currencies are not the same.
+	 *
+	 * @since TBD
+	 */
+	public function alert_currency_mismatch() {
+		$merchant = tribe( Merchant::class );
+
+		// Bail if merchant is not connected.
+		if ( ! $merchant->is_connected() ) {
+			return;
+		}
+
+		$stripe_currency = strtoupper( $merchant->get_merchant_currency() );
+		$site_currency   = strtoupper( Currency::get_currency_code() );
+
+		// Bail if no currency is set for the Stripe connection.
+		if ( empty( $stripe_currency ) ) {
+			return;
+		}
+
+		if ( $site_currency === $stripe_currency ) {
+			return;
+		}
+
+		tribe( Notice_Handler::class )->trigger_admin(
+			'tc-stripe-currency-mismatch',
+			[
+				'content' =>
+					sprintf(
+					// Translators: %1$s The tickets commerce currency. %2$s: The currency from the Stripe account.
+						__( 'Tickets Commerce is configured to use %1$s as its currency but the default currency for the connected stripe account is %2$s. If you believe this is an error, you can modify the Tickets Commerce currency in the main Payments tab. Using different currencies for Tickets Commerce and Stripe may result in exchange rates and conversions being handled by Stripe.', 'event-tickets' ),
+						$site_currency,
+						$stripe_currency
+					),
+			]
+		);
 	}
 
 	/**
@@ -154,12 +194,19 @@ class Settings extends Abstract_Settings {
 			esc_html__( 'Learn more', 'event-tickets' )
 		);
 
+		$checkout_type_tooltip = sprintf(
+		// Translators: %1$s: Opening `<a>` tag for Stripe docs link. %2$s: Closing `<a>` tag for Stripe docs link.
+			__( 'Additional payment methods are available based on currency and location and must be enabled individually within your Stripe account.  Learn more about Stripe checkout and payment configuration %1$shere%2$s.', 'event-tickets' ),
+			'<a href="https://stripe.com/docs/payments/checkout/web#checkout-payment-method-options" target="_blank" rel="noopener noreferrer">', // @todo: @juanfra: Update this link with our KB article.
+			'</a>'
+		);
+
 		$payment_methods_tooltip = sprintf(
-		// Translators: %1$s: Opening `<strong>` tag. %2$s: The currency name. %3$s: Closing `</strong>` tag. %4$s: Opening `<a>` tag for Stripe link. %5$s: Closing `</a>` tag.
-			__( 'Payment methods available for %1$s%2$s%3$s.<br /><br /> The payment methods listed here are dependent on the currency selected for Tickets Commerce and the currency each payment method support. You can review the payment methods and their availablity for each currency on %4$sStripe\'s documentation%5$s.<br /><br />', 'event-tickets' ),
-			'<strong>',
+		// Translators: %1$s: Opening `<span>` tag. %2$s: The currency name. %3$s: Closing `</span>` tag. %4$s: Opening `<a>` tag for Stripe link. %5$s: Closing `</a>` tag.
+			__( '%1$sPayment methods available for %2$s%3$s.<br /><br /> The payment methods listed here are dependent on the currency selected for Tickets Commerce and the currency each payment method support. You can review the payment methods and their availablity for each currency on %4$sStripe\'s documentation%5$s.<br /><br />', 'event-tickets' ),
+			'<span class="tec-tickets__admin-settings-tickets-commerce-gateway-currency">',
 			$currency_name,
-			'</strong>',
+			'</span>',
 			'<a href="https://stripe.com/docs/payments/payment-methods/integration-options" target="_blank" rel="noopener noreferrer">',
 			'</a>'
 		);
@@ -170,17 +217,33 @@ class Settings extends Abstract_Settings {
 			esc_html__( 'You are using the free Stripe payment gateway integration. This includes an additional 2%% fee for processing ticket sales. This fee is removed by activating Event Tickets Plus. %1$s.', 'event-tickets' ),
 			$plus_link
 		);
-
-		$settings       = [
-			'tickets-commerce-stripe-commerce-description'           => [
+		$main_settings  = [
+			'tickets-commerce-stripe-commerce-description' => [
 				'type' => 'html',
 				'html' => '<div class="tec-tickets__admin-settings-tickets-commerce-description">' . $stripe_message . '</div>',
 			],
-			'tickets-commerce-stripe-commerce-configure'             => [
+			'tickets-commerce-stripe-commerce-configure'   => [
 				'type'            => 'wrapped_html',
 				'html'            => $this->get_connection_settings_html(),
 				'validation_type' => 'html',
 			],
+		];
+
+		// If gateway isn't connected/active, only show the connection settings.
+		$is_connected = tribe( Merchant::class )->is_connected();
+		if ( ! $is_connected ) {
+			/**
+			 * Allow filtering the list of Stripe settings.
+			 *
+			 * @since TBD
+			 *
+			 * @param array $settings     The list of Stripe Commerce settings.
+			 * @param bool  $is_connected Whether or not gateway is connected.
+			 */
+			return apply_filters( 'tec_tickets_commerce_stripe_settings', $main_settings, $is_connected );
+		}
+
+		$connected_settings = [
 			'tickets-commerce-stripe-settings-heading'               => [
 				'type' => 'html',
 				'html' => '<h3 class="tribe-dependent -input">' . __( 'Stripe Settings', 'event-tickets' ) . '</h3><div class="clear"></div>',
@@ -218,72 +281,63 @@ class Settings extends Abstract_Settings {
 			static::$option_checkout_element                          => [
 				'type'            => 'radio',
 				'label'           => esc_html__( 'Checkout Type', 'event-tickets' ),
-				'tooltip'         => esc_html__( 'Choose if you want to process payments with credit cards only, or if you also want to include other payment methods.', 'event-tickets' ),
-				'default'         => self::PAYMENT_ELEMENT_SLUG,
+				'tooltip'         => $checkout_type_tooltip,
+				'default'         => self::CARD_ELEMENT_SLUG,
 				'validation_type' => 'options',
 				'options'         => [
-					self::PAYMENT_ELEMENT_SLUG => esc_html__( 'Accept payments with one or multiple payment methods, including credit cards.', 'event-tickets' ),
 					self::CARD_ELEMENT_SLUG    => esc_html__( 'Accept only credit card payments.', 'event-tickets' ),
+					self::PAYMENT_ELEMENT_SLUG => esc_html__( 'Accept credit card payments and additional payment methods configured in Stripe.', 'event-tickets' ),
 				],
-				'tooltip_first'   => true,
 			],
 			static::$option_checkout_element_card_fields              => [
-				'type'            => 'radio',
-				'label'           => esc_html__( 'Credit Card Fields', 'event-tickets' ),
-				'tooltip'         => esc_html__( 'Stripe offers two different types of credit card fields. A consolidated single field or a more traditional multi-fields format.', 'event-tickets' ) . '<br /><br />',
-				'default'         => self::COMPACT_CARD_ELEMENT_SLUG,
+				'type'                => 'radio',
+				'label'               => esc_html__( 'Credit Card field format', 'event-tickets' ),
+				'default'             => self::COMPACT_CARD_ELEMENT_SLUG,
 				'fieldset_attributes' => [
 					'data-depends'              => '#tribe-field-' . static::$option_checkout_element . '-' . self::CARD_ELEMENT_SLUG,
 					'data-condition-is-checked' => true,
 				],
-				'class'           => 'tribe-dependent',
-				'validation_type' => 'options',
-				'options'         => [
+				'class'               => 'tribe-dependent',
+				'validation_type'     => 'options',
+				'options'             => [
 					self::COMPACT_CARD_ELEMENT_SLUG  => sprintf(
-					// Translators: %1$s: Opening `<strong>` tag. %2$s: Closing `</strong>` tag. %3$s: Opening `<span>` tag. %4$s: Closing `</span>` tag.
-						__( '%1$sSingle field%2$s. %3$sIt combines the card number, expiration date, CVC, and zip / postal code (if enabled) fields into one intuitive field.%4$s', 'event-tickets' ),
-						'<strong>',
-						'</strong>',
+					// Translators: %1$s: Opening `<span>` tag. %2$s: Closing `</span>` tag.
+						__( 'Single field. %1$sFor streamlined checkout.%2$s', 'event-tickets' ),
 						'<span class="tribe_soft_note">',
 						'</span>'
 					),
 					self::SEPARATE_CARD_ELEMENT_SLUG => sprintf(
-					// Translators: %1$s: Opening `<strong>` tag. %2$s: Closing `</strong>` tag. %3$s: Opening `<span>` tag. %4$s: Closing `</span>` tag.
-						__( '%1$sMultiple fields.%2$s %3$sAll fields are separate from one another. This is the more traditional credit card fieldset format that many are familiar with.%4$s', 'event-tickets' ),
-						'<strong>',
-						'</strong>',
+					// Translators: %1$s: Opening `<span>` tag. %2$s: Closing `</span>` tag.
+						__( 'Multiple fields. %1$sFor standard checkout.%2$s', 'event-tickets' ),
 						'<span class="tribe_soft_note">',
 						'</span>'
 					),
 				],
-				'tooltip_first'   => true,
 			],
 			static::$option_checkout_element_payment_methods          => [
-				'type'            => 'checkbox_list',
-				'label'           => esc_html__( 'Payment methods accepted', 'event-tickets' ),
-				'tooltip'         => $payment_methods_tooltip,
-				'default'         => self::DEFAULT_PAYMENT_ELEMENT_METHODS,
+				'type'                => 'checkbox_list',
+				'label'               => esc_html__( 'Payment methods accepted', 'event-tickets' ),
+				'tooltip'             => $payment_methods_tooltip,
+				'default'             => self::DEFAULT_PAYMENT_ELEMENT_METHODS,
 				'fieldset_attributes' => [
 					'data-depends'              => '#tribe-field-' . static::$option_checkout_element . '-' . self::PAYMENT_ELEMENT_SLUG,
 					'data-condition-is-checked' => true,
 				],
-				'class'           => 'tribe-dependent',
-				'validation_type' => 'options_multi',
-				'options'         => $this->get_payment_methods_available_by_currency(),
-				'tooltip_first'   => true,
+				'class'               => 'tribe-dependent',
+				'validation_type'     => 'options_multi',
+				'options'             => $this->get_payment_methods_available_by_currency(),
 			],
 		];
-
-		$settings = array_merge( $settings, tribe( Webhooks::class )->get_fields() );
 
 		/**
 		 * Allow filtering the list of Stripe settings.
 		 *
 		 * @since TBD
 		 *
-		 * @param array $settings The list of Stripe Commerce settings.
+		 * @param array $settings     The list of Stripe Commerce settings.
+		 * @param bool  $is_connected Whether or not gateway is connected.
 		 */
-		return apply_filters( 'tec_tickets_commerce_stripe_settings', $settings );
+		return apply_filters( 'tec_tickets_commerce_stripe_settings', array_merge( $main_settings, $connected_settings ), $is_connected );
 	}
 
 	/**
@@ -323,8 +377,8 @@ class Settings extends Abstract_Settings {
 
 	/**
 	 * Returns the list of available Payment Methods.
-	 * Methods and currencies sourced from
-	 * https://stripe.com/docs/payments/payment-methods/integration-options#payment-method-product-support
+	 *
+	 * @link https://stripe.com/docs/payments/payment-methods/integration-options#payment-method-product-support
 	 *
 	 * @since TBD
 	 *
@@ -333,28 +387,20 @@ class Settings extends Abstract_Settings {
 	private function get_payment_methods_available() {
 		$available_methods = [
 			'afterpay_clearpay' => [
-				'currencies' => [ 'AUD', 'CAD', 'GBP', 'NZD' ],
+				'currencies' => [ 'AUD', 'CAD', 'GBP', 'NZD', 'USD' ],
 				'label'      => esc_html__( 'AfterPay and ClearPay', 'event-tickets' ),
 			],
 			'alipay'            => [
 				'currencies' => [ 'AUD', 'CAD', 'CNY', 'EUR', 'GBP', 'HKD', 'JPY', 'MYR', 'NZD', 'SGD', 'USD' ],
 				'label'      => esc_html__( 'Alipay', 'event-tickets' ),
 			],
-			'bacs_debit'        => [
-				'currencies' => [ 'GBP' ],
-				'label'      => esc_html__( 'Bacs Direct Debit', 'event-tickets' ),
-			],
 			'giropay'           => [
 				'currencies' => [ 'EUR' ],
 				'label'      => esc_html__( 'Giropay', 'event-tickets' ),
 			],
 			'klarna'            => [
-				'currencies' => [ 'DKK', 'EUR', 'GBP', 'NOK', 'SEK' ],
+				'currencies' => [ 'DKK', 'EUR', 'GBP', 'NOK', 'SEK', 'USD' ],
 				'label'      => esc_html__( 'Klarna', 'event-tickets' ),
-			],
-			'acss_debit'        => [
-				'currencies' => [ 'CAD', 'USD' ],
-				'label'      => esc_html__( 'Pre-authorized debit in Canada', 'event-tickets' ),
 			],
 		];
 
@@ -377,6 +423,8 @@ class Settings extends Abstract_Settings {
 		if ( empty( $this->connection_status ) ) {
 			$this->set_connection_status();
 		}
+
+		update_option( Merchant::$merchant_default_currency_option_key, $this->connection_status['default_currency'] );
 
 		if ( empty( tribe_get_option( static::$option_checkout_element ) ) ) {
 			tribe_update_option( static::$option_checkout_element, static::PAYMENT_ELEMENT_SLUG );
