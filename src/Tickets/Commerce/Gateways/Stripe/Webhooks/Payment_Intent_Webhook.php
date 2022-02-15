@@ -24,7 +24,7 @@ class Payment_Intent_Webhook implements Webhook_Event_Interface {
 	 * @param Status_Interface $new_status
 	 * @param \WP_REST_Request $request
 	 *
-	 * @return bool
+	 * @return bool|\WP_Error
 	 */
 	public static function handle( array $event, Status_Interface $new_status, \WP_REST_Request $request ) {
 		$payment_intent    = static::get_payment_intent_data( $event );
@@ -33,11 +33,19 @@ class Payment_Intent_Webhook implements Webhook_Event_Interface {
 		$order = static::get_order_by_payment_intent_id( $payment_intent_id );
 
 		if ( empty( $order ) ) {
-			return new \WP_Error( 200, sprintf( 'Payment Intent %s does not correspond to a known order.', esc_html( $payment_intent_id ) ) );
+			return new \WP_Error( 200, sprintf(
+				// Translators: %s is the payment intent id
+				__( 'Payment Intent %s does not correspond to a known order.', 'event-tickets' ),
+				esc_html( $payment_intent_id )
+			) );
 		}
 
 		if ( ! static::should_payment_intent_be_updated( $payment_intent, $order->gateway_payload ) ) {
-			return new \WP_Error( 200, sprintf( 'Payment Intent %s does not require an update or is a duplicate of a past event.', esc_html( $payment_intent_id ) ) );
+			return new \WP_Error( 200, sprintf(
+				// Translators: %s is the payment intent id
+				__( 'Payment Intent %s does not require an update or is a duplicate of a past event.', 'event-tickets' ),
+				esc_html( $payment_intent_id )
+			) );
 		}
 
 		$meta = [

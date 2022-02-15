@@ -198,7 +198,7 @@ class Payment_Intent_Handler {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $payment_intent Payment intent data from Stripe
+	 * @param array $payment_intent Payment intent data from Stripe.
 	 */
 	public function store_payment_intent( $payment_intent ) {
 		set_transient( $this->get_payment_intent_transient_name(), $payment_intent, 6 * HOUR_IN_SECONDS );

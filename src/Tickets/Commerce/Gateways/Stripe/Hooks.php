@@ -44,6 +44,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	protected function add_filters() {
 		add_filter( 'tec_tickets_commerce_gateways', [ $this, 'filter_add_gateway' ], 5, 2 );
 		add_filter( 'tec_tickets_commerce_notice_messages', [ $this, 'include_admin_notices' ] );
+		add_filter( 'tec_tickets_commerce_stripe_settings', [ $this, 'include_webhook_settings' ] );
 		add_filter( 'tribe_field_div_end', [ $this, 'filter_include_webhooks_copy' ], 10, 2 );
 		add_filter( 'tribe_settings_save_field_value', [ $this, 'validate_payment_methods' ], 10, 2 );
 	}
@@ -186,5 +187,18 @@ class Hooks extends \tad_DI52_ServiceProvider {
 
 		// Revert value to the previous configuration.
 		return tribe_get_option( $field_id );
+	}
+
+	/**
+	 * Add Webhook settings fields
+	 *
+	 * @since TBD
+	 *
+	 * @param array $settings Array of settings for the Stripe gateway.
+	 *
+	 * @return mixed
+	 */
+	public function include_webhook_settings( $settings ) {
+		return array_merge( $settings, tribe( Webhooks::class )->get_fields() );
 	}
 }

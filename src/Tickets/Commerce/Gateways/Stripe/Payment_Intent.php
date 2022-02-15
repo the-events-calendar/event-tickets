@@ -67,7 +67,8 @@ class Payment_Intent {
 
 			return new \WP_Error(
 				'tec-tc-stripe-test-payment-intent-failed',
-				__( sprintf( 'Stripe reports that it is unable to process charges with the selected Payment Methods. Usually this means that one of the methods selected is not available or not configured in your Stripe account. The errors you see below were returned from Stripe, please correct any inconsistencies or contact Stripe support, then try again: <div class="stripe-errors">%s</div>', $compiled_errors ), 'event-tickets' )
+				// Translators: %s is the html-formatted response from Stripe servers containing the error messages.
+				sprintf( __( 'Stripe reports that it is unable to process charges with the selected Payment Methods. Usually this means that one of the methods selected is not available or not configured in your Stripe account. The errors you see below were returned from Stripe, please correct any inconsistencies or contact Stripe support, then try again: <div class="stripe-errors">%s</div>', 'event-tickets' ), $compiled_errors )
 			);
 		}
 
@@ -155,7 +156,6 @@ class Payment_Intent {
 		$payment_intent = static::get( $payment_intent_id );
 
 		if ( empty( $payment_intent['id'] ) ) {
-			// error
 			return;
 		}
 
@@ -163,7 +163,6 @@ class Payment_Intent {
 		$body = array_diff_assoc( $data, $payment_intent );
 
 		if ( empty( $body ) ) {
-			// noop
 			return;
 		}
 

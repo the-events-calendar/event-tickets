@@ -64,7 +64,7 @@ class Handler {
 			return $handlers_map[ $type ]( $request, $response );
 		}
 
-		// Define where this request should be processed and call that method
+		// Define where this request should be processed and call that method.
 		$event_handler = static::get_handler_method_for_event( $type );
 
 		// Stripe webhooks don't care for anything other than our response codes

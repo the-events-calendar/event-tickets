@@ -170,7 +170,18 @@ class Webhooks extends Abstract_Webhooks {
 			'tickets-commerce-gateway-settings-group-description-webhook' => [
 				'type' => 'html',
 				'html' => '<p class="tec-tickets__admin-settings-tickets-commerce-gateway-group-description-stripe-webhooks contained">'
-						  . esc_html__( 'To find your signing secret, head to https://dashboard.stripe.com/webhooks, click on the endpoint desired, and click to Reveal the Signing Secret', 'event-tickets' )
+						  . wp_kses(
+							  sprintf(
+							      // Translators: %s s a link to Stripe's webhooks configuration page.
+								  __( 'To find your signing secret, head to %s, click on the endpoint desired, and click to Reveal the Signing Secret', 'event-tickets' ),
+								  '<a target="_blank" rel="noopener noreferrer" href="https://dashboard.stripe.com/webhooks">https://dashboard.stripe.com/webhooks</a>' ),
+							  [ 'a' => [
+								  'target' => [],
+								  'class' => [],
+								  'href' => [],
+								  'rel' => []
+							  ] ]
+						  )
 						  . '</p><div class="clear"></div>',
 			],
 			static::$option_webhooks_value                                => [
