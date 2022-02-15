@@ -456,4 +456,33 @@ class Settings extends Abstract_Settings {
 		return $admin_views->template( 'settings/tickets-commerce/stripe/main', $context, false );
 	}
 
+	/**
+	 * Resets the values of payment methods and card options if they are no longer in use and avoid a settings
+	 * notice for empty values.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed  $value    Field value submitted.
+	 * @param string $field_id Field key in the settings array.
+	 * @param array  $field    Entire field array.
+	 *
+	 * @return mixed
+	 */
+	public function reset_hidden_field_values( $value, $field_id, $field ) {
+
+		if ( $value ) {
+			return $value;
+		}
+
+		if ( $field_id === static::$option_checkout_element_payment_methods ) {
+			return tribe_get_option( static::$option_checkout_element_payment_methods, self::DEFAULT_PAYMENT_ELEMENT_METHODS );
+		}
+
+		if ( $field_id === static::$option_checkout_element_card_fields ) {
+			return tribe_get_option( static::$option_checkout_element_card_fields, self::COMPACT_CARD_ELEMENT_SLUG );
+		}
+
+		return $value;
+	}
+
 }
