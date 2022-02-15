@@ -224,7 +224,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		}
 
 		if ( 'succeeded' === result.paymentIntent.status ) {
-			return ( await obj.handlePaymentSuccess( result ) );
+			return ( obj.handlePaymentSuccess( result ) );
 		}
 	};
 
