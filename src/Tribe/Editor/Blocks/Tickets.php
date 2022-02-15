@@ -1,9 +1,10 @@
 <?php
+
 /**
  * Tickets block Setup
  */
 class Tribe__Tickets__Editor__Blocks__Tickets
-extends Tribe__Editor__Blocks__Abstract {
+	extends Tribe__Editor__Blocks__Abstract {
 
 	public function hook() {
 		add_action( 'wp_ajax_ticket_availability_check', [ $this, 'ticket_availability' ] );
@@ -26,7 +27,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	 *
 	 * @since 4.9
 	 *
-	 * @param  array $attributes
+	 * @param array $attributes
 	 *
 	 * @return string
 	 */
@@ -48,17 +49,19 @@ extends Tribe__Editor__Blocks__Abstract {
 	 */
 	public function assets() {
 		global $wp_version;
-		$plugin = Tribe__Tickets__Main::instance();
+		$plugin       = Tribe__Tickets__Main::instance();
+		$block_object = $this;
 
-		wp_register_script(
+		tribe_asset(
+			$plugin,
 			'wp-util-not-in-footer',
 			includes_url( '/js/wp-util.js' ),
 			[ 'jquery', 'underscore' ],
-			false,
-			false
+			null,
+			[
+				'type' => 'js',
+			]
 		);
-
-		wp_enqueue_script( 'wp-util-not-in-footer' );
 
 		$tickets_block_dependencies = [
 			'jquery',
@@ -93,13 +96,13 @@ extends Tribe__Editor__Blocks__Abstract {
 					],
 					[
 						'name' => 'TribeCartEndpoint',
-						'data' => [
-							'url' => tribe_tickets_rest_url( '/cart/' ),
-						],
+						'data' => static function() {
+							return [ 'url' => tribe_tickets_rest_url( '/cart/' ) ];
+						}
 					],
 					[
 						'name' => 'TribeMessages',
-						'data' => $this->set_messages(),
+						'data' => [ $block_object, 'set_messages' ],
 					],
 					[
 						'name' => 'TribeTicketsURLs',
@@ -117,7 +120,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	 *
 	 * @since 4.9
 	 *
-	 * @param  array $tickets (IDs of tickets to check)
+	 * @param array $tickets (IDs of tickets to check)
 	 *
 	 * @return void
 	 */
@@ -168,7 +171,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	 *
 	 * @since 4.9
 	 *
-	 * @param  int $post_id Post ID.
+	 * @param int $post_id Post ID.
 	 *
 	 * @return array
 	 */
@@ -205,7 +208,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	 * @since 4.9
 	 * @since 4.12.3 Retrieve slug from updated Ticktes Status Manager method.
 	 *
-	 * @param  Tribe__Tickets__Tickets $provider Provider class instance.
+	 * @param Tribe__Tickets__Tickets $provider Provider class instance.
 	 *
 	 * @return string
 	 */
@@ -230,7 +233,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	 *
 	 * @since 4.9
 	 *
-	 * @param  array $tickets Array of all tickets.
+	 * @param array $tickets Array of all tickets.
 	 *
 	 * @return array
 	 */
@@ -251,7 +254,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	 *
 	 * @since 4.9
 	 *
-	 * @param  array $tickets Array of all tickets.
+	 * @param array $tickets Array of all tickets.
 	 *
 	 * @return bool
 	 */
@@ -270,7 +273,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	 *
 	 * @since 4.11.0
 	 *
-	 * @param  array $tickets Array of all tickets.
+	 * @param array $tickets Array of all tickets.
 	 *
 	 * @return bool
 	 */
@@ -296,7 +299,7 @@ extends Tribe__Editor__Blocks__Abstract {
 		$messages = [
 			'api_error_title'        => _x( 'API Error', 'Error message title, will be followed by the error code.', 'event-tickets' ),
 			'connection_error'       => __( 'Refresh this page or wait a few minutes before trying again. If this happens repeatedly, please contact the Site Admin.', 'event-tickets' ),
-			'capacity_error'         => __( 'The ticket for this event has sold out and has been removed from your cart.', 'event-tickets'),
+			'capacity_error'         => __( 'The ticket for this event has sold out and has been removed from your cart.', 'event-tickets' ),
 			'validation_error_title' => __( 'Whoops!', 'event-tickets' ),
 			'validation_error'       => '<p>' . sprintf( _x( 'You have %s ticket(s) with a field that requires information.', 'The %s will change based on the error produced.', 'event-tickets' ), '<span class="tribe-tickets__notice--error__count">0</span>' ) . '</p>',
 		];
