@@ -12,17 +12,6 @@
 
 	<?php $this->template( 'settings/tickets-commerce/stripe/modal/signup-complete/notice-test-mode' ); ?>
 
-	<p>
-		<?php
-		$pci = sprintf(
-			// Translators: %1$s: opening `a` tag to the knowledge base article. %2$s: closing `a` tag to the knowledge base article.
-			esc_html__( 'Stripe allows you to accept credit or debit cards directly on your website. Because of this, your site needs to maintain %1$sPCI-DSS compliance%2$s.', 'event-tickets' ),
-			'<a href="https://theeventscalendar.com/knowledgebase/k/pci-compliance/" target="_blank" rel="noopener noreferrer" class="tribe-common-anchor-alt">',
-			'</a>'
-		);
-		?>
-	</p>
-
 	<div class="tec-tickets__admin-settings-tickets-commerce-stripe-modal-content-section">
 		<strong><?php esc_html_e( 'Currency', 'event-tickets' ); ?></strong> &mdash;
 		<?php
