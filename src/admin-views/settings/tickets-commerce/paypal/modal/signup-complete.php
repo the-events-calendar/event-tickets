@@ -26,7 +26,7 @@ $args = [
 		'tribe-dialog__title',
 		'tribe-modal__title',
 		'tribe-common-h5',
-		'tribe-modal__title--paypal-connected',
+		'tribe-modal__title--gateway-connected',
 	],
 ];
 
