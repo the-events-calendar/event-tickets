@@ -23,7 +23,7 @@
 		<strong><?php esc_html_e( 'Payment methods', 'event-tickets' ); ?></strong> &mdash;
 		<?php
 		printf(
-			// Translators: %1$s: opening `a` tag to stripe's dashboard. %2$s: closing `a` tag to the knowledge base article.
+			// Translators: %1$s: opening `a` tag to stripe's dashboard. %2$s: closing `a` tag.
 			esc_html__( 'You will have to confirm that the payments methods you have selected to sell tickets are enabled on the %1$sStripe payment methods section%2$s.', 'event-tickets' ),
 			'<a href="https://dashboard.stripe.com/settings/payment_methods" target="_blank" rel="noopener noreferrer" class="tribe-common-anchor-alt">',
 			'</a>'
@@ -35,7 +35,7 @@
 		<strong><?php esc_html_e( 'Webhooks', 'event-tickets' ); ?></strong> &mdash;
 		<?php
 		printf(
-			// Translators: %1$s: opening `a` tag to the knowledge base article. %2$s: closing `a` tag to the knowledge base article.
+			// Translators: %1$s: opening `a` tag to the knowledge base article. %2$s: closing `a` tag.
 			esc_html__( 'In order for ticket sales to be marked as complete for some payment methods on your Stripe gateway for your Event Tickets site, you must configure the webhook at Stripe. %1$sLearn how to set up webhooks here%2$s.', 'event-tickets' ),
 			'<a href="https://evnt.is/1b3p" target="_blank" rel="noopener noreferrer" class="tribe-common-anchor-alt">',
 			'</a>'
@@ -47,7 +47,7 @@
 		<strong><?php esc_html_e( 'PCI Compliance', 'event-tickets' ); ?></strong> &mdash;
 		<?php
 		printf(
-			// Translators: %1$s: opening `a` tag to the knowledge base article. %2$s: closing `a` tag to the knowledge base article.
+			// Translators: %1$s: opening `a` tag to the knowledge base article. %2$s: closing `a` tag.
 			esc_html__( 'Stripe allows you to accept credit or debit cards directly on your website. Because of this, your site needs to maintain %1$sPCI-DSS compliance%2$s.', 'event-tickets' ),
 			'<a href="https://theeventscalendar.com/knowledgebase/k/pci-compliance/" target="_blank" rel="noopener noreferrer" class="tribe-common-anchor-alt">',
 			'</a>'
