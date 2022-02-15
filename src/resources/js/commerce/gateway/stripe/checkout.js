@@ -396,16 +396,22 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * @since TBD
 	 */
 	obj.setupSeparateCardElement = () => {
-		// Instantiate the CardElement with individual fields
+		// Instantiate the CardElement with individual fields.
 		obj.cardElement = obj.stripeElements.create( 'cardNumber', {
 			showIcon: true,
 			iconStyle: 'default',
-			style: obj.checkout.cardElementStyle
+			style: obj.checkout.cardElementStyle,
 		} );
 		obj.cardElement.mount( obj.selectors.cardNumber );
-		obj.cardExpiry = obj.stripeElements.create( 'cardExpiry', {style: obj.checkout.cardElementStyle} );
+
+		obj.cardExpiry = obj.stripeElements.create( 'cardExpiry', {
+			style: obj.checkout.cardElementStyle,
+		} );
 		obj.cardExpiry.mount( obj.selectors.cardExpiry );
-		obj.cardCvc = obj.stripeElements.create( 'cardCvc', {style: obj.checkout.cardElementStyle} );
+
+		obj.cardCvc = obj.stripeElements.create( 'cardCvc', {
+			style: obj.checkout.cardElementStyle,
+		} );
 		obj.cardCvc.mount( obj.selectors.cardCvc );
 	};
 
@@ -417,8 +423,10 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * @since TBD
 	 */
 	obj.setupCompactCardElement = () => {
-		// Instantiate the CardElement with a single field combo
-		obj.cardElement = obj.stripeElements.create( 'card', {style: obj.checkout.cardElementStyle} );
+		// Instantiate the CardElement with a single field combo.
+		obj.cardElement = obj.stripeElements.create( 'card', {
+			style: obj.checkout.cardElementStyle,
+		} );
 		obj.cardElement.mount( obj.selectors.cardElement );
 		obj.cardElement.on( 'change', obj.onCardChange );
 	};
@@ -431,7 +439,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * @since TBD
 	 */
 	obj.setupPaymentElement = () => {
-		let wallets = obj.getWallets();
+		const wallets = obj.getWallets();
 		// Instantiate the PaymentElement
 		obj.paymentElement = obj.stripeElements.create( 'payment', {
 			fields: {
