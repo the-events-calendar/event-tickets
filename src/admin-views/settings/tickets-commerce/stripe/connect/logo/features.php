@@ -12,15 +12,13 @@
  * @var array                                         $merchant_status [Global] Merchant Status data.
  */
 
- // @todo @fe @juanfra: DQA note: Update language for features.
- 
 ?>
 <ul>
 	<li>
-		<?php esc_html_e( 'Credit and debit card payments', 'event-tickets' ); ?>
+		<?php esc_html_e( 'Credit, debit card payments and more!', 'event-tickets' ); ?>
 	</li>
 	<li>
-		<?php esc_html_e( 'Easy no-API key connection', 'event-tickets' ); ?>
+		<?php esc_html_e( 'Easy, streamlined connection', 'event-tickets' ); ?>
 	</li>
 	<li>
 		<?php esc_html_e( 'Accept payments from around the world', 'event-tickets' ); ?>
