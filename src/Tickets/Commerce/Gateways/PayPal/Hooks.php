@@ -140,6 +140,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 			return;
 		}
 
+		Gateway::disable();
 		$notices->trigger_admin( 'tc-paypal-disconnected' );
 	}
 
