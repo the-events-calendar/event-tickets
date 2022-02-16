@@ -6,7 +6,7 @@ use TEC\Tickets\Commerce\Status\Status_Interface;
 use TEC\Tickets\Commerce\Gateways\Contracts\Webhook_Event_Interface;
 
 /**
- * Webhook for Charge operations
+ * Webhook for Charge operations.
  *
  * @since   TBD
  *
@@ -25,7 +25,7 @@ class Charge_Webhook implements Webhook_Event_Interface {
 
 		if ( empty( $order ) ) {
 			return new \WP_Error( 200, sprintf(
-			// Translators: %s is the payment intent id
+				// Translators: %s is the payment intent id.
 				__( 'Payment Intent %s does not correspond to a known order.', 'event-tickets' ),
 				esc_html( $payment_intent_id )
 			) );
