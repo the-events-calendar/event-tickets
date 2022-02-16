@@ -33,11 +33,13 @@ class Handler {
 	 * @return WP_REST_Response|WP_Error
 	 */
 	public static function process_webhook_response( WP_REST_Request $request, WP_REST_Response $response ) {
-		$event = $request->get_json_params();
-		$type  = Arr::get( $event, 'type' );
+		$event  = $request->get_json_params();
+		$object = Arr::get( $event, 'object' );
+		$type   = Arr::get( $event, 'type' );
+		$id     = Arr::get( $event, 'id' );
 
 		// Invalid event.
-		if ( empty( $type ) || 'event' !== $event['object'] ) {
+		if ( empty( $type ) || 'event' !== $object ) {
 			return new WP_Error( 'tec-tickets-commerce-stripe-webhook-invalid-payload', null, [ 'event' => $event ] );
 		}
 
@@ -52,7 +54,17 @@ class Handler {
 				'tickets-commerce-gateway-stripe'
 			);
 
-			return new WP_Error( 'tec-tickets-commerce-stripe-webhook-invalid-type', null, [ 'event' => $event ] );
+			$response->set_status( 200 );
+			$response->set_data(
+				sprintf(
+					// Translators: %1$s is the event id and %2$s is the event type name.
+					__( 'Event %1$s was received but events of type %2$s are not currently handled.', 'event-tickets' ),
+					esc_html( $id ),
+					esc_html( $type )
+				)
+			);
+
+			return $response;
 		}
 
 		$new_status = tribe( Events::class )->convert_to_commerce_status( $type );
@@ -73,15 +85,7 @@ class Handler {
 			return $event_handler;
 		}
 
-		$handler_response = call_user_func_array( $event_handler, [ $event, $new_status, $request ] );
-
-		// Stripe webhooks don't care for anything other than our response codes
-		// 200 we're good. Anything else we're not.
-		if ( is_wp_error( $handler_response ) ) {
-			return $handler_response;
-		}
-
-		return $response;
+		return call_user_func_array( $event_handler, [ $event, $new_status, $request, $response ] );
 	}
 
 	/**
@@ -91,14 +95,23 @@ class Handler {
 	 *
 	 * @param string $type The event type from Stripe.
 	 *
-	 * @return string
+	 * @return string|WP_REST_Response
 	 */
 	public static function get_handler_method_for_event( $type ) {
 		$handlers = Events::get_event_handlers();
 
-		return isset( $handlers[ $type ] ) ?
-			$handlers[ $type ] :
-			new WP_Error( 200, sprintf( __( 'Webhook event was retrieved properly but %s is not a handled event.', 'event-tickets' ), esc_html( $type ) ) );
+		if ( ! isset( $handlers[ $type ] ) ) {
+			return new WP_REST_Response(
+				sprintf(
+					// Translators: %1$s is the event type name.
+					__( 'Event was received but events of type %1$s are not currently handled.', 'event-tickets' ),
+					esc_html( $type )
+				),
+				200
+			);
+		}
+
+		return $handlers[ $type ];
 	}
 
 

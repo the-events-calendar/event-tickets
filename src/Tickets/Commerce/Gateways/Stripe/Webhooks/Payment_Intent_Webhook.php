@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Commerce\Gateways\Stripe\Webhooks;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Webhook_Event_Interface;
+use TEC\Tickets\Commerce\Gateways\Stripe\Payment_Intent;
 use TEC\Tickets\Commerce\Gateways\Stripe\Status;
 use TEC\Tickets\Commerce\Status\Status_Interface;
 
@@ -20,32 +21,53 @@ class Payment_Intent_Webhook implements Webhook_Event_Interface {
 	 *
 	 * @since TBD
 	 *
-	 * @param array            $event
-	 * @param Status_Interface $new_status
-	 * @param \WP_REST_Request $request
+	 * @param array             $event
+	 * @param Status_Interface  $new_status
+	 * @param \WP_REST_Request  $request
+	 * @param \WP_REST_Response $response
 	 *
-	 * @return bool|\WP_Error
+	 * @return bool|\WP_Error|\WP_REST_Response
 	 */
-	public static function handle( array $event, Status_Interface $new_status, \WP_REST_Request $request ) {
+	public static function handle( array $event, Status_Interface $new_status, \WP_REST_Request $request, \WP_REST_Response $response ) {
 		$payment_intent    = static::get_payment_intent_data( $event );
 		$payment_intent_id = $payment_intent['id'];
 
-		$order = static::get_order_by_payment_intent_id( $payment_intent_id );
+		if ( ! empty( $payment_intent['metadata']['order_id'] ) ) {
+			$order = tec_tc_get_order( $payment_intent['metadata']['order_id'] );
+		}
 
 		if ( empty( $order ) ) {
-			return new \WP_Error( 200, sprintf(
-				// Translators: %s is the payment intent id
+			$order = static::get_order_by_payment_intent_id( $payment_intent_id );
+		}
+
+
+		if ( empty( $order ) ) {
+
+			if ( ! empty( $payment_intent['metadata'][ Payment_Intent::$test_metadata_key ] ) ) {
+				$response->set_status( 200 );
+				$response->set_data(
+					__( 'Payment Intent Test Successful', 'event-tickets' )
+				);
+
+				return $response;
+			}
+
+			return new \WP_Error( 400, sprintf(
+				// Translators: %s is the payment intent id.
 				__( 'Payment Intent %s does not correspond to a known order.', 'event-tickets' ),
 				esc_html( $payment_intent_id )
 			) );
 		}
 
 		if ( ! static::should_payment_intent_be_updated( $payment_intent, $order->gateway_payload ) ) {
-			return new \WP_Error( 200, sprintf(
+			$response->set_status( 200 );
+			$response->set_data(
+				sprintf(
 				// Translators: %s is the payment intent id
-				__( 'Payment Intent %s does not require an update or is a duplicate of a past event.', 'event-tickets' ),
-				esc_html( $payment_intent_id )
-			) );
+					__( 'Payment Intent %s does not require an update or is a duplicate of a past event.', 'event-tickets' ),
+					esc_html( $payment_intent_id )
+				)
+			);
 		}
 
 		$meta = [
@@ -67,6 +89,7 @@ class Payment_Intent_Webhook implements Webhook_Event_Interface {
 	 */
 	public static function get_order_by_payment_intent_id( string $payment_intent_id ) {
 		return tec_tc_orders()->by_args( [
+			'status'           => 'any',
 			'gateway_order_id' => $payment_intent_id,
 		] )->first();
 	}
