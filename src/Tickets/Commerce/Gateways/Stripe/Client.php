@@ -179,14 +179,9 @@ class Client {
 	public function update_payment_intent( $data ) {
 
 		$payment_intent = $this->get_payment_intent( $data['payment_intent']['id'] );
+		$meta = $payment_intent['metadata'];
 
 		$stripe_receipt_emails = tribe_get_option( Settings::$option_stripe_receipt_emails );
-
-		// Currently, this method is only used to add an email recipient for Stripe receipts. If this is not
-		// required, only return the payment intent object to store.
-		if ( ! $stripe_receipt_emails ) {
-			return $payment_intent;
-		}
 
 		if ( $stripe_receipt_emails && ! empty( $data['billing_details']['email'] ) ) {
 			$body['receipt_email'] = $data['billing_details']['email'];
