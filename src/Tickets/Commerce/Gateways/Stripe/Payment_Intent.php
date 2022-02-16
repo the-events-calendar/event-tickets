@@ -24,6 +24,8 @@ class Payment_Intent {
 	 */
 	const TEST_VALUE = 1.28;
 
+	public static $test_metadata_key = 'payment_intent_validation_test';
+
 	/**
 	 * Create a simple payment intent with the designated payment methods to check for errors.
 	 *
@@ -47,11 +49,12 @@ class Payment_Intent {
 		$fee   = Application_Fee::calculate( $value );
 
 		$query_args = [];
-		$body       = [
+		$body = [
 			'currency'               => $value->get_currency_code(),
 			'amount'                 => (string) $value->get_integer(),
 			'payment_method_types'   => $payment_methods,
 			'application_fee_amount' => (string) $fee->get_integer(),
+			'metadata'               => [ static::$test_metadata_key => true ],
 		];
 
 		$args = [

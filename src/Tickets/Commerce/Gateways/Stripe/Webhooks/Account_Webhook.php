@@ -30,7 +30,7 @@ class Account_Webhook implements Webhook_Event_Interface {
 	 *
 	 * @return bool
 	 */
-	public static function handle( array $event, Status_Interface $new_status, WP_REST_Request $request ): bool {
+	public static function handle( array $event, Status_Interface $new_status, WP_REST_Request $request, WP_REST_Response $response ): bool {
 		return true;
 	}
 
@@ -60,7 +60,7 @@ class Account_Webhook implements Webhook_Event_Interface {
 	 * @param WP_REST_Request  $request
 	 * @param WP_REST_Response $response
 	 *
-	 * @return WP_REST_Response
+	 * @return \WP_REST_Response|\WP_Error
 	 */
 	public static function handle_account_deauthorized( WP_REST_Request $request, WP_REST_Response $response ): WP_REST_Response {
 
@@ -69,7 +69,7 @@ class Account_Webhook implements Webhook_Event_Interface {
 		$current_id = tribe( Merchant::class )->get_client_id();
 
 		if ( $account_id !== $current_id ) {
-			new \WP_Error( '400', __( 'Account deauthorized is not the same as account connected.', 'event-tickets' ) );
+			return new \WP_Error( '400', __( 'Account deauthorized is not the same as account connected.', 'event-tickets' ) );
 		}
 
 
