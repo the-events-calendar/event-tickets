@@ -62,7 +62,7 @@ class Account_Webhook implements Webhook_Event_Interface {
 	 *
 	 * @return \WP_REST_Response|\WP_Error
 	 */
-	public static function handle_account_deauthorized( WP_REST_Request $request, WP_REST_Response $response ): WP_REST_Response {
+	public static function handle_account_deauthorized( WP_REST_Request $request, WP_REST_Response $response ) {
 
 		$params = $request->get_json_params();
 		$account_id = $params['account'];
