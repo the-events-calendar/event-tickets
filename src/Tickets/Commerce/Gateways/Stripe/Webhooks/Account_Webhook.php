@@ -45,7 +45,7 @@ class Account_Webhook implements Webhook_Event_Interface {
 	 *
 	 * @return WP_REST_Response
 	 */
-	public static function handle_default( WP_REST_Request $request, WP_REST_Response $response ): WP_REST_Response {
+	public static function handle_account_updated( WP_REST_Request $request, WP_REST_Response $response ): WP_REST_Response {
 		return $response;
 	}
 
