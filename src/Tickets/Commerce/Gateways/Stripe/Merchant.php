@@ -413,4 +413,22 @@ class Merchant extends Abstract_Merchant {
 	public function get_merchant_currency() {
 		return get_option( static::$merchant_default_currency_option_key );
 	}
+
+	/**
+	 * Updates an existing merchant account.
+	 *
+	 * @since TBD
+	 *
+	 * @return array|\WP_Error|null
+	 */
+	public function update( $data ) {
+		$query_args = [];
+		$args       = [
+			'body' => $data,
+		];
+
+		$url = sprintf( '/accounts/%s', urlencode( $this->get_client_id() ) );
+
+		return Requests::post( $url, $query_args, $args );
+	}
 }

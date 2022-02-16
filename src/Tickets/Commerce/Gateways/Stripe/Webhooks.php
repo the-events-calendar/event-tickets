@@ -102,7 +102,7 @@ class Webhooks extends Abstract_Webhooks {
 		];
 
 		// This doesn't work on a Sandbox account, so we might need to add some text about .
-		$response = tribe( Client::class )->update_account( tribe( Merchant::class )->get_client_id(), $account_data_update );
+		$response = tribe( Merchant::class )->update( $account_data_update );
 
 		// We sleep for 5 seconds to allow the API to reach the website after the update.
 		sleep( 10 );
