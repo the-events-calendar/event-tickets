@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
 use TEC\Tickets\Commerce\Gateways\Stripe\Webhooks\Account_Webhook;
+use TEC\Tickets\Commerce\Gateways\Stripe\Webhooks\Charge_Webhook;
 use TEC\Tickets\Commerce\Gateways\Stripe\Webhooks\Payment_Intent_Webhook;
 
 /**
@@ -31,6 +32,7 @@ class Provider extends \tad_DI52_ServiceProvider {
 
 		// Webhooks.
 		$this->container->singleton( Account_Webhook::class );
+		$this->container->singleton( Charge_Webhook::class );
 		$this->container->singleton( Payment_Intent_Webhook::class );
 
 		$this->register_hooks();

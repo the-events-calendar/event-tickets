@@ -16,15 +16,7 @@ use TEC\Tickets\Commerce\Status\Status_Interface;
 class Payment_Intent_Webhook implements Webhook_Event_Interface {
 
 	/**
-	 * Handler for Stripe webhook events in the payment_intent family.
-	 *
-	 * @since TBD
-	 *
-	 * @param array            $event
-	 * @param Status_Interface $new_status
-	 * @param \WP_REST_Request $request
-	 *
-	 * @return bool|\WP_Error
+	 * @inheritDoc
 	 */
 	public static function handle( array $event, Status_Interface $new_status, \WP_REST_Request $request ) {
 		$payment_intent    = static::get_payment_intent_data( $event );

@@ -16,82 +16,7 @@ use TEC\Tickets\Commerce\Status as Commerce_Status;
 class Events {
 
 	/**
-	 * Webhook Event name when the account was updated.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	public const ACCOUNT_UPDATED = 'account.updated';
-
-	/**
-	 * Webhook Event name for a payment intent .
-	 *
-	 * @link  https://stripe.com/docs/api/payment_intents/object
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	public const PAYMENT_INTENT_CANCELED = 'payment_intent.canceled';
-
-	/**
-	 * Webhook Event name for a payment intent .
-	 *
-	 * @link  https://stripe.com/docs/api/payment_intents/object
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	public const PAYMENT_INTENT_CREATED = 'payment_intent.created';
-
-	/**
-	 * Webhook Event name for a payment intent .
-	 *
-	 * @link  https://stripe.com/docs/api/payment_intents/object
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	public const PAYMENT_INTENT_PAYMENT_FAILED = 'payment_intent.payment_failed';
-
-	/**
-	 * Webhook Event name for a payment intent .
-	 *
-	 * @link  https://stripe.com/docs/api/payment_intents/object
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	public const PAYMENT_INTENT_PROCESSING = 'payment_intent.processing';
-
-	/**
-	 * Webhook Event name for a payment intent .
-	 *
-	 * @link  https://stripe.com/docs/api/payment_intents/object
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	public const PAYMENT_INTENT_REQUIRES_ACTION = 'payment_intent.requires_action';
-
-	/**
-	 * Webhook Event name for a payment intent .
-	 *
-	 * @link  https://stripe.com/docs/api/payment_intents/object
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	public const PAYMENT_INTENT_SUCCEEDED = 'payment_intent.succeeded';
-
-	/**
-	 * Webhook Event name for a payment intent .
+	 * Webhook Event name for when an application is deauthorized from the dashboard.
 	 *
 	 * @link  https://stripe.com/docs/api/payment_intents/object
 	 * @link  https://stripe.com/docs/api/events/types#event_types-account.application.deauthorized
@@ -102,10 +27,122 @@ class Events {
 	 */
 	public const ACCOUNT_APPLICATION_DEAUTHORIZED = 'account.application.deauthorized';
 
+	/**
+	 * Webhook Event name when the account was updated.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const ACCOUNT_UPDATED = 'account.updated';
+
+	/**
+	 * Webhook Event name for when a charge expires before being captured.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const CHARGE_EXPIRED = 'charge.expired';
+
+	/**
+	 * Webhook Event name for when a charge capture fails.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const CHARGE_FAILED = 'charge.failed';
+
+	/**
+	 * Webhook Event name for when a charge is refunded.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const CHARGE_REFUNDED = 'charge.refunded';
+
+	/**
+	 * Webhook Event name for a payment intent that was canceled.
+	 *
+	 * @link  https://stripe.com/docs/api/payment_intents/object
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const PAYMENT_INTENT_CANCELED = 'payment_intent.canceled';
+
+	/**
+	 * Webhook Event name for a payment intent that was created.
+	 *
+	 * @link  https://stripe.com/docs/api/payment_intents/object
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const PAYMENT_INTENT_CREATED = 'payment_intent.created';
+
+	/**
+	 * Webhook Event name for a payment intent that failed to create a charge.
+	 *
+	 * @link  https://stripe.com/docs/api/payment_intents/object
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const PAYMENT_INTENT_PAYMENT_FAILED = 'payment_intent.payment_failed';
+
+	/**
+	 * Webhook Event name for a payment intent that is in process.
+	 *
+	 * @link  https://stripe.com/docs/api/payment_intents/object
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const PAYMENT_INTENT_PROCESSING = 'payment_intent.processing';
+
+	/**
+	 * Webhook Event name for a payment intent that requires user action to complete a charge.
+	 *
+	 * @link  https://stripe.com/docs/api/payment_intents/object
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const PAYMENT_INTENT_REQUIRES_ACTION = 'payment_intent.requires_action';
+
+	/**
+	 * Webhook Event name for a payment intent that has successfully completed.
+	 *
+	 * @link  https://stripe.com/docs/api/payment_intents/object
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const PAYMENT_INTENT_SUCCEEDED = 'payment_intent.succeeded';
+
+	/**
+	 * Returns the handle to be used for each webhook event.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
 	public static function get_event_handlers(): array {
 		$handlers = [
 			static::ACCOUNT_UPDATED                  => [ Account_Webhook::class, 'handle_account_updated' ],
 			static::ACCOUNT_APPLICATION_DEAUTHORIZED => [ Account_Webhook::class, 'handle_account_deauthorized' ],
+			static::CHARGE_EXPIRED                   => [ Charge_Webhook::class, 'handle' ],
+			static::CHARGE_FAILED                    => [ Charge_Webhook::class, 'handle' ],
+			static::CHARGE_REFUNDED                  => [ Charge_Webhook::class, 'handle' ],
 			static::PAYMENT_INTENT_PROCESSING        => [ Payment_Intent_Webhook::class, 'handle' ],
 			static::PAYMENT_INTENT_REQUIRES_ACTION   => [ Payment_Intent_Webhook::class, 'handle' ],
 			static::PAYMENT_INTENT_SUCCEEDED         => [ Payment_Intent_Webhook::class, 'handle' ],
@@ -133,6 +170,9 @@ class Events {
 	 */
 	public static function get_event_transition_status(): array {
 		$events = [
+			static::CHARGE_EXPIRED                 => Commerce_Status\Not_Completed::class,
+			static::CHARGE_FAILED                  => Commerce_Status\Denied::class,
+			static::CHARGE_REFUNDED                => Commerce_Status\Refunded::class,
 			static::PAYMENT_INTENT_CANCELED        => Commerce_Status\Denied::class,
 			static::PAYMENT_INTENT_CREATED         => Commerce_Status\Created::class,
 			static::PAYMENT_INTENT_PAYMENT_FAILED  => Commerce_Status\Not_Completed::class,
