@@ -14,11 +14,12 @@ interface Webhook_Event_Interface {
 	 *
 	 * @since TBD
 	 *
-	 * @param array            $event
-	 * @param Status_Interface $new_status
-	 * @param \WP_REST_Request $request
+	 * @param array             $event
+	 * @param Status_Interface  $new_status
+	 * @param \WP_REST_Request  $request
+	 * @param \WP_REST_Response $response
 	 *
-	 * @return bool|\WP_Error
+	 * @return \WP_REST_Response|\WP_Error
 	 */
-	public static function handle( array $event, Status_Interface $new_status, \WP_REST_Request $request );
+	public static function handle( array $event, Status_Interface $new_status, \WP_REST_Request $request, \WP_REST_Response $response );
 }

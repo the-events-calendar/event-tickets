@@ -17,7 +17,7 @@ class Charge_Webhook implements Webhook_Event_Interface {
 	/**
 	 * @inheritDoc
 	 */
-	public static function handle( array $event, Status_Interface $new_status, \WP_REST_Request $request ) {
+	public static function handle( array $event, Status_Interface $new_status, \WP_REST_Request $request, \WP_REST_Response $response ) {
 		$charge_data       = static::get_charge_data( $event );
 		$payment_intent_id = $charge_data['payment_intent'];
 
