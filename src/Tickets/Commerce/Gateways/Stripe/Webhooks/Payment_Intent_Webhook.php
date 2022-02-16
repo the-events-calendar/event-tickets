@@ -67,6 +67,7 @@ class Payment_Intent_Webhook implements Webhook_Event_Interface {
 	 */
 	public static function get_order_by_payment_intent_id( string $payment_intent_id ) {
 		return tec_tc_orders()->by_args( [
+			'status' => 'any',
 			'gateway_order_id' => $payment_intent_id,
 		] )->first();
 	}
