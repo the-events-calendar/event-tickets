@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Commerce\Gateways\Stripe\Webhooks;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Webhook_Event_Interface;
+use TEC\Tickets\Commerce\Gateways\Stripe\Gateway;
 use TEC\Tickets\Commerce\Gateways\Stripe\Merchant;
 use TEC\Tickets\Commerce\Status\Status_Interface;
 
@@ -74,6 +75,7 @@ class Account_Webhook implements Webhook_Event_Interface {
 
 		tribe( Merchant::class )->set_merchant_deauthorized( 'tc-stripe-account-disconnected' );
 		tribe( Merchant::class )->delete_signup_data();
+		Gateway::disable();
 
 		return $response;
 	}
