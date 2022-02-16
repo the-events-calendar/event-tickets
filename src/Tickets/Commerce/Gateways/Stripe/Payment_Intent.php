@@ -24,6 +24,13 @@ class Payment_Intent {
 	 */
 	const TEST_VALUE = 1.28;
 
+	/**
+	 * The key used to identify payment intents created to validate configurations.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
 	public static $test_metadata_key = 'payment_intent_validation_test';
 
 	/**
