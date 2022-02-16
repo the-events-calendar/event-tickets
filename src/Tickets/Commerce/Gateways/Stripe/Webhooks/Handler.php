@@ -57,7 +57,7 @@ class Handler {
 			$response->set_status( 200 );
 			$response->set_data(
 				sprintf(
-				// Translators: %1$s is the event id and %2$s is the event type name
+					// Translators: %1$s is the event id and %2$s is the event type name.
 					__( 'Event %1$s was received but events of type %2$s are not currently handled.', 'event-tickets' ),
 					esc_html( $id ),
 					esc_html( $type )
