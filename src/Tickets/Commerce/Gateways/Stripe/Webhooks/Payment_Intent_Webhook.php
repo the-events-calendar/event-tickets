@@ -32,7 +32,14 @@ class Payment_Intent_Webhook implements Webhook_Event_Interface {
 		$payment_intent    = static::get_payment_intent_data( $event );
 		$payment_intent_id = $payment_intent['id'];
 
-		$order = static::get_order_by_payment_intent_id( $payment_intent_id );
+		if ( ! empty( $payment_intent['metadata']['order_id'] ) ) {
+			$order = tec_tc_get_order( $payment_intent['metadata']['order_id'] );
+		}
+
+		if ( empty( $order ) ) {
+			$order = static::get_order_by_payment_intent_id( $payment_intent_id );
+		}
+
 
 		if ( empty( $order ) ) {
 
