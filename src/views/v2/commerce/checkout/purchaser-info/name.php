@@ -17,7 +17,6 @@
  */
 
 $label_classes = [
-	'tribe-common-b2',
 	'tribe-tickets__form-field-label',
 	'tribe-tickets__commerce-checkout-purchaser-info-name-field-label',
 ];

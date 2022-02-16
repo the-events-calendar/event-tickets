@@ -23,8 +23,8 @@ if ( is_user_logged_in() || $must_login || empty( $items ) ) {
 }
 ?>
 
-<div class="tribe-tickets__form tribe-tickets__commerce-checkout-purchaser-info-wrapper">
-	<h4 class="tribe-common-h5"><?php esc_html_e( 'Purchaser info', 'event-tickets' ); ?></h4>
+<div class="tribe-tickets__form tribe-tickets__commerce-checkout-purchaser-info-wrapper tribe-common-b2">
+	<h4 class="tribe-common-h5 tribe-tickets__commerce-checkout-purchaser-info-title"><?php esc_html_e( 'Purchaser info', 'event-tickets' ); ?></h4>
 	<?php $this->template( 'checkout/purchaser-info/name' ); ?>
 	<?php $this->template( 'checkout/purchaser-info/email' ); ?>
 </div>
