@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
 use TEC\Tickets\Commerce\Cart;
+use TEC\Tickets\Commerce\Gateways\Stripe\REST\Webhook_Endpoint;
 
 /**
  * Class Payment Intent Handler
@@ -115,6 +116,7 @@ class Payment_Intent_Handler {
 		// Add the Order ID as metadata to the Payment Intent
 		$metadata = $payment_intent['metadata'];
 		$metadata['order_id'] = $order->ID;
+		$metadata['return_url'] = tribe( Webhook_Endpoint::class )->get_route_url();
 		$body['metadata'] = $metadata;
 
 		if ( $stripe_receipt_emails && ! empty( $data['billing_details']['email'] ) ) {
