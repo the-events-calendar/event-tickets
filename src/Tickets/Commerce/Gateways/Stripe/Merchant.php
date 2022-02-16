@@ -20,7 +20,7 @@ class Merchant extends Abstract_Merchant {
 	 * @var array
 	 */
 	const UNAUTHORIZED_COUNTRIES = [
-		'BR'
+		'BR',
 	];
 
 	/**
@@ -72,8 +72,8 @@ class Merchant extends Abstract_Merchant {
 		$client_data = $this->to_array();
 
 		if ( empty( $client_data['client_id'] )
-			|| empty( $client_data['client_secret'] )
-			|| empty( $client_data['publishable_key'] )
+			 || empty( $client_data['client_secret'] )
+			 || empty( $client_data['publishable_key'] )
 		) {
 			return false;
 		}
@@ -412,5 +412,25 @@ class Merchant extends Abstract_Merchant {
 	 */
 	public function get_merchant_currency() {
 		return get_option( static::$merchant_default_currency_option_key );
+	}
+
+	/**
+	 * Updates an existing merchant account.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $data Array of data to be passed directly to the body of the update request.
+	 *
+	 * @return array|\WP_Error|null
+	 */
+	public function update( $data ) {
+		$query_args = [];
+		$args       = [
+			'body' => $data,
+		];
+
+		$url = sprintf( '/accounts/%s', urlencode( $this->get_client_id() ) );
+
+		return Requests::post( $url, $query_args, $args );
 	}
 }

@@ -46,7 +46,8 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		cardErrors: '#tec-tc-gateway-stripe-errors',
 		paymentElement: '#tec-tc-gateway-stripe-payment-element',
 		paymentMessage: '#tec-tc-gateway-stripe-payment-message',
-		submitButton: '#tec-tc-gateway-stripe-checkout-button'
+		submitButton: '#tec-tc-gateway-stripe-checkout-button',
+		hiddenElement: '.tribe-common-a11y-hidden'
 	};
 
 	/**
@@ -66,6 +67,15 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * @type {Object|null}
 	 */
 	obj.stripeElements = null;
+
+	/**
+	 * Loader container.
+	 *
+	 * @since TBD
+	 *
+	 * @type {Object|null}
+	 */
+	obj.checkoutContainer = null;
 
 	/**
 	 * Handle displaying errors to the end user in the cardErrors field
@@ -215,7 +225,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		}
 
 		if ( 'succeeded' === result.paymentIntent.status ) {
-			return ( await obj.handlePaymentSuccess( result ) );
+			return ( obj.handlePaymentSuccess( result ) );
 		}
 	};
 
@@ -231,6 +241,8 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	obj.handlePaymentError = ( data ) => {
 		$( obj.selectors.cardErrors ).val( data.error.message );
 		tribe.tickets.debug.log( 'stripe', 'handlePaymentError', data );
+
+		tribe.tickets.loader.hide( obj.checkoutContainer );
 
 		return obj.handleErrorDisplay(
 			[
@@ -416,11 +428,11 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	obj.handlePayment = async ( event ) => {
 		event.preventDefault();
 
-		const $container = $( event.target ).closest( tribe.tickets.commerce.selectors.checkoutContainer );
+		obj.checkoutContainer = $( event.target ).closest( tribe.tickets.commerce.selectors.checkoutContainer );
 
-		obj.hideNotice( $container );
+		obj.hideNotice( obj.checkoutContainer );
 
-		tribe.tickets.loader.show( $container );
+		tribe.tickets.loader.show( obj.checkoutContainer );
 
 		let order = await obj.handleCreateOrder();
 		obj.submitButton( false );
@@ -432,10 +444,10 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 				obj.submitCardPayment();
 			}
 		} else {
+			tribe.tickets.loader.hide( obj.checkoutContainer );
 			obj.showNotice( {}, order.message, '' );
 		}
 
-		tribe.tickets.loader.hide( $container );
 		obj.submitButton( true );
 	};
 
@@ -514,6 +526,8 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	obj.setupStripe = async () => {
 
 		if ( obj.checkout.paymentIntentData.errors ) {
+			obj.submitButton( false );
+			$( obj.selectors.submitButton ).addClass( obj.selectors.hiddenElement.className() );
 			return obj.handleErrorDisplay( obj.checkout.paymentIntentData.errors );
 		}
 
