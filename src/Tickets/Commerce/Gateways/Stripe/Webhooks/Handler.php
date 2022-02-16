@@ -103,7 +103,7 @@ class Handler {
 		if ( ! isset( $handlers[ $type ] ) ) {
 			return new WP_REST_Response(
 				sprintf(
-					// Translators: %1$s is the event type name
+					// Translators: %1$s is the event type name.
 					__( 'Event was received but events of type %1$s are not currently handled.', 'event-tickets' ),
 					esc_html( $type )
 				),
