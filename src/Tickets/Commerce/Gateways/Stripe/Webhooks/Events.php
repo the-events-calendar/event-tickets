@@ -104,7 +104,7 @@ class Events {
 
 	public static function get_event_handlers(): array {
 		$handlers = [
-			static::ACCOUNT_UPDATED                  => [ Account_Webhook::class, 'handle_account_deauthorized' ],
+			static::ACCOUNT_UPDATED                  => [ Account_Webhook::class, 'handle_account_updated' ],
 			static::ACCOUNT_APPLICATION_DEAUTHORIZED => [ Account_Webhook::class, 'handle_account_deauthorized' ],
 			static::PAYMENT_INTENT_PROCESSING        => [ Payment_Intent_Webhook::class, 'handle' ],
 			static::PAYMENT_INTENT_REQUIRES_ACTION   => [ Payment_Intent_Webhook::class, 'handle' ],
