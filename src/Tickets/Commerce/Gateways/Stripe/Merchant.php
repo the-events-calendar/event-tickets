@@ -20,7 +20,7 @@ class Merchant extends Abstract_Merchant {
 	 * @var array
 	 */
 	const UNAUTHORIZED_COUNTRIES = [
-		'BR'
+		'BR',
 	];
 
 	/**
@@ -72,8 +72,8 @@ class Merchant extends Abstract_Merchant {
 		$client_data = $this->to_array();
 
 		if ( empty( $client_data['client_id'] )
-			|| empty( $client_data['client_secret'] )
-			|| empty( $client_data['publishable_key'] )
+			 || empty( $client_data['client_secret'] )
+			 || empty( $client_data['publishable_key'] )
 		) {
 			return false;
 		}
@@ -418,6 +418,8 @@ class Merchant extends Abstract_Merchant {
 	 * Updates an existing merchant account.
 	 *
 	 * @since TBD
+	 *
+	 * @param array $data Array of data to be passed directly to the body of the update request.
 	 *
 	 * @return array|\WP_Error|null
 	 */
