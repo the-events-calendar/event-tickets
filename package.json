@@ -36,9 +36,7 @@
       "!src/resources/postcss/tickets-report.pcss",
       "!src/resources/postcss/tickets-v1.pcss"
     ],
-    "jest": [
-      "src/modules/**/__tests__/**/*.js"
-    ]
+    "jest": ["src/modules/**/__tests__/**/*.js"]
   },
   "scripts": {
     "preinstall": "if [ -d node_modules/@the-events-calendar/product-taskmaster ]; then node node_modules/@the-events-calendar/product-taskmaster/scripts/syncPackageJSON.js; fi",
@@ -62,7 +60,7 @@
   },
   "engines": { "node": "16.6.1", "npm": "7.20.3" },
   "devDependencies": {
-    "@the-events-calendar/product-taskmaster": "^2.1.1",
+    "@the-events-calendar/product-taskmaster": "^2.2.0",
     "@wordpress/hooks": "^1.3.2",
     "cross-env": "^5.2.0",
     "enzyme": "^3.7.0",
