@@ -174,6 +174,7 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 	 */
 	public function handle_connection_terminated( $reason = [] ) {
 		tribe( Merchant::class )->delete_signup_data();
+		Gateway::disable();
 
 		$query_args = [
 			'tab'                 => Payments_Tab::$slug,

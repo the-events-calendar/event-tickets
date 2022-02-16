@@ -160,7 +160,7 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	 */
 	public function handle_invalid_response( $response, $message, $slug = 'error' ) {
 
-		$notices = tribe( Notice_Handler::class );
+		$notices = tribe( Commerce\Notice_Handler::class );
 		$body    = (array) json_decode( wp_remote_retrieve_body( $response ) );
 
 		$error         = isset( $body['error'] ) ? $body['error'] : __( 'Something went wrong!', 'event-tickets' );
