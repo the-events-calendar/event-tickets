@@ -53,7 +53,7 @@ class Payment_Intent_Webhook implements Webhook_Event_Interface {
 			}
 
 			return new \WP_Error( 400, sprintf(
-			// Translators: %s is the payment intent id
+				// Translators: %s is the payment intent id.
 				__( 'Payment Intent %s does not correspond to a known order.', 'event-tickets' ),
 				esc_html( $payment_intent_id )
 			) );
