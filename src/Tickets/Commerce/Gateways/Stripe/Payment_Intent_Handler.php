@@ -107,17 +107,17 @@ class Payment_Intent_Handler {
 	 * @return array|\WP_Error|null
 	 */
 	public function update_payment_intent( $data, \WP_Post $order ) {
-		$body = [];
+		$body              = [];
 		$payment_intent_id = $data['payment_intent']['id'];
 
 		$stripe_receipt_emails = tribe_get_option( Settings::$option_stripe_receipt_emails );
-		$payment_intent = Payment_Intent::get( $payment_intent_id );
+		$payment_intent        = Payment_Intent::get( $payment_intent_id );
 
 		// Add the Order ID as metadata to the Payment Intent
-		$metadata = $payment_intent['metadata'];
-		$metadata['order_id'] = $order->ID;
+		$metadata               = $payment_intent['metadata'];
+		$metadata['order_id']   = $order->ID;
 		$metadata['return_url'] = tribe( Webhook_Endpoint::class )->get_route_url();
-		$body['metadata'] = $metadata;
+		$body['metadata']       = $metadata;
 
 		if ( $stripe_receipt_emails && ! empty( $data['billing_details']['email'] ) ) {
 			$body['receipt_email'] = $data['billing_details']['email'];
