@@ -24,7 +24,7 @@ if ( ! $gateway::should_show() ) {
 
 $classes = [
 	'tec-tickets__admin-settings-tickets-commerce-gateways-item-status',
-	'tec-tickets__admin-settings-tickets-commerce-gateways-item-status--enabled' => $gateway->is_enabled() && $gateway->is_active(),
+	'tec-tickets__admin-settings-tickets-commerce-gateways-item-status--enabled' => $gateway->is_enabled() && $gateway->is_connected(),
 ];
 
 ?>
