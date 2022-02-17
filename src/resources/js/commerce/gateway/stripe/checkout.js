@@ -367,7 +367,6 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		return obj.stripeLib.confirmCardPayment( obj.checkout.paymentIntentData.key, {
 			payment_method: {
 				card: obj.cardElement,
-				purchaser: obj.getPurchaserData()
 			}
 		} ).then( obj.handleConfirmCardPayment );
 	};
