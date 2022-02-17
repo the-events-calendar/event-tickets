@@ -64,6 +64,15 @@ class Events {
 	public const CHARGE_REFUNDED = 'charge.refunded';
 
 	/**
+	 * Webhook Event name for when a charge is completed.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const CHARGE_SUCCEEDED = 'charge.succeeded';
+
+	/**
 	 * Webhook Event name for a payment intent that was canceled.
 	 *
 	 * @link  https://stripe.com/docs/api/payment_intents/object
@@ -143,6 +152,7 @@ class Events {
 			static::CHARGE_EXPIRED                   => [ Charge_Webhook::class, 'handle' ],
 			static::CHARGE_FAILED                    => [ Charge_Webhook::class, 'handle' ],
 			static::CHARGE_REFUNDED                  => [ Charge_Webhook::class, 'handle' ],
+			static::CHARGE_SUCCEEDED                 => [ Charge_Webhook::class, 'handle' ],
 			static::PAYMENT_INTENT_PROCESSING        => [ Payment_Intent_Webhook::class, 'handle' ],
 			static::PAYMENT_INTENT_REQUIRES_ACTION   => [ Payment_Intent_Webhook::class, 'handle' ],
 			static::PAYMENT_INTENT_SUCCEEDED         => [ Payment_Intent_Webhook::class, 'handle' ],
@@ -173,6 +183,7 @@ class Events {
 			static::CHARGE_EXPIRED                 => Commerce_Status\Not_Completed::class,
 			static::CHARGE_FAILED                  => Commerce_Status\Denied::class,
 			static::CHARGE_REFUNDED                => Commerce_Status\Refunded::class,
+			static::CHARGE_SUCCEEDED               => Commerce_Status\Completed::class,
 			static::PAYMENT_INTENT_CANCELED        => Commerce_Status\Denied::class,
 			static::PAYMENT_INTENT_CREATED         => Commerce_Status\Created::class,
 			static::PAYMENT_INTENT_PAYMENT_FAILED  => Commerce_Status\Not_Completed::class,

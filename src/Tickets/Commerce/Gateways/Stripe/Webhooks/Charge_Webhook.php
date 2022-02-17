@@ -2,6 +2,7 @@
 
 namespace TEC\Tickets\Commerce\Gateways\Stripe\Webhooks;
 
+use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Status\Status_Interface;
 use TEC\Tickets\Commerce\Gateways\Contracts\Webhook_Event_Interface;
 
@@ -21,7 +22,7 @@ class Charge_Webhook implements Webhook_Event_Interface {
 		$charge_data       = static::get_charge_data( $event );
 		$payment_intent_id = $charge_data['payment_intent'];
 
-		$order = static::get_order_by_payment_intent_id( $payment_intent_id );
+		$order = tribe( Order::class )->get_from_gateway_order_id( $payment_intent_id );
 
 		if ( empty( $order ) ) {
 			return new \WP_Error( 200, sprintf(
