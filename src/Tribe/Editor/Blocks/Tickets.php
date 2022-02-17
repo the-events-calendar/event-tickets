@@ -48,30 +48,7 @@ class Tribe__Tickets__Editor__Blocks__Tickets
 	 * @return void
 	 */
 	public function assets() {
-		global $wp_version;
 		$plugin       = Tribe__Tickets__Main::instance();
-		$block_object = $this;
-
-		tribe_asset(
-			$plugin,
-			'wp-util-not-in-footer',
-			includes_url( '/js/wp-util.js' ),
-			[ 'jquery', 'underscore' ],
-			null,
-			[
-				'type' => 'js',
-			]
-		);
-
-		$tickets_block_dependencies = [
-			'jquery',
-			'wp-util-not-in-footer',
-			'tribe-common',
-		];
-
-		if ( version_compare( $wp_version, '5.0', '>=' ) ) {
-			$tickets_block_dependencies[] = 'wp-i18n';
-		}
 
 		// Check whether we use v1 or v2. We need to update this when we deprecate tickets v1.
 		$tickets_js = tribe_tickets_new_views_is_enabled() ? 'v2/tickets-block.js' : 'tickets-block.js';
@@ -80,7 +57,12 @@ class Tribe__Tickets__Editor__Blocks__Tickets
 			$plugin,
 			'tribe-tickets-block',
 			$tickets_js,
-			$tickets_block_dependencies,
+			[
+				'jquery',
+				'wp-util',
+				'wp-i18n',
+				'tribe-common',
+			],
 			null,
 			[
 				'type'     => 'js',
@@ -96,13 +78,13 @@ class Tribe__Tickets__Editor__Blocks__Tickets
 					],
 					[
 						'name' => 'TribeCartEndpoint',
-						'data' => static function() {
+						'data' => static function () {
 							return [ 'url' => tribe_tickets_rest_url( '/cart/' ) ];
 						}
 					],
 					[
 						'name' => 'TribeMessages',
-						'data' => [ $block_object, 'set_messages' ],
+						'data' => [ $this, 'set_messages' ],
 					],
 					[
 						'name' => 'TribeTicketsURLs',
