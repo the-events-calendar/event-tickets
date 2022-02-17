@@ -189,11 +189,13 @@ class Webhooks extends Abstract_Webhooks {
 			static::$option_webhooks_value                                => [
 				'type'       => 'text',
 				'label'      => esc_html__( 'Webhooks URL', 'event-tickets' ),
-				'tooltip'    => sprintf(
+				'tooltip'    => wp_kses_post(
+					sprintf(
 						// Translators: %1$s `<a>` link to Stripe's webhooks configuration page. %2$s closing `</a>` link.
-					__( 'Add the following webhook endpoint URL to your %1$sStripe account settings%2$s (if there is not one already)', 'event-tickets' ),
-					'<a target="_blank" rel="noopener noreferrer" href="https://dashboard.stripe.com/webhooks">',
-					'</a>'
+						__( 'Add the following webhook endpoint URL to your %1$sStripe account settings%2$s (if there is not one already)', 'event-tickets' ),
+						'<a target="_blank" rel="noopener noreferrer" href="https://dashboard.stripe.com/webhooks">',
+						'</a>'
+					)
 				),
 				'size'       => 'large',
 				'default'    => tribe( Webhook_Endpoint::class )->get_route_url(),
