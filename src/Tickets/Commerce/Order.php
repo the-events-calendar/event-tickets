@@ -544,4 +544,20 @@ class Order extends Abstract_Order {
 
 		return static::POSTTYPE === $order->post_type;
 	}
+
+	/**
+	 * Get the order associated with a given gateway order id.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $gateway_order_id The gateway order id.
+	 *
+	 * @return mixed|\WP_Post|null
+	 */
+	public function get_from_gateway_order_id( string $gateway_order_id ) {
+		return tec_tc_orders()->by_args( [
+			'status'           => 'any',
+			'gateway_order_id' => $gateway_order_id,
+		] )->first();
+	}
 }
