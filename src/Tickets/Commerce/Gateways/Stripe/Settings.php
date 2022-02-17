@@ -318,6 +318,7 @@ class Settings extends Abstract_Settings {
 				'label'               => esc_html__( 'Payment methods accepted', 'event-tickets' ),
 				'tooltip'             => $payment_methods_tooltip,
 				'default'             => self::DEFAULT_PAYMENT_ELEMENT_METHODS,
+				'can_be_empty'        => false,
 				'fieldset_attributes' => [
 					'data-depends'              => '#tribe-field-' . static::$option_checkout_element . '-' . self::PAYMENT_ELEMENT_SLUG,
 					'data-condition-is-checked' => true,
