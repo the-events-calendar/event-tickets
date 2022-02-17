@@ -342,7 +342,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 			'name'     => $option_key,
 			'id'       => 'tickets-commerce-enable-input',
 			'class'    => 'tec-tickets__admin-settings-tickets-commerce-toggle-checkbox tribe-dependency tribe-dependency-verified',
-			'disabled' => ! $section_gateway::is_active(),
+			'disabled' => ! $section_gateway::is_connected(),
 			'checked'  => $section_gateway::is_enabled(),
 		] );
 
