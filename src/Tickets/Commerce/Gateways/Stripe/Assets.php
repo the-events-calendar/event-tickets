@@ -93,6 +93,10 @@ class Assets extends \tad_DI52_ServiceProvider {
 									],
 									'.Input'         => [
 										'boxShadow'   => 'none'
+									],
+									'.Label'         => [
+										'fontSize'     => '14px',
+										'marginBotton' => '4px',
 									]
 								]
 							],
