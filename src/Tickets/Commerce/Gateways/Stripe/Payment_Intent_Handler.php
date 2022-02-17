@@ -119,8 +119,15 @@ class Payment_Intent_Handler {
 		$metadata['return_url'] = tribe( Webhook_Endpoint::class )->get_route_url();
 		$body['metadata']       = $metadata;
 
-		if ( $stripe_receipt_emails && ! empty( $data['billing_details']['email'] ) ) {
-			$body['receipt_email'] = $data['billing_details']['email'];
+		if ( $stripe_receipt_emails ) {
+			if ( is_user_logged_in() ) {
+				$user                  = wp_get_current_user();
+				$body['receipt_email'] = $user->get( 'user_email' );
+			}
+
+			if ( ! empty( $data['purchaser']['email'] ) ) {
+				$body['receipt_email'] = $data['purchaser']['email'];
+			}
 		}
 
 		return Payment_Intent::update( $payment_intent_id, $body );
