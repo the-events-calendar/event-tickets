@@ -208,6 +208,10 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 * @return mixed
 	 */
 	public function include_webhook_settings( $settings ) {
+		if ( ! tribe( Merchant::class )->is_connected() ) {
+			return $settings;
+		}
+
 		return array_merge( $settings, tribe( Webhooks::class )->get_fields() );
 	}
 
