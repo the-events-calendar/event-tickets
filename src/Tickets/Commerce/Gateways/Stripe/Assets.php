@@ -92,7 +92,7 @@ class Assets extends \tad_DI52_ServiceProvider {
 										'paddingTop'  => '6px'
 									],
 									'.Input'         => [
-										'boxShadow'   => 'none',
+										'boxShadow'    => 'none',
 										'fontSize'     => '14px',
 									],
 									'.Label'         => [
