@@ -175,6 +175,18 @@ class Hooks extends \tad_DI52_ServiceProvider {
 			return $value;
 		}
 
+		$checkout_type   = tribe_get_request_var( Settings::$option_checkout_element );
+		$payment_methods = tribe_get_request_var( $field_id );
+
+		if ( empty( $payment_methods ) ) {
+			if ( $checkout_type === Settings::PAYMENT_ELEMENT_SLUG ) {
+				\Tribe__Settings::instance()->errors[] = esc_html__( 'Payment methods accepted cannot be empty', 'event-tickets' );
+			}
+
+			// Revert value to the previous configuration.
+			return tribe_get_option( $field_id );
+		}
+
 		$payment_intent_test = tribe( Payment_Intent::class )->test_creation( $payment_methods );
 
 		if ( ! is_wp_error( $payment_intent_test ) ) {
