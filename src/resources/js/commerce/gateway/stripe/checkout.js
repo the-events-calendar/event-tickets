@@ -466,16 +466,19 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 			style: obj.checkout.cardElementStyle,
 		} );
 		obj.cardElement.mount( obj.selectors.cardNumber );
+		obj.cardElement.on( 'change', obj.onCardChange );
 
 		obj.cardExpiry = obj.stripeElements.create( 'cardExpiry', {
 			style: obj.checkout.cardElementStyle,
 		} );
 		obj.cardExpiry.mount( obj.selectors.cardExpiry );
+		obj.cardExpiry.on( 'change', obj.onCardChange );
 
 		obj.cardCvc = obj.stripeElements.create( 'cardCvc', {
 			style: obj.checkout.cardElementStyle,
 		} );
 		obj.cardCvc.mount( obj.selectors.cardCvc );
+		obj.cardCvc.on( 'change', obj.onCardChange );
 	};
 
 	/**
