@@ -181,7 +181,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.2.4.1] 2022-02-17 =
 
-* Fix - Shortcode
+* Fix - Classic Editor compatibility problems with the Ticket Form resolved [GTRIA-738]
 
 = [5.2.4] 2022-02-15 =
 
