@@ -3,7 +3,7 @@
  * Tickets Commerce: Stripe Checkout Form
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/commerce/gateway/stripe/form.php
+ * [your-theme]/tribe/tickets/v2/commerce/gateway/stripe/container.php
  *
  * See more documentation about our views templating system.
  *

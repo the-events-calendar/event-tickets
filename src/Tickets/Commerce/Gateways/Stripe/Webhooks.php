@@ -102,7 +102,7 @@ class Webhooks extends Abstract_Webhooks {
 		];
 
 		// This doesn't work on a Sandbox account, so we might need to add some text about .
-		$response = tribe( Client::class )->update_account( tribe( Merchant::class )->get_client_id(), $account_data_update );
+		$response = tribe( Merchant::class )->update( $account_data_update );
 
 		// We sleep for 5 seconds to allow the API to reach the website after the update.
 		sleep( 10 );
@@ -170,24 +170,33 @@ class Webhooks extends Abstract_Webhooks {
 			'tickets-commerce-gateway-settings-group-description-webhook' => [
 				'type' => 'html',
 				'html' => '<p class="tec-tickets__admin-settings-tickets-commerce-gateway-group-description-stripe-webhooks contained">'
-						  . wp_kses(
-							  sprintf(
-							      // Translators: %s s a link to Stripe's webhooks configuration page.
-								  __( 'To find your signing secret, head to %s, click on the endpoint desired, and click to Reveal the Signing Secret', 'event-tickets' ),
-								  '<a target="_blank" rel="noopener noreferrer" href="https://dashboard.stripe.com/webhooks">https://dashboard.stripe.com/webhooks</a>' ),
-							  [ 'a' => [
-								  'target' => [],
-								  'class' => [],
-								  'href' => [],
-								  'rel' => []
-							  ] ]
-						  )
-						  . '</p><div class="clear"></div>',
+							. wp_kses(
+								sprintf(
+									// Translators: %1$s A link to Stripe's webhooks configuration page.
+									__( 'To find your signing secret, head to %1$s, click on the endpoint desired, and click to Reveal the Signing Secret.', 'event-tickets' ),
+									'<a target="_blank" rel="noopener noreferrer" href="https://dashboard.stripe.com/webhooks">https://dashboard.stripe.com/webhooks</a>',
+								),
+								[ 'a' => [
+									'target'    => [],
+										'class' => [],
+										'href'  => [],
+										'rel'   => [],
+									],
+								]
+							)
+							. '</p><div class="clear"></div>',
 			],
 			static::$option_webhooks_value                                => [
 				'type'       => 'text',
 				'label'      => esc_html__( 'Webhooks URL', 'event-tickets' ),
-				'tooltip'    => '',
+				'tooltip'    => wp_kses_post(
+					sprintf(
+						// Translators: %1$s `<a>` link to Stripe's webhooks configuration page. %2$s closing `</a>` link.
+						__( 'Add the following webhook endpoint URL to your %1$sStripe account settings%2$s (if there is not one already)', 'event-tickets' ),
+						'<a target="_blank" rel="noopener noreferrer" href="https://dashboard.stripe.com/webhooks">',
+						'</a>'
+					)
+				),
 				'size'       => 'large',
 				'default'    => tribe( Webhook_Endpoint::class )->get_route_url(),
 				'attributes' => [
@@ -208,6 +217,18 @@ class Webhooks extends Abstract_Webhooks {
 					'data-loading-text' => esc_attr__( 'Validating signing key with Stripe, please wait.', 'event-tickets' ),
 					'data-ajax-action'  => 'tec_tickets_commerce_gateway_stripe_test_webhooks',
 				],
+			],
+			'tickets-commerce-gateway-settings-group-description-bottom' => [
+				'type' => 'html',
+				'html' => '<p class="tec-tickets__admin-settings-tickets-commerce-gateway-group-description-stripe-webhooks-bottom contained">'
+							. wp_kses_post(
+								sprintf(
+									// Translators: %1$s A link to the KB article. %2$s closing `</a>` link.
+									__( 'Setting up webhooks will enable you to receive notifications on the charge statuses. %1$sLearn more%2$s', 'event-tickets' ),
+									'<a target="_blank" rel="noopener noreferrer" href="https://evnt.is/1b3o">',
+									'</a>'
+								)
+							). '</p><div class="clear"></div>',
 			],
 			'tickets-commerce-gateway-settings-group-end-webhook'         => [
 				'type' => 'html',

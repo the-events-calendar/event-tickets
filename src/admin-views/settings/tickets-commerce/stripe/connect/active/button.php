@@ -23,7 +23,7 @@ if ( false === $merchant_status['connected'] ) {
 		<div class="tec-tickets__admin-settings-tickets-commerce-gateways-item-button">
 			<a
 				class="tec-tickets__admin-settings-tickets-commerce-gateways-item-button-link"
-				href="<?php echo esc_url( 'https://dashboard.stripe.com/' ); ?>"
+				href="<?php echo esc_url( 'https://dashboard.stripe.com/settings' ); ?>"
 				target="_blank"
 				rel="noopener noreferrer"
 			>

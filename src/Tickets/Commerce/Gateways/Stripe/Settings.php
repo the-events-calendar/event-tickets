@@ -318,6 +318,7 @@ class Settings extends Abstract_Settings {
 				'label'               => esc_html__( 'Payment methods accepted', 'event-tickets' ),
 				'tooltip'             => $payment_methods_tooltip,
 				'default'             => self::DEFAULT_PAYMENT_ELEMENT_METHODS,
+				'can_be_empty'        => false,
 				'fieldset_attributes' => [
 					'data-depends'              => '#tribe-field-' . static::$option_checkout_element . '-' . self::PAYMENT_ELEMENT_SLUG,
 					'data-condition-is-checked' => true,
@@ -350,7 +351,9 @@ class Settings extends Abstract_Settings {
 	public function get_payment_methods_available_by_currency() {
 		$currency          = Currency::get_currency_code();
 		$payment_methods   = $this->get_payment_methods_available();
-		$available_methods = [];
+		$available_methods = [
+			'card' => esc_html__( 'Credit Cards', 'event-tickets' ),
+		];
 
 		foreach ( $payment_methods as $method => $configs ) {
 			if ( ! in_array( $currency, $configs['currencies'], true ) ) {
@@ -360,7 +363,6 @@ class Settings extends Abstract_Settings {
 			$available_methods[ $method ] = $configs['label'];
 		}
 
-		$available_methods['card'] = esc_html__( 'Credit Cards', 'event-tickets' );
 
 		/**
 		 * Allows filtering the list of available Payment Methods

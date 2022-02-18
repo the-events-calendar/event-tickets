@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
 use TEC\Tickets\Commerce\Cart;
+use TEC\Tickets\Commerce\Gateways\Stripe\REST\Webhook_Endpoint;
 
 /**
  * Class Payment Intent Handler
@@ -100,25 +101,33 @@ class Payment_Intent_Handler {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $data The purchase data received from the front-end.
+	 * @param array    $data  The purchase data received from the front-end.
+	 * @param \WP_Post $order The order object.
 	 *
 	 * @return array|\WP_Error|null
 	 */
-	public function update_payment_intent( $data ) {
+	public function update_payment_intent( $data, \WP_Post $order ) {
+		$body              = [];
 		$payment_intent_id = $data['payment_intent']['id'];
 
 		$stripe_receipt_emails = tribe_get_option( Settings::$option_stripe_receipt_emails );
+		$payment_intent        = Payment_Intent::get( $payment_intent_id );
 
-		$body = [];
+		// Add the Order ID as metadata to the Payment Intent
+		$metadata               = $payment_intent['metadata'];
+		$metadata['order_id']   = $order->ID;
+		$metadata['return_url'] = tribe( Webhook_Endpoint::class )->get_route_url();
+		$body['metadata']       = $metadata;
 
-		// Currently this method is only used to add an email recipient for Stripe receipts. If this is not
-		// required, only return the payment intent object to store.
-		if ( ! $stripe_receipt_emails ) {
-			return Payment_Intent::get( $payment_intent_id );
-		}
+		if ( $stripe_receipt_emails ) {
+			if ( is_user_logged_in() ) {
+				$user                  = wp_get_current_user();
+				$body['receipt_email'] = $user->get( 'user_email' );
+			}
 
-		if ( $stripe_receipt_emails && ! empty( $data['billing_details']['email'] ) ) {
-			$body['receipt_email'] = $data['billing_details']['email'];
+			if ( ! empty( $data['purchaser']['email'] ) ) {
+				$body['receipt_email'] = $data['purchaser']['email'];
+			}
 		}
 
 		return Payment_Intent::update( $payment_intent_id, $body );
