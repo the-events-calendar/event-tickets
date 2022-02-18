@@ -184,6 +184,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Feature - Collect puchaser name and email for anonymous purchases using Tickets Commerce. [ET-1378]
 * Fix - Remove anonymous purchase notice for Tickets Commerce after ET-1378 was implemented. [ET-1379]
 
+= [5.2.4.1] 2022-02-17 =
+
+* Fix - Classic Editor compatibility problems with the Ticket Form resolved [GTRIA-738]
+
 = [5.2.4] 2022-02-15 =
 
 * Tweak - Compatibility with the Common Abstract for editor blocks registration.
