@@ -178,7 +178,7 @@ class Webhooks extends Abstract_Webhooks {
 								sprintf(
 									// Translators: %1$s A link to the KB article. %2$s closing `</a>` link.
 									__( 'Setting up webhooks will enable you to receive notifications on charge statuses and keep order information up to date for asynchronous payments. %1$sLearn more%2$s', 'event-tickets' ),
-									'<a target="_blank" rel="noopener noreferrer" href="https://evnt.is/1b3o">',
+									'<a target="_blank" rel="noopener noreferrer" href="https://evnt.is/1b3p">',
 									'</a>'
 								)
 							)
