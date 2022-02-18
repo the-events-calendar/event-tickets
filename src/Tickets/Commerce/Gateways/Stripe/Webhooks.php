@@ -158,6 +158,10 @@ class Webhooks extends Abstract_Webhooks {
 			$signing_key_tooltip = '<span class="dashicons dashicons-yes"></span><span class="tribe-field-tickets-commerce-stripe-webhooks-signing-key-status">' . esc_html__( 'Webhooks were properly validated for sales.', 'event-tickets' ) . '</span>';
 		}
 
+		if ( tribe( Merchant::class )->is_sandbox() ) {
+			$signing_key_tooltip .= '<br /><b>' . esc_html__( 'Webhook validation will not work in Tickets Commerce test mode.', 'event-tickets' ) . '</b>';
+		}
+
 		return [
 			'tickets-commerce-gateway-settings-group-start-webhook'       => [
 				'type' => 'html',
