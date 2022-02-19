@@ -45,7 +45,7 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 		$sections   = array_unique( array_filter( wp_list_pluck( $items, 'event_id' ) ) );
 		$sub_totals = Value::build_list( array_filter( wp_list_pluck( $items, 'sub_total' ) ) );
 		$total_value = Value::create();
-		
+
 		$gateways = tribe( Manager::class )->get_gateways();
 
 		$args = [
@@ -60,15 +60,8 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 			'is_tec_active'      => defined( 'TRIBE_EVENTS_FILE' ) && class_exists( 'Tribe__Events__Main' ),
 			'gateways'           => $gateways,
 			'gateways_active'    => $this->get_gateways_active(),
-			'gateways_connected' => $this->get_gateways_connected(),
-			'gateways_enabled' => 0,
+			'gateways_connected' => $this->get_available_gateways(),
 		];
-		
-		foreach ( $gateways as $gateway ) {
-			if ( $gateway->is_enabled() ) {
-				$args['gateways_enabled']++;
-			}
-		}
 
 		$this->template_vars = $args;
 	}
@@ -108,17 +101,17 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 	}
 
 	/**
-	 * Get the number of connected gateways.
+	 * Get the number of available gateways.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @return int The number of connected gateways.
+	 * @return int The number of available gateways.
 	 */
-	public function get_gateways_connected() {
+	public function get_available_gateways() {
 		$gateways = tribe( Manager::class )->get_gateways();
 
 		$gateways_connected = array_filter( array_map( static function ( $gateway ) {
-			return $gateway::is_connected() && $gateway::should_show() ? $gateway : null;
+			return $gateway::should_show() && $gateway::is_enabled() && $gateway::is_connected() ? $gateway : null;
 		}, $gateways ) );
 
 		return count( $gateways_connected );
