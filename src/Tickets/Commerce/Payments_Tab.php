@@ -324,6 +324,8 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	 *
 	 * @since TBD
 	 *
+	 * @param Gateway $section_gateway Gateway class.
+	 *
 	 * @return array[]
 	 */
 	public function get_gateway_section_fields( $section_gateway ): array {
