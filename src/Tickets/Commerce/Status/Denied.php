@@ -24,20 +24,6 @@ class Denied extends Status_Abstract {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function is_final() {
-		return true;
-	}
-
-	/**
-	 * {@inheritdoc}
-	 */
-	public function get_name() {
-		return __( 'Denied', 'event-tickets' );
-	}
-
-	/**
-	 * {@inheritdoc}
-	 */
 	protected $flags = [
 		'incomplete',
 		'warning',
@@ -54,4 +40,18 @@ class Denied extends Status_Abstract {
 		'show_in_admin_all_list'    => true,
 		'show_in_admin_status_list' => true,
 	];
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function get_name() {
+		return __( 'Denied', 'event-tickets' );
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function is_final() {
+		return true;
+	}
 }
