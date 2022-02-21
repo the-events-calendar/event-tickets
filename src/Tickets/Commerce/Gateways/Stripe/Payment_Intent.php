@@ -136,6 +136,11 @@ class Payment_Intent {
 	 */
 	public static function create_from_cart( Cart $cart, $retry = false ) {
 		$items = tribe( Order::class )->prepare_cart_items_for_order( $cart );
+
+		if ( empty( $items ) ) {
+			return [];
+		}
+
 		$value = tribe( Order::class )->get_value_total( array_filter( $items ) );
 
 		return static::create( $value, $retry );

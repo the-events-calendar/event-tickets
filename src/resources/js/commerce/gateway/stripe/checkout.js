@@ -527,6 +527,10 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 */
 	obj.setupStripe = async () => {
 
+		if ( 0 === obj.checkout.paymentIntentData.length ) {
+			return;
+		}
+
 		if ( obj.checkout.paymentIntentData.errors ) {
 			obj.submitButton( false );
 			$( obj.selectors.submitButton ).addClass( obj.selectors.hiddenElement.className() );
