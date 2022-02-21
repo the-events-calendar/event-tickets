@@ -24,6 +24,13 @@ class Denied extends Status_Abstract {
 	/**
 	 * {@inheritdoc}
 	 */
+	public function is_final() {
+		return true;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
 	public function get_name() {
 		return __( 'Denied', 'event-tickets' );
 	}

@@ -129,7 +129,19 @@ abstract class Status_Abstract implements Status_Interface {
 	 * {@inheritdoc}
 	 */
 	public function can_apply_to( $order ) {
+
+		if ( $this->is_final() ) {
+			return false;
+		}
+
 		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function is_final() {
+		return false;
 	}
 
 	/**

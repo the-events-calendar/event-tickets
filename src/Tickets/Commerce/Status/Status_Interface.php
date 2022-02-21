@@ -103,4 +103,13 @@ interface Status_Interface {
 	 * @return array
 	 */
 	public function get_wp_arguments();
+
+	/**
+	 * Whether an order in this status can be transitioned away from it.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function is_final();
 }
