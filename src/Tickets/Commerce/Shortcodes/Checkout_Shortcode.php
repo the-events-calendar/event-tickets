@@ -108,7 +108,6 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 	 * @return int The number of connected gateways.
 	 */
 	public function get_gateways_connected() {
-		_deprecated_function( __METHOD__, 'TBD', __CLASS__ . '::get_gateways_available' );
 		return $this->get_gateways_available();
 	}
 
