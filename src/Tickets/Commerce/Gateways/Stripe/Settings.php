@@ -213,7 +213,7 @@ class Settings extends Abstract_Settings {
 
 		$stripe_message = sprintf(
 		// Translators: %1$s: The Event Tickets Plus link.
-			esc_html__( 'You are using the free Stripe payment gateway integration. This includes an additional 2%% fee for processing ticket sales. This fee is removed by activating Event Tickets Plus. %1$s.', 'event-tickets' ),
+			esc_html__( 'You are using the free Stripe payment gateway integration. This includes an additional 2%% fee for processing ticket sales. This fee is removed if you have an active subscription to Event Tickets Plus. %1$s.', 'event-tickets' ),
 			$plus_link
 		);
 		$main_settings  = [
