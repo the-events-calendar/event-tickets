@@ -60,7 +60,7 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 			'is_tec_active'      => defined( 'TRIBE_EVENTS_FILE' ) && class_exists( 'Tribe__Events__Main' ),
 			'gateways'           => $gateways,
 			'gateways_active'    => $this->get_gateways_active(),
-			'gateways_connected' => $this->get_gateways_available(),
+			'gateways_connected' => $this->get_gateways_connected(),
 		];
 
 		$this->template_vars = $args;
