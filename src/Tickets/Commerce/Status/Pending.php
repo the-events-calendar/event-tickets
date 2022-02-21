@@ -62,6 +62,11 @@ class Pending extends Status_Abstract {
 	public function can_apply_to( $order ) {
 		$status = parent::can_apply_to( $order );
 
+		// If the parent status is final, don't run.
+		if ( ! $status ) {
+			return $status;
+		}
+
 		// If the parent status or abstract has an error already we dont even run.
 		if ( is_wp_error( $status ) ) {
 			return $status;
