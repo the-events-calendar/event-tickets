@@ -26,11 +26,6 @@
  * @var int              $gateways_active       [Global] The number of active gateways.
  */
 
-
-if ( empty( $items ) ) {
-	return;
-}
-
 $the_title = sprintf(
 	// Translators: %1$s: Plural `Tickets` label.
 	__( 'Purchase %1$s', 'event-tickets' ),
