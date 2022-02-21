@@ -27,7 +27,7 @@
  */
 
 // Bail if user needs to login, the cart is empty or if there are no active gateways.
-if ( $must_login || empty( $items ) || ! tribe_is_truthy( $gateways_connected ) ) {
+if ( $must_login || empty( $items ) || ! tribe_is_truthy( $gateways_active ) ) {
 	return;
 }
 

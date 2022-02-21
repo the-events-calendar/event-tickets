@@ -27,7 +27,7 @@
  */
 
 // Bail if the cart is empty or if there's active gateways.
-if ( empty( $items ) || tribe_is_truthy( $gateways_connected ) ) {
+if ( empty( $items ) || tribe_is_truthy( $gateways_active ) ) {
 	return;
 }
 
