@@ -12,16 +12,18 @@ class GatewayErrorTest extends TicketsCommerceSnapshotTestCase {
 	 */
 	public function test_should_render_notice() {
 		$this->assertMatchesHtmlSnapshot( $this->get_partial_html( [
-				'items'              => [ 'Ticket 1', 'Ticket 2' ],
-				'gateways_connected' => 0,
+				'items'            => [ 'Ticket 1', 'Ticket 2' ],
+				'gateways_active'  => 0,
+				'gateways_enabled' => 0,
 			]
 		) );
 	}
 
 	public function test_should_render_empty_if_no_tickets() {
 		$this->assertEmpty( $this->get_partial_html( [
-				'items'               => [],
-				'gateways_connected'  => 0,
+				'items'            => [],
+				'gateways_active'  => 0,
+				'gateways_enabled' => 0,
 			]
 		) );
 	}
@@ -29,7 +31,8 @@ class GatewayErrorTest extends TicketsCommerceSnapshotTestCase {
 	public function test_should_render_empty_if_gateway_active() {
 		$this->assertEmpty( $this->get_partial_html( [
 				'items'            => [ 'Ticket 1', 'Ticket 2' ],
-				'gateways_connected'  => 1,
+				'gateways_active'  => 1,
+				'gateways_enabled' => 1,
 			]
 		) );
 	}
