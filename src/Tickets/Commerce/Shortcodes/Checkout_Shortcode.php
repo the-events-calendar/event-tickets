@@ -60,7 +60,7 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 			'is_tec_active'      => defined( 'TRIBE_EVENTS_FILE' ) && class_exists( 'Tribe__Events__Main' ),
 			'gateways'           => $gateways,
 			'gateways_active'    => $this->get_gateways_active(),
-			'gateways_connected' => $this->get_available_gateways(),
+			'gateways_connected' => $this->get_gateways_available(),
 		];
 
 		$this->template_vars = $args;
@@ -101,13 +101,13 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 	}
 
 	/**
-	 * Get the number of available gateways.
+	 * Get the number of available gateways that can be used for checkout. A gateway is only available if it's properly connected and enabled.
 	 *
 	 * @since 5.2.0
 	 *
 	 * @return int The number of available gateways.
 	 */
-	public function get_available_gateways() {
+	public function get_gateways_available() {
 		$gateways = tribe( Manager::class )->get_gateways();
 
 		$gateways_connected = array_filter( array_map( static function ( $gateway ) {
