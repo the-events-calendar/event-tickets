@@ -101,9 +101,21 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 	}
 
 	/**
-	 * Get the number of available gateways that can be used for checkout. A gateway is only available if it's properly connected and enabled.
+	 * Get the number of connected gateways.
 	 *
 	 * @since 5.2.0
+	 *
+	 * @return int The number of connected gateways.
+	 */
+	public function get_gateways_connected() {
+		_deprecated_function( __METHOD__, 'TBD', __CLASS__ . '::get_gateways_available' );
+		return $this->get_gateways_available();
+	}
+
+	/**
+	 * Get the number of available gateways that can be used for checkout. A gateway is only available if it's properly connected and enabled.
+	 *
+	 * @since TBD
 	 *
 	 * @return int The number of available gateways.
 	 */
