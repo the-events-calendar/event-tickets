@@ -196,7 +196,7 @@ class Settings extends Abstract_Settings {
 
 		$checkout_type_tooltip = sprintf(
 			// Translators: %1$s: Opening `<a>` tag for KB article link. %2$s: Closing `<a>` tag.
-			__( 'Additional payment methods are available based on currency and location and must be enabled individually within your Stripe account. Learn more about Stripe checkout and payment configuration %1$shere%2$s.', 'event-tickets' ),
+			__( 'Additional payment methods are available based on currency and location and must be enabled individually within your Stripe account. %1$sLearn more%2$s', 'event-tickets' ),
 			'<a href="https://evnt.is/1axw" target="_blank" rel="noopener noreferrer">',
 			'</a>'
 		);
