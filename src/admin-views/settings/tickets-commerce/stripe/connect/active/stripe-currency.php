@@ -28,7 +28,7 @@ $tc_currency     = Currency::get_currency_code();
 if ( $stripe_currency !== $tc_currency ) {
 	$message = sprintf(
 		// Translators: %1$s is the Stripe currency, %2$s is the Tickets Commerce currency symbol.
-		__( 'Your Stripe account is set to %1$s, but your Tickets Commerce site is set to %2$s. Please update your Tickets Commerce currency to match the one on Stripe.', 'event-tickets' ),
+		__( 'Your Stripe account is set to %1$s, but your Tickets Commerce site is set to %2$s. Using different currencies for Tickets Commerce and Stripe may not be supported by all payment methods available in %2$s, and may result in exchange rates and conversions from %2$s to %1$s being handled by Stripe.', 'event-tickets' ),
 		'<strong>' . $stripe_currency . '</strong>',
 		'<strong>' . $tc_currency . '</strong>'
 	);
@@ -43,7 +43,6 @@ if ( $stripe_currency !== $tc_currency ) {
 
 $message_classes = [
 	'tec-tickets__admin-settings-tickets-commerce-gateway-currency-message',
-	'tec-tickets__admin-settings-tickets-commerce-gateway-currency-message--error' => $stripe_currency !== $tc_currency,
 ];
 
 ?>
@@ -53,6 +52,9 @@ $message_classes = [
 	</div>
 	<div class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-col2">
 		<div class="tec-tickets__admin-settings-tickets-commerce-gateway-currency"><?php echo esc_html( Currency::get_currency_name( $stripe_currency ) ); ?></div>
-		<div <?php tribe_classes( $message_classes ); ?>><?php echo wp_kses_post( $message ); ?></div>
+		<div <?php tribe_classes( $message_classes ); ?>>
+			<span class="dashicons dashicons-info-outline"></span>
+			<?php echo wp_kses_post( $message ); ?>
+		</div>
 	</div>
 </div>
