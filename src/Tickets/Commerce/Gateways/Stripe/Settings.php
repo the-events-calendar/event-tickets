@@ -175,7 +175,7 @@ class Settings extends Abstract_Settings {
 				'content' =>
 					sprintf(
 					// Translators: %1$s The tickets commerce currency. %2$s: The currency from the Stripe account.
-						__( 'Tickets Commerce is configured to use %1$s as its currency but the default currency for the connected stripe account is %2$s. If you believe this is an error, you can modify the Tickets Commerce currency in the main Payments tab. Using different currencies for Tickets Commerce and Stripe may result in exchange rates and conversions being handled by Stripe.', 'event-tickets' ),
+						__( 'Tickets Commerce is configured to use %1$s as its currency but the default currency for the connected stripe account is %2$s. Using different currencies for Tickets Commerce and Stripe may not be supported by all payment methods available in %1$s, and may result in exchange rates and conversions from %1$s to %2$s being handled by Stripe. If you believe this is an error, you can modify the Tickets Commerce currency in the main Payments tab.', 'event-tickets' ),
 						$site_currency,
 						$stripe_currency
 					),
@@ -196,7 +196,7 @@ class Settings extends Abstract_Settings {
 
 		$checkout_type_tooltip = sprintf(
 			// Translators: %1$s: Opening `<a>` tag for KB article link. %2$s: Closing `<a>` tag.
-			__( 'Additional payment methods are available based on currency and location and must be enabled individually within your Stripe account. Learn more about Stripe checkout and payment configuration %1$shere%2$s.', 'event-tickets' ),
+			__( 'Additional payment methods are available based on currency and location and must be enabled individually within your Stripe account. %1$sLearn more%2$s', 'event-tickets' ),
 			'<a href="https://evnt.is/1axw" target="_blank" rel="noopener noreferrer">',
 			'</a>'
 		);
@@ -213,7 +213,7 @@ class Settings extends Abstract_Settings {
 
 		$stripe_message = sprintf(
 		// Translators: %1$s: The Event Tickets Plus link.
-			esc_html__( 'You are using the free Stripe payment gateway integration. This includes an additional 2%% fee for processing ticket sales. This fee is removed by activating Event Tickets Plus. %1$s.', 'event-tickets' ),
+			esc_html__( 'You are using the free Stripe payment gateway integration. This includes an additional 2%% fee for processing ticket sales. This fee is removed if you have an active subscription to Event Tickets Plus. %1$s.', 'event-tickets' ),
 			$plus_link
 		);
 		$main_settings  = [
@@ -486,5 +486,4 @@ class Settings extends Abstract_Settings {
 
 		return $value;
 	}
-
 }

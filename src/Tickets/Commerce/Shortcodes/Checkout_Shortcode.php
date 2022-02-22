@@ -41,11 +41,11 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 	 * {@inheritDoc}
 	 */
 	public function setup_template_vars() {
-		$items      = tribe( Cart::class )->get_items_in_cart( true );
-		$sections   = array_unique( array_filter( wp_list_pluck( $items, 'event_id' ) ) );
-		$sub_totals = Value::build_list( array_filter( wp_list_pluck( $items, 'sub_total' ) ) );
+		$items       = tribe( Cart::class )->get_items_in_cart( true );
+		$sections    = array_unique( array_filter( wp_list_pluck( $items, 'event_id' ) ) );
+		$sub_totals  = Value::build_list( array_filter( wp_list_pluck( $items, 'sub_total' ) ) );
 		$total_value = Value::create();
-		
+
 		$gateways = tribe( Manager::class )->get_gateways();
 
 		$args = [
@@ -61,14 +61,7 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 			'gateways'           => $gateways,
 			'gateways_active'    => $this->get_gateways_active(),
 			'gateways_connected' => $this->get_gateways_connected(),
-			'gateways_enabled' => 0,
 		];
-		
-		foreach ( $gateways as $gateway ) {
-			if ( $gateway->is_enabled() ) {
-				$args['gateways_enabled']++;
-			}
-		}
 
 		$this->template_vars = $args;
 	}
@@ -101,7 +94,7 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 	public function get_gateways_active() {
 		$gateways        = tribe( Manager::class )->get_gateways();
 		$gateways_active = array_filter( array_map( static function ( $gateway ) {
-			return $gateway::is_active() && $gateway::should_show() ? $gateway : null;
+			return $gateway::is_active() && $gateway::is_enabled() && $gateway::should_show() ? $gateway : null;
 		}, $gateways ) );
 
 		return count( $gateways_active );
