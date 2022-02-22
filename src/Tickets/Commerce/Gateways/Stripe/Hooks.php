@@ -167,38 +167,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 			return $value;
 		}
 
-		if ( ! tribe( Merchant::class )->is_connected() ) {
-			return $value;
-		}
-
-		if ( ! isset( $_POST['tribeSaveSettings'] ) || ! isset( $_POST['current-settings-tab'] ) ) {
-			return $value;
-		}
-
-		$checkout_type   = tribe_get_request_var( Settings::$option_checkout_element );
-		$payment_methods = tribe_get_request_var( $field_id );
-
-		if ( empty( $payment_methods ) ) {
-			if ( $checkout_type === Settings::PAYMENT_ELEMENT_SLUG ) {
-				\Tribe__Settings::instance()->errors[] = esc_html__( 'Payment methods accepted cannot be empty', 'event-tickets' );
-			}
-
-			// Revert value to the previous configuration.
-			return tribe_get_option( $field_id );
-		}
-
-		$payment_intent_test = tribe( Payment_Intent::class )->test_creation( $payment_methods );
-
-		if ( ! is_wp_error( $payment_intent_test ) ) {
-			// Payment Settings are working, great!
-			return $value;
-		}
-
-		// Payment attempt failed. Provide an alert in the Dashboard.
-		\Tribe__Settings::instance()->errors[] = $payment_intent_test->get_error_message();
-
-		// Revert value to the previous configuration.
-		return tribe_get_option( $field_id );
+		return Payment_Intent::validate_payment_methods( $value, $field_id );
 	}
 
 	/**

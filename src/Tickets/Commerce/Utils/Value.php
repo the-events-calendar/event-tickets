@@ -23,6 +23,7 @@ class Value extends Abstract_Currency {
 		$this->currency_symbol_position     = Currency::get_currency_symbol_position( $this->get_currency_code() );
 		$this->currency_separator_decimal   = Currency::get_currency_separator_decimal( $this->get_currency_code() );
 		$this->currency_separator_thousands = Currency::get_currency_separator_thousands( $this->get_currency_code() );
+		$this->set_precision( Currency::get_currency_precision( $this->get_currency_code() ) );
 	}
 
 	/**
@@ -74,5 +75,4 @@ class Value extends Abstract_Currency {
 		);
 
 	}
-
 }

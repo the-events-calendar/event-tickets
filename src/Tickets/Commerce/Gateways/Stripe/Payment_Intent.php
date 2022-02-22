@@ -4,6 +4,7 @@ namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Order;
+use TEC\Tickets\Commerce\Utils\Currency;
 use TEC\Tickets\Commerce\Utils\Value;
 
 /**
@@ -16,13 +17,13 @@ use TEC\Tickets\Commerce\Utils\Value;
 class Payment_Intent {
 
 	/**
-	 * Value to use when creating test payment intents.
+	 * The minimum amount to charge for the current currency is multiplied by this value to produce the test creation amount.
 	 *
 	 * @since TBD
 	 *
 	 * @var float
 	 */
-	const TEST_VALUE = 1.28;
+	const TEST_MULTIPLIER = 3.14;
 
 	/**
 	 * The key used to identify payment intents created to validate configurations.
@@ -45,14 +46,13 @@ class Payment_Intent {
 	 *
 	 * @return bool|\WP_Error
 	 */
-	public static function test_creation( $payment_methods ) {
-
+	public static function test_creation( $payment_methods, $retry = false ) {
 		// Payment Intents for cards only are always valid.
 		if ( 1 === count( $payment_methods ) && in_array( 'card', $payment_methods, true ) ) {
 			return true;
 		}
 
-		$value = Value::create( static::TEST_VALUE );
+		$value = Value::create( static::get_charge_amount() );
 		$fee   = Application_Fee::calculate( $value );
 
 		$query_args = [];
@@ -232,6 +232,76 @@ class Payment_Intent {
 		}
 
 		return $compiled;
+	}
+
+	/**
+	 * Calculates the minimum charge amount allowed for the current currency
+	 *
+	 * @since TBD
+	 *
+	 * @return int|float|null returns an int or float with the minimum value allowed, null if Stripe does not support
+	 *                        the currency.
+	 */
+	public static function get_charge_amount() {
+		$currency     = Currency::get_currency_code();
+		$currency_map = Currency::get_default_currency_map();
+
+		return static::TEST_MULTIPLIER * $currency_map[ $currency ]['stripe_minimum_charge'];
+	}
+
+	/**
+	 * Intercept saving settings to check if any new payment methods would break Stripe payment intents.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed  $value    The new value.
+	 * @param string $field_id The field id in the options.
+	 *
+	 * @return array
+	 */
+	public static function validate_payment_methods( $value, $field_id ) {
+
+		if ( ! tribe( Merchant::class )->is_connected() ) {
+			return $value;
+		}
+
+		if ( ! isset( $_POST['tribeSaveSettings'] ) || ! isset( $_POST['current-settings-tab'] ) ) {
+			return $value;
+		}
+
+		$checkout_type   = tribe_get_request_var( Settings::$option_checkout_element );
+		$payment_methods = tribe_get_request_var( $field_id );
+		$current_methods = tribe_get_option( $field_id, [] );
+
+		if ( empty( $payment_methods ) ) {
+			if ( $checkout_type === Settings::PAYMENT_ELEMENT_SLUG ) {
+				\Tribe__Settings::instance()->errors[] = esc_html__( 'Payment methods accepted cannot be empty', 'event-tickets' );
+			}
+
+			// Revert value to the previous configuration.
+			return $current_methods;
+		}
+
+		sort( $payment_methods );
+		sort( $current_methods );
+
+		// If the two arrays are equal, there's no need to create a new test.
+		if ( $payment_methods === $current_methods ) {
+			return $current_methods;
+		}
+
+		$payment_intent_test = static::test_creation( $payment_methods );
+
+		if ( ! is_wp_error( $payment_intent_test ) ) {
+			// Payment Settings are working, great!
+			return $value;
+		}
+
+		// Payment attempt failed. Provide an alert in the Dashboard.
+		\Tribe__Settings::instance()->errors[] = $payment_intent_test->get_error_message();
+
+		// Revert value to the previous configuration.
+		return tribe_get_option( $field_id, [] );
 	}
 
 }
