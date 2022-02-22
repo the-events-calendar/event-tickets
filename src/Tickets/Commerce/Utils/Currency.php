@@ -80,7 +80,7 @@ class Currency {
 	 * @return string
 	 */
 	public static function get_currency_symbol( $code ) {
-		$map = static::get_default_currency_map();
+		$map    = static::get_default_currency_map();
 		$symbol = '';
 
 		if ( isset( $map[ $code ] ) ) {
@@ -120,7 +120,7 @@ class Currency {
 	 * @return string
 	 */
 	public static function get_currency_name( $code ) {
-		$map    = static::get_default_currency_map();
+		$map  = static::get_default_currency_map();
 		$name = '';
 
 		if ( isset( $map[ $code ] ) ) {
@@ -151,6 +151,46 @@ class Currency {
 	}
 
 	/**
+	 * Return the currency precision to use as the number of decimals allowed.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $code The currency 3-letter code.
+	 *
+	 * @return string
+	 */
+	public static function get_currency_precision( $code ) {
+		$map       = static::get_default_currency_map();
+		$precision = 2;
+
+		if ( isset( $map[ $code ] ) ) {
+			$precision = $map[ $code ]['decimal_precision'];
+		}
+
+		/**
+		 * Filter the specific currency precision before returning. $code is the 3-letter currency code.
+		 *
+		 * @since TBD
+		 *
+		 * @param int $precision The currency precision.
+		 *
+		 * @return int
+		 */
+		$precision = apply_filters( "tec_tickets_commerce_currency_{$code}_precision", $precision );
+
+		/**
+		 * Filter all currency symbols before returning.
+		 *
+		 * @since TBD
+		 *
+		 * @param int $precision The currency precision.
+		 *
+		 * @return int
+		 */
+		return apply_filters( 'tec_tickets_commerce_currency_precision', $precision );
+	}
+
+	/**
 	 * Return the currency decimal separator character to use as defined in the currency map.
 	 *
 	 * @since 5.2.3
@@ -160,7 +200,7 @@ class Currency {
 	 * @return string
 	 */
 	public static function get_currency_separator_decimal( $code ) {
-		$map = static::get_default_currency_map();
+		$map       = static::get_default_currency_map();
 		$separator = '';
 
 		if ( isset( $map[ $code ] ) ) {
@@ -200,7 +240,7 @@ class Currency {
 	 * @return string
 	 */
 	public static function get_currency_separator_thousands( $code ) {
-		$map = static::get_default_currency_map();
+		$map       = static::get_default_currency_map();
 		$separator = '';
 
 		if ( isset( $map[ $code ] ) ) {
@@ -266,7 +306,7 @@ class Currency {
 		 *
 		 * @since 5.2.3
 		 *
-		 * @param string   $currency_position The currency position string.
+		 * @param string $currency_position The currency position string.
 		 *
 		 * @return string
 		 */
@@ -387,7 +427,7 @@ class Currency {
 				'decimal_point'         => ',',
 				'thousands_sep'         => '.',
 				'decimal_precision'     => 2,
-				'stripe_minimum_charge' => 1,
+				'stripe_minimum_charge' => null,
 			],
 			'INR' => [
 				'name'                  => __( 'Indian Rupee (INR)', 'event-tickets' ),
@@ -443,7 +483,7 @@ class Currency {
 				'decimal_point'         => '.',
 				'thousands_sep'         => ',',
 				'decimal_precision'     => 2,
-				'stripe_minimum_charge' => 1,
+				'stripe_minimum_charge' => null,
 			],
 			'PLN' => [
 				'name'                  => __( 'Polish Zloty (PLN)', 'event-tickets' ),
@@ -459,7 +499,7 @@ class Currency {
 				'decimal_point'         => '.',
 				'thousands_sep'         => ',',
 				'decimal_precision'     => 2,
-				'stripe_minimum_charge' => 1,
+				'stripe_minimum_charge' => null,
 			],
 			'SEK' => [
 				'name'                  => __( 'Swedish Krona (SEK)', 'event-tickets' ),
@@ -483,7 +523,7 @@ class Currency {
 				'decimal_point'         => '.',
 				'thousands_sep'         => ',',
 				'decimal_precision'     => 2,
-				'stripe_minimum_charge' => 1,
+				'stripe_minimum_charge' => null,
 			],
 			'TWD' => [
 				'name'                  => __( 'Taiwan New Dollar (TWD)', 'event-tickets' ),
@@ -491,7 +531,7 @@ class Currency {
 				'decimal_point'         => '.',
 				'thousands_sep'         => ',',
 				'decimal_precision'     => 2,
-				'stripe_minimum_charge' => 1,
+				'stripe_minimum_charge' => null,
 			],
 			'USD' => [
 				'name'                  => __( 'U.S. Dollar (USD)', 'event-tickets' ),
