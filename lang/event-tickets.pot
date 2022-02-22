@@ -2,17 +2,17 @@
 # This file is distributed under the same license as the Event Tickets package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Event Tickets 5.2.3\n"
+"Project-Id-Version: Event Tickets 5.2.4\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/event-tickets\n"
-"POT-Creation-Date: 2022-01-18 06:39:56+00:00\n"
+"POT-Creation-Date: 2022-02-09 17:16:04+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2022-01-18 06:39\n"
+"PO-Revision-Date: 2022-02-09 17:16\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 
-#. #-#-#-#-#  event-tickets.pot (Event Tickets 5.2.3)  #-#-#-#-#
+#. #-#-#-#-#  event-tickets.pot (Event Tickets 5.2.4)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
 #: event-tickets.php:61 src/Tribe/Admin/Notices.php:92 src/Tribe/Main.php:691
 #: src/Tribe/Privacy.php:59 src/admin-views/admin-welcome-message.php:58
@@ -5839,28 +5839,28 @@ msgstr ""
 msgid "Are you sure you want to cancel?"
 msgstr ""
 
-#: src/Tribe/Editor/Blocks/Tickets.php:297 src/Tribe/Tickets.php:4329
+#: src/Tribe/Editor/Blocks/Tickets.php:300 src/Tribe/Tickets.php:4329
 msgctxt "Error message title, will be followed by the error code."
 msgid "API Error"
 msgstr ""
 
-#: src/Tribe/Editor/Blocks/Tickets.php:298 src/Tribe/Tickets.php:4330
+#: src/Tribe/Editor/Blocks/Tickets.php:301 src/Tribe/Tickets.php:4330
 msgid ""
 "Refresh this page or wait a few minutes before trying again. If this happens "
 "repeatedly, please contact the Site Admin."
 msgstr ""
 
-#: src/Tribe/Editor/Blocks/Tickets.php:299 src/Tribe/Tickets.php:4331
+#: src/Tribe/Editor/Blocks/Tickets.php:302 src/Tribe/Tickets.php:4331
 msgid ""
 "The ticket for this event has sold out and has been removed from your cart."
 msgstr ""
 
-#: src/Tribe/Editor/Blocks/Tickets.php:300 src/Tribe/Tickets.php:4332
+#: src/Tribe/Editor/Blocks/Tickets.php:303 src/Tribe/Tickets.php:4332
 #: src/views/v2/commerce/order/header/title-empty.php:28
 msgid "Whoops!"
 msgstr ""
 
-#: src/Tribe/Editor/Blocks/Tickets.php:301 src/Tribe/Tickets.php:4333
+#: src/Tribe/Editor/Blocks/Tickets.php:304 src/Tribe/Tickets.php:4333
 msgctxt "The %s will change based on the error produced."
 msgid "You have %s ticket(s) with a field that requires information."
 msgstr ""
@@ -7374,7 +7374,7 @@ msgid "Search attendees"
 msgstr ""
 
 #: src/admin-views/commerce/metabox/capacity.php:16
-#: src/admin-views/editor/list-row.php:99
+#: src/admin-views/editor/list-row.php:100
 #: src/admin-views/rsvp-metabox-capacity.php:10
 #: src/admin-views/tpp-metabox-capacity.php:16
 msgid "Capacity:"
@@ -7497,27 +7497,27 @@ msgid ""
 "ecommerce plugin."
 msgstr ""
 
-#: src/admin-views/editor/list-row.php:43
+#: src/admin-views/editor/list-row.php:44
 msgctxt "ticket type label"
 msgid "%s Type:"
 msgstr ""
 
-#: src/admin-views/editor/list-row.php:104
+#: src/admin-views/editor/list-row.php:105
 msgid "Available:"
 msgstr ""
 
-#: src/admin-views/editor/list-row.php:116
+#: src/admin-views/editor/list-row.php:117
 msgctxt "ticket ID title attribute"
 msgid "Edit %s ID: %d"
 msgstr ""
 
 #. Translators: %s: dynamic "ticket" text, %d: ticket ID #.
-#: src/admin-views/editor/list-row.php:129
+#: src/admin-views/editor/list-row.php:131
 msgctxt "ticket ID title attribute"
 msgid "Duplicate %s ID: %d"
 msgstr ""
 
-#: src/admin-views/editor/list-row.php:141
+#: src/admin-views/editor/list-row.php:144
 msgctxt "ticket ID title attribute"
 msgid "Delete %s ID: %d"
 msgstr ""
