@@ -181,6 +181,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.3.0] 2022-02-24 =
 
+* Version - Event Tickets 5.3.0 is only compatible with Event Tickets Plus 5.4.0 and higher
 * Feature - Introduction of Stripe for Tickets Commerce. [ET-1342]
 * Feature - Collect purchaser name and email for anonymous purchases using Tickets Commerce. [ET-1378]
 * Feature - Introduce automatic handling of zero-decimal currencies in Tickets Commerce [ET-1414][ET-1420]
