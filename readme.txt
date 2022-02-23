@@ -17,6 +17,8 @@ Manage tickets and RSVPs for free with [Event Tickets](https://evnt.is/1ao8), fr
 
 This plugin makes it easy to sell tickets and collect registration for in-person or virtual events. Plus, it comes with features backed by our world-class team of developers and designers. Integrate Event Tickets with your PayPal business account and manage attendees from your WordPress dashboard.
 
+Use our free commerce solution, Tickets Commerce, to sell tickets with PayPal and/or Stripe.
+
 https://vimeo.com/480516958
 
 = 🎟️ Ticketing and Registration for WordPress =
@@ -37,6 +39,7 @@ Whether your vision is big or small, you're in good company. Thousands of small 
 
 ✔️ Attendees can RSVP to events
 ✔️ Attendees can purchase tickets to events
+✔️ Sell tickets with PayPal and/or Stripe using our free commerce solution, Tickets Commerce.
 ✔️ Add RSVPs and tickets to posts, pages, or custom post types
 ✔️ Collect ticket fees by connecting your PayPal business account
 ✔️ Generate sales and attendee reports
@@ -44,7 +47,7 @@ Whether your vision is big or small, you're in good company. Thousands of small 
 ✔️ Automatic ticket confirmation emails
 ✔️ Works out of the box with [The Events Calendar](https://wordpress.org/plugins/the-events-calendar/)
 ✔️ Responsive design works on all devices
-✔️ Tested on the major theme frameworks such as Avada, Genesis, Woo Themes, Thesis and many more.
+✔️ Tested on the major theme frameworks such as Avada, Genesis, Kadence, Thesis and many more.
 ✔️ Internationalized & translated
 ✔️ Extensive template tags for customization
 ✔️ Hooks & filters galore
@@ -60,7 +63,8 @@ Additional helpful links:
 
 * [Guide: Getting Started with Event Tickets](https://theeventscalendar.com/knowledgebase/guide/event-tickets/)
 * [Installing Event Tickets Video](https://evnt.is/1ao9)
-* [Do I need Event TIckets or Event Tickets Plus?](https://evnt.is/1aoa)
+* [Using Tickets Commerce Video](https://www.youtube.com/watch?v=2MZnZDMjpCk)
+* [Do I need Event Tickets or Event Tickets Plus?](https://evnt.is/1aoa)
 * [How to Make Money with Virtual Events](https://evnt.is/1aob)
 
 If you have any questions about this plugin, you can post a thread in the WordPress.org forum. Please search existing threads before starting a new on
@@ -143,7 +147,7 @@ If you're already an [Event Tickets Plus](https://evnt.is/18wk) subscriber, you'
 
 Event Tickets is our free ticketing plugin that has all the basics you need to sell tickets and collect RSVPs on your website. You can use Event Tickets with or without The Events Calendar.
 
-[Event Tickets Plus](https://evnt.is/18wk) is a premium plugin that runs alongside Event Tickets and enhances it with extra features, including custom registration fields, shortcodes, WooCommerce integration, our [mobile ticketing app](https://evnt.is/1aof) and more.
+[Event Tickets Plus](https://evnt.is/18wk) is a premium plugin that runs alongside Event Tickets and enhances it with extra features, including custom registration fields, shortcodes, WooCommerce integration, enhanced Stripe functionality for Stripe for Tickets Commerce, our [mobile ticketing app](https://evnt.is/1aof) and more.
 
 [Read more to learn which plugin is right for you.](https://evnt.is/1aoa)
 
