@@ -190,7 +190,7 @@ class Settings extends Abstract_Settings {
 		$currency_code = Currency::get_currency_code();
 		$currency_name = Currency::get_currency_name( $currency_code );
 		$plus_link_faq = sprintf(
-			'<a href="https://theeventscalendar.com/products/wordpress-event-tickets/#faqs" target="_blank" rel="noopener noreferrer">%s</a>',
+			'<a href="https://evnt.is/1b3u" target="_blank" rel="noopener noreferrer">%s</a>',
 			esc_html__( 'Learn more', 'event-tickets' )
 		);
 
