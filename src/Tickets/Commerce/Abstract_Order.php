@@ -28,7 +28,7 @@ abstract class Abstract_Order {
 	/**
 	 * Prepare purchaser data received from the checkout page to include in orders.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param array $data user data input in the checkout page
 	 *
@@ -70,7 +70,7 @@ abstract class Abstract_Order {
 		/**
 		 * Allows filtering the billing details gathered before creating an order
 		 *
-		 * @since TBD
+		 * @since 5.3.0
 		 *
 		 * @param array $purchaser the list of billing details gathered from the front-end and/or logged-in users
 		 * @param array $data      the entire data array received from the checkout page
@@ -81,7 +81,7 @@ abstract class Abstract_Order {
 	/**
 	 * Prepare purchaser data received from the checkout page to include in orders.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param array $data user data input in the checkout page.
 	 *
@@ -126,7 +126,7 @@ abstract class Abstract_Order {
 		/**
 		 * Filter the purchaser details for creating an order.
 		 *
-		 * @since TBD
+		 * @since 5.3.0
 		 *
 		 * @param array $purchaser the list of purchaser info gathered from the front-end and/or logged-in users.
 		 * @param array $data      the entire data array received from the checkout page.

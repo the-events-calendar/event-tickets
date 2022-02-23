@@ -8,7 +8,7 @@ use TEC\Tickets\Commerce\Notice_Handler;
 /**
  * Class Hooks
  *
- * @since   TBD
+ * @since   5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe
  */
@@ -25,7 +25,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Adds the actions required by each Stripe component.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 */
 	protected function add_actions() {
 		add_action( 'rest_api_init', [ $this, 'register_endpoints' ] );
@@ -39,7 +39,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Adds the filters required by each Stripe component.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 */
 	protected function add_filters() {
 		add_filter( 'tec_tickets_commerce_gateways', [ $this, 'filter_add_gateway' ], 5, 2 );
@@ -53,7 +53,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Add this gateway to the list of available.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param array $gateways List of available gateways.
 	 *
@@ -66,7 +66,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Modify the HTML of the Webhooks field to include a copy button.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param string        $html
 	 * @param \Tribe__Field $field
@@ -80,7 +80,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Register the Endpoints from Stripe.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 */
 	public function register_endpoints() : void {
 		$this->container->make( REST::class )->register_endpoints();
@@ -89,7 +89,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Handles the validation of the signing key on the settings page.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 */
 	public function action_handle_testing_webhooks_field() : void {
 		$this->container->make( Webhooks::class )->handle_validation();
@@ -98,7 +98,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Handle stripe errors into the admin UI.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 */
 	public function handle_stripe_errors() {
 
@@ -126,7 +126,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Include Stripe admin notices for Ticket Commerce.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param array $messages Array of messages.
 	 *
@@ -140,7 +140,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 * Checks if Stripe is active and can be used to check out in the current cart and, if so,
 	 * generates a payment intent
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 */
 	public function maybe_create_stripe_payment_intent() {
 
@@ -154,7 +154,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Intercept saving settings to check if any new payment methods would break Stripe payment intents.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param mixed  $value    The new value.
 	 * @param string $field_id The field id in the options.
@@ -173,7 +173,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Add Webhook settings fields
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param array $settings Array of settings for the Stripe gateway.
 	 *
@@ -190,7 +190,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Makes sure mandatory fields have values when hidden.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param mixed  $value    Field value submitted.
 	 * @param string $field_id Field key in the settings array.

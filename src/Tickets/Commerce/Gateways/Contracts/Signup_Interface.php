@@ -5,7 +5,7 @@ namespace TEC\Tickets\Commerce\Gateways\Contracts;
 /**
  * Signup Interface.
  *
- * @since   TBD
+ * @since   5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Contracts
  */
@@ -14,7 +14,7 @@ interface Signup_Interface {
 	/**
 	 * Gets the content for the template used for the sign-up link.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return false|string
 	 */
@@ -23,7 +23,7 @@ interface Signup_Interface {
 	/**
 	 * Gets the template instance used to setup the rendering of the page.
 	 *
-	 * @since TBD moved to Abstract_Signup
+	 * @since 5.3.0 moved to Abstract_Signup
 	 * @since 5.1.9
 	 *
 	 * @return \Tribe__Template
@@ -33,7 +33,7 @@ interface Signup_Interface {
 	/**
 	 * Gets the saved hash for a given user, empty when non-existent.
 	 *
-	 * @since TBD moved to Abstract_Signup
+	 * @since 5.3.0 moved to Abstract_Signup
 	 * @since 5.1.9
 	 *
 	 * @return array
@@ -43,7 +43,7 @@ interface Signup_Interface {
 	/**
 	 * Saves the URL in a transient for later use.
 	 *
-	 * @since TBD moved to Abstract_Signup
+	 * @since 5.3.0 moved to Abstract_Signup
 	 * @since 5.1.9
 	 *
 	 * @param string $value URL for signup.
@@ -55,7 +55,7 @@ interface Signup_Interface {
 	/**
 	 * Delete url transient from the DB.
 	 *
-	 * @since TBD moved to Abstract_Signup
+	 * @since 5.3.0 moved to Abstract_Signup
 	 * @since 5.1.9
 	 *
 	 * @return bool

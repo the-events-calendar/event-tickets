@@ -113,7 +113,7 @@ class Currency {
 	/**
 	 * Return the currency name to use as defined in the currency map.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param string $code The currency 3-letter code.
 	 *
@@ -130,7 +130,7 @@ class Currency {
 		/**
 		 * Filter the specific currency name before returning. $code is the 3-letter currency code.
 		 *
-		 * @since TBD
+		 * @since 5.3.0
 		 *
 		 * @param string $name The currency name.
 		 *
@@ -141,7 +141,7 @@ class Currency {
 		/**
 		 * Filter all currency symbols before returning.
 		 *
-		 * @since TBD
+		 * @since 5.3.0
 		 *
 		 * @param string $name The currency name.
 		 *
@@ -153,7 +153,7 @@ class Currency {
 	/**
 	 * Return the currency precision to use as the number of decimals allowed.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param string $code The currency 3-letter code.
 	 *
@@ -170,7 +170,7 @@ class Currency {
 		/**
 		 * Filter the specific currency precision before returning. $code is the 3-letter currency code.
 		 *
-		 * @since TBD
+		 * @since 5.3.0
 		 *
 		 * @param int $precision The currency precision.
 		 *
@@ -181,7 +181,7 @@ class Currency {
 		/**
 		 * Filter all currency symbols before returning.
 		 *
-		 * @since TBD
+		 * @since 5.3.0
 		 *
 		 * @param int $precision The currency precision.
 		 *

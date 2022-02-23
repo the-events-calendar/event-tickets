@@ -13,7 +13,7 @@ use Tribe__Utils__Array as Arr;
 /**
  * Class Webhook Endpoint.
  *
- * @since   TBD
+ * @since   5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe\REST
  */
@@ -22,7 +22,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * The REST API endpoint path.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -31,7 +31,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Register the actual endpoint on WP Rest API.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 */
 	public function register(): void {
 		$namespace     = tribe( 'tickets.rest-v1.main' )->get_events_route_namespace();
@@ -54,7 +54,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Arguments for the incoming request endpoint.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return array
 	 */
@@ -68,7 +68,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	 * If there is any request related error handling it should happen here, webhook related ones should go in
 	 * the Handler methods.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -88,7 +88,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Given a WP Rest request we determine if it has the correct Stripe signature.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param WP_REST_Request $request Which request we are validating.
 	 *
@@ -103,7 +103,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @link  https://stripe.com/docs/webhooks/signatures
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param string $header the Stripe-Signature request header
 	 * @param string $body   the raw json request body

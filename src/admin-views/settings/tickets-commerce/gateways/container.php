@@ -2,7 +2,7 @@
 /**
  * Template to display a list of featured gateways.
  *
- * @since TBD
+ * @since 5.3.0
  *
  * @var Tribe__Template    $this     Template object.
  * @var Abstract_Gateway[] $gateways Array of gateway objects.

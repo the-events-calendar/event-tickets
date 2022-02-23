@@ -41,7 +41,7 @@ interface Gateway_Interface {
 	/**
 	 * Get the settings url for this Commerce Gateway section.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return string
 	 */
@@ -117,7 +117,7 @@ interface Gateway_Interface {
 	/**
 	 * Renders the template for the checkout.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param \Tribe__Template $template Template used to render the checkout.
 	 *

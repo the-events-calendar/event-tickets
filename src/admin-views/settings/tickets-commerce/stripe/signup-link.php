@@ -2,7 +2,7 @@
 /**
  * Template to display the Stripe signup link.
  *
- * @since TBD
+ * @since 5.3.0
  *
  * @var Tribe__Tickets__Admin__Views $this     Template object.
  * @var array                        $gateways Array of gateway objects.

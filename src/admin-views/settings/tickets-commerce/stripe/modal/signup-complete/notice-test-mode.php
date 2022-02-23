@@ -2,9 +2,9 @@
 /**
  * The Template for displaying the Tickets Commerce Stripe modal notice when connected.
  *
- * @version TBD
+ * @version 5.3.0
  *
- * @since   TBD
+ * @since   5.3.0
  */
 
 // Bail if not in sandbox mode.

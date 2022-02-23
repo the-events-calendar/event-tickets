@@ -7,7 +7,7 @@ use TEC\Tickets\Commerce\Traits\Has_Mode;
 /**
  * Abstract Merchant Contract.
  *
- * @since   TBD
+ * @since   5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Contracts
  */
@@ -47,7 +47,7 @@ abstract class Abstract_Merchant implements Merchant_Interface {
 	/**
 	 * Gets the value stored for the Client ID.
 	 *
-	 * @since TBD moved to Abstract_Merchant
+	 * @since 5.3.0 moved to Abstract_Merchant
 	 * @since 5.1.9
 	 *
 	 * @return string
@@ -59,7 +59,7 @@ abstract class Abstract_Merchant implements Merchant_Interface {
 	/**
 	 * Save merchant details.
 	 *
-	 * @since TBD moved to Abstract_Merchant
+	 * @since 5.3.0 moved to Abstract_Merchant
 	 * @since 5.1.9
 	 *
 	 * @return bool

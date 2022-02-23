@@ -16,7 +16,7 @@ use WP_REST_Request;
 /**
  * Class Return Endpoint.
  *
- * @since   TBD
+ * @since   5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe\REST
  */
@@ -25,7 +25,7 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * The REST API endpoint path.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -34,7 +34,7 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Register the actual endpoint on WP Rest API.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 */
 	public function register() {
 		$namespace     = tribe( 'tickets.rest-v1.main' )->get_events_route_namespace();
@@ -57,7 +57,7 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Arguments used for the endpoint.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return array
 	 */
@@ -68,7 +68,7 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Handles the request that creates an order with Tickets Commerce and the Stripe gateway.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 */
@@ -98,7 +98,7 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Decode the payload received from WhoDat.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param string $payload json payload.
 	 *
@@ -116,7 +116,7 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Handle successful account connections.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param object $payload data returned from WhoDat.
 	 */
@@ -152,7 +152,7 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Handle unsuccessful account connections.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param object $payload data returned from WhoDat.
 	 */
@@ -170,7 +170,7 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Handle account disconnections.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 */
 	public function handle_connection_terminated( $reason = [] ) {
 		tribe( Merchant::class )->delete_signup_data();

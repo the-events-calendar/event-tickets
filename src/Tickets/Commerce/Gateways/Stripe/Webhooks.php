@@ -10,7 +10,7 @@ use TEC\Tickets\Commerce\Gateways\Stripe\REST\Webhook_Endpoint;
 /**
  * Class Webhooks
  *
- * @since   TBD
+ * @since   5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe
  */
@@ -19,7 +19,7 @@ class Webhooks extends Abstract_Webhooks {
 	/**
 	 * Option key that determines if the webhooks are valid.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -28,7 +28,7 @@ class Webhooks extends Abstract_Webhooks {
 	/**
 	 * Option key that determines if the webhooks are valid.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -37,7 +37,7 @@ class Webhooks extends Abstract_Webhooks {
 	/**
 	 * Option key that we use to allow customers to copy.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -46,7 +46,7 @@ class Webhooks extends Abstract_Webhooks {
 	/**
 	 * Option name for the option to store the webhook signing key
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -69,7 +69,7 @@ class Webhooks extends Abstract_Webhooks {
 	/**
 	 * Testing if given Signing Key is valid on an AJAX request.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return void
 	 */
@@ -123,7 +123,7 @@ class Webhooks extends Abstract_Webhooks {
 	/**
 	 * Includes a Copy button to the webhook UI.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param string        $html
 	 * @param \Tribe__Field $field
@@ -142,7 +142,7 @@ class Webhooks extends Abstract_Webhooks {
 	/**
 	 * Return the fields related to webhooks.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return array
 	 */

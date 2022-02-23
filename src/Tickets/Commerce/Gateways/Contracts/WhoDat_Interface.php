@@ -5,7 +5,7 @@ namespace TEC\Tickets\Commerce\Gateways\Contracts;
 /**
  * WhoDat Interface
  *
- * @since   TBD
+ * @since   5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Contracts
  */
@@ -14,7 +14,7 @@ interface WhoDat_Interface {
 	/**
 	 * Send a GET request to WhoDat.
 	 *
-	 * @since TBD moved to Abstract_WhoDat.
+	 * @since 5.3.0 moved to Abstract_WhoDat.
 	 * @since 5.1.9
 	 *
 	 * @param string $endpoint
@@ -27,7 +27,7 @@ interface WhoDat_Interface {
 	/**
 	 * Get REST API endpoint URL for requests.
 	 *
-	 * @since TBD moved to Abstract_WhoDat.
+	 * @since 5.3.0 moved to Abstract_WhoDat.
 	 * @since 5.1.9
 	 *
 	 * @param string $endpoint   The endpoint path.
@@ -40,7 +40,7 @@ interface WhoDat_Interface {
 	/**
 	 * Log WhoDat errors.
 	 *
-	 * @since TBD    moved to Abstract_WhoDat and made public.
+	 * @since 5.3.0    moved to Abstract_WhoDat and made public.
 	 * @since 5.1.9
 	 *
 	 * @param string $type
@@ -52,7 +52,7 @@ interface WhoDat_Interface {
 	/**
 	 * Send a POST request to WhoDat.
 	 *
-	 * @since TBD    moved to Abstract_WhoDat.
+	 * @since 5.3.0    moved to Abstract_WhoDat.
 	 * @since 5.1.9
 	 *
 	 * @param string $endpoint

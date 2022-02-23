@@ -5,7 +5,7 @@ namespace TEC\Tickets\Commerce\Gateways\Stripe;
 /**
  * Class REST
  *
- * @since   TBD
+ * @since   5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe
  */
@@ -23,7 +23,7 @@ class REST extends \tad_DI52_ServiceProvider {
 	/**
 	 * Register the endpoints for handling webhooks.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 */
 	public function register_endpoints() {
 		$this->container->make( REST\Order_Endpoint::class )->register();

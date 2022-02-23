@@ -107,7 +107,7 @@ interface Status_Interface {
 	/**
 	 * Whether an order in this status can be transitioned away from it.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return bool
 	 */

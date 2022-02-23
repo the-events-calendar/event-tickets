@@ -108,7 +108,7 @@ class Settings {
 	/**
 	 * Stores the instance of the template engine that we will use for rendering differentelements.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var Tribe__Template
 	 */
@@ -127,7 +127,7 @@ class Settings {
 	/**
 	 * Gets the template instance used to setup the rendering html.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return Tribe__Template
 	 */
@@ -145,7 +145,7 @@ class Settings {
 	/**
 	 * Determine whether Tickets Commerce is in test mode.
 	 *
-	 * @since TBD    moved to Settings class
+	 * @since 5.3.0    moved to Settings class
 	 * @since 5.1.6
 	 *
 	 * @return bool Whether Tickets Commerce is in test mode.
@@ -409,7 +409,7 @@ class Settings {
 	/**
 	 * Returns the content for the main featured settings which displays the list of gateways.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return string
 	 */
@@ -477,7 +477,7 @@ class Settings {
 	/**
 	 * Is a valid license of Event Tickets Plus available?
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param bool $revalidate whether to submit a new validation API request
 	 *

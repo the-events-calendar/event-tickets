@@ -14,7 +14,7 @@ use WP_REST_Response;
 /**
  * Class Handler
  *
- * @since   TBD
+ * @since   5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe\Webhooks
  */
@@ -25,7 +25,7 @@ class Handler {
 	 *
 	 * These will be directly sent to the Rest API.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param WP_REST_Request  $request
 	 * @param WP_REST_Response $response
@@ -91,7 +91,7 @@ class Handler {
 	/**
 	 * Get the class and method to call to handle this event.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param string $type The event type from Stripe.
 	 *
@@ -118,7 +118,7 @@ class Handler {
 	/**
 	 * Generic handler to update order statuses to a defined Status.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param \WP_Post                         $order    The order to update.
 	 * @param Commerce_Status\Status_Interface $status   The new status to use.

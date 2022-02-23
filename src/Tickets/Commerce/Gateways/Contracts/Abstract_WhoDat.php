@@ -7,7 +7,7 @@ use Tribe__Utils__Array as Arr;
 /**
  * Abstract class to handle WhoDat connections
  *
- * @since   TBD
+ * @since   5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
@@ -16,7 +16,7 @@ abstract class Abstract_WhoDat implements WhoDat_Interface {
 	/**
 	 * Public WhoDat URL, used to authenticate accounts with gateway payment providers
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -25,7 +25,7 @@ abstract class Abstract_WhoDat implements WhoDat_Interface {
 	/**
 	 * Returns the gateway-specific endpoint to use
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return string
 	 */
@@ -36,7 +36,7 @@ abstract class Abstract_WhoDat implements WhoDat_Interface {
 	/**
 	 * Returns the WhoDat URL to use.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return string
 	 */

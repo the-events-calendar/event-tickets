@@ -301,7 +301,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Prepares an array of cart items ready to go into an Order.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param Cart $cart The cart instance to get items from.
 	 *
@@ -548,7 +548,7 @@ class Order extends Abstract_Order {
 	/**
 	 * Get the order associated with a given gateway order id.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param string $gateway_order_id The gateway order id.
 	 *

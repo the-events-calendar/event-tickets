@@ -5,7 +5,7 @@ namespace TEC\Tickets\Commerce\Gateways\Contracts;
 /**
  * Abstract REST Endpoint Contract
  *
- * @since   TBD
+ * @since   5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Contracts
  */
@@ -14,7 +14,7 @@ abstract class Abstract_REST_Endpoint implements REST_Endpoint_Interface, \Tribe
 	/**
 	 * The REST API endpoint path.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -39,7 +39,7 @@ abstract class Abstract_REST_Endpoint implements REST_Endpoint_Interface, \Tribe
 	/**
 	 * Gets the Return URL pointing to this on boarding route.
 	 *
-	 * @since TBD moved to Abstract_REST_Endpoint
+	 * @since 5.3.0 moved to Abstract_REST_Endpoint
 	 * @since 5.1.9
 	 *
 	 * @return string
@@ -55,7 +55,7 @@ abstract class Abstract_REST_Endpoint implements REST_Endpoint_Interface, \Tribe
 	/**
 	 * Sanitize a request argument based on details registered to the route.
 	 *
-	 * @since TBD moved to Abstract_REST_Endpoint
+	 * @since 5.3.0 moved to Abstract_REST_Endpoint
 	 * @since 5.1.9
 	 *
 	 * @param mixed $value Value of the 'filter' argument.
@@ -75,7 +75,7 @@ abstract class Abstract_REST_Endpoint implements REST_Endpoint_Interface, \Tribe
 	 *
 	 * @TODO  We need to make sure Swagger documentation is present.
 	 *
-	 * @since TBD moved to Abstract_REST_Endpoint
+	 * @since 5.3.0 moved to Abstract_REST_Endpoint
 	 * @since 5.1.9
 	 *
 	 * @return array

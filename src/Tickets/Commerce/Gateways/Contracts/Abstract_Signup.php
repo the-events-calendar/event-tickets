@@ -5,7 +5,7 @@ namespace TEC\Tickets\Commerce\Gateways\Contracts;
 /**
  * Abstract Signup Contract
  *
- * @since   TBD
+ * @since   5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Contracts
  */
@@ -14,7 +14,7 @@ abstract class Abstract_Signup implements Signup_Interface {
 	/**
 	 * Holds the transient key used to store hash passed to PayPal.
 	 *
-	 * @since TBD moved to Abstract_Signup
+	 * @since 5.3.0 moved to Abstract_Signup
 	 * @since 5.1.9
 	 *
 	 * @var string
@@ -24,7 +24,7 @@ abstract class Abstract_Signup implements Signup_Interface {
 	/**
 	 * Holds the transient key used to link PayPal to this site.
 	 *
-	 * @since TBD moved to Abstract_Signup
+	 * @since 5.3.0 moved to Abstract_Signup
 	 * @since 5.1.9
 	 *
 	 * @var string
@@ -35,7 +35,7 @@ abstract class Abstract_Signup implements Signup_Interface {
 	 * Must be implemented in each Signup class, represents the folder from which to load the
 	 * templates.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -44,7 +44,7 @@ abstract class Abstract_Signup implements Signup_Interface {
 	/**
 	 * Stores the instance of the template engine that we will use for rendering the page.
 	 *
-	 * @since TBD moved to Abstract_Signup
+	 * @since 5.3.0 moved to Abstract_Signup
 	 * @since 5.1.9
 	 *
 	 * @var \Tribe__Template

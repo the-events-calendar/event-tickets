@@ -9,7 +9,7 @@ use TEC\Tickets\Commerce\Gateways\Contracts\Webhook_Event_Interface;
 /**
  * Webhook for Charge operations.
  *
- * @since   TBD
+ * @since   5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe\Webhooks
  */
@@ -43,7 +43,7 @@ class Charge_Webhook implements Webhook_Event_Interface {
 	/**
 	 * Get the charge object array from the webhook event data.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param array $event Event data coming from the Webhook.
 	 *

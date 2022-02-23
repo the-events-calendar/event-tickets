@@ -8,7 +8,7 @@ use TEC\Tickets\Commerce\Gateways\Stripe\REST\Webhook_Endpoint;
 /**
  * Class Payment Intent Handler
  *
- * @since   TBD
+ * @since   5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe
  */
@@ -17,7 +17,7 @@ class Payment_Intent_Handler {
 	/**
 	 * Base string to use when composing payment intent transient names.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -26,7 +26,7 @@ class Payment_Intent_Handler {
 	/**
 	 * Transient name to store payment intents.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -35,7 +35,7 @@ class Payment_Intent_Handler {
 	/**
 	 * Counter for how many times we've re-tried creating a PaymentIntent.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var int
 	 */
@@ -44,7 +44,7 @@ class Payment_Intent_Handler {
 	/**
 	 * Max number of retries to create a PaymentIntent.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var int
 	 */
@@ -69,7 +69,7 @@ class Payment_Intent_Handler {
 	 * Calls the Stripe API and returns a new PaymentIntent object, used to authenticate
 	 * front-end payment requests.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param string $currency 3-letter ISO code for the desired currency. Not all currencies are supported.
 	 * @param int    $value    The payment value in the smallest currency unit (e.g: cents, if the purchase is in USD).
@@ -99,7 +99,7 @@ class Payment_Intent_Handler {
 	/**
 	 * Updates an existing payment intent to add any necessary data before confirming the purchase.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param array    $data  The purchase data received from the front-end.
 	 * @param \WP_Post $order The order object.
@@ -136,7 +136,7 @@ class Payment_Intent_Handler {
 	/**
 	 * Assembles basic data about the payment intent created at page-load to use in javascript.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return array
 	 */
@@ -161,7 +161,7 @@ class Payment_Intent_Handler {
 	/**
 	 * Compose the transient name used for payment intent transients.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 */
 	public function set_payment_intent_transient_name() {
 		$this->payment_intent_transient_name = $this->payment_intent_transient_prefix . md5( tribe( Cart::class )->get_cart_hash() );
@@ -170,7 +170,7 @@ class Payment_Intent_Handler {
 	/**
 	 * Returns the transient name used for payment intent transients.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return string
 	 */
@@ -186,7 +186,7 @@ class Payment_Intent_Handler {
 	/**
 	 * Retrieve a stored payment intent referring to the current cart.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return array|false
 	 */
@@ -197,7 +197,7 @@ class Payment_Intent_Handler {
 	/**
 	 * Delete the payment intent transient.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return bool
 	 */
@@ -208,7 +208,7 @@ class Payment_Intent_Handler {
 	/**
 	 * Store a payment intent array in a transient.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param array $payment_intent Payment intent data from Stripe.
 	 */

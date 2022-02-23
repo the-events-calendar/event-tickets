@@ -9,7 +9,7 @@ use TEC\Tickets\Commerce\Gateways\Stripe\REST\Webhook_Endpoint;
 /**
  * Class WhoDat. Handles connection to Stripe when the platform keys are needed.
  *
- * @since   TBD
+ * @since   5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe
  */
@@ -18,7 +18,7 @@ class WhoDat extends Abstract_WhoDat {
 	/**
 	 * The API Path.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -27,7 +27,7 @@ class WhoDat extends Abstract_WhoDat {
 	/**
 	 * Creates a new account link for the client and redirects the user to setup the account details.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return string
 	 */
@@ -46,7 +46,7 @@ class WhoDat extends Abstract_WhoDat {
 	/**
 	 * De-authorize the current seller account in Stripe oAuth.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return string
 	 */
@@ -65,7 +65,7 @@ class WhoDat extends Abstract_WhoDat {
 	/**
 	 * Register a newly connected stripe account to the website.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param array $account_data array of data returned from stripe after a successful connection.
 	 */
@@ -82,7 +82,7 @@ class WhoDat extends Abstract_WhoDat {
 	/**
 	 * Requests WhoDat to refresh the oAuth tokens.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return string
 	 */
