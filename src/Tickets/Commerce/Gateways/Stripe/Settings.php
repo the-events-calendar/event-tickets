@@ -189,8 +189,8 @@ class Settings extends Abstract_Settings {
 	public function get_settings() {
 		$currency_code = Currency::get_currency_code();
 		$currency_name = Currency::get_currency_name( $currency_code );
-		$plus_link     = sprintf(
-			'<a href="https://evnt.is/19zl" target="_blank" rel="noopener noreferrer">%s</a>',
+		$plus_link_faq = sprintf(
+			'<a href="https://theeventscalendar.com/products/wordpress-event-tickets/#faqs" target="_blank" rel="noopener noreferrer">%s</a>',
 			esc_html__( 'Learn more', 'event-tickets' )
 		);
 
@@ -214,7 +214,7 @@ class Settings extends Abstract_Settings {
 		$stripe_message = sprintf(
 		// Translators: %1$s: The Event Tickets Plus link.
 			esc_html__( 'You are using the free Stripe payment gateway integration. This includes an additional 2%% fee for processing ticket sales. This fee is removed if you have an active subscription to Event Tickets Plus. %1$s.', 'event-tickets' ),
-			$plus_link
+			$plus_link_faq
 		);
 		$main_settings  = [
 			'tickets-commerce-stripe-commerce-description' => [
