@@ -3,7 +3,7 @@
 Contributors: theeventscalendar, brianjessee, camwynsp, paulkim, aguseo, bordoni, borkweb, GeoffBel, geoffgraham, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra
 Tags: tickets, registration, The Events Calendar, RSVP, ticket sales, attendee management
 Requires at least: 5.6
-Tested up to: 5.9.0
+Tested up to: 5.9.1
 Stable tag: 5.3.0
 Requires PHP: 7.1
 License: GPLv2 or later
@@ -179,9 +179,11 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.3.0] TBD =
+= [5.3.0] 2022-02-24 =
 
-* Feature - Collect puchaser name and email for anonymous purchases using Tickets Commerce. [ET-1378]
+* Feature - Introduction of Stripe for Tickets Commerce. [ET-1342]
+* Feature - Collect purchaser name and email for anonymous purchases using Tickets Commerce. [ET-1378]
+* Feature - Introduce automatic handling of zero-decimal currencies in Tickets Commerce [ET-1414][ET-1420]
 * Fix - Remove anonymous purchase notice for Tickets Commerce after ET-1378 was implemented. [ET-1379]
 
 = [5.2.4.1] 2022-02-17 =
@@ -211,64 +213,5 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Added the post_type to the attendee page on Posts/Pages so that additional logic would function correctly. [ET-1319]
 * Fix - Fixed toggling of shared capacity data for tickets. [ETP-497]
 * Language - 7 new strings added, 99 updated, 0 fuzzied, and 0 obsoleted
-
-= [5.2.2] 2021-12-15 =
-
-* Feature - Included Price, Currency and Value classes to improve monetary handling for Tickets Commerce [ET-1331]
-* Enhancement - Allow for filtering of tickets within the RSVP template block handler. [ETP-763]
-* Fix - Remove use of `wp_cache_flush()` and use conditional when using an external object cache. (props to @r-a-y for this change!) [ET-1343]
-* Fix - Fixes error being caused by an endless loop when currency settings are saved. [ET-1344]
-* Fix - Fixed an issue where shared capacity on the ticket block page wasn't calculated correctly. [ET-1291]
-* Fix - Fixed the `Add Attendee` modal from generating a 500 error when two or more tickets have been enabled for an event. [ETP-764]
-* Language - 0 new strings added, 50 updated, 0 fuzzied, and 0 obsoleted
-
-= [5.2.1] 2021-11-17 =
-
-* Enhancement - Auto generate checkout page when enabling Tickets Commerce. [ET-1232]
-* Enhancement - Auto generate order success page when enabling Tickets Commerce. [ET-1233]
-* Enhancement - Added filter `tribe_tickets_manual_attendee_allow_email_resend` to allow customization of email resending via Manual Attendees depending on status. [ETP-703]
-* Enhancement - Add `getPrice` method to utilities JS object to centralize the way we get ticket prices. [ET-1238]
-* Enhancement - Add a modal with more information about the PayPal connection after connecting with PayPal via Tickets Commerce. [ET-1321]
-* Fix - Fixes error being caused when trying to load attendee information. [ET-1320]
-* Fix - Added `allow_resending_email` method which can be used to enable or disable resending email. [ETP-703]
-* Fix - Fixed ticket total formatting within the attendee registration modal when using custom thousands and decimal separators. [ET-1216]
-* Fix - QR Code API generation settings not working if `The Events Calendar` plugin was not active. [ETP-754]
-* Fix - Fixed the event cost formatting issues showing the wrong currency symbol, symbol location and separators. [ET-1251]
-* Fix - Disable "Connect to PayPal" button while a new URL is not available, after changing countries. [ET-1318]
-* Fix - Searching Ticket Holder Email / Ticket Holder Name through the Attendee page now functions as expected. [ET-1171]\
-* Fix - Working with PayPal accounts in currencies other than USD now works as expected. [ET-1330]
-* Language - 17 new strings added, 41 updated, 0 fuzzied, and 0 obsoleted
-
-= [5.2.0.1] 2021-11-10 =
-
-* Fix - Ensures that Tickets Commerce attendees get archived properly when an order is canceled or not completed. [ET-1322]
-
-= [5.2.0] 2021-11-04 =
-
-* Feature - Introduction of Tickets Commerce, the new and improved solution you can set up to sell tickets with Event Tickets.
-* Language - 840 new strings added, 432 updated, 26 fuzzied, and 16 obsoleted
-
-= [5.1.10] 2021-09-27 =
-
-* Enhancement - When editing an RSVP or ticket in the block editor, allow title to wrap to multiple lines. [ET-1089]
-* Enhancement - Ensure that text for the RSVP going/not going dropdown on front end isn't cut off and arrows aren't hidden. [ET-1169]
-* Tweak - Added a new filter `tribe_tickets_get_provider_query_slug` to allow customization of the provider URL variable name. [ET-543]
-* Tweak - Changed the `provider` URL variable name to `tickets_provider`. The filter `tribe_tickets_get_provider_query_slug` allows for customization. [ET-543]
-* Fix - Fixed ticket total formatting when using custom thousands and decimal separators. [ET-1197]
-* Fix - Show warning while creating new tickets with `0` price for TribeCommerce. [ET-1201]
-* Fix - Prevent text overlapping description in the ticket AR modal. [ET-1179]
-* Fix - Removed the ability to resend tickets from the Attendees page to Attendees who cancelled or refunded their ticket. [ETP-703]
-* Language - 26 new strings added, 116 updated, 2 fuzzied, and 35 obsoleted
-
-= [5.1.9.1] 2021-09-08 =
-
-* Fix - Fixed conflict with WooCommerce Payments plugin showing error on Ticket Form. [ET-1174]
-
-= [5.1.9] 2021-08-31 =
-
-* Fix - Fixed cart calculation inconsistency with WooCommerce when the "Number of decimals" setting was set to `0`. [ETP-324]
-* Fix - Removed RSVP V2 preview templates and functionality. [ET-1162]
-* Fix - Updated deprecated hook `block_categories` to use `block_categories_all`. [ET-1156]
-* Language - 37 new strings added, 162 updated, 6 fuzzied, and 20 obsoleted
 
 [See changelog for all versions](https://raw.githubusercontent.com/the-events-calendar/event-tickets/master/changelog.txt)
