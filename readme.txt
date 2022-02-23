@@ -179,9 +179,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.3.0] TBD =
+= [5.3.0] 2022-02-24 =
 
-* Feature - Collect puchaser name and email for anonymous purchases using Tickets Commerce. [ET-1378]
+* Feature - Introduction of Stripe for Tickets Commerce. You can now sell tickets via Stripe, for free. [ET-1342]
+* Feature - Collect purchaser name and email for anonymous purchases using Tickets Commerce. [ET-1378]
 * Fix - Remove anonymous purchase notice for Tickets Commerce after ET-1378 was implemented. [ET-1379]
 
 = [5.2.4.1] 2022-02-17 =
