@@ -1,6 +1,6 @@
 === Event Tickets ===
 
-Contributors: theeventscalendar, brianjessee, camwynsp, paulkim, aguseo, bordoni, borkweb, GeoffBel, geoffgraham, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra
+Contributors: theeventscalendar, brianjessee, camwynsp, aguseo, bordoni, borkweb, GeoffBel, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra, moraleida.me
 Tags: tickets, registration, The Events Calendar, RSVP, ticket sales, attendee management
 Requires at least: 5.6
 Tested up to: 5.9.1
@@ -185,6 +185,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Feature - Collect purchaser name and email for anonymous purchases using Tickets Commerce. [ET-1378]
 * Feature - Introduce automatic handling of zero-decimal currencies in Tickets Commerce [ET-1414][ET-1420]
 * Fix - Remove anonymous purchase notice for Tickets Commerce after ET-1378 was implemented. [ET-1379]
+* Language - 102 new strings added, 164 updated, 0 fuzzied, and 3 obsoleted
 
 = [5.2.4.1] 2022-02-17 =
 
