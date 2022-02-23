@@ -5,7 +5,7 @@ namespace TEC\Tickets\Commerce\Gateways\Contracts;
 /**
  * Merchant Interface
  *
- * @since   TBD
+ * @since   5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Contracts
  */
@@ -14,7 +14,7 @@ interface Merchant_Interface {
 	/**
 	 * Gets the account key.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return string
 	 */
@@ -23,7 +23,7 @@ interface Merchant_Interface {
 	/**
 	 * Save merchant data.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return boolean
 	 */
@@ -32,7 +32,7 @@ interface Merchant_Interface {
 	/**
 	 * Transforms the Merchant data into an array.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return array
 	 */
@@ -41,7 +41,7 @@ interface Merchant_Interface {
 	/**
 	 * Creates this object from an array.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param array   $data
 	 * @param boolean $needs_save

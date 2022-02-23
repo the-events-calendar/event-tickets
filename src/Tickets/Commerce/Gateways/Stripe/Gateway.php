@@ -11,7 +11,7 @@ use Tribe__Utils__Array as Arr;
 /**
  * Class Gateway
  *
- * @since   TBD
+ * @since   5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe
  */
@@ -37,7 +37,7 @@ class Gateway extends Abstract_Gateway {
 	 *
 	 * This shouldn't be updated unless we are modifying something on the Stripe user level.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */

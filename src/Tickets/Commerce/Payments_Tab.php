@@ -42,7 +42,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	/**
 	 * Meta key for page creation flag.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -51,7 +51,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	/**
 	 * Key to determine current section.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -60,7 +60,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	/**
 	 * Key to use in GET variable for currently selected section.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -69,7 +69,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	/**
 	 * Key to use for section menu.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -78,7 +78,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	/**
 	 * Stores the instance of the template engine that we will use for rendering differentelements.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var Tribe__Template
 	 */
@@ -112,7 +112,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	/**
 	 * Gets the template instance used to setup the rendering html.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return Tribe__Template
 	 */
@@ -130,7 +130,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	/**
 	 * Gets the URL for the Payment Tab.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param array $args Which query args we are adding.
 	 *
@@ -147,7 +147,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	/**
 	 * Returns the settings item for the section menu at the top of the Payments settings tab.
 	 *
-	 * @since  TBD
+	 * @since  5.3.0
 	 *
 	 * @return array[]
 	 */
@@ -168,7 +168,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	/**
 	 * Gets an array of all the sections, based on the active Gateways.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return array[]
 	 */
@@ -199,7 +199,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 		/**
 		 * Filters the sections available on the Payment Tab.
 		 *
-		 * @since TBD
+		 * @since 5.3.0
 		 *
 		 * @param array[] $sections Current sections.
 		 */
@@ -209,7 +209,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	/**
 	 * Filters the redirect URL to include section, if applicable.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param string $url URL of redirection.
 	 *
@@ -255,7 +255,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	/**
 	 * Returns the settings item for the section menu at the top of the Payments settings tab.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return Gateway|null
 	 */
@@ -268,7 +268,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	/**
 	 * Gets the fields for the Tickets Commerce top level fields.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return array[]
 	 */
@@ -322,7 +322,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	/**
 	 * Get selected section top level menu.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param Gateway $section_gateway Gateway class.
 	 *
@@ -375,7 +375,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	/**
 	 * Gets the top level settings for Tickets Commerce.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return array[]
 	 */

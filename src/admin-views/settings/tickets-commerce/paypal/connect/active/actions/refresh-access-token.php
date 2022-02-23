@@ -2,11 +2,11 @@
 /**
  * The Template for displaying the Tickets Commerce refresh access token action button.
  *
- * @version TBD
+ * @version 5.3.0
  *
  * @since 5.2.0
- * @since TBD Added section param to URL.
- * @since TBD Using generic CSS classes for gateway instead of PayPal.
+ * @since 5.3.0 Added section param to URL.
+ * @since 5.3.0 Using generic CSS classes for gateway instead of PayPal.
  *
  * @var Tribe__Tickets__Admin__Views                  $this               [Global] Template object.
  * @var string                                        $plugin_url         [Global] The plugin URL.

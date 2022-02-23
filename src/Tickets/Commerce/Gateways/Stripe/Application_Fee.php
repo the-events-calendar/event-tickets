@@ -15,7 +15,7 @@ class Application_Fee {
 	/**
 	 * The percentage applied to Stripe transactions. Currently set at 2%.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var float
 	 */
@@ -24,7 +24,7 @@ class Application_Fee {
 	/**
 	 * Calculate the fee value that needs to be applied to the PaymentIntent.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param Value $value the value over which to calculate the fee.
 	 *
@@ -43,7 +43,7 @@ class Application_Fee {
 	/**
 	 * Returns the application fee percentage value.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return float
 	 */

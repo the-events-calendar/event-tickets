@@ -17,7 +17,7 @@ class WhoDat extends Abstract_WhoDat {
 	/**
 	 * The API Path.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */

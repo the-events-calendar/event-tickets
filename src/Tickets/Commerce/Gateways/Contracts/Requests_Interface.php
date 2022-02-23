@@ -5,7 +5,7 @@ namespace TEC\Tickets\Commerce\Gateways\Contracts;
 /**
  * Requests Interface for gateways.
  *
- * @since TBD
+ * @since 5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Contracts;
  */
@@ -14,7 +14,7 @@ interface Requests_Interface {
 	/**
 	 * Send a GET request to the Stripe API.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param string $endpoint
 	 * @param array  $query_args
@@ -28,7 +28,7 @@ interface Requests_Interface {
 	/**
 	 * Send a POST request.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param string $endpoint
 	 * @param array  $query_args
@@ -42,7 +42,7 @@ interface Requests_Interface {
 	/**
 	 * Send a PATCH request to the Stripe API.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param string $endpoint
 	 * @param array  $query_args
@@ -56,7 +56,7 @@ interface Requests_Interface {
 	/**
 	 * Send a DELETE request to the Stripe API.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param string $endpoint
 	 * @param array  $query_args
@@ -70,7 +70,7 @@ interface Requests_Interface {
 	/**
 	 * Send a given method request to a given URL in the Stripe API.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param string $method
 	 * @param string $url
@@ -87,7 +87,7 @@ interface Requests_Interface {
 	 * Process Request responses to catch any error code and transform in a WP_Error.
 	 * Returns the request array if no errors are found. Or a WP_Error object.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param array|\WP_Error $response Array of server data.
 	 *
@@ -98,7 +98,7 @@ interface Requests_Interface {
 	/**
 	 * Format user-facing errors to the list structure expected in the checkout script.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param \WP_Error $errors WP_Error instance.
 	 *
@@ -109,7 +109,7 @@ interface Requests_Interface {
 	/**
 	 * Get REST API endpoint URL for requests.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param string $endpoint   The endpoint path.
 	 * @param array  $query_args Query args appended to the URL.

@@ -12,7 +12,7 @@ interface Webhook_Event_Interface {
 	/**
 	 * Generic handler for webhook events.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param array             $event
 	 * @param Status_Interface  $new_status

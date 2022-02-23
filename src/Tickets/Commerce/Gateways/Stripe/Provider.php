@@ -9,7 +9,7 @@ use TEC\Tickets\Commerce\Gateways\Stripe\Webhooks\Payment_Intent_Webhook;
 /**
  * Class Provider
  *
- * @since TBD
+ * @since 5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe
  */
@@ -42,7 +42,7 @@ class Provider extends \tad_DI52_ServiceProvider {
 	/**
 	 * Registers the provider handling all the 1st level filters and actions for this Service Provider.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 */
 	protected function register_hooks() {
 		$hooks = new Hooks( $this->container );
@@ -55,7 +55,7 @@ class Provider extends \tad_DI52_ServiceProvider {
 	/**
 	 * Registers the provider handling all the 1st level filters and actions for this Service Provider
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 */
 	protected function register_assets() {
 		$assets = new Assets( $this->container );

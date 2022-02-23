@@ -10,7 +10,7 @@ use TEC\Tickets\Commerce\Utils\Value;
 /**
  * Stripe orders aka Payment Intents class.
  *
- * @since TBD
+ * @since 5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe
  */
@@ -19,7 +19,7 @@ class Payment_Intent {
 	/**
 	 * The minimum amount to charge for the current currency is multiplied by this value to produce the test creation amount.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var float
 	 */
@@ -28,7 +28,7 @@ class Payment_Intent {
 	/**
 	 * The key used to identify payment intents created to validate configurations.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -40,7 +40,7 @@ class Payment_Intent {
 	 * If the payment intent succeeds it is cancelled. If it fails we display a notice to the user and not apply their
 	 * settings.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param array $payment_methods a list of payment_methods to allow in the Payment Intent.
 	 *
@@ -91,7 +91,7 @@ class Payment_Intent {
 	 * Calls the Stripe API and returns a new PaymentIntent object, used to authenticate
 	 * front-end payment requests.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param Value $value The value object to create a payment intent for.
 	 * @param bool  $retry Is this a retry?
@@ -127,7 +127,7 @@ class Payment_Intent {
 	/**
 	 * Creates a Payment Intent from cart.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param Cart $cart
 	 * @param bool $retry
@@ -149,7 +149,7 @@ class Payment_Intent {
 	/**
 	 * Calls the Stripe API and returns an existing Payment Intent.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param string $payment_intent_id Payment Intent ID.
 	 *
@@ -171,7 +171,7 @@ class Payment_Intent {
 	/**
 	 * Updates an existing payment intent to add any necessary data before confirming the purchase.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param array $data The purchase data received from the front-end.
 	 *
@@ -191,7 +191,7 @@ class Payment_Intent {
 	/**
 	 * Issue an API request to cancel a Payment Intent.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param string $payment_intent_id the payment intent to cancel.
 	 */
@@ -210,7 +210,7 @@ class Payment_Intent {
 	/**
 	 * Compile errors caught when creating a Payment Intent into a proper html notice for the admin.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param array $errors List of errors returned from Stripe.
 	 *
@@ -237,7 +237,7 @@ class Payment_Intent {
 	/**
 	 * Calculates the minimum charge amount allowed for the current currency
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return int|float|null returns an int or float with the minimum value allowed, null if Stripe does not support
 	 *                        the currency.
@@ -252,7 +252,7 @@ class Payment_Intent {
 	/**
 	 * Intercept saving settings to check if any new payment methods would break Stripe payment intents.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param mixed  $value    The new value.
 	 * @param string $field_id The field id in the options.

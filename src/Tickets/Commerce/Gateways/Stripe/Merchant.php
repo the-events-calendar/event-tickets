@@ -8,7 +8,7 @@ use Tribe__Utils__Array as Arr;
 /**
  * Class Merchant
  *
- * @since   TBD
+ * @since   5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe
  */
@@ -26,7 +26,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Option key to save the information regarding merchant status.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -35,7 +35,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Option key to save the information regarding merchant authorization.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -44,7 +44,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Option key to save the information regarding merchant default currency.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -53,7 +53,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Determines if Merchant is active. For Stripe this is the same as being connected.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return bool
 	 */
@@ -64,7 +64,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Determines if the Merchant is connected.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return bool
 	 */
@@ -92,7 +92,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Returns the options key for the account in the merchant mode.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return string
 	 */
@@ -107,7 +107,7 @@ class Merchant extends Abstract_Merchant {
 	 *
 	 * Uses normal WP options to be saved, instead of the normal tribe_update_option.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return string
 	 */
@@ -120,7 +120,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Returns the stripe client secret stored for server-side transactions.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return string
 	 */
@@ -137,7 +137,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Fetch the Publishable key for the user.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return string
 	 */
@@ -154,7 +154,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Returns the stripe client id stored for server-side transactions.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return string
 	 */
@@ -171,7 +171,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Return array of merchant details.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return array
 	 */
@@ -186,7 +186,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Saves signup data from the redirect into permanent option.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param array $signup_data
 	 *
@@ -203,7 +203,7 @@ class Merchant extends Abstract_Merchant {
 	 * Returns the list of enabled payment method types for the Payment Element, or the Card type
 	 * for the Card Element.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return string[]
 	 */
@@ -219,7 +219,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Query the Stripe API to gather information about the current connected account.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param array $client_data Connection data from the database.
 	 *
@@ -286,7 +286,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Empty the signup data option and void the connection.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return bool
 	 */
@@ -297,7 +297,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Validate if this Merchant is allowed to connect to the TEC Provider.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return string 'valid' if the account is permitted, or a string with the notice slug if not.
 	 */
@@ -324,7 +324,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Determine if a stripe account is listed in an unauthorized country.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param array $status The connection status array.
 	 *
@@ -339,7 +339,7 @@ class Merchant extends Abstract_Merchant {
 	 *
 	 * Unauthorized accounts are accounts that cannot be authorized to connect, usually due to regulatory reasons.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return bool
 	 */
@@ -350,7 +350,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Set merchant as unauthorized.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param string $validation_key Refusal reason, must be the same as the notice slug for the corresponding error.
 	 */
@@ -362,7 +362,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Unset merchant as unauthorized.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 */
 	public function unset_merchant_unauthorized() {
 		delete_option( static::$merchant_unauthorized_option_key );
@@ -374,7 +374,7 @@ class Merchant extends Abstract_Merchant {
 	 * De-authorized accounts are accounts that were previously connected and whose connection has been revoked in the
 	 * Stripe Dashboard. These accounts can be re-connected with the proper credentials.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return bool
 	 */
@@ -385,7 +385,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Set merchant as de-authorized.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param string $validation_key De-authorization reason, must be the same as the notice slug for the corresponding error.
 	 */
@@ -397,7 +397,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Unset merchant as de-authorized.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 */
 	public function unset_merchant_deauthorized() {
 		delete_option( static::$merchant_deauthorized_option_key );
@@ -406,7 +406,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Get the merchant default currency.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return string
 	 */
@@ -417,7 +417,7 @@ class Merchant extends Abstract_Merchant {
 	/**
 	 * Updates an existing merchant account.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param array $data Array of data to be passed directly to the body of the update request.
 	 *

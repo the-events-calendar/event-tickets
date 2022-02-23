@@ -11,7 +11,7 @@ use TEC\Tickets\Commerce\Status\Status_Interface;
 /**
  * Webhook for Payment_Intent operations
  *
- * @since   TBD
+ * @since   5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe\Webhooks
  */
@@ -73,7 +73,7 @@ class Payment_Intent_Webhook implements Webhook_Event_Interface {
 	/**
 	 * Get the payment intent id from the webhook event data.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param array $event Event data coming from the Webhook.
 	 *
@@ -88,7 +88,7 @@ class Payment_Intent_Webhook implements Webhook_Event_Interface {
 	/**
 	 * Get the payment intent object array from the webhook event data.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param array $event Event data coming from the Webhook.
 	 *
@@ -101,7 +101,7 @@ class Payment_Intent_Webhook implements Webhook_Event_Interface {
 	/**
 	 * Checks if the payment intent contained in the event received has already been processed.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param array   $payment_intent_received The payment intent data received
 	 * @param array[] $payment_intents_stored  The payment intent data stored from each update, keyed by status.

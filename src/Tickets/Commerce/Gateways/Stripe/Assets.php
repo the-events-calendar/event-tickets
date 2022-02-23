@@ -9,7 +9,7 @@ use TEC\Tickets\Commerce\Payments_Tab;
 /**
  * Class Assets.
  *
- * @since   TBD
+ * @since   5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe
  */
@@ -18,7 +18,7 @@ class Assets extends \tad_DI52_ServiceProvider {
 	/**
 	 * The nonce action to use when requesting the creation of a new order
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -164,7 +164,7 @@ class Assets extends \tad_DI52_ServiceProvider {
 	/**
 	 * Determines if we are currently on the stripe section of the settings.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return bool
 	 */
@@ -175,7 +175,7 @@ class Assets extends \tad_DI52_ServiceProvider {
 	/**
 	 * Define if the assets for `Stripe` should be enqueued or not.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return bool If the `Stripe` assets should be enqueued or not.
 	 */

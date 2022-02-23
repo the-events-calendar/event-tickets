@@ -2,9 +2,9 @@
 /**
  * The Template for displaying the Tickets Commerce Stripe help links (troubleshooting).
  *
- * @since   TBD
+ * @since   5.3.0
  *
- * @version TBD
+ * @version 5.3.0
  *
  * @var string                                        $plugin_url      [Global] The plugin URL.
  * @var TEC\Tickets\Commerce\Gateways\Stripe\Signup   $signup          [Global] The Signup class.
@@ -16,7 +16,7 @@
 	<?php $this->template( 'components/icons/lightbulb' ); ?>
 	<!-- @todo: We need to update this link. -->
 	<a
-		href="https://evnt.is/1axw" 
+		href="https://evnt.is/1axw"
 		target="_blank"
 		rel="noopener noreferrer"
 		class="tec-tickets__admin-settings-tickets-commerce-gateway-help-link-url"

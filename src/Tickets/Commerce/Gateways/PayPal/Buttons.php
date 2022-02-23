@@ -47,13 +47,13 @@ class Buttons {
 	/**
 	 * Returns the variables for gateway's checkout template.
 	 *
-	 * @since TBD
-	 * 
+	 * @since 5.3.0
+	 *
 	 * @return []
 	 */
 	public function get_checkout_template_vars() {
 		$client        = tribe( Client::class );
-		
+
 		$template_vars = [
 			'url'            => $client->get_js_sdk_url(),
 			'attribution_id' => Gateway::ATTRIBUTION_ID,
@@ -66,11 +66,11 @@ class Buttons {
 			$template_vars['client_token'] = $client_token;
 			$template_vars['client_token_expires_in'] = $client_token_expires_in - 60;
 		}
-		
+
 		$merchant = tribe( Merchant::class );
 		$template_vars['supports_custom_payments'] = $merchant->get_supports_custom_payments();
 		$template_vars['active_custom_payments']   = $merchant->get_active_custom_payments();
-		
+
 		return $template_vars;
 	}
 }

@@ -2,9 +2,9 @@
 /**
  * The Template for displaying the Tickets Commerce Stripe Modal after a successful connection.
  *
- * @version TBD
+ * @version 5.3.0
  *
- * @since   TBD
+ * @since   5.3.0
  */
 
 $request_vars = tribe_get_request_vars();

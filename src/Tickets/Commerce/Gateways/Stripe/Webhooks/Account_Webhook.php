@@ -13,7 +13,7 @@ use WP_REST_Response;
 /**
  * Webhook for Account operations
  *
- * @since TBD
+ * @since 5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe\Webhooks
  */
@@ -22,7 +22,7 @@ class Account_Webhook implements Webhook_Event_Interface {
 	/**
 	 * Handler for Stripe webhook events in the payment_intent family.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param array            $event
 	 * @param Status_Interface $new_status
@@ -39,7 +39,7 @@ class Account_Webhook implements Webhook_Event_Interface {
 	 *
 	 * These will be directly sent to the Rest API.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param WP_REST_Request  $request
 	 * @param WP_REST_Response $response
@@ -55,7 +55,7 @@ class Account_Webhook implements Webhook_Event_Interface {
 	 *
 	 * These will be directly sent to the Rest API.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param WP_REST_Request  $request
 	 * @param WP_REST_Response $response

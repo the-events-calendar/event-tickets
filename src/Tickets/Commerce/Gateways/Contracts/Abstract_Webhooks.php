@@ -7,7 +7,7 @@ use Tribe__Utils__Array as Arr;
 /**
  * Class Abstract_Webhooks.
  *
- * @since   TBD
+ * @since   5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Contracts
  */
@@ -16,7 +16,7 @@ abstract class Abstract_Webhooks {
 	/**
 	 * Gets the gateway for this webhook.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return Abstract_Gateway
 	 */
@@ -25,7 +25,7 @@ abstract class Abstract_Webhooks {
 	/**
 	 * Gets the merchant for this webhook.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return Abstract_Merchant
 	 */
@@ -34,7 +34,7 @@ abstract class Abstract_Webhooks {
 	/**
 	 * Returns the options key for webhook settings in the merchant mode.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return string
 	 */
@@ -49,7 +49,7 @@ abstract class Abstract_Webhooks {
 	/**
 	 * Retrieves the settings for the webhooks from the database.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param array|string $key       Specify each nested index in order.
 	 *                                Example: array( 'lvl1', 'lvl2' );
@@ -66,7 +66,7 @@ abstract class Abstract_Webhooks {
 	/**
 	 * Saves the webhook settings in the database.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param array $settings []
 	 *
@@ -79,7 +79,7 @@ abstract class Abstract_Webhooks {
 	/**
 	 * Retrieves the settings for the webhooks from the database.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return array|null
 	 */
@@ -97,7 +97,7 @@ abstract class Abstract_Webhooks {
 	/**
 	 * Deletes the stored webhook settings.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return bool
 	 */

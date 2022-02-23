@@ -2,7 +2,7 @@
 /**
  * Help link for featured settings box.
  *
- * @since TBD
+ * @since 5.3.0
  *
  * @var Tribe__Template $this  Template object.
  * @var array           $link  Array of link arguments.

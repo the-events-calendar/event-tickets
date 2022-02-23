@@ -23,7 +23,7 @@ use WP_REST_Server;
 /**
  * Class Order Endpoint.
  *
- * @since   TBD
+ * @since   5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe\REST
  */
@@ -32,7 +32,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * The REST API endpoint path.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -41,7 +41,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Register the actual endpoint on WP Rest API.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 */
 	public function register() {
 		$namespace     = tribe( 'tickets.rest-v1.main' )->get_events_route_namespace();
@@ -86,7 +86,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Arguments used for the endpoint.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return array
 	 */
@@ -97,7 +97,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Handles the request that creates an order with Tickets Commerce and the Stripe gateway.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -150,7 +150,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Arguments used for the updating order endpoint.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return array
 	 */
@@ -188,7 +188,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Handles the request that creates an order with Tickets Commerce and the Stripe gateway.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -259,7 +259,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Arguments used for the fail order endpoint.e
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return array
 	 */
@@ -310,7 +310,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Handles the request that creates an order with Tickets Commerce and the Stripe gateway.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -323,7 +323,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Returns an array of error messages that are used by the API responses.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return array $messages Array of error messages.
 	 */
@@ -337,7 +337,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		/**
 		 * Filter the error messages for Stripe checkout.
 		 *
-		 * @since TBD
+		 * @since 5.3.0
 		 *
 		 * @param array $messages Array of error messages.
 		 */

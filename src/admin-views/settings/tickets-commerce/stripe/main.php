@@ -2,11 +2,11 @@
 /**
  * The Template for displaying the Tickets Commerce Stripe Settings.
  *
- * @since   TBD
+ * @since   5.3.0
  *
  * @todo FrontEnd needs to revisit all of these templates to make sure we're not missing anything
  *
- * @version TBD
+ * @version 5.3.0
  *
  * @var string                                        $plugin_url      [Global] The plugin URL.
  * @var TEC\Tickets\Commerce\Gateways\Stripe\Signup   $signup          [Global] The Signup class.

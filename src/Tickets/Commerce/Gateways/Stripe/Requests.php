@@ -7,7 +7,7 @@ use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Requests;
 /**
  * Stripe Requests.
  *
- * @since TBD
+ * @since 5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe;
  */
@@ -16,7 +16,7 @@ class Requests extends Abstract_Requests {
 	/**
 	 * The Merchant class reference to use.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -25,7 +25,7 @@ class Requests extends Abstract_Requests {
 	/**
 	 * The Gateway class reference to use.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -34,7 +34,7 @@ class Requests extends Abstract_Requests {
 	/**
 	 * The Stripe API base URL.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -53,7 +53,7 @@ class Requests extends Abstract_Requests {
 	/**
 	 * Get environment base URL.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return string
 	 */

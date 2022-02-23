@@ -7,7 +7,7 @@ use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Signup;
 /**
  * Class Signup.
  *
- * @since   TBD
+ * @since   5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe
  */
@@ -21,7 +21,7 @@ class Signup extends Abstract_Signup {
 	/**
 	 * The return path the user will be redirected to after signing up or disconnecting.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -35,7 +35,7 @@ class Signup extends Abstract_Signup {
 	/**
 	 * Generates a stripe connection URL from WhoDat.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return string
 	 */
@@ -53,7 +53,7 @@ class Signup extends Abstract_Signup {
 	/**
 	 * Generates a stripe disconnection URL from WhoDat
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return string
 	 */
@@ -82,7 +82,7 @@ class Signup extends Abstract_Signup {
 	/**
 	 * Get a unique tracking ID to identify this client on stripe.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return string
 	 */
@@ -93,7 +93,7 @@ class Signup extends Abstract_Signup {
 	/**
 	 * Determines if the signup was successful.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param array $data
 	 *

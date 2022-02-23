@@ -10,9 +10,9 @@
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
  * @since   5.1.10
- * @since   TBD Improve check for active gateways now that we can enable or disable gateways.
+ * @since   5.3.0 Improve check for active gateways now that we can enable or disable gateways.
  *
- * @version TBD
+ * @version 5.3.0
  *
  * @var \Tribe__Template $this               [Global] Template object.
  * @var Module           $provider           [Global] The tickets provider instance.

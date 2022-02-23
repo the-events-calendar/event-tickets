@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * @since   TBD
+ * @since   5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways
  */
@@ -17,7 +17,7 @@ use Tribe__Utils__Array as Arr;
 /**
  * Abstract Gateway Contract.
  *
- * @since   TBD
+ * @since   5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Contracts
  */
@@ -26,14 +26,14 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	/**
 	 * The Gateway key.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 */
 	protected static $key;
 
 	/**
 	 * The Gateway settings class
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -42,7 +42,7 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	/**
 	 * The Gateway merchant class
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -52,7 +52,7 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	 * The option name prefix that configured whether or not a gateway is enabled.
 	 * It is followed by the gateway 'key'
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -61,7 +61,7 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	/**
 	 * Default name for the checkout template.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -183,7 +183,7 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	 *
 	 * {SITE_URL}?v={GATEWAY_VERSION}-{RANDOM_6_CHAR_HASH}
 	 *
-	 * @since TBD moved to Abstract_Gateway
+	 * @since 5.3.0 moved to Abstract_Gateway
 	 * @since 5.1.9
 	 *
 	 * @return string
@@ -203,7 +203,7 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	/**
 	 * Get URL for the display logo.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return string
 	 */
@@ -214,7 +214,7 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	/**
 	 * Get text to use a subtitle when listing gateways.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return string
 	 */
@@ -225,7 +225,7 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	/**
 	 * Returns the enabled option key.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return string
 	 */
@@ -236,7 +236,7 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	/**
 	 * Returns if gateway is enabled.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return boolean
 	 */
@@ -251,7 +251,7 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	/**
 	 * Returns status text.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return string
 	 */
@@ -266,7 +266,7 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	/**
 	 * Returns name of the container template within the `views/v2/commerce/gateway/{key}/` folder.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return string
 	 */
@@ -291,7 +291,7 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	/**
 	 * Disable the gateway toggle.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return bool
 	 */

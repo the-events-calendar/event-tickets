@@ -9,7 +9,7 @@ use TEC\Tickets\Commerce\Status as Commerce_Status;
  *
  * @todo    Create a Contract between this and PayPal.
  *
- * @since   TBD
+ * @since   5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe
  */
@@ -18,7 +18,7 @@ class Status {
 	/**
 	 * Order Status in Stripe for when the payment intent is first created or when payment is denied.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -27,7 +27,7 @@ class Status {
 	/**
 	 * Order Status in Stripe for when the payment intent is first created or when payment is denied.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -36,7 +36,7 @@ class Status {
 	/**
 	 * Order Status in Stripe for created and waiting for automatic confirmation to start processing.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -45,7 +45,7 @@ class Status {
 	/**
 	 * Order Status in Stripe for created and waiting for user confirmation to start processing.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -54,7 +54,7 @@ class Status {
 	/**
 	 * Order Status in Stripe for created and waiting for user confirmation to start processing.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -63,7 +63,7 @@ class Status {
 	/**
 	 * Order Status in Stripe for processing.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -72,7 +72,7 @@ class Status {
 	/**
 	 * Order Status in Stripe for a successful hold on funds, waiting for settlement.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -81,7 +81,7 @@ class Status {
 	/**
 	 * Order Status in Stripe for completed with success.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -90,7 +90,7 @@ class Status {
 	/**
 	 * Order Status in Stripe for manually cancelled and invalidated.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -104,7 +104,7 @@ class Status {
 	 *
 	 * @link  https://stripe.com/docs/payments/intents
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var array
 	 */
@@ -123,7 +123,7 @@ class Status {
 	/**
 	 * Gets the valid mapping of the statuses.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return array
 	 */
@@ -134,7 +134,7 @@ class Status {
 	/**
 	 * Checks if a given Stripe status is valid.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param string $status Status from Stripe.
 	 *
@@ -149,7 +149,7 @@ class Status {
 	/**
 	 * Converts a valid Stripe status into a commerce status object.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param string $stripe_status A Stripe status string.
 	 *

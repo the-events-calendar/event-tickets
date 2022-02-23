@@ -9,7 +9,7 @@ use TEC\Tickets\Commerce\Status as Commerce_Status;
  *
  * @link    https://stripe.com/docs/api/webhook_endpoints/create#create_webhook_endpoint-enabled_events
  *
- * @since   TBD
+ * @since   5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe\Webhooks
  */
@@ -21,7 +21,7 @@ class Events {
 	 * @link  https://stripe.com/docs/api/payment_intents/object
 	 * @link  https://stripe.com/docs/api/events/types#event_types-account.application.deauthorized
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -30,7 +30,7 @@ class Events {
 	/**
 	 * Webhook Event name when the account was updated.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -39,7 +39,7 @@ class Events {
 	/**
 	 * Webhook Event name for when a charge expires before being captured.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -48,7 +48,7 @@ class Events {
 	/**
 	 * Webhook Event name for when a charge capture fails.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -57,7 +57,7 @@ class Events {
 	/**
 	 * Webhook Event name for when a charge is refunded.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -66,7 +66,7 @@ class Events {
 	/**
 	 * Webhook Event name for when a charge is completed.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -77,7 +77,7 @@ class Events {
 	 *
 	 * @link  https://stripe.com/docs/api/payment_intents/object
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -88,7 +88,7 @@ class Events {
 	 *
 	 * @link  https://stripe.com/docs/api/payment_intents/object
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -99,7 +99,7 @@ class Events {
 	 *
 	 * @link  https://stripe.com/docs/api/payment_intents/object
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -110,7 +110,7 @@ class Events {
 	 *
 	 * @link  https://stripe.com/docs/api/payment_intents/object
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -121,7 +121,7 @@ class Events {
 	 *
 	 * @link  https://stripe.com/docs/api/payment_intents/object
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -132,7 +132,7 @@ class Events {
 	 *
 	 * @link  https://stripe.com/docs/api/payment_intents/object
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -141,7 +141,7 @@ class Events {
 	/**
 	 * Returns the handle to be used for each webhook event.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return array
 	 */
@@ -163,7 +163,7 @@ class Events {
 		/**
 		 * Allows filtering of the Webhook map of events-to-handler-functions for each one of the types we listen for.
 		 *
-		 * @since TBD
+		 * @since 5.3.0
 		 *
 		 * @param array $events The default map of event handler functions.
 		 */
@@ -174,7 +174,7 @@ class Events {
 	 * Returns a list of all valid webhook events.
 	 * If it converts directly to a TC status it will be the status Class name, otherwise it will be callable.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return callable[]|Commerce_Status\Status_Interface[]
 	 */
@@ -195,7 +195,7 @@ class Events {
 		/**
 		 * Allows filtering of the Webhook map of events-to-statuses for each one of the types we listen for.
 		 *
-		 * @since TBD
+		 * @since 5.3.0
 		 *
 		 * @param array $events The default map of which event statuses.
 		 */
@@ -205,7 +205,7 @@ class Events {
 	/**
 	 * Return webhook label's "Nice name", it's only applicable if the webhook converts to a status.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param string $event_name A Stripe Event String.
 	 *
@@ -224,7 +224,7 @@ class Events {
 		/**
 		 * Allows filtering of the Webhook map of events for each one of the types we listen for.
 		 *
-		 * @since TBD
+		 * @since 5.3.0
 		 *
 		 * @param array  $labels     The default map of which event types that translate to a given label string.
 		 * @param string $event_name Which event name we are looking for.
@@ -245,7 +245,7 @@ class Events {
 	/**
 	 * Checks if a given Stripe webhook event name is valid.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param string $event_name A Stripe Event String.
 	 *
@@ -260,7 +260,7 @@ class Events {
 	/**
 	 * Converts a valid Stripe webhook event name into a commerce status object.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param string $event_name A Stripe Event String.
 	 *

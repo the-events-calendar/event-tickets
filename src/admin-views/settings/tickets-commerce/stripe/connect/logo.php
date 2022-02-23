@@ -2,9 +2,9 @@
 /**
  * The Template for displaying the Tickets Commerce Stripe logo and features.
  *
- * @since   TBD
+ * @since   5.3.0
  *
- * @version TBD
+ * @version 5.3.0
  *
  * @var string                                        $plugin_url      [Global] The plugin URL.
  * @var TEC\Tickets\Commerce\Gateways\Stripe\Signup   $signup          [Global] The Signup class.

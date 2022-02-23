@@ -2,7 +2,7 @@
 /**
  * Featured settings box.
  *
- * @since TBD
+ * @since 5.3.0
  *
  * @var Tribe__Template $this             Template object.
  * @var string          $title            Featured settings title.

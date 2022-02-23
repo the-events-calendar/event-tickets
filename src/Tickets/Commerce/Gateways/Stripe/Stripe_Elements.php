@@ -8,7 +8,7 @@ use TEC\Tickets\Commerce\Module;
 /**
  * Class Payment_Element
  *
- * @since   TBD
+ * @since   5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe
  */
@@ -17,7 +17,7 @@ class Stripe_Elements {
 	/**
 	 * Are we forcing users to log in before checking out?
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return bool
 	 */
@@ -28,7 +28,7 @@ class Stripe_Elements {
 	/**
 	 * Returns the variables for gateway's checkout template.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return []
 	 */
@@ -42,7 +42,7 @@ class Stripe_Elements {
 	/**
 	 * Include the Stripe Payment Element form.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return bool
 	 */
@@ -53,7 +53,7 @@ class Stripe_Elements {
 	/**
 	 * Include the Stripe Card Element form.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return string
 	 */

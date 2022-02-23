@@ -2,10 +2,10 @@
 /**
  * The Template for displaying the Tickets Commerce PayPal modal content when connected.
  *
- * @version TBD
+ * @version 5.3.0
  *
  * @since   5.2.1
- * @since   TBD Using generic CSS classes for gateway instead of PayPal.
+ * @since   5.3.0 Using generic CSS classes for gateway instead of PayPal.
  */
 
 ?>

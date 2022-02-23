@@ -10,7 +10,7 @@ use Tribe__Tickets__Main;
 /**
  * The Stripe specific settings.
  *
- * @since   TBD
+ * @since   5.3.0
  * @package TEC\Tickets\Commerce\Gateways\Stripe
  */
 class Settings extends Abstract_Settings {
@@ -18,7 +18,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * DB identifier for the Payment Element selection
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -27,7 +27,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * DB identifier for the Card Element selection
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -36,7 +36,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * DB identifier for the Card Element Compact Layout
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -45,7 +45,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * DB identifier for the Card Element Separate Layout
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -54,7 +54,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * DB identifier for the default methods set for the Payment Element
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var array
 	 */
@@ -63,7 +63,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Connection details fetched from the Stripe API on page-load
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var array
 	 */
@@ -77,7 +77,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Option name for the statement descriptor field
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -86,7 +86,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Option name for the collect billing details field
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -95,7 +95,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Option name for the stripe receipt emails field
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -104,7 +104,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Option name for the stripe checkout element field
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -113,7 +113,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Option name for the card element credit card fields to use
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -122,7 +122,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Option name for the payment element payment methods allowed
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -138,7 +138,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Set the internal parameter w/ account details received from the Stripe API
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 */
 	public function set_connection_status() {
 		$this->connection_status = tribe( Merchant::class )->check_account_status();
@@ -147,7 +147,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Trigger a dismissible admin notice if Tickets Commerce and Stripe currencies are not the same.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 */
 	public function alert_currency_mismatch() {
 		$merchant = tribe( Merchant::class );
@@ -234,7 +234,7 @@ class Settings extends Abstract_Settings {
 			/**
 			 * Allow filtering the list of Stripe settings.
 			 *
-			 * @since TBD
+			 * @since 5.3.0
 			 *
 			 * @param array $settings     The list of Stripe Commerce settings.
 			 * @param bool  $is_connected Whether or not gateway is connected.
@@ -332,7 +332,7 @@ class Settings extends Abstract_Settings {
 		/**
 		 * Allow filtering the list of Stripe settings.
 		 *
-		 * @since TBD
+		 * @since 5.3.0
 		 *
 		 * @param array $settings     The list of Stripe Commerce settings.
 		 * @param bool  $is_connected Whether or not gateway is connected.
@@ -344,7 +344,7 @@ class Settings extends Abstract_Settings {
 	 * Filters the general list of payment methods to grab only those available to the currency configured in Tickets
 	 * Commerce.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return array
 	 */
@@ -367,7 +367,7 @@ class Settings extends Abstract_Settings {
 		/**
 		 * Allows filtering the list of available Payment Methods
 		 *
-		 * @since TBD
+		 * @since 5.3.0
 		 *
 		 * @param array   $available_methods the list of payment methods available to the current currency
 		 * @param string  $currency          the currency configured for Tickets Commerce
@@ -381,7 +381,7 @@ class Settings extends Abstract_Settings {
 	 *
 	 * @link https://stripe.com/docs/payments/payment-methods/integration-options#payment-method-product-support
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return array[]
 	 */
@@ -408,7 +408,7 @@ class Settings extends Abstract_Settings {
 		/**
 		 * Allows for filtering the list of available payment methods.
 		 *
-		 * @since TBD
+		 * @since 5.3.0
 		 *
 		 * @param array $available_methods the list of payment methods available.
 		 */
@@ -418,7 +418,7 @@ class Settings extends Abstract_Settings {
 	/**
 	 * Setup basic defaults once a new account is onboarded.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 */
 	public function setup_account_defaults() {
 		if ( empty( $this->connection_status ) ) {
@@ -462,7 +462,7 @@ class Settings extends Abstract_Settings {
 	 * Resets the values of payment methods and card options if they are no longer in use and avoid a settings
 	 * notice for empty values.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param mixed  $value    Field value submitted.
 	 * @param string $field_id Field key in the settings array.

@@ -11,9 +11,9 @@
  *
  * @todo FrontEnd needs to revisit all of these templates to make sure we're not missing anything
  *
- * @since   TBD
+ * @since   5.3.0
  *
- * @version TBD
+ * @version 5.3.0
  * @var bool $must_login      [Global] Whether login is required to buy tickets or not.
  * @var bool $payment_element [Global] Whether to load the Stripe Payment Element.
  */

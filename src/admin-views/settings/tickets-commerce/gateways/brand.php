@@ -2,7 +2,7 @@
 /**
  * Template to display a featured gateway.
  *
- * @since TBD
+ * @since 5.3.0
  *
  * @var Tribe__Template  $this    Template object.
  * @var Gateway_Abstract $gateway Gateway object.

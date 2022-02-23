@@ -11,7 +11,7 @@ namespace TEC\Tickets\Commerce\Gateways\Contracts;
 /**
  * Abstract Settings
  *
- * @since   TBD
+ * @since   5.3.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Contracts
  */
@@ -20,7 +20,7 @@ abstract class Abstract_Settings {
 	/**
 	 * The option key for the gateway-specific sandbox.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var string
 	 */
@@ -38,7 +38,7 @@ abstract class Abstract_Settings {
 	/**
 	 * Get the HTML for the connection box in the admin
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return string
 	 */
@@ -47,7 +47,7 @@ abstract class Abstract_Settings {
 	/**
 	 * Check if this gateway is currently in test mode.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return bool
 	 */

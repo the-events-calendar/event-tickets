@@ -7,7 +7,7 @@ use \Tribe__Template;
 /**
  * Featured Settings for TC Payments Tab.
  *
- * @since TBD
+ * @since 5.3.0
  *
  * @package TEC\Tickets\Commerce\Admin
  */
@@ -16,7 +16,7 @@ class Featured_Settings {
 	/**
 	 * Stores the instance of the template engine that we will use for rendering the elements.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @var Tribe__Template
 	 */
@@ -25,7 +25,7 @@ class Featured_Settings {
 	/**
 	 * Gets the template instance used to setup the rendering html.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @return Tribe__Template
 	 */
@@ -43,7 +43,7 @@ class Featured_Settings {
 	/**
 	 * Returns html of the featured settings block.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param array   $context Context of template.
 	 * @param boolean $echo    Whether or not to output the HTML or just return it.
