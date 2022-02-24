@@ -190,6 +190,9 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Feature - Collect purchaser name and email for anonymous purchases using Tickets Commerce. [ET-1378]
 * Feature - Introduce automatic handling of zero-decimal currencies in Tickets Commerce [ET-1414][ET-1420]
 * Fix - Remove anonymous purchase notice for Tickets Commerce after ET-1378 was implemented. [ET-1379]
+* Tweak - Added filters: `tec_tickets_commerce_order_purchaser_data`, `tec_tickets_commerce_order_purchaser_data`, `tec_tickets_commerce_stripe_checkout_localized_data`, `tec_tickets_commerce_stripe_order_endpoint_error_messages`, `tec_tickets_commerce_stripe_settings`, `tec_tickets_commerce_stripe_settings`, `tec_tickets_commerce_stripe_payment_methods_by_currency`, `tec_tickets_commerce_stripe_payment_methods_available`, `tec_tickets_commerce_stripe_fee_is_applied_notice`, `tec_tickets_commerce_gateway_stripe_webhook_event_handlers`, `tec_tickets_commerce_gateway_stripe_webhook_status`, `tec_tickets_commerce_gateway_stripe_webhook_events_labels_map`, `tec_tickets_commerce_payments_tab_sections`, `tec_tickets_commerce_currency_{$code}_name`, `tec_tickets_commerce_currency_name`, `tec_tickets_commerce_currency_{$code}_precision`, `tec_tickets_commerce_currency_precision`
+* Tweak - Removed filters: `tec_tickets_commerce_gateway_paypal_tracking_id`
+* Tweak - Changed views: `tickets/email`, `v2/commerce/checkout`, `v2/commerce/checkout/cart`, `v2/commerce/checkout/footer/gateway-error`, `v2/commerce/checkout/gateways`, `v2/commerce/checkout/purchaser-info`, `v2/commerce/checkout/purchaser-info/email`, `v2/commerce/checkout/purchaser-info/name`, `v2/commerce/gateway/paypal/container`, `v2/commerce/gateway/stripe/card-element`, `v2/commerce/gateway/stripe/container`, `v2/commerce/gateway/stripe/payment-element`
 * Language - 102 new strings added, 164 updated, 0 fuzzied, and 3 obsoleted
 
 = [5.2.4.1] 2022-02-17 =
