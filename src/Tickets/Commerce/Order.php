@@ -2,7 +2,7 @@
 
 namespace TEC\Tickets\Commerce;
 
-use TEC\Tickets\Commerce\Gateways\Interface_Gateway;
+use TEC\Tickets\Commerce\Gateways\Contracts\Gateway_Interface;
 use TEC\Tickets\Commerce\Utils\Value;
 use Tribe__Date_Utils as Dates;
 
@@ -299,6 +299,34 @@ class Order extends Abstract_Order {
 	}
 
 	/**
+	 * Prepares an array of cart items ready to go into an Order.
+	 *
+	 * @since 5.3.0
+	 *
+	 * @param Cart $cart The cart instance to get items from.
+	 *
+	 * @return array
+	 */
+	public function prepare_cart_items_for_order( Cart $cart ) {
+		return array_map(
+			static function ( $item ) {
+				/** @var Value $ticket_value */
+				$ticket_value = tribe( Ticket::class )->get_price_value( $item['ticket_id'] );
+
+				if ( null === $ticket_value ) {
+					return null;
+				}
+
+				$item['price']     = (string) $ticket_value->get_decimal();
+				$item['sub_total'] = (string) $ticket_value->sub_total( $item['quantity'] )->get_decimal();
+
+				return $item;
+			},
+			$cart->get_items_in_cart()
+		);
+	}
+
+	/**
 	 * Creates a order from the items in the cart.
 	 *
 	 * @since 5.1.9
@@ -307,7 +335,7 @@ class Order extends Abstract_Order {
 	 *
 	 * @return false|\WP_Post
 	 */
-	public function create_from_cart( Interface_Gateway $gateway, $purchaser = null ) {
+	public function create_from_cart( Gateway_Interface $gateway, $purchaser = null ) {
 		$cart = tribe( Cart::class );
 
 		$items      = $cart->get_items_in_cart();
@@ -330,28 +358,18 @@ class Order extends Abstract_Order {
 		$total = $this->get_value_total( array_filter( $items ) );
 
 		$order_args = [
-			'title'       => $this->generate_order_title( $items, $cart->get_cart_hash() ),
-			'total_value' => $total->get_decimal(),
-			'items'       => $items,
-			'gateway'     => $gateway::get_key(),
-			'hash'        => $cart->get_cart_hash(),
-			'currency'    => Utils\Currency::get_currency_code(),
+			'title'                => $this->generate_order_title( $items, $cart->get_cart_hash() ),
+			'total_value'          => $total->get_decimal(),
+			'items'                => $items,
+			'gateway'              => $gateway::get_key(),
+			'hash'                 => $cart->get_cart_hash(),
+			'currency'             => Utils\Currency::get_currency_code(),
+			'purchaser_user_id'    => $purchaser['purchaser_user_id'],
+			'purchaser_full_name'  => $purchaser['purchaser_full_name'],
+			'purchaser_first_name' => $purchaser['purchaser_first_name'],
+			'purchaser_last_name'  => $purchaser['purchaser_last_name'],
+			'purchaser_email'      => $purchaser['purchaser_email'],
 		];
-
-		// When purchaser data-set is not passed we pull from the current user.
-		if ( empty( $purchaser ) && is_user_logged_in() && $user = wp_get_current_user() ) {
-			$order_args['purchaser_user_id']    = $user->ID;
-			$order_args['purchaser_full_name']  = $user->first_name . ' ' . $user->last_name;
-			$order_args['purchaser_first_name'] = $user->first_name;
-			$order_args['purchaser_last_name']  = $user->last_name;
-			$order_args['purchaser_email']      = $user->user_email;
-		} elseif ( empty( $purchaser ) ) {
-			$order_args['purchaser_user_id']    = 0;
-			$order_args['purchaser_full_name']  = static::$placeholder_name;
-			$order_args['purchaser_first_name'] = static::$placeholder_name;
-			$order_args['purchaser_last_name']  = static::$placeholder_name;
-			$order_args['purchaser_email']      = '';
-		}
 
 		$order = $this->create( $gateway, $order_args );
 
@@ -368,14 +386,14 @@ class Order extends Abstract_Order {
 	 *
 	 * @since 5.2.0
 	 *
-	 * @throws \Tribe__Repository__Usage_Error
-	 *
-	 * @param Interface_Gateway $gateway
+	 * @param Gateway_Interface $gateway
 	 * @param array             $args
+	 *
+	 * @throws \Tribe__Repository__Usage_Error
 	 *
 	 * @return false|\WP_Post
 	 */
-	public function create( Interface_Gateway $gateway, $args ) {
+	public function create( Gateway_Interface $gateway, $args ) {
 		$gateway_key = $gateway::get_key();
 
 		/**
@@ -384,7 +402,7 @@ class Order extends Abstract_Order {
 		 * @since 5.2.0
 		 *
 		 * @param array             $args
-		 * @param Interface_Gateway $gateway
+		 * @param Gateway_Interface $gateway
 		 */
 		$args = apply_filters( "tec_tickets_commerce_order_{$gateway_key}_create_args", $args, $gateway );
 
@@ -394,7 +412,7 @@ class Order extends Abstract_Order {
 		 * @since 5.2.0
 		 *
 		 * @param array             $args
-		 * @param Interface_Gateway $gateway
+		 * @param Gateway_Interface $gateway
 		 */
 		$args = apply_filters( 'tec_tickets_commerce_order_create_args', $args, $gateway );
 
@@ -525,5 +543,21 @@ class Order extends Abstract_Order {
 		}
 
 		return static::POSTTYPE === $order->post_type;
+	}
+
+	/**
+	 * Get the order associated with a given gateway order id.
+	 *
+	 * @since 5.3.0
+	 *
+	 * @param string $gateway_order_id The gateway order id.
+	 *
+	 * @return mixed|\WP_Post|null
+	 */
+	public function get_from_gateway_order_id( string $gateway_order_id ) {
+		return tec_tc_orders()->by_args( [
+			'status'           => 'any',
+			'gateway_order_id' => $gateway_order_id,
+		] )->first();
 	}
 }

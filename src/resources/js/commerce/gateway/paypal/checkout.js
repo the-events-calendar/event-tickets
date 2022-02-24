@@ -1,32 +1,5 @@
 /* global tribe, jQuery, paypal, ajaxurl */
 /**
- * Makes sure we have all the required levels on the Tribe Object
- *
- * @since 5.1.9
- *
- * @type   {Object}
- */
-tribe.tickets = tribe.tickets || {};
-
-/**
- * Path to this script in the global tribe Object.
- *
- * @since 5.1.9
- *
- * @type   {Object}
- */
-tribe.tickets.commerce = tribe.tickets.commerce || {};
-
-/**
- * Path to this script in the global tribe Object.
- *
- * @since 5.1.9
- *
- * @type   {Object}
- */
-tribe.tickets.commerce.gateway = tribe.tickets.commerce.gateway || {};
-
-/**
  * Path to this script in the global tribe Object.
  *
  * @since 5.1.9
@@ -56,6 +29,14 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
  */
 ( function ( $, obj ) {
 	'use strict';
+
+	/**
+	 * The document element
+	 *
+	 * @since TBD
+	 *
+	 * @type {jQuery|HTMLElement}
+	 */
 	const $document = $( document );
 
 	/**
@@ -86,6 +67,15 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	obj.timeouts = [];
 
 	/**
+	 * Flag to check if the current error is generic or not.
+	 *
+	 * @since TBD
+	 *
+	 * @type {boolean}
+	 */
+	obj.isGenericError = true;
+
+	/**
 	 * PayPal Checkout Selectors.
 	 *
 	 * @since 5.1.9
@@ -93,6 +83,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @type {Object}
 	 */
 	obj.selectors = {
+		paypalGatewayContainer: '.tribe-tickets__commerce-checkout-paypal',
 		checkoutScript: '.tec-tc-gateway-paypal-checkout-script',
 		activePayment: '.tec-tc-gateway-paypal-payment-active',
 		buttons: '#tec-tc-gateway-paypal-checkout-buttons',
@@ -133,6 +124,13 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @return {void}
 	 */
 	obj.handleGenericError = function ( error, $container ) {
+
+		// Bail out if there were other errors.
+		if ( ! obj.isGenericError ) {
+			// reset the flag.
+			obj.isGenericError = true;
+			return;
+		}
 		tribe.tickets.debug.log( 'handleGenericError', arguments );
 		$container.removeClass( obj.selectors.activePayment.className() );
 
@@ -167,12 +165,17 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 */
 	obj.handleCreateOrder = function ( data, actions, $container ) {
 		tribe.tickets.debug.log( 'handleCreateOrder', arguments );
+
 		return fetch(
 			obj.orderEndpointUrl,
 			{
 				method: 'POST',
+				body: JSON.stringify( {
+					purchaser: tribe.tickets.commerce.getPurchaserData( $container )
+				} ),
 				headers: {
 					'X-WP-Nonce': $container.find( tribe.tickets.commerce.selectors.nonce ).val(),
+					'Content-Type': 'application/json',
 				}
 			}
 		)
@@ -219,7 +222,8 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 */
 	obj.handleCreateOrderFail = function ( $container, data ) {
 		tribe.tickets.debug.log( 'handleCreateOrderFail', arguments );
-		obj.showNotice( $container, data.title, data.content );
+		obj.showNotice( $container, data.message, '' );
+		obj.isGenericError = false;
 	};
 
 	/**
@@ -557,6 +561,13 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	obj.bindScriptLoader = function () {
 
 		const $script = $( obj.selectors.checkoutScript );
+		const $paypalGateway = $( obj.selectors.paypalGatewayContainer );
+		
+		// Check to see if PayPal gateway is present.
+		if ( $paypalGateway.length === 0 ) {
+			$document.trigger( tribe.tickets.commerce.customEvents.hideLoader );
+			return;
+		}
 
 		if ( ! $script.length ) {
 			$document.trigger( tribe.tickets.commerce.customEvents.hideLoader );
@@ -705,6 +716,11 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 		tribe.tickets.debug.log( 'handleHostedCaptureError', error );
 		tribe.tickets.loader.hide( $container );
 
+		if ( ! obj.isGenericError ) {
+			obj.isGenericError = true;
+			return;
+		}
+
 		let errorTitle = '';
 		let errorContent = '';
 
@@ -810,6 +826,8 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 			} else {
 				obj.showNotice( $container, '', data.message );
 			}
+		} else {
+			obj.showNotice( $container, '', data.message );
 		}
 
 		tribe.tickets.loader.hide( $container );
@@ -843,4 +861,4 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 
 	$( obj.ready );
 
-} )( jQuery, tribe.tickets.commerce.gateway.paypal.checkout );
+} )( jQuery, tribe.tickets.commerce.gateway.paypal );

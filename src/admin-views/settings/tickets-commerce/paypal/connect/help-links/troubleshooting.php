@@ -14,12 +14,12 @@
  */
 
 ?>
-<div class="tec-tickets__admin-settings-tickets-commerce-paypal-help-link">
+<div class="tec-tickets__admin-settings-tickets-commerce-gateway-help-link">
 	<?php $this->template( 'components/icons/lightbulb' ); ?>
 	<a
 		href="https://evnt.is/1axw"
 		target="_blank"
 		rel="noopener noreferrer"
-		class="tec-tickets__admin-settings-tickets-commerce-paypal-help-link-url"
+		class="tec-tickets__admin-settings-tickets-commerce-gateway-help-link-url"
 	><?php esc_html_e( 'Get troubleshooting help', 'event-tickets' ); ?></a>
 </div>
