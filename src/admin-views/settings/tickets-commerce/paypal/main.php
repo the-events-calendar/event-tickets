@@ -2,9 +2,10 @@
 /**
  * The Template for displaying the Tickets Commerce PayPal Settings.
  *
- * @version 5.1.10
+ * @version 5.3.0
  *
  * @since   5.1.10
+ * @since   5.3.0 Using generic CSS classes for gateway instead of PayPal.
  *
  * @var Tribe__Tickets__Admin__Views                  $this                  [Global] Template object.
  * @var string                                        $plugin_url            [Global] The plugin URL.
@@ -15,13 +16,13 @@
  */
 
 $classes = [
-	'tec-tickets__admin-settings-tickets-commerce-paypal',
-	'tec-tickets__admin-settings-tickets-commerce-paypal--connected' => $is_merchant_connected,
+	'tec-tickets__admin-settings-tickets-commerce-gateway',
+	'tec-tickets__admin-settings-tickets-commerce-gateway--connected' => $is_merchant_connected,
 ]
 ?>
 
 <div <?php tribe_classes( $classes ); ?>>
-	<div id="tec-tickets__admin-settings-tickets-commerce-paypal-connect" class="tec-tickets__admin-settings-tickets-commerce-paypal-connect">
+	<div id="tec-tickets__admin-settings-tickets-commerce-gateway-connect" class="tec-tickets__admin-settings-tickets-commerce-gateway-connect">
 
 		<?php $this->template( 'settings/tickets-commerce/paypal/connect/inactive' ); ?>
 

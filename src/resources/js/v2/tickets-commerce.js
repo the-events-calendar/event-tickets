@@ -1,3 +1,4 @@
+/* eslint-disable es5/no-arrow-functions */
 /**
  * Makes sure we have all the required levels on the Tribe Object
  *
@@ -54,6 +55,9 @@ tribe.tickets.commerce = {};
 		checkoutItemDescriptionButtonLess: '.tribe-tickets__commerce-checkout-cart-item-details-button--less', // eslint-disable-line max-len
 		hiddenElement: '.tribe-common-a11y-hidden',
 		nonce: '#tec-tc-checkout-nonce',
+		purchaserFormContainer: '.tribe-tickets__commerce-checkout-purchaser-info-wrapper',
+		purchaserName: '.tribe-tickets__commerce-checkout-purchaser-info-form-field-name',
+		purchaserEmail: '.tribe-tickets__commerce-checkout-purchaser-info-form-field-email',
 	};
 
 	/**
@@ -178,6 +182,28 @@ tribe.tickets.commerce = {};
 		obj.bindLoaderEvents();
 
 		$document.trigger( 'afterSetup.tecTicketsCommerce', [ $container ] );
+	};
+
+	/**
+	 * Get purchaser data if available.
+	 *
+	 * @since TBD
+	 *
+	 * @param {jQuery} $container Container for the purchaser info fields.
+	 *
+	 * @return {Object}
+	 */
+	obj.getPurchaserData = ( $container ) => {
+		const purchaser = {};
+
+		if ( ! $container.length ) {
+			return purchaser;
+		}
+
+		purchaser.name  = $container.find( obj.selectors.purchaserName ).val();
+		purchaser.email = $container.find( obj.selectors.purchaserEmail ).val();
+
+		return purchaser;
 	};
 
 	/**

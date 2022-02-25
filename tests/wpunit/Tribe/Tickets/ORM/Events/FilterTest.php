@@ -23,7 +23,7 @@ class FilterTest extends EventsTestCase {
 		$events = tribe_events();
 
 		// Always return consistent list of IDs.
-		$events->order_by( 'id' );
+		$events->order_by( 'id', 'ASC' );
 
 		// Enable found() calculations.
 		$events->set_found_rows( true );

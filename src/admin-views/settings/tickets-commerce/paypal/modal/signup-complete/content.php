@@ -2,13 +2,14 @@
 /**
  * The Template for displaying the Tickets Commerce PayPal modal content when connected.
  *
- * @version 5.2.1
+ * @version 5.3.0
  *
  * @since   5.2.1
+ * @since   5.3.0 Using generic CSS classes for gateway instead of PayPal.
  */
 
 ?>
-<div class="tec-tickets__admin-settings-tickets-commerce-paypal-modal-content tec-tickets__admin-modal tribe-common-b2">
+<div class="tec-tickets__admin-settings-tickets-commerce-gateway-modal-content tec-tickets__admin-modal tribe-common-b2">
 
 	<?php $this->template( 'settings/tickets-commerce/paypal/modal/signup-complete/notice-test-mode' ); ?>
 

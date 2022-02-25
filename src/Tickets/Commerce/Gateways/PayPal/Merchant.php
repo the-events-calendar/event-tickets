@@ -2,6 +2,7 @@
 
 namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
+use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Merchant;
 use Tribe__Utils__Array as Arr;
 use Tribe__Date_Utils as Dates;
 use TEC\Tickets\Commerce\Traits\Has_Mode;
@@ -13,8 +14,7 @@ use TEC\Tickets\Commerce\Traits\Has_Mode;
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
-class Merchant {
-	use Has_Mode;
+class Merchant extends Abstract_Merchant {
 
 	/**
 	 * All account Props we use for the merchant
@@ -231,17 +231,6 @@ class Merchant {
 	 */
 	public function set_merchant_id_in_paypal( $value, $needs_save = true ) {
 		$this->set_value( 'merchant_id_in_paypal', $value, $needs_save );
-	}
-
-	/**
-	 * Gets the value stored for the Client ID.
-	 *
-	 * @since 5.1.9
-	 *
-	 * @return string
-	 */
-	public function get_client_id() {
-		return $this->client_id;
 	}
 
 	/**
@@ -501,15 +490,6 @@ class Merchant {
 		return "tec_tickets_commerce_{$gateway_key}_{$merchant_mode}_user_info";
 	}
 
-	/**
-	 * Handle initial setup for the object singleton.
-	 *
-	 * @since 5.1.9
-	 */
-	public function init() {
-		$this->set_mode( tec_tickets_commerce_is_sandbox_mode() ? 'sandbox' : 'live' );
-		$this->from_array( $this->get_details_data(), false );
-	}
 
 	/**
 	 * Return array of merchant details.
@@ -534,25 +514,6 @@ class Merchant {
 		];
 	}
 
-	/**
-	 * Make Merchant object from array.
-	 *
-	 * @since 5.1.9
-	 *
-	 * @param array   $data       Which values need to .
-	 * @param boolean $needs_save Determines if the proprieties saved need to save to the DB.
-	 *
-	 * @return boolean
-	 */
-	public function from_array( array $data, $needs_save = true ) {
-		if ( ! $this->validate( $data ) ) {
-			return false;
-		}
-
-		$this->setup_properties( $data, $needs_save );
-
-		return true;
-	}
 
 	/**
 	 * Saves a given base value into the class props.
@@ -632,28 +593,6 @@ class Merchant {
 		}
 
 		return true;
-	}
-
-	/**
-	 * Save merchant details.
-	 *
-	 * @since 5.1.9
-	 *
-	 * @return bool
-	 */
-	public function save() {
-		if ( false === $this->needs_save() ) {
-			return false;
-		}
-
-		$saved = update_option( $this->get_account_key(), $this->to_array() );
-
-		// If we were able to save, we reset the needs save.
-		if ( $saved ) {
-			$this->needs_save = false;
-		}
-
-		return $saved;
 	}
 
 	/**
