@@ -2,29 +2,17 @@
 
 namespace TEC\Tickets\Commerce\Gateways\PayPal\REST;
 
-use tad\WPBrowser\Adapters\WP;
 use TEC\Tickets\Commerce\Cart;
+use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_REST_Endpoint;
 use TEC\Tickets\Commerce\Gateways\PayPal\Gateway;
 use TEC\Tickets\Commerce\Gateways\PayPal\Status;
 use TEC\Tickets\Commerce\Order;
 
 use TEC\Tickets\Commerce\Gateways\PayPal\Client;
-use TEC\Tickets\Commerce\Gateways\PayPal\Merchant;
-use TEC\Tickets\Commerce\Gateways\PayPal\Refresh_Token;
-
-use TEC\Tickets\Commerce\Gateways\PayPal\Signup;
-use TEC\Tickets\Commerce\Gateways\PayPal\WhoDat;
-
-
-use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Status\Denied;
 use TEC\Tickets\Commerce\Status\Pending;
-use TEC\Tickets\Commerce\Status\Completed;
-use TEC\Tickets\Commerce\Status\Created;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Success;
-use Tribe__Documentation__Swagger__Provider_Interface;
-use Tribe__Settings;
 use Tribe__Utils__Array as Arr;
 
 use WP_Error;
@@ -40,7 +28,7 @@ use WP_REST_Server;
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal\REST
  */
-class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interface {
+class Order_Endpoint extends Abstract_REST_Endpoint {
 
 	/**
 	 * The REST API endpoint path.
@@ -97,30 +85,6 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 	}
 
 	/**
-	 * Gets the Endpoint path for the on boarding process.
-	 *
-	 * @since 5.1.9
-	 *
-	 * @return string
-	 */
-	public function get_endpoint_path() {
-		return $this->path;
-	}
-
-	/**
-	 * Get the REST API route URL.
-	 *
-	 * @since 5.1.9
-	 *
-	 * @return string The REST API route URL.
-	 */
-	public function get_route_url() {
-		$namespace = tribe( 'tickets.rest-v1.main' )->get_events_route_namespace();
-
-		return rest_url( '/' . $namespace . $this->get_endpoint_path(), 'https' );
-	}
-
-	/**
 	 * Handles the request that creates an order with Tickets Commerce and the PayPal gateway.
 	 *
 	 * @since 5.1.9
@@ -135,12 +99,18 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 		];
 
 		$messages = $this->get_error_messages();
+		$data = $request->get_json_params();
+		$purchaser = tribe( Order::class )->get_purchaser_data( $data );
 
-		$order = tribe( Order::class )->create_from_cart( tribe( Gateway::class ) );
+		if ( is_wp_error( $purchaser ) ) {
+			return $purchaser;
+		}
+
+		$order = tribe( Order::class )->create_from_cart( tribe( Gateway::class ), $purchaser );
 
 		$unit = [
 			'reference_id' => $order->ID,
-			'value'        => $order->total_value->get_decimal(),
+			'value'        => (string) $order->total_value->get_decimal(),
 			'currency'     => $order->currency,
 			'first_name'   => $order->purchaser['first_name'],
 			'last_name'    => $order->purchaser['last_name'],
@@ -151,9 +121,9 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 			$ticket          = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
 			$unit['items'][] = [
 				'name'        => $ticket->name,
-				'unit_amount' => [ 'value' => $item['price'], 'currency_code' => $order->currency ],
+				'unit_amount' => [ 'value' => (string) $item['price'], 'currency_code' => $order->currency ],
 				'quantity'    => $item['quantity'],
-				'item_total'  => [ 'value' => $item['sub_total'], 'currency_code' => $order->currency ],
+				'item_total'  => [ 'value' => (string) $item['sub_total'], 'currency_code' => $order->currency ],
 				'sku'         => $ticket->sku,
 			];
 		}
@@ -432,19 +402,6 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 		}
 
 		return sanitize_text_field( $value );
-	}
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @TODO  We need to make sure Swagger documentation is present.
-	 *
-	 * @since 5.1.9
-	 *
-	 * @return array
-	 */
-	public function get_documentation() {
-		return [];
 	}
 
 	/**

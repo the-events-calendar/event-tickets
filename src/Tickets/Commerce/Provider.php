@@ -76,6 +76,7 @@ class Provider extends tad_DI52_ServiceProvider {
 		$this->container->singleton( Compatibility\Events::class );
 
 		// Load any external SPs we might need.
+		$this->container->register( Gateways\Stripe\Provider::class );
 		$this->container->register( Gateways\PayPal\Provider::class );
 		$this->container->register( Gateways\Manual\Provider::class );
 

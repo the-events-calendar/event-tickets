@@ -11,7 +11,7 @@ use Tribe__Utils__Array as Arr;
  *
  * @since   5.1.9
  *
- * @package TEC\Tickets\Commerce\Gateways\PayPal
+ * @package TEC\Tickets\Commerce
  */
 class Module extends \Tribe__Tickets__Tickets {
 

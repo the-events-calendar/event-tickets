@@ -80,7 +80,7 @@ class Currency {
 	 * @return string
 	 */
 	public static function get_currency_symbol( $code ) {
-		$map = static::get_default_currency_map();
+		$map    = static::get_default_currency_map();
 		$symbol = '';
 
 		if ( isset( $map[ $code ] ) ) {
@@ -111,6 +111,86 @@ class Currency {
 	}
 
 	/**
+	 * Return the currency name to use as defined in the currency map.
+	 *
+	 * @since 5.3.0
+	 *
+	 * @param string $code The currency 3-letter code.
+	 *
+	 * @return string
+	 */
+	public static function get_currency_name( $code ) {
+		$map  = static::get_default_currency_map();
+		$name = '';
+
+		if ( isset( $map[ $code ] ) ) {
+			$name = $map[ $code ]['name'];
+		}
+
+		/**
+		 * Filter the specific currency name before returning. $code is the 3-letter currency code.
+		 *
+		 * @since 5.3.0
+		 *
+		 * @param string $name The currency name.
+		 *
+		 * @return string
+		 */
+		$name = apply_filters( "tec_tickets_commerce_currency_{$code}_name", $name );
+
+		/**
+		 * Filter all currency symbols before returning.
+		 *
+		 * @since 5.3.0
+		 *
+		 * @param string $name The currency name.
+		 *
+		 * @return string
+		 */
+		return apply_filters( 'tec_tickets_commerce_currency_name', $name );
+	}
+
+	/**
+	 * Return the currency precision to use as the number of decimals allowed.
+	 *
+	 * @since 5.3.0
+	 *
+	 * @param string $code The currency 3-letter code.
+	 *
+	 * @return string
+	 */
+	public static function get_currency_precision( $code ) {
+		$map       = static::get_default_currency_map();
+		$precision = 2;
+
+		if ( isset( $map[ $code ] ) ) {
+			$precision = $map[ $code ]['decimal_precision'];
+		}
+
+		/**
+		 * Filter the specific currency precision before returning. $code is the 3-letter currency code.
+		 *
+		 * @since 5.3.0
+		 *
+		 * @param int $precision The currency precision.
+		 *
+		 * @return int
+		 */
+		$precision = apply_filters( "tec_tickets_commerce_currency_{$code}_precision", $precision );
+
+		/**
+		 * Filter all currency symbols before returning.
+		 *
+		 * @since 5.3.0
+		 *
+		 * @param int $precision The currency precision.
+		 *
+		 * @return int
+		 */
+		return apply_filters( 'tec_tickets_commerce_currency_precision', $precision );
+	}
+
+	/**
 	 * Return the currency decimal separator character to use as defined in the currency map.
 	 *
 	 * @since 5.2.3
@@ -120,7 +200,7 @@ class Currency {
 	 * @return string
 	 */
 	public static function get_currency_separator_decimal( $code ) {
-		$map = static::get_default_currency_map();
+		$map       = static::get_default_currency_map();
 		$separator = '';
 
 		if ( isset( $map[ $code ] ) ) {
@@ -160,7 +240,7 @@ class Currency {
 	 * @return string
 	 */
 	public static function get_currency_separator_thousands( $code ) {
-		$map = static::get_default_currency_map();
+		$map       = static::get_default_currency_map();
 		$separator = '';
 
 		if ( isset( $map[ $code ] ) ) {
@@ -226,7 +306,7 @@ class Currency {
 		 *
 		 * @since 5.2.3
 		 *
-		 * @param string   $currency_position The currency position string.
+		 * @param string $currency_position The currency position string.
 		 *
 		 * @return string
 		 */
@@ -261,155 +341,205 @@ class Currency {
 		 */
 		return apply_filters( 'tec_tickets_commerce_default_currency_map', [
 			'AUD' => [
-				'name'          => __( 'Australian Dollar (AUD)', 'event-tickets' ),
-				'symbol'        => '&#x41;&#x24;',
-				'thousands_sep' => ',',
-				'decimal_point' => '.',
+				'name'                  => __( 'Australian Dollar (AUD)', 'event-tickets' ),
+				'symbol'                => '&#x41;&#x24;',
+				'thousands_sep'         => ',',
+				'decimal_point'         => '.',
+				'decimal_precision'     => 2,
+				'stripe_minimum_charge' => 0.50,
 			],
 			'BRL' => [
-				'name'          => __( 'Brazilian Real  (BRL)', 'event-tickets' ),
-				'symbol'        => '&#82;&#x24;',
-				'thousands_sep' => '.',
-				'decimal_point' => ',',
+				'name'                  => __( 'Brazilian Real  (BRL)', 'event-tickets' ),
+				'symbol'                => '&#82;&#x24;',
+				'thousands_sep'         => '.',
+				'decimal_point'         => ',',
+				'decimal_precision'     => 2,
+				'stripe_minimum_charge' => 5.00, // minimum charge is 0.50, but boleto requires 5.00
 			],
 			'CAD' => [
-				'name'          => __( 'Canadian Dollar (CAD)', 'event-tickets' ),
-				'symbol'        => '&#x24;',
-				'thousands_sep' => ',',
-				'decimal_point' => '.',
+				'name'                  => __( 'Canadian Dollar (CAD)', 'event-tickets' ),
+				'symbol'                => '&#x24;',
+				'thousands_sep'         => ',',
+				'decimal_point'         => '.',
+				'decimal_precision'     => 2,
+				'stripe_minimum_charge' => 0.50,
 			],
 			'CHF' => [
-				'name'          => __( 'Swiss Franc (CHF)', 'event-tickets' ),
-				'symbol'        => '&#x43;&#x48;&#x46;',
-				'decimal_point' => ',',
-				'thousands_sep' => '.',
+				'name'                  => __( 'Swiss Franc (CHF)', 'event-tickets' ),
+				'symbol'                => '&#x43;&#x48;&#x46;',
+				'decimal_point'         => ',',
+				'thousands_sep'         => '.',
+				'decimal_precision'     => 2,
+				'stripe_minimum_charge' => 0.50,
 			],
 			'CZK' => [
-				'name'          => __( 'Czech Koruna (CZK)', 'event-tickets' ),
-				'symbol'        => '&#x4b;&#x10d;',
-				'position'      => 'postfix',
-				'decimal_point' => ',',
-				'thousands_sep' => '.',
+				'name'                  => __( 'Czech Koruna (CZK)', 'event-tickets' ),
+				'symbol'                => '&#x4b;&#x10d;',
+				'position'              => 'postfix',
+				'decimal_point'         => ',',
+				'thousands_sep'         => '.',
+				'decimal_precision'     => 2,
+				'stripe_minimum_charge' => 15.00,
 			],
 			'DKK' => [
-				'name'          => __( 'Danish Krone (DKK)', 'event-tickets' ),
-				'symbol'        => '&#107;&#114;',
-				'decimal_point' => ',',
-				'thousands_sep' => '.',
+				'name'                  => __( 'Danish Krone (DKK)', 'event-tickets' ),
+				'symbol'                => '&#107;&#114;',
+				'decimal_point'         => ',',
+				'thousands_sep'         => '.',
+				'decimal_precision'     => 2,
+				'stripe_minimum_charge' => 2.50,
 			],
 			'EUR' => [
-				'name'          => __( 'Euro (EUR)', 'event-tickets' ),
-				'symbol'        => '&#8364;',
-				'decimal_point' => ',',
-				'thousands_sep' => '.',
+				'name'                  => __( 'Euro (EUR)', 'event-tickets' ),
+				'symbol'                => '&#8364;',
+				'decimal_point'         => ',',
+				'thousands_sep'         => '.',
+				'decimal_precision'     => 2,
+				'stripe_minimum_charge' => 0.50,
 			],
 			'GBP' => [
-				'name'          => __( 'Pound Sterling (GBP)', 'event-tickets' ),
-				'symbol'        => '&#163;',
-				'decimal_point' => '.',
-				'thousands_sep' => ',',
+				'name'                  => __( 'Pound Sterling (GBP)', 'event-tickets' ),
+				'symbol'                => '&#163;',
+				'decimal_point'         => '.',
+				'thousands_sep'         => ',',
+				'decimal_precision'     => 2,
+				'stripe_minimum_charge' => 0.30,
 			],
 			'HKD' => [
-				'name'          => __( 'Hong Kong Dollar (HKD)', 'event-tickets' ),
-				'symbol'        => '&#x24;',
-				'decimal_point' => '.',
-				'thousands_sep' => ',',
+				'name'                  => __( 'Hong Kong Dollar (HKD)', 'event-tickets' ),
+				'symbol'                => '&#x24;',
+				'decimal_point'         => '.',
+				'thousands_sep'         => ',',
+				'decimal_precision'     => 2,
+				'stripe_minimum_charge' => 4.00,
 			],
 			'HUF' => [
-				'name'          => __( 'Hungarian Forint (HUF)', 'event-tickets' ),
-				'symbol'        => '&#x46;&#x74;',
-				'decimal_point' => ',',
-				'thousands_sep' => '.',
+				'name'                  => __( 'Hungarian Forint (HUF)', 'event-tickets' ),
+				'symbol'                => '&#x46;&#x74;',
+				'decimal_point'         => ',',
+				'thousands_sep'         => '.',
+				'decimal_precision'     => 2,
+				'stripe_minimum_charge' => 175.00,
 			],
 			'ILS' => [
-				'name'          => __( 'Israeli New Sheqel (ILS)', 'event-tickets' ),
-				'symbol'        => '&#x20aa;',
-				'decimal_point' => ',',
-				'thousands_sep' => '.',
+				'name'                  => __( 'Israeli New Sheqel (ILS)', 'event-tickets' ),
+				'symbol'                => '&#x20aa;',
+				'decimal_point'         => ',',
+				'thousands_sep'         => '.',
+				'decimal_precision'     => 2,
+				'stripe_minimum_charge' => null,
 			],
 			'INR' => [
-				'name'          => __( 'Indian Rupee (INR)', 'event-tickets' ),
-				'symbol'        => '&#x20B9;',
-				'decimal_point' => '.',
-				'thousands_sep' => ',',
+				'name'                  => __( 'Indian Rupee (INR)', 'event-tickets' ),
+				'symbol'                => '&#x20B9;',
+				'decimal_point'         => '.',
+				'thousands_sep'         => ',',
+				'decimal_precision'     => 2,
+				'stripe_minimum_charge' => 0.50,
 			],
 			'JPY' => [
-				'name'          => __( 'Japanese Yen (JPY)', 'event-tickets' ),
-				'symbol'        => '&#165;',
-				'decimal_point' => '.',
-				'thousands_sep' => ',',
+				'name'                  => __( 'Japanese Yen (JPY)', 'event-tickets' ),
+				'symbol'                => '&#165;',
+				'decimal_point'         => '.',
+				'thousands_sep'         => ',',
+				'decimal_precision'     => 0,
+				'stripe_minimum_charge' => 50,
 			],
 			'MYR' => [
-				'name'          => __( 'Malaysian Ringgit (MYR)', 'event-tickets' ),
-				'symbol'        => '&#82;&#77;',
-				'decimal_point' => '.',
-				'thousands_sep' => ',',
+				'name'                  => __( 'Malaysian Ringgit (MYR)', 'event-tickets' ),
+				'symbol'                => '&#82;&#77;',
+				'decimal_point'         => '.',
+				'thousands_sep'         => ',',
+				'decimal_precision'     => 2,
+				'stripe_minimum_charge' => 2.00,
 			],
 			'MXN' => [
-				'name'          => __( 'Mexican Peso (MXN)', 'event-tickets' ),
-				'symbol'        => '&#x24;',
-				'decimal_point' => '.',
-				'thousands_sep' => ',',
+				'name'                  => __( 'Mexican Peso (MXN)', 'event-tickets' ),
+				'symbol'                => '&#x24;',
+				'decimal_point'         => '.',
+				'thousands_sep'         => ',',
+				'decimal_precision'     => 2,
+				'stripe_minimum_charge' => 10.00,
 			],
 			'NOK' => [
-				'name'          => __( 'Norwegian Krone (NOK)', 'event-tickets' ),
-				'symbol'        => '',
-				'decimal_point' => ',',
-				'thousands_sep' => '.',
+				'name'                  => __( 'Norwegian Krone (NOK)', 'event-tickets' ),
+				'symbol'                => '',
+				'decimal_point'         => ',',
+				'thousands_sep'         => '.',
+				'decimal_precision'     => 2,
+				'stripe_minimum_charge' => 3.00,
 			],
 			'NZD' => [
-				'name'          => __( 'New Zealand Dollar (NZD)', 'event-tickets' ),
-				'symbol'        => '&#x24;',
-				'decimal_point' => '.',
-				'thousands_sep' => ',',
+				'name'                  => __( 'New Zealand Dollar (NZD)', 'event-tickets' ),
+				'symbol'                => '&#x24;',
+				'decimal_point'         => '.',
+				'thousands_sep'         => ',',
+				'decimal_precision'     => 2,
+				'stripe_minimum_charge' => 0.50,
 			],
 			'PHP' => [
-				'name'          => __( 'Philippine Peso (PHP)', 'event-tickets' ),
-				'symbol'        => '&#x20b1;',
-				'decimal_point' => '.',
-				'thousands_sep' => ',',
+				'name'                  => __( 'Philippine Peso (PHP)', 'event-tickets' ),
+				'symbol'                => '&#x20b1;',
+				'decimal_point'         => '.',
+				'thousands_sep'         => ',',
+				'decimal_precision'     => 2,
+				'stripe_minimum_charge' => null,
 			],
 			'PLN' => [
-				'name'          => __( 'Polish Zloty (PLN)', 'event-tickets' ),
-				'symbol'        => '&#x7a;&#x142;',
-				'decimal_point' => ',',
-				'thousands_sep' => '.',
+				'name'                  => __( 'Polish Zloty (PLN)', 'event-tickets' ),
+				'symbol'                => '&#x7a;&#x142;',
+				'decimal_point'         => ',',
+				'thousands_sep'         => '.',
+				'decimal_precision'     => 2,
+				'stripe_minimum_charge' => 2.00,
 			],
 			'RUB' => [
-				'name'          => __( 'Russian Ruble (RUB)', 'event-tickets' ),
-				'symbol'        => '&#x20BD;',
-				'decimal_point' => '.',
-				'thousands_sep' => ',',
+				'name'                  => __( 'Russian Ruble (RUB)', 'event-tickets' ),
+				'symbol'                => '&#x20BD;',
+				'decimal_point'         => '.',
+				'thousands_sep'         => ',',
+				'decimal_precision'     => 2,
+				'stripe_minimum_charge' => null,
 			],
 			'SEK' => [
-				'name'          => __( 'Swedish Krona (SEK)', 'event-tickets' ),
-				'symbol'        => '&#x6b;&#x72;',
-				'decimal_point' => ',',
-				'thousands_sep' => '.',
+				'name'                  => __( 'Swedish Krona (SEK)', 'event-tickets' ),
+				'symbol'                => '&#x6b;&#x72;',
+				'decimal_point'         => ',',
+				'thousands_sep'         => '.',
+				'decimal_precision'     => 2,
+				'stripe_minimum_charge' => 3.00,
 			],
 			'SGD' => [
-				'name'          => __( 'Singapore Dollar (SGD)', 'event-tickets' ),
-				'symbol'        => '&#x53;&#x24;',
-				'decimal_point' => '.',
-				'thousands_sep' => ',',
+				'name'                  => __( 'Singapore Dollar (SGD)', 'event-tickets' ),
+				'symbol'                => '&#x53;&#x24;',
+				'decimal_point'         => '.',
+				'thousands_sep'         => ',',
+				'decimal_precision'     => 2,
+				'stripe_minimum_charge' => 0.50,
 			],
 			'THB' => [
-				'name'          => __( 'Thai Baht (THB)', 'event-tickets' ),
-				'symbol'        => '&#x0e3f;',
-				'decimal_point' => '.',
-				'thousands_sep' => ',',
+				'name'                  => __( 'Thai Baht (THB)', 'event-tickets' ),
+				'symbol'                => '&#x0e3f;',
+				'decimal_point'         => '.',
+				'thousands_sep'         => ',',
+				'decimal_precision'     => 2,
+				'stripe_minimum_charge' => null,
 			],
 			'TWD' => [
-				'name'          => __( 'Taiwan New Dollar (TWD)', 'event-tickets' ),
-				'symbol'        => '&#x4e;&#x54;&#x24;',
-				'decimal_point' => '.',
-				'thousands_sep' => ',',
+				'name'                  => __( 'Taiwan New Dollar (TWD)', 'event-tickets' ),
+				'symbol'                => '&#x4e;&#x54;&#x24;',
+				'decimal_point'         => '.',
+				'thousands_sep'         => ',',
+				'decimal_precision'     => 2,
+				'stripe_minimum_charge' => null,
 			],
 			'USD' => [
-				'name'          => __( 'U.S. Dollar (USD)', 'event-tickets' ),
-				'symbol'        => '&#x24;',
-				'decimal_point' => '.',
-				'thousands_sep' => ',',
+				'name'                  => __( 'U.S. Dollar (USD)', 'event-tickets' ),
+				'symbol'                => '&#x24;',
+				'decimal_point'         => '.',
+				'thousands_sep'         => ',',
+				'decimal_precision'     => 2,
+				'stripe_minimum_charge' => 0.50,
 			],
 		] );
 	}
