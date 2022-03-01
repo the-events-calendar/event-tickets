@@ -19,6 +19,8 @@ This plugin makes it easy to sell tickets, collect registrations, and manage att
 
 Connect to Stripe and take advantage of one of the world’s most popular payment gateways. Our Stripe integration lets you accept credit card payments on your website, along with additional payment methods including AfterPay, ClearPay, AliPay, Giropay, and Klarna.
 
+https://vimeo.com/480516958
+
 Easily connect to PayPal without any complicated API keys or code through our quick connection wizard in your WordPress backend. With just a few clicks, you can begin selling tickets and enable payment through PayPal, Venmo, and credit cards.
 
 Even more, you can [upgrade to Event Tickets Plus](https://theeventscalendar.com/products/wordpress-event-tickets/?utm_source=wordpress&utm_medium=referral&utm_campaign=event-tickets-page&utm_content=) and unlock additional payment methods including digital wallets like ApplePay and Google Pay through Stripe, or use WooCommerce to take advantage of popular payment solutions including Braintree, Square, AmazonPay, and more.
