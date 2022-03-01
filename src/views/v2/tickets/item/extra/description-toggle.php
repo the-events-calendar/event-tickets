@@ -4,7 +4,7 @@
  * Extra column, description toggle.
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/tickets/item/extra/price.php
+ * [your-theme]/tribe/tickets/v2/tickets/item/extra/description-toggle.php
  *
  * See more documentation about our views templating system.
  *
