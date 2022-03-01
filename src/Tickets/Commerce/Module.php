@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Testing GHA tests.
+ */
 namespace TEC\Tickets\Commerce;
 
 use TEC\Tickets\Commerce;
