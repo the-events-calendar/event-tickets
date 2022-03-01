@@ -4,7 +4,7 @@
  * Registration Summary
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/blocks/tickets/registration/summary.php
+ * [your-theme]/tribe/tickets/blocks/tickets/registration/content.php
  *
  * See more documentation about our Blocks Editor templating system.
  *
