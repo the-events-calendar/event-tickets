@@ -186,7 +186,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [5.3.1] TBD =
 
 * Fix - Fixed a warning message when creating an event via Community Events. [CT-51]
-* Enhancement - Updated theme compatibily class to make use of common compatibility classes. [ET-850]
+* Enhancement - Updated theme compatibility class to make use of common compatibility classes. [ET-850]
 * Enhancement - Tweaked `get_tickets` method to improve stability and performance around ticket. [ET-1362]
 
 = [5.3.0] 2022-02-24 =
