@@ -11,7 +11,7 @@ use Tribe__Utils__Array as Arr;
  *
  * @since   5.1.9
  *
- * @package TEC\Tickets\Commerce\Gateways\PayPal
+ * @package TEC\Tickets\Commerce
  */
 class Module extends \Tribe__Tickets__Tickets {
 
@@ -439,7 +439,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 */
 
 	/**
-	 * Get's the product price html
+	 * Returns the ticket price html template.
 	 *
 	 * @since 5.1.9
 	 *
@@ -449,7 +449,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * @return string
 	 */
 	public function get_price_html( $product, $attendee = false ) {
-		return tribe( Ticket::class )->get_price_html( $product, $attendee );
+		return tribe( Ticket::class )->get_price_html( $product );
 	}
 
 	/**

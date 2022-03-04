@@ -6,10 +6,7 @@ use TEC\Tickets\Commerce\Status\Denied;
 use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Status\Status_Interface;
-use TEC\Tickets\Commerce\Utils\Price;
-use TEC\Tickets\Event;
-
-use Tribe__Utils__Array as Arr;
+use TEC\Tickets\Commerce\Utils\Value;
 use Tribe__Tickets__Global_Stock as Event_Stock;
 
 /**
@@ -127,6 +124,34 @@ class Ticket {
 	 * @var string
 	 */
 	public static $status_count_meta_key_prefix = '_tec_tc_ticket_status_count';
+
+	/**
+	 * Stores the instance of the template engine that we will use for rendering the elements.
+	 *
+	 * @since 5.2.3
+	 *
+	 * @var \Tribe__Template
+	 */
+	protected $template;
+
+	/**
+	 * Gets the template instance used to setup the rendering html.
+	 *
+	 * @since 5.2.3
+	 *
+	 * @return \Tribe__Template
+	 */
+	public function get_template() {
+		if ( empty( $this->template ) ) {
+			$this->template = new \Tribe__Template();
+			$this->template->set_template_origin( \Tribe__Tickets__Main::instance() );
+			$this->template->set_template_folder( 'src/views/v2/commerce/ticket' );
+			$this->template->set_template_context_extract( true );
+			$this->template->set_template_folder_lookup( true );
+		}
+
+		return $this->template;
+	}
 
 	/**
 	 * Register this Class post type into WP.
@@ -269,9 +294,6 @@ class Ticket {
 			return null;
 		}
 
-		/** @todo TribeCommerceLegacy: Remove the usage of Currency from Tribe Commerce totally, leave that behind. */
-		add_filter( 'tribe_get_option_ticket-commerce-currency-code', [ tribe( Legacy_Compat::class ), 'maybe_load_currency_code_from_tribe_commerce' ], 10, 3 );
-
 		$event_id = get_post_meta( $ticket_id, static::$event_relation_meta_key, true );
 
 		$return = new \Tribe__Tickets__Ticket_Object();
@@ -282,6 +304,7 @@ class Ticket {
 		$return->menu_order       = $product->menu_order;
 		$return->post_type        = $product->post_type;
 		$return->price            = get_post_meta( $ticket_id, '_price', true );
+		$return->value            = Value::create( $return->price );
 		$return->provider_class   = Module::class;
 		$return->admin_link       = '';
 		$return->show_description = $return->show_description();
@@ -843,30 +866,29 @@ class Ticket {
 	}
 
 	/**
-	 * Gets the product price value.
+	 * Gets the product price value object
 	 *
-	 * @todo  TribeCommerceLegacy: This should not be used, the model should be used.
-	 *
-	 * @since 5.1.9
+	 * @since   5.1.9
+	 * @since   5.2.3 method signature changed to return an instance of Value instead of a string.
 	 *
 	 * @param int|\WP_Post $product
 	 *
-	 * @return string
+	 * @return Commerce\Utils\Value;
+	 * @version 5.2.3
+	 *
 	 */
 	public function get_price_value( $product ) {
-		$product = get_post( $product );
+		$ticket = Models\Ticket_Model::from_post( $product );
 
-		if ( ! $product instanceof \WP_Post ) {
-			return false;
+		if ( ! $ticket instanceof Models\Ticket_Model ) {
+			return;
 		}
 
-		return get_post_meta( $product->ID, static::$price_meta_key, true );
+		return $ticket->get_value();
 	}
 
 	/**
-	 * Get's the product price html
-	 *
-	 * @todo  TribeCommerceLegacy: This should not be used, the model and a template should be used.
+	 * Returns the ticket price html template
 	 *
 	 * @since 5.1.9
 	 *
@@ -876,30 +898,8 @@ class Ticket {
 	 * @return string
 	 */
 	public function get_price_html( $product, $attendee = false ) {
-		$product_id = $product;
+		$value = $this->get_price_value( $product );
 
-		if ( $product instanceof \WP_Post ) {
-			$product_id = $product->ID;
-		} elseif ( is_numeric( $product_id ) ) {
-			$product = get_post( $product_id );
-		} else {
-			return '';
-		}
-
-		$price = Price::to_currency( Price::to_string( $this->get_price_value( $product ) ) );
-
-		$price_html = '<span class="tribe-tickets-price-amount amount">' . esc_html( $price ) . '</span>';
-
-		/**
-		 * Allow filtering of the Price HTML
-		 *
-		 * @since 5.1.9
-		 *
-		 * @param string $price_html
-		 * @param mixed  $product
-		 * @param mixed  $attendee
-		 *
-		 */
-		return apply_filters( 'tec_tickets_commerce_ticket_price_html', $price_html, $product, $attendee );
+		return $this->get_template()->template( 'price', [ 'price' => $value ], false );
 	}
 }

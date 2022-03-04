@@ -1128,7 +1128,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 			],
 		] );
 
-		$updated_event = tribe_tickets_update_capacity( $event_id, 10 );
 		$deleted_event = tribe_tickets_delete_capacity( $event_id );
 
 		$this->assertTrue( $deleted_event, 'Could not delete capacity for event' );
@@ -1156,7 +1155,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 			],
 		] );
 
-		$updated_event = tribe_tickets_update_capacity( $post_id, 10 );
 		$deleted_event = tribe_tickets_delete_capacity( $post_id );
 
 		$this->assertTrue( $deleted_event, 'Could not delete capacity for post' );

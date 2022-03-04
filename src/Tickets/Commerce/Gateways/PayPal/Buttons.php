@@ -43,32 +43,20 @@ class Buttons {
 		return $this->template;
 	}
 
+
 	/**
-	 * Get the checkout script tag for PayPal buttons.
+	 * Returns the variables for gateway's checkout template.
 	 *
-	 * @since 5.1.10
+	 * @since 5.3.0
 	 *
-	 * @return string
+	 * @return []
 	 */
-	public function get_checkout_script() {
-		// Bail if PayPal is not configured and active.
-		if ( ! tribe( Merchant::class )->is_active() ) {
-			return;
-		}
-
-		$items = tribe( Cart::class )->get_items_in_cart( true );
-
-		// Bail if there are no tickets in cart.
-		if ( empty( $items ) ) {
-			return;
-		}
-
+	public function get_checkout_template_vars() {
 		$client        = tribe( Client::class );
-		$must_login    = ! is_user_logged_in() && tribe( Module::class )->login_required();
+
 		$template_vars = [
 			'url'            => $client->get_js_sdk_url(),
 			'attribution_id' => Gateway::ATTRIBUTION_ID,
-			'must_login'     => $must_login,
 		];
 
 		$client_token_data       = $client->get_client_token();
@@ -79,59 +67,10 @@ class Buttons {
 			$template_vars['client_token_expires_in'] = $client_token_expires_in - 60;
 		}
 
-		$html = $this->get_template()->template( 'checkout-script', $template_vars, false );
+		$merchant = tribe( Merchant::class );
+		$template_vars['supports_custom_payments'] = $merchant->get_supports_custom_payments();
+		$template_vars['active_custom_payments']   = $merchant->get_active_custom_payments();
 
-		tribe_asset_enqueue( 'tec-tickets-commerce-gateway-paypal-checkout' );
-
-		return $html;
-	}
-
-
-	/**
-	 * Include the payment buttons from PayPal into the Checkout page.
-	 *
-	 * @since 5.2.0
-	 *
-	 * @param string           $file     Which file we are loading.
-	 * @param string           $name     Name of file file
-	 * @param \Tribe__Template $template Which Template object is being used.
-	 *
-	 */
-	public function include_payment_buttons( $file, $name, $template ) {
-		$must_login = ! is_user_logged_in() && tribe( Module::class )->login_required();
-
-		$template->template( 'gateway/paypal/buttons', [ 'must_login' => $must_login ] );
-	}
-
-
-	/**
-	 * Include the advanced payment fields from PayPal into the Checkout page.
-	 *
-	 * @since 5.2.0
-	 *
-	 * @param string           $file     Which file we are loading.
-	 * @param string           $name     Name of file file
-	 * @param \Tribe__Template $template Which Template object is being used.
-	 *
-	 */
-	public function include_advanced_payments( $file, $name, $template ) {
-		$items = tribe( Cart::class )->get_items_in_cart( true );
-
-		// Bail if there are no tickets in cart.
-		if ( empty( $items ) ) {
-			return;
-		}
-
-		$must_login = ! is_user_logged_in() && tribe( Module::class )->login_required();
-		$merchant   = tribe( Merchant::class );
-
-		$template->template(
-			'gateway/paypal/advanced-payments',
-			[
-				'supports_custom_payments' => $merchant->get_supports_custom_payments(),
-				'active_custom_payments'   => $merchant->get_active_custom_payments(),
-				'must_login'               => $must_login,
-			]
-		);
+		return $template_vars;
 	}
 }

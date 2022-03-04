@@ -30,6 +30,7 @@ class Status_Handler extends \tad_DI52_ServiceProvider {
 	 * @var string[]
 	 */
 	protected $default_statuses = [
+		Action_Required::class,
 		Created::class,
 		Completed::class,
 		Denied::class,

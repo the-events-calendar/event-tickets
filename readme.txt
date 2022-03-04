@@ -1,10 +1,10 @@
 === Event Tickets ===
 
-Contributors: theeventscalendar, brianjessee, camwynsp, paulkim, aguseo, bordoni, borkweb, GeoffBel, geoffgraham, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra
+Contributors: theeventscalendar, brianjessee, camwynsp, aguseo, bordoni, borkweb, GeoffBel, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra, moraleida.me
 Tags: tickets, registration, The Events Calendar, RSVP, ticket sales, attendee management
 Requires at least: 5.6
-Tested up to: 5.8.1
-Stable tag: 5.2.2
+Tested up to: 5.9.1
+Stable tag: 5.3.0.1
 Requires PHP: 7.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -13,11 +13,21 @@ Event Tickets allows your visitors to RSVP and buy tickets to events on your sit
 
 == Description ==
 
-Manage tickets and RSVPs for free with [Event Tickets](https://evnt.is/1ao8), from the team behind the number one calendar on WordPress.
+Sell tickets and collect RSVPs with the free [Event Tickets](https://evnt.is/1ao8) plugin, from the team behind the number one calendar in WordPress.
 
-This plugin makes it easy to sell tickets and collect registration for in-person or virtual events. Plus, it comes with features backed by our world-class team of developers and designers. Integrate Event Tickets with your PayPal business account and manage attendees from your WordPress dashboard.
+This plugin makes it easy to sell tickets, collect registrations, and manage attendees for your in-person or virtual events. Plus, it comes with features backed by our world-class team of developers and designers. Easily integrate Event Tickets with your Stripe account or PayPal business account.
+
+Connect to Stripe and take advantage of one of the world’s most popular payment gateways. Our Stripe integration lets you accept credit card payments on your website, along with additional payment methods including AfterPay, ClearPay, AliPay, Giropay, and Klarna.
 
 https://vimeo.com/480516958
+
+Easily connect to PayPal without any complicated API keys or code through our quick connection wizard in your WordPress backend. With just a few clicks, you can begin selling tickets and enable payment through PayPal, Venmo, and credit cards.
+
+Even more, you can [upgrade to Event Tickets Plus](https://theeventscalendar.com/products/wordpress-event-tickets/?utm_source=wordpress&utm_medium=referral&utm_campaign=event-tickets-page&utm_content=) and unlock additional payment methods including digital wallets like ApplePay and Google Pay through Stripe, or use WooCommerce to take advantage of popular payment solutions including Braintree, Square, AmazonPay, and more.
+
+Easily connect to PayPal without any complicated API keys or code through our quick connection wizard in your WordPress backend. With just a few clicks, you can begin selling tickets and enable payment through PayPal, Venmo, and credit cards.
+
+Even more, you can [upgrade to Event Tickets Plus](https://theeventscalendar.com/products/wordpress-event-tickets/?utm_source=wordpress&utm_medium=referral&utm_campaign=event-tickets-page&utm_content=) and unlock additional payment methods including digital wallets like ApplePay and Google Pay through Stripe, or use WooCommerce to take advantage of popular payment solutions including Braintree, Square, AmazonPay, and more.
 
 = 🎟️ Ticketing and Registration for WordPress =
 
@@ -35,22 +45,23 @@ Whether your vision is big or small, you're in good company. Thousands of small 
 
 = ✨ Features =
 
-✔️ Attendees can RSVP to events
 ✔️ Attendees can purchase tickets to events
+✔️ Attendees can RSVP to events
+✔️ Sell tickets with PayPal and/or Stripe using our free commerce solution, Tickets Commerce.
 ✔️ Add RSVPs and tickets to posts, pages, or custom post types
-✔️ Collect ticket fees by connecting your PayPal business account
+✔️ Collect ticket fees by connecting your PayPal business or Stripe account
 ✔️ Generate sales and attendee reports
 ✔️ Ticket stock countdown
 ✔️ Automatic ticket confirmation emails
 ✔️ Works out of the box with [The Events Calendar](https://wordpress.org/plugins/the-events-calendar/)
 ✔️ Responsive design works on all devices
-✔️ Tested on the major theme frameworks such as Avada, Genesis, Woo Themes, Thesis and many more.
+✔️ Tested on the major theme frameworks such as Avada, Genesis, Kadence, Thesis and many more.
 ✔️ Internationalized & translated
 ✔️ Extensive template tags for customization
 ✔️ Hooks & filters galore
 ✔️ [Library of extensions](https://evnt.is/1a0r)
 
-Upgrade to [Event Tickets Plus](https://evnt.is/18th) for full WooCommerce integration to use additional payment gateways like Stripe or Braintree.
+Upgrade to [Event Tickets Plus](https://evnt.is/18th) for full WooCommerce integration to use additional payment gateways.
 
 == 📃 Documentation ==
 
@@ -60,8 +71,10 @@ Additional helpful links:
 
 * [Guide: Getting Started with Event Tickets](https://theeventscalendar.com/knowledgebase/guide/event-tickets/)
 * [Installing Event Tickets Video](https://evnt.is/1ao9)
-* [Do I need Event TIckets or Event Tickets Plus?](https://evnt.is/1aoa)
+* [Using Tickets Commerce Video](https://www.youtube.com/watch?v=2MZnZDMjpCk)
+* [Do I need Event Tickets or Event Tickets Plus?](https://evnt.is/1aoa)
 * [How to Make Money with Virtual Events](https://evnt.is/1aob)
+* [Implementing Stripe on Event Tickets and Event Tickets Plus](https://theeventscalendar.com/knowledgebase/k/implementing-stripe-on-event-tickets-and-event-tickets-plus/)
 
 If you have any questions about this plugin, you can post a thread in the WordPress.org forum. Please search existing threads before starting a new on
 
@@ -143,7 +156,7 @@ If you're already an [Event Tickets Plus](https://evnt.is/18wk) subscriber, you'
 
 Event Tickets is our free ticketing plugin that has all the basics you need to sell tickets and collect RSVPs on your website. You can use Event Tickets with or without The Events Calendar.
 
-[Event Tickets Plus](https://evnt.is/18wk) is a premium plugin that runs alongside Event Tickets and enhances it with extra features, including custom registration fields, shortcodes, WooCommerce integration, our [mobile ticketing app](https://evnt.is/1aof) and more.
+[Event Tickets Plus](https://evnt.is/18wk) is a premium plugin that runs alongside Event Tickets and enhances it with extra features, including custom registration fields, shortcodes, WooCommerce integration, enhanced Stripe functionality for Stripe for Tickets Commerce, our [mobile ticketing app](https://evnt.is/1aof) and more.
 
 [Read more to learn which plugin is right for you.](https://evnt.is/1aoa)
 
@@ -179,63 +192,48 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.2.2] 2021-12-15 =
+= [5.3.0.1] 2022-03-01 =
 
-* Feature - Included Price, Currency and Value classes to improve monetary handling for Tickets Commerce [ET-1331]
-* Enhancement - Allow for filtering of tickets within the RSVP template block handler. [ETP-763]
-* Fix - Remove use of `wp_cache_flush()` and use conditional when using an external object cache. (props to @r-a-y for this change!) [ET-1343]
-* Fix - Fixes error being caused by an endless loop when currency settings are saved. [ET-1344]
-* Fix - Fixed an issue where shared capacity on the ticket block page wasn't calculated correctly. [ET-1291]
-* Fix - Fixed the `Add Attendee` modal from generating a 500 error when two or more tickets have been enabled for an event. [ETP-764]
-* Language - 0 new strings added, 50 updated, 0 fuzzied, and 0 obsoleted
+* Tweak - Update version of Freemius to 2.4.3.
 
-= [5.2.1] 2021-11-17 =
+= [5.3.0] 2022-02-24 =
 
-* Enhancement - Auto generate checkout page when enabling Tickets Commerce. [ET-1232]
-* Enhancement - Auto generate order success page when enabling Tickets Commerce. [ET-1233]
-* Enhancement - Added filter `tribe_tickets_manual_attendee_allow_email_resend` to allow customization of email resending via Manual Attendees depending on status. [ETP-703]
-* Enhancement - Add `getPrice` method to utilities JS object to centralize the way we get ticket prices. [ET-1238]
-* Enhancement - Add a modal with more information about the PayPal connection after connecting with PayPal via Tickets Commerce. [ET-1321]
-* Fix - Fixes error being caused when trying to load attendee information. [ET-1320]
-* Fix - Added `allow_resending_email` method which can be used to enable or disable resending email. [ETP-703]
-* Fix - Fixed ticket total formatting within the attendee registration modal when using custom thousands and decimal separators. [ET-1216]
-* Fix - QR Code API generation settings not working if `The Events Calendar` plugin was not active. [ETP-754]
-* Fix - Fixed the event cost formatting issues showing the wrong currency symbol, symbol location and separators. [ET-1251]
-* Fix - Disable "Connect to PayPal" button while a new URL is not available, after changing countries. [ET-1318]
-* Fix - Searching Ticket Holder Email / Ticket Holder Name through the Attendee page now functions as expected. [ET-1171]\
-* Fix - Working with PayPal accounts in currencies other than USD now works as expected. [ET-1330]
-* Language - 17 new strings added, 41 updated, 0 fuzzied, and 0 obsoleted
+* Version - Event Tickets 5.3.0 is only compatible with Event Tickets Plus 5.4.0 and higher
+* Feature - Introduction of Stripe for Tickets Commerce. [ET-1342]
+* Feature - Collect purchaser name and email for anonymous purchases using Tickets Commerce. [ET-1378]
+* Feature - Introduce automatic handling of zero-decimal currencies in Tickets Commerce [ET-1414][ET-1420]
+* Fix - Remove anonymous purchase notice for Tickets Commerce after ET-1378 was implemented. [ET-1379]
+* Tweak - Added filters: `tec_tickets_commerce_order_purchaser_data`, `tec_tickets_commerce_order_purchaser_data`, `tec_tickets_commerce_stripe_checkout_localized_data`, `tec_tickets_commerce_stripe_order_endpoint_error_messages`, `tec_tickets_commerce_stripe_settings`, `tec_tickets_commerce_stripe_settings`, `tec_tickets_commerce_stripe_payment_methods_by_currency`, `tec_tickets_commerce_stripe_payment_methods_available`, `tec_tickets_commerce_stripe_fee_is_applied_notice`, `tec_tickets_commerce_gateway_stripe_webhook_event_handlers`, `tec_tickets_commerce_gateway_stripe_webhook_status`, `tec_tickets_commerce_gateway_stripe_webhook_events_labels_map`, `tec_tickets_commerce_payments_tab_sections`, `tec_tickets_commerce_currency_{$code}_name`, `tec_tickets_commerce_currency_name`, `tec_tickets_commerce_currency_{$code}_precision`, `tec_tickets_commerce_currency_precision`
+* Tweak - Removed filters: `tec_tickets_commerce_gateway_paypal_tracking_id`
+* Tweak - Changed views: `tickets/email`, `v2/commerce/checkout`, `v2/commerce/checkout/cart`, `v2/commerce/checkout/footer/gateway-error`, `v2/commerce/checkout/gateways`, `v2/commerce/checkout/purchaser-info`, `v2/commerce/checkout/purchaser-info/email`, `v2/commerce/checkout/purchaser-info/name`, `v2/commerce/gateway/paypal/container`, `v2/commerce/gateway/stripe/card-element`, `v2/commerce/gateway/stripe/container`, `v2/commerce/gateway/stripe/payment-element`
+* Language - 102 new strings added, 164 updated, 0 fuzzied, and 3 obsoleted
 
-= [5.2.0.1] 2021-11-10 =
+= [5.2.4.1] 2022-02-17 =
 
-* Fix - Ensures that Tickets Commerce attendees get archived properly when an order is canceled or not completed. [ET-1322]
+* Fix - Classic Editor compatibility problems with the Ticket Form resolved [GTRIA-738]
 
-= [5.2.0] 2021-11-04 =
+= [5.2.4] 2022-02-15 =
 
-* Feature - Introduction of Tickets Commerce, the new and improved solution you can set up to sell tickets with Event Tickets.
-* Language - 840 new strings added, 432 updated, 26 fuzzied, and 16 obsoleted
+* Tweak - Compatibility with the Common Abstract for editor blocks registration.
+* Tweak - Remove the `wp.editor.InnerBlocks` gutenberg component in favor of `wp.blockEditor.InnerBlocks` which was deprecated since version 5.3. [ET-1367]
+* Tweak - Prevent scripts from loading on all Admin pages, only load on pages needed.
+* Tweak - Performance improvements around Block Asset loading and redundancy.
+* Tweak - Internal caching of values to reduce `get_option()` call count.
+* Tweak - Switch from `sanitize_title_with_dashes` to `sanitize_key` in a couple instances for performance gains.
+* Tweak - Prevent asset loading from repeating calls to plugin URL and path, resulting in some minor performance gains.
+* Fix - Update the way we handle Classic Editor compatibility. Specifically around user choice. [TEC-4016]
+* Fix - Remove incorrect reference for moment.min.js.map [TEC-4148]
+* Fix - Fixed troubleshooting page styles for standalone Event Tickets setup [ET-1382]
+* Fix - Remove singleton created from a deprecated class.
+* Language - 0 new strings added, 12 updated, 0 fuzzied, and 0 obsoleted
 
-= [5.1.10] 2021-09-27 =
+= [5.2.3] 2022-01-19 =
 
-* Enhancement - When editing an RSVP or ticket in the block editor, allow title to wrap to multiple lines. [ET-1089]
-* Enhancement - Ensure that text for the RSVP going/not going dropdown on front end isn't cut off and arrows aren't hidden. [ET-1169]
-* Tweak - Added a new filter `tribe_tickets_get_provider_query_slug` to allow customization of the provider URL variable name. [ET-543]
-* Tweak - Changed the `provider` URL variable name to `tickets_provider`. The filter `tribe_tickets_get_provider_query_slug` allows for customization. [ET-543]
-* Fix - Fixed ticket total formatting when using custom thousands and decimal separators. [ET-1197]
-* Fix - Show warning while creating new tickets with `0` price for TribeCommerce. [ET-1201]
-* Fix - Prevent text overlapping description in the ticket AR modal. [ET-1179]
-* Fix - Removed the ability to resend tickets from the Attendees page to Attendees who cancelled or refunded their ticket. [ETP-703]
-* Language - 26 new strings added, 116 updated, 2 fuzzied, and 35 obsoleted
-
-= [5.1.9.1] 2021-09-08 =
-
-* Fix - Fixed conflict with WooCommerce Payments plugin showing error on Ticket Form. [ET-1174]
-
-= [5.1.9] 2021-08-31 =
-
-* Fix - Fixed cart calculation inconsistency with WooCommerce when the "Number of decimals" setting was set to `0`. [ETP-324]
-* Fix - Removed RSVP V2 preview templates and functionality. [ET-1162]
-* Fix - Updated deprecated hook `block_categories` to use `block_categories_all`. [ET-1156]
-* Language - 37 new strings added, 162 updated, 6 fuzzied, and 20 obsoleted
+* Feature - Allow duplicating a ticket when using the Classic Editor. [ET-1349]
+* Feature - Added the TEC Tickets icon in the block editor Tickets category section. [ET-1350]
+* Enhancement - Added a warning when Tickets Commerce is enabled, but users aren't required to log in before purchasing tickets. [ET-1352
+* Fix - Added the post_type to the attendee page on Posts/Pages so that additional logic would function correctly. [ET-1319]
+* Fix - Fixed toggling of shared capacity data for tickets. [ETP-497]
+* Language - 7 new strings added, 99 updated, 0 fuzzied, and 0 obsoleted
 
 [See changelog for all versions](https://raw.githubusercontent.com/the-events-calendar/event-tickets/master/changelog.txt)
