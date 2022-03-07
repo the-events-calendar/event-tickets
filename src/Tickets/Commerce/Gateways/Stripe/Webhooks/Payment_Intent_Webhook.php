@@ -59,6 +59,8 @@ class Payment_Intent_Webhook implements Webhook_Event_Interface {
 					esc_html( $payment_intent_id )
 				)
 			);
+			
+			return $response;
 		}
 
 		$meta = [
