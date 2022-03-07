@@ -2,7 +2,9 @@
 
 namespace TEC\Tickets\Commerce\Gateways\PayPal\REST;
 
+use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_REST_Endpoint;
 use TEC\Tickets\Commerce\Gateways\PayPal\Client;
+use TEC\Tickets\Commerce\Gateways\PayPal\Gateway;
 use TEC\Tickets\Commerce\Gateways\PayPal\Merchant;
 use TEC\Tickets\Commerce\Gateways\PayPal\Refresh_Token;
 
@@ -10,7 +12,7 @@ use TEC\Tickets\Commerce\Gateways\PayPal\Signup;
 use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks;
 use TEC\Tickets\Commerce\Gateways\PayPal\WhoDat;
 use TEC\Tickets\Commerce\Notice_Handler;
-use Tribe__Documentation__Swagger__Provider_Interface;
+use TEC\Tickets\Commerce\Payments_Tab;
 use Tribe__Settings;
 use Tribe__Utils__Array as Arr;
 
@@ -27,21 +29,15 @@ use WP_REST_Server;
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal\REST
  */
-class On_Boarding_Endpoint implements Tribe__Documentation__Swagger__Provider_Interface {
+class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 
 	/**
-	 * The REST API endpoint path.
-	 *
-	 * @since 5.1.9
-	 *
-	 * @var string
+	 * @inheritDoc
 	 */
 	protected $path = '/commerce/paypal/on-boarding';
 
 	/**
-	 * Register the actual endpoint on WP Rest API.
-	 *
-	 * @since 5.1.9
+	 * @inheritDoc
 	 */
 	public function register() {
 		$namespace     = tribe( 'tickets.rest-v1.main' )->get_events_route_namespace();
@@ -70,45 +66,6 @@ class On_Boarding_Endpoint implements Tribe__Documentation__Swagger__Provider_In
 		);
 
 		$documentation->register_documentation_provider( $this->get_endpoint_path(), $this );
-	}
-
-	/**
-	 * Gets the Endpoint path for the on boarding process.
-	 *
-	 * @since 5.1.9
-	 *
-	 * @return string
-	 */
-	public function get_endpoint_path() {
-		return $this->path;
-	}
-
-	/**
-	 * Get the REST API route URL.
-	 *
-	 * @since 5.1.9
-	 *
-	 * @return string The REST API route URL.
-	 */
-	public function get_route_url() {
-		$namespace = tribe( 'tickets.rest-v1.main' )->get_events_route_namespace();
-
-		return rest_url( '/' . $namespace . $this->get_endpoint_path(), 'https' );
-	}
-
-	/**
-	 * Gets the Return URL pointing to this on boarding route.
-	 *
-	 * @since 5.1.9
-	 *
-	 * @return string
-	 */
-	public function get_return_url( $hash = null ) {
-		$arguments = [
-			'hash' => $hash,
-		];
-
-		return add_query_arg( $arguments, $this->get_route_url() );
 	}
 
 	/**
@@ -167,7 +124,10 @@ class On_Boarding_Endpoint implements Tribe__Documentation__Swagger__Provider_In
 		$signup        = tribe( Signup::class );
 		$existing_hash = $signup->get_transient_hash();
 		$request_hash  = $request->get_param( 'hash' );
-		$return_url    = Tribe__Settings::instance()->get_url( [ 'tab' => 'payments' ] );
+		$return_url    = Tribe__Settings::instance()->get_url( [
+			'tab' => Payments_Tab::$slug,
+			tribe( Payments_Tab::class)::$key_current_section_get_var => tribe( Gateway::class )->get_key(),
+		] );
 
 		if ( $request_hash !== $existing_hash ) {
 			$this->redirect_with( 'invalid-paypal-signup-hash', $return_url );
@@ -414,35 +374,5 @@ class On_Boarding_Endpoint implements Tribe__Documentation__Swagger__Provider_In
 				'sanitize_callback' => [ $this, 'sanitize_callback' ],
 			],
 		];
-	}
-
-	/**
-	 * Sanitize a request argument based on details registered to the route.
-	 *
-	 * @since 5.1.9
-	 *
-	 * @param mixed $value Value of the 'filter' argument.
-	 *
-	 * @return string|array
-	 */
-	public function sanitize_callback( $value ) {
-		if ( is_array( $value ) ) {
-			return array_map( 'sanitize_text_field', $value );
-		}
-
-		return sanitize_text_field( $value );
-	}
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @TODO  We need to make sure Swagger documentation is present.
-	 *
-	 * @since 5.1.9
-	 *
-	 * @return array
-	 */
-	public function get_documentation() {
-		return [];
 	}
 }

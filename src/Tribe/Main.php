@@ -7,7 +7,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '5.2.3';
+	const VERSION = '5.3.1';
 
 	/**
 	 * Used to store the version history.
@@ -362,7 +362,7 @@ class Tribe__Tickets__Main {
 		tribe_singleton( 'tickets.commerce.paypal', new Tribe__Tickets__Commerce__PayPal__Main );
 		tribe_singleton( 'tickets.redirections', 'Tribe__Tickets__Redirections' );
 
-		tribe_singleton( 'tickets.theme-compatibility', 'Tribe__Tickets__Theme_Compatibility' );
+		tribe_singleton( Tribe__Tickets__Theme_Compatibility::class, Tribe__Tickets__Theme_Compatibility::class );
 
 		// Event Tickets Provider to manage Events.
 		tribe_register_provider( Events_Service_Provider::class );
@@ -607,7 +607,7 @@ class Tribe__Tickets__Main {
 		add_action( 'init', tribe_callback( 'tickets.commerce.cart', 'hook' ) );
 
 		// Theme Compatibility.
-		add_filter( 'body_class', tribe_callback( 'tickets.theme-compatibility', 'filter_body_class' ) );
+		add_action( 'parse_query', [ tribe( Tribe__Tickets__Theme_Compatibility::class ), 'add_body_classes' ], 55 );
 	}
 
 	/**
