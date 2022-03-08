@@ -1796,7 +1796,7 @@ if ( ! function_exists( 'tribe_tickets_new_views_is_enabled' ) ) {
 		}
 
 		// If ET was installed on or after version 5.0.3, default to enabled.
-		$should_default_to_on_et = ! tribe_installed_before( 'Tribe__Tickets_Plus__Main', '5.0.3' );
+		$should_default_to_on_et = ! tribe_installed_before( 'Tribe__Tickets__Main', '5.0.3' );
 
 		// If ETP was installed on or after version 5.1, default to enabled.
 		$should_default_to_on_etp = class_exists( 'Tribe__Tickets_Plus__Main' ) && ! tribe_installed_before( 'Tribe__Tickets_Plus__Main', '5.1' );
