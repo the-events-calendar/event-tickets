@@ -186,6 +186,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [5.3.1] TBD =
 
 * Fix - Fixed a warning message when creating an event via Community Events. [CT-51]
+* Fix - Fixed errors for Tickets Commerce with Stripe during checkout. [ET-1447]
 * Enhancement - Updated theme compatibility class to make use of common compatibility classes. [ET-850]
 * Enhancement - Tweaked `get_tickets` method to improve stability and performance around ticket. [ET-1362]
 
