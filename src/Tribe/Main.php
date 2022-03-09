@@ -607,7 +607,7 @@ class Tribe__Tickets__Main {
 		add_action( 'init', tribe_callback( 'tickets.commerce.cart', 'hook' ) );
 
 		// Theme Compatibility.
-		add_action( 'parse_query', [ tribe( Tribe__Tickets__Theme_Compatibility::class ), 'add_body_classes' ], 55 );
+		add_filter( 'body_class', [ tribe( Tribe__Tickets__Theme_Compatibility::class ), 'add_body_classes' ], 55 );
 	}
 
 	/**
