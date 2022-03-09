@@ -28,7 +28,7 @@
 	Tickets</h2>
 
 		<div id="tribe-tickets__notice__tickets-in-cart"  class="tribe-tickets__notice tribe-tickets__notice--barred tribe-tickets__notice--barred-left" >
-
+	
 	<div  class="tribe-common-b2 tribe-tickets-notice__content tribe-common-b3" >
 		The numbers below include tickets for this event already in your cart. Clicking "Get Tickets" will allow you to edit any existing attendee information as well as change ticket quantities.	</div>
 </div>
@@ -67,7 +67,7 @@
 
 	<div  class="tribe-common-b2 tribe-common-b1--min-medium tribe-tickets__tickets-item-extra-price" >
 		<span class="tribe-tickets__tickets-sale-price">
-
+		
 				<span class="tribe-formatted-currency-wrap tribe-currency-prefix">
 					<span class="tribe-currency-symbol">$</span>
 					<span class="tribe-amount">99.00</span>
@@ -75,14 +75,14 @@
 						</span>
 </div>
 
-
+	
 <div class="tribe-common-b3 tribe-tickets__tickets-item-extra-available">
 
-
+	
 	<span class="tribe-tickets__tickets-item-extra-available-quantity"> 100 </span> available
 </div>
 
-
+	
 </div>
 
 	<div  class="tribe-common-h4 tribe-tickets__tickets-item-quantity" >
@@ -90,8 +90,8 @@
 	Sold Out</div>
 	</div>
 
-
-
+	
+	
 </div>
 <div
 	id="tribe-modal-tickets-item-21"
@@ -127,7 +127,7 @@
 
 	<div  class="tribe-common-b2 tribe-common-b1--min-medium tribe-tickets__tickets-item-extra-price" >
 		<span class="tribe-tickets__tickets-sale-price">
-
+		
 				<span class="tribe-formatted-currency-wrap tribe-currency-prefix">
 					<span class="tribe-currency-symbol">$</span>
 					<span class="tribe-amount">99.00</span>
@@ -135,14 +135,14 @@
 						</span>
 </div>
 
-
+	
 <div class="tribe-common-b3 tribe-tickets__tickets-item-extra-available">
 
-
+	
 	<span class="tribe-tickets__tickets-item-extra-available-quantity"> 100 </span> available
 </div>
 
-
+	
 </div>
 
 	<div  class="tribe-common-h4 tribe-tickets__tickets-item-quantity" >
@@ -150,13 +150,13 @@
 	Sold Out</div>
 	</div>
 
-
-
+	
+	
 </div>
 
 		<div class="tribe-tickets__tickets-footer">
 
-
+	
 	<div class="tribe-common-b2 tribe-tickets__tickets-footer-quantity">
 	<span class="tribe-tickets__tickets-footer-quantity-label">
 		Quantity:	</span>
@@ -167,7 +167,7 @@
 	<span class="tribe-tickets__tickets-footer-total-label">
 		Total:	</span>
 	<span class="tribe-tickets__tickets-footer-total-wrap">
-
+		
 				<span class="tribe-formatted-currency-wrap tribe-currency-prefix">
 					<span class="tribe-currency-symbol">$</span>
 					<span class="tribe-amount">0.00</span>
@@ -175,10 +175,10 @@
 				</span>
 </div>
 
-
+	
 </div>
 
-
+		
 		<div  class="tribe-tickets-loader__dots tribe-common-c-loader tribe-common-a11y-hidden tribe-common-c-loader__dot tribe-common-c-loader__dot--third" >
 	<svg  class="tribe-common-c-svgicon tribe-common-c-svgicon--dot tribe-common-c-loader__dot tribe-common-c-loader__dot--first"  viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg"><circle cx="7.5" cy="7.5" r="7.5"/></svg>
 	<svg  class="tribe-common-c-svgicon tribe-common-c-svgicon--dot tribe-common-c-loader__dot tribe-common-c-loader__dot--second"  viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg"><circle cx="7.5" cy="7.5" r="7.5"/></svg>
