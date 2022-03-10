@@ -524,6 +524,7 @@ class Tribe__Tickets__Main {
 		$this->register_plugin_autoload_paths();
 
 		require_once $this->plugin_path . 'src/template-tags/tickets.php';
+		require_once $this->plugin_path . 'src/template-tags/commerce.php';
 
 		// deprecated classes are registered in a class to path fashion
 		foreach ( glob( $this->plugin_path . 'src/deprecated/*.php' ) as $file ) {
