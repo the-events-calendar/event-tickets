@@ -447,6 +447,10 @@ class Tribe__Tickets__Commerce__Currency {
 			return edd_currency_symbol();
 		}
 
+		if ( 'TEC\Tickets\Commerce\Module' === $provider && function_exists( 'tec_tickets_commerce_currency_symbol' ) ) {
+			return tec_tickets_commerce_currency_symbol();
+		}
+
 		/** @var Tribe__Tickets__Commerce__PayPal__Main $tpp */
 		$tpp = tribe( 'tickets.commerce.paypal' );
 
