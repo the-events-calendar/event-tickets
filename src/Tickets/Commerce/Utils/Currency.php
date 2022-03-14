@@ -541,6 +541,14 @@ class Currency {
 				'decimal_precision'     => 2,
 				'stripe_minimum_charge' => 0.50,
 			],
+			'ZAR' => [
+				'name'                  => __( 'South African Rand (ZAR)', 'event-tickets' ),
+				'symbol'                => '&#082;',
+				'decimal_point'         => '.',
+				'thousands_sep'         => ' ',
+				'decimal_precision'     => 2,
+				'stripe_minimum_charge' => 30,
+			],
 		] );
 	}
 }
