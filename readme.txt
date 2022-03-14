@@ -192,6 +192,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Fix - Correct a misapplied Customizer color that breaks the loading "dot" animation. [ET-1437]
+
 = [5.3.0.1] 2022-03-01 =
 
 * Tweak - Update version of Freemius to 2.4.3.
