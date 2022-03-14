@@ -344,6 +344,12 @@ class Tribe__Tickets__Commerce__Currency {
 				'decimal_point' => '.',
 				'thousands_sep' => ',',
 			),
+			'ZAR' => [
+				'name'                  => __( 'South African Rand (ZAR)', 'event-tickets' ),
+				'symbol'                => '&#082;',
+				'decimal_point'         => '.',
+				'thousands_sep'         => ' ',
+			],
 		);
 
 		/**
