@@ -186,6 +186,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [5.3.1] TBD =
 
 * Fix - Fixed a warning message when creating an event via Community Events. [CT-51]
+* Fix - Fixed errors for Tickets Commerce with Stripe during checkout. [ET-1447]
+* Fix - Fixed the default views (v2) for users that are using Event Tickets as standalone, after version `5.3.0`. [ET-1448]
+* Fix - Avoid sending duplicate ticket emails for using Tickets Commerce Stripe Webhooks. [ET-1446]
+* Fix - Respect the selected currency when using Tickets Commerce in the blocks editor. [ET-1450]
 * Enhancement - Updated theme compatibility class to make use of common compatibility classes. [ET-850]
 * Enhancement - Tweaked `get_tickets` method to improve stability and performance around ticket. [ET-1362]
 

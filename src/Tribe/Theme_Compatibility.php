@@ -51,9 +51,9 @@ class Tribe__Tickets__Theme_Compatibility extends Compat {
 	 *
 	 * @since TBD
 	 *
-	 * @return void
+	 * @return array $classes List of body classes.
 	 */
-	public function add_body_classes() {
-		tribe( Body_Classes::class )->add_classes( static::get_compatibility_classes() );
+	public function add_body_classes( $classes ) {
+		return array_merge( $classes, static::get_compatibility_classes() );
 	}
 }

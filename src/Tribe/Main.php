@@ -524,6 +524,7 @@ class Tribe__Tickets__Main {
 		$this->register_plugin_autoload_paths();
 
 		require_once $this->plugin_path . 'src/template-tags/tickets.php';
+		require_once $this->plugin_path . 'src/template-tags/commerce.php';
 
 		// deprecated classes are registered in a class to path fashion
 		foreach ( glob( $this->plugin_path . 'src/deprecated/*.php' ) as $file ) {
@@ -607,7 +608,7 @@ class Tribe__Tickets__Main {
 		add_action( 'init', tribe_callback( 'tickets.commerce.cart', 'hook' ) );
 
 		// Theme Compatibility.
-		add_action( 'parse_query', [ tribe( Tribe__Tickets__Theme_Compatibility::class ), 'add_body_classes' ], 55 );
+		add_filter( 'body_class', [ tribe( Tribe__Tickets__Theme_Compatibility::class ), 'add_body_classes' ], 55 );
 	}
 
 	/**
