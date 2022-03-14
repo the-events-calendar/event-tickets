@@ -154,11 +154,7 @@ class Customizer extends \tad_DI52_ServiceProvider {
 
 			// overrides for common components/full/_loader.pcss.
 			$template .= '
-				@keyframes tribe-common-c-loader-bounce {
-					0% {}
-					50% { background-color: <%= global_elements.accent_color %>; }
-					100% {}
-				}
+			.tribe-common .tribe-common-c-svgicon--dot { color: <%= global_elements.accent_color %>; }
 			';
 		}
 
