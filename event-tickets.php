@@ -10,7 +10,7 @@ License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: event-tickets
 Domain Path: /lang/
- */
+*/
 /*
  Copyright 2010-2012 by Modern Tribe Inc and the contributors
 

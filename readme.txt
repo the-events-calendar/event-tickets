@@ -13,13 +13,21 @@ Event Tickets allows your visitors to RSVP and buy tickets to events on your sit
 
 == Description ==
 
-Manage tickets and RSVPs for free with [Event Tickets](https://evnt.is/1ao8), from the team behind the number one calendar on WordPress.
+Sell tickets and collect RSVPs with the free [Event Tickets](https://evnt.is/1ao8) plugin, from the team behind the number one calendar in WordPress.
 
-This plugin makes it easy to sell tickets and collect registration for in-person or virtual events. Plus, it comes with features backed by our world-class team of developers and designers. Integrate Event Tickets with your PayPal business account and manage attendees from your WordPress dashboard.
+This plugin makes it easy to sell tickets, collect registrations, and manage attendees for your in-person or virtual events. Plus, it comes with features backed by our world-class team of developers and designers. Easily integrate Event Tickets with your Stripe account or PayPal business account.
 
-Use our free commerce solution, Tickets Commerce, to sell tickets with PayPal and/or Stripe.
+Connect to Stripe and take advantage of one of the world’s most popular payment gateways. Our Stripe integration lets you accept credit card payments on your website, along with additional payment methods including AfterPay, ClearPay, AliPay, Giropay, and Klarna.
 
 https://vimeo.com/480516958
+
+Easily connect to PayPal without any complicated API keys or code through our quick connection wizard in your WordPress backend. With just a few clicks, you can begin selling tickets and enable payment through PayPal, Venmo, and credit cards.
+
+Even more, you can [upgrade to Event Tickets Plus](https://theeventscalendar.com/products/wordpress-event-tickets/?utm_source=wordpress&utm_medium=referral&utm_campaign=event-tickets-page&utm_content=) and unlock additional payment methods including digital wallets like ApplePay and Google Pay through Stripe, or use WooCommerce to take advantage of popular payment solutions including Braintree, Square, AmazonPay, and more.
+
+Easily connect to PayPal without any complicated API keys or code through our quick connection wizard in your WordPress backend. With just a few clicks, you can begin selling tickets and enable payment through PayPal, Venmo, and credit cards.
+
+Even more, you can [upgrade to Event Tickets Plus](https://theeventscalendar.com/products/wordpress-event-tickets/?utm_source=wordpress&utm_medium=referral&utm_campaign=event-tickets-page&utm_content=) and unlock additional payment methods including digital wallets like ApplePay and Google Pay through Stripe, or use WooCommerce to take advantage of popular payment solutions including Braintree, Square, AmazonPay, and more.
 
 = 🎟️ Ticketing and Registration for WordPress =
 
@@ -37,11 +45,11 @@ Whether your vision is big or small, you're in good company. Thousands of small 
 
 = ✨ Features =
 
-✔️ Attendees can RSVP to events
 ✔️ Attendees can purchase tickets to events
+✔️ Attendees can RSVP to events
 ✔️ Sell tickets with PayPal and/or Stripe using our free commerce solution, Tickets Commerce.
 ✔️ Add RSVPs and tickets to posts, pages, or custom post types
-✔️ Collect ticket fees by connecting your PayPal business account
+✔️ Collect ticket fees by connecting your PayPal business or Stripe account
 ✔️ Generate sales and attendee reports
 ✔️ Ticket stock countdown
 ✔️ Automatic ticket confirmation emails
@@ -53,7 +61,7 @@ Whether your vision is big or small, you're in good company. Thousands of small 
 ✔️ Hooks & filters galore
 ✔️ [Library of extensions](https://evnt.is/1a0r)
 
-Upgrade to [Event Tickets Plus](https://evnt.is/18th) for full WooCommerce integration to use additional payment gateways like Stripe or Braintree.
+Upgrade to [Event Tickets Plus](https://evnt.is/18th) for full WooCommerce integration to use additional payment gateways.
 
 == 📃 Documentation ==
 
@@ -66,6 +74,7 @@ Additional helpful links:
 * [Using Tickets Commerce Video](https://www.youtube.com/watch?v=2MZnZDMjpCk)
 * [Do I need Event Tickets or Event Tickets Plus?](https://evnt.is/1aoa)
 * [How to Make Money with Virtual Events](https://evnt.is/1aob)
+* [Implementing Stripe on Event Tickets and Event Tickets Plus](https://theeventscalendar.com/knowledgebase/k/implementing-stripe-on-event-tickets-and-event-tickets-plus/)
 
 If you have any questions about this plugin, you can post a thread in the WordPress.org forum. Please search existing threads before starting a new on
 
@@ -194,6 +203,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Enhancement - Tweaked `get_tickets` method to improve stability and performance around ticket. [ET-1362]
 * Tweak - Removed filters: `tribe_tickets_theme_compatibility_registered`
 * Language - 0 new strings added, 33 updated, 0 fuzzied, and 0 obsoleted
+
+= [5.3.0.1] 2022-03-01 =
+
+* Tweak - Update version of Freemius to 2.4.3.
 
 = [5.3.0] 2022-02-24 =
 
