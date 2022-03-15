@@ -190,8 +190,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Fixed the default views (v2) for users that are using Event Tickets as standalone, after version `5.3.0`. [ET-1448]
 * Fix - Avoid sending duplicate ticket emails for using Tickets Commerce Stripe Webhooks. [ET-1446]
 * Fix - Respect the selected currency when using Tickets Commerce in the blocks editor. [ET-1450]
-* Enhancement - Updated theme compatibility class to make use of common compatibility classes. [ET-850]
+* Enhancement - Updated theme compatibility class to make use of common compatibility classes. Deprecate the `filter_body_class` and `get_body_classes` methods from `Tribe__Tickets__Theme_Compatibility`. [ET-850]
 * Enhancement - Tweaked `get_tickets` method to improve stability and performance around ticket. [ET-1362]
+* Tweak - Removed filters: `tribe_tickets_theme_compatibility_registered`
+* Language - 0 new strings added, 33 updated, 0 fuzzied, and 0 obsoleted
 
 = [5.3.0] 2022-02-24 =
 
