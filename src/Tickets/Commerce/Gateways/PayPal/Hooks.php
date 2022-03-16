@@ -77,6 +77,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 		add_filter( 'tec_tickets_commerce_success_shortcode_success_page_paypal_template_vars', [ $this, 'include_success_page_vars' ], 10, 2 );
 		add_filter( 'tec_tickets_commerce_notice_messages', [ $this, 'include_admin_notices' ] );
 		add_filter( 'tribe-events-save-options', [ $this, 'flush_transients_when_toggling_sandbox_mode' ] );
+		add_filter( 'tec_tickets_commerce_admin_notices', [ $this, 'filter_admin_notices' ] );
 	}
 
 	/**
@@ -326,5 +327,18 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 */
 	public function flush_transients_when_toggling_sandbox_mode( $options ) {
 		return $this->container->make( Signup::class )->maybe_delete_transient_data( $options );
+	}
+	
+	/**
+	 * Filter admin notices.
+	 * 
+	 * @since TBD
+	 * 
+	 * @param array $notices Array of admin notices.
+	 * 
+	 * @return array
+	 */
+	public function filter_admin_notices( $notices ) {
+		return $this->container->make( Gateway::class )->filter_admin_notices( $notices );
 	}
 }

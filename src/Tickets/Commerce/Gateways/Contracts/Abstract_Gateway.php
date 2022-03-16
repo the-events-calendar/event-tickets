@@ -11,6 +11,7 @@ namespace TEC\Tickets\Commerce\Gateways\Contracts;
 use TEC\Tickets\Commerce;
 use TEC\Tickets\Commerce\Gateways\Manager;
 use TEC\Tickets\Commerce\Payments_Tab;
+use TEC\Tickets\Commerce\Settings;
 use Tribe__Settings;
 use Tribe__Utils__Array as Arr;
 
@@ -47,6 +48,15 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	 * @var string
 	 */
 	protected static $merchant;
+
+	/**
+	 * Supported currencies.
+	 *
+	 * @since TBD
+	 *
+	 * @var string[]
+	 */
+	protected static $supported_currencies = [];
 
 	/**
 	 * The option name prefix that configured whether or not a gateway is enabled.
@@ -301,5 +311,26 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 		}
 
 		return tribe_remove_option( static::get_enabled_option_key() );
+	}
+
+	/**
+	 * Is currency supported.
+	 *
+	 * @since TBD
+	 * 
+	 * @param string $currency_code Currency code.
+	 *
+	 * @return bool
+	 */
+	public static function is_currency_supported( $currency_code ) {
+		if ( empty( $currency_code ) ) {
+			return false;
+		}
+		
+		// If supported currencies aren't set, assume it's supported.
+		if ( empty( static::$supported_currencies ) ) {
+			return true;
+		}
+		return in_array( $currency_code, static::$supported_currencies );
 	}
 }

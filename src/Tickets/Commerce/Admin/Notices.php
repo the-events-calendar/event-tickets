@@ -20,20 +20,27 @@ class Notices extends tad_DI52_ServiceProvider {
 	 * @inheritdoc
 	 */
 	public function register() {
-
-		tribe_notice(
-			'event-tickets-tickets-commerce-checkout-not-set',
-			[ $this, 'render_checkout_notice' ],
-			[ 'dismiss' => false, 'type' => 'error' ],
-			[ $this, 'should_render_checkout_notice' ]
-		);
-
-		tribe_notice(
-			'event-tickets-tickets-commerce-success-not-set',
-			[ $this, 'render_success_notice' ],
-			[ 'dismiss' => false, 'type' => 'error' ],
-			[ $this, 'should_render_success_notice' ]
-		);
+		
+		$notices = [
+			[
+				'event-tickets-tickets-commerce-checkout-not-set',
+				[ $this, 'render_checkout_notice' ],
+				[ 'dismiss' => false, 'type' => 'error' ],
+				[ $this, 'should_render_checkout_notice' ],
+			],
+			[
+				'event-tickets-tickets-commerce-success-not-set',
+				[ $this, 'render_success_notice' ],
+				[ 'dismiss' => false, 'type' => 'error' ],
+				[ $this, 'should_render_success_notice' ],
+			],
+		];
+		
+		$notices = apply_filters( 'tec_tickets_commerce_admin_notices', $notices );
+		
+		foreach ( $notices as $notice ) {
+			call_user_func_array( 'tribe_notice', $notice );
+		}
 	}
 
 	/**

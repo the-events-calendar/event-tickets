@@ -5,6 +5,7 @@ namespace TEC\Tickets\Commerce\Gateways\Stripe;
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Gateway;
 use TEC\Tickets\Commerce\Gateways\Stripe\REST\Return_Endpoint;
 use TEC\Tickets\Commerce\Payments_Tab;
+use TEC\Tickets\Commerce\Settings as TC_Settings;
 use \Tribe__Tickets__Main;
 use Tribe__Utils__Array as Arr;
 
@@ -31,6 +32,23 @@ class Gateway extends Abstract_Gateway {
 	 * @inheritDoc
 	 */
 	protected static $merchant = Merchant::class;
+	
+	/**
+	 * @inheritDoc
+	 */
+	protected static $supported_currencies = [
+		'USD', 'AED', 'AFN', 'ALL', 'AMD', 'ANG', 'AOA', 'ARS', 'AUD', 'AWG', 'AZN', 'BAM', 'BBD', 
+		'BDT', 'BGN', 'BIF', 'BMD', 'BND', 'BOB', 'BRL', 'BSD', 'BWP', 'BYN', 'BZD', 'CAD', 'CDF', 
+		'CHF', 'CLP', 'CNY', 'COP', 'CRC', 'CVE', 'CZK', 'DJF', 'DKK', 'DOP', 'DZD', 'EGP', 'ETB', 
+		'EUR', 'FJD', 'FKP', 'GBP', 'GEL', 'GIP', 'GMD', 'GNF', 'GTQ', 'GYD', 'HKD', 'HNL', 'HRK', 
+		'HTG', 'HUF', 'IDR', 'ILS', 'INR', 'ISK', 'JMD', 'JPY', 'KES', 'KGS', 'KHR', 'KMF', 'KRW', 
+		'KYD', 'KZT', 'LAK', 'LBP', 'LKR', 'LRD', 'LSL', 'MAD', 'MDL', 'MGA', 'MKD', 'MMK', 'MNT', 
+		'MOP', 'MRO', 'MUR', 'MVR', 'MWK', 'MXN', 'MYR', 'MZN', 'NAD', 'NGN', 'NIO', 'NOK', 'NPR', 
+		'NZD', 'PAB', 'PEN', 'PGK', 'PHP', 'PKR', 'PLN', 'PYG', 'QAR', 'RON', 'RSD', 'RUB', 'RWF', 
+		'SAR', 'SBD', 'SCR', 'SEK', 'SGD', 'SHP', 'SLL', 'SOS', 'SRD', 'STD', 'SZL', 'THB', 'TJS', 
+		'TOP', 'TRY', 'TTD', 'TWD', 'TZS', 'UAH', 'UGX', 'UYU', 'UZS', 'VND', 'VUV', 'WST', 'XAF', 
+		'XCD', 'XOF', 'XPF', 'YER', 'ZAR', 'ZMW', 
+	];
 
 	/**
 	 * Stripe tracking ID version.
@@ -124,5 +142,63 @@ class Gateway extends Abstract_Gateway {
 		$template_path = "gateway/{$gateway_key}/container";
 
 		return $template->template( $template_path, tribe( Stripe_Elements::class )->get_checkout_template_vars() );
+	}
+	
+	/**
+	 * Filter to add any admin notices that might be needed.
+	 * 
+	 * @since TBD
+	 * 
+	 * @param array Array of admin notices.
+	 * 
+	 * @return array
+	 */
+	public function filter_admin_notices( $notices ) {
+		
+		// Check for unsupported currency.
+		$selected_currency = tribe_get_option( TC_Settings::$option_currency_code );
+		if ( $this->is_enabled() && ! $this->is_currency_supported( $selected_currency ) ){
+			$notices[] = [
+				'tc-paypal-currency-not-supported',
+				[ $this, 'render_unsupported_currency_notice' ],
+				[ 'dismiss' => false, 'type' => 'error' ],
+			];
+		}
+		
+		return $notices;
+	}
+	
+	/**
+	 * HTML for notice for unsupported currencies
+	 * 
+	 * @since TBD
+	 * 
+	 * @return string
+	 */
+	public function render_unsupported_currency_notice() {
+		$selected_currency = tribe_get_option( TC_Settings::$option_currency_code );
+		$currency_name = tribe( Currency::class )->get_currency_name( $selected_currency );
+		// If we don't have the currency name configured, use the currency code instead.
+		if ( empty( $currency_name ) ) {
+			$currency_name = $selected_currency;
+		}
+		$notice_link = sprintf(
+			'<a href="%1$s" target="_blank" rel="noopener noreferrer">%2$s</a>',
+			esc_url( 'https://stripe.com/docs/currencies' ),
+			esc_html__( 'here', 'event-tickets' )
+		);
+		$notice_header = esc_html__( 'Stripe doesn\'t support your selected currency', 'event-tickets' );
+		$notice_text = sprintf(
+			// translators: %1$s: Link to knowledgebase article.
+			esc_html__( 'Unfortunately, Stripe doesn\'t support payments in %1$s. Please try using a different gateway or adjusting your Tickets Commerce currency setting. You can see a list of supported currencies %2$s.', 'event-tickets' ),
+			$currency_name,
+			$notice_link
+		);
+
+		return sprintf(
+			'<p><strong>%1$s</strong></p><p>%2$s</p>',
+			$notice_header,
+			$notice_text
+		);
 	}
 }
