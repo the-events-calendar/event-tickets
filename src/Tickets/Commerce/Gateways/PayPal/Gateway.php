@@ -212,7 +212,7 @@ class Gateway extends Abstract_Gateway {
 		);
 		$notice_header = esc_html__( 'PayPal doesn\'t support your selected currency', 'event-tickets' );
 		$notice_text = sprintf(
-			// translators: %1$s: Link to knowledgebase article.
+			// Translators: %1$s: Currency Name. %2$s: Link to knowledgebase article.
 			esc_html__( 'Unfortunately PayPal doesn\'t support payments in %1$s. Please try using a different gateway or adjusting your Tickets Commerce currency setting. You can see a list of supported currencies %2$s.', 'event-tickets' ),
 			$currency_name,
 			$notice_link
