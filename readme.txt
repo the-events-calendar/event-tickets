@@ -192,6 +192,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [TBD] TBD = 
+
+* Enhancement - Added a notice when an enabled Tickets Commerce gateway doesn't support it's selected currency.
+
 = [5.3.0.1] 2022-03-01 =
 
 * Tweak - Update version of Freemius to 2.4.3.
