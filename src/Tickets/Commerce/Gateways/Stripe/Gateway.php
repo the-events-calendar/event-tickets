@@ -6,6 +6,7 @@ use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Gateway;
 use TEC\Tickets\Commerce\Gateways\Stripe\REST\Return_Endpoint;
 use TEC\Tickets\Commerce\Payments_Tab;
 use TEC\Tickets\Commerce\Settings as TC_Settings;
+use TEC\Tickets\Commerce\Utils\Currency;
 use \Tribe__Tickets__Main;
 use Tribe__Utils__Array as Arr;
 
