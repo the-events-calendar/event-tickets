@@ -76,13 +76,15 @@ interface Status_Interface {
 	/**
 	 * Determines if a given order can be modified to this status.
 	 *
+	 * @since 5.3.1    $new_status parameter introduced
 	 * @since 5.1.9
 	 *
-	 * @param int|\WP_Post $order Which order we are testing against.
+	 * @param int|\WP_Post    $order      Which order we are testing against.
+	 * @param Status_Abstract $new_status The status to transition to.
 	 *
 	 * @return boolean|\WP_Error
 	 */
-	public function can_apply_to( $order );
+	public function can_apply_to( $order, $new_status );
 
 	/**
 	 * Filters the WP arguments used to register the status.

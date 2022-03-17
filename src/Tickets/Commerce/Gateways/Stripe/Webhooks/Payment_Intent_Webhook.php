@@ -59,6 +59,8 @@ class Payment_Intent_Webhook implements Webhook_Event_Interface {
 					esc_html( $payment_intent_id )
 				)
 			);
+			
+			return $response;
 		}
 
 		$meta = [
@@ -114,10 +116,12 @@ class Payment_Intent_Webhook implements Webhook_Event_Interface {
 			return true;
 		}
 
-		foreach ( $payment_intents_stored as $intent ) {
-			// This payment intent has already been processed and updated.
-			if ( $payment_intent_received['id'] === $intent['id'] ) {
-				return false;
+		foreach ( $payment_intents_stored as $status => $intents ) {
+			foreach( $intents as $intent ) {
+				// This payment intent has already been processed and updated.
+				if ( $payment_intent_received['id'] === $intent['id'] ) {
+					return false;
+				}
 			}
 		}
 
