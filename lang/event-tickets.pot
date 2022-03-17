@@ -2,19 +2,19 @@
 # This file is distributed under the same license as the Event Tickets package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Event Tickets 5.3.0\n"
+"Project-Id-Version: Event Tickets 5.3.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/event-tickets\n"
-"POT-Creation-Date: 2022-02-23 17:47:54+00:00\n"
+"POT-Creation-Date: 2022-03-15 18:47:00+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2022-02-23 17:47\n"
+"PO-Revision-Date: 2022-03-15 18:47\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 
-#. #-#-#-#-#  event-tickets.pot (Event Tickets 5.3.0)  #-#-#-#-#
+#. #-#-#-#-#  event-tickets.pot (Event Tickets 5.3.1)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
-#: event-tickets.php:61 src/Tribe/Admin/Notices.php:92 src/Tribe/Main.php:691
+#: event-tickets.php:61 src/Tribe/Admin/Notices.php:92 src/Tribe/Main.php:692
 #: src/Tribe/Privacy.php:59 src/admin-views/admin-welcome-message.php:58
 msgid "Event Tickets"
 msgstr ""
@@ -4578,32 +4578,32 @@ msgid "Reach out to PayPal to resolve the following capabilities:"
 msgstr ""
 
 #: src/Tickets/Commerce/Gateways/PayPal/Tickets_Form.php:77
-#: src/Tribe/Commerce/PayPal/Main.php:1908 src/Tribe/RSVP.php:2355
+#: src/Tribe/Commerce/PayPal/Main.php:1906 src/Tribe/RSVP.php:2361
 msgid "Return to the %1$sAttendees Report%2$s."
 msgstr ""
 
 #: src/Tickets/Commerce/Gateways/PayPal/Tickets_Form.php:84
-#: src/Tribe/Commerce/PayPal/Main.php:1915 src/Tribe/RSVP.php:2362
+#: src/Tribe/Commerce/PayPal/Main.php:1913 src/Tribe/RSVP.php:2368
 msgid "Post updated. %1$s"
 msgstr ""
 
 #: src/Tickets/Commerce/Gateways/PayPal/Tickets_Form.php:88
-#: src/Tribe/Commerce/PayPal/Main.php:1919 src/Tribe/RSVP.php:2366
+#: src/Tribe/Commerce/PayPal/Main.php:1917 src/Tribe/RSVP.php:2372
 msgid "Post published. %1$s"
 msgstr ""
 
 #: src/Tickets/Commerce/Gateways/PayPal/Tickets_Form.php:91
-#: src/Tribe/Commerce/PayPal/Main.php:1922 src/Tribe/RSVP.php:2369
+#: src/Tribe/Commerce/PayPal/Main.php:1920 src/Tribe/RSVP.php:2375
 msgid "Post submitted."
 msgstr ""
 
 #: src/Tickets/Commerce/Gateways/PayPal/Tickets_Form.php:92
-#: src/Tribe/Commerce/PayPal/Main.php:1923 src/Tribe/RSVP.php:2370
+#: src/Tribe/Commerce/PayPal/Main.php:1921 src/Tribe/RSVP.php:2376
 msgid "Post scheduled."
 msgstr ""
 
 #: src/Tickets/Commerce/Gateways/PayPal/Tickets_Form.php:93
-#: src/Tribe/Commerce/PayPal/Main.php:1924 src/Tribe/RSVP.php:2371
+#: src/Tribe/Commerce/PayPal/Main.php:1922 src/Tribe/RSVP.php:2377
 msgid "Post draft updated."
 msgstr ""
 
@@ -4976,7 +4976,7 @@ msgid "Tribe Commerce ( Legacy PayPal, not recommended )"
 msgstr ""
 
 #: src/Tickets/Commerce/Models/Attendee_Model.php:62
-#: src/Tribe/Commerce/PayPal/Main.php:2959 src/Tribe/RSVP.php:2014
+#: src/Tribe/Commerce/PayPal/Main.php:2957 src/Tribe/RSVP.php:2020
 msgid "(deleted)"
 msgstr ""
 
@@ -4995,7 +4995,7 @@ msgid "Payments"
 msgstr ""
 
 #: src/Tickets/Commerce/Payments_Tab.php:281 src/Tribe/Admin/Notices.php:214
-#: src/Tribe/Main.php:666 src/admin-views/admin-welcome-message.php:56
+#: src/Tribe/Main.php:667 src/admin-views/admin-welcome-message.php:56
 #: src/admin-views/tribe-commerce-settings.php:4
 msgid "Event Tickets Plus"
 msgstr ""
@@ -5113,12 +5113,12 @@ msgid "Orders Report"
 msgstr ""
 
 #: src/Tickets/Commerce/Reports/Orders.php:91
-#: src/Tribe/Commerce/PayPal/Main.php:1724
+#: src/Tribe/Commerce/PayPal/Main.php:1722
 msgid "Sales report"
 msgstr ""
 
 #: src/Tickets/Commerce/Reports/Orders.php:132
-#: src/Tribe/Commerce/PayPal/Main.php:1750
+#: src/Tribe/Commerce/PayPal/Main.php:1748
 msgid "Report"
 msgstr ""
 
@@ -5975,7 +5975,7 @@ msgstr ""
 msgid "%s Capacity"
 msgstr ""
 
-#: src/Tribe/CSV_Importer/RSVP_Importer.php:250
+#: src/Tribe/CSV_Importer/RSVP_Importer.php:254
 msgid "Recurring event tickets are not supported, event %s."
 msgstr ""
 
@@ -6334,90 +6334,90 @@ msgid ""
 "moving you to a newer version of PHP."
 msgstr ""
 
-#: src/Tribe/Main.php:621
+#: src/Tribe/Main.php:622
 msgid "Support for Event Tickets"
 msgstr ""
 
-#: src/Tribe/Main.php:623
+#: src/Tribe/Main.php:624
 msgid "Settings overview"
 msgstr ""
 
-#: src/Tribe/Main.php:624
+#: src/Tribe/Main.php:625
 msgid "Features overview"
 msgstr ""
 
-#: src/Tribe/Main.php:625
+#: src/Tribe/Main.php:626
 msgid "Troubleshooting common problems"
 msgstr ""
 
-#: src/Tribe/Main.php:626
+#: src/Tribe/Main.php:627
 msgid "Customizing Event Tickets"
 msgstr ""
 
-#: src/Tribe/Main.php:643
+#: src/Tribe/Main.php:644
 msgid "New User Primer"
 msgstr ""
 
-#: src/Tribe/Main.php:645
+#: src/Tribe/Main.php:646
 msgctxt "help feature box section"
 msgid ""
 "We are committed to helping you sell %1$s for your event. Check out our "
 "handy %2$s to get started."
 msgstr ""
 
-#: src/Tribe/Main.php:662
+#: src/Tribe/Main.php:663
 msgid "open-source forum on WordPress.org"
 msgstr ""
 
-#: src/Tribe/Main.php:663
+#: src/Tribe/Main.php:664
 msgid ""
 "If you have tried the above steps and are still having trouble, you can post "
 "a new thread to our %s. Our support staff monitors these forums once a week "
 "and would be happy to assist you there."
 msgstr ""
 
-#: src/Tribe/Main.php:665
+#: src/Tribe/Main.php:666
 msgid "premium support on our website"
 msgstr ""
 
-#: src/Tribe/Main.php:667
+#: src/Tribe/Main.php:668
 msgid ""
 "Looking for more immediate support? We offer %1$s with the purchase of any "
 "of our premium plugins (like %2$s). Pick up a license and you can post there "
 "directly and expect a response within 24-48 hours during weekdays."
 msgstr ""
 
-#: src/Tribe/Main.php:669 src/Tribe/Main.php:674
+#: src/Tribe/Main.php:670 src/Tribe/Main.php:675
 msgid "post a thread"
 msgstr ""
 
-#: src/Tribe/Main.php:670
+#: src/Tribe/Main.php:671
 msgid ""
 "Already have Event Tickets Plus? You can %s in our premium support forums. "
 "Our support team monitors the forums and will respond to your thread within "
 "24-48 hours (during the week)."
 msgstr ""
 
-#: src/Tribe/Main.php:675
+#: src/Tribe/Main.php:676
 msgid ""
 "If you have a valid license for one of our paid plugins, you can %s in our "
 "premium support forums. Our support team monitors the forums and will "
 "respond to your thread within 24-48 hours (during the week)."
 msgstr ""
 
-#: src/Tribe/Main.php:697
+#: src/Tribe/Main.php:698
 msgid "Event Tickets - Legacy"
 msgstr ""
 
-#: src/Tribe/Main.php:833
+#: src/Tribe/Main.php:834
 msgid "Welcome to Event Tickets!"
 msgstr ""
 
-#: src/Tribe/Main.php:986
+#: src/Tribe/Main.php:987
 msgid "Buy"
 msgstr ""
 
-#: src/Tribe/Main.php:1065
+#: src/Tribe/Main.php:1066
 msgid ""
 "When Event Tickets and Event Tickets Plus are both activated, Event Tickets "
 "Plus must be running version %1$s or greater. Please %2$smanually update now"
@@ -7343,16 +7343,16 @@ msgstr ""
 msgid "You confirmed you will not be attending %s"
 msgstr ""
 
-#: src/Tribe/RSVP.php:1723
+#: src/Tribe/RSVP.php:1729
 msgid ""
 "Your %1$s has been received! Check your email for your %1$s confirmation."
 msgstr ""
 
-#: src/Tribe/RSVP.php:1730
+#: src/Tribe/RSVP.php:1736
 msgid "You can't %1$s more than the total remaining %2$s."
 msgstr ""
 
-#: src/Tribe/RSVP.php:1738
+#: src/Tribe/RSVP.php:1744
 msgid "In order to %s, you must enter your name and a valid email address."
 msgstr ""
 
