@@ -192,6 +192,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Fix - Fixed JS assets loading and causing errors on checkout page for Tickets Commerce. [ET-1426]
+
 = [5.3.1] 2022-03-15 =
 
 * Fix - Fixed a warning message when creating an event via Community Events. [CT-51]
