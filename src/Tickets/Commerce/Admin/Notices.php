@@ -36,6 +36,13 @@ class Notices extends tad_DI52_ServiceProvider {
 			],
 		];
 		
+		/**
+		 * Filters admin notices.
+		 *
+		 * @since TBD
+		 *
+		 * @param array[] $notices Array of admin notice parameters.
+		 */
 		$notices = apply_filters( 'tec_tickets_commerce_admin_notices', $notices );
 		
 		foreach ( $notices as $notice ) {

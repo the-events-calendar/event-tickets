@@ -330,6 +330,6 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 		if ( empty( static::$supported_currencies ) ) {
 			return true;
 		}
-		return in_array( $currency_code, static::$supported_currencies );
+		return in_array( $currency_code, static::$supported_currencies, true );
 	}
 }

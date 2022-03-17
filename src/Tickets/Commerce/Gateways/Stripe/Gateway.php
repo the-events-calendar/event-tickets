@@ -160,7 +160,7 @@ class Gateway extends Abstract_Gateway {
 		$selected_currency = tribe_get_option( TC_Settings::$option_currency_code );
 		if ( $this->is_enabled() && ! $this->is_currency_supported( $selected_currency ) ){
 			$notices[] = [
-				'tc-paypal-currency-not-supported',
+				'tc-stripe-currency-not-supported',
 				[ $this, 'render_unsupported_currency_notice' ],
 				[ 'dismiss' => false, 'type' => 'error' ],
 			];
