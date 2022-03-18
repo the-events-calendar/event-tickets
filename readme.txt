@@ -3,8 +3,8 @@
 Contributors: theeventscalendar, brianjessee, camwynsp, aguseo, bordoni, borkweb, GeoffBel, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra, moraleida.me
 Tags: tickets, registration, The Events Calendar, RSVP, ticket sales, attendee management
 Requires at least: 5.6
-Tested up to: 5.9.1
-Stable tag: 5.3.0.1
+Tested up to: 5.9.2
+Stable tag: 5.3.2
 Requires PHP: 7.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -195,6 +195,18 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [TBD] TBD =
 
 * Enhancement - Adding the South African Rand to list of supported currencies in Tickets Commerce. [ET-1438]
+
+= [5.3.1] 2022-03-15 =
+
+* Fix - Fixed a warning message when creating an event via Community Events. [CT-51]
+* Fix - Fixed errors for Tickets Commerce with Stripe during checkout. [ET-1447]
+* Fix - Fixed the default views (v2) for users that are using Event Tickets as standalone, after version `5.3.0`. [ET-1448]
+* Fix - Avoid sending duplicate ticket emails for using Tickets Commerce Stripe Webhooks. [ET-1446]
+* Fix - Respect the selected currency when using Tickets Commerce in the blocks editor. [ET-1450]
+* Enhancement - Updated theme compatibility class to make use of common compatibility classes. Deprecate the `filter_body_class` and `get_body_classes` methods from `Tribe__Tickets__Theme_Compatibility`. [ET-850]
+* Enhancement - Tweaked `get_tickets` method to improve stability and performance around ticket. [ET-1362]
+* Tweak - Removed filters: `tribe_tickets_theme_compatibility_registered`
+* Language - 0 new strings added, 33 updated, 0 fuzzied, and 0 obsoleted
 
 = [5.3.0.1] 2022-03-01 =
 

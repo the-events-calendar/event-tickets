@@ -1,13 +1,13 @@
 <?php return '<div
-	id="tribe-block-tickets-item-12943"
-	 class="tribe-tickets__tickets-item post-12943 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	 data-ticket-id="12943" data-available="false" data-has-shared-cap="false" data-ticket-price="99" data-whatever="value" >
+	id="tribe-block-tickets-item-11"
+	 class="tribe-tickets__tickets-item post-11 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	 data-ticket-id="11" data-available="false" data-has-shared-cap="false" data-ticket-price="99" data-whatever="value" >
 
 	<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__tickets-item-content-title"  >
 		Test ticket for 8</div>
 
 
 <div
-	id="tribe__details__content--12943"
+	id="tribe__details__content--11"
 	 class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__tickets-item-details-content" >
 	Test ticket description for 8</div>
 <div  class="tribe-tickets__tickets-item-extra" >
