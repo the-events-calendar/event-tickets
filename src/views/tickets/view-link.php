@@ -51,6 +51,18 @@ if ( empty( $post_type ) || ! is_user_logged_in() ) {
 	return;
 }
 
+/**
+ * Filters the arg to determine whether or not to hide the view link.
+ *
+ * @since TBD
+ *
+ * @param bool True/false to hide view link.
+ */
+$hide_view_link = apply_filters( 'tec_tickets_hide_view_link', tribe_doing_shortcode( 'tribe_tickets' ) );
+if ( $hide_view_link ) {
+	return;
+}
+
 $is_event_page = class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::POSTTYPE === $event->post_type;
 
 $post_type_singular = $post_type ? $post_type->labels->singular_name : _x( 'Post', 'fallback post type singular name', 'event-tickets' );

@@ -29,6 +29,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
 
+/**
+ * Filters the arg to determine whether or not to hide the view link.
+ *
+ * @since TBD
+ *
+ * @param bool True/false to hide view link.
+ */
+$hide_view_link = apply_filters( 'tec_tickets_hide_view_link', tribe_doing_shortcode( 'tribe_tickets' ) );
+if ( $hide_view_link ) {
+	return;
+}
+
 $view      = Tribe__Tickets__Tickets_View::instance();
 $event_id  = $this->get( 'post_id' );
 $event     = get_post( $event_id );
