@@ -71,10 +71,10 @@ if ( $has_plus ) {
 	<div class="tribe-events-admin-quick-nav">
 		<div class="tribe-events-admin-quick-nav__title"><?php esc_html_e( 'Quick Links:', 'event-tickets' ); ?></div>
 		<ul class="tribe-events-admin-quick-nav__links">
+			<li class="tribe-events-admin-quick-nav__link-item">
+				<a href="<?php echo esc_url( Tribe__Tickets__Main::instance()->settings()->get_url() ); ?>" target="_blank" rel="noopener noreferrer" class="tribe-events-admin-quick-nav__link"><?php esc_html_e( 'Configure Settings', 'event-tickets' ); ?></a>
+			</li>
 			<?php if ( $has_plus && $has_tec ) : // ET+ with TEC. ?>
-				<li class="tribe-events-admin-quick-nav__link-item">
-					<a href="edit.php?page=tribe-common&tab=event-tickets&post_type=tribe_events" target="_blank" rel="noopener noreferrer" class="tribe-events-admin-quick-nav__link"><?php esc_html_e( 'Configure Settings', 'event-tickets' ); ?></a>
-				</li>
 				<li class="tribe-events-admin-quick-nav__link-item">
 					<a href="plugin-install.php?tab=plugin-information&amp;plugin=woocommerce&amp;TB_iframe=true" class="tribe-events-admin-quick-nav__link thickbox open-plugin-details-modal"><?php esc_html_e( 'Install WooCommerce', 'event-tickets' ); ?></a>
 				</li>
@@ -83,9 +83,6 @@ if ( $has_plus ) {
 				</li>
 			<?php elseif ( $has_plus ) : // ET+ without TEC. ?>
 				<li class="tribe-events-admin-quick-nav__link-item">
-					<a href="edit.php?page=tribe-common&tab=event-tickets" target="_blank" rel="noopener noreferrer" class="tribe-events-admin-quick-nav__link"><?php esc_html_e( 'Configure Settings', 'event-tickets' ); ?></a>
-				</li>
-				<li class="tribe-events-admin-quick-nav__link-item">
 					<a href="plugin-install.php?tab=plugin-information&amp;plugin=woocommerce&amp;TB_iframe=true" class="tribe-events-admin-quick-nav__link thickbox open-plugin-details-modal"><?php esc_html_e( 'Install WooCommerce', 'event-tickets' ); ?></a>
 				</li>
 				<li class="tribe-events-admin-quick-nav__link-item">
@@ -93,18 +90,12 @@ if ( $has_plus ) {
 				</li>
 			<?php elseif ( $has_tec ) : // ET with TEC. ?>
 				<li class="tribe-events-admin-quick-nav__link-item">
-					<a href="edit.php?page=tribe-common&tab=event-tickets&post_type=tribe_events" target="_blank" rel="noopener noreferrer" class="tribe-events-admin-quick-nav__link"><?php esc_html_e( 'Configure Settings', 'event-tickets' ); ?></a>
-				</li>
-				<li class="tribe-events-admin-quick-nav__link-item">
 					<a href="post-new.php?post_type=tribe_events" class="tribe-events-admin-quick-nav__link"><?php esc_html_e( 'Create RSVP', 'event-tickets' ); ?></a>
 				</li>
 				<li class="tribe-events-admin-quick-nav__link-item">
 					<a href="https://evnt.is/1axt" target="_blank" rel="noopener noreferrer" class="tribe-events-admin-quick-nav__link"><?php esc_html_e( 'Set Up Tickets Commerce', 'event-tickets' ); ?></a>
 				</li>
 			<?php else : // ET without TEC. ?>
-				<li class="tribe-events-admin-quick-nav__link-item">
-					<a href="edit.php?page=tribe-common&tab=event-tickets" target="_blank" rel="noopener noreferrer" class="tribe-events-admin-quick-nav__link"><?php esc_html_e( 'Configure Settings', 'event-tickets' ); ?></a>
-				</li>
 				<li class="tribe-events-admin-quick-nav__link-item">
 					<a href="plugin-install.php?tab=plugin-information&amp;plugin=the-events-calendar&amp;TB_iframe=true" class="tribe-events-admin-quick-nav__link thickbox open-plugin-details-modal"><?php esc_html_e( 'Install The Events Calendar', 'event-tickets' ); ?></a>
 				</li>
