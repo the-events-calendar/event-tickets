@@ -76,7 +76,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	public static $key_section_menu = 'tec_tc_section_menu';
 
 	/**
-	 * Stores the instance of the template engine that we will use for rendering differentelements.
+	 * Stores the instance of the template engine that we will use for rendering different elements.
 	 *
 	 * @since 5.3.0
 	 *
@@ -145,7 +145,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 		$args['tab'] = static::$slug;
 
 		// Use the settings page get_url to build the URL.
-		return Tribe__Settings::instance()->get_url( $args );
+		return Tribe__Tickets__Main::instance()->settings()->get_url( $args );
 	}
 
 	/**

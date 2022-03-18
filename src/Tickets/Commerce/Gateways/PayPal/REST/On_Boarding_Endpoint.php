@@ -124,7 +124,7 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 		$signup        = tribe( Signup::class );
 		$existing_hash = $signup->get_transient_hash();
 		$request_hash  = $request->get_param( 'hash' );
-		$return_url    = Tribe__Settings::instance()->get_url( [
+		$return_url    = Tribe__Tickets__Main::instance()->settings()->get_url( [
 			'tab' => Payments_Tab::$slug,
 			tribe( Payments_Tab::class)::$key_current_section_get_var => tribe( Gateway::class )->get_key(),
 		] );

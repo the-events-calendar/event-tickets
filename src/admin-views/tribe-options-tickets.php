@@ -233,7 +233,7 @@ $tickets_fields = array_merge(
 );
 
 /**
- * Filters the fields to be registered in the Events > Settings > Tickets tab.
+ * Filters the fields to be registered in the Settings > General tab.
  *
  * A field definition is one suitable to be consumed by the `Tribe__Settings_Tab` class.
  *
@@ -246,5 +246,5 @@ $tickets_fields = apply_filters( 'tribe_tickets_settings_tab_fields', $tickets_f
 
 $tickets_tab = [
 	'priority' => 20,
-	'fields' => $tickets_fields,
+	'fields'   => $tickets_fields,
 ];

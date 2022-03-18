@@ -30,6 +30,30 @@ class Tribe__Tickets__Admin__Ticket_Settings {
 	}
 
 	/**
+	 * Returns the main admin tickets settings URL.
+	 *
+	 * @param array $args Arguments to pass to the URL.
+	 *
+	 * @return string
+	 */
+	public function get_url( array $args = [] ) {
+		$defaults = [
+			'page' => self::$settings_page_id,
+		];
+
+		// Allow the link to be "changed" on the fly.
+		$args = wp_parse_args( $args, $defaults );
+
+		$wp_url = is_network_admin() ? network_admin_url( 'settings.php' ) : admin_url( 'admin.php' );
+
+		// Keep the resulting URL args clean.
+		$url = add_query_arg( $args, $wp_url );
+
+		return apply_filters( 'tec_tickets_settings_url', $url, $args, $url );
+
+	}
+
+	/**
 	 * Adds the Event Tickets settings page to the pages configuration.
 	 *
 	 * @since TBD

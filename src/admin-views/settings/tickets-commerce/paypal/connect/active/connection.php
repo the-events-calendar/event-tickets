@@ -23,7 +23,7 @@ if ( empty( $is_merchant_connected ) ) {
 }
 
 $name           = $merchant->get_merchant_id();
-$disconnect_url = Tribe__Settings::instance()->get_url( [
+$disconnect_url = Tribe__Tickets__Main::instance()->settings()->get_url( [
 	'tab' => Payments_Tab::$slug,
 	Payments_Tab::$key_current_section_get_var => $gateway_key,
 	'tc-action' => 'paypal-disconnect'

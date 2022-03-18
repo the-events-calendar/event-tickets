@@ -916,6 +916,13 @@ class Tribe__Tickets__Main {
 	}
 
 	/**
+	 * settings page object accessor
+	 */
+	public function settings() {
+		return $this->settings_tab();
+	}
+
+	/**
 	 * Returns the supported post types for tickets
 	 */
 	public function post_types() {
