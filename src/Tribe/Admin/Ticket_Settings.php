@@ -49,8 +49,14 @@ class Tribe__Tickets__Admin__Ticket_Settings {
 		// Keep the resulting URL args clean.
 		$url = add_query_arg( $args, $wp_url );
 
-		return apply_filters( 'tec_tickets_settings_url', $url, $args, $url );
-
+		/**
+		 * Filters the URL to the Event Tickets settings page.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $url The URL to the Event Tickets settings page.
+		 */
+		return apply_filters( 'tec_tickets_settings_url', $url );
 	}
 
 	/**

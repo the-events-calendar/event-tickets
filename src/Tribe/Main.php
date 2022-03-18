@@ -828,6 +828,7 @@ class Tribe__Tickets__Main {
 			$this->activation_page = new Tribe__Admin__Activation_Page( [
 				'slug'                  => 'event-tickets',
 				'admin_page'            => 'tickets_page_tec-tickets-settings', // @todo @juanfra: See if we can set this on a var or something.
+				'admin_url'             => $this->settings()->get_url(),
 				'version'               => self::VERSION,
 				'activation_transient'  => '_tribe_tickets_activation_redirect',
 				'plugin_path'           => $this->plugin_dir . 'event-tickets.php',
