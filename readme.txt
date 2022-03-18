@@ -25,10 +25,6 @@ Easily connect to PayPal without any complicated API keys or code through our qu
 
 Even more, you can [upgrade to Event Tickets Plus](https://theeventscalendar.com/products/wordpress-event-tickets/?utm_source=wordpress&utm_medium=referral&utm_campaign=event-tickets-page&utm_content=) and unlock additional payment methods including digital wallets like ApplePay and Google Pay through Stripe, or use WooCommerce to take advantage of popular payment solutions including Braintree, Square, AmazonPay, and more.
 
-Easily connect to PayPal without any complicated API keys or code through our quick connection wizard in your WordPress backend. With just a few clicks, you can begin selling tickets and enable payment through PayPal, Venmo, and credit cards.
-
-Even more, you can [upgrade to Event Tickets Plus](https://theeventscalendar.com/products/wordpress-event-tickets/?utm_source=wordpress&utm_medium=referral&utm_campaign=event-tickets-page&utm_content=) and unlock additional payment methods including digital wallets like ApplePay and Google Pay through Stripe, or use WooCommerce to take advantage of popular payment solutions including Braintree, Square, AmazonPay, and more.
-
 = 🎟️ Ticketing and Registration for WordPress =
 
 See Event Tickets in action on our [demo site](https://evnt.is/1ajs). Just getting started? Check out the [Getting Started Guide](https://evnt.is/1aoc) for an introduction to features, settings, and functionality.
