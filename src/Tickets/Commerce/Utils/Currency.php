@@ -551,4 +551,28 @@ class Currency {
 			],
 		] );
 	}
+	
+	/**
+	 * Creates the array for a currency drop-down using only code & name
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function get_currency_code_options() {
+		$currency_map = $this->get_default_currency_map();
+		$options = array_combine(
+			array_keys( $currency_map ),
+			wp_list_pluck( $currency_map, 'name' )
+		);
+
+		/**
+		 * Filters the currency code options shown to the user in the TC settings.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $options
+		 */
+		return apply_filters( 'tec_tickets_commerce_currency_code_options', $options );
+	}
 }
