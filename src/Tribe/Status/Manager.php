@@ -354,6 +354,14 @@ class Tribe__Tickets__Status__Manager {
 			}
 		}
 
+		// Add Completed statuses for Tickets Commerce providers.
+		if ( \TEC\Tickets\Commerce::ABBR === $abbreviated_name ) {
+			$completed_status = tribe( \TEC\Tickets\Commerce\Status\Completed::class );
+			$trigger_statuses = [
+				$completed_status::SLUG,
+				$completed_status->get_name(),
+			];
+		}
 
 		return $trigger_statuses;
 
