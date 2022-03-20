@@ -76,7 +76,7 @@ interface Status_Interface {
 	/**
 	 * Determines if a given order can be modified to this status.
 	 *
-	 * @since TBD    $new_status parameter introduced
+	 * @since 5.3.1    $new_status parameter introduced
 	 * @since 5.1.9
 	 *
 	 * @param int|\WP_Post    $order      Which order we are testing against.

@@ -2,7 +2,7 @@
 /**
  * Tickets Commerce functions.
  *
- * @since TBD
+ * @since 5.3.1
  *
  * Helpers to work with and customize ticketing-related features.
  */
@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Returns the Tickets Commerce currency code.
  *
- * @since TBD
+ * @since 5.3.1
  *
  * @return string String containing the Tickets Commerce currency code.
  */
@@ -29,7 +29,7 @@ function tec_tickets_commerce_currency_code() {
 /**
  * Returns the Tickets Commerce currency symbol.
  *
- * @since TBD
+ * @since 5.3.1
  *
  * @return string String containing the Tickets Commerce currency symbol.
  */
