@@ -337,20 +337,21 @@ class Tribe__Tickets__Status__Manager {
 		}
 
 		$abbreviated_name = $this->get_provider_slug( $provider_name );
+		$trigger_statuses = [];
 
-		$filtered_statuses = wp_list_filter(
-			$this->statuses[ $abbreviated_name ]->statuses,
-			[ 'count_completed' => true ]
-		);
+		if ( isset( $this->statuses[ $abbreviated_name ] ) ) {
+			$filtered_statuses = wp_list_filter(
+				$this->statuses[ $abbreviated_name ]->statuses,
+				[ 'count_completed' => true ]
+			);
 
+			foreach ( $filtered_statuses as $status ) {
+				$trigger_statuses[] = $status->provider_name;
 
-		foreach ( $filtered_statuses as $status ) {
-			$trigger_statuses[] = $status->provider_name;
-
-			if ( ! empty( $status->additional_names ) ) {
-				$trigger_statuses = $this->add_additional_names_to_array( $trigger_statuses, $status->additional_names );
+				if ( ! empty( $status->additional_names ) ) {
+					$trigger_statuses = $this->add_additional_names_to_array( $trigger_statuses, $status->additional_names );
+				}
 			}
-
 		}
 
 
