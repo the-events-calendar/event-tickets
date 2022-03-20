@@ -326,6 +326,8 @@ class Tribe__Tickets__Status__Manager {
 	 *
 	 * @since 4.10.5
 	 *
+	 * @since TBD add support fot Tickets Commerce completed statuses directly, as we have changed the way statuses are handled for Tickets Commerce.
+	 *
 	 * @param string|object $provider_name an object or string of a commerce main class name
 	 *
 	 * @return array
@@ -363,8 +365,15 @@ class Tribe__Tickets__Status__Manager {
 			];
 		}
 
-		return $trigger_statuses;
-
+		/**
+		 * Filters the array of completed status slugs for the providers.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $trigger_statuses Array of supported statuses.
+		 * @param string|object $provider_name an object or string of a commerce main class name.
+		 */
+		return apply_filters( 'tec_tickets_completed_status_by_provider_name', $trigger_statuses, $provider_name );
 	}
 
 	/**
