@@ -27,6 +27,7 @@ class Tribe__Tickets__Admin__Ticket_Settings {
 
 		add_filter( 'tribe_settings_page_title', [ $this, 'settings_page_title' ] );
 		add_filter( 'tec_admin_pages_with_tabs', [ $this, 'add_to_pages_with_tabs' ], 20, 1 );
+		add_filter( 'tec_admin_footer_text', [ $this, 'admin_footer_text_settings' ] );
 	}
 
 	/**
@@ -279,5 +280,35 @@ class Tribe__Tickets__Admin__Ticket_Settings {
 		include_once Tribe__Tickets__Main::instance()->plugin_path . 'src/admin-views/tec-tickets-options-network.php';
 
 		new Tribe__Settings_Tab( 'network', esc_html__( 'Network', 'event-tickets' ), $networkTab );
+	}
+
+	/**
+	 * Add the Event Tickets admin footer text.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $footer_text The admin footer text.
+	 * @param string $footer_text The admin footer text, maybe modified.
+	 */
+	public function admin_footer_text_settings( $footer_text ) {
+		$admin_pages = tribe( 'admin.pages' );
+		$admin_page  = $admin_pages->get_current_page();
+
+		if ( ! empty( $admin_page ) && self::$settings_page_id !== $admin_page ) {
+			return $footer_text;
+		}
+
+		// Translators: %1$s: Opening `<a>` to Event Tickets rating page. %2$s: Closing `</a>` tag. %3$s: Five stars.
+		$review_text = esc_html__( 'If you like %1$sEvent Tickets%2$s please leave us a %3$s. It takes a minute and it helps a lot.', 'event-tickets' );
+		$review_url  = 'https://wordpress.org/support/plugin/event-tickets/reviews/?filter=5';
+
+		$footer_text = sprintf(
+			$review_text,
+			'<strong>',
+			'</strong>',
+			'<a href="' . $review_url . '" target="_blank" rel="noopener noreferrer" class="tribe-rating">&#9733;&#9733;&#9733;&#9733;&#9733;</a>'
+		);
+
+		return $footer_text;
 	}
 }
