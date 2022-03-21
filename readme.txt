@@ -195,6 +195,8 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [TBD] TBD =
 
 * Fix - Fixed Events Tickets App check-in for Tickets Commerce tickets. [ET-1436]
+* Fix - Fixed Issue with Tickets Commerce Tickets not displaying in REST API [ET-1458]
+* Fix - Fixed Issue with Tickets Commerce Attendees not displaying in shortcodes [ET-1461]
 
 = [5.3.1] 2022-03-15 =
 
