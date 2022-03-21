@@ -195,6 +195,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [TBD] TBD =
 
 * Fix - Fixed JS assets loading and causing errors on checkout page for Tickets Commerce. [ET-1426]
+* Fix - Fixed Events Tickets App check-in for Tickets Commerce tickets. [ET-1436]
 
 = [5.3.1] 2022-03-15 =
 
