@@ -2,6 +2,8 @@
 
 namespace Tribe\Tickets;
 
+use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Commerce\Status\Completed;
 use Tribe__Tickets__Status__Manager as Manager;
 
 /**
@@ -90,5 +92,17 @@ class ManagerTest extends \Codeception\TestCase\WPTestCase {
 		//run setup again to get the active modules that will include Tribe Commerce
 		Manager::get_instance()->setup();
 		$this->assertArrayHasKey( 'Tribe__Tickets__Commerce__PayPal__Main', Manager::get_instance()->get_active_modules() );
+	}
+
+	/**
+	 * @test
+	 * @since TBD
+	 */
+	public function it_returns_tickets_commerce_completed_statuses() {
+		$statues = Manager::get_instance()->get_completed_status_by_provider_name( Module::class );
+
+		$completed = tribe( Completed::class );
+		$this->assertTrue( in_array( $completed->get_slug(), $statues ), 'Tickets Commerce completed status slug is not found.' );
+		$this->assertTrue( in_array( $completed->get_name(), $statues ), 'Tickets Commerce completed status name is not found.' );
 	}
 }
