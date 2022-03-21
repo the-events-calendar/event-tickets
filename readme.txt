@@ -192,7 +192,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [TBD] TBD = 
+= [TBD] TBD =
 
 * Enhancement - Added a notice when an enabled Tickets Commerce gateway doesn't support it's selected currency. [ET-1392]
 * Fix - Fixed Events Tickets App check-in for Tickets Commerce tickets. [ET-1436]
