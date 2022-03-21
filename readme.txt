@@ -194,8 +194,9 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [TBD] TBD =
 
-* Enhancement - Added a notice when an enabled Tickets Commerce gateway doesn't support it's selected currency. [ET-1392]
+* Enhancement - Adding the South African Rand to list of supported currencies in Tickets Commerce. [ET-1438]
 * Fix - Fixed Events Tickets App check-in for Tickets Commerce tickets. [ET-1436]
+* Enhancement - Added a notice when an enabled Tickets Commerce gateway doesn't support it's selected currency. [ET-1392]
 
 = [5.3.1] 2022-03-15 =
 
