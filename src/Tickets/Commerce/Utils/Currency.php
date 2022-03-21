@@ -553,11 +553,11 @@ class Currency {
 	}
 	
 	/**
-	 * Creates the array for a currency drop-down using only code & name
+	 * Creates the array for a currency drop-down using only code & name.
 	 *
 	 * @since TBD
 	 *
-	 * @return array
+	 * @return array<string, string>
 	 */
 	public function get_currency_code_options() {
 		$currency_map = $this->get_default_currency_map();
@@ -571,7 +571,7 @@ class Currency {
 		 *
 		 * @since TBD
 		 *
-		 * @param array $options
+		 * @param array<string, string> $options
 		 */
 		return apply_filters( 'tec_tickets_commerce_currency_code_options', $options );
 	}
