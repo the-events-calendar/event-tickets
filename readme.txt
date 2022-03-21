@@ -192,6 +192,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Fix - Fixed Events Tickets App check-in for Tickets Commerce tickets. [ET-1436]
+
 = [5.3.1] 2022-03-15 =
 
 * Fix - Fixed a warning message when creating an event via Community Events. [CT-51]
