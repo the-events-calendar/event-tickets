@@ -247,7 +247,7 @@ class Tribe__Tickets__Admin__Ticket_Settings {
 		$admin_pages = tribe( 'admin.pages' );
 		$settings    = Tribe__Settings::instance();
 
-		if ( ! $settings->should_setup_network_pages() ) {
+		if ( ! is_plugin_active_for_network( 'event-tickets/event-tickets.php' ) ) {
 			return;
 		}
 

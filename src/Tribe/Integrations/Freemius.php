@@ -278,7 +278,7 @@ class Tribe__Tickets__Integrations__Freemius {
 	 * @return string The Settings page path.
 	 */
 	public function get_settings_path() {
-		return Tribe__Tickets__Main::instance()->settings()->get_url();
+		return str_replace( get_admin_url(), '', Tribe__Tickets__Main::instance()->settings()->get_url() );
 	}
 
 	/**
