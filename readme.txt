@@ -196,6 +196,8 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 * Enhancement - Adding the South African Rand to list of supported currencies in Tickets Commerce. [ET-1438]
 * Fix - Fixed Events Tickets App check-in for Tickets Commerce tickets. [ET-1436]
+* Fix - Fixed Issue with Tickets Commerce Tickets not displaying in REST API. [ET-1458]
+* Fix - Fixed Issue with Tickets Commerce Attendees not displaying in shortcodes. [ET-1461]
 * Fix - Fixed JS assets loading and causing errors on checkout page for Tickets Commerce. [ET-1426]
 
 = [5.3.1] 2022-03-15 =
