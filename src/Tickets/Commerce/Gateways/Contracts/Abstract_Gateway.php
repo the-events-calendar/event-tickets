@@ -313,6 +313,24 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	}
 
 	/**
+	 * Get supported currencies.
+	 *
+	 * @since TBD
+	 *
+	 * @return string[]
+	 */
+	public static function get_supported_currencies() {
+		/**
+		 * Filter to modify supported currencies for this gateway.
+		 * 
+		 * @since TBD
+		 * 
+		 * @param string[] $supported_currencies Array of three-letter, supported currency codes.
+		 */
+		return apply_filters( 'tec_tickets_commerce_gateway_supported_currencies_' . static::$key, static::$supported_currencies );
+	}
+
+	/**
 	 * Is currency supported.
 	 *
 	 * @since TBD
@@ -326,10 +344,12 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 			return false;
 		}
 		
+		$supported_currencies = static::get_supported_currencies();
+		
 		// If supported currencies aren't set, assume it's supported.
-		if ( empty( static::$supported_currencies ) ) {
+		if ( empty( $supported_currencies ) ) {
 			return true;
 		}
-		return in_array( $currency_code, static::$supported_currencies, true );
+		return in_array( $currency_code, $supported_currencies, true );
 	}
 }
