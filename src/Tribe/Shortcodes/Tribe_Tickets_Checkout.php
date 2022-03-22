@@ -65,6 +65,7 @@ class Tribe_Tickets_Checkout extends Shortcode_Abstract {
 		$template->add_template_globals( $args );
 
 		// Enqueue assets.
+		do_action( 'tec-tickets-commerce-checkout-shortcode-assets' );
 		tribe_asset_enqueue_group( 'tribe-tickets-commerce-checkout' );
 
 		return $template->template( 'v2/tickets/commerce/checkout', $args, false );

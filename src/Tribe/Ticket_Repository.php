@@ -95,6 +95,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 		return [
 			'rsvp'           => '_tribe_rsvp_for_event',
 			'tribe-commerce' => '_tribe_tpp_for_event',
+			TEC\Tickets\Commerce::PROVIDER => TEC\Tickets\Commerce\Ticket::$event_relation_meta_key,
 		];
 	}
 

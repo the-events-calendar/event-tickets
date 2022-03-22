@@ -124,6 +124,7 @@ class Checkout_Shortcode extends Shortcode_Abstract {
 	 */
 	public static function enqueue_assets() {
 		// Enqueue assets.
+		do_action( 'tec-tickets-commerce-checkout-shortcode-assets' );
 		tribe_asset_enqueue_group( 'tribe-tickets-commerce-checkout' );
 		tribe_asset_enqueue( 'tribe-tickets-forms-style' );
 	}
