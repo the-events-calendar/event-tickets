@@ -9,6 +9,7 @@
 
 namespace Tribe\Tickets\Repositories;
 
+use TEC\Tickets\Commerce;
 use Tribe\Tickets\Repositories\Traits\Event;
 use Tribe\Tickets\Repositories\Traits\Post_Attendees;
 use Tribe\Tickets\Repositories\Traits\Post_Tickets;
@@ -82,8 +83,9 @@ class Post_Repository extends Tribe__Repository {
 	 */
 	public function attendee_types() {
 		return [
-			'rsvp'           => 'tribe_rsvp_attendees',
-			'tribe-commerce' => 'tribe_tpp_attendees',
+			'rsvp'             => 'tribe_rsvp_attendees',
+			'tribe-commerce'   => 'tribe_tpp_attendees',
+			Commerce::PROVIDER => Commerce\Attendee::POSTTYPE,
 		];
 	}
 
@@ -98,8 +100,9 @@ class Post_Repository extends Tribe__Repository {
 	 */
 	public function attendee_to_event_keys() {
 		return [
-			'rsvp'           => '_tribe_rsvp_event',
-			'tribe-commerce' => '_tribe_tpp_event',
+			'rsvp'             => '_tribe_rsvp_event',
+			'tribe-commerce'   => '_tribe_tpp_event',
+			Commerce::PROVIDER => Commerce\Attendee::$event_relation_meta_key,
 		];
 	}
 
