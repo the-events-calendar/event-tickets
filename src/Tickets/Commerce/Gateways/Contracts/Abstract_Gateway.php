@@ -49,6 +49,15 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	protected static $merchant;
 
 	/**
+	 * Supported currencies.
+	 *
+	 * @since TBD
+	 *
+	 * @var string[]
+	 */
+	protected static $supported_currencies = [];
+
+	/**
 	 * The option name prefix that configured whether or not a gateway is enabled.
 	 * It is followed by the gateway 'key'
 	 *
@@ -301,5 +310,46 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 		}
 
 		return tribe_remove_option( static::get_enabled_option_key() );
+	}
+
+	/**
+	 * Get supported currencies.
+	 *
+	 * @since TBD
+	 *
+	 * @return string[]
+	 */
+	public static function get_supported_currencies() {
+		/**
+		 * Filter to modify supported currencies for this gateway.
+		 * 
+		 * @since TBD
+		 * 
+		 * @param string[] $supported_currencies Array of three-letter, supported currency codes.
+		 */
+		return apply_filters( 'tec_tickets_commerce_gateway_supported_currencies_' . static::$key, static::$supported_currencies );
+	}
+
+	/**
+	 * Is currency supported.
+	 *
+	 * @since TBD
+	 * 
+	 * @param string $currency_code Currency code.
+	 *
+	 * @return bool
+	 */
+	public static function is_currency_supported( $currency_code ) {
+		if ( empty( $currency_code ) ) {
+			return false;
+		}
+		
+		$supported_currencies = static::get_supported_currencies();
+		
+		// If supported currencies aren't set, assume it's supported.
+		if ( empty( $supported_currencies ) ) {
+			return true;
+		}
+		return in_array( $currency_code, $supported_currencies, true );
 	}
 }
