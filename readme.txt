@@ -195,6 +195,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [TBD] TBD =
 
 * Fix - Fixed Events Tickets App check-in for Tickets Commerce tickets. [ET-1436]
+* Fix - Improved validation of Stripe webhook events to avoid handling events created by other apps. [ET-1474]
 
 = [5.3.1] 2022-03-15 =
 
