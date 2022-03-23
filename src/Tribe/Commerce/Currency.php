@@ -473,6 +473,11 @@ class Tribe__Tickets__Commerce__Currency {
 	 * @return string
 	 */
 	protected function get_provider_cost( $provider = '', $cost = '' ) {
+		// Convert to class name if object is passed.
+		if ( is_object( $provider ) ) {
+			$provider = get_class( $provider );
+		}
+
 		if ( ! class_exists( $provider ) ) {
 			return $cost;
 		}
