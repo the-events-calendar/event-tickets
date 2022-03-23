@@ -35,6 +35,15 @@ class Payment_Intent {
 	public static $test_metadata_key = 'payment_intent_validation_test';
 
 	/**
+	 * The key used to identify payment intents created in Tickets Commerce.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $tc_metadata_identifier = 'tec_tc_payment_intent';
+
+	/**
 	 * Create a simple payment intent with the designated payment methods to check for errors.
 	 *
 	 * If the payment intent succeeds it is cancelled. If it fails we display a notice to the user and not apply their
@@ -56,12 +65,15 @@ class Payment_Intent {
 		$fee   = Application_Fee::calculate( $value );
 
 		$query_args = [];
-		$body = [
+		$body       = [
 			'currency'               => $value->get_currency_code(),
 			'amount'                 => (string) $value->get_integer(),
 			'payment_method_types'   => $payment_methods,
 			'application_fee_amount' => (string) $fee->get_integer(),
-			'metadata'               => [ static::$test_metadata_key => true ],
+			'metadata'               => [
+				static::$test_metadata_key      => true,
+				static::$tc_metadata_identifier => true,
+			],
 		];
 
 		$args = [
@@ -107,6 +119,9 @@ class Payment_Intent {
 			'amount'                 => (string) $value->get_integer(),
 			'payment_method_types'   => tribe( Merchant::class )->get_payment_method_types( $retry ),
 			'application_fee_amount' => (string) $fee->get_integer(),
+			'metadata'               => [
+				static::$tc_metadata_identifier => true,
+			],
 		];
 
 		$stripe_statement_descriptor = tribe_get_option( Settings::$option_statement_descriptor );
