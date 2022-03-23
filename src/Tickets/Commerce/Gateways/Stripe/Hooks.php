@@ -48,6 +48,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 		add_filter( 'tribe_field_div_end', [ $this, 'filter_include_webhooks_copy' ], 10, 2 );
 		add_filter( 'tribe_settings_save_field_value', [ $this, 'validate_payment_methods' ], 10, 2 );
 		add_filter( 'tribe_settings_validate_field_value', [ $this, 'provide_defaults_for_hidden_fields'], 10, 3 );
+		add_filter( 'tec_tickets_commerce_admin_notices', [ $this, 'filter_admin_notices' ] );
 	}
 
 	/**
@@ -200,5 +201,18 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 */
 	public function provide_defaults_for_hidden_fields( $value, $field_id, $field ) {
 		return tribe( Settings::class )->reset_hidden_field_values( $value, $field_id, $field );
+	}
+	
+	/**
+	 * Filter admin notices.
+	 * 
+	 * @since TBD
+	 * 
+	 * @param array $notices Array of admin notices.
+	 * 
+	 * @return array
+	 */
+	public function filter_admin_notices( $notices ) {
+		return $this->container->make( Gateway::class )->filter_admin_notices( $notices );
 	}
 }
