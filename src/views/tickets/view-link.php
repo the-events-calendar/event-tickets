@@ -20,14 +20,19 @@
  * @since   5.0.1 Add additional checks to prevent PHP errors when called from automated testing.
  * @since   5.0.2 Fix template path in documentation block.
  * @since   5.1.3 Use /tribe-events/ for the template path in documentation block.
+ * @since   TBD Added use of $hide_view_my_tickets_link variable to hide link as an option.
  *
- * @version 5.1.3
+ * @version TBD
  *
  * @var Tribe__Tickets__Tickets_View $this
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
+}
+
+if ( isset( $hide_view_my_tickets_link ) && tribe_is_truthy( $hide_view_my_tickets_link ) ) {
+	return;
 }
 
 $view = Tribe__Tickets__Tickets_View::instance();

@@ -19,8 +19,9 @@
  * @since 4.10.9 Uses new functions to get singular and plural texts.
  * @since 4.12.1 Account for empty post type object, such as if post type got disabled. Fix typo in sprintf placeholders.
  * @since 5.0.2 Fix template path in documentation block.
+ * @since TBD Added use of $hide_view_my_tickets_link variable to hide link as an option.
  *
- * @version 5.0.2
+ * @version TBD
  *
  * @var Tribe__Tickets__Editor__Template $this
  */
@@ -29,15 +30,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
 
-/**
- * Filters the arg to determine whether or not to hide the view link.
- *
- * @since TBD
- *
- * @param bool True/false to hide view link.
- */
-$hide_view_link = apply_filters( 'tec_tickets_hide_view_link', tribe_doing_shortcode( 'tribe_tickets' ) );
-if ( $hide_view_link ) {
+if ( isset( $hide_view_my_tickets_link ) && tribe_is_truthy( $hide_view_my_tickets_link ) ) {
 	return;
 }
 
