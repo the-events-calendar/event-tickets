@@ -326,7 +326,9 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 		if ( isset( $data['attendee_status'] ) ) {
 			$statuses = tribe( 'tickets.status' )->get_statuses_by_action( 'all', $provider );
 			if ( ! in_array( $data['attendee_status'], $statuses, true ) ) {
-				return new WP_Error( 'invalid-attendee-status', sprintf( __( 'Supported statuses for this attendee are: %s', 'event-tickets' ), implode( $statuses, ' | ' ) ), [ 'status' => 400 ] );
+				$error_message  = __( 'Supported statuses for this attendee are: ', 'event-tickets' );
+				$error_message .= implode( $statuses, ' | ' );
+				return new WP_Error( 'invalid-attendee-status', $error_message, [ 'status' => 400 ] );
 			}
 		}
 
