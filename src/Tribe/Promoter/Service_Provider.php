@@ -7,6 +7,7 @@ use Tribe\Tickets\Promoter\Triggers\Dispatcher;
 use Tribe\Tickets\Promoter\Triggers\Factory;
 use Tribe\Tickets\Promoter\Triggers\Observers\Commerce;
 use Tribe\Tickets\Promoter\Triggers\Observers\RSVP;
+use Tribe\Tickets\Promoter\Triggers\Observers\Tickets_Commerce;
 use Tribe__Tickets__Promoter__Integration;
 use Tribe__Tickets__Promoter__Observer;
 
@@ -33,6 +34,7 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 		$this->container->singleton( Dispatcher::class, Dispatcher::class, [ 'hook' ] );
 		$this->container->singleton( Commerce::class, Commerce::class, [ 'hook' ] );
 		$this->container->singleton( RSVP::class, RSVP::class, [ 'hook' ] );
+		$this->container->singleton( Tickets_Commerce::class, Tickets_Commerce::class, [ 'hook' ] );
 
 		$this->load();
 	}
@@ -51,5 +53,6 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 		tribe( Dispatcher::class );
 		tribe( RSVP::class );
 		tribe( Commerce::class );
+		tribe( Tickets_Commerce::class );
 	}
 }
