@@ -202,6 +202,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Fixed Issue with Tickets Commerce Attendees not displaying in shortcodes. [ET-1461]
 * Fix - Fixed JS assets loading and causing errors on checkout page for Tickets Commerce. [ET-1426]
 * Fix - Fixed WooCommerce currency settings not getting reflected on Event Cost Field . [ETP-783]
+* Feature - REST API endpoints added for creating and updating attendees. [ET-1346]
 
 = [5.3.1] 2022-03-15 =
 
