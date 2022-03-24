@@ -1,12 +1,27 @@
 <?php
 
-namespace Tribe\Tickets\Promoter\Triggers\Observers;
+namespace TEC\Tickets\Commerce;
 
-use TEC\Tickets\Commerce\Module;
 use Tribe\Tickets\Promoter\Triggers\Contracts\Attendee_Model;
 use Tribe\Tickets\Promoter\Triggers\Models\Attendee;
 
-class Tickets_Commerce {
+class Promoter_Observer {
+
+	/**
+	 * @since 4.12.0
+	 *
+	 * @var Tribe__Tickets__Promoter__Observer $observer ET Observer reference.
+	 */
+	private $observer;
+
+	/**
+	 * Constructor.
+	 *
+	 */
+	public function __construct() {
+		$this->observer = tribe( \Tribe__Tickets__Promoter__Observer::class );
+		$this->hook();
+	}
 
 	/**
 	 * Attach hooks for trigger messages.
