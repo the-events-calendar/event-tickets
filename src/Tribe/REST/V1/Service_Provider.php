@@ -242,14 +242,14 @@ class Tribe__Tickets__REST__V1__Service_Provider extends tad_DI52_ServiceProvide
 			'methods'             => WP_REST_Server::CREATABLE,
 			'args'                => $endpoint->CREATE_args(),
 			'callback'            => [ $endpoint, 'create' ],
-			'permission_callback' => '__return_true',
+			'permission_callback' => [ $endpoint, 'validate_user_permission' ],
 		] );
 
 		register_rest_route( $this->namespace, '/attendees/(?P<id>\\d+)', [
 			'methods'             => WP_REST_Server::EDITABLE,
 			'args'                => $endpoint->EDIT_args(),
 			'callback'            => [ $endpoint, 'update' ],
-			'permission_callback' => '__return_true',
+			'permission_callback' => [ $endpoint, 'validate_user_permission' ],
 		] );
 
 		tribe( 'tickets.rest-v1.endpoints.documentation' )->register_documentation_provider( '/attendees/{id}', $endpoint );

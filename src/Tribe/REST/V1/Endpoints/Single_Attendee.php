@@ -332,4 +332,15 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 
 		return $data;
 	}
+
+	/**
+	 * Validates the user permission.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function validate_user_permission() {
+		return current_user_can( 'edit_users' ) || current_user_can( 'tribe_manage_attendees' );
+	}
 }
