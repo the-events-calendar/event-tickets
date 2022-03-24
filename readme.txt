@@ -21,6 +21,8 @@ Use our free commerce solution, Tickets Commerce, to sell tickets with PayPal an
 
 https://vimeo.com/480516958
 
+[See more videos on our YouTube channel](https://evnt.is/1b4-)
+
 = 🎟️ Ticketing and Registration for WordPress =
 
 See Event Tickets in action on our [demo site](https://evnt.is/1ajs). Just getting started? Check out the [Getting Started Guide](https://evnt.is/1aoc) for an introduction to features, settings, and functionality.
