@@ -199,6 +199,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Fixed JS assets loading and causing errors on checkout page for Tickets Commerce. [ET-1426]
 * Fix - Fixed WooCommerce currency settings not getting reflected on Event Cost Field . [ETP-783]
 * Fix - Correct a misapplied Customizer color that breaks the loading "dot" animation. [ET-1437]
+* Enhancement - Hide 'View My Tickets' link when showing tickets within the `[tribe_tickets]` shortcode. [ETP-775]
 
 = [5.3.1] 2022-03-15 =
 
