@@ -196,6 +196,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Improved validation of Stripe webhook events to avoid handling events created by other apps. [ET-1474]
 * Fix - Fixed Issue with Tickets Commerce Tickets not displaying in REST API. [ET-1458]
 * Fix - Fixed Issue with Tickets Commerce Attendees not displaying in shortcodes. [ET-1461]
+* Fix - Fixed Issue with Tickets Commerce Attendees not being synced with Promoter. [ET-1476]
 * Fix - Fixed JS assets loading and causing errors on checkout page for Tickets Commerce. [ET-1426]
 * Fix - Fixed WooCommerce currency settings not getting reflected on Event Cost Field . [ETP-783]
 * Fix - Correct a misapplied Customizer color that breaks the loading "dot" animation. [ET-1437]
