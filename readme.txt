@@ -25,10 +25,6 @@ Easily connect to PayPal without any complicated API keys or code through our qu
 
 Even more, you can [upgrade to Event Tickets Plus](https://evnt.is/1b54) and unlock additional payment methods including digital wallets like ApplePay and Google Pay through Stripe, or use WooCommerce to take advantage of popular payment solutions including Braintree, Square, AmazonPay, and more.
 
-Easily connect to PayPal without any complicated API keys or code through our quick connection wizard in your WordPress backend. With just a few clicks, you can begin selling tickets and enable payment through PayPal, Venmo, and credit cards.
-
-Even more, you can [upgrade to Event Tickets Plus](https://evnt.is/1b54) and unlock additional payment methods including digital wallets like ApplePay and Google Pay through Stripe, or use WooCommerce to take advantage of popular payment solutions including Braintree, Square, AmazonPay, and more.
-
 = 🎟️ Ticketing and Registration for WordPress =
 
 See Event Tickets in action on our [demo site](https://evnt.is/1ajs). Just getting started? Check out the [Getting Started Guide](https://evnt.is/1aoc) for an introduction to features, settings, and functionality.
@@ -197,10 +193,13 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Enhancement - Added a notice when an enabled Tickets Commerce gateway doesn't support it's selected currency. [ET-1392]
 * Enhancement - Adding the South African Rand to list of supported currencies in Tickets Commerce. [ET-1438]
 * Fix - Fixed Events Tickets App check-in for Tickets Commerce tickets. [ET-1436]
+* Fix - Improved validation of Stripe webhook events to avoid handling events created by other apps. [ET-1474]
 * Fix - Fixed Issue with Tickets Commerce Tickets not displaying in REST API. [ET-1458]
 * Fix - Fixed Issue with Tickets Commerce Attendees not displaying in shortcodes. [ET-1461]
 * Fix - Fixed JS assets loading and causing errors on checkout page for Tickets Commerce. [ET-1426]
 * Fix - Fixed WooCommerce currency settings not getting reflected on Event Cost Field . [ETP-783]
+* Fix - Correct a misapplied Customizer color that breaks the loading "dot" animation. [ET-1437]
+* Enhancement - Hide 'View My Tickets' link when showing tickets within the `[tribe_tickets]` shortcode. [ETP-775]
 * Tweak - Updated links in readme.txt file. [ET-1459]
 
 = [5.3.1] 2022-03-15 =
