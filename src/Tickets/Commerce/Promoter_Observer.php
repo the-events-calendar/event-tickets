@@ -36,11 +36,11 @@ class Promoter_Observer {
 	}
 
 	/**
-	 * Action fired when a TC attendee is created
+	 * Action fired when a TC attendee is created.
 	 *
 	 * @since TBD
 	 *
-	 * @param \WP_Post $attendee Attendee object
+	 * @param \WP_Post $attendee Attendee object.
 	 */
 	public function attendee_created( \WP_Post $attendee ) {
 		$this->trigger( 'ticket_purchased', $attendee->ID );
