@@ -19,7 +19,7 @@ This plugin makes it easy to sell tickets, collect registrations, and manage att
 
 Connect to Stripe and take advantage of one of the world’s most popular payment gateways. Our Stripe integration lets you accept credit card payments on your website, along with additional payment methods including AfterPay, ClearPay, AliPay, Giropay, and Klarna.
 
-https://evnt.is/1b5e
+https://vimeo.com/480516958
 
 Easily connect to PayPal without any complicated API keys or code through our quick connection wizard in your WordPress backend. With just a few clicks, you can begin selling tickets and enable payment through PayPal, Venmo, and credit cards.
 
