@@ -29,7 +29,9 @@ class Promoter_Observer {
 	 * @since TBD
 	 */
 	public function hook() {
+
 		add_action( 'tec_tickets_commerce_flag_action_generated_attendee', [ $this, 'attendee_created' ], 10, 5 );
+		add_action( 'tec_tickets_commerce_ticket_deleted', tribe_callback( 'tickets.promoter.observer', 'notify_event_id' ) );
 		add_action( 'event_tickets_checkin', [ $this, 'checkin' ], 10, 2 );
 	}
 
