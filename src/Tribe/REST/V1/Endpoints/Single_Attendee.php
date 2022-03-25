@@ -130,7 +130,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 	 *
 	 * @since TBD
 	 *
-	 * @return array
+	 * @return array Array of supported arguments for the create endpoint.
 	 */
 	public function CREATE_args() {
 		$args = [
@@ -159,6 +159,13 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 
 		];
 
+		/**
+		 * Filters the supported args for the create endpoint.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $args Supported list of arguments.
+		 */
 		return apply_filters( 'tribe_ticket_rest_api_post_attendee_args', $args );
 	}
 
@@ -200,7 +207,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 	 *
 	 * @since TBD
 	 *
-	 * @return array
+	 * @return array Array of supported arguments for the edit endpoint.
 	 */
 	public function EDIT_args() {
 		$args = [
@@ -212,6 +219,13 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 			],
 		];
 
+		/**
+		 * Filters the supported args for the edit endpoint.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $args Supported list of arguments.
+		 */
 		return apply_filters( 'tribe_ticket_rest_api_edit_attendee_args', $args );
 	}
 
