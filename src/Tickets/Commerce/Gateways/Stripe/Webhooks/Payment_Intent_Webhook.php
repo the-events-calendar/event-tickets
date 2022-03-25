@@ -7,6 +7,7 @@ use TEC\Tickets\Commerce\Gateways\Stripe\Payment_Intent;
 use TEC\Tickets\Commerce\Gateways\Stripe\Status;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Status\Status_Interface;
+use Tribe__Utils__Array as Arr;
 
 /**
  * Webhook for Payment_Intent operations
