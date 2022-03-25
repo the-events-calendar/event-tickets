@@ -1545,9 +1545,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 * @param int    $post_id
 		 * @param int    $ticket_id
 		 */
-		$ticket = apply_filters( 'tribe_tickets_tpp_get_ticket', $return, $event_id, $ticket_id );
-
-		return $return;
+		return apply_filters( 'tribe_tickets_tpp_get_ticket', $return, $event_id, $ticket_id );
 	}
 
 	/**

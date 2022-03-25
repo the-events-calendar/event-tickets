@@ -275,7 +275,7 @@ class Order extends Abstract_Order {
 			return false;
 		}
 
-		$can_apply = $status->can_apply_to( $order_id );
+		$can_apply = $status->can_apply_to( $order_id, $status );
 		if ( ! $can_apply ) {
 			return $can_apply;
 		}

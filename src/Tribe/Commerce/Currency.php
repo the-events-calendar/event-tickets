@@ -447,6 +447,10 @@ class Tribe__Tickets__Commerce__Currency {
 			return edd_currency_symbol();
 		}
 
+		if ( 'TEC\Tickets\Commerce\Module' === $provider && function_exists( 'tec_tickets_commerce_currency_symbol' ) ) {
+			return tec_tickets_commerce_currency_symbol();
+		}
+
 		/** @var Tribe__Tickets__Commerce__PayPal__Main $tpp */
 		$tpp = tribe( 'tickets.commerce.paypal' );
 
@@ -469,6 +473,11 @@ class Tribe__Tickets__Commerce__Currency {
 	 * @return string
 	 */
 	protected function get_provider_cost( $provider = '', $cost = '' ) {
+		// Convert to class name if object is passed.
+		if ( is_object( $provider ) ) {
+			$provider = get_class( $provider );
+		}
+
 		if ( ! class_exists( $provider ) ) {
 			return $cost;
 		}

@@ -59,8 +59,8 @@ class Pending extends Status_Abstract {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function can_apply_to( $order ) {
-		$status = parent::can_apply_to( $order );
+	public function can_apply_to( $order, $new_status ) {
+		$status = parent::can_apply_to( $order, $new_status );
 
 		// If the parent status is final, don't run.
 		if ( ! $status ) {
