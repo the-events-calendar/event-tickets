@@ -49,7 +49,7 @@ Whether your vision is big or small, you're in good company. Thousands of small 
 ✔️ Generate sales and attendee reports
 ✔️ Ticket stock countdown
 ✔️ Automatic ticket confirmation emails
-✔️ Works out of the box with [The Events Calendar](https://wordpress.org/plugins/the-events-calendar/)
+✔️ Works out of the box with [The Events Calendar](https://evnt.is/18yi)
 ✔️ Responsive design works on all devices
 ✔️ Tested on the major theme frameworks such as Avada, Genesis, Kadence, Thesis and many more.
 ✔️ Internationalized & translated
@@ -65,12 +65,12 @@ All of our documentation can be found in [our knowledgebase](https://evnt.is/eu)
 
 Additional helpful links:
 
-* [Guide: Getting Started with Event Tickets](https://theeventscalendar.com/knowledgebase/guide/event-tickets/)
+* [Guide: Getting Started with Event Tickets](https://evnt.is/1aot)
 * [Installing Event Tickets Video](https://evnt.is/1ao9)
-* [Using Tickets Commerce Video](https://www.youtube.com/watch?v=2MZnZDMjpCk)
+* [Using Tickets Commerce Video](https://evnt.is/1b5f)
 * [Do I need Event Tickets or Event Tickets Plus?](https://evnt.is/1aoa)
 * [How to Make Money with Virtual Events](https://evnt.is/1aob)
-* [Implementing Stripe on Event Tickets and Event Tickets Plus](https://theeventscalendar.com/knowledgebase/k/implementing-stripe-on-event-tickets-and-event-tickets-plus/)
+* [Implementing Stripe on Event Tickets and Event Tickets Plus](https://evnt.is/1b5g)
 
 If you have any questions about this plugin, you can post a thread in the WordPress.org forum. Please search existing threads before starting a new on
 
@@ -78,8 +78,8 @@ If you have any questions about this plugin, you can post a thread in the WordPr
 
 Take your calendar to the next level by pairing it with our plugins for ticketing, crowdsourcing, email marketing, and more. Learn more about all our products on our website.
 Our Free Plugins:
-📅 [The Events Calendar](https://wordpress.org/plugins/the-events-calendar/)
-📐 [Advanced Post Manager](https://wordpress.org/plugins/advanced-post-manager/)
+📅 [The Events Calendar](https://evnt.is/18yi)
+📐 [Advanced Post Manager](https://evnt.is/18e6)
 
 Our Premium Plugins and Services:
 
@@ -100,17 +100,17 @@ If you aren't familiar with Event Tickets, check out our [Getting Started Guide]
 Ready to dig deeper? Check out these resources:
 
 * [Tutorials](https://evnt.is/2u)
-* [Known Issues](https://theeventscalendar.com/known-issues/)
+* [Known Issues](https://evnt.is/1b5h)
 * [Help Videos](https://evnt.is/youtube)
 * [Release Notes](https://evnt.is/2v)
 
-We check in on the [Event Tickets forum here on WordPress.org](https://wordpress.org/support/plugin/event-tickets/) about once a week to help users with basic troubleshooting and identifying bugs. If you're looking for premium, personalized support, consider upgrading to [Event Tickets Plus](https://evnt.is/18wk).
+We check in on the [Event Tickets forum here on WordPress.org](https://evnt.is/1ac3) about once a week to help users with basic troubleshooting and identifying bugs. If you're looking for premium, personalized support, consider upgrading to [Event Tickets Plus](https://evnt.is/18wk).
 
 Still have a question? Shoot us an email at support@theeventscalendar.com.
 
 == Translate ==
 
-Event Tickets is translated into multiple languages, including German, Danish, and Dutch. Help localize Event Tickets even further by adding your locale – visit [translate.wordpress.org](https://translate.wordpress.org/projects/wp-plugins/event-tickets/).
+Event Tickets is translated into multiple languages, including German, Danish, and Dutch. Help localize Event Tickets even further by adding your locale – visit [translate.wordpress.org](https://evnt.is/1b5i).
 
 == Installation ==
 
@@ -138,13 +138,13 @@ Event Tickets is translated into multiple languages, including German, Danish, a
 
 First, make sure that you're running the latest version of Event Tickets. If you've got any other add-ons, make sure those are current and running the latest code as well. Also be sure to check our [knowledgebase](https://evnt.is/1aoc).
 
-The most common issues we see are either plugin or theme conflicts. You can test if a plugin or theme is conflicting by manually deactivating other plugins until just Event Tickets is running on your site. If the issue persists, revert to the default [Twenty Twenty](https://wordpress.org/themes/twentytwenty/) theme. If the issue is resolved after deactivating a specific plugin or your theme, you'll know that is the source of the conflict.
+The most common issues we see are either plugin or theme conflicts. You can test if a plugin or theme is conflicting by manually deactivating other plugins until just Event Tickets is running on your site. If the issue persists, revert to the default [Twenty Twenty](https://evnt.is/1b5j) theme. If the issue is resolved after deactivating a specific plugin or your theme, you'll know that is the source of the conflict.
 
 Note that we aren't going to say “tough luck” if you identify a plugin/theme conflict. While we can't guarantee 100% integration with any plugin or theme out there, we will do our best (and reach out the plugin/theme author as needed) to figure out a solution that benefits everyone.
 
 = I'm still stuck. Where do I go to file a bug or ask a question? =
 
-Free plugin users can post in the [Event Tickets support forum on WordPress.org](https://wordpress.org/support/plugin/event-tickets/). Our team reviews that forum weekly to look for bug reports.
+Free plugin users can post in the [Event Tickets support forum on WordPress.org](https://evnt.is/1ac3). Our team reviews that forum weekly to look for bug reports.
 
 If you're already an [Event Tickets Plus](https://evnt.is/18wk) subscriber, you're entitled to our actively-monitored [Premium Support](https://evnt.is/1aoe) on our website. Generally, except in times of increased support loads, we reply to all premium support tickets within 24 hours during the business week.
 
@@ -180,7 +180,7 @@ The following add-ons are available for The Events Calendar:
 
 = I have a feature idea. What's the best way to tell you about it? =
 
-We've got a [LoopedIn](https://app.loopedin.io/the-events-calendar-suite-roadmap#/ideas) page where we're actively watching for feature ideas from the community. Vote up existing feature requests or add your own, and help us shape the future of the products business in a way that best meets the community's needs.
+We've got a [LoopedIn](https://evnt.is/ideas) page where we're actively watching for feature ideas from the community. Vote up existing feature requests or add your own, and help us shape the future of the products business in a way that best meets the community's needs.
 
 = I've still got questions. Where can I find answers? =
 
@@ -196,10 +196,12 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Improved validation of Stripe webhook events to avoid handling events created by other apps. [ET-1474]
 * Fix - Fixed Issue with Tickets Commerce Tickets not displaying in REST API. [ET-1458]
 * Fix - Fixed Issue with Tickets Commerce Attendees not displaying in shortcodes. [ET-1461]
+* Fix - Fixed Issue with Tickets Commerce Attendees not being synced with Promoter. [ET-1476]
 * Fix - Fixed JS assets loading and causing errors on checkout page for Tickets Commerce. [ET-1426]
 * Fix - Fixed WooCommerce currency settings not getting reflected on Event Cost Field . [ETP-783]
 * Fix - Correct a misapplied Customizer color that breaks the loading "dot" animation. [ET-1437]
 * Enhancement - Hide 'View My Tickets' link when showing tickets within the `[tribe_tickets]` shortcode. [ETP-775]
+* Tweak - Updated links in readme.txt file. [ET-1459]
 
 = [5.3.1] 2022-03-15 =
 
@@ -257,4 +259,4 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Fixed toggling of shared capacity data for tickets. [ETP-497]
 * Language - 7 new strings added, 99 updated, 0 fuzzied, and 0 obsoleted
 
-[See changelog for all versions](https://raw.githubusercontent.com/the-events-calendar/event-tickets/master/changelog.txt)
+[See changelog for all versions](https://evnt.is/1b5k)
