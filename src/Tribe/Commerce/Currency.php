@@ -467,8 +467,10 @@ class Tribe__Tickets__Commerce__Currency {
 	 *
 	 * @since 4.7
 	 *
-	 * @param string $provider
-	 * @param string $cost
+	 * @since TBD removed unused WooCommerce formatting.
+	 *
+	 * @param string | Tribe__Tickets__Tickets $provider Provider class name or object.
+	 * @param string $cost Cost for the Event.
 	 *
 	 * @return string
 	 */
@@ -480,13 +482,6 @@ class Tribe__Tickets__Commerce__Currency {
 
 		if ( ! class_exists( $provider ) ) {
 			return $cost;
-		}
-
-		if (
-			'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' === $provider
-			&& function_exists( 'wc_format_localized_price' )
-		) {
-			return wc_format_localized_price( $cost );
 		}
 
 		if (
