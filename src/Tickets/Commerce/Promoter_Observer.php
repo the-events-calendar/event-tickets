@@ -70,7 +70,7 @@ class Promoter_Observer {
 
 		$attendee  = tec_tc_get_attendee( $attendee_id );
 		$ticket    = tribe( Module::class );
-		$attendee  = new Attendee( $attendee );
+		$attendee  = new Attendee( (array) $attendee );
 
 		/**
 		 * Create a new action to listen for a trigger associated with an attendee.
