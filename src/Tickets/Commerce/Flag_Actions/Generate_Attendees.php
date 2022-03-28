@@ -68,6 +68,13 @@ class Generate_Attendees extends Flag_Action_Abstract {
 	 * @return string[]
 	 */
 	public function modify_status_with_attendee_generation_flag( $flags, $post, $status ) {
+		$found = array_search( 'send_email', $flags, true );
+
+		if ( false !== $found ) {
+			array_splice( $flags, $found, 0, 'generate_attendees' );
+			return $flags;
+		}
+
 		$flags[] = 'generate_attendees';
 
 		return $flags;
