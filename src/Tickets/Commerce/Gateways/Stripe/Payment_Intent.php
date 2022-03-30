@@ -37,7 +37,7 @@ class Payment_Intent {
 	/**
 	 * The key used to identify payment intents created in Tickets Commerce.
 	 *
-	 * @since TBD
+	 * @since 5.3.2
 	 *
 	 * @var string
 	 */

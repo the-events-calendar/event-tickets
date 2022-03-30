@@ -19,7 +19,7 @@
  * @since 4.10.9 Uses new functions to get singular and plural texts.
  * @since 4.12.1 Account for empty post type object, such as if post type got disabled. Fix typo in sprintf placeholders.
  * @since 5.0.2 Fix template path in documentation block.
- * @since TBD Added use of $hide_view_my_tickets_link variable to hide link as an option.
+ * @since 5.3.2 Added use of $hide_view_my_tickets_link variable to hide link as an option.
  *
  * @version TBD
  *

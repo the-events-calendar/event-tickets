@@ -467,7 +467,7 @@ class Tribe__Tickets__Commerce__Currency {
 	 *
 	 * @since 4.7
 	 *
-	 * @since TBD removed unused WooCommerce formatting.
+	 * @since 5.3.2 removed unused WooCommerce formatting.
 	 *
 	 * @param string | Tribe__Tickets__Tickets $provider Provider class name or object.
 	 * @param string $cost Cost for the Event.

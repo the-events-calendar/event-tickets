@@ -551,11 +551,11 @@ class Currency {
 			],
 		] );
 	}
-	
+
 	/**
 	 * Creates the array for a currency drop-down using only code & name.
 	 *
-	 * @since TBD
+	 * @since 5.3.2
 	 *
 	 * @return array<string, string>
 	 */
@@ -569,7 +569,7 @@ class Currency {
 		/**
 		 * Filters the currency code options shown to the user in the TC settings.
 		 *
-		 * @since TBD
+		 * @since 5.3.2
 		 *
 		 * @param array<string, string> $options
 		 */

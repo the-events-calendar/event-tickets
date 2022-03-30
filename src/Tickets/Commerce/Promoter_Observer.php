@@ -26,7 +26,7 @@ class Promoter_Observer {
 	/**
 	 * Attach hooks for trigger messages.
 	 *
-	 * @since TBD
+	 * @since 5.3.2
 	 */
 	public function hook() {
 
@@ -38,7 +38,7 @@ class Promoter_Observer {
 	/**
 	 * Action fired when a TC attendee is created.
 	 *
-	 * @since TBD
+	 * @since 5.3.2
 	 *
 	 * @param \WP_Post $attendee Attendee object.
 	 */
@@ -49,7 +49,7 @@ class Promoter_Observer {
 	/**
 	 * Responds to a checkin action.
 	 *
-	 * @since TBD
+	 * @since 5.3.2
 	 *
 	 * @param int       $attendee_id The ID of the attendee utilized.
 	 * @param bool|null $qr          Whether it's from a QR scan.
@@ -61,7 +61,7 @@ class Promoter_Observer {
 	/**
 	 * Fire a trigger action using Tickets Commerce as main source of the ticket data.
 	 *
-	 * @since TBD
+	 * @since 5.3.2
 	 *
 	 * @param string $type        The trigger type.
 	 * @param int    $attendee_id The ID of the attendee utilized.
@@ -75,7 +75,7 @@ class Promoter_Observer {
 		/**
 		 * Create a new action to listen for a trigger associated with an attendee.
 		 *
-		 * @since TBD
+		 * @since 5.3.2
 		 *
 		 * @param string                  $type     The type of trigger fired.
 		 * @param Attendee_Model          $attendee The attendee associated with the trigger.

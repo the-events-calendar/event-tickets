@@ -20,7 +20,7 @@ class Notices extends tad_DI52_ServiceProvider {
 	 * @inheritdoc
 	 */
 	public function register() {
-		
+
 		$notices = [
 			[
 				'event-tickets-tickets-commerce-checkout-not-set',
@@ -35,16 +35,16 @@ class Notices extends tad_DI52_ServiceProvider {
 				[ $this, 'should_render_success_notice' ],
 			],
 		];
-		
+
 		/**
 		 * Filters admin notices.
 		 *
-		 * @since TBD
+		 * @since 5.3.2
 		 *
 		 * @param array[] $notices Array of admin notice parameters.
 		 */
 		$notices = apply_filters( 'tec_tickets_commerce_admin_notices', $notices );
-		
+
 		foreach ( $notices as $notice ) {
 			call_user_func_array( 'tribe_notice', $notice );
 		}

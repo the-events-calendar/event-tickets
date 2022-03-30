@@ -202,14 +202,14 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	public function provide_defaults_for_hidden_fields( $value, $field_id, $field ) {
 		return tribe( Settings::class )->reset_hidden_field_values( $value, $field_id, $field );
 	}
-	
+
 	/**
 	 * Filter admin notices.
-	 * 
-	 * @since TBD
-	 * 
+	 *
+	 * @since 5.3.2
+	 *
 	 * @param array $notices Array of admin notices.
-	 * 
+	 *
 	 * @return array
 	 */
 	public function filter_admin_notices( $notices ) {

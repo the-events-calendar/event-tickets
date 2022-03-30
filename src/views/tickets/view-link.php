@@ -59,7 +59,7 @@ if ( empty( $post_type ) || ! is_user_logged_in() ) {
 /**
  * Filters the arg to determine whether or not to hide the view link.
  *
- * @since TBD
+ * @since 5.3.2
  *
  * @param bool True/false to hide view link.
  */

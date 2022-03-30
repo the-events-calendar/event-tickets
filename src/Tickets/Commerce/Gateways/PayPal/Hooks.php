@@ -328,14 +328,14 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	public function flush_transients_when_toggling_sandbox_mode( $options ) {
 		return $this->container->make( Signup::class )->maybe_delete_transient_data( $options );
 	}
-	
+
 	/**
 	 * Filter admin notices.
-	 * 
-	 * @since TBD
-	 * 
+	 *
+	 * @since 5.3.2
+	 *
 	 * @param array $notices Array of admin notices.
-	 * 
+	 *
 	 * @return array
 	 */
 	public function filter_admin_notices( $notices ) {

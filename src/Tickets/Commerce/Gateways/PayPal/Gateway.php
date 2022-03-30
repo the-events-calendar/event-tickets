@@ -29,13 +29,13 @@ class Gateway extends Abstract_Gateway {
 	 * @inheritDoc
 	 */
 	protected static $merchant = Merchant::class;
-	
+
 	/**
 	 * @inheritDoc
 	 */
 	protected static $supported_currencies = [
-		'AUD', 'BRL', 'CAD', 'CNY', 'CZK', 'DKK', 'EUR', 'HKD', 'HUF', 
-		'ILS', 'JPY', 'MYR', 'MXN', 'TWD', 'NZD', 'NOK', 'PHP', 'PLN', 
+		'AUD', 'BRL', 'CAD', 'CNY', 'CZK', 'DKK', 'EUR', 'HKD', 'HUF',
+		'ILS', 'JPY', 'MYR', 'MXN', 'TWD', 'NZD', 'NOK', 'PHP', 'PLN',
 		'GBP', 'RUB', 'SGD', 'SEK', 'CHF', 'THB', 'USD',
 	];
 
@@ -166,18 +166,18 @@ class Gateway extends Abstract_Gateway {
 
 		return $template->template( $template_path, tribe( Buttons::class )->get_checkout_template_vars() );
 	}
-	
+
 	/**
 	 * Filter to add any admin notices that might be needed.
-	 * 
-	 * @since TBD
-	 * 
+	 *
+	 * @since 5.3.2
+	 *
 	 * @param array Array of admin notices.
-	 * 
+	 *
 	 * @return array
 	 */
 	public function filter_admin_notices( $notices ) {
-		
+
 		// Check for unsupported currency.
 		$selected_currency = tribe_get_option( TC_Settings::$option_currency_code );
 		if ( $this->is_enabled() && ! $this->is_currency_supported( $selected_currency ) ){
@@ -187,15 +187,15 @@ class Gateway extends Abstract_Gateway {
 				[ 'dismiss' => false, 'type' => 'error' ],
 			];
 		}
-		
+
 		return $notices;
 	}
-	
+
 	/**
 	 * HTML for notice for unsupported currencies
-	 * 
-	 * @since TBD
-	 * 
+	 *
+	 * @since 5.3.2
+	 *
 	 * @return string
 	 */
 	public function render_unsupported_currency_notice() {

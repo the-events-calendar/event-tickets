@@ -33,22 +33,22 @@ class Gateway extends Abstract_Gateway {
 	 * @inheritDoc
 	 */
 	protected static $merchant = Merchant::class;
-	
+
 	/**
 	 * @inheritDoc
 	 */
 	protected static $supported_currencies = [
-		'USD', 'AED', 'AFN', 'ALL', 'AMD', 'ANG', 'AOA', 'ARS', 'AUD', 'AWG', 'AZN', 'BAM', 'BBD', 
-		'BDT', 'BGN', 'BIF', 'BMD', 'BND', 'BOB', 'BRL', 'BSD', 'BWP', 'BYN', 'BZD', 'CAD', 'CDF', 
-		'CHF', 'CLP', 'CNY', 'COP', 'CRC', 'CVE', 'CZK', 'DJF', 'DKK', 'DOP', 'DZD', 'EGP', 'ETB', 
-		'EUR', 'FJD', 'FKP', 'GBP', 'GEL', 'GIP', 'GMD', 'GNF', 'GTQ', 'GYD', 'HKD', 'HNL', 'HRK', 
-		'HTG', 'HUF', 'IDR', 'ILS', 'INR', 'ISK', 'JMD', 'JPY', 'KES', 'KGS', 'KHR', 'KMF', 'KRW', 
-		'KYD', 'KZT', 'LAK', 'LBP', 'LKR', 'LRD', 'LSL', 'MAD', 'MDL', 'MGA', 'MKD', 'MMK', 'MNT', 
-		'MOP', 'MRO', 'MUR', 'MVR', 'MWK', 'MXN', 'MYR', 'MZN', 'NAD', 'NGN', 'NIO', 'NOK', 'NPR', 
-		'NZD', 'PAB', 'PEN', 'PGK', 'PHP', 'PKR', 'PLN', 'PYG', 'QAR', 'RON', 'RSD', 'RUB', 'RWF', 
-		'SAR', 'SBD', 'SCR', 'SEK', 'SGD', 'SHP', 'SLL', 'SOS', 'SRD', 'STD', 'SZL', 'THB', 'TJS', 
-		'TOP', 'TRY', 'TTD', 'TWD', 'TZS', 'UAH', 'UGX', 'UYU', 'UZS', 'VND', 'VUV', 'WST', 'XAF', 
-		'XCD', 'XOF', 'XPF', 'YER', 'ZAR', 'ZMW', 
+		'USD', 'AED', 'AFN', 'ALL', 'AMD', 'ANG', 'AOA', 'ARS', 'AUD', 'AWG', 'AZN', 'BAM', 'BBD',
+		'BDT', 'BGN', 'BIF', 'BMD', 'BND', 'BOB', 'BRL', 'BSD', 'BWP', 'BYN', 'BZD', 'CAD', 'CDF',
+		'CHF', 'CLP', 'CNY', 'COP', 'CRC', 'CVE', 'CZK', 'DJF', 'DKK', 'DOP', 'DZD', 'EGP', 'ETB',
+		'EUR', 'FJD', 'FKP', 'GBP', 'GEL', 'GIP', 'GMD', 'GNF', 'GTQ', 'GYD', 'HKD', 'HNL', 'HRK',
+		'HTG', 'HUF', 'IDR', 'ILS', 'INR', 'ISK', 'JMD', 'JPY', 'KES', 'KGS', 'KHR', 'KMF', 'KRW',
+		'KYD', 'KZT', 'LAK', 'LBP', 'LKR', 'LRD', 'LSL', 'MAD', 'MDL', 'MGA', 'MKD', 'MMK', 'MNT',
+		'MOP', 'MRO', 'MUR', 'MVR', 'MWK', 'MXN', 'MYR', 'MZN', 'NAD', 'NGN', 'NIO', 'NOK', 'NPR',
+		'NZD', 'PAB', 'PEN', 'PGK', 'PHP', 'PKR', 'PLN', 'PYG', 'QAR', 'RON', 'RSD', 'RUB', 'RWF',
+		'SAR', 'SBD', 'SCR', 'SEK', 'SGD', 'SHP', 'SLL', 'SOS', 'SRD', 'STD', 'SZL', 'THB', 'TJS',
+		'TOP', 'TRY', 'TTD', 'TWD', 'TZS', 'UAH', 'UGX', 'UYU', 'UZS', 'VND', 'VUV', 'WST', 'XAF',
+		'XCD', 'XOF', 'XPF', 'YER', 'ZAR', 'ZMW',
 	];
 
 	/**
@@ -144,18 +144,18 @@ class Gateway extends Abstract_Gateway {
 
 		return $template->template( $template_path, tribe( Stripe_Elements::class )->get_checkout_template_vars() );
 	}
-	
+
 	/**
 	 * Filter to add any admin notices that might be needed.
-	 * 
-	 * @since TBD
-	 * 
+	 *
+	 * @since 5.3.2
+	 *
 	 * @param array Array of admin notices.
-	 * 
+	 *
 	 * @return array
 	 */
 	public function filter_admin_notices( $notices ) {
-		
+
 		// Check for unsupported currency.
 		$selected_currency = tribe_get_option( TC_Settings::$option_currency_code );
 		if ( $this->is_enabled() && ! $this->is_currency_supported( $selected_currency ) ){
@@ -165,15 +165,15 @@ class Gateway extends Abstract_Gateway {
 				[ 'dismiss' => false, 'type' => 'error' ],
 			];
 		}
-		
+
 		return $notices;
 	}
-	
+
 	/**
 	 * HTML for notice for unsupported currencies
-	 * 
-	 * @since TBD
-	 * 
+	 *
+	 * @since 5.3.2
+	 *
 	 * @return string
 	 */
 	public function render_unsupported_currency_notice() {

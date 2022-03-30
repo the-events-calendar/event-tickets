@@ -128,7 +128,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 	 * Returns the content of the `args` array that should be used to register the endpoint
 	 * with the `register_rest_route` function.
 	 *
-	 * @since TBD
+	 * @since 5.3.2
 	 *
 	 * @return array Array of supported arguments for the create endpoint.
 	 */
@@ -162,7 +162,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 		/**
 		 * Filters the supported args for the create endpoint.
 		 *
-		 * @since TBD
+		 * @since 5.3.2
 		 *
 		 * @param array $args Supported list of arguments.
 		 */
@@ -205,7 +205,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 	 * Returns the content of the `args` array that should be used to register the endpoint
 	 * with the `register_rest_route` function.
 	 *
-	 * @since TBD
+	 * @since 5.3.2
 	 *
 	 * @return array Array of supported arguments for the edit endpoint.
 	 */
@@ -222,7 +222,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 		/**
 		 * Filters the supported args for the edit endpoint.
 		 *
-		 * @since TBD
+		 * @since 5.3.2
 		 *
 		 * @param array $args Supported list of arguments.
 		 */
@@ -256,7 +256,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 		/**
 		 * Filter REST API attendee data before creating an attendee.
 		 *
-		 * @since TBD
+		 * @since 5.3.2
 		 *
 		 * @param array $attendee_data Attendee data.
 		 * @param WP_REST_Request $request Request object.
@@ -307,7 +307,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 		/**
 		 * Filter REST API attendee data before creating an attendee.
 		 *
-		 * @since TBD
+		 * @since 5.3.2
 		 *
 		 * @param array $updated_data Data that needs to be updated.
 		 * @param WP_REST_Request $request Request object.
@@ -329,7 +329,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 	/**
 	 * Validate Attendee status if available.
 	 *
-	 * @since TBD
+	 * @since 5.3.2
 	 *
 	 * @param array $data Attendee data.
 	 * @param Tribe__Tickets__Tickets $provider Provider for the selected ticket.
@@ -342,7 +342,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 			if ( ! in_array( $data['attendee_status'], $statuses, true ) ) {
 				$error_message  = sprintf(
 					// Translators: %s - List of valid statuses.
-					__( 'Supported statuses for this attendee are: %s', 'event-tickets' ), 
+					__( 'Supported statuses for this attendee are: %s', 'event-tickets' ),
 					implode( $statuses, ' | ' )
 				);
 				return new WP_Error( 'invalid-attendee-status', $error_message, [ 'status' => 400 ] );
@@ -355,7 +355,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 	/**
 	 * Validates the user permission.
 	 *
-	 * @since TBD
+	 * @since 5.3.2
 	 *
 	 * @return bool
 	 */
