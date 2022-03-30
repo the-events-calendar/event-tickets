@@ -188,10 +188,12 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [TBD] TBD =
+= [5.3.2] 2022-04-05 =
 
+* Feature - REST API endpoints added for creating and updating attendees. [ET-1346]
 * Enhancement - Added a notice when an enabled Tickets Commerce gateway doesn't support it's selected currency. [ET-1392]
 * Enhancement - Adding the South African Rand to list of supported currencies in Tickets Commerce. [ET-1438]
+* Enhancement - Hide 'View My Tickets' link when showing tickets within the `[tribe_tickets]` shortcode. [ETP-775]
 * Fix - Fixed Events Tickets App check-in for Tickets Commerce tickets. [ET-1436]
 * Fix - Improved validation of Stripe webhook events to avoid handling events created by other apps. [ET-1474]
 * Fix - Fixed Issue with Tickets Commerce Tickets not displaying in REST API. [ET-1458]
@@ -199,11 +201,13 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Fixed Issue with Tickets Commerce Attendees not being synced with Promoter. [ET-1476]
 * Fix - Fixed JS assets loading and causing errors on checkout page for Tickets Commerce. [ET-1426]
 * Fix - Fixed WooCommerce currency settings not getting reflected on Event Cost Field . [ETP-783]
-* Feature - REST API endpoints added for creating and updating attendees. [ET-1346]
 * Fix - Correct a misapplied Customizer color that breaks the loading "dot" animation. [ET-1437]
 * Fix - Add Mexico to the list of countries ET cannot process fees from. [ET-1479]
-* Enhancement - Hide 'View My Tickets' link when showing tickets within the `[tribe_tickets]` shortcode. [ETP-775]
 * Tweak - Updated links in readme.txt file. [ET-1459]
+* Tweak - Added filters: `tec_tickets_commerce_admin_notices`, `tec_tickets_commerce_gateway_supported_currencies_`, `tec_tickets_commerce_currency_code_options`, `tribe_ticket_rest_api_post_attendee_args`, `tribe_ticket_rest_api_edit_attendee_args`, `tribe_tickets_rest_api_post_attendee_data`, `tribe_tickets_rest_api_update_attendee_data`, `tec_tickets_completed_status_by_provider_name`, `tec_tickets_hide_view_link`
+* Tweak - Added actions: `tribe_tickets_promoter_trigger_attendee`, `tec-tickets-commerce-checkout-shortcode-assets`, `tec-tickets-commerce-checkout-shortcode-assets`
+* Tweak - Changed views: `blocks/attendees/view-link`, `tickets/view-link`
+* Language - 17 new strings added, 70 updated, 0 fuzzied, and 0 obsoleted
 
 = [5.3.1] 2022-03-15 =
 
