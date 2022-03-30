@@ -4,6 +4,8 @@ namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Gateway;
 use TEC\Tickets\Commerce\Notice_Handler;
+use TEC\Tickets\Commerce\Settings as TC_Settings;
+use TEC\Tickets\Commerce\Utils\Currency;
 use \Tribe__Tickets__Main;
 
 /**
@@ -27,6 +29,15 @@ class Gateway extends Abstract_Gateway {
 	 * @inheritDoc
 	 */
 	protected static $merchant = Merchant::class;
+	
+	/**
+	 * @inheritDoc
+	 */
+	protected static $supported_currencies = [
+		'AUD', 'BRL', 'CAD', 'CNY', 'CZK', 'DKK', 'EUR', 'HKD', 'HUF', 
+		'ILS', 'JPY', 'MYR', 'MXN', 'TWD', 'NZD', 'NOK', 'PHP', 'PLN', 
+		'GBP', 'RUB', 'SGD', 'SEK', 'CHF', 'THB', 'USD',
+	];
 
 	/**
 	 * PayPal's attribution ID for requests.
@@ -154,5 +165,63 @@ class Gateway extends Abstract_Gateway {
 		$template_path = "gateway/{$gateway_key}/container";
 
 		return $template->template( $template_path, tribe( Buttons::class )->get_checkout_template_vars() );
+	}
+	
+	/**
+	 * Filter to add any admin notices that might be needed.
+	 * 
+	 * @since TBD
+	 * 
+	 * @param array Array of admin notices.
+	 * 
+	 * @return array
+	 */
+	public function filter_admin_notices( $notices ) {
+		
+		// Check for unsupported currency.
+		$selected_currency = tribe_get_option( TC_Settings::$option_currency_code );
+		if ( $this->is_enabled() && ! $this->is_currency_supported( $selected_currency ) ){
+			$notices[] = [
+				'tc-paypal-currency-not-supported',
+				[ $this, 'render_unsupported_currency_notice' ],
+				[ 'dismiss' => false, 'type' => 'error' ],
+			];
+		}
+		
+		return $notices;
+	}
+	
+	/**
+	 * HTML for notice for unsupported currencies
+	 * 
+	 * @since TBD
+	 * 
+	 * @return string
+	 */
+	public function render_unsupported_currency_notice() {
+		$selected_currency = tribe_get_option( TC_Settings::$option_currency_code );
+		$currency_name = tribe( Currency::class )->get_currency_name( $selected_currency );
+		// If we don't have the currency name configured, use the currency code instead.
+		if ( empty( $currency_name ) ) {
+			$currency_name = $selected_currency;
+		}
+		$notice_link = sprintf(
+			'<a href="%1$s" target="_blank" rel="noopener noreferrer">%2$s</a>',
+			esc_url( 'https://developer.paypal.com/docs/reports/reference/paypal-supported-currencies/' ),
+			esc_html__( 'here', 'event-tickets' )
+		);
+		$notice_header = esc_html__( 'PayPal doesn\'t support your selected currency', 'event-tickets' );
+		$notice_text = sprintf(
+			// Translators: %1$s: Currency Name. %2$s: Link to gateway provider's currency documentation.
+			esc_html__( 'Unfortunately PayPal doesn\'t support payments in %1$s. Please try using a different gateway or adjusting your Tickets Commerce currency setting. You can see a list of supported currencies %2$s.', 'event-tickets' ),
+			$currency_name,
+			$notice_link
+		);
+
+		return sprintf(
+			'<p><strong>%1$s</strong></p><p>%2$s</p>',
+			$notice_header,
+			$notice_text
+		);
 	}
 }

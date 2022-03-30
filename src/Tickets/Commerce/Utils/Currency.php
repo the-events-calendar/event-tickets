@@ -541,6 +541,38 @@ class Currency {
 				'decimal_precision'     => 2,
 				'stripe_minimum_charge' => 0.50,
 			],
+			'ZAR' => [
+				'name'                  => __( 'South African Rand (ZAR)', 'event-tickets' ),
+				'symbol'                => '&#082;',
+				'decimal_point'         => '.',
+				'thousands_sep'         => ' ',
+				'decimal_precision'     => 2,
+				'stripe_minimum_charge' => 30,
+			],
 		] );
+	}
+	
+	/**
+	 * Creates the array for a currency drop-down using only code & name.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string, string>
+	 */
+	public function get_currency_code_options() {
+		$currency_map = $this->get_default_currency_map();
+		$options = array_combine(
+			array_keys( $currency_map ),
+			wp_list_pluck( $currency_map, 'name' )
+		);
+
+		/**
+		 * Filters the currency code options shown to the user in the TC settings.
+		 *
+		 * @since TBD
+		 *
+		 * @param array<string, string> $options
+		 */
+		return apply_filters( 'tec_tickets_commerce_currency_code_options', $options );
 	}
 }
