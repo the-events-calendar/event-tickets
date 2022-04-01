@@ -192,6 +192,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [6.0.0-RBE-Beta2.3] 2022-XX-XX =
+
+* Enhancement - Adds a compatibility layer to work with the new Recurrence Backend Engine in TEC/ECP.
+
 = [5.3.1] 2022-03-15 =
 
 * Fix - Fixed a warning message when creating an event via Community Events. [CT-51]
