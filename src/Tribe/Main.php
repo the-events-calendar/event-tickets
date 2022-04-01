@@ -312,6 +312,8 @@ class Tribe__Tickets__Main {
 			tribe_register_provider( Tribe\Tickets\Service_Providers\Customizer::class );
 		}
 
+		// Admin home.
+		tribe_register_provider( Tribe\Tickets\Admin\Home\Service_Provider::class );
 	}
 
 	/**
@@ -827,7 +829,7 @@ class Tribe__Tickets__Main {
 		if ( empty( $this->activation_page ) ) {
 			$this->activation_page = new Tribe__Admin__Activation_Page( [
 				'slug'                  => 'event-tickets',
-				'admin_page'            => 'tickets_page_tec-tickets-settings', // @todo @juanfra: See if we can set this on a var or something.
+				'admin_page'            => 'tickets_page_tec-tickets-settings',
 				'admin_url'             => $this->settings()->get_url(),
 				'version'               => self::VERSION,
 				'activation_transient'  => '_tribe_tickets_activation_redirect',

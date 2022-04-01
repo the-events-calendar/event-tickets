@@ -141,6 +141,10 @@ class Tribe__Tickets__Admin__Ticket_Settings {
 				'title'    => esc_html__( 'Tickets', 'event-tickets' ),
 				'icon'     => $this->get_menu_icon(),
 				'position' => 7,
+				'callback' => [
+					tribe( 'tickets.admin.home' ),
+					'display_home_page',
+				],
 			]
 		);
 
@@ -299,7 +303,11 @@ class Tribe__Tickets__Admin__Ticket_Settings {
 		$admin_pages = tribe( 'admin.pages' );
 		$admin_page  = $admin_pages->get_current_page();
 
-		if ( ! empty( $admin_page ) && self::$settings_page_id !== $admin_page ) {
+		if (
+			! empty( $admin_page )
+			&& self::$settings_page_id !== $admin_page
+			&& self::$parent_slug !== $admin_page
+		) {
 			return $footer_text;
 		}
 
