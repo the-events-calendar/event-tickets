@@ -23,11 +23,10 @@ class Tribe__Tickets__Admin__Ticket_Settings {
 		add_action( 'network_admin_menu', [ $this, 'maybe_add_network_settings_page' ] );
 		add_action( 'tribe_settings_do_tabs', [ $this, 'do_network_settings_tab' ], 400 );
 
-		// @todo @juanfra: We'll need to add a method to sync the network settings.
-
 		add_filter( 'tribe_settings_page_title', [ $this, 'settings_page_title' ] );
 		add_filter( 'tec_admin_pages_with_tabs', [ $this, 'add_to_pages_with_tabs' ], 20, 1 );
 		add_filter( 'tec_admin_footer_text', [ $this, 'admin_footer_text_settings' ] );
+		add_filter( 'tribe-events-save-network-options', [ $this, 'maybe_hijack_save_network_settings' ], 10, 2 );
 	}
 
 	/**
@@ -215,6 +214,8 @@ class Tribe__Tickets__Admin__Ticket_Settings {
 	 *
 	 * @since 4.10.9 Use customizable ticket name functions.
 	 * @since TBD Use admin page and only show the General tab if we're in the Event Tickets menu.
+	 *
+	 * @param string $admin_page The admin page ID.
 	 */
 	public function settings_ui( $admin_page ) {
 		if ( ! empty( $admin_page ) && self::$settings_page_id !== $admin_page ) {
@@ -271,6 +272,8 @@ class Tribe__Tickets__Admin__Ticket_Settings {
 	 * Generate network settings page for Event Tickets.
 	 *
 	 * @since TBD
+	 *
+	 * @param string $admin_page The admin page ID.
 	 */
 	public function do_network_settings_tab( $admin_page ) {
 		if ( ! empty( $admin_page ) && self::$settings_page_id !== $admin_page ) {
@@ -310,5 +313,56 @@ class Tribe__Tickets__Admin__Ticket_Settings {
 		);
 
 		return $footer_text;
+	}
+
+	/**
+	 * Get Tickets settings tab IDs.
+	 *
+	 * @since TBD
+	 *
+	 * @return array $tabs Array of tabs IDs for the Tickets settings page.
+	 */
+	public function get_tickets_settings_tabs_ids() {
+		$tabs = [
+			'event-tickets',
+		];
+
+		/**
+		 * Filters the tickets settings tab IDs.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $tabs Array of tabs IDs for the Tickets settings page.
+		 */
+		return apply_filters( 'tec_tickets_settings_tabs_ids', $tabs );
+	}
+
+	/**
+	 * Maybe hijack the saving for the network settings page.
+	 *
+	 * @since TBD
+	 *
+	 * @param array  $options Formatted the same as from get_options().
+	 * @param string $admin_page The admin page being saved.
+	 *
+	 * @return array $options Formatted the same as from get_options(), maybe modified.
+	 */
+	public function maybe_hijack_save_network_settings( $options, $admin_page ) {
+		// If we're saving the network settings page for tickets, bail.
+		if ( ! empty( $admin_page ) && self::$settings_page_id === $admin_page ) {
+			return $options;
+		}
+
+		$tickets_tabs = $this->get_tickets_settings_tabs_ids();
+
+		// Iterate over the TEC settings tab ids and merge the network settings.
+		foreach ( $tickets_tabs as $tab => $key ) {
+			if ( in_array( $key, $options['hideSettingsTabs'] ) ) {
+				$_POST['hideSettingsTabs'][] = $key;
+				$options['hideSettingsTabs'] = $key;
+			}
+		}
+
+		return $options;
 	}
 }
