@@ -2,20 +2,25 @@
 
 namespace TEC\Tickets\Recurrence;
 
-use TEC\Events\Custom_Tables\V1\Migration\State as Custom_Tables_Migration;
+use tad_DI52_ServiceProvider;
+use TEC\Events\Custom_Tables\V1\Migration\State;
 
-class Provider extends \tad_DI52_ServiceProvider {
+class Provider extends tad_DI52_ServiceProvider {
 
 	/**
 	 * @inheritDoc
 	 */
 	public function register() {
 
-		if ( ! class_exists( Custom_Tables_Migration::class ) || ! tribe( Custom_Tables_Migration::class )->is_migrated() ) {
+		if ( ! class_exists( 'TEC\Events\Custom_Tables\V1\Migration\State' ) ) {
 			return;
 		}
 
-		$this->container->register( Compatibility::class );
+		if ( ! tribe( State::class )->is_migrated() ) {
+			return;
+		}
+
+		$this->container->singleton( Compatibility::class );
 
 		$this->register_hooks();
 	}

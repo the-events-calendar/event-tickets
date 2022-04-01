@@ -52,7 +52,7 @@ class Compatibility {
 	 */
 	public static function object_can_have_tickets( \WP_Post $post ) {
 
-		if ( 'tribe_events' !== $post->post_type || ! class_exists( 'TEC\Events\Custom_Tables\V1\Models\Occurrence' ) ) {
+		if ( 'tribe_events' !== $post->post_type ) {
 			return true;
 		}
 
