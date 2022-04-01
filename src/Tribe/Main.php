@@ -390,7 +390,7 @@ class Tribe__Tickets__Main {
 		// Admin manager.
 		tribe_register_provider( Tribe\Tickets\Admin\Manager\Service_Provider::class );
 
-		// Promoter
+		// Promoter.
 		tribe_register_provider( Promoter_Service_Provider::class );
 	}
 
@@ -905,7 +905,7 @@ class Tribe__Tickets__Main {
 	}
 
 	/**
-	 * settings page object accessor
+	 * Settings page object accessor.
 	 */
 	public function settings_tab() {
 		static $settings;
@@ -918,7 +918,9 @@ class Tribe__Tickets__Main {
 	}
 
 	/**
-	 * settings page object accessor
+	 * Settings page object accessor.
+	 *
+	 * @since TBD
 	 */
 	public function settings() {
 		return $this->settings_tab();
