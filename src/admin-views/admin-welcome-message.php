@@ -177,7 +177,7 @@ if ( $has_plus ) {
 					alt="<?php esc_attr_e( 'Illustration of a book with The Events Calendar logo', 'event-tickets' ); ?>"
 				/>
 				<div class="tribe-events-admin-card__title"><?php esc_html_e( 'Want to take your events to the next level?', 'event-tickets' ); ?></div>
-				<a class="tribe-events-admin-card__link" href="admin.php?page=tribe-app-shop"><?php esc_html_e( 'Check out our suite of add-ons', 'event-tickets' ); ?></a>
+				<a class="tribe-events-admin-card__link" href="edit.php?page=tribe-app-shop&post_type=tribe_events"><?php esc_html_e( 'Check out our suite of add-ons', 'event-tickets' ); ?></a>
 			</div>
 		<?php else : // ET or ET+ without TEC. ?>
 			<div class="tribe-events-admin-card tribe-events-admin-card--2up tribe-events-admin-card--first">
@@ -199,7 +199,7 @@ if ( $has_plus ) {
 					alt="<?php esc_attr_e( 'Illustration of a book with The Events Calendar logo', 'event-tickets' ); ?>"
 				/>
 				<div class="tribe-events-admin-card__title"><?php esc_html_e( 'Want to take your events to the next level?', 'event-tickets' ); ?></div>
-				<a class="tribe-events-admin-card__link" href="admin.php?page=tribe-app-shop"><?php esc_html_e( 'Check out our suite of add-ons', 'event-tickets' ); ?></a>
+				<a class="tribe-events-admin-card__link" href="edit.php?page=tribe-app-shop&post_type=tribe_events"><?php esc_html_e( 'Check out our suite of add-ons', 'event-tickets' ); ?></a>
 			</div>
 		<?php else : // this is for ET. ?>
 			<div class="tribe-events-admin-card tribe-events-admin-card--2up tribe-events-admin-card--second">
