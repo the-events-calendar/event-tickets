@@ -162,7 +162,7 @@ export const getRSVP = ( postId, page = 1 ) => ( dispatch ) => {
 						),
 					);
 					dispatch( actions.setRSVPDetails( {
-						title: rsvp.title.rendered,
+						title: rsvp.title.raw,
 						description: rsvp.excerpt.raw,
 						capacity,
 						notGoingResponses,
@@ -178,7 +178,7 @@ export const getRSVP = ( postId, page = 1 ) => ( dispatch ) => {
 						endTimeInput: momentUtil.toTime( endMoment ),
 					} ) );
 					dispatch( actions.setRSVPTempDetails( {
-						tempTitle: rsvp.title.rendered,
+						tempTitle: rsvp.title.raw,
 						tempDescription: rsvp.excerpt.raw,
 						tempCapacity: capacity,
 						tempNotGoingResponses: notGoingResponses,
