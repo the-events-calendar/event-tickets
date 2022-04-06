@@ -14,6 +14,7 @@ use TEC\Tickets\Commerce\Gateways\Manager;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Traits\Has_Mode;
+use TEC\Tickets\Commerce\Utils\Currency;
 use TEC\Tickets\Settings as Tickets_Settings;
 use \Tribe__Template;
 use Tribe__Field_Conditional;
@@ -223,10 +224,7 @@ class Settings {
 		$success_shortcode  = Shortcodes\Success_Shortcode::get_wp_slug();
 		$checkout_shortcode = Shortcodes\Checkout_Shortcode::get_wp_slug();
 
-		/** @var \Tribe__Tickets__Commerce__Currency $commerce_currency */
-		$commerce_currency = tribe( 'tickets.commerce.currency' );
-
-		$paypal_currency_code_options = $commerce_currency->generate_currency_code_options();
+		$paypal_currency_code_options = tribe( Currency::class )->get_currency_code_options();
 
 		$current_user = get_user_by( 'id', get_current_user_id() );
 
