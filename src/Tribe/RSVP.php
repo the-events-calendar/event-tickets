@@ -1629,7 +1629,13 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$tickets = [];
 
 		foreach ( $ticket_ids as $post ) {
-			$tickets[] = $this->get_ticket( $post_id, $post );
+			$ticket = $this->get_ticket( $post_id, $post );
+
+			if ( ! $ticket instanceof Tribe__Tickets__Ticket_Object ) {
+				continue;
+			}
+
+			$tickets[] = $ticket;
 		}
 
 		return $tickets;
@@ -2572,6 +2578,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		/** @var Tribe__Tickets__Ticket_Object $ticket_type */
 		$ticket_type = $this->get_ticket( $post_id, $product_id );
+
+		if ( ! $ticket_type instanceof Tribe__Tickets__Ticket_Object ) {
+			return false;
+		}
 
 		// get the RSVP status `decrease_stock_by` value
 		$status_stock_size     = $rsvp_options[ $attendee_order_status ]['decrease_stock_by'];
