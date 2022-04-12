@@ -16,9 +16,11 @@ class Provider extends tad_DI52_ServiceProvider {
 			return;
 		}
 
+		/*
 		if ( ! tribe( State::class )->is_migrated() ) {
 			return;
 		}
+		*/
 
 		$this->container->singleton( Compatibility::class );
 
