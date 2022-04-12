@@ -286,7 +286,7 @@ class Tribe__Tickets__Admin__Ticket_Settings {
 			return;
 		}
 
-		include_once Tribe__Tickets__Main::instance()->plugin_path . 'src/admin-views/tec-tickets-options-network.php';
+		include_once tribe( 'tickets.main' )->plugin_path . 'src/admin-views/tec-tickets-options-network.php';
 
 		new Tribe__Settings_Tab( 'network', esc_html__( 'Network', 'event-tickets' ), $networkTab );
 	}

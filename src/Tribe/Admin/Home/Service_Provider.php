@@ -71,6 +71,7 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 	 * @since TBD
 	 */
 	public function display_home_page() {
+		// @todo Move to a relevant class so the Service Provider avoids business logic.
 		// We're temporary relying on the activation page, on the "welcome" context.
 		$activation_page = tribe( 'admin.activation.page' );
 		$plugin          = \Tribe__Tickets__Main::instance();

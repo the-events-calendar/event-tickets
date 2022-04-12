@@ -158,7 +158,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 		$args['tab'] = static::$slug;
 
 		// Use the settings page get_url to build the URL.
-		return Tribe__Tickets__Main::instance()->settings()->get_url( $args );
+		return tribe( 'tickets.main' )->settings()->get_url( $args );
 	}
 
 	/**

@@ -171,7 +171,7 @@ class Settings {
 		) {
 			return false;
 		}
-		$url = \Tribe__Tickets__Main::instance()->settings()->get_url( [ 'tab' => 'payments' ] );
+		$url = tribe( 'tickets.main' )->settings()->get_url( [ 'tab' => 'payments' ] );
 
 		// Add the main site admin menu item.
 		$wp_admin_bar->add_menu(

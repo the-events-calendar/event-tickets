@@ -254,7 +254,7 @@ class Tribe__Tickets__Integrations__Freemius {
 	 * @return string The welcome page URL.
 	 */
 	public function get_welcome_url() {
-		return Tribe__Tickets__Main::instance()->settings()->get_url( [ Tribe__Tickets__Main::instance()->activation_page()->welcome_slug => 1 ] );
+		return tribe( 'tickets.main' )->settings()->get_url( [ tribe( 'tickets.main' )->activation_page()->welcome_slug => 1 ] );
 	}
 
 	/**
@@ -278,7 +278,7 @@ class Tribe__Tickets__Integrations__Freemius {
 	 * @return string The Settings page path.
 	 */
 	public function get_settings_path() {
-		return str_replace( get_admin_url(), '', Tribe__Tickets__Main::instance()->settings()->get_url() );
+		return str_replace( get_admin_url(), '', tribe( 'tickets.main' )->settings()->get_url() );
 	}
 
 	/**
