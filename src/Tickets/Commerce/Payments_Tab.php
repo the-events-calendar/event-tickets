@@ -119,6 +119,8 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	 * @since TBD
 	 *
 	 * @param array $tabs Array containing the tabs ids for Event Tickets settings.
+	 *
+	 * @return array $tabs Array containing the tabs ids for Event Tickets settings.
 	 */
 	public function settings_add_tab_id( $tabs ) {
 		$tabs[] = static::$slug;

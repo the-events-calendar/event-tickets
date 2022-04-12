@@ -297,7 +297,7 @@ class Tribe__Tickets__Admin__Ticket_Settings {
 	 * @since TBD
 	 *
 	 * @param string $footer_text The admin footer text.
-	 * @param string $footer_text The admin footer text, maybe modified.
+	 * @return string $footer_text The admin footer text, maybe modified.
 	 */
 	public function admin_footer_text_settings( $footer_text ) {
 		$admin_pages = tribe( 'admin.pages' );
