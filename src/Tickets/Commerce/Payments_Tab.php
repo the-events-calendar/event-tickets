@@ -7,6 +7,7 @@ use TEC\Tickets\Commerce\Shortcodes\Success_Shortcode;
 use TEC\Tickets\Commerce\Gateways\Manager;
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Gateway as Gateway;
 use TEC\Tickets\Settings as Tickets_Settings;
+use Tribe\Tickets\Admin\Tickets_Settings as Plugin_Settings;
 use \Tribe__Settings;
 use \tad_DI52_ServiceProvider;
 use \Tribe__Template;
@@ -98,7 +99,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	 * @since 5.2.0
 	 */
 	public function register_tab( $admin_page ) {
-		if ( ! empty( $admin_page ) && \Tribe__Tickets__Admin__Ticket_Settings::$settings_page_id !== $admin_page ) {
+		if ( ! empty( $admin_page ) && Plugin_Settings::$settings_page_id !== $admin_page ) {
 			return;
 		}
 
@@ -160,7 +161,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 		$args['tab'] = static::$slug;
 
 		// Use the settings page get_url to build the URL.
-		return tribe( 'tickets.main' )->settings()->get_url( $args );
+		return tribe( Plugin_Settings::class )->get_url( $args );
 	}
 
 	/**

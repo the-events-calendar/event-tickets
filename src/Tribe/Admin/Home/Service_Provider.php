@@ -3,6 +3,7 @@
 namespace Tribe\Tickets\Admin\Home;
 
 use tad_DI52_ServiceProvider;
+use Tribe\Tickets\Admin\Tickets_Settings;
 
 /**
  * Class Manager
@@ -45,7 +46,7 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 	 */
 	public function is_home_page() {
 		$admin_page  = isset( $_GET['page'] ) ? $_GET['page'] : null;
-		$parent_slug = \Tribe__Tickets__Admin__Ticket_Settings::$parent_slug;
+		$parent_slug = tribe( Tickets_Settings::class )::$parent_slug;
 
 		return ! empty( $admin_page ) && $parent_slug === $admin_page;
 	}

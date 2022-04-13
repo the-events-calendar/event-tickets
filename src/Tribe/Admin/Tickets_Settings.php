@@ -1,10 +1,14 @@
 <?php
+namespace Tribe\Tickets\Admin;
 
 use Tribe\Admin\Troubleshooting as Troubleshooting;
+use Tribe__Settings;
+use Tribe__Settings_Tab;
+
 /**
  * Manages the admin settings UI in relation to ticket configuration.
  */
-class Tribe__Tickets__Admin__Ticket_Settings {
+class Tickets_Settings {
 
 	/**
 	 * Event Tickets menu page slug.
@@ -21,19 +25,9 @@ class Tribe__Tickets__Admin__Ticket_Settings {
 	public static $settings_page_id = 'tec-tickets-settings';
 
 	/**
-	 * Settings page hooks.
+	 * Settings tabs.
 	 */
-	public function __construct() {
-		add_action( 'tribe_settings_do_tabs', [ $this, 'settings_ui' ] );
-		add_action( 'admin_menu', [ $this, 'add_admin_pages' ] );
-		add_action( 'network_admin_menu', [ $this, 'maybe_add_network_settings_page' ] );
-		add_action( 'tribe_settings_do_tabs', [ $this, 'do_network_settings_tab' ], 400 );
-
-		add_filter( 'tribe_settings_page_title', [ $this, 'settings_page_title' ] );
-		add_filter( 'tec_admin_pages_with_tabs', [ $this, 'add_to_pages_with_tabs' ], 20, 1 );
-		add_filter( 'tec_admin_footer_text', [ $this, 'admin_footer_text_settings' ] );
-		add_filter( 'tribe-events-save-network-options', [ $this, 'maybe_hijack_save_network_settings' ], 10, 2 );
-	}
+	public $tabs = [];
 
 	/**
 	 * Returns the main admin tickets settings URL.
@@ -44,7 +38,7 @@ class Tribe__Tickets__Admin__Ticket_Settings {
 	 */
 	public function get_url( array $args = [] ) {
 		$defaults = [
-			'page' => self::$settings_page_id,
+			'page' => static::$settings_page_id,
 		];
 
 		// Allow the link to be "changed" on the fly.
@@ -75,7 +69,7 @@ class Tribe__Tickets__Admin__Ticket_Settings {
 	 * @return array $pages The modified array containing the pages with tabs.
 	 */
 	public function add_to_pages_with_tabs( $pages ) {
-		$pages[] = self::$settings_page_id;
+		$pages[] = static::$settings_page_id;
 
 		return $pages;
 	}
@@ -112,7 +106,7 @@ class Tribe__Tickets__Admin__Ticket_Settings {
 		$admin_pages = tribe( 'admin.pages' );
 		$admin_page  = $admin_pages->get_current_page();
 
-		return ! empty( $admin_page ) && self::$settings_page_id === $admin_page;
+		return ! empty( $admin_page ) && static::$settings_page_id === $admin_page;
 	}
 
 	/**
@@ -136,8 +130,8 @@ class Tribe__Tickets__Admin__Ticket_Settings {
 
 		$admin_pages->register_page(
 			[
-				'id'       => self::$parent_slug,
-				'path'     => self::$parent_slug,
+				'id'       => static::$parent_slug,
+				'path'     => static::$parent_slug,
 				'title'    => esc_html__( 'Tickets', 'event-tickets' ),
 				'icon'     => $this->get_menu_icon(),
 				'position' => 7,
@@ -150,19 +144,19 @@ class Tribe__Tickets__Admin__Ticket_Settings {
 
 		$admin_pages->register_page(
 			[
-				'id'     => self::$parent_slug,
-				'path'   => self::$parent_slug,
-				'parent' => self::$parent_slug,
+				'id'     => static::$parent_slug,
+				'path'   => static::$parent_slug,
+				'parent' => static::$parent_slug,
 				'title'  => esc_html__( 'Home', 'event-tickets' ),
 			]
 		);
 
 		$admin_pages->register_page(
 			[
-				'id'       => self::$settings_page_id,
-				'parent'   => self::$parent_slug,
+				'id'       => static::$settings_page_id,
+				'parent'   => static::$parent_slug,
 				'title'    => esc_html__( 'Settings', 'event-tickets' ),
-				'path'     => self::$settings_page_id,
+				'path'     => static::$settings_page_id,
 				'callback' => [
 					tribe( 'settings' ),
 					'generatePage',
@@ -173,7 +167,7 @@ class Tribe__Tickets__Admin__Ticket_Settings {
 		$admin_pages->register_page(
 			[
 				'id'       => 'tec-tickets-help',
-				'parent'   => self::$parent_slug,
+				'parent'   => static::$parent_slug,
 				'title'    => esc_html__( 'Help', 'event-tickets' ),
 				'path'     => 'tec-tickets-help',
 				'callback' => [
@@ -194,7 +188,7 @@ class Tribe__Tickets__Admin__Ticket_Settings {
 	public function maybe_add_troubleshooting() {
 		$admin_pages = tribe( 'admin.pages' );
 
-		if ( ! Tribe__Settings::instance()->should_setup_pages() ) {
+		if ( ! tribe( 'settings' )->should_setup_pages() ) {
 			return;
 		}
 
@@ -224,13 +218,13 @@ class Tribe__Tickets__Admin__Ticket_Settings {
 	 * @param string $admin_page The admin page ID.
 	 */
 	public function settings_ui( $admin_page ) {
-		if ( ! empty( $admin_page ) && self::$settings_page_id !== $admin_page ) {
+		if ( ! empty( $admin_page ) && static::$settings_page_id !== $admin_page ) {
 			return;
 		}
 
 		$settings = $this->get_settings_array();
 
-		new Tribe__Settings_Tab( 'event-tickets', esc_html__( 'General', 'event-tickets' ), $settings );
+		$this->tabs['event-tickets'] = new Tribe__Settings_Tab( 'event-tickets', esc_html__( 'General', 'event-tickets' ), $settings );
 	}
 
 	/**
@@ -239,8 +233,7 @@ class Tribe__Tickets__Admin__Ticket_Settings {
 	 * @return array
 	 */
 	protected function get_settings_array() {
-		$plugin_path = Tribe__Tickets__Main::instance()->plugin_path;
-		include $plugin_path . 'src/admin-views/tribe-options-tickets.php';
+		include tribe( 'tickets.main' )->plugin_path . 'src/admin-views/tribe-options-tickets.php';
 
 		/** @var array $tickets_tab Set in the file included above*/
 		return $tickets_tab;
@@ -253,7 +246,7 @@ class Tribe__Tickets__Admin__Ticket_Settings {
 	 */
 	public function maybe_add_network_settings_page() {
 		$admin_pages = tribe( 'admin.pages' );
-		$settings    = Tribe__Settings::instance();
+		$settings    = tribe( 'settings' );
 
 		if ( ! is_plugin_active_for_network( 'event-tickets/event-tickets.php' ) ) {
 			return;
@@ -261,10 +254,10 @@ class Tribe__Tickets__Admin__Ticket_Settings {
 
 		$admin_pages->register_page(
 			[
-				'id'         => self::$settings_page_id,
+				'id'         => static::$settings_page_id,
 				'parent'     => 'settings.php',
 				'title'      => esc_html__( 'Tickets Settings', 'event-tickets' ),
-				'path'       => self::$settings_page_id,
+				'path'       => static::$settings_page_id,
 				'capability' => $admin_pages->get_capability( 'manage_network_options' ),
 				'callback'   => [
 					$settings,
@@ -282,13 +275,13 @@ class Tribe__Tickets__Admin__Ticket_Settings {
 	 * @param string $admin_page The admin page ID.
 	 */
 	public function do_network_settings_tab( $admin_page ) {
-		if ( ! empty( $admin_page ) && self::$settings_page_id !== $admin_page ) {
+		if ( ! empty( $admin_page ) && static::$settings_page_id !== $admin_page ) {
 			return;
 		}
 
 		include_once tribe( 'tickets.main' )->plugin_path . 'src/admin-views/tec-tickets-options-network.php';
 
-		new Tribe__Settings_Tab( 'network', esc_html__( 'Network', 'event-tickets' ), $networkTab );
+		$this->tabs['network'] = new Tribe__Settings_Tab( 'network', esc_html__( 'Network', 'event-tickets' ), $networkTab );
 	}
 
 	/**
@@ -359,7 +352,7 @@ class Tribe__Tickets__Admin__Ticket_Settings {
 	 */
 	public function maybe_hijack_save_network_settings( $options, $admin_page ) {
 		// If we're saving the network settings page for tickets, bail.
-		if ( ! empty( $admin_page ) && self::$settings_page_id === $admin_page ) {
+		if ( ! empty( $admin_page ) && static::$settings_page_id === $admin_page ) {
 			return $options;
 		}
 

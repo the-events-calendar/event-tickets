@@ -8,6 +8,7 @@ use TEC\Tickets\Commerce\Gateways\Stripe\Merchant;
 use TEC\Tickets\Commerce\Gateways\Stripe\Settings;
 use TEC\Tickets\Commerce\Gateways\Stripe\Signup;
 use TEC\Tickets\Commerce\Payments_Tab;
+use Tribe\Tickets\Admin\Tickets_Settings;
 use Tribe__Settings;
 
 use WP_REST_Server;
@@ -137,7 +138,7 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 		}
 
 		tribe( Merchant::class )->unset_merchant_unauthorized();
-		$url = tribe( 'tickets.main' )->settings()->get_url(
+		$url = tribe( Tickets_Settings::class )->get_url(
 			[
 				'tab'        => Payments_Tab::$slug,
 				'tc-section' => Gateway::get_key(),
@@ -157,7 +158,7 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 	 * @param object $payload data returned from WhoDat.
 	 */
 	public function handle_connection_error( $payload ) {
-		$url = tribe( 'tickets.main' )->settings()->get_url( [
+		$url = tribe( Tickets_Settings::class )->get_url( [
 			'tab'             => Payments_Tab::$slug,
 			'tc-section'      => Gateway::get_key(),
 			'tc-stripe-error' => $payload->{'tc-stripe-error'},
@@ -184,7 +185,7 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 
 		$url_args = array_merge( $query_args, $reason );
 
-		$url = tribe( 'tickets.main' )->settings()->get_url( $url_args );
+		$url = tribe( Tickets_Settings::class )->get_url( $url_args );
 
 		wp_safe_redirect( $url );
 		exit();
