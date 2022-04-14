@@ -18,14 +18,14 @@
  * @var string                                        $gateway_key           [Global] Key for gateway.
  */
 
-use Tribe\Tickets\Admin\Tickets_Settings;
+use Tribe\Tickets\Admin\Settings;
 use TEC\Tickets\Commerce\Payments_Tab;
 
 if ( empty( $is_merchant_connected ) ) {
 	return;
 }
 
-$resync_connection_url = tribe( Tickets_Settings::class )->get_url(
+$resync_connection_url = tribe( Settings::class )->get_url(
 	[
 		'tab'       => Payments_Tab::$slug,
 		tribe( Payments_Tab::class )::$key_current_section_get_var => $gateway_key,

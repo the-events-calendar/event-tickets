@@ -16,7 +16,7 @@ use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Traits\Has_Mode;
 use TEC\Tickets\Commerce\Utils\Currency;
 use TEC\Tickets\Settings as Tickets_Settings;
-use Tribe\Tickets\Admin\Tickets_Settings as Plugin_Settings;
+use Tribe\Tickets\Admin\Settings as Plugin_Settings;
 use \Tribe__Template;
 use Tribe__Field_Conditional;
 use Tribe__Tickets__Main;

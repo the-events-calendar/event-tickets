@@ -3,7 +3,7 @@
  * The template that displays the welcome message when the plugin is first activated.
  */
 
-use Tribe\Tickets\Admin\Tickets_Settings;
+use Tribe\Tickets\Admin\Settings;
 
 $main     = Tribe__Main::instance();
 $has_plus = class_exists( 'Tribe__Tickets_Plus__Main' );
@@ -74,7 +74,7 @@ if ( $has_plus ) {
 		<div class="tribe-events-admin-quick-nav__title"><?php esc_html_e( 'Quick Links:', 'event-tickets' ); ?></div>
 		<ul class="tribe-events-admin-quick-nav__links">
 			<li class="tribe-events-admin-quick-nav__link-item">
-				<a href="<?php echo esc_url( tribe( Tickets_Settings::class )->get_url() ); ?>" target="_blank" rel="noopener noreferrer" class="tribe-events-admin-quick-nav__link"><?php esc_html_e( 'Configure Settings', 'event-tickets' ); ?></a>
+				<a href="<?php echo esc_url( tribe( Settings::class )->get_url() ); ?>" target="_blank" rel="noopener noreferrer" class="tribe-events-admin-quick-nav__link"><?php esc_html_e( 'Configure Settings', 'event-tickets' ); ?></a>
 			</li>
 			<?php if ( $has_plus && $has_tec ) : // ET+ with TEC. ?>
 				<li class="tribe-events-admin-quick-nav__link-item">

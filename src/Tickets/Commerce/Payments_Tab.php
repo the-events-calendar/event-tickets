@@ -6,8 +6,8 @@ use TEC\Tickets\Commerce\Shortcodes\Checkout_Shortcode;
 use TEC\Tickets\Commerce\Shortcodes\Success_Shortcode;
 use TEC\Tickets\Commerce\Gateways\Manager;
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Gateway as Gateway;
-use TEC\Tickets\Settings as Tickets_Settings;
-use Tribe\Tickets\Admin\Tickets_Settings as Plugin_Settings;
+use TEC\Tickets\Settings as Tickets_Commerce_Settings;
+use Tribe\Tickets\Admin\Settings as Plugin_Settings;
 use \Tribe__Settings;
 use \tad_DI52_ServiceProvider;
 use \Tribe__Template;
@@ -315,7 +315,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 							<label class="tec-tickets__admin-settings-tickets-commerce-toggle">
 								<input
 									type="checkbox"
-									name="' . Tickets_Settings::$tickets_commerce_enabled . '"
+									name="' . Tickets_Commerce_Settings::$tickets_commerce_enabled . '"
 									' . checked( $is_tickets_commerce_enabled, true, false ) . '
 									id="tickets-commerce-enable-input"
 									class="tec-tickets__admin-settings-tickets-commerce-toggle-checkbox tribe-dependency tribe-dependency-verified">
@@ -331,7 +331,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 			'html' => '<div class="tec-tickets__admin-settings-tickets-commerce-description">' . $plus_message . '</div>',
 		];
 
-		$fields[ Tickets_Settings::$tickets_commerce_enabled ] = [
+		$fields[ Tickets_Commerce_Settings::$tickets_commerce_enabled ] = [
 			'type'            => 'hidden',
 			'validation_type' => 'boolean',
 		];
@@ -432,7 +432,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	 */
 	public function maybe_generate_pages() {
 
-		$tc_enabled = tribe_get_request_var( Tickets_Settings::$tickets_commerce_enabled );
+		$tc_enabled = tribe_get_request_var( Tickets_Commerce_Settings::$tickets_commerce_enabled );
 
 		if ( ! tribe_is_truthy( $tc_enabled ) ) {
 			return;

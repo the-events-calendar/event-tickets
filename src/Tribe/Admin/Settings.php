@@ -8,7 +8,7 @@ use Tribe__Settings_Tab;
 /**
  * Manages the admin settings UI in relation to ticket configuration.
  */
-class Tickets_Settings {
+class Settings {
 
 	/**
 	 * Event Tickets menu page slug.

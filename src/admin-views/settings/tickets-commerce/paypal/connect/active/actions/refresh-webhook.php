@@ -18,7 +18,7 @@
  * @var string                                        $gateway_key           [Global] Key for gateway.
  */
 
-use Tribe\Tickets\Admin\Tickets_Settings;
+use Tribe\Tickets\Admin\Settings;
 use TEC\Tickets\Commerce\Payments_Tab;
 
 $debug = defined( 'WP_DEBUG' ) && WP_DEBUG;
@@ -27,7 +27,7 @@ if ( empty( $is_merchant_connected ) || ! $debug ) {
 	return;
 }
 
-$url = tribe( Tickets_Settings::class )->get_url(
+$url = tribe( Settings::class )->get_url(
 	[
 		'tab'       => Payments_Tab::$slug,
 		tribe( Payments_Tab::class )::$key_current_section_get_var => $gateway_key,

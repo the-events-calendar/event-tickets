@@ -17,7 +17,7 @@
  * @var string                                        $gateway_key           [Global] Key for gateway.
  */
 
-use Tribe\Tickets\Admin\Tickets_Settings;
+use Tribe\Tickets\Admin\Settings;
 use TEC\Tickets\Commerce\Payments_Tab;
 
 if ( empty( $is_merchant_connected ) ) {
@@ -25,7 +25,7 @@ if ( empty( $is_merchant_connected ) ) {
 }
 
 $name           = $merchant->get_merchant_id();
-$disconnect_url = tribe( Tickets_Settings::class )->get_url(
+$disconnect_url = tribe( Settings::class )->get_url(
 	[
 		'tab'       => Payments_Tab::$slug,
 		Payments_Tab::$key_current_section_get_var => $gateway_key,

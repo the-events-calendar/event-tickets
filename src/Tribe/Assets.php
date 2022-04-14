@@ -1,7 +1,7 @@
 <?php
 
 use Tribe__Utils__Array as Arr;
-use Tribe\Tickets\Admin\Tickets_Settings;
+use Tribe\Tickets\Admin\Settings;
 
 class Tribe__Tickets__Assets {
 	/**
@@ -396,7 +396,7 @@ class Tribe__Tickets__Assets {
 		$admin_page    = $admin_pages->get_current_page();
 
 		// Load specifically on Ticket Settings page only.
-		$should_enqueue = $admin_helpers->is_screen() && Tickets_Settings::$settings_page_id === $admin_page;
+		$should_enqueue = $admin_helpers->is_screen() && Settings::$settings_page_id === $admin_page;
 
 		/**
 		 * Allow filtering of whether the base Admin Settings Assets should be loaded.
