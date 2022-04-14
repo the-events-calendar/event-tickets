@@ -178,7 +178,7 @@ class Tribe__Tickets__Integrations__Freemius {
 	}
 
 	/**
-	 * For some reason Freemius is redirecting some customers to a page that doesnt exist. So we catch that page and
+	 * For some reason Freemius is redirecting some customers to a page that doesn't exist. So we catch that page and
 	 * redirect them back to the actual page that we are using to setup the plugins integration.
 	 *
 	 * @since 4.11.5
@@ -254,7 +254,7 @@ class Tribe__Tickets__Integrations__Freemius {
 	 * @return string The welcome page URL.
 	 */
 	public function get_welcome_url() {
-		return Tribe__Settings::instance()->get_url( [ Tribe__Tickets__Main::instance()->activation_page()->welcome_slug => 1 ] );
+		return tribe( 'tickets.main' )->settings()->get_url( [ tribe( 'tickets.main' )->activation_page()->welcome_slug => 1 ] );
 	}
 
 	/**
@@ -278,13 +278,7 @@ class Tribe__Tickets__Integrations__Freemius {
 	 * @return string The Settings page path.
 	 */
 	public function get_settings_path() {
-		if ( class_exists( 'Tribe__Events__Main' ) ) {
-			$url = sprintf( 'edit.php?post_type=%s&page=%s', Tribe__Events__Main::POSTTYPE, $this->page );
-		} else {
-			$url = sprintf( 'admin.php?page=%s', $this->page );
-		}
-
-		return $url;
+		return str_replace( get_admin_url(), '', tribe( 'tickets.main' )->settings()->get_url() );
 	}
 
 	/**

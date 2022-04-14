@@ -1,6 +1,7 @@
 <?php
 use Tribe\Tickets\Events\Service_Provider as Events_Service_Provider;
 use Tribe\Tickets\Promoter\Service_Provider as Promoter_Service_Provider;
+use Tribe\Tickets\Admin\Settings;
 
 class Tribe__Tickets__Main {
 
@@ -312,6 +313,8 @@ class Tribe__Tickets__Main {
 			tribe_register_provider( Tribe\Tickets\Service_Providers\Customizer::class );
 		}
 
+		// Admin home.
+		tribe_register_provider( Tribe\Tickets\Admin\Home\Service_Provider::class );
 	}
 
 	/**
@@ -390,8 +393,11 @@ class Tribe__Tickets__Main {
 		// Admin manager.
 		tribe_register_provider( Tribe\Tickets\Admin\Manager\Service_Provider::class );
 
-		// Promoter
+		// Promoter.
 		tribe_register_provider( Promoter_Service_Provider::class );
+
+		// Admin provider.
+		tribe_register_provider( \Tribe\Tickets\Admin\Provider::class );
 	}
 
 	/**
@@ -827,6 +833,8 @@ class Tribe__Tickets__Main {
 		if ( empty( $this->activation_page ) ) {
 			$this->activation_page = new Tribe__Admin__Activation_Page( [
 				'slug'                  => 'event-tickets',
+				'admin_page'            => 'tickets_page_tec-tickets-settings',
+				'admin_url'             => tribe( Settings::class )->get_url(),
 				'version'               => self::VERSION,
 				'activation_transient'  => '_tribe_tickets_activation_redirect',
 				'plugin_path'           => $this->plugin_dir . 'event-tickets.php',
@@ -903,16 +911,23 @@ class Tribe__Tickets__Main {
 	}
 
 	/**
-	 * settings page object accessor
+	 * Settings page object accessor.
+	 *
+	 * @return \Tribe\Tickets\Admin\Settings
 	 */
 	public function settings_tab() {
-		static $settings;
+		return tribe( \Tribe\Tickets\Admin\Settings::class );
+	}
 
-		if ( ! $settings ) {
-			$settings = new Tribe__Tickets__Admin__Ticket_Settings;
-		}
-
-		return $settings;
+	/**
+	 * Settings page object accessor.
+	 *
+	 * @since TBD
+	 *
+	 * @return \Tribe\Tickets\Admin\Settings
+	 */
+	public function settings() {
+		return $this->settings_tab();
 	}
 
 	/**
