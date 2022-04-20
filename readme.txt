@@ -190,6 +190,8 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.3.3] TBD =
 
+* Fix - Tickets Commerce manual attendee's ticket price is set to 0. [ETP-781]
+
 = [5.3.2] 2022-04-05 =
 
 * Feature - REST API endpoints added for creating and updating attendees. [ET-1346]
