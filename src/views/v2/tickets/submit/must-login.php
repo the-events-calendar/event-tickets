@@ -10,9 +10,10 @@
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   5.0.3
+ * @since 5.0.3
+ * @since TBD Fixed template override path.
  *
- * @version 5.0.3
+ * @version TBD
  *
  * @var Tribe__Tickets__Editor__Template   $this                        [Global] Template object.
  * @var Tribe__Tickets__Tickets            $provider                    [Global] The tickets provider class.
