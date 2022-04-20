@@ -4,7 +4,7 @@
  * composed by Title and Description currently
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/registration-js/attendees/fields/url.php
+ * [your-theme]/tribe/tickets/registration-js/attendees/fields/number.php
  *
  * @since  4.12.1
  *
