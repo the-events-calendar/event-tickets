@@ -68,7 +68,6 @@ if (
 				?>
 
 				<?php echo esc_html( $ticket->name ); ?>
-
 				<?php
 				/**
 				 * Fires after the ticket name is printed in the tickets table.
@@ -79,6 +78,9 @@ if (
 				 * @param Tribe__Tickets__Tickets       $provider_obj The current ticket provider object.
 				 */
 				do_action( 'event_tickets_ticket_list_after_ticket_name', $ticket, $provider_obj );
+				
+				$this->template( 'editor/list-row/available-dates', [ 'ticket' => $ticket ]); 
+				
 				?>
 			</div>
 		</div>
