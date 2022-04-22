@@ -68,7 +68,7 @@ if (
 				?>
 
 				<?php echo esc_html( $ticket->name ); ?>
-				
+
 				<?php
 				/**
 				 * Fires after the ticket name is printed in the tickets table.
