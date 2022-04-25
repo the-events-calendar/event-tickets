@@ -37,7 +37,7 @@ class Upsell {
 			'classes' => [
 				'tec-admin__upsell-event_tickets-capacity_arf'
 			],
-			'text'    => 'Get individual information collection from each attendee and advanced capacity options with',
+			'text'    => esc_html__( 'Get individual information collection from each attendee and advanced capacity options with' , 'event-tickets' ),
 			'link'    => [
 				'classes' => [
 					'tec-admin__upsell-link--underlined'
