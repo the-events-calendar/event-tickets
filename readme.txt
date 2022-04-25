@@ -194,6 +194,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Tickets Commerce manual attendee's ticket price is set to 0. [ETP-781]
 * Fix - Fixed template override path for a few templates. [ET-1491]
 * Enhancement - Added availability dates and icons to ticket listing in classic editor. [ET-1494]
+* Tweak - Lighten color of disabled "Get Tickets" button text when using the Genesis theme. [ET-1435]
 
 = [5.3.2] 2022-04-05 =
 
