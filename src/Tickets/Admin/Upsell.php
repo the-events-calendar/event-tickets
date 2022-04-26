@@ -37,7 +37,11 @@ class Upsell {
 			'classes' => [
 				'tec-admin__upsell-tec-tickets-capacity-arf'
 			],
-			'text'    => esc_html__( 'Get individual information collection from each attendee and advanced capacity options with' , 'event-tickets' ),
+			'text'    => sprintf(
+				// Translators: %s name of "Event Tickets Plus" plugin.
+				esc_html__( 'Get individual information collection from each attendee and advanced capacity options with %s' , 'event-tickets' ),
+				''
+			 ),
 			'link'    => [
 				'classes' => [
 					'tec-admin__upsell-link--underlined'
