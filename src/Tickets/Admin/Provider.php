@@ -8,7 +8,6 @@
 
 namespace TEC\Tickets\Admin;
 
-use tad_DI52_ServiceProvider;
 
 /**
  * Service provider for the Tickets Admin area.
@@ -16,7 +15,7 @@ use tad_DI52_ServiceProvider;
  * @since   TBD
  * @package TEC\Tickets\Admin
  */
-class Provider extends tad_DI52_ServiceProvider {
+class Provider extends \tad_DI52_ServiceProvider {
 
 	/**
 	 * Register the provider singletons.
