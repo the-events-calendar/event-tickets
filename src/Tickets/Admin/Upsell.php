@@ -36,13 +36,13 @@ class Upsell {
 
 		tribe( Upsell_Notice\Main::class )->render( [
 			'classes' => [
-				'tec-admin__upsell-event_tickets-capacity_arf'
+				'tec-admin__upsell-tec-tickets-capacity-arf'
 			],
 			'text'    => sprintf(
-				// Translators: %s: Name of "Event Tickets Plus" plugin.
+				// Translators: %s name of "Event Tickets Plus" plugin.
 				esc_html__( 'Get individual information collection from each attendee and advanced capacity options with %s' , 'event-tickets' ),
 				''
-			),
+			 ),
 			'link'    => [
 				'classes' => [
 					'tec-admin__upsell-link--underlined'
