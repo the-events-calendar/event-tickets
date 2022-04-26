@@ -69,7 +69,11 @@ class Upsell {
 			'classes' => [
 				'tec-admin__upsell-tec-tickets-manual-attendees'
 			],
-			'text'    => esc_html__( 'Manually add attendees with' , 'event-tickets' ),
+			'text'    => sprintf(
+				// Translators: %s name of "Event Tickets Plus" plugin.
+				esc_html__( 'Manually add attendees with %s' , 'event-tickets' ),
+				''
+			),
 			'link'    => [
 				'classes' => [
 					'tec-admin__upsell-link--underlined'
