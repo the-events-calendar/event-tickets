@@ -20,7 +20,7 @@ class Upsell {
 	 */
 	public function hooks() {
 		add_action( 'tribe_events_tickets_pre_edit', [ $this, 'maybe_show_capacity_arf' ] );
-		add_action( 'tec_events_tickets_attendees_event_summary_table_extra', [ $this, 'maybe_show_manual_attendees' ] );
+		add_action( 'tec_tickets_attendees_event_summary_table_extra', [ $this, 'maybe_show_manual_attendees' ] );
 	}
 	
 	/**
@@ -63,7 +63,7 @@ class Upsell {
 		echo '<div class="welcome-panel-column welcome-panel-extra">';
 		tribe( Upsell_Notice\Main::class )->render( [
 			'classes' => [
-				'tec-admin__upsell-event_tickets-manual_attendees'
+				'tec-admin__upsell-tec-tickets-manual-attendees'
 			],
 			'text'    => esc_html__( 'Manually add attendees with' , 'event-tickets' ),
 			'link'    => [
