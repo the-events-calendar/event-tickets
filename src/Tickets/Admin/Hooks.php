@@ -17,7 +17,6 @@
 
 namespace TEC\Tickets\Admin;
 
-use \tad_DI52_ServiceProvider;
 
 /**
  * Class Hooks.
@@ -26,7 +25,7 @@ use \tad_DI52_ServiceProvider;
  *
  * @package TEC\Tickets\Admin
  */
-class Hooks extends tad_DI52_ServiceProvider {
+class Hooks extends \tad_DI52_ServiceProvider {
 
 	/**
 	 * Binds and sets up implementations.
