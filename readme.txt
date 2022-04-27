@@ -188,7 +188,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.3.3] 2022-05-27 =
+= [5.3.3] 2022-04-27 =
 
 * Fix - Updates the plugin validation library to track licenses in a more fault-tolerant way. [ET-1498]
 
