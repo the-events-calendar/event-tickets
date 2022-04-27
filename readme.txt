@@ -190,6 +190,8 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.3.3] TBD =
 
+* Enhancement - Notify users of the Manual Addition of Attendees feature that is available. [ET-1492]
+* Enhancement - Notify users of Capacity and Attendee Registration Field features that are available. [ET-1493]
 * Fix - RSVP title is being encoded within the block editor fields. [ET-1478]
 * Fix - Tickets Commerce manual attendee's ticket price is set to 0. [ETP-781]
 * Fix - Fixed template override path for a few templates. [ET-1491]
