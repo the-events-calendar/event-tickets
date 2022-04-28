@@ -6,12 +6,12 @@
 class Tribe__Tickets__Plugin_Register extends Tribe__Abstract_Plugin_Register {
 
 	protected $main_class   = 'Tribe__Tickets__Main';
-	protected $dependencies = array(
-		'addon-dependencies' => array(
-			'Tribe__Tickets_Plus__Main'               => '5.4.1-dev',
+	protected $dependencies = [
+		'addon-dependencies' => [
+			'Tribe__Tickets_Plus__Main'               => '5.5.0-dev',
 			'Tribe__Events__Community__Tickets__Main' => '4.7.2-dev',
-		),
-	);
+		],
+	];
 
 	public function __construct() {
 		$this->base_dir = EVENT_TICKETS_MAIN_PLUGIN_FILE;
