@@ -191,6 +191,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [5.3.3] 2022-04-28 =
 
 * Fix - Updates the plugin validation library to track licenses in a more fault-tolerant way. [ET-1498]
+* Language - 0 new strings added, 1 updated, 0 fuzzied, and 0 obsoleted.
 
 = [5.3.2] 2022-04-05 =
 
