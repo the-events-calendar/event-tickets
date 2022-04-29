@@ -3,8 +3,8 @@
 Contributors: theeventscalendar, brianjessee, camwynsp, aguseo, bordoni, borkweb, GeoffBel, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra, moraleida.me
 Tags: tickets, registration, event registration, RSVP, ticket sales, attendee management
 Requires at least: 5.6
-Tested up to: 5.9.2
-Stable tag: 5.3.3
+Tested up to: 5.9.3
+Stable tag: 5.3.4
 Requires PHP: 7.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -188,7 +188,11 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.3.3] TBD =
+= [5.3.4] TBD =
+
+* Fix - Tickets Commerce manual attendee's ticket price is set to 0. [ETP-781]
+
+= [5.3.3] 2022-04-28 =
 
 * Enhancement - Notify users of the Manual Addition of Attendees feature that is available. [ET-1492]
 * Enhancement - Notify users of Capacity and Attendee Registration Field features that are available. [ET-1493]
