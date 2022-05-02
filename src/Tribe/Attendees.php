@@ -1,6 +1,6 @@
 <?php
 
-use Illuminate\Support\Arr;
+use Tribe__Utils__Array as Arr;
 
 /**
  * Handles most actions related to an Attendeees or Multiple ones
