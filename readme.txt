@@ -191,6 +191,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [5.3.4] TBD =
 
 * Fix - Tickets Commerce manual attendee's ticket price is set to 0. [ETP-781]
+* Fix - Fix typo in Value utils to prevent conflict with `vue.js`. [ET-1504]
 
 = [5.3.3] 2022-04-28 =
 
