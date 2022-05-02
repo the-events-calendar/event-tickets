@@ -190,6 +190,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.3.4] TBD =
 
+* Fix - Fatal error when exporting attendees in PHP 8. [ET-1502]
 * Fix - Tickets Commerce manual attendee's ticket price is set to 0. [ETP-781]
 
 = [5.3.3] 2022-04-28 =
