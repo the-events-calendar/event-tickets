@@ -62,7 +62,7 @@ class Value extends Abstract_Currency {
 		$html[] = '<span class="tribe-amount">%2$s</span>';
 		$html[] = '</span>';
 
-		if ( $position !== 'prefix' ) {
+		if ( 'prefix' !== $position ) {
 			// If position is not prefix, swap the symbol and amount span tags.
 			$hold    = $html[1];
 			$html[1] = $html[2];
