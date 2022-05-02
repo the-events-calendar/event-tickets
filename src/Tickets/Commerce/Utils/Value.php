@@ -57,7 +57,7 @@ class Value extends Abstract_Currency {
 
 		$position = 'prefix' === $this->get_currency_symbol_position() ? 'prefix' : 'postfix';
 
-		$html[] = "<span class'tribe-formatted-currency-wrap tribe-currency-{$position}'>";
+		$html[] = "<span class='tribe-formatted-currency-wrap tribe-currency-{$position}'>";
 		$html[] = '<span class="tribe-currency-symbol">%1$s</span>';
 		$html[] = '<span class="tribe-amount">%2$s</span>';
 		$html[] = '</span>';
