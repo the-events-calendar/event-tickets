@@ -190,6 +190,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.3.4] TBD =
 
+* Fix - Typo was causing a JS `setAttribute` error in `vue.min.js`. [ET-1504]
 * Fix - Tickets Commerce manual attendee's ticket price is set to 0. [ETP-781]
 
 = [5.3.3] 2022-04-28 =
