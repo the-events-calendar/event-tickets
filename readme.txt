@@ -191,6 +191,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [5.3.4] TBD =
 
 * Fix - Typo was causing a JS `setAttribute` error in `vue.min.js`. [ET-1504]
+* Fix - Fatal error when exporting attendees in PHP 8. [ET-1502]
 * Fix - Tickets Commerce manual attendee's ticket price is set to 0. [ETP-781]
 * Enhancement - Notify users of the Manual Addition of Attendees feature that is available. [ET-1492]
 * Enhancement - Notify users of Capacity and Attendee Registration Field features that are available. [ET-1493]
