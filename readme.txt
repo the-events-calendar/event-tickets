@@ -192,16 +192,18 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 * Fix - Tickets Commerce manual attendee's ticket price is set to 0. [ETP-781]
 * Fix - Fix typo in Value utils to prevent conflict with `vue.js`. [ET-1504]
-
-= [5.3.3] 2022-04-28 =
-
-* Enhancement - Notify users of the Manual Addition of Attendees feature that is available. [ET-1492]
-* Enhancement - Notify users of Capacity and Attendee Registration Field features that are available. [ET-1493]
 * Fix - RSVP title is being encoded within the block editor fields. [ET-1478]
 * Fix - Tickets Commerce manual attendee's ticket price is set to 0. [ETP-781]
 * Fix - Fixed template override path for a few templates. [ET-1491]
 * Enhancement - Added availability dates and icons to ticket listing in classic editor. [ET-1494]
+* Enhancement - Notify users of the Manual Addition of Attendees feature that is available. [ET-1492]
+* Enhancement - Notify users of Capacity and Attendee Registration Field features that are available. [ET-1493]
 * Tweak - Lighten color of disabled "Get Tickets" button text when using the Genesis theme. [ET-1435]
+
+= [5.3.3] 2022-04-28 =
+
+* Fix - Updates the plugin validation library to track licenses in a more fault-tolerant way. [ET-1498]
+* Language - 0 new strings added, 1 updated, 0 fuzzied, and 0 obsoleted.
 
 = [5.3.2] 2022-04-05 =
 
