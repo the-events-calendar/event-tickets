@@ -1,4 +1,7 @@
 <?php
+
+use Illuminate\Support\Arr;
+
 /**
  * Handles most actions related to an Attendeees or Multiple ones
  */
@@ -539,8 +542,8 @@ class Tribe__Tickets__Attendees {
 				$row[ $column_id ] = $this->attendees_table->column_default( $single_item, $column_id );
 
 				// In the case of orphaned field data, handle converting array to string.
-				if ( is_array( $row[ $column_id ] ) && array_key_exists( 'value', $row[ $column_id ] ) ) {
-					$row[ $column_id ] = $row[ $column_id ]['value'];
+				if ( is_array( $row[ $column_id ] ) ) {
+					$row[ $column_id ] = Arr::get( $row[ $column_id ], 'value', '' );
 				}
 
 				// Special handling for the check_in column
