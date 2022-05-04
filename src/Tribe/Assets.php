@@ -364,7 +364,7 @@ class Tribe__Tickets__Assets {
 		global $post;
 
 		// Should enqueue if Ticket settings page.
-		if ( 'tribe-common' === tribe_get_request_var( 'page' ) && 'event-tickets' === tribe_get_request_var( 'tab' ) ) {
+		if ( tribe( Settings::class )->is_tec_tickets_settings() ) {
 			return true;
 		}
 
