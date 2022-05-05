@@ -356,16 +356,17 @@ class Settings {
 			return $options;
 		}
 
-		$tickets_tabs = $this->get_tickets_settings_tabs_ids();
+		$tickets_tabs                     = $this->get_tickets_settings_tabs_ids();
+		$form_options['hideSettingsTabs'] = $_POST['hideSettingsTabs'];
 
-		// Iterate over the TEC settings tab ids and merge the network settings.
+		// Iterate over the Tickets settings tab ids and merge the network settings.
 		foreach ( $tickets_tabs as $tab => $key ) {
 			if ( in_array( $key, $options['hideSettingsTabs'] ) ) {
-				$_POST['hideSettingsTabs'][] = $key;
-				$options['hideSettingsTabs'] = $key;
+				$_POST['hideSettingsTabs'][]        = $key;
+				$form_options['hideSettingsTabs'][] = $key;
 			}
 		}
 
-		return $options;
+		return $form_options;
 	}
 }
