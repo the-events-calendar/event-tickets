@@ -188,7 +188,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.3.4] TBD =
+= [5.3.4] 2022-05-10 =
 
 * Fix - Typo was causing a JS `setAttribute` error in `vue.min.js`. [ET-1504]
 * Fix - Fatal error when exporting attendees in PHP 8. [ET-1502]
@@ -200,6 +200,9 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Fixed template override path for a few templates. [ET-1491]
 * Enhancement - Added availability dates and icons to ticket listing in classic editor. [ET-1494]
 * Tweak - Lighten color of disabled "Get Tickets" button text when using the Genesis theme. [ET-1435]
+* Tweak - Added actions: `tec_tickets_attendees_event_summary_table_extra`
+* Tweak - Changed views: `blocks/tickets/opt-out-hidden`, `blocks/tickets/registration/summary/content`, `registration-js/attendees/fields/number`, `v2/tickets/commerce/fields/tribe-commerce`, `v2/tickets/item/extra/description-toggle`, `v2/tickets/submit/must-login`.
+* Language - 2 new strings added, 46 updated, 0 fuzzied, and 0 obsoleted.
 
 = [5.3.3] 2022-04-28 =
 
