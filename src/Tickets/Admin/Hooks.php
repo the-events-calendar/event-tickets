@@ -10,7 +10,7 @@
  * remove_action( 'some_action', [ tribe( TEC\Tickets\Admin\Hooks::class ), 'some_method' ] );
  * remove_action( 'some_action', [ tribe( 'tickets.admin.hooks' ), 'some_method' ] );
  *
- * @since   TBD
+ * @since   5.3.4
  *
  * @package TEC\Tickets\Admin
  */
@@ -21,7 +21,7 @@ namespace TEC\Tickets\Admin;
 /**
  * Class Hooks.
  *
- * @since   TBD
+ * @since   5.3.4
  *
  * @package TEC\Tickets\Admin
  */
@@ -30,7 +30,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Binds and sets up implementations.
 	 *
-	 * @since TBD
+	 * @since 5.3.4
 	 */
 	public function register() {
 		tribe( Upsell::class )->hooks();

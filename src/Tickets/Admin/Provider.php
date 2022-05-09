@@ -2,7 +2,7 @@
 /**
  * The main service provider for the Tickets Admin area.
  *
- * @since   TBD
+ * @since   5.3.4
  * @package TEC\Tickets\Admin
  */
 
@@ -12,7 +12,7 @@ namespace TEC\Tickets\Admin;
 /**
  * Service provider for the Tickets Admin area.
  *
- * @since   TBD
+ * @since   5.3.4
  * @package TEC\Tickets\Admin
  */
 class Provider extends \tad_DI52_ServiceProvider {
@@ -20,7 +20,7 @@ class Provider extends \tad_DI52_ServiceProvider {
 	/**
 	 * Register the provider singletons.
 	 *
-	 * @since TBD
+	 * @since 5.3.4
 	 */
 	public function register() {
 
@@ -32,13 +32,13 @@ class Provider extends \tad_DI52_ServiceProvider {
 
 		// Register singleton classes.
 		$this->container->singleton( Upsell::class );
-		
+
 	}
 
 	/**
 	 * Registers the provider handling all the 1st level filters and actions for the Tickets Admin area.
 	 *
-	 * @since TBD
+	 * @since 5.3.4
 	 */
 	protected function register_hooks() {
 		$hooks = new Hooks( $this->container );

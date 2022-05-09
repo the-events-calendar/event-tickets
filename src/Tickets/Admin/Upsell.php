@@ -7,26 +7,26 @@ use \Tribe\Admin\Upsell_Notice;
 /**
  * Class Upsell
  *
- * @since   TBD
+ * @since   5.3.4
  *
  * @package TEC\Tickets\Admin
  */
 class Upsell {
-	
+
 	/**
 	 * Method to register Upsell-related hooks.
-	 * 
-	 * @since TBD
+	 *
+	 * @since 5.3.4
 	 */
 	public function hooks() {
 		add_action( 'tribe_events_tickets_pre_edit', [ $this, 'maybe_show_capacity_arf' ] );
 		add_action( 'tec_tickets_attendees_event_summary_table_extra', [ $this, 'maybe_show_manual_attendees' ] );
 	}
-	
+
 	/**
 	 * Maybe show upsell for Capacity and ARF features.
-	 * 
-	 * @since TBD
+	 *
+	 * @since 5.3.4
 	 */
 	public function maybe_show_capacity_arf() {
 		// If they already have ET+ activated, then bail.
@@ -52,11 +52,11 @@ class Upsell {
 			],
 		] );
 	}
-	
+
 	/**
 	 * Maybe show upsell for Manual Attendees.
-	 * 
-	 * @since TBD
+	 *
+	 * @since 5.3.4
 	 */
 	public function maybe_show_manual_attendees() {
 		// If they already have ET+ activated, then bail.

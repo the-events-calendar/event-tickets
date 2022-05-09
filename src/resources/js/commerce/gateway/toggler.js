@@ -1,16 +1,16 @@
 /**
  * Makes sure we have all the required levels on the Tribe Object
  *
- * @since TBD
+ * @since 5.3.0
  *
  * @type   {Object}
  */
  tribe.tickets = tribe.tickets || {};
- 
+
  /**
  * Path to this script in the global tribe Object.
  *
- * @since TBD
+ * @since 5.3.0
  *
  * @type   {Object}
  */
@@ -19,7 +19,7 @@ tribe.tickets.commerce = tribe.tickets.commerce || {};
 /**
  * Path to this script in the global tribe Object.
  *
- * @since TBD
+ * @since 5.3.0
  *
  * @type   {Object}
  */
@@ -28,7 +28,7 @@ tribe.tickets.commerce.gateway = tribe.tickets.commerce.gateway || {};
 /**
  * Path to this script in the global tribe Object.
  *
- * @since TBD
+ * @since 5.3.0
  *
  * @type   {Object}
  */
@@ -37,7 +37,7 @@ tribe.tickets.commerce.gateway.toggler = tribe.tickets.commerce.gateway.toggler 
 /**
  * This script Object for public usage of the methods.
  *
- * @since TBD
+ * @since 5.3.0
  *
  * @type   {Object}
  */
@@ -46,7 +46,7 @@ tribe.tickets.commerce.gateway.toggler = tribe.tickets.commerce.gateway.toggler 
 	/**
 	 * Pull the variables from the PHP backend.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @type {Object}
 	 */
@@ -55,7 +55,7 @@ tribe.tickets.commerce.gateway.toggler = tribe.tickets.commerce.gateway.toggler 
 	/**
 	 * Array of gateway elements.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @type {Object}
 	 */
@@ -64,7 +64,7 @@ tribe.tickets.commerce.gateway.toggler = tribe.tickets.commerce.gateway.toggler 
 	/**
 	 * Object to store the toggle elements.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @type {Object}
 	 */
@@ -73,7 +73,7 @@ tribe.tickets.commerce.gateway.toggler = tribe.tickets.commerce.gateway.toggler 
 	/**
 	 * Toggler selectors.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @type {Object}
 	 */
@@ -88,13 +88,13 @@ tribe.tickets.commerce.gateway.toggler = tribe.tickets.commerce.gateway.toggler 
 	/**
 	 * Toggler init method.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
-	 * @return 
+	 * @return
 	 */
 	obj.init = () => {
 		obj.gateways = $( obj.selectors.gatewayDiv );
-		
+
 		// If one or less gateways, go ahead and show and not add toggles.
 		if( obj.gateways.length < 2 ){
 			obj.gateways.show();
@@ -107,7 +107,7 @@ tribe.tickets.commerce.gateway.toggler = tribe.tickets.commerce.gateway.toggler 
 	/**
 	 * Shows gateway.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param {Element} gateway Gateway element to show.
 	 */
@@ -121,7 +121,7 @@ tribe.tickets.commerce.gateway.toggler = tribe.tickets.commerce.gateway.toggler 
 	/**
 	 * Hides gateway.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param {Element} gateway Gateway element to hide.
 	 */
@@ -135,7 +135,7 @@ tribe.tickets.commerce.gateway.toggler = tribe.tickets.commerce.gateway.toggler 
 	/**
 	 * Show the default/first gateway.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 */
 	obj.showDefault = () => {
 		obj.showGateway( obj.gateways[0] );
@@ -152,7 +152,7 @@ tribe.tickets.commerce.gateway.toggler = tribe.tickets.commerce.gateway.toggler 
 	/**
 	 * Show the additional (non-default) gateway(s).
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 */
 	obj.showAdditional = () => {
 		// If additional options already open, let's close it and show default.
@@ -174,7 +174,7 @@ tribe.tickets.commerce.gateway.toggler = tribe.tickets.commerce.gateway.toggler 
 	/**
 	 * Add toggle elements to DOM.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 */
 	obj.addToggles = () => {
 		obj.toggles.default = $( obj.getDefaultToggleHTML() );
@@ -187,35 +187,35 @@ tribe.tickets.commerce.gateway.toggler = tribe.tickets.commerce.gateway.toggler 
 	/**
 	 * Get HTML for default gateway toggle.
 	 *
-	 * @since TBD
-     * 
+	 * @since 5.3.0
+     *
      * @return string HTML for toggle.
 	 */
 	obj.getDefaultToggleHTML = () => {
-		return `<div class="${obj.selectors.toggle.className()}">` + 
-			`<button class="${obj.selectors.toggleButton.className()}">` + 
-			`${obj.text.default}` + 
+		return `<div class="${obj.selectors.toggle.className()}">` +
+			`<button class="${obj.selectors.toggleButton.className()}">` +
+			`${obj.text.default}` +
 			`</button></div>`;
 	};
 
 	/**
 	 * Get HTML for additional gateways toggle.
 	 *
-	 * @since TBD
-     * 
+	 * @since 5.3.0
+     *
      * @return string HTML for toggle.
 	 */
 	obj.getAdditionalToggleHTML = () => {
-		return `<div class="${obj.selectors.toggle.className()}">` + 
-			`<button class="${obj.selectors.toggleButton.className()}">` + 
-			`${obj.text.additional}` + 
+		return `<div class="${obj.selectors.toggle.className()}">` +
+			`<button class="${obj.selectors.toggleButton.className()}">` +
+			`${obj.text.additional}` +
 			`</button></div>`;
 	};
 
 	/**
 	 * Create toggle event handlers.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 */
 	obj.toggleEvents = () => {
 		obj.toggles.default.find( 'button' ).on( 'click', obj.showDefault );
