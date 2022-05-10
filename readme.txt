@@ -188,7 +188,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.3.4] 2022-05-10 =
+= [5.3.4] 2022-05-11 =
 
 * Fix - Typo was causing a JS `setAttribute` error in `vue.min.js`. [ET-1504]
 * Fix - Fatal error when exporting attendees in PHP 8. [ET-1502]
