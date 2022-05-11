@@ -487,6 +487,17 @@ class Settings {
 			return false;
 		}
 
-		return tribe( \Tribe__Tickets_Plus__PUE::class )->is_current_license_valid( $revalidate );
+		$pue = tribe( \Tribe__Tickets_Plus__PUE::class );
+
+		// If we have a current valid license we are ok.
+		if ( $pue->is_current_license_valid() ) {
+			return true;
+		}
+
+		if ( ! $pue->get_pue()->is_valid_key_format() ) {
+			return true;
+		}
+
+		return $pue->is_current_license_valid( $revalidate );
 	}
 }
