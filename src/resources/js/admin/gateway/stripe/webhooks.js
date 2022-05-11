@@ -2,7 +2,7 @@
 /**
  * Makes sure we have all the required levels on the Tribe Object
  *
- * @since TBD
+ * @since 4.8.14
  *
  * @type   {Object}
  */
@@ -11,7 +11,7 @@ tribe.tickets = tribe.tickets || {};
 /**
  * Path to this script in the global tribe Object.
  *
- * @since TBD
+ * @since 5.3.0
  *
  * @type   {Object}
  */
@@ -29,7 +29,7 @@ tribe.tickets.commerce.gateway = tribe.tickets.commerce.gateway || {};
 /**
  * Path to this script in the global tribe Object.
  *
- * @since TBD
+ * @since 5.3.0
  *
  * @type   {Object}
  */
@@ -38,7 +38,7 @@ tribe.tickets.commerce.gateway.stripe = tribe.tickets.commerce.gateway.stripe ||
 /**
  * This script Object for public usage of the methods.
  *
- * @since TBD
+ * @since 5.3.0
  *
  * @type   {Object}
  */
@@ -50,7 +50,7 @@ tribe.tickets.commerce.gateway.stripe.webhooks = {};
 	/**
 	 * Stores the all selectors used on this module.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @type {Object}
 	 */
@@ -65,7 +65,7 @@ tribe.tickets.commerce.gateway.stripe.webhooks = {};
 	/**
 	 * Stores the ClipboardJS instance for later reference.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @type {Object}
 	 */
@@ -74,7 +74,7 @@ tribe.tickets.commerce.gateway.stripe.webhooks = {};
 	/**
 	 * Configures the Copy URL UI.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 */
 	obj.setupCopyUrl = () => {
 		obj.clipboardButton = new ClipboardJS( obj.selectors.button );
@@ -84,7 +84,7 @@ tribe.tickets.commerce.gateway.stripe.webhooks = {};
 	/**
 	 * Configures the signing key input events.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 */
 	obj.setupSigningValidation = () => {
 		$( obj.selectors.signingKey ).on( 'change', obj.onSigningFieldChange );
@@ -93,7 +93,7 @@ tribe.tickets.commerce.gateway.stripe.webhooks = {};
 	/**
 	 * When the signing field changes.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param event {Event}
 	 *

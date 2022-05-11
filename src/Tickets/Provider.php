@@ -39,6 +39,9 @@ class Provider extends tad_DI52_ServiceProvider {
 
 		// Load compatibility with ECP Recurrence engine.
 		$this->container->register( Recurrence\Provider::class );
+
+		// Loads admin area.
+		$this->container->register( Admin\Provider::class );
 	}
 
 	/**

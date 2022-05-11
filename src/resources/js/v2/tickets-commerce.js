@@ -187,7 +187,7 @@ tribe.tickets.commerce = {};
 	/**
 	 * Get purchaser data if available.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @param {jQuery} $container Container for the purchaser info fields.
 	 *

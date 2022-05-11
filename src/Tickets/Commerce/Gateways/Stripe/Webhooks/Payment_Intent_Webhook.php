@@ -7,6 +7,7 @@ use TEC\Tickets\Commerce\Gateways\Stripe\Payment_Intent;
 use TEC\Tickets\Commerce\Gateways\Stripe\Status;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Status\Status_Interface;
+use Tribe__Utils__Array as Arr;
 
 /**
  * Webhook for Payment_Intent operations
@@ -34,6 +35,18 @@ class Payment_Intent_Webhook implements Webhook_Event_Interface {
 
 		if ( empty( $order ) ) {
 
+			if ( empty( $payment_intent['metadata'][ Payment_Intent::$tc_metadata_identifier ] ) ) {
+				$response->set_status( 200 );
+				$response->set_data( sprintf(
+				// Translators: %1$s is the event id and %2$s is the event type name.
+					__( 'Event %1$s was received and will not be handled because the Payment Intent %2$s does not refer to an Event Tickets transaction.', 'event-tickets' ),
+					esc_html( Arr::get( $event, 'id' ) ),
+					esc_html( $payment_intent_id )
+				) );
+
+				return $response;
+			}
+
 			if ( ! empty( $payment_intent['metadata'][ Payment_Intent::$test_metadata_key ] ) ) {
 				$response->set_status( 200 );
 				$response->set_data(
@@ -59,7 +72,7 @@ class Payment_Intent_Webhook implements Webhook_Event_Interface {
 					esc_html( $payment_intent_id )
 				)
 			);
-			
+
 			return $response;
 		}
 

@@ -1,4 +1,7 @@
 <?php
+
+use Tribe__Utils__Array as Arr;
+
 /**
  * Handles most actions related to an Attendeees or Multiple ones
  */
@@ -537,6 +540,11 @@ class Tribe__Tickets__Attendees {
 				// values by calling the table object's column_default() method - any other values
 				// should simply be passed back unmodified
 				$row[ $column_id ] = $this->attendees_table->column_default( $single_item, $column_id );
+
+				// In the case of orphaned field data, handle converting array to string.
+				if ( is_array( $row[ $column_id ] ) ) {
+					$row[ $column_id ] = Arr::get( $row[ $column_id ], 'value', '' );
+				}
 
 				// Special handling for the check_in column
 				if ( ! empty( $single_item[ $column_id ] ) && 'check_in' === $column_id && 1 == $single_item[ $column_id ] ) {

@@ -161,6 +161,16 @@ $export_url = tribe( 'tickets.attendees' )->get_export_url();
 					do_action( 'tribe_events_tickets_attendees_totals_bottom', $event_id );
 					?>
 				</div>
+				<?php
+				/**
+				 * Fires after the last column so that "extra" content can be displayed.
+				 *
+				 * @since 5.3.4
+				 *
+				 * @param int $event_id Event ID.
+				 */
+				do_action( 'tec_tickets_attendees_event_summary_table_extra', $event_id );
+				?>
 			</div>
 		</div>
 	</div>
