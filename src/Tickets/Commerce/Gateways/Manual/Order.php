@@ -42,8 +42,9 @@ class Order extends Abstract_Order {
 					return null;
 				}
 
-				$item['price']     = $ticket_value->get_decimal();
-				$item['sub_total'] = $ticket_value->sub_total( $item['quantity'] )->get_decimal();
+				// Price should be 0 for Manual attendee orders.
+				$item['price']     = 0;
+				$item['sub_total'] = 0;
 
 				return $item;
 			},

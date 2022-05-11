@@ -4,7 +4,7 @@ Contributors: theeventscalendar, brianjessee, camwynsp, aguseo, bordoni, borkweb
 Tags: tickets, registration, event registration, RSVP, ticket sales, attendee management
 Requires at least: 5.6
 Tested up to: 5.9.3
-Stable tag: 5.3.3
+Stable tag: 5.3.4
 Requires PHP: 7.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -187,6 +187,22 @@ We've got a [LoopedIn](https://evnt.is/ideas) page where we're actively watching
 Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on using, tweaking, and troubleshooting our plugins.
 
 == Changelog ==
+
+= [5.3.4] 2022-05-11 =
+
+* Fix - Typo was causing a JS `setAttribute` error in `vue.min.js`. [ET-1504]
+* Fix - Fatal error when exporting attendees in PHP 8. [ET-1502]
+* Fix - Tickets Commerce manual attendee's ticket price is set to 0. [ETP-781]
+* Enhancement - Notify users of the Manual Addition of Attendees feature that is available. [ET-1492]
+* Enhancement - Notify users of Capacity and Attendee Registration Field features that are available. [ET-1493]
+* Fix - RSVP title is being encoded within the block editor fields. [ET-1478]
+* Fix - Tickets Commerce manual attendee's ticket price is set to 0. [ETP-781]
+* Fix - Fixed template override path for a few templates. [ET-1491]
+* Enhancement - Added availability dates and icons to ticket listing in classic editor. [ET-1494]
+* Tweak - Lighten color of disabled "Get Tickets" button text when using the Genesis theme. [ET-1435]
+* Tweak - Added actions: `tec_tickets_attendees_event_summary_table_extra`
+* Tweak - Changed views: `blocks/tickets/opt-out-hidden`, `blocks/tickets/registration/summary/content`, `registration-js/attendees/fields/number`, `v2/tickets/commerce/fields/tribe-commerce`, `v2/tickets/item/extra/description-toggle`, `v2/tickets/submit/must-login`.
+* Language - 2 new strings added, 46 updated, 0 fuzzied, and 0 obsoleted.
 
 = [5.3.3] 2022-04-28 =
 

@@ -4,15 +4,16 @@
  * Extra column, description toggle.
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/tickets/item/extra/price.php
+ * [your-theme]/tribe/tickets/v2/tickets/item/extra/description-toggle.php
  *
  * See more documentation about our views templating system.
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   5.0.3
+ * @since 5.0.3
+ * @since 5.3.4 Fixed template override path.
  *
- * @version 5.0.3
+ * @version 5.3.4
  *
  * @var Tribe__Tickets__Editor__Template   $this                        [Global] Template object.
  * @var int                                $post_id                     [Global] The current Post ID to which tickets are attached.
