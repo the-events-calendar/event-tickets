@@ -33,7 +33,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	/**
 	 * The document element
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @type {jQuery|HTMLElement}
 	 */
@@ -69,7 +69,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	/**
 	 * Flag to check if the current error is generic or not.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @type {boolean}
 	 */
@@ -562,7 +562,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 
 		const $script = $( obj.selectors.checkoutScript );
 		const $paypalGateway = $( obj.selectors.paypalGatewayContainer );
-		
+
 		// Check to see if PayPal gateway is present.
 		if ( $paypalGateway.length === 0 ) {
 			$document.trigger( tribe.tickets.commerce.customEvents.hideLoader );

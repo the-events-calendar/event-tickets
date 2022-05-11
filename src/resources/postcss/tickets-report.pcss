@@ -4,7 +4,12 @@
 	position: relative;
 
 	&.welcome-panel {
+		background: none;
 		overflow: visible;
+		
+		&:before {
+			content: none;
+		}
 	}
 
 	.about-description {
@@ -15,31 +20,44 @@
 		color: inherit;
 	}
 
+	.welcome-panel-content {
+		min-height: initial;
+	}
+
 	.welcome-panel-column-container {
-		display: flex;
-		flex-flow: row;
-		justify-content: space-between;
+		display: grid;
+		gap: unset;
+		grid-template-columns: repeat(3, 1fr);
+		grid-template-areas: 
+			"first middle last"
+			"extra extra last";
+		margin-top: 0px;
+		padding: 0px;
 		position: initial;
 		*zoom: 1;
 
 		@media screen and (max-width: 768px) {
-			flex-wrap: wrap;
+			grid-template-columns: 1fr;
+			grid-template-areas: 
+				"first" 
+				"middle"
+				"last"
+				"extra";
 		}
 	}
 
 	.welcome-panel-column {
+		display: inline-block;
+		max-width: none;
 		padding: 20px 10px;
+		width: auto;
 
 		@media screen and (max-width: 768px) {
 			padding: 20px 0;
-			width: 100%;
 		}
 
 		@media screen and (min-width: 1024px) {
-			display: inline-block;
-			padding: 20px 2%;
-			width: 29%;
-			min-width: 29%;
+			padding: 20px var(--tec-spacer-5);
 		}
 
 		h3 {
@@ -76,7 +94,17 @@
 		}
 	}
 
+	.welcome-panel-first {
+		grid-area: first;
+	}
+
+	.welcome-panel-extra {
+		grid-area: extra;
+	}
+
 	.welcome-panel-middle {
+		grid-area: middle;
+		
 		> div {
 			@media screen and (max-width: 768px) {
 				padding: 0 15px;
@@ -85,9 +113,11 @@
 	}
 
 	.welcome-panel-last {
+		align-content: start;
 		border-left: 1px solid #eee;
 		display: flex;
 		flex-flow: row wrap;
+		grid-area: last;
 		padding: 10px 20px 5px;
 		*zoom: 1;
 
@@ -131,10 +161,6 @@
 			@media screen and (min-width: 870px) {
 				&:first-child {
 					margin-bottom: 0;
-				}
-
-				&:last-child {
-					margin-top: 0;
 				}
 			}
 		}
@@ -351,5 +377,14 @@ table.orders {
 		&.pending {
 			font-style: italic;
 		}
+	}
+}
+
+.tec-admin__upsell-tec-tickets-manual-attendees {
+	.tec-admin__upsell-content {
+		padding: 0px;
+	}
+	.tec-admin__upsell-text {
+		color: #1d2327;
 	}
 }
