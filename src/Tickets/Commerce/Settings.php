@@ -494,7 +494,7 @@ class Settings {
 			return true;
 		}
 
-		if ( ! $pue->get_pue()->is_valid_key_format() ) {
+		if ( $pue->get_pue()->is_valid_key_format() ) {
 			return true;
 		}
 
