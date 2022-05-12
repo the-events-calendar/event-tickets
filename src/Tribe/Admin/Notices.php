@@ -61,13 +61,13 @@ class Tribe__Tickets__Admin__Notices {
 			return;
 		}
 
-		// Bail if we aren't in Events > Settings.
-		if ( 'tribe-common' !== tribe_get_request_var( 'page' ) ) {
+		// Bail if we aren't in Tickets > Settings.
+		if ( \Tribe\Tickets\Admin\Settings::$settings_page_id !== tribe_get_request_var( 'page' ) ) {
 			return;
 		}
 
-		// Bail if already at wp-admin > Events > Settings > Tickets tab to avoid redundancy/confusion by linking to itself.
-		if ( 'display' === tribe_get_request_var( 'tab' ) ) {
+		// Bail if already at wp-admin > Tickets > Settings > Tickets tab to avoid redundancy/confusion by linking to itself.
+		if ( 'event-tickets' === tribe_get_request_var( 'tab' ) ) {
 			return;
 		}
 

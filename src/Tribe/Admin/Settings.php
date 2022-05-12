@@ -2,7 +2,6 @@
 namespace Tribe\Tickets\Admin;
 
 use Tribe\Admin\Troubleshooting as Troubleshooting;
-use Tribe__Settings;
 use Tribe__Settings_Tab;
 
 /**

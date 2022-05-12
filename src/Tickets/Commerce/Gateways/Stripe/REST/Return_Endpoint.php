@@ -9,7 +9,6 @@ use TEC\Tickets\Commerce\Gateways\Stripe\Settings;
 use TEC\Tickets\Commerce\Gateways\Stripe\Signup;
 use TEC\Tickets\Commerce\Payments_Tab;
 use Tribe\Tickets\Admin\Settings as Plugin_Settings;
-use Tribe__Settings;
 
 use WP_REST_Server;
 use WP_REST_Request;
