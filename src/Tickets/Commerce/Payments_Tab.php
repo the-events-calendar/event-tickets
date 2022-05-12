@@ -8,7 +8,6 @@ use TEC\Tickets\Commerce\Gateways\Manager;
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Gateway as Gateway;
 use TEC\Tickets\Settings as Tickets_Commerce_Settings;
 use Tribe\Tickets\Admin\Settings as Plugin_Settings;
-use \Tribe__Settings;
 use \tad_DI52_ServiceProvider;
 use \Tribe__Template;
 use Tribe__Tickets__Main;
@@ -251,7 +250,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 			return $url;
 		}
 
-		if ( Tribe__Settings::$parent_slug !== $page ) {
+		if ( \Tribe\Tickets\Admin\Settings::$settings_page_id !== $page ) {
 			return $url;
 		}
 
