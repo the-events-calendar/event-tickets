@@ -190,6 +190,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.3.4.1] 2022-05-12 =
 
+* Version - Event Tickets 5.3.4.1 is only compatible with Event Tickets Plus 5.4.4.1 and higher
 * Fix - Ensure that Event Tickets Plus customers never encounter application fees on Stripe for Tickets Commerce purchases. [ET-1513]
 
 = [5.3.4] 2022-05-11 =
