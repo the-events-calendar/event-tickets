@@ -62,6 +62,15 @@ class Tribe__Tickets__Integrations__Freemius {
 	private $name = 'Event Tickets';
 
 	/**
+	 * Store the value from the parent menu slug.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private $menu_slug = 'tec-tickets';
+
+	/**
 	 * Store the value from the 'page' in the request.
 	 *
 	 * @since 4.11.5
@@ -142,7 +151,7 @@ class Tribe__Tickets__Integrations__Freemius {
 
 		$this->instance = $freemius->initialize( $this->slug, $this->freemius_id, $this->public_key, [
 			'menu'           => [
-				'slug'       => $this->page,
+				'slug'       => $this->menu_slug,
 				'first-path' => $this->get_settings_path(),
 				'account'    => false,
 				'contact'    => false,
@@ -279,7 +288,7 @@ class Tribe__Tickets__Integrations__Freemius {
 	 * @return string The Settings page path.
 	 */
 	public function get_settings_path() {
-		return sprintf( 'admin.php?page=%s', $this->page );
+		return str_replace( get_admin_url(), '', tribe( 'tickets.main' )->settings()->get_url() );
 	}
 
 	/**
