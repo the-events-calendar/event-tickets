@@ -68,7 +68,7 @@ class Tribe__Tickets__Integrations__Freemius {
 	 *
 	 * @var string
 	 */
-	private $page = 'tribe-common';
+	private $page = 'tec-tickets-settings';
 
 	/**
 	 * Tribe__Tickets__Integrations__Freemius constructor.
@@ -96,10 +96,10 @@ class Tribe__Tickets__Integrations__Freemius {
 		$page = tribe_get_request_var( 'page' );
 
 		$valid_page = [
+			\Tribe\Tickets\Admin\Settings::$settings_page_id => true,
 			Tribe__Settings::$parent_slug                    => true,
 			Tribe__App_Shop::MENU_SLUG                       => true,
-			'tribe-help'                                     => true,
-			\Tribe\Tickets\Admin\Settings::$settings_page_id => true,
+			'tec-tickets-help'                               => true,
 		];
 
 		if ( class_exists( 'Tribe__Events__Aggregator__Page' ) ) {
