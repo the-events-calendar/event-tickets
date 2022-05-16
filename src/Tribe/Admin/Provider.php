@@ -20,7 +20,7 @@ class Provider extends \tad_DI52_ServiceProvider {
 	 */
 	public function add_hooks() {
 		add_action( 'tribe_settings_do_tabs', tribe_callback( Settings::class, 'settings_ui' ) );
-		add_action( 'admin_menu', tribe_callback( Settings::class, 'add_admin_pages' ) );
+		add_action( 'admin_menu', tribe_callback( Settings::class, 'add_admin_pages' ), 1 );
 		add_action( 'network_admin_menu', tribe_callback( Settings::class, 'maybe_add_network_settings_page' ) );
 		add_action( 'tribe_settings_do_tabs', tribe_callback( Settings::class, 'do_network_settings_tab' ), 400 );
 
