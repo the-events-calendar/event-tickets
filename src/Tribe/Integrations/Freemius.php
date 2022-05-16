@@ -68,7 +68,7 @@ class Tribe__Tickets__Integrations__Freemius {
 	 *
 	 * @var string
 	 */
-	private $page = 'tec-tickets-settings';
+	private $page = 'tec-tickets';
 
 	/**
 	 * Tribe__Tickets__Integrations__Freemius constructor.
