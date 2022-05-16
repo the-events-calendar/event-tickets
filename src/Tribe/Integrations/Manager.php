@@ -47,7 +47,7 @@ class Tribe__Tickets__Integrations__Manager {
 	}
 
 	/**
-	 * Loads our Freemius integration
+	 * Loads our Freemius integration.
 	 *
 	 * @since 4.11.5
 	 */
@@ -56,7 +56,6 @@ class Tribe__Tickets__Integrations__Manager {
 	}
 
 	public function hook() {
-		// init.
-		add_action( 'tribe_tickets_plugin_loaded', [ $this, 'load_freemius' ], 15 );
+		add_action( 'init', [ $this, 'load_freemius' ], 15 );
 	}
 }
