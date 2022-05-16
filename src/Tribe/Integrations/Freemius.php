@@ -96,6 +96,7 @@ class Tribe__Tickets__Integrations__Freemius {
 		$page = tribe_get_request_var( 'page' );
 
 		$valid_page = [
+			\Tribe\Tickets\Admin\Settings::$parent_slug      => true,
 			\Tribe\Tickets\Admin\Settings::$settings_page_id => true,
 			Tribe__Settings::$parent_slug                    => true,
 			Tribe__App_Shop::MENU_SLUG                       => true,
