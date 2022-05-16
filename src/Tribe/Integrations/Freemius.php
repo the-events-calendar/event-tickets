@@ -224,9 +224,6 @@ class Tribe__Tickets__Integrations__Freemius {
 	 * @return string The connect page URL.
 	 */
 	public function get_connect_url( $connect_url ) {
-
-		return admin_url( 'edit-tags.php?taxonomy=category' );
-
 		$settings_url = $this->get_settings_url();
 
 		if ( false !== strpos( $connect_url, 'fs_action' ) ) {
