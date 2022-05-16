@@ -76,7 +76,7 @@ class Tribe__Tickets__Integrations__Freemius {
 	 * @since 4.11.5
 	 */
 	public function __construct() {
-		$this->setup();
+		// deprecate.
 	}
 
 	/**
