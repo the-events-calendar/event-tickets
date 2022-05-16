@@ -101,6 +101,7 @@ class Tribe__Tickets__Integrations__Freemius {
 			Tribe__Settings::$parent_slug                    => true,
 			Tribe__App_Shop::MENU_SLUG                       => true,
 			'tec-tickets-help'                               => true,
+			'tec-tickets-troubleshooting'                    => true,
 		];
 
 		if ( class_exists( 'Tribe__Events__Aggregator__Page' ) ) {
