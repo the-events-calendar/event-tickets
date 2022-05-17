@@ -36,6 +36,7 @@ class Assets extends \tad_DI52_ServiceProvider {
 			[],
 			'admin_enqueue_scripts',
 			[
+				'conditionals' => [ $this, 'should_enqueue_assets_payments_tab' ],
 				'localize' => [
 					[
 						'name' => 'tribeTicketsCommercePayPaCommerce',
