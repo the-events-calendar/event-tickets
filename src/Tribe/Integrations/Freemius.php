@@ -77,9 +77,7 @@ class Tribe__Tickets__Integrations__Freemius {
 	 *
 	 * @deprecated TBD
 	 */
-	public function __construct() {
-		_deprecated_function( __METHOD__, 'TBD' );
-	}
+	public function __construct() {}
 
 	/**
 	 * Performs setup for the Freemius integration singleton.
