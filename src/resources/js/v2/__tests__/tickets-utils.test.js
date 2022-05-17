@@ -10,7 +10,7 @@ const formats = {
 		"number_of_decimals":2
 	},
 	'german' : {
-		"symbol":"$",
+		"symbol":"€",
 		"placement":"prefix",
 		"decimal_point":",",
 		"thousands_sep":".",
@@ -59,4 +59,25 @@ describe( 'Format testing', () => {
 			expect(utils.cleanNumber( output, format )).toBe(number);
 		});
 	} );
+} );
+
+describe( 'Clean number extended tests', () => {
+	const dataset = [
+		{ formatName: 'default', formatted: '12', raw: '12' },
+		{ formatName: 'default', formatted: '1,000', raw: '1000' },
+		{ formatName: 'default', formatted: '1,000.00', raw: '1000.00' },
+		{ formatName: 'default', formatted: '999', raw: '999' },
+		{ formatName: 'german', formatted: '12', raw: '12' },
+		{ formatName: 'german', formatted: '1.000', raw: '1000' },
+		{ formatName: 'german', formatted: '1.000,00', raw: '1000.00' },
+		{ formatName: 'german', formatted: '999', raw: '999' },
+		{ formatName: 'german', formatted: '99.999.999,99', raw: '99999999.99' },
+		{ formatName: 'german', formatted: '99.999.999', raw: '99999999' },
+	];
+
+	describe('Testing Clean Number', () => {
+		it.each(dataset)( 'values : ( $formatName, $formatted, $raw )', ( { formatName, formatted, raw } ) => {
+			expect(utils.cleanNumber( formatted, formatName )).toBe(raw);
+		} );
+	});
 } );
