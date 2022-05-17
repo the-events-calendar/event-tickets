@@ -35,7 +35,7 @@ require( '../tickets-utils' );
 
 const utils = tribe.tickets.utils;
 
-test( 'Testing demo rest endpoint', () => {
+test( 'Testing dummy rest endpoint', () => {
 	expect(utils.getRestEndpoint()).toBe("test");
 } );
 
@@ -82,11 +82,15 @@ describe( 'Clean number extended tests', () => {
 		{ formatName: 'german', formatted: '99.999.999', raw: '99999999' },
 	];
 
-	describe('Testing Clean Number', () => {
+	describe( 'Testing Clean Number', () => {
 		it.each(dataset)( 'values : ( $formatName, $formatted, $raw )', ( { formatName, formatted, raw } ) => {
 			expect(utils.cleanNumber( formatted, formatName )).toBe(raw);
 		} );
 	});
+
+	test( 'Should return same number if no separator found', () => {
+		expect(utils.cleanNumber( '1111', 'default' )).toBe('1111');
+	} );
 } );
 
 
@@ -101,9 +105,13 @@ describe( 'Format number extended tests', () => {
 		{ formatName: 'special', formatted: '1.000.000', raw: '1000' },
 	];
 
-	describe('Testing Format Number', () => {
+	describe( 'Testing Format Number', () => {
 		it.each(dataset)( 'values : ( $formatName, $formatted, $raw )', ( { formatName, formatted, raw } ) => {
 			expect(utils.numberFormat( raw, formatName )).toBe(formatted);
 		} );
 	});
+
+	test( 'Should return false if invalid format given', () => {
+		expect( utils.numberFormat( '111', 'invalid-format' ) ).toBe(false);
+	} );
 } );
