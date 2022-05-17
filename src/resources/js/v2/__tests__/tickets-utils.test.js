@@ -35,11 +35,11 @@ require( '../tickets-utils' );
 
 const utils = tribe.tickets.utils;
 
-test( 'Testing dummy rest endpoint', () => {
+test( 'Dummy rest endpoint is working', () => {
 	expect(utils.getRestEndpoint()).toBe("test");
 } );
 
-test( 'Testing formats are not empty', () => {
+test( 'Formats are not empty', () => {
 	expect( utils.getCurrencyFormatting('default') ).not.toBe( {} );
 } );
 
@@ -56,13 +56,13 @@ describe( 'Format testing', () => {
 	];
 
 	describe( 'Testing Number format', () => {
-		it.each(dataset)('values :( $format, $number, $output )', ({ format, number, output }) => {
+		test.each(dataset)('values :( $format, $number, $output )', ({ format, number, output }) => {
 			expect(utils.numberFormat( number, format )).toBe(output);
 		});
 	} );
 
 	describe( 'Testing Clean Number', () => {
-		it.each(dataset)('values : ( $format, $number, $output )', ({ format, number, output }) => {
+		test.each(dataset)('values : ( $format, $number, $output )', ({ format, number, output }) => {
 			expect(utils.cleanNumber( output, format )).toBe(number);
 		});
 	} );
@@ -83,12 +83,12 @@ describe( 'Clean number extended tests', () => {
 	];
 
 	describe( 'Testing Clean Number', () => {
-		it.each(dataset)( 'values : ( $formatName, $formatted, $raw )', ( { formatName, formatted, raw } ) => {
+		test.each(dataset)( 'values : ( $formatName, $formatted, $raw )', ( { formatName, formatted, raw } ) => {
 			expect(utils.cleanNumber( formatted, formatName )).toBe(raw);
 		} );
 	});
 
-	test( 'Should return same number if no separator found', () => {
+	it( 'Should return same number if no separator found', () => {
 		expect(utils.cleanNumber( '1111', 'default' )).toBe('1111');
 	} );
 } );
@@ -106,12 +106,12 @@ describe( 'Format number extended tests', () => {
 	];
 
 	describe( 'Testing Format Number', () => {
-		it.each(dataset)( 'values : ( $formatName, $formatted, $raw )', ( { formatName, formatted, raw } ) => {
+		test.each(dataset)( 'values : ( $formatName, $formatted, $raw )', ( { formatName, formatted, raw } ) => {
 			expect(utils.numberFormat( raw, formatName )).toBe(formatted);
 		} );
 	});
 
-	test( 'Should return false if invalid format given', () => {
+	it( 'Should return false if invalid format given', () => {
 		expect( utils.numberFormat( '111', 'invalid-format' ) ).toBe(false);
 	} );
 } );
