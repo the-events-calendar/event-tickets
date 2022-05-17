@@ -365,7 +365,7 @@ class Settings {
 		}
 
 		if ( ! is_plugin_active_for_network( 'event-tickets/event-tickets.php' ) ) {
-			return;
+			return $options;
 		}
 
 		$tickets_tabs                     = $this->get_tickets_settings_tabs_ids();
