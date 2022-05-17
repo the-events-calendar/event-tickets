@@ -68,15 +68,17 @@ class Tribe__Tickets__Integrations__Freemius {
 	 *
 	 * @var string
 	 */
-	private $page = 'tribe-common';
+	private $page = 'tec-tickets-settings';
 
 	/**
 	 * Tribe__Tickets__Integrations__Freemius constructor.
 	 *
 	 * @since 4.11.5
+	 *
+	 * @deprecated TBD
 	 */
 	public function __construct() {
-		$this->setup();
+		_deprecated_function( __METHOD__, 'TBD' );
 	}
 
 	/**
@@ -96,9 +98,12 @@ class Tribe__Tickets__Integrations__Freemius {
 		$page = tribe_get_request_var( 'page' );
 
 		$valid_page = [
-			Tribe__Settings::$parent_slug => true,
-			Tribe__App_Shop::MENU_SLUG    => true,
-			'tribe-help'                  => true,
+			\Tribe\Tickets\Admin\Settings::$parent_slug      => true,
+			\Tribe\Tickets\Admin\Settings::$settings_page_id => true,
+			Tribe__Settings::$parent_slug                    => true,
+			Tribe__App_Shop::MENU_SLUG                       => true,
+			'tec-tickets-help'                               => true,
+			'tec-tickets-troubleshooting'                    => true,
 		];
 
 		if ( class_exists( 'Tribe__Events__Aggregator__Page' ) ) {
