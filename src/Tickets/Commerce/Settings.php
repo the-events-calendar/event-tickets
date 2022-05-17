@@ -483,11 +483,15 @@ class Settings {
 	 * @return bool
 	 */
 	public static function is_licensed_plugin( $revalidate = false ) {
-
 		if ( ! class_exists( 'Tribe__Tickets_Plus__PUE' ) ) {
 			return false;
 		}
 
-		return tribe( \Tribe__Tickets_Plus__PUE::class )->is_current_license_valid( $revalidate );
+		$pue = tribe( \Tribe__Tickets_Plus__PUE::class );
+
+		/**
+		 * @todo we need to make sure we actually validate the PUE key.
+		 */
+		return $pue->get_pue()->is_valid_key_format() ;
 	}
 }
