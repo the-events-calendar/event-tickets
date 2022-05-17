@@ -16,6 +16,13 @@ const formats = {
 		"thousands_sep":".",
 		"number_of_decimals":2
 	},
+	'special' : {
+		"symbol":"€",
+		"placement":"prefix",
+		"decimal_point":".",
+		"thousands_sep":".",
+		"number_of_decimals":3
+	},
 
 };
 global.TribeCurrency = { formatting: JSON.stringify(formats) };
@@ -78,6 +85,25 @@ describe( 'Clean number extended tests', () => {
 	describe('Testing Clean Number', () => {
 		it.each(dataset)( 'values : ( $formatName, $formatted, $raw )', ( { formatName, formatted, raw } ) => {
 			expect(utils.cleanNumber( formatted, formatName )).toBe(raw);
+		} );
+	});
+} );
+
+
+describe( 'Format number extended tests', () => {
+	const dataset = [
+		{ formatName: 'default', formatted: '12.00', raw: '12' },
+		{ formatName: 'default', formatted: '1,000.00', raw: '1000' },
+		{ formatName: 'default', formatted: '999.00', raw: '999' },
+		{ formatName: 'default', formatted: '999.33', raw: '999.333' },
+		{ formatName: 'default', formatted: '999.79', raw: '999.7888' },
+		{ formatName: 'special', formatted: '1.000', raw: '1' },
+		{ formatName: 'special', formatted: '1.000.000', raw: '1000' },
+	];
+
+	describe('Testing Format Number', () => {
+		it.each(dataset)( 'values : ( $formatName, $formatted, $raw )', ( { formatName, formatted, raw } ) => {
+			expect(utils.numberFormat( raw, formatName )).toBe(formatted);
 		} );
 	});
 } );
