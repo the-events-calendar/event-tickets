@@ -55,6 +55,11 @@ class Tribe__Tickets__Integrations__Manager {
 		tribe( 'tickets.integrations.freemius' );
 	}
 
+	/**
+	 * Hooks for the integrations manager.
+	 *
+	 * @since TBD
+	 */
 	public function hook() {
 		add_action( 'init', [ $this, 'load_freemius' ], 15 );
 	}
