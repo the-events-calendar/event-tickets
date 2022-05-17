@@ -144,11 +144,8 @@ class Tribe__Tickets__Integrations__Freemius {
 
 		$this->instance = $freemius->initialize( $this->slug, $this->freemius_id, $this->public_key, [
 			'menu'           => [
-				'slug'       => 'tec-tickets-settings',
+				'slug'       => $this->page,
 				'first-path' => $this->get_settings_path(),
-				'parent'     => [
-					'slug' => 'tec-tickets',
-				],
 				'account'    => false,
 				'contact'    => false,
 				'support'    => false,
