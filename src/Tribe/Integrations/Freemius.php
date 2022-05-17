@@ -74,6 +74,8 @@ class Tribe__Tickets__Integrations__Freemius {
 	 * Tribe__Tickets__Integrations__Freemius constructor.
 	 *
 	 * @since 4.11.5
+	 *
+	 * @deprecated TBD
 	 */
 	public function __construct() {
 		_deprecated_function( __METHOD__, 'TBD' );
