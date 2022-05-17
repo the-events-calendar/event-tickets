@@ -56,6 +56,6 @@ class Tribe__Tickets__Integrations__Manager {
 	}
 
 	public function hook() {
-		add_action( 'init', [ $this, 'load_freemius' ], 10 );
+		add_action( 'init', [ $this, 'load_freemius' ], 15 );
 	}
 }
