@@ -364,6 +364,10 @@ class Settings {
 			return $options;
 		}
 
+		if ( ! is_plugin_active_for_network( 'event-tickets/event-tickets.php' ) ) {
+			return;
+		}
+
 		$tickets_tabs                     = $this->get_tickets_settings_tabs_ids();
 		$form_options['hideSettingsTabs'] = $_POST['hideSettingsTabs'];
 
