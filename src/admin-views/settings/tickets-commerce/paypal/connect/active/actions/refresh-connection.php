@@ -2,12 +2,12 @@
 /**
  * The Template for displaying the Tickets Commerce refresh connection action button.
  *
- * @version TBD
+ * @version 5.4.0
  *
  * @since 5.2.0
  * @since 5.3.0 Added section param to URL.
  * @since 5.3.0 Using generic CSS classes for gateway instead of PayPal.
- * @since TBD Using the new tickets settings get_url() method.
+ * @since 5.4.0 Using the new tickets settings get_url() method.
  *
  * @var Tribe__Tickets__Admin__Views                  $this                  [Global] Template object.
  * @var string                                        $plugin_url            [Global] The plugin URL.

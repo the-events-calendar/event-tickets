@@ -8,7 +8,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin
 	 */
-const VERSION = '5.4.0';
+	const VERSION = '5.4.0';
 
 	/**
 	 * Used to store the version history.
@@ -922,7 +922,7 @@ const VERSION = '5.4.0';
 	/**
 	 * Settings page object accessor.
 	 *
-	 * @since TBD
+	 * @since 5.4.0
 	 *
 	 * @return \Tribe\Tickets\Admin\Settings
 	 */

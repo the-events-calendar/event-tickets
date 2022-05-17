@@ -10,13 +10,13 @@ use Tribe\Tickets\Admin\Settings;
  *
  * @package Tribe\Tickets\Admin\Home
  *
- * @since   TBD
+ * @since   5.4.0
  */
 class Service_Provider extends tad_DI52_ServiceProvider {
 	/**
 	 * Register the provider singletons.
 	 *
-	 * @since TBD
+	 * @since 5.4.0
 	 */
 	public function register() {
 
@@ -27,7 +27,7 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 	/**
 	 * Add actions and filters.
 	 *
-	 * @since TBD
+	 * @since 5.4.0
 	 */
 	protected function hooks() {
 		if ( ! $this->is_home_page() ) {
@@ -40,7 +40,7 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 	/**
 	 * Check if it's the home page.
 	 *
-	 * @since TBD
+	 * @since 5.4.0
 	 *
 	 * @return bool
 	 */
@@ -54,7 +54,7 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 	/**
 	 * Hooked to admin_body_class to add the class to the body tag.
 	 *
-	 * @since TBD
+	 * @since 5.4.0
 	 *
 	 * @param string $classes A space separated string of classes to be added to body.
 	 *
@@ -69,7 +69,7 @@ class Service_Provider extends tad_DI52_ServiceProvider {
 	/**
 	 * Display the home page for Event Tickets.
 	 *
-	 * @since TBD
+	 * @since 5.4.0
 	 */
 	public function display_home_page() {
 		// @todo Move to a relevant class so the Service Provider avoids business logic.

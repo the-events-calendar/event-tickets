@@ -116,7 +116,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	/**
 	 * Add the payments tab to the list of tab ids for the Tickets settings.
 	 *
-	 * @since TBD
+	 * @since 5.4.0
 	 *
 	 * @param array $tabs Array containing the tabs ids for Event Tickets settings.
 	 *

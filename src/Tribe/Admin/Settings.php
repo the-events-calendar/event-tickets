@@ -51,7 +51,7 @@ class Settings {
 		/**
 		 * Filters the URL to the Event Tickets settings page.
 		 *
-		 * @since TBD
+		 * @since 5.4.0
 		 *
 		 * @param string $url The URL to the Event Tickets settings page.
 		 */
@@ -61,7 +61,7 @@ class Settings {
 	/**
 	 * Adds the Event Tickets settings page to the pages configuration.
 	 *
-	 * @since TBD
+	 * @since 5.4.0
 	 *
 	 * @param array $pages An array containing the slug of the pages with tabs.
 	 *
@@ -76,7 +76,7 @@ class Settings {
 	/**
 	 * Filter the Event Tickets Settings page title.
 	 *
-	 * @since TBD
+	 * @since 5.4.0
 	 *
 	 * @param string $title The title of the settings page.
 	 *
@@ -97,7 +97,7 @@ class Settings {
 	/**
 	 * Defines wether the current page is the Event Tickets Settings page.
 	 *
-	 * @since TBD
+	 * @since 5.4.0
 	 *
 	 * @return boolean
 	 */
@@ -111,7 +111,7 @@ class Settings {
 	/**
 	 * Get the icon for the Event Tickets settings page.
 	 *
-	 * @since TBD
+	 * @since 5.4.0
 	 *
 	 * @return string
 	 */
@@ -131,7 +131,7 @@ class Settings {
 	/**
 	 * Adds the Event Tickets menu and pages.
 	 *
-	 * @since TBD
+	 * @since 5.4.0
 	 */
 	public function add_admin_pages() {
 		$admin_pages = tribe( 'admin.pages' );
@@ -191,7 +191,7 @@ class Settings {
 	/**
 	 * Maybe add troubleshooting page for Event Tickets.
 	 *
-	 * @since TBD
+	 * @since 5.4.0
 	 */
 	public function maybe_add_troubleshooting() {
 		$admin_pages = tribe( 'admin.pages' );
@@ -221,7 +221,7 @@ class Settings {
 	 * Loads the ticket settings from an admin-view file and returns them as an array.
 	 *
 	 * @since 4.10.9 Use customizable ticket name functions.
-	 * @since TBD Use admin page and only show the General tab if we're in the Event Tickets menu.
+	 * @since 5.4.0 Use admin page and only show the General tab if we're in the Event Tickets menu.
 	 *
 	 * @param string $admin_page The admin page ID.
 	 */
@@ -250,7 +250,7 @@ class Settings {
 	/**
 	 * Maybe add network settings page for Event Tickets.
 	 *
-	 * @since TBD
+	 * @since 5.4.0
 	 */
 	public function maybe_add_network_settings_page() {
 		$admin_pages = tribe( 'admin.pages' );
@@ -278,7 +278,7 @@ class Settings {
 	/**
 	 * Generate network settings page for Event Tickets.
 	 *
-	 * @since TBD
+	 * @since 5.4.0
 	 *
 	 * @param string $admin_page The admin page ID.
 	 */
@@ -295,7 +295,7 @@ class Settings {
 	/**
 	 * Add the Event Tickets admin footer text.
 	 *
-	 * @since TBD
+	 * @since 5.4.0
 	 *
 	 * @param string $footer_text The admin footer text.
 	 * @return string $footer_text The admin footer text, maybe modified.
@@ -329,7 +329,7 @@ class Settings {
 	/**
 	 * Get Tickets settings tab IDs.
 	 *
-	 * @since TBD
+	 * @since 5.4.0
 	 *
 	 * @return array $tabs Array of tabs IDs for the Tickets settings page.
 	 */
@@ -341,7 +341,7 @@ class Settings {
 		/**
 		 * Filters the tickets settings tab IDs.
 		 *
-		 * @since TBD
+		 * @since 5.4.0
 		 *
 		 * @param array $tabs Array of tabs IDs for the Tickets settings page.
 		 */
@@ -351,7 +351,7 @@ class Settings {
 	/**
 	 * Maybe hijack the saving for the network settings page.
 	 *
-	 * @since TBD
+	 * @since 5.4.0
 	 *
 	 * @param array  $options Formatted the same as from get_options().
 	 * @param string $admin_page The admin page being saved.

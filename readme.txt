@@ -188,7 +188,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.4.0] TBD =
+= [5.4.0] 2022-05-17 =
 
 * Feature - Introducing the new Tickets menu on the WordPress admin. [ET-1335]
 
