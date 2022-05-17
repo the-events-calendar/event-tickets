@@ -27,5 +27,6 @@
     "tecTicketsCommerceData": true,
     "tecTicketsCommerceGatewayPayPalCheckout": true,
     "paypal": true
-  }
+  },
+  "ignorePatterns": ["**/*.test.js"]
 }
