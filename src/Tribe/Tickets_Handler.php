@@ -43,6 +43,15 @@ class Tribe__Tickets__Tickets_Handler {
 	public $key_start_date = '_ticket_start_date';
 
 	/**
+	 * Post meta key for the ticket start time
+	 *
+	 * @since  TBD
+	 *
+	 * @var    string
+	 */
+	public $key_start_time = '_ticket_start_time';
+
+	/**
 	 * Post meta key for the ticket end date
 	 *
 	 * @since  4.6
@@ -50,6 +59,15 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @var    string
 	 */
 	public $key_end_date = '_ticket_end_date';
+
+	/**
+	 * Post meta key for the ticket end time
+	 *
+	 * @since  TBD
+	 *
+	 * @var    string
+	 */
+	public $key_end_time = '_ticket_end_time';
 
 	/**
 	 * Post meta key for the manual updated meta keys
