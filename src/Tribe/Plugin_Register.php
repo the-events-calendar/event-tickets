@@ -8,9 +8,6 @@ class Tribe__Tickets__Plugin_Register extends Tribe__Abstract_Plugin_Register {
 	protected $main_class = 'Tribe__Tickets__Main';
 
 	protected $dependencies = [
-		'co-dependencies'    => [
-			'Tribe__Events__Main' => '5.15.0-dev',
-		],
 		'addon-dependencies' => [
 			'Tribe__Tickets_Plus__Main'               => '5.5.0-dev',
 			'Tribe__Events__Community__Tickets__Main' => '4.7.2-dev',
