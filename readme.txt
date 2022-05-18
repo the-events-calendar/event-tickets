@@ -190,6 +190,8 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.4.0] 2022-05-17 =
 
+* Version - Event Tickets 5.4.0 is only compatible with The Events Calendar 5.15.0 and higher
+* Version - Event Tickets 5.4.0 is only compatible with Event Tickets Plus 5.5.0 and higher
 * Feature - Introducing the new Tickets menu on the WordPress admin. [ET-1335]
 * Language - 6 new strings added, 171 updated, 1 fuzzied, and 2 obsoleted
 
