@@ -188,6 +188,9 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [TBD] TBD
+* Fix - Encoding issue in the block editor's price block of The Events Calendar events. [ET-1434]
+
 = [5.3.4.1] 2022-05-12 =
 
 * Version - Event Tickets 5.3.4.1 is only compatible with Event Tickets Plus 5.4.4.1 and higher
