@@ -433,6 +433,7 @@ class Tribe__Tickets__Main {
 		);
 
 		$output = '<div class="error">';
+		// Translators: %1$s is the required version for The Events Calendar. %2$s Is the update link opening `<a>`. %3$s Is the update link closing `</a>`. .
 		$output .= '<p>' . sprintf( __( 'When The Events Calendar and Event Tickets are both activated, The Events Calendar must be running version %1$s or greater. Please %2$supdate now.%3$s', 'event-tickets' ), str_replace( '-dev', '', $this->min_tec_version ), '<a href="' . esc_url( $upgrade_path ) . '">', '</a>' ) . '</p>';
 		$output .= '</div>';
 
