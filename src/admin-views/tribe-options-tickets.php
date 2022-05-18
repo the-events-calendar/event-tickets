@@ -229,7 +229,7 @@ $tickets_fields = array_merge(
 	$authentication_fields,
 	$commerce_fields,
 	$misc_fields,
-	$ticket_fields_end,
+	$ticket_fields_end
 );
 
 /**
