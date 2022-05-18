@@ -432,8 +432,11 @@ class Tribe__Tickets__Main {
 			), 'upgrade-plugin_' . $plugin_short_path
 		);
 
+		$min_version = str_replace( '-dev', '', $this->min_tec_version );
+
 		$output = '<div class="error">';
-		$output .= '<p>' . sprintf( __( 'When The Events Calendar and Event Tickets are both activated, The Events Calendar must be running version %1$s or greater. Please %2$supdate now.%3$s', 'event-tickets' ), $this->min_tec_version, '<a href="' . esc_url( $upgrade_path ) . '">', '</a>' ) . '</p>';
+		// Translators: %1$s is the min required version of The Events Calendar. %2$s Is the update link opening `<a>`. %3$s Is the update link closing `</a>`.
+		$output .= '<p>' . sprintf( __( 'When The Events Calendar and Event Tickets are both activated, The Events Calendar must be running version %1$s or greater. Please %2$supdate now.%3$s', 'event-tickets' ), $min_version, '<a href="' . esc_url( $upgrade_path ) . '">', '</a>' ) . '</p>';
 		$output .= '</div>';
 
 		echo $output;
