@@ -1,3 +1,5 @@
+/* eslint-disable max-len,es5/no-destructuring,es5/no-shorthand-properties,es5/no-arrow-functions,no-undef,no-redeclare,no-unused-vars */
+
 global.TribeCartEndpoint = { url : 'test' };
 
 // Follows the formatting found here: `Tribe__Tickets__Tickets::get_asset_localize_data_for_currencies()`
