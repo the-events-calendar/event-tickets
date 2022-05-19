@@ -188,7 +188,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.4.0] 2022-05-17 =
+= [5.4.0] 2022-05-19 =
 
 * Version - Event Tickets 5.4.0 is only compatible with The Events Calendar 5.15.0 and higher
 * Version - Event Tickets 5.4.0 is only compatible with Event Tickets Plus 5.5.0 and higher
