@@ -53,7 +53,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 *                                         an empty string on Dashboard screen.
 	 */
 	public function remove_tickets_metabox_for_events_in_series( $post_type, $context, $post ) {
-		if ( Compatibility::object_can_have_tickets( $post ) ) {
+		if ( ! $post instanceof \WP_Post || Compatibility::object_can_have_tickets( $post ) ) {
 			return;
 		}
 
