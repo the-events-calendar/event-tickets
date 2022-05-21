@@ -6,8 +6,8 @@ use TEC\Tickets\Commerce\Shortcodes\Checkout_Shortcode;
 use TEC\Tickets\Commerce\Shortcodes\Success_Shortcode;
 use TEC\Tickets\Commerce\Gateways\Manager;
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Gateway as Gateway;
-use TEC\Tickets\Settings as Tickets_Settings;
-use \Tribe__Settings;
+use TEC\Tickets\Settings as Tickets_Commerce_Settings;
+use Tribe\Tickets\Admin\Settings as Plugin_Settings;
 use \tad_DI52_ServiceProvider;
 use \Tribe__Template;
 use Tribe__Tickets__Main;
@@ -76,7 +76,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	public static $key_section_menu = 'tec_tc_section_menu';
 
 	/**
-	 * Stores the instance of the template engine that we will use for rendering differentelements.
+	 * Stores the instance of the template engine that we will use for rendering different elements.
 	 *
 	 * @since 5.3.0
 	 *
@@ -97,7 +97,11 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	 *
 	 * @since 5.2.0
 	 */
-	public function register_tab() {
+	public function register_tab( $admin_page ) {
+		if ( ! empty( $admin_page ) && Plugin_Settings::$settings_page_id !== $admin_page ) {
+			return;
+		}
+
 		$tab_settings = [
 			'priority'  => 25,
 			'fields'    => $this->get_fields(),
@@ -107,6 +111,21 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 		$tab_settings = apply_filters( 'tec_tickets_commerce_payments_tab_settings', $tab_settings );
 
 		new \Tribe__Settings_Tab( static::$slug, esc_html__( 'Payments', 'event-tickets' ), $tab_settings );
+	}
+
+	/**
+	 * Add the payments tab to the list of tab ids for the Tickets settings.
+	 *
+	 * @since 5.4.0
+	 *
+	 * @param array $tabs Array containing the tabs ids for Event Tickets settings.
+	 *
+	 * @return array $tabs Array containing the tabs ids for Event Tickets settings.
+	 */
+	public function settings_add_tab_id( $tabs ) {
+		$tabs[] = static::$slug;
+
+		return $tabs;
 	}
 
 	/**
@@ -141,7 +160,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 		$args['tab'] = static::$slug;
 
 		// Use the settings page get_url to build the URL.
-		return Tribe__Settings::instance()->get_url( $args );
+		return tribe( Plugin_Settings::class )->get_url( $args );
 	}
 
 	/**
@@ -231,7 +250,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 			return $url;
 		}
 
-		if ( Tribe__Settings::$parent_slug !== $page ) {
+		if ( \Tribe\Tickets\Admin\Settings::$settings_page_id !== $page ) {
 			return $url;
 		}
 
@@ -295,7 +314,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 							<label class="tec-tickets__admin-settings-tickets-commerce-toggle">
 								<input
 									type="checkbox"
-									name="' . Tickets_Settings::$tickets_commerce_enabled . '"
+									name="' . Tickets_Commerce_Settings::$tickets_commerce_enabled . '"
 									' . checked( $is_tickets_commerce_enabled, true, false ) . '
 									id="tickets-commerce-enable-input"
 									class="tec-tickets__admin-settings-tickets-commerce-toggle-checkbox tribe-dependency tribe-dependency-verified">
@@ -311,7 +330,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 			'html' => '<div class="tec-tickets__admin-settings-tickets-commerce-description">' . $plus_message . '</div>',
 		];
 
-		$fields[ Tickets_Settings::$tickets_commerce_enabled ] = [
+		$fields[ Tickets_Commerce_Settings::$tickets_commerce_enabled ] = [
 			'type'            => 'hidden',
 			'validation_type' => 'boolean',
 		];
@@ -412,7 +431,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	 */
 	public function maybe_generate_pages() {
 
-		$tc_enabled = tribe_get_request_var( Tickets_Settings::$tickets_commerce_enabled );
+		$tc_enabled = tribe_get_request_var( Tickets_Commerce_Settings::$tickets_commerce_enabled );
 
 		if ( ! tribe_is_truthy( $tc_enabled ) ) {
 			return;
