@@ -13,6 +13,7 @@ use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks;
 use TEC\Tickets\Commerce\Gateways\PayPal\WhoDat;
 use TEC\Tickets\Commerce\Notice_Handler;
 use TEC\Tickets\Commerce\Payments_Tab;
+use Tribe\Tickets\Admin\Settings as Plugin_Settings;
 use Tribe__Settings;
 use Tribe__Utils__Array as Arr;
 
@@ -124,10 +125,12 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 		$signup        = tribe( Signup::class );
 		$existing_hash = $signup->get_transient_hash();
 		$request_hash  = $request->get_param( 'hash' );
-		$return_url    = Tribe__Settings::instance()->get_url( [
-			'tab' => Payments_Tab::$slug,
-			tribe( Payments_Tab::class)::$key_current_section_get_var => tribe( Gateway::class )->get_key(),
-		] );
+		$return_url    = tribe( Plugin_Settings::class )->get_url(
+			[
+				'tab' => Payments_Tab::$slug,
+				tribe( Payments_Tab::class )::$key_current_section_get_var => tribe( Gateway::class )->get_key(),
+			]
+		);
 
 		if ( $request_hash !== $existing_hash ) {
 			$this->redirect_with( 'invalid-paypal-signup-hash', $return_url );
@@ -208,10 +211,9 @@ class On_Boarding_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param string $status Which status we will add to the URL
+	 * @param string $status Which status we will add to the URL.
 	 * @param string $url    Which URL we are sending the client to.
 	 * @param array  $data   Extra that that will be json encoded to the URL.
-	 *
 	 */
 	protected function redirect_with( $status, $url, array $data = [] ) {
 		$signup = tribe( Signup::class );

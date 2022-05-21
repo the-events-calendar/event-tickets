@@ -268,7 +268,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 		$page = tribe_get_request_var( 'page' );
 		$tab  = tribe_get_request_var( 'tab' );
 
-		if ( \Tribe__Settings::instance()->adminSlug !== $page || 'payments' !== $tab || is_ssl() ) {
+		if ( \Tribe\Tickets\Admin\Settings::$settings_page_id !== $page || 'payments' !== $tab || is_ssl() ) {
 			return;
 		}
 
