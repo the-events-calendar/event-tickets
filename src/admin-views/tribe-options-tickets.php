@@ -78,7 +78,8 @@ $tickets_fields = [
 	],
 ];
 
-$tec_fields = [];
+$tec_fields  = [];
+$misc_fields = [];
 
 /**
  * If The Events Calendar is active let's add an option to control the position
@@ -119,6 +120,54 @@ if ( class_exists( 'Tribe__Events__Main' ) ) {
 		'size'            => 'small',
 		'can_be_empty'    => true,
 		'parent_option'   => Tribe__Events__Main::OPTIONNAME,
+		],
+	];
+} else {
+	$sample_date = strtotime( 'January 15 ' . date( 'Y' ) );
+
+	$misc_fields = [
+		'tribe-form-content-start' => [
+			'type' => 'html',
+			'html' => '<div class="tribe-settings-form-wrap">',
+		],
+		'general-title'            => [
+			'type' => 'html',
+			'html' => '<h3>' . esc_html__( 'Miscellaneous Settings', 'event-tickets' ) . '</h3>',
+		],
+		'debugEvents'              => [
+			'type'            => 'checkbox_bool',
+			'label'           => esc_html__( 'Debug mode', 'event-tickets' ),
+			'tooltip'         => sprintf(
+				// Translators: %s Debug bar plugin link.
+				esc_html__(
+					'Enable this option to log debug information. By default this will log to your server PHP error log. If you\'d like to see the log messages in your browser, then we recommend that you install the %s and look for the "Tribe" tab in the debug output.',
+					'event-tickets'
+				),
+				'<a href="https://wordpress.org/extend/plugins/debug-bar/" target="_blank">' . esc_html__( 'Debug Bar Plugin', 'event-tickets' ) . '</a>'
+			),
+			'default'         => false,
+			'validation_type' => 'boolean',
+		],
+		'datepickerFormat'         => [
+			'type'            => 'dropdown',
+			'label'           => esc_html__( 'Compact Date Format', 'event-tickets' ),
+			'tooltip'         => esc_html__( 'Select the date format used for elements with minimal space, such as in datepickers.', 'event-tickets' ),
+			'default'         => 1,
+			'options'         => [
+				'0'  => date( 'Y-m-d', $sample_date ),
+				'1'  => date( 'n/j/Y', $sample_date ),
+				'2'  => date( 'm/d/Y', $sample_date ),
+				'3'  => date( 'j/n/Y', $sample_date ),
+				'4'  => date( 'd/m/Y', $sample_date ),
+				'5'  => date( 'n-j-Y', $sample_date ),
+				'6'  => date( 'm-d-Y', $sample_date ),
+				'7'  => date( 'j-n-Y', $sample_date ),
+				'8'  => date( 'd-m-Y', $sample_date ),
+				'9'  => date( 'Y.m.d', $sample_date ),
+				'10' => date( 'm.d.Y', $sample_date ),
+				'11' => date( 'd.m.Y', $sample_date ),
+			],
+			'validation_type' => 'options',
 		],
 	];
 }
@@ -179,11 +228,12 @@ $tickets_fields = array_merge(
 	$tec_fields,
 	$authentication_fields,
 	$commerce_fields,
+	$misc_fields,
 	$ticket_fields_end
 );
 
 /**
- * Filters the fields to be registered in the Events > Settings > Tickets tab.
+ * Filters the fields to be registered in the Settings > General tab.
  *
  * A field definition is one suitable to be consumed by the `Tribe__Settings_Tab` class.
  *
@@ -196,5 +246,5 @@ $tickets_fields = apply_filters( 'tribe_tickets_settings_tab_fields', $tickets_f
 
 $tickets_tab = [
 	'priority' => 20,
-	'fields' => $tickets_fields,
+	'fields'   => $tickets_fields,
 ];

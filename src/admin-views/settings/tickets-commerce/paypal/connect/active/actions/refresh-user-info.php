@@ -2,11 +2,12 @@
 /**
  * The Template for displaying the Tickets Commerce refresh user info action button.
  *
- * @version 5.3.0
+ * @version 5.4.0
  *
- * @since   5.2.0
+ * @since 5.2.0
  * @since 5.3.0 Added section param to URL.
  * @since 5.3.0 Using generic CSS classes for gateway instead of PayPal.
+ * @since 5.4.0 Using the new tickets settings get_url() method.
  *
  * @var Tribe__Tickets__Admin__Views                  $this                  [Global] Template object.
  * @var string                                        $plugin_url            [Global] The plugin URL.
@@ -17,6 +18,7 @@
  * @var string                                        $gateway_key           [Global] Key for gateway.
  */
 
+use Tribe\Tickets\Admin\Settings;
 use TEC\Tickets\Commerce\Payments_Tab;
 
 $debug = defined( 'WP_DEBUG' ) && WP_DEBUG;
@@ -25,11 +27,13 @@ if ( empty( $is_merchant_connected ) || ! $debug ) {
 	return;
 }
 
-$url = Tribe__Settings::instance()->get_url( [
-	'tab' => Payments_Tab::$slug,
-	tribe( Payments_Tab::class )::$key_current_section_get_var => $gateway_key,
-	'tc-action' => 'paypal-refresh-user-info',
-] );
+$url = tribe( Settings::class )->get_url(
+	[
+		'tab'       => Payments_Tab::$slug,
+		tribe( Payments_Tab::class )::$key_current_section_get_var => $gateway_key,
+		'tc-action' => 'paypal-refresh-user-info',
+	]
+);
 ?>
 
 <a
