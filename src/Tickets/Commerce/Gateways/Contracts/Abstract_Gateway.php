@@ -11,7 +11,6 @@ namespace TEC\Tickets\Commerce\Gateways\Contracts;
 use TEC\Tickets\Commerce;
 use TEC\Tickets\Commerce\Gateways\Manager;
 use TEC\Tickets\Commerce\Payments_Tab;
-use Tribe__Settings;
 use Tribe__Utils__Array as Arr;
 
 /**

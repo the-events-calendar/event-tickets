@@ -4,7 +4,7 @@ Contributors: theeventscalendar, brianjessee, camwynsp, aguseo, bordoni, borkweb
 Tags: tickets, registration, event registration, RSVP, ticket sales, attendee management
 Requires at least: 5.6
 Tested up to: 5.9.3
-Stable tag: 5.3.4.1
+Stable tag: 5.4.1
 Requires PHP: 7.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -188,6 +188,19 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [5.4.1] TBD =
+
+= [5.4.0.1] 2022-05-23 =
+
+* Fix - Check if function exists for `get_current_screen` to avoid a fatal if not.
+
+= [5.4.0] 2022-05-19 =
+
+* Version - Event Tickets 5.4.0 is only compatible with The Events Calendar 5.15.0 and higher
+* Version - Event Tickets 5.4.0 is only compatible with Event Tickets Plus 5.5.0 and higher
+* Feature - Introducing the new Tickets menu on the WordPress admin. [ET-1335]
+* Language - 6 new strings added, 171 updated, 1 fuzzied, and 2 obsoleted
+
 = [5.3.4.1] 2022-05-12 =
 
 * Version - Event Tickets 5.3.4.1 is only compatible with Event Tickets Plus 5.4.4.1 and higher
@@ -198,12 +211,12 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Typo was causing a JS `setAttribute` error in `vue.min.js`. [ET-1504]
 * Fix - Fatal error when exporting attendees in PHP 8. [ET-1502]
 * Fix - Tickets Commerce manual attendee's ticket price is set to 0. [ETP-781]
-* Enhancement - Notify users of the Manual Addition of Attendees feature that is available. [ET-1492]
-* Enhancement - Notify users of Capacity and Attendee Registration Field features that are available. [ET-1493]
 * Fix - RSVP title is being encoded within the block editor fields. [ET-1478]
 * Fix - Tickets Commerce manual attendee's ticket price is set to 0. [ETP-781]
 * Fix - Fixed template override path for a few templates. [ET-1491]
 * Enhancement - Added availability dates and icons to ticket listing in classic editor. [ET-1494]
+* Enhancement - Notify users of the Manual Addition of Attendees feature that is available. [ET-1492]
+* Enhancement - Notify users of Capacity and Attendee Registration Field features that are available. [ET-1493]
 * Tweak - Lighten color of disabled "Get Tickets" button text when using the Genesis theme. [ET-1435]
 * Tweak - Added actions: `tec_tickets_attendees_event_summary_table_extra`
 * Tweak - Changed views: `blocks/tickets/opt-out-hidden`, `blocks/tickets/registration/summary/content`, `registration-js/attendees/fields/number`, `v2/tickets/commerce/fields/tribe-commerce`, `v2/tickets/item/extra/description-toggle`, `v2/tickets/submit/must-login`.
@@ -246,49 +259,5 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Enhancement - Tweaked `get_tickets` method to improve stability and performance around ticket. [ET-1362]
 * Tweak - Removed filters: `tribe_tickets_theme_compatibility_registered`
 * Language - 0 new strings added, 33 updated, 0 fuzzied, and 0 obsoleted
-
-= [5.3.0.1] 2022-03-01 =
-
-* Tweak - Update version of Freemius to 2.4.3.
-
-= [5.3.0] 2022-02-24 =
-
-* Version - Event Tickets 5.3.0 is only compatible with Event Tickets Plus 5.4.0 and higher
-* Feature - Introduction of Stripe for Tickets Commerce. [ET-1342]
-* Feature - Collect purchaser name and email for anonymous purchases using Tickets Commerce. [ET-1378]
-* Feature - Introduce automatic handling of zero-decimal currencies in Tickets Commerce [ET-1414][ET-1420]
-* Fix - Remove anonymous purchase notice for Tickets Commerce after ET-1378 was implemented. [ET-1379]
-* Tweak - Added filters: `tec_tickets_commerce_order_purchaser_data`, `tec_tickets_commerce_order_purchaser_data`, `tec_tickets_commerce_stripe_checkout_localized_data`, `tec_tickets_commerce_stripe_order_endpoint_error_messages`, `tec_tickets_commerce_stripe_settings`, `tec_tickets_commerce_stripe_settings`, `tec_tickets_commerce_stripe_payment_methods_by_currency`, `tec_tickets_commerce_stripe_payment_methods_available`, `tec_tickets_commerce_stripe_fee_is_applied_notice`, `tec_tickets_commerce_gateway_stripe_webhook_event_handlers`, `tec_tickets_commerce_gateway_stripe_webhook_status`, `tec_tickets_commerce_gateway_stripe_webhook_events_labels_map`, `tec_tickets_commerce_payments_tab_sections`, `tec_tickets_commerce_currency_{$code}_name`, `tec_tickets_commerce_currency_name`, `tec_tickets_commerce_currency_{$code}_precision`, `tec_tickets_commerce_currency_precision`
-* Tweak - Removed filters: `tec_tickets_commerce_gateway_paypal_tracking_id`
-* Tweak - Changed views: `tickets/email`, `v2/commerce/checkout`, `v2/commerce/checkout/cart`, `v2/commerce/checkout/footer/gateway-error`, `v2/commerce/checkout/gateways`, `v2/commerce/checkout/purchaser-info`, `v2/commerce/checkout/purchaser-info/email`, `v2/commerce/checkout/purchaser-info/name`, `v2/commerce/gateway/paypal/container`, `v2/commerce/gateway/stripe/card-element`, `v2/commerce/gateway/stripe/container`, `v2/commerce/gateway/stripe/payment-element`
-* Language - 102 new strings added, 164 updated, 0 fuzzied, and 3 obsoleted
-
-= [5.2.4.1] 2022-02-17 =
-
-* Fix - Classic Editor compatibility problems with the Ticket Form resolved [GTRIA-738]
-
-= [5.2.4] 2022-02-15 =
-
-* Tweak - Compatibility with the Common Abstract for editor blocks registration.
-* Tweak - Remove the `wp.editor.InnerBlocks` gutenberg component in favor of `wp.blockEditor.InnerBlocks` which was deprecated since version 5.3. [ET-1367]
-* Tweak - Prevent scripts from loading on all Admin pages, only load on pages needed.
-* Tweak - Performance improvements around Block Asset loading and redundancy.
-* Tweak - Internal caching of values to reduce `get_option()` call count.
-* Tweak - Switch from `sanitize_title_with_dashes` to `sanitize_key` in a couple instances for performance gains.
-* Tweak - Prevent asset loading from repeating calls to plugin URL and path, resulting in some minor performance gains.
-* Fix - Update the way we handle Classic Editor compatibility. Specifically around user choice. [TEC-4016]
-* Fix - Remove incorrect reference for moment.min.js.map [TEC-4148]
-* Fix - Fixed troubleshooting page styles for standalone Event Tickets setup [ET-1382]
-* Fix - Remove singleton created from a deprecated class.
-* Language - 0 new strings added, 12 updated, 0 fuzzied, and 0 obsoleted
-
-= [5.2.3] 2022-01-19 =
-
-* Feature - Allow duplicating a ticket when using the Classic Editor. [ET-1349]
-* Feature - Added the TEC Tickets icon in the block editor Tickets category section. [ET-1350]
-* Enhancement - Added a warning when Tickets Commerce is enabled, but users aren't required to log in before purchasing tickets. [ET-1352
-* Fix - Added the post_type to the attendee page on Posts/Pages so that additional logic would function correctly. [ET-1319]
-* Fix - Fixed toggling of shared capacity data for tickets. [ETP-497]
-* Language - 7 new strings added, 99 updated, 0 fuzzied, and 0 obsoleted
 
 [See changelog for all versions](https://evnt.is/1b5k)
