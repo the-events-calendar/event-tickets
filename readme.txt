@@ -188,6 +188,8 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [5.4.1] TBD =
+
 = [5.4.0.1] 2022-05-23 =
 
 * Fix - Check if function exists for `get_current_screen` to avoid a fatal if not.
