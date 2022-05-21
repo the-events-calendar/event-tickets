@@ -188,6 +188,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [5.4.0.1] 2022-05-23 =
+
+* Fix - Check if function exists for `get_current_screen` to avoid a fatal if not.
+
 = [5.4.0] 2022-05-19 =
 
 * Version - Event Tickets 5.4.0 is only compatible with The Events Calendar 5.15.0 and higher
