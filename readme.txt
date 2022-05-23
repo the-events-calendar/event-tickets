@@ -4,7 +4,7 @@ Contributors: theeventscalendar, brianjessee, camwynsp, aguseo, bordoni, borkweb
 Tags: tickets, registration, event registration, RSVP, ticket sales, attendee management
 Requires at least: 5.6
 Tested up to: 5.9.3
-Stable tag: 5.4.0
+Stable tag: 5.4.1
 Requires PHP: 7.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -188,8 +188,16 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.4.0] 2022-05-17 =
+= [5.4.1] TBD =
 
+= [5.4.0.1] 2022-05-23 =
+
+* Fix - Check if function exists for `get_current_screen` to avoid a fatal if not.
+
+= [5.4.0] 2022-05-19 =
+
+* Version - Event Tickets 5.4.0 is only compatible with The Events Calendar 5.15.0 and higher
+* Version - Event Tickets 5.4.0 is only compatible with Event Tickets Plus 5.5.0 and higher
 * Feature - Introducing the new Tickets menu on the WordPress admin. [ET-1335]
 * Language - 6 new strings added, 171 updated, 1 fuzzied, and 2 obsoleted
 
