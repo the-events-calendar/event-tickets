@@ -3,7 +3,6 @@
 namespace TEC\Tickets\Recurrence;
 
 use tad_DI52_ServiceProvider;
-use TEC\Events\Custom_Tables\V1\Migration\State;
 
 class Provider extends tad_DI52_ServiceProvider {
 
@@ -12,15 +11,13 @@ class Provider extends tad_DI52_ServiceProvider {
 	 */
 	public function register() {
 
-		if ( ! class_exists( 'TEC\Events\Custom_Tables\V1\Migration\State' ) ) {
+		if ( ! class_exists( 'TEC\Events\Custom_Tables\V1\Provider' ) ) {
 			return;
 		}
 
-		/*
-		if ( ! tribe( State::class )->is_migrated() ) {
+		if ( ! \TEC\Events\Custom_Tables\V1\Provider::is_active() ) {
 			return;
 		}
-		*/
 
 		$this->container->singleton( Compatibility::class );
 
