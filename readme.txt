@@ -119,7 +119,7 @@ Event Tickets is translated into multiple languages, including German, Danish, a
 3. When the popup appears select the event-tickets.x.x.zip file from your desktop. (The 'x.x' will change depending on the current version number).
 4. Follow the on-screen instructions and wait as the upload completes.
 5. When it's finished, activate the plugin via the prompt. A message will show confirming activation was successful.
-6. For access to new updates, make sure you have added your valid License Key under Events --> Settings --> Licenses.
+6. For access to new updates, make sure you have added your valid License Key under Tickets --> Settings --> Licenses.
 
 == Screenshots ==
 
@@ -192,17 +192,41 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 * Enhancement - Adds a compatibility layer to work with the new Recurrence Backend Engine in TEC/ECP.
 
+= [5.4.0.1] 2022-05-23 =
+
+* Fix - Check if function exists for `get_current_screen` to avoid a fatal if not.
+
+= [5.4.0] 2022-05-19 =
+
+* Version - Event Tickets 5.4.0 is only compatible with The Events Calendar 5.15.0 and higher
+* Version - Event Tickets 5.4.0 is only compatible with Event Tickets Plus 5.5.0 and higher
+* Feature - Introducing the new Tickets menu on the WordPress admin. [ET-1335]
+* Language - 6 new strings added, 171 updated, 1 fuzzied, and 2 obsoleted
+
+= [5.3.4.1] 2022-05-12 =
+
+* Version - Event Tickets 5.3.4.1 is only compatible with Event Tickets Plus 5.4.4.1 and higher
+* Fix - Ensure that Event Tickets Plus customers never encounter application fees on Stripe for Tickets Commerce purchases. [ET-1513]
+
 = [5.3.4] 2022-05-11 =
 
 * Fix - Typo was causing a JS `setAttribute` error in `vue.min.js`. [ET-1504]
 * Fix - Fatal error when exporting attendees in PHP 8. [ET-1502]
 * Fix - Tickets Commerce manual attendee's ticket price is set to 0. [ETP-781]
+<<<<<<< HEAD
 * Enhancement - Notify users of the Manual Addition of Attendees feature that is available. [ET-1492]
 * Enhancement - Notify users of Capacity and Attendee Registration Field features that are available. [ET-1493]
+=======
+>>>>>>> fd16ee407ffd2a30f50c0e1c459232cf76b9170f
 * Fix - RSVP title is being encoded within the block editor fields. [ET-1478]
 * Fix - Tickets Commerce manual attendee's ticket price is set to 0. [ETP-781]
 * Fix - Fixed template override path for a few templates. [ET-1491]
 * Enhancement - Added availability dates and icons to ticket listing in classic editor. [ET-1494]
+<<<<<<< HEAD
+=======
+* Enhancement - Notify users of the Manual Addition of Attendees feature that is available. [ET-1492]
+* Enhancement - Notify users of Capacity and Attendee Registration Field features that are available. [ET-1493]
+>>>>>>> fd16ee407ffd2a30f50c0e1c459232cf76b9170f
 * Tweak - Lighten color of disabled "Get Tickets" button text when using the Genesis theme. [ET-1435]
 * Tweak - Added actions: `tec_tickets_attendees_event_summary_table_extra`
 * Tweak - Changed views: `blocks/tickets/opt-out-hidden`, `blocks/tickets/registration/summary/content`, `registration-js/attendees/fields/number`, `v2/tickets/commerce/fields/tribe-commerce`, `v2/tickets/item/extra/description-toggle`, `v2/tickets/submit/must-login`.
@@ -246,6 +270,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Tweak - Removed filters: `tribe_tickets_theme_compatibility_registered`
 * Language - 0 new strings added, 33 updated, 0 fuzzied, and 0 obsoleted
 
+<<<<<<< HEAD
 = [5.3.0.1] 2022-03-01 =
 
 * Tweak - Update version of Freemius to 2.4.3.
@@ -290,4 +315,6 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Fixed toggling of shared capacity data for tickets. [ETP-497]
 * Language - 7 new strings added, 99 updated, 0 fuzzied, and 0 obsoleted
 
+=======
+>>>>>>> fd16ee407ffd2a30f50c0e1c459232cf76b9170f
 [See changelog for all versions](https://evnt.is/1b5k)

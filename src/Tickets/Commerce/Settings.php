@@ -16,6 +16,7 @@ use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Traits\Has_Mode;
 use TEC\Tickets\Commerce\Utils\Currency;
 use TEC\Tickets\Settings as Tickets_Settings;
+use Tribe\Tickets\Admin\Settings as Plugin_Settings;
 use \Tribe__Template;
 use Tribe__Field_Conditional;
 use Tribe__Tickets__Main;
@@ -171,7 +172,7 @@ class Settings {
 		) {
 			return false;
 		}
-		$url = \Tribe__Settings::instance()->get_url( [ 'tab' => 'payments' ] );
+		$url = tribe( Plugin_Settings::class )->get_url( [ 'tab' => 'payments' ] );
 
 		// Add the main site admin menu item.
 		$wp_admin_bar->add_menu(
@@ -482,11 +483,15 @@ class Settings {
 	 * @return bool
 	 */
 	public static function is_licensed_plugin( $revalidate = false ) {
-
 		if ( ! class_exists( 'Tribe__Tickets_Plus__PUE' ) ) {
 			return false;
 		}
 
-		return tribe( \Tribe__Tickets_Plus__PUE::class )->is_current_license_valid( $revalidate );
+		$pue = tribe( \Tribe__Tickets_Plus__PUE::class );
+
+		/**
+		 * @todo we need to make sure we actually validate the PUE key.
+		 */
+		return $pue->get_pue()->is_valid_key_format() ;
 	}
 }
