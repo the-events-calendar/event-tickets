@@ -119,7 +119,7 @@ Event Tickets is translated into multiple languages, including German, Danish, a
 3. When the popup appears select the event-tickets.x.x.zip file from your desktop. (The 'x.x' will change depending on the current version number).
 4. Follow the on-screen instructions and wait as the upload completes.
 5. When it's finished, activate the plugin via the prompt. A message will show confirming activation was successful.
-6. For access to new updates, make sure you have added your valid License Key under Events --> Settings --> Licenses.
+6. For access to new updates, make sure you have added your valid License Key under Tickets --> Settings --> Licenses.
 
 == Screenshots ==
 
