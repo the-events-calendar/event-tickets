@@ -190,6 +190,8 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.4.1] TBD =
 
+* Fix - Encoding issue in the block editor's price block of The Events Calendar events. [ET-1434]
+
 = [5.4.0.1] 2022-05-23 =
 
 * Fix - Check if function exists for `get_current_screen` to avoid a fatal if not.
