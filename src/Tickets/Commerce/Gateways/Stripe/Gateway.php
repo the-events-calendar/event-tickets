@@ -48,8 +48,7 @@ class Gateway extends Abstract_Gateway {
 		'NZD', 'PAB', 'PEN', 'PGK', 'PHP', 'PKR', 'PLN', 'PYG', 'QAR', 'RON', 'RSD', 'RUB', 'RWF',
 		'SAR', 'SBD', 'SCR', 'SEK', 'SGD', 'SHP', 'SLL', 'SOS', 'SRD', 'STD', 'SZL', 'THB', 'TJS',
 		'TOP', 'TRY', 'TTD', 'TWD', 'TZS', 'UAH', 'UGX', 'UYU', 'UZS', 'VND', 'VUV', 'WST', 'XAF',
-		'XCD', 'XOF', 'XPF', 'YER', 'ZAR', 'ZMW', 'AED', 'AFN', 'ALL', 'AMD', 'ANG', 'AOA', 'ARS', 
-		'AWG', 'AZN', 'BAM', 'BND', 'BZD', 
+		'XCD', 'XOF', 'XPF', 'YER', 'ZAR', 'ZMW',
 	];
 
 	/**
