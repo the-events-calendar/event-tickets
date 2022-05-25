@@ -60,6 +60,7 @@ tribe.tickets.commerce.gateway.stripe.webhooks = {};
 		statusLabel: '.tribe-field-tickets-commerce-stripe-webhooks-signing-key-status',
 		tooltip: '.tooltip' ,
 		genericDashicon: '.dashicons',
+		saveButton: 'input#tribeSaveSettings',
 	};
 
 	/**
@@ -104,6 +105,7 @@ tribe.tickets.commerce.gateway.stripe.webhooks = {};
 		const $tooltip = $field.siblings( obj.selectors.tooltip );
 		const $statusIcon = $tooltip.find( obj.selectors.genericDashicon );
 		const $statusLabel = $tooltip.find( obj.selectors.statusLabel );
+		const $saveButton = $( obj.selectors.saveButton );
 
 		const params = new URLSearchParams();
 		params.set( 'signing_key', $field.val() );
@@ -111,6 +113,7 @@ tribe.tickets.commerce.gateway.stripe.webhooks = {};
 		params.set( 'tc_nonce', $field.data( 'ajaxNonce' ) );
 
 		$field.prop( 'disabled', true );
+		$saveButton.prop( 'disabled', true );
 
 		const args = {
 			timeout: 30000,
@@ -128,12 +131,15 @@ tribe.tickets.commerce.gateway.stripe.webhooks = {};
 		const response = await tribe.ky.post( ajaxurl, args ).json();
 
 		$field.prop( 'disabled', false );
+		$saveButton.prop( 'disabled', false );
+
 		if ( response.data.is_valid_webhook ) {
 			$statusIcon.removeClass( [ 'dashicons-update' ] ).addClass( 'dashicons-yes' );
 			$statusLabel.text( response.data.status );
 		} else {
 			$statusIcon.removeClass( [ 'dashicons-update' ] ).addClass( 'dashicons-no' );
 			$statusLabel.text( response.data.status );
+			$field.val('');
 		}
 
 		return response;
