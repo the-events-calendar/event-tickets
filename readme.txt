@@ -191,6 +191,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [5.4.1] TBD =
 
 * Fix - Encoding issue in the block editor's price block of The Events Calendar events. [ET-1434]
+* Fix - Add India to the list of countries ET cannot process fees from. [ET-1522]
 * Fix - Avoid loading PayPal partner JS script on all admin pages. [ET-1520]
 
 = [5.4.0.1] 2022-05-23 =
