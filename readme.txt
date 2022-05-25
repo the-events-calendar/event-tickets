@@ -192,6 +192,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 * Fix - Encoding issue in the block editor's price block of The Events Calendar events. [ET-1434]
 * Fix - Add India to the list of countries ET cannot process fees from. [ET-1522]
+* Fix - Disable saving Stripe Webhook Signing Secret before validation. [ET-1497]
 * Enhancement - Add a new notice to set up permalinks to something different than "Plain" in order to use Tickets Commerce. [ET-1521]
 
 = [5.4.0.1] 2022-05-23 =
