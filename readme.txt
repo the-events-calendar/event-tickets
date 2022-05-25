@@ -191,6 +191,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [5.4.1] TBD =
 
 * Fix - Encoding issue in the block editor's price block of The Events Calendar events. [ET-1434]
+* Fix - Disable saving Stripe Webhook Signing Secret before validation. [ET-1497]
 
 = [5.4.0.1] 2022-05-23 =
 
