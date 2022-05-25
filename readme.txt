@@ -193,7 +193,9 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - In the blocks editor, the ticket sale start/end times always load as midnight. [ET-1518]
 * Fix - Encoding issue in the block editor's price block of The Events Calendar events. [ET-1434]
 * Fix - Add India to the list of countries ET cannot process fees from. [ET-1522]
+* Fix - Avoid loading PayPal partner JS script on all admin pages. [ET-1520]
 * Fix - Disable saving Stripe Webhook Signing Secret before validation. [ET-1497]
+* Enhancement - Add a new notice to set up permalinks to something different than "Plain" in order to use Tickets Commerce. [ET-1521]
 
 = [5.4.0.1] 2022-05-23 =
 
@@ -226,43 +228,5 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Tweak - Added actions: `tec_tickets_attendees_event_summary_table_extra`
 * Tweak - Changed views: `blocks/tickets/opt-out-hidden`, `blocks/tickets/registration/summary/content`, `registration-js/attendees/fields/number`, `v2/tickets/commerce/fields/tribe-commerce`, `v2/tickets/item/extra/description-toggle`, `v2/tickets/submit/must-login`.
 * Language - 2 new strings added, 46 updated, 0 fuzzied, and 0 obsoleted.
-
-= [5.3.3] 2022-04-28 =
-
-* Fix - Updates the plugin validation library to track licenses in a more fault-tolerant way. [ET-1498]
-* Language - 0 new strings added, 1 updated, 0 fuzzied, and 0 obsoleted.
-
-= [5.3.2] 2022-04-05 =
-
-* Feature - REST API endpoints added for creating and updating attendees. [ET-1346]
-* Enhancement - Added a notice when an enabled Tickets Commerce gateway doesn't support it's selected currency. [ET-1392]
-* Enhancement - Adding the South African Rand to list of supported currencies in Tickets Commerce. [ET-1438]
-* Enhancement - Hide 'View My Tickets' link when showing tickets within the `[tribe_tickets]` shortcode. [ETP-775]
-* Fix - Fixed Events Tickets App check-in for Tickets Commerce tickets. [ET-1436]
-* Fix - Improved validation of Stripe webhook events to avoid handling events created by other apps. [ET-1474]
-* Fix - Fixed Issue with Tickets Commerce Tickets not displaying in REST API. [ET-1458]
-* Fix - Fixed Issue with Tickets Commerce Attendees not displaying in shortcodes. [ET-1461]
-* Fix - Fixed Issue with Tickets Commerce Attendees not being synced with Promoter. [ET-1476]
-* Fix - Fixed JS assets loading and causing errors on checkout page for Tickets Commerce. [ET-1426]
-* Fix - Fixed WooCommerce currency settings not getting reflected on Event Cost Field . [ETP-783]
-* Fix - Correct a misapplied Customizer color that breaks the loading "dot" animation. [ET-1437]
-* Fix - Add Mexico to the list of countries ET cannot process fees from. [ET-1479]
-* Tweak - Updated links in readme.txt file. [ET-1459]
-* Tweak - Added filters: `tec_tickets_commerce_admin_notices`, `tec_tickets_commerce_gateway_supported_currencies_`, `tec_tickets_commerce_currency_code_options`, `tribe_ticket_rest_api_post_attendee_args`, `tribe_ticket_rest_api_edit_attendee_args`, `tribe_tickets_rest_api_post_attendee_data`, `tribe_tickets_rest_api_update_attendee_data`, `tec_tickets_completed_status_by_provider_name`, `tec_tickets_hide_view_link`
-* Tweak - Added actions: `tribe_tickets_promoter_trigger_attendee`, `tec-tickets-commerce-checkout-shortcode-assets`, `tec-tickets-commerce-checkout-shortcode-assets`
-* Tweak - Changed views: `blocks/attendees/view-link`, `tickets/view-link`
-* Language - 17 new strings added, 70 updated, 0 fuzzied, and 0 obsoleted
-
-= [5.3.1] 2022-03-15 =
-
-* Fix - Fixed a warning message when creating an event via Community Events. [CT-51]
-* Fix - Fixed errors for Tickets Commerce with Stripe during checkout. [ET-1447]
-* Fix - Fixed the default views (v2) for users that are using Event Tickets as standalone, after version `5.3.0`. [ET-1448]
-* Fix - Avoid sending duplicate ticket emails for using Tickets Commerce Stripe Webhooks. [ET-1446]
-* Fix - Respect the selected currency when using Tickets Commerce in the blocks editor. [ET-1450]
-* Enhancement - Updated theme compatibility class to make use of common compatibility classes. Deprecate the `filter_body_class` and `get_body_classes` methods from `Tribe__Tickets__Theme_Compatibility`. [ET-850]
-* Enhancement - Tweaked `get_tickets` method to improve stability and performance around ticket. [ET-1362]
-* Tweak - Removed filters: `tribe_tickets_theme_compatibility_registered`
-* Language - 0 new strings added, 33 updated, 0 fuzzied, and 0 obsoleted
 
 [See changelog for all versions](https://evnt.is/1b5k)
