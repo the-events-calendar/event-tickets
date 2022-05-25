@@ -157,7 +157,7 @@ class Notices extends tad_DI52_ServiceProvider {
 	 *
 	 * @since TBD
 	 *
-	 * @return bool
+	 * @return bool Whether or not to render the notice.
 	 */
 	public function should_render_permalinks_notice() {
 		// If the site is using pretty permalinks, bail.
