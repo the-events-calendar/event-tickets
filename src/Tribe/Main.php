@@ -8,7 +8,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '6.0.0-RBE-Beta3.0';
+	const VERSION = '6.0.0-RBE-Beta3.1';
 
 	/**
 	 * Used to store the version history.
