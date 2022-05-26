@@ -909,6 +909,14 @@ class Currency {
 				'decimal_precision'     => 2,
 				'stripe_minimum_charge' => 9,
 			],
+			'SCR' => [
+				'name'                  => __( 'Seychellois rupee (SCR)', 'event-tickets' ),
+				'symbol'                => '&#x20a8;',
+				'decimal_point'         => '.',
+				'thousands_sep'         => ',',
+				'decimal_precision'     => 2,
+				'stripe_minimum_charge' => 14,
+			],
 			'BBD' => [
 				'name'                  => __( 'Barbadian dollar (BBD)', 'event-tickets' ),
 				'symbol'                => '&#036;',
