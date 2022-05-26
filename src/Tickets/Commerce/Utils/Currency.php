@@ -822,7 +822,7 @@ class Currency {
 				'stripe_minimum_charge' => 1,
 			],
 			'PEN' => [
-				'name'                  => __( 'Peruvian Sol (PEN)', 'event-tickets' ),
+				'name'                  => __( 'Peruvian sol (PEN)', 'event-tickets' ),
 				'symbol'                => 'S/',
 				'decimal_point'         => '.',
 				'thousands_sep'         => ',',
@@ -854,7 +854,7 @@ class Currency {
 				'stripe_minimum_charge' => 202,
 			],
 			'PYG' => [
-				'name'                  => __( 'Paranguaian guaraní (PYG)', 'event-tickets' ),
+				'name'                  => __( 'Paraguayan guaraní (PYG)', 'event-tickets' ),
 				'symbol'                => '&#8370;',
 				'decimal_point'         => '.',
 				'thousands_sep'         => ',',
