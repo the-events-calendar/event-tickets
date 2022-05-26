@@ -339,7 +339,7 @@ class Currency {
 		 *
 		 * @return array
 		 */
-		return apply_filters( 'tec_tickets_commerce_default_currency_map', [
+		$default_map = apply_filters( 'tec_tickets_commerce_default_currency_map', [
 			'AUD' => [
 				'name'                  => __( 'Australian Dollar (AUD)', 'event-tickets' ),
 				'symbol'                => '&#x41;&#x24;',
@@ -549,7 +549,117 @@ class Currency {
 				'decimal_precision'     => 2,
 				'stripe_minimum_charge' => 30,
 			],
+			'AED' => [
+				'name'                  => __( 'United Arab Emirates dirham (AED)', 'event-tickets' ),
+				'symbol'                => '&#x62f;.&#x625;',
+				'decimal_point'         => '.',
+				'thousands_sep'         => ',',
+				'decimal_precision'     => 2,
+				'stripe_minimum_charge' => 2,
+			], 
+			'AFN' => [
+				'name'                  => __( 'Afghan afghani (AFN)', 'event-tickets' ),
+				'symbol'                => '&#x60b;',
+				'decimal_point'         => '.',
+				'thousands_sep'         => ',',
+				'decimal_precision'     => 2,
+				'stripe_minimum_charge' => 85,
+			], 
+			'ALL' => [
+				'name'                  => __( 'Albanian lek (ALL)', 'event-tickets' ),
+				'symbol'                => 'L',
+				'decimal_point'         => '.',
+				'thousands_sep'         => ',',
+				'decimal_precision'     => 2,
+				'stripe_minimum_charge' => 115,
+			], 
+			'AMD' => [
+				'name'                  => __( 'Armenian dram (AMD)', 'event-tickets' ),
+				'symbol'                => 'AMD',
+				'decimal_point'         => '.',
+				'thousands_sep'         => ',',
+				'decimal_precision'     => 2,
+				'stripe_minimum_charge' => 455,
+			], 
+			'ANG' => [
+				'name'                  => __( 'Netherlands Antillean guilder (ANG)', 'event-tickets' ),
+				'symbol'                => '&fnof;',
+				'decimal_point'         => '.',
+				'thousands_sep'         => ',',
+				'decimal_precision'     => 2,
+				'stripe_minimum_charge' => 2,
+			], 
+			'AOA' => [
+				'name'                  => __( 'Angolan kwanza (AOA)', 'event-tickets' ),
+				'symbol'                => 'Kz',
+				'decimal_point'         => '.',
+				'thousands_sep'         => ',',
+				'decimal_precision'     => 2,
+				'stripe_minimum_charge' => 415,
+			], 
+			'ARS' => [
+				'name'                  => __( 'Argentine peso (ARS)', 'event-tickets' ),
+				'symbol'                => '&#036;',
+				'decimal_point'         => '.',
+				'thousands_sep'         => ',',
+				'decimal_precision'     => 2,
+				'stripe_minimum_charge' => 110,
+			], 
+			'AWG' => [
+				'name'                  => __( 'Aruban florin (AWG)', 'event-tickets' ),
+				'symbol'                => 'Afl.',
+				'decimal_point'         => '.',
+				'thousands_sep'         => ',',
+				'decimal_precision'     => 2,
+				'stripe_minimum_charge' => 2,
+			], 
+			'AZN' => [
+				'name'                  => __( 'Azerbaijani manat (AZN)', 'event-tickets' ),
+				'symbol'                => 'AZN',
+				'decimal_point'         => '.',
+				'thousands_sep'         => ',',
+				'decimal_precision'     => 2,
+				'stripe_minimum_charge' => 2,
+			], 
+			'BAM' => [
+				'name'                  => __( 'Bosnia and Herzegovina convertible mark (BAM)', 'event-tickets' ),
+				'symbol'                => 'KM',
+				'decimal_point'         => '.',
+				'thousands_sep'         => ',',
+				'decimal_precision'     => 2,
+				'stripe_minimum_charge' => 2,
+			], 
+			'BND' => [
+				'name'                  => __( 'Brunei dollar (BND)', 'event-tickets' ),
+				'symbol'                => '&#036;',
+				'decimal_point'         => '.',
+				'thousands_sep'         => ',',
+				'decimal_precision'     => 2,
+				'stripe_minimum_charge' => 2,
+			], 
+			'BZD' => [
+				'name'                  => __( 'Belize dollar (BZD)', 'event-tickets' ),
+				'symbol'                => '&#036;',
+				'decimal_point'         => '.',
+				'thousands_sep'         => ',',
+				'decimal_precision'     => 2,
+				'stripe_minimum_charge' => 3,
+			], 
 		] );
+
+		/** @var Tribe__Cache $cache */
+		$cache = tribe( 'cache' );
+		$cache_key = 'tec_tc_stripe_default_currency_map';
+		$map = isset( $cache[ $cache_key ] ) ? $cache[ $cache_key ] : false;
+
+		// If not cached or the count is different, store the map in alpha order.
+		if ( ! $map || ! is_array( $map ) || count( $map ) != count( $default_map ) ) {
+			ksort( $default_map );
+			$map = $default_map;
+			$cache[ $cache_key ] = $map;
+		}
+		
+		return $map;
 	}
 
 	/**
