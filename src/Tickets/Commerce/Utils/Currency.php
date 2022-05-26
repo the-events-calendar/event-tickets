@@ -339,7 +339,7 @@ class Currency {
 		 *
 		 * @return array
 		 */
-		$map = apply_filters( 'tec_tickets_commerce_default_currency_map', [
+		$default_map = apply_filters( 'tec_tickets_commerce_default_currency_map', [
 			'AUD' => [
 				'name'                  => __( 'Australian Dollar (AUD)', 'event-tickets' ),
 				'symbol'                => '&#x41;&#x24;',
@@ -919,8 +919,17 @@ class Currency {
 			],
 		] );
 
-		// Sort in alpha order by currency code.
-		ksort( $map );
+		/** @var Tribe__Cache $cache */
+		$cache = tribe( 'cache' );
+		$cache_key = 'tec_tc_stripe_default_currency_map';
+		$map = isset( $cache[ $cache_key ] ) ? $cache[ $cache_key ] : false;
+
+		// If not cached or the count is different, store the map in alpha order.
+		if ( ! $map || ! is_array( $map ) || count( $map ) != count( $default_map ) ) {
+			ksort( $default_map );
+			$map = $default_map;
+			$cache[ $cache_key ] = $map;
+		}
 		
 		return $map;
 	}

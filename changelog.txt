@@ -1,10 +1,28 @@
 == Changelog ==
 
-= [5.4.0] TBD =
+= [5.4.1] TBD =
 
+* Fix - Encoding issue in the block editor's price block of The Events Calendar events. [ET-1434]
+* Fix - Add India to the list of countries ET cannot process fees from. [ET-1522]
+* Enhancement - Add a new notice to set up permalinks to something different than "Plain" in order to use Tickets Commerce. [ET-1521]
+
+= [5.4.0.1] 2022-05-23 =
+
+* Fix - Check if function exists for `get_current_screen` to avoid a fatal if not.
+
+= [5.4.0] 2022-05-19 =
+
+* Version - Event Tickets 5.4.0 is only compatible with The Events Calendar 5.15.0 and higher
+* Version - Event Tickets 5.4.0 is only compatible with Event Tickets Plus 5.5.0 and higher
 * Feature - Introducing the new Tickets menu on the WordPress admin. [ET-1335]
+* Language - 6 new strings added, 171 updated, 1 fuzzied, and 2 obsoleted
 
-= [5.3.4] 2022-05-10 =
+= [5.3.4.1] 2022-05-12 =
+
+* Version - Event Tickets 5.3.4.1 is only compatible with Event Tickets Plus 5.4.4.1 and higher
+* Fix - Ensure that Event Tickets Plus customers never encounter application fees on Stripe for Tickets Commerce purchases. [ET-1513]
+
+= [5.3.4] 2022-05-11 =
 
 * Fix - Typo was causing a JS `setAttribute` error in `vue.min.js`. [ET-1504]
 * Fix - Fatal error when exporting attendees in PHP 8. [ET-1502]
@@ -12,9 +30,9 @@
 * Fix - RSVP title is being encoded within the block editor fields. [ET-1478]
 * Fix - Tickets Commerce manual attendee's ticket price is set to 0. [ETP-781]
 * Fix - Fixed template override path for a few templates. [ET-1491]
+* Enhancement - Added availability dates and icons to ticket listing in classic editor. [ET-1494]
 * Enhancement - Notify users of the Manual Addition of Attendees feature that is available. [ET-1492]
 * Enhancement - Notify users of Capacity and Attendee Registration Field features that are available. [ET-1493]
-* Enhancement - Added availability dates and icons to ticket listing in classic editor. [ET-1494]
 * Tweak - Lighten color of disabled "Get Tickets" button text when using the Genesis theme. [ET-1435]
 * Tweak - Added actions: `tec_tickets_attendees_event_summary_table_extra`
 * Tweak - Changed views: `blocks/tickets/opt-out-hidden`, `blocks/tickets/registration/summary/content`, `registration-js/attendees/fields/number`, `v2/tickets/commerce/fields/tribe-commerce`, `v2/tickets/item/extra/description-toggle`, `v2/tickets/submit/must-login`.
