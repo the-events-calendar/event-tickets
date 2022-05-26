@@ -197,6 +197,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Avoid loading PayPal partner JS script on all admin pages. [ET-1520]
 * Fix - Disable saving Stripe Webhook Signing Secret before validation. [ET-1497]
 * Enhancement - Add a new notice to set up permalinks to something different than "Plain" in order to use Tickets Commerce. [ET-1521]
+* Enhancement - Add links to "Settings" and "Getting started" on the plugin action links. [ET-1525]
 
 = [5.4.0.1] 2022-05-23 =
 
