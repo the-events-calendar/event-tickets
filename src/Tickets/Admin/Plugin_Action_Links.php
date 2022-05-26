@@ -7,7 +7,7 @@ use Tribe\Tickets\Admin\Settings as Plugin_Settings;
 /**
  * Class Plugin_Action_Links
  *
- * @since   TBD
+ * @since TBD
  *
  * @package TEC\Tickets\Admin
  */
