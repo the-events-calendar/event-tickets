@@ -190,7 +190,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.4.1] TBD =
 
-* Enhancement - Additional supported currencies for Stripe using Tickets Commerce. [ET-1454, ET-1455, ET-1456]
+* Enhancement - Expanded list of supported currencies for Tickets Commerce, for details visit: https://evnt.is/tec-tc-currencies. [ET-1454, ET-1455, ET-1456]
 * Fix - In the blocks editor, the ticket sale start/end times always load as midnight. [ET-1518]
 * Fix - Encoding issue in the block editor's price block of The Events Calendar events. [ET-1434]
 * Fix - Add India to the list of countries ET cannot process fees from. [ET-1522]
