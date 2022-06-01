@@ -182,6 +182,12 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			return new WP_Error( 'tec-tc-gateway-paypal-nonexistent-order-id', $messages['nonexistent-order-id'], $order );
 		}
 
+		$recheck = $request->get_param( 'recheck' );
+
+		if ( $recheck ) {
+			return $this->handle_recheck_order( $paypal_order_id, $order );
+		}
+
 		$payer_id = $request->get_param( 'payer_id' );
 
 		$paypal_capture_response = tribe( Client::class )->capture_order( $paypal_order_id, $payer_id );
@@ -202,31 +208,36 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			return new WP_Error( 'tec-tc-gateway-paypal-failed-capture', $messages['failed-capture'], $paypal_capture_response );
 		}
 
-		$paypal_capture_status = Arr::get( $paypal_capture_response, [ 'status' ] );
+		$response['success']  = true;
+		$response['order_id'] = $paypal_order_id;
 
-		/**
-		 * Sometimes the capture status received is not final. Before proceeding, let's check for the order again.
-		 *
-		 * @since TBD
-		 *
-		 * See ET-1533 for the reasoning behind this
-		 */
-		if ( 'COMPLETED' === $paypal_capture_status ) {
-			$paypal_order = tribe( Client::class )->get_order( $paypal_order_id );
+		return new WP_REST_Response( $response );
+	}
 
-			if ( $paypal_order['status'] !== $paypal_capture_status ) {
-				$paypal_capture_response = $paypal_order;
-			}
-		}
+	/**
+	 * Gets the Order object again, in another request, to check for purchases possibly denied after creation.
+	 *
+	 * @since TBD
+	 *
+	 * @param string   $order_id The PayPal order ID.
+	 * @param \WP_Post $order    The TC Order object.
+	 *
+	 * @return bool|WP_Error|WP_REST_Response
+	 */
+	public function handle_recheck_order( $order_id, $order ) {
 
-		$status = tribe( Status::class )->convert_to_commerce_status( $paypal_capture_status );
+		$paypal_order_response = tribe( Client::class )->get_order( $order_id );
+
+		$paypal_order_status = Arr::get( $paypal_order_response, [ 'status' ] );
+
+		$status = tribe( Status::class )->convert_to_commerce_status( $paypal_order_status );
 
 		if ( ! $status ) {
 			return new WP_Error( 'tec-tc-gateway-paypal-invalid-capture-status', $messages['invalid-capture-status'], $paypal_capture_response );
 		}
 
 		$updated = tribe( Order::class )->modify_status( $order->ID, $status->get_slug(), [
-			'gateway_payload' => $paypal_capture_response,
+			'gateway_payload' => $paypal_order_response,
 		] );
 
 		if ( is_wp_error( $updated ) ) {
@@ -240,7 +251,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		// When we have success we clear the cart.
 		tribe( Cart::class )->clear_cart();
 
-		$response['redirect_url'] = add_query_arg( [ 'tc-order-id' => $paypal_order_id ], tribe( Success::class )->get_url() );
+		$response['redirect_url'] = add_query_arg( [ 'tc-order-id' => $order_id ], tribe( Success::class )->get_url() );
 
 		return new WP_REST_Response( $response );
 	}
