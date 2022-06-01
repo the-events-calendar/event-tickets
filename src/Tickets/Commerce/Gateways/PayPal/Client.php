@@ -2,6 +2,7 @@
 
 namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
+use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Gateways\PayPal\REST\Webhook_Endpoint;
 use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Events;
 use Tribe__Utils__Array as Arr;
@@ -517,6 +518,7 @@ class Client {
 		$args = [
 			'headers' => [
 				'PayPal-Partner-Attribution-Id' => Gateway::ATTRIBUTION_ID,
+				'PayPal-Request-Id'             => tribe( Cart::class )->get_cart_hash(),
 				'Prefer'                        => 'return=representation',
 			],
 			'body'    => $body,
@@ -543,6 +545,7 @@ class Client {
 		$args = [
 			'headers' => [
 				'PayPal-Partner-Attribution-Id' => Gateway::ATTRIBUTION_ID,
+				'PayPal-Request-Id'             => tribe( Cart::class )->get_cart_hash(),
 				'Prefer'                        => 'return=representation',
 			],
 			'body'    => $body,
@@ -585,6 +588,7 @@ class Client {
 		$args = [
 			'headers' => [
 				'PayPal-Partner-Attribution-Id' => Gateway::ATTRIBUTION_ID,
+				'PayPal-Request-Id'             => tribe( Cart::class )->get_cart_hash(),
 				'Prefer'                        => 'return=representation',
 			],
 			'body'    => $body,
