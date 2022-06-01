@@ -528,6 +528,35 @@ class Client {
 	}
 
 	/**
+	 * Retrieves an order object for a given ID in PayPal.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $order_id Order ID to retrieve.
+	 *
+	 * @return array|null
+	 */
+	public function get_order( $order_id ) {
+		$query_args = [];
+		$body       = [];
+
+		$args = [
+			'headers' => [
+				'PayPal-Partner-Attribution-Id' => Gateway::ATTRIBUTION_ID,
+				'Prefer'                        => 'return=representation',
+			],
+			'body'    => $body,
+		];
+
+		$order_id = urlencode( $order_id );
+		$url        = '/v2/checkout/orders/{order_id}';
+		$url        = str_replace( '{order_id}', $order_id, $url );
+		$response   = $this->get( $url, $query_args, $args );
+
+		return $response;
+	}
+
+	/**
 	 * Captures an order for a given ID in PayPal.
 	 *
 	 * @since 5.1.9

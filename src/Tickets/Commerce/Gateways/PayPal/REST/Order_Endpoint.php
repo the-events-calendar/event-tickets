@@ -203,7 +203,23 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		}
 
 		$paypal_capture_status = Arr::get( $paypal_capture_response, [ 'status' ] );
-		$status                = tribe( Status::class )->convert_to_commerce_status( $paypal_capture_status );
+
+		/**
+		 * Sometimes the capture status received is not final. Before proceeding, let's check for the order again.
+		 *
+		 * @since TBD
+		 *
+		 * See ET-1533 for the reasoning behind this
+		 */
+		if ( 'COMPLETED' === $paypal_capture_status ) {
+			$paypal_order = tribe( Client::class )->get_order( $paypal_order_id );
+
+			if ( $paypal_order['status'] !== $paypal_capture_status ) {
+				$paypal_capture_response = $paypal_order;
+			}
+		}
+
+		$status = tribe( Status::class )->convert_to_commerce_status( $paypal_capture_status );
 
 		if ( ! $status ) {
 			return new WP_Error( 'tec-tc-gateway-paypal-invalid-capture-status', $messages['invalid-capture-status'], $paypal_capture_response );
