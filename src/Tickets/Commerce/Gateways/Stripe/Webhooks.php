@@ -114,6 +114,9 @@ class Webhooks extends Abstract_Webhooks {
 		$is_valid = tribe_get_option( static::$option_is_valid_webhooks, false );
 		if ( $is_valid ) {
 			$status = esc_html__( 'Webhooks were properly validated for sales.', 'event-tickets' );
+		} else {
+			// Reset saved signing key.
+			tribe_update_option( static::$option_webhooks_signing_key, '' );
 		}
 
 		wp_send_json_success( [ 'is_valid_webhook' => $is_valid, 'updated' => $updated, 'status' => $status ] );
