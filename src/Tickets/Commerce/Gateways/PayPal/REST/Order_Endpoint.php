@@ -226,22 +226,18 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 */
 	public function handle_recheck_order( $order_id, $order ) {
 
-		$paypal_order_response = tribe( Client::class )->get_order( $order_id );
+		$paypal_order_response       = tribe( Client::class )->get_order( $order_id );
+		$paypal_order_status         = Arr::get( $paypal_order_response, [ 'status' ] );
+		$paypal_order_purchase_units = Arr::get( $paypal_order_response, [ 'purchase_units' ], [] );
+		$paypal_order_captures       = [];
 
-		$paypal_order_status = Arr::get( $paypal_order_response, [ 'status' ] );
-		$paypal_order_payments = Arr::get( $paypal_order_response, [ 'payments' ], [] );
+		foreach( $paypal_order_purchase_units as $unit ) {
+			$paypal_order_captures[] = $unit['payments']['captures'];
+		}
 
-		if ( 'CREATED' === $paypal_order_status && ! empty( $paypal_order_payments ) ) {
-			$paypal_order_captures = (array) Arr::get( $paypal_order_payments, [ 'captures' ], [] );
+		if ( 'CREATED' === $paypal_order_status && ! empty( $paypal_order_captures ) ) {
 
-			if ( count( $paypal_order_captures ) > 1 ) {
-				// Sort the captures array by the update timestamp
-				usort( $paypal_order_captures, function( $a, $b ) {
-					return strtotime( $a['update_time'] ) <=> strtotime( $b['update_time'] );
-				} );
-			}
-
-			foreach( $paypal_order_captures as $capture ) {
+			foreach( array_pop( $paypal_order_captures ) as $capture ) {
 				$capture_status = $capture['status'];
 				$final = $capture['final_capture'] ?? false;
 
