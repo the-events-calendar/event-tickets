@@ -272,7 +272,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		}
 
 		if ( in_array( $paypal_order_status, [ Status::FAILED, Status::DECLINED ], true ) ) {
-			return new WP_Error( 'tec-tc-gateway-paypal-failed-capture', $messages['failed-capture'], $paypal_order_response );
+			return new WP_Error( 'tec-tc-gateway-paypal-capture-declined', $messages['capture-declined'], $paypal_order_response );
 		}
 
 		$response['success']  = true;
@@ -475,6 +475,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			'canceled-creating-order' => __( 'Your PayPal order was cancelled.', 'event-tickets' ),
 			'nonexistent-order-id'    => __( 'Provided Order id is not valid.', 'event-tickets' ),
 			'failed-capture'          => __( 'There was a problem while processing your payment, please try again.', 'event-tickets' ),
+			'capture-declined'        => __( 'Your payment was declined.', 'event-tickets' ),
 			'invalid-capture-status'  => __( 'There was a problem with the Order status change, please try again.', 'event-tickets' ),
 		];
 
