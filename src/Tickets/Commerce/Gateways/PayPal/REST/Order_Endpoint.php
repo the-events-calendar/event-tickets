@@ -230,6 +230,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		$paypal_order_status         = Arr::get( $paypal_order_response, [ 'status' ] );
 		$paypal_order_purchase_units = Arr::get( $paypal_order_response, [ 'purchase_units' ], [] );
 		$paypal_order_captures       = [];
+		$messages                    = $this->get_error_messages();
 
 		foreach( $paypal_order_purchase_units as $unit ) {
 			$paypal_order_captures[] = $unit['payments']['captures'];
@@ -250,7 +251,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		$status = tribe( Status::class )->convert_to_commerce_status( $capture_status );
 
 		if ( ! $status ) {
-			return new WP_Error( 'tec-tc-gateway-paypal-invalid-capture-status', $messages['invalid-capture-status'], $paypal_capture_response );
+			return new WP_Error( 'tec-tc-gateway-paypal-invalid-capture-status', $messages['invalid-capture-status'], $paypal_order_response );
 		}
 
 		$updated = tribe( Order::class )->modify_status( $order->ID, $status->get_slug(), [
@@ -264,7 +265,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		$response['success']  = true;
 
 		if ( in_array( $capture_status, [ 'FAILED', 'DECLINED' ], true ) ) {
-			$response['success'] = false;
+			return new WP_Error( 'tec-tc-gateway-paypal-failed-capture', $messages['failed-capture'], $paypal_order_response );
 		}
 
 		$response['status']   = $status->get_slug();
