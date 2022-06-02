@@ -532,7 +532,7 @@ class Client {
 	/**
 	 * Retrieves an order object for a given ID in PayPal.
 	 *
-	 * @since TBD
+	 * @since 5.4.0.2
 	 *
 	 * @param string $order_id Order ID to retrieve.
 	 *

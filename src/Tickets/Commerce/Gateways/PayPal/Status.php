@@ -70,7 +70,7 @@ class Status {
 	/**
 	 * Order Capture Status in PayPal for failed captures.
 	 *
-	 * @since TBD
+	 * @since 5.4.0.2
 	 *
 	 * @var string
 	 */
@@ -79,7 +79,7 @@ class Status {
 	/**
 	 * Order Capture Status in PayPal for declined captures.
 	 *
-	 * @since TBD
+	 * @since 5.4.0.2
 	 *
 	 * @var string
 	 */

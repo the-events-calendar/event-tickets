@@ -196,7 +196,7 @@ class Cart {
 	/**
 	 * Generates a unique version of the cart hash, used to enforce idempotency in REST API requests.
 	 *
-	 * @since TBD
+	 * @since 5.4.0.2
 	 *
 	 * @param string $salt An optional value to make sure the generated hash is not directly translatable to the cart
 	 *                     hash.
@@ -209,7 +209,7 @@ class Cart {
 		/**
 		 * Allows modifications to the cart/order hash for Tickets Commerce.
 		 *
-		 * @since TBD
+		 * @since 5.4.0.2
 		 *
 		 * @param string $cart_order_hash The md5-hashed cart hash.
 		 * @param string $cart_hash       The current cart hash.

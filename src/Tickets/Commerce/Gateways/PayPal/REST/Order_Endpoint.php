@@ -217,7 +217,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Gets the Order object again, in another request, to check for purchases possibly denied after creation.
 	 *
-	 * @since TBD
+	 * @since 5.4.0.2
 	 *
 	 * @param string   $order_id The PayPal order ID.
 	 * @param \WP_Post $order    The TC Order object.
