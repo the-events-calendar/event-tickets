@@ -188,6 +188,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [TBD] =
+
+* Fix - Adds a safety check to avoid issuing tickets for late-declined purchases in PayPal, when the Order status returned is valid. [ET-1533]
+
 = [5.4.0.1] 2022-05-23 =
 
 * Fix - Check if function exists for `get_current_screen` to avoid a fatal if not.
