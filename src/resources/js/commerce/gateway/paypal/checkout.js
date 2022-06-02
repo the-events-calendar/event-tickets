@@ -244,7 +244,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	/**
 	 * Handles checking if a purchase was really successful or was late-declined.
 	 *
-	 * @since TBD
+	 * @since 5.4.0.2
 	 *
 	 * @param {Object} data PayPal data passed to this method.
 	 * @param {Object} actions PayPal actions available on approve.
