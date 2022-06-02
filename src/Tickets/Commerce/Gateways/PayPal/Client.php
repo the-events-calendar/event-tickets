@@ -518,7 +518,7 @@ class Client {
 		$args = [
 			'headers' => [
 				'PayPal-Partner-Attribution-Id' => Gateway::ATTRIBUTION_ID,
-				'PayPal-Request-Id'             => tribe( Cart::class )->get_cart_hash(),
+				'PayPal-Request-Id'             => tribe( Cart::class )->generate_cart_order_hash(),
 				'Prefer'                        => 'return=representation',
 			],
 			'body'    => $body,
@@ -545,7 +545,7 @@ class Client {
 		$args = [
 			'headers' => [
 				'PayPal-Partner-Attribution-Id' => Gateway::ATTRIBUTION_ID,
-				'PayPal-Request-Id'             => tribe( Cart::class )->get_cart_hash(),
+				'PayPal-Request-Id'             => tribe( Cart::class )->generate_cart_order_hash(),
 				'Prefer'                        => 'return=representation',
 			],
 			'body'    => $body,
@@ -588,7 +588,7 @@ class Client {
 		$args = [
 			'headers' => [
 				'PayPal-Partner-Attribution-Id' => Gateway::ATTRIBUTION_ID,
-				'PayPal-Request-Id'             => tribe( Cart::class )->get_cart_hash(),
+				'PayPal-Request-Id'             => tribe( Cart::class )->generate_cart_order_hash(),
 				'Prefer'                        => 'return=representation',
 			],
 			'body'    => $body,
