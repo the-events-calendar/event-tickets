@@ -233,13 +233,22 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		$messages                    = $this->get_error_messages();
 
 		foreach( $paypal_order_purchase_units as $unit ) {
-			$paypal_order_captures[] = $unit['payments']['captures'];
+			if ( ! empty( $unit['payments']['captures'] ) ) {
+				$paypal_order_captures[] = $unit['payments']['captures'];
+			}
 		}
 
-		if ( 'CREATED' === $paypal_order_status && ! empty( $paypal_order_captures ) ) {
+		if ( Status::CREATED === $paypal_order_status && ! empty( $paypal_order_captures ) ) {
+			$paypal_order_captures = array_shift( $paypal_order_captures );
+			if ( count( $paypal_order_captures ) > 1 ) {
+				// Sort the captures array by the update timestamp
+				usort( $paypal_order_captures, function( $a, $b ) {
+					return strtotime( $a['update_time'] ) <=> strtotime( $b['update_time'] );
+				} );
+			}
 
-			foreach( array_pop( $paypal_order_captures ) as $capture ) {
-				$capture_status = $capture['status'];
+			foreach( $paypal_order_captures as $capture ) {
+				$paypal_order_status = $capture['status'];
 				$final = $capture['final_capture'] ?? false;
 
 				if ( $final ) {
@@ -248,7 +257,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			}
 		}
 
-		$status = tribe( Status::class )->convert_to_commerce_status( $capture_status );
+		$status = tribe( Status::class )->convert_to_commerce_status( $paypal_order_status );
 
 		if ( ! $status ) {
 			return new WP_Error( 'tec-tc-gateway-paypal-invalid-capture-status', $messages['invalid-capture-status'], $paypal_order_response );
@@ -262,12 +271,11 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			return $updated;
 		}
 
-		$response['success']  = true;
-
-		if ( in_array( $capture_status, [ 'FAILED', 'DECLINED' ], true ) ) {
+		if ( in_array( $paypal_order_status, [ Status::FAILED, Status::DECLINED ], true ) ) {
 			return new WP_Error( 'tec-tc-gateway-paypal-failed-capture', $messages['failed-capture'], $paypal_order_response );
 		}
 
+		$response['success']  = true;
 		$response['status']   = $status->get_slug();
 		$response['order_id'] = $order->ID;
 
