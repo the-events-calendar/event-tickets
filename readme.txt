@@ -188,7 +188,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.4.0.2] 2022-06-02 =
+= [5.4.0.2] 2022-06-06 =
 
 * Fix - Adds a safety check to avoid issuing tickets for late-declined purchases in PayPal, when the Order status returned is valid. [ET-1533]
 
