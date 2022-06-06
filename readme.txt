@@ -3,8 +3,8 @@
 Contributors: theeventscalendar, brianjessee, camwynsp, aguseo, bordoni, borkweb, GeoffBel, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra, moraleida.me
 Tags: tickets, registration, event registration, RSVP, ticket sales, attendee management
 Requires at least: 5.6
-Tested up to: 5.9.3
-Stable tag: 5.4.0.1
+Tested up to: 6.0
+Stable tag: 5.4.0.2
 Requires PHP: 7.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -187,6 +187,12 @@ We've got a [LoopedIn](https://evnt.is/ideas) page where we're actively watching
 Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on using, tweaking, and troubleshooting our plugins.
 
 == Changelog ==
+
+= [5.4.0.2] 2022-06-06 =
+
+* Fix - Adds a safety check to avoid issuing tickets for late-declined purchases in PayPal, when the Order status returned is valid. [ET-1533]
+* Tweak - Added filters: `tec_tickets_commerce_cart_order_hash`
+* Language - 1 new strings added, 15 updated, 0 fuzzied, and 0 obsoleted.
 
 = [5.4.0.1] 2022-05-23 =
 
