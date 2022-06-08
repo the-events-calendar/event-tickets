@@ -45,7 +45,7 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Post meta key for the ticket start time
 	 *
-	 * @since TBD
+	 * @since 5.4.1
 	 *
 	 * @var    string
 	 */
@@ -63,7 +63,7 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Post meta key for the ticket end time
 	 *
-	 * @since TBD
+	 * @since 5.4.1
 	 *
 	 * @var    string
 	 */

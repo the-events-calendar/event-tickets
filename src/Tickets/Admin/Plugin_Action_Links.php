@@ -7,7 +7,7 @@ use Tribe\Tickets\Admin\Settings as Plugin_Settings;
 /**
  * Class Plugin_Action_Links
  *
- * @since TBD
+ * @since 5.4.1
  *
  * @package TEC\Tickets\Admin
  */
@@ -16,7 +16,7 @@ class Plugin_Action_Links {
 	/**
 	 * Method to register plugin action links related hooks.
 	 *
-	 * @since TBD
+	 * @since 5.4.1
 	 */
 	public function hooks() {
 		add_action(
@@ -31,7 +31,7 @@ class Plugin_Action_Links {
 	/**
 	 * Add links to plugin actions.
 	 *
-	 * @since TBD
+	 * @since 5.4.1
 	 *
 	 * @param array $actions The array with the links on the plugin actions.
 	 *

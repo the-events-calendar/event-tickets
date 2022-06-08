@@ -155,7 +155,7 @@ class Notices extends tad_DI52_ServiceProvider {
 	/**
 	 * Display a notice when Tickets Commerce is enabled, and the site is not using pretty permalinks.
 	 *
-	 * @since TBD
+	 * @since 5.4.1
 	 *
 	 * @return bool Whether or not to render the notice.
 	 */
@@ -181,7 +181,7 @@ class Notices extends tad_DI52_ServiceProvider {
 	/**
 	 * Gets the HTML for the notice that is shown when permalinks are not set.
 	 *
-	 * @since TBD
+	 * @since 5.4.1
 	 *
 	 * @return string Notice HTML.
 	 */
