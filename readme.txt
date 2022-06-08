@@ -188,7 +188,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.4.1] TBD =
+= [5.4.1] 2022-06-08 =
 
 * Enhancement - Expanded list of supported currencies for Tickets Commerce, for details visit: https://evnt.is/tec-tc-currencies. [ET-1454, ET-1455, ET-1456]
 * Fix - In the blocks editor, the ticket sale start/end times always load as midnight. [ET-1518]
@@ -198,6 +198,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Disable saving Stripe Webhook Signing Secret before validation. [ET-1497]
 * Enhancement - Add a new notice to set up permalinks to something different than "Plain" in order to use Tickets Commerce. [ET-1521]
 * Enhancement - Add links to "Settings" and "Getting started" on the plugin action links. [ET-1525]
+* Language - 2 new strings added, 20 updated, 0 fuzzied, and 3 obsoleted
 
 = [5.4.0.2] 2022-06-06 =
 
