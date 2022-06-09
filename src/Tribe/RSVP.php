@@ -599,7 +599,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$main = Tribe__Tickets__Main::instance();
 
 		$stylesheet_url = $main->plugin_url . 'src/resources/css/rsvp.css';
-		$stylesheet_url = Tribe__Template_Factory::getMinFile( $stylesheet_url, true );
+		$stylesheet_url = Tribe__Assets::maybe_get_min_file( $stylesheet_url, true );
 
 		// apply filters
 		$stylesheet_url = apply_filters( 'tribe_tickets_rsvp_stylesheet_url', $stylesheet_url );
@@ -612,7 +612,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		);
 
 		$js_url = $main->plugin_url . 'src/resources/js/rsvp.js';
-		$js_url = Tribe__Template_Factory::getMinFile( $js_url, true );
+		$js_url = Tribe__Assets::maybe_get_min_file( $js_url, true );
 		$js_url = apply_filters( 'tribe_tickets_rsvp_js_url', $js_url );
 
 		wp_register_script(

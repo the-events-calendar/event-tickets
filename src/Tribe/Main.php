@@ -1033,7 +1033,7 @@ class Tribe__Tickets__Main {
 	 * are explicitly output
 	 */
 	public function embed_head() {
-		$css_path = Tribe__Template_Factory::getMinFile( $this->plugin_url . 'src/resources/css/tickets-embed.css', true );
+		$css_path = Tribe__Assets::maybe_get_min_file( $this->plugin_url . 'src/resources/css/tickets-embed.css' );
 		$css_path = add_query_arg( 'ver', self::VERSION, $css_path );
 		?>
 		<link rel="stylesheet" id="tribe-tickets-embed-css" href="<?php echo esc_url( $css_path ); ?>" type="text/css" media="all">
