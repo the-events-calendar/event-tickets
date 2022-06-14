@@ -956,6 +956,15 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			];
 		}
 
+		// Setup sorting args.
+		if ( tribe_get_request_var( 'orderby' ) ) {
+			$args['orderby'] = tribe_get_request_var( 'orderby' );
+		}
+
+		if ( tribe_get_request_var( 'order' ) ) {
+			$args['order']   = tribe_get_request_var( 'order' );
+		}
+
 		$item_data = Tribe__Tickets__Tickets::get_event_attendees_by_args( $event_id, $args );
 
 		$items = [];
@@ -1065,5 +1074,20 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		$search_box = str_replace( '<input type="search"', $custom_search . '<input type="search"', $search_box );
 
 		echo $search_box;
+	}
+
+	/**
+	 * Return list of sortable columns.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function get_sortable_columns() {
+		return [
+			'ticket'        => 'ticket',
+			'security'      => 'security',
+			'status'        => 'order_status_label'
+		];
 	}
 }
