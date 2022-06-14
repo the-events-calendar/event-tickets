@@ -188,6 +188,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [5.4.2] TBD =
+
+* Enhancement - Unify CSS class names for many admin elements. [ET-1536]
+
 = [5.4.1] 2022-06-08 =
 
 * Enhancement - Expanded list of supported currencies for Tickets Commerce, for details visit: https://evnt.is/tec-tc-currencies. [ET-1454, ET-1455, ET-1456]
