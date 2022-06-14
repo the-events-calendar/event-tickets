@@ -3,6 +3,7 @@
 msgid ""
 msgstr ""
 <<<<<<< HEAD
+<<<<<<< HEAD
 "Project-Id-Version: Event Tickets 5.3.4\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/event-tickets\n"
 "POT-Creation-Date: 2022-05-09 16:57:28+00:00\n"
@@ -16,21 +17,50 @@ msgstr ""
 #. #-#-#-#-#  event-tickets.pot (Event Tickets 5.3.4)  #-#-#-#-#
 =======
 "Project-Id-Version: Event Tickets 5.4.0.1\n"
+=======
+"Project-Id-Version: Event Tickets 5.4.1\n"
+>>>>>>> 9dfae7455f55dcaad975f3c981bed1f90fb2a771
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/event-tickets\n"
-"POT-Creation-Date: 2022-05-23 14:31:33+00:00\n"
+"POT-Creation-Date: 2022-06-03 18:02:24+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2022-05-23 14:31\n"
+"PO-Revision-Date: 2022-06-03 18:02\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 
+<<<<<<< HEAD
 #. #-#-#-#-#  event-tickets.pot (Event Tickets 5.4.0.1)  #-#-#-#-#
 >>>>>>> fd16ee407ffd2a30f50c0e1c459232cf76b9170f
+=======
+#. #-#-#-#-#  event-tickets.pot (Event Tickets 5.4.1)  #-#-#-#-#
+=======
+"Project-Id-Version: Event Tickets 5.4.0.2\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/event-tickets\n"
+"POT-Creation-Date: 2022-06-02 15:33:28+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2022-06-02 15:33\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+
+#. #-#-#-#-#  event-tickets.pot (Event Tickets 5.4.0.2)  #-#-#-#-#
+>>>>>>> master
+>>>>>>> 9dfae7455f55dcaad975f3c981bed1f90fb2a771
 #. Plugin Name of the plugin/theme
 #: event-tickets.php:61 src/Tribe/Admin/Notices.php:92 src/Tribe/Main.php:701
 #: src/Tribe/Privacy.php:59 src/admin-views/admin-welcome-message.php:60
 msgid "Event Tickets"
+msgstr ""
+
+#: src/Tickets/Admin/Plugin_Action_Links.php:41
+#: src/Tribe/Admin/Settings.php:166 src/admin-views/editor/panel/list.php:101
+msgid "Settings"
+msgstr ""
+
+#: src/Tickets/Admin/Plugin_Action_Links.php:42
+msgid "Getting started"
 msgstr ""
 
 #. Translators: %s: Link to "Event Tickets Plus" plugin.
@@ -58,6 +88,7 @@ msgid "Please provide a valid purchaser email."
 msgstr ""
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #: src/Tickets/Commerce/Admin/Notices.php:84
 #: src/Tickets/Commerce/Admin/Notices.php:129
 msgid "Learn More"
@@ -81,12 +112,29 @@ msgstr ""
 =======
 #: src/Tickets/Commerce/Admin/Notices.php:88
 >>>>>>> fd16ee407ffd2a30f50c0e1c459232cf76b9170f
-msgid ""
-"In order to start selling with Tickets Commerce, you'll need to set up your "
-"checkout page. Please configure the setting on Settings > Payments and "
-"confirm that the page you have selected has the proper shortcode. %1$s"
+=======
+#: src/Tickets/Commerce/Admin/Notices.php:90
+#: src/Tickets/Commerce/Admin/Notices.php:137
+#: src/Tickets/Commerce/Admin/Notices.php:192
+msgid "Learn More"
 msgstr ""
 
+#: src/Tickets/Commerce/Admin/Notices.php:92
+msgid "Set up your checkout page"
+msgstr ""
+
+#. translators: %1$s: Opening `<a>` tag for the Payments tab on the Tickets
+#. Settings. %2$s: Closing `</a>` tag. %3$s: Link to knowledgebase article.
+#: src/Tickets/Commerce/Admin/Notices.php:95
+>>>>>>> 9dfae7455f55dcaad975f3c981bed1f90fb2a771
+msgid ""
+"In order to start selling with Tickets Commerce, you'll need to set up your "
+"checkout page. Please configure the setting on %1$sTickets > Settings > "
+"Payments%2$s and confirm that the page you have selected has the proper "
+"shortcode. %3$s"
+msgstr ""
+
+<<<<<<< HEAD
 <<<<<<< HEAD
 #: src/Tickets/Commerce/Admin/Notices.php:131
 =======
@@ -101,10 +149,33 @@ msgstr ""
 =======
 #: src/Tickets/Commerce/Admin/Notices.php:133
 >>>>>>> fd16ee407ffd2a30f50c0e1c459232cf76b9170f
+=======
+#: src/Tickets/Commerce/Admin/Notices.php:139
+msgid "Set up your order success page"
+msgstr ""
+
+#. translators: %1$s: Opening `<a>` tag for the Payments tab on the Tickets
+#. Settings. %2$s: Closing `</a>` tag.  %3$s: Link to knowledgebase article.
+#: src/Tickets/Commerce/Admin/Notices.php:142
 msgid ""
 "In order to start selling with Tickets Commerce, you'll need to set up your "
-"order success page. Please configure the setting on Settings > Payments and "
-"confirm that the page you have selected has the proper shortcode. %1$s"
+"order success page. Please configure the setting on %1$sTickets > Settings > "
+"Payments%2$s and confirm that the page you have selected has the proper "
+"shortcode. %3$s"
+msgstr ""
+
+#: src/Tickets/Commerce/Admin/Notices.php:195
+msgid "Set up your permalinks to sell with Tickets Commerce"
+msgstr ""
+
+#. translators: %3$s: Link to knowledgebase article.
+#: src/Tickets/Commerce/Admin/Notices.php:198
+>>>>>>> 9dfae7455f55dcaad975f3c981bed1f90fb2a771
+msgid ""
+"In order to start selling with Tickets Commerce, you'll need to set up your "
+"permalinks setting to an option different than \"Plain\". Please configure "
+"the setting on %1$sSettings > Permalinks%2$s and confirm that you are not "
+"using plain permalinks. %3$s"
 msgstr ""
 
 #: src/Tickets/Commerce/Admin_Tables/Attendees.php:77
@@ -381,19 +452,19 @@ msgstr ""
 msgid "Manually Generated"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Assets.php:44
+#: src/Tickets/Commerce/Gateways/PayPal/Assets.php:45
 msgid "Disconnect PayPal Account"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Assets.php:45
+#: src/Tickets/Commerce/Gateways/PayPal/Assets.php:46
 msgid "Are you sure you want to disconnect your PayPal account?"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Assets.php:46
+#: src/Tickets/Commerce/Gateways/PayPal/Assets.php:47
 msgid "You’re connected to PayPal! Here’s what’s next..."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Assets.php:48
+#: src/Tickets/Commerce/Gateways/PayPal/Assets.php:49
 msgid ""
 "PayPal allows you to accept credit or debit cards directly on your website. "
 "Because of\n"
@@ -405,69 +476,69 @@ msgid ""
 "comprised of, but not limited to:"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Assets.php:58
+#: src/Tickets/Commerce/Gateways/PayPal/Assets.php:59
 msgid ""
 "Using a trusted, secure hosting provider – preferably one which claims and "
 "actively promotes PCI compliance."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Assets.php:59
+#: src/Tickets/Commerce/Gateways/PayPal/Assets.php:60
 #: src/admin-views/settings/tickets-commerce/paypal/modal/signup-complete/content.php:36
 msgid ""
 "Maintain security best practices when setting passwords and limit access to "
 "your server."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Assets.php:60
+#: src/Tickets/Commerce/Gateways/PayPal/Assets.php:61
 msgid "Implement an SSL certificate to keep your payments secure."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Assets.php:61
+#: src/Tickets/Commerce/Gateways/PayPal/Assets.php:62
 msgid "Keep plugins up to date to ensure latest security fixes are present."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Assets.php:64
+#: src/Tickets/Commerce/Gateways/PayPal/Assets.php:65
 #: src/admin-views/settings/tickets-commerce/paypal/modal/signup-complete/notice-test-mode.php:24
 msgid ""
 "You have connected your account for test mode. You will need to connect "
 "again once you are in live mode."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Assets.php:110
+#: src/Tickets/Commerce/Gateways/PayPal/Assets.php:111
 msgid "E.g.: 123"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Assets.php:111
+#: src/Tickets/Commerce/Gateways/PayPal/Assets.php:112
 msgid "E.g.: 03/26"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Assets.php:112
+#: src/Tickets/Commerce/Gateways/PayPal/Assets.php:113
 msgid "E.g.: 4111 1111 1111 1111"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Assets.php:113
+#: src/Tickets/Commerce/Gateways/PayPal/Assets.php:114
 msgid "E.g.: 01020"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Client.php:742
+#: src/Tickets/Commerce/Gateways/PayPal/Client.php:775
 msgid "The PayPal webhook does not exist"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Client.php:745
+#: src/Tickets/Commerce/Gateways/PayPal/Client.php:778
 msgid "Unexpected PayPal response when getting webhook"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Client.php:792
+#: src/Tickets/Commerce/Gateways/PayPal/Client.php:825
 msgid "Unexpected PayPal response when creating webhook"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Client.php:803
+#: src/Tickets/Commerce/Gateways/PayPal/Client.php:836
 msgid ""
 "PayPal webhook limit has been reached, you need to go into your developer."
 "paypal.com account and remove webhooks from the associated account"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Client.php:862
+#: src/Tickets/Commerce/Gateways/PayPal/Client.php:895
 msgid "Unexpected PayPal response when updating webhook"
 msgstr ""
 
@@ -4537,42 +4608,46 @@ msgstr ""
 msgid "Unexpected response from PayPal when on boarding"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:311
-#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:349
+#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:369
+#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:407
 msgid "Order ID in PayPal"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:324
+#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:382
 msgid "Payer ID token from PayPal"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:362
+#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:420
 #: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:282
 msgid "To which status the failing should change this order to"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:375
+#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:433
 #: src/Tickets/Commerce/Gateways/Stripe/REST/Order_Endpoint.php:295
 msgid "Why this particular order has failed."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:416
+#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:474
 msgid "Creating new PayPal order failed. Please try again."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:417
+#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:475
 msgid "Your PayPal order was cancelled."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:418
+#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:476
 msgid "Provided Order id is not valid."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:419
+#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:477
 msgid "There was a problem while processing your payment, please try again."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:420
+#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:478
+msgid "Your payment was declined."
+msgstr ""
+
+#: src/Tickets/Commerce/Gateways/PayPal/REST/Order_Endpoint.php:479
 msgid "There was a problem with the Order status change, please try again."
 msgstr ""
 
@@ -5033,45 +5108,45 @@ msgid ""
 msgstr ""
 
 #: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:78
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:156
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:159
 msgid "Webhooks not validated yet."
 msgstr ""
 
 #: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:116
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:158
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:161
 msgid "Webhooks were properly validated for sales."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:162
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:165
 msgid "Webhook validation will not work in Tickets Commerce test mode."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:172
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:175
 #: src/admin-views/settings/tickets-commerce/stripe/modal/signup-complete/content.php:35
 msgid "Webhooks"
 msgstr ""
 
 #. Translators: %1$s A link to the KB article. %2$s closing `</a>` link.
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:180
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:183
 msgid ""
 "Setting up webhooks will enable you to receive notifications on charge "
 "statuses and keep order information up to date for asynchronous payments. "
 "%1$sLearn more%2$s"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:189
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:192
 msgid "Webhooks URL"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:200
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:203
 msgid "Signing Secret"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:208
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:211
 msgid "Validating signing key with Stripe, please wait."
 msgstr ""
 
-#: src/Tickets/Commerce/Legacy_Compat.php:86
+#: src/Tickets/Commerce/Legacy_Compat.php:85
 msgid "Tribe Commerce ( Legacy PayPal, not recommended )"
 msgstr ""
 
@@ -5679,22 +5754,460 @@ msgid "Singapore Dollar (SGD)"
 msgstr ""
 
 #: src/Tickets/Commerce/Utils/Currency.php:521
-#: src/Tribe/Commerce/Currency.php:330
-msgid "Thai Baht (THB)"
-msgstr ""
-
-#: src/Tickets/Commerce/Utils/Currency.php:529
-#: src/Tribe/Commerce/Currency.php:336
-msgid "Taiwan New Dollar (TWD)"
-msgstr ""
-
-#: src/Tickets/Commerce/Utils/Currency.php:537
 #: src/Tribe/Commerce/Currency.php:342
 msgid "U.S. Dollar (USD)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:545
+#: src/Tickets/Commerce/Utils/Currency.php:529
 msgid "South African Rand (ZAR)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:537
+msgid "United Arab Emirates dirham (AED)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:545
+msgid "Afghan afghani (AFN)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:553
+msgid "Albanian lek (ALL)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:561
+msgid "Armenian dram (AMD)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:569
+msgid "Netherlands Antillean guilder (ANG)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:577
+msgid "Angolan kwanza (AOA)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:585
+msgid "Argentine peso (ARS)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:593
+msgid "Aruban florin (AWG)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:601
+msgid "Azerbaijani manat (AZN)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:609
+msgid "Bosnia and Herzegovina convertible mark (BAM)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:617
+msgid "Brunei dollar (BND)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:625
+msgid "Belize dollar (BZD)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:633
+msgid "Lebanese pound (LBP)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:641
+msgid "Sri Lankan rupee (LKR)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:649
+msgid "Liberian dollar (LRD)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:657
+msgid "Lesotho loti (LSL)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:665
+msgid "Moroccan dirham (MAD)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:673
+msgid "Moldovan leu (MDL)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:681
+msgid "Malagasy ariary (MGA)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:689
+msgid "Macedonian denar (MKD)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:697
+msgid "Burmese kyat (MMK)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:705
+msgid "Mongolian tögrög (MNT)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:713
+msgid "Macanese pataca (MOP)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:721
+msgid "Mauritian rupee (MUR)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:729
+msgid "Maldivian rufiyaa (MVR)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:737
+msgid "Malawian kwacha (MWK)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:745
+msgid "Mexican peso (MXN)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:753
+msgid "Malaysian ringgit (MYR)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:761
+msgid "Mozambican metical (MZN)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:769
+msgid "Namibian dollar (NAD)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:777
+msgid "Nigerian naira (NGN)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:785
+msgid "Nicaraguan córdoba (NIO)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:793
+msgid "Nepalese rupee (NPR)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:801
+msgid "Panamanian balboa (PAB)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:809
+msgid "Peruvian sol (PEN)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:817
+msgid "Papua New Guinean kina (PGK)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:825
+msgid "Philippine peso (PHP)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:833
+msgid "Pakistani rupee (PKR)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:841
+msgid "Paraguayan guaraní (PYG)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:849
+msgid "Qatari riyal (QAR)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:857
+msgid "Romanian leu (RON)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:865
+msgid "Serbian dinar (RSD)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:873
+msgid "Rwandan franc (RWF)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:881
+msgid "Saudi riyal (SAR)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:889
+msgid "Solomon Islands dollar (SBD)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:897
+msgid "Seychellois rupee (SCR)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:905
+msgid "Barbadian dollar (BBD)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:913
+msgid "Bangladeshi taka (BDT)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:921
+msgid "Bulgarian lev (BGN)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:929
+msgid "Burundian franc (BIF)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:937
+msgid "Bermudian dollar (BMD)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:945
+msgid "Bolivian boliviano (BOB)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:953
+msgid "Bahamian dollar (BSD)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:961
+msgid "Botswana pula (BWP)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:969
+msgid "Belarusian ruble (BYN)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:977
+msgid "Congolese franc (CDF)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:985
+msgid "Chilean peso (CLP)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:993
+msgid "Chinese yuan (CNY)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:1001
+msgid "Colombian peso (COP)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:1009
+msgid "Costa Rican colón (CRC)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:1017
+msgid "Cape Verdean escudo (CVE)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:1025
+msgid "Djiboutian franc (DJF)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:1033
+msgid "Dominican peso (DOP)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:1041
+msgid "Algerian dinar (DZD)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:1049
+msgid "Egyptian pound (EGP)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:1057
+msgid "Ethiopian birr (ETB)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:1065
+msgid "Fijian dollar (FJD)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:1073
+msgid "Georgian lari (GEL)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:1081
+msgid "Gibraltar pound (GIP)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:1089
+msgid "Gambian dalasi (GMD)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:1097
+msgid "Guinean franc (GNF)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:1105
+msgid "Guatemalan quetzal (GTQ)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:1113
+msgid "Guyanese dollar (GYD)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:1121
+msgid "Honduran lempira (HNL)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:1129
+msgid "Croatian kuna (HRK)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:1137
+msgid "Haitian gourde (HTG)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:1145
+msgid "Indonesian rupiah (IDR)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:1153
+msgid "Icelandic krona (ISK)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:1161
+msgid "Jamaican dollar (JMD)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:1169
+msgid "Kenyan shilling (KES)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:1177
+msgid "Kyrgyzstani som (KGS)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:1185
+msgid "Cambodian riel (KHR)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:1193
+msgid "Comorian franc (KMF)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:1201
+msgid "South Korean won (KRW)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:1209
+msgid "Cayman Islands dollar (KYD)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:1217
+msgid "Kazakhstani tenge (KZT)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:1225
+msgid "Lao kip (LAK)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:1233
+msgid "Saint Helena pound (SHP)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:1241
+msgid "Sierra Leonean leone (SLL)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:1249
+msgid "Somali shilling (SOS)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:1257
+msgid "Surinamese dollar (SRD)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:1265
+msgid "Swazi lilangeni (SZL)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:1273
+msgid "Thai baht (THB)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:1281
+msgid "Tajikistani somoni (TJS)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:1289
+msgid "Tongan paʻanga (TOP)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:1297
+msgid "Turkish lira (TRY)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:1305
+msgid "Trinidad and Tobago dollar (TTD)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:1313
+msgid "New Taiwan dollar (TWD)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:1321
+msgid "Tanzanian shilling (TZS)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:1329
+msgid "Ukrainian hryvnia (UAH)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:1337
+msgid "Ugandan shilling (UGX)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:1345
+msgid "Uruguayan peso (UYU)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:1353
+msgid "Uzbekistani som (UZS)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:1361
+msgid "Vietnamese dong (VND)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:1369
+msgid "Vanuatu vatu (VUV)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:1377
+msgid "Samoan tālā (WST)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:1385
+msgid "Central African CFA franc (XAF)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:1393
+msgid "East Caribbean dollar (XCD)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:1401
+msgid "West African CFA franc (XOF)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:1409
+msgid "CFP franc (XPF)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:1417
+msgid "Yemeni rial (YER)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:1425
+msgid "Zambian kwacha (ZMW)"
 msgstr ""
 
 #: src/Tribe/Abstract_Attendance_Totals.php:65
@@ -5976,10 +6489,6 @@ msgstr ""
 msgid "Home"
 msgstr ""
 
-#: src/Tribe/Admin/Settings.php:166 src/admin-views/editor/panel/list.php:101
-msgid "Settings"
-msgstr ""
-
 #: src/Tribe/Admin/Settings.php:179
 msgid "Help"
 msgstr ""
@@ -6219,6 +6728,14 @@ msgstr ""
 
 #: src/Tribe/CSV_Importer/RSVP_Importer.php:254
 msgid "Recurring event tickets are not supported, event %s."
+msgstr ""
+
+#: src/Tribe/Commerce/Currency.php:330
+msgid "Thai Baht (THB)"
+msgstr ""
+
+#: src/Tribe/Commerce/Currency.php:336
+msgid "Taiwan New Dollar (TWD)"
 msgstr ""
 
 #. Translators: %1$s: the post/event title, %2$d: the post/event ID.
@@ -7734,13 +8251,13 @@ msgstr ""
 msgid "(copy)"
 msgstr ""
 
-#: src/Tribe/Tickets_Handler.php:86
+#: src/Tribe/Tickets_Handler.php:104
 #: src/views/blocks/tickets/extra-available-unlimited.php:19
 #: src/views/v2/tickets/item/extra/available/unlimited.php:56
 msgid "Unlimited"
 msgstr ""
 
-#: src/Tribe/Tickets_Handler.php:644
+#: src/Tribe/Tickets_Handler.php:662
 msgid "Invalid ticket capacity data."
 msgstr ""
 

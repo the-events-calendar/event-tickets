@@ -58,7 +58,7 @@ class Tribe__Tickets__Integrations__Manager {
 	/**
 	 * Hooks for the integrations manager.
 	 *
-	 * @since TBD
+	 * @since 5.4.1
 	 */
 	public function hook() {
 		add_action( 'init', [ $this, 'load_freemius' ], 15 );

@@ -3,7 +3,7 @@
 Contributors: theeventscalendar, brianjessee, camwynsp, aguseo, bordoni, borkweb, GeoffBel, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra, moraleida.me
 Tags: tickets, registration, event registration, RSVP, ticket sales, attendee management
 Requires at least: 5.6
-Tested up to: 5.9.3
+Tested up to: 6.0
 Stable tag: 5.6.0-beta3.2
 Requires PHP: 7.1
 License: GPLv2 or later
@@ -192,6 +192,24 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 * Enhancement - Adds a compatibility layer to work with the new Recurrence Backend Engine in TEC/ECP.
 
+= [5.4.1] 2022-06-08 =
+
+* Enhancement - Expanded list of supported currencies for Tickets Commerce, for details visit: https://evnt.is/tec-tc-currencies. [ET-1454, ET-1455, ET-1456]
+* Fix - In the blocks editor, the ticket sale start/end times always load as midnight. [ET-1518]
+* Fix - Encoding issue in the block editor's price block of The Events Calendar events. [ET-1434]
+* Fix - Add India to the list of countries ET cannot process fees from. [ET-1522]
+* Fix - Avoid loading PayPal partner JS script on all admin pages. [ET-1520]
+* Fix - Disable saving Stripe Webhook Signing Secret before validation. [ET-1497]
+* Enhancement - Add a new notice to set up permalinks to something different than "Plain" in order to use Tickets Commerce. [ET-1521]
+* Enhancement - Add links to "Settings" and "Getting started" on the plugin action links. [ET-1525]
+* Language - 2 new strings added, 20 updated, 0 fuzzied, and 3 obsoleted
+
+= [5.4.0.2] 2022-06-06 =
+
+* Fix - Adds a safety check to avoid issuing tickets for late-declined purchases in PayPal, when the Order status returned is valid. [ET-1533]
+* Tweak - Added filters: `tec_tickets_commerce_cart_order_hash`
+* Language - 1 new strings added, 15 updated, 0 fuzzied, and 0 obsoleted.
+
 = [5.4.0.1] 2022-05-23 =
 
 * Fix - Check if function exists for `get_current_screen` to avoid a fatal if not.
@@ -210,23 +228,15 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.3.4] 2022-05-11 =
 
+* Enhancement - Added availability dates and icons to ticket listing in classic editor. [ET-1494]
+* Enhancement - Notify users of the Manual Addition of Attendees feature that is available. [ET-1492]
+* Enhancement - Notify users of Capacity and Attendee Registration Field features that are available. [ET-1493]
 * Fix - Typo was causing a JS `setAttribute` error in `vue.min.js`. [ET-1504]
 * Fix - Fatal error when exporting attendees in PHP 8. [ET-1502]
 * Fix - Tickets Commerce manual attendee's ticket price is set to 0. [ETP-781]
-<<<<<<< HEAD
-* Enhancement - Notify users of the Manual Addition of Attendees feature that is available. [ET-1492]
-* Enhancement - Notify users of Capacity and Attendee Registration Field features that are available. [ET-1493]
-=======
->>>>>>> fd16ee407ffd2a30f50c0e1c459232cf76b9170f
 * Fix - RSVP title is being encoded within the block editor fields. [ET-1478]
 * Fix - Tickets Commerce manual attendee's ticket price is set to 0. [ETP-781]
 * Fix - Fixed template override path for a few templates. [ET-1491]
-* Enhancement - Added availability dates and icons to ticket listing in classic editor. [ET-1494]
-<<<<<<< HEAD
-=======
-* Enhancement - Notify users of the Manual Addition of Attendees feature that is available. [ET-1492]
-* Enhancement - Notify users of Capacity and Attendee Registration Field features that are available. [ET-1493]
->>>>>>> fd16ee407ffd2a30f50c0e1c459232cf76b9170f
 * Tweak - Lighten color of disabled "Get Tickets" button text when using the Genesis theme. [ET-1435]
 * Tweak - Added actions: `tec_tickets_attendees_event_summary_table_extra`
 * Tweak - Changed views: `blocks/tickets/opt-out-hidden`, `blocks/tickets/registration/summary/content`, `registration-js/attendees/fields/number`, `v2/tickets/commerce/fields/tribe-commerce`, `v2/tickets/item/extra/description-toggle`, `v2/tickets/submit/must-login`.
@@ -270,7 +280,6 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Tweak - Removed filters: `tribe_tickets_theme_compatibility_registered`
 * Language - 0 new strings added, 33 updated, 0 fuzzied, and 0 obsoleted
 
-<<<<<<< HEAD
 = [5.3.0.1] 2022-03-01 =
 
 * Tweak - Update version of Freemius to 2.4.3.
@@ -315,6 +324,4 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Fixed toggling of shared capacity data for tickets. [ETP-497]
 * Language - 7 new strings added, 99 updated, 0 fuzzied, and 0 obsoleted
 
-=======
->>>>>>> fd16ee407ffd2a30f50c0e1c459232cf76b9170f
 [See changelog for all versions](https://evnt.is/1b5k)

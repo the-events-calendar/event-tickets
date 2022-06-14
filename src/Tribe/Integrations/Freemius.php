@@ -75,7 +75,7 @@ class Tribe__Tickets__Integrations__Freemius {
 	 *
 	 * @since 4.11.5
 	 *
-	 * @deprecated TBD
+	 * @deprecated 5.4.1
 	 */
 	public function __construct() {}
 

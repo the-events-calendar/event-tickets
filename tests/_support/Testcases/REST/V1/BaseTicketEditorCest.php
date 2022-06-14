@@ -350,10 +350,8 @@ class BaseTicketEditorCest extends BaseRestCest {
 			'status'                        => 'publish',
 			'title'                         => $create_args['name'],
 			'image'                         => false,
-			// @todo TC does not return full date+time, should it?
-			'available_from'                => 'tribe-commerce' === $provider ? $create_args['start_date'] : $create_args['start_date'] . ' ' . $create_args['start_time'],
-			// @todo TC does not return full date+time, should it?
-			'available_until'               => 'tribe-commerce' === $provider ? $create_args['end_date'] : $create_args['end_date'] . ' ' . $create_args['end_time'],
+			'available_from'                => $create_args['start_date'] . ' ' . $create_args['start_time'],
+			'available_until'               => $create_args['end_date'] . ' ' . $create_args['end_time'],
 			'capacity_details'              => [
 				'available_percentage' => 100,
 				// @todo Zero may not be what it should return if unlimited.
@@ -474,10 +472,8 @@ class BaseTicketEditorCest extends BaseRestCest {
 			'status'                        => 'publish',
 			'title'                         => $create_args['name'],
 			'image'                         => false,
-			// @todo TC does not return full date+time, should it?
-			'available_from'                => 'tribe-commerce' === $provider ? $create_args['start_date'] : $create_args['start_date'] . ' ' . $create_args['start_time'],
-			// @todo TC does not return full date+time, should it?
-			'available_until'               => 'tribe-commerce' === $provider ? $create_args['end_date'] : $create_args['end_date'] . ' ' . $create_args['end_time'],
+			'available_from'                => $create_args['start_date'] . ' ' . $create_args['start_time'],
+			'available_until'               => $create_args['end_date'] . ' ' . $create_args['end_time'],
 			'capacity_details'              => [
 				'available_percentage' => 100,
 				// @todo Zero may not be what it should return if unlimited.
@@ -650,11 +646,9 @@ class BaseTicketEditorCest extends BaseRestCest {
 			'date_utc'                      => $response['date_utc'],
 			'title'                         => $update_args['name'],
 			'image'                         => false,
-			// @todo TC does not return full date+time, should it?
-			'available_from'                => 'tribe-commerce' === $provider ? $update_args['start_date'] : $update_args['start_date'] . ' ' . $update_args['start_time'],
+			'available_from'                => $update_args['start_date'] . ' ' . $update_args['start_time'],
 			'available_from_details'        => $response['available_from_details'],
-			// @todo TC does not return full date+time, should it?
-			'available_until'               => 'tribe-commerce' === $provider ? $update_args['end_date'] : $update_args['end_date'] . ' ' . $update_args['end_time'],
+			'available_until'               => $update_args['end_date'] . ' ' . $update_args['end_time'],
 			'available_until_details'       => $response['available_until_details'],
 			'capacity_details'              => [
 				'available_percentage' => 100,

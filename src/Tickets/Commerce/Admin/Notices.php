@@ -5,6 +5,7 @@ namespace TEC\Tickets\Commerce\Admin;
 use \tad_DI52_ServiceProvider;
 use TEC\Tickets\Commerce\Checkout;
 use TEC\Tickets\Commerce\Success;
+use Tribe\Tickets\Admin\Settings as Plugin_Settings;
 
 /**
  * Class Notices
@@ -33,6 +34,12 @@ class Notices extends tad_DI52_ServiceProvider {
 				[ 'dismiss' => false, 'type' => 'error' ],
 				[ $this, 'should_render_success_notice' ],
 			],
+			[
+				'event-tickets-tickets-commerce-permalinks',
+				[ $this, 'render_permalinks_notice' ],
+				[ 'dismiss' => true, 'type' => 'error' ],
+				[ $this, 'should_render_permalinks_notice' ],
+			],
 		];
 
 		/**
@@ -58,7 +65,7 @@ class Notices extends tad_DI52_ServiceProvider {
 	 */
 	public function should_render_checkout_notice() {
 		// If we're not on our own settings page, bail.
-		if ( \Tribe\Tickets\Admin\Settings::$settings_page_id !== tribe_get_request_var( 'page' ) ) {
+		if ( tribe_get_request_var( 'page' ) !== \Tribe\Tickets\Admin\Settings::$settings_page_id ) {
 			return false;
 		}
 
@@ -84,8 +91,10 @@ class Notices extends tad_DI52_ServiceProvider {
 		);
 		$notice_header = esc_html__( 'Set up your checkout page', 'event-tickets' );
 		$notice_text = sprintf(
-			// translators: %1$s: Link to knowledgebase article.
-			esc_html__( 'In order to start selling with Tickets Commerce, you\'ll need to set up your checkout page. Please configure the setting on Settings > Payments and confirm that the page you have selected has the proper shortcode. %1$s', 'event-tickets' ),
+			// translators: %1$s: Opening `<a>` tag for the Payments tab on the Tickets Settings. %2$s: Closing `</a>` tag. %3$s: Link to knowledgebase article.
+			esc_html__( 'In order to start selling with Tickets Commerce, you\'ll need to set up your checkout page. Please configure the setting on %1$sTickets > Settings > Payments%2$s and confirm that the page you have selected has the proper shortcode. %3$s', 'event-tickets' ),
+			'<a href="' . tribe( Plugin_Settings::class )->get_url( [ 'tab' => 'payments' ] ) . '">',
+			'</a>',
 			$notice_link
 		);
 
@@ -103,7 +112,7 @@ class Notices extends tad_DI52_ServiceProvider {
 	 */
 	public function should_render_success_notice() {
 		// If we're not on our own settings page, bail.
-		if ( \Tribe\Tickets\Admin\Settings::$settings_page_id !== tribe_get_request_var( 'page' ) ) {
+		if ( tribe_get_request_var( 'page' ) !== \Tribe\Tickets\Admin\Settings::$settings_page_id ) {
 			return false;
 		}
 
@@ -115,7 +124,7 @@ class Notices extends tad_DI52_ServiceProvider {
 	}
 
 	/**
-	 * Gets the HTML for the notice that is shown when checkout setting is not set.
+	 * Gets the HTML for the notice that is shown when success setting is not set.
 	 *
 	 * @since 5.2.0
 	 *
@@ -128,9 +137,67 @@ class Notices extends tad_DI52_ServiceProvider {
 			esc_html__( 'Learn More', 'event-tickets' )
 		);
 		$notice_header = esc_html__( 'Set up your order success page', 'event-tickets' );
-		$notice_text = sprintf(
-			// translators: %1$s: Link to knowledgebase article.
-			esc_html__( 'In order to start selling with Tickets Commerce, you\'ll need to set up your order success page. Please configure the setting on Settings > Payments and confirm that the page you have selected has the proper shortcode. %1$s', 'event-tickets' ),
+		$notice_text   = sprintf(
+			// translators: %1$s: Opening `<a>` tag for the Payments tab on the Tickets Settings. %2$s: Closing `</a>` tag.  %3$s: Link to knowledgebase article.
+			esc_html__( 'In order to start selling with Tickets Commerce, you\'ll need to set up your order success page. Please configure the setting on %1$sTickets > Settings > Payments%2$s and confirm that the page you have selected has the proper shortcode. %3$s', 'event-tickets' ),
+			'<a href="' . tribe( Plugin_Settings::class )->get_url( [ 'tab' => 'payments' ] ) . '">',
+			'</a>',
+			$notice_link
+		);
+
+		return sprintf(
+			'<p><strong>%1$s</strong></p><p>%2$s</p>',
+			$notice_header,
+			$notice_text
+		);
+	}
+
+	/**
+	 * Display a notice when Tickets Commerce is enabled, and the site is not using pretty permalinks.
+	 *
+	 * @since 5.4.1
+	 *
+	 * @return bool Whether or not to render the notice.
+	 */
+	public function should_render_permalinks_notice() {
+		// If the site is using pretty permalinks, bail.
+		if ( '' !== get_option( 'permalink_structure' ) ) {
+			return false;
+		}
+
+		// If we're not on our own settings page, bail.
+		if ( tribe_get_request_var( 'page' ) !== \Tribe\Tickets\Admin\Settings::$settings_page_id ) {
+			return false;
+		}
+
+		// If Tickets Commerce is not enabled, bail.
+		if ( ! tec_tickets_commerce_is_enabled() ) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Gets the HTML for the notice that is shown when permalinks are not set.
+	 *
+	 * @since 5.4.1
+	 *
+	 * @return string Notice HTML.
+	 */
+	public function render_permalinks_notice() {
+		$notice_link = sprintf(
+			'<a href="%1$s" target="_blank" rel="noopener noreferrer">%2$s</a>',
+			esc_url( 'https://evnt.is/tec-tc-permalinks' ),
+			esc_html__( 'Learn More', 'event-tickets' )
+		);
+
+		$notice_header = esc_html__( 'Set up your permalinks to sell with Tickets Commerce', 'event-tickets' );
+		$notice_text   = sprintf(
+			// translators: %3$s: Link to knowledgebase article.
+			esc_html__( 'In order to start selling with Tickets Commerce, you\'ll need to set up your permalinks setting to an option different than "Plain". Please configure the setting on %1$sSettings > Permalinks%2$s and confirm that you are not using plain permalinks. %3$s', 'event-tickets' ),
+			'<a href="' . get_admin_url( null, 'options-permalink.php' ) . '">',
+			'</a>',
 			$notice_link
 		);
 
