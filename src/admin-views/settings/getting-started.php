@@ -14,24 +14,24 @@ $help_text = $etp_enabled
 	: __( 'Thank you for using Event Tickets! We recommend looking through the settings below so that you can fine tune your specific ticketing needs. Here are some resources that can help.', 'event-tickets' );
 
 ?>
-<div class="event-tickets__admin-banner">
+<div class="tec-tickets__admin-banner">
 	<h3><?php echo esc_html__( 'Getting Started With Tickets', 'event-tickets' ); ?></h3>
-	<p class="event-tickets__admin-banner-help-text"><?php echo esc_html__( $help_text ); ?></p>
+	<p class="tec-tickets__admin-banner-help-text"><?php echo esc_html__( $help_text ); ?></p>
 
-	<div class="event-tickets__admin-banner-help-links-wrapper">
-		<div class="event-tickets__admin-banner-links">
+	<div class="tec-tickets__admin-banner-help-links-wrapper">
+		<div class="tec-tickets__admin-banner-links">
 			<h3><?php esc_html_e( 'Beginner Resources', 'event-tickets' ); ?> </h3>
 
-			<ul class="event-tickets__admin-banner-kb-list">
+			<ul class="tec-tickets__admin-banner-kb-list">
 				<?php
 				foreach ( $et_resource_links as $link ) {
-					$new_label = isset( $link['new'] ) ? '<span class="event-tickets__admin-banner-links-link-label--new">' . esc_html( 'New!', 'event-tickets' ) . '</span>' : '';
+					$new_label = isset( $link['new'] ) ? '<span class="tec-tickets__admin-banner-links-link-label--new">' . esc_html( 'New!', 'event-tickets' ) . '</span>' : '';
 					printf( '<li><a href="%s" target="_blank" rel="noopener noreferrer">%s%s</a></li>', esc_url( $link['href'] ), esc_html( $link['label'] ), $new_label );
 				}
 				?>
 			</ul>
 		</div>
-		<div class="event-tickets__admin-banner-links">
+		<div class="tec-tickets__admin-banner-links">
 			<h3>
 				<?php esc_html_e( 'Advanced Plus Features', 'event-tickets' ); ?>
 				<?php
@@ -41,7 +41,7 @@ $help_text = $etp_enabled
 				?>
 			</h3>
 
-			<ul class="event-tickets__admin-banner-kb-list">
+			<ul class="tec-tickets__admin-banner-kb-list">
 				<?php
 				foreach ( $etp_resource_links as $link ) {
 					printf( '<li><a href="%s" target="_blank" rel="noopener noreferrer">%s</a></li>', esc_url( $link['href'] ), esc_html( $link['label'] ) );
