@@ -294,17 +294,25 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 	public function get_tickets_commerce_section_fields() {
 		$fields = [];
 
-		// If no gateway section is selected, show main settings.
-		$plus_link = sprintf(
-			'<a href="https://evnt.is/19zl" target="_blank" rel="noopener noreferrer">%s</a>',
-			esc_html__( 'Event Tickets Plus', 'event-tickets' )
-		);
+		// Show settings description
+		$plus_messages = [
+			esc_html_x( 'Tickets Commerce provides a simple and flexible ecommerce checkout for purchasing tickets. Just choose your payment gateway and configure checkout options and you\'re all set.', 'about Tickets Commerce', 'event-tickets' ),
+		];
 
-		$plus_message = sprintf(
-		// Translators: %1$s: The Event Tickets Plus link.
-			esc_html_x( 'Tickets Commerce provides a simple and flexible ecommerce checkout for purchasing tickets. Just choose your payment gateway and configure checkout options and you\'re all set.  If you need more advanced features like custom attendee information, QR code check in, and stock sharing between tickets, take a look at %1$s for these features and more.', 'about Tickets Commerce', 'event-tickets' ),
-			$plus_link
-		);
+		// Promote Event Tickets Plus if not installed.
+		if ( ! class_exists( 'Tribe__Tickets_Plus__Main' ) ) {
+			$plus_link = sprintf(
+				'<a href="https://evnt.is/19zl" target="_blank" rel="noopener noreferrer">%s</a>',
+				esc_html__( 'Event Tickets Plus', 'event-tickets' )
+			);
+
+			$plus_messages[] = sprintf(
+				// Translators: %1$s: The Event Tickets Plus link.
+				esc_html_x( 'If you need more advanced features like custom attendee information, QR code check in, and stock sharing between tickets, take a look at %1$s for these features and more.', 'about Event Tickets Plus', 'event-tickets' ),
+				$plus_link
+			);
+		}
+		$plus_message = implode( ' ', $plus_messages );
 
 		$is_tickets_commerce_enabled = tec_tickets_commerce_is_enabled();
 
