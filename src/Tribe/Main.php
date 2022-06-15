@@ -8,7 +8,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '5.4.1';
+	const VERSION = '5.6.0-beta3.2';
 
 	/**
 	 * Used to store the version history.
@@ -43,7 +43,7 @@ class Tribe__Tickets__Main {
 	*
 	* @since 4.10
 	*/
-	protected $min_tec_version = '5.15.0-dev';
+	protected $min_tec_version = '6.0.0-dev';
 
 	/**
 	 * Name of the provider
@@ -1033,7 +1033,7 @@ class Tribe__Tickets__Main {
 	 * are explicitly output
 	 */
 	public function embed_head() {
-		$css_path = Tribe__Template_Factory::getMinFile( $this->plugin_url . 'src/resources/css/tickets-embed.css', true );
+		$css_path = Tribe__Assets::maybe_get_min_file( $this->plugin_url . 'src/resources/css/tickets-embed.css' );
 		$css_path = add_query_arg( 'ver', self::VERSION, $css_path );
 		?>
 		<link rel="stylesheet" id="tribe-tickets-embed-css" href="<?php echo esc_url( $css_path ); ?>" type="text/css" media="all">
