@@ -1408,7 +1408,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$attendee_data['total_found'] = $repository->found();
 			}
 
-			$attendee_data['attendees'] = self::get_attendees_from_modules( $attendee_posts, $post_id );
+			$attendees = self::get_attendees_from_modules( $attendee_posts, $post_id );
+
+			// Sorting for non post-fields.
+			if ( ! empty( $args['orderby'] ) ) {
+				$order     = $args['order'] ?? 'ASC';
+				$attendees = wp_list_sort( $attendees, $args['orderby'], $order );
+			}
+
+			$attendee_data['attendees'] = $attendees;
 
 			return $attendee_data;
 		}
@@ -1474,6 +1482,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			// Limit results per page.
 			if ( ! empty( $args['per_page'] ) ) {
 				$repository->per_page( absint( $args['per_page'] ) );
+			}
+
+			if ( ! empty( $args['orderby'] ) ) {
+				$repository->order_by( strval( $args['orderby'] ) );
+			}
+
+			if ( ! empty( $args['order'] ) ) {
+				$repository->order( strval( $args['order'] ) );
 			}
 		}
 
