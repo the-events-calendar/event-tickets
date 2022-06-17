@@ -693,12 +693,6 @@ class Tribe__Tickets__Main {
 			trailingslashit( get_stylesheet_directory() ) . 'tribe/tickets',
 		];
 
-		$plugins[ __( 'Event Tickets - Legacy', 'event-tickets' ) ] = [
-			self::VERSION,
-			$this->plugin_path . 'src/views',
-			trailingslashit( get_stylesheet_directory() ) . 'tribe-events/tickets',
-		];
-
 		return $plugins;
 	}
 
@@ -1045,36 +1039,6 @@ class Tribe__Tickets__Main {
 			$updater->do_updates();
 		}
 	}
-
-		/**
-		* Hooked to admin_notices, this error is thrown when Event Tickets is run alongside a version of
-		* Event Tickets Plus that is too old
-		*
-		* @deprecated 4.10
-		*
-		*/
-		public function et_plus_compatibility_notice() {
-			_deprecated_function( __METHOD__, '4.10', '' );
-
-			$active_plugins = get_option( 'active_plugins' );
-
-			$plugin_short_path = null;
-
-			foreach ( $active_plugins as $plugin ) {
-				if ( false !== strstr( $plugin, 'event-tickets-plus.php' ) ) {
-					$plugin_short_path = $plugin;
-					break;
-				}
-			}
-
-			$upgrade_path = 'https://theeventscalendar.com/knowledgebase/manual-updates/';
-
-			$output = '<div class="error">';
-			$output .= '<p>' . sprintf( esc_html__( 'When Event Tickets and Event Tickets Plus are both activated, Event Tickets Plus must be running version %1$s or greater. Please %2$smanually update now%3$s.', 'event-tickets' ), preg_replace( '/^(\d\.[\d]+).*/', '$1', self::VERSION ), '<a href="' . esc_url( $upgrade_path ) . '" target="_blank">', '</a>' ) . '</p>';
-			$output .= '</div>';
-
-			echo $output;
-		}
 
 	/**
 	 * Returns the autoloader singleton instance to use in a context-aware manner.
