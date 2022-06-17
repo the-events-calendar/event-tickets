@@ -265,8 +265,8 @@ class Settings {
 				'default'         => 'before',
 				'validation_type' => 'options',
 				'options'         => [
-					'prefix'  => 'Before',
-					'postfix' => 'After',
+					'prefix'  => esc_html__( 'Before', 'event-tickets' ),
+					'postfix' => esc_html__( 'After', 'event-tickets' ),
 				],
 			],
 			static::$option_stock_handling                  => [
