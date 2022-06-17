@@ -191,6 +191,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [5.4.2] TBD =
 
 * Fix - Remove duplicate `Total Event Capacity` wording when ET+ is activated. [ET-1535]
+* Fix - When using ET as a standalone plugin, the SelectWoo asset was not being properly loaded. [ET-1531]
 
 = [5.4.1] 2022-06-08 =
 
