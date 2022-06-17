@@ -33,7 +33,11 @@ class Assets extends tad_DI52_ServiceProvider {
 			$tickets_main,
 			'tribe-tickets-admin-commerce-settings',
 			'admin/tickets-commerce-settings.js',
-			[ 'jquery' ],
+			[ 
+				'jquery',
+				'tribe-dropdowns',
+				'tribe-select2',
+			],
 			'admin_enqueue_scripts'
 		);
 
