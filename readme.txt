@@ -191,6 +191,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [5.4.2] TBD =
 
 * Fix - Remove duplicate `Total Event Capacity` wording when ET+ is activated. [ET-1535]
+* Enhancement - Unify CSS class names for many admin elements. [ET-1536]
 
 = [5.4.1] 2022-06-08 =
 
