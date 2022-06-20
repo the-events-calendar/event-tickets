@@ -262,7 +262,7 @@ class Settings {
 				'type'            => 'dropdown',
 				'label'           => esc_html__( 'Currency Position', 'event-tickets' ),
 				'tooltip'         => esc_html__( 'The position of the currency symbol as it relates to the ticket values.', 'event-tickets' ),
-				'default'         => 'before',
+				'default'         => 'prefix',
 				'validation_type' => 'options',
 				'options'         => [
 					'prefix'  => esc_html__( 'Before', 'event-tickets' ),
