@@ -192,6 +192,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 * Fix - Remove duplicate `Total Event Capacity` wording when ET+ is activated. [ET-1535]
 * Enhancement - Sorting support added on Attendee Report page for Ticket, Security Code, and Status columns. [ET-1526]
+* Enhancement - Sorting support added on Tickets Commerce Order report page Order, Email, Date, Status, and Total columns. [ET-1527]
 * Enhancement - Unify CSS class names for many admin elements. [ET-1536]
 
 = [5.4.1] 2022-06-08 =
