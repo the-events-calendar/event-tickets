@@ -195,6 +195,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Enhancement - Unify CSS class names for many admin elements. [ET-1536]
 * Enhancement - Add a `Currency Position` setting for Tickets Commerce. [ET-1534]
 * Fix - Some CSS issues within the tickets block in the block editor. [ET-1530]
+* Fix - Allow price block to override the string that is dynamically created from ticket values. [ET-1524]
 
 = [5.4.1] 2022-06-08 =
 
