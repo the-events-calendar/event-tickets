@@ -2,6 +2,8 @@
 
 namespace TEC\Tickets\Commerce\Utils;
 
+use TEC\Tickets\Commerce\Settings;
+
 /**
  * Class Currency Utils
  *
@@ -286,20 +288,7 @@ class Currency {
 	 *
 	 */
 	public static function get_currency_symbol_position( $code ) {
-		$map = static::get_default_currency_map();
-		if ( ! isset( $map[ $code ]['position'] ) ) {
-			$currency_position = 'prefix';
-		} else {
-			$currency_position = $map[ $code ]['position'];
-		}
-
-		if (
-			'prefix' === $currency_position
-			&& 'EUR' === $code
-			&& 0 !== strpos( get_locale(), 'en_' ) // site language does not start with 'en_'
-		) {
-			$currency_position = 'postfix';
-		}
+		$currency_position = tribe_get_option( Settings::$option_currency_position, 'prefix' );
 
 		/**
 		 * Whether the currency position should be 'prefix' or 'postfix' (i.e. suffix).

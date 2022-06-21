@@ -529,6 +529,10 @@ class Tribe__Tickets__Commerce__Currency {
 			return 'before' === $position ? 'prefix' : 'postfix';
 		}
 
+		if ( 'TEC\Tickets\Commerce\Module' === $provider && function_exists( 'tec_tickets_commerce_currency_position' ) ) {
+			return tec_tickets_commerce_currency_position();
+		}
+
 		return $this->get_currency_symbol_position( $object_id );
 	}
 

@@ -194,6 +194,11 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Enhancement - Sorting support added on Attendee Report page for Ticket, Security Code, and Status columns. [ET-1526]
 * Enhancement - Sorting support added on Tickets Commerce Order report page Order, Email, Date, Status, and Total columns. [ET-1527]
 * Enhancement - Unify CSS class names for many admin elements. [ET-1536]
+* Fix - When using Event Tickets as a standalone plugin, the SelectWoo asset was not being properly loaded. [ET-1531]
+* Enhancement - Add a `Currency Position` setting for Tickets Commerce. [ET-1534]
+* Fix - Some CSS issues within the tickets block in the block editor. [ET-1530]
+* Fix - The wrong `Ticket #` was being sent in attendee emails for Ticket Commerce tickets. [ET-1537]
+* Fix - Allow price block to override the string that is dynamically created from ticket values. [ET-1524]
 
 = [5.4.1] 2022-06-08 =
 
