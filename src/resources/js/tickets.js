@@ -821,6 +821,20 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		}
 	} );
 
+	/**
+	 * Disable creating tickets/rsvps if recurrence rules are created.
+	 */
+	$document.on( 'tribe-recurrence-active', function( event ) {
+		$( '.ticket_panel button' ).prop( 'disabled', true );
+	} );
+
+	/**
+	 * Enable creating tickets/rsvps if recurrence rules are removed.
+	 */
+	$document.on( 'tribe-recurrence-inactive', function( event ) {
+		$( '.ticket_panel button' ).prop( 'disabled', false );
+	} );
+
 	/* Remove header image action */
 	$document.on( 'click', '#tribe_ticket_header_remove', function( e ) {
 		e.preventDefault();

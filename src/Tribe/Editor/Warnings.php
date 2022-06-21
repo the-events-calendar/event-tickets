@@ -94,7 +94,15 @@ class Warnings {
 	 * @return string The Recurring Event warning message.
 	 */
 	public function get_recurring_event_warning_message() {
-		return __( 'This is a recurring event. If you add tickets, they will only show up on first event in the recurrence series. Please carefully configure your recurring events.', 'event-tickets' );
+		return sprintf(
+				__( 'Tickets and RSVPs are not yet supported for events with Recurrence Patterns. %1$s%2$s Read about our plans for future features %3$s', 'event-tickets' ),
+				'<br />',
+				'<a className="tribe-editor__not-supported-message-link"
+					href="https://evnt.is/1b7a"
+					target="_blank"
+					rel="noopener noreferrer" >',
+				'</a>'
+		);
 	}
 
 	/**
