@@ -24,7 +24,6 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 * @since TBD
 	 */
 	public function add_actions() {
-		add_action( 'do_meta_boxes', [ $this, 'remove_tickets_metabox_for_events_in_series' ], 0, 3 );
 	}
 
 	/**
@@ -39,25 +38,6 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 */
 	public function disallow_attaching_tickets_to_series( $post_types ) {
 		return array_merge( $post_types, Compatibility::get_restricted_post_types() );
-	}
-
-	/**
-	 * Removes the tickets metabox if the current event is part of a Series.
-	 *
-	 * @since TBD
-	 *
-	 * @param string                $post_type Post type of the post on Edit Post screen, 'link' on Edit Link screen,
-	 *                                         'dashboard' on Dashboard screen.
-	 * @param string                $context   Meta box context. Possible values include 'normal', 'advanced', 'side'.
-	 * @param WP_Post|object|string $post      Post object on Edit Post screen, link object on Edit Link screen,
-	 *                                         an empty string on Dashboard screen.
-	 */
-	public function remove_tickets_metabox_for_events_in_series( $post_type, $context, $post ) {
-		if ( ! $post instanceof \WP_Post || Compatibility::object_can_have_tickets( $post ) ) {
-			return;
-		}
-
-		remove_meta_box( 'tribetickets', false, 'normal' );
 	}
 
 	/**
