@@ -234,7 +234,7 @@ class Settings {
 		$success_shortcode  = Shortcodes\Success_Shortcode::get_wp_slug();
 		$checkout_shortcode = Shortcodes\Checkout_Shortcode::get_wp_slug();
 
-		$paypal_currency_code_options = tribe( Currency::class )->get_currency_code_options();
+		$tc_currency_options = tribe( Currency::class )->get_currency_code_options();
 
 		$current_user = get_user_by( 'id', get_current_user_id() );
 
@@ -290,7 +290,7 @@ class Settings {
 				'tooltip'         => esc_html__( 'The currency that will be used for Tickets Commerce transactions.', 'event-tickets' ),
 				'default'         => 'USD',
 				'validation_type' => 'options',
-				'options'         => $paypal_currency_code_options,
+				'options'         => $tc_currency_options,
 			],
 			static::$option_currency_position               => [
 				'type'            => 'dropdown',
