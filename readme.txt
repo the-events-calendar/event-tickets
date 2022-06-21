@@ -191,6 +191,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [5.4.2] TBD =
 
 * Fix - Remove duplicate `Total Event Capacity` wording when ET+ is activated. [ET-1535]
+* Tweak - Added helpful heading labels for Tickets Commerce Payments settings tab fields. [ET-1529]
 * Enhancement - Sorting support added on Tickets Commerce Order report page Order, Email, Date, Status, and Total columns. [ET-1527]
 * Enhancement - Unify CSS class names for many admin elements. [ET-1536]
 * Fix - When using Event Tickets as a standalone plugin, the SelectWoo asset was not being properly loaded. [ET-1531]
