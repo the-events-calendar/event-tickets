@@ -54,6 +54,15 @@ class Settings {
 	public static $option_currency_code = 'tickets-commerce-currency-code';
 
 	/**
+	 * The option key for currency position.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $option_currency_position = 'tickets-commerce-currency-position';
+
+	/**
 	 * The option key for stock handling.
 	 *
 	 * @since 5.1.6
@@ -282,6 +291,17 @@ class Settings {
 				'default'         => 'USD',
 				'validation_type' => 'options',
 				'options'         => $paypal_currency_code_options,
+			],
+      static::$option_currency_position               => [
+				'type'            => 'dropdown',
+				'label'           => esc_html__( 'Currency Position', 'event-tickets' ),
+				'tooltip'         => esc_html__( 'The position of the currency symbol as it relates to the ticket values.', 'event-tickets' ),
+				'default'         => 'prefix',
+				'validation_type' => 'options',
+				'options'         => [
+					'prefix'  => esc_html__( 'Before', 'event-tickets' ),
+					'postfix' => esc_html__( 'After', 'event-tickets' ),
+				],
 			],
 			'tickets-commerce-settings-page-heading'        => [
 				'type' => 'html',

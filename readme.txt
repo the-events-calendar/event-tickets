@@ -194,6 +194,8 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Tweak - Added helpful heading labels for Tickets Commerce Payments settings tab fields. [ET-1529]
 * Enhancement - Sorting support added on Tickets Commerce Order report page Order, Email, Date, Status, and Total columns. [ET-1527]
 * Enhancement - Unify CSS class names for many admin elements. [ET-1536]
+* Enhancement - Add a `Currency Position` setting for Tickets Commerce. [ET-1534]
+* Fix - Some CSS issues within the tickets block in the block editor. [ET-1530]
 
 = [5.4.1] 2022-06-08 =
 
