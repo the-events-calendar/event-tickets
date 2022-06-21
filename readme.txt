@@ -197,6 +197,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Enhancement - Add a `Currency Position` setting for Tickets Commerce. [ET-1534]
 * Fix - Some CSS issues within the tickets block in the block editor. [ET-1530]
 * Fix - The wrong `Ticket #` was being sent in attendee emails for Ticket Commerce tickets. [ET-1537]
+* Fix - Allow price block to override the string that is dynamically created from ticket values. [ET-1524]
 
 = [5.4.1] 2022-06-08 =
 
