@@ -54,10 +54,11 @@ class Tickets extends PureComponent {
 	}
 
 	renderBlockNotSupported() {
+		const { clientId, } = this.props;
 		return (
 			<div className="tribe-editor__not-supported-message">
 				<p className="tribe-editor__not-supported-message-text">
-					{__( 'Tickets and RSVPs are not yet supported for events with Recurrence Patterns.', 'event-tickets' )}
+					{__( 'Tickets are not yet supported for events with Recurrence Patterns.', 'event-tickets' )}
 					<br/>
 					<a
 						className="tribe-editor__not-supported-message-link"
@@ -67,6 +68,8 @@ class Tickets extends PureComponent {
 					>
 						{__( 'Read about our plans for future features.', 'event-tickets' )}
 					</a>
+					<br/>
+					<a href="#" onClick={() => wp.data.dispatch('core/block-editor').removeBlock(clientId)}>{__( 'Remove block', 'event-tickets' )}</a>
 				</p>
 			</div>
 		);
