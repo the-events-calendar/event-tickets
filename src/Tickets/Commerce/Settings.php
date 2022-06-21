@@ -292,7 +292,7 @@ class Settings {
 				'validation_type' => 'options',
 				'options'         => $paypal_currency_code_options,
 			],
-      static::$option_currency_position               => [
+			static::$option_currency_position               => [
 				'type'            => 'dropdown',
 				'label'           => esc_html__( 'Currency Position', 'event-tickets' ),
 				'tooltip'         => esc_html__( 'The position of the currency symbol as it relates to the ticket values.', 'event-tickets' ),
