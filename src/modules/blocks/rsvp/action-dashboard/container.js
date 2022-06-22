@@ -15,7 +15,7 @@ import { select, dispatch as wpDispatch } from '@wordpress/data';
 import RSVPActionDashboard from './template';
 import { actions, selectors, thunks } from '@moderntribe/tickets/data/blocks/rsvp';
 import { withStore } from '@moderntribe/common/hoc';
-import { eventHasRecurrenceRules } from '@moderntribe/common/utils/recurrence';
+import { hasRecurrenceRules } from '@moderntribe/common/utils/recurrence';
 
 const getIsConfirmDisabled = ( state ) => (
 	! selectors.getRSVPTempTitle( state ) ||
@@ -78,7 +78,7 @@ const onConfirmClick = ( state, dispatch ) => () => {
 
 const mapStateToProps = ( state ) => ( {
 	created: selectors.getRSVPCreated( state ),
-	hasRecurrenceRules: eventHasRecurrenceRules( state ),
+	hasRecurrenceRules: hasRecurrenceRules( state ),
 	isCancelDisabled: selectors.getRSVPIsLoading( state ),
 	isConfirmDisabled: getIsConfirmDisabled( state ),
 	isLoading: selectors.getRSVPIsLoading( state ),

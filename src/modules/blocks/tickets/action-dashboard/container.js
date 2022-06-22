@@ -16,7 +16,7 @@ import { createBlock } from '@wordpress/blocks';
 import Template from './template';
 import { withStore } from '@moderntribe/common/hoc';
 import { selectors, constants } from '@moderntribe/tickets/data/blocks/ticket';
-import { eventHasRecurrenceRules } from '@moderntribe/common/utils/recurrence';
+import { hasRecurrenceRules } from '@moderntribe/common/utils/recurrence';
 
 const mapStateToProps = ( state, ownProps ) => {
 	const provider = selectors.getTicketsProvider( state );
@@ -25,7 +25,7 @@ const mapStateToProps = ( state, ownProps ) => {
 	return {
 		hasCreatedTickets: selectors.hasCreatedTickets( state ),
 		hasOrdersPage: Boolean( page ),
-		hasRecurrenceRules: eventHasRecurrenceRules( state ),
+		hasRecurrenceRules: hasRecurrenceRules( state ),
 		onConfirmClick: () => { // eslint-disable-line wpcalypso/redux-no-bound-selectors
 			const { clientId } = ownProps;
 			const { getBlockCount } = select( 'core/editor' );
