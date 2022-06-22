@@ -32,7 +32,7 @@ class Tribe__Tickets__Editor__Compatibility__Tickets {
 			return $content;
 		}
 
-		// If editing via Elementor, return.
+		// If edited via Elementor, return.
 		if ( class_exists( '\Elementor\Plugin' ) && \Elementor\Plugin::$instance->documents->get( get_the_ID() )->is_built_with_elementor() ) {
 			return $content;
 		}
