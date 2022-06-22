@@ -32,6 +32,11 @@ class Tribe__Tickets__Editor__Compatibility__Tickets {
 			return $content;
 		}
 
+		// If editing via Elementor, return.
+		if ( class_exists( '\Elementor\Plugin' ) && \Elementor\Plugin::$instance->editor->is_edit_mode() ) {
+			return $content;
+		}
+
 		/** @var Tribe__Context $context */
 		$context = tribe( 'context' );
 
