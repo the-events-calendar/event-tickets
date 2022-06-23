@@ -190,6 +190,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.4.2] TBD =
 
+* Fix - Fixed changing of Shared Capacity stock when a single ticket stock is updated. [ETP-800]
 * Fix - Cannot edit events with Elementor on The Events Calendar with Event Tickets activated. [ET-1538]
 * Fix - Remove duplicate `Total Event Capacity` wording when ET+ is activated. [ET-1535]
 * Tweak - Added helpful heading labels for Tickets Commerce Payments settings tab fields. [ET-1529]
