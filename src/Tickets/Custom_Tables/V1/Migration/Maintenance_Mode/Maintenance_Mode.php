@@ -58,8 +58,8 @@ class Maintenance_Mode {
 	 *
 	 * @since TBD
 	 *
-	 * @param bool   $done_state    Indicates whether the template has been rendered.
-	 * @param string $template_name The template being rendered.
+	 * @param mixed $done_state    Indicates whether the template has been rendered.
+	 * @param mixed $template_name The template being rendered.
 	 *
 	 * @return bool|null The filtered value that will indicate whether the template has rendered or not.
 	 */

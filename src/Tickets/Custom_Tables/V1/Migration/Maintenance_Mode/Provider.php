@@ -116,12 +116,12 @@ class Provider extends tad_DI52_ServiceProvider {
 	 *
 	 * @since TBD
 	 *
-	 * @param mixed   $done_state    Indicates whether the template has been rendered.
-	 * @param string $template_name The template being rendered.
+	 * @param mixed $done_state    Indicates whether the template has been rendered.
+	 * @param mixed $template_name The template being rendered.
 	 *
 	 * @return bool The filtered value that will indicate whether the template has rendered or not.
 	 */
-	public function filter_template_done_state_for_tickets_and_rsvps( $done_state, string $template_name ): ?bool {
+	public function filter_template_done_state_for_tickets_and_rsvps( $done_state, $template_name ): ?bool {
 		return $this->container->make( Maintenance_Mode::class )->filter_template_done_state_for_tickets_and_rsvps( $done_state, $template_name );
 	}
 }
