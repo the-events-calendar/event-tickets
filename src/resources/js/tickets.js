@@ -21,6 +21,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	var $body = $( 'html, body' );
 	var $document = $( document );
 	var $tribe_tickets = $( document.getElementById( 'tribetickets' ) );
+	const $recurrence_button = $( '#tribe-add-recurrence' );
+	const $ticket_buttons = $( '.ticket_panel button' );
 
 	// Bail if we don't have what we need
 	if ( 0 === $tribe_tickets.length ) {
@@ -825,15 +827,34 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	 * Disable creating tickets/rsvps if recurrence rules are created.
 	 */
 	$document.on( 'tribe-recurrence-active', function( event ) {
-		$( '.ticket_panel button' ).prop( 'disabled', true );
+		$ticket_buttons.hide();
+		$ticket_buttons.parent().find('.ticket-editor-notice').show();
 	} );
 
 	/**
 	 * Enable creating tickets/rsvps if recurrence rules are removed.
 	 */
 	$document.on( 'tribe-recurrence-inactive', function( event ) {
-		$( '.ticket_panel button' ).prop( 'disabled', false );
+		$ticket_buttons.show();
+		$ticket_buttons.parent().find('.ticket-editor-notice').hide();
 	} );
+
+	/**
+	 * Disable creating recurrence rules if tickets are created.
+	 */
+	$document.on( 'tribe-tickets-active', function( event ) {
+		$recurrence_button.hide();
+		$recurrence_button.siblings('.icaltec-recurrence-not-supported').show();
+	} );
+
+	/**
+	 * Enable creating recurrence rules if tickets are removed.
+	 */
+	$document.on( 'tribe-tickets-inactive', function( event ) {
+		$recurrence_button.show();
+		$recurrence_button.siblings('.icaltec-recurrence-not-supported').hide();
+	} );
+
 
 	/* Remove header image action */
 	$document.on( 'click', '#tribe_ticket_header_remove', function( e ) {
