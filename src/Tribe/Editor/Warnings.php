@@ -38,7 +38,12 @@ class Warnings {
 			return;
 		}
 
-		if ( \Tribe__Events__Main::POSTTYPE != get_post_type( $post_id ) ) {
+		if ( \Tribe__Events__Main::POSTTYPE != get_post_type( $post_id ) && ! tribe_is_frontend() ) {
+			return;
+		}
+
+		if ( tribe_is_frontend() ) {
+			$this->render_notice( $this->get_recurring_event_warning_message() );
 			return;
 		}
 
