@@ -1085,9 +1085,9 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 */
 	public function get_sortable_columns() {
 		return [
-			'ticket'        => 'ticket',
-			'security'      => 'security',
-			'status'        => 'order_status_label'
+			'ticket'   => 'id',
+			'security' => 'security_code',
+			'status'   => 'status'
 		];
 	}
 }

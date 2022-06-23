@@ -1408,15 +1408,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$attendee_data['total_found'] = $repository->found();
 			}
 
-			$attendees = self::get_attendees_from_modules( $attendee_posts, $post_id );
-
-			// Sorting for non post-fields.
-			if ( ! empty( $args['orderby'] ) ) {
-				$order     = $args['order'] ?? 'ASC';
-				$attendees = wp_list_sort( $attendees, $args['orderby'], $order );
-			}
-
-			$attendee_data['attendees'] = $attendees;
+			$attendee_data['attendees'] = self::get_attendees_from_modules( $attendee_posts, $post_id );
 
 			return $attendee_data;
 		}
