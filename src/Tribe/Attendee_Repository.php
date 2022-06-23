@@ -1307,4 +1307,95 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 
 		$this->attendee_provider->send_tickets_email_for_attendees( $attendee_tickets, $send_ticket_email_args );
 	}
+
+	/**
+	 * Overrides the base method to correctly handle the `order_by` clauses before.
+	 *
+	 * The Event repository handles ordering with some non trivial logic and some query filtering.
+	 * To avoid the "stacking" of `orderby` clauses and filters the query filters are added at the very last moment,
+	 * right before building the query.
+	 *
+	 * @since TBD
+	 *
+	 * @return WP_Query The built query object.
+	 */
+	protected function build_query_internally() {
+		$order_by = Arr::get_in_any( [ $this->query_args, $this->default_args ], 'orderby' );
+		unset( $this->query_args['orderby'], $this->default_args['order_by'] );
+
+		$this->handle_order_by( $order_by );
+
+		return parent::build_query_internally();
+	}
+
+	/**
+	 * Handles the `order_by` clauses for events
+	 *
+	 * @since TBD
+	 *
+	 * @param string $order_by The key used to order events; e.g. `event_date` to order events by start date.
+	 */
+	public function handle_order_by( $order_by ) {
+		$check_orderby = $order_by;
+
+		if ( ! is_array( $check_orderby ) ) {
+			$check_orderby = explode( ' ', $check_orderby );
+		}
+
+		$timestamp_key = 'TIMESTAMP(mt1.meta_value)';
+
+		$after = false;
+		$loop  = 0;
+
+		foreach ( $check_orderby as $key => $value ) {
+			$order_by      = is_numeric( $key ) ? $value : $key;
+			$default_order = Arr::get_in_any( [ $this->query_args, $this->default_args ], 'order', 'ASC' );
+			$order         = is_numeric( $key ) ? $default_order : $value;
+
+			// Let the first applied ORDER BY clause override the existing ones, then stack the ORDER BY clauses.
+			$override = $loop === 0;
+
+			switch ( $order_by ) {
+				case 'security_code':
+					$this->order_by_security_code( $order, $after, $override );
+					break;
+				case 'status':
+					$this->order_by_status( $order, $after, $override );
+					break;
+				case $timestamp_key:
+					$this->filter_query->orderby( [ $timestamp_key => $default_order ], null, null, $after );
+					break;
+				case '__none':
+					unset( $this->query_args['orderby'] );
+					unset( $this->query_args['order'] );
+					break;
+				default:
+					$after = $after || 1 === $loop;
+					if ( empty( $this->query_args['orderby'] ) ) {
+						// In some versions of WP, [ $order_by, $order ] doesn't work as expected. Using explict value setting instead.
+						$this->query_args['orderby'] = $order_by;
+						$this->query_args['order']   = $order;
+					} else {
+						$add = [ $order_by => $order ];
+						// Make sure all `orderby` clauses have the shape `<orderby> => <order>`.
+						$normalized = [];
+
+						if ( ! is_array( $this->query_args['orderby'] ) ) {
+							$this->query_args['orderby'] = [
+								$this->query_args['orderby'] => $this->query_args['order']
+							];
+						}
+
+						foreach ( $this->query_args['orderby'] as $k => $v ) {
+							$the_order_by                = is_numeric( $k ) ? $v : $k;
+							$the_order                   = is_numeric( $k ) ? $default_order : $v;
+							$normalized[ $the_order_by ] = $the_order;
+						}
+						$this->query_args['orderby'] = $normalized;
+						$this->query_args['orderby'] = array_merge( $this->query_args['orderby'], $add );
+					}
+					break;
+			}
+		}
+	}
 }
