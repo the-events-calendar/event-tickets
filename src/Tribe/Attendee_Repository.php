@@ -1359,9 +1359,9 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 				case 'security_code':
 					$this->order_by_security_code( $order, $after, $override );
 					break;
-				case 'status':
-					$this->order_by_status( $order, $after, $override );
-					break;
+//				case 'status':
+//					$this->order_by_status( $order, $after, $override );
+//					break;
 				case $timestamp_key:
 					$this->filter_query->orderby( [ $timestamp_key => $default_order ], null, null, $after );
 					break;
@@ -1397,5 +1397,13 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 					break;
 			}
 		}
+	}
+
+	protected function order_by_security_code( $order = null, $after = false, $override = true ) {
+		
+	}
+
+	protected function order_by_status( $order = null, $after = false, $override = true ) {
+
 	}
 }
