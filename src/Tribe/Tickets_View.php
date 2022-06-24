@@ -1107,7 +1107,20 @@ class Tribe__Tickets__Tickets_View {
 		tribe_asset_enqueue_group( 'tribe-tickets-block-assets' );
 
 		if ( tribe_tickets_new_views_is_enabled() ) {
-			$before_content = '';
+			 ob_start();
+
+			/**
+			 * Allow for the addition of content (namely the "Who's Attending?" list) above the ticket form.
+			 *
+			 * @since TBD
+			 */
+			do_action( 'tribe_tickets_before_front_end_ticket_form' );
+
+			$before_content = (string) ob_get_clean();
+			if ( $echo ) {
+				echo $before_content;
+				$before_content = '';
+			}
 
 			/**
 			 * A flag we can set via filter, e.g. at the end of this method, to ensure this template only shows once.
@@ -1193,7 +1206,7 @@ class Tribe__Tickets__Tickets_View {
 		$tickets        = $blocks_rsvp->get_tickets( $post_id );
 		$active_tickets = $blocks_rsvp->get_active_tickets( $tickets );
 		$past_tickets   = $blocks_rsvp->get_all_tickets_past( $tickets );
-		
+
 		if( class_exists( 'Tribe__Tickets_Plus__Main' ) && ! empty( $include_tickets ) ) {
 			$tickets        = Tribe__Tickets_Plus__Tickets::filter_tickets_by_ids( $tickets, $include_tickets );
 			$active_tickets = Tribe__Tickets_Plus__Tickets::filter_tickets_by_ids( $active_tickets, $include_tickets );

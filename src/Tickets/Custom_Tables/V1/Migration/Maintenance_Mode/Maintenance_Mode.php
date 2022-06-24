@@ -27,7 +27,7 @@ class Maintenance_Mode {
 	 * @return void The method does not return any value and will echo a mesage to the page.
 	 */
 	public function include_migration_in_progress_tickets_and_rsvp_message() {
-
+		// Include once, so we don't write two messages.
 		include_once TEC_ET_CUSTOM_TABLES_V1_ROOT . '/admin-views/migration/maintenance-mode/tickets-and-rsvps.php';
 	}
 
