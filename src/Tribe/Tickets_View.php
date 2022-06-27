@@ -1135,7 +1135,7 @@ class Tribe__Tickets__Tickets_View {
 
 			// Output order links / view link if we haven't already (for RSVPs).
 			if ( ! $already_rendered ) {
-				$before_content = $template->template( 'blocks/attendees/order-links', [], $echo );
+				$before_content .= $template->template( 'blocks/attendees/order-links', [], $echo );
 
 				if ( empty( $before_content ) ) {
 					$before_content = $template->template( 'blocks/attendees/view-link', [], $echo );
