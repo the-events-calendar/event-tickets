@@ -1402,30 +1402,30 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	protected function order_by_security_code( $order = null, $after = false, $override = true ) {
 		global $wpdb;
 
-		$meta_alias = 'security_code';
-		$meta_key   = $this->security_code_keys();
-
+		$meta_alias     = 'security_code';
+		$meta_keys_in   = $this->prepare_interval( $this->security_code_keys() );
 		$postmeta_table = "orderby_{$meta_alias}_meta";
 		$filter_id      = 'order_by_security_code';
 
-//		$this->filter_query->join(
-//			"LEFT JOIN {$wpdb->postmeta} AS {$postmeta_table}
-//				ON {$postmeta_table}.post_id = {$wpdb->posts}.ID
-//			",
-//			$filter_id,
-//			true
-//		);
-
-		$this->filter_query->where(
-			"meta_in_1.meta_key IN ( _tribe_rsvp_security_code ) "
+		$this->filter_query->join(
+			"
+			LEFT JOIN {$wpdb->postmeta} AS {$postmeta_table}
+				ON (
+					{$postmeta_table}.post_id = {$wpdb->posts}.ID
+					AND {$postmeta_table}.meta_key IN {$meta_keys_in}
+				)
+			"
+			,
+			$filter_id,
+			true
 		);
 
 		$order = $order === null
 			? Arr::get_in_any( [ $this->query_args, $this->default_args ], 'order', 'ASC' )
 			: $order;
-		$this->filter_query->orderby( [ $meta_alias => $order ], $filter_id, $override, $after );
 
-//		$this->filter_query->fields( 'meta_key' );
+		$this->filter_query->orderby( [ $meta_alias => $order ], $filter_id, true, $after );
+		$this->filter_query->fields( "{$postmeta_table}.meta_value AS {$meta_alias}", $filter_id, $override );
 	}
 
 	protected function order_by_status( $order = null, $after = false, $override = true ) {
