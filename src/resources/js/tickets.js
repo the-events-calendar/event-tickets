@@ -18,11 +18,14 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	'use strict';
 
 	// base elements
-	var $body = $( 'html, body' );
 	var $document = $( document );
 	var $tribe_tickets = $( document.getElementById( 'tribetickets' ) );
-	const $recurrence_button = $( '#tribe-add-recurrence' );
-	const $ticket_buttons = $( '.ticket_panel button' );
+	const recurrence_row_selectors = '.recurrence-row';
+	const recurrence_not_supported_row_selector = '.recurrence-row.tribe-recurrence-not-supported';
+	const recurrence_rule_panel_selector = '.tribe-event-recurrence-rule';
+	const ticket_button_selectors = '#rsvp_form_toggle, #ticket_form_toggle, #settings_form_toggle';
+	const tickets_panel_table_selector = '.tribe-tickets-editor-table-tickets-body';
+	const tickets_panel_form_selector = '#tribe_panel_edit';
 
 	// Bail if we don't have what we need
 	if ( 0 === $tribe_tickets.length ) {
@@ -827,32 +830,32 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	 * Disable creating tickets/rsvps if recurrence rules are created.
 	 */
 	$document.on( 'tribe-recurrence-active', function( event ) {
-		$ticket_buttons.hide();
-		$ticket_buttons.parent().find('.ticket-editor-notice').show();
+		$( ticket_button_selectors ).hide();
+		$( ticket_button_selectors ).parent().find('.ticket-editor-notice').show();
 	} );
 
 	/**
 	 * Enable creating tickets/rsvps if recurrence rules are removed.
 	 */
 	$document.on( 'tribe-recurrence-inactive', function( event ) {
-		$ticket_buttons.show();
-		$ticket_buttons.parent().find('.ticket-editor-notice').hide();
+		$( ticket_button_selectors ).show();
+		$( ticket_button_selectors ).parent().find('.ticket-editor-notice').hide();
 	} );
 
 	/**
 	 * Disable creating recurrence rules if tickets are created.
 	 */
 	$document.on( 'tribe-tickets-active', function( event ) {
-		$recurrence_button.hide();
-		$recurrence_button.siblings('.icaltec-recurrence-not-supported').show();
+		$( recurrence_row_selectors ).hide();
+		$( recurrence_not_supported_row_selector ).css('visibility','visible' ).show();
 	} );
 
 	/**
 	 * Enable creating recurrence rules if tickets are removed.
 	 */
 	$document.on( 'tribe-tickets-inactive', function( event ) {
-		$recurrence_button.show();
-		$recurrence_button.siblings('.icaltec-recurrence-not-supported').hide();
+		$( recurrence_row_selectors ).show();
+		$( recurrence_not_supported_row_selector ).hide();
 	} );
 
 
@@ -863,6 +866,24 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		$( document.getElementById( 'tribe_ticket_header_remove' ) ).hide();
 		$( document.getElementById( 'tribe_tickets_image_preview_filename' ) ).hide().find( '.filename' ).text( '' );
 		$( document.getElementById( 'tribe_ticket_header_image_id' ) ).val( '' );
+	} );
+
+	$document.on( 'after_panel_swap.tickets', function() {
+		$document.trigger( 'tribe-tickets-active' );
+	} );
+
+	$document.on( 'verify.dependency', function() {
+		if ( $( tickets_panel_table_selector ).is( ':visible' ) ) {
+			$document.trigger( 'tribe-tickets-active' );
+		} else {
+			$document.trigger( 'tribe-tickets-inactive' );
+		}
+
+		if ( $( recurrence_rule_panel_selector ).is( ':visible' ) ) {
+			$document.trigger( 'tribe-recurrence-active' );
+		} else {
+			$document.trigger( 'tribe-recurrence-inactive' );
+		}
 	} );
 
 	$( obj.setupPanels );
