@@ -1087,7 +1087,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		return [
 			'ticket'   => 'id',
 			'security' => 'security_code',
-			'status'   => 'status'
+			'check_in' => 'check_in'
 		];
 	}
 }
