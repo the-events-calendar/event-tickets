@@ -544,6 +544,9 @@ class Order_Repository extends Tribe__Repository {
 				case 'gateway':
 					$this->order_by_gateway( $order, $after, $override );
 					break;
+				case 'gateway_id':
+					$this->order_by_gateway_id( $order, $after, $override );
+					break;
 				case '__none':
 					unset( $this->query_args['orderby'] );
 					unset( $this->query_args['order'] );
