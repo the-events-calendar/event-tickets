@@ -577,6 +577,7 @@ class Order_Repository extends Tribe__Repository {
 	 *
 	 * @since TBD
 	 *
+	 * @param string $key        The meta key that is used for the sorting.
 	 * @param string $order      The order direction, either `ASC` or `DESC`; defaults to `null` to use the order
 	 *                           specified in the current query or default arguments.
 	 * @param bool   $after      Whether to append the duration ORDER BY clause to the existing clauses or not;
@@ -585,15 +586,12 @@ class Order_Repository extends Tribe__Repository {
 	 * @param bool   $override   Whether to override existing ORDER BY clauses with this one or not; default to
 	 *                           `true` to override existing ORDER BY clauses.
 	 */
-	protected function order_by_purchaser_email( $order = null, $after = false, $override = true ) {
+	protected function order_by_key( $meta_key, $order = null, $after = false, $override = true ) {
 		global $wpdb;
 
-		$meta_alias = 'purchaser_email';
-		$meta_key   = Order::$purchaser_email_meta_key;
-
+		$meta_alias     = "sorted_by_{$meta_key}";
+		$filter_id      = "order_by_{$meta_alias}";
 		$postmeta_table = "orderby_{$meta_alias}_meta";
-
-		$filter_id = "order_by_{$meta_alias}";
 
 		$this->filter_query->join(
 			$wpdb->prepare(
@@ -615,6 +613,23 @@ class Order_Repository extends Tribe__Repository {
 			: $order;
 		$this->filter_query->orderby( [ $meta_alias => $order ], $filter_id, $override, $after );
 		$this->filter_query->fields( "{$postmeta_table}.meta_value AS {$meta_alias}", $filter_id, $override );
+	}
+
+	/**
+	 * Sets up the query filters to order events by the purchaser email.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $order      The order direction, either `ASC` or `DESC`; defaults to `null` to use the order
+	 *                           specified in the current query or default arguments.
+	 * @param bool   $after      Whether to append the duration ORDER BY clause to the existing clauses or not;
+	 *                           defaults to `false` to prepend the duration clause to the existing ORDER BY
+	 *                           clauses.
+	 * @param bool   $override   Whether to override existing ORDER BY clauses with this one or not; default to
+	 *                           `true` to override existing ORDER BY clauses.
+	 */
+	protected function order_by_purchaser_email( $order = null, $after = false, $override = true ) {
+		$this->order_by_key( Order::$purchaser_email_meta_key, $order, $after, $override );
 	}
 
 	/**
