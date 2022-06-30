@@ -487,4 +487,80 @@ class Order_Repository extends Tribe__Repository {
 		return null;
 	}
 
+	/**
+	 * Overrides the base method to correctly handle the `order_by` clauses before.
+	 *
+	 * @since TBD
+	 *
+	 * @return \WP_Query The built query object.
+	 */
+	protected function build_query_internally() {
+		$order_by = Arr::get_in_any( [ $this->query_args, $this->default_args ], 'orderby', 'event_date' );
+		unset( $this->query_args['orderby'], $this->default_args['order_by'] );
+
+		$this->handle_order_by( $order_by );
+
+		return parent::build_query_internally();
+	}
+
+	/**
+	 * Handles the `order_by` clauses for events
+	 *
+	 * @since TBD
+	 *
+	 * @param string $order_by The key used to order items.
+	 */
+	public function handle_order_by( $order_by ) {
+		$check_orderby = $order_by;
+
+		if ( ! is_array( $check_orderby ) ) {
+			$check_orderby = explode( ' ', $check_orderby );
+		}
+
+		$after = false;
+		$loop  = 0;
+
+		foreach ( $check_orderby as $key => $value ) {
+			$order_by      = is_numeric( $key ) ? $value : $key;
+			$default_order = Arr::get_in_any( [ $this->query_args, $this->default_args ], 'order', 'ASC' );
+			$order         = is_numeric( $key ) ? $default_order : $value;
+
+			// Let the first applied ORDER BY clause override the existing ones, then stack the ORDER BY clauses.
+			$override = $loop === 0;
+
+			switch ( $order_by ) {
+				
+				case '__none':
+					unset( $this->query_args['orderby'] );
+					unset( $this->query_args['order'] );
+					break;
+				default:
+					$after = $after || 1 === $loop;
+					if ( empty( $this->query_args['orderby'] ) ) {
+						// In some versions of WP, [ $order_by, $order ] doesn't work as expected. Using explict value setting instead.
+						$this->query_args['orderby'] = $order_by;
+						$this->query_args['order']   = $order;
+					} else {
+						$add = [ $order_by => $order ];
+						// Make sure all `orderby` clauses have the shape `<orderby> => <order>`.
+						$normalized = [];
+
+						if ( ! is_array( $this->query_args['orderby'] ) ) {
+							$this->query_args['orderby'] = [
+								$this->query_args['orderby'] => $this->query_args['order']
+							];
+						}
+
+						foreach ( $this->query_args['orderby'] as $k => $v ) {
+							$the_order_by                = is_numeric( $k ) ? $v : $k;
+							$the_order                   = is_numeric( $k ) ? $default_order : $v;
+							$normalized[ $the_order_by ] = $the_order;
+						}
+						$this->query_args['orderby'] = $normalized;
+						$this->query_args['orderby'] = array_merge( $this->query_args['orderby'], $add );
+					}
+					break;
+			}
+		}
+	}
 }
