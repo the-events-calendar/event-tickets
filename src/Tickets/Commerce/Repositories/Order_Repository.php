@@ -646,12 +646,9 @@ class Order_Repository extends Tribe__Repository {
 	 *                           `true` to override existing ORDER BY clauses.
 	 */
 	protected function order_by_total_value( $order = null, $after = false, $override = true ) {
-		global $wpdb;
+		$this->order_by_key( Order::$total_value_meta_key, $order, $after, $override );
+	}
 
-		$meta_alias = 'total_value';
-		$meta_key   = Order::$total_value_meta_key;
-
-		$postmeta_table = "orderby_{$meta_alias}_meta";
 
 		$filter_id = "order_by_{$meta_alias}";
 
