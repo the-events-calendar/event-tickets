@@ -1342,8 +1342,6 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			$check_orderby = explode( ' ', $check_orderby );
 		}
 
-		$timestamp_key = 'TIMESTAMP(mt1.meta_value)';
-
 		$after = false;
 		$loop  = 0;
 
@@ -1361,9 +1359,6 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 					break;
 				case 'check_in':
 					$this->order_by_check_in( $order, $after, $override );
-					break;
-				case $timestamp_key:
-					$this->filter_query->orderby( [ $timestamp_key => $default_order ], null, null, $after );
 					break;
 				case '__none':
 					unset( $this->query_args['orderby'] );
@@ -1399,6 +1394,19 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		}
 	}
 
+	/**
+	 * Sets up the query filters to order attendees by the security code meta.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $order      The order direction, either `ASC` or `DESC`; defaults to `null` to use the order
+	 *                           specified in the current query or default arguments.
+	 * @param bool   $after      Whether to append the duration ORDER BY clause to the existing clauses or not;
+	 *                           defaults to `false` to prepend the duration clause to the existing ORDER BY
+	 *                           clauses.
+	 * @param bool   $override   Whether to override existing ORDER BY clauses with this one or not; default to
+	 *                           `true` to override existing ORDER BY clauses.
+	 */
 	protected function order_by_security_code( $order = null, $after = false, $override = true ) {
 		global $wpdb;
 
@@ -1428,6 +1436,19 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		$this->filter_query->fields( "{$postmeta_table}.meta_value AS {$meta_alias}", $filter_id, $override );
 	}
 
+	/**
+	 * Sets up the query filters to order attendees by the check-in status.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $order      The order direction, either `ASC` or `DESC`; defaults to `null` to use the order
+	 *                           specified in the current query or default arguments.
+	 * @param bool   $after      Whether to append the duration ORDER BY clause to the existing clauses or not;
+	 *                           defaults to `false` to prepend the duration clause to the existing ORDER BY
+	 *                           clauses.
+	 * @param bool   $override   Whether to override existing ORDER BY clauses with this one or not; default to
+	 *                           `true` to override existing ORDER BY clauses.
+	 */
 	protected function order_by_check_in( $order = null, $after = false, $override = true ) {
 		global $wpdb;
 
