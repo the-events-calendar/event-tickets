@@ -355,8 +355,10 @@ class Orders extends WP_List_Table {
 	public function get_sortable_columns() {
 		return [
 			'order'  => 'order_id',
+			'purchaser'  => 'purchaser_full_name',
 			'email'  => 'purchaser_email',
 			'date'   => 'purchase_time',
+			'gateway' => 'gateway',
 			'status' => 'status',
 			'total'  => 'total_value'
 		];
