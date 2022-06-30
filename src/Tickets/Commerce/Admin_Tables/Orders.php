@@ -357,7 +357,7 @@ class Orders extends WP_List_Table {
 			'order'  => 'order_id',
 			'email'  => 'purchaser_email',
 			'date'   => 'purchase_time',
-			'status' => 'post_status',
+			'status' => 'status',
 			'total'  => 'total_value'
 		];
 	}

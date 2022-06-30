@@ -535,6 +535,9 @@ class Order_Repository extends Tribe__Repository {
 				case 'total_value':
 					$this->order_by_total_value( $order, $after, $override );
 					break;
+				case 'status':
+					$this->order_by_status( $order, $after, $override );
+					break;
 				case '__none':
 					unset( $this->query_args['orderby'] );
 					unset( $this->query_args['order'] );
@@ -657,6 +660,34 @@ class Order_Repository extends Tribe__Repository {
 			: $order;
 		$this->filter_query->orderby( [ $meta_alias => $order ], $filter_id, $override, $after );
 		$this->filter_query->fields( "{$postmeta_table}.meta_value AS {$meta_alias}", $filter_id, $override );
+	}
+
+	/**
+	 * Sets up the query filters to order events by the status.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $order      The order direction, either `ASC` or `DESC`; defaults to `null` to use the order
+	 *                           specified in the current query or default arguments.
+	 * @param bool   $after      Whether to append the duration ORDER BY clause to the existing clauses or not;
+	 *                           defaults to `false` to prepend the duration clause to the existing ORDER BY
+	 *                           clauses.
+	 * @param bool   $override   Whether to override existing ORDER BY clauses with this one or not; default to
+	 *                           `true` to override existing ORDER BY clauses.
+	 */
+	protected function order_by_status( $order = null, $after = false, $override = true ) {
+		global $wpdb;
+
+		$meta_alias = 'status';
+		$filter_id = "order_by_{$meta_alias}";
+		$prefix = 'tec-' . Commerce::ABBR . '-';
+
+		$order = $order === null
+			? Arr::get_in_any( [ $this->query_args, $this->default_args ], 'order', 'ASC' )
+			: $order;
+
+		$this->filter_query->orderby( [ $meta_alias => $order ], $filter_id, $override, $after );
+		$this->filter_query->fields( "TRIM( '{$prefix}' from {$wpdb->posts}.post_status ) AS {$meta_alias}", $filter_id, $override );
 	}
 
 }
