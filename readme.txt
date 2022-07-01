@@ -188,7 +188,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.4.2] TBD =
+= [5.4.2] 2022-07-05 =
 
 * Fix - Fixed changing of Shared Capacity stock when a single ticket stock is updated. [ETP-800]
 * Fix - Cannot edit events with Elementor on The Events Calendar with Event Tickets activated. [ET-1538]
