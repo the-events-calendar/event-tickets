@@ -200,6 +200,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Some CSS issues within the tickets block in the block editor. [ET-1530]
 * Fix - The wrong `Ticket #` was being sent in attendee emails for Ticket Commerce tickets. [ET-1537]
 * Fix - Allow price block to override the string that is dynamically created from ticket values. [ET-1524]
+* Language - 9 new strings added, 177 updated, 0 fuzzied, and 1 obsoleted.
 
 = [5.4.1] 2022-06-08 =
 

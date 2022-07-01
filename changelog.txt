@@ -12,12 +12,14 @@
 * Fix - Some CSS issues within the tickets block in the block editor. [ET-1530]
 * Fix - The wrong `Ticket #` was being sent in attendee emails for Ticket Commerce tickets. [ET-1537]
 * Fix - Allow price block to override the string that is dynamically created from ticket values. [ET-1524]
+* Language - 9 new strings added, 177 updated, 0 fuzzied, and 1 obsoleted.
 
 = [5.4.1] TBD =
 
 * Fix - Encoding issue in the block editor's price block of The Events Calendar events. [ET-1434]
 * Fix - Add India to the list of countries ET cannot process fees from. [ET-1522]
 * Enhancement - Add a new notice to set up permalinks to something different than "Plain" in order to use Tickets Commerce. [ET-1521]
+* Language - 2 new strings added, 20 updated, 0 fuzzied, and 3 obsoleted
 
 = [5.4.0.2] 2022-06-06 =
 
