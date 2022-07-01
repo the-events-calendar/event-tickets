@@ -56,7 +56,7 @@ class Settings {
 	/**
 	 * The option key for currency position.
 	 *
-	 * @since TBD
+	 * @since 5.4.2
 	 *
 	 * @var string
 	 */

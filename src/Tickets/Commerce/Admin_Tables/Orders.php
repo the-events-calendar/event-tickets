@@ -140,9 +140,6 @@ class Orders extends WP_List_Table {
 
 		$search    = tribe_get_request_var( 's' );
 		$page      = absint( tribe_get_request_var( 'paged', 0 ) );
-		$orderby   = tribe_get_request_var( 'orderby' );
-		$order     = tribe_get_request_var( 'order' );
-
 		$arguments = [
 			'status'         => 'any',
 			'paged'          => $page,
@@ -164,13 +161,7 @@ class Orders extends WP_List_Table {
 
 		$total_items = $orders_repository->found();
 
-		$items = $orders_repository->all();
-
-		if ( $orderby && $order ) {
-			$items = wp_list_sort( $items, $orderby, $order );
-		}
-
-		$this->items = $items;
+		$this->items = $orders_repository->all();
 
 		$this->set_pagination_args( [
 			'total_items' => $total_items,
@@ -342,22 +333,5 @@ class Orders extends WP_List_Table {
 			return $item->gateway;
 		}
 		return $gateway::get_label();
-	}
-
-	/**
-	 * List of sortable columns.
-	 *
-	 * @since TBD
-	 *
-	 * @return array
-	 */
-	public function get_sortable_columns() {
-		return [
-			'order'  => 'order_id',
-			'email'  => 'purchaser_email',
-			'date'   => 'purchase_time',
-			'status' => 'status',
-			'total'  => 'total'
-		];
 	}
 }
