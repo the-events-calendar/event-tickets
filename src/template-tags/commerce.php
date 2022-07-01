@@ -40,7 +40,7 @@ function tec_tickets_commerce_currency_symbol() {
 /**
  * Returns the Tickets Commerce currency position.
  *
- * @since TBD
+ * @since 5.4.2
  *
  * @return string String containing the Tickets Commerce currency position. Either `prefix` or `postfix`.
  */
