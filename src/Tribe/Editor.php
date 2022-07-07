@@ -119,6 +119,10 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 
 		foreach ( $this->get_enabled_post_types() as $type ) {
 			$is_valid_type = $helper->is_post_type_screen( $type );
+
+			if ( $is_valid_type ) {
+				break;
+			}
 		}
 
 		if ( ! $is_valid_type ) {
