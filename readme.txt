@@ -188,6 +188,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [TBD] 2022-07-12 =
+
+* Fix - Fixes compatibility with Elementor-based themes. [ET-1554]
+
 = [5.4.2] 2022-07-05 =
 
 * Enhancement - Unify CSS class names for many admin elements. [ET-1536]
