@@ -1,6 +1,6 @@
 == Changelog ==
 
-= [TBD] 2022-07-12 =
+= [5.4.2.1] 2022-07-12 =
 
 * Fix - Fixes compatibility with Elementor-based themes. [ET-1554]
 
