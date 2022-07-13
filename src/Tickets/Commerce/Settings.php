@@ -54,6 +54,15 @@ class Settings {
 	public static $option_currency_code = 'tickets-commerce-currency-code';
 
 	/**
+	 * The option key for currency position.
+	 *
+	 * @since 5.4.2
+	 *
+	 * @var string
+	 */
+	public static $option_currency_position = 'tickets-commerce-currency-position';
+
+	/**
 	 * The option key for stock handling.
 	 *
 	 * @since 5.1.6
@@ -225,14 +234,14 @@ class Settings {
 		$success_shortcode  = Shortcodes\Success_Shortcode::get_wp_slug();
 		$checkout_shortcode = Shortcodes\Checkout_Shortcode::get_wp_slug();
 
-		$paypal_currency_code_options = tribe( Currency::class )->get_currency_code_options();
+		$tc_currency_options = tribe( Currency::class )->get_currency_code_options();
 
 		$current_user = get_user_by( 'id', get_current_user_id() );
 
 		$settings = [
-			'tickets-commerce-general-settings-heading'     => [
+			'tickets-commerce-settings-general-heading'     => [
 				'type' => 'html',
-				'html' => '<h3 class="tribe-dependent"  data-depends="#' . Tickets_Settings::$tickets_commerce_enabled . '-input" data-condition-is-checked>' . __( 'Tickets Commerce Settings', 'event-tickets' ) . '</h3><div class="clear"></div>',
+				'html' => '<h3>' . __( 'General', 'event-tickets' ) . '</h3>',
 			],
 			static::$option_sandbox                         => [
 				'type'            => 'checkbox_bool',
@@ -240,14 +249,6 @@ class Settings {
 				'tooltip'         => esc_html__( 'Enables Test mode for testing payments. Any payments made will be done on "sandbox" accounts.', 'event-tickets' ),
 				'default'         => false,
 				'validation_type' => 'boolean',
-			],
-			static::$option_currency_code                   => [
-				'type'            => 'dropdown',
-				'label'           => esc_html__( 'Currency Code', 'event-tickets' ),
-				'tooltip'         => esc_html__( 'The currency that will be used for Tickets Commerce transactions.', 'event-tickets' ),
-				'default'         => 'USD',
-				'validation_type' => 'options',
-				'options'         => $paypal_currency_code_options,
 			],
 			static::$option_stock_handling                  => [
 				'type'            => 'radio',
@@ -279,6 +280,33 @@ class Settings {
 				],
 				'tooltip_first'   => true,
 			],
+			'tickets-commerce-settings-currency-heading'    => [
+				'type' => 'html',
+				'html' => '<h3>' . __( 'Currency', 'event-tickets' ) . '</h3>',
+			],
+			static::$option_currency_code                   => [
+				'type'            => 'dropdown',
+				'label'           => esc_html__( 'Currency Code', 'event-tickets' ),
+				'tooltip'         => esc_html__( 'The currency that will be used for Tickets Commerce transactions.', 'event-tickets' ),
+				'default'         => 'USD',
+				'validation_type' => 'options',
+				'options'         => $tc_currency_options,
+			],
+			static::$option_currency_position               => [
+				'type'            => 'dropdown',
+				'label'           => esc_html__( 'Currency Position', 'event-tickets' ),
+				'tooltip'         => esc_html__( 'The position of the currency symbol as it relates to the ticket values.', 'event-tickets' ),
+				'default'         => 'prefix',
+				'validation_type' => 'options',
+				'options'         => [
+					'prefix'  => esc_html__( 'Before', 'event-tickets' ),
+					'postfix' => esc_html__( 'After', 'event-tickets' ),
+				],
+			],
+			'tickets-commerce-settings-page-heading'        => [
+				'type' => 'html',
+				'html' => '<h3>' . __( 'Pages Configuration', 'event-tickets' ) . '</h3>',
+			],
 			static::$option_checkout_page                   => [
 				'type'            => 'dropdown',
 				'label'           => esc_html__( 'Checkout page', 'event-tickets' ),
@@ -308,6 +336,10 @@ class Settings {
 				'validation_type' => 'options',
 				'options'         => $pages,
 				'required'        => true,
+			],
+			'tickets-commerce-email-settings-heading'       => [
+				'type' => 'html',
+				'html' => '<h3>' . __( 'Emails', 'event-tickets' ) . '</h3>',
 			],
 			static::$option_confirmation_email_sender_email => [
 				'type'            => 'email',
