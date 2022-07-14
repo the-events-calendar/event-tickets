@@ -411,7 +411,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return array|false
 		 */
 		public function get_tickets_ids( $post = 0 ) {
-			$post_id = (int) $post;
+			$post_id = 0;
+			if ( is_numeric( $post ) ) {
+				$post_id = (int) $post;
+			}
 
 			if ( ! empty( $post ) ) {
 				if ( ! $post instanceof WP_Post ) {
