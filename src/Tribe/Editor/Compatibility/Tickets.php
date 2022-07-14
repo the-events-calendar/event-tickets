@@ -34,9 +34,10 @@ class Tribe__Tickets__Editor__Compatibility__Tickets {
 
 		// If edited via Elementor, return.
 		$post = get_post();
-		if ( $post instanceof WP_Post
-			 && class_exists( '\Elementor\Plugin' )
-			 && \Elementor\Plugin::$instance->documents->get( $post->ID )->is_built_with_elementor()
+		if ( class_exists( '\Elementor\Plugin' )
+			 && \Elementor\Plugin::$instance
+			 && ( \Elementor\Plugin::$instance->editor->is_edit_mode() ||
+				  \Elementor\Plugin::$instance->preview->is_preview_mode() )
 		) {
 			return $content;
 		}
