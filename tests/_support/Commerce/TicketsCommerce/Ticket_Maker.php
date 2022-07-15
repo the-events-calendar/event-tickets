@@ -1,10 +1,7 @@
 <?php
-
 namespace Tribe\Tickets\Test\Commerce\TicketsCommerce;
 
 use Tribe\Tickets\Test\Commerce\Ticket_Maker as Ticket_Maker_Base;
-use Tribe__Tickets__Global_Stock as Global_Stock;
-use Tribe__Utils__Array as Utils_Array;
 use TEC\Tickets\Commerce\Module as Module;
 
 trait Ticket_Maker {
@@ -14,6 +11,8 @@ trait Ticket_Maker {
 	/**
 	 * Get the ticket provider class.
 	 *
+	 * @since TBD
+	 *
 	 * @return string Ticket provider class.
 	 */
 	protected function get_ticket_provider() {
@@ -22,6 +21,8 @@ trait Ticket_Maker {
 
 	/**
 	 * Generates a ticket for a post.
+	 *
+	 * @since TBD
 	 *
 	 * @param int   $post_id   The ID of the post this ticket should be related to.
 	 * @param int   $price     Ticket price.
@@ -46,6 +47,8 @@ trait Ticket_Maker {
 	/**
 	 * Generates multiple identical TC tickets for a post.
 	 *
+	 * @since TBD
+	 *
 	 * @param int   $count     The number of tickets to create
 	 * @param int   $post_id   The ID of the post this ticket should be related to.
 	 * @param array $overrides An array of values to override the default and random generation arguments.
@@ -58,6 +61,8 @@ trait Ticket_Maker {
 
 	/**
 	 * Generate multiple tickets for a post - the tickets need not be identical.
+	 *
+	 * @since TBD
 	 *
 	 * @param int   $post_id        The ID of the post these tickets should be related to.
 	 * @param array $tickets        An array of tickets. Each ticket must be an array.
