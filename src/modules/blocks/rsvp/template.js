@@ -94,11 +94,11 @@ class RSVP extends PureComponent {
 	}
 
 	render() {
-		if ( !this.props.hasRecurrenceRules ) {
-			return this.renderBlock();
+		if ( this.props.hasRecurrenceRules && this.props.noTicketsOnRecurring ) {
+			return this.renderBlockNotSupported();
 		}
 
-		return this.renderBlockNotSupported();
+		return this.renderBlock();
 	}
 }
 
