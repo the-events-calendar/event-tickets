@@ -60,4 +60,37 @@ class CapacityTest extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertEquals( 95, $ticket->available(), 'Ticket availability should be 95 after purchasing 5' );
 	}
+
+	public function test_purchasing_over_capacity() {
+		$maker = new Event();
+		$event_id = $maker->create();
+
+		// create ticket with default capacity of 100.
+		$ticket_a_id = $this->create_tc_ticket( $event_id, 10 );
+
+		// get the ticket.
+		$ticket = tribe( Module::class )->get_ticket( $event_id, $ticket_a_id );
+
+		$this->assertEquals( 100, $ticket->capacity(), 'Ticket capacity should be 100' );
+		$this->assertEquals( 100, $ticket->available(), 'Ticket availability should be 100' );
+
+		//order data.
+		$data['tickets'] = [
+			[ 'ticket_id' => $ticket_a_id, 'quantity' => 200, 'obj' => $ticket ]
+		];
+
+		// try creating order.
+		$cart = new Cart();
+		$should_be_errors = $cart->get_repository()->process( $data );
+
+		$this->assertIsArray( $should_be_errors );
+
+		/**
+		 * @var \WP_Error $error_a
+		 */
+		$error_a = $should_be_errors[0];
+
+		$this->assertWPError( $error_a );
+		$this->assertEquals( 'ticket-capacity-not-available', $error_a->get_error_code() );
+	}
 }
