@@ -11,7 +11,7 @@ import Template from './template';
 import { withStore } from '@moderntribe/common/hoc';
 import withSaveData from '@moderntribe/tickets/blocks/hoc/with-save-data';
 import { actions, selectors } from '@moderntribe/tickets/data/blocks/ticket';
-import { hasRecurrenceRules } from '@moderntribe/common/utils/recurrence';
+import { hasRecurrenceRules, noTicketsOnRecurring } from '@moderntribe/common/utils/recurrence';
 
 const mapStateToProps = ( state ) => {
 	const headerImageId = selectors.getTicketsHeaderImageId( state );
@@ -23,6 +23,7 @@ const mapStateToProps = ( state ) => {
 		sharedCapacity: selectors.getTicketsSharedCapacity( state ),
 		canCreateTickets: selectors.canCreateTickets(),
 		hasRecurrenceRules: hasRecurrenceRules( state ),
+		noTicketsOnRecurring: noTicketsOnRecurring(),
 	};
 };
 

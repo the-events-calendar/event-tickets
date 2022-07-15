@@ -76,11 +76,11 @@ class Tickets extends PureComponent {
 	}
 
 	renderContent() {
-		if ( !this.props.hasRecurrenceRules ) {
-			return this.renderBlock();
+		if ( this.props.hasRecurrenceRules && this.props.noTicketsOnRecurring ) {
+			return this.renderBlockNotSupported();
 		}
 
-		return this.renderBlockNotSupported();
+		return this.renderBlock();
 	}
 
 	render() {
