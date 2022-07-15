@@ -4,7 +4,12 @@ namespace Tribe\Tickets\Commerce;
 
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Provider;
+use TEC\Tickets\Commerce\Order;
+use TEC\Tickets\Commerce\Cart;
+use TEC\Tickets\Commerce\Gateways\PayPal\Gateway;
+use TEC\Tickets\Commerce\Status\Pending;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
+use Tribe\Events\Test\Factories\Event;
 
 class CapacityTest extends \Codeception\TestCase\WPTestCase {
 
@@ -27,5 +32,32 @@ class CapacityTest extends \Codeception\TestCase\WPTestCase {
 		$provider = tribe( Module::class );
 
 		$this->assertNotFalse( $provider );
+	}
+
+	public function test_if_tickets_can_be_created_and_purchased() {
+
+		$maker = new Event();
+		$event_id = $maker->create();
+
+		// create ticket with default capacity of 100.
+		$ticket_a_id = $this->create_tc_ticket( $event_id, 10 );
+
+		// get the ticket.
+		$ticket = tribe( Module::class )->get_ticket( $event_id, $ticket_a_id );
+
+		$this->assertEquals( 100, $ticket->capacity(), 'Ticket capacity should be 100' );
+		$this->assertEquals( 100, $ticket->available(), 'Ticket availability should be 100' );
+
+		// create order.
+		$cart = new Cart();
+		$cart->get_repository()->add_item( $ticket_a_id, 5 );
+
+		$order     = tribe( Order::class )->create_from_cart( tribe( Gateway::class ) );
+		$completed = tribe( Order::class )->modify_status( $order->ID, Pending::SLUG );
+
+		// refresh ticket.
+		$ticket = tribe( Module::class )->get_ticket( $event_id, $ticket_a_id );
+
+		$this->assertEquals( 95, $ticket->available(), 'Ticket availability should be 95 after purchasing 5' );
 	}
 }
