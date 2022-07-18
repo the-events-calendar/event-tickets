@@ -1,5 +1,10 @@
 == Changelog ==
 
+= [5.4.2.1] 2022-07-12 =
+
+* Fix - Fixes compatibility with Elementor-based themes. [ET-1554]
+* Language - 0 new strings added, 1 updated, 0 fuzzied, and 0 obsoleted.
+
 = [5.4.2] 2022-07-05 =
 
 * Fix - Fixed changing of Shared Capacity stock when a single ticket stock is updated. [ETP-800]
