@@ -42,6 +42,14 @@ class Warnings {
 			return;
 		}
 
+		if ( class_exists( '\TEC\Events\Custom_Tables\V1\Migration\State' ) ) {
+			$migrated = tribe( \TEC\Events\Custom_Tables\V1\Migration\State::class )->is_migrated();
+
+			if ( ! $migrated ) {
+				return;
+			}
+		}
+
 		if ( tribe_is_frontend() ) {
 			$this->render_notice( $this->get_recurring_event_warning_message() );
 			return;

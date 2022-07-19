@@ -77,6 +77,12 @@ class Provider extends tad_DI52_ServiceProvider {
 	 *                `tec-no-tickets-on-recurring` class.
 	 */
 	public function prevent_tickets_on_recurring_events( string $admin_body_classes ): string {
+		$state = $this->container->make( State::class );
+
+		if ( ! $state->is_migrated() ) {
+			return $admin_body_classes;
+		}
+
 		$classes = array_unique(
 			array_merge(
 				Arr::list_to_array( $admin_body_classes ), [ 'tec-no-tickets-on-recurring' ]
