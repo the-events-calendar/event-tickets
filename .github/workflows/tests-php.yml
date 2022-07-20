@@ -21,7 +21,7 @@ jobs:
       # Checkout the repo and tric
       # ------------------------------------------------------------------------------
       - name: Checkout the repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 1000
           token: ${{ secrets.GH_BOT_TOKEN }}
@@ -44,7 +44,7 @@ jobs:
       # Checkout tric
       # ------------------------------------------------------------------------------
       - name: Checkout tric
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         if: steps.skip.outputs.value != 1
         with:
           repository: the-events-calendar/tric
@@ -147,7 +147,7 @@ jobs:
       # Clone and init TEC
       # ------------------------------------------------------------------------------
       - name: Clone TEC
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         if: steps.skip.outputs.value != 1
         with:
           fetch-depth: 1
