@@ -100,11 +100,6 @@ class SharedCapacityTest extends WPTestCase {
 		// Enable Tribe Commerce.
 		add_filter( 'tribe_tickets_commerce_paypal_is_active', '__return_true' );
 		add_filter( 'tribe_tickets_get_modules', function ( $modules ) {
-
-			if ( isset( $modules['TEC\Tickets\Commerce\Module'] ) ) {
-				unset( $modules['TEC\Tickets\Commerce\Module'] );
-			}
-
 			$modules['Tribe__Tickets__Commerce__PayPal__Main'] = tribe( 'tickets.commerce.paypal' )->plugin_name;
 
 			return $modules;
