@@ -1,6 +1,6 @@
 <?php
 
-namespace Tribe\Tickets\Commerce;
+namespace TEC\Tickets\Commerce\Stock;
 
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Provider;
@@ -20,10 +20,6 @@ class CapacityTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public static function setUpBeforeClass() {
 		parent::setUpBeforeClass();
-
-		define( 'TEC_TICKETS_COMMERCE', true );
-
-		tribe_register_provider( Provider::class );
 
 		add_filter( 'tribe_tickets_ticket_object_is_ticket_cache_enabled', '__return_false' );
 	}
