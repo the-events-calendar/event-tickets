@@ -33,7 +33,6 @@ class Provider extends tad_DI52_ServiceProvider {
 
 		// Specifically prevents anything else from loading.
 		if ( ! tec_tickets_commerce_is_enabled() ) {
-			codecept_debug( 'Returned here' );
 			return;
 		}
 
