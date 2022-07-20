@@ -190,6 +190,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.6.1] TBD =
 
+* Fix - Fixed searching attendees by purchaser name and email for Tickets Commerce attendees. [ET-1543]
 
 = [5.4.2.1] 2022-07-12 =
 
