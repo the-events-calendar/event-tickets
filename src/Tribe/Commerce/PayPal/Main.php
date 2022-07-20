@@ -198,6 +198,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$this->bind_implementations();
 
 		if ( ! $this->is_active() ) {
+			codecept_debug( 'Unsetting the PayPal tribecommerce' );
 			unset( parent::$active_modules['Tribe__Tickets__Commerce__PayPal__Main'] );
 		}
 
@@ -325,7 +326,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		add_action( 'tribe_events_tickets_metabox_edit_advanced', [ $this, 'do_metabox_advanced_options' ], 10, 2 );
 		add_filter( 'tribe_tickets_stock_message_available_quantity', tribe_callback( 'tickets.commerce.paypal.orders.sales', 'filter_available' ), 10, 4 );
 		add_action( 'admin_init', tribe_callback( 'tickets.commerce.paypal.oversell.request', 'handle' ) );
-		add_filter( 'tribe_tickets_get_default_module', [ $this, 'deprioritize_module' ], 5, 2 );
+//		add_filter( 'tribe_tickets_get_default_module', [ $this, 'deprioritize_module' ], 5, 2 );
 
 		add_filter( 'tribe_tickets_tickets_in_cart', [ $this, 'get_tickets_in_cart' ], 10, 2 );
 		add_action( 'wp_loaded', [ $this, 'maybe_redirect_to_attendees_registration_screen' ], 1 );

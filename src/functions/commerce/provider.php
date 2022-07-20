@@ -14,16 +14,21 @@ use TEC\Tickets\Settings;
  */
 function tec_tickets_commerce_is_enabled() {
 	if ( defined( 'TEC_TICKETS_COMMERCE' ) ) {
+		codecept_debug( 'enabled from constant' );
 		return (bool) TEC_TICKETS_COMMERCE;
 	}
 
 	$env_var = getenv( 'TEC_TICKETS_COMMERCE' );
 	if ( false !== $env_var ) {
+		codecept_debug( 'enabled from environment : ' );
+		codecept_debug( $env_var );
 		return (bool) $env_var;
 	}
 
 	$enabled = (bool) tribe_get_option( Settings::$tickets_commerce_enabled, false );
 
+	codecept_debug( 'tec value from option : ' );
+	codecept_debug( intval( $enabled ) );
 	/**
 	 * Allows filtering of the Tickets Commerce provider, doing so will render
 	 * the methods and classes no longer load-able so keep that in mind.
