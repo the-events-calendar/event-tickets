@@ -188,7 +188,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.4.3.1] TBD =
+= [5.4.3.1] 2022-07-21 =
 
 * Fix - Update Freemius to avoid PHP 8 fatals. [TEC-4330]
 
