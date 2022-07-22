@@ -2528,15 +2528,31 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.7
 	 *
+	 * @since TBD
+	 *
 	 * @param int     $product_id       The ticket post ID.
 	 * @param int     $ticket_qty       The number of attendees that should be generated.
 	 * @param array   $attendee_details An array containing the details for the attendees
 	 *                                  that should be generated.
 	 * @param boolean $redirect         Whether to redirect on error.
 	 *
-	 * @return bool|array `true` if the attendees were successfully generated, `false` otherwise. If $redirect is set to false, upon success this method will return an array of attendee IDs generated.
+	 * @return array|WP_Error `true` if the attendees were successfully generated, `false` otherwise. If $redirect is set to false, upon success this method will return an array of attendee IDs generated.
 	 */
 	public function generate_tickets_for( $product_id, $ticket_qty, $attendee_details, $redirect = true ) {
+		// Get the event this tickets is for
+		$post_id = get_post_meta( $product_id, $this->get_event_key(), true );
+
+		if ( empty( $post_id ) ) {
+			return new WP_Error( 'rsvp-invalid-parent-id', __( 'Invalid parent ID provided!', 'event-tickets' ) );
+		}
+
+		/** @var Tribe__Tickets__Ticket_Object $ticket_type */
+		$ticket_type = $this->get_ticket( $post_id, $product_id );
+
+		if ( ! $ticket_type instanceof Tribe__Tickets__Ticket_Object ) {
+			return new WP_Error( 'rsvp-invalid-ticket-id', __( 'Invalid Ticket ID provided!', 'event-tickets' ) );
+		}
+
 		$rsvp_options = $this->tickets_view->get_rsvp_options( null, false );
 
 		$required_details = array(
@@ -2549,12 +2565,12 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		foreach ( $required_details as $required_detail ) {
 			if ( ! isset( $attendee_details[ $required_detail ] ) ) {
-				return false;
+				return new WP_Error( 'rsvp-missing-required-data', __( 'Missing required RSVP data', 'event-tickets' ) );
 			}
 
 			// Some details should not be empty.
 			if ( 'optout' !== $required_detail && empty( $attendee_details[ $required_detail ] ) ) {
-				return false;
+				return new WP_Error( 'rsvp-missing-required-data', __( 'Missing required RSVP data', 'event-tickets' ) );
 			}
 		}
 
@@ -2572,20 +2588,6 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		$attendee_optout = filter_var( $attendee_optout, FILTER_VALIDATE_BOOLEAN );
 		$attendee_optout = (int) $attendee_optout;
-
-		// Get the event this tickets is for
-		$post_id = get_post_meta( $product_id, $this->get_event_key(), true );
-
-		if ( empty( $post_id ) ) {
-			return false;
-		}
-
-		/** @var Tribe__Tickets__Ticket_Object $ticket_type */
-		$ticket_type = $this->get_ticket( $post_id, $product_id );
-
-		if ( ! $ticket_type instanceof Tribe__Tickets__Ticket_Object ) {
-			return false;
-		}
 
 		// get the RSVP status `decrease_stock_by` value
 		$status_stock_size     = $rsvp_options[ $attendee_order_status ]['decrease_stock_by'];
@@ -2605,7 +2607,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				tribe_exit();
 			}
 
-			return false;
+			return new WP_Error( 'rsvp-invalid-stock-request', __( 'Requested amount of Tickets are not available!', 'event-tickets' ) );
 		}
 
 		/**
