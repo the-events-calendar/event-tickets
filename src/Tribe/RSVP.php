@@ -482,9 +482,9 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			 */
 			$attendee_ids = $this->generate_tickets( $args['post_id'], false );
 
-			if ( false === $attendee_ids ) {
+			if ( is_wp_error( $attendee_ids ) ) {
 				$result['success']  = false;
-				$result['errors'][] = __( 'Your RSVP was unsuccessful, please try again.', 'event-tickets' );
+				$result['errors'][] = $attendee_ids->get_error_message();
 
 				return $result;
 			}
@@ -1040,7 +1040,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @param int|null $post_id  Post ID for ticket, null to use current post ID.
 	 * @param boolean  $redirect Whether to redirect on error.
 	 *
-	 * @return array|false List of attendee ID(s) generated, or false if there was a problem.
+	 * @return array|WP_Error List of attendee ID(s) generated, or \WP_Error if there was a problem.
 	 */
 	public function generate_tickets( $post_id = null, $redirect = true ) {
 		$has_tickets = false;
@@ -1069,7 +1069,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				tribe_exit();
 			}
 
-			return false;
+			return new WP_Error( 'rsvp-error', __( 'Invalid data! Attendee details missing!', 'event-tickets' ) );
 		}
 
 		$product_ids = [];
@@ -1095,6 +1095,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			}
 
 			$tickets_generated = $this->generate_tickets_for( $product_id, $ticket_qty, $attendee_details, $redirect );
+
+			if ( ! $tickets_generated ) {
+				return new WP_Error( 'rsvp-capacity-error', __( 'Your RSVP couldn’t be confirmed. The registration is at full capacity.', 'event-tickets' ) );
+			}
 
 			if ( $tickets_generated ) {
 				if ( is_array( $tickets_generated ) ) {
