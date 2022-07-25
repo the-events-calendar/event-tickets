@@ -1096,8 +1096,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 			$tickets_generated = $this->generate_tickets_for( $product_id, $ticket_qty, $attendee_details, $redirect );
 
-			if ( ! $tickets_generated ) {
-				return new WP_Error( 'rsvp-capacity-error', __( 'Your RSVP couldn’t be confirmed. The registration is at full capacity.', 'event-tickets' ) );
+			if ( is_wp_error( $tickets_generated ) ) {
+				return $tickets_generated;
 			}
 
 			if ( $tickets_generated ) {
@@ -2639,7 +2639,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				$attendee_ids[] = $this->create_attendee_for_ticket( $ticket_type, $attendee_data );
 			} catch ( Exception $exception ) {
 				// Stop processing and return false.
-				return false;
+				return new WP_Error( 'rsvp-invalid-stock-request', $exception->getMessage() );
 			}
 		}
 
