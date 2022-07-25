@@ -1069,7 +1069,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				tribe_exit();
 			}
 
-			return new WP_Error( 'rsvp-error', __( 'Invalid data! Attendee details missing!', 'event-tickets' ) );
+			return new WP_Error( 'rsvp-error', __( 'Invalid data! Missing required attendee details!', 'event-tickets' ) );
 		}
 
 		$product_ids = [];
@@ -2528,7 +2528,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.7
 	 *
-	 * @since TBD
+	 * @since TBD Return WP_Error in case of errors to show proper error messages.
 	 *
 	 * @param int     $product_id       The ticket post ID.
 	 * @param int     $ticket_qty       The number of attendees that should be generated.
@@ -2565,12 +2565,14 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		foreach ( $required_details as $required_detail ) {
 			if ( ! isset( $attendee_details[ $required_detail ] ) ) {
-				return new WP_Error( 'rsvp-missing-required-data', __( 'Missing required RSVP data', 'event-tickets' ) );
+				$message = sprintf( __( "Missing required RSVP field: %s", 'event-tickets' ), $required_detail );
+				return new WP_Error( 'rsvp-missing-required-data', $message );
 			}
 
 			// Some details should not be empty.
 			if ( 'optout' !== $required_detail && empty( $attendee_details[ $required_detail ] ) ) {
-				return new WP_Error( 'rsvp-missing-required-data', __( 'Missing required RSVP data', 'event-tickets' ) );
+				$message = sprintf( __( "Missing required RSVP field: %s", 'event-tickets' ), $required_detail );
+				return new WP_Error( 'rsvp-missing-required-data', $message );
 			}
 		}
 
