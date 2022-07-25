@@ -3,7 +3,7 @@
 Contributors: theeventscalendar, brianjessee, camwynsp, aguseo, bordoni, borkweb, GeoffBel, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra, moraleida.me
 Tags: tickets, registration, event registration, RSVP, ticket sales, attendee management
 Requires at least: 5.6
-Tested up to: 6.0
+Tested up to: 6.0.1
 Stable tag: 5.4.4
 Requires PHP: 7.1
 License: GPLv2 or later
@@ -190,6 +190,17 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.4.4] TBD =
 
+* Fix - Fixed searching attendees by purchaser name and email for Tickets Commerce attendees. [ET-1543]
+* Fix - Fixed concurrent RSVP booking not showing error messages for out of stock tickets. [ET-1506]
+
+= [5.4.3.1] 2022-07-21 =
+
+* Fix - Update Freemius to avoid PHP 8 fatals. [TEC-4330]
+
+= [5.4.3] 2022-07-20 =
+
+* Tweak - update TCMN to match TEC 5.16.3 [TEC-4433]
+* Language - 0 new strings added, 1 updated, 0 fuzzied, and 0 obsoleted.
 
 = [5.4.2.1] 2022-07-12 =
 
