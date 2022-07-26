@@ -576,7 +576,6 @@ class Order_Repository extends Tribe__Repository {
 						$this->query_args['orderby'] = $normalized;
 						$this->query_args['orderby'] = array_merge( $this->query_args['orderby'], $add );
 					}
-					break;
 			}
 		}
 	}
@@ -617,9 +616,8 @@ class Order_Repository extends Tribe__Repository {
 			true
 		);
 
-		$order = $order === null
-			? Arr::get_in_any( [ $this->query_args, $this->default_args ], 'order', 'ASC' )
-			: $order;
+		$order = $this->get_query_order_type( $order );
+
 		$this->filter_query->orderby( [ $meta_alias => $order ], $filter_id, $override, $after );
 		$this->filter_query->fields( "{$postmeta_table}.meta_value AS {$meta_alias}", $filter_id, $override );
 	}
@@ -726,15 +724,28 @@ class Order_Repository extends Tribe__Repository {
 		global $wpdb;
 
 		$meta_alias = 'status';
-		$filter_id = "order_by_{$meta_alias}";
-		$prefix = 'tec-' . Commerce::ABBR . '-';
+		$filter_id  = "order_by_{$meta_alias}";
+		$prefix     = 'tec-' . Commerce::ABBR . '-';
 
-		$order = $order === null
-			? Arr::get_in_any( [ $this->query_args, $this->default_args ], 'order', 'ASC' )
-			: $order;
+		$order = $this->get_query_order_type( $order );
 
 		$this->filter_query->orderby( [ $meta_alias => $order ], $filter_id, $override, $after );
 		$this->filter_query->fields( "TRIM( '{$prefix}' from {$wpdb->posts}.post_status ) AS {$meta_alias}", $filter_id, $override );
+	}
+
+	/**
+	 * Get the order param for the current orderby clause.
+	 *
+	 * @since TBD
+	 *
+	 * @param $order string|null order type value either 'ASC' or 'DESC'.
+	 *
+	 * @return string
+	 */
+	protected function get_query_order_type( $order = null ) {
+		return $order === null
+			? Arr::get_in_any( [ $this->query_args, $this->default_args ], 'order', 'ASC' )
+			: $order;
 	}
 
 }
