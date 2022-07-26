@@ -1112,7 +1112,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		$provider = $status->get_provider_slug( current( $providers ) );
 
 		// For now, disabled for all providers but RSVP, we may remove this logic once we implement sorting for other providers.
-		if ( 'rsvp' != $provider ) {
+		if ( 'rsvp' !== $provider ) {
 			return false;
 		}
 
