@@ -192,6 +192,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 * Enhancement - Sorting support added on Attendee Report page for Ticket, Security Code, and Check In columns. [ET-1526]
 * Fix - Fixed searching attendees by purchaser name and email for Tickets Commerce attendees. [ET-1543]
+* Fix - Fixed concurrent RSVP booking not showing error messages for out of stock tickets. [ET-1506]
 
 = [5.4.3.1] 2022-07-21 =
 
