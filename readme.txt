@@ -190,6 +190,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.4.4] TBD =
 
+* Fix - Tickets/RSVP blocks appear in wrong place on non-events when blocks are disabled in The Events Calendar. [ET-1544]
 * Fix - Fixed searching attendees by purchaser name and email for Tickets Commerce attendees. [ET-1543]
 * Fix - Fixed concurrent RSVP booking not showing error messages for out of stock tickets. [ET-1506]
 * Fix - Fixed showing proper ticket unavailable message for past events. [ET-1146]
