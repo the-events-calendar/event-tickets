@@ -247,4 +247,23 @@ tribe.tickets.utils = {};
 			return parseFloat( priceString );
 	};
 
+	/**
+	 *
+	 * @param targetQty
+	 * @param targetAvailable
+	 * @param maxAvailable
+	 * @param addedToCart
+	 * @returns {number|*}
+	 */
+	obj.calculateSharedCap = function( targetQty, targetAvailable, maxAvailable, addedToCart ) {
+
+		let maxLimit = maxAvailable - addedToCart;
+
+		if ( targetQty <= targetAvailable && targetQty <= maxLimit ) {
+			return targetQty;
+		}
+
+		return maxLimit;
+	}
+
 } )( jQuery, tribe.tickets.utils );
