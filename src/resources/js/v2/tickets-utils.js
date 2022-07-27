@@ -249,18 +249,24 @@ tribe.tickets.utils = {};
 
 	/**
 	 *
-	 * @param targetQty
-	 * @param targetAvailable
-	 * @param maxAvailable
-	 * @param addedToCart
-	 * @returns {number|*}
+	 * @param targetQty {integer}
+	 * @param targetAvailable {integer}
+	 * @param maxAvailable {integer}
+	 * @param addedToCart {integer}
+	 * @returns {number|integer}
 	 */
 	obj.calculateSharedCap = function( targetQty, targetAvailable, maxAvailable, addedToCart ) {
 
-		let maxLimit = maxAvailable - addedToCart;
+		const maxLimit = maxAvailable - addedToCart;
 
+		// If target qty is smaller than both max available and target ticket capacity then it's valid.
 		if ( targetQty <= targetAvailable && targetQty <= maxLimit ) {
 			return targetQty;
+		}
+
+		// If qty is larger than ticket capacity then return ticket availability, given it's less than max available.
+		if ( targetQty > targetAvailable ) {
+			return targetAvailable <= maxLimit ? targetAvailable : 0;
 		}
 
 		return maxLimit;
