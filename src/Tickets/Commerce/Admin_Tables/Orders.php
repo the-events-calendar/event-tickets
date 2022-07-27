@@ -140,6 +140,8 @@ class Orders extends WP_List_Table {
 
 		$search    = tribe_get_request_var( 's' );
 		$page      = absint( tribe_get_request_var( 'paged', 0 ) );
+		$orderby   = tribe_get_request_var( 'orderby' );
+		$order     = tribe_get_request_var( 'order' );
 		$arguments = [
 			'status'         => 'any',
 			'paged'          => $page,
@@ -155,6 +157,14 @@ class Orders extends WP_List_Table {
 		}
 		if ( ! empty( $product_ids ) ) {
 			$arguments['tickets'] = $product_ids;
+		}
+
+		if ( ! empty( $orderby ) ) {
+			$arguments['orderby'] = $orderby;
+		}
+
+		if ( ! empty( $order ) ) {
+			$arguments['order'] = $order;
 		}
 
 		$orders_repository = tec_tc_orders()->by_args( $arguments );
@@ -334,4 +344,25 @@ class Orders extends WP_List_Table {
 		}
 		return $gateway::get_label();
 	}
+
+	/**
+	 * List of sortable columns.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function get_sortable_columns() {
+		return [
+			'order'            => 'order_id',
+			'purchaser'        => 'purchaser_full_name',
+			'email'            => 'purchaser_email',
+			'date'             => 'purchase_time',
+			'gateway'          => 'gateway',
+			'gateway_order_id' => 'gateway_id',
+			'status'           => 'status',
+			'total'            => 'total_value'
+		];
+	}
+
 }
