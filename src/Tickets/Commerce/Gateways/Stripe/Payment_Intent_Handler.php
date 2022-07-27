@@ -117,6 +117,23 @@ class Payment_Intent_Handler {
 		$metadata               = $payment_intent['metadata'];
 		$metadata['order_id']   = $order->ID;
 		$metadata['return_url'] = tribe( Webhook_Endpoint::class )->get_route_url();
+
+		$metadata[ 'purchaser_name' ] = $order->purchaser_name;
+		$metadata[ 'purchaser_email' ] = $order->purchaser_email;
+
+		$events_in_order  = array_unique( array_filter( wp_list_pluck( $order->items, 'event_id' ) ) );
+		$tickets_in_order = array_unique( array_filter( wp_list_pluck( $order->items, 'ticket_id' ) ) );
+		$ticket_names     = array_map(
+			static function ( $item ) {
+				return get_the_title( $item );
+			},
+			$tickets_in_order
+		);
+
+		$metadata[ 'event_name' ]   = get_post( current( $events_in_order ) )->post_title;
+		$metadata[ 'event_url' ]    = get_post_permalink( current( $events_in_order ) );
+		$metadata[ 'ticket_names' ] =  implode( $ticket_names, ' ,' );
+
 		$body['metadata']       = $metadata;
 
 		if ( $stripe_receipt_emails ) {
