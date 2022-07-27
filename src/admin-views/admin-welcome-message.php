@@ -3,6 +3,7 @@
  * The template that displays the welcome message when the plugin is first activated.
  */
 
+use TEC\Tickets\Commerce\Payments_Tab;
 use Tribe\Tickets\Admin\Settings;
 
 $main     = Tribe__Main::instance();
@@ -18,6 +19,18 @@ if ( $has_plus ) {
 	$logo_image      = 'images/logo/event-tickets-plus.svg';
 	$mobile_graphic  = 'images/header/welcome-mobile-etplus.jpg';
 }
+
+$tc_description = esc_html( 'Tickets Commerce provides flexible online payments right out of the box.', 'event-tickets' );
+$tc_link = tribe( Payments_Tab::class )->get_url();
+
+if ( $has_tec ) {
+	$tc_description = sprintf( 
+		'%s %s', 
+		esc_html( 'Want to monetize your events?', 'event-tickets' ), 
+		$tc_description 
+	);
+}
+
 ?>
 
 <?php if ( $has_plus ) : ?>
@@ -142,12 +155,12 @@ if ( $has_plus ) {
 		<div class="tribe-events-admin-card tribe-events-admin-card--3up tribe-events-admin-card--last">
 			<img
 				class="tribe-events-admin-card__image"
-				src="<?php echo esc_url( tribe_resource_url( 'images/welcome/translations.jpg', false, null, $main ) ); ?>"
-				alt="<?php esc_attr_e( 'Illustration of characters being translated', 'event-tickets' ); ?>"
+				src="<?php echo esc_url( tribe_resource_url( 'images/welcome/tickets-commerce.png', false, null, $main ) ); ?>"
+				alt="<?php esc_attr_e( 'Illustration of money turning into a ticket', 'event-tickets' ); ?>"
 			/>
-			<div class="tribe-events-admin-card__title"><?php esc_html_e( 'Translations', 'event-tickets' ); ?></div>
-			<div class="tribe-events-admin-card__description"><?php esc_html_e( 'Need a language other than English? We\'ve got you covered here.', 'event-tickets' ); ?></div>
-			<a class="tribe-events-admin-card__link" href="https://evnt.is/language" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Learn more', 'event-tickets' ); ?></a>
+			<div class="tribe-events-admin-card__title"><?php esc_html_e( 'Tickets Commerce', 'event-tickets' ); ?></div>
+			<div class="tribe-events-admin-card__description"><?php echo $tc_description; ?></div>
+			<a class="tribe-events-admin-card__link" href="<?php echo $tc_link; ?>"><?php esc_html_e( 'Get started', 'event-tickets' ); ?></a>
 		</div>
 
 		<div class="tribe-events-admin-card tribe-events-admin-card--1up">
