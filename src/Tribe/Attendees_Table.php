@@ -957,13 +957,8 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		}
 
 		// Setup sorting args.
-		if ( tribe_get_request_var( 'orderby' ) ) {
-			$args['orderby'] = tribe_get_request_var( 'orderby' );
-		}
-
-		if ( tribe_get_request_var( 'order' ) ) {
-			$args['order']   = tribe_get_request_var( 'order' );
-		}
+		$args['orderby'] = tribe_get_request_var( 'orderby', $args['orderby'] );
+		$args['order']   = tribe_get_request_var( 'order', $args['order'] );
 
 		$item_data = Tribe__Tickets__Tickets::get_event_attendees_by_args( $event_id, $args );
 
