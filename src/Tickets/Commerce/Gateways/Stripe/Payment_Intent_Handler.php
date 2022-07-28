@@ -222,7 +222,7 @@ class Payment_Intent_Handler {
 	 * @return array
 	 */
 	protected function get_updated_metadata( \WP_Post $order, array $payment_intent ) {
-		// Add the Order ID as metadata to the Payment Intent
+		// Add the Order ID as metadata to the Payment Intent.
 		$metadata               = $payment_intent['metadata'];
 		$metadata['order_id']   = $order->ID;
 		$metadata['return_url'] = tribe( Webhook_Endpoint::class )->get_route_url();
