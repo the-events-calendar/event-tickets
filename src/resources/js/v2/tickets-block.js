@@ -279,6 +279,15 @@ tribe.tickets.block = {
 		}
 	};
 
+	obj.formMatch = function ( $input, newValue ) {
+		var formID = $input.closest( obj.selectors.item ).attr( 'data-ticket-id' );
+
+		$( `[data-ticket-id="${formID}"]` ).each( function() {
+			$(this).find( obj.selectors.itemQuantityInput ).val( newValue )
+			obj.updateFooter( $(this).closest( 'form' ) );
+		});
+	};
+
 	/**
 	 * Step up the input according to the button that was clicked.
 	 * Handles IE/Edge.
@@ -322,6 +331,9 @@ tribe.tickets.block = {
 		} else {
 			$input.val( newValue );
 		}
+
+		// If there's two of the same forms on a page, match the value of attendees on both on change
+		obj.formMatch( $input, newValue );
 	};
 
 	/**
@@ -349,6 +361,9 @@ tribe.tickets.block = {
 		} else {
 			$input[ 0 ].value = decrease;
 		}
+
+		// If there's two of the same forms on a page, match the value of attendees on both on change
+		obj.formMatch( $input, decrease );
 	};
 
 	/**
@@ -560,8 +575,6 @@ tribe.tickets.block = {
 				} else {
 					obj.stepDown( $input, originalValue );
 				}
-
-				obj.updateFooter( $input.closest( 'form' ) );
 
 				// Trigger the on Change for the input ( if it has changed ) as it's not handled via stepUp() || stepDown().
 				if ( originalValue !== $input[ 0 ].value ) {
