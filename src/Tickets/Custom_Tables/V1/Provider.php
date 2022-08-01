@@ -45,6 +45,7 @@ class Provider extends tad_DI52_ServiceProvider {
 		$this->lock_for_maintence();
 
 		add_filter( 'admin_body_class', [ $this, 'prevent_tickets_on_recurring_events' ] );
+		add_filter( 'body_class', [ $this, 'prevent_tickets_on_recurring_events_front_end' ] );
 
 		$this->has_registered = true;
 
@@ -90,5 +91,21 @@ class Provider extends tad_DI52_ServiceProvider {
 		);
 
 		return implode( ' ', $classes );
+	}
+
+	/**
+	 * A wrapper for `prevent_tickets_on_recurring_events` that can be used
+	 * on front-end body tags.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $body_classes A list of classes.
+	 *
+	 * @return array A list of classes, updated to include the `tec-no-tickets-on-recurring` class.
+	 */
+	public function prevent_tickets_on_recurring_events_front_end( array $body_classes ): array {
+		$classes = implode( ' ', $body_classes );
+		$classes = $this->prevent_tickets_on_recurring_events( $classes );
+		return explode( ' ', $classes );
 	}
 }
