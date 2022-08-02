@@ -3411,8 +3411,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			// Blocks and ticket templates merged - bail if we should be seeing blocks.
 			if (
 				has_blocks( $post->ID )
-				&& $editor->should_load_blocks()
-				&& ! $editor->is_classic_editor()
 			) {
 				return false;
 			}
