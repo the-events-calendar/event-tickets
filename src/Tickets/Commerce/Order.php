@@ -350,6 +350,7 @@ class Order extends Abstract_Order {
 
 				$item['price']     = $ticket_value->get_decimal();
 				$item['sub_total'] = $ticket_value->sub_total( $item['quantity'] )->get_decimal();
+				$item['event_id']  = tribe( Ticket::class )->get_related_event_id( $item['ticket_id'] );
 
 				return $item;
 			},

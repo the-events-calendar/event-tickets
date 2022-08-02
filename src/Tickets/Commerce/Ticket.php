@@ -900,4 +900,17 @@ class Ticket {
 
 		return $this->get_template()->template( 'price', [ 'price' => $value ], false );
 	}
+
+	/**
+	 * Get the event ID for the ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_id The ticket post ID.
+	 *
+	 * @return mixed
+	 */
+	public function get_related_event_id( $ticket_id ) {
+		return get_post_meta( $ticket_id, static::$event_relation_meta_key, true );
+	}
 }
