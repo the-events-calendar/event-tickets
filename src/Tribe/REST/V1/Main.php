@@ -41,6 +41,27 @@ class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 			return;
 		}
 
+		// Add support for `ticketed` param on tribe_events filter on REST API.
+		add_filter( 'tribe_events_archive_get_args', [ $this , 'parse_events_rest_args' ], 10, 3 );
+	}
+
+	/**
+	 * Filter the args for Event Query over REST API.
+	 *
+	 * @since TBD
+	 *
+	 * @param array           $args Arguments used to get the events from the archive page.
+	 * @param array           $data Array with the data to be returned to the REST response.
+	 * @param WP_REST_Request $request The request object.
+	 *
+	 * @return mixed
+	 */
+	public function parse_events_rest_args( $args, $data, $request ) {
+		if ( isset( $request['ticketed'] ) ) {
+			$args['has_rsvp_or_tickets'] = tribe_is_truthy( $request['ticketed'] );
+		}
+
+		return $args;
 	}
 
 	/**
