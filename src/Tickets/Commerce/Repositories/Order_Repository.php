@@ -487,4 +487,265 @@ class Order_Repository extends Tribe__Repository {
 		return null;
 	}
 
+	/**
+	 * Overrides the base method to correctly handle the `order_by` clauses before.
+	 *
+	 * @since TBD
+	 *
+	 * @return \WP_Query The built query object.
+	 */
+	protected function build_query_internally() {
+		$order_by = Arr::get_in_any( [ $this->query_args, $this->default_args ], 'orderby', 'event_date' );
+		unset( $this->query_args['orderby'], $this->default_args['order_by'] );
+
+		$this->handle_order_by( $order_by );
+
+		return parent::build_query_internally();
+	}
+
+	/**
+	 * Handles the `order_by` clauses for events
+	 *
+	 * @since TBD
+	 *
+	 * @param string $order_by The key used to order items.
+	 */
+	public function handle_order_by( $order_by ) {
+		$check_orderby = $order_by;
+
+		if ( ! is_array( $check_orderby ) ) {
+			$check_orderby = explode( ' ', $check_orderby );
+		}
+
+		$after = false;
+		$loop  = 0;
+
+		foreach ( $check_orderby as $key => $value ) {
+			$order_by      = is_numeric( $key ) ? $value : $key;
+			$default_order = Arr::get_in_any( [ $this->query_args, $this->default_args ], 'order', 'ASC' );
+			$order         = is_numeric( $key ) ? $default_order : $value;
+
+			// Let the first applied ORDER BY clause override the existing ones, then stack the ORDER BY clauses.
+			$override = $loop === 0;
+
+			switch ( $order_by ) {
+				case 'purchaser_full_name':
+					$this->order_by_purchaser_full_name( $order, $after, $override );
+					break;
+				case 'purchaser_email':
+					$this->order_by_purchaser_email( $order, $after, $override );
+					break;
+				case 'total_value':
+					$this->order_by_total_value( $order, $after, $override );
+					break;
+				case 'status':
+					$this->order_by_status( $order, $after, $override );
+					break;
+				case 'gateway':
+					$this->order_by_gateway( $order, $after, $override );
+					break;
+				case 'gateway_id':
+					$this->order_by_gateway_id( $order, $after, $override );
+					break;
+				case '__none':
+					unset( $this->query_args['orderby'] );
+					unset( $this->query_args['order'] );
+					break;
+				default:
+					$after = $after || 1 === $loop;
+					if ( empty( $this->query_args['orderby'] ) ) {
+						// In some versions of WP, [ $order_by, $order ] doesn't work as expected. Using explict value setting instead.
+						$this->query_args['orderby'] = $order_by;
+						$this->query_args['order']   = $order;
+					} else {
+						$add = [ $order_by => $order ];
+						// Make sure all `orderby` clauses have the shape `<orderby> => <order>`.
+						$normalized = [];
+
+						if ( ! is_array( $this->query_args['orderby'] ) ) {
+							$this->query_args['orderby'] = [
+								$this->query_args['orderby'] => $this->query_args['order']
+							];
+						}
+
+						foreach ( $this->query_args['orderby'] as $k => $v ) {
+							$the_order_by                = is_numeric( $k ) ? $v : $k;
+							$the_order                   = is_numeric( $k ) ? $default_order : $v;
+							$normalized[ $the_order_by ] = $the_order;
+						}
+						$this->query_args['orderby'] = $normalized;
+						$this->query_args['orderby'] = array_merge( $this->query_args['orderby'], $add );
+					}
+			}
+		}
+	}
+
+	/**
+	 * Sets up the query filters to order items by the purchaser email.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $key        The meta key that is used for the sorting.
+	 * @param string $order      The order direction, either `ASC` or `DESC`; defaults to `null` to use the order
+	 *                           specified in the current query or default arguments.
+	 * @param bool   $after      Whether to append the duration ORDER BY clause to the existing clauses or not;
+	 *                           defaults to `false` to prepend the duration clause to the existing ORDER BY
+	 *                           clauses.
+	 * @param bool   $override   Whether to override existing ORDER BY clauses with this one or not; default to
+	 *                           `true` to override existing ORDER BY clauses.
+	 */
+	protected function order_by_key( $meta_key, $order = null, $after = false, $override = true ) {
+		global $wpdb;
+
+		$meta_alias     = "sorted_by_{$meta_key}";
+		$filter_id      = "order_by_{$meta_alias}";
+		$postmeta_table = "orderby_{$meta_alias}_meta";
+
+		$this->filter_query->join(
+			$wpdb->prepare(
+				"
+				LEFT JOIN {$wpdb->postmeta} AS {$postmeta_table}
+					ON (
+						{$postmeta_table}.post_id = {$wpdb->posts}.ID
+						AND {$postmeta_table}.meta_key = %s
+					)
+				",
+				$meta_key
+			),
+			$filter_id,
+			true
+		);
+
+		$order = $this->get_query_order_type( $order );
+
+		$this->filter_query->orderby( [ $meta_alias => $order ], $filter_id, $override, $after );
+		$this->filter_query->fields( "{$postmeta_table}.meta_value AS {$meta_alias}", $filter_id, $override );
+	}
+
+	/**
+	 * Sets up the query filters to order items by purchaser name.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $order      The order direction, either `ASC` or `DESC`; defaults to `null` to use the order
+	 *                           specified in the current query or default arguments.
+	 * @param bool   $after      Whether to append the duration ORDER BY clause to the existing clauses or not;
+	 *                           defaults to `false` to prepend the duration clause to the existing ORDER BY
+	 *                           clauses.
+	 * @param bool   $override   Whether to override existing ORDER BY clauses with this one or not; default to
+	 *                           `true` to override existing ORDER BY clauses.
+	 */
+	protected function order_by_purchaser_full_name( $order = null, $after = false, $override = true ) {
+		$this->order_by_key( Order::$purchaser_full_name_meta_key, $order, $after, $override );
+	}
+
+	/**
+	 * Sets up the query filters to order items by the purchaser email.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $order      The order direction, either `ASC` or `DESC`; defaults to `null` to use the order
+	 *                           specified in the current query or default arguments.
+	 * @param bool   $after      Whether to append the duration ORDER BY clause to the existing clauses or not;
+	 *                           defaults to `false` to prepend the duration clause to the existing ORDER BY
+	 *                           clauses.
+	 * @param bool   $override   Whether to override existing ORDER BY clauses with this one or not; default to
+	 *                           `true` to override existing ORDER BY clauses.
+	 */
+	protected function order_by_purchaser_email( $order = null, $after = false, $override = true ) {
+		$this->order_by_key( Order::$purchaser_email_meta_key, $order, $after, $override );
+	}
+
+	/**
+	 * Sets up the query filters to order items by the total value.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $order      The order direction, either `ASC` or `DESC`; defaults to `null` to use the order
+	 *                           specified in the current query or default arguments.
+	 * @param bool   $after      Whether to append the duration ORDER BY clause to the existing clauses or not;
+	 *                           defaults to `false` to prepend the duration clause to the existing ORDER BY
+	 *                           clauses.
+	 * @param bool   $override   Whether to override existing ORDER BY clauses with this one or not; default to
+	 *                           `true` to override existing ORDER BY clauses.
+	 */
+	protected function order_by_total_value( $order = null, $after = false, $override = true ) {
+		$this->order_by_key( Order::$total_value_meta_key, $order, $after, $override );
+	}
+
+	/**
+	 * Sets up the query filters to order items by the gateway id.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $order      The order direction, either `ASC` or `DESC`; defaults to `null` to use the order
+	 *                           specified in the current query or default arguments.
+	 * @param bool   $after      Whether to append the duration ORDER BY clause to the existing clauses or not;
+	 *                           defaults to `false` to prepend the duration clause to the existing ORDER BY
+	 *                           clauses.
+	 * @param bool   $override   Whether to override existing ORDER BY clauses with this one or not; default to
+	 *                           `true` to override existing ORDER BY clauses.
+	 */
+	protected function order_by_gateway_id( $order = null, $after = false, $override = true ) {
+		$this->order_by_key( Order::$gateway_order_id_meta_key, $order, $after, $override );
+	}
+
+	/**
+	 * Sets up the query filters to order items by the gatway name.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $order      The order direction, either `ASC` or `DESC`; defaults to `null` to use the order
+	 *                           specified in the current query or default arguments.
+	 * @param bool   $after      Whether to append the duration ORDER BY clause to the existing clauses or not;
+	 *                           defaults to `false` to prepend the duration clause to the existing ORDER BY
+	 *                           clauses.
+	 * @param bool   $override   Whether to override existing ORDER BY clauses with this one or not; default to
+	 *                           `true` to override existing ORDER BY clauses.
+	 */
+	protected function order_by_gateway( $order = null, $after = false, $override = true ) {
+		$this->order_by_key( Order::$gateway_meta_key, $order, $after, $override );
+	}
+
+	/**
+	 * Sets up the query filters to order items by the status.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $order      The order direction, either `ASC` or `DESC`; defaults to `null` to use the order
+	 *                           specified in the current query or default arguments.
+	 * @param bool   $after      Whether to append the duration ORDER BY clause to the existing clauses or not;
+	 *                           defaults to `false` to prepend the duration clause to the existing ORDER BY
+	 *                           clauses.
+	 * @param bool   $override   Whether to override existing ORDER BY clauses with this one or not; default to
+	 *                           `true` to override existing ORDER BY clauses.
+	 */
+	protected function order_by_status( $order = null, $after = false, $override = true ) {
+		global $wpdb;
+
+		$meta_alias = 'status';
+		$filter_id  = "order_by_{$meta_alias}";
+		$prefix     = 'tec-' . Commerce::ABBR . '-';
+
+		$order = $this->get_query_order_type( $order );
+
+		$this->filter_query->orderby( [ $meta_alias => $order ], $filter_id, $override, $after );
+		$this->filter_query->fields( "TRIM( '{$prefix}' from {$wpdb->posts}.post_status ) AS {$meta_alias}", $filter_id, $override );
+	}
+
+	/**
+	 * Get the order param for the current orderby clause.
+	 *
+	 * @since TBD
+	 *
+	 * @param $order string|null order type value either 'ASC' or 'DESC'.
+	 *
+	 * @return string
+	 */
+	protected function get_query_order_type( $order = null ) {
+		return $order === null
+			? Arr::get_in_any( [ $this->query_args, $this->default_args ], 'order', 'ASC' )
+			: $order;
+	}
+
 }
