@@ -529,7 +529,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	public function filter_by_order_status( $order_status, $type = 'in' ) {
 		$statuses = Arr::list_to_array( $order_status );
 
-		$has_manage_access = current_user_can( 'edit_users' ) || current_user_can( 'tribe_manage_attendees' );
+		$has_manage_access = tribe( 'tickets.rest-v1.main' )->request_has_manage_access();
 
 		// map the `any` meta-status
 		if ( 1 === count( $statuses ) && 'any' === $statuses[0] ) {
