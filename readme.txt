@@ -4,7 +4,7 @@ Contributors: theeventscalendar, brianjessee, camwynsp, aguseo, bordoni, borkweb
 Tags: tickets, registration, event registration, RSVP, ticket sales, attendee management
 Requires at least: 5.6
 Tested up to: 6.0.1
-Stable tag: 5.6.0-rc1
+Stable tag: 5.5.0-rc1
 Requires PHP: 7.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -188,8 +188,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.6.0-rc1] TBD =
+= [5.5.0] 2022-0X-XX =
 
+* Version - Event Tickets 5.5.0 is only compatible with The Events Calendar 6.0.0 and higher
+* Version - Event Tickets 5.5.0 is only compatible with Event Tickets Plus 5.6.0 and higher
 * Enhancement - Adds a compatibility layer to work with the new Recurrence Backend Engine in TEC/ECP.
 
 = [5.4.2.1] 2022-07-12 =
