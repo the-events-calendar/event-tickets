@@ -188,11 +188,21 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+
 = [5.5.0] 2022-0X-XX =
 
 * Version - Event Tickets 5.5.0 is only compatible with The Events Calendar 6.0.0 and higher
 * Version - Event Tickets 5.5.0 is only compatible with Event Tickets Plus 5.6.0 and higher
 * Enhancement - Adds a compatibility layer to work with the new Recurrence Backend Engine in TEC/ECP.
+
+= [5.4.3.1] 2022-07-21 =
+
+* Fix - Update Freemius to avoid PHP 8 fatals. [TEC-4330]
+
+= [5.4.3] 2022-07-20 =
+
+* Tweak - update TCMN to match TEC 5.16.3 [TEC-4433]
+* Language - 0 new strings added, 1 updated, 0 fuzzied, and 0 obsoleted.
 
 = [5.4.2.1] 2022-07-12 =
 
