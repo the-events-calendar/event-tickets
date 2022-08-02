@@ -6,7 +6,7 @@
 	&.welcome-panel {
 		background: none;
 		overflow: visible;
-		
+
 		&:before {
 			content: none;
 		}
@@ -28,7 +28,7 @@
 		display: grid;
 		gap: unset;
 		grid-template-columns: repeat(3, 1fr);
-		grid-template-areas: 
+		grid-template-areas:
 			"first middle last"
 			"extra extra last";
 		margin-top: 0px;
@@ -38,8 +38,8 @@
 
 		@media screen and (max-width: 768px) {
 			grid-template-columns: 1fr;
-			grid-template-areas: 
-				"first" 
+			grid-template-areas:
+				"first"
 				"middle"
 				"last"
 				"extra";
@@ -104,7 +104,7 @@
 
 	.welcome-panel-middle {
 		grid-area: middle;
-		
+
 		> div {
 			@media screen and (max-width: 768px) {
 				padding: 0 15px;
@@ -334,6 +334,14 @@
 	}
 }
 
+.list-or-table__section {
+	margin-block: 20px;
+
+	label {
+		margin-block: 10px;
+	}
+}
+
 /*
  * Preserves utility of modal windows, especially the "Email Attendees" modal, in views above the
  * mobile view but under the upper limits of "tablet" views. The weird class names and !important declarations
@@ -387,4 +395,9 @@ table.orders {
 	.tec-admin__upsell-text {
 		color: #1d2327;
 	}
+}
+
+// Added some room to support the List or Table being visible on screen
+#TB_window iframe {
+	min-height: 434px !important;
 }

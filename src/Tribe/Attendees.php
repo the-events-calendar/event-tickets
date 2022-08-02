@@ -768,7 +768,13 @@ class Tribe__Tickets__Attendees {
 		$event = get_post( $_GET['event_id'] );
 
 		ob_start();
-		$attendee_tpl = Tribe__Tickets__Templates::get_template_hierarchy( 'tickets/attendees-email.php', array( 'disable_view_check' => true ) );
+
+		if ( isset( $_POST['list_or_table'] ) && 'List' === $_POST['list_or_table'] ) {
+			$attendee_tpl = Tribe__Tickets__Templates::get_template_hierarchy( 'tickets/attendees-email-list.php', array( 'disable_view_check' => true ) );
+		} else {
+			$attendee_tpl = Tribe__Tickets__Templates::get_template_hierarchy( 'tickets/attendees-email.php', array( 'disable_view_check' => true ) );
+		}
+
 		include $attendee_tpl;
 		$content = ob_get_clean();
 

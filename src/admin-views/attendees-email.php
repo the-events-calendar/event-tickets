@@ -40,6 +40,21 @@ $referer    = ! empty( $_SERVER['HTTP_REFERER'] ) ? "action='" . esc_url( $_SERV
 			<input type="text" name="email_to_address" id="email_to_address" value="">
 		</label>
 		<input type="hidden" value="email" name="action" />
+		<fieldset class="list-or-table__section">
+    		<legend><?php esc_html_e( 'Data as a List or Table?:', 'event-tickets' ); ?></legend>
+			<div>
+				<label for="email_table">
+					<span><?php esc_html_e( 'Table:', 'event-tickets' ); ?></span>
+					<input type="radio" name="list_or_table" id="email_table" value="Table" checked />
+				</label>
+			</div>
+			<div>
+				<label for="email_list">
+					<span><?php esc_html_e( 'List:', 'event-tickets' ); ?></span>
+					<input type="radio" name="list_or_table" id="email_list" value="List" />
+				</label>
+			</div>
+		</fieldset>
 	</div>
 		<div id="plugin-information-footer">
 		<?php
