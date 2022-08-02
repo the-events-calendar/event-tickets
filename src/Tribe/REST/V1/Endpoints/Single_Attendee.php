@@ -9,7 +9,11 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 	 * {@inheritdoc}
 	 */
 	public function get_documentation() {
-		$GET_defaults = array( 'in' => 'query', 'default' => '', 'type' => 'string' );
+		$GET_defaults = [
+			'in'      => 'query',
+			'default' => '',
+			'type'    => 'string',
+		];
 
 		return array(
 			'get' => array(
@@ -64,8 +68,8 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 	 * {@inheritdoc}
 	 */
 	public function READ_args() {
-		return array(
-			'id' => array(
+		return [
+			'id' => [
 				'type'              => 'integer',
 				'in'                => 'path',
 				'description'       => __( 'The attendee post ID', 'event-tickets' ),
@@ -74,9 +78,9 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 				 * Here we check for a positive int, not an attendee ID to properly
 				 * return 404 for missing post in place of 400.
 				 */
-				'validate_callback' => array( $this->validator, 'is_positive_int' ),
-			),
-		);
+				'validate_callback' => [ $this->validator, 'is_positive_int' ],
+			],
+		];
 	}
 
 	/**
@@ -351,6 +355,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 	 * Validates the user permission.
 	 *
 	 * @since 5.3.2
+	 * @since TBD check the REST API permission via centralized method.
 	 *
 	 * @return bool
 	 */
