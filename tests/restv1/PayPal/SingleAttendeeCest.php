@@ -30,9 +30,10 @@ class SingleAttendeeCest extends BaseRestCest {
 				'_capacity'   => 30,
 			],
 		] );
-		$attendees_id    = $this->create_many_attendees_for_ticket( $attendees_count, $ticket_id, $post_id );
+		$attendees       = $this->create_many_attendees_for_ticket( $attendees_count, $ticket_id, $post_id );
 
-		$ticket_rest_url = $this->attendees_url . "/{$ticket_id}";
+		$attendee_id     = $attendees[ 0 ]['attendee_id'];
+		$ticket_rest_url = $this->attendees_url . "/{$attendee_id}";
 
 		$I->sendGET( $ticket_rest_url );
 

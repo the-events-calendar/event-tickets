@@ -25,12 +25,13 @@ class SingleAttendeeCest extends BaseRestCest {
 
 		$ticket_id = $this->create_rsvp_ticket( $post_id );
 
-		$this->create_attendee_for_ticket( $ticket_id, $post_id, [
+		$attendees = $this->create_attendee_for_ticket( $ticket_id, $post_id, [
 			'rsvp_status' => 'yes',
 			'optout'      => false,
 		] );
 
-		$ticket_rest_url = $this->attendees_url . "/{$ticket_id}";
+		$attendee_id     = $attendees[ 0 ]['attendee_id'];
+		$ticket_rest_url = $this->attendees_url . "/{$attendee_id}";
 
 		$I->sendGET( $ticket_rest_url );
 
