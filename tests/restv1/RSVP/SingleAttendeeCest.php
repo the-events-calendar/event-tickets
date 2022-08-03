@@ -14,7 +14,7 @@ class SingleAttendeeCest extends BaseRestCest {
 	use Ticket_Maker;
 
 	/**
-	 * It should return a response
+	 * It should return the attendee response.
 	 *
 	 * @test
 	 */
@@ -34,7 +34,7 @@ class SingleAttendeeCest extends BaseRestCest {
 
 		$I->sendGET( $ticket_rest_url );
 
-		$I->seeResponseCodeIs( 400 );
+		$I->seeResponseCodeIs( 200 );
 		$I->seeResponseIsJson();
 	}
 }
