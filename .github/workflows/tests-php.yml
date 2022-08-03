@@ -9,8 +9,8 @@ jobs:
           # - acceptance
           - functional
           - integration
-          - restv1 --group="capacity"
-          - restv1 --skip-group="capacity"
+          - restv1 --group=\"capacity\"
+          - restv1 --skip-group=\"capacity\"
           - views_integration
           - commerce_integration
           - wpunit --group="capacity"
@@ -231,6 +231,6 @@ jobs:
         uses: actions/upload-artifact@v2
         if: steps.skip.outputs.value != 1 && failure()
         with:
-          name: output ${{ shellQuote matrix.suite }}
+          name: output ${{ matrix.suite }}
           path: tests/_output/
           retention-days: 7
