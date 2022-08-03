@@ -231,6 +231,6 @@ jobs:
         uses: actions/upload-artifact@v2
         if: steps.skip.outputs.value != 1 && failure()
         with:
-          name: output ${{ matrix.suite }}
+          name: output ${{ shellQuote matrix.suite }}
           path: tests/_output/
           retention-days: 7
