@@ -113,8 +113,8 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 			'attendees_max' => 'attendees_max',
 			'checkedin_min' => 'checkedin_min',
 			'checkedin_max' => 'checkedin_max',
-			'capacity_min' => 'capacity_min',
-			'capacity_max' => 'capacity_max',
+			'capacity_min'  => 'capacity_min',
+			'capacity_max'  => 'capacity_max',
 		);
 
 		foreach ( $supported_args as $request_arg => $query_arg ) {
@@ -123,7 +123,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 			}
 		}
 
-		$has_manage_access = current_user_can( 'edit_users' ) || current_user_can( 'tribe_manage_attendees' );
+		$has_manage_access = tribe( 'tickets.rest-v1.main' )->request_has_manage_access();
 
 		$attendess_btwn = $checkedin_btwn = $capacity_btwn = null;
 
