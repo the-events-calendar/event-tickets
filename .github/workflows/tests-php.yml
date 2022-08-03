@@ -9,7 +9,8 @@ jobs:
           # - acceptance
           - functional
           - integration
-          - restv1 --debug
+          - restv1 --group="capacity"
+          - restv1 --skip-group="capacity"
           - views_integration
           - commerce_integration
           - wpunit --group="capacity"
