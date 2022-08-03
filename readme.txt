@@ -195,6 +195,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Fixed concurrent RSVP booking not showing error messages for out of stock tickets. [ET-1506]
 * Fix - Fixed showing proper ticket unavailable message for past events. [ET-1146]
 * Fix - Fixed Shared Capacity calculation with capped tickets. [ETP-801]
+* Fix - Fixed logic that was causing fatal errors when using Elementor. [ET-1561]
 * Enhancement - Sorting support added on Tickets Commerce Order Report page columns. [ET-1527]
 * Enhancement - Sorting support added on Attendee Report page for Ticket, Security Code, and Check In columns. [ET-1526]
 * Enhancement - Added section about Tickets Commerce on the Tickets Home page. [ET-1539]
