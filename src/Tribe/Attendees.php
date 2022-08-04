@@ -769,7 +769,7 @@ class Tribe__Tickets__Attendees {
 
 		ob_start();
 
-		if ( isset( $_POST['list_or_table'] ) && 'List' === $_POST['list_or_table'] ) {
+		if ( 'List' === tribe_get_request_var( 'list_or_table' ) ) {
 			$attendee_tpl = Tribe__Tickets__Templates::get_template_hierarchy( 'tickets/attendees-email-list.php', array( 'disable_view_check' => true ) );
 		} else {
 			$attendee_tpl = Tribe__Tickets__Templates::get_template_hierarchy( 'tickets/attendees-email.php', array( 'disable_view_check' => true ) );
