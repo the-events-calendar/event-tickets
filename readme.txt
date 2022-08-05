@@ -201,6 +201,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Enhancement - Added section about Tickets Commerce on the Tickets Home page. [ET-1539]
 * Enhancement - Tickets Commerce Stripe gateway now shows additional purchaser info metadata in Stripe dashboard. [ET-1542]
 * Enhancement - Update REST API Endpoints to have access via API KEY and remove the restriction to be using Event Tickets Plus to access the `attendees` endpoint. [ET-1559]
+* Enhancement - Allow filtering of Events Archive REST API using `ticketed` parameter to filter Ticketed and Non-ticketed events. [TEC-4439]
 
 = [5.4.3.1] 2022-07-21 =
 
