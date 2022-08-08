@@ -307,12 +307,17 @@ trait Post_Tickets {
 
 		global $wpdb;
 		$prefix = 'has_rsvp_or_tickets_';
+		$tc_relation_meta_key = \TEC\Tickets\Commerce\Ticket::$event_relation_meta_key;
 
 		if ( (bool) $has_rsvp_or_tickets ) {
 			// Join to the meta that relates tickets to events but exclude RSVP tickets.
 			$repo->join_clause( "JOIN {$wpdb->postmeta} {$prefix}_ticket_event ON (
 					{$prefix}_ticket_event.meta_value = {$wpdb->posts}.ID
-					AND {$prefix}_ticket_event.meta_key REGEXP '^(_tribe_|_tec_).*(_for_event|_event)$'
+					AND (
+						{$prefix}_ticket_event.meta_key REGEXP '^_tribe.*_for_event$'
+						OR
+						{$prefix}_ticket_event.meta_key REGEXP '^{$tc_relation_meta_key}$'
+					)
 				)" );
 
 			return;
