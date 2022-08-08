@@ -312,7 +312,7 @@ trait Post_Tickets {
 			// Join to the meta that relates tickets to events but exclude RSVP tickets.
 			$repo->join_clause( "JOIN {$wpdb->postmeta} {$prefix}_ticket_event ON (
 					{$prefix}_ticket_event.meta_value = {$wpdb->posts}.ID
-					AND {$prefix}_ticket_event.meta_key REGEXP '^_tribe_.*_for_event$'
+					AND {$prefix}_ticket_event.meta_key REGEXP '^(_tribe_|_tec_).*(_for_event|_event)$'
 				)" );
 
 			return;
