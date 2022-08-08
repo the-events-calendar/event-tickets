@@ -58,7 +58,7 @@ class Tickets extends PureComponent {
 		return (
 			<div className="tribe-editor__not-supported-message">
 				<p className="tribe-editor__not-supported-message-text">
-					{__( 'Tickets are not yet supported for events with Recurrence Patterns.', 'event-tickets' )}
+					{__( 'Tickets are not yet supported for on recurring events.', 'event-tickets' )}
 					<br/>
 					<a
 						className="tribe-editor__not-supported-message-link"

@@ -76,7 +76,7 @@ class RSVP extends PureComponent {
 		return (
 			<div className="tribe-editor__not-supported-message">
 				<p className="tribe-editor__not-supported-message-text">
-					{__( 'RSVPs are not yet supported for events with Recurrence Patterns.', 'event-tickets' )}
+					{__( 'RSVPs are not yet supported on recurring events.', 'event-tickets' )}
 					<br/>
 					<a
 						className="tribe-editor__not-supported-message-link"

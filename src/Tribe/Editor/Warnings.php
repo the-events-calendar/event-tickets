@@ -108,7 +108,7 @@ class Warnings {
 	 */
 	public function get_recurring_event_warning_message() {
 		return sprintf(
-				__( 'Tickets and RSVPs are not yet supported for events with Recurrence Patterns. %1$s%2$s Read about our plans for future features %3$s', 'event-tickets' ),
+				__( 'Tickets and RSVPs are not yet supported on recurring events. %1$s%2$s Read about our plans for future features %3$s', 'event-tickets' ),
 				'<br />',
 				'<a className="tribe-editor__not-supported-message-link"
 					href="https://evnt.is/1b7a"
