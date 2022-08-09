@@ -197,7 +197,6 @@ class Attendees_List {
 		if ( ! $post instanceof WP_Post ) {
 			return [];
 		}
-
 		$args = [
 			'by' => [
 				// Exclude people who have opted out or not specified optout.
@@ -206,8 +205,6 @@ class Attendees_List {
 				'post_status' => 'publish',
 				// Only include RSVP status yes.
 				'rsvp_status__or_none' => 'yes',
-				// Only include public order statuses.
-				'order_status' => 'public',
 			],
 		];
 

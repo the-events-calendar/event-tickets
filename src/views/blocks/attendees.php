@@ -15,9 +15,11 @@
  * @version 4.11.3
  */
 
-$title     = $this->attr( 'title' );
-$attendees = $this->get( 'attendees', null );
-$classes   = [ 'tribe-block', 'tribe-block__attendees' ];
+$title           = $this->attr( 'title' );
+$classes         = [ 'tribe-block', 'tribe-block__attendees' ];
+$attendees_list  = tribe( 'tickets.events.attendees-list' );
+$attendees       = $attendees_list->get_attendees_for_post( $post_id );
+$attendees_total = $attendees_list->get_attendance_counts( $post_id );
 
 if ( ! is_array( $attendees ) ) {
 	return;
@@ -27,7 +29,7 @@ if ( ! is_array( $attendees ) ) {
 
 	<?php $this->template( 'blocks/attendees/title', [ 'title' => $title ] ); ?>
 
-	<?php $this->template( 'blocks/attendees/description', [ 'attendees' => $attendees ] ); ?>
+	<?php $this->template( 'blocks/attendees/description', [ 'attendees_total' => $attendees_total ] ); ?>
 
 	<?php foreach ( $attendees as $key => $attendee ) : ?>
 
