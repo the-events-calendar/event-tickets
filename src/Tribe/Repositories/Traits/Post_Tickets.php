@@ -91,7 +91,7 @@ trait Post_Tickets {
 				AND (
 					{$prefix}_ticket_event.meta_key REGEXP '^_tribe_.*_for_event$'
 					OR
-					{$prefix}_ticket_event.meta_key REGEXP '^{$tc_relation_meta_key}$'
+					{$prefix}_ticket_event.meta_key = {$tc_relation_meta_key}'
 				)
 			)" );
 
@@ -294,7 +294,7 @@ trait Post_Tickets {
 				AND (
 					{$prefix}_ticket_event.meta_key REGEXP '^_tribe_.*_for_event$'
 					OR
-					{$prefix}_ticket_event.meta_key REGEXP '^{$tc_relation_meta_key}$'
+					{$prefix}_ticket_event.meta_key = {$tc_relation_meta_key}'
 				)
 			)" );
 		// Keep any event without tickets or not related to an RSVP ticket.
@@ -329,7 +329,7 @@ trait Post_Tickets {
 					AND (
 						{$prefix}_ticket_event.meta_key REGEXP '^_tribe_.*_for_event$'
 						OR
-						{$prefix}_ticket_event.meta_key REGEXP '^{$tc_relation_meta_key}$'
+						{$prefix}_ticket_event.meta_key = {$tc_relation_meta_key}'
 					)
 				)" );
 
