@@ -89,7 +89,7 @@ trait Post_Tickets {
 			ON (
 				{$prefix}_ticket_event.meta_value = {$wpdb->posts}.ID
 				AND (
-					{$prefix}_ticket_event.meta_key = {$tc_relation_meta_key}'
+					{$prefix}_ticket_event.meta_key = '{$tc_relation_meta_key}'
 					OR
 					{$prefix}_ticket_event.meta_key REGEXP '^_tribe_.*_for_event$'
 				)
@@ -292,7 +292,7 @@ trait Post_Tickets {
 			ON (
 				{$prefix}_ticket_event.meta_value = {$wpdb->posts}.ID
 				AND (
-					{$prefix}_ticket_event.meta_key = {$tc_relation_meta_key}'
+					{$prefix}_ticket_event.meta_key = '{$tc_relation_meta_key}'
 					OR
 					{$prefix}_ticket_event.meta_key REGEXP '^_tribe_.*_for_event$'
 				)
@@ -327,7 +327,7 @@ trait Post_Tickets {
 			$repo->join_clause( "JOIN {$wpdb->postmeta} {$prefix}_ticket_event ON (
 					{$prefix}_ticket_event.meta_value = {$wpdb->posts}.ID
 					AND (
-						{$prefix}_ticket_event.meta_key = {$tc_relation_meta_key}'
+						{$prefix}_ticket_event.meta_key = '{$tc_relation_meta_key}'
 						OR
 						{$prefix}_ticket_event.meta_key REGEXP '^_tribe_.*_for_event$'
 					)
