@@ -9,7 +9,11 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 	 * {@inheritdoc}
 	 */
 	public function get_documentation() {
-		$GET_defaults = array( 'in' => 'query', 'default' => '', 'type' => 'string' );
+		$GET_defaults = [
+			'in'      => 'query',
+			'default' => '',
+			'type'    => 'string',
+		];
 
 		return array(
 			'get' => array(
@@ -64,8 +68,8 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 	 * {@inheritdoc}
 	 */
 	public function READ_args() {
-		return array(
-			'id' => array(
+		return [
+			'id' => [
 				'type'              => 'integer',
 				'in'                => 'path',
 				'description'       => __( 'The attendee post ID', 'event-tickets' ),
@@ -74,9 +78,9 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 				 * Here we check for a positive int, not an attendee ID to properly
 				 * return 404 for missing post in place of 400.
 				 */
-				'validate_callback' => array( $this->validator, 'is_positive_int' ),
-			),
-		);
+				'validate_callback' => [ $this->validator, 'is_positive_int' ],
+			],
+		];
 	}
 
 	/**
@@ -85,11 +89,6 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 	 * @since 4.12.0 Returns 401 Unauthorized if Event Tickets Plus is not loaded.
 	 */
 	public function get( WP_REST_Request $request ) {
-		// Early bail: ET Plus must be active to use this endpoint.
-		if ( ! class_exists( 'Tribe__Tickets_Plus__Main' ) ) {
-			return new WP_REST_Response( __( 'Sorry, Event Tickets Plus must be active to use this endpoint.', 'event-tickets' ), 401 );
-		}
-
 		return tribe_attendees( 'restv1' )->by_primary_key( $request['id'] );
 	}
 
@@ -356,10 +355,11 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 	 * Validates the user permission.
 	 *
 	 * @since 5.3.2
+	 * @since TBD check the REST API permission via centralized method.
 	 *
 	 * @return bool
 	 */
 	public function validate_user_permission() {
-		return current_user_can( 'edit_users' ) || current_user_can( 'tribe_manage_attendees' );
+		return tribe( 'tickets.rest-v1.main' )->request_has_manage_access();
 	}
 }

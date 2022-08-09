@@ -4,7 +4,7 @@ Contributors: theeventscalendar, brianjessee, camwynsp, aguseo, bordoni, borkweb
 Tags: tickets, registration, event registration, RSVP, ticket sales, attendee management
 Requires at least: 5.6
 Tested up to: 6.0.1
-Stable tag: 5.4.3.1
+Stable tag: 5.4.4
 Requires PHP: 7.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -187,6 +187,21 @@ We've got a [LoopedIn](https://evnt.is/ideas) page where we're actively watching
 Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on using, tweaking, and troubleshooting our plugins.
 
 == Changelog ==
+
+= [5.4.4] TBD =
+
+* Fix - Tickets/RSVP blocks appear in wrong place on non-events when block editor is disabled in The Events Calendar. [ET-1544]
+* Fix - Fixed searching attendees by purchaser name and email for Tickets Commerce attendees. [ET-1543]
+* Fix - Fixed concurrent RSVP booking not showing error messages for out of stock tickets. [ET-1506]
+* Fix - Fixed showing proper ticket unavailable message for past events. [ET-1146]
+* Fix - Fixed Shared Capacity calculation with capped tickets. [ETP-801]
+* Fix - Fixed logic that was causing fatal errors when using Elementor. [ET-1561]
+* Enhancement - Sorting support added on Tickets Commerce Order Report page columns. [ET-1527]
+* Enhancement - Sorting support added on Attendee Report page for Ticket, Security Code, and Check In columns. [ET-1526]
+* Enhancement - Added section about Tickets Commerce on the Tickets Home page. [ET-1539]
+* Enhancement - Tickets Commerce Stripe gateway now shows additional purchaser info metadata in Stripe dashboard. [ET-1542]
+* Enhancement - Update REST API Endpoints to have access via API KEY and remove the restriction to be using Event Tickets Plus to access the `attendees` endpoint. [ET-1559]
+* Enhancement - Allow filtering of Events Archive REST API using `ticketed` parameter to filter Ticketed and Non-ticketed events. [TEC-4439]
 
 = [5.4.3.1] 2022-07-21 =
 

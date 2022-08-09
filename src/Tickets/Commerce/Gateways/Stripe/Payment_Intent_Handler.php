@@ -112,12 +112,7 @@ class Payment_Intent_Handler {
 
 		$stripe_receipt_emails = tribe_get_option( Settings::$option_stripe_receipt_emails );
 		$payment_intent        = Payment_Intent::get( $payment_intent_id );
-
-		// Add the Order ID as metadata to the Payment Intent
-		$metadata               = $payment_intent['metadata'];
-		$metadata['order_id']   = $order->ID;
-		$metadata['return_url'] = tribe( Webhook_Endpoint::class )->get_route_url();
-		$body['metadata']       = $metadata;
+		$body['metadata']      = $this->get_updated_metadata( $order, $payment_intent );
 
 		if ( $stripe_receipt_emails ) {
 			if ( is_user_logged_in() ) {
@@ -214,5 +209,47 @@ class Payment_Intent_Handler {
 	 */
 	public function store_payment_intent( $payment_intent ) {
 		set_transient( $this->get_payment_intent_transient_name(), $payment_intent, 6 * HOUR_IN_SECONDS );
+	}
+
+	/**
+	 * Get the additional metadata for the payment intent.
+	 *
+	 * @since TBD
+	 *
+	 * @param \WP_Post $order The Order data.
+	 * @param array $payment_intent The Payment intent.
+	 *
+	 * @return array
+	 */
+	protected function get_updated_metadata( \WP_Post $order, array $payment_intent ) {
+		// Add the Order ID as metadata to the Payment Intent.
+		$metadata               = $payment_intent['metadata'];
+		$metadata['order_id']   = $order->ID;
+		$metadata['return_url'] = tribe( Webhook_Endpoint::class )->get_route_url();
+
+		$events_in_order  = array_unique( array_filter( wp_list_pluck( $order->items, 'event_id' ) ) );
+		$tickets_in_order = array_unique( array_filter( wp_list_pluck( $order->items, 'ticket_id' ) ) );
+		$ticket_names     = array_map(
+			static function ( $item ) {
+				return get_the_title( $item );
+			},
+			$tickets_in_order
+		);
+
+		$metadata[ 'purchaser_name' ]  = $order->purchaser_name;
+		$metadata[ 'purchaser_email' ] = $order->purchaser_email;
+		$metadata[ 'event_name' ]      = get_post( current( $events_in_order ) )->post_title;
+		$metadata[ 'event_url' ]       = get_post_permalink( current( $events_in_order ) );
+		$metadata[ 'ticket_names' ]    =  implode( $ticket_names, ' ,' );
+
+		/**
+		 * Filter the updated metadata for a completed order's payment intent.
+		 *
+		 * @since TBD
+		 *
+		 * @param \WP_Post $order The Order data.
+		 * @param array $payment_intent The Payment intent.
+		 */
+		return apply_filters( 'tec_tickets_commerce_stripe_update_payment_intent_metadata', $metadata, $order, $payment_intent );
 	}
 }

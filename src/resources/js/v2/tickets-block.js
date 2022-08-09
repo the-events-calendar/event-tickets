@@ -297,7 +297,7 @@ tribe.tickets.block = {
 
 		if ( 'true' === $parent.attr( 'data-has-shared-cap' ) ) {
 			const $form = $parent.closest( 'form' );
-			newValue = obj.checkSharedCapacity( $form, newValue );
+			newValue = obj.checkSharedCapacity( $form, newValue, $parent );
 		}
 
 		if ( 0 === newValue ) {
@@ -396,10 +396,11 @@ tribe.tickets.block = {
 	 *
 	 * @param {jQuery} $form jQuery object that is the form we are checking.
 	 * @param {number} qty The quantity we desire.
+	 * @param {obj} target The ticket item that was clicked.
 	 *
 	 * @returns {integer} The quantity, limited by existing shared cap tickets.
 	 */
-	obj.checkSharedCapacity = function( $form, qty ) {
+	obj.checkSharedCapacity = function( $form, qty, $target ) {
 		let sharedCap = [];
 		let currentLoad = [];
 		const $sharedTickets = $form
@@ -411,21 +412,18 @@ tribe.tickets.block = {
 			return qty;
 		}
 
-		$sharedTickets.each(
-			function() {
-				sharedCap.push( parseInt( $( this ).attr( 'data-available-cap' ), 10 ) );
-			}
-		);
+		let active_ticket_limit = $target.attr( 'data-available-count' );
+		let totalSharedCap =  $target.attr( 'data-shared-cap' );
+
+		if ( undefined === active_ticket_limit || undefined === totalSharedCap ) {
+			return qty;
+		}
 
 		$sharedCapTickets.each(
 			function() {
 				currentLoad.push( parseInt( $( this ).val(), 10 ) );
 			}
 		);
-
-		// IE doesn't allow spread operator.
-		// @todo: check that we're no longer supporting some IE versions.
-		sharedCap = Math.max.apply( this, sharedCap );
 
 		currentLoad = currentLoad.reduce(
 			function( a, b ) {
@@ -434,9 +432,20 @@ tribe.tickets.block = {
 			0
 		);
 
-		const currentAvailable = sharedCap - currentLoad;
+		$sharedTickets.each(
+			function() {
+				sharedCap.push( parseInt( $( this ).attr( 'data-available-count' ), 10 ) );
+			}
+		);
 
-		return Math.min( currentAvailable, qty );
+		sharedCap = Math.max.apply( this, sharedCap );
+
+		return tribe.tickets.utils.calculateSharedCap(
+			qty,
+			active_ticket_limit,
+			sharedCap,
+			currentLoad
+		);
 	};
 
 	/**
@@ -637,7 +646,7 @@ tribe.tickets.block = {
 				}
 
 				if ( 'true' === $ticket.attr( 'data-has-shared-cap' ) ) {
-					maxQty = obj.checkSharedCapacity( $form, newQuantity );
+					maxQty = obj.checkSharedCapacity( $form, newQuantity, $this );
 				}
 
 				if ( 0 > maxQty ) {
