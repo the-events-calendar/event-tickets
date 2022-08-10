@@ -17,6 +17,8 @@
 
 $title           = $this->attr( 'title' );
 $classes         = [ 'tribe-block', 'tribe-block__attendees' ];
+
+/** @var \Tribe\Tickets\Events\Attendees_List $attendees_list */
 $attendees_list  = tribe( 'tickets.events.attendees-list' );
 $attendees       = $attendees_list->get_attendees_for_post( $post_id );
 $attendees_total = $attendees_list->get_attendance_counts( $post_id );
