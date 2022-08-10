@@ -76,7 +76,7 @@ class Settings extends tad_DI52_ServiceProvider {
 				'size'                => 'medium',
 				'default'             => $current_user->user_email,
 				'validation_callback' => 'is_string',
-				'validation_type'     => 'textarea',
+				'validation_type'     => 'email',
 			],
 		];
 
@@ -104,12 +104,12 @@ class Settings extends tad_DI52_ServiceProvider {
 				'html' => '<p>' . esc_html__( 'Add a logo and customize link colors and footer information to personalize your communications.  If you\'d like more granular control over email styling, you can override the email templates in your theme.  Learn More', 'event-tickets' ) . '</p>',
 			],
 			static::$option_header_image_url  => [
-				'type'                => 'text',
+				'type'                => 'image',
 				'label'               => esc_html__( 'Header Image', 'event-tickets' ),
 				'size'                => 'medium',
 				'default'             => '',
 				'validation_callback' => 'is_string',
-				'validation_type'     => 'textarea',
+				'validation_type'     => 'url',
 			],
 			static::$option_header_image_alignment  => [
 				'type'            => 'dropdown',
@@ -123,20 +123,20 @@ class Settings extends tad_DI52_ServiceProvider {
 				],
 			],
 			static::$option_header_bg_color  => [
-				'type'                => 'text',
+				'type'                => 'color',
 				'label'               => esc_html__( 'Header/Footer Background', 'event-tickets' ),
 				'size'                => 'medium',
 				'default'             => '#ffffff',
 				'validation_callback' => 'is_string',
-				'validation_type'     => 'textarea',
+				'validation_type'     => 'color',
 			],
 			static::$option_ticket_bg_color  => [
-				'type'                => 'text',
+				'type'                => 'color',
 				'label'               => esc_html__( 'Ticket Color', 'event-tickets' ),
 				'size'                => 'medium',
 				'default'             => '#ffffff',
 				'validation_callback' => 'is_string',
-				'validation_type'     => 'textarea',
+				'validation_type'     => 'color',
 			],
 			static::$option_footer_content  => [
 				'type'                => 'wysiwyg',
@@ -144,6 +144,17 @@ class Settings extends tad_DI52_ServiceProvider {
 				'tooltip'             => esc_html__( 'Add custom links and instructions to the bottom of your emails.', 'event-tickets' ),
 				'default'             => '',
 				'validation_type'     => 'html',
+				'settings'            => [
+					'media_buttons' => false,
+					'quicktags'     => false,
+					'editor_height' => 200,
+					'buttons'       => [
+						'bold',
+						'italic',
+						'underline',
+						'strikethrough',
+					],
+				]
 			],
 			static::$option_footer_credit => [
 				'type'            => 'checkbox_bool',
