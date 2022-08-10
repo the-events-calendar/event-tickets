@@ -44,7 +44,8 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * @since TBD
 	 */
 	protected function add_actions() {
-		add_action( 'tribe_settings_do_tabs', [ tribe( Emails_Tab::class ), 'register_tab' ], 17 );
+		add_action( 'init', [ $this, 'register_post_types' ] );
+		add_action( 'init', [ $this, 'register_settings_tabs' ] );
 	}
 
 	/**
@@ -54,5 +55,23 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 */
 	protected function add_filters() {
 		add_filter( 'tec_tickets_settings_tabs_ids', [ tribe( Emails_Tab::class ), 'settings_add_tab_id' ] );
+	}
+
+	/**
+	 * Register post types for Tickets Emails.
+	 *
+	 * @since TBD
+	 */
+	public function register_post_types() {
+		$this->container->make( Email_Template::class )->register_post_type();
+	}
+	
+	/**
+	 * Register post types for Tickets Emails.
+	 *
+	 * @since TBD
+	 */
+	public function register_settings_tabs() {
+		add_action( 'tribe_settings_do_tabs', [ tribe( Emails_Tab::class ), 'register_tab' ], 17 );
 	}
 }
