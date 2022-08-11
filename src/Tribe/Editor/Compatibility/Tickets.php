@@ -36,6 +36,7 @@ class Tribe__Tickets__Editor__Compatibility__Tickets {
 		$post = get_post();
 		if ( $post instanceof WP_Post
 			 && class_exists( '\Elementor\Plugin' )
+			 && \Elementor\Plugin::$instance->documents->get( $post->ID )
 			 && \Elementor\Plugin::$instance->documents->get( $post->ID )->is_built_with_elementor()
 		) {
 			return $content;

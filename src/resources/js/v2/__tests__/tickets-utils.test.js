@@ -115,3 +115,27 @@ describe( 'Format number extended tests', () => {
 		expect( utils.numberFormat( '111', 'invalid-format' ) ).toBe(false);
 	} );
 } );
+
+describe( 'Testing Shared Capacity Calculations', () => {
+
+	// result should always the be minimum value between `target_available` and `maxAvailable - addedtToCart`.
+	const dataset = [
+		{ targetQty: 2, targetAvailable: 2, maxAvailable: 2, addedToCart: 0, result: 2 },
+		{ targetQty: 1, targetAvailable: 1, maxAvailable: 2, addedToCart: 0, result: 1 },
+		{ targetQty: 3, targetAvailable: 2, maxAvailable: 5, addedToCart: 0, result: 2 },
+		{ targetQty: 3, targetAvailable: 3, maxAvailable: 2, addedToCart: 0, result: 2 },
+		{ targetQty: 1, targetAvailable: 1, maxAvailable: 2, addedToCart: 2, result: 0 },
+		{ targetQty: 3, targetAvailable: 3, maxAvailable: 2, addedToCart: 2, result: 0 },
+		{ targetQty: 4, targetAvailable: 4, maxAvailable: 6, addedToCart: 3, result: 3 },
+		{ targetQty: 4, targetAvailable: 5, maxAvailable: 3, addedToCart: 0, result: 3 },
+		{ targetQty: 4, targetAvailable: 5, maxAvailable: 3, addedToCart: 1, result: 2 },
+		{ targetQty: 4, targetAvailable: 5, maxAvailable: 3, addedToCart: 2, result: 1 },
+		{ targetQty: 4, targetAvailable: 5, maxAvailable: 3, addedToCart: 3, result: 0 },
+	];
+
+	describe( 'Testing Shared Cap combinations', () => {
+		test.each(dataset)( 'values : ( $targetQty, $targetAvailable, $maxAvailable, $addedToCart )', ( { targetQty, targetAvailable, maxAvailable, addedToCart, result } ) => {
+			expect(utils.calculateSharedCap( targetQty, targetAvailable, maxAvailable, addedToCart )).toBe(result);
+		} );
+	});
+} );

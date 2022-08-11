@@ -956,6 +956,15 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			];
 		}
 
+		// Setup sorting args.
+		if ( tribe_get_request_var( 'orderby' ) ) {
+			$args['orderby'] = tribe_get_request_var( 'orderby' );
+		}
+
+		if ( tribe_get_request_var( 'order' ) ) {
+			$args['order']   = tribe_get_request_var( 'order' );
+		}
+
 		$item_data = Tribe__Tickets__Tickets::get_event_attendees_by_args( $event_id, $args );
 
 		$items = [];
@@ -1065,5 +1074,48 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		$search_box = str_replace( '<input type="search"', $custom_search . '<input type="search"', $search_box );
 
 		echo $search_box;
+	}
+
+	/**
+	 * Return list of sortable columns.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function get_sortable_columns() {
+		return [
+				'ticket'   => 'id',
+				'security' => 'security_code',
+				'check_in' => 'check_in',
+				'status'   => $this->is_status_sortable()
+		];
+	}
+
+	/**
+	 * Check if `Status` column is sortable or not.
+	 *
+	 * @since TBD
+	 *
+	 * @return false|string
+	 */
+	protected function is_status_sortable() {
+		$event_id  = tribe_get_request_var( 'event_id' );
+		$providers = Tribe__Tickets__Tickets::get_active_providers_for_post( $event_id );
+
+		if ( count( $providers ) > 1 ) {
+			return false;
+		}
+
+		/** @var \Tribe__Tickets__Status__Manager $status */
+		$status   = tribe( 'tickets.status' );
+		$provider = $status->get_provider_slug( current( $providers ) );
+
+		// For now, disabled for all providers but RSVP, we may remove this logic once we implement sorting for other providers.
+		if ( 'rsvp' !== $provider ) {
+			return false;
+		}
+
+		return $provider . '_status';
 	}
 }
