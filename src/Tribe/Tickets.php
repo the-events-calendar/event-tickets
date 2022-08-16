@@ -1456,6 +1456,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			if ( ! empty( $args['per_page'] ) ) {
 				$repository->per_page( absint( $args['per_page'] ) );
 			}
+
+			if ( ! empty( $args['orderby'] ) ) {
+				$repository->order_by( strval( $args['orderby'] ) );
+			}
+
+			if ( ! empty( $args['order'] ) ) {
+				$repository->order( strval( $args['order'] ) );
+			}
 		}
 
 		/**
@@ -3390,11 +3398,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$editor = tribe( 'editor' );
 
 			// Blocks and ticket templates merged - bail if we should be seeing blocks.
-			if (
-				has_blocks( $post->ID )
-				&& $editor->should_load_blocks()
-				&& ! $editor->is_classic_editor()
-			) {
+			if ( has_blocks( $post->ID ) ) {
 				return false;
 			}
 

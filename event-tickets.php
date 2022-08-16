@@ -12,7 +12,7 @@ Text Domain: event-tickets
 Domain Path: /lang/
 */
 /*
- Copyright 2010-2012 by Modern Tribe Inc and the contributors
+ Copyright 2010-2022 by The Events Calendar and the contributors
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License

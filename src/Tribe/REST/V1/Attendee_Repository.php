@@ -23,7 +23,7 @@ class Tribe__Tickets__REST__V1__Attendee_Repository
 	public function __construct() {
 		$this->decorated = tribe( 'tickets.attendee-repository' );
 		$this->decorated->set_formatter( $this );
-		$this->decorated->set_query_builder($this);
+		$this->decorated->set_query_builder( $this );
 		$this->decorated->set_default_args( array_merge(
 			$this->decorated->get_default_args(),
 			array( 'order' => 'ASC', 'orderby' => array( 'id', 'title' ) )
@@ -39,11 +39,7 @@ class Tribe__Tickets__REST__V1__Attendee_Repository
 	 * @return WP_Query
 	 */
 	public function build_query( $use_query_builder = true ) {
-		$can_view_hidden_attendees = false;
-
-		if ( current_user_can( 'edit_users' ) || current_user_can( 'tribe_manage_attendees' ) ) {
-			$can_view_hidden_attendees = true;
-		}
+		$can_view_hidden_attendees = tribe( 'tickets.rest-v1.main' )->request_has_manage_access();
 
 		/**
 		 * Whether the current user can view hidden attendees,
@@ -115,7 +111,7 @@ class Tribe__Tickets__REST__V1__Attendee_Repository
 	 *
 	 * @since 4.8
 	 *
-	 * @param mixed $primary_key
+	 * @param mixed $primary_key The attendee ID.
 	 *
 	 * @return array|WP_Error The Attendee data on success, or a WP_Error
 	 *                        detailing why the read failed.
@@ -131,10 +127,10 @@ class Tribe__Tickets__REST__V1__Attendee_Repository
 		$messages = tribe( 'tickets.rest-v1.messages' );
 
 		if ( empty( $found ) ) {
-			return new WP_Error( 'attendee-not-found', $messages->get_message( 'attendee-not-found' ), array( 'status' => 404 ) );
+			return new WP_Error( 'attendee-not-found', $messages->get_message( 'attendee-not-found' ), [ 'status' => 404 ] );
 		}
 
-		if ( current_user_can( 'edit_users' ) || current_user_can( 'tribe_manage_attendees' ) ) {
+		if ( tribe( 'tickets.rest-v1.main' )->request_has_manage_access() ) {
 			return $this->format_item( $found[0] );
 		}
 
@@ -148,7 +144,7 @@ class Tribe__Tickets__REST__V1__Attendee_Repository
 		$found_w_cap = $cap_query->get_posts();
 
 		if ( empty( $found_w_cap ) ) {
-			return new WP_Error( 'attendee-not-accessible', $messages->get_message( 'attendee-not-accessible' ), array( 'status' => 401 ) );
+			return new WP_Error( 'attendee-not-accessible', $messages->get_message( 'attendee-not-accessible' ), [ 'status' => 401 ] );
 		}
 
 		$this->decorated->set_query_builder( $this );
@@ -161,7 +157,7 @@ class Tribe__Tickets__REST__V1__Attendee_Repository
 	 *
 	 * @since 4.8
 	 *
-	 * @param int|WP_Post $id
+	 * @param int|WP_Post $id The attendee ID.
 	 *
 	 * @return array|null The attendee information in the REST API format or
 	 *                    `null` if the attendee is invalid.
