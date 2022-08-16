@@ -34,8 +34,6 @@ class Provider extends tad_DI52_ServiceProvider {
 		$this->register_assets();
 		$this->register_hooks();
 
-		$this->load_functions();
-
 
 		// Register the SP on the container.
 		$this->container->singleton( static::class, $this );
@@ -52,20 +50,6 @@ class Provider extends tad_DI52_ServiceProvider {
 		$assets->register();
 
 		$this->container->singleton( Assets::class, $assets );
-	}
-
-	/**
-	 * Include All function files.
-	 *
-	 * @since TBD
-	 */
-	protected function load_functions() {
-		$path = Tickets_Plugin::instance()->plugin_path;
-
-		require_once $path . 'src/functions/commerce/orm.php';
-		require_once $path . 'src/functions/commerce/orders.php';
-		require_once $path . 'src/functions/commerce/attendees.php';
-		require_once $path . 'src/functions/commerce/tickets.php';
 	}
 
 	/**
