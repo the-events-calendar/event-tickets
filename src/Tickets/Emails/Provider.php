@@ -9,14 +9,11 @@
 namespace TEC\Tickets\Emails;
 
 use tad_DI52_ServiceProvider;
-use TEC\Tickets\Commerce\Gateways;
-use \Tribe__Tickets__Main as Tickets_Plugin;
-
 
 /**
- * Service provider for the Tickets Commerce.
+ * Service provider for the Tickets Emails.
  *
- * @since   5.1.6
+ * @since   TBD
  * @package TEC\Tickets\Emails
  */
 class Provider extends tad_DI52_ServiceProvider {
@@ -24,7 +21,7 @@ class Provider extends tad_DI52_ServiceProvider {
 	/**
 	 * Register the provider singletons.
 	 *
-	 * @since 5.1.6
+	 * @since TBD
 	 */
 	public function register() {
 
