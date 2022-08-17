@@ -1,7 +1,5 @@
 <?php
 
-use TEC\Tickets\Settings;
-
 /**
  * Checks whether out new Tickets Emails system should load.
  *
