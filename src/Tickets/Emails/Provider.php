@@ -28,6 +28,11 @@ class Provider extends tad_DI52_ServiceProvider {
 	 */
 	public function register() {
 
+		// If not enabled, do not load Tickets Emails system.
+		if ( ! tec_tickets_emails_is_enabled() ) {
+			return;
+		}
+
 		$this->container->register( Emails_Tab::class );
 		$this->container->register( Settings::class );
 
