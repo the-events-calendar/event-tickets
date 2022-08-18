@@ -134,7 +134,7 @@ class Emails_Tab extends tad_DI52_ServiceProvider {
 			'html' => '<h2>' . esc_html__( 'Tickets Emails', 'event-tickets' ) . '</h2>',
 		];
 		$kb_link_html = sprintf( '<a href="%s" target="_blank" rel="nofollow">%s</a>',
-			'https://www.theeventscalendar.com',
+			'https://www.theeventscalendar.com', // @todo Replace with correct KB URL.
 			esc_html__( 'Knowledgebase', 'event-tickets' )
 		);
 		$description_text = sprintf(
