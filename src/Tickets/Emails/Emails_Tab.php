@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * Handles registering and setup for the Tickets Emails settings tab.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Emails
+ */
+
 namespace TEC\Tickets\Emails;
 
 use TEC\Tickets\Commerce\Shortcodes\Checkout_Shortcode;
