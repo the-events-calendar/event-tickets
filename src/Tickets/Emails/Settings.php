@@ -16,13 +16,76 @@ use Tribe__Tickets__Main;
 
 class Settings {
 
+	/**
+	 * The option key for email sender's name.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
 	static $option_sender_name = 'tec-tickets-emails-sender-name';
+
+	/**
+	 * The option key for email sender's email.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
 	static $option_sender_email = 'tec-tickets-emails-sender-email';
+
+	/**
+	 * The option key for the email header image url.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
 	static $option_header_image_url = 'tec-tickets-emails-header-image-url';
+
+	/**
+	 * The option key for the email header image alignment.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
 	static $option_header_image_alignment = 'tec-tickets-emails-header-image-alignment';
+
+	/**
+	 * The option key for the email header background color.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
 	static $option_header_bg_color = 'tec-tickets-emails-header-bg-color';
+
+	/**
+	 * The option key for the email ticket background color.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
 	static $option_ticket_bg_color = 'tec-tickets-emails-ticket-bg-color';
+
+	/**
+	 * The option key for the email footer content.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
 	static $option_footer_content = 'tec-tickets-emails-footer-content';
+
+	/**
+	 * The option key for the email footer credit.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
 	static $option_footer_credit = 'tec-tickets-emails-footer-credit';
 
 	/**
