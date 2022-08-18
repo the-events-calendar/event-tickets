@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Handles registering and setup for the Tickets Emails settings tab.
  *
