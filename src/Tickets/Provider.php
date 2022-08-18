@@ -26,6 +26,7 @@ class Provider extends tad_DI52_ServiceProvider {
 	 */
 	public function register() {
 		require_once Tickets_Plugin::instance()->plugin_path . 'src/functions/commerce/provider.php';
+		require_once Tickets_Plugin::instance()->plugin_path . 'src/functions/emails/provider.php';
 
 		$this->register_hooks();
 		$this->register_assets();
@@ -36,6 +37,9 @@ class Provider extends tad_DI52_ServiceProvider {
 
 		// Loads all of tickets commerce.
 		$this->container->register( Commerce\Provider::class );
+
+		// Loads all of tickets emails.
+		$this->container->register( Emails\Provider::class );
 		
 		// Loads admin area.
 		$this->container->register( Admin\Provider::class );
