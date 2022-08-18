@@ -11,6 +11,9 @@
 
 namespace TEC\Tickets\Emails;
 
+use Tribe__Template;
+use Tribe__Tickets__Main;
+
 class Settings {
 
 	static $option_sender_name = 'tec-tickets-emails-sender-name';
@@ -23,6 +26,24 @@ class Settings {
 	static $option_footer_credit = 'tec-tickets-emails-footer-credit';
 
 	/**
+	 * Gets the template instance used to setup the rendering html.
+	 *
+	 * @since TBD
+	 *
+	 * @return Tribe__Template
+	 */
+	public function get_template() {
+		if ( empty( $this->template ) ) {
+			$this->template = new Tribe__Template();
+			$this->template->set_template_origin( Tribe__Tickets__Main::instance() );
+			$this->template->set_template_folder( 'src/admin-views/settings/tickets-emails' );
+			$this->template->set_template_context_extract( true );
+		}
+
+		return $this->template;
+	}
+
+	/**
 	 * Adds list of Templates to the Tickets Emails settings tab.
 	 * 
 	 * @param  [] $fields Current array of Tickets Emails settings fields.
@@ -30,10 +51,37 @@ class Settings {
 	 * @return [] $fields Filtered array of Tickets Emails settings fields.
 	 */
 	public function add_template_list( $fields ) {
+
+		$template = $this->get_template();
+
+		// @todo Replace this with array of actual Message Template objects that do not yet exist.
+		$templates = [
+			[
+				'title'     => 'Ticket Email',
+				'enabled'   => true,
+				'recipient' => 'Purchaser',
+			],
+			[
+				'title'     => 'RSVP Email',
+				'enabled'   => true,
+				'recipient' => 'Attendee',
+			],
+			[
+				'title'     => 'Order Notification',
+				'enabled'   => false,
+				'recipient' => 'Site Admin',
+			],
+			[
+				'title'     => 'Order Failure',
+				'enabled'   => true,
+				'recipient' => 'Site Admin',
+			],
+		];
+
 		$new_fields = [
 			[
 				'type' => 'html',
-				'html' => '<h3>This space is reserved for the email template listing</h3>',
+				'html' => $template->template( 'message-templates', [ 'templates' => $templates ], false ),
 			],
 		];
 
