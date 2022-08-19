@@ -11,6 +11,7 @@
 
 namespace TEC\Tickets\Emails;
 
+use TEC\Tickets\Commerce\Settings as CommerceSettings;
 use Tribe__Template;
 use Tribe__Tickets__Main;
 
@@ -99,7 +100,7 @@ class Settings {
 		if ( empty( $this->template ) ) {
 			$this->template = new Tribe__Template();
 			$this->template->set_template_origin( Tribe__Tickets__Main::instance() );
-			$this->template->set_template_folder( 'src/admin-views/settings/tickets-emails' );
+			$this->template->set_template_folder( 'src/admin-views/settings/emails' );
 			$this->template->set_template_context_extract( true );
 		}
 
@@ -108,6 +109,8 @@ class Settings {
 
 	/**
 	 * Adds list of Templates to the Tickets Emails settings tab.
+	 * 
+	 * @since TBD
 	 * 
 	 * @param  [] $fields Current array of Tickets Emails settings fields.
 	 * 
@@ -155,6 +158,8 @@ class Settings {
 
 	/**
 	 * Adds Sender Info fields to Tickets Emails settings.
+	 * 
+	 * @since TBD
 	 *
 	 * @param  [] $fields Current array of Tickets Emails settings fields.
 	 * 
@@ -162,7 +167,10 @@ class Settings {
 	 */
 	public function sender_info_fields( $fields ) {
 
-		$current_user = get_user_by( 'id', get_current_user_id() );
+		// If name and email stored in TC, use it, otherwise use WP User info.
+		$current_user  = get_user_by( 'id', get_current_user_id() );
+		$default_name  = tribe_get_option( CommerceSettings::$option_confirmation_email_sender_name, $current_user->user_nicename );
+		$default_email = tribe_get_option( CommerceSettings::$option_confirmation_email_sender_email, $current_user->user_email );
 
 		$new_fields = [
 			[
@@ -177,7 +185,7 @@ class Settings {
 				'type'                => 'text',
 				'label'               => esc_html__( 'Sender Name', 'event-tickets' ),
 				'size'                => 'medium',
-				'default'             => $current_user->user_nicename,
+				'default'             => $default_name,
 				'validation_callback' => 'is_string',
 				'validation_type'     => 'textarea',
 			],
@@ -185,7 +193,7 @@ class Settings {
 				'type'                => 'text',
 				'label'               => esc_html__( 'Sender Email', 'event-tickets' ),
 				'size'                => 'medium',
-				'default'             => $current_user->user_email,
+				'default'             => $default_email,
 				'validation_callback' => 'is_string',
 				'validation_type'     => 'email',
 			],
@@ -198,6 +206,8 @@ class Settings {
 
 	/**
 	 * Adds Sender Info fields to Tickets Emails settings.
+	 * 
+	 * @since TBD
 	 *
 	 * @param  [] $fields Current array of Tickets Emails settings fields.
 	 * 
@@ -264,13 +274,16 @@ class Settings {
 						'italic',
 						'underline',
 						'strikethrough',
+						'alignleft',
+						'aligncenter',
+						'alignright',
 					],
 				]
 			],
 			static::$option_footer_credit => [
 				'type'            => 'checkbox_bool',
 				'label'           => esc_html__( 'Footer Credit', 'event-tickets' ),
-				'tooltip'         => esc_html__( 'Include "Ticket powered by Event Tickets Plus" in the footer', 'event-tickets' ),
+				'tooltip'         => esc_html__( 'Include "Ticket powered by Event Tickets" in the footer', 'event-tickets' ),
 				'default'         => true,
 				'validation_type' => 'boolean',
 			],
