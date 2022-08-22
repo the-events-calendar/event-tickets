@@ -1,7 +1,7 @@
 == Changelog ==
 
 = [TBD]
-* Enhancement - For Attendee ticket email, added an option for List for better mobile visibility [ETP-810]
+* Enhancement - For Attendee ticket email, added an option for List for better mobile visibility. [ETP-810]
 
 = [5.4.2.1] 2022-07-12 =
 

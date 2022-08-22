@@ -39,7 +39,6 @@
 
 		if ( $count === 2 ) {
 			$cell_type = 'td';
-
 		}
 
 		if ( $count > 1 ) {

@@ -41,7 +41,7 @@ $referer    = ! empty( $_SERVER['HTTP_REFERER'] ) ? "action='" . esc_url( $_SERV
 		</label>
 		<input type="hidden" value="email" name="action" />
 		<fieldset class="list-or-table__section">
-			<legend><?php esc_html_e( 'Send data as a List or Table?:', 'event-tickets' ); ?></legend>
+			<legend><?php esc_html_e( 'Send data as a List or Table?', 'event-tickets' ); ?></legend>
 			<div>
 				<label for="email_table">
 					<span><?php esc_html_e( 'Table:', 'event-tickets' ); ?></span>
