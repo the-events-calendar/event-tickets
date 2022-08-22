@@ -1,10 +1,6 @@
 /* global tribe_event_tickets_plus, tribe, jQuery, _, tribe_l10n_datatables,
  tribe_ticket_datepicker_format, TribeTickets, tribe_timepickers  */
 
-/**
- * Wordpress dependencies
- */
-
 // For compatibility purposes we add this
 if ( 'undefined' === typeof tribe.tickets ) {
 	tribe.tickets = {};
