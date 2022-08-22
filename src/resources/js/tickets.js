@@ -4,7 +4,6 @@
 /**
  * Wordpress dependencies
  */
-const { __ } = wp.i18n;
 
 // For compatibility purposes we add this
 if ( 'undefined' === typeof tribe.tickets ) {
@@ -136,33 +135,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		}
 
 		$( document.getElementById( provider_id ) ).prop( 'checked', true ).trigger( 'change' );
-	}
-
-	/**
-	 * Validates the Attendee custom fields by making sure that no Labels are duplicate, which breaks functionality
-	 *
-	 * @since TBD
-	 *
-	 * @return boolean
-	 */
-	function validateAttendeeLabels() {
-		var $attendee_labels = $edit_panel.find( `input[name$='[label]']` );
-		var $attendee_array = [];
-		var result = true;
-
-		// Make sure labels are not the same for attendee information before we allow a save
-		$attendee_labels.each( function() {
-			if ( $attendee_array.includes( $( this ).val() ) ) {
-				alert( __( 'Duplicate labels are not allowed.\nPlease verify that you are not using the same label for different fields and try again.', 'event-tickets' ) );
-				result = false;
-
-				return false;
-			} else {
-				$attendee_array.push( $( this ).val() );
-			}
-		} );
-
-		return result;
 	}
 
 	/**
@@ -667,8 +639,12 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			return;
 		}
 
-		if ( validateAttendeeLabels() === false ) {
-			return;
+		// Does an attendee field validation for multiple labels, if ET+ is active.
+		// Called in event-tickets-plus/src/resources/js/meta-admin.js
+		if ( tribe_event_tickets_plus.meta.admin ) {
+			if ( tribe_event_tickets_plus.meta.admin.validateAttendeeLabels() === false ) {
+				return;
+			}
 		}
 
 		$tribe_tickets.trigger( 'pre-save-ticket.tribe', e );
