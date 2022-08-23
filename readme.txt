@@ -190,8 +190,8 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.5.0] 2022-0X-XX =
 
-* Version - Event Tickets 5.5.0 is only compatible with The Events Calendar 6.0.0 and higher
-* Version - Event Tickets 5.5.0 is only compatible with Event Tickets Plus 5.6.0 and higher
+* Version - Event Tickets 5.5.0 is only compatible with The Events Calendar 6.0.0 and higher.
+* Version - Event Tickets 5.5.0 is only compatible with Event Tickets Plus 5.6.0 and higher.
 * Enhancement - Adds a compatibility layer to work with the new Recurrence Backend Engine in TEC/ECP.
 * Language - 4 new strings added, 49 updated, 0 fuzzied, and 3 obsoleted
 
