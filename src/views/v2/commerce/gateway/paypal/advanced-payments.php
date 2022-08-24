@@ -25,7 +25,7 @@ if ( $must_login || ! $active_custom_payments ) {
 ?>
 
 <!-- Advanced credit and debit card payments form -->
-<div class="tribe-tickets__commerce-checkout-paypal-advanced-payments-container">
+<div class="tribe-tickets__commerce-checkout-paypal-advanced-payments-container tribe-common-a11y-hidden">
 
 	<?php $this->template( 'gateway/paypal/advanced-payments/separator' ); ?>
 
