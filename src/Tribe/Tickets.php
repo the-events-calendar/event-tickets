@@ -375,7 +375,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Retrieve the Query args to fetch all the Tickets.
 		 *
-		 * @since  TBD refactored to use the tickets ORM.
+		 * @since  5.5.0 refactored to use the tickets ORM.
 		 * @since  4.6
 		 *
 		 * @param int|WP_Post $post_id Build the args to query only
@@ -403,7 +403,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Retrieve the ID numbers of all tickets assigned to an event.
 		 *
-		 * @since  TBD refactored to use the tickets ORM.
+		 * @since  5.5.0 refactored to use the tickets ORM.
 		 * @since  4.6
 		 *
 		 * @param int|WP_Post $post Only get tickets assigned to this post ID.

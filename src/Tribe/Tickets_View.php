@@ -1112,7 +1112,7 @@ class Tribe__Tickets__Tickets_View {
 			/**
 			 * Allow for the addition of content (namely the "Who's Attending?" list) above the ticket form.
 			 *
-			 * @since TBD
+			 * @since 5.5.0
 			 */
 			do_action( 'tribe_tickets_before_front_end_ticket_form' );
 

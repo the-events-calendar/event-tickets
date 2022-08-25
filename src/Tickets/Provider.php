@@ -28,7 +28,7 @@ class Provider extends tad_DI52_ServiceProvider {
 	/**
 	 * Binds and sets up implementations.
 	 *
-	 * @since TBD
+	 * @since 5.5.0
 	 * @since 5.1.6
 	 */
 	public function register() {
@@ -65,7 +65,7 @@ class Provider extends tad_DI52_ServiceProvider {
 	/**
 	 * The RBE (Custom Tables) providers to be registered. Validates the conditions required to register providers.
 	 *
-	 * @since TBD
+	 * @since 5.5.0
 	 */
 	public function register_ct1_providers() {
 		if ( ! class_exists( TEC_CT1_Provider::class ) ) {

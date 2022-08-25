@@ -2,7 +2,7 @@
 /**
  * Manages the compatibility of Event Tickets with the new Recurrence Back-end Engine in Events Calendar Pro.
  *
- * @since   TBD
+ * @since   5.5.0
  *
  * @package TEC\Tickets\Recurrence
  */
@@ -15,7 +15,7 @@ use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series;
 /**
  * Custom Tables Compatibility for Tickets
  *
- * @since   TBD
+ * @since   5.5.0
  *
  * @package TEC\Events_Pro\Custom_Tables\V1\Tickets
  */
@@ -24,7 +24,7 @@ class Compatibility {
 	/**
 	 * TEC post types that cannot have tickets attached.
 	 *
-	 * @since TBD
+	 * @since 5.5.0
 	 *
 	 * @var array
 	 */
@@ -33,7 +33,7 @@ class Compatibility {
 	/**
 	 * Get a list of post types to restrict adding tickets to.
 	 *
-	 * @since TBD
+	 * @since 5.5.0
 	 *
 	 * @return array
 	 */
@@ -44,7 +44,7 @@ class Compatibility {
 	/**
 	 * Checks if a WP post object is allowed to have tickets.
 	 *
-	 * @since TBD
+	 * @since 5.5.0
 	 *
 	 * @param \WP_Post $post the object to check.
 	 *

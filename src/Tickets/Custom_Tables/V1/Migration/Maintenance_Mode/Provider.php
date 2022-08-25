@@ -3,7 +3,7 @@
  * Handles the maintenance mode set during migration to prevent WRITE operations on Events
  * and related information.
  *
- * @since   TBD
+ * @since   5.5.0
  *
  * @package TEC\Tickets\Custom_Tables\V1\Migration\Maintenance_Mode;
  */
@@ -15,7 +15,7 @@ use tad_DI52_ServiceProvider;
 /**
  * Class Provider.
  *
- * @since   TBD
+ * @since   5.5.0
  *
  * @package TEC\Tickets\Custom_Tables\V1\Migration\Maintenance_Mode;
  */
@@ -29,7 +29,7 @@ class Provider extends tad_DI52_ServiceProvider {
 	 * Activates the migration mode, disabling a number of UI elements
 	 * across ET.
 	 *
-	 * @since TBD
+	 * @since 5.5.0
 	 *
 	 * @return bool Whether the Event-wide maintenance mode was activated or not.
 	 */
@@ -48,7 +48,7 @@ class Provider extends tad_DI52_ServiceProvider {
 	 * Hooks into filters and actions disabling a number of UI across plugins to make sure
 	 * no Event-related data will be modified during the migration.
 	 *
-	 * @since TBD
+	 * @since 5.5.0
 	 *
 	 * @return void
 	 */
@@ -81,7 +81,7 @@ class Provider extends tad_DI52_ServiceProvider {
 	/**
 	 * Includes the file for the Ticket/RSVP migration in-progress message.
 	 *
-	 * @since TBD
+	 * @since 5.5.0
 	 *
 	 * @return void The method does not return any value and will echo a mesage to the page.
 	 */
@@ -92,7 +92,7 @@ class Provider extends tad_DI52_ServiceProvider {
 	/**
 	 * Includes the file for the ticket/rsvp update form migration in-progress message.
 	 *
-	 * @since TBD
+	 * @since 5.5.0
 	 *
 	 * @return void The method does not return any value and will echo a message to the page.
 	 */
@@ -103,7 +103,7 @@ class Provider extends tad_DI52_ServiceProvider {
 	/**
 	 * Returns the file path for the Ticket/RSVP migration in-progress message.
 	 *
-	 * @since TBD
+	 * @since 5.5.0
 	 *
 	 * @return string The absolute file path to the Migration in progress message.
 	 */
@@ -114,7 +114,7 @@ class Provider extends tad_DI52_ServiceProvider {
 	/**
 	 * Filters the done state for templates that we wish to prevent from displaying when a migration is in progress.
 	 *
-	 * @since TBD
+	 * @since 5.5.0
 	 *
 	 * @param mixed $done_state    Indicates whether the template has been rendered.
 	 * @param mixed $template_name The template being rendered.

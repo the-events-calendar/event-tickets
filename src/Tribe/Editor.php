@@ -101,7 +101,7 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 	 * Check if current admin page is post type `tribe_events`
 	 *
 	 * @since 4.9
-	 * @since TBD renamed from `current_type_support_tickets`
+	 * @since 5.5.0 renamed from `current_type_support_tickets`
 	 *
 	 * @param  mixed $post_type
 	 *
@@ -134,7 +134,7 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 		/**
 		 * Allows overriding the ability of a post to support tickets, as long as the post_type supports tickets.
 		 *
-		 * @since TBD
+		 * @since 5.5.0
 		 *
 		 * @param bool $can_have_tickets the post type slug
 		 * @param int  $post_id          the post id

@@ -34,14 +34,14 @@ class Customizer extends \tad_DI52_ServiceProvider {
 	 *
 	 * @since 4.12.3
 	 *
-	 * @deprecated TBD
+	 * @deprecated 5.5.0
 	 *
 	 * @param string $template The original CSS template.
 	 *
 	 * @return string $template The resulting CSS template.
 	 */
 	public function filter_accent_color_css( $template ) {
-		_deprecated_function( __METHOD__, 'TBD', 'Accent color is no longer available on Views V2.' );
+		_deprecated_function( __METHOD__, '5.5.0', 'Accent color is no longer available on Views V2.' );
 
 		return $template;
 	}

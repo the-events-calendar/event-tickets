@@ -2,7 +2,7 @@
 /**
  * Handles registering Providers for the TEC\Events_Community\Custom_Tables\V1 (RBE) namespace.
  *
- * @since   TBD
+ * @since   5.5.0
  *
  * @package TEC\Events_Community\Custom_Tables\V1;
  */
@@ -16,7 +16,7 @@ use Tribe__Utils__Array as Arr;
 /**
  * Class Provider.
  *
- * @since   TBD
+ * @since   5.5.0
  *
  * @package TEC\Tickets\Custom_Tables\V1;
  */
@@ -29,7 +29,7 @@ class Provider extends tad_DI52_ServiceProvider {
 	/**
 	 * Registers any dependent providers.
 	 *
-	 * @since TBD
+	 * @since 5.5.0
 	 *
 	 * @return bool Whether the Event-wide maintenance mode was activated or not.
 	 */
@@ -56,7 +56,7 @@ class Provider extends tad_DI52_ServiceProvider {
 	 * Registers the filters required to lock Ticket editing while the
 	 * migration to the Custom Tables V1 is running.
 	 *
-	 * @since TBD
+	 * @since 5.5.0
 	 */
 	private function lock_for_maintence(): void {
 		$state = $this->container->make( State::class );
@@ -70,7 +70,7 @@ class Provider extends tad_DI52_ServiceProvider {
 	 * Filter the body clases in admin context to prevent tickets from being added to
 	 * recurring Events or ticketed Events from being made recurring.
 	 *
-	 * @since TBD
+	 * @since 5.5.0
 	 *
 	 * @param string $admin_body_classes A space-separated list of classes.
 	 *
@@ -97,7 +97,7 @@ class Provider extends tad_DI52_ServiceProvider {
 	 * A wrapper for `prevent_tickets_on_recurring_events` that can be used
 	 * on front-end body tags.
 	 *
-	 * @since TBD
+	 * @since 5.5.0
 	 *
 	 * @param array $body_classes A list of classes.
 	 *

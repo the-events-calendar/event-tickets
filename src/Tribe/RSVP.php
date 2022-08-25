@@ -2528,7 +2528,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.7
 	 *
-	 * @since TBD Return WP_Error in case of errors to show proper error messages.
+	 * @since 5.5.0 Return WP_Error in case of errors to show proper error messages.
 	 *
 	 * @param int     $product_id       The ticket post ID.
 	 * @param int     $ticket_qty       The number of attendees that should be generated.
