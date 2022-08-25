@@ -2,37 +2,20 @@
 # This file is distributed under the same license as the Event Tickets package.
 msgid ""
 msgstr ""
-<<<<<<< HEAD
-"Project-Id-Version: Event Tickets 5.5.0-rc1\n"
+"Project-Id-Version: Event Tickets 5.5.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/event-tickets\n"
-"POT-Creation-Date: 2022-08-02 18:57:11+00:00\n"
+"POT-Creation-Date: 2022-08-25 17:55:09+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2022-08-02 18:57\n"
+"PO-Revision-Date: 2022-08-25 17:55\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 
-#. #-#-#-#-#  event-tickets.pot (Event Tickets 5.5.0-rc1)  #-#-#-#-#
+#. #-#-#-#-#  event-tickets.pot (Event Tickets 5.5.0)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
 #: event-tickets.php:61 src/Tribe/Admin/Notices.php:92 src/Tribe/Main.php:690
-#: src/Tribe/Privacy.php:59 src/admin-views/admin-welcome-message.php:60
-=======
-"Project-Id-Version: Event Tickets 5.4.4\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/event-tickets\n"
-"POT-Creation-Date: 2022-08-11 05:07:59+00:00\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2022-08-11 05:07\n"
-"Last-Translator: \n"
-"Language-Team: \n"
-
-#. #-#-#-#-#  event-tickets.pot (Event Tickets 5.4.4)  #-#-#-#-#
-#. Plugin Name of the plugin/theme
-#: event-tickets.php:61 src/Tribe/Admin/Notices.php:92 src/Tribe/Main.php:701
 #: src/Tribe/Privacy.php:59 src/admin-views/admin-welcome-message.php:73
->>>>>>> 7953506b01e0a0cf79117e4817299a02a3026aab
 msgid "Event Tickets"
 msgstr ""
 
@@ -5096,11 +5079,7 @@ msgid "Payments"
 msgstr ""
 
 #: src/Tickets/Commerce/Payments_Tab.php:300 src/Tribe/Admin/Notices.php:214
-<<<<<<< HEAD
-#: src/Tribe/Main.php:665 src/admin-views/admin-welcome-message.php:58
-=======
-#: src/Tribe/Main.php:676 src/admin-views/admin-welcome-message.php:71
->>>>>>> 7953506b01e0a0cf79117e4817299a02a3026aab
+#: src/Tribe/Main.php:665 src/admin-views/admin-welcome-message.php:71
 #: src/admin-views/tribe-commerce-settings.php:4
 msgid "Event Tickets Plus"
 msgstr ""
@@ -5455,19 +5434,11 @@ msgstr ""
 msgid "%s will be available on %s at %s"
 msgstr ""
 
-<<<<<<< HEAD
-#: src/Tickets/Commerce/Status/Pending.php:163 src/Tribe/Tickets.php:3181
+#: src/Tickets/Commerce/Status/Pending.php:163 src/Tribe/Tickets.php:3189
 msgid "%s are no longer available."
 msgstr ""
 
-#: src/Tickets/Commerce/Status/Pending.php:165 src/Tribe/Tickets.php:3183
-=======
-#: src/Tickets/Commerce/Status/Pending.php:163 src/Tribe/Tickets.php:3208
-msgid "%s are no longer available."
-msgstr ""
-
-#: src/Tickets/Commerce/Status/Pending.php:165 src/Tribe/Tickets.php:3210
->>>>>>> 7953506b01e0a0cf79117e4817299a02a3026aab
+#: src/Tickets/Commerce/Status/Pending.php:165 src/Tribe/Tickets.php:3191
 msgid "There are no %s available at this time."
 msgstr ""
 
@@ -6820,48 +6791,28 @@ msgstr ""
 msgid "Are you sure you want to cancel?"
 msgstr ""
 
-<<<<<<< HEAD
-#: src/Tribe/Editor/Blocks/Tickets.php:282 src/Tribe/Tickets.php:4315
-=======
-#: src/Tribe/Editor/Blocks/Tickets.php:282 src/Tribe/Tickets.php:4338
->>>>>>> 7953506b01e0a0cf79117e4817299a02a3026aab
+#: src/Tribe/Editor/Blocks/Tickets.php:282 src/Tribe/Tickets.php:4319
 msgctxt "Error message title, will be followed by the error code."
 msgid "API Error"
 msgstr ""
 
-<<<<<<< HEAD
-#: src/Tribe/Editor/Blocks/Tickets.php:283 src/Tribe/Tickets.php:4316
-=======
-#: src/Tribe/Editor/Blocks/Tickets.php:283 src/Tribe/Tickets.php:4339
->>>>>>> 7953506b01e0a0cf79117e4817299a02a3026aab
+#: src/Tribe/Editor/Blocks/Tickets.php:283 src/Tribe/Tickets.php:4320
 msgid ""
 "Refresh this page or wait a few minutes before trying again. If this happens "
 "repeatedly, please contact the Site Admin."
 msgstr ""
 
-<<<<<<< HEAD
-#: src/Tribe/Editor/Blocks/Tickets.php:284 src/Tribe/Tickets.php:4317
-=======
-#: src/Tribe/Editor/Blocks/Tickets.php:284 src/Tribe/Tickets.php:4340
->>>>>>> 7953506b01e0a0cf79117e4817299a02a3026aab
+#: src/Tribe/Editor/Blocks/Tickets.php:284 src/Tribe/Tickets.php:4321
 msgid ""
 "The ticket for this event has sold out and has been removed from your cart."
 msgstr ""
 
-<<<<<<< HEAD
-#: src/Tribe/Editor/Blocks/Tickets.php:285 src/Tribe/Tickets.php:4318
-=======
-#: src/Tribe/Editor/Blocks/Tickets.php:285 src/Tribe/Tickets.php:4341
->>>>>>> 7953506b01e0a0cf79117e4817299a02a3026aab
+#: src/Tribe/Editor/Blocks/Tickets.php:285 src/Tribe/Tickets.php:4322
 #: src/views/v2/commerce/order/header/title-empty.php:28
 msgid "Whoops!"
 msgstr ""
 
-<<<<<<< HEAD
-#: src/Tribe/Editor/Blocks/Tickets.php:286 src/Tribe/Tickets.php:4319
-=======
-#: src/Tribe/Editor/Blocks/Tickets.php:286 src/Tribe/Tickets.php:4342
->>>>>>> 7953506b01e0a0cf79117e4817299a02a3026aab
+#: src/Tribe/Editor/Blocks/Tickets.php:286 src/Tribe/Tickets.php:4323
 msgctxt "The %s will change based on the error produced."
 msgid "You have %s ticket(s) with a field that requires information."
 msgstr ""
@@ -6904,8 +6855,8 @@ msgstr ""
 
 #: src/Tribe/Editor/Warnings.php:111
 msgid ""
-"Tickets and RSVPs are not yet supported for events with Recurrence Patterns. "
-"%1$s%2$s Read about our plans for future features %3$s"
+"Tickets and RSVPs are not yet supported on recurring events. %1$s%2$s Read "
+"about our plans for future features %3$s"
 msgstr ""
 
 #: src/Tribe/Editor.php:227
@@ -8114,74 +8065,42 @@ msgstr ""
 msgid "Move %s"
 msgstr ""
 
-<<<<<<< HEAD
-#: src/Tribe/Tickets.php:1767
+#: src/Tribe/Tickets.php:1775
 msgid "Shared capacity with other tickets"
 msgstr ""
 
-#: src/Tribe/Tickets.php:1768
-=======
-#: src/Tribe/Tickets.php:1794
-msgid "Shared capacity with other tickets"
-msgstr ""
-
-#: src/Tribe/Tickets.php:1795
->>>>>>> 7953506b01e0a0cf79117e4817299a02a3026aab
+#: src/Tribe/Tickets.php:1776
 msgid "Set capacity for this ticket only"
 msgstr ""
 
 #. translators: %1$s: The singular of "RSVP" or "ticket", %2$s: The plural of
 #. "RSVPs" or "tickets", %3$s: The site name.
-<<<<<<< HEAD
-#: src/Tribe/Tickets.php:2385
-=======
-#: src/Tribe/Tickets.php:2412
->>>>>>> 7953506b01e0a0cf79117e4817299a02a3026aab
+#: src/Tribe/Tickets.php:2393
 msgctxt "The default RSVP/ticket email subject"
 msgid "Your %1$s from %3$s"
 msgid_plural "Your %2$s from %3$s"
 msgstr[0] ""
 msgstr[1] ""
 
-<<<<<<< HEAD
-#: src/Tribe/Tickets.php:3133
+#: src/Tribe/Tickets.php:3141
 msgid "%s are not available as this %s has passed."
 msgstr ""
 
-#: src/Tribe/Tickets.php:3169
+#: src/Tribe/Tickets.php:3177
 msgid "%s will be available on "
 msgstr ""
 
-#: src/Tribe/Tickets.php:3175
-=======
-#: src/Tribe/Tickets.php:3160
-msgid "%s are not available as this %s has passed."
-msgstr ""
-
-#: src/Tribe/Tickets.php:3196
-msgid "%s will be available on "
-msgstr ""
-
-#: src/Tribe/Tickets.php:3202
->>>>>>> 7953506b01e0a0cf79117e4817299a02a3026aab
+#: src/Tribe/Tickets.php:3183
 msgid " at "
 msgstr ""
 
 #. translators: %s: Tickets label
-<<<<<<< HEAD
-#: src/Tribe/Tickets.php:3178 src/views/blocks/tickets/content-inactive.php:19
-=======
-#: src/Tribe/Tickets.php:3205 src/views/blocks/tickets/content-inactive.php:19
->>>>>>> 7953506b01e0a0cf79117e4817299a02a3026aab
+#: src/Tribe/Tickets.php:3186 src/views/blocks/tickets/content-inactive.php:19
 #: src/views/v2/tickets/item/content/inactive.php:53
 msgid "%s are not yet available"
 msgstr ""
 
-<<<<<<< HEAD
-#: src/Tribe/Tickets.php:3634
-=======
-#: src/Tribe/Tickets.php:3657
->>>>>>> 7953506b01e0a0cf79117e4817299a02a3026aab
+#: src/Tribe/Tickets.php:3638
 msgid "(copy)"
 msgstr ""
 
