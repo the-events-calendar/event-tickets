@@ -626,7 +626,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	/* "Save Ticket" button action */
 	$document.on( 'click.tribe', '[name="ticket_form_save"]', function( e ) {
 		var $form = $( document.getElementById( 'ticket_form_table' ) );
-		var attendeeLablesIsValid = true;
+		var additionalValidation = true;
 
 		// Makes sure we have validation
 		$form.trigger( 'validation.tribe' );
@@ -636,11 +636,11 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			return;
 		}
 
-		// setting triggerHandler as a variable is needed to return a new value of attendeeLablesIsValid if needed.
-		attendeeLablesIsValid = $tribe_tickets.triggerHandler( 'attendee-label-validation.tribe', [ attendeeLablesIsValid ] );
+		// setting triggerHandler as a variable is needed to return a new value of additionalValidation if needed.
+		additionalValidation = $tribe_tickets.triggerHandler( 'additionalValidation.tribe', [ additionalValidation ] );
 
-		// if trigger returns false, that there's multiple of the same label, exit out of form save.
-		if ( attendeeLablesIsValid === false ) {
+		// prevent form submission if trigger above returns false
+		if ( additionalValidation === false ) {
 			return;
 		}
 
