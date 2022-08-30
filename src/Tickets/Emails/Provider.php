@@ -51,6 +51,7 @@ class Provider extends tad_DI52_ServiceProvider {
 		$assets->register();
 
 		$this->container->singleton( Assets::class, $assets );
+		$this->container->singleton( 'tickets.emails.assets', $assets );
 	}
 
 	/**
