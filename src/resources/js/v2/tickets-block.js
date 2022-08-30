@@ -345,7 +345,7 @@ tribe.tickets.block = {
 			$input.val( newValue );
 		}
 
-		// If there's two of the same forms on a page, match the value of attendees on both on change
+		// If there's two of the same forms on a page, match the value of attendees on both on change.
 		obj.formMatch( $input, newValue );
 	};
 
@@ -375,7 +375,7 @@ tribe.tickets.block = {
 			$input[ 0 ].value = decrease;
 		}
 
-		// If there's two of the same forms on a page, match the value of attendees on both on change
+		// If there's two of the same forms on a page, match the value of attendees on both on change.
 		obj.formMatch( $input, decrease );
 	};
 
