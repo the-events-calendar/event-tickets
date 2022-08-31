@@ -9,13 +9,7 @@
 
 namespace TEC\Tickets\Emails;
 
-use TEC\Tickets\Commerce\Shortcodes\Checkout_Shortcode;
-use TEC\Tickets\Commerce\Shortcodes\Success_Shortcode;
-use TEC\Tickets\Commerce\Gateways\Manager;
-use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Gateway as Gateway;
-use TEC\Tickets\Settings as Tickets_Commerce_Settings;
 use Tribe\Tickets\Admin\Settings as Plugin_Settings;
-use \tad_DI52_ServiceProvider;
 use \Tribe__Template;
 use Tribe__Tickets__Main;
 
@@ -26,7 +20,7 @@ use Tribe__Tickets__Main;
  *
  * @package TEC\Tickets\Emails
  */
-class Emails_Tab extends tad_DI52_ServiceProvider {
+class Emails_Tab {
 
 	/**
 	 * Slug for the tab.
@@ -38,16 +32,11 @@ class Emails_Tab extends tad_DI52_ServiceProvider {
 	public static $slug = 'emails';
 
 	/**
-	 * @inheritdoc
-	 */
-	public function register() {
-		$this->container->singleton( static::class, $this );
-	}
-
-	/**
 	 * Create the Tickets Commerce Emails Settings Tab.
 	 *
 	 * @since  TBD
+	 * 
+	 * @param $admin_page Page ID of current admin page.
 	 */
 	public function register_tab( $admin_page ) {
 		if ( ! empty( $admin_page ) && Plugin_Settings::$settings_page_id !== $admin_page ) {
@@ -70,9 +59,9 @@ class Emails_Tab extends tad_DI52_ServiceProvider {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $tabs Array containing the tabs ids for Event Tickets settings.
+	 * @param  array $tabs Current array of tabs ids.
 	 *
-	 * @return array $tabs Array containing the tabs ids for Event Tickets settings.
+	 * @return array $tabs Filtered array of tabs ids.
 	 */
 	public function settings_add_tab_id( $tabs ) {
 		$tabs[] = static::$slug;

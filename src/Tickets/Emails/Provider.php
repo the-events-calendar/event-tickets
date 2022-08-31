@@ -30,15 +30,15 @@ class Provider extends tad_DI52_ServiceProvider {
 			return;
 		}
 
-		$this->container->register( Emails_Tab::class );
-
 		$this->register_assets();
 		$this->register_hooks();
 
-
-		// Register the SP on the container.
+		// Register singletons.
 		$this->container->singleton( static::class, $this );
 		$this->container->singleton( 'tickets.emails.provider', $this );
+		$this->container->singleton( Emails_Tab::class );
+		$this->container->singleton( 'tickets.emails.emails_tab', $this );
+
 	}
 
 	/**

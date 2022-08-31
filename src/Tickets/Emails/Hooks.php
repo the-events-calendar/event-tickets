@@ -44,7 +44,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * @since TBD
 	 */
 	protected function add_actions() {
-		add_action( 'tribe_settings_do_tabs', [ tribe( Emails_Tab::class ), 'register_tab' ], 17 );
+		add_action( 'tribe_settings_do_tabs', [ $this, 'register_emails_tab' ], 17 );
 	}
 
 	/**
@@ -53,9 +53,72 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * @since TBD
 	 */
 	protected function add_filters() {
-		add_filter( 'tec_tickets_settings_tabs_ids', [ tribe( Emails_Tab::class ), 'settings_add_tab_id' ] );
-		add_filter( 'tec_tickets_emails_settings_fields', [ tribe( Settings::class ), 'add_template_list' ] );
-		add_filter( 'tec_tickets_emails_settings_fields', [ tribe( Settings::class ), 'sender_info_fields' ] );
-		add_filter( 'tec_tickets_emails_settings_fields', [ tribe( Settings::class ), 'email_styling_fields' ] );
+		add_filter( 'tec_tickets_settings_tabs_ids', [ $this, 'add_tab_id' ] );
+		add_filter( 'tec_tickets_emails_settings_fields', [ $this, 'add_template_list' ] );
+		add_filter( 'tec_tickets_emails_settings_fields', [ $this, 'add_sender_info_fields' ] );
+		add_filter( 'tec_tickets_emails_settings_fields', [ $this, 'add_email_styling_fields' ] );
+	}
+
+	/**
+	 * Action to add emails tab to tickets settings page.
+	 *
+	 * @since TBD
+	 * 
+	 * @param $admin_page Page ID of current admin page.
+	 */
+	public function register_emails_tab( $admin_page ) {
+		$this->container->make( Emails_Tab::class )->register_tab( $admin_page );
+	}
+
+	/**
+	 * Filter to add tab id to tickets emails tab.
+	 *
+	 * @since TBD
+	 * 
+	 * @param  array $tabs Current array of tabs ids.
+	 * 
+	 * @return array $tabs Filtered array of tabs ids.
+	 */
+	public function add_tab_id( $tabs ) {
+		return $this->container->make( Emails_Tab::class )->settings_add_tab_id( $tabs );
+	}
+
+	/**
+	 * Filter to add template list to Ticklets Emails settings fields.
+	 *
+	 * @since TBD
+	 * 
+	 * @param  array $fields Current array of Tickets Emails settings fields.
+	 * 
+	 * @return array $fields Filtered array of Tickets Emails settings fields.
+	 */
+	public function add_template_list( $fields ) {
+		return $this->container->make( Settings::class )->add_template_list( $fields );
+	}
+
+	/**
+	 * Filter to add sender info to Ticklets Emails settings fields.
+	 *
+	 * @since TBD
+	 * 
+	 * @param array $fields Current array of Tickets Emails settings fields.
+	 * 
+	 * @return array $fields Filtered array of Tickets Emails settings fields.
+	 */
+	public function add_sender_info_fields( $fields ) {
+		return $this->container->make( Settings::class )->sender_info_fields( $fields );
+	}
+
+	/**
+	 * Filter to add sender info to Ticklets Emails settings fields.
+	 *
+	 * @since TBD
+	 * 
+	 * @param array $fields Current array of Tickets Emails settings fields.
+	 * 
+	 * @return array $fields Filtered array of Tickets Emails settings fields.
+	 */
+	public function add_email_styling_fields( $fields ) {
+		return $this->container->make( Settings::class )->email_styling_fields( $fields );
 	}
 }
