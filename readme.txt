@@ -188,6 +188,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Fix - Properly save the check-in details for attendees on check-in. [ETP-819]
+
 = [5.4.4] 2022-08-15 =
 
 * Fix - Tickets/RSVP blocks appear in wrong place on non-events when block editor is disabled in The Events Calendar. [ET-1544]
