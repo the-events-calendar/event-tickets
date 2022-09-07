@@ -2,19 +2,19 @@
 # This file is distributed under the same license as the Event Tickets package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Event Tickets 5.4.4\n"
+"Project-Id-Version: Event Tickets 5.5.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/event-tickets\n"
-"POT-Creation-Date: 2022-08-11 05:07:59+00:00\n"
+"POT-Creation-Date: 2022-08-25 17:55:09+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2022-08-11 05:07\n"
+"PO-Revision-Date: 2022-08-25 17:55\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 
-#. #-#-#-#-#  event-tickets.pot (Event Tickets 5.4.4)  #-#-#-#-#
+#. #-#-#-#-#  event-tickets.pot (Event Tickets 5.5.0)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
-#: event-tickets.php:61 src/Tribe/Admin/Notices.php:92 src/Tribe/Main.php:701
+#: event-tickets.php:61 src/Tribe/Admin/Notices.php:92 src/Tribe/Main.php:690
 #: src/Tribe/Privacy.php:59 src/admin-views/admin-welcome-message.php:73
 msgid "Event Tickets"
 msgstr ""
@@ -5079,7 +5079,7 @@ msgid "Payments"
 msgstr ""
 
 #: src/Tickets/Commerce/Payments_Tab.php:300 src/Tribe/Admin/Notices.php:214
-#: src/Tribe/Main.php:676 src/admin-views/admin-welcome-message.php:71
+#: src/Tribe/Main.php:665 src/admin-views/admin-welcome-message.php:71
 #: src/admin-views/tribe-commerce-settings.php:4
 msgid "Event Tickets Plus"
 msgstr ""
@@ -5434,11 +5434,11 @@ msgstr ""
 msgid "%s will be available on %s at %s"
 msgstr ""
 
-#: src/Tickets/Commerce/Status/Pending.php:163 src/Tribe/Tickets.php:3208
+#: src/Tickets/Commerce/Status/Pending.php:163 src/Tribe/Tickets.php:3189
 msgid "%s are no longer available."
 msgstr ""
 
-#: src/Tickets/Commerce/Status/Pending.php:165 src/Tribe/Tickets.php:3210
+#: src/Tickets/Commerce/Status/Pending.php:165 src/Tribe/Tickets.php:3191
 msgid "There are no %s available at this time."
 msgstr ""
 
@@ -6048,6 +6048,22 @@ msgstr ""
 msgid "Zambian kwacha (ZMW)"
 msgstr ""
 
+#: src/Tickets/Custom_Tables/V1/admin-views/migration/maintenance-mode/ticket-updates.php:6
+msgid "Your changes will not be saved."
+msgstr ""
+
+#: src/Tickets/Custom_Tables/V1/admin-views/migration/maintenance-mode/ticket-updates.php:10
+msgid ""
+"Editing your Tickets and RSVPs has been disabled on this site while it is "
+"undergoing maintenance. Thank you for your patience."
+msgstr ""
+
+#: src/Tickets/Custom_Tables/V1/admin-views/migration/maintenance-mode/tickets-and-rsvps.php:5
+msgid ""
+"Tickets and RSVPs have been disabled on this site while it is undergoing "
+"maintenance. Thank you for your patience."
+msgstr ""
+
 #: src/Tribe/Abstract_Attendance_Totals.php:65
 msgctxt "total sold tooltip"
 msgid "Includes all ticketed attendees regardless of order status."
@@ -6058,7 +6074,7 @@ msgctxt "total complete tooltip"
 msgid "Includes ticketed attendees with orders marked Completed."
 msgstr ""
 
-#: src/Tribe/Admin/Home/Service_Provider.php:80 src/Tribe/Main.php:845
+#: src/Tribe/Admin/Home/Service_Provider.php:80 src/Tribe/Main.php:828
 msgid "Welcome to Event Tickets!"
 msgstr ""
 
@@ -6107,7 +6123,7 @@ msgid ""
 msgstr ""
 
 #: src/Tribe/Admin/Move_Ticket_Types.php:320
-#: src/Tribe/Admin/Move_Tickets.php:758
+#: src/Tribe/Admin/Move_Tickets.php:761
 msgid "Changes to your tickets from %s"
 msgstr ""
 
@@ -6142,28 +6158,28 @@ msgctxt "attendee screen bulk actions"
 msgid "Move"
 msgstr ""
 
-#: src/Tribe/Admin/Move_Tickets.php:450
+#: src/Tribe/Admin/Move_Tickets.php:453
 msgid ""
 "%1$s could not be moved: valid %2$s IDs or a destination ID were not "
 "provided."
 msgstr ""
 
-#: src/Tribe/Admin/Move_Tickets.php:462
+#: src/Tribe/Admin/Move_Tickets.php:465
 msgid ""
 "%s could not be moved: there was an unexpected failure during reassignment."
 msgstr ""
 
-#: src/Tribe/Admin/Move_Tickets.php:471
+#: src/Tribe/Admin/Move_Tickets.php:474
 msgctxt "moved tickets success message fragment"
 msgid "assigned to %s"
 msgstr ""
 
-#: src/Tribe/Admin/Move_Tickets.php:478
+#: src/Tribe/Admin/Move_Tickets.php:481
 msgctxt "moved tickets success message fragment"
 msgid "moved to %s and"
 msgstr ""
 
-#: src/Tribe/Admin/Move_Tickets.php:485
+#: src/Tribe/Admin/Move_Tickets.php:488
 msgid ""
 "%1$d attendee for %2$s was successfully %3$s. By default, we adjust capacity "
 "and stock, however, we recommend reviewing each as needed to ensure numbers "
@@ -6177,11 +6193,11 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Tribe/Admin/Move_Tickets.php:633
+#: src/Tribe/Admin/Move_Tickets.php:636
 msgid "This ticket was moved to %1$s %2$s from %3$s %4$s"
 msgstr ""
 
-#: src/Tribe/Admin/Move_Tickets.php:820
+#: src/Tribe/Admin/Move_Tickets.php:823
 msgid "This ticket was moved to %1$s from %2$s"
 msgstr ""
 
@@ -6775,28 +6791,28 @@ msgstr ""
 msgid "Are you sure you want to cancel?"
 msgstr ""
 
-#: src/Tribe/Editor/Blocks/Tickets.php:282 src/Tribe/Tickets.php:4338
+#: src/Tribe/Editor/Blocks/Tickets.php:282 src/Tribe/Tickets.php:4319
 msgctxt "Error message title, will be followed by the error code."
 msgid "API Error"
 msgstr ""
 
-#: src/Tribe/Editor/Blocks/Tickets.php:283 src/Tribe/Tickets.php:4339
+#: src/Tribe/Editor/Blocks/Tickets.php:283 src/Tribe/Tickets.php:4320
 msgid ""
 "Refresh this page or wait a few minutes before trying again. If this happens "
 "repeatedly, please contact the Site Admin."
 msgstr ""
 
-#: src/Tribe/Editor/Blocks/Tickets.php:284 src/Tribe/Tickets.php:4340
+#: src/Tribe/Editor/Blocks/Tickets.php:284 src/Tribe/Tickets.php:4321
 msgid ""
 "The ticket for this event has sold out and has been removed from your cart."
 msgstr ""
 
-#: src/Tribe/Editor/Blocks/Tickets.php:285 src/Tribe/Tickets.php:4341
+#: src/Tribe/Editor/Blocks/Tickets.php:285 src/Tribe/Tickets.php:4322
 #: src/views/v2/commerce/order/header/title-empty.php:28
 msgid "Whoops!"
 msgstr ""
 
-#: src/Tribe/Editor/Blocks/Tickets.php:286 src/Tribe/Tickets.php:4342
+#: src/Tribe/Editor/Blocks/Tickets.php:286 src/Tribe/Tickets.php:4323
 msgctxt "The %s will change based on the error produced."
 msgid "You have %s ticket(s) with a field that requires information."
 msgstr ""
@@ -6825,26 +6841,25 @@ msgid "%s was not able to be updated"
 msgstr ""
 
 #. translators: %1$s: URL for help link, %2$s: Label for help link.
-#: src/Tribe/Editor/Warnings.php:77
+#: src/Tribe/Editor/Warnings.php:90
 msgctxt "Helper link in Ticket Editor"
 msgid "Learn More"
 msgstr ""
 
 #. translators: %1$s: link to help article.
-#: src/Tribe/Editor/Warnings.php:83
+#: src/Tribe/Editor/Warnings.php:96
 msgid ""
 "There is no payment gateway configured. To create tickets, you'll need to "
 "enable and configure an ecommerce solution. %1$s"
 msgstr ""
 
-#: src/Tribe/Editor/Warnings.php:97
+#: src/Tribe/Editor/Warnings.php:111
 msgid ""
-"This is a recurring event. If you add tickets, they will only show up on "
-"first event in the recurrence series. Please carefully configure your "
-"recurring events."
+"Tickets and RSVPs are not yet supported on recurring events. %1$s%2$s Read "
+"about our plans for future features %3$s"
 msgstr ""
 
-#: src/Tribe/Editor.php:209
+#: src/Tribe/Editor.php:227
 msgid "Tickets Blocks"
 msgstr ""
 
@@ -6916,108 +6931,97 @@ msgstr ""
 
 #. Translators: %1$s is the min required version of The Events Calendar. %2$s
 #. Is the update link opening `<a>`. %3$s Is the update link closing `</a>`.
-#: src/Tribe/Main.php:439
+#: src/Tribe/Main.php:428
 msgid ""
 "When The Events Calendar and Event Tickets are both activated, The Events "
 "Calendar must be running version %1$s or greater. Please %2$supdate now.%3$s"
 msgstr ""
 
-#: src/Tribe/Main.php:502
+#: src/Tribe/Main.php:491
 msgid ""
 "Sorry, Event Tickets requires WordPress %s or higher. Please upgrade your "
 "WordPress install."
 msgstr ""
 
-#: src/Tribe/Main.php:506
+#: src/Tribe/Main.php:495
 msgid ""
 "Sorry, Event Tickets requires PHP %s or higher. Talk to your Web host about "
 "moving you to a newer version of PHP."
 msgstr ""
 
-#: src/Tribe/Main.php:631
+#: src/Tribe/Main.php:620
 msgid "Support for Event Tickets"
 msgstr ""
 
-#: src/Tribe/Main.php:633
+#: src/Tribe/Main.php:622
 msgid "Settings overview"
 msgstr ""
 
-#: src/Tribe/Main.php:634
+#: src/Tribe/Main.php:623
 msgid "Features overview"
 msgstr ""
 
-#: src/Tribe/Main.php:635
+#: src/Tribe/Main.php:624
 msgid "Troubleshooting common problems"
 msgstr ""
 
-#: src/Tribe/Main.php:636
+#: src/Tribe/Main.php:625
 msgid "Customizing Event Tickets"
 msgstr ""
 
-#: src/Tribe/Main.php:653
+#: src/Tribe/Main.php:642
 msgid "New User Primer"
 msgstr ""
 
-#: src/Tribe/Main.php:655
+#: src/Tribe/Main.php:644
 msgctxt "help feature box section"
 msgid ""
 "We are committed to helping you sell %1$s for your event. Check out our "
 "handy %2$s to get started."
 msgstr ""
 
-#: src/Tribe/Main.php:672
+#: src/Tribe/Main.php:661
 msgid "open-source forum on WordPress.org"
 msgstr ""
 
-#: src/Tribe/Main.php:673
+#: src/Tribe/Main.php:662
 msgid ""
 "If you have tried the above steps and are still having trouble, you can post "
 "a new thread to our %s. Our support staff monitors these forums once a week "
 "and would be happy to assist you there."
 msgstr ""
 
-#: src/Tribe/Main.php:675
+#: src/Tribe/Main.php:664
 msgid "premium support on our website"
 msgstr ""
 
-#: src/Tribe/Main.php:677
+#: src/Tribe/Main.php:666
 msgid ""
 "Looking for more immediate support? We offer %1$s with the purchase of any "
 "of our premium plugins (like %2$s). Pick up a license and you can post there "
 "directly and expect a response within 24-48 hours during weekdays."
 msgstr ""
 
-#: src/Tribe/Main.php:679 src/Tribe/Main.php:684
+#: src/Tribe/Main.php:668 src/Tribe/Main.php:673
 msgid "post a thread"
 msgstr ""
 
-#: src/Tribe/Main.php:680
+#: src/Tribe/Main.php:669
 msgid ""
 "Already have Event Tickets Plus? You can %s in our premium support forums. "
 "Our support team monitors the forums and will respond to your thread within "
 "24-48 hours (during the week)."
 msgstr ""
 
-#: src/Tribe/Main.php:685
+#: src/Tribe/Main.php:674
 msgid ""
 "If you have a valid license for one of our paid plugins, you can %s in our "
 "premium support forums. Our support team monitors the forums and will "
 "respond to your thread within 24-48 hours (during the week)."
 msgstr ""
 
-#: src/Tribe/Main.php:707
-msgid "Event Tickets - Legacy"
-msgstr ""
-
-#: src/Tribe/Main.php:1005
+#: src/Tribe/Main.php:988
 msgid "Buy"
-msgstr ""
-
-#: src/Tribe/Main.php:1084
-msgid ""
-"When Event Tickets and Event Tickets Plus are both activated, Event Tickets "
-"Plus must be running version %1$s or greater. Please %2$smanually update now"
-"%3$s."
 msgstr ""
 
 #: src/Tribe/Metabox.php:114
@@ -8052,51 +8056,51 @@ msgstr ""
 msgid "Capacity"
 msgstr ""
 
-#: src/Tribe/Tickets.php:472
+#: src/Tribe/Tickets.php:453
 msgctxt "delete link"
 msgid "Delete %s"
 msgstr ""
 
-#: src/Tribe/Tickets.php:554
+#: src/Tribe/Tickets.php:535
 msgid "Move %s"
 msgstr ""
 
-#: src/Tribe/Tickets.php:1794
+#: src/Tribe/Tickets.php:1775
 msgid "Shared capacity with other tickets"
 msgstr ""
 
-#: src/Tribe/Tickets.php:1795
+#: src/Tribe/Tickets.php:1776
 msgid "Set capacity for this ticket only"
 msgstr ""
 
 #. translators: %1$s: The singular of "RSVP" or "ticket", %2$s: The plural of
 #. "RSVPs" or "tickets", %3$s: The site name.
-#: src/Tribe/Tickets.php:2412
+#: src/Tribe/Tickets.php:2393
 msgctxt "The default RSVP/ticket email subject"
 msgid "Your %1$s from %3$s"
 msgid_plural "Your %2$s from %3$s"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Tribe/Tickets.php:3160
+#: src/Tribe/Tickets.php:3141
 msgid "%s are not available as this %s has passed."
 msgstr ""
 
-#: src/Tribe/Tickets.php:3196
+#: src/Tribe/Tickets.php:3177
 msgid "%s will be available on "
 msgstr ""
 
-#: src/Tribe/Tickets.php:3202
+#: src/Tribe/Tickets.php:3183
 msgid " at "
 msgstr ""
 
 #. translators: %s: Tickets label
-#: src/Tribe/Tickets.php:3205 src/views/blocks/tickets/content-inactive.php:19
+#: src/Tribe/Tickets.php:3186 src/views/blocks/tickets/content-inactive.php:19
 #: src/views/v2/tickets/item/content/inactive.php:53
 msgid "%s are not yet available"
 msgstr ""
 
-#: src/Tribe/Tickets.php:3657
+#: src/Tribe/Tickets.php:3638
 msgid "(copy)"
 msgstr ""
 

@@ -47,7 +47,7 @@ class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 	/**
 	 * Filter the args for Event Query over REST API.
 	 *
-	 * @since TBD
+	 * @since 5.5.0
 	 *
 	 * @param array           $args Arguments used to get the events from the archive page.
 	 * @param array           $data Array with the data to be returned to the REST response.
@@ -159,7 +159,7 @@ class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 	/**
 	 * Return if the request has access to private information.
 	 *
-	 * @since TBD
+	 * @since 5.5.0
 	 *
 	 * @return bool True if the request has access to private information, false otherwise.
 	 */
@@ -170,7 +170,7 @@ class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 	/**
 	 * Return if the user has manage access.
 	 *
-	 * @since TBD
+	 * @since 5.5.0
 	 *
 	 * @return bool True if the user has manage access, false otherwise.
 	 */
@@ -181,7 +181,7 @@ class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 	/**
 	 * Return if user can read private information.
 	 *
-	 * @since TBD
+	 * @since 5.5.0
 	 *
 	 * @return bool True if user can read private information, false otherwise.
 	 */
@@ -192,7 +192,7 @@ class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 	/**
 	 * Return if the request has a valid api key.
 	 *
-	 * @since TBD
+	 * @since 5.5.0
 	 *
 	 * @return bool True if the request has a valid api key, false otherwise.
 	 */
