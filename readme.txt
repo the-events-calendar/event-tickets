@@ -190,6 +190,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [TBD] TBD =
 
+* Fix - Properly save the check-in details for attendees on check-in. [ETP-819]
 * Enhancement - Add `attendance` information to the `events` REST API endpoint. [ET-1580]
 
 = [5.4.4] 2022-08-15 =
