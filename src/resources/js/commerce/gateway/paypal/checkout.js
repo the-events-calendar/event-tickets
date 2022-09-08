@@ -651,7 +651,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	obj.setupAdvancedPayments = ( event, $container ) => {
 		// If this returns false or the card fields aren't visible, see Step #1.
 		if ( ! paypal.HostedFields.isEligible() ) {
-			// Card fields aren't shown if the merchant isn't eligible
+			// Card fields aren't shown if the merchant isn't eligible.
 			return;
 		}
 
