@@ -19,6 +19,8 @@ import RSVPInactiveBlock from './inactive-block/container';
 import MoveModal from '@moderntribe/tickets/elements/move-modal';
 import './style.pcss';
 
+const { __ } = wp.i18n;
+
 class RSVP extends PureComponent {
 	static propTypes = {
 		clientId: PropTypes.string.isRequired,
@@ -35,7 +37,7 @@ class RSVP extends PureComponent {
 		! this.props.rsvpId && this.props.initializeRSVP();
 	}
 
-	render() {
+	renderBlock() {
 		const {
 			created,
 			isInactive,
@@ -67,6 +69,36 @@ class RSVP extends PureComponent {
 				{ isModalShowing && <MoveModal /> }
 			</Fragment>
 		);
+	}
+
+	renderBlockNotSupported() {
+		const { clientId, } = this.props;
+		return (
+			<div className="tribe-editor__not-supported-message">
+				<p className="tribe-editor__not-supported-message-text">
+					{__( 'RSVPs are not yet supported on recurring events.', 'event-tickets' )}
+					<br/>
+					<a
+						className="tribe-editor__not-supported-message-link"
+						href="https://evnt.is/1b7a"
+						target="_blank"
+						rel="noopener noreferrer"
+					>
+						{__( 'Read about our plans for future features.', 'event-tickets' )}
+					</a>
+					<br/>
+					<a href="#" onClick={() => wp.data.dispatch('core/block-editor').removeBlock(clientId)}>{__( 'Remove block', 'event-tickets' )}</a>
+				</p>
+			</div>
+		);
+	}
+
+	render() {
+		if ( this.props.hasRecurrenceRules && this.props.noTicketsOnRecurring ) {
+			return this.renderBlockNotSupported();
+		}
+
+		return this.renderBlock();
 	}
 }
 

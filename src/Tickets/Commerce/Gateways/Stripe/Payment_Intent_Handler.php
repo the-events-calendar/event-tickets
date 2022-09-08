@@ -214,7 +214,7 @@ class Payment_Intent_Handler {
 	/**
 	 * Get the additional metadata for the payment intent.
 	 *
-	 * @since TBD
+	 * @since 5.5.0
 	 *
 	 * @param \WP_Post $order The Order data.
 	 * @param array $payment_intent The Payment intent.
@@ -245,7 +245,7 @@ class Payment_Intent_Handler {
 		/**
 		 * Filter the updated metadata for a completed order's payment intent.
 		 *
-		 * @since TBD
+		 * @since 5.5.0
 		 *
 		 * @param \WP_Post $order The Order data.
 		 * @param array $payment_intent The Payment intent.

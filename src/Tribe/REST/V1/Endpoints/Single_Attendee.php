@@ -355,7 +355,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 	 * Validates the user permission.
 	 *
 	 * @since 5.3.2
-	 * @since TBD check the REST API permission via centralized method.
+	 * @since 5.5.0 check the REST API permission via centralized method.
 	 *
 	 * @return bool
 	 */

@@ -1315,7 +1315,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 * To avoid the "stacking" of `orderby` clauses and filters the query filters are added at the very last moment,
 	 * right before building the query.
 	 *
-	 * @since TBD
+	 * @since 5.5.0
 	 *
 	 * @return WP_Query The built query object.
 	 */
@@ -1331,7 +1331,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	/**
 	 * Handles the `order_by` clauses for events
 	 *
-	 * @since TBD
+	 * @since 5.5.0
 	 *
 	 * @param string $order_by The key used to order events; e.g. `event_date` to order events by start date.
 	 */
@@ -1399,7 +1399,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	/**
 	 * Sets up the query filters to order attendees by the security code meta.
 	 *
-	 * @since TBD
+	 * @since 5.5.0
 	 *
 	 * @param string $order      The order direction, either `ASC` or `DESC`; defaults to `null` to use the order
 	 *                           specified in the current query or default arguments.
@@ -1439,7 +1439,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	/**
 	 * Sets up the query filters to order attendees by the check-in status.
 	 *
-	 * @since TBD
+	 * @since 5.5.0
 	 *
 	 * @param string $order      The order direction, either `ASC` or `DESC`; defaults to `null` to use the order
 	 *                           specified in the current query or default arguments.
@@ -1480,7 +1480,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	/**
 	 * Sets up the query filters to order attendees by the order status.
 	 *
-	 * @since TBD
+	 * @since 5.5.0
 	 *
 	 * @param string $order      The order direction, either `ASC` or `DESC`; defaults to `null` to use the order
 	 *                           specified in the current query or default arguments.
@@ -1523,7 +1523,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	/**
 	 * Get the order param for the current orderby clause.
 	 *
-	 * @since TBD
+	 * @since 5.5.0
 	 *
 	 * @param $order string|null order type value either 'ASC' or 'DESC'.
 	 *
