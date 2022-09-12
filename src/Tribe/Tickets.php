@@ -1019,7 +1019,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
-		 * Mark an attendee as checked in
+		 * Mark an attendee as checked in.
 		 *
 		 * @abstract
 		 *
@@ -1031,11 +1031,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			update_post_meta( $attendee_id, $this->checkin_key, 1 );
 
 			$args = func_get_args();
-			$qr = null;
+			$qr   = null;
 
 			if ( isset( $args[1] ) && $qr = (bool) $args[1] ) {
 				update_post_meta( $attendee_id, '_tribe_qr_status', 1 );
 			}
+
+			$this->save_checkin_details( $attendee_id, $qr );
 
 			/**
 			 * Fires a checkin action
@@ -1051,6 +1053,35 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
+		 * Save the attendee checkin details.
+		 *
+		 * @since TBD
+		 *
+		 * @param int   $attendee_id     The ID of the attendee that's being checked-in.
+		 * @param mixed $qr              True if the check-in is from a QR code.
+		 */
+		public function save_checkin_details( $attendee_id, $qr ) {
+			$checkin_details = [
+				'date'   => current_time( 'mysql' ),
+				'source' => ! empty( $qr ) ? 'app' : 'site',
+				'author' => get_current_user_id(),
+			];
+
+			/**
+			 * Filters the checkin details for this attendee checkin.
+			 *
+			 * @since TBD
+			 *
+			 * @param array $checkin_details The check-in details.
+			 * @param int   $attendee_id     The ID of the attendee that's being checked-in.
+			 * @param mixed $qr              True if the check-in is from a QR code.
+			 */
+			$checkin_details = apply_filters( 'tec_tickets_checkin_details', $checkin_details, $attendee_id, $qr );
+
+			update_post_meta( $attendee_id, $this->checkin_key . '_details', $checkin_details );
+		}
+
+		/**
 		 * Mark an attendee as not checked in
 		 *
 		 * @abstract
@@ -1060,6 +1091,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		public function uncheckin( $attendee_id ) {
 			delete_post_meta( $attendee_id, $this->checkin_key );
+			delete_post_meta( $attendee_id, $this->checkin_key . '_details' );
 			delete_post_meta( $attendee_id, '_tribe_qr_status' );
 
 			/**
