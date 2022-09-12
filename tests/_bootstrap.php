@@ -24,6 +24,8 @@ if( ! defined( 'TRIBE_TESTS_HOME_URL' ) ) {
 	define( 'TRIBE_TESTS_HOME_URL', 'http://wordpress.test/' );
 }
 
+define( 'TEC_CUSTOM_TABLES_V1_DISABLED', true );
+
 /**
  * Codeception will regenerate snapshots on `--debug`, while the `spatie/snapshot-assertions`
  * library will do the same on `--update-snapshots`.
