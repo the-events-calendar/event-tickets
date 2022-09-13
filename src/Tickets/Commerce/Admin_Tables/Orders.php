@@ -348,7 +348,7 @@ class Orders extends WP_List_Table {
 	/**
 	 * List of sortable columns.
 	 *
-	 * @since TBD
+	 * @since 5.5.0
 	 *
 	 * @return array
 	 */
