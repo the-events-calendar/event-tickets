@@ -8,7 +8,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '5.4.4';
+	const VERSION = '5.5.0';
 
 	/**
 	 * Used to store the version history.
@@ -43,7 +43,7 @@ class Tribe__Tickets__Main {
 	*
 	* @since 4.10
 	*/
-	protected $min_tec_version = '5.15.0-dev';
+	protected $min_tec_version = '6.0.0-dev';
 
 	/**
 	 * Name of the provider
@@ -301,17 +301,6 @@ class Tribe__Tickets__Main {
 		Tribe__Main::instance();
 
 		add_action( 'tribe_common_loaded', [ $this, 'bootstrap' ], 0 );
-
-		// Customizer support - only loaded on older version of TEC for backwards compatibility.
-		if (
-			class_exists( 'Tribe__Events__Main' )
-			&& (
-				! function_exists( 'tribe_events_views_v2_is_enabled' )
-				|| ! tribe_events_views_v2_is_enabled()
-			)
-		) {
-			tribe_register_provider( Tribe\Tickets\Service_Providers\Customizer::class );
-		}
 
 		// Admin home.
 		tribe_register_provider( Tribe\Tickets\Admin\Home\Service_Provider::class );
@@ -704,12 +693,6 @@ class Tribe__Tickets__Main {
 			trailingslashit( get_stylesheet_directory() ) . 'tribe/tickets',
 		];
 
-		$plugins[ __( 'Event Tickets - Legacy', 'event-tickets' ) ] = [
-			self::VERSION,
-			$this->plugin_path . 'src/views',
-			trailingslashit( get_stylesheet_directory() ) . 'tribe-events/tickets',
-		];
-
 		return $plugins;
 	}
 
@@ -1033,7 +1016,7 @@ class Tribe__Tickets__Main {
 	 * are explicitly output
 	 */
 	public function embed_head() {
-		$css_path = Tribe__Template_Factory::getMinFile( $this->plugin_url . 'src/resources/css/tickets-embed.css', true );
+		$css_path = Tribe__Assets::maybe_get_min_file( $this->plugin_url . 'src/resources/css/tickets-embed.css' );
 		$css_path = add_query_arg( 'ver', self::VERSION, $css_path );
 		?>
 		<link rel="stylesheet" id="tribe-tickets-embed-css" href="<?php echo esc_url( $css_path ); ?>" type="text/css" media="all">
@@ -1056,36 +1039,6 @@ class Tribe__Tickets__Main {
 			$updater->do_updates();
 		}
 	}
-
-		/**
-		* Hooked to admin_notices, this error is thrown when Event Tickets is run alongside a version of
-		* Event Tickets Plus that is too old
-		*
-		* @deprecated 4.10
-		*
-		*/
-		public function et_plus_compatibility_notice() {
-			_deprecated_function( __METHOD__, '4.10', '' );
-
-			$active_plugins = get_option( 'active_plugins' );
-
-			$plugin_short_path = null;
-
-			foreach ( $active_plugins as $plugin ) {
-				if ( false !== strstr( $plugin, 'event-tickets-plus.php' ) ) {
-					$plugin_short_path = $plugin;
-					break;
-				}
-			}
-
-			$upgrade_path = 'https://theeventscalendar.com/knowledgebase/manual-updates/';
-
-			$output = '<div class="error">';
-			$output .= '<p>' . sprintf( esc_html__( 'When Event Tickets and Event Tickets Plus are both activated, Event Tickets Plus must be running version %1$s or greater. Please %2$smanually update now%3$s.', 'event-tickets' ), preg_replace( '/^(\d\.[\d]+).*/', '$1', self::VERSION ), '<a href="' . esc_url( $upgrade_path ) . '" target="_blank">', '</a>' ) . '</p>';
-			$output .= '</div>';
-
-			echo $output;
-		}
 
 	/**
 	 * Returns the autoloader singleton instance to use in a context-aware manner.
