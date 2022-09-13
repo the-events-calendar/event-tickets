@@ -2,20 +2,20 @@
 # This file is distributed under the same license as the Event Tickets package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Event Tickets 5.4.2\n"
+"Project-Id-Version: Event Tickets 5.4.4\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/event-tickets\n"
-"POT-Creation-Date: 2022-07-01 13:34:05+00:00\n"
+"POT-Creation-Date: 2022-08-11 05:07:59+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2022-07-01 13:34\n"
+"PO-Revision-Date: 2022-08-11 05:07\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 
-#. #-#-#-#-#  event-tickets.pot (Event Tickets 5.4.2)  #-#-#-#-#
+#. #-#-#-#-#  event-tickets.pot (Event Tickets 5.4.4)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
 #: event-tickets.php:61 src/Tribe/Admin/Notices.php:92 src/Tribe/Main.php:701
-#: src/Tribe/Privacy.php:59 src/admin-views/admin-welcome-message.php:60
+#: src/Tribe/Privacy.php:59 src/admin-views/admin-welcome-message.php:73
 msgid "Event Tickets"
 msgstr ""
 
@@ -175,61 +175,61 @@ msgid "Check In"
 msgstr ""
 
 #: src/Tickets/Commerce/Admin_Tables/Attendees.php:350
-#: src/Tribe/Attendees_Table.php:994
+#: src/Tribe/Attendees_Table.php:1003
 msgctxt "Attendees Table search options"
 msgid "Search by Purchaser Name"
 msgstr ""
 
 #: src/Tickets/Commerce/Admin_Tables/Attendees.php:351
-#: src/Tribe/Attendees_Table.php:995
+#: src/Tribe/Attendees_Table.php:1004
 msgctxt "Attendees Table search options"
 msgid "Search by Purchaser Email"
 msgstr ""
 
 #: src/Tickets/Commerce/Admin_Tables/Attendees.php:352
-#: src/Tribe/Attendees_Table.php:996
+#: src/Tribe/Attendees_Table.php:1005
 msgctxt "Attendees Table search options"
 msgid "Search by Ticket Holder Name"
 msgstr ""
 
 #: src/Tickets/Commerce/Admin_Tables/Attendees.php:353
-#: src/Tribe/Attendees_Table.php:997
+#: src/Tribe/Attendees_Table.php:1006
 msgctxt "Attendees Table search options"
 msgid "Search by Ticket Holder Email"
 msgstr ""
 
 #: src/Tickets/Commerce/Admin_Tables/Attendees.php:354
-#: src/Tribe/Attendees_Table.php:998
+#: src/Tribe/Attendees_Table.php:1007
 msgctxt "Attendees Table search options"
 msgid "Search by User ID"
 msgstr ""
 
 #: src/Tickets/Commerce/Admin_Tables/Attendees.php:355
-#: src/Tribe/Attendees_Table.php:999
+#: src/Tribe/Attendees_Table.php:1008
 msgctxt "Attendees Table search options"
 msgid "Search by Order Status"
 msgstr ""
 
 #: src/Tickets/Commerce/Admin_Tables/Attendees.php:356
-#: src/Tribe/Attendees_Table.php:1000
+#: src/Tribe/Attendees_Table.php:1009
 msgctxt "Attendees Table search options"
 msgid "Search by Order ID"
 msgstr ""
 
 #: src/Tickets/Commerce/Admin_Tables/Attendees.php:357
-#: src/Tribe/Attendees_Table.php:1001
+#: src/Tribe/Attendees_Table.php:1010
 msgctxt "Attendees Table search options"
 msgid "Search by Security Code"
 msgstr ""
 
 #: src/Tickets/Commerce/Admin_Tables/Attendees.php:358
-#: src/Tribe/Attendees_Table.php:1002
+#: src/Tribe/Attendees_Table.php:1011
 msgctxt "Attendees Table search options"
 msgid "Search by %s ID"
 msgstr ""
 
 #: src/Tickets/Commerce/Admin_Tables/Attendees.php:359
-#: src/Tribe/Attendees_Table.php:1003
+#: src/Tribe/Attendees_Table.php:1012
 msgctxt "Attendees Table search options"
 msgid "Search by Product ID"
 msgstr ""
@@ -259,7 +259,7 @@ msgid "Delete"
 msgstr ""
 
 #: src/Tickets/Commerce/Admin_Tables/Attendees.php:630
-#: src/Tribe/Attendees_Table.php:980
+#: src/Tribe/Attendees_Table.php:989
 msgid "No matching attendees found."
 msgstr ""
 
@@ -307,12 +307,12 @@ msgstr ""
 msgid "Total"
 msgstr ""
 
-#: src/Tickets/Commerce/Admin_Tables/Orders.php:178
+#: src/Tickets/Commerce/Admin_Tables/Orders.php:188
 #: src/Tribe/Commerce/PayPal/Orders/Table.php:274
 msgid "No matching orders found."
 msgstr ""
 
-#: src/Tickets/Commerce/Admin_Tables/Orders.php:281
+#: src/Tickets/Commerce/Admin_Tables/Orders.php:291
 #: src/Tribe/Commerce/PayPal/Orders/Table.php:177
 msgid "%1$s"
 msgstr ""
@@ -4639,32 +4639,32 @@ msgid "Reach out to PayPal to resolve the following capabilities:"
 msgstr ""
 
 #: src/Tickets/Commerce/Gateways/PayPal/Tickets_Form.php:77
-#: src/Tribe/Commerce/PayPal/Main.php:1906 src/Tribe/RSVP.php:2361
+#: src/Tribe/Commerce/PayPal/Main.php:1906 src/Tribe/RSVP.php:2365
 msgid "Return to the %1$sAttendees Report%2$s."
 msgstr ""
 
 #: src/Tickets/Commerce/Gateways/PayPal/Tickets_Form.php:84
-#: src/Tribe/Commerce/PayPal/Main.php:1913 src/Tribe/RSVP.php:2368
+#: src/Tribe/Commerce/PayPal/Main.php:1913 src/Tribe/RSVP.php:2372
 msgid "Post updated. %1$s"
 msgstr ""
 
 #: src/Tickets/Commerce/Gateways/PayPal/Tickets_Form.php:88
-#: src/Tribe/Commerce/PayPal/Main.php:1917 src/Tribe/RSVP.php:2372
+#: src/Tribe/Commerce/PayPal/Main.php:1917 src/Tribe/RSVP.php:2376
 msgid "Post published. %1$s"
 msgstr ""
 
 #: src/Tickets/Commerce/Gateways/PayPal/Tickets_Form.php:91
-#: src/Tribe/Commerce/PayPal/Main.php:1920 src/Tribe/RSVP.php:2375
+#: src/Tribe/Commerce/PayPal/Main.php:1920 src/Tribe/RSVP.php:2379
 msgid "Post submitted."
 msgstr ""
 
 #: src/Tickets/Commerce/Gateways/PayPal/Tickets_Form.php:92
-#: src/Tribe/Commerce/PayPal/Main.php:1921 src/Tribe/RSVP.php:2376
+#: src/Tribe/Commerce/PayPal/Main.php:1921 src/Tribe/RSVP.php:2380
 msgid "Post scheduled."
 msgstr ""
 
 #: src/Tickets/Commerce/Gateways/PayPal/Tickets_Form.php:93
-#: src/Tribe/Commerce/PayPal/Main.php:1922 src/Tribe/RSVP.php:2377
+#: src/Tribe/Commerce/PayPal/Main.php:1922 src/Tribe/RSVP.php:2381
 msgid "Post draft updated."
 msgstr ""
 
@@ -4827,9 +4827,8 @@ msgstr ""
 #: src/Tickets/Commerce/Gateways/Stripe/Settings.php:194
 #: src/Tribe/Admin/Settings/Service_Provider.php:147
 #: src/Tribe/Admin/Settings/Service_Provider.php:195
-#: src/admin-views/admin-welcome-message.php:150
-#: src/admin-views/admin-welcome-message.php:172
-#: src/admin-views/admin-welcome-message.php:192
+#: src/admin-views/admin-welcome-message.php:185
+#: src/admin-views/admin-welcome-message.php:205
 msgid "Learn more"
 msgstr ""
 
@@ -5060,11 +5059,12 @@ msgid "Tribe Commerce ( Legacy PayPal, not recommended )"
 msgstr ""
 
 #: src/Tickets/Commerce/Models/Attendee_Model.php:62
-#: src/Tribe/Commerce/PayPal/Main.php:2957 src/Tribe/RSVP.php:2020
+#: src/Tribe/Commerce/PayPal/Main.php:2957 src/Tribe/RSVP.php:2024
 msgid "(deleted)"
 msgstr ""
 
 #: src/Tickets/Commerce/Module.php:20 src/Tickets/Commerce/Payments_Tab.php:200
+#: src/admin-views/admin-welcome-message.php:161
 msgid "Tickets Commerce"
 msgstr ""
 
@@ -5079,7 +5079,7 @@ msgid "Payments"
 msgstr ""
 
 #: src/Tickets/Commerce/Payments_Tab.php:300 src/Tribe/Admin/Notices.php:214
-#: src/Tribe/Main.php:676 src/admin-views/admin-welcome-message.php:58
+#: src/Tribe/Main.php:676 src/admin-views/admin-welcome-message.php:71
 #: src/admin-views/tribe-commerce-settings.php:4
 msgid "Event Tickets Plus"
 msgstr ""
@@ -5434,11 +5434,11 @@ msgstr ""
 msgid "%s will be available on %s at %s"
 msgstr ""
 
-#: src/Tickets/Commerce/Status/Pending.php:163 src/Tribe/Tickets.php:3200
+#: src/Tickets/Commerce/Status/Pending.php:163 src/Tribe/Tickets.php:3208
 msgid "%s are no longer available."
 msgstr ""
 
-#: src/Tickets/Commerce/Status/Pending.php:165 src/Tribe/Tickets.php:3202
+#: src/Tickets/Commerce/Status/Pending.php:165 src/Tribe/Tickets.php:3210
 msgid "There are no %s available at this time."
 msgstr ""
 
@@ -6237,7 +6237,7 @@ msgid ""
 msgstr ""
 
 #: src/Tribe/Admin/Settings/Service_Provider.php:53
-#: src/admin-views/admin-welcome-message.php:128
+#: src/admin-views/admin-welcome-message.php:141
 msgid "Getting Started Guide"
 msgstr ""
 
@@ -6297,6 +6297,7 @@ msgid ""
 msgstr ""
 
 #: src/Tribe/Admin/Settings/Service_Provider.php:145
+#: src/admin-views/admin-welcome-message.php:163
 msgid "Get started"
 msgstr ""
 
@@ -6774,28 +6775,28 @@ msgstr ""
 msgid "Are you sure you want to cancel?"
 msgstr ""
 
-#: src/Tribe/Editor/Blocks/Tickets.php:282 src/Tribe/Tickets.php:4334
+#: src/Tribe/Editor/Blocks/Tickets.php:282 src/Tribe/Tickets.php:4338
 msgctxt "Error message title, will be followed by the error code."
 msgid "API Error"
 msgstr ""
 
-#: src/Tribe/Editor/Blocks/Tickets.php:283 src/Tribe/Tickets.php:4335
+#: src/Tribe/Editor/Blocks/Tickets.php:283 src/Tribe/Tickets.php:4339
 msgid ""
 "Refresh this page or wait a few minutes before trying again. If this happens "
 "repeatedly, please contact the Site Admin."
 msgstr ""
 
-#: src/Tribe/Editor/Blocks/Tickets.php:284 src/Tribe/Tickets.php:4336
+#: src/Tribe/Editor/Blocks/Tickets.php:284 src/Tribe/Tickets.php:4340
 msgid ""
 "The ticket for this event has sold out and has been removed from your cart."
 msgstr ""
 
-#: src/Tribe/Editor/Blocks/Tickets.php:285 src/Tribe/Tickets.php:4337
+#: src/Tribe/Editor/Blocks/Tickets.php:285 src/Tribe/Tickets.php:4341
 #: src/views/v2/commerce/order/header/title-empty.php:28
 msgid "Whoops!"
 msgstr ""
 
-#: src/Tribe/Editor/Blocks/Tickets.php:286 src/Tribe/Tickets.php:4338
+#: src/Tribe/Editor/Blocks/Tickets.php:286 src/Tribe/Tickets.php:4342
 msgctxt "The %s will change based on the error produced."
 msgid "You have %s ticket(s) with a field that requires information."
 msgstr ""
@@ -6903,7 +6904,7 @@ msgstr ""
 msgid "Powered by"
 msgstr ""
 
-#: src/Tribe/JSON_LD/Order.php:132 src/Tribe/RSVP.php:1612
+#: src/Tribe/JSON_LD/Order.php:132 src/Tribe/RSVP.php:1616
 #: src/admin-views/editor/column-body-price.php:23
 msgid "Free"
 msgstr ""
@@ -7423,139 +7424,134 @@ msgstr ""
 msgid "The requested page was not found."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:91
-#: src/Tribe/REST/V1/Endpoints/Single_Attendee.php:90
-msgid "Sorry, Event Tickets Plus must be active to use this endpoint."
-msgstr ""
-
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:205
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:199
 #: src/Tribe/REST/V1/Endpoints/Ticket_Archive.php:239
 msgid "The page of results to return; defaults to 1"
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:213
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:207
 msgid ""
 "How many attendees to return per results page; defaults to posts_per_page."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:222
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:216
 msgid ""
 "Limit results to attendees whose ticket is provided by one of the providers "
 "specified in the CSV list or array; defaults to all the available."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:235
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:229
 msgid ""
 "Limit results to attendees containing the specified string in the title or "
 "description."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:241
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:235
 #: src/Tribe/REST/V1/Endpoints/Ticket_Archive.php:260
 msgid "Offset the results by a specific number of items."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:247
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:241
 #: src/Tribe/REST/V1/Endpoints/Ticket_Archive.php:266
 msgid "Sort results in ASC or DESC order. Defaults to ASC."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:256
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:250
 msgid ""
 "Order the results by one of date, relevance, id, include, title or slug. "
 "Defaults to id."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:268
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:262
 msgid "Limit results to attendees by post the ticket is associated with."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:274
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:268
 msgid "Limit results to attendees associated with a ticket."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:280
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:274
 msgid ""
 "Limit results to attendees created after or on the specified UTC date or "
 "timestamp."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:286
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:280
 msgid ""
 "Limit results to attendees created before or on the specified UTC date or "
 "timestamp."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:292
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:286
 msgid "Limit results to a specific CSV list or array of attendee IDs."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:305
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:299
 msgid "Exclude a specific CSV list or array of attendee IDs from the results."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:318
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:312
 msgid ""
 "Limit results to attendees that paid tickets a price equal or below the "
 "specified value; if not specified no maximum price limit will be used."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:324
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:318
 msgid ""
 "Limit results to attendees that paid tickets a price equal or above the "
 "specified value; if not specified no minimum price limit will be used."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:330
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:324
 msgid ""
 "Limit results to attendees whose ticket is assigned to one of the posts "
 "specified in the CSV list or array."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:343
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:337
 msgid ""
 "Limit results to attendees whose tickets is not assigned to any of the posts "
 "specified in the CSV list or array.."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:356
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:350
 #: src/Tribe/REST/V1/Endpoints/Ticket_Archive.php:314
 msgid "Limit results to a specific CSV list or array of ticket IDs."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:368
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:362
 msgid "Exclude a specific CSV list or array of ticket IDs."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:380
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:374
 msgid ""
 "Limit results to attendees for posts that are in one of the post statuses "
 "specified in the CSV list or array; defaults to publish."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:391
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:385
 msgid ""
 "Limit results to attendees that are in one of post statuses specified in the "
 "CSV list or array; defaults to publish."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:402
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:396
 msgid ""
 "Limit results to attendees whose order status is in one of post statuses "
 "specified in the CSV list or array; defaults to public."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:413
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:407
 msgid "Limit results to attendees that are or not checked-in."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:418
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:412
 msgid ""
 "Limit results to RSVP Attendees that have one of the RSVP Going status "
 "specified in the CSV list or array."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:429
+#: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:423
 msgid ""
 "Limit results to attendees for tickets that provide attendees the "
 "possibility to fill in additional information or not; requires ET+."
@@ -7626,65 +7622,65 @@ msgstr ""
 msgid "List of meta for each ticket to be saved for Attendee Registration"
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Single_Attendee.php:19
+#: src/Tribe/REST/V1/Endpoints/Single_Attendee.php:23
 msgid "Returns the data of the attendee with the specified post ID"
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Single_Attendee.php:29
+#: src/Tribe/REST/V1/Endpoints/Single_Attendee.php:33
 msgid "The attendee post ID is invalid."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Single_Attendee.php:39
+#: src/Tribe/REST/V1/Endpoints/Single_Attendee.php:43
 msgid "The attendee with the specified ID is not accessible."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Single_Attendee.php:49
+#: src/Tribe/REST/V1/Endpoints/Single_Attendee.php:53
 msgid "An attendee with the specified ID does not exist."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Single_Attendee.php:71
-#: src/Tribe/REST/V1/Endpoints/Single_Attendee.php:217
+#: src/Tribe/REST/V1/Endpoints/Single_Attendee.php:75
+#: src/Tribe/REST/V1/Endpoints/Single_Attendee.php:216
 msgid "The attendee post ID"
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Single_Attendee.php:117
+#: src/Tribe/REST/V1/Endpoints/Single_Attendee.php:116
 msgid "Something went wrong! Attendee creation failed."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Single_Attendee.php:141
+#: src/Tribe/REST/V1/Endpoints/Single_Attendee.php:140
 msgid "The Ticket ID, where the attendee is registered."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Single_Attendee.php:146
+#: src/Tribe/REST/V1/Endpoints/Single_Attendee.php:145
 msgid "Full name of the attendee."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Single_Attendee.php:152
+#: src/Tribe/REST/V1/Endpoints/Single_Attendee.php:151
 msgid "Email of the attendeee."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Single_Attendee.php:157
+#: src/Tribe/REST/V1/Endpoints/Single_Attendee.php:156
 msgid "Order Status for the attendee."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Single_Attendee.php:194
+#: src/Tribe/REST/V1/Endpoints/Single_Attendee.php:193
 msgid "Something went wrong! Attendee update failed."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Single_Attendee.php:245
+#: src/Tribe/REST/V1/Endpoints/Single_Attendee.php:244
 msgid "Ticket Provider not found."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Single_Attendee.php:290
+#: src/Tribe/REST/V1/Endpoints/Single_Attendee.php:289
 msgid "Attendee ID is not valid."
 msgstr ""
 
-#: src/Tribe/REST/V1/Endpoints/Single_Attendee.php:296
+#: src/Tribe/REST/V1/Endpoints/Single_Attendee.php:295
 msgid "Attendee provider not found."
 msgstr ""
 
 #. Translators: %s - List of valid statuses.
-#: src/Tribe/REST/V1/Endpoints/Single_Attendee.php:345
+#: src/Tribe/REST/V1/Endpoints/Single_Attendee.php:344
 msgid "Supported statuses for this attendee are: %s"
 msgstr ""
 
@@ -7933,10 +7929,6 @@ msgstr ""
 msgid "Not going"
 msgstr ""
 
-#: src/Tribe/RSVP.php:487
-msgid "Your RSVP was unsuccessful, please try again."
-msgstr ""
-
 #: src/Tribe/RSVP.php:524
 msgid "Unable to verify your opt-in request, please try again."
 msgstr ""
@@ -7972,25 +7964,45 @@ msgstr ""
 msgid "Unable to process your request, attendee creation failed."
 msgstr ""
 
-#: src/Tribe/RSVP.php:1274
+#: src/Tribe/RSVP.php:1072
+msgid "Invalid data! Missing required attendee details!"
+msgstr ""
+
+#: src/Tribe/RSVP.php:1278
 msgid "Your %1$s from %2$s"
 msgstr ""
 
-#: src/Tribe/RSVP.php:1380
+#: src/Tribe/RSVP.php:1384
 msgid "You confirmed you will not be attending %s"
 msgstr ""
 
-#: src/Tribe/RSVP.php:1729
+#: src/Tribe/RSVP.php:1733
 msgid ""
 "Your %1$s has been received! Check your email for your %1$s confirmation."
 msgstr ""
 
-#: src/Tribe/RSVP.php:1736
+#: src/Tribe/RSVP.php:1740
 msgid "You can't %1$s more than the total remaining %2$s."
 msgstr ""
 
-#: src/Tribe/RSVP.php:1744
+#: src/Tribe/RSVP.php:1748
 msgid "In order to %s, you must enter your name and a valid email address."
+msgstr ""
+
+#: src/Tribe/RSVP.php:2546
+msgid "Invalid parent ID provided!"
+msgstr ""
+
+#: src/Tribe/RSVP.php:2553
+msgid "Invalid Ticket ID provided!"
+msgstr ""
+
+#: src/Tribe/RSVP.php:2568 src/Tribe/RSVP.php:2574
+msgid "Missing required RSVP field: %s"
+msgstr ""
+
+#: src/Tribe/RSVP.php:2612
+msgid "Requested amount of Tickets are not available!"
 msgstr ""
 
 #: src/Tribe/Status/Abstract_Commerce.php:169
@@ -8049,43 +8061,42 @@ msgstr ""
 msgid "Move %s"
 msgstr ""
 
-#: src/Tribe/Tickets.php:1786
+#: src/Tribe/Tickets.php:1794
 msgid "Shared capacity with other tickets"
 msgstr ""
 
-#: src/Tribe/Tickets.php:1787
+#: src/Tribe/Tickets.php:1795
 msgid "Set capacity for this ticket only"
 msgstr ""
 
 #. translators: %1$s: The singular of "RSVP" or "ticket", %2$s: The plural of
 #. "RSVPs" or "tickets", %3$s: The site name.
-#: src/Tribe/Tickets.php:2404
+#: src/Tribe/Tickets.php:2412
 msgctxt "The default RSVP/ticket email subject"
 msgid "Your %1$s from %3$s"
 msgid_plural "Your %2$s from %3$s"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Tribe/Tickets.php:3152
+#: src/Tribe/Tickets.php:3160
 msgid "%s are not available as this %s has passed."
 msgstr ""
 
-#: src/Tribe/Tickets.php:3188
+#: src/Tribe/Tickets.php:3196
 msgid "%s will be available on "
 msgstr ""
 
-#: src/Tribe/Tickets.php:3194
+#: src/Tribe/Tickets.php:3202
 msgid " at "
 msgstr ""
 
 #. translators: %s: Tickets label
-#: src/Tribe/Tickets.php:3197 src/views/blocks/tickets/content-inactive.php:19
+#: src/Tribe/Tickets.php:3205 src/views/blocks/tickets/content-inactive.php:19
 #: src/views/v2/tickets/item/content/inactive.php:53
-#: src/views/v2/tickets/item/inactive.php:63
 msgid "%s are not yet available"
 msgstr ""
 
-#: src/Tribe/Tickets.php:3653
+#: src/Tribe/Tickets.php:3657
 msgid "(copy)"
 msgstr ""
 
@@ -8109,194 +8120,186 @@ msgstr ""
 msgid "This %s is no longer active."
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:29
+#: src/admin-views/admin-welcome-message.php:42
 msgid "The Events Calendar product suite logo"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:31
+#: src/admin-views/admin-welcome-message.php:44
 msgctxt "short expression of excitement"
 msgid "WOOHOO!"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:31
+#: src/admin-views/admin-welcome-message.php:44
 msgid "You're the proud owner of Event Tickets Plus! Let's get started…"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:40
-#: src/admin-views/admin-welcome-message.php:46
+#: src/admin-views/admin-welcome-message.php:53
+#: src/admin-views/admin-welcome-message.php:59
 msgid "Shapes and lines for visual interest"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:53
+#: src/admin-views/admin-welcome-message.php:66
 msgid "Event Tickets logo"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:66
+#: src/admin-views/admin-welcome-message.php:79
 msgid ""
 "Thanks for installing Event Tickets Plus! Here are some handy resources for "
 "getting started with our plugins."
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:68
+#: src/admin-views/admin-welcome-message.php:81
 msgid ""
 "Thanks for installing Event Tickets! Here are some handy resources for "
 "getting started with our plugins."
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:74
+#: src/admin-views/admin-welcome-message.php:87
 msgid "Quick Links:"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:77
+#: src/admin-views/admin-welcome-message.php:90
 msgid "Configure Settings"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:81
-#: src/admin-views/admin-welcome-message.php:88
+#: src/admin-views/admin-welcome-message.php:94
+#: src/admin-views/admin-welcome-message.php:101
 msgid "Install WooCommerce"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:84
+#: src/admin-views/admin-welcome-message.php:97
 msgid "Create Ticket"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:91
-#: src/admin-views/admin-welcome-message.php:102
+#: src/admin-views/admin-welcome-message.php:104
+#: src/admin-views/admin-welcome-message.php:115
 msgid "Install The Events Calendar"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:95
+#: src/admin-views/admin-welcome-message.php:108
 msgid "Create RSVP"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:98
-#: src/admin-views/admin-welcome-message.php:105
+#: src/admin-views/admin-welcome-message.php:111
+#: src/admin-views/admin-welcome-message.php:118
 msgid "Set Up Tickets Commerce"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:111
+#: src/admin-views/admin-welcome-message.php:124
 msgid "Helpful Resources"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:126
-#: src/admin-views/admin-welcome-message.php:179
-#: src/admin-views/admin-welcome-message.php:201
+#: src/admin-views/admin-welcome-message.php:139
+#: src/admin-views/admin-welcome-message.php:192
+#: src/admin-views/admin-welcome-message.php:214
 msgid "Illustration of a book with The Events Calendar logo"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:129
+#: src/admin-views/admin-welcome-message.php:142
 msgid "New to Event Tickets? Here's everything you need to get started."
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:130
+#: src/admin-views/admin-welcome-message.php:143
 msgid "Check out the guide"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:136
+#: src/admin-views/admin-welcome-message.php:149
 msgid "Illustration of a thought lightbulb coming from a book"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:138
+#: src/admin-views/admin-welcome-message.php:151
 msgid "Knowledgebase"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:139
+#: src/admin-views/admin-welcome-message.php:152
 msgid ""
 "Ready to dig deeper? Our Knowledgebase can help you get the most out of The "
 "Events Calendar suite."
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:140
+#: src/admin-views/admin-welcome-message.php:153
 msgid "Dig deeper"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:146
-msgid "Illustration of characters being translated"
+#: src/admin-views/admin-welcome-message.php:159
+msgid "Illustration of money turning into a ticket"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:148
-msgid "Translations"
-msgstr ""
-
-#: src/admin-views/admin-welcome-message.php:149
-msgid "Need a language other than English? We've got you covered here."
-msgstr ""
-
-#: src/admin-views/admin-welcome-message.php:157
+#: src/admin-views/admin-welcome-message.php:170
 msgid "Illustration of a phone screen with a person's face"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:159
+#: src/admin-views/admin-welcome-message.php:172
 msgid "Virtual Event Resources"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:160
+#: src/admin-views/admin-welcome-message.php:173
 msgid ""
 "Tips and tools to help with planning online events, webinars, and more on "
 "WordPress and beyond."
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:161
+#: src/admin-views/admin-welcome-message.php:174
 msgid "Get started with online events"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:169
+#: src/admin-views/admin-welcome-message.php:182
 msgid "Illustration of a power plug and gears"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:171
+#: src/admin-views/admin-welcome-message.php:184
 msgid "Browse our library of free extensions for Event Tickets."
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:181
-#: src/admin-views/admin-welcome-message.php:203
+#: src/admin-views/admin-welcome-message.php:194
+#: src/admin-views/admin-welcome-message.php:216
 msgid "Want to take your events to the next level?"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:182
-#: src/admin-views/admin-welcome-message.php:204
+#: src/admin-views/admin-welcome-message.php:195
+#: src/admin-views/admin-welcome-message.php:217
 msgid "Check out our suite of add-ons"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:189
+#: src/admin-views/admin-welcome-message.php:202
 msgid "Illustration of a calendar"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:191
+#: src/admin-views/admin-welcome-message.php:204
 msgid "Add The Events Calendar (it's free!) to enhance Event Tickets."
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:211
+#: src/admin-views/admin-welcome-message.php:224
 msgid "Illustration of a hand holding a ticket and the WooCommerce logo"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:213
+#: src/admin-views/admin-welcome-message.php:226
 msgid "Add WooCommerce integration, advanced registration, and more."
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:214
+#: src/admin-views/admin-welcome-message.php:227
 msgid "Check out Event Tickets Plus"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:219
+#: src/admin-views/admin-welcome-message.php:232
 msgid "Want this emailed to you?"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:220
+#: src/admin-views/admin-welcome-message.php:233
 msgid ""
 "Keep this list of links on hand and stay subscribed to receive tips and "
 "tricks about The Events Calendar products."
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:223
+#: src/admin-views/admin-welcome-message.php:236
 msgid "Your email"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:225
+#: src/admin-views/admin-welcome-message.php:238
 msgid "Sign Up"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:238
+#: src/admin-views/admin-welcome-message.php:251
 msgid "The Events Calendar brand logo"
 msgstr ""
 
