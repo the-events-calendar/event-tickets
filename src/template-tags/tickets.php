@@ -1846,6 +1846,6 @@ function tribe_tickets_get_provider_query_slug() {
  *
  * @return bool True if The Events Calendar is active.
  */
-function tec_tickets_tec_events_is_active() {
+function tec_tickets_tec_events_is_active() : bool {
 	return function_exists( 'tribe_events' );
 }
