@@ -1079,7 +1079,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	/**
 	 * Return list of sortable columns.
 	 *
-	 * @since TBD
+	 * @since 5.5.0
 	 *
 	 * @return array
 	 */
@@ -1095,7 +1095,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	/**
 	 * Check if `Status` column is sortable or not.
 	 *
-	 * @since TBD
+	 * @since 5.5.0
 	 *
 	 * @return false|string
 	 */
