@@ -24,8 +24,6 @@ if( ! defined( 'TRIBE_TESTS_HOME_URL' ) ) {
 	define( 'TRIBE_TESTS_HOME_URL', 'http://wordpress.test/' );
 }
 
-define( 'TEC_CUSTOM_TABLES_V1_DISABLED', true );
-
 /**
  * Codeception will regenerate snapshots on `--debug`, while the `spatie/snapshot-assertions`
  * library will do the same on `--update-snapshots`.
@@ -36,3 +34,7 @@ define( 'TEC_CUSTOM_TABLES_V1_DISABLED', true );
 if ( in_array( '--debug', $_SERVER['argv'], true ) ) {
 	$_SERVER['argv'][] = '--update-snapshots';
 }
+
+// By default, do not enable the Custom Tables v1 implementation in tests.
+putenv( 'TEC_CUSTOM_TABLES_V1_DISABLED=1' );
+$_ENV['TEC_CUSTOM_TABLES_V1_DISABLED'] = 1;
