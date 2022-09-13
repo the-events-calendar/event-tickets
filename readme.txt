@@ -190,6 +190,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.5.1] TBD =
 
+* Fix - Correct parameter type hinting when param can be null. [ET-1582]
 
 
 = [5.5.0] 2022-09-06 =
