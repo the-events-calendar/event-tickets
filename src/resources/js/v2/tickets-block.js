@@ -291,7 +291,7 @@ tribe.tickets.block = {
 	 */
 	obj.formMatch = function ( $input, newValue ) {
 		var formID = $input.closest( obj.selectors.item ).attr( 'data-ticket-id' );
-		var $formTicket = $( `[ data-ticket-id="${ formID }" ]` );
+		var $formTicket = $( '[ data-ticket-id="' + formID + '" ]' );
 
 		if ( $formTicket.length >= 2 ) {
 			$formTicket.each( function() {
