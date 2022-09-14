@@ -7,6 +7,7 @@ jobs:
       matrix:
         suite:
           # - acceptance
+          - env_summary -vvv
           - functional
           - integration
           - restv1 --group="capacity"
