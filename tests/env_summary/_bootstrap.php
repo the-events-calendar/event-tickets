@@ -17,4 +17,4 @@ update_option( 'theme', 'twentytwenty' );
 update_option( 'stylesheet', 'twentytwenty' );
 
 $support = Tribe__Support::getInstance();
-print_r( var_dump( $support->getSupportStats() ), 1);
+codecept_debug( $support->getSupportStats() );
