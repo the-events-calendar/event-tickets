@@ -188,10 +188,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.5.1] TBD =
+= [5.5.1] 2022-09-21 =
 
 * Fix - Correct parameter type hinting when param can be null. [ET-1582]
-
+* Language - 0 new strings added, 1 updated, 0 fuzzied, and 0 obsoleted
 
 = [5.5.0] 2022-09-06 =
 
