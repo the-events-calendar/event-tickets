@@ -429,11 +429,21 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				}
 			}
 
-			$args       = $this->get_tickets_query_args( $post_id );
+			$args = $this->get_tickets_query_args( $post_id );
 			$repository = tribe_tickets( $this->orm_provider );
 			$repository->by_args( $args );
 
-			return $repository->get_ids();
+			$ids = $repository->get_ids();
+
+			if ( empty( $ids ) && $this->repair_provider( $post_id ) ) {
+				// Try again, using the correct provider.
+				$args = $this->get_tickets_query_args( $post_id );
+				$repository = tribe_tickets( $this->orm_provider );
+				$repository->by_args( $args );
+				$ids = $repository->get_ids();
+			}
+
+			return $ids;
 		}
 
 		/**
@@ -4402,6 +4412,67 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			wp_send_json_success( $data );
 		}
 
+
+		/**
+		 * Attempt to repair the ticket provider of a post from the database state.
+		 *
+		 * @since TBD
+		 *
+		 * @param int  $post_id The post ID.
+		 * @param bool $force   Whether to force the repair or not.
+		 *
+		 * @return bool Whether the repair was required, allowed and performed or not.
+		 */
+		private function repair_provider( int $post_id, bool $force = false ): bool {
+			$post_transient = tribe( 'post-transient' );
+
+			if ( $post_transient->get( $post_id, 'tec_tickets_provider_repaired' ) !== false ) {
+				// Do not attempt repairing the provider of a ticket on each request, just once a week.
+				return false;
+			}
+
+			/**
+			 * Filters whether the provider of a post should be repaired reading what is in the database
+			 * or not.
+			 *
+			 * @since TBD
+			 *
+			 * @param bool $repair_provider Whether the provider of a post should be repaired reading what
+			 *                              is in the database or not.
+			 * @param int  $post_id         The post ID.
+			 */
+			if ( ! apply_filters( 'tec_tickets_attempt_provider_repair', true, $post_id ) ) {
+				return false;
+			}
+
+			/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+			$tickets_handler = tribe( 'tickets.handler' );
+			global $wpdb;
+			$meta_keys = $wpdb->get_col(
+				$wpdb->prepare(
+					"SELECT DISTINCT(meta_key) FROM {$wpdb->postmeta}
+                          WHERE meta_key LIKE '_tribe_%_for_event'
+                            AND meta_value = %d;",
+					$post_id
+				)
+			);
+
+			$map = [
+				'_tribe_wooticket_for_event' => 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main',
+				'_tribe_eddticket_for_event' => 'Tribe__Tickets_Plus__Commerce__EDD__Main',
+				'_tribe_rsvp_for_event'      => 'Tribe__Tickets__RSVP',
+				'_tribe_tpp_for_event'       => 'Tribe__Tickets_Plus__Commerce__PayPal__Main',
+			];
+
+			if ( count( $meta_keys ) === 1 && isset( $map[ $meta_keys[0] ] ) ) {
+				update_post_meta( $post_id, $tickets_handler->key_provider_field, $map[ $meta_keys[0] ] );
+				$post_transient->set( $post_id, 'tec_tickets_provider_repaired', true, WEEK_IN_SECONDS );
+			}
+
+			return true;
+		}
+
 		// @codingStandardsIgnoreEnd
 	}
+
 }
