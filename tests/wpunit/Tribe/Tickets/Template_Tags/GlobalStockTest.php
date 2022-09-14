@@ -50,14 +50,9 @@ class GlobalStockTest extends Ticket_Object_TestCase {
 	public function it_should_get_correct_event_stock_when_using_global_and_non_global_stock_tickets() {
 		$event_id = $this->factory()->event->create();
 
-		// Enable Global Stock on the Event
-		add_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_ENABLED, 1 );
-
 		$initial_global_capacity    = 50;
 		$paypal_attendees_one_count = 5;
 		$paypal_attendees_two_count = 6;
-
-		add_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_LEVEL, $initial_global_capacity );
 
 		/**
 		 * Create PayPal tickets with global stock enabled with 50 total/shared capacity,
@@ -65,29 +60,33 @@ class GlobalStockTest extends Ticket_Object_TestCase {
 		 *
 		 * @see \Tribe__Tickets__Tickets_Handler::has_unlimited_stock() Comments/Explanation.
 		 */
-		 $ticket_ids = $this->create_distinct_paypal_tickets_basic(
+		 $ticket_ids = $this->create_distinct_paypal_tickets(
 			$event_id,
 			[
 				[
-					'meta_input' => [
-						'_capacity'                     => 30,
-						'total_sales'                   => $paypal_attendees_one_count,
-						Global_Stock::TICKET_STOCK_MODE => Global_Stock::CAPPED_STOCK_MODE,
+					'tribe-ticket' => [
+						'event_capacity'    => $initial_global_capacity,
+						'capacity'          => 30,
+						'total_sales'       => $paypal_attendees_one_count,
+						'mode'              => Global_Stock::CAPPED_STOCK_MODE,
 					],
 				],
 				[
-					'meta_input' => [
-						'_capacity'                     => 40,
-						'total_sales'                   => $paypal_attendees_two_count,
-						Global_Stock::TICKET_STOCK_MODE => Global_Stock::CAPPED_STOCK_MODE,
+					'tribe-ticket' => [
+						'event_capacity'    => $initial_global_capacity,
+						'capacity'          => 40,
+						'total_sales'       => $paypal_attendees_two_count,
+						'mode'              => Global_Stock::CAPPED_STOCK_MODE,
 					],
 				],
 			],
-			$initial_global_capacity
 		);
 
 		$attendees_count     = $paypal_attendees_one_count + $paypal_attendees_two_count;
 		$remaining_available = $initial_global_capacity - $attendees_count;
+
+		$global_stock = new Global_Stock( $event_id );
+		$global_stock->set_stock_level( $remaining_available );
 
 		$this->assertEquals( $remaining_available, 39, 'Our math is incorrect - check this test!' );
 		$this->assertEquals( $remaining_available, tribe_events_count_available_tickets( $event_id ), "Incorrect available counts on capped tickets." );
