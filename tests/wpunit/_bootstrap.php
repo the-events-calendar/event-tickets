@@ -18,3 +18,5 @@ if ( ! function_exists( 'tribe_is_recurring_event' ) ) {
 
 update_option( 'theme', 'twentytwenty' );
 update_option( 'stylesheet', 'twentytwenty' );
+
+codecept_debug( Tribe__Main::instance() );
