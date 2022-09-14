@@ -904,7 +904,7 @@ class Ticket {
 	/**
 	 * Get the event ID for the ticket.
 	 *
-	 * @since TBD
+	 * @since 5.5.0
 	 *
 	 * @param int $ticket_id The ticket post ID.
 	 *
