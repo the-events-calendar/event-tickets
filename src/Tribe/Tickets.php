@@ -377,6 +377,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @since  5.5.0 refactored to use the tickets ORM.
 		 * @since  4.6
+		 * @since TBD Set default query args.
 		 *
 		 * @param int|WP_Post $post_id Build the args to query only
 		 *                             for tickets related to this post ID.
