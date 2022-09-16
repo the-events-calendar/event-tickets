@@ -38,38 +38,41 @@ class Tickets extends PureComponent {
 
 	renderBlock() {
 		const {
-				  isSelected,
-				  clientId,
-				  canCreateTickets
-			  } = this.props;
+			isSelected,
+			clientId,
+			canCreateTickets,
+		} = this.props;
 
 		return (
 			<Fragment>
-				<TicketsContainer isSelected={isSelected}/>
-				{canCreateTickets && <TicketsDashboard isSelected={isSelected} clientId={clientId}/>}
-				<TicketControls/>
+				<TicketsContainer isSelected={ isSelected } />
+				{ canCreateTickets && <TicketsDashboard isSelected={ isSelected } clientId={ clientId } />}
+				<TicketControls />
 			</Fragment>
 		);
-
 	}
 
 	renderBlockNotSupported() {
-		const { clientId, } = this.props;
+		const { clientId } = this.props;
 		return (
 			<div className="tribe-editor__not-supported-message">
 				<p className="tribe-editor__not-supported-message-text">
-					{__( 'Tickets are not yet supported for on recurring events.', 'event-tickets' )}
-					<br/>
+					{ __( 'Tickets are not yet supported for on recurring events.', 'event-tickets' ) }
+					<br />
 					<a
 						className="tribe-editor__not-supported-message-link"
 						href="https://evnt.is/1b7a"
 						target="_blank"
 						rel="noopener noreferrer"
 					>
-						{__( 'Read about our plans for future features.', 'event-tickets' )}
+						{ __( 'Read about our plans for future features.', 'event-tickets' ) }
 					</a>
-					<br/>
-					<a href="#" onClick={() => wp.data.dispatch('core/block-editor').removeBlock(clientId)}>{__( 'Remove block', 'event-tickets' )}</a>
+					<br />
+					<a href="#" onClick={ () =>
+						wp.data.dispatch( 'core/block-editor' ).removeBlock( clientId )
+					}>
+						{__( 'Remove block', 'event-tickets' )}
+					</a>
 				</p>
 			</div>
 		);
@@ -88,11 +91,11 @@ class Tickets extends PureComponent {
 
 		return (
 			<div
-				className={classNames(
+				className={ classNames(
 					'tribe-editor__tickets',
 					{ 'tribe-editor__tickets--selected': isSelected },
-					{ 'tribe-editor__tickets--settings-open': isSettingsOpen }
-				)}
+					{ 'tribe-editor__tickets--settings-open': isSettingsOpen },
+				) }
 			>
 				{this.renderContent()}
 			</div>
