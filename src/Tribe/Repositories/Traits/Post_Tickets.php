@@ -13,6 +13,7 @@ use Tribe__Repository;
 use Tribe__Repository__Usage_Error;
 use Tribe__Repository__Void_Query_Exception;
 use Tribe__Utils__Array;
+use TEC\Tickets\Commerce\Ticket as TEC_Ticket;
 
 /**
  * Class Post_Tickets
@@ -79,6 +80,7 @@ trait Post_Tickets {
 
 		$operator_name = Tribe__Utils__Array::get( Tribe__Repository::get_comparison_operators(), $operator, '' );
 		$prefix        = str_replace( '-', '_', 'by_cost_' . $operator_name );
+		$tc_relation_meta_key = TEC_Ticket::$event_relation_meta_key;
 
 		global $wpdb;
 
@@ -86,7 +88,11 @@ trait Post_Tickets {
 		$repo->join_clause( "JOIN {$wpdb->postmeta} {$prefix}_ticket_event
 			ON (
 				{$prefix}_ticket_event.meta_value = {$wpdb->posts}.ID
-				AND {$prefix}_ticket_event.meta_key REGEXP '^_tribe_.*_for_event$'
+				AND (
+					{$prefix}_ticket_event.meta_key = '{$tc_relation_meta_key}'
+					OR
+					{$prefix}_ticket_event.meta_key REGEXP '^_tribe_.*_for_event$'
+				)
 			)" );
 
 		$price_regexp_frags = [
@@ -279,11 +285,17 @@ trait Post_Tickets {
 			return;
 		}
 
+		$tc_relation_meta_key = TEC_Ticket::$event_relation_meta_key;
+
 		// Join to the meta that relates tickets to events.
 		$repo->join_clause( "LEFT JOIN {$wpdb->postmeta} {$prefix}_ticket_event
 			ON (
 				{$prefix}_ticket_event.meta_value = {$wpdb->posts}.ID
-				AND {$prefix}_ticket_event.meta_key REGEXP '^_tribe_.*_for_event$'
+				AND (
+					{$prefix}_ticket_event.meta_key = '{$tc_relation_meta_key}'
+					OR
+					{$prefix}_ticket_event.meta_key REGEXP '^_tribe_.*_for_event$'
+				)
 			)" );
 		// Keep any event without tickets or not related to an RSVP ticket.
 		$repo->where_clause( "{$prefix}_ticket_event.meta_id IS NULL
@@ -309,10 +321,16 @@ trait Post_Tickets {
 		$prefix = 'has_rsvp_or_tickets_';
 
 		if ( (bool) $has_rsvp_or_tickets ) {
+			$tc_relation_meta_key = TEC_Ticket::$event_relation_meta_key;
+
 			// Join to the meta that relates tickets to events but exclude RSVP tickets.
 			$repo->join_clause( "JOIN {$wpdb->postmeta} {$prefix}_ticket_event ON (
 					{$prefix}_ticket_event.meta_value = {$wpdb->posts}.ID
-					AND {$prefix}_ticket_event.meta_key REGEXP '^_tribe_.*_for_event$'
+					AND (
+						{$prefix}_ticket_event.meta_key = '{$tc_relation_meta_key}'
+						OR
+						{$prefix}_ticket_event.meta_key REGEXP '^_tribe_.*_for_event$'
+					)
 				)" );
 
 			return;
