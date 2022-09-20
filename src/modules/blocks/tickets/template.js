@@ -8,7 +8,8 @@ import classNames from 'classnames';
 /**
  * WordPress dependencies
  */
- import { __ } from '@wordpress/i18n';
+import { __ } from '@wordpress/i18n';
+import { Button } from '@wordpress/components';
 
 /**
  * Internal dependencies
@@ -71,11 +72,11 @@ class Tickets extends PureComponent {
 						{ __( 'Read about our plans for future features.', 'event-tickets' ) }
 					</a>
 					<br />
-					<a href="#" onClick={ () =>
+					<Button variant="secondary" onClick={ () =>
 						wp.data.dispatch( 'core/block-editor' ).removeBlock( clientId )
 					}>
 						{__( 'Remove block', 'event-tickets' )}
-					</a>
+					</Button>
 				</p>
 			</div>
 		);

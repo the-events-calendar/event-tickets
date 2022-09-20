@@ -8,7 +8,7 @@ import classNames from 'classnames';
 /**
  * WordPress dependencies
  */
-import { Spinner } from '@wordpress/components';
+import { Spinner, Button } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
 /**
@@ -86,11 +86,11 @@ class RSVP extends PureComponent {
 						{ __( 'Read about our plans for future features.', 'event-tickets' ) }
 					</a>
 					<br />
-					<a href="#" onClick={ () =>
+					<Button variant="secondary" onClick={ () =>
 						wp.data.dispatch( 'core/block-editor' ).removeBlock( clientId ) }
 					>
 						{ __( 'Remove block', 'event-tickets' ) }
-					</a>
+					</Button>
 				</p>
 			</div>
 		);
