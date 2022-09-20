@@ -6,14 +6,17 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 /**
+ * WordPress dependencies
+ */
+ import { __ } from '@wordpress/i18n';
+
+/**
  * Internal dependencies
  */
 import TicketsDashboard from './dashboard/container';
 import TicketsContainer from './container/container';
 import TicketControls from './controls/container';
 import './style.pcss';
-
-const { __ } = wp.i18n;
 
 class Tickets extends PureComponent {
 	static propTypes = {
