@@ -1,6 +1,6 @@
 == Changelog ==
 
-= [5.4.4] TBD =
+= [5.4.4] 2022-08-15 =
 
 * Fix - Tickets/RSVP blocks appear in wrong place on non-events when block editor is disabled in The Events Calendar. [ET-1544]
 * Fix - Fixed searching attendees by purchaser name and email for Tickets Commerce attendees. [ET-1543]
@@ -42,7 +42,7 @@
 * Fix - Allow price block to override the string that is dynamically created from ticket values. [ET-1524]
 * Language - 9 new strings added, 177 updated, 0 fuzzied, and 1 obsoleted.
 
-= [5.4.1] TBD =
+= [5.4.1] 2022-06-08 =
 
 * Fix - Encoding issue in the block editor's price block of The Events Calendar events. [ET-1434]
 * Fix - Add India to the list of countries ET cannot process fees from. [ET-1522]

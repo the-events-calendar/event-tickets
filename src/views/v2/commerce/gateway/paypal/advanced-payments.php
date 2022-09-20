@@ -10,9 +10,9 @@
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
  * @since   5.2.0
- * @since   TBD Hidden by default and shown using JS.
+ * @since   5.5.1 Hidden by default and shown using JS.
  *
- * @version TBD
+ * @version 5.5.1
  *
  * @var bool $must_login              [Global] Whether login is required to buy tickets or not.
  * @var bool $supports_custom_payments [Global] Determines if this site supports custom payments.
