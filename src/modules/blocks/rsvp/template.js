@@ -9,6 +9,7 @@ import classNames from 'classnames';
  * WordPress dependencies
  */
 import { Spinner } from '@wordpress/components';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -18,8 +19,6 @@ import RSVPDashboard from './dashboard/container';
 import RSVPInactiveBlock from './inactive-block/container';
 import MoveModal from '@moderntribe/tickets/elements/move-modal';
 import './style.pcss';
-
-const { __ } = wp.i18n;
 
 class RSVP extends PureComponent {
 	static propTypes = {
