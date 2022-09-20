@@ -191,6 +191,8 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [TBD] TBD =
 
 * Fix - Properly save the check-in details for attendees on check-in. [ETP-819]
+* Fix - TicketsCommerce ticketed events not showing up for Events REST API. [ET-1567]
+* Enhancement - Add template tag to properly check if The Events Calendar is active. [ETP-820]
 * Enhancement - Add `attendance` information to the `events` REST API endpoint. [ET-1580]
 
 = [5.5.0] 2022-09-06 =
