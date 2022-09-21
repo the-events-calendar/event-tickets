@@ -131,6 +131,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 				'price_currency' => '_tribe_tickets_price_currency_symbol',
 				'full_name'      => '_tribe_tickets_full_name',
 				'email'          => '_tribe_tickets_email',
+				'check_in'       => current( $this->checked_in_keys() ),
 			]
 		);
 
@@ -901,6 +902,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			'attendee_status'   => null,
 			'price_paid'        => null,
 			'optout'            => null,
+			'check_in'          => null,
 		];
 
 		$args = array_merge( $args, $attendee_data );
@@ -969,6 +971,11 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			if ( isset( $args['optout'] ) ) {
 				// Enforce a 0/1 value for the optout value.
 				$args['optout'] = (int) tribe_is_truthy( $args['optout'] );
+			}
+
+			if ( isset( $args['check_in'] ) ) {
+				// Enforce a 0/1 value for the check_in value.
+				$args['check_in'] = (int) tribe_is_truthy( $args['check_in'] );
 			}
 		}
 
