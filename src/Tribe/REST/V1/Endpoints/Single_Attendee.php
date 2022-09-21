@@ -155,6 +155,11 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 				'type'              => 'string',
 				'description'       => __( 'Order Status for the attendee.', 'event-tickets' ),
 			],
+			'check_in'              => [
+				'required'          => false,
+				'type'              => 'bool',
+				'description'       => __( 'Check in value for the attendee.', 'event-tickets' ),
+			],
 
 		];
 
@@ -215,6 +220,11 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 				'in'                => 'path',
 				'description'       => __( 'The attendee post ID', 'event-tickets' ),
 				'required'          => true,
+			],
+			'check_in'              => [
+				'required'          => false,
+				'type'              => 'bool',
+				'description'       => __( 'Check in value for the attendee.', 'event-tickets' ),
 			],
 		];
 
