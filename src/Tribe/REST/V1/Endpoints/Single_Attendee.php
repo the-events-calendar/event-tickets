@@ -116,7 +116,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 			return new WP_Error( 'attendee-creation-failed', __( 'Something went wrong! Attendee creation failed.', 'event-tickets' ) );
 		}
 
-		$attendee = $post_data['provider']->get_attendee( $attendee_object->ID );
+		$attendee = tribe_attendees( 'restv1' )->by_primary_key( $attendee_object->ID );
 		$response = new WP_REST_Response( $attendee );
 		$response->set_status( 201 );
 
@@ -198,7 +198,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 			return new WP_Error( 'attendee-update-failed', __( 'Something went wrong! Attendee update failed.', 'event-tickets' ) );
 		}
 
-		$attendee = $provider->get_attendee( $post_data['attendee_id'] );
+		$attendee = tribe_attendees( 'restv1' )->by_primary_key( $post_data['attendee_id'] );
 		$response = new WP_REST_Response( $attendee );
 		$response->set_status( 201 );
 
