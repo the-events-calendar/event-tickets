@@ -143,7 +143,8 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 		}
 
 		if ( $request['orderby'] ) {
-			$query->order_by( $request['orderby'] );
+			$order_type = isset( $request['order'] ) ? $request['order'] : 'DESC';
+			$query->order_by( $request['orderby'], $order_type );
 		}
 
 		if ( $request['offset'] ) {
