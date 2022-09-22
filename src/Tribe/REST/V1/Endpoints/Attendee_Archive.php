@@ -138,13 +138,12 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 			->by_args( $fetch_args )
 			->permission( $permission );
 
-		if ( $request['order'] ) {
-			$query->order( $request['order'] );
+		if ( $request['orderby'] ) {
+			$query->order_by( $request['orderby'] );
 		}
 
-		if ( $request['orderby'] ) {
-			$order_type = isset( $request['order'] ) ? $request['order'] : 'DESC';
-			$query->order_by( $request['orderby'], $order_type );
+		if ( $request['order'] ) {
+			$query->order( $request['order'] );
 		}
 
 		if ( $request['offset'] ) {
