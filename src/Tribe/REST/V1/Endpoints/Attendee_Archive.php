@@ -105,7 +105,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 			'before'                         => 'before_date',
 			'include'                        => 'post__in',
 			'exclude'                        => 'post__not_in',
-			'order'                          => 'order',
+			'order_id'                       => 'order',
 			'post_status'                    => 'event_status',
 			'status'                         => 'post_status',
 			'order_status'                   => 'order_status',
