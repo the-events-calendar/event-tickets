@@ -1434,8 +1434,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 					{$postmeta_table}.post_id = {$wpdb->posts}.ID
 					AND {$postmeta_table}.meta_key IN {$meta_keys_in}
 				)
-			"
-			,
+			",
 			$filter_id,
 			true
 		);
