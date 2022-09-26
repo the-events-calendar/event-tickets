@@ -208,7 +208,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 
 		foreach ( $search_keys as $key => $search_term ) {
 			if ( isset( $request_args[ $key ] ) ) {
-				$query->by( $search_term, '%' . $request_args[ $key ] . '%' );
+				$query->by( $search_term, '%' . sanitize_text_field( $request_args[ $key ] ) . '%' );
 			}
 		}
 
