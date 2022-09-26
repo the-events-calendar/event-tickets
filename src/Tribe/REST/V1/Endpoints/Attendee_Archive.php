@@ -150,6 +150,8 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 			$query->offset( $request['offset'] );
 		}
 
+		$query = $this->process_search( $query_args, $query );
+
 		$query_args = array_intersect_key( $query_args, $this->READ_args() );
 		$found      = $query->found();
 
@@ -185,6 +187,32 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 		];
 
 		return new WP_REST_Response( $data, 200, $headers );
+	}
+
+	/**
+	 * Process the search terms for attendees.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $request_args Array of request args.
+	 * @param Tribe__Tickets__REST__V1__Attendee_Repository $query The query object.
+	 *
+	 * @return Tribe__Tickets__REST__V1__Attendee_Repository $query The query object.
+	 */
+	protected function process_search( array $request_args, Tribe__Tickets__REST__V1__Attendee_Repository $query ) {
+
+		$search_keys = [
+			'name'  => 'holder_name__like',
+			'email' => 'holder_email__like',
+		];
+
+		foreach ( $search_keys as $key => $search_term ) {
+			if ( isset( $request_args[ $key ] ) ) {
+				$query->by( $search_term, '%' . $request_args[ $key ] . '%' );
+			}
+		}
+
+		return $query;
 	}
 
 	/**
