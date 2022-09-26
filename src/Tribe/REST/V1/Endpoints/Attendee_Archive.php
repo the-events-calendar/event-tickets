@@ -150,6 +150,8 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 			$query->offset( $request['offset'] );
 		}
 
+		$query = $this->process_search( $query_args, $query );
+
 		$query_args = array_intersect_key( $query_args, $this->READ_args() );
 		$found      = $query->found();
 
@@ -185,6 +187,32 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 		];
 
 		return new WP_REST_Response( $data, 200, $headers );
+	}
+
+	/**
+	 * Process the search terms for attendees.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $request_args Array of request args.
+	 * @param Tribe__Tickets__REST__V1__Attendee_Repository $query The query object.
+	 *
+	 * @return Tribe__Tickets__REST__V1__Attendee_Repository $query The query object.
+	 */
+	protected function process_search( array $request_args, Tribe__Tickets__REST__V1__Attendee_Repository $query ) {
+
+		$search_keys = [
+			'name'  => 'holder_name__like',
+			'email' => 'holder_email__like',
+		];
+
+		foreach ( $search_keys as $key => $search_term ) {
+			if ( isset( $request_args[ $key ] ) ) {
+				$query->by( $search_term, '%' . sanitize_text_field( $request_args[ $key ] ) . '%' );
+			}
+		}
+
+		return $query;
 	}
 
 	/**
@@ -423,6 +451,16 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 				'description' => __( 'Limit results to attendees for tickets that provide attendees the possibility to fill in additional information or not; requires ET+.', 'event-tickets' ),
 				'required'    => false,
 				'type'        => 'boolean',
+			),
+			'name' => array(
+				'description' => __( 'Limit results to attendees by name. It will search for names that are like the specified value', 'event-tickets' ),
+				'required'    => false,
+				'type'        => 'string',
+			),
+			'email' => array(
+				'description' => __( 'Limit results to attendees by email. It will search for emails that are like the specified value', 'event-tickets' ),
+				'required'    => false,
+				'type'        => 'string',
 			),
 		);
 	}

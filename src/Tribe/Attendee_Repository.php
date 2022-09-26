@@ -1361,6 +1361,9 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			$override = $loop === 0;
 
 			switch ( $order_by ) {
+				case 'full_name':
+					$this->order_by_full_name( $order, $after, $override );
+					break;
 				case 'security_code':
 					$this->order_by_security_code( $order, $after, $override );
 					break;
@@ -1401,6 +1404,45 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 					}
 			}
 		}
+	}
+
+	/**
+	 * Sets up the query filters to order attendees by the full name meta.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $order      The order direction, either `ASC` or `DESC`; defaults to `null` to use the order
+	 *                           specified in the current query or default arguments.
+	 * @param bool   $after      Whether to append the duration ORDER BY clause to the existing clauses or not;
+	 *                           defaults to `false` to prepend the duration clause to the existing ORDER BY
+	 *                           clauses.
+	 * @param bool   $override   Whether to override existing ORDER BY clauses with this one or not; default to
+	 *                           `true` to override existing ORDER BY clauses.
+	 */
+	protected function order_by_full_name( $order = null, $after = false, $override = true ) {
+		global $wpdb;
+
+		$meta_alias     = 'full_name';
+		$meta_keys_in   = $this->prepare_interval( $this->holder_name_keys() );
+		$postmeta_table = "orderby_{$meta_alias}_meta";
+		$filter_id      = 'order_by_full_name';
+
+		$this->filter_query->join(
+			"
+			LEFT JOIN {$wpdb->postmeta} AS {$postmeta_table}
+				ON (
+					{$postmeta_table}.post_id = {$wpdb->posts}.ID
+					AND {$postmeta_table}.meta_key IN {$meta_keys_in}
+				)
+			",
+			$filter_id,
+			true
+		);
+
+		$order = $this->get_query_order_type( $order );
+
+		$this->filter_query->orderby( [ $meta_alias => $order ], $filter_id, true, $after );
+		$this->filter_query->fields( "{$postmeta_table}.meta_value AS {$meta_alias}", $filter_id, $override );
 	}
 
 	/**

@@ -190,8 +190,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [TBD] TBD =
 
+* Fix - Orderby param not working for Attendee archive REST API. [ET-1591]
 * Fix - Properly save the check-in details for attendees on check-in. [ETP-819]
 * Fix - TicketsCommerce ticketed events not showing up for Events REST API. [ET-1567]
+* Enhancement - Added support for `name` and `email` param for searching in Attendee archive REST API. [ET-1591]
 * Enhancement - Add template tag to properly check if The Events Calendar is active. [ETP-820]
 * Enhancement - Add `attendance` information to the `events` REST API endpoint. [ET-1580]
 * Enhancement - Add `check_in` argument support for `attendees` REST API endpoint. [ET-1588]
