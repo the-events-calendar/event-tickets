@@ -452,6 +452,16 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 				'required'    => false,
 				'type'        => 'boolean',
 			),
+			'name' => array(
+				'description' => __( 'Limit results to attendees by name. It will search for names that are like the specified value', 'event-tickets' ),
+				'required'    => false,
+				'type'        => 'string',
+			),
+			'email' => array(
+				'description' => __( 'Limit results to attendees by email. It will search for emails that are like the specified value', 'event-tickets' ),
+				'required'    => false,
+				'type'        => 'string',
+			),
 		);
 	}
 }
