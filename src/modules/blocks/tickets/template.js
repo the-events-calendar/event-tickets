@@ -50,7 +50,7 @@ class Tickets extends PureComponent {
 		return (
 			<Fragment>
 				<TicketsContainer isSelected={ isSelected } />
-				{ canCreateTickets && <TicketsDashboard isSelected={ isSelected } clientId={ clientId } />}
+				{ canCreateTickets && <TicketsDashboard isSelected={ isSelected } clientId={ clientId } /> }
 				<TicketControls />
 			</Fragment>
 		);
@@ -75,7 +75,7 @@ class Tickets extends PureComponent {
 					<Button variant="secondary" onClick={ () =>
 						wp.data.dispatch( 'core/block-editor' ).removeBlock( clientId )
 					}>
-						{__( 'Remove block', 'event-tickets' )}
+						{ __( 'Remove block', 'event-tickets' ) }
 					</Button>
 				</p>
 			</div>
