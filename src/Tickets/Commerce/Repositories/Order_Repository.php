@@ -490,7 +490,7 @@ class Order_Repository extends Tribe__Repository {
 	/**
 	 * Overrides the base method to correctly handle the `order_by` clauses before.
 	 *
-	 * @since TBD
+	 * @since 5.5.0
 	 *
 	 * @return \WP_Query The built query object.
 	 */
@@ -506,7 +506,7 @@ class Order_Repository extends Tribe__Repository {
 	/**
 	 * Handles the `order_by` clauses for events
 	 *
-	 * @since TBD
+	 * @since 5.5.0
 	 *
 	 * @param string $order_by The key used to order items.
 	 */
@@ -583,7 +583,7 @@ class Order_Repository extends Tribe__Repository {
 	/**
 	 * Sets up the query filters to order items by the purchaser email.
 	 *
-	 * @since TBD
+	 * @since 5.5.0
 	 *
 	 * @param string $key        The meta key that is used for the sorting.
 	 * @param string $order      The order direction, either `ASC` or `DESC`; defaults to `null` to use the order
@@ -625,7 +625,7 @@ class Order_Repository extends Tribe__Repository {
 	/**
 	 * Sets up the query filters to order items by purchaser name.
 	 *
-	 * @since TBD
+	 * @since 5.5.0
 	 *
 	 * @param string $order      The order direction, either `ASC` or `DESC`; defaults to `null` to use the order
 	 *                           specified in the current query or default arguments.
@@ -642,7 +642,7 @@ class Order_Repository extends Tribe__Repository {
 	/**
 	 * Sets up the query filters to order items by the purchaser email.
 	 *
-	 * @since TBD
+	 * @since 5.5.0
 	 *
 	 * @param string $order      The order direction, either `ASC` or `DESC`; defaults to `null` to use the order
 	 *                           specified in the current query or default arguments.
@@ -659,7 +659,7 @@ class Order_Repository extends Tribe__Repository {
 	/**
 	 * Sets up the query filters to order items by the total value.
 	 *
-	 * @since TBD
+	 * @since 5.5.0
 	 *
 	 * @param string $order      The order direction, either `ASC` or `DESC`; defaults to `null` to use the order
 	 *                           specified in the current query or default arguments.
@@ -676,7 +676,7 @@ class Order_Repository extends Tribe__Repository {
 	/**
 	 * Sets up the query filters to order items by the gateway id.
 	 *
-	 * @since TBD
+	 * @since 5.5.0
 	 *
 	 * @param string $order      The order direction, either `ASC` or `DESC`; defaults to `null` to use the order
 	 *                           specified in the current query or default arguments.
@@ -693,7 +693,7 @@ class Order_Repository extends Tribe__Repository {
 	/**
 	 * Sets up the query filters to order items by the gatway name.
 	 *
-	 * @since TBD
+	 * @since 5.5.0
 	 *
 	 * @param string $order      The order direction, either `ASC` or `DESC`; defaults to `null` to use the order
 	 *                           specified in the current query or default arguments.
@@ -710,7 +710,7 @@ class Order_Repository extends Tribe__Repository {
 	/**
 	 * Sets up the query filters to order items by the status.
 	 *
-	 * @since TBD
+	 * @since 5.5.0
 	 *
 	 * @param string $order      The order direction, either `ASC` or `DESC`; defaults to `null` to use the order
 	 *                           specified in the current query or default arguments.
@@ -736,7 +736,7 @@ class Order_Repository extends Tribe__Repository {
 	/**
 	 * Get the order param for the current orderby clause.
 	 *
-	 * @since TBD
+	 * @since 5.5.0
 	 *
 	 * @param $order string|null order type value either 'ASC' or 'DESC'.
 	 *

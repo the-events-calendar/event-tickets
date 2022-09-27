@@ -34,7 +34,7 @@ class Tribe__Tickets__Editor__Assets {
 			[
 				'in_footer'    => false,
 				'localize'     => [],
-				'conditionals' => tribe_callback( 'tickets.editor', 'current_type_support_tickets' ),
+				'conditionals' => tribe_callback( 'tickets.editor', 'current_post_supports_tickets' ),
 				'priority'     => 200,
 			]
 		);
@@ -51,7 +51,7 @@ class Tribe__Tickets__Editor__Assets {
 			[
 				'in_footer'    => false,
 				'localize'     => [],
-				'conditionals' => tribe_callback( 'tickets.editor', 'current_type_support_tickets' ),
+				'conditionals' => tribe_callback( 'tickets.editor', 'current_post_supports_tickets' ),
 				'priority'     => 201,
 			]
 		);
@@ -68,7 +68,7 @@ class Tribe__Tickets__Editor__Assets {
 			[
 				'in_footer'    => false,
 				'localize'     => [],
-				'conditionals' => tribe_callback( 'tickets.editor', 'current_type_support_tickets' ),
+				'conditionals' => tribe_callback( 'tickets.editor', 'current_post_supports_tickets' ),
 				'priority'     => 202,
 			]
 		);
@@ -92,7 +92,7 @@ class Tribe__Tickets__Editor__Assets {
 			[
 				'in_footer'    => false,
 				'localize'     => [],
-				'conditionals' => tribe_callback( 'tickets.editor', 'current_type_support_tickets' ),
+				'conditionals' => tribe_callback( 'tickets.editor', 'current_post_supports_tickets' ),
 				'priority'     => 203,
 			]
 		);
@@ -106,11 +106,11 @@ class Tribe__Tickets__Editor__Assets {
 			[
 				'in_footer'    => false,
 				'localize'     => [],
-				'conditionals' => tribe_callback( 'tickets.editor', 'current_type_support_tickets' ),
+				'conditionals' => tribe_callback( 'tickets.editor', 'current_post_supports_tickets' ),
 				'priority'     => 15,
 			]
 		);
-		
+
 		tribe_asset(
 			$plugin,
 			'tec-tickets-blocks-category-icon-styles',
@@ -120,7 +120,7 @@ class Tribe__Tickets__Editor__Assets {
 			[
 				'in_footer'    => false,
 				'localize'     => [],
-				'conditionals' => tribe_callback( 'tickets.editor', 'current_type_support_tickets' ),
+				'conditionals' => tribe_callback( 'tickets.editor', 'current_post_supports_tickets' ),
 				'priority'     => 16,
 			]
 		);

@@ -214,7 +214,7 @@ class Payment_Intent_Handler {
 	/**
 	 * Get the additional metadata for the payment intent.
 	 *
-	 * @since TBD
+	 * @since 5.5.0
 	 *
 	 * @param \WP_Post $order The Order data.
 	 * @param array $payment_intent The Payment intent.
@@ -236,16 +236,16 @@ class Payment_Intent_Handler {
 			$tickets_in_order
 		);
 
-		$metadata[ 'purchaser_name' ]  = $order->purchaser_name;
-		$metadata[ 'purchaser_email' ] = $order->purchaser_email;
-		$metadata[ 'event_name' ]      = get_post( current( $events_in_order ) )->post_title;
-		$metadata[ 'event_url' ]       = get_post_permalink( current( $events_in_order ) );
-		$metadata[ 'ticket_names' ]    =  implode( $ticket_names, ' ,' );
+		$metadata['purchaser_name']  = $order->purchaser_name;
+		$metadata['purchaser_email'] = $order->purchaser_email;
+		$metadata['event_name']      = get_post( current( $events_in_order ) )->post_title;
+		$metadata['event_url']       = get_post_permalink( current( $events_in_order ) );
+		$metadata['ticket_names']    = implode( ' ,', $ticket_names );
 
 		/**
 		 * Filter the updated metadata for a completed order's payment intent.
 		 *
-		 * @since TBD
+		 * @since 5.5.0
 		 *
 		 * @param \WP_Post $order The Order data.
 		 * @param array $payment_intent The Payment intent.
