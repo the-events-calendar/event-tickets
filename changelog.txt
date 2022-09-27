@@ -1,8 +1,9 @@
 == Changelog ==
 
-= [TBD]
+== TBD ==
 
 * Fix - Fixes the issues where while using `tribe_tickets_attendees` shortcode, 0 attendees always shows up. [ETP-811]
+* Fix - Fixes multiple of the same ticket form being on the same page being out of sync. [GTRIA-729]
 * Fix - Added a JS event that checks for attendee label validation if ET+ is active. [ETP-803]
 
 = [5.5.1] 2022-09-22 =
