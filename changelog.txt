@@ -1,5 +1,9 @@
 == Changelog ==
 
+= TBD =
+
+* Fix - Added a JS event that checks for attendee label validation if ET+ is active. [ETP-803]
+
 = [5.5.1] 2022-09-22 =
 
 * Fix - Listing tickets is no longer limited by the global settings. [ET-1584]
