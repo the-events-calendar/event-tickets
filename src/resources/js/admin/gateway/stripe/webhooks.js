@@ -1,10 +1,9 @@
-/* global ClipboardJS, URLSearchParams */
+/* global ClipboardJS */
 /**
  * Makes sure we have all the required levels on the Tribe Object
  *
  * @since 4.8.14
- *
- * @type   {Object}
+ * @type   {object}
  */
 tribe.tickets = tribe.tickets || {};
 
@@ -12,8 +11,7 @@ tribe.tickets = tribe.tickets || {};
  * Path to this script in the global tribe Object.
  *
  * @since 5.3.0
- *
- * @type   {Object}
+ * @type   {object}
  */
 tribe.tickets.commerce = tribe.tickets.commerce || {};
 
@@ -21,8 +19,7 @@ tribe.tickets.commerce = tribe.tickets.commerce || {};
  * Path to this script in the global tribe Object.
  *
  * @since 5.2.0
- *
- * @type   {Object}
+ * @type   {object}
  */
 tribe.tickets.commerce.gateway = tribe.tickets.commerce.gateway || {};
 
@@ -30,8 +27,7 @@ tribe.tickets.commerce.gateway = tribe.tickets.commerce.gateway || {};
  * Path to this script in the global tribe Object.
  *
  * @since 5.3.0
- *
- * @type   {Object}
+ * @type   {object}
  */
 tribe.tickets.commerce.gateway.stripe = tribe.tickets.commerce.gateway.stripe || {};
 
@@ -39,26 +35,22 @@ tribe.tickets.commerce.gateway.stripe = tribe.tickets.commerce.gateway.stripe ||
  * This script Object for public usage of the methods.
  *
  * @since 5.3.0
- *
- * @type   {Object}
+ * @type   {object}
  */
 tribe.tickets.commerce.gateway.stripe.webhooks = {};
 
 ( ( $, obj, ajaxurl ) => {
-	"use strict";
-
 	/**
 	 * Stores the all selectors used on this module.
 	 *
 	 * @since 5.3.0
-	 *
-	 * @type {Object}
+	 * @type {object}
 	 */
 	obj.selectors = {
 		button: '.tribe-field-tickets-commerce-stripe-webhooks-copy',
 		signingKey: '[name="tickets-commerce-stripe-webhooks-signing-key"]',
 		statusLabel: '.tribe-field-tickets-commerce-stripe-webhooks-signing-key-status',
-		tooltip: '.tooltip' ,
+		tooltip: '.tooltip',
 		genericDashicon: '.dashicons',
 		saveButton: 'input#tribeSaveSettings',
 	};
@@ -67,8 +59,7 @@ tribe.tickets.commerce.gateway.stripe.webhooks = {};
 	 * Stores the ClipboardJS instance for later reference.
 	 *
 	 * @since 5.3.0
-	 *
-	 * @type {Object}
+	 * @type {object}
 	 */
 	obj.clipboardButton = null;
 
@@ -95,11 +86,10 @@ tribe.tickets.commerce.gateway.stripe.webhooks = {};
 	 * When the signing field changes.
 	 *
 	 * @since 5.3.0
-	 *
 	 * @param event {Event}
-	 *
 	 * @return {Promise<*>}
 	 */
+	// eslint-disable-next-line
 	obj.onSigningFieldChange = async ( event ) => {
 		const $field = $( event.target );
 		const $tooltip = $field.siblings( obj.selectors.tooltip );
@@ -120,9 +110,10 @@ tribe.tickets.commerce.gateway.stripe.webhooks = {};
 			body: params,
 			hooks: {
 				beforeRequest: [
-					request => {
+					() => {
 						$statusLabel.text( $field.data( 'loadingText' ) );
-						$statusIcon.removeClass( [ 'dashicons-no', 'dashicons-yes' ] ).addClass( 'dashicons-update' );
+						$statusIcon.removeClass( [ 'dashicons-no', 'dashicons-yes' ] )
+							.addClass( 'dashicons-update' );
 					},
 				],
 			},
@@ -139,7 +130,7 @@ tribe.tickets.commerce.gateway.stripe.webhooks = {};
 		} else {
 			$statusIcon.removeClass( [ 'dashicons-update' ] ).addClass( 'dashicons-no' );
 			$statusLabel.text( response.data.status );
-			$field.val('');
+			$field.val( '' );
 		}
 
 		return response;

@@ -2,8 +2,7 @@
  * Makes sure we have all the required levels on the Tribe Object
  *
  * @since 5.0.3
- *
- * @type   {PlainObject}
+ * @type   {object}
  */
 tribe.tickets = tribe.tickets || {};
 
@@ -11,8 +10,7 @@ tribe.tickets = tribe.tickets || {};
  * Configures ET Utils Object in the Global Tribe variable
  *
  * @since 5.0.3
- *
- * @type   {PlainObject}
+ * @type   {object}
  */
 tribe.tickets.utils = {};
 
@@ -20,31 +18,26 @@ tribe.tickets.utils = {};
  * Initializes in a Strict env the code that manages the plugin "utils".
  *
  * @since 5.0.3
- *
- * @param  {PlainObject} $   jQuery
- * @param  {PlainObject} obj tribe.tickets.utils
- *
+ * @param  {object} $   jQuery
+ * @param  {object} obj tribe.tickets.utils
  * @return {void}
  */
 ( function( $, obj ) {
-	'use strict';
 	const $document = $( document );
 
 	/**
 	 * Disable/Enable element.
 	 *
 	 * @since 5.0.3
-	 *
 	 * @param {object} $element jQuery object that we want to disable/enable.
 	 * @param {boolean} isDisabled True if we want to disable the element.
-	 *
 	 * @return {void}
 	 */
 	obj.disable = function( $element, isDisabled ) {
 		if ( isDisabled ) {
 			$element.prop( 'disabled', true )
 				.attr( {
-					'disabled': 'true',
+					disabled: 'true',
 					'aria-disabled': 'true',
 				} );
 		} else {
@@ -58,7 +51,6 @@ tribe.tickets.utils = {};
 	 * Get the REST endpoint
 	 *
 	 * @since 5.0.3
-	 *
 	 * @returns {string} REST endpoint URL.
 	 */
 	obj.getRestEndpoint = function() {
@@ -69,9 +61,7 @@ tribe.tickets.utils = {};
 	 * Get the Currency Formatting for a Provider.
 	 *
 	 * @since 5.0.3
-	 *
 	 * @param {string} provider The provider.
-	 *
 	 * @returns {object} The appropriate currency format.
 	 */
 	obj.getCurrencyFormatting = function( provider ) {
@@ -85,10 +75,8 @@ tribe.tickets.utils = {};
 	 * So they play nice with other functions.
 	 *
 	 * @since 5.0.3
-	 *
 	 * @param {number} passedNumber The number to clean.
 	 * @param {string} provider The provider.
-	 *
 	 * @returns {string} The cleaned number.
 	 */
 	obj.cleanNumber = function( passedNumber, provider ) {
@@ -131,10 +119,8 @@ tribe.tickets.utils = {};
 	 * Based off coding from https://stackoverflow.com/a/2901136.
 	 *
 	 * @since 5.0.3
-	 *
 	 * @param {number} number The number to format.
 	 * @param {string} provider The provider.
-	 *
 	 * @returns {string} The formatted number.
 	 */
 	obj.numberFormat = function( number, provider ) {
@@ -159,7 +145,7 @@ tribe.tickets.utils = {};
 			return Math.round( num * k ) / k;
 		};
 
-		let s = ( prec ? toFixedFix( n, prec ) : Math.round( n ) ).toString().split( '.' );
+		const s = ( prec ? toFixedFix( n, prec ) : Math.round( n ) ).toString().split( '.' );
 
 		if ( s[ 0 ].length > 3 ) {
 			s[ 0 ] = s[ 0 ].replace( /\B(?=(?:\d{3})+(?!\d))/g, sep );
@@ -177,9 +163,7 @@ tribe.tickets.utils = {};
 	 * Get the tickets form, given a post ID.
 	 *
 	 * @since 5.0.3
-	 *
 	 * @param {number} postId The post id.
-	 *
 	 * @returns {jQuery} The jQuery object of the form.
 	 */
 	obj.getTicketsFormFromPostId = function( postId ) {
@@ -190,9 +174,7 @@ tribe.tickets.utils = {};
 	 * Get the tickets provider, given a post ID.
 	 *
 	 * @since 5.0.3
-	 *
 	 * @param {number} postId The post id.
-	 *
 	 * @returns {boolean|string} The provider, or false if it's not found.
 	 */
 	obj.getTicketsProviderFromPostId = function( postId ) {
@@ -203,9 +185,7 @@ tribe.tickets.utils = {};
 	 * Get the tickets provider ID, given a post ID.
 	 *
 	 * @since 5.0.3
-	 *
 	 * @param {number} postId The post id.
-	 *
 	 * @returns {boolean|string} The provider ID, or false if it's not found.
 	 */
 	obj.getTicketsProviderIdFromPostId = function( postId ) {
@@ -216,8 +196,7 @@ tribe.tickets.utils = {};
 	 * Get the first tickets block post ID
 	 *
 	 * @since 5.0.3
-	 *
-	 * @return {boolean|int} postId The post id.
+	 * @return {boolean|number} postId The post id.
 	 */
 	obj.getTicketsPostId = function() {
 		const $ticketsBlock = $( tribe.tickets.block.selectors.form )[ 0 ];
@@ -230,8 +209,9 @@ tribe.tickets.utils = {};
 	 * Get the price of the ticket from the ticket item element.
 	 *
 	 * @since 5.2.1
-	 *
-	 * @return {float|int} The ticket price.
+	 * @param {jQuery} $ticketItem The ticket item
+	 * @param {object} provider The provider
+	 * @return {number} The ticket price.
 	 */
 	obj.getPrice = function( $ticketItem, provider ) {
 		if ( ! $ticketItem ) {
@@ -244,7 +224,8 @@ tribe.tickets.utils = {};
 		const priceString = isNaN( realPrice )
 			? obj.cleanNumber( formattedPrice, provider )
 			: realPrice;
-			return parseFloat( priceString );
+
+		return parseFloat( priceString );
 	};
 
 	/**
@@ -253,10 +234,9 @@ tribe.tickets.utils = {};
 	 * @param targetAvailable {integer}
 	 * @param maxAvailable {integer}
 	 * @param addedToCart {integer}
-	 * @returns {number|integer}
+	 * @returns {number} The shared cap
 	 */
 	obj.calculateSharedCap = function( targetQty, targetAvailable, maxAvailable, addedToCart ) {
-
 		const maxLimit = maxAvailable - addedToCart;
 
 		// If target qty is smaller than both max available and target ticket capacity then it's valid.
@@ -270,6 +250,5 @@ tribe.tickets.utils = {};
 		}
 
 		return maxLimit;
-	}
-
+	};
 } )( jQuery, tribe.tickets.utils );
