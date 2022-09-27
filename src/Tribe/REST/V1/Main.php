@@ -13,7 +13,7 @@ class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 	/**
 	 * Event Tickets REST API URL prefix.
 	 *
-	 * This prefx is appended to the Modern Tribe REST API URL ones.
+	 * This prefix is appended to the `The Events Calendar` REST API URL ones.
 	 *
 	 * @var string
 	 */
@@ -41,13 +41,80 @@ class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 		}
 
 		// Add support for `ticketed` param on tribe_events filter on REST API.
-		add_filter( 'tribe_events_archive_get_args', [ $this , 'parse_events_rest_args' ], 10, 3 );
+		add_filter( 'tribe_events_archive_get_args', [ $this, 'parse_events_rest_args' ], 10, 3 );
+
+		add_filter( 'tribe_rest_event_data', [ $this, 'rest_event_data_add_attendance' ], 10, 2 );
+		add_filter( 'tribe_rest_events_archive_data', [ $this, 'rest_events_archive_add_attendance' ], 10, 2 );
+	}
+
+	/**
+	 * Filters the data that will be returned for the events endpoint, adding attendance.
+	 *
+	 * @since TBD
+	 *
+	 * @param array           $data    The retrieved data.
+	 * @param WP_REST_Request $request The original request.
+	 *
+	 * @return array          $data    The retrieved data, updated with attendance if the request has access.
+	 */
+	public function rest_events_archive_add_attendance( $data, $request ) : array {
+
+		if ( ! $this->request_has_manage_access() ) {
+			return $data;
+		}
+
+		if ( empty( $data['events'] ) ) {
+			return $data;
+		}
+
+		foreach ( $data['events'] as $event ) {
+			$attendee_count = Tribe__Tickets__Tickets::get_event_attendees_count( $event->id );
+			$checked_in     = Tribe__Tickets__Tickets::get_event_checkedin_attendees_count( $event->id );
+
+			$event['attendance'] = [
+				'total_attendees' => $attendee_count,
+				'checked_in'      => $checked_in,
+				'not_checked_in'  => $attendee_count - $checked_in,
+			];
+
+		}
+
+		return $data;
+	}
+
+	/**
+	 * Filters the data that will be returned for a single event, adding attendance.
+	 *
+	 * @since TBD
+	 *
+	 * @param array   $data  The data that will be returned in the response.
+	 * @param WP_Post $event The requested event.
+	 *
+	 * @return array  $data  The retrieved data, updated with attendance if the request has access.
+	 */
+	public function rest_event_data_add_attendance( $data, $event ) : array {
+
+		if ( ! $this->request_has_manage_access() ) {
+			return $data;
+		}
+
+		$post_id        = $event->ID;
+		$attendee_count = Tribe__Tickets__Tickets::get_event_attendees_count( $post_id );
+		$checked_in     = Tribe__Tickets__Tickets::get_event_checkedin_attendees_count( $post_id );
+
+		$data['attendance'] = [
+			'total_attendees' => $attendee_count,
+			'checked_in'      => $checked_in,
+			'not_checked_in'  => $attendee_count - $checked_in,
+		];
+
+		return $data;
 	}
 
 	/**
 	 * Filter the args for Event Query over REST API.
 	 *
-	 * @since TBD
+	 * @since 5.5.0
 	 *
 	 * @param array           $args Arguments used to get the events from the archive page.
 	 * @param array           $data Array with the data to be returned to the REST response.
@@ -159,7 +226,7 @@ class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 	/**
 	 * Return if the request has access to private information.
 	 *
-	 * @since TBD
+	 * @since 5.5.0
 	 *
 	 * @return bool True if the request has access to private information, false otherwise.
 	 */
@@ -170,7 +237,7 @@ class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 	/**
 	 * Return if the user has manage access.
 	 *
-	 * @since TBD
+	 * @since 5.5.0
 	 *
 	 * @return bool True if the user has manage access, false otherwise.
 	 */
@@ -181,7 +248,7 @@ class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 	/**
 	 * Return if user can read private information.
 	 *
-	 * @since TBD
+	 * @since 5.5.0
 	 *
 	 * @return bool True if user can read private information, false otherwise.
 	 */
@@ -192,7 +259,7 @@ class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 	/**
 	 * Return if the request has a valid api key.
 	 *
-	 * @since TBD
+	 * @since 5.5.0
 	 *
 	 * @return bool True if the request has a valid api key, false otherwise.
 	 */

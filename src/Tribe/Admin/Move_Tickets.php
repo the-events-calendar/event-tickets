@@ -330,19 +330,18 @@ class Tribe__Tickets__Admin__Move_Tickets {
 		$ignore_ids = array_map( 'absint', $ignore_ids );
 		$ignore_ids = array_filter( $ignore_ids );
 
-		$query_args = array(
-			'post_type'      => $post_types,
-			'posts_per_page' => $limit,
-			'eventDisplay'   => 'custom',
-			'orderby'        => 'title',
-			'order'          => 'ASC',
-			's'              => $params['search_terms'],
-			'post__not_in'   => $ignore_ids,
-		);
+		$query_args = [
+			'post_type'           => $post_types,
+			'posts_per_page'      => $limit,
+			'eventDisplay'        => 'custom',
+			'orderby'             => 'title',
+			'order'               => 'ASC',
+			's'                   => $params['search_terms'],
+			'post__not_in'        => $ignore_ids,
+			'post__not_in_series' => true,
+		];
 
-		$posts = get_posts( $query_args );
-
-		return $this->format_post_list( $posts );
+		return $this->format_post_list( new \WP_Query( $query_args ) );
 	}
 
 	/**
@@ -353,20 +352,24 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	 *
 	 * @return array
 	 */
-	protected function format_post_list( array $query_results ) {
+	protected function format_post_list( \WP_Query $query ) {
+		global $post;
 		$posts = array();
 
-		foreach ( $query_results as $wp_post ) {
-			/** This filter is documented in wp-includes/post-template.php */
-			$title = apply_filters( 'the_title', $wp_post->post_title, $wp_post->ID );
+		while( $query->have_posts() ) {
+			$query->the_post();
+			/*y This filter is documented in wp-includes/post-template.php */
+			$title = apply_filters( 'the_title', $post->post_title, $post->ID );
 
 			// Append the event start date if there is one, ie for events
-			if ( $wp_post->_EventStartDate ) {
-				$title .= ' (' . tribe_get_start_date( $wp_post->ID ) . ')';
+			if ( $post->_EventStartDate ) {
+				$title .= ' (' . tribe_get_start_date( $post->ID ) . ')';
 			}
 
-			$posts[ $wp_post->ID ] = $title;
+			$posts[ $post->ID ] = $title;
 		}
+
+		wp_reset_postdata();
 
 		return $posts;
 	}
