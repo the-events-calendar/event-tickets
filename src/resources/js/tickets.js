@@ -635,12 +635,21 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	/* "Save Ticket" button action */
 	$document.on( 'click.tribe', '[name="ticket_form_save"]', function( e ) {
 		var $form = $( document.getElementById( 'ticket_form_table' ) );
+		var additionalValidation = true;
 
 		// Makes sure we have validation
 		$form.trigger( 'validation.tribe' );
 
 		// Prevent anything from happening when there are errors
 		if ( tribe.validation.hasErrors( $form ) ) {
+			return;
+		}
+
+		// setting triggerHandler as a variable is needed to return a new value of additionalValidation if needed.
+		additionalValidation = $tribe_tickets.triggerHandler( 'additionalValidation.tribe', [ additionalValidation ] );
+
+		// prevent form submission if trigger above returns false
+		if ( additionalValidation === false ) {
 			return;
 		}
 
