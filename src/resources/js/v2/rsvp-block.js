@@ -2,8 +2,7 @@
  * Makes sure we have all the required levels on the Tribe Object
  *
  * @since 5.0.0
- *
- * @type {Object}
+ * @type {object}
  */
 tribe.tickets = tribe.tickets || {};
 tribe.tickets.rsvp = tribe.tickets.rsvp || {};
@@ -12,8 +11,7 @@ tribe.tickets.rsvp = tribe.tickets.rsvp || {};
  * Configures RSVP block Object in the Global Tribe variable
  *
  * @since 5.0.0
- *
- * @type {Object}
+ * @type {object}
  */
 tribe.tickets.rsvp.block = {};
 
@@ -21,22 +19,18 @@ tribe.tickets.rsvp.block = {};
  * Initializes in a Strict env the code that manages the RSVP block.
  *
  * @since 5.0.0
- *
- * @param  {Object} $   jQuery
- * @param  {Object} obj tribe.tickets.rsvp.block
- *
+ * @param  {object} $   jQuery
+ * @param  {object} obj tribe.tickets.rsvp.block
  * @return {void}
  */
 ( function( $, obj ) {
-	'use strict';
 	const $document = $( document );
 
 	/**
 	 * Selectors used for configuration and setup
 	 *
 	 * @since 5.0.0
-	 *
-	 * @type {Object}
+	 * @type {object}
 	 */
 	obj.selectors = {
 		container: '.tribe-tickets__rsvp-wrapper',
@@ -53,13 +47,11 @@ tribe.tickets.rsvp.block = {};
 	 * Binds events for the going button.
 	 *
 	 * @since 5.0.0
-	 *
 	 * @param {jQuery} $container jQuery object of the RSVP container.
-	 *
 	 * @return {void}
 	 */
 	obj.bindGoing = function( $container ) {
-		let data  = {};
+		let data = {};
 		const rsvpId = $container.data( 'rsvp-id' );
 		const $goingButton = $container.find( obj.selectors.goingButton );
 
@@ -80,13 +72,11 @@ tribe.tickets.rsvp.block = {};
 	 * Binds events for the not going button.
 	 *
 	 * @since 5.0.0
-	 *
 	 * @param {jQuery} $container jQuery object of the RSVP container.
-	 *
 	 * @return {void}
 	 */
 	obj.bindNotGoing = function( $container ) {
-		let data  = {};
+		let data = {};
 		const rsvpId = $container.data( 'rsvp-id' );
 		const $notGoingButton = $container.find( obj.selectors.notGoingButton );
 
@@ -107,19 +97,16 @@ tribe.tickets.rsvp.block = {};
 	 * Binds events for the cancel button.
 	 *
 	 * @since 5.0.0
-	 *
 	 * @param {jQuery} $container jQuery object of the RSVP container.
-	 *
 	 * @return {void}
 	 */
 	obj.bindCancel = function( $container ) {
-		let data  = {};
+		let data = {};
 		const rsvpId = $container.data( 'rsvp-id' );
 		const $cancelButton = $container.find( obj.selectors.cancelButton );
 
 		$cancelButton.each( function( index, button ) {
 			$( button ).on( 'click', function() {
-
 				if ( ! confirm( TribeRsvp.cancelText ) ) {
 					return;
 				}
@@ -139,7 +126,6 @@ tribe.tickets.rsvp.block = {};
 	 * Handle the RSVP toggle for listing in public attendee list.
 	 *
 	 * @since 5.0.0
-	 *
 	 * @param {Event} event Input event
 	 */
 	obj.handleDisplayToggle = function( event ) {
@@ -168,7 +154,6 @@ tribe.tickets.rsvp.block = {};
 	 * Handle the RSVP form submission
 	 *
 	 * @since 5.0.0
-	 *
 	 * @param {event} e submission event
 	 */
 	obj.handleSubmission = function( e ) {
@@ -179,7 +164,7 @@ tribe.tickets.rsvp.block = {};
 		const rsvpId = $form.data( 'rsvp-id' );
 		const params = $form.serializeArray();
 
-		var data = {
+		const data = {
 			action: 'tribe_tickets_rsvp_handle',
 			ticket_id: rsvpId,
 			step: 'success',
@@ -196,9 +181,7 @@ tribe.tickets.rsvp.block = {};
 	 * Binds events for the RSVP form.
 	 *
 	 * @since 5.0.0
-	 *
 	 * @param {jQuery} $container jQuery object of the RSVP container.
-	 *
 	 * @return {void}
 	 */
 	obj.bindForm = function( $container ) {
@@ -213,9 +196,7 @@ tribe.tickets.rsvp.block = {};
 	 * Binds events for the display in public attendee toggle.
 	 *
 	 * @since 5.0.0
-	 *
 	 * @param {jQuery} $container jQuery object of the RSVP container.
-	 *
 	 * @return {void}
 	 */
 	obj.bindDisplayToggle = function( $container ) {
@@ -224,7 +205,7 @@ tribe.tickets.rsvp.block = {};
 		$displayToggle.on(
 			'input',
 			{ container: $container },
-			obj.handleDisplayToggle
+			obj.handleDisplayToggle,
 		);
 	};
 
@@ -232,11 +213,9 @@ tribe.tickets.rsvp.block = {};
 	 * Unbinds events.
 	 *
 	 * @since 5.0.0
-	 *
 	 * @param  {Event}       event    event object for 'beforeAjaxSuccess.tribeTicketsRsvp' event
 	 * @param  {jqXHR}       jqXHR    Request object
-	 * @param  {Object}      settings Settings that this request was made with
-	 *
+	 * @param  {object}      settings Settings that this request was made with
 	 * @return {void}
 	 */
 	obj.unbindEvents = function( event, jqXHR, settings ) { // eslint-disable-line no-unused-vars
@@ -258,13 +237,10 @@ tribe.tickets.rsvp.block = {};
 	 * Binds events for container.
 	 *
 	 * @since 5.0.0
-	 *
 	 * @param {jQuery}  $container jQuery object of object of the RSVP container.
-	 *
 	 * @return {void}
 	 */
 	obj.bindEvents = function( $container ) {
-
 		obj.bindGoing( $container );
 		obj.bindNotGoing( $container );
 		obj.bindCancel( $container );
@@ -274,7 +250,7 @@ tribe.tickets.rsvp.block = {};
 		$container.on(
 			'beforeAjaxSuccess.tribeTicketsRsvp',
 			{ container: $container },
-			obj.unbindEvents
+			obj.unbindEvents,
 		);
 	};
 
@@ -282,11 +258,9 @@ tribe.tickets.rsvp.block = {};
 	 * Initialize RSVP events.
 	 *
 	 * @since 5.0.0
-	 *
 	 * @param {Event}   event      event object for 'afterSetup.tribeTicketsRsvp' event
-	 * @param {int}     index      jQuery.each index param from 'afterSetup.tribeTicketsRsvp' event.
+	 * @param {number}  index      jQuery.each index param from 'afterSetup.tribeTicketsRsvp' event.
 	 * @param {jQuery}  $container jQuery object of view container.
-	 *
 	 * @return {void}
 	 */
 	obj.init = function( event, index, $container ) {
@@ -297,14 +271,13 @@ tribe.tickets.rsvp.block = {};
 	 * Handles the initialization of the RSVP block events when Document is ready.
 	 *
 	 * @since 5.0.0
-	 *
 	 * @return {void}
 	 */
 	obj.ready = function() {
 		$document.on(
 			'afterSetup.tribeTicketsRsvp',
 			tribe.tickets.rsvp.manager.selectors.container,
-			obj.init
+			obj.init,
 		);
 	};
 
