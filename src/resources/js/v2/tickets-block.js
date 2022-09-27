@@ -265,21 +265,19 @@ tribe.tickets.block = {
 	 * When multiple of the same ticket forms are on a page, sync them on change.
 	 *
 	 * @since TBD
-	 *
 	 * @param {jQuery} $input The ticket input being changed.
 	 * @param {number} newValue The value being updated to.
-	 *
 	 * @return {void}
 	 */
-	obj.formMatch = function ( $input, newValue ) {
-		var formID = $input.closest( obj.selectors.item ).attr( 'data-ticket-id' );
-		var $formTicket = $( '[ data-ticket-id="' + formID + '" ]' );
+	obj.formMatch = function( $input, newValue ) {
+		const formID = $input.closest( obj.selectors.item ).attr( 'data-ticket-id' );
+		const $formTicket = $( '[ data-ticket-id="' + formID + '" ]' );
 
 		if ( $formTicket.length >= 2 ) {
 			$formTicket.each( function() {
-				$( this ).find( obj.selectors.itemQuantityInput ).val( newValue )
+				$( this ).find( obj.selectors.itemQuantityInput ).val( newValue );
 				obj.updateFooter( $( this ).closest( 'form' ) );
-			});
+			} );
 		}
 	};
 
