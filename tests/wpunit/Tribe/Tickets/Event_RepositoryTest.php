@@ -31,7 +31,7 @@ class Event_RepositoryTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	/**
-	 * It should allow filtering events by ticket cost
+	 * It should allow filtering events by ticket cost.
 	 *
 	 * @test
 	 */

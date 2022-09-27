@@ -3,7 +3,20 @@
 = [TBD]
 * Fix - Fixes the issues where while using `tribe_tickets_attendees` shortcode, 0 attendees always shows up. [ETP-811]
 
-= [5.4.4] TBD =
+= [5.5.1] 2022-09-22 =
+
+* Fix - Listing tickets is no longer limited by the global settings. [ET-1584]
+* Fix - Correct parameter type hinting when param can be null. [ET-1582]
+* Language - 0 new strings added, 1 updated, 0 fuzzied, and 0 obsoleted
+
+= [5.5.0] 2022-09-06 =
+
+* Version - Event Tickets 5.5.0 is only compatible with The Events Calendar 6.0.0 and higher.
+* Version - Event Tickets 5.5.0 is only compatible with Event Tickets Plus 5.6.0 and higher.
+* Enhancement - Adds a compatibility layer to work with the new Recurrence Backend Engine in TEC/ECP.
+* Language - 4 new strings added, 49 updated, 0 fuzzied, and 3 obsoleted
+
+= [5.4.4] 2022-08-15 =
 
 * Fix - Tickets/RSVP blocks appear in wrong place on non-events when block editor is disabled in The Events Calendar. [ET-1544]
 * Fix - Fixed searching attendees by purchaser name and email for Tickets Commerce attendees. [ET-1543]
@@ -45,7 +58,7 @@
 * Fix - Allow price block to override the string that is dynamically created from ticket values. [ET-1524]
 * Language - 9 new strings added, 177 updated, 0 fuzzied, and 1 obsoleted.
 
-= [5.4.1] TBD =
+= [5.4.1] 2022-06-08 =
 
 * Fix - Encoding issue in the block editor's price block of The Events Calendar events. [ET-1434]
 * Fix - Add India to the list of countries ET cannot process fees from. [ET-1522]
