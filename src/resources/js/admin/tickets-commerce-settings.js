@@ -2,8 +2,7 @@
  * Makes sure we have all the required levels on the Tribe Object
  *
  * @since 5.1.6
- *
- * @type {Object}
+ * @type {object}
  */
 tribe.tickets = tribe.tickets || {};
 tribe.tickets.admin = tribe.tickets.admin || {};
@@ -14,8 +13,7 @@ tribe.dialogs.events = tribe.dialogs.events || {};
  * Configures admin commerce settings Object in the Global Tribe variable
  *
  * @since 5.1.6
- *
- * @type {Object}
+ * @type {object}
  */
 tribe.tickets.admin.commerceSettings = {};
 
@@ -23,23 +21,19 @@ tribe.tickets.admin.commerceSettings = {};
  * Initializes in a Strict env the code that manages the Tickets Commerce settings page.
  *
  * @since 5.1.6
- *
- * @param  {Object} $   jQuery
- * @param  {Object} _   Underscore.js
- * @param  {Object} obj tribe.tickets.admin.commerceSettings
- *
+ * @param  {object} $   jQuery
+ * @param  {object} _   Underscore.js
+ * @param  {object} obj tribe.tickets.admin.commerceSettings
  * @return {void}
  */
 ( function( $, _, obj ) {
-	'use strict';
 	const $document = $( document );
 
 	/**
 	 * Selectors used for configuration and setup
 	 *
 	 * @since 5.1.6
-	 *
-	 * @type {PlainObject}
+	 * @type {object}
 	 */
 	// @todo Replace ID/class names.
 	obj.selectors = {
@@ -64,7 +58,7 @@ tribe.tickets.admin.commerceSettings = {};
 						return;
 					}
 
-					obj.paypalErrorQuickHelp[0] &&
+					obj.paypalErrorQuickHelp[ 0 ] &&
 						obj.paypalErrorQuickHelp.removeClass( 'tribe-common-a11y-hidden' );
 				} );
 			} );
@@ -74,13 +68,12 @@ tribe.tickets.admin.commerceSettings = {};
 			attributes: true,
 			childList: true,
 		} );
-	}
+	};
 
 	obj.maybeShowModalAfterConnection = function() {
-
 		if (
-			! window.location.search.match( /tc-status=paypal-signup-complete/i )
-			&& ! window.location.search.match( /tc-status=stripe-signup-complete/i )
+			! window.location.search.match( /tc-status=paypal-signup-complete/i ) &&
+			! window.location.search.match( /tc-status=stripe-signup-complete/i )
 		) {
 			return;
 		}
@@ -99,9 +92,8 @@ tribe.tickets.admin.commerceSettings = {};
 					$( closeButton ).on( 'click', function() {
 						dialog.a11yInstance.hide();
 					} );
-			} );
+				} );
 		} );
-
 	};
 
 	obj.setupPartnerLink = function( partnerLink ) {
@@ -120,9 +112,7 @@ tribe.tickets.admin.commerceSettings = {};
 	 * Performs an AJAX request to get the partner URL.
 	 *
 	 * @since 5.1.6
-	 *
-	 * @param {String} countryCode The country code.
-	 *
+	 * @param {string} countryCode The country code.
 	 * @return {void}
 	 */
 	obj.requestPartnerUrl = function( countryCode ) {
@@ -158,7 +148,7 @@ tribe.tickets.admin.commerceSettings = {};
 						}
 
 						const buttonContainer = document.querySelector( obj.selectors.connectButtonWrap );
-						obj.paypalErrorQuickHelp[0] && obj.paypalErrorQuickHelp.remove();
+						obj.paypalErrorQuickHelp[ 0 ] && obj.paypalErrorQuickHelp.remove();
 						buttonContainer.append( createElementFromHTML( res.data ) );
 					} );
 			} );
@@ -201,7 +191,8 @@ tribe.tickets.admin.commerceSettings = {};
 		obj.paypalErrorQuickHelp = $( obj.selectors.troubleNotice );
 
 		// Hide paypal quick help message.
-		obj.paypalErrorQuickHelp[0] && obj.paypalErrorQuickHelp.addClass( 'tribe-common-a11y-hidden' );
+		obj.paypalErrorQuickHelp[ 0 ] &&
+		obj.paypalErrorQuickHelp.addClass( 'tribe-common-a11y-hidden' );
 
 		obj.requestPartnerUrl( countryCode );
 	};
@@ -225,10 +216,10 @@ tribe.tickets.admin.commerceSettings = {};
 		const query = '&authCode=' + authCode + '&sharedId=' + sharedId;
 
 		fetch( ajaxurl + '?action=tribe_tickets_paypal_commerce_user_on_boarded' + query )
-			.then( function ( res ) {
-				return res.json()
+			.then( function( res ) {
+				return res.json();
 			} )
-			.then( function ( res ) {
+			.then( function( res ) {
 				if ( true !== res.success ) {
 					// @todo Improve the error messaging here.
 					alert( 'Something went wrong while we were connecting your account, please try again.' );
@@ -237,26 +228,25 @@ tribe.tickets.admin.commerceSettings = {};
 
 				// Remove PayPal quick help container.
 				obj.paypalErrorQuickHelp = $( obj.selectors.troubleNotice );
-				obj.paypalErrorQuickHelp[0] && obj.paypalErrorQuickHelp.remove();
+				obj.paypalErrorQuickHelp[ 0 ] && obj.paypalErrorQuickHelp.remove();
 			} );
-	}
+	};
 
 	/**
 	 * Handles the initialization of the gateway settings when Document is ready.
 	 *
 	 * @since 5.1.6
-	 *
 	 * @return {void}
 	 */
 	obj.ready = function() {
 		obj.onBoardingButton = $( obj.selectors.connectButton );
 		obj.disconnectButton = $( obj.selectors.disconnectPayPalAccountButton );
 
-		if ( obj.onBoardingButton[0] ) {
+		if ( obj.onBoardingButton[ 0 ] ) {
 			obj.onBoardingButton.on( 'click', obj.handleConnectClick );
 		}
 
-		if ( obj.disconnectButton[0] ) {
+		if ( obj.disconnectButton[ 0 ] ) {
 			obj.disconnectButton.on( 'click', obj.handleDisconnectClick );
 		}
 

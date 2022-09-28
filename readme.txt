@@ -188,6 +188,11 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Fix - Properly save the check-in details for attendees on check-in. [ETP-819]
+* Enhancement - Add `attendance` information to the `events` REST API endpoint. [ET-1580]
+
 = [5.5.1] 2022-09-22 =
 
 * Fix - Listing tickets is no longer limited by the global settings. [ET-1584]
