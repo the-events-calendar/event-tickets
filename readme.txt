@@ -3,7 +3,7 @@
 Contributors: theeventscalendar, brianjessee, camwynsp, aguseo, bordoni, borkweb, GeoffBel, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra, moraleida.me
 Tags: tickets, registration, event registration, RSVP, ticket sales, attendee management
 Requires at least: 5.8.4
-Tested up to: 6.1.0
+Tested up to: 6.0.2
 Stable tag: 5.5.1
 Requires PHP: 7.3
 License: GPLv2 or later
@@ -188,7 +188,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.5.1] 2022-09-21 =
+= [5.5.1] 2022-09-22 =
 
 * Fix - Listing tickets is no longer limited by the global settings. [ET-1584]
 * Fix - Correct parameter type hinting when param can be null. [ET-1582]

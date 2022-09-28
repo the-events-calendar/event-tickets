@@ -1,6 +1,6 @@
 == Changelog ==
 
-= [5.5.1] 2022-09-21 =
+= [5.5.1] 2022-09-22 =
 
 * Fix - Listing tickets is no longer limited by the global settings. [ET-1584]
 * Fix - Correct parameter type hinting when param can be null. [ET-1582]
@@ -55,7 +55,7 @@
 * Fix - Allow price block to override the string that is dynamically created from ticket values. [ET-1524]
 * Language - 9 new strings added, 177 updated, 0 fuzzied, and 1 obsoleted.
 
-= [5.4.1] TBD =
+= [5.4.1] 2022-06-08 =
 
 * Fix - Encoding issue in the block editor's price block of The Events Calendar events. [ET-1434]
 * Fix - Add India to the list of countries ET cannot process fees from. [ET-1522]
