@@ -42,7 +42,7 @@ class Provider extends tad_DI52_ServiceProvider {
 			define( 'TEC_ET_CUSTOM_TABLES_V1_ROOT', __DIR__ );
 		}
 
-		$this->lock_for_maintence();
+		$this->lock_for_maintenance();
 
 		add_filter( 'admin_body_class', [ $this, 'prevent_tickets_on_recurring_events' ] );
 		add_filter( 'body_class', [ $this, 'prevent_tickets_on_recurring_events_front_end' ] );
@@ -58,7 +58,7 @@ class Provider extends tad_DI52_ServiceProvider {
 	 *
 	 * @since 5.5.0
 	 */
-	private function lock_for_maintence(): void {
+	private function lock_for_maintenance(): void {
 		$state = $this->container->make( State::class );
 
 		if ( $state->should_lock_for_maintenance() ) {
@@ -67,7 +67,7 @@ class Provider extends tad_DI52_ServiceProvider {
 	}
 
 	/**
-	 * Filter the body clases in admin context to prevent tickets from being added to
+	 * Filter the body classes in admin context to prevent tickets from being added to
 	 * recurring Events or ticketed Events from being made recurring.
 	 *
 	 * @since 5.5.0
@@ -77,7 +77,7 @@ class Provider extends tad_DI52_ServiceProvider {
 	 * @return string A space-separated list of classes, updated to include the
 	 *                `tec-no-tickets-on-recurring` class.
 	 */
-	public function prevent_tickets_on_recurring_events( string $admin_body_classes ): string {
+	public function prevent_tickets_on_recurring_events( ?string $admin_body_classes ): string {
 		$state = $this->container->make( State::class );
 
 		if ( ! $state->is_migrated() ) {

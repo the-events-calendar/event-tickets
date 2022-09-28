@@ -744,22 +744,34 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 	 * @covers Tribe__Tickets__Tickets_Handler::get_post_totals()
 	 */
 	public function it_should_handle_stock_on_tickets_with_global_stock_with_sales() {
-		$ticket_ids = $this->create_distinct_paypal_tickets_basic( $this->event_id, [
+
+		$total_event_capacity = 30;
+		$ticket_ids = $this->create_distinct_paypal_tickets( $this->event_id, [
 			[
-				'meta_input' => [
-					'_capacity'                     => 20,
-					'total_sales'                   => 5,
-					Global_Stock::TICKET_STOCK_MODE => Global_Stock::CAPPED_STOCK_MODE,
+				'tribe-ticket' => [
+					'mode'              => Global_Stock::CAPPED_STOCK_MODE,
+					'event_capacity'    => $total_event_capacity,
+					'capacity'          => 20,
 				],
 			],
 			[
-				'meta_input' => [
-					'_capacity'                     => 30,
-					'total_sales'                   => 5,
-					Global_Stock::TICKET_STOCK_MODE => Global_Stock::GLOBAL_STOCK_MODE,
+				'tribe-ticket' => [
+					'mode'              => Global_Stock::GLOBAL_STOCK_MODE,
+					'event_capacity'    => $total_event_capacity,
+					'capacity'          => 30,
 				],
 			],
 		] );
+
+		//simulate sales.
+		$global = new Global_Stock( $this->event_id );
+
+		foreach ( $ticket_ids as $ticket_id ) {
+			$sales_count = 5;
+			update_post_meta( $ticket_id, 'total_sales', $sales_count  );
+			$new_stock = $global->get_stock_level() - $sales_count;
+			$global->set_stock_level( $new_stock );
+		}
 
 		$test_data = $this->handler->get_post_totals( $this->event_id );
 

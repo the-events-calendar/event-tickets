@@ -193,6 +193,13 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Properly save the check-in details for attendees on check-in. [ETP-819]
 * Enhancement - Add `attendance` information to the `events` REST API endpoint. [ET-1580]
 
+= [5.5.1] 2022-09-22 =
+
+* Fix - Listing tickets is no longer limited by the global settings. [ET-1584]
+* Fix - Correct parameter type hinting when param can be null. [ET-1582]
+* Fix - Showing Checkout not available and credit card fields at the same time for PayPal gateway in TicketsCommerce. [ETP-812]
+* Language - 0 new strings added, 1 updated, 0 fuzzied, and 0 obsoleted
+
 = [5.5.0] 2022-09-06 =
 
 * Version - Event Tickets 5.5.0 is only compatible with The Events Calendar 6.0.0 and higher.
