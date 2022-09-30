@@ -1,7 +1,10 @@
 == Changelog ==
 
 = [TBD]
+
 * Enhancement - For Attendee ticket email, added an option for List for better mobile visibility. [ETP-810]
+* Fix - Fixes multiple of the same ticket form being on the same page being out of sync. [GTRIA-729]
+* Fix - Added a JS event that checks for attendee label validation if ET+ is active. [ETP-803]
 
 = [5.5.1] 2022-09-22 =
 
