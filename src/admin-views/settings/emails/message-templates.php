@@ -15,6 +15,10 @@ if ( empty( $templates ) ) {
 }
 // @todo Update template HTML.
 ?>
-<h3>
-	This space is reserved for the message template list.
-</h3>
+<div class="tec_tickets-emails-template-list">
+	<?
+	foreach ( $templates as $email_template ) {
+		$this->template( 'message-templates/list-item', [ 'template' => $email_template ] );
+	}
+	?>
+</div>
