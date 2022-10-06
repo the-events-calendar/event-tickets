@@ -5,70 +5,70 @@
  */
 
 .tec_tickets-emails-template-list {
-    background: var(--tec-color-background);
-    border: 1px var(--tec-color-border-default) solid;
-    border-radius: var(--tec-border-radius-default);
-    margin-bottom: var(--tec-spacer-5);
+	background: var(--tec-color-background);
+	border: 1px var(--tec-color-border-default) solid;
+	border-radius: var(--tec-border-radius-default);
+	margin-bottom: var(--tec-spacer-5);
 }
 
 .tec_tickets-emails-template-list-item {
-    align-items: center;
-    border-top: 1px solid var(--tec-color-border-default);
-    display: flex;
-    justify-content: flex-start;
-    min-height: 54px;
+	align-items: center;
+	border-top: 1px solid var(--tec-color-border-default);
+	display: flex;
+	justify-content: flex-start;
+	min-height: 54px;
 
-    &:first-of-type {
-        border-top: none;
-    }
+	&:first-of-type {
+		border-top: none;
+	}
 
-    &.disabled {
-        color: var(--tec-color-text-disabled);
-    }
+	&.disabled {
+		color: var(--tec-color-text-disabled);
+	}
 }
 
 .tec_tickets-emails-template-list-item-icon {
-    padding: 0 var(--tec-spacer-4);
-    width: 25px;
+	padding: 0 var(--tec-spacer-4);
+	width: 25px;
 
-    & > span.dashicons-yes {
-        color: #1eb056;
-        height: 25px;
-        width: 25px;
+	& > span.dashicons-yes {
+		color: #1eb056;
+		height: 25px;
+		width: 25px;
 
-        &::before {
-            font-size: 25px;
-            font-weight: var(--tec-font-weight-regular);
-        }
-    }
+		&::before {
+			font-size: 25px;
+			font-weight: var(--tec-font-weight-regular);
+		}
+	}
 }
 
 .tec_tickets-emails-template-list-item-title {
-    font-size: 15px;
-    font-weight: var(--tec-font-weight-bold);
-    min-width: 90px;
-    padding: 0 var(--tec-spacer-4) 0 0;
+	font-size: 15px;
+	font-weight: var(--tec-font-weight-bold);
+	min-width: 90px;
+	padding: 0 var(--tec-spacer-4) 0 0;
 
-    @media (--viewport-medium) {
-        min-width: 200px;
-    }
+	@media (--viewport-medium) {
+		min-width: 200px;
+	}
 }
 
 .tec_tickets-emails-template-list-item-recipient {
-    flex-grow: 1;
-    font-size: 13px;
-    font-weight: var(--tec-font-weight-regular);
-    padding: 0;
+	flex-grow: 1;
+	font-size: 13px;
+	font-weight: var(--tec-font-weight-regular);
+	padding: 0;
 }
 
 .tec_tickets-emails-template-list-item-action {
-    padding: 0 var(--tec-spacer-4);
+	padding: 0 var(--tec-spacer-4);
 
-    & > a {
-        color: var(--tec-color-icon-secondary);
+	& > a {
+		color: var(--tec-color-icon-secondary);
 
-        &:hover {
-            color: var(--tec-color-event-icon-hover);
-        }
-    }
+		&:hover {
+			color: var(--tec-color-event-icon-hover);
+		}
+	}
 }

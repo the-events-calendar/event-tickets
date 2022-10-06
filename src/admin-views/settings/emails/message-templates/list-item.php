@@ -15,7 +15,6 @@
 if ( empty( $template ) ) {
 	return;
 }
-// @todo Update template HTML.
 
 $item_classes   = [ 'tec_tickets-emails-template-list-item' ];
 $item_classes[] = tribe_is_truthy( $template['enabled'] ) ? 'enabled' : 'disabled';

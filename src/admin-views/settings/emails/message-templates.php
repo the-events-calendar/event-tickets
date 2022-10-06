@@ -13,7 +13,7 @@
 if ( empty( $templates ) ) {
 	return;
 }
-// @todo Update template HTML.
+
 ?>
 <div class="tec_tickets-emails-template-list">
 	<?

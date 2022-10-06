@@ -15,7 +15,7 @@
 if ( empty( $template ) ) {
 	return;
 }
-// @todo Update template HTML.
+
 ?>
 <div class="tec_tickets-emails-template-list-item-title">
 	<?php echo esc_html( $template['title'] ); ?>

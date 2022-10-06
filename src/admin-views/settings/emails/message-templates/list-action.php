@@ -15,7 +15,7 @@
 if ( empty( $template ) ) {
 	return;
 }
-// @todo Update link to go to tempalte edit page.
+
 ?>
 <div class="tec_tickets-emails-template-list-item-action">
 	<a href="#" class="dashicons dashicons-edit"></a>

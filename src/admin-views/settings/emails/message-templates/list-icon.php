@@ -15,7 +15,6 @@
 if ( empty( $template ) ) {
 	return;
 }
-// @todo Update template HTML.
 
 $icon_classes   = [ 'dashicons' ];
 $icon_classes[] = tribe_is_truthy( $template['enabled'] ) ? 'dashicons-yes' : '';
