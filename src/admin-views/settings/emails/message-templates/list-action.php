@@ -18,5 +18,5 @@ if ( empty( $template ) ) {
 
 ?>
 <div class="tec-tickets__admin-settings-emails-template-list-item-action">
-	<a href="#" class="dashicons dashicons-edit"></a>
+	<a href="#" class="tec-tickets__admin-settings-emails-template-list-item-action-link dashicons dashicons-edit"></a>
 </div>
