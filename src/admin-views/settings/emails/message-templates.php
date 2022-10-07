@@ -16,9 +16,7 @@ if ( empty( $templates ) ) {
 
 ?>
 <div class="tec-tickets__admin-settings-emails-template-list">
-	<?
-	foreach ( $templates as $email_template ) {
-		$this->template( 'message-templates/list-item', [ 'template' => $email_template ] );
-	}
-	?>
+	<? foreach ( $templates as $email_template ) : ?>
+		<?php $this->template( 'message-templates/list-item', [ 'template' => $email_template ] ); ?>
+	<?php endforeach;	?>
 </div>
