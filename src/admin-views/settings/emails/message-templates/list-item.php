@@ -16,8 +16,10 @@ if ( empty( $template ) ) {
 	return;
 }
 
-$item_classes   = [ 'tec_tickets-emails-template-list-item' ];
-$item_classes[] = tribe_is_truthy( $template['enabled'] ) ? 'enabled' : 'disabled';
+$item_classes   = [ 'tec-tickets__admin-settings-emails-template-list-item' ];
+$item_classes[] = tribe_is_truthy( $template['enabled'] ) ? 
+    'tec-tickets__admin-settings-emails-template-list-item--enabled' : 
+    'tec-tickets__admin-settings-emails-template-list-item--disabled';
 
 ?>
 <div <?php tribe_classes( $item_classes ); ?> >

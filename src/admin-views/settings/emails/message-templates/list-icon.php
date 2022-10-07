@@ -20,6 +20,6 @@ $icon_classes   = [ 'dashicons' ];
 $icon_classes[] = tribe_is_truthy( $template['enabled'] ) ? 'dashicons-yes' : '';
 
 ?>
-<div class="tec_tickets-emails-template-list-item-icon">
+<div class="tec-tickets__admin-settings-emails-template-list-item-icon">
 	<span <?php tribe_classes( $icon_classes ); ?> ></span>
 </div>
