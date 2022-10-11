@@ -97,7 +97,7 @@ class Emails_Tab {
 	 * @return string
 	 */
 	public function get_url( array $args = [] ): string {
-		// Force the payment tab.
+		// Force the `emails` tab.
 		$args['tab'] = static::$slug;
 
 		// Use the settings page get_url to build the URL.

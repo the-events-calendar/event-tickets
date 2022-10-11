@@ -112,9 +112,9 @@ class Settings {
 	 * 
 	 * @since TBD
 	 * 
-	 * @param  [] $fields Current array of Tickets Emails settings fields.
+	 * @param  array $fields Current array of Tickets Emails settings fields.
 	 * 
-	 * @return [] $fields Filtered array of Tickets Emails settings fields.
+	 * @return array $fields Filtered array of Tickets Emails settings fields.
 	 */
 	public function add_template_list( $fields ) {
 
@@ -151,6 +151,13 @@ class Settings {
 			],
 		];
 
+		/**
+		 * Filter the Tickets Emails Tab Template List
+		 *
+		 * @since TBD
+		 *
+		 * @param array  $new_fields  A settings array that includes the template list.
+		 */
 		$new_fields = apply_filters( 'tec_tickets_emails_settings_template_list', $new_fields );
 
 		return array_merge( $fields, $new_fields );
@@ -166,12 +173,6 @@ class Settings {
 	 * @return [] $fields Filtered array of Tickets Emails settings fields.
 	 */
 	public function sender_info_fields( $fields ) {
-
-		// If name and email stored in TC, use it, otherwise use WP User info.
-		$current_user  = get_user_by( 'id', get_current_user_id() );
-		$default_name  = tribe_get_option( CommerceSettings::$option_confirmation_email_sender_name, $current_user->user_nicename );
-		$default_email = tribe_get_option( CommerceSettings::$option_confirmation_email_sender_email, $current_user->user_email );
-
 		$new_fields = [
 			[
 				'type' => 'html',
@@ -185,7 +186,7 @@ class Settings {
 				'type'                => 'text',
 				'label'               => esc_html__( 'Sender Name', 'event-tickets' ),
 				'size'                => 'medium',
-				'default'             => $default_name,
+				'default'             => $this->get_sender_name(),
 				'validation_callback' => 'is_string',
 				'validation_type'     => 'textarea',
 			],
@@ -193,15 +194,58 @@ class Settings {
 				'type'                => 'text',
 				'label'               => esc_html__( 'Sender Email', 'event-tickets' ),
 				'size'                => 'medium',
-				'default'             => $default_email,
+				'default'             => $this->get_sender_email(),
 				'validation_callback' => 'is_string',
 				'validation_type'     => 'email',
 			],
 		];
 
+		/**
+		 * Filter the Tickets Emails Sender Info Fields
+		 *
+		 * @since TBD
+		 *
+		 * @param array  $new_fields  A settings array that includes the sender info fields.
+		 */
 		$new_fields = apply_filters( 'tec_tickets_emails_settings_sender_info_fields', $new_fields );
 
 		return array_merge( $fields, $new_fields );
+	}
+
+	/**
+	 * Get sender name.
+	 * 
+	 * @since TBD
+	 * 
+	 * @return string Sender's name.
+	 */
+	public function get_sender_name() {
+		// Get name from settings.
+		$name  = tribe_get_option( CommerceSettings::$option_confirmation_email_sender_name );
+		if ( ! empty( $name ) ) {
+			return $name;
+		}
+		// If not set, return WordPress User `nicename`.
+		$current_user  = get_user_by( 'id', get_current_user_id() );
+		return $current_user->user_nicename;
+	}
+
+	/**
+	 * Get sender email.
+	 * 
+	 * @since TBD
+	 * 
+	 * @return string Sender's email address.
+	 */
+	public function get_sender_email() {
+		// Get email from settings.
+		$email  = tribe_get_option( CommerceSettings::$option_confirmation_email_sender_email );
+		if ( ! empty( $email ) ) {
+			return $email;
+		}
+		// If not set, return WordPress User `email`.
+		$current_user  = get_user_by( 'id', get_current_user_id() );
+		return $current_user->user_email;
 	}
 
 	/**
@@ -289,6 +333,13 @@ class Settings {
 			],
 		];
 
+		/**
+		 * Filter the Tickets Emails Styling Fields
+		 *
+		 * @since TBD
+		 *
+		 * @param array  $new_fields  A settings array that includes the styling fields.
+		 */
 		$new_fields = apply_filters( 'tec_tickets_emails_settings_email_styling_fields', $new_fields );
 
 		return array_merge( $fields, $new_fields );

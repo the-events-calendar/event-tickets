@@ -53,10 +53,10 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * @since TBD
 	 */
 	protected function add_filters() {
-		add_filter( 'tec_tickets_settings_tabs_ids', [ $this, 'add_tab_id' ] );
-		add_filter( 'tec_tickets_emails_settings_fields', [ $this, 'add_template_list' ] );
-		add_filter( 'tec_tickets_emails_settings_fields', [ $this, 'add_sender_info_fields' ] );
-		add_filter( 'tec_tickets_emails_settings_fields', [ $this, 'add_email_styling_fields' ] );
+		add_filter( 'tec_tickets_settings_tabs_ids', [ $this, 'filter_add_tab_id' ] );
+		add_filter( 'tec_tickets_emails_settings_fields', [ $this, 'filter_add_template_list' ] );
+		add_filter( 'tec_tickets_emails_settings_fields', [ $this, 'filter_add_sender_info_fields' ] );
+		add_filter( 'tec_tickets_emails_settings_fields', [ $this, 'filter_add_email_styling_fields' ] );
 	}
 
 	/**
@@ -79,7 +79,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * 
 	 * @return array $tabs Filtered array of tabs ids.
 	 */
-	public function add_tab_id( $tabs ) {
+	public function filter_add_tab_id( $tabs ) {
 		return $this->container->make( Emails_Tab::class )->settings_add_tab_id( $tabs );
 	}
 
@@ -92,7 +92,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * 
 	 * @return array $fields Filtered array of Tickets Emails settings fields.
 	 */
-	public function add_template_list( $fields ) {
+	public function filter_add_template_list( $fields ) {
 		return $this->container->make( Settings::class )->add_template_list( $fields );
 	}
 
@@ -105,7 +105,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * 
 	 * @return array $fields Filtered array of Tickets Emails settings fields.
 	 */
-	public function add_sender_info_fields( $fields ) {
+	public function filter_add_sender_info_fields( $fields ) {
 		return $this->container->make( Settings::class )->sender_info_fields( $fields );
 	}
 
@@ -118,7 +118,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * 
 	 * @return array $fields Filtered array of Tickets Emails settings fields.
 	 */
-	public function add_email_styling_fields( $fields ) {
+	public function filter_add_email_styling_fields( $fields ) {
 		return $this->container->make( Settings::class )->email_styling_fields( $fields );
 	}
 }
