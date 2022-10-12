@@ -10,7 +10,7 @@
  *
  * @return bool Whether Tickets Emails is enabled or not.
  */
-function tec_tickets_emails_is_enabled() {
+function tec_tickets_emails_is_enabled(): bool {
 	if ( defined( 'TEC_TICKETS_EMAILS' ) ) {
 		return (bool) TEC_TICKETS_EMAILS;
 	}

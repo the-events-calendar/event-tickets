@@ -24,7 +24,7 @@ class Settings {
 	 *
 	 * @var string
 	 */
-	static $option_sender_name = 'tec-tickets-emails-sender-name';
+	public static $option_sender_name = 'tec-tickets-emails-sender-name';
 
 	/**
 	 * The option key for email sender's email.
@@ -33,7 +33,7 @@ class Settings {
 	 *
 	 * @var string
 	 */
-	static $option_sender_email = 'tec-tickets-emails-sender-email';
+	public static $option_sender_email = 'tec-tickets-emails-sender-email';
 
 	/**
 	 * The option key for the email header image url.
@@ -42,7 +42,7 @@ class Settings {
 	 *
 	 * @var string
 	 */
-	static $option_header_image_url = 'tec-tickets-emails-header-image-url';
+	public static $option_header_image_url = 'tec-tickets-emails-header-image-url';
 
 	/**
 	 * The option key for the email header image alignment.
@@ -51,7 +51,7 @@ class Settings {
 	 *
 	 * @var string
 	 */
-	static $option_header_image_alignment = 'tec-tickets-emails-header-image-alignment';
+	public static $option_header_image_alignment = 'tec-tickets-emails-header-image-alignment';
 
 	/**
 	 * The option key for the email header background color.
@@ -60,7 +60,7 @@ class Settings {
 	 *
 	 * @var string
 	 */
-	static $option_header_bg_color = 'tec-tickets-emails-header-bg-color';
+	public static $option_header_bg_color = 'tec-tickets-emails-header-bg-color';
 
 	/**
 	 * The option key for the email ticket background color.
@@ -69,7 +69,7 @@ class Settings {
 	 *
 	 * @var string
 	 */
-	static $option_ticket_bg_color = 'tec-tickets-emails-ticket-bg-color';
+	public static $option_ticket_bg_color = 'tec-tickets-emails-ticket-bg-color';
 
 	/**
 	 * The option key for the email footer content.
@@ -78,7 +78,7 @@ class Settings {
 	 *
 	 * @var string
 	 */
-	static $option_footer_content = 'tec-tickets-emails-footer-content';
+	public static $option_footer_content = 'tec-tickets-emails-footer-content';
 
 	/**
 	 * The option key for the email footer credit.
@@ -87,7 +87,7 @@ class Settings {
 	 *
 	 * @var string
 	 */
-	static $option_footer_credit = 'tec-tickets-emails-footer-credit';
+	public static $option_footer_credit = 'tec-tickets-emails-footer-credit';
 
 	/**
 	 * Gets the template instance used to setup the rendering html.
@@ -257,7 +257,7 @@ class Settings {
 	 * 
 	 * @return [] $fields Filtered array of Tickets Emails settings fields.
 	 */
-	public function email_styling_fields( $fields ) {
+	public function email_styling_fields( array $fields ): array {
 
 		$new_fields = [
 			[
