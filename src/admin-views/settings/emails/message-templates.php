@@ -13,8 +13,10 @@
 if ( empty( $templates ) ) {
 	return;
 }
-// @todo Update template HTML.
+
 ?>
-<h3>
-	This space is reserved for the message template list.
-</h3>
+<div class="tec-tickets__admin-settings-emails-template-list">
+	<?php foreach ( $templates as $email_template ) : ?>
+		<?php $this->template( 'message-templates/list-item', [ 'template' => $email_template ] ); ?>
+	<?php endforeach; ?>
+</div>
