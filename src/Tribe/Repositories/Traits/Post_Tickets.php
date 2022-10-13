@@ -14,6 +14,7 @@ use Tribe__Repository__Usage_Error;
 use Tribe__Repository__Void_Query_Exception;
 use Tribe__Utils__Array;
 use TEC\Tickets\Commerce\Ticket as TEC_Ticket;
+use Tribe__Tickets__Tickets_Handler as TEC_Tickets;
 
 /**
  * Class Post_Tickets
@@ -311,35 +312,27 @@ trait Post_Tickets {
 	 */
 	public function filter_by_has_rsvp_or_tickets( $has_rsvp_or_tickets = true ) {
 		$repo = $this;
+		$event_has_tickets_provider_key = tribe( TEC_Tickets::class )->key_provider_field;
+		$rsvp_key = '_tribe_rsvp_for_event';
 
 		// If the repo is decorated, use that.
 		if ( ! empty( $repo ) ) {
 			$repo = $this->decorated;
 		}
 
-		global $wpdb;
-		$prefix = 'has_rsvp_or_tickets_';
-
 		if ( (bool) $has_rsvp_or_tickets ) {
-			$tc_relation_meta_key = TEC_Ticket::$event_relation_meta_key;
+			$modules = tribe( \Tribe__Tickets__Status__Manager::class )->get_status_managers();
+			$ticket_meta_keys = array_map( function( $module ) {
+				return "_tribe_{$module}_for_event";
+			}, array_keys( $modules ) );
 
-			// Join to the meta that relates tickets to events but exclude RSVP tickets.
-			$repo->join_clause( "JOIN {$wpdb->postmeta} {$prefix}_ticket_event ON (
-					{$prefix}_ticket_event.meta_value = {$wpdb->posts}.ID
-					AND (
-						{$prefix}_ticket_event.meta_key = '{$tc_relation_meta_key}'
-						OR
-						{$prefix}_ticket_event.meta_key REGEXP '^_tribe_.*_for_event$'
-					)
-				)" );
+			$ticket_meta_keys = \array_merge( $ticket_meta_keys, [ '_tec_tickets_commerce_event' ] );
 
+			$repo->by_related_to_min( $ticket_meta_keys, 1 );
 			return;
 		}
 
-		// Join to the meta that relates tickets to events.
-		$repo->join_clause( "LEFT JOIN {$wpdb->postmeta} {$prefix}_ticket_event
-					ON {$prefix}_ticket_event.meta_value = {$wpdb->posts}.ID" );
-		// Keep events that have no tickets assigned or are assigned RSVP tickets.
-		$repo->where_clause( "{$prefix}_ticket_event.meta_id IS NULL" );
+		$repo->by( 'meta_not_exists', $event_has_tickets_provider_key );
+		$repo->by_not_related_to( [ $rsvp_key ] );
 	}
 }
