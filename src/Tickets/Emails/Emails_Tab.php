@@ -63,7 +63,7 @@ class Emails_Tab {
 	 *
 	 * @return array $tabs Filtered array of tabs ids.
 	 */
-	public function settings_add_tab_id( $tabs ) {
+	public function settings_add_tab_id( array $tabs ): array {
 		$tabs[] = static::$slug;
 
 		return $tabs;
@@ -76,7 +76,7 @@ class Emails_Tab {
 	 *
 	 * @return Tribe__Template
 	 */
-	public function get_template() {
+	public function get_template(): Tribe__Template {
 		if ( empty( $this->template ) ) {
 			$this->template = new Tribe__Template();
 			$this->template->set_template_origin( Tribe__Tickets__Main::instance() );
@@ -97,7 +97,7 @@ class Emails_Tab {
 	 * @return string
 	 */
 	public function get_url( array $args = [] ): string {
-		// Force the payment tab.
+		// Force the `emails` tab.
 		$args['tab'] = static::$slug;
 
 		// Use the settings page get_url to build the URL.

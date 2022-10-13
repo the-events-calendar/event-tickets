@@ -37,7 +37,7 @@ class Provider extends tad_DI52_ServiceProvider {
 		$this->container->singleton( static::class, $this );
 		$this->container->singleton( 'tickets.emails.provider', $this );
 		$this->container->singleton( Emails_Tab::class );
-		$this->container->singleton( 'tickets.emails.emails_tab', $this );
+		$this->container->singleton( 'tickets.emails.emails-tab', $this );
 
 	}
 

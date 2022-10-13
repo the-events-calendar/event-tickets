@@ -24,7 +24,7 @@ class Settings {
 	 *
 	 * @var string
 	 */
-	static $option_sender_name = 'tec-tickets-emails-sender-name';
+	public static $option_sender_name = 'tec-tickets-emails-sender-name';
 
 	/**
 	 * The option key for email sender's email.
@@ -33,7 +33,7 @@ class Settings {
 	 *
 	 * @var string
 	 */
-	static $option_sender_email = 'tec-tickets-emails-sender-email';
+	public static $option_sender_email = 'tec-tickets-emails-sender-email';
 
 	/**
 	 * The option key for the email header image url.
@@ -42,7 +42,7 @@ class Settings {
 	 *
 	 * @var string
 	 */
-	static $option_header_image_url = 'tec-tickets-emails-header-image-url';
+	public static $option_header_image_url = 'tec-tickets-emails-header-image-url';
 
 	/**
 	 * The option key for the email header image alignment.
@@ -51,7 +51,7 @@ class Settings {
 	 *
 	 * @var string
 	 */
-	static $option_header_image_alignment = 'tec-tickets-emails-header-image-alignment';
+	public static $option_header_image_alignment = 'tec-tickets-emails-header-image-alignment';
 
 	/**
 	 * The option key for the email header background color.
@@ -60,7 +60,7 @@ class Settings {
 	 *
 	 * @var string
 	 */
-	static $option_header_bg_color = 'tec-tickets-emails-header-bg-color';
+	public static $option_header_bg_color = 'tec-tickets-emails-header-bg-color';
 
 	/**
 	 * The option key for the email ticket background color.
@@ -69,7 +69,7 @@ class Settings {
 	 *
 	 * @var string
 	 */
-	static $option_ticket_bg_color = 'tec-tickets-emails-ticket-bg-color';
+	public static $option_ticket_bg_color = 'tec-tickets-emails-ticket-bg-color';
 
 	/**
 	 * The option key for the email footer content.
@@ -78,7 +78,7 @@ class Settings {
 	 *
 	 * @var string
 	 */
-	static $option_footer_content = 'tec-tickets-emails-footer-content';
+	public static $option_footer_content = 'tec-tickets-emails-footer-content';
 
 	/**
 	 * The option key for the email footer credit.
@@ -87,7 +87,7 @@ class Settings {
 	 *
 	 * @var string
 	 */
-	static $option_footer_credit = 'tec-tickets-emails-footer-credit';
+	public static $option_footer_credit = 'tec-tickets-emails-footer-credit';
 
 	/**
 	 * Gets the template instance used to setup the rendering html.
@@ -96,7 +96,7 @@ class Settings {
 	 *
 	 * @return Tribe__Template
 	 */
-	public function get_template() {
+	public function get_template(): Tribe__Template {
 		if ( empty( $this->template ) ) {
 			$this->template = new Tribe__Template();
 			$this->template->set_template_origin( Tribe__Tickets__Main::instance() );
@@ -112,11 +112,11 @@ class Settings {
 	 * 
 	 * @since TBD
 	 * 
-	 * @param  [] $fields Current array of Tickets Emails settings fields.
+	 * @param  array $fields Current array of Tickets Emails settings fields.
 	 * 
-	 * @return [] $fields Filtered array of Tickets Emails settings fields.
+	 * @return array $fields Filtered array of Tickets Emails settings fields.
 	 */
-	public function add_template_list( $fields ) {
+	public function add_template_list( array $fields ): array {
 
 		$template = $this->get_template();
 
@@ -151,6 +151,13 @@ class Settings {
 			],
 		];
 
+		/**
+		 * Filter the Tickets Emails Tab Template List
+		 *
+		 * @since TBD
+		 *
+		 * @param array  $new_fields  A settings array that includes the template list.
+		 */
 		$new_fields = apply_filters( 'tec_tickets_emails_settings_template_list', $new_fields );
 
 		return array_merge( $fields, $new_fields );
@@ -165,13 +172,7 @@ class Settings {
 	 * 
 	 * @return [] $fields Filtered array of Tickets Emails settings fields.
 	 */
-	public function sender_info_fields( $fields ) {
-
-		// If name and email stored in TC, use it, otherwise use WP User info.
-		$current_user  = get_user_by( 'id', get_current_user_id() );
-		$default_name  = tribe_get_option( CommerceSettings::$option_confirmation_email_sender_name, $current_user->user_nicename );
-		$default_email = tribe_get_option( CommerceSettings::$option_confirmation_email_sender_email, $current_user->user_email );
-
+	public function sender_info_fields( array $fields ): array {
 		$new_fields = [
 			[
 				'type' => 'html',
@@ -185,7 +186,7 @@ class Settings {
 				'type'                => 'text',
 				'label'               => esc_html__( 'Sender Name', 'event-tickets' ),
 				'size'                => 'medium',
-				'default'             => $default_name,
+				'default'             => $this->get_sender_name(),
 				'validation_callback' => 'is_string',
 				'validation_type'     => 'textarea',
 			],
@@ -193,15 +194,58 @@ class Settings {
 				'type'                => 'text',
 				'label'               => esc_html__( 'Sender Email', 'event-tickets' ),
 				'size'                => 'medium',
-				'default'             => $default_email,
+				'default'             => $this->get_sender_email(),
 				'validation_callback' => 'is_string',
 				'validation_type'     => 'email',
 			],
 		];
 
+		/**
+		 * Filter the Tickets Emails Sender Info Fields
+		 *
+		 * @since TBD
+		 *
+		 * @param array  $new_fields  A settings array that includes the sender info fields.
+		 */
 		$new_fields = apply_filters( 'tec_tickets_emails_settings_sender_info_fields', $new_fields );
 
 		return array_merge( $fields, $new_fields );
+	}
+
+	/**
+	 * Get sender name.
+	 * 
+	 * @since TBD
+	 * 
+	 * @return string Sender's name.
+	 */
+	public function get_sender_name(): string {
+		// Get name from settings.
+		$name  = tribe_get_option( CommerceSettings::$option_confirmation_email_sender_name );
+		if ( ! empty( $name ) ) {
+			return $name;
+		}
+		// If not set, return WordPress User `nicename`.
+		$current_user  = get_user_by( 'id', get_current_user_id() );
+		return $current_user->user_nicename;
+	}
+
+	/**
+	 * Get sender email.
+	 * 
+	 * @since TBD
+	 * 
+	 * @return string Sender's email address.
+	 */
+	public function get_sender_email(): string {
+		// Get email from settings.
+		$email  = tribe_get_option( CommerceSettings::$option_confirmation_email_sender_email );
+		if ( ! empty( $email ) ) {
+			return $email;
+		}
+		// If not set, return WordPress User `email`.
+		$current_user  = get_user_by( 'id', get_current_user_id() );
+		return $current_user->user_email;
 	}
 
 	/**
@@ -213,7 +257,7 @@ class Settings {
 	 * 
 	 * @return [] $fields Filtered array of Tickets Emails settings fields.
 	 */
-	public function email_styling_fields( $fields ) {
+	public function email_styling_fields( array $fields ): array {
 
 		$new_fields = [
 			[
@@ -289,6 +333,13 @@ class Settings {
 			],
 		];
 
+		/**
+		 * Filter the Tickets Emails Styling Fields
+		 *
+		 * @since TBD
+		 *
+		 * @param array  $new_fields  A settings array that includes the styling fields.
+		 */
 		$new_fields = apply_filters( 'tec_tickets_emails_settings_email_styling_fields', $new_fields );
 
 		return array_merge( $fields, $new_fields );
