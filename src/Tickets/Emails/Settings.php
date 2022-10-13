@@ -96,7 +96,7 @@ class Settings {
 	 *
 	 * @return Tribe__Template
 	 */
-	public function get_template() {
+	public function get_template(): Tribe__Template {
 		if ( empty( $this->template ) ) {
 			$this->template = new Tribe__Template();
 			$this->template->set_template_origin( Tribe__Tickets__Main::instance() );
@@ -116,7 +116,7 @@ class Settings {
 	 * 
 	 * @return array $fields Filtered array of Tickets Emails settings fields.
 	 */
-	public function add_template_list( $fields ) {
+	public function add_template_list( array $fields ): array {
 
 		$template = $this->get_template();
 
@@ -172,7 +172,7 @@ class Settings {
 	 * 
 	 * @return [] $fields Filtered array of Tickets Emails settings fields.
 	 */
-	public function sender_info_fields( $fields ) {
+	public function sender_info_fields( array $fields ): array {
 		$new_fields = [
 			[
 				'type' => 'html',
@@ -219,7 +219,7 @@ class Settings {
 	 * 
 	 * @return string Sender's name.
 	 */
-	public function get_sender_name() {
+	public function get_sender_name(): string {
 		// Get name from settings.
 		$name  = tribe_get_option( CommerceSettings::$option_confirmation_email_sender_name );
 		if ( ! empty( $name ) ) {
@@ -237,7 +237,7 @@ class Settings {
 	 * 
 	 * @return string Sender's email address.
 	 */
-	public function get_sender_email() {
+	public function get_sender_email(): string {
 		// Get email from settings.
 		$email  = tribe_get_option( CommerceSettings::$option_confirmation_email_sender_email );
 		if ( ! empty( $email ) ) {

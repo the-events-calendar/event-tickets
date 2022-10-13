@@ -63,7 +63,7 @@ class Emails_Tab {
 	 *
 	 * @return array $tabs Filtered array of tabs ids.
 	 */
-	public function settings_add_tab_id( $tabs ): array {
+	public function settings_add_tab_id( array $tabs ): array {
 		$tabs[] = static::$slug;
 
 		return $tabs;
