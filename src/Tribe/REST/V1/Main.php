@@ -68,8 +68,9 @@ class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 		}
 
 		foreach ( $data['events'] as $event ) {
-			$attendee_count = Tribe__Tickets__Tickets::get_event_attendees_count( $event->id );
-			$checked_in     = Tribe__Tickets__Tickets::get_event_checkedin_attendees_count( $event->id );
+			$event_id       = is_array( $event ) ? $event['id'] : $event->id;
+			$attendee_count = Tribe__Tickets__Tickets::get_event_attendees_count( $event_id );
+			$checked_in     = Tribe__Tickets__Tickets::get_event_checkedin_attendees_count( $event_id );
 
 			$event['attendance'] = [
 				'total_attendees' => $attendee_count,
