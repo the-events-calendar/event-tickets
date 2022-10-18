@@ -14,7 +14,6 @@ use Tribe__Repository__Usage_Error;
 use Tribe__Repository__Void_Query_Exception;
 use Tribe__Utils__Array;
 use TEC\Tickets\Commerce\Ticket as TEC_Ticket;
-use Tribe__Tickets__Tickets_Handler as TEC_Tickets;
 
 /**
  * Class Post_Tickets
@@ -311,9 +310,12 @@ trait Post_Tickets {
 	 * @param bool $has_rsvp_or_tickets Indicates if the event should have RSVP or tickets attached to it or not.
 	 */
 	public function filter_by_has_rsvp_or_tickets( $has_rsvp_or_tickets = true ) {
-		$repo = $this;
-		$event_has_tickets_provider_key = tribe( TEC_Tickets::class )->key_provider_field;
-		$rsvp_key = '_tribe_rsvp_for_event';
+		$repo    = $this;
+		$modules = \Tribe__Tickets__Tickets::modules();
+
+		foreach ( $modules as $module => $name ) {
+			$module_keys[] = tribe( $module )->get_event_key();
+		}
 
 		// If the repo is decorated, use that.
 		if ( ! empty( $repo ) ) {
@@ -321,18 +323,10 @@ trait Post_Tickets {
 		}
 
 		if ( (bool) $has_rsvp_or_tickets ) {
-			$modules = tribe( \Tribe__Tickets__Status__Manager::class )->get_status_managers();
-			$ticket_meta_keys = array_map( function( $module ) {
-				return "_tribe_{$module}_for_event";
-			}, array_keys( $modules ) );
-
-			$ticket_meta_keys = \array_merge( $ticket_meta_keys, [ '_tec_tickets_commerce_event' ] );
-
-			$repo->by_related_to_min( $ticket_meta_keys, 1 );
+			$repo->by_related_to_min( $module_keys, 1 );
 			return;
 		}
 
-		$repo->by( 'meta_not_exists', $event_has_tickets_provider_key );
-		$repo->by_not_related_to( [ $rsvp_key ] );
+		$repo->by_not_related_to( $module_keys );
 	}
 }
