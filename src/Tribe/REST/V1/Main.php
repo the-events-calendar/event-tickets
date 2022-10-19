@@ -50,7 +50,7 @@ class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 	/**
 	 * Filters the data that will be returned for the events endpoint, adding attendance.
 	 *
-	 * @since TBD
+	 * @since 5.5.2
 	 *
 	 * @param array           $data    The retrieved data.
 	 * @param WP_REST_Request $request The original request.
@@ -86,7 +86,7 @@ class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 	/**
 	 * Filters the data that will be returned for a single event, adding attendance.
 	 *
-	 * @since TBD
+	 * @since 5.5.2
 	 *
 	 * @param array   $data  The data that will be returned in the response.
 	 * @param WP_Post $event The requested event.

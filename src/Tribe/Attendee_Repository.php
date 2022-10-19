@@ -1409,7 +1409,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	/**
 	 * Sets up the query filters to order attendees by the full name meta.
 	 *
-	 * @since TBD
+	 * @since 5.5.2
 	 *
 	 * @param string $order      The order direction, either `ASC` or `DESC`; defaults to `null` to use the order
 	 *                           specified in the current query or default arguments.

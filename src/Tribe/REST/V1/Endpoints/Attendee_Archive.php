@@ -192,7 +192,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 	/**
 	 * Process the search terms for attendees.
 	 *
-	 * @since TBD
+	 * @since 5.5.2
 	 *
 	 * @param array $request_args Array of request args.
 	 * @param Tribe__Tickets__REST__V1__Attendee_Repository $query The query object.

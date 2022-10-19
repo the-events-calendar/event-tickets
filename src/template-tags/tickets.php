@@ -1842,7 +1842,7 @@ function tribe_tickets_get_provider_query_slug() {
  * By checking if `tribe_events` function exists we avoid fatal errors when there are
  * version dependencies mismatches.
  *
- * @since TBD
+ * @since 5.5.2
  *
  * @return bool True if The Events Calendar is active.
  */
