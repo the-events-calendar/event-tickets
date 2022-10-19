@@ -11,7 +11,7 @@ trait Ticket_Maker {
 	/**
 	 * Get the ticket provider class.
 	 *
-	 * @since TBD
+	 * @since 5.5.1
 	 *
 	 * @return string Ticket provider class.
 	 */
@@ -22,7 +22,7 @@ trait Ticket_Maker {
 	/**
 	 * Generates a ticket for a post.
 	 *
-	 * @since TBD
+	 * @since 5.5.1
 	 *
 	 * @param int   $post_id   The ID of the post this ticket should be related to.
 	 * @param int   $price     Ticket price.
@@ -47,7 +47,7 @@ trait Ticket_Maker {
 	/**
 	 * Generates multiple identical TC tickets for a post.
 	 *
-	 * @since TBD
+	 * @since 5.5.1
 	 *
 	 * @param int   $count     The number of tickets to create
 	 * @param int   $post_id   The ID of the post this ticket should be related to.
@@ -62,7 +62,7 @@ trait Ticket_Maker {
 	/**
 	 * Generate multiple tickets for a post - the tickets need not be identical.
 	 *
-	 * @since TBD
+	 * @since 5.5.1
 	 *
 	 * @param int   $post_id        The ID of the post these tickets should be related to.
 	 * @param array $tickets        An array of tickets. Each ticket must be an array.
