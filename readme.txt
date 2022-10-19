@@ -188,6 +188,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [5.5.2] 2022-10-20 =
+
+* Tweak - Updating common to avoid cross-compatibility issues with The Events Calendar and Promoter.
+
 = [5.5.1] 2022-09-22 =
 
 * Fix - Listing tickets is no longer limited by the global settings. [ET-1584]
