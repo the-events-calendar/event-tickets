@@ -269,6 +269,14 @@ class Event_RepositoryTest extends \Codeception\TestCase\WPTestCase {
 	public function should_allow_filtering_by_events_that_have_rsvp_and_or_tickets() {
 		$this->create_test_events();
 
+		// Enable Tribe Commerce.
+		add_filter( 'tribe_tickets_commerce_paypal_is_active', '__return_true' );
+		add_filter( 'tribe_tickets_get_modules', function ( $modules ) {
+			$modules['Tribe__Tickets__Commerce__PayPal__Main'] = tribe( $this->get_paypal_ticket_provider() )->plugin_name;
+
+			return $modules;
+		} );
+
 		$actual = tribe_events()->where( 'has_rsvp_or_tickets', true )->get_ids();
 		// Retrieve all events with either tickets or rsvp
 		$this->assertEqualSets( $actual, array_unique( array_merge( $this->events['with_tickets'], [ $this->events['rsvp'] ] ) ) );
