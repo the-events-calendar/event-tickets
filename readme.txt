@@ -197,6 +197,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Enhancement - Add template tag to properly check if The Events Calendar is active. [ETP-820]
 * Enhancement - Add `attendance` information to the `events` REST API endpoint. [ET-1580]
 * Enhancement - Add `check_in` argument support for `attendees` REST API endpoint. [ET-1588]
+* Language - 0 new strings added, 18 updated, 0 fuzzied, and 0 obsoleted
 
 = [5.5.1] 2022-09-22 =
 
