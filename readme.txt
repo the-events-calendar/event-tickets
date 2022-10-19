@@ -190,7 +190,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.5.2] 2022-10-20 =
 
-* Tweak - Updating common to avoid cross-compatibility issues with The Events Calendar and Promoter.
+* Fix - Update version of Firebase/JWT in Common from 5.x to 6.3.0
 
 = [5.5.1] 2022-09-22 =
 
