@@ -4,7 +4,7 @@ Contributors: theeventscalendar, brianjessee, camwynsp, aguseo, bordoni, borkweb
 Tags: tickets, registration, event registration, RSVP, ticket sales, attendee management
 Requires at least: 5.8.5
 Tested up to: 6.0.3
-Stable tag: 5.5.2
+Stable tag: 5.5.3
 Requires PHP: 7.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -188,7 +188,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.5.2] 2022-10-20 =
+= [5.5.3] 2022-10-24 =
 
 * Fix - Orderby param not working for Attendee archive REST API. [ET-1591]
 * Fix - Properly save the check-in details for attendees on check-in. [ETP-819]
@@ -199,6 +199,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Enhancement - Add `attendance` information to the `events` REST API endpoint. [ET-1580]
 * Enhancement - Add `check_in` argument support for `attendees` REST API endpoint. [ET-1588]
 * Language - 0 new strings added, 18 updated, 0 fuzzied, and 0 obsoleted
+
+= [5.5.2] 2022-10-20 =
+
+* Fix - Update version of Firebase/JWT in Common from 5.x to 6.3.0
 
 = [5.5.1] 2022-09-22 =
 
