@@ -2,8 +2,8 @@
 
 Contributors: theeventscalendar, brianjessee, camwynsp, aguseo, bordoni, borkweb, GeoffBel, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra, moraleida.me
 Tags: tickets, registration, event registration, RSVP, ticket sales, attendee management
-Requires at least: 5.8.4
-Tested up to: 6.1.0
+Requires at least: 5.8.5
+Tested up to: 6.0.3
 Stable tag: 5.5.2
 Requires PHP: 7.3
 License: GPLv2 or later
@@ -193,6 +193,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Orderby param not working for Attendee archive REST API. [ET-1591]
 * Fix - Properly save the check-in details for attendees on check-in. [ETP-819]
 * Fix - TicketsCommerce ticketed events not showing up for Events REST API. [ET-1567]
+* Fix - Update version of Firebase/JWT in Common from 5.x to 6.3.0
 * Enhancement - Added support for `name` and `email` param for searching in Attendee archive REST API. [ET-1591]
 * Enhancement - Add template tag to properly check if The Events Calendar is active. [ETP-820]
 * Enhancement - Add `attendance` information to the `events` REST API endpoint. [ET-1580]
