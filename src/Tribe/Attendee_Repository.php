@@ -1197,9 +1197,33 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		// Maybe send the attendee email.
 		$this->maybe_send_attendee_email( $attendee_data['attendee_id'], $attendee_data );
 
+		$this->maybe_handle_checkin( $attendee_data['attendee_id'], $attendee_data );
+
 		// Clear the attendee cache if post_id is provided.
 		if ( ! empty( $this->updates['post_id'] ) && $this->attendee_provider ) {
 			$this->attendee_provider->clear_attendees_cache( $this->updates['post_id'] );
+		}
+	}
+
+
+	/**
+	 * Handle check in actions.
+	 *
+	 * @since TBD
+	 *
+	 * @param int   $attendee_id   The attendee ID.
+	 * @param array $attendee_data List of attendee data that was used for saving.
+	 * @return void
+	 */
+	public function maybe_handle_checkin( $attendee_id, $attendee_data ): void {
+		if ( ! isset( $attendee_data['check_in'] ) ) {
+			return;
+		}
+
+		if ( $attendee_data['check_in'] ) {
+			$this->attendee_provider->checkin( $attendee_id );
+		} else {
+			$this->attendee_provider->uncheckin( $attendee_id );
 		}
 	}
 
