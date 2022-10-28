@@ -155,9 +155,11 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 		$query_args = array_intersect_key( $query_args, $this->READ_args() );
 		$found      = $query->found();
 
+		$total_pages = (int) ceil( $found / $per_page );
+
 		if ( 0 === $found && 1 === $page ) {
 			$attendees = [];
-		} elseif ( 1 !== $page && $page * $per_page > $found ) {
+		} elseif ( 1 !== $page && $page > $total_pages ) {
 			return new WP_Error( 'invalid-page-number', $this->messages->get_message( 'invalid-page-number' ), [ 'status' => 400 ] );
 		} else {
 			$attendees = $query
@@ -178,7 +180,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 
 		$data['rest_url']    = add_query_arg( $query_args, $main->get_url( '/attendees/' ) );
 		$data['total']       = $found;
-		$data['total_pages'] = (int) ceil( $found / $per_page );
+		$data['total_pages'] = $total_pages;
 		$data['attendees']   = $attendees;
 
 		$headers = [
