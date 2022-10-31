@@ -188,7 +188,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.5.3] 2022-10-24 =
+= [5.5.3] 2022-10-31 =
 
 * Fix - Orderby param not working for Attendee archive REST API. [ET-1591]
 * Fix - Properly save the check-in details for attendees on check-in. [ETP-819]
