@@ -991,14 +991,17 @@ class Tribe__Tickets__REST__V1__Post_Repository
 					/** @var Tribe__Tickets__Commerce__Currency $currency */
 					$currency                 = tribe( 'tickets.commerce.currency' );
 					$ticket_object            = $this->get_ticket_object( $attendee['product_id'] );
-					$purchase_time            = Tribe__Utils__Array::get( $order_data, 'purchase_time', get_post_time( Tribe__Date_Utils::DBDATETIMEFORMAT, false, $attendee_id ) );
-					$attendee_data['payment'] = array(
-						'provider'     => Tribe__Utils__Array::get( $order_data, 'provider_slug', $this->get_provider_slug( $provider ) ),
-						'price'        => $ticket_object->price,
-						'currency'     => html_entity_decode( $currency->get_currency_symbol( $attendee['product_id'] ) ),
-						'date'         => $purchase_time,
-						'date_details' => $this->get_date_details( $purchase_time ),
-					);
+
+					if ( ! is_wp_error( $ticket_object ) ) {
+						$purchase_time            = Tribe__Utils__Array::get( $order_data, 'purchase_time', get_post_time( Tribe__Date_Utils::DBDATETIMEFORMAT, false, $attendee_id ) );
+						$attendee_data['payment'] = array(
+							'provider'     => Tribe__Utils__Array::get( $order_data, 'provider_slug', $this->get_provider_slug( $provider ) ),
+							'price'        => ! empty( $ticket_object->price ) ? $ticket_object->price : '',
+							'currency'     => html_entity_decode( $currency->get_currency_symbol( $attendee['product_id'] ) ),
+							'date'         => $purchase_time,
+							'date_details' => $this->get_date_details( $purchase_time ),
+						);
+					}
 				}
 			}
 		}

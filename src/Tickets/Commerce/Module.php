@@ -762,6 +762,16 @@ class Module extends \Tribe__Tickets__Tickets {
 				$attendee->set( 'email', $attendee_data['email'] );
 			}
 
+			if ( isset( $attendee_data['check_in'] ) ) {
+				$attendee->set( 'checked_in', $attendee_data['check_in'] );
+
+				if ( $attendee_data['check_in'] ) {
+					parent::checkin( $attendee_id );
+				} else {
+					parent::uncheckin( $attendee_id );
+				}
+			}
+
 			$attendee->save();
 
 			// Send attendee email.
