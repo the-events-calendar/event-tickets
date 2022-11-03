@@ -131,6 +131,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 				'price_currency' => '_tribe_tickets_price_currency_symbol',
 				'full_name'      => '_tribe_tickets_full_name',
 				'email'          => '_tribe_tickets_email',
+				'check_in'       => current( $this->checked_in_keys() ),
 			]
 		);
 
@@ -901,6 +902,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			'attendee_status'   => null,
 			'price_paid'        => null,
 			'optout'            => null,
+			'check_in'          => null,
 		];
 
 		$args = array_merge( $args, $attendee_data );
@@ -969,6 +971,11 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			if ( isset( $args['optout'] ) ) {
 				// Enforce a 0/1 value for the optout value.
 				$args['optout'] = (int) tribe_is_truthy( $args['optout'] );
+			}
+
+			if ( isset( $args['check_in'] ) ) {
+				// Enforce a 0/1 value for the check_in value.
+				$args['check_in'] = (int) tribe_is_truthy( $args['check_in'] );
 			}
 		}
 
@@ -1190,9 +1197,33 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		// Maybe send the attendee email.
 		$this->maybe_send_attendee_email( $attendee_data['attendee_id'], $attendee_data );
 
+		$this->maybe_handle_checkin( $attendee_data['attendee_id'], $attendee_data );
+
 		// Clear the attendee cache if post_id is provided.
 		if ( ! empty( $this->updates['post_id'] ) && $this->attendee_provider ) {
 			$this->attendee_provider->clear_attendees_cache( $this->updates['post_id'] );
+		}
+	}
+
+
+	/**
+	 * Handle check in actions.
+	 *
+	 * @since TBD
+	 *
+	 * @param int   $attendee_id   The attendee ID.
+	 * @param array $attendee_data List of attendee data that was used for saving.
+	 * @return void
+	 */
+	public function maybe_handle_checkin( $attendee_id, $attendee_data ): void {
+		if ( ! isset( $attendee_data['check_in'] ) ) {
+			return;
+		}
+
+		if ( $attendee_data['check_in'] ) {
+			$this->attendee_provider->checkin( $attendee_id );
+		} else {
+			$this->attendee_provider->uncheckin( $attendee_id );
 		}
 	}
 
@@ -1354,6 +1385,9 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			$override = $loop === 0;
 
 			switch ( $order_by ) {
+				case 'full_name':
+					$this->order_by_full_name( $order, $after, $override );
+					break;
 				case 'security_code':
 					$this->order_by_security_code( $order, $after, $override );
 					break;
@@ -1394,6 +1428,45 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 					}
 			}
 		}
+	}
+
+	/**
+	 * Sets up the query filters to order attendees by the full name meta.
+	 *
+	 * @since 5.5.2
+	 *
+	 * @param string $order      The order direction, either `ASC` or `DESC`; defaults to `null` to use the order
+	 *                           specified in the current query or default arguments.
+	 * @param bool   $after      Whether to append the duration ORDER BY clause to the existing clauses or not;
+	 *                           defaults to `false` to prepend the duration clause to the existing ORDER BY
+	 *                           clauses.
+	 * @param bool   $override   Whether to override existing ORDER BY clauses with this one or not; default to
+	 *                           `true` to override existing ORDER BY clauses.
+	 */
+	protected function order_by_full_name( $order = null, $after = false, $override = true ) {
+		global $wpdb;
+
+		$meta_alias     = 'full_name';
+		$meta_keys_in   = $this->prepare_interval( $this->holder_name_keys() );
+		$postmeta_table = "orderby_{$meta_alias}_meta";
+		$filter_id      = 'order_by_full_name';
+
+		$this->filter_query->join(
+			"
+			LEFT JOIN {$wpdb->postmeta} AS {$postmeta_table}
+				ON (
+					{$postmeta_table}.post_id = {$wpdb->posts}.ID
+					AND {$postmeta_table}.meta_key IN {$meta_keys_in}
+				)
+			",
+			$filter_id,
+			true
+		);
+
+		$order = $this->get_query_order_type( $order );
+
+		$this->filter_query->orderby( [ $meta_alias => $order ], $filter_id, true, $after );
+		$this->filter_query->fields( "{$postmeta_table}.meta_value AS {$meta_alias}", $filter_id, $override );
 	}
 
 	/**

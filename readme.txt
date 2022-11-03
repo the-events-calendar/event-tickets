@@ -2,9 +2,9 @@
 
 Contributors: theeventscalendar, brianjessee, camwynsp, aguseo, bordoni, borkweb, GeoffBel, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra, moraleida.me
 Tags: tickets, registration, event registration, RSVP, ticket sales, attendee management
-Requires at least: 5.8.4
-Tested up to: 6.0.2
-Stable tag: 5.5.3
+Requires at least: 5.8.5
+Tested up to: 6.1
+Stable tag: 5.5.4
 Requires PHP: 7.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -188,10 +188,23 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [TBD] TBD =
+= [5.5.4] TBD =
 
+= [5.5.3] 2022-10-31 =
+
+* Fix - Orderby param not working for Attendee archive REST API. [ET-1591]
 * Fix - Properly save the check-in details for attendees on check-in. [ETP-819]
+* Fix - TicketsCommerce ticketed events not showing up for Events REST API. [ET-1567]
+* Fix - Update version of Firebase/JWT in Common from 5.x to 6.3.0
+* Enhancement - Added support for `name` and `email` param for searching in Attendee archive REST API. [ET-1591]
+* Enhancement - Add template tag to properly check if The Events Calendar is active. [ETP-820]
 * Enhancement - Add `attendance` information to the `events` REST API endpoint. [ET-1580]
+* Enhancement - Add `check_in` argument support for `attendees` REST API endpoint. [ET-1588]
+* Language - 0 new strings added, 18 updated, 0 fuzzied, and 0 obsoleted
+
+= [5.5.2] 2022-10-20 =
+
+* Fix - Update version of Firebase/JWT in Common from 5.x to 6.3.0
 
 = [5.5.1] 2022-09-22 =
 

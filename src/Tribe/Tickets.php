@@ -377,7 +377,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @since  5.5.0 refactored to use the tickets ORM.
 		 * @since  4.6
-		 * @since TBD Set default query args.
+		 * @since 5.5.2 Set default query args.
 		 *
 		 * @param int|WP_Post $post_id Build the args to query only
 		 *                             for tickets related to this post ID.
@@ -1042,7 +1042,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Save the attendee checkin details.
 		 *
-		 * @since TBD
+		 * @since 5.5.2
 		 *
 		 * @param int   $attendee_id     The ID of the attendee that's being checked-in.
 		 * @param mixed $qr              True if the check-in is from a QR code.
@@ -1057,7 +1057,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/**
 			 * Filters the checkin details for this attendee checkin.
 			 *
-			 * @since TBD
+			 * @since 5.5.2
 			 *
 			 * @param array $checkin_details The check-in details.
 			 * @param int   $attendee_id     The ID of the attendee that's being checked-in.
