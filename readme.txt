@@ -188,7 +188,6 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-
 = [5.5.4] TBD =
 
 = [5.5.3] 2022-10-31 =
