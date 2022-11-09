@@ -188,7 +188,11 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.5.4] TBD =
+= [5.5.4] 2022-11-09 =
+
+* Fix - Fixes multiple of the same ticket form being on the same page being out of sync. [GTRIA-729]
+* Fix - Added a JS event that checks for attendee label validation if ET+ is active. [ETP-803]
+
 
 = [5.5.3] 2022-10-31 =
 
