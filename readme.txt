@@ -21,6 +21,8 @@ Connect to Stripe and take advantage of one of the world’s most popular paymen
 
 https://vimeo.com/480516958
 
+[See more videos on our YouTube channel](https://evnt.is/1b4-)
+
 Easily connect to PayPal without any complicated API keys or code through our quick connection wizard in your WordPress backend. With just a few clicks, you can begin selling tickets and enable payment through PayPal, Venmo, and credit cards.
 
 Even more, you can [upgrade to Event Tickets Plus](https://evnt.is/1b54) and unlock additional payment methods including digital wallets like ApplePay and Google Pay through Stripe, or use WooCommerce to take advantage of popular payment solutions including Braintree, Square, AmazonPay, and more.
