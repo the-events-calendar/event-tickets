@@ -192,6 +192,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [TBD] TBD =
 
+* Fix - Fixes the issues where while using `tribe_tickets_attendees` shortcode, 0 attendees always shows up. [ETP-811]
 
 = [5.5.4] 2022-11-09 =
 
