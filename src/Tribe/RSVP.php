@@ -2171,11 +2171,11 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			update_post_meta( $attendee_id, '_tribe_qr_status', 1 );
 		}
 
-		$checkin_details = array(
+		$checkin_details = [
 			'date'   => current_time( 'mysql' ),
-			'source' => null !== $qr ? 'app' : 'site',
+			'source' => ! empty( $qr ) ? 'app' : 'site',
 			'author' => get_current_user_id(),
-		);
+		];
 
 		/**
 		 * Filters the checkin details for this attendee checkin.
@@ -2216,6 +2216,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		}
 
 		delete_post_meta( $attendee_id, $this->checkin_key );
+		delete_post_meta( $attendee_id, $this->checkin_key . '_details' );
 		delete_post_meta( $attendee_id, '_tribe_qr_status' );
 		do_action( 'rsvp_uncheckin', $attendee_id );
 

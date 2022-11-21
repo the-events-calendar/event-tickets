@@ -2,8 +2,7 @@
  * Makes sure we have all the required levels on the Tribe Object
  *
  * @since 5.0.3
- *
- * @type {PlainObject}
+ * @type {object}
  */
 tribe.tickets = tribe.tickets || {};
 
@@ -11,8 +10,7 @@ tribe.tickets = tribe.tickets || {};
  * Configures Tickets Block Object in the Global Tribe variable
  *
  * @since 5.0.3
- *
- * @type {PlainObject}
+ * @type {object}
  */
 tribe.tickets.block = {
 	num_attendees: 0,
@@ -23,14 +21,11 @@ tribe.tickets.block = {
  * Initializes in a Strict env the code that manages the Tickets Block
  *
  * @since 5.0.3
- *
- * @param  {PlainObject} $   jQuery
- * @param  {PlainObject} obj tribe.tickets.block
- *
+ * @param  {object} $   jQuery
+ * @param  {object} obj tribe.tickets.block
  * @return {void}
  */
 ( function( $, obj ) {
-	'use strict';
 	const $document = $( document );
 
 	/**
@@ -86,9 +81,7 @@ tribe.tickets.block = {
 	 * Make DOM updates for the AJAX response.
 	 *
 	 * @since 5.0.3
-	 *
-	 * @param {array} tickets Array of tickets to iterate over.
-	 *
+	 * @param {Array} tickets Array of tickets to iterate over.
 	 * @return {void}
 	 */
 	obj.updateAvailability = function( tickets ) {
@@ -122,9 +115,7 @@ tribe.tickets.block = {
 	 * Update all the footer info.
 	 *
 	 * @since 5.0.3
-	 *
 	 * @param {jQuery} $form The form we're updating.
-	 *
 	 * @return {void}
 	 */
 	obj.updateFooter = function( $form ) {
@@ -140,7 +131,6 @@ tribe.tickets.block = {
 	 * Adjust the footer count for +/-.
 	 *
 	 * @since 5.0.3
-	 *
 	 * @param {object} $form The form we're updating.
 	 */
 	obj.updateFooterCount = function( $form ) {
@@ -177,9 +167,7 @@ tribe.tickets.block = {
 	 * Get tickets block provider.
 	 *
 	 * @since 5.0.3
-	 *
 	 * @param {jQuery} $form The form we want to retrieve the provider from.
-	 *
 	 * @return {string} The provider.
 	 */
 	obj.getTicketsBlockProvider = function( $form ) {
@@ -190,7 +178,6 @@ tribe.tickets.block = {
 	 * Adjust the footer total/amount for +/-.
 	 *
 	 * @since 5.0.3
-	 *
 	 * @param {object} $form The form we're updating.
 	 */
 	obj.updateFooterAmount = function( $form ) {
@@ -226,9 +213,7 @@ tribe.tickets.block = {
 	 * Update form totals.
 	 *
 	 * @since 5.0.3
-	 *
 	 * @param {jQuery} $form The jQuery form object to update totals.
-	 *
 	 * @return {void}
 	 */
 	obj.updateFormTotals = function( $form ) {
@@ -243,14 +228,13 @@ tribe.tickets.block = {
 	 * Get the tickets IDs.
 	 *
 	 * @since 5.0.3
-	 *
-	 * @returns {array} Array of tickets IDs.
+	 * @returns {Array} Array of tickets IDs.
 	 */
 	obj.getTickets = function() {
 		const $tickets = $( obj.selectors.item ).map(
 			function() {
 				return $( this ).data( 'ticket-id' );
-			}
+			},
 		).get();
 
 		return $tickets;
@@ -260,10 +244,8 @@ tribe.tickets.block = {
 	 * Maybe display the Opt Out.
 	 *
 	 * @since 5.0.3
-	 *
 	 * @param {jQuery} $ticket The ticket item element.
 	 * @param {number} newQuantity The new ticket quantity.
-	 *
 	 * @return {void}
 	 */
 	obj.maybeShowOptOut = function( $ticket, newQuantity ) {
@@ -280,11 +262,30 @@ tribe.tickets.block = {
 	};
 
 	/**
+	 * When multiple of the same ticket forms are on a page, sync them on change.
+	 *
+	 * @since TBD
+	 * @param {jQuery} $input The ticket input being changed.
+	 * @param {number} newValue The value being updated to.
+	 * @return {void}
+	 */
+	obj.formMatch = function( $input, newValue ) {
+		const formID = $input.closest( obj.selectors.item ).attr( 'data-ticket-id' );
+		const $formTicket = $( '[ data-ticket-id="' + formID + '" ]' );
+
+		if ( $formTicket.length >= 2 ) {
+			$formTicket.each( function() {
+				$( this ).find( obj.selectors.itemQuantityInput ).val( newValue );
+				obj.updateFooter( $( this ).closest( 'form' ) );
+			} );
+		}
+	};
+
+	/**
 	 * Step up the input according to the button that was clicked.
 	 * Handles IE/Edge.
 	 *
 	 * @since 5.0.3
-	 *
 	 * @param {jQuery} $input The input field.
 	 * @param {number} originalValue The field's original value.
 	 */
@@ -322,6 +323,9 @@ tribe.tickets.block = {
 		} else {
 			$input.val( newValue );
 		}
+
+		// If there's two of the same forms on a page, match the value of attendees on both on change.
+		obj.formMatch( $input, newValue );
 	};
 
 	/**
@@ -329,7 +333,6 @@ tribe.tickets.block = {
 	 * Handles IE/Edge.
 	 *
 	 * @since 5.0.3
-	 *
 	 * @param {jQuery} $input The input field.
 	 * @param {number} originalValue The field's original value.
 	 */
@@ -349,6 +352,9 @@ tribe.tickets.block = {
 		} else {
 			$input[ 0 ].value = decrease;
 		}
+
+		// If there's two of the same forms on a page, match the value of attendees on both on change.
+		obj.formMatch( $input, decrease );
 	};
 
 	/**
@@ -379,7 +385,7 @@ tribe.tickets.block = {
 
 				// Make DOM updates.
 				obj.updateAvailability( tickets );
-			}
+			},
 		);
 
 		// Repeat every 60 ( filterable via tribe_tickets_availability_check_interval ) seconds.
@@ -393,12 +399,10 @@ tribe.tickets.block = {
 	 * limits it to the shared cap minus any tickets in cart.
 	 *
 	 * @since 5.0.3
-	 *
 	 * @param {jQuery} $form jQuery object that is the form we are checking.
 	 * @param {number} qty The quantity we desire.
-	 * @param {obj} target The ticket item that was clicked.
-	 *
-	 * @returns {integer} The quantity, limited by existing shared cap tickets.
+	 * @param {object} $target The ticket item that was clicked.
+	 * @returns {number} The quantity, limited by existing shared cap tickets.
 	 */
 	obj.checkSharedCapacity = function( $form, qty, $target ) {
 		let sharedCap = [];
@@ -412,39 +416,39 @@ tribe.tickets.block = {
 			return qty;
 		}
 
-		let active_ticket_limit = $target.attr( 'data-available-count' );
-		let totalSharedCap =  $target.attr( 'data-shared-cap' );
+		const activeTicketLimit = $target.attr( 'data-available-count' );
+		const totalSharedCap = $target.attr( 'data-shared-cap' );
 
-		if ( undefined === active_ticket_limit || undefined === totalSharedCap ) {
+		if ( undefined === activeTicketLimit || undefined === totalSharedCap ) {
 			return qty;
 		}
 
 		$sharedCapTickets.each(
 			function() {
 				currentLoad.push( parseInt( $( this ).val(), 10 ) );
-			}
+			},
 		);
 
 		currentLoad = currentLoad.reduce(
 			function( a, b ) {
 				return a + b;
 			},
-			0
+			0,
 		);
 
 		$sharedTickets.each(
 			function() {
 				sharedCap.push( parseInt( $( this ).attr( 'data-available-count' ), 10 ) );
-			}
+			},
 		);
 
 		sharedCap = Math.max.apply( this, sharedCap );
 
 		return tribe.tickets.utils.calculateSharedCap(
 			qty,
-			active_ticket_limit,
+			activeTicketLimit,
 			sharedCap,
-			currentLoad
+			currentLoad,
 		);
 	};
 
@@ -452,9 +456,7 @@ tribe.tickets.block = {
 	 * Get the Quantity.
 	 *
 	 * @since 5.0.3
-	 *
 	 * @param {jQuery} $cartItem The cart item to update.
-	 *
 	 * @returns {number} The item quantity.
 	 */
 	obj.getQty = function( $cartItem ) {
@@ -467,9 +469,7 @@ tribe.tickets.block = {
 	 * Get the Price.
 	 *
 	 * @since 5.0.3
-	 *
 	 * @param {jQuery} $item The jQuery object of the ticket item to update.
-	 *
 	 * @returns {number} The item price.
 	 */
 	obj.getPrice = function( $item ) {
@@ -480,10 +480,8 @@ tribe.tickets.block = {
 	 * Get ticket data to send to cart.
 	 *
 	 * @since 5.0.3
-	 *
 	 * @param {jQuery} $form jQuery object of the form container.
-	 *
-	 * @returns {array} Tickets array of objects.
+	 * @returns {Array} Tickets array of objects.
 	 */
 	obj.getTicketsForCart = function( $form ) {
 		const $ticketsForm = $form || $document;
@@ -512,7 +510,7 @@ tribe.tickets.block = {
 				data.optout = optout;
 
 				tickets.push( data );
-			}
+			},
 		);
 
 		return tickets;
@@ -522,9 +520,7 @@ tribe.tickets.block = {
 	 * Unbinds events for add/remove ticket.
 	 *
 	 * @since 5.0.3
-	 *
 	 * @param {jQuery} $container jQuery object of the tickets container.
-	 *
 	 * @return {void}
 	 */
 	obj.unbindTicketsAddRemove = function( $container ) {
@@ -538,9 +534,7 @@ tribe.tickets.block = {
 	 * Binds events for add/remove ticket.
 	 *
 	 * @since 5.0.3
-	 *
 	 * @param {jQuery} $container jQuery object of the tickets container.
-	 *
 	 * @return {void}
 	 */
 	obj.bindTicketsAddRemove = function( $container ) {
@@ -570,15 +564,13 @@ tribe.tickets.block = {
 					obj.stepDown( $input, originalValue );
 				}
 
-				obj.updateFooter( $input.closest( 'form' ) );
-
 				// Trigger the on Change for the input ( if it has changed ) as it's not handled via stepUp() || stepDown().
 				if ( originalValue !== $input[ 0 ].value ) {
 					$input.trigger( 'change' );
 				}
 
 				$document.trigger( 'afterTicketsAddRemove.tribeTicketsBlock', [ $input ] );
-			}
+			},
 		);
 	};
 
@@ -586,9 +578,7 @@ tribe.tickets.block = {
 	 * Unbinds events for the quantity input.
 	 *
 	 * @since 5.0.3
-	 *
 	 * @param {jQuery} $container jQuery object of the tickets container.
-	 *
 	 * @return {void}
 	 */
 	obj.unbindTicketsQuantityInput = function( $container ) {
@@ -601,9 +591,7 @@ tribe.tickets.block = {
 	 * Binds events for the quantity input.
 	 *
 	 * @since 5.0.3
-	 *
 	 * @param {jQuery} $container jQuery object of the tickets container.
-	 *
 	 * @return {void}
 	 */
 	obj.bindTicketsQuantityInput = function( $container ) {
@@ -618,7 +606,7 @@ tribe.tickets.block = {
 					e.stopPropagation();
 					return;
 				}
-			}
+			},
 		);
 
 		/**
@@ -660,7 +648,7 @@ tribe.tickets.block = {
 				obj.updateFormTotals( $form );
 
 				$document.trigger( 'afterTicketsQuantityChange.tribeTicketsBlock', [ $this ] );
-			}
+			},
 		);
 	};
 
@@ -668,9 +656,7 @@ tribe.tickets.block = {
 	 * Toggle the ticket item description visibility.
 	 *
 	 * @since 5.0.3
-	 *
 	 * @param {event} event The event.
-	 *
 	 * @return {void}
 	 */
 	obj.itemDescriptionToggle = function( event ) {
@@ -711,25 +697,23 @@ tribe.tickets.block = {
 	 * Binds the description toggle.
 	 *
 	 * @since 5.0.3
-	 *
 	 * @param {jQuery} $container jQuery object of the tickets container.
-	 *
 	 * @return {void}
 	 */
 	obj.bindDescriptionToggle = function( $container ) {
 		const $descriptionToggleButtons = $container.find(
-			obj.selectors.itemDescriptionButtonMore + ', ' + obj.selectors.itemDescriptionButtonLess
+			obj.selectors.itemDescriptionButtonMore + ', ' + obj.selectors.itemDescriptionButtonLess,
 		);
 
 		// Add keyboard support for enter key.
 		$descriptionToggleButtons.on(
 			'keyup',
-			obj.itemDescriptionToggle
+			obj.itemDescriptionToggle,
 		);
 
 		$descriptionToggleButtons.on(
 			'click',
-			obj.itemDescriptionToggle
+			obj.itemDescriptionToggle,
 		);
 	};
 
@@ -737,14 +721,12 @@ tribe.tickets.block = {
 	 * Unbinds the description toggle.
 	 *
 	 * @since 5.0.3
-	 *
 	 * @param {jQuery} $container jQuery object of the tickets container.
-	 *
 	 * @return {void}
 	 */
 	obj.unbindDescriptionToggle = function( $container ) {
 		const $descriptionToggleButtons = $container.find(
-			obj.selectors.itemDescriptionButtonMore + ', ' + obj.selectors.itemDescriptionButtonLess
+			obj.selectors.itemDescriptionButtonMore + ', ' + obj.selectors.itemDescriptionButtonLess,
 		);
 
 		$descriptionToggleButtons.off();
@@ -754,9 +736,7 @@ tribe.tickets.block = {
 	 * Submit the tickets block form.
 	 *
 	 * @since 5.0.3
-	 *
 	 * @param {jQuery} $form jQuery object of the form.
-	 *
 	 * @return {void}
 	 */
 	obj.ticketsSubmit = function( $form ) {
@@ -787,9 +767,7 @@ tribe.tickets.block = {
 	 * Binds events the classic "Submit" (non-modal)
 	 *
 	 * @since 5.0.3
-	 *
 	 * @param {jQuery} $container jQuery object of the tickets container.
-	 *
 	 * @return {void}
 	 */
 	obj.bindTicketsSubmit = function( $container ) {
@@ -808,7 +786,7 @@ tribe.tickets.block = {
 				const $form = $container.find( obj.selectors.form );
 
 				obj.ticketsSubmit( $form );
-			}
+			},
 		);
 	};
 
@@ -816,9 +794,7 @@ tribe.tickets.block = {
 	 * Binds events for container.
 	 *
 	 * @since 5.0.3
-	 *
 	 * @param {jQuery} $container jQuery object of object of the tickets container.
-	 *
 	 * @return {void}
 	 */
 	obj.bindEvents = function( $container ) {
@@ -840,7 +816,6 @@ tribe.tickets.block = {
 	 * Handles the initialization of the tickets block events when Document is ready.
 	 *
 	 * @since 5.0.3
-	 *
 	 * @return {void}
 	 */
 	obj.ready = function() {

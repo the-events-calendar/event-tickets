@@ -5,6 +5,7 @@ namespace Tribe\Tickets;
 use Tribe\Events\Test\Factories\Event;
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
+use function StellarWP\Slic\array_merge_multi;
 
 class Event_RepositoryTest extends \Codeception\TestCase\WPTestCase {
 	use RSVP_Ticket_Maker;
@@ -242,7 +243,7 @@ class Event_RepositoryTest extends \Codeception\TestCase\WPTestCase {
 	 *
 	 * @test
 	 */
-	public function should_allow_filtering_by_events_that_have_rsvp_tickets_() {
+	public function should_allow_filtering_by_events_that_have_rsvp_tickets() {
 		$this->create_test_events();
 
 		$actual = tribe_events()->where( 'has_rsvp', false )->get_ids();
@@ -258,6 +259,35 @@ class Event_RepositoryTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertEqualSets( [
 			$this->events['rsvp']
 		], tribe_events()->where( 'has_rsvp', true )->get_ids() );
+	}
+
+	/**
+	 * It should allow filtering by events that have rsvp and/or tickets.
+	 *
+	 * @test
+	 */
+	public function should_allow_filtering_by_events_that_have_rsvp_and_or_tickets() {
+		$this->create_test_events();
+
+		// Enable Tribe Commerce.
+		add_filter( 'tribe_tickets_commerce_paypal_is_active', '__return_true' );
+		add_filter( 'tribe_tickets_get_modules', function ( $modules ) {
+			$modules['Tribe__Tickets__Commerce__PayPal__Main'] = tribe( $this->get_paypal_ticket_provider() )->plugin_name;
+
+			return $modules;
+		} );
+
+		$actual = tribe_events()->where( 'has_rsvp_or_tickets', true )->get_ids();
+		// Retrieve all events with either tickets or rsvp
+		$this->assertEqualSets( $actual, array_unique( array_merge( $this->events['with_tickets'], [ $this->events['rsvp'] ] ) ) );
+		// Retrieve no events without tickets or rsvp
+		$this->assertFalse( in_array( $actual, $this->events['without_tickets'], true ) );
+
+		$actual = tribe_events()->where( 'has_rsvp_or_tickets', false )->get_ids();
+		// Retrieve only events without either tickets or rsvp
+		$this->assertEqualSets( $actual, array_unique( array_merge( $this->events['without_tickets'], $this->events['with_cost_meta'] ) ) );
+		// Retrieve no events with tickets or rsvp
+		$this->assertFalse( in_array( $actual, array_merge( $this->events['with_tickets'], [ $this->events['rsvp'] ] ), true ) );
 	}
 
 	/**

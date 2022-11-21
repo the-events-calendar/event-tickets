@@ -86,7 +86,7 @@ class Tribe__Tickets__REST__V1__Attendee_Repository
 			'relevance' => 'relevance',
 			'id'        => 'id',
 			'include'   => 'meta_value_num',
-			'title'     => 'title',
+			'title'     => 'full_name',
 			'slug'      => 'name',
 		);
 
