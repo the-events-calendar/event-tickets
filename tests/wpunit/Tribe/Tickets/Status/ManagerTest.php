@@ -96,7 +96,7 @@ class ManagerTest extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * @test
-	 * @since TBD
+	 * @since 5.5.1
 	 */
 	public function it_returns_tickets_commerce_completed_statuses() {
 		$statues = Manager::get_instance()->get_completed_status_by_provider_name( Module::class );

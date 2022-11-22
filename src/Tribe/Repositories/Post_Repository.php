@@ -60,6 +60,7 @@ class Post_Repository extends Tribe__Repository {
 			'cost_currency_symbol' => [ $this, 'filter_by_cost_currency_symbol' ],
 			'has_tickets'          => [ $this, 'filter_by_has_tickets' ],
 			'has_rsvp'             => [ $this, 'filter_by_has_rsvp' ],
+			'has_rsvp_or_tickets'  => [ $this, 'filter_by_has_rsvp_or_tickets' ],
 
 			// These filter methods are added by the Post_Attendees trait.
 			'has_attendees'        => [ $this, 'filter_by_has_attendees' ],

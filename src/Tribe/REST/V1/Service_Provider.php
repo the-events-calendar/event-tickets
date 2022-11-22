@@ -21,7 +21,7 @@ class Tribe__Tickets__REST__V1__Service_Provider extends tad_DI52_ServiceProvide
 	 * @since 4.7.5
 	 */
 	public function register() {
-		tribe_singleton( 'tickets.rest-v1.main', 'Tribe__Tickets__REST__V1__Main', array( 'hook' ) );
+		tribe_singleton( 'tickets.rest-v1.main', 'Tribe__Tickets__REST__V1__Main', [ 'hook' ] );
 		tribe_singleton( 'tickets.rest-v1.messages', 'Tribe__Tickets__REST__V1__Messages' );
 		tribe_singleton( 'tickets.rest-v1.headers-base', 'Tribe__Tickets__REST__V1__Headers__Base' );
 		tribe_singleton( 'tickets.rest-v1.settings', 'Tribe__Tickets__REST__V1__Settings' );
@@ -114,11 +114,15 @@ class Tribe__Tickets__REST__V1__Service_Provider extends tad_DI52_ServiceProvide
 		/** @var Tribe__Documentation__Swagger__Builder_Interface $endpoint */
 		$endpoint = tribe( 'tickets.rest-v1.endpoints.documentation' );
 
-		register_rest_route( $this->namespace, '/doc', array(
-			'methods'             => WP_REST_Server::READABLE,
-			'callback'            => array( $endpoint, 'get' ),
-			'permission_callback' => '__return_true',
-		) );
+		register_rest_route(
+			$this->namespace,
+			'/doc',
+			[
+				'methods'             => WP_REST_Server::READABLE,
+				'callback'            => [ $endpoint, 'get' ],
+				'permission_callback' => '__return_true',
+			]
+		);
 
 		$endpoint->register_definition_provider( 'Image', new Tribe__Documentation__Swagger__Image_Definition_Provider() );
 		$endpoint->register_definition_provider( 'ImageSize', new Tribe__Documentation__Swagger__Image_Size_Definition_Provider() );

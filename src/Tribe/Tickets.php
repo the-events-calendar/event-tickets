@@ -373,38 +373,26 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
-		 * Retrieve the Query args to fetch all the Tickets.
+		 * Set the Query args to fetch all the Tickets.
 		 *
+		 * @since  5.5.0 refactored to use the tickets ORM.
 		 * @since  4.6
+		 * @since 5.5.2 Set default query args.
 		 *
-		 * @param  int|WP_Post $post_id Build the args to query only
-		 *                           for tickets related to this post ID.
+		 * @param int|WP_Post $post_id Build the args to query only
+		 *                             for tickets related to this post ID.
 		 *
-		 * @return array
+		 * @return Tribe__Repository__Interface
 		 */
-		public function get_tickets_query_args( $post_id = null ) {
-			if ( $post_id instanceof WP_Post ) {
-				$post_id = $post_id->ID;
-			}
+		public function set_tickets_query_args( $post_id = null ) {
+			$repository = tribe_tickets( $this->orm_provider );
+			$repository->by( 'event', $post_id );
+			$repository->by( 'status', 'publish' );
+			$repository->by( 'posts_per_page', -1 );
+			$repository->order_by( 'menu_order' );
+			$repository->order( 'ASC' );
+			$default_args = $repository->get_query();
 
-			$args = [
-				'post_type'      => [ $this->ticket_object ],
-				'posts_per_page' => -1,
-				'fields'         => 'ids',
-				'post_status'    => 'publish',
-				'orderby'        => 'menu_order',
-				'order'          => 'ASC',
-			];
-
-			if ( ! empty( $post_id ) ) {
-				$args['meta_query'] = [
-					[
-						'key'     => $this->get_event_key(),
-						'value'   => $post_id,
-						'compare' => '=',
-					],
-				];
-			}
 
 			/**
 			 * Filters the query arguments that will be used to fetch tickets.
@@ -413,21 +401,31 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 *
 			 * @param array $args
 			 */
-			$args = apply_filters( 'tribe_tickets_get_tickets_query_args', $args );
+			$vars = apply_filters( 'tribe_tickets_get_tickets_query_args', $default_args->query_vars );
 
-			return $args;
+			if ( $default_args->query_vars !== $vars ) {
+				$repository->by_args( $vars );
+			}
+
+			return $repository;
 		}
 
 		/**
 		 * Retrieve the ID numbers of all tickets assigned to an event.
 		 *
+		 * @since  5.5.0 refactored to use the tickets ORM.
 		 * @since  4.6
 		 *
-		 * @param  int|WP_Post $post Only get tickets assigned to this post ID.
+		 * @param int|WP_Post $post Only get tickets assigned to this post ID.
 		 *
 		 * @return array|false
 		 */
-		public function get_tickets_ids( $post = null ) {
+		public function get_tickets_ids( $post = 0 ) {
+			$post_id = 0;
+			if ( is_numeric( $post ) ) {
+				$post_id = (int) $post;
+			}
+
 			if ( ! empty( $post ) ) {
 				if ( ! $post instanceof WP_Post ) {
 					$post = get_post( $post );
@@ -435,24 +433,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				if ( ! $post instanceof WP_Post ) {
 					return false;
 				}
-				$args = $this->get_tickets_query_args( $post->ID );
-			} else {
-				$args = $this->get_tickets_query_args();
+
+				if ( class_exists( '\TEC\Events\Custom_Tables\V1\Models\Occurrence' ) ) {
+					$post_id = \TEC\Events\Custom_Tables\V1\Models\Occurrence::normalize_id( $post->ID );
+				}
 			}
 
-			// @todo Switch this into a Ticket ORM request in the future.
-			$cache = new Tribe__Cache();
-			$cache_key = $cache->make_key( $args );
-			$query = $cache->get( $cache_key );
-
-			if ( $query instanceof WP_Query ) {
-				return $query->posts;
-			}
-
-			$query = new WP_Query( $args );
-			$cache->set( $cache_key, $query, Tribe__Cache::NO_EXPIRATION, 'event_tickets_after_create_ticket' );
-
-			return $query->posts;
+			return $this->set_tickets_query_args( $post_id )->get_ids();
 		}
 
 		/**
@@ -1019,7 +1006,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
-		 * Mark an attendee as checked in
+		 * Mark an attendee as checked in.
 		 *
 		 * @abstract
 		 *
@@ -1031,11 +1018,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			update_post_meta( $attendee_id, $this->checkin_key, 1 );
 
 			$args = func_get_args();
-			$qr = null;
+			$qr   = null;
 
 			if ( isset( $args[1] ) && $qr = (bool) $args[1] ) {
 				update_post_meta( $attendee_id, '_tribe_qr_status', 1 );
 			}
+
+			$this->save_checkin_details( $attendee_id, $qr );
 
 			/**
 			 * Fires a checkin action
@@ -1051,6 +1040,35 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
+		 * Save the attendee checkin details.
+		 *
+		 * @since 5.5.2
+		 *
+		 * @param int   $attendee_id     The ID of the attendee that's being checked-in.
+		 * @param mixed $qr              True if the check-in is from a QR code.
+		 */
+		public function save_checkin_details( $attendee_id, $qr ) {
+			$checkin_details = [
+				'date'   => current_time( 'mysql' ),
+				'source' => ! empty( $qr ) ? 'app' : 'site',
+				'author' => get_current_user_id(),
+			];
+
+			/**
+			 * Filters the checkin details for this attendee checkin.
+			 *
+			 * @since 5.5.2
+			 *
+			 * @param array $checkin_details The check-in details.
+			 * @param int   $attendee_id     The ID of the attendee that's being checked-in.
+			 * @param mixed $qr              True if the check-in is from a QR code.
+			 */
+			$checkin_details = apply_filters( 'tec_tickets_checkin_details', $checkin_details, $attendee_id, $qr );
+
+			update_post_meta( $attendee_id, $this->checkin_key . '_details', $checkin_details );
+		}
+
+		/**
 		 * Mark an attendee as not checked in
 		 *
 		 * @abstract
@@ -1060,6 +1078,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		public function uncheckin( $attendee_id ) {
 			delete_post_meta( $attendee_id, $this->checkin_key );
+			delete_post_meta( $attendee_id, $this->checkin_key . '_details' );
 			delete_post_meta( $attendee_id, '_tribe_qr_status' );
 
 			/**
@@ -1474,6 +1493,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			// Limit results per page.
 			if ( ! empty( $args['per_page'] ) ) {
 				$repository->per_page( absint( $args['per_page'] ) );
+			}
+
+			if ( ! empty( $args['orderby'] ) ) {
+				$repository->order_by( strval( $args['orderby'] ) );
+			}
+
+			if ( ! empty( $args['order'] ) ) {
+				$repository->order( strval( $args['order'] ) );
 			}
 		}
 
@@ -3409,11 +3436,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$editor = tribe( 'editor' );
 
 			// Blocks and ticket templates merged - bail if we should be seeing blocks.
-			if (
-				has_blocks( $post->ID )
-				&& $editor->should_load_blocks()
-				&& ! $editor->is_classic_editor()
-			) {
+			if ( has_blocks( $post->ID ) ) {
 				return false;
 			}
 
