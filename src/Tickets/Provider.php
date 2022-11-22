@@ -38,6 +38,7 @@ class Provider extends tad_DI52_ServiceProvider {
 		}
 
 		require_once Tickets_Plugin::instance()->plugin_path . 'src/functions/commerce/provider.php';
+		require_once Tickets_Plugin::instance()->plugin_path . 'src/functions/emails/provider.php';
 
 		$this->register_hooks();
 		$this->register_assets();
@@ -52,6 +53,9 @@ class Provider extends tad_DI52_ServiceProvider {
 		// Load compatibility with ECP Recurrence engine.
 		$this->container->register( Recurrence\Provider::class );
 
+		// Loads all of tickets emails.
+		$this->container->register( Emails\Provider::class );
+		
 		// Loads admin area.
 		$this->container->register( Admin\Provider::class );
 
