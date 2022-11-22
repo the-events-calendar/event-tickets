@@ -122,4 +122,44 @@ class CreateTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertEquals( $attendee_data['user_id'], (int) get_post_meta( $attendee->ID, $provider->attendee_user_id, true ) );
 		$this->assertCount( 9, $meta, 'There appears to be untested meta on this attendee, please add them to the test: ' . var_export( $meta, true ) );
 	}
+
+	/**
+	 * It should allow creating an attendee from an RSVP ticket object with check in data.
+	 *
+	 * @test
+	 */
+	public function should_allow_creating_an_attendee_from_with_checkin_data() {
+		/** @var \Tribe__Tickets__Repositories__Attendee__RSVP $attendees */
+		$attendees = tribe_attendees( 'rsvp' );
+
+		$post_id = $this->factory->post->create();
+
+		$attendee_data = [
+			'full_name' => 'A test attendee',
+			'email'     => 'attendee@test.com',
+			'user_id'   => 1234,
+			'check_in'  => true,
+		];
+
+		$ticket_id = $this->create_rsvp_ticket( $post_id );
+
+		/** @var \Tribe__Tickets__RSVP $provider */
+		$provider = tribe( 'tickets.rsvp' );
+
+		$ticket = $provider->get_ticket( $post_id, $ticket_id );
+
+		$attendee = $attendees->create_attendee_for_ticket( $ticket, $attendee_data );
+		$attendee_item = $provider->get_attendee( $attendee->ID );
+
+		// Confirm the attendee was created as intended.
+		$this->assertInstanceOf( WP_Post::class, $attendee );
+		$this->assertEquals( $attendee_data['full_name'], $attendee->post_title );
+		$this->assertEquals( $provider::ATTENDEE_OBJECT, $attendee->post_type );
+		$this->assertEquals( 'publish', $attendee->post_status );
+		$this->assertEquals( 0, $attendee->post_parent );
+
+		// Confirm the attendee check in meta was set as intended.
+		$this->assertEquals( 1, $attendee_item['check_in'] );
+		$this->assertEquals( 1, get_post_meta( $attendee->ID, $provider->checkin_key, true ) );
+	}
 }

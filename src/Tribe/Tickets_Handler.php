@@ -517,10 +517,11 @@ class Tribe__Tickets__Tickets_Handler {
 
 		foreach ( $modules as $provider_class => $name ) {
 			$provider = call_user_func( array( $provider_class, 'get_instance' ) );
-			$module_args = $provider->get_tickets_query_args( $post );
+			$module_args = $provider->set_tickets_query_args( $post )->get_query();
+			$module_args = $module_args->query_vars;
 
-			$args['post_type'] = array_merge( $args['post_type'], $module_args['post_type'] );
-			$args['meta_query'] = array_merge( $args['meta_query'], $module_args['meta_query'] );
+			$args['post_type'] = array_merge( (array) $args['post_type'], (array) $module_args['post_type'] );
+			$args['meta_query'] = array_merge( (array) $args['meta_query'], (array) $module_args['meta_query'] );
 		}
 
 		$query = new WP_Query( $args );
@@ -657,6 +658,11 @@ class Tribe__Tickets__Tickets_Handler {
 	public function trigger_shared_cap_sync( $post_id, $ticket, $raw_data ) {
 		$ticket_capacity_data = Tribe__Utils__Array::get( $raw_data, 'tribe-ticket', [] );
 		$ticket_capacity      = Tribe__Utils__Array::get( $ticket_capacity_data, 'capacity', false );
+		$capacity_mode        = Tribe__Utils__Array::get( $ticket_capacity_data, 'mode', false );
+
+		if ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $capacity_mode ) {
+			return false;
+		}
 
 		if ( empty( $ticket_capacity_data ) || ! $ticket_capacity ) {
 			return new WP_Error( 'invalid_capacity', __( 'Invalid ticket capacity data.', 'event-tickets' ), $raw_data );

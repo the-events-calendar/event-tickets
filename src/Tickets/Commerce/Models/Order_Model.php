@@ -63,10 +63,12 @@ class Order_Model extends Base {
 				'provider_slug'       => Commerce::ABBR,
 				'status_log'          => $status_log,
 				'status_obj'          => $status,
+				'status'              => $status->get_name(),
 				'gateway'             => $gateway_slug,
 				'gateway_order_id'    => $gateway_order_id,
 				'gateway_payload'     => $gateway_payload,
 				'total_value'         => Commerce\Utils\Value::create( $total_value ),
+				'total'               => $total_value,
 				'currency'            => $currency,
 				'purchaser'           => [
 					'user_id'    => (int) $purchaser_user_id,

@@ -1835,3 +1835,17 @@ function tribe_tickets_get_provider_query_slug() {
 	 */
 	return apply_filters( 'tribe_tickets_get_provider_query_slug', 'tickets_provider' );
 }
+
+/**
+ * Return if `The Events Calendar` is active.
+ *
+ * By checking if `tribe_events` function exists we avoid fatal errors when there are
+ * version dependencies mismatches.
+ *
+ * @since 5.5.2
+ *
+ * @return bool True if The Events Calendar is active.
+ */
+function tec_tickets_tec_events_is_active() : bool {
+	return function_exists( 'tribe_events' );
+}

@@ -9,6 +9,8 @@
 namespace TEC\Tickets;
 
 use \tad_DI52_ServiceProvider;
+use TEC\Events\Custom_Tables\V1\Provider as TEC_CT1_Provider;
+use TEC\Tickets\Custom_Tables\V1\Provider as ET_CT1_Provider;
 use \Tribe__Tickets__Main as Tickets_Plugin;
 
 /**
@@ -18,14 +20,25 @@ use \Tribe__Tickets__Main as Tickets_Plugin;
  * @package TEC\Tickets
  */
 class Provider extends tad_DI52_ServiceProvider {
+	/**
+	 * @var bool Flag whether this provider has registered itself and dependencies yet or not.
+	 */
+	private $has_registered = false;
 
 	/**
 	 * Binds and sets up implementations.
 	 *
+	 * @since 5.5.0
 	 * @since 5.1.6
 	 */
 	public function register() {
+		if ( $this->has_registered ) {
+
+			return false;
+		}
+
 		require_once Tickets_Plugin::instance()->plugin_path . 'src/functions/commerce/provider.php';
+		require_once Tickets_Plugin::instance()->plugin_path . 'src/functions/emails/provider.php';
 
 		$this->register_hooks();
 		$this->register_assets();
@@ -36,9 +49,38 @@ class Provider extends tad_DI52_ServiceProvider {
 
 		// Loads all of tickets commerce.
 		$this->container->register( Commerce\Provider::class );
+
+		// Load compatibility with ECP Recurrence engine.
+		$this->container->register( Recurrence\Provider::class );
+
+		// Loads all of tickets emails.
+		$this->container->register( Emails\Provider::class );
 		
 		// Loads admin area.
 		$this->container->register( Admin\Provider::class );
+
+		// RBE only Providers here.
+		$this->register_ct1_providers();
+		$this->has_registered = true;
+
+		return true;
+	}
+
+	/**
+	 * The RBE (Custom Tables) providers to be registered. Validates the conditions required to register providers.
+	 *
+	 * @since 5.5.0
+	 */
+	public function register_ct1_providers() {
+		if ( ! class_exists( TEC_CT1_Provider::class ) ) {
+			return;
+		}
+
+		if ( ! TEC_CT1_Provider::is_active() ) {
+			return;
+		}
+
+		$this->container->register( ET_CT1_Provider::class );
 	}
 
 	/**

@@ -2,8 +2,7 @@
  * Makes sure we have all the required levels on the Tribe Object
  *
  * @since 5.1.0
- *
- * @type {PlainObject}
+ * @type {object}
  */
 tribe.tickets = tribe.tickets || {};
 tribe.tickets.admin = tribe.tickets.admin || {};
@@ -12,8 +11,7 @@ tribe.tickets.admin = tribe.tickets.admin || {};
  * Configures admin manager Object in the Global Tribe variable
  *
  * @since 5.1.0
- *
- * @type {PlainObject}
+ * @type {object}
  */
 tribe.tickets.admin.manager = {};
 
@@ -21,23 +19,19 @@ tribe.tickets.admin.manager = {};
  * Initializes in a Strict env the code that manages the Tickets Manager
  *
  * @since 5.1.0
- *
- * @param  {PlainObject} $   jQuery
- * @param  {PlainObject} _   Underscore.js
- * @param  {PlainObject} obj tribe.tickets.admin.manager
- *
+ * @param  {object} $   jQuery
+ * @param  {object} _   Underscore.js
+ * @param  {object} obj tribe.tickets.admin.manager
  * @return {void}
  */
 ( function( $, _, obj ) {
-	'use strict';
 	const $document = $( document );
 
 	/**
 	 * Selectors used for configuration and setup
 	 *
 	 * @since 5.1.0
-	 *
-	 * @type {PlainObject}
+	 * @type {object}
 	 */
 	obj.selectors = {
 		container: '.tribe-tickets__admin-container',
@@ -50,7 +44,6 @@ tribe.tickets.admin.manager = {};
 	 * Stores the current ajax request been handled by the manager.
 	 *
 	 * @since 5.1.0
-	 *
 	 * @type {jqXHR|null}
 	 */
 	obj.currentAjaxRequest = null;
@@ -59,7 +52,6 @@ tribe.tickets.admin.manager = {};
 	 * Containers on the current page that were initialized.
 	 *
 	 * @since 5.1.0
-	 *
 	 * @type {jQuery}
 	 */
 	obj.$containers = $();
@@ -68,7 +60,6 @@ tribe.tickets.admin.manager = {};
 	 * Saves all the containers in the page into the object.
 	 *
 	 * @since 5.1.0
-	 *
 	 * @return {void}
 	 */
 	obj.selectContainers = function() {
@@ -79,9 +70,7 @@ tribe.tickets.admin.manager = {};
 	 * Clean up the container and event listeners
 	 *
 	 * @since 5.1.0
-	 *
 	 * @param  {jQuery} container Which element we are going to clean up
-	 *
 	 * @return {void}
 	 */
 	obj.cleanup = function( container ) {
@@ -96,12 +85,9 @@ tribe.tickets.admin.manager = {};
 	 * Setup the container for admin management
 	 *
 	 * @since 5.1.0
-	 *
 	 * @todo  Requirement to setup other JS modules after hijacking Click and Submit
-	 *
-	 * @param  {integer}        index     jQuery.each index param
+	 * @param  {number}         index     jQuery.each index param
 	 * @param  {Element|jQuery} container Which element we are going to setup
-	 *
 	 * @return {void}
 	 */
 	obj.setup = function( index, container ) {
@@ -116,17 +102,15 @@ tribe.tickets.admin.manager = {};
 	 * Performs an AJAX request.
 	 *
 	 * @since 5.1.0
-	 *
 	 * @param  {object}         data       DOM Event related to the Click action
 	 * @param  {Element|jQuery} $container Which container we are dealing with
-	 *
 	 * @return {void}
 	 */
 	obj.request = function( data, $container ) {
 		const settings = obj.getAjaxSettings( $container );
 
 		// Set the security nonce.
-		data[ 'nonce' ] = TribeTicketsAdminManager.tribeTicketsAdminManagerNonce;
+		data.nonce = TribeTicketsAdminManager.tribeTicketsAdminManagerNonce;
 
 		// Pass the data received to the $.ajax settings
 		settings.data = data;
@@ -138,10 +122,8 @@ tribe.tickets.admin.manager = {};
 	 * Gets the jQuery.ajax() settings provided a views container
 	 *
 	 * @since 5.1.0
-	 *
 	 * @param  {Element|jQuery} $container Which container we are dealing with.
-	 *
-	 * @return {Object} ajaxSettings
+	 * @return {object} ajaxSettings
 	 */
 	obj.getAjaxSettings = function( $container ) {
 		const ajaxSettings = {
@@ -165,10 +147,8 @@ tribe.tickets.admin.manager = {};
 	 * Context with the RSVP container used to fire this AJAX call
 	 *
 	 * @since 5.1.0
-	 *
-	 * @param  {jqXHR}       jqXHR    Request object
-	 * @param  {PlainObject} settings Settings that this request will be made with
-	 *
+	 * @param  {jqXHR}  jqXHR    Request object
+	 * @param  {object} settings Settings that this request will be made with
 	 * @return {void}
 	 */
 	obj.ajaxBeforeSend = function( jqXHR, settings ) {
@@ -190,10 +170,8 @@ tribe.tickets.admin.manager = {};
 	 * Context with the RSVP container used to fire this AJAX call
 	 *
 	 * @since 5.1.0
-	 *
 	 * @param  {jqXHR}  jqXHR      Request object
-	 * @param  {String} textStatus Status for the request
-	 *
+	 * @param  {string} textStatus Status for the request
 	 * @return {void}
 	 */
 	obj.ajaxComplete = function( jqXHR, textStatus ) {
@@ -218,11 +196,9 @@ tribe.tickets.admin.manager = {};
 	 * Context with the RSVP container used to fire this AJAX call
 	 *
 	 * @since 5.1.0
-	 *
-	 * @param  {Object} response   Response sent from the AJAX response.
-	 * @param  {String} textStatus Status for the request
+	 * @param  {object} response   Response sent from the AJAX response.
+	 * @param  {string} textStatus Status for the request
 	 * @param  {jqXHR}  jqXHR      Request object
-	 *
 	 * @return {void}
 	 */
 	obj.ajaxSuccess = function( response, textStatus, jqXHR ) {
@@ -265,10 +241,8 @@ tribe.tickets.admin.manager = {};
 	 * Context with the RSVP container used to fire this AJAX call
 	 *
 	 * @since 5.1.0
-	 *
-	 * @param  {jqXHR}       jqXHR    Request object
-	 * @param  {PlainObject} settings Settings that this request was made with
-	 *
+	 * @param  {jqXHR}  jqXHR    Request object
+	 * @param  {object} settings Settings that this request was made with
 	 * @return {void}
 	 */
 	obj.ajaxError = function( jqXHR, settings ) {
@@ -283,7 +257,6 @@ tribe.tickets.admin.manager = {};
 	 * Handles the initialization of the manager when Document is ready.
 	 *
 	 * @since 5.1.0
-	 *
 	 * @return {void}
 	 */
 	obj.ready = function() {

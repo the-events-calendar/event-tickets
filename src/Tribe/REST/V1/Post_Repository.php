@@ -586,12 +586,12 @@ class Tribe__Tickets__REST__V1__Post_Repository
 
 		// @todo here we need to uniform the return values to indicate unlimited and oversold!
 
-		$details = array(
+		$details = [
 			'available_percentage' => $available_percentage,
-			'available'            => (int) $ticket->stock(), // see note above about why we use this
-		);
+			'available'            => (int) $ticket->stock(), // see note above about why we use this.
+		];
 
-		if ( current_user_can( 'edit_users' ) || current_user_can( 'tribe_manage_attendees' ) ) {
+		if ( tribe( 'tickets.rest-v1.main' )->request_has_manage_access() ) {
 			$details['max']     = (int) $ticket->capacity();
 			$details['sold']    = (int) $ticket->qty_sold();
 			$details['pending'] = (int) $ticket->qty_pending();
@@ -663,7 +663,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 
 		$event = $ticket_object->get_event();
 
-		$has_manage_access          = current_user_can( 'edit_users' ) || current_user_can( 'tribe_manage_attendees' );
+		$has_manage_access          = tribe( 'tickets.rest-v1.main' )->request_has_manage_access();
 		$always_show_attendees_data = $has_manage_access;
 
 		/**
@@ -765,7 +765,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 			return false;
 		}
 
-		$has_manage_access = current_user_can( 'edit_users' ) || current_user_can( 'tribe_manage_attendees' );
+		$has_manage_access = tribe( 'tickets.rest-v1.main' )->request_has_manage_access();
 		$permission        = $has_manage_access ? 'editable' : 'readable';
 
 		$query = tribe_attendees( 'restv1' )
@@ -950,9 +950,9 @@ class Tribe__Tickets__REST__V1__Post_Repository
 			'rest_url'          => $main->get_url( '/attendees/' . $attendee_id ),
 		];
 
-		$has_manage_access = current_user_can( 'edit_users' ) || current_user_can( 'tribe_manage_attendees' );
+		$has_manage_access = tribe( 'tickets.rest-v1.main' )->request_has_manage_access();
 
-		// Only show the attendee name if the attendee did not optout or the user can read private posts
+		// Only show the attendee name if the attendee did not optout or the user can read private posts.
 		if ( empty( $attendee['optout'] ) || $has_manage_access ) {
 			$attendee_data['title']  = Tribe__Utils__Array::get( $attendee, 'holder_name', Tribe__Utils__Array::get( $attendee, 'purchaser_name', '' ) );
 			$attendee_data['optout'] = tribe_is_truthy( $attendee['optout'] );
@@ -960,7 +960,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 			$attendee_data['optout'] = true;
 		}
 
-		// Sensible information should not be shown to everyone
+		// Sensible information should not be shown to everyone.
 		if ( $has_manage_access ) {
 			$attendee_data = array_merge(
 				$attendee_data,
@@ -991,14 +991,17 @@ class Tribe__Tickets__REST__V1__Post_Repository
 					/** @var Tribe__Tickets__Commerce__Currency $currency */
 					$currency                 = tribe( 'tickets.commerce.currency' );
 					$ticket_object            = $this->get_ticket_object( $attendee['product_id'] );
-					$purchase_time            = Tribe__Utils__Array::get( $order_data, 'purchase_time', get_post_time( Tribe__Date_Utils::DBDATETIMEFORMAT, false, $attendee_id ) );
-					$attendee_data['payment'] = array(
-						'provider'     => Tribe__Utils__Array::get( $order_data, 'provider_slug', $this->get_provider_slug( $provider ) ),
-						'price'        => $ticket_object->price,
-						'currency'     => html_entity_decode( $currency->get_currency_symbol( $attendee['product_id'] ) ),
-						'date'         => $purchase_time,
-						'date_details' => $this->get_date_details( $purchase_time ),
-					);
+
+					if ( ! is_wp_error( $ticket_object ) ) {
+						$purchase_time            = Tribe__Utils__Array::get( $order_data, 'purchase_time', get_post_time( Tribe__Date_Utils::DBDATETIMEFORMAT, false, $attendee_id ) );
+						$attendee_data['payment'] = array(
+							'provider'     => Tribe__Utils__Array::get( $order_data, 'provider_slug', $this->get_provider_slug( $provider ) ),
+							'price'        => ! empty( $ticket_object->price ) ? $ticket_object->price : '',
+							'currency'     => html_entity_decode( $currency->get_currency_symbol( $attendee['product_id'] ) ),
+							'date'         => $purchase_time,
+							'date_details' => $this->get_date_details( $purchase_time ),
+						);
+					}
 				}
 			}
 		}
