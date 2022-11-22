@@ -75,7 +75,7 @@ class Dispatcher {
 
 			$args = [
 				'body'      => [
-					'token' => JWT::encode( $this->get_payload( $trigger ), $this->secret ),
+					'token' => JWT::encode( $this->get_payload( $trigger ), $this->secret, 'HS256' ),
 				],
 				'sslverify' => false,
 				'timeout'   => 30,
