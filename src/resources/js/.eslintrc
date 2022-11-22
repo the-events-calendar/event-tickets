@@ -1,7 +1,7 @@
 {
   "root": true,
   "extends": [
-    "../../../node_modules/@the-events-calendar/product-taskmaster/config/eslint.es5.js"
+    "../../../node_modules/@the-events-calendar/product-taskmaster/config/eslint.es6.js"
   ],
   "env": {
     "browser": true,
@@ -11,6 +11,7 @@
     "es5/no-block-scoping": 0,
     "es5/no-default-parameters": 0
   },
+  "ignorePatterns": [ "tickets-utils.test.js" ],
   "globals": {
     "ajaxurl": true,
     "Give": true,

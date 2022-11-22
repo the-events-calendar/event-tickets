@@ -482,9 +482,9 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			 */
 			$attendee_ids = $this->generate_tickets( $args['post_id'], false );
 
-			if ( false === $attendee_ids ) {
+			if ( is_wp_error( $attendee_ids ) ) {
 				$result['success']  = false;
-				$result['errors'][] = __( 'Your RSVP was unsuccessful, please try again.', 'event-tickets' );
+				$result['errors'][] = $attendee_ids->get_error_message();
 
 				return $result;
 			}
@@ -599,7 +599,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$main = Tribe__Tickets__Main::instance();
 
 		$stylesheet_url = $main->plugin_url . 'src/resources/css/rsvp.css';
-		$stylesheet_url = Tribe__Template_Factory::getMinFile( $stylesheet_url, true );
+		$stylesheet_url = Tribe__Assets::maybe_get_min_file( $stylesheet_url, true );
 
 		// apply filters
 		$stylesheet_url = apply_filters( 'tribe_tickets_rsvp_stylesheet_url', $stylesheet_url );
@@ -612,7 +612,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		);
 
 		$js_url = $main->plugin_url . 'src/resources/js/rsvp.js';
-		$js_url = Tribe__Template_Factory::getMinFile( $js_url, true );
+		$js_url = Tribe__Assets::maybe_get_min_file( $js_url, true );
 		$js_url = apply_filters( 'tribe_tickets_rsvp_js_url', $js_url );
 
 		wp_register_script(
@@ -1040,7 +1040,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @param int|null $post_id  Post ID for ticket, null to use current post ID.
 	 * @param boolean  $redirect Whether to redirect on error.
 	 *
-	 * @return array|false List of attendee ID(s) generated, or false if there was a problem.
+	 * @return array|WP_Error List of attendee ID(s) generated, or \WP_Error if there was a problem.
 	 */
 	public function generate_tickets( $post_id = null, $redirect = true ) {
 		$has_tickets = false;
@@ -1069,7 +1069,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				tribe_exit();
 			}
 
-			return false;
+			return new WP_Error( 'rsvp-error', __( 'Invalid data! Missing required attendee details!', 'event-tickets' ) );
 		}
 
 		$product_ids = [];
@@ -1095,6 +1095,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			}
 
 			$tickets_generated = $this->generate_tickets_for( $product_id, $ticket_qty, $attendee_details, $redirect );
+
+			if ( is_wp_error( $tickets_generated ) ) {
+				return $tickets_generated;
+			}
 
 			if ( $tickets_generated ) {
 				if ( is_array( $tickets_generated ) ) {
@@ -2167,11 +2171,11 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			update_post_meta( $attendee_id, '_tribe_qr_status', 1 );
 		}
 
-		$checkin_details = array(
+		$checkin_details = [
 			'date'   => current_time( 'mysql' ),
-			'source' => null !== $qr ? 'app' : 'site',
+			'source' => ! empty( $qr ) ? 'app' : 'site',
 			'author' => get_current_user_id(),
-		);
+		];
 
 		/**
 		 * Filters the checkin details for this attendee checkin.
@@ -2212,6 +2216,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		}
 
 		delete_post_meta( $attendee_id, $this->checkin_key );
+		delete_post_meta( $attendee_id, $this->checkin_key . '_details' );
 		delete_post_meta( $attendee_id, '_tribe_qr_status' );
 		do_action( 'rsvp_uncheckin', $attendee_id );
 
@@ -2524,15 +2529,31 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.7
 	 *
+	 * @since 5.5.0 Return WP_Error in case of errors to show proper error messages.
+	 *
 	 * @param int     $product_id       The ticket post ID.
 	 * @param int     $ticket_qty       The number of attendees that should be generated.
 	 * @param array   $attendee_details An array containing the details for the attendees
 	 *                                  that should be generated.
 	 * @param boolean $redirect         Whether to redirect on error.
 	 *
-	 * @return bool|array `true` if the attendees were successfully generated, `false` otherwise. If $redirect is set to false, upon success this method will return an array of attendee IDs generated.
+	 * @return array|WP_Error `true` if the attendees were successfully generated, `false` otherwise. If $redirect is set to false, upon success this method will return an array of attendee IDs generated.
 	 */
 	public function generate_tickets_for( $product_id, $ticket_qty, $attendee_details, $redirect = true ) {
+		// Get the event this tickets is for
+		$post_id = get_post_meta( $product_id, $this->get_event_key(), true );
+
+		if ( empty( $post_id ) ) {
+			return new WP_Error( 'rsvp-invalid-parent-id', __( 'Invalid parent ID provided!', 'event-tickets' ) );
+		}
+
+		/** @var Tribe__Tickets__Ticket_Object $ticket_type */
+		$ticket_type = $this->get_ticket( $post_id, $product_id );
+
+		if ( ! $ticket_type instanceof Tribe__Tickets__Ticket_Object ) {
+			return new WP_Error( 'rsvp-invalid-ticket-id', __( 'Invalid Ticket ID provided!', 'event-tickets' ) );
+		}
+
 		$rsvp_options = $this->tickets_view->get_rsvp_options( null, false );
 
 		$required_details = array(
@@ -2545,12 +2566,14 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		foreach ( $required_details as $required_detail ) {
 			if ( ! isset( $attendee_details[ $required_detail ] ) ) {
-				return false;
+				$message = sprintf( __( "Missing required RSVP field: %s", 'event-tickets' ), $required_detail );
+				return new WP_Error( 'rsvp-missing-required-data', $message );
 			}
 
 			// Some details should not be empty.
 			if ( 'optout' !== $required_detail && empty( $attendee_details[ $required_detail ] ) ) {
-				return false;
+				$message = sprintf( __( "Missing required RSVP field: %s", 'event-tickets' ), $required_detail );
+				return new WP_Error( 'rsvp-missing-required-data', $message );
 			}
 		}
 
@@ -2568,20 +2591,6 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		$attendee_optout = filter_var( $attendee_optout, FILTER_VALIDATE_BOOLEAN );
 		$attendee_optout = (int) $attendee_optout;
-
-		// Get the event this tickets is for
-		$post_id = get_post_meta( $product_id, $this->get_event_key(), true );
-
-		if ( empty( $post_id ) ) {
-			return false;
-		}
-
-		/** @var Tribe__Tickets__Ticket_Object $ticket_type */
-		$ticket_type = $this->get_ticket( $post_id, $product_id );
-
-		if ( ! $ticket_type instanceof Tribe__Tickets__Ticket_Object ) {
-			return false;
-		}
 
 		// get the RSVP status `decrease_stock_by` value
 		$status_stock_size     = $rsvp_options[ $attendee_order_status ]['decrease_stock_by'];
@@ -2601,7 +2610,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				tribe_exit();
 			}
 
-			return false;
+			return new WP_Error( 'rsvp-invalid-stock-request', __( 'Requested amount of Tickets are not available!', 'event-tickets' ) );
 		}
 
 		/**
@@ -2631,7 +2640,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				$attendee_ids[] = $this->create_attendee_for_ticket( $ticket_type, $attendee_data );
 			} catch ( Exception $exception ) {
 				// Stop processing and return false.
-				return false;
+				return new WP_Error( 'rsvp-invalid-stock-request', $exception->getMessage() );
 			}
 		}
 

@@ -36,3 +36,14 @@ function tec_tickets_commerce_currency_code() {
 function tec_tickets_commerce_currency_symbol() {
 	return Currency::get_currency_symbol( tec_tickets_commerce_currency_code() );
 }
+
+/**
+ * Returns the Tickets Commerce currency position.
+ *
+ * @since 5.4.2
+ *
+ * @return string String containing the Tickets Commerce currency position. Either `prefix` or `postfix`.
+ */
+function tec_tickets_commerce_currency_position() {
+	return Currency::get_currency_symbol_position( tec_tickets_commerce_currency_code() );
+}

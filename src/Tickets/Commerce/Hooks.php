@@ -226,7 +226,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 */
 	public function maybe_trigger_process_action() {
 		$page = tribe_get_request_var( 'page' );
-		if ( \Tribe__Settings::instance()->adminSlug !== $page ) {
+		if ( \Tribe\Tickets\Admin\Settings::$settings_page_id !== $page ) {
 			return;
 		}
 

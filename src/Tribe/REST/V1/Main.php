@@ -13,7 +13,7 @@ class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 	/**
 	 * Event Tickets REST API URL prefix.
 	 *
-	 * This prefx is appended to the Modern Tribe REST API URL ones.
+	 * This prefix is appended to the `The Events Calendar` REST API URL ones.
 	 *
 	 * @var string
 	 */
@@ -22,13 +22,12 @@ class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 	/**
 	 * @var array
 	 */
-	protected $registered_endpoints = array();
+	protected $registered_endpoints = [];
 
 	/**
 	 * Hooks the filters and actions required for the REST API support to kick in.
 	 *
 	 * @since 4.7.5
-	 *
 	 */
 	public function hook() {
 		$this->hook_headers();
@@ -41,6 +40,95 @@ class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 			return;
 		}
 
+		// Add support for `ticketed` param on tribe_events filter on REST API.
+		add_filter( 'tribe_events_archive_get_args', [ $this, 'parse_events_rest_args' ], 10, 3 );
+
+		add_filter( 'tribe_rest_event_data', [ $this, 'rest_event_data_add_attendance' ], 10, 2 );
+		add_filter( 'tribe_rest_events_archive_data', [ $this, 'rest_events_archive_add_attendance' ], 10, 2 );
+	}
+
+	/**
+	 * Filters the data that will be returned for the events endpoint, adding attendance.
+	 *
+	 * @since 5.5.2
+	 *
+	 * @param array           $data    The retrieved data.
+	 * @param WP_REST_Request $request The original request.
+	 *
+	 * @return array          $data    The retrieved data, updated with attendance if the request has access.
+	 */
+	public function rest_events_archive_add_attendance( $data, $request ) : array {
+
+		if ( ! $this->request_has_manage_access() ) {
+			return $data;
+		}
+
+		if ( empty( $data['events'] ) ) {
+			return $data;
+		}
+
+		foreach ( $data['events'] as $event ) {
+			$event_id       = is_array( $event ) ? $event['id'] : $event->id;
+			$attendee_count = Tribe__Tickets__Tickets::get_event_attendees_count( $event_id );
+			$checked_in     = Tribe__Tickets__Tickets::get_event_checkedin_attendees_count( $event_id );
+
+			$event['attendance'] = [
+				'total_attendees' => $attendee_count,
+				'checked_in'      => $checked_in,
+				'not_checked_in'  => $attendee_count - $checked_in,
+			];
+
+		}
+
+		return $data;
+	}
+
+	/**
+	 * Filters the data that will be returned for a single event, adding attendance.
+	 *
+	 * @since 5.5.2
+	 *
+	 * @param array   $data  The data that will be returned in the response.
+	 * @param WP_Post $event The requested event.
+	 *
+	 * @return array  $data  The retrieved data, updated with attendance if the request has access.
+	 */
+	public function rest_event_data_add_attendance( $data, $event ) : array {
+
+		if ( ! $this->request_has_manage_access() ) {
+			return $data;
+		}
+
+		$post_id        = $event->ID;
+		$attendee_count = Tribe__Tickets__Tickets::get_event_attendees_count( $post_id );
+		$checked_in     = Tribe__Tickets__Tickets::get_event_checkedin_attendees_count( $post_id );
+
+		$data['attendance'] = [
+			'total_attendees' => $attendee_count,
+			'checked_in'      => $checked_in,
+			'not_checked_in'  => $attendee_count - $checked_in,
+		];
+
+		return $data;
+	}
+
+	/**
+	 * Filter the args for Event Query over REST API.
+	 *
+	 * @since 5.5.0
+	 *
+	 * @param array           $args Arguments used to get the events from the archive page.
+	 * @param array           $data Array with the data to be returned to the REST response.
+	 * @param WP_REST_Request $request The request object.
+	 *
+	 * @return mixed
+	 */
+	public function parse_events_rest_args( $args, $data, $request ) {
+		if ( isset( $request['ticketed'] ) ) {
+			$args['has_rsvp_or_tickets'] = tribe_is_truthy( $request['ticketed'] );
+		}
+
+		return $args;
 	}
 
 	/**
@@ -123,7 +211,6 @@ class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 		return 'v1';
 	}
 
-
 	/**
 	 * Returns the REST API URL prefix that will be appended to the namespace.
 	 *
@@ -135,6 +222,62 @@ class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 	 */
 	protected function url_prefix() {
 		return $this->url_prefix;
+	}
+
+	/**
+	 * Return if the request has access to private information.
+	 *
+	 * @since 5.5.0
+	 *
+	 * @return bool True if the request has access to private information, false otherwise.
+	 */
+	public function request_has_manage_access() : bool {
+		return $this->user_has_manage_access() || $this->request_has_valid_api_key();
+	}
+
+	/**
+	 * Return if the user has manage access.
+	 *
+	 * @since 5.5.0
+	 *
+	 * @return bool True if the user has manage access, false otherwise.
+	 */
+	public function user_has_manage_access() : bool {
+		return current_user_can( 'edit_users' ) || current_user_can( 'tribe_manage_attendees' );
+	}
+
+	/**
+	 * Return if user can read private information.
+	 *
+	 * @since 5.5.0
+	 *
+	 * @return bool True if user can read private information, false otherwise.
+	 */
+	public function user_has_read_private_posts_access() : bool {
+		return current_user_can( 'read_private_posts' );
+	}
+
+	/**
+	 * Return if the request has a valid api key.
+	 *
+	 * @since 5.5.0
+	 *
+	 * @return bool True if the request has a valid api key, false otherwise.
+	 */
+	public function request_has_valid_api_key() : bool {
+		$option = tribe_get_option( 'tickets-plus-qr-options-api-key', '' );
+
+		if ( empty( $option ) ) {
+			return false;
+		}
+
+		$request_var = tribe_get_request_var( 'api_key' );
+
+		if ( empty( $request_var ) || $option !== $request_var ) {
+			return false;
+		}
+
+		return true;
 	}
 
 }

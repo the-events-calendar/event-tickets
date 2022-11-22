@@ -33,7 +33,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	/**
 	 * The document element
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @type {jQuery|HTMLElement}
 	 */
@@ -69,7 +69,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	/**
 	 * Flag to check if the current error is generic or not.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 *
 	 * @type {boolean}
 	 */
@@ -95,6 +95,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 			nameField: '#tec-tc-card-holder-name',
 			expirationField: '#tec-tc-expiration-date',
 		},
+		hiddenElement: '.tribe-common-a11y-hidden',
 	};
 
 	/**
@@ -242,6 +243,46 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	};
 
 	/**
+	 * Handles checking if a purchase was really successful or was late-declined.
+	 *
+	 * @since 5.4.0.2
+	 *
+	 * @param {Object} data PayPal data passed to this method.
+	 * @param {Object} actions PayPal actions available on approve.
+	 * @param {jQuery} $container jQuery object of the tickets container.
+	 *
+	 * @return {void}
+	 */
+	obj.handleCheckSuccess = function ( data, actions, $container ) {
+		tribe.tickets.debug.log( 'handleCheckSuccess', arguments );
+
+		const body = {
+			'recheck': true
+		};
+
+		return fetch(
+			obj.orderEndpointUrl + '/' + data.order_id,
+			{
+				method: 'POST',
+				headers: {
+					'X-WP-Nonce': $container.find( tribe.tickets.commerce.selectors.nonce ).val(),
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify( body ),
+			}
+		)
+			.then( response => response.json() )
+			.then( data => {
+				if ( data.success ) {
+					return obj.handleApproveSuccess( data, actions, $container );
+				} else {
+					return obj.handleApproveFail( data, actions, $container );
+				}
+			} )
+			.catch( obj.handleApproveError );
+	};
+
+	/**
 	 * Handles the Approval of the orders via PayPal.
 	 *
 	 * @since 5.1.9
@@ -277,7 +318,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 			.then( response => response.json() )
 			.then( data => {
 				if ( data.success ) {
-					return obj.handleApproveSuccess( data, actions, $container );
+					return obj.handleCheckSuccess( data, actions, $container );
 				} else {
 					return obj.handleApproveFail( data, actions, $container );
 				}
@@ -321,6 +362,8 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 			} else {
 				obj.showNotice( $container, '', data.message );
 			}
+		} else {
+			obj.showNotice( $container, '', data.message );
 		}
 
 		tribe.tickets.loader.hide( $container );
@@ -562,7 +605,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 
 		const $script = $( obj.selectors.checkoutScript );
 		const $paypalGateway = $( obj.selectors.paypalGatewayContainer );
-		
+
 		// Check to see if PayPal gateway is present.
 		if ( $paypalGateway.length === 0 ) {
 			$document.trigger( tribe.tickets.commerce.customEvents.hideLoader );
@@ -608,11 +651,11 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	obj.setupAdvancedPayments = ( event, $container ) => {
 		// If this returns false or the card fields aren't visible, see Step #1.
 		if ( ! paypal.HostedFields.isEligible() ) {
-			// Hides card fields if the merchant isn't eligible
-			$container.find( obj.selectors.advancedPayments.form ).hide();
-
+			// Card fields aren't shown if the merchant isn't eligible.
 			return;
 		}
+
+		$container.find( obj.selectors.advancedPayments.container ).removeClass( obj.selectors.hiddenElement.className() );
 
 		/**
 		 * See references on how to use:
@@ -780,7 +823,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 			.then( data => {
 				tribe.tickets.debug.log( data );
 				if ( data.success ) {
-					return obj.handleHostedApproveSuccess( data, actions, $container );
+					return obj.handleCheckSuccess( data, actions, $container );
 				} else {
 					return obj.handleHostedApproveFail( data, actions, $container );
 				}

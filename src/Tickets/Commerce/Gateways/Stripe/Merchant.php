@@ -21,6 +21,8 @@ class Merchant extends Abstract_Merchant {
 	 */
 	const UNAUTHORIZED_COUNTRIES = [
 		'BR',
+		'IN',
+		'MX',
 	];
 
 	/**

@@ -4,15 +4,16 @@
  * Commerce Fields TPP
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/tickets/commerce/fields/tpp.php
+ * [your-theme]/tribe/tickets/v2/tickets/commerce/fields/tribe-commerce.php
  *
  * See more documentation about our views templating system.
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   5.0.3
+ * @since 5.0.3
+ * @since 5.3.4 Fixed template override path.
  *
- * @version 5.0.3
+ * @version 5.3.4
  *
  * @var Tribe__Tickets__Editor__Template   $this                        [Global] Template object.
  * @var Tribe__Tickets__Tickets            $provider                    [Global] The tickets provider class.
