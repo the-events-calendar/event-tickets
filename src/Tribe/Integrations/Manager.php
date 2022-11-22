@@ -42,15 +42,25 @@ class Tribe__Tickets__Integrations__Manager {
 	 * @since 4.11.5
 	 */
 	public function load_integrations() {
-		$this->load_freemius();
+		tribe_singleton( 'tickets.integrations.freemius', Tribe__Tickets__Integrations__Freemius::class, [ 'setup' ] );
+		$this->hook();
 	}
 
 	/**
-	 * Loads our Freemius integration
+	 * Loads our Freemius integration.
 	 *
 	 * @since 4.11.5
 	 */
-	private function load_freemius() {
-		tribe_singleton( 'tickets.integrations.freemius', new Tribe__Tickets__Integrations__Freemius );
+	public function load_freemius() {
+		tribe( 'tickets.integrations.freemius' );
+	}
+
+	/**
+	 * Hooks for the integrations manager.
+	 *
+	 * @since 5.4.1
+	 */
+	public function hook() {
+		add_action( 'init', [ $this, 'load_freemius' ], 15 );
 	}
 }

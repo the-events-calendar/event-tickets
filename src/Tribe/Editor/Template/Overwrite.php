@@ -94,6 +94,11 @@ class Tribe__Tickets__Editor__Template__Overwrite {
 	public function has_classic_editor( $post_id ) {
 		$is_event = function_exists( 'tribe_is_event' ) && tribe_is_event( $post_id );
 
+		// If not an event, just check if it has blocks or not.
+		if ( ! $is_event ) {
+			return ! has_blocks( $post_id );
+		}
+
 		if ( $is_event && $this->has_early_access_to_blocks() ) {
 			return false;
 		}

@@ -1,0 +1,46 @@
+/**
+ * Event Tickets - Admin Styles for Stripe Gateway Webhooks.
+ *
+ * @since 5.3.0
+ */
+#tribe-field-tickets-commerce-stripe-webhooks-value {
+	input {
+		border-bottom-right-radius: 0;
+		border-top-right-radius: 0;
+	}
+
+	.tribe-field-tickets-commerce-stripe-webhooks-copy {
+		border-bottom-left-radius: 0;
+		border-top-left-radius: 0;
+		line-height: 24px;
+		margin-left: -2px;
+		padding-left: 6px;
+		padding-right: 6px;
+
+		span {
+			line-height: 24px;
+		}
+	}
+}
+
+#tribe-field-tickets-commerce-stripe-webhooks-signing-key {
+	.dashicons {
+		&.dashicons-update {
+			animation: rotate 1s infinite;
+		}
+
+		&.dashicons-no {
+			color: var(--tec-color-icon-error);
+		}
+
+		&.dashicons-yes {
+			color: #50b078;
+		}
+	}
+
+	@keyframes rotate {
+		100% {
+			transform: rotate(360deg);
+		}
+	}
+}

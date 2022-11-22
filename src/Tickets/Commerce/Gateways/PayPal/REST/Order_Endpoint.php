@@ -2,29 +2,17 @@
 
 namespace TEC\Tickets\Commerce\Gateways\PayPal\REST;
 
-use tad\WPBrowser\Adapters\WP;
 use TEC\Tickets\Commerce\Cart;
+use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_REST_Endpoint;
 use TEC\Tickets\Commerce\Gateways\PayPal\Gateway;
 use TEC\Tickets\Commerce\Gateways\PayPal\Status;
 use TEC\Tickets\Commerce\Order;
 
 use TEC\Tickets\Commerce\Gateways\PayPal\Client;
-use TEC\Tickets\Commerce\Gateways\PayPal\Merchant;
-use TEC\Tickets\Commerce\Gateways\PayPal\Refresh_Token;
-
-use TEC\Tickets\Commerce\Gateways\PayPal\Signup;
-use TEC\Tickets\Commerce\Gateways\PayPal\WhoDat;
-
-
-use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Status\Denied;
 use TEC\Tickets\Commerce\Status\Pending;
-use TEC\Tickets\Commerce\Status\Completed;
-use TEC\Tickets\Commerce\Status\Created;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Success;
-use Tribe__Documentation__Swagger__Provider_Interface;
-use Tribe__Settings;
 use Tribe__Utils__Array as Arr;
 
 use WP_Error;
@@ -40,7 +28,7 @@ use WP_REST_Server;
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal\REST
  */
-class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interface {
+class Order_Endpoint extends Abstract_REST_Endpoint {
 
 	/**
 	 * The REST API endpoint path.
@@ -97,30 +85,6 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 	}
 
 	/**
-	 * Gets the Endpoint path for the on boarding process.
-	 *
-	 * @since 5.1.9
-	 *
-	 * @return string
-	 */
-	public function get_endpoint_path() {
-		return $this->path;
-	}
-
-	/**
-	 * Get the REST API route URL.
-	 *
-	 * @since 5.1.9
-	 *
-	 * @return string The REST API route URL.
-	 */
-	public function get_route_url() {
-		$namespace = tribe( 'tickets.rest-v1.main' )->get_events_route_namespace();
-
-		return rest_url( '/' . $namespace . $this->get_endpoint_path(), 'https' );
-	}
-
-	/**
 	 * Handles the request that creates an order with Tickets Commerce and the PayPal gateway.
 	 *
 	 * @since 5.1.9
@@ -135,12 +99,18 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 		];
 
 		$messages = $this->get_error_messages();
+		$data = $request->get_json_params();
+		$purchaser = tribe( Order::class )->get_purchaser_data( $data );
 
-		$order = tribe( Order::class )->create_from_cart( tribe( Gateway::class ) );
+		if ( is_wp_error( $purchaser ) ) {
+			return $purchaser;
+		}
+
+		$order = tribe( Order::class )->create_from_cart( tribe( Gateway::class ), $purchaser );
 
 		$unit = [
 			'reference_id' => $order->ID,
-			'value'        => $order->total_value->get_decimal(),
+			'value'        => (string) $order->total_value->get_decimal(),
 			'currency'     => $order->currency,
 			'first_name'   => $order->purchaser['first_name'],
 			'last_name'    => $order->purchaser['last_name'],
@@ -151,9 +121,9 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 			$ticket          = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
 			$unit['items'][] = [
 				'name'        => $ticket->name,
-				'unit_amount' => [ 'value' => $item['price'], 'currency_code' => $order->currency ],
+				'unit_amount' => [ 'value' => (string) $item['price'], 'currency_code' => $order->currency ],
 				'quantity'    => $item['quantity'],
-				'item_total'  => [ 'value' => $item['sub_total'], 'currency_code' => $order->currency ],
+				'item_total'  => [ 'value' => (string) $item['sub_total'], 'currency_code' => $order->currency ],
 				'sku'         => $ticket->sku,
 			];
 		}
@@ -212,6 +182,12 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 			return new WP_Error( 'tec-tc-gateway-paypal-nonexistent-order-id', $messages['nonexistent-order-id'], $order );
 		}
 
+		$recheck = $request->get_param( 'recheck' );
+
+		if ( $recheck ) {
+			return $this->handle_recheck_order( $paypal_order_id, $order );
+		}
+
 		$payer_id = $request->get_param( 'payer_id' );
 
 		$paypal_capture_response = tribe( Client::class )->capture_order( $paypal_order_id, $payer_id );
@@ -232,19 +208,71 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 			return new WP_Error( 'tec-tc-gateway-paypal-failed-capture', $messages['failed-capture'], $paypal_capture_response );
 		}
 
-		$paypal_capture_status = Arr::get( $paypal_capture_response, [ 'status' ] );
-		$status                = tribe( Status::class )->convert_to_commerce_status( $paypal_capture_status );
+		$response['success']  = true;
+		$response['order_id'] = $paypal_order_id;
+
+		return new WP_REST_Response( $response );
+	}
+
+	/**
+	 * Gets the Order object again, in another request, to check for purchases possibly denied after creation.
+	 *
+	 * @since 5.4.0.2
+	 *
+	 * @param string   $order_id The PayPal order ID.
+	 * @param \WP_Post $order    The TC Order object.
+	 *
+	 * @return bool|WP_Error|WP_REST_Response
+	 */
+	public function handle_recheck_order( $order_id, $order ) {
+
+		$paypal_order_response       = tribe( Client::class )->get_order( $order_id );
+		$paypal_order_status         = Arr::get( $paypal_order_response, [ 'status' ] );
+		$paypal_order_purchase_units = Arr::get( $paypal_order_response, [ 'purchase_units' ], [] );
+		$paypal_order_captures       = [];
+		$messages                    = $this->get_error_messages();
+
+		foreach( $paypal_order_purchase_units as $unit ) {
+			if ( ! empty( $unit['payments']['captures'] ) ) {
+				$paypal_order_captures[] = $unit['payments']['captures'];
+			}
+		}
+
+		if ( Status::CREATED === $paypal_order_status && ! empty( $paypal_order_captures ) ) {
+			$paypal_order_captures = array_shift( $paypal_order_captures );
+			if ( count( $paypal_order_captures ) > 1 ) {
+				// Sort the captures array by the update timestamp
+				usort( $paypal_order_captures, function( $a, $b ) {
+					return strtotime( $a['update_time'] ) <=> strtotime( $b['update_time'] );
+				} );
+			}
+
+			foreach( $paypal_order_captures as $capture ) {
+				$paypal_order_status = $capture['status'];
+				$final = $capture['final_capture'] ?? false;
+
+				if ( $final ) {
+					break;
+				}
+			}
+		}
+
+		$status = tribe( Status::class )->convert_to_commerce_status( $paypal_order_status );
 
 		if ( ! $status ) {
-			return new WP_Error( 'tec-tc-gateway-paypal-invalid-capture-status', $messages['invalid-capture-status'], $paypal_capture_response );
+			return new WP_Error( 'tec-tc-gateway-paypal-invalid-capture-status', $messages['invalid-capture-status'], $paypal_order_response );
 		}
 
 		$updated = tribe( Order::class )->modify_status( $order->ID, $status->get_slug(), [
-			'gateway_payload' => $paypal_capture_response,
+			'gateway_payload' => $paypal_order_response,
 		] );
 
 		if ( is_wp_error( $updated ) ) {
 			return $updated;
+		}
+
+		if ( in_array( $paypal_order_status, [ Status::FAILED, Status::DECLINED ], true ) ) {
+			return new WP_Error( 'tec-tc-gateway-paypal-capture-declined', $messages['capture-declined'], $paypal_order_response );
 		}
 
 		$response['success']  = true;
@@ -254,7 +282,7 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 		// When we have success we clear the cart.
 		tribe( Cart::class )->clear_cart();
 
-		$response['redirect_url'] = add_query_arg( [ 'tc-order-id' => $paypal_order_id ], tribe( Success::class )->get_url() );
+		$response['redirect_url'] = add_query_arg( [ 'tc-order-id' => $order_id ], tribe( Success::class )->get_url() );
 
 		return new WP_REST_Response( $response );
 	}
@@ -435,19 +463,6 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 	}
 
 	/**
-	 * {@inheritDoc}
-	 *
-	 * @TODO  We need to make sure Swagger documentation is present.
-	 *
-	 * @since 5.1.9
-	 *
-	 * @return array
-	 */
-	public function get_documentation() {
-		return [];
-	}
-
-	/**
 	 * Returns an array of error messages that are used by the API responses.
 	 *
 	 * @since 5.2.0
@@ -460,6 +475,7 @@ class Order_Endpoint implements Tribe__Documentation__Swagger__Provider_Interfac
 			'canceled-creating-order' => __( 'Your PayPal order was cancelled.', 'event-tickets' ),
 			'nonexistent-order-id'    => __( 'Provided Order id is not valid.', 'event-tickets' ),
 			'failed-capture'          => __( 'There was a problem while processing your payment, please try again.', 'event-tickets' ),
+			'capture-declined'        => __( 'Your payment was declined.', 'event-tickets' ),
 			'invalid-capture-status'  => __( 'There was a problem with the Order status change, please try again.', 'event-tickets' ),
 		];
 

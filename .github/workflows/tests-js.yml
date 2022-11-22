@@ -3,6 +3,7 @@ on:
   pull_request:
     paths:
       - 'src/modules/**.js'
+      - 'src/resources/js/**.js'
 jobs:
   jest:
     runs-on: ubuntu-latest

@@ -101,12 +101,13 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 	 * Check if current admin page is post type `tribe_events`
 	 *
 	 * @since 4.9
+	 * @since 5.5.0 renamed from `current_type_support_tickets`
 	 *
 	 * @param  mixed $post_type
 	 *
 	 * @return bool
 	 */
-	public function current_type_support_tickets( $post_type = null ) {
+	public function current_post_supports_tickets( $post_type = null ) {
 		$post_types = $this->get_enabled_post_types();
 
 		if ( ! is_null( $post_type ) ) {
@@ -114,14 +115,31 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 		}
 
 		$is_valid_type = false;
-		foreach ( $this->get_enabled_post_types() as $post_type ) {
-			$is_valid_type = Tribe__Admin__Helpers::instance()->is_post_type_screen( $post_type );
-			// Don't operate on following types as current type is valid
+		$helper = Tribe__Admin__Helpers::instance();
+
+		foreach ( $this->get_enabled_post_types() as $type ) {
+			$is_valid_type = $helper->is_post_type_screen( $type );
+
 			if ( $is_valid_type ) {
-				return $is_valid_type;
+				break;
 			}
 		}
-		return $is_valid_type;
+
+		if ( ! $is_valid_type ) {
+			return false;
+		}
+
+		global $post_id;
+
+		/**
+		 * Allows overriding the ability of a post to support tickets, as long as the post_type supports tickets.
+		 *
+		 * @since 5.5.0
+		 *
+		 * @param bool $can_have_tickets the post type slug
+		 * @param int  $post_id          the post id
+		 */
+		return apply_filters( 'event_tickets_post_supports_tickets', true, $post_id );
 	}
 
 	/**
@@ -197,7 +215,7 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 	 * @return array
 	 */
 	public function block_categories( $categories ) {
-		if ( ! $this->current_type_support_tickets() ) {
+		if ( ! $this->current_post_supports_tickets() ) {
 			return $categories;
 		}
 

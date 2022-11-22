@@ -33,7 +33,11 @@ class Assets extends tad_DI52_ServiceProvider {
 			$tickets_main,
 			'tribe-tickets-admin-commerce-settings',
 			'admin/tickets-commerce-settings.js',
-			[ 'jquery' ],
+			[ 
+				'jquery',
+				'tribe-dropdowns',
+				'tribe-select2',
+			],
 			'admin_enqueue_scripts'
 		);
 
@@ -85,6 +89,25 @@ class Assets extends tad_DI52_ServiceProvider {
 				'tribe-common',
 			],
 			null
+		);
+
+		tribe_asset(
+			$tickets_main,
+			'tribe-tickets-commerce-base-gateway-checkout-toggler',
+			'commerce/gateway/toggler.js',
+			[],
+			null,
+			[
+				'localize' => [
+					'name' => 'tecTicketsCommerceCheckoutToggleText',
+					'data' => static function () {
+						return [
+							'default'    => __( 'Default checkout', 'event-tickets' ),
+							'additional' => __( 'Additional payment options', 'event-tickets' ),
+						];
+					}
+				]
+			]
 		);
 	}
 }

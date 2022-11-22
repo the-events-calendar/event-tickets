@@ -23,13 +23,6 @@ class Reversed extends Status_Abstract {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function get_name() {
-		return __( 'Reversed', 'event-tickets' );
-	}
-
-	/**
-	 * {@inheritdoc}
-	 */
 	protected $flags = [
 		'warning',
 		'backfill_purchaser',
@@ -45,4 +38,18 @@ class Reversed extends Status_Abstract {
 		'show_in_admin_all_list'    => true,
 		'show_in_admin_status_list' => true,
 	];
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function get_name() {
+		return __( 'Reversed', 'event-tickets' );
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function is_final() {
+		return true;
+	}
 }

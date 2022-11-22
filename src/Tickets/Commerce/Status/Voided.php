@@ -25,13 +25,6 @@ class Voided extends Status_Abstract {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function get_name() {
-		return __( 'Voided', 'event-tickets' );
-	}
-
-	/**
-	 * {@inheritdoc}
-	 */
 	protected $flags = [
 		'backfill_purchaser',
 		'count_refunded',
@@ -47,5 +40,19 @@ class Voided extends Status_Abstract {
 		'show_in_admin_all_list'    => true,
 		'show_in_admin_status_list' => true,
 	];
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function get_name() {
+		return __( 'Voided', 'event-tickets' );
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function is_final() {
+		return true;
+	}
 }
 

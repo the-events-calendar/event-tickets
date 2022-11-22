@@ -2,9 +2,10 @@
 /**
  * The Template for displaying the Tickets Commerce PayPal connection details.
  *
- * @version 5.2.0
+ * @version 5.3.0
  *
- * @since 5.2.0
+ * @since   5.2.0
+ * @since   5.3.0 Using generic CSS classes for gateway instead of PayPal.
  *
  * @var Tribe__Tickets__Admin__Views                  $this               [Global] Template object.
  * @var string                                        $plugin_url         [Global] The plugin URL.
@@ -19,10 +20,10 @@ if ( empty( $is_merchant_connected ) ) {
 }
 ?>
 
-<div class="tec-tickets__admin-settings-tickets-commerce-paypal-connected-actions">
+<div class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-actions">
 	<?php $this->template( 'settings/tickets-commerce/paypal/connect/active/actions/refresh-connection' ); ?>
 
-	<div class="tec-tickets__admin-settings-tickets-commerce-paypal-connected-actions-debug">
+	<div class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-actions-debug">
 		<?php $this->template( 'settings/tickets-commerce/paypal/connect/active/actions/refresh-access-token' ); ?>
 
 		<?php $this->template( 'settings/tickets-commerce/paypal/connect/active/actions/refresh-user-info' ); ?>

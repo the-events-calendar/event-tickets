@@ -2,16 +2,10 @@
 
 namespace TEC\Tickets\Commerce\Gateways\PayPal\REST;
 
+use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_REST_Endpoint;
 use TEC\Tickets\Commerce\Gateways\PayPal\Client;
 use TEC\Tickets\Commerce\Gateways\PayPal\Merchant;
-use TEC\Tickets\Commerce\Gateways\PayPal\REST;
 use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks;
-use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Headers;
-use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Listeners\Payment_Capture_Completed;
-use TEC\Tickets\Commerce\Gateways\PayPal\Webhooks\Validation;
-use Tribe__Documentation__Swagger__Provider_Interface;
-use Tribe__REST__Endpoints__CREATE_Endpoint_Interface;
-use Tribe__Tickets__REST__V1__Endpoints__Base;
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
@@ -23,7 +17,7 @@ use WP_REST_Server;
  * @since   5.1.6
  * @package TEC\Tickets\Commerce\Gateways\PayPal\REST
  */
-class Webhook_Endpoint implements Tribe__Documentation__Swagger__Provider_Interface {
+class Webhook_Endpoint extends Abstract_REST_Endpoint {
 
 	/**
 	 * The REST API endpoint path.
@@ -55,30 +49,6 @@ class Webhook_Endpoint implements Tribe__Documentation__Swagger__Provider_Interf
 		);
 
 		$documentation->register_documentation_provider( $this->get_endpoint_path(), $this );
-	}
-
-	/**
-	 * Gets the Endpoint path for the on boarding process.
-	 *
-	 * @since 5.1.9
-	 *
-	 * @return string
-	 */
-	public function get_endpoint_path() {
-		return $this->path;
-	}
-
-	/**
-	 * Get the REST API route URL.
-	 *
-	 * @since 5.1.9
-	 *
-	 * @return string The REST API route URL.
-	 */
-	public function get_route_url() {
-		$namespace = tribe( 'tickets.rest-v1.main' )->get_events_route_namespace();
-
-		return rest_url( '/' . $namespace . $this->get_endpoint_path(), 'https' );
 	}
 
 	/**

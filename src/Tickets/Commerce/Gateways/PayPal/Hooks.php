@@ -60,9 +60,6 @@ class Hooks extends \tad_DI52_ServiceProvider {
 		add_action( 'tec_tickets_commerce_admin_process_action:paypal-refresh-webhook', [ $this, 'handle_action_refresh_webhook' ] );
 		add_action( 'tec_tickets_commerce_admin_process_action:paypal-resync-connection', [ $this, 'handle_action_refresh_connection' ] );
 
-		add_action( 'tribe_template_after_include:tickets/v2/commerce/checkout/footer', [ $this, 'include_payment_buttons' ], 15, 3 );
-		add_action( 'tribe_template_after_include:tickets/v2/commerce/checkout/footer', [ $this, 'include_advanced_payments' ], 20, 3 );
-		add_action( 'tribe_template_after_include:tickets/v2/commerce/checkout/footer', [ $this, 'include_client_js_sdk_script' ], 30, 3 );
 		add_action( 'wp_ajax_tec_tickets_commerce_gateway_paypal_refresh_connect_url', [ $this, 'ajax_refresh_connect_url' ] );
 		add_action( 'admin_init', [ $this, 'render_ssl_notice' ] );
 
@@ -80,6 +77,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 		add_filter( 'tec_tickets_commerce_success_shortcode_success_page_paypal_template_vars', [ $this, 'include_success_page_vars' ], 10, 2 );
 		add_filter( 'tec_tickets_commerce_notice_messages', [ $this, 'include_admin_notices' ] );
 		add_filter( 'tribe-events-save-options', [ $this, 'flush_transients_when_toggling_sandbox_mode' ] );
+		add_filter( 'tec_tickets_commerce_admin_notices', [ $this, 'filter_admin_notices' ] );
 	}
 
 	/**
@@ -127,46 +125,6 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	}
 
 	/**
-	 * Include the Client JS SDK script into checkout.
-	 *
-	 * @since 5.1.9
-	 *
-	 * @param string           $file     Which file we are loading.
-	 * @param string           $name     Name of file file
-	 * @param \Tribe__Template $template Which Template object is being used.
-	 *
-	 */
-	public function include_client_js_sdk_script( $file, $name, $template ) {
-		echo tribe( Buttons::class )->get_checkout_script();
-	}
-
-	/**
-	 * Include the payment buttons from PayPal into the Checkout page.
-	 *
-	 * @since 5.1.9
-	 *
-	 * @param string           $file     Which file we are loading.
-	 * @param string           $name     Name of file file
-	 * @param \Tribe__Template $template Which Template object is being used.
-	 */
-	public function include_payment_buttons( $file, $name, $template ) {
-		$this->container->make( Buttons::class )->include_payment_buttons( $file, $name, $template );
-	}
-
-	/**
-	 * Include the advanced payment fields from PayPal in the Checkout page.
-	 *
-	 * @since 5.2.0
-	 *
-	 * @param string           $file     Which file we are loading.
-	 * @param string           $name     Name of file file
-	 * @param \Tribe__Template $template Which Template object is being used.
-	 */
-	public function include_advanced_payments( $file, $name, $template ) {
-		$this->container->make( Buttons::class )->include_advanced_payments( $file, $name, $template );
-	}
-
-	/**
 	 * Handles the disconnecting of the merchant.
 	 *
 	 * @since 5.1.9
@@ -183,6 +141,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 			return;
 		}
 
+		Gateway::disable();
 		$notices->trigger_admin( 'tc-paypal-disconnected' );
 	}
 
@@ -309,7 +268,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 		$page = tribe_get_request_var( 'page' );
 		$tab  = tribe_get_request_var( 'tab' );
 
-		if ( \Tribe__Settings::instance()->adminSlug !== $page || 'payments' !== $tab || is_ssl() ) {
+		if ( \Tribe\Tickets\Admin\Settings::$settings_page_id !== $page || 'payments' !== $tab || is_ssl() ) {
 			return;
 		}
 
@@ -368,5 +327,18 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 */
 	public function flush_transients_when_toggling_sandbox_mode( $options ) {
 		return $this->container->make( Signup::class )->maybe_delete_transient_data( $options );
+	}
+
+	/**
+	 * Filter admin notices.
+	 *
+	 * @since 5.3.2
+	 *
+	 * @param array $notices Array of admin notices.
+	 *
+	 * @return array
+	 */
+	public function filter_admin_notices( $notices ) {
+		return $this->container->make( Gateway::class )->filter_admin_notices( $notices );
 	}
 }

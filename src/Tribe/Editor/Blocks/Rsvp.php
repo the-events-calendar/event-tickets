@@ -415,7 +415,7 @@ class Tribe__Tickets__Editor__Blocks__Rsvp extends Tribe__Editor__Blocks__Abstra
 				continue;
 			}
 
-			$has_tickets |= $rsvp->generate_tickets_for( $product_id, $ticket_qty, $attendee_details );
+			$has_tickets = ! is_wp_error( $rsvp->generate_tickets_for( $product_id, $ticket_qty, $attendee_details ) );
 		}
 
 		$order_id              = $attendee_details['order_id'];
