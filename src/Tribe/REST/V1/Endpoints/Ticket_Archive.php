@@ -196,7 +196,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 
 		if ( 0 === $found && 1 === $page ) {
 			$tickets = array();
-		} elseif ( 1 !== $page && $per_page > $total_pages ) {
+		} elseif ( 1 !== $page && $page > $total_pages ) {
 			return new WP_Error( 'invalid-page-number', $this->messages->get_message( 'invalid-page-number' ), array( 'status' => 400 ) );
 		} else {
 			$tickets = $query
