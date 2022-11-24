@@ -48,9 +48,11 @@ class Email_Template {
 	 *
 	 * @return string The HTML of the template.
 	 */
-	public function get_html() {
+	public function get_html( $context = [] ) {
 		$template = $this->get_template();
-		return $template->template( 'email-template', $this->get_context(), false );
+		$context  = wp_parse_args( $context, $this->get_context() );
+
+		return $template->template( 'email-template', $context, false );
 	}
 
 	/**
@@ -140,7 +142,7 @@ class Email_Template {
 				'event_description' => '<h4>Additional Information</h4><p>Age Restriction: 18+<br>Door Time: 8:00PM<br>Event Time: 9:00PM</p>',
 			];
 		}
-		error_log(var_export($this->context_data, true));
+
 		return array_merge( $context, $this->context_data );
 		// return apply_filters( 'tec_tickets_emails_email_template_context', $context );
 	}

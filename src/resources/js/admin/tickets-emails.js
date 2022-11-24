@@ -36,20 +36,12 @@ tribe.tickets.emails = {};
 		modalWrapper: '.tribe-modal__wrapper--emails-preview',
 		modalTitle: '.tribe-modal__title',
 		modalContent: '.tribe-modal__content',
-		formAddAttendeeTicketSelect: '.tribe-tickets__manual-attendees-add-attendee-ticket-select',
 		form: '.tribe-tickets__manual-attendees-form',
 		hiddenElement: '.tribe-common-a11y-hidden',
 		validationNotice: '.tribe-tickets__notice--error',
 		formTicketBgColorName: 'tec-tickets-emails-ticket-bg-color',
 		formHeaderBgColorName: 'tec-tickets-emails-header-bg-color',
 	};
-
-	/**
-	 * Store attendee email to see if it changes on edit.
-	 *
-	 * @since TBD
-	 */
-	obj.attendeeTicketEmail = '';
 
 	/**
 	 * Handler for when the modal is being "closed".
@@ -105,11 +97,6 @@ tribe.tickets.emails = {};
 		const title = $trigger.data( 'modal-title' );
 		const request = 'tec_tickets_preview_email';
 
-		// Get email.
-		// get colors and image.
-		// Get alignment.
-		// $("input[name=name]").val();
-
 		if ( title ) {
 			const $modalTitle = $modal.find( obj.selectors.modalTitle );
 			$modalTitle.html( title );
@@ -117,9 +104,16 @@ tribe.tickets.emails = {};
 
 		// And replace the content.
 		const $modalContent = $modal.find( obj.selectors.modalContent );
-		const data = {
+		const requestData = {
 			action: 'tribe_tickets_admin_manager',
 			request: request,
+		};
+
+		const contextData = obj.getSettingsContext();
+
+		const data = {
+			...requestData,
+			...contextData,
 		};
 
 		tribe.tickets.admin.manager.request( data, $modalContent );
@@ -130,6 +124,32 @@ tribe.tickets.emails = {};
 			{ container: $modalContent, requestData: data },
 			obj.bindModalEvents,
 		);
+	};
+
+	/**
+	 * Get context to send on the request.
+	 *
+	 * @since TBD
+	 * @return {object}
+	 */
+	obj.getSettingsContext = function() {
+		const context = {};
+		// Get email.
+		// get colors and image.
+		// Get alignment.
+
+		// @todo @juanfra: check if the elements are found in the DOM.
+		const ticketBgColor = $document
+			.find( 'input[name=' + obj.selectors.formTicketBgColorName + ']' ).val();
+
+		context.ticketBgColor = ticketBgColor;
+
+		const headerBgColor = $document
+			.find( 'input[name=' + obj.selectors.formHeaderBgColorName + ']' ).val();
+
+		context.headerBgColor = headerBgColor;
+
+		return context;
 	};
 
 	/**

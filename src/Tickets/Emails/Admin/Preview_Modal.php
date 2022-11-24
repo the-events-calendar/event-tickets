@@ -1,6 +1,7 @@
 <?php
 namespace TEC\Tickets\Emails\Admin;
 
+use Tribe__Utils__Array as Arr;
 use TEC\Tickets\Emails\Assets as Assets;
 use TEC\Tickets\Emails\Emails_Tab as Emails_Tab;
 use TEC\Tickets\Emails\Email_Template as Email_Template;
@@ -197,7 +198,21 @@ class Preview_Modal {
 		$email_template = tribe( Email_Template::class );
 		$email_template->set_preview( true );
 
-		$html  = $email_template->get_html();
+		$context = [];
+
+		$ticket_bg_color = Arr::get( $vars, 'ticketBgColor', '' );
+
+		if ( ! empty( $ticket_bg_color ) ) {
+			$context['ticket_bg_color'] = $ticket_bg_color;
+		}
+
+		$header_bg_color = Arr::get( $vars, 'headerBgColor', '' );
+
+		if ( ! empty( $header_bg_color ) ) {
+			$context['header_bg_color'] = $header_bg_color;
+		}
+
+		$html  = $email_template->get_html( $context );
 		$html .= $tickets_template->template( 'v2/components/loader/loader', [], false );
 
 		return $html;
