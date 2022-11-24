@@ -18,5 +18,7 @@ if ( empty( $template ) ) {
 
 ?>
 <div class="tec-tickets__admin-settings-emails-template-list-item-title">
-	<?php echo esc_html( $template['title'] ); ?>
+	<a href="#" class="tec-tickets__admin-settings-emails-template-list-item-title-link">
+		<?php echo esc_html( $template['title'] ); ?>
+	</a>
 </div>

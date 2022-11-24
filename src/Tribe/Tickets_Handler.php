@@ -657,7 +657,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 */
 	public function trigger_shared_cap_sync( $post_id, $ticket, $raw_data ) {
 		$ticket_capacity_data = Tribe__Utils__Array::get( $raw_data, 'tribe-ticket', [] );
-		$ticket_capacity      = Tribe__Utils__Array::get( $ticket_capacity_data, 'capacity', false );
+		$ticket_capacity      = Tribe__Utils__Array::get( $ticket_capacity_data, 'event_capacity', false );
 		$capacity_mode        = Tribe__Utils__Array::get( $ticket_capacity_data, 'mode', false );
 
 		if ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $capacity_mode ) {

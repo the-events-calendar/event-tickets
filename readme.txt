@@ -193,6 +193,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [TBD] TBD =
 
 * Fix - Fixed the order of tickets in an event changing when you haven't manually requested it. [ET-1568]
+* Fix - Fixed shared capacity tickets only showing the lowest capacity between the shared pool tickets. [ETP-815]
 
 = [5.5.4] 2022-11-09 =
 
