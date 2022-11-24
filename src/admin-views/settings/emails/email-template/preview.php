@@ -3,7 +3,7 @@
 
 
 
-?><div style="max-width: 712px; margin-bottom: 20px; border: 1px solid #000">
+?><div style="max-width: 100%;">
 	<?php $this->template( 'email-template/style' ); ?>
 	<?php $this->template( 'email-template/body' ); ?>
 </div>

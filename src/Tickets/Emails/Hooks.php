@@ -45,6 +45,8 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 */
 	protected function add_actions() {
 		add_action( 'tribe_settings_do_tabs', [ $this, 'register_emails_tab' ], 17 );
+		add_action( 'tribe_settings_after_form_element_tab_emails', [ $this, 'action_add_preview_modal_button' ] );
+		add_action( 'admin_footer', [ $this, 'action_add_preview_modal' ] );
 	}
 
 	/**
@@ -57,26 +59,47 @@ class Hooks extends tad_DI52_ServiceProvider {
 		add_filter( 'tec_tickets_emails_settings_fields', [ $this, 'filter_add_template_list' ] );
 		add_filter( 'tec_tickets_emails_settings_fields', [ $this, 'filter_add_sender_info_fields' ] );
 		add_filter( 'tec_tickets_emails_settings_fields', [ $this, 'filter_add_email_styling_fields' ] );
+
+		// Hook the `Tickets Emails` preview for the AJAX requests.
+		add_filter( 'tribe_tickets_admin_manager_request', [ $this, 'filter_add_preview_modal_content' ], 15, 2 );
 	}
 
 	/**
 	 * Action to add emails tab to tickets settings page.
 	 *
 	 * @since TBD
-	 * 
-	 * @param $admin_page Page ID of current admin page.
+	 *
+	 * @param string $admin_page Page ID of current admin page.
 	 */
 	public function register_emails_tab( $admin_page ) {
 		$this->container->make( Emails_Tab::class )->register_tab( $admin_page );
 	}
 
 	/**
+	 * Action to add the preview modal button to the settings page.
+	 *
+	 * @since TBD
+	 */
+	public function action_add_preview_modal_button() {
+		echo $this->container->make( Admin\Preview_modal::class )->get_modal_button();
+	}
+
+	/**
+	 * Action to add the preview modal to the settings page.
+	 *
+	 * @since TBD
+	 */
+	public function action_add_preview_modal() {
+		echo $this->container->make( Admin\Preview_modal::class )->render_modal();
+	}
+
+	/**
 	 * Filter to add tab id to tickets emails tab.
 	 *
 	 * @since TBD
-	 * 
+	 *
 	 * @param  array $tabs Current array of tabs ids.
-	 * 
+	 *
 	 * @return array $tabs Filtered array of tabs ids.
 	 */
 	public function filter_add_tab_id( $tabs ) {
@@ -87,9 +110,9 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * Filter to add template list to Ticklets Emails settings fields.
 	 *
 	 * @since TBD
-	 * 
+	 *
 	 * @param  array $fields Current array of Tickets Emails settings fields.
-	 * 
+	 *
 	 * @return array $fields Filtered array of Tickets Emails settings fields.
 	 */
 	public function filter_add_template_list( $fields ) {
@@ -100,9 +123,9 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * Filter to add sender info to Ticklets Emails settings fields.
 	 *
 	 * @since TBD
-	 * 
+	 *
 	 * @param array $fields Current array of Tickets Emails settings fields.
-	 * 
+	 *
 	 * @return array $fields Filtered array of Tickets Emails settings fields.
 	 */
 	public function filter_add_sender_info_fields( $fields ) {
@@ -113,12 +136,26 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * Filter to add sender info to Ticklets Emails settings fields.
 	 *
 	 * @since TBD
-	 * 
+	 *
 	 * @param array $fields Current array of Tickets Emails settings fields.
-	 * 
+	 *
 	 * @return array $fields Filtered array of Tickets Emails settings fields.
 	 */
 	public function filter_add_email_styling_fields( $fields ) {
 		return $this->container->make( Settings::class )->email_styling_fields( $fields );
+	}
+
+	/**
+	 * Filter the preview modal content.
+	 *
+	 * @since TBD
+	 *
+	 * @param string|\WP_Error $render_response The render response HTML content or WP_Error with list of errors.
+	 * @param array            $vars            The request variables.
+	 *
+	 * @return string $content The response for the preview modal content.
+	 */
+	public function filter_add_preview_modal_content( $render_response, $vars ) {
+		return $this->container->make( Admin\Preview_modal::class )->get_modal_content_ajax( $render_response, $vars );
 	}
 }

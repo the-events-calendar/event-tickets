@@ -1,8 +1,8 @@
 <?php
 
 
-$greeting_text = empty( $recipient_name ) ? 
-	esc_html( 'Here\'s your ticket!', 'event-tickets' ) :
+$greeting_text = empty( $recipient_name ) ?
+	esc_html__( 'Here\'s your ticket!', 'event-tickets' ) :
 	sprintf(
 		// Translators: %s - First name of email recipient.
 		esc_html( 'Here\'s your ticket, %s!' ),
@@ -12,7 +12,7 @@ $greeting_text = empty( $recipient_name ) ?
 ?>
 <tr>
 	<td style="padding:10px 0;">
-		<h1 style="font-size: 28px;font-weight: 700;line-height: 30px;letter-spacing: 0px;text-align: left;">
+		<h1 style="font-size: 28px;font-weight: 700;line-height: 30px;letter-spacing: 0px;text-align:left;color:#141827;">
 			<?php echo $greeting_text; ?>
 		</h1>
 	</td>

@@ -39,6 +39,9 @@ class Provider extends tad_DI52_ServiceProvider {
 		$this->container->singleton( Emails_Tab::class );
 		$this->container->singleton( 'tickets.emails.emails-tab', $this );
 
+		$this->container->singleton( Admin\Preview_Modal::class );
+		$this->container->singleton( 'tickets.emails.admin.preview-modal', $this );
+
 	}
 
 	/**
@@ -63,7 +66,7 @@ class Provider extends tad_DI52_ServiceProvider {
 		$hooks = new Hooks( $this->container );
 		$hooks->register();
 
-		// Allow Hooks to be removed, by having the them registered to the container
+		// Allow Hooks to be removed, by having the them registered to the container.
 		$this->container->singleton( Hooks::class, $hooks );
 		$this->container->singleton( 'tickets.emails.hooks', $hooks );
 	}

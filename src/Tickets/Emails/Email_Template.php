@@ -24,7 +24,7 @@ class Email_Template {
 	private bool $preview = false;
 
 	private Array $context_data = [];
-	
+
 	/**
 	 * Gets the template instance used to setup the rendering html.
 	 *
@@ -68,7 +68,7 @@ class Email_Template {
 	 * @since TBD
 	 *
 	 * @param boolean $is_preview
-	 * 
+	 *
 	 * @return void
 	 */
 	public function set_preview( $is_preview = false ) {
@@ -92,7 +92,7 @@ class Email_Template {
 	 * @since TBD
 	 *
 	 * @param Array $data
-	 * 
+	 *
 	 * @return void
 	 */
 	public function set_data( Array $data ) {
@@ -112,7 +112,7 @@ class Email_Template {
 			'header_image_url'       => tribe_get_option( Settings::$option_header_image_url, '' ),
 			'header_image_alignment' => tribe_get_option( Settings::$option_header_image_alignment, 'left' ),
 			'header_bg_color'        => tribe_get_option( Settings::$option_header_bg_color, '#ffffff' ),
-			'ticket_bg_color'        => tribe_get_option( Settings::$option_ticket_bg_color, '#ffffff' ),
+			'ticket_bg_color'        => tribe_get_option( Settings::$option_ticket_bg_color, '#007363' ),
 			'footer_content'         => tribe_get_option( Settings::$option_footer_content, '' ),
 			'footer_credit'          => tribe_get_option( Settings::$option_footer_credit, true ),
 		];
@@ -151,7 +151,7 @@ class Email_Template {
 	 * @since TBD
 	 *
 	 * @param string $hexColor 6-character hexidecimal color code, including hash.
-	 * 
+	 *
 	 * @return string Contrasting 6-character hexidecimal color code.
 	 */
 	private function get_contrast_color( $hexColor ) {
@@ -185,7 +185,7 @@ class Email_Template {
 		// If contrast is more than 5, return black color
 		if ($contrastRatio > 5) {
 			return '#000000';
-		} else { 
+		} else {
 			// if not, return white color.
 			return '#FFFFFF';
 		}

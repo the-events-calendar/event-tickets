@@ -35,8 +35,8 @@ class Emails_Tab {
 	 * Create the Tickets Commerce Emails Settings Tab.
 	 *
 	 * @since  TBD
-	 * 
-	 * @param $admin_page Page ID of current admin page.
+	 *
+	 * @param string $admin_page Page ID of current admin page.
 	 */
 	public function register_tab( $admin_page ) {
 		if ( ! empty( $admin_page ) && Plugin_Settings::$settings_page_id !== $admin_page ) {
@@ -102,6 +102,21 @@ class Emails_Tab {
 
 		// Use the settings page get_url to build the URL.
 		return tribe( Plugin_Settings::class )->get_url( $args );
+	}
+
+	/**
+	 * Determine if is on "tab".
+	 *
+	 * @since TBD
+	 *
+	 * @return boolean True when on `emails` tab.
+	 */
+	public function is_on_tab(): bool {
+		$admin_pages  = tribe( 'admin.pages' );
+		$current_page = $admin_pages->get_current_page();
+		$current_tab  = tribe_get_request_var( 'tab' );
+
+		return $admin_pages->is_tec_page( $current_page ) && self::$slug === $current_tab;
 	}
 
 	/**

@@ -17,7 +17,7 @@ if ( empty( $footer_content ) && ! tribe_is_truthy( $footer_credit ) ) {
 			<?php endif; ?>
 			<?php if ( tribe_is_truthy( $footer_credit ) ) : ?>
 				<tr>
-					<td style="padding:10px 0px 0px 0px;text-align:right;color:<?php echo $header_text_color; ?>;" align="right">
+					<td style="padding:10px 0px 0px 0px;text-align:right;font-size:11px;color:<?php echo $header_text_color; ?>;" align="right">
 						Ticket powered by <a href="#" style="color:<?php echo $header_text_color; ?>;">Event Tickets</a>
 					</td>
 				</tr>
