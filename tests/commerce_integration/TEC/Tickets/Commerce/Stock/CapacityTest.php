@@ -48,7 +48,15 @@ class CapacityTest extends \Codeception\TestCase\WPTestCase {
 		$cart = new Cart();
 		$cart->get_repository()->add_item( $ticket_a_id, 5 );
 
-		$order     = tribe( Order::class )->create_from_cart( tribe( Gateway::class ) );
+		$purchaser = [
+			'purchaser_user_id'    => 0,
+			'purchaser_full_name'  => 'Test Purchaser',
+			'purchaser_first_name' => 'Test',
+			'purchaser_last_name'  => 'Purchaser',
+			'purchaser_email'      => 'test@test.com',
+		];
+
+		$order     = tribe( Order::class )->create_from_cart( tribe( Gateway::class ), $purchaser );
 		$completed = tribe( Order::class )->modify_status( $order->ID, Pending::SLUG );
 
 		// refresh ticket.
