@@ -109,11 +109,11 @@ class Settings {
 
 	/**
 	 * Adds list of Templates to the Tickets Emails settings tab.
-	 * 
+	 *
 	 * @since TBD
-	 * 
+	 *
 	 * @param  array $fields Current array of Tickets Emails settings fields.
-	 * 
+	 *
 	 * @return array $fields Filtered array of Tickets Emails settings fields.
 	 */
 	public function add_template_list( array $fields ): array {
@@ -165,11 +165,11 @@ class Settings {
 
 	/**
 	 * Adds Sender Info fields to Tickets Emails settings.
-	 * 
+	 *
 	 * @since TBD
 	 *
 	 * @param  [] $fields Current array of Tickets Emails settings fields.
-	 * 
+	 *
 	 * @return [] $fields Filtered array of Tickets Emails settings fields.
 	 */
 	public function sender_info_fields( array $fields ): array {
@@ -214,9 +214,9 @@ class Settings {
 
 	/**
 	 * Get sender name.
-	 * 
+	 *
 	 * @since TBD
-	 * 
+	 *
 	 * @return string Sender's name.
 	 */
 	public function get_sender_name(): string {
@@ -232,9 +232,9 @@ class Settings {
 
 	/**
 	 * Get sender email.
-	 * 
+	 *
 	 * @since TBD
-	 * 
+	 *
 	 * @return string Sender's email address.
 	 */
 	public function get_sender_email(): string {
@@ -250,11 +250,11 @@ class Settings {
 
 	/**
 	 * Adds Sender Info fields to Tickets Emails settings.
-	 * 
+	 *
 	 * @since TBD
 	 *
 	 * @param  [] $fields Current array of Tickets Emails settings fields.
-	 * 
+	 *
 	 * @return [] $fields Filtered array of Tickets Emails settings fields.
 	 */
 	public function email_styling_fields( array $fields ): array {
@@ -299,17 +299,17 @@ class Settings {
 				'type'                => 'color',
 				'label'               => esc_html__( 'Ticket Color', 'event-tickets' ),
 				'size'                => 'medium',
-				'default'             => '#ffffff',
+				'default'             => '#007363',
 				'validation_callback' => 'is_string',
 				'validation_type'     => 'color',
 			],
 			static::$option_footer_content  => [
-				'type'                => 'wysiwyg',
-				'label'               => esc_html__( 'Footer Content', 'event-tickets' ),
-				'tooltip'             => esc_html__( 'Add custom links and instructions to the bottom of your emails.', 'event-tickets' ),
-				'default'             => '',
-				'validation_type'     => 'html',
-				'settings'            => [
+				'type'            => 'wysiwyg',
+				'label'           => esc_html__( 'Footer Content', 'event-tickets' ),
+				'tooltip'         => esc_html__( 'Add custom links and instructions to the bottom of your emails.', 'event-tickets' ),
+				'default'         => '',
+				'validation_type' => 'html',
+				'settings'        => [
 					'media_buttons' => false,
 					'quicktags'     => false,
 					'editor_height' => 200,
@@ -322,7 +322,7 @@ class Settings {
 						'aligncenter',
 						'alignright',
 					],
-				]
+				],
 			],
 			static::$option_footer_credit => [
 				'type'            => 'checkbox_bool',
