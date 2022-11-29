@@ -130,6 +130,7 @@ tribe.tickets.commerce.gateway.stripe.webhooks = {};
 		} else {
 			$statusIcon.removeClass( [ 'dashicons-update' ] ).addClass( 'dashicons-no' );
 			$statusLabel.text( response.data.status );
+			alert( response.data.status );
 			$field.val( '' );
 		}
 
