@@ -112,11 +112,20 @@ class Webhooks extends Abstract_Webhooks {
 		tribe_unset_var( \Tribe__Settings_Manager::OPTION_CACHE_VAR_NAME );
 
 		$is_valid = tribe_get_option( static::$option_is_valid_webhooks, false );
-		if ( $is_valid ) {
-			$status = esc_html__( 'Webhooks were properly validated for sales.', 'event-tickets' );
-		} else {
+		$status   = esc_html__( 'Webhooks were properly validated for sales.', 'event-tickets' );
+
+		if ( ! $is_valid ) {
 			// Reset saved signing key.
 			tribe_update_option( static::$option_webhooks_signing_key, '' );
+
+			// default status message.
+			$status = __( 'Something went wrong! Webhook was not validated from Stripe.', 'event-tickets' );
+
+			if ( isset( $response['errors'] ) ) {
+				$error_code = $response['errors'][0][0] ?? '';
+				$error_msg  = $response['errors'][0][1] ?? '';
+				$status     = $error_code . ' - ' . $error_msg;
+			}
 		}
 
 		wp_send_json_success( [ 'is_valid_webhook' => $is_valid, 'updated' => $updated, 'status' => $status ] );
