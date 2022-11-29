@@ -929,10 +929,19 @@ class Merchant extends Abstract_Merchant {
 	 */
 	public function validate_locale( string $locale ) : string {
 		// check if the length is valid.
-		if ( 5 !== strlen( $locale ) ) {
-			return 'en_US';
+		if ( 5 === strlen( $locale ) ) {
+			return $locale;
 		}
 
-		return $locale;
+		$fallback_locale = 'en_US';
+
+		/**
+		 * Allows filtering of the fallback locale value for the PayPal SDK if the existing is invalid.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $fallback_locale
+		 */
+		return apply_filters( 'tec_tickets_commerce_gateway_paypal_locale_fallback_default', $fallback_locale );
 	}
 }
