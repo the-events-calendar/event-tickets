@@ -57,19 +57,17 @@ class Payment_Intent {
 	 */
 	public static function test_creation( $payment_methods, $retry = false ) {
 		// Payment Intents for cards only are always valid.
-		if ( 1 === count( $payment_methods ) && in_array( 'card', $payment_methods, true ) ) {
+		if ( 1 === count( $payment_methods ) && in_array( 'card', $payment_methods, true ) && ! defined( 'DOING_AJAX' ) ) {
 			return true;
 		}
 
 		$value = Value::create( static::get_charge_amount() );
-		$fee   = Application_Fee::calculate( $value );
 
 		$query_args = [];
 		$body       = [
 			'currency'               => $value->get_currency_code(),
 			'amount'                 => (string) $value->get_integer(),
 			'payment_method_types'   => $payment_methods,
-			'application_fee_amount' => (string) $fee->get_integer(),
 			'metadata'               => [
 				static::$test_metadata_key      => true,
 				static::$tc_metadata_identifier => true,

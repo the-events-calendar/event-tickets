@@ -79,7 +79,7 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 		$response = new WP_REST_Response( null, 200 );
 
 		// Flag that the webhooks are working as expected.
-		tribe_update_option( Webhooks::$option_is_valid_webhooks, true );
+		tribe_update_option( Webhooks::$option_is_valid_webhooks, md5( tribe_get_option( Webhooks::$option_webhooks_signing_key ) ) );
 
 		// After this point we are ready to do individual modifications based on the Webhook value.
 		return Webhooks\Handler::process_webhook_response( $request, $response );

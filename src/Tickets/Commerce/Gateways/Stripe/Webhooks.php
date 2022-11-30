@@ -83,40 +83,25 @@ class Webhooks extends Abstract_Webhooks {
 		}
 
 		$signing_key = tribe_get_request_var( 'signing_key' );
-		$updated     = tribe_update_option( static::$option_webhooks_signing_key, $signing_key );
 
-		if ( empty( $signing_key ) ) {
-			// If we updated and the value was empty we need to reset the validity of the key.
-			if ( $updated ) {
-				tribe_update_option( static::$option_is_valid_webhooks, false );
-			}
+		$previous_key = tribe_get_option( static::$option_webhooks_signing_key, false );
+		tribe_update_option( static::$option_webhooks_signing_key, $signing_key );
+		$test_update = Payment_Intent::test_creation( ['card'] );
 
-			wp_send_json_error( [ 'updated' => $updated, 'status' => $status ] );
-			exit;
-		}
+		sleep(10);
 
-		$account_data_update = [
-			'metadata' => [
-				'tec_tc_enabled_webhooks' => 1,
-			],
-		];
+		$valid_key = tribe_get_option( static::$option_is_valid_webhooks, false );
 
-		// This doesn't work on a Sandbox account, so we might need to add some text about .
-		$response = tribe( Merchant::class )->update( $account_data_update );
-
-		// We sleep for 5 seconds to allow the API to reach the website after the update.
-		sleep( 10 );
-
-		// Reset cache so it fetches from DB again.
-		wp_cache_init();
-		tribe_unset_var( \Tribe__Settings_Manager::OPTION_CACHE_VAR_NAME );
-
-		$is_valid = tribe_get_option( static::$option_is_valid_webhooks, false );
-		if ( $is_valid ) {
+		if ( false === $valid_key ) {
+			$status = esc_html__( 'We have not received any Stripe events yet. You can trigger a new event by making a test purchase.', 'event-tickets' );
+			$is_valid = false;
+		} elseif ( $valid_key === md5( $signing_key ) ) {
 			$status = esc_html__( 'Webhooks were properly validated for sales.', 'event-tickets' );
+			$is_valid = true;
 		} else {
-			// Reset saved signing key.
-			tribe_update_option( static::$option_webhooks_signing_key, '' );
+			$status = esc_html__( 'This key has not been used in the latest events received. If this is a new key, this status will be updated as soon as a new event is received.', 'event-tickets' );
+			$is_valid = false;
+			$updated = true;
 		}
 
 		wp_send_json_success( [ 'is_valid_webhook' => $is_valid, 'updated' => $updated, 'status' => $status ] );
