@@ -82,24 +82,51 @@ class Webhooks extends Abstract_Webhooks {
 			exit;
 		}
 
-		$signing_key = tribe_get_request_var( 'signing_key' );
+		$signing_key    = tribe_get_request_var( 'signing_key' );
+		$stored_key     = tribe_get_option( static::$option_webhooks_signing_key, false );
+		$current_status = tribe_get_option( static::$option_is_valid_webhooks, false );
 
-		$previous_key = tribe_get_option( static::$option_webhooks_signing_key, false );
+		if ( $signing_key === $stored_key && $current_status === md5( $signing_key ) ) {
+			$status = esc_html__( 'Webhooks were properly validated for sales.', 'event-tickets' );
+			wp_send_json_success( [ 'is_valid_webhook' => true, 'updated' => false, 'status' => $status ] );
+			exit;
+		}
+
+		// backwards compat
+		if ( $signing_key === $stored_key && true === $current_status ) {
+			$status = esc_html__( 'Webhooks were properly validated for sales.', 'event-tickets' );
+			tribe_update_option( Webhooks::$option_is_valid_webhooks, md5( tribe_get_option( Webhooks::$option_webhooks_signing_key ) ) );
+			wp_send_json_success( [ 'is_valid_webhook' => true, 'updated' => false, 'status' => $status ] );
+			exit;
+		}
+
+		// at this point, either webhooks were not yet validated with the current key, or we're changing keys
+
+		// replace stored key
 		tribe_update_option( static::$option_webhooks_signing_key, $signing_key );
-		$test_update = Payment_Intent::test_creation( ['card'] );
 
-		sleep(10);
+		// create a test payment
+		if ( true !== Payment_Intent::test_creation( ['card'] ) ) {
+			// payment creation failed
+			$status = esc_html__( 'Could not connect to Stripe for validation. Please check your connection configuration.', 'event-tickets' );
+			tribe_update_option( static::$option_webhooks_signing_key, $stored_key );
+			wp_send_json_success( [ 'is_valid_webhook' => false, 'updated' => false, 'status' => $status ] );
+			exit;
+		}
+
+		sleep(20);
+
 
 		$valid_key = tribe_get_option( static::$option_is_valid_webhooks, false );
 
 		if ( false === $valid_key ) {
-			$status = esc_html__( 'We have not received any Stripe events yet. You can trigger a new event by making a test purchase.', 'event-tickets' );
+			$status = esc_html__( 'We have not received any Stripe events yet. Please wait a few seconds and refresh the page.', 'event-tickets' );
 			$is_valid = false;
 		} elseif ( $valid_key === md5( $signing_key ) ) {
 			$status = esc_html__( 'Webhooks were properly validated for sales.', 'event-tickets' );
 			$is_valid = true;
 		} else {
-			$status = esc_html__( 'This key has not been used in the latest events received. If this is a new key, this status will be updated as soon as a new event is received.', 'event-tickets' );
+			$status = esc_html__( 'This key has not been used in the latest events received. If you are setting up a new key, this status will be updated as soon as a new event is received.', 'event-tickets' );
 			$is_valid = false;
 			$updated = true;
 		}
@@ -144,10 +171,6 @@ class Webhooks extends Abstract_Webhooks {
 			$signing_key_tooltip = '<span class="dashicons dashicons-no"></span><span class="tribe-field-tickets-commerce-stripe-webhooks-signing-key-status">' . esc_html__( 'Webhooks not validated yet.', 'event-tickets' ) . '</span>';
 		} else {
 			$signing_key_tooltip = '<span class="dashicons dashicons-yes"></span><span class="tribe-field-tickets-commerce-stripe-webhooks-signing-key-status">' . esc_html__( 'Webhooks were properly validated for sales.', 'event-tickets' ) . '</span>';
-		}
-
-		if ( tribe( Merchant::class )->is_sandbox() ) {
-			$signing_key_tooltip .= '<br /><b>' . esc_html__( 'Webhook validation will not work in Tickets Commerce test mode.', 'event-tickets' ) . '</b>';
 		}
 
 		return [
