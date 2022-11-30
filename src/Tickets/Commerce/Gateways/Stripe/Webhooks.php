@@ -100,10 +100,11 @@ class Webhooks extends Abstract_Webhooks {
 			exit;
 		}
 
-		// at this point, either webhooks were not yet validated with the current key, or we're changing keys
-
+		// at this point, either webhooks were not yet validated with the current key, or we're changing keys so we can start over.
 		// replace stored key
 		tribe_update_option( static::$option_webhooks_signing_key, $signing_key );
+		// wipe success indicator
+		tribe_update_option( Webhooks::$option_is_valid_webhooks, false );
 
 		// create a test payment
 		if ( true !== Payment_Intent::test_creation( ['card'] ) ) {
@@ -126,7 +127,7 @@ class Webhooks extends Abstract_Webhooks {
 			$status = esc_html__( 'Webhooks were properly validated for sales.', 'event-tickets' );
 			$is_valid = true;
 		} else {
-			$status = esc_html__( 'This key has not been used in the latest events received. If you are setting up a new key, this status will be updated as soon as a new event is received.', 'event-tickets' );
+			$status = esc_html__( 'This key has not been used in the latest events received. If you are setting up a new key, this status will be properly updated as soon as a new event is received.', 'event-tickets' );
 			$is_valid = false;
 			$updated = true;
 		}
