@@ -191,8 +191,6 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [TBD] TBD =
 * Fix - Remove need for Platform Controls to verify webhook signatures in Stripe. [ET-1508]
 
-* Fix - Fixes multiple of the same ticket form being on the same page being out of sync. [GTRIA-729]
-
 = [5.5.4] 2022-11-09 =
 
 * Fix - Fixes multiple of the same ticket form being on the same page being out of sync. [GTRIA-729]

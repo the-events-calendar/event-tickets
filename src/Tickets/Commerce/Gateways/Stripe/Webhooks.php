@@ -245,10 +245,10 @@ class Webhooks extends Abstract_Webhooks {
 				'validation_callback' => 'is_string',
 				'validation_type'     => 'textarea',
 				'attributes'          => [
-					'data-ajax-nonce'   => wp_create_nonce( static::$nonce_key_handle_validation ),
-					'data-loading-text' => esc_attr__( 'Validating signing key with Stripe, please wait. This can take up to one minute.', 'event-tickets' ),
-					'data-ajax-action'  => 'tec_tickets_commerce_gateway_stripe_test_webhooks',
-					'data-ajax-action-verify'  => 'tec_tickets_commerce_gateway_stripe_verify_webhooks',
+					'data-ajax-nonce'         => wp_create_nonce( static::$nonce_key_handle_validation ),
+					'data-loading-text'       => esc_attr__( 'Validating signing key with Stripe, please wait. This can take up to one minute.', 'event-tickets' ),
+					'data-ajax-action'        => 'tec_tickets_commerce_gateway_stripe_test_webhooks',
+					'data-ajax-action-verify' => 'tec_tickets_commerce_gateway_stripe_verify_webhooks',
 				],
 			],
 			'tickets-commerce-gateway-settings-group-end-webhook'         => [
