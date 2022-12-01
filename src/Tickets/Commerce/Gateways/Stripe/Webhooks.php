@@ -115,8 +115,8 @@ class Webhooks extends Abstract_Webhooks {
 			exit;
 		}
 
-		sleep(20);
-
+		// Give it some time so Stripe talks back to the site.
+		sleep(10);
 
 		$valid_key = tribe_get_option( static::$option_is_valid_webhooks, false );
 
@@ -133,6 +133,35 @@ class Webhooks extends Abstract_Webhooks {
 		}
 
 		wp_send_json_success( [ 'is_valid_webhook' => $is_valid, 'updated' => $updated, 'status' => $status ] );
+		exit;
+	}
+
+	/**
+	 * Testing the current Signing Key has been verified with success.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function handle_verification(): void {
+		$nonce  = tribe_get_request_var( 'tc_nonce' );
+		$status = esc_html__( 'The signing key appears to be invalid. Please check your webhook configuration in the Stripe Dashboard.', 'event-tickets' );
+
+		if ( ! wp_verify_nonce( $nonce, static::$nonce_key_handle_validation ) ) {
+			wp_send_json_error( [ 'updated' => false, 'status' => $status ] );
+			exit;
+		}
+
+		$stored_key     = tribe_get_option( static::$option_webhooks_signing_key, false );
+		$current_status = tribe_get_option( static::$option_is_valid_webhooks, false );
+
+		if ( $current_status === md5( $stored_key ) ) {
+			$status = esc_html__( 'Webhooks were properly validated for sales.', 'event-tickets' );
+			wp_send_json_success( [ 'is_valid_webhook' => true, 'updated' => false, 'status' => $status ] );
+			exit;
+		}
+
+		wp_send_json_success( [ 'is_valid_webhook' => false, 'updated' => false, 'status' => $status ] );
 		exit;
 	}
 
@@ -217,8 +246,9 @@ class Webhooks extends Abstract_Webhooks {
 				'validation_type'     => 'textarea',
 				'attributes'          => [
 					'data-ajax-nonce'   => wp_create_nonce( static::$nonce_key_handle_validation ),
-					'data-loading-text' => esc_attr__( 'Validating signing key with Stripe, please wait.', 'event-tickets' ),
+					'data-loading-text' => esc_attr__( 'Validating signing key with Stripe, please wait. This can take up to one minute.', 'event-tickets' ),
 					'data-ajax-action'  => 'tec_tickets_commerce_gateway_stripe_test_webhooks',
+					'data-ajax-action-verify'  => 'tec_tickets_commerce_gateway_stripe_verify_webhooks',
 				],
 			],
 			'tickets-commerce-gateway-settings-group-end-webhook'         => [

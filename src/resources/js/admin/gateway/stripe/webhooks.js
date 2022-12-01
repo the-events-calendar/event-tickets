@@ -39,7 +39,7 @@ tribe.tickets.commerce.gateway.stripe = tribe.tickets.commerce.gateway.stripe ||
  */
 tribe.tickets.commerce.gateway.stripe.webhooks = {};
 
-( ( $, obj, ajaxurl ) => {
+(( $, obj, ajaxurl ) => {
 	/**
 	 * Stores the all selectors used on this module.
 	 *
@@ -52,7 +52,7 @@ tribe.tickets.commerce.gateway.stripe.webhooks = {};
 		statusLabel: '.tribe-field-tickets-commerce-stripe-webhooks-signing-key-status',
 		tooltip: '.tooltip',
 		genericDashicon: '.dashicons',
-		saveButton: 'input#tribeSaveSettings',
+		saveButton: 'input#tribeSaveSettings'
 	};
 
 	/**
@@ -83,6 +83,65 @@ tribe.tickets.commerce.gateway.stripe.webhooks = {};
 	};
 
 	/**
+	 * Initiate the process of validating a signing key
+	 *
+	 * @since TBD
+	 *
+	 * @returns {Promise<*>}
+	 */
+	obj.initiateValidation = async ( $field, $icon, $label ) => {
+		const params = new URLSearchParams();
+		params.set( 'signing_key', $field.val() );
+		params.set( 'action', $field.data( 'ajaxAction' ) );
+		params.set( 'tc_nonce', $field.data( 'ajaxNonce' ) );
+
+		const args = {
+			timeout: 30000,
+			body: params,
+			hooks: {
+				beforeRequest: [
+					() => {
+						$label.text( $field.data( 'loadingText' ) );
+						$icon.removeClass( [ 'dashicons-no', 'dashicons-yes' ] )
+							.addClass( 'dashicons-update' );
+					}
+				]
+			}
+		};
+
+		return await tribe.ky.post( ajaxurl, args ).json();
+	};
+
+	/**
+	 * Check if current key has been verified
+	 *
+	 * @since TBD
+	 * @returns {Promise<*>}
+	 */
+	obj.checkValidationSuccess = async ( $field, $icon, $label ) => {
+		const params = new URLSearchParams();
+		params.set( 'signing_key', $field.val() );
+		params.set( 'action', $field.data( 'ajaxActionVerify' ) );
+		params.set( 'tc_nonce', $field.data( 'ajaxNonce' ) );
+
+		const args = {
+			timeout: 30000,
+			body: params,
+			hooks: {
+				beforeRequest: [
+					() => {
+						$label.text( $field.data( 'loadingText' ) );
+						$icon.removeClass( [ 'dashicons-no', 'dashicons-yes' ] )
+							.addClass( 'dashicons-update' );
+					}
+				]
+			}
+		};
+
+		return await tribe.ky.post( ajaxurl, args ).json();
+	};
+
+	/**
 	 * When the signing field changes.
 	 *
 	 * @since 5.3.0
@@ -97,40 +156,28 @@ tribe.tickets.commerce.gateway.stripe.webhooks = {};
 		const $statusLabel = $tooltip.find( obj.selectors.statusLabel );
 		const $saveButton = $( obj.selectors.saveButton );
 
-		const params = new URLSearchParams();
-		params.set( 'signing_key', $field.val() );
-		params.set( 'action', $field.data( 'ajaxAction' ) );
-		params.set( 'tc_nonce', $field.data( 'ajaxNonce' ) );
-
 		$field.prop( 'disabled', true );
 		$saveButton.prop( 'disabled', true );
 
-		const args = {
-			timeout: 30000,
-			body: params,
-			hooks: {
-				beforeRequest: [
-					() => {
-						$statusLabel.text( $field.data( 'loadingText' ) );
-						$statusIcon.removeClass( [ 'dashicons-no', 'dashicons-yes' ] )
-							.addClass( 'dashicons-update' );
-					},
-				],
-			},
-		};
-
-		const response = await tribe.ky.post( ajaxurl, args ).json();
-
-		$field.prop( 'disabled', false );
-		$saveButton.prop( 'disabled', false );
+		let response = await obj.initiateValidation( $field, $statusIcon, $statusLabel );
 
 		if ( response.data.is_valid_webhook ) {
+			// We were able to validate the key in the first request
 			$statusIcon.removeClass( [ 'dashicons-update' ] ).addClass( 'dashicons-yes' );
-			$statusLabel.text( response.data.status );
 		} else {
-			$statusIcon.removeClass( [ 'dashicons-update' ] ).addClass( 'dashicons-no' );
-			$statusLabel.text( response.data.status );
+			// Make a second request to check for success.
+			response = await obj.checkValidationSuccess( $field, $statusIcon, $statusLabel )
+
+			if ( response.data.is_valid_webhook ) {
+				$statusIcon.removeClass( [ 'dashicons-update' ] ).addClass( 'dashicons-yes' );
+			} else {
+				$statusIcon.removeClass( [ 'dashicons-update' ] ).addClass( 'dashicons-no' );
+			}
 		}
+
+		$statusLabel.text( response.data.status );
+		$field.prop( 'disabled', false );
+		$saveButton.prop( 'disabled', false );
 
 		return response;
 	};
@@ -144,4 +191,4 @@ tribe.tickets.commerce.gateway.stripe.webhooks = {};
 	};
 
 	$( document ).ready( obj.ready );
-} )( jQuery, tribe.tickets.commerce.gateway.stripe.webhooks, window.ajaxurl );
+})( jQuery, tribe.tickets.commerce.gateway.stripe.webhooks, window.ajaxurl );
