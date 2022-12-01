@@ -39,7 +39,7 @@ tribe.tickets.commerce.gateway.stripe = tribe.tickets.commerce.gateway.stripe ||
  */
 tribe.tickets.commerce.gateway.stripe.webhooks = {};
 
-(( $, obj, ajaxurl ) => {
+( ( $, obj, ajaxurl ) => {
 	/**
 	 * Stores the all selectors used on this module.
 	 *
@@ -52,7 +52,7 @@ tribe.tickets.commerce.gateway.stripe.webhooks = {};
 		statusLabel: '.tribe-field-tickets-commerce-stripe-webhooks-signing-key-status',
 		tooltip: '.tooltip',
 		genericDashicon: '.dashicons',
-		saveButton: 'input#tribeSaveSettings'
+		saveButton: 'input#tribeSaveSettings',
 	};
 
 	/**
@@ -191,4 +191,4 @@ tribe.tickets.commerce.gateway.stripe.webhooks = {};
 	};
 
 	$( document ).ready( obj.ready );
-})( jQuery, tribe.tickets.commerce.gateway.stripe.webhooks, window.ajaxurl );
+} )( jQuery, tribe.tickets.commerce.gateway.stripe.webhooks, window.ajaxurl );

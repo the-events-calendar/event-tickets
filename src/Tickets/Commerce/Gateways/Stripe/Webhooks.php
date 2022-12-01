@@ -107,7 +107,7 @@ class Webhooks extends Abstract_Webhooks {
 		tribe_update_option( Webhooks::$option_is_valid_webhooks, false );
 
 		// create a test payment
-		if ( true !== Payment_Intent::test_creation( ['card'] ) ) {
+		if ( true !== Payment_Intent::test_creation( [ 'card' ] ) ) {
 			// payment creation failed
 			$status = esc_html__( 'Could not connect to Stripe for validation. Please check your connection configuration.', 'event-tickets' );
 			tribe_update_option( static::$option_webhooks_signing_key, $stored_key );
