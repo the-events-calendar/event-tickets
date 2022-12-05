@@ -86,7 +86,9 @@ tribe.tickets.commerce.gateway.stripe.webhooks = {};
 	 * Initiate the process of validating a signing key
 	 *
 	 * @since TBD
-	 *
+	 * @param $field
+	 * @param $icon
+	 * @param $label
 	 * @returns {Promise<*>}
 	 */
 	obj.initiateValidation = async ( $field, $icon, $label ) => {
@@ -104,9 +106,9 @@ tribe.tickets.commerce.gateway.stripe.webhooks = {};
 						$label.text( $field.data( 'loadingText' ) );
 						$icon.removeClass( [ 'dashicons-no', 'dashicons-yes' ] )
 							.addClass( 'dashicons-update' );
-					}
-				]
-			}
+					},
+				],
+			},
 		};
 
 		return await tribe.ky.post( ajaxurl, args ).json();
@@ -116,6 +118,9 @@ tribe.tickets.commerce.gateway.stripe.webhooks = {};
 	 * Check if current key has been verified
 	 *
 	 * @since TBD
+	 * @param $field
+	 * @param $icon
+	 * @param $label
 	 * @returns {Promise<*>}
 	 */
 	obj.checkValidationSuccess = async ( $field, $icon, $label ) => {
@@ -133,9 +138,9 @@ tribe.tickets.commerce.gateway.stripe.webhooks = {};
 						$label.text( $field.data( 'loadingText' ) );
 						$icon.removeClass( [ 'dashicons-no', 'dashicons-yes' ] )
 							.addClass( 'dashicons-update' );
-					}
-				]
-			}
+					},
+				],
+			},
 		};
 
 		return await tribe.ky.post( ajaxurl, args ).json();
@@ -166,7 +171,7 @@ tribe.tickets.commerce.gateway.stripe.webhooks = {};
 			$statusIcon.removeClass( [ 'dashicons-update' ] ).addClass( 'dashicons-yes' );
 		} else {
 			// Make a second request to check for success.
-			response = await obj.checkValidationSuccess( $field, $statusIcon, $statusLabel )
+			response = await obj.checkValidationSuccess( $field, $statusIcon, $statusLabel );
 
 			if ( response.data.is_valid_webhook ) {
 				$statusIcon.removeClass( [ 'dashicons-update' ] ).addClass( 'dashicons-yes' );
