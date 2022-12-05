@@ -86,10 +86,10 @@ tribe.tickets.commerce.gateway.stripe.webhooks = {};
 	 * Initiate the process of validating a signing key
 	 *
 	 * @since TBD
-	 * @param $field
-	 * @param $icon
-	 * @param $label
-	 * @returns {Promise<*>}
+	 * @param $field the key element
+	 * @param $icon  the icon element
+	 * @param $label the label element
+	 * @returns {Promise<*>} result of the validation request
 	 */
 	obj.initiateValidation = async ( $field, $icon, $label ) => {
 		const params = new URLSearchParams();
@@ -118,10 +118,10 @@ tribe.tickets.commerce.gateway.stripe.webhooks = {};
 	 * Check if current key has been verified
 	 *
 	 * @since TBD
-	 * @param $field
-	 * @param $icon
-	 * @param $label
-	 * @returns {Promise<*>}
+	 * @param $field the key element
+	 * @param $icon  the icon element
+	 * @param $label the label element
+	 * @returns {Promise<*>} result of the verification request
 	 */
 	obj.checkValidationSuccess = async ( $field, $icon, $label ) => {
 		const params = new URLSearchParams();
