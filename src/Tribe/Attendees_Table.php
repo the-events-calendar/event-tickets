@@ -894,7 +894,14 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		];
 
 		$event_id = empty( $_GET['event_id'] ) ? 0 : absint( $_GET['event_id'] );
-
+		/**
+		 * This filter allows retrieval of an event ID to be filtered before being accessed elsewhere.
+		 *
+		 * @since TBD
+		 *
+		 * @param int The event ID to be filtered.
+		 */
+		$event_id = apply_filters( 'tec_tickets_filter_event_id', $event_id );
 		$search = sanitize_text_field( tribe_get_request_var( $this->search_box_input_name ) );
 
 		if ( ! empty( $search ) ) {

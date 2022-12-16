@@ -33,6 +33,14 @@ abstract class Tribe__Tickets__Abstract_Attendance_Totals {
 		} elseif ( isset( $_GET[ 'event_id' ] ) ) {
 			$this->event_id = absint( $_GET[ 'event_id' ] );
 		}
+		/**
+		 * This filter allows retrieval of an event ID to be filtered before being accessed elsewhere.
+		 *
+		 * @since TBD
+		 *
+		 * @param int The event ID to be filtered.
+		 */
+		$this->event_id = apply_filters( 'tec_tickets_filter_event_id', $this->event_id );
 
 		return (bool) $this->event_id;
 	}
