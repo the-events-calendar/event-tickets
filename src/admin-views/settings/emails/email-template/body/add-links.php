@@ -1,6 +1,12 @@
 <?php
+/**
+ * Tickets Emails Email Template 'Add' links
+ *
+ * @since  TBD   Add links for email template that allows recipient to subscribe to events.
+ * 
+ */
 
-
+// @todo Update add links.
 
 ?>
 <tr>
@@ -9,12 +15,12 @@
 			<tr>
 				<td style="padding:30px 10px;text-align:right;width:50%" align="right">
 					<a href="#" style="color:#3C434A">
-						Add event to iCal
+						<?php esc_html_e( 'Add event to iCal', 'event-tickets' ); ?>
 					</a>
 				</td>
 				<td style="padding:30px 10px;text-align:left;width:50%" align="left">
 					<a href="#" style="color:#3C434A">
-						Add event to Google Calendar
+						<?php esc_html_e( 'Add event to Google Calendar', 'event-tickets' ); ?>
 					</a>
 				</td>
 			</tr>

@@ -1,5 +1,12 @@
 <?php
-
+/**
+ * Tickets Emails Email Template Greeting
+ *
+ * @since  TBD   Email template greeting.
+ * 
+ * @var string $recipient_name Email recipient's first name.
+ * 
+ */
 
 $greeting_text = empty( $recipient_name ) ? 
 	esc_html( 'Here\'s your ticket!', 'event-tickets' ) :
