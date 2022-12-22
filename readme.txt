@@ -190,6 +190,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Tweak - Added the `tribe-tickets__tickets-item--shared-capacity` wrapper class for tickets having shared capacity. [ETP-841]
+
 = [5.5.5] 2022-12-08 =
 
 * Fix - Remove need for Platform Controls to verify webhook signatures in Stripe. [ET-1508]
