@@ -1,6 +1,6 @@
 <?php
 /**
- * Handles registering and setup for the Tickets Emails settings tab.
+ * Tickets Emails template object to configure and display the email template.
  *
  * @since TBD
  *
@@ -11,6 +11,7 @@ namespace TEC\Tickets\Emails;
 
 use Tribe__Template;
 use Tribe__Tickets__Main;
+use Tribe__Utils__Color;
 
 /**
  * Class Email_Template
@@ -21,9 +22,23 @@ use Tribe__Tickets__Main;
  */
 class Email_Template {
 
+	/**
+	 * Whether or not this is for a template preview.
+	 * 
+	 * @since TBD
+	 *
+	 * @var boolean
+	 */
 	private bool $preview = false;
 
-	private Array $context_data = [];
+	/**
+	 * Holds context array that will be applied to the template.
+	 * 
+	 * @since TBD
+	 *
+	 * @var array
+	 */
+	private array $context_data = [];
 	
 	/**
 	 * Gets the template instance used to setup the rendering html.
@@ -36,6 +51,7 @@ class Email_Template {
 		if ( empty( $this->template ) ) {
 			$this->template = new Tribe__Template();
 			$this->template->set_template_origin( Tribe__Tickets__Main::instance() );
+			// @todo Move template folder into `src/views/v2` before TE release.
 			$this->template->set_template_folder( 'src/admin-views/settings/emails' );
 			$this->template->set_template_context_extract( true );
 		}
@@ -46,6 +62,8 @@ class Email_Template {
 	/**
 	 * Returns the email template HTML.
 	 *
+	 * @since TBD
+	 *
 	 * @return string The HTML of the template.
 	 */
 	public function get_html() {
@@ -55,6 +73,8 @@ class Email_Template {
 
 	/**
 	 * Prints the email template HTML.
+	 *
+	 * @since TBD
 	 *
 	 * @return void.
 	 */
@@ -91,11 +111,11 @@ class Email_Template {
 	 *
 	 * @since TBD
 	 *
-	 * @param Array $data
+	 * @param array $data
 	 * 
 	 * @return void
 	 */
-	public function set_data( Array $data ) {
+	public function set_data( array $data ) {
 		$this->context_data = $data;
 	}
 
@@ -104,7 +124,7 @@ class Email_Template {
 	 *
 	 * @since TBD
 	 *
-	 * @return Array Template context array.
+	 * @return array Template context array.
 	 */
 	public function get_context() {
 		$context = [
@@ -116,78 +136,51 @@ class Email_Template {
 			'footer_content'         => tribe_get_option( Settings::$option_footer_content, '' ),
 			'footer_credit'          => tribe_get_option( Settings::$option_footer_credit, true ),
 		];
-		$context['header_text_color'] = $this->get_contrast_color( $context['header_bg_color'] );
-		$context['ticket_text_color'] = $this->get_contrast_color( $context['ticket_bg_color'] );
+		$context['header_text_color'] = Tribe__Utils__Color::get_contrast_color( $context['header_bg_color'] );
+		$context['ticket_text_color'] = Tribe__Utils__Color::get_contrast_color( $context['ticket_bg_color'] );
 
 		if ( $this->preview ) {
-			$current_user = wp_get_current_user();
-			$this->context_data = [
-				'recipient_first_name' => $current_user->first_name,
-				'recipient_last_name'  => $current_user->last_name,
-				'date_string'          => esc_html__( 'September 22 @ 7:00 pm - 11:00 pm', 'event-tickets' ),
-				'qr_url'               => esc_url( plugins_url( '/event-tickets/src/resources/images/example-qr.png' ) ),
-				'ticket_name'          => esc_html__( 'General Admission', 'event-tickets' ),
-				'ticket_id'            => '17e4a14cec',
-				'event_title'          => esc_html__( 'Rebirth Brass Band', 'event-tickets' ),
-				'event_image_url'      => esc_url( plugins_url( '/event-tickets/src/resources/images/example-event-image.png' ) ),
-				'event_venue'          => [
-					'name'     => esc_html__( 'Saturn', 'event-tickets' ),
-					'address1' => esc_html__( '200 41st Street South', 'event-tickets' ),
-					'address2' => esc_html__( 'Birmingham, AL, 35222', 'event-tickets' ),
-					'phone'    => esc_html__( '(987) 654-3210', 'event-tickets' ),
-					'website'    => esc_url( get_site_url() ),
-				],
-				'event_description' => '<h4>Additional Information</h4><p>Age Restriction: 18+<br>Door Time: 8:00PM<br>Event Time: 9:00PM</p>',
-			];
+			$this->context_data = $this->get_preview_context_array();
 		}
-		error_log(var_export($this->context_data, true));
-		return array_merge( $context, $this->context_data );
-		// return apply_filters( 'tec_tickets_emails_email_template_context', $context );
+		
+		$this->context_data = apply_filters( 'tec_tickets_emails_email_template_context', array_merge( $context, $this->context_data ) );
+
+		/**
+		 * Allow filtering the contxt array before sending to the email template.
+		 *
+		 * @since TBD
+		 *
+		 * @param array Context array for email template.
+		 */
+		return apply_filters( 'tec_tickets_emails_email_template_context', $this->context_data );
 	}
 
 	/**
-	 * Returns contrasting color (light or dark) based on input color.
+	 * Get the context data in the case of a template preview.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $hexColor 6-character hexidecimal color code, including hash.
-	 * 
-	 * @return string Contrasting 6-character hexidecimal color code.
+	 * @return array Context data.
 	 */
-	private function get_contrast_color( $hexColor ) {
-		// hexColor RGB
-		$R1 = hexdec(substr($hexColor, 1, 2));
-		$G1 = hexdec(substr($hexColor, 3, 2));
-		$B1 = hexdec(substr($hexColor, 5, 2));
-
-		// Black RGB
-		$blackColor = "#000000";
-		$R2BlackColor = hexdec(substr($blackColor, 1, 2));
-		$G2BlackColor = hexdec(substr($blackColor, 3, 2));
-		$B2BlackColor = hexdec(substr($blackColor, 5, 2));
-
-		 // Calc contrast ratio
-		 $L1 = 0.2126 * pow($R1 / 255, 2.2) +
-			   0.7152 * pow($G1 / 255, 2.2) +
-			   0.0722 * pow($B1 / 255, 2.2);
-
-		$L2 = 0.2126 * pow($R2BlackColor / 255, 2.2) +
-			  0.7152 * pow($G2BlackColor / 255, 2.2) +
-			  0.0722 * pow($B2BlackColor / 255, 2.2);
-
-		$contrastRatio = 0;
-		if ($L1 > $L2) {
-			$contrastRatio = (int)(($L1 + 0.05) / ($L2 + 0.05));
-		} else {
-			$contrastRatio = (int)(($L2 + 0.05) / ($L1 + 0.05));
-		}
-
-		// If contrast is more than 5, return black color
-		if ($contrastRatio > 5) {
-			return '#000000';
-		} else { 
-			// if not, return white color.
-			return '#FFFFFF';
-		}
+	private function get_preview_context_array() {
+		$current_user = wp_get_current_user();
+		return [
+			'recipient_first_name' => $current_user->first_name,
+			'recipient_last_name'  => $current_user->last_name,
+			'date_string'          => esc_html__( 'September 22 @ 7:00 pm - 11:00 pm', 'event-tickets' ),
+			'qr_url'               => esc_url( plugins_url( '/event-tickets/src/resources/images/example-qr.png' ) ),
+			'ticket_name'          => esc_html__( 'General Admission', 'event-tickets' ),
+			'ticket_id'            => '17e4a14cec',
+			'event_title'          => esc_html__( 'Rebirth Brass Band', 'event-tickets' ),
+			'event_image_url'      => esc_url( plugins_url( '/event-tickets/src/resources/images/example-event-image.png' ) ),
+			'event_venue'          => [
+				'name'     => esc_html__( 'Saturn', 'event-tickets' ),
+				'address1' => esc_html__( '200 41st Street South', 'event-tickets' ),
+				'address2' => esc_html__( 'Birmingham, AL, 35222', 'event-tickets' ),
+				'phone'    => esc_html__( '(987) 654-3210', 'event-tickets' ),
+				'website'    => esc_url( get_site_url() ),
+			],
+			'event_description' => '<h4>Additional Information</h4><p>Age Restriction: 18+<br>Door Time: 8:00PM<br>Event Time: 9:00PM</p>',
+		];
 	}
 }
