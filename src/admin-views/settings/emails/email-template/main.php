@@ -1,4 +1,14 @@
-<!DOCTYPE html>
+<?php
+/**
+ * Tickets Emails Email Template Main
+ *
+ * @since  TBD   Main email template that goes to recipients' email clients.
+ * 
+ * @var Tribe__Template  $this  Parent template object.
+ * 
+ */
+
+?><!DOCTYPE html>
 	<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office">
 	<head>
 		<meta charset="UTF-8">
