@@ -60,7 +60,7 @@ if ( empty( $event_venue ) || ! is_array( $event_venue ) ) {
 								<img width="24" height="23" style="width:24px;height:23px;display:block;" src="<?php echo plugins_url( '/event-tickets/src/resources/icons/link.svg' ) ?>" />
 							</td>
 							<td style="padding:0;">
-								<a href="<?php echo esc_url( $event_venue['website'] ); ?>" target="_blank">
+								<a href="<?php echo esc_url( $event_venue['website'] ); ?>" target="_blank" rel="noopener noreferrer">
 									<?php echo esc_url( $event_venue['website'] ); ?>
 								</a>
 							</td>
