@@ -33,7 +33,7 @@ if ( empty( $event_venue ) || ! is_array( $event_venue ) ) {
 					<table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;">
 						<tr>
 							<td style="padding:0 25px 0 0;text-align:center;vertical-align:top;width:20px" valign="top" align="center">
-								<img width="20" height="28" style="width:20px;height:28px;display:block;" src="<?php echo plugins_url('/event-tickets/src/resources/icons/map-pin.svg') ?>" />
+								<img width="20" height="28" style="width:20px;height:28px;display:block;" src="<?php echo plugins_url( '/event-tickets/src/resources/icons/map-pin.svg' ) ?>" />
 							</td>
 							<td style="padding:0;text-align:left">
 								<?php echo esc_html( $event_venue['address1'] ); ?><br>
@@ -47,7 +47,7 @@ if ( empty( $event_venue ) || ! is_array( $event_venue ) ) {
 					<table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;margin-bottom:18px">
 						<tr>
 							<td style="padding:0 20px 0 0;text-align:center;vertical-align:top;width:25px" valign="top" align="center">
-								<img width="25" height="24" style="width:25px;height:24px;display:block;" src="<?php echo plugins_url('/event-tickets/src/resources/icons/phone.svg') ?>" />
+								<img width="25" height="24" style="width:25px;height:24px;display:block;" src="<?php echo plugins_url( '/event-tickets/src/resources/icons/phone.svg' ) ?>" />
 							</td>
 							<td style="padding:0;">
 								<?php echo esc_html( $event_venue['phone'] ); ?>
@@ -57,7 +57,7 @@ if ( empty( $event_venue ) || ! is_array( $event_venue ) ) {
 					<table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;">
 						<tr>
 							<td style="padding:0 21px 0 0;text-align:center;vertical-align:top;width:24px" valign="top" align="center">
-								<img width="24" height="23" style="width:24px;height:23px;display:block;" src="<?php echo plugins_url('/event-tickets/src/resources/icons/link.svg') ?>" />
+								<img width="24" height="23" style="width:24px;height:23px;display:block;" src="<?php echo plugins_url( '/event-tickets/src/resources/icons/link.svg' ) ?>" />
 							</td>
 							<td style="padding:0;">
 								<a href="<?php echo esc_url( $event_venue['website'] ); ?>" target="_blank">

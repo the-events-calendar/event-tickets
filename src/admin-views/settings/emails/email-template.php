@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Tickets Emails Email Template
  *
