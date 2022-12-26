@@ -152,7 +152,7 @@ class Orders extends WP_List_Table {
 		$product_ids   = tribe_get_request_var( 'product_ids' );
 		$product_ids   = ! empty( $product_ids ) ? explode( ',', $product_ids ) : null;
 
-		$search    = tribe_get_request_var( 's' );
+		$search    = tribe_get_request_var( $this->search_box_input_name );
 		$page      = absint( tribe_get_request_var( 'paged', 0 ) );
 		$orderby   = tribe_get_request_var( 'orderby' );
 		$order     = tribe_get_request_var( 'order' );
@@ -162,8 +162,42 @@ class Orders extends WP_List_Table {
 			'posts_per_page' => $this->per_page_option,
 		];
 
-		if ( $search ) {
-			$arguments['search'] = $search;
+		if ( ! empty( $search ) ) {
+			$search_keys = array_keys( $this->get_search_options() );
+
+			// Default selection.
+			$search_key  = 'purchaser_full_name';
+			$search_type = sanitize_text_field( tribe_get_request_var( $this->search_type_slug ) );
+
+			if (
+				$search_type
+				&& in_array( $search_type, $search_keys, true )
+			) {
+				$search_key = $search_type;
+			}
+
+			$search_like_keys = [
+				'purchaser_full_name',
+				'purchaser_email',
+			];
+
+			/**
+			 * Filters the item keys that support LIKE matching to filter orders while searching them.
+			 *
+			 * @since TBD
+			 *
+			 * @param array  $search_like_keys The keys that support LIKE matching.
+			 * @param array  $search_keys      The keys that can be used to search orders.
+			 * @param string $search           The current search string.
+			 */
+			$search_like_keys = apply_filters( 'tec_tc_order_search_like_keys', $search_like_keys, $search_keys, $search );
+
+			// Update search key if it supports LIKE matching.
+			if ( in_array( $search_key, $search_like_keys, true ) ) {
+				$search_key .= '__like';
+			}
+
+			$arguments[ $search_key ] = $search;
 		}
 
 		if ( ! empty( $post_id ) ) {
@@ -180,6 +214,15 @@ class Orders extends WP_List_Table {
 		if ( ! empty( $order ) ) {
 			$arguments['order'] = $order;
 		}
+
+		/**
+		 * Filters the arguments used to fetch the orders for the order report.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $arguments The arguments used to fetch the orders.
+		 */
+		$arguments = apply_filters( 'tec_tc_order_report_args', $arguments );
 
 		$orders_repository = tec_tc_orders()->by_args( $arguments );
 
@@ -393,7 +436,7 @@ class Orders extends WP_List_Table {
 			'purchaser_full_name' => __( 'Search by Purchaser Name', 'event-tickets' ),
 			'purchaser_email'     => __( 'Search by Purchaser Email', 'event-tickets' ),
 			'gateway'             => __( 'Search by Gateway', 'event-tickets' ),
-			'gateway_id'          => __( 'Search by Gateway ID', 'event-tickets' ),
+			'gateway_order_id'    => __( 'Search by Gateway ID', 'event-tickets' ),
 			'order_id'            => __( 'Search by Order ID', 'event-tickets' ),
 		];
 
