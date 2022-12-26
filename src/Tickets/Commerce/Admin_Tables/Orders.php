@@ -39,6 +39,14 @@ class Orders extends WP_List_Table {
 	public $post_id;
 
 	/**
+	 * The name (what gets submitted to the server) of our search box input.
+	 *
+	 * @var string $search_box_input_name
+	 */
+	private $search_box_input_name = 'search';
+
+
+	/**
 	 * Orders Table constructor.
 	 *
 	 * @since 5.2.0
@@ -365,4 +373,77 @@ class Orders extends WP_List_Table {
 		];
 	}
 
+	/**
+	 * Get the allowed search types and their labels.
+	 *
+	 * @see \TEC\Tickets\Commerce\Repositories\Order_Repository for a List of valid ORM args.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function get_search_options() {
+		return [
+			'purchaser_full_name' => __( 'Search by Purchaser Name', 'event-tickets' ),
+			'purchaser_email'     => __( 'Search by Purchaser Email', 'event-tickets' ),
+			'gateway'             => __( 'Search by Gateway', 'event-tickets' ),
+			'gateway_id'          => __( 'Search by Gateway ID', 'event-tickets' ),
+			'order_id'            => __( 'Search by Order ID', 'event-tickets' ),
+		];
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function search_box( $text, $input_id ) {
+		// Workaround to show the search box even when no items are found.
+		$old_items   = $this->items;
+		$this->items = [
+			'Temporary',
+		];
+
+		// Get normal search box HTML to override.
+		ob_start();
+		parent::search_box( $text, $input_id );
+		$search_box = ob_get_clean();
+
+		// Assign the custom search name.
+		$search_box = str_replace( 'name="s"', 'name="' . esc_attr( $this->search_box_input_name ) . '"', $search_box );
+		// And get its value upon reloading the page to display its search results so user knows what they searched for.
+		$search_box = str_replace( 'value=""', 'value="' . esc_attr( tribe_get_request_var( $this->search_box_input_name ) ) . '"', $search_box );
+
+		$this->items = $old_items;
+
+		/**
+		 * Filters the search types to be shown in the search box for filtering attendees.
+		 *
+		 * @since 4.10.6
+		 *
+		 * @param array $options List of ORM search types and their labels.
+		 */
+		$options = apply_filters( 'tec_tc_order_search_types', $this->get_search_options() );
+
+		// Default selection.
+		$selected = 'purchaser_full_name';
+
+		$search_type = sanitize_text_field( tribe_get_request_var( 'tec_tc_order_search_type' ) );
+
+		if (
+			$search_type
+			&& array_key_exists( $search_type, $options )
+		) {
+			$selected = $search_type;
+		}
+
+		$template_vars = [
+			'options'  => $options,
+			'selected' => $selected,
+		];
+
+		$custom_search = tribe( \TEC\Tickets\Commerce\Reports\Orders::class )->get_template()->template( 'orders/search-options', $template_vars, false );
+		// Add our search type dropdown before the search box input
+		$search_box = str_replace( '<input type="submit"', $custom_search . '<input type="submit"', $search_box );
+
+		echo $search_box;
+	}
 }
