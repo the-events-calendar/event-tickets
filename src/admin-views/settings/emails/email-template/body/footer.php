@@ -19,8 +19,8 @@ if ( empty( $footer_content ) && ! tribe_is_truthy( $footer_credit ) ) {
 <tr>
 	<td style="padding:0px 20px 10px 20px;border-top:1px solid #efefef;background:<?php echo esc_attr( $header_bg_color ); ?>;">
 		<table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;">
-			<?php $this->template( 'email-template/footer-content' ); ?>
-			<?php $this->template( 'email-template/footer-credit' ); ?>
+			<?php $this->template( 'email-template/body/footer-content' ); ?>
+			<?php $this->template( 'email-template/body/footer-credit' ); ?>
 		</table>
 	</td>
 </tr>
