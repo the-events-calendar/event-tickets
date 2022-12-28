@@ -170,6 +170,15 @@ class Attendees_Repository extends Tribe__Repository {
 	 */
 	protected function clean_post_ids( $posts ) {
 		return array_unique( array_filter( array_map( static function ( $post ) {
+			/**
+			 * This filter allows an event ID to be filtered before being accessed elsewhere.
+			 *
+			 * @since TBD
+			 *
+			 * @param int The event ID to be filtered.
+			 */
+			$post = apply_filters( 'tec_tickets_filter_event_id', $post );
+
 			if ( is_numeric( $post ) ) {
 				return $post;
 			}

@@ -11,6 +11,7 @@ namespace TEC\Tickets\Custom_Tables\V1;
 
 use tad_DI52_ServiceProvider;
 use TEC\Events\Custom_Tables\V1\Migration\State;
+use TEC\Events\Custom_Tables\V1\Models\Occurrence;
 use TEC\Tickets\Custom_Tables\V1\WP_Query\WP_Meta_Query_Modifier;
 use Tribe__Utils__Array as Arr;
 use WP_Query;
@@ -75,12 +76,12 @@ class Provider extends tad_DI52_ServiceProvider {
 	 *
 	 * @since TBD
 	 *
-	 * @param int|mixed $id Event ID to attempt converting to a post ID.
+	 * @param mixed $id Event ID to attempt converting to a post ID.
 	 *
-	 * @return int|mixed The post ID or whatever was passed.
+	 * @return mixed The post ID or whatever was passed.
 	 */
 	public function normalize_event_id( $id ) {
-		return $this->container->make( WP_Meta_Query_Modifier::class )->normalize_id( $id );
+		return Occurrence::normalize_id( $id );
 	}
 
 	/**
