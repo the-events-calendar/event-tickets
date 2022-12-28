@@ -12,7 +12,6 @@ namespace TEC\Tickets\Custom_Tables\V1;
 use tad_DI52_ServiceProvider;
 use TEC\Events\Custom_Tables\V1\Migration\State;
 use TEC\Events\Custom_Tables\V1\Models\Occurrence;
-use TEC\Tickets\Custom_Tables\V1\WP_Query\WP_Meta_Query_Modifier;
 use Tribe__Utils__Array as Arr;
 use WP_Query;
 
@@ -47,27 +46,13 @@ class Provider extends tad_DI52_ServiceProvider {
 
 		$this->lock_for_maintenance();
 
-		$this->container->singleton(WP_Meta_Query_Modifier::class);
-
 		add_filter( 'admin_body_class', [ $this, 'prevent_tickets_on_recurring_events' ] );
 		add_filter( 'body_class', [ $this, 'prevent_tickets_on_recurring_events_front_end' ] );
-		add_filter( 'pre_get_posts', [ $this, 'modify_tickets_meta_query' ] );
 		add_filter( 'tec_tickets_filter_event_id', [ $this, 'normalize_event_id' ] );
 
 		$this->has_registered = true;
 
 		return true;
-	}
-
-	/**
-	 * Modify ticket meta query for Custom Tables.
-	 *
-	 * @since TBD
-	 *
-	 * @param WP_Query $wp_query The WP_Query to inspect and modify for Custom Table queries.
-	 */
-	public function modify_tickets_meta_query( $wp_query ) {
-		$this->container->make( WP_Meta_Query_Modifier::class )->modify_tickets_meta_query( $wp_query );
 	}
 
 	/**
@@ -149,7 +134,6 @@ class Provider extends tad_DI52_ServiceProvider {
 	public function unregister() {
 		remove_filter( 'admin_body_class', [ $this, 'prevent_tickets_on_recurring_events' ] );
 		remove_filter( 'body_class', [ $this, 'prevent_tickets_on_recurring_events_front_end' ] );
-		remove_filter( 'pre_get_posts', [ $this, 'modify_tickets_meta_query' ] );
 		remove_filter( 'tec_tickets_filter_event_id', [ $this, 'normalize_event_id' ] );
 	}
 }
