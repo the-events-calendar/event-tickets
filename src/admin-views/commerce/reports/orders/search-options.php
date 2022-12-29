@@ -1,6 +1,6 @@
 <?php
 /**
- * The template that displays the search type dropdown in the Attendees admin screen.
+ * The template that displays the search type dropdown in the Tickets Commerce Order report admin screen.
  *
  * @version TBD
  *
