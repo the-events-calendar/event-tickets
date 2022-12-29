@@ -193,6 +193,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [TBD] TBD =
 
 * Tweak - Added the `tribe-tickets__tickets-item--shared-capacity` wrapper class for tickets having shared capacity. [ETP-841]
+* Enhancement - Added search capabilities to the Tickets Commerce Orders report page. [ET-1259]
 
 = [5.5.5] 2022-12-08 =
 
