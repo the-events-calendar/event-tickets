@@ -45,6 +45,12 @@ class Orders extends WP_List_Table {
 	 */
 	private $search_box_input_name = 'search';
 
+	/**
+	 * The name of the search type slug.
+	 *
+	 * @var string $search_box_input_name
+	 */
+	private $search_type_slug = 'tec_tc_order_search_type';
 
 	/**
 	 * Orders Table constructor.
@@ -383,13 +389,22 @@ class Orders extends WP_List_Table {
 	 * @return array
 	 */
 	public function get_search_options() {
-		return [
+		$options = [
 			'purchaser_full_name' => __( 'Search by Purchaser Name', 'event-tickets' ),
 			'purchaser_email'     => __( 'Search by Purchaser Email', 'event-tickets' ),
 			'gateway'             => __( 'Search by Gateway', 'event-tickets' ),
 			'gateway_id'          => __( 'Search by Gateway ID', 'event-tickets' ),
 			'order_id'            => __( 'Search by Order ID', 'event-tickets' ),
 		];
+
+		/**
+		 * Filters the search types to be shown in the search box for filtering orders.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $options List of ORM search types and their labels.
+		 */
+		return apply_filters( 'tec_tc_order_search_types', $options );
 	}
 
 	/**
@@ -414,19 +429,11 @@ class Orders extends WP_List_Table {
 
 		$this->items = $old_items;
 
-		/**
-		 * Filters the search types to be shown in the search box for filtering attendees.
-		 *
-		 * @since 4.10.6
-		 *
-		 * @param array $options List of ORM search types and their labels.
-		 */
-		$options = apply_filters( 'tec_tc_order_search_types', $this->get_search_options() );
-
 		// Default selection.
 		$selected = 'purchaser_full_name';
 
-		$search_type = sanitize_text_field( tribe_get_request_var( 'tec_tc_order_search_type' ) );
+		$search_type = sanitize_text_field( tribe_get_request_var( $this->search_type_slug ) );
+		$options     = $this->get_search_options();
 
 		if (
 			$search_type
