@@ -437,7 +437,7 @@ class Orders extends WP_List_Table {
 			'purchaser_email'     => __( 'Search by Purchaser Email', 'event-tickets' ),
 			'gateway'             => __( 'Search by Gateway', 'event-tickets' ),
 			'gateway_order_id'    => __( 'Search by Gateway ID', 'event-tickets' ),
-			'order_id'            => __( 'Search by Order ID', 'event-tickets' ),
+			'id'                  => __( 'Search by Order ID', 'event-tickets' ),
 		];
 
 		/**
