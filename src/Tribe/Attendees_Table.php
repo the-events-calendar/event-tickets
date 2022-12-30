@@ -70,7 +70,15 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 
 		// Fetch the event Object
 		if ( ! empty( $_GET['event_id'] ) ) {
-			$this->event = get_post( absint( $_GET['event_id'] ) );
+			/**
+			 * This filter allows retrieval of an event ID to be filtered before being accessed elsewhere.
+			 *
+			 * @since TBD
+			 *
+			 * @param int The event ID to be filtered.
+			 */
+			$event_id = apply_filters( 'tec_tickets_filter_event_id', $_GET['event_id'] );
+			$this->event = get_post( absint( $event_id ) );
 		}
 
 		parent::__construct( apply_filters( 'tribe_events_tickets_attendees_table_args', $args ) );
