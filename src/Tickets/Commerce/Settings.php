@@ -272,7 +272,7 @@ class Settings {
 					),
 					Completed::SLUG => sprintf(
 					// Translators: %1$s: The word "ticket" in lowercase. %2$s: `<strong>` opening tag. %3$s: `</strong>` closing tag.
-						esc_html__( 'Only decrease available %1$s stock if an order is confirmed as %2$sCompleted%3$s by the payment gateway.', 'event-tickets' ),
+						esc_html__( 'Only decrease available %1$s stock and send the %1$s to the customer if an order is confirmed as %2$sCompleted%3$s by the payment gateway.', 'event-tickets' ),
 						tribe_get_ticket_label_singular_lowercase( 'stock_handling' ),
 						'<strong>',
 						'</strong>'
