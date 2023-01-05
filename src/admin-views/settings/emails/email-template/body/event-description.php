@@ -1,6 +1,12 @@
 <?php
-
-
+/**
+ * Tickets Emails Email Template Event Description
+ *
+ * @since  TBD   Event description.
+ * 
+ * @var string $event_description HTML of event description.
+ * 
+ */
 
 if ( empty( $event_description ) ) {
 	return;
@@ -9,6 +15,6 @@ if ( empty( $event_description ) ) {
 ?>
 <tr>
 	<td style="padding:0;">
-		<?php echo $event_description; ?>
+		<?php echo wp_kses( $event_description, 'post' ); ?>
 	</td>
 </tr>

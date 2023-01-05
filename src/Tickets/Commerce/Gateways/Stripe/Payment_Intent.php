@@ -57,7 +57,7 @@ class Payment_Intent {
 	 */
 	public static function test_creation( $payment_methods, $retry = false ) {
 		// Payment Intents for cards only are always valid.
-		if ( 1 === count( $payment_methods ) && in_array( 'card', $payment_methods, true ) ) {
+		if ( 1 === count( $payment_methods ) && in_array( 'card', $payment_methods, true ) && ! defined( 'DOING_AJAX' ) ) {
 			return true;
 		}
 
