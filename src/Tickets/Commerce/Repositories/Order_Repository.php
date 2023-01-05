@@ -83,9 +83,11 @@ class Order_Repository extends Tribe__Repository {
 		$this->add_simple_meta_schema_entry( 'currency', Order::$currency_meta_key, 'meta_equals' );
 		$this->add_simple_meta_schema_entry( 'purchaser_user_id', Order::$purchaser_user_id_meta_key, 'meta_equals' );
 		$this->add_simple_meta_schema_entry( 'purchaser_full_name', Order::$purchaser_full_name_meta_key, 'meta_equals' );
+		$this->add_simple_meta_schema_entry( 'purchaser_full_name__like', Order::$purchaser_full_name_meta_key, 'meta_like' );
 		$this->add_simple_meta_schema_entry( 'purchaser_first_name', Order::$purchaser_first_name_meta_key, 'meta_equals' );
 		$this->add_simple_meta_schema_entry( 'purchaser_last_name', Order::$purchaser_last_name_meta_key, 'meta_equals' );
 		$this->add_simple_meta_schema_entry( 'purchaser_email', Order::$purchaser_email_meta_key, 'meta_equals' );
+		$this->add_simple_meta_schema_entry( 'purchaser_email__like', Order::$purchaser_email_meta_key, 'meta_like' );
 		$this->add_simple_meta_schema_entry( 'hash', Order::$hash_meta_key, 'meta_equals' );
 	}
 
