@@ -15,6 +15,6 @@ if ( empty( $event_description ) ) {
 ?>
 <tr>
 	<td style="padding:0;">
-		<?php echo wp_kses( $event_description, 'post' ); ?>
+		<?php echo wp_kses_post( $event_description ); ?>
 	</td>
 </tr>

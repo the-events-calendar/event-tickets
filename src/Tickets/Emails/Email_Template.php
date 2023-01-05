@@ -143,7 +143,7 @@ class Email_Template {
 			$this->context_data = $this->get_preview_context_array();
 		}
 		
-		$this->context_data = apply_filters( 'tec_tickets_emails_email_template_context', array_merge( $context, $this->context_data ) );
+		$this->context_data = array_merge( $context, $this->context_data );
 
 		/**
 		 * Allow filtering the contxt array before sending to the email template.
