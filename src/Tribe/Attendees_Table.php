@@ -71,8 +71,8 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		}
 
 		// Fetch the event Object
-		$event_id = filter_var( $_GET['event_id'], FILTER_VALIDATE_INT );
-		if ( ! empty( $event_id ) ) {
+		if ( ! empty( $_GET['event_id'] ) ) {
+			$event_id    = filter_var( $_GET['event_id'], FILTER_VALIDATE_INT );
 			$event_id    = Event::filter_event_id( $event_id );
 			$this->event = get_post( absint( $event_id ) );
 		}
