@@ -31,38 +31,32 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 		add_filter( 'tribe_tickets_ticket_object_is_ticket_cache_enabled', '__return_false' );
 	}
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function setUp() {
-		parent::setUp();
-
-		// Enable post as ticket type.
-		add_filter( 'tribe_tickets_post_types', function () {
-			return [ 'post' ];
-		} );
-
-		// Enable Tribe Commerce.
-		add_filter( 'tribe_tickets_commerce_paypal_is_active', '__return_true' );
-		add_filter( 'tribe_tickets_get_modules', function ( $modules ) {
-			$modules['Tribe__Tickets__Commerce__PayPal__Main'] = tribe( 'tickets.commerce.paypal' )->plugin_name;
-
-			return $modules;
-		} );
-
-		// Reset Data_API object so it sees Tribe Commerce.
-		tribe_singleton( 'tickets.data_api', new Data_API );
-
-		$GLOBALS['hook_suffix'] = 'tribe_events_page_tickets-attendees';
-	}
-
 	private function make_instance() {
 		return new Attendees_Table();
 	}
 
+	public function create_order_for_ticket( $ticket_id, $quantity = 5 ) {
+		// create order.
+		$cart = new Cart();
+		$cart->get_repository()->add_item( $ticket_id, $quantity );
+
+		$purchaser = [
+			'purchaser_user_id'    => 0,
+			'purchaser_full_name'  => 'Test Purchaser',
+			'purchaser_first_name' => 'Test',
+			'purchaser_last_name'  => 'Purchaser',
+			'purchaser_email'      => 'test' . uniqid() . '@test.com',
+		];
+
+		$order     = tribe( Order::class )->create_from_cart( tribe( Gateway::class ), $purchaser );
+		$completed = tribe( Order::class )->modify_status( $order->ID, Pending::SLUG );
+
+		return $order;
+	}
+
 	/**
 	 * It should allow fetching ticket attendees by event.
-	 * @skip
+	 *
 	 * @test
 	 */
 	public function should_allow_fetching_attendees_by_provisional_id() {
@@ -80,39 +74,15 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 		};
 		add_filter( 'tec_events_custom_tables_v1_normalize_occurrence_id', $faux_provisional_hook );
 		$post       = $this->given_a_migrated_single_event();
-		$post2      = $this->given_a_migrated_single_event();
 		$post_id    = $post->ID;
-		$post_id2   = $post2->ID;
+		$quantity   = 4;
 		$occurrence = Occurrence::find_by_post_id( $post_id );
 
 		// Create a faux provisional id.
 		$provisional_id = $occurrence->occurrence_id + $base;
-		$occurrence2    = Occurrence::find_by_post_id( $post_id2 );
+		$ticket_a_id    = $this->create_tc_ticket( $post_id, 10 );
 
-		// Create a faux provisional id.
-		$provisional_id2 = $occurrence2->occurrence_id + $base;
-		$ticket_a_id = $this->create_tc_ticket( $post_id, 10 );
-
-		// create order.
-		$cart = new Cart();
-		$cart->get_repository()->add_item( $ticket_a_id, 5 );
-
-		$purchaser = [
-			'purchaser_user_id'    => 0,
-			'purchaser_full_name'  => 'Test Purchaser',
-			'purchaser_first_name' => 'Test',
-			'purchaser_last_name'  => 'Purchaser',
-			'purchaser_email'      => 'test@test.com',
-		];
-
-		$order     = tribe( Order::class )->create_from_cart( tribe( Gateway::class ), $purchaser );
-		$completed = tribe( Order::class )->modify_status( $order->ID, Pending::SLUG );
-
-
-		// Add other ticket/attendees for another post so we can confirm we only returned the correct attendees.
-		$paypal_ticket_id2 = $this->create_tc_ticket( $post_id2, 1 );
-
-
+		$this->create_order_for_ticket( $ticket_a_id, $quantity );
 
 		$_GET['event_id'] = $provisional_id;
 		$table            = $this->make_instance();
@@ -120,18 +90,8 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 		$table->prepare_items();
 		$attendee_ids = wp_list_pluck( $table->items, 'attendee_id' );
 
-		$expected_attendee_ids = array_slice( array_merge( $paypal_attendee_ids, $rsvp_attendee_ids ), 0, $table->get_pagination_arg( 'per_page' ) );
-
-		$this->assertEqualSets( $expected_attendee_ids, $attendee_ids );
-		$this->assertEquals( count( array_merge( $paypal_attendee_ids, $rsvp_attendee_ids ) ), $table->get_pagination_arg( 'total_items' ) );
-
-		$_GET['event_id'] = $provisional_id2;
-		$table->prepare_items();
-		$attendee_ids2 = wp_list_pluck( $table->items, 'attendee_id' );
-
-		$expected_attendee_ids2 = array_slice( array_merge( $paypal_attendee_ids2, $rsvp_attendee_ids2 ), 0, $table->get_pagination_arg( 'per_page' ) );
-
-		$this->assertEqualSets( $expected_attendee_ids2, $attendee_ids2 );
-		$this->assertEquals( count( array_merge( $paypal_attendee_ids2, $rsvp_attendee_ids2 ) ), $table->get_pagination_arg( 'total_items' ) );
+		$this->assertNotEmpty( $attendee_ids );
+		$this->assertEquals( $quantity, count( $attendee_ids ) );
+		$this->assertEquals( $table->get_pagination_arg( 'total_items' ), count( $attendee_ids ) );
 	}
 }
