@@ -1,5 +1,5 @@
 <?php
-
+use TEC\Tickets\Event;
 use Tribe\Tooltip\View as Tooltip_View;
 
 abstract class Tribe__Tickets__Abstract_Attendance_Totals {
@@ -30,17 +30,11 @@ abstract class Tribe__Tickets__Abstract_Attendance_Totals {
 	protected function set_event_id( $event_id = 0 ) {
 		if ( $event_id ) {
 			$this->event_id = absint( $event_id );
-		} elseif ( isset( $_GET[ 'event_id' ] ) ) {
-			$this->event_id = absint( $_GET[ 'event_id' ] );
+		} elseif ( isset( $_GET['event_id'] ) ) {
+			$this->event_id = filter_var( $_GET['event_id'], FILTER_VALIDATE_INT );
 		}
-		/**
-		 * This filter allows retrieval of an event ID to be filtered before being accessed elsewhere.
-		 *
-		 * @since TBD
-		 *
-		 * @param int The event ID to be filtered.
-		 */
-		$this->event_id = apply_filters( 'tec_tickets_filter_event_id', $this->event_id );
+
+		$this->event_id = Event::filter_event_id( $this->event_id );
 
 		return (bool) $this->event_id;
 	}

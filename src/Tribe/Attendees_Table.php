@@ -1,5 +1,7 @@
 <?php
 
+use TEC\Tickets\Event;
+
 if ( ! class_exists( 'WP_List_Table' ) ) {
 	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 }
@@ -69,15 +71,9 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		}
 
 		// Fetch the event Object
-		if ( ! empty( $_GET['event_id'] ) ) {
-			/**
-			 * This filter allows retrieval of an event ID to be filtered before being accessed elsewhere.
-			 *
-			 * @since TBD
-			 *
-			 * @param int The event ID to be filtered.
-			 */
-			$event_id = apply_filters( 'tec_tickets_filter_event_id', $_GET['event_id'] );
+		$event_id = filter_var( $_GET['event_id'], FILTER_VALIDATE_INT );
+		if ( ! empty( $event_id ) ) {
+			$event_id    = Event::filter_event_id( $event_id );
 			$this->event = get_post( absint( $event_id ) );
 		}
 
@@ -901,16 +897,8 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			'return_total_found' => true,
 		];
 
-		$event_id = empty( $_GET['event_id'] ) ? 0 : absint( $_GET['event_id'] );
-		/**
-		 * This filter allows retrieval of an event ID to be filtered before being accessed elsewhere.
-		 *
-		 * @since TBD
-		 *
-		 * @param int The event ID to be filtered.
-		 */
-		$event_id = apply_filters( 'tec_tickets_filter_event_id', $event_id );
-		$search = sanitize_text_field( tribe_get_request_var( $this->search_box_input_name ) );
+		$event_id = Event::filter_event_id( filter_var( $_GET['event_id'], FILTER_VALIDATE_INT ) );
+		$search   = sanitize_text_field( tribe_get_request_var( $this->search_box_input_name ) );
 
 		if ( ! empty( $search ) ) {
 			$search_keys = array_keys( $this->get_search_options() );

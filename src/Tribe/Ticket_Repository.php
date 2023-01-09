@@ -1,5 +1,5 @@
 <?php
-
+use TEC\Tickets\Event;
 /**
  * Class Tribe__Tickets__Ticket_Repository
  *
@@ -79,14 +79,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 * @param int|array $event_id
 	 */
 	public function filter_by_event( $event_id ) {
-		/**
-		 * This filter allows an event ID to be filtered before being accessed elsewhere.
-		 *
-		 * @since TBD
-		 *
-		 * @param int The event ID to be filtered.
-		 */
-		$event_id = apply_filters( 'tec_tickets_filter_event_id', $event_id );
+		$event_id = Event::filter_event_id( $event_id );
 		$this->by( 'meta_in', $this->ticket_to_event_keys(), $event_id );
 	}
 
@@ -115,14 +108,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 * @param int|array $event_id
 	 */
 	public function filter_by_event_not_in( $event_id ) {
-		/**
-		 * This filter allows an event ID to be filtered before being accessed elsewhere.
-		 *
-		 * @since TBD
-		 *
-		 * @param int The event ID to be filtered.
-		 */
-		$event_id = apply_filters( 'tec_tickets_filter_event_id', $event_id );
+		$event_id = Event::filter_event_id( $event_id );
 		$this->by( 'meta_not_in', $this->ticket_to_event_keys(), $event_id );
 	}
 
