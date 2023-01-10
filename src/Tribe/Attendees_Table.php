@@ -1,5 +1,7 @@
 <?php
 
+use TEC\Tickets\Event;
+
 if ( ! class_exists( 'WP_List_Table' ) ) {
 	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 }
@@ -70,7 +72,9 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 
 		// Fetch the event Object
 		if ( ! empty( $_GET['event_id'] ) ) {
-			$this->event = get_post( absint( $_GET['event_id'] ) );
+			$event_id    = filter_var( $_GET['event_id'], FILTER_VALIDATE_INT );
+			$event_id    = Event::filter_event_id( $event_id );
+			$this->event = get_post( $event_id );
 		}
 
 		parent::__construct( apply_filters( 'tribe_events_tickets_attendees_table_args', $args ) );
@@ -893,9 +897,8 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			'return_total_found' => true,
 		];
 
-		$event_id = empty( $_GET['event_id'] ) ? 0 : absint( $_GET['event_id'] );
-
-		$search = sanitize_text_field( tribe_get_request_var( $this->search_box_input_name ) );
+		$event_id = Event::filter_event_id( filter_var( $_GET['event_id'], FILTER_VALIDATE_INT ) );
+		$search   = sanitize_text_field( tribe_get_request_var( $this->search_box_input_name ) );
 
 		if ( ! empty( $search ) ) {
 			$search_keys = array_keys( $this->get_search_options() );
