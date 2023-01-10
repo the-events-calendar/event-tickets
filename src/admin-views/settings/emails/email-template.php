@@ -7,10 +7,6 @@
  * @var Tribe_Template  $this  Current template object.
  */
 
-
-if ( tribe_is_truthy( $preview ) ) {
-	$this->template( 'email-template/preview' );
-} else {
-	$this->template( 'email-template/main' );
-}
+$this->template( 'email-template/preview' );
+$this->template( 'email-template/main' );
 

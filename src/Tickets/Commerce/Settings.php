@@ -265,7 +265,7 @@ class Settings {
 				'options'         => [
 					Pending::SLUG   => sprintf(
 					// Translators: %1$s: The word "ticket" in lowercase. %2$s: `<strong>` opening tag. %3$s: `</strong>` closing tag.
-						esc_html__( 'Decrease available %1$s stock as soon as a %2$sPending%3$s order is created.', 'event-tickets' ),
+						esc_html__( 'Decrease available %1$s stock and send the %1$s to the customer as soon as a %2$sPending%3$s order is created.', 'event-tickets' ),
 						tribe_get_ticket_label_singular_lowercase( 'stock_handling' ),
 						'<strong>',
 						'</strong>'
