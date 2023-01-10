@@ -53,6 +53,8 @@ class Event {
 		 *
 		 * @param int|null The event ID to be filtered.
 		 */
-		return apply_filters( 'tec_tickets_filter_event_id', $event_id );
+		$event_id = apply_filters( 'tec_tickets_filter_event_id', $event_id );
+
+		return is_numeric( $event_id ) ? (int) $event_id : null;
 	}
 }
