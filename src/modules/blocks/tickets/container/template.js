@@ -8,7 +8,7 @@ import classNames from 'classnames';
 /**
  * Wordpress dependencies
  */
-import { InnerBlocks } from '@wordpress/editor';
+const { InnerBlocks } = wp.blockEditor;
 import { __ } from '@wordpress/i18n';
 
 /**

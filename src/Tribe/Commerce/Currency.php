@@ -447,6 +447,10 @@ class Tribe__Tickets__Commerce__Currency {
 			return edd_currency_symbol();
 		}
 
+		if ( 'TEC\Tickets\Commerce\Module' === $provider && function_exists( 'tec_tickets_commerce_currency_symbol' ) ) {
+			return tec_tickets_commerce_currency_symbol();
+		}
+
 		/** @var Tribe__Tickets__Commerce__PayPal__Main $tpp */
 		$tpp = tribe( 'tickets.commerce.paypal' );
 
@@ -463,21 +467,21 @@ class Tribe__Tickets__Commerce__Currency {
 	 *
 	 * @since 4.7
 	 *
-	 * @param string $provider
-	 * @param string $cost
+	 * @since 5.3.2 removed unused WooCommerce formatting.
+	 *
+	 * @param string | Tribe__Tickets__Tickets $provider Provider class name or object.
+	 * @param string $cost Cost for the Event.
 	 *
 	 * @return string
 	 */
 	protected function get_provider_cost( $provider = '', $cost = '' ) {
-		if ( ! class_exists( $provider ) ) {
-			return $cost;
+		// Convert to class name if object is passed.
+		if ( is_object( $provider ) ) {
+			$provider = get_class( $provider );
 		}
 
-		if (
-			'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' === $provider
-			&& function_exists( 'wc_format_localized_price' )
-		) {
-			return wc_format_localized_price( $cost );
+		if ( ! class_exists( $provider ) ) {
+			return $cost;
 		}
 
 		if (
@@ -523,6 +527,10 @@ class Tribe__Tickets__Commerce__Currency {
 			$position = edd_get_option( 'currency_position', 'before' );
 
 			return 'before' === $position ? 'prefix' : 'postfix';
+		}
+
+		if ( 'TEC\Tickets\Commerce\Module' === $provider && function_exists( 'tec_tickets_commerce_currency_position' ) ) {
+			return tec_tickets_commerce_currency_position();
 		}
 
 		return $this->get_currency_symbol_position( $object_id );

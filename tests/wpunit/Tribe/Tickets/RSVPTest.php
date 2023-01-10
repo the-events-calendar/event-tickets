@@ -610,7 +610,7 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 			[
 				'success' => false,
 				'errors'  => [
-					'Your RSVP was unsuccessful, please try again.',
+					'Invalid data! Missing required attendee details!',
 				],
 			],
 		];
@@ -804,7 +804,7 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 			[
 				'success' => false,
 				'errors'  => [
-					'Your RSVP was unsuccessful, please try again.',
+					'Invalid data! Missing required attendee details!',
 				],
 			],
 		];

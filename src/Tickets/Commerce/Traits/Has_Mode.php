@@ -59,6 +59,10 @@ trait Has_Mode {
 	 * @return string Which mode we are using the Merchant.
 	 */
 	public function get_mode() {
+		if ( null === $this->mode ) {
+			$this->set_mode( tec_tickets_commerce_is_sandbox_mode() ? 'sandbox' : 'live' );
+		}
+
 		return $this->mode;
 	}
 

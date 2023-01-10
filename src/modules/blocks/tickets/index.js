@@ -7,7 +7,7 @@ import React from 'react';
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { InnerBlocks } from '@wordpress/editor';
+const { InnerBlocks } = wp.blockEditor;
 
 /**
  * Internal dependencies

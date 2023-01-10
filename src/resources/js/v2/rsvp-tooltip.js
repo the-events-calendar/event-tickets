@@ -2,8 +2,7 @@
  * Makes sure we have all the required levels on the Tribe Object
  *
  * @since 5.0.0
- *
- * @type   {PlainObject}
+ * @type   {object}
  */
 tribe.tickets = tribe.tickets || {};
 tribe.tickets.rsvp = tribe.tickets.rsvp || {};
@@ -12,8 +11,7 @@ tribe.tickets.rsvp = tribe.tickets.rsvp || {};
  * Configures RSVP Tooltip Object in the Global Tribe variable
  *
  * @since 5.0.0
- *
- * @type   {PlainObject}
+ * @type   {object}
  */
 tribe.tickets.rsvp.tooltip = {};
 
@@ -21,22 +19,18 @@ tribe.tickets.rsvp.tooltip = {};
  * Initializes in a Strict env the code that manages the RSVP Tooltip
  *
  * @since 5.0.0
- *
- * @param  {PlainObject} $   jQuery
- * @param  {PlainObject} obj tribe.tickets.rsvp.tooltip
- *
+ * @param  {object} $   jQuery
+ * @param  {object} obj tribe.tickets.rsvp.tooltip
  * @return {void}
  */
 ( function( $, obj ) {
-	'use strict';
-	var $document = $( document );
+	const $document = $( document );
 
 	/**
 	 * Config used for tooltip setup.
 	 *
 	 * @since 5.0.0
-	 *
-	 * @type {PlainObject}
+	 * @type {object}
 	 */
 	obj.config = {
 		delayHoverIn: 300,
@@ -47,8 +41,7 @@ tribe.tickets.rsvp.tooltip = {};
 	 * Selectors used for configuration and setup.
 	 *
 	 * @since 5.0.0
-	 *
-	 * @type {PlainObject}
+	 * @type {object}
 	 */
 	obj.selectors = {
 		tooltipTrigger: '[data-js~="tribe-tickets-tooltip"]',
@@ -63,9 +56,7 @@ tribe.tickets.rsvp.tooltip = {};
 	 * Handle tooltip focus event.
 	 *
 	 * @since 5.0.0
-	 *
 	 * @param {Event} event event object
-	 *
 	 * @return {void}
 	 */
 	obj.handleOriginFocus = function( event ) {
@@ -73,7 +64,7 @@ tribe.tickets.rsvp.tooltip = {};
 			if (
 				event.data.target.is( ':focus' ) ||
 				event.data.target.hasClass(
-					obj.selectors.tribeTicketsRsvpTooltipTriggerHoverClass.className()
+					obj.selectors.tribeTicketsRsvpTooltipTriggerHoverClass.className(),
 				)
 			) {
 				event.data.target.tooltipster( 'open' );
@@ -85,9 +76,7 @@ tribe.tickets.rsvp.tooltip = {};
 	 * Handle tooltip blur event.
 	 *
 	 * @since 5.0.0
-	 *
 	 * @param {Event} event event object
-	 *
 	 * @return {void}
 	 */
 	obj.handleOriginBlur = function( event ) {
@@ -98,14 +87,12 @@ tribe.tickets.rsvp.tooltip = {};
 	 * Handle origin mouseenter and touchstart events.
 	 *
 	 * @since 5.0.0
-	 *
 	 * @param {Event} event event object
-	 *
 	 * @return {void}
 	 */
 	obj.handleOriginHoverIn = function( event ) {
 		event.data.target.addClass(
-			obj.selectors.tribeTicketsRsvpTooltipTriggerHoverClass.className()
+			obj.selectors.tribeTicketsRsvpTooltipTriggerHoverClass.className(),
 		);
 	};
 
@@ -113,14 +100,12 @@ tribe.tickets.rsvp.tooltip = {};
 	 * Handle origin mouseleave and touchleave events.
 	 *
 	 * @since 5.0.0
-	 *
 	 * @param {Event} event event object
-	 *
 	 * @return {void}
 	 */
 	obj.handleOriginHoverOut = function( event ) {
 		event.data.target.removeClass(
-			obj.selectors.tribeTicketsRsvpTooltipTriggerHoverClass.className()
+			obj.selectors.tribeTicketsRsvpTooltipTriggerHoverClass.className(),
 		);
 	};
 
@@ -128,14 +113,12 @@ tribe.tickets.rsvp.tooltip = {};
 	 * Handle tooltip mouseenter and touchstart event.
 	 *
 	 * @since 5.0.0
-	 *
 	 * @param {Event} event event object
-	 *
 	 * @return {void}
 	 */
 	obj.handleTooltipHoverIn = function( event ) {
 		event.data.target.addClass(
-			obj.selectors.tribeTicketsRsvpTooltipThemeHoverClass.className()
+			obj.selectors.tribeTicketsRsvpTooltipThemeHoverClass.className(),
 		);
 	};
 
@@ -143,14 +126,12 @@ tribe.tickets.rsvp.tooltip = {};
 	 * Handle tooltip mouseleave and touchleave events.
 	 *
 	 * @since 5.0.0
-	 *
 	 * @param {Event} event event object
-	 *
 	 * @return {void}
 	 */
 	obj.handleTooltipHoverOut = function( event ) {
 		event.data.target.removeClass(
-			obj.selectors.tribeTicketsRsvpTooltipThemeHoverClass.className()
+			obj.selectors.tribeTicketsRsvpTooltipThemeHoverClass.className(),
 		);
 	};
 
@@ -158,14 +139,12 @@ tribe.tickets.rsvp.tooltip = {};
 	 * Handle tooltip instance closing event.
 	 *
 	 * @since 5.0.0
-	 *
 	 * @param {Event} event event object
-	 *
 	 * @return {void}
 	 */
 	obj.handleInstanceClose = function( event ) {
-		var $origin = event.data.origin;
-		var $tooltip = $( event.tooltip );
+		const $origin = event.data.origin;
+		const $tooltip = $( event.tooltip );
 
 		// if trigger is focused, hovered, or tooltip is hovered, do not close tooltip
 		if (
@@ -181,9 +160,7 @@ tribe.tickets.rsvp.tooltip = {};
 	 * Handle tooltip instance close event.
 	 *
 	 * @since 5.0.0
-	 *
 	 * @param {Event} event event object
-	 *
 	 * @return {void}
 	 */
 	obj.handleInstanceClosing = function( event ) {
@@ -197,14 +174,12 @@ tribe.tickets.rsvp.tooltip = {};
 	 * A custom function to be fired only once at instantiation.
 	 *
 	 * @since 5.0.0
-	 *
-	 * @param {Tooltipster} instance instance of Tooltipster
-	 * @param {PlainObject} helper   helper object with tooltip origin
-	 *
+	 * @param {Function} instance instance of Tooltipster
+	 * @param {object}   helper   helper object with tooltip origin
 	 * @return {void}
 	 */
 	obj.onFunctionInit = function( instance, helper ) {
-		var $origin = $( helper.origin );
+		const $origin = $( helper.origin );
 		$origin
 			.on( 'focus', { target: $origin }, obj.handleOriginFocus )
 			.on( 'blur', { target: $origin }, obj.handleOriginBlur )
@@ -220,14 +195,12 @@ tribe.tickets.rsvp.tooltip = {};
 	 * A custom function to be fired when the tooltip and its contents have been added to the DOM.
 	 *
 	 * @since 5.0.0
-	 *
-	 * @param {Tooltipster} instance instance of Tooltipster
-	 * @param {PlainObject} helper   helper object with tooltip origin
-	 *
+	 * @param {Function} instance instance of Tooltipster
+	 * @param {object}   helper   helper object with tooltip origin
 	 * @return {void}
 	 */
 	obj.onFunctionReady = function( instance, helper ) {
-		var $tooltip = $( helper.tooltip );
+		const $tooltip = $( helper.tooltip );
 		$tooltip
 			.on( 'mouseenter touchstart', { target: $tooltip }, obj.handleTooltipHoverIn )
 			.on( 'mouseleave touchleave', { target: $tooltip }, obj.handleTooltipHoverOut );
@@ -237,9 +210,7 @@ tribe.tickets.rsvp.tooltip = {};
 	 * Deinitialize accessible tooltips via tooltipster.
 	 *
 	 * @since 5.0.0
-	 *
 	 * @param {jQuery} $container jQuery object of view container.
-	 *
 	 * @return {void}
 	 */
 	obj.deinitTooltips = function( $container ) {
@@ -257,13 +228,11 @@ tribe.tickets.rsvp.tooltip = {};
 	 * Initialize accessible tooltips via tooltipster.
 	 *
 	 * @since 5.0.0
-	 *
 	 * @param {jQuery} $container jQuery object of RSVP container.
-	 *
 	 * @return {void}
 	 */
 	obj.initTooltips = function( $container ) {
-		var theme = $container.data( 'tribeTicketsRsvpTooltipTheme' );
+		const theme = $container.data( 'tribeTicketsRsvpTooltipTheme' );
 
 		$container
 			.find( obj.selectors.tooltipTrigger )
@@ -284,15 +253,13 @@ tribe.tickets.rsvp.tooltip = {};
 	 * Initialize tooltip theme.
 	 *
 	 * @since 5.0.0
-	 *
 	 * @param {jQuery} $container jQuery object of RSVP container.
-	 *
 	 * @return {void}
 	 */
 	obj.initTheme = function( $container ) {
 		$container.trigger( 'beforeTooltipInitTheme.tribeTicketsRsvp', [ $container ] );
 
-		var theme = [
+		const theme = [
 			obj.selectors.tribeTicketsRsvpTooltipThemeClass.className(),
 			obj.selectors.tribeCommonClass.className(),
 			obj.selectors.tribeTicketsClass.className(),
@@ -306,15 +273,13 @@ tribe.tickets.rsvp.tooltip = {};
 	 * Deinitialize tooltip JS.
 	 *
 	 * @since 5.0.0
-	 *
-	 * @param  {Event}       event    event object for 'beforeAjaxSuccess.tribeTicketsRsvp' event
-	 * @param  {jqXHR}       jqXHR    Request object
-	 * @param  {PlainObject} settings Settings that this request was made with
-	 *
+	 * @param  {Event}  event    event object for 'beforeAjaxSuccess.tribeTicketsRsvp' event
+	 * @param  {jqXHR}  jqXHR    Request object
+	 * @param  {object} settings Settings that this request was made with
 	 * @return {void}
 	 */
 	obj.deinit = function( event, jqXHR, settings ) { // eslint-disable-line no-unused-vars
-		var $container = event.data.container;
+		const $container = event.data.container;
 		obj.deinitTooltips( $container );
 		$container.off( 'beforeAjaxSuccess.tribeTicketsRsvp', obj.deinit );
 	};
@@ -323,11 +288,9 @@ tribe.tickets.rsvp.tooltip = {};
 	 * Initialize tooltips JS.
 	 *
 	 * @since 5.0.0
-	 *
 	 * @param {Event}   event      event object for 'afterSetup.tribeTicketsRsvp' event
-	 * @param {integer} index      jQuery.each index param from 'afterSetup.tribeTicketsRsvp' event.
+	 * @param {number}  index      jQuery.each index param from 'afterSetup.tribeTicketsRsvp' event.
 	 * @param {jQuery}  $container jQuery object of view container.
-	 *
 	 * @return {void}
 	 */
 	obj.init = function( event, index, $container ) {
@@ -340,14 +303,13 @@ tribe.tickets.rsvp.tooltip = {};
 	 * Handles the initialization of the scripts when Document is ready.
 	 *
 	 * @since 5.0.0
-	 *
 	 * @return {void}
 	 */
 	obj.ready = function() {
 		$document.on(
 			'afterSetup.tribeTicketsRsvp',
 			tribe.tickets.rsvp.manager.selectors.container,
-			obj.init
+			obj.init,
 		);
 	};
 

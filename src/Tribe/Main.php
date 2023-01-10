@@ -1,13 +1,14 @@
 <?php
 use Tribe\Tickets\Events\Service_Provider as Events_Service_Provider;
 use Tribe\Tickets\Promoter\Service_Provider as Promoter_Service_Provider;
+use Tribe\Tickets\Admin\Settings;
 
 class Tribe__Tickets__Main {
 
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '5.2.3';
+	const VERSION = '5.5.5';
 
 	/**
 	 * Used to store the version history.
@@ -42,7 +43,7 @@ class Tribe__Tickets__Main {
 	*
 	* @since 4.10
 	*/
-	protected $min_tec_version = '5.5.0';
+	protected $min_tec_version = '6.0.3-dev';
 
 	/**
 	 * Name of the provider
@@ -301,17 +302,8 @@ class Tribe__Tickets__Main {
 
 		add_action( 'tribe_common_loaded', [ $this, 'bootstrap' ], 0 );
 
-		// Customizer support - only loaded on older version of TEC for backwards compatibility.
-		if (
-			class_exists( 'Tribe__Events__Main' )
-			&& (
-				! function_exists( 'tribe_events_views_v2_is_enabled' )
-				|| ! tribe_events_views_v2_is_enabled()
-			)
-		) {
-			tribe_register_provider( Tribe\Tickets\Service_Providers\Customizer::class );
-		}
-
+		// Admin home.
+		tribe_register_provider( Tribe\Tickets\Admin\Home\Service_Provider::class );
 	}
 
 	/**
@@ -362,7 +354,7 @@ class Tribe__Tickets__Main {
 		tribe_singleton( 'tickets.commerce.paypal', new Tribe__Tickets__Commerce__PayPal__Main );
 		tribe_singleton( 'tickets.redirections', 'Tribe__Tickets__Redirections' );
 
-		tribe_singleton( 'tickets.theme-compatibility', 'Tribe__Tickets__Theme_Compatibility' );
+		tribe_singleton( Tribe__Tickets__Theme_Compatibility::class, Tribe__Tickets__Theme_Compatibility::class );
 
 		// Event Tickets Provider to manage Events.
 		tribe_register_provider( Events_Service_Provider::class );
@@ -390,8 +382,11 @@ class Tribe__Tickets__Main {
 		// Admin manager.
 		tribe_register_provider( Tribe\Tickets\Admin\Manager\Service_Provider::class );
 
-		// Promoter
+		// Promoter.
 		tribe_register_provider( Promoter_Service_Provider::class );
+
+		// Admin provider.
+		tribe_register_provider( \Tribe\Tickets\Admin\Provider::class );
 	}
 
 	/**
@@ -426,8 +421,11 @@ class Tribe__Tickets__Main {
 			), 'upgrade-plugin_' . $plugin_short_path
 		);
 
+		$min_version = str_replace( '-dev', '', $this->min_tec_version );
+
 		$output = '<div class="error">';
-		$output .= '<p>' . sprintf( __( 'When The Events Calendar and Event Tickets are both activated, The Events Calendar must be running version %1$s or greater. Please %2$supdate now.%3$s', 'event-tickets' ), $this->min_tec_version, '<a href="' . esc_url( $upgrade_path ) . '">', '</a>' ) . '</p>';
+		// Translators: %1$s is the min required version of The Events Calendar. %2$s Is the update link opening `<a>`. %3$s Is the update link closing `</a>`.
+		$output .= '<p>' . sprintf( __( 'When The Events Calendar and Event Tickets are both activated, The Events Calendar must be running version %1$s or greater. Please %2$supdate now.%3$s', 'event-tickets' ), $min_version, '<a href="' . esc_url( $upgrade_path ) . '">', '</a>' ) . '</p>';
 		$output .= '</div>';
 
 		echo $output;
@@ -524,6 +522,7 @@ class Tribe__Tickets__Main {
 		$this->register_plugin_autoload_paths();
 
 		require_once $this->plugin_path . 'src/template-tags/tickets.php';
+		require_once $this->plugin_path . 'src/template-tags/commerce.php';
 
 		// deprecated classes are registered in a class to path fashion
 		foreach ( glob( $this->plugin_path . 'src/deprecated/*.php' ) as $file ) {
@@ -607,7 +606,7 @@ class Tribe__Tickets__Main {
 		add_action( 'init', tribe_callback( 'tickets.commerce.cart', 'hook' ) );
 
 		// Theme Compatibility.
-		add_filter( 'body_class', tribe_callback( 'tickets.theme-compatibility', 'filter_body_class' ) );
+		add_filter( 'body_class', [ tribe( Tribe__Tickets__Theme_Compatibility::class ), 'add_body_classes' ], 55 );
 	}
 
 	/**
@@ -692,12 +691,6 @@ class Tribe__Tickets__Main {
 			self::VERSION,
 			$this->plugin_path . 'src/views',
 			trailingslashit( get_stylesheet_directory() ) . 'tribe/tickets',
-		];
-
-		$plugins[ __( 'Event Tickets - Legacy', 'event-tickets' ) ] = [
-			self::VERSION,
-			$this->plugin_path . 'src/views',
-			trailingslashit( get_stylesheet_directory() ) . 'tribe-events/tickets',
 		];
 
 		return $plugins;
@@ -826,6 +819,8 @@ class Tribe__Tickets__Main {
 		if ( empty( $this->activation_page ) ) {
 			$this->activation_page = new Tribe__Admin__Activation_Page( [
 				'slug'                  => 'event-tickets',
+				'admin_page'            => 'tickets_page_tec-tickets-settings',
+				'admin_url'             => tribe( Settings::class )->get_url(),
 				'version'               => self::VERSION,
 				'activation_transient'  => '_tribe_tickets_activation_redirect',
 				'plugin_path'           => $this->plugin_dir . 'event-tickets.php',
@@ -902,16 +897,23 @@ class Tribe__Tickets__Main {
 	}
 
 	/**
-	 * settings page object accessor
+	 * Settings page object accessor.
+	 *
+	 * @return \Tribe\Tickets\Admin\Settings
 	 */
 	public function settings_tab() {
-		static $settings;
+		return tribe( \Tribe\Tickets\Admin\Settings::class );
+	}
 
-		if ( ! $settings ) {
-			$settings = new Tribe__Tickets__Admin__Ticket_Settings;
-		}
-
-		return $settings;
+	/**
+	 * Settings page object accessor.
+	 *
+	 * @since 5.4.0
+	 *
+	 * @return \Tribe\Tickets\Admin\Settings
+	 */
+	public function settings() {
+		return $this->settings_tab();
 	}
 
 	/**
@@ -1014,7 +1016,7 @@ class Tribe__Tickets__Main {
 	 * are explicitly output
 	 */
 	public function embed_head() {
-		$css_path = Tribe__Template_Factory::getMinFile( $this->plugin_url . 'src/resources/css/tickets-embed.css', true );
+		$css_path = Tribe__Assets::maybe_get_min_file( $this->plugin_url . 'src/resources/css/tickets-embed.css' );
 		$css_path = add_query_arg( 'ver', self::VERSION, $css_path );
 		?>
 		<link rel="stylesheet" id="tribe-tickets-embed-css" href="<?php echo esc_url( $css_path ); ?>" type="text/css" media="all">
@@ -1037,36 +1039,6 @@ class Tribe__Tickets__Main {
 			$updater->do_updates();
 		}
 	}
-
-		/**
-		* Hooked to admin_notices, this error is thrown when Event Tickets is run alongside a version of
-		* Event Tickets Plus that is too old
-		*
-		* @deprecated 4.10
-		*
-		*/
-		public function et_plus_compatibility_notice() {
-			_deprecated_function( __METHOD__, '4.10', '' );
-
-			$active_plugins = get_option( 'active_plugins' );
-
-			$plugin_short_path = null;
-
-			foreach ( $active_plugins as $plugin ) {
-				if ( false !== strstr( $plugin, 'event-tickets-plus.php' ) ) {
-					$plugin_short_path = $plugin;
-					break;
-				}
-			}
-
-			$upgrade_path = 'https://theeventscalendar.com/knowledgebase/manual-updates/';
-
-			$output = '<div class="error">';
-			$output .= '<p>' . sprintf( esc_html__( 'When Event Tickets and Event Tickets Plus are both activated, Event Tickets Plus must be running version %1$s or greater. Please %2$smanually update now%3$s.', 'event-tickets' ), preg_replace( '/^(\d\.[\d]+).*/', '$1', self::VERSION ), '<a href="' . esc_url( $upgrade_path ) . '" target="_blank">', '</a>' ) . '</p>';
-			$output .= '</div>';
-
-			echo $output;
-		}
 
 	/**
 	 * Returns the autoloader singleton instance to use in a context-aware manner.

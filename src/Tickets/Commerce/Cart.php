@@ -194,6 +194,31 @@ class Cart {
 	}
 
 	/**
+	 * Generates a unique version of the cart hash, used to enforce idempotency in REST API requests.
+	 *
+	 * @since 5.4.0.2
+	 *
+	 * @param string $salt An optional value to make sure the generated hash is not directly translatable to the cart
+	 *                     hash.
+	 *
+	 * @return string
+	 */
+	public function generate_cart_order_hash( $salt = '' ): string {
+		$cart_hash = $this->get_cart_hash();
+
+		/**
+		 * Allows modifications to the cart/order hash for Tickets Commerce.
+		 *
+		 * @since 5.4.0.2
+		 *
+		 * @param string $cart_order_hash The md5-hashed cart hash.
+		 * @param string $cart_hash       The current cart hash.
+		 * @param string $salt            The salt value.
+		 */
+		return (string) apply_filters( 'tec_tickets_commerce_cart_order_hash', md5( $cart_hash . $salt ), $cart_hash, $salt );
+	}
+
+	/**
 	 * Reads the cart hash from the cookies.
 	 *
 	 * @since 5.1.9

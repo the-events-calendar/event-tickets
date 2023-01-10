@@ -7,10 +7,10 @@ if ( empty( $selected_country_code ) ) {
 }
 ?>
 <div
-	class="tec-tickets__admin-settings-tickets-commerce-paypal-signup-settings"
+	class="tec-tickets__admin-settings-tickets-commerce-gateway-signup-settings"
 >
 	<p
-		class="tec-tickets__admin-settings-tickets-commerce-paypal-merchant-country-container"
+		class="tec-tickets__admin-settings-tickets-commerce-gateway-merchant-country-container"
 	>
 		<select
 			name='tec-tickets-commerce-gateway-paypal-merchant-country'
@@ -31,14 +31,14 @@ if ( empty( $selected_country_code ) ) {
 		</select>
 	</p>
 
-	<div class="tec-tickets__admin-settings-tickets-commerce-paypal-connect-button">
+	<div class="tec-tickets__admin-settings-tickets-commerce-gateway-connect-button">
 		<a
 			target="_blank"
 			data-paypal-onboard-complete="tecTicketsCommerceGatewayPayPalSignupCallback"
 			href="<?php echo esc_url( $url ) ?>&displayMode=minibrowser"
 			data-paypal-button="true"
 			id="connect_to_paypal"
-			class="tec-tickets__admin-settings-tickets-commerce-paypal-connect-button-link"
+			class="tec-tickets__admin-settings-tickets-commerce-gateway-connect-button-link"
 		>
 			<?php echo wp_kses( __( 'Connect Automatically with <i>PayPal</i>', 'event-tickets' ), 'post' ); ?>
 		</a>

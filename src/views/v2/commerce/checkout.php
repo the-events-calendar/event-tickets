@@ -9,9 +9,10 @@
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   5.1.9
+ * @since 5.1.9
+ * @since 5.3.0 Added purchaser info templates.
  *
- * @version 5.1.9
+ * @version 5.3.0
  *
  * @var \Tribe__Template $this                  [Global] Template object.
  * @var Module           $provider              [Global] The tickets provider instance.
@@ -43,19 +44,21 @@ $attributes = [
 		<?php tribe( 'tickets.editor.template' )->template( 'v2/components/loader/loader' ); ?>
 		<?php
 		tribe( 'tickets.editor.template' )->template(
-			'components/notice',
-			[
-				'notice_classes'  => [
+				'components/notice',
+				[
+					'notice_classes'  => [
 						'tribe-tickets__notice--error',
 						'tribe-tickets__commerce-checkout-notice',
-				],
-				'content_classes' => [ 'tribe-tickets__commerce-checkout-notice-content' ],
-				'title'           => __( 'Checkout Error!', 'event-tickets' ),
-				'content'         => __( 'Something went wrong!', 'event-tickets' ),
-			]
+					],
+					'content_classes' => [ 'tribe-tickets__commerce-checkout-notice-content' ],
+					'title'           => __( 'Checkout Error!', 'event-tickets' ),
+					'content'         => __( 'Something went wrong!', 'event-tickets' ),
+				]
 		);
 		?>
 		<?php $this->template( 'checkout/cart/empty' ); ?>
+		<?php $this->template( 'checkout/purchaser-info' ); ?>
+		<?php $this->template( 'checkout/gateways' ); ?>
 		<?php $this->template( 'checkout/footer' ); ?>
 		<?php $this->template( 'checkout/must-login' ); ?>
 	</section>

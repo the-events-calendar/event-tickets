@@ -18,9 +18,15 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	'use strict';
 
 	// base elements
-	var $body = $( 'html, body' );
 	var $document = $( document );
 	var $tribe_tickets = $( document.getElementById( 'tribetickets' ) );
+	const recurrence_row_selectors = '.recurrence-row';
+	const recurrence_not_supported_row_selector = '.recurrence-row.tribe-recurrence-not-supported';
+	const recurrence_rule_panel_selector = '.tribe-event-recurrence-rule';
+	const ticket_button_selectors = '#rsvp_form_toggle, #ticket_form_toggle, #settings_form_toggle';
+	const tickets_panel_table_selector = '.tribe-tickets-editor-table-tickets-body';
+	const tickets_panel_form_selector = '#tribe_panel_edit';
+	const noTicketsOnRecurring = document.body.classList.contains( 'tec-no-tickets-on-recurring' );
 
 	// Bail if we don't have what we need
 	if ( 0 === $tribe_tickets.length ) {
@@ -28,7 +34,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	}
 
 	/**
-	 * Replacement for jQuery $.isNumeric that was deprecated on version 5.7 of WP.
+	 * Replacement for jQuery $.isNumeric that was deprecated on version 5.7 of
+	 * WP.
 	 *
 	 * @param {string|int} number
 	 *
@@ -99,8 +106,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	};
 
 	/**
-	 * Sets the ticket edit form provider to the currently selected default ticketing provider.
-	 * Defaults to RSVP if something fails
+	 * Sets the ticket edit form provider to the currently selected default
+	 * ticketing provider. Defaults to RSVP if something fails
 	 *
 	 * @since 4.6
 	 *
@@ -202,7 +209,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	/**
 	 * Switch from one panel to another
 	 * @param  event  e      triggering event
-	 * @param  object ($base_panel) $panel jQuery object containing the panel we want to switch to
+	 * @param  object ($base_panel) $panel jQuery object containing the panel we
+	 *     want to switch to
 	 * @return void
 	 */
 	obj.swapPanel = function( panel ) {
@@ -330,10 +338,11 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		var startofweek = 0;
 
 		/**
-		 * There might be cases when Tickets is used in isolation where TEC is not installed
-		 * for those cases tribe_datepicker_opts is undefined as is a variable defined by TEC. One of
-		 * the most important part of this variable is the dateFormat value, in this case we created
-		 * a new global variable so any other element that dependes on it has access to this value
+		 * There might be cases when Tickets is used in isolation where TEC is not
+		 * installed for those cases tribe_datepicker_opts is undefined as is a
+		 * variable defined by TEC. One of the most important part of this variable
+		 * is the dateFormat value, in this case we created a new global variable
+		 * so any other element that dependes on it has access to this value
 		 */
 		if ( typeof tribe_datepicker_opts === 'undefined' ) {
 			var $dateFormat = $( '[data-datepicker_format]' );
@@ -626,6 +635,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	/* "Save Ticket" button action */
 	$document.on( 'click.tribe', '[name="ticket_form_save"]', function( e ) {
 		var $form = $( document.getElementById( 'ticket_form_table' ) );
+		var additionalValidation = true;
 
 		// Makes sure we have validation
 		$form.trigger( 'validation.tribe' );
@@ -635,17 +645,30 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			return;
 		}
 
+		// setting triggerHandler as a variable is needed to return a new value of additionalValidation if needed.
+		additionalValidation = $tribe_tickets.triggerHandler( 'additionalValidation.tribe', [ additionalValidation ] );
+
+		// prevent form submission if trigger above returns false
+		if ( additionalValidation === false ) {
+			return;
+		}
+
 		$tribe_tickets.trigger( 'pre-save-ticket.tribe', e );
 
-		var $orders = $base_panel.find( '.tribe-ticket-field-order' );
+		var ticketID = $edit_panel.find( '#ticket_id' ).val();
+		var $editParent = $base_panel.find( `[data-ticket-type-id="${ticketID}"]` );
+		var orders = $editParent.find( '.tribe-ticket-field-order' ).val();
 		var params = {
 			action: 'tribe-ticket-add',
 			data: $edit_panel.find( 'input,textarea,select' ).serialize().replace( /\'/g, '%27' ).replace( /\:/g, '%3A' ),
 			post_id: $post_id.val(),
 			nonce: TribeTickets.add_ticket_nonce,
-			menu_order: $orders.length,
+			menu_order: orders,
 			is_admin: $( 'body' ).hasClass( 'wp-admin' )
 		};
+
+		// ticket_menu_order is missing from the serialized string, lets add it
+		params.data = params.data.concat( "&ticket_menu_order=" + orders )
 
 		$.post(
 			ajaxurl,
@@ -821,6 +844,49 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		}
 	} );
 
+	if ( noTicketsOnRecurring ) {
+		/**
+		 * Disable creating tickets/rsvps if recurrence rules are created.
+		 */
+		$document.on( 'tribe-recurrence-active', function( event ) {
+			$( ticket_button_selectors ).hide();
+			$( ticket_button_selectors ).
+					parent().
+					find( '.ticket-editor-notice' ).
+					show();
+		} );
+
+		/**
+		 * Enable creating tickets/rsvps if recurrence rules are removed.
+		 */
+		$document.on( 'tribe-recurrence-inactive', function( event ) {
+			$( ticket_button_selectors ).show();
+			$( ticket_button_selectors ).
+					parent().
+					find( '.ticket-editor-notice' ).
+					hide();
+		} );
+
+		/**
+		 * Disable creating recurrence rules if tickets are created.
+		 */
+		$document.on( 'tribe-tickets-active', function( event ) {
+			$( recurrence_row_selectors ).hide();
+			$( recurrence_not_supported_row_selector ).
+					css( 'visibility', 'visible' ).
+					show();
+		} );
+
+		/**
+		 * Enable creating recurrence rules if tickets are removed.
+		 */
+		$document.on( 'tribe-tickets-inactive', function( event ) {
+			$( recurrence_row_selectors ).show();
+			$( recurrence_not_supported_row_selector ).hide();
+		} );
+	}
+
+
 	/* Remove header image action */
 	$document.on( 'click', '#tribe_ticket_header_remove', function( e ) {
 		e.preventDefault();
@@ -828,6 +894,24 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		$( document.getElementById( 'tribe_ticket_header_remove' ) ).hide();
 		$( document.getElementById( 'tribe_tickets_image_preview_filename' ) ).hide().find( '.filename' ).text( '' );
 		$( document.getElementById( 'tribe_ticket_header_image_id' ) ).val( '' );
+	} );
+
+	$document.on( 'after_panel_swap.tickets', function() {
+		$document.trigger( 'tribe-tickets-active' );
+	} );
+
+	$document.on( 'verify.dependency', function() {
+		if ( $( tickets_panel_table_selector ).is( ':visible' ) ) {
+			$document.trigger( 'tribe-tickets-active' );
+		} else {
+			$document.trigger( 'tribe-tickets-inactive' );
+		}
+
+		if ( $( recurrence_rule_panel_selector ).is( ':visible' ) ) {
+			$document.trigger( 'tribe-recurrence-active' );
+		} else {
+			$document.trigger( 'tribe-recurrence-inactive' );
+		}
 	} );
 
 	$( obj.setupPanels );

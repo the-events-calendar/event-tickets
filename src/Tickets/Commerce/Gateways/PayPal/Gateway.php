@@ -2,8 +2,11 @@
 
 namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
-use TEC\Tickets\Commerce\Gateways\Abstract_Gateway;
+use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Gateway;
 use TEC\Tickets\Commerce\Notice_Handler;
+use TEC\Tickets\Commerce\Settings as TC_Settings;
+use TEC\Tickets\Commerce\Utils\Currency;
+use \Tribe__Tickets__Main;
 
 /**
  * Class Gateway
@@ -18,7 +21,26 @@ class Gateway extends Abstract_Gateway {
 	protected static $key = 'paypal';
 
 	/**
-	 * PayPal attribution ID for requests.
+	 * @inheritDoc
+	 */
+	protected static $settings = Settings::class;
+
+	/**
+	 * @inheritDoc
+	 */
+	protected static $merchant = Merchant::class;
+
+	/**
+	 * @inheritDoc
+	 */
+	protected static $supported_currencies = [
+		'AUD', 'BRL', 'CAD', 'CNY', 'CZK', 'DKK', 'EUR', 'HKD', 'HUF',
+		'ILS', 'JPY', 'MYR', 'MXN', 'TWD', 'NZD', 'NOK', 'PHP', 'PLN',
+		'GBP', 'RUB', 'SGD', 'SEK', 'CHF', 'THB', 'USD',
+	];
+
+	/**
+	 * PayPal's attribution ID for requests.
 	 *
 	 * @since 5.1.6
 	 *
@@ -47,136 +69,159 @@ class Gateway extends Abstract_Gateway {
 	/**
 	 * @inheritDoc
 	 */
-	public static function is_connected() {
-		// If this gateway shouldn't be shown, then don't change the active status.
-		if ( ! static::should_show() ) {
-			return false;
-		}
+	public function get_admin_notices() {
+		$notices = [
+			[
+				'slug'    => 'tc-paypal-signup-complete',
+				'content' => __( 'PayPal is now connected.', 'event-tickets' ),
+				'type'    => 'info',
+			],
+			[
+				'slug'    => 'tc-paypal-disconnect-failed',
+				'content' => __( 'Failed to disconnect PayPal account.', 'event-tickets' ),
+				'type'    => 'error',
+			],
+			[
+				'slug'    => 'tc-paypal-disconnected',
+				'content' => __( 'Disconnected PayPal account.', 'event-tickets' ),
+				'type'    => 'info',
+			],
+			[
+				'slug'    => 'tc-paypal-refresh-token-failed',
+				'content' => __( 'Failed to refresh PayPal access token.', 'event-tickets' ),
+				'type'    => 'error',
+			],
+			[
+				'slug'    => 'tc-paypal-refresh-token',
+				'content' => __( 'PayPal access token was refreshed successfully.', 'event-tickets' ),
+				'type'    => 'info',
+			],
+			[
+				'slug'    => 'tc-paypal-refresh-user-info-failed',
+				'content' => __( 'Failed to refresh PayPal user info.', 'event-tickets' ),
+				'type'    => 'error',
+			],
+			[
+				'slug'    => 'tc-paypal-refresh-user-info',
+				'content' => __( 'PayPal user info was refreshed successfully.', 'event-tickets' ),
+				'type'    => 'info',
+			],
+			[
+				'slug'    => 'tc-paypal-refresh-webhook-failed',
+				'content' => __( 'Failed to refresh PayPal webhooks.', 'event-tickets' ),
+				'type'    => 'error',
+			],
+			[
+				'slug'    => 'tc-paypal-refresh-webhook-success',
+				'content' => __( 'PayPal webhooks refreshed successfully.', 'event-tickets' ),
+				'type'    => 'info',
+			],
+			[
+				'slug'    => 'tc-paypal-ssl-not-available',
+				'content' => __( 'A valid SSL certificate is required to set up your PayPal account and accept payments', 'event-tickets' ),
+				'type'    => 'error',
+			],
+		];
 
-		return tribe( Merchant::class )->is_connected();
+		return $notices;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public static function is_active() {
-		// If this gateway shouldn't be shown, then don't change the active status.
+	public function get_logo_url(): string {
+		return Tribe__Tickets__Main::instance()->plugin_url . 'src/resources/images/admin/paypal_logo.png';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function get_subtitle(): string {
+		return __( 'Enable payments through PayPal, Venmo, and credit card.', 'event-tickets' );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static function is_enabled(): bool {
 		if ( ! static::should_show() ) {
 			return false;
 		}
 
-		return tribe( Merchant::class )->is_active();
+		$option_value = tribe_get_option( static::get_enabled_option_key() );
+		if ( '' !== $option_value ) {
+			return (bool) $option_value;
+		}
+
+		// If option is not explicitly set, the default will be if PayPal is connected.
+		return static::is_connected();
 	}
 
 	/**
-	 * Get the list of settings for the gateway.
-	 *
-	 * @since 5.1.6
-	 *
-	 * @return array The list of settings for the gateway.
+	 * @inheritDoc
 	 */
-	public function get_settings() {
-		return tribe( Settings::class )->get_settings();
+	public function render_checkout_template( \Tribe__Template $template ): string {
+		$gateway_key   = static::get_key();
+		$template_path = "gateway/{$gateway_key}/container";
+
+		return $template->template( $template_path, tribe( Buttons::class )->get_checkout_template_vars() );
 	}
 
 	/**
-	 * Determine whether Tickets Commerce is in test mode.
+	 * Filter to add any admin notices that might be needed.
 	 *
-	 * @since 5.1.6
+	 * @since 5.3.2
 	 *
-	 * @return bool Whether Tickets Commerce is in test mode.
-	 */
-	public static function is_test_mode() {
-		return tribe_is_truthy( tribe_get_option( \TEC\Tickets\Commerce\Settings::$option_sandbox ) );
-	}
-
-	/**
-	 * Get all the admin notices.
-	 *
-	 * @since 5.2.0.
+	 * @param array Array of admin notices.
 	 *
 	 * @return array
 	 */
-	public function get_admin_notices() {
-		$notices = [
-			[
-				'slug'     => 'tc-paypal-signup-complete',
-				'content'  => __( 'PayPal is now connected.', 'event-tickets' ),
-				'type'     => 'info',
-			],
-			[
-				'slug'     => 'tc-paypal-disconnect-failed',
-				'content'  => __( 'Failed to disconnect PayPal account.', 'event-tickets' ),
-				'type'     => 'error',
-			],
-			[
-				'slug'     => 'tc-paypal-disconnected',
-				'content'  => __( 'Disconnected PayPal account.', 'event-tickets' ),
-				'type'     => 'info',
-			],
-			[
-				'slug'     => 'tc-paypal-refresh-token-failed',
-				'content'  => __( 'Failed to refresh PayPal access token.', 'event-tickets' ),
-				'type'     => 'error',
-			],
-			[
-				'slug'     => 'tc-paypal-refresh-token',
-				'content'  => __( 'PayPal access token was refreshed successfully.', 'event-tickets' ),
-				'type'     => 'info',
-			],
-			[
-				'slug'     => 'tc-paypal-refresh-user-info-failed',
-				'content'  => __( 'Failed to refresh PayPal user info.', 'event-tickets' ),
-				'type'     => 'error',
-			],
-			[
-				'slug'     => 'tc-paypal-refresh-user-info',
-				'content'  => __( 'PayPal user info was refreshed successfully.', 'event-tickets' ),
-				'type'     => 'info',
-			],
-			[
-				'slug'     => 'tc-paypal-refresh-webhook-failed',
-				'content'  => __( 'Failed to refresh PayPal webhooks.', 'event-tickets' ),
-				'type'     => 'error',
-			],
-			[
-				'slug'     => 'tc-paypal-refresh-webhook-success',
-				'content'  => __( 'PayPal webhooks refreshed successfully.', 'event-tickets' ),
-				'type'     => 'info',
-			],
-			[
-				'slug'     => 'tc-paypal-ssl-not-available',
-				'content'  => __( 'A valid SSL certificate is required to set up your PayPal account and accept payments', 'event-tickets' ),
-				'type'     => 'error',
-			],
-		];
+	public function filter_admin_notices( $notices ) {
 
-		 return $notices;
+		// Check for unsupported currency.
+		$selected_currency = tribe_get_option( TC_Settings::$option_currency_code );
+		if ( $this->is_enabled() && ! $this->is_currency_supported( $selected_currency ) ){
+			$notices[] = [
+				'tc-paypal-currency-not-supported',
+				[ $this, 'render_unsupported_currency_notice' ],
+				[ 'dismiss' => false, 'type' => 'error' ],
+			];
+		}
+
+		return $notices;
 	}
 
 	/**
-	 * Displays error notice for invalid API responses, with error message from API response data.
+	 * HTML for notice for unsupported currencies
 	 *
-	 * @since 5.2.0
+	 * @since 5.3.2
 	 *
-	 * @param array  $response Raw Response data.
-	 * @param string $message  Additional message to show with error message.
-	 * @param string $slug     Slug for notice container.
+	 * @return string
 	 */
-	public function handle_invalid_response( $response, $message, $slug = 'error' ) {
+	public function render_unsupported_currency_notice() {
+		$selected_currency = tribe_get_option( TC_Settings::$option_currency_code );
+		$currency_name = tribe( Currency::class )->get_currency_name( $selected_currency );
+		// If we don't have the currency name configured, use the currency code instead.
+		if ( empty( $currency_name ) ) {
+			$currency_name = $selected_currency;
+		}
+		$notice_link = sprintf(
+			'<a href="%1$s" target="_blank" rel="noopener noreferrer">%2$s</a>',
+			esc_url( 'https://developer.paypal.com/docs/reports/reference/paypal-supported-currencies/' ),
+			esc_html__( 'here', 'event-tickets' )
+		);
+		$notice_header = esc_html__( 'PayPal doesn\'t support your selected currency', 'event-tickets' );
+		$notice_text = sprintf(
+			// Translators: %1$s: Currency Name. %2$s: Link to gateway provider's currency documentation.
+			esc_html__( 'Unfortunately PayPal doesn\'t support payments in %1$s. Please try using a different gateway or adjusting your Tickets Commerce currency setting. You can see a list of supported currencies %2$s.', 'event-tickets' ),
+			$currency_name,
+			$notice_link
+		);
 
-		$notices = tribe( Notice_Handler::class );
-		$body    = (array) json_decode( wp_remote_retrieve_body( $response ) );
-
-		$error = isset( $body['error'] ) ? $body['error'] : __( 'Something went wrong!' , 'event-tickets' );
-		$error_message = isset( $body['error_description'] ) ? $body['error_description'] : __( 'Unexpected response recieved.' , 'event-tickets' );
-
-		$notices->trigger_admin(
-			$slug,
-			[
-				'content' => sprintf( 'Error - %s : %s - %s', $error, $error_message, $message ),
-				'type'    => 'error',
-			]
+		return sprintf(
+			'<p><strong>%1$s</strong></p><p>%2$s</p>',
+			$notice_header,
+			$notice_text
 		);
 	}
 }

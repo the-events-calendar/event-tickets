@@ -23,6 +23,7 @@ class Value extends Abstract_Currency {
 		$this->currency_symbol_position     = Currency::get_currency_symbol_position( $this->get_currency_code() );
 		$this->currency_separator_decimal   = Currency::get_currency_separator_decimal( $this->get_currency_code() );
 		$this->currency_separator_thousands = Currency::get_currency_separator_thousands( $this->get_currency_code() );
+		$this->set_precision( Currency::get_currency_precision( $this->get_currency_code() ) );
 	}
 
 	/**
@@ -56,12 +57,12 @@ class Value extends Abstract_Currency {
 
 		$position = 'prefix' === $this->get_currency_symbol_position() ? 'prefix' : 'postfix';
 
-		$html[] = "<span class'tribe-formatted-currency-wrap tribe-currency-{$position}'>";
+		$html[] = "<span class='tribe-formatted-currency-wrap tribe-currency-{$position}'>";
 		$html[] = '<span class="tribe-currency-symbol">%1$s</span>';
 		$html[] = '<span class="tribe-amount">%2$s</span>';
 		$html[] = '</span>';
 
-		if ( $position !== 'prefix' ) {
+		if ( 'prefix' !== $position ) {
 			// If position is not prefix, swap the symbol and amount span tags.
 			$hold    = $html[1];
 			$html[1] = $html[2];
@@ -74,5 +75,4 @@ class Value extends Abstract_Currency {
 		);
 
 	}
-
 }

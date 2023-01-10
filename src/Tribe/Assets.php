@@ -1,6 +1,7 @@
 <?php
 
 use Tribe__Utils__Array as Arr;
+use Tribe\Tickets\Admin\Settings;
 
 class Tribe__Tickets__Assets {
 	/**
@@ -363,7 +364,7 @@ class Tribe__Tickets__Assets {
 		global $post;
 
 		// Should enqueue if Ticket settings page.
-		if ( 'tribe-common' === tribe_get_request_var( 'page' ) && 'event-tickets' === tribe_get_request_var( 'tab' ) ) {
+		if ( tribe( Settings::class )->is_tec_tickets_settings() ) {
 			return true;
 		}
 
@@ -390,18 +391,12 @@ class Tribe__Tickets__Assets {
 	 * @return bool
 	 */
 	public function should_enqueue_admin_settings_assets() {
-
 		$admin_helpers = Tribe__Admin__Helpers::instance();
-
-		// The list of admin tabs that the plugin hooks into.
-		$admin_tabs = [
-			'event-tickets',
-			'event-tickets-commerce',
-			'payments',
-		];
+		$admin_pages   = tribe( 'admin.pages' );
+		$admin_page    = $admin_pages->get_current_page();
 
 		// Load specifically on Ticket Settings page only.
-		$should_enqueue = $admin_helpers->is_screen() && in_array( tribe_get_request_var( 'tab' ), $admin_tabs, true );
+		$should_enqueue = $admin_helpers->is_screen() && Settings::$settings_page_id === $admin_page;
 
 		/**
 		 * Allow filtering of whether the base Admin Settings Assets should be loaded.

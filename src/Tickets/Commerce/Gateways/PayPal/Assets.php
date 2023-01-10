@@ -9,6 +9,7 @@
 
 namespace TEC\Tickets\Commerce\Gateways\PayPal;
 
+use TEC\Tickets\Commerce\Checkout;
 use TEC\Tickets\Commerce\Gateways\PayPal\REST\On_Boarding_Endpoint;
 use TEC\Tickets\Commerce\Gateways\PayPal\REST\Order_Endpoint;
 
@@ -35,6 +36,7 @@ class Assets extends \tad_DI52_ServiceProvider {
 			[],
 			'admin_enqueue_scripts',
 			[
+				'conditionals' => [ $this, 'should_enqueue_assets_payments_tab' ],
 				'localize' => [
 					[
 						'name' => 'tribeTicketsCommercePayPaCommerce',
@@ -91,8 +93,9 @@ class Assets extends \tad_DI52_ServiceProvider {
 				'tribe-tickets-loader',
 				'tribe-tickets-commerce-js',
 				'tribe-tickets-commerce-notice-js',
+				'tribe-tickets-commerce-base-gateway-checkout-toggler',
 			],
-			null,
+			'tec-tickets-commerce-checkout-shortcode-assets',
 			[
 				'groups'       => [
 					'tec-tickets-commerce-gateway-paypal',
@@ -187,7 +190,7 @@ class Assets extends \tad_DI52_ServiceProvider {
 	 * @return bool If the `PayPal` assets should be enqueued or not.
 	 */
 	public function should_enqueue_assets() {
-		return tribe( Gateway::class )->is_active();
+		return tribe( Checkout::class )->is_current_page() && tribe( Gateway::class )->is_enabled() && tribe( Gateway::class )->is_active();
 	}
 
 	/**
@@ -198,6 +201,6 @@ class Assets extends \tad_DI52_ServiceProvider {
 	 * @return bool If the `PayPal` assets should be enqueued or not.
 	 */
 	public function should_enqueue_assets_payments_tab() {
-		return 'payments' === tribe_get_request_var( 'tab' ) && \Tribe__Settings::instance()->adminSlug === tribe_get_request_var( 'page' );
+		return 'paypal' === tribe_get_request_var( 'tc-section' ) && 'payments' === tribe_get_request_var( 'tab' ) && \Tribe\Tickets\Admin\Settings::$settings_page_id === tribe_get_request_var( 'page' );
 	}
 }
