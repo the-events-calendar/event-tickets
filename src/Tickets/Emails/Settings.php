@@ -3,7 +3,7 @@
 /**
  * Tickets Emails Settings class
  *
- * @since   TBD
+ * @since   5.5.6
  *
  * @package TEC\Tickets\Emails
  *
@@ -20,7 +20,7 @@ class Settings {
 	/**
 	 * The option key for email sender's name.
 	 *
-	 * @since TBD
+	 * @since 5.5.6
 	 *
 	 * @var string
 	 */
@@ -29,7 +29,7 @@ class Settings {
 	/**
 	 * The option key for email sender's email.
 	 *
-	 * @since TBD
+	 * @since 5.5.6
 	 *
 	 * @var string
 	 */
@@ -38,7 +38,7 @@ class Settings {
 	/**
 	 * The option key for the email header image url.
 	 *
-	 * @since TBD
+	 * @since 5.5.6
 	 *
 	 * @var string
 	 */
@@ -47,7 +47,7 @@ class Settings {
 	/**
 	 * The option key for the email header image alignment.
 	 *
-	 * @since TBD
+	 * @since 5.5.6
 	 *
 	 * @var string
 	 */
@@ -56,7 +56,7 @@ class Settings {
 	/**
 	 * The option key for the email header background color.
 	 *
-	 * @since TBD
+	 * @since 5.5.6
 	 *
 	 * @var string
 	 */
@@ -65,7 +65,7 @@ class Settings {
 	/**
 	 * The option key for the email ticket background color.
 	 *
-	 * @since TBD
+	 * @since 5.5.6
 	 *
 	 * @var string
 	 */
@@ -74,7 +74,7 @@ class Settings {
 	/**
 	 * The option key for the email footer content.
 	 *
-	 * @since TBD
+	 * @since 5.5.6
 	 *
 	 * @var string
 	 */
@@ -83,7 +83,7 @@ class Settings {
 	/**
 	 * The option key for the email footer credit.
 	 *
-	 * @since TBD
+	 * @since 5.5.6
 	 *
 	 * @var string
 	 */
@@ -92,7 +92,7 @@ class Settings {
 	/**
 	 * Gets the template instance used to setup the rendering html.
 	 *
-	 * @since TBD
+	 * @since 5.5.6
 	 *
 	 * @return Tribe__Template
 	 */
@@ -109,11 +109,11 @@ class Settings {
 
 	/**
 	 * Adds list of Templates to the Tickets Emails settings tab.
-	 * 
-	 * @since TBD
-	 * 
+	 *
+	 * @since 5.5.6
+	 *
 	 * @param  array $fields Current array of Tickets Emails settings fields.
-	 * 
+	 *
 	 * @return array $fields Filtered array of Tickets Emails settings fields.
 	 */
 	public function add_template_list( array $fields ): array {
@@ -154,7 +154,7 @@ class Settings {
 		/**
 		 * Filter the Tickets Emails Tab Template List
 		 *
-		 * @since TBD
+		 * @since 5.5.6
 		 *
 		 * @param array  $new_fields  A settings array that includes the template list.
 		 */
@@ -165,11 +165,11 @@ class Settings {
 
 	/**
 	 * Adds Sender Info fields to Tickets Emails settings.
-	 * 
-	 * @since TBD
+	 *
+	 * @since 5.5.6
 	 *
 	 * @param  [] $fields Current array of Tickets Emails settings fields.
-	 * 
+	 *
 	 * @return [] $fields Filtered array of Tickets Emails settings fields.
 	 */
 	public function sender_info_fields( array $fields ): array {
@@ -203,7 +203,7 @@ class Settings {
 		/**
 		 * Filter the Tickets Emails Sender Info Fields
 		 *
-		 * @since TBD
+		 * @since 5.5.6
 		 *
 		 * @param array  $new_fields  A settings array that includes the sender info fields.
 		 */
@@ -214,9 +214,9 @@ class Settings {
 
 	/**
 	 * Get sender name.
-	 * 
-	 * @since TBD
-	 * 
+	 *
+	 * @since 5.5.6
+	 *
 	 * @return string Sender's name.
 	 */
 	public function get_sender_name(): string {
@@ -232,9 +232,9 @@ class Settings {
 
 	/**
 	 * Get sender email.
-	 * 
-	 * @since TBD
-	 * 
+	 *
+	 * @since 5.5.6
+	 *
 	 * @return string Sender's email address.
 	 */
 	public function get_sender_email(): string {
@@ -250,11 +250,11 @@ class Settings {
 
 	/**
 	 * Adds Sender Info fields to Tickets Emails settings.
-	 * 
-	 * @since TBD
+	 *
+	 * @since 5.5.6
 	 *
 	 * @param  [] $fields Current array of Tickets Emails settings fields.
-	 * 
+	 *
 	 * @return [] $fields Filtered array of Tickets Emails settings fields.
 	 */
 	public function email_styling_fields( array $fields ): array {
@@ -336,7 +336,7 @@ class Settings {
 		/**
 		 * Filter the Tickets Emails Styling Fields
 		 *
-		 * @since TBD
+		 * @since 5.5.6
 		 *
 		 * @param array  $new_fields  A settings array that includes the styling fields.
 		 */

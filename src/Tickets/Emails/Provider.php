@@ -2,7 +2,7 @@
 /**
  * The main service provider for the Tickets Emails.
  *
- * @since   TBD
+ * @since   5.5.6
  * @package TEC\Tickets\Emails
  */
 
@@ -13,7 +13,7 @@ use tad_DI52_ServiceProvider;
 /**
  * Service provider for the Tickets Emails.
  *
- * @since   TBD
+ * @since   5.5.6
  * @package TEC\Tickets\Emails
  */
 class Provider extends tad_DI52_ServiceProvider {
@@ -21,7 +21,7 @@ class Provider extends tad_DI52_ServiceProvider {
 	/**
 	 * Register the provider singletons.
 	 *
-	 * @since TBD
+	 * @since 5.5.6
 	 */
 	public function register() {
 
@@ -44,7 +44,7 @@ class Provider extends tad_DI52_ServiceProvider {
 	/**
 	 * Registers the provider handling all the 1st level filters and actions for Tickets Emails.
 	 *
-	 * @since TBD
+	 * @since 5.5.6
 	 */
 	protected function register_assets() {
 		$assets = new Assets( $this->container );
@@ -57,7 +57,7 @@ class Provider extends tad_DI52_ServiceProvider {
 	/**
 	 * Registers the provider handling all the 1st level filters and actions for Tickets Emails.
 	 *
-	 * @since TBD
+	 * @since 5.5.6
 	 */
 	protected function register_hooks() {
 		$hooks = new Hooks( $this->container );

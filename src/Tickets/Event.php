@@ -39,7 +39,7 @@ class Event {
 	/**
 	 * Will filter event ID input to a filtered and relevant ID.
 	 *
-	 * @since TBD
+	 * @since 5.5.6
 	 *
 	 * @param numeric $event_id The event ID to be normalized.
 	 *
@@ -49,7 +49,7 @@ class Event {
 		/**
 		 * This filter allows retrieval of an event ID to be filtered before being accessed elsewhere.
 		 *
-		 * @since TBD
+		 * @since 5.5.6
 		 *
 		 * @param int|null The event ID to be filtered.
 		 */

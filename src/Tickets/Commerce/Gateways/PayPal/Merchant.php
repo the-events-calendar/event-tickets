@@ -921,7 +921,7 @@ class Merchant extends Abstract_Merchant {
 	 * Validates the locale to make sure it has a valid length.
 	 * If it's not, it will return the default locale.
 	 *
-	 * @since TBD
+	 * @since 5.5.6
 	 *
 	 * @param string $locale The Locale code.
 	 *
@@ -938,7 +938,7 @@ class Merchant extends Abstract_Merchant {
 		/**
 		 * Allows filtering of the fallback locale value for the PayPal SDK if the existing is invalid.
 		 *
-		 * @since TBD
+		 * @since 5.5.6
 		 *
 		 * @param string $fallback_locale
 		 */

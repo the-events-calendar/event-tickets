@@ -59,7 +59,7 @@ class Provider extends tad_DI52_ServiceProvider {
 	 * Will normalize the event ID, converting provisional ID's to their Post ID counterpart. Non-destructive, will
 	 * retain original value if a provisional ID is not found.
 	 *
-	 * @since TBD
+	 * @since 5.5.6
 	 *
 	 * @param mixed $id Event ID to attempt converting to a post ID.
 	 *
@@ -129,7 +129,7 @@ class Provider extends tad_DI52_ServiceProvider {
 	/**
 	 * Do cleanup stuff.
 	 *
-	 * @since TBD
+	 * @since 5.5.6
 	 */
 	public function unregister() {
 		remove_filter( 'admin_body_class', [ $this, 'prevent_tickets_on_recurring_events' ] );
