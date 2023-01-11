@@ -918,6 +918,8 @@ class Tribe__Tickets__Main {
 
 	/**
 	 * Returns the supported post types for tickets
+	 *
+	 * @return array<string>
 	 */
 	public function post_types() {
 		$options = (array) get_option( Tribe__Main::OPTIONNAME, [] );
