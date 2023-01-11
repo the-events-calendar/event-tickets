@@ -197,6 +197,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Tweak - Added a dashboard notice for sites running PHP versions lower than 7.4 to alert them that the minimum version of PHP is changing to 7.4 in February 2023.
 * Enhancement - Added search capabilities to the Tickets Commerce Orders report page. [ET-1259]
 * Fix - Allow loading attendance page with `event_id` params that use The Events Calendar provisional IDs. [ET-1624]
+* Language - 4 new strings added, 43 updated, 0 fuzzied, and 2 obsoleted
 
 = [5.5.5] 2022-12-08 =
 
