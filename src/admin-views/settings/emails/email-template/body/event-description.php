@@ -3,9 +3,8 @@
  * Tickets Emails Email Template Event Description
  *
  * @since  TBD   Event description.
- * 
+ *
  * @var string $event_description HTML of event description.
- * 
  */
 
 if ( empty( $event_description ) ) {

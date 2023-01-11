@@ -3,9 +3,8 @@
  * Tickets Emails Email Template Event Image
  *
  * @since  TBD   Event image.
- * 
+ *
  * @var array $event_venue Array of venue information.
- * 
  */
 
 if ( empty( $event_venue ) || ! is_array( $event_venue ) ) {

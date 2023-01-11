@@ -24,7 +24,7 @@ class Email_Template {
 
 	/**
 	 * Whether or not this is for a template preview.
-	 * 
+	 *
 	 * @since TBD
 	 *
 	 * @var boolean
@@ -33,7 +33,7 @@ class Email_Template {
 
 	/**
 	 * Holds context array that will be applied to the template.
-	 * 
+	 *
 	 * @since TBD
 	 *
 	 * @var array
@@ -114,7 +114,7 @@ class Email_Template {
 	 * @since TBD
 	 *
 	 * @param array $data
-	 * 
+	 *
 	 * @return void
 	 */
 	public function set_data( array $data ) {
@@ -144,7 +144,7 @@ class Email_Template {
 		if ( $this->preview ) {
 			$this->context_data = $this->get_preview_context_array();
 		}
-		
+
 		$this->context_data = array_merge( $context, $this->context_data );
 
 		/**
