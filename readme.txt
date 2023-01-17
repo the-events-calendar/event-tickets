@@ -190,7 +190,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.5.6] 2023-01-12 =
+= [5.5.6] 2023-01-16 =
 
 * Tweak - Updated the settings description for stock handling options. [ET-1603]
 * Tweak - Added the `tribe-tickets__tickets-item--shared-capacity` wrapper class for tickets having shared capacity. [ETP-841]
