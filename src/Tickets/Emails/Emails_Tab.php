@@ -2,7 +2,7 @@
 /**
  * Handles registering and setup for the Tickets Emails settings tab.
  *
- * @since TBD
+ * @since 5.5.6
  *
  * @package TEC\Tickets\Emails
  */
@@ -16,7 +16,7 @@ use Tribe__Tickets__Main;
 /**
  * Class Emails_Tab
  *
- * @since   TBD
+ * @since   5.5.6
  *
  * @package TEC\Tickets\Emails
  */
@@ -25,7 +25,7 @@ class Emails_Tab {
 	/**
 	 * Slug for the tab.
 	 *
-	 * @since TBD
+	 * @since 5.5.6
 	 *
 	 * @var string
 	 */
@@ -34,8 +34,8 @@ class Emails_Tab {
 	/**
 	 * Create the Tickets Commerce Emails Settings Tab.
 	 *
-	 * @since  TBD
-	 * 
+	 * @since  5.5.6
+	 *
 	 * @param $admin_page Page ID of current admin page.
 	 */
 	public function register_tab( $admin_page ) {
@@ -57,7 +57,7 @@ class Emails_Tab {
 	/**
 	 * Add the emails tab to the list of tab ids for the Tickets settings.
 	 *
-	 * @since TBD
+	 * @since 5.5.6
 	 *
 	 * @param  array $tabs Current array of tabs ids.
 	 *
@@ -72,7 +72,7 @@ class Emails_Tab {
 	/**
 	 * Gets the template instance used to setup the rendering html.
 	 *
-	 * @since TBD
+	 * @since 5.5.6
 	 *
 	 * @return Tribe__Template
 	 */
@@ -90,7 +90,7 @@ class Emails_Tab {
 	/**
 	 * Gets the URL for the Emails Tab.
 	 *
-	 * @since TBD
+	 * @since 5.5.6
 	 *
 	 * @param array $args Which query args we are adding.
 	 *
@@ -107,7 +107,7 @@ class Emails_Tab {
 	/**
 	 * Gets the top level settings for Tickets Commerce.
 	 *
-	 * @since TBD
+	 * @since 5.5.6
 	 *
 	 * @return array[]
 	 */
@@ -139,7 +139,7 @@ class Emails_Tab {
 		/**
 		 * Hook to modify the settings fields for Tickets Emails.
 		 *
-		 * @since TBD
+		 * @since 5.5.6
 		 *
 		 * @param array[] $fields Top level settings.
 		 */

@@ -184,7 +184,7 @@ class Orders extends WP_List_Table {
 			/**
 			 * Filters the item keys that support LIKE matching to filter orders while searching them.
 			 *
-			 * @since TBD
+			 * @since 5.5.6
 			 *
 			 * @param array  $search_like_keys The keys that support LIKE matching.
 			 * @param array  $search_keys      The keys that can be used to search orders.
@@ -218,7 +218,7 @@ class Orders extends WP_List_Table {
 		/**
 		 * Filters the arguments used to fetch the orders for the order report.
 		 *
-		 * @since TBD
+		 * @since 5.5.6
 		 *
 		 * @param array $arguments The arguments used to fetch the orders.
 		 */
@@ -427,7 +427,7 @@ class Orders extends WP_List_Table {
 	 *
 	 * @see \TEC\Tickets\Commerce\Repositories\Order_Repository for a List of valid ORM args.
 	 *
-	 * @since TBD
+	 * @since 5.5.6
 	 *
 	 * @return array
 	 */
@@ -443,7 +443,7 @@ class Orders extends WP_List_Table {
 		/**
 		 * Filters the search types to be shown in the search box for filtering orders.
 		 *
-		 * @since TBD
+		 * @since 5.5.6
 		 *
 		 * @param array $options List of ORM search types and their labels.
 		 */

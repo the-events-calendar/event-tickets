@@ -1209,7 +1209,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	/**
 	 * Handle check in actions.
 	 *
-	 * @since TBD
+	 * @since 5.5.6
 	 *
 	 * @param int   $attendee_id   The attendee ID.
 	 * @param array $attendee_data List of attendee data that was used for saving.

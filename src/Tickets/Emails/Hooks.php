@@ -10,7 +10,7 @@
  * remove_action( 'some_action', [ tribe( TEC\Tickets\Emails\Hooks::class ), 'some_method' ] );
  * remove_action( 'some_action', [ tribe( 'tickets.emails.hooks' ), 'some_method' ] );
  *
- * @since   TBD
+ * @since   5.5.6
  *
  * @package TEC\Tickets\Emails
  */
@@ -22,7 +22,7 @@ use \tad_DI52_ServiceProvider;
 /**
  * Class Hooks.
  *
- * @since   TBD
+ * @since   5.5.6
  *
  * @package TEC\Tickets\Emails
  */
@@ -31,7 +31,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Binds and sets up implementations.
 	 *
-	 * @since TBD
+	 * @since 5.5.6
 	 */
 	public function register() {
 		$this->add_actions();
@@ -41,7 +41,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Adds the actions required by each Tickets Emails component.
 	 *
-	 * @since TBD
+	 * @since 5.5.6
 	 */
 	protected function add_actions() {
 		add_action( 'tribe_settings_do_tabs', [ $this, 'register_emails_tab' ], 17 );
@@ -50,7 +50,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Adds the filters required by each Tickets Emails component.
 	 *
-	 * @since TBD
+	 * @since 5.5.6
 	 */
 	protected function add_filters() {
 		add_filter( 'tec_tickets_settings_tabs_ids', [ $this, 'filter_add_tab_id' ] );
@@ -62,8 +62,8 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Action to add emails tab to tickets settings page.
 	 *
-	 * @since TBD
-	 * 
+	 * @since 5.5.6
+	 *
 	 * @param $admin_page Page ID of current admin page.
 	 */
 	public function register_emails_tab( $admin_page ) {
@@ -73,10 +73,10 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Filter to add tab id to tickets emails tab.
 	 *
-	 * @since TBD
-	 * 
+	 * @since 5.5.6
+	 *
 	 * @param  array $tabs Current array of tabs ids.
-	 * 
+	 *
 	 * @return array $tabs Filtered array of tabs ids.
 	 */
 	public function filter_add_tab_id( $tabs ) {
@@ -86,10 +86,10 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Filter to add template list to Ticklets Emails settings fields.
 	 *
-	 * @since TBD
-	 * 
+	 * @since 5.5.6
+	 *
 	 * @param  array $fields Current array of Tickets Emails settings fields.
-	 * 
+	 *
 	 * @return array $fields Filtered array of Tickets Emails settings fields.
 	 */
 	public function filter_add_template_list( $fields ) {
@@ -99,10 +99,10 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Filter to add sender info to Ticklets Emails settings fields.
 	 *
-	 * @since TBD
-	 * 
+	 * @since 5.5.6
+	 *
 	 * @param array $fields Current array of Tickets Emails settings fields.
-	 * 
+	 *
 	 * @return array $fields Filtered array of Tickets Emails settings fields.
 	 */
 	public function filter_add_sender_info_fields( $fields ) {
@@ -112,10 +112,10 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Filter to add sender info to Ticklets Emails settings fields.
 	 *
-	 * @since TBD
-	 * 
+	 * @since 5.5.6
+	 *
 	 * @param array $fields Current array of Tickets Emails settings fields.
-	 * 
+	 *
 	 * @return array $fields Filtered array of Tickets Emails settings fields.
 	 */
 	public function filter_add_email_styling_fields( $fields ) {
