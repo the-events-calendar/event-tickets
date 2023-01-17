@@ -190,6 +190,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Tweak - Updated ARF upsell notice to only display in admin dashboard. [CT-67]
+
 = [5.5.6] 2023-01-16 =
 
 * Tweak - Updated the settings description for stock handling options. [ET-1603]
