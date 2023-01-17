@@ -28,7 +28,6 @@ class Attendees_ListTest extends \Codeception\TestCase\WPTestCase{
 		} );
 
 		// Enable Tickets Commerce as the default provider.
-		add_filter( 'tec_tickets_commerce_is_enabled', '__return_true' );
 		add_filter( 'tribe_tickets_get_modules', function ( $modules ) {
 			$modules[Module::class] = Module::class;
 			return $modules;
