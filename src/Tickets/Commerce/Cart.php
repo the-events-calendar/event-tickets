@@ -329,7 +329,7 @@ class Cart {
 			$expire = 1;
 		}
 
-		$is_cookie_set = setcookie( static::$cart_hash_cookie_name, $value, $expire, COOKIEPATH ?: '/', COOKIE_DOMAIN, $secure );
+		$is_cookie_set = setcookie( static::$cart_hash_cookie_name, $value, $expire, COOKIEPATH ?: '/', COOKIE_DOMAIN, $secure, true );
 
 		// Overwrite local variable so we can use it right away.
 		$_COOKIE[ static::$cart_hash_cookie_name ] = $value;
