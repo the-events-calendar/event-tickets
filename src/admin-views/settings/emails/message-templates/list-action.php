@@ -2,8 +2,8 @@
 /**
  * Tickets Emails Message Template List Action
  *
- * @since  TBD   Action links for list item of email message templates for Emails settings tab.
- * 
+ * @since  5.5.6   Action links for list item of email message templates for Emails settings tab.
+ *
  * @var Array[]  $templates  Array of template info.
  * @var Array    $template   Template info.
  */

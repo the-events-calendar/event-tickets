@@ -6,7 +6,7 @@
  * In order the function will check the `TEC_TICKETS_EMAILS` constant,
  * the `TEC_TICKETS_EMAILS` environment variable and, finally, the `Manager::$option_enabled` option.
  *
- * @since TBD
+ * @since 5.5.6
  *
  * @return bool Whether Tickets Emails is enabled or not.
  */
@@ -23,7 +23,7 @@ function tec_tickets_emails_is_enabled(): bool {
 	/**
 	 * Allows filtering of the Tickets Emails provider.
 	 *
-	 * @since TBD
+	 * @since 5.5.6
 	 *
 	 * @param boolean $enabled Determining if Tickets Emails is enabled
 	 */

@@ -2,8 +2,8 @@
 /**
  * Tickets Emails Message Template List Item
  *
- * @since  TBD  List item of email message templates for Emails settings tab.
- * 
+ * @since  5.5.6  List item of email message templates for Emails settings tab.
+ *
  * @var Array[]  $templates  Array of template info.
  * @var Array    $template   Template info.
  */
@@ -17,8 +17,8 @@ if ( empty( $template ) ) {
 }
 
 $item_classes   = [ 'tec-tickets__admin-settings-emails-template-list-item' ];
-$item_classes[] = tribe_is_truthy( $template['enabled'] ) ? 
-    'tec-tickets__admin-settings-emails-template-list-item--enabled' : 
+$item_classes[] = tribe_is_truthy( $template['enabled'] ) ?
+    'tec-tickets__admin-settings-emails-template-list-item--enabled' :
     'tec-tickets__admin-settings-emails-template-list-item--disabled';
 
 ?>

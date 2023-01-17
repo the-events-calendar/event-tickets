@@ -3,7 +3,7 @@
 Contributors: theeventscalendar, brianjessee, camwynsp, aguseo, bordoni, borkweb, GeoffBel, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra, moraleida.me
 Tags: tickets, registration, event registration, RSVP, ticket sales, attendee management
 Requires at least: 5.8.5
-Tested up to: 6.1
+Tested up to: 6.1.1
 Stable tag: 5.5.8
 Requires PHP: 7.3
 License: GPLv2 or later
@@ -190,12 +190,14 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.5.6] 2023-01-12 =
+= [5.5.6] 2023-01-16 =
 
 * Tweak - Updated the settings description for stock handling options. [ET-1603]
 * Tweak - Added the `tribe-tickets__tickets-item--shared-capacity` wrapper class for tickets having shared capacity. [ETP-841]
 * Tweak - Added a dashboard notice for sites running PHP versions lower than 7.4 to alert them that the minimum version of PHP is changing to 7.4 in February 2023.
 * Enhancement - Added search capabilities to the Tickets Commerce Orders report page. [ET-1259]
+* Fix - Allow loading attendance page with `event_id` params that use The Events Calendar provisional IDs. [ET-1624]
+* Language - 4 new strings added, 43 updated, 0 fuzzied, and 2 obsoleted
 
 = [5.5.5] 2022-12-08 =
 

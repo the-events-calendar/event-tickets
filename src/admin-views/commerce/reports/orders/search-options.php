@@ -2,7 +2,7 @@
 /**
  * The template that displays the search type dropdown in the Tickets Commerce Order report admin screen.
  *
- * @version TBD
+ * @version 5.5.6
  *
  * @var array $options Available options.
  * @var string $selected Selected value.

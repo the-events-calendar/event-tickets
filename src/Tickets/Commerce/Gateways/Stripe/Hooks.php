@@ -100,7 +100,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Handles the validation of the signing key on the settings page.
 	 *
-	 * @since TBD
+	 * @since 5.5.6
 	 */
 	public function action_handle_verify_webhooks() : void {
 		$this->container->make( Webhooks::class )->handle_verification();

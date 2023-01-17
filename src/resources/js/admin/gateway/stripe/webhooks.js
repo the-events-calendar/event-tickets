@@ -85,7 +85,7 @@ tribe.tickets.commerce.gateway.stripe.webhooks = {};
 	/**
 	 * Initiate the process of validating a signing key
 	 *
-	 * @since TBD
+	 * @since 5.5.6
 	 * @param $field the key element
 	 * @param $icon  the icon element
 	 * @param $label the label element
@@ -117,7 +117,7 @@ tribe.tickets.commerce.gateway.stripe.webhooks = {};
 	/**
 	 * Check if current key has been verified
 	 *
-	 * @since TBD
+	 * @since 5.5.6
 	 * @param $field the key element
 	 * @param $icon  the icon element
 	 * @param $label the label element

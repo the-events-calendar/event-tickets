@@ -139,7 +139,7 @@ class Webhooks extends Abstract_Webhooks {
 	/**
 	 * Testing the current Signing Key has been verified with success.
 	 *
-	 * @since TBD
+	 * @since 5.5.6
 	 *
 	 * @return void
 	 */
