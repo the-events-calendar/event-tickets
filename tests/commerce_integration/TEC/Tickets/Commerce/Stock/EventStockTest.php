@@ -8,12 +8,14 @@ use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Gateways\PayPal\Gateway;
 use TEC\Tickets\Commerce\Status\Pending;
+use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Events\Test\Factories\Event;
 
 class EventStockTest extends \Codeception\TestCase\WPTestCase {
 
 	use Ticket_Maker;
+	use Order_Maker;
 
 	/**
 	 * @inheritDoc
@@ -104,21 +106,7 @@ class EventStockTest extends \Codeception\TestCase\WPTestCase {
 		// create ticket with default capacity of 100.
 		$ticket_a_id = $this->create_tc_ticket( $event_id, 10 );
 
-		// create order.
-		$cart = new Cart();
-		$cart->get_repository()->add_item( $ticket_a_id, 5 );
-
-		$purchaser = [
-			'purchaser_user_id'    => 0,
-			'purchaser_full_name'  => 'Test Purchaser',
-			'purchaser_first_name' => 'Test',
-			'purchaser_last_name'  => 'Purchaser',
-			'purchaser_email'      => 'test@test.com',
-		];
-
-		$order     = tribe( Order::class )->create_from_cart( tribe( Gateway::class ), $purchaser );
-		$completed = tribe( Order::class )->modify_status( $order->ID, Pending::SLUG );
-		$cart->clear_cart();
+		$order = $this->create_order( [ $ticket_a_id => 5 ] );
 
 		$expected['rsvp'] = [
 			'count'     => 0,
@@ -150,23 +138,11 @@ class EventStockTest extends \Codeception\TestCase\WPTestCase {
 		$ticket_a_id = $this->create_tc_ticket( $event_id, 10 );
 		$ticket_b_id = $this->create_tc_ticket( $event_id, 20 );
 
-		// create order.
-		$cart = new Cart();
-		$cart->get_repository()->add_item( $ticket_a_id, 5 );
-		$cart->get_repository()->add_item( $ticket_b_id, 10 );
+		$order = $this->create_order( [
+			$ticket_a_id => 5,
+			$ticket_b_id => 10,
+		] );
 
-		$purchaser = [
-			'purchaser_user_id'    => 0,
-			'purchaser_full_name'  => 'Test Purchaser',
-			'purchaser_first_name' => 'Test',
-			'purchaser_last_name'  => 'Purchaser',
-			'purchaser_email'      => 'test@test.com',
-		];
-
-		$order     = tribe( Order::class )->create_from_cart( tribe( Gateway::class ), $purchaser );
-		$completed = tribe( Order::class )->modify_status( $order->ID, Pending::SLUG );
-		$cart->clear_cart();
-		
 		$expected['rsvp'] = [
 			'count'     => 0,
 			'stock'     => 0,
