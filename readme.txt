@@ -190,6 +190,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [5.5.8] TBD =
+
+* Fix - Fixed Ticket Commerce cart cookies not getting saved. [ET-1629]
+
 = [5.5.6] 2023-01-16 =
 
 * Tweak - Updated the settings description for stock handling options. [ET-1603]
