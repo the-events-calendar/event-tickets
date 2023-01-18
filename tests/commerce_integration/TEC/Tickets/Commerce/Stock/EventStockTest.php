@@ -30,6 +30,9 @@ class EventStockTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertNotFalse( $provider );
 	}
 
+	/**
+	 * @test
+	 */
 	public function test_stock_count_after_single_ticket_creation() {
 
 		$maker = new Event();
@@ -60,6 +63,9 @@ class EventStockTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertEqualSets( $expected, $counts );
 	}
 
+	/**
+	 * @test
+	 */
 	public function test_stock_count_after_multiple_ticket_creation() {
 
 		$maker = new Event();
@@ -87,6 +93,9 @@ class EventStockTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertEqualSets( $expected, $counts );
 	}
 
+	/**
+	 * @test
+	 */
 	public function test_stock_count_after_purchase() {
 
 		$maker = new Event();
@@ -109,6 +118,7 @@ class EventStockTest extends \Codeception\TestCase\WPTestCase {
 
 		$order     = tribe( Order::class )->create_from_cart( tribe( Gateway::class ), $purchaser );
 		$completed = tribe( Order::class )->modify_status( $order->ID, Pending::SLUG );
+		$cart->clear_cart();
 
 		$expected['rsvp'] = [
 			'count'     => 0,
@@ -129,6 +139,9 @@ class EventStockTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertEqualSets( $expected, $data );
 	}
 
+	/**
+	 * @test
+	 */
 	public function test_stock_count_after_purchase_of_multiple_tickets() {
 		$maker    = new Event();
 		$event_id = $maker->create();
@@ -137,15 +150,11 @@ class EventStockTest extends \Codeception\TestCase\WPTestCase {
 		$ticket_a_id = $this->create_tc_ticket( $event_id, 10 );
 		$ticket_b_id = $this->create_tc_ticket( $event_id, 20 );
 
-		codecept_debug( $ticket_a_id );
-		codecept_debug( $ticket_b_id );
 		// create order.
 		$cart = new Cart();
-		$cart->clear_cart();
 		$cart->get_repository()->add_item( $ticket_a_id, 5 );
 		$cart->get_repository()->add_item( $ticket_b_id, 10 );
 
-		codecept_debug( $cart->get_items_in_cart() );
 		$purchaser = [
 			'purchaser_user_id'    => 0,
 			'purchaser_full_name'  => 'Test Purchaser',
@@ -156,7 +165,8 @@ class EventStockTest extends \Codeception\TestCase\WPTestCase {
 
 		$order     = tribe( Order::class )->create_from_cart( tribe( Gateway::class ), $purchaser );
 		$completed = tribe( Order::class )->modify_status( $order->ID, Pending::SLUG );
-
+		$cart->clear_cart();
+		
 		$expected['rsvp'] = [
 			'count'     => 0,
 			'stock'     => 0,
