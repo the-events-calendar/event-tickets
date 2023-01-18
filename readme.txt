@@ -190,8 +190,9 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [TBD] TBD =
+= [5.5.8] TBD =
 
+* Fix - Fixed Ticket Commerce cart cookies not getting saved. [ET-1629]
 * Tweak - Updated ARF upsell notice to only display in admin dashboard. [CT-67]
 
 = [5.5.6] 2023-01-16 =
