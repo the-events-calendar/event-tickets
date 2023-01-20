@@ -1,4 +1,5 @@
 <?php
+use TEC\Tickets\Event;
 
 /**
  *    Class in charge of registering and displaying
@@ -194,6 +195,7 @@ class Tribe__Tickets__Metabox {
 	 */
 	public function ajax_ticket_add() {
 		$post_id = absint( tribe_get_request_var( 'post_id', 0 ) );
+		$post_id = Event::filter_event_id( $post_id );
 
 		if ( ! $post_id ) {
 			wp_send_json_error( esc_html__( 'Invalid parent Post', 'event-tickets' ) );
