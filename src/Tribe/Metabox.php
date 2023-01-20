@@ -192,13 +192,26 @@ class Tribe__Tickets__Metabox {
 	 *
 	 * @since 4.6.2
 	 * @since 4.10.9 Use customizable ticket name functions.
+	 * @since TBD Added optional parameter to return values instead of echoing directly.
+	 *
+	 * @param bool $echo Optional, flags whether to JSON output directly or return results.
+	 *
+	 * @return void|WP_Error|array The results depending on $echo param, WP_Error if something went wrong.
 	 */
-	public function ajax_ticket_add() {
+	public function ajax_ticket_add( $echo = true ) {
 		$post_id = absint( tribe_get_request_var( 'post_id', 0 ) );
 		$post_id = Event::filter_event_id( $post_id );
 
 		if ( ! $post_id ) {
-			wp_send_json_error( esc_html__( 'Invalid parent Post', 'event-tickets' ) );
+			$output = esc_html__( 'Invalid parent Post', 'event-tickets' );
+			if ( ! $echo ) {
+				return new WP_Error(
+					'bad_request',
+					$output,
+					[ 'status' => 400 ]
+				);
+			}
+			wp_send_json_error( $output );
 		}
 
 		/**
@@ -208,11 +221,30 @@ class Tribe__Tickets__Metabox {
 		$data = wp_parse_args( tribe_get_request_var( array( 'data' ), array() ), array() );
 
 		if ( ! $this->has_permission( $post_id, $_POST, 'add_ticket_nonce' ) ) {
-			wp_send_json_error( esc_html( sprintf( __( 'Failed to add the %s. Refresh the page to try again.', 'event-tickets' ), tribe_get_ticket_label_singular( 'ajax_ticket_add_error' ) ) ) );
+			$output = esc_html(
+				sprintf( __( 'Failed to add the %s. Refresh the page to try again.', 'event-tickets' ),
+					tribe_get_ticket_label_singular( 'ajax_ticket_add_error' ) )
+			);
+			if ( ! $echo ) {
+				return new WP_Error(
+					'bad_request',
+					$output,
+					[ 'status' => 400 ]
+				);
+			}
+			wp_send_json_error( $output );
 		}
 
 		if ( ! isset( $data['ticket_provider'] ) || ! $this->module_is_valid( $data['ticket_provider'] ) ) {
-			wp_send_json_error( esc_html__( 'Commerce Provider invalid', 'event-tickets' ) );
+			$output = esc_html__( 'Commerce Provider invalid', 'event-tickets' );
+			if ( ! $echo ) {
+				return new WP_Error(
+					'bad_request',
+					$output,
+					[ 'status' => 400 ]
+				);
+			}
+			wp_send_json_error( $output );
 		}
 
 		// Get the Provider
@@ -238,19 +270,34 @@ class Tribe__Tickets__Metabox {
 			 */
 			do_action( 'tribe_tickets_ticket_added', $post_id );
 		} else {
-			wp_send_json_error( esc_html( sprintf( __( 'Failed to add the %s', 'event-tickets' ), tribe_get_ticket_label_singular( 'ajax_ticket_add_error' ) ) ) );
+			$output = esc_html(
+				sprintf( __( 'Failed to add the %s', 'event-tickets' ),
+					tribe_get_ticket_label_singular( 'ajax_ticket_add_error' ) )
+			);
+			if ( ! $echo ) {
+				return new WP_Error(
+					'bad_request',
+					$output,
+					[ 'status' => 400 ]
+				);
+			}
+			wp_send_json_error( $output );
 		}
 
-		$return = $this->get_panels( $post_id );
+		$return           = $this->get_panels( $post_id );
 		$return['notice'] = $this->notice( 'ticket-add' );
 
 		/**
 		 * Filters the return data for ticket add
 		 *
-		 * @param array $return Array of data to return to the ajax call
-		 * @param int $post_id ID of parent "event" post
+		 * @param array $return  Array of data to return to the ajax call
+		 * @param int   $post_id ID of parent "event" post
 		 */
 		$return = apply_filters( 'event_tickets_ajax_ticket_add_data', $return, $post_id );
+
+		if ( ! $echo ) {
+			return $return;
+		}
 
 		wp_send_json_success( $return );
 	}

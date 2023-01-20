@@ -9,7 +9,6 @@ use TEC\Events\Custom_Tables\V1\Migration\State;
 use TEC\Events\Custom_Tables\V1\Models\Event;
 use TEC\Events\Custom_Tables\V1\Models\Event as Event_Model;
 use TEC\Events\Custom_Tables\V1\Models\Occurrence;
-use TEC\Events\Custom_Tables\V1\Models\Occurrence as Occurrence_Model;
 use TEC\Events\Custom_Tables\V1\Tables\Events as EventsSchema;
 use TEC\Events\Custom_Tables\V1\Tables\Occurrences as OccurrencesSchema;
 use Tribe__Date_Utils as Dates;
@@ -18,6 +17,48 @@ use Tribe__Events__Main as TEC;
 use TEC\Events\Custom_Tables\V1\Schema_Builder\Schema_Builder;
 
 trait CT1_Fixtures {
+
+	/**
+	 * @return int
+	 */
+	public function get_provisional_id_base() {
+		return 100000000;
+	}
+
+	/**
+	 * Hook callback to normalize provisional IDs.
+	 *
+	 * @param mixed $id
+	 *
+	 * @return mixed
+	 */
+	public function faux_provisional_id_filter( $id ) {
+		$base = $this->get_provisional_id_base();
+		if ( is_numeric( $id ) && $id > $base ) {
+			$occurrence_id = $id - $base;
+			$occurrence    = Occurrence::find( $occurrence_id );
+
+			return $occurrence instanceof Occurrence ? $occurrence->post_id : $id;
+		}
+
+		return $id;
+	}
+
+	/**
+	 * Sets up core hook that mimics what ECP does to normalize provisional ID's to the post ID.
+	 */
+	public function enable_provisional_id_normalizer() {
+		// Faux provisional ID cleaner upper.
+		add_filter( 'tec_events_custom_tables_v1_normalize_occurrence_id', [$this, 'faux_provisional_id_filter'] );
+	}
+
+	/**
+	 * Removes hook that was normalizing provisional IDs.
+	 */
+	public function disable_provisional_id_normalizer() {
+		remove_filter( 'tec_events_custom_tables_v1_normalize_occurrence_id', [$this, 'faux_provisional_id_filter'] );
+	}
+
 	/**
 	 * Utility to generate reports with various criteria.
 	 *
@@ -112,12 +153,12 @@ trait CT1_Fixtures {
 		$post_id    = ( new \WP_UnitTest_Factory_For_Post() )->create( array_merge( $event_args, $override_event_args ) );
 
 		// Make sure no models are present in the custom tables for it.
-		Occurrence_Model::where( 'post_id', '=', $post_id )
+		Occurrence::where( 'post_id', '=', $post_id )
 		                ->delete();
 		Event_Model::where( 'post_id', '=', $post_id )
 		           ->delete();
 		$this->assertNull( Event_Model::find( $post_id, 'post_id' ) );
-		$this->assertNull( Occurrence_Model::find( $post_id, 'post_id' ) );
+		$this->assertNull( Occurrence::find( $post_id, 'post_id' ) );
 		// Just in case, remove any recurrence meta there might be.
 		delete_post_meta( $post_id, '_tribe_blocks_recurrence_rules' );
 		delete_post_meta( $post_id, '_tribe_blocks_recurrence_exclusions' );
