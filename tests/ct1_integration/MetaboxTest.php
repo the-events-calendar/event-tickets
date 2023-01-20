@@ -46,7 +46,7 @@ class MetaboxTest extends \Codeception\TestCase\WPTestCase {
 		];
 
 		$metabox  = tribe( Tribe__Tickets__Metabox::class );
-		$response = $metabox->ajax_ticket_add( false );
+		$response = $metabox->ajax_ticket_add( true );
 
 		// Should create ticket with the provisional ID provided.
 		$this->assertIsArray( $response );
