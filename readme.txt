@@ -4,7 +4,7 @@ Contributors: theeventscalendar, brianjessee, camwynsp, aguseo, bordoni, borkweb
 Tags: tickets, registration, event registration, RSVP, ticket sales, attendee management
 Requires at least: 5.8.5
 Tested up to: 6.1.1
-Stable tag: 5.5.6
+Stable tag: 5.5.7
 Requires PHP: 7.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -190,9 +190,11 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [TBD] TBD =
+= [5.5.7] TBD =
 
 * Fix - Resolve provisional ID's properly on the event edit screen for ticket management actions. [ET-1632]
+* Fix - Fixed Ticket Commerce cart cookies not getting saved. [ET-1629]
+* Tweak - Updated Attendee Registration Fields upsell notice to only display in admin dashboard. [CT-67]
 
 = [5.5.6] 2023-01-16 =
 
