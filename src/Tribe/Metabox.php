@@ -198,7 +198,7 @@ class Tribe__Tickets__Metabox {
 	 *
 	 * @return void|WP_Error|array The results depending on $echo param, WP_Error if something went wrong.
 	 */
-	public function ajax_ticket_add( $return_value = true ) {
+	public function ajax_ticket_add( $return_value = false ) {
 		$return_value = (bool) $return_value;
 		$post_id      = absint( tribe_get_request_var( 'post_id', 0 ) );
 		$post_id      = Event::filter_event_id( $post_id );
@@ -309,29 +309,67 @@ class Tribe__Tickets__Metabox {
 	 * @since   4.6.2
 	 * @since   4.10.9 Use customizable ticket name functions.
 	 * @since   4.12.3 Update detecting ticket provider to account for possibly inactive provider. Remove unused vars.
+	 * @since   TBD Added optional parameter to return values instead of echoing directly.
+	 *
+	 * @param bool $return_value Optional, flags whether to JSON output directly or return results.
+	 *
+	 * @return void|WP_Error|array The results depending on $echo param, WP_Error if something went wrong.
 	 */
-	public function ajax_ticket_edit() {
-		$post_id = absint( tribe_get_request_var( 'post_id', 0 ) );
-		$post_id = Event::filter_event_id( $post_id );
+	public function ajax_ticket_edit( $return_value = false ) {
+		$return_value = (bool) $return_value;
+		$post_id      = absint( tribe_get_request_var( 'post_id', 0 ) );
+		$post_id      = Event::filter_event_id( $post_id );
 
 		if ( ! $post_id ) {
-			wp_send_json_error( esc_html__( 'Invalid parent Post', 'event-tickets' ) );
+			$output = esc_html__( 'Invalid parent Post', 'event-tickets' );
+			if ( $return_value ) {
+				return new WP_Error(
+					'bad_request',
+					$output,
+					[ 'status' => 400 ]
+				);
+			}
+			wp_send_json_error( $output );
 		}
 
 		$ticket_id = absint( tribe_get_request_var( 'ticket_id', 0 ) );
 
 		if ( ! $ticket_id ) {
-			wp_send_json_error( esc_html( sprintf( __( 'Invalid %s', 'event-tickets' ), tribe_get_ticket_label_singular( 'ajax_ticket_edit_error' ) ) ) );
+			$output = esc_html( sprintf( __( 'Invalid %s', 'event-tickets' ), tribe_get_ticket_label_singular( 'ajax_ticket_edit_error' ) ) );
+			if ( $return_value ) {
+				return new WP_Error(
+					'bad_request',
+					$output,
+					[ 'status' => 400 ]
+				);
+			}
+			wp_send_json_error( $output );
 		}
 
 		if ( ! $this->has_permission( $post_id, $_POST, 'edit_ticket_nonce' ) ) {
-			wp_send_json_error( esc_html( sprintf( __( 'Failed to edit the %s. Refresh the page to try again.', 'event-tickets' ), tribe_get_ticket_label_singular( 'ajax_ticket_edit_error' ) ) ) );
+			$output = esc_html( sprintf( __( 'Failed to edit the %s. Refresh the page to try again.', 'event-tickets' ), tribe_get_ticket_label_singular( 'ajax_ticket_edit_error' ) ) );
+			if ( $return_value ) {
+				return new WP_Error(
+					'bad_request',
+					$output,
+					[ 'status' => 400 ]
+				);
+			}
+			wp_send_json_error( $output );
 		}
 
 		$provider = tribe_tickets_get_ticket_provider( $ticket_id );
 
 		if ( empty( $provider ) ) {
-			wp_send_json_error( esc_html__( 'Commerce Module invalid', 'event-tickets' ) );
+			$output = esc_html__( 'Commerce Module invalid', 'event-tickets' );
+			if ( $return_value ) {
+				return new WP_Error(
+					'bad_request',
+					$output,
+					[ 'status' => 400 ]
+				);
+			}
+			wp_send_json_error( $output );
 		}
 
 		$return = $this->get_panels( $post_id, $ticket_id );
@@ -340,11 +378,15 @@ class Tribe__Tickets__Metabox {
 		 * Provides an opportunity for final adjustments to the data used to populate
 		 * the edit-ticket form.
 		 *
-		 * @param array $return     Data for the JSON response
-		 * @param int   $post_id    Post ID
-		 * @param int   $ticket_id  Ticket ID
+		 * @param array $return    Data for the JSON response
+		 * @param int   $post_id   Post ID
+		 * @param int   $ticket_id Ticket ID
 		 */
 		$return = (array) apply_filters( 'tribe_events_tickets_ajax_ticket_edit', $return, $post_id, $ticket_id );
+
+		if ( $return_value ) {
+			return $return;
+		}
 
 		wp_send_json_success( $return );
 	}
@@ -353,30 +395,68 @@ class Tribe__Tickets__Metabox {
 	 * Sanitizes the data for the delete ticket ajax call, and calls the child delete_ticket
 	 * function.
 	 *
-	 * @since  4.6.2
+	 * @since   4.6.2
+	 * @since   TBD Added optional parameter to return values instead of echoing directly.
+	 *
+	 * @param bool $return_value Optional, flags whether to JSON output directly or return results.
+	 *
+	 * @return void|WP_Error|array The results depending on $echo param, WP_Error if something went wrong.
 	 */
-	public function ajax_ticket_delete() {
-		$post_id = absint( tribe_get_request_var( 'post_id', 0 ) );
-		$post_id = Event::filter_event_id( $post_id );
+	public function ajax_ticket_delete( $return_value = false ) {
+		$return_value = (bool) $return_value;
+		$post_id      = absint( tribe_get_request_var( 'post_id', 0 ) );
+		$post_id      = Event::filter_event_id( $post_id );
 
 		if ( ! $post_id ) {
-			wp_send_json_error( esc_html__( 'Invalid parent Post', 'event-tickets' ) );
+			$output = esc_html__( 'Invalid parent Post', 'event-tickets' );
+			if ( $return_value ) {
+				return new WP_Error(
+					'bad_request',
+					$output,
+					[ 'status' => 400 ]
+				);
+			}
+			wp_send_json_error( $output );
 		}
 
 		$ticket_id = absint( tribe_get_request_var( 'ticket_id', 0 ) );
 
 		if ( ! $ticket_id ) {
-			wp_send_json_error( esc_html( sprintf( __( 'Invalid %s', 'event-tickets' ), tribe_get_ticket_label_singular( 'ajax_ticket_delete_error' ) ) ) );
+			$output = esc_html( sprintf( __( 'Invalid %s', 'event-tickets' ), tribe_get_ticket_label_singular( 'ajax_ticket_delete_error' ) ) );
+			if ( $return_value ) {
+				return new WP_Error(
+					'bad_request',
+					$output,
+					[ 'status' => 400 ]
+				);
+			}
+			wp_send_json_error( $output );
 		}
 
 		if ( ! $this->has_permission( $post_id, $_POST, 'remove_ticket_nonce' ) ) {
-			wp_send_json_error( esc_html( sprintf( __( 'Failed to delete the %s. Refresh the page to try again.', 'event-tickets' ), tribe_get_ticket_label_singular( 'ajax_ticket_delete_error' ) ) ) );
+			$output = esc_html( sprintf( __( 'Failed to delete the %s. Refresh the page to try again.', 'event-tickets' ), tribe_get_ticket_label_singular( 'ajax_ticket_delete_error' ) ) );
+			if ( $return_value ) {
+				return new WP_Error(
+					'bad_request',
+					$output,
+					[ 'status' => 400 ]
+				);
+			}
+			wp_send_json_error( $output );
 		}
 
 		$provider = tribe_tickets_get_ticket_provider( $ticket_id );
 
 		if ( empty( $provider ) ) {
-			wp_send_json_error( esc_html__( 'Commerce Module invalid', 'event-tickets' ) );
+			$output = esc_html__( 'Commerce Module invalid', 'event-tickets' );
+			if ( $return_value ) {
+				return new WP_Error(
+					'bad_request',
+					$output,
+					[ 'status' => 400 ]
+				);
+			}
+			wp_send_json_error( $output );
 		}
 
 		// Pass the control to the child object
@@ -395,38 +475,71 @@ class Tribe__Tickets__Metabox {
 			do_action( 'tribe_tickets_ticket_deleted', $post_id );
 		}
 
+		if ( $return_value ) {
+			return $return;
+		}
 		wp_send_json_success( $return );
 	}
 
 	/**
 	 * Sanitizes the data for the duplicate ticket ajax call, then duplicates the ticket and meta.
 	 *
-	 * @since 5.2.3.
+	 * @since   5.2.3.
+	 * @since   TBD Added optional parameter to return values instead of echoing directly.
+	 *
+	 * @param bool $return_value Optional, flags whether to JSON output directly or return results.
+	 *
+	 * @return void|WP_Error|array The results depending on $echo param, WP_Error if something went wrong.
 	 */
-	public function ajax_ticket_duplicate() {
-		$post_id = absint( tribe_get_request_var( 'post_id', 0 ) );
-		$post_id = Event::filter_event_id( $post_id );
+	public function ajax_ticket_duplicate( $return_value = false ) {
+		$return_value = (bool) $return_value;
+		$post_id      = absint( tribe_get_request_var( 'post_id', 0 ) );
+		$post_id      = Event::filter_event_id( $post_id );
 
 		if ( ! $post_id ) {
-			wp_send_json_error( esc_html__( 'Invalid parent Post', 'event-tickets' ) );
+			$output = esc_html__( 'Invalid parent Post', 'event-tickets' );
+			if ( $return_value ) {
+				return new WP_Error(
+					'bad_request',
+					$output,
+					[ 'status' => 400 ]
+				);
+			}
+			wp_send_json_error( $output );
 		}
 
 		$ticket_id = absint( tribe_get_request_var( 'ticket_id', 0 ) );
 
 		if ( ! $ticket_id ) {
-			wp_send_json_error( esc_html( sprintf(
-				// Translators: %s: dynamic "ticket" text.
+			$output = esc_html( sprintf(
+			// Translators: %s: dynamic "ticket" text.
 				__( 'Invalid %s', 'event-tickets' ),
 				tribe_get_ticket_label_singular( 'ajax_ticket_duplicate_error' )
-			) ) );
+			) );
+			if ( $return_value ) {
+				return new WP_Error(
+					'bad_request',
+					$output,
+					[ 'status' => 400 ]
+				);
+			}
+			wp_send_json_error( $output );
 		}
 
 		if ( ! $this->has_permission( $post_id, $_POST, 'duplicate_ticket_nonce' ) ) {
-			wp_send_json_error( esc_html( sprintf(
-				// Translators: %s: dynamic "ticket" text.
+			$output = esc_html( sprintf(
+			// Translators: %s: dynamic "ticket" text.
 				__( 'Failed to duplicate the %s. Refresh the page to try again.', 'event-tickets' ),
 				tribe_get_ticket_label_singular( 'ajax_ticket_duplicate_error' )
-			) ) );
+			) );
+			if ( $return_value ) {
+				return new WP_Error(
+					'bad_request',
+					$output,
+					[ 'status' => 400 ]
+				);
+			}
+			wp_send_json_error( $output );
 		}
 
 		$provider = tribe_tickets_get_ticket_provider( $ticket_id );
@@ -450,10 +563,18 @@ class Tribe__Tickets__Metabox {
 			 */
 			do_action( 'tribe_tickets_ticket_added', $post_id );
 		} else {
-			wp_send_json_error( esc_html( sprintf( __( 'Failed to duplicate the %s', 'event-tickets' ), tribe_get_ticket_label_singular( 'ajax_ticket_duplicate_error' ) ) ) );
+			$output = esc_html( sprintf( __( 'Failed to duplicate the %s', 'event-tickets' ), tribe_get_ticket_label_singular( 'ajax_ticket_duplicate_error' ) ) );
+			if ( $return_value ) {
+				return new WP_Error(
+					'bad_request',
+					$output,
+					[ 'status' => 400 ]
+				);
+			}
+			wp_send_json_error( $output );
 		}
 
-		$return = $this->get_panels( $post_id );
+		$return           = $this->get_panels( $post_id );
 		$return['notice'] = $this->notice( 'ticket-duplicate' );
 
 		/**
@@ -465,6 +586,10 @@ class Tribe__Tickets__Metabox {
 		 * @param int   $post_id ID of parent "event" post.
 		 */
 		$return = apply_filters( 'event_tickets_ajax_ticket_duplicate_data', $return, $post_id );
+
+		if ( $return_value ) {
+			return $return;
+		}
 
 		wp_send_json_success( $return );
 	}
