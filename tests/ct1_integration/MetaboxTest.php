@@ -5,8 +5,6 @@ namespace Tribe\Tickets;
 use TEC\Events\Custom_Tables\V1\Models\Occurrence;
 use Tribe\Tickets\Test\Traits\CT1\CT1_Fixtures;
 use Tribe__Tickets__Metabox;
-
-//use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker;
 
 class MetaboxTest extends \Codeception\TestCase\WPTestCase {
