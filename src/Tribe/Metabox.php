@@ -196,7 +196,7 @@ class Tribe__Tickets__Metabox {
 	 *
 	 * @param bool $return_value Optional, flags whether to JSON output directly or return results.
 	 *
-	 * @return void|WP_Error|array The results depending on $echo param, WP_Error if something went wrong.
+	 * @return void|WP_Error|array The results depending on $return_value param, WP_Error if something went wrong.
 	 */
 	public function ajax_ticket_add( $return_value = false ) {
 		$return_value = (bool) $return_value;
@@ -313,7 +313,7 @@ class Tribe__Tickets__Metabox {
 	 *
 	 * @param bool $return_value Optional, flags whether to JSON output directly or return results.
 	 *
-	 * @return void|WP_Error|array The results depending on $echo param, WP_Error if something went wrong.
+	 * @return void|WP_Error|array The results depending on $return_value param, WP_Error if something went wrong.
 	 */
 	public function ajax_ticket_edit( $return_value = false ) {
 		$return_value = (bool) $return_value;
@@ -400,7 +400,7 @@ class Tribe__Tickets__Metabox {
 	 *
 	 * @param bool $return_value Optional, flags whether to JSON output directly or return results.
 	 *
-	 * @return void|WP_Error|array The results depending on $echo param, WP_Error if something went wrong.
+	 * @return void|WP_Error|array The results depending on $return_value param, WP_Error if something went wrong.
 	 */
 	public function ajax_ticket_delete( $return_value = false ) {
 		$return_value = (bool) $return_value;
@@ -489,7 +489,7 @@ class Tribe__Tickets__Metabox {
 	 *
 	 * @param bool $return_value Optional, flags whether to JSON output directly or return results.
 	 *
-	 * @return void|WP_Error|array The results depending on $echo param, WP_Error if something went wrong.
+	 * @return void|WP_Error|array The results depending on $return_value param, WP_Error if something went wrong.
 	 */
 	public function ajax_ticket_duplicate( $return_value = false ) {
 		$return_value = (bool) $return_value;
