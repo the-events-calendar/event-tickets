@@ -49,14 +49,14 @@ trait CT1_Fixtures {
 	 */
 	public function enable_provisional_id_normalizer() {
 		// Faux provisional ID cleaner upper.
-		add_filter( 'tec_events_custom_tables_v1_normalize_occurrence_id', [$this, 'faux_provisional_id_filter'] );
+		add_filter( 'tec_events_custom_tables_v1_normalize_occurrence_id', [ $this, 'faux_provisional_id_filter' ] );
 	}
 
 	/**
 	 * Removes hook that was normalizing provisional IDs.
 	 */
 	public function disable_provisional_id_normalizer() {
-		remove_filter( 'tec_events_custom_tables_v1_normalize_occurrence_id', [$this, 'faux_provisional_id_filter'] );
+		remove_filter( 'tec_events_custom_tables_v1_normalize_occurrence_id', [ $this, 'faux_provisional_id_filter' ] );
 	}
 
 	/**
@@ -150,11 +150,11 @@ trait CT1_Fixtures {
 			'post_status' => 'publish',
 		];
 
-		$post_id    = ( new \WP_UnitTest_Factory_For_Post() )->create( array_merge( $event_args, $override_event_args ) );
+		$post_id = ( new \WP_UnitTest_Factory_For_Post() )->create( array_merge( $event_args, $override_event_args ) );
 
 		// Make sure no models are present in the custom tables for it.
 		Occurrence::where( 'post_id', '=', $post_id )
-		                ->delete();
+		          ->delete();
 		Event_Model::where( 'post_id', '=', $post_id )
 		           ->delete();
 		$this->assertNull( Event_Model::find( $post_id, 'post_id' ) );
@@ -200,7 +200,7 @@ trait CT1_Fixtures {
 		}
 	}
 
-	private function assert_custom_tables_not_exist(){
+	private function assert_custom_tables_not_exist() {
 		$schema_builder = tribe()->make( Schema_Builder::class );
 		foreach ( $schema_builder->get_registered_table_schemas() as $table_schema ) {
 			$this->assertFalse( $table_schema->exists() );
@@ -225,7 +225,7 @@ trait CT1_Fixtures {
 		delete_transient( Activation::ACTIVATION_TRANSIENT );
 	}
 
-	private function given_a_migrated_single_event(){
+	private function given_a_migrated_single_event() {
 		$post = $this->given_a_non_migrated_single_event();
 		Event::upsert( [ 'post_id' ], Event::data_from_post( $post ) );
 		$event = Event::find( $post->ID, 'post_id' );
