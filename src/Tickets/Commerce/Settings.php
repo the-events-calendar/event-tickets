@@ -54,6 +54,33 @@ class Settings {
 	public static $option_currency_code = 'tickets-commerce-currency-code';
 
 	/**
+	 * The option key for currency decimal separator.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $option_currency_decimal_separator = 'tickets-commerce-currency-decimal-separator';
+
+	/**
+	 * The option key for currency thousands separator.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $option_currency_thousands_separator = 'tickets-commerce-currency-thousands-separator';
+
+	/**
+	 * The option key for currency precision.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $option_currency_precision = 'tickets-commerce-currency-precision';
+
+	/**
 	 * The option key for currency position.
 	 *
 	 * @since 5.4.2
@@ -238,6 +265,8 @@ class Settings {
 
 		$current_user = get_user_by( 'id', get_current_user_id() );
 
+		$preview_amount = \TEC\Tickets\Commerce\Utils\Value::create( 1000 )->get_currency();
+
 		$settings = [
 			'tickets-commerce-settings-general-heading'     => [
 				'type' => 'html',
@@ -287,11 +316,36 @@ class Settings {
 			static::$option_currency_code                   => [
 				'type'            => 'dropdown',
 				'label'           => esc_html__( 'Currency Code', 'event-tickets' ),
-				'tooltip'         => esc_html__( 'The currency that will be used for Tickets Commerce transactions.', 'event-tickets' ),
+				'tooltip'         => esc_html__( 'The currency that will be used for Tickets Commerce transactions. Format Preview : ' . $preview_amount, 'event-tickets' ),
 				'default'         => 'USD',
 				'validation_type' => 'options',
 				'options'         => $tc_currency_options,
 			],
+
+			static::$option_currency_decimal_separator      => [
+				'type'            => 'text',
+				'label'           => esc_html__( 'Decimal Separator', 'event-tickets' ),
+				'tooltip'         => esc_html__( 'The decimal separator that will be used for Tickets Commerce currency format.', 'event-tickets' ),
+				'default'         => '.',
+				'validation_callback' => 'is_string',
+			],
+
+			static::$option_currency_thousands_separator    => [
+				'type'            => 'text',
+				'label'           => esc_html__( 'Thousands Separator', 'event-tickets' ),
+				'tooltip'         => esc_html__( 'The thousands separator that will be used for Tickets Commerce currency format.', 'event-tickets' ),
+				'default'         => ',',
+				'validation_callback' => 'is_string',
+			],
+
+			static::$option_currency_precision              => [
+				'type'            => 'text',
+				'label'           => esc_html__( 'Precision', 'event-tickets' ),
+				'tooltip'         => esc_html__( 'The number of decimal points that will be used for Tickets Commerce currency format.', 'event-tickets' ),
+				'default'         => '2',
+				'validation_type' => 'int',
+			],
+
 			static::$option_currency_position               => [
 				'type'            => 'dropdown',
 				'label'           => esc_html__( 'Currency Position', 'event-tickets' ),
