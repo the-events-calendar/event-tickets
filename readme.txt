@@ -194,6 +194,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 * Fix - Fixed Ticket Commerce cart cookies not getting saved. [ET-1629]
 * Tweak - Updated Attendee Registration Fields upsell notice to only display in admin dashboard. [CT-67]
+* Enhancement - Added currency format options to alter currency decimal separator, thousand separator, and number of decimal places. [ET-1608]
 
 = [5.5.6] 2023-01-16 =
 
