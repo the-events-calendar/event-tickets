@@ -325,7 +325,7 @@ class Settings {
 			static::$option_currency_decimal_separator      => [
 				'type'            => 'text',
 				'label'           => esc_html__( 'Decimal Separator', 'event-tickets' ),
-				'tooltip'         => esc_html__( 'The decimal separator that will be used for Tickets Commerce currency format.', 'event-tickets' ),
+				'tooltip'         => esc_html__( 'This sets the decimal separator of displayed prices.', 'event-tickets' ),
 				'default'         => '.',
 				'validation_callback' => 'is_string',
 			],
@@ -333,7 +333,7 @@ class Settings {
 			static::$option_currency_thousands_separator    => [
 				'type'            => 'text',
 				'label'           => esc_html__( 'Thousands Separator', 'event-tickets' ),
-				'tooltip'         => esc_html__( 'The thousands separator that will be used for Tickets Commerce currency format.', 'event-tickets' ),
+				'tooltip'         => esc_html__( 'This sets the thousand separator of displayed prices', 'event-tickets' ),
 				'default'         => ',',
 				'validation_callback' => 'is_string',
 			],
@@ -341,7 +341,7 @@ class Settings {
 			static::$option_currency_precision              => [
 				'type'            => 'text',
 				'label'           => esc_html__( 'Precision', 'event-tickets' ),
-				'tooltip'         => esc_html__( 'The number of decimal points that will be used for Tickets Commerce currency format.', 'event-tickets' ),
+				'tooltip'         => esc_html__( 'This sets the number of decimal points shown in displayed prices.', 'event-tickets' ),
 				'default'         => '2',
 				'validation_type' => 'int',
 			],
