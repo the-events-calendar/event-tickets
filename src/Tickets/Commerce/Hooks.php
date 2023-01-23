@@ -126,6 +126,9 @@ class Hooks extends tad_DI52_ServiceProvider {
 		add_filter( 'tec_tickets_commerce_payments_tab_settings', [ $this, 'filter_payments_tab_settings' ] );
 
 		add_filter( 'wp_redirect', [ $this, 'filter_redirect_url' ] );
+
+		// add action to intercept the update of currency code option.
+		add_filter( 'tribe_settings_save_option_array', [ $this, 'set_default_format_on_currency_change' ], 10, 3 );
 	}
 
 	/**
@@ -727,5 +730,37 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 */
 	public function include_assets_checkout_shortcode() {
 		Shortcodes\Checkout_Shortcode::enqueue_assets();
+	}
+
+	/**
+	 * Intercept the currency code option updates to set defaults according to the new selection.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $options The options being updated.
+	 *
+	 * @return array The options being updated.
+	 */
+	public function set_default_format_on_currency_change( $options  ) {
+		// bail if the currency code is not set in getting updated.
+		if ( ! isset( $_POST[ Settings::$option_currency_code ] ) ) {
+			return $options;
+		}
+
+		// get the saved currency code.
+		$saved_currency_code = tribe_get_option( Settings::$option_currency_code );
+		$new_currency_code   = sanitize_text_field( $_POST[ Settings::$option_currency_code ] );
+
+		if ( $saved_currency_code === $new_currency_code ) {
+			return $options;
+		}
+		// if they are not same then update the rest format options from default map.
+		$currency_data = Base_Commerce\Utils\Currency::get_default_currency_map();
+
+		$options[ Settings::$option_currency_decimal_separator ]   = $currency_data[ $new_currency_code ]['decimal_point'];
+		$options[ Settings::$option_currency_thousands_separator ] = $currency_data[ $new_currency_code ]['thousands_sep'];
+		$options[ Settings::$option_currency_precision ]           = $currency_data[ $new_currency_code ]['decimal_precision'];
+
+		return $options;
 	}
 }
