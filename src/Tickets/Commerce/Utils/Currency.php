@@ -169,6 +169,8 @@ class Currency {
 			$precision = $map[ $code ]['decimal_precision'];
 		}
 
+		$precision = tribe_get_option( Settings::$option_currency_precision, $precision );
+
 		/**
 		 * Filter the specific currency precision before returning. $code is the 3-letter currency code.
 		 *
@@ -209,6 +211,8 @@ class Currency {
 			$separator = $map[ $code ]['decimal_point'];
 		}
 
+		$separator = tribe_get_option( Settings::$option_currency_decimal_separator, $separator );
+
 		/**
 		 * Filter the specific currency decimal separator before returning. $code is the 3-letter currency code.
 		 *
@@ -248,6 +252,8 @@ class Currency {
 		if ( isset( $map[ $code ] ) ) {
 			$separator = $map[ $code ]['thousands_sep'];
 		}
+
+		$separator = tribe_get_option( Settings::$option_currency_thousands_separator, $separator );
 
 		/**
 		 * Filter the specific currency thousands separator before returning. $code is the 3-letter currency code.
