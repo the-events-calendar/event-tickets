@@ -316,7 +316,7 @@ class Settings {
 			static::$option_currency_code                   => [
 				'type'            => 'dropdown',
 				'label'           => esc_html__( 'Currency Code', 'event-tickets' ),
-				'tooltip'         => esc_html__( 'The currency that will be used for Tickets Commerce transactions. Format Preview : ' . $preview_amount, 'event-tickets' ),
+				'tooltip'         => esc_html__( 'The currency that will be used for Tickets Commerce transactions.', 'event-tickets' ) . '<b> Format Preview : ' . $preview_amount . '</b>',
 				'default'         => 'USD',
 				'validation_type' => 'options',
 				'options'         => $tc_currency_options,
