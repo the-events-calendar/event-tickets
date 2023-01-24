@@ -223,7 +223,8 @@ class Tribe__Tickets__Metabox {
 
 		if ( ! $this->has_permission( $post_id, $_POST, 'add_ticket_nonce' ) ) {
 			$output = esc_html(
-				sprintf( __( 'Failed to add the %s. Refresh the page to try again.', 'event-tickets' ),
+				/* Translators:  %1$s - singular ticket term. */
+				sprintf( __( 'Failed to add the %1$s. Refresh the page to try again.', 'event-tickets' ),
 					tribe_get_ticket_label_singular( 'ajax_ticket_add_error' ) )
 			);
 			if ( $return_value ) {
@@ -272,7 +273,8 @@ class Tribe__Tickets__Metabox {
 			do_action( 'tribe_tickets_ticket_added', $post_id );
 		} else {
 			$output = esc_html(
-				sprintf( __( 'Failed to add the %s', 'event-tickets' ),
+				/* Translators: %1$s - Singular ticket term. */
+				sprintf( __( 'Failed to add the %1$s', 'event-tickets' ),
 					tribe_get_ticket_label_singular( 'ajax_ticket_add_error' ) )
 			);
 			if ( $return_value ) {
@@ -335,7 +337,8 @@ class Tribe__Tickets__Metabox {
 		$ticket_id = absint( tribe_get_request_var( 'ticket_id', 0 ) );
 
 		if ( ! $ticket_id ) {
-			$output = esc_html( sprintf( __( 'Invalid %s', 'event-tickets' ), tribe_get_ticket_label_singular( 'ajax_ticket_edit_error' ) ) );
+			/* Translators: %1$s - singular ticket term. */
+			$output = esc_html( sprintf( __( 'Invalid %1$s', 'event-tickets' ), tribe_get_ticket_label_singular( 'ajax_ticket_edit_error' ) ) );
 			if ( $return_value ) {
 				return new WP_Error(
 					'bad_request',
@@ -347,7 +350,8 @@ class Tribe__Tickets__Metabox {
 		}
 
 		if ( ! $this->has_permission( $post_id, $_POST, 'edit_ticket_nonce' ) ) {
-			$output = esc_html( sprintf( __( 'Failed to edit the %s. Refresh the page to try again.', 'event-tickets' ), tribe_get_ticket_label_singular( 'ajax_ticket_edit_error' ) ) );
+			/* Translators: %1$s - singular ticket term. */
+			$output = esc_html( sprintf( __( 'Failed to edit the %1$s. Refresh the page to try again.', 'event-tickets' ), tribe_get_ticket_label_singular( 'ajax_ticket_edit_error' ) ) );
 			if ( $return_value ) {
 				return new WP_Error(
 					'bad_request',
@@ -422,7 +426,8 @@ class Tribe__Tickets__Metabox {
 		$ticket_id = absint( tribe_get_request_var( 'ticket_id', 0 ) );
 
 		if ( ! $ticket_id ) {
-			$output = esc_html( sprintf( __( 'Invalid %s', 'event-tickets' ), tribe_get_ticket_label_singular( 'ajax_ticket_delete_error' ) ) );
+			/* Translators: %1$s - singular ticket term */
+			$output = esc_html( sprintf( __( 'Invalid %1$s', 'event-tickets' ), tribe_get_ticket_label_singular( 'ajax_ticket_delete_error' ) ) );
 			if ( $return_value ) {
 				return new WP_Error(
 					'bad_request',
@@ -434,7 +439,8 @@ class Tribe__Tickets__Metabox {
 		}
 
 		if ( ! $this->has_permission( $post_id, $_POST, 'remove_ticket_nonce' ) ) {
-			$output = esc_html( sprintf( __( 'Failed to delete the %s. Refresh the page to try again.', 'event-tickets' ), tribe_get_ticket_label_singular( 'ajax_ticket_delete_error' ) ) );
+			/* Translators: %1$s - singular ticket term */
+			$output = esc_html( sprintf( __( 'Failed to delete the %1$s. Refresh the page to try again.' 'event-tickets' ), tribe_get_ticket_label_singular( 'ajax_ticket_delete_error' ) ) );
 			if ( $return_value ) {
 				return new WP_Error(
 					'bad_request',
@@ -563,7 +569,8 @@ class Tribe__Tickets__Metabox {
 			 */
 			do_action( 'tribe_tickets_ticket_added', $post_id );
 		} else {
-			$output = esc_html( sprintf( __( 'Failed to duplicate the %s', 'event-tickets' ), tribe_get_ticket_label_singular( 'ajax_ticket_duplicate_error' ) ) );
+			/* Translators: %1$s - singular ticket term */
+			$output = esc_html( sprintf( __( 'Failed to duplicate the %1$s', 'event-tickets' ), tribe_get_ticket_label_singular( 'ajax_ticket_duplicate_error' ) ) );
 			if ( $return_value ) {
 				return new WP_Error(
 					'bad_request',

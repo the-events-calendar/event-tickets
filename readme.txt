@@ -192,7 +192,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.5.7] TBD =
 
-* Fix - Resolve provisional ID's properly on the event edit screen for ticket management actions. [ET-1632]
+* Fix - Resolve provisional IDs properly on the event edit screen for ticket management actions. [ET-1632]
 * Fix - Fixed Ticket Commerce cart cookies not getting saved. [ET-1629]
 * Tweak - Updated Attendee Registration Fields upsell notice to only display in admin dashboard. [CT-67]
 
