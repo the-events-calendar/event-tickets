@@ -41,6 +41,13 @@ class Email_Template {
 	private array $context_data = [];
 	
 	/**
+	 * Variable to hold template object.
+	 *
+	 * @var null|Tribe__Template
+	 */
+	private $template;
+	
+	/**
 	 * Gets the template instance used to setup the rendering html.
 	 *
 	 * @since TBD
@@ -52,7 +59,7 @@ class Email_Template {
 			$this->template = new Tribe__Template();
 			$this->template->set_template_origin( Tribe__Tickets__Main::instance() );
 			// @todo Move template folder into `src/views/v2` before TE release.
-			$this->template->set_template_folder( 'src/admin-views/settings/emails' );
+			$this->template->set_template_folder( 'src/views/v2/tickets/emails' );
 			$this->template->set_template_context_extract( true );
 		}
 
@@ -168,7 +175,6 @@ class Email_Template {
 			'recipient_first_name' => $current_user->first_name,
 			'recipient_last_name'  => $current_user->last_name,
 			'date_string'          => esc_html__( 'September 22 @ 7:00 pm - 11:00 pm', 'event-tickets' ),
-			'qr_url'               => esc_url( plugins_url( '/event-tickets/src/resources/images/example-qr.png' ) ),
 			'ticket_name'          => esc_html__( 'General Admission', 'event-tickets' ),
 			'ticket_id'            => '17e4a14cec',
 			'event_title'          => esc_html__( 'Rebirth Brass Band', 'event-tickets' ),
