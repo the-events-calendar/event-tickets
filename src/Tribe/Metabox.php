@@ -440,7 +440,7 @@ class Tribe__Tickets__Metabox {
 
 		if ( ! $this->has_permission( $post_id, $_POST, 'remove_ticket_nonce' ) ) {
 			/* Translators: %1$s - singular ticket term */
-			$output = esc_html( sprintf( __( 'Failed to delete the %1$s. Refresh the page to try again.' 'event-tickets' ), tribe_get_ticket_label_singular( 'ajax_ticket_delete_error' ) ) );
+			$output = esc_html( sprintf( __( 'Failed to delete the %1$s. Refresh the page to try again.', 'event-tickets' ), tribe_get_ticket_label_singular( 'ajax_ticket_delete_error' ) ) );
 			if ( $return_value ) {
 				return new WP_Error(
 					'bad_request',
