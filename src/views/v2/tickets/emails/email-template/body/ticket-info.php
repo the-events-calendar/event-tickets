@@ -14,7 +14,6 @@
 ?>
 <tr>
 	<td style="padding:20px 25px;background:<?php echo esc_attr( $ticket_bg_color ); ?>">
-		<?php $this->template( 'email-template/body/qr-image' ); ?>
 		<?php $this->template( 'email-template/body/recipient-name' ); ?>
 		<p style="font-size: 16px;margin:0;padding:0;color:<?php echo esc_attr( $ticket_text_color ); ?>;">
 			<?php echo esc_html( $ticket_name ); ?>
