@@ -79,15 +79,15 @@ class Settings {
 	 * @var string
 	 */
 	public static $option_footer_content = 'tec-tickets-emails-footer-content';
-
+	
 	/**
-	 * The option key for the email footer credit.
+	 * Variable to hold template object.
 	 *
-	 * @since 5.5.6
+	 * @since TBD
 	 *
-	 * @var string
+	 * @var null|Tribe__Template
 	 */
-	public static $option_footer_credit = 'tec-tickets-emails-footer-credit';
+	private $template;
 
 	/**
 	 * Gets the template instance used to setup the rendering html.
@@ -323,13 +323,6 @@ class Settings {
 						'alignright',
 					],
 				]
-			],
-			static::$option_footer_credit => [
-				'type'            => 'checkbox_bool',
-				'label'           => esc_html__( 'Footer Credit', 'event-tickets' ),
-				'tooltip'         => esc_html__( 'Include "Ticket powered by Event Tickets" in the footer', 'event-tickets' ),
-				'default'         => true,
-				'validation_type' => 'boolean',
 			],
 		];
 

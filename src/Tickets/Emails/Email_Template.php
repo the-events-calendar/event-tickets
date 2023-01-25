@@ -141,7 +141,7 @@ class Email_Template {
 			'header_bg_color'        => tribe_get_option( Settings::$option_header_bg_color, '#ffffff' ),
 			'ticket_bg_color'        => tribe_get_option( Settings::$option_ticket_bg_color, '#ffffff' ),
 			'footer_content'         => tribe_get_option( Settings::$option_footer_content, '' ),
-			'footer_credit'          => tribe_get_option( Settings::$option_footer_credit, true ),
+			'footer_credit'          => true,
 		];
 		$context['header_text_color'] = Tribe__Utils__Color::get_contrast_color( $context['header_bg_color'] );
 		$context['ticket_text_color'] = Tribe__Utils__Color::get_contrast_color( $context['ticket_bg_color'] );
