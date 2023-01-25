@@ -35,6 +35,7 @@ class Tribe__Tickets__Admin__Notices {
 		$this->maybe_display_rsvp_new_views_options_notice();
 		$this->maybe_display_classic_editor_ecp_recurring_tickets_notice();
 		$this->maybe_display_plus_commerce_notice();
+		$this->maybe_display_unsupported_currency_notice();
 	}
 
 	/**
@@ -235,6 +236,46 @@ class Tribe__Tickets__Admin__Notices {
 			$message = sprintf( '<p>%s</p>', $message );
 
 			tribe_notice( "event-tickets-plus-missing-{$provider}-support", $message, 'dismiss=1&type=warning' );
+		}
+	}
+
+	/**
+	 * Display notices for unsupported currencies.
+	 *
+	 * @return void
+	 */
+	public function maybe_display_unsupported_currency_notice() {
+		// Get currencies and notice texts.
+		$unsupported_currency = [
+			'HRK' => [
+				'heading' => __( 'Tickets Commerce is now selling with Euro', 'event-tickets' ),
+				'message' => __( 'From the 1st of January 2023, the euro became the official currency for Croatia. We have removed the Croatian kuna from our currency settings and updated your settings to start selling with Euro.', 'event-tickets' ),
+				'updated' => 'EUR'
+			],
+		];
+
+		// Get currency code option
+		$currency = tribe_get_option( 'tickets-commerce-currency-code' );
+
+		if ( array_key_exists( $currency, $unsupported_currency ) ) {
+
+			$message = sprintf(
+				'<h3>%1$s</h3><p>%2$s</p>',
+				$unsupported_currency[$currency]['heading'],
+				$unsupported_currency[$currency]['message']
+			);
+
+			tribe_notice(
+				__FUNCTION__,
+				$message,
+				[
+					'dismiss' => true,
+					'type'    => 'warning',
+				]
+			);
+
+			// Update currency to new option
+			tribe_update_option( 'tickets-commerce-currency-code', $unsupported_currency[$currency]['updated'] );
 		}
 	}
 }
