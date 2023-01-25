@@ -78,7 +78,6 @@ class Preview_Modal {
 			'button_display'          => false,
 			'close_event'             => 'tribeDialogCloseEmailsPreviewModal.tribeTickets',
 			'show_event'              => 'tribeDialogShowEmailsPreviewModal.tribeTickets',
-			// @todo @juanfra review `tribe-tickets__admin-container`
 			'content_wrapper_classes' => 'tribe-dialog__wrapper tribe-modal__wrapper--emails-preview tribe-tickets__admin-container event-tickets tribe-common',
 			'title'                   => esc_html__( 'Email Preview', 'event-tickets' ),
 			'title_classes'           => [
@@ -115,8 +114,6 @@ class Preview_Modal {
 		$dialog_view->render_modal( $content, $args, static::$modal_id );
 		$modal_content = ob_get_clean();
 
-		// @todo @juanfra: Check how's that we're gonna deal with the admin views
-		// and see how we load wrappers here instead of hardcoding.
 		$modal  = '<div class="tribe-common event-tickets">';
 		$modal .= '<span id="' . esc_attr( static::$modal_target ) . '"></span>';
 		$modal .= $modal_content;
@@ -153,7 +150,6 @@ class Preview_Modal {
 				'tribe-dialog__title',
 				'tribe-modal__title',
 				'tribe-common-h5',
-				// @todo @juanfra: Review this one.
 				'tribe-modal__title--emails-preview',
 			],
 		];

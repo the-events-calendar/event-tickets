@@ -134,6 +134,7 @@ tribe.tickets.emails = {};
 	 */
 	obj.getSettingsContext = function() {
 		const context = {};
+		// @todo @juanfra: Get individual email settings and send them as context (once we have the settings per page).
 		// Get email.
 		// get colors and image.
 		// Get alignment.
@@ -174,8 +175,6 @@ tribe.tickets.emails = {};
 	obj.ready = function() {
 		obj.bindModalOpen();
 		obj.bindModalClose();
-
-		//console.log( 'PASARELLA' );
 	};
 
 	// Configure on document ready.
