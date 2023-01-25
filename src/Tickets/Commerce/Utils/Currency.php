@@ -1114,14 +1114,6 @@ class Currency {
 				'decimal_precision'     => 2,
 				'stripe_minimum_charge' => 25,
 			],
-			'HRK' => [
-				'name'                  => __( 'Croatian kuna (HRK)', 'event-tickets' ),
-				'symbol'                => 'kn',
-				'decimal_point'         => '.',
-				'thousands_sep'         => ',',
-				'decimal_precision'     => 2,
-				'stripe_minimum_charge' => 8,
-			],
 			'HTG' => [
 				'name'                  => __( 'Haitian gourde (HTG)', 'event-tickets' ),
 				'symbol'                => 'G',
