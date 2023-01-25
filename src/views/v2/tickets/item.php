@@ -15,8 +15,9 @@
  * @since 5.1.6 Add the `data-available-count` attribute for each ticket to calculate the shared capacity availability correctly.
  * @since 5.1.9 Add the `data-ticket-price` attribute for each ticket to calculate the price precisely.
  * @since 5.1.10 Cast the `data-ticket-price` attribute value as string to avoid unwanted PHP errors.
+ * @since 5.5.6 Add the `tribe-tickets__tickets-item--shared-capacity` wrapper class for tickets having shared capacity.
  *
- * @version 5.1.10
+ * @version 5.5.6
  *
  * If RSVP:
  * @var Tribe__Tickets__Editor__Template   $this                        [Global] Template object.
@@ -90,8 +91,9 @@ $has_suffix = ! empty( $ticket->price_suffix );
 
 $classes = [
 	'tribe-tickets__tickets-item',
-	'tribe-tickets__tickets-item--disabled'     => ! empty( $must_login ),
-	'tribe-tickets__tickets-item--price-suffix' => $has_suffix,
+	'tribe-tickets__tickets-item--disabled'        => ! empty( $must_login ),
+	'tribe-tickets__tickets-item--price-suffix'    => $has_suffix,
+	'tribe-tickets__tickets-item--shared-capacity' => $this->get( 'data_has_shared_cap' ),
 	get_post_class( '', $ticket->ID ),
 ];
 

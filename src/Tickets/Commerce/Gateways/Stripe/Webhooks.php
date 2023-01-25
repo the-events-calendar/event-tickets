@@ -82,44 +82,86 @@ class Webhooks extends Abstract_Webhooks {
 			exit;
 		}
 
-		$signing_key = tribe_get_request_var( 'signing_key' );
-		$updated     = tribe_update_option( static::$option_webhooks_signing_key, $signing_key );
+		$signing_key    = tribe_get_request_var( 'signing_key' );
+		$stored_key     = tribe_get_option( static::$option_webhooks_signing_key, false );
+		$current_status = tribe_get_option( static::$option_is_valid_webhooks, false );
 
-		if ( empty( $signing_key ) ) {
-			// If we updated and the value was empty we need to reset the validity of the key.
-			if ( $updated ) {
-				tribe_update_option( static::$option_is_valid_webhooks, false );
-			}
-
-			wp_send_json_error( [ 'updated' => $updated, 'status' => $status ] );
+		if ( $signing_key === $stored_key && $current_status === md5( $signing_key ) ) {
+			$status = esc_html__( 'Webhooks were properly validated for sales.', 'event-tickets' );
+			wp_send_json_success( [ 'is_valid_webhook' => true, 'updated' => false, 'status' => $status ] );
 			exit;
 		}
 
-		$account_data_update = [
-			'metadata' => [
-				'tec_tc_enabled_webhooks' => 1,
-			],
-		];
-
-		// This doesn't work on a Sandbox account, so we might need to add some text about .
-		$response = tribe( Merchant::class )->update( $account_data_update );
-
-		// We sleep for 5 seconds to allow the API to reach the website after the update.
-		sleep( 10 );
-
-		// Reset cache so it fetches from DB again.
-		wp_cache_init();
-		tribe_unset_var( \Tribe__Settings_Manager::OPTION_CACHE_VAR_NAME );
-
-		$is_valid = tribe_get_option( static::$option_is_valid_webhooks, false );
-		if ( $is_valid ) {
+		// backwards compat
+		if ( $signing_key === $stored_key && true === $current_status ) {
 			$status = esc_html__( 'Webhooks were properly validated for sales.', 'event-tickets' );
+			tribe_update_option( Webhooks::$option_is_valid_webhooks, md5( tribe_get_option( Webhooks::$option_webhooks_signing_key ) ) );
+			wp_send_json_success( [ 'is_valid_webhook' => true, 'updated' => false, 'status' => $status ] );
+			exit;
+		}
+
+		// at this point, either webhooks were not yet validated with the current key, or we're changing keys so we can start over.
+		// replace stored key
+		tribe_update_option( static::$option_webhooks_signing_key, $signing_key );
+		// wipe success indicator
+		tribe_update_option( Webhooks::$option_is_valid_webhooks, false );
+
+		// create a test payment
+		if ( true !== Payment_Intent::test_creation( [ 'card' ] ) ) {
+			// payment creation failed
+			$status = esc_html__( 'Could not connect to Stripe for validation. Please check your connection configuration.', 'event-tickets' );
+			tribe_update_option( static::$option_webhooks_signing_key, $stored_key );
+			wp_send_json_success( [ 'is_valid_webhook' => false, 'updated' => false, 'status' => $status ] );
+			exit;
+		}
+
+		// Give it some time so Stripe talks back to the site.
+		sleep(10);
+
+		$valid_key = tribe_get_option( static::$option_is_valid_webhooks, false );
+
+		if ( false === $valid_key ) {
+			$status = esc_html__( 'We have not received any Stripe events yet. Please wait a few seconds and refresh the page.', 'event-tickets' );
+			$is_valid = false;
+		} elseif ( $valid_key === md5( $signing_key ) ) {
+			$status = esc_html__( 'Webhooks were properly validated for sales.', 'event-tickets' );
+			$is_valid = true;
 		} else {
-			// Reset saved signing key.
-			tribe_update_option( static::$option_webhooks_signing_key, '' );
+			$status = esc_html__( 'This key has not been used in the latest events received. If you are setting up a new key, this status will be properly updated as soon as a new event is received.', 'event-tickets' );
+			$is_valid = false;
+			$updated = true;
 		}
 
 		wp_send_json_success( [ 'is_valid_webhook' => $is_valid, 'updated' => $updated, 'status' => $status ] );
+		exit;
+	}
+
+	/**
+	 * Testing the current Signing Key has been verified with success.
+	 *
+	 * @since 5.5.6
+	 *
+	 * @return void
+	 */
+	public function handle_verification(): void {
+		$nonce  = tribe_get_request_var( 'tc_nonce' );
+		$status = esc_html__( 'The signing key appears to be invalid. Please check your webhook configuration in the Stripe Dashboard.', 'event-tickets' );
+
+		if ( ! wp_verify_nonce( $nonce, static::$nonce_key_handle_validation ) ) {
+			wp_send_json_error( [ 'updated' => false, 'status' => $status ] );
+			exit;
+		}
+
+		$stored_key     = tribe_get_option( static::$option_webhooks_signing_key, false );
+		$current_status = tribe_get_option( static::$option_is_valid_webhooks, false );
+
+		if ( $current_status === md5( $stored_key ) ) {
+			$status = esc_html__( 'Webhooks were properly validated for sales.', 'event-tickets' );
+			wp_send_json_success( [ 'is_valid_webhook' => true, 'updated' => false, 'status' => $status ] );
+			exit;
+		}
+
+		wp_send_json_success( [ 'is_valid_webhook' => false, 'updated' => false, 'status' => $status ] );
 		exit;
 	}
 
@@ -159,10 +201,6 @@ class Webhooks extends Abstract_Webhooks {
 			$signing_key_tooltip = '<span class="dashicons dashicons-no"></span><span class="tribe-field-tickets-commerce-stripe-webhooks-signing-key-status">' . esc_html__( 'Webhooks not validated yet.', 'event-tickets' ) . '</span>';
 		} else {
 			$signing_key_tooltip = '<span class="dashicons dashicons-yes"></span><span class="tribe-field-tickets-commerce-stripe-webhooks-signing-key-status">' . esc_html__( 'Webhooks were properly validated for sales.', 'event-tickets' ) . '</span>';
-		}
-
-		if ( tribe( Merchant::class )->is_sandbox() ) {
-			$signing_key_tooltip .= '<br /><b>' . esc_html__( 'Webhook validation will not work in Tickets Commerce test mode.', 'event-tickets' ) . '</b>';
 		}
 
 		return [
@@ -207,9 +245,10 @@ class Webhooks extends Abstract_Webhooks {
 				'validation_callback' => 'is_string',
 				'validation_type'     => 'textarea',
 				'attributes'          => [
-					'data-ajax-nonce'   => wp_create_nonce( static::$nonce_key_handle_validation ),
-					'data-loading-text' => esc_attr__( 'Validating signing key with Stripe, please wait.', 'event-tickets' ),
-					'data-ajax-action'  => 'tec_tickets_commerce_gateway_stripe_test_webhooks',
+					'data-ajax-nonce'         => wp_create_nonce( static::$nonce_key_handle_validation ),
+					'data-loading-text'       => esc_attr__( 'Validating signing key with Stripe, please wait. This can take up to one minute.', 'event-tickets' ),
+					'data-ajax-action'        => 'tec_tickets_commerce_gateway_stripe_test_webhooks',
+					'data-ajax-action-verify' => 'tec_tickets_commerce_gateway_stripe_verify_webhooks',
 				],
 			],
 			'tickets-commerce-gateway-settings-group-end-webhook'         => [

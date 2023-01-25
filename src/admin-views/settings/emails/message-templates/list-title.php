@@ -2,8 +2,8 @@
 /**
  * Tickets Emails Message Template List Title
  *
- * @since  TBD   Title for list item of email message templates for Emails settings tab.
- * 
+ * @since  5.5.6   Title for list item of email message templates for Emails settings tab.
+ *
  * @var Array[]  $templates  Array of template info.
  * @var Array    $template   Template info.
  */
@@ -18,5 +18,7 @@ if ( empty( $template ) ) {
 
 ?>
 <div class="tec-tickets__admin-settings-emails-template-list-item-title">
-	<?php echo esc_html( $template['title'] ); ?>
+	<a href="#" class="tec-tickets__admin-settings-emails-template-list-item-title-link">
+		<?php echo esc_html( $template['title'] ); ?>
+	</a>
 </div>

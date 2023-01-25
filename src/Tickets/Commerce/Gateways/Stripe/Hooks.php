@@ -34,6 +34,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 		add_action( 'admin_init', [ $this, 'handle_stripe_errors' ] );
 
 		add_action( 'wp_ajax_tec_tickets_commerce_gateway_stripe_test_webhooks', [ $this, 'action_handle_testing_webhooks_field' ] );
+		add_action( 'wp_ajax_tec_tickets_commerce_gateway_stripe_verify_webhooks', [ $this, 'action_handle_verify_webhooks' ] );
 	}
 
 	/**
@@ -88,12 +89,21 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	}
 
 	/**
-	 * Handles the validation of the signing key on the settings page.
+	 * Handles the testing of the signing key on the settings page.
 	 *
 	 * @since 5.3.0
 	 */
 	public function action_handle_testing_webhooks_field() : void {
 		$this->container->make( Webhooks::class )->handle_validation();
+	}
+
+	/**
+	 * Handles the validation of the signing key on the settings page.
+	 *
+	 * @since 5.5.6
+	 */
+	public function action_handle_verify_webhooks() : void {
+		$this->container->make( Webhooks::class )->handle_verification();
 	}
 
 	/**

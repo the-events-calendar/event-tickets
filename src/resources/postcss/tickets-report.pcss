@@ -388,3 +388,21 @@ table.orders {
 		color: #1d2327;
 	}
 }
+
+.tec-tc-report-page {
+	p.search-box {
+		display: flex;
+	}
+	select, input {
+		margin: 0 5px;
+	}
+
+	@media screen and (max-width: 768px) {
+		p.search-box {
+			flex-direction: column;
+		}
+		select, input {
+			margin: 5px 0;
+		}
+	}
+}

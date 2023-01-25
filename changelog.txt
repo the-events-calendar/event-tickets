@@ -1,9 +1,43 @@
 == Changelog ==
 
+= [TBD] TBD =
+
+* Tweak - Added the `tribe-tickets__tickets-item--shared-capacity` wrapper class for tickets having shared capacity. [ETP-841]
+
+= [5.5.5] 2022-12-08 =
+
+* Fix - Remove need for Platform Controls to verify webhook signatures in Stripe. [ET-1508]
+* Fix - Fixed the order of tickets in an event changing when you haven't manually requested it. [ET-1568]
+* Fix - Fixed shared capacity tickets only showing the lowest capacity between the shared pool tickets. [ETP-815]
+* Tweak - Removed locale param for Tickets Commerce JS SDK as per PayPal recommendation. [ET-1615]
+* Language - 110 new strings added, 193 updated, 5 fuzzied, and 24 obsoleted
+
+= [5.5.4] 2022-11-09 =
+
+* Fix - Fixes multiple of the same ticket form being on the same page being out of sync. [GTRIA-729]
+* Fix - Added a JS event that checks for attendee label validation if ET+ is active. [ETP-803]
+
+= [5.5.3] 2022-10-31 =
+
+* Fix - Orderby param not working for Attendee archive REST API. [ET-1591]
+* Fix - Properly save the check-in details for attendees on check-in. [ETP-819]
+* Fix - TicketsCommerce ticketed events not showing up for Events REST API. [ET-1567]
+* Fix - Update version of Firebase/JWT in Common from 5.x to 6.3.0
+* Enhancement - Added support for `name` and `email` param for searching in Attendee archive REST API. [ET-1591]
+* Enhancement - Add template tag to properly check if The Events Calendar is active. [ETP-820]
+* Enhancement - Add `attendance` information to the `events` REST API endpoint. [ET-1580]
+* Enhancement - Add `check_in` argument support for `attendees` REST API endpoint. [ET-1588]
+* Language - 0 new strings added, 18 updated, 0 fuzzied, and 0 obsoleted
+
+= [5.5.2] 2022-10-20 =
+
+* Fix - Update version of Firebase/JWT in Common from 5.x to 6.3.0
+
 = [5.5.1] 2022-09-22 =
 
 * Fix - Listing tickets is no longer limited by the global settings. [ET-1584]
 * Fix - Correct parameter type hinting when param can be null. [ET-1582]
+* Fix - Showing Checkout not available and credit card fields at the same time for PayPal gateway in TicketsCommerce. [ETP-812]
 * Language - 0 new strings added, 1 updated, 0 fuzzied, and 0 obsoleted
 
 = [5.5.0] 2022-09-06 =
@@ -26,6 +60,8 @@
 * Enhancement - Added section about Tickets Commerce on the Tickets Home page. [ET-1539]
 * Enhancement - Tickets Commerce Stripe gateway now shows additional purchaser info metadata in Stripe dashboard. [ET-1542]
 * Enhancement - Update REST API Endpoints to have access via API KEY and remove the restriction to be using Event Tickets Plus to access the `attendees` endpoint. [ET-1559]
+* Enhancement - Allow filtering of Events Archive REST API using `ticketed` parameter to filter Ticketed and Non-ticketed events. [TEC-4439]
+* Language - 6 new strings added, 162 updated, 0 fuzzied, and 9 obsoleted
 
 = [5.4.3.1] 2022-07-21 =
 
@@ -43,13 +79,13 @@
 
 = [5.4.2] 2022-07-05 =
 
+* Enhancement - Unify CSS class names for many admin elements. [ET-1536]
+* Enhancement - Add a `Currency Position` setting for Tickets Commerce. [ET-1534]
+* Tweak - Added helpful heading labels for Tickets Commerce Payments settings tab fields. [ET-1529]
 * Fix - Fixed changing of Shared Capacity stock when a single ticket stock is updated. [ETP-800]
 * Fix - Cannot edit events with Elementor on The Events Calendar with Event Tickets activated. [ET-1538]
 * Fix - Remove duplicate `Total Event Capacity` wording when ET+ is activated. [ET-1535]
-* Tweak - Added helpful heading labels for Tickets Commerce Payments settings tab fields. [ET-1529]
-* Enhancement - Unify CSS class names for many admin elements. [ET-1536]
 * Fix - When using Event Tickets as a standalone plugin, the SelectWoo asset was not being properly loaded. [ET-1531]
-* Enhancement - Add a `Currency Position` setting for Tickets Commerce. [ET-1534]
 * Fix - Some CSS issues within the tickets block in the block editor. [ET-1530]
 * Fix - The wrong `Ticket #` was being sent in attendee emails for Ticket Commerce tickets. [ET-1537]
 * Fix - Allow price block to override the string that is dynamically created from ticket values. [ET-1524]
@@ -57,15 +93,20 @@
 
 = [5.4.1] 2022-06-08 =
 
+* Enhancement - Expanded list of supported currencies for Tickets Commerce, for details visit: https://evnt.is/tec-tc-currencies. [ET-1454, ET-1455, ET-1456]
+* Fix - In the blocks editor, the ticket sale start/end times always load as midnight. [ET-1518]
 * Fix - Encoding issue in the block editor's price block of The Events Calendar events. [ET-1434]
 * Fix - Add India to the list of countries ET cannot process fees from. [ET-1522]
+* Fix - Avoid loading PayPal partner JS script on all admin pages. [ET-1520]
+* Fix - Disable saving Stripe Webhook Signing Secret before validation. [ET-1497]
 * Enhancement - Add a new notice to set up permalinks to something different than "Plain" in order to use Tickets Commerce. [ET-1521]
+* Enhancement - Add links to "Settings" and "Getting started" on the plugin action links. [ET-1525]
 * Language - 2 new strings added, 20 updated, 0 fuzzied, and 3 obsoleted
 
 = [5.4.0.2] 2022-06-06 =
 
 * Fix - Adds a safety check to avoid issuing tickets for late-declined purchases in PayPal, when the Order status returned is valid. [ET-1533]
-* Tweak - Added filters: `tec_tickets_commerce_cart_order_hash`.
+* Tweak - Added filters: `tec_tickets_commerce_cart_order_hash`
 * Language - 1 new strings added, 15 updated, 0 fuzzied, and 0 obsoleted.
 
 = [5.4.0.1] 2022-05-23 =
@@ -86,15 +127,15 @@
 
 = [5.3.4] 2022-05-11 =
 
+* Enhancement - Added availability dates and icons to ticket listing in classic editor. [ET-1494]
+* Enhancement - Notify users of the Manual Addition of Attendees feature that is available. [ET-1492]
+* Enhancement - Notify users of Capacity and Attendee Registration Field features that are available. [ET-1493]
 * Fix - Typo was causing a JS `setAttribute` error in `vue.min.js`. [ET-1504]
 * Fix - Fatal error when exporting attendees in PHP 8. [ET-1502]
 * Fix - Tickets Commerce manual attendee's ticket price is set to 0. [ETP-781]
 * Fix - RSVP title is being encoded within the block editor fields. [ET-1478]
 * Fix - Tickets Commerce manual attendee's ticket price is set to 0. [ETP-781]
 * Fix - Fixed template override path for a few templates. [ET-1491]
-* Enhancement - Added availability dates and icons to ticket listing in classic editor. [ET-1494]
-* Enhancement - Notify users of the Manual Addition of Attendees feature that is available. [ET-1492]
-* Enhancement - Notify users of Capacity and Attendee Registration Field features that are available. [ET-1493]
 * Tweak - Lighten color of disabled "Get Tickets" button text when using the Genesis theme. [ET-1435]
 * Tweak - Added actions: `tec_tickets_attendees_event_summary_table_extra`
 * Tweak - Changed views: `blocks/tickets/opt-out-hidden`, `blocks/tickets/registration/summary/content`, `registration-js/attendees/fields/number`, `v2/tickets/commerce/fields/tribe-commerce`, `v2/tickets/item/extra/description-toggle`, `v2/tickets/submit/must-login`.

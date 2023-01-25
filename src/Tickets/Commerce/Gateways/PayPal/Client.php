@@ -90,7 +90,6 @@ class Client {
 			'merchant-id'     => $merchant->get_merchant_id_in_paypal(),
 			'components'      => 'hosted-fields,buttons',
 			'intent'          => 'capture',
-			'locale'          => $merchant->get_locale(),
 			'disable-funding' => 'credit',
 			'currency'        => tribe_get_option( \TEC\Tickets\Commerce\Settings::$option_currency_code, 'USD' ),
 		], $query_args );
