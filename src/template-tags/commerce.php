@@ -77,6 +77,6 @@ function tec_tickets_commerce_currency_thousands_separator() : string {
  *
  * @return int Number of decimals for the Tickets Commerce currency.
  */
-function tec_tickets_commerce_currency_decimal_precision() : int {
+function tec_tickets_commerce_currency_number_of_decimals() : int {
 	return Currency::get_currency_precision( tec_tickets_commerce_currency_code() );
 }

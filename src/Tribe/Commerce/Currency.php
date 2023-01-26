@@ -708,8 +708,8 @@ class Tribe__Tickets__Commerce__Currency {
 			return $decimals;
 		}
 
-		if ( \TEC\Tickets\Commerce\Module::class === $provider && function_exists( 'tec_tickets_commerce_currency_decimal_precision' ) ) {
-			return tec_tickets_commerce_currency_decimal_precision();
+		if ( \TEC\Tickets\Commerce\Module::class === $provider && function_exists( 'tec_tickets_commerce_currency_number_of_decimals' ) ) {
+			return tec_tickets_commerce_currency_number_of_decimals();
 		}
 
 		return $this->get_currency_number_of_decimals();
