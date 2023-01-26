@@ -447,7 +447,7 @@ class Tribe__Tickets__Commerce__Currency {
 			return edd_currency_symbol();
 		}
 
-		if ( 'TEC\Tickets\Commerce\Module' === $provider && function_exists( 'tec_tickets_commerce_currency_symbol' ) ) {
+		if ( \TEC\Tickets\Commerce\Module::class === $provider && function_exists( 'tec_tickets_commerce_currency_symbol' ) ) {
 			return tec_tickets_commerce_currency_symbol();
 		}
 
@@ -529,7 +529,7 @@ class Tribe__Tickets__Commerce__Currency {
 			return 'before' === $position ? 'prefix' : 'postfix';
 		}
 
-		if ( 'TEC\Tickets\Commerce\Module' === $provider && function_exists( 'tec_tickets_commerce_currency_position' ) ) {
+		if ( \TEC\Tickets\Commerce\Module::class === $provider && function_exists( 'tec_tickets_commerce_currency_position' ) ) {
 			return tec_tickets_commerce_currency_position();
 		}
 
@@ -639,7 +639,7 @@ class Tribe__Tickets__Commerce__Currency {
 			return edd_get_option( 'decimal_separator', '.' );
 		}
 
-		if ( 'TEC\Tickets\Commerce\Module' === $provider && function_exists( 'tec_tickets_commerce_currency_decimal_separator' ) ) {
+		if ( \TEC\Tickets\Commerce\Module::class === $provider && function_exists( 'tec_tickets_commerce_currency_decimal_separator' ) ) {
 			return tec_tickets_commerce_currency_decimal_separator();
 		}
 
@@ -669,7 +669,7 @@ class Tribe__Tickets__Commerce__Currency {
 			return edd_get_option( 'thousands_separator', '.' );
 		}
 
-		if ( 'TEC\Tickets\Commerce\Module' === $provider && function_exists( 'tec_tickets_commerce_currency_thousands_separator' ) ) {
+		if ( \TEC\Tickets\Commerce\Module::class === $provider && function_exists( 'tec_tickets_commerce_currency_thousands_separator' ) ) {
 			return tec_tickets_commerce_currency_thousands_separator();
 		}
 
@@ -708,7 +708,7 @@ class Tribe__Tickets__Commerce__Currency {
 			return $decimals;
 		}
 
-		if ( 'TEC\Tickets\Commerce\Module' === $provider && function_exists( 'tec_tickets_commerce_currency_decimal_precision' ) ) {
+		if ( \TEC\Tickets\Commerce\Module::class === $provider && function_exists( 'tec_tickets_commerce_currency_decimal_precision' ) ) {
 			return tec_tickets_commerce_currency_decimal_precision();
 		}
 
