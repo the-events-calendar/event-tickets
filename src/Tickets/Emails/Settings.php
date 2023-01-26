@@ -299,17 +299,17 @@ class Settings {
 				'type'                => 'color',
 				'label'               => esc_html__( 'Ticket Color', 'event-tickets' ),
 				'size'                => 'medium',
-				'default'             => '#ffffff',
+				'default'             => '#007363',
 				'validation_callback' => 'is_string',
 				'validation_type'     => 'color',
 			],
 			static::$option_footer_content  => [
-				'type'                => 'wysiwyg',
-				'label'               => esc_html__( 'Footer Content', 'event-tickets' ),
-				'tooltip'             => esc_html__( 'Add custom links and instructions to the bottom of your emails.', 'event-tickets' ),
-				'default'             => '',
-				'validation_type'     => 'html',
-				'settings'            => [
+				'type'            => 'wysiwyg',
+				'label'           => esc_html__( 'Footer Content', 'event-tickets' ),
+				'tooltip'         => esc_html__( 'Add custom links and instructions to the bottom of your emails.', 'event-tickets' ),
+				'default'         => '',
+				'validation_type' => 'html',
+				'settings'        => [
 					'media_buttons' => false,
 					'quicktags'     => false,
 					'editor_height' => 200,
@@ -322,7 +322,7 @@ class Settings {
 						'aligncenter',
 						'alignright',
 					],
-				]
+				],
 			],
 		];
 

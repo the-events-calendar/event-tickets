@@ -3,12 +3,11 @@
  * Tickets Emails Email Template Recipient Name
  *
  * @since  TBD   Recipient Name.
- * 
+ *
  * @var string $ticket_name       Ticket name.
  * @var string $ticket_id         Ticket ID.
  * @var string $ticket_text_color Ticket text color.
  * @var string $ticket_bg_color   Ticket background color.
- * 
  */
 
 ?>

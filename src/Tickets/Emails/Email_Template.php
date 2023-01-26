@@ -24,7 +24,7 @@ class Email_Template {
 
 	/**
 	 * Whether or not this is for a template preview.
-	 * 
+	 *
 	 * @since TBD
 	 *
 	 * @var boolean
@@ -33,13 +33,13 @@ class Email_Template {
 
 	/**
 	 * Holds context array that will be applied to the template.
-	 * 
+	 *
 	 * @since TBD
 	 *
 	 * @var array
 	 */
 	private array $context_data = [];
-	
+
 	/**
 	 * Variable to hold template object.
 	 *
@@ -73,9 +73,11 @@ class Email_Template {
 	 *
 	 * @return string The HTML of the template.
 	 */
-	public function get_html() {
+	public function get_html( $context = [] ) {
 		$template = $this->get_template();
-		return $template->template( 'email-template', $this->get_context(), false );
+		$context  = wp_parse_args( $context, $this->get_context() );
+
+		return $template->template( 'email-template', $context, false );
 	}
 
 	/**
@@ -95,7 +97,7 @@ class Email_Template {
 	 * @since TBD
 	 *
 	 * @param boolean $is_preview
-	 * 
+	 *
 	 * @return void
 	 */
 	public function set_preview( $is_preview = false ) {
@@ -119,7 +121,7 @@ class Email_Template {
 	 * @since TBD
 	 *
 	 * @param array $data
-	 * 
+	 *
 	 * @return void
 	 */
 	public function set_data( array $data ) {
@@ -139,7 +141,7 @@ class Email_Template {
 			'header_image_url'       => tribe_get_option( Settings::$option_header_image_url, '' ),
 			'header_image_alignment' => tribe_get_option( Settings::$option_header_image_alignment, 'left' ),
 			'header_bg_color'        => tribe_get_option( Settings::$option_header_bg_color, '#ffffff' ),
-			'ticket_bg_color'        => tribe_get_option( Settings::$option_ticket_bg_color, '#ffffff' ),
+			'ticket_bg_color'        => tribe_get_option( Settings::$option_ticket_bg_color, '#007363' ),
 			'footer_content'         => tribe_get_option( Settings::$option_footer_content, '' ),
 			'footer_credit'          => true,
 		];
@@ -149,7 +151,7 @@ class Email_Template {
 		if ( $this->preview ) {
 			$this->context_data = $this->get_preview_context_array();
 		}
-		
+
 		$this->context_data = array_merge( $context, $this->context_data );
 
 		/**
