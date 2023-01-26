@@ -261,8 +261,8 @@ class Tribe__Tickets__Admin__Notices {
 
 			$message = sprintf(
 				'<h3>%1$s</h3><p>%2$s</p>',
-				$unsupported_currency[$currency]['heading'],
-				$unsupported_currency[$currency]['message']
+				esc_html( $unsupported_currency[$currency]['heading'] ),
+				esc_html( $unsupported_currency[$currency]['message'] )
 			);
 
 			tribe_notice(
