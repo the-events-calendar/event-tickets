@@ -375,6 +375,14 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		 * @param array $item
 		 */
 		$row_actions = (array) apply_filters( 'event_tickets_attendees_table_row_actions', $default_row_actions, $item );
+
+		// Make sure that `Delete` is the last item.
+		if ( isset( $row_actions['delete-attendee'] ) ) {
+			$delete_action = $row_actions['delete-attendee'];
+			unset( $row_actions['delete-attendee'] );
+			$row_actions['delete-attendee'] = $delete_action;
+		}
+
 		$row_actions = join( ' | ', $row_actions );
 
 		return empty( $row_actions ) ? '' : '<div class="row-actions">' . $row_actions . '</div>';
@@ -426,7 +434,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			'attendee' => $attendee,
 		] ) );
 
-		$default_actions[] = '<span class="trash"><a href="' . $delete_url . '">' . esc_html_x( 'Delete', 'row action', 'event-tickets' ) . '</a></span>';
+		$default_actions['delete-attendee'] = '<span class="trash"><a href="' . $delete_url . '">' . esc_html_x( 'Delete', 'row action', 'event-tickets' ) . '</a></span>';
 
 		return array_merge( $row_actions, $default_actions );
 	}
