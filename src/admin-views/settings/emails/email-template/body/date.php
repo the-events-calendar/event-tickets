@@ -3,9 +3,8 @@
  * Tickets Emails Email Template Date String
  *
  * @since  TBD   Add links for email template that allows recipient to subscribe to events.
- * 
+ *
  * @var string $date_string Textual representation of event date and time. Format will vary based on user settings/language.
- * 
  */
 
 if ( empty( $date_string ) ) {

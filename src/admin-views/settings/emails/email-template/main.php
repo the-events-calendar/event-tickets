@@ -3,14 +3,13 @@
  * Tickets Emails Email Template Main
  *
  * @since  TBD   Main email template that goes to recipients' email clients.
- * 
+ *
  * @var Tribe__Template  $this    Parent template object.
  * @var boolean          $preview Whether or not we are viewing the template as a preview.
- * 
  */
 
 // If viewing preview, bail.
- if ( tribe_is_truthy( $preview ) ) {
+if ( tribe_is_truthy( $preview ) ) {
 	return;
 }
 
