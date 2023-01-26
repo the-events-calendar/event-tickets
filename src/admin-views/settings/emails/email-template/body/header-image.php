@@ -3,9 +3,8 @@
  * Tickets Emails Email Template Header Image
  *
  * @since  TBD   Header image.
- * 
+ *
  * @var string $header_image_url URL of header image.
- * 
  */
 
 if ( empty( $header_image_url ) ) {
