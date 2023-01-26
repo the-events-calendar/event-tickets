@@ -265,8 +265,6 @@ class Settings {
 
 		$current_user = get_user_by( 'id', get_current_user_id() );
 
-		$preview_amount = \TEC\Tickets\Commerce\Utils\Value::create( 1000 )->get_currency();
-
 		$settings = [
 			'tickets-commerce-settings-general-heading'     => [
 				'type' => 'html',
