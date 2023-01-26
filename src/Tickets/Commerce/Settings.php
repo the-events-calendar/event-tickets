@@ -72,13 +72,13 @@ class Settings {
 	public static $option_currency_thousands_separator = 'tickets-commerce-currency-thousands-separator';
 
 	/**
-	 * The option key for currency precision.
+	 * The option key for currency number of decimals.
 	 *
 	 * @since TBD
 	 *
 	 * @var string
 	 */
-	public static $option_currency_precision = 'tickets-commerce-currency-precision';
+	public static $option_currency_number_of_decimals = 'tickets-commerce-currency-number-of-decimals';
 
 	/**
 	 * The option key for currency position.
@@ -338,9 +338,9 @@ class Settings {
 				'validation_callback' => 'is_string',
 			],
 
-			static::$option_currency_precision              => [
+			static::$option_currency_number_of_decimals => [
 				'type'            => 'text',
-				'label'           => esc_html__( 'Precision', 'event-tickets' ),
+				'label'           => esc_html__( 'Number of Decimals', 'event-tickets' ),
 				'tooltip'         => esc_html__( 'This sets the number of decimal points shown in displayed prices.', 'event-tickets' ),
 				'default'         => '2',
 				'validation_type' => 'int',
@@ -592,13 +592,13 @@ class Settings {
 	 */
 	public function set_default_format_on_currency_change( $options ) {
 		// bail if the currency code is not set in getting updated.
-		if ( ! isset( $_POST[ self::$option_currency_code ] ) ) {
+		if ( ! isset( $_POST[ static::$option_currency_code ] ) ) {
 			return $options;
 		}
 
 		// get the saved currency code.
-		$saved_currency_code = tribe_get_option( self::$option_currency_code );
-		$new_currency_code   = sanitize_text_field( $_POST[ self::$option_currency_code ] );
+		$saved_currency_code = tribe_get_option( static::$option_currency_code );
+		$new_currency_code   = sanitize_text_field( $_POST[ static::$option_currency_code ] );
 
 		if ( $saved_currency_code === $new_currency_code ) {
 			return $options;
@@ -611,9 +611,9 @@ class Settings {
 			return $options;
 		}
 
-		$options[ self::$option_currency_decimal_separator ]   = $currency_data[ $new_currency_code ]['decimal_point'];
-		$options[ self::$option_currency_thousands_separator ] = $currency_data[ $new_currency_code ]['thousands_sep'];
-		$options[ self::$option_currency_precision ]           = $currency_data[ $new_currency_code ]['decimal_precision'];
+		$options[ static::$option_currency_decimal_separator ]   = $currency_data[ $new_currency_code ]['decimal_point'];
+		$options[ static::$option_currency_thousands_separator ] = $currency_data[ $new_currency_code ]['thousands_sep'];
+		$options[ static::$option_currency_number_of_decimals ]  = $currency_data[ $new_currency_code ]['decimal_precision'];
 
 		return $options;
 	}

@@ -169,7 +169,7 @@ class Currency {
 			$precision = $map[ $code ]['decimal_precision'];
 		}
 
-		$precision = tribe_get_option( Settings::$option_currency_precision, $precision );
+		$precision = tribe_get_option( Settings::$option_currency_number_of_decimals, $precision );
 
 		/**
 		 * Filter the specific currency precision before returning. $code is the 3-letter currency code.
