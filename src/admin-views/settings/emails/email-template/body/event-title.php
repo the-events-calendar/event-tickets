@@ -3,9 +3,8 @@
  * Tickets Emails Email Template Event Title
  *
  * @since  TBD   Event title.
- * 
+ *
  * @var string $event_title Text for event title.
- * 
  */
 
 if ( empty( $event_title ) ) {

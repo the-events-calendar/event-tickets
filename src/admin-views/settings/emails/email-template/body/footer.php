@@ -3,13 +3,12 @@
  * Tickets Emails Email Template Footer
  *
  * @since  TBD   Email template footer.
- * 
+ *
  * @var Tribe__Template  $this  Parent template object.
  * @var string $footer_content    HTML of footer content.
  * @var bool   $footer_credit     Show the footer credit?
  * @var string $header_bg_color   Header background color.
  * @var string $header_text_color Header text color.
- * 
  */
 
 if ( empty( $footer_content ) && ! tribe_is_truthy( $footer_credit ) ) {
