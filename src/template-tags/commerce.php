@@ -55,7 +55,7 @@ function tec_tickets_commerce_currency_position() {
  *
  * @return string String containing the Tickets Commerce currency decimal point separator.
  */
-function tec_tickets_commerce_currency_decimal_separator() {
+function tec_tickets_commerce_currency_decimal_separator() : string {
 	return Currency::get_currency_separator_decimal( tec_tickets_commerce_currency_code() );
 }
 
@@ -66,7 +66,7 @@ function tec_tickets_commerce_currency_decimal_separator() {
  *
  * @return string String containing the Tickets Commerce currency thousands separator.
  */
-function tec_tickets_commerce_currency_thousands_separator() {
+function tec_tickets_commerce_currency_thousands_separator() : string {
 	return Currency::get_currency_separator_thousands( tec_tickets_commerce_currency_code() );
 }
 
@@ -77,6 +77,6 @@ function tec_tickets_commerce_currency_thousands_separator() {
  *
  * @return int Number of decimals for the Tickets Commerce currency.
  */
-function tec_tickets_commerce_currency_decimal_precision() {
+function tec_tickets_commerce_currency_decimal_precision() : int {
 	return Currency::get_currency_precision( tec_tickets_commerce_currency_code() );
 }
