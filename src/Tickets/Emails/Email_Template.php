@@ -59,7 +59,7 @@ class Email_Template {
 			$this->template = new Tribe__Template();
 			$this->template->set_template_origin( Tribe__Tickets__Main::instance() );
 			// @todo Move template folder into `src/views/v2` before TE release.
-			$this->template->set_template_folder( 'src/views/v2/tickets/emails' );
+			$this->template->set_template_folder( 'src/views/v2/emails' );
 			$this->template->set_template_context_extract( true );
 		}
 
