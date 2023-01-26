@@ -3,9 +3,8 @@
  * Tickets Emails Email Template Event Image
  *
  * @since  TBD   Event image.
- * 
+ *
  * @var string $event_image_url URL for the event image.
- * 
  */
 
 if ( empty( $event_image_url ) ) {

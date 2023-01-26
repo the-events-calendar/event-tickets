@@ -3,15 +3,13 @@
  * Tickets Emails Email Template body
  *
  * @since  TBD   Email template body.
- * 
+ *
  * @var Tribe__Template  $this  Parent template object.
- * 
  */
 
-
- // @todo Update link URL
- 
-?><table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;background:#f0eeeb;color:#3C434A;">
+// @todo Update link URL.
+?>
+<table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;background:#f0eeeb;color:#3C434A;">
 	<tr>
 		<?php $this->template( 'email-template/body/top-link' ); ?>
 	</tr>
