@@ -43,6 +43,15 @@ class Currency {
 	public static $currency_code_fallback = 'USD';
 
 	/**
+	 * Unsupported Currency
+	 *
+	 * @since 5.5.5
+	 *
+	 * @var array
+	 */
+	public static $unsupported_currency = [];
+
+	/**
 	 * Retrieves the working currency code.
 	 *
 	 * @since 5.2.3
@@ -1114,6 +1123,14 @@ class Currency {
 				'decimal_precision'     => 2,
 				'stripe_minimum_charge' => 25,
 			],
+			'HRK' => [
+				'name'                  => __( 'Croatian kuna (HRK)', 'event-tickets' ),
+				'symbol'                => 'kn',
+				'decimal_point'         => '.',
+				'thousands_sep'         => ',',
+				'decimal_precision'     => 2,
+				'stripe_minimum_charge' => 8,
+			],
 			'HTG' => [
 				'name'                  => __( 'Haitian gourde (HTG)', 'event-tickets' ),
 				'symbol'                => 'G',
@@ -1449,5 +1466,61 @@ class Currency {
 		 * @param array<string, string> $options
 		 */
 		return apply_filters( 'tec_tickets_commerce_currency_code_options', $options );
+	}
+
+	/**
+	 * Get unsupported currencies and notice texts.
+	 *
+	 * @since 5.5.5
+	 *
+	 * @return array
+	 */
+	public static function get_unsupported_currencies() {
+		return [
+			'HRK' => [
+				'heading'   => __( 'Tickets Commerce is now selling with Euro', 'event-tickets' ),
+				'message'   => __( 'From the 1st of January 2023, the euro became the official currency for Croatia. We have removed the Croatian kuna from our currency settings and updated your settings to start selling with Euro.', 'event-tickets' ),
+				'new_value' => 'EUR',
+			],
+		];
+	}
+
+	/**
+	 * Verify if currency is supported.
+	 *
+	 * @since 5.5.5
+	 *
+	 * @return bool
+	 */
+	public static function is_supported_currency() {
+		// Get currency code option.
+		$currency = tribe_get_option( static::$currency_code_option );
+
+		// Get unsupported currencies.
+		$unsupported_currencies = static::get_unsupported_currencies();
+
+		if ( array_key_exists( $currency, $unsupported_currencies ) ) {
+			// Get the unsupported currency.
+			static::$unsupported_currency = $unsupported_currencies[ $currency ];
+
+			// Update currency option to the new value.
+			static::update_currency_option();
+
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Update currency option to the new value if the currency is unsupported.
+	 *
+	 * @since 5.5.5
+	 *
+	 * @return void
+	 */
+	public static function update_currency_option() {
+		// Update currency option.
+		tribe_update_option( static::$currency_code_option, static::$unsupported_currency['new_value'] );
 	}
 }
