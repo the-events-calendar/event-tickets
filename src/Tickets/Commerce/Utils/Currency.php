@@ -43,6 +43,42 @@ class Currency {
 	public static $currency_code_fallback = 'USD';
 
 	/**
+	 * The fallback currency code to use if none is found.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $currency_code_fallback_symbol = '&#x24;';
+
+	/**
+	 * The fallback currency thousands separator to use if none is found.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $currency_code_thousands_separator = ',';
+
+	/**
+	 * The fallback currency decimal separator to use if none is found.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $currency_code_decimal_separator = '.';
+
+	/**
+	 * The fallback number of decimals for currency.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $currency_code_number_of_decimals = '2';
+
+	/**
 	 * Retrieves the working currency code.
 	 *
 	 * @since 5.2.3
@@ -163,7 +199,7 @@ class Currency {
 	 */
 	public static function get_currency_precision( $code ) {
 		$map       = static::get_default_currency_map();
-		$precision = 2;
+		$precision = static::$currency_code_number_of_decimals;
 
 		if ( isset( $map[ $code ] ) ) {
 			$precision = $map[ $code ]['decimal_precision'];
@@ -205,7 +241,7 @@ class Currency {
 	 */
 	public static function get_currency_separator_decimal( $code ) {
 		$map       = static::get_default_currency_map();
-		$separator = '';
+		$separator = static::$currency_code_decimal_separator;
 
 		if ( isset( $map[ $code ] ) ) {
 			$separator = $map[ $code ]['decimal_point'];
@@ -247,7 +283,7 @@ class Currency {
 	 */
 	public static function get_currency_separator_thousands( $code ) {
 		$map       = static::get_default_currency_map();
-		$separator = '';
+		$separator = static::$currency_code_thousands_separator;
 
 		if ( isset( $map[ $code ] ) ) {
 			$separator = $map[ $code ]['thousands_sep'];
