@@ -578,41 +578,4 @@ class Settings {
 		 */
 		return $pue->get_pue()->is_valid_key_format() ;
 	}
-
-	/**
-	 * Set the format settings according to the selected currency.
-	 *
-	 * @since TBD
-	 *
-	 * @param array $options The options to be filtered.
-	 *
-	 * @return array
-	 */
-	public function set_default_format_on_currency_change( $options ) {
-		// bail if the currency code is not set in getting updated.
-		if ( ! isset( $_POST[ static::$option_currency_code ] ) ) {
-			return $options;
-		}
-
-		// get the saved currency code.
-		$saved_currency_code = tribe_get_option( static::$option_currency_code );
-		$new_currency_code   = sanitize_text_field( $_POST[ static::$option_currency_code ] );
-
-		if ( $saved_currency_code === $new_currency_code ) {
-			return $options;
-		}
-
-		// if they are not same then update the rest format options from default map.
-		$currency_data = Currency::get_default_currency_map();
-
-		if ( ! isset( $currency_data[ $new_currency_code ] ) ) {
-			return $options;
-		}
-
-		$options[ static::$option_currency_decimal_separator ]   = $currency_data[ $new_currency_code ]['decimal_point'];
-		$options[ static::$option_currency_thousands_separator ] = $currency_data[ $new_currency_code ]['thousands_sep'];
-		$options[ static::$option_currency_number_of_decimals ]  = $currency_data[ $new_currency_code ]['decimal_precision'];
-
-		return $options;
-	}
 }

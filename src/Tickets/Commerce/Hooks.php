@@ -126,9 +126,6 @@ class Hooks extends tad_DI52_ServiceProvider {
 		add_filter( 'tec_tickets_commerce_payments_tab_settings', [ $this, 'filter_payments_tab_settings' ] );
 
 		add_filter( 'wp_redirect', [ $this, 'filter_redirect_url' ] );
-
-		// add action to intercept the update of currency code option.
-		add_filter( 'tribe_settings_save_option_array', [ $this, 'intercept_currency_symbol_change' ], 10, 3 );
 	}
 
 	/**
@@ -730,18 +727,5 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 */
 	public function include_assets_checkout_shortcode() {
 		Shortcodes\Checkout_Shortcode::enqueue_assets();
-	}
-
-	/**
-	 * Intercept the currency code option updates to set defaults according to the new selection.
-	 *
-	 * @since TBD
-	 *
-	 * @param array $options The options being updated.
-	 *
-	 * @return array The options being updated.
-	 */
-	public function intercept_currency_symbol_change( $options  ) {
-		return tribe( Base_Commerce\Settings::class )->set_default_format_on_currency_change( $options );
 	}
 }
