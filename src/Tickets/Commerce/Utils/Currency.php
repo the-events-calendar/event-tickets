@@ -1480,7 +1480,7 @@ class Currency {
 	/**
 	 * Verify if currency is supported.
 	 *
-	 * @since 5.5.5
+	 * @since TBD
 	 *
 	 * @return bool
 	 */
