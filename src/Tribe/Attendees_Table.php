@@ -588,7 +588,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		$parent = 'admin.php';
 
 		/**
-		 * Filtert to show email form for non-admins.
+		 * Filter to show email form for non-admins.
 		 *
 		 * @since 4.10.1
 		 *
@@ -629,7 +629,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			'right' => [],
 		];
 
-		// Only show the email button if the user is an admin, or we've enableds it via the filter.
+		// Only show the email button if the user is an admin, or we've enabled it via the filter.
 		if ( current_user_can( 'edit_posts' ) || $allow_fe ) {
 			$nav['left']['email'] = sprintf( '<a class="email button action thickbox" href="%1$s">%2$s</a>', esc_url( $email_link ), esc_html__( 'Email', 'event-tickets' ) );
 		}
@@ -702,12 +702,12 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * @return bool
 	 */
 	protected function validate_action_nonce() {
-		// If a bulk action request was posted
+		// If a bulk action request was posted.
 		if ( ! empty( $_POST['attendee'] ) && $_POST['attendee'] && wp_verify_nonce( $_POST['_wpnonce'], 'bulk-attendees' ) ) {
 			return true;
 		}
 
-		// If an individual action was requested
+		// If an individual action was requested.
 		if ( ! empty( $_GET['attendee'] ) && $_GET['attendee'] && wp_verify_nonce( $_GET['nonce'], 'do_item_action_' . $_GET['attendee'] ) ) {
 			return true;
 		}
@@ -742,7 +742,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Get the Event ID ( Post ID ) of the Current Attendees Table
+	 * Get the Event ID ( Post ID ) of the Current Attendees Table.
 	 *
 	 * @since 4.10.4
 	 *
@@ -1083,7 +1083,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		/** @var Tribe__Tickets__Admin__Views $admin_views */
 		$admin_views = tribe( 'tickets.admin.views' );
 
-		$custom_search = $admin_views->template( 'attendees-table-search', $args, false );
+		$custom_search = $admin_views->template( 'attendees/table/search', $args, false );
 
 		// Add our search type dropdown before the search box input
 		$search_box = str_replace( '<input type="search"', $custom_search . '<input type="search"', $search_box );
