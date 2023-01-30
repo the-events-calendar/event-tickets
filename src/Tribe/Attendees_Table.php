@@ -147,7 +147,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	/**
 	 * Checks the current user's permissions
 	 */
-	public function ajax_user_can() {
+	public function ajax_user_can(): bool {
 		return current_user_can( get_post_type_object( $this->screen->post_type )->cap->edit_posts );
 	}
 
@@ -157,7 +157,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 *
 	 * @return array
 	 */
-	public function get_columns() {
+	public function get_columns(): array {
 		return $this->get_table_columns();
 	}
 
@@ -286,13 +286,13 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * Retrieves the order id for the specified table row item.
 	 *
 	 * In some cases, such as when the current item belongs to the RSVP provider, an
-	 * empty string may be returned as there is no order screen that can be linekd to.
+	 * empty string may be returned as there is no order screen that can be linked to.
 	 *
 	 * @param array $item
 	 *
 	 * @return string
 	 */
-	public function get_order_id_url( array $item ) {
+	public function get_order_id_url( array $item ): string {
 		// Backwards compatibility.
 		if ( empty( $item['order_id_url'] ) ) {
 			$item['order_id_url'] = get_edit_post_link( $item['order_id'], true );
@@ -909,7 +909,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			'return_total_found' => true,
 		];
 
-		$event_id = Event::filter_event_id( filter_var( $_GET['event_id'], FILTER_VALIDATE_INT ) );
+		$event_id = Event::filter_event_id( filter_var( tribe_get_request_var( 'event_id' ), FILTER_VALIDATE_INT ) );
 		$search   = sanitize_text_field( tribe_get_request_var( $this->search_box_input_name ) );
 
 		if ( ! empty( $search ) ) {
@@ -1085,7 +1085,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 
 		$custom_search = $admin_views->template( 'attendees/table/search', $args, false );
 
-		// Add our search type dropdown before the search box input
+		// Add our search type dropdown before the search box input.
 		$search_box = str_replace( '<input type="search"', $custom_search . '<input type="search"', $search_box );
 
 		echo $search_box;
