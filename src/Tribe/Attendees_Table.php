@@ -89,7 +89,13 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * @return array List of CSS classes for the table tag.
 	 */
 	protected function get_table_classes() {
-		$classes = [ 'widefat', 'striped', 'attendees', 'tribe-attendees' ];
+		$classes = [
+			'widefat',
+			'striped',
+			'attendees',
+			'tribe-attendees',
+			'tec-tickets__admin-table-attendees',
+		];
 
 		if ( is_admin() ) {
 			$classes[] = 'fixed';
@@ -244,12 +250,12 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		$icon    = '';
 		$warning = false;
 
-		// Check if the order_warning flag has been set (to indicate the order has been cancelled, refunded etc)
+		// Check if the order_warning flag has been set (to indicate the order has been cancelled, refunded etc).
 		if ( isset( $item['order_warning'] ) && $item['order_warning'] ) {
 			$warning = true;
 		}
 
-		// If the warning flag is set, add the appropriate icon
+		// If the warning flag is set, add the appropriate icon.
 		if ( $warning ) {
 			$icon = sprintf( "<span class='warning'><img src='%s'/></span> ", esc_url( Tribe__Tickets__Main::instance()->plugin_url . 'src/resources/images/warning.png' ) );
 		}
@@ -287,7 +293,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * @return string
 	 */
 	public function get_order_id_url( array $item ) {
-		// Backwards compatibility
+		// Backwards compatibility.
 		if ( empty( $item['order_id_url'] ) ) {
 			$item['order_id_url'] = get_edit_post_link( $item['order_id'], true );
 		}
@@ -421,7 +427,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		}
 
 		if ( is_admin() ) {
-			$default_actions[] = '<span class="inline move-ticket"> <a href="#">' . esc_html_x( 'Move', 'row action', 'event-tickets' ) . '</a> </span>';
+			$default_actions[] = '<span class="inline move-ticket tec-tickets__admin-table-action-button--attendee-move"> <a href="#">' . esc_html_x( 'Move', 'row action', 'event-tickets' ) . '</a> </span>';
 		}
 
 		$attendee = esc_attr( $item['attendee_id'] . '|' . $provider );
@@ -527,7 +533,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		/** @var Tribe__Tickets__Admin__Views $admin_views */
 		$admin_views = tribe( 'tickets.admin.views' );
 
-		$admin_views->template( 'attendees-table/check-in-button', $context );
+		$admin_views->template( 'attendees/table/check-in-button', $context );
 	}
 
 	/**
@@ -538,7 +544,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	public function single_row( $item ) {
 		$checked = '';
 		if ( ( (int) $item['check_in'] ) === 1 ) {
-			$checked = ' tickets_checked ';
+			$checked = ' tickets_checked tec-tickets__admin-table-attendees-attendee-checked-in ';
 		}
 
 		$status = 'complete';
@@ -746,12 +752,11 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 
 		$event_id = isset( $_GET['event_id'] ) ? $_GET['event_id'] : 0;
 
-		//if not event_id try to use post_id
+		// If not `event_id` try to use `post_id`.
 		$event_id = empty( $event_id ) && isset( $_GET['post_id'] ) ? $_GET['post_id'] : $event_id;
 
 		return absint( $event_id );
 	}
-
 
 	/**
 	 * Process the checking-in of selected attendees from the Attendees table.
@@ -819,7 +824,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			$addon->delete_ticket( null, $id );
 		}
 
-		// redirect after deleting attendees back to attendee url
+		// Redirect after deleting attendees back to attendee URL.
 		$post = get_post( $this->get_post_id() );
 		if ( ! isset( $post->ID ) ) {
 			return;
@@ -880,7 +885,6 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 				return $failed;
 			}
 		}
-
 
 		return [ $id, $addon ];
 	}
@@ -956,7 +960,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			// Update search key if it supports LIKE matching.
 			if ( in_array( $search_key, $search_like_keys, true ) ) {
 				$search_key .= '__like';
-				$search     = '%' . $search . '%';
+				$search      = '%' . $search . '%';
 			}
 
 			// Only get matches that have search phrase in the key.
@@ -992,7 +996,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Message to be displayed when there are no items
+	 * Message to be displayed when there are no items.
 	 *
 	 * @since 4.7
 	 */
@@ -1040,7 +1044,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		$search_box = ob_get_clean();
 
 		if ( ! is_admin() ) {
-			// Give front-end (e.g. Community) a custom input name
+			// Give front-end (e.g. Community) a custom input name.
 			$search_box = str_replace( 'name="s"', 'name="' . esc_attr( $this->search_box_input_name ) . '"', $search_box );
 			// And get its value upon reloading the page to display its search results so user knows what they searched for
 			$search_box = str_replace( 'value=""', 'value="' . esc_attr( tribe_get_request_var( $this->search_box_input_name ) ) . '"', $search_box );
