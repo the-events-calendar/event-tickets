@@ -1473,7 +1473,7 @@ class Currency {
 		 *
 		 * @since TBD
 		 *
-		 * @return string
+		 * @return array
 		 */
 		return apply_filters( 'tec_tickets_commerce_unsupported_currencies', [
 				'HRK' => [
