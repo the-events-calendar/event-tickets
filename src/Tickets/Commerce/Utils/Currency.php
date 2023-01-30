@@ -1467,7 +1467,7 @@ class Currency {
 	 *
 	 * @return array
 	 */
-	public static function get_unsupported_currencies() {
+	public static function get_unsupported_currencies(): array {
 		return [
 			'HRK' => [
 				'heading'   => __( 'Tickets Commerce is now selling with Euro', 'event-tickets' ),
