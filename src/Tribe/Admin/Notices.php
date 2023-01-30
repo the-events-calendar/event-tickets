@@ -244,7 +244,7 @@ class Tribe__Tickets__Admin__Notices {
 	/**
 	 * Display notices for unsupported currencies.
 	 *
-	 * @since 5.5.5
+	 * @since TBD
 	 *
 	 * @return void
 	 */
