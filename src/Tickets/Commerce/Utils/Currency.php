@@ -45,7 +45,7 @@ class Currency {
 	/**
 	 * Unsupported Currency
 	 *
-	 * @since 5.5.5
+	 * @since TBD
 	 *
 	 * @var array
 	 */
