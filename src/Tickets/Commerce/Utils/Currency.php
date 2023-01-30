@@ -1418,15 +1418,7 @@ class Currency {
 				'thousands_sep'         => ',',
 				'decimal_precision'     => 2,
 				'stripe_minimum_charge' => 19,
-			],
-			'HRK' => [
-				'name'                  => __( 'Croatian kuna (HRK)', 'event-tickets' ),
-				'symbol'                => 'kn',
-				'decimal_point'         => '.',
-				'thousands_sep'         => ',',
-				'decimal_precision'     => 2,
-				'stripe_minimum_charge' => 8,
-			],
+			]
 		] );
 
 		/** @var \Tribe__Cache $cache */
@@ -1489,7 +1481,7 @@ class Currency {
 					'message'   => __( 'From the 1st of January 2023, the euro became the official currency for Croatia. We have removed the Croatian kuna from our currency settings and updated your settings to start selling with Euro.', 'event-tickets' ),
 					'new_value' => 'EUR',
 				],
-			];
+			]
 		);
 	}
 
