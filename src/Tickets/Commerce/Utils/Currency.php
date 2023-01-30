@@ -1418,15 +1418,7 @@ class Currency {
 				'thousands_sep'         => ',',
 				'decimal_precision'     => 2,
 				'stripe_minimum_charge' => 19,
-			],
-			'HRK' => [
-				'name'                  => __( 'Croatian kuna (HRK)', 'event-tickets' ),
-				'symbol'                => 'kn',
-				'decimal_point'         => '.',
-				'thousands_sep'         => ',',
-				'decimal_precision'     => 2,
-				'stripe_minimum_charge' => 8,
-			],
+			]
 		] );
 
 		/** @var \Tribe__Cache $cache */
