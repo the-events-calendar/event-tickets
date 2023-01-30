@@ -119,7 +119,9 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 *
 	 * @return array
 	 */
-	public function get_table_columns() {
+	public function get_table_columns(): array {
+		$event_id = $this->get_post_id();
+
 		$columns = [
 			'cb'           => '<input type="checkbox" />',
 			'ticket'       => esc_html( tribe_get_ticket_label_singular( 'attendee_table_column' ) ),
@@ -132,7 +134,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		/** @var Tribe__Tickets__Attendees $attendees */
 		$attendees = tribe( 'tickets.attendees' );
 
-		if ( $attendees->user_can_manage_attendees( 0, $this->event->ID ) ) {
+		if ( $attendees->user_can_manage_attendees( 0, $event_id ) ) {
 			$columns['check_in'] = esc_html_x( 'Check in', 'attendee table', 'event-tickets' );
 		}
 
@@ -366,8 +368,9 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	protected function get_row_actions( array $item ) {
 		/** @var Tribe__Tickets__Attendees $attendees */
 		$attendees = tribe( 'tickets.attendees' );
+		$event_id  = $this->get_post_id();
 
-		if ( ! $attendees->user_can_manage_attendees( 0, $this->event->ID ) ) {
+		if ( ! $attendees->user_can_manage_attendees( 0, $event_id ) ) {
 			return '';
 		}
 
@@ -405,8 +408,9 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	public function add_default_row_actions( array $row_actions, array $item ) {
 		/** @var Tribe__Tickets__Attendees $attendees */
 		$attendees = tribe( 'tickets.attendees' );
+		$event_id  = $this->get_post_id();
 
-		if ( ! $attendees->user_can_manage_attendees( 0, $this->event->ID ) ) {
+		if ( ! $attendees->user_can_manage_attendees( 0, $event_id ) ) {
 			return $row_actions;
 		}
 
@@ -421,7 +425,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 					<a href="#" class="tickets_uncheckin" data-attendee-id="%1$d" data-event-id="%2$d" data-provider="%3$s">' . esc_html_x( 'Undo Check In', 'row action', 'event-tickets' ) . '</a>
 				</span>',
 				esc_attr( $item['attendee_id'] ),
-				esc_attr( $this->event->ID ),
+				esc_attr( $event_id ),
 				esc_attr( $provider )
 			);
 		}
@@ -481,8 +485,9 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * @return string
 	 */
 	public function column_check_in( $item ) {
+		$event_id = $this->get_post_id();
 
-		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees( 0, $this->event->ID ) ) {
+		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees( 0, $event_id ) ) {
 			return false;
 		}
 
@@ -574,9 +579,10 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * @param string $which (top|bottom)
 	 */
 	public function extra_tablenav( $which ) {
+		$event_id = $this->get_post_id();
 
 		// Bail early if user is not owner/have permissions
-		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees( 0, $this->event->ID ) ) {
+		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees( 0, $event_id ) ) {
 			return;
 		}
 
@@ -603,7 +609,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		$email_link = Tribe__Settings::instance()->get_url( [
 			'page'      => 'tickets-attendees',
 			'action'    => 'email',
-			'event_id'  => $this->event->ID,
+			'event_id'  => $event_id,
 			'TB_iframe' => true,
 			'width'     => 410,
 			'height'    => 300,
@@ -655,9 +661,10 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * @return array
 	 */
 	public function get_bulk_actions() {
-		$actions = [];
+		$actions  = [];
+		$event_id = $this->get_post_id();
 
-		if ( tribe( 'tickets.attendees' )->user_can_manage_attendees( 0, $this->event->ID ) ) {
+		if ( tribe( 'tickets.attendees' )->user_can_manage_attendees( 0, $event_id ) ) {
 			$actions['delete_attendee'] = esc_attr__( 'Delete', 'event-tickets' );
 			$actions['check_in']        = esc_attr__( 'Check in', 'event-tickets' );
 			$actions['uncheck_in']      = esc_attr__( 'Undo Check in', 'event-tickets' );
@@ -749,11 +756,16 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * @return int $event_id the event or post id for the attendee table
 	 */
 	protected function get_post_id() {
+		if ( ! empty( $this->event->ID ) ) {
+			return absint( $this->event->ID );
+		}
 
-		$event_id = isset( $_GET['event_id'] ) ? $_GET['event_id'] : 0;
+		$event_id = tribe_get_request_var( 'event_id', 0 );
 
 		// If not `event_id` try to use `post_id`.
-		$event_id = empty( $event_id ) && isset( $_GET['post_id'] ) ? $_GET['post_id'] : $event_id;
+		if ( empty( $event_id ) ) {
+			$event_id = tribe_get_request_var( 'post_id', $event_id );
+		}
 
 		return absint( $event_id );
 	}
