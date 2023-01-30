@@ -249,7 +249,9 @@ class Tribe__Tickets__Admin__Notices {
 	 * @return void
 	 */
 	public function maybe_display_unsupported_currency_notice() {
-		if ( Currency::is_supported_currency() ) return;
+		if ( Currency::is_supported_currency() ) {
+			return;
+		}
 
 		$message = sprintf(
 			'<h3>%1$s</h3><p>%2$s</p>',
