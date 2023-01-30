@@ -249,7 +249,7 @@ class Tribe__Tickets__Admin__Notices {
 	 * @return void
 	 */
 	public function maybe_display_unsupported_currency_notice() {
-		if ( Currency::is_supported_currency() ) {
+		if ( Currency::is_current_currency_supported() ) {
 			return;
 		}
 
@@ -259,8 +259,10 @@ class Tribe__Tickets__Admin__Notices {
 			esc_html( Currency::$unsupported_currency['message'] )
 		);
 
+		$notice_symbol = Currency::$unsupported_currency['symbol'];
+
 		tribe_notice(
-			'event-tickets-unsupported-currencies',
+			"event-tickets-unsupported-currencies-{$notice_symbol}",
 			$message,
 			[
 				'dismiss' => true,
