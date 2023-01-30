@@ -1463,7 +1463,7 @@ class Currency {
 	/**
 	 * Get unsupported currencies and notice texts.
 	 *
-	 * @since 5.5.5
+	 * @since TBD
 	 *
 	 * @return array
 	 */
