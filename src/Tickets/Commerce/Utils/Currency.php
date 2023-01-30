@@ -43,7 +43,7 @@ class Currency {
 	public static $currency_code_fallback = 'USD';
 
 	/**
-	 * Unsupported Currency
+	 * Unsupported Currency.
 	 *
 	 * @since TBD
 	 *
