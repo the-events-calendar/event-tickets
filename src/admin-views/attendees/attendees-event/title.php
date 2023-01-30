@@ -32,7 +32,7 @@ if ( empty( $show_title ) ) {
 		sprintf(
 			// Translators: %1$s: the post/event title, %2$d: the post/event ID.
 			_x( 'Attendees for: %1$s [#%2$d]', 'attendees report screen heading', 'event-tickets' ),
-			get_the_title( $event ),
+			get_the_title( $attendees->attendees_table->event ),
 			$event_id
 		)
 	);
