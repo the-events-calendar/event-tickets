@@ -1418,7 +1418,15 @@ class Currency {
 				'thousands_sep'         => ',',
 				'decimal_precision'     => 2,
 				'stripe_minimum_charge' => 19,
-			]
+			],
+			'HRK' => [
+				'name'                  => __( 'Croatian kuna (HRK)', 'event-tickets' ),
+				'symbol'                => 'kn',
+				'decimal_point'         => '.',
+				'thousands_sep'         => ',',
+				'decimal_precision'     => 2,
+				'stripe_minimum_charge' => 8,
+			],
 		] );
 
 		/** @var \Tribe__Cache $cache */
@@ -1468,13 +1476,21 @@ class Currency {
 	 * @return array
 	 */
 	public static function get_unsupported_currencies(): array {
-		return [
-			'HRK' => [
-				'heading'   => __( 'Tickets Commerce is now selling with Euro', 'event-tickets' ),
-				'message'   => __( 'From the 1st of January 2023, the euro became the official currency for Croatia. We have removed the Croatian kuna from our currency settings and updated your settings to start selling with Euro.', 'event-tickets' ),
-				'new_value' => 'EUR',
-			],
-		];
+		/**
+		 * Filter all unsupported currenices before returning.
+		 *
+		 * @since TBD
+		 *
+		 * @return string
+		 */
+		return apply_filters( 'tec_tickets_commerce_unsupported_currencies', [
+				'HRK' => [
+					'heading'   => __( 'Tickets Commerce is now selling with Euro', 'event-tickets' ),
+					'message'   => __( 'From the 1st of January 2023, the euro became the official currency for Croatia. We have removed the Croatian kuna from our currency settings and updated your settings to start selling with Euro.', 'event-tickets' ),
+					'new_value' => 'EUR',
+				],
+			];
+		);
 	}
 
 	/**
@@ -1484,7 +1500,7 @@ class Currency {
 	 *
 	 * @return bool
 	 */
-	public static function is_supported_currency() {
+	public static function is_supported_currency(): bool {
 		// Get currency code option.
 		$currency = tribe_get_option( static::$currency_code_option );
 
@@ -1496,7 +1512,7 @@ class Currency {
 			static::$unsupported_currency = $unsupported_currencies[ $currency ];
 
 			// Update currency option to the new value.
-			static::update_currency_option();
+			static::update_currency_option( $unsupported_currencies[ $currency ]['new_value'] );
 
 			return false;
 		}
@@ -1509,10 +1525,11 @@ class Currency {
 	 *
 	 * @since TBD
 	 *
+	 * @param string $new_currency_option
 	 * @return void
 	 */
-	public static function update_currency_option() {
+	public static function update_currency_option( $new_currency_option ) {
 		// Update currency option.
-		tribe_update_option( static::$currency_code_option, static::$unsupported_currency['new_value'] );
+		tribe_update_option( static::$currency_code_option, $new_currency_option );
 	}
 }
