@@ -503,7 +503,7 @@ class Tribe__Tickets__Attendees {
 			$columns = apply_filters( $filter_name, [] );
 		} else {
 			$columns = array_filter( (array) get_column_headers( get_current_screen() ) );
-			$columns = array_map( 'wp_strip_all_tags', $columns  );
+			$columns = array_map( 'wp_strip_all_tags', $columns );
 		}
 
 		// We don't want HTML inputs, private data or other columns that are superfluous in a CSV export.
@@ -706,7 +706,6 @@ class Tribe__Tickets__Attendees {
 	 * Handles the "send to email" action for the attendees list.
 	 *
 	 * @since 4.6.2
-	 *
 	 */
 	public function send_mail_list() {
 		$error = new WP_Error();
