@@ -1507,7 +1507,7 @@ class Currency {
 	/**
 	 * Update currency option to the new value if the currency is unsupported.
 	 *
-	 * @since 5.5.5
+	 * @since TBD
 	 *
 	 * @return void
 	 */
