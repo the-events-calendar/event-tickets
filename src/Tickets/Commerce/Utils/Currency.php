@@ -1418,7 +1418,15 @@ class Currency {
 				'thousands_sep'         => ',',
 				'decimal_precision'     => 2,
 				'stripe_minimum_charge' => 19,
-			]
+			],
+			'HRK' => [
+				'name'                  => __( 'Croatian kuna (HRK)', 'event-tickets' ),
+				'symbol'                => 'kn',
+				'decimal_point'         => '.',
+				'thousands_sep'         => ',',
+				'decimal_precision'     => 2,
+				'stripe_minimum_charge' => 8,
+			],
 		] );
 
 		/** @var \Tribe__Cache $cache */
@@ -1492,7 +1500,7 @@ class Currency {
 	 *
 	 * @return bool
 	 */
-	public static function is_supported_currency(): bool {
+	public static function is_current_currency_supported(): bool {
 		// Get currency code option.
 		$currency = tribe_get_option( static::$currency_code_option );
 
@@ -1502,6 +1510,10 @@ class Currency {
 		if ( array_key_exists( $currency, $unsupported_currencies ) ) {
 			// Get the unsupported currency.
 			static::$unsupported_currency = $unsupported_currencies[ $currency ];
+
+			// Get the currency symbol.
+			$default_map = static::get_default_currency_map();
+			static::$unsupported_currency['symbol'] = $default_map[ $currency ]['symbol'];
 
 			// Update currency option to the new value.
 			static::update_currency_option( $unsupported_currencies[ $currency ]['new_value'] );
