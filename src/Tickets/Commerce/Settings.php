@@ -54,6 +54,33 @@ class Settings {
 	public static $option_currency_code = 'tickets-commerce-currency-code';
 
 	/**
+	 * The option key for currency decimal separator.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $option_currency_decimal_separator = 'tickets-commerce-currency-decimal-separator';
+
+	/**
+	 * The option key for currency thousands separator.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $option_currency_thousands_separator = 'tickets-commerce-currency-thousands-separator';
+
+	/**
+	 * The option key for currency number of decimals.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $option_currency_number_of_decimals = 'tickets-commerce-currency-number-of-decimals';
+
+	/**
 	 * The option key for currency position.
 	 *
 	 * @since 5.4.2
@@ -288,10 +315,35 @@ class Settings {
 				'type'            => 'dropdown',
 				'label'           => esc_html__( 'Currency Code', 'event-tickets' ),
 				'tooltip'         => esc_html__( 'The currency that will be used for Tickets Commerce transactions.', 'event-tickets' ),
-				'default'         => 'USD',
+				'default'         => Currency::$currency_code_fallback,
 				'validation_type' => 'options',
 				'options'         => $tc_currency_options,
 			],
+
+			static::$option_currency_decimal_separator      => [
+				'type'            => 'text',
+				'label'           => esc_html__( 'Decimal Separator', 'event-tickets' ),
+				'tooltip'         => esc_html__( 'This sets the decimal separator of displayed prices.', 'event-tickets' ),
+				'default'         => Currency::$currency_code_decimal_separator,
+				'validation_callback' => 'is_string',
+			],
+
+			static::$option_currency_thousands_separator    => [
+				'type'            => 'text',
+				'label'           => esc_html__( 'Thousands Separator', 'event-tickets' ),
+				'tooltip'         => esc_html__( 'This sets the thousand separator of displayed prices', 'event-tickets' ),
+				'default'         => Currency::$currency_code_thousands_separator,
+				'validation_callback' => 'is_string',
+			],
+
+			static::$option_currency_number_of_decimals => [
+				'type'            => 'text',
+				'label'           => esc_html__( 'Number of Decimals', 'event-tickets' ),
+				'tooltip'         => esc_html__( 'This sets the number of decimal points shown in displayed prices.', 'event-tickets' ),
+				'default'         => Currency::$currency_code_number_of_decimals,
+				'validation_type' => 'int',
+			],
+
 			static::$option_currency_position               => [
 				'type'            => 'dropdown',
 				'label'           => esc_html__( 'Currency Position', 'event-tickets' ),
