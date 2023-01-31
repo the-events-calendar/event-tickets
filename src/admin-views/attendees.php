@@ -7,8 +7,14 @@
  * @var Tribe__Tickets__Attendees $attendees The Attendees object.
  */
 
+$wrapper_classes = [
+	'wrap',
+	'tribe-report-page',
+	'tec-tickets__admin-attendees',
+	'tec-tickets__admin-attendees--event' => ! empty( $event_id ),
+];
 ?>
-<div class="wrap tribe-report-page">
+<div <?php tribe_classes( $wrapper_classes ); ?>>
 	<?php
 	$this->template( 'attendees/attendees' );
 	$this->template( 'attendees/attendees-event' );
