@@ -360,7 +360,7 @@ class Tribe__Tickets__Attendees {
 					'content'  => sprintf( '<h3> %s </h3> <p> %s </p>', esc_html__( 'Columns', 'event-tickets' ), esc_html__( 'You can use Screen Options to select which columns you want to see. The selection works in the table below, in the email, for print and for the CSV export.', 'event-tickets' ) ),
 					'position' => [
 						'edge'  => 'top',
-						'align' => 'right'
+						'align' => 'right',
 					],
 				],
 			];
@@ -990,8 +990,8 @@ class Tribe__Tickets__Attendees {
 		// If this function is called from the tabbed-view.php file it does not send over $event_id or $attendees.
 		// If the $event_id is not an integer we can get the information from the get scope and find the data.
 		if (
-			! is_int( $event_id ) &&
-			! empty( tribe_get_request_var( 'event_id' ) )
+			! is_int( $event_id )
+			&& ! empty( tribe_get_request_var( 'event_id' ) )
 		) {
 			$event_id  = tribe_get_request_var( 'event_id' );
 			$attendees = tribe( 'tickets.attendees' );
