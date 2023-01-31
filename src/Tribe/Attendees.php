@@ -298,43 +298,9 @@ class Tribe__Tickets__Attendees {
 			return;
 		}
 
-		$resources_url = plugins_url( 'src/resources', dirname( dirname( __FILE__ ) ) );
-
-		wp_enqueue_style( 'tickets-report-css', $resources_url . '/css/tickets-report.css', array(), Tribe__Tickets__Main::instance()->css_version() );
-		wp_enqueue_style( 'tickets-report-print-css', $resources_url . '/css/tickets-report-print.css', array(), Tribe__Tickets__Main::instance()->css_version(), 'print' );
-		wp_enqueue_script( $this->slug() . '-js', $resources_url . '/js/tickets-attendees.js', array( 'jquery' ), Tribe__Tickets__Main::instance()->js_version() );
+		tribe_asset_enqueue_group( 'event-tickets-admin-attendees' );
 
 		add_thickbox();
-
-		$move_url_args = [
-			'dialog'    => Tribe__Tickets__Main::instance()->move_tickets()->dialog_name(),
-			'check'     => wp_create_nonce( 'move_tickets' ),
-			'TB_iframe' => 'true',
-		];
-
-		$config_data = [
-			'nonce'             => wp_create_nonce( 'email-attendee-list' ),
-			'required'          => esc_html__( 'You need to select a user or type a valid email address', 'event-tickets' ),
-			'sending'           => esc_html__( 'Sending...', 'event-tickets' ),
-			'ajaxurl'           => admin_url( 'admin-ajax.php' ),
-			'checkin_nonce'     => wp_create_nonce( 'checkin' ),
-			'uncheckin_nonce'   => wp_create_nonce( 'uncheckin' ),
-			'cannot_move'       => esc_html__( 'You must first select one or more tickets before you can move them!', 'event-tickets' ),
-			'move_url'          => add_query_arg( $move_url_args ),
-			'confirmation'      => esc_html__( 'Please confirm that you would like to delete this attendee.', 'event-tickets' ),
-			'bulk_confirmation' => esc_html__( 'Please confirm you would like to delete these attendees.', 'event-tickets' ),
-		];
-
-		/**
-		 * Allow filtering the configuration data for the Attendee objects on Attendees report page.
-		 *
-		 * @since 5.0.4
-		 *
-		 * @param array $config_data List of configuration data to be localized.
-		 */
-		$config_data = apply_filters( 'tribe_tickets_attendees_report_js_config', $config_data );
-
-		wp_localize_script( $this->slug() . '-js', 'Attendees', $config_data );
 	}
 
 	/**
