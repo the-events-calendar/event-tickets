@@ -3,7 +3,7 @@
 namespace TEC\Tickets\Commerce\Status;
 
 /**
- * Class Pending.
+ * Class Action_Required.
  *
  * This is a payment that has begun, but is not complete.  An example of this is someone who has filled out the checkout
  * form and then gone to Gateway for payment.  We have the record of sale, but they haven't completed their payment yet.
@@ -20,7 +20,7 @@ class Action_Required extends Status_Abstract {
 	 *
 	 * @var string
 	 */
-	const SLUG = 'action-required';
+	const SLUG = 'action-req'; // max-length = 13 bytes/chars
 
 	/**
 	 * {@inheritdoc}

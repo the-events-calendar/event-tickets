@@ -27,7 +27,7 @@ class CartTest extends TicketsCommerceSnapshotTestCase {
 				'event_id'    => $event->ID,
 				'total_value' => Value::create( $total ),
 				'items'       => $cart_items,
-			]
-		) );
+				'must_login'  => true,
+		] ) );
 	}
 }

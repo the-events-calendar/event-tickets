@@ -131,6 +131,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 				'price_currency' => '_tribe_tickets_price_currency_symbol',
 				'full_name'      => '_tribe_tickets_full_name',
 				'email'          => '_tribe_tickets_email',
+				'check_in'       => current( $this->checked_in_keys() ),
 			]
 		);
 
@@ -217,7 +218,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		return [
 			'rsvp'                          => '_tribe_rsvp_full_name',
 			'tribe-commerce'                => '_tribe_tpp_full_name',
-			\TEC\Tickets\Commerce::PROVIDER => \TEC\Tickets\Commerce\Attendee::$purchaser_name_meta_key,
+			\TEC\Tickets\Commerce::PROVIDER => \TEC\Tickets\Commerce\Attendee::$full_name_meta_key,
 		];
 	}
 
@@ -234,7 +235,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		return [
 			'rsvp'                          => '_tribe_rsvp_email',
 			'tribe-commerce'                => '_tribe_tpp_email',
-			\TEC\Tickets\Commerce::PROVIDER => \TEC\Tickets\Commerce\Attendee::$purchaser_email_meta_key,
+			\TEC\Tickets\Commerce::PROVIDER => \TEC\Tickets\Commerce\Attendee::$email_meta_key,
 		];
 	}
 
@@ -529,7 +530,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	public function filter_by_order_status( $order_status, $type = 'in' ) {
 		$statuses = Arr::list_to_array( $order_status );
 
-		$has_manage_access = current_user_can( 'edit_users' ) || current_user_can( 'tribe_manage_attendees' );
+		$has_manage_access = tribe( 'tickets.rest-v1.main' )->request_has_manage_access();
 
 		// map the `any` meta-status
 		if ( 1 === count( $statuses ) && 'any' === $statuses[0] ) {
@@ -901,6 +902,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			'attendee_status'   => null,
 			'price_paid'        => null,
 			'optout'            => null,
+			'check_in'          => null,
 		];
 
 		$args = array_merge( $args, $attendee_data );
@@ -969,6 +971,11 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			if ( isset( $args['optout'] ) ) {
 				// Enforce a 0/1 value for the optout value.
 				$args['optout'] = (int) tribe_is_truthy( $args['optout'] );
+			}
+
+			if ( isset( $args['check_in'] ) ) {
+				// Enforce a 0/1 value for the check_in value.
+				$args['check_in'] = (int) tribe_is_truthy( $args['check_in'] );
 			}
 		}
 
@@ -1190,9 +1197,33 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		// Maybe send the attendee email.
 		$this->maybe_send_attendee_email( $attendee_data['attendee_id'], $attendee_data );
 
+		$this->maybe_handle_checkin( $attendee_data['attendee_id'], $attendee_data );
+
 		// Clear the attendee cache if post_id is provided.
 		if ( ! empty( $this->updates['post_id'] ) && $this->attendee_provider ) {
 			$this->attendee_provider->clear_attendees_cache( $this->updates['post_id'] );
+		}
+	}
+
+
+	/**
+	 * Handle check in actions.
+	 *
+	 * @since 5.5.6
+	 *
+	 * @param int   $attendee_id   The attendee ID.
+	 * @param array $attendee_data List of attendee data that was used for saving.
+	 * @return void
+	 */
+	public function maybe_handle_checkin( $attendee_id, $attendee_data ): void {
+		if ( ! isset( $attendee_data['check_in'] ) ) {
+			return;
+		}
+
+		if ( $attendee_data['check_in'] ) {
+			$this->attendee_provider->checkin( $attendee_id );
+		} else {
+			$this->attendee_provider->uncheckin( $attendee_id );
 		}
 	}
 
@@ -1306,5 +1337,274 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		];
 
 		$this->attendee_provider->send_tickets_email_for_attendees( $attendee_tickets, $send_ticket_email_args );
+	}
+
+	/**
+	 * Overrides the base method to correctly handle the `order_by` clauses before.
+	 *
+	 * The Event repository handles ordering with some non trivial logic and some query filtering.
+	 * To avoid the "stacking" of `orderby` clauses and filters the query filters are added at the very last moment,
+	 * right before building the query.
+	 *
+	 * @since 5.5.0
+	 *
+	 * @return WP_Query The built query object.
+	 */
+	protected function build_query_internally() {
+		$order_by = Arr::get_in_any( [ $this->query_args, $this->default_args ], 'orderby' );
+		unset( $this->query_args['orderby'], $this->default_args['order_by'] );
+
+		$this->handle_order_by( $order_by );
+
+		return parent::build_query_internally();
+	}
+
+	/**
+	 * Handles the `order_by` clauses for events
+	 *
+	 * @since 5.5.0
+	 *
+	 * @param string $order_by The key used to order events; e.g. `event_date` to order events by start date.
+	 */
+	public function handle_order_by( $order_by ) {
+		$check_orderby = $order_by;
+
+		if ( ! is_array( $check_orderby ) ) {
+			$check_orderby = explode( ' ', $check_orderby );
+		}
+
+		$after = false;
+		$loop  = 0;
+
+		foreach ( $check_orderby as $key => $value ) {
+			$order_by      = is_numeric( $key ) ? $value : $key;
+			$default_order = Arr::get_in_any( [ $this->query_args, $this->default_args ], 'order', 'ASC' );
+			$order         = is_numeric( $key ) ? $default_order : $value;
+
+			// Let the first applied ORDER BY clause override the existing ones, then stack the ORDER BY clauses.
+			$override = $loop === 0;
+
+			switch ( $order_by ) {
+				case 'full_name':
+					$this->order_by_full_name( $order, $after, $override );
+					break;
+				case 'security_code':
+					$this->order_by_security_code( $order, $after, $override );
+					break;
+				case 'check_in':
+					$this->order_by_check_in( $order, $after, $override );
+					break;
+				case 'rsvp_status':
+					$this->order_by_rsvp_status( $order, $after, $override );
+					break;
+				case '__none':
+					unset( $this->query_args['orderby'] );
+					unset( $this->query_args['order'] );
+					break;
+				default:
+					$after = $after || 1 === $loop;
+					if ( empty( $this->query_args['orderby'] ) ) {
+						// In some versions of WP, [ $order_by, $order ] doesn't work as expected. Using explict value setting instead.
+						$this->query_args['orderby'] = $order_by;
+						$this->query_args['order']   = $order;
+					} else {
+						$add = [ $order_by => $order ];
+						// Make sure all `orderby` clauses have the shape `<orderby> => <order>`.
+						$normalized = [];
+
+						if ( ! is_array( $this->query_args['orderby'] ) ) {
+							$this->query_args['orderby'] = [
+								$this->query_args['orderby'] => $this->query_args['order']
+							];
+						}
+
+						foreach ( $this->query_args['orderby'] as $k => $v ) {
+							$the_order_by                = is_numeric( $k ) ? $v : $k;
+							$the_order                   = is_numeric( $k ) ? $default_order : $v;
+							$normalized[ $the_order_by ] = $the_order;
+						}
+						$this->query_args['orderby'] = $normalized;
+						$this->query_args['orderby'] = array_merge( $this->query_args['orderby'], $add );
+					}
+			}
+		}
+	}
+
+	/**
+	 * Sets up the query filters to order attendees by the full name meta.
+	 *
+	 * @since 5.5.2
+	 *
+	 * @param string $order      The order direction, either `ASC` or `DESC`; defaults to `null` to use the order
+	 *                           specified in the current query or default arguments.
+	 * @param bool   $after      Whether to append the duration ORDER BY clause to the existing clauses or not;
+	 *                           defaults to `false` to prepend the duration clause to the existing ORDER BY
+	 *                           clauses.
+	 * @param bool   $override   Whether to override existing ORDER BY clauses with this one or not; default to
+	 *                           `true` to override existing ORDER BY clauses.
+	 */
+	protected function order_by_full_name( $order = null, $after = false, $override = true ) {
+		global $wpdb;
+
+		$meta_alias     = 'full_name';
+		$meta_keys_in   = $this->prepare_interval( $this->holder_name_keys() );
+		$postmeta_table = "orderby_{$meta_alias}_meta";
+		$filter_id      = 'order_by_full_name';
+
+		$this->filter_query->join(
+			"
+			LEFT JOIN {$wpdb->postmeta} AS {$postmeta_table}
+				ON (
+					{$postmeta_table}.post_id = {$wpdb->posts}.ID
+					AND {$postmeta_table}.meta_key IN {$meta_keys_in}
+				)
+			",
+			$filter_id,
+			true
+		);
+
+		$order = $this->get_query_order_type( $order );
+
+		$this->filter_query->orderby( [ $meta_alias => $order ], $filter_id, true, $after );
+		$this->filter_query->fields( "{$postmeta_table}.meta_value AS {$meta_alias}", $filter_id, $override );
+	}
+
+	/**
+	 * Sets up the query filters to order attendees by the security code meta.
+	 *
+	 * @since 5.5.0
+	 *
+	 * @param string $order      The order direction, either `ASC` or `DESC`; defaults to `null` to use the order
+	 *                           specified in the current query or default arguments.
+	 * @param bool   $after      Whether to append the duration ORDER BY clause to the existing clauses or not;
+	 *                           defaults to `false` to prepend the duration clause to the existing ORDER BY
+	 *                           clauses.
+	 * @param bool   $override   Whether to override existing ORDER BY clauses with this one or not; default to
+	 *                           `true` to override existing ORDER BY clauses.
+	 */
+	protected function order_by_security_code( $order = null, $after = false, $override = true ) {
+		global $wpdb;
+
+		$meta_alias     = 'security_code';
+		$meta_keys_in   = $this->prepare_interval( $this->security_code_keys() );
+		$postmeta_table = "orderby_{$meta_alias}_meta";
+		$filter_id      = 'order_by_security_code';
+
+		$this->filter_query->join(
+			"
+			LEFT JOIN {$wpdb->postmeta} AS {$postmeta_table}
+				ON (
+					{$postmeta_table}.post_id = {$wpdb->posts}.ID
+					AND {$postmeta_table}.meta_key IN {$meta_keys_in}
+				)
+			"
+			,
+			$filter_id,
+			true
+		);
+
+		$order = $this->get_query_order_type( $order );
+
+		$this->filter_query->orderby( [ $meta_alias => $order ], $filter_id, true, $after );
+		$this->filter_query->fields( "{$postmeta_table}.meta_value AS {$meta_alias}", $filter_id, $override );
+	}
+
+	/**
+	 * Sets up the query filters to order attendees by the check-in status.
+	 *
+	 * @since 5.5.0
+	 *
+	 * @param string $order      The order direction, either `ASC` or `DESC`; defaults to `null` to use the order
+	 *                           specified in the current query or default arguments.
+	 * @param bool   $after      Whether to append the duration ORDER BY clause to the existing clauses or not;
+	 *                           defaults to `false` to prepend the duration clause to the existing ORDER BY
+	 *                           clauses.
+	 * @param bool   $override   Whether to override existing ORDER BY clauses with this one or not; default to
+	 *                           `true` to override existing ORDER BY clauses.
+	 */
+	protected function order_by_check_in( $order = null, $after = false, $override = true ) {
+		global $wpdb;
+
+		$meta_alias     = 'check_in';
+		$meta_keys_in   = $this->prepare_interval( $this->checked_in_keys() );
+
+		$postmeta_table = "orderby_{$meta_alias}_meta";
+		$filter_id      = "order_by_{$meta_alias}";
+
+		$this->filter_query->join(
+			"
+			LEFT JOIN {$wpdb->postmeta} AS {$postmeta_table}
+				ON (
+					{$postmeta_table}.post_id = {$wpdb->posts}.ID
+					AND {$postmeta_table}.meta_key IN {$meta_keys_in}
+				)
+			"
+			,
+			$filter_id,
+			true
+		);
+
+		$order = $this->get_query_order_type( $order );
+
+		$this->filter_query->orderby( [ $meta_alias => $order ], $filter_id, true, $after );
+		$this->filter_query->fields( "{$postmeta_table}.meta_value AS {$meta_alias}", $filter_id, $override );
+	}
+
+	/**
+	 * Sets up the query filters to order attendees by the order status.
+	 *
+	 * @since 5.5.0
+	 *
+	 * @param string $order      The order direction, either `ASC` or `DESC`; defaults to `null` to use the order
+	 *                           specified in the current query or default arguments.
+	 * @param bool   $after      Whether to append the duration ORDER BY clause to the existing clauses or not;
+	 *                           defaults to `false` to prepend the duration clause to the existing ORDER BY
+	 *                           clauses.
+	 * @param bool   $override   Whether to override existing ORDER BY clauses with this one or not; default to
+	 *                           `true` to override existing ORDER BY clauses.
+	 */
+	protected function order_by_rsvp_status( $order = null, $after = false, $override = true ) {
+		global $wpdb;
+
+		$meta_alias = 'rsvp_status';
+		$meta_key   = Tribe__Tickets__RSVP::ATTENDEE_RSVP_KEY;
+
+		$postmeta_table = "orderby_{$meta_alias}";
+		$filter_id      = "order_by_{$meta_alias}";
+
+		$this->filter_query->join(
+			$wpdb->prepare(
+				"
+				LEFT JOIN {$wpdb->postmeta} AS {$postmeta_table}
+					ON (
+						{$postmeta_table}.post_id = {$wpdb->posts}.ID
+						AND {$postmeta_table}.meta_key = %s
+					)
+				",
+				$meta_key
+			),
+			$filter_id,
+			true
+		);
+
+		$order = $this->get_query_order_type( $order );
+
+		$this->filter_query->orderby( [ $meta_alias => $order ], $filter_id, $override, $after );
+		$this->filter_query->fields( "{$postmeta_table}.meta_value AS {$meta_alias}", $filter_id, $override );
+	}
+
+	/**
+	 * Get the order param for the current orderby clause.
+	 *
+	 * @since 5.5.0
+	 *
+	 * @param $order string|null order type value either 'ASC' or 'DESC'.
+	 *
+	 * @return string
+	 */
+	protected function get_query_order_type( $order = null ) {
+		return $order === null
+			? Arr::get_in_any( [ $this->query_args, $this->default_args ], 'order', 'ASC' )
+			: $order;
 	}
 }

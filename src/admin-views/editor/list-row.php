@@ -79,6 +79,9 @@ if (
 				 * @param Tribe__Tickets__Tickets       $provider_obj The current ticket provider object.
 				 */
 				do_action( 'event_tickets_ticket_list_after_ticket_name', $ticket, $provider_obj );
+				
+				$this->template( 'editor/list-row/available-dates', [ 'ticket' => $ticket ]); 
+				
 				?>
 			</div>
 		</div>

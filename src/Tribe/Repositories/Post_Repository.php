@@ -9,6 +9,7 @@
 
 namespace Tribe\Tickets\Repositories;
 
+use TEC\Tickets\Commerce;
 use Tribe\Tickets\Repositories\Traits\Event;
 use Tribe\Tickets\Repositories\Traits\Post_Attendees;
 use Tribe\Tickets\Repositories\Traits\Post_Tickets;
@@ -59,6 +60,7 @@ class Post_Repository extends Tribe__Repository {
 			'cost_currency_symbol' => [ $this, 'filter_by_cost_currency_symbol' ],
 			'has_tickets'          => [ $this, 'filter_by_has_tickets' ],
 			'has_rsvp'             => [ $this, 'filter_by_has_rsvp' ],
+			'has_rsvp_or_tickets'  => [ $this, 'filter_by_has_rsvp_or_tickets' ],
 
 			// These filter methods are added by the Post_Attendees trait.
 			'has_attendees'        => [ $this, 'filter_by_has_attendees' ],
@@ -82,8 +84,9 @@ class Post_Repository extends Tribe__Repository {
 	 */
 	public function attendee_types() {
 		return [
-			'rsvp'           => 'tribe_rsvp_attendees',
-			'tribe-commerce' => 'tribe_tpp_attendees',
+			'rsvp'             => 'tribe_rsvp_attendees',
+			'tribe-commerce'   => 'tribe_tpp_attendees',
+			Commerce::PROVIDER => Commerce\Attendee::POSTTYPE,
 		];
 	}
 
@@ -98,8 +101,9 @@ class Post_Repository extends Tribe__Repository {
 	 */
 	public function attendee_to_event_keys() {
 		return [
-			'rsvp'           => '_tribe_rsvp_event',
-			'tribe-commerce' => '_tribe_tpp_event',
+			'rsvp'             => '_tribe_rsvp_event',
+			'tribe-commerce'   => '_tribe_tpp_event',
+			Commerce::PROVIDER => Commerce\Attendee::$event_relation_meta_key,
 		];
 	}
 

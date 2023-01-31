@@ -1,0 +1,62 @@
+/**
+ * Event Tickets - Tickets Commerce Stripe Stylesheet
+ *
+ * @since 5.3.0
+ */
+
+.event-tickets {
+
+	.tribe-tickets__commerce-checkout-stripe-payment-element {
+		margin-bottom: var(--tec-spacer-4);
+	}
+
+	.tribe-tickets__commerce-checkout-stripe-card-element {
+		margin-bottom: var(--tec-spacer-4);
+	}
+
+	.tribe-tickets__commerce-checkout-stripe-card-element-row {
+		display: flex;
+		justify-content: stretch;
+	}
+
+	.tribe-tickets__commerce-checkout-stripe-card-element--compact {
+		border: 1px solid var(--tec-color-border-default);
+		border-radius: var(--tec-border-radius-default);
+		padding: var(--tec-spacer-2);
+
+		.tribe-tickets__commerce-checkout-stripe-card-element-row {
+			display: none;
+		}
+	}
+
+	.tribe-tickets__commerce-checkout-stripe-card-element-number,
+	.tribe-tickets__commerce-checkout-stripe-card-element-expiry,
+	.tribe-tickets__commerce-checkout-stripe-card-element-cvc,
+	.tribe-tickets__commerce-checkout-stripe-card-element-zip {
+		border: 1px solid var(--tec-color-border-default);
+		border-radius: var(--tec-border-radius-default);
+		flex-basis: 67%;
+		flex-grow: 1;
+		margin-bottom: var(--tec-spacer-2);
+		margin-right: var(--tec-spacer-2);
+		padding: var(--tec-spacer-2) var(--tec-spacer-3);
+	}
+
+	.tribe-tickets__commerce-checkout-stripe-card-element-expiry,
+	.tribe-tickets__commerce-checkout-stripe-card-element-zip {
+		flex-basis: 33%;
+		margin-right: 0;
+	}
+
+	.tribe-tickets__commerce-checkout-stripe-card-element-zip-input {
+		background-color: var(--tec-color-background-events);
+		border: none;
+		color: #23282d;
+		display: block;
+		font-family: sans-serif;
+		font-size: var(--tec-font-size-2);
+		margin: 0;
+		padding: 0;
+		width: 100%;
+	}
+}

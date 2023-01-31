@@ -2,8 +2,7 @@
  * Makes sure we have all the required levels on the Tribe Object
  *
  * @since 5.1.9
- *
- * @type   {Object}
+ * @type   {object}
  */
 tribe.tickets = tribe.tickets || {};
 
@@ -11,8 +10,7 @@ tribe.tickets = tribe.tickets || {};
  * Configures ET Tickets Commerce Object in the Global Tribe variable
  *
  * @since 5.1.9
- *
- * @type   {Object}
+ * @type   {object}
  */
 tribe.tickets.commerce = {};
 
@@ -20,14 +18,11 @@ tribe.tickets.commerce = {};
  * Initializes in a Strict env the code that manages the plugin tickets commerce.
  *
  * @since 5.1.9
- *
- * @param  {Object} $   jQuery
- * @param  {Object} obj tribe.tickets.commerce
- *
+ * @param  {object} $   jQuery
+ * @param  {object} obj tribe.tickets.commerce
  * @return {void}
  */
 ( function( $, obj ) {
-	'use strict';
 	const $document = $( document );
 
 	/**
@@ -36,8 +31,8 @@ tribe.tickets.commerce = {};
 	 * @since 5.1.10
 	 */
 	obj.customEvents = {
-		showLoader : 'showLoader.tecTicketsCommerce',
-		hideLoader : 'hideLoader.tecTicketsCommerce',
+		showLoader: 'showLoader.tecTicketsCommerce',
+		hideLoader: 'hideLoader.tecTicketsCommerce',
 	};
 
 	/*
@@ -54,6 +49,9 @@ tribe.tickets.commerce = {};
 		checkoutItemDescriptionButtonLess: '.tribe-tickets__commerce-checkout-cart-item-details-button--less', // eslint-disable-line max-len
 		hiddenElement: '.tribe-common-a11y-hidden',
 		nonce: '#tec-tc-checkout-nonce',
+		purchaserFormContainer: '.tribe-tickets__commerce-checkout-purchaser-info-wrapper',
+		purchaserName: '.tribe-tickets__commerce-checkout-purchaser-info-form-field-name',
+		purchaserEmail: '.tribe-tickets__commerce-checkout-purchaser-info-form-field-email',
 	};
 
 	/**
@@ -79,7 +77,7 @@ tribe.tickets.commerce = {};
 	 *
 	 * @since 5.1.10
 	 */
-	obj.bindLoaderEvents = function () {
+	obj.bindLoaderEvents = function() {
 		$document.on( obj.customEvents.showLoader, obj.loaderShow );
 		$document.on( obj.customEvents.hideLoader, obj.loaderHide );
 	};
@@ -88,9 +86,7 @@ tribe.tickets.commerce = {};
 	 * Toggle the checkout item description visibility.
 	 *
 	 * @since 5.1.9
-	 *
 	 * @param {event} event The event.
-	 *
 	 * @return {void}
 	 */
 	obj.checkoutItemDescriptionToggle = function( event ) {
@@ -131,9 +127,7 @@ tribe.tickets.commerce = {};
 	 * Binds the checkout item description toggle.
 	 *
 	 * @since 5.1.9
-	 *
 	 * @param {jQuery} $container jQuery object of the tickets container.
-	 *
 	 * @return {void}
 	 */
 	obj.bindCheckoutItemDescriptionToggle = function( $container ) {
@@ -148,9 +142,7 @@ tribe.tickets.commerce = {};
 	 * Unbinds the description toggle.
 	 *
 	 * @since 5.1.9
-	 *
 	 * @param {jQuery} $container jQuery object of the tickets container.
-	 *
 	 * @return {void}
 	 */
 	obj.unbindCheckoutItemDescriptionToggle = function( $container ) {
@@ -163,9 +155,7 @@ tribe.tickets.commerce = {};
 	 * Binds events for checkout container.
 	 *
 	 * @since 5.1.9
-	 *
 	 * @param {jQuery} $container jQuery object of object of the tickets container.
-	 *
 	 * @return {void}
 	 */
 	obj.bindCheckoutEvents = function( $container ) {
@@ -181,10 +171,29 @@ tribe.tickets.commerce = {};
 	};
 
 	/**
+	 * Get purchaser data if available.
+	 *
+	 * @since 5.3.0
+	 * @param {jQuery} $container Container for the purchaser info fields.
+	 * @return {object}
+	 */
+	obj.getPurchaserData = ( $container ) => {
+		const purchaser = {};
+
+		if ( ! $container.length ) {
+			return purchaser;
+		}
+
+		purchaser.name = $container.find( obj.selectors.purchaserName ).val();
+		purchaser.email = $container.find( obj.selectors.purchaserEmail ).val();
+
+		return purchaser;
+	};
+
+	/**
 	 * Handles the initialization of the tickets commerce events when Document is ready.
 	 *
 	 * @since 5.1.9
-	 *
 	 * @return {void}
 	 */
 	obj.ready = function() {
@@ -196,5 +205,4 @@ tribe.tickets.commerce = {};
 	};
 
 	$( obj.ready );
-
 } )( jQuery, tribe.tickets.commerce );

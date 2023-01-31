@@ -79,7 +79,7 @@ class Tribe__Tickets__Editor__Provider extends tad_DI52_ServiceProvider {
 	/**
 	 * Register the blocks after plugins are fully loaded.
 	 *
-	 * @since TBD
+	 * @since 5.3.0
 	 */
 	public function register_blocks() {
 		// Register blocks.

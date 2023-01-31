@@ -1795,8 +1795,13 @@ if ( ! function_exists( 'tribe_tickets_new_views_is_enabled' ) ) {
 			return (bool) $env_var;
 		}
 
+		// If ET was installed on or after version 5.0.3, default to enabled.
+		$should_default_to_on_et = ! tribe_installed_before( 'Tribe__Tickets__Main', '5.0.3' );
+
 		// If ETP was installed on or after version 5.1, default to enabled.
-		$should_default_to_on = class_exists( 'Tribe__Tickets_Plus__Main' ) && ! tribe_installed_before( 'Tribe__Tickets_Plus__Main', '5.1' );
+		$should_default_to_on_etp = class_exists( 'Tribe__Tickets_Plus__Main' ) && ! tribe_installed_before( 'Tribe__Tickets_Plus__Main', '5.1' );
+
+		$should_default_to_on = $should_default_to_on_etp || $should_default_to_on_et;
 
 		// Check for settings UI option.
 		$enabled = (bool) tribe_get_option( 'tickets_use_new_views', $should_default_to_on );
@@ -1829,4 +1834,18 @@ function tribe_tickets_get_provider_query_slug() {
 	 * @param string  String for which the slug should be named.
 	 */
 	return apply_filters( 'tribe_tickets_get_provider_query_slug', 'tickets_provider' );
+}
+
+/**
+ * Return if `The Events Calendar` is active.
+ *
+ * By checking if `tribe_events` function exists we avoid fatal errors when there are
+ * version dependencies mismatches.
+ *
+ * @since 5.5.2
+ *
+ * @return bool True if The Events Calendar is active.
+ */
+function tec_tickets_tec_events_is_active() : bool {
+	return function_exists( 'tribe_events' );
 }

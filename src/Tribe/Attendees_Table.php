@@ -1,5 +1,7 @@
 <?php
 
+use TEC\Tickets\Event;
+
 if ( ! class_exists( 'WP_List_Table' ) ) {
 	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 }
@@ -70,7 +72,9 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 
 		// Fetch the event Object
 		if ( ! empty( $_GET['event_id'] ) ) {
-			$this->event = get_post( absint( $_GET['event_id'] ) );
+			$event_id    = filter_var( $_GET['event_id'], FILTER_VALIDATE_INT );
+			$event_id    = Event::filter_event_id( $event_id );
+			$this->event = get_post( $event_id );
 		}
 
 		parent::__construct( apply_filters( 'tribe_events_tickets_attendees_table_args', $args ) );
@@ -893,9 +897,8 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			'return_total_found' => true,
 		];
 
-		$event_id = empty( $_GET['event_id'] ) ? 0 : absint( $_GET['event_id'] );
-
-		$search = sanitize_text_field( tribe_get_request_var( $this->search_box_input_name ) );
+		$event_id = Event::filter_event_id( filter_var( $_GET['event_id'], FILTER_VALIDATE_INT ) );
+		$search   = sanitize_text_field( tribe_get_request_var( $this->search_box_input_name ) );
 
 		if ( ! empty( $search ) ) {
 			$search_keys = array_keys( $this->get_search_options() );
@@ -954,6 +957,15 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 					$search,
 				],
 			];
+		}
+
+		// Setup sorting args.
+		if ( tribe_get_request_var( 'orderby' ) ) {
+			$args['orderby'] = tribe_get_request_var( 'orderby' );
+		}
+
+		if ( tribe_get_request_var( 'order' ) ) {
+			$args['order']   = tribe_get_request_var( 'order' );
 		}
 
 		$item_data = Tribe__Tickets__Tickets::get_event_attendees_by_args( $event_id, $args );
@@ -1065,5 +1077,48 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		$search_box = str_replace( '<input type="search"', $custom_search . '<input type="search"', $search_box );
 
 		echo $search_box;
+	}
+
+	/**
+	 * Return list of sortable columns.
+	 *
+	 * @since 5.5.0
+	 *
+	 * @return array
+	 */
+	public function get_sortable_columns() {
+		return [
+				'ticket'   => 'id',
+				'security' => 'security_code',
+				'check_in' => 'check_in',
+				'status'   => $this->is_status_sortable()
+		];
+	}
+
+	/**
+	 * Check if `Status` column is sortable or not.
+	 *
+	 * @since 5.5.0
+	 *
+	 * @return false|string
+	 */
+	protected function is_status_sortable() {
+		$event_id  = tribe_get_request_var( 'event_id' );
+		$providers = Tribe__Tickets__Tickets::get_active_providers_for_post( $event_id );
+
+		if ( count( $providers ) > 1 ) {
+			return false;
+		}
+
+		/** @var \Tribe__Tickets__Status__Manager $status */
+		$status   = tribe( 'tickets.status' );
+		$provider = $status->get_provider_slug( current( $providers ) );
+
+		// For now, disabled for all providers but RSVP, we may remove this logic once we implement sorting for other providers.
+		if ( 'rsvp' !== $provider ) {
+			return false;
+		}
+
+		return $provider . '_status';
 	}
 }

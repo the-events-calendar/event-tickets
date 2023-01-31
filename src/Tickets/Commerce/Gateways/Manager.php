@@ -2,6 +2,7 @@
 
 namespace TEC\Tickets\Commerce\Gateways;
 
+use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Gateway;
 use TEC\Tickets\Settings;
 
 /**
@@ -20,7 +21,7 @@ class Manager {
 	 * @var string
 	 */
 	public static $option_gateway = '_tickets_commerce_gateway';
-
+	
 	/**
 	 * Get the list of registered Tickets Commerce gateways.
 	 *
@@ -96,8 +97,15 @@ class Manager {
 	 * @return Abstract_Gateway
 	 */
 	public function get_gateway_by_key( $key ) {
+		if ( empty( $key ) ) {
+			return;
+		}
+		
 		$gateways = $this->get_gateways();
+		if ( ! isset( $gateways[ $key ] ) ) {
+			return;
+		}
 
-		return isset( $gateways[ $key ] ) ? $gateways[ $key ] : null;
+		return $gateways[ $key ];
 	}
 }

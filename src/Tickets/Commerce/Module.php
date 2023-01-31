@@ -11,7 +11,7 @@ use Tribe__Utils__Array as Arr;
  *
  * @since   5.1.9
  *
- * @package TEC\Tickets\Commerce\Gateways\PayPal
+ * @package TEC\Tickets\Commerce
  */
 class Module extends \Tribe__Tickets__Tickets {
 
@@ -760,6 +760,16 @@ class Module extends \Tribe__Tickets__Tickets {
 
 			if ( ! empty( $attendee_data['email'] ) && filter_var( $attendee_data['email'], FILTER_VALIDATE_EMAIL ) ) {
 				$attendee->set( 'email', $attendee_data['email'] );
+			}
+
+			if ( isset( $attendee_data['check_in'] ) ) {
+				$attendee->set( 'checked_in', $attendee_data['check_in'] );
+
+				if ( $attendee_data['check_in'] ) {
+					parent::checkin( $attendee_id );
+				} else {
+					parent::uncheckin( $attendee_id );
+				}
 			}
 
 			$attendee->save();

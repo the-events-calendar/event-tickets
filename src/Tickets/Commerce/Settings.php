@@ -8,17 +8,22 @@
 
 namespace TEC\Tickets\Commerce;
 
+use TEC\Tickets\Commerce\Admin\Featured_Settings;
 use TEC\Tickets\Commerce\Gateways\Abstract_Gateway;
 use TEC\Tickets\Commerce\Gateways\Manager;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Traits\Has_Mode;
+use TEC\Tickets\Commerce\Utils\Currency;
 use TEC\Tickets\Settings as Tickets_Settings;
+use Tribe\Tickets\Admin\Settings as Plugin_Settings;
+use \Tribe__Template;
 use Tribe__Field_Conditional;
+use Tribe__Tickets__Main;
 use WP_Admin_Bar;
 
 /**
- * The Tickets Commerce settings.
+ * The Tickets Commerce Global settings.
  *
  * This class will contain all of the settings handling and admin settings config implementation from
  * Tribe__Tickets__Commerce__PayPal__Main that is gateway-agnostic.
@@ -26,7 +31,8 @@ use WP_Admin_Bar;
  * @since   5.1.6
  * @package Tribe\Tickets\Commerce\Tickets_Commerce
  */
-class Settings extends Abstract_Settings {
+class Settings {
+
 	use Has_Mode;
 
 	/**
@@ -46,6 +52,15 @@ class Settings extends Abstract_Settings {
 	 * @var string
 	 */
 	public static $option_currency_code = 'tickets-commerce-currency-code';
+
+	/**
+	 * The option key for currency position.
+	 *
+	 * @since 5.4.2
+	 *
+	 * @var string
+	 */
+	public static $option_currency_position = 'tickets-commerce-currency-position';
 
 	/**
 	 * The option key for stock handling.
@@ -102,6 +117,15 @@ class Settings extends Abstract_Settings {
 	public static $option_confirmation_email_subject = 'tickets-commerce-confirmation-email-subject';
 
 	/**
+	 * Stores the instance of the template engine that we will use for rendering differentelements.
+	 *
+	 * @since 5.3.0
+	 *
+	 * @var Tribe__Template
+	 */
+	protected $template;
+
+	/**
 	 * Settings constructor.
 	 *
 	 * @since 5.2.0
@@ -109,6 +133,36 @@ class Settings extends Abstract_Settings {
 	public function __construct() {
 		// Configure which mode we are in.
 		$this->set_mode( tec_tickets_commerce_is_sandbox_mode() ? 'sandbox' : 'live' );
+	}
+
+	/**
+	 * Gets the template instance used to setup the rendering html.
+	 *
+	 * @since 5.3.0
+	 *
+	 * @return Tribe__Template
+	 */
+	public function get_template() {
+		if ( empty( $this->template ) ) {
+			$this->template = new Tribe__Template();
+			$this->template->set_template_origin( Tribe__Tickets__Main::instance() );
+			$this->template->set_template_folder( 'src/admin-views/settings/tickets-commerce' );
+			$this->template->set_template_context_extract( true );
+		}
+
+		return $this->template;
+	}
+
+	/**
+	 * Determine whether Tickets Commerce is in test mode.
+	 *
+	 * @since 5.3.0    moved to Settings class
+	 * @since 5.1.6
+	 *
+	 * @return bool Whether Tickets Commerce is in test mode.
+	 */
+	public static function is_test_mode() {
+		return tribe_is_truthy( tribe_get_option( static::$option_sandbox ) );
 	}
 
 	/**
@@ -127,7 +181,7 @@ class Settings extends Abstract_Settings {
 		) {
 			return false;
 		}
-		$url = \Tribe__Settings::instance()->get_url( [ 'tab' => 'payments' ] );
+		$url = tribe( Plugin_Settings::class )->get_url( [ 'tab' => 'payments' ] );
 
 		// Add the main site admin menu item.
 		$wp_admin_bar->add_menu(
@@ -156,7 +210,11 @@ class Settings extends Abstract_Settings {
 	 * @return array The list of settings for Tickets Commerce.
 	 */
 	public function get_settings() {
-		$gateways_manager = tribe( Manager::class );
+
+		$section_gateway = tribe( Payments_Tab::class )->get_section_gateway();
+		if ( ! empty( $section_gateway ) ) {
+			return $section_gateway->get_settings();
+		}
 
 		// @todo Replace this with a better and more performant REST API based solution.
 		$page_args = [
@@ -176,17 +234,14 @@ class Settings extends Abstract_Settings {
 		$success_shortcode  = Shortcodes\Success_Shortcode::get_wp_slug();
 		$checkout_shortcode = Shortcodes\Checkout_Shortcode::get_wp_slug();
 
-		/** @var \Tribe__Tickets__Commerce__Currency $commerce_currency */
-		$commerce_currency = tribe( 'tickets.commerce.currency' );
-
-		$paypal_currency_code_options = $commerce_currency->generate_currency_code_options();
+		$tc_currency_options = tribe( Currency::class )->get_currency_code_options();
 
 		$current_user = get_user_by( 'id', get_current_user_id() );
 
 		$settings = [
-			'tickets-commerce-general-settings-heading'     => [
+			'tickets-commerce-settings-general-heading'     => [
 				'type' => 'html',
-				'html' => '<h3 class="tribe-dependent"  data-depends="#' . Tickets_Settings::$tickets_commerce_enabled . '-input" data-condition-is-checked>' . __( 'Tickets Commerce Settings', 'event-tickets' ) . '</h3><div class="clear"></div>',
+				'html' => '<h3>' . __( 'General', 'event-tickets' ) . '</h3>',
 			],
 			static::$option_sandbox                         => [
 				'type'            => 'checkbox_bool',
@@ -194,14 +249,6 @@ class Settings extends Abstract_Settings {
 				'tooltip'         => esc_html__( 'Enables Test mode for testing payments. Any payments made will be done on "sandbox" accounts.', 'event-tickets' ),
 				'default'         => false,
 				'validation_type' => 'boolean',
-			],
-			static::$option_currency_code                   => [
-				'type'            => 'dropdown',
-				'label'           => esc_html__( 'Currency Code', 'event-tickets' ),
-				'tooltip'         => esc_html__( 'The currency that will be used for Tickets Commerce transactions.', 'event-tickets' ),
-				'default'         => 'USD',
-				'validation_type' => 'options',
-				'options'         => $paypal_currency_code_options,
 			],
 			static::$option_stock_handling                  => [
 				'type'            => 'radio',
@@ -218,20 +265,47 @@ class Settings extends Abstract_Settings {
 				'options'         => [
 					Pending::SLUG   => sprintf(
 					// Translators: %1$s: The word "ticket" in lowercase. %2$s: `<strong>` opening tag. %3$s: `</strong>` closing tag.
-						esc_html__( 'Decrease available %1$s stock as soon as a %2$sPending%3$s order is created.', 'event-tickets' ),
+						esc_html__( 'Decrease available %1$s stock and send the %1$s to the customer as soon as a %2$sPending%3$s order is created.', 'event-tickets' ),
 						tribe_get_ticket_label_singular_lowercase( 'stock_handling' ),
 						'<strong>',
 						'</strong>'
 					),
 					Completed::SLUG => sprintf(
 					// Translators: %1$s: The word "ticket" in lowercase. %2$s: `<strong>` opening tag. %3$s: `</strong>` closing tag.
-						esc_html__( 'Only decrease available %1$s stock if an order is confirmed as %2$sCompleted%3$s by the payment gateway.', 'event-tickets' ),
+						esc_html__( 'Only decrease available %1$s stock and send the %1$s to the customer if an order is confirmed as %2$sCompleted%3$s by the payment gateway.', 'event-tickets' ),
 						tribe_get_ticket_label_singular_lowercase( 'stock_handling' ),
 						'<strong>',
 						'</strong>'
 					),
 				],
 				'tooltip_first'   => true,
+			],
+			'tickets-commerce-settings-currency-heading'    => [
+				'type' => 'html',
+				'html' => '<h3>' . __( 'Currency', 'event-tickets' ) . '</h3>',
+			],
+			static::$option_currency_code                   => [
+				'type'            => 'dropdown',
+				'label'           => esc_html__( 'Currency Code', 'event-tickets' ),
+				'tooltip'         => esc_html__( 'The currency that will be used for Tickets Commerce transactions.', 'event-tickets' ),
+				'default'         => 'USD',
+				'validation_type' => 'options',
+				'options'         => $tc_currency_options,
+			],
+			static::$option_currency_position               => [
+				'type'            => 'dropdown',
+				'label'           => esc_html__( 'Currency Position', 'event-tickets' ),
+				'tooltip'         => esc_html__( 'The position of the currency symbol as it relates to the ticket values.', 'event-tickets' ),
+				'default'         => 'prefix',
+				'validation_type' => 'options',
+				'options'         => [
+					'prefix'  => esc_html__( 'Before', 'event-tickets' ),
+					'postfix' => esc_html__( 'After', 'event-tickets' ),
+				],
+			],
+			'tickets-commerce-settings-page-heading'        => [
+				'type' => 'html',
+				'html' => '<h3>' . __( 'Pages Configuration', 'event-tickets' ) . '</h3>',
 			],
 			static::$option_checkout_page                   => [
 				'type'            => 'dropdown',
@@ -262,6 +336,10 @@ class Settings extends Abstract_Settings {
 				'validation_type' => 'options',
 				'options'         => $pages,
 				'required'        => true,
+			],
+			'tickets-commerce-email-settings-heading'       => [
+				'type' => 'html',
+				'html' => '<h3>' . __( 'Emails', 'event-tickets' ) . '</h3>',
 			],
 			static::$option_confirmation_email_sender_email => [
 				'type'            => 'email',
@@ -316,7 +394,36 @@ class Settings extends Abstract_Settings {
 			],
 		];
 
-		$settings = array_merge( $gateways_manager->get_gateway_settings(), $settings );
+		// Add featured settings to top of other settings.
+		$featured_settings = [
+			'tc_featured_settings' => [
+				'type' => 'html',
+				'html' => tribe( Featured_Settings::class )->get_html(
+					[
+						'title'            => __( 'Payment Gateways', 'event-tickets' ),
+						'description'      => __(
+							'Set up a payment gateway to get started with Tickets Commerce. Enable multiple ' .
+							'gateways for providing users additional options for users when purchasing tickets.',
+							'event-tickets'
+						),
+						'content_template' => $this->get_featured_gateways_html(),
+						'links'            => [
+							[
+								'slug'     => 'help-1',
+								'priority' => 10,
+								'link'     => 'https://evnt.is/1axt',
+								'html'     => __( 'Learn more about configuring payment options with Tickets Commerce', 'event-tickets' ),
+								'target'   => '_blank',
+								'classes'  => [],
+							],
+						],
+						'classes'          => [],
+					]
+				),
+			],
+		];
+
+		$settings = array_merge( $featured_settings, $settings );
 
 		/**
 		 * Allow filtering the list of Tickets Commerce settings.
@@ -327,8 +434,23 @@ class Settings extends Abstract_Settings {
 		 */
 		$settings = apply_filters( 'tribe_tickets_commerce_settings', $settings );
 
+		return array_merge( tribe( Payments_Tab::class )->get_fields(), $this->apply_commerce_enabled_conditional( $settings ) );
+	}
 
-		return array_merge( tribe( Payments_Tab::class )->get_top_level_settings(), $this->apply_commerce_enabled_conditional( $settings ) );
+	/**
+	 * Returns the content for the main featured settings which displays the list of gateways.
+	 *
+	 * @since 5.3.0
+	 *
+	 * @return string
+	 */
+	public function get_featured_gateways_html() {
+		$manager  = tribe( Manager::class );
+		$gateways = $manager->get_gateways();
+
+		$template = $this->get_template();
+
+		return $template->template( 'gateways/container', [ 'gateways' => $gateways, 'manager' => $manager ], false );
 	}
 
 	/**
@@ -383,4 +505,25 @@ class Settings extends Abstract_Settings {
 		return $meta_value;
 	}
 
+	/**
+	 * Is a valid license of Event Tickets Plus available?
+	 *
+	 * @since 5.3.0
+	 *
+	 * @param bool $revalidate whether to submit a new validation API request
+	 *
+	 * @return bool
+	 */
+	public static function is_licensed_plugin( $revalidate = false ) {
+		if ( ! class_exists( 'Tribe__Tickets_Plus__PUE' ) ) {
+			return false;
+		}
+
+		$pue = tribe( \Tribe__Tickets_Plus__PUE::class );
+
+		/**
+		 * @todo we need to make sure we actually validate the PUE key.
+		 */
+		return $pue->get_pue()->is_valid_key_format() ;
+	}
 }

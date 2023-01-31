@@ -1,0 +1,87 @@
+/**
+ * Event Tickets Emails Admin Settings
+ *
+ * @since 5.5.6
+ */
+
+.tec-tickets__admin-settings-emails-template-list {
+	background: var(--tec-color-background);
+	border: 1px var(--tec-color-border-default) solid;
+	border-radius: var(--tec-border-radius-default);
+	margin-bottom: var(--tec-spacer-5);
+}
+
+.tec-tickets__admin-settings-emails-template-list-item {
+	align-items: center;
+	border-top: 1px solid var(--tec-color-border-default);
+	display: flex;
+	justify-content: flex-start;
+	min-height: 54px;
+
+	&:first-of-type {
+		border-top: none;
+	}
+}
+
+.tec-tickets__admin-settings-emails-template-list-item--disabled {
+	color: #8e8e8e;
+
+	.tec-tickets__admin-settings-emails-template-list-item-title-link {
+		color: #8e8e8e;
+	}
+}
+
+.tec-tickets__admin-settings-emails-template-list-item-icon {
+	padding: 0 var(--tec-spacer-4);
+	width: 25px;
+
+	& > span.dashicons-yes {
+		color: #1eb056;
+		height: 25px;
+		width: 25px;
+
+		&:before {
+			font-size: 25px;
+			font-weight: var(--tec-font-weight-regular);
+		}
+	}
+}
+
+.tec-tickets__admin-settings-emails-template-list-item-title {
+	min-width: 90px;
+	padding: 0 var(--tec-spacer-4) 0 0;
+
+	@media (--viewport-medium) {
+		min-width: 200px;
+	}
+}
+
+.tec-tickets__admin-settings-emails-template-list-item-title-link {
+	color: #000;
+	font-size: 15px;
+	font-weight: var(--tec-font-weight-bold);
+	text-decoration: none;
+
+	&:hover {
+		color: #000;
+	}
+}
+
+.tec-tickets__admin-settings-emails-template-list-item-recipient {
+	flex-grow: 1;
+	font-size: 13px;
+	font-weight: var(--tec-font-weight-regular);
+	padding: 0;
+}
+
+.tec-tickets__admin-settings-emails-template-list-item-action {
+	padding: 0 var(--tec-spacer-4);
+}
+
+.tec-tickets__admin-settings-emails-template-list-item-action-link {
+	color: var(--tec-color-icon-secondary);
+
+	&:hover {
+		color: var(--tec-color-icon-primary-alt);
+	}
+}

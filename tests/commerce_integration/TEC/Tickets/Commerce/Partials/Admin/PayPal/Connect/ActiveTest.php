@@ -22,6 +22,7 @@ class ActiveTest extends Html_Partial_Test_Case {
 				'merchant'              => $merchant,
 				'is_merchant_connected' => true,
 				'signup'                => $signup,
+				'gateway_key'           => 'paypal',
 			]
 		) );
 	}
