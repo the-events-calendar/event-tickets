@@ -156,6 +156,10 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * @return string $content The response for the preview modal content.
 	 */
 	public function filter_add_preview_modal_content( $render_response, $vars ) {
+		if ( 'tec_tickets_preview_email' !== $vars['request'] ) {
+			return $render_response;
+		}
+
 		return $this->container->make( Admin\Preview_modal::class )->get_modal_content_ajax( $render_response, $vars );
 	}
 }
