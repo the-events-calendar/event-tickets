@@ -1511,7 +1511,7 @@ class Currency {
 	 */
 	public static function get_unsupported_currencies(): array {
 		/**
-		 * Filter all unsupported currenices before returning.
+		 * Filter all unsupported currencies before returning.
 		 *
 		 * @since TBD
 		 *
