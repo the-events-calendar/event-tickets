@@ -1520,7 +1520,7 @@ class Currency {
 		return apply_filters( 'tec_tickets_commerce_unsupported_currencies', [
 				'HRK' => [
 					'heading'   => __( 'Tickets Commerce is now selling with Euro', 'event-tickets' ),
-					'message'   => __( 'From the 1st of January 2023, the euro became the official currency for Croatia. We have removed the Croatian kuna from our currency settings and updated your settings to start selling with Euro.', 'event-tickets' ),
+					'message'   => __( 'From the 1st of January 2023, the euro became the official currency for Croatia. We have removed the Croatian Kuna from our currency settings and updated your settings to start selling with Euro.', 'event-tickets' ),
 					'new_value' => 'EUR',
 				],
 			]
