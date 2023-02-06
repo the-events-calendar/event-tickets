@@ -2,7 +2,7 @@
 /**
  * Tickets Emails Email Template Event Image
  *
- * @since  TBD   Event image.
+ * @since  5.5.7   Event image.
  *
  * @var string $event_image_url URL for the event image.
  */

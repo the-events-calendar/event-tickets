@@ -2,7 +2,7 @@
 /**
  * Tickets Emails Email Template Footer Content
  *
- * @since  TBD   Email template footer content.
+ * @since  5.5.7   Email template footer content.
  *
  * @var string $footer_content    HTML of footer content.
  * @var string $header_text_color Header text color.

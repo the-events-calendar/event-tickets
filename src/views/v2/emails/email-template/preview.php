@@ -2,7 +2,7 @@
 /**
  * Tickets Emails Email Template Preview.
  *
- * @since  TBD   Preview email template that can be viewed on a web page.
+ * @since  5.5.7   Preview email template that can be viewed on a web page.
  *
  * @var Tribe__Template  $this    Parent template object.
  * @var boolean          $preview Whether or not we are viewing the template as a preview.

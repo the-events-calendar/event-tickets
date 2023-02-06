@@ -2,7 +2,7 @@
 /**
  * Tickets Emails Email Template Header Image
  *
- * @since  TBD   Header image.
+ * @since  5.5.7   Header image.
  *
  * @var string $header_image_url URL of header image.
  */

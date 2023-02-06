@@ -2,7 +2,7 @@
 /**
  * Tickets Emails Email Template Event Image
  *
- * @since  TBD   Event image.
+ * @since  5.5.7   Event image.
  *
  * @var array $event_venue Array of venue information.
  */

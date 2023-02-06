@@ -2,7 +2,7 @@
 /**
  * Tickets Emails Email Template Event Title
  *
- * @since  TBD   Event title.
+ * @since  5.5.7   Event title.
  *
  * @var string $event_title Text for event title.
  */

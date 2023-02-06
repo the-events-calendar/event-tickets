@@ -2,8 +2,8 @@
 /**
  * Tickets Emails Email Template
  *
- * @since  TBD  Email template to be mailed out by the Event Tickets plugin.
- * 
+ * @since  5.5.7  Email template to be mailed out by the Event Tickets plugin.
+ *
  * @var Tribe_Template  $this  Current template object.
  */
 

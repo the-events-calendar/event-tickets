@@ -197,6 +197,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Tweak - Updated Attendee Registration Fields upsell notice to only display in admin dashboard. [CT-67]
 * Fix - Resolve provisional IDs properly on the event edit screen for ticket management actions. [ET-1632]
 * Fix - Fixed Ticket Commerce cart cookies not getting saved. [ET-1629]
+* Language - 28 new strings added, 189 updated, 5 fuzzied, and 3 obsoleted
 
 = [5.5.6] 2023-01-16 =
 

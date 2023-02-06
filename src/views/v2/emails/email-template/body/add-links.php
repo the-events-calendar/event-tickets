@@ -2,7 +2,7 @@
 /**
  * Tickets Emails Email Template 'Add' links
  *
- * @since  TBD   Add links for email template that allows recipient to subscribe to events.
+ * @since  5.5.7   Add links for email template that allows recipient to subscribe to events.
  */
 
 // @todo Update add links.
