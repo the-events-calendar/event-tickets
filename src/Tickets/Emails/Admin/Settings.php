@@ -9,7 +9,7 @@
  *
  */
 
-namespace TEC\Tickets\Emails;
+namespace TEC\Tickets\Emails\Admin;
 
 use TEC\Tickets\Commerce\Settings as CommerceSettings;
 use Tribe__Template;
@@ -79,7 +79,7 @@ class Settings {
 	 * @var string
 	 */
 	public static $option_footer_content = 'tec-tickets-emails-footer-content';
-	
+
 	/**
 	 * Variable to hold template object.
 	 *

@@ -46,7 +46,7 @@ class Email_Template {
 	 * @var null|Tribe__Template
 	 */
 	private $template;
-	
+
 	/**
 	 * Gets the template instance used to setup the rendering html.
 	 *
@@ -138,11 +138,11 @@ class Email_Template {
 	public function get_context() {
 		$context = [
 			'preview'                => $this->preview,
-			'header_image_url'       => tribe_get_option( Settings::$option_header_image_url, '' ),
-			'header_image_alignment' => tribe_get_option( Settings::$option_header_image_alignment, 'left' ),
-			'header_bg_color'        => tribe_get_option( Settings::$option_header_bg_color, '#ffffff' ),
-			'ticket_bg_color'        => tribe_get_option( Settings::$option_ticket_bg_color, '#007363' ),
-			'footer_content'         => tribe_get_option( Settings::$option_footer_content, '' ),
+			'header_image_url'       => tribe_get_option( Admin\Settings::$option_header_image_url, '' ),
+			'header_image_alignment' => tribe_get_option( Admin\Settings::$option_header_image_alignment, 'left' ),
+			'header_bg_color'        => tribe_get_option( Admin\Settings::$option_header_bg_color, '#ffffff' ),
+			'ticket_bg_color'        => tribe_get_option( Admin\Settings::$option_ticket_bg_color, '#007363' ),
+			'footer_content'         => tribe_get_option( Admin\Settings::$option_footer_content, '' ),
 			'footer_credit'          => true,
 		];
 		$context['header_text_color'] = Tribe__Utils__Color::get_contrast_color( $context['header_bg_color'] );

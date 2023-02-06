@@ -7,7 +7,7 @@
  * @package TEC\Tickets\Emails
  */
 
-namespace TEC\Tickets\Emails;
+namespace TEC\Tickets\Emails\Admin;
 
 use Tribe\Tickets\Admin\Settings as Plugin_Settings;
 use \Tribe__Template;

@@ -3,7 +3,7 @@ namespace TEC\Tickets\Emails\Admin;
 
 use Tribe__Utils__Array as Arr;
 use TEC\Tickets\Emails\Assets as Assets;
-use TEC\Tickets\Emails\Emails_Tab as Emails_Tab;
+use TEC\Tickets\Emails\Admin\Emails_Tab as Emails_Tab;
 use TEC\Tickets\Emails\Email_Template as Email_Template;
 
 /**
