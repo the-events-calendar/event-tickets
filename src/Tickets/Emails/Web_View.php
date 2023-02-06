@@ -53,7 +53,7 @@ class Web_View {
 	 *
 	 * @return void
 	 */
-	public function action_template_redirect_tickets_email() {
+	public function action_template_redirect_tickets_emails() {
 		if ( empty( tribe_get_request_var( self::$url_slug ) ) ) {
 			return;
 		}

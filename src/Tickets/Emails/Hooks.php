@@ -172,6 +172,6 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * @return void
 	 */
 	public function action_template_redirect_tickets_emails() {
-		$this->container->make( Web_View::class )->action_template_redirect_tickets_email();
+		$this->container->make( Web_View::class )->action_template_redirect_tickets_emails();
 	}
 }
