@@ -107,7 +107,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	}
 
 	/**
-	 * Filter to add template list to Ticklets Emails settings fields.
+	 * Filter to add template list to Tickets Emails settings fields.
 	 *
 	 * @since 5.5.6
 	 *
@@ -120,7 +120,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	}
 
 	/**
-	 * Filter to add sender info to Ticklets Emails settings fields.
+	 * Filter to add sender info to Tickets Emails settings fields.
 	 *
 	 * @since 5.5.6
 	 *
@@ -133,7 +133,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	}
 
 	/**
-	 * Filter to add sender info to Ticklets Emails settings fields.
+	 * Filter to add sender info to Tickets Emails settings fields.
 	 *
 	 * @since 5.5.6
 	 *
