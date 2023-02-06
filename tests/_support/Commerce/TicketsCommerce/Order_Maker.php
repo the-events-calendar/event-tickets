@@ -4,6 +4,7 @@ namespace Tribe\Tickets\Test\Commerce\TicketsCommerce;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Gateways\PayPal\Gateway;
 use TEC\Tickets\Commerce\Order;
+use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Pending;
 use Tribe\Tickets\Test\Commerce\Ticket_Maker as Ticket_Maker_Base;
 use TEC\Tickets\Commerce\Module as Module;
@@ -36,6 +37,7 @@ trait Order_Maker {
 
 		$order     = tribe( Order::class )->create_from_cart( tribe( Gateway::class ), $purchaser );
 		$completed = tribe( Order::class )->modify_status( $order->ID, Pending::SLUG );
+		$completed = tribe( Order::class )->modify_status( $order->ID, Completed::SLUG );
 		$cart->clear_cart();
 
 		return $order;
