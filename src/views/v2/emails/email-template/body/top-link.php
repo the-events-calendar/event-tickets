@@ -1,18 +1,21 @@
 <?php
 /**
- * Tickets Emails Email Template Top Link
+ * Tickets Emails Email Template Top Link.
  *
  * @since  TBD   Top Link.
  */
 
-// @todo Update link URL
+if ( empty( $web_view_url ) ) {
+	return;
+}
 ?>
 <td style="padding:10px 15px;text-align:center;font-size:11px;" align="center">
 	<?php
 	echo sprintf(
-		'%s <a href="#" style="color:#3C434A;">%s</a>',
-		esc_html__( 'Having trouble viewing this email?', 'event-tickets' ),
-		esc_html__( 'Click here', 'event-tickets' ),
+		// Translators: %1$s: Opening `<a>` tag for the email web view. %2$s: Closing `</a>`.
+		esc_html__( 'Having trouble viewing this email? %1$sClick here%2$s', 'event-tickets' ),
+		'<a href="' . esc_url( $web_view_url ) . '" target="_blank" rel="noopener noreferrer">',
+		'</a>'
 	);
 	?>
 </td>

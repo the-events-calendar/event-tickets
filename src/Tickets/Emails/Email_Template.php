@@ -144,6 +144,7 @@ class Email_Template {
 			'ticket_bg_color'        => tribe_get_option( Settings::$option_ticket_bg_color, '#007363' ),
 			'footer_content'         => tribe_get_option( Settings::$option_footer_content, '' ),
 			'footer_credit'          => true,
+			'web_view_url'           => tribe( Web_View::class )->get_url(),
 		];
 		$context['header_text_color'] = Tribe__Utils__Color::get_contrast_color( $context['header_bg_color'] );
 		$context['ticket_text_color'] = Tribe__Utils__Color::get_contrast_color( $context['ticket_bg_color'] );
@@ -155,7 +156,7 @@ class Email_Template {
 		$this->context_data = array_merge( $context, $this->context_data );
 
 		/**
-		 * Allow filtering the contxt array before sending to the email template.
+		 * Allow filtering the context array before sending to the email template.
 		 *
 		 * @since TBD
 		 *
