@@ -1,8 +1,17 @@
 <?php
 /**
- * Tickets Emails Email Template Event Image
+ * Event Tickets Emails: Main template > Body > Event > Location.
  *
- * @since  TBD   Event image.
+ * Override this template in your own theme by creating a file at:
+ * [your-theme]/tribe/tickets/v2/emails/template-parts/body/event/location.php
+ *
+ * See more documentation about our views templating system.
+ *
+ * @link https://evnt.is/tickets-emails-tpl Help article for Tickets Emails template files.
+ *
+ * @version TBD
+ *
+ * @since TBD
  *
  * @var array $event_venue Array of venue information.
  */
@@ -28,7 +37,7 @@ if ( empty( $event_venue ) || ! is_array( $event_venue ) ) {
 		</h2>
 		<table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;">
 			<tr>
-				<td style="padding:12px 0 0 0;">
+				<td style="padding:12px 0 0 0; width: 50%;">
 					<table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;">
 						<tr>
 							<td style="text-align:center;vertical-align:top;display:inline-block;" valign="top" align="center">
@@ -42,7 +51,7 @@ if ( empty( $event_venue ) || ! is_array( $event_venue ) ) {
 						</tr>
 					</table>
 				</td>
-				<td style="padding:0;">
+				<td style="padding:0; width: 50%;">
 					<table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;margin-bottom:18px">
 						<tr>
 							<td style="display:inline-block;text-align:center;vertical-align:top;" valign="top" align="center">
@@ -59,7 +68,12 @@ if ( empty( $event_venue ) || ! is_array( $event_venue ) ) {
 								<img width="24" height="23" style="width:24px;height:23px;display:block;" src="<?php echo plugins_url( '/event-tickets/src/resources/icons/link.svg' ) ?>" />
 							</td>
 							<td style="padding:0;">
-								<a href="<?php echo esc_url( $event_venue['website'] ); ?>" target="_blank" rel="noopener noreferrer">
+								<a
+									href="<?php echo esc_url( $event_venue['website'] ); ?>"
+									target="_blank"
+									rel="noopener noreferrer"
+									style="overflow-wrap: anywhere;"
+								>
 									<?php echo esc_url( $event_venue['website'] ); ?>
 								</a>
 							</td>

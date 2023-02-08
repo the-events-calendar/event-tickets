@@ -1,12 +1,10 @@
 <?php
-
 /**
  * Tickets Emails Settings class
  *
  * @since   5.5.6
  *
  * @package TEC\Tickets\Emails
- *
  */
 
 namespace TEC\Tickets\Emails\Admin;
@@ -168,9 +166,9 @@ class Settings {
 	 *
 	 * @since 5.5.6
 	 *
-	 * @param  [] $fields Current array of Tickets Emails settings fields.
+	 * @param  array $fields Current array of Tickets Emails settings fields.
 	 *
-	 * @return [] $fields Filtered array of Tickets Emails settings fields.
+	 * @return array $fields Filtered array of Tickets Emails settings fields.
 	 */
 	public function sender_info_fields( array $fields ): array {
 		$new_fields = [
@@ -253,9 +251,9 @@ class Settings {
 	 *
 	 * @since 5.5.6
 	 *
-	 * @param  [] $fields Current array of Tickets Emails settings fields.
+	 * @param  array $fields Current array of Tickets Emails settings fields.
 	 *
-	 * @return [] $fields Filtered array of Tickets Emails settings fields.
+	 * @return array $fields Filtered array of Tickets Emails settings fields.
 	 */
 	public function email_styling_fields( array $fields ): array {
 

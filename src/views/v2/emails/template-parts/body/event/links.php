@@ -1,8 +1,17 @@
 <?php
 /**
- * Tickets Emails Email Template 'Add' links
+ * Event Tickets Emails: Main template > Body > Event > Links.
  *
- * @since  TBD   Add links for email template that allows recipient to subscribe to events.
+ * Override this template in your own theme by creating a file at:
+ * [your-theme]/tribe/tickets/v2/emails/template-parts/body/event/links.php
+ *
+ * See more documentation about our views templating system.
+ *
+ * @link https://evnt.is/tickets-emails-tpl Help article for Tickets Emails template files.
+ *
+ * @version TBD
+ *
+ * @since TBD
  */
 
 // @todo Update add links.
