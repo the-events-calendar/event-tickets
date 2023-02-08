@@ -33,8 +33,11 @@
 	body, table, td, div, h1, p {font-family: Helvetica, Arial, sans-serif;}
 	table, td {border:0;}
 
-	a, a:focus, a:visited {
+	.tec-tickets__email-body a,
+	.tec-tickets__email-body a:focus,
+	.tec-tickets__email-body a:visited {
 		color: #141827;
+		text-decoration: underline;
 	}
 
 	.tec-tickets__email-body,
