@@ -81,7 +81,7 @@ class Settings {
 	/**
 	 * Variable to hold template object.
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 *
 	 * @var null|Tribe__Template
 	 */

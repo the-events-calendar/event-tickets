@@ -2,7 +2,7 @@
 /**
  * Tickets Emails template object to configure and display the email template.
  *
- * @since TBD
+ * @since 5.5.7
  *
  * @package TEC\Tickets\Emails
  */
@@ -16,7 +16,7 @@ use Tribe__Utils__Color;
 /**
  * Class Email_Template
  *
- * @since   TBD
+ * @since   5.5.7
  *
  * @package TEC\Tickets\Emails
  */
@@ -25,7 +25,7 @@ class Email_Template {
 	/**
 	 * Whether or not this is for a template preview.
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 *
 	 * @var boolean
 	 */
@@ -34,7 +34,7 @@ class Email_Template {
 	/**
 	 * Holds context array that will be applied to the template.
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 *
 	 * @var array
 	 */
@@ -50,7 +50,7 @@ class Email_Template {
 	/**
 	 * Gets the template instance used to setup the rendering html.
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 *
 	 * @return Tribe__Template The template object.
 	 */
@@ -68,7 +68,7 @@ class Email_Template {
 	/**
 	 * Returns the email template HTML.
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 *
 	 * @return string The HTML of the template.
 	 */
@@ -82,7 +82,7 @@ class Email_Template {
 	/**
 	 * Prints the email template HTML.
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 *
 	 * @return void.
 	 */
@@ -93,7 +93,7 @@ class Email_Template {
 	/**
 	 * Sets whether or not this will be a template preview.
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 *
 	 * @param boolean $is_preview
 	 *
@@ -106,7 +106,7 @@ class Email_Template {
 	/**
 	 * Is this a template preview?
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 *
 	 * @return boolean Whether or not this is a template preview.
 	 */
@@ -117,7 +117,7 @@ class Email_Template {
 	/**
 	 * Sets the data for the template context.
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 *
 	 * @param array $data
 	 *
@@ -130,7 +130,7 @@ class Email_Template {
 	/**
 	 * Returns the template context array and creates sample data if preview.
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 *
 	 * @return array Template context array.
 	 */
@@ -158,7 +158,7 @@ class Email_Template {
 		/**
 		 * Allow filtering the context array before sending to the email template.
 		 *
-		 * @since TBD
+		 * @since 5.5.7
 		 *
 		 * @param array Context array for email template.
 		 */
@@ -168,7 +168,7 @@ class Email_Template {
 	/**
 	 * Get the context data in the case of a template preview.
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 *
 	 * @return array Context data.
 	 */

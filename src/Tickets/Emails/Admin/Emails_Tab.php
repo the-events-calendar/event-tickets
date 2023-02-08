@@ -107,7 +107,7 @@ class Emails_Tab {
 	/**
 	 * Determine if is on "tab".
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 *
 	 * @return boolean True when on `emails` tab.
 	 */

@@ -1,7 +1,7 @@
 /**
  * Makes sure we have all the required levels on the Tribe Object
  *
- * @since TBD
+ * @since 5.5.7
  * @type   {object}
  */
 tribe.tickets = tribe.tickets || {};
@@ -11,7 +11,7 @@ tribe.dialogs.events = tribe.dialogs.events || {};
 /**
  * Configures ET emails Object in the Global Tribe variable
  *
- * @since TBD
+ * @since 5.5.7
  * @type   {object}
  */
 tribe.tickets.emails = {};
@@ -19,7 +19,7 @@ tribe.tickets.emails = {};
 /**
  * Initializes in a Strict env the code that manages the plugin Emails library.
  *
- * @since TBD
+ * @since 5.5.7
  * @param  {object} $   jQuery
  * @param  {object} obj tribe.tickets.emails
  * @return {void}
@@ -30,7 +30,7 @@ tribe.tickets.emails = {};
 	/*
 	 * Manual Attendees Selectors.
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 */
 	obj.selectors = {
 		modalWrapper: '.tribe-modal__wrapper--emails-preview',
@@ -46,7 +46,7 @@ tribe.tickets.emails = {};
 	/**
 	 * Handler for when the modal is being "closed".
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 * @param {object} event The close event.
 	 * @param {object} dialogEl The dialog element.
 	 * @return {void}
@@ -61,7 +61,7 @@ tribe.tickets.emails = {};
 	/**
 	 * Bind handler for when the modal is being "closed".
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 * @return {void}
 	 */
 	obj.bindModalClose = function() {
@@ -74,7 +74,7 @@ tribe.tickets.emails = {};
 	/**
 	 * Unbinds events for the modal content container.
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 * @param {jQuery} $container jQuery object of the container.
 	 */
 	obj.unbindModalEvents = function( $container ) {
@@ -85,7 +85,7 @@ tribe.tickets.emails = {};
 	/**
 	 * Handler for when the modal is opened.
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 * @param {object} event The show event.
 	 * @param {object} dialogEl The dialog element.
 	 * @param {object} trigger The event.
@@ -129,7 +129,7 @@ tribe.tickets.emails = {};
 	/**
 	 * Get context to send on the request.
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 * @return {object}
 	 */
 	obj.getSettingsContext = function() {
@@ -156,7 +156,7 @@ tribe.tickets.emails = {};
 	/**
 	 * Bind handler for when the modal is being "opened".
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 * @return {void}
 	 */
 	obj.bindModalOpen = function() {
@@ -169,7 +169,7 @@ tribe.tickets.emails = {};
 	/**
 	 * Handles the initialization of the scripts when Document is ready.
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 * @return {void}
 	 */
 	obj.ready = function() {
