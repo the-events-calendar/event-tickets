@@ -16,12 +16,12 @@
  * @var string $event_title Text for event title.
  */
 
-if ( empty( $event_title ) ) {
+if ( empty( $tickets[0]['event']['title'] ) ) {
 	return;
 }
 ?>
 <tr>
 	<td style="padding:0;">
-		<h3 class="tec-tickets__email-table-content-event-title"><?php echo esc_html( $event_title ); ?></h3>
+		<h3 class="tec-tickets__email-table-content-event-title"><?php echo esc_html( $tickets[0]['event']['title'] ); ?></h3>
 	</td>
 </tr>

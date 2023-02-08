@@ -3,7 +3,7 @@
  * Event Tickets Emails: Main template > Body > Event > Location.
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/emails/template-parts/body/event/location.php
+ * [your-theme]/tribe/tickets/v2/emails/template-parts/body/event/venue.php
  *
  * See more documentation about our views templating system.
  *
@@ -16,9 +16,11 @@
  * @var array $event_venue Array of venue information.
  */
 
-if ( empty( $event_venue ) || ! is_array( $event_venue ) ) {
+if ( empty( $tickets[0]['event']['venue'] ) || ! is_array( $tickets[0]['event']['venue'] ) ) {
 	return;
 }
+
+$event_venue = $tickets[0]['event']['venue'];
 
 // @todo - Update `Get Directions` link.
 

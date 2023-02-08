@@ -14,11 +14,11 @@
  * @since TBD
  */
 
-if ( empty( $ticket_security_code ) ) {
+if ( empty( $ticket['security_code'] ) ) {
 	return;
 }
 
 ?>
 <div class="tec-tickets__email-table-content-ticket-security-code">
-	<?php echo esc_html( $ticket_security_code ); ?>
+	<?php echo esc_html( $ticket['security_code'] ); ?>
 </div>
