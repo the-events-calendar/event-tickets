@@ -16,6 +16,15 @@ use Tribe__Tickets__Main;
 class Settings {
 
 	/**
+	 * The option key for enabling the feature and upgrading.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $option_enabled = 'tec-tickets-emails-enabled';
+
+	/**
 	 * The option key for email sender's name.
 	 *
 	 * @since 5.5.6
@@ -184,15 +193,15 @@ class Settings {
 				'type'                => 'text',
 				'label'               => esc_html__( 'Sender Name', 'event-tickets' ),
 				'size'                => 'medium',
-				'default'             => $this->get_sender_name(),
+				'default'             => $this->get_default_sender_name(),
 				'validation_callback' => 'is_string',
 				'validation_type'     => 'textarea',
 			],
-			static::$option_sender_email  => [
+			static::$option_sender_email => [
 				'type'                => 'text',
 				'label'               => esc_html__( 'Sender Email', 'event-tickets' ),
 				'size'                => 'medium',
-				'default'             => $this->get_sender_email(),
+				'default'             => $this->get_default_sender_email(),
 				'validation_callback' => 'is_string',
 				'validation_type'     => 'email',
 			],
@@ -217,14 +226,14 @@ class Settings {
 	 *
 	 * @return string Sender's name.
 	 */
-	public function get_sender_name(): string {
+	public function get_default_sender_name(): string {
 		// Get name from settings.
-		$name  = tribe_get_option( CommerceSettings::$option_confirmation_email_sender_name );
+		$name = tribe_get_option( CommerceSettings::$option_confirmation_email_sender_name );
 		if ( ! empty( $name ) ) {
 			return $name;
 		}
 		// If not set, return WordPress User `nicename`.
-		$current_user  = get_user_by( 'id', get_current_user_id() );
+		$current_user = get_user_by( 'id', get_current_user_id() );
 		return $current_user->user_nicename;
 	}
 
@@ -235,14 +244,14 @@ class Settings {
 	 *
 	 * @return string Sender's email address.
 	 */
-	public function get_sender_email(): string {
+	public function get_default_sender_email(): string {
 		// Get email from settings.
-		$email  = tribe_get_option( CommerceSettings::$option_confirmation_email_sender_email );
+		$email = tribe_get_option( CommerceSettings::$option_confirmation_email_sender_email );
 		if ( ! empty( $email ) ) {
 			return $email;
 		}
 		// If not set, return WordPress User `email`.
-		$current_user  = get_user_by( 'id', get_current_user_id() );
+		$current_user = get_user_by( 'id', get_current_user_id() );
 		return $current_user->user_email;
 	}
 
@@ -334,5 +343,36 @@ class Settings {
 		$new_fields = apply_filters( 'tec_tickets_emails_settings_email_styling_fields', $new_fields );
 
 		return array_merge( $fields, $new_fields );
+	}
+
+	/**
+	 * Maybe add the upgrade option. Only for installs that are previous to the
+	 * version in which we introduce Tickets Emails.
+	 *
+	 * @since TBD
+	 *
+	 * @param  array $fields Current array of Tickets Emails settings fields.
+	 *
+	 * @return array $fields Filtered array of Tickets Emails settings fields.
+	 */
+	public function maybe_add_upgrade_field( array $fields ): array {
+		$upgrade_option_available = tribe_installed_before( 'Tribe__Tickets__Main', '5.6.0' );
+
+		if ( ! $upgrade_option_available ) {
+			return $fields;
+		}
+
+		$new_fields = [
+			self::$option_enabled => [
+				'type'            => 'checkbox_bool',
+				'label'           => esc_html__( 'Enable Tickets Emails', 'event-tickets-plus' ),
+				'tooltip'         => esc_html__( 'Start using the new Tickets Emails for your site.', 'event-tickets' ),
+				'default'         => false,
+				'validation_type' => 'boolean',
+			],
+		];
+
+		return array_merge( $fields, $new_fields );
+
 	}
 }
