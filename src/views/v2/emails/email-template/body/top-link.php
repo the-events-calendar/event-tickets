@@ -2,7 +2,7 @@
 /**
  * Tickets Emails Email Template Top Link.
  *
- * @since  TBD   Top Link.
+ * @since  5.5.7   Top Link.
  */
 
 if ( empty( $web_view_url ) ) {

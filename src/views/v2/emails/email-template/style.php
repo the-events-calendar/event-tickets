@@ -2,7 +2,7 @@
 /**
  * Tickets Emails Email Template Style
  *
- * @since  TBD   Main email template style.
+ * @since  5.5.7   Main email template style.
  */
 
 ?>

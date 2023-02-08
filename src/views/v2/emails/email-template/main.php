@@ -2,7 +2,7 @@
 /**
  * Tickets Emails Email Template Main
  *
- * @since  TBD   Main email template that goes to recipients' email clients.
+ * @since  5.5.7   Main email template that goes to recipients' email clients.
  *
  * @var Tribe__Template  $this    Parent template object.
  * @var boolean          $preview Whether or not we are viewing the template as a preview.

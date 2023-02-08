@@ -2,7 +2,7 @@
 /**
  * Tickets Emails Email Template Footer Credit
  *
- * @since  TBD   Email template footer credit.
+ * @since  5.5.7   Email template footer credit.
  *
  * @var bool   $footer_credit     Show the footer credit?
  * @var string $header_text_color Header text color.

@@ -2,7 +2,7 @@
 /**
  * Tickets Emails Email Template Recipient Name
  *
- * @since  TBD   Recipient Name.
+ * @since  5.5.7   Recipient Name.
  *
  * @var string $recipient_first_name Recipient's first name.
  * @var string $recipient_last_name  Recipient's last name.

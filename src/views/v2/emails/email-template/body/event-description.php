@@ -2,7 +2,7 @@
 /**
  * Tickets Emails Email Template Event Description
  *
- * @since  TBD   Event description.
+ * @since  5.5.7   Event description.
  *
  * @var string $event_description HTML of event description.
  */

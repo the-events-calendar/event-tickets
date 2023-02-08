@@ -79,7 +79,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Action to add the preview modal button to the settings page.
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 */
 	public function action_add_preview_modal_button() {
 		echo $this->container->make( Admin\Preview_modal::class )->get_modal_button();
@@ -88,7 +88,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Action to add the preview modal to the settings page.
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 */
 	public function action_add_preview_modal() {
 		echo $this->container->make( Admin\Preview_modal::class )->render_modal();
@@ -149,7 +149,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Filter the preview modal content.
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 *
 	 * @param string|\WP_Error $render_response The render response HTML content or WP_Error with list of errors.
 	 * @param array            $vars            The request variables.

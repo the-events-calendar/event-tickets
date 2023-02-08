@@ -26,7 +26,7 @@ class Upsell {
 	/**
 	 * Maybe show upsell for Capacity and ARF features.
 	 *
-	 * @since TBD - Added is_admin() to make sure upsells only display within the admin area.
+	 * @since 5.5.7 - Added is_admin() to make sure upsells only display within the admin area.
 	 * @since 5.3.4
 	 */
 	public function maybe_show_capacity_arf() {
@@ -57,7 +57,7 @@ class Upsell {
 	/**
 	 * Maybe show upsell for Manual Attendees.
 	 *
-	 * @since TBD - Added is_admin() to make sure upsells only display within the admin area.
+	 * @since 5.5.7 - Added is_admin() to make sure upsells only display within the admin area.
 	 * @since 5.3.4
 	 */
 	public function maybe_show_manual_attendees() {

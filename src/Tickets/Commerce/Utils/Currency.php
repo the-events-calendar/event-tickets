@@ -45,7 +45,7 @@ class Currency {
 	/**
 	 * The fallback currency code to use if none is found.
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 *
 	 * @var string
 	 */
@@ -54,7 +54,7 @@ class Currency {
 	/**
 	 * The fallback currency thousands separator to use if none is found.
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 *
 	 * @var string
 	 */
@@ -63,7 +63,7 @@ class Currency {
 	/**
 	 * The fallback currency decimal separator to use if none is found.
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 *
 	 * @var string
 	 */
@@ -72,7 +72,7 @@ class Currency {
 	/**
 	 * The fallback number of decimals for currency.
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 *
 	 * @var string
 	 */
@@ -81,7 +81,7 @@ class Currency {
 	/**
 	 * Unsupported Currency.
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 *
 	 * @var array
 	 */
@@ -1505,7 +1505,7 @@ class Currency {
 	/**
 	 * Get unsupported currencies and notice texts.
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 *
 	 * @return array
 	 */
@@ -1513,7 +1513,7 @@ class Currency {
 		/**
 		 * Filter all unsupported currencies before returning.
 		 *
-		 * @since TBD
+		 * @since 5.5.7
 		 *
 		 * @return array
 		 */
@@ -1530,7 +1530,7 @@ class Currency {
 	/**
 	 * Verify if currency is supported.
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 *
 	 * @return bool
 	 */
@@ -1561,7 +1561,7 @@ class Currency {
 	/**
 	 * Update currency option to the new value if the currency is unsupported.
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 *
 	 * @param string $new_currency_option
 	 * @return void

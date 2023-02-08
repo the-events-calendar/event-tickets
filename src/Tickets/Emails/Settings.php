@@ -79,11 +79,11 @@ class Settings {
 	 * @var string
 	 */
 	public static $option_footer_content = 'tec-tickets-emails-footer-content';
-	
+
 	/**
 	 * Variable to hold template object.
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 *
 	 * @var null|Tribe__Template
 	 */

@@ -2,7 +2,7 @@
 /**
  * Tickets Emails Email Template Footer
  *
- * @since  TBD   Email template footer.
+ * @since  5.5.7   Email template footer.
  *
  * @var Tribe__Template  $this  Parent template object.
  * @var string $footer_content    HTML of footer content.
