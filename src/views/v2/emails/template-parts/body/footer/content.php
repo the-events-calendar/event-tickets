@@ -22,7 +22,7 @@ if ( empty( $footer_content ) ) {
 }
 ?>
 <tr>
-	<td style="padding:10px 0px 0px 0px;color:<?php echo esc_attr( $header_text_color ); ?>;">
+	<td style="padding: 20px 0;color:<?php echo esc_attr( $header_text_color ); ?>;">
 		<?php echo wp_kses_post( $footer_content ); ?>
 	</td>
 </tr>
