@@ -31,7 +31,8 @@
 	}
 
 	body, table, td, div, h1, p {font-family: Helvetica, Arial, sans-serif;}
-	table, td {border:0;}
+	table { width:100%}
+	table, td {border:0;border-spacing: 0;}
 
 	.tec-tickets__email-body a,
 	.tec-tickets__email-body a:focus,
@@ -113,14 +114,27 @@
 		margin: 0;
 	}
 
+	.tec-tickets__email-table-content-tickets-total {
+		padding:10px;
+		text-align: center;
+		font-weight: 700;
+		background-color: <?php echo esc_attr( $header_bg_color ); ?>;
+		color: <?php echo esc_attr( $header_text_color ); ?>;
+	}
+
+	.tec-tickets__email-table-content-tickets tbody > tr:last-child > td {
+		border-bottom: 0;
+	}
+
 	.tec-tickets__email-table-content-ticket,
 	td.tec-tickets__email-table-content-ticket {
 		padding: 20px 25px;
-		background:<?php echo esc_attr( $ticket_bg_color ); ?>
+		background:<?php echo esc_attr( $ticket_bg_color ); ?>;
+		border-bottom: 1px solid rgba(0,0,0,.08);
 	}
 
-	.tec-tickets__email-table-content-ticket-attendee-name,
-	h2.tec-tickets__email-table-content-ticket-attendee-name {
+	.tec-tickets__email-table-content-ticket-holder-name,
+	h2.tec-tickets__email-table-content-ticket-holder-name {
 		font-size: 21px;
 		font-weight: 700;
 		line-height: 24px;
@@ -133,7 +147,7 @@
 	.tec-tickets__email-table-content-ticket-type-name,
 	div.tec-tickets__email-table-content-ticket-type-name {
 		font-size: 16px;
-		margin:0;
+		margin-top: 8px;
 		padding:0;
 		color:<?php echo esc_attr( $ticket_text_color ); ?>;
 	}
@@ -149,12 +163,21 @@
 		opacity: .7;
 	}
 
+	.tec-tickets__email-table-content-ticket-number-from-total,
+	div.tec-tickets__email-table-content-ticket-number-from-total {
+		font-size: 14px;
+		font-weight: 700;
+		display: block;
+		margin:0 !important;
+		padding:15px 0 0 0 !important;
+		color:<?php echo esc_attr( $ticket_text_color ); ?>;
+	}
+
 	.tec-tickets__email-table-main-footer,
 	td.tec-tickets__email-table-main-footer {
-
 		padding: 0px 20px 10px 20px;
 		border-top: 1px solid #efefef;
-		background: <?php echo esc_attr( $header_bg_color ); ?>;
+		background-color: <?php echo esc_attr( $header_bg_color ); ?>;
 	}
 
 	.tec-tickets__email-table-main-footer table {

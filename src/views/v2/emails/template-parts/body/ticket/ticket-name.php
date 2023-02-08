@@ -18,11 +18,11 @@
  * @var string $ticket_text_color    Ticket text color.
  */
 
-if ( empty( $ticket_name ) ) {
+if ( empty( $ticket['ticket_name'] ) ) {
 	return;
 }
 
 ?>
 <div class="tec-tickets__email-table-content-ticket-type-name">
-	<?php echo esc_html( $ticket_name ); ?>
+	<?php echo esc_html( $ticket['ticket_name'] ); ?>
 </div>

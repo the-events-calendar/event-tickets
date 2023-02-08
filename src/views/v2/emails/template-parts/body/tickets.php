@@ -16,13 +16,31 @@
  * @var Tribe_Template  $this  Current template object.
  */
 
+if ( empty( $tickets ) ) {
+	return;
+}
+$i = 0;
+
+$this->template( 'template-parts/body/tickets-total' );
+
 ?>
 <tr>
-	<td class="tec-tickets__email-table-content-ticket">
-		<?php $this->template( 'template-parts/body/ticket/attendee-name' ); ?>
+	<td style="padding:0;">
+		<table class="tec-tickets__email-table-content-tickets" role="presentation">
+		<?php foreach ( $tickets as $ticket ) : ?>
+			<?php $i++; ?>
+			<tr>
+				<td class="tec-tickets__email-table-content-ticket">
+				<?php $this->template( 'template-parts/body/ticket/holder-name', [ 'ticket' => $ticket ] ); ?>
 
-		<?php $this->template( 'template-parts/body/ticket/ticket-name' ); ?>
+				<?php $this->template( 'template-parts/body/ticket/ticket-name', [ 'ticket' => $ticket ] ); ?>
 
-		<?php $this->template( 'template-parts/body/ticket/security-code' ); ?>
+				<?php $this->template( 'template-parts/body/ticket/security-code', [ 'ticket' => $ticket ] ); ?>
+
+				<?php $this->template( 'template-parts/body/ticket/number-from-total', [ 'i' => $i ] ); ?>
+				</td>
+			</tr>
+		<?php endforeach; ?>
+		</table>
 	</td>
 </tr>

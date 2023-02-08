@@ -12,17 +12,15 @@
  * @version TBD
  *
  * @since TBD
- *
- * @var string $event_description HTML of event description.
  */
 
-if ( empty( $event_description ) ) {
+if ( empty( $tickets[0]['event']['description'] ) ) {
 	return;
 }
 
 ?>
 <tr>
 	<td style="padding:0;">
-		<?php echo wp_kses_post( $event_description ); ?>
+		<?php echo wp_kses_post( $tickets[0]['event']['description'] ); ?>
 	</td>
 </tr>
