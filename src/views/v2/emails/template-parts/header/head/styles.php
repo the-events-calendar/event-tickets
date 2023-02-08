@@ -34,7 +34,7 @@
 	table, td {border:0;}
 
 	a, a:focus, a:visited {
-		color: #3C434A;
+		color: #141827;
 	}
 
 	.tec-tickets__email-body,
