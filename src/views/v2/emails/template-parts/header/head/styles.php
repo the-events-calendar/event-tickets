@@ -27,9 +27,15 @@
 		margin: 0;
 		padding: 0;
 		text-align: <?php echo is_rtl() ? 'right' : 'left'; ?>;
+		color: #3C434A;
 	}
-	table, td, div, h1, p {font-family: Helvetica, Arial, sans-serif;}
+
+	body, table, td, div, h1, p {font-family: Helvetica, Arial, sans-serif;}
 	table, td {border:0;}
+
+	a, a:focus, a:visited {
+		color: #3C434A;
+	}
 
 	.tec-tickets__email-body,
 	div.tec-tickets__email-body {
@@ -44,22 +50,22 @@
 
 	.tec-tickets__email-preview-link,
 	div.tec-tickets__email-preview-link {
-		padding: 10px 15px;
-		text-align:center;
-		font-size:11px;
+		padding: 15px;
+		text-align: center;
+		font-size: 11px;
 		max-width: 600px;
 		margin: 0 auto;
 	}
 
 	.tec-tickets__email-table-main,
 	table.tec-tickets__email-table-main {
-		width:100%;
-		max-width:600px;
-		border-collapse:collapse;
-		border:0;
-		border-spacing:0;
-		text-align:left;
-		background:#ffffff;
+		width: 100%;
+		max-width: 600px;
+		border-collapse: collapse;
+		border: 0;
+		border-spacing: 0;
+		text-align: left;
+		background: #ffffff;
 		margin:0 auto;
 	}
 
@@ -78,6 +84,11 @@
 		padding: 15px 30px;
 	}
 
+	.tec-tickets__email-table-content,
+	.tec-tickets__email-table-content table {
+		font-size: 14px;
+	}
+
 	.tec-tickets__email-table-content-title,
 	h1.tec-tickets__email-table-content-title {
 		font-size: 28px;
@@ -86,6 +97,7 @@
 		text-align: left;
 		color: #141827;
 		padding: 24px 0 !important;
+		margin: 0;
 	}
 
 	.tec-tickets__email-table-content-event-title,
@@ -95,6 +107,7 @@
 		font-weight: 700;
 		font-size: 18px;
 		padding: 20px 0 !important;
+		margin: 0;
 	}
 
 	.tec-tickets__email-table-content-ticket,
@@ -130,13 +143,19 @@
 		margin:0 !important;
 		padding:15px 0 0 0 !important;
 		color:<?php echo esc_attr( $ticket_text_color ); ?>;
+		opacity: .7;
 	}
 
 	.tec-tickets__email-table-main-footer,
 	td.tec-tickets__email-table-main-footer {
+
 		padding: 0px 20px 10px 20px;
 		border-top: 1px solid #efefef;
 		background: <?php echo esc_attr( $header_bg_color ); ?>;
+	}
+
+	.tec-tickets__email-table-main-footer table {
+		font-size: 12px;
 	}
 
 </style>
