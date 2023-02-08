@@ -44,9 +44,9 @@
 
 	.tec-tickets__email-preview-link,
 	div.tec-tickets__email-preview-link {
-		padding: 10px 15px;
-		text-align:center;
-		font-size:11px;
+		padding: 15px;
+		text-align: center;
+		font-size: 11px;
 		max-width: 600px;
 		margin: 0 auto;
 	}
