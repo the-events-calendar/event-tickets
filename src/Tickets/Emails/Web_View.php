@@ -89,7 +89,7 @@ class Web_View {
 		$email_template = tribe( Email_Template::class );
 		$email_template->set_preview( true );
 
-		echo $email_template->get_html( [], false );
+		echo $email_template->get_html();
 
 		exit;
 	}
