@@ -14,7 +14,7 @@
  * @since TBD
  */
 
-if ( empty( $tickets ) || count( $tickets ) === 0 ) {
+if ( empty( $tickets ) || count( $tickets ) === 1 ) {
 	return;
 }
 
