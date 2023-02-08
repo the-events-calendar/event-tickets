@@ -2,7 +2,7 @@
 /**
  * Tickets Emails template object to configure and display the email template.
  *
- * @since TBD
+ * @since 5.5.7
  *
  * @package TEC\Tickets\Emails
  */
@@ -16,7 +16,7 @@ use Tribe__Utils__Color;
 /**
  * Class Email_Template
  *
- * @since   TBD
+ * @since   5.5.7
  *
  * @package TEC\Tickets\Emails
  */
@@ -25,7 +25,7 @@ class Email_Template {
 	/**
 	 * Whether or not this is for a template preview.
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 *
 	 * @var boolean
 	 */
@@ -34,7 +34,7 @@ class Email_Template {
 	/**
 	 * Holds context array that will be applied to the template.
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 *
 	 * @var array
 	 */
@@ -46,11 +46,11 @@ class Email_Template {
 	 * @var null|Tribe__Template
 	 */
 	private $template;
-	
+
 	/**
 	 * Gets the template instance used to setup the rendering html.
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 *
 	 * @return Tribe__Template The template object.
 	 */
@@ -58,7 +58,6 @@ class Email_Template {
 		if ( empty( $this->template ) ) {
 			$this->template = new Tribe__Template();
 			$this->template->set_template_origin( Tribe__Tickets__Main::instance() );
-			// @todo Move template folder into `src/views/v2` before TE release.
 			$this->template->set_template_folder( 'src/views/v2/emails' );
 			$this->template->set_template_context_extract( true );
 		}
@@ -69,21 +68,21 @@ class Email_Template {
 	/**
 	 * Returns the email template HTML.
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 *
 	 * @return string The HTML of the template.
 	 */
-	public function get_html( $context = [] ) {
+	public function get_html( $context = [], $email = 'template' ) {
 		$template = $this->get_template();
-		$context  = wp_parse_args( $context, $this->get_context() );
+		$context  = wp_parse_args( $context, $this->get_context( $email ) );
 
-		return $template->template( 'email-template', $context, false );
+		return $template->template( $email, $context, false );
 	}
 
 	/**
 	 * Prints the email template HTML.
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 *
 	 * @return void.
 	 */
@@ -94,7 +93,7 @@ class Email_Template {
 	/**
 	 * Sets whether or not this will be a template preview.
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 *
 	 * @param boolean $is_preview
 	 *
@@ -107,7 +106,7 @@ class Email_Template {
 	/**
 	 * Is this a template preview?
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 *
 	 * @return boolean Whether or not this is a template preview.
 	 */
@@ -118,7 +117,7 @@ class Email_Template {
 	/**
 	 * Sets the data for the template context.
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 *
 	 * @param array $data
 	 *
@@ -131,18 +130,20 @@ class Email_Template {
 	/**
 	 * Returns the template context array and creates sample data if preview.
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 *
 	 * @return array Template context array.
 	 */
-	public function get_context() {
+	public function get_context( $email = '' ) {
 		$context = [
+			'email'                  => $email,
 			'preview'                => $this->preview,
-			'header_image_url'       => tribe_get_option( Settings::$option_header_image_url, '' ),
-			'header_image_alignment' => tribe_get_option( Settings::$option_header_image_alignment, 'left' ),
-			'header_bg_color'        => tribe_get_option( Settings::$option_header_bg_color, '#ffffff' ),
-			'ticket_bg_color'        => tribe_get_option( Settings::$option_ticket_bg_color, '#007363' ),
-			'footer_content'         => tribe_get_option( Settings::$option_footer_content, '' ),
+			'title'                  => esc_html__( 'Ticket Email', 'event-tickets' ),
+			'header_image_url'       => tribe_get_option( Admin\Settings::$option_header_image_url, '' ),
+			'header_image_alignment' => tribe_get_option( Admin\Settings::$option_header_image_alignment, 'left' ),
+			'header_bg_color'        => tribe_get_option( Admin\Settings::$option_header_bg_color, '#ffffff' ),
+			'ticket_bg_color'        => tribe_get_option( Admin\Settings::$option_ticket_bg_color, '#007363' ),
+			'footer_content'         => tribe_get_option( Admin\Settings::$option_footer_content, '' ),
 			'footer_credit'          => true,
 			'web_view_url'           => tribe( Web_View::class )->get_url(),
 		];
@@ -153,12 +154,12 @@ class Email_Template {
 			$this->context_data = $this->get_preview_context_array();
 		}
 
-		$this->context_data = array_merge( $context, $this->context_data );
+		$this->context_data = wp_parse_args( $this->context_data, $context );
 
 		/**
 		 * Allow filtering the context array before sending to the email template.
 		 *
-		 * @since TBD
+		 * @since 5.5.7
 		 *
 		 * @param array Context array for email template.
 		 */
@@ -168,18 +169,29 @@ class Email_Template {
 	/**
 	 * Get the context data in the case of a template preview.
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 *
 	 * @return array Context data.
 	 */
 	private function get_preview_context_array() {
 		$current_user = wp_get_current_user();
+		$title        = empty( $current_user->first_name ) ?
+		__( 'Here\'s your ticket!', 'event-tickets' ) :
+		sprintf(
+			// Translators: %s - First name of email recipient.
+			__( 'Here\'s your ticket, %s!', 'event-tickets' ),
+			$current_user->first_name
+		);
+
 		return [
-			'recipient_first_name' => $current_user->first_name,
-			'recipient_last_name'  => $current_user->last_name,
+			'title'                        => $title,
+			'ticket_attendee_display_name' => $current_user->display_name,
+			'ticket_attendee_first_name'   => $current_user->first_name,
+			'ticket_attendee_last_name'    => $current_user->last_name,
+			'ticket_name'                  => esc_html__( 'General Admission', 'event-tickets' ),
+			'ticket_security_code'         => '17e4a14cec',
+			// @todo @juanfra @codingmusician @rafsuntaskin: These should come from TEC.
 			'date_string'          => esc_html__( 'September 22 @ 7:00 pm - 11:00 pm', 'event-tickets' ),
-			'ticket_name'          => esc_html__( 'General Admission', 'event-tickets' ),
-			'ticket_id'            => '17e4a14cec',
 			'event_title'          => esc_html__( 'Rebirth Brass Band', 'event-tickets' ),
 			'event_image_url'      => esc_url( plugins_url( '/event-tickets/src/resources/images/example-event-image.png' ) ),
 			'event_venue'          => [

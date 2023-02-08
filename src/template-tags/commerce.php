@@ -51,7 +51,7 @@ function tec_tickets_commerce_currency_position() {
 /**
  * Returns the Tickets Commerce currency decimal point separator.
  *
- * @since TBD
+ * @since 5.5.7
  *
  * @return string String containing the Tickets Commerce currency decimal point separator.
  */
@@ -62,7 +62,7 @@ function tec_tickets_commerce_currency_decimal_separator() : string {
 /**
  * Returns the Tickets Commerce currency thousands separator.
  *
- * @since TBD
+ * @since 5.5.7
  *
  * @return string String containing the Tickets Commerce currency thousands separator.
  */
@@ -73,7 +73,7 @@ function tec_tickets_commerce_currency_thousands_separator() : string {
 /**
  * Returns the Tickets Commerce currency number of decimals.
  *
- * @since TBD
+ * @since 5.5.7
  *
  * @return int Number of decimals for the Tickets Commerce currency.
  */

@@ -56,7 +56,7 @@ class Settings {
 	/**
 	 * The option key for currency decimal separator.
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 *
 	 * @var string
 	 */
@@ -65,7 +65,7 @@ class Settings {
 	/**
 	 * The option key for currency thousands separator.
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 *
 	 * @var string
 	 */
@@ -74,7 +74,7 @@ class Settings {
 	/**
 	 * The option key for currency number of decimals.
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 *
 	 * @var string
 	 */
