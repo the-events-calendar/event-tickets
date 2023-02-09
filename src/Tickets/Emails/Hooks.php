@@ -44,6 +44,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * @since 5.5.6
 	 */
 	protected function add_actions() {
+		add_action( 'init', [ $this, 'action_register_post_type' ] );
 		add_action( 'tribe_settings_do_tabs', [ $this, 'register_emails_tab' ], 17 );
 		add_action( 'tribe_settings_after_form_element_tab_emails', [ $this, 'action_add_preview_modal_button' ] );
 		add_action( 'admin_footer', [ $this, 'action_add_preview_modal' ] );
@@ -62,6 +63,16 @@ class Hooks extends tad_DI52_ServiceProvider {
 
 		// Hook the `Tickets Emails` preview for the AJAX requests.
 		add_filter( 'tribe_tickets_admin_manager_request', [ $this, 'filter_add_preview_modal_content' ], 15, 2 );
+	}
+
+	/**
+	 * Action to register the post type with emails.
+	 *
+	 * @since TBD
+	 *
+	 */
+	public function action_register_post_type() {
+		$this->container->make( Email_Handler::class )->register_post_type();
 	}
 
 	/**
