@@ -192,7 +192,7 @@ class Tribe__Tickets__Metabox {
 	 *
 	 * @since 4.6.2
 	 * @since 4.10.9 Use customizable ticket name functions.
-	 * @since TBD Added optional parameter to return values instead of echoing directly.
+	 * @since 5.5.7 Added optional parameter to return values instead of echoing directly.
 	 *
 	 * @param bool $return_value Optional, flags whether to JSON output directly or return results.
 	 *
@@ -311,7 +311,7 @@ class Tribe__Tickets__Metabox {
 	 * @since   4.6.2
 	 * @since   4.10.9 Use customizable ticket name functions.
 	 * @since   4.12.3 Update detecting ticket provider to account for possibly inactive provider. Remove unused vars.
-	 * @since   TBD Added optional parameter to return values instead of echoing directly.
+	 * @since   5.5.7 Added optional parameter to return values instead of echoing directly.
 	 *
 	 * @param bool $return_value Optional, flags whether to JSON output directly or return results.
 	 *
@@ -400,7 +400,7 @@ class Tribe__Tickets__Metabox {
 	 * function.
 	 *
 	 * @since   4.6.2
-	 * @since   TBD Added optional parameter to return values instead of echoing directly.
+	 * @since   5.5.7 Added optional parameter to return values instead of echoing directly.
 	 *
 	 * @param bool $return_value Optional, flags whether to JSON output directly or return results.
 	 *
@@ -491,7 +491,7 @@ class Tribe__Tickets__Metabox {
 	 * Sanitizes the data for the duplicate ticket ajax call, then duplicates the ticket and meta.
 	 *
 	 * @since   5.2.3.
-	 * @since   TBD Added optional parameter to return values instead of echoing directly.
+	 * @since   5.5.7 Added optional parameter to return values instead of echoing directly.
 	 *
 	 * @param bool $return_value Optional, flags whether to JSON output directly or return results.
 	 *

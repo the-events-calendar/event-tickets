@@ -2,7 +2,7 @@
 /**
  * Tickets Emails Email Template Greeting
  *
- * @since  TBD   Email template greeting.
+ * @since  5.5.7   Email template greeting.
  *
  * @var string $recipient_name Email recipient's first name.
  */

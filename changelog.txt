@@ -1,8 +1,21 @@
 == Changelog ==
 
-= [TBD] TBD =
+= [5.5.7] TBD =
 
+* Fix - Resolve provisional IDs properly on the event edit screen for ticket management actions. [ET-1632]
+* Fix - Fixed Ticket Commerce cart cookies not getting saved. [ET-1629]
+* Tweak - Updated Currency options in Tickets Commerce settings for Croatian users from Kuna (HRK) to Euro (EUR). [ET-1625]
+* Tweak - Updated Attendee Registration Fields upsell notice to only display in admin dashboard. [CT-67]
+* Enhancement - Added currency format options to alter currency decimal separator, thousand separator, and number of decimal places. [ET-1608]
+
+= [5.5.6] 2023-01-16 =
+
+* Tweak - Updated the settings description for stock handling options. [ET-1603]
 * Tweak - Added the `tribe-tickets__tickets-item--shared-capacity` wrapper class for tickets having shared capacity. [ETP-841]
+* Tweak - Added a dashboard notice for sites running PHP versions lower than 7.4 to alert them that the minimum version of PHP is changing to 7.4 in February 2023.
+* Enhancement - Added search capabilities to the Tickets Commerce Orders report page. [ET-1259]
+* Fix - Allow loading attendance page with `event_id` params that use The Events Calendar provisional IDs. [ET-1624]
+* Language - 4 new strings added, 43 updated, 0 fuzzied, and 2 obsoleted
 
 = [5.5.5] 2022-12-08 =
 

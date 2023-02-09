@@ -2,7 +2,7 @@
 /**
  * Tickets Emails Email Template body
  *
- * @since  TBD   Email template body.
+ * @since  5.5.7   Email template body.
  *
  * @var Tribe__Template  $this  Parent template object.
  */

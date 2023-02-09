@@ -2,7 +2,7 @@
 /**
  * Tickets Emails Email Template Header
  *
- * @since  TBD   Header.
+ * @since  5.5.7   Header.
  *
  * @var string $header_bg_color        Header background color.
  * @var string $header_image_alignment Header image alignment text.
