@@ -72,7 +72,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * @param string $admin_page Page ID of current admin page.
 	 */
 	public function register_emails_tab( $admin_page ) {
-		$this->container->make( Emails_Tab::class )->register_tab( $admin_page );
+		$this->container->make( Admin\Emails_Tab::class )->register_tab( $admin_page );
 	}
 
 	/**
@@ -103,11 +103,11 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * @return array $tabs Filtered array of tabs ids.
 	 */
 	public function filter_add_tab_id( $tabs ) {
-		return $this->container->make( Emails_Tab::class )->settings_add_tab_id( $tabs );
+		return $this->container->make( Admin\Emails_Tab::class )->settings_add_tab_id( $tabs );
 	}
 
 	/**
-	 * Filter to add template list to Ticklets Emails settings fields.
+	 * Filter to add template list to Tickets Emails settings fields.
 	 *
 	 * @since 5.5.6
 	 *
@@ -116,11 +116,11 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * @return array $fields Filtered array of Tickets Emails settings fields.
 	 */
 	public function filter_add_template_list( $fields ) {
-		return $this->container->make( Settings::class )->add_template_list( $fields );
+		return $this->container->make( Admin\Settings::class )->add_template_list( $fields );
 	}
 
 	/**
-	 * Filter to add sender info to Ticklets Emails settings fields.
+	 * Filter to add sender info to Tickets Emails settings fields.
 	 *
 	 * @since 5.5.6
 	 *
@@ -129,11 +129,11 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * @return array $fields Filtered array of Tickets Emails settings fields.
 	 */
 	public function filter_add_sender_info_fields( $fields ) {
-		return $this->container->make( Settings::class )->sender_info_fields( $fields );
+		return $this->container->make( Admin\Settings::class )->sender_info_fields( $fields );
 	}
 
 	/**
-	 * Filter to add sender info to Ticklets Emails settings fields.
+	 * Filter to add sender info to Tickets Emails settings fields.
 	 *
 	 * @since 5.5.6
 	 *
@@ -142,7 +142,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * @return array $fields Filtered array of Tickets Emails settings fields.
 	 */
 	public function filter_add_email_styling_fields( $fields ) {
-		return $this->container->make( Settings::class )->email_styling_fields( $fields );
+		return $this->container->make( Admin\Settings::class )->email_styling_fields( $fields );
 	}
 
 	/**
