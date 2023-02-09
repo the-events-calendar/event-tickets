@@ -47,7 +47,7 @@ class Web_View {
 	}
 
 	/**
-	 * Manage the redirect to generate the PDF on the fly.
+	 * Manage the redirect to generate the email on the fly.
 	 *
 	 * @since TBD
 	 *
