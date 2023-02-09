@@ -233,4 +233,63 @@ class EventStockTest extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertEqualSets( $expected, $data );
 	}
+
+	/**
+	 * @test
+	 *
+	 * Test attendance count with shared capacity tickets and individual capacity tickets.
+	 */
+	public function test_attendance_count_with_shared_capacity_and_individual_capacity() {
+
+		$maker = new Event();
+		$event_id = $maker->create();
+
+		$overrides = [
+			'tribe-ticket' => [
+				'mode'           => \Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE,
+				'event_capacity' => 50,
+				'capacity'       => 30,
+			],
+		];
+		$ticket_a_id   = $this->create_tc_ticket( $event_id, 10, $overrides );
+
+		$overrides = [
+			'tribe-ticket' => [
+				'mode'           => \Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE,
+				'event_capacity' => 50,
+				'capacity'       => 50,
+			],
+		];
+		$ticket_b_id   = $this->create_tc_ticket( $event_id, 20, $overrides );
+
+		$overrides = [
+			'tribe-ticket' => [
+				'mode'           => \Tribe__Tickets__Global_Stock::OWN_STOCK_MODE,
+				'capacity'       => 20,
+			],
+		];
+		$ticket_c_id   = $this->create_tc_ticket( $event_id, 20, $overrides );
+
+		$expected['rsvp'] = [
+			'count'     => 0,
+			'stock'     => 0,
+			'unlimited' => 0,
+			'available' => 0,
+		];
+
+		$expected['tickets'] = [
+			'count'     => 3, // count of ticket types currently for sale
+			'stock'     => 70, // current stock of tickets available for sale
+			'global'    => 1, // numeric boolean if tickets share global stock
+			'unlimited' => 0, // numeric boolean if any ticket has unlimited stock
+			'available' => 70,
+		];
+
+		$data = \Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
+
+		codecept_debug( $data );
+
+		// Make sure that we have the proper initial data.
+		$this->assertEqualSets( $expected, $data );
+	}
 }
