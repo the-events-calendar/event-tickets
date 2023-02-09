@@ -1958,58 +1958,61 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 					continue;
 				}
 
-				// if ticket and not rsvp add to ticket array
-				if ( 'Tribe__Tickets__RSVP' !== $ticket->provider_class ) {
-					$types['tickets']['count'] ++;
+				if ( 'Tribe__Tickets__RSVP' === $ticket->provider_class ) {
+					$types = static::process_rsvp_counts( $ticket, $types );
+					continue;
+				}
 
-					$global_stock_mode = $ticket->global_stock_mode();
+				// we have a ticket type so increasing the ticket count.
+				$types['tickets']['count'] ++;
 
-					if (
-						$global_stock_mode === Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE
-						&& 0 === $types['tickets']['global']
-					) {
-						$types['tickets']['global'] ++;
-					} elseif (
-						$global_stock_mode === Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE
-						&& 1 === $types['tickets']['global']
-					) {
-						continue;
-					}
+				$global_stock_mode = $ticket->global_stock_mode();
 
-					if ( Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $global_stock_mode ) {
-						continue;
-					}
+//				if (
+//					$global_stock_mode === Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE
+//					&& 0 === $types['tickets']['global']
+//				) {
+//					$types['tickets']['global'] ++;
+//				} elseif (
+//					$global_stock_mode === Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE
+//					&& 1 === $types['tickets']['global']
+//				) {
+//					continue;
+//				}
 
-					$stock_level = Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $global_stock_mode ? $ticket->global_stock_cap() : $ticket->available();
-
-					// whether the stock level is negative because it represents unlimited stock (`-1`)
-					// or because it's oversold we normalize to `0` for the sake of displaying
-					$stock_level = max( 0, (int) $stock_level );
-
+				// for individual tickets.
+				if ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $global_stock_mode ) {
+					$stock_level = $ticket->available();
 					$types['tickets']['stock'] += $stock_level;
-
-					if ( 0 !== $types['tickets']['stock'] ) {
-						$types['tickets']['available'] ++;
-					}
-
+					$types['tickets']['available'] += $stock_level;
 					if ( ! $ticket->manage_stock() || -1 === $ticket->capacity ) {
 						$types['tickets']['unlimited'] ++;
-						$types['tickets']['available'] ++;
 					}
-				} else {
-					$types['rsvp']['count'] ++;
-
-					$types['rsvp']['stock'] += $ticket->stock;
-
-					if ( 0 !== $types['rsvp']['stock'] ) {
-						$types['rsvp']['available'] ++;
-					}
-
-					if ( ! $ticket->manage_stock() ) {
-						$types['rsvp']['unlimited'] ++;
-						$types['rsvp']['available'] ++;
-					}
+					continue;
 				}
+
+				// flag if we have any shared capacity tickets.
+				if ( Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $global_stock_mode ) {
+					$types['tickets']['global'] = 1;
+					continue;
+				}
+
+				$stock_level = Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $global_stock_mode ? $ticket->global_stock_cap() : $ticket->available();
+
+				// whether the stock level is negative because it represents unlimited stock (`-1`)
+				// or because it's oversold we normalize to `0` for the sake of displaying
+				$stock_level = max( 0, (int) $stock_level );
+
+				$types['tickets']['stock'] += $stock_level;
+
+				if ( 0 !== $types['tickets']['stock'] ) {
+					$types['tickets']['available'] ++;
+				}
+
+//				if ( ! $ticket->manage_stock() || -1 === $ticket->capacity ) {
+//					$types['tickets']['unlimited'] ++;
+//					$types['tickets']['available'] ++;
+//				}
 			}
 
 			$global_stock = new Tribe__Tickets__Global_Stock( $post_id );
@@ -2020,6 +2023,23 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			// If there's at least one ticket with shared capacity
 			if ( ! self::tickets_own_stock( $post_id ) ) {
 				$types['tickets']['stock'] += $global_stock;
+			}
+
+			return $types;
+		}
+
+		public static function process_rsvp_counts( $rsvp, $types ) {
+			$types['rsvp']['count'] ++;
+
+			$types['rsvp']['stock'] += $rsvp->stock;
+
+			if ( 0 !== $types['rsvp']['stock'] ) {
+				$types['rsvp']['available'] ++;
+			}
+
+			if ( ! $rsvp->manage_stock() ) {
+				$types['rsvp']['unlimited'] ++;
+				$types['rsvp']['available'] ++;
 			}
 
 			return $types;
