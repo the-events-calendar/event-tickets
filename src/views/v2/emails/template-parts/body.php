@@ -27,6 +27,6 @@ $this->template( 'template-parts/body/event/image' );
 
 $this->template( 'template-parts/body/tickets' );
 
-$this->template( 'template-parts/body/event/location' );
+$this->template( 'template-parts/body/event/venue' );
 
 $this->template( 'template-parts/body/event/links' );
