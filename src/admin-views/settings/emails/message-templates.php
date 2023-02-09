@@ -2,8 +2,8 @@
 /**
  * Tickets Emails Message Template List
  *
- * @since  TBD  List of email message templates for Emails settings tab.
- * 
+ * @since  5.5.6  List of email message templates for Emails settings tab.
+ *
  * @var Array[]  $templates  Array of template info.
  */
 

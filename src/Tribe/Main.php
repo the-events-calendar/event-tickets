@@ -8,7 +8,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '5.5.5';
+	const VERSION = '5.5.6';
 
 	/**
 	 * Used to store the version history.
@@ -918,6 +918,8 @@ class Tribe__Tickets__Main {
 
 	/**
 	 * Returns the supported post types for tickets
+	 *
+	 * @return array<string>
 	 */
 	public function post_types() {
 		$options = (array) get_option( Tribe__Main::OPTIONNAME, [] );

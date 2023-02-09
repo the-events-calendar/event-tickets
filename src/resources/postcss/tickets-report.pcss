@@ -397,7 +397,25 @@ table.orders {
 	}
 }
 
-// Added some room to support the List or Table being visible on screen
-#TB_window iframe {
-	min-height: 434px !important;
+.tec-tc-report-page {
+	p.search-box {
+		display: flex;
+	}
+	select, input {
+		margin: 0 5px;
+	}
+  
+  // Added some room to support the List or Table being visible on screen
+	#TB_window iframe {
+		min-height: 434px !important;
+  }
+
+	@media screen and (max-width: 768px) {
+		p.search-box {
+			flex-direction: column;
+		}
+		select, input {
+			margin: 5px 0;
+		}
+	}
 }
