@@ -58,7 +58,7 @@ class EventStockTest extends \Codeception\TestCase\WPTestCase {
 			'stock'     => 100, // current stock of tickets available for sale
 			'global'    => 0, // numeric boolean if tickets share global stock
 			'unlimited' => 0, // numeric boolean if any ticket has unlimited stock
-			'available' => 1,
+			'available' => 100,
 		];
 
 		$counts = \Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
@@ -88,7 +88,7 @@ class EventStockTest extends \Codeception\TestCase\WPTestCase {
 			'stock'     => 200, // current stock of tickets available for sale
 			'global'    => 0, // numeric boolean if tickets share global stock
 			'unlimited' => 0, // numeric boolean if any ticket has unlimited stock
-			'available' => 2,
+			'available' => 200,
 		];
 
 		$counts = \Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
@@ -119,7 +119,7 @@ class EventStockTest extends \Codeception\TestCase\WPTestCase {
 			'stock'     => 95, // current stock of tickets available for sale
 			'global'    => 0, // numeric boolean if tickets share global stock
 			'unlimited' => 0, // numeric boolean if any ticket has unlimited stock
-			'available' => 1,
+			'available' => 95,
 		];
 
 		$data = \Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
@@ -155,7 +155,7 @@ class EventStockTest extends \Codeception\TestCase\WPTestCase {
 			'stock'     => 185, // current stock of tickets available for sale
 			'global'    => 0, // numeric boolean if tickets share global stock
 			'unlimited' => 0, // numeric boolean if any ticket has unlimited stock
-			'available' => 2,
+			'available' => 185,
 		];
 
 		$data = \Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
