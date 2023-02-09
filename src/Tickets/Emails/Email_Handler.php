@@ -59,8 +59,6 @@ class Email_Handler extends tad_DI52_ServiceProvider {
 			// Spawn the new instance.
 			$email = new $email_class;
 
-			var_dump( $email );
-
 			// Register as a singleton for internal ease of use.
 			$this->container->singleton( $email_class, $email );
 
