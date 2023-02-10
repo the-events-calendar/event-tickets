@@ -287,9 +287,11 @@ class EventStockTest extends \Codeception\TestCase\WPTestCase {
 
 		$data = \Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
 
-		codecept_debug( $data );
-
 		// Make sure that we have the proper initial data.
 		$this->assertEqualSets( $expected, $data );
 	}
+
+	// @todo add tests for unlimited capacity
+	// @todo add tests for only rsvp
+	// @todo add tests for rsvp and shared capacity
 }
