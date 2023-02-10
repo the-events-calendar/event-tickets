@@ -1968,18 +1968,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 				$global_stock_mode = $ticket->global_stock_mode();
 
-//				if (
-//					$global_stock_mode === Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE
-//					&& 0 === $types['tickets']['global']
-//				) {
-//					$types['tickets']['global'] ++;
-//				} elseif (
-//					$global_stock_mode === Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE
-//					&& 1 === $types['tickets']['global']
-//				) {
-//					continue;
-//				}
-
 				// for individual tickets.
 				if ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $global_stock_mode ) {
 					$stock_level = $ticket->available();
@@ -2008,11 +1996,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				if ( 0 !== $types['tickets']['stock'] ) {
 					$types['tickets']['available'] ++;
 				}
-
-//				if ( ! $ticket->manage_stock() || -1 === $ticket->capacity ) {
-//					$types['tickets']['unlimited'] ++;
-//					$types['tickets']['available'] ++;
-//				}
 			}
 
 			$global_stock = new Tribe__Tickets__Global_Stock( $post_id );
