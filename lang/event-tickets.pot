@@ -2,24 +2,25 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Event Tickets 5.5.6\n"
+"Project-Id-Version: Event Tickets 5.5.7\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/event-tickets\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2023-01-11T05:14:12-08:00\n"
-"PO-Revision-Date: 2023-01-11 13:14\n"
+"POT-Creation-Date: 2023-02-06T07:23:40-08:00\n"
+"PO-Revision-Date: 2023-02-06 15:23\n"
 "X-Generator: WP-CLI 2.7.1\n"
 "X-Domain: event-tickets\n"
 
 #. Plugin Name of the plugin
 #: event-tickets.php:61
 #: src/admin-views/admin-welcome-message.php:73
-#: src/Tribe/Admin/Notices.php:92
+#: src/Tribe/Admin/Notices.php:95
 #: src/Tribe/Main.php:690
 #: src/Tribe/Privacy.php:59
+#: src/views/v2/emails/email-template/body/footer-credit.php:19
 msgid "Event Tickets"
 msgstr ""
 
@@ -64,7 +65,7 @@ msgstr ""
 #: src/admin-views/admin-welcome-message.php:71
 #: src/admin-views/tribe-commerce-settings.php:4
 #: src/Tickets/Commerce/Payments_Tab.php:300
-#: src/Tribe/Admin/Notices.php:214
+#: src/Tribe/Admin/Notices.php:217
 #: src/Tribe/Main.php:665
 msgid "Event Tickets Plus"
 msgstr ""
@@ -138,7 +139,7 @@ msgid "Illustration of a thought lightbulb coming from a book"
 msgstr ""
 
 #: src/admin-views/admin-welcome-message.php:151
-#: src/Tickets/Emails/Emails_Tab.php:127
+#: src/Tickets/Emails/Emails_Tab.php:142
 msgid "Knowledgebase"
 msgstr ""
 
@@ -1004,7 +1005,7 @@ msgid "Enable \"Can't Go\" responses"
 msgstr ""
 
 #: src/admin-views/settings/featured/link.php:33
-#: src/Tickets/Commerce/Settings.php:415
+#: src/Tickets/Commerce/Settings.php:467
 msgid "Learn more about configuring payment options with Tickets Commerce"
 msgstr ""
 
@@ -1247,7 +1248,7 @@ msgid "You are now connected to Stripe! What's next?"
 msgstr ""
 
 #: src/admin-views/settings/tickets-commerce/stripe/modal/signup-complete/content.php:16
-#: src/Tickets/Commerce/Settings.php:285
+#: src/Tickets/Commerce/Settings.php:312
 msgid "Currency"
 msgstr ""
 
@@ -1406,7 +1407,7 @@ msgid "Enables PayPal Sandbox mode for testing."
 msgstr ""
 
 #: src/admin-views/tribe-commerce-settings.php:136
-#: src/Tickets/Commerce/Settings.php:289
+#: src/Tickets/Commerce/Settings.php:316
 msgid "Currency Code"
 msgstr ""
 
@@ -1415,7 +1416,7 @@ msgid "The currency that will be used for Tribe Commerce transactions."
 msgstr ""
 
 #: src/admin-views/tribe-commerce-settings.php:144
-#: src/Tickets/Commerce/Settings.php:255
+#: src/Tickets/Commerce/Settings.php:282
 msgid "Stock Handling"
 msgstr ""
 
@@ -1433,7 +1434,7 @@ msgid "Only decrease available %s stock if an order is confirmed as Completed by
 msgstr ""
 
 #: src/admin-views/tribe-commerce-settings.php:162
-#: src/Tickets/Commerce/Settings.php:327
+#: src/Tickets/Commerce/Settings.php:379
 msgid "Success page"
 msgstr ""
 
@@ -1442,7 +1443,7 @@ msgid "After a successful PayPal order users will be redirected to this page; us
 msgstr ""
 
 #: src/admin-views/tribe-commerce-settings.php:176
-#: src/Tickets/Commerce/Settings.php:346
+#: src/Tickets/Commerce/Settings.php:398
 msgid "Confirmation email sender address"
 msgstr ""
 
@@ -1452,32 +1453,32 @@ msgid "Email address PayPal %s customers will receive confirmation from. Leave e
 msgstr ""
 
 #: src/admin-views/tribe-commerce-settings.php:185
-#: src/Tickets/Commerce/Settings.php:361
+#: src/Tickets/Commerce/Settings.php:413
 msgid "Confirmation email sender name"
 msgstr ""
 
 #. Translators: %s: The word "ticket" in lowercase.
 #: src/admin-views/tribe-commerce-settings.php:186
-#: src/Tickets/Commerce/Settings.php:365
+#: src/Tickets/Commerce/Settings.php:417
 msgctxt "tickets fields settings paypal email sender"
 msgid "Sender name of the confirmation email sent to customers when confirming a %s purchase."
 msgstr ""
 
 #: src/admin-views/tribe-commerce-settings.php:194
-#: src/Tickets/Commerce/Settings.php:376
+#: src/Tickets/Commerce/Settings.php:428
 msgid "Confirmation email subject"
 msgstr ""
 
 #. Translators: %s: The word "ticket" in lowercase.
 #: src/admin-views/tribe-commerce-settings.php:195
-#: src/Tickets/Commerce/Settings.php:380
+#: src/Tickets/Commerce/Settings.php:432
 msgctxt "tickets fields settings paypal email subject"
 msgid "Subject of the confirmation email sent to customers when confirming a %s purchase."
 msgstr ""
 
 #. Translators: %s: The word "tickets" in lowercase.
 #: src/admin-views/tribe-commerce-settings.php:197
-#: src/Tickets/Commerce/Settings.php:388
+#: src/Tickets/Commerce/Settings.php:440
 msgctxt "tickets fields settings paypal email subject"
 msgid "You have %s!"
 msgstr ""
@@ -1772,12 +1773,12 @@ msgid "Getting started"
 msgstr ""
 
 #. Translators: %s: Link to "Event Tickets Plus" plugin.
-#: src/Tickets/Admin/Upsell.php:43
+#: src/Tickets/Admin/Upsell.php:44
 msgid "Get individual information collection from each attendee and advanced capacity options with %s"
 msgstr ""
 
 #. Translators: %s: Link to "Event Tickets Plus" plugin.
-#: src/Tickets/Admin/Upsell.php:74
+#: src/Tickets/Admin/Upsell.php:76
 msgid "Manually add attendees with %s"
 msgstr ""
 
@@ -6519,7 +6520,7 @@ msgid "Stripe Settings"
 msgstr ""
 
 #: src/Tickets/Commerce/Gateways/Stripe/Settings.php:252
-#: src/Tickets/Commerce/Settings.php:244
+#: src/Tickets/Commerce/Settings.php:271
 #: src/Tribe/Admin/Settings.php:235
 msgid "General"
 msgstr ""
@@ -6852,92 +6853,116 @@ msgctxt "Browser title"
 msgid "%s - Tickets Commerce Orders"
 msgstr ""
 
-#: src/Tickets/Commerce/Settings.php:192
+#: src/Tickets/Commerce/Settings.php:219
 msgid "Tickets Commerce Test Mode Active"
 msgstr ""
 
-#: src/Tickets/Commerce/Settings.php:232
+#: src/Tickets/Commerce/Settings.php:259
 msgid "-- No page set --"
 msgstr ""
 
-#: src/Tickets/Commerce/Settings.php:248
+#: src/Tickets/Commerce/Settings.php:275
 msgid "Enable Test Mode"
 msgstr ""
 
-#: src/Tickets/Commerce/Settings.php:249
+#: src/Tickets/Commerce/Settings.php:276
 msgid "Enables Test mode for testing payments. Any payments made will be done on \"sandbox\" accounts."
 msgstr ""
 
 #. Translators: %s: The word "ticket" in lowercase.
-#: src/Tickets/Commerce/Settings.php:259
+#: src/Tickets/Commerce/Settings.php:286
 msgctxt "tickets fields settings paypal stock handling"
 msgid "When a customer purchases a %s, the payment gateway might flag the order as Pending. The order will be Complete once payment is confirmed by the payment gateway."
 msgstr ""
 
 #. Translators: %1$s: The word "ticket" in lowercase. %2$s: `<strong>` opening tag. %3$s: `</strong>` closing tag.
-#: src/Tickets/Commerce/Settings.php:268
+#: src/Tickets/Commerce/Settings.php:295
 msgid "Decrease available %1$s stock and send the %1$s to the customer as soon as a %2$sPending%3$s order is created."
 msgstr ""
 
 #. Translators: %1$s: The word "ticket" in lowercase. %2$s: `<strong>` opening tag. %3$s: `</strong>` closing tag.
-#: src/Tickets/Commerce/Settings.php:275
+#: src/Tickets/Commerce/Settings.php:302
 msgid "Only decrease available %1$s stock and send the %1$s to the customer if an order is confirmed as %2$sCompleted%3$s by the payment gateway."
 msgstr ""
 
-#: src/Tickets/Commerce/Settings.php:290
+#: src/Tickets/Commerce/Settings.php:317
 msgid "The currency that will be used for Tickets Commerce transactions."
 msgstr ""
 
-#: src/Tickets/Commerce/Settings.php:297
+#: src/Tickets/Commerce/Settings.php:325
+msgid "Decimal Separator"
+msgstr ""
+
+#: src/Tickets/Commerce/Settings.php:326
+msgid "This sets the decimal separator of displayed prices."
+msgstr ""
+
+#: src/Tickets/Commerce/Settings.php:333
+msgid "Thousands Separator"
+msgstr ""
+
+#: src/Tickets/Commerce/Settings.php:334
+msgid "This sets the thousand separator of displayed prices"
+msgstr ""
+
+#: src/Tickets/Commerce/Settings.php:341
+msgid "Number of Decimals"
+msgstr ""
+
+#: src/Tickets/Commerce/Settings.php:342
+msgid "This sets the number of decimal points shown in displayed prices."
+msgstr ""
+
+#: src/Tickets/Commerce/Settings.php:349
 msgid "Currency Position"
 msgstr ""
 
-#: src/Tickets/Commerce/Settings.php:298
+#: src/Tickets/Commerce/Settings.php:350
 msgid "The position of the currency symbol as it relates to the ticket values."
 msgstr ""
 
-#: src/Tickets/Commerce/Settings.php:302
+#: src/Tickets/Commerce/Settings.php:354
 msgid "Before"
 msgstr ""
 
-#: src/Tickets/Commerce/Settings.php:303
+#: src/Tickets/Commerce/Settings.php:355
 msgid "After"
 msgstr ""
 
-#: src/Tickets/Commerce/Settings.php:308
+#: src/Tickets/Commerce/Settings.php:360
 msgid "Pages Configuration"
 msgstr ""
 
-#: src/Tickets/Commerce/Settings.php:312
+#: src/Tickets/Commerce/Settings.php:364
 msgid "Checkout page"
 msgstr ""
 
 #. Translators: %s: The [shortcode] for the success page.
-#: src/Tickets/Commerce/Settings.php:316
+#: src/Tickets/Commerce/Settings.php:368
 msgid "This is the page where customers go to complete their purchase. Use the %s shortcode to display the checkout experience in the page content."
 msgstr ""
 
 #. Translators: %s: The [shortcode] for the success page.
-#: src/Tickets/Commerce/Settings.php:331
+#: src/Tickets/Commerce/Settings.php:383
 msgid "After a successful order, users will be redirected to this page. Use the %s shortcode to display the order confirmation to the user in the page content."
 msgstr ""
 
-#: src/Tickets/Commerce/Settings.php:342
+#: src/Tickets/Commerce/Settings.php:394
 #: src/Tickets/Emails/Emails_Tab.php:54
 msgid "Emails"
 msgstr ""
 
 #. Translators: %s: The word "tickets" in lowercase.
-#: src/Tickets/Commerce/Settings.php:350
+#: src/Tickets/Commerce/Settings.php:402
 msgctxt "tickets fields settings confirmation email"
 msgid "Email address that %s customers will receive confirmation from. Leave empty to use the default WordPress site email address."
 msgstr ""
 
-#: src/Tickets/Commerce/Settings.php:403
+#: src/Tickets/Commerce/Settings.php:455
 msgid "Payment Gateways"
 msgstr ""
 
-#: src/Tickets/Commerce/Settings.php:404
+#: src/Tickets/Commerce/Settings.php:456
 msgid "Set up a payment gateway to get started with Tickets Commerce. Enable multiple gateways for providing users additional options for users when purchasing tickets."
 msgstr ""
 
@@ -7036,571 +7061,575 @@ msgstr ""
 msgid "unavailable"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:333
+#: src/Tickets/Commerce/Utils/Currency.php:384
 #: src/Tribe/Commerce/Currency.php:197
 msgid "Australian Dollar (AUD)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:341
+#: src/Tickets/Commerce/Utils/Currency.php:392
 #: src/Tribe/Commerce/Currency.php:203
 msgid "Brazilian Real  (BRL)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:349
+#: src/Tickets/Commerce/Utils/Currency.php:400
 #: src/Tribe/Commerce/Currency.php:209
 msgid "Canadian Dollar (CAD)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:357
+#: src/Tickets/Commerce/Utils/Currency.php:408
 #: src/Tribe/Commerce/Currency.php:215
 msgid "Swiss Franc (CHF)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:365
+#: src/Tickets/Commerce/Utils/Currency.php:416
 #: src/Tribe/Commerce/Currency.php:221
 msgid "Czech Koruna (CZK)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:374
+#: src/Tickets/Commerce/Utils/Currency.php:425
 #: src/Tribe/Commerce/Currency.php:228
 msgid "Danish Krone (DKK)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:382
+#: src/Tickets/Commerce/Utils/Currency.php:433
 #: src/Tribe/Commerce/Currency.php:234
 msgid "Euro (EUR)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:390
+#: src/Tickets/Commerce/Utils/Currency.php:441
 #: src/Tribe/Commerce/Currency.php:240
 msgid "Pound Sterling (GBP)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:398
+#: src/Tickets/Commerce/Utils/Currency.php:449
 #: src/Tribe/Commerce/Currency.php:246
 msgid "Hong Kong Dollar (HKD)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:406
+#: src/Tickets/Commerce/Utils/Currency.php:457
 #: src/Tribe/Commerce/Currency.php:252
 msgid "Hungarian Forint (HUF)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:414
+#: src/Tickets/Commerce/Utils/Currency.php:465
 #: src/Tribe/Commerce/Currency.php:258
 msgid "Israeli New Sheqel (ILS)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:422
+#: src/Tickets/Commerce/Utils/Currency.php:473
 #: src/Tribe/Commerce/Currency.php:264
 msgid "Indian Rupee (INR)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:430
+#: src/Tickets/Commerce/Utils/Currency.php:481
 #: src/Tribe/Commerce/Currency.php:270
 msgid "Japanese Yen (JPY)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:438
+#: src/Tickets/Commerce/Utils/Currency.php:489
 #: src/Tribe/Commerce/Currency.php:276
 msgid "Malaysian Ringgit (MYR)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:446
+#: src/Tickets/Commerce/Utils/Currency.php:497
 #: src/Tribe/Commerce/Currency.php:282
 msgid "Mexican Peso (MXN)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:454
+#: src/Tickets/Commerce/Utils/Currency.php:505
 #: src/Tribe/Commerce/Currency.php:288
 msgid "Norwegian Krone (NOK)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:462
+#: src/Tickets/Commerce/Utils/Currency.php:513
 #: src/Tribe/Commerce/Currency.php:294
 msgid "New Zealand Dollar (NZD)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:470
+#: src/Tickets/Commerce/Utils/Currency.php:521
 #: src/Tribe/Commerce/Currency.php:300
 msgid "Philippine Peso (PHP)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:478
+#: src/Tickets/Commerce/Utils/Currency.php:529
 #: src/Tribe/Commerce/Currency.php:306
 msgid "Polish Zloty (PLN)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:486
+#: src/Tickets/Commerce/Utils/Currency.php:537
 #: src/Tribe/Commerce/Currency.php:312
 msgid "Russian Ruble (RUB)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:494
+#: src/Tickets/Commerce/Utils/Currency.php:545
 #: src/Tribe/Commerce/Currency.php:318
 msgid "Swedish Krona (SEK)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:502
+#: src/Tickets/Commerce/Utils/Currency.php:553
 #: src/Tribe/Commerce/Currency.php:324
 msgid "Singapore Dollar (SGD)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:510
+#: src/Tickets/Commerce/Utils/Currency.php:561
 #: src/Tribe/Commerce/Currency.php:342
 msgid "U.S. Dollar (USD)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:518
+#: src/Tickets/Commerce/Utils/Currency.php:569
 msgid "South African Rand (ZAR)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:526
+#: src/Tickets/Commerce/Utils/Currency.php:577
 msgid "United Arab Emirates dirham (AED)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:534
+#: src/Tickets/Commerce/Utils/Currency.php:585
 msgid "Afghan afghani (AFN)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:542
+#: src/Tickets/Commerce/Utils/Currency.php:593
 msgid "Albanian lek (ALL)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:550
+#: src/Tickets/Commerce/Utils/Currency.php:601
 msgid "Armenian dram (AMD)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:558
+#: src/Tickets/Commerce/Utils/Currency.php:609
 msgid "Netherlands Antillean guilder (ANG)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:566
+#: src/Tickets/Commerce/Utils/Currency.php:617
 msgid "Angolan kwanza (AOA)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:574
+#: src/Tickets/Commerce/Utils/Currency.php:625
 msgid "Argentine peso (ARS)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:582
+#: src/Tickets/Commerce/Utils/Currency.php:633
 msgid "Aruban florin (AWG)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:590
+#: src/Tickets/Commerce/Utils/Currency.php:641
 msgid "Azerbaijani manat (AZN)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:598
+#: src/Tickets/Commerce/Utils/Currency.php:649
 msgid "Bosnia and Herzegovina convertible mark (BAM)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:606
+#: src/Tickets/Commerce/Utils/Currency.php:657
 msgid "Brunei dollar (BND)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:614
+#: src/Tickets/Commerce/Utils/Currency.php:665
 msgid "Belize dollar (BZD)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:622
+#: src/Tickets/Commerce/Utils/Currency.php:673
 msgid "Lebanese pound (LBP)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:630
+#: src/Tickets/Commerce/Utils/Currency.php:681
 msgid "Sri Lankan rupee (LKR)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:638
+#: src/Tickets/Commerce/Utils/Currency.php:689
 msgid "Liberian dollar (LRD)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:646
+#: src/Tickets/Commerce/Utils/Currency.php:697
 msgid "Lesotho loti (LSL)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:654
+#: src/Tickets/Commerce/Utils/Currency.php:705
 msgid "Moroccan dirham (MAD)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:662
+#: src/Tickets/Commerce/Utils/Currency.php:713
 msgid "Moldovan leu (MDL)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:670
+#: src/Tickets/Commerce/Utils/Currency.php:721
 msgid "Malagasy ariary (MGA)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:678
+#: src/Tickets/Commerce/Utils/Currency.php:729
 msgid "Macedonian denar (MKD)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:686
+#: src/Tickets/Commerce/Utils/Currency.php:737
 msgid "Burmese kyat (MMK)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:694
+#: src/Tickets/Commerce/Utils/Currency.php:745
 msgid "Mongolian tögrög (MNT)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:702
+#: src/Tickets/Commerce/Utils/Currency.php:753
 msgid "Macanese pataca (MOP)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:710
+#: src/Tickets/Commerce/Utils/Currency.php:761
 msgid "Mauritian rupee (MUR)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:718
+#: src/Tickets/Commerce/Utils/Currency.php:769
 msgid "Maldivian rufiyaa (MVR)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:726
+#: src/Tickets/Commerce/Utils/Currency.php:777
 msgid "Malawian kwacha (MWK)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:734
+#: src/Tickets/Commerce/Utils/Currency.php:785
 msgid "Mexican peso (MXN)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:742
+#: src/Tickets/Commerce/Utils/Currency.php:793
 msgid "Malaysian ringgit (MYR)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:750
+#: src/Tickets/Commerce/Utils/Currency.php:801
 msgid "Mozambican metical (MZN)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:758
+#: src/Tickets/Commerce/Utils/Currency.php:809
 msgid "Namibian dollar (NAD)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:766
+#: src/Tickets/Commerce/Utils/Currency.php:817
 msgid "Nigerian naira (NGN)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:774
+#: src/Tickets/Commerce/Utils/Currency.php:825
 msgid "Nicaraguan córdoba (NIO)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:782
+#: src/Tickets/Commerce/Utils/Currency.php:833
 msgid "Nepalese rupee (NPR)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:790
+#: src/Tickets/Commerce/Utils/Currency.php:841
 msgid "Panamanian balboa (PAB)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:798
+#: src/Tickets/Commerce/Utils/Currency.php:849
 msgid "Peruvian sol (PEN)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:806
+#: src/Tickets/Commerce/Utils/Currency.php:857
 msgid "Papua New Guinean kina (PGK)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:814
+#: src/Tickets/Commerce/Utils/Currency.php:865
 msgid "Philippine peso (PHP)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:822
+#: src/Tickets/Commerce/Utils/Currency.php:873
 msgid "Pakistani rupee (PKR)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:830
+#: src/Tickets/Commerce/Utils/Currency.php:881
 msgid "Paraguayan guaraní (PYG)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:838
+#: src/Tickets/Commerce/Utils/Currency.php:889
 msgid "Qatari riyal (QAR)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:846
+#: src/Tickets/Commerce/Utils/Currency.php:897
 msgid "Romanian leu (RON)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:854
+#: src/Tickets/Commerce/Utils/Currency.php:905
 msgid "Serbian dinar (RSD)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:862
+#: src/Tickets/Commerce/Utils/Currency.php:913
 msgid "Rwandan franc (RWF)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:870
+#: src/Tickets/Commerce/Utils/Currency.php:921
 msgid "Saudi riyal (SAR)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:878
+#: src/Tickets/Commerce/Utils/Currency.php:929
 msgid "Solomon Islands dollar (SBD)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:886
+#: src/Tickets/Commerce/Utils/Currency.php:937
 msgid "Seychellois rupee (SCR)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:894
+#: src/Tickets/Commerce/Utils/Currency.php:945
 msgid "Barbadian dollar (BBD)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:902
+#: src/Tickets/Commerce/Utils/Currency.php:953
 msgid "Bangladeshi taka (BDT)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:910
+#: src/Tickets/Commerce/Utils/Currency.php:961
 msgid "Bulgarian lev (BGN)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:918
+#: src/Tickets/Commerce/Utils/Currency.php:969
 msgid "Burundian franc (BIF)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:926
+#: src/Tickets/Commerce/Utils/Currency.php:977
 msgid "Bermudian dollar (BMD)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:934
+#: src/Tickets/Commerce/Utils/Currency.php:985
 msgid "Bolivian boliviano (BOB)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:942
+#: src/Tickets/Commerce/Utils/Currency.php:993
 msgid "Bahamian dollar (BSD)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:950
+#: src/Tickets/Commerce/Utils/Currency.php:1001
 msgid "Botswana pula (BWP)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:958
+#: src/Tickets/Commerce/Utils/Currency.php:1009
 msgid "Belarusian ruble (BYN)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:966
+#: src/Tickets/Commerce/Utils/Currency.php:1017
 msgid "Congolese franc (CDF)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:974
+#: src/Tickets/Commerce/Utils/Currency.php:1025
 msgid "Chilean peso (CLP)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:982
+#: src/Tickets/Commerce/Utils/Currency.php:1033
 msgid "Chinese yuan (CNY)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:990
+#: src/Tickets/Commerce/Utils/Currency.php:1041
 msgid "Colombian peso (COP)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:998
+#: src/Tickets/Commerce/Utils/Currency.php:1049
 msgid "Costa Rican colón (CRC)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:1006
+#: src/Tickets/Commerce/Utils/Currency.php:1057
 msgid "Cape Verdean escudo (CVE)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:1014
+#: src/Tickets/Commerce/Utils/Currency.php:1065
 msgid "Djiboutian franc (DJF)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:1022
+#: src/Tickets/Commerce/Utils/Currency.php:1073
 msgid "Dominican peso (DOP)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:1030
+#: src/Tickets/Commerce/Utils/Currency.php:1081
 msgid "Algerian dinar (DZD)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:1038
+#: src/Tickets/Commerce/Utils/Currency.php:1089
 msgid "Egyptian pound (EGP)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:1046
+#: src/Tickets/Commerce/Utils/Currency.php:1097
 msgid "Ethiopian birr (ETB)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:1054
+#: src/Tickets/Commerce/Utils/Currency.php:1105
 msgid "Fijian dollar (FJD)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:1062
+#: src/Tickets/Commerce/Utils/Currency.php:1113
 msgid "Georgian lari (GEL)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:1070
+#: src/Tickets/Commerce/Utils/Currency.php:1121
 msgid "Gibraltar pound (GIP)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:1078
+#: src/Tickets/Commerce/Utils/Currency.php:1129
 msgid "Gambian dalasi (GMD)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:1086
+#: src/Tickets/Commerce/Utils/Currency.php:1137
 msgid "Guinean franc (GNF)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:1094
+#: src/Tickets/Commerce/Utils/Currency.php:1145
 msgid "Guatemalan quetzal (GTQ)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:1102
+#: src/Tickets/Commerce/Utils/Currency.php:1153
 msgid "Guyanese dollar (GYD)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:1110
+#: src/Tickets/Commerce/Utils/Currency.php:1161
 msgid "Honduran lempira (HNL)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:1118
-msgid "Croatian kuna (HRK)"
-msgstr ""
-
-#: src/Tickets/Commerce/Utils/Currency.php:1126
+#: src/Tickets/Commerce/Utils/Currency.php:1169
 msgid "Haitian gourde (HTG)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:1134
+#: src/Tickets/Commerce/Utils/Currency.php:1177
 msgid "Indonesian rupiah (IDR)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:1142
+#: src/Tickets/Commerce/Utils/Currency.php:1185
 msgid "Icelandic krona (ISK)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:1150
+#: src/Tickets/Commerce/Utils/Currency.php:1193
 msgid "Jamaican dollar (JMD)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:1158
+#: src/Tickets/Commerce/Utils/Currency.php:1201
 msgid "Kenyan shilling (KES)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:1166
+#: src/Tickets/Commerce/Utils/Currency.php:1209
 msgid "Kyrgyzstani som (KGS)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:1174
+#: src/Tickets/Commerce/Utils/Currency.php:1217
 msgid "Cambodian riel (KHR)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:1182
+#: src/Tickets/Commerce/Utils/Currency.php:1225
 msgid "Comorian franc (KMF)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:1190
+#: src/Tickets/Commerce/Utils/Currency.php:1233
 msgid "South Korean won (KRW)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:1198
+#: src/Tickets/Commerce/Utils/Currency.php:1241
 msgid "Cayman Islands dollar (KYD)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:1206
+#: src/Tickets/Commerce/Utils/Currency.php:1249
 msgid "Kazakhstani tenge (KZT)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:1214
+#: src/Tickets/Commerce/Utils/Currency.php:1257
 msgid "Lao kip (LAK)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:1222
+#: src/Tickets/Commerce/Utils/Currency.php:1265
 msgid "Saint Helena pound (SHP)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:1230
+#: src/Tickets/Commerce/Utils/Currency.php:1273
 msgid "Sierra Leonean leone (SLL)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:1238
+#: src/Tickets/Commerce/Utils/Currency.php:1281
 msgid "Somali shilling (SOS)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:1246
+#: src/Tickets/Commerce/Utils/Currency.php:1289
 msgid "Surinamese dollar (SRD)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:1254
+#: src/Tickets/Commerce/Utils/Currency.php:1297
 msgid "Swazi lilangeni (SZL)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:1262
+#: src/Tickets/Commerce/Utils/Currency.php:1305
 msgid "Thai baht (THB)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:1270
+#: src/Tickets/Commerce/Utils/Currency.php:1313
 msgid "Tajikistani somoni (TJS)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:1278
+#: src/Tickets/Commerce/Utils/Currency.php:1321
 msgid "Tongan paʻanga (TOP)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:1286
+#: src/Tickets/Commerce/Utils/Currency.php:1329
 msgid "Turkish lira (TRY)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:1294
+#: src/Tickets/Commerce/Utils/Currency.php:1337
 msgid "Trinidad and Tobago dollar (TTD)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:1302
+#: src/Tickets/Commerce/Utils/Currency.php:1345
 msgid "New Taiwan dollar (TWD)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:1310
+#: src/Tickets/Commerce/Utils/Currency.php:1353
 msgid "Tanzanian shilling (TZS)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:1318
+#: src/Tickets/Commerce/Utils/Currency.php:1361
 msgid "Ukrainian hryvnia (UAH)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:1326
+#: src/Tickets/Commerce/Utils/Currency.php:1369
 msgid "Ugandan shilling (UGX)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:1334
+#: src/Tickets/Commerce/Utils/Currency.php:1377
 msgid "Uruguayan peso (UYU)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:1342
+#: src/Tickets/Commerce/Utils/Currency.php:1385
 msgid "Uzbekistani som (UZS)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:1350
+#: src/Tickets/Commerce/Utils/Currency.php:1393
 msgid "Vietnamese dong (VND)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:1358
+#: src/Tickets/Commerce/Utils/Currency.php:1401
 msgid "Vanuatu vatu (VUV)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:1366
+#: src/Tickets/Commerce/Utils/Currency.php:1409
 msgid "Samoan tālā (WST)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:1374
+#: src/Tickets/Commerce/Utils/Currency.php:1417
 msgid "Central African CFA franc (XAF)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:1382
+#: src/Tickets/Commerce/Utils/Currency.php:1425
 msgid "East Caribbean dollar (XCD)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:1390
+#: src/Tickets/Commerce/Utils/Currency.php:1433
 msgid "West African CFA franc (XOF)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:1398
+#: src/Tickets/Commerce/Utils/Currency.php:1441
 msgid "CFP franc (XPF)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:1406
+#: src/Tickets/Commerce/Utils/Currency.php:1449
 msgid "Yemeni rial (YER)"
 msgstr ""
 
-#: src/Tickets/Commerce/Utils/Currency.php:1414
+#: src/Tickets/Commerce/Utils/Currency.php:1457
 msgid "Zambian kwacha (ZMW)"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:1522
+msgid "Tickets Commerce is now selling with Euro"
+msgstr ""
+
+#: src/Tickets/Commerce/Utils/Currency.php:1523
+msgid "From the 1st of January 2023, the euro became the official currency for Croatia. We have removed the Croatian Kuna from our currency settings and updated your settings to start selling with Euro."
 msgstr ""
 
 #: src/Tickets/Custom_Tables/V1/admin-views/migration/maintenance-mode/ticket-updates.php:6
@@ -7615,13 +7644,55 @@ msgstr ""
 msgid "Tickets and RSVPs have been disabled on this site while it is undergoing maintenance. Thank you for your patience."
 msgstr ""
 
-#: src/Tickets/Emails/Emails_Tab.php:123
+#: src/Tickets/Emails/Admin/Preview_Modal.php:82
+msgid "Email Preview"
+msgstr ""
+
+#: src/Tickets/Emails/Admin/Preview_Modal.php:139
+#: src/Tickets/Emails/Admin/Preview_Modal.php:148
+msgid "Preview Email"
+msgstr ""
+
+#: src/Tickets/Emails/Admin/Preview_Modal.php:143
+msgctxt "Preview email button on the settings"
+msgid "Preview Email"
+msgstr ""
+
+#: src/Tickets/Emails/Emails_Tab.php:138
 msgid "Tickets Emails"
 msgstr ""
 
 #. Translators: %s Link to knowledgebase article.
-#: src/Tickets/Emails/Emails_Tab.php:131
+#: src/Tickets/Emails/Emails_Tab.php:146
 msgid "Customize your customer communications when tickets are purchased, RSVPs are submitted, and for Tickets Commerce order notifications.  Learn More about Tickets Commerce communications in our %s."
+msgstr ""
+
+#: src/Tickets/Emails/Email_Template.php:179
+msgid "September 22 @ 7:00 pm - 11:00 pm"
+msgstr ""
+
+#: src/Tickets/Emails/Email_Template.php:180
+msgid "General Admission"
+msgstr ""
+
+#: src/Tickets/Emails/Email_Template.php:182
+msgid "Rebirth Brass Band"
+msgstr ""
+
+#: src/Tickets/Emails/Email_Template.php:185
+msgid "Saturn"
+msgstr ""
+
+#: src/Tickets/Emails/Email_Template.php:186
+msgid "200 41st Street South"
+msgstr ""
+
+#: src/Tickets/Emails/Email_Template.php:187
+msgid "Birmingham, AL, 35222"
+msgstr ""
+
+#: src/Tickets/Emails/Email_Template.php:188
+msgid "(987) 654-3210"
 msgstr ""
 
 #: src/Tickets/Emails/Settings.php:179
@@ -7682,14 +7753,6 @@ msgstr ""
 
 #: src/Tickets/Emails/Settings.php:309
 msgid "Add custom links and instructions to the bottom of your emails."
-msgstr ""
-
-#: src/Tickets/Emails/Settings.php:329
-msgid "Footer Credit"
-msgstr ""
-
-#: src/Tickets/Emails/Settings.php:330
-msgid "Include \"Ticket powered by Event Tickets\" in the footer"
 msgstr ""
 
 #: src/Tribe/Abstract_Attendance_Totals.php:67
@@ -7806,13 +7869,13 @@ msgstr ""
 msgid "%1$s type was moved to <a href=\"%2$s\" target=\"_blank\">%3$s</a> from <a href=\"%4$s\" target=\"_blank\">%5$s</a>"
 msgstr ""
 
-#: src/Tribe/Admin/Notices.php:88
+#: src/Tribe/Admin/Notices.php:91
 msgctxt "Admin notice link text"
 msgid "RSVP Display Settings"
 msgstr ""
 
 #. translators: %1$s: RSVP singular text, %2$s: Link to settings page.
-#: src/Tribe/Admin/Notices.php:97
+#: src/Tribe/Admin/Notices.php:100
 msgid ""
 "With this new version, we've introduced newly redesigned %1$s frontend views. If you have customized the %1$s section, this update will likely impact your customizations.\n"
 "\n"
@@ -7820,27 +7883,27 @@ msgid ""
 msgstr ""
 
 #. Translators: %1$s: dynamic "Tickets" text, %2$s: dynamic "Event" text.
-#: src/Tribe/Admin/Notices.php:152
+#: src/Tribe/Admin/Notices.php:155
 msgctxt "heading for classic editor notice if Events Calendar Pro event has tickets"
 msgid "%1$s for Recurring %2$s"
 msgstr ""
 
 #. Translators: %1$s: dynamic "event" text, %2$s: dynamic "ticket" text, %3$s: dynamic "tickets" text, %4$s: dynamic "RSVP" text, %5$s: dynamic "Ticket" text.
-#: src/Tribe/Admin/Notices.php:163
+#: src/Tribe/Admin/Notices.php:166
 msgctxt "text for classic editor notice if Events Calendar Pro event has tickets"
 msgid "Heads up! You saved a recurring %1$s with a %2$s. Please note that we do not currently support recurring %3$s. Only the first instance of this recurring series will have your %4$s or %5$s displayed."
 msgstr ""
 
-#: src/Tribe/Admin/Notices.php:218
+#: src/Tribe/Admin/Notices.php:221
 msgid "WooCommerce"
 msgstr ""
 
-#: src/Tribe/Admin/Notices.php:219
+#: src/Tribe/Admin/Notices.php:222
 msgid "Easy Digital Downloads"
 msgstr ""
 
 #. translators: %1$s: The ticket commerce provider (WooCommerce, etc); %2$s: The Event Tickets Plus plugin name and link.
-#: src/Tribe/Admin/Notices.php:229
+#: src/Tribe/Admin/Notices.php:232
 msgid "Event Tickets does not support ticket sales via third party ecommerce plugins. If you want to sell tickets with %1$s, please purchase a license for %2$s."
 msgstr ""
 
@@ -7976,7 +8039,7 @@ msgid "It looks like you have modified your shared capacity setting but have not
 msgstr ""
 
 #: src/Tribe/Assets.php:294
-#: src/Tribe/Metabox.php:646
+#: src/Tribe/Metabox.php:831
 msgid "Please enter in without thousand separators and currency symbols."
 msgstr ""
 
@@ -8358,12 +8421,12 @@ msgstr ""
 
 #: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:66
 #: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:252
-#: src/Tribe/Metabox.php:222
-#: src/Tribe/Metabox.php:283
-#: src/Tribe/Metabox.php:327
-#: src/Tribe/Metabox.php:384
-#: src/Tribe/Metabox.php:438
-#: src/Tribe/Metabox.php:476
+#: src/Tribe/Metabox.php:258
+#: src/Tribe/Metabox.php:368
+#: src/Tribe/Metabox.php:457
+#: src/Tribe/Metabox.php:556
+#: src/Tribe/Metabox.php:623
+#: src/Tribe/Metabox.php:661
 msgid "Commerce Module invalid"
 msgstr ""
 
@@ -8517,55 +8580,65 @@ msgstr ""
 msgid "Buy"
 msgstr ""
 
-#: src/Tribe/Metabox.php:114
+#: src/Tribe/Metabox.php:115
 msgid "Invalid Post ID"
 msgstr ""
 
-#: src/Tribe/Metabox.php:199
-#: src/Tribe/Metabox.php:267
-#: src/Tribe/Metabox.php:311
-#: src/Tribe/Metabox.php:358
+#: src/Tribe/Metabox.php:207
+#: src/Tribe/Metabox.php:326
+#: src/Tribe/Metabox.php:415
+#: src/Tribe/Metabox.php:506
 msgid "Invalid parent Post"
 msgstr ""
 
-#: src/Tribe/Metabox.php:209
-msgid "Failed to add the %s. Refresh the page to try again."
+#. Translators:  %1$s - singular ticket term.
+#: src/Tribe/Metabox.php:227
+msgid "Failed to add the %1$s. Refresh the page to try again."
 msgstr ""
 
-#: src/Tribe/Metabox.php:213
+#: src/Tribe/Metabox.php:241
 msgid "Commerce Provider invalid"
 msgstr ""
 
-#: src/Tribe/Metabox.php:239
-msgid "Failed to add the %s"
+#. Translators: %1$s - Singular ticket term.
+#: src/Tribe/Metabox.php:277
+msgid "Failed to add the %1$s"
+msgstr ""
+
+#. Translators: %1$s - singular ticket term.
+#. Translators: %1$s - singular ticket term
+#: src/Tribe/Metabox.php:341
+#: src/Tribe/Metabox.php:430
+msgid "Invalid %1$s"
+msgstr ""
+
+#. Translators: %1$s - singular ticket term.
+#: src/Tribe/Metabox.php:354
+msgid "Failed to edit the %1$s. Refresh the page to try again."
+msgstr ""
+
+#. Translators: %1$s - singular ticket term
+#: src/Tribe/Metabox.php:443
+msgid "Failed to delete the %1$s. Refresh the page to try again."
 msgstr ""
 
 #. Translators: %s: dynamic "ticket" text.
-#: src/Tribe/Metabox.php:273
-#: src/Tribe/Metabox.php:317
-#: src/Tribe/Metabox.php:366
+#: src/Tribe/Metabox.php:522
 msgid "Invalid %s"
 msgstr ""
 
-#: src/Tribe/Metabox.php:277
-msgid "Failed to edit the %s. Refresh the page to try again."
-msgstr ""
-
-#: src/Tribe/Metabox.php:321
-msgid "Failed to delete the %s. Refresh the page to try again."
-msgstr ""
-
 #. Translators: %s: dynamic "ticket" text.
-#: src/Tribe/Metabox.php:374
+#: src/Tribe/Metabox.php:538
 msgid "Failed to duplicate the %s. Refresh the page to try again."
 msgstr ""
 
-#: src/Tribe/Metabox.php:400
-msgid "Failed to duplicate the %s"
+#. Translators: %1$s - singular ticket term
+#: src/Tribe/Metabox.php:573
+msgid "Failed to duplicate the %1$s"
 msgstr ""
 
-#: src/Tribe/Metabox.php:430
-#: src/Tribe/Metabox.php:468
+#: src/Tribe/Metabox.php:615
+#: src/Tribe/Metabox.php:653
 msgid "The attendee ID is missing from the request parameters."
 msgstr ""
 
@@ -10238,6 +10311,44 @@ msgstr ""
 
 #: src/views/v2/commerce/order/header/title.php:28
 msgid "Order Received!"
+msgstr ""
+
+#: src/views/v2/emails/email-template/body/add-links.php:16
+msgid "Add event to iCal"
+msgstr ""
+
+#: src/views/v2/emails/email-template/body/add-links.php:21
+msgid "Add event to Google Calendar"
+msgstr ""
+
+#: src/views/v2/emails/email-template/body/event-location.php:20
+msgid "Event Location"
+msgstr ""
+
+#: src/views/v2/emails/email-template/body/event-location.php:40
+msgid "Get Directions"
+msgstr ""
+
+#. Translators: %s - HTML link to `Event Tickets` website.
+#: src/views/v2/emails/email-template/body/footer-credit.php:23
+msgid "Ticket powered by %s"
+msgstr ""
+
+#: src/views/v2/emails/email-template/body/greeting.php:11
+msgid "Here's your ticket!"
+msgstr ""
+
+#. Translators: %s - First name of email recipient.
+#: src/views/v2/emails/email-template/body/greeting.php:14
+msgid "Here's your ticket, %s!"
+msgstr ""
+
+#: src/views/v2/emails/email-template/body/top-link.php:14
+msgid "Having trouble viewing this email?"
+msgstr ""
+
+#: src/views/v2/emails/email-template/body/top-link.php:15
+msgid "Click here"
 msgstr ""
 
 #: src/views/v2/rsvp/actions/full.php:22
