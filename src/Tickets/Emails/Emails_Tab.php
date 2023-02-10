@@ -105,6 +105,21 @@ class Emails_Tab {
 	}
 
 	/**
+	 * Determine if is on "tab".
+	 *
+	 * @since 5.5.7
+	 *
+	 * @return boolean True when on `emails` tab.
+	 */
+	public function is_on_tab(): bool {
+		$admin_pages  = tribe( 'admin.pages' );
+		$current_page = $admin_pages->get_current_page();
+		$current_tab  = tribe_get_request_var( 'tab' );
+
+		return $admin_pages->is_tec_page( $current_page ) && self::$slug === $current_tab;
+	}
+
+	/**
 	 * Gets the top level settings for Tickets Commerce.
 	 *
 	 * @since 5.5.6

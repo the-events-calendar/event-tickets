@@ -1,5 +1,7 @@
 <?php
 
+use TEC\Tickets\Commerce\Utils\Currency;
+
 /**
  * Class Tribe__Tickets__Admin__Notices
  *
@@ -35,6 +37,7 @@ class Tribe__Tickets__Admin__Notices {
 		$this->maybe_display_rsvp_new_views_options_notice();
 		$this->maybe_display_classic_editor_ecp_recurring_tickets_notice();
 		$this->maybe_display_plus_commerce_notice();
+		$this->maybe_display_unsupported_currency_notice();
 	}
 
 	/**
@@ -236,5 +239,35 @@ class Tribe__Tickets__Admin__Notices {
 
 			tribe_notice( "event-tickets-plus-missing-{$provider}-support", $message, 'dismiss=1&type=warning' );
 		}
+	}
+
+	/**
+	 * Display notices for unsupported currencies.
+	 *
+	 * @since 5.5.7
+	 *
+	 * @return void
+	 */
+	public function maybe_display_unsupported_currency_notice() {
+		if ( Currency::is_current_currency_supported() ) {
+			return;
+		}
+
+		$message = sprintf(
+			'<h3>%1$s</h3><p>%2$s</p>',
+			esc_html( Currency::$unsupported_currency['heading'] ),
+			esc_html( Currency::$unsupported_currency['message'] )
+		);
+
+		$notice_symbol = Currency::$unsupported_currency['symbol'];
+
+		tribe_notice(
+			"event-tickets-unsupported-currencies-{$notice_symbol}",
+			$message,
+			[
+				'dismiss' => true,
+				'type'    => 'warning',
+			]
+		);
 	}
 }

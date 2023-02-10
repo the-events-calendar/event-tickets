@@ -26,11 +26,12 @@ class Upsell {
 	/**
 	 * Maybe show upsell for Capacity and ARF features.
 	 *
+	 * @since 5.5.7 - Added is_admin() to make sure upsells only display within the admin area.
 	 * @since 5.3.4
 	 */
 	public function maybe_show_capacity_arf() {
-		// If they already have ET+ activated, then bail.
-		if ( class_exists( 'Tribe__Tickets_Plus__Main' ) ) {
+		// If they already have ET+ activated or are not within the admin area, then bail.
+		if ( class_exists( 'Tribe__Tickets_Plus__Main' ) || ! is_admin() ) {
 			return;
 		}
 
@@ -56,11 +57,12 @@ class Upsell {
 	/**
 	 * Maybe show upsell for Manual Attendees.
 	 *
+	 * @since 5.5.7 - Added is_admin() to make sure upsells only display within the admin area.
 	 * @since 5.3.4
 	 */
 	public function maybe_show_manual_attendees() {
-		// If they already have ET+ activated, then bail.
-		if ( class_exists( 'Tribe__Tickets_Plus__Main' ) ) {
+		// If they already have ET+ activated or are not within the admin area, then bail.
+		if ( class_exists( 'Tribe__Tickets_Plus__Main' ) || ! is_admin() ) {
 			return;
 		}
 

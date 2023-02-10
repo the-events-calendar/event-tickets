@@ -81,13 +81,13 @@ class Settings {
 	public static $option_footer_content = 'tec-tickets-emails-footer-content';
 
 	/**
-	 * The option key for the email footer credit.
+	 * Variable to hold template object.
 	 *
-	 * @since 5.5.6
+	 * @since 5.5.7
 	 *
-	 * @var string
+	 * @var null|Tribe__Template
 	 */
-	public static $option_footer_credit = 'tec-tickets-emails-footer-credit';
+	private $template;
 
 	/**
 	 * Gets the template instance used to setup the rendering html.
@@ -299,17 +299,17 @@ class Settings {
 				'type'                => 'color',
 				'label'               => esc_html__( 'Ticket Color', 'event-tickets' ),
 				'size'                => 'medium',
-				'default'             => '#ffffff',
+				'default'             => '#007363',
 				'validation_callback' => 'is_string',
 				'validation_type'     => 'color',
 			],
 			static::$option_footer_content  => [
-				'type'                => 'wysiwyg',
-				'label'               => esc_html__( 'Footer Content', 'event-tickets' ),
-				'tooltip'             => esc_html__( 'Add custom links and instructions to the bottom of your emails.', 'event-tickets' ),
-				'default'             => '',
-				'validation_type'     => 'html',
-				'settings'            => [
+				'type'            => 'wysiwyg',
+				'label'           => esc_html__( 'Footer Content', 'event-tickets' ),
+				'tooltip'         => esc_html__( 'Add custom links and instructions to the bottom of your emails.', 'event-tickets' ),
+				'default'         => '',
+				'validation_type' => 'html',
+				'settings'        => [
 					'media_buttons' => false,
 					'quicktags'     => false,
 					'editor_height' => 200,
@@ -322,14 +322,7 @@ class Settings {
 						'aligncenter',
 						'alignright',
 					],
-				]
-			],
-			static::$option_footer_credit => [
-				'type'            => 'checkbox_bool',
-				'label'           => esc_html__( 'Footer Credit', 'event-tickets' ),
-				'tooltip'         => esc_html__( 'Include "Ticket powered by Event Tickets" in the footer', 'event-tickets' ),
-				'default'         => true,
-				'validation_type' => 'boolean',
+				],
 			],
 		];
 
