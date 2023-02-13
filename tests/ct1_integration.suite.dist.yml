@@ -13,7 +13,7 @@ modules:
         dbPassword: "%WP_TEST_DB_PASSWORD%"
         tablePrefix: test_
         domain: "%WP_DOMAIN%"
-        adminEmail: admin@%WP_DOMAIN%
+        adminEmail: admin@tribe.localhost
         title: 'Event Tickets Tests'
         plugins:
           - the-events-calendar/the-events-calendar.php
