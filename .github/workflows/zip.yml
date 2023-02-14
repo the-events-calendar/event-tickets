@@ -118,7 +118,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-composer-
       # ------------------------------------------------------------------------------
-      # Downgrade composer
+      # Ensure composer permissions
       # ------------------------------------------------------------------------------
       - name: Set composer folder permissions
         run: |
