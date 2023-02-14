@@ -25,7 +25,25 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	 *
 	 * @var string
 	 */
-	public $id = 'ticket';
+	public $id = 'tec_tickets_emails_ticket';
+
+	/**
+	 * Email template.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public $template = 'ticket';
+
+	/**
+	 * Hook method.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function hook() {}
 
 	/**
 	 * Check if the email is enabled.
@@ -37,6 +55,29 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	public function is_enabled(): bool {
 		// @todo: This value should come from the settings.
 		return true;
+	}
+
+	/**
+	 * Checks if this email is customer focussed.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function is_customer_email(): bool {
+		return true;
+	}
+
+	/**
+	 * Get email title.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The email subject.
+	 */
+	public function get_title(): string {
+		// @todo @codingmusician: apply filters?
+		return esc_html__( 'Ticket Email', 'event-tickets' );
 	}
 
 	/**
@@ -60,13 +101,13 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 		 * @param string $subject  The email subject.
 		 * @param string $id       The ticket id.
 		 */
-		$subject = apply_filters( 'tec_tickets_emails_subject_' . $this->id, $subject, $this->if );
+		$subject = apply_filters( 'tec_tickets_emails_subject_' . $this->id, $subject, $this->id, $this->template );
 
 		return $subject;
 	}
 
 	/**
-	 * Get content.
+	 * Get email content.
 	 *
 	 * @since TBD
 	 *
@@ -78,9 +119,50 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 		// @todo: Parse args, etc.
 		$context = ! empty( $args['context'] ) ? $args['context'] : [];
 
+		// @todo: We need to grab the proper information that's going to be sent as context.
+
 		$email_template = tribe( Email_Template::class );
 		$email_template->set_preview( true );
 
-		return $email_template->get_html( $context, $this->id ); // @todo @juanfra @codingmusician: we may want to inverse these parameters.
+		// @todo @juanfra @codingmusician: we may want to inverse these parameters.
+		return $email_template->get_html( $context, $this->template );
+	}
+
+	/**
+	 * Get email settings.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function get_settings(): array {
+
+		$settings = [
+			[
+				'type' => 'html',
+				'html' => '<h3>' . esc_html__( 'Ticket Email Settings', 'event-tickets' ) . '</h3>',
+			],
+			// @todo @codingmusician: Include all the email settings here.
+		];
+
+		return $settings;
+	}
+
+	/**
+	 * Get the `post_type` data for this email.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function get_post_type_data(): array {
+		$data = [
+			'slug'      => $this->id,
+			'title'     => $this->get_title(),
+			'template'  => $this->template,
+			'recipient' => 'customer',
+		];
+
+		return $data;
 	}
 }

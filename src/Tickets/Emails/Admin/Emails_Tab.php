@@ -127,7 +127,6 @@ class Emails_Tab {
 	 * @return array[]
 	 */
 	public function get_fields(): array {
-
 		$fields = [];
 		$fields['tribe-form-content-start'] = [
 			'type' => 'html',

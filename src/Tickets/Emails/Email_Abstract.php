@@ -73,6 +73,31 @@ abstract class Email_Abstract {
 	abstract public function is_enabled();
 
 	/**
+	 * Handles the hooking of a given email to the correct actions in WP.
+	 *
+	 * @since TBD
+	 */
+	abstract public function hook();
+
+	/**
+	 * Get the post type data for the email.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	abstract public function get_post_type_data(): array;
+
+	/**
+	 * Get the settings for the email.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	abstract public function get_settings(): array;
+
+	/**
 	 * Get email headers.
 	 *
 	 * @since TBD

@@ -9,8 +9,6 @@
 
 namespace TEC\Tickets\Emails;
 
-use \tad_DI52_ServiceProvider;
-
 /**
  * Class Email_Handler.
  *
@@ -18,7 +16,7 @@ use \tad_DI52_ServiceProvider;
  *
  * @package TEC\Tickets\Emails
  */
-class Email_Handler extends tad_DI52_ServiceProvider {
+class Email_Handler extends \tad_DI52_ServiceProvider {
 
 	/**
 	 * Event Tickets Emails post type.
@@ -34,7 +32,7 @@ class Email_Handler extends tad_DI52_ServiceProvider {
 	 *
 	 * @since TBD
 	 *
-	 * @var Flag_Action_Interface[] // @todo @juanfra: update docblock.
+	 * @var Email_Abstract[]
 	 */
 	protected $emails = [];
 
@@ -82,13 +80,14 @@ class Email_Handler extends tad_DI52_ServiceProvider {
 	}
 
 	/**
-	 * Gets the emails registered.
+	 * Gets the registered emails.
 	 *
 	 * @since TBD
 	 *
 	 * @return Email_Abstract[]
 	 */
 	public function get_all() {
+		// @todo @codingmusician: Maybe filter these so that we can have more emails from outside the defaults with an extension for example?
 		return $this->emails;
 	}
 
@@ -124,15 +123,41 @@ class Email_Handler extends tad_DI52_ServiceProvider {
 	}
 
 	/**
-	 * Create system emails.
+	 * Populate the Tickets Emails post type with the system emails.
+	 *
+	 * @since TBD
 	 *
 	 * @return void
 	 */
-	public function create_emails() {
+	public function maybe_populate_tec_tickets_emails_post_type() {
+		// $emails = apply_filters( 'filter', $this->get_all() );
+		// iterate on emails, check if exists by slug and create if not.
 
-		// $emails = apply_filters();
 		// @todo @codingmusician: create posts for static::POSTTYPE.
 	}
 
+	/**
+	 * Add per email setting fields.
+	 *
+	 * @param array $fields
+	 *
+	 * @return array $fields
+	 */
+	public function add_settings_per_email( array $fields ): array {
+		if ( ! tribe( Admin\Emails_Tab::class )->is_on_tab() ) {
+			return $fields;
+		}
+
+		$emails = $this->get_all();
+
+		foreach ( $emails as $email ) {
+			// if ( ! tribe( Admin\Emails_Tab::class )->is_on_section ) { // @todo @codingmusician: We need to implement the section logic for emails tab.
+			//	continue;
+			// }
+			// $fields = array_merge( $fields, $email->get_settings() );
+		}
+
+		return $fields;
+	}
 
 }
