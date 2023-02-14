@@ -291,7 +291,43 @@ class EventStockTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertEqualSets( $expected, $data );
 	}
 
-	// @todo add tests for unlimited capacity
+	/**
+	 * @test Test attendance count with unlimited capacity tickets.
+	 */
+	public function test_attendance_count_with_unlimited_capacity() {
+
+		$maker = new Event();
+		$event_id = $maker->create();
+
+		$overrides = [
+			'tribe-ticket' => [
+				'mode'           => \Tribe__Tickets__Global_Stock::OWN_STOCK_MODE,
+				'capacity'       => -1,
+			],
+		];
+		$ticket_a_id   = $this->create_tc_ticket( $event_id, 10, $overrides );
+
+		$expected['rsvp'] = [
+			'count'     => 0,
+			'stock'     => 0,
+			'unlimited' => 0,
+			'available' => 0,
+		];
+
+		$expected['tickets'] = [
+			'count'     => 1, // count of ticket types currently for sale
+			'stock'     => -1, // current stock of tickets available for sale
+			'global'    => 0, // numeric boolean if tickets share global stock
+			'unlimited' => 1, // numeric boolean if any ticket has unlimited stock
+			'available' => -1,
+		];
+
+		$data = \Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
+
+		// Make sure that we have the proper initial data.
+		$this->assertEqualSets( $expected, $data );
+	}
+
 	// @todo add tests for only rsvp
 	// @todo add tests for rsvp and shared capacity
 }
