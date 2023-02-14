@@ -47,3 +47,36 @@ function tec_tickets_commerce_currency_symbol() {
 function tec_tickets_commerce_currency_position() {
 	return Currency::get_currency_symbol_position( tec_tickets_commerce_currency_code() );
 }
+
+/**
+ * Returns the Tickets Commerce currency decimal point separator.
+ *
+ * @since 5.5.7
+ *
+ * @return string String containing the Tickets Commerce currency decimal point separator.
+ */
+function tec_tickets_commerce_currency_decimal_separator() : string {
+	return Currency::get_currency_separator_decimal( tec_tickets_commerce_currency_code() );
+}
+
+/**
+ * Returns the Tickets Commerce currency thousands separator.
+ *
+ * @since 5.5.7
+ *
+ * @return string String containing the Tickets Commerce currency thousands separator.
+ */
+function tec_tickets_commerce_currency_thousands_separator() : string {
+	return Currency::get_currency_separator_thousands( tec_tickets_commerce_currency_code() );
+}
+
+/**
+ * Returns the Tickets Commerce currency number of decimals.
+ *
+ * @since 5.5.7
+ *
+ * @return int Number of decimals for the Tickets Commerce currency.
+ */
+function tec_tickets_commerce_currency_number_of_decimals() : int {
+	return Currency::get_currency_precision( tec_tickets_commerce_currency_code() );
+}

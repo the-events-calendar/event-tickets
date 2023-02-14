@@ -4,7 +4,7 @@ Contributors: theeventscalendar, brianjessee, camwynsp, aguseo, bordoni, borkweb
 Tags: tickets, registration, event registration, RSVP, ticket sales, attendee management
 Requires at least: 5.8.5
 Tested up to: 6.1.1
-Stable tag: 5.5.6
+Stable tag: 5.5.7
 Requires PHP: 7.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -189,6 +189,15 @@ We've got a [LoopedIn](https://evnt.is/ideas) page where we're actively watching
 Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on using, tweaking, and troubleshooting our plugins.
 
 == Changelog ==
+
+= [5.5.7] 2023-02-09 =
+
+* Enhancement - Added currency format options to alter currency decimal separator, thousand separator, and number of decimal places. [ET-1608]
+* Tweak - Updated Currency options in Tickets Commerce settings for Croatian users from Kuna (HRK) to Euro (EUR). [ET-1625]
+* Tweak - Updated Attendee Registration Fields upsell notice to only display in admin dashboard. [CT-67]
+* Fix - Resolve provisional IDs properly on the event edit screen for ticket management actions. [ET-1632]
+* Fix - Fixed Ticket Commerce cart cookies not getting saved. [ET-1629]
+* Language - 28 new strings added, 189 updated, 5 fuzzied, and 3 obsoleted
 
 = [5.5.6] 2023-01-16 =
 

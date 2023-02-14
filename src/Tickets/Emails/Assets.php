@@ -21,13 +21,39 @@ use \tad_DI52_ServiceProvider;
 class Assets extends tad_DI52_ServiceProvider {
 
 	/**
+	 * Key for this group of assets.
+	 *
+	 * @since 5.5.7
+	 *
+	 * @var string
+	 */
+	public static $group_key = 'tec-tickets-admin-emails';
+
+	/**
 	 * Binds and sets up implementations.
 	 *
 	 * @since 5.5.6
 	 */
 	public function register() {
 		/** @var Tribe__Tickets__Main $tickets_main */
-		$tickets_main = tribe( 'tickets.main' );
+		$plugin = tribe( 'tickets.main' );
 
+		tribe_asset(
+			$plugin,
+			static::$group_key . '-modal-scripts',
+			'admin/tickets-emails.js',
+			[
+				'jquery',
+				'tribe-common',
+				'tribe-tickets-loader',
+			],
+			null,
+			[
+				'groups' => [
+					static::$group_key,
+					'tribe-tickets-admin',
+				],
+			]
+		);
 	}
 }
