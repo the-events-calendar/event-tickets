@@ -2387,7 +2387,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				'provider'      => 'ticket',
 				'post_id'       => 0,
 				'order_id'      => '',
-				'send_callback' => 'wp_mail',
+				'send_callback' => stellarwp_pigeon_is_enabled() ? [ \StellarWP\Pigeon\Delivery\Envelope::class, 'dispatch'] : 'wp_mail',
 			];
 
 			// Set up the default arguments.
