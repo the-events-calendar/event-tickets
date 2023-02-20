@@ -276,6 +276,14 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			$label = '<a href="' . esc_url( $order_id_url ) . '">#' . esc_html( $item['order_id'] ) . ' &ndash; ' . $label . '</a>';
 		}
 
+		$classes = [
+			'tec-tickets__admin-table-attendees-order-status',
+			'tec-tickets__admin-table-attendees-order-status--' . sanitize_title_with_dashes( $item['order_status'] ),
+		];
+
+		$label = sprintf( '<div class="%1$s"><span>%2$s</span></div>', implode( ' ', $classes ), $label );
+
+
 		/**
 		 * Provides an opportunity to modify the order status text within
 		 * the attendees table.
