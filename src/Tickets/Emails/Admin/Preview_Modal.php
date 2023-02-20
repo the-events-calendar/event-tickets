@@ -3,7 +3,7 @@ namespace TEC\Tickets\Emails\Admin;
 
 use Tribe__Utils__Array as Arr;
 use TEC\Tickets\Emails\Assets as Assets;
-use TEC\Tickets\Emails\Emails_Tab as Emails_Tab;
+use TEC\Tickets\Emails\Admin\Emails_Tab as Emails_Tab;
 use TEC\Tickets\Emails\Email_Template as Email_Template;
 
 /**
@@ -11,14 +11,14 @@ use TEC\Tickets\Emails\Email_Template as Email_Template;
  *
  * @package TEC\Tickets\Emails
  *
- * @since TBD
+ * @since 5.5.7
  */
 class Preview_Modal {
 
 	/**
 	 * Modal ID.
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 *
 	 * @var string
 	 */
@@ -27,7 +27,7 @@ class Preview_Modal {
 	/**
 	 * Modal target.
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 *
 	 * @var string
 	 */
@@ -36,7 +36,7 @@ class Preview_Modal {
 	/**
 	 * Check if we should render the modal.
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 *
 	 * @return boolean Whether we should render the modal.
 	 */
@@ -47,7 +47,7 @@ class Preview_Modal {
 	/**
 	 * Render the `Emails` preview modal.
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 */
 	public function render_modal() {
 		if ( ! $this->should_render() ) {
@@ -66,7 +66,7 @@ class Preview_Modal {
 	/**
 	 * Get the default modal args.
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 *
 	 * @param array $args Override default args by sending them in the `$args`.
 	 *
@@ -94,7 +94,7 @@ class Preview_Modal {
 	/**
 	 * Get the default modal contents.
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 *
 	 * @param array $args Override default args by sending them in the `$args`.
 	 *
@@ -125,7 +125,7 @@ class Preview_Modal {
 	/**
 	 * Get the default modal button args.
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 *
 	 * @param array $args Override default args by sending them in the `$args`.
 	 *
@@ -160,7 +160,7 @@ class Preview_Modal {
 	/**
 	 * Get the default modal button.
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 *
 	 * @param array $args Override default args by sending them in the `$args`.
 	 *
@@ -178,7 +178,7 @@ class Preview_Modal {
 	 * Get the `Tickets Emails` preview modal content,
 	 * depending on the request.
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 *
 	 * @param string|\WP_Error $render_response The render response HTML content or WP_Error with list of errors.
 	 * @param array            $vars            The request variables.

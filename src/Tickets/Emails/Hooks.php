@@ -72,13 +72,13 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * @param string $admin_page Page ID of current admin page.
 	 */
 	public function register_emails_tab( $admin_page ) {
-		$this->container->make( Emails_Tab::class )->register_tab( $admin_page );
+		$this->container->make( Admin\Emails_Tab::class )->register_tab( $admin_page );
 	}
 
 	/**
 	 * Action to add the preview modal button to the settings page.
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 */
 	public function action_add_preview_modal_button() {
 		echo $this->container->make( Admin\Preview_modal::class )->get_modal_button();
@@ -87,7 +87,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Action to add the preview modal to the settings page.
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 */
 	public function action_add_preview_modal() {
 		echo $this->container->make( Admin\Preview_modal::class )->render_modal();
@@ -103,11 +103,11 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * @return array $tabs Filtered array of tabs ids.
 	 */
 	public function filter_add_tab_id( $tabs ) {
-		return $this->container->make( Emails_Tab::class )->settings_add_tab_id( $tabs );
+		return $this->container->make( Admin\Emails_Tab::class )->settings_add_tab_id( $tabs );
 	}
 
 	/**
-	 * Filter to add template list to Ticklets Emails settings fields.
+	 * Filter to add template list to Tickets Emails settings fields.
 	 *
 	 * @since 5.5.6
 	 *
@@ -116,11 +116,11 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * @return array $fields Filtered array of Tickets Emails settings fields.
 	 */
 	public function filter_add_template_list( $fields ) {
-		return $this->container->make( Settings::class )->add_template_list( $fields );
+		return $this->container->make( Admin\Settings::class )->add_template_list( $fields );
 	}
 
 	/**
-	 * Filter to add sender info to Ticklets Emails settings fields.
+	 * Filter to add sender info to Tickets Emails settings fields.
 	 *
 	 * @since 5.5.6
 	 *
@@ -129,11 +129,11 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * @return array $fields Filtered array of Tickets Emails settings fields.
 	 */
 	public function filter_add_sender_info_fields( $fields ) {
-		return $this->container->make( Settings::class )->sender_info_fields( $fields );
+		return $this->container->make( Admin\Settings::class )->sender_info_fields( $fields );
 	}
 
 	/**
-	 * Filter to add sender info to Ticklets Emails settings fields.
+	 * Filter to add sender info to Tickets Emails settings fields.
 	 *
 	 * @since 5.5.6
 	 *
@@ -142,13 +142,13 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * @return array $fields Filtered array of Tickets Emails settings fields.
 	 */
 	public function filter_add_email_styling_fields( $fields ) {
-		return $this->container->make( Settings::class )->email_styling_fields( $fields );
+		return $this->container->make( Admin\Settings::class )->email_styling_fields( $fields );
 	}
 
 	/**
 	 * Filter the preview modal content.
 	 *
-	 * @since TBD
+	 * @since 5.5.7
 	 *
 	 * @param string|\WP_Error $render_response The render response HTML content or WP_Error with list of errors.
 	 * @param array            $vars            The request variables.
