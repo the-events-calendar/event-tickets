@@ -1000,7 +1000,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			$args['order']   = tribe_get_request_var( 'order' );
 		}
 
-		$item_data = Tribe__Tickets__Tickets::get_event_attendees_by_args( $event_id, $args );
+		$item_data = Tribe__Tickets__Tickets::get_attendees_by_args( $args, $event_id );
 
 		$items = [];
 
