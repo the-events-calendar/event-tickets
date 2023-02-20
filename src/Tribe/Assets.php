@@ -229,7 +229,7 @@ class Tribe__Tickets__Assets {
 		$assets = [
 			[ 'event-tickets-admin-css', 'tickets-admin.css', [ 'tribe-validation-style', 'tribe-jquery-timepicker-css', 'tribe-common-admin' ] ],
 			[ 'event-tickets-admin-refresh-css', 'tickets-refresh.css', [ 'event-tickets-admin-css', 'tribe-common-admin' ] ],
-			[ 'event-tickets-admin-tables-css', 'tickets-tables.css', [  'tec-variables-full', 'event-tickets-admin-css' ] ],
+			[ 'event-tickets-admin-tables-css', 'tickets-tables.css', [ 'tec-variables-full', 'event-tickets-admin-css' ] ],
 			[ 'event-tickets-attendees-list-js', 'attendees-list.js', [ 'jquery' ] ],
 			[ 'event-tickets-admin-accordion-js', 'accordion.js', [] ],
 			[ 'event-tickets-admin-accordion-css', 'accordion.css', [] ],
@@ -347,6 +347,17 @@ class Tribe__Tickets__Assets {
 			[
 				'groups'       => 'event-tickets-admin-settings',
 				'conditionals' => [ $this, 'should_enqueue_admin_settings_assets' ],
+			]
+		);
+
+		tribe_asset(
+			$tickets_main,
+			'tribe-tickets-admin-attendees',
+			'tickets-admin-attendees.css',
+			[ 'tec-variables-full' ],
+			null,
+			[
+				'groups' => [ 'event-tickets-admin-attendees' ],
 			]
 		);
 
