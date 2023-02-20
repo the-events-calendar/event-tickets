@@ -204,7 +204,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 *
 	 * @return string
 	 */
-	public function column_primary_info( array $item ) {
+	public function column_primary_info( array $item ): string {
 		$name  = '';
 		$email = '';
 
@@ -222,8 +222,10 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 
 		$output = sprintf(
 			'
-				<div class="purchaser_name">%1$s</div>
-				<div class="purchaser_email">%2$s</div>
+				<div class="purchaser_name tec-tickets__admin-table-attendees-purchaser-name">%1$s</div>
+				<div class="purchaser_email tec-tickets__admin-table-attendees-purchaser-email">
+				' . $unique_id . '<a class="tec-tickets__admin-table-attendees-purchaser-email-link" href="mailto:%2$s">%2$s</a>
+				</div>
 			',
 			esc_html( $name ),
 			esc_html( $email )
