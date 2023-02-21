@@ -10,7 +10,7 @@
  */
 
 $attendees->attendees_table->prepare_items();
-$event        = $attendees->attendees_table->event;
+
 $form_classes = [
 	'topics-filter',
 	'event-tickets__attendees-admin-form',
@@ -24,13 +24,7 @@ $form_classes = [
 >
 	<input type="hidden" name="<?php echo esc_attr( is_admin() ? 'page' : 'tribe[page]' ); ?>" value="<?php echo esc_attr( tribe_get_request_var( 'page', '' ) ); ?>" />
 
-	<?php if ( ! empty( $event_id ) ) : ?>
-	<input type="hidden" name="<?php echo esc_attr( is_admin() ? 'event_id' : 'tribe[event_id]' ); ?>" id="event_id" value="<?php echo esc_attr( $event_id ); ?>" />
-	<?php endif; ?>
-
-	<?php if ( ! empty( $event ) ) : ?>
-	<input type="hidden" name="<?php echo esc_attr( is_admin() ? 'post_type' : 'tribe[post_type]' ); ?>" value="<?php echo esc_attr( $event->post_type ); ?>" />
-	<?php endif; ?>
+	<?php $this->template( 'attendees/attendees/table/form/fields' ); ?>
 
 	<?php $attendees->attendees_table->search_box( __( 'Search attendees', 'event-tickets' ), 'attendees-search' ); ?>
 	<?php $attendees->attendees_table->display(); ?>
