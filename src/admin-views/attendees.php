@@ -11,7 +11,8 @@ $wrapper_classes = [
 	'wrap',
 	'tribe-report-page',
 	'tec-tickets__admin-attendees',
-	'tec-tickets__admin-attendees--event' => ! empty( $event_id ),
+	'tec-tickets__admin-attendees--event'     => ! empty( $event_id ),
+	'tec-tickets__admin-attendees--front-end' => empty( is_admin() ),
 ];
 ?>
 <div <?php tribe_classes( $wrapper_classes ); ?>>
