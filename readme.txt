@@ -193,6 +193,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [TBD] TBD =
 
 * Tweak - Code maintenance for the attendees screen. [ET-1635]
+* Tweak - Save last check-in time for tickets scanned via the Event Tickets Plus APP. [ET-1640]
 
 = [5.5.7] 2023-02-09 =
 
