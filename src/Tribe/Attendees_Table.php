@@ -556,7 +556,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		/** @var Tribe__Tickets__Admin__Views $admin_views */
 		$admin_views = tribe( 'tickets.admin.views' );
 
-		$admin_views->template( 'attendees/table/check-in-button', $context );
+		$admin_views->template( 'attendees/attendees-table/check-in-button', $context );
 	}
 
 	/**
@@ -1113,7 +1113,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		/** @var Tribe__Tickets__Admin__Views $admin_views */
 		$admin_views = tribe( 'tickets.admin.views' );
 
-		$custom_search = $admin_views->template( 'attendees/table/search', $args, false );
+		$custom_search = $admin_views->template( 'attendees/attendees-table/search', $args, false );
 
 		// Add our search type dropdown before the search box input.
 		$search_box = str_replace( '<input type="search"', $custom_search . '<input type="search"', $search_box );

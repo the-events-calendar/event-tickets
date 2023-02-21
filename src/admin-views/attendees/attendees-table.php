@@ -24,7 +24,7 @@ $form_classes = [
 >
 	<input type="hidden" name="<?php echo esc_attr( is_admin() ? 'page' : 'tribe[page]' ); ?>" value="<?php echo esc_attr( tribe_get_request_var( 'page', '' ) ); ?>" />
 
-	<?php $this->template( 'attendees/attendees/table/form/fields' ); ?>
+	<?php $this->template( 'attendees/attendees-table/form/fields' ); ?>
 
 	<?php $attendees->attendees_table->search_box( __( 'Search attendees', 'event-tickets' ), 'attendees-search' ); ?>
 	<?php $attendees->attendees_table->display(); ?>

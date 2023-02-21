@@ -9,6 +9,6 @@
  * @var Tribe__Tickets__Attendees $attendees The Attendees object.
  */
 
-$this->template( 'attendees/table/form/fields/event-id' );
+$this->template( 'attendees/attendees-table/form/fields/event-id' );
 
-$this->template( 'attendees/table/form/fields/post-type' );
+$this->template( 'attendees/attendees-table/form/fields/post-type' );
