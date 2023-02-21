@@ -190,6 +190,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Tweak - Save last check-in time for tickets scanned via the Event Tickets Plus APP. [ET-1640]
+
 = [5.5.7] 2023-02-09 =
 
 * Enhancement - Added currency format options to alter currency decimal separator, thousand separator, and number of decimal places. [ET-1608]
