@@ -75,6 +75,15 @@ abstract class Email_Abstract {
 	protected $placeholders = [];
 
 	/**
+	 * Get email title.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	abstract public function get_title();
+
+	/**
 	 * Get email subject.
 	 *
 	 * @since TBD
