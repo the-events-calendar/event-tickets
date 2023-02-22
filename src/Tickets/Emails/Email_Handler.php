@@ -186,7 +186,7 @@ class Email_Handler extends \tad_DI52_ServiceProvider {
 		$emails = $this->get_all();
 
 		foreach ( $emails as $email ) {
-			// if ( ! tribe( Admin\Emails_Tab::class )->is_on_section ) { // @todo @codingmusician: We need to implement the section logic for emails tab.
+			// if ( ! tribe( Admin\Emails_Tab::class )->is_on_tab_section( $email->id ) ) { // @todo @codingmusician: We need to implement the section logic for emails tab.
 			//	continue;
 			// }
 			// $fields = array_merge( $fields, $email->get_settings() );

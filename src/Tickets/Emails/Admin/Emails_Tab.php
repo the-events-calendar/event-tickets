@@ -112,11 +112,24 @@ class Emails_Tab {
 	 * @return boolean True when on `emails` tab.
 	 */
 	public function is_on_tab(): bool {
-		$admin_pages  = tribe( 'admin.pages' );
-		$current_page = $admin_pages->get_current_page();
-		$current_tab  = tribe_get_request_var( 'tab' );
+		$settings = tribe( Plugin_Settings::class );
 
-		return $admin_pages->is_tec_page( $current_page ) && self::$slug === $current_tab;
+		return $settings->is_on_tab( self::$slug );
+	}
+
+	/**
+	 * Determine if is on a "section" of the "emails" tab.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $section The section.
+	 *
+	 * @return boolean True when on `emails` tab and on `section`
+	 */
+	public function is_on_section( $section = '' ): bool {
+		$settings = tribe( Plugin_Settings::class );
+
+		return $settings->is_on_tab_section( self::$slug, $section );
 	}
 
 	/**
