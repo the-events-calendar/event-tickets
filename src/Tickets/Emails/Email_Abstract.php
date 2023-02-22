@@ -265,7 +265,8 @@ abstract class Email_Abstract {
 		 *
 		 * @since TBD
 		 *
-		 * @param
+		 * @param string $string The formatted string.
+		 * @param string $id The email id.
 		 */
 		return apply_filters( 'tec_tickets_emails_format_string', str_replace( $find, $replace, $string ), $this->id );
 	}
