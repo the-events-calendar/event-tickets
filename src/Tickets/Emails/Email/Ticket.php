@@ -73,7 +73,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	 *
 	 * @since TBD
 	 *
-	 * @return string The email subject.
+	 * @return string The email title.
 	 */
 	public function get_title(): string {
 		// @todo @codingmusician: apply filters?
@@ -89,7 +89,9 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	 */
 	public function get_heading(): string {
 		// @todo @codingmusician: apply filters?
-		return '';
+		$heading = '';
+
+		return $this->format_string( $heading );
 	}
 
 	/**
@@ -125,6 +127,8 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	 */
 	public function get_subject(): string {
 		$subject = ''; // This comes from the option.
+
+		$subject = $this->format_string( $subject );
 
 		// @todo: Probably we want more data parsed, or maybe move the filters somewhere else as we're always gonna
 		// apply filters on the subject maybe move the filter to the parent::get_subject() ?

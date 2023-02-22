@@ -71,6 +71,15 @@ abstract class Email_Abstract {
 	abstract public function get_subject(): string;
 
 	/**
+	 * Get email title.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	abstract public function get_title(): string;
+
+	/**
 	 * Get email heading.
 	 *
 	 * @since TBD
@@ -129,7 +138,7 @@ abstract class Email_Abstract {
 	 *
 	 * @since TBD
 	 *
-	 * @param $args The arguments.
+	 * @param array $args The arguments.
 	 *
 	 * @return string
 	 */
@@ -144,7 +153,7 @@ abstract class Email_Abstract {
 	 *
 	 * @return string
 	 */
-	public function get_headers( $headers = [] ) {
+	public function get_headers( $headers = [] ): array {
 		$from_email = $this->get_from_email();
 		$from_name  = $this->get_from_name();
 
@@ -182,20 +191,9 @@ abstract class Email_Abstract {
 		 * @param array $headers The headers.
 		 * @param string $id The email ID.
 		 */
-		$headers = apply_filters( 'tec_tickets_emails_headers_' . $this->id, $headers, $this->id );
+		$headers = apply_filters( 'tec_tickets_emails_headers', $headers, $this->id );
 
 		return $headers;
-	}
-
-	/**
-	 * Default content to show below main email content.
-	 *
-	 * @since TBD
-	 *
-	 * @return string
-	 */
-	public function get_additional_content() {
-		return '';
 	}
 
 	/**
@@ -203,11 +201,11 @@ abstract class Email_Abstract {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $attachments
+	 * @param array $attachments The attachments.
 	 *
 	 * @return array
 	 */
-	public function get_attachments( $attachments = [] ) {
+	public function get_attachments( $attachments = [] ): array {
 
 		/**
 		 * Filter the attachments.
@@ -217,8 +215,51 @@ abstract class Email_Abstract {
 		 * @param array $attachments The attachments.
 		 * @param string $id The email ID.
 		 */
-		$attachments = apply_filters( 'tec_tickets_emails_attachments_' . $this->id, $attachments, $this->id );
+		$attachments = apply_filters( 'tec_tickets_emails_attachments', $attachments, $this->id );
 
 		return $attachments;
+	}
+
+	/**
+	 * Format email string.
+	 *
+	 * @param mixed $string Text to replace placeholders in.
+	 * @return string
+	 */
+	public function format_string( $string ): string {
+		$find    = array_keys( $this->placeholders );
+		$replace = array_values( $this->placeholders );
+
+		/**
+		 * Filter the formatted email string.
+		 *
+		 * @since TBD
+		 *
+		 * @param
+		 */
+		return apply_filters( 'tec_tickets_emails_format_string', str_replace( $find, $replace, $string ), $this->id );
+	}
+
+	/**
+	 * Get WordPress blog name.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_blogname(): string {
+		return wp_specialchars_decode( get_option( 'blogname' ), ENT_QUOTES );
+	}
+
+	/**
+	 * Default content to show below email content.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_additional_content(): string {
+		$additional_content = '';
+		return $this->format_string( $additional_content );
 	}
 }
