@@ -214,7 +214,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 			],
 			[
 				'type' => 'html',
-				'html' => '<p>' . esc_html__( 'Ticket purchasers will receive an email including their ticket and additional info upon completion of purchase. Customize the content of this specific email using the tools below. The brackets {event-name}, {event-date}, and {ticket-name} can be used to pull dynamic content from the ticket into your email. Learn more about customizing email templates in our Knowledgebase.' ) . '</p>',
+				'html' => '<p>' . esc_html__( 'Ticket purchasers will receive an email including their ticket and additional info upon completion of purchase. Customize the content of this specific email using the tools below. The brackets {event_name}, {event_date}, and {ticket_name} can be used to pull dynamic content from the ticket into your email. Learn more about customizing email templates in our Knowledgebase.' ) . '</p>',
 			],
 			static::$option_enabled => [
 				'type'                => 'checkbox_bool',
@@ -225,15 +225,15 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 			static::$option_subject => [
 				'type'                => 'text',
 				'label'               => esc_html__( 'Email subject', 'event-tickets' ),
-				'default'             => esc_html__( 'Your tickets to {event-name}', 'event-tickets' ),
-				'placeholder'         => esc_html__( 'Your tickets to {event-name}', 'event-tickets' ),
+				'default'             => esc_html__( 'Your tickets to {event_name}', 'event-tickets' ),
+				'placeholder'         => esc_html__( 'Your tickets to {event_name}', 'event-tickets' ),
 				'validation_callback' => 'is_string',
 			],
 			static::$option_heading => [
 				'type'                => 'text',
 				'label'               => esc_html__( 'Email heading', 'event-tickets' ),
-				'default'             => esc_html__( 'Here\'s your ticket, {attendee-name}!', 'event-tickets' ),
-				'placeholder'         => esc_html__( 'Here\'s your ticket, {attendee-name}!', 'event-tickets' ),
+				'default'             => esc_html__( 'Here\'s your ticket, {attendee_name}!', 'event-tickets' ),
+				'placeholder'         => esc_html__( 'Here\'s your ticket, {attendee_name}!', 'event-tickets' ),
 				'validation_callback' => 'is_string',
 			],
 			static::$option_add_content => [
