@@ -57,39 +57,39 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 
 	/**
 	 * Enabled option key.
-	 * 
+	 *
 	 * @since TBD
-	 * 
+	 *
 	 * @var string
 	 */
-	static $option_enabled = 'tec_tickets_emails_ticket_option_enabled';
+	public static $option_enabled = 'tec_tickets_emails_ticket_option_enabled';
 
 	/**
 	 * Subject option key.
-	 * 
+	 *
 	 * @since TBD
-	 * 
+	 *
 	 * @var string
 	 */
-	static $option_subject = 'tec_tickets_emails_ticket_option_subject';
+	public static $option_subject = 'tec_tickets_emails_ticket_option_subject';
 
 	/**
 	 * Email heading option key.
-	 * 
+	 *
 	 * @since TBD
-	 * 
+	 *
 	 * @var string
 	 */
-	static $option_heading = 'tec_tickets_emails_ticket_option_heading';
+	public static $option_heading = 'tec_tickets_emails_ticket_option_heading';
 
 	/**
 	 * Email heading option key.
-	 * 
+	 *
 	 * @since TBD
-	 * 
+	 *
 	 * @var string
 	 */
-	static $option_add_content = 'tec_tickets_emails_ticket_option_add_content';
+	public static $option_add_content = 'tec_tickets_emails_ticket_option_add_content';
 
 	/**
 	 * Checks if this email is enabled.
@@ -240,7 +240,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 			],
 			[
 				'type' => 'html',
-				'html' => '<p>' . esc_html__( 'Ticket purchasers will receive an email including their ticket and additional info upon completion of purchase. Customize the content of this specific email using the tools below. The brackets {event-name}, {event-date}, and {ticket-name} can be used to pull dynamic content from the ticket into your email. Learn more about customizing email templates in our Knowledgebase.' ) . '</p>',
+				'html' => '<p>' . esc_html__( 'Ticket purchasers will receive an email including their ticket and additional info upon completion of purchase. Customize the content of this specific email using the tools below. The brackets {event_name}, {event_date}, and {ticket_name} can be used to pull dynamic content from the ticket into your email. Learn more about customizing email templates in our Knowledgebase.' ) . '</p>',
 			],
 			static::$option_enabled => [
 				'type'                => 'checkbox_bool',
@@ -252,12 +252,14 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 				'type'                => 'text',
 				'label'               => esc_html__( 'Email subject', 'event-tickets' ),
 				'default'             => $this->get_default_subject(),
+				'placeholder'         => esc_html__( 'Your tickets to {event_name}', 'event-tickets' ),
 				'validation_callback' => 'is_string',
 			],
 			static::$option_heading => [
 				'type'                => 'text',
 				'label'               => esc_html__( 'Email heading', 'event-tickets' ),
 				'default'             => $this->get_default_heading(),
+				'placeholder'         => esc_html__( 'Here\'s your ticket, {attendee_name}!', 'event-tickets' ),
 				'validation_callback' => 'is_string',
 			],
 			static::$option_add_content => [

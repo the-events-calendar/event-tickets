@@ -118,7 +118,7 @@ class Settings {
 	 * @return boolean
 	 */
 	public function is_on_tab( $tab = '' ): bool {
-		if ( ! is_tec_tickets_settings() || empty( $tab ) ) {
+		if ( ! $this->is_tec_tickets_settings() || empty( $tab ) ) {
 			return false;
 		}
 
