@@ -11,11 +11,13 @@ use TEC\Tickets\Commerce\Status\Pending;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Events\Test\Factories\Event;
+use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 
 class EventStockTest extends \Codeception\TestCase\WPTestCase {
 
 	use Ticket_Maker;
 	use Order_Maker;
+	use RSVP_Ticket_Maker;
 
 	/**
 	 * @inheritDoc
@@ -328,6 +330,69 @@ class EventStockTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertEqualSets( $expected, $data );
 	}
 
-	// @todo add tests for only rsvp
-	// @todo add tests for rsvp and shared capacity
+	/**
+	 * @test Test attendance count with RSVP tickets.
+	 */
+	public function test_attendance_for_rsvp_ticket() {
+		$maker = new Event();
+		$event_id = $maker->create();
+
+		$rsvp = $this->create_rsvp_ticket( $event_id );
+
+		$expected['rsvp'] = [
+			'count'     => 1,
+			'stock'     => 100,
+			'unlimited' => 0,
+			'available' => 1,
+		];
+
+		$expected['tickets'] = [
+			'count'     => 0, // count of ticket types currently for sale
+			'stock'     => 0, // current stock of tickets available for sale
+			'global'    => 0, // numeric boolean if tickets share global stock
+			'unlimited' => 0, // numeric boolean if any ticket has unlimited stock
+			'available' => 0,
+		];
+
+		$data = \Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
+
+		// Make sure that we have the proper initial data.
+		$this->assertEqualSets( $expected, $data );
+	}
+
+	/**
+	 * @test Test attendance count with unlimited tickets.
+	 */
+	public function test_with_unlimited_rsvp_and_tickets() {
+		$maker = new Event();
+		$event_id = $maker->create();
+
+		$overrides = [
+			'meta_input' => [
+				'_capacity'       => -1,
+			],
+		];
+
+		$rsvp = $this->create_rsvp_ticket( $event_id, $overrides );
+
+		$expected['rsvp'] = [
+			'count'     => 1,
+			'stock'     => -1,
+			'unlimited' => 0,
+			'available' => 1,
+		];
+
+		$expected['tickets'] = [
+			'count'     => 0, // count of ticket types currently for sale
+			'stock'     => 0, // current stock of tickets available for sale
+			'global'    => 0, // numeric boolean if tickets share global stock
+			'unlimited' => 0, // numeric boolean if any ticket has unlimited stock
+			'available' => 0,
+		];
+
+		$data = \Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
+
+		// Make sure that we have the proper initial data.
+		$this->assertEqualSets( $expected, $data );
+	}
 }
