@@ -87,8 +87,14 @@ class Email_Handler extends \tad_DI52_ServiceProvider {
 	 * @return Email_Abstract[]
 	 */
 	public function get_all() {
-		// @todo @codingmusician: Maybe filter these so that we can have more emails from outside the defaults with an extension for example?
-		return $this->emails;
+		/**
+		 * Filter the array of email classses that will be used.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $emails Array of email classes.
+		 */
+		return apply_filters( 'tec_tickets_emails_email_classes', $this->emails );
 	}
 
 	/**
@@ -130,10 +136,39 @@ class Email_Handler extends \tad_DI52_ServiceProvider {
 	 * @return void
 	 */
 	public function maybe_populate_tec_tickets_emails_post_type() {
-		// $emails = apply_filters( 'filter', $this->get_all() );
-		// iterate on emails, check if exists by slug and create if not.
+		$emails = $this->get_all();
 
-		// @todo @codingmusician: create posts for static::POSTTYPE.
+		// iterate on emails, check if exists by slug and create if not.
+		foreach ( $emails as $email_class ) {
+			$email = tribe( $email_class );
+			if ( empty( $email->get_post() ) ) {
+				$this->create_tec_tickets_emails_post_type( $email );
+			}
+		}
+	}
+
+	/**
+	 * Create system email.
+	 *
+	 * @since TBD
+	 *
+	 * @param Email_Abstract $email
+	 * 
+	 * @return void
+	 */
+	public function create_tec_tickets_emails_post_type( $email ) {
+		$args = [
+			'post_name'    => $email->id,
+			'post_title'   => $email->get_title(),
+			'post_status'  => 'publish',
+			'post_type'    => static::POSTTYPE,
+			'meta_input'   => [
+				'email_recipient' => $email->recipient,
+				'email_template'  => $email->template,
+				'email_version'   => $email->version,
+			],
+		];
+		wp_insert_post( $args );
 	}
 
 	/**
