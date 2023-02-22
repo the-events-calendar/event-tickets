@@ -56,15 +56,6 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	public $version = '1.0.0';
 
 	/**
-	 * Default subject.
-	 * 
-	 * @since TBD
-	 * 
-	 * @var string
-	 */
-	public $default_subject = '';
-
-	/**
 	 * Enabled option key.
 	 * 
 	 * @since TBD
@@ -142,10 +133,30 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	 * @return string The email heading.
 	 */
 	public function get_heading(): string {
-		// @todo @codingmusician: apply filters?
-		$heading = '';
+		$heading = tribe_get_option( static::$option_heading, $this->get_default_heading() );
+
+		/**
+		 * Allow filtering the email heading.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $subject  The email heading.
+		 * @param string $id       The ticket id.
+		 */
+		$heading = apply_filters( 'tec_tickets_emails_subject_' . $this->id, $heading, $this->id, $this->template );
 
 		return $this->format_string( $heading );
+	}
+
+	/**
+	 * Get default email heading.
+	 * 
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_default_heading() {
+		return esc_html__( 'Here\'s your ticket, {attendee-name}!', 'event-tickets' );
 	}
 
 	/**
@@ -156,7 +167,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	 * @return string The email subject.
 	 */
 	public function get_subject(): string {
-		$subject = tribe_get_option( static::$option_subject, true );
+		$subject = tribe_get_option( static::$option_subject, $this->get_default_subject() );
 
 		$subject = $this->format_string( $subject );
 
@@ -174,6 +185,17 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 		$subject = apply_filters( 'tec_tickets_emails_subject_' . $this->id, $subject, $this->id, $this->template );
 
 		return $subject;
+	}
+
+	/**
+	 * Get default email subject.
+	 * 
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_default_subject() {
+		return esc_html__( 'Your tickets to {event-name}', 'event-tickets' );
 	}
 
 	/**
@@ -210,11 +232,15 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 		$settings = [
 			[
 				'type' => 'html',
+				'html' => '<div class="tribe-settings-form-wrap">',
+			],
+			[
+				'type' => 'html',
 				'html' => '<h3>' . esc_html__( 'Ticket Email Settings', 'event-tickets' ) . '</h3>',
 			],
 			[
 				'type' => 'html',
-				'html' => '<p>' . esc_html__( 'Ticket purchasers will receive an email including their ticket and additional info upon completion of purchase. Customize the content of this specific email using the tools below. The brackets [event-name], [event-date], and [ticket-name] can be used to pull dynamic content from the ticket into your email. Learn more about customizing email templates in our Knowledgebase.' ) . '</p>',
+				'html' => '<p>' . esc_html__( 'Ticket purchasers will receive an email including their ticket and additional info upon completion of purchase. Customize the content of this specific email using the tools below. The brackets {event-name}, {event-date}, and {ticket-name} can be used to pull dynamic content from the ticket into your email. Learn more about customizing email templates in our Knowledgebase.' ) . '</p>',
 			],
 			static::$option_enabled => [
 				'type'                => 'checkbox_bool',
@@ -225,13 +251,13 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 			static::$option_subject => [
 				'type'                => 'text',
 				'label'               => esc_html__( 'Email subject', 'event-tickets' ),
-				'default'             => esc_html__( 'Your tickets to [event-name]', 'event-tickets' ),
+				'default'             => $this->get_default_subject(),
 				'validation_callback' => 'is_string',
 			],
 			static::$option_heading => [
 				'type'                => 'text',
 				'label'               => esc_html__( 'Email heading', 'event-tickets' ),
-				'default'             => esc_html__( 'Here\'s your ticket, [attendee-name]!', 'event-tickets' ),
+				'default'             => $this->get_default_heading(),
 				'validation_callback' => 'is_string',
 			],
 			static::$option_add_content => [
