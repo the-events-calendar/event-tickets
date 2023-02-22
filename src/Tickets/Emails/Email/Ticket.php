@@ -81,13 +81,49 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	}
 
 	/**
+	 * Get email heading.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The email subject.
+	 */
+	public function get_heading(): string {
+		// @todo @codingmusician: apply filters?
+		return '';
+	}
+
+	/**
+	 * Get email "from" name.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The from name.
+	 */
+	public function get_from_name(): string {
+		// @todo @codingmusician: Get the from name.
+		return '';
+	}
+
+	/**
+	 * Get email "from" email.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The from email.
+	 */
+	public function get_from_email(): string {
+		// @todo @codingmusician: Get the from email.
+		return '';
+	}
+
+	/**
 	 * Get email subject.
 	 *
 	 * @since TBD
 	 *
 	 * @return string The email subject.
 	 */
-	public function get_subject() {
+	public function get_subject(): string {
 		$subject = ''; // This comes from the option.
 
 		// @todo: Probably we want more data parsed, or maybe move the filters somewhere else as we're always gonna
@@ -115,7 +151,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	 *
 	 * @return string The email content.
 	 */
-	public function get_content( $args ) {
+	public function get_content( $args = [] ): string {
 		// @todo: Parse args, etc.
 		$context = ! empty( $args['context'] ) ? $args['context'] : [];
 
