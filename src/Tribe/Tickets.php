@@ -2016,6 +2016,16 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			return $types;
 		}
 
+		/**
+		 * Process RSVP counts.
+		 *
+		 * @since TBD
+		 *
+		 * @param Tribe__Tickets__Ticket_Object $rsvp RSVP ticket object.
+		 * @param array                         $types Array of ticket types.
+		 *
+		 * @return array
+		 */
 		public static function process_rsvp_counts( $rsvp, $types ) {
 			$types['rsvp']['count'] ++;
 
