@@ -10,6 +10,7 @@
 namespace TEC\Tickets\Emails;
 
 use WP_Post;
+use TEC\Tickets\Emails\Admin\Settings as Emails_Settings;
 
 /**
  * Class Email_Abstract.
@@ -154,24 +155,6 @@ abstract class Email_Abstract {
 	abstract public function get_settings(): array;
 
 	/**
-	 * Get the "From" email.
-	 *
-	 * @since TBD
-	 *
-	 * @return string
-	 */
-	abstract public function get_from_email(): string;
-
-	/**
-	 * Get the "From" name.
-	 *
-	 * @since TBD
-	 *
-	 * @return string
-	 */
-	abstract public function get_from_name(): string;
-
-	/**
 	 * Get the email content.
 	 *
 	 * @since TBD
@@ -181,6 +164,52 @@ abstract class Email_Abstract {
 	 * @return string
 	 */
 	abstract public function get_content( $args = [] ): string;
+
+	/**
+	 * Get the "From" email.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The "from" email.
+	 */
+	public function get_from_email(): string {
+		$from_email = tribe_get_option( Emails_Settings::$option_sender_email, tribe( Emails_Settings::class )->get_default_sender_email() );
+
+		/**
+		 * Filter the from email.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $from_email The "from" email.
+		 * @param string $id The email ID.
+		 */
+		$from_email = apply_filters( 'tec_tickets_emails_from_email', $from_email, $this->id );
+
+		return $from_email;
+	}
+
+	/**
+	 * Get the "From" name.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The "from" name.
+	 */
+	public function get_from_name(): string {
+		$from_name = tribe_get_option( Emails_Settings::$option_sender_name, tribe( Emails_Settings::class )->get_default_sender_name() );
+
+		/**
+		 * Filter the from name.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $from_email The "from" name.
+		 * @param string $id The email ID.
+		 */
+		$from_name = apply_filters( 'tec_tickets_emails_from_name', $from_name, $this->id );
+
+		return $from_name;
+	}
 
 	/**
 	 * Get email headers.
@@ -294,7 +323,8 @@ abstract class Email_Abstract {
 		 *
 		 * @since TBD
 		 *
-		 * @param
+		 * @param string $string The formatted string.
+		 * @param string $id The email id.
 		 */
 		return apply_filters( 'tec_tickets_emails_format_string', str_replace( $find, $replace, $string ), $this->id );
 	}
