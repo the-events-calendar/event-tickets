@@ -86,30 +86,6 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	}
 
 	/**
-	 * Get email "from" name.
-	 *
-	 * @since TBD
-	 *
-	 * @return string The from name.
-	 */
-	public function get_from_name(): string {
-		// @todo @codingmusician: Get the from name.
-		return '';
-	}
-
-	/**
-	 * Get email "from" email.
-	 *
-	 * @since TBD
-	 *
-	 * @return string The from email.
-	 */
-	public function get_from_email(): string {
-		// @todo @codingmusician: Get the from email.
-		return '';
-	}
-
-	/**
 	 * Get email subject.
 	 *
 	 * @since TBD
