@@ -195,4 +195,22 @@ class Email_Handler extends \tad_DI52_ServiceProvider {
 		return $fields;
 	}
 
+	/**
+	 * Get email by ID.
+	 * 
+	 * @since TBD
+	 * 
+	 * @param string $id ID of email.
+	 * 
+	 * @return Email_Abstract|boolean Email object or false if it does not exist.
+	 */
+	public function get_email_by_id( $id ) {
+		$emails = $this->get_all();
+		foreach ( $emails as $email ) {
+			if ( $email->id === $id ) {
+				return $email;
+			}
+		}
+		return false;
+	}
 }
