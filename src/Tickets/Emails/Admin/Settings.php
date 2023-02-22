@@ -225,9 +225,9 @@ class Settings {
 		if ( ! empty( $name ) ) {
 			return $name;
 		}
-		// If not set, return WordPress User `nicename`.
-		$current_user = get_user_by( 'id', get_current_user_id() );
-		return $current_user->user_nicename;
+
+		// Return the site name as default.
+		return esc_attr( get_bloginfo( 'name', 'display' ) );
 	}
 
 	/**
@@ -243,9 +243,9 @@ class Settings {
 		if ( ! empty( $email ) ) {
 			return $email;
 		}
-		// If not set, return WordPress User `email`.
-		$current_user = get_user_by( 'id', get_current_user_id() );
-		return $current_user->user_email;
+
+		// Return the admin email as default.
+		return get_option( 'admin_email' );
 	}
 
 	/**
