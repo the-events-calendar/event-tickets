@@ -9,6 +9,8 @@
 
 namespace TEC\Tickets\Emails;
 
+use WP_Post;
+
 /**
  * Class Email_Abstract.
  *
@@ -26,6 +28,24 @@ abstract class Email_Abstract {
 	 * @var string
 	 */
 	public $id;
+
+	/**
+	 * Email template filename.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public $template;
+
+	/**
+	 * Email recipient.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public $recipient;
 
 	/**
 	 * Email title.
@@ -64,11 +84,11 @@ abstract class Email_Abstract {
 	abstract public function get_subject();
 
 	/**
-	 * Get email attachments.
+	 * Is email enabled.
 	 *
 	 * @since TBD
 	 *
-	 * @return array
+	 * @return boolean
 	 */
 	abstract public function is_enabled();
 
@@ -135,9 +155,20 @@ abstract class Email_Abstract {
 	 *
 	 * @since TBD
 	 *
-	 * @return array
+	 * @return string
 	 */
 	public function get_content( $args ) {
 		return '';
+	}
+
+	/**
+	 * Get post object of email.
+	 * 
+	 * @since TBD
+	 * 
+	 * @return WP_Post|null;
+	 */
+	public function get_post() {
+		return get_page_by_path( $this->id, OBJECT, Email_Handler::POSTTYPE );
 	}
 }
