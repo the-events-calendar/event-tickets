@@ -85,7 +85,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	 *
 	 * @since TBD
 	 *
-	 * @return string The email subject.
+	 * @return string The email heading.
 	 */
 	public function get_heading(): string {
 		// @todo @codingmusician: apply filters?
