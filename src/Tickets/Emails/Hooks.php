@@ -73,7 +73,9 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 *
 	 */
 	public function action_register_post_type() {
-		$this->container->make( Email_Handler::class )->register_post_type();
+		$email_handler = $this->container->make( Email_Handler::class );
+		$email_handler->register_post_type();
+		$email_handler->maybe_populate_tec_tickets_emails_post_type();
 	}
 
 	/**
