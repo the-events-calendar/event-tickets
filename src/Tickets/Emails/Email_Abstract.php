@@ -9,6 +9,7 @@
 
 namespace TEC\Tickets\Emails;
 
+use WP_Post;
 use TEC\Tickets\Emails\Admin\Settings as Emails_Settings;
 
 /**
@@ -30,6 +31,24 @@ abstract class Email_Abstract {
 	public $id;
 
 	/**
+	 * Email template filename.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public $template;
+
+	/**
+	 * Email recipient.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public $recipient;
+
+	/**
 	 * Email title.
 	 *
 	 * @since TBD
@@ -37,6 +56,15 @@ abstract class Email_Abstract {
 	 * @var string
 	 */
 	public $title;
+
+	/**
+	 * Email version number.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public $version;
 
 	/**
 	 * Email subject.
@@ -264,7 +292,7 @@ abstract class Email_Abstract {
 	 *
 	 * @since TBD
 	 *
-	 * @return array
+	 * @return string
 	 */
 	public function get_placeholders(): array {
 		/**
@@ -322,5 +350,16 @@ abstract class Email_Abstract {
 	public function get_additional_content(): string {
 		$additional_content = '';
 		return $this->format_string( $additional_content );
+	}
+
+	/**
+	 * Get post object of email.
+	 * 
+	 * @since TBD
+	 * 
+	 * @return WP_Post|null;
+	 */
+	public function get_post() {
+		return get_page_by_path( $this->id, OBJECT, Email_Handler::POSTTYPE );
 	}
 }

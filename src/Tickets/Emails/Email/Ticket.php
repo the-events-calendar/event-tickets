@@ -8,6 +8,7 @@
 namespace TEC\Tickets\Emails\Email;
 
 use \TEC\Tickets\Emails\Email_Template;
+use WP_Post;
 
 /**
  * Class Ticket
@@ -37,19 +38,81 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	public $template = 'ticket';
 
 	/**
-	 * Check if the email is enabled.
+	 * Email recipient.
 	 *
 	 * @since TBD
 	 *
-	 * @return bool True if the email is enabled.
+	 * @var string
+	 */
+	public $recipient = 'customer';
+
+	/**
+	 * Email version number.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public $version = '1.0.0';
+
+	/**
+	 * Default subject.
+	 * 
+	 * @since TBD
+	 * 
+	 * @var string
+	 */
+	public $default_subject = '';
+
+	/**
+	 * Enabled option key.
+	 * 
+	 * @since TBD
+	 * 
+	 * @var string
+	 */
+	static $option_enabled = 'tec_tickets_emails_ticket_option_enabled';
+
+	/**
+	 * Subject option key.
+	 * 
+	 * @since TBD
+	 * 
+	 * @var string
+	 */
+	static $option_subject = 'tec_tickets_emails_ticket_option_subject';
+
+	/**
+	 * Email heading option key.
+	 * 
+	 * @since TBD
+	 * 
+	 * @var string
+	 */
+	static $option_heading = 'tec_tickets_emails_ticket_option_heading';
+
+	/**
+	 * Email heading option key.
+	 * 
+	 * @since TBD
+	 * 
+	 * @var string
+	 */
+	static $option_add_content = 'tec_tickets_emails_ticket_option_add_content';
+
+	/**
+	 * Checks if this email is enabled.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
 	 */
 	public function is_enabled(): bool {
-		// @todo: This value should come from the settings.
-		return true;
+		return tribe_is_truthy( tribe_get_option( static::$option_enabled, true ) );
 	}
 
 	/**
-	 * Checks if this email is customer focussed.
+	 * Checks if this email is sent to customer.
 	 *
 	 * @since TBD
 	 *
@@ -93,7 +156,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	 * @return string The email subject.
 	 */
 	public function get_subject(): string {
-		$subject = ''; // This comes from the option.
+		$subject = tribe_get_option( static::$option_subject, true );
 
 		$subject = $this->format_string( $subject );
 
@@ -149,7 +212,35 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 				'type' => 'html',
 				'html' => '<h3>' . esc_html__( 'Ticket Email Settings', 'event-tickets' ) . '</h3>',
 			],
-			// @todo @codingmusician: Include all the email settings here.
+			[
+				'type' => 'html',
+				'html' => '<p>' . esc_html__( 'Ticket purchasers will receive an email including their ticket and additional info upon completion of purchase. Customize the content of this specific email using the tools below. The brackets [event-name], [event-date], and [ticket-name] can be used to pull dynamic content from the ticket into your email. Learn more about customizing email templates in our Knowledgebase.' ) . '</p>',
+			],
+			static::$option_enabled => [
+				'type'                => 'checkbox_bool',
+				'label'               => esc_html__( 'Ticket Email ', 'event-tickets' ),
+				'default'             => true,
+				'validation_type'     => 'boolean',
+			],
+			static::$option_subject => [
+				'type'                => 'text',
+				'label'               => esc_html__( 'Email subject', 'event-tickets' ),
+				'default'             => esc_html__( 'Your tickets to [event-name]', 'event-tickets' ),
+				'validation_callback' => 'is_string',
+			],
+			static::$option_heading => [
+				'type'                => 'text',
+				'label'               => esc_html__( 'Email heading', 'event-tickets' ),
+				'default'             => esc_html__( 'Here\'s your ticket, [attendee-name]!', 'event-tickets' ),
+				'validation_callback' => 'is_string',
+			],
+			static::$option_add_content => [
+				'type'                => 'textarea',
+				'label'               => esc_html__( 'Additional content', 'event-tickets' ),
+				'default'             => '',
+				'tooltip'             => esc_html__( 'Additional content will be displayed below the tickets in your email.', 'event-tickets' ),
+				'validation_type'     => 'textarea',
+			],
 		];
 
 		return $settings;
