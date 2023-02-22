@@ -9,6 +9,7 @@
 
 namespace TEC\Tickets\Emails\Admin;
 
+use TEC\Tickets\Emails\Email_Handler;
 use Tribe\Tickets\Admin\Settings as Plugin_Settings;
 use \Tribe__Template;
 use Tribe__Tickets__Main;
@@ -30,6 +31,24 @@ class Emails_Tab {
 	 * @var string
 	 */
 	public static $slug = 'emails';
+
+	/**
+	 * Slug for editing emails.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $edit_query = 'te-edit';
+	
+	/**
+	 * Holder for tempalte object.
+	 *
+	 * @since TBD
+	 *
+	 * @var null|Tribe_Template
+	 */
+	private static $template;
 
 	/**
 	 * Create the Tickets Commerce Emails Settings Tab.
@@ -127,6 +146,12 @@ class Emails_Tab {
 	 * @return array[]
 	 */
 	public function get_fields(): array {
+
+		// Check to see if we're editing an email, first.
+		if ( $this->is_editing_email() ) {
+			return $this->get_email_settings();
+		}
+
 		$fields = [];
 		$fields['tribe-form-content-start'] = [
 			'type' => 'html',
@@ -158,5 +183,47 @@ class Emails_Tab {
 		 * @param array[] $fields Top level settings.
 		 */
 		return apply_filters( 'tec_tickets_emails_settings_fields', $fields );
+	}
+
+	/**
+	 * Check if currently editing email.
+	 * 
+	 * @since TBD
+	 *
+	 * @param Email_Abstract $email
+	 * 
+	 * @return boolean
+	 */
+	public function is_editing_email( $email = null ) {
+		if ( ! $this->is_on_tab() ) {
+			return false;
+		}
+
+		// Get `tc-edit` query string from URL.
+		$editing_email  = tribe_get_request_var( static::$edit_query );
+
+		// If email wasn't passed, just return whether or not string is empty.
+		if ( empty( $email ) ) {
+			return ! empty( $editing_email );
+		}
+
+		// Otherwise, return whether or not supplied email is being edited.
+		return $email->id === $editing_email;
+	}
+
+	/**
+	 * Get email settings.
+	 *
+	 * @since TBD
+	 * 
+	 * @return array|null Settings array
+	 */
+	public function get_email_settings() {
+		$email_id  = tribe_get_request_var( static::$edit_query );
+		$email = tribe( Email_Handler::class )->get_email_by_id( $email_id );
+		if ( ! $email ) {
+			return;
+		}
+		return $email->get_settings();
 	}
 }
