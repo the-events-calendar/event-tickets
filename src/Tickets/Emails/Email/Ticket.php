@@ -37,15 +37,6 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	public $template = 'ticket';
 
 	/**
-	 * Hook method.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	public function hook() {}
-
-	/**
 	 * Check if the email is enabled.
 	 *
 	 * @since TBD

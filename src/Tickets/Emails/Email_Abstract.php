@@ -59,7 +59,16 @@ abstract class Email_Abstract {
 	 *
 	 * @since TBD
 	 */
-	abstract public function hook();
+	public function hook() {
+		$this->placeholders = array_merge(
+			[
+				'{site_title}'   => $this->get_blogname(),
+				'{site_address}' => wp_parse_url( home_url(), PHP_URL_HOST ),
+				'{site_url}'     => wp_parse_url( home_url(), PHP_URL_HOST ),
+			],
+			$this->get_placeholders()
+		);
+	}
 
 	/**
 	 * Get email subject.
@@ -218,6 +227,27 @@ abstract class Email_Abstract {
 		$attachments = apply_filters( 'tec_tickets_emails_attachments', $attachments, $this->id );
 
 		return $attachments;
+	}
+
+	/**
+	 * Get email placeholders.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function get_placeholders(): array {
+		/**
+		 * Filter the placeholders.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $placeholders The placeholders.
+		 * @param string $id The email ID.
+		 */
+		$placeholders = apply_filters( 'tec_tickets_emails_placeholders', $this->placeholders, $this->id );
+
+		return $placeholders;
 	}
 
 	/**
