@@ -9,8 +9,10 @@
 
 namespace TEC\Tickets\Emails;
 
+use TEC\Tickets\Emails\Admin\Emails_Tab;
 use WP_Post;
 use TEC\Tickets\Emails\Admin\Settings as Emails_Settings;
+use Tribe\Tickets\Admin\Settings as Plugin_Settings;
 
 /**
  * Class Email_Abstract.
@@ -361,5 +363,23 @@ abstract class Email_Abstract {
 	 */
 	public function get_post() {
 		return get_page_by_path( $this->id, OBJECT, Email_Handler::POSTTYPE );
+	}
+
+	/**
+	 * Get edit URL.
+	 * 
+	 * @since TBD
+	 * 
+	 * @return string
+	 */
+	public function get_edit_url() {
+		// Force the `emails` tab.
+		$args = [
+			'tab'                   => Emails_Tab::$slug,
+			Emails_Tab::$edit_query => $this->id,
+		];
+
+		// Use the settings page get_url to build the URL.
+		return tribe( Plugin_Settings::class )->get_url( $args );
 	}
 }
