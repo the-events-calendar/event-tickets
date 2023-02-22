@@ -1054,6 +1054,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				'author' => get_current_user_id(),
 			];
 
+			if ( ! empty( $qr ) ) {
+				// Save the latest date in which a ticket was scanned with the APP.
+				tribe_update_option( 'tec_tickets_plus_app_last_checkin_time', time() );
+			}
+
 			/**
 			 * Filters the checkin details for this attendee checkin.
 			 *

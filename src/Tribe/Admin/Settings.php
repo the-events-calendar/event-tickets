@@ -101,11 +101,46 @@ class Settings {
 	 *
 	 * @return boolean
 	 */
-	public function is_tec_tickets_settings() {
+	public function is_tec_tickets_settings(): bool {
 		$admin_pages = tribe( 'admin.pages' );
 		$admin_page  = $admin_pages->get_current_page();
 
 		return ! empty( $admin_page ) && static::$settings_page_id === $admin_page;
+	}
+
+	/**
+	 * Check if the current page is on a specific tab for the Tickets settings.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $tab The tab name.
+	 *
+	 * @return boolean
+	 */
+	public function is_on_tab( $tab = '' ): bool {
+		if ( ! is_tec_tickets_settings() || empty( $tab ) ) {
+			return false;
+		}
+
+		return tribe_get_request_var( 'tab' ) === $tab;
+	}
+
+	/**
+	 * Check if the current page is on a specific tab for the Tickets settings.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $tab The tab name.
+	 * @param string $section The section name.
+	 *
+	 * @return boolean
+	 */
+	public function is_on_tab_section( $tab = '', $section = '' ): bool {
+		if ( ! $this->is_on_tab( $tab ) || empty( 'section' ) ) {
+			return false;
+		}
+
+		return tribe_get_request_var( 'section' ) === $section;
 	}
 
 	/**

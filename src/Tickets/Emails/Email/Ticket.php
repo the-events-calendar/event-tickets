@@ -101,15 +101,6 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	static $option_add_content = 'tec_tickets_emails_ticket_option_add_content';
 
 	/**
-	 * Hook method.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	public function hook() {}
-
-	/**
 	 * Checks if this email is enabled.
 	 *
 	 * @since TBD
@@ -136,11 +127,49 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	 *
 	 * @since TBD
 	 *
-	 * @return string The email subject.
+	 * @return string The email title.
 	 */
 	public function get_title(): string {
 		// @todo @codingmusician: apply filters?
 		return esc_html__( 'Ticket Email', 'event-tickets' );
+	}
+
+	/**
+	 * Get email heading.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The email heading.
+	 */
+	public function get_heading(): string {
+		// @todo @codingmusician: apply filters?
+		$heading = '';
+
+		return $this->format_string( $heading );
+	}
+
+	/**
+	 * Get email "from" name.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The from name.
+	 */
+	public function get_from_name(): string {
+		// @todo @codingmusician: Get the from name.
+		return '';
+	}
+
+	/**
+	 * Get email "from" email.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The from email.
+	 */
+	public function get_from_email(): string {
+		// @todo @codingmusician: Get the from email.
+		return '';
 	}
 
 	/**
@@ -150,8 +179,10 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	 *
 	 * @return string The email subject.
 	 */
-	public function get_subject() {
+	public function get_subject(): string {
 		$subject = tribe_get_option( static::$option_subject, true );
+
+		$subject = $this->format_string( $subject );
 
 		// @todo: Probably we want more data parsed, or maybe move the filters somewhere else as we're always gonna
 		// apply filters on the subject maybe move the filter to the parent::get_subject() ?
@@ -178,7 +209,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	 *
 	 * @return string The email content.
 	 */
-	public function get_content( $args ) {
+	public function get_content( $args = [] ): string {
 		// @todo: Parse args, etc.
 		$context = ! empty( $args['context'] ) ? $args['context'] : [];
 
