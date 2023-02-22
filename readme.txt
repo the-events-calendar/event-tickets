@@ -193,6 +193,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [5.5.8] 2023-02-22 =
 
 * Version - Event Tickets 5.5.8 is only compatible with The Events Calendar 6.0.10 and higher.
+* Version - Event Tickets 5.5.8 is only compatible with Event Tickets Plus 5.6.7 and higher.
 * Tweak - PHP version compatibility bumped to PHP 7.4
 * Tweak - Version Composer updated to 2
 * Tweak - Version Node updated to 18.13.0
