@@ -10,6 +10,7 @@
 namespace TEC\Tickets\Emails\Admin;
 
 use TEC\Tickets\Commerce\Settings as CommerceSettings;
+use TEC\Tickets\Emails\Email_Handler;
 use Tribe__Template;
 use Tribe__Tickets__Main;
 
@@ -118,34 +119,12 @@ class Settings {
 
 		$template = $this->get_template();
 
-		// @todo Replace this with array of actual Message Template objects that do not yet exist.
-		$templates = [
-			[
-				'title'     => 'Ticket Email',
-				'enabled'   => true,
-				'recipient' => 'Purchaser',
-			],
-			[
-				'title'     => 'RSVP Email',
-				'enabled'   => true,
-				'recipient' => 'Attendee',
-			],
-			[
-				'title'     => 'Order Notification',
-				'enabled'   => false,
-				'recipient' => 'Site Admin',
-			],
-			[
-				'title'     => 'Order Failure',
-				'enabled'   => true,
-				'recipient' => 'Site Admin',
-			],
-		];
+		$emails = tribe( Email_Handler::class )->get_all();
 
 		$new_fields = [
 			[
 				'type' => 'html',
-				'html' => $template->template( 'message-templates', [ 'templates' => $templates ], false ),
+				'html' => $template->template( 'message-templates', [ 'emails' => $emails ], false ),
 			],
 		];
 
