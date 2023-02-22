@@ -194,6 +194,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 * Tweak - Save activation time for Event Tickets. [ET-1639]
 * Tweak - Save last check-in time for tickets scanned via the Event Tickets Plus APP. [ET-1640]
+* Fix - Fixed shared capacity ticket counts not showing properly on calendar views. [ETP-851]
 
 = [5.5.7] 2023-02-09 =
 
