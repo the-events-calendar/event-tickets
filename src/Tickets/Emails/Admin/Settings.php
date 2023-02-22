@@ -184,8 +184,8 @@ class Settings {
 				'type'                => 'text',
 				'label'               => esc_html__( 'Sender Name', 'event-tickets' ),
 				'size'                => 'medium',
-				'default'             => $this->get_sender_name(),
-				'placeholder'         => $this->get_sender_name(),
+				'default'             => $this->get_default_sender_name(),
+				'placeholder'         => $this->get_default_sender_name(),
 				'validation_callback' => 'is_string',
 				'validation_type'     => 'textarea',
 			],
@@ -193,8 +193,8 @@ class Settings {
 				'type'                => 'text',
 				'label'               => esc_html__( 'Sender Email', 'event-tickets' ),
 				'size'                => 'medium',
-				'default'             => $this->get_sender_email(),
-				'placeholder'         => $this->get_sender_email(),
+				'default'             => $this->get_default_sender_email(),
+				'placeholder'         => $this->get_default_sender_email(),
 				'validation_callback' => 'is_string',
 				'validation_type'     => 'email',
 			],
@@ -219,14 +219,14 @@ class Settings {
 	 *
 	 * @return string Sender's name.
 	 */
-	public function get_sender_name(): string {
+	public function get_default_sender_name(): string {
 		// Get name from settings.
-		$name  = tribe_get_option( CommerceSettings::$option_confirmation_email_sender_name );
+		$name = tribe_get_option( CommerceSettings::$option_confirmation_email_sender_name );
 		if ( ! empty( $name ) ) {
 			return $name;
 		}
 		// If not set, return WordPress User `nicename`.
-		$current_user  = get_user_by( 'id', get_current_user_id() );
+		$current_user = get_user_by( 'id', get_current_user_id() );
 		return $current_user->user_nicename;
 	}
 
@@ -237,14 +237,14 @@ class Settings {
 	 *
 	 * @return string Sender's email address.
 	 */
-	public function get_sender_email(): string {
+	public function get_default_sender_email(): string {
 		// Get email from settings.
-		$email  = tribe_get_option( CommerceSettings::$option_confirmation_email_sender_email );
+		$email = tribe_get_option( CommerceSettings::$option_confirmation_email_sender_email );
 		if ( ! empty( $email ) ) {
 			return $email;
 		}
 		// If not set, return WordPress User `email`.
-		$current_user  = get_user_by( 'id', get_current_user_id() );
+		$current_user = get_user_by( 'id', get_current_user_id() );
 		return $current_user->user_email;
 	}
 
