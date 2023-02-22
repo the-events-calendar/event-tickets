@@ -64,6 +64,8 @@ class Email_Handler extends \tad_DI52_ServiceProvider {
 			$this->register_email( $email );
 		}
 
+		$this->maybe_populate_tec_tickets_emails_post_type();
+
 		$this->container->singleton( static::class, $this );
 	}
 
@@ -152,17 +154,17 @@ class Email_Handler extends \tad_DI52_ServiceProvider {
 	 *
 	 * @since TBD
 	 *
-	 * @param Email_Abstract $email
-	 * 
+	 * @param Email_Abstract $email The email.
+	 *
 	 * @return void
 	 */
 	public function create_tec_tickets_emails_post_type( $email ) {
 		$args = [
-			'post_name'    => $email->id,
-			'post_title'   => $email->get_title(),
-			'post_status'  => 'publish',
-			'post_type'    => static::POSTTYPE,
-			'meta_input'   => [
+			'post_name'   => $email->id,
+			'post_title'  => $email->get_title(),
+			'post_status' => 'publish',
+			'post_type'   => static::POSTTYPE,
+			'meta_input'  => [
 				'email_recipient' => $email->recipient,
 				'email_template'  => $email->template,
 				'email_version'   => $email->version,
@@ -174,7 +176,7 @@ class Email_Handler extends \tad_DI52_ServiceProvider {
 	/**
 	 * Add per email setting fields.
 	 *
-	 * @param array $fields
+	 * @param array $fields The fields.
 	 *
 	 * @return array $fields
 	 */
@@ -186,7 +188,7 @@ class Email_Handler extends \tad_DI52_ServiceProvider {
 		$emails = $this->get_all();
 
 		foreach ( $emails as $email ) {
-			// if ( ! tribe( Admin\Emails_Tab::class )->is_on_tab_section( $email->id ) ) { // @todo @codingmusician: We need to implement the section logic for emails tab.
+			// if ( ! tribe( Admin\Emails_Tab::class )->is_on_section( $email->id ) ) { // @todo @codingmusician: We need to implement the section logic for emails tab.
 			//	continue;
 			// }
 			// $fields = array_merge( $fields, $email->get_settings() );
