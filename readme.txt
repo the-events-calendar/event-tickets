@@ -5,7 +5,7 @@ Tags: tickets, registration, event registration, RSVP, ticket sales, attendee ma
 Requires at least: 5.8.5
 Tested up to: 6.1.1
 Stable tag: 5.5.8
-Requires PHP: 7.3
+Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
