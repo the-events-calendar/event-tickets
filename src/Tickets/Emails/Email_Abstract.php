@@ -57,6 +57,15 @@ abstract class Email_Abstract {
 	public $title;
 
 	/**
+	 * Email version number.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public $version;
+
+	/**
 	 * Email subject.
 	 *
 	 * @since TBD
