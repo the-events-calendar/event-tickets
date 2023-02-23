@@ -48,7 +48,7 @@ class Emails_Tab {
 	 *
 	 * @var null|Tribe_Template
 	 */
-	private static $template;
+	private $template;
 
 	/**
 	 * Create the Tickets Commerce Emails Settings Tab.
@@ -237,6 +237,15 @@ class Emails_Tab {
 		if ( ! $email ) {
 			return;
 		}
-		return $email->get_settings();
+		$settings = $email->get_settings();
+
+		$back_link = [[
+			'type' => 'html',
+			'html' => $this->get_template()->template( 'back-link', [
+				'text' => __( 'Back to Email Settings', 'event-tickets' ),
+				'url'  => $this->get_url(),
+			], false ),
+		]];
+		return array_merge( $back_link, $settings );
 	}
 }
