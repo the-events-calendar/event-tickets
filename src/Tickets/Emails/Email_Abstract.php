@@ -375,8 +375,9 @@ abstract class Email_Abstract {
 	public function get_edit_url() {
 		// Force the `emails` tab.
 		$args = [
-			'tab'                   => Emails_Tab::$slug,
-			Emails_Tab::$edit_query => $this->id,
+			'tab'                    => Emails_Tab::$slug,
+			'section'                => Emails_Tab::$edit_section_slug,
+			Emails_Tab::$edit_id_key => $this->id,
 		];
 
 		// Use the settings page get_url to build the URL.

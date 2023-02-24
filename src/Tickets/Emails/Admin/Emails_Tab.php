@@ -31,24 +31,33 @@ class Emails_Tab {
 	 * @var string
 	 */
 	public static $slug = 'emails';
-
-	/**
-	 * Slug for editing emails.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	public static $edit_query = 'te-edit';
 	
 	/**
-	 * Holder for tempalte object.
+	 * Holder for template object.
 	 *
 	 * @since TBD
 	 *
 	 * @var null|Tribe_Template
 	 */
 	private $template;
+
+	/**
+	 * Edit section slug.
+	 * 
+	 * @since TBD
+	 * 
+	 * @var string
+	 */
+	public static $edit_section_slug = 'edit_email';
+
+	/**
+	 * Editing id key.
+	 * 
+	 * @since TBD
+	 * 
+	 * @var string
+	 */
+	public static $edit_id_key = 'id';
 
 	/**
 	 * Create the Tickets Commerce Emails Settings Tab.
@@ -161,7 +170,7 @@ class Emails_Tab {
 	public function get_fields(): array {
 
 		// Check to see if we're editing an email, first.
-		if ( $this->is_editing_email() ) {
+		if ( $this->is_on_section( static::$edit_section_slug ) ) {
 			return $this->get_email_settings();
 		}
 
@@ -208,12 +217,12 @@ class Emails_Tab {
 	 * @return boolean
 	 */
 	public function is_editing_email( $email = null ) {
-		if ( ! $this->is_on_tab() ) {
+		if ( ! $this->is_on_section( static::$edit_section_slug ) ) {
 			return false;
 		}
 
 		// Get `tc-edit` query string from URL.
-		$editing_email  = tribe_get_request_var( static::$edit_query );
+		$editing_email  = tribe_get_request_var( static::$edit_id_key );
 
 		// If email wasn't passed, just return whether or not string is empty.
 		if ( empty( $email ) ) {
@@ -232,13 +241,9 @@ class Emails_Tab {
 	 * @return array|null Settings array
 	 */
 	public function get_email_settings() {
-		$email_id  = tribe_get_request_var( static::$edit_query );
+		$email_id  = tribe_get_request_var( static::$edit_id_key );
 		$email = tribe( Email_Handler::class )->get_email_by_id( $email_id );
-		if ( ! $email ) {
-			return;
-		}
-		$settings = $email->get_settings();
-
+		
 		$back_link = [[
 			'type' => 'html',
 			'html' => $this->get_template()->template( 'back-link', [
@@ -246,6 +251,18 @@ class Emails_Tab {
 				'url'  => $this->get_url(),
 			], false ),
 		]];
+
+		if ( ! $email ) {
+			return array_merge( $back_link, [
+				[
+					'type' => 'html',
+					'html' => '<p>' . esc_html__( 'Invalid email id selected.', 'event-tickets') . '</p>',
+				]
+			] );
+		}
+
+		$settings = $email->get_settings();
+
 		return array_merge( $back_link, $settings );
 	}
 }
