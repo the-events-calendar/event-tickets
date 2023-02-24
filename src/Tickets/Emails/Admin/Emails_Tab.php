@@ -57,7 +57,25 @@ class Emails_Tab {
 	 * 
 	 * @var string
 	 */
-	public static $edit_id_key = 'id';
+	public static $key_edit_id = 'id';
+
+	/**
+	 * Key to determine current section.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $key_current_section = 'tec_tickets_emails_current_section';
+
+	/**
+	 * Key to determine current email id.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $key_current_email_id = 'tec_tickets_emails_current_email_id';
 
 	/**
 	 * Create the Tickets Commerce Emails Settings Tab.
@@ -222,7 +240,7 @@ class Emails_Tab {
 		}
 
 		// Get `tc-edit` query string from URL.
-		$editing_email  = tribe_get_request_var( static::$edit_id_key );
+		$editing_email  = tribe_get_request_var( static::$key_edit_id );
 
 		// If email wasn't passed, just return whether or not string is empty.
 		if ( empty( $email ) ) {
@@ -241,7 +259,7 @@ class Emails_Tab {
 	 * @return array|null Settings array
 	 */
 	public function get_email_settings() {
-		$email_id  = tribe_get_request_var( static::$edit_id_key );
+		$email_id  = tribe_get_request_var( static::$key_edit_id );
 		$email = tribe( Email_Handler::class )->get_email_by_id( $email_id );
 		
 		$back_link = [[
@@ -261,8 +279,71 @@ class Emails_Tab {
 			] );
 		}
 
+		$hidden_fields = [[
+			'type' => 'html',
+			'html' => sprintf(
+				'<input type="hidden" name="%s" id="%s" value="%s" />',
+				esc_attr( static::$key_current_section ),
+				esc_attr( static::$key_current_section ),
+				esc_attr( static::$edit_section_slug )
+			) . sprintf(
+				'<input type="hidden" name="%s" id="%s" value="%s" />',
+				esc_attr( static::$key_current_email_id ),
+				esc_attr( static::$key_current_email_id ),
+				esc_attr( $email_id )
+			)
+		]];
+
 		$settings = $email->get_settings();
 
-		return array_merge( $back_link, $settings );
+		return array_merge( $back_link, $settings, $hidden_fields );
+	}
+	/**
+	 * Filters the redirect URL to include section, if applicable.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $url URL of redirection.
+	 *
+	 * @return string
+	 */
+	public function filter_redirect_url( $url ) {
+		if ( ! is_admin() ) {
+			return $url;
+		}
+
+		$tab  = tribe_get_request_var( 'tab' );
+		$page = tribe_get_request_var( 'page' );
+
+		if ( empty( $tab ) || empty( $page ) ) {
+			return $url;
+		}
+
+		if ( empty( $_SERVER['REQUEST_METHOD'] ) || 'POST' !== strtoupper( $_SERVER['REQUEST_METHOD'] ) ) {
+			return $url;
+		}
+
+		if ( Plugin_Settings::$settings_page_id !== $page ) {
+			return $url;
+		}
+
+		if ( static::$slug !== $tab ) {
+			return $url;
+		}
+
+		$section = tribe_get_request_var( static::$key_current_section );
+		if ( static::$edit_section_slug !== $section ) {
+			return $url;
+		}
+
+		$email_id = tribe_get_request_var( static::$key_current_email_id );
+		if ( empty( $email_id ) ) {
+			return $url;
+		}
+
+		return add_query_arg( [
+			'section'            => $section,
+			static::$key_edit_id => $email_id
+		], $url );
 	}
 }

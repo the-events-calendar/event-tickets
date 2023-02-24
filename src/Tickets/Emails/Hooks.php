@@ -18,6 +18,7 @@
 namespace TEC\Tickets\Emails;
 
 use \tad_DI52_ServiceProvider;
+use TEC\Tickets\Emails\Admin\Emails_Tab;
 
 /**
  * Class Hooks.
@@ -65,6 +66,21 @@ class Hooks extends tad_DI52_ServiceProvider {
 
 		// Hook the `Tickets Emails` preview for the AJAX requests.
 		add_filter( 'tribe_tickets_admin_manager_request', [ $this, 'filter_add_preview_modal_content' ], 15, 2 );
+
+		add_filter( 'wp_redirect', [ $this, 'filter_redirect_url' ] );
+	}
+
+	/**
+	 * Filters the redirect URL to determine whether or not section key needs to be added.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $url Redirect URL.
+	 *
+	 * @return string
+	 */
+	public function filter_redirect_url( $url ) {
+		return $this->container->make( Emails_Tab::class )->filter_redirect_url( $url );
 	}
 
 	/**

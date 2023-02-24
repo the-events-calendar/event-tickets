@@ -243,7 +243,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 				'html' => '<p>' . esc_html__( 'Ticket purchasers will receive an email including their ticket and additional info upon completion of purchase. Customize the content of this specific email using the tools below. The brackets {event_name}, {event_date}, and {ticket_name} can be used to pull dynamic content from the ticket into your email. Learn more about customizing email templates in our Knowledgebase.' ) . '</p>',
 			],
 			static::$option_enabled => [
-				'type'                => 'toggle',
+				'type'                => 'checkbox_bool',
 				'label'               => esc_html__( 'Ticket Email ', 'event-tickets' ),
 				'default'             => true,
 				'validation_type'     => 'boolean',

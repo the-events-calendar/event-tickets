@@ -377,7 +377,7 @@ abstract class Email_Abstract {
 		$args = [
 			'tab'                    => Emails_Tab::$slug,
 			'section'                => Emails_Tab::$edit_section_slug,
-			Emails_Tab::$edit_id_key => $this->id,
+			Emails_Tab::$key_edit_id => $this->id,
 		];
 
 		// Use the settings page get_url to build the URL.
