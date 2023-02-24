@@ -913,4 +913,35 @@ class Ticket {
 	public function get_related_event_id( $ticket_id ) {
 		return get_post_meta( $ticket_id, static::$event_relation_meta_key, true );
 	}
+
+	/**
+	 * Update attendee data for moved attendees.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_id                the ticket which has been moved
+	 * @param int $src_ticket_type_id       the ticket type it belonged to originally
+	 * @param int $tgt_ticket_type_id       the ticket type it now belongs to
+	 * @param int $src_event_id             the event/post which the ticket originally belonged to
+	 * @param int $tgt_event_id             the event/post which the ticket now belongs to
+	 * @param int $instigator_id            the user who initiated the change
+	 *
+	 * @return void
+	 */
+	public function handle_moved_ticket_updates( $attendee_id, $src_ticket_type_id, $tgt_ticket_type_id, $src_event_id, $tgt_event_id, $instigator_id ) {
+		$attendee = tec_tc_attendees()->where( 'ID', $attendee_id );
+
+		try {
+			$attendee->set( 'ticket_id', $tgt_ticket_type_id );
+			$attendee->set( 'event_id', $tgt_event_id );
+		} catch ( \Exception $e ) {
+			do_action( 'tribe_log', 'error', __CLASS__, [ 'message' => $e->getMessage() ] );
+		}
+
+		$attendee_data = $attendee->save();
+
+		if ( $attendee_data ) {
+			$this->decrease_ticket_sales_by( $src_ticket_type_id, 1 );
+		}
+	}
 }
