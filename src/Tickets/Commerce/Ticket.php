@@ -919,12 +919,12 @@ class Ticket {
 	 *
 	 * @since TBD
 	 *
-	 * @param int $ticket_id                the ticket which has been moved
-	 * @param int $src_ticket_type_id       the ticket type it belonged to originally
-	 * @param int $tgt_ticket_type_id       the ticket type it now belongs to
-	 * @param int $src_event_id             the event/post which the ticket originally belonged to
-	 * @param int $tgt_event_id             the event/post which the ticket now belongs to
-	 * @param int $instigator_id            the user who initiated the change
+	 * @param int $ticket_id                The ticket which has been moved.
+	 * @param int $src_ticket_type_id       The ticket type it belonged to originally.
+	 * @param int $tgt_ticket_type_id       The ticket type it now belongs to.
+	 * @param int $src_event_id             The event/post which the ticket originally belonged to.
+	 * @param int $tgt_event_id             The event/post which the ticket now belongs to.
+	 * @param int $instigator_id            The user who initiated the change.
 	 *
 	 * @return void
 	 */
