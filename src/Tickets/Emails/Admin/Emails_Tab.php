@@ -39,7 +39,7 @@ class Emails_Tab {
 	 *
 	 * @var null|Tribe_Template
 	 */
-	private $template;
+	protected $template;
 
 	/**
 	 * Edit section slug.
