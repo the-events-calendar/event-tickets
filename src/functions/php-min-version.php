@@ -35,7 +35,7 @@ function tribe_is_not_min_php_version( $version = PHP_VERSION ) {
  * @return string
  */
 function tribe_get_php_min_version() {
-	return '5.6';
+	return '7.4';
 }
 
 /**
