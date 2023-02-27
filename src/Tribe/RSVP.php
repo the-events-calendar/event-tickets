@@ -2836,4 +2836,17 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		return $sales;
 	}
+
+	/**
+	 * Check if the not going option is enabled for the provided rsvp ticket id.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_id The ticket post ID.
+	 *
+	 * @return bool Whether the not going option is enabled or not.
+	 */
+	public function is_not_going_enabled( $ticket_id ): bool {
+		return tribe_is_truthy( get_post_meta( $ticket_id, $this->show_not_going, true ) );
+	}
 }
