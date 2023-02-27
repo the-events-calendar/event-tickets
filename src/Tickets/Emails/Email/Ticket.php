@@ -47,15 +47,6 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	public $recipient = 'customer';
 
 	/**
-	 * Email version number.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	public $version = '1.0.0';
-
-	/**
 	 * Enabled option key.
 	 *
 	 * @since TBD
