@@ -86,6 +86,8 @@ class Hooks extends tad_DI52_ServiceProvider {
 		add_action( 'admin_bar_menu', [ $this, 'include_admin_bar_test_mode' ], 1000, 1 );
 
 		add_action( 'tribe_template_before_include:tickets/v2/commerce/checkout', [ $this, 'include_assets_checkout_shortcode' ] );
+
+		add_action( 'tribe_tickets_ticket_moved', [ $this, 'handle_moved_ticket_updates' ], 10, 6 );
 	}
 
 	/**
@@ -727,5 +729,23 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 */
 	public function include_assets_checkout_shortcode() {
 		Shortcodes\Checkout_Shortcode::enqueue_assets();
+	}
+
+	/**
+	 * Hook the attendee data update on moved tickets.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_id                The ticket which has been moved.
+	 * @param int $src_ticket_type_id       The ticket type it belonged to originally.
+	 * @param int $tgt_ticket_type_id       The ticket type it now belongs to.
+	 * @param int $src_event_id             The event/post which the ticket originally belonged to.
+	 * @param int $tgt_event_id             The event/post which the ticket now belongs to.
+	 * @param int $instigator_id            The user who initiated the change.
+	 *
+	 * @return void
+	 */
+	public function handle_moved_ticket_updates( $attendee_id, $src_ticket_type_id, $tgt_ticket_type_id, $src_event_id, $tgt_event_id, $instigator_id ) {
+		$this->container->make( Ticket::class )->handle_moved_ticket_updates( $attendee_id, $src_ticket_type_id, $tgt_ticket_type_id, $src_event_id, $tgt_event_id, $instigator_id );
 	}
 }
