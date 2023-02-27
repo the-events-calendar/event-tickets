@@ -136,7 +136,7 @@ class Settings {
 	 * @return boolean
 	 */
 	public function is_on_tab_section( $tab = '', $section = '' ): bool {
-		if ( ! $this->is_on_tab( $tab ) || empty( 'section' ) ) {
+		if ( ! $this->is_on_tab( $tab ) || empty( $section ) ) {
 			return false;
 		}
 

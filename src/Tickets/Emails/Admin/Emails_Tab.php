@@ -55,7 +55,7 @@ class Emails_Tab {
 	 *
 	 * @since  5.5.6
 	 *
-	 * @param $admin_page Page ID of current admin page.
+	 * @param string $admin_page Page ID of current admin page.
 	 */
 	public function register_tab( $admin_page ) {
 		if ( ! empty( $admin_page ) && Plugin_Settings::$settings_page_id !== $admin_page ) {

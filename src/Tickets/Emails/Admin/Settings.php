@@ -17,6 +17,15 @@ use Tribe__Tickets__Main;
 class Settings {
 
 	/**
+	 * The option key for enabling the feature and upgrading.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $option_enabled = 'tec-tickets-emails-enabled';
+
+	/**
 	 * The option key for email sender's name.
 	 *
 	 * @since 5.5.6
@@ -168,7 +177,7 @@ class Settings {
 				'validation_callback' => 'is_string',
 				'validation_type'     => 'textarea',
 			],
-			static::$option_sender_email  => [
+			static::$option_sender_email => [
 				'type'                => 'text',
 				'label'               => esc_html__( 'Sender Email', 'event-tickets' ),
 				'size'                => 'medium',
@@ -315,5 +324,36 @@ class Settings {
 		$new_fields = apply_filters( 'tec_tickets_emails_settings_email_styling_fields', $new_fields );
 
 		return array_merge( $fields, $new_fields );
+	}
+
+	/**
+	 * Maybe add the upgrade option. Only for installs that are previous to the
+	 * version in which we introduce Tickets Emails.
+	 *
+	 * @since TBD
+	 *
+	 * @param  array $fields Current array of Tickets Emails settings fields.
+	 *
+	 * @return array $fields Filtered array of Tickets Emails settings fields.
+	 */
+	public function maybe_add_upgrade_field( array $fields ): array {
+		$upgrade_option_available = tribe_installed_before( 'Tribe__Tickets__Main', '5.6.0' );
+
+		if ( ! $upgrade_option_available ) {
+			return $fields;
+		}
+
+		$new_fields = [
+			self::$option_enabled => [
+				'type'            => 'checkbox_bool',
+				'label'           => esc_html__( 'Enable Tickets Emails', 'event-tickets-plus' ),
+				'tooltip'         => esc_html__( 'Start using the new Tickets Emails for your site.', 'event-tickets' ),
+				'default'         => false,
+				'validation_type' => 'boolean',
+			],
+		];
+
+		return array_merge( $fields, $new_fields );
+
 	}
 }
