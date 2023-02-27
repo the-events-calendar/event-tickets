@@ -13,10 +13,11 @@ if ( empty( $email ) ) {
 	return;
 }
 
-$item_classes   = [ 'tec-tickets__admin-settings-emails-template-list-item' ];
-$item_classes[] = $email->is_enabled() ?
-    'tec-tickets__admin-settings-emails-template-list-item--enabled' :
-    'tec-tickets__admin-settings-emails-template-list-item--disabled';
+$item_classes   = [ 
+	'tec-tickets__admin-settings-emails-template-list-item',
+	'tec-tickets__admin-settings-emails-template-list-item--enabled'  => $email->is_enabled(),
+	'tec-tickets__admin-settings-emails-template-list-item--disabled' => ! $email->is_enabled(),
+];
 
 ?>
 <div <?php tribe_classes( $item_classes ); ?> >

@@ -13,8 +13,8 @@ if ( empty( $url ) || empty( $text ) ) {
 }
 
 ?>
-<div class="tec-tickets__admin-settings-back-link">
-	<a href="<?php echo esc_attr( $url ); ?>" role="link">
+<div class="tec-tickets__admin-settings-back-link-wrapper">
+	<a class="tec-tickets__admin-settings-back-link" href="<?php echo esc_attr( $url ); ?>" role="link">
 		&larr; <?php echo esc_html( $text ); ?>
 	</a>
 </div>
