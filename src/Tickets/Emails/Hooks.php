@@ -58,6 +58,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 */
 	protected function add_filters() {
 		add_filter( 'tec_tickets_settings_tabs_ids', [ $this, 'filter_add_tab_id' ] );
+		add_filter( 'tec_tickets_emails_settings_fields', [ $this, 'filter_maybe_add_upgrade_field' ] );
 		add_filter( 'tec_tickets_emails_settings_fields', [ $this, 'filter_add_template_list' ] );
 		add_filter( 'tec_tickets_emails_settings_fields', [ $this, 'filter_add_sender_info_fields' ] );
 		add_filter( 'tec_tickets_emails_settings_fields', [ $this, 'filter_add_email_styling_fields' ] );
@@ -117,6 +118,19 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 */
 	public function filter_add_tab_id( $tabs ) {
 		return $this->container->make( Admin\Emails_Tab::class )->settings_add_tab_id( $tabs );
+	}
+
+	/**
+	 * Filter to maybe add the upgrade option.
+	 *
+	 * @since TBD
+	 *
+	 * @param  array $fields Current array of Tickets Emails settings fields.
+	 *
+	 * @return array $fields Filtered array of Tickets Emails settings fields.
+	 */
+	public function filter_maybe_add_upgrade_field( $fields ) {
+		return $this->container->make( Admin\Settings::class )->maybe_add_upgrade_field( $fields );
 	}
 
 	/**
