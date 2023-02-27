@@ -357,7 +357,9 @@ class Tribe__Tickets__Assets {
 			[ 'tec-variables-full' ],
 			null,
 			[
-				'groups' => [ 'event-tickets-admin-attendees' ],
+				'groups' => [ 
+					'event-tickets-admin-attendees',
+				],
 			]
 		);
 
