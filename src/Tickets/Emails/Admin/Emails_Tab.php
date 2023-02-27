@@ -42,24 +42,6 @@ class Emails_Tab {
 	protected $template;
 
 	/**
-	 * Edit section slug.
-	 * 
-	 * @since TBD
-	 * 
-	 * @var string
-	 */
-	public static $edit_section_slug = 'edit_email';
-
-	/**
-	 * Editing id key.
-	 * 
-	 * @since TBD
-	 * 
-	 * @var string
-	 */
-	public static $key_edit_id = 'id';
-
-	/**
 	 * Key to determine current section.
 	 *
 	 * @since TBD
@@ -67,15 +49,6 @@ class Emails_Tab {
 	 * @var string
 	 */
 	public static $key_current_section = 'tec_tickets_emails_current_section';
-
-	/**
-	 * Key to determine current email id.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	public static $key_current_email_id = 'tec_tickets_emails_current_email_id';
 
 	/**
 	 * Create the Tickets Commerce Emails Settings Tab.
@@ -173,9 +146,13 @@ class Emails_Tab {
 	 * @return boolean True when on `emails` tab and on `section`
 	 */
 	public function is_on_section( $section = '' ): bool {
-		$settings = tribe( Plugin_Settings::class );
+		$current_section = tribe_get_request_var( 'section' );
 
-		return $settings->is_on_tab_section( self::$slug, $section );
+		if ( empty( $section ) ) {
+			return ! empty( $current_section );
+		}
+
+		return $section === $current_section;
 	}
 
 	/**
@@ -188,7 +165,7 @@ class Emails_Tab {
 	public function get_fields(): array {
 
 		// Check to see if we're editing an email, first.
-		if ( $this->is_on_section( static::$edit_section_slug ) ) {
+		if ( $this->is_on_section() ) {
 			return $this->get_email_settings();
 		}
 
@@ -235,12 +212,12 @@ class Emails_Tab {
 	 * @return boolean
 	 */
 	public function is_editing_email( $email = null ) {
-		if ( ! $this->is_on_section( static::$edit_section_slug ) ) {
+		if ( ! $this->is_on_section() ) {
 			return false;
 		}
 
-		// Get `tc-edit` query string from URL.
-		$editing_email  = tribe_get_request_var( static::$key_edit_id );
+		// Get `section` query string from URL.
+		$editing_email  = tribe_get_request_var( 'section' );
 
 		// If email wasn't passed, just return whether or not string is empty.
 		if ( empty( $email ) ) {
@@ -259,7 +236,7 @@ class Emails_Tab {
 	 * @return array|null Settings array
 	 */
 	public function get_email_settings() {
-		$email_id  = tribe_get_request_var( static::$key_edit_id );
+		$email_id  = tribe_get_request_var( 'section' );
 		$email = tribe( Email_Handler::class )->get_email_by_id( $email_id );
 		
 		$back_link = [[
@@ -285,11 +262,6 @@ class Emails_Tab {
 				'<input type="hidden" name="%s" id="%s" value="%s" />',
 				esc_attr( static::$key_current_section ),
 				esc_attr( static::$key_current_section ),
-				esc_attr( static::$edit_section_slug )
-			) . sprintf(
-				'<input type="hidden" name="%s" id="%s" value="%s" />',
-				esc_attr( static::$key_current_email_id ),
-				esc_attr( static::$key_current_email_id ),
 				esc_attr( $email_id )
 			)
 		]];
@@ -331,19 +303,13 @@ class Emails_Tab {
 			return $url;
 		}
 
-		$section = tribe_get_request_var( static::$key_current_section );
-		if ( static::$edit_section_slug !== $section ) {
-			return $url;
-		}
-
-		$email_id = tribe_get_request_var( static::$key_current_email_id );
+		$email_id = tribe_get_request_var( 'section' );
 		if ( empty( $email_id ) ) {
 			return $url;
 		}
 
 		return add_query_arg( [
-			'section'            => $section,
-			static::$key_edit_id => $email_id
+			'section'            => $email_id,
 		], $url );
 	}
 }

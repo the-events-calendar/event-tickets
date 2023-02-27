@@ -376,8 +376,7 @@ abstract class Email_Abstract {
 		// Force the `emails` tab.
 		$args = [
 			'tab'                    => Emails_Tab::$slug,
-			'section'                => Emails_Tab::$edit_section_slug,
-			Emails_Tab::$key_edit_id => $this->id,
+			'section'                => $this->id,
 		];
 
 		// Use the settings page get_url to build the URL.
