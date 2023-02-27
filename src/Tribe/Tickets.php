@@ -1379,6 +1379,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Returns all the attendees for an event with filtered by arguments. Queries all registered providers.
 		 *
 		 * @since 4.10.6
+		 * @since TBD Move the logic to `get_attendees_by_args` and use the method to return the attendees.
 		 *
 		 * @static
 		 *
@@ -1408,6 +1409,38 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return $attendee_data;
 			}
 
+			return self::get_attendees_by_args( $args, $post_id );
+		}
+
+		/**
+		 * Returns all the attendees with filtered by arguments. Queries all registered providers.
+		 *
+		 * @since TBD
+		 *
+		 * @static
+		 *
+		 * @param int   $post_id ID of parent "event" post.
+		 * @param array $args {
+		 *      List of arguments to filter attendees by.
+		 *
+		 *      @type boolean $return_total_found Whether to return total_found count in an array along with list of
+		 *                                        attendees. Default is off.
+		 *      @type int     $page               Page number of attendees to return. Default is page 1.
+		 *      @type int     $per_page           How many attendees to return per page. Default is all.
+		 *      @type string  $fields             Which fields to return. Default is all.
+		 *      @type array   $by                 List of ORM->by() filters to use. [what=>[args...]], [what=>arg], or
+		 *                                        [[what,args...]] format.
+		 *      @type array   $where_multi        List of ORM->where_multi() filters to use. [[what,args...]] format.
+		 * }
+		 *
+		 * @return array List of attendees and total_found.
+		 */
+		public static function get_attendees_by_args( $args = [], $post_id = 0 ) {
+			$attendee_data = [
+				'total_found' => 0,
+				'attendees'   => [],
+			];
+
 			$provider = 'default';
 
 			if ( ! empty( $args['provider'] ) ) {
@@ -1418,7 +1451,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$repository = tribe_attendees( $provider );
 
 			// Limit by post ID.
-			$repository->by( 'event', $post_id );
+			if ( ! empty( $post_id ) ) {
+				$repository->by( 'event', $post_id );
+			}
 
 			self::pass_args_to_repository( $repository, $args );
 

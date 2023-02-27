@@ -161,7 +161,7 @@ class Attendees extends Report_Abstract {
 				$status = tribe( \Tribe__Tickets__Attendees::class )->send_mail_list();
 			}
 
-			tribe( 'tickets.admin.views' )->template( 'attendees-email', [ 'status' => $status ] );
+			tribe( 'tickets.admin.views' )->template( 'attendees/attendees-email', [ 'status' => $status ] );
 
 			// Use iFrame Footer -- WP Method.
 			iframe_footer();

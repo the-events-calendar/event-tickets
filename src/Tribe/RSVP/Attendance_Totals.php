@@ -59,7 +59,7 @@ class Tribe__Tickets__RSVP__Attendance_Totals extends Tribe__Tickets__Abstract_A
 			'total_refunded_tooltip'  => '',
 		];
 
-		$html = tribe( 'tickets.admin.views' )->template( 'attendees-totals-list', $args, false );
+		$html = tribe( 'tickets.admin.views' )->template( 'attendees/attendees-event/totals-list', $args, false );
 
 		/**
 		 * Filters the HTML that should be printed to display RSVP attendance lines.
