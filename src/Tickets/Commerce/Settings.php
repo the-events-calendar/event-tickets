@@ -389,62 +389,69 @@ class Settings {
 				'options'         => $pages,
 				'required'        => true,
 			],
-			'tickets-commerce-email-settings-heading'       => [
-				'type' => 'html',
-				'html' => '<h3>' . __( 'Emails', 'event-tickets' ) . '</h3>',
-			],
-			static::$option_confirmation_email_sender_email => [
-				'type'            => 'email',
-				'label'           => esc_html__( 'Confirmation email sender address', 'event-tickets' ),
-				'tooltip'         => esc_html(
-					sprintf(
-					// Translators: %s: The word "tickets" in lowercase.
-						_x( 'Email address that %s customers will receive confirmation from. Leave empty to use the default WordPress site email address.', 'tickets fields settings confirmation email', 'event-tickets' ),
-						tribe_get_ticket_label_plural_lowercase( 'tickets_fields_settings_paypal_confirmation_email' )
-					)
-				),
-				'size'            => 'medium',
-				'default'         => $current_user->user_email,
-				'validation_type' => 'email',
-				'can_be_empty'    => true,
-			],
-			static::$option_confirmation_email_sender_name  => [
-				'type'                => 'text',
-				'label'               => esc_html__( 'Confirmation email sender name', 'event-tickets' ),
-				'tooltip'             => esc_html(
-					sprintf(
-					// Translators: %s: The word "ticket" in lowercase.
-						_x( 'Sender name of the confirmation email sent to customers when confirming a %s purchase.', 'tickets fields settings paypal email sender', 'event-tickets' ),
-						tribe_get_ticket_label_singular_lowercase( 'tickets_fields_settings_paypal_email_sender' )
-					)
-				),
-				'size'                => 'medium',
-				'default'             => $current_user->user_nicename,
-				'validation_callback' => 'is_string',
-				'validation_type'     => 'textarea',
-			],
-			static::$option_confirmation_email_subject      => [
-				'type'                => 'text',
-				'label'               => esc_html__( 'Confirmation email subject', 'event-tickets' ),
-				'tooltip'             => esc_html(
-					sprintf(
-					// Translators: %s: The word "ticket" in lowercase.
-						_x( 'Subject of the confirmation email sent to customers when confirming a %s purchase.', 'tickets fields settings paypal email subject', 'event-tickets' ),
-						tribe_get_ticket_label_singular_lowercase( 'tickets_fields_settings_paypal_email_subject' )
-					)
-				),
-				'size'                => 'large',
-				'default'             => esc_html(
-					sprintf(
-					// Translators: %s: The word "tickets" in lowercase.
-						_x( 'You have %s!', 'tickets fields settings paypal email subject', 'event-tickets' ),
-						tribe_get_ticket_label_plural_lowercase( 'tickets_fields_settings_paypal_email_subject' )
-					)
-				),
-				'validation_callback' => 'is_string',
-				'validation_type'     => 'textarea',
-			],
 		];
+
+		if ( ! tec_tickets_emails_is_enabled() ) {
+			$email_settings = [
+				'tickets-commerce-email-settings-heading' => [
+					'type' => 'html',
+					'html' => '<h3>' . __( 'Emails', 'event-tickets' ) . '</h3>',
+				],
+				static::$option_confirmation_email_sender_email => [
+					'type'            => 'email',
+					'label'           => esc_html__( 'Confirmation email sender address', 'event-tickets' ),
+					'tooltip'         => esc_html(
+						sprintf(
+						// Translators: %s: The word "tickets" in lowercase.
+							_x( 'Email address that %s customers will receive confirmation from. Leave empty to use the default WordPress site email address.', 'tickets fields settings confirmation email', 'event-tickets' ),
+							tribe_get_ticket_label_plural_lowercase( 'tickets_fields_settings_paypal_confirmation_email' )
+						)
+					),
+					'size'            => 'medium',
+					'default'         => $current_user->user_email,
+					'validation_type' => 'email',
+					'can_be_empty'    => true,
+				],
+				static::$option_confirmation_email_sender_name  => [
+					'type'                => 'text',
+					'label'               => esc_html__( 'Confirmation email sender name', 'event-tickets' ),
+					'tooltip'             => esc_html(
+						sprintf(
+						// Translators: %s: The word "ticket" in lowercase.
+							_x( 'Sender name of the confirmation email sent to customers when confirming a %s purchase.', 'tickets fields settings paypal email sender', 'event-tickets' ),
+							tribe_get_ticket_label_singular_lowercase( 'tickets_fields_settings_paypal_email_sender' )
+						)
+					),
+					'size'                => 'medium',
+					'default'             => $current_user->user_nicename,
+					'validation_callback' => 'is_string',
+					'validation_type'     => 'textarea',
+				],
+				static::$option_confirmation_email_subject      => [
+					'type'                => 'text',
+					'label'               => esc_html__( 'Confirmation email subject', 'event-tickets' ),
+					'tooltip'             => esc_html(
+						sprintf(
+						// Translators: %s: The word "ticket" in lowercase.
+							_x( 'Subject of the confirmation email sent to customers when confirming a %s purchase.', 'tickets fields settings paypal email subject', 'event-tickets' ),
+							tribe_get_ticket_label_singular_lowercase( 'tickets_fields_settings_paypal_email_subject' )
+						)
+					),
+					'size'                => 'large',
+					'default'             => esc_html(
+						sprintf(
+						// Translators: %s: The word "tickets" in lowercase.
+							_x( 'You have %s!', 'tickets fields settings paypal email subject', 'event-tickets' ),
+							tribe_get_ticket_label_plural_lowercase( 'tickets_fields_settings_paypal_email_subject' )
+						)
+					),
+					'validation_callback' => 'is_string',
+					'validation_type'     => 'textarea',
+				],
+			];
+
+			$settings = array_merge( $settings, $email_settings );
+		}
 
 		// Add featured settings to top of other settings.
 		$featured_settings = [
@@ -576,6 +583,6 @@ class Settings {
 		/**
 		 * @todo we need to make sure we actually validate the PUE key.
 		 */
-		return $pue->get_pue()->is_valid_key_format() ;
+		return $pue->get_pue()->is_valid_key_format();
 	}
 }
