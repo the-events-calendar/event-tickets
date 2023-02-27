@@ -132,7 +132,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 		 * @since TBD
 		 *
 		 * @param string $heading  The email heading.
-		 * @param string $id       The ticket id.
+		 * @param string $id       The email id.
 		 */
 		$heading = apply_filters( 'tec_tickets_emails_heading_' . $this->id, $heading, $this->id, $this->template );
 
@@ -171,7 +171,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 		 * @since TBD
 		 *
 		 * @param string $subject  The email subject.
-		 * @param string $id       The ticket id.
+		 * @param string $id       The email id.
 		 */
 		$subject = apply_filters( 'tec_tickets_emails_subject_' . $this->id, $subject, $this->id, $this->template );
 

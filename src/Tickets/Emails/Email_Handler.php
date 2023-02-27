@@ -183,30 +183,6 @@ class Email_Handler extends \tad_DI52_ServiceProvider {
 	}
 
 	/**
-	 * Add per email setting fields.
-	 *
-	 * @param array $fields The fields.
-	 *
-	 * @return array $fields
-	 */
-	public function add_settings_per_email( array $fields ): array {
-		if ( ! tribe( Admin\Emails_Tab::class )->is_on_tab() ) {
-			return $fields;
-		}
-
-		$emails = $this->get_all();
-
-		foreach ( $emails as $email ) {
-			// if ( ! tribe( Admin\Emails_Tab::class )->is_on_section( $email->id ) ) { // @todo @codingmusician: We need to implement the section logic for emails tab.
-			//	continue;
-			// }
-			// $fields = array_merge( $fields, $email->get_settings() );
-		}
-
-		return $fields;
-	}
-
-	/**
 	 * Get email by ID.
 	 * 
 	 * @since TBD

@@ -239,37 +239,44 @@ class Emails_Tab {
 		$email_id  = tribe_get_request_var( 'section' );
 		$email = tribe( Email_Handler::class )->get_email_by_id( $email_id );
 		
-		$back_link = [[
-			'type' => 'html',
-			'html' => $this->get_template()->template( 'back-link', [
-				'text' => __( 'Back to Email Settings', 'event-tickets' ),
-				'url'  => $this->get_url(),
-			], false ),
-		]];
+		$back_link = [
+			[
+				'type' => 'html',
+				'html' => $this->get_template()->template( 'back-link', 
+					[
+						'text' => __( 'Back to Email Settings', 'event-tickets' ),
+						'url'  => $this->get_url(),
+					], 
+					false ),
+			]
+		];
 
 		if ( ! $email ) {
 			return array_merge( $back_link, [
 				[
 					'type' => 'html',
-					'html' => '<p>' . esc_html__( 'Invalid email id selected.', 'event-tickets') . '</p>',
+					'html' => '<p>' . esc_html__( 'Invalid email id selected.', 'event-tickets' ) . '</p>',
 				]
 			] );
 		}
 
-		$hidden_fields = [[
-			'type' => 'html',
-			'html' => sprintf(
-				'<input type="hidden" name="%s" id="%s" value="%s" />',
-				esc_attr( static::$key_current_section ),
-				esc_attr( static::$key_current_section ),
-				esc_attr( $email_id )
-			)
-		]];
+		$hidden_fields = [
+			[
+				'type' => 'html',
+				'html' => sprintf(
+					'<input type="hidden" name="%s" id="%s" value="%s" />',
+					esc_attr( static::$key_current_section ),
+					esc_attr( static::$key_current_section ),
+					esc_attr( $email_id )
+				)
+			]
+		];
 
 		$settings = $email->get_settings();
 
 		return array_merge( $back_link, $settings, $hidden_fields );
 	}
+	
 	/**
 	 * Filters the redirect URL to include section, if applicable.
 	 *

@@ -17,5 +17,5 @@ if ( empty( $email ) ) {
 
 ?>
 <div class="tec-tickets__admin-settings-emails-template-list-item-action">
-	<a href="<?php echo $email->get_edit_url(); ?>" class="tec-tickets__admin-settings-emails-template-list-item-action-link dashicons dashicons-edit"></a>
+	<a href="<?php echo esc_url( $email->get_edit_url() ); ?>" class="tec-tickets__admin-settings-emails-template-list-item-action-link dashicons dashicons-edit"></a>
 </div>
