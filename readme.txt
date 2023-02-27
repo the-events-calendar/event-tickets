@@ -4,8 +4,8 @@ Contributors: theeventscalendar, brianjessee, camwynsp, aguseo, bordoni, borkweb
 Tags: tickets, registration, event registration, RSVP, ticket sales, attendee management
 Requires at least: 5.8.5
 Tested up to: 6.1.1
-Stable tag: 5.5.7
-Requires PHP: 7.3
+Stable tag: 5.5.8
+Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -195,6 +195,16 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Tweak - Save activation time for Event Tickets. [ET-1639]
 * Tweak - Save last check-in time for tickets scanned via the Event Tickets Plus APP. [ET-1640]
 * Fix - Fixed attendee ticket title for moved TicketsCommerce tickets. [ET-1611]
+
+= [5.5.8] 2023-02-22 =
+
+* Version - Event Tickets 5.5.8 is only compatible with The Events Calendar 6.0.10 and higher.
+* Version - Event Tickets 5.5.8 is only compatible with Event Tickets Plus 5.6.7 and higher.
+* Tweak - PHP version compatibility bumped to PHP 7.4
+* Tweak - Version Composer updated to 2
+* Tweak - Version Node updated to 18.13.0
+* Tweak - Version NPM update to 8.19.3
+* Tweak - Reduce JavaScript bundle sizes for Blocks editor
 
 = [5.5.7] 2023-02-09 =
 
