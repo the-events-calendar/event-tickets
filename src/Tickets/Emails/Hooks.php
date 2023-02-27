@@ -47,6 +47,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 		add_action( 'tribe_settings_do_tabs', [ $this, 'register_emails_tab' ], 17 );
 		add_action( 'tribe_settings_after_form_element_tab_emails', [ $this, 'action_add_preview_modal_button' ] );
 		add_action( 'admin_footer', [ $this, 'action_add_preview_modal' ] );
+		add_action( 'template_redirect', [ $this, 'action_template_redirect_tickets_emails' ] );
 	}
 
 	/**
@@ -161,5 +162,16 @@ class Hooks extends tad_DI52_ServiceProvider {
 		}
 
 		return $this->container->make( Admin\Preview_modal::class )->get_modal_content_ajax( $render_response, $vars );
+	}
+
+	/**
+	 * Manage the redirect to view emails via web.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function action_template_redirect_tickets_emails() {
+		$this->container->make( Web_View::class )->action_template_redirect_tickets_emails();
 	}
 }
