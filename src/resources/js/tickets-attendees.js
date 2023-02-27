@@ -79,9 +79,10 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 		} );
 
 		$( '.tickets_checkin' ).on( 'click', function( e ) {
-
 			var obj = jQuery( this );
 			obj.prop( 'disabled', true );
+			obj.addClass( 'is-busy' );
+
 
 			var params = {
 				action  : 'tribe-ticket-checkin',
@@ -106,6 +107,7 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 					}
 
 					obj.prop( 'disabled', false );
+					obj.removeClass( 'is-busy' );
 				},
 				'json'
 			);
@@ -114,9 +116,10 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 		} );
 
 		$( '.tickets_uncheckin' ).on( 'click', function( e ) {
-
 			var obj = jQuery( this );
 			obj.prop( 'disabled', true );
+			obj.addClass( 'is-busy' );
+
 
 			var params = {
 				action  : 'tribe-ticket-uncheckin',
@@ -140,6 +143,7 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 					}
 
 					obj.prop( 'disabled', false );
+					obj.removeClass( 'is-busy' );
 				},
 				'json'
 			);

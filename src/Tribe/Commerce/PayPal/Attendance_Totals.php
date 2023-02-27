@@ -87,7 +87,7 @@ class Tribe__Tickets__Commerce__PayPal__Attendance_Totals extends Tribe__Tickets
 			'total_refunded_tooltip'  => $this->get_total_refunded_tooltip(),
 		];
 
-		tribe( 'tickets.admin.views' )->template( 'attendees-totals-list', $args, true );
+		tribe( 'tickets.admin.views' )->template( 'attendees/attendees-event/totals-list', $args, true );
 	}
 
 	/**
