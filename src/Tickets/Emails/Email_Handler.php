@@ -29,9 +29,9 @@ class Email_Handler extends \tad_DI52_ServiceProvider {
 
 	/**
 	 * Version number for custom post types.
-	 * 
+	 *
 	 * @since TBD
-	 * 
+	 *
 	 * @var string
 	 */
 	const VERSION = '1.0.0';
@@ -184,11 +184,11 @@ class Email_Handler extends \tad_DI52_ServiceProvider {
 
 	/**
 	 * Get email by ID.
-	 * 
+	 *
 	 * @since TBD
-	 * 
+	 *
 	 * @param string $id ID of email.
-	 * 
+	 *
 	 * @return Email_Abstract|boolean Email object or false if it does not exist.
 	 */
 	public function get_email_by_id( $id ) {
