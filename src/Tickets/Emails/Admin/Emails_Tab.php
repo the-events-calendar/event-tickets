@@ -137,25 +137,6 @@ class Emails_Tab {
 	}
 
 	/**
-	 * Determine if is on a "section" of the "emails" tab.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $section The section.
-	 *
-	 * @return boolean True when on `emails` tab and on `section`
-	 */
-	public function is_on_section( $section = '' ): bool {
-		$current_section = tribe_get_request_var( 'section' );
-
-		if ( empty( $section ) ) {
-			return ! empty( $current_section );
-		}
-
-		return $section === $current_section;
-	}
-
-	/**
 	 * Gets the top level settings for Tickets Commerce.
 	 *
 	 * @since 5.5.6
@@ -165,7 +146,7 @@ class Emails_Tab {
 	public function get_fields(): array {
 
 		// Check to see if we're editing an email, first.
-		if ( $this->is_on_section() ) {
+		if ( $this->is_editing_email() ) {
 			return $this->get_email_settings();
 		}
 
@@ -212,10 +193,6 @@ class Emails_Tab {
 	 * @return boolean
 	 */
 	public function is_editing_email( $email = null ) {
-		if ( ! $this->is_on_section() ) {
-			return false;
-		}
-
 		// Get `section` query string from URL.
 		$editing_email  = tribe_get_request_var( 'section' );
 
@@ -276,7 +253,7 @@ class Emails_Tab {
 
 		return array_merge( $back_link, $settings, $hidden_fields );
 	}
-	
+
 	/**
 	 * Filters the redirect URL to include section, if applicable.
 	 *
