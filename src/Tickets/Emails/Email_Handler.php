@@ -9,6 +9,8 @@
 
 namespace TEC\Tickets\Emails;
 
+use Tribe__Tickets__Main;
+
 /**
  * Class Email_Handler.
  *
@@ -26,15 +28,6 @@ class Email_Handler extends \tad_DI52_ServiceProvider {
 	 * @var string
 	 */
 	const POSTTYPE = 'tec_tickets_emails';
-
-	/**
-	 * Version number for custom post types.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	const VERSION = '1.0.0';
 
 	/**
 	 * Registered emails.
@@ -176,7 +169,7 @@ class Email_Handler extends \tad_DI52_ServiceProvider {
 			'meta_input'  => [
 				'email_recipient' => $email->recipient,
 				'email_template'  => $email->template,
-				'email_version'   => static::VERSION,
+				'email_version'   => Tribe__Tickets__Main::VERSION,
 			],
 		];
 		wp_insert_post( $args );
