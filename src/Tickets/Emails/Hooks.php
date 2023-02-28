@@ -64,7 +64,6 @@ class Hooks extends tad_DI52_ServiceProvider {
 		add_filter( 'tec_tickets_emails_settings_fields', [ $this, 'filter_add_template_list' ] );
 		add_filter( 'tec_tickets_emails_settings_fields', [ $this, 'filter_add_sender_info_fields' ] );
 		add_filter( 'tec_tickets_emails_settings_fields', [ $this, 'filter_add_email_styling_fields' ] );
-		add_filter( 'tec_tickets_emails_settings_fields', [ $this, 'filter_add_settings_per_email' ] );
 
 		// Hook the `Tickets Emails` preview for the AJAX requests.
 		add_filter( 'tribe_tickets_admin_manager_request', [ $this, 'filter_add_preview_modal_content' ], 15, 2 );
@@ -197,19 +196,6 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 */
 	public function filter_add_email_styling_fields( $fields ) {
 		return $this->container->make( Admin\Settings::class )->email_styling_fields( $fields );
-	}
-
-	/**
-	 * Filter to add emails fields.
-	 *
-	 * @since TBD
-	 *
-	 * @param array $fields Current array of Tickets Emails settings fields.
-	 *
-	 * @return array $fields Filtered array of Tickets Emails settings fields.
-	 */
-	public function filter_add_settings_per_email( $fields ) {
-		return $this->container->make( Email_Handler::class )->add_settings_per_email( $fields );
 	}
 
 	/**
