@@ -356,9 +356,9 @@ abstract class Email_Abstract {
 
 	/**
 	 * Get post object of email.
-	 * 
+	 *
 	 * @since TBD
-	 * 
+	 *
 	 * @return WP_Post|null;
 	 */
 	public function get_post() {
@@ -367,16 +367,16 @@ abstract class Email_Abstract {
 
 	/**
 	 * Get edit URL.
-	 * 
+	 *
 	 * @since TBD
-	 * 
+	 *
 	 * @return string
 	 */
 	public function get_edit_url() {
 		// Force the `emails` tab.
 		$args = [
-			'tab'                    => Emails_Tab::$slug,
-			'section'                => $this->id,
+			'tab'     => Emails_Tab::$slug,
+			'section' => $this->id,
 		];
 
 		// Use the settings page get_url to build the URL.

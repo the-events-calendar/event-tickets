@@ -141,7 +141,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 
 	/**
 	 * Get default email heading.
-	 * 
+	 *
 	 * @since TBD
 	 *
 	 * @return string
@@ -180,7 +180,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 
 	/**
 	 * Get default email subject.
-	 * 
+	 *
 	 * @since TBD
 	 *
 	 * @return string
