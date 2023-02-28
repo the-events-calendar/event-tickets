@@ -15,5 +15,9 @@ if ( empty( $email ) ) {
 
 ?>
 <div class="tec-tickets__admin-settings-emails-template-list-item-recipient">
-	<?php echo esc_html__( 'To:', 'event-tickets' ); ?> <?php echo esc_html( $email->recipient ); ?>
+	<?php echo sprintf( 
+			// Translators: %s: The email recipient.
+			esc_html__( 'To: %s', 'event-tickets' ), 
+			esc_html( $email->recipient )
+		); ?>
 </div>
