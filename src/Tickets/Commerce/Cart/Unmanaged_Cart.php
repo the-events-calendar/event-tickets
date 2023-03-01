@@ -125,6 +125,7 @@ class Unmanaged_Cart implements Cart_Interface {
 		$this->set_hash( null );
 		delete_transient( Commerce\Cart::get_transient_name( $cart_hash ) );
 		tribe( Commerce\Cart::class )->set_cart_hash_cookie( $cart_hash );
+		$this->items = [];
 	}
 
 	/**
