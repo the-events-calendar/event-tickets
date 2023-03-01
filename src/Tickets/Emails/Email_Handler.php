@@ -53,7 +53,7 @@ class Email_Handler extends \tad_DI52_ServiceProvider {
 	 * @since TBD
 	 */
 	public function register() {
-		foreach ( $this->default_emails as $email_class ) {
+		foreach ( $this->get_emails() as $email_class ) {
 			// Spawn the new instance.
 			$email = new $email_class;
 
@@ -88,15 +88,34 @@ class Email_Handler extends \tad_DI52_ServiceProvider {
 	 *
 	 * @return Email_Abstract[]
 	 */
-	public function get_all() {
+	public function get_emails() {
+		$emails = array_merge( $this->emails, $this->get_default_emails() );
 		/**
-		 * Filter the array of email classses that will be used.
+		 * Filter the array of email classes that will be used.
 		 *
 		 * @since TBD
 		 *
 		 * @param array $emails Array of email classes.
 		 */
-		return apply_filters( 'tec_tickets_emails_email_classes', $this->emails );
+		return apply_filters( 'tec_tickets_emails_registered_emails', $emails );
+	}
+
+	/**
+	 * Gets the default emails.
+	 *
+	 * @since TBD
+	 *
+	 * @return Email_Abstract[]
+	 */
+	public function get_default_emails() {
+		/**
+		 * Filter the array of default emails.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $emails Array of default email classes.
+		 */
+		return apply_filters( 'tec_tickets_emails_default_emails', $this->default_emails );
 	}
 
 	/**
@@ -138,7 +157,7 @@ class Email_Handler extends \tad_DI52_ServiceProvider {
 	 * @return void
 	 */
 	public function maybe_populate_tec_tickets_emails_post_type() {
-		$emails = $this->get_all();
+		$emails = $this->get_emails();
 
 		// iterate on emails, check if exists by slug and create if not.
 		foreach ( $emails as $email_class ) {
@@ -185,7 +204,7 @@ class Email_Handler extends \tad_DI52_ServiceProvider {
 			return $fields;
 		}
 
-		$emails = $this->get_all();
+		$emails = $this->get_emails();
 
 		foreach ( $emails as $email ) {
 			// if ( ! tribe( Admin\Emails_Tab::class )->is_on_section( $email->id ) ) { // @todo @codingmusician: We need to implement the section logic for emails tab.
