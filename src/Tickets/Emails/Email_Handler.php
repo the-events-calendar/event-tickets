@@ -53,7 +53,7 @@ class Email_Handler extends \tad_DI52_ServiceProvider {
 	 * @since TBD
 	 */
 	public function register() {
-		foreach ( $this->get_emails() as $email_class ) {
+		foreach ( $this->get_default_emails() as $email_class ) {
 			// Spawn the new instance.
 			$email = new $email_class;
 
@@ -89,7 +89,6 @@ class Email_Handler extends \tad_DI52_ServiceProvider {
 	 * @return Email_Abstract[]
 	 */
 	public function get_emails() {
-		$emails = array_merge( $this->emails, $this->get_default_emails() );
 		/**
 		 * Filter the array of email classes that will be used.
 		 *
@@ -97,7 +96,7 @@ class Email_Handler extends \tad_DI52_ServiceProvider {
 		 *
 		 * @param array $emails Array of email classes.
 		 */
-		return apply_filters( 'tec_tickets_emails_registered_emails', $emails );
+		return apply_filters( 'tec_tickets_emails_registered_emails', $this->emails );
 	}
 
 	/**
