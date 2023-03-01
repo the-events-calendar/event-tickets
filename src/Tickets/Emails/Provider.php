@@ -39,16 +39,12 @@ class Provider extends tad_DI52_ServiceProvider {
 		$this->container->singleton( 'tickets.emails.provider', $this );
 
 		$this->container->singleton( Admin\Emails_Tab::class );
-		$this->container->singleton( 'tickets.emails.emails-tab', Admin\Emails_Tab::class );
 
 		$this->container->singleton( Admin\Preview_Modal::class );
-		$this->container->singleton( 'tickets.emails.admin.preview-modal', Admin\Preview_Modal::class );
 
 		$this->container->register( Email_Handler::class );
-		$this->container->singleton( 'tickets.emails.email-handler', Email_Handler::class );
 
 		$this->container->singleton( Web_View::class );
-		$this->container->singleton( 'tickets.emails.web-view', $this );
 	}
 
 	/**

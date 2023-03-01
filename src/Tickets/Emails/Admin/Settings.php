@@ -128,7 +128,7 @@ class Settings {
 
 		$template = $this->get_template();
 
-		$emails = tribe( Email_Handler::class )->get_all();
+		$emails = tribe( Email_Handler::class )->get_emails();
 
 		$new_fields = [
 			[
