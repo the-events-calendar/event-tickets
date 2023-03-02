@@ -387,6 +387,12 @@ class Tribe__Tickets__Main {
 
 		// Admin provider.
 		tribe_register_provider( \Tribe\Tickets\Admin\Provider::class );
+
+		// Set up Site Health
+		tribe_register_provider( TEC\Tickets\Site_Health\Provider::class );
+
+		// Set up Telemetry
+		tribe_register_provider( TEC\Tickets\Telemetry\Provider::class );
 	}
 
 	/**
