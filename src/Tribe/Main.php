@@ -298,7 +298,7 @@ class Tribe__Tickets__Main {
 		$this->init_autoloading();
 
 		// Start Up Common.
-		Tribe__Main::instance();
+		Tribe__Main::instance()->set_parent_plugin_file( EVENT_TICKETS_MAIN_PLUGIN_FILE );
 
 		add_action( 'tribe_common_loaded', [ $this, 'bootstrap' ], 0 );
 
