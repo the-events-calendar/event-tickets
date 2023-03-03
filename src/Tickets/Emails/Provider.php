@@ -42,6 +42,8 @@ class Provider extends tad_DI52_ServiceProvider {
 		$this->container->singleton( Admin\Preview_Modal::class );
 		$this->container->singleton( 'tickets.emails.admin.preview-modal', $this );
 
+		$this->container->register( Tags\Provider::class );
+
 	}
 
 	/**

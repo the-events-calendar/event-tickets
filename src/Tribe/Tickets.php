@@ -2281,6 +2281,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return string
 		 */
 		public function generate_tickets_email_content( $tickets ) {
+
+			if ( stellarwp_pigeon_is_enabled() ) {
+				return tribe( \StellarWP\Pigeon\Delivery\Envelope::class )->package( 'tickets/email', null, [ 'tickets' => $tickets ] );
+			}
+
 			return tribe_tickets_get_template_part( 'tickets/email', null, [ 'tickets' => $tickets ], false );
 		}
 
