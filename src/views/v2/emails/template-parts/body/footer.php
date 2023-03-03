@@ -20,7 +20,7 @@
  * @var string $header_text_color Header text color.
  */
 
-if ( empty( $footer_content ) || empty( $footer_credit ) ) {
+if ( empty( $footer_content ) && empty( $footer_credit ) ) {
 	return;
 }
 ?>
