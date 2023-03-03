@@ -18,6 +18,7 @@
 namespace TEC\Tickets\Emails;
 
 use \tad_DI52_ServiceProvider;
+use TEC\Tickets\Emails\Admin\Emails_Tab;
 
 /**
  * Class Hooks.
@@ -45,6 +46,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 */
 	protected function add_actions() {
 		add_action( 'init', [ $this, 'action_register_post_type' ] );
+		add_action( 'init', [ $this, 'action_maybe_populate_email_post_types' ] );
 		add_action( 'tribe_settings_do_tabs', [ $this, 'register_emails_tab' ], 17 );
 		add_action( 'tribe_settings_after_form_element_tab_emails', [ $this, 'action_add_preview_modal_button' ] );
 		add_action( 'admin_footer', [ $this, 'action_add_preview_modal' ] );
@@ -62,10 +64,24 @@ class Hooks extends tad_DI52_ServiceProvider {
 		add_filter( 'tec_tickets_emails_settings_fields', [ $this, 'filter_add_template_list' ] );
 		add_filter( 'tec_tickets_emails_settings_fields', [ $this, 'filter_add_sender_info_fields' ] );
 		add_filter( 'tec_tickets_emails_settings_fields', [ $this, 'filter_add_email_styling_fields' ] );
-		add_filter( 'tec_tickets_emails_settings_fields', [ $this, 'filter_add_settings_per_email' ] );
 
 		// Hook the `Tickets Emails` preview for the AJAX requests.
 		add_filter( 'tribe_tickets_admin_manager_request', [ $this, 'filter_add_preview_modal_content' ], 15, 2 );
+
+		add_filter( 'wp_redirect', [ $this, 'filter_redirect_url' ] );
+	}
+
+	/**
+	 * Filters the redirect URL to determine whether or not section key needs to be added.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $url Redirect URL.
+	 *
+	 * @return string
+	 */
+	public function filter_redirect_url( $url ) {
+		return $this->container->make( Emails_Tab::class )->filter_redirect_url( $url );
 	}
 
 	/**
@@ -76,6 +92,16 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 */
 	public function action_register_post_type() {
 		$this->container->make( Email_Handler::class )->register_post_type();
+	}
+
+	/**
+	 * Action to possibly create default email post types.
+	 *
+	 * @since TBD
+	 *
+	 */
+	public function action_maybe_populate_email_post_types() {
+		$this->container->make( Email_Handler::class )->maybe_populate_tec_tickets_emails_post_type();
 	}
 
 	/**
@@ -170,19 +196,6 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 */
 	public function filter_add_email_styling_fields( $fields ) {
 		return $this->container->make( Admin\Settings::class )->email_styling_fields( $fields );
-	}
-
-	/**
-	 * Filter to add emails fields.
-	 *
-	 * @since TBD
-	 *
-	 * @param array $fields Current array of Tickets Emails settings fields.
-	 *
-	 * @return array $fields Filtered array of Tickets Emails settings fields.
-	 */
-	public function filter_add_settings_per_email( $fields ) {
-		return $this->container->make( Email_Handler::class )->add_settings_per_email( $fields );
 	}
 
 	/**

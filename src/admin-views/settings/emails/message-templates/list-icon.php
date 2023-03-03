@@ -1,23 +1,20 @@
 <?php
 /**
- * Tickets Emails Message Template List Icon
+ * Tickets Emails List Icon
  *
- * @since  5.5.6   Icon (checkmark) for list item of email message templates for Emails settings tab.
+ * @since  5.5.6   Icon (checkmark) for list item of email templates for Emails settings tab.
  *
- * @var Array[]  $templates  Array of template info.
- * @var Array    $template   Template info.
+ * @var Email_Abstract[]  $emails  Array of email info.
+ * @var Email_Abstract    $email   Email info.
  */
 
-// @todo $templates variable will be an array of Message_Template objects in the future.
-// @todo $template variable will be a Message_Template object in the future.
-
-// If no template, bail.
-if ( empty( $template ) ) {
+// If no email, bail.
+if ( empty( $email ) ) {
 	return;
 }
 
 $icon_classes   = [ 'dashicons' ];
-$icon_classes[] = tribe_is_truthy( $template['enabled'] ) ? 'dashicons-yes' : '';
+$icon_classes[] = $email->is_enabled() ? 'dashicons-yes' : '';
 
 ?>
 <div class="tec-tickets__admin-settings-emails-template-list-item-icon">

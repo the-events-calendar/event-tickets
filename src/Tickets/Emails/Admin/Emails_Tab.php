@@ -9,6 +9,7 @@
 
 namespace TEC\Tickets\Emails\Admin;
 
+use TEC\Tickets\Emails\Email_Handler;
 use Tribe\Tickets\Admin\Settings as Plugin_Settings;
 use \Tribe__Template;
 use Tribe__Tickets__Main;
@@ -30,6 +31,24 @@ class Emails_Tab {
 	 * @var string
 	 */
 	public static $slug = 'emails';
+	
+	/**
+	 * Holder for template object.
+	 *
+	 * @since TBD
+	 *
+	 * @var null|Tribe_Template
+	 */
+	protected $template;
+
+	/**
+	 * Key to determine current section.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $key_current_section = 'tec_tickets_emails_current_section';
 
 	/**
 	 * Create the Tickets Commerce Emails Settings Tab.
@@ -118,21 +137,6 @@ class Emails_Tab {
 	}
 
 	/**
-	 * Determine if is on a "section" of the "emails" tab.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $section The section.
-	 *
-	 * @return boolean True when on `emails` tab and on `section`
-	 */
-	public function is_on_section( $section = '' ): bool {
-		$settings = tribe( Plugin_Settings::class );
-
-		return $settings->is_on_tab_section( self::$slug, $section );
-	}
-
-	/**
 	 * Gets the top level settings for Tickets Commerce.
 	 *
 	 * @since 5.5.6
@@ -140,6 +144,12 @@ class Emails_Tab {
 	 * @return array[]
 	 */
 	public function get_fields(): array {
+
+		// Check to see if we're editing an email, first.
+		if ( $this->is_editing_email() ) {
+			return $this->get_email_settings();
+		}
+
 		$fields = [];
 		$fields['tribe-form-content-start'] = [
 			'type' => 'html',
@@ -171,5 +181,119 @@ class Emails_Tab {
 		 * @param array[] $fields Top level settings.
 		 */
 		return apply_filters( 'tec_tickets_emails_settings_fields', $fields );
+	}
+
+	/**
+	 * Check if currently editing email.
+	 * 
+	 * @since TBD
+	 *
+	 * @param Email_Abstract $email
+	 * 
+	 * @return boolean
+	 */
+	public function is_editing_email( $email = null ) {
+		// Get `section` query string from URL.
+		$editing_email  = tribe_get_request_var( 'section' );
+
+		// If email wasn't passed, just return whether or not string is empty.
+		if ( empty( $email ) ) {
+			return ! empty( $editing_email );
+		}
+
+		// Otherwise, return whether or not supplied email is being edited.
+		return $email->id === $editing_email;
+	}
+
+	/**
+	 * Get email settings.
+	 *
+	 * @since TBD
+	 * 
+	 * @return array|null Settings array
+	 */
+	public function get_email_settings() {
+		$email_id  = tribe_get_request_var( 'section' );
+		$email = tribe( Email_Handler::class )->get_email_by_id( $email_id );
+		
+		$back_link = [
+			[
+				'type' => 'html',
+				'html' => $this->get_template()->template( 'back-link', 
+					[
+						'text' => __( 'Back to Email Settings', 'event-tickets' ),
+						'url'  => $this->get_url(),
+					], 
+					false ),
+			]
+		];
+
+		if ( ! $email ) {
+			return array_merge( $back_link, [
+				[
+					'type' => 'html',
+					'html' => '<p>' . esc_html__( 'Invalid email id selected.', 'event-tickets' ) . '</p>',
+				]
+			] );
+		}
+
+		$hidden_fields = [
+			[
+				'type' => 'html',
+				'html' => sprintf(
+					'<input type="hidden" name="%s" id="%s" value="%s" />',
+					esc_attr( static::$key_current_section ),
+					esc_attr( static::$key_current_section ),
+					esc_attr( $email_id )
+				)
+			]
+		];
+
+		$settings = $email->get_settings();
+
+		return array_merge( $back_link, $settings, $hidden_fields );
+	}
+
+	/**
+	 * Filters the redirect URL to include section, if applicable.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $url URL of redirection.
+	 *
+	 * @return string
+	 */
+	public function filter_redirect_url( $url ) {
+		if ( ! is_admin() ) {
+			return $url;
+		}
+
+		$tab  = tribe_get_request_var( 'tab' );
+		$page = tribe_get_request_var( 'page' );
+
+		if ( empty( $tab ) || empty( $page ) ) {
+			return $url;
+		}
+
+		if ( empty( $_SERVER['REQUEST_METHOD'] ) || 'POST' !== strtoupper( $_SERVER['REQUEST_METHOD'] ) ) {
+			return $url;
+		}
+
+		if ( Plugin_Settings::$settings_page_id !== $page ) {
+			return $url;
+		}
+
+		if ( static::$slug !== $tab ) {
+			return $url;
+		}
+
+		$email_id = tribe_get_request_var( 'section' );
+		if ( empty( $email_id ) ) {
+			return $url;
+		}
+
+		return add_query_arg( [
+			'section'            => $email_id,
+		], $url );
 	}
 }

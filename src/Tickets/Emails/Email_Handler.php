@@ -9,6 +9,8 @@
 
 namespace TEC\Tickets\Emails;
 
+use Tribe__Tickets__Main;
+
 /**
  * Class Email_Handler.
  *
@@ -185,34 +187,29 @@ class Email_Handler extends \tad_DI52_ServiceProvider {
 			'meta_input'  => [
 				'email_recipient' => $email->recipient,
 				'email_template'  => $email->template,
-				'email_version'   => $email->version,
+				'email_version'   => Tribe__Tickets__Main::VERSION,
 			],
 		];
 		wp_insert_post( $args );
 	}
 
 	/**
-	 * Add per email setting fields.
+	 * Get email by ID.
 	 *
-	 * @param array $fields The fields.
+	 * @since TBD
 	 *
-	 * @return array $fields
+	 * @param string $id ID of email.
+	 *
+	 * @return Email_Abstract|boolean Email object or false if it does not exist.
 	 */
-	public function add_settings_per_email( array $fields ): array {
-		if ( ! tribe( Admin\Emails_Tab::class )->is_on_tab() ) {
-			return $fields;
-		}
-
+	public function get_email_by_id( $id ) {
 		$emails = $this->get_emails();
 
 		foreach ( $emails as $email ) {
-			// if ( ! tribe( Admin\Emails_Tab::class )->is_on_section( $email->id ) ) { // @todo @codingmusician: We need to implement the section logic for emails tab.
-			//	continue;
-			// }
-			// $fields = array_merge( $fields, $email->get_settings() );
+			if ( $email->id === $id ) {
+				return $email;
+			}
 		}
-
-		return $fields;
+		return false;
 	}
-
 }
