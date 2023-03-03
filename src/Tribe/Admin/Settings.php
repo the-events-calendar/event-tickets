@@ -88,8 +88,8 @@ class Settings {
 		}
 
 		return sprintf(
-			// Translators: %s is the `Tickets` in plural.
-			__( '%s Settings', 'event-tickets' ),
+			// Translators: %1$s is the `Tickets` in plural.
+			__( '%1$s Settings', 'event-tickets' ),
 			tribe_get_ticket_label_plural( 'tec_tickets_settings_title' )
 		);
 	}

@@ -194,10 +194,11 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 * Tweak - Code maintenance for the attendees screen. [ET-1635]
 * Tweak - Save activation time for Event Tickets. [ET-1639]
+* Tweak - Added wrapper method to fetch RSVP ticket not going option data. [ETP-843]
 * Tweak - Save last check-in time for tickets scanned via the Event Tickets Plus APP. [ET-1640]
 * Fix - Fixed shared capacity ticket counts not showing properly on calendar views. [ETP-851]
 * Fix - Fixed attendee ticket title for moved TicketsCommerce tickets. [ET-1611]
-* Tweak - Added wrapper method to fetch RSVP ticket not going option data. [ETP-843]
+* Fix - Fixed fatal error on the Tickets Settings page when site language was set to Italian. [ET-1645]
 
 = [5.5.8] 2023-02-22 =
 
