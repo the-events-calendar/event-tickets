@@ -1,0 +1,365 @@
+<?php
+/**
+ * Tickets Emails Email abstract class.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Emails
+ */
+
+namespace TEC\Tickets\Emails;
+
+use WP_Post;
+use TEC\Tickets\Emails\Admin\Settings as Emails_Settings;
+
+/**
+ * Class Email_Abstract.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Emails
+ */
+abstract class Email_Abstract {
+
+	/**
+	 * Email ID.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public $id;
+
+	/**
+	 * Email template filename.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public $template;
+
+	/**
+	 * Email recipient.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public $recipient;
+
+	/**
+	 * Email title.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public $title;
+
+	/**
+	 * Email version number.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public $version;
+
+	/**
+	 * Email subject.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public $subject = '';
+
+	/**
+	 * Strings to find/replace in subjects/headings.
+	 *
+	 * @since TBD
+	 *
+	 * @var array
+	 */
+	protected $placeholders = [];
+
+	/**
+	 * Handles the hooking of a given email to the correct actions in WP.
+	 *
+	 * @since TBD
+	 */
+	public function hook() {
+		$this->placeholders = array_merge(
+			[
+				'{site_title}'   => $this->get_blogname(),
+				'{site_address}' => wp_parse_url( home_url(), PHP_URL_HOST ),
+				'{site_url}'     => wp_parse_url( home_url(), PHP_URL_HOST ),
+			],
+			$this->get_placeholders()
+		);
+	}
+
+	/**
+	 * Get email subject.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	abstract public function get_subject(): string;
+
+	/**
+	 * Get email title.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	abstract public function get_title(): string;
+
+	/**
+	 * Get email heading.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	abstract public function get_heading(): string;
+
+	/**
+	 * Get email attachments.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	abstract public function is_enabled(): bool;
+
+	/**
+	 * Get the post type data for the email.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	abstract public function get_post_type_data(): array;
+
+	/**
+	 * Get the settings for the email.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	abstract public function get_settings(): array;
+
+	/**
+	 * Get the email content.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $args The arguments.
+	 *
+	 * @return string
+	 */
+	abstract public function get_content( $args = [] ): string;
+
+	/**
+	 * Get the "From" email.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The "from" email.
+	 */
+	public function get_from_email(): string {
+		$from_email = tribe_get_option( Emails_Settings::$option_sender_email, tribe( Emails_Settings::class )->get_default_sender_email() );
+
+		/**
+		 * Filter the from email.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $from_email The "from" email.
+		 * @param string $id The email ID.
+		 */
+		$from_email = apply_filters( 'tec_tickets_emails_from_email', $from_email, $this->id );
+
+		return $from_email;
+	}
+
+	/**
+	 * Get the "From" name.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The "from" name.
+	 */
+	public function get_from_name(): string {
+		$from_name = tribe_get_option( Emails_Settings::$option_sender_name, tribe( Emails_Settings::class )->get_default_sender_name() );
+
+		/**
+		 * Filter the from name.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $from_email The "from" name.
+		 * @param string $id The email ID.
+		 */
+		$from_name = apply_filters( 'tec_tickets_emails_from_name', $from_name, $this->id );
+
+		return $from_name;
+	}
+
+	/**
+	 * Get email headers.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $headers The email headers.
+	 *
+	 * @return string
+	 */
+	public function get_headers( $headers = [] ): array {
+		$from_email = $this->get_from_email();
+		$from_name  = $this->get_from_name();
+
+		// Enforce headers array.
+		if ( ! is_array( $headers ) ) {
+			$headers = explode( "\r\n", $headers );
+		}
+
+		// Add From name/email to headers if no headers set yet and we have a valid From email address.
+		if ( empty( $headers ) && ! empty( $from_name ) && ! empty( $from_email ) && is_email( $from_email ) ) {
+			$from_email = filter_var( $from_email, FILTER_SANITIZE_EMAIL );
+
+			$headers[] = sprintf(
+				'From: %1$s <%2$s>',
+				stripcslashes( $from_name ),
+				$from_email
+			);
+
+			$headers[] = sprintf(
+				'Reply-To: %s',
+				$from_email
+			);
+		}
+
+		// Enforce text/html content type header.
+		if ( ! in_array( 'Content-type: text/html', $headers, true ) || ! in_array( 'Content-type: text/html; charset=utf-8', $headers, true ) ) {
+			$headers[] = 'Content-type: text/html; charset=utf-8';
+		}
+
+		/**
+		 * Filter the headers.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $headers The headers.
+		 * @param string $id The email ID.
+		 */
+		$headers = apply_filters( 'tec_tickets_emails_headers', $headers, $this->id );
+
+		return $headers;
+	}
+
+	/**
+	 * Get email attachments.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $attachments The attachments.
+	 *
+	 * @return array
+	 */
+	public function get_attachments( $attachments = [] ): array {
+
+		/**
+		 * Filter the attachments.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $attachments The attachments.
+		 * @param string $id The email ID.
+		 */
+		$attachments = apply_filters( 'tec_tickets_emails_attachments', $attachments, $this->id );
+
+		return $attachments;
+	}
+
+	/**
+	 * Get email placeholders.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_placeholders(): array {
+		/**
+		 * Filter the placeholders.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $placeholders The placeholders.
+		 * @param string $id The email ID.
+		 */
+		$placeholders = apply_filters( 'tec_tickets_emails_placeholders', $this->placeholders, $this->id );
+
+		return $placeholders;
+	}
+
+	/**
+	 * Format email string.
+	 *
+	 * @param mixed $string Text to replace placeholders in.
+	 * @return string
+	 */
+	public function format_string( $string ): string {
+		$find    = array_keys( $this->placeholders );
+		$replace = array_values( $this->placeholders );
+
+		/**
+		 * Filter the formatted email string.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $string The formatted string.
+		 * @param string $id The email id.
+		 */
+		return apply_filters( 'tec_tickets_emails_format_string', str_replace( $find, $replace, $string ), $this->id );
+	}
+
+	/**
+	 * Get WordPress blog name.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_blogname(): string {
+		return wp_specialchars_decode( get_option( 'blogname' ), ENT_QUOTES );
+	}
+
+	/**
+	 * Default content to show below email content.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_additional_content(): string {
+		$additional_content = '';
+		return $this->format_string( $additional_content );
+	}
+
+	/**
+	 * Get post object of email.
+	 * 
+	 * @since TBD
+	 * 
+	 * @return WP_Post|null;
+	 */
+	public function get_post() {
+		return get_page_by_path( $this->id, OBJECT, Email_Handler::POSTTYPE );
+	}
+}
