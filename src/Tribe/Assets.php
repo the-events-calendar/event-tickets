@@ -357,7 +357,7 @@ class Tribe__Tickets__Assets {
 			[ 'tec-variables-full' ],
 			null,
 			[
-				'groups' => [ 
+				'groups' => [
 					'event-tickets-admin-attendees',
 				],
 			]
@@ -434,6 +434,21 @@ class Tribe__Tickets__Assets {
 				'groups' => [
 					'event-tickets-admin-attendees',
 				],
+			]
+		);
+
+		// WP Admin and admin bar.
+		tribe_asset(
+			$tickets_main,
+			'tec-tickets-admin-wp',
+			'tickets-admin-wp.css',
+			[ 'dashicons' ],
+			[
+				'admin_enqueue_scripts',
+				'wp_enqueue_scripts',
+			],
+			[
+				'conditionals' => [ $this, 'should_enqueue_admin_wp' ],
 			]
 		);
 	}
@@ -614,6 +629,17 @@ class Tribe__Tickets__Assets {
 
 		// If views V2 are in place, we respect the skeleton setting.
 		return ! tribe( Tribe\Events\Views\V2\Assets::class )->is_skeleton_style();
+	}
+
+	/**
+	 * Check if we should enqueue the Event Tickets WP admin assets.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool True if we should enqueue the assets, false otherwise.
+	 */
+	public function should_enqueue_admin_wp(): bool {
+		return is_admin() || is_admin_bar_showing();
 	}
 
 }

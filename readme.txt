@@ -192,6 +192,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [TBD] TBD =
 
+* Enhancement - Add the Attendee count for the site to the `At a Glance` admin widget. [ET-1654]
+
+= [TBD] TBD =
+
 * Tweak - Code maintenance for the attendees screen. [ET-1635]
 * Tweak - Save activation time for Event Tickets. [ET-1639]
 * Tweak - Added wrapper method to fetch RSVP ticket not going option data. [ETP-843]
