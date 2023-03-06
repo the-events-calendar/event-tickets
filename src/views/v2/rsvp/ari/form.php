@@ -18,6 +18,9 @@
  * @version 5.0.0
  */
 
+// Ensure $going is not undefined in Ajax call.
+$going = isset( $going ) ?: null;
+
 ?>
 <div class="tribe-tickets__rsvp-ar-form">
 
