@@ -111,7 +111,7 @@ class Settings {
 	/**
 	 * Check if the current page is on a specific tab for the Tickets settings.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @param string $tab The tab name.
 	 *
@@ -128,7 +128,7 @@ class Settings {
 	/**
 	 * Check if the current page is on a specific tab for the Tickets settings.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @param string $tab The tab name.
 	 * @param string $section The section name.

@@ -2,7 +2,7 @@
 /**
  * Event Attendees screen.
  *
- * @since  TBD
+ * @since  5.5.9
  *
  * @var Tribe_Template            $this      Current template object.
  * @var int                       $event_id  The event/post/page id.

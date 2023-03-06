@@ -74,7 +74,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Filters the redirect URL to determine whether or not section key needs to be added.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @param string $url Redirect URL.
 	 *
@@ -87,7 +87,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Action to register the post type with emails.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 */
 	public function action_register_post_type() {
@@ -97,7 +97,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Action to possibly create default email post types.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 */
 	public function action_maybe_populate_email_post_types() {
@@ -149,7 +149,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Filter to maybe add the upgrade option.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @param  array $fields Current array of Tickets Emails settings fields.
 	 *
@@ -219,7 +219,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Manage the redirect to view emails via web.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @return void
 	 */

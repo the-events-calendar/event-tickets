@@ -19,7 +19,7 @@ class Settings {
 	/**
 	 * The option key for enabling the feature and upgrading.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @var string
 	 */
@@ -330,7 +330,7 @@ class Settings {
 	 * Maybe add the upgrade option. Only for installs that are previous to the
 	 * version in which we introduce Tickets Emails.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @param  array $fields Current array of Tickets Emails settings fields.
 	 *
