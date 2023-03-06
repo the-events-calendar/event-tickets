@@ -13,7 +13,7 @@ use WP_Post;
 /**
  * Class Ticket
  *
- * @since TBD
+ * @since 5.5.9
  *
  * @package TEC\Tickets\Emails
  */
@@ -22,7 +22,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Email ID.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @var string
 	 */
@@ -31,7 +31,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Email template.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @var string
 	 */
@@ -40,7 +40,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Email recipient.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @var string
 	 */
@@ -49,7 +49,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Enabled option key.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @var string
 	 */
@@ -58,7 +58,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Subject option key.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @var string
 	 */
@@ -67,7 +67,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Email heading option key.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @var string
 	 */
@@ -76,7 +76,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Email heading option key.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @var string
 	 */
@@ -85,7 +85,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Checks if this email is enabled.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @return bool
 	 */
@@ -96,7 +96,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Checks if this email is sent to customer.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @return bool
 	 */
@@ -107,7 +107,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Get email title.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @return string The email title.
 	 */
@@ -119,7 +119,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Get email heading.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @return string The email heading.
 	 */
@@ -129,7 +129,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 		/**
 		 * Allow filtering the email heading.
 		 *
-		 * @since TBD
+		 * @since 5.5.9
 		 *
 		 * @param string $heading  The email heading.
 		 * @param string $id       The email id.
@@ -142,7 +142,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Get default email heading.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @return string
 	 */
@@ -153,7 +153,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Get email subject.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @return string The email subject.
 	 */
@@ -168,7 +168,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 		/**
 		 * Allow filtering the email subject.
 		 *
-		 * @since TBD
+		 * @since 5.5.9
 		 *
 		 * @param string $subject  The email subject.
 		 * @param string $id       The email id.
@@ -181,7 +181,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Get default email subject.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @return string
 	 */
@@ -192,7 +192,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Get email content.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @param array $args The arguments.
 	 *
@@ -214,7 +214,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Get email settings.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @return array
 	 */
@@ -282,7 +282,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Get the `post_type` data for this email.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @return array
 	 */

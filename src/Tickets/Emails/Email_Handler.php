@@ -2,7 +2,7 @@
 /**
  * Tickets Emails Handler.
  *
- * @since TBD
+ * @since 5.5.9
  *
  * @package TEC\Tickets\Emails
  */
@@ -14,7 +14,7 @@ use Tribe__Tickets__Main;
 /**
  * Class Email_Handler.
  *
- * @since TBD
+ * @since 5.5.9
  *
  * @package TEC\Tickets\Emails
  */
@@ -23,7 +23,7 @@ class Email_Handler extends \tad_DI52_ServiceProvider {
 	/**
 	 * Event Tickets Emails post type.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @var string
 	 */
@@ -32,7 +32,7 @@ class Email_Handler extends \tad_DI52_ServiceProvider {
 	/**
 	 * Registered emails.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @var Email_Abstract[]
 	 */
@@ -41,7 +41,7 @@ class Email_Handler extends \tad_DI52_ServiceProvider {
 	/**
 	 * Emails
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @var string[]
 	 */
@@ -52,7 +52,7 @@ class Email_Handler extends \tad_DI52_ServiceProvider {
 	/**
 	 * Binds and sets up implementations.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 */
 	public function register() {
 		foreach ( $this->get_default_emails() as $email_class ) {
@@ -74,7 +74,7 @@ class Email_Handler extends \tad_DI52_ServiceProvider {
 	/**
 	 * Register a given email into the Handler, and hook the handling to WP.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @param Email_Abstract $email Which email we are registering.
 	 */
@@ -86,7 +86,7 @@ class Email_Handler extends \tad_DI52_ServiceProvider {
 	/**
 	 * Gets the registered emails.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @return Email_Abstract[]
 	 */
@@ -94,7 +94,7 @@ class Email_Handler extends \tad_DI52_ServiceProvider {
 		/**
 		 * Filter the array of email classes that will be used.
 		 *
-		 * @since TBD
+		 * @since 5.5.9
 		 *
 		 * @param array $emails Array of email classes.
 		 */
@@ -104,7 +104,7 @@ class Email_Handler extends \tad_DI52_ServiceProvider {
 	/**
 	 * Gets the default emails.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @return Email_Abstract[]
 	 */
@@ -112,7 +112,7 @@ class Email_Handler extends \tad_DI52_ServiceProvider {
 		/**
 		 * Filter the array of default emails.
 		 *
-		 * @since TBD
+		 * @since 5.5.9
 		 *
 		 * @param array $emails Array of default email classes.
 		 */
@@ -122,7 +122,7 @@ class Email_Handler extends \tad_DI52_ServiceProvider {
 	/**
 	 * Register post type.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 */
 	public function register_post_type() {
 		$post_type_args = [
@@ -141,7 +141,7 @@ class Email_Handler extends \tad_DI52_ServiceProvider {
 		 * Filter the arguments that craft the order post type.
 		 *
 		 * @see   register_post_type
-		 * @since TBD
+		 * @since 5.5.9
 		 *
 		 * @param array $post_type_args Post type arguments, passed to register_post_type()
 		 */
@@ -153,7 +153,7 @@ class Email_Handler extends \tad_DI52_ServiceProvider {
 	/**
 	 * Populate the Tickets Emails post type with the system emails.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @return void
 	 */
@@ -172,7 +172,7 @@ class Email_Handler extends \tad_DI52_ServiceProvider {
 	/**
 	 * Create system email.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @param Email_Abstract $email The email.
 	 *
@@ -196,7 +196,7 @@ class Email_Handler extends \tad_DI52_ServiceProvider {
 	/**
 	 * Get email by ID.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @param string $id ID of email.
 	 *

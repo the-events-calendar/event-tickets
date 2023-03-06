@@ -2,7 +2,7 @@
 /**
  * Tickets Emails web view.
  *
- * @since TBD
+ * @since 5.5.9
  *
  * @package TEC\Tickets\Emails
  */
@@ -14,7 +14,7 @@ use WP_Error;
 /**
  * Class Web_View
  *
- * @since   TBD
+ * @since   5.5.9
  *
  * @package TEC\Tickets\Emails
  */
@@ -23,14 +23,14 @@ class Web_View {
 	/**
 	 * The web view URL.
 	 *
-	 * @since TBD.
+	 * @since 5.5.9.
 	 */
 	public static $url_slug = 'tec-tickets-emails-web-view';
 
 	/**
 	 * Get the web view link.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @return string The email web view URL.
 	 */
@@ -49,7 +49,7 @@ class Web_View {
 	/**
 	 * Manage the redirect to generate the email on the fly.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @return void
 	 */

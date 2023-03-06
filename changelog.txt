@@ -1,6 +1,26 @@
 == Changelog ==
 
-= [5.5.7] TBD =
+= [5.5.9] 2023-03-06 =
+
+* Tweak - Code maintenance for the attendees screen. [ET-1635]
+* Tweak - Save activation time for Event Tickets. [ET-1639]
+* Tweak - Added wrapper method to fetch RSVP ticket not going option data. [ETP-843]
+* Tweak - Save last check-in time for tickets scanned via the Event Tickets Plus APP. [ET-1640]
+* Fix - Fixed shared capacity ticket counts not showing properly on calendar views. [ETP-851]
+* Fix - Fixed attendee ticket title for moved TicketsCommerce tickets. [ET-1611]
+* Fix - Fixed fatal error on the Tickets Settings page when site language was set to Italian. [ET-1645]
+
+= [5.5.8] 2023-02-22 =
+
+* Version - Event Tickets 5.5.8 is only compatible with The Events Calendar 6.0.10 and higher.
+* Version - Event Tickets 5.5.8 is only compatible with Event Tickets Plus 5.6.7 and higher.
+* Tweak - PHP version compatibility bumped to PHP 7.4
+* Tweak - Version Composer updated to 2
+* Tweak - Version Node updated to 18.13.0
+* Tweak - Version NPM update to 8.19.3
+* Tweak - Reduce JavaScript bundle sizes for Blocks editor
+
+= [5.5.7] 2023-02-09 =
 
 * Fix - Resolve provisional IDs properly on the event edit screen for ticket management actions. [ET-1632]
 * Fix - Fixed Ticket Commerce cart cookies not getting saved. [ET-1629]

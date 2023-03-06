@@ -31,11 +31,11 @@ class Emails_Tab {
 	 * @var string
 	 */
 	public static $slug = 'emails';
-	
+
 	/**
 	 * Holder for template object.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @var null|Tribe_Template
 	 */
@@ -44,7 +44,7 @@ class Emails_Tab {
 	/**
 	 * Key to determine current section.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @var string
 	 */
@@ -185,11 +185,11 @@ class Emails_Tab {
 
 	/**
 	 * Check if currently editing email.
-	 * 
-	 * @since TBD
+	 *
+	 * @since 5.5.9
 	 *
 	 * @param Email_Abstract $email
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public function is_editing_email( $email = null ) {
@@ -208,22 +208,22 @@ class Emails_Tab {
 	/**
 	 * Get email settings.
 	 *
-	 * @since TBD
-	 * 
+	 * @since 5.5.9
+	 *
 	 * @return array|null Settings array
 	 */
 	public function get_email_settings() {
 		$email_id  = tribe_get_request_var( 'section' );
 		$email = tribe( Email_Handler::class )->get_email_by_id( $email_id );
-		
+
 		$back_link = [
 			[
 				'type' => 'html',
-				'html' => $this->get_template()->template( 'back-link', 
+				'html' => $this->get_template()->template( 'back-link',
 					[
 						'text' => __( 'Back to Email Settings', 'event-tickets' ),
 						'url'  => $this->get_url(),
-					], 
+					],
 					false ),
 			]
 		];
@@ -257,7 +257,7 @@ class Emails_Tab {
 	/**
 	 * Filters the redirect URL to include section, if applicable.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @param string $url URL of redirection.
 	 *

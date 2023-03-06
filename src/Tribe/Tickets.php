@@ -1379,7 +1379,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Returns all the attendees for an event with filtered by arguments. Queries all registered providers.
 		 *
 		 * @since 4.10.6
-		 * @since TBD Move the logic to `get_attendees_by_args` and use the method to return the attendees.
+		 * @since 5.5.9 Move the logic to `get_attendees_by_args` and use the method to return the attendees.
 		 *
 		 * @static
 		 *
@@ -1415,7 +1415,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Returns all the attendees with filtered by arguments. Queries all registered providers.
 		 *
-		 * @since TBD
+		 * @since 5.5.9
 		 *
 		 * @static
 		 *
@@ -2054,7 +2054,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Process RSVP counts.
 		 *
-		 * @since TBD
+		 * @since 5.5.9
 		 *
 		 * @param Tribe__Tickets__Ticket_Object $rsvp RSVP ticket object.
 		 * @param array                         $types Array of ticket types.

@@ -2,7 +2,7 @@
 /**
  * Settings back link.
  *
- * @since TBD
+ * @since 5.5.9
  *
  * @var bool    $url   Link URL.
  * @var string  $text  Link text.

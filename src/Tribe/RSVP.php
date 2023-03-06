@@ -2840,7 +2840,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
 	 * Check if the not going option is enabled for the provided rsvp ticket id.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @param int $ticket_id The ticket post ID.
 	 *

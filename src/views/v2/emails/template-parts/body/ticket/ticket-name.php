@@ -9,9 +9,9 @@
  *
  * @link https://evnt.is/tickets-emails-tpl Help article for Tickets Emails template files.
  *
- * @version TBD
+ * @version 5.5.9
  *
- * @since TBD
+ * @since 5.5.9
  *
  * @var string $recipient_first_name Recipient's first name.
  * @var string $recipient_last_name  Recipient's last name.

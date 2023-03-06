@@ -2,7 +2,7 @@
 /**
  * Tickets Emails Email Sender class.
  *
- * @since TBD
+ * @since 5.5.9
  *
  * @package TEC\Tickets\Emails
  */
@@ -12,7 +12,7 @@ namespace TEC\Tickets\Emails;
 /**
  * Class Email_Sender.
  *
- * @since TBD
+ * @since 5.5.9
  *
  * @package TEC\Tickets\Emails
  */
@@ -21,7 +21,7 @@ class Email_Sender {
 	/**
 	 * Send an email.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @param string $to          Email to.
 	 * @param string $subject     Email subject.

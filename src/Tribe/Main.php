@@ -182,7 +182,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Fires when the plugin is deactivated.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 */
 	public function on_deactivation() {
 		// Remove plugin activation time on deactivation.

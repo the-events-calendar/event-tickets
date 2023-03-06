@@ -2,7 +2,7 @@
 /**
  * Tickets Emails Email abstract class.
  *
- * @since TBD
+ * @since 5.5.9
  *
  * @package TEC\Tickets\Emails
  */
@@ -17,7 +17,7 @@ use Tribe\Tickets\Admin\Settings as Plugin_Settings;
 /**
  * Class Email_Abstract.
  *
- * @since TBD
+ * @since 5.5.9
  *
  * @package TEC\Tickets\Emails
  */
@@ -26,7 +26,7 @@ abstract class Email_Abstract {
 	/**
 	 * Email ID.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @var string
 	 */
@@ -35,7 +35,7 @@ abstract class Email_Abstract {
 	/**
 	 * Email template filename.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @var string
 	 */
@@ -44,7 +44,7 @@ abstract class Email_Abstract {
 	/**
 	 * Email recipient.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @var string
 	 */
@@ -53,7 +53,7 @@ abstract class Email_Abstract {
 	/**
 	 * Email title.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @var string
 	 */
@@ -62,7 +62,7 @@ abstract class Email_Abstract {
 	/**
 	 * Email version number.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @var string
 	 */
@@ -71,7 +71,7 @@ abstract class Email_Abstract {
 	/**
 	 * Email subject.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @var string
 	 */
@@ -80,7 +80,7 @@ abstract class Email_Abstract {
 	/**
 	 * Strings to find/replace in subjects/headings.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @var array
 	 */
@@ -89,7 +89,7 @@ abstract class Email_Abstract {
 	/**
 	 * Handles the hooking of a given email to the correct actions in WP.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 */
 	public function hook() {
 		$this->placeholders = array_merge(
@@ -105,7 +105,7 @@ abstract class Email_Abstract {
 	/**
 	 * Get email subject.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @return string
 	 */
@@ -114,7 +114,7 @@ abstract class Email_Abstract {
 	/**
 	 * Get email title.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @return string
 	 */
@@ -123,7 +123,7 @@ abstract class Email_Abstract {
 	/**
 	 * Get email heading.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @return string
 	 */
@@ -132,7 +132,7 @@ abstract class Email_Abstract {
 	/**
 	 * Get email attachments.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @return array
 	 */
@@ -141,7 +141,7 @@ abstract class Email_Abstract {
 	/**
 	 * Get the post type data for the email.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @return array
 	 */
@@ -150,7 +150,7 @@ abstract class Email_Abstract {
 	/**
 	 * Get the settings for the email.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @return array
 	 */
@@ -159,7 +159,7 @@ abstract class Email_Abstract {
 	/**
 	 * Get the email content.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @param array $args The arguments.
 	 *
@@ -170,7 +170,7 @@ abstract class Email_Abstract {
 	/**
 	 * Get the "From" email.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @return string The "from" email.
 	 */
@@ -180,7 +180,7 @@ abstract class Email_Abstract {
 		/**
 		 * Filter the from email.
 		 *
-		 * @since TBD
+		 * @since 5.5.9
 		 *
 		 * @param array $from_email The "from" email.
 		 * @param string $id The email ID.
@@ -193,7 +193,7 @@ abstract class Email_Abstract {
 	/**
 	 * Get the "From" name.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @return string The "from" name.
 	 */
@@ -203,7 +203,7 @@ abstract class Email_Abstract {
 		/**
 		 * Filter the from name.
 		 *
-		 * @since TBD
+		 * @since 5.5.9
 		 *
 		 * @param array $from_email The "from" name.
 		 * @param string $id The email ID.
@@ -216,7 +216,7 @@ abstract class Email_Abstract {
 	/**
 	 * Get email headers.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @param array $headers The email headers.
 	 *
@@ -255,7 +255,7 @@ abstract class Email_Abstract {
 		/**
 		 * Filter the headers.
 		 *
-		 * @since TBD
+		 * @since 5.5.9
 		 *
 		 * @param array $headers The headers.
 		 * @param string $id The email ID.
@@ -268,7 +268,7 @@ abstract class Email_Abstract {
 	/**
 	 * Get email attachments.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @param array $attachments The attachments.
 	 *
@@ -279,7 +279,7 @@ abstract class Email_Abstract {
 		/**
 		 * Filter the attachments.
 		 *
-		 * @since TBD
+		 * @since 5.5.9
 		 *
 		 * @param array $attachments The attachments.
 		 * @param string $id The email ID.
@@ -292,7 +292,7 @@ abstract class Email_Abstract {
 	/**
 	 * Get email placeholders.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @return string
 	 */
@@ -300,7 +300,7 @@ abstract class Email_Abstract {
 		/**
 		 * Filter the placeholders.
 		 *
-		 * @since TBD
+		 * @since 5.5.9
 		 *
 		 * @param array $placeholders The placeholders.
 		 * @param string $id The email ID.
@@ -323,7 +323,7 @@ abstract class Email_Abstract {
 		/**
 		 * Filter the formatted email string.
 		 *
-		 * @since TBD
+		 * @since 5.5.9
 		 *
 		 * @param string $string The formatted string.
 		 * @param string $id The email id.
@@ -334,7 +334,7 @@ abstract class Email_Abstract {
 	/**
 	 * Get WordPress blog name.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @return string
 	 */
@@ -345,7 +345,7 @@ abstract class Email_Abstract {
 	/**
 	 * Default content to show below email content.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @return string
 	 */
@@ -357,7 +357,7 @@ abstract class Email_Abstract {
 	/**
 	 * Get post object of email.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @return WP_Post|null;
 	 */
@@ -368,7 +368,7 @@ abstract class Email_Abstract {
 	/**
 	 * Get edit URL.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @return string
 	 */

@@ -734,7 +734,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Hook the attendee data update on moved tickets.
 	 *
-	 * @since TBD
+	 * @since 5.5.9
 	 *
 	 * @param int $ticket_id                The ticket which has been moved.
 	 * @param int $src_ticket_type_id       The ticket type it belonged to originally.
