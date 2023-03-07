@@ -175,14 +175,24 @@ class Tribe__Tickets__Main {
 
 		// Set plugin activation time for all installs.
 		if ( is_admin() ) {
-			// Avoid a race condition and fatal by making sure Common is loaded before we try to run this.
+			// Avoid a race condition and fatal by waiting until Common is loaded before we try to run this.
 			add_action(
 				'tribe_common_loaded',
-				function() {
-					tribe_update_option( 'tec_tickets_activation_time', time() );
-				}
+				[ $this, 'set_activation_time' ]
 			);
 		}
+	}
+
+	/**
+	 * Set the plugin activation time.
+	 * Activated on plugin activation, runs on tribe_common_loaded.
+	 *
+	 * @since 5.5.9
+	 *
+	 * @return void
+	 */
+	public function set_activation_time() {
+		tribe_update_option( 'tec_tickets_activation_time', time() );
 	}
 
 	/**
