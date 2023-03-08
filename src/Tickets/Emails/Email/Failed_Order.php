@@ -25,7 +25,7 @@ class Failed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 	 *
 	 * @var string
 	 */
-	public $id = 'tec_tickets_emails_failed_order';
+	public static $id = 'tec_tickets_emails_failed_order';
 
 	/**
 	 * Email template.

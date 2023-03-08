@@ -28,7 +28,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	 *
 	 * @var string
 	 */
-	public $id = 'tec_tickets_emails_ticket';
+	public static $id = 'tec_tickets_emails_ticket';
 
 	/**
 	 * Email template.

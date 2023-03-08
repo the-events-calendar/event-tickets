@@ -25,7 +25,7 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 	 *
 	 * @var string
 	 */
-	public $id = 'tec_tickets_emails_completed_order';
+	public static $id = 'tec_tickets_emails_completed_order';
 
 	/**
 	 * Email template.
