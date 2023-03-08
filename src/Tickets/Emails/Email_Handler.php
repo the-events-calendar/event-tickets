@@ -183,7 +183,7 @@ class Email_Handler extends \tad_DI52_ServiceProvider {
 	 */
 	public function create_tec_tickets_emails_post_type( $email ) {
 		$args = [
-			'post_name'   => $email->id,
+			'post_name'   => $email->get_id(),
 			'post_title'  => $email->get_title(),
 			'post_status' => 'publish',
 			'post_type'   => static::POSTTYPE,

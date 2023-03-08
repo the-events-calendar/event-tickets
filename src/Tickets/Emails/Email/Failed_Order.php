@@ -141,7 +141,7 @@ class Failed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 		 * @param string $heading  The email heading.
 		 * @param string $id       The email id.
 		 */
-		$recipient = apply_filters( 'tec_tickets_emails_recipient_' . $this->id, $recipient, $this->id, $this->template );
+		$recipient = apply_filters( 'tec_tickets_emails_recipient_' . self::$id, $recipient, self::$id, $this->template );
 
 		return $this->format_string( $recipient );
 	}
@@ -175,7 +175,7 @@ class Failed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 		 * @param string $heading  The email heading.
 		 * @param string $id       The email id.
 		 */
-		$heading = apply_filters( 'tec_tickets_emails_heading_' . $this->id, $heading, $this->id, $this->template );
+		$heading = apply_filters( 'tec_tickets_emails_heading_' . self::$id, $heading, self::$id, $this->template );
 
 		return $this->format_string( $heading );
 	}
@@ -214,7 +214,7 @@ class Failed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 		 * @param string $subject  The email subject.
 		 * @param string $id       The email id.
 		 */
-		$subject = apply_filters( 'tec_tickets_emails_subject_' . $this->id, $subject, $this->id, $this->template );
+		$subject = apply_filters( 'tec_tickets_emails_subject_' . self::$id, $subject, self::$id, $this->template );
 
 		return $subject;
 	}
@@ -334,7 +334,7 @@ class Failed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 		 * @param array          $settings  The settings array.
 		 * @param Email_Abstract $this      Email object.
 		 */
-		return apply_filters( 'tec_tickets_emails_settings_' . $this->id, $settings, $this );
+		return apply_filters( 'tec_tickets_emails_settings_' . self::$id, $settings, $this );
 	}
 
 	/**
@@ -346,7 +346,7 @@ class Failed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 	 */
 	public function get_post_type_data(): array {
 		$data = [
-			'slug'      => $this->id,
+			'slug'      => self::$id,
 			'title'     => $this->get_title(),
 			'template'  => $this->template,
 			'recipient' => $this->recipient,
