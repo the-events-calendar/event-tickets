@@ -1206,6 +1206,7 @@ class Tribe__Tickets__Tickets_View {
 		$tickets        = $blocks_rsvp->get_tickets( $post_id );
 		$active_tickets = $blocks_rsvp->get_active_tickets( $tickets );
 		$past_tickets   = $blocks_rsvp->get_all_tickets_past( $tickets );
+		$going          = tribe_get_request_var( 'going', '' );
 
 		if( class_exists( 'Tribe__Tickets_Plus__Main' ) && ! empty( $include_tickets ) ) {
 			$tickets        = Tribe__Tickets_Plus__Tickets::filter_tickets_by_ids( $tickets, $include_tickets );
@@ -1229,7 +1230,7 @@ class Tribe__Tickets__Tickets_View {
 			'opt_in_nonce'        => '',
 			'doing_shortcode'     => $doing_shortcode,
 			'block_html_id'       => $block_html_id,
-			'going'               => tribe_get_request_var( 'going', '' ),
+			'going'               => isset( $going ) ? $going : null,
 		];
 
 		/**
