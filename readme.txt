@@ -194,7 +194,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 * Enhancement - Add the Attendee count for the site to the `At a Glance` admin widget. [ET-1654]
 
-= [5.5.9] 2023-03-06 =
+= [5.5.9] 2023-03-08 =
 
 * Tweak - Code maintenance for the attendees screen. [ET-1635]
 * Tweak - Save activation time for Event Tickets. [ET-1639]
