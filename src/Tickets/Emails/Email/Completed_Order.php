@@ -1,110 +1,99 @@
 <?php
 /**
- * Class Ticket
+ * Class Completed_Order
  *
  * @package TEC\Tickets\Emails
  */
 
 namespace TEC\Tickets\Emails\Email;
 
-use TEC\Tickets\Commerce\Settings;
 use \TEC\Tickets\Emails\Email_Template;
-use WP_Post;
 
 /**
- * Class Ticket
+ * Class Completed_Order
  *
- * @since 5.5.9
+ * @since TBD
  *
  * @package TEC\Tickets\Emails
  */
-class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
+class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 
 	/**
 	 * Email ID.
 	 *
-	 * @since 5.5.9
+	 * @since TBD
 	 *
 	 * @var string
 	 */
-	public $id = 'tec_tickets_emails_ticket';
+	public $id = 'tec_tickets_emails_completed_order';
 
 	/**
 	 * Email template.
 	 *
-	 * @since 5.5.9
+	 * @since TBD
 	 *
 	 * @var string
 	 */
-	public $template = 'ticket';
+	public $template = 'completed_order';
 
 	/**
 	 * Email recipient.
 	 *
-	 * @since 5.5.9
+	 * @since TBD
 	 *
 	 * @var string
 	 */
-	public $recipient = 'customer';
+	public $recipient = 'admin';
 
 	/**
 	 * Enabled option key.
 	 *
-	 * @since 5.5.9
+	 * @since TBD
 	 *
 	 * @var string
 	 */
-	public static $option_enabled = 'tec_tickets_emails_ticket_option_enabled';
+	public static $option_enabled = 'tec_tickets_emails_completed_order_option_enabled';
+
+	/**
+	 * Recipient option key.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $option_recipient = 'tec_tickets_emails_completed_order_option_recipient';
 
 	/**
 	 * Subject option key.
 	 *
-	 * @since 5.5.9
+	 * @since TBD
 	 *
 	 * @var string
 	 */
-	public static $option_subject = 'tec_tickets_emails_ticket_option_subject';
+	public static $option_subject = 'tec_tickets_emails_completed_order_option_subject';
 
 	/**
-	 * Subject option key for multiple tickets.
+	 * Email heading option key.
 	 *
 	 * @since TBD
 	 *
 	 * @var string
 	 */
-	public static $option_subject_multiple = 'tec_tickets_emails_ticket_option_subject_multiple';
+	public static $option_heading = 'tec_tickets_emails_completed_order_option_heading';
 
 	/**
 	 * Email heading option key.
-	 *
-	 * @since 5.5.9
-	 *
-	 * @var string
-	 */
-	public static $option_heading = 'tec_tickets_emails_ticket_option_heading';
-
-	/**
-	 * Email heading option key for multiple tickets.
 	 *
 	 * @since TBD
 	 *
 	 * @var string
 	 */
-	public static $option_heading_multiple = 'tec_tickets_emails_ticket_option_heading_multiple';
-
-	/**
-	 * Email heading option key.
-	 *
-	 * @since 5.5.9
-	 *
-	 * @var string
-	 */
-	public static $option_add_content = 'tec_tickets_emails_ticket_option_add_content';
+	public static $option_add_content = 'tec_tickets_emails_completed_order_option_add_content';
 
 	/**
 	 * Checks if this email is enabled.
 	 *
-	 * @since 5.5.9
+	 * @since TBD
 	 *
 	 * @return bool
 	 */
@@ -115,29 +104,63 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Checks if this email is sent to customer.
 	 *
-	 * @since 5.5.9
+	 * @since TBD
 	 *
 	 * @return bool
 	 */
 	public function is_customer_email(): bool {
-		return true;
+		return false;
 	}
 
 	/**
 	 * Get email title.
 	 *
-	 * @since 5.5.9
+	 * @since TBD
 	 *
 	 * @return string The email title.
 	 */
 	public function get_title(): string {
-		return esc_html__( 'Ticket Email', 'event-tickets' );
+		return esc_html__( 'Completed Order', 'event-tickets' );
+	}
+
+	/**
+	 * Get email recipient.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The email heading.
+	 */
+	public function get_recipient(): string {
+		$recipient = tribe_get_option( static::$option_recipient, $this->get_default_recipient() );
+
+		/**
+		 * Allow filtering the email heading.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $heading  The email heading.
+		 * @param string $id       The email id.
+		 */
+		$recipient = apply_filters( 'tec_tickets_emails_recipient_' . $this->id, $recipient, $this->id, $this->template );
+
+		return $this->format_string( $recipient );
+	}
+
+	/**
+	 * Get default email recipient.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_default_recipient() {
+		return get_option( 'admin_email' );
 	}
 
 	/**
 	 * Get email heading.
 	 *
-	 * @since 5.5.9
+	 * @since TBD
 	 *
 	 * @return string The email heading.
 	 */
@@ -147,7 +170,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 		/**
 		 * Allow filtering the email heading.
 		 *
-		 * @since 5.5.9
+		 * @since TBD
 		 *
 		 * @param string $heading  The email heading.
 		 * @param string $id       The email id.
@@ -160,37 +183,18 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Get default email heading.
 	 *
-	 * @since 5.5.9
-	 *
-	 * @return string
-	 */
-	public function get_default_heading() {
-		return sprintf(
-			// Translators: %s Lowercase singular of ticket.
-			esc_html__( 'Here\'s your %s, {attendee-name}!', 'event-tickets' ),
-			tribe_get_ticket_label_singular_lowercase()
-		);
-	}
-
-	/**
-	 * Get default email heading for multiple tickets.
-	 *
 	 * @since TBD
 	 *
 	 * @return string
 	 */
-	public function get_default_heading_multiple() {
-		return sprintf(
-			// Translators: %s Lowercase plural of tickets.
-			esc_html__( 'Here are your %s, {attendee-name}!', 'event-tickets' ),
-			tribe_get_ticket_label_plural_lowercase()
-		);
+	public function get_default_heading() {
+		return esc_html__( 'Failed order: #{order_number}', 'event-tickets' );
 	}
 
 	/**
 	 * Get email subject.
 	 *
-	 * @since 5.5.9
+	 * @since TBD
 	 *
 	 * @return string The email subject.
 	 */
@@ -205,7 +209,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 		/**
 		 * Allow filtering the email subject.
 		 *
-		 * @since 5.5.9
+		 * @since TBD
 		 *
 		 * @param string $subject  The email subject.
 		 * @param string $id       The email id.
@@ -218,40 +222,18 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Get default email subject.
 	 *
-	 * @since 5.5.9
-	 *
-	 * @return string
-	 */
-	public function get_default_subject() {
-		$default_subject = sprintf(
-			// Translators: %s - Lowercase singular of tickets.
-			esc_html__( 'Your %s from {site-title}', 'event-tickets' ),
-			tribe_get_ticket_label_singular_lowercase()
-		);
-
-		// If they already had a subject set in Tickets Commerce, let's make it the default.
-		return tribe_get_option( Settings::$option_confirmation_email_subject, $default_subject );
-	}
-
-	/**
-	 * Get default email subject for multiple tickets.
-	 *
 	 * @since TBD
 	 *
 	 * @return string
 	 */
-	public function get_default_subject_multiple() {
-		return sprintf(
-			// Translators: %s - Lowercase plural of tickets.
-			esc_html__( 'Your %s from {site-title}', 'event-tickets' ),
-			tribe_get_ticket_label_plural_lowercase()
-		);
+	public function get_default_subject() {
+		return esc_html__( '[{site_title}]: Failed order #{order_number}', 'event-tickets' );
 	}
 
 	/**
 	 * Get email content.
 	 *
-	 * @since 5.5.9
+	 * @since TBD
 	 *
 	 * @param array $args The arguments.
 	 *
@@ -273,7 +255,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Get email settings.
 	 *
-	 * @since 5.5.9
+	 * @since TBD
 	 *
 	 * @return array
 	 */
@@ -286,17 +268,24 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 			],
 			[
 				'type' => 'html',
-				'html' => '<h2>' . esc_html__( 'Ticket Email Settings', 'event-tickets' ) . '</h2>',
+				'html' => '<h2>' . esc_html__( 'Completed Order Email Settings', 'event-tickets' ) . '</h2>',
 			],
 			[
 				'type' => 'html',
-				'html' => '<p>' . esc_html__( 'Ticket purchasers will receive an email including their ticket and additional info upon completion of purchase. Customize the content of this specific email using the tools below. The brackets {event_name}, {event_date}, and {ticket_name} can be used to pull dynamic content from the ticket into your email. Learn more about customizing email templates in our Knowledgebase.' ) . '</p>',
+				'html' => '<p>' . esc_html__( 'The site admin will receive an email about any orders that were made. Customize the content of this specific email using the tools below. The brackets {event_name}, {event_date}, and {ticket_name} can be used to pull dynamic content from the ticket into your email. Learn more about customizing email templates in our Knowledgebase.' ) . '</p>',
 			],
 			static::$option_enabled => [
 				'type'                => 'toggle',
 				'label'               => esc_html__( 'Enabled', 'event-tickets' ),
 				'default'             => true,
 				'validation_type'     => 'boolean',
+			],
+			static::$option_recipient => [
+				'type'                => 'text',
+				'label'               => esc_html__( 'Recipient(s)', 'event-tickets' ),
+				'default'             => $this->get_default_recipient(),
+				'size'                => 'large',
+				'validation_type' => 'email_list',
 			],
 			static::$option_subject => [
 				'type'                => 'text',
@@ -306,27 +295,11 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 				'size'                => 'large',
 				'validation_callback' => 'is_string',
 			],
-			static::$option_subject_multiple => [
-				'type'                => 'text',
-				'label'               => esc_html__( 'Subject (multiple)', 'event-tickets' ),
-				'default'             => $this->get_default_subject_multiple(),
-				'placeholder'         => $this->get_default_subject_multiple(),
-				'size'                => 'large',
-				'validation_callback' => 'is_string',
-			],
 			static::$option_heading => [
 				'type'                => 'text',
 				'label'               => esc_html__( 'Heading', 'event-tickets' ),
 				'default'             => $this->get_default_heading(),
 				'placeholder'         => $this->get_default_heading(),
-				'size'                => 'large',
-				'validation_callback' => 'is_string',
-			],
-			static::$option_heading_multiple => [
-				'type'                => 'text',
-				'label'               => esc_html__( 'Heading (multiple)', 'event-tickets' ),
-				'default'             => $this->get_default_heading_multiple(),
-				'placeholder'         => $this->get_default_heading_multiple(),
 				'size'                => 'large',
 				'validation_callback' => 'is_string',
 			],
@@ -359,7 +332,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Get the `post_type` data for this email.
 	 *
-	 * @since 5.5.9
+	 * @since TBD
 	 *
 	 * @return array
 	 */
