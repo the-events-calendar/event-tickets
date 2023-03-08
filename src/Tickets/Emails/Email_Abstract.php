@@ -30,7 +30,7 @@ abstract class Email_Abstract {
 	 *
 	 * @var string
 	 */
-	public $id;
+	public static $id;
 
 	/**
 	 * Email template filename.
