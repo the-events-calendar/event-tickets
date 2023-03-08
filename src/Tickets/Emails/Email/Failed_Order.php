@@ -34,7 +34,7 @@ class Failed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 	 *
 	 * @var string
 	 */
-	public $template = 'failed_order';
+	public $template = 'admin-failed-order';
 
 	/**
 	 * Email recipient.

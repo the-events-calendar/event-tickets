@@ -36,7 +36,7 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 	 *
 	 * @var string
 	 */
-	public $template = 'purchase_receipt';
+	public $template = 'customer-completed-order';
 
 	/**
 	 * Email recipient.
