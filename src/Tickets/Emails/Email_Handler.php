@@ -209,7 +209,7 @@ class Email_Handler extends \tad_DI52_ServiceProvider {
 		$emails = $this->get_emails();
 
 		foreach ( $emails as $email ) {
-			if ( $email->id === $id ) {
+			if ( $email->get_id() === $id ) {
 				return $email;
 			}
 		}
