@@ -8,6 +8,7 @@
 namespace TEC\Tickets\Emails\Email;
 
 use TEC\Tickets\Commerce\Settings;
+use TEC\Tickets\Emails\Email_Abstract;
 use \TEC\Tickets\Emails\Email_Template;
 use WP_Post;
 
@@ -353,7 +354,15 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 			],
 		];
 
-		return $settings;
+		/**
+		 * Allow filtering the settings for this email.
+		 *
+		 * @since TBD
+		 *
+		 * @param array          $settings  The settings array.
+		 * @param Email_Abstract $this      Email object.
+		 */
+		return apply_filters( 'tec_tickets_emails_settings_' . $this->id, $settings, $this );
 	}
 
 	/**

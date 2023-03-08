@@ -326,7 +326,15 @@ class Failed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 			],
 		];
 
-		return $settings;
+		/**
+		 * Allow filtering the settings for this email.
+		 *
+		 * @since TBD
+		 *
+		 * @param array          $settings  The settings array.
+		 * @param Email_Abstract $this      Email object.
+		 */
+		return apply_filters( 'tec_tickets_emails_settings_' . $this->id, $settings, $this );
 	}
 
 	/**
