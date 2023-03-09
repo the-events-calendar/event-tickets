@@ -55,7 +55,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	 *
 	 * @var string
 	 */
-	public static $option_enabled = 'tec_tickets_emails_ticket_option_enabled';
+	public static $option_enabled = 'tec-tickets-emails-ticket-enabled';
 
 	/**
 	 * Subject option key.
@@ -64,7 +64,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	 *
 	 * @var string
 	 */
-	public static $option_subject = 'tec_tickets_emails_ticket_option_subject';
+	public static $option_subject = 'tec-tickets-emails-ticket-subject';
 
 	/**
 	 * Subject option key for multiple tickets.
@@ -73,7 +73,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	 *
 	 * @var string
 	 */
-	public static $option_subject_multiple = 'tec_tickets_emails_ticket_option_subject_multiple';
+	public static $option_subject_multiple = 'tec-tickets-emails-ticket-subject-multiple';
 
 	/**
 	 * Email heading option key.
@@ -82,7 +82,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	 *
 	 * @var string
 	 */
-	public static $option_heading = 'tec_tickets_emails_ticket_option_heading';
+	public static $option_heading = 'tec-tickets-emails-ticket-heading';
 
 	/**
 	 * Email heading option key for multiple tickets.
@@ -91,7 +91,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	 *
 	 * @var string
 	 */
-	public static $option_heading_multiple = 'tec_tickets_emails_ticket_option_heading_multiple';
+	public static $option_heading_multiple = 'tec-tickets-emails-ticket-heading-multiple';
 
 	/**
 	 * Email heading option key.
@@ -100,7 +100,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	 *
 	 * @var string
 	 */
-	public static $option_add_content = 'tec_tickets_emails_ticket_option_add_content';
+	public static $option_add_content = 'tec-tickets-emails-ticket-add-content';
 
 	/**
 	 * Checks if this email is enabled.
@@ -146,14 +146,26 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 		$heading = tribe_get_option( static::$option_heading, $this->get_default_heading() );
 
 		/**
-		 * Allow filtering the email heading.
+		 * Allow filtering the email heading for Ticket.
 		 *
 		 * @since 5.5.9
 		 *
-		 * @param string $heading  The email heading.
-		 * @param string $id       The email id.
+		 * @param string          $heading  The email heading.
+		 * @param string          $id       The email id.
+		 * @param Tribe__Template $template Template object.
 		 */
-		$heading = apply_filters( 'tec_tickets_emails_heading_' . self::$id, $heading, self::$id, $this->template );
+		$heading = apply_filters( 'tec_tickets_emails_ticket_heading', $heading, self::$id, $this->template );
+
+		/**
+		 * Allow filtering the email heading globally.
+		 *
+		 * @since TBD
+		 *
+		 * @param string          $heading  The email heading.
+		 * @param string          $id       The email id.
+		 * @param Tribe__Template $template Template object.
+		 */
+		$heading = apply_filters( 'tec_tickets_emails_heading', $heading, self::$id, $this->template );
 
 		return $this->format_string( $heading );
 	}
@@ -208,10 +220,22 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 		 *
 		 * @since 5.5.9
 		 *
-		 * @param string $subject  The email subject.
-		 * @param string $id       The email id.
+		 * @param string          $subject  The email subject.
+		 * @param string          $id       The email id.
+		 * @param Tribe__Template $template Template object.
 		 */
-		$subject = apply_filters( 'tec_tickets_emails_subject_' . self::$id, $subject, self::$id, $this->template );
+		$subject = apply_filters( 'tec_tickets_emails_ticket_subject', $subject, self::$id, $this->template );
+
+		/**
+		 * Allow filtering the email subject.
+		 *
+		 * @since 5.5.9
+		 *
+		 * @param string          $subject  The email subject.
+		 * @param string          $id       The email id.
+		 * @param Tribe__Template $template Template object.
+		 */
+		$subject = apply_filters( 'tec_tickets_emails_subject', $subject, self::$id, $this->template );
 
 		return $subject;
 	}
@@ -355,14 +379,24 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 		];
 
 		/**
-		 * Allow filtering the settings for this email.
+		 * Allow filtering the settings for Ticket email.
 		 *
 		 * @since TBD
 		 *
-		 * @param array          $settings  The settings array.
-		 * @param Email_Abstract $this      Email object.
+		 * @param array  $settings The settings array.
+		 * @param string $id       The email ID.
 		 */
-		return apply_filters( 'tec_tickets_emails_settings_' . self::$id, $settings, $this );
+		$settings = apply_filters( 'tec_tickets_emails_ticket_settings', $settings, self::$id );
+
+		/**
+		 * Allow filtering the settings globally.
+		 *
+		 * @since TBD
+		 *
+		 * @param array  $settings The settings array.
+		 * @param string $id       The email ID.
+		 */
+		return apply_filters( 'tec_tickets_emails_settings', $settings, self::$id );
 	}
 
 	/**

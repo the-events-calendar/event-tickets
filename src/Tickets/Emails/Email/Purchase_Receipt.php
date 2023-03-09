@@ -54,7 +54,7 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 	 *
 	 * @var string
 	 */
-	public static $option_enabled = 'tec_tickets_emails_purchase_receipt_option_enabled';
+	public static $option_enabled = 'tec-tickets-emails-purchase-receipt-enabled';
 
 	/**
 	 * Subject option key.
@@ -63,7 +63,7 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 	 *
 	 * @var string
 	 */
-	public static $option_subject = 'tec_tickets_emails_purchase_receipt_option_subject';
+	public static $option_subject = 'tec-tickets-emails-purchase-receipt-subject';
 
 	/**
 	 * Email heading option key.
@@ -72,7 +72,7 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 	 *
 	 * @var string
 	 */
-	public static $option_heading = 'tec_tickets_emails_purchase_receipt_option_heading';
+	public static $option_heading = 'tec-tickets-emails-purchase-receipt-heading';
 
 	/**
 	 * Email heading option key.
@@ -81,7 +81,7 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 	 *
 	 * @var string
 	 */
-	public static $option_add_content = 'tec_tickets_emails_purchase_receipt_option_add_content';
+	public static $option_add_content = 'tec-tickets-emails-purchase-receipt-add-content';
 
 	/**
 	 * Checks if this email is enabled.
@@ -127,14 +127,26 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 		$heading = tribe_get_option( static::$option_heading, $this->get_default_heading() );
 
 		/**
-		 * Allow filtering the email heading.
+		 * Allow filtering the email heading for Purchase Receipt.
 		 *
 		 * @since TBD
 		 *
-		 * @param string $heading  The email heading.
-		 * @param string $id       The email id.
+		 * @param string          $heading  The email heading.
+		 * @param string          $id       The email id.
+		 * @param Tribe__Template $template Template object.
 		 */
-		$heading = apply_filters( 'tec_tickets_emails_heading_' . self::$id, $heading, self::$id, $this->template );
+		$heading = apply_filters( 'tec_tickets_emails_purchase_receipt_heading', $heading, self::$id, $this->template );
+
+		/**
+		 * Allow filtering the email heading globally.
+		 *
+		 * @since TBD
+		 *
+		 * @param string          $heading  The email heading.
+		 * @param string          $id       The email id.
+		 * @param Tribe__Template $template Template object.
+		 */
+		$heading = apply_filters( 'tec_tickets_emails_heading', $heading, self::$id, $this->template );
 
 		return $this->format_string( $heading );
 	}
@@ -166,14 +178,26 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 		// apply filters on the subject maybe move the filter to the parent::get_subject() ?
 
 		/**
-		 * Allow filtering the email subject.
+		 * Allow filtering the email subject for Purchase Receipt.
 		 *
 		 * @since TBD
 		 *
-		 * @param string $subject  The email subject.
-		 * @param string $id       The email id.
+		 * @param string          $subject  The email subject.
+		 * @param string          $id       The email id.
+		 * @param Tribe__Template $template Template object.
 		 */
-		$subject = apply_filters( 'tec_tickets_emails_subject_' . self::$id, $subject, self::$id, $this->template );
+		$subject = apply_filters( 'tec_tickets_emails_purchase_receipt_subject', $subject, self::$id, $this->template );
+
+		/**
+		 * Allow filtering the email subject globally.
+		 *
+		 * @since TBD
+		 *
+		 * @param string          $subject  The email subject.
+		 * @param string          $id       The email id.
+		 * @param Tribe__Template $template Template object.
+		 */
+		$subject = apply_filters( 'tec_tickets_emails_subject', $subject, self::$id, $this->template );
 
 		return $subject;
 	}
@@ -278,14 +302,24 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 		];
 
 		/**
-		 * Allow filtering the settings for this email.
+		 * Allow filtering the settings for Purchase Receipt.
 		 *
 		 * @since TBD
 		 *
-		 * @param array          $settings  The settings array.
-		 * @param Email_Abstract $this      Email object.
+		 * @param array  $settings  The settings array.
+		 * @param string $id        Email ID.
 		 */
-		return apply_filters( 'tec_tickets_emails_settings_' . self::$id, $settings, $this );
+		$settings = apply_filters( 'tec_tickets_emails_purchase_receipt_settings', $settings, self::$id );
+
+		/**
+		 * Allow filtering the settings globally.
+		 *
+		 * @since TBD
+		 *
+		 * @param array  $settings  The settings array.
+		 * @param string $id        Email ID.
+		 */
+		return apply_filters( 'tec_tickets_emails_settings', $settings, self::$id );
 	}
 
 	/**

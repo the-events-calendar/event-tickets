@@ -52,7 +52,7 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 	 *
 	 * @var string
 	 */
-	public static $option_enabled = 'tec_tickets_emails_completed_order_option_enabled';
+	public static $option_enabled = 'tec-tickets-emails-completed-order-enabled';
 
 	/**
 	 * Recipient option key.
@@ -61,7 +61,7 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 	 *
 	 * @var string
 	 */
-	public static $option_recipient = 'tec_tickets_emails_completed_order_option_recipient';
+	public static $option_recipient = 'tec-tickets-emails-completed-order-recipient';
 
 	/**
 	 * Subject option key.
@@ -70,7 +70,7 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 	 *
 	 * @var string
 	 */
-	public static $option_subject = 'tec_tickets_emails_completed_order_option_subject';
+	public static $option_subject = 'tec-tickets-emails-completed-order-subject';
 
 	/**
 	 * Email heading option key.
@@ -79,7 +79,7 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 	 *
 	 * @var string
 	 */
-	public static $option_heading = 'tec_tickets_emails_completed_order_option_heading';
+	public static $option_heading = 'tec-tickets-emails-completed-order-heading';
 
 	/**
 	 * Email heading option key.
@@ -88,7 +88,7 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 	 *
 	 * @var string
 	 */
-	public static $option_add_content = 'tec_tickets_emails_completed_order_option_add_content';
+	public static $option_add_content = 'tec-tickets-emails-completed-order-add-content';
 
 	/**
 	 * Checks if this email is enabled.
@@ -134,14 +134,26 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 		$recipient = tribe_get_option( static::$option_recipient, $this->get_default_recipient() );
 
 		/**
-		 * Allow filtering the email recipient.
+		 * Allow filtering the email recipient for Completed Order.
 		 *
 		 * @since TBD
 		 *
-		 * @param string $heading  The email recipient.
-		 * @param string $id       The email id.
+		 * @param string          $heading  The email recipient.
+		 * @param string          $id       The email id.
+		 * @param Tribe__Template $template Template object.
 		 */
-		$recipient = apply_filters( "tec_tickets_emails_recipient_{self::$id}", $recipient, self::$id, $this->template );
+		$recipient = apply_filters( 'tec_tickets_emails_completed_order_recipient', $recipient, self::$id, $this->template );
+
+		/**
+		 * Allow filtering the email recipient globally.
+		 *
+		 * @since TBD
+		 *
+		 * @param string          $heading  The email recipient.
+		 * @param string          $id       The email id.
+		 * @param Tribe__Template $template Template object.
+		 */
+		$recipient = apply_filters( 'tec_tickets_emails_recipient', $recipient, self::$id, $this->template );
 
 		return $this->format_string( $recipient );
 	}
@@ -168,14 +180,26 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 		$heading = tribe_get_option( static::$option_heading, $this->get_default_heading() );
 
 		/**
-		 * Allow filtering the email heading.
+		 * Allow filtering the email heading for Completed Order.
 		 *
 		 * @since TBD
 		 *
-		 * @param string $heading  The email heading.
-		 * @param string $id       The email id.
+		 * @param string          $heading  The email heading.
+		 * @param string          $id       The email id.
+		 * @param Tribe__Template $template Template object.
 		 */
-		$heading = apply_filters( 'tec_tickets_emails_heading_' . self::$id, $heading, self::$id, $this->template );
+		$heading = apply_filters( 'tec_tickets_emails_completed_order_heading', $heading, self::$id, $this->template );
+
+		/**
+		 * Allow filtering the email heading globally.
+		 *
+		 * @since TBD
+		 *
+		 * @param string          $heading  The email heading.
+		 * @param string          $id       The email id.
+		 * @param Tribe__Template $template Template object.
+		 */
+		$heading = apply_filters( 'tec_tickets_emails_heading', $heading, self::$id, $this->template );
 
 		return $this->format_string( $heading );
 	}
@@ -188,7 +212,7 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 	 * @return string
 	 */
 	public function get_default_heading() {
-		return esc_html__( 'Failed order: #{order_number}', 'event-tickets' );
+		return esc_html__( 'Completed order: #{order_number}', 'event-tickets' );
 	}
 
 	/**
@@ -207,14 +231,26 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 		// apply filters on the subject maybe move the filter to the parent::get_subject() ?
 
 		/**
-		 * Allow filtering the email subject.
+		 * Allow filtering the email subject for Completed Order.
 		 *
 		 * @since TBD
 		 *
-		 * @param string $subject  The email subject.
-		 * @param string $id       The email id.
+		 * @param string          $subject  The email subject.
+		 * @param string          $id       The email id.
+		 * @param Tribe__Template $template Template object.
 		 */
-		$subject = apply_filters( 'tec_tickets_emails_subject_' . self::$id, $subject, self::$id, $this->template );
+		$subject = apply_filters( 'tec_tickets_emails_completed_order_subject', $subject, self::$id, $this->template );
+
+		/**
+		 * Allow filtering the email subject globally.
+		 *
+		 * @since TBD
+		 *
+		 * @param string          $subject  The email subject.
+		 * @param string          $id       The email id.
+		 * @param Tribe__Template $template Template object.
+		 */
+		$subject = apply_filters( 'tec_tickets_emails_subject', $subject, self::$id, $this->template );
 
 		return $subject;
 	}
@@ -227,7 +263,7 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 	 * @return string
 	 */
 	public function get_default_subject() {
-		return esc_html__( '[{site_title}]: Failed order #{order_number}', 'event-tickets' );
+		return esc_html__( '[{site_title}]: Completed order #{order_number}', 'event-tickets' );
 	}
 
 	/**
@@ -330,10 +366,20 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 		 *
 		 * @since TBD
 		 *
-		 * @param array          $settings  The settings array.
-		 * @param Email_Abstract $this      Email object.
+		 * @param array  $settings  The settings array.
+		 * @param string $id        Email ID.
 		 */
-		return apply_filters( 'tec_tickets_emails_settings_' . self::$id, $settings, $this );
+		$settings = apply_filters( 'tec_tickets_emails_completed_order_settings', $settings, self::$id );
+
+		/**
+		 * Allow filtering the settings for this email.
+		 *
+		 * @since TBD
+		 *
+		 * @param array  $settings  The settings array.
+		 * @param string $id        Email ID.
+		 */
+		return apply_filters( 'tec_tickets_emails_settings', $settings, self::$id );
 	}
 
 	/**
