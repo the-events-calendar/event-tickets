@@ -13,14 +13,14 @@
  * @var Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
  * @var WP_Post|int $post_id The post object or ID.
  *
- * @since 4.12.3
+ * @since TBD Ensured that $going is not undefined in Ajax call.
  *
- * @version 5.0.0
+ * @version TBD
  */
 
 $going = $this->get( 'going' );
-
 ?>
+
 <div class="tribe-tickets__rsvp-ar-form">
 
 	<input type="hidden" name="tribe_tickets[<?php echo esc_attr( absint( $rsvp->ID ) ); ?>][ticket_id]" value="<?php echo esc_attr( absint( $rsvp->ID ) ); ?>">
