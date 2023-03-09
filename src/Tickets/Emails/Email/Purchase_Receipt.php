@@ -7,9 +7,7 @@
 
 namespace TEC\Tickets\Emails\Email;
 
-use TEC\Tickets\Commerce\Settings;
 use \TEC\Tickets\Emails\Email_Template;
-use WP_Post;
 
 /**
  * Class Purchase_Receipt
