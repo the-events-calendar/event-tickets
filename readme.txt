@@ -192,6 +192,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [TBD] TBD =
 
+* Fix - Undefined $going variable on Ajax request. [ET-1612]
 * Enhancement - Add the Attendee count for the site to the `At a Glance` admin widget. [ET-1654]
 
 = [5.5.9] 2023-03-08 =
