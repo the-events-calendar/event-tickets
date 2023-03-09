@@ -21,7 +21,16 @@ use TEC\Common\Telemetry\Telemetry as Common_Telemetry;
  * @package TEC\Tickets\Telemetry
  */
 class Telemetry {
-	public function filter_tec_common_telemetry_optin_args( $original_optin_args ) {
+	/**
+	 * Filters the modal optin args to be specific to ET
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string|mixed> $original_optin_args The original args, provided by Common.
+	 *
+	 * @return array<string|mixed> The filtered args.
+	 */
+	public function filter_tec_common_telemetry_optin_args( $original_optin_args ): array {
 		$user_name   = esc_html( wp_get_current_user()->display_name );
 
 		$et_optin_args = [
@@ -46,7 +55,7 @@ class Telemetry {
 	 *
 	 * @return array<string|mixed> The fields, with the optin control appended.
 	 */
-	public function filter_tribe_general_settings_debugging_section( $fields ): array {
+	public function filter_tec_tickets_authentication_settings(  $fields ): array {
 		$status = Config::get_container()->get( Status::class );
 		$opted = $status->get();
 
@@ -57,6 +66,10 @@ class Telemetry {
 				$label = esc_html_x( 'Opt in to Telemetry', 'the-events-calendar' );
 		}
 
+		$fields['ticket-telemetry-optin-heading'] =  [
+			'type' => 'html',
+			'html' => '<h3 id="event-tickets-telemetry-settings">' . __( 'Telemetry', 'event-tickets' ) . '</h3>',
+		];
 
 		$fields['opt-in-status'] = [
 			'type'            => 'checkbox_bool',

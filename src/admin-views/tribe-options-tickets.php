@@ -78,6 +78,15 @@ $tickets_fields = [
 	],
 ];
 
+/**
+ * Allow direct filtering of the "Ticket Settings" section
+ *
+ * @since TBD
+ *
+ * @param array<string|mixed> $tickets_fields An array of field data.
+ */
+$tickets_fields = (array) apply_filters( 'tec_tickets_ticket_settings', $tickets_fields );
+
 $tec_fields  = [];
 $misc_fields = [];
 
@@ -197,6 +206,15 @@ $authentication_fields = [
 		'can_be_empty'    => true,
 	],
 ];
+
+/**
+ * Allow direct filtering of the "Login Requirements" section
+ *
+ * @since TBD
+ *
+ * @param array<string|mixed> $authentication_fields An array of field data.
+ */
+$authentication_fields = (array) apply_filters( 'tec_tickets_authentication_settings', $authentication_fields );
 
 $ticket_fields_end = [
 	'tribe-form-content-end' => [
