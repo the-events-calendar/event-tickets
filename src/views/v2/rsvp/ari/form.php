@@ -18,6 +18,8 @@
  * @version 5.0.0
  */
 
+$going = $this->get( 'going' );
+
 ?>
 <div class="tribe-tickets__rsvp-ar-form">
 
