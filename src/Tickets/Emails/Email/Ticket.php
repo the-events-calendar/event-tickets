@@ -226,7 +226,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	public function get_default_subject() {
 		$default_subject = sprintf(
 			// Translators: %s - Lowercase singular of tickets.
-			esc_html__( 'Your %s from {site-title}', 'event-tickets' ),
+			esc_html__( 'Your %s from {site_title}', 'event-tickets' ),
 			tribe_get_ticket_label_singular_lowercase()
 		);
 
@@ -244,7 +244,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	public function get_default_subject_multiple() {
 		return sprintf(
 			// Translators: %s - Lowercase plural of tickets.
-			esc_html__( 'Your %s from {site-title}', 'event-tickets' ),
+			esc_html__( 'Your %s from {site_title}', 'event-tickets' ),
 			tribe_get_ticket_label_plural_lowercase()
 		);
 	}

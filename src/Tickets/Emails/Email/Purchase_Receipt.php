@@ -205,7 +205,6 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 		// @todo: We need to grab the proper information that's going to be sent as context.
 
 		$email_template = tribe( Email_Template::class );
-		$email_template->set_preview( true );
 
 		// @todo @juanfra @codingmusician: we may want to inverse these parameters.
 		return $email_template->get_html( $context, $this->template );
@@ -231,7 +230,7 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 			],
 			[
 				'type' => 'html',
-				'html' => '<p>' . esc_html__( 'The site admin will receive an email about any orders that were made. Customize the content of this specific email using the tools below. The brackets {event_name}, {event_date}, and {ticket_name} can be used to pull dynamic content from the ticket into your email. Learn more about customizing email templates in our Knowledgebase.' ) . '</p>',
+				'html' => '<p>' . esc_html__( 'The ticket purchaser will receive an email about the purchase that  was completed.' ) . '</p>',
 			],
 			static::$option_enabled => [
 				'type'                => 'toggle',
@@ -259,7 +258,7 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 				'type'                => 'wysiwyg',
 				'label'               => esc_html__( 'Additional content', 'event-tickets' ),
 				'default'             => '',
-				'tooltip'             => esc_html__( 'Additional content will be displayed below the tickets in your email.', 'event-tickets' ),
+				'tooltip'             => esc_html__( 'Additional content will be displayed below the purchase receipt details in the email.', 'event-tickets' ),
 				'validation_type'     => 'html',
 				'settings'        => [
 					'media_buttons' => false,

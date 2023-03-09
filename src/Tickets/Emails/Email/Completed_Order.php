@@ -128,20 +128,20 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 	 *
 	 * @since TBD
 	 *
-	 * @return string The email heading.
+	 * @return string The email recipient.
 	 */
 	public function get_recipient(): string {
 		$recipient = tribe_get_option( static::$option_recipient, $this->get_default_recipient() );
 
 		/**
-		 * Allow filtering the email heading.
+		 * Allow filtering the email recipient.
 		 *
 		 * @since TBD
 		 *
-		 * @param string $heading  The email heading.
+		 * @param string $heading  The email recipient.
 		 * @param string $id       The email id.
 		 */
-		$recipient = apply_filters( 'tec_tickets_emails_recipient_' . self::$id, $recipient, self::$id, $this->template );
+		$recipient = apply_filters( "tec_tickets_emails_recipient_{self::$id}", $recipient, self::$id, $this->template );
 
 		return $this->format_string( $recipient );
 	}
@@ -151,9 +151,9 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 	 *
 	 * @since TBD
 	 *
-	 * @return string
+	 * @return string $recipient The default email recipient.
 	 */
-	public function get_default_recipient() {
+	public function get_default_recipient(): string {
 		return get_option( 'admin_email' );
 	}
 
@@ -246,7 +246,6 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 		// @todo: We need to grab the proper information that's going to be sent as context.
 
 		$email_template = tribe( Email_Template::class );
-		$email_template->set_preview( true );
 
 		// @todo @juanfra @codingmusician: we may want to inverse these parameters.
 		return $email_template->get_html( $context, $this->template );

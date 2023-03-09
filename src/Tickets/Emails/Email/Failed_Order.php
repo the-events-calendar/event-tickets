@@ -134,11 +134,11 @@ class Failed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 		$recipient = tribe_get_option( static::$option_recipient, $this->get_default_recipient() );
 
 		/**
-		 * Allow filtering the email heading.
+		 * Allow filtering the email recipient.
 		 *
 		 * @since TBD
 		 *
-		 * @param string $heading  The email heading.
+		 * @param string $heading  The email recipient.
 		 * @param string $id       The email id.
 		 */
 		$recipient = apply_filters( 'tec_tickets_emails_recipient_' . self::$id, $recipient, self::$id, $this->template );
@@ -246,7 +246,6 @@ class Failed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 		// @todo: We need to grab the proper information that's going to be sent as context.
 
 		$email_template = tribe( Email_Template::class );
-		$email_template->set_preview( true );
 
 		// @todo @juanfra @codingmusician: we may want to inverse these parameters.
 		return $email_template->get_html( $context, $this->template );
@@ -272,7 +271,7 @@ class Failed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 			],
 			[
 				'type' => 'html',
-				'html' => '<p>' . esc_html__( 'The site admin will receive an email about any orders that were made. Customize the content of this specific email using the tools below. The brackets {event_name}, {event_date}, and {ticket_name} can be used to pull dynamic content from the ticket into your email. Learn more about customizing email templates in our Knowledgebase.' ) . '</p>',
+				'html' => '<p>' . esc_html__( 'Site administrators and additional recipients will be notified when there’s a problem with a ticket purchase. Customize the content of this specific email using the tools below. The brackets {event_name}, {event_date}, and {ticket_name} can be used to pull dynamic content from the ticket into your email. Learn more about customizing email templates in our Knowledgebase.' ) . '</p>',
 			],
 			static::$option_enabled => [
 				'type'                => 'toggle',
@@ -307,7 +306,7 @@ class Failed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 				'type'                => 'wysiwyg',
 				'label'               => esc_html__( 'Additional content', 'event-tickets' ),
 				'default'             => '',
-				'tooltip'             => esc_html__( 'Additional content will be displayed below the tickets in your email.', 'event-tickets' ),
+				'tooltip'             => esc_html__( 'Additional content will be displayed below the failed order details in your email.', 'event-tickets' ),
 				'validation_type'     => 'html',
 				'settings'        => [
 					'media_buttons' => false,

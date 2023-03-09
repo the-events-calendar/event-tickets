@@ -390,7 +390,7 @@ abstract class Email_Abstract {
 	 * 
 	 * @return string
 	 */
-	public function get_id() {
+	public function get_id(): string {
 		return static::$id;
 	}
 }
