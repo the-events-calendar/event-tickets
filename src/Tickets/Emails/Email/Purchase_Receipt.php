@@ -34,7 +34,7 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 	 *
 	 * @var string
 	 */
-	public $template = 'customer-completed-order';
+	public $template = 'customer-purchase-receipt';
 
 	/**
 	 * Email recipient.
@@ -43,7 +43,7 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 	 *
 	 * @var string
 	 */
-	public $recipient = 'admin';
+	public $recipient = 'customer';
 
 	/**
 	 * Enabled option key.
@@ -100,7 +100,7 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 	 * @return bool
 	 */
 	public function is_customer_email(): bool {
-		return false;
+		return true;
 	}
 
 	/**
