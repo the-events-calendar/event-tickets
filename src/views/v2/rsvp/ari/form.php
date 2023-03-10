@@ -13,6 +13,7 @@
  * @var Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
  * @var WP_Post|int $post_id The post object or ID.
  *
+ * @since 4.12.3
  * @since TBD Ensured that $going is not undefined in Ajax call.
  *
  * @version TBD
