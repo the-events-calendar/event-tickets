@@ -392,7 +392,7 @@ abstract class Email_Abstract {
 	 * @return string
 	 */
 	public function get_option_key( $option ): string {
-		$template_name = static::$template;
+		$template_name = $this->template;
 		return "tec-tickets-emails-{$template_name}-{$option}";
 	}
 
@@ -430,7 +430,7 @@ abstract class Email_Abstract {
 		 * @param string $id         The email id.
 		 * @param string $template   Template name.
 		 */
-		$template_name = static::$template;
+		$template_name = $this->template;
 		$recipient = apply_filters( "tec_tickets_emails_{$template_name}_recipient", $recipient, self::$id, $this->template );
 
 		/**
@@ -469,7 +469,7 @@ abstract class Email_Abstract {
 		 * @param string $id       The email id.
 		 * @param string $template Template name.
 		 */
-		$template_name = static::$template;
+		$template_name = $this->template;
 		$subject = apply_filters( "tec_tickets_emails_{$template_name}_subject", $subject, self::$id, $this->template );
 
 		/**
@@ -508,7 +508,7 @@ abstract class Email_Abstract {
 		 * @param string $id       The email id.
 		 * @param string $template Template name.
 		 */
-		$template_name = static::$template;
+		$template_name = $this->template;
 		$heading = apply_filters( "tec_tickets_emails_{$template_name}_heading", $heading, self::$id, $this->template );
 
 		/**
@@ -568,7 +568,7 @@ abstract class Email_Abstract {
 		 * @param string $id       The email id.
 		 * @param string $template Template name.
 		 */
-		$template_name = static::$template;
+		$template_name = $this->template;
 		$content = apply_filters( "tec_tickets_emails_{$template_name}_additional_content", $content, self::$id, $this->template );
 
 		/**
@@ -606,7 +606,7 @@ abstract class Email_Abstract {
 		 * @param array  $settings  The settings array.
 		 * @param string $id        Email ID.
 		 */
-		$template_name = static::$template;
+		$template_name = $this->template;
 		$settings = apply_filters( "tec_tickets_emails_{$template_name}_settings", $settings, self::$id );
 
 		/**
