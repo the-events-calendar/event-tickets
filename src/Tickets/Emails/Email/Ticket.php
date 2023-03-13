@@ -84,13 +84,13 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	}
 
 	/**
-	 * Get default email heading for multiple tickets.
+	 * Get default email heading for plural tickets.
 	 *
 	 * @since TBD
 	 *
 	 * @return string
 	 */
-	public function get_default_heading_multiple(): string {
+	public function get_default_heading_plural(): string {
 		return sprintf(
 			// Translators: %s Lowercase plural of tickets.
 			esc_html__( 'Here are your %s, {attendee-name}!', 'event-tickets' ),
@@ -99,15 +99,15 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	}
 
 	/**
-	 * Get heading for multiple tickets.
+	 * Get heading for plural tickets.
 	 * 
 	 * @since TBD
 	 * 
 	 * @return string
 	 */
-	public function get_heading_multiple(): string {
-		$option_key = $this->get_option_key( 'heading-multiple' );
-		$heading = tribe_get_option( $option_key, $this->get_default_heading_multiple() );
+	public function get_heading_plural(): string {
+		$option_key = $this->get_option_key( 'heading-plural' );
+		$heading = tribe_get_option( $option_key, $this->get_default_heading_plural() );
 
 		// @todo: Probably we want more data parsed, or maybe move the filters somewhere else as we're always gonna
 
@@ -121,7 +121,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 		 * @param string $template Template name.
 		 */
 		$template_name = static::$template;
-		$heading = apply_filters( "tec_tickets_emails_{$template_name}_heading_multiple", $heading, self::$id, $this->template );
+		$heading = apply_filters( "tec_tickets_emails_{$template_name}_heading_plural", $heading, self::$id, $this->template );
 
 		/**
 		 * Allow filtering the email heading globally.
@@ -132,7 +132,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 		 * @param string $id       The email id.
 		 * @param string $template Template name.
 		 */
-		$heading = apply_filters( 'tec_tickets_emails_heading_multiple', $heading, self::$id, $this->template );
+		$heading = apply_filters( 'tec_tickets_emails_heading_plural', $heading, self::$id, $this->template );
 
 		return $this->format_string( $heading );
 	}
@@ -156,13 +156,13 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	}
 
 	/**
-	 * Get default email subject for multiple tickets.
+	 * Get default email subject for plural tickets.
 	 *
 	 * @since TBD
 	 *
 	 * @return string
 	 */
-	public function get_default_subject_multiple() {
+	public function get_default_subject_plural() {
 		return sprintf(
 			// Translators: %s - Lowercase plural of tickets.
 			esc_html__( 'Your %s from {site_title}', 'event-tickets' ),
@@ -171,15 +171,15 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	}
 
 	/**
-	 * Get subject for multiple tickets.
+	 * Get subject for plural tickets.
 	 * 
 	 * @since TBD
 	 * 
 	 * @return string
 	 */
-	public function get_subject_multiple(): string {
-		$option_key = $this->get_option_key( 'subject-multiple' );
-		$subject = tribe_get_option( $option_key, $this->get_default_subject_multiple() );
+	public function get_subject_plural(): string {
+		$option_key = $this->get_option_key( 'subject-plural' );
+		$subject = tribe_get_option( $option_key, $this->get_default_subject_plural() );
 
 		// @todo: Probably we want more data parsed, or maybe move the filters somewhere else as we're always gonna
 
@@ -193,7 +193,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 		 * @param string $template Template name.
 		 */
 		$template_name = static::$template;
-		$subject = apply_filters( "tec_tickets_emails_{$template_name}_subject_multiple", $subject, self::$id, $this->template );
+		$subject = apply_filters( "tec_tickets_emails_{$template_name}_subject_plural", $subject, self::$id, $this->template );
 
 		/**
 		 * Allow filtering the email subject globally.
@@ -204,7 +204,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 		 * @param string $id       The email id.
 		 * @param string $template Template name.
 		 */
-		$subject = apply_filters( 'tec_tickets_emails_subject_multiple', $subject, self::$id, $this->template );
+		$subject = apply_filters( 'tec_tickets_emails_subject_plural', $subject, self::$id, $this->template );
 
 		return $this->format_string( $subject );
 	}
@@ -244,11 +244,11 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 				'size'                => 'large',
 				'validation_callback' => 'is_string',
 			],
-			$this->get_option_key( 'subject-multiple' ) => [
+			$this->get_option_key( 'subject-plural' ) => [
 				'type'                => 'text',
-				'label'               => esc_html__( 'Subject (multiple)', 'event-tickets' ),
-				'default'             => $this->get_default_subject_multiple(),
-				'placeholder'         => $this->get_default_subject_multiple(),
+				'label'               => esc_html__( 'Subject (plural)', 'event-tickets' ),
+				'default'             => $this->get_default_subject_plural(),
+				'placeholder'         => $this->get_default_subject_plural(),
 				'size'                => 'large',
 				'validation_callback' => 'is_string',
 			],
@@ -260,11 +260,11 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 				'size'                => 'large',
 				'validation_callback' => 'is_string',
 			],
-			$this->get_option_key( 'heading-multiple' ) => [
+			$this->get_option_key( 'heading-plural' ) => [
 				'type'                => 'text',
-				'label'               => esc_html__( 'Heading (multiple)', 'event-tickets' ),
-				'default'             => $this->get_default_heading_multiple(),
-				'placeholder'         => $this->get_default_heading_multiple(),
+				'label'               => esc_html__( 'Heading (plural)', 'event-tickets' ),
+				'default'             => $this->get_default_heading_plural(),
+				'placeholder'         => $this->get_default_heading_plural(),
 				'size'                => 'large',
 				'validation_callback' => 'is_string',
 			],
