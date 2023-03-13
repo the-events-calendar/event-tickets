@@ -193,6 +193,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [5.5.9.1] 2023-03-13 =
 
 * Fix - Fixed unlimited capacity tickets showing as sold out on calendar views. [ET-1678]
+* Fix - Fix fatal on the attendees screen when accessing as a non-admin user. [ET-1679]
 
 = [5.5.9] 2023-03-08 =
 
