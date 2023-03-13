@@ -119,7 +119,7 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 			],
 			[
 				'type' => 'html',
-				'html' => '<p>' . esc_html__( 'The ticket purchaser will receive an email about the purchase that  was completed.' ) . '</p>',
+				'html' => '<p>' . esc_html__( 'The ticket purchaser will receive an email about the purchase that was completed.' ) . '</p>',
 			],
 			$this->get_option_key( 'enabled' ) => [
 				'type'                => 'toggle',

@@ -143,7 +143,7 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 				'type'                => 'wysiwyg',
 				'label'               => esc_html__( 'Additional content', 'event-tickets' ),
 				'default'             => $this->get_default_additional_content(),
-				'tooltip'             => esc_html__( 'Additional content will be displayed below the tickets in your email.', 'event-tickets' ),
+				'tooltip'             => esc_html__( 'Additional content will be displayed below the order details.', 'event-tickets' ),
 				'validation_type'     => 'html',
 				'settings'        => [
 					'media_buttons' => false,
