@@ -30,7 +30,7 @@ abstract class Email_Abstract {
 	 *
 	 * @var string
 	 */
-	public static $id;
+	public $id;
 
 	/**
 	 * Email template filename.
@@ -176,7 +176,7 @@ abstract class Email_Abstract {
 		 * @param array $from_email The "from" email.
 		 * @param string $id The email ID.
 		 */
-		$from_email = apply_filters( 'tec_tickets_emails_from_email', $from_email, static::$id );
+		$from_email = apply_filters( 'tec_tickets_emails_from_email', $from_email, $this->id );
 
 		return $from_email;
 	}
@@ -199,7 +199,7 @@ abstract class Email_Abstract {
 		 * @param array $from_email The "from" name.
 		 * @param string $id The email ID.
 		 */
-		$from_name = apply_filters( 'tec_tickets_emails_from_name', $from_name, static::$id );
+		$from_name = apply_filters( 'tec_tickets_emails_from_name', $from_name, $this->id );
 
 		return $from_name;
 	}
@@ -251,7 +251,7 @@ abstract class Email_Abstract {
 		 * @param array $headers The headers.
 		 * @param string $id The email ID.
 		 */
-		$headers = apply_filters( 'tec_tickets_emails_headers', $headers, static::$id );
+		$headers = apply_filters( 'tec_tickets_emails_headers', $headers, $this->id );
 
 		return $headers;
 	}
@@ -275,7 +275,7 @@ abstract class Email_Abstract {
 		 * @param array $attachments The attachments.
 		 * @param string $id The email ID.
 		 */
-		$attachments = apply_filters( 'tec_tickets_emails_attachments', $attachments, static::$id );
+		$attachments = apply_filters( 'tec_tickets_emails_attachments', $attachments, $this->id );
 
 		return $attachments;
 	}
@@ -296,7 +296,7 @@ abstract class Email_Abstract {
 		 * @param array $placeholders The placeholders.
 		 * @param string $id The email ID.
 		 */
-		$placeholders = apply_filters( 'tec_tickets_emails_placeholders', $this->placeholders, static::$id );
+		$placeholders = apply_filters( 'tec_tickets_emails_placeholders', $this->placeholders, $this->id );
 
 		return $placeholders;
 	}
@@ -319,7 +319,7 @@ abstract class Email_Abstract {
 		 * @param string $string The formatted string.
 		 * @param string $id The email id.
 		 */
-		return apply_filters( 'tec_tickets_emails_format_string', str_replace( $find, $replace, $string ), static::$id );
+		return apply_filters( 'tec_tickets_emails_format_string', str_replace( $find, $replace, $string ), $this->id );
 	}
 
 	/**
@@ -352,7 +352,7 @@ abstract class Email_Abstract {
 	 * @return WP_Post|null;
 	 */
 	public function get_post() {
-		return get_page_by_path( static::$id, OBJECT, Email_Handler::POSTTYPE );
+		return get_page_by_path( $this->id, OBJECT, Email_Handler::POSTTYPE );
 	}
 
 	/**
@@ -366,7 +366,7 @@ abstract class Email_Abstract {
 		// Force the `emails` tab.
 		$args = [
 			'tab'     => Emails_Tab::$slug,
-			'section' => static::$id,
+			'section' => $this->id,
 		];
 
 		// Use the settings page get_url to build the URL.
@@ -381,7 +381,7 @@ abstract class Email_Abstract {
 	 * @return string
 	 */
 	public function get_id(): string {
-		return static::$id;
+		return $this->id;
 	}
 
 	/**
