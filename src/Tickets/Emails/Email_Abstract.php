@@ -431,7 +431,7 @@ abstract class Email_Abstract {
 		 * @param string $template   Template name.
 		 */
 		$template_name = $this->template;
-		$recipient = apply_filters( "tec_tickets_emails_{$template_name}_recipient", $recipient, self::$id, $this->template );
+		$recipient = apply_filters( "tec_tickets_emails_{$template_name}_recipient", $recipient, $this->id, $this->template );
 
 		/**
 		 * Allow filtering the email recipient globally.
@@ -442,7 +442,7 @@ abstract class Email_Abstract {
 		 * @param string $id         The email id.
 		 * @param string $template   Template name.
 		 */
-		$recipient = apply_filters( 'tec_tickets_emails_recipient', $recipient, self::$id, $this->template );
+		$recipient = apply_filters( 'tec_tickets_emails_recipient', $recipient, $this->id, $this->template );
 
 		return $this->format_string( $recipient );
 	}
@@ -470,7 +470,7 @@ abstract class Email_Abstract {
 		 * @param string $template Template name.
 		 */
 		$template_name = $this->template;
-		$subject = apply_filters( "tec_tickets_emails_{$template_name}_subject", $subject, self::$id, $this->template );
+		$subject = apply_filters( "tec_tickets_emails_{$template_name}_subject", $subject, $this->id, $this->template );
 
 		/**
 		 * Allow filtering the email subject globally.
@@ -481,7 +481,7 @@ abstract class Email_Abstract {
 		 * @param string $id       The email id.
 		 * @param string $template Template name.
 		 */
-		$subject = apply_filters( 'tec_tickets_emails_subject', $subject, self::$id, $this->template );
+		$subject = apply_filters( 'tec_tickets_emails_subject', $subject, $this->id, $this->template );
 
 		return $this->format_string( $subject );
 	}
@@ -509,7 +509,7 @@ abstract class Email_Abstract {
 		 * @param string $template Template name.
 		 */
 		$template_name = $this->template;
-		$heading = apply_filters( "tec_tickets_emails_{$template_name}_heading", $heading, self::$id, $this->template );
+		$heading = apply_filters( "tec_tickets_emails_{$template_name}_heading", $heading, $this->id, $this->template );
 
 		/**
 		 * Allow filtering the email heading globally.
@@ -520,7 +520,7 @@ abstract class Email_Abstract {
 		 * @param string $id       The email id.
 		 * @param string $template Template name.
 		 */
-		$heading = apply_filters( 'tec_tickets_emails_heading', $heading, self::$id, $this->template );
+		$heading = apply_filters( 'tec_tickets_emails_heading', $heading, $this->id, $this->template );
 
 		return $this->format_string( $heading );
 	}
@@ -569,7 +569,7 @@ abstract class Email_Abstract {
 		 * @param string $template Template name.
 		 */
 		$template_name = $this->template;
-		$content = apply_filters( "tec_tickets_emails_{$template_name}_additional_content", $content, self::$id, $this->template );
+		$content = apply_filters( "tec_tickets_emails_{$template_name}_additional_content", $content, $this->id, $this->template );
 
 		/**
 		 * Allow filtering the email heading globally.
@@ -580,7 +580,7 @@ abstract class Email_Abstract {
 		 * @param string $id       The email id.
 		 * @param string $template Template name.
 		 */
-		$content = apply_filters( 'tec_tickets_emails_additional_content', $content, self::$id, $this->template );
+		$content = apply_filters( 'tec_tickets_emails_additional_content', $content, $this->id, $this->template );
 
 		return $this->format_string( $content );
 	}
@@ -607,7 +607,7 @@ abstract class Email_Abstract {
 		 * @param string $id        Email ID.
 		 */
 		$template_name = $this->template;
-		$settings = apply_filters( "tec_tickets_emails_{$template_name}_settings", $settings, self::$id );
+		$settings = apply_filters( "tec_tickets_emails_{$template_name}_settings", $settings, $this->id );
 
 		/**
 		 * Allow filtering the settings for this email.
@@ -617,7 +617,7 @@ abstract class Email_Abstract {
 		 * @param array  $settings  The settings array.
 		 * @param string $id        Email ID.
 		 */
-		return apply_filters( 'tec_tickets_emails_settings', $settings, self::$id );
+		return apply_filters( 'tec_tickets_emails_settings', $settings, $this->id );
 	}
 
 	/**
@@ -629,7 +629,7 @@ abstract class Email_Abstract {
 	 */
 	public function get_post_type_data(): array {
 		$data = [
-			'slug'      => self::$id,
+			'slug'      => $this->id,
 			'title'     => $this->get_title(),
 			'template'  => $this->template,
 			'recipient' => $this->recipient,
