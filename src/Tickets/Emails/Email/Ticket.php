@@ -47,82 +47,6 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	public $recipient = 'customer';
 
 	/**
-	 * Enabled option key.
-	 *
-	 * @since 5.5.9
-	 *
-	 * @var string
-	 */
-	public static $option_enabled = 'tec-tickets-emails-ticket-enabled';
-
-	/**
-	 * Subject option key.
-	 *
-	 * @since 5.5.9
-	 *
-	 * @var string
-	 */
-	public static $option_subject = 'tec-tickets-emails-ticket-subject';
-
-	/**
-	 * Subject option key for multiple tickets.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	public static $option_subject_multiple = 'tec-tickets-emails-ticket-subject-multiple';
-
-	/**
-	 * Email heading option key.
-	 *
-	 * @since 5.5.9
-	 *
-	 * @var string
-	 */
-	public static $option_heading = 'tec-tickets-emails-ticket-heading';
-
-	/**
-	 * Email heading option key for multiple tickets.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	public static $option_heading_multiple = 'tec-tickets-emails-ticket-heading-multiple';
-
-	/**
-	 * Email heading option key.
-	 *
-	 * @since 5.5.9
-	 *
-	 * @var string
-	 */
-	public static $option_add_content = 'tec-tickets-emails-ticket-add-content';
-
-	/**
-	 * Checks if this email is enabled.
-	 *
-	 * @since 5.5.9
-	 *
-	 * @return bool
-	 */
-	public function is_enabled(): bool {
-		return tribe_is_truthy( tribe_get_option( static::$option_enabled, true ) );
-	}
-
-	/**
-	 * Checks if this email is sent to customer.
-	 *
-	 * @since 5.5.9
-	 *
-	 * @return bool
-	 */
-	public function is_customer_email(): bool {
-		return true;
-	}
-
-	/**
 	 * Get email title.
 	 *
 	 * @since 5.5.9
@@ -134,38 +58,14 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	}
 
 	/**
-	 * Get email heading.
+	 * Get default recipient.
 	 *
 	 * @since 5.5.9
 	 *
-	 * @return string The email heading.
+	 * @return string
 	 */
-	public function get_heading(): string {
-		$heading = tribe_get_option( static::$option_heading, $this->get_default_heading() );
-
-		/**
-		 * Allow filtering the email heading for Ticket.
-		 *
-		 * @since 5.5.9
-		 *
-		 * @param string          $heading  The email heading.
-		 * @param string          $id       The email id.
-		 * @param Tribe__Template $template Template object.
-		 */
-		$heading = apply_filters( 'tec_tickets_emails_ticket_heading', $heading, self::$id, $this->template );
-
-		/**
-		 * Allow filtering the email heading globally.
-		 *
-		 * @since TBD
-		 *
-		 * @param string          $heading  The email heading.
-		 * @param string          $id       The email id.
-		 * @param Tribe__Template $template Template object.
-		 */
-		$heading = apply_filters( 'tec_tickets_emails_heading', $heading, self::$id, $this->template );
-
-		return $this->format_string( $heading );
+	public function get_default_recipient(): string {
+		return '{attendee-email}';
 	}
 
 	/**
@@ -175,7 +75,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	 *
 	 * @return string
 	 */
-	public function get_default_heading() {
+	public function get_default_heading(): string {
 		return sprintf(
 			// Translators: %s Lowercase singular of ticket.
 			esc_html__( 'Here\'s your %s, {attendee-name}!', 'event-tickets' ),
@@ -190,7 +90,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	 *
 	 * @return string
 	 */
-	public function get_default_heading_multiple() {
+	public function get_default_heading_multiple(): string {
 		return sprintf(
 			// Translators: %s Lowercase plural of tickets.
 			esc_html__( 'Here are your %s, {attendee-name}!', 'event-tickets' ),
@@ -199,43 +99,42 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	}
 
 	/**
-	 * Get email subject.
-	 *
-	 * @since 5.5.9
-	 *
-	 * @return string The email subject.
+	 * Get heading for multiple tickets.
+	 * 
+	 * @since TBD
+	 * 
+	 * @return string
 	 */
-	public function get_subject(): string {
-		$subject = tribe_get_option( static::$option_subject, $this->get_default_subject() );
-
-		$subject = $this->format_string( $subject );
+	public function get_heading_multiple(): string {
+		$option_key = $this->get_option_key( 'heading-multiple' );
+		$heading = tribe_get_option( $option_key, $this->get_default_heading_multiple() );
 
 		// @todo: Probably we want more data parsed, or maybe move the filters somewhere else as we're always gonna
-		// apply filters on the subject maybe move the filter to the parent::get_subject() ?
 
 		/**
-		 * Allow filtering the email subject.
+		 * Allow filtering the email heading for Completed Order.
 		 *
-		 * @since 5.5.9
+		 * @since TBD
 		 *
-		 * @param string          $subject  The email subject.
-		 * @param string          $id       The email id.
-		 * @param Tribe__Template $template Template object.
+		 * @param string $heading  The email heading.
+		 * @param string $id       The email id.
+		 * @param string $template Template name.
 		 */
-		$subject = apply_filters( 'tec_tickets_emails_ticket_subject', $subject, self::$id, $this->template );
+		$template_name = static::$template;
+		$heading = apply_filters( "tec_tickets_emails_{$template_name}_heading_multiple", $heading, self::$id, $this->template );
 
 		/**
-		 * Allow filtering the email subject.
+		 * Allow filtering the email heading globally.
 		 *
-		 * @since 5.5.9
+		 * @since TBD
 		 *
-		 * @param string          $subject  The email subject.
-		 * @param string          $id       The email id.
-		 * @param Tribe__Template $template Template object.
+		 * @param string $heading  The email heading.
+		 * @param string $id       The email id.
+		 * @param string $template Template name.
 		 */
-		$subject = apply_filters( 'tec_tickets_emails_subject', $subject, self::$id, $this->template );
+		$heading = apply_filters( 'tec_tickets_emails_heading_multiple', $heading, self::$id, $this->template );
 
-		return $subject;
+		return $this->format_string( $heading );
 	}
 
 	/**
@@ -245,7 +144,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	 *
 	 * @return string
 	 */
-	public function get_default_subject() {
+	public function get_default_subject(): string {
 		$default_subject = sprintf(
 			// Translators: %s - Lowercase singular of tickets.
 			esc_html__( 'Your %s from {site_title}', 'event-tickets' ),
@@ -272,37 +171,53 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	}
 
 	/**
-	 * Get email content.
-	 *
-	 * @since 5.5.9
-	 *
-	 * @param array $args The arguments.
-	 *
-	 * @return string The email content.
+	 * Get subject for multiple tickets.
+	 * 
+	 * @since TBD
+	 * 
+	 * @return string
 	 */
-	public function get_content( $args = [] ): string {
-		// @todo: Parse args, etc.
-		$context = ! empty( $args['context'] ) ? $args['context'] : [];
+	public function get_subject_multiple(): string {
+		$option_key = $this->get_option_key( 'subject-multiple' );
+		$subject = tribe_get_option( $option_key, $this->get_default_subject_multiple() );
 
-		// @todo: We need to grab the proper information that's going to be sent as context.
+		// @todo: Probably we want more data parsed, or maybe move the filters somewhere else as we're always gonna
 
-		$email_template = tribe( Email_Template::class );
-		$email_template->set_preview( true );
+		/**
+		 * Allow filtering the email subject.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $subject  The email subject.
+		 * @param string $id       The email id.
+		 * @param string $template Template name.
+		 */
+		$template_name = static::$template;
+		$subject = apply_filters( "tec_tickets_emails_{$template_name}_subject_multiple", $subject, self::$id, $this->template );
 
-		// @todo @juanfra @codingmusician: we may want to inverse these parameters.
-		return $email_template->get_html( $context, $this->template );
+		/**
+		 * Allow filtering the email subject globally.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $subject  The email heasubjectding.
+		 * @param string $id       The email id.
+		 * @param string $template Template name.
+		 */
+		$subject = apply_filters( 'tec_tickets_emails_subject_multiple', $subject, self::$id, $this->template );
+
+		return $this->format_string( $subject );
 	}
 
 	/**
-	 * Get email settings.
+	 * Get email settings fields.
 	 *
-	 * @since 5.5.9
+	 * @since TBD
 	 *
 	 * @return array
 	 */
-	public function get_settings(): array {
-
-		$settings = [
+	public function get_settings_fields(): array {
+		return [
 			[
 				'type' => 'html',
 				'html' => '<div class="tribe-settings-form-wrap">',
@@ -315,13 +230,13 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 				'type' => 'html',
 				'html' => '<p>' . esc_html__( 'Ticket purchasers will receive an email including their ticket and additional info upon completion of purchase. Customize the content of this specific email using the tools below. The brackets {event_name}, {event_date}, and {ticket_name} can be used to pull dynamic content from the ticket into your email. Learn more about customizing email templates in our Knowledgebase.' ) . '</p>',
 			],
-			static::$option_enabled => [
+			$this->get_option_key( 'enabled' ) => [
 				'type'                => 'toggle',
 				'label'               => esc_html__( 'Enabled', 'event-tickets' ),
 				'default'             => true,
 				'validation_type'     => 'boolean',
 			],
-			static::$option_subject => [
+			$this->get_option_key( 'subject' ) => [
 				'type'                => 'text',
 				'label'               => esc_html__( 'Subject', 'event-tickets' ),
 				'default'             => $this->get_default_subject(),
@@ -329,7 +244,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 				'size'                => 'large',
 				'validation_callback' => 'is_string',
 			],
-			static::$option_subject_multiple => [
+			$this->get_option_key( 'subject-multiple' ) => [
 				'type'                => 'text',
 				'label'               => esc_html__( 'Subject (multiple)', 'event-tickets' ),
 				'default'             => $this->get_default_subject_multiple(),
@@ -337,7 +252,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 				'size'                => 'large',
 				'validation_callback' => 'is_string',
 			],
-			static::$option_heading => [
+			$this->get_option_key( 'heading' ) => [
 				'type'                => 'text',
 				'label'               => esc_html__( 'Heading', 'event-tickets' ),
 				'default'             => $this->get_default_heading(),
@@ -345,7 +260,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 				'size'                => 'large',
 				'validation_callback' => 'is_string',
 			],
-			static::$option_heading_multiple => [
+			$this->get_option_key( 'heading-multiple' ) => [
 				'type'                => 'text',
 				'label'               => esc_html__( 'Heading (multiple)', 'event-tickets' ),
 				'default'             => $this->get_default_heading_multiple(),
@@ -353,7 +268,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 				'size'                => 'large',
 				'validation_callback' => 'is_string',
 			],
-			static::$option_add_content => [
+			$this->get_option_key( 'add-content' ) => [
 				'type'                => 'wysiwyg',
 				'label'               => esc_html__( 'Additional content', 'event-tickets' ),
 				'default'             => '',
@@ -375,43 +290,5 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 				],
 			],
 		];
-
-		/**
-		 * Allow filtering the settings for Ticket email.
-		 *
-		 * @since TBD
-		 *
-		 * @param array  $settings The settings array.
-		 * @param string $id       The email ID.
-		 */
-		$settings = apply_filters( 'tec_tickets_emails_ticket_settings', $settings, self::$id );
-
-		/**
-		 * Allow filtering the settings globally.
-		 *
-		 * @since TBD
-		 *
-		 * @param array  $settings The settings array.
-		 * @param string $id       The email ID.
-		 */
-		return apply_filters( 'tec_tickets_emails_settings', $settings, self::$id );
-	}
-
-	/**
-	 * Get the `post_type` data for this email.
-	 *
-	 * @since 5.5.9
-	 *
-	 * @return array
-	 */
-	public function get_post_type_data(): array {
-		$data = [
-			'slug'      => self::$id,
-			'title'     => $this->get_title(),
-			'template'  => $this->template,
-			'recipient' => $this->recipient,
-		];
-
-		return $data;
 	}
 }
