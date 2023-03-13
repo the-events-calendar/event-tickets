@@ -404,7 +404,7 @@ abstract class Email_Abstract {
 	 * @return bool
 	 */
 	public function is_enabled(): bool {
-		$option_key = $this->get_option_key( 'emabled' );
+		$option_key = $this->get_option_key( 'enabled' );
 		return tribe_is_truthy( tribe_get_option( $option_key, true ) );
 	}
 
