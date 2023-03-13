@@ -392,7 +392,8 @@ abstract class Email_Abstract {
 	 * @return string
 	 */
 	public function get_option_key( $option ): string {
-		return "tec-tickets-emails-{$this->get_id()}-{$option}";
+		$template_name = static::$template;
+		return "tec-tickets-emails-{$template_name}-{$option}";
 	}
 
 	/**
