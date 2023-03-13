@@ -190,7 +190,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.5.9.1] 2023-03-10 =
+= [5.5.9.1] 2023-03-13 =
 
 * Fix - Fixed unlimited capacity tickets showing as sold out on calendar views. [ET-1678]
 
