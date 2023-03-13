@@ -25,7 +25,7 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 	 *
 	 * @var string
 	 */
-	public static $id = 'tec_tickets_emails_purchase_receipt';
+	public $id = 'tec_tickets_emails_purchase_receipt';
 
 	/**
 	 * Email template.
