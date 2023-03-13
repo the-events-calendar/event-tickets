@@ -56,6 +56,8 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * It should allow fetching ticket attendees by event.
 	 *
+	 * @todo @rafsuntaskin fix this test from failing randomly.
+	 *
 	 * @test
 	 */
 	public function should_allow_fetching_attendees_by_event() {
