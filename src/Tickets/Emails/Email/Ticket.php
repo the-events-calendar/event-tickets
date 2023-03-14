@@ -120,7 +120,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 		 * @param string $id       The email id.
 		 * @param string $template Template name.
 		 */
-		$heading = apply_filters( 'tec_tickets_emails_heading_plural', $heading, self::$id, $this->template );
+		$heading = apply_filters( 'tec_tickets_emails_heading_plural', $heading, $this->id, $this->template );
 
 		/**
 		 * Allow filtering the email heading for Completed Order.
@@ -132,7 +132,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 		 * @param string $template Template name.
 		 */
 		$template_name = static::$template;
-		$heading = apply_filters( "tec_tickets_emails_{$template_name}_heading_plural", $heading, self::$id, $this->template );
+		$heading = apply_filters( "tec_tickets_emails_{$template_name}_heading_plural", $heading, $this->id, $this->template );
 
 		return $this->format_string( $heading );
 	}
@@ -192,7 +192,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 		 * @param string $id       The email id.
 		 * @param string $template Template name.
 		 */
-		$subject = apply_filters( 'tec_tickets_emails_subject_plural', $subject, self::$id, $this->template );
+		$subject = apply_filters( 'tec_tickets_emails_subject_plural', $subject, $this->id, $this->template );
 
 		/**
 		 * Allow filtering the email subject.
@@ -204,7 +204,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 		 * @param string $template Template name.
 		 */
 		$template_name = static::$template;
-		$subject = apply_filters( "tec_tickets_emails_{$template_name}_subject_plural", $subject, self::$id, $this->template );
+		$subject = apply_filters( "tec_tickets_emails_{$template_name}_subject_plural", $subject, $this->id, $this->template );
 
 		return $this->format_string( $subject );
 	}
