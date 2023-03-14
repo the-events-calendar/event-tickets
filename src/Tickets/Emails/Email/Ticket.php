@@ -112,6 +112,17 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 		// @todo: Probably we want more data parsed, or maybe move the filters somewhere else as we're always gonna
 
 		/**
+		 * Allow filtering the email heading globally.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $heading  The email heading.
+		 * @param string $id       The email id.
+		 * @param string $template Template name.
+		 */
+		$heading = apply_filters( 'tec_tickets_emails_heading_plural', $heading, self::$id, $this->template );
+
+		/**
 		 * Allow filtering the email heading for Completed Order.
 		 *
 		 * @since TBD
@@ -122,17 +133,6 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 		 */
 		$template_name = static::$template;
 		$heading = apply_filters( "tec_tickets_emails_{$template_name}_heading_plural", $heading, self::$id, $this->template );
-
-		/**
-		 * Allow filtering the email heading globally.
-		 *
-		 * @since TBD
-		 *
-		 * @param string $heading  The email heading.
-		 * @param string $id       The email id.
-		 * @param string $template Template name.
-		 */
-		$heading = apply_filters( 'tec_tickets_emails_heading_plural', $heading, self::$id, $this->template );
 
 		return $this->format_string( $heading );
 	}
@@ -184,6 +184,17 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 		// @todo: Probably we want more data parsed, or maybe move the filters somewhere else as we're always gonna
 
 		/**
+		 * Allow filtering the email subject globally.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $subject  The email heasubjectding.
+		 * @param string $id       The email id.
+		 * @param string $template Template name.
+		 */
+		$subject = apply_filters( 'tec_tickets_emails_subject_plural', $subject, self::$id, $this->template );
+
+		/**
 		 * Allow filtering the email subject.
 		 *
 		 * @since TBD
@@ -194,17 +205,6 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 		 */
 		$template_name = static::$template;
 		$subject = apply_filters( "tec_tickets_emails_{$template_name}_subject_plural", $subject, self::$id, $this->template );
-
-		/**
-		 * Allow filtering the email subject globally.
-		 *
-		 * @since TBD
-		 *
-		 * @param string $subject  The email heasubjectding.
-		 * @param string $id       The email id.
-		 * @param string $template Template name.
-		 */
-		$subject = apply_filters( 'tec_tickets_emails_subject_plural', $subject, self::$id, $this->template );
 
 		return $this->format_string( $subject );
 	}
