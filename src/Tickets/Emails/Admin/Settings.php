@@ -279,7 +279,7 @@ class Settings {
 				'type'                => 'color',
 				'label'               => esc_html__( 'Header/Footer Background', 'event-tickets' ),
 				'size'                => 'medium',
-				'default'             => '#ffffff',
+				'default'             => '#50B078',
 				'validation_callback' => 'is_string',
 				'validation_type'     => 'color',
 			],
