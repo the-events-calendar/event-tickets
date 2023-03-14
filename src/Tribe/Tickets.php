@@ -2008,6 +2008,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 				$global_stock_mode = $ticket->global_stock_mode();
 
+				// Handle tickets with unlimited capacity.
+				if ( empty( $global_stock_mode ) ) {
+					if ( ! $ticket->manage_stock() || -1 === $ticket->capacity ) {
+						$types['tickets']['unlimited'] ++;
+						$types['tickets']['available'] ++;
+					}
+					continue;
+				}
+
 				// for individual tickets.
 				if ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $global_stock_mode ) {
 					$stock_level = $ticket->available();
@@ -2048,7 +2057,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$types['tickets']['stock'] += $global_stock;
 			}
 
-			return $types;
+			/**
+			 * Allow filtering of ticket counts by event.
+			 *
+			 * @since TBD
+			 *
+			 * @param array $types   An array of ticket types.
+			 * @param int   $post_id The event post ID.
+			 */
+			return apply_filters( 'tec_tickets_get_ticket_counts', $types, $post_id );
 		}
 
 		/**
