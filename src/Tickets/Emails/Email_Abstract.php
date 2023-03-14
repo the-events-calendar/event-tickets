@@ -422,6 +422,17 @@ abstract class Email_Abstract {
 		// @todo: Probably we want more data parsed, or maybe move the filters somewhere else as we're always gonna
 
 		/**
+		 * Allow filtering the email recipient globally.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $recipient  The email recipient.
+		 * @param string $id         The email id.
+		 * @param string $template   Template name.
+		 */
+		$recipient = apply_filters( 'tec_tickets_emails_recipient', $recipient, $this->id, $this->template );
+
+		/**
 		 * Allow filtering the email recipient for Completed Order.
 		 *
 		 * @since TBD
@@ -432,17 +443,6 @@ abstract class Email_Abstract {
 		 */
 		$template_name = $this->template;
 		$recipient = apply_filters( "tec_tickets_emails_{$template_name}_recipient", $recipient, $this->id, $this->template );
-
-		/**
-		 * Allow filtering the email recipient globally.
-		 *
-		 * @since TBD
-		 *
-		 * @param string $recipient  The email recipient.
-		 * @param string $id         The email id.
-		 * @param string $template   Template name.
-		 */
-		$recipient = apply_filters( 'tec_tickets_emails_recipient', $recipient, $this->id, $this->template );
 
 		return $this->format_string( $recipient );
 	}
@@ -461,6 +461,17 @@ abstract class Email_Abstract {
 		// @todo: Probably we want more data parsed, or maybe move the filters somewhere else as we're always gonna
 
 		/**
+		 * Allow filtering the email subject globally.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $subject  The email subject.
+		 * @param string $id       The email id.
+		 * @param string $template Template name.
+		 */
+		$subject = apply_filters( 'tec_tickets_emails_subject', $subject, $this->id, $this->template );
+
+		/**
 		 * Allow filtering the email subject.
 		 *
 		 * @since TBD
@@ -471,17 +482,6 @@ abstract class Email_Abstract {
 		 */
 		$template_name = $this->template;
 		$subject = apply_filters( "tec_tickets_emails_{$template_name}_subject", $subject, $this->id, $this->template );
-
-		/**
-		 * Allow filtering the email subject globally.
-		 *
-		 * @since TBD
-		 *
-		 * @param string $subject  The email subject.
-		 * @param string $id       The email id.
-		 * @param string $template Template name.
-		 */
-		$subject = apply_filters( 'tec_tickets_emails_subject', $subject, $this->id, $this->template );
 
 		return $this->format_string( $subject );
 	}
@@ -500,6 +500,17 @@ abstract class Email_Abstract {
 		// @todo: Probably we want more data parsed, or maybe move the filters somewhere else as we're always gonna
 
 		/**
+		 * Allow filtering the email heading globally.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $heading  The email heading.
+		 * @param string $id       The email id.
+		 * @param string $template Template name.
+		 */
+		$heading = apply_filters( 'tec_tickets_emails_heading', $heading, $this->id, $this->template );
+
+		/**
 		 * Allow filtering the email heading for Completed Order.
 		 *
 		 * @since TBD
@@ -510,17 +521,6 @@ abstract class Email_Abstract {
 		 */
 		$template_name = $this->template;
 		$heading = apply_filters( "tec_tickets_emails_{$template_name}_heading", $heading, $this->id, $this->template );
-
-		/**
-		 * Allow filtering the email heading globally.
-		 *
-		 * @since TBD
-		 *
-		 * @param string $heading  The email heading.
-		 * @param string $id       The email id.
-		 * @param string $template Template name.
-		 */
-		$heading = apply_filters( 'tec_tickets_emails_heading', $heading, $this->id, $this->template );
 
 		return $this->format_string( $heading );
 	}
@@ -560,6 +560,17 @@ abstract class Email_Abstract {
 		// @todo: Probably we want more data parsed, or maybe move the filters somewhere else as we're always gonna
 
 		/**
+		 * Allow filtering the email heading globally.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $content  The email heading.
+		 * @param string $id       The email id.
+		 * @param string $template Template name.
+		 */
+		$content = apply_filters( 'tec_tickets_emails_additional_content', $content, $this->id, $this->template );
+
+		/**
 		 * Allow filtering the email heading for Completed Order.
 		 *
 		 * @since TBD
@@ -570,17 +581,6 @@ abstract class Email_Abstract {
 		 */
 		$template_name = $this->template;
 		$content = apply_filters( "tec_tickets_emails_{$template_name}_additional_content", $content, $this->id, $this->template );
-
-		/**
-		 * Allow filtering the email heading globally.
-		 *
-		 * @since TBD
-		 *
-		 * @param string $content  The email heading.
-		 * @param string $id       The email id.
-		 * @param string $template Template name.
-		 */
-		$content = apply_filters( 'tec_tickets_emails_additional_content', $content, $this->id, $this->template );
 
 		return $this->format_string( $content );
 	}
@@ -599,15 +599,14 @@ abstract class Email_Abstract {
 		// @todo: Probably we want more data parsed, or maybe move the filters somewhere else as we're always gonna
 
 		/**
-		 * Allow filtering the settings for this email.
+		 * Allow filtering the settings globally.
 		 *
 		 * @since TBD
 		 *
 		 * @param array  $settings  The settings array.
 		 * @param string $id        Email ID.
 		 */
-		$template_name = $this->template;
-		$settings = apply_filters( "tec_tickets_emails_{$template_name}_settings", $settings, $this->id );
+		return apply_filters( 'tec_tickets_emails_settings', $settings, $this->id );
 
 		/**
 		 * Allow filtering the settings for this email.
@@ -617,7 +616,8 @@ abstract class Email_Abstract {
 		 * @param array  $settings  The settings array.
 		 * @param string $id        Email ID.
 		 */
-		return apply_filters( 'tec_tickets_emails_settings', $settings, $this->id );
+		$template_name = $this->template;
+		$settings = apply_filters( "tec_tickets_emails_{$template_name}_settings", $settings, $this->id );
 	}
 
 	/**
