@@ -4,7 +4,7 @@ Contributors: theeventscalendar, brianjessee, camwynsp, aguseo, bordoni, borkweb
 Tags: tickets, registration, event registration, RSVP, ticket sales, attendee management
 Requires at least: 5.8.5
 Tested up to: 6.1.1
-Stable tag: 5.5.9
+Stable tag: 5.5.9.1
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -194,6 +194,11 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 * Fix - Undefined $going variable on Ajax request. [ET-1612]
 * Enhancement - Add the Attendee count for the site to the `At a Glance` admin widget. [ET-1654]
+
+= [5.5.9.1] 2023-03-13 =
+
+* Fix - Fixed unlimited capacity tickets showing as sold out on calendar views. [ET-1678]
+* Fix - Fix fatal on the attendees screen when accessing as a non-admin user. [ET-1679]
 
 = [5.5.9] 2023-03-08 =
 
