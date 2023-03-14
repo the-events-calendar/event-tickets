@@ -354,7 +354,7 @@ class Settings {
 									type="checkbox"
 									name="' . self::$option_enabled . '"
 									' . checked( $is_tickets_emails_enabled, true, false ) . '
-									id="tickets-commerce-enable-input"
+									id="tickets-emails-enable-input"
 									class="tec-tickets__admin-settings-toggle-large-checkbox tribe-dependency tribe-dependency-verified">
 									<span class="tec-tickets__admin-settings-toggle-large-switch"></span>
 									<span class="tec-tickets__admin-settings-toggle-large-label">' . esc_html__( 'Enable Tickets Emails', 'event-tickets' ) . '</span>
