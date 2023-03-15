@@ -28,6 +28,15 @@ class Failed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 	public $id = 'tec_tickets_emails_failed_order';
 
 	/**
+	 * Email slug.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public $slug = 'failed-order';
+
+	/**
 	 * Email template.
 	 *
 	 * @since TBD
@@ -161,5 +170,26 @@ class Failed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 				],
 			],
 		];
+	}
+
+	/**
+	 * Get email content.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $args The arguments.
+	 *
+	 * @return string The email content.
+	 */
+	public function get_content( $args = [] ): string {
+		// @todo: Parse args, etc.
+		$context = ! empty( $args['context'] ) ? $args['context'] : [];
+
+		// @todo: We need to grab the proper information that's going to be sent as context.
+
+		$email_template = tribe( Email_Template::class );
+
+		// @todo @juanfra @codingmusician: we may want to inverse these parameters.
+		return $email_template->get_html( $context, $this->template );
 	}
 }

@@ -33,6 +33,15 @@ abstract class Email_Abstract {
 	public $id;
 
 	/**
+	 * Email slug.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public $slug;
+
+	/**
 	 * Email template filename.
 	 *
 	 * @since 5.5.9
@@ -146,6 +155,17 @@ abstract class Email_Abstract {
 	 * @return array
 	 */
 	abstract public function get_settings_fields(): array;
+
+	/**
+	 * Get email content.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $args The arguments.
+	 *
+	 * @return string The email content.
+	 */
+	abstract public function get_content( $args ): string;
 
 	/**
 	 * Is customer email.
@@ -441,8 +461,7 @@ abstract class Email_Abstract {
 		 * @param string $id         The email id.
 		 * @param string $template   Template name.
 		 */
-		$template_name = $this->template;
-		$recipient = apply_filters( "tec_tickets_emails_{$template_name}_recipient", $recipient, $this->id, $this->template );
+		$recipient = apply_filters( "tec_tickets_emails_{$this->slug}_recipient", $recipient, $this->id, $this->template );
 
 		return $this->format_string( $recipient );
 	}
@@ -480,8 +499,7 @@ abstract class Email_Abstract {
 		 * @param string $id       The email id.
 		 * @param string $template Template name.
 		 */
-		$template_name = $this->template;
-		$subject = apply_filters( "tec_tickets_emails_{$template_name}_subject", $subject, $this->id, $this->template );
+		$subject = apply_filters( "tec_tickets_emails_{$this->slug}_subject", $subject, $this->id, $this->template );
 
 		return $this->format_string( $subject );
 	}
@@ -519,31 +537,9 @@ abstract class Email_Abstract {
 		 * @param string $id       The email id.
 		 * @param string $template Template name.
 		 */
-		$template_name = $this->template;
-		$heading = apply_filters( "tec_tickets_emails_{$template_name}_heading", $heading, $this->id, $this->template );
+		$heading = apply_filters( "tec_tickets_emails_{$this->slug}_heading", $heading, $this->id, $this->template );
 
 		return $this->format_string( $heading );
-	}
-
-	/**
-	 * Get email content.
-	 *
-	 * @since TBD
-	 *
-	 * @param array $args The arguments.
-	 *
-	 * @return string The email content.
-	 */
-	public function get_content( $args = [] ): string {
-		// @todo: Parse args, etc.
-		$context = ! empty( $args['context'] ) ? $args['context'] : [];
-
-		// @todo: We need to grab the proper information that's going to be sent as context.
-
-		$email_template = tribe( Email_Template::class );
-
-		// @todo @juanfra @codingmusician: we may want to inverse these parameters.
-		return $email_template->get_html( $context, $this->template );
 	}
 
 	/**
@@ -579,8 +575,7 @@ abstract class Email_Abstract {
 		 * @param string $id       The email id.
 		 * @param string $template Template name.
 		 */
-		$template_name = $this->template;
-		$content = apply_filters( "tec_tickets_emails_{$template_name}_additional_content", $content, $this->id, $this->template );
+		$content = apply_filters( "tec_tickets_emails_{$this->slug}_additional_content", $content, $this->id, $this->template );
 
 		return $this->format_string( $content );
 	}
@@ -616,8 +611,7 @@ abstract class Email_Abstract {
 		 * @param array  $settings  The settings array.
 		 * @param string $id        Email ID.
 		 */
-		$template_name = $this->template;
-		$settings = apply_filters( "tec_tickets_emails_{$template_name}_settings", $settings, $this->id );
+		$settings = apply_filters( "tec_tickets_emails_{$this->slug}_settings", $settings, $this->id );
 	}
 
 	/**
@@ -629,7 +623,7 @@ abstract class Email_Abstract {
 	 */
 	public function get_post_type_data(): array {
 		$data = [
-			'slug'      => $this->id,
+			'slug'      => $this->slug,
 			'title'     => $this->get_title(),
 			'template'  => $this->template,
 			'recipient' => $this->recipient,

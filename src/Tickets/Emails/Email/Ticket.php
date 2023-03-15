@@ -29,6 +29,15 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	public $id = 'tec_tickets_emails_ticket';
 
 	/**
+	 * Email slug.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public $slug = 'ticket';
+
+	/**
 	 * Email template.
 	 *
 	 * @since 5.5.9
@@ -65,7 +74,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	 * @return string
 	 */
 	public function get_default_recipient(): string {
-		return '{attendee-email}';
+		return '{attendee_email}';
 	}
 
 	/**
@@ -78,7 +87,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	public function get_default_heading(): string {
 		return sprintf(
 			// Translators: %s Lowercase singular of ticket.
-			esc_html__( 'Here\'s your %s, {attendee-name}!', 'event-tickets' ),
+			esc_html__( 'Here\'s your %s, {attendee_name}!', 'event-tickets' ),
 			tribe_get_ticket_label_singular_lowercase()
 		);
 	}
@@ -93,7 +102,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	public function get_default_heading_plural(): string {
 		return sprintf(
 			// Translators: %s Lowercase plural of tickets.
-			esc_html__( 'Here are your %s, {attendee-name}!', 'event-tickets' ),
+			esc_html__( 'Here are your %s, {attendee_name}!', 'event-tickets' ),
 			tribe_get_ticket_label_plural_lowercase()
 		);
 	}
@@ -123,7 +132,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 		$heading = apply_filters( 'tec_tickets_emails_heading_plural', $heading, $this->id, $this->template );
 
 		/**
-		 * Allow filtering the email heading for Completed Order.
+		 * Allow filtering the email heading.
 		 *
 		 * @since TBD
 		 *
@@ -131,8 +140,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 		 * @param string $id       The email id.
 		 * @param string $template Template name.
 		 */
-		$template_name = static::$template;
-		$heading = apply_filters( "tec_tickets_emails_{$template_name}_heading_plural", $heading, $this->id, $this->template );
+		$heading = apply_filters( "tec_tickets_emails_{$this->slug}_heading_plural", $heading, $this->id, $this->template );
 
 		return $this->format_string( $heading );
 	}
@@ -188,7 +196,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 		 *
 		 * @since TBD
 		 *
-		 * @param string $subject  The email heasubjectding.
+		 * @param string $subject  The email subject.
 		 * @param string $id       The email id.
 		 * @param string $template Template name.
 		 */
@@ -203,8 +211,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 		 * @param string $id       The email id.
 		 * @param string $template Template name.
 		 */
-		$template_name = static::$template;
-		$subject = apply_filters( "tec_tickets_emails_{$template_name}_subject_plural", $subject, $this->id, $this->template );
+		$subject = apply_filters( "tec_tickets_emails_{$this->slug}_subject_plural", $subject, $this->id, $this->template );
 
 		return $this->format_string( $subject );
 	}
@@ -290,5 +297,26 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 				],
 			],
 		];
+	}
+
+	/**
+	 * Get email content.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $args The arguments.
+	 *
+	 * @return string The email content.
+	 */
+	public function get_content( $args = [] ): string {
+		// @todo: Parse args, etc.
+		$context = ! empty( $args['context'] ) ? $args['context'] : [];
+
+		// @todo: We need to grab the proper information that's going to be sent as context.
+
+		$email_template = tribe( Email_Template::class );
+
+		// @todo @juanfra @codingmusician: we may want to inverse these parameters.
+		return $email_template->get_html( $context, $this->template );
 	}
 }
