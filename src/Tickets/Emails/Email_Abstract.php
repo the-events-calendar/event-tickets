@@ -412,8 +412,7 @@ abstract class Email_Abstract {
 	 * @return string
 	 */
 	public function get_option_key( $option ): string {
-		$template_name = $this->template;
-		return "tec-tickets-emails-{$template_name}-{$option}";
+		return "tec-tickets-emails-{$this->slug}-{$option}";
 	}
 
 	/**
