@@ -600,7 +600,7 @@ abstract class Email_Abstract {
 		 * @param array  $settings  The settings array.
 		 * @param string $id        Email ID.
 		 */
-		return apply_filters( 'tec_tickets_emails_settings', $settings, $this->id );
+		$settings = apply_filters( 'tec_tickets_emails_settings', $settings, $this->id );
 
 		/**
 		 * Allow filtering the settings for this email.
@@ -611,6 +611,8 @@ abstract class Email_Abstract {
 		 * @param string $id        Email ID.
 		 */
 		$settings = apply_filters( "tec_tickets_emails_{$this->slug}_settings", $settings, $this->id );
+
+		return $settings;
 	}
 
 	/**
