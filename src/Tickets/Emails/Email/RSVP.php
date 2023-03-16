@@ -7,7 +7,6 @@
 
 namespace TEC\Tickets\Emails\Email;
 
-use TEC\Tickets\Commerce\Settings;
 use \TEC\Tickets\Emails\Email_Template;
 
 /**
@@ -238,6 +237,13 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 				'type'                => 'toggle',
 				'label'               => esc_html__( 'Enabled', 'event-tickets' ),
 				'default'             => true,
+				'validation_type'     => 'boolean',
+			],
+			$this->get_option_key( 'use-ticket-email' ) => [
+				'type'                => 'toggle',
+				'label'               => esc_html__( 'Use Ticket Email', 'event-tickets' ),
+				'placeholder'         => esc_html__( 'Use the ticket email settings and template.', 'event-tickets' ),
+				'default'             => false,
 				'validation_type'     => 'boolean',
 			],
 			$this->get_option_key( 'subject' ) => [
