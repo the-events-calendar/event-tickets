@@ -337,20 +337,42 @@ class Settings {
 	 * @return array $fields Filtered array of Tickets Emails settings fields.
 	 */
 	public function maybe_add_upgrade_field( array $fields ): array {
-		$upgrade_option_available = tribe_installed_before( 'Tribe__Tickets__Main', '5.6.0' );
+		$upgrade_option_available = tribe_installed_before( 'Tribe__Tickets__Main', '5.7.0' );
 
 		if ( ! $upgrade_option_available ) {
 			return $fields;
 		}
 
-		$new_fields = [
-			self::$option_enabled => [
-				'type'            => 'checkbox_bool',
-				'label'           => esc_html__( 'Enable Tickets Emails', 'event-tickets-plus' ),
-				'tooltip'         => esc_html__( 'Start using the new Tickets Emails for your site.', 'event-tickets' ),
-				'default'         => false,
-				'validation_type' => 'boolean',
-			],
+		$new_fields                = [];
+		$is_tickets_emails_enabled = tribe_get_option( self::$option_enabled, tec_tickets_emails_is_enabled() );
+
+		$new_fields['tickets-emails-header'] = [
+			'type' => 'html',
+			'html' => '<div class="tec-tickets__admin-settings-toggle-large-wrapper">
+							<label class="tec-tickets__admin-settings-toggle-large">
+								<input
+									type="checkbox"
+									name="' . self::$option_enabled . '"
+									' . checked( $is_tickets_emails_enabled, true, false ) . '
+									id="tickets-emails-enable-input"
+									class="tec-tickets__admin-settings-toggle-large-checkbox tribe-dependency tribe-dependency-verified">
+									<span class="tec-tickets__admin-settings-toggle-large-switch"></span>
+									<span class="tec-tickets__admin-settings-toggle-large-label">' . esc_html__( 'Enable Tickets Emails', 'event-tickets' ) . '</span>
+							</label>
+						</div>',
+
+		];
+
+		$description = esc_html__( 'Start using the new Tickets Emails for your site.', 'event-tickets' );
+
+		$new_fields['tickets-emails-description'] = [
+			'type' => 'html',
+			'html' => '<div class="tec-tickets__admin-settings-emails-description">' . $description . '</div>',
+		];
+
+		$fields[ self::$option_enabled ] = [
+			'type'            => 'hidden',
+			'validation_type' => 'boolean',
 		];
 
 		return array_merge( $fields, $new_fields );
