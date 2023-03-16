@@ -2,7 +2,7 @@
  * Makes sure we have all the required levels on the Tribe Object
  *
  * @since 5.5.7
- * @type   {object}
+ * @type   {Object}
  */
 tribe.tickets = tribe.tickets || {};
 tribe.dialogs = tribe.dialogs || {};
@@ -12,7 +12,7 @@ tribe.dialogs.events = tribe.dialogs.events || {};
  * Configures ET emails Object in the Global Tribe variable
  *
  * @since 5.5.7
- * @type   {object}
+ * @type   {Object}
  */
 tribe.tickets.emails = {};
 
@@ -20,8 +20,8 @@ tribe.tickets.emails = {};
  * Initializes in a Strict env the code that manages the plugin Emails library.
  *
  * @since 5.5.7
- * @param  {object} $   jQuery
- * @param  {object} obj tribe.tickets.emails
+ * @param  {Object} $   jQuery
+ * @param  {Object} obj tribe.tickets.emails
  * @return {void}
  */
 ( function( $, obj ) {
@@ -39,6 +39,7 @@ tribe.tickets.emails = {};
 		form: '.tribe-tickets__manual-attendees-form',
 		hiddenElement: '.tribe-common-a11y-hidden',
 		validationNotice: '.tribe-tickets__notice--error',
+		formHeaderImageUrl: 'tec-tickets-emails-header-image-url',
 		formTicketBgColorName: 'tec-tickets-emails-ticket-bg-color',
 		formHeaderBgColorName: 'tec-tickets-emails-header-bg-color',
 	};
@@ -47,8 +48,8 @@ tribe.tickets.emails = {};
 	 * Handler for when the modal is being "closed".
 	 *
 	 * @since 5.5.7
-	 * @param {object} event The close event.
-	 * @param {object} dialogEl The dialog element.
+	 * @param {Object} event The close event.
+	 * @param {Object} dialogEl The dialog element.
 	 * @return {void}
 	 */
 	obj.modalClose = function( event, dialogEl ) {
@@ -86,9 +87,9 @@ tribe.tickets.emails = {};
 	 * Handler for when the modal is opened.
 	 *
 	 * @since 5.5.7
-	 * @param {object} event The show event.
-	 * @param {object} dialogEl The dialog element.
-	 * @param {object} trigger The event.
+	 * @param {Object} event The show event.
+	 * @param {Object} dialogEl The dialog element.
+	 * @param {Object} trigger The event.
 	 * @return {void}
 	 */
 	obj.modalOpen = function( event, dialogEl, trigger ) {
@@ -130,13 +131,13 @@ tribe.tickets.emails = {};
 	 * Get context to send on the request.
 	 *
 	 * @since 5.5.7
-	 * @return {object}
+	 * @return {Object}
 	 */
 	obj.getSettingsContext = function() {
 		const context = {};
 		// @todo @juanfra: Get individual email settings and send them as context (once we have the settings per page).
+
 		// Get email.
-		// get colors and image.
 		// Get alignment.
 
 		// @todo @juanfra: check if the elements are found in the DOM.
@@ -149,6 +150,11 @@ tribe.tickets.emails = {};
 			.find( 'input[name=' + obj.selectors.formHeaderBgColorName + ']' ).val();
 
 		context.headerBgColor = headerBgColor;
+
+		const headerImageUrl = $document
+			.find( 'input[name=' + obj.selectors.formHeaderImageUrl + ']' ).val();
+
+		context.headerImageUrl = headerImageUrl;
 
 		return context;
 	};
