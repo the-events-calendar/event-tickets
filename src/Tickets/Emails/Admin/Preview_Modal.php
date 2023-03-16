@@ -208,6 +208,12 @@ class Preview_Modal {
 			$context['header_bg_color'] = $header_bg_color;
 		}
 
+		$header_img_url = Arr::get( $vars, 'headerImageUrl', '' );
+
+		if ( ! empty( $header_img_url ) ) {
+			$context['header_image_url'] = $header_img_url;
+		}
+
 		$html  = $email_template->get_html( $context );
 		$html .= $tickets_template->template( 'v2/components/loader/loader', [], false );
 
