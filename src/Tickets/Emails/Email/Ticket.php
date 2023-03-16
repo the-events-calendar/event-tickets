@@ -109,9 +109,9 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 
 	/**
 	 * Get heading for plural tickets.
-	 * 
+	 *
 	 * @since TBD
-	 * 
+	 *
 	 * @return string
 	 */
 	public function get_heading_plural(): string {
@@ -180,9 +180,9 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 
 	/**
 	 * Get subject for plural tickets.
-	 * 
+	 *
 	 * @since TBD
-	 * 
+	 *
 	 * @return string
 	 */
 	public function get_subject_plural(): string {
@@ -311,6 +311,14 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	public function get_content( $args = [] ): string {
 		// @todo: Parse args, etc.
 		$context = ! empty( $args['context'] ) ? $args['context'] : [];
+
+		// @todo @juanfra @codingmusician: we need to see if we can initialize this as part of the class.
+		$context = [
+			'title'              => $this->get_title(),
+			'heading'            => $this->get_heading(),
+			'tickets'            => ! empty( $args['tickets'] ) ? $args['tickets'] : [],
+			'additional_content' => $this->format_string( tribe_get_option( $this->get_option_key( 'add-content' ), '' ) ),
+		];
 
 		// @todo: We need to grab the proper information that's going to be sent as context.
 
