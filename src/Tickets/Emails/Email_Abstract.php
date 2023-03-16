@@ -33,6 +33,15 @@ abstract class Email_Abstract {
 	public $id;
 
 	/**
+	 * Email slug.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public $slug;
+
+	/**
 	 * Email template filename.
 	 *
 	 * @since 5.5.9
@@ -103,13 +112,22 @@ abstract class Email_Abstract {
 	}
 
 	/**
-	 * Get email subject.
+	 * Get default email subject.
 	 *
-	 * @since 5.5.9
+	 * @since TBD
 	 *
 	 * @return string
 	 */
-	abstract public function get_subject(): string;
+	abstract public function get_default_subject(): string;
+
+	/**
+	 * Get default recipient.
+	 * 
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	abstract public function get_default_recipient(): string;
 
 	/**
 	 * Get email title.
@@ -121,51 +139,44 @@ abstract class Email_Abstract {
 	abstract public function get_title(): string;
 
 	/**
-	 * Get email heading.
+	 * Get default email heading.
 	 *
-	 * @since 5.5.9
+	 * @since TBD
 	 *
 	 * @return string
 	 */
-	abstract public function get_heading(): string;
+	abstract public function get_default_heading(): string;
 
 	/**
-	 * Get email attachments.
+	 * Get the settings fields for the email.
 	 *
-	 * @since 5.5.9
+	 * @since TBD
 	 *
 	 * @return array
 	 */
-	abstract public function is_enabled(): bool;
+	abstract public function get_settings_fields(): array;
 
 	/**
-	 * Get the post type data for the email.
+	 * Get email content.
 	 *
-	 * @since 5.5.9
-	 *
-	 * @return array
-	 */
-	abstract public function get_post_type_data(): array;
-
-	/**
-	 * Get the settings for the email.
-	 *
-	 * @since 5.5.9
-	 *
-	 * @return array
-	 */
-	abstract public function get_settings(): array;
-
-	/**
-	 * Get the email content.
-	 *
-	 * @since 5.5.9
+	 * @since TBD
 	 *
 	 * @param array $args The arguments.
 	 *
+	 * @return string The email content.
+	 */
+	abstract public function get_content( $args ): string;
+
+	/**
+	 * Is customer email.
+	 * 
+	 * @since TBD
+	 * 
 	 * @return string
 	 */
-	abstract public function get_content( $args = [] ): string;
+	public function is_customer_email(): bool {
+		return in_array( $this->recipient, [ 'customer', 'purchaser' ] );
+	}
 
 	/**
 	 * Get the "From" email.
@@ -343,15 +354,14 @@ abstract class Email_Abstract {
 	}
 
 	/**
-	 * Default content to show below email content.
+	 * Default default content to show below email content.
 	 *
-	 * @since 5.5.9
+	 * @since TBD
 	 *
 	 * @return string
 	 */
-	public function get_additional_content(): string {
-		$additional_content = '';
-		return $this->format_string( $additional_content );
+	public function get_default_additional_content(): string {
+		return '';
 	}
 
 	/**
@@ -381,5 +391,245 @@ abstract class Email_Abstract {
 
 		// Use the settings page get_url to build the URL.
 		return tribe( Plugin_Settings::class )->get_url( $args );
+	}
+
+	/**
+	 * Get ID.
+	 * 
+	 * @since TBD
+	 * 
+	 * @return string
+	 */
+	public function get_id(): string {
+		return $this->id;
+	}
+
+	/**
+	 * Get setting option key.
+	 * 
+	 * @since TBD
+	 * 
+	 * @return string
+	 */
+	public function get_option_key( $option ): string {
+		return "tec-tickets-emails-{$this->slug}-{$option}";
+	}
+
+	/**
+	 * Checks if this email is enabled.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function is_enabled(): bool {
+		$option_key = $this->get_option_key( 'enabled' );
+		return tribe_is_truthy( tribe_get_option( $option_key, true ) );
+	}
+
+	/**
+	 * Get email recipient.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The email recipient.
+	 */
+	public function get_recipient(): string {
+		$option_key = $this->get_option_key( 'recipient' );
+		$recipient = tribe_get_option( $option_key, $this->get_default_recipient() );
+
+		// @todo: Probably we want more data parsed, or maybe move the filters somewhere else as we're always gonna
+
+		/**
+		 * Allow filtering the email recipient globally.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $recipient  The email recipient.
+		 * @param string $id         The email id.
+		 * @param string $template   Template name.
+		 */
+		$recipient = apply_filters( 'tec_tickets_emails_recipient', $recipient, $this->id, $this->template );
+
+		/**
+		 * Allow filtering the email recipient for Completed Order.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $recipient  The email recipient.
+		 * @param string $id         The email id.
+		 * @param string $template   Template name.
+		 */
+		$recipient = apply_filters( "tec_tickets_emails_{$this->slug}_recipient", $recipient, $this->id, $this->template );
+
+		return $this->format_string( $recipient );
+	}
+
+	/**
+	 * Get the subject of the email.
+	 * 
+	 * @since TBD
+	 * 
+	 * @return string
+	 */
+	public function get_subject(): string {
+		$option_key = $this->get_option_key( 'subject' );
+		$subject = tribe_get_option( $option_key, $this->get_default_subject() );
+
+		// @todo: Probably we want more data parsed, or maybe move the filters somewhere else as we're always gonna
+
+		/**
+		 * Allow filtering the email subject globally.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $subject  The email subject.
+		 * @param string $id       The email id.
+		 * @param string $template Template name.
+		 */
+		$subject = apply_filters( 'tec_tickets_emails_subject', $subject, $this->id, $this->template );
+
+		/**
+		 * Allow filtering the email subject.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $subject  The email subject.
+		 * @param string $id       The email id.
+		 * @param string $template Template name.
+		 */
+		$subject = apply_filters( "tec_tickets_emails_{$this->slug}_subject", $subject, $this->id, $this->template );
+
+		return $this->format_string( $subject );
+	}
+
+	/**
+	 * Get email heading.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The email heading.
+	 */
+	public function get_heading(): string {
+		$option_key = $this->get_option_key( 'heading' );
+		$heading = tribe_get_option( $option_key, $this->get_default_heading() );
+
+		// @todo: Probably we want more data parsed, or maybe move the filters somewhere else as we're always gonna
+
+		/**
+		 * Allow filtering the email heading globally.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $heading  The email heading.
+		 * @param string $id       The email id.
+		 * @param string $template Template name.
+		 */
+		$heading = apply_filters( 'tec_tickets_emails_heading', $heading, $this->id, $this->template );
+
+		/**
+		 * Allow filtering the email heading for Completed Order.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $heading  The email heading.
+		 * @param string $id       The email id.
+		 * @param string $template Template name.
+		 */
+		$heading = apply_filters( "tec_tickets_emails_{$this->slug}_heading", $heading, $this->id, $this->template );
+
+		return $this->format_string( $heading );
+	}
+
+	/**
+	 * Get additional content.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The email heading.
+	 */
+	public function get_additional_content(): string {
+		$option_key = $this->get_option_key( 'add-content' );
+		$content = tribe_get_option( $option_key, $this->get_default_additional_content() );
+
+		// @todo: Probably we want more data parsed, or maybe move the filters somewhere else as we're always gonna
+
+		/**
+		 * Allow filtering the email heading globally.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $content  The email heading.
+		 * @param string $id       The email id.
+		 * @param string $template Template name.
+		 */
+		$content = apply_filters( 'tec_tickets_emails_additional_content', $content, $this->id, $this->template );
+
+		/**
+		 * Allow filtering the email heading for Completed Order.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $content  The email heading.
+		 * @param string $id       The email id.
+		 * @param string $template Template name.
+		 */
+		$content = apply_filters( "tec_tickets_emails_{$this->slug}_additional_content", $content, $this->id, $this->template );
+
+		return $this->format_string( $content );
+	}
+
+	/**
+	 * Get and filter email settings.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function get_settings(): array {
+
+		$settings = $this->get_settings_fields();
+
+		// @todo: Probably we want more data parsed, or maybe move the filters somewhere else as we're always gonna
+
+		/**
+		 * Allow filtering the settings globally.
+		 *
+		 * @since TBD
+		 *
+		 * @param array  $settings  The settings array.
+		 * @param string $id        Email ID.
+		 */
+		$settings = apply_filters( 'tec_tickets_emails_settings', $settings, $this->id );
+
+		/**
+		 * Allow filtering the settings for this email.
+		 *
+		 * @since TBD
+		 *
+		 * @param array  $settings  The settings array.
+		 * @param string $id        Email ID.
+		 */
+		$settings = apply_filters( "tec_tickets_emails_{$this->slug}_settings", $settings, $this->id );
+
+		return $settings;
+	}
+
+	/**
+	 * Get the `post_type` data for this email.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function get_post_type_data(): array {
+		$data = [
+			'slug'      => $this->slug,
+			'title'     => $this->get_title(),
+			'template'  => $this->template,
+			'recipient' => $this->recipient,
+		];
+
+		return $data;
 	}
 }

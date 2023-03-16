@@ -47,6 +47,9 @@ class Email_Handler extends \tad_DI52_ServiceProvider {
 	 */
 	protected $default_emails = [
 		\TEC\Tickets\Emails\Email\Ticket::class,
+		\TEC\Tickets\Emails\Email\Purchase_Receipt::class,
+		\TEC\Tickets\Emails\Email\Failed_Order::class,
+		\TEC\Tickets\Emails\Email\Completed_Order::class,
 	];
 
 	/**
@@ -180,7 +183,7 @@ class Email_Handler extends \tad_DI52_ServiceProvider {
 	 */
 	public function create_tec_tickets_emails_post_type( $email ) {
 		$args = [
-			'post_name'   => $email->id,
+			'post_name'   => $email->get_id(),
 			'post_title'  => $email->get_title(),
 			'post_status' => 'publish',
 			'post_type'   => static::POSTTYPE,
@@ -206,7 +209,7 @@ class Email_Handler extends \tad_DI52_ServiceProvider {
 		$emails = $this->get_emails();
 
 		foreach ( $emails as $email ) {
-			if ( $email->id === $id ) {
+			if ( $email->get_id() === $id ) {
 				return $email;
 			}
 		}
