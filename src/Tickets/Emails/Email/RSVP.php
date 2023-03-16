@@ -7,6 +7,7 @@
 
 namespace TEC\Tickets\Emails\Email;
 
+use TEC\Tickets\Commerce\Settings as Settings;
 use \TEC\Tickets\Emails\Email_Template;
 
 /**
@@ -85,9 +86,9 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 	 */
 	public function get_default_heading(): string {
 		return sprintf(
-			// Translators: %s Lowercase singular of rsvp.
+			// Translators: %s Lowercase singular of ticket.
 			esc_html__( 'Here\'s your %s, {attendee_name}!', 'event-tickets' ),
-			tribe_get_rsvp_label_singular()
+			tribe_get_ticket_label_singular_lowercase()
 		);
 	}
 
@@ -100,9 +101,9 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 	 */
 	public function get_default_heading_plural(): string {
 		return sprintf(
-			// Translators: %s Lowercase plural of rsvps.
+			// Translators: %s Lowercase plural of tickets.
 			esc_html__( 'Here are your %s, {attendee_name}!', 'event-tickets' ),
-			tribe_get_rsvp_label_plural()
+			tribe_get_ticket_label_plural_lowercase()
 		);
 	}
 
@@ -152,11 +153,14 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 	 * @return string
 	 */
 	public function get_default_subject(): string {
-		return sprintf(
-			// Translators: %s - Lowercase singular of rsvp.
+		$default_subject = sprintf(
+			// Translators: %s - Lowercase singular of ticket.
 			esc_html__( 'Your %s from {site_title}', 'event-tickets' ),
-			tribe_get_rsvp_label_singular()
+			tribe_get_ticket_label_singular_lowercase()
 		);
+
+		// If they already had a subject set in Tickets Commerce, let's make it the default.
+		return tribe_get_option( Settings::$option_confirmation_email_subject, $default_subject );
 	}
 
 	/**
@@ -168,9 +172,9 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 	 */
 	public function get_default_subject_plural() {
 		return sprintf(
-			// Translators: %s - Lowercase plural of rsvps.
+			// Translators: %s - Lowercase plural of tickets.
 			esc_html__( 'Your %s from {site_title}', 'event-tickets' ),
-			tribe_get_rsvp_label_plural()
+			tribe_get_ticket_label_plural_lowercase()
 		);
 	}
 
@@ -220,7 +224,7 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 	 * @return array
 	 */
 	public function get_settings_fields(): array {
-		return [
+		$settings = [
 			[
 				'type' => 'html',
 				'html' => '<div class="tribe-settings-form-wrap">',
@@ -243,9 +247,17 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 				'type'                => 'toggle',
 				'label'               => esc_html__( 'Use Ticket Email', 'event-tickets' ),
 				'placeholder'         => esc_html__( 'Use the ticket email settings and template.', 'event-tickets' ),
-				'default'             => false,
+				'default'             => true,
 				'validation_type'     => 'boolean',
 			],
+		];
+
+		// If using the ticket email settings, no need to show the remaining settings.
+		if ( tribe_is_truthy( tribe_get_option( $this->get_option_key( 'use-ticket-email' ), true ) ) ) {
+			return $settings;
+		}
+
+		$add_settings = [
 			$this->get_option_key( 'subject' ) => [
 				'type'                => 'text',
 				'label'               => esc_html__( 'Subject', 'event-tickets' ),
@@ -300,6 +312,8 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 				],
 			],
 		];
+
+		return array_merge( $settings, $add_settings );
 	}
 
 	/**
