@@ -2422,6 +2422,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Send RSVPs/tickets email for an attendee.
 		 *
 		 * @since 5.0.3
+		 * @since TBD Adjusted the method to use the new Tickets Emails Handler.
 		 *
 		 * @param string $to      The email to send the tickets to.
 		 * @param array  $tickets The list of tickets to send.
@@ -2442,6 +2443,110 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return bool Whether email was sent to attendees.
 		 */
 		public function send_tickets_email_for_attendee( $to, $tickets, $args = [] ) {
+			// If no tickets to send for, do not send email.
+			if ( empty( $tickets ) ) {
+				return false;
+			}
+
+			if ( ! tec_tickets_emails_is_enabled() ) {
+				return $this->send_tickets_email_for_attendee_legacy( $to, $tickets, $args );
+			}
+
+			$defaults = [
+				'provider'      => 'ticket',
+				'post_id'       => 0,
+				'order_id'      => '',
+			];
+
+			// Set up the default arguments.
+			$args = wp_parse_args( $args, $defaults );
+
+			$provider      = $args['provider'];
+			$post_id       = $args['post_id'];
+			$order_id      = $args['order_id'];
+			$is_rsvp       = 'rsvp' === $provider;
+
+			if ( $is_rsvp ) {
+				// @todo @juanfra @codingmusician: Check if there's a fallback to the ticket email class (in case they have the opt-in set).
+				$email_class = tribe( TEC\Tickets\Emails\Email\RSVP::class );
+			} else {
+				$email_class = tribe( TEC\Tickets\Emails\Email\Ticket::class );
+			}
+
+			if ( ! $email_class->is_enabled() ) {
+				return false;
+			}
+
+			// Filter the array so that we have a list of tickets by event.
+			$tickets_by_event = [];
+
+			foreach ( $tickets as $ticket ) {
+				$event_id = $ticket['event_id']; // @todo: check what happens with tickets from posts/pages.
+
+				if ( ! isset( $tickets_by_event[ $event_id ] ) ) {
+					$tickets_by_event[ $event_id ] = [];
+				}
+
+				$tickets_by_event[ $event_id ][] = $ticket;
+			}
+
+			// loop the tickets by event and send one email for each event.
+			foreach ( $tickets_by_event as $event_id => $event_tickets ) {
+				// @todo @juanfra @codingmusician: Set tickets data to the email class.
+				$subject     = $email_class->get_subject();
+				$content     = $email_class->get_content( [ 'tickets' => $event_tickets ] );
+				$headers     = $email_class->get_headers();
+				$attachments = $email_class->get_attachments();
+
+				$sent = tribe( TEC\Tickets\Emails\Email_Sender::class )->send( $to, $subject, $content, $headers, $attachments );
+
+				// Handle marking the attendee ticket email as being sent.
+				if ( $sent ) {
+					// Mark attendee ticket email as being sent for each attendee ticket.
+					foreach ( $event_tickets as $attendee ) {
+						$this->update_ticket_sent_counter( $attendee['attendee_id'] );
+
+						$this->update_attendee_activity_log(
+							$attendee['attendee_id'],
+							[
+								'type'  => 'email',
+								'name'  => $attendee['holder_name'],
+								'email' => $attendee['holder_email'],
+							]
+						);
+					}
+				} else {
+					break;
+				}
+			}
+
+			return $sent;
+		}
+
+		/**
+		 * Send RSVPs/tickets email for an attendee (legacy).
+		 *
+		 * @since TBD
+		 *
+		 * @param string $to      The email to send the tickets to.
+		 * @param array  $tickets The list of tickets to send.
+		 * @param array  $args    {
+		 *      The list of arguments to use for sending ticket emails.
+		 *
+		 *      @type string       $subject     The email subject.
+		 *      @type string       $content     The email content.
+		 *      @type string       $from_name   The name to send tickets from.
+		 *      @type string       $from_email  The email to send tickets from.
+		 *      @type array|string $headers     The list of headers to send.
+		 *      @type array        $attachments The list of attachments to send.
+		 *      @type string       $provider    The provider slug (rsvp, tpp, woo, edd).
+		 *      @type int          $post_id     The post/event ID to send the emails for.
+		 *      @type string|int   $order_id    The order ID to send the emails for.
+		 * }
+		 *
+		 * @return bool Whether email was sent to attendees.
+		 */
+		public function send_tickets_email_for_attendee_legacy( $to, $tickets, $args = [] ) {
 			// If no tickets to send for, do not send email.
 			if ( empty( $tickets ) ) {
 				return false;
