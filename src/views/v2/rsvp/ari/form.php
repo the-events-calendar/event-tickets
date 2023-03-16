@@ -21,7 +21,6 @@
 
 $going = $this->get( 'going' );
 ?>
-
 <div class="tribe-tickets__rsvp-ar-form">
 
 	<input type="hidden" name="tribe_tickets[<?php echo esc_attr( absint( $rsvp->ID ) ); ?>][ticket_id]" value="<?php echo esc_attr( absint( $rsvp->ID ) ); ?>">
