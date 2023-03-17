@@ -324,7 +324,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	 */
 	public function get_content( $args = [] ): string {
 		// @todo: Parse args, etc.
-		$is_preview = ! empty( $args['is_preview'] );
+		$is_preview = tribe_is_truthy( $args['is_preview'] );
 
 		// @todo @juanfra @codingmusician: we need to see if we initialize tickets from a method.
 		$defaults = [
