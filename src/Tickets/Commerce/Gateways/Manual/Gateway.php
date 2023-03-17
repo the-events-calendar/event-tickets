@@ -62,4 +62,13 @@ class Gateway extends Abstract_Gateway {
 	public function get_admin_notices() {
 		return [];
 	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function get_order_details_link_by_order( $order ): string {
+		return $order->gateway_order_id;
+	}
 }
