@@ -420,6 +420,8 @@ abstract class Email_Abstract {
 	 *
 	 * @since TBD
 	 *
+	 * @param string $option The option name.
+	 *
 	 * @return string
 	 */
 	public function get_option_key( $option ): string {
@@ -447,7 +449,7 @@ abstract class Email_Abstract {
 	 */
 	public function get_recipient(): string {
 		$option_key = $this->get_option_key( 'recipient' );
-		$recipient = tribe_get_option( $option_key, $this->get_default_recipient() );
+		$recipient  = tribe_get_option( $option_key, $this->get_default_recipient() );
 
 		// @todo: Probably we want more data parsed, or maybe move the filters somewhere else as we're always gonna
 
@@ -485,7 +487,7 @@ abstract class Email_Abstract {
 	 */
 	public function get_subject(): string {
 		$option_key = $this->get_option_key( 'subject' );
-		$subject = tribe_get_option( $option_key, $this->get_default_subject() );
+		$subject    = tribe_get_option( $option_key, $this->get_default_subject() );
 
 		// @todo: Probably we want more data parsed, or maybe move the filters somewhere else as we're always gonna
 
@@ -523,7 +525,7 @@ abstract class Email_Abstract {
 	 */
 	public function get_heading(): string {
 		$option_key = $this->get_option_key( 'heading' );
-		$heading = tribe_get_option( $option_key, $this->get_default_heading() );
+		$heading    = tribe_get_option( $option_key, $this->get_default_heading() );
 
 		// @todo: Probably we want more data parsed, or maybe move the filters somewhere else as we're always gonna
 
@@ -561,7 +563,7 @@ abstract class Email_Abstract {
 	 */
 	public function get_additional_content(): string {
 		$option_key = $this->get_option_key( 'add-content' );
-		$content = tribe_get_option( $option_key, $this->get_default_additional_content() );
+		$content    = tribe_get_option( $option_key, $this->get_default_additional_content() );
 
 		// @todo: Probably we want more data parsed, or maybe move the filters somewhere else as we're always gonna
 
