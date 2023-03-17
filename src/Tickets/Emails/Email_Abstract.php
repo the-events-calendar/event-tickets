@@ -122,7 +122,7 @@ abstract class Email_Abstract {
 
 	/**
 	 * Get default recipient.
-	 * 
+	 *
 	 * @since TBD
 	 *
 	 * @return string
@@ -157,6 +157,17 @@ abstract class Email_Abstract {
 	abstract public function get_settings_fields(): array;
 
 	/**
+	 * Get preview context.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $args The arguments.
+	 *
+	 * @return string The email preview context.
+	 */
+	abstract public function get_preview_context( $args ): array;
+
+	/**
 	 * Get email content.
 	 *
 	 * @since TBD
@@ -169,9 +180,9 @@ abstract class Email_Abstract {
 
 	/**
 	 * Is customer email.
-	 * 
+	 *
 	 * @since TBD
-	 * 
+	 *
 	 * @return string
 	 */
 	public function is_customer_email(): bool {
@@ -395,9 +406,9 @@ abstract class Email_Abstract {
 
 	/**
 	 * Get ID.
-	 * 
+	 *
 	 * @since TBD
-	 * 
+	 *
 	 * @return string
 	 */
 	public function get_id(): string {
@@ -406,9 +417,11 @@ abstract class Email_Abstract {
 
 	/**
 	 * Get setting option key.
-	 * 
+	 *
 	 * @since TBD
-	 * 
+	 *
+	 * @param string $option The option name.
+	 *
 	 * @return string
 	 */
 	public function get_option_key( $option ): string {
@@ -436,7 +449,7 @@ abstract class Email_Abstract {
 	 */
 	public function get_recipient(): string {
 		$option_key = $this->get_option_key( 'recipient' );
-		$recipient = tribe_get_option( $option_key, $this->get_default_recipient() );
+		$recipient  = tribe_get_option( $option_key, $this->get_default_recipient() );
 
 		// @todo: Probably we want more data parsed, or maybe move the filters somewhere else as we're always gonna
 
@@ -467,14 +480,14 @@ abstract class Email_Abstract {
 
 	/**
 	 * Get the subject of the email.
-	 * 
+	 *
 	 * @since TBD
-	 * 
+	 *
 	 * @return string
 	 */
 	public function get_subject(): string {
 		$option_key = $this->get_option_key( 'subject' );
-		$subject = tribe_get_option( $option_key, $this->get_default_subject() );
+		$subject    = tribe_get_option( $option_key, $this->get_default_subject() );
 
 		// @todo: Probably we want more data parsed, or maybe move the filters somewhere else as we're always gonna
 
@@ -512,7 +525,7 @@ abstract class Email_Abstract {
 	 */
 	public function get_heading(): string {
 		$option_key = $this->get_option_key( 'heading' );
-		$heading = tribe_get_option( $option_key, $this->get_default_heading() );
+		$heading    = tribe_get_option( $option_key, $this->get_default_heading() );
 
 		// @todo: Probably we want more data parsed, or maybe move the filters somewhere else as we're always gonna
 
@@ -550,7 +563,7 @@ abstract class Email_Abstract {
 	 */
 	public function get_additional_content(): string {
 		$option_key = $this->get_option_key( 'add-content' );
-		$content = tribe_get_option( $option_key, $this->get_default_additional_content() );
+		$content    = tribe_get_option( $option_key, $this->get_default_additional_content() );
 
 		// @todo: Probably we want more data parsed, or maybe move the filters somewhere else as we're always gonna
 
