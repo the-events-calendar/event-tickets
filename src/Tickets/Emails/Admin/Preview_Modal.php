@@ -221,7 +221,7 @@ class Preview_Modal {
 			$email = tribe( \TEC\Tickets\Emails\Email_Handler::class )->get_email_by_id( $current_email );
 
 			if ( ! empty( $email ) ) {
-				$email_class = tribe( $email::class );
+				$email_class = tribe( get_class( $email ) );
 				$html        = $email_class->get_content( $email_class->get_preview_context() );
 			}
 
