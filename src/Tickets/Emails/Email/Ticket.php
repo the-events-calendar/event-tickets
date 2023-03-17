@@ -300,6 +300,20 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	}
 
 	/**
+	 * Get preview context for email.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $args The arguments.
+	 * @return array $args The modified arguments
+	 */
+	public function get_preview_context( $args = [] ): array {
+		$defaults = tribe( Email_Template::class )->get_preview_context( $args );
+
+		return wp_parse_args( $args, $defaults );
+	}
+
+	/**
 	 * Get email content.
 	 *
 	 * @since TBD
@@ -310,21 +324,21 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	 */
 	public function get_content( $args = [] ): string {
 		// @todo: Parse args, etc.
-		$context = ! empty( $args['context'] ) ? $args['context'] : [];
+		$is_preview = ! empty( $args['is_preview'] );
 
-		// @todo @juanfra @codingmusician: we need to see if we can initialize this as part of the class.
-		$context = [
+		// @todo @juanfra @codingmusician: we need to see if we initialize tickets from a method.
+		$defaults = [
 			'title'              => $this->get_title(),
 			'heading'            => $this->get_heading(),
 			'tickets'            => ! empty( $args['tickets'] ) ? $args['tickets'] : [],
 			'additional_content' => $this->format_string( tribe_get_option( $this->get_option_key( 'add-content' ), '' ) ),
 		];
 
-		// @todo: We need to grab the proper information that's going to be sent as context.
+		$args = wp_parse_args( $args, $defaults );
 
 		$email_template = tribe( Email_Template::class );
+		$email_template->set_preview( $is_preview );
 
-		// @todo @juanfra @codingmusician: we may want to inverse these parameters.
-		return $email_template->get_html( $context, $this->template );
+		return $email_template->get_html( $this->template, $args );
 	}
 }

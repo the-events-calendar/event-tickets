@@ -122,7 +122,7 @@ abstract class Email_Abstract {
 
 	/**
 	 * Get default recipient.
-	 * 
+	 *
 	 * @since TBD
 	 *
 	 * @return string
@@ -157,6 +157,17 @@ abstract class Email_Abstract {
 	abstract public function get_settings_fields(): array;
 
 	/**
+	 * Get preview context.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $args The arguments.
+	 *
+	 * @return string The email preview context.
+	 */
+	abstract public function get_preview_context( $args ): array;
+
+	/**
 	 * Get email content.
 	 *
 	 * @since TBD
@@ -169,9 +180,9 @@ abstract class Email_Abstract {
 
 	/**
 	 * Is customer email.
-	 * 
+	 *
 	 * @since TBD
-	 * 
+	 *
 	 * @return string
 	 */
 	public function is_customer_email(): bool {
@@ -395,9 +406,9 @@ abstract class Email_Abstract {
 
 	/**
 	 * Get ID.
-	 * 
+	 *
 	 * @since TBD
-	 * 
+	 *
 	 * @return string
 	 */
 	public function get_id(): string {
@@ -406,9 +417,9 @@ abstract class Email_Abstract {
 
 	/**
 	 * Get setting option key.
-	 * 
+	 *
 	 * @since TBD
-	 * 
+	 *
 	 * @return string
 	 */
 	public function get_option_key( $option ): string {
@@ -467,9 +478,9 @@ abstract class Email_Abstract {
 
 	/**
 	 * Get the subject of the email.
-	 * 
+	 *
 	 * @since TBD
-	 * 
+	 *
 	 * @return string
 	 */
 	public function get_subject(): string {

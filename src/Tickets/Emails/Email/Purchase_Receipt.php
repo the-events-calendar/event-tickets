@@ -95,7 +95,7 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 	 * @return string
 	 */
 	public function get_default_heading(): string {
-		return esc_html__( 'Your purchase receipt for #{order-number}', 'event-tickets' );
+		return esc_html__( 'Your purchase receipt for #{order_number}', 'event-tickets' );
 	}
 
 	/**
@@ -106,7 +106,7 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 	 * @return string
 	 */
 	public function get_default_subject(): string {
-		return esc_html__( 'Your purchase receipt for #{order-number}', 'event-tickets' );
+		return esc_html__( 'Your purchase receipt for #{order_number}', 'event-tickets' );
 	}
 
 	/**
@@ -177,6 +177,24 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 	}
 
 	/**
+	 * Get preview context for email.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $args The arguments.
+	 * @return array $args The modified arguments
+	 */
+	public function get_preview_context( $args = [] ): array {
+		$defaults = [
+			'is_preview' => true,
+			'title'      => $this->get_heading(),
+			'heading'    => $this->get_heading(),
+		];
+
+		return wp_parse_args( $args, $defaults );
+	}
+
+	/**
 	 * Get email content.
 	 *
 	 * @since TBD
@@ -186,14 +204,20 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 	 * @return string The email content.
 	 */
 	public function get_content( $args = [] ): string {
-		// @todo: Parse args, etc.
-		$context = ! empty( $args['context'] ) ? $args['context'] : [];
-
 		// @todo: We need to grab the proper information that's going to be sent as context.
+		$is_preview = ! empty( $args['is_preview'] );
+
+		$defaults = [
+			'title'              => $this->get_title(),
+			'heading'            => $this->get_heading(),
+			'additional_content' => $this->format_string( tribe_get_option( $this->get_option_key( 'add-content' ), '' ) ),
+		];
+
+		$args = wp_parse_args( $args, $defaults );
 
 		$email_template = tribe( Email_Template::class );
+		$email_template->set_preview( $is_preview );
 
-		// @todo @juanfra @codingmusician: we may want to inverse these parameters.
-		return $email_template->get_html( $context, $this->template );
+		return $email_template->get_html( $this->template, $args );
 	}
 }
