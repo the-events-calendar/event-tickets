@@ -5,8 +5,10 @@ namespace TEC\Tickets\Commerce\Gateways\PayPal;
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Gateway;
 use TEC\Tickets\Commerce\Notice_Handler;
 use TEC\Tickets\Commerce\Settings as TC_Settings;
+use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Utils\Currency;
 use \Tribe__Tickets__Main;
+use Tribe__Utils__Array as Arr;
 
 /**
  * Class Gateway
@@ -223,5 +225,47 @@ class Gateway extends Abstract_Gateway {
 			$notice_header,
 			$notice_text
 		);
+	}
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @since TBD
+	 */
+	public function get_order_details_link_by_order( \WP_Post $order ): string {
+		$status          = tribe( Status_Handler::class )->get_by_wp_slug( $order->post_status );
+		$payload         = $order->gateway_payload[ $status::SLUG ];
+		$capture_payload = end( $payload );
+		$capture_id      = Arr::get( $capture_payload, [ 'purchase_units', 0, 'payments', 'captures', 0, 'id' ] );
+
+		$link  = $this->get_dashboard_url_from_payload( $capture_payload );
+		$link .= 'activity/payment/' . $capture_id;
+
+		// build the link html
+		return sprintf(
+			'<a href="%1$s" target="_blank" rel="noopener noreferrer">%2$s</a>',
+			esc_url( $link ),
+			$order->gateway_order_id
+		);
+	}
+
+	/**
+	 * Determine the dashboard url from the capture payload.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $capture_payload The capture payload.
+	 *
+	 * @return string The dashboard url.
+	 */
+	public function get_dashboard_url_from_payload( $capture_payload ): string {
+		$link = 'https://www.paypal.com/';
+		$capture_link = Arr::get( $capture_payload, [ 'links', 0, 'href' ] );
+		// check if the link contains sandbox
+		if ( strpos( $capture_link, 'sandbox' ) !== false ) {
+			$link = 'https://sandbox.paypal.com/';
+		}
+
+		return $link;
 	}
 }
