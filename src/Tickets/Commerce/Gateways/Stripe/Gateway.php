@@ -202,4 +202,28 @@ class Gateway extends Abstract_Gateway {
 			$notice_text
 		);
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function get_order_details_link_by_order( $order ): string {
+		var_dump($order); die();
+		$gateway_order_id = $this->get_capture_id_from_gateway_order_id( $order->gateway_order_id );
+
+		$link = sprintf( 'https://dashboard.stripe.com/payments/%s', $gateway_order_id );
+
+		return sprintf(
+			'<a href="%s" target="_blank" rel="noopener noreferrer">%s</a>',
+			$link,
+			$gateway_order_id
+		);
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function get_capture_id_from_gateway_order_id( $gateway_order_id ) {
+		return $gateway_order_id;
+	}
+
 }
