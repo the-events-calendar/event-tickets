@@ -207,9 +207,9 @@ class Gateway extends Abstract_Gateway {
 	 * @inheritDoc
 	 */
 	public function get_order_details_link_by_order( $order ): string {
-		var_dump($order); die();
 		$gateway_order_id = $this->get_capture_id_from_gateway_order_id( $order->gateway_order_id );
 
+		// @todo @rafsuntaskin determine test/live mode from order data.
 		$link = sprintf( 'https://dashboard.stripe.com/payments/%s', $gateway_order_id );
 
 		return sprintf(
