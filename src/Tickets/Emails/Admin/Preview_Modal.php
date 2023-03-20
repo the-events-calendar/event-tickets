@@ -229,7 +229,7 @@ class Preview_Modal {
 			$email_template = tribe( Email_Template::class );
 			$email_template->set_preview( true );
 			$context = $email_template->get_preview_context( $context );
-			$html    = $email_template->get_html( 'ticket', $context );
+			$html    = $email_template->get_html( 'admin-failed-order', $context );
 		}
 
 		$html .= $tickets_template->template( 'v2/components/loader/loader', [], false );
