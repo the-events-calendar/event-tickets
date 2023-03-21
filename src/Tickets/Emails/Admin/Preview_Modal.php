@@ -191,10 +191,9 @@ class Preview_Modal {
 		/** @var Tribe__Tickets__Editor__Template $template */
 		$tickets_template = tribe( 'tickets.editor.template' );
 
-		$email_template = tribe( Email_Template::class );
-		$email_template->set_preview( true );
-
-		$context = [];
+		$context = [
+			'is_preview' => true,
+		];
 
 		$ticket_bg_color = Arr::get( $vars, 'ticketBgColor', '' );
 
@@ -214,7 +213,25 @@ class Preview_Modal {
 			$context['header_image_url'] = $header_img_url;
 		}
 
-		$html  = $email_template->get_html( $context );
+		$current_email = Arr::get( $vars, 'currentEmail', '' );
+
+		$html = '';
+
+		if ( ! empty( $current_email ) ) {
+			$email = tribe( \TEC\Tickets\Emails\Email_Handler::class )->get_email_by_id( $current_email );
+
+			if ( ! empty( $email ) ) {
+				$email_class = tribe( get_class( $email ) );
+				$html        = $email_class->get_content( $email_class->get_preview_context() );
+			}
+
+		} else {
+			$email_template = tribe( Email_Template::class );
+			$email_template->set_preview( true );
+			$context = $email_template->get_preview_context( $context );
+			$html    = $email_template->get_html( 'ticket', $context );
+		}
+
 		$html .= $tickets_template->template( 'v2/components/loader/loader', [], false );
 
 		return $html;

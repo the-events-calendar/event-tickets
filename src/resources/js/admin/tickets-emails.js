@@ -38,7 +38,7 @@ tribe.tickets.emails = {};
 		modalContent: '.tribe-modal__content',
 		form: '.tribe-tickets__manual-attendees-form',
 		hiddenElement: '.tribe-common-a11y-hidden',
-		validationNotice: '.tribe-tickets__notice--error',
+		formCurrentEmail: 'tec_tickets_emails_current_section',
 		formHeaderImageUrl: 'tec-tickets-emails-header-image-url',
 		formTicketBgColorName: 'tec-tickets-emails-ticket-bg-color',
 		formHeaderBgColorName: 'tec-tickets-emails-header-bg-color',
@@ -155,6 +155,11 @@ tribe.tickets.emails = {};
 			.find( 'input[name=' + obj.selectors.formHeaderImageUrl + ']' ).val();
 
 		context.headerImageUrl = headerImageUrl;
+
+		const currentEmail = $document
+			.find( 'input[name=' + obj.selectors.formCurrentEmail + ']' ).val();
+
+		context.currentEmail = currentEmail;
 
 		return context;
 	};

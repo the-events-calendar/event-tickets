@@ -47,6 +47,7 @@ class Email_Handler extends \tad_DI52_ServiceProvider {
 	 */
 	protected $default_emails = [
 		\TEC\Tickets\Emails\Email\Ticket::class,
+		\TEC\Tickets\Emails\Email\RSVP::class,
 		\TEC\Tickets\Emails\Email\Purchase_Receipt::class,
 		\TEC\Tickets\Emails\Email\Failed_Order::class,
 		\TEC\Tickets\Emails\Email\Completed_Order::class,
@@ -135,7 +136,7 @@ class Email_Handler extends \tad_DI52_ServiceProvider {
 			'show_in_menu'    => false,
 			'query_var'       => false,
 			'rewrite'         => false,
-			'capability_type' => 'post',
+			'capability_type' => 'page',
 			'has_archive'     => false,
 			'hierarchical'    => false,
 		];
