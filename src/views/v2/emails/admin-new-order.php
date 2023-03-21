@@ -18,6 +18,6 @@
 
 $this->template( 'template-parts/header' );
 
-$this->template( 'template-parts/body' );
+$this->template( 'admin-new-order/body' );
 
 $this->template( 'template-parts/footer' );
