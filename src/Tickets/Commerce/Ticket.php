@@ -944,4 +944,19 @@ class Ticket {
 			$this->decrease_ticket_sales_by( $src_ticket_type_id, 1 );
 		}
 	}
+
+	/**
+	 * Increase the ticket stock.
+	 *
+	 * @since TBD
+	 *
+	 * @param $ticket_id int The ticket post ID.
+	 * @param $quantity int The quantity to increase the ticket stock by.
+	 *
+	 * @return bool|int
+	 */
+	public function increase_ticket_stock_by( $ticket_id, $quantity = 1 ) {
+		$stock = (int) get_post_meta( $ticket_id,  static::$stock_meta_key, true ) + $quantity;
+		return update_post_meta( $ticket_id,  static::$stock_meta_key, $stock );
+	}
 }
