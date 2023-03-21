@@ -341,7 +341,7 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 	 */
 	public function get_content( $args = [] ): string {
 		// @todo: Parse args, etc.
-		$is_preview = tribe_is_truthy( $args['is_preview'] );
+		$is_preview = ! empty( $args['is_preview'] ) ? tribe_is_truthy( $args['is_preview'] ) : false;
 
 		// @todo @juanfra @codingmusician: we need to see if we initialize tickets.
 		$defaults = [
