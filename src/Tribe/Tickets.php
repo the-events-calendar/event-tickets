@@ -2467,7 +2467,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$is_rsvp       = 'rsvp' === $provider || ( is_object( $provider ) && 'Tribe__Tickets__RSVP' === get_class( $provider ) );
 
 			if ( $is_rsvp ) {
-				// @todo @juanfra @codingmusician: Check if there's a fallback to the ticket email class (in case they have the opt-in set).
 				$email_class      = tribe( TEC\Tickets\Emails\Email\RSVP::class );
 				$use_ticket_email = tribe_get_option( $email_class->get_option_key( 'use-ticket-email' ), false );
 				if ( ! empty( $use_ticket_email ) ) {
