@@ -323,6 +323,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			'must_login' => ! is_user_logged_in() && $this->login_required(),
 			'login_url'  => self::get_login_url( $post_id ),
 			'threshold'  => $blocks_rsvp->get_threshold( $post_id ),
+			'going'      => tribe_get_request_var( 'going', '' ),
 		];
 
 		/**
