@@ -47,7 +47,7 @@ class UpdateTest extends \Codeception\TestCase\WPTestCase {
 		$deleted = tribe( Attendee::class )->delete( $attendee->ID );
 
 		$new_count = tec_tc_attendees()->by( 'event_id', $event_id )->count();
-		$this->assertEquals( 1, $new_count, 'There should be 4 attendees' );
+		$this->assertEquals( 1, $new_count, 'There should be 1 attendee' );
 
 		// get ticket.
 		$ticket = tribe( Module::class )->get_ticket( $event_id, $ticket_a_id );

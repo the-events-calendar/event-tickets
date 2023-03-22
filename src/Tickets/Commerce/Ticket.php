@@ -952,7 +952,7 @@ class Ticket {
 	 * @since TBD
 	 *
 	 * @param $ticket_id int The ticket post ID.
-	 * @param $quantity int The quantity to increase the ticket stock by.
+	 * @param $quantity  int The quantity to increase the ticket stock by.
 	 *
 	 * @return bool|int
 	 */

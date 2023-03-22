@@ -621,13 +621,13 @@ class Module extends \Tribe__Tickets__Tickets {
 			$deleted = tribe( Ticket::class )->delete( $event_id, $ticket_id );
 		}
 
-		if ( $deleted ) {
-			// Run anything we might need on parent method.
-			parent::delete_ticket( $event_id, $ticket_id );
-			return true;
+		if ( ! $deleted ) {
+			return false;
 		}
 		
-		return false;
+		// Run anything we might need on parent method.
+		parent::delete_ticket( $event_id, $ticket_id );
+		return true;
 	}
 
 	/**
