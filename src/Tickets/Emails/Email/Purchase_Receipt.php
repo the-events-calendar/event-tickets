@@ -205,7 +205,7 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 	 */
 	public function get_content( $args = [] ): string {
 		// @todo: We need to grab the proper information that's going to be sent as context.
-		$is_preview = tribe_is_truthy( $args['is_preview'] );
+		$is_preview = ! empty( $args['is_preview'] ) ? tribe_is_truthy( $args['is_preview'] ) : false;
 
 		$defaults = [
 			'title'              => $this->get_title(),
