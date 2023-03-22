@@ -18,6 +18,12 @@
 
 $this->template( 'template-parts/header' );
 
-$this->template( 'template-parts/body' );
+$this->template( 'template-parts/body/title' );
+$this->template( 'template-parts/body/order/purchaser-details' );
+$this->template( 'template-parts/body/order/event-title' );
+$this->template( 'template-parts/body/order/ticket-totals' );
+$this->template( 'template-parts/body/order/order-total' );
+$this->template( 'template-parts/body/order/payment-info', [ 'status' => 'success' ] );
+$this->template( 'template-parts/body/order/attendee-info' );
 
 $this->template( 'template-parts/footer' );
