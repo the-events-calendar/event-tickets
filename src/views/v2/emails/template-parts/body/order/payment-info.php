@@ -21,7 +21,8 @@
  * @var bool             $is_tec_active         [Global] Whether `The Events Calendar` is active or not.
  */
 
-// @todo @codingmusician @juanfra Get status from $order object and remove hardcoded status.
+// @todo @codingmusician @juanfra Replace hardcoded data with dynamic data.
+
 $payment_info = empty( $status ) || 'success' !== $status ?
 	esc_html__( 'Payment unsuccessful with Stripe', 'event-tickets' ) :
 	esc_html__( 'Payment completed with Stripe', 'event-tickets' );

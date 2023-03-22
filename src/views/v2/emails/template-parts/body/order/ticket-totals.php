@@ -21,6 +21,7 @@
  * @var bool             $is_tec_active         [Global] Whether `The Events Calendar` is active or not.
  */
 
+ // @todo @codingmusician @juanfra Replace hardcoded data with dynamic data.
 
 ?>
 <tr>
