@@ -1,9 +1,9 @@
 <?php
 /**
- * Event Tickets Emails: Failed Order Template.
+ * Event Tickets Emails: Order Payment Info
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/emails/admin-failed-order/body.php
+ * [your-theme]/tribe/tickets/v2/emails/template-parts/body/order/payment-info.php
  *
  * See more documentation about our views templating system.
  *
@@ -21,11 +21,14 @@
  * @var bool             $is_tec_active         [Global] Whether `The Events Calendar` is active or not.
  */
 
+// @todo @codingmusician @juanfra Get status from $order object and remove hardcoded status.
+$payment_info = empty( $status ) || 'success' !== $status ?
+	esc_html__( 'Payment unsuccessful with Stripe', 'event-tickets' ) :
+	esc_html__( 'Payment completed with Stripe', 'event-tickets' );
 
-$this->template( 'template-parts/body/title' );
-$this->template( 'admin-failed-order/error-message' );
-$this->template( 'admin-failed-order/purchaser-details' );
-$this->template( 'admin-failed-order/event-title' );
-$this->template( 'admin-failed-order/ticket-totals' );
-$this->template( 'admin-failed-order/order-total' );
-$this->template( 'admin-failed-order/payment-info' );
+?>
+<tr>
+	<td style="font-size:14px;font-weight:400;padding:20px 0 50px;text-align:right" align="right">
+		<?php echo $payment_info; ?>
+	</td>
+</tr>

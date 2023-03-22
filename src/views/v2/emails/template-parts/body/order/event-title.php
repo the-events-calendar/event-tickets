@@ -1,9 +1,9 @@
 <?php
 /**
- * Event Tickets Emails: Completed Order Template.
+ * Event Tickets Emails: Order Event Title
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/emails/admin-new-order/order-total.php
+ * [your-theme]/tribe/tickets/v2/emails/template-parts/body/order/event-title.php
  *
  * See more documentation about our views templating system.
  *
@@ -21,15 +21,9 @@
  * @var bool             $is_tec_active         [Global] Whether `The Events Calendar` is active or not.
  */
 
-
 ?>
 <tr>
-	<td style="padding-top:20px;text-align:right" align="right">
-		<table style="display:inline-block;width:auto">
-			<tr>
-				<td style="font-size:14px;font-weight:400;line-height:24px;padding-right:10px">Order Total</td>
-				<td style="font-size:16px;font-weight:700;line-height:24px;">$100.00</td>
-			</tr>
-		</table>
+	<td style="font-size:16px;font-weight:700;padding-top:43px;">
+		Black Midi with Special Guests Chat Pile and Apprehend
 	</td>
 </tr>

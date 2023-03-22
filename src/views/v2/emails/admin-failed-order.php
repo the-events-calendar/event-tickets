@@ -18,6 +18,13 @@
 
 $this->template( 'template-parts/header' );
 
-$this->template( 'admin-failed-order/body' );
+$this->template( 'template-parts/body/title' );
+$this->template( 'template-parts/body/order/error-message' );
+$this->template( 'template-parts/body/order/purchaser-details' );
+$this->template( 'template-parts/body/order/event-title' );
+$this->template( 'template-parts/body/order/ticket-totals' );
+// @todo @codingmusician @juanfra Get status from $order object and remove hardcoded status.
+$this->template( 'template-parts/body/order/order-total', [ 'status' => 'failed' ] );
+$this->template( 'template-parts/body/order/payment-info' );
 
 $this->template( 'template-parts/footer' );

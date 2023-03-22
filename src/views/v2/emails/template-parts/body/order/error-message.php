@@ -1,9 +1,9 @@
 <?php
 /**
- * Event Tickets Emails: Failed Order Template.
+ * Event Tickets Emails: Order Error Message
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/emails/admin-failed-order/payment-info.php
+ * [your-theme]/tribe/tickets/v2/emails/template-parts/body/order/error-message.php
  *
  * See more documentation about our views templating system.
  *
@@ -25,7 +25,12 @@
 
 ?>
 <tr>
-	<td style="font-size:14px;font-weight:400;padding:20px 0 50px;text-align:right" align="right">
-		Payment unsuccessful with Stripe
+	<td style="font-size:14px;font-weight:400;padding-top:10px">
+		The following attempted purchase has failed because:
+	</td>
+</tr>
+<tr>
+	<td style="color:#da394d;font-size:14px;font-weight:700;padding:24px 0 40px">
+		Stripe payment processing was unsuccessful
 	</td>
 </tr>

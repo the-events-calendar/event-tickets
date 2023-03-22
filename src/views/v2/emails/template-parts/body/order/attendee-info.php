@@ -1,9 +1,9 @@
 <?php
 /**
- * Event Tickets Emails: Completed Order Template.
+ * Event Tickets Emails: Order Attendee Info
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/emails/admin-new-order/attendee-info.php
+ * [your-theme]/tribe/tickets/v2/emails/template-parts/body/order/attendee-info.php
  *
  * See more documentation about our views templating system.
  *

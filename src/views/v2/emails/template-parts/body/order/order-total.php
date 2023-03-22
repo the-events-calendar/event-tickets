@@ -1,9 +1,9 @@
 <?php
 /**
- * Event Tickets Emails: Completed Order Template.
+ * Event Tickets Emails: Order Total
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/emails/admin-new-order/payment-info.php
+ * [your-theme]/tribe/tickets/v2/emails/template-parts/body/order/order-total.php
  *
  * See more documentation about our views templating system.
  *
@@ -22,10 +22,14 @@
  */
 
 
-
 ?>
 <tr>
-	<td style="font-size:14px;font-weight:400;padding-top:20px;text-align:right" align="right">
-		Payment completed with Stripe
+	<td style="padding-top:20px;text-align:right" align="right">
+		<table style="display:inline-block;width:auto">
+			<tr>
+				<td style="font-size:14px;font-weight:400;line-height:24px;padding-right:10px">Order Total</td>
+				<td style="font-size:16px;font-weight:700;line-height:24px;">$100.00</td>
+			</tr>
+		</table>
 	</td>
 </tr>

@@ -1,9 +1,9 @@
 <?php
 /**
- * Event Tickets Emails: Failed Order Template.
+ * Event Tickets Emails: Order Purchaser Details
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/emails/admin-failed-order/event-title.php
+ * [your-theme]/tribe/tickets/v2/emails/template-parts/body/order/purchaser-details.php
  *
  * See more documentation about our views templating system.
  *
@@ -21,9 +21,33 @@
  * @var bool             $is_tec_active         [Global] Whether `The Events Calendar` is active or not.
  */
 
+
+
 ?>
 <tr>
-	<td style="font-size:16px;font-weight:700;padding-top:43px;">
-		Black Midi with Special Guests Chat Pile and Apprehend
+	<td style="padding-bottom:16px">
+		Order details:
+	</td>
+</tr>
+<tr>
+	<td>
+		<table>
+			<tr>
+				<th style="font-size:16px;font-weight:700;line-height:23px;text-align:left" align="left">
+					Order #123
+				</th>
+				<th style="font-size:16px;font-weight:700;line-height:23px;text-align:right" align="right">
+					David Hickox
+				</th>
+			</tr>
+			<tr>
+				<td style="font-size:14px;font-weight:400;line-height:23px;text-align:left" align="left">
+					March 1, 2023
+				</td>
+				<td style="font-size:14px;font-weight:400;line-height:23px;text-align:right" align="right">
+					david@theeventscalendar.com
+				</td>
+			</tr>
+		</table>
 	</td>
 </tr>
