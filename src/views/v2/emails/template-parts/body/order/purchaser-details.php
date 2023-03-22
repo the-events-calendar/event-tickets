@@ -25,11 +25,6 @@
 
 ?>
 <tr>
-	<td style="padding-bottom:16px">
-		Order details:
-	</td>
-</tr>
-<tr>
 	<td>
 		<table>
 			<tr>
