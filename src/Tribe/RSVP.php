@@ -282,6 +282,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * Handle RSVP processing for the RSVP forms.
 	 *
 	 * @since 4.12.3
+	 * @since TBD Added `going` to the $args variable.
 	 *
 	 * @param int         $ticket_id The ticket ID.
 	 * @param null|string $step      Which step to render.
