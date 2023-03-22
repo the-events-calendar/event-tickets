@@ -17,6 +17,7 @@
  *
  * @version 5.0.0
  */
+
 ?>
 <div class="tribe-tickets__rsvp-ar-form">
 
