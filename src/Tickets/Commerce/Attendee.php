@@ -318,9 +318,6 @@ class Attendee {
 		 */
 		do_action( 'tec_tickets_commerce_attendee_after_delete', $attendee_id, $result, $force );
 
-		\Tribe__Tickets__Attendance::instance( $event_id )->increment_deleted_attendees_count();
-		\Tribe__Post_Transient::instance()->delete( $event_id, \Tribe__Tickets__Tickets::ATTENDEES_CACHE );
-
 		/**
 		 * Allows filtering of the return from the `wp_delete_post`.
 		 *

@@ -769,11 +769,10 @@ class Ticket {
 	 * @param int $attendee_id Attendee ID.
 	 */
 	public function update_stock_after_attendee_deletion( $attendee_id ) {
-
-		$post_id    = (int) get_post_meta( $attendee_id, Attendee::$event_relation_meta_key, true );
+		$event_id    = (int) get_post_meta( $attendee_id, Attendee::$event_relation_meta_key, true );
 		$product_id = (int) get_post_meta( $attendee_id, Attendee::$ticket_relation_meta_key, true );
 
-		$global_stock    = new \Tribe__Tickets__Global_Stock( $post_id );
+		$global_stock    = new \Tribe__Tickets__Global_Stock( $event_id );
 		$shared_capacity = false;
 		if ( $global_stock->is_enabled() ) {
 			$shared_capacity = true;
@@ -781,6 +780,12 @@ class Ticket {
 
 		$this->decrease_ticket_sales_by( $product_id, 1, $shared_capacity, $global_stock );
 		$this->increase_ticket_stock_by( $product_id );
+
+		// Increase the deleted attendees count.
+		\Tribe__Tickets__Attendance::instance( $event_id )->increment_deleted_attendees_count();
+
+		// Update the cache.
+		\Tribe__Post_Transient::instance()->delete( $event_id, \Tribe__Tickets__Tickets::ATTENDEES_CACHE );
 	}
 
 	/**
