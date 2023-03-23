@@ -1428,6 +1428,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 *
 	 * @param int $order_id The order ID.
 	 * @param int $event_id The event ID.
+	 *
+	 * @return bool Whether the email was sent or not.
 	 */
 	public function send_non_attendance_confirmation( $order_id, $event_id ) {
 		if ( ! tec_tickets_emails_is_enabled() ) {
@@ -1460,6 +1462,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		$sent = tribe( TEC\Tickets\Emails\Email_Sender::class )->send( $to, $subject, $content, $headers, $attachments );
 
+		return $sent;
 	}
 
 	/**
@@ -1565,7 +1568,9 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$order_id
 		);
 
-		wp_mail( $to, $subject, $content, $headers, $attachments );
+		$sent = wp_mail( $to, $subject, $content, $headers, $attachments );
+
+		return $sent;
 	}
 
 	/**
