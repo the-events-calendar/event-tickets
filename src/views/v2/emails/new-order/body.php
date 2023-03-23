@@ -1,9 +1,9 @@
 <?php
 /**
- * Event Tickets Emails: New Order Template.
+ * Event Tickets Emails: New Order Template Body
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/emails/admin-new-order.php
+ * [your-theme]/tribe/tickets/v2/emails/new-order/body.php
  *
  * See more documentation about our views templating system.
  *
@@ -18,15 +18,10 @@
 
  // @todo @codingmusician @juanfra Replace hardcoded data with dynamic data.
 
-$this->template( 'template-parts/header' );
-
 $this->template( 'template-parts/body/title' );
 $this->template( 'template-parts/body/order/purchaser-details' );
 $this->template( 'template-parts/body/order/event-title' );
 $this->template( 'template-parts/body/order/ticket-totals' );
 $this->template( 'template-parts/body/order/order-total' );
-// @todo @codingmusician @juanfra Get status from $order object and remove hardcoded status.
-$this->template( 'template-parts/body/order/payment-info', [ 'status' => 'success' ] );
+$this->template( 'template-parts/body/order/payment-info' );
 $this->template( 'template-parts/body/order/attendee-info' );
-
-$this->template( 'template-parts/footer' );
