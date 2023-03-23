@@ -25,7 +25,7 @@
 
 ?>
 <tr>
-	<td style="padding:50px 0">
+	<td style="padding-bottom:50px">
 		<table style="border-collapse:collapse;margin-top:10px">
 			<tr style="border:1px solid #d5d5d5;color: #727272;font-size:12px;font-weight:400;line-height:24px;">
 				<td style="padding:0 6px;text-align:left;" align="left">Attendee</td>

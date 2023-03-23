@@ -43,7 +43,7 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 	 *
 	 * @var string
 	 */
-	public $template = 'admin-new-order';
+	public $template = 'new-order';
 
 	/**
 	 * Email recipient.
