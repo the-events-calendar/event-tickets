@@ -369,6 +369,7 @@ class Attendee {
 
 		if ( ! empty( $args['full_name'] ) ) {
 			$create_args['full_name'] = $args['full_name'];
+			$create_args['title']     = $args['full_name'];
 		}
 
 		if (
@@ -376,6 +377,7 @@ class Attendee {
 			&& ! empty( $order->purchaser['full_name'] )
 		) {
 			$create_args['full_name'] = $order->purchaser['full_name'];
+			$create_args['title']     = $order->purchaser['full_name'];
 		}
 
 		$fields = Arr::get( $args, 'fields', [] );
