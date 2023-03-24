@@ -4,7 +4,7 @@ Contributors: theeventscalendar, brianjessee, camwynsp, aguseo, bordoni, borkweb
 Tags: tickets, registration, event registration, RSVP, ticket sales, attendee management
 Requires at least: 5.8.5
 Tested up to: 6.1.1
-Stable tag: 5.5.9
+Stable tag: 5.5.9.1
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -193,8 +193,15 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [TBD] TBD =
 
 * Enhancement - Add the Attendee count for the site to the `At a Glance` admin widget. [ET-1654]
+* Fix - When using Tickets Commerce the SKU will properly appear when creating a ticket using Community Tickets. [CT-64]
+* Fix - Fixed Tickets/RSVP blocks crashing when hovering over their tooltips. [ET-1674]
 
-= [5.5.9] 2023-03-06 =
+= [5.5.9.1] 2023-03-13 =
+
+* Fix - Fixed unlimited capacity tickets showing as sold out on calendar views. [ET-1678]
+* Fix - Fix fatal on the attendees screen when accessing as a non-admin user. [ET-1679]
+
+= [5.5.9] 2023-03-08 =
 
 * Tweak - Code maintenance for the attendees screen. [ET-1635]
 * Tweak - Save activation time for Event Tickets. [ET-1639]
@@ -207,6 +214,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Tweak - Removed filters: `tribe_tickets_caps_can_manage_attendees`
 * Tweak - Added actions: `tribe_log`
 * Tweak - Changed views: `v2/emails/admin-failed-order`, `v2/emails/admin-new-order`, `v2/emails/customer-completed-order`, `v2/emails/email-template`, `v2/emails/email-template/body`, `v2/emails/email-template/body/add-links`, `v2/emails/email-template/body/date`, `v2/emails/email-template/body/event-description`, `v2/emails/email-template/body/event-image`, `v2/emails/email-template/body/event-title`, `v2/emails/email-template/body/footer-content`, `v2/emails/email-template/body/footer`, `v2/emails/email-template/body/greeting`, `v2/emails/email-template/body/header-image`, `v2/emails/email-template/body/header`, `v2/emails/email-template/body/recipient-name`, `v2/emails/email-template/body/ticket-info`, `v2/emails/email-template/body/top-link`, `v2/emails/email-template/main`, `v2/emails/email-template/preview`, `v2/emails/email-template/style`, `v2/emails/rsvp`, `v2/emails/template-parts/body`, `v2/emails/template-parts/body/event/date`, `v2/emails/template-parts/body/event/description`, `v2/emails/template-parts/body/event/image`, `v2/emails/template-parts/body/event/links`, `v2/emails/template-parts/body/event/title`, `v2/emails/email-template/body/event-location`, `v2/emails/template-parts/body/footer`, `v2/emails/template-parts/body/footer/content`, `v2/emails/email-template/body/footer-credit`, `v2/emails/template-parts/body/header`, `v2/emails/template-parts/body/header/image`, `v2/emails/template-parts/body/ticket/holder-name`, `v2/emails/template-parts/body/ticket/number-from-total`, `v2/emails/template-parts/body/ticket/security-code`, `v2/emails/template-parts/body/ticket/ticket-name`, `v2/emails/template-parts/body/tickets-total`, `v2/emails/template-parts/body/tickets`, `v2/emails/template-parts/body/title`, `v2/emails/template-parts/footer`, `v2/emails/template-parts/footer/footer-preview`, `v2/emails/template-parts/footer/footer`, `v2/emails/template-parts/header`, `v2/emails/template-parts/header/head/json-ld`, `v2/emails/template-parts/header/head/meta`, `v2/emails/template-parts/header/head/scripts`, `v2/emails/template-parts/header/head/styles`, `v2/emails/template-parts/header/head/title`, `v2/emails/template-parts/header/header-preview`, `v2/emails/template-parts/header/header`, `v2/emails/template-parts/header/top-link`, `v2/emails/template`, `v2/emails/ticket`
+* Language - 16 new strings added, 181 updated, 1 fuzzied, and 94 obsoleted
 
 = [5.5.8] 2023-02-22 =
 

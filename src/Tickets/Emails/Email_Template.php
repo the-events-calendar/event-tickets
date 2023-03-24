@@ -72,9 +72,10 @@ class Email_Template {
 	 *
 	 * @return string The HTML of the template.
 	 */
-	public function get_html( $context = [], $email = 'template' ) {
+	public function get_html( $email = 'template', $context = [] ) {
 		$template = $this->get_template();
-		$context  = wp_parse_args( $context, $this->get_context( $email ) );
+		$defaults = $this->get_context( $email );
+		$context  = wp_parse_args( $context, $defaults );
 
 		return $template->template( $email, $context, false );
 	}
@@ -150,9 +151,6 @@ class Email_Template {
 		$context['header_text_color'] = Tribe__Utils__Color::get_contrast_color( $context['header_bg_color'] );
 		$context['ticket_text_color'] = Tribe__Utils__Color::get_contrast_color( $context['ticket_bg_color'] );
 
-		if ( $this->preview ) {
-			$this->context_data = $this->get_preview_context_array();
-		}
 
 		$this->context_data = wp_parse_args( $this->context_data, $context );
 
@@ -169,11 +167,11 @@ class Email_Template {
 	/**
 	 * Get the context data in the case of a template preview.
 	 *
-	 * @since 5.5.7
+	 * @since TBD
 	 *
 	 * @return array Context data.
 	 */
-	private function get_preview_context_array() {
+	public function get_preview_context( $args = [] ): array {
 		$current_user = wp_get_current_user();
 		$title        = empty( $current_user->first_name ) ?
 		__( 'Here\'s your ticket!', 'event-tickets' ) :
@@ -184,8 +182,10 @@ class Email_Template {
 		);
 
 		return [
-			'title'   => $title,
-			'tickets' => [
+			'title'      => $title,
+			'heading'    => $title,
+			'is_preview' => true,
+			'tickets'    => [
 				[
 					'ticket_id'         => '1234',
 					'ticket_name'       => esc_html__( 'General Admission', 'event-tickets' ),
