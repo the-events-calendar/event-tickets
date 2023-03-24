@@ -1168,7 +1168,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				'tribe_tickets_rsvp_send_mail_stati', $send_mail_stati, $order_id, $post_id, $attendee_order_status
 			);
 
-			// No point sending tickets if their current intention is not to attend
+			// No point sending tickets if their current intention is not to attend.
 			if ( $has_tickets && in_array( $attendee_order_status, $send_mail_stati, true ) ) {
 				$this->send_tickets_email( $order_id, $post_id );
 			} elseif ( $has_tickets ) {
@@ -1249,6 +1249,11 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		}
 
 		$email_class      = tribe( TEC\Tickets\Emails\Email\RSVP::class );
+
+		if ( ! $email_class->is_enabled() ) {
+			return false;
+		}
+
 		$use_ticket_email = tribe_get_option( $email_class->get_option_key( 'use-ticket-email' ), false );
 		if ( ! empty( $use_ticket_email ) ) {
 			$email_class = tribe( TEC\Tickets\Emails\Email\Ticket::class );
@@ -1275,7 +1280,6 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				);
 			}
 		}
-
 	}
 
 	/**
@@ -1298,7 +1302,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		// Look at each attendee and check if a ticket was sent: in each case where a ticket
 		// has not yet been sent we should a) send the ticket out by email and b) record the
-		// fact it was sent
+		// fact it was sent.
 		foreach ( $all_attendees as $single_attendee ) {
 			// Do not add those attendees/tickets marked as not attending (note that despite the name
 			// 'qr_ticket_id', this key is not QR code specific, it's simply the attendee post ID).
@@ -1307,7 +1311,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				continue;
 			}
 
-			// Only add those attendees/tickets that haven't already been sent
+			// Only add those attendees/tickets that haven't already been sent.
 			if ( empty( $single_attendee['ticket_sent'] ) ) {
 				$to_send[] = $single_attendee;
 			}
@@ -1422,10 +1426,57 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * Dispatches a confirmation email that acknowledges the user has RSVP'd
 	 * in cases where they have indicated that they will *not* be attending.
 	 *
+	 * @since TBD Adjusted the method to use the new Tickets Emails Handler.
+	 *
+	 * @param int $order_id The order ID.
+	 * @param int $event_id The event ID.
+	 *
+	 * @return bool Whether the email was sent or not.
+	 */
+	public function send_non_attendance_confirmation( $order_id, $event_id ) {
+		if ( ! tec_tickets_emails_is_enabled() ) {
+			return $this->send_non_attendance_confirmation_legacy( $order_id, $event_id );
+		}
+
+		$attendees = $this->get_attendees_by_order_id( $order_id );
+
+		if ( empty( $attendees ) ) {
+			return;
+		}
+
+		// For now all ticket holders in an order share the same email.
+		$to = $attendees['0']['holder_email'];
+
+		if ( ! is_email( $to ) ) {
+			return;
+		}
+
+		$email_class = tribe( TEC\Tickets\Emails\Email\RSVP_Not_Going::class );
+
+		if ( ! $email_class->is_enabled() ) {
+			return false;
+		}
+
+		$subject     = $email_class->get_subject();
+		$content     = $email_class->get_content( [ 'tickets' => $attendees ] );
+		$headers     = $email_class->get_headers();
+		$attachments = $email_class->get_attachments();
+
+		$sent = tribe( TEC\Tickets\Emails\Email_Sender::class )->send( $to, $subject, $content, $headers, $attachments );
+
+		return $sent;
+	}
+
+	/**
+	 * Dispatches a confirmation email that acknowledges the user has RSVP'd
+	 * in cases where they have indicated that they will *not* be attending.
+	 *
+	 * @since TBD
+	 *
 	 * @param int $order_id The order ID.
 	 * @param int $event_id The event ID.
 	 */
-	public function send_non_attendance_confirmation( $order_id, $event_id ) {
+	public function send_non_attendance_confirmation_legacy( $order_id, $event_id ) {
 
 		$attendees = $this->get_attendees_by_order_id( $order_id );
 
@@ -1519,7 +1570,9 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$order_id
 		);
 
-		wp_mail( $to, $subject, $content, $headers, $attachments );
+		$sent = wp_mail( $to, $subject, $content, $headers, $attachments );
+
+		return $sent;
 	}
 
 	/**
@@ -2394,7 +2447,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$capacity  = '';
 		$not_going = false;
 
-		// This returns the original stock
+		// This returns the original stock.
 		if ( ! empty( $ticket_id ) ) {
 			$ticket = $this->get_ticket( $event_id, $ticket_id );
 
@@ -2417,7 +2470,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 	public function add_message( $message, $type = 'update' ) {
 		$message = apply_filters( 'tribe_rsvp_submission_message', $message, $type );
-		self::$messages[] = (object) array( 'message' => $message, 'type' => $type );
+		self::$messages[] = (object) [ 'message' => $message, 'type' => $type ];
 	}
 
 	/**
@@ -2425,7 +2478,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * the Attendees Report rather than the RSVP attendees post list (because that's kind of
 	 * confusing)
 	 *
-	 * @param int $post_id WP_Post ID
+	 * @param int $post_id WP_Post ID.
 	 */
 	public function maybe_redirect_to_attendees_report( $post_id ) {
 		$post = get_post( $post_id );
@@ -2494,8 +2547,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			esc_html__( 'Post published. %1$s', 'event-tickets' ),
 			$return_link
 		);
-		$messages[ self::ATTENDEE_OBJECT ][8] = esc_html__( 'Post submitted.', 'event-tickets' );
-		$messages[ self::ATTENDEE_OBJECT ][9] = esc_html__( 'Post scheduled.', 'event-tickets' );
+		$messages[ self::ATTENDEE_OBJECT ][8]  = esc_html__( 'Post submitted.', 'event-tickets' );
+		$messages[ self::ATTENDEE_OBJECT ][9]  = esc_html__( 'Post scheduled.', 'event-tickets' );
 		$messages[ self::ATTENDEE_OBJECT ][10] = esc_html__( 'Post draft updated.', 'event-tickets' );
 
 		return $messages;
