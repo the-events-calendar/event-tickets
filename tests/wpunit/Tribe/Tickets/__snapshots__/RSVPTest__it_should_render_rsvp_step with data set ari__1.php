@@ -111,7 +111,7 @@
 	<input type="hidden" name="tribe_tickets[TICKET_ID][attendees][0][order_status]" value="">
 	<input type="hidden" name="tribe_tickets[TICKET_ID][attendees][0][optout]" value="1">
 
-
+	
 <div
 	class="tribe-tickets__rsvp-ar-form-guest"
 	data-guest-number="1"
@@ -171,7 +171,7 @@
 	>
 </div>
 
-
+	
 </div>
 
 	<div class="tribe-tickets__rsvp-form-buttons">
@@ -216,7 +216,7 @@
 				Guest {{data.attendee_id + 1}}	</h3>
 </header>
 
-
+		
 		<div class="tribe-tickets__rsvp-form-buttons">
 	<button
 		class="tribe-common-h7 tribe-tickets__rsvp-form-button tribe-tickets__rsvp-form-button--cancel"
