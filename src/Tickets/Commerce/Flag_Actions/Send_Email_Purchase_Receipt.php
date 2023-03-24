@@ -39,12 +39,11 @@ class Send_Email_Purchase_Receipt extends Flag_Action_Abstract {
 			$order->events_in_order[] = $order;
 		}
 
-
 		if ( empty( $order->events_in_order ) || ! is_array( $order->events_in_order ) ) {
 			return;
 		}
 
-		// bail if tickets emails is not enabled.
+		// Bail if tickets emails is not enabled.
 		if ( ! tec_tickets_emails_is_enabled() ) {
 			return;
 		}
@@ -55,6 +54,7 @@ class Send_Email_Purchase_Receipt extends Flag_Action_Abstract {
 
 		$email_class = tribe( \TEC\Tickets\Emails\Email\Purchase_Receipt::class );
 
+		// Bail if the `Purchase Receipt` email is not enabled.
 		if ( ! $email_class->is_enabled() ) {
 			return false;
 		}
