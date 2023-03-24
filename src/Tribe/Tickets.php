@@ -2456,6 +2456,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				'provider'      => 'ticket',
 				'post_id'       => 0,
 				'order_id'      => '',
+				'order_status'  => '',
 			];
 
 			// Set up the default arguments.
@@ -2467,11 +2468,16 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$is_rsvp       = 'rsvp' === $provider || ( is_object( $provider ) && 'Tribe__Tickets__RSVP' === get_class( $provider ) );
 
 			if ( $is_rsvp ) {
-				$email_class      = tribe( TEC\Tickets\Emails\Email\RSVP::class );
-				$use_ticket_email = tribe_get_option( $email_class->get_option_key( 'use-ticket-email' ), false );
-				if ( ! empty( $use_ticket_email ) ) {
-					$email_class = tribe( TEC\Tickets\Emails\Email\Ticket::class );
+				if ( 'no' !== strtolower( $args['order_status'] ) ) {
+					$email_class      = tribe( TEC\Tickets\Emails\Email\RSVP::class );
+					$use_ticket_email = tribe_get_option( $email_class->get_option_key( 'use-ticket-email' ), false );
+					if ( ! empty( $use_ticket_email ) ) {
+						$email_class = tribe( TEC\Tickets\Emails\Email\Ticket::class );
+					}
+				} else {
+					$email_class = tribe( TEC\Tickets\Emails\Email\RSVP_Not_Going::class );
 				}
+
 			} else {
 				$email_class = tribe( TEC\Tickets\Emails\Email\Ticket::class );
 			}
