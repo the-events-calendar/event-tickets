@@ -193,6 +193,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [TBD] TBD =
 
 * Enhancement - Add the Attendee count for the site to the `At a Glance` admin widget. [ET-1654]
+* Enhancement - Add `post_title` data for attendees created using Tickets Commerce. [ET-1590]
 * Fix - When using Tickets Commerce the SKU will properly appear when creating a ticket using Community Tickets. [CT-64]
 * Fix - Fixed Tickets/RSVP blocks crashing when hovering over their tooltips. [ET-1674]
 
