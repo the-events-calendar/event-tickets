@@ -282,6 +282,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * Handle RSVP processing for the RSVP forms.
 	 *
 	 * @since 4.12.3
+	 * @since TBD Added `going` to the $args variable.
 	 *
 	 * @param int         $ticket_id The ticket ID.
 	 * @param null|string $step      Which step to render.
@@ -323,6 +324,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			'must_login' => ! is_user_logged_in() && $this->login_required(),
 			'login_url'  => self::get_login_url( $post_id ),
 			'threshold'  => $blocks_rsvp->get_threshold( $post_id ),
+			'going'      => tribe_get_request_var( 'going', '' ),
 		];
 
 		/**
