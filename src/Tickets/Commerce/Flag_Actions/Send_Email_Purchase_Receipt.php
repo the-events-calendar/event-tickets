@@ -35,16 +35,16 @@ class Send_Email_Purchase_Receipt extends Flag_Action_Abstract {
 	 * {@inheritDoc}
 	 */
 	public function handle( Status_Interface $new_status, $old_status, \WP_Post $order ) {
+		// Bail if tickets emails is not enabled.
+		if ( ! tec_tickets_emails_is_enabled() ) {
+			return;
+		}
+
 		if ( ! empty( $order->gateway ) && 'manual' === $order->gateway && empty( $order->events_in_order ) ) {
 			$order->events_in_order[] = $order;
 		}
 
 		if ( empty( $order->events_in_order ) || ! is_array( $order->events_in_order ) ) {
-			return;
-		}
-
-		// Bail if tickets emails is not enabled.
-		if ( ! tec_tickets_emails_is_enabled() ) {
 			return;
 		}
 
