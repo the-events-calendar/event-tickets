@@ -347,7 +347,8 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 		$defaults = [
 			'title'              => $this->get_title(),
 			'heading'            => $this->get_heading(),
-			'tickets'            => ! empty( $args['tickets'] ) ? $args['tickets'] : [],
+			'tickets'            => ! empty( $args['tickets'] ) ? $args['tickets'] : $this->__get( 'tickets' ),
+			'post_id'            => $this->__get( 'post_id' ),
 			'additional_content' => $this->format_string( tribe_get_option( $this->get_option_key( 'add-content' ), '' ) ),
 		];
 
