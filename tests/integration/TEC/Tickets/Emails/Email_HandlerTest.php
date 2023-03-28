@@ -50,7 +50,7 @@ class Email_HandlerTest extends \Codeception\TestCase\WPTestCase {
 
 		// Filter the emails to return the default ones.
 		$defaul_emails = $handler->get_default_emails();
-		add_filter( 'tec_ticketk_emails_registered_emails', static fn() => $defaul_emails );
+		add_filter( 'tec_tickets_emails_registered_emails', static fn() => $defaul_emails );
 
 		$this->assertEquals( count( $defaul_emails ), $handler->maybe_populate_tec_tickets_emails_post_type() );
 	}
@@ -65,7 +65,7 @@ class Email_HandlerTest extends \Codeception\TestCase\WPTestCase {
 
 		// Filter the emails to return an empty array: no email to create.
 		$defaul_emails = $handler->get_default_emails();
-		add_filter( 'tec_ticketk_emails_registered_emails', '__return_empty_array' );
+		add_filter( 'tec_tickets_emails_registered_emails', '__return_empty_array' );
 
 		$this->assertEquals( 0, $handler->maybe_populate_tec_tickets_emails_post_type() );
 	}
@@ -89,7 +89,7 @@ class Email_HandlerTest extends \Codeception\TestCase\WPTestCase {
 
 		// Filter the emails to return an empty array: no email to create.
 		$defaul_emails = $handler->get_default_emails();
-		add_filter( 'tec_ticketk_emails_registered_emails', static fn() => $defaul_emails );
+		add_filter( 'tec_tickets_emails_registered_emails', static fn() => $defaul_emails );
 
 		$this->assertEquals( count( $defaul_emails ) - 1, $handler->maybe_populate_tec_tickets_emails_post_type() );
 		$this->assertCount( 1, $this->get_log_records() );
