@@ -1,0 +1,31 @@
+actor: Rt_smoketestTester
+bootstrap: _bootstrap.php
+modules:
+  enabled:
+    - \Helper\Rt_smoketest
+    - WPDb
+    - WPBrowser
+    - WPFilesystem
+  config:
+    WPDb:
+      dsn: 'mysql:host=%WP_DB_HOST%;dbname=%WP_DB_NAME%'
+      user: %WP_DB_USER%
+      password: %WP_DB_PASSWORD%
+      dump: 'tests/_data/rt_smoketest.sql'
+      populate: true
+      waitlock: 10
+      cleanup: true
+      reconnect: false
+      url: '%WP_URL%'
+      tablePrefix: 'wp_'
+    WPBrowser:
+      url: '%WP_URL%'
+      adminUsername: %WP_ADMIN_USERNAME%
+      adminPassword: %WP_ADMIN_PASSWORD%
+      adminPath: '/wp-admin'
+    WPFilesystem:
+      wpRootFolder: '%WP_ROOT_FOLDER%'
+      themes: '/wp-content/themes'
+      plugins: '/wp-content/plugins'
+      mu-plugins: '/wp-content/mu-plugins'
+      uploads: '/wp-content/uploads'
