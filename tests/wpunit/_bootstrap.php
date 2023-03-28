@@ -1,6 +1,8 @@
 <?php
 // Here you can initialize variables that will be available to your tests
 
+use Tribe\Tickets\Promoter\Triggers\Dispatcher;
+
 $tec_support = dirname( __DIR__, 3 ) . '/the-events-calendar/tests/_support';
 Codeception\Util\Autoload::addNamespace( 'Tribe\Events\Test', $tec_support );
 
@@ -18,3 +20,6 @@ if ( ! function_exists( 'tribe_is_recurring_event' ) ) {
 
 update_option( 'theme', 'twentytwenty' );
 update_option( 'stylesheet', 'twentytwenty' );
+
+// Disable Promoter.
+remove_action( 'tribe_tickets_promoter_trigger', [ tribe( Dispatcher::class ), 'trigger' ] );
