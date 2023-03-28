@@ -7,6 +7,7 @@ use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Gateways\PayPal\Gateway;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Status\Pending;
+use Tribe\Tickets\Promoter\Triggers\Dispatcher;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Traits\CT1\CT1_Fixtures;
@@ -17,12 +18,28 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 	use Attendee_Maker;
 	use Ticket_Maker;
 
+	private $wp_screen_backup;
+
+	private function set_wp_screen(): void {
+		global $wp_screen, $hook_suffix;
+		$this->wp_screen_backup = $wp_screen;
+		$hook_suffix            = 'edit.php';
+		$wp_screen              = \WP_Screen::get();
+	}
+
+	private function disable_promoter_trigger(): void {
+		remove_action( 'tribe_tickets_promoter_trigger', [ tribe( Dispatcher::class ), 'trigger' ] );
+	}
+
 	public function _setUp() {
 		parent::_setUp();
 		$this->enable_provisional_id_normalizer();
+		$this->set_wp_screen();
+		$this->disable_promoter_trigger();
 	}
 
 	public function _tearDown() {
+		$GLOBALS['wp_screen'] = $this->wp_screen_backup;
 		parent::_tearDown();
 		$this->disable_provisional_id_normalizer();
 	}
