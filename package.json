@@ -1,6 +1,6 @@
 {
   "name": "event-tickets",
-  "version": "6.0.0-dev",
+  "version": "5.6.0-dev",
   "repository": "git@github.com:the-events-calendar/event-tickets.git",
   "_zipname": "event-tickets",
   "_zipfoldername": "event-tickets",
