@@ -23,4 +23,8 @@ if ( ! defined( 'WP_DISABLE_FATAL_ERROR_HANDLER' ) ) {
 	define( 'WP_DISABLE_FATAL_ERROR_HANDLER', true );
 }
 
-// @todo here deal with redirection after activation/deactivation.
+if ( ! defined( 'TRIBE_NO_FREEMIUS' ) ) {
+	define( 'TRIBE_NO_FREEMIUS', true );
+}
+
+add_filter( 'tec_admin_update_page_bypass', '__return_true' );
