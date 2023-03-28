@@ -104,7 +104,7 @@ class Email_Handler extends \tad_DI52_ServiceProvider {
 		 *
 		 * @param array $emails Array of email classes.
 		 */
-		return apply_filters( 'tec_ticketk_emails_registered_emails', $this->emails );
+		return apply_filters( 'tec_tickets_emails_registered_emails', $this->emails );
 	}
 
 	/**
