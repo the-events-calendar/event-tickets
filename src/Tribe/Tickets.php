@@ -2501,6 +2501,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			// loop the tickets by event and send one email for each event.
 			foreach ( $tickets_by_event as $event_id => $event_tickets ) {
+				$email_class->__set( 'post_id', $event_id );
+				$email_class->__set( 'tickets', $event_tickets );
 				// @todo @juanfra @codingmusician: Set tickets data to the email class.
 				$subject     = $email_class->get_subject();
 				$content     = $email_class->get_content( [ 'tickets' => $event_tickets ] );
