@@ -116,7 +116,7 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 	 */
 	public function get_heading_plural(): string {
 		$option_key = $this->get_option_key( 'heading-plural' );
-		$heading = tribe_get_option( $option_key, $this->get_default_heading_plural() );
+		$heading    = tribe_get_option( $option_key, $this->get_default_heading_plural() );
 
 		// @todo: Probably we want more data parsed, or maybe move the filters somewhere else as we're always gonna
 
@@ -125,22 +125,24 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 		 *
 		 * @since TBD
 		 *
-		 * @param string $heading  The email heading.
-		 * @param string $id       The email id.
-		 * @param string $template Template name.
+		 * @param string         $heading  The email heading.
+		 * @param string         $id       The email id.
+		 * @param string         $template Template name.
+		 * @param Email_Abstract $this     The email object.
 		 */
-		$heading = apply_filters( 'tec_tickets_emails_heading_plural', $heading, $this->id, $this->template );
+		$heading = apply_filters( 'tec_tickets_emails_heading_plural', $heading, $this->id, $this->template, $this );
 
 		/**
 		 * Allow filtering the email heading.
 		 *
 		 * @since TBD
 		 *
-		 * @param string $heading  The email heading.
-		 * @param string $id       The email id.
-		 * @param string $template Template name.
+		 * @param string         $heading  The email heading.
+		 * @param string         $id       The email id.
+		 * @param string         $template Template name.
+		 * @param Email_Abstract $this     The email object.
 		 */
-		$heading = apply_filters( "tec_tickets_emails_{$this->slug}_heading_plural", $heading, $this->id, $this->template );
+		$heading = apply_filters( "tec_tickets_emails_{$this->slug}_heading_plural", $heading, $this->id, $this->template, $this );
 
 		return $this->format_string( $heading );
 	}
@@ -187,7 +189,7 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 	 */
 	public function get_subject_plural(): string {
 		$option_key = $this->get_option_key( 'subject-plural' );
-		$subject = tribe_get_option( $option_key, $this->get_default_subject_plural() );
+		$subject    = tribe_get_option( $option_key, $this->get_default_subject_plural() );
 
 		// @todo: Probably we want more data parsed, or maybe move the filters somewhere else as we're always gonna
 
@@ -196,22 +198,24 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 		 *
 		 * @since TBD
 		 *
-		 * @param string $subject  The email subject.
-		 * @param string $id       The email id.
-		 * @param string $template Template name.
+		 * @param string         $subject  The email subject.
+		 * @param string         $id       The email id.
+		 * @param string         $template Template name.
+		 * @param Email_Abstract $this     The email object.
 		 */
-		$subject = apply_filters( 'tec_tickets_emails_subject_plural', $subject, $this->id, $this->template );
+		$subject = apply_filters( 'tec_tickets_emails_subject_plural', $subject, $this->id, $this->template, $this );
 
 		/**
 		 * Allow filtering the email subject.
 		 *
 		 * @since TBD
 		 *
-		 * @param string $subject  The email subject.
-		 * @param string $id       The email id.
-		 * @param string $template Template name.
+		 * @param string         $subject  The email subject.
+		 * @param string         $id       The email id.
+		 * @param string         $template Template name.
+		 * @param Email_Abstract $this     The email object.
 		 */
-		$subject = apply_filters( "tec_tickets_emails_{$this->slug}_subject_plural", $subject, $this->id, $this->template );
+		$subject = apply_filters( "tec_tickets_emails_{$this->slug}_subject_plural", $subject, $this->id, $this->template, $this );
 
 		return $this->format_string( $subject );
 	}
