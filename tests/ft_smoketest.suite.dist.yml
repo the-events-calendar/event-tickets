@@ -1,17 +1,18 @@
-actor: Rt_smoketestTester
+actor: FT_Smoketester
 bootstrap: _bootstrap.php
 modules:
   enabled:
-    - \Helper\Rt_smoketest
+    - \Helper\FT_Smoketest
     - WPDb
     - WPBrowser
     - WPFilesystem
+    - Asserts
   config:
     WPDb:
       dsn: 'mysql:host=%WP_DB_HOST%;dbname=%WP_DB_NAME%'
       user: %WP_DB_USER%
       password: %WP_DB_PASSWORD%
-      dump: 'tests/_data/rt_smoketest.sql'
+      dump: 'tests/_data/ft_smoketest.sql'
       populate: true
       waitlock: 10
       cleanup: true

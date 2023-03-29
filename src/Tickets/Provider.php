@@ -55,13 +55,19 @@ class Provider extends tad_DI52_ServiceProvider {
 
 		// Loads all of tickets emails.
 		$this->container->register( Emails\Provider::class );
-		
+
 		// Loads admin area.
 		$this->container->register( Admin\Provider::class );
 
 		// RBE only Providers here.
 		$this->register_ct1_providers();
 		$this->has_registered = true;
+
+		// Register the Flexible Tickets feature if CT1 fully activated.
+		add_action(
+			'tec_events_custom_tables_v1_fully_activated',
+			$this->container->callback( Flexible_Tickets\Provider::class, 'register' )
+		);
 
 		return true;
 	}

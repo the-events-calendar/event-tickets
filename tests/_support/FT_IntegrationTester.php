@@ -16,9 +16,9 @@
  *
  * @SuppressWarnings(PHPMD)
 */
-class Rt_smoketestTester extends \Codeception\Actor
+class FT_IntegrationTester extends \Codeception\Actor
 {
-    use _generated\Rt_smoketestTesterActions;
+    use _generated\Ft_integrationTesterActions;
 
     /**
      * Define custom actions here

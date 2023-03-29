@@ -7,7 +7,7 @@
  * @package TEC\Tickets\Recurring_Tickets;
  */
 
-namespace TEC\Tickets\Recurring_Tickets;
+namespace TEC\Tickets\Flexible_Tickets;
 
 use TEC\Common\Provider\Controller;
 
@@ -16,7 +16,7 @@ use TEC\Common\Provider\Controller;
  *
  * @since   TBD
  *
- * @package TEC\Tickets\Recurring_Tickets;
+ * @package TEC\Tickets\Flexible_Tickets;
  */
 class Custom_Tables extends Controller {
 
