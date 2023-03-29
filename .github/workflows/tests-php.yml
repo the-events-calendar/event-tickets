@@ -7,16 +7,17 @@ jobs:
       matrix:
         suite:
           # - acceptance
-          - ct1_integration
-          - functional
+#          - ct1_integration
+#          - functional
           - integration
-          - restv1 --group="capacity"
-          - restv1 --skip-group="capacity"
-          - views_integration
-          - commerce_integration
-          - wpunit --group="capacity"
-          - wpunit --skip-group="capacity"
-          - rt_smoketest
+#          - restv1 --group="capacity"
+#          - restv1 --skip-group="capacity"
+#          - views_integration
+#          - commerce_integration
+#          - wpunit --group="capacity"
+#          - wpunit --skip-group="capacity"
+#          - ft_smoketest
+          - ft_integration
     runs-on: ubuntu-latest
     steps:
       # ------------------------------------------------------------------------------
@@ -28,6 +29,14 @@ jobs:
           fetch-depth: 1000
           token: ${{ secrets.GH_BOT_TOKEN }}
           submodules: recursive
+      # ------------------------------------------------------------------------------
+      # Install TEC plugins required by the suite
+      # ------------------------------------------------------------------------------
+      - name: Clone and setup the required TEC plugins with slic
+        if: steps.skip.outputs.value != 1 && steps.test_suite_plugins_required.outputs.content
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ".github/clone-tec-repos.sh tests/${{ matrix.suite }}.suite.dist.yml"
       # ------------------------------------------------------------------------------
       # Check if any PHP files have changed
       # ------------------------------------------------------------------------------

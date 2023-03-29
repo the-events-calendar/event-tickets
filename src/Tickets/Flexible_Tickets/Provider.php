@@ -11,17 +11,16 @@
  * @package TEC\Tickets\Recurring_Tickets;
  */
 
-namespace TEC\Tickets\Recurring_Tickets;
+namespace TEC\Tickets\Flexible_Tickets;
 
-use TEC\Common\lucatume\DI52\ContainerException;
-use TEC\Common\lucatume\DI52\ServiceProvider;
+use tad_DI52_ServiceProvider as ServiceProvider;
 
 /**
  * Class Provider.
  *
  * @since   TBD
  *
- * @package TEC\Tickets\Recurring_Tickets;
+ * @package TEC\Tickets\Flexible_Tickets;
  */
 class Provider extends ServiceProvider {
 	/**
@@ -32,7 +31,7 @@ class Provider extends ServiceProvider {
 	 *
 	 * @var string
 	 */
-	public const DISABLED = 'TEC_RECURRING_TICKETS_DISABLED';
+	public const DISABLED = 'TEC_FLEXIBLE_TICKETS_DISABLED';
 
 	/**
 	 * Whether the provider did register or not.
@@ -46,9 +45,9 @@ class Provider extends ServiceProvider {
 	/**
 	 * Registers the bindings, service providers and controllers part of the feature.
 	 *
+	 * @return void The bindings, service providers and controllers are registered in the container.
 	 * @since TBD
 	 *
-	 * @return void The bindings, service providers and controllers are registered in the container.
 	 */
 	public function register() {
 		if ( $this->did_register ) {
@@ -64,6 +63,15 @@ class Provider extends ServiceProvider {
 			return;
 		}
 
+		do_action( 'tribe_log', 'debug', 'TEC Flexible Tickets activated.' );
+
+		/**
+		 * Fires when the TEC Flexible Tickets feature is activated.
+		 *
+		 * @since TBD
+		 */
+		do_action( 'tec_flexible_tickets_activated' );
+
 		$this->container->register( Custom_Tables::class );
 	}
 
@@ -73,9 +81,9 @@ class Provider extends ServiceProvider {
 	 * The method will check if the feature has been disabled via a constant, an environment variable,
 	 * an option or a filter.
 	 *
+	 * @return bool Whether the feature is enabled or not.
 	 * @since TBD
 	 *
-	 * @return bool Whether the feature is enabled or not.
 	 */
 	private function is_enabled(): bool {
 		if ( defined( self::DISABLED ) && constant( self::DISABLED ) ) {
@@ -98,9 +106,10 @@ class Provider extends ServiceProvider {
 		 * Note: this filter will only apply if the disable constant or env var
 		 * are not set or are set to falsy values.
 		 *
+		 * @param bool $activate Defaults to `true`.
+		 *
 		 * @since TBD
 		 *
-		 * @param bool $activate Defaults to `true`.
 		 */
 		return (bool) apply_filters( 'tec_recurring_tickets_enabled', $active );
 	}
