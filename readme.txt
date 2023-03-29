@@ -190,7 +190,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.5.10] 2023-04-04 =
+= [5.5.10] 2023-04-03 =
 
 * Enhancement - Added functionality to properly restock deleted attendee ticket for Tickets Commerce. [ETP-860]
 * Enhancement - Add the Attendee count for the site to the `At a Glance` admin widget. [ET-1654]
