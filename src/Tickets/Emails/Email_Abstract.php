@@ -218,6 +218,17 @@ abstract class Email_Abstract {
 		 */
 		$from_email = apply_filters( 'tec_tickets_emails_from_email', $from_email, $this->id, $this );
 
+		/**
+		 * Filter the from email for the particular email.
+		 *
+		 * @since TBD
+		 *
+		 * @param array          $from_email The "from" email.
+		 * @param string         $id         The email ID.
+		 * @param Email_Abstract $this       The email object.
+		 */
+		$from_email = apply_filters( "tec_tickets_emails_{$this->slug}_from_email", $from_email, $this->id, $this );
+
 		return $from_email;
 	}
 
@@ -241,6 +252,17 @@ abstract class Email_Abstract {
 		 * @param Email_Abstract $this       The email object.
 		 */
 		$from_name = apply_filters( 'tec_tickets_emails_from_name', $from_name, $this->id, $this );
+
+		/**
+		 * Filter the from name for the particular email.
+		 *
+		 * @since TBD
+		 *
+		 * @param array          $from_email The "from" name.
+		 * @param string         $id         The email ID.
+		 * @param Email_Abstract $this       The email object.
+		 */
+		$from_name = apply_filters( "tec_tickets_emails_{$this->slug}_from_name", $from_name, $this->id, $this );
 
 		return $from_name;
 	}
@@ -295,6 +317,17 @@ abstract class Email_Abstract {
 		 */
 		$headers = apply_filters( 'tec_tickets_emails_headers', $headers, $this->id, $this );
 
+		/**
+		 * Filter the headers for the particular email.
+		 *
+		 * @since TBD
+		 *
+		 * @param array          $headers The headers.
+		 * @param string         $id      The email ID.
+		 * @param Email_Abstract $this    The email object.
+		 */
+		$headers = apply_filters( "tec_tickets_emails_{$this->slug}_headers", $headers, $this->id, $this );
+
 		return $headers;
 	}
 
@@ -308,7 +341,6 @@ abstract class Email_Abstract {
 	 * @return array
 	 */
 	public function get_attachments( $attachments = [] ): array {
-
 		/**
 		 * Filter the attachments.
 		 *
@@ -319,6 +351,17 @@ abstract class Email_Abstract {
 		 * @param Email_Abstract $this        The email object.
 		 */
 		$attachments = apply_filters( 'tec_tickets_emails_attachments', $attachments, $this->id, $this );
+
+		/**
+		 * Filter the attachments for the particular email.
+		 *
+		 * @since TBD
+		 *
+		 * @param array          $attachments The attachments.
+		 * @param string         $id          The email ID.
+		 * @param Email_Abstract $this        The email object.
+		 */
+		$attachments = apply_filters( "tec_tickets_emails_{$this->slug}_attachments", $attachments, $this->id, $this );
 
 		return $attachments;
 	}
@@ -359,6 +402,17 @@ abstract class Email_Abstract {
 		 * @param Email_Abstract $this         The email object.
 		 */
 		$placeholders = apply_filters( 'tec_tickets_emails_placeholders', $this->placeholders, $this->id, $this );
+
+		/**
+		 * Filter the placeholders for the particular email.
+		 *
+		 * @since TBD
+		 *
+		 * @param array          $placeholders The placeholders.
+		 * @param string         $id           The email ID.
+		 * @param Email_Abstract $this         The email object.
+		 */
+		$placeholders = apply_filters( "tec_tickets_emails_{$this->slug}_placeholders", $placeholders, $this->id, $this );
 
 		return $placeholders;
 	}
