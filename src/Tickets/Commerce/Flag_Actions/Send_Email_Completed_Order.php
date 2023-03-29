@@ -8,7 +8,7 @@ use TEC\Tickets\Commerce\Status\Status_Interface;
 /**
  * Class Send_Email_Completed_Order, normally triggered when an order is completed.
  *
- * @since TBD
+ * @since 5.5.10
  *
  * @package TEC\Tickets\Commerce\Flag_Actions
  */

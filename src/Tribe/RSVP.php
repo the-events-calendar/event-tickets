@@ -282,7 +282,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * Handle RSVP processing for the RSVP forms.
 	 *
 	 * @since 4.12.3
-	 * @since TBD Added `going` to the $args variable.
+	 * @since 5.5.10 Added `going` to the $args variable.
 	 *
 	 * @param int         $ticket_id The ticket ID.
 	 * @param null|string $step      Which step to render.
@@ -1193,7 +1193,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * including the tickets.
 	 *
 	 * @since 4.5.2 added $event_id parameter
-	 * @since TBD Adjusted the method to use the new Tickets Emails Handler.
+	 * @since 5.5.10 Adjusted the method to use the new Tickets Emails Handler.
 	 *
 	 * @param int $order_id The order ID.
 	 * @param int $event_id The event ID.
@@ -1288,7 +1288,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * Dispatches a confirmation email that acknowledges the user has RSVP'd
 	 * including the tickets, for the legacy emails.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @param int $order_id The order ID.
 	 * @param int $event_id The event ID.
@@ -1428,7 +1428,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * Dispatches a confirmation email that acknowledges the user has RSVP'd
 	 * in cases where they have indicated that they will *not* be attending.
 	 *
-	 * @since TBD Adjusted the method to use the new Tickets Emails Handler.
+	 * @since 5.5.10 Adjusted the method to use the new Tickets Emails Handler.
 	 *
 	 * @param int $order_id The order ID.
 	 * @param int $event_id The event ID.
@@ -1475,7 +1475,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * Dispatches a confirmation email that acknowledges the user has RSVP'd
 	 * in cases where they have indicated that they will *not* be attending.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @param int $order_id The order ID.
 	 * @param int $event_id The event ID.

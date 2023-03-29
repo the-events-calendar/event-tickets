@@ -35,7 +35,7 @@ abstract class Email_Abstract {
 	/**
 	 * Email slug.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @var string
 	 */
@@ -98,7 +98,7 @@ abstract class Email_Abstract {
 	/**
 	 * Array holding all the dynamic values attached to the object.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @var array<string, mixed> An array holding the dynamic values set to this model.
 	 */
@@ -122,7 +122,7 @@ abstract class Email_Abstract {
 	/**
 	 * Get default email subject.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @return string
 	 */
@@ -131,7 +131,7 @@ abstract class Email_Abstract {
 	/**
 	 * Get default recipient.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @return string
 	 */
@@ -149,7 +149,7 @@ abstract class Email_Abstract {
 	/**
 	 * Get default email heading.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @return string
 	 */
@@ -158,7 +158,7 @@ abstract class Email_Abstract {
 	/**
 	 * Get the settings fields for the email.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @return array
 	 */
@@ -167,7 +167,7 @@ abstract class Email_Abstract {
 	/**
 	 * Get preview context.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @param array $args The arguments.
 	 *
@@ -178,7 +178,7 @@ abstract class Email_Abstract {
 	/**
 	 * Get email content.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @param array $args The arguments.
 	 *
@@ -189,7 +189,7 @@ abstract class Email_Abstract {
 	/**
 	 * Is customer email.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @return string
 	 */
@@ -221,7 +221,7 @@ abstract class Email_Abstract {
 		/**
 		 * Filter the from email for the particular email.
 		 *
-		 * @since TBD
+		 * @since 5.5.10
 		 *
 		 * @param array          $from_email The "from" email.
 		 * @param string         $id         The email ID.
@@ -256,7 +256,7 @@ abstract class Email_Abstract {
 		/**
 		 * Filter the from name for the particular email.
 		 *
-		 * @since TBD
+		 * @since 5.5.10
 		 *
 		 * @param array          $from_email The "from" name.
 		 * @param string         $id         The email ID.
@@ -320,7 +320,7 @@ abstract class Email_Abstract {
 		/**
 		 * Filter the headers for the particular email.
 		 *
-		 * @since TBD
+		 * @since 5.5.10
 		 *
 		 * @param array          $headers The headers.
 		 * @param string         $id      The email ID.
@@ -355,7 +355,7 @@ abstract class Email_Abstract {
 		/**
 		 * Filter the attachments for the particular email.
 		 *
-		 * @since TBD
+		 * @since 5.5.10
 		 *
 		 * @param array          $attachments The attachments.
 		 * @param string         $id          The email ID.
@@ -369,7 +369,7 @@ abstract class Email_Abstract {
 	/**
 	 * Set email placeholders.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @param array $placeholders the placeholders to set.
 	 *
@@ -406,7 +406,7 @@ abstract class Email_Abstract {
 		/**
 		 * Filter the placeholders for the particular email.
 		 *
-		 * @since TBD
+		 * @since 5.5.10
 		 *
 		 * @param array          $placeholders The placeholders.
 		 * @param string         $id           The email ID.
@@ -454,7 +454,7 @@ abstract class Email_Abstract {
 	/**
 	 * Default default content to show below email content.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @return string
 	 */
@@ -494,7 +494,7 @@ abstract class Email_Abstract {
 	/**
 	 * Get ID.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @return string
 	 */
@@ -505,7 +505,7 @@ abstract class Email_Abstract {
 	/**
 	 * Get setting option key.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @param string $option The option name.
 	 *
@@ -518,7 +518,7 @@ abstract class Email_Abstract {
 	/**
 	 * Checks if this email is enabled.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @return bool
 	 */
@@ -530,7 +530,7 @@ abstract class Email_Abstract {
 	/**
 	 * Get email recipient.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @return string The email recipient.
 	 */
@@ -543,7 +543,7 @@ abstract class Email_Abstract {
 		/**
 		 * Allow filtering the email recipient globally.
 		 *
-		 * @since TBD
+		 * @since 5.5.10
 		 *
 		 * @param string         $recipient  The email recipient.
 		 * @param string         $id         The email id.
@@ -555,7 +555,7 @@ abstract class Email_Abstract {
 		/**
 		 * Allow filtering the email recipient for the particular email.
 		 *
-		 * @since TBD
+		 * @since 5.5.10
 		 *
 		 * @param string         $recipient  The email recipient.
 		 * @param string         $id         The email id.
@@ -570,7 +570,7 @@ abstract class Email_Abstract {
 	/**
 	 * Get the subject of the email.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @return string
 	 */
@@ -583,7 +583,7 @@ abstract class Email_Abstract {
 		/**
 		 * Allow filtering the email subject globally.
 		 *
-		 * @since TBD
+		 * @since 5.5.10
 		 *
 		 * @param string         $subject  The email subject.
 		 * @param string         $id       The email id.
@@ -595,7 +595,7 @@ abstract class Email_Abstract {
 		/**
 		 * Allow filtering the email subject.
 		 *
-		 * @since TBD
+		 * @since 5.5.10
 		 *
 		 * @param string         $subject  The email subject.
 		 * @param string         $id       The email id.
@@ -610,7 +610,7 @@ abstract class Email_Abstract {
 	/**
 	 * Get email heading.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @return string The email heading.
 	 */
@@ -623,7 +623,7 @@ abstract class Email_Abstract {
 		/**
 		 * Allow filtering the email heading globally.
 		 *
-		 * @since TBD
+		 * @since 5.5.10
 		 *
 		 * @param string         $heading  The email heading.
 		 * @param string         $id       The email id.
@@ -635,7 +635,7 @@ abstract class Email_Abstract {
 		/**
 		 * Allow filtering the email heading for Completed Order.
 		 *
-		 * @since TBD
+		 * @since 5.5.10
 		 *
 		 * @param string         $heading  The email heading.
 		 * @param string         $id       The email id.
@@ -650,7 +650,7 @@ abstract class Email_Abstract {
 	/**
 	 * Get additional content.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @return string The email heading.
 	 */
@@ -663,7 +663,7 @@ abstract class Email_Abstract {
 		/**
 		 * Allow filtering the email heading globally.
 		 *
-		 * @since TBD
+		 * @since 5.5.10
 		 *
 		 * @param string         $content  The email heading.
 		 * @param string         $id       The email id.
@@ -675,7 +675,7 @@ abstract class Email_Abstract {
 		/**
 		 * Allow filtering the email heading for Completed Order.
 		 *
-		 * @since TBD
+		 * @since 5.5.10
 		 *
 		 * @param string         $content  The email heading.
 		 * @param string         $id       The email id.
@@ -690,7 +690,7 @@ abstract class Email_Abstract {
 	/**
 	 * Get and filter email settings.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @return array
 	 */
@@ -703,7 +703,7 @@ abstract class Email_Abstract {
 		/**
 		 * Allow filtering the settings globally.
 		 *
-		 * @since TBD
+		 * @since 5.5.10
 		 *
 		 * @param array          $settings The settings array.
 		 * @param string         $id       Email ID.
@@ -714,7 +714,7 @@ abstract class Email_Abstract {
 		/**
 		 * Allow filtering the settings for this email.
 		 *
-		 * @since TBD
+		 * @since 5.5.10
 		 *
 		 * @param array          $settings The settings array.
 		 * @param string         $id       Email ID.
@@ -728,7 +728,7 @@ abstract class Email_Abstract {
 	/**
 	 * Set a value to a dynamic property.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @param string $name  The name of the property.
 	 * @param mixed  $value The value of the property.
@@ -740,7 +740,7 @@ abstract class Email_Abstract {
 	/**
 	 * Getter to access dynamic properties.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @param string $name The name of the property.
 	 *
@@ -765,7 +765,7 @@ abstract class Email_Abstract {
 	/**
 	 * Get the `post_type` data for this email.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @return array
 	 */
