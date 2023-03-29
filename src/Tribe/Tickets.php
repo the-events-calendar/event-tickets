@@ -2060,7 +2060,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/**
 			 * Allow filtering of ticket counts by event.
 			 *
-			 * @since TBD
+			 * @since 5.5.10
 			 *
 			 * @param array $types   An array of ticket types.
 			 * @param int   $post_id The event post ID.
@@ -2422,7 +2422,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Send RSVPs/tickets email for an attendee.
 		 *
 		 * @since 5.0.3
-		 * @since TBD Adjusted the method to use the new Tickets Emails Handler.
+		 * @since 5.5.10 Adjusted the method to use the new Tickets Emails Handler.
 		 *
 		 * @param string $to      The email to send the tickets to.
 		 * @param array  $tickets The list of tickets to send.
@@ -2501,6 +2501,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			// loop the tickets by event and send one email for each event.
 			foreach ( $tickets_by_event as $event_id => $event_tickets ) {
+				$email_class->__set( 'post_id', $event_id );
+				$email_class->__set( 'tickets', $event_tickets );
 				// @todo @juanfra @codingmusician: Set tickets data to the email class.
 				$subject     = $email_class->get_subject();
 				$content     = $email_class->get_content( [ 'tickets' => $event_tickets ] );
@@ -2535,7 +2537,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Send RSVPs/tickets email for an attendee (legacy).
 		 *
-		 * @since TBD
+		 * @since 5.5.10
 		 *
 		 * @param string $to      The email to send the tickets to.
 		 * @param array  $tickets The list of tickets to send.

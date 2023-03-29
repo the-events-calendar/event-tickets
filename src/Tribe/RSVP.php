@@ -282,6 +282,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * Handle RSVP processing for the RSVP forms.
 	 *
 	 * @since 4.12.3
+	 * @since 5.5.10 Added `going` to the $args variable.
 	 *
 	 * @param int         $ticket_id The ticket ID.
 	 * @param null|string $step      Which step to render.
@@ -323,6 +324,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			'must_login' => ! is_user_logged_in() && $this->login_required(),
 			'login_url'  => self::get_login_url( $post_id ),
 			'threshold'  => $blocks_rsvp->get_threshold( $post_id ),
+			'going'      => tribe_get_request_var( 'going', '' ),
 		];
 
 		/**
@@ -1191,7 +1193,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * including the tickets.
 	 *
 	 * @since 4.5.2 added $event_id parameter
-	 * @since TBD Adjusted the method to use the new Tickets Emails Handler.
+	 * @since 5.5.10 Adjusted the method to use the new Tickets Emails Handler.
 	 *
 	 * @param int $order_id The order ID.
 	 * @param int $event_id The event ID.
@@ -1246,7 +1248,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			return;
 		}
 
-		$email_class      = tribe( TEC\Tickets\Emails\Email\RSVP::class );
+		$email_class = tribe( TEC\Tickets\Emails\Email\RSVP::class );
 
 		if ( ! $email_class->is_enabled() ) {
 			return false;
@@ -1257,6 +1259,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$email_class = tribe( TEC\Tickets\Emails\Email\Ticket::class );
 		}
 
+		$email_class->__set( 'post_id', $event_id );
+		$email_class->__set( 'tickets', $all_attendees );
 		$subject     = $email_class->get_subject();
 		$content     = $email_class->get_content( [ 'tickets' => $all_attendees ] );
 		$headers     = $email_class->get_headers();
@@ -1284,7 +1288,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * Dispatches a confirmation email that acknowledges the user has RSVP'd
 	 * including the tickets, for the legacy emails.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @param int $order_id The order ID.
 	 * @param int $event_id The event ID.
@@ -1424,7 +1428,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * Dispatches a confirmation email that acknowledges the user has RSVP'd
 	 * in cases where they have indicated that they will *not* be attending.
 	 *
-	 * @since TBD Adjusted the method to use the new Tickets Emails Handler.
+	 * @since 5.5.10 Adjusted the method to use the new Tickets Emails Handler.
 	 *
 	 * @param int $order_id The order ID.
 	 * @param int $event_id The event ID.
@@ -1455,6 +1459,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			return false;
 		}
 
+		$email_class->__set( 'post_id', $event_id );
+		$email_class->__set( 'tickets', $attendees );
 		$subject     = $email_class->get_subject();
 		$content     = $email_class->get_content( [ 'tickets' => $attendees ] );
 		$headers     = $email_class->get_headers();
@@ -1469,7 +1475,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * Dispatches a confirmation email that acknowledges the user has RSVP'd
 	 * in cases where they have indicated that they will *not* be attending.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @param int $order_id The order ID.
 	 * @param int $event_id The event ID.

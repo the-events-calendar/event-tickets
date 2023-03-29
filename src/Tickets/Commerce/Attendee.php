@@ -277,7 +277,7 @@ class Attendee {
 	 *
 	 * @since 5.2.1
 	 *
-	 * @since TBD Avoid force delete of WP_Post objects and integrate stock management.
+	 * @since 5.5.10 Avoid force delete of WP_Post objects and integrate stock management.
 	 *
 	 * @param int     $attendee_id The Attendee ID.
 	 * @param boolean $force       Force the deletion.

@@ -12,7 +12,7 @@ use \TEC\Tickets\Emails\Email_Template;
 /**
  * Class Failed_Order
  *
- * @since TBD
+ * @since 5.5.10
  *
  * @package TEC\Tickets\Emails
  */
@@ -21,7 +21,7 @@ class Failed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Email ID.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @var string
 	 */
@@ -30,7 +30,7 @@ class Failed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Email slug.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @var string
 	 */
@@ -39,7 +39,7 @@ class Failed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Email template.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @var string
 	 */
@@ -48,7 +48,7 @@ class Failed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Email recipient.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @var string
 	 */
@@ -57,7 +57,7 @@ class Failed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Get email title.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @return string The email title.
 	 */
@@ -68,7 +68,7 @@ class Failed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Get default email recipient.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @return string
 	 */
@@ -79,7 +79,7 @@ class Failed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Get default email heading.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @return string
 	 */
@@ -90,7 +90,7 @@ class Failed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Get default email subject.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @return string
 	 */
@@ -101,7 +101,7 @@ class Failed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Get email settings.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @return array
 	 */
@@ -175,7 +175,7 @@ class Failed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Get preview context for email.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @param array $args The arguments.
 	 * @return array $args The modified arguments
@@ -193,7 +193,7 @@ class Failed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Get email content.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @param array $args The arguments.
 	 *

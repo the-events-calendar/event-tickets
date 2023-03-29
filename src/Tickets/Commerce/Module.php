@@ -594,7 +594,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @since TBD Adjust the method to handle both Ticket and Attendee post type deletion separately.
+	 * @since 5.5.10 Adjust the method to handle both Ticket and Attendee post type deletion separately.
 	 *
 	 * @param $event_id
 	 * @param $ticket_id
@@ -624,7 +624,7 @@ class Module extends \Tribe__Tickets__Tickets {
 		if ( ! $deleted ) {
 			return false;
 		}
-		
+
 		// Run anything we might need on parent method.
 		parent::delete_ticket( $event_id, $ticket_id );
 		return true;
