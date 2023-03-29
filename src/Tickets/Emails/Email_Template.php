@@ -167,7 +167,7 @@ class Email_Template {
 	/**
 	 * Get the context data in the case of a template preview.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @return array Context data.
 	 */

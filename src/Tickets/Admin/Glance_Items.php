@@ -7,7 +7,7 @@ use Tribe__Tickets__Tickets;
 /**
  * Class Glance_Items
  *
- * @since TBD
+ * @since 5.5.10
  *
  * @package TEC\Tickets\Admin
  */
@@ -16,7 +16,7 @@ class Glance_Items {
 	/**
 	 * Method to register glance items related hooks.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 */
 	public function hooks() {
 		add_filter( 'dashboard_glance_items', [ $this, 'custom_glance_items_attendees' ], 10, 1 );
