@@ -370,8 +370,9 @@ abstract class Email_Abstract {
 	 * @return string
 	 */
 	public function format_string( $string ): string {
-		$find    = array_keys( $this->placeholders );
-		$replace = array_values( $this->placeholders );
+		$placeholders = $this->get_placeholders();
+		$find         = array_keys( $placeholders );
+		$replace      = array_values( $placeholders );
 
 		/**
 		 * Filter the formatted email string.
