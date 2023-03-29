@@ -30,9 +30,9 @@
 		color: #3C434A;
 	}
 
-	body, table, td, div, h1, p {font-family: Helvetica, Arial, sans-serif;}
-	table { width:100%}
-	table, td {border:0;border-spacing: 0;}
+	body, table, td, div, h1, p { font-family: Helvetica, Arial, sans-serif; }
+	table { width: 100% }
+	table, td { border: 0; border-spacing: 0; }
 
 	.tec-tickets__email-body a,
 	.tec-tickets__email-body a:focus,
@@ -77,14 +77,14 @@
 	td.tec-tickets__email-table-main-header {
 		padding: 5px 5px 0px 5px;
 		background: <?php echo esc_attr( $header_bg_color ); ?>;
-		text-align: <?php echo esc_attr( $header_image_alignment ); ?>"
+		text-align: <?php echo esc_attr( $header_image_alignment ); ?>;
 	}
 
 	.tec-tickets__email-table-content,
 	table.tec-tickets__email-table-content {
-		width:100%;
-		border:0;
-		border-spacing:0;
+		width: 100%;
+		border: 0;
+		border-spacing: 0;
 		padding: 15px 30px;
 	}
 
@@ -138,18 +138,18 @@
 		font-size: 21px;
 		font-weight: 700;
 		line-height: 24px;
-		margin:0;
-		padding:0;
+		margin: 0;
+		padding: 0;
 		background:transparent;
-		color:<?php echo esc_attr( $ticket_text_color ); ?>;
+		color: <?php echo esc_attr( $ticket_text_color ); ?>;
 	}
 
 	.tec-tickets__email-table-content-ticket-type-name,
 	div.tec-tickets__email-table-content-ticket-type-name {
 		font-size: 16px;
 		margin-top: 8px;
-		padding:0;
-		color:<?php echo esc_attr( $ticket_text_color ); ?>;
+		padding: 0;
+		color: <?php echo esc_attr( $ticket_text_color ); ?>;
 	}
 
 	.tec-tickets__email-table-content-ticket-security-code,
@@ -157,9 +157,9 @@
 		font-size: 14px;
 		font-weight: 400;
 		display: block;
-		margin:0 !important;
-		padding:15px 0 0 0 !important;
-		color:<?php echo esc_attr( $ticket_text_color ); ?>;
+		margin: 0 !important;
+		padding: 15px 0 0 0 !important;
+		color: <?php echo esc_attr( $ticket_text_color ); ?>;
 		opacity: .7;
 	}
 
@@ -168,9 +168,9 @@
 		font-size: 14px;
 		font-weight: 700;
 		display: block;
-		margin:0 !important;
-		padding:15px 0 0 0 !important;
-		color:<?php echo esc_attr( $ticket_text_color ); ?>;
+		margin: 0 !important;
+		padding: 15px 0 0 0 !important;
+		color: <?php echo esc_attr( $ticket_text_color ); ?>;
 	}
 
 	.tec-tickets__email-table-main-footer,
