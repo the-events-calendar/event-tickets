@@ -238,6 +238,8 @@ class Tribe__Tickets__Attendees {
 			[ $this, 'render' ]
 		);
 
+		$attendees_page_hook_suffix = \TEC\Tickets\Admin\Attendees\Page::$hook_suffix;
+
 		/**
 		 * @since 4.7.1
 		 *
@@ -248,6 +250,7 @@ class Tribe__Tickets__Attendees {
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_assets' ] );
 		add_action( 'admin_enqueue_scripts', [ $this, 'load_pointers' ] );
 		add_action( "load-{$this->page_id}", [ $this, 'screen_setup' ] );
+		add_action( "load-{$attendees_page_hook_suffix}", [ $this, 'screen_setup' ] );
 	}
 
 	/**
@@ -347,7 +350,10 @@ class Tribe__Tickets__Attendees {
 		$action = tribe_get_request_var( 'action', false );
 
 		// When on the admin and not on the correct page bail.
-		if ( is_admin() && $this->slug() !== $page ) {
+		if (
+			is_admin()
+			&& ( $this->slug() !== $page && \TEC\Tickets\Admin\Attendees\Page::$slug !== $page )
+		) {
 			return;
 		}
 

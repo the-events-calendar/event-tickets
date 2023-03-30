@@ -34,7 +34,14 @@ class Page {
 	 *
 	 * @var string
 	 */
-	public static $attendees_page_id = 'tec-tickets-attendees';
+	public static $slug = 'tec-tickets-attendees';
+
+	/**
+	 * Event Tickets Attendees page hook suffix.
+	 *
+	 * @var string
+	 */
+	public static $hook_suffix = 'tickets_page_tec-tickets-attendees';
 
 	/**
 	 * Defines wether the current page is the Event Tickets Attendees page.
@@ -58,14 +65,13 @@ class Page {
 	public function add_tec_tickets_attendees_page() {
 		$admin_pages = tribe( 'admin.pages' );
 
-		$admin_pages->register_page(
+		$attendees_page = $admin_pages->register_page(
 			[
-				'id'       => static::$attendees_page_id,
-				'path'     => static::$attendees_page_id,
+				'id'       => static::$slug,
+				'path'     => static::$slug,
 				'parent'   => static::$parent_slug,
 				'title'    => esc_html__( 'Attendees', 'event-tickets' ),
 				'position' => 2.5,
-				// 'capability' => 'manage_options',
 				'callback' => [
 					$this,
 					'render_tec_tickets_attendees_page',
@@ -92,7 +98,6 @@ class Page {
 			'event_id'  => 0,
 		];
 
-		echo '';
-		//$admin_views->template( 'attendees', $context );
+		$admin_views->template( 'attendees', $context );
 	}
 }

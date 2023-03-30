@@ -950,6 +950,10 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		$event_id = Event::filter_event_id( filter_var( tribe_get_request_var( 'event_id' ), FILTER_VALIDATE_INT ) );
 		$search   = sanitize_text_field( tribe_get_request_var( $this->search_box_input_name ) );
 
+		if ( empty( $event_id ) ) {
+			$event_id = 0;
+		}
+
 		if ( ! empty( $search ) ) {
 			$search_keys = array_keys( $this->get_search_options() );
 
