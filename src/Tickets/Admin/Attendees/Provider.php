@@ -1,17 +1,17 @@
 <?php
 /**
- * The main service provider for the Tickets Admin area.
+ * The main service provider for the Tickets Admin Attendees page.
  *
- * @since   5.3.4
+ * @since   TBD
  * @package TEC\Tickets\Admin
  */
 
-namespace TEC\Tickets\Admin;
+namespace TEC\Tickets\Admin\Attendees;
 
 /**
- * Service provider for the Tickets Admin area.
+ * Service provider for the Tickets Admin Attendees
  *
- * @since   5.3.4
+ * @since   TBD
  * @package TEC\Tickets\Admin
  */
 class Provider extends \tad_DI52_ServiceProvider {
@@ -19,27 +19,26 @@ class Provider extends \tad_DI52_ServiceProvider {
 	/**
 	 * Register the provider singletons.
 	 *
-	 * @since 5.3.4
+	 * @since TBD
 	 */
 	public function register() {
+		if (
+			! tribe( 'tickets.attendees' )->user_can_manage_attendees()
+			|| ! tec_tickets_attendees_page_is_enabled()
+		) {
+			return;
+		}
 
 		$this->register_hooks();
 
 		// Register the SP on the container.
 		$this->container->singleton( static::class, $this );
-		$this->container->singleton( 'tickets.admin.provider', $this );
-
-		// Register the Attendees provider.
-		$this->container->register( Attendees\Provider::class );
-
-		// Register singleton classes.
-		$this->container->singleton( Upsell::class );
 	}
 
 	/**
 	 * Registers the provider handling all the 1st level filters and actions for the Tickets Admin area.
 	 *
-	 * @since 5.3.4
+	 * @since TBD
 	 */
 	protected function register_hooks() {
 		$hooks = new Hooks( $this->container );
@@ -47,7 +46,5 @@ class Provider extends \tad_DI52_ServiceProvider {
 
 		// Allow Hooks to be removed, by having the them registered to the container.
 		$this->container->singleton( Hooks::class, $hooks );
-		$this->container->singleton( 'tickets.admin.hooks', $hooks );
 	}
-
 }

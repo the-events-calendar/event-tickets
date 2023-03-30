@@ -17,7 +17,6 @@
 
 namespace TEC\Tickets\Admin;
 
-
 /**
  * Class Hooks.
  *

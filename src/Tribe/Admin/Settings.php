@@ -187,10 +187,11 @@ class Settings {
 
 		$admin_pages->register_page(
 			[
-				'id'     => static::$parent_slug,
-				'path'   => static::$parent_slug,
-				'parent' => static::$parent_slug,
-				'title'  => esc_html__( 'Home', 'event-tickets' ),
+				'id'       => static::$parent_slug,
+				'path'     => static::$parent_slug,
+				'parent'   => static::$parent_slug,
+				'position' => 1,
+				'title'    => esc_html__( 'Home', 'event-tickets' ),
 			]
 		);
 
@@ -200,6 +201,7 @@ class Settings {
 				'parent'   => static::$parent_slug,
 				'title'    => esc_html__( 'Settings', 'event-tickets' ),
 				'path'     => static::$settings_page_id,
+				'position' => 2,
 				'callback' => [
 					tribe( 'settings' ),
 					'generatePage',
@@ -213,6 +215,7 @@ class Settings {
 				'parent'   => static::$parent_slug,
 				'title'    => esc_html__( 'Help', 'event-tickets' ),
 				'path'     => 'tec-tickets-help',
+				'position' => 3,
 				'callback' => [
 					tribe( 'settings.manager' ),
 					'do_help_tab',
@@ -244,6 +247,7 @@ class Settings {
 				'title'      => esc_html__( 'Troubleshooting', 'event-tickets' ),
 				'path'       => 'tec-tickets-troubleshooting',
 				'capability' => $troubleshooting->get_required_capability(),
+				'position'   => 4,
 				'callback'   => [
 					$troubleshooting,
 					'do_menu_page',
