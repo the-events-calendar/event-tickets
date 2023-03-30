@@ -24,14 +24,14 @@
 // @todo @codingmusician @juanfra Replace hardcoded data with dynamic data.
 
 ?>
-<tr style="border:1px solid #d5d5d5;color: #727272;font-size:12px;font-weight:400;line-height:24px;">
-	<td style="padding:0 6px;text-align:left;" align="left">
+<tr class="tec-tickets__email-table-content-order-attendees-table-header-row">
+	<td class="tec-tickets__email-table-content-order-attendees-table-header-cell tec-tickets__email-table-content-align-left" align="left">
 		<?php echo esc_html__( 'Attendee', 'event-tickets' ); ?>
 	</td>
-	<td style="padding:0 6px;text-align:center;" align="center">
+	<td class="tec-tickets__email-table-content-order-attendees-table-header-cell tec-tickets__email-table-content-align-center" align="center">
 		<?php echo esc_html__( 'Type', 'event-tickets' ); ?>
 	</td>
-	<td style="padding:0 6px;text-align:right;" align="right">
+	<td class="tec-tickets__email-table-content-order-attendees-table-header-cell tec-tickets__email-table-content-align-right" align="right">
 		<?php echo esc_html__( 'Ticket ID', 'event-tickets' ); ?>
 	</td>
 </tr>

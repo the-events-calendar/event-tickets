@@ -1,9 +1,9 @@
 <?php
 /**
- * Event Tickets Emails: Order Event Title
+ * Event Tickets Emails: Order Purchaser Details - Date
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/emails/template-parts/body/order/event-title.php
+ * [your-theme]/tribe/tickets/v2/emails/template-parts/body/order/purchaser-details/date.php
  *
  * See more documentation about our views templating system.
  *
@@ -21,11 +21,9 @@
  * @var bool             $is_tec_active         [Global] Whether `The Events Calendar` is active or not.
  */
 
- // @todo @codingmusician @juanfra Replace hardcoded data with dynamic data.
+// @todo @codingmusician @juanfra Replace hardcoded data with dynamic data.
 
 ?>
-<tr>
-	<td class="tec-tickets__email-table-content-order-event-title">
-		Black Midi with Special Guests Chat Pile and Apprehend
-	</td>
-</tr>
+<td class="tec-tickets__email-table-content-order-purchaser-details-bottom tec-tickets__email-table-content-align-left" align="left">
+	March 1, 2023
+</td>
