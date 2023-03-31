@@ -30,4 +30,3 @@ modules:
       plugins: '/wp-content/plugins'
       mu-plugins: '/wp-content/mu-plugins'
       uploads: '/wp-content/uploads'
-tec_plugins: events-pro

@@ -1,7 +1,7 @@
 actor: FT_IntegrationTester
 modules:
   enabled:
-    - \Helper\Ft_integration
+    - \Helper\Ft_Integration
     - WPLoader
   config:
     WPLoader:
@@ -22,4 +22,3 @@ modules:
         - the-events-calendar/the-events-calendar.php
         - events-pro/events-calendar-pro.php
         - event-tickets/event-tickets.php
-tec_plugins: events-pro
