@@ -33,7 +33,6 @@ jobs:
       # Install TEC plugins required by the suite
       # ------------------------------------------------------------------------------
       - name: Clone and setup the required TEC plugins with slic
-        if: steps.skip.outputs.value != 1 && steps.test_suite_plugins_required.outputs.content
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ".github/clone-tec-repos.sh tests/${{ matrix.suite }}.suite.dist.yml"
