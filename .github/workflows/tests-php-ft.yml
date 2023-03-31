@@ -6,16 +6,8 @@ jobs:
       fail-fast: false
       matrix:
         suite:
-          # - acceptance
-          - ct1_integration
-          - functional
-          - integration
-          - restv1 --group="capacity"
-          - restv1 --skip-group="capacity"
-          - views_integration
-          - commerce_integration
-          - wpunit --group="capacity"
-          - wpunit --skip-group="capacity"
+          - ft_smoketest
+          - ft_integration
     runs-on: ubuntu-latest
     steps:
       # ------------------------------------------------------------------------------
@@ -132,6 +124,28 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
         continue-on-error: true
+      - name: Fetch head branch from ECP
+        uses: octokit/request-action@v2.x
+        if: steps.skip.outputs.value != 1
+        id: fetch-ecp-head-branch
+        with:
+          route: GET /repos/{owner}/{repo}/branches/${{ github.head_ref }}
+          owner: the-events-calendar
+          repo: events-pro
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
+        continue-on-error: true
+      - name: Fetch base branch from ECP
+        uses: octokit/request-action@v2.x
+        id: fetch-ecp-base-branch
+        if: steps.skip.outputs.value != 1 && steps.fetch-ecp-head-branch.outcome != 'success'
+        with:
+          route: GET /repos/{owner}/{repo}/branches/${{ github.base_ref }}
+          owner: the-events-calendar
+          repo: events-pro
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
+        continue-on-error: true
       # ------------------------------------------------------------------------------
       # Set TEC branch
       # ------------------------------------------------------------------------------
@@ -169,6 +183,37 @@ jobs:
         run: |
           docker network prune -f
           ${SLIC_BIN} use the-events-calendar/common
+          ${SLIC_BIN} composer install --no-dev
+      # ------------------------------------------------------------------------------
+      # Set ECP branch
+      # ------------------------------------------------------------------------------
+      - name: Set ECP with head branch
+        if: steps.skip.outputs.value != 1 && steps.fetch-ecp-head-branch.outcome == 'success'
+        run: echo "ECP_BRANCH=${{ github.head_ref }}" >> $GITHUB_ENV
+      - name: Set ECP with base branch
+        if: steps.skip.outputs.value != 1 && steps.fetch-ecp-head-branch.outcome != 'success' && steps.fetch-ecp-base-branch.outcome == 'success'
+        run: echo "ECP_BRANCH=${{ github.base_ref }}" >> $GITHUB_ENV
+      - name: Set ECP with master branch
+        if: steps.skip.outputs.value != 1 && steps.fetch-ecp-head-branch.outcome != 'success' && steps.fetch-ecp-base-branch.outcome != 'success'
+        run: echo "ECP_BRANCH=master" >> $GITHUB_ENV
+      # ------------------------------------------------------------------------------
+      # Clone and init ECP
+      # ------------------------------------------------------------------------------
+      - name: Clone ECP
+        uses: actions/checkout@v2
+        if: steps.skip.outputs.value != 1
+        with:
+          fetch-depth: 1
+          repository: the-events-calendar/events-pro
+          ref: ${{ env.ECP_BRANCH }}
+          token: ${{ secrets.GH_BOT_TOKEN }}
+          path: events-pro
+          submodules: recursive
+      - name: Init ECP
+        if: steps.skip.outputs.value != 1
+        run: |
+          mv ${GITHUB_WORKSPACE}/events-pro ${GITHUB_WORKSPACE}/../events-pro
+          ${SLIC_BIN} use events-pro
           ${SLIC_BIN} composer install --no-dev
       # ------------------------------------------------------------------------------
       # Set up ET Common
