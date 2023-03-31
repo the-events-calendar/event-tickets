@@ -23,6 +23,7 @@ extensions:
         - 'Codeception\Command\GenerateWPXMLRPC'
     enabled:
       - Tribe\Test\Codeception\Extensions\Function_Mocker
+      - tad\WPBrowser\Extension\Events
     config:
       Tribe\Test\Codeception\Extensions\Function_Mocker:
         suites: [ 'views_integration', 'wpunit' ]
