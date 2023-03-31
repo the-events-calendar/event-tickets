@@ -18,7 +18,7 @@
 */
 class FT_IntegrationTester extends \Codeception\Actor
 {
-    use _generated\Ft_integrationTesterActions;
+    use _generated\FT_IntegrationTesterActions;
 
     /**
      * Define custom actions here
