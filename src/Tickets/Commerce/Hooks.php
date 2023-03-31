@@ -326,7 +326,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @since TBD Updated method to use the new hook from Attendee class.
+	 * @since 5.5.10 Updated method to use the new hook from Attendee class.
 	 *
 	 * @param int $attendee_id the attendee id.
 	 */

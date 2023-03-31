@@ -11,7 +11,7 @@
  *
  * @version TBD
  *
- * @since TBD
+ * @since 5.5.10
  *
  * @var Tribe_Template  $this  Current template object.
  */

@@ -764,7 +764,7 @@ class Ticket {
 	 * Update Ticket Stock and Global Stock after deleting an Attendee.
 	 *
 	 * @since 5.1.9
-	 * @since TBD updated method signature to match new action signature.
+	 * @since 5.5.10 updated method signature to match new action signature.
 	 *
 	 * @param int $attendee_id Attendee ID.
 	 */
@@ -954,7 +954,7 @@ class Ticket {
 	/**
 	 * Increase the ticket stock.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @param $ticket_id int The ticket post ID.
 	 * @param $quantity  int The quantity to increase the ticket stock by.

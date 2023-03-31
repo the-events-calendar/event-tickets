@@ -13,7 +13,7 @@ use \TEC\Tickets\Emails\Email_Template;
 /**
  * Class RSVP
  *
- * @since TBD
+ * @since 5.5.10
  *
  * @package TEC\Tickets\Emails
  */
@@ -22,7 +22,7 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Email ID.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @var string
 	 */
@@ -31,7 +31,7 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Email slug.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @var string
 	 */
@@ -40,7 +40,7 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Email template.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @var string
 	 */
@@ -49,7 +49,7 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Email recipient.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @var string
 	 */
@@ -58,7 +58,7 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Get email title.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @return string The email title.
 	 */
@@ -69,7 +69,7 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Get default recipient.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @return string
 	 */
@@ -80,7 +80,7 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Get default email heading.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @return string
 	 */
@@ -95,7 +95,7 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Get default email heading for plural rsvps.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @return string
 	 */
@@ -110,7 +110,7 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Get heading for plural tickets.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @return string
 	 */
@@ -123,7 +123,7 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 		/**
 		 * Allow filtering the email heading globally.
 		 *
-		 * @since TBD
+		 * @since 5.5.10
 		 *
 		 * @param string         $heading  The email heading.
 		 * @param string         $id       The email id.
@@ -135,7 +135,7 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 		/**
 		 * Allow filtering the email heading.
 		 *
-		 * @since TBD
+		 * @since 5.5.10
 		 *
 		 * @param string         $heading  The email heading.
 		 * @param string         $id       The email id.
@@ -150,7 +150,7 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Get default email subject.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @return string
 	 */
@@ -168,7 +168,7 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Get default email subject for plural rsvps.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @return string
 	 */
@@ -183,7 +183,7 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Get subject for plural rsvps.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @return string
 	 */
@@ -196,7 +196,7 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 		/**
 		 * Allow filtering the email subject globally.
 		 *
-		 * @since TBD
+		 * @since 5.5.10
 		 *
 		 * @param string         $subject  The email subject.
 		 * @param string         $id       The email id.
@@ -208,7 +208,7 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 		/**
 		 * Allow filtering the email subject.
 		 *
-		 * @since TBD
+		 * @since 5.5.10
 		 *
 		 * @param string         $subject  The email subject.
 		 * @param string         $id       The email id.
@@ -223,7 +223,7 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Get email settings fields.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @return array
 	 */
@@ -323,7 +323,7 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Get preview context for email.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @param array $args The arguments.
 	 * @return array $args The modified arguments
@@ -337,7 +337,7 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Get email content.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @param array $args The arguments.
 	 *
