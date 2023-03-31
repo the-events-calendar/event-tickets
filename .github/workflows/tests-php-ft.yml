@@ -1,4 +1,4 @@
-name: 'Codeception Tests'
+name: 'FT Codeception Tests'
 on: [ pull_request ]
 jobs:
   test:
