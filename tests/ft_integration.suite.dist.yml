@@ -1,7 +1,7 @@
 actor: FT_IntegrationTester
 modules:
   enabled:
-    - \Helper\Ft_Integration
+    - \Helper\Ft_integration
     - WPLoader
   config:
     WPLoader:
