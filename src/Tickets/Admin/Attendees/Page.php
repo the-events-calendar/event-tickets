@@ -54,7 +54,35 @@ class Page {
 		$admin_pages = tribe( 'admin.pages' );
 		$admin_page  = $admin_pages->get_current_page();
 
-		return ! empty( $admin_page ) && static::$attendees_page_id === $admin_page;
+		return ! empty( $admin_page ) && static::$slug === $admin_page;
+	}
+
+	/**
+	 * Returns the main admin attendees URL.
+	 *
+	 * @param array $args Arguments to pass to the URL.
+	 *
+	 * @return string
+	 */
+	public function get_url( array $args = [] ): string {
+		$defaults = [
+			'page' => static::$slug,
+		];
+
+		// Allow the link to be "changed" on the fly.
+		$args = wp_parse_args( $args, $defaults );
+
+		// Keep the resulting URL args clean.
+		$url = add_query_arg( $args, admin_url( 'admin.php' ) );
+
+		/**
+		 * Filters the URL to the Event Tickets attendees page.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $url The URL to the Event Tickets attendees page.
+		 */
+		return apply_filters( 'tec_tickets_attendees_page_url', $url );
 	}
 
 	/**
