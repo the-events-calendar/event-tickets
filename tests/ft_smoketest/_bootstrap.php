@@ -33,9 +33,9 @@ if ( ! copy( codecept_data_dir( 'mu-plugins/ft-smoketest.php' ), $mu_plugin_path
 codecept_debug( 'Placed ft-smoketest mu-plugin file.' );
 
 // Remove the plugin after the suite is done.
-//addListener( Events::SUITE_AFTER, function () use ( $mu_plugin_path ) {
-//	if ( ! unlink( $mu_plugin_path ) ) {
-//		throw new RuntimeException( 'Could not delete ft-smoketest mu-plugin file.' );
-//	}
-//} );
+addListener( Events::SUITE_AFTER, function () use ( $mu_plugin_path ) {
+	if ( ! unlink( $mu_plugin_path ) ) {
+		throw new RuntimeException( 'Could not delete ft-smoketest mu-plugin file.' );
+	}
+} );
 
