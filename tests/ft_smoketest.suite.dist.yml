@@ -6,6 +6,7 @@ modules:
     - WPBrowser
     - WPFilesystem
     - Asserts
+    - WPLoader
   config:
     WPDb:
       dsn: 'mysql:host=%WP_DB_HOST%;dbname=%WP_DB_NAME%'
@@ -29,3 +30,11 @@ modules:
       plugins: '/wp-content/plugins'
       mu-plugins: '/wp-content/mu-plugins'
       uploads: '/wp-content/uploads'
+    WPLoader:
+      loadOnly: true
+      wpRootFolder: %WP_ROOT_FOLDER%
+      dbName: %WP_DB_NAME%
+      dbHost: %WP_DB_HOST%
+      dbUser: %WP_DB_USER%
+      dbPassword: %WP_DB_PASSWORD%
+      domain: %WP_DOMAIN%

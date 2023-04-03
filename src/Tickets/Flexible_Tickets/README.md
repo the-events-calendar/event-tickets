@@ -70,4 +70,8 @@ Hook on the `tec_debug_data` filter to add your own data to the debug informatio
 The plugin will also hook on the `tribe_log` action to collect and print on the page the logged messages; the messages
 are stored in the `logs` property of the debug data and are stored by level (debug, error, warning and so on).
 
+### CI
+The project requires TEC and ECP to work correctly and is depending on the Custom Tables v1 feature being active in both projects.
+For this reason the project has a dedicated GitHub workflow that will clone and initialize TEC and ECP, see `.github/workflows/tests-php-ft.yml`.
+
 [1]: https://github.com/stellarwp/slic
