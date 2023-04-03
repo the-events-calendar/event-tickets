@@ -176,6 +176,15 @@ abstract class Email_Abstract {
 	abstract public function get_preview_context( $args ): array;
 
 	/**
+	 * Get the default template context.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The email template context.
+	 */
+	abstract public function get_default_template_context(): array;
+
+	/**
 	 * Get email content.
 	 *
 	 * @since 5.5.10
@@ -723,6 +732,46 @@ abstract class Email_Abstract {
 		$settings = apply_filters( "tec_tickets_emails_{$this->slug}_settings", $settings, $this->id, $this );
 
 		return $settings;
+	}
+
+	/**
+	 * Get template context for email.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $args The arguments.
+	 * @return array $args The modified arguments
+	 */
+	public function get_template_context( $args = [] ): array {
+		$defaults = $this->get_default_template_context();
+
+		$args = wp_parse_args( $args, $defaults );
+
+		/**
+		 * Allow filtering the template context globally.
+		 *
+		 * @since TBD
+		 *
+		 * @param array          $args     The email arguments.
+		 * @param string         $id       The email id.
+		 * @param string         $template Template name.
+		 * @param Email_Abstract $this     The email object.
+		 */
+		$args = apply_filters( 'tec_tickets_emails_template_args', $args, $this->id, $this->template, $this );
+
+		/**
+		 * Allow filtering the template context.
+		 *
+		* @since TBD
+		 *
+		 * @param array          $args     The email arguments.
+		 * @param string         $id       The email id.
+		 * @param string         $template Template name.
+		 * @param Email_Abstract $this     The email object.
+		 */
+		$subject = apply_filters( "tec_tickets_emails_{$this->slug}_template_args", $args, $this->id, $this->template, $this );
+
+		return $args;
 	}
 
 	/**

@@ -191,6 +191,23 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 	}
 
 	/**
+	 * Get default template context for email.
+	 *
+	 * @since TBD
+	 *
+	 * @return array $args The default arguments
+	 */
+	public function get_default_template_context(): array {
+		$defaults = [
+			'title'              => $this->get_title(),
+			'heading'            => $this->get_heading(),
+			'additional_content' => $this->format_string( tribe_get_option( $this->get_option_key( 'add-content' ), '' ) ),
+		];
+
+		return $defaults;
+	}
+
+	/**
 	 * Get email content.
 	 *
 	 * @since 5.5.10
@@ -202,14 +219,7 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 	public function get_content( $args = [] ): string {
 		// @todo: We need to grab the proper information that's going to be sent as context.
 		$is_preview = ! empty( $args['is_preview'] ) ? tribe_is_truthy( $args['is_preview'] ) : false;
-
-		$defaults = [
-			'title'              => $this->get_title(),
-			'heading'            => $this->get_heading(),
-			'additional_content' => $this->format_string( tribe_get_option( $this->get_option_key( 'add-content' ), '' ) ),
-		];
-
-		$args = wp_parse_args( $args, $defaults );
+		$args       = $this->get_template_context( $args );
 
 		$email_template = tribe( Email_Template::class );
 		$email_template->set_preview( $is_preview );
