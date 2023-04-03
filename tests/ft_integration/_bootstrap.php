@@ -12,3 +12,5 @@ $ct1_active = tribe()->getVar( 'ct1_fully_activated' );
 if ( empty( $ct1_active ) ) {
 	throw new \Exception( 'TEC CT1 is not active' );
 }
+
+require_once __DIR__ . '/Controller_Test_Case.php';

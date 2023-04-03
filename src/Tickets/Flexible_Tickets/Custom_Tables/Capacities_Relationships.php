@@ -55,8 +55,7 @@ class Capacities_Relationships extends Table {
 				`id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
 				`capacity_id` int(11) UNSIGNED NOT NULL,
 				`object_id` bigint(20) UNSIGNED NOT NULL,
-				PRIMARY KEY (`id`),
-				FOREIGN KEY (`capacity_id`) REFERENCES `$capacities`(`id`) ON DELETE CASCADE
+				PRIMARY KEY (`id`)
 			) $charset_collate;
 		";
 	}
@@ -71,13 +70,13 @@ class Capacities_Relationships extends Table {
 
 		$table_name = static::table_name();
 
-		if ( $this->exists() && $this->has_foreign_key( 'user_id' ) ) {
+		if ( $this->exists() && $this->has_foreign_key( 'capacity_id' ) ) {
 			return $results;
 		}
 
 		$capacities = Capacities::table_name();
-		$updated    = $wpdb->query( "ALTER TABLE `$table_name`
-    		ADD FOREIGN KEY ( `capacity_id` ) REFERENCES $capacities(id) ON DELETE CASCADE" );
+		$updated    = $wpdb->query( "ALTER TABLE $table_name
+			ADD FOREIGN KEY ( capacity_id ) REFERENCES $capacities(id) ON DELETE CASCADE" );
 
 		$message = $updated ?
 			"Added FOREIGN KEY constraint to the $table_name table on $capacities.id."

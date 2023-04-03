@@ -54,7 +54,7 @@ class Capacities extends Table {
 
 		return "
 			CREATE TABLE `$table_name` (
-				`id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+				`id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
 				`value` int(11) DEFAULT -1 NOT NULL,
 				`type` varchar(50) DEFAULT '' NOT NULL,
 				`name` varchar(50) DEFAULT '' NOT NULL,

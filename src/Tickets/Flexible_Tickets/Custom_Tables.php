@@ -36,9 +36,7 @@ class Custom_Tables extends Controller {
 	 *
 	 * @return void
 	 */
-	public function register() {
-		$this->container->singleton( self::class, self::class );
-
+	public function do_register(): void {
 		Schema_Config::set_container( $this->container );
 		Schema_Config::set_db( DB::class );
 
@@ -65,10 +63,10 @@ class Custom_Tables extends Controller {
 	 */
 	public function register_tables(): void {
 		$this->container->singleton( Capacities::class, Schema_Register::table( Capacities::class ) );
-		$this->container->singleton( Capacities::class, Schema_Register::table( Capacities_Relationships::class ) );
+		$this->container->singleton( Ticket_Groups::class, Schema_Register::table( Ticket_Groups::class ) );
 		$this->container->singleton( Posts_And_Posts::class, Schema_Register::table( Posts_And_Posts::class ) );
 		$this->container->singleton( Posts_And_Users::class, Schema_Register::table( Posts_And_Users::class ) );
-		$this->container->singleton( Ticket_Groups::class, Schema_Register::table( Ticket_Groups::class ) );
+		$this->container->singleton( Capacities_Relationships::class, Schema_Register::table( Capacities_Relationships::class ) );
 		$this->container->singleton( Posts_And_Ticket_Groups::class, Schema_Register::table( Posts_And_Ticket_Groups::class ) );
 	}
 }

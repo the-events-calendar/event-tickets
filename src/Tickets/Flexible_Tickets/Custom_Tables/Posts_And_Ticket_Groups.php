@@ -78,9 +78,7 @@ class Posts_And_Ticket_Groups extends Table {
 		}
 
 		$ticket_groups = Ticket_Groups::table_name();
-		$updated       = $wpdb->query( "ALTER TABLE `$table_name`
-    			ADD FOREIGN KEY ( `group_id` )
-    			    REFERENCES $ticket_groups(id) ON DELETE CASCADE" );
+		$updated = $wpdb->query( "ALTER TABLE `$table_name` ADD FOREIGN KEY ( `group_id` ) REFERENCES `$ticket_groups`(id) ON DELETE CASCADE" );
 
 		$message = $updated ?
 			"Added FOREIGN KEY constraint to the $table_name table on $ticket_groups(id)."

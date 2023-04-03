@@ -63,7 +63,7 @@ class Provider extends tad_DI52_ServiceProvider {
 		// Register the Flexible Tickets feature if CT1 fully activated.
 		add_action(
 			'tec_events_custom_tables_v1_fully_activated',
-			$this->container->callback( Flexible_Tickets\Provider::class, 'register' )
+			[ $this, 'register_flexible_tickets_provider' ]
 		);
 
 		return true;
@@ -110,5 +110,16 @@ class Provider extends tad_DI52_ServiceProvider {
 		// Allow Hooks to be removed, by having the them registered to the container
 		$this->container->singleton( Hooks::class, $hooks );
 		$this->container->singleton( 'tickets.hooks', $hooks );
+	}
+
+	/**
+	 * Register the Flexible Tickets feature if CT1 fully activated.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function register_flexible_tickets_provider(): void {
+		$this->container->register( Flexible_Tickets\Provider::class );
 	}
 }
