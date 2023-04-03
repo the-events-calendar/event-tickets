@@ -329,7 +329,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 			'title'              => $this->get_title(),
 			'heading'            => $this->get_heading(),
 			'post_id'            => $this->__get( 'post_id' ),
-			'tickets'            => ! empty( $args['tickets'] ) ? $args['tickets'] : $this->__get( 'tickets' ),
+			'tickets'            => $this->__get( 'tickets' ),
 			'additional_content' => $this->format_string( tribe_get_option( $this->get_option_key( 'add-content' ), '' ) ),
 		];
 
