@@ -7,8 +7,6 @@
 
 namespace TEC\Tickets\Emails\Email;
 
-use Automattic\WooCommerce\StoreApi\Formatters\CurrencyFormatter;
-use TEC\Tickets\Commerce\Utils\Currency;
 use \TEC\Tickets\Emails\Email_Template;
 
 /**
