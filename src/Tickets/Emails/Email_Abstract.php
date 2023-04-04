@@ -769,7 +769,7 @@ abstract class Email_Abstract {
 		 * @param string         $template Template name.
 		 * @param Email_Abstract $this     The email object.
 		 */
-		$subject = apply_filters( "tec_tickets_emails_{$this->slug}_template_args", $args, $this->id, $this->template, $this );
+		$args = apply_filters( "tec_tickets_emails_{$this->slug}_template_args", $args, $this->id, $this->template, $this );
 
 		return $args;
 	}
