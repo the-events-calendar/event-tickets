@@ -66,9 +66,9 @@ class Posts_And_Users extends Table {
 
 		return "
 			CREATE TABLE `$table_name` (
-				`id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-				`user_id` bigint(20) NOT NULL,
-				`post_id` bigint(20) NOT NULL,
+				`id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+				`user_id` bigint(20) unsigned NOT NULL,
+				`post_id` bigint(20) unsigned NOT NULL,
 				`type` varchar(255) DEFAULT '' NOT NULL,
 				PRIMARY KEY (`id`)
 			) $charset_collate;

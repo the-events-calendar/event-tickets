@@ -69,4 +69,31 @@ class Custom_Tables extends Controller {
 		$this->container->singleton( Capacities_Relationships::class, Schema_Register::table( Capacities_Relationships::class ) );
 		$this->container->singleton( Posts_And_Ticket_Groups::class, Schema_Register::table( Posts_And_Ticket_Groups::class ) );
 	}
+
+	/**
+	 * Drops the custom tables.
+	 *
+	 * @since TBD
+	 *
+	 * @return int The number of tables dropped.
+	 */
+	public function drop_tables(): int {
+		$dropped = 0;
+
+		DB::query( 'SET FOREIGN_KEY_CHECKS = 0' );
+		foreach (
+			[
+				Capacities::table_name(),
+				Ticket_Groups::table_name(),
+				Posts_And_Posts::table_name(),
+				Posts_And_Users::table_name(),
+				Capacities_Relationships::table_name(),
+			] as $table
+		) {
+			$dropped += DB::query( "DROP TABLE IF EXISTS $table" );
+		}
+		DB::query( 'SET FOREIGN_KEY_CHECKS = 1' );
+
+		return $dropped;
+	}
 }

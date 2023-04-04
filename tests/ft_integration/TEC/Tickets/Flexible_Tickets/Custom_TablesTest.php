@@ -31,7 +31,6 @@ class Custom_TablesTest extends Controller_Test_Case {
 	 */
 	public function should_register_the_capacities_table_correctly( string $table_class ): void {
 		$controller = $this->make_controller();
-
 		$controller->register();
 
 		do_action( 'tribe_plugins_loaded' );
@@ -41,4 +40,11 @@ class Custom_TablesTest extends Controller_Test_Case {
 		$this->assertInstanceOf( $table_class, $table );
 		$this->assertTrue( $table->exists() );
 	}
+
+	/*
+	 * Why is there no test for the drop_tables() method?
+	 * This test case is running in the context of a transaction managed by the integration suite.
+	 * DROP and CREATE TABLE statements will be fitered to TEMPORARY.
+	 * The drop and create statements are executed in suite _bootstrap.php file and there is the their check.
+	 */
 }

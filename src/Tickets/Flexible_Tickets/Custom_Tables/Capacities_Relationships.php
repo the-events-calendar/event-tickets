@@ -48,12 +48,11 @@ class Capacities_Relationships extends Table {
 		global $wpdb;
 		$table_name      = self::table_name( true );
 		$charset_collate = $wpdb->get_charset_collate();
-		$capacities      = Capacities::table_name( true );
 
 		return "
 			CREATE TABLE `$table_name` (
 				`id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-				`capacity_id` int(11) UNSIGNED NOT NULL,
+				`capacity_id` bigint(20) UNSIGNED NOT NULL,
 				`object_id` bigint(20) UNSIGNED NOT NULL,
 				PRIMARY KEY (`id`)
 			) $charset_collate;
