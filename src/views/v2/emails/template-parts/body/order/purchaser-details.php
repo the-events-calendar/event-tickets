@@ -28,20 +28,12 @@
 	<td>
 		<table>
 			<tr>
-				<th style="font-size:16px;font-weight:700;line-height:23px;text-align:left" align="left">
-					Order #123
-				</th>
-				<th style="font-size:16px;font-weight:700;line-height:23px;text-align:right" align="right">
-					David Hickox
-				</th>
+				<?php $this->template( 'template-parts/body/order/purchaser-details/order-number' ); ?>
+				<?php $this->template( 'template-parts/body/order/purchaser-details/name' ); ?>
 			</tr>
 			<tr>
-				<td style="font-size:14px;font-weight:400;line-height:23px;text-align:left" align="left">
-					March 1, 2023
-				</td>
-				<td style="font-size:14px;font-weight:400;line-height:23px;text-align:right" align="right">
-					david@theeventscalendar.com
-				</td>
+				<?php $this->template( 'template-parts/body/order/purchaser-details/date' ); ?>
+				<?php $this->template( 'template-parts/body/order/purchaser-details/email' ); ?>
 			</tr>
 		</table>
 	</td>

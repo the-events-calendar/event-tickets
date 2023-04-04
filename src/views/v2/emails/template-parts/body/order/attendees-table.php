@@ -59,8 +59,8 @@ $attendees = [
 
 ?>
 <tr>
-	<td style="padding-bottom:50px">
-		<table style="border-collapse:collapse;margin-top:10px">
+	<td class="tec-tickets__email-table-content-order-attendees-table-container">
+		<table class="tec-tickets__email-table-content-order-attendees-table">
 			<?php $this->template( 'template-parts/body/order/attendees-table/header-row' ); ?>
 			<?php foreach ( $attendees as $attendee ) : ?>
 				<?php $this->template( 'template-parts/body/order/attendees-table/attendee-info', [ 'attendee' => $attendee ] ); ?>

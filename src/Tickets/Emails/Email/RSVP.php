@@ -13,7 +13,7 @@ use \TEC\Tickets\Emails\Email_Template;
 /**
  * Class RSVP
  *
- * @since TBD
+ * @since 5.5.10
  *
  * @package TEC\Tickets\Emails
  */
@@ -22,7 +22,7 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Email ID.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @var string
 	 */
@@ -31,7 +31,7 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Email slug.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @var string
 	 */
@@ -40,7 +40,7 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Email template.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @var string
 	 */
@@ -49,7 +49,7 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Email recipient.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @var string
 	 */
@@ -58,7 +58,7 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Get email title.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @return string The email title.
 	 */
@@ -69,7 +69,7 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Get default recipient.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @return string
 	 */
@@ -80,7 +80,7 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Get default email heading.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @return string
 	 */
@@ -95,7 +95,7 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Get default email heading for plural rsvps.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @return string
 	 */
@@ -110,37 +110,39 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Get heading for plural tickets.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @return string
 	 */
 	public function get_heading_plural(): string {
 		$option_key = $this->get_option_key( 'heading-plural' );
-		$heading = tribe_get_option( $option_key, $this->get_default_heading_plural() );
+		$heading    = tribe_get_option( $option_key, $this->get_default_heading_plural() );
 
 		// @todo: Probably we want more data parsed, or maybe move the filters somewhere else as we're always gonna
 
 		/**
 		 * Allow filtering the email heading globally.
 		 *
-		 * @since TBD
+		 * @since 5.5.10
 		 *
-		 * @param string $heading  The email heading.
-		 * @param string $id       The email id.
-		 * @param string $template Template name.
+		 * @param string         $heading  The email heading.
+		 * @param string         $id       The email id.
+		 * @param string         $template Template name.
+		 * @param Email_Abstract $this     The email object.
 		 */
-		$heading = apply_filters( 'tec_tickets_emails_heading_plural', $heading, $this->id, $this->template );
+		$heading = apply_filters( 'tec_tickets_emails_heading_plural', $heading, $this->id, $this->template, $this );
 
 		/**
 		 * Allow filtering the email heading.
 		 *
-		 * @since TBD
+		 * @since 5.5.10
 		 *
-		 * @param string $heading  The email heading.
-		 * @param string $id       The email id.
-		 * @param string $template Template name.
+		 * @param string         $heading  The email heading.
+		 * @param string         $id       The email id.
+		 * @param string         $template Template name.
+		 * @param Email_Abstract $this     The email object.
 		 */
-		$heading = apply_filters( "tec_tickets_emails_{$this->slug}_heading_plural", $heading, $this->id, $this->template );
+		$heading = apply_filters( "tec_tickets_emails_{$this->slug}_heading_plural", $heading, $this->id, $this->template, $this );
 
 		return $this->format_string( $heading );
 	}
@@ -148,7 +150,7 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Get default email subject.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @return string
 	 */
@@ -166,7 +168,7 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Get default email subject for plural rsvps.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @return string
 	 */
@@ -181,37 +183,39 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Get subject for plural rsvps.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @return string
 	 */
 	public function get_subject_plural(): string {
 		$option_key = $this->get_option_key( 'subject-plural' );
-		$subject = tribe_get_option( $option_key, $this->get_default_subject_plural() );
+		$subject    = tribe_get_option( $option_key, $this->get_default_subject_plural() );
 
 		// @todo: Probably we want more data parsed, or maybe move the filters somewhere else as we're always gonna
 
 		/**
 		 * Allow filtering the email subject globally.
 		 *
-		 * @since TBD
+		 * @since 5.5.10
 		 *
-		 * @param string $subject  The email subject.
-		 * @param string $id       The email id.
-		 * @param string $template Template name.
+		 * @param string         $subject  The email subject.
+		 * @param string         $id       The email id.
+		 * @param string         $template Template name.
+		 * @param Email_Abstract $this     The email object.
 		 */
-		$subject = apply_filters( 'tec_tickets_emails_subject_plural', $subject, $this->id, $this->template );
+		$subject = apply_filters( 'tec_tickets_emails_subject_plural', $subject, $this->id, $this->template, $this );
 
 		/**
 		 * Allow filtering the email subject.
 		 *
-		 * @since TBD
+		 * @since 5.5.10
 		 *
-		 * @param string $subject  The email subject.
-		 * @param string $id       The email id.
-		 * @param string $template Template name.
+		 * @param string         $subject  The email subject.
+		 * @param string         $id       The email id.
+		 * @param string         $template Template name.
+		 * @param Email_Abstract $this     The email object.
 		 */
-		$subject = apply_filters( "tec_tickets_emails_{$this->slug}_subject_plural", $subject, $this->id, $this->template );
+		$subject = apply_filters( "tec_tickets_emails_{$this->slug}_subject_plural", $subject, $this->id, $this->template, $this );
 
 		return $this->format_string( $subject );
 	}
@@ -219,7 +223,7 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Get email settings fields.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @return array
 	 */
@@ -319,7 +323,7 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Get preview context for email.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @param array $args The arguments.
 	 * @return array $args The modified arguments
@@ -331,9 +335,28 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 	}
 
 	/**
-	 * Get email content.
+	 * Get default template context for email.
 	 *
 	 * @since TBD
+	 *
+	 * @return array $args The default arguments
+	 */
+	public function get_default_template_context(): array {
+		$defaults = [
+			'title'              => $this->get_title(),
+			'heading'            => $this->get_heading(),
+			'tickets'            => $this->__get( 'tickets' ),
+			'post_id'            => $this->__get( 'post_id' ),
+			'additional_content' => $this->format_string( tribe_get_option( $this->get_option_key( 'add-content' ), '' ) ),
+		];
+
+		return $defaults;
+	}
+
+	/**
+	 * Get email content.
+	 *
+	 * @since 5.5.10
 	 *
 	 * @param array $args The arguments.
 	 *
@@ -342,16 +365,7 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 	public function get_content( $args = [] ): string {
 		// @todo: Parse args, etc.
 		$is_preview = ! empty( $args['is_preview'] ) ? tribe_is_truthy( $args['is_preview'] ) : false;
-
-		// @todo @juanfra @codingmusician: we need to see if we initialize tickets.
-		$defaults = [
-			'title'              => $this->get_title(),
-			'heading'            => $this->get_heading(),
-			'tickets'            => ! empty( $args['tickets'] ) ? $args['tickets'] : [],
-			'additional_content' => $this->format_string( tribe_get_option( $this->get_option_key( 'add-content' ), '' ) ),
-		];
-
-		$args = wp_parse_args( $args, $defaults );
+		$args       = $this->get_template_context( $args );
 
 		$email_template = tribe( Email_Template::class );
 		$email_template->set_preview( $is_preview );

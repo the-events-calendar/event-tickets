@@ -1,9 +1,9 @@
 <?php
 /**
- * Event Tickets Emails: Order Event Title
+ * Event Tickets Emails: Order Ticket Totals - Header Row
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/emails/template-parts/body/order/event-title.php
+ * [your-theme]/tribe/tickets/v2/emails/template-parts/body/order/ticket-totals/header-row.php
  *
  * See more documentation about our views templating system.
  *
@@ -24,8 +24,8 @@
  // @todo @codingmusician @juanfra Replace hardcoded data with dynamic data.
 
 ?>
-<tr>
-	<td class="tec-tickets__email-table-content-order-event-title">
-		Black Midi with Special Guests Chat Pile and Apprehend
-	</td>
+<tr class="tec-tickets__email-table-content-order-ticket-totals-header-row">
+	<td style="width: 80%" class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-left" align="left">Ticket</td>
+	<td class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-center" align="center">Qty</td>
+	<td class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-right" align="right">Price</td>
 </tr>

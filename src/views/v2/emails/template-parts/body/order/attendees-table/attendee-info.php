@@ -27,16 +27,16 @@ if ( empty( $attendee ) ) {
 }
 
 ?>
-<tr style="border:1px solid #d5d5d5;font-size:12px;font-weight:400;line-height:24px;">
-	<td style="padding:0 6px;text-align:left;vertical-align:top" align="left">
+<tr class="tec-tickets__email-table-content-order-attendee-info-row">
+	<td class="tec-tickets__email-table-content-order-attendee-info tec-tickets__email-table-content-align-left" align="left">
 		<?php echo $attendee['name']; ?><br>
 		<?php echo $attendee['email']; ?><br>
 		<?php $this->template( 'template-parts/body/order/attendees-table/custom-fields' ); ?>
 	</td>
-	<td style="padding:0 6px;text-align:center;vertical-align:top" align="center">
+	<td class="tec-tickets__email-table-content-order-attendee-info tec-tickets__email-table-content-align-center"  align="center">
 		<?php echo $attendee['ticket_title']; ?><br>
 	</td>
-	<td style="padding:0 6px;text-align:right;vertical-align:top" align="right">
+	<td class="tec-tickets__email-table-content-order-attendee-info tec-tickets__email-table-content-align-right"  align="right">
 		<?php echo $attendee['ticket_id']; ?><br>
 	</td>
 </tr>

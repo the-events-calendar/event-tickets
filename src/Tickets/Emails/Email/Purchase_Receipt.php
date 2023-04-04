@@ -12,7 +12,7 @@ use \TEC\Tickets\Emails\Email_Template;
 /**
  * Class Purchase_Receipt
  *
- * @since TBD
+ * @since 5.5.10
  *
  * @package TEC\Tickets\Emails
  */
@@ -21,7 +21,7 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Email ID.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @var string
 	 */
@@ -30,7 +30,7 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Email slug.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @var string
 	 */
@@ -39,7 +39,7 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Email template.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @var string
 	 */
@@ -48,7 +48,7 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Email recipient.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @var string
 	 */
@@ -57,7 +57,7 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Checks if this email is sent to customer.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @return bool
 	 */
@@ -68,7 +68,7 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Get email title.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @return string The email title.
 	 */
@@ -79,7 +79,7 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Get default recipient.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @return string
 	 */
@@ -90,7 +90,7 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Get default email heading.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @return string
 	 */
@@ -101,7 +101,7 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Get default email subject.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @return string
 	 */
@@ -112,7 +112,7 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Get email settings.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @return array
 	 */
@@ -179,7 +179,7 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 	/**
 	 * Get preview context for email.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @param array $args The arguments.
 	 * @return array $args The modified arguments
@@ -195,9 +195,27 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 	}
 
 	/**
-	 * Get email content.
+	 * Get default template context for email.
 	 *
 	 * @since TBD
+	 *
+	 * @return array $args The default arguments
+	 */
+	public function get_default_template_context(): array {
+		$defaults = [
+			'title'              => $this->get_title(),
+			'heading'            => $this->get_heading(),
+			'additional_content' => $this->format_string( tribe_get_option( $this->get_option_key( 'add-content' ), '' ) ),
+			'order'              => $this->__get( 'order' ),
+		];
+
+		return $defaults;
+	}
+
+	/**
+	 * Get email content.
+	 *
+	 * @since 5.5.10
 	 *
 	 * @param array $args The arguments.
 	 *
@@ -206,14 +224,7 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 	public function get_content( $args = [] ): string {
 		// @todo: We need to grab the proper information that's going to be sent as context.
 		$is_preview = ! empty( $args['is_preview'] ) ? tribe_is_truthy( $args['is_preview'] ) : false;
-
-		$defaults = [
-			'title'              => $this->get_title(),
-			'heading'            => $this->get_heading(),
-			'additional_content' => $this->format_string( tribe_get_option( $this->get_option_key( 'add-content' ), '' ) ),
-		];
-
-		$args = wp_parse_args( $args, $defaults );
+		$args       = $this->get_template_context( $args );
 
 		$email_template = tribe( Email_Template::class );
 		$email_template->set_preview( $is_preview );

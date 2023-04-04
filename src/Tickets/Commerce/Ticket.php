@@ -761,25 +761,31 @@ class Ticket {
 	}
 
 	/**
-	 * Update Stock and Global Stock when deleting an Attendee
-	 *
-	 * @todo  TribeCommerceLegacy: This should be moved into using a Flag Action.
+	 * Update Ticket Stock and Global Stock after deleting an Attendee.
 	 *
 	 * @since 5.1.9
+	 * @since 5.5.10 updated method signature to match new action signature.
 	 *
-	 * @param int $ticket_id  the attendee id being deleted
-	 * @param int $post_id    the post or event id for the attendee
-	 * @param int $product_id the ticket-product id in Tribe Commerce
+	 * @param int $attendee_id Attendee ID.
 	 */
-	public function update_stock_after_deletion( $ticket_id, $post_id, $product_id ) {
+	public function update_stock_after_attendee_deletion( $attendee_id ) {
+		$event_id    = (int) get_post_meta( $attendee_id, Attendee::$event_relation_meta_key, true );
+		$product_id = (int) get_post_meta( $attendee_id, Attendee::$ticket_relation_meta_key, true );
 
-		$global_stock    = new \Tribe__Tickets__Global_Stock( $post_id );
+		$global_stock    = new \Tribe__Tickets__Global_Stock( $event_id );
 		$shared_capacity = false;
 		if ( $global_stock->is_enabled() ) {
 			$shared_capacity = true;
 		}
 
-		tribe( Module::class )->decrease_ticket_sales_by( $product_id, 1, $shared_capacity, $global_stock );
+		$this->decrease_ticket_sales_by( $product_id, 1, $shared_capacity, $global_stock );
+		$this->increase_ticket_stock_by( $product_id );
+
+		// Increase the deleted attendees count.
+		\Tribe__Tickets__Attendance::instance( $event_id )->increment_deleted_attendees_count();
+
+		// Update the cache.
+		\Tribe__Post_Transient::instance()->delete( $event_id, \Tribe__Tickets__Tickets::ATTENDEES_CACHE );
 	}
 
 	/**
@@ -943,5 +949,20 @@ class Ticket {
 		if ( $attendee_data ) {
 			$this->decrease_ticket_sales_by( $src_ticket_type_id, 1 );
 		}
+	}
+
+	/**
+	 * Increase the ticket stock.
+	 *
+	 * @since 5.5.10
+	 *
+	 * @param $ticket_id int The ticket post ID.
+	 * @param $quantity  int The quantity to increase the ticket stock by.
+	 *
+	 * @return bool|int
+	 */
+	public function increase_ticket_stock_by( $ticket_id, $quantity = 1 ) {
+		$stock = (int) get_post_meta( $ticket_id,  static::$stock_meta_key, true ) + $quantity;
+		return update_post_meta( $ticket_id,  static::$stock_meta_key, $stock );
 	}
 }

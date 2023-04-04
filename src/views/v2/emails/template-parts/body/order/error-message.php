@@ -25,12 +25,12 @@
 
 ?>
 <tr>
-	<td style="font-size:14px;font-weight:400;padding-top:10px">
+	<td class="tec-tickets__email-table-content-order-error-top-text">
 		The following attempted purchase has failed because:
 	</td>
 </tr>
 <tr>
-	<td style="color:#da394d;font-size:14px;font-weight:700;padding:24px 0 40px">
+	<td class="tec-tickets__email-table-content-order-error-bottom-text">
 		Stripe payment processing was unsuccessful
 	</td>
 </tr>

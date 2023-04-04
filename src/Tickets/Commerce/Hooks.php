@@ -74,7 +74,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 
 		add_action( 'tribe_events_tickets_attendees_event_details_top', [ $this, 'setup_attendance_totals' ] );
 		add_action( 'trashed_post', [ $this, 'maybe_redirect_to_attendees_report' ] );
-		add_action( 'tickets_tpp_ticket_deleted', [ $this, 'update_stock_after_deletion' ], 10, 3 );
+		add_action( 'tec_tickets_commerce_attendee_before_delete', [ $this, 'update_stock_after_attendee_deletion' ] );
 
 		add_action( 'transition_post_status', [ $this, 'transition_order_post_status_hooks' ], 10, 3 );
 
@@ -324,16 +324,14 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Backwards compatibility to update stock after deletion of Ticket.
 	 *
-	 * @todo  Determine if this is still required.
-	 *
 	 * @since 5.1.9
 	 *
-	 * @param int $ticket_id  the attendee id being deleted.
-	 * @param int $post_id    the post or event id for the attendee.
-	 * @param int $product_id the ticket-product id in Tribe Commerce.
+	 * @since 5.5.10 Updated method to use the new hook from Attendee class.
+	 *
+	 * @param int $attendee_id the attendee id.
 	 */
-	public function update_stock_after_deletion( $ticket_id, $post_id, $product_id ) {
-		$this->container->make( Ticket::class )->update_stock_after_deletion( $ticket_id, $post_id, $product_id );
+	public function update_stock_after_attendee_deletion( $attendee_id ) {
+		$this->container->make( Ticket::class )->update_stock_after_attendee_deletion( $attendee_id );
 	}
 
 	/**

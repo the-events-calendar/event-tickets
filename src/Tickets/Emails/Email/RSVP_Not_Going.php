@@ -1,6 +1,6 @@
 <?php
 /**
- * Class Completed_Order
+ * Class RSVP_Not_Going
  *
  * @package TEC\Tickets\Emails
  */
@@ -10,13 +10,13 @@ namespace TEC\Tickets\Emails\Email;
 use \TEC\Tickets\Emails\Email_Template;
 
 /**
- * Class Completed_Order
+ * Class RSVP_Not_Going
  *
  * @since 5.5.10
  *
  * @package TEC\Tickets\Emails
  */
-class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
+class RSVP_Not_Going extends \TEC\Tickets\Emails\Email_Abstract {
 
 	/**
 	 * Email ID.
@@ -25,7 +25,7 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 	 *
 	 * @var string
 	 */
-	public $id = 'tec_tickets_emails_completed_order';
+	public $id = 'tec_tickets_emails_rsvp_not_going';
 
 	/**
 	 * Email slug.
@@ -34,7 +34,7 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 	 *
 	 * @var string
 	 */
-	public $slug = 'completed-order';
+	public $slug = 'rsvp-not-going';
 
 	/**
 	 * Email template.
@@ -43,7 +43,7 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 	 *
 	 * @var string
 	 */
-	public $template = 'new-order';
+	public $template = 'rsvp-not-going';
 
 	/**
 	 * Email recipient.
@@ -52,7 +52,7 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 	 *
 	 * @var string
 	 */
-	public $recipient = 'admin';
+	public $recipient = 'customer';
 
 	/**
 	 * Get email title.
@@ -62,18 +62,18 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 	 * @return string The email title.
 	 */
 	public function get_title(): string {
-		return esc_html__( 'Completed Order', 'event-tickets' );
+		return esc_html__( 'RSVP "Not Going" Email', 'event-tickets' );
 	}
 
 	/**
-	 * Get default email recipient.
+	 * Get default recipient.
 	 *
 	 * @since 5.5.10
 	 *
-	 * @return string $recipient The default email recipient.
+	 * @return string
 	 */
 	public function get_default_recipient(): string {
-		return get_option( 'admin_email' );
+		return '{attendee_email}';
 	}
 
 	/**
@@ -84,7 +84,9 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 	 * @return string
 	 */
 	public function get_default_heading(): string {
-		return esc_html__( 'Completed order: #{order_number}', 'event-tickets' );
+		$default_heading = esc_html__( 'You confirmed you will not be attending', 'event-tickets' );
+
+		return $default_heading;
 	}
 
 	/**
@@ -94,45 +96,40 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 	 *
 	 * @return string
 	 */
-	public function get_default_subject():string {
-		return esc_html__( '[{site_title}]: Completed order #{order_number}', 'event-tickets' );
+	public function get_default_subject(): string {
+		$default_subject = esc_html__( 'You confirmed you will not be attending', 'event-tickets' );
+
+		return $default_subject;
 	}
 
 	/**
-	 * Get email settings.
+	 * Get email settings fields.
 	 *
 	 * @since 5.5.10
 	 *
 	 * @return array
 	 */
 	public function get_settings_fields(): array {
-		return [
+		$settings = [
 			[
 				'type' => 'html',
 				'html' => '<div class="tribe-settings-form-wrap">',
 			],
 			[
 				'type' => 'html',
-				'html' => '<h2>' . esc_html__( 'Completed Order Email Settings', 'event-tickets' ) . '</h2>',
+				'html' => '<h2>' . esc_html__( 'RSVP "Not Going" Email Settings', 'event-tickets' ) . '</h2>',
 			],
 			[
 				'type' => 'html',
-				'html' => '<p>' . esc_html__( 'The site admin will receive an email about any orders that were made. Customize the content of this specific email using the tools below. The brackets {event_name}, {event_date}, and {ticket_name} can be used to pull dynamic content from the ticket into your email. Learn more about customizing email templates in our Knowledgebase.' ) . '</p>',
+				'html' => '<p>' . esc_html__( 'Registrants will receive an email confirming that they will not be attending. Customize the content of this specific email using the tools below. The brackets {event_name}, {event_date}, and {rsvp_name} can be used to pull dynamic content from the RSVP into your email. Learn more about customizing email templates in our Knowledgebase.' ) . '</p>',
 			],
-			$this->get_option_key( 'enabled' ) => [
-				'type'                => 'toggle',
-				'label'               => esc_html__( 'Enabled', 'event-tickets' ),
-				'default'             => true,
-				'validation_type'     => 'boolean',
+			$this->get_option_key( 'enabled' )     => [
+				'type'            => 'toggle',
+				'label'           => esc_html__( 'Enabled', 'event-tickets' ),
+				'default'         => true,
+				'validation_type' => 'boolean',
 			],
-			$this->get_option_key( 'recipient' ) => [
-				'type'                => 'text',
-				'label'               => esc_html__( 'Recipient(s)', 'event-tickets' ),
-				'default'             => $this->get_default_recipient(),
-				'size'                => 'large',
-				'validation_type' => 'email_list',
-			],
-			$this->get_option_key( 'subject' ) => [
+			$this->get_option_key( 'subject' )     => [
 				'type'                => 'text',
 				'label'               => esc_html__( 'Subject', 'event-tickets' ),
 				'default'             => $this->get_default_subject(),
@@ -140,7 +137,7 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 				'size'                => 'large',
 				'validation_callback' => 'is_string',
 			],
-			$this->get_option_key( 'heading' ) => [
+			$this->get_option_key( 'heading' )     => [
 				'type'                => 'text',
 				'label'               => esc_html__( 'Heading', 'event-tickets' ),
 				'default'             => $this->get_default_heading(),
@@ -149,11 +146,11 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 				'validation_callback' => 'is_string',
 			],
 			$this->get_option_key( 'add-content' ) => [
-				'type'                => 'wysiwyg',
-				'label'               => esc_html__( 'Additional content', 'event-tickets' ),
-				'default'             => $this->get_default_additional_content(),
-				'tooltip'             => esc_html__( 'Additional content will be displayed below the order details.', 'event-tickets' ),
-				'validation_type'     => 'html',
+				'type'            => 'wysiwyg',
+				'label'           => esc_html__( 'Additional content', 'event-tickets' ),
+				'default'         => '',
+				'tooltip'         => esc_html__( 'Additional content will be displayed below the information in your email.', 'event-tickets' ),
+				'validation_type' => 'html',
 				'settings'        => [
 					'media_buttons' => false,
 					'quicktags'     => false,
@@ -170,6 +167,8 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 				],
 			],
 		];
+
+		return $settings;
 	}
 
 	/**
@@ -202,7 +201,6 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 			'title'              => $this->get_title(),
 			'heading'            => $this->get_heading(),
 			'additional_content' => $this->format_string( tribe_get_option( $this->get_option_key( 'add-content' ), '' ) ),
-			'order'              => $this->__get( 'order' ),
 		];
 
 		return $defaults;
@@ -218,7 +216,7 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 	 * @return string The email content.
 	 */
 	public function get_content( $args = [] ): string {
-		// @todo: We need to grab the proper information that's going to be sent as context.
+		// @todo: Parse args, etc.
 		$is_preview = ! empty( $args['is_preview'] ) ? tribe_is_truthy( $args['is_preview'] ) : false;
 		$args       = $this->get_template_context( $args );
 

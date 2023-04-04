@@ -1,26 +1,23 @@
 <?php
 /**
- * Event Tickets Emails: Main template > Body > Title.
+ * Event Tickets Emails: RSVP "Not Going" Email Template.
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/emails/template-parts/body/title.php
+ * [your-theme]/tribe/tickets/v2/emails/rsvp-not-going.php
  *
  * See more documentation about our views templating system.
  *
  * @link https://evnt.is/tickets-emails-tpl Help article for Tickets Emails template files.
  *
- * @version 5.5.9
+ * @version TBD
  *
- * @since 5.5.9
+ * @since 5.5.10
  *
  * @var Tribe_Template  $this  Current template object.
  */
 
-?>
-<tr>
-	<td>
-		<h1 class="tec-tickets__email-table-content-title">
-			<?php echo esc_html( $heading ); ?>
-		</h1>
-	</td>
-</tr>
+$this->template( 'template-parts/header' );
+
+$this->template( 'rsvp-not-going/body' );
+
+$this->template( 'template-parts/footer' );

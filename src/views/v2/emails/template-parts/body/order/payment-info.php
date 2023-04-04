@@ -29,7 +29,7 @@ $payment_info = empty( $status ) || 'success' !== $status ?
 
 ?>
 <tr>
-	<td style="font-size:14px;font-weight:400;padding:20px 0 50px;text-align:right" align="right">
+	<td class="tec-tickets__email-table-content-order-payment-info-container" align="right">
 		<?php echo $payment_info; ?>
 	</td>
 </tr>

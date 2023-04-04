@@ -590,9 +590,11 @@ class Module extends \Tribe__Tickets__Tickets {
 	}
 
 	/**
-	 * Deletes a ticket.
+	 * Deletes a ticket or an attendee post.
 	 *
 	 * @since 5.1.9
+	 *
+	 * @since 5.5.10 Adjust the method to handle both Ticket and Attendee post type deletion separately.
 	 *
 	 * @param $event_id
 	 * @param $ticket_id
@@ -604,16 +606,28 @@ class Module extends \Tribe__Tickets__Tickets {
 		 * Important, do not add anything above this method.
 		 * Our goal is to reduce the amount of load on the `Module`, relegate these behaviors to the correct models.
 		 */
-		$deleted = tribe( Ticket::class )->delete( $event_id, $ticket_id );
+
+		$ticket_post = get_post( $ticket_id );
+
+		if ( ! $ticket_post ) {
+			return false;
+		}
+
+		$deleted = false;
+		// We are handling both Ticket and Attendee post type deletion using this same method.
+		if ( $ticket_post->post_type === Attendee::POSTTYPE ) {
+			$deleted = tribe( Attendee::class )->delete( $ticket_id );
+		} else if ( $ticket_post->post_type === Ticket::POSTTYPE ) {
+			$deleted = tribe( Ticket::class )->delete( $event_id, $ticket_id );
+		}
 
 		if ( ! $deleted ) {
-			return $deleted;
+			return false;
 		}
 
 		// Run anything we might need on parent method.
 		parent::delete_ticket( $event_id, $ticket_id );
-
-		return $deleted;
+		return true;
 	}
 
 	/**
