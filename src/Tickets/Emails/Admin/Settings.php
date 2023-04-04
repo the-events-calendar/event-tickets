@@ -287,7 +287,7 @@ class Settings {
 				'type'                => 'color',
 				'label'               => esc_html__( 'Ticket Color', 'event-tickets' ),
 				'size'                => 'medium',
-				'default'             => '#007363',
+				'default'             => '#2D2E33',
 				'validation_callback' => 'is_string',
 				'validation_type'     => 'color',
 			],
