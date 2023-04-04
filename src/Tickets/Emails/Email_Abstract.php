@@ -840,13 +840,13 @@ abstract class Email_Abstract {
 		return [
 			'provider'   => 'Stripe',
 			'status'     => 'success',
-			'post_title' => 'Black Midi with Special Guests Chat Pile and Apprehend',
+			'post_title' => __( 'Black Midi with Special Guests Chat Pile and Apprehend', 'event-tickets' ),
 			'total'      => '$100.00',
 			'purchaser'  => [
-				'name' => 'John Doe',
+				'name' => __( 'John Doe', 'event-tickets' ),
 				'email' => 'john@doe.com',
 			],
-			'created' => 'March 1, 2023',
+			'created' => __( 'March 1, 2023', 'event-tickets' ),
 			'id'      => 123,
 		];
 	}
@@ -875,36 +875,36 @@ abstract class Email_Abstract {
 	public function get_preview_attendees(): array {
 		return [
 			[
-				'name' => 'John Doe',
-				'email' => 'john@doe.com',
+				'ticket_title' => __( 'General Admission', 'event-tickets' ),
+				'ticket_id'    => '17e4a14cec',
+				'name'         => __( 'John Doe', 'event-tickets' ),
+				'email'        => 'john@doe.com',
 				'custom_fields' => [
 					[
-						'label' => 'Shirt size',
-						'value' => 'large'
+						'label' => __( 'Shirt size', 'event-tickets' ),
+						'value' => __( 'large', 'event-tickets' ),
 					],
 					[
-						'label' => 'Backstage pass',
-						'value' => 'yes'
+						'label' => __( 'Backstage pass', 'event-tickets' ),
+						'value' => __( 'yes', 'event-tickets' ),
 					],
 				],
-				'ticket_title' => 'General Admission',
-				'ticket_id' => '17e4a14cec',
 			],
 			[
-				'name' => 'Jane Doe',
-				'email' => 'jane@doe.com',
+				'ticket_title' => __( 'General Admission', 'event-tickets' ),
+				'ticket_id'    => '55e5e14w4',
+				'name'         => __( 'Jane Doe', 'event-tickets' ),
+				'email'        => 'jane@doe.com',
 				'custom_fields' => [
 					[
-						'label' => 'Shirt size',
-						'value' => 'small'
+						'label' => __( 'Shirt size', 'event-tickets' ),
+						'value' => __( 'small', 'event-tickets' ),
 					],
 					[
-						'label' => 'Backstage pass',
-						'value' => 'yes'
+						'label' => __( 'Backstage pass', 'event-tickets' ),
+						'value' => __( 'yes', 'event-tickets' ),
 					],
 				],
-				'ticket_title' => 'General Admission',
-				'ticket_id' => '55e5e14w4',
 			],
 		];
 	}
@@ -919,7 +919,7 @@ abstract class Email_Abstract {
 	public function get_preview_tickets(): array {
 		return [
 			[
-				'title'    => 'General Admission',
+				'title'    => __( 'General Admission', 'event-tickets' ),
 				'quantity' => 2,
 				'price'    => '$50.00'
 			]
