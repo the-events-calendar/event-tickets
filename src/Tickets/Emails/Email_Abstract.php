@@ -398,7 +398,7 @@ abstract class Email_Abstract {
 	 *
 	 * @since 5.5.9
 	 *
-	 * @return string
+	 * @return array
 	 */
 	public function get_placeholders(): array {
 		/**
@@ -434,8 +434,8 @@ abstract class Email_Abstract {
 	 */
 	public function format_string( $string ): string {
 		$placeholders = $this->get_placeholders();
-		$find         = array_keys( $this->placeholders );
-		$replace      = array_values( $this->placeholders );
+		$find         = array_keys( $placeholders );
+		$replace      = array_values( $placeholders );
 
 		/**
 		 * Filter the formatted email string.
