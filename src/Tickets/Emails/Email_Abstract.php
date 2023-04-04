@@ -829,7 +829,14 @@ abstract class Email_Abstract {
 		return $data;
 	}
 
-	public function get_preview_order_successful() {
+	/**
+	 * Get a successful order array for preview.
+	 * 
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function get_preview_order_successful(): array {
 		return [
 			'provider'   => 'Stripe',
 			'status'     => 'success',
@@ -844,23 +851,28 @@ abstract class Email_Abstract {
 		];
 	}
 
-	public function get_preview_order_failed() {
-		return [
-			'provider'      => 'Stripe',
-			'status'        => 'failed',
-			'error_message' => 'Stripe payment processing was unsuccessful',
-			'post_title'    => 'Black Midi with Special Guests Chat Pile and Apprehend',
-			'total'      => '$100.00',
-			'purchaser'  => [
-				'name' => 'John Doe',
-				'email' => 'john@doe.com',
-			],
-			'created' => 'March 1, 2023',
-			'id'      => 123,
-		];
+	/**
+	 * Get a failed order array for preview.
+	 * 
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function get_preview_order_failed(): array {
+		// Get successful order and just change the status.
+		$order = $this->get_preview_order_successful();
+		$order['status'] = 'failed';
+		return $order;
 	}
 
-	public function get_preview_attendees() {
+	/**
+	 * Get a attendees array for preview.
+	 * 
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function get_preview_attendees(): array {
 		return [
 			[
 				'name' => 'John Doe',
@@ -897,7 +909,14 @@ abstract class Email_Abstract {
 		];
 	}
 
-	public function get_preview_tickets() {
+	/**
+	 * Get a tickets array for preview.
+	 * 
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function get_preview_tickets(): array {
 		return [
 			[
 				'title'    => 'General Admission',
