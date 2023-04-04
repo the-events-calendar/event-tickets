@@ -219,6 +219,7 @@
 
 	.tec-tickets__email-table-content-order-attendee-info,
 	td.tec-tickets__email-table-content-order-attendee-info {
+		line-height: 18px;
 		padding: 0 6px;
 		vertical-align: top;
 	}
@@ -319,6 +320,7 @@
 	}
 
 	.tec-tickets__email-table-content-order-ticket-totals-cell,
+	th.tec-tickets__email-table-content-order-ticket-totals-cell,
 	td.tec-tickets__email-table-content-order-ticket-totals-cell {
 		padding: 0 6px;
 

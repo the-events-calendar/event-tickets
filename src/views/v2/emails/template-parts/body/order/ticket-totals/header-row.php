@@ -16,16 +16,20 @@
  * @var Tribe_Template  $this  Current template object.
  * @var Module           $provider              [Global] The tickets provider instance.
  * @var string           $provider_id           [Global] The tickets provider class name.
- * @var \WP_Post         $order                 [Global] The order object.
+ * @var array            $order                 [Global] The order object.
  * @var int              $order_id              [Global] The order ID.
  * @var bool             $is_tec_active         [Global] Whether `The Events Calendar` is active or not.
  */
 
- // @todo @codingmusician @juanfra Replace hardcoded data with dynamic data.
-
 ?>
 <tr class="tec-tickets__email-table-content-order-ticket-totals-header-row">
-	<td style="width: 80%" class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-left" align="left">Ticket</td>
-	<td class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-center" align="center">Qty</td>
-	<td class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-right" align="right">Price</td>
+	<th style="width: 80%" class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-left" align="left">
+		<?php echo esc_html__( 'Ticket', 'event-tickets' ); ?>
+	</th>
+	<th class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-center" align="center">
+		<?php echo esc_html__( 'Qty', 'event-tickets' ); ?>
+	</th>
+	<th class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-right" align="right">
+		<?php echo esc_html__( 'Price', 'event-tickets' ); ?>
+	</th>
 </tr>

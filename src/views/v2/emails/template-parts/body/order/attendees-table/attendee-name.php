@@ -1,9 +1,9 @@
 <?php
 /**
- * Event Tickets Emails: Order Ticket Totals - Ticket Quantity
+ * Event Tickets Emails: Order Attendee Name
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/emails/template-parts/body/order/ticket-totals/ticket-quantity.php
+ * [your-theme]/tribe/tickets/v2/emails/template-parts/body/order/attendees-table/attendee-name.php
  *
  * See more documentation about our views templating system.
  *
@@ -21,9 +21,11 @@
  * @var bool             $is_tec_active         [Global] Whether `The Events Calendar` is active or not.
  */
 
-$ticket_qty = empty( $ticket['quantity'] ) ? 0 : $ticket['quantity'];
+if ( empty( $attendee['name'] ) ) {
+	return;
+}
 
 ?>
-<td class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-center" align="center">
-	<?php esc_html_e( $ticket_qty ); ?>
-</td>
+<div>
+	<?php esc_html_e( $attendee['name'] ); ?>
+</div>

@@ -398,7 +398,7 @@ abstract class Email_Abstract {
 	 *
 	 * @since 5.5.9
 	 *
-	 * @return string
+	 * @return array
 	 */
 	public function get_placeholders(): array {
 		/**

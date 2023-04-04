@@ -8,6 +8,7 @@
 namespace TEC\Tickets\Emails\Email;
 
 use \TEC\Tickets\Emails\Email_Template;
+use TEC\Tickets\Emails\Preview_Data;
 
 /**
  * Class Completed_Order
@@ -43,7 +44,7 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 	 *
 	 * @var string
 	 */
-	public $template = 'new-order';
+	public $template = 'admin-new-order';
 
 	/**
 	 * Email recipient.
@@ -182,9 +183,13 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 	 */
 	public function get_preview_context( $args = [] ): array {
 		$defaults = [
-			'is_preview' => true,
-			'title'      => $this->get_heading(),
-			'heading'    => $this->get_heading(),
+			'is_preview'         => true,
+			'title'              => $this->get_heading(),
+			'heading'            => $this->get_heading(),
+			'additional_content' => $this->format_string( tribe_get_option( $this->get_option_key( 'add-content' ), '' ) ),
+			'order'              => Preview_Data::get_order(),
+			'tickets'            => Preview_Data::get_tickets(),
+			'attendees'          => Preview_Data::get_attendees(),
 		];
 
 		return wp_parse_args( $args, $defaults );
