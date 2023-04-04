@@ -8,6 +8,7 @@ As this file grows, it will be split into multiple files and linked from here.
 * [Activating and deactivating the feature](#activating-and-deactivating-the-feature)
 * [Custom tables structure](_docs/custom-tables-structure.md)
 * [Testing](_docs/testing.md)
+* [WP CLI support](_docs/wp-cli.md)
 
 ## Activating and deactivating the feature
 
