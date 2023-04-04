@@ -88,4 +88,18 @@ class Attendees_ListTest extends \Codeception\TestCase\WPTestCase{
 		$total_attendees = count( $rsvp_attendees ) + count( $ticket_attendees );
 		$this->assertEquals( $total_attendees, $attendees_list->get_attendance_counts( $post_id ) );
 	}
+
+	/**
+	 * @test
+	 */
+	public function test_generated_attendee_has_post_title() {
+		$post_id = $this->factory()->post->create();
+		$tickets_commerce_ticket_id = $this->create_tc_ticket( $post_id );
+		$ticket_attendees = $this->create_many_attendees_for_ticket( 1, $tickets_commerce_ticket_id, $post_id );
+
+		$attendee = tec_tc_attendees()->by( 'event_id', $post_id )->first();
+
+		$this->assertNotEmpty( $attendee );
+		$this->assertNotEmpty( $attendee->post_title );
+	}
 }

@@ -8,7 +8,8 @@ import classNames from 'classnames';
 /**
  * Internal dependencies
  */
-import { LabeledItem, Tooltip } from '@moderntribe/common/elements';
+import { LabeledItem } from '@moderntribe/common/elements';
+import { Tooltip } from '@wordpress/components';
 import './style.pcss';
 
 const LabelWithTooltip = ( {
@@ -27,13 +28,15 @@ const LabelWithTooltip = ( {
 		isLabel={ isLabel }
 		label={ label }
 	>
-		<Tooltip
-			disabled={ tooltipDisabled }
-			label={ tooltipLabel }
-			labelClassName="tribe-editor__label-with-tooltip__tooltip-label"
-			position={ tooltipPosition }
-			text={ tooltipText }
-		/>
+		<Tooltip text={ tooltipText } position={ tooltipPosition }>
+			<button
+				aria-label={ tooltipText }
+				className={ classNames( 'tribe-editor__tooltip-label', "tribe-editor__label-with-tooltip__tooltip-label" ) }
+				disabled={ tooltipDisabled }
+			>
+				{ tooltipLabel }
+			</button>
+		</Tooltip>
 	</LabeledItem>
 );
 

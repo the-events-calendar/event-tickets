@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Checks whether out new Tickets Emails system should load.
  *
@@ -20,6 +19,12 @@ function tec_tickets_emails_is_enabled(): bool {
 		return (bool) $env_var;
 	}
 
+	// The version in which Tickets Emails was introduced.
+	$should_default_to_on = ! tribe_installed_before( 'Tribe__Tickets__Main', '5.7.0' );
+
+	// Check for settings UI option.
+	$enabled = (bool) tribe_get_option( TEC\Tickets\Emails\Admin\Settings::$option_enabled, $should_default_to_on );
+
 	/**
 	 * Allows filtering of the Tickets Emails provider.
 	 *
@@ -27,5 +32,5 @@ function tec_tickets_emails_is_enabled(): bool {
 	 *
 	 * @param boolean $enabled Determining if Tickets Emails is enabled
 	 */
-	return apply_filters( 'tec_tickets_emails_is_enabled', false );
+	return apply_filters( 'tec_tickets_emails_is_enabled', $enabled );
 }

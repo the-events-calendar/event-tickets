@@ -1,7 +1,7 @@
 <?php
 
 // Ensure the CT1 code branch is enabled.
-use Monolog\Logger;
+use TEC\Common\Monolog\Logger;
 use TEC\Events\Custom_Tables\V1\Activation;
 use TEC\Tickets\Provider;
 

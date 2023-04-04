@@ -5,4 +5,5 @@ module.exports = {
 	...sharedConfig,
 	displayName: 'tickets',
 	testMatch: pkg._filePath.jest.map( ( path ) => `<rootDir>/${ path }` ),
+	modulePathIgnorePatterns: [ '<rootDir>/common' ],
 };

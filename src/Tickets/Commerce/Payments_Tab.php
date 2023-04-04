@@ -310,16 +310,16 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 
 		$fields['tickets-commerce-header'] = [
 			'type' => 'html',
-			'html' => '<div class="tec-tickets__admin-settings-tickets-commerce-toggle-wrapper">
-							<label class="tec-tickets__admin-settings-tickets-commerce-toggle">
+			'html' => '<div class="tec-tickets__admin-settings-toggle-large-wrapper">
+							<label class="tec-tickets__admin-settings-toggle-large">
 								<input
 									type="checkbox"
 									name="' . Tickets_Commerce_Settings::$tickets_commerce_enabled . '"
 									' . checked( $is_tickets_commerce_enabled, true, false ) . '
 									id="tickets-commerce-enable-input"
-									class="tec-tickets__admin-settings-tickets-commerce-toggle-checkbox tribe-dependency tribe-dependency-verified">
-									<span class="tec-tickets__admin-settings-tickets-commerce-toggle-switch"></span>
-									<span class="tec-tickets__admin-settings-tickets-commerce-toggle-label">' . esc_html__( 'Enable Tickets Commerce', 'event-tickets' ) . '</span>
+									class="tec-tickets__admin-settings-toggle-large-checkbox tribe-dependency tribe-dependency-verified">
+									<span class="tec-tickets__admin-settings-toggle-large-switch"></span>
+									<span class="tec-tickets__admin-settings-toggle-large-label">' . esc_html__( 'Enable Tickets Commerce', 'event-tickets' ) . '</span>
 							</label>
 						</div>',
 
@@ -362,7 +362,7 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 			'type'     => 'checkbox',
 			'name'     => $option_key,
 			'id'       => 'tickets-commerce-enable-input',
-			'class'    => 'tec-tickets__admin-settings-tickets-commerce-toggle-checkbox tribe-dependency tribe-dependency-verified',
+			'class'    => 'tec-tickets__admin-settings-toggle-large-checkbox tribe-dependency tribe-dependency-verified',
 			'disabled' => ! $section_gateway::is_connected(),
 			'checked'  => $section_gateway::is_enabled(),
 		] );
@@ -372,11 +372,11 @@ class Payments_Tab extends tad_DI52_ServiceProvider {
 		 */
 		$fields['tickets-commerce-header'] = [
 			'type' => 'html',
-			'html' => '<div class="tec-tickets__admin-settings-tickets-commerce-toggle-wrapper">
-							<label class="tec-tickets__admin-settings-tickets-commerce-toggle">
+			'html' => '<div class="tec-tickets__admin-settings-toggle-large-wrapper">
+							<label class="tec-tickets__admin-settings-toggle-large">
 								<input ' . implode( ' ', $attributes ) . ' />
-								<span class="tec-tickets__admin-settings-tickets-commerce-toggle-switch"></span>
-								<span class="tec-tickets__admin-settings-tickets-commerce-toggle-label">' . $enable_label . '</span>
+								<span class="tec-tickets__admin-settings-toggle-large-switch"></span>
+								<span class="tec-tickets__admin-settings-toggle-large-label">' . $enable_label . '</span>
 							</label>
 						</div>',
 

@@ -26,6 +26,7 @@ class Provider extends tad_DI52_ServiceProvider {
 	public function register() {
 
 		// If not enabled, do not load Tickets Emails system.
+		// @todo @codingmusician @rafsuntaskin @juanfra: Remove this for 5.7.0 (When we release Tickets Emails)
 		if ( ! tec_tickets_emails_is_enabled() ) {
 			return;
 		}
@@ -36,14 +37,16 @@ class Provider extends tad_DI52_ServiceProvider {
 		// Register singletons.
 		$this->container->singleton( static::class, $this );
 		$this->container->singleton( 'tickets.emails.provider', $this );
-		$this->container->singleton( Emails_Tab::class );
-		$this->container->singleton( 'tickets.emails.emails-tab', $this );
+
+		$this->container->singleton( Admin\Emails_Tab::class );
 
 		$this->container->singleton( Admin\Preview_Modal::class );
-		$this->container->singleton( 'tickets.emails.admin.preview-modal', $this );
 
 		$this->container->register( Tags\Provider::class );
 
+		$this->container->register( Email_Handler::class );
+
+		$this->container->singleton( Web_View::class );
 	}
 
 	/**
