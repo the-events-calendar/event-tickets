@@ -7,7 +7,7 @@
  * @package TEC\Tickets\Flexible_Tickets;
  */
 
-namespace TEC\Tickets\Flexible_Tickets;
+namespace TEC\Tickets\Flexible_Tickets\Test;
 
 use Codeception\TestCase\WPTestCase;
 use TEC\Common\Provider\Controller;

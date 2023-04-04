@@ -96,7 +96,6 @@ $add_new_ticket_label = count( $ticket_providing_modules ) > 0
 			); ?>
 		</button>
 
-
 		<button id="settings_form_toggle" class="button-secondary tribe-button-icon tribe-button-icon-settings">
 			<?php esc_html_e( 'Settings', 'event-tickets' ); ?>
 		</button>

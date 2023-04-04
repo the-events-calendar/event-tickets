@@ -71,7 +71,8 @@
     "psr-4": {
       "Tribe\\Tests\\Modules\\Tickets\\": "tests/_support/Modules",
       "Tribe\\Tests\\Tickets\\": "tests/_support",
-      "Tribe\\Tickets\\Events\\Views\\": "tests/views_integration/Tribe/Tickets/Events/Views"
+      "Tribe\\Tickets\\Events\\Views\\": "tests/views_integration/Tribe/Tickets/Events/Views",
+      "TEC\\Tickets\\Flexible_Tickets\\Test\\": "tests/_support/Flexible_Tickets"
     }
   }
 }

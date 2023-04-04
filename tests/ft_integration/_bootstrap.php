@@ -20,8 +20,6 @@ if ( empty( $ct1_active ) ) {
 	throw new Exception( 'TEC CT1 is not active' );
 }
 
-require_once __DIR__ . '/Controller_Test_Case.php';
-
 // Let's make sure to start from a clean slate, custom-tables wise.
 $custom_tables = tribe( Custom_Tables::class );
 $custom_tables->drop_tables();

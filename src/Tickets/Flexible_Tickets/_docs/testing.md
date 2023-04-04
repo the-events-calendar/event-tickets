@@ -16,8 +16,8 @@ be active.
 Controllers MUST be covered by direct, dedicated tests in this suite. The specialized classes used by Controllers CAN be
 covered by tests in this suite, if required or more efficient.
 Due to the inherent "global" nature of Controllers, they should be tested using test case extending
-the `TEC\Tickets\Flexible_Tickets\Controller_Test_Case` test case; the test case will set up a "sanbox" container for
-the Controller under test to act that will diverge from the global container to avoid testing Controllers affecting
+the `TEC\Tickets\Flexible_Tickets\Test\Controller_Test_Case` test case; the test case will set up a "sandbox" container
+for the Controller under test to act that will diverge from the global container to avoid testing Controllers affecting
 the global state and, thus, the following tests.
 
 Tests should be named with a strict relation to the class they are testing; e.g. the tests for
