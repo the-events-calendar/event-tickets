@@ -3,7 +3,7 @@
  * Event Tickets Emails: Order Attendee Info
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/emails/template-parts/body/order/attendee-info.php
+ * [your-theme]/tribe/tickets/v2/emails/template-parts/body/order/attendees-table/attendee-info.php
  *
  * See more documentation about our views templating system.
  *
@@ -28,13 +28,11 @@ if ( empty( $attendee ) ) {
 ?>
 <tr class="tec-tickets__email-table-content-order-attendee-info-row">
 	<td class="tec-tickets__email-table-content-order-attendee-info tec-tickets__email-table-content-align-left" align="left">
-		<div><?php esc_html_e( $attendee['name'] ); ?></div>
-		<div><?php esc_html_e( $attendee['email'] ); ?></div>
+		<?php $this->template( 'template-parts/body/order/attendees-table/attendee-name' ); ?>
+		<?php $this->template( 'template-parts/body/order/attendees-table/attendee-email' ); ?>
 		<?php $this->template( 'template-parts/body/order/attendees-table/custom-fields' ); ?>
 	</td>
-	<td class="tec-tickets__email-table-content-order-attendee-info tec-tickets__email-table-content-align-center"  align="center">
-		<?php esc_html_e( $attendee['ticket_title'] ); ?>
-	</td>
+	<?php $this->template( 'template-parts/body/order/attendees-table/ticket-title' ); ?>
 	<td class="tec-tickets__email-table-content-order-attendee-info tec-tickets__email-table-content-align-right"  align="right">
 		<?php esc_html_e( $attendee['ticket_id'] ); ?>
 	</td>
