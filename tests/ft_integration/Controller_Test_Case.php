@@ -30,7 +30,9 @@ class Controller_Test_Case extends WPTestCase {
 	protected $test_container;
 
 	/**
-	 * Creates a controller instance.
+	 * Creates a controller instance and sets up a dedicated Service Locator for it.
+	 *
+	 * In the context of the dedicated Service Locator the controller is not yet registered.
 	 *
 	 * @since TBD
 	 *
