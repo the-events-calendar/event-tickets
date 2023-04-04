@@ -8,6 +8,7 @@
 namespace TEC\Tickets\Emails\Email;
 
 use \TEC\Tickets\Emails\Email_Template;
+use TEC\Tickets\Emails\Preview_Data;
 
 /**
  * Class Failed_Order
@@ -186,8 +187,8 @@ class Failed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 			'title'              => $this->get_heading(),
 			'heading'            => $this->get_heading(),
 			'additional_content' => $this->format_string( tribe_get_option( $this->get_option_key( 'add-content' ), '' ) ),
-			'order'              => $this->get_preview_order_failed(),
-			'tickets'            => $this->get_preview_tickets(),
+			'order'              => Preview_Data::get_order( 'failed' ),
+			'tickets'            => Preview_Data::get_tickets(),
 		];
 
 		return wp_parse_args( $args, $defaults );

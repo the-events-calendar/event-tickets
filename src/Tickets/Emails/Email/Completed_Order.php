@@ -8,6 +8,7 @@
 namespace TEC\Tickets\Emails\Email;
 
 use \TEC\Tickets\Emails\Email_Template;
+use TEC\Tickets\Emails\Preview_Data;
 
 /**
  * Class Completed_Order
@@ -186,9 +187,9 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 			'title'              => $this->get_heading(),
 			'heading'            => $this->get_heading(),
 			'additional_content' => $this->format_string( tribe_get_option( $this->get_option_key( 'add-content' ), '' ) ),
-			'order'              => $this->get_preview_order_successful(),
-			'attendees'          => $this->get_preview_attendees(),
-			'tickets'            => $this->get_preview_tickets(),
+			'order'              => Preview_Data::get_order(),
+			'tickets'            => Preview_Data::get_tickets(),
+			'attendees'          => Preview_Data::get_attendees(),
 		];
 
 		return wp_parse_args( $args, $defaults );
