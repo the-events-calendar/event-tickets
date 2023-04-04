@@ -66,6 +66,7 @@ class Send_Email_Purchase_Receipt extends Flag_Action_Abstract {
 		];
 
 		$email_class->set_placeholders( $placeholders );
+		$email_class->__set( $order );
 
 		$to          = $order->purchaser['email'];
 		$subject     = $email_class->get_subject();
