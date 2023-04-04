@@ -1,7 +1,9 @@
 <?php
 // Ensure TEC CT1 Feature is active.
+use Codeception\Events;
 use TEC\Events\Custom_Tables\V1\Activation;
 use TEC\Tickets\Flexible_Tickets\Custom_Tables;
+use function tad\WPBrowser\addListener;
 
 putenv( 'TEC_CUSTOM_TABLES_V1_DISABLED=1' );
 $_ENV['TEC_CUSTOM_TABLES_V1_DISABLED'] = 1;
@@ -20,3 +22,7 @@ require_once __DIR__ . '/Controller_Test_Case.php';
 $custom_tables = tribe( Custom_Tables::class );
 $custom_tables->drop_tables();
 $custom_tables->register_tables();
+
+addListener( Events::TEST_AFTER, function () use ( $custom_tables ) {
+	$custom_tables->truncate_tables();
+} );

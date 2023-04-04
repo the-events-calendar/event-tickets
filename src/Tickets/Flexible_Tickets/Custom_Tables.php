@@ -96,4 +96,31 @@ class Custom_Tables extends Controller {
 
 		return $dropped;
 	}
+
+	/**
+	 * Truncates the custom tables.
+	 *
+	 * @since TBD
+	 *
+	 * @return int The number of tables truncated.
+	 */
+	public function truncate_tables(): int {
+		$truncated = 0;
+
+		DB::query( 'SET FOREIGN_KEY_CHECKS = 0' );
+		foreach (
+			[
+				Capacities::table_name(),
+				Ticket_Groups::table_name(),
+				Posts_And_Posts::table_name(),
+				Posts_And_Users::table_name(),
+				Capacities_Relationships::table_name(),
+			] as $table
+		) {
+			$truncated += DB::query( "TRUNCATE TABLE $table" );
+		}
+		DB::query( 'SET FOREIGN_KEY_CHECKS = 1' );
+
+		return $truncated;
+	}
 }
