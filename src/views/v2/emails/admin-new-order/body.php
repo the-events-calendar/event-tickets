@@ -9,14 +9,13 @@
  *
  * @link https://evnt.is/tickets-emails-tpl Help article for Tickets Emails template files.
  *
- * @version 5.5.9
+ * @version TBD
  *
- * @since 5.5.9
+ * @since TBD
  *
  * @var Tribe_Template  $this  Current template object.
  */
 
- // @todo @codingmusician @juanfra Replace hardcoded data with dynamic data.
 
 $this->template( 'template-parts/body/title' );
 $this->template( 'template-parts/body/order/purchaser-details' );

@@ -16,7 +16,6 @@
  * @var Tribe_Template  $this  Current template object.
  */
 
- // @todo @codingmusician @juanfra Replace hardcoded data with dynamic data.
 
 $this->template( 'template-parts/body/title' );
 $this->template( 'template-parts/body/order/error-message' );
