@@ -25,9 +25,7 @@ if ( empty( $attendee['custom_fields'] ) ) {
 	return;
 }
 
-$fields = [];
-foreach ( $attendee['custom_fields'] as $custom_field ) {
-	$fields[] = $custom_field['label'] . ' - ' . $custom_field['value'];
-}
-
-echo implode( '<br>', $fields );
+?>
+<?php foreach ( $attendee['custom_fields'] as $custom_field ) : ?>
+	<div><?php esc_html_e( $custom_field['label'] ); ?> - <?php esc_html_e( $custom_field['value'] ); ?></div>
+<?php endforeach; ?>

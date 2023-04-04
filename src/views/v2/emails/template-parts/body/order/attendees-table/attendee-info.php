@@ -28,14 +28,14 @@ if ( empty( $attendee ) ) {
 ?>
 <tr class="tec-tickets__email-table-content-order-attendee-info-row">
 	<td class="tec-tickets__email-table-content-order-attendee-info tec-tickets__email-table-content-align-left" align="left">
-		<?php esc_html_e( $attendee['name'] ); ?><br>
-		<?php esc_html_e( $attendee['email'] ); ?><br>
+		<div><?php esc_html_e( $attendee['name'] ); ?></div>
+		<div><?php esc_html_e( $attendee['email'] ); ?></div>
 		<?php $this->template( 'template-parts/body/order/attendees-table/custom-fields' ); ?>
 	</td>
 	<td class="tec-tickets__email-table-content-order-attendee-info tec-tickets__email-table-content-align-center"  align="center">
-		<?php esc_html_e( $attendee['ticket_title'] ); ?><br>
+		<?php esc_html_e( $attendee['ticket_title'] ); ?>
 	</td>
 	<td class="tec-tickets__email-table-content-order-attendee-info tec-tickets__email-table-content-align-right"  align="right">
-		<?php esc_html_e( $attendee['ticket_id'] ); ?><br>
+		<?php esc_html_e( $attendee['ticket_id'] ); ?>
 	</td>
 </tr>
