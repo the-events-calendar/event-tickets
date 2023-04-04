@@ -7,6 +7,8 @@
 
 namespace TEC\Tickets\Emails\Email;
 
+use Automattic\WooCommerce\StoreApi\Formatters\CurrencyFormatter;
+use TEC\Tickets\Commerce\Utils\Currency;
 use \TEC\Tickets\Emails\Email_Template;
 
 /**
@@ -43,7 +45,7 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 	 *
 	 * @var string
 	 */
-	public $template = 'new-order';
+	public $template = 'admin-new-order';
 
 	/**
 	 * Email recipient.
@@ -182,9 +184,13 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 	 */
 	public function get_preview_context( $args = [] ): array {
 		$defaults = [
-			'is_preview' => true,
-			'title'      => $this->get_heading(),
-			'heading'    => $this->get_heading(),
+			'is_preview'         => true,
+			'title'              => $this->get_heading(),
+			'heading'            => $this->get_heading(),
+			'additional_content' => $this->format_string( tribe_get_option( $this->get_option_key( 'add-content' ), '' ) ),
+			'order'              => $this->get_preview_order_successful(),
+			'attendees'          => $this->get_preview_attendees(),
+			'tickets'            => $this->get_preview_tickets(),
 		];
 
 		return wp_parse_args( $args, $defaults );

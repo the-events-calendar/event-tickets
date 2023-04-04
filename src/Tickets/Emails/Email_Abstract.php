@@ -434,8 +434,8 @@ abstract class Email_Abstract {
 	 */
 	public function format_string( $string ): string {
 		$placeholders = $this->get_placeholders();
-		$find         = array_keys( $placeholders );
-		$replace      = array_values( $placeholders );
+		$find         = array_keys( $this->placeholders );
+		$replace      = array_values( $this->placeholders );
 
 		/**
 		 * Filter the formatted email string.
@@ -827,5 +827,83 @@ abstract class Email_Abstract {
 		];
 
 		return $data;
+	}
+
+	public function get_preview_order_successful() {
+		return [
+			'provider'   => 'Stripe',
+			'status'     => 'success',
+			'post_title' => 'Black Midi with Special Guests Chat Pile and Apprehend',
+			'total'      => '$100.00',
+			'purchaser'  => [
+				'name' => 'John Doe',
+				'email' => 'john@doe.com',
+			],
+			'created' => 'March 1, 2023',
+			'id'      => 123,
+		];
+	}
+
+	public function get_preview_order_failed() {
+		return [
+			'provider'      => 'Stripe',
+			'status'        => 'failed',
+			'error_message' => 'Stripe payment processing was unsuccessful',
+			'post_title'    => 'Black Midi with Special Guests Chat Pile and Apprehend',
+			'total'      => '$100.00',
+			'purchaser'  => [
+				'name' => 'John Doe',
+				'email' => 'john@doe.com',
+			],
+			'created' => 'March 1, 2023',
+			'id'      => 123,
+		];
+	}
+
+	public function get_preview_attendees() {
+		return [
+			[
+				'name' => 'John Doe',
+				'email' => 'john@doe.com',
+				'custom_fields' => [
+					[
+						'label' => 'Shirt size',
+						'value' => 'large'
+					],
+					[
+						'label' => 'Backstage pass',
+						'value' => 'yes'
+					],
+				],
+				'ticket_title' => 'General Admission',
+				'ticket_id' => '17e4a14cec',
+			],
+			[
+				'name' => 'Jane Doe',
+				'email' => 'jane@doe.com',
+				'custom_fields' => [
+					[
+						'label' => 'Shirt size',
+						'value' => 'small'
+					],
+					[
+						'label' => 'Backstage pass',
+						'value' => 'yes'
+					],
+				],
+				'ticket_title' => 'General Admission',
+				'ticket_id' => '55e5e14w4',
+			],
+		];
+	}
+
+	public function get_preview_tickets() {
+		return [
+			[
+				'title'    => 'General Admission',
+				'quantity' => 2,
+				'price'    => '$50.00'
+			]
+		];
 	}
 }

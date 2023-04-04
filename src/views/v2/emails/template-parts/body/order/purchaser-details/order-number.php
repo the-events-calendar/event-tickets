@@ -16,14 +16,19 @@
  * @var Tribe_Template  $this  Current template object.
  * @var Module           $provider              [Global] The tickets provider instance.
  * @var string           $provider_id           [Global] The tickets provider class name.
- * @var \WP_Post         $order                 [Global] The order object.
+ * @var array            $order                 [Global] The order object.
  * @var int              $order_id              [Global] The order ID.
  * @var bool             $is_tec_active         [Global] Whether `The Events Calendar` is active or not.
  */
 
-// @todo @codingmusician @juanfra Replace hardcoded data with dynamic data.
+$order_number = empty( $order['id'] ) ? 0 : $order['id'];
+$order_string = sprintf(
+	// Translators: %d - The order number.
+	__( 'Order #%d', 'event-tickets' ),
+	$order_number
+);
 
 ?>
-<th class="tec-tickets__email-table-content-order-purchaser-details-top tec-tickets__email-table-content-align-left" align="left">
-	Order #123
-</th>
+<td class="tec-tickets__email-table-content-order-purchaser-details-top tec-tickets__email-table-content-align-left" align="left">
+	<?php esc_html_e( $order_string ); ?>
+</td>

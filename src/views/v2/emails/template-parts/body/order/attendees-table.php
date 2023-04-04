@@ -16,46 +16,14 @@
  * @var Tribe_Template  $this  Current template object.
  * @var Module           $provider              [Global] The tickets provider instance.
  * @var string           $provider_id           [Global] The tickets provider class name.
- * @var \WP_Post         $order                 [Global] The order object.
+ * @var array            $order                 [Global] The order object.
  * @var int              $order_id              [Global] The order ID.
  * @var bool             $is_tec_active         [Global] Whether `The Events Calendar` is active or not.
  */
 
-// @todo @codingmusician @juanfra Replace hardcoded data with dynamic data.
-$attendees = [
-	[
-		'name' => 'David Hickox',
-		'email' => 'david@theeventscalendar.com',
-		'custom_fields' => [
-			[
-				'label' => 'Shirt size',
-				'value' => 'large'
-			],
-			[
-				'label' => 'Backstage pass',
-				'value' => 'yes'
-			],
-		],
-		'ticket_title' => 'General Admission',
-		'ticket_id' => '17e4a14cec',
-	],
-	[
-		'name' => 'Matt Whitson',
-		'email' => 'matt@aptv.org',
-		'custom_fields' => [
-			[
-				'label' => 'Shirt size',
-				'value' => 'small'
-			],
-			[
-				'label' => 'Backstage pass',
-				'value' => 'yes'
-			],
-		],
-		'ticket_title' => 'General Admission',
-		'ticket_id' => '55e5e14w4',
-	],
-];
+if ( empty( $attendees ) ) {
+	return;
+}
 
 ?>
 <tr>

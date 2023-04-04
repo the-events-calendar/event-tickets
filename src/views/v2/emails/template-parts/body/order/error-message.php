@@ -16,21 +16,23 @@
  * @var Tribe_Template  $this  Current template object.
  * @var Module           $provider              [Global] The tickets provider instance.
  * @var string           $provider_id           [Global] The tickets provider class name.
- * @var \WP_Post         $order                 [Global] The order object.
+ * @var array            $order                 [Global] The order object.
  * @var int              $order_id              [Global] The order ID.
  * @var bool             $is_tec_active         [Global] Whether `The Events Calendar` is active or not.
  */
 
-// @todo @codingmusician @juanfra Replace hardcoded data with dynamic data.
+if ( empty( $order ) || empty( $order['error_message'] ) ) {
+	return;
+}
 
 ?>
 <tr>
 	<td class="tec-tickets__email-table-content-order-error-top-text">
-		The following attempted purchase has failed because:
+		<?php echo esc_html__( 'The following attempted purchase has failed because:', 'event-tickets' ); ?>
 	</td>
 </tr>
 <tr>
 	<td class="tec-tickets__email-table-content-order-error-bottom-text">
-		Stripe payment processing was unsuccessful
+		<?php echo esc_html( $order['error_message'] ); ?>
 	</td>
 </tr>

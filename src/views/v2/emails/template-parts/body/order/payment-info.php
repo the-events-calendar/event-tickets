@@ -16,20 +16,29 @@
  * @var Tribe_Template  $this  Current template object.
  * @var Module           $provider              [Global] The tickets provider instance.
  * @var string           $provider_id           [Global] The tickets provider class name.
- * @var \WP_Post         $order                 [Global] The order object.
+ * @var array            $order                 [Global] The order object.
  * @var int              $order_id              [Global] The order ID.
  * @var bool             $is_tec_active         [Global] Whether `The Events Calendar` is active or not.
  */
 
-// @todo @codingmusician @juanfra Replace hardcoded data with dynamic data.
+if ( empty( $order ) || empty( $order['provider'] ) ) {
+	return;
+}
 
-$payment_info = empty( $status ) || 'success' !== $status ?
-	esc_html__( 'Payment unsuccessful with Stripe', 'event-tickets' ) :
-	esc_html__( 'Payment completed with Stripe', 'event-tickets' );
+$payment_info = empty( $order['status'] ) || 'success' !== $order['status'] ?
+	sprintf(
+		// Translators: %s - Payment provider's name.
+		__( 'Payment unsuccessful with %s', 'event-tickets' ),
+		$order['provider']
+	) : sprintf(
+		// Translators: %s - Payment provider's name.
+		__( 'Payment completed with %s', 'event-tickets' ),
+		$order['provider']
+	);
 
 ?>
 <tr>
 	<td class="tec-tickets__email-table-content-order-payment-info-container" align="right">
-		<?php echo $payment_info; ?>
+		<?php esc_html_e( $payment_info ); ?>
 	</td>
 </tr>

@@ -19,5 +19,5 @@
  // @todo @codingmusician @juanfra Replace hardcoded data with dynamic data.
 
 $this->template( 'template-parts/header' );
-$this->template( 'new-order/body', [ 'status' => 'success' ] );
+$this->template( 'admin-new-order/body' );
 $this->template( 'template-parts/footer' );
