@@ -33,7 +33,5 @@ if ( empty( $attendee ) ) {
 		<?php $this->template( 'template-parts/body/order/attendees-table/custom-fields' ); ?>
 	</td>
 	<?php $this->template( 'template-parts/body/order/attendees-table/ticket-title' ); ?>
-	<td class="tec-tickets__email-table-content-order-attendee-info tec-tickets__email-table-content-align-right"  align="right">
-		<?php esc_html_e( $attendee['ticket_id'] ); ?>
-	</td>
+	<?php $this->template( 'template-parts/body/order/attendees-table/ticket-id' ); ?>
 </tr>
