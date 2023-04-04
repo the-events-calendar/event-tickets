@@ -62,6 +62,7 @@ class Send_Email_Completed_Order extends Flag_Action_Abstract {
 		];
 
 		$email_class->set_placeholders( $placeholders );
+		$email_class->__set( $order );
 
 		$to          = $email_class->get_recipient();
 		$subject     = $email_class->get_subject();
