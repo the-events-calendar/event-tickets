@@ -184,4 +184,13 @@
 		font-size: 12px;
 	}
 
+	.tec-tickets__email-table-content-greeting-container,
+	td.tec-tickets__email-table-content-greeting-container {
+		padding-bottom: 40px;
+	}
+
+	.tec-tickets__email-table-content-add-content-container,
+	td.tec-tickets__email-table-content-add-content-container {
+		padding-bottom: 40px;
+	}
 </style>

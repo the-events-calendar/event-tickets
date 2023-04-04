@@ -24,7 +24,7 @@
 
 ?>
 <tr>
-	<td style="padding-bottom:40px;">
+	<td class="tec-tickets__email-table-content-greeting-container">
 		Hi David,<br>
 		<br>
 		Below are the details of your recent ticket purchase.  Your tickets will arrive in a separate email.  
