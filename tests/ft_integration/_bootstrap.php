@@ -25,6 +25,10 @@ $custom_tables = tribe( Custom_Tables::class );
 $custom_tables->drop_tables();
 $custom_tables->register_tables();
 
+// Start the posts auto-increment from a high number to make it easier to replace the post IDs in HTML snapshots.
+global $wpdb;
+DB::query( "ALTER TABLE $wpdb->posts AUTO_INCREMENT = 5096" );
+
 // After each test truncate Event Ticket and TEC CT1 custom tables.
 addListener( Events::TEST_AFTER, function () use ( $custom_tables ) {
 	$custom_tables->truncate_tables();
