@@ -1,4 +1,4 @@
-# Flexible Tickets Custom Tables Structure
+# Flexible Tickets for Event Tickets - Custom Tables Structure
 
 What follows is a description of the custom tables that are used by the Flexible Tickets plugin.
 This is intended to be used as a reference for developers who are working on the plugin.

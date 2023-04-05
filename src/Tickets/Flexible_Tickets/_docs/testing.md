@@ -1,4 +1,4 @@
-## Flexibl Tickets Feature Testing
+## Flexible Tickets for Event Tickets - Testing
 
 Testing will happen using [`slic`][1]; refer to the project documentation to setup.
 The feature dedicated suites are set up alongside the existing Event Tickets' ones.

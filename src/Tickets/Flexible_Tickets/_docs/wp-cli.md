@@ -1,4 +1,4 @@
-# Flexible Tickets integration and support for WP CLI
+# Flexible Tickets for Event Tickets - WP CLI support
 
 The feature integrates with existing [WP CLI][1] commands to provide support for the new custom tables.
 
