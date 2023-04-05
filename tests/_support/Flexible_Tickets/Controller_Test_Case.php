@@ -57,8 +57,18 @@ class Controller_Test_Case extends WPTestCase {
 		$original_controller->unregister();
 		// Create a container that will provide the context for the controller cloning the original container.
 		$this->test_container = clone tribe();
+		// Register the test container in the test container.
+		$this->test_container->singleton( get_class( $this->test_container ), $this->test_container );
+		$this->test_container->singleton( \tad_DI52_Container::class, $this->test_container );
 		// The controller will NOT have registered in this container.
 		$this->test_container->setVar( $controller_class . '_registered', false );
+		// Unset the previous, maybe, bound and resolved instance of the controller.
+		unset( $this->test_container[ $controller_class ] );
+		// Nothing should be bound in the container for the controller.
+		$this->assertFalse( $this->test_container->has( $controller_class ) );
+
+		// Due to the previous unset, the container will build this as a prototype.
+		return $this->test_container->make( $controller_class );
 
 		return new $controller_class( $this->test_container );
 	}
