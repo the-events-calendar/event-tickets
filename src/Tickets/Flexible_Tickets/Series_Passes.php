@@ -12,6 +12,7 @@ namespace TEC\Tickets\Flexible_Tickets;
 use tad_DI52_Container;
 use TEC\Common\Provider\Controller;
 use TEC\Tickets\Flexible_Tickets\Templates\Admin_Views;
+use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 
 /**
  * Class Series_Passes.
@@ -47,7 +48,7 @@ class Series_Passes extends Controller {
 	 * @return void
 	 */
 	protected function do_register(): void {
-		add_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'add_form_toggle' ] );
+		add_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'render_form_toggle' ] );
 	}
 
 	/**
@@ -58,7 +59,7 @@ class Series_Passes extends Controller {
 	 * @return void
 	 */
 	public function unregister(): void {
-		remove_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'add_form_toggle' ] );
+		remove_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'render_form_toggle' ] );
 	}
 
 	/**
@@ -70,7 +71,17 @@ class Series_Passes extends Controller {
 	 *
 	 * @return void The toggle is added to the new ticket form.
 	 */
-	public function add_form_toggle( int $post_id ): void {
+	public function render_form_toggle( $post_id ): void {
+		if ( ! ( is_numeric( $post_id ) && $post_id > 0 ) ) {
+			return;
+		}
+
+		$post = get_post( $post_id );
+
+		if ( ! ( $post instanceof \WP_Post && $post->post_type === Series_Post_Type::POSTTYPE ) ) {
+			return;
+		}
+
 		$this->admin_views->template( 'form-toggle', [ 'post_id' => $post_id ] );
 	}
 }
