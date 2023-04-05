@@ -4,7 +4,7 @@
  *
  * @since TBD
  *
- * @package TEC\Tickets\Emails
+ * @package TEC\Tickets\Emails\Admin
  */
 
 namespace TEC\Tickets\Emails\Admin;
