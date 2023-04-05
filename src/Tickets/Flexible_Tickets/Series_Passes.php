@@ -9,7 +9,9 @@
 
 namespace TEC\Tickets\Flexible_Tickets;
 
+use tad_DI52_Container;
 use TEC\Common\Provider\Controller;
+use TEC\Tickets\Flexible_Tickets\Templates\Admin_Views;
 
 /**
  * Class Series_Passes.
@@ -21,6 +23,23 @@ use TEC\Common\Provider\Controller;
 class Series_Passes extends Controller {
 
 	/**
+	 * A reference to the templates handler.
+	 *
+	 * @since TBD
+	 *
+	 * @var Admin_Views
+	 */
+	private Admin_Views $admin_views;
+
+	public function __construct(
+		tad_DI52_Container $container,
+		Admin_Views $admin_views
+	) {
+		parent::__construct( $container );
+		$this->admin_views = $admin_views;
+	}
+
+	/**
 	 * {@inheritDoc}
 	 *
 	 * @since TBD
@@ -28,7 +47,7 @@ class Series_Passes extends Controller {
 	 * @return void
 	 */
 	protected function do_register(): void {
-		// TODO: Implement do_register() method.
+		add_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'add_form_toggle' ] );
 	}
 
 	/**
@@ -39,6 +58,19 @@ class Series_Passes extends Controller {
 	 * @return void
 	 */
 	public function unregister(): void {
-		// TODO: Implement unregister() method.
+		remove_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'add_form_toggle' ] );
+	}
+
+	/**
+	 * Adds the toggle to the new ticket form.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id The post ID.
+	 *
+	 * @return void The toggle is added to the new ticket form.
+	 */
+	public function add_form_toggle( int $post_id ): void {
+		$this->admin_views->template( 'form-toggle', [ 'post_id' => $post_id ] );
 	}
 }

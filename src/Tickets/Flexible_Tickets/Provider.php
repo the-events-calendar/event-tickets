@@ -14,6 +14,7 @@
 namespace TEC\Tickets\Flexible_Tickets;
 
 use tad_DI52_ServiceProvider as ServiceProvider;
+use TEC\Tickets\Flexible_Tickets\Templates\Admin_Views;
 
 /**
  * Class Provider.
@@ -58,6 +59,9 @@ class Provider extends ServiceProvider {
 
 		// Whether the feature is enabled or not, allow fetching this provider.
 		$this->container->singleton( self::class, self::class );
+
+		// Bind some implementations common to all Controllers.
+		$this->container->singleton( Admin_Views::class, Admin_Views::class );
 
 		if ( ! $this->is_enabled() ) {
 			return;
