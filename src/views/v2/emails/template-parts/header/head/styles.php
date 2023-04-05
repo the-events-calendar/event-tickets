@@ -323,6 +323,7 @@
 	th.tec-tickets__email-table-content-order-ticket-totals-cell,
 	td.tec-tickets__email-table-content-order-ticket-totals-cell {
 		padding: 0 6px;
+	}
 
 	.tec-tickets__email-table-content-greeting-container,
 	td.tec-tickets__email-table-content-greeting-container {
