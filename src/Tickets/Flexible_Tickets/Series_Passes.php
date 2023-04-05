@@ -11,8 +11,8 @@ namespace TEC\Tickets\Flexible_Tickets;
 
 use tad_DI52_Container;
 use TEC\Common\Provider\Controller;
-use TEC\Tickets\Flexible_Tickets\Templates\Admin_Views;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
+use TEC\Tickets\Flexible_Tickets\Templates\Admin_Views;
 
 /**
  * Class Series_Passes.
@@ -32,6 +32,14 @@ class Series_Passes extends Controller {
 	 */
 	private Admin_Views $admin_views;
 
+	/**
+	 * Series_Passes constructor.
+	 *
+	 * since TBD
+	 *
+	 * @param tad_DI52_Container $container The container instance.
+	 * @param Admin_Views $admin_views The templates handler.
+	 */
 	public function __construct(
 		tad_DI52_Container $container,
 		Admin_Views $admin_views
@@ -82,6 +90,8 @@ class Series_Passes extends Controller {
 			return;
 		}
 
-		$this->admin_views->template( 'form-toggle', [ 'post_id' => $post_id ] );
+		$this->admin_views->template( 'form-toggle', [
+			'disabled' => false,
+		] );
 	}
 }

@@ -76,6 +76,8 @@ class Provider extends ServiceProvider {
 		 */
 		do_action( 'tec_flexible_tickets_activated' );
 
+		require_once __DIR__ . '/template-tags.php';
+
 		$this->container->register( Custom_Tables::class );
 		$this->container->register( WP_Cli::class );
 		$this->container->register( Series_Passes::class );
