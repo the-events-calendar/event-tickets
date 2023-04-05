@@ -7,14 +7,14 @@
  * @package TEC\Tickets\Emails
  */
 
-namespace TEC\Tickets\Emails;
+namespace TEC\Tickets\Emails\Admin;
 
 /**
  * Class Preview_Data.
  *
  * @since TBD
  *
- * @package TEC\Tickets\Emails
+ * @package TEC\Tickets\Emails\Admin
  */
 class Preview_Data {
 
@@ -27,12 +27,12 @@ class Preview_Data {
 	 * 
 	 * @return array
 	 */
-	static function get_order( $status = 'success' ) {
-		return [
+	static public function get_order( $args = [] ): array {
+		$default = [
 			'created'    => __( 'March 1, 2023', 'event-tickets' ),
 			'id'         => 123,
 			'provider'   => 'Stripe',
-			'status'     => $status,
+			'status'     => 'success',
 			'post_title' => __( 'Black Midi with Special Guests Chat Pile and Apprehend', 'event-tickets' ),
 			'total'      => '$100.00',
 			'purchaser'  => [
@@ -40,6 +40,7 @@ class Preview_Data {
 				'email' => 'john@doe.com',
 			],
 		];
+		return wp_parse_args( $args, $default );
 	}
 
 	/**
@@ -49,8 +50,8 @@ class Preview_Data {
 	 * 
 	 * @return array
 	 */
-	static function get_attendees() {
-		return [
+	static public function get_attendees( $args = [] ): array {
+		$default = [
 			[
 				'ticket_title' => __( 'General Admission', 'event-tickets' ),
 				'ticket_id'    => '17e4a14cec',
@@ -84,6 +85,7 @@ class Preview_Data {
 				],
 			],
 		];
+		return wp_parse_args( $args, $default );
 	}
 
 	/**
@@ -93,14 +95,15 @@ class Preview_Data {
 	 * 
 	 * @return array
 	 */
-	static function get_tickets() {
-		return [
+	static public function get_tickets( $args = [] ): array {
+		$default = [
 			[
 				'title'    => __( 'General Admission', 'event-tickets' ),
 				'quantity' => 2,
 				'price'    => '$50.00'
 			]
 		];
+		return wp_parse_args( $args, $default );
 	}
 
 }
