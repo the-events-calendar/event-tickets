@@ -36,7 +36,7 @@ $hello = empty( $order['purchaser'] ) || empty( $order['purchaser']['first_name'
 ?>
 <tr>
 	<td class="tec-tickets__email-table-content-greeting-container">
-		<div>
+		<div style="margin-bottom: 24px">
 			<?php esc_html_e( $hello ); ?>
 		</div>
 		<div>
