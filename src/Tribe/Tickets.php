@@ -2503,13 +2503,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			foreach ( $tickets_by_event as $event_id => $event_tickets ) {
 				$email_class->__set( 'post_id', $event_id );
 				$email_class->__set( 'tickets', $event_tickets );
-				// @todo @juanfra @codingmusician: Set tickets data to the email class.
-				$subject     = $email_class->get_subject();
-				$content     = $email_class->get_content( [ 'tickets' => $event_tickets ] );
-				$headers     = $email_class->get_headers();
-				$attachments = $email_class->get_attachments();
+				$email_class->recipient = $to;
 
-				$sent = tribe( TEC\Tickets\Emails\Email_Sender::class )->send( $to, $subject, $content, $headers, $attachments );
+				$sent = $email_class->send();
 
 				// Handle marking the attendee ticket email as being sent.
 				if ( $sent ) {

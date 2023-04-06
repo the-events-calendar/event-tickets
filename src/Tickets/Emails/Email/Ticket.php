@@ -47,15 +47,6 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	public $template = 'ticket';
 
 	/**
-	 * Email recipient.
-	 *
-	 * @since 5.5.9
-	 *
-	 * @var string
-	 */
-	public $recipient = 'customer';
-
-	/**
 	 * Get email title.
 	 *
 	 * @since 5.5.9
@@ -67,14 +58,14 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	}
 
 	/**
-	 * Get default recipient.
+	 * Get email to.
 	 *
-	 * @since 5.5.9
+	 * @since TBD
 	 *
-	 * @return string
+	 * @return string The email "to".
 	 */
-	public function get_default_recipient(): string {
-		return '{attendee_email}';
+	public function get_to(): string {
+		return esc_html__( 'Attendee(s)', 'event-tickets' );
 	}
 
 	/**
@@ -326,11 +317,12 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	 */
 	public function get_default_template_context(): array {
 		$defaults = [
+			'email'              => $this,
 			'title'              => $this->get_title(),
 			'heading'            => $this->get_heading(),
 			'post_id'            => $this->__get( 'post_id' ),
 			'tickets'            => $this->__get( 'tickets' ),
-			'additional_content' => $this->format_string( tribe_get_option( $this->get_option_key( 'add-content' ), '' ) ),
+			'additional_content' => $this->get_additional_content(),
 		];
 
 		return $defaults;
@@ -353,5 +345,55 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 		$email_template->set_preview( $is_preview );
 
 		return $email_template->get_html( $this->template, $args );
+	}
+
+	/**
+	 * Send the email.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether the email was sent or not.
+	 */
+	public function send() {
+		$recipient = $this->get_recipient();
+
+		// Bail if there is no email address to send to.
+		if ( empty( $recipient ) ) {
+			return false;
+		}
+
+		if ( ! $this->is_enabled() ) {
+			return false;
+		}
+
+		$tickets = $this->__get( 'tickets' );
+		$post_id = $this->__get( 'post_id' );
+
+		// Bail if there's no tickets or post ID.
+		if ( empty( $tickets ) || empty( $post_id ) ) {
+			return false;
+		}
+
+		$placeholders = [
+			'{attendee_name}'  => $tickets[0]['holder_name'],
+			'{attendee_email}' => $tickets[0]['holder_email'],
+		];
+
+		if ( ! empty( $tickets[0]['purchaser_name'] ) ) {
+			$placeholders['{purchaser_name}'] = $tickets[0]['purchaser_name'];
+		}
+
+		if ( ! empty( $tickets[0]['purchaser_email'] ) ) {
+			$placeholders['{purchaser_email}'] = $tickets[0]['purchaser_email'];
+		}
+
+		$this->set_placeholders( $placeholders );
+
+		$subject     = $this->get_subject();
+		$content     = $this->get_content();
+		$headers     = $this->get_headers();
+		$attachments = $this->get_attachments();
+
+		return tribe( \TEC\Tickets\Emails\Email_Sender::class )->send( $recipient, $subject, $content, $headers, $attachments );
 	}
 }

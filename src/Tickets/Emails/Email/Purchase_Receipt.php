@@ -46,26 +46,6 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 	public $template = 'customer-purchase-receipt';
 
 	/**
-	 * Email recipient.
-	 *
-	 * @since 5.5.10
-	 *
-	 * @var string
-	 */
-	public $recipient = 'purchaser';
-
-	/**
-	 * Checks if this email is sent to customer.
-	 *
-	 * @since 5.5.10
-	 *
-	 * @return bool
-	 */
-	public function is_customer_email(): bool {
-		return true;
-	}
-
-	/**
 	 * Get email title.
 	 *
 	 * @since 5.5.10
@@ -77,14 +57,14 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 	}
 
 	/**
-	 * Get default recipient.
+	 * Get email to.
 	 *
-	 * @since 5.5.10
+	 * @since TBD
 	 *
-	 * @return string
+	 * @return string The email "to".
 	 */
-	public function get_default_recipient(): string {
-		return '{purchaser_email}';
+	public function get_to(): string {
+		return esc_html__( 'Purchaser', 'event-tickets' );
 	}
 
 	/**
@@ -186,9 +166,11 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 	 */
 	public function get_preview_context( $args = [] ): array {
 		$defaults = [
-			'is_preview' => true,
-			'title'      => $this->get_heading(),
-			'heading'    => $this->get_heading(),
+			'email'              => $this,
+			'is_preview'         => true,
+			'title'              => $this->get_heading(),
+			'heading'            => $this->get_heading(),
+			'additional_content' => $this->get_additional_content(),
 		];
 
 		return wp_parse_args( $args, $defaults );
@@ -203,9 +185,10 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 	 */
 	public function get_default_template_context(): array {
 		$defaults = [
+			'email'              => $this,
 			'title'              => $this->get_title(),
 			'heading'            => $this->get_heading(),
-			'additional_content' => $this->format_string( tribe_get_option( $this->get_option_key( 'add-content' ), '' ) ),
+			'additional_content' => $this->get_additional_content(),
 			'order'              => $this->__get( 'order' ),
 		];
 
@@ -230,5 +213,46 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 		$email_template->set_preview( $is_preview );
 
 		return $email_template->get_html( $this->template, $args );
+	}
+
+	/**
+	 * Send the email.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether the email was sent or not.
+	 */
+	public function send() {
+		$recipient = $this->get_recipient();
+
+		// Bail if there is no email address to send to.
+		if ( empty( $recipient ) ) {
+			return false;
+		}
+
+		if ( ! $this->is_enabled() ) {
+			return false;
+		}
+
+		$order = $this->__get( 'order' );
+
+		// Bail if there's no order.
+		if ( empty( $order ) ) {
+			return false;
+		}
+
+		$placeholders = [
+			'{order_number}' => $order->ID,
+			'{order_id}'     => $order->ID,
+		];
+
+		$this->set_placeholders( $placeholders );
+
+		$subject     = $this->get_subject();
+		$content     = $this->get_content();
+		$headers     = $this->get_headers();
+		$attachments = $this->get_attachments();
+
+		return tribe( \TEC\Tickets\Emails\Email_Sender::class )->send( $recipient, $subject, $content, $headers, $attachments );
 	}
 }
