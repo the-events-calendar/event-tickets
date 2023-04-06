@@ -186,11 +186,15 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 	 * @return array $args The modified arguments
 	 */
 	public function get_preview_context( $args = [] ): array {
+
+		// Convert linebreaks into HTML paragraphs.
+		$additional_content = apply_filters( 'the_content', tribe_get_option( $this->get_option_key( 'add-content' ), '' ) );
+
 		$defaults = [
 			'is_preview'         => true,
 			'title'              => $this->get_heading(),
 			'heading'            => $this->get_heading(),
-			'additional_content' => $this->format_string( tribe_get_option( $this->get_option_key( 'add-content' ), '' ) ),
+			'additional_content' => $this->format_string( $additional_content ),
 			'order'              => Preview_Data::get_order(),
 			'tickets'            => Preview_Data::get_tickets(),
 			'attendees'          => Preview_Data::get_attendees(),
