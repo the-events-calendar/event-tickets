@@ -21,7 +21,7 @@
  * @var bool             $is_tec_active         [Global] Whether `The Events Calendar` is active or not.
  */
 
-$order_number = empty( $order['id'] ) ? 0 : $order['id'];
+$order_number = empty( $order['id'] ) ? 0 : intval( $order['id'] );
 $order_string = sprintf(
 	// Translators: %d - The order number.
 	__( 'Order #%d', 'event-tickets' ),

@@ -21,7 +21,7 @@
  * @var bool             $is_tec_active         [Global] Whether `The Events Calendar` is active or not.
  */
 
-if( empty( $order ) ) {
+if ( empty( $order ) ) {
 	return;
 }
 
