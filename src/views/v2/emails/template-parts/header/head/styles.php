@@ -327,6 +327,7 @@
 
 	.tec-tickets__email-table-content-greeting-container,
 	td.tec-tickets__email-table-content-greeting-container {
+		line-height: 21px;
 		padding-bottom: 40px;
 	}
 

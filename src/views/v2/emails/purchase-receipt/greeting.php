@@ -36,9 +36,10 @@ $hello = empty( $order['purchaser'] ) || empty( $order['purchaser']['first_name'
 ?>
 <tr>
 	<td class="tec-tickets__email-table-content-greeting-container">
-		<div style="margin-bottom: 24px">
+		<div>
 			<?php esc_html_e( $hello ); ?>
 		</div>
+		<div>&nbsp;</div>
 		<div>
 			<?php 
 				echo esc_html__( 'Below are the details of your recent ticket purchase.  Your tickets will arrive in a separate email.', 'event-tickets' );
