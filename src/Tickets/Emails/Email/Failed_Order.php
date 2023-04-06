@@ -8,6 +8,7 @@
 namespace TEC\Tickets\Emails\Email;
 
 use \TEC\Tickets\Emails\Email_Template;
+use TEC\Tickets\Emails\Admin\Preview_Data;
 
 /**
  * Class Failed_Order
@@ -182,9 +183,15 @@ class Failed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 	 */
 	public function get_preview_context( $args = [] ): array {
 		$defaults = [
-			'is_preview' => true,
-			'title'      => $this->get_heading(),
-			'heading'    => $this->get_heading(),
+			'is_preview'         => true,
+			'title'              => $this->get_heading(),
+			'heading'            => $this->get_heading(),
+			'additional_content' => $this->format_string( tribe_get_option( $this->get_option_key( 'add-content' ), '' ) ),
+			'order'              => Preview_Data::get_order( [ 
+				'status'        => 'failed',
+				'error_message' => __( 'Stripe payment processing was unsuccessful.', 'event-tickets' ),
+			] ),
+			'tickets'            => Preview_Data::get_tickets(),
 		];
 
 		return wp_parse_args( $args, $defaults );
