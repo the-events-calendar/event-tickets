@@ -3,7 +3,7 @@
  * Event Tickets Emails: Failed Order Template
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/emails/failed-order.php
+ * [your-theme]/tribe/tickets/v2/emails/admin-failed-order.php
  *
  * See more documentation about our views templating system.
  *
