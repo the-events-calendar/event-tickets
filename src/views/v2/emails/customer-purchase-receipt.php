@@ -25,6 +25,6 @@
 
 $this->template( 'template-parts/header' );
 
-$this->template( 'purchase-receipt/body', [ 'status' => 'success' ] );
+$this->template( 'purchase-receipt/body' );
 
 $this->template( 'template-parts/footer' );
