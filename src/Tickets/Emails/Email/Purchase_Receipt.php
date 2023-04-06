@@ -111,6 +111,24 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 	}
 
 	/**
+	 * Get additional content.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_add_content(): string {
+		// Get stored content.
+		$add_content = tribe_get_option( $this->get_option_key( 'add-content' ), '' );
+
+		// Process any placeholders.
+		$add_content = $this->format_string( $add_content );
+
+		// Filtering with `the_content` converts linebreaks into paragraphs.
+		return apply_filters( 'the_content', $add_content );
+	}
+
+	/**
 	 * Get email settings.
 	 *
 	 * @since 5.5.10
@@ -186,15 +204,11 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 	 * @return array $args The modified arguments
 	 */
 	public function get_preview_context( $args = [] ): array {
-
-		// Convert linebreaks into HTML paragraphs.
-		$additional_content = apply_filters( 'the_content', tribe_get_option( $this->get_option_key( 'add-content' ), '' ) );
-
 		$defaults = [
 			'is_preview'         => true,
 			'title'              => $this->get_heading(),
 			'heading'            => $this->get_heading(),
-			'additional_content' => $this->format_string( $additional_content ),
+			'additional_content' => $this->get_add_content(),
 			'order'              => Preview_Data::get_order(),
 			'tickets'            => Preview_Data::get_tickets(),
 			'attendees'          => Preview_Data::get_attendees(),
@@ -214,7 +228,7 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 		$defaults = [
 			'title'              => $this->get_title(),
 			'heading'            => $this->get_heading(),
-			'additional_content' => $this->format_string( tribe_get_option( $this->get_option_key( 'add-content' ), '' ) ),
+			'additional_content' => $this->get_add_content(),
 			'order'              => $this->__get( 'order' ),
 		];
 
