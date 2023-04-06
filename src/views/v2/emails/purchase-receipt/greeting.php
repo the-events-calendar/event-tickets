@@ -21,12 +21,28 @@
  * @var bool             $is_tec_active         [Global] Whether `The Events Calendar` is active or not.
  */
 
+if ( empty( $order ) ) {
+	return;
+}
+
+$hello = empty( $order['purchaser'] ) || empty( $order['purchaser']['first_name'] ) ? 
+	__( 'Hello!', 'event-tickets' ) :
+	sprintf(
+		// Translators: %s - First name of purchaser.
+		__( 'Hi, %s!', 'event-tickets' ),
+		$order['purchaser']['first_name']
+	);
 
 ?>
 <tr>
 	<td class="tec-tickets__email-table-content-greeting-container">
-		Hi David,<br>
-		<br>
-		Below are the details of your recent ticket purchase.  Your tickets will arrive in a separate email.  
+		<div>
+			<?php esc_html_e( $hello ); ?>
+		</div>
+		<div>
+			<?php 
+				echo esc_html__( 'Below are the details of your recent ticket purchase.  Your tickets will arrive in a separate email.', 'event-tickets' );
+			?>
+		</div>
 	</td>
 </tr>

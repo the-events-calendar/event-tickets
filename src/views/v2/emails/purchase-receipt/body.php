@@ -24,7 +24,7 @@
  // @todo @codingmusician @juanfra Replace hardcoded data with dynamic data.
 
 $this->template( 'template-parts/body/title' );
-$this->template( 'template-parts/body/greeting' );
+$this->template( 'purchase-receipt/greeting' );
 $this->template( 'template-parts/body/order/purchaser-details' );
 $this->template( 'template-parts/body/order/event-title' );
 $this->template( 'template-parts/body/order/ticket-totals' );

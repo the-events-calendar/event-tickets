@@ -36,8 +36,9 @@ class Preview_Data {
 			'post_title' => __( 'Black Midi with Special Guests Chat Pile and Apprehend', 'event-tickets' ),
 			'total'      => '$100.00',
 			'purchaser'  => [
-				'name'  => __( 'John Doe', 'event-tickets' ),
-				'email' => 'john@doe.com',
+				'first_name'  => __( 'John', 'event-tickets' ),
+				'name'        => __( 'John Doe', 'event-tickets' ),
+				'email'       => 'john@doe.com',
 			],
 		];
 		return wp_parse_args( $args, $default );
