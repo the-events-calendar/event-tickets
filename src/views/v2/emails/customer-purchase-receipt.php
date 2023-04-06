@@ -3,7 +3,7 @@
  * Event Tickets Emails: Purchase Receipt template.
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/emails/purchase-receipt.php
+ * [your-theme]/tribe/tickets/v2/emails/customer-purchase-receipt.php
  *
  * See more documentation about our views templating system.
  *
