@@ -13,6 +13,8 @@ use tad_DI52_Container;
 use TEC\Common\Provider\Controller;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 use TEC\Tickets\Flexible_Tickets\Templates\Admin_Views;
+use Tribe__Tickets__Tickets as Tickets;
+use Tribe__Tickets__RSVP as RSVP;
 
 /**
  * Class Series_Passes.
@@ -90,8 +92,9 @@ class Series_Passes extends Controller {
 			return;
 		}
 
+		$ticket_providing_modules = array_diff_key( Tickets::modules(), [ RSVP::class => true ] );
 		$this->admin_views->template( 'form-toggle', [
-			'disabled' => false,
+			'disabled' => count( $ticket_providing_modules ) === 0,
 		] );
 	}
 }

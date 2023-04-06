@@ -7,9 +7,12 @@ use Generator;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 use TEC\Tickets\Flexible_Tickets\Test\Controller_Test_Case;
+use Tribe\Tests\Traits\With_Uopz;
+use Tribe__Tickets__Tickets as Tickets;
 
 class Series_PassesTest extends Controller_Test_Case {
 	use SnapshotAssertions;
+	use With_Uopz;
 
 	protected $controller_class = Series_Passes::class;
 
@@ -75,8 +78,23 @@ class Series_PassesTest extends Controller_Test_Case {
 			}
 		];
 
-		yield 'post ID is a Series' => [
+		yield 'post ID is a Series, no ticket providers' => [
 			function () {
+				$this->set_class_fn_return( Tickets::class, 'modules', [] );
+
+				return [
+					$this->factory()->post->create( [
+						'post_type' => Series_Post_Type::POSTTYPE,
+					] ),
+					true
+				];
+			}
+		];
+
+		yield 'post ID is a Series, with ticket providers' => [
+			function () {
+				$this->set_class_fn_return( Tickets::class, 'modules', [ 'Stripe' => 'Some_Class' ] );
+
 				return [
 					$this->factory()->post->create( [
 						'post_type' => Series_Post_Type::POSTTYPE,

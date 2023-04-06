@@ -17,7 +17,7 @@
 				'ARIA label for the button to add a new Series Pass',
 				'event-tickets'
 		) ); ?>"
-"<?php echo disabled( $disabled ) ?>"
+<?php disabled( $disabled ) ?>
 >
 <?php
 echo esc_html(
