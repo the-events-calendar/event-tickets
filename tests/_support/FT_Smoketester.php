@@ -1,5 +1,6 @@
 <?php
 
+use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 
 /**
  * Inherited Methods
@@ -60,5 +61,41 @@ class FT_Smoketester extends \Codeception\Actor {
 		$this->assertArrayHasKey( $key, $debug_data, "No '$key' key found in debug data" );
 
 		return $debug_data[ $key ];
+	}
+
+	/**
+	 * Updates the option to allow, or forbid, Series to have tickets.
+	 *
+	 * @since TBD
+	 *
+	 * @param bool $series_are_ticketable Whether Series should be ticketable or not.
+	 *
+	 * @return void
+	 */
+	public function have_ticketable_series_in_database( bool $series_are_ticketable = true ): void {
+		$enabled_post_types = tribe_get_option( 'ticket-enabled-post-types' );
+		if ( $series_are_ticketable ) { // Ensure Tickets can be added to Series.
+			$enabled_post_types[] = Series_Post_Type::POSTTYPE;
+			$enabled_post_types   = array_unique( $enabled_post_types );
+		} else {
+			$enabled_post_types = array_diff( $enabled_post_types, [ Series_Post_Type::POSTTYPE ] );
+		}
+		tribe_update_option( 'ticket-enabled-post-types', $enabled_post_types );
+	}
+
+	/**
+	 * Inserts a post of type `tribe_event_series` in the database.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $overrides The post overrides.
+	 *
+	 * @return int The post ID of the inserted Series post.
+	 */
+	public function have_series_in_database( array $overrides = [] ): int {
+		$data              = $overrides;
+		$data['post_type'] = Series_Post_Type::POSTTYPE;
+
+		return $this->havePostInDatabase( $data );
 	}
 }
