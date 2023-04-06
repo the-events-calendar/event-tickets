@@ -21,15 +21,13 @@
  * @var bool             $is_tec_active         [Global] Whether `The Events Calendar` is active or not.
  */
 
+ if ( empty( $additional_content ) ) {
+	return;
+ }
 
 ?>
 <tr>
 	<td class="tec-tickets__email-table-content-add-content-container">
-		<h2 style="font-size:16px;font-weight:700;margin-bottom:10px">Additional Information</h2>
-		<p>
-			Please bring valid ID when attending the show.  Order cancellations are accepted up to 
-			10 days prior to the event date.  Email us at <a href="#">customerservice@exitin.com</a> for ticket transfers 
-			or refunds.
-		</p>
+		<?php echo wp_kses_post( $additional_content ); ?>
 	</td>
 </tr>
