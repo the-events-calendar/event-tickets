@@ -17,7 +17,7 @@
  */
 
 // If not viewing preview, bail.
-if ( empty( $preview ) ) {
+if ( empty( $preview ) || ! tribe_is_truthy( $preview ) ) {
 	return;
 }
 ?>
