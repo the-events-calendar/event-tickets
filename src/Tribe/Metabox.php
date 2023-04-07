@@ -221,6 +221,11 @@ class Tribe__Tickets__Metabox {
 		 */
 		$data = wp_parse_args( tribe_get_request_var( array( 'data' ), array() ), array() );
 
+		/**
+		 * The ticket type might not be defined, it should not be required.
+		 */
+		$ticket_type = tribe_get_request_var( 'ticket_type', null );
+
 		if ( ! $this->has_permission( $post_id, $_POST, 'add_ticket_nonce' ) ) {
 			$output = esc_html(
 				/* Translators:  %1$s - singular ticket term. */
@@ -268,9 +273,29 @@ class Tribe__Tickets__Metabox {
 			/**
 			 * Fire action when a ticket has been added
 			 *
+			 * @since 4.6.2
+			 * @since TBD Added $ticket_id and $data parameterss.
+			 *
 			 * @param int $post_id ID of parent "event" post
+			 * @param int $ticket_id ID of ticket post
+			 * @param array $data <string,mixed> Array of ticket data
 			 */
-			do_action( 'tribe_tickets_ticket_added', $post_id );
+			do_action( 'tribe_tickets_ticket_added', $post_id, $ticket_id, $data );
+
+			if ( ! empty( $ticket_type ) ) {
+				/**
+				 * Fire action when a ticket of a specified type has been added.
+				 *
+				 * Note: if the ticket type is not specified, then the action will not fire.
+				 *
+				 * @since TBD
+				 *
+				 * @param int $post_id ID of the post the ticket is attached to.
+				 * @param int $ticket_id ID of the ticket post.
+				 * @param array $data <string,mixed> Array of ticket data.
+				 */
+				do_action( "tec_tickets_ticket_added_{$ticket_type}", $post_id, $ticket_id, $data );
+			}
 		} else {
 			$output = esc_html(
 				/* Translators: %1$s - Singular ticket term. */

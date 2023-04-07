@@ -27,6 +27,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	const tickets_panel_table_selector = '.tribe-tickets-editor-table-tickets-body';
 	const tickets_panel_form_selector = '#tribe_panel_edit';
 	const noTicketsOnRecurring = document.body.classList.contains( 'tec-no-tickets-on-recurring' );
+	// Initialize the ticket type to `null`.
+	let ticketType = null;
 
 	// Bail if we don't have what we need
 	if ( 0 === $tribe_tickets.length ) {
@@ -584,6 +586,9 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		// Where we clicked
 		var $button = $( this );
 
+		// Set the current ticket type reading the data from the button, if possible.
+		ticketType = $button.data('ticket-type');
+
 		set_default_provider_radio( 'rsvp_form_toggle' === $button.attr( 'id' ) );
 
 		// Triggers Dependency
@@ -664,7 +669,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			post_id: $post_id.val(),
 			nonce: TribeTickets.add_ticket_nonce,
 			menu_order: orders,
-			is_admin: $( 'body' ).hasClass( 'wp-admin' )
+			is_admin: $( 'body' ).hasClass( 'wp-admin' ),
+			ticket_type: ticketType
 		};
 
 		// ticket_menu_order is missing from the serialized string, lets add it

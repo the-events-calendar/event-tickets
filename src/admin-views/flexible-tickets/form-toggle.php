@@ -18,6 +18,7 @@
 				'event-tickets'
 		) ); ?>"
 <?php disabled( $disabled ) ?>
+		data-ticket-type="series_pass"
 >
 <?php
 echo esc_html(
