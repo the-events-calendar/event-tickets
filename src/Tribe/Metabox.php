@@ -204,15 +204,15 @@ class Tribe__Tickets__Metabox {
 		$post_id      = Event::filter_event_id( $post_id );
 
 		if ( ! $post_id ) {
-			$output = esc_html__( 'Invalid parent Post', 'event-tickets' );
+			$failed_ticket_output = esc_html__( 'Invalid parent Post', 'event-tickets' );
 			if ( $return_value ) {
 				return new WP_Error(
 					'bad_request',
-					$output,
+					$failed_ticket_output,
 					[ 'status' => 400 ]
 				);
 			}
-			wp_send_json_error( $output );
+			wp_send_json_error( $failed_ticket_output );
 		}
 
 		/**
@@ -227,7 +227,7 @@ class Tribe__Tickets__Metabox {
 		$ticket_type = tribe_get_request_var( 'ticket_type', null );
 
 		if ( ! $this->has_permission( $post_id, $_POST, 'add_ticket_nonce' ) ) {
-			$output = esc_html(
+			$failed_ticket_output = esc_html(
 				/* Translators:  %1$s - singular ticket term. */
 				sprintf( __( 'Failed to add the %1$s. Refresh the page to try again.', 'event-tickets' ),
 					tribe_get_ticket_label_singular( 'ajax_ticket_add_error' ) )
@@ -235,23 +235,23 @@ class Tribe__Tickets__Metabox {
 			if ( $return_value ) {
 				return new WP_Error(
 					'bad_request',
-					$output,
+					$failed_ticket_output,
 					[ 'status' => 400 ]
 				);
 			}
-			wp_send_json_error( $output );
+			wp_send_json_error( $failed_ticket_output );
 		}
 
 		if ( ! isset( $data['ticket_provider'] ) || ! $this->module_is_valid( $data['ticket_provider'] ) ) {
-			$output = esc_html__( 'Commerce Provider invalid', 'event-tickets' );
+			$failed_ticket_output = esc_html__( 'Commerce Provider invalid', 'event-tickets' );
 			if ( $return_value ) {
 				return new WP_Error(
 					'bad_request',
-					$output,
+					$failed_ticket_output,
 					[ 'status' => 400 ]
 				);
 			}
-			wp_send_json_error( $output );
+			wp_send_json_error( $failed_ticket_output );
 		}
 
 		// Get the Provider
@@ -268,48 +268,54 @@ class Tribe__Tickets__Metabox {
 		// Do the actual adding
 		$ticket_id = $module->ticket_add( $post_id, $data );
 
+		$failed_ticket_output = esc_html(
+		/* Translators: %1$s - Singular ticket term. */
+			sprintf( __( 'Failed to add the %1$s', 'event-tickets' ),
+				tribe_get_ticket_label_singular( 'ajax_ticket_add_error' ) )
+		);
+
 		// Successful?
 		if ( $ticket_id ) {
-			/**
-			 * Fire action when a ticket has been added
-			 *
-			 * @since 4.6.2
-			 * @since TBD Added $ticket_id and $data parameterss.
-			 *
-			 * @param int $post_id ID of parent "event" post
-			 * @param int $ticket_id ID of ticket post
-			 * @param array $data <string,mixed> Array of ticket data
-			 */
-			do_action( 'tribe_tickets_ticket_added', $post_id, $ticket_id, $data );
 
-			if ( ! empty( $ticket_type ) ) {
+			try {
 				/**
-				 * Fire action when a ticket of a specified type has been added.
+				 * Fire action when a ticket has been added
 				 *
-				 * Note: if the ticket type is not specified, then the action will not fire.
+				 * @since 4.6.2
+				 * @since TBD Added $ticket_id and $data parameterss.
 				 *
-				 * @since TBD
-				 *
-				 * @param int $post_id ID of the post the ticket is attached to.
-				 * @param int $ticket_id ID of the ticket post.
-				 * @param array $data <string,mixed> Array of ticket data.
+				 * @param int $post_id ID of parent "event" post
+				 * @param int $ticket_id ID of ticket post
+				 * @param array $data <string,mixed> Array of ticket data
 				 */
-				do_action( "tec_tickets_ticket_added_{$ticket_type}", $post_id, $ticket_id, $data );
+				do_action( 'tribe_tickets_ticket_added', $post_id, $ticket_id, $data );
+				if ( ! empty( $ticket_type ) ) {
+					/**
+					 * Fire action when a ticket of a specified type has been added.
+					 *
+					 * Note: if the ticket type is not specified, then the action will not fire.
+					 *
+					 * @since TBD
+					 *
+					 * @param int $post_id ID of the post the ticket is attached to.
+					 * @param int $ticket_id ID of the ticket post.
+					 * @param array $data <string,mixed> Array of ticket data.
+					 */
+					do_action( "tec_tickets_ticket_added_{$ticket_type}", $post_id, $ticket_id, $data );
+				}
+			} catch ( Exception $e ) {
+				// Something went wrong while executing the actions, let's log the error.
+				wp_send_json_error( $failed_ticket_output );
 			}
 		} else {
-			$output = esc_html(
-				/* Translators: %1$s - Singular ticket term. */
-				sprintf( __( 'Failed to add the %1$s', 'event-tickets' ),
-					tribe_get_ticket_label_singular( 'ajax_ticket_add_error' ) )
-			);
 			if ( $return_value ) {
 				return new WP_Error(
 					'bad_request',
-					$output,
+					$failed_ticket_output,
 					[ 'status' => 400 ]
 				);
 			}
-			wp_send_json_error( $output );
+			wp_send_json_error( $failed_ticket_output );
 		}
 
 		$return           = $this->get_panels( $post_id );

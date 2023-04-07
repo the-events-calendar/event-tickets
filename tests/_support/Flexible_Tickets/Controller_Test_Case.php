@@ -31,6 +31,14 @@ class Controller_Test_Case extends WPTestCase {
 	 * @var \Tribe__Container
 	 */
 	protected $test_container;
+	/**
+	 * A set of logs collected after the Controller has been registered.
+	 *
+	 * @since TBD
+	 *
+	 * @var array|void|\WP_UnitTest_Factory|null
+	 */
+	protected $controller_logs = [];
 
 	/**
 	 * Creates a controller instance and sets up a dedicated Service Locator for it.
@@ -66,11 +74,19 @@ class Controller_Test_Case extends WPTestCase {
 		unset( $this->test_container[ $controller_class ] );
 		// Nothing should be bound in the container for the controller.
 		$this->assertFalse( $this->test_container->has( $controller_class ) );
+		// From now on, ingest all logging.
+		global $wp_filter;
+		$wp_filter['tribe_log'] = new \WP_Hook();
+		add_action( 'tribe_log', function ( $level, $message, $context ) {
+			$this->controller_logs[] = [
+				'level'   => $level,
+				'message' => $message,
+				'context' => $context,
+			];
+		}, 10, 3 );
 
 		// Due to the previous unset, the container will build this as a prototype.
 		return $this->test_container->make( $controller_class );
-
-		return new $controller_class( $this->test_container );
 	}
 
 	/**
@@ -139,5 +155,34 @@ class Controller_Test_Case extends WPTestCase {
 		foreach ( $tables as $table ) {
 			$this->assertEmpty( $wpdb->get_var( "SELECT COUNT(*) FROM $table" ) );
 		}
+	}
+
+	/**
+	 * @before
+	 */
+	public function reset_controller_logs(): void {
+		$this->controller_logs = [];
+	}
+
+	/**
+	 * Asserts the controller logged a message with the specified level and message.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $level The log level.
+	 * @param string $needle The message to look for, or a part of it.
+	 *
+	 * @return void
+	 */
+	protected function assert_controller_logged( string $level, string $needle ): void {
+		$found              = false;
+		$correct_level_logs = array_filter( $this->controller_logs, static fn( $log ) => $log['level'] === $level );
+		foreach ( $correct_level_logs as $log ) {
+			if ( strpos( $log['message'], $needle ) !== false ) {
+				$found = true;
+				break;
+			}
+		}
+		$this->assertTrue( $found, "Could not find a log with level {$level} and message matching {$needle}" );
 	}
 }

@@ -16,6 +16,7 @@ use TEC\Tickets\Flexible_Tickets\Custom_Tables\Ticket_Groups;
 use TEC\Tickets\Flexible_Tickets\Test\Controller_Test_Case;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
+use Tribe__Log as Log;
 use Tribe__Tickets__Global_Stock as Global_Stock;
 use Tribe__Tickets__Tickets as Tickets;
 
@@ -217,11 +218,11 @@ class Series_PassesTest extends Controller_Test_Case {
 	 * @dataProvider invalid_add_pass_custom_tables_data_provider
 	 */
 	public function should_not_add_custom_tables_data_on_invalid_filter_arguments( Closure $fixture ): void {
-		$filter_args = $fixture();
+		[ $post_id, $ticket_id, $ticket_data ] = $fixture();
 
-		$this->make_controller();
+		$controller = $this->make_controller();
 
-		do_action( 'tec_tickets_ticket_added_series_pass', ...$filter_args );
+		$this->assertFalse( $controller->add_pass_custom_tables_data( $post_id, $ticket_id, $ticket_data ) );
 
 		$this->assert_custom_table_empty(
 			Capacities::table_name(),
@@ -267,6 +268,7 @@ class Series_PassesTest extends Controller_Test_Case {
 
 		$controller = $this->make_controller();
 
-		$controller->add_pass_custom_tables_data( $series_id, $ticket_id, $ticket_data );
+		$this->assertTrue( $controller->add_pass_custom_tables_data( $series_id, $ticket_id, $ticket_data ) );
+		$this->assert_controller_logged( Log::DEBUG, "Added Series Pass custom tables data for Ticket {$ticket_id} and Series {$series_id}" );
 	}
 }

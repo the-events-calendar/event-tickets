@@ -25,6 +25,13 @@ class Capacities extends Table {
 	public const SCHEMA_VERSION = '1.0.0';
 
 	/**
+	 * The value that represents unlimited capacity.
+	 *
+	 * @since TBD
+	 */
+	public const VALUE_UNLIMITED = -1;
+
+	/**
 	 * {@inheritdoc}
 	 */
 	protected static $base_table_name = 'tec_capacities';
@@ -56,7 +63,7 @@ class Capacities extends Table {
 			CREATE TABLE `$table_name` (
 				`id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
 				`value` int(11) DEFAULT -1 NOT NULL,
-				`type` varchar(50) DEFAULT '' NOT NULL,
+				`mode` varchar(50) DEFAULT '' NOT NULL,
 				`name` varchar(50) DEFAULT '' NOT NULL,
 				`description` varchar(50) DEFAULT '' NULL,
 				PRIMARY KEY (`id`)

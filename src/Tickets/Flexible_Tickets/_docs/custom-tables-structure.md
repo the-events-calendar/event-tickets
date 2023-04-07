@@ -14,9 +14,9 @@ erDiagram
 	capacities {
 		INTEGER id
 		INTEGER value
-		INTEGER type
-		NVARCHAR(255) name
-		NVARCHAR(255) description
+		VARCHAR(255) mode
+		VARCHAR(255) name
+		VARCHAR(255) description
 	}
 
 	capacities_relationships {
@@ -76,7 +76,7 @@ The table has the following structure:
 |---------------|------------------|----------------------------------------------------------------------------|
 | `id`          | unsigned integer | The primary key of the record.                                             |
 | `value`       | signed integer   | The current capacity value, or `-1` to indicate the capacity is unlimited. |
-| `type`        | string           | The type of capacity, e.g. `shared` or `local`.                            |
+| `mode`        | string           | The type of capacity, e.g. `shared` or `own`.                              |
 | `name`        | string           | The human-readable name of the capacity, e.g. `General Admission`.         |
 | `description` | string           | The human-readable description of the capacity.                            |
 
@@ -133,6 +133,18 @@ and `post_id_2` columns: each of these columns can be a Post ID or an Occurrence
 
 The `type` column is used to indicate the type of relationship between the two Posts and make researching the
 relationships easier.
+The class `TEC\Tickets\Flexible_Tickets\Custom_Tables\Posts_And_Posts` defines a set of constants that MUST be used to
+build the string that will be stored in the `type` column according to the following pattern:
+
+* `TYPE_TICKET_AND_POST_PREFIX` e.g. `ticket_and_post_post` or `ticket_and_post_tribe_event_series` to indicate a relationship
+  between a Ticket and a Post of a given type.
+* `TYPE_TICKET_AND_ATTENDEE` to indicate a relationship between a Ticket and an Attendee.
+* `TYPE_TICKET_AND_ORDER` to indicate a relationship between a Ticket and an Order.
+* `TYPE_ORDER_AND_POST_PREFIX` e.g. `order_and_post_post` or `order_and_post_tribe_event_series` to indicate a relationship
+  between an Order and a Post of a given type.
+* `TYPE_ORDER_AND_ATTENDEE` to indicate a relationship between an Order and an Attendee.
+* `TYPE_ATTENDEE_AND_POST_PREFIX` e.g. `attendee_and_post_post` or `attendee_and_post_tribe_event_series` to indicate a
+  relationship between an Attendee and a Post of a given type.
 
 ### Posts and Users
 
