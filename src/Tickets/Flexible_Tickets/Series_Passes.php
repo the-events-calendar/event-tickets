@@ -59,6 +59,8 @@ class Series_Passes extends Controller {
 	 */
 	protected function do_register(): void {
 		add_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'render_form_toggle' ] );
+		add_action( 'tec_tickets_ticket_added_series_pass', [ $this, 'add_pass_custom_tables_data' ], 10, 3 );
+
 	}
 
 	/**
@@ -70,6 +72,7 @@ class Series_Passes extends Controller {
 	 */
 	public function unregister(): void {
 		remove_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'render_form_toggle' ] );
+		remove_action( "tec_tickets_ticket_added_series_pass", [ $this, 'add_pass_custom_tables_data' ] );
 	}
 
 	/**
@@ -96,5 +99,22 @@ class Series_Passes extends Controller {
 		$this->admin_views->template( 'form-toggle', [
 			'disabled' => count( $ticket_providing_modules ) === 0,
 		] );
+	}
+
+	public function add_pass_custom_tables_data( $post_id, $ticket_id, $ticket_data ): void {
+		$check_args = is_int( $post_id ) && $post_id > 0
+		              && is_int( $ticket_id ) && $ticket_id > 0
+		              && is_array( $ticket_data )
+		              && (
+			              ( $series = get_post( $post_id ) ) instanceof \WP_Post
+			              && $series->post_type === Series_Post_Type::POSTTYPE
+		              );
+
+		if ( ! $check_args ) {
+			return;
+		}
+
+		$ticket = get_post( $ticket_id );
+		$ticket_meta = get_post_meta( $ticket_id );
 	}
 }
