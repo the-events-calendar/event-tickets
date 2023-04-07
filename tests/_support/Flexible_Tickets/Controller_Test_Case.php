@@ -124,4 +124,20 @@ class Controller_Test_Case extends WPTestCase {
 			. PHP_EOL . json_encode( $added_filters, JSON_PRETTY_PRINT )
 		);
 	}
+
+	/**
+	 * Asserts the specified custom tables are empty.
+	 *
+	 * @since TBD
+	 *
+	 * @param string ...$tables The table names to check.
+	 *
+	 * @return void
+	 */
+	protected function assert_custom_table_empty( string ...$tables ): void {
+		global $wpdb;
+		foreach ( $tables as $table ) {
+			$this->assertEmpty( $wpdb->get_var( "SELECT COUNT(*) FROM $table" ) );
+		}
+	}
 }
