@@ -1454,19 +1454,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		}
 
 		$email_class = tribe( TEC\Tickets\Emails\Email\RSVP_Not_Going::class );
-
-		if ( ! $email_class->is_enabled() ) {
-			return false;
-		}
-
 		$email_class->__set( 'post_id', $event_id );
 		$email_class->__set( 'tickets', $attendees );
-		$subject     = $email_class->get_subject();
-		$content     = $email_class->get_content( [ 'tickets' => $attendees ] );
-		$headers     = $email_class->get_headers();
-		$attachments = $email_class->get_attachments();
-
-		$sent = tribe( TEC\Tickets\Emails\Email_Sender::class )->send( $to, $subject, $content, $headers, $attachments );
+		$email_class->recipient = $to;
+		$sent                   = $email_class->send();
 
 		return $sent;
 	}

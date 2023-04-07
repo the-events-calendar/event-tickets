@@ -171,7 +171,7 @@ class Email_Handler extends \tad_DI52_ServiceProvider {
 			return false;
 		}
 
-		$emails = $this->get_emails();
+		$emails  = $this->get_emails();
 		$created = 0;
 
 		// iterate on emails, check if exists by slug and create if not.
@@ -201,9 +201,9 @@ class Email_Handler extends \tad_DI52_ServiceProvider {
 			'post_status' => 'publish',
 			'post_type'   => static::POSTTYPE,
 			'meta_input'  => [
-				'email_recipient' => $email->recipient,
-				'email_template'  => $email->template,
-				'email_version'   => Tribe__Tickets__Main::VERSION,
+				'email_to'       => $email->to,
+				'email_template' => $email->template,
+				'email_version'  => Tribe__Tickets__Main::VERSION,
 			],
 		];
 		$inserted = wp_insert_post( $args );
