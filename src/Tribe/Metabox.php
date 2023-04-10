@@ -265,6 +265,9 @@ class Tribe__Tickets__Metabox {
 			);
 		}
 
+		// If we have a ticket type, set it.
+		$data['ticket_type'] = $ticket_type ?? 'default';
+
 		// Do the actual adding
 		$ticket_id = $module->ticket_add( $post_id, $data );
 
@@ -289,20 +292,6 @@ class Tribe__Tickets__Metabox {
 				 * @param array $data <string,mixed> Array of ticket data
 				 */
 				do_action( 'tribe_tickets_ticket_added', $post_id, $ticket_id, $data );
-				if ( ! empty( $ticket_type ) ) {
-					/**
-					 * Fire action when a ticket of a specified type has been added.
-					 *
-					 * Note: if the ticket type is not specified, then the action will not fire.
-					 *
-					 * @since TBD
-					 *
-					 * @param int $post_id ID of the post the ticket is attached to.
-					 * @param int $ticket_id ID of the ticket post.
-					 * @param array $data <string,mixed> Array of ticket data.
-					 */
-					do_action( "tec_tickets_ticket_added_{$ticket_type}", $post_id, $ticket_id, $data );
-				}
 			} catch ( Exception $e ) {
 				// Something went wrong while executing the actions, let's log the error.
 				wp_send_json_error( $failed_ticket_output );

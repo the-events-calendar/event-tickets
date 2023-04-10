@@ -11,6 +11,8 @@ As this file grows, it will be split into multiple files and linked from here.
 * [Controllers](_docs/controllers.md)
 * [WP CLI support](_docs/wp-cli.md)
 * [Templating](_docs/html-templating.md)
+* New Ticket types
+	* [Series Passes](_docs/series-passes.md)
 
 ## Activating and deactivating the feature
 

@@ -40,7 +40,10 @@ if (
 }
 
 ?>
-<tr class="<?php echo esc_attr( $provider ); ?> is-expanded" data-ticket-order-id="order_<?php echo esc_attr( $ticket->ID ); ?>" data-ticket-type-id="<?php echo esc_attr( $ticket->ID ); ?>">
+<tr class="<?php echo esc_attr( $provider ); ?> is-expanded"
+	data-ticket-order-id="order_<?php echo esc_attr( $ticket->ID ); ?>"
+	data-ticket-type-id="<?php echo esc_attr( $ticket->ID ); ?>"
+	data-ticket-type="<?php echo esc_attr( $ticket->type ); ?> ">
 	<td class="column-primary ticket_name <?php echo esc_attr( $provider ); ?>" data-label="<?php echo esc_attr( sprintf( _x( '%s Type:', 'ticket type label', 'event-tickets' ), tribe_get_ticket_label_singular( 'ticket_type_label' ) ) ); ?>">
 		<input
 			type="hidden"
@@ -79,9 +82,9 @@ if (
 				 * @param Tribe__Tickets__Tickets       $provider_obj The current ticket provider object.
 				 */
 				do_action( 'event_tickets_ticket_list_after_ticket_name', $ticket, $provider_obj );
-				
-				$this->template( 'editor/list-row/available-dates', [ 'ticket' => $ticket ]); 
-				
+
+				$this->template( 'editor/list-row/available-dates', [ 'ticket' => $ticket ]);
+
 				?>
 			</div>
 		</div>
@@ -138,7 +141,7 @@ if (
                 esc_html($ticket->name)
             );
         }
-		
+
 		printf(
 			"<button attr-provider='%s' attr-ticket-id='%s' title='%s' class='ticket_delete'><span class='ticket_delete_text'>%s</span></a>",
 			esc_attr( $ticket->provider_class ),

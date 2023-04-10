@@ -12,16 +12,16 @@ namespace TEC\Tickets\Flexible_Tickets;
 use Exception;
 use tad_DI52_Container;
 use TEC\Common\Provider\Controller;
-use TEC\Common\StellarWP\DB\Database\Exceptions\DatabaseQueryException;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 use TEC\Tickets\Flexible_Tickets\Custom_Tables\Capacities;
 use TEC\Tickets\Flexible_Tickets\Custom_Tables\Capacities_Relationships;
 use TEC\Tickets\Flexible_Tickets\Custom_Tables\Posts_And_Posts;
 use TEC\Tickets\Flexible_Tickets\Templates\Admin_Views;
-use Tribe__Tickets__Tickets as Tickets;
-use Tribe__Tickets__RSVP as RSVP;
 use Tribe__Tickets__Global_Stock as Global_Stock;
+use Tribe__Tickets__RSVP as RSVP;
+use Tribe__Tickets__Ticket_Object as Ticket;
+use Tribe__Tickets__Tickets as Tickets;
 use WP_Post;
 
 /**
@@ -32,6 +32,12 @@ use WP_Post;
  * @package TEC\Tickets\Flexible_Tickets;
  */
 class Series_Passes extends Controller {
+	/**
+	 * The ticket type handled by this class.
+	 *
+	 * @since TBD
+	 */
+	public const HANDLED_TICKET_TYPE = 'series_pass';
 
 	/**
 	 * A reference to the templates handler.
@@ -67,7 +73,8 @@ class Series_Passes extends Controller {
 	 */
 	protected function do_register(): void {
 		add_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'render_form_toggle' ] );
-		add_action( 'tec_tickets_ticket_added_series_pass', [ $this, 'add_pass_custom_tables_data' ], 10, 3 );
+		add_action( 'tec_tickets_commerce_after_save_ticket', [ $this, 'add_pass_custom_tables_data' ], 10, 2 );
+//		add_action( 'tec_tickets_ticket_deleted_series_pass', [ $this, 'remove_pass_custom_tables_data' ], 10, 2 );
 
 	}
 
@@ -80,7 +87,7 @@ class Series_Passes extends Controller {
 	 */
 	public function unregister(): void {
 		remove_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'render_form_toggle' ] );
-		remove_action( "tec_tickets_ticket_added_series_pass", [ $this, 'add_pass_custom_tables_data' ] );
+		remove_action( 'tec_tickets_commerce_after_save_ticket', [ $this, 'add_pass_custom_tables_data' ] );
 	}
 
 	/**
@@ -115,26 +122,28 @@ class Series_Passes extends Controller {
 	 * @since TBD
 	 *
 	 * @param int $post_id The Series post ID to add the pass to.
-	 * @param int $ticket_id The ticket post ID.
-	 * @param array<string,mixed> $ticket_data The ticket data.
+	 * @param Ticket $ticket A reference to the ticket object.
 	 *
 	 * @return bool Whether the data was added successfully.
 	 * @throws Exception If the data could not be added.
 	 */
-	public function add_pass_custom_tables_data( $post_id, $ticket_id, $ticket_data ): bool {
+	public function add_pass_custom_tables_data( $post_id, $ticket ): bool {
 		$check_args = is_int( $post_id ) && $post_id > 0
-		              && is_int( $ticket_id ) && $ticket_id > 0
-		              && is_array( $ticket_data )
 		              && (
 			              ( $series = get_post( $post_id ) ) instanceof WP_Post
 			              && $series->post_type === Series_Post_Type::POSTTYPE
-		              );
+		              )
+		              && $ticket instanceof Ticket
+		              && ( $ticket->type ?? 'default' ) === self::HANDLED_TICKET_TYPE;
 
 		if ( ! $check_args ) {
 			return false;
 		}
 
-		DB::transaction( function () use ( $post_id, $ticket_id, $ticket_data ) {
+		DB::transaction( function () use ( $post_id, $ticket ) {
+			$ticket_id       = $ticket->ID;
+			$capacity        = $ticket->capacity();
+			$capacity_mode   = $ticket->global_stock_mode();
 			$posts_and_posts = Posts_And_Posts::table_name();
 			if ( ! ( DB::insert(
 				$posts_and_posts, [
@@ -152,8 +161,8 @@ class Series_Passes extends Controller {
 			$capacities = Capacities::table_name();
 			if ( ! DB::insert(
 				$capacities, [
-				'value'       => $ticket_data['ticket-ticket']['capacity'] ?? Capacities::VALUE_UNLIMITED,
-				'mode'        => $ticket_data ['ticket-ticket']['capacity_type'] ?? Global_Stock::OWN_STOCK_MODE,
+				'value'       => $capacity ?: Capacities::VALUE_UNLIMITED,
+				'mode'        => $capacity_mode ?: Global_Stock::OWN_STOCK_MODE,
 				'name'        => '',
 				'description' => '',
 			], [ '%d', '%s', '%s', '%s', ] ) ) {
@@ -164,6 +173,14 @@ class Series_Passes extends Controller {
 				);
 			}
 			$capacity_id = DB::last_insert_id();
+
+			if ( empty( $capacity_id ) ) {
+				$this->error( "Could not get last insert id for $capacities table for ticket {$ticket_id}" );
+				// Throw an exception to rollback the transaction.
+				throw new \RuntimeException(
+					"Could not get last insert id for $capacities table for ticket {$ticket_id}"
+				);
+			}
 
 			$capacities_and_relationships = Capacities_Relationships::table_name();
 			if ( ! DB::insert(
@@ -179,8 +196,55 @@ class Series_Passes extends Controller {
 			}
 		} );
 
-		$this->debug( "Added Series Pass custom tables data for Ticket {$ticket_id} and Series {$post_id}" );
+		$this->debug( "Added Series Pass custom tables data for Ticket {$ticket->ID} and Series {$post_id}" );
 
 		return true;
 	}
+
+//	public function remove_pass_custom_tables_data( $post_id, $ticket_id ): bool {
+//		$check_args = is_int( $post_id ) && $post_id > 0
+//		              && is_int( $ticket_id ) && $ticket_id > 0
+//		              && (
+//			              ( $series = get_post( $post_id ) ) instanceof WP_Post
+//			              && $series->post_type === Series_Post_Type::POSTTYPE
+//		              );
+//
+//		if ( ! $check_args ) {
+//			return false;
+//		}
+//
+//		DB::transaction( function () use ( $post_id, $ticket_id ) {
+//			$posts_and_posts = Posts_And_Posts::table_name();
+//			if ( ! DB::delete(
+//				$posts_and_posts, [
+//				'post_id_1' => (int) $ticket_id,
+//				'post_id_2' => (int) $post_id,
+//				'type'      => Posts_And_Posts::TYPE_TICKET_AND_POST_PREFIX . Series_Post_Type::POSTTYPE,
+//			], [ '%d', '%d', '%s', ] ) ) {
+//				$this->error( "Could not delete from $posts_and_posts table for ticket {$ticket_id} and series {$post_id}" );
+//				// Throw an exception to rollback the transaction.
+//				throw new \RuntimeException(
+//					"Could not delete from $posts_and_posts table for ticket {$ticket_id} and series {$post_id}"
+//				);
+//			}
+//
+//			$capacities_and_relationships = Capacities_Relationships::table_name();
+//			if ( ! DB::delete(
+//				$capacities_and_relationships, [
+//				'object_id' => $ticket_id,
+//			], [ '%d', ] ) ) {
+//				$this->error( "Could not delete from $capacities_and_relationships table for ticket {$ticket_id}" );
+//				// Throw an exception to rollback the transaction.
+//				throw new \RuntimeException(
+//					"Could not delete from $capacities_and_relationships table for ticket {$ticket_id}"
+//				);
+//			}
+//
+//			$capacities = Capacities::table_name();
+//			if ( ! DB::delete(
+//				$capacities, [
+//				'id' => DB::get_var( "SELECT capacity_id FROM $capacities_and_relationships WHERE object_id = {$ticket_id}" ),
+//			], [ '%d', ] ) ) {
+//				$this->
+//	}
 }

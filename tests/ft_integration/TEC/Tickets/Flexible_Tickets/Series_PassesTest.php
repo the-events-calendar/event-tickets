@@ -4,12 +4,10 @@ namespace TEC\Tickets\Flexible_Tickets;
 
 use Closure;
 use Generator;
-use http\Exception\RuntimeException;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Common\StellarWP\DB\Database\Exceptions\DatabaseQueryException;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
-use TEC\Tickets\Commerce;
 use TEC\Tickets\Flexible_Tickets\Custom_Tables\Capacities;
 use TEC\Tickets\Flexible_Tickets\Custom_Tables\Capacities_Relationships;
 use TEC\Tickets\Flexible_Tickets\Custom_Tables\Posts_And_Posts;
@@ -17,16 +15,15 @@ use TEC\Tickets\Flexible_Tickets\Custom_Tables\Posts_And_Ticket_Groups;
 use TEC\Tickets\Flexible_Tickets\Custom_Tables\Posts_And_Users;
 use TEC\Tickets\Flexible_Tickets\Custom_Tables\Ticket_Groups;
 use TEC\Tickets\Flexible_Tickets\Test\Controller_Test_Case;
+use TEC\Tickets\Flexible_Tickets\Test\Traits\Series_Pass_Factory;
 use Tribe\Tests\Traits\With_Uopz;
-use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe__Log as Log;
-use Tribe__Tickets__Global_Stock as Global_Stock;
 use Tribe__Tickets__Tickets as Tickets;
 
 class Series_PassesTest extends Controller_Test_Case {
 	use SnapshotAssertions;
 	use With_Uopz;
-	use Ticket_Maker;
+	use Series_Pass_Factory;
 
 	protected $controller_class = Series_Passes::class;
 
@@ -140,65 +137,33 @@ class Series_PassesTest extends Controller_Test_Case {
 	}
 
 	public function invalid_add_pass_custom_tables_data_provider(): Generator {
-		yield 'empty post ID, ticket ID and ticket data' => [
+		yield 'empty post ID and ticket' => [
 			function () {
-				return [ '', false, [] ];
+				return [ '', false ];
 			}
 		];
 
-		$ticket_data = [
-			'ticket_name'             => '5 days of concert',
-			'ticket_description'      => 'Just like the old days',
-			'ticket_show_description' => '1',
-			'ticket_start_date'       => '4/24/2023',
-			'ticket_start_time'       => '',
-			'ticket_end_date'         => '4/30/2023',
-			'ticket_end_time'         => '',
-			'ticket_provider'         => 'TEC\\Tickets\\Commerce\\Module',
-			'ticket_price'            => '2389',
-			'tribe-ticket'            =>
-				[
-					'capacity' => '1000',
-				],
-			'ticket_sku'              => '',
-			'ticket_id'               => '',
-			'ticket_menu_order'       => 'undefined',
-		];
-
-		yield 'post ID is not a number, ticket ID and ticket data' => [
-			function () use ( $ticket_data ) {
-				// Legit Series.
-				$post_id = static::factory()->post->create( [
-					'post_type' => Series_Post_Type::POSTTYPE,
-				] );
-				// Legit ticket.
-				$ticket_id = $this->create_tc_ticket( $post_id, 2389 );
-
-				return [ 'foo', $ticket_id, $ticket_data ];
-			}
-		];
-
-		yield 'post ID, ticket ID not a number, ticket data' => [
-			function () use ( $ticket_data ) {
-				// Legit Series.
-				$post_id = static::factory()->post->create( [
-					'post_type' => Series_Post_Type::POSTTYPE,
-				] );
-
-				return [ $post_id, 'foo', $ticket_data ];
-			}
-		];
-
-		yield 'post ID, ticket ID, ticket data not an array' => [
+		yield 'post ID is not a number, ticket valid' => [
 			function () {
 				// Legit Series.
 				$post_id = static::factory()->post->create( [
 					'post_type' => Series_Post_Type::POSTTYPE,
 				] );
 				// Legit ticket.
-				$ticket_id = $this->create_tc_ticket( $post_id, 2389 );
+				$ticket = $this->create_tc_series_pass( $post_id, 2389 );
 
-				return [ $post_id, $ticket_id, 'foo' ];
+				return [ 'foo', $ticket ];
+			}
+		];
+
+		yield 'post ID, not Ticket' => [
+			function () {
+				// Legit Series.
+				$post_id = static::factory()->post->create( [
+					'post_type' => Series_Post_Type::POSTTYPE,
+				] );
+
+				return [ $post_id, [] ];
 			}
 		];
 
@@ -207,9 +172,9 @@ class Series_PassesTest extends Controller_Test_Case {
 				// Legit Series.
 				$post_id = static::factory()->post->create();
 				// Legit ticket.
-				$ticket_id = $this->create_tc_ticket( $post_id, 2389 );
+				$ticket = $this->create_tc_series_pass( $post_id, 2389 );
 
-				return [ $post_id, $ticket_id, 'foo' ];
+				return [ $post_id, $ticket ];
 			}
 		];
 	}
@@ -221,11 +186,11 @@ class Series_PassesTest extends Controller_Test_Case {
 	 * @dataProvider invalid_add_pass_custom_tables_data_provider
 	 */
 	public function should_not_add_custom_tables_data_on_invalid_filter_arguments( Closure $fixture ): void {
-		[ $post_id, $ticket_id, $ticket_data ] = $fixture();
+		[ $post_id, $ticket ] = $fixture();
 
 		$controller = $this->make_controller();
 
-		$this->assertFalse( $controller->add_pass_custom_tables_data( $post_id, $ticket_id, $ticket_data ) );
+		$this->assertFalse( $controller->add_pass_custom_tables_data( $post_id, $ticket ) );
 
 		$this->assert_custom_table_empty(
 			Capacities::table_name(),
@@ -243,35 +208,15 @@ class Series_PassesTest extends Controller_Test_Case {
 	 * @test
 	 */
 	public function should_add_pass_custom_tables_data_correctly(): void {
-		$series_id   = static::factory()->post->create( [
+		$series_id = static::factory()->post->create( [
 			'post_type' => Series_Post_Type::POSTTYPE,
 		] );
-		$ticket_data = [
-			'ticket_name'             => '5 days of concert',
-			'ticket_description'      => 'Just like the old days',
-			'ticket_show_description' => '1',
-			'ticket_start_date'       => '4/24/2023',
-			'ticket_start_time'       => '',
-			'ticket_end_date'         => '4/30/2023',
-			'ticket_end_time'         => '',
-			'ticket_provider'         => 'TEC\\Tickets\\Commerce\\Module',
-			'ticket_price'            => '2389',
-			'tribe-ticket'            =>
-				[
-					'mode'     => Global_Stock::OWN_STOCK_MODE,
-					'capacity' => '1000',
-				],
-			'ticket_sku'              => '5-DAYS-OF-CONCERT',
-			'ticket_id'               => '',
-			'ticket_menu_order'       => 'undefined',
-		];
-		// Create the ticket like the AJAX handler would.
-		$ticket_id = Commerce\Module::get_instance()->ticket_add( $series_id, $ticket_data );
+		$ticket    = $this->create_tc_series_pass( $series_id, 2389 );
 
 		$controller = $this->make_controller();
 
-		$this->assertTrue( $controller->add_pass_custom_tables_data( $series_id, $ticket_id, $ticket_data ) );
-		$this->assert_controller_logged( Log::DEBUG, "Added Series Pass custom tables data for Ticket {$ticket_id} and Series {$series_id}" );
+		$this->assertTrue( $controller->add_pass_custom_tables_data( $series_id, $ticket ) );
+		$this->assert_controller_logged( Log::DEBUG, "Added Series Pass custom tables data for Ticket" );
 	}
 
 	public function custom_table_names(): array {
@@ -289,31 +234,14 @@ class Series_PassesTest extends Controller_Test_Case {
 	 * @dataProvider custom_table_names
 	 */
 	public function should_throw_if_table_insert_throws( string $table_name ): void {
+		global $wpdb;
+		// Avoid filling the test output.
+		$wpdb->suppress_errors = true;
 		// Use legit data.
-		$series_id   = static::factory()->post->create( [
+		$series_id = static::factory()->post->create( [
 			'post_type' => Series_Post_Type::POSTTYPE,
 		] );
-		$ticket_data = [
-			'ticket_name'             => '5 days of concert',
-			'ticket_description'      => 'Just like the old days',
-			'ticket_show_description' => '1',
-			'ticket_start_date'       => '4/24/2023',
-			'ticket_start_time'       => '',
-			'ticket_end_date'         => '4/30/2023',
-			'ticket_end_time'         => '',
-			'ticket_provider'         => 'TEC\\Tickets\\Commerce\\Module',
-			'ticket_price'            => '2389',
-			'tribe-ticket'            =>
-				[
-					'mode'     => Global_Stock::OWN_STOCK_MODE,
-					'capacity' => '1000',
-				],
-			'ticket_sku'              => '5-DAYS-OF-CONCERT',
-			'ticket_id'               => '',
-			'ticket_menu_order'       => 'undefined',
-		];
-		// Create the ticket like the AJAX handler would.
-		$ticket_id = Commerce\Module::get_instance()->ticket_add( $series_id, $ticket_data );
+		$ticket    = $this->create_tc_series_pass( $series_id, 2389 );
 		// The DB::insert for the table will fail; this will cause output in the tests.
 		add_filter( 'query', static function ( string $query ) use ( $table_name ) {
 			if ( preg_match( '/^INSERT INTO `' . $table_name . '`/i', $query ) ) {
@@ -327,7 +255,7 @@ class Series_PassesTest extends Controller_Test_Case {
 
 		$this->expectException( DatabaseQueryException::class );
 
-		$controller->add_pass_custom_tables_data( $series_id, $ticket_id, $ticket_data );
+		$controller->add_pass_custom_tables_data( $series_id, $ticket );
 	}
 
 	/**
@@ -338,30 +266,10 @@ class Series_PassesTest extends Controller_Test_Case {
 	 */
 	public function should_throw_and_log_if_table_insert_does_not_affect_any_rows( string $table_name ): void {
 		// Use legit data.
-		$series_id   = static::factory()->post->create( [
+		$series_id = static::factory()->post->create( [
 			'post_type' => Series_Post_Type::POSTTYPE,
 		] );
-		$ticket_data = [
-			'ticket_name'             => '5 days of concert',
-			'ticket_description'      => 'Just like the old days',
-			'ticket_show_description' => '1',
-			'ticket_start_date'       => '4/24/2023',
-			'ticket_start_time'       => '',
-			'ticket_end_date'         => '4/30/2023',
-			'ticket_end_time'         => '',
-			'ticket_provider'         => 'TEC\\Tickets\\Commerce\\Module',
-			'ticket_price'            => '2389',
-			'tribe-ticket'            =>
-				[
-					'mode'     => Global_Stock::OWN_STOCK_MODE,
-					'capacity' => '1000',
-				],
-			'ticket_sku'              => '5-DAYS-OF-CONCERT',
-			'ticket_id'               => '',
-			'ticket_menu_order'       => 'undefined',
-		];
-		// Create the ticket like the AJAX handler would.
-		$ticket_id = Commerce\Module::get_instance()->ticket_add( $series_id, $ticket_data );
+		$ticket    = $this->create_tc_series_pass( $series_id, 2389 );
 		// The DB::insert for the table will not affect any rows.
 		add_filter( 'query', static function ( string $query ) use ( $table_name ) {
 			if ( preg_match( '/^INSERT INTO `' . $table_name . '`/i', $query ) ) {
@@ -375,9 +283,33 @@ class Series_PassesTest extends Controller_Test_Case {
 		$controller = $this->make_controller();
 
 		try {
-			$controller->add_pass_custom_tables_data( $series_id, $ticket_id, $ticket_data );
+			$controller->add_pass_custom_tables_data( $series_id, $ticket );
 		} catch ( \Exception $e ) {
 			$this->assert_controller_logged( Log::ERROR, "Could not insert into $table_name table for ticket" );
+		}
+		$this->assertInstanceOf( \RuntimeException::class, $e );
+	}
+
+	/**
+	 * It should throw and log if cannot get last capacity inserted ID
+	 *
+	 * @test
+	 */
+	public function should_throw_and_log_if_cannot_get_last_capacity_inserted_id(): void {
+		// Use legit data.
+		$series_id = static::factory()->post->create( [
+			'post_type' => Series_Post_Type::POSTTYPE,
+		] );
+		$ticket    = $this->create_tc_series_pass( $series_id, 2389 );
+		$this->set_class_fn_return( DB::class, 'last_insert_id', false );
+		$capacities = Capacities::table_name();
+
+		$controller = $this->make_controller();
+
+		try {
+			$controller->add_pass_custom_tables_data( $series_id, $ticket );
+		} catch ( \Exception $e ) {
+			$this->assert_controller_logged( Log::ERROR, "Could not get last insert id for $capacities table for ticket" );
 		}
 		$this->assertInstanceOf( \RuntimeException::class, $e );
 	}
