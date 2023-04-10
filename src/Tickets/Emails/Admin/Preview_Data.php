@@ -20,14 +20,14 @@ class Preview_Data {
 
 	/**
 	 * Get Order preview data.
-	 * 
+	 *
 	 * @since TBD
 	 *
-	 * @param string $status Status of order.
-	 * 
+	 * @param string $args Array of preview data.
+	 *
 	 * @return array
 	 */
-	static public function get_order( $args = [] ): array {
+	public static function get_order( $args = [] ): array {
 		$default = [
 			'created'    => __( 'March 1, 2023', 'event-tickets' ),
 			'id'         => 123,
@@ -45,12 +45,14 @@ class Preview_Data {
 
 	/**
 	 * Get Attendees preview data.
-	 * 
+	 *
 	 * @since TBD
-	 * 
+	 *
+	 * @param string $args Array of preview data.
+	 *
 	 * @return array
 	 */
-	static public function get_attendees( $args = [] ): array {
+	public static function get_attendees( $args = [] ): array {
 		$default = [
 			[
 				'ticket_title' => __( 'General Admission', 'event-tickets' ),
@@ -90,20 +92,21 @@ class Preview_Data {
 
 	/**
 	 * Get Tickets preview data.
-	 * 
+	 *
 	 * @since TBD
-	 * 
+	 *
+	 * @param string $args Array of preview data.
+	 *
 	 * @return array
 	 */
-	static public function get_tickets( $args = [] ): array {
+	public static function get_tickets( $args = [] ): array {
 		$default = [
 			[
 				'title'    => __( 'General Admission', 'event-tickets' ),
 				'quantity' => 2,
-				'price'    => '$50.00'
-			]
+				'price'    => '$50.00',
+			],
 		];
 		return wp_parse_args( $args, $default );
 	}
-
 }
