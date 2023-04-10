@@ -124,6 +124,14 @@ class Ticket {
 	 * @var string
 	 */
 	public static $status_count_meta_key_prefix = '_tec_tc_ticket_status_count';
+	/**
+	 * The meta key that holds the ticket type.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $type_meta_key = '_type';
 
 	/**
 	 * Stores the instance of the template engine that we will use for rendering the elements.
@@ -508,6 +516,7 @@ class Ticket {
 		}
 
 		update_post_meta( $ticket->ID, '_price', $ticket->price );
+		update_post_meta( $ticket->ID, '_type', $ticket->type ?? 'default' );
 
 		$ticket_data = \Tribe__Utils__Array::get( $raw_data, 'tribe-ticket', array() );
 		tribe( Module::class )->update_capacity( $ticket, $ticket_data, $save_type );
