@@ -135,43 +135,46 @@ class Series_Passes extends Controller {
 		}
 
 		DB::transaction( function () use ( $post_id, $ticket_id, $ticket_data ) {
+			$posts_and_posts = Posts_And_Posts::table_name();
 			if ( ! ( DB::insert(
-				Posts_And_Posts::table_name(), [
+				$posts_and_posts, [
 				'post_id_1' => (int) $ticket_id,
 				'post_id_2' => (int) $post_id,
 				'type'      => Posts_And_Posts::TYPE_TICKET_AND_POST_PREFIX . Series_Post_Type::POSTTYPE,
 			], [ '%d', '%d', '%s', ] ) ) ) {
-				$this->error( "Could not insert into posts_and_posts table for ticket {$ticket_id} and series {$post_id}" );
+				$this->error( "Could not insert into $posts_and_posts table for ticket {$ticket_id} and series {$post_id}" );
 				// Throw an exception to rollback the transaction.
-				throw new DatabaseQueryException(
-					"Could not insert into posts_and_posts table for ticket {$ticket_id} and series {$post_id}"
+				throw new \RuntimeException(
+					"Could not insert into $posts_and_posts table for ticket {$ticket_id} and series {$post_id}"
 				);
 			}
 
+			$capacities = Capacities::table_name();
 			if ( ! DB::insert(
-				Capacities::table_name(), [
+				$capacities, [
 				'value'       => $ticket_data['ticket-ticket']['capacity'] ?? Capacities::VALUE_UNLIMITED,
 				'mode'        => $ticket_data ['ticket-ticket']['capacity_type'] ?? Global_Stock::OWN_STOCK_MODE,
 				'name'        => '',
 				'description' => '',
 			], [ '%d', '%s', '%s', '%s', ] ) ) {
-				$this->error( "Could not insert into capacities table for ticket {$ticket_id}" );
+				$this->error( "Could not insert into $capacities table for ticket {$ticket_id}" );
 				// Throw an exception to rollback the transaction.
-				throw new DatabaseQueryException(
-					"Could not insert into capacities table for ticket {$ticket_id}"
+				throw new \RuntimeException(
+					"Could not insert into $capacities table for ticket {$ticket_id}"
 				);
 			}
 			$capacity_id = DB::last_insert_id();
 
+			$capacities_and_relationships = Capacities_Relationships::table_name();
 			if ( ! DB::insert(
-				Capacities_Relationships::table_name(), [
+				$capacities_and_relationships, [
 				'capacity_id' => $capacity_id,
 				'object_id'   => $ticket_id,
 			], [ '%d', '%d', ] ) ) {
-				$this->error( "Could not insert into capacities_relationships table for ticket {$ticket_id} and capacity {$capacity_id}" );
+				$this->error( "Could not insert into $capacities_and_relationships table for ticket {$ticket_id} and capacity {$capacity_id}" );
 				// Throw an exception to rollback the transaction.
-				throw new DatabaseQueryException(
-					"Could not insert into capacities_relationships table for ticket {$ticket_id} and capacity {$capacity_id}"
+				throw new \RuntimeException(
+					"Could not insert into $capacities_and_relationships table for ticket {$ticket_id} and capacity {$capacity_id}"
 				);
 			}
 		} );

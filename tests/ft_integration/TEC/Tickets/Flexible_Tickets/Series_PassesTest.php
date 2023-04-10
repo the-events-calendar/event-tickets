@@ -4,7 +4,10 @@ namespace TEC\Tickets\Flexible_Tickets;
 
 use Closure;
 use Generator;
+use http\Exception\RuntimeException;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use TEC\Common\StellarWP\DB\Database\Exceptions\DatabaseQueryException;
+use TEC\Common\StellarWP\DB\DB;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 use TEC\Tickets\Commerce;
 use TEC\Tickets\Flexible_Tickets\Custom_Tables\Capacities;
@@ -262,7 +265,6 @@ class Series_PassesTest extends Controller_Test_Case {
 			'ticket_id'               => '',
 			'ticket_menu_order'       => 'undefined',
 		];
-
 		// Create the ticket like the AJAX handler would.
 		$ticket_id = Commerce\Module::get_instance()->ticket_add( $series_id, $ticket_data );
 
@@ -270,5 +272,113 @@ class Series_PassesTest extends Controller_Test_Case {
 
 		$this->assertTrue( $controller->add_pass_custom_tables_data( $series_id, $ticket_id, $ticket_data ) );
 		$this->assert_controller_logged( Log::DEBUG, "Added Series Pass custom tables data for Ticket {$ticket_id} and Series {$series_id}" );
+	}
+
+	public function custom_table_names(): array {
+		return [
+			'posts_an_posts'           => [ Posts_And_Posts::table_name() ],
+			'capacities'               => [ Capacities::table_name() ],
+			'capacities_relationships' => [ Capacities_Relationships::table_name() ],
+		];
+	}
+
+	/**
+	 * It should throw if table insertion throws
+	 *
+	 * @test
+	 * @dataProvider custom_table_names
+	 */
+	public function should_throw_if_table_insert_throws( string $table_name ): void {
+		// Use legit data.
+		$series_id   = static::factory()->post->create( [
+			'post_type' => Series_Post_Type::POSTTYPE,
+		] );
+		$ticket_data = [
+			'ticket_name'             => '5 days of concert',
+			'ticket_description'      => 'Just like the old days',
+			'ticket_show_description' => '1',
+			'ticket_start_date'       => '4/24/2023',
+			'ticket_start_time'       => '',
+			'ticket_end_date'         => '4/30/2023',
+			'ticket_end_time'         => '',
+			'ticket_provider'         => 'TEC\\Tickets\\Commerce\\Module',
+			'ticket_price'            => '2389',
+			'tribe-ticket'            =>
+				[
+					'mode'     => Global_Stock::OWN_STOCK_MODE,
+					'capacity' => '1000',
+				],
+			'ticket_sku'              => '5-DAYS-OF-CONCERT',
+			'ticket_id'               => '',
+			'ticket_menu_order'       => 'undefined',
+		];
+		// Create the ticket like the AJAX handler would.
+		$ticket_id = Commerce\Module::get_instance()->ticket_add( $series_id, $ticket_data );
+		// The DB::insert for the table will fail; this will cause output in the tests.
+		add_filter( 'query', static function ( string $query ) use ( $table_name ) {
+			if ( preg_match( '/^INSERT INTO `' . $table_name . '`/i', $query ) ) {
+				return 'SELECT foo FROM bar';
+			}
+
+			return $query;
+		} );
+
+		$controller = $this->make_controller();
+
+		$this->expectException( DatabaseQueryException::class );
+
+		$controller->add_pass_custom_tables_data( $series_id, $ticket_id, $ticket_data );
+	}
+
+	/**
+	 * It should throw and log if table insert does not affect any rows
+	 *
+	 * @test
+	 * @dataProvider custom_table_names
+	 */
+	public function should_throw_and_log_if_table_insert_does_not_affect_any_rows( string $table_name ): void {
+		// Use legit data.
+		$series_id   = static::factory()->post->create( [
+			'post_type' => Series_Post_Type::POSTTYPE,
+		] );
+		$ticket_data = [
+			'ticket_name'             => '5 days of concert',
+			'ticket_description'      => 'Just like the old days',
+			'ticket_show_description' => '1',
+			'ticket_start_date'       => '4/24/2023',
+			'ticket_start_time'       => '',
+			'ticket_end_date'         => '4/30/2023',
+			'ticket_end_time'         => '',
+			'ticket_provider'         => 'TEC\\Tickets\\Commerce\\Module',
+			'ticket_price'            => '2389',
+			'tribe-ticket'            =>
+				[
+					'mode'     => Global_Stock::OWN_STOCK_MODE,
+					'capacity' => '1000',
+				],
+			'ticket_sku'              => '5-DAYS-OF-CONCERT',
+			'ticket_id'               => '',
+			'ticket_menu_order'       => 'undefined',
+		];
+		// Create the ticket like the AJAX handler would.
+		$ticket_id = Commerce\Module::get_instance()->ticket_add( $series_id, $ticket_data );
+		// The DB::insert for the table will not affect any rows.
+		add_filter( 'query', static function ( string $query ) use ( $table_name ) {
+			if ( preg_match( '/^INSERT INTO `' . $table_name . '`/i', $query ) ) {
+				// Return a query that will not affect any rows.
+				return "SELECT id FROM $table_name WHERE 1=0";
+			}
+
+			return $query;
+		} );
+
+		$controller = $this->make_controller();
+
+		try {
+			$controller->add_pass_custom_tables_data( $series_id, $ticket_id, $ticket_data );
+		} catch ( \Exception $e ) {
+			$this->assert_controller_logged( Log::ERROR, "Could not insert into $table_name table for ticket" );
+		}
+		$this->assertInstanceOf( \RuntimeException::class, $e );
 	}
 }
