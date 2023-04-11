@@ -26,13 +26,15 @@ class Preview_Data {
 	 */
 	public static function get_default_preview_data(): array {
 		$current_user = wp_get_current_user();
-		$title        = empty( $current_user->first_name ) ?
-		__( 'Here\'s your ticket!', 'event-tickets' ) :
-		sprintf(
-			// Translators: %s - First name of email recipient.
-			__( 'Here\'s your ticket, %s!', 'event-tickets' ),
-			$current_user->first_name
-		);
+		$title        = __( 'Here\'s your ticket!', 'event-tickets' );
+
+		if ( ! empty( $current_user->first_name ) ) {
+			$title = sprintf(
+				// Translators: %s - First name of email recipient.
+				__( 'Here\'s your ticket, %s!', 'event-tickets' ),
+				$current_user->first_name
+			);
+		}
 
 		return [
 			'title'      => $title,
@@ -58,9 +60,8 @@ class Preview_Data {
 							'address2'   => esc_html__( 'Birmingham, AL, 35222', 'event-tickets' ),
 							'phone'      => esc_html__( '(987) 654-3210', 'event-tickets' ),
 							'website'    => esc_url( get_site_url() ),
-						]
+						],
 					],
-
 				],
 			],
 		];
