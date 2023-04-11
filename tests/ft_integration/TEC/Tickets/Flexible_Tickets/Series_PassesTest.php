@@ -191,7 +191,7 @@ class Series_PassesTest extends Controller_Test_Case {
 
 		$controller = $this->make_controller();
 
-		$this->assertFalse( $controller->insert_pass_custom_tables_data( $post_id, $ticket ) );
+		$this->assertFalse( $controller->upsert_pass_custom_tables_data( $post_id, $ticket ) );
 
 		$this->assert_custom_table_empty(
 			Capacities::table_name(),
@@ -216,7 +216,7 @@ class Series_PassesTest extends Controller_Test_Case {
 
 		$controller = $this->make_controller();
 
-		$this->assertTrue( $controller->insert_pass_custom_tables_data( $series_id, $ticket ) );
+		$this->assertTrue( $controller->upsert_pass_custom_tables_data( $series_id, $ticket ) );
 		$this->assert_controller_logged( Log::DEBUG, "Added Series Pass custom tables data for Ticket" );
 	}
 
@@ -256,7 +256,7 @@ class Series_PassesTest extends Controller_Test_Case {
 
 		$this->expectException( DatabaseQueryException::class );
 
-		$controller->insert_pass_custom_tables_data( $series_id, $ticket );
+		$controller->upsert_pass_custom_tables_data( $series_id, $ticket );
 	}
 
 	/**
@@ -284,7 +284,7 @@ class Series_PassesTest extends Controller_Test_Case {
 		$controller = $this->make_controller();
 
 		try {
-			$controller->insert_pass_custom_tables_data( $series_id, $ticket );
+			$controller->upsert_pass_custom_tables_data( $series_id, $ticket );
 		} catch ( \Exception $e ) {
 			$this->assert_controller_logged( Log::ERROR, "Could not insert into $table_name table for ticket" );
 		}
@@ -308,7 +308,7 @@ class Series_PassesTest extends Controller_Test_Case {
 		$controller = $this->make_controller();
 
 		try {
-			$controller->insert_pass_custom_tables_data( $series_id, $ticket );
+			$controller->upsert_pass_custom_tables_data( $series_id, $ticket );
 		} catch ( \Exception $e ) {
 			$this->assert_controller_logged( Log::ERROR, "Could not get last insert id for $capacities table for ticket" );
 		}
@@ -406,7 +406,7 @@ class Series_PassesTest extends Controller_Test_Case {
 
 		$controller = $this->make_controller();
 
-		$this->assertTrue( $controller->insert_pass_custom_tables_data( $series_id, $ticket ) );
+		$this->assertTrue( $controller->upsert_pass_custom_tables_data( $series_id, $ticket ) );
 
 		$capacities_relationships = Capacities_Relationships::table_name();
 		$capacities               = Capacities::table_name();
@@ -445,7 +445,7 @@ class Series_PassesTest extends Controller_Test_Case {
 
 		$controller = $this->make_controller();
 
-		$this->assertTrue( $controller->insert_pass_custom_tables_data( $series_id, $ticket ) );
+		$this->assertTrue( $controller->upsert_pass_custom_tables_data( $series_id, $ticket ) );
 
 		$capacities_relationships = Capacities_Relationships::table_name();
 		// Remove the capacity from the relationships table.
@@ -480,7 +480,7 @@ class Series_PassesTest extends Controller_Test_Case {
 
 		$controller = $this->make_controller();
 
-		$this->assertTrue( $controller->insert_pass_custom_tables_data( $series_id, $ticket ) );
+		$this->assertTrue( $controller->upsert_pass_custom_tables_data( $series_id, $ticket ) );
 
 		// Filter the query to trigger an error during the posts and posts deletion.
 		add_filter( 'query', static function ( string $query ) use ( $table_name ) {
@@ -513,7 +513,7 @@ class Series_PassesTest extends Controller_Test_Case {
 
 		$controller = $this->make_controller();
 
-		$this->assertTrue( $controller->insert_pass_custom_tables_data( $series_id, $ticket ) );
+		$this->assertTrue( $controller->upsert_pass_custom_tables_data( $series_id, $ticket ) );
 
 		// Filter the query to make it so that the wpdb call will return `false.
 		add_filter( 'query', static function ( string $query ) use ( $table_name ) {
@@ -551,7 +551,7 @@ class Series_PassesTest extends Controller_Test_Case {
 
 		$controller = $this->make_controller();
 
-		$this->assertTrue( $controller->insert_pass_custom_tables_data( $series_id_1, $ticket_1 ) );
+		$this->assertTrue( $controller->upsert_pass_custom_tables_data( $series_id_1, $ticket_1 ) );
 
 		$capacities_relationships = Capacities_Relationships::table_name();
 		$capacities               = Capacities::table_name();

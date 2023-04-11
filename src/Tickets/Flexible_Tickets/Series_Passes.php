@@ -12,7 +12,6 @@ namespace TEC\Tickets\Flexible_Tickets;
 use Exception;
 use tad_DI52_Container;
 use TEC\Common\Provider\Controller;
-use TEC\Common\StellarWP\DB\Database\Exceptions\DatabaseQueryException;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 use TEC\Tickets\Flexible_Tickets\Custom_Tables\Capacities;
@@ -74,7 +73,7 @@ class Series_Passes extends Controller {
 	 */
 	protected function do_register(): void {
 		add_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'render_form_toggle' ] );
-		add_action( 'tribe_tickets_ticket_add', [ $this, 'insert_pass_custom_tables_data' ], 10, 2 );
+		add_action( 'tribe_tickets_ticket_add', [ $this, 'upsert_pass_custom_tables_data' ], 10, 2 );
 		add_action( 'event_tickets_attendee_ticket_deleted', [ $this, 'delete_pass_custom_tables_data' ], 5, 2 );
 
 	}
@@ -88,7 +87,7 @@ class Series_Passes extends Controller {
 	 */
 	public function unregister(): void {
 		remove_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'render_form_toggle' ] );
-		remove_action( 'tribe_tickets_ticket_add', [ $this, 'insert_pass_custom_tables_data' ] );
+		remove_action( 'tribe_tickets_ticket_add', [ $this, 'upsert_pass_custom_tables_data' ] );
 		remove_action( 'event_tickets_attendee_ticket_deleted', [ $this, 'delete_pass_custom_tables_data' ], 5 );
 	}
 
@@ -119,7 +118,7 @@ class Series_Passes extends Controller {
 	}
 
 	/**
-	 * Adds the data to the custom tables for the series pass.
+	 * Inserts or updates the data to the custom tables for the series pass.
 	 *
 	 * @since TBD
 	 *
@@ -129,7 +128,7 @@ class Series_Passes extends Controller {
 	 * @return bool Whether the data was added successfully.
 	 * @throws Exception If the data could not be added.
 	 */
-	public function insert_pass_custom_tables_data( $post_id, $ticket ): bool {
+	public function upsert_pass_custom_tables_data( $post_id, $ticket ): bool {
 		$check_args = is_int( $post_id ) && $post_id > 0
 		              && (
 			              ( $series = get_post( $post_id ) ) instanceof WP_Post
@@ -141,6 +140,9 @@ class Series_Passes extends Controller {
 		if ( ! $check_args ) {
 			return false;
 		}
+
+		// Reload the ticket object to make sure we have the latest data and the global stock information.
+		$ticket = Tickets::load_ticket_object( $ticket->ID );
 
 		DB::transaction( function () use ( $post_id, $ticket ) {
 			$ticket_id       = $ticket->ID;
