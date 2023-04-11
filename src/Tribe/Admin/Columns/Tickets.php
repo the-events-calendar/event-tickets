@@ -188,7 +188,6 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 			$percentage = 100;
 		} else {
 			// In all other cases, calculate the actual percentage
-			//$percentage = round( ( 100 / $ticket['capacity'] ) * $total );
 			$percentage = round( ( 100 / $ticket['capacity'] ) * $total );
 		}
 
