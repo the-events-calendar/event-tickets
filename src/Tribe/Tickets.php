@@ -3976,7 +3976,12 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$save_ticket = $this->save_ticket( $post_id, $ticket, $data );
 
 			// Set the ticket type.
-			update_post_meta( $ticket->ID, '_type', $data['ticket_type'] ?? 'default' );
+			$ticket_type = 'default';
+			if ( $update ) {
+				$ticket_type = get_post_meta( $ticket->ID, '_type', true ) ?: 'default';
+			}
+			$new_ticket_type = ! empty( $data['ticket_type'] ) ? $data['ticket_type'] : $ticket_type;
+			update_post_meta( $ticket->ID, '_type', $new_ticket_type );
 
 			/**
 			 * Fired once a ticket has been created and added to a post.
