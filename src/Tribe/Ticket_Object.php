@@ -1180,6 +1180,16 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			 */
 			return (bool) apply_filters( 'tribe_tickets_ticket_object_is_ticket_cache_enabled', true, $this->ID );
 		}
-	}
 
+		/**
+		 * Returns the ticket type.
+		 *
+		 * @since TBD
+		 *
+		 * @return string The ticket type.
+		 */
+		public function type(): string {
+			return get_post_meta( $this->ID, '_type', true ) ?: 'default';
+		}
+	}
 }

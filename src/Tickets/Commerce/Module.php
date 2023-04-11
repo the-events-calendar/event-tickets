@@ -557,7 +557,6 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * Gets an individual ticket.
 	 *
 	 * @since 5.1.9
-	 * @since TBD Set some provider-invariant ticket properties.
 	 *
 	 * @param int|\WP_Post $post_id
 	 * @param int|\WP_Post $ticket_id
@@ -565,17 +564,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * @return null|\Tribe__Tickets__Ticket_Object
 	 */
 	public function get_ticket( $post_id, $ticket_id ) {
-		$ticket = tribe( Ticket::class )->get_ticket( $ticket_id );
-
-		if ( ! $ticket instanceof \Tribe__Tickets__Ticket_Object ) {
-			return null;
-		}
-
-		// Set provider-invariant ticket properties.
-		$ticket_type  = get_post_meta( $ticket_id, '_type', true ) ?: 'default';
-		$ticket->type = $ticket_type;
-
-		return $ticket;
+		return tribe( Ticket::class )->get_ticket( $ticket_id );
 	}
 
 	/**
@@ -605,7 +594,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @since 5.5.10 Adjust the method to handle both Ticket and Attendee post type deletion separately.
+	 * @since TBD Adjust the method to handle both Ticket and Attendee post type deletion separately.
 	 *
 	 * @param $event_id
 	 * @param $ticket_id
@@ -635,7 +624,7 @@ class Module extends \Tribe__Tickets__Tickets {
 		if ( ! $deleted ) {
 			return false;
 		}
-
+		
 		// Run anything we might need on parent method.
 		parent::delete_ticket( $event_id, $ticket_id );
 		return true;

@@ -135,7 +135,7 @@ class Series_Passes extends Controller {
 			              && $series->post_type === Series_Post_Type::POSTTYPE
 		              )
 		              && $ticket instanceof Ticket
-		              && ( $ticket->type ?? 'default' ) === self::HANDLED_TICKET_TYPE;
+		              && ( $ticket->type() ?? 'default' ) === self::HANDLED_TICKET_TYPE;
 
 		if ( ! $check_args ) {
 			return false;
@@ -219,7 +219,7 @@ class Series_Passes extends Controller {
 
 		$ticket = Tickets::load_ticket_object( $ticket_id );
 
-		if ( ! ( $ticket instanceof Ticket && ( $ticket->type ?? 'default' ) === self::HANDLED_TICKET_TYPE ) ) {
+		if ( ! ( $ticket instanceof Ticket && ( $ticket->type() ?? 'default' ) === self::HANDLED_TICKET_TYPE ) ) {
 			return false;
 		}
 
