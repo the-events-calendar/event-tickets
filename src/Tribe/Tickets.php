@@ -3930,7 +3930,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$ticket->end_date = date( Tribe__Date_Utils::DBDATEFORMAT, strtotime( $end_datetime ) );
 			}
 
-			$ticket->type = $data['ticket_type'] ?? 'default';
+			update_post_meta( $ticket->ID, '_type', $data['ticket_type'] ?? 'default' );
 
 			// Pass the control to the child object.
 			$save_ticket = $this->save_ticket( $post_id, $ticket, $data );
