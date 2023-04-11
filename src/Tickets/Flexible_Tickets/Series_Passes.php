@@ -325,14 +325,12 @@ class Series_Passes extends Controller {
 	 * @return bool Whether the data is correct.
 	 */
 	private function check_upsert_data( $post_id, $ticket ): bool {
-		$check_args = is_int( $post_id ) && $post_id > 0
-		              && (
-			              ( $series = get_post( $post_id ) ) instanceof WP_Post
-			              && $series->post_type === Series_Post_Type::POSTTYPE
-		              )
-		              && $ticket instanceof Ticket
-		              && ( $ticket->type() ?? 'default' ) === self::HANDLED_TICKET_TYPE;
-
-		return $check_args;
+		return is_int( $post_id ) && $post_id > 0
+		       && (
+			       ( $series = get_post( $post_id ) ) instanceof WP_Post
+			       && $series->post_type === Series_Post_Type::POSTTYPE
+		       )
+		       && $ticket instanceof Ticket
+		       && ( $ticket->type() ?? 'default' ) === self::HANDLED_TICKET_TYPE;
 	}
 }
