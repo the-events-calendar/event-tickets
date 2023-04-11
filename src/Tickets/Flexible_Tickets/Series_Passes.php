@@ -12,6 +12,7 @@ namespace TEC\Tickets\Flexible_Tickets;
 use Exception;
 use tad_DI52_Container;
 use TEC\Common\Provider\Controller;
+use TEC\Common\StellarWP\DB\Database\Exceptions\DatabaseQueryException;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 use TEC\Tickets\Flexible_Tickets\Custom_Tables\Capacities;
@@ -205,6 +206,18 @@ class Series_Passes extends Controller {
 		return true;
 	}
 
+	/**
+	 * Deletes data from the custom tables when a Series Pass is deleted.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id The Series post ID to delete the pass from.
+	 * @param int $ticket_id The ticket ID to delete the pass from.
+	 *
+	 * @return bool Whether the data was deleted successfully.
+	 *
+	 * @throws Exception If the data could not be deleted.
+	 */
 	public function delete_pass_custom_tables_data( $post_id, $ticket_id ): bool {
 		$check_args = is_int( $post_id ) && $post_id > 0
 		              && (
