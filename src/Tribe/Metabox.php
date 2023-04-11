@@ -222,9 +222,13 @@ class Tribe__Tickets__Metabox {
 		$data = wp_parse_args( tribe_get_request_var( array( 'data' ), array() ), array() );
 
 		/**
-		 * The ticket type might not be defined, it should not be required.
+		 * The ticket type might not be defined, read it from the ticket, if possible.
 		 */
 		$ticket_type = tribe_get_request_var( 'ticket_type', null );
+		if ( ! $ticket_type && isset( $data['ticket_id'] ) ) {
+			$ticket_type = get_post_meta( $data['ticket_id'], '_type', true );
+		}
+		$ticket_type = sanitize_text_field( $ticket_type ?: 'default' );
 
 		if ( ! $this->has_permission( $post_id, $_POST, 'add_ticket_nonce' ) ) {
 			$failed_ticket_output = esc_html(
@@ -266,7 +270,7 @@ class Tribe__Tickets__Metabox {
 		}
 
 		// If we have a ticket type, set it.
-		$data['ticket_type'] = $ticket_type ?? 'default';
+		$data['ticket_type'] = $ticket_type;
 
 		// Do the actual adding
 		$ticket_id = $module->ticket_add( $post_id, $data );
