@@ -2,7 +2,7 @@
 /**
  * Handles the Series Passes integration at different levels.
  *
- * @since TBD
+ * @since   TBD
  *
  * @package TEC\Tickets\Flexible_Tickets;
  */
@@ -27,7 +27,7 @@ use WP_Post;
 /**
  * Class Series_Passes.
  *
- * @since TBD
+ * @since   TBD
  *
  * @package TEC\Tickets\Flexible_Tickets;
  */
@@ -53,8 +53,8 @@ class Series_Passes extends Controller {
 	 *
 	 * since TBD
 	 *
-	 * @param tad_DI52_Container $container The container instance.
-	 * @param Admin_Views $admin_views The templates handler.
+	 * @param tad_DI52_Container $container   The container instance.
+	 * @param Admin_Views        $admin_views The templates handler.
 	 */
 	public function __construct(
 		tad_DI52_Container $container,
@@ -73,9 +73,9 @@ class Series_Passes extends Controller {
 	 */
 	protected function do_register(): void {
 		add_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'render_form_toggle' ] );
-		add_action( 'tribe_tickets_ticket_add', [ $this, 'upsert_pass_custom_tables_data' ], 10, 2 );
+		add_action( 'tec_tickets_ticket_add', [ $this, 'insert_pass_custom_tables_data' ], 10, 2 );
 		add_action( 'event_tickets_attendee_ticket_deleted', [ $this, 'delete_pass_custom_tables_data' ], 5, 2 );
-
+		add_action( 'tec_tickets_ticket_update', [ $this, 'update_pass_custom_tables_data' ], 10, 2 );
 	}
 
 	/**
@@ -87,7 +87,7 @@ class Series_Passes extends Controller {
 	 */
 	public function unregister(): void {
 		remove_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'render_form_toggle' ] );
-		remove_action( 'tribe_tickets_ticket_add', [ $this, 'upsert_pass_custom_tables_data' ] );
+		remove_action( 'tribe_tickets_ticket_add', [ $this, 'insert_pass_custom_tables_data' ] );
 		remove_action( 'event_tickets_attendee_ticket_deleted', [ $this, 'delete_pass_custom_tables_data' ], 5 );
 	}
 
@@ -122,22 +122,14 @@ class Series_Passes extends Controller {
 	 *
 	 * @since TBD
 	 *
-	 * @param int $post_id The Series post ID to add the pass to.
-	 * @param Ticket $ticket A reference to the ticket object.
+	 * @param int    $post_id The Series post ID to add the pass to.
+	 * @param Ticket $ticket  A reference to the ticket object.
 	 *
 	 * @return bool Whether the data was added successfully.
 	 * @throws Exception If the data could not be added.
 	 */
-	public function upsert_pass_custom_tables_data( $post_id, $ticket ): bool {
-		$check_args = is_int( $post_id ) && $post_id > 0
-		              && (
-			              ( $series = get_post( $post_id ) ) instanceof WP_Post
-			              && $series->post_type === Series_Post_Type::POSTTYPE
-		              )
-		              && $ticket instanceof Ticket
-		              && ( $ticket->type() ?? 'default' ) === self::HANDLED_TICKET_TYPE;
-
-		if ( ! $check_args ) {
+	public function insert_pass_custom_tables_data( $post_id, $ticket ): bool {
+		if ( ! ( $this->check_upsert_data( $post_id, $ticket ) ) ) {
 			return false;
 		}
 
@@ -213,7 +205,7 @@ class Series_Passes extends Controller {
 	 *
 	 * @since TBD
 	 *
-	 * @param int $post_id The Series post ID to delete the pass from.
+	 * @param int $post_id   The Series post ID to delete the pass from.
 	 * @param int $ticket_id The ticket ID to delete the pass from.
 	 *
 	 * @return bool Whether the data was deleted successfully.
@@ -307,5 +299,37 @@ class Series_Passes extends Controller {
 		} );
 
 		return true;
+	}
+
+	public function update_pass_custom_tables_data( $post_id, $ticket ): bool {
+		if ( ! ( $this->check_upsert_data( $post_id, $ticket ) ) ) {
+			return false;
+		}
+
+		// Reload the ticket object to make sure we have the latest data and the global stock information.
+		$ticket = Tickets::load_ticket_object( $ticket->ID );
+	}
+
+	/**
+	 * Parses the data passed as input to insert or update a Series Pass to make sure
+	 * it's correct.
+	 *
+	 * @since TBD
+	 *
+	 * @param int    $post_id The post ID the ticket has been created or updated for.
+	 * @param Ticket $ticket  The created or updated ticket object.
+	 *
+	 * @return bool Whether the data is correct.
+	 */
+	private function check_upsert_data( int $post_id, Ticket $ticket ): bool {
+		$check_args = is_int( $post_id ) && $post_id > 0
+		              && (
+			              ( $series = get_post( $post_id ) ) instanceof WP_Post
+			              && $series->post_type === Series_Post_Type::POSTTYPE
+		              )
+		              && $ticket instanceof Ticket
+		              && ( $ticket->type() ?? 'default' ) === self::HANDLED_TICKET_TYPE;
+
+		return $check_args;
 	}
 }
