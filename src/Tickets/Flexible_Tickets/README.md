@@ -18,11 +18,11 @@ As this file grows, it will be split into multiple files and linked from here.
 ## Activating and deactivating the feature
 
 The whole feature is active by default and can be completely deactivated by setting
-the `TEC_FLEXIBLE_TICKETS_DISABLEDEC_TICKETS_COMMERCE` constant to a falsy value (e.g. `0` or `false`) in the
+the `TEC_FLEXIBLE_TICKETS_DISABLED` constant to a falsy value (e.g. `0` or `false`) in the
 site `wp-config.php` file.
 
 ```php
-define( 'TEC_FLEXIBLE_TICKETS_DISABLEDEC_TICKETS_COMMERCE', false );
+define( 'TEC_FLEXIBLE_TICKETS_DISABLED', false );
 ```
 
 If the constant is not set, or its value is truthy, the feature will be active.
