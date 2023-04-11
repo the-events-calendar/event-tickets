@@ -3981,12 +3981,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/**
 			 * Fired once a ticket has been created and added to a post.
 			 *
+			 * @since TBD Add the `$update` parameter.
+			 *
 			 * @param int                           $post_id  The ticket parent post ID.
 			 * @param Tribe__Tickets__Ticket_Object $ticket   The ticket that was just added.
 			 * @param array                         $raw_data The ticket data that was used to save.
 			 * @param string                        $class    The Commerce engine class name.
+			 * @param bool                          $update   Whether the ticket is being updated or created.
 			 */
-			do_action( 'tribe_tickets_ticket_add', $post_id, $ticket, $data, __CLASS__ );
+			do_action( 'tribe_tickets_ticket_add', $post_id, $ticket, $data, __CLASS__, $update );
 
 			if ( $update ) {
 				/**
@@ -3994,12 +3997,24 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				 *
 				 * @since TBD
 				 *
-				 * @param int $post_id The ticket parent post ID.
-				 * @param Tribe__Tickets__Ticket_Object $ticket The ticket that was just added.
-				 * @param array $raw_data The ticket data that was used to save.
-				 * @param string $class The Commerce engine class name.
+				 * @param int                           $post_id  The ticket parent post ID.
+				 * @param Tribe__Tickets__Ticket_Object $ticket   The ticket that was just added.
+				 * @param array                         $raw_data The ticket data that was used to save.
+				 * @param string                        $class    The Commerce engine class name.
 				 */
 				do_action( 'tec_tickets_ticket_update', $post_id, $ticket, $data, __CLASS__ );
+			} else {
+				/**
+				 * Fired once a ticket has been created.
+				 *
+				 * @since TBD
+				 *
+				 * @param int                           $post_id  The ticket parent post ID.
+				 * @param Tribe__Tickets__Ticket_Object $ticket   The ticket that was just added.
+				 * @param array                         $raw_data The ticket data that was used to save.
+				 * @param string                        $class    The Commerce engine class name.
+				 */
+				do_action( 'tec_tickets_ticket_add', $post_id, $ticket, $data, __CLASS__ );
 			}
 
 			$tickets_handler->toggle_manual_update_flag( false );
