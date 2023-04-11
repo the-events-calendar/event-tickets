@@ -163,14 +163,14 @@ class RSVP_Not_Going extends \TEC\Tickets\Emails\Email_Abstract {
 	}
 
 	/**
-	 * Get preview context for email.
+	 * Get default preview context for email.
 	 *
-	 * @since 5.5.10
+	 * @since TBD
 	 *
 	 * @param array $args The arguments.
 	 * @return array $args The modified arguments
 	 */
-	public function get_preview_context( $args = [] ): array {
+	public function get_default_preview_context( $args = [] ): array {
 		$defaults = [
 			'email'              => $this,
 			'is_preview'         => true,
