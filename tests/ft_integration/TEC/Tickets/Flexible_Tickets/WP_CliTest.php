@@ -48,4 +48,30 @@ class WP_CliTest extends Controller_Test_Case {
 
 		$this->assertNotEmpty( $controller->truncate_custom_tables() );
 	}
+
+	/**
+	 * It should disable foreign key checks before running the site empty command
+	 *
+	 * @test
+	 */
+	public function should_disable_foreign_key_checks_before_running_the_site_empty_command(): void {
+		$this->set_const_value( 'WP_CLI', true );
+
+		$controller = $this->make_controller();
+
+		$this->assertTrue( $controller->maybe_disable_foreign_key_checks( [ 'site', 'empty' ] ) );
+	}
+
+	/**
+	 * It should not disable foreign key checks before running any other command.
+	 *
+	 * @test
+	 */
+	public function should_not_disable_foreign_key_checks_before_running_any_other_command_(): void {
+		$this->set_const_value( 'WP_CLI', true );
+
+		$controller = $this->make_controller();
+
+		$this->assertFalse( $controller->maybe_disable_foreign_key_checks( [ 'site', 'activate' ] ) );
+	}
 }
