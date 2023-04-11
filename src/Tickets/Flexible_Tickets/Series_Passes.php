@@ -73,8 +73,8 @@ class Series_Passes extends Controller {
 	 */
 	protected function do_register(): void {
 		add_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'render_form_toggle' ] );
-		add_action( 'tec_tickets_commerce_after_save_ticket', [ $this, 'add_pass_custom_tables_data' ], 10, 2 );
-//		add_action( 'tec_tickets_ticket_deleted_series_pass', [ $this, 'remove_pass_custom_tables_data' ], 10, 2 );
+		add_action( 'tribe_tickets_ticket_add', [ $this, 'insert_pass_custom_tables_data' ], 10, 2 );
+		add_action( 'event_tickets_attendee_ticket_deleted', [ $this, 'delete_pass_custom_tables_data' ], 5, 2 );
 
 	}
 
@@ -87,7 +87,8 @@ class Series_Passes extends Controller {
 	 */
 	public function unregister(): void {
 		remove_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'render_form_toggle' ] );
-		remove_action( 'tec_tickets_commerce_after_save_ticket', [ $this, 'add_pass_custom_tables_data' ] );
+		remove_action( 'tribe_tickets_ticket_add', [ $this, 'insert_pass_custom_tables_data' ] );
+		remove_action( 'event_tickets_attendee_ticket_deleted', [ $this, 'delete_pass_custom_tables_data' ], 5 );
 	}
 
 	/**
@@ -127,7 +128,7 @@ class Series_Passes extends Controller {
 	 * @return bool Whether the data was added successfully.
 	 * @throws Exception If the data could not be added.
 	 */
-	public function add_pass_custom_tables_data( $post_id, $ticket ): bool {
+	public function insert_pass_custom_tables_data( $post_id, $ticket ): bool {
 		$check_args = is_int( $post_id ) && $post_id > 0
 		              && (
 			              ( $series = get_post( $post_id ) ) instanceof WP_Post
@@ -145,12 +146,13 @@ class Series_Passes extends Controller {
 			$capacity        = $ticket->capacity();
 			$capacity_mode   = $ticket->global_stock_mode();
 			$posts_and_posts = Posts_And_Posts::table_name();
-			if ( ! ( DB::insert(
+
+			if ( ! DB::insert(
 				$posts_and_posts, [
 				'post_id_1' => (int) $ticket_id,
 				'post_id_2' => (int) $post_id,
 				'type'      => Posts_And_Posts::TYPE_TICKET_AND_POST_PREFIX . Series_Post_Type::POSTTYPE,
-			], [ '%d', '%d', '%s', ] ) ) ) {
+			], [ '%d', '%d', '%s', ] ) ) {
 				$this->error( "Could not insert into $posts_and_posts table for ticket {$ticket_id} and series {$post_id}" );
 				// Throw an exception to rollback the transaction.
 				throw new \RuntimeException(
@@ -159,6 +161,7 @@ class Series_Passes extends Controller {
 			}
 
 			$capacities = Capacities::table_name();
+
 			if ( ! DB::insert(
 				$capacities, [
 				'value'       => $capacity ?: Capacities::VALUE_UNLIMITED,
@@ -182,16 +185,17 @@ class Series_Passes extends Controller {
 				);
 			}
 
-			$capacities_and_relationships = Capacities_Relationships::table_name();
+			$capacities_relationships = Capacities_Relationships::table_name();
+
 			if ( ! DB::insert(
-				$capacities_and_relationships, [
+				$capacities_relationships, [
 				'capacity_id' => $capacity_id,
 				'object_id'   => $ticket_id,
 			], [ '%d', '%d', ] ) ) {
-				$this->error( "Could not insert into $capacities_and_relationships table for ticket {$ticket_id} and capacity {$capacity_id}" );
+				$this->error( "Could not insert into $capacities_relationships table for ticket {$ticket_id} and capacity {$capacity_id}" );
 				// Throw an exception to rollback the transaction.
 				throw new \RuntimeException(
-					"Could not insert into $capacities_and_relationships table for ticket {$ticket_id} and capacity {$capacity_id}"
+					"Could not insert into $capacities_relationships table for ticket {$ticket_id} and capacity {$capacity_id}"
 				);
 			}
 		} );
@@ -201,50 +205,92 @@ class Series_Passes extends Controller {
 		return true;
 	}
 
-//	public function remove_pass_custom_tables_data( $post_id, $ticket_id ): bool {
-//		$check_args = is_int( $post_id ) && $post_id > 0
-//		              && is_int( $ticket_id ) && $ticket_id > 0
-//		              && (
-//			              ( $series = get_post( $post_id ) ) instanceof WP_Post
-//			              && $series->post_type === Series_Post_Type::POSTTYPE
-//		              );
-//
-//		if ( ! $check_args ) {
-//			return false;
-//		}
-//
-//		DB::transaction( function () use ( $post_id, $ticket_id ) {
-//			$posts_and_posts = Posts_And_Posts::table_name();
-//			if ( ! DB::delete(
-//				$posts_and_posts, [
-//				'post_id_1' => (int) $ticket_id,
-//				'post_id_2' => (int) $post_id,
-//				'type'      => Posts_And_Posts::TYPE_TICKET_AND_POST_PREFIX . Series_Post_Type::POSTTYPE,
-//			], [ '%d', '%d', '%s', ] ) ) {
-//				$this->error( "Could not delete from $posts_and_posts table for ticket {$ticket_id} and series {$post_id}" );
-//				// Throw an exception to rollback the transaction.
-//				throw new \RuntimeException(
-//					"Could not delete from $posts_and_posts table for ticket {$ticket_id} and series {$post_id}"
-//				);
-//			}
-//
-//			$capacities_and_relationships = Capacities_Relationships::table_name();
-//			if ( ! DB::delete(
-//				$capacities_and_relationships, [
-//				'object_id' => $ticket_id,
-//			], [ '%d', ] ) ) {
-//				$this->error( "Could not delete from $capacities_and_relationships table for ticket {$ticket_id}" );
-//				// Throw an exception to rollback the transaction.
-//				throw new \RuntimeException(
-//					"Could not delete from $capacities_and_relationships table for ticket {$ticket_id}"
-//				);
-//			}
-//
-//			$capacities = Capacities::table_name();
-//			if ( ! DB::delete(
-//				$capacities, [
-//				'id' => DB::get_var( "SELECT capacity_id FROM $capacities_and_relationships WHERE object_id = {$ticket_id}" ),
-//			], [ '%d', ] ) ) {
-//				$this->
-//	}
+	public function delete_pass_custom_tables_data( $post_id, $ticket_id ): bool {
+		$check_args = is_int( $post_id ) && $post_id > 0
+		              && (
+			              ( $series = get_post( $post_id ) ) instanceof WP_Post
+			              && $series->post_type === Series_Post_Type::POSTTYPE
+		              )
+		              && is_int( $ticket_id ) && $ticket_id > 0;
+
+		if ( ! $check_args ) {
+			return false;
+		}
+
+		$ticket = Tickets::load_ticket_object( $ticket_id );
+
+		if ( ! ( $ticket instanceof Ticket && ( $ticket->type ?? 'default' ) === self::HANDLED_TICKET_TYPE ) ) {
+			return false;
+		}
+
+		DB::transaction( function () use ( $post_id, $ticket_id ) {
+			$capacities_relationships = Capacities_Relationships::table_name();
+
+			$capacity_id = DB::get_var(
+				DB::prepare(
+					"SELECT capacity_id FROM $capacities_relationships WHERE object_id = %d",
+					$ticket_id
+				)
+			);
+
+			if ( empty( $capacity_id ) ) {
+				$this->error( "Could not get capacity id for ticket {$ticket_id}" );
+				// Throw an exception to rollback the transaction.
+				throw new \RuntimeException(
+					"Could not get capacity id for ticket {$ticket_id}"
+				);
+			}
+
+			$posts_and_posts = Posts_And_Posts::table_name();
+
+			if ( false === DB::delete(
+					$posts_and_posts, [
+					'post_id_1' => (int) $ticket_id,
+					'post_id_2' => (int) $post_id,
+					'type'      => Posts_And_Posts::TYPE_TICKET_AND_POST_PREFIX . Series_Post_Type::POSTTYPE,
+				], [ '%d', '%d', '%s', ] ) ) {
+				$this->error( "Could not delete from $posts_and_posts table for ticket {$ticket_id} and series {$post_id}" );
+				// Throw an exception to rollback the transaction.
+				throw new \RuntimeException(
+					"Could not delete from $posts_and_posts table for ticket {$ticket_id} and series {$post_id}"
+				);
+			}
+
+			$capacity_relaionships_count = (int) DB::get_var(
+				DB::prepare(
+					"SELECT COUNT(*) FROM $capacities_relationships WHERE capacity_id = %d",
+					$capacity_id
+				)
+			);
+
+			if ( false === DB::delete(
+					$capacities_relationships, [
+					'object_id' => $ticket_id,
+				], [ '%d', ] ) ) {
+				$this->error( "Could not delete from $capacities_relationships table for ticket {$ticket_id}" );
+				// Throw an exception to rollback the transaction.
+				throw new \RuntimeException(
+					"Could not delete from $capacities_relationships table for ticket {$ticket_id}"
+				);
+			}
+
+			if ( $capacity_relaionships_count === 1 ) {
+				// The ticket being deleted was the only one using this capacity, remove it.
+				$capacities = Capacities::table_name();
+
+				if ( false === DB::delete(
+						$capacities, [
+						'id' => $capacity_id,
+					], [ '%d', ] ) ) {
+					$this->error( "Could not delete from $capacities table for capacity {$capacity_id}" );
+					// Throw an exception to rollback the transaction.
+					throw new \RuntimeException(
+						"Could not delete from $capacities table for capacity {$capacity_id}"
+					);
+				}
+			}
+		} );
+
+		return true;
+	}
 }

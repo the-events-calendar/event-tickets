@@ -645,7 +645,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return false;
 			}
 
-			if ( in_array( get_post_type( $event_id ), Tribe__Tickets__Main::instance()->post_types() ) ) {
+			$post_types = Tribe__Tickets__Main::instance()->post_types();
+			if ( in_array( get_post_type( $event_id ), $post_types ) ) {
 				return get_post( $event_id );
 			}
 

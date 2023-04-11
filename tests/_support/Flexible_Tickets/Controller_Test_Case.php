@@ -36,9 +36,10 @@ class Controller_Test_Case extends WPTestCase {
 	 *
 	 * @since TBD
 	 *
-	 * @var array|void|\WP_UnitTest_Factory|null
+	 * @var array<string,array>> An array of log entries, each entry is an array with the keys `level`, `message` and
+	 *                         `context`.
 	 */
-	protected $controller_logs = [];
+	protected array $controller_logs = [];
 
 	/**
 	 * Creates a controller instance and sets up a dedicated Service Locator for it.
