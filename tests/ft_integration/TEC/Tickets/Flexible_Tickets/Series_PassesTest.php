@@ -618,23 +618,7 @@ class Series_PassesTest extends Controller_Test_Case {
 	 * @test
 	 */
 	public function should_update_pass_capacity_correctly_from_unlimited_to_own(): void {
-		$series_id = static::factory()->post->create( [
-			'post_type' => Series_Post_Type::POSTTYPE,
-		] );
-		$ticket    = $this->create_tc_series_pass( $series_id, 2389, [
-			'tribe-ticket' => $this->capacity_payload( 'unlimited' ),
-		] );
-
-		$this->assertEquals( Series_Passes::HANDLED_TICKET_TYPE, $ticket->type() );
-
-		$controller = $this->make_controller();
-
-		$this->assertTrue( $controller->insert_pass_custom_tables_data( $series_id, $ticket ) );
-		$this->assert_object_capacity_in_db( $ticket->ID, - 1, Global_Stock::OWN_STOCK_MODE );
-		$this->assert_object_capacity_not_in_db( $series_id );
-		$ticket_id = $ticket->ID;
-
-		$ticket = Tickets::load_ticket_object( $ticket_id );
+		[ $series_id, $ticket, $ticket_id ] = $this->given_a_pass_with_unlimited_capacity();
 
 		$ticket_update_data = [
 			'ticket_id'          => $ticket_id,
@@ -665,7 +649,29 @@ class Series_PassesTest extends Controller_Test_Case {
 	 * @test
 	 */
 	public function should_update_pass_capacity_correctly_from_unlimited_to_global(): void {
-		throw new \Exception( 'Not implemented yet' );
+		[ $series_id, $ticket, $ticket_id ] = $this->given_a_pass_with_unlimited_capacity();
+
+		$ticket_update_data = [
+			'ticket_id'          => $ticket_id,
+			'tribe-ticket'       => $this->capacity_payload( 'global_100' ),
+			// Required for the update.
+			'ticket_name'        => $ticket->name,
+			'ticket_description' => $ticket->description,
+			'ticket_menu_order'  => $ticket->menu_order,
+		];
+
+		// Get the test controller, disconnect the original one.
+		$controller = $this->make_controller();
+
+		// Update the ticket.
+		Commerce\Module::get_instance()->ticket_add( $series_id, $ticket_update_data );
+
+		$this->assertTrue( $controller->update_pass_custom_tables_data( $series_id, $ticket ) );
+
+		$ticket = Tickets::load_ticket_object( $ticket_id );
+
+		$this->assert_object_capacity_in_db( $ticket->ID, '', Global_Stock::GLOBAL_STOCK_MODE );
+		$this->assert_object_capacity_in_db( $series_id, 100, Global_Stock::GLOBAL_STOCK_MODE );
 	}
 
 	/**
@@ -837,5 +843,27 @@ class Series_PassesTest extends Controller_Test_Case {
 		$capacity_relationships       = DB::get_results( "SELECT * FROM $capacity_relationships_table WHERE object_id = {$object_id}" );
 
 		$this->assertCount( 0, $capacity_relationships );
+	}
+
+	private function given_a_pass_with_unlimited_capacity(): array {
+		$series_id = static::factory()->post->create( [
+			'post_type' => Series_Post_Type::POSTTYPE,
+		] );
+		$ticket    = $this->create_tc_series_pass( $series_id, 2389, [
+			'tribe-ticket' => $this->capacity_payload( 'unlimited' ),
+		] );
+
+		$this->assertEquals( Series_Passes::HANDLED_TICKET_TYPE, $ticket->type() );
+
+		$controller = $this->make_controller();
+
+		$this->assertTrue( $controller->insert_pass_custom_tables_data( $series_id, $ticket ) );
+		$this->assert_object_capacity_in_db( $ticket->ID, - 1, Global_Stock::OWN_STOCK_MODE );
+		$this->assert_object_capacity_not_in_db( $series_id );
+		$ticket_id = $ticket->ID;
+
+		$ticket = Tickets::load_ticket_object( $ticket_id );
+
+		return array( $series_id, $ticket, $ticket_id );
 	}
 }
