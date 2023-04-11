@@ -47,15 +47,6 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 	public $template = 'admin-new-order';
 
 	/**
-	 * Email recipient.
-	 *
-	 * @since 5.5.10
-	 *
-	 * @var string
-	 */
-	public $recipient = 'admin';
-
-	/**
 	 * Get email title.
 	 *
 	 * @since 5.5.10
@@ -64,6 +55,17 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 	 */
 	public function get_title(): string {
 		return esc_html__( 'Completed Order', 'event-tickets' );
+	}
+
+	/**
+	 * Get email to.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The email "to".
+	 */
+	public function get_to(): string {
+		return esc_html__( 'Admin', 'event-tickets' );
 	}
 
 	/**
@@ -183,10 +185,11 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 	 */
 	public function get_preview_context( $args = [] ): array {
 		$defaults = [
+			'email'              => $this,
 			'is_preview'         => true,
 			'title'              => $this->get_heading(),
 			'heading'            => $this->get_heading(),
-			'additional_content' => $this->format_string( tribe_get_option( $this->get_option_key( 'add-content' ), '' ) ),
+			'additional_content' => $this->get_additional_content(),
 			'order'              => Preview_Data::get_order(),
 			'tickets'            => Preview_Data::get_tickets(),
 			'attendees'          => Preview_Data::get_attendees(),
@@ -204,9 +207,10 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 	 */
 	public function get_default_template_context(): array {
 		$defaults = [
+			'email'              => $this,
 			'title'              => $this->get_title(),
 			'heading'            => $this->get_heading(),
-			'additional_content' => $this->format_string( tribe_get_option( $this->get_option_key( 'add-content' ), '' ) ),
+			'additional_content' => $this->get_additional_content(),
 			'order'              => $this->__get( 'order' ),
 		];
 
@@ -223,7 +227,6 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 	 * @return string The email content.
 	 */
 	public function get_content( $args = [] ): string {
-		// @todo: We need to grab the proper information that's going to be sent as context.
 		$is_preview = ! empty( $args['is_preview'] ) ? tribe_is_truthy( $args['is_preview'] ) : false;
 		$args       = $this->get_template_context( $args );
 
@@ -231,5 +234,46 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 		$email_template->set_preview( $is_preview );
 
 		return $email_template->get_html( $this->template, $args );
+	}
+
+	/**
+	 * Send the email.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether the email was sent or not.
+	 */
+	public function send() {
+		$recipient = $this->get_recipient();
+
+		// Bail if there is no email address to send to.
+		if ( empty( $recipient ) ) {
+			return false;
+		}
+
+		if ( ! $this->is_enabled() ) {
+			return false;
+		}
+
+		$order = $this->__get( 'order' );
+
+		// Bail if there's no order.
+		if ( empty( $order ) ) {
+			return false;
+		}
+
+		$placeholders = [
+			'{order_number}' => $order->ID,
+			'{order_id}'     => $order->ID,
+		];
+
+		$this->set_placeholders( $placeholders );
+
+		$subject     = $this->get_subject();
+		$content     = $this->get_content();
+		$headers     = $this->get_headers();
+		$attachments = $this->get_attachments();
+
+		return tribe( \TEC\Tickets\Emails\Email_Sender::class )->send( $recipient, $subject, $content, $headers, $attachments );
 	}
 }
