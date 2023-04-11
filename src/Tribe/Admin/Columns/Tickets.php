@@ -88,6 +88,18 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 	 * @return string The column HTML.
 	 */
 	protected function render_tickets_entry( $post_id ) {
+
+		/**
+		 * Allows the displaying of the ticket attendee column to be toggled.
+		 *
+		 *  @param boolean $hide_attendee_column Allows the display of the attendee column to be toggled. Default, false.
+		 */
+		$hide_attendee_column = apply_filters( 'tec_tickets_disable_attendee_column', false );
+
+		if ( $hide_attendee_column ) {
+			return '&mdash;';
+		}
+
 		$post = get_post( $post_id );
 
 		$total = Tribe__Tickets__Tickets::get_event_attendees_count( $post_id );
@@ -100,7 +112,9 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 			return '&mdash;';
 		}
 
-		$content = sprintf( '<div>%s</div>%s', $total - $not_going, $this->get_percentage_string( $post_id, null, $total, $not_going ) );
+		$percentage = $this->get_percentage_string( $post_id, null, $total, $not_going );
+
+		$content = sprintf( '<div>%s</div>%s', $total - $not_going, $percentage  );
 		$attendees_link = tribe( 'tickets.attendees' )->get_report_link( $post );
 
 		return sprintf( '<a href="%s" target="_blank" class="tribe-tickets-column-attendees-link">%s</a>', $attendees_link, $content );
@@ -111,6 +125,7 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 	 *
 	 * @since 4.6.2 Deprecated the second parameter.
 	 * @since 4.10.6 Added $total and $not_going parameters to further optimize requests.
+	 * @since TBD Added caching and reorganized code to further optimize requests.
 	 *
 	 * @param  int     $post_id   The current post ID.
 	 * @param  null    $deprecated
@@ -121,6 +136,15 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 	 *                post tickets has unlimited stock.
 	 */
 	protected function get_percentage_string( $post_id, $deprecated = null, $total = null, $not_going = null ) {
+
+		/** @var Tribe__Cache $cache */
+		$cache = tribe( 'cache' );
+		$key   = __METHOD__ . '-' . $post_id . '_' . (int) $total . '_' . (int) $not_going;
+
+		if ( isset( $cache[ $key ] ) ) {
+			return $cache[ $key ];
+		}
+
 		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
 		$tickets_handler = tribe( 'tickets.handler' );
 
@@ -139,14 +163,22 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 
 		// Bail early for unlimited
 		if ( $ticket['has_unlimited'] ) {
-			return tribe_tickets_get_readable_amount( -1 );
+
+			$unlimited_amount = tribe_tickets_get_readable_amount( - 1 );
+
+			// Set our cache to the unlimited text.
+			$cache[ $key ] = $unlimited_amount;
+
+			return $unlimited_amount;
 		}
 
-		$shared_capacity_obj  = new Tribe__Tickets__Global_Stock( $post_id );
-		$global_stock_enabled = $shared_capacity_obj->is_enabled();
-		$global_stock         = $shared_capacity_obj->get_stock_level();
+		$stock = $ticket['stock'];
 
-		$stock = $global_stock_enabled ? $global_stock : $ticket['stock'];
+		if ( $ticket['has_shared'] ) {
+			$shared_capacity_obj = new Tribe__Tickets__Global_Stock( $post_id );
+			$global_stock        = $shared_capacity_obj->get_stock_level();
+			$stock               = $global_stock;
+		}
 
 		if ( 1 > $total || 0 === $ticket['capacity'] ) {
 			// If there have been zero sales we need not do any further arithmetic
@@ -156,10 +188,14 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 			$percentage = 100;
 		} else {
 			// In all other cases, calculate the actual percentage
+			//$percentage = round( ( 100 / $ticket['capacity'] ) * $total );
 			$percentage = round( ( 100 / $ticket['capacity'] ) * $total );
 		}
 
-		return ' <div><small>(' . $percentage . '%)</small></div>';
+		// Set our cache to the percentage.
+		$cache[ $key ] = $percentage;
+
+		return sprintf( '<div><small>(%s%%)</small></div>', $percentage );
 	}
 
 	/************************
