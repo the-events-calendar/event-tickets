@@ -3930,6 +3930,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		public function ticket_add( $post_id, $data ) {
 			$ticket                   = new Tribe__Tickets__Ticket_Object();
 			$ticket->ID               = isset( $data['ticket_id'] ) ? absint( $data['ticket_id'] ) : null;
+			$update                   = ! empty( $ticket->ID );
 			$ticket->name             = isset( $data['ticket_name'] ) ? esc_html( $data['ticket_name'] ) : null;
 			$ticket->description      = isset( $data['ticket_description'] ) ? wp_kses_post( $data['ticket_description'] ) : '';
 			$ticket->price            = ! empty( $data['ticket_price'] ) ? filter_var( trim( $data['ticket_price'] ), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION | FILTER_FLAG_ALLOW_THOUSAND ) : 0;
@@ -3986,6 +3987,20 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 * @param string                        $class    The Commerce engine class name.
 			 */
 			do_action( 'tribe_tickets_ticket_add', $post_id, $ticket, $data, __CLASS__ );
+
+			if ( $update ) {
+				/**
+				 * Fired once a ticket has been updated.
+				 *
+				 * @since TBD
+				 *
+				 * @param int $post_id The ticket parent post ID.
+				 * @param Tribe__Tickets__Ticket_Object $ticket The ticket that was just added.
+				 * @param array $raw_data The ticket data that was used to save.
+				 * @param string $class The Commerce engine class name.
+				 */
+				do_action( 'tec_tickets_ticket_update', $post_id, $ticket, $data, __CLASS__ );
+			}
 
 			$tickets_handler->toggle_manual_update_flag( false );
 
