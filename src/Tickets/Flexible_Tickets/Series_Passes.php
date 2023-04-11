@@ -87,8 +87,9 @@ class Series_Passes extends Controller {
 	 */
 	public function unregister(): void {
 		remove_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'render_form_toggle' ] );
-		remove_action( 'tribe_tickets_ticket_add', [ $this, 'insert_pass_custom_tables_data' ] );
+		remove_action( 'tec_tickets_ticket_add', [ $this, 'insert_pass_custom_tables_data' ] );
 		remove_action( 'event_tickets_attendee_ticket_deleted', [ $this, 'delete_pass_custom_tables_data' ], 5 );
+		remove_action( 'tec_tickets_ticket_update', [ $this, 'update_pass_custom_tables_data' ] );
 	}
 
 	/**
@@ -308,6 +309,8 @@ class Series_Passes extends Controller {
 
 		// Reload the ticket object to make sure we have the latest data and the global stock information.
 		$ticket = Tickets::load_ticket_object( $ticket->ID );
+
+		return true;
 	}
 
 	/**
@@ -321,7 +324,7 @@ class Series_Passes extends Controller {
 	 *
 	 * @return bool Whether the data is correct.
 	 */
-	private function check_upsert_data( int $post_id, Ticket $ticket ): bool {
+	private function check_upsert_data( $post_id, $ticket ): bool {
 		$check_args = is_int( $post_id ) && $post_id > 0
 		              && (
 			              ( $series = get_post( $post_id ) ) instanceof WP_Post

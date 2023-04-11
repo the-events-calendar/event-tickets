@@ -18,6 +18,7 @@ use TEC\Tickets\Flexible_Tickets\Test\Controller_Test_Case;
 use TEC\Tickets\Flexible_Tickets\Test\Traits\Series_Pass_Factory;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe__Log as Log;
+use Tribe__Tickets__Global_Stock as Global_Stock;
 use Tribe__Tickets__Tickets as Tickets;
 
 class Series_PassesTest extends Controller_Test_Case {
@@ -536,44 +537,127 @@ class Series_PassesTest extends Controller_Test_Case {
 	 * It should not remove capacity when pass deleted if related to other tickets
 	 *
 	 * @test
-	 * @skip
+	 * @skip Come back to this when shared capacity is handled.
 	 */
 	public function should_not_remove_capacity_when_pass_deleted_if_related_to_other(): void {
 		// @todo handle shared capacity first
-		$series_id_1 = static::factory()->post->create( [
-			'post_type' => Series_Post_Type::POSTTYPE,
-		] );
-		$ticket_1    = $this->create_tc_series_pass( $series_id_1, 2389 );
-		$series_id_2 = static::factory()->post->create( [
-			'post_type' => Series_Post_Type::POSTTYPE,
-		] );
-		$ticket_2    = $this->create_tc_series_pass( $series_id_2, 2389 );
+	}
+
+	/**
+	 * It should not update pass data on invalid input
+	 *
+	 * @test
+	 * @dataProvider invalid_add_pass_custom_tables_data_provider
+	 */
+	public function should_not_update_pass_data_on_invalid_input( Closure $fixture ): void {
+		[ $post_id, $ticket ] = $fixture();
 
 		$controller = $this->make_controller();
 
-		$this->assertTrue( $controller->insert_pass_custom_tables_data( $series_id_1, $ticket_1 ) );
+		$this->assertFalse( $controller->update_pass_custom_tables_data( $post_id, $ticket ) );
+	}
 
-		$capacities_relationships = Capacities_Relationships::table_name();
-		$capacities               = Capacities::table_name();
-		$capacity_id              = DB::get_var(
-			DB::prepare(
-				"SELECT capacity_id FROM $capacities_relationships WHERE object_id = %d",
-				$ticket_1->ID
-			)
+	/**
+	 * It should not update pass data posts and posts relationship
+	 *
+	 * @test
+	 */
+	public function should_not_update_pass_data_posts_and_posts_relationship(): void {
+		$series_id = static::factory()->post->create( [
+			'post_type' => Series_Post_Type::POSTTYPE,
+		] );
+		$ticket    = $this->create_tc_series_pass( $series_id, 2389 );
+
+		$controller = $this->make_controller();
+
+		$this->assertTrue( $controller->insert_pass_custom_tables_data( $series_id, $ticket ) );
+
+		$posts_and_posts_table        = Posts_And_Posts::table_name();
+		$type                         = Posts_And_Posts::TYPE_TICKET_AND_POST_PREFIX . Series_Post_Type::POSTTYPE;
+		$relationship_query           = "SELECT * FROM $posts_and_posts_table WHERE post_id_1 = {$ticket->ID}
+                      AND post_id_2 = {$series_id} AND type = '$type'";
+		$posts_and_posts_relationship = DB::get_row( $relationship_query );
+
+		$this->assertTrue( $controller->update_pass_custom_tables_data( $series_id, $ticket ) );
+		$this->assertEquals(
+			$posts_and_posts_relationship,
+			DB::get_row( $relationship_query )
 		);
+	}
 
-		$this->assertTrue( $controller->delete_pass_custom_tables_data( $series_id_1, $ticket_1->ID ) );
-		$this->assertEquals( 0, DB::get_var(
-			DB::prepare(
-				"SELECT count(id) FROM $capacities_relationships WHERE object_id = %d",
-				$ticket_1->ID
-			)
-		) );
-		$this->assertEquals( 0, DB::get_var(
-			DB::prepare(
-				"SELECT count(id) FROM $capacities WHERE id = %d",
-				$capacity_id
-			)
-		) );
+	public function update_capacity_data_provider(): \Generator {
+		// Examples of the possible payloads sent over to represent the capacity.
+		$unlimited = [
+			'mode' => '',
+		];
+
+		$global_100 = [
+			'mode'           => 'global',
+			'event_capacity' => '100',
+			'capacity'       => '',
+		];
+
+		$capped_23 = [
+			'mode'           => 'capped',
+			'event_capacity' => '100',
+			'capacity'       => '23',
+		];
+
+		$own_89 = [
+			'mode'     => 'own',
+			'capacity' => '89',
+		];
+
+		yield 'unlimited to own 89' => [
+			function () use ( $own_89, $unlimited ) {
+				$series_id = static::factory()->post->create( [
+					'post_type' => Series_Post_Type::POSTTYPE,
+				] );
+				$ticket    = $this->create_tc_series_pass( $series_id, 23, [
+					'tribe-ticket' => $unlimited
+				] );
+
+				$controller = $this->make_controller();
+
+				$this->assertTrue( $controller->insert_pass_custom_tables_data( $series_id, $ticket ) );
+				$this->assertEquals( Global_Stock::OWN_STOCK_MODE, $ticket->global_stock_mode() );
+				$this->assertEquals( '', $ticket->capacity() );
+
+				return [ $series_id, $ticket->ID, $own_89 ];
+			},
+		];
+	}
+
+	/**
+	 * It should update pass capacity correctly
+	 *
+	 * @test
+	 * @dataProvider update_capacity_data_provider
+	 * @skip         Come back to this when shared capacity is handled.
+	 */
+	public function should_update_pass_capacity_correctly( Closure $fixture ): void {
+		[ $post_id, $ticket_id, $capacity_payload ] = $fixture();
+
+		$controller = $this->make_controller();
+
+		$this->assertTrue( $controller->update_pass_custom_tables_data( $post_id, $ticket_id ) );
+	}
+
+	/**
+	 * It should throw if table update throws
+	 *
+	 * @test
+	 * @skip Come back to this when shared capacity is handled.
+	 */
+	public function should_throw_if_table_update_throws( string $table_name ): void {
+	}
+
+	/**
+	 * It should log and throw if table update fails
+	 *
+	 * @test
+	 * @skip Come back to this when shared capacity is handled.
+	 */
+	public function should_log_and_throw_if_table_update_fails(): void {
 	}
 }
