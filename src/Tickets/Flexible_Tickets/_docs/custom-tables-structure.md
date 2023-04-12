@@ -13,7 +13,8 @@ In describing the tables, we'll use the `wp_` table prefix as a convention when 
 erDiagram
 	capacities {
 		INTEGER id
-		INTEGER value
+		INTEGER currrent_value
+		INTEGER initial_value
 		VARCHAR(255) mode
 		VARCHAR(255) name
 		VARCHAR(255) description
@@ -22,6 +23,7 @@ erDiagram
 	capacities_relationships {
 		INTEGER id
 		INTEGER capacity_id FK
+		INTEGER parent_capacity_id FK
 		INTEGER object_id
 	}
 
@@ -72,13 +74,14 @@ Posts (any post type), Ticket Groups, Series, Events and Occurrences.
 
 The table has the following structure:
 
-| Column        | Type             | Description                                                                |
-|---------------|------------------|----------------------------------------------------------------------------|
-| `id`          | unsigned integer | The primary key of the record.                                             |
-| `value`       | signed integer   | The current capacity value, or `-1` to indicate the capacity is unlimited. |
-| `mode`        | string           | The type of capacity, e.g. `shared` or `own`.                              |
-| `name`        | string           | The human-readable name of the capacity, e.g. `General Admission`.         |
-| `description` | string           | The human-readable description of the capacity.                            |
+| Column          | Type             | Description                                                                |
+|-----------------|------------------|----------------------------------------------------------------------------|
+| `id`            | unsigned integer | The primary key of the record.                                             |
+| `initial_vlaue` | signed integer   | The initial capacity value, or `-1` to indicate the capacity is unlimited. |
+| `current_value` | signed integer   | The current capacity value, or `-1` to indicate the capacity is unlimited. |
+| `mode`          | string           | The type of capacity, e.g. `shared` or `own`.                              |
+| `name`          | string           | The human-readable name of the capacity, e.g. `General Admission`.         |
+| `description`   | string           | The human-readable description of the capacity.                            |
 
 ### Capacities Relationships
 
@@ -87,11 +90,12 @@ objects like Posts (any post type), Ticket Groups, Series, Events and Occurrence
 
 The table has the following structure:
 
-| Column        | Type             | Description                                              |
-|---------------|------------------|----------------------------------------------------------|
-| `id`          | unsigned integer | The primary key of the record.                           |
-| `capacity_id` | unsigned integer | The ID of the Capacity entity part of this relationship. |
-| `object_id`   | unsigned integer | The ID of the object part of this relationship.          |
+| Column               | Type             | Description                                                              |
+|----------------------|------------------|--------------------------------------------------------------------------|
+| `id`                 | unsigned integer | The primary key of the record.                                           |
+| `capacity_id`        | unsigned integer | The ID of the Capacity entity part of this relationship.                 |
+| `parent_capacity_id` | unsigned integer | The ID of the Capacity parent to the Capacity part of this relationship. |
+| `object_id`          | unsigned integer | The ID of the object part of this relationship.                          |
 
 The table has one foreign key constraint on the `capacity_id` to remove the capacity relationship when
 the capacity is deleted.
@@ -136,11 +140,13 @@ relationships easier.
 The class `TEC\Tickets\Flexible_Tickets\Custom_Tables\Posts_And_Posts` defines a set of constants that MUST be used to
 build the string that will be stored in the `type` column according to the following pattern:
 
-* `TYPE_TICKET_AND_POST_PREFIX` e.g. `ticket_and_post_post` or `ticket_and_post_tribe_event_series` to indicate a relationship
+* `TYPE_TICKET_AND_POST_PREFIX` e.g. `ticket_and_post_post` or `ticket_and_post_tribe_event_series` to indicate a
+  relationship
   between a Ticket and a Post of a given type.
 * `TYPE_TICKET_AND_ATTENDEE` to indicate a relationship between a Ticket and an Attendee.
 * `TYPE_TICKET_AND_ORDER` to indicate a relationship between a Ticket and an Order.
-* `TYPE_ORDER_AND_POST_PREFIX` e.g. `order_and_post_post` or `order_and_post_tribe_event_series` to indicate a relationship
+* `TYPE_ORDER_AND_POST_PREFIX` e.g. `order_and_post_post` or `order_and_post_tribe_event_series` to indicate a
+  relationship
   between an Order and a Post of a given type.
 * `TYPE_ORDER_AND_ATTENDEE` to indicate a relationship between an Order and an Attendee.
 * `TYPE_ATTENDEE_AND_POST_PREFIX` e.g. `attendee_and_post_post` or `attendee_and_post_tribe_event_series` to indicate a
