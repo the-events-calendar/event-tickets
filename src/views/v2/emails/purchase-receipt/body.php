@@ -9,9 +9,9 @@
  *
  * @link https://evnt.is/tickets-emails-tpl Help article for Tickets Emails template files.
  *
- * @version 5.5.9
+ * @version TBD
  *
- * @since 5.5.9
+ * @since TBD
  *
  * @var Tribe_Template   $this                  Current template object.
  * @var Module           $provider              [Global] The tickets provider instance.
@@ -24,7 +24,7 @@
  // @todo @codingmusician @juanfra Replace hardcoded data with dynamic data.
 
 $this->template( 'template-parts/body/title' );
-$this->template( 'purchase-receipt/greeting' );
+$this->template( 'purchase-receipt/intro' );
 $this->template( 'template-parts/body/order/customer-purchaser-details' );
 $this->template( 'template-parts/body/order/event-title' );
 $this->template( 'template-parts/body/order/ticket-totals' );

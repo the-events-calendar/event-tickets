@@ -91,24 +91,6 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 	}
 
 	/**
-	 * Get additional content.
-	 *
-	 * @since TBD
-	 *
-	 * @return string
-	 */
-	public function get_add_content(): string {
-		// Get stored content.
-		$add_content = tribe_get_option( $this->get_option_key( 'add-content' ), '' );
-
-		// Process any placeholders.
-		$add_content = $this->format_string( $add_content );
-
-		// Filtering with `the_content` converts linebreaks into paragraphs.
-		return apply_filters( 'the_content', $add_content );
-	}
-
-	/**
 	 * Get email settings.
 	 *
 	 * @since 5.5.10

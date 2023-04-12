@@ -173,7 +173,7 @@ abstract class Email_Abstract {
 	 *
 	 * @return string The email preview context.
 	 */
-	abstract public function get_default_preview_context( $args ): array;
+	abstract public function get_default_preview_context( $args = [] ): array;
 
 	/**
 	 * Get the default template context.
@@ -668,6 +668,9 @@ abstract class Email_Abstract {
 	public function get_additional_content(): string {
 		$option_key = $this->get_option_key( 'add-content' );
 		$content    = tribe_get_option( $option_key, $this->get_default_additional_content() );
+
+		// Convert linebreaks into paragraphs.
+		$content = wpautop( $content );
 
 		// @todo: Probably we want more data parsed, or maybe move the filters somewhere else as we're always gonna
 
