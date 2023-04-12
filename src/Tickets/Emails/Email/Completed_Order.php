@@ -176,19 +176,19 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 	}
 
 	/**
-	 * Get preview context for email.
+	 * Get default preview context for email.
 	 *
-	 * @since 5.5.10
+	 * @since TBD
 	 *
 	 * @param array $args The arguments.
 	 * @return array $args The modified arguments
 	 */
-	public function get_preview_context( $args = [] ): array {
+	public function get_default_preview_context( $args = [] ): array {
 		$defaults = [
 			'email'              => $this,
 			'is_preview'         => true,
-			'title'              => $this->get_heading(),
-			'heading'            => $this->get_heading(),
+			'title'              => esc_html__( 'Completed order: #123', 'event-tickets' ),
+			'heading'            => esc_html__( 'Completed order: #123', 'event-tickets' ),
 			'additional_content' => $this->get_additional_content(),
 			'order'              => Preview_Data::get_order(),
 			'tickets'            => Preview_Data::get_tickets(),
