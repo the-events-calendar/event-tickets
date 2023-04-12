@@ -302,6 +302,18 @@ class Series_Passes extends Controller {
 		return true;
 	}
 
+	/**
+	 * Updates data in the custom tables when a Series Pass is updated.
+	 *
+	 * @since TBD
+	 *
+	 * @param int    $post_id The Series post ID to update the pass for.
+	 * @param Ticket $ticket  The ticket object to update the pass for.
+	 *
+	 * @return bool Whether the data was updated successfully.
+	 *
+	 * @throws Exception If the data could not be updated.
+	 */
 	public function update_pass_custom_tables_data( $post_id, $ticket ): bool {
 		if ( ! ( $this->check_upsert_data( $post_id, $ticket ) ) ) {
 			return false;
