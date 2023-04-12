@@ -129,13 +129,13 @@ abstract class Email_Abstract {
 	abstract public function get_default_subject(): string;
 
 	/**
-	 * Get default recipient.
+	 * Get email "to".
 	 *
-	 * @since 5.5.10
+	 * @since TBD
 	 *
 	 * @return string
 	 */
-	abstract public function get_default_recipient(): string;
+	abstract public function get_to(): string;
 
 	/**
 	 * Get email title.
@@ -194,17 +194,6 @@ abstract class Email_Abstract {
 	 * @return string The email content.
 	 */
 	abstract public function get_content( $args ): string;
-
-	/**
-	 * Is customer email.
-	 *
-	 * @since 5.5.10
-	 *
-	 * @return string
-	 */
-	public function is_customer_email(): bool {
-		return in_array( $this->recipient, [ 'customer', 'purchaser' ] );
-	}
 
 	/**
 	 * Get the "From" email.
@@ -398,7 +387,7 @@ abstract class Email_Abstract {
 	 *
 	 * @since 5.5.9
 	 *
-	 * @return string
+	 * @return array
 	 */
 	public function get_placeholders(): array {
 		/**
@@ -544,10 +533,12 @@ abstract class Email_Abstract {
 	 * @return string The email recipient.
 	 */
 	public function get_recipient(): string {
-		$option_key = $this->get_option_key( 'recipient' );
-		$recipient  = tribe_get_option( $option_key, $this->get_default_recipient() );
+		$recipient = $this->recipient;
 
-		// @todo: Probably we want more data parsed, or maybe move the filters somewhere else as we're always gonna
+		if ( empty( $recipient ) ) {
+			$option_key = $this->get_option_key( 'recipient' );
+			$recipient  = tribe_get_option( $option_key, $this->get_default_recipient() );
+		}
 
 		/**
 		 * Allow filtering the email recipient globally.
@@ -573,7 +564,18 @@ abstract class Email_Abstract {
 		 */
 		$recipient = apply_filters( "tec_tickets_emails_{$this->slug}_recipient", $recipient, $this->id, $this->template, $this );
 
-		return $this->format_string( $recipient );
+		return $recipient;
+	}
+
+	/**
+	 * Get default recipient.
+	 *
+	 * @since 5.5.10
+	 *
+	 * @return string
+	 */
+	public function get_default_recipient(): string {
+		return '';
 	}
 
 	/**
@@ -820,10 +822,10 @@ abstract class Email_Abstract {
 	 */
 	public function get_post_type_data(): array {
 		$data = [
-			'slug'      => $this->slug,
-			'title'     => $this->get_title(),
-			'template'  => $this->template,
-			'recipient' => $this->recipient,
+			'slug'     => $this->slug,
+			'title'    => $this->get_title(),
+			'template' => $this->template,
+			'to'       => $this->get_to(),
 		];
 
 		return $data;

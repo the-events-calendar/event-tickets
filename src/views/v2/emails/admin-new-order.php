@@ -1,6 +1,6 @@
 <?php
 /**
- * Event Tickets Emails: New Order Template.
+ * Event Tickets Emails: New Order Template
  *
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/v2/emails/admin-new-order.php
@@ -9,15 +9,14 @@
  *
  * @link https://evnt.is/tickets-emails-tpl Help article for Tickets Emails template files.
  *
- * @version 5.5.9
+ * @version TBD
  *
- * @since 5.5.9
+ * @since TBD
  *
  * @var Tribe_Template  $this  Current template object.
  */
 
+
 $this->template( 'template-parts/header' );
-
-$this->template( 'template-parts/body' );
-
+$this->template( 'admin-new-order/body' );
 $this->template( 'template-parts/footer' );

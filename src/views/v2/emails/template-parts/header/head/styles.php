@@ -184,4 +184,144 @@
 		font-size: 12px;
 	}
 
+	.tec-tickets__email-table-content-order-attendees-table-container,
+	td.tec-tickets__email-table-content-order-attendees-table-container {
+		padding-bottom: 50px;
+	}
+
+	.tec-tickets__email-table-content-order-attendees-table,
+	table.tec-tickets__email-table-content-order-attendees-table {
+		border-collapse: collapse;
+		margin-top: 10px;
+	}
+
+	.tec-tickets__email-table-content-order-attendees-table-header-row,
+	tr.tec-tickets__email-table-content-order-attendees-table-header-row {
+		border: 1px solid #d5d5d5;
+		color: #727272;
+		font-size: 12px;
+		font-weight: 400;
+		line-height: 24px;
+	}
+
+	.tec-tickets__email-table-content-order-attendees-table-header-cell,
+	td.tec-tickets__email-table-content-order-attendees-table-header-cell {
+		padding:0 6px;
+	}
+
+	.tec-tickets__email-table-content-order-attendee-info-row,
+	tr.tec-tickets__email-table-content-order-attendee-info-row {
+		border: 1px solid #d5d5d5;
+		font-size: 12px;
+		font-weight: 400;
+		line-height: 24px;
+	}
+
+	.tec-tickets__email-table-content-order-attendee-info,
+	td.tec-tickets__email-table-content-order-attendee-info {
+		line-height: 18px;
+		padding: 0 6px;
+		vertical-align: top;
+	}
+
+	.tec-tickets__email-table-content-align-left {
+		text-align: left;
+	}
+
+	.tec-tickets__email-table-content-align-center {
+		text-align: center;
+	}
+
+	.tec-tickets__email-table-content-align-right {
+		text-align: right;
+	}
+
+	.tec-tickets__email-table-content-order-error-top-text {
+		font-size: 14px;
+		font-weight: 400;
+		padding-top: 10px;
+	}
+
+	.tec-tickets__email-table-content-order-error-bottom-text,
+	td.tec-tickets__email-table-content-order-error-bottom-text {
+		color: #da394d;
+		font-size: 14px;
+		font-weight: 700;
+		padding: 24px 0 40px;
+	}
+
+	.tec-tickets__email-table-content-order-event-title,
+	td.tec-tickets__email-table-content-order-event-title {
+		font-size: 16px;
+		font-weight: 700;
+		padding-top:43px;
+	}
+
+	.tec-tickets__email-table-content-order-total-container,
+	td.tec-tickets__email-table-content-order-total-container {
+		padding-top: 20px;
+		text-align: right;
+	}
+
+	.tec-tickets__email-table-content-order-total-table {
+		display: inline-block;
+		width: auto;
+	}
+
+	.tec-tickets__email-table-content-order-total-left-cell,
+	td.tec-tickets__email-table-content-order-total-left-cell {
+		font-size: 14px;
+		font-weight: 400;
+		line-height: 24px;
+		padding-right: 10px;
+	}
+
+	.tec-tickets__email-table-content-order-total-right-cell {
+		font-size: 16px;
+		font-weight: 700;
+		line-height: 24px;
+	}
+
+	.tec-tickets__email-table-content-order-payment-info-container,
+	td.tec-tickets__email-table-content-order-payment-info-container {
+		font-size: 14px;
+		font-weight: 400;
+		padding: 20px 0 50px;
+		text-align: right;
+	}
+
+	.tec-tickets__email-table-content-order-purchaser-details-top {
+		font-size: 16px;
+		font-weight: 700;
+		line-height: 23px;
+	}
+
+	.tec-tickets__email-table-content-order-purchaser-details-bottom {
+		font-size: 14px;
+		font-weight: 400;
+		line-height: 23px;
+	}
+
+	.tec-tickets__email-table-content-order-ticket-totals-header-row,
+	tr.tec-tickets__email-table-content-order-ticket-totals-header-row {
+		border: 1px solid #d5d5d5;
+		color: #727272;
+		font-size: 12px;
+		font-weight: 400;
+		line-height: 24px;
+	}
+
+	.tec-tickets__email-table-content-order-ticket-totals-ticket-row,
+	tr.tec-tickets__email-table-content-order-ticket-totals-ticket-row {
+		border: 1px solid #d5d5d5;
+		font-size: 14px;
+		font-weight: 400;
+		line-height: 24px;
+	}
+
+	.tec-tickets__email-table-content-order-ticket-totals-cell,
+	th.tec-tickets__email-table-content-order-ticket-totals-cell,
+	td.tec-tickets__email-table-content-order-ticket-totals-cell {
+		padding: 0 6px;
+	}
 </style>

@@ -49,27 +49,8 @@ class Send_Email_Completed_Order extends Flag_Action_Abstract {
 		}
 
 		$email_class = tribe( \TEC\Tickets\Emails\Email\Completed_Order::class );
+		$email_class->__set( 'order', $order );
 
-		// Bail if the `Completed Order` email is not enabled.
-		if ( ! $email_class->is_enabled() ) {
-			return false;
-		}
-
-		// @todo @juanfra: See if we handle the placeholders here or not.
-		$placeholders = [
-			'{order_number}' => $order->ID,
-			'{order_id}'     => $order->ID,
-		];
-
-		$email_class->set_placeholders( $placeholders );
-		$email_class->__set( $order );
-
-		$to          = $email_class->get_recipient();
-		$subject     = $email_class->get_subject();
-		$content     = $email_class->get_content( [] );
-		$headers     = $email_class->get_headers();
-		$attachments = $email_class->get_attachments();
-
-		$sent = tribe( \TEC\Tickets\Emails\Email_Sender::class )->send( $to, $subject, $content, $headers, $attachments );
+		return $email_class->send();
 	}
 }
