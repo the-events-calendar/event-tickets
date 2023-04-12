@@ -80,13 +80,13 @@ At the start these are the entities at play (no pun intended):
 This is a snapshot of the `capacities_relationships` table (the `id` column of the table is not shown as it's not
 relevant, the `object_id` entry would only contain the object ID):
 
-| capacity_id | parent_capacity_id | object_id       |
-|-------------|--------------------|-----------------|
-| 1           | 0                  | 789 (Event)     |
-| 2           | 1                  | 123 (Adult)     |
-| 1           | 0                  | 345 (Child)     |
-| 3           | 0                  | 456 (VIP)       |
-| 4           | 0                  | 567 (Livestrem) |
+| capacity_id | parent_capacity_id | object_id               |
+|-------------|--------------------|-------------------------|
+| 1           | 0                  | 789 (Event)             |
+| 2           | 1                  | 123 (Adult Ticket)      |
+| 1           | 0                  | 345 (Child Ticket)      |
+| 3           | 0                  | 456 (VIP Ticket)        |
+| 4           | 0                  | 567 (Livestream Ticket) |
 
 And the `capacities` table at the start of this example:
 
