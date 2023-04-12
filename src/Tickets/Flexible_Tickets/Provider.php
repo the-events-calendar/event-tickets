@@ -82,6 +82,7 @@ class Provider extends ServiceProvider {
 		$this->container->register( WP_Cli::class );
 		$this->container->register( Base::class );
 		$this->container->register( Series_Passes::class );
+		// @todo add Meta redirection to the new tables for capacity.
 	}
 
 	/**
