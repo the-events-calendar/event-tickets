@@ -90,12 +90,12 @@ relevant, the `object_id` entry would only contain the object ID):
 
 And the `capacities` table at the start of this example:
 
-| id  | initial_value | current_value | mode      |
-|-----|---------------|---------------|-----------|
-| 1   | 100           | 100           | shared    |
-| 2   | 50            | 50            | capped    |
-| 3   | 20            | 20            | own       |
-| 4   | -1            | -1            | unlimited |
+| id  | max_value | current_value | mode      |
+|-----|-----------|---------------|-----------|
+| 1   | 100       | 100           | shared    |
+| 2   | 50        | 50            | capped    |
+| 3   | 20        | 20            | own       |
+| 4   | -1        | -1            | unlimited |
 
 First a Customer wants to purchase 2 Adult and 1 Child ticket.
 
@@ -140,12 +140,12 @@ WHERE `id` IN (
 
 The `capacities` table will now look like this:
 
-| id  | initial_value | current_value | mode      |
-|-----|---------------|---------------|-----------|
-| 1   | 100           | 97            | shared    |
-| 2   | 50            | 48            | capped    |
-| 3   | 20            | 20            | own       |
-| 4   | -1            | -1            | unlimited |
+| id  | max_value | current_value | mode      |
+|-----|-----------|---------------|-----------|
+| 1   | 100       | 97            | shared    |
+| 2   | 50        | 48            | capped    |
+| 3   | 20        | 20            | own       |
+| 4   | -1        | -1            | unlimited |
 
 Then a Customer purchases 3 VIP tickets.
 
@@ -163,11 +163,11 @@ WHERE `id` IN (
 
 And the `capacities` table will look like this:
 
-| id  | initial_value | current_value | mode      |
-|-----|---------------|---------------|-----------|
-| 1   | 100           | 97            | shared    |
-| 2   | 50            | 48            | capped    |
-| 3   | 20            | 17            | own       |
-| 4   | -1            | -1            | unlimited |
+| id  | max_value | current_value | mode      |
+|-----|-----------|---------------|-----------|
+| 1   | 100       | 97            | shared    |
+| 2   | 50        | 48            | capped    |
+| 3   | 20        | 17            | own       |
+| 4   | -1        | -1            | unlimited |
 
 Then a Customer purchases 1 Live-stream ticket; the `capacities` table will not change.
