@@ -53,6 +53,7 @@ class Capacities_Relationships extends Table {
 			CREATE TABLE `$table_name` (
 				`id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
 				`capacity_id` bigint(20) UNSIGNED NOT NULL,
+				`parent_capacity_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
 				`object_id` bigint(20) UNSIGNED NOT NULL,
 				PRIMARY KEY (`id`)
 			) $charset_collate;
