@@ -13,7 +13,7 @@
  *
  * @since 5.5.9
  *
- * @var Tribe_Template  $this  Current template object.
+ * @var \Tribe__Template $this  Current template object.
  */
 
 if ( ! empty( $preview ) || empty( $json_ld ) ) {
@@ -21,3 +21,8 @@ if ( ! empty( $preview ) || empty( $json_ld ) ) {
 }
 
 // @todo @juanfra @codingmusician @rafsuntaskin print JSON-LD here.
+?>
+
+<script type="application/ld+json">
+	<?php echo wp_json_encode( $json_ld ); ?>
+</script>
