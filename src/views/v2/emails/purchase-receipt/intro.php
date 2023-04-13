@@ -1,9 +1,9 @@
 <?php
 /**
- * Event Tickets Emails: Main template > Body > Intro.
+ * Event Tickets Emails: Purchase Receipt > Intro.
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/emails/template-parts/body/intro.php
+ * [your-theme]/tribe/tickets/v2/emails/purchase-receipt/intro.php
  *
  * See more documentation about our views templating system.
  *
