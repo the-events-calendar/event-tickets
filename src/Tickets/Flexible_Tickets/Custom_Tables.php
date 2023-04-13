@@ -19,6 +19,7 @@ use TEC\Tickets\Flexible_Tickets\Custom_Tables\Posts_And_Posts;
 use TEC\Tickets\Flexible_Tickets\Custom_Tables\Posts_And_Ticket_Groups;
 use TEC\Tickets\Flexible_Tickets\Custom_Tables\Posts_And_Users;
 use TEC\Tickets\Flexible_Tickets\Custom_Tables\Ticket_Groups;
+use TEC\Common\StellarWP\Models\Config as Model_Config;
 
 /**
  * Class Custom_Tables.
@@ -39,6 +40,7 @@ class Custom_Tables extends Controller {
 	public function do_register(): void {
 		Schema_Config::set_container( $this->container );
 		Schema_Config::set_db( DB::class );
+		Model_Config::setHookPrefix('tec-tickets-flexible-tickets');
 
 		add_action( 'tribe_plugins_loaded', [ $this, 'register_tables' ] );
 	}

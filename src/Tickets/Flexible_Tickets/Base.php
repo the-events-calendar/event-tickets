@@ -2,7 +2,7 @@
 /**
  * A Controller to register basic functionalities common to all the ticket types handled by the feature.
  *
- * @since TBD
+ * @since   TBD
  *
  * @package TEC\Tickets\Flexible_Tickets;
  */
@@ -15,7 +15,7 @@ use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 /**
  * Class Base.
  *
- * @since TBD
+ * @since   TBD
  *
  * @package TEC\Tickets\Flexible_Tickets;
  */
@@ -43,6 +43,15 @@ class Base extends Controller {
 		remove_filter( 'tribe_tickets_post_types', [ $this, 'update_ticket_post_types' ] );
 	}
 
+	/**
+	 * Updates the list of post types that can have tickets.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string> $post_types The list of post types that can have tickets.
+	 *
+	 * @return array<string> The updated list of post types that can have tickets.
+	 */
 	public function update_ticket_post_types( $post_types ) {
 		if ( ! is_array( $post_types ) ) {
 			return $post_types;

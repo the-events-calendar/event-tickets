@@ -32,6 +32,13 @@ class Capacities extends Table {
 	public const VALUE_UNLIMITED = -1;
 
 	/**
+	 * The mode that represents unlimited capacity.
+	 *
+	 * @since TBD
+	 */
+	public const MODE_UNLIMITED = 'unlimited';
+
+	/**
 	 * {@inheritdoc}
 	 */
 	protected static $base_table_name = 'tec_capacities';
@@ -62,8 +69,8 @@ class Capacities extends Table {
 		return "
 			CREATE TABLE `$table_name` (
 				`id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+				`max_value` int(11) DEFAULT -1 NOT NULL,
 				`current_value` int(11) DEFAULT -1 NOT NULL,
-				`initial_value` int(11) DEFAULT -1 NOT NULL,
 				`mode` varchar(50) DEFAULT '' NOT NULL,
 				`name` varchar(50) DEFAULT '' NOT NULL,
 				`description` varchar(50) DEFAULT '' NULL,

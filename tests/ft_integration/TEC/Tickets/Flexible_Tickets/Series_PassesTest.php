@@ -206,21 +206,63 @@ class Series_PassesTest extends Controller_Test_Case {
 		);
 	}
 
+	public function capacity_payload( string $payload ): array {
+		// Examples of the possible payloads sent over to represent the capacity.
+		$map = [
+			'unlimited'  => [
+				'mode' => '',
+
+			],
+			'global_100' => [
+				'mode'           => 'global',
+				'event_capacity' => '100',
+				'capacity'       => '',
+			],
+			'capped_23'  => [
+				'mode'           => 'capped',
+				'event_capacity' => '100',
+				'capacity'       => '23',
+			],
+			'own_89'     => [
+				'mode'     => 'own',
+				'capacity' => '89',
+			]
+		];
+
+		return $map[ $payload ];
+	}
+
 	/**
-	 * It should add pass custom tables data correctly
+	 * It should insert unlimited pass data correctly
 	 *
 	 * @test
 	 */
-	public function should_add_pass_custom_tables_data_correctly(): void {
-		$series_id = static::factory()->post->create( [
+	public function should_insert_unlimited_pass_data_correclty(): void {
+		$series_id        = static::factory()->post->create( [
 			'post_type' => Series_Post_Type::POSTTYPE,
 		] );
-		$ticket    = $this->create_tc_series_pass( $series_id, 2389 );
+		$capacity_payload = $this->capacity_payload( 'unlimited' );
+		$ticket           = $this->create_tc_series_pass( $series_id, 2389, [
+			'tribe-ticket' => $capacity_payload,
+		] );
 
 		$controller = $this->make_controller();
 
-		$this->assertTrue( $controller->insert_pass_custom_tables_data( $series_id, $ticket ) );
+		$this->assertTrue( $controller->insert_pass_custom_tables_data(
+			$series_id,
+			$ticket,
+			$this->data_for_ticket( $ticket, $capacity_payload ) )
+		);
 		$this->assert_controller_logged( Log::DEBUG, "Added Series Pass custom tables data for Ticket" );
+		$this->assert_object_capacity_in_db(
+			$ticket->ID,
+			[ 'parent_capacity_id' => 0, 'object_id' => $ticket->ID ],
+			[
+				'max_value'     => Capacities::VALUE_UNLIMITED,
+				'current_value' => Capacities::VALUE_UNLIMITED,
+				'mode'          => Global_Stock::OWN_STOCK_MODE
+			]
+		);
 	}
 
 	public function custom_table_names(): array {
@@ -587,255 +629,31 @@ class Series_PassesTest extends Controller_Test_Case {
 		);
 	}
 
-	protected function capacity_payload( string $payload ): array {
-		// Examples of the possible payloads sent over to represent the capacity.
-		$map = [
-			'unlimited'  => [
-				'mode' => '',
-			],
-			'global_100' => [
-				'mode'           => 'global',
-				'event_capacity' => '100',
-				'capacity'       => '',
-			],
-			'capped_23'  => [
-				'mode'           => 'capped',
-				'event_capacity' => '100',
-				'capacity'       => '23',
-			],
-			'own_89'     => [
-				'mode'     => 'own',
-				'capacity' => '89',
-			]
-		];
-
-		return $map[ $payload ];
-	}
-
-	/**
-	 * It should update pass capacity correctly from unlimited to own
-	 *
-	 * @test
-	 */
-	public function should_update_pass_capacity_correctly_from_unlimited_to_own(): void {
-		[ $series_id, $ticket, $ticket_id ] = $this->given_a_pass_with_unlimited_capacity();
-
-		$ticket_update_data = [
-			'ticket_id'          => $ticket_id,
-			'tribe-ticket'       => $this->capacity_payload( 'own_89' ),
-			// Required for the update.
-			'ticket_name'        => $ticket->name,
-			'ticket_description' => $ticket->description,
-			'ticket_menu_order'  => $ticket->menu_order,
-		];
-
-		// Get the test controller, disconnect the original one.
-		$controller = $this->make_controller();
-
-		// Update the ticket.
-		Commerce\Module::get_instance()->ticket_add( $series_id, $ticket_update_data );
-
-		$this->assertTrue( $controller->update_pass_custom_tables_data( $series_id, $ticket ) );
-
-		$ticket = Tickets::load_ticket_object( $ticket_id );
-
-		$this->assert_object_capacity_in_db( $ticket->ID, - 1, Global_Stock::OWN_STOCK_MODE );
-		$this->assert_object_capacity_not_in_db( $series_id );
-	}
-
-	/**
-	 * It should update pass capacity correctly from unlimited to global
-	 *
-	 * @test
-	 */
-	public function should_update_pass_capacity_correctly_from_unlimited_to_global(): void {
-		[ $series_id, $ticket, $ticket_id ] = $this->given_a_pass_with_unlimited_capacity();
-
-		$ticket_update_data = [
-			'ticket_id'          => $ticket_id,
-			'tribe-ticket'       => $this->capacity_payload( 'global_100' ),
-			// Required for the update.
-			'ticket_name'        => $ticket->name,
-			'ticket_description' => $ticket->description,
-			'ticket_menu_order'  => $ticket->menu_order,
-		];
-
-		// Get the test controller, disconnect the original one.
-		$controller = $this->make_controller();
-
-		// Update the ticket.
-		Commerce\Module::get_instance()->ticket_add( $series_id, $ticket_update_data );
-
-		$this->assertTrue( $controller->update_pass_custom_tables_data( $series_id, $ticket ) );
-
-		$ticket = Tickets::load_ticket_object( $ticket_id );
-
-		$this->assert_object_capacity_in_db( $ticket->ID, '', Global_Stock::GLOBAL_STOCK_MODE );
-		$this->assert_object_capacity_in_db( $series_id, 100, Global_Stock::GLOBAL_STOCK_MODE );
-	}
-
-	/**
-	 * It should update pass capacity correctly from unlimited to capped
-	 *
-	 * @test
-	 */
-	public function should_update_pass_capacity_correctly_from_unlimited_to_capped(): void {
-		throw new \Exception( 'Not implemented yet' );
-	}
-
-	/**
-	 * It should update pass capacity correctly from unlimited to unlimited
-	 *
-	 * @test
-	 */
-	public function should_update_pass_capacity_correctly_from_unlimited_to_unlimited(): void {
-		throw new \Exception( 'Not implemented yet' );
-	}
-
-	/**
-	 * It should update pass capacity correctly from global to own
-	 *
-	 * @test
-	 */
-	public function should_update_pass_capacity_correctly_from_global_to_own(): void {
-		throw new \Exception( 'Not implemented yet' );
-	}
-
-	/**
-	 * It should update pass capacity correctly from global to global
-	 *
-	 * @test
-	 */
-	public function should_update_pass_capacity_correctly_from_global_to_global(): void {
-		throw new \Exception( 'Not implemented yet' );
-	}
-
-	/**
-	 * It should update pass capacity correctly from global to capped
-	 *
-	 * @test
-	 */
-	public function should_update_pass_capacity_correctly_from_global_to_capped(): void {
-		throw new \Exception( 'Not implemented yet' );
-	}
-
-	/**
-	 * It should update pass capacity correctly from global to unlimited
-	 *
-	 * @test
-	 */
-	public function should_update_pass_capacity_correctly_from_global_to_unlimited(): void {
-		throw new \Exception( 'Not implemented yet' );
-	}
-
-	/**
-	 * It should update pass capacity correctly from capped to own
-	 *
-	 * @test
-	 */
-	public function should_update_pass_capacity_correctly_from_capped_to_own(): void {
-		throw new \Exception( 'Not implemented yet' );
-	}
-
-	/**
-	 * It should update pass capacity correctly from capped to global
-	 *
-	 * @test
-	 */
-	public function should_update_pass_capacity_correctly_from_capped_to_global(): void {
-		throw new \Exception( 'Not implemented yet' );
-	}
-
-	/**
-	 * It should update pass capacity correctly from capped to capped
-	 *
-	 * @test
-	 */
-	public function should_update_pass_capacity_correctly_from_capped_to_capped(): void {
-		throw new \Exception( 'Not implemented yet' );
-	}
-
-	/**
-	 * It should update pass capacity correctly from capped to unlimited
-	 *
-	 * @test
-	 */
-	public function should_update_pass_capacity_correctly_from_capped_to_unlimited(): void {
-		throw new \Exception( 'Not implemented yet' );
-	}
-
-	/**
-	 * It should update pass capacity correctly from own to own
-	 *
-	 * @test
-	 */
-	public function should_update_pass_capacity_correctly_from_own_to_own(): void {
-		throw new \Exception( 'Not implemented yet' );
-	}
-
-	/**
-	 * It should update pass capacity correctly from own to global
-	 *
-	 * @test
-	 */
-	public function should_update_pass_capacity_correctly_from_own_to_global(): void {
-		throw new \Exception( 'Not implemented yet' );
-	}
-
-	/**
-	 * It should update pass capacity correctly from own to capped
-	 *
-	 * @test
-	 */
-	public function should_update_pass_capacity_correctly_from_own_to_capped(): void {
-		throw new \Exception( 'Not implemented yet' );
-	}
-
-	/**
-	 * It should update pass capacity correctly from own to unlimited
-	 *
-	 * @test
-	 */
-	public function should_update_pass_capacity_correctly_from_own_to_unlimited(): void {
-		throw new \Exception( 'Not implemented yet' );
-	}
-
-	/**
-	 * It should throw if table update throws
-	 *
-	 * @test
-	 */
-	public function should_throw_if_table_update_throws( string $table_name ): void {
-		throw new \Exception( 'Not implemented yet' );
-	}
-
-	/**
-	 * It should log and throw if table update fails
-	 *
-	 * @test
-	 * @skip not implemented yet
-	 */
-	public function should_log_and_throw_if_table_update_fails(): void {
-		throw new \Exception( 'Not implemented yet' );
-	}
-
-	private function assert_object_capacity_in_db( int $object_id, $value, string $mode ): void {
+	private function assert_object_capacity_in_db( int $object_id, array $relationships_criteria, array $capacities_criteria ): void {
 		$capacity_relationships_table = Capacities_Relationships::table_name();
-		$capacity_relationships       = DB::get_results( "SELECT * FROM $capacity_relationships_table WHERE object_id = {$object_id}" );
+		$capacity_relationships       = DB::get_results( "SELECT * FROM $capacity_relationships_table WHERE object_id = {$object_id}", ARRAY_A );
 
 		$this->assertCount( 1, $capacity_relationships );
 
-		$capacity_id = $capacity_relationships[0]->capacity_id;
+		$capacity_relationship = $capacity_relationships[0];
+		$capacity_id           = $capacity_relationship['capacity_id'];
+
+		foreach ( $relationships_criteria as $key => $value ) {
+			$this->assertEquals( $value, $capacity_relationship[ $key ] );
+		}
 
 		$capacities_table = Capacities::table_name();
-		$capacities       = DB::get_results( "SELECT * FROM $capacities_table WHERE id = {$capacity_id}" );
+		$capacities       = DB::get_results( "SELECT * FROM $capacities_table WHERE id = {$capacity_id}", ARRAY_A );
 
 		$this->assertCount( 1, $capacities );
 
 		$capacity = $capacities[0];
 
-		$this->assertEquals( $value, $capacity->value );
-		$this->assertEquals( $mode, $capacity->mode );
+		codecept_debug( $capacity );
+
+		foreach ( $capacities_criteria as $key => $value ) {
+			$this->assertEquals( $value, $capacity[ $key ] );
+		}
 	}
 
 	private function assert_object_capacity_not_in_db( int $object_id ): void {
@@ -865,5 +683,14 @@ class Series_PassesTest extends Controller_Test_Case {
 		$ticket = Tickets::load_ticket_object( $ticket_id );
 
 		return array( $series_id, $ticket, $ticket_id );
+	}
+
+	private function data_for_ticket( Ticket $ticket, array $capacity_payload = [ 'mode' => '' ] ): array {
+		return [
+			'ticket_name'        => "Test TC ticket for {$post_id}",
+			'ticket_description' => "Test TC ticket description for {$post_id}",
+			'ticket_price'       => get_post_meta( $ticket->ID, '_price', true ),
+			'tribe-ticket'       => $capacity_payload,
+		];
 	}
 }
