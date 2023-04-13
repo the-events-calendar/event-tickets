@@ -10,6 +10,7 @@
 namespace TEC\Tickets\Emails;
 
 use TEC\Tickets\Emails\Admin\Emails_Tab;
+use TEC\Tickets\Emails\JSON_LD\Handler;
 use WP_Post;
 use TEC\Tickets\Emails\Admin\Settings as Emails_Settings;
 use Tribe\Tickets\Admin\Settings as Plugin_Settings;
@@ -872,5 +873,16 @@ abstract class Email_Abstract {
 		];
 
 		return $data;
+	}
+
+	/**
+	 * Get the related JSON data for this email.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function get_json_data(): array {
+		return Handler::get_data( $this );
 	}
 }
