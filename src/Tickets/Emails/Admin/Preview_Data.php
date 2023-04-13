@@ -86,8 +86,9 @@ class Preview_Data {
 			// @todo @codingmusician: We will need to make this work with the currency settings selected for Tickets Commerce.
 			'total'      => '$100.00',
 			'purchaser'  => [
-				'name'  => __( 'John Doe', 'event-tickets' ),
-				'email' => 'john@doe.com',
+				'first_name'  => __( 'John', 'event-tickets' ),
+				'name'        => __( 'John Doe', 'event-tickets' ),
+				'email'       => 'john@doe.com',
 			],
 		];
 		return wp_parse_args( $args, $default );
