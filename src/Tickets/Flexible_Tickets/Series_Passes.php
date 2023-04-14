@@ -292,22 +292,64 @@ class Series_Passes extends Controller {
 	 *
 	 * @since TBD
 	 *
-	 * @param int    $post_id The Series post ID to update the pass for.
-	 * @param Ticket $ticket  The ticket object to update the pass for.
+	 * @param int                 $post_id The Series post ID to update the pass for.
+	 * @param Ticket              $ticket  The ticket object to update the pass for.
+	 * @param array<string,mixed> $data    The data to update the pass with.
 	 *
 	 * @return bool Whether the data was updated successfully.
 	 *
 	 * @throws Exception If the data could not be updated.
 	 */
-	public function update_pass_custom_tables_data( $post_id, $ticket ): bool {
-		if ( ! ( $this->check_upsert_data( $post_id, $ticket ) ) ) {
+	public function update_pass_custom_tables_data( $post_id, $ticket, $data ): bool {
+		if ( ! ( $this->check_upsert_data( $post_id, $ticket, $data ) ) ) {
 			return false;
 		}
 
 		// Reload the ticket object to make sure we have the latest data and the global stock information.
 		$ticket = Tickets::load_ticket_object( $ticket->ID );
+		$ticket_id = $ticket->ID;
 
-		// @todo
+		DB::transaction( function () use ( $post_id, $ticket_id ) {
+			// @todo
+			// unlimited to unlimited -> no update needed
+			// unlimited to own -> update existing capacity
+			// unlimited to global ->
+			//  - remove capacity
+			//  - create/update global capacity
+			//  - update existing relationship to point to global
+			// unlimited to capped ->
+			//  - update existing capacity to capped
+			//  - create/update global capacity
+			//  - update existing relationship to have capacity_parent_id pointing to global
+			// own to unlimited -> update existing capacity
+			// own to own -> update_existing capacity
+			// own to global ->
+			//  - remove capacity
+			//  - create/update global capacity
+			//  - update existing relationship to point to global
+			// own to capped ->
+			//  - update existing capacity to capped
+			//  - create/update global capacity
+			//  - update existing relationship to have capacity_parent_id pointing to global
+			// global to unlimited -> update existing capacity
+			// global to own ->
+			//  - create (own) capacity
+			//  - update existing relationship to point to new capacity
+			// global to global -> update existing capacity
+			// global to capped ->
+			//  - create (capped) capacity
+			//  - update existing relationship to point to new capacity and capacity_parent_id to global
+			// capped to unlimited ->
+			//  - update existing capacity
+			//  - update existing relationship to remove capacity_parent_id
+			// capped to own ->
+			//  - update existing capacity
+			//  - update existing relationship to remove capacity_parent_id
+			// capped to global ->
+			//  - remove existing capacity
+			//  - update existing relationship to point to global
+			// capped to capped -> update existing capacity
+		} );
 
 		return true;
 	}
