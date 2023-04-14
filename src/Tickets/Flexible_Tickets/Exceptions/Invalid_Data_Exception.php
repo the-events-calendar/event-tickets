@@ -17,9 +17,7 @@ namespace TEC\Tickets\Flexible_Tickets\Exceptions;
  * @package TEC\Tickets\Flexible_Tickets\Exceptions;
  */
 class Invalid_Data_Exception extends \Exception {
-	public const CAPACITY_MODE_MISSING = 0;
-	public const GLOBAL_STOCK_MODE_MISSING_EVENT_CAPACITY = 1;
-	public const INVALID_CAPACITY_MODE = 2;
-	public const CAPPED_STOCK_MODE_MISSING_EVENT_CAPACITY = 3;
-	public const CAPPED_STOCK_MODE_MISSING_TICKET_CAPACITY = 4;
+	public const CAPACITY_VALUE_MISSING = 1;
+	public const EVENT_CAPACITY_VALUE_MISSING = 2;
+	public const CAPACITY_MODE_INVALID = 3;
 }

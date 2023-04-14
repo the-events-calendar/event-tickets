@@ -11,6 +11,8 @@ namespace TEC\Tickets\Flexible_Tickets\Models;
 
 use TEC\Common\StellarWP\Models\Contracts\ModelCrud;
 use TEC\Common\StellarWP\Models\Model;
+use TEC\Common\StellarWP\Models\ModelQueryBuilder;
+use TEC\Tickets\Flexible_Tickets\Repositories\Posts_And_Posts;
 
 /**
  * Class Post_And_Post.
@@ -18,6 +20,11 @@ use TEC\Common\StellarWP\Models\Model;
  * @since   TBD
  *
  * @package TEC\Tickets\Flexible_Tickets\Models;
+ *
+ * @property int    $id         The post and post ID.
+ * @property int    $post_id_1  The first post ID.
+ * @property int    $post_id_2  The second post ID.
+ * @property string $type       The type of the relationship.
  */
 class Post_And_Post extends Model implements ModelCrud {
 	/**
@@ -30,23 +37,68 @@ class Post_And_Post extends Model implements ModelCrud {
 		'type'      => 'string',
 	];
 
-	public static function find( $id ) {
-		// TODO: Implement find() method.
+	/**
+	 * Finds a model by its ID.
+	 *
+	 * @since TBD
+	 *
+	 * @param $id
+	 *
+	 * @return Post_And_Post|null The model, or null if not found.
+	 */
+	public static function find( $id ): ?Post_And_Post {
+		return tribe( Posts_And_Posts::class )->get_by_id( $id );
 	}
 
-	public static function create( array $attributes ) {
-		// TODO: Implement create() method.
+	/**
+	 * Creates and saves to database a new model instance.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $attributes The attributes to set on the model.
+	 *
+	 * @return Post_And_Post The created model.
+	 */
+	public static function create( array $attributes ): Post_And_Post {
+		$model = new static( $attributes );
+		$model->save();
+
+		return $model;
 	}
 
-	public function save() {
-		// TODO: Implement save() method.
+	/**
+	 * Saves the model to the database.
+	 *
+	 * @since TBD
+	 *
+	 * @return $this The saved model, its ID set.
+	 */
+	public function save(): Post_And_Post {
+		$this->id = tribe( Posts_And_Posts::class )->insert( $this )->id;
+
+		return $this;
 	}
 
+	/**
+	 * Deletes the model from the database.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether the model was deleted or not.
+	 */
 	public function delete(): bool {
-		// TODO: Implement delete() method.
+		return tribe( Posts_And_Posts::class )->delete( $this );
 	}
 
-	public static function query() {
-		// TODO: Implement query() method.
+
+	/**
+	 * Returns a query builder for the model.
+	 *
+	 * @since TBD
+	 *
+	 * @return ModelQueryBuilder The query builder for the model.
+	 */
+	public static function query(): ModelQueryBuilder {
+		return tribe( Posts_And_Posts::class )->prepareQuery();
 	}
 }

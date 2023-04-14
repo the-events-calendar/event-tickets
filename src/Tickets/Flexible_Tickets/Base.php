@@ -10,6 +10,7 @@
 namespace TEC\Tickets\Flexible_Tickets;
 
 use TEC\Common\Provider\Controller;
+use TEC\Common\StellarWP\Models\Repositories\Repository;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 
 /**
@@ -29,6 +30,10 @@ class Base extends Controller {
 	 * @return void
 	 */
 	protected function do_register(): void {
+		$this->container->singleton( Repositories\Capacities::class, Repositories\Capacities::class );
+		$this->container->singleton( Repositories\Posts_And_Posts::class, Repositories\Posts_And_Posts::class );
+		$this->container->singleton( Repositories\Capacities_Relationships::class, Repositories\Capacities_Relationships::class );
+
 		add_filter( 'tribe_tickets_post_types', [ $this, 'update_ticket_post_types' ] );
 	}
 

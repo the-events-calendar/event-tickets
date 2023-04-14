@@ -11,13 +11,23 @@ namespace TEC\Tickets\Flexible_Tickets\Models;
 
 use TEC\Common\StellarWP\Models\Contracts\ModelCrud;
 use TEC\Common\StellarWP\Models\Model;
+use TEC\Common\StellarWP\Models\ModelQueryBuilder;
+use TEC\Tickets\Flexible_Tickets\Custom_Tables\Capacities as Table;
+use TEC\Tickets\Flexible_Tickets\Repositories\Capacities;
+use Tribe__Tickets__Global_Stock as Global_Stock;
 
 /**
  * Class Capacity.
  *
- * @since   TBD
+ * @since     TBD
  *
- * @package TEC\Tickets\Flexible_Tickets\Models;
+ * @package   TEC\Tickets\Flexible_Tickets\Models;
+ *
+ * @property int    $id            The capacity ID.
+ * @property int    $max_value     The maximum capacity value.
+ * @property int    $current_value The current capacity value.
+ * @property string $mode          The capacity mode.
+ * @proeperty string $name          The capacity name.
  */
 class Capacity extends Model implements ModelCrud {
 	/**
@@ -32,23 +42,160 @@ class Capacity extends Model implements ModelCrud {
 		'description'   => 'string',
 	];
 
+	/**
+	 * Finds a capacity by its ID.
+	 *
+	 * @since TBD
+	 *
+	 * @param $id
+	 *
+	 * @return \TEC\Common\StellarWP\Models\Contracts\Model|void
+	 */
 	public static function find( $id ) {
-		// TODO: Implement find() method.
+		return tribe( Capacities::class )->find_by_id( $id );
 	}
 
-	public static function create( array $attributes ) {
-		// TODO: Implement create() method.
+	/**
+	 * Creates and saves to database a new Capacity instance.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $attributes The attributes to set on the model.
+	 *
+	 * @return Capacity
+	 */
+	public static function create( array $attributes ): Capacity {
+		$model = new static( $attributes );
+		$model->save();
+
+		return $model;
 	}
 
-	public function save() {
-		// TODO: Implement save() method.
+	/**
+	 * Saves the model to the database.
+	 *
+	 * @since TBD
+	 *
+	 * @return Capacity The saved model.
+	 *
+	 * @throws \Exception If the model is not valid.
+	 */
+	public function save(): Capacity {
+		$this->id = tribe( Capacities::class )->insert( $this )->id;
+
+		return $this;
 	}
 
+	/**
+	 * Deletes the model from the database.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether the model was deleted or not.
+	 */
 	public function delete(): bool {
-		// TODO: Implement delete() method.
+		return tribe( Capacities::class )->delete( $this );
 	}
 
-	public static function query() {
-		// TODO: Implement query() method.
+	/**
+	 * Returns a query builder for the model.
+	 *
+	 * @since TBD
+	 *
+	 * @return ModelQueryBuilder The query builder for the model.
+	 */
+	public static function query(): ModelQueryBuilder {
+		return tribe( Capacities::class )->query();
 	}
+
+	/**
+	 * Creates and saves to database a new unlimited Capacity instance.
+	 *
+	 * @since TBD
+	 *
+	 * @return Capacity The created unlimited Capacity model.
+	 */
+	public static function create_unlimited(): Capacity {
+		$capacity = new static( [
+			'max_value'     => Table::VALUE_UNLIMITED,
+			'current_value' => Table::VALUE_UNLIMITED,
+			'mode'          => Table::MODE_UNLIMITED,
+			'name'          => '',
+			'description'   => '',
+		] );
+
+		$capacity->save();
+
+		return $capacity;
+	}
+
+	/**
+	 * Creates and saves to database a new global Capacity instance.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $capacity The capacity value.
+	 *
+	 * @return Capacity The created global Capacity model.
+	 */
+	public static function create_global( int $capacity ): Capacity {
+		$model = new static( [
+			'max_value'     => $capacity,
+			'current_value' => $capacity,
+			'mode'          => Global_Stock::GLOBAL_STOCK_MODE,
+			'name'          => '',
+			'description'   => '',
+		] );
+
+		$model->save();
+
+		return $model;
+	}
+
+	/**
+	 * Creates and saves to database a new capped Capacity instance.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $capacity The capacity value.
+	 *
+	 * @return Capacity The created capped Capacity model.
+	 */
+	public static function create_capped( int $capacity ): Capacity {
+		$model = new static( [
+			'max_value'     => $capacity,
+			'current_value' => $capacity,
+			'mode'          => Global_Stock::CAPPED_STOCK_MODE,
+			'name'          => '',
+			'description'   => '',
+		] );
+
+		$model->save();
+
+		return $model;
+	}
+
+	/**
+	 * Creates and saves to database a new own Capacity instance.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $capacity The capacity value.
+	 *
+	 * @return Capacity The created own Capacity model.
+	 */
+	public static function create_own( int $capacity ): Capacity {
+		$model = new static( [
+			'max_value'     => $capacity,
+			'current_value' => $capacity,
+			'mode'          => Global_Stock::OWN_STOCK_MODE,
+			'name'          => '',
+			'description'   => '',
+		] );
+
+		$model->save();
+
+		return $model;
+	}
+
 }

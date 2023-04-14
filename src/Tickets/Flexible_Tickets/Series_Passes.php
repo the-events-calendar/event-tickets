@@ -12,7 +12,6 @@ namespace TEC\Tickets\Flexible_Tickets;
 use Exception;
 use tad_DI52_Container;
 use TEC\Common\Provider\Controller;
-use TEC\Common\StellarWP\DB\Database\Exceptions\DatabaseQueryException;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 use TEC\Tickets\Flexible_Tickets\Custom_Tables\Capacities;
@@ -20,6 +19,9 @@ use TEC\Tickets\Flexible_Tickets\Custom_Tables\Capacities_Relationships;
 use TEC\Tickets\Flexible_Tickets\Custom_Tables\Posts_And_Posts;
 use TEC\Tickets\Flexible_Tickets\Exceptions\Custom_Tables_Exception;
 use TEC\Tickets\Flexible_Tickets\Exceptions\Invalid_Data_Exception;
+use TEC\Tickets\Flexible_Tickets\Models\Capacity;
+use TEC\Tickets\Flexible_Tickets\Models\Capacity_Relationship;
+use TEC\Tickets\Flexible_Tickets\Models\Post_And_Post;
 use TEC\Tickets\Flexible_Tickets\Templates\Admin_Views;
 use Tribe__Tickets__Global_Stock as Global_Stock;
 use Tribe__Tickets__RSVP as RSVP;
@@ -141,10 +143,8 @@ class Series_Passes extends Controller {
 		$ticket = Tickets::load_ticket_object( $ticket->ID );
 
 		if ( ! isset( $data['tribe-ticket']['mode'] ) ) {
-			throw new Invalid_Data_Exception(
-				'Capacity mode is required',
-				Invalid_Data_Exception::CAPACITY_MODE_MISSING
-			);
+			// Default the mode to unlimited.
+			$data['tribe-ticket']['mode'] = Capacities::MODE_UNLIMITED;
 		}
 
 		$capacity_data = $data['tribe-ticket'];
@@ -153,76 +153,82 @@ class Series_Passes extends Controller {
 		$ticket_id     = $ticket->ID;
 
 		DB::transaction( function () use ( $ticket_id, $post_id, $capacity_mode, $capacity_data ) {
-			$posts_and_posts = Posts_And_Posts::table_name();
+			$capacities_relationships = $this->container->get( Repositories\Capacities_Relationships::class );
 
-			// Start by inserting th e Ticket <> Series relationship.
-			if ( ! DB::insert(
-				$posts_and_posts, [
+			// Start by inserting the post_and_post relationship between the ticket and the series.
+			Post_And_Post::create( [
 				'post_id_1' => (int) $ticket_id,
 				'post_id_2' => (int) $post_id,
 				'type'      => Posts_And_Posts::TYPE_TICKET_AND_POST_PREFIX . Series_Post_Type::POSTTYPE,
-			], [ '%d', '%d', '%s', ] ) ) {
-				$this->error( "Could not insert into $posts_and_posts table for ticket {$ticket_id} and series {$post_id}" );
-				// Throw an exception to rollback the transaction.
-				throw new \RuntimeException(
-					"Could not insert into $posts_and_posts table for ticket {$ticket_id} and series {$post_id}"
-				);
+			] );
+
+			if ( $capacity_mode === Capacities::MODE_UNLIMITED ) {
+				Capacity_Relationship::create( [
+					'object_id'          => $ticket_id,
+					'capacity_id'        => Capacity::create_unlimited()->id,
+					'parent_capacity_id' => 0,
+				] );
+
+				return;
 			}
 
-			switch ( $capacity_mode ) {
-				case Capacities::MODE_UNLIMITED:
-					$this->insert_unlimited_capacity_data( $ticket_id );
-					break;
-				case Global_Stock::GLOBAL_STOCK_MODE:
-					if ( ! isset( $capacity_data['event_capacity'] ) ) {
-						throw new Invalid_Data_Exception(
-							'Event capacity is required when using global stock mode',
-							Invalid_Data_Exception::GLOBAL_STOCK_MODE_MISSING_EVENT_CAPACITY
-						);
-					}
-					// Insert the global capacity for the Event.
-					[ $capacity_id ] = $this->insert_global_capacity_data( $post_id, $capacity_data['event_capacity'] );
-					// Insert the relationship between the Ticket and the Event global capacity.
-					$this->insert_capacities_relationships_data( [
-						'object_id'          => $ticket_id,
-						'capacity_id'        => $capacity_id,
-						'parent_capacity_id' => 0
-					] );
-					break;
-				case Global_Stock::CAPPED_STOCK_MODE:
-					if ( ! isset( $capacity_data['event_capacity'] ) ) {
-						throw new Invalid_Data_Exception(
-							'Event capacity is required when using capped stock mode',
-							Invalid_Data_Exception::CAPPED_STOCK_MODE_MISSING_EVENT_CAPACITY
-						);
-					}
-					if ( ! isset( $capacity_data['capacity'] ) ) {
-						throw new Invalid_Data_Exception(
-							'Ticket capacity is required when using capped stock mode',
-							Invalid_Data_Exception::CAPPED_STOCK_MODE_MISSING_TICKET_CAPACITY
-						);
-					}
-					// Insert the global capacity for the Event.
-					$capacities_relationships = Capacities_Relationships::table_name();
-					$parent_capacity_id       = DB::get_var( DB::prepare(
-						"SELECT capacity_id FROM {$capacities_relationships} WHERE parent_capacity_id = 0 AND object_id = %d",
-						$post_id
-					) );
-					if ( ! $parent_capacity_id ) {
-						[ $parent_capacity_id ] = $this->insert_global_capacity_data( $post_id, $capacity_data['event_capacity'] );
-					}
-					// Insert the capped capacity for the Ticket.
-					$this->insert_capped_capacity_data( $ticket_id, $parent_capacity_id, $capacity_data['capacity'] );
-					break;
-				case Global_Stock::OWN_STOCK_MODE:
-					$this->insert_own_capacity_data( $ticket_id, $capacity_data['capacity'] );
-					break;
-				default:
-					throw new Invalid_Data_Exception(
-						'Invalid capacity mode: ' . $capacity_mode,
-						Invalid_Data_Exception::INVALID_CAPACITY_MODE
-					);
+			if ( ! isset( $capacity_data['capacity'] ) ) {
+				throw new Invalid_Data_Exception( 'The capacity data is missing.', Invalid_Data_Exception::CAPACITY_VALUE_MISSING );
 			}
+
+			if ( in_array( $capacity_mode, [
+				Global_Stock::GLOBAL_STOCK_MODE,
+				Global_Stock::CAPPED_STOCK_MODE
+			], true ) ) {
+				if ( ! isset( $capacity_data['event_capacity'] ) ) {
+					throw new Invalid_Data_Exception( 'The event capacity data is missing.', Invalid_Data_Exception::EVENT_CAPACITY_VALUE_MISSING );
+				}
+
+				// Update or insert the global capacity for the Event.
+				$event_capacity_relationship = $capacities_relationships->find_by_object_id( $post_id );
+
+				if ( $event_capacity_relationship === null ) {
+					$event_capacity              = Capacity::create_global( $capacity_data['event_capacity'] );
+					$event_capacity_relationship = Capacity_Relationship::create( [
+						'object_id'          => $post_id,
+						'capacity_id'        => $event_capacity->id,
+						'parent_capacity_id' => 0,
+					] );
+				}
+
+				if ( $capacity_mode === Global_Stock::GLOBAL_STOCK_MODE ) {
+					// Relate the ticket with the global capacity for the Event.
+					Capacity_Relationship::create( [
+						'object_id'          => $ticket_id,
+						'capacity_id'        => $event_capacity_relationship->capacity_id,
+						'parent_capacity_id' => $event_capacity_relationship->id,
+					] );
+
+					return;
+				}
+
+				// Create a new capacity for the ticket subordinated to the global capacity for the Event.
+				Capacity_Relationship::create( [
+					'object_id'          => $ticket_id,
+					'capacity_id'        => Capacity::create_capped( $capacity_data['capacity'] )->id,
+					'parent_capacity_id' => $event_capacity_relationship->id,
+				] );
+
+				return;
+			}
+
+			if ( $capacity_mode === Global_Stock::OWN_STOCK_MODE ) {
+				// Create a new capacity for the ticket.
+				Capacity_Relationship::create( [
+					'object_id'          => $ticket_id,
+					'capacity_id'        => Capacity::create_own( $capacity_data['capacity'] )->id,
+					'parent_capacity_id' => 0,
+				] );
+
+				return;
+			}
+
+			throw new Invalid_Data_Exception( 'The capacity mode is invalid.', Invalid_Data_Exception::CAPACITY_MODE_INVALID );
 		} );
 
 		$this->debug( "Added Series Pass custom tables data for Ticket {$ticket->ID} and Series {$post_id}" );
@@ -261,71 +267,27 @@ class Series_Passes extends Controller {
 		}
 
 		DB::transaction( function () use ( $post_id, $ticket_id ) {
-			$capacities_relationships = Capacities_Relationships::table_name();
+			$capacities_relationships = $this->container->get( Repositories\Capacities_Relationships::class );
+			$capacity_relationship    = $capacities_relationships->find_by_object_id( $ticket_id );
 
-			$capacity_id = DB::get_var(
-				DB::prepare(
-					"SELECT capacity_id FROM $capacities_relationships WHERE object_id = %d",
-					$ticket_id
-				)
-			);
-
-			if ( empty( $capacity_id ) ) {
-				$this->error( "Could not get capacity id for ticket {$ticket_id}" );
-				// Throw an exception to rollback the transaction.
-				throw new \RuntimeException(
-					"Could not get capacity id for ticket {$ticket_id}"
-				);
+			if ( $capacity_relationship === null ) {
+				// No point in continuing if there is no capacity relationship.
+				return;
 			}
 
-			$posts_and_posts = Posts_And_Posts::table_name();
+			$capacity_relationship->delete();
 
-			if ( false === DB::delete(
-					$posts_and_posts, [
-					'post_id_1' => (int) $ticket_id,
-					'post_id_2' => (int) $post_id,
-					'type'      => Posts_And_Posts::TYPE_TICKET_AND_POST_PREFIX . Series_Post_Type::POSTTYPE,
-				], [ '%d', '%d', '%s', ] ) ) {
-				$this->error( "Could not delete from $posts_and_posts table for ticket {$ticket_id} and series {$post_id}" );
-				// Throw an exception to rollback the transaction.
-				throw new \RuntimeException(
-					"Could not delete from $posts_and_posts table for ticket {$ticket_id} and series {$post_id}"
-				);
-			}
+			$capacities = $this->container->get( Repositories\Capacities::class );
+			$capacities->prepareQuery()
+			           ->where( 'id', $capacity_relationship->capacity_id )
+			           ->delete();
 
-			$capacity_relaionships_count = (int) DB::get_var(
-				DB::prepare(
-					"SELECT COUNT(*) FROM $capacities_relationships WHERE capacity_id = %d",
-					$capacity_id
-				)
-			);
-
-			if ( false === DB::delete(
-					$capacities_relationships, [
-					'object_id' => $ticket_id,
-				], [ '%d', ] ) ) {
-				$this->error( "Could not delete from $capacities_relationships table for ticket {$ticket_id}" );
-				// Throw an exception to rollback the transaction.
-				throw new \RuntimeException(
-					"Could not delete from $capacities_relationships table for ticket {$ticket_id}"
-				);
-			}
-
-			if ( $capacity_relaionships_count === 1 ) {
-				// The ticket being deleted was the only one using this capacity, remove it.
-				$capacities = Capacities::table_name();
-
-				if ( false === DB::delete(
-						$capacities, [
-						'id' => $capacity_id,
-					], [ '%d', ] ) ) {
-					$this->error( "Could not delete from $capacities table for capacity {$capacity_id}" );
-					// Throw an exception to rollback the transaction.
-					throw new \RuntimeException(
-						"Could not delete from $capacities table for capacity {$capacity_id}"
-					);
-				}
-			}
+			$posts_and_posts = $this->container->get( Repositories\Posts_And_Posts::class );
+			$posts_and_posts->prepareQuery()
+			                ->where( 'post_id_1', $ticket_id )
+			                ->where( 'post_id_2', $post_id )
+			                ->where( 'type', Posts_And_Posts::TYPE_TICKET_AND_POST_PREFIX . Series_Post_Type::POSTTYPE )
+			                ->delete();
 		} );
 
 		return true;
@@ -351,6 +313,8 @@ class Series_Passes extends Controller {
 		// Reload the ticket object to make sure we have the latest data and the global stock information.
 		$ticket = Tickets::load_ticket_object( $ticket->ID );
 
+		// @todo
+
 		return true;
 	}
 
@@ -375,205 +339,5 @@ class Series_Passes extends Controller {
 		       && $ticket instanceof Ticket
 		       && ( $ticket->type() ?? 'default' ) === self::HANDLED_TICKET_TYPE
 		       && is_array( $data );
-	}
-
-	/**
-	 * Inserts data in the custom tables for an object with unlimited capacity.
-	 *
-	 * @since TBD
-	 *
-	 * @param int $object_id The object ID to insert the unlimited capacity data for.
-	 *
-	 * @return array<int> The IDs of the inserted capacity and capacity relationship.
-	 *
-	 * @throws Custom_Tables_Exception If the data could not be inserted.
-	 */
-	private function insert_unlimited_capacity_data( int $object_id ): array {
-		$capacity_id = $this->insert_capacities_data( [
-			'max_value'     => (int) Capacities::VALUE_UNLIMITED,
-			'current_value' => (int) Capacities::VALUE_UNLIMITED,
-			'mode'          => Capacities::MODE_UNLIMITED,
-			'name'          => '',
-			'description'   => '',
-		] );
-
-		$capacity_relationship_id = $this->insert_capacities_relationships_data( [
-			'object_id'          => $object_id,
-			'parent_capacity_id' => 0,
-			'capacity_id'        => $capacity_id,
-		] );
-
-		return [ $capacity_id, $capacity_relationship_id ];
-	}
-
-	/**
-	 * Inserts data into the Capacities custom table.
-	 *
-	 * @since TBD
-	 *
-	 * @param array<string,mixed> $data The data to insert.
-	 *
-	 * @return int The ID of the inserted row.
-	 *
-	 * @throws Custom_Tables_Exception
-	 */
-	private function insert_capacities_data( array $data ): int {
-		$capacities = Capacities::table_name();
-
-		if ( ! DB::insert(
-			$capacities, [
-			'max_value'     => $data['max_value'],
-			'current_value' => $data['current_value'],
-			'mode'          => $data['mode'],
-			'name'          => $data['name'],
-			'description'   => $data['description'],
-		], [ '%d', '%s', '%s', '%s', ] ) ) {
-			$message = "Could not insert data into $capacities table: " . json_encode( $data, JSON_PRETTY_PRINT );
-
-			$this->error( $message );
-			// Throw an exception to rollback the transaction.
-			throw new Custom_Tables_Exception( $message, Custom_Tables_Exception::CAPACITIES_INSERT_ERROR );
-		}
-
-		$last_insert_id = DB::last_insert_id();
-
-		if ( ! $last_insert_id ) {
-			$message = "Could not get last insert ID for $capacities table: " . json_encode( $data, JSON_PRETTY_PRINT );
-
-			$this->error( $message );
-			// Throw an exception to rollback the transaction.
-			throw new Custom_Tables_Exception( $message, Custom_Tables_Exception::CAPACITIES_INSERT_ERROR );
-		}
-
-		return $last_insert_id;
-	}
-
-	/**
-	 * Inserts data into the Capacities Relationships custom table.
-	 *
-	 * @since TBD
-	 *
-	 * @param array<string,mixed> $data The data to insert.
-	 *
-	 * @return int The ID of the inserted row.
-	 *
-	 * @throws Custom_Tables_Exception
-	 */
-	private function insert_capacities_relationships_data( array $data ): int {
-		$capacities_relationships = Capacities_Relationships::table_name();
-
-		if ( ! DB::insert(
-			$capacities_relationships, [
-			'parent_capacity_id' => $data['parent_capacity_id'],
-			'capacity_id'        => $data['capacity_id'],
-			'object_id'          => $data['object_id']
-		], [ '%d', '%d', ] ) ) {
-			$message = "Could not insert into $capacities_relationships table: " . json_encode( $data, JSON_PRETTY_PRINT );
-			$this->error( $message );
-			// Throw an exception to rollback the transaction.
-			throw new Custom_Tables_Exception( $message, Custom_Tables_Exception::CAPACITIES_RELATIONSHIPS_INSERT_ERROR );
-		}
-
-		$last_insert_id = DB::last_insert_id();
-
-		if ( empty( $last_insert_id ) ) {
-			$message = "Could not get last insert ID for $capacities_relationships table: " . json_encode( $data, JSON_PRETTY_PRINT );
-			$this->error( $message );
-			// Throw an exception to rollback the transaction.
-			throw new Custom_Tables_Exception( $message, Custom_Tables_Exception::CAPACITIES_RELATIONSHIPS_INSERT_ERROR );
-		}
-
-		return $last_insert_id;
-	}
-
-	/**
-	 * Inserts data in the custom tables for an object with global capacity.
-	 *
-	 * @since TBD
-	 *
-	 * @param int $object_id The object ID to insert the global capacity data for.
-	 * @param int $capacity  The global capacity value.
-	 *
-	 * @return array<int> The IDs of the inserted capacity and capacity relationship.
-	 *
-	 * @throws Custom_Tables_Exception If the data could not be inserted.
-	 */
-	private function insert_global_capacity_data( int $object_id, int $capacity ): array {
-		$global_capacity_id = $this->insert_capacities_data( [
-			'max_value'     => $capacity,
-			'current_value' => $capacity,
-			'mode'          => Global_Stock::CAPPED_STOCK_MODE,
-			'name'          => '',
-			'description'   => '',
-		] );
-
-		$global_capacity_relationship_id = $this->insert_capacities_relationships_data( [
-			'object_id'          => $object_id,
-			'parent_capacity_id' => 0,
-			'capacity_id'        => $global_capacity_id,
-		] );
-
-		return [ $global_capacity_id, $global_capacity_relationship_id ];
-	}
-
-	/**
-	 * Inserts data in the custom tables for an object with capped capacity.
-	 *
-	 * @since TBD
-	 *
-	 * @param int $object_id          The object ID to insert the capped capacity data for.
-	 * @param int $parent_capacity_id The ID of the parent capacity.
-	 * @param int $capacity           The capped capacity value.
-	 *
-	 * @return array<int> The IDs of the inserted capacity and capacity relationship.
-	 *
-	 * @throws Custom_Tables_Exception If the data could not be inserted.
-	 */
-	private function insert_capped_capacity_data( int $object_id, int $parent_capacity_id, int $capacity ): array {
-		$capacity_id = $this->insert_capacities_data( [
-			'max_value'     => $capacity,
-			'current_value' => $capacity,
-			'mode'          => Global_Stock::CAPPED_STOCK_MODE,
-			'name'          => '',
-			'description'   => '',
-		] );
-
-		$capacity_relationship_id = $this->insert_capacities_relationships_data( [
-			'object_id'          => $object_id,
-			'parent_capacity_id' => $parent_capacity_id,
-			'capacity_id'        => $capacity_id,
-		] );
-
-		return [ $capacity_id, $capacity_relationship_id ];
-	}
-
-	/**
-	 * Inserts data in the custom tables for an object with own capacity.
-	 *
-	 * @since TBD
-	 *
-	 * @param int $object_id The object ID to insert the own capacity data for.
-	 * @param int $capacity  The own capacity value.
-	 *
-	 * @return array<int> The IDs of the inserted capacity and capacity relationship.
-	 *
-	 * @throws Custom_Tables_Exception If the data could not be inserted.
-	 */
-	private function insert_own_capacity_data( $object_id, $capacity ): array {
-		$capacity_id = $this->insert_capacities_data( [
-			'max_value'     => $capacity,
-			'current_value' => $capacity,
-			'mode'          => Global_Stock::OWN_STOCK_MODE,
-			'name'          => '',
-			'description'   => '',
-		] );
-
-		$capacity_relationship_id = $this->insert_capacities_relationships_data( [
-			'object_id'          => $object_id,
-			'parent_capacity_id' => 0,
-			'capacity_id'        => $capacity_id,
-		] );
-
-		return [ $capacity_id, $capacity_relationship_id ];
 	}
 }
