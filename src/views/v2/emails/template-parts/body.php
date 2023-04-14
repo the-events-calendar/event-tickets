@@ -18,15 +18,4 @@
 
 $this->template( 'template-parts/body/title' );
 
-// @todo @codingmusician @juanfra: We need to move these to TEC and the `tickets` folder.
-$this->template( 'template-parts/body/event/date' );
-
-$this->template( 'template-parts/body/event/title' );
-
-$this->template( 'template-parts/body/event/image' );
-
 $this->template( 'template-parts/body/tickets' );
-
-$this->template( 'template-parts/body/event/venue' );
-
-$this->template( 'template-parts/body/event/links' );
