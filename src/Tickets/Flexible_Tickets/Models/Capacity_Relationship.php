@@ -10,8 +10,10 @@
 namespace TEC\Tickets\Flexible_Tickets\Models;
 
 use TEC\Common\StellarWP\Models\Contracts\ModelCrud;
+use TEC\Common\StellarWP\Models\Contracts\ModelFromQueryBuilderObject;
 use TEC\Common\StellarWP\Models\Model;
 use TEC\Common\StellarWP\Models\ModelQueryBuilder;
+use TEC\Tickets\Flexible_Tickets\Data_Transfer_Objects\Capacity_Relationship_DTO;
 use TEC\Tickets\Flexible_Tickets\Repositories\Capacities_Relationships;
 
 /**
@@ -26,7 +28,7 @@ use TEC\Tickets\Flexible_Tickets\Repositories\Capacities_Relationships;
  * @property int $parent_capacity_id The parent capacity ID.
  * @property int $object_id          The object ID.
  */
-class Capacity_Relationship extends Model implements ModelCrud {
+class Capacity_Relationship extends Model implements ModelCrud, ModelFromQueryBuilderObject {
 	/**
 	 * @inheritDoc
 	 */
@@ -99,5 +101,18 @@ class Capacity_Relationship extends Model implements ModelCrud {
 	 */
 	public static function query(): ModelQueryBuilder {
 		return tribe( Capacities_Relationships::class )->query();
+	}
+
+	/**
+	 * Creates a model from a DTO object.
+	 *
+	 * @since TBD
+	 *
+	 * @param object $object The query data object.
+	 *
+	 * @return Capacity_Relationship The model built from the data.
+	 */
+	public static function fromQueryBuilderObject( $object ): Capacity_Relationship {
+		return Capacity_Relationship_DTO::fromObject( $object )->toModel();
 	}
 }

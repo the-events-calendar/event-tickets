@@ -260,12 +260,6 @@ class Series_Passes extends Controller {
 			return false;
 		}
 
-		$ticket = Tickets::load_ticket_object( $ticket_id );
-
-		if ( ! ( $ticket instanceof Ticket && ( $ticket->type() ?? 'default' ) === self::HANDLED_TICKET_TYPE ) ) {
-			return false;
-		}
-
 		DB::transaction( function () use ( $post_id, $ticket_id ) {
 			$capacities_relationships = $this->container->get( Repositories\Capacities_Relationships::class );
 			$capacity_relationship    = $capacities_relationships->find_by_object_id( $ticket_id );

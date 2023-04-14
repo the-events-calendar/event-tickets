@@ -10,8 +10,10 @@
 namespace TEC\Tickets\Flexible_Tickets\Models;
 
 use TEC\Common\StellarWP\Models\Contracts\ModelCrud;
+use TEC\Common\StellarWP\Models\Contracts\ModelFromQueryBuilderObject;
 use TEC\Common\StellarWP\Models\Model;
 use TEC\Common\StellarWP\Models\ModelQueryBuilder;
+use TEC\Tickets\Flexible_Tickets\Data_Transfer_Objects\Post_And_Post_DTO;
 use TEC\Tickets\Flexible_Tickets\Repositories\Posts_And_Posts;
 
 /**
@@ -26,7 +28,7 @@ use TEC\Tickets\Flexible_Tickets\Repositories\Posts_And_Posts;
  * @property int    $post_id_2  The second post ID.
  * @property string $type       The type of the relationship.
  */
-class Post_And_Post extends Model implements ModelCrud {
+class Post_And_Post extends Model implements ModelCrud, ModelFromQueryBuilderObject {
 	/**
 	 * @inheritDoc
 	 */
@@ -100,5 +102,18 @@ class Post_And_Post extends Model implements ModelCrud {
 	 */
 	public static function query(): ModelQueryBuilder {
 		return tribe( Posts_And_Posts::class )->prepareQuery();
+	}
+
+	/**
+	 * Creates a model from a DTO object.
+	 *
+	 * @since TBD
+	 *
+	 * @param object $object The query data object.
+	 *
+	 * @return Post_And_Post The model built from the data.
+	 */
+	public static function fromQueryBuilderObject( $object ): Post_And_Post {
+		return Post_And_Post_DTO::fromObject( $object )->toModel();
 	}
 }

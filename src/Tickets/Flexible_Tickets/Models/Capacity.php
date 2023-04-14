@@ -10,9 +10,11 @@
 namespace TEC\Tickets\Flexible_Tickets\Models;
 
 use TEC\Common\StellarWP\Models\Contracts\ModelCrud;
+use TEC\Common\StellarWP\Models\Contracts\ModelFromQueryBuilderObject;
 use TEC\Common\StellarWP\Models\Model;
 use TEC\Common\StellarWP\Models\ModelQueryBuilder;
 use TEC\Tickets\Flexible_Tickets\Custom_Tables\Capacities as Table;
+use TEC\Tickets\Flexible_Tickets\Data_Transfer_Objects\Capacity_DTO;
 use TEC\Tickets\Flexible_Tickets\Repositories\Capacities;
 use Tribe__Tickets__Global_Stock as Global_Stock;
 
@@ -29,7 +31,7 @@ use Tribe__Tickets__Global_Stock as Global_Stock;
  * @property string $mode          The capacity mode.
  * @proeperty string $name          The capacity name.
  */
-class Capacity extends Model implements ModelCrud {
+class Capacity extends Model implements ModelCrud, ModelFromQueryBuilderObject {
 	/**
 	 * @inheritDoc
 	 */
@@ -198,4 +200,16 @@ class Capacity extends Model implements ModelCrud {
 		return $model;
 	}
 
+	/**
+	 * Creates a model from a DTO object.
+	 *
+	 * @since TBD
+	 *
+	 * @param object $object The query data object.
+	 *
+	 * @return Capacity The model built from the data.
+	 */
+	public static function fromQueryBuilderObject( $object ): Capacity {
+		return Capacity_DTO::fromObject( $object )->toModel();
+	}
 }
