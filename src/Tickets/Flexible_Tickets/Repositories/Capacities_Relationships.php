@@ -99,7 +99,7 @@ class Capacities_Relationships extends Repository implements Insertable, Updatab
 			[ '%d', '%d', '%s' ]
 		);
 
-		$model->id = DB::insert_id();
+		$model->id = DB::last_insert_id();
 
 		return $model;
 	}
