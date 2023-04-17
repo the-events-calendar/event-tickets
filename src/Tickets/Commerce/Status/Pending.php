@@ -16,6 +16,7 @@ use WP_Error;
  * form and then gone to Gateway for payment.  We have the record of sale, but they haven't completed their payment yet.
  *
  * @since   5.1.9
+ * @since TBD Added event_tickets_unvailable_message filter for unavailable messages.
  *
  * @package TEC\Tickets\Commerce\Status
  */

@@ -3427,6 +3427,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * event are currently unavailable and unless a different ticket provider reports differently
 		 * the "tickets unavailable" message should be displayed.
 		 *
+		 * @since TBD Added event_tickets_unvailable_message filter for unavailable messages.
+		 *
 		 * @param array $tickets
 		 * @param int $post_id ID of parent "event" post (defaults to the current post)
 		 */
