@@ -190,6 +190,9 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= TBD =
+* Enhancement - Ensure TC unavailable messages are filtered using event_tickets_unavailable_message filter. [ET-1579]
+
 = [5.5.10] 2023-04-03 =
 
 * Enhancement - Added functionality to properly restock deleted attendee ticket for Tickets Commerce. [ETP-860]
