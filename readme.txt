@@ -192,8 +192,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = TBD =
 * Enhancement - Save number of attendees checked-in via Event Tickets plus app. [ET-1695]
-
-== Changelog ==
+* Enhancement - Ensure Tickets Commerce unavailable messages are filtered using event_tickets_unavailable_message filter. [ET-1579]
 
 = [5.5.10] 2023-04-03 =
 
