@@ -1,9 +1,9 @@
 <?php
 /**
- * Event Tickets Emails: Purchase Receipt template.
+ * Event Tickets Emails: Main template > Body > Additional Content.
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/emails/customer-purchase-receipt.php
+ * [your-theme]/tribe/tickets/v2/emails/template-parts/body/add-content.php
  *
  * See more documentation about our views templating system.
  *
@@ -21,8 +21,13 @@
  * @var bool             $is_tec_active         [Global] Whether `The Events Calendar` is active or not.
  */
 
-$this->template( 'template-parts/header' );
+ if ( empty( $additional_content ) ) {
+	return;
+ }
 
-$this->template( 'purchase-receipt/body' );
-
-$this->template( 'template-parts/footer' );
+?>
+<tr>
+	<td class="tec-tickets__email-table-content-add-content-container">
+		<?php echo wp_kses_post( $additional_content ); ?>
+	</td>
+</tr>
