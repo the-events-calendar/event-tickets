@@ -18,13 +18,13 @@ class Tribe__Tickets__Admin__Columns {
 	 *
 	 * @var Tribe__Tickets__Admin__Columns__Tickets[]
 	 */
-	protected $columns = array();
+	protected $columns = [];
 
 	/**
 	 * Hooks the actions and filters needed to perform this class operations.
 	 */
 	public function hook() {
-		$this->add_custom_columns( (array) tribe_get_option( 'ticket-enabled-post-types', array() ) );
+		$this->add_custom_columns( (array) tribe_get_option( 'ticket-enabled-post-types', [] ) );
 	}
 
 	protected function add_custom_columns( $supported_types ) {
@@ -35,8 +35,8 @@ class Tribe__Tickets__Admin__Columns {
 		foreach ( $supported_types as $supported_type ) {
 			$tickets_column                   = new Tribe__Tickets__Admin__Columns__Tickets( $supported_type );
 
-			add_filter( "manage_{$supported_type}_posts_columns", array( $tickets_column, 'filter_manage_post_columns' ) );
-			add_action( "manage_{$supported_type}_posts_custom_column", array( $tickets_column, 'render_column' ), 10, 2 );
+			add_filter( "manage_{$supported_type}_posts_columns", [ $tickets_column, 'filter_manage_post_columns' ] );
+			add_action( "manage_{$supported_type}_posts_custom_column", [ $tickets_column, 'render_column' ], 10, 2 );
 
 			// store the column for later use
 			$this->columns[ $supported_type ] = $tickets_column;

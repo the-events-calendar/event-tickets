@@ -45,12 +45,14 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 	/**
 	 * Filters the list columns to add the ticket related ones.
 	 *
+	 * @since TBD Moved to shorthand array syntax.
+	 *
 	 * @param array $columns
 	 *
 	 * @return array
 	 */
-	public function filter_manage_post_columns( array $columns = array() ) {
-		$additional_columns = array();
+	public function filter_manage_post_columns( array $columns = [] ) {
+		$additional_columns = [];
 
 		if ( isset( $this->supported_columns['tickets'] ) ) {
 			$additional_columns['tickets'] = __( 'Attendees', 'event-tickets' );
@@ -75,7 +77,40 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 
 		$method = $this->supported_columns[ $column ];
 
-		echo call_user_func( array( $this, $method ), $post_id );
+
+		/**
+		 * Filter whether a column should be displayed in the admin post type table.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool   $should_display_column Whether the column should be displayed or not. Default true.
+		 * @param string $column                The current column name.
+		 * @param int    $post_id               The current post ID.
+		 * @param object $instance              The current instance of the plugin class.
+		 */
+		$should_display_column = apply_filters( 'tec_tickets_admin_post_type_table_column', true, $column, $post_id, $this );
+		if ( ! $should_display_column ) {
+			return false;
+		}
+
+		/**
+		 * Filter whether a specific column should be displayed in the admin post type table.
+		 *
+		 * The dynamic portion of the hook name, `$column`, refers to the current column name. Example, tickets
+		 *
+		 * @since TBD
+		 *
+		 * @param bool   $should_display_column Whether the column should be displayed or not. Default true.
+		 * @param string $column                The current column name.
+		 * @param int    $post_id               The current post ID.
+		 * @param object $instance              The current instance of the plugin class.
+		 */
+		$should_display_column = apply_filters( "tec_tickets_admin_post_type_table_column_{$column}", $should_display_column, $column, $post_id, $this );
+		if ( ! $should_display_column ) {
+			return false;
+		}
+
+		echo call_user_func( [ $this, $method ], $post_id );
 
 		return true;
 	}
@@ -88,18 +123,6 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 	 * @return string The column HTML.
 	 */
 	protected function render_tickets_entry( $post_id ) {
-
-		/**
-		 * Allows the displaying of the ticket attendee column to be toggled.
-		 *
-		 *  @param boolean $hide_attendee_column Allows the display of the attendee column to be toggled. Default, false.
-		 */
-		$hide_attendee_column = apply_filters( 'tec_tickets_disable_attendee_column', false );
-
-		if ( $hide_attendee_column ) {
-			return '&mdash;';
-		}
-
 		$post = get_post( $post_id );
 
 		$total = Tribe__Tickets__Tickets::get_event_attendees_count( $post_id );
@@ -194,6 +217,7 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 		// Set our cache to the percentage.
 		$cache[ $key ] = $percentage;
 
+		// To escape percent in sprintf use %%.
 		return sprintf( '<div><small>(%s%%)</small></div>', $percentage );
 	}
 

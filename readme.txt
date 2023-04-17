@@ -190,6 +190,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Enhancement - Added the ability to disable the Attendees column on the Events admin dashboard using `tec_tickets_admin_post_type_table_column` or `tec_tickets_admin_post_type_table_column_{$column}`. [ET-1701]
+
 = [5.5.10] 2023-04-03 =
 
 * Enhancement - Added functionality to properly restock deleted attendee ticket for Tickets Commerce. [ETP-860]
