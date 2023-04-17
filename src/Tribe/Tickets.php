@@ -1043,6 +1043,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Save the attendee checkin details.
 		 *
 		 * @since 5.5.2
+		 * @since TBD Update attendee scan count via tec_tickets_plus_app_attendees_checked_in option.
 		 *
 		 * @param int   $attendee_id     The ID of the attendee that's being checked-in.
 		 * @param mixed $qr              True if the check-in is from a QR code.
