@@ -9,6 +9,7 @@
 
 namespace TEC\Tickets\Flexible_Tickets\Models;
 
+use Exception;
 use TEC\Common\StellarWP\Models\Contracts\ModelCrud;
 use TEC\Common\StellarWP\Models\Contracts\ModelFromQueryBuilderObject;
 use TEC\Common\StellarWP\Models\Model;
@@ -80,7 +81,7 @@ class Capacity extends Model implements ModelCrud, ModelFromQueryBuilderObject {
 	 *
 	 * @return Capacity The saved model.
 	 *
-	 * @throws \Exception If the model is not valid.
+	 * @throws Exception If the model is not valid.
 	 */
 	public function save(): Capacity {
 		$this->id = tribe( Capacities::class )->insert( $this )->id;
@@ -211,5 +212,15 @@ class Capacity extends Model implements ModelCrud, ModelFromQueryBuilderObject {
 	 */
 	public static function fromQueryBuilderObject( $object ): Capacity {
 		return Capacity_DTO::fromObject( $object )->toModel();
+	}
+
+	public function update_to( string $mode, array $data = [] ): Capacity {
+		// Going from a own capacity type to a global one requires making sure the global capacity exists.
+		$mode_is_global       = in_array( $mode, [
+			Global_Stock::GLOBAL_STOCK_MODE,
+			Global_Stock::CAPPED_STOCK_MODE
+		], true );
+		$current_mod_is_local = in_array( $this->mode, [ Global_Stock::OWN_STOCK_MODE, Table::MODE_UNLIMITED ], true );
+		$from_own_to_global   = $current_mod_is_local && $mode_is_global;
 	}
 }

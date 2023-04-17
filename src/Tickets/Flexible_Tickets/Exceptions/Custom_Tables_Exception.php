@@ -17,7 +17,6 @@ namespace TEC\Tickets\Flexible_Tickets\Exceptions;
  * @package TEC\Tickets\Flexible_Tickets\Exceptions;
  */
 class Custom_Tables_Exception extends \Exception {
-
-	public const CAPACITIES_INSERT_ERROR = 0;
-	public const CAPACITIES_RELATIONSHIPS_INSERT_ERROR = 1;
+	public const CAPACITY_RELATIONSHIP_MISSING = 1;
+	public const CAPACITY_MISSING = 2;
 }
