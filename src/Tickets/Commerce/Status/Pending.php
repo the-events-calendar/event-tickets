@@ -166,8 +166,6 @@ class Pending extends Status_Abstract {
 					$message = sprintf( __( 'There are no %s available at this time.', 'event-tickets' ), tribe_get_ticket_label_plural( 'unavailable_mixed' ) );
 				}
 
-				$tickets = tribe( Module::class )->get_tickets( $post->ID );
-
 				/**
 				 * Filters the unavailability message for a ticket collection
 				 *
@@ -176,7 +174,7 @@ class Pending extends Status_Abstract {
 				 * @param string Unavailability message
 				 * @param array Collection of tickets
 				 */
-				$message = apply_filters( 'event_tickets_unvailable_message', $message, $tickets );
+				$message = (string) apply_filters( 'event_tickets_unvailable_message', $message, array( $ticket ) );
 
 				return new WP_Error(
 					'tec-tc-ticket-unavailable',
