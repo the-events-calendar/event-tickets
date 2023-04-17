@@ -65,12 +65,12 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 	 * Renders a column content calling the right render method.
 	 *
 	 * @param string $column  The current column name.
-	 * @param int    $post_id The current post ID.
+	 * @param int $post_id The current post ID.
 	 *
 	 * @return bool Whether the column content was rendered or not if the column
 	 *              type is not supported.
 	 */
-	public function render_column( $column, $post_id ) {
+	public function render_column( string $column, int $post_id ): bool {
 		if ( ! isset( $this->supported_columns[ $column ] ) ) {
 			return false;
 		}
@@ -122,7 +122,7 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 	 *
 	 * @return string The column HTML.
 	 */
-	protected function render_tickets_entry( $post_id ) {
+	protected function render_tickets_entry( int $post_id ): string {
 		$post = get_post( $post_id );
 
 		$total = Tribe__Tickets__Tickets::get_event_attendees_count( $post_id );
@@ -149,15 +149,15 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 	 * @since 4.10.6 Added $total and $not_going parameters to further optimize requests.
 	 * @since TBD Added caching and reorganized code to further optimize requests.
 	 *
-	 * @param  int     $post_id   The current post ID.
+	 * @param int $post_id   The current post ID.
 	 * @param  null    $deprecated
-	 * @param null|int $total     Total attendees found for post (if already calculated).
-	 * @param null|int $not_going Total attendees not going for post (if already calculated).
+	 * @param int|null $total     Total attendees found for post (if already calculated).
+	 * @param int|null $not_going Total attendees not going for post (if already calculated).
 	 *
 	 * @return string The percentage HTML or an empty string if one of the
 	 *                post tickets has unlimited stock.
 	 */
-	protected function get_percentage_string( $post_id, $deprecated = null, $total = null, $not_going = null ) {
+	protected function get_percentage_string( int $post_id, $deprecated = null, int $total = null, int $not_going = null ): string {
 
 		/** @var Tribe__Cache $cache */
 		$cache = tribe( 'cache' );
