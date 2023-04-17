@@ -1061,7 +1061,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 				// Save the attendee scan count.
 				$attendee_scan_count = (int) tribe_get_option( 'tec_tickets_plus_app_attendees_checked_in' );
-				tribe_update_option( 'tec_tickets_plus_app_attendees_checked_in', $attendee_scan_count++ );
+				tribe_update_option( 'tec_tickets_plus_app_attendees_checked_in', ++$attendee_scan_count );
 			}
 
 			/**
