@@ -13,12 +13,9 @@
  *
  * @since TBD
  *
- * @var Tribe_Template  $this  Current template object.
- * @var Module           $provider              [Global] The tickets provider instance.
- * @var string           $provider_id           [Global] The tickets provider class name.
- * @var array            $order                 [Global] The order object.
- * @var int              $order_id              [Global] The order ID.
- * @var bool             $is_tec_active         [Global] Whether `The Events Calendar` is active or not.
+ * @var Tribe_Template  $this          Current template object.
+ * @var array           $order         [Global] The order object.
+ * @var bool            $is_tec_active [Global] Whether `The Events Calendar` is active or not.
  */
 
 if ( empty( $attendee ) ) {

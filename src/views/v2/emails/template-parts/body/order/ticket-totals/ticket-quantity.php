@@ -13,17 +13,19 @@
  *
  * @since TBD
  *
- * @var Tribe_Template  $this  Current template object.
- * @var Module           $provider              [Global] The tickets provider instance.
- * @var string           $provider_id           [Global] The tickets provider class name.
- * @var array            $order                 [Global] The order object.
- * @var int              $order_id              [Global] The order ID.
- * @var bool             $is_tec_active         [Global] Whether `The Events Calendar` is active or not.
+ * @var Tribe_Template $this               Current template object.
+ * @var Email_Abstract $email              The email object.
+ * @var string         $heading            The email heading.
+ * @var string         $title              The email title.
+ * @var bool           $preview            Whether the email is in preview mode or not.
+ * @var string         $additional_content The email additional content.
+ * @var bool           $is_tec_active      Whether `The Events Calendar` is active or not.
+ * @var \WP_Post       $order              The order object.
  */
 
 $ticket_qty = empty( $ticket['quantity'] ) ? 0 : $ticket['quantity'];
 
 ?>
 <td class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-center" align="center">
-	<?php esc_html_e( $ticket_qty ); ?>
+	<?php echo esc_html( $ticket_qty ); ?>
 </td>
