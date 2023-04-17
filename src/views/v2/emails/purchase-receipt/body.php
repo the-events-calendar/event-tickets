@@ -1,9 +1,9 @@
 <?php
 /**
- * Event Tickets Emails: Purchase Receipt template.
+ * Event Tickets Emails: Purchase Receipt Body template
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/emails/customer-purchase-receipt.php
+ * [your-theme]/tribe/tickets/v2/emails/purchase-receipt/body.php
  *
  * See more documentation about our views templating system.
  *
@@ -21,8 +21,14 @@
  * @var bool             $is_tec_active         [Global] Whether `The Events Calendar` is active or not.
  */
 
-$this->template( 'template-parts/header' );
+ // @todo @codingmusician @juanfra Replace hardcoded data with dynamic data.
 
-$this->template( 'purchase-receipt/body' );
-
-$this->template( 'template-parts/footer' );
+$this->template( 'template-parts/body/title' );
+$this->template( 'purchase-receipt/intro' );
+$this->template( 'template-parts/body/order/customer-purchaser-details' );
+$this->template( 'template-parts/body/order/event-title' );
+$this->template( 'template-parts/body/order/ticket-totals' );
+$this->template( 'template-parts/body/order/order-total' );
+$this->template( 'template-parts/body/order/payment-info' );
+$this->template( 'template-parts/body/order/attendees-table' );
+$this->template( 'template-parts/body/add-content' );
