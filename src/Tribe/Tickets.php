@@ -3453,6 +3453,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				/**
 				 * Filters the unavailability message for a ticket collection
 				 *
+				 * @since TBD
+				 *
 				 * @param string Unavailability message
 				 * @param array Collection of tickets
 				 */
