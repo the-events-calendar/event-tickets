@@ -193,6 +193,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [TBD] TBD =
 
 * Enhancement - Added the ability to disable the Attendees column on the Events admin dashboard using `tec_tickets_admin_post_type_table_column` or `tec_tickets_admin_post_type_table_column_{$column}`. [ET-1701]
+* Enhancement - Ensure Tickets Commerce unavailable messages are filtered using event_tickets_unavailable_message filter. [ET-1579]
 
 = [5.5.10] 2023-04-03 =
 
