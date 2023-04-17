@@ -3458,7 +3458,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				 * @param string Unavailability message
 				 * @param array Collection of tickets
 				 */
-				echo apply_filters( 'event_tickets_unvailable_message', $message, $tickets );
+				echo (string) apply_filters( 'event_tickets_unvailable_message', $message, $tickets );
 			}
 		}
 
