@@ -190,6 +190,11 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= TBD =
+* Enhancement - Save number of attendees checked-in via Event Tickets plus app. [ET-1695]
+
+== Changelog ==
+
 = [5.5.10] 2023-04-03 =
 
 * Enhancement - Added functionality to properly restock deleted attendee ticket for Tickets Commerce. [ETP-860]
