@@ -899,7 +899,12 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 * @return array
 	 */
 	protected function build_attendee_data( array $attendee, $context = 'default' ) {
-		$this->get_ticket_object( $attendee['product_id'] );
+		$ticket = $this->get_ticket_object( $attendee['product_id'] );
+
+		if ( ! $ticket instanceof Tribe__Tickets__Ticket_Object ) {
+			return [];
+		}
+
 		$attendee_id = $attendee['attendee_id'];
 		/** @var Tribe__Tickets__Data_API $data_api */
 		$data_api = tribe( 'tickets.data_api' );
