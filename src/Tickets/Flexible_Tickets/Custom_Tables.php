@@ -40,6 +40,7 @@ class Custom_Tables extends Controller {
 	public function do_register(): void {
 		Schema_Config::set_container( $this->container );
 		Schema_Config::set_db( DB::class );
+		Model_Config::reset();
 		Model_Config::setHookPrefix('tec-tickets-flexible-tickets');
 
 		add_action( 'tribe_plugins_loaded', [ $this, 'register_tables' ] );
