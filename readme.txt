@@ -194,6 +194,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Enhancement - Save number of attendees checked-in via Event Tickets Plus app. [ET-1695]
 * Enhancement - Ensure Tickets Commerce unavailable messages are filtered using event_tickets_unavailable_message filter. [ET-1579]
 * Fix - When using Tickets Commerce tickets under the price of $1 will no longer display improperly. Deprecated `maybe_reset_cost_format`. [ET-1697]
+
 = [5.5.10] 2023-04-03 =
 
 * Enhancement - Added functionality to properly restock deleted attendee ticket for Tickets Commerce. [ETP-860]
