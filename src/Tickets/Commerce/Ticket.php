@@ -124,14 +124,6 @@ class Ticket {
 	 * @var string
 	 */
 	public static $status_count_meta_key_prefix = '_tec_tc_ticket_status_count';
-	/**
-	 * The meta key that holds the ticket type.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	public static $type_meta_key = '_type';
 
 	/**
 	 * Stores the instance of the template engine that we will use for rendering the elements.
