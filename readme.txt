@@ -191,6 +191,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 == Changelog ==
 
 = TBD =
+* Enhancement - Save number of attendees checked-in via Event Tickets Plus app. [ET-1695]
 * Enhancement - Ensure Tickets Commerce unavailable messages are filtered using event_tickets_unavailable_message filter. [ET-1579]
 * Fix - Fixed disappearing blocks when Tickets interface are moved during Event creation. [ET-1677]
 
