@@ -7,21 +7,20 @@ use Generator;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Common\StellarWP\DB\Database\Exceptions\DatabaseQueryException;
 use TEC\Common\StellarWP\DB\DB;
+use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
-use TEC\Tickets\Commerce;
 use TEC\Tickets\Flexible_Tickets\Custom_Tables\Capacities;
 use TEC\Tickets\Flexible_Tickets\Custom_Tables\Capacities_Relationships;
 use TEC\Tickets\Flexible_Tickets\Custom_Tables\Posts_And_Posts;
 use TEC\Tickets\Flexible_Tickets\Custom_Tables\Posts_And_Ticket_Groups;
 use TEC\Tickets\Flexible_Tickets\Custom_Tables\Posts_And_Users;
 use TEC\Tickets\Flexible_Tickets\Custom_Tables\Ticket_Groups;
-use TEC\Tickets\Flexible_Tickets\Test\Controller_Test_Case;
 use TEC\Tickets\Flexible_Tickets\Test\Traits\Series_Pass_Factory;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe__Log as Log;
 use Tribe__Tickets__Global_Stock as Global_Stock;
-use Tribe__Tickets__Tickets as Tickets;
 use Tribe__Tickets__Ticket_Object as Ticket;
+use Tribe__Tickets__Tickets as Tickets;
 
 class Series_PassesTest extends Controller_Test_Case {
 	use SnapshotAssertions;
@@ -29,6 +28,13 @@ class Series_PassesTest extends Controller_Test_Case {
 	use Series_Pass_Factory;
 
 	protected $controller_class = Series_Passes::class;
+
+	private function asssert_tables_empty( string ...$tables ): void {
+		global $wpdb;
+		foreach ( $tables as $table ) {
+			$this->assertEmpty( $wpdb->get_var( "SELECT COUNT(*) FROM $table" ) );
+		}
+	}
 
 	public function post_not_series_provider(): Generator {
 		yield 'empty post ID' => [
@@ -141,13 +147,13 @@ class Series_PassesTest extends Controller_Test_Case {
 	}
 
 	public function invalid_add_pass_custom_tables_data_provider(): Generator {
-		yield 'empty post ID and ticket' => [
+		yield 'empty post ID, ticket and date' => [
 			function () {
-				return [ '', false ];
+				return [ '', false, [] ];
 			}
 		];
 
-		yield 'post ID is not a number, ticket valid' => [
+		yield 'post ID is not a number, ticket valid, data valid' => [
 			function () {
 				// Legit Series.
 				$post_id = static::factory()->post->create( [
@@ -155,8 +161,9 @@ class Series_PassesTest extends Controller_Test_Case {
 				] );
 				// Legit ticket.
 				$ticket = $this->create_tc_series_pass( $post_id, 2389 );
+				$data   = $this->data_for_ticket( $ticket );
 
-				return [ 'foo', $ticket ];
+				return [ 'foo', $ticket, $data ];
 			}
 		];
 
@@ -167,7 +174,7 @@ class Series_PassesTest extends Controller_Test_Case {
 					'post_type' => Series_Post_Type::POSTTYPE,
 				] );
 
-				return [ $post_id, [] ];
+				return [ $post_id, [], [] ];
 			}
 		];
 
@@ -177,8 +184,9 @@ class Series_PassesTest extends Controller_Test_Case {
 				$post_id = static::factory()->post->create();
 				// Legit ticket.
 				$ticket = $this->create_tc_series_pass( $post_id, 2389 );
+				$data   = $this->data_for_ticket( $ticket );
 
-				return [ $post_id, $ticket ];
+				return [ $post_id, $ticket, $data ];
 			}
 		];
 	}
@@ -190,13 +198,13 @@ class Series_PassesTest extends Controller_Test_Case {
 	 * @dataProvider invalid_add_pass_custom_tables_data_provider
 	 */
 	public function should_not_add_custom_tables_data_on_invalid_filter_arguments( Closure $fixture ): void {
-		[ $post_id, $ticket ] = $fixture();
+		[ $post_id, $ticket, $data ] = $fixture();
 
 		$controller = $this->make_controller();
 
-		$this->assertFalse( $controller->insert_pass_custom_tables_data( $post_id, $ticket ) );
+		$this->assertFalse( $controller->insert_pass_custom_tables_data( $post_id, $ticket, $data ) );
 
-		$this->assert_custom_table_empty(
+		$this->asssert_tables_empty(
 			Capacities::table_name(),
 			Capacities_Relationships::table_name(),
 			Posts_And_Posts::table_name(),
@@ -260,7 +268,7 @@ class Series_PassesTest extends Controller_Test_Case {
 			[
 				'max_value'     => Capacities::VALUE_UNLIMITED,
 				'current_value' => Capacities::VALUE_UNLIMITED,
-				'mode'          => Global_Stock::OWN_STOCK_MODE
+				'mode'          => Capacities::VALUE_UNLIMITED
 			]
 		);
 	}
@@ -687,8 +695,8 @@ class Series_PassesTest extends Controller_Test_Case {
 
 	private function data_for_ticket( Ticket $ticket, array $capacity_payload = [ 'mode' => '' ] ): array {
 		return [
-			'ticket_name'        => "Test TC ticket for {$post_id}",
-			'ticket_description' => "Test TC ticket description for {$post_id}",
+			'ticket_name'        => "Test TC ticket for $ticket->ID",
+			'ticket_description' => "Test TC ticket description for $ticket->ID",
 			'ticket_price'       => get_post_meta( $ticket->ID, '_price', true ),
 			'tribe-ticket'       => $capacity_payload,
 		];

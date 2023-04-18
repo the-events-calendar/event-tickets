@@ -2,7 +2,7 @@
 
 namespace TEC\Tickets\Flexible_Tickets;
 
-use TEC\Tickets\Flexible_Tickets\Test\Controller_Test_Case;
+use TEC\Common\Tests\Provider\Controller_Test_Case;
 use Tribe\Tests\Traits\With_Uopz;
 
 class WP_CliTest extends Controller_Test_Case {

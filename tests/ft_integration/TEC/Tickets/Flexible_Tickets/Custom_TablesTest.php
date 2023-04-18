@@ -2,13 +2,13 @@
 
 namespace TEC\Tickets\Flexible_Tickets;
 
+use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Flexible_Tickets\Custom_Tables\Capacities;
 use TEC\Tickets\Flexible_Tickets\Custom_Tables\Capacities_Relationships;
 use TEC\Tickets\Flexible_Tickets\Custom_Tables\Posts_And_Posts;
 use TEC\Tickets\Flexible_Tickets\Custom_Tables\Posts_And_Ticket_Groups;
 use TEC\Tickets\Flexible_Tickets\Custom_Tables\Posts_And_Users;
 use TEC\Tickets\Flexible_Tickets\Custom_Tables\Ticket_Groups;
-use TEC\Tickets\Flexible_Tickets\Test\Controller_Test_Case;
 
 class Custom_TablesTest extends Controller_Test_Case {
 	protected string $controller_class = Custom_Tables::class;

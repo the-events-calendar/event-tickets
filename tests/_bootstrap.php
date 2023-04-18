@@ -13,6 +13,7 @@ $common_support_dir = $common_tests_dir . '/_support';
 require_once $common_support_dir . '/Helper/TECDb.php';
 
 Codeception\Util\Autoload::addNamespace( 'Tribe\Tests', $common_support_dir );
+Codeception\Util\Autoload::addNamespace( 'TEC\Common\Tests', $common_support_dir );
 
 if( ! defined( 'TRIBE_TESTS_HOME_URL' ) ) {
 	/**
