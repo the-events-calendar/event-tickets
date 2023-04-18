@@ -15,26 +15,22 @@ use TEC\Tickets\Flexible_Tickets\Custom_Tables\Posts_And_Posts;
 use TEC\Tickets\Flexible_Tickets\Custom_Tables\Posts_And_Ticket_Groups;
 use TEC\Tickets\Flexible_Tickets\Custom_Tables\Posts_And_Users;
 use TEC\Tickets\Flexible_Tickets\Custom_Tables\Ticket_Groups;
+use TEC\Tickets\Flexible_Tickets\Test\Traits\Custom_Tables_Assertions;
 use TEC\Tickets\Flexible_Tickets\Test\Traits\Series_Pass_Factory;
+use TEC\Tickets\Flexible_Tickets\Test\Traits\Ticket_Data_Factory;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe__Log as Log;
 use Tribe__Tickets__Global_Stock as Global_Stock;
-use Tribe__Tickets__Ticket_Object as Ticket;
 use Tribe__Tickets__Tickets as Tickets;
 
 class Series_PassesTest extends Controller_Test_Case {
 	use SnapshotAssertions;
 	use With_Uopz;
 	use Series_Pass_Factory;
+	use Custom_Tables_Assertions;
+	use Ticket_Data_Factory;
 
 	protected $controller_class = Series_Passes::class;
-
-	private function asssert_tables_empty( string ...$tables ): void {
-		global $wpdb;
-		foreach ( $tables as $table ) {
-			$this->assertEmpty( $wpdb->get_var( "SELECT COUNT(*) FROM $table" ) );
-		}
-	}
 
 	public function post_not_series_provider(): Generator {
 		yield 'empty post ID' => [
@@ -214,7 +210,7 @@ class Series_PassesTest extends Controller_Test_Case {
 		);
 	}
 
-	public function capacity_payload( string $payload ): array {
+	private function capacity_payload( string $payload ): array {
 		// Examples of the possible payloads sent over to represent the capacity.
 		$map = [
 			'unlimited'  => [
@@ -246,6 +242,9 @@ class Series_PassesTest extends Controller_Test_Case {
 	 * @test
 	 */
 	public function should_insert_unlimited_pass_data_correclty(): void {
+		// Create the controller first to make sure it will not be registered.
+		$controller = $this->make_controller();
+
 		$series_id        = static::factory()->post->create( [
 			'post_type' => Series_Post_Type::POSTTYPE,
 		] );
@@ -253,8 +252,6 @@ class Series_PassesTest extends Controller_Test_Case {
 		$ticket           = $this->create_tc_series_pass( $series_id, 2389, [
 			'tribe-ticket' => $capacity_payload,
 		] );
-
-		$controller = $this->make_controller();
 
 		$this->assertTrue( $controller->insert_pass_custom_tables_data(
 			$series_id,
@@ -268,7 +265,140 @@ class Series_PassesTest extends Controller_Test_Case {
 			[
 				'max_value'     => Capacities::VALUE_UNLIMITED,
 				'current_value' => Capacities::VALUE_UNLIMITED,
-				'mode'          => Capacities::VALUE_UNLIMITED
+				'mode'          => Capacities::MODE_UNLIMITED
+			]
+		);
+		$this->assert_object_capacity_not_in_db( $series_id );
+	}
+
+	/**
+	 * It should insert_own_pass_data_correctly
+	 *
+	 * @test
+	 */
+	public function should_insert_own_pass_data_correctly(): void {
+		// Create the controller first to make sure it will not be registered.
+		$controller = $this->make_controller();
+
+		$series_id        = static::factory()->post->create( [
+			'post_type' => Series_Post_Type::POSTTYPE,
+		] );
+		$capacity_payload = $this->capacity_payload( 'own_89' );
+		$ticket           = $this->create_tc_series_pass( $series_id, 2389, [
+			'tribe-ticket' => $capacity_payload,
+		] );
+
+		$this->assertTrue( $controller->insert_pass_custom_tables_data(
+			$series_id,
+			$ticket,
+			$this->data_for_ticket( $ticket, $capacity_payload ) )
+		);
+		$this->assert_controller_logged( Log::DEBUG, "Added Series Pass custom tables data for Ticket" );
+		$this->assert_object_capacity_in_db(
+			$ticket->ID,
+			[ 'parent_capacity_id' => 0, 'object_id' => $ticket->ID ],
+			[
+				'max_value'     => 89,
+				'current_value' => 89,
+				'mode'          => Global_Stock::OWN_STOCK_MODE
+			]
+		);
+		$this->assert_object_capacity_not_in_db( $series_id );
+	}
+
+	/**
+	 * It should insert global pass data correctly
+	 *
+	 * @test
+	 */
+	public function should_insert_global_pass_data_correctly(): void {
+		// Create the controller first to make sure it will not be registered.
+		$controller = $this->make_controller();
+
+		$series_id        = static::factory()->post->create( [
+			'post_type' => Series_Post_Type::POSTTYPE,
+		] );
+		$capacity_payload = $this->capacity_payload( 'global_100' );
+		$ticket           = $this->create_tc_series_pass( $series_id, 2389, [
+			'tribe-ticket' => $capacity_payload,
+		] );
+
+		$this->assertTrue( $controller->insert_pass_custom_tables_data(
+			$series_id,
+			$ticket,
+			$this->data_for_ticket( $ticket, $capacity_payload ) )
+		);
+		$this->assert_controller_logged( Log::DEBUG, "Added Series Pass custom tables data for Ticket" );
+		$this->assert_object_capacity_in_db(
+			$series_id,
+			[ 'parent_capacity_id' => 0, 'object_id' => $series_id ],
+			[
+				'max_value'     => 100,
+				'current_value' => 100,
+				'mode'          => Global_Stock::GLOBAL_STOCK_MODE
+			]
+		);
+		$event_capacity_id = $this->test_services->get( Repositories\Capacities_Relationships::class )
+		                                         ->find_by_object_id( $series_id )->capacity_id;
+		$this->assertNotEmpty( $event_capacity_id );
+		$this->assert_object_capacity_in_db(
+			$ticket->ID,
+			[ 'parent_capacity_id' => 0, 'object_id' => $ticket->ID, 'capacity_id' => $event_capacity_id ],
+			[
+				'max_value'     => 100,
+				'current_value' => 100,
+				'mode'          => Global_Stock::GLOBAL_STOCK_MODE
+			]
+		);
+	}
+
+	/**
+	 * It should insert capped pass data correctly
+	 *
+	 * @test
+	 */
+	public function should_insert_capped_pass_data_correctly(): void {
+		// Create the controller first to make sure it will not be registered.
+		$controller = $this->make_controller();
+
+		$series_id        = static::factory()->post->create( [
+			'post_type' => Series_Post_Type::POSTTYPE,
+		] );
+		$capacity_payload = $this->capacity_payload( 'capped_23' );
+		$ticket           = $this->create_tc_series_pass( $series_id, 2389, [
+			'tribe-ticket' => $capacity_payload,
+		] );
+
+		$this->assertTrue( $controller->insert_pass_custom_tables_data(
+			$series_id,
+			$ticket,
+			$this->data_for_ticket( $ticket, $capacity_payload ) )
+		);
+		$this->assert_controller_logged( Log::DEBUG, "Added Series Pass custom tables data for Ticket" );
+		$this->assert_object_capacity_in_db(
+			$series_id,
+			[ 'parent_capacity_id' => 0, 'object_id' => $series_id ],
+			[
+				'max_value'     => 100,
+				'current_value' => 100,
+				'mode'          => Global_Stock::GLOBAL_STOCK_MODE
+			]
+		);
+		$capacities_relationships = $this->test_services->get( Repositories\Capacities_Relationships::class );
+		$event_capacity_id        = $capacities_relationships->find_by_object_id( $series_id )->capacity_id;
+		$this->assertNotEmpty( $event_capacity_id );
+		$ticket_capacity_id = $capacities_relationships->find_by_object_id( $ticket->ID )->capacity_id;
+		$this->assert_object_capacity_in_db(
+			$ticket->ID,
+			[
+				'parent_capacity_id' => $event_capacity_id,
+				'object_id'          => $ticket->ID,
+				'capacity_id'        => $ticket_capacity_id
+			],
+			[
+				'max_value'     => 23,
+				'current_value' => 23,
+				'mode'          => Global_Stock::CAPPED_STOCK_MODE
 			]
 		);
 	}
@@ -309,63 +439,7 @@ class Series_PassesTest extends Controller_Test_Case {
 
 		$this->expectException( DatabaseQueryException::class );
 
-		$controller->insert_pass_custom_tables_data( $series_id, $ticket );
-	}
-
-	/**
-	 * It should throw and log if table insert does not affect any rows
-	 *
-	 * @test
-	 * @dataProvider custom_table_names
-	 */
-	public function should_throw_and_log_if_table_insert_does_not_affect_any_rows( string $table_name ): void {
-		// Use legit data.
-		$series_id = static::factory()->post->create( [
-			'post_type' => Series_Post_Type::POSTTYPE,
-		] );
-		$ticket    = $this->create_tc_series_pass( $series_id, 2389 );
-		// The DB::insert for the table will not affect any rows.
-		add_filter( 'query', static function ( string $query ) use ( $table_name ) {
-			if ( preg_match( '/^INSERT INTO `' . $table_name . '`/i', $query ) ) {
-				// Return a query that will not affect any rows.
-				return "SELECT id FROM $table_name WHERE 1=0";
-			}
-
-			return $query;
-		} );
-
-		$controller = $this->make_controller();
-
-		try {
-			$controller->insert_pass_custom_tables_data( $series_id, $ticket );
-		} catch ( \Exception $e ) {
-			$this->assert_controller_logged( Log::ERROR, "Could not insert into $table_name table for ticket" );
-		}
-		$this->assertInstanceOf( \RuntimeException::class, $e );
-	}
-
-	/**
-	 * It should throw and log if cannot get last capacity inserted ID
-	 *
-	 * @test
-	 */
-	public function should_throw_and_log_if_cannot_get_last_capacity_inserted_id(): void {
-		// Use legit data.
-		$series_id = static::factory()->post->create( [
-			'post_type' => Series_Post_Type::POSTTYPE,
-		] );
-		$ticket    = $this->create_tc_series_pass( $series_id, 2389 );
-		$this->set_class_fn_return( DB::class, 'last_insert_id', false );
-		$capacities = Capacities::table_name();
-
-		$controller = $this->make_controller();
-
-		try {
-			$controller->insert_pass_custom_tables_data( $series_id, $ticket );
-		} catch ( \Exception $e ) {
-			$this->assert_controller_logged( Log::ERROR, "Could not get last insert id for $capacities table for ticket" );
-		}
-		$this->assertInstanceOf( \RuntimeException::class, $e );
+		$controller->insert_pass_custom_tables_data( $series_id, $ticket, $this->data_for_ticket( $ticket ) );
 	}
 
 	public function delete_incorrect_input_data_provider(): \Generator {
@@ -459,7 +533,7 @@ class Series_PassesTest extends Controller_Test_Case {
 
 		$controller = $this->make_controller();
 
-		$this->assertTrue( $controller->insert_pass_custom_tables_data( $series_id, $ticket ) );
+		$this->assertTrue( $controller->insert_pass_custom_tables_data( $series_id, $ticket, $this->data_for_ticket( $ticket ) ) );
 
 		$capacities_relationships = Capacities_Relationships::table_name();
 		$capacities               = Capacities::table_name();
@@ -486,11 +560,11 @@ class Series_PassesTest extends Controller_Test_Case {
 	}
 
 	/**
-	 * It should log and throw if capacity ID cannot be found while deleting pass data
+	 * It should bail if capacity ID cannot be found while deleting pass data
 	 *
 	 * @test
 	 */
-	public function should_log_and_throw_if_capacity_id_cannot_be_found_while_deleting_pass_data(): void {
+	public function should_bail_if_capacity_id_cannot_be_found_while_deleting_pass_data(): void {
 		$series_id = static::factory()->post->create( [
 			'post_type' => Series_Post_Type::POSTTYPE,
 		] );
@@ -498,7 +572,7 @@ class Series_PassesTest extends Controller_Test_Case {
 
 		$controller = $this->make_controller();
 
-		$this->assertTrue( $controller->insert_pass_custom_tables_data( $series_id, $ticket ) );
+		$this->assertTrue( $controller->insert_pass_custom_tables_data( $series_id, $ticket, $this->data_for_ticket( $ticket ) ) );
 
 		$capacities_relationships = Capacities_Relationships::table_name();
 		// Remove the capacity from the relationships table.
@@ -508,12 +582,8 @@ class Series_PassesTest extends Controller_Test_Case {
 			[ '%d' ]
 		);
 
-		try {
-			$this->assertTrue( $controller->delete_pass_custom_tables_data( $series_id, $ticket->ID ) );
-		} catch ( \Exception $e ) {
-		}
-		$this->assertInstanceOf( \RuntimeException::class, $e );
-		$this->assert_controller_logged( Log::ERROR, 'Could not get capacity id for ticket ' );
+		$this->assertTrue( $controller->delete_pass_custom_tables_data( $series_id, $ticket->ID ) );
+		$this->assert_controller_logged( Log::DEBUG, 'No capacity relationship found for ticket ' . $ticket->ID );
 	}
 
 	/**
@@ -533,7 +603,7 @@ class Series_PassesTest extends Controller_Test_Case {
 
 		$controller = $this->make_controller();
 
-		$this->assertTrue( $controller->insert_pass_custom_tables_data( $series_id, $ticket ) );
+		$this->assertTrue( $controller->insert_pass_custom_tables_data( $series_id, $ticket, $this->data_for_ticket( $ticket ) ) );
 
 		// Filter the query to trigger an error during the posts and posts deletion.
 		add_filter( 'query', static function ( string $query ) use ( $table_name ) {
@@ -550,155 +620,16 @@ class Series_PassesTest extends Controller_Test_Case {
 	}
 
 	/**
-	 * It should log and throw if posts and posts data cannot be deleted
-	 *
-	 * @test
-	 * @dataProvider custom_table_names
-	 */
-	public function should_log_and_throw_if_posts_and_posts_data_cannot_be_deleted( string $table_name ): void {
-		$series_id = static::factory()->post->create( [
-			'post_type' => Series_Post_Type::POSTTYPE,
-		] );
-		$ticket    = $this->create_tc_series_pass( $series_id, 2389 );
-		global $wpdb;
-		// Avoid filling the test output.
-		$wpdb->suppress_errors = true;
-
-		$controller = $this->make_controller();
-
-		$this->assertTrue( $controller->insert_pass_custom_tables_data( $series_id, $ticket ) );
-
-		// Filter the query to make it so that the wpdb call will return `false.
-		add_filter( 'query', static function ( string $query ) use ( $table_name ) {
-			if ( preg_match( '/^DELETE FROM `' . $table_name . '`/i', $query ) ) {
-				return '';
-			}
-
-			return $query;
-		} );
-
-		try {
-			$this->assertTrue( $controller->delete_pass_custom_tables_data( $series_id, $ticket->ID ) );
-		} catch ( \Exception $e ) {
-		}
-		$this->assertInstanceOf( \RuntimeException::class, $e );
-		$this->assert_controller_logged( Log::ERROR, "Could not delete from $table_name table" );
-	}
-
-	/**
-	 * It should not remove capacity when pass deleted if related to other tickets
-	 *
-	 * @test
-	 * @skip Come back to this when shared capacity is handled.
-	 */
-	public function should_not_remove_capacity_when_pass_deleted_if_related_to_other(): void {
-		// @todo handle shared capacity first
-	}
-
-	/**
 	 * It should not update pass data on invalid input
 	 *
 	 * @test
 	 * @dataProvider invalid_add_pass_custom_tables_data_provider
 	 */
 	public function should_not_update_pass_data_on_invalid_input( Closure $fixture ): void {
-		[ $post_id, $ticket ] = $fixture();
+		[ $post_id, $ticket, $data ] = $fixture();
 
 		$controller = $this->make_controller();
 
-		$this->assertFalse( $controller->update_pass_custom_tables_data( $post_id, $ticket ) );
-	}
-
-	/**
-	 * It should not update pass data posts and posts relationship
-	 *
-	 * @test
-	 */
-	public function should_not_update_pass_data_posts_and_posts_relationship(): void {
-		$series_id = static::factory()->post->create( [
-			'post_type' => Series_Post_Type::POSTTYPE,
-		] );
-		$ticket    = $this->create_tc_series_pass( $series_id, 2389 );
-
-		$controller = $this->make_controller();
-
-		$this->assertTrue( $controller->insert_pass_custom_tables_data( $series_id, $ticket ) );
-
-		$posts_and_posts_table        = Posts_And_Posts::table_name();
-		$type                         = Posts_And_Posts::TYPE_TICKET_AND_POST_PREFIX . Series_Post_Type::POSTTYPE;
-		$relationship_query           = "SELECT * FROM $posts_and_posts_table WHERE post_id_1 = {$ticket->ID}
-                      AND post_id_2 = {$series_id} AND type = '$type'";
-		$posts_and_posts_relationship = DB::get_row( $relationship_query );
-
-		$this->assertTrue( $controller->update_pass_custom_tables_data( $series_id, $ticket ) );
-		$this->assertEquals(
-			$posts_and_posts_relationship,
-			DB::get_row( $relationship_query )
-		);
-	}
-
-	private function assert_object_capacity_in_db( int $object_id, array $relationships_criteria, array $capacities_criteria ): void {
-		$capacity_relationships_table = Capacities_Relationships::table_name();
-		$capacity_relationships       = DB::get_results( "SELECT * FROM $capacity_relationships_table WHERE object_id = {$object_id}", ARRAY_A );
-
-		$this->assertCount( 1, $capacity_relationships );
-
-		$capacity_relationship = $capacity_relationships[0];
-		$capacity_id           = $capacity_relationship['capacity_id'];
-
-		foreach ( $relationships_criteria as $key => $value ) {
-			$this->assertEquals( $value, $capacity_relationship[ $key ] );
-		}
-
-		$capacities_table = Capacities::table_name();
-		$capacities       = DB::get_results( "SELECT * FROM $capacities_table WHERE id = {$capacity_id}", ARRAY_A );
-
-		$this->assertCount( 1, $capacities );
-
-		$capacity = $capacities[0];
-
-		codecept_debug( $capacity );
-
-		foreach ( $capacities_criteria as $key => $value ) {
-			$this->assertEquals( $value, $capacity[ $key ] );
-		}
-	}
-
-	private function assert_object_capacity_not_in_db( int $object_id ): void {
-		$capacity_relationships_table = Capacities_Relationships::table_name();
-		$capacity_relationships       = DB::get_results( "SELECT * FROM $capacity_relationships_table WHERE object_id = {$object_id}" );
-
-		$this->assertCount( 0, $capacity_relationships );
-	}
-
-	private function given_a_pass_with_unlimited_capacity(): array {
-		$series_id = static::factory()->post->create( [
-			'post_type' => Series_Post_Type::POSTTYPE,
-		] );
-		$ticket    = $this->create_tc_series_pass( $series_id, 2389, [
-			'tribe-ticket' => $this->capacity_payload( 'unlimited' ),
-		] );
-
-		$this->assertEquals( Series_Passes::HANDLED_TICKET_TYPE, $ticket->type() );
-
-		$controller = $this->make_controller();
-
-		$this->assertTrue( $controller->insert_pass_custom_tables_data( $series_id, $ticket ) );
-		$this->assert_object_capacity_in_db( $ticket->ID, - 1, Global_Stock::OWN_STOCK_MODE );
-		$this->assert_object_capacity_not_in_db( $series_id );
-		$ticket_id = $ticket->ID;
-
-		$ticket = Tickets::load_ticket_object( $ticket_id );
-
-		return array( $series_id, $ticket, $ticket_id );
-	}
-
-	private function data_for_ticket( Ticket $ticket, array $capacity_payload = [ 'mode' => '' ] ): array {
-		return [
-			'ticket_name'        => "Test TC ticket for $ticket->ID",
-			'ticket_description' => "Test TC ticket description for $ticket->ID",
-			'ticket_price'       => get_post_meta( $ticket->ID, '_price', true ),
-			'tribe-ticket'       => $capacity_payload,
-		];
+		$this->assertFalse( $controller->update_pass_custom_tables_data( $post_id, $ticket, $data ) );
 	}
 }

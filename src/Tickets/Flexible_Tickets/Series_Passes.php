@@ -142,12 +142,6 @@ class Series_Passes extends Controller {
 		// Reload the ticket object to make sure we have the latest data and the global stock information.
 		$ticket = Tickets::load_ticket_object( $ticket->ID );
 
-		if ( ! isset( $data['tribe-ticket']['mode'] ) ) {
-			$global_capacity = $capacities->find_by_object_id( $post_id );
-			// Default the mode to unlimited.
-			$data['tribe-ticket']['mode'] = Capacities::MODE_UNLIMITED;
-		}
-
 		$capacity_data = $data['tribe-ticket'];
 		// No mode means unlimited.
 		$capacity_mode = $capacity_data['mode'] ?: Capacities::MODE_UNLIMITED;
@@ -202,13 +196,13 @@ class Series_Passes extends Controller {
 					Capacity_Relationship::create( [
 						'object_id'          => $ticket_id,
 						'capacity_id'        => $global_capacity_relationship->capacity_id,
-						'parent_capacity_id' => $global_capacity_relationship->id,
+						'parent_capacity_id' => 0,
 					] );
 
 					return;
 				}
 
-				// Create a new capacity for the ticket subordinated to the global capacity for the Event.
+				// Capped; create a new capacity for the ticket subordinated to the global capacity for the Event.
 				Capacity_Relationship::create( [
 					'object_id'          => $ticket_id,
 					'capacity_id'        => Capacity::create_capped( $capacity_data['capacity'] )->id,
@@ -255,7 +249,9 @@ class Series_Passes extends Controller {
 			              ( $series = get_post( $post_id ) ) instanceof WP_Post
 			              && $series->post_type === Series_Post_Type::POSTTYPE
 		              )
-		              && is_int( $ticket_id ) && $ticket_id > 0;
+		              && is_int( $ticket_id ) && $ticket_id > 0
+		              && ( $ticket = Tickets::load_ticket_object( $ticket_id ) ) instanceof Ticket
+		              && $ticket->type() === self::HANDLED_TICKET_TYPE;
 
 		if ( ! $check_args ) {
 			return false;
@@ -266,7 +262,8 @@ class Series_Passes extends Controller {
 			$capacity_relationship    = $capacities_relationships->find_by_object_id( $ticket_id );
 
 			if ( $capacity_relationship === null ) {
-				// No point in continuing if there is no capacity relationship.
+				// No point in continuing if there is no capacity relationship, it might have been deleted already.
+				$this->debug('No capacity relationship found for ticket ' . $ticket_id);
 				return;
 			}
 

@@ -36,8 +36,8 @@ class Custom_TablesTest extends Controller_Test_Case {
 
 		do_action( 'tribe_plugins_loaded' );
 
-		$this->assertTrue( $this->test_container->isBound( $table_class ) );
-		$table = $this->test_container->get( $table_class );
+		$this->assertTrue( $this->test_services->isBound( $table_class ) );
+		$table = $this->test_services->get( $table_class );
 		$this->assertInstanceOf( $table_class, $table );
 		$this->assertTrue( $table->exists() );
 	}
