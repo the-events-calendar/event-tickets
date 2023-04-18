@@ -259,15 +259,6 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		private $event_id = null;
 
 		/**
-		 * The ticket type.
-		 *
-		 * @since TBD
-		 *
-		 * @var string
-		 */
-		public string $type = 'default';
-
-		/**
 		 * Get the ticket's start date
 		 *
 		 * @since 4.2
@@ -928,8 +919,11 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * Magic getter to handle fetching protected properties
 		 *
-		 * @deprecated 4.0
-		 * @todo Remove when event-tickets-* plugins are fully de-supported
+		 * @since TBD Add the `type` property to the list of properties that can be fetched.
+		 *
+		 * @param string $var Property to fetch.
+		 *
+		 * @return mixed Value of the property.
 		 */
 		public function __get( $var ) {
 			switch ( $var ) {
@@ -951,6 +945,9 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				case 'qty_cancelled':
 					return $this->qty_cancelled();
 					break;
+				case 'type':
+					return $this->type();
+					break;
 			}
 
 			return null;
@@ -959,8 +956,10 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * Magic setter to handle setting protected properties
 		 *
-		 * @deprecated 4.0
-		 * @todo Remove when event-tickets-* plugins are fully de-supported
+		 * @since TBD Add the `type` property to the list of properties that can be set.
+		 *
+		 * @param string $var   Property to set.
+		 * @param mixed  $value Value to set the property to.
 		 */
 		public function __set( $var, $value ) {
 			switch ( $var ) {
@@ -978,6 +977,11 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 					break;
 				case 'qty_cancelled':
 					return $this->qty_cancelled( $value );
+					break;
+				case 'type':
+					if ( $this->ID ) {
+						update_post_meta( $this->ID, '_type', $value );
+					}
 					break;
 			}
 
@@ -1189,6 +1193,10 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * @return string The ticket type.
 		 */
 		public function type(): string {
+			if ( ! $this->ID ) {
+				return 'default';
+			}
+
 			return get_post_meta( $this->ID, '_type', true ) ?: 'default';
 		}
 	}
