@@ -192,6 +192,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = TBD =
 * Enhancement - Ensure Tickets Commerce unavailable messages are filtered using event_tickets_unavailable_message filter. [ET-1579]
+* Fix - Fixed disappearing blocks when Tickets interface are moved during Event creation. [ET-1677]
 
 = [5.5.10] 2023-04-03 =
 
