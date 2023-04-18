@@ -13,15 +13,15 @@
  *
  * @since TBD
  *
- * @var Tribe_Template  $this  Current template object.
+ * @var Tribe_Template   $this  Current template object.
  * @var Module           $provider              [Global] The tickets provider instance.
  * @var string           $provider_id           [Global] The tickets provider class name.
- * @var array            $order                 [Global] The order object.
+ * @var object           $order                 [Global] The order object.
  * @var int              $order_id              [Global] The order ID.
  * @var bool             $is_tec_active         [Global] Whether `The Events Calendar` is active or not.
  */
 
-$purchaser_email = empty( $order['purchaser'] ) || empty( $order['purchaser']['email'] ) ? '' : $order['purchaser']['email'];
+$purchaser_email = empty( $order->purchaser ) || empty( $order->purchaser['email'] ) ? '' : $order->purchaser['email'];
 
 ?>
 <td class="tec-tickets__email-table-content-order-purchaser-details-bottom tec-tickets__email-table-content-align-right" align="right">

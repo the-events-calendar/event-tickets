@@ -13,15 +13,15 @@
  *
  * @since TBD
  *
- * @var Tribe_Template  $this  Current template object.
+ * @var Tribe_Template   $this  Current template object.
  * @var Module           $provider              [Global] The tickets provider instance.
  * @var string           $provider_id           [Global] The tickets provider class name.
- * @var array            $order                 [Global] The order object.
+ * @var object           $order                 [Global] The order object.
  * @var int              $order_id              [Global] The order ID.
  * @var bool             $is_tec_active         [Global] Whether `The Events Calendar` is active or not.
  */
 
-if ( empty( $order ) || empty( $order['error_message'] ) ) {
+if ( empty( $order ) || empty( $order->error_message ) ) {
 	return;
 }
 
@@ -33,6 +33,6 @@ if ( empty( $order ) || empty( $order['error_message'] ) ) {
 </tr>
 <tr>
 	<td class="tec-tickets__email-table-content-order-error-bottom-text">
-		<?php echo esc_html( $order['error_message'] ); ?>
+		<?php echo esc_html( $order->error_message ); ?>
 	</td>
 </tr>

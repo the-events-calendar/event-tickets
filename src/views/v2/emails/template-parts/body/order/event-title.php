@@ -13,21 +13,21 @@
  *
  * @since TBD
  *
- * @var Tribe_Template  $this  Current template object.
+ * @var Tribe_Template   $this  Current template object.
  * @var Module           $provider              [Global] The tickets provider instance.
  * @var string           $provider_id           [Global] The tickets provider class name.
- * @var array            $order                 [Global] The order object.
+ * @var object           $order                 [Global] The order object.
  * @var int              $order_id              [Global] The order ID.
  * @var bool             $is_tec_active         [Global] Whether `The Events Calendar` is active or not.
  */
-
-if ( empty( $order ) || empty( $order['post_title'] ) ) {
+error_log( var_export($order, true));
+if ( empty( $order ) || empty( $order->post_title ) ) {
 	return;
 }
 
 ?>
 <tr>
 	<td class="tec-tickets__email-table-content-order-event-title">
-		<?php echo esc_html( $order['post_title'] ); ?>
+		<?php echo esc_html( $order->post_title ); ?>
 	</td>
 </tr>

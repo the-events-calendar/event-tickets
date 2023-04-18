@@ -77,7 +77,7 @@ class Preview_Data {
 	 * @return array
 	 */
 	public static function get_order( $args = [] ): array {
-		$default = [
+		$default = (object) [
 			'created'    => __( 'March 1, 2023', 'event-tickets' ),
 			'id'         => 123,
 			'provider'   => 'Stripe',
