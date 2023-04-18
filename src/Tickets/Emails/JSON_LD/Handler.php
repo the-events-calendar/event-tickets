@@ -1,6 +1,7 @@
 <?php
 namespace TEC\Tickets\Emails\JSON_LD;
 
+use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Emails\Email_Abstract;
 
 /**
@@ -32,22 +33,59 @@ class Handler {
 				return [];
 			}
 
-			$data = [
-				'@context' => 'https://schema.org',
-				'@type'    => 'Order',
-				'orderNumber' => $order->ID,
-				'orderStatus' => 'https://schema.org/OrderDelivered',
-				'acceptedOffer' => [
-					'@type' => 'Offer',
-					'price' => $order->total,
-					'priceCurrency' => $order->currency,
-					'itemOffered' => [
-						'@type' => 'Event',
-						'name' => $order->post_title,
-					],
-				],
-			];
+			$data = ( new Handler )->get_completed_order_data( $order );
 
+		}
+
+		return $data;
+	}
+
+	public function get_completed_order_data( $order ) : array {
+
+		$commerce = tribe( Module::class );
+		$report_link = $commerce->get_event_reports_link( $order->events_in_order[0], true );
+
+		$data = [
+			'@context' => 'https://schema.org',
+			'@type'    => 'Order',
+			'orderNumber' => $order->ID,
+			'merchant' => [
+				'@type' => 'Organization',
+				'name' => get_bloginfo( 'name' ),
+			],
+			'priceCurrency' => $order->currency,
+			'price' => $order->total,
+			'orderStatus' => 'https://schema.org/OrderDelivered',
+			'customer' => [
+				'@type' => 'Person',
+				'name' => $order->purchaser_name,
+				'email' => $order->purchaser_email,
+			],
+			'url' => $report_link,
+			'potentialAction' => [
+				'@type' => 'ViewAction',
+				'url' => $report_link,
+				'name' => esc_html__( 'View Order', 'event-tickets' ),
+			],
+		];
+
+		// Add order items.
+		foreach ( $order->items as $ticket_id => $item ) {
+			$ticket = tec_tc_get_ticket( $ticket_id );
+			$data['acceptedOffer'][] = [
+				'@type' => 'Offer',
+				'price' => $item['price'],
+				'priceCurrency' => $order->currency,
+				'itemOffered' => [
+					'@type' => 'Ticket',
+					'name' => $ticket->post_title,
+				],
+				'eligibleQuantity' => [
+					'@type' => 'QuantitativeValue',
+					'value' => $item['quantity'],
+				],
+
+			];
 		}
 
 		return $data;

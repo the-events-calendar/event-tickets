@@ -20,7 +20,6 @@ if ( ! empty( $preview ) || empty( $json_ld ) ) {
 	return;
 }
 
-// @todo @juanfra @codingmusician @rafsuntaskin print JSON-LD here.
 ?>
 
 <script type="application/ld+json">
