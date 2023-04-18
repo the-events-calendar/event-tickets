@@ -16,7 +16,6 @@ use TEC\Common\StellarWP\DB\DB;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 use TEC\Tickets\Flexible_Tickets\Custom_Tables\Capacities;
 use TEC\Tickets\Flexible_Tickets\Custom_Tables\Posts_And_Posts;
-use TEC\Tickets\Flexible_Tickets\Exceptions\Custom_Tables_Exception;
 use TEC\Tickets\Flexible_Tickets\Exceptions\Invalid_Data_Exception;
 use TEC\Tickets\Flexible_Tickets\Models\Capacity;
 use TEC\Tickets\Flexible_Tickets\Models\Capacity_Relationship;
@@ -80,6 +79,8 @@ class Series_Passes extends Controller {
 		add_action( 'tec_tickets_ticket_add', [ $this, 'insert_pass_custom_tables_data' ], 10, 3 );
 		add_action( 'event_tickets_attendee_ticket_deleted', [ $this, 'delete_pass_custom_tables_data' ], 5, 2 );
 		add_action( 'tec_tickets_ticket_update', [ $this, 'update_pass_custom_tables_data' ], 10, 2 );
+
+		$this->container->singleton( Series_Passes\Capacity_Updater::class, Series_Passes\Capacity_Updater::class );
 	}
 
 	/**
@@ -313,156 +314,8 @@ class Series_Passes extends Controller {
 		$new_mode = $capacity_data['mode'] ?: Capacities::MODE_UNLIMITED;
 
 		DB::transaction( function () use ( $post_id, $ticket_id, $new_mode, $data ) {
-			$capacities               = $this->container->get( Repositories\Capacities::class );
-			$capacities_relationships = $this->container->get( Repositories\Capacities_Relationships::class );
-
-			$capacity_relationship = $capacities_relationships->find_by_object_id( $ticket_id );
-
-			if ( $capacity_relationship === null ) {
-				throw new Custom_Tables_Exception(
-					'The capacity relationship is missing.',
-					Custom_Tables_Exception::CAPACITY_RELATIONSHIP_MISSING
-				);
-			}
-
-			$capacity = $capacities->find_by_id( $capacity_relationship->capacity_id );
-
-			if ( $capacity === null ) {
-				throw new Custom_Tables_Exception(
-					'The capacity is missing.',
-					Custom_Tables_Exception::CAPACITY_MISSING
-				);
-			}
-
-			$global_capacity_relationship = $capacities_relationships->find_by_object_id( $post_id );
-
-			$current_mode_is_local = in_array( $capacity->mode, [
-				Capacities::MODE_UNLIMITED,
-				Global_Stock::OWN_STOCK_MODE
-			], true );
-			$new_mode_is_local     = in_array( $new_mode, [
-				Capacities::MODE_UNLIMITED,
-				Global_Stock::OWN_STOCK_MODE
-			], true );
-			$new_mode_is_unlimited = $new_mode === Capacities::MODE_UNLIMITED;
-
-			// If the new mode is not unlimited, we need a capacity value.
-			if ( ( ! $new_mode_is_unlimited ) && ! isset( $data['capacity'] ) ) {
-				throw new Invalid_Data_Exception( 'The capacity is missing.', Invalid_Data_Exception::CAPACITY_VALUE_MISSING );
-			}
-
-			// If the new mode is global or capped, we need a global capacity value.
-			if ( ! isset( $data['event_capacity'] )
-			     && in_array( $new_mode, [
-					Global_Stock::GLOBAL_STOCK_MODE,
-					Global_Stock::CAPPED_STOCK_MODE
-				], true ) ) {
-				throw new Invalid_Data_Exception( 'The global capacity is missing.', Invalid_Data_Exception::EVENT_CAPACITY_VALUE_MISSING );
-			}
-
-			if ( $current_mode_is_local && $new_mode_is_local ) {
-				$capacity->mode          = $new_mode;
-				$capacity->max_value     = $new_mode_is_unlimited ?
-					Capacities::VALUE_UNLIMITED
-					: (int) $data['capacity'];
-				$capacity->current_value = $new_mode_is_unlimited ?
-					Capacities::VALUE_UNLIMITED
-					: min( $data['capacity'], $capacity->current_value );
-				$capacity->save();
-
-				return;
-			}
-
-			if ( ! $new_mode_is_local ) {
-				// Ensure the global capacity exists.
-				if ( $global_capacity_relationship === null ) {
-					$global_capacity              = Capacity::create_global( $data['event_capacity'] );
-					$global_capacity_relationship = Capacity_Relationship::create( [
-						'object_id'          => $post_id,
-						'capacity_id'        => $global_capacity->id,
-						'parent_capacity_id' => 0,
-					] );
-				} else {
-					$global_capacity = $capacities->find_by_id( $global_capacity_relationship->capacity_id );
-				}
-
-				// Update the global capacity.
-				$global_capacity->max_value = $data['event_capacity'];
-				$global_capacity->current_value = min($data['event_capacity'], $global_capacity->current_value);
-				$global_capacity->save();
-
-				// Global to global -> done
-				//
-				// Global to capped.
-				// - create ticket capacity
-				// - create ticket relationship with capacity parent set to the global capacity
-				// - update ticket relationship to point to the ticket capacity
-				//
-				// Capped to capped
-				// - update ticket capacity
-				//
-				// Capped to global
-				// - remove ticket capacity
-				// - update ticket relationship to point to the global capacity
-			}
-
-			// These are the possible combinations of old and new capacity modes:
-			//
-			// unlimited to unlimited
-			//  - no update needed
-			//
-			// unlimited to own
-			//  - update existing capacity
-			// own to unlimited
-			//  - update existing capacity
-			// own to own ->
-			//  - update_existing capacity
-			// capped to capped
-			//  - update existing capacity
-			// global to global
-			//  - update existing capacity
-			//
-			// unlimited to global ->
-			//  - create/update global capacity
-			//  - remove capacity
-			//  - update existing relationship to point to global
-			// own to global ->
-			//  - create/update global capacity
-			//  - remove capacity
-			//  - update existing relationship to point to global
-			//
-			// unlimited to capped ->
-			//  - create/update global capacity
-			//  - update existing capacity
-			//  - update existing relationship to have capacity_parent_id pointing to global
-			// own to capped ->
-			//  - create/update global capacity
-			//  - update existing capacity
-			//  - update existing relationship to have capacity_parent_id pointing to global
-			//
-			// global to own ->
-			//  - create capacity
-			//  - update existing relationship to point to new capacity
-			// global to unlimited ->
-			//  - create capacity
-			//  - update existing relationship to point to new capacity
-			//
-			// global to capped ->
-			//  - create capacity
-			//  - update existing relationship to point to new capacity and capacity_parent_id to global
-			//
-			// capped to unlimited ->
-			//  - update existing capacity
-			//  - update existing relationship to remove capacity_parent_id
-			// capped to own ->
-			//  - update existing capacity
-			//  - update existing relationship to remove capacity_parent_id
-			//
-			// capped to global ->
-			//  - remove existing capacity
-			//  - update existing relationship to point to global
-			//
-			// Given this write the switch statement to handle all the possible combinations.
+			$updater = $this->container->make( Series_Passes\Capacity_Updater::class );
+			$updater->update( $post_id, $ticket_id, $new_mode, $data );
 		} );
 
 		return true;
