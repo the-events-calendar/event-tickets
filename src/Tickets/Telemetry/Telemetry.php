@@ -12,6 +12,7 @@ namespace TEC\Tickets\Telemetry;
 use TEC\Common\StellarWP\Telemetry\Config;
 use TEC\Common\StellarWP\Telemetry\Opt_In\Status;
 use TEC\Common\Telemetry\Telemetry as Common_Telemetry;
+use Tribe__Tickets__Main;
 
 /**
  * Class Telemetry
@@ -21,8 +22,27 @@ use TEC\Common\Telemetry\Telemetry as Common_Telemetry;
  * @package TEC\Tickets\Telemetry
  */
 class Telemetry {
+
 	/**
-	 * Filters the modal optin args to be specific to ET
+	 * The Telemetry plugin slug for Event Tickets.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	protected static $plugin_slug = 'event-tickets';
+
+	/**
+	 * The "plugin path" for the Event Tickets main file.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	protected static $plugin_path = 'event-tickets.php';
+
+	/**
+	 * Filters the modal optin args to be specific to Event Tickets.
 	 *
 	 * @since TBD
 	 *
@@ -92,5 +112,48 @@ class Telemetry {
 		];
 
 		return $fields;
+	}
+
+	/**
+	 * Ensures the admin control reflects the actual opt-in status.
+	 * We save this value in tribe_options but since that could get out of sync,
+	 * we always display the status from TEC\Common\StellarWP\Telemetry\Opt_In\Status directly.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed  $value  The value of the attribute.
+	 * @param string $field  The field object id.
+	 *
+	 * @return mixed $value
+	 */
+	public function filter_tribe_field_opt_in_status( $value, $id ) {
+		if ( 'opt-in-status' !== $id ) {
+			return $value;
+		}
+
+		// We don't care what the value stored in tribe_options is - give us the Opt_In\Status value.
+		$status = Config::get_container()->get( Status::class );
+		// Rather than test for STATUS_ACTIVE, we just make sure it's not inactive (as there is also a "mixed" status)
+		$value = $status->get() !== $status::STATUS_INACTIVE;
+
+		return $value;
+	}
+
+	/**
+	 * Adds Event Tickets to the list of plugins
+	 * to be opted in/out alongside tribe-common.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,string> $slugs The default array of slugs in the format  [ 'plugin_slug' => 'plugin_path' ]
+	 *
+	 * @see \TEC\Common\Telemetry\Telemetry::get_tec_telemetry_slugs()
+	 *
+	 * @return array<string,string> $slugs The same array with The Events Calendar added to it.
+	 */
+	public function filter_tec_telemetry_slugs( $slugs ) {
+		$dir = Tribe__Tickets__Main::instance()->plugin_dir;
+		$slugs[self::$plugin_slug] =  $dir . self::$plugin_path;
+		return array_unique( $slugs, SORT_STRING );
 	}
 }
