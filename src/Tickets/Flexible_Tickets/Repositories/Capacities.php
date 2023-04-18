@@ -28,9 +28,6 @@ use TEC\Tickets\Flexible_Tickets\Models\Capacity;
  * @package TEC\Tickets\Flexible_Tickets\Repositories;
  */
 class Capacities extends Repository implements Insertable, Updatable, Deletable {
-	public static function upsert_global_capaacity() {
-	}
-
 	/**
 	 * Returns a query builder for the model.
 	 *

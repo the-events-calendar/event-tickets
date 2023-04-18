@@ -12,14 +12,22 @@ trait Custom_Tables_Assertions {
 		$capacity_relationships_table = Capacities_Relationships::table_name();
 		$capacity_relationships       = DB::get_results( "SELECT * FROM $capacity_relationships_table WHERE object_id = {$object_id}" );
 
-		$this->assertCount( 0, $capacity_relationships );
+		$this->assertCount(
+			0,
+			$capacity_relationships,
+			"Expected no capacities_relationships for object_id {$object_id} but got " . count( $capacity_relationships )
+		);
 	}
 
 	protected function assert_object_capacity_in_db( int $object_id, array $relationships_criteria, array $capacities_criteria ): void {
 		$capacity_relationships_table = Capacities_Relationships::table_name();
 		$capacity_relationships       = DB::get_results( "SELECT * FROM $capacity_relationships_table WHERE object_id = {$object_id}", ARRAY_A );
 
-		$this->assertCount( 1, $capacity_relationships );
+		$this->assertCount(
+			1,
+			$capacity_relationships,
+			"Expected one capacities_relationships for object_id {$object_id} but got " . count( $capacity_relationships )
+		);
 
 		$capacity_relationship = $capacity_relationships[0];
 		$capacity_id           = $capacity_relationship['capacity_id'];

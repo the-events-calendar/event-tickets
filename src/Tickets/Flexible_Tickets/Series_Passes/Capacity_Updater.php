@@ -98,52 +98,34 @@ class Capacity_Updater {
 
 		$current_mode_is_local  = in_array( $capacity->mode, [
 			Capacities_Table::MODE_UNLIMITED,
-			Global_Stock::OWN_STOCK_MODE
+			Global_Stock::OWN_STOCK_MODE,
+			Global_Stock::CAPPED_STOCK_MODE,
 		], true );
 		$new_mode_is_local      = in_array( $new_mode, [
 			Capacities_Table::MODE_UNLIMITED,
-			Global_Stock::OWN_STOCK_MODE
+			Global_Stock::OWN_STOCK_MODE,
+			Global_Stock::CAPPED_STOCK_MODE,
 		], true );
 		$new_mode_is_unlimited  = $new_mode === Capacities_Table::MODE_UNLIMITED;
 		$new_mode_is_capped     = $new_mode === Global_Stock::CAPPED_STOCK_MODE;
-		$current_mode_is_global = $capacity->mode === Global_Stock::GLOBAL_STOCK_MODE;
-		$current_mode_is_capped = $capacity->mode === Global_Stock::CAPPED_STOCK_MODE;
 		$new_mode_is_global     = $new_mode === Global_Stock::GLOBAL_STOCK_MODE;
+		$current_mode_is_global = $capacity->mode === Global_Stock::GLOBAL_STOCK_MODE;
 
 		// If the new mode is not unlimited, we need a capacity value.
 		if ( ( ! $new_mode_is_unlimited ) && ! isset( $data['capacity'] ) ) {
 			throw new Invalid_Data_Exception( 'The capacity is missing.', Invalid_Data_Exception::CAPACITY_VALUE_MISSING );
 		}
 
-		// If the new mode is global or capped, we need a global capacity value.
-		if ( ! isset( $data['event_capacity'] )
-		     && in_array( $new_mode, [
-				Global_Stock::GLOBAL_STOCK_MODE,
-				Global_Stock::CAPPED_STOCK_MODE
-			], true ) ) {
-			throw new Invalid_Data_Exception( 'The global capacity is missing.', Invalid_Data_Exception::EVENT_CAPACITY_VALUE_MISSING );
-		}
+		if ( $new_mode_is_global || $new_mode_is_capped ) {
+			// If the new mode is global or capped, we need a global capacity value.
+			if ( ! isset( $data['event_capacity'] ) ) {
+				throw new Invalid_Data_Exception( 'The global capacity is missing.', Invalid_Data_Exception::EVENT_CAPACITY_VALUE_MISSING );
+			}
 
-		if (
-			( $current_mode_is_local && $new_mode_is_local )
-			|| ( $current_mode_is_capped && $new_mode_is_capped )
-		) {
-			$capacity->mode          = $new_mode;
-			$capacity->max_value     = $new_mode_is_unlimited ?
-				Capacities_Table::VALUE_UNLIMITED : (int) $data['capacity'];
-			$capacity->current_value = $new_mode_is_unlimited ?
-				Capacities_Table::VALUE_UNLIMITED
-				: min( $data['capacity'], $capacity->current_value );
-			$capacity->save();
-
-			return $capacity;
-		}
-
-		if ( ! $new_mode_is_local ) {
-			// Ensure the global capacity exists.
+			// Update or insert the global capacity.
 			if ( $global_capacity_relationship === null ) {
-				$global_capacity              = Capacity::create_global( $data['event_capacity'] );
-				$global_capacity_relationship = Capacity_Relationship::create( [
+				$global_capacity = Capacity::create_global( $data['event_capacity'] );
+				Capacity_Relationship::create( [
 					'object_id'          => $series_id,
 					'capacity_id'        => $global_capacity->id,
 					'parent_capacity_id' => 0,
@@ -153,30 +135,65 @@ class Capacity_Updater {
 			}
 
 			// Update the global capacity.
-			$global_capacity->max_value     = $data['event_capacity'];
-			$global_capacity->current_value = min( $data['event_capacity'], $global_capacity->current_value );
+			$delta                          = $global_capacity->max_value - $global_capacity->current_value;
+			$global_capacity->max_value     = (int) $data['event_capacity'];
+			$global_capacity->current_value = $global_capacity->max_value - $delta;
 			$global_capacity->save();
-
-			if ( $current_mode_is_global && $new_mode_is_capped ) {
-				// Global to capped.
-				$capacity                                  = Capacity::create_capped( $data['capacity'] );
-				$capacity_relationship->capacity_id        = $capacity->id;
-				$capacity_relationship->parent_capacity_id = $global_capacity->id;
-				$capacity_relationship->save();
-
-				return $capacity;
-			}
-
-			if ( $current_mode_is_capped && $new_mode_is_global ) {
-				$capacity->delete();
-				$capacity_relationship->parent_capacity_id = 0;
-				$capacity_relationship->capacity_id        = $global_capacity->id;
-				$capacity_relationship->save();
-
-				return $capacity;
-			}
 		}
 
-		throw new Invalid_Data_Exception( 'The capacity mode is invalid.', Invalid_Data_Exception::CAPACITY_MODE_INVALID );
+		if ( $current_mode_is_local && $new_mode_is_local ) {
+			$delta               = $capacity->max_value - $capacity->current_value;
+			$capacity->mode      = $new_mode;
+			$capacity->max_value = $new_mode_is_unlimited ?
+				Capacities_Table::VALUE_UNLIMITED : (int) $data['capacity'];
+
+			if ( $new_mode_is_unlimited ) {
+				$capacity->current_value = Capacities_Table::VALUE_UNLIMITED;
+			} else {
+				$capacity->current_value = $capacity->max_value - $delta;
+			}
+
+			$capacity->save();
+
+			// Update the parent capacity ID depending on the new mode.
+			$parent_capacity_id                        = $new_mode_is_capped ? $global_capacity->id : 0;
+			$capacity_relationship->parent_capacity_id = $parent_capacity_id;
+			$capacity_relationship->save();
+
+			return $capacity;
+		}
+
+		if ( $current_mode_is_local && $new_mode_is_global ) {
+			$capacity_relationship->capacity_id        = $global_capacity->id;
+			$capacity_relationship->parent_capacity_id = 0;
+			$capacity_relationship->save();
+			$capacity->delete();
+
+			return $global_capacity;
+		}
+
+		if ( $current_mode_is_global && $new_mode_is_local ) {
+			$capacity = new Capacity( [
+				'mode'          => $new_mode,
+				'max_value'     => $new_mode_is_unlimited ?
+					Capacities_Table::VALUE_UNLIMITED : (int) $data['capacity'],
+				'current_value' => $new_mode_is_unlimited ?
+					Capacities_Table::VALUE_UNLIMITED : (int) $data['capacity'],
+				'description'   => '',
+				'name'          => ''
+			] );
+			$capacity->save();
+			$capacity_relationship->capacity_id        = $capacity->id;
+			$capacity_relationship->parent_capacity_id = $new_mode_is_capped ? $global_capacity->id : 0;
+			$capacity_relationship->save();
+
+			return $capacity;
+		}
+
+		if ( $new_mode_is_global ) {
+			return $global_capacity;
+		}
+
+		throw new Custom_Tables_Exception( 'Capacity update from ' . $capacity->mode . ' to ' . $new_mode . ' is not supported.', );
 	}
 }

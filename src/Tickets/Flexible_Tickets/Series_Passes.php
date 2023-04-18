@@ -310,9 +310,9 @@ class Series_Passes extends Controller {
 		// No mode means unlimited.
 		$new_mode = $capacity_data['mode'] ?: Capacities::MODE_UNLIMITED;
 
-		DB::transaction( function () use ( $post_id, $ticket_id, $new_mode, $data ) {
+		DB::transaction( function () use ( $post_id, $ticket_id, $new_mode, $capacity_data ) {
 			$updater = $this->container->make( Series_Passes\Capacity_Updater::class );
-			$updater->update( $post_id, $ticket_id, $new_mode, $data );
+			$updater->update( $post_id, $ticket_id, $new_mode, $capacity_data );
 		} );
 
 		return true;

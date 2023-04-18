@@ -84,6 +84,10 @@ class Capacity extends Model implements ModelCrud, ModelFromQueryBuilderObject {
 	 * @throws Exception If the model is not valid.
 	 */
 	public function save(): Capacity {
+		if ( $this->id ) {
+			return tribe( Capacities::class )->update( $this );
+		}
+
 		$this->id = tribe( Capacities::class )->insert( $this )->id;
 
 		return $this;

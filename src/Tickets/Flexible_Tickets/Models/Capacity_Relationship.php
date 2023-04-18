@@ -76,6 +76,10 @@ class Capacity_Relationship extends Model implements ModelCrud, ModelFromQueryBu
 	 * @return Capacity_Relationship The saved model.
 	 */
 	public function save(): Capacity_Relationship {
+		if ( $this->id ) {
+			return tribe( Capacities_Relationships::class )->update( $this );
+		}
+
 		$this->id = tribe( Capacities_Relationships::class )->insert( $this )->id;
 
 		return $this;

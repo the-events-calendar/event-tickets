@@ -15,6 +15,7 @@ use TEC\Tickets\Flexible_Tickets\Custom_Tables\Posts_And_Posts;
 use TEC\Tickets\Flexible_Tickets\Custom_Tables\Posts_And_Ticket_Groups;
 use TEC\Tickets\Flexible_Tickets\Custom_Tables\Posts_And_Users;
 use TEC\Tickets\Flexible_Tickets\Custom_Tables\Ticket_Groups;
+use TEC\Tickets\Flexible_Tickets\Models\Capacity_Relationship;
 use TEC\Tickets\Flexible_Tickets\Test\Traits\Custom_Tables_Assertions;
 use TEC\Tickets\Flexible_Tickets\Test\Traits\Series_Pass_Factory;
 use TEC\Tickets\Flexible_Tickets\Test\Traits\Ticket_Data_Factory;
@@ -215,11 +216,15 @@ class Series_PassesTest extends Controller_Test_Case {
 		$map = [
 			'unlimited'  => [
 				'mode' => '',
-
 			],
 			'global_100' => [
 				'mode'           => 'global',
 				'event_capacity' => '100',
+				'capacity'       => '',
+			],
+			'global_89'  => [
+				'mode'           => 'global',
+				'event_capacity' => '89',
 				'capacity'       => '',
 			],
 			'capped_23'  => [
@@ -227,10 +232,23 @@ class Series_PassesTest extends Controller_Test_Case {
 				'event_capacity' => '100',
 				'capacity'       => '23',
 			],
+			'capped_89'  => [
+				'mode'           => 'capped',
+				'event_capacity' => '100',
+				'capacity'       => '89',
+			],
+			'own_23'     => [
+				'mode'     => 'own',
+				'capacity' => '23',
+			],
 			'own_89'     => [
 				'mode'     => 'own',
 				'capacity' => '89',
-			]
+			],
+			'own_99'     => [
+				'mode'     => 'own',
+				'capacity' => '99',
+			],
 		];
 
 		return $map[ $payload ];
@@ -631,5 +649,737 @@ class Series_PassesTest extends Controller_Test_Case {
 		$controller = $this->make_controller();
 
 		$this->assertFalse( $controller->update_pass_custom_tables_data( $post_id, $ticket, $data ) );
+	}
+
+	/**
+	 * It should correctly update pass data from global to global
+	 *
+	 * @test
+	 */
+	public function should_correctly_update_pass_data_from_global_to_global(): void {
+		[
+			$series_id,
+			$ticket,
+			$ticket_capacity_relationship,
+			$series_capacity_relationship
+		] = $this->given_a_pass_with_capacity( 'global_100' );
+
+		$controller = $this->make_controller();
+
+		$data = $this->data_for_ticket( $ticket, $this->capacity_payload( 'global_89' ) );
+		$this->assertTrue( $controller->update_pass_custom_tables_data( $series_id, $ticket, $data ) );
+		$this->assert_object_capacity_in_db(
+			$series_id,
+			[
+				'id'                 => $series_capacity_relationship->id,
+				'capacity_id'        => $series_capacity_relationship->capacity_id,
+				'object_id'          => $series_id,
+				'parent_capacity_id' => 0,
+			],
+			[
+				'max_value'     => 89,
+				'current_value' => 89,
+				'mode'          => Global_Stock::GLOBAL_STOCK_MODE,
+			] );
+		$this->assert_object_capacity_in_db(
+			$ticket->ID,
+			[
+				'id'                 => $ticket_capacity_relationship->id,
+				'capacity_id'        => $series_capacity_relationship->capacity_id,
+				'object_id'          => $ticket->ID,
+				'parent_capacity_id' => 0
+			],
+			[
+				'id'            => $series_capacity_relationship->capacity_id,
+				'max_value'     => 89,
+				'current_value' => 89,
+				'mode'          => Global_Stock::GLOBAL_STOCK_MODE,
+			] );
+	}
+
+	/**
+	 * It should correctly update pass data from global to capped
+	 *
+	 * @test
+	 */
+	public function should_correctly_update_pass_data_from_global_to_capped(): void {
+		[
+			$series_id,
+			$ticket,
+			,
+			$series_capacity_relationship
+		] = $this->given_a_pass_with_capacity( 'global_100' );
+
+		$controller = $this->make_controller();
+
+		$data = $this->data_for_ticket( $ticket, $this->capacity_payload( 'capped_23' ) );
+		$this->assertTrue( $controller->update_pass_custom_tables_data( $series_id, $ticket, $data ) );
+		$this->assert_object_capacity_in_db(
+			$series_id,
+			[
+				'id'                 => $series_capacity_relationship->id,
+				'capacity_id'        => $series_capacity_relationship->capacity_id,
+				'object_id'          => $series_id,
+				'parent_capacity_id' => 0,
+			],
+			[
+				'max_value'     => 100,
+				'current_value' => 100,
+				'mode'          => Global_Stock::GLOBAL_STOCK_MODE,
+			] );
+		$ticket_capacity_relationship = $this->test_services->get( Repositories\Capacities_Relationships::class )
+		                                                    ->find_by_object_id( $ticket->ID );
+		$this->assertNotSame( $ticket_capacity_relationship->capacity_id, $series_capacity_relationship->capacity_id );
+		$this->assert_object_capacity_in_db(
+			$ticket->ID,
+			[
+				'id'                 => $ticket_capacity_relationship->id,
+				'capacity_id'        => $ticket_capacity_relationship->capacity_id,
+				'object_id'          => $ticket->ID,
+				'parent_capacity_id' => $series_capacity_relationship->capacity_id,
+			],
+			[
+				'id'            => $ticket_capacity_relationship->capacity_id,
+				'max_value'     => 23,
+				'current_value' => 23,
+				'mode'          => Global_Stock::CAPPED_STOCK_MODE,
+			] );
+	}
+
+	/**
+	 * It should correctly update pass data from global to unlimited
+	 *
+	 * @test
+	 */
+	public function should_correctly_update_pass_data_from_global_to_unlimited(): void {
+		[
+			$series_id,
+			$ticket,
+			,
+			$series_capacity_relationship
+		] = $this->given_a_pass_with_capacity( 'global_100' );
+
+		$controller = $this->make_controller();
+
+		$data = $this->data_for_ticket( $ticket, $this->capacity_payload( 'unlimited' ) );
+		$this->assertTrue( $controller->update_pass_custom_tables_data( $series_id, $ticket, $data ) );
+		$this->assert_object_capacity_in_db(
+			$series_id,
+			[
+				'id'                 => $series_capacity_relationship->id,
+				'capacity_id'        => $series_capacity_relationship->capacity_id,
+				'object_id'          => $series_id,
+				'parent_capacity_id' => 0,
+			],
+			[
+				'max_value'     => 100,
+				'current_value' => 100,
+				'mode'          => Global_Stock::GLOBAL_STOCK_MODE,
+			] );
+		$ticket_capacity_relationship = $this->test_services->get( Repositories\Capacities_Relationships::class )
+		                                                    ->find_by_object_id( $ticket->ID );
+		$this->assertNotSame( $ticket_capacity_relationship->capacity_id, $series_capacity_relationship->capacity_id );
+		$this->assert_object_capacity_in_db(
+			$ticket->ID,
+			[
+				'id'                 => $ticket_capacity_relationship->id,
+				'capacity_id'        => $ticket_capacity_relationship->capacity_id,
+				'object_id'          => $ticket->ID,
+				'parent_capacity_id' => 0,
+			],
+			[
+				'id'            => $ticket_capacity_relationship->capacity_id,
+				'max_value'     => Capacities::VALUE_UNLIMITED,
+				'current_value' => Capacities::VALUE_UNLIMITED,
+				'mode'          => Capacities::MODE_UNLIMITED,
+			] );
+	}
+
+	/**
+	 * It should correctly update pass data from global to own
+	 *
+	 * @test
+	 */
+	public function should_correctly_update_pass_data_from_global_to_own(): void {
+		[
+			$series_id,
+			$ticket,
+			,
+			$series_capacity_relationship
+		] = $this->given_a_pass_with_capacity( 'global_100' );
+
+		$controller = $this->make_controller();
+
+		$data = $this->data_for_ticket( $ticket, $this->capacity_payload( 'own_89' ) );
+		$this->assertTrue( $controller->update_pass_custom_tables_data( $series_id, $ticket, $data ) );
+		$this->assert_object_capacity_in_db(
+			$series_id,
+			[
+				'id'                 => $series_capacity_relationship->id,
+				'capacity_id'        => $series_capacity_relationship->capacity_id,
+				'object_id'          => $series_id,
+				'parent_capacity_id' => 0,
+			],
+			[
+				'max_value'     => 100,
+				'current_value' => 100,
+				'mode'          => Global_Stock::GLOBAL_STOCK_MODE,
+			] );
+		$ticket_capacity_relationship = $this->test_services->get( Repositories\Capacities_Relationships::class )
+		                                                    ->find_by_object_id( $ticket->ID );
+		$this->assertNotSame( $ticket_capacity_relationship->capacity_id, $series_capacity_relationship->capacity_id );
+		$this->assert_object_capacity_in_db(
+			$ticket->ID,
+			[
+				'id'                 => $ticket_capacity_relationship->id,
+				'capacity_id'        => $ticket_capacity_relationship->capacity_id,
+				'object_id'          => $ticket->ID,
+				'parent_capacity_id' => 0,
+			],
+			[
+				'id'            => $ticket_capacity_relationship->capacity_id,
+				'max_value'     => 89,
+				'current_value' => 89,
+				'mode'          => Global_Stock::OWN_STOCK_MODE,
+			] );
+	}
+
+	/**
+	 * It should correctly update pass data from capped to global
+	 *
+	 * @test
+	 */
+	public function should_correctly_update_pass_data_from_capped_to_global(): void {
+		[
+			$series_id,
+			$ticket,
+			$ticket_capacity_relationship,
+			$series_capacity_relationship
+		] = $this->given_a_pass_with_capacity( 'capped_23' );
+
+		$controller = $this->make_controller();
+
+		$data = $this->data_for_ticket( $ticket, $this->capacity_payload( 'global_100' ) );
+		$this->assertTrue( $controller->update_pass_custom_tables_data( $series_id, $ticket, $data ) );
+		$this->assert_object_capacity_in_db(
+			$series_id,
+			[
+				'id'                 => $series_capacity_relationship->id,
+				'capacity_id'        => $series_capacity_relationship->capacity_id,
+				'object_id'          => $series_id,
+				'parent_capacity_id' => 0,
+			],
+			[
+				'max_value'     => 100,
+				'current_value' => 100,
+				'mode'          => Global_Stock::GLOBAL_STOCK_MODE,
+			] );
+		$this->assert_object_capacity_in_db(
+			$ticket->ID,
+			[
+				'id'                 => $ticket_capacity_relationship->id,
+				'capacity_id'        => $series_capacity_relationship->capacity_id,
+				'object_id'          => $ticket->ID,
+				'parent_capacity_id' => 0,
+			],
+			[
+				'id'            => $series_capacity_relationship->capacity_id,
+				'max_value'     => 100,
+				'current_value' => 100,
+				'mode'          => Global_Stock::GLOBAL_STOCK_MODE,
+			] );
+	}
+
+	/**
+	 * It should correctly update pass data from capped to capped
+	 *
+	 * @test
+	 */
+	public function should_correctly_update_pass_data_from_capped_to_capped(): void {
+		[
+			$series_id,
+			$ticket,
+			$ticket_capacity_relationship,
+			$series_capacity_relationship
+		] = $this->given_a_pass_with_capacity( 'capped_23' );
+
+		$controller = $this->make_controller();
+
+		$data = $this->data_for_ticket( $ticket, $this->capacity_payload( 'capped_89' ) );
+		$this->assertTrue( $controller->update_pass_custom_tables_data( $series_id, $ticket, $data ) );
+		$this->assert_object_capacity_in_db(
+			$series_id,
+			[
+				'id'                 => $series_capacity_relationship->id,
+				'capacity_id'        => $series_capacity_relationship->capacity_id,
+				'object_id'          => $series_id,
+				'parent_capacity_id' => 0,
+			],
+			[
+				'max_value'     => 100,
+				'current_value' => 100,
+				'mode'          => Global_Stock::GLOBAL_STOCK_MODE,
+			] );
+		$this->assert_object_capacity_in_db(
+			$ticket->ID,
+			[
+				'id'                 => $ticket_capacity_relationship->id,
+				'capacity_id'        => $ticket_capacity_relationship->capacity_id,
+				'object_id'          => $ticket->ID,
+				'parent_capacity_id' => $series_capacity_relationship->capacity_id,
+			],
+			[
+				'id'            => $ticket_capacity_relationship->capacity_id,
+				'max_value'     => 89,
+				'current_value' => 89,
+				'mode'          => Global_Stock::CAPPED_STOCK_MODE,
+			] );
+	}
+
+	/**
+	 * It should correctly update pass data from capped to unlimited
+	 *
+	 * @test
+	 */
+	public function should_correctly_update_pass_data_from_capped_to_unlimited(): void {
+		[
+			$series_id,
+			$ticket,
+			$ticket_capacity_relationship
+		] = $this->given_a_pass_with_capacity( 'capped_23' );
+
+		$controller = $this->make_controller();
+
+		$data = $this->data_for_ticket( $ticket, $this->capacity_payload( 'unlimited' ) );
+		$this->assertTrue( $controller->update_pass_custom_tables_data( $series_id, $ticket, $data ) );
+		$this->assert_object_capacity_in_db(
+			$series_id,
+			[
+				'object_id'          => $series_id,
+				'parent_capacity_id' => 0,
+			],
+			[
+				'max_value'     => 100,
+				'current_value' => 100,
+				'mode'          => Global_Stock::GLOBAL_STOCK_MODE,
+			] );
+		$this->assert_object_capacity_in_db(
+			$ticket->ID,
+			[
+				'id'                 => $ticket_capacity_relationship->id,
+				'capacity_id'        => $ticket_capacity_relationship->capacity_id,
+				'object_id'          => $ticket->ID,
+				'parent_capacity_id' => 0
+			],
+			[
+				'id'            => $ticket_capacity_relationship->capacity_id,
+				'max_value'     => Capacities::VALUE_UNLIMITED,
+				'current_value' => Capacities::VALUE_UNLIMITED,
+				'mode'          => Capacities::MODE_UNLIMITED,
+			] );
+	}
+
+	/**
+	 * It should correctly update pass data from capped to own
+	 *
+	 * @test
+	 */
+	public function should_correctly_update_pass_data_from_capped_to_own(): void {
+		[
+			$series_id,
+			$ticket,
+			$ticket_capacity_relationship
+		] = $this->given_a_pass_with_capacity( 'capped_23' );
+
+		$controller = $this->make_controller();
+
+		$data = $this->data_for_ticket( $ticket, $this->capacity_payload( 'own_89' ) );
+		$this->assertTrue( $controller->update_pass_custom_tables_data( $series_id, $ticket, $data ) );
+		$this->assert_object_capacity_in_db(
+			$series_id,
+			[
+				'object_id'          => $series_id,
+				'parent_capacity_id' => 0,
+			],
+			[
+				'max_value'     => 100,
+				'current_value' => 100,
+				'mode'          => Global_Stock::GLOBAL_STOCK_MODE,
+			] );
+		$this->assert_object_capacity_in_db(
+			$ticket->ID,
+			[
+				'id'                 => $ticket_capacity_relationship->id,
+				'capacity_id'        => $ticket_capacity_relationship->capacity_id,
+				'object_id'          => $ticket->ID,
+				'parent_capacity_id' => 0
+			],
+			[
+				'id'            => $ticket_capacity_relationship->capacity_id,
+				'max_value'     => 89,
+				'current_value' => 89,
+				'mode'          => Global_Stock::OWN_STOCK_MODE
+			] );
+	}
+
+	/**
+	 * It should correctly update pass data from unlimited to global
+	 *
+	 * @test
+	 */
+	public function should_correctly_update_pass_data_from_unlimited_to_global(): void {
+		[
+			$series_id,
+			$ticket,
+			$ticket_capacity_relationship
+		] = $this->given_a_pass_with_capacity( 'unlimited' );
+
+		$controller = $this->make_controller();
+
+		$data = $this->data_for_ticket( $ticket, $this->capacity_payload( 'global_100' ) );
+		$this->assertTrue( $controller->update_pass_custom_tables_data( $series_id, $ticket, $data ) );
+		$this->assert_object_capacity_in_db(
+			$series_id,
+			[
+				'object_id'          => $series_id,
+				'parent_capacity_id' => 0,
+			],
+			[
+				'max_value'     => 100,
+				'current_value' => 100,
+				'mode'          => Global_Stock::GLOBAL_STOCK_MODE,
+			] );
+		$series_capacity_relationship = $this->test_services->get( Repositories\Capacities_Relationships::class )
+		                                                    ->find_by_object_id( $series_id );
+		$this->assert_object_capacity_in_db(
+			$ticket->ID,
+			[
+				'id'                 => $ticket_capacity_relationship->id,
+				'capacity_id'        => $series_capacity_relationship->capacity_id,
+				'object_id'          => $ticket->ID,
+				'parent_capacity_id' => 0
+			],
+			[
+				'id'            => $series_capacity_relationship->capacity_id,
+				'max_value'     => 100,
+				'current_value' => 100,
+				'mode'          => Global_Stock::GLOBAL_STOCK_MODE
+			] );
+	}
+
+	/**
+	 * It should correctly update pass data from unlimited to capped
+	 *
+	 * @test
+	 */
+	public function should_correctly_update_pass_data_from_unlimited_to_capped(): void {
+		[
+			$series_id,
+			$ticket,
+			$ticket_capacity_relationship
+		] = $this->given_a_pass_with_capacity( 'unlimited' );
+
+		$controller = $this->make_controller();
+
+		$data = $this->data_for_ticket( $ticket, $this->capacity_payload( 'capped_23' ) );
+		$this->assertTrue( $controller->update_pass_custom_tables_data( $series_id, $ticket, $data ) );
+		$this->assert_object_capacity_in_db(
+			$series_id,
+			[
+				'object_id'          => $series_id,
+				'parent_capacity_id' => 0,
+			],
+			[
+				'max_value'     => 100,
+				'current_value' => 100,
+				'mode'          => Global_Stock::GLOBAL_STOCK_MODE,
+			] );
+		$series_capacity_relationship = $this->test_services->get( Repositories\Capacities_Relationships::class )
+		                                                    ->find_by_object_id( $series_id );
+		$this->assert_object_capacity_in_db(
+			$ticket->ID,
+			[
+				'id'                 => $ticket_capacity_relationship->id,
+				'capacity_id'        => $ticket_capacity_relationship->capacity_id,
+				'object_id'          => $ticket->ID,
+				'parent_capacity_id' => $series_capacity_relationship->capacity_id
+			],
+			[
+				'id'            => $ticket_capacity_relationship->capacity_id,
+				'max_value'     => 23,
+				'current_value' => 23,
+				'mode'          => Global_Stock::CAPPED_STOCK_MODE,
+			] );
+	}
+
+	/**
+	 * It should correctly update pass data from unlimited to unlimited
+	 *
+	 * @test
+	 */
+	public function should_correctly_update_pass_data_from_unlimited_to_unlimited(): void {
+		[
+			$series_id,
+			$ticket,
+			$ticket_capacity_relationship
+		] = $this->given_a_pass_with_capacity( 'unlimited' );
+
+		$controller = $this->make_controller();
+
+		$data = $this->data_for_ticket( $ticket, $this->capacity_payload( 'unlimited' ) );
+		$this->assertTrue( $controller->update_pass_custom_tables_data( $series_id, $ticket, $data ) );
+		$this->assert_object_capacity_in_db(
+			$ticket->ID,
+			[
+				'id'                 => $ticket_capacity_relationship->id,
+				'capacity_id'        => $ticket_capacity_relationship->capacity_id,
+				'object_id'          => $ticket->ID,
+				'parent_capacity_id' => 0
+			],
+			[
+				'id'            => $ticket_capacity_relationship->capacity_id,
+				'max_value'     => Capacities::VALUE_UNLIMITED,
+				'current_value' => Capacities::VALUE_UNLIMITED,
+				'mode'          => Capacities::MODE_UNLIMITED,
+			] );
+		$this->assert_object_capacity_not_in_db( $series_id );
+	}
+
+	/**
+	 * It should correctly update pass data from unlimited to own
+	 *
+	 * @test
+	 */
+	public function should_correctly_update_pass_data_from_unlimited_to_own(): void {
+		[
+			$series_id,
+			$ticket,
+			$ticket_capacity_relationship
+		] = $this->given_a_pass_with_capacity( 'unlimited' );
+
+		$controller = $this->make_controller();
+
+		$data = $this->data_for_ticket( $ticket, $this->capacity_payload( 'own_23' ) );
+		$this->assertTrue( $controller->update_pass_custom_tables_data( $series_id, $ticket, $data ) );
+		$this->assert_object_capacity_in_db(
+			$ticket->ID,
+			[
+				'id'                 => $ticket_capacity_relationship->id,
+				'capacity_id'        => $ticket_capacity_relationship->capacity_id,
+				'object_id'          => $ticket->ID,
+				'parent_capacity_id' => 0
+			],
+			[
+				'id'            => $ticket_capacity_relationship->capacity_id,
+				'max_value'     => 23,
+				'current_value' => 23,
+				'mode'          => Global_Stock::OWN_STOCK_MODE,
+			] );
+		$this->assert_object_capacity_not_in_db( $series_id );
+	}
+
+	/**
+	 * It should correctly update pass data from own to global
+	 *
+	 * @test
+	 */
+	public function should_correctly_update_pass_data_from_own_to_global(): void {
+		[
+			$series_id,
+			$ticket,
+			$ticket_capacity_relationship
+		] = $this->given_a_pass_with_capacity( 'own_89' );
+
+		$controller = $this->make_controller();
+
+		$data = $this->data_for_ticket( $ticket, $this->capacity_payload( 'global_100' ) );
+		$this->assertTrue( $controller->update_pass_custom_tables_data( $series_id, $ticket, $data ) );
+		$this->assert_object_capacity_in_db(
+			$series_id,
+			[
+				'object_id'          => $series_id,
+				'parent_capacity_id' => 0
+			],
+			[
+				'max_value'     => 100,
+				'current_value' => 100,
+				'mode'          => Global_Stock::GLOBAL_STOCK_MODE,
+			] );
+		$series_capacity_relationship = $this->test_services->get( Repositories\Capacities_Relationships::class )
+		                                                    ->find_by_object_id( $series_id );
+		$this->assertInstanceOf( Capacity_Relationship::class, $series_capacity_relationship );
+		$this->assert_object_capacity_in_db(
+			$ticket->ID,
+			[
+				'id'                 => $ticket_capacity_relationship->id,
+				'capacity_id'        => $series_capacity_relationship->capacity_id,
+				'object_id'          => $ticket->ID,
+				'parent_capacity_id' => 0
+			],
+			[
+				'id'            => $series_capacity_relationship->capacity_id,
+				'max_value'     => 100,
+				'current_value' => 100,
+				'mode'          => Global_Stock::GLOBAL_STOCK_MODE,
+			] );
+	}
+
+	/**
+	 * It should correctly update pass data from own to capped
+	 *
+	 * @test
+	 */
+	public function should_correctly_update_pass_data_from_own_to_capped(): void {
+		[
+			$series_id,
+			$ticket,
+			$ticket_capacity_relationship
+		] = $this->given_a_pass_with_capacity( 'own_89' );
+
+		$controller = $this->make_controller();
+
+		$data = $this->data_for_ticket( $ticket, $this->capacity_payload( 'capped_23' ) );
+		$this->assertTrue( $controller->update_pass_custom_tables_data( $series_id, $ticket, $data ) );
+
+		$this->assert_object_capacity_in_db(
+			$series_id,
+			[
+				'object_id'          => $series_id,
+				'parent_capacity_id' => 0
+			],
+			[
+				'max_value'     => 100,
+				'current_value' => 100,
+				'mode'          => Global_Stock::GLOBAL_STOCK_MODE,
+			] );
+		$series_capacity_relationship = $this->test_services->get( Repositories\Capacities_Relationships::class )
+		                                                    ->find_by_object_id( $series_id );
+		$this->assertInstanceOf( Capacity_Relationship::class, $series_capacity_relationship );
+		$this->assert_object_capacity_in_db(
+			$ticket->ID,
+			[
+				'id'                 => $ticket_capacity_relationship->id,
+				'capacity_id'        => $ticket_capacity_relationship->capacity_id,
+				'object_id'          => $ticket->ID,
+				'parent_capacity_id' => $series_capacity_relationship->capacity_id
+			],
+			[
+				'id'            => $ticket_capacity_relationship->capacity_id,
+				'max_value'     => 23,
+				'current_value' => 23,
+				'mode'          => Global_Stock::CAPPED_STOCK_MODE
+			] );
+	}
+
+	/**
+	 * It should correctly update pass data from own to unlimited
+	 *
+	 * @test
+	 */
+	public function should_correctly_update_pass_data_from_own_to_unlimited(): void {
+		[
+			$series_id,
+			$ticket,
+			$ticket_capacity_relationship
+		] = $this->given_a_pass_with_capacity( 'own_89' );
+
+		$controller = $this->make_controller();
+
+		$data = $this->data_for_ticket( $ticket, $this->capacity_payload( 'unlimited' ) );
+		$this->assertTrue( $controller->update_pass_custom_tables_data( $series_id, $ticket, $data ) );
+
+		$this->assert_object_capacity_in_db(
+			$ticket->ID,
+			[
+				'id'                 => $ticket_capacity_relationship->id,
+				'capacity_id'        => $ticket_capacity_relationship->capacity_id,
+				'object_id'          => $ticket->ID,
+				'parent_capacity_id' => 0
+			],
+			[
+				'id'            => $ticket_capacity_relationship->capacity_id,
+				'max_value'     => Capacities::VALUE_UNLIMITED,
+				'current_value' => Capacities::VALUE_UNLIMITED,
+				'mode'          => Capacities::MODE_UNLIMITED,
+			] );
+		$this->assert_object_capacity_not_in_db( $series_id );
+	}
+
+	/**
+	 * It should correctly update pass data from own to own
+	 *
+	 * @test
+	 */
+	public function should_correctly_update_pass_data_from_own_to_own(): void {
+		[
+			$series_id,
+			$ticket,
+			$ticket_capacity_relationship
+		] = $this->given_a_pass_with_capacity( 'own_89' );
+
+		$controller = $this->make_controller();
+
+		$data = $this->data_for_ticket( $ticket, $this->capacity_payload( 'own_99' ) );
+		$this->assertTrue( $controller->update_pass_custom_tables_data( $series_id, $ticket, $data ) );
+
+		$this->assert_object_capacity_in_db(
+			$ticket->ID,
+			[
+				'id'                 => $ticket_capacity_relationship->id,
+				'capacity_id'        => $ticket_capacity_relationship->capacity_id,
+				'object_id'          => $ticket->ID,
+				'parent_capacity_id' => 0
+			],
+			[
+				'id'            => $ticket_capacity_relationship->capacity_id,
+				'max_value'     => 99,
+				'current_value' => 99,
+				'mode'          => Global_Stock::OWN_STOCK_MODE
+			] );
+		$this->assert_object_capacity_not_in_db( $series_id );
+
+		$data = $this->data_for_ticket( $ticket, $this->capacity_payload( 'own_23' ) );
+		$this->assertTrue( $controller->update_pass_custom_tables_data( $series_id, $ticket, $data ) );
+
+		$this->assert_object_capacity_in_db(
+			$ticket->ID,
+			[
+				'id'                 => $ticket_capacity_relationship->id,
+				'capacity_id'        => $ticket_capacity_relationship->capacity_id,
+				'object_id'          => $ticket->ID,
+				'parent_capacity_id' => 0
+			],
+			[
+				'id'            => $ticket_capacity_relationship->capacity_id,
+				'max_value'     => 23,
+				'current_value' => 23,
+				'mode'          => Global_Stock::OWN_STOCK_MODE
+			] );
+		$this->assert_object_capacity_not_in_db( $series_id );
+	}
+
+	/**
+	 * @return array{int,int,Repositories\Capacities_Relationships,Repositories\Capacities_Relationships}
+	 */
+	protected function given_a_pass_with_capacity( string $payload ): array {
+		$controller = $this->make_controller();
+
+		$series_id        = static::factory()->post->create( [
+			'post_type' => Series_Post_Type::POSTTYPE,
+		] );
+		$capacity_payload = $this->capacity_payload( $payload );
+		$ticket           = $this->create_tc_series_pass( $series_id, 2389, [
+			'tribe-ticket' => $capacity_payload,
+		] );
+		$data             = $this->data_for_ticket( $ticket, $capacity_payload );
+
+		$this->assertTrue( $controller->insert_pass_custom_tables_data( $series_id, $ticket, $data ) );
+
+		$ticket_capacity_relationship = $this->test_services->get( Repositories\Capacities_Relationships::class )
+		                                                    ->find_by_object_id( $ticket->ID );
+		$series_capacity_relationship = $this->test_services->get( Repositories\Capacities_Relationships::class )
+		                                                    ->find_by_object_id( $series_id );
+
+		return [ $series_id, $ticket, $ticket_capacity_relationship, $series_capacity_relationship ];
 	}
 }

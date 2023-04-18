@@ -76,6 +76,10 @@ class Post_And_Post extends Model implements ModelCrud, ModelFromQueryBuilderObj
 	 * @return $this The saved model, its ID set.
 	 */
 	public function save(): Post_And_Post {
+		if ( $this->id ) {
+			return tribe( Posts_And_Posts::class )->update( $this );
+		}
+
 		$this->id = tribe( Posts_And_Posts::class )->insert( $this )->id;
 
 		return $this;
