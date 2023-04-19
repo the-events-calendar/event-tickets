@@ -13,7 +13,7 @@
  *
  * @since TBD
  *
- * @var Tribe_Template $this               Current template object.
+ * @var Tribe__Template $this              Current template object.
  * @var Email_Abstract $email              The email object.
  * @var string         $heading            The email heading.
  * @var string         $title              The email title.
