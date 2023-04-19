@@ -15,6 +15,7 @@ As this file grows, it will be split into multiple files and linked from here.
 * [Filters and actions](_docs/filters-and-actions.md)
 * New Ticket types
 	* [Series Passes](_docs/series-passes.md)
+* [APIs](_docs/apis.md)
 
 ## Activating and deactivating the feature
 
