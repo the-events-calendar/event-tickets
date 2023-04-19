@@ -44,8 +44,13 @@ $hello = empty( $order['purchaser'] ) || empty( $order['purchaser']['name'] ) ?
 		<div>&nbsp;</div>
 		<div>
 			<?php
-				echo esc_html__( 'Below are the details of your recent ticket purchase. Your tickets will arrive in a separate email.', 'event-tickets' );
-			?>
+				sprintf(
+					// Translators: %1$s - ticket label singular, %2$s - Tickets label plural.
+					esc_html__( 'Below are the details of your recent %1$s purchase. Your %2$s will arrive in a separate email.', 'event-tickets' ),
+					tribe_get_ticket_label_singular_lowercase( 'tec-tickets-emails-purchase-receipt-intro' ),
+					tribe_get_ticket_label_plural_lowercase( 'tec-tickets-emails-purchase-receipt-intro' )
+				);
+				?>
 		</div>
 	</td>
 </tr>
