@@ -24,7 +24,7 @@ class Series_PassesCest {
 	}
 
 	/**
-	 * It should not display add ticket on Series page if not ticketable
+	 * It should not display add series pass on Series page if not ticketable
 	 *
 	 * @test
 	 */
@@ -35,5 +35,33 @@ class Series_PassesCest {
 		$I->amEditingPostWithId( $series_id );
 
 		$I->dontSeeElement( '#series_pass_form_toggle' );
+	}
+
+	/**
+	 * It should not display add ticket button on Series page.
+	 *
+	 * @test
+	 */
+	public function should_not_display_new_ticket_button_on_series_page( Tester $I ): void {
+		$series_id = $I->have_series_in_database();
+		$I->have_ticketable_series_in_database();
+
+		$I->amEditingPostWithId( $series_id );
+
+		$I->dontSeeElement( '#ticket_form_toggle' );
+	}
+
+	/**
+	 * It should not display add RSVP button on Series page.
+	 *
+	 * @test
+	 */
+	public function should_not_display_new_rsvp_button_on_series_page( Tester $I ): void {
+		$series_id = $I->have_series_in_database();
+		$I->have_ticketable_series_in_database();
+
+		$I->amEditingPostWithId( $series_id );
+
+		$I->dontSeeElement( '#rsvp_form_toggle' );
 	}
 }
