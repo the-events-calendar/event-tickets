@@ -940,6 +940,9 @@ class Tribe__Tickets__REST__V1__Post_Repository
 			return [];
 		}
 
+		$formatted_price = tribe( \Tribe__Tickets__Commerce__Currency::class )->get_formatted_currency( $ticket->price, $ticket->ID, $provider );
+		$currency_config = tribe( \Tribe__Tickets__Commerce__Currency::class )->get_currency_by_provider( $ticket->price, $provider );
+
 		$attendee_data = [
 			'id'                => $attendee_id,
 			'post_id'           => (int) $attendee['event_id'],
@@ -954,12 +957,14 @@ class Tribe__Tickets__REST__V1__Post_Repository
 			'modified_utc'      => $attendee_post->post_modified_gmt,
 			'rest_url'          => $main->get_url( '/attendees/' . $attendee_id ),
 			'ticket' => [
-				'id'          => $ticket->ID,
-				'title'       => $ticket->name,
-				'description' => $ticket->description,
-				'price'       => $ticket->price,
-				'start_sale'  => $ticket->start_date,
-				'end_sale'    => $ticket->end_date,
+				'id'              => $ticket->ID,
+				'title'           => $ticket->name,
+				'description'     => $ticket->description,
+				'raw_price'       => $ticket->price,
+				'formatted_price' => $formatted_price,
+				'currency_config' => $currency_config,
+				'start_sale'      => $ticket->start_date,
+				'end_sale'        => $ticket->end_date,
 			],
 		];
 
