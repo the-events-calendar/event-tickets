@@ -8,14 +8,21 @@
  * See more documentation about our views templating system.
  *
  * @link https://evnt.is/tickets-emails-tpl Help article for Tickets Emails template files.
+ * If you are looking for Event related templates, see in The Events Calendar plugin.
  *
  * @version 5.5.9
  *
  * @since 5.5.9
  *
- * @var string $recipient_first_name Recipient's first name.
- * @var string $recipient_last_name  Recipient's last name.
- * @var string $ticket_text_color    Ticket text color.
+ * @var Tribe_Template $this             Current template object.
+ * @var Email_Abstract $email            The email object.
+ * @var bool           $preview          Whether the email is in preview mode or not.
+ * @var bool           $is_tec_active    Whether `The Events Calendar` is active or not.
+ * @var array          $tickets          The list of tickets.
+ * @var array          $ticket           The ticket object.
+ * @var WP_Post|null   $event The event post object with properties added by the `tribe_get_event` function.
+ *
+ * @see tribe_get_event() For the format of the event object.
  */
 
 if ( empty( $ticket['ticket_name'] ) ) {
