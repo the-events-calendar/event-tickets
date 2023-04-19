@@ -14,13 +14,13 @@
  *
  * @since 5.5.9
  *
- * @var Tribe__Template $this          Current template object.
- * @var Email_Abstract  $email         The email object.
- * @var bool            $preview       Whether the email is in preview mode or not.
- * @var bool            $is_tec_active Whether `The Events Calendar` is active or not.
- * @var array           $tickets       The list of tickets.
- * @var array           $ticket        The ticket object.
- * @var WP_Post|null    $event         The event post object with properties added by the `tribe_get_event` function.
+ * @var Tribe__Template                    $this          Current template object.
+ * @var \TEC\Tickets\Emails\Email_Abstract $email         The email object.
+ * @var bool                               $preview       Whether the email is in preview mode or not.
+ * @var bool                               $is_tec_active Whether `The Events Calendar` is active or not.
+ * @var array                              $tickets       The list of tickets.
+ * @var array                              $ticket        The ticket object.
+ * @var WP_Post|null                       $event         The event post object with properties added by the `tribe_get_event` function.
  *
  * @see tribe_get_event() For the format of the event object.
  */
