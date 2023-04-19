@@ -2,6 +2,8 @@
 namespace TEC\Tickets\Emails\JSON_LD;
 
 use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Emails\Email\Completed_Order;
+use TEC\Tickets\Emails\Email\Purchase_Receipt;
 use TEC\Tickets\Emails\Email_Abstract;
 
 /**
@@ -26,8 +28,8 @@ class Handler {
 
 		$data = [];
 
-		if ( $email->slug === 'completed-order'
-		     || $email->slug === 'purchase-receipt' )
+		if ( $email::$slug === Completed_Order::$slug
+		     || $email::$slug === Purchase_Receipt::$slug )
 		{
 			$order = $email->__get( 'order' );
 
