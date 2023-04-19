@@ -191,8 +191,6 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 			'heading'            => esc_html__( 'Completed order: #123', 'event-tickets' ),
 			'additional_content' => $this->get_additional_content(),
 			'order'              => Preview_Data::get_order(),
-			'tickets'            => Preview_Data::get_tickets(),
-			'attendees'          => Preview_Data::get_attendees(),
 		];
 
 		return wp_parse_args( $args, $defaults );

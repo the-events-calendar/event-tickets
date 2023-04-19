@@ -71,6 +71,7 @@ class Preview_Data {
 			'id'               => '123',
 			'gateway_order_id' => '123',
 			'total'            => $total_value,
+			'total_value'      => $total_value,
 			'purchaser'        => [
 				'first_name' => __( 'John', 'event-tickets' ),
 				'name'       => __( 'John Doe', 'event-tickets' ),
