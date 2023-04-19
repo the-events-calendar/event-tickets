@@ -64,8 +64,7 @@ class Preview_Data {
 	 * @return array
 	 */
 	public static function get_order( $args = [] ) {
-		$total_value = Value::create();
-		$total_value->set_value( '100' );
+		$total_value = Value::create( '100' );
 
 		$order = (object) [
 			'id'               => '123',
