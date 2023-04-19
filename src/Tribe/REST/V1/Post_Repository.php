@@ -953,6 +953,14 @@ class Tribe__Tickets__REST__V1__Post_Repository
 			'modified'          => $attendee_post->post_modified,
 			'modified_utc'      => $attendee_post->post_modified_gmt,
 			'rest_url'          => $main->get_url( '/attendees/' . $attendee_id ),
+			'ticket' => [
+				'id'          => $ticket->ID,
+				'title'       => $ticket->name,
+				'description' => $ticket->description,
+				'price'       => $ticket->price,
+				'start_sale'  => $ticket->start_date,
+				'end_sale'    => $ticket->end_date,
+			],
 		];
 
 		$has_manage_access = tribe( 'tickets.rest-v1.main' )->request_has_manage_access();
