@@ -120,6 +120,24 @@ class Tribe__Tickets__Editor__Provider extends tad_DI52_ServiceProvider {
 			add_action( 'block_categories_all', tribe_callback( 'tickets.editor', 'block_categories' ) );
 		}
 
+		add_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'render_form_toggle_buttons'] );
+	}
+
+	/**
+	 * Render the New Ticket and New RSVP buttons in the metabox, as appropriate.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id The post id.
+	 */
+	public function render_form_toggle_buttons( $post_id ): void {
+
+		if ( did_action( 'tec_flexible_tickets_activated' )
+			&& \TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type::POSTTYPE === get_post_type( $post_id ) ) {
+			return;
+		}
+
+		tribe( Tribe__Tickets__Editor__Meta::class )->render_form_toggle_buttons( $post_id );
 	}
 
 	/**

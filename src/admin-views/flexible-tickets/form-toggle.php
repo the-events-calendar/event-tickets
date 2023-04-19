@@ -6,7 +6,6 @@
  *
  * @var bool $disabled Whether Series Passes can be added to this post or not.
  */
-
 ?>
 
 <button
@@ -24,7 +23,7 @@
 echo esc_html(
 		sprintf(
 				_x( 'New %s', 'Series Pass form toggle button text', 'event-tickets' ),
-				tec_tickets_get_series_pass_singular_label()
+				tec_tickets_get_series_pass_singular_lowercase()
 		)
 ); ?>
 </button>

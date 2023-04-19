@@ -398,4 +398,29 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 			Tribe__Tickets__Global_Stock::TICKET_STOCK_CAP     => 1,
 		];
 	}
+
+	/**
+	 * Render the New Ticket and New RSVP buttons in the metabox, as appropriate.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id The Post ID.
+	 */
+	public function render_form_toggle_buttons( $post_id ): void {
+		$ticket_providing_modules = array_diff_key( tribe__tickets__tickets::modules(), [ 'tribe__tickets__rsvp' => true ] );
+		$add_new_ticket_label     = count( $ticket_providing_modules ) > 0
+			? esc_attr__( 'Add a new ticket', 'event-tickets' )
+			: esc_attr__( 'No commerce providers available', 'event-tickets' );
+
+		/** @var Tribe__Tickets__Admin__Views $admin_views */
+		$admin_views = tribe( 'tickets.admin.views' );
+
+		$admin_views->template( 'editor/elements/new-ticket', [
+			'post_id'                  => $post_id,
+			'add_new_ticket_label'     => $add_new_ticket_label,
+			'ticket_providing_modules' => $ticket_providing_modules,
+		] );
+
+		$admin_views->template( 'editor/elements/new-rsvp', [ 'post_id' => $post_id ] );
+	}
 }

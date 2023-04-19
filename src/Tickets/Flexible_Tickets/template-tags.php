@@ -5,7 +5,7 @@
  * @since TBD
  */
 
-if ( ! function_exists( 'tec_tickets_get_series_pass_singular_label' ) ) {
+if ( ! function_exists( 'tec_tickets_get_series_pass_singular_lowercase' ) ) {
 	/**
 	 * Returns the filtered, lowercase singular version of the Series Pass label.
 	 *
@@ -15,7 +15,7 @@ if ( ! function_exists( 'tec_tickets_get_series_pass_singular_label' ) ) {
 	 *
 	 * @return string The lowercase singular version of the Series Pass label.
 	 */
-	function tec_tickets_get_series_pass_singular_label( string $context = '' ): string {
+	function tec_tickets_get_series_pass_singular_lowercase( string $context = '' ): string {
 		/**
 		 * Allows customization of the lowercase singular version of the Series Pass label.
 		 *
