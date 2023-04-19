@@ -35,7 +35,7 @@ class Failed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 	 *
 	 * @var string
 	 */
-	public $slug = 'failed-order';
+	public static $slug = 'failed-order';
 
 	/**
 	 * Email template.

@@ -35,7 +35,7 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 	 *
 	 * @var string
 	 */
-	public $slug = 'completed-order';
+	public static $slug = 'completed-order';
 
 	/**
 	 * Email template.

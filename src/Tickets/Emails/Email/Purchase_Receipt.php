@@ -35,7 +35,7 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 	 *
 	 * @var string
 	 */
-	public $slug = 'purchase-receipt';
+	public static $slug = 'purchase-receipt';
 
 	/**
 	 * Email template.

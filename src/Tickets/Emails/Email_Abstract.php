@@ -40,7 +40,7 @@ abstract class Email_Abstract {
 	 *
 	 * @var string
 	 */
-	public $slug;
+	public static $slug;
 
 	/**
 	 * Email template filename.

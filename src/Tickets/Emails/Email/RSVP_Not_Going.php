@@ -34,7 +34,7 @@ class RSVP_Not_Going extends \TEC\Tickets\Emails\Email_Abstract {
 	 *
 	 * @var string
 	 */
-	public $slug = 'rsvp-not-going';
+	public static $slug = 'rsvp-not-going';
 
 	/**
 	 * Email template.

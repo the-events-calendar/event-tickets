@@ -35,7 +35,7 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	 *
 	 * @var string
 	 */
-	public $slug = 'ticket';
+	public static $slug = 'ticket';
 
 	/**
 	 * Email template.
