@@ -23,7 +23,7 @@
  * @var \WP_Post       $order              The order object.
  */
 
-$ticket_title = get_the_title( $ticket['ticket_id'] );
+$ticket_title = get_the_title( $ticket );
 
 ?>
 <td class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-left" align="left">

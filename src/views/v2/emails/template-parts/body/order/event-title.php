@@ -25,6 +25,10 @@
 
 // @todo @codingmusician: This needs to be moved to TEC if it's the event title.
 
+if ( empty( $order->events_in_order ) ) {
+	return;
+}
+
 $event = tribe_get_event( $order->events_in_order[0] );
 
 if ( empty( $event ) || empty( $event->post_title ) ) {
