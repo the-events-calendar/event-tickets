@@ -50,7 +50,7 @@ class Handler {
 	 *
 	 * @param $order \WP_Post The order post object.
 	 *
-	 * @return array
+	 * @return array<string,mixed>
 	 */
 	public function get_completed_order_data( $order ) : array {
 

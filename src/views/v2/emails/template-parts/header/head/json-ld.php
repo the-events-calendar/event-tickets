@@ -21,7 +21,6 @@ if ( ! empty( $preview ) || empty( $json_ld ) ) {
 }
 
 ?>
-
 <script type="application/ld+json">
 	<?php echo wp_json_encode( $json_ld ); ?>
 </script>
