@@ -13,18 +13,18 @@
  *
  * @since TBD
  *
- * @var Tribe_Template   $this                  Current template object.
- * @var Module           $provider              [Global] The tickets provider instance.
- * @var string           $provider_id           [Global] The tickets provider class name.
- * @var \WP_Post         $order                 [Global] The order object.
- * @var int              $order_id              [Global] The order ID.
- * @var bool             $is_tec_active         [Global] Whether `The Events Calendar` is active or not.
+ * @var Tribe_Template   $this               Current template object.
+ * @var \WP_Post         $order              The order object.
+ * @var bool             $is_tec_active      Whether `The Events Calendar` is active or not.
+ * @var string           $additional_content The additional content to be added to the email.
+ * @var WP_Post|null     $event              The event post object with properties added by the `tribe_get_event` function.
+ *
+ * @see tribe_get_event() For the format of the event object.
  */
 
- if ( empty( $additional_content ) ) {
+if ( empty( $additional_content ) ) {
 	return;
- }
-
+}
 ?>
 <tr>
 	<td class="tec-tickets__email-table-content-add-content-container">
