@@ -8,6 +8,7 @@ use TEC\Events\Custom_Tables\V1\Tables\Occurrences as Occurrences_Table;
 use TEC\Events_Pro\Custom_Tables\V1\Tables\Series_Relationships as Series_Relationships_Table;
 use TEC\Tickets\Flexible_Tickets\Custom_Tables;
 use function tad\WPBrowser\addListener;
+use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 
 putenv( 'TEC_CUSTOM_TABLES_V1_DISABLED=1' );
 $_ENV['TEC_CUSTOM_TABLES_V1_DISABLED'] = 1;
@@ -24,6 +25,13 @@ if ( empty( $ct1_active ) ) {
 $custom_tables = tribe( Custom_Tables::class );
 $custom_tables->drop_tables();
 $custom_tables->register_tables();
+
+// Ensure Series are ticket-able, in most scenarios this is what we want.
+add_filter( 'tribe_tickets_post_types', function ( $post_types ) {
+	$post_types[] = Series_Post_Type::POSTTYPE;
+
+	return $post_types;
+} );
 
 // Start the posts auto-increment from a high number to make it easier to replace the post IDs in HTML snapshots.
 global $wpdb;

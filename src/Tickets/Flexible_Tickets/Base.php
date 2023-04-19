@@ -33,10 +33,6 @@ class Base extends Controller {
 		$this->container->singleton( Repositories\Capacities::class, Repositories\Capacities::class );
 		$this->container->singleton( Repositories\Posts_And_Posts::class, Repositories\Posts_And_Posts::class );
 		$this->container->singleton( Repositories\Capacities_Relationships::class, Repositories\Capacities_Relationships::class );
-
-		// @TODO: @lucatume do we really need this filter? It is not needed to add Series to the list of post types that can have tickets,
-		// and it actually forces the Ticket metabox to appear on the Series edit screen even if Series are set to not have tickets.
-		//add_filter( 'tribe_tickets_post_types', [ $this, 'update_ticket_post_types' ] );
 	}
 
 	/**
@@ -47,25 +43,5 @@ class Base extends Controller {
 	 * @return void
 	 */
 	public function unregister(): void {
-		remove_filter( 'tribe_tickets_post_types', [ $this, 'update_ticket_post_types' ] );
-	}
-
-	/**
-	 * Updates the list of post types that can have tickets.
-	 *
-	 * @since TBD
-	 *
-	 * @param array<string> $post_types The list of post types that can have tickets.
-	 *
-	 * @return array<string> The updated list of post types that can have tickets.
-	 */
-	public function update_ticket_post_types( $post_types ) {
-		if ( ! is_array( $post_types ) ) {
-			return $post_types;
-		}
-
-		$post_types[] = Series_Post_Type::POSTTYPE;
-
-		return $post_types;
 	}
 }
