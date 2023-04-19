@@ -148,7 +148,7 @@ class Email_Template {
 			'footer_content'         => tribe_get_option( Admin\Settings::$option_footer_content, '' ),
 			'footer_credit'          => true,
 			'web_view_url'           => tribe( Web_View::class )->get_url(),
-			'is_tec_active'          => defined( 'TRIBE_EVENTS_FILE' ) && class_exists( 'Tribe__Events__Main' ),
+			'is_tec_active'          => defined( 'TRIBE_EVENTS_FILE' ) && function_exists( 'tribe_get_event' ),
 		];
 		$context['header_text_color'] = Tribe__Utils__Color::get_contrast_color( $context['header_bg_color'] );
 		$context['ticket_text_color'] = Tribe__Utils__Color::get_contrast_color( $context['ticket_bg_color'] );
