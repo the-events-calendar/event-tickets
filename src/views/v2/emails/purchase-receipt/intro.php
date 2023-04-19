@@ -13,14 +13,14 @@
  *
  * @since TBD
  *
- * @var Tribe_Template $this               Current template object.
- * @var Email_Abstract $email              The email object.
- * @var string         $heading            The email heading.
- * @var string         $title              The email title.
- * @var bool           $preview            Whether the email is in preview mode or not.
- * @var string         $additional_content The email additional content.
- * @var bool           $is_tec_active      Whether `The Events Calendar` is active or not.
- * @var \WP_Post       $order              The order object.
+ * @var Tribe__Template                    $this               Current template object.
+ * @var \TEC\Tickets\Emails\Email_Abstract $email              The email object.
+ * @var string                             $heading            The email heading.
+ * @var string                             $title              The email title.
+ * @var bool                               $preview            Whether the email is in preview mode or not.
+ * @var string                             $additional_content The email additional content.
+ * @var bool                               $is_tec_active      Whether `The Events Calendar` is active or not.
+ * @var \WP_Post                           $order              The order object.
  */
 
 if ( empty( $order ) ) {
@@ -44,8 +44,13 @@ $hello = empty( trim( $order->purchaser_name ) ) ?
 		<div>&nbsp;</div>
 		<div>
 			<?php
-				echo esc_html__( 'Below are the details of your recent ticket purchase. Your tickets will arrive in a separate email.', 'event-tickets' );
-			?>
+				sprintf(
+					// Translators: %1$s - ticket label singular, %2$s - Tickets label plural.
+					esc_html__( 'Below are the details of your recent %1$s purchase. Your %2$s will arrive in a separate email.', 'event-tickets' ),
+					tribe_get_ticket_label_singular_lowercase( 'tec-tickets-emails-purchase-receipt-intro' ),
+					tribe_get_ticket_label_plural_lowercase( 'tec-tickets-emails-purchase-receipt-intro' )
+				);
+				?>
 		</div>
 	</td>
 </tr>
