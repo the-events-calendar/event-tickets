@@ -194,6 +194,7 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 			'heading'            => $this->get_heading(),
 			'additional_content' => $this->get_additional_content(),
 			'order'              => $this->__get( 'order' ),
+			'jsonld'             => $this->get_json_data(),
 		];
 
 		return $defaults;

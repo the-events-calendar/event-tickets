@@ -26,14 +26,16 @@ class Handler {
 
 		$data = [];
 
-		if ( $email->slug === 'completed-order' ) {
+		if ( $email->slug === 'completed-order'
+		     || $email->slug === 'purchase-receipt' )
+		{
 			$order = $email->__get( 'order' );
 
 			if ( empty( $order ) ) {
 				return [];
 			}
 
-			return  ( new Handler )->get_completed_order_data( $order );
+			return ( new Handler )->get_completed_order_data( $order );
 		}
 
 		return $data;
