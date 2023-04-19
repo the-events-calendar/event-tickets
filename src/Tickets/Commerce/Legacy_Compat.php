@@ -63,7 +63,7 @@ class Legacy_Compat extends tad_DI52_ServiceProvider {
 	 */
 	public function maybe_reset_cost_format( $cost, $post_id ) {
 
-		_deprecated_function( __METHOD__, 'TBD' );
+		_deprecated_function( __METHOD__, 'TBD', 'Deprecated in favor of the default handling of cost format in Tickets Commerce.' );
 
 		$provider = tribe_get_event_meta( $post_id, tribe( 'tickets.handler' )->key_provider_field );
 
