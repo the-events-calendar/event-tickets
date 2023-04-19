@@ -13,22 +13,30 @@
  *
  * @since TBD
  *
- * @var Tribe_Template   $this                  Current template object.
- * @var Module           $provider              [Global] The tickets provider instance.
- * @var string           $provider_id           [Global] The tickets provider class name.
- * @var \WP_Post         $order                 [Global] The order object.
- * @var int              $order_id              [Global] The order ID.
- * @var bool             $is_tec_active         [Global] Whether `The Events Calendar` is active or not.
+ * @var Tribe__Template                    $this               Current template object.
+ * @var \TEC\Tickets\Emails\Email_Abstract $email              The email object.
+ * @var string                             $heading            The email heading.
+ * @var string                             $title              The email title.
+ * @var bool                               $preview            Whether the email is in preview mode or not.
+ * @var string                             $additional_content The email additional content.
+ * @var bool                               $is_tec_active      Whether `The Events Calendar` is active or not.
+ * @var \WP_Post                           $order              The order object.
  */
 
- // @todo @codingmusician @juanfra Replace hardcoded data with dynamic data.
-
 $this->template( 'template-parts/body/title' );
+
 $this->template( 'purchase-receipt/intro' );
+
 $this->template( 'template-parts/body/order/customer-purchaser-details' );
+
 $this->template( 'template-parts/body/order/event-title' );
+
 $this->template( 'template-parts/body/order/ticket-totals' );
+
 $this->template( 'template-parts/body/order/order-total' );
+
 $this->template( 'template-parts/body/order/payment-info' );
+
 $this->template( 'template-parts/body/order/attendees-table' );
+
 $this->template( 'template-parts/body/add-content' );
