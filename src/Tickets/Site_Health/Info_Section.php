@@ -10,6 +10,8 @@
 namespace TEC\Tickets\Site_Health;
 
 use TEC\Common\Site_Health\Info_Section_Abstract;
+use Tribe__Events__Main;
+use Tribe__Utils__Array as Arr;
 
 /**
  * Class Site_Health
@@ -80,11 +82,34 @@ class Info_Section extends Info_Section_Abstract {
 	 */
 	public function add_fields() {
 		$fields = [
+			'ticket_enabled_post_types' => [
+				'label' => esc_html__( 'Ticket-enabled post types', 'event-tickets' ),
+				'value' => Arr::to_list( array_filter( (array) tribe_get_option( 'ticket-enabled-post-types', [] ) ), ', ' ),
+			],
+			'previous_versions' => [
+				'label' => esc_html__( 'Previous ET versions', 'event-tickets' ),
+				'value' => Arr::to_list( array_filter( (array) tribe_get_option( 'previous_event_tickets_versions', [] ) ), ', ' ),
+			],
 			'ticketed_posts' => [
 				'label' => esc_html__( 'Total ticketed posts', 'event-tickets' ),
-				'value' => 100,
+				'value' => tribe( 'tickets.post-repository' )->per_page( -1 )->where( 'has_tickets' )->count(),
+			],
+			'rsvp_posts' => [
+				'label' => esc_html__( 'Total posts with RSVPs', 'event-tickets' ),
+				'value' => tribe( 'tickets.post-repository' )->per_page( -1 )->where( 'has_rsvp' )->count(),
 			],
 		];
+
+		if ( class_exists( 'Tribe__Events__Main' ) ) {
+			$fields[ 'ticketed_events' ] = [
+				'label' => esc_html__( 'Total ticketed events', 'event-tickets' ),
+				'value' => tribe( 'tickets.event-repository' )->per_page( -1 )->where( 'has_tickets' )->count(),
+			];
+			$fields[ 'rsvp_events' ] = [
+				'label' => esc_html__( 'Total events with RSVPs', 'event-tickets' ),
+				'value' => tribe( 'tickets.event-repository' )->per_page( -1 )->where( 'has_rsvp' )->count(),
+			];
+		}
 
 		return $fields;
 	}
