@@ -247,7 +247,6 @@ class Cart {
 			$tries     = 1;
 			$max_tries = 20;
 
-			$this->clear_cart();
 			// While we dont find an empty transient to store this cart we loop, but avoid more than 20 tries.
 			while (
 				( ! empty( $cart_hash_transient ) || empty( $cart_hash ) )

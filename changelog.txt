@@ -1,12 +1,55 @@
 == Changelog ==
 
-= [5.5.7] TBD =
+= [5.5.10] 2023-04-03 =
 
-* Fix - Resolve provisional IDs properly on the event edit screen for ticket management actions. [ET-1632]
-* Fix - Fixed Ticket Commerce cart cookies not getting saved. [ET-1629]
+* Enhancement - Added functionality to properly restock deleted attendee ticket for Tickets Commerce. [ETP-860]
+* Enhancement - Add the Attendee count for the site to the `At a Glance` admin widget. [ET-1654]
+* Enhancement - Add `post_title` data for attendees created using Tickets Commerce. [ET-1590]
+* Fix - When using Tickets Commerce the SKU will properly appear when creating a ticket using Community Tickets. [CT-64]
+* Fix - Fixed Tickets/RSVP blocks crashing when hovering over their tooltips. [ET-1674]
+* Fix - Undefined $going variable on Ajax request. [ET-1612]
+* Tweak - Added filters: `tec_tickets_emails_heading_plural`, `tec_tickets_emails_{$this->slug}_heading_plural`, `tec_tickets_emails_subject_plural`, `tec_tickets_emails_{$this->slug}_subject_plural`, `tec_tickets_emails_{$this->slug}_from_email`, `tec_tickets_emails_{$this->slug}_from_name`, `tec_tickets_emails_{$this->slug}_headers`, `tec_tickets_emails_{$this->slug}_attachments`, `tec_tickets_emails_{$this->slug}_placeholders`, `tec_tickets_emails_recipient`, `tec_tickets_emails_{$this->slug}_recipient`, `tec_tickets_emails_subject`, `tec_tickets_emails_{$this->slug}_subject`, `tec_tickets_emails_heading`, `tec_tickets_emails_{$this->slug}_heading`, `tec_tickets_emails_additional_content`, `tec_tickets_emails_{$this->slug}_additional_content`, `tec_tickets_emails_settings`, `tec_tickets_emails_{$this->slug}_settings`, `tribe_tickets_rsvp_tickets_to_send`
+* Tweak - Removed filters: `tec_tickets_emails_heading_`, `tec_tickets_emails_subject_`, `tribe_rsvp_non_attendance_email_subject`
+* Tweak - Changed views: `v2/emails/customer-completed-order`, `v2/emails/rsvp-not-going`, `v2/emails/rsvp-not-going/body`, `v2/emails/template-parts/body/title`
+* Language - 33 new strings added, 83 updated, 1 fuzzied, and 6 obsoleted
+
+= [5.5.9.1] 2023-03-13 =
+
+* Fix - Fixed unlimited capacity tickets showing as sold out on calendar views. [ET-1678]
+* Fix - Fix fatal on the attendees screen when accessing as a non-admin user. [ET-1679]
+
+= [5.5.9] 2023-03-06 =
+
+* Tweak - Code maintenance for the attendees screen. [ET-1635]
+* Tweak - Save activation time for Event Tickets. [ET-1639]
+* Tweak - Added wrapper method to fetch RSVP ticket not going option data. [ETP-843]
+* Tweak - Save last check-in time for tickets scanned via the Event Tickets Plus APP. [ET-1640]
+* Fix - Fixed shared capacity ticket counts not showing properly on calendar views. [ETP-851]
+* Fix - Fixed attendee ticket title for moved TicketsCommerce tickets. [ET-1611]
+* Fix - Fixed fatal error on the Tickets Settings page when site language was set to Italian. [ET-1645]
+* Tweak - Added filters: `tec_tickets_emails_heading_`, `tec_tickets_emails_subject_`, `tec_tickets_emails_from_email`, `tec_tickets_emails_from_name`, `tec_tickets_emails_headers`, `tec_tickets_emails_attachments`, `tec_tickets_emails_placeholders`, `tec_tickets_emails_format_string`, `tec_tickets_emails_registered_emails`, `tec_tickets_emails_default_emails`, `tec_tickets_emails_post_type_args`
+* Tweak - Removed filters: `tribe_tickets_caps_can_manage_attendees`
+* Tweak - Added actions: `tribe_log`
+* Tweak - Changed views: `v2/emails/admin-failed-order`, `v2/emails/admin-new-order`, `v2/emails/customer-completed-order`, `v2/emails/email-template`, `v2/emails/email-template/body`, `v2/emails/email-template/body/add-links`, `v2/emails/email-template/body/date`, `v2/emails/email-template/body/event-description`, `v2/emails/email-template/body/event-image`, `v2/emails/email-template/body/event-title`, `v2/emails/email-template/body/footer-content`, `v2/emails/email-template/body/footer`, `v2/emails/email-template/body/greeting`, `v2/emails/email-template/body/header-image`, `v2/emails/email-template/body/header`, `v2/emails/email-template/body/recipient-name`, `v2/emails/email-template/body/ticket-info`, `v2/emails/email-template/body/top-link`, `v2/emails/email-template/main`, `v2/emails/email-template/preview`, `v2/emails/email-template/style`, `v2/emails/rsvp`, `v2/emails/template-parts/body`, `v2/emails/template-parts/body/event/date`, `v2/emails/template-parts/body/event/description`, `v2/emails/template-parts/body/event/image`, `v2/emails/template-parts/body/event/links`, `v2/emails/template-parts/body/event/title`, `v2/emails/email-template/body/event-location`, `v2/emails/template-parts/body/footer`, `v2/emails/template-parts/body/footer/content`, `v2/emails/email-template/body/footer-credit`, `v2/emails/template-parts/body/header`, `v2/emails/template-parts/body/header/image`, `v2/emails/template-parts/body/ticket/holder-name`, `v2/emails/template-parts/body/ticket/number-from-total`, `v2/emails/template-parts/body/ticket/security-code`, `v2/emails/template-parts/body/ticket/ticket-name`, `v2/emails/template-parts/body/tickets-total`, `v2/emails/template-parts/body/tickets`, `v2/emails/template-parts/body/title`, `v2/emails/template-parts/footer`, `v2/emails/template-parts/footer/footer-preview`, `v2/emails/template-parts/footer/footer`, `v2/emails/template-parts/header`, `v2/emails/template-parts/header/head/json-ld`, `v2/emails/template-parts/header/head/meta`, `v2/emails/template-parts/header/head/scripts`, `v2/emails/template-parts/header/head/styles`, `v2/emails/template-parts/header/head/title`, `v2/emails/template-parts/header/header-preview`, `v2/emails/template-parts/header/header`, `v2/emails/template-parts/header/top-link`, `v2/emails/template`, `v2/emails/ticket`
+
+= [5.5.8] 2023-02-22 =
+
+* Version - Event Tickets 5.5.8 is only compatible with The Events Calendar 6.0.10 and higher.
+* Version - Event Tickets 5.5.8 is only compatible with Event Tickets Plus 5.6.7 and higher.
+* Tweak - PHP version compatibility bumped to PHP 7.4
+* Tweak - Version Composer updated to 2
+* Tweak - Version Node updated to 18.13.0
+* Tweak - Version NPM update to 8.19.3
+* Tweak - Reduce JavaScript bundle sizes for Blocks editor
+
+= [5.5.7] 2023-02-09 =
+
+* Enhancement - Added currency format options to alter currency decimal separator, thousand separator, and number of decimal places. [ET-1608]
 * Tweak - Updated Currency options in Tickets Commerce settings for Croatian users from Kuna (HRK) to Euro (EUR). [ET-1625]
 * Tweak - Updated Attendee Registration Fields upsell notice to only display in admin dashboard. [CT-67]
-* Enhancement - Added currency format options to alter currency decimal separator, thousand separator, and number of decimal places. [ET-1608]
+* Fix - Resolve provisional IDs properly on the event edit screen for ticket management actions. [ET-1632]
+* Fix - Fixed Ticket Commerce cart cookies not getting saved. [ET-1629]
+* Language - 28 new strings added, 189 updated, 5 fuzzied, and 3 obsoleted
 
 = [5.5.6] 2023-01-16 =
 

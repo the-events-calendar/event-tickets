@@ -60,6 +60,7 @@ class Metabox {
 	 * they want, specific to their implementation.
 	 *
 	 * @since 5.1.9
+	 * @since 5.5.10 removed `tribe_is_frontend` so the SKU displays when using Community Tickets.
 	 *
 	 * @param int $post_id
 	 * @param int $ticket_id
@@ -69,9 +70,7 @@ class Metabox {
 
 		echo '<div id="' . sanitize_html_class( $provider ) . '_advanced" class="tribe-dependent" data-depends="#provider_TEC_Tickets_Commerce_Module_radio" data-condition-is-checked>';
 
-		if ( ! tribe_is_frontend() ) {
-			$this->do_metabox_sku_options( $post_id, $ticket_id );
-		}
+		$this->do_metabox_sku_options( $post_id, $ticket_id );
 
 		/**
 		 * Allows for the insertion of additional content into the ticket edit form - advanced section

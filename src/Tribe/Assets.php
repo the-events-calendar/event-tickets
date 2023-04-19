@@ -229,7 +229,7 @@ class Tribe__Tickets__Assets {
 		$assets = [
 			[ 'event-tickets-admin-css', 'tickets-admin.css', [ 'tribe-validation-style', 'tribe-jquery-timepicker-css', 'tribe-common-admin' ] ],
 			[ 'event-tickets-admin-refresh-css', 'tickets-refresh.css', [ 'event-tickets-admin-css', 'tribe-common-admin' ] ],
-			[ 'event-tickets-admin-tables-css', 'tickets-tables.css', [  'tec-variables-full', 'event-tickets-admin-css' ] ],
+			[ 'event-tickets-admin-tables-css', 'tickets-tables.css', [ 'tec-variables-full', 'event-tickets-admin-css' ] ],
 			[ 'event-tickets-attendees-list-js', 'attendees-list.js', [ 'jquery' ] ],
 			[ 'event-tickets-admin-accordion-js', 'accordion.js', [] ],
 			[ 'event-tickets-admin-accordion-css', 'accordion.css', [] ],
@@ -347,6 +347,108 @@ class Tribe__Tickets__Assets {
 			[
 				'groups'       => 'event-tickets-admin-settings',
 				'conditionals' => [ $this, 'should_enqueue_admin_settings_assets' ],
+			]
+		);
+
+		tribe_asset(
+			$tickets_main,
+			'tribe-tickets-admin-attendees',
+			'tickets-admin-attendees.css',
+			[ 'tec-variables-full', 'wp-components' ],
+			null,
+			[
+				'groups' => [
+					'event-tickets-admin-attendees',
+				],
+			]
+		);
+
+		tribe_asset(
+			$tickets_main,
+			'tickets-report-css',
+			'tickets-report.css',
+			[],
+			null,
+			[
+				'groups' => [
+					'event-tickets-admin-attendees',
+				],
+			]
+		);
+
+		tribe_asset(
+			$tickets_main,
+			'tickets-report-print-css',
+			'tickets-report-print.css',
+			[],
+			null,
+			[
+				'media'  => 'print',
+				'groups' => [
+					'event-tickets-admin-attendees',
+				],
+			]
+		);
+
+		$move_url_args = [
+			'dialog'    => \Tribe__Tickets__Main::instance()->move_tickets()->dialog_name(),
+			'check'     => wp_create_nonce( 'move_tickets' ),
+			'TB_iframe' => 'true',
+		];
+
+		$config_data = [
+			'nonce'             => wp_create_nonce( 'email-attendee-list' ),
+			'required'          => esc_html__( 'You need to select a user or type a valid email address', 'event-tickets' ),
+			'sending'           => esc_html__( 'Sending...', 'event-tickets' ),
+			'ajaxurl'           => admin_url( 'admin-ajax.php' ),
+			'checkin_nonce'     => wp_create_nonce( 'checkin' ),
+			'uncheckin_nonce'   => wp_create_nonce( 'uncheckin' ),
+			'cannot_move'       => esc_html__( 'You must first select one or more tickets before you can move them!', 'event-tickets' ),
+			'move_url'          => add_query_arg( $move_url_args ),
+			'confirmation'      => esc_html__( 'Please confirm that you would like to delete this attendee.', 'event-tickets' ),
+			'bulk_confirmation' => esc_html__( 'Please confirm you would like to delete these attendees.', 'event-tickets' ),
+		];
+
+		/**
+		 * Allow filtering the configuration data for the Attendee objects on Attendees report page.
+		 *
+		 * @since 5.2.0
+		 *
+		 * @param array $config_data List of configuration data to be localized.
+		 */
+		$config_data = apply_filters( 'tribe_tickets_attendees_report_js_config', $config_data );
+
+		tribe_asset(
+			$tickets_main,
+			'tickets-attendees-js',
+			'tickets-attendees.js',
+			[ 'jquery' ],
+			null,
+			[
+				'localize' => [
+					[
+						'name' => 'Attendees',
+						'data' => $config_data,
+					],
+				],
+				'groups' => [
+					'event-tickets-admin-attendees',
+				],
+			]
+		);
+
+		// WP Admin and admin bar.
+		tribe_asset(
+			$tickets_main,
+			'tec-tickets-admin-wp',
+			'tickets-admin-wp.css',
+			[ 'dashicons' ],
+			[
+				'admin_enqueue_scripts',
+				'wp_enqueue_scripts',
+			],
+			[
+				'conditionals' => [ $this, 'should_enqueue_admin_wp' ],
 			]
 		);
 	}
@@ -527,6 +629,17 @@ class Tribe__Tickets__Assets {
 
 		// If views V2 are in place, we respect the skeleton setting.
 		return ! tribe( Tribe\Events\Views\V2\Assets::class )->is_skeleton_style();
+	}
+
+	/**
+	 * Check if we should enqueue the Event Tickets WP admin assets.
+	 *
+	 * @since 5.5.10
+	 *
+	 * @return bool True if we should enqueue the assets, false otherwise.
+	 */
+	public function should_enqueue_admin_wp(): bool {
+		return is_admin() || is_admin_bar_showing();
 	}
 
 }
