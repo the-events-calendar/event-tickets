@@ -27,7 +27,7 @@ if ( empty( $order ) ) {
 	return;
 }
 
-$hello = empty( $order->purchaser_name ) ?
+$hello = empty( trim( $order->purchaser_name ) ) ?
 	__( 'Hello!', 'event-tickets' ) :
 	sprintf(
 		// Translators: %s - First name of purchaser.
