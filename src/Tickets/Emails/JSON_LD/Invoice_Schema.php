@@ -2,6 +2,11 @@
 
 namespace TEC\Tickets\Emails\JSON_LD;
 
+/**
+ * Class Invoice_Schema
+ *
+ * @todo @rafsuntaskin Fill in later if needed.
+ */
 class Invoice_Schema extends JSON_LD_Abstract {
 
 	/**
