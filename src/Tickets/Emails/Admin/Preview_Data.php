@@ -9,6 +9,7 @@
 
 namespace TEC\Tickets\Emails\Admin;
 
+use TEC\Tickets\Commerce\Utils\Value;
 /**
  * Class Preview_Data.
  *
@@ -62,22 +63,36 @@ class Preview_Data {
 	 *
 	 * @return array
 	 */
-	public static function get_order( $args = [] ): array {
-		$default = (object) [
-			'created'    => __( 'March 1, 2023', 'event-tickets' ),
-			'id'         => 123,
-			'provider'   => 'Stripe',
-			'status'     => 'success',
-			'post_title' => __( 'Black Midi with Special Guests Chat Pile and Apprehend', 'event-tickets' ),
-			// @todo @codingmusician: We will need to make this work with the currency settings selected for Tickets Commerce.
-			'total'      => '$100.00',
-			'purchaser'  => [
-				'first_name'  => __( 'John', 'event-tickets' ),
-				'name'        => __( 'John Doe', 'event-tickets' ),
-				'email'       => 'john@doe.com',
+	public static function get_order( $args = [] ) {
+		$total_value = Value::create();
+		$total_value->set_value( '100' );
+
+		$order = (object) [
+			'id'               => '123',
+			'gateway_order_id' => '123',
+			'total'            => $total_value,
+			'purchaser'        => [
+				'first_name' => __( 'John', 'event-tickets' ),
+				'name'       => __( 'John Doe', 'event-tickets' ),
+				'email'      => 'john@doe.com',
+			],
+			'purchaser_name'   => __( 'John Doe', 'event-tickets' ),
+			'purchaser_email'  => 'john@doe.com',
+			'gateway'          => __( 'Stripe', 'event-tickets' ),
+			'status'           => 'completed',
+			'items'            => [
+				[
+					'ticket_id'         => '1234',
+					'ticket_name'       => esc_html__( 'General Admission', 'event-tickets' ),
+					'holder_name'       => __( 'John Doe', 'event-tickets' ),
+					'holder_first_name' => __( 'John', 'event-tickets' ),
+					'holder_last_name'  => __( 'Doe', 'event-tickets' ),
+					'security_code'     => '17e4a14cec',
+				],
 			],
 		];
-		return wp_parse_args( $args, $default );
+
+		return $order;
 	}
 
 	/**
