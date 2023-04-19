@@ -33,13 +33,21 @@ class Handler {
 				return [];
 			}
 
-			$data = ( new Handler )->get_completed_order_data( $order );
-
+			return  ( new Handler )->get_completed_order_data( $order );
 		}
 
 		return $data;
 	}
 
+	/**
+	 * Get the JSON LD data for a completed order.
+	 *
+	 * @since TBD
+	 *
+	 * @param $order \WP_Post The order post object.
+	 *
+	 * @return array
+	 */
 	public function get_completed_order_data( $order ) : array {
 
 		$commerce = tribe( Module::class );
