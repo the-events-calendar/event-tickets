@@ -8,7 +8,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '5.5.8';
+	const VERSION = '5.5.10';
 
 	/**
 	 * Used to store the version history.
@@ -161,6 +161,7 @@ class Tribe__Tickets__Main {
 		add_action( 'plugins_loaded', [ $this, 'maybe_bail_if_invalid_wp_or_php' ], -1 );
 		add_action( 'plugins_loaded', [ $this, 'plugins_loaded' ], 0 );
 		register_activation_hook( EVENT_TICKETS_MAIN_PLUGIN_FILE, [ $this, 'on_activation' ] );
+		register_deactivation_hook( EVENT_TICKETS_MAIN_PLUGIN_FILE, [ $this, 'on_deactivation' ] );
 	}
 
 	/**
@@ -170,6 +171,39 @@ class Tribe__Tickets__Main {
 		// Set a transient we can use when deciding whether or not to show update/welcome splash pages
 		if ( ! is_network_admin() && ! isset( $_GET['activate-multi'] ) ) {
 			set_transient( '_tribe_tickets_activation_redirect', 1, 30 );
+		}
+
+		// Set plugin activation time for all installs.
+		if ( is_admin() ) {
+			// Avoid a race condition and fatal by waiting until Common is loaded before we try to run this.
+			add_action(
+				'tribe_common_loaded',
+				[ $this, 'set_activation_time' ]
+			);
+		}
+	}
+
+	/**
+	 * Set the plugin activation time.
+	 * Activated on plugin activation, runs on tribe_common_loaded.
+	 *
+	 * @since 5.5.9
+	 *
+	 * @return void
+	 */
+	public function set_activation_time() {
+		tribe_update_option( 'tec_tickets_activation_time', time() );
+	}
+
+	/**
+	 * Fires when the plugin is deactivated.
+	 *
+	 * @since 5.5.9
+	 */
+	public function on_deactivation() {
+		// Remove plugin activation time on deactivation.
+		if ( is_admin() ) {
+			tribe_remove_option( 'tec_tickets_activation_time' );
 		}
 	}
 
@@ -605,7 +639,7 @@ class Tribe__Tickets__Main {
 		add_action( 'admin_enqueue_scripts', tribe_callback( 'tickets.assets', 'enqueue_editor_scripts' ) );
 		add_filter( 'tribe_asset_data_add_object_tribe_l10n_datatables', tribe_callback( 'tickets.assets', 'add_data_strings' ) );
 
-		// Redirections
+		// Redirections.
 		add_action( 'wp_loaded', tribe_callback( 'tickets.redirections', 'maybe_redirect' ) );
 
 		// Cart handling.
