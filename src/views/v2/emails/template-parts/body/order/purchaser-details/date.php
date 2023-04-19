@@ -23,7 +23,7 @@
  * @var \WP_Post       $order              The order object.
  */
 
-$order_date = empty( $order->created ) ? '' : $order->created;
+$order_date = get_the_date( get_option( 'date_format' ), $order->ID );
 
 ?>
 <td class="tec-tickets__email-table-content-order-purchaser-details-bottom tec-tickets__email-table-content-align-left" align="left">
