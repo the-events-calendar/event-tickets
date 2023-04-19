@@ -22,7 +22,9 @@
  * @var bool           $is_tec_active      Whether `The Events Calendar` is active or not.
  * @var \WP_Post       $order              The order object.
  */
-error_log( var_export($order, true));
+
+// @todo @codingmusician: This needs to be moved to TEC if it's the event title.
+
 if ( empty( $order ) || empty( $order->post_title ) ) {
 	return;
 }

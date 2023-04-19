@@ -31,7 +31,7 @@ $payment_info = empty( $order->status ) || 'completed' !== strtolower( $order->s
 	sprintf(
 		// Translators: %s - Payment provider's name.
 		__( 'Payment unsuccessful with %s', 'event-tickets' ),
-		$order->provider
+		$order->gateway
 	) : sprintf(
 		// Translators: %s - Payment provider's name.
 		__( 'Payment completed with %s', 'event-tickets' ),
