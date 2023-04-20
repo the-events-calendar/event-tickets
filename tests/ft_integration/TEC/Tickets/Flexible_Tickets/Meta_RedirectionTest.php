@@ -54,13 +54,4 @@ class Meta_RedirectionTest extends Controller_Test_Case {
 
 		$this->assertSame( null, $redirected );
 	}
-
-	/**
-	 * It should not redirect metadata if post type cannot be determined
-	 *
-	 * @test
-	 */
-	public function should_not_redirect_metadata_if_post_type_cannot_be_determined(): void {
-
-	}
 }

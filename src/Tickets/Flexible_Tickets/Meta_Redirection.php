@@ -28,7 +28,7 @@ class Meta_Redirection extends Controller {
 	 * @return void
 	 */
 	protected function do_register(): void {
-		add_filter( 'get_post_metadata', [ $this, 'redirect_metadata' ], 5, 3 );
+		add_filter( 'get_post_metadata', [ $this, 'redirect_metadata' ], 5, 4 );
 	}
 
 	/**
@@ -42,7 +42,23 @@ class Meta_Redirection extends Controller {
 		remove_filter( 'get_post_metadata', [ $this, 'redirect_metadata' ], 5 );
 	}
 
-	public function redirect_metadata( $value, $object_id, $meta_key, $single ) {
+	/**
+	 * Depending on the post ID, meta key and setting, get metadata from the custom tables.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed  $value     The value get_metadata() should return - a single metadata value, or an array of
+	 *                          values.
+	 * @param int    $object_id Object ID.
+	 * @param string $meta_key  Meta key, might be empty to indicate all meta for the given object.
+	 * @param bool   $single    Whether to return only the first value for the specified meta key, or an array of
+	 *                          values.
+	 *
+	 * @return mixed Either the value from the custom tables, or the original value.
+	 */
+	public function redirect_metadata( $value, $object_id, $meta_key = '', $single = false ) {
+		return $value;
+
 		$check_args = is_int( $object_id ) && $object_id > 0
 		              && is_string( $meta_key ) && ! empty( $meta_key );
 
