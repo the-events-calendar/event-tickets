@@ -28,11 +28,6 @@ class Provider extends ServiceProvider {
 	 * @return void
 	 */
 	public function register() {
-		// wp-admin/admin.php?page=tec-tickets-settings
-		if ( ! tribe( Settings::class )->is_tec_tickets_settings() ) {
-			return;
-		}
-
 		$this->add_filters();
 	}
 
@@ -52,6 +47,7 @@ class Provider extends ServiceProvider {
 		add_filter( 'tec_tickets_authentication_settings', [ $this, 'filter_tec_tickets_authentication_settings' ] );
 		add_filter( 'tribe_field_value', [ $this, 'filter_tribe_field_opt_in_status' ], 10, 2 );
 		add_filter( 'tec_telemetry_slugs', [ $this, 'filter_tec_telemetry_slugs' ] );
+		add_filter( 'stellarwp/telemetry/exit_interview_args', [ $this, 'filter_exit_interview_args' ], 10, 2 );
 	}
 
 	/**
@@ -123,5 +119,18 @@ class Provider extends ServiceProvider {
 	 */
 	public function filter_tec_telemetry_slugs( $slugs ) {
 		return $this->container->get( Telemetry::class )->filter_tec_telemetry_slugs( $slugs );
+	}
+
+	/**
+	 * Filters the exit questionnaire shown during plugin deactivation/uninstall.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $args The default args.
+	 *
+	 * @return array<string,mixed> $args The modified args.
+	 */
+	public function filter_exit_interview_args( $args, $slug ) {
+		return $this->container->make( Telemetry::class )->filter_exit_interview_args( $args, $slug );
 	}
 }

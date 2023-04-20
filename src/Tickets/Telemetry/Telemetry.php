@@ -12,6 +12,7 @@ namespace TEC\Tickets\Telemetry;
 use TEC\Common\StellarWP\Telemetry\Config;
 use TEC\Common\StellarWP\Telemetry\Opt_In\Status;
 use TEC\Common\Telemetry\Telemetry as Common_Telemetry;
+use Tribe\Tickets\Admin\Settings;
 use Tribe__Tickets__Main;
 
 /**
@@ -51,13 +52,19 @@ class Telemetry {
 	 * @return array<string|mixed> The filtered args.
 	 */
 	public function filter_tec_common_telemetry_optin_args( $original_optin_args ): array {
+		// wp-admin/admin.php?page=tec-tickets-settings
+		if ( ! tribe( Settings::class )->is_tec_tickets_settings() ) {
+			return $original_optin_args;
+		}
+
 		$user_name   = esc_html( wp_get_current_user()->display_name );
 
 		$et_optin_args = [
-			'plugin_logo_alt'       => 'Event Tickets Logo',
-			'plugin_name'           => 'Event Tickets',
-			'heading'               => __( 'We hope you love Event Tickets!', 'event-tickets' ),
-			'intro'                 => __( "Hi, {$user_name}! This is an invitation to help our StellarWP community. If you opt-in, some data about your usage of Event Tickets and future StellarWP Products will be shared with our teams (so they can work their butts off to improve). We will also share some helpful info on WordPress, and our products from time to time. And if you skip this, that’s okay! Our products still work just fine.", 'event-tickets' ),
+			'plugin_logo'     => tribe_resource_url( 'images/tec-tickets-logo-text.svg', false, null, Tribe__Tickets__Main::instance() ),
+			'plugin_logo_alt' => 'Event Tickets Logo',
+			'plugin_name'     => 'Event Tickets',
+			'heading'         => __( 'We hope you love Event Tickets!', 'event-tickets' ),
+			'intro'           => __( "Hi, {$user_name}! This is an invitation to help our StellarWP community. If you opt-in, some data about your usage of Event Tickets and future StellarWP Products will be shared with our teams (so they can work their butts off to improve). We will also share some helpful info on WordPress, and our products from time to time. And if you skip this, that’s okay! Our products still work just fine.", 'event-tickets' ),
 		];
 
 		return array_merge( $original_optin_args, $et_optin_args );
@@ -154,6 +161,21 @@ class Telemetry {
 	public function filter_tec_telemetry_slugs( $slugs ) {
 		$dir = Tribe__Tickets__Main::instance()->plugin_dir;
 		$slugs[self::$plugin_slug] =  $dir . self::$plugin_path;
+
 		return array_unique( $slugs, SORT_STRING );
 	}
+
+	public function filter_exit_interview_args( $args, $slug ) {
+		if ( self::$plugin_slug !== $slug ) {
+			return $args;
+		}
+
+		$new_args = [
+			'plugin_logo'     => tribe_resource_url( 'images/tec-tickets-logo-text.svg', false, null, Tribe__Tickets__Main::instance() ),
+			'plugin_logo_alt' => 'TEC Common Logo',
+		];
+
+		return array_merge( $args, $new_args );
+	}
+
 }
