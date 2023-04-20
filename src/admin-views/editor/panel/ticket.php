@@ -1,4 +1,7 @@
 <?php
+
+use TEC\Tickets\Admin\Editor_Data;
+
 $is_admin = tribe_is_truthy( tribe_get_request_var( 'is_admin', is_admin() ) );
 
 if ( ! isset( $post_id ) ) {
@@ -140,6 +143,8 @@ $msg_rsvp_form_save = sprintf(
 	),
 	tribe_get_rsvp_label_singular( 'form_save_value' )
 );
+
+$editor_data = tribe( Editor_Data::class );
 ?>
 
 <div id="tribe_panel_edit" class="ticket_panel panel_edit tribe-validation" aria-hidden="true" data-default-provider="<?php echo esc_attr( $default_module_class ); ?>">
@@ -250,7 +255,9 @@ $msg_rsvp_form_save = sprintf(
 			</div>
 			<section id="ticket_form_main" class="main" data-datepicker_format="<?php echo esc_attr( Tribe__Date_Utils::get_datepicker_format_index() ); ?>">
 				<div class="input_block">
-					<label class="ticket_form_label ticket_form_left" for="ticket_name"><?php esc_html_e( 'Type:', 'event-tickets' ); ?></label>
+					<label class="ticket_form_label ticket_form_left" id="ticket_name_label" for="ticket_name">
+						<?php echo esc_html( $editor_data->get_raw_data_entry( 'ticket_name_label_default' ) ); ?>
+					</label>
 					<input
 						type='text'
 						id='ticket_name'

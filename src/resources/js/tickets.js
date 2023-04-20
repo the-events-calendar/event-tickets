@@ -226,6 +226,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			$panel = $base_panel;
 		}
 
+		// @todo pick up default labels here.
+
 		var $eventTickets = $( '#event_tickets' );
 
 		// trigger an event before swapping the panel

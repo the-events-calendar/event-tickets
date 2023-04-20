@@ -1,5 +1,6 @@
 <?php
 
+use TEC\Tickets\Admin\Editor_Data;
 use Tribe__Utils__Array as Arr;
 use Tribe\Tickets\Admin\Settings;
 
@@ -294,6 +295,10 @@ class Tribe__Tickets__Assets {
 								'decimal_error' => __( 'Please enter in without thousand separators and currency symbols.', 'event-tickets' ),
 							];
 						},
+					],
+					[
+						'name' => 'tecTicketsEditorData',
+						'data' => tribe( Editor_Data::class )->get_html_escaped_data(),
 					],
 				],
 			]
