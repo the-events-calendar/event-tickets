@@ -319,7 +319,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		// Makes sure the Panels are Ready for interaction
 		obj.setupPanels();
 
-		// At the end always swap panels (deafults to base/list)
+		// At the end always swap panels (defaults to base/list)
 		obj.swapPanel( swapTo );
 
 		// Trigger dependency.
@@ -338,6 +338,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		var $ticket_start_time = $( document.getElementById( 'ticket_start_time' ) );
 		var $ticket_end_time = $( document.getElementById( 'ticket_end_time' ) );
 		var startofweek = 0;
+		const ticketNameLabel = document.getElementById('ticket_name_label');
 
 		/**
 		 * There might be cases when Tickets is used in isolation where TEC is not
