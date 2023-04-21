@@ -14,6 +14,7 @@ use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use Tribe\Models\Post_Types\Base;
+use Tribe\Utils\Lazy_Collection;
 use Tribe__Date_Utils as Dates;
 use Tribe__Utils__Array as Arr;
 
@@ -57,15 +58,6 @@ class Order_Model extends Base {
 			$events_in_order  = (array) Arr::get( $post_meta, [ Order::$events_in_order_meta_key ] );
 			$tickets_in_order = (array) Arr::get( $post_meta, [ Order::$tickets_in_order_meta_key ] );
 
-			$tickets = [];
-			if ( ! empty( $items ) ) {
-				foreach ( $items as $item ) {
-					$post = get_post( $item['ticket_id'] );
-					$post->ticket_data = $item;
-					$tickets[] = $post;
-				}
-			}
-
 			$properties = [
 				'order_id'            => $post_id,
 				'provider'            => Module::class,
@@ -94,7 +86,7 @@ class Order_Model extends Base {
 				'events_in_order'     => $events_in_order,
 				'tickets_in_order'    => $tickets_in_order,
 				'flag_action_markers' => $flag_action_markers,
-				'tickets'             => $tickets,
+				'tickets'             => ( new Lazy_Collection( $this->get_ticket_data_callback( $items ) ) )->on_resolve( $cache_this ),
 			];
 		} catch ( \Exception $e ) {
 			return [];
@@ -179,4 +171,39 @@ class Order_Model extends Base {
 		return 'tc_orders';
 	}
 
+	/**
+	 * Returns a callback that will return the ticket data for the order items.
+	 *
+	 * @since TBD
+	 *
+	 * @param $items array The order items.
+	 *
+	 * @return \Closure
+	 */
+	public function get_ticket_data_callback( $items ): \Closure {
+		/**
+		 * Filters the callback that will return the ticket data for the order items.
+		 *
+		 * Returning a non `null` value here will skip the default logic.
+		 *
+		 * @since TBD
+		 *
+		 * @param null|\Closure $callback The callback that will return the ticket data for the order items.
+		 * @param array $items The order items.
+		 */
+		$callback = apply_filters( 'tec_tickets_order_items_ticket_data_callback', null, $items );
+
+		if ( null !== $callback ) {
+			return $callback;
+		}
+
+		return static function() use ( $items ) {
+			return array_reduce( $items, function( $tickets, $item ) {
+				$post = get_post( $item['ticket_id'] );
+				$post->ticket_data = $item;
+				$tickets[] = $post;
+				return $tickets;
+			}, []);
+		};
+	}
 }
