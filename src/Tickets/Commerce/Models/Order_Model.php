@@ -199,6 +199,7 @@ class Order_Model extends Base {
 
 		return static function() use ( $items ) {
 			return array_reduce( $items, function( $tickets, $item ) {
+				// @todo @rafsuntaskin should be updated later to make use of `tec_tc_get_ticket` function, once Ticket Model is updated.
 				$post = get_post( $item['ticket_id'] );
 				$post->ticket_data = $item;
 				$tickets[] = $post;
