@@ -272,18 +272,9 @@ $editor_data = tribe( Editor_Data::class );
 						class="tribe_soft_note ticket_form_right"
 						data-depends="#Tribe__Tickets__RSVP_radio"
 						data-condition-not-checked
+						id="ticket_name_note"
 					><?php
-						echo esc_html(
-							sprintf(
-								// Translators: %1$s: dynamic 'ticket' text.
-								_x(
-									'This is the name of your %1$s. It is displayed on the frontend of your website and within %1$s emails.',
-									'admin edit ticket panel note',
-									'event-tickets'
-								),
-								tribe_get_ticket_label_singular_lowercase( 'admin_edit_ticket_panel_note' )
-							)
-						);
+						echo esc_html( $editor_data->get_raw_data_entry( 'ticket_name_note_default' ) );
 						?>
 					</span>
 					<span

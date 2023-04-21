@@ -33,6 +33,15 @@ class Editor_Data {
 	public function __construct() {
 		$this->data = [
 			'ticket_name_label_default' => _x( 'Type:', 'The label used in the ticket edit form for the name of the ticket.', 'event-tickets' ),
+			'ticket_name_note_default'  => sprintf(
+				// Translators: %1$s: dynamic 'ticket' text.
+				_x(
+					'This is the name of your %1$s. It is displayed on the frontend of your website and within %1$s emails.',
+					'admin edit ticket panel note',
+					'event-tickets'
+				),
+				tribe_get_ticket_label_singular_lowercase( 'admin_edit_ticket_panel_note' )
+			)
 		];
 	}
 
@@ -44,7 +53,22 @@ class Editor_Data {
 	 * @return array<string,string|int|float> The data in its HTML-escaped form.
 	 */
 	public function get_html_escaped_data(): array {
-		return array_map( 'esc_html', $this->get_raw_data() );
+		$default_data = array_map( 'esc_html', $this->get_raw_data() );
+
+		/**
+		 * Filter the data to be used in the editor.
+		 *
+		 * @since TBD
+		 *
+		 * @param array<string,string|int|float> $data The data to be used in the editor, in its HTML-escaped form.
+		 */
+		$data = apply_filters( 'tec_tickets_localized_editor_data', $default_data );
+
+		if ( ! is_array( $data ) ) {
+			$data = $default_data;
+		}
+
+		return $data;
 	}
 
 	/**
@@ -69,19 +93,5 @@ class Editor_Data {
 	 */
 	private function get_raw_data(): array {
 		return $this->data;
-	}
-
-	/**
-	 * Adds a data entry to the data.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $key   The key to add the data entry for.
-	 * @param mixed  $value The value to add to the data entry.
-	 *
-	 * @return void The data entry is added to the data.
-	 */
-	public function add_data_entry( string $key, $value ): void {
-		$this->data[ $key ] = $value;
 	}
 }

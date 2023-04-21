@@ -1,0 +1,5 @@
+{
+    "ticket_name_label_default": "Type:",
+    "ticket_name_note_default": "This is the name of your ticket. It is displayed on the frontend of your website and within ticket emails.",
+    "test": "Some new data"
+}

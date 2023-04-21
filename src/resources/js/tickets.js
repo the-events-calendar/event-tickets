@@ -1,5 +1,5 @@
 /* global tribe_event_tickets_plus, tribe, jQuery, _, tribe_l10n_datatables,
- tribe_ticket_datepicker_format, TribeTickets, tribe_timepickers  */
+ tribe_ticket_datepicker_format, TribeTickets, tribe_timepickers, tecTicketsEditorData  */
 
 // For compatibility purposes we add this
 if ( 'undefined' === typeof tribe.tickets ) {
@@ -8,6 +8,10 @@ if ( 'undefined' === typeof tribe.tickets ) {
 
 if ( 'undefined' === typeof ajaxurl ) {
 	ajaxurl = TribeTickets.ajaxurl;
+}
+
+if( 'undefined' === typeof tecTicketsEditorData ){
+	tecTicketsEditorData = {};
 }
 
 tribe.tickets.editor = {};
@@ -74,6 +78,18 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		'dd.mm.yy',
 	];
 	var dateFormat = datepickerFormats[0];
+
+	/**
+	 * Retrieves the editor data for the given key.
+	 *
+	 * @param {string} key The key of the editor data to retrieve.
+	 *
+	 * @returns {*|null} Either the editor data for the given key or null if the
+	 * 				 	 key is not found.
+	 */
+	const getEditorData = function ( key ) {
+		return tecTicketsEditorData.hasOwnProperty( key ) ? tecTicketsEditorData[ key ] : null;
+	};
 
 	var changeEventCapacity = function( event, eventCapacity ) {
 		if ( 'undefined' === typeof eventCapacity ) {
@@ -208,6 +224,23 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		settings: '#tribe_panel_settings',
 	};
 
+	obj.swapPanelData = function (ticketType) {
+		[
+			'ticket_name_label',
+			'ticket_name_note'
+		].map((id) => {
+			const element = document.getElementById(id);
+
+			if (!element) {
+				return;
+			}
+
+			const defaultText = getEditorData(id + '_default');
+			const typeText = getEditorData(id + '_' + ticketType);
+			element.innerHTML = typeText ? typeText : defaultText;
+		});
+	};
+
 	/**
 	 * Switch from one panel to another
 	 * @param  event  e      triggering event
@@ -226,7 +259,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			$panel = $base_panel;
 		}
 
-		// @todo pick up default labels here.
+		obj.swapPanelData( ticketType );
 
 		var $eventTickets = $( '#event_tickets' );
 
@@ -611,6 +644,9 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		// Where we clicked
 		var $button = $( this );
 
+		// Set the current ticket type reading the data from the button, if possible.
+		ticketType = $button.closest( '[data-ticket-type]' ).data( 'ticket-type' );
+
 		// Prep the Params for the Request
 		var params = {
 			action: 'tribe-ticket-edit',
@@ -629,7 +665,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				}
 
 				obj.refreshPanels( response.data, 'ticket' );
-				obj.startWatchingMoveLinkIn( '#event_tickets' )
+				obj.startWatchingMoveLinkIn( '#event_tickets' );
 
 				$tribe_tickets.trigger( 'edit-ticket.tribe', event );
 			},
