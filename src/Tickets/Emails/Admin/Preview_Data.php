@@ -183,6 +183,15 @@ class Preview_Data {
 		return wp_parse_args( $args, $default );
 	}
 
+	/**
+	 * Get preview placeholders.
+	 * 
+	 * @since TBD
+	 *
+	 * @param array $args Override arguments.
+	 * 
+	 * @return array
+	 */
 	public static function get_placeholders( $args = [] ): array {
 		$tickets = self::get_tickets();
 		$order   = self::get_order();
