@@ -9,6 +9,10 @@
 
 namespace TEC\Tickets\Emails\Admin;
 
+use TEC\Tickets\Commerce\Order;
+use TEC\Tickets\Commerce\Utils\Value;
+use WP_Post;
+
 /**
  * Class Preview_Data.
  *
@@ -60,24 +64,37 @@ class Preview_Data {
 	 *
 	 * @param string $args Array of preview data.
 	 *
-	 * @return array
+	 * @return WP_Post
 	 */
-	public static function get_order( $args = [] ): array {
-		$default = [
-			'created'    => __( 'March 1, 2023', 'event-tickets' ),
-			'id'         => 123,
-			'provider'   => 'Stripe',
-			'status'     => 'success',
-			'post_title' => __( 'Black Midi with Special Guests Chat Pile and Apprehend', 'event-tickets' ),
-			// @todo @codingmusician: We will need to make this work with the currency settings selected for Tickets Commerce.
-			'total'      => '$100.00',
-			'purchaser'  => [
-				'first_name'  => __( 'John', 'event-tickets' ),
-				'name'        => __( 'John Doe', 'event-tickets' ),
-				'email'       => 'john@doe.com',
+	public static function get_order( $args = [] ) {
+		$total_value = Value::create( '100' );
+
+		$order = new WP_Post( (object) [
+			'ID'               => -99,
+			'gateway_order_id' => -99,
+			'total'            => $total_value,
+			'total_value'      => $total_value,
+			'purchaser'        => [
+				'first_name' => __( 'John', 'event-tickets' ),
+				'name'       => __( 'John Doe', 'event-tickets' ),
+				'email'      => 'john@doe.com',
 			],
-		];
-		return wp_parse_args( $args, $default );
+			'purchaser_name'   => __( 'John Doe', 'event-tickets' ),
+			'purchaser_email'  => 'john@doe.com',
+			'gateway'          => __( 'Stripe', 'event-tickets' ),
+			'status'           => 'completed',
+			'tickets'          => self::get_tickets(),
+			'post_author'      => 1,
+			'post_date'        => current_time( 'mysql' ),
+			'post_date_gmt'    => current_time( 'mysql', 1 ),
+			'post_title'       => __( 'Preview Order', 'event-tickets' ),
+			'post_status'      => 'publish',
+			'post_name'        => 'preview-order-' . rand( 1, 9999 ),
+			'post_type'        => Order::POSTTYPE,
+			'filter'           => 'raw',
+		] );
+
+		return $order;
 	}
 
 	/**
@@ -137,14 +154,30 @@ class Preview_Data {
 	 * @return array
 	 */
 	public static function get_tickets( $args = [] ): array {
-		$default = [
-			[
-				'title'    => __( 'General Admission', 'event-tickets' ),
-				'quantity' => 2,
-				// @todo @codingmusician: We will need to make this work with the currency settings selected for Tickets Commerce.
-				'price'    => '$50.00',
-			],
+		$tickets = [
+			new WP_Post( (object) [
+				'ID' => -98,
+				'post_author'   => 1,
+				'post_date'     => current_time( 'mysql' ),
+				'post_date_gmt' => current_time( 'mysql', 1 ),
+				'post_title'    => __( 'General Admission', 'event-tickets' ),
+				'post_status'   => 'publish',
+				'post_name'     => 'preview-order-' . rand( 1, 9999 ),
+				'post_type'     => Order::POSTTYPE,
+				'filter'        => 'raw',
+				'ticket_data'   => [
+					'ticket_id' => -98,
+					'quantity'  => 2,
+					'extra' => [
+						'optout' => true,
+						'iac' => 'none',
+					],
+					'price' => 50.0,
+					'sub_total' => 50.0,
+					'event_id' => -97,
+				],
+			] ),
 		];
-		return wp_parse_args( $args, $default );
+		return $tickets;
 	}
 }
