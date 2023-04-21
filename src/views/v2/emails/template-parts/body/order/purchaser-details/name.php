@@ -23,7 +23,7 @@
  * @var \WP_Post                           $order              The order object.
  */
 
-$purchaser_name = empty( $order['purchaser'] ) || empty( $order['purchaser']['name'] ) ? '' : $order['purchaser']['name'];
+$purchaser_name = empty( $order->purchaser_name ) ? '' : $order->purchaser_name;
 
 ?>
 <td class="tec-tickets__email-table-content-order-purchaser-details-top tec-tickets__email-table-content-align-right" align="right">

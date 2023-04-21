@@ -23,13 +23,21 @@
  * @var \WP_Post                           $order              The order object.
  */
 
-if ( empty( $order ) || empty( $order['post_title'] ) ) {
+// @todo @codingmusician: This needs to be moved to TEC if it's the event title.
+
+if ( empty( $order->events_in_order ) ) {
+	return;
+}
+
+$event = tribe_get_event( $order->events_in_order[0] );
+
+if ( empty( $event ) || empty( $event->post_title ) ) {
 	return;
 }
 
 ?>
 <tr>
 	<td class="tec-tickets__email-table-content-order-event-title">
-		<?php echo esc_html( $order['post_title'] ); ?>
+		<?php echo esc_html( $event->post_title ); ?>
 	</td>
 </tr>
