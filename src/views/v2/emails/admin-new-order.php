@@ -25,6 +25,6 @@
 
 $this->template( 'template-parts/header' );
 
-$this->template( 'admin-new-order/body' );
+$this->template( 'new-order/body' );
 
 $this->template( 'template-parts/footer' );

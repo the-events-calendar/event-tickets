@@ -27,12 +27,12 @@ if ( empty( $order ) ) {
 	return;
 }
 
-$hello = empty( $order['purchaser'] ) || empty( $order['purchaser']['name'] ) ?
+$hello = empty( trim( $order->purchaser_name ) ) ?
 	__( 'Hello!', 'event-tickets' ) :
 	sprintf(
 		// Translators: %s - First name of purchaser.
 		__( 'Hi, %s!', 'event-tickets' ),
-		$order['purchaser']['name']
+		$order->purchaser_name
 	);
 
 ?>

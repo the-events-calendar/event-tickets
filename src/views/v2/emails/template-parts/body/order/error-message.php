@@ -23,7 +23,7 @@
  * @var \WP_Post                           $order              The order object.
  */
 
-if ( empty( $order ) || empty( $order['error_message'] ) ) {
+if ( empty( $order ) || empty( $order->error_message ) ) {
 	return;
 }
 
@@ -35,6 +35,6 @@ if ( empty( $order ) || empty( $order['error_message'] ) ) {
 </tr>
 <tr>
 	<td class="tec-tickets__email-table-content-order-error-bottom-text">
-		<?php echo esc_html( $order['error_message'] ); ?>
+		<?php echo esc_html( $order->error_message ); ?>
 	</td>
 </tr>

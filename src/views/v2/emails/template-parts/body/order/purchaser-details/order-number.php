@@ -23,10 +23,10 @@
  * @var \WP_Post                           $order              The order object.
  */
 
-$order_number = empty( $order['id'] ) ? 0 : intval( $order['id'] );
+$order_number = empty( $order->gateway_order_id ) ? 0 : $order->gateway_order_id;
 $order_string = sprintf(
-	// Translators: %d - The order number.
-	__( 'Order #%d', 'event-tickets' ),
+	// Translators: %s - The order number.
+	__( 'Order #%s', 'event-tickets' ),
 	$order_number
 );
 

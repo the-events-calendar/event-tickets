@@ -23,7 +23,7 @@
  * @var \WP_Post                           $order              The order object.
  */
 
-if ( empty( $order ) || empty( $order['total'] ) ) {
+if ( empty( $order ) || empty( $order->total ) ) {
 	return;
 }
 
@@ -36,7 +36,7 @@ if ( empty( $order ) || empty( $order['total'] ) ) {
 					<?php echo esc_html__( 'Order Total', 'event-tickets' ); ?>
 				</td>
 				<td class="tec-tickets__email-table-content-order-total-right-cell">
-					<?php echo esc_html( $order['total'] ); ?>
+					<?php echo esc_html( $order->total_value->get_currency() ); ?>
 				</td>
 			</tr>
 		</table>
