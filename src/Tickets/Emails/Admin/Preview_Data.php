@@ -11,6 +11,7 @@ namespace TEC\Tickets\Emails\Admin;
 
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Utils\Value;
+use TEC\Tickets\Emails\Email\Ticket;
 use WP_Post;
 
 /**
@@ -29,31 +30,17 @@ class Preview_Data {
 	 * @return array The default preview data.
 	 */
 	public static function get_default_preview_data(): array {
-		$current_user = wp_get_current_user();
-		$title        = __( 'Here\'s your ticket!', 'event-tickets' );
 
-		if ( ! empty( $current_user->first_name ) ) {
-			$title = sprintf(
-				// Translators: %s - First name of email recipient.
-				__( 'Here\'s your ticket, %s!', 'event-tickets' ),
-				$current_user->first_name
-			);
-		}
+		// We'll borrow from the Ticket class.
+		$ticket_email = tribe( Ticket::class );
+		$ticket_email->set_placeholders( self::get_placeholders() );
 
 		return [
-			'title'      => $title,
-			'heading'    => $title,
+			'title'      => $ticket_email->get_heading(),
+			'heading'    => $ticket_email->get_heading(),
 			'is_preview' => true,
-			'tickets'    => [
-				[
-					'ticket_id'         => '1234',
-					'ticket_name'       => esc_html__( 'General Admission', 'event-tickets' ),
-					'holder_name'       => $current_user->first_name . ' ' . $current_user->last_name,
-					'holder_first_name' => $current_user->first_name,
-					'holder_last_name'  => $current_user->last_name,
-					'security_code'     => '17e4a14cec',
-				],
-			],
+			'order'      => self::get_order(),
+			'tickets'    => self::get_tickets(),
 		];
 	}
 
@@ -154,30 +141,56 @@ class Preview_Data {
 	 * @return array
 	 */
 	public static function get_tickets( $args = [] ): array {
-		$tickets = [
-			new WP_Post( (object) [
+		$default = [
+			[
 				'ID' => -98,
-				'post_author'   => 1,
-				'post_date'     => current_time( 'mysql' ),
-				'post_date_gmt' => current_time( 'mysql', 1 ),
-				'post_title'    => __( 'General Admission', 'event-tickets' ),
-				'post_status'   => 'publish',
-				'post_name'     => 'preview-order-' . rand( 1, 9999 ),
-				'post_type'     => Order::POSTTYPE,
-				'filter'        => 'raw',
-				'ticket_data'   => [
+				'post_author'     => 1,
+				'post_date'       => current_time( 'mysql' ),
+				'post_date_gmt'   => current_time( 'mysql', 1 ),
+				'post_title'      => __( 'General Admission', 'event-tickets' ),
+				'post_status'     => 'publish',
+				'post_name'       => 'preview-order-' . rand( 1, 9999 ),
+				'post_type'       => Order::POSTTYPE,
+				'filter'          => 'raw',
+				'ticket'          => __( 'General Admission', 'event-tickets' ),
+				'ticket_name'     => __( 'General Admission', 'event-tickets' ),
+				'purchaser_id'    => 1,
+				'purchaser_name'  => __( 'John Doe', 'event-tickets' ),
+				'purchaser_email' => __( 'john@doe.com', 'event-tickets' ),
+				'holder_name'     => __( 'John Doe', 'event-tickets' ),
+				'holder_email'    => __( 'john@doe.com', 'event-tickets' ),
+				'ticket_id'       => -98,
+				'qr_ticket_id'    => -98,
+				'security_code'   => 'abcdefg12345',
+				'is_subscribed'   => false,
+				'is_purchaser'    => true,
+				'iac'             => 'none',
+				'attendee_meta'   => '',
+				'ticket_exists'   => true,
+				'ticket_data'     => [
 					'ticket_id' => -98,
 					'quantity'  => 2,
-					'extra' => [
+					'extra'     => [
 						'optout' => true,
-						'iac' => 'none',
+						'iac'    => 'none',
 					],
-					'price' => 50.0,
+					'price'     => 50.0,
 					'sub_total' => 50.0,
-					'event_id' => -97,
+					'event_id'  => -96,
 				],
-			] ),
+			],
 		];
-		return $tickets;
+		return wp_parse_args( $args, $default );
+	}
+
+	public static function get_placeholders( $args = [] ): array {
+		$tickets = self::get_tickets();
+		$order   = self::get_order();
+		$default = [
+			'{attendee_name}'  => $tickets[0]['purchaser_name'],
+			'{attendee_email}' => $tickets[0]['purchaser_email'],
+			'{order_number}'   => $order->ID,
+		];
+		return wp_parse_args( $args, $default );
 	}
 }

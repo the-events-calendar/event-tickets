@@ -8,6 +8,7 @@
 namespace TEC\Tickets\Emails\Email;
 
 use TEC\Tickets\Commerce\Settings;
+use TEC\Tickets\Emails\Admin\Preview_Data;
 use \TEC\Tickets\Emails\Email_Template;
 
 /**
@@ -304,6 +305,12 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 	 */
 	public function get_default_preview_context( $args = [] ): array {
 		$defaults = tribe( Email_Template::class )->get_preview_context( $args );
+
+		$args['order'] = Preview_Data::get_order();
+		$args['tickets'] = Preview_Data::get_tickets();
+		$args['heading'] = count($args['tickets']) > 1 ?
+			$this->get_heading_plural() :
+			$this->get_heading();
 
 		return wp_parse_args( $args, $defaults );
 	}
