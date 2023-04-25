@@ -882,7 +882,7 @@ abstract class Email_Abstract {
 	 *
 	 * @return array
 	 */
-	public function get_json_data(): array {
+	public function get_json_data() : array {
 		/**
 		 * Allow filtering the JSON data for this email.
 		 *
@@ -891,6 +891,18 @@ abstract class Email_Abstract {
 		 * @param array $data The JSON data.
 		 * @param Email_Abstract $this The email object.
 		 */
-		return apply_filters( 'tec_tickets_emails_json_data', Handler::get_data( $this ), $this );
+		$data = apply_filters( 'tec_tickets_emails_json_data', Handler::get_data( $this ), $this );
+
+		/**
+		 * Allow filtering the JSON data for this email.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $data The JSON data.
+		 * @param Email_Abstract $this The email object.
+		 */
+		$data = apply_filters( "tec_tickets_emails_{$this->slug}_json_data", $data, $this );
+
+		return $data;
 	}
 }
