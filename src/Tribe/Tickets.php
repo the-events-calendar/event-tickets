@@ -3463,7 +3463,18 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				 * @param $message string Unavailability message
 				 * @param $tickets array Collection of tickets
 				 */
-				echo (string) apply_filters( 'tec_tickets_unavailable_message', $message, $tickets );
+				$message =  (string) apply_filters( 'tec_tickets_unavailable_message', $message, $tickets );
+
+				$message = apply_filters_deprecated(
+					'event_tickets_unvailable_message',
+					[ $message, $tickets ],
+					'TBD',
+					'tec_tickets_unavailable_message',
+					'The filter "event_tickets_unvailable_message" has been renamed to "tec_tickets_unavailable_message" to match plugin namespacing.'
+				);
+
+				return $message;
+
 			}
 		}
 
