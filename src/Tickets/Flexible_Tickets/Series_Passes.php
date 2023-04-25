@@ -79,7 +79,7 @@ class Series_Passes extends Controller {
 		add_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'render_form_toggle' ] );
 		add_action( 'tec_tickets_ticket_add', [ $this, 'insert_pass_custom_tables_data' ], 10, 3 );
 		add_action( 'event_tickets_attendee_ticket_deleted', [ $this, 'delete_pass_custom_tables_data' ], 5, 2 );
-		add_action( 'tec_tickets_ticket_update', [ $this, 'update_pass_custom_tables_data' ], 10, 2 );
+		add_action( 'tec_tickets_ticket_update', [ $this, 'update_pass_custom_tables_data' ], 10, 3 );
 		add_filter( 'tec_tickets_localized_editor_data', [ $this, 'add_pass_editor_data' ] );
 		add_filter( 'the_content', [ $this, 'reorder_series_content' ], 0 );
 
