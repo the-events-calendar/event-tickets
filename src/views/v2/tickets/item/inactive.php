@@ -61,6 +61,15 @@ $message = $is_sale_past
 	? sprintf( __( '%s are no longer available', 'event-tickets' ), tribe_get_ticket_label_plural( 'event-tickets' ) )
 	/* translators: %s: Tickets label */
 	: $provider->get_tickets_unavailable_message( $tickets );
+
+/**
+ * Filters the unavailability message for a ticket collection
+ *
+ * @param $message string Unavailability message
+ * @param $tickets array Collection of tickets
+ */
+$message = apply_filters( 'event_tickets_unvailable_message', $message, $tickets );
+
 ?>
 <div <?php tribe_classes( $classes ); ?>>
 	<div
