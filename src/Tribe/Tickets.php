@@ -3461,7 +3461,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				 * @since TBD
 				 *
 				 * @param $message string Unavailability message
-				 * @param $tickets array  Collection of tickets
+				 * @param $tickets array Collection of tickets
 				 */
 				echo (string) apply_filters( 'tec_tickets_unavailable_message', $message, $tickets );
 			}
