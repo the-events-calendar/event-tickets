@@ -80,7 +80,6 @@ class Series_Passes extends Controller {
 		add_action( 'tec_tickets_ticket_add', [ $this, 'insert_pass_custom_tables_data' ], 10, 3 );
 		add_action( 'event_tickets_attendee_ticket_deleted', [ $this, 'delete_pass_custom_tables_data' ], 5, 2 );
 		add_action( 'tec_tickets_ticket_update', [ $this, 'update_pass_custom_tables_data' ], 10, 3 );
-		add_filter( 'tec_tickets_localized_editor_data', [ $this, 'add_pass_editor_data' ] );
 		add_filter( 'the_content', [ $this, 'reorder_series_content' ], 0 );
 
 		$this->container->singleton( Series_Passes\Capacity_Updater::class, Series_Passes\Capacity_Updater::class );
@@ -98,7 +97,6 @@ class Series_Passes extends Controller {
 		remove_action( 'tec_tickets_ticket_add', [ $this, 'insert_pass_custom_tables_data' ] );
 		remove_action( 'event_tickets_attendee_ticket_deleted', [ $this, 'delete_pass_custom_tables_data' ], 5 );
 		remove_action( 'tec_tickets_ticket_update', [ $this, 'update_pass_custom_tables_data' ] );
-		remove_filter( 'tec_tickets_localized_editor_data', [ $this, 'add_pass_editor_data' ] );
 		remove_filter( 'the_content', [ $this, 'reorder_series_content' ], 0 );
 	}
 
@@ -345,51 +343,6 @@ class Series_Passes extends Controller {
 		       && $ticket instanceof Ticket
 		       && ( $ticket->type() ?? 'default' ) === self::HANDLED_TICKET_TYPE
 		       && is_array( $data );
-	}
-
-	/**
-	 * Filters the data used by the Ticket editor to add the one specific to Series Passes.
-	 *
-	 * @since TBD
-	 *
-	 * @param array<string,string> $data A map of data to pass to the ticket editor, from a slug
-	 *                                   to the HTML-escaped value.
-	 *
-	 * @return array<string,string> The filtered data.
-	 */
-	public function add_pass_editor_data( $data ) {
-		if ( ! is_array( $data ) ) {
-			return $data;
-		}
-
-		$data['ticket_name_label_series_pass']         = _x(
-			'Name:',
-			'The label for the Series Pass name field in the ticket form.',
-			'event-tickets'
-		);
-		$data['ticket_name_note_series_pass']          = _x(
-			'The ticket name is displayed on the frontend of your website and within ticket emails.',
-			'The note for the Series Pass name field in the ticket form.',
-			'event-tickets'
-		);
-		$data['ticket_type_icon_url_series_pass']      = tribe_resource_url( 'icons/series-pass.svg', false, null, \Tribe__Tickets__Main::instance() );
-		$data['ticket_type_icon_alt_text_series_pass'] = _x(
-			'Series Pass',
-			'The alt text for the Series Pass icon in the ticket form.',
-			'event-tickets'
-		);
-		$data['ticket_type_help_series_pass']          = _x(
-			'A Series Pass provides an attendee with access to all events in a Series.',
-			'The help text for the Series Pass icon in the ticket form.',
-			'event-tickets'
-		);
-		$data['ticket_type_name_series_pass']          = _x(
-			'Series Pass',
-			'The name of the Series Pass ticket type.',
-			'event-tickets'
-		);
-
-		return $data;
 	}
 
 	/**

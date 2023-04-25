@@ -1,7 +1,4 @@
 <?php
-
-use TEC\Tickets\Admin\Editor_Data;
-
 $is_admin = tribe_is_truthy( tribe_get_request_var( 'is_admin', is_admin() ) );
 
 if ( ! isset( $post_id ) ) {
@@ -60,7 +57,6 @@ $start_date_errors = [
 ];
 
 $ticket_name        = $ticket ? $ticket->name : '';
-$ticket_type        = $ticket ? $ticket->type() : 'default';
 $ticket_description = $ticket ? $ticket->description : '';
 $ticket_start_time  = $ticket ? $ticket->start_time : '';
 $ticket_end_time    = $ticket ? $ticket->end_time : '';
@@ -144,8 +140,6 @@ $msg_rsvp_form_save = sprintf(
 	),
 	tribe_get_rsvp_label_singular( 'form_save_value' )
 );
-
-$editor_data = tribe( Editor_Data::class );
 ?>
 
 <div id="tribe_panel_edit" class="ticket_panel panel_edit tribe-validation" aria-hidden="true" data-default-provider="<?php echo esc_attr( $default_module_class ); ?>">
@@ -255,22 +249,21 @@ $editor_data = tribe( Editor_Data::class );
 				</h4>
 			</div>
 			<section id="ticket_form_main" class="main" data-datepicker_format="<?php echo esc_attr( Tribe__Date_Utils::get_datepicker_format_index() ); ?>">
-				<div class="input_block">
-					<?php
-					/**
-					 * Allows for the insertion of additional elements into the start of the main ticket form.
-					 *
-					 * @since TBD
-					 *
-					 * @param int $post_id Post ID
-					 * @param int $ticket_id Ticket ID
-					 */
-					do_action( 'tec_tickets_ticket_form_main_start', $post_id, $ticket_id ); ?>
 
-				</div>
+				<?php
+				/**
+				 * Allows for the insertion of additional elements into the start of the main ticket form.
+				 *
+				 * @since TBD
+				 *
+				 * @param int $post_id Post ID
+				 * @param int $ticket_id Ticket ID
+				 */
+				do_action( 'tec_tickets_ticket_form_main_start', $post_id, $ticket_id ); ?>
+
 				<div class="input_block">
-					<label class="ticket_form_label ticket_form_left" id="ticket_name_label" for="ticket_name">
-						<?php echo esc_html( $editor_data->get_raw_data_entry( 'ticket_name_label_default' ) ); ?>
+					<label class="ticket_form_label ticket_form_left" for="ticket_name">
+						<?php echo esc_html_x( 'Name:', 'The ticket name label in the admin ticket edit panel.', 'event-tickets' ); ?>
 					</label>
 					<input
 						type='text'
@@ -286,9 +279,18 @@ $editor_data = tribe( Editor_Data::class );
 						class="tribe_soft_note ticket_form_right"
 						data-depends="#Tribe__Tickets__RSVP_radio"
 						data-condition-not-checked
-						id="ticket_name_note"
 					><?php
-						echo esc_html( $editor_data->get_raw_data_entry( 'ticket_name_note_default' ) );
+						echo esc_html(
+							sprintf(
+								// Translators: %1$s: dynamic 'ticket' text.
+								_x(
+									'The %1$s name is displayed on the frontend of your website and within ticket emails.',
+									'admin edit ticket panel note',
+									'event-tickets'
+								),
+								tribe_get_ticket_label_singular_lowercase( 'admin_edit_ticket_panel_note' )
+							)
+						);
 						?>
 					</span>
 					<span
@@ -300,7 +302,7 @@ $editor_data = tribe( Editor_Data::class );
 							sprintf(
 								// Translators: %1$s: dynamic 'RSVP' text.
 								_x(
-									'This is the name of your %1$s. It is displayed on the frontend of your website and within %1$s emails.',
+									'The %1$s name is displayed on the frontend of your website and within %1$s emails.',
 									'admin edit RSVP panel note',
 									'event-tickets'
 								),
@@ -371,7 +373,7 @@ $editor_data = tribe( Editor_Data::class );
 							data-step="<?php echo esc_attr( $timepicker_step ); ?>"
 							data-round="<?php echo esc_attr( $timepicker_round ); ?>"
 							value="<?php echo esc_attr( $ticket_start_time ); ?>"
-							aria-label="<?php echo esc_attr( $msg_ticket_stssssssssssssssssssssrt_time_aria ); ?>"
+							aria-label="<?php echo esc_attr( $msg_ticket_start_time_aria ); ?>"
 						/>
 						<span class="helper-text hide-if-js"><?php esc_html_e( 'HH:MM', 'event-tickets' ); ?></span>
 						<span class="dashicons dashicons-editor-help" title="<?php echo esc_attr( $msg_ticket_start_date ); ?>">

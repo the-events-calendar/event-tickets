@@ -10,10 +10,6 @@ if ( 'undefined' === typeof ajaxurl ) {
 	ajaxurl = TribeTickets.ajaxurl;
 }
 
-if( 'undefined' === typeof tecTicketsEditorData ){
-	tecTicketsEditorData = {};
-}
-
 tribe.tickets.editor = {};
 
 var ticketHeaderImage = window.ticketHeaderImage || {};
@@ -78,18 +74,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		'dd.mm.yy',
 	];
 	var dateFormat = datepickerFormats[0];
-
-	/**
-	 * Retrieves the editor data for the given key.
-	 *
-	 * @param {string} key The key of the editor data to retrieve.
-	 *
-	 * @returns {*|null} Either the editor data for the given key or null if the
-	 * 				 	 key is not found.
-	 */
-	const getEditorData = function ( key ) {
-		return tecTicketsEditorData.hasOwnProperty( key ) ? tecTicketsEditorData[ key ] : null;
-	};
 
 	var changeEventCapacity = function( event, eventCapacity ) {
 		if ( 'undefined' === typeof eventCapacity ) {
@@ -225,21 +209,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	};
 
 	obj.setupSwapPanelData = function (ticketType) {
-		[
-			'ticket_name_label',
-			'ticket_name_note'
-		].map((id) => {
-			const element = document.getElementById(id);
-
-			if (!element) {
-				return;
-			}
-
-			const defaultText = getEditorData(id + '_default');
-			const typeText = getEditorData(id + '_' + ticketType);
-			element.innerHTML = typeText ? typeText : defaultText;
-		});
-
 		if (ticketType === 'default') {
 			$('#ticket_type_options').addClass('hidden');
 		} else {

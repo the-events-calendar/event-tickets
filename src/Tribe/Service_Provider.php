@@ -1,7 +1,4 @@
 <?php
-
-use TEC\Tickets\Admin\Editor_Data;
-
 /**
  * Class Tribe__Tickets__Service_Provider
  *
@@ -57,8 +54,6 @@ class Tribe__Tickets__Service_Provider extends tad_DI52_ServiceProvider {
 
 		// Migration queues.
 		$this->container->singleton( 'tickets.migration.queue_4_12', \Tribe\Tickets\Migration\Queue_4_12::class, [ 'hooks' ] );
-
-		$this->container->singleton( Editor_Data::class, Editor_Data::class );
 
 		$this->load();
 	}

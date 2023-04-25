@@ -1384,28 +1384,6 @@ class Series_PassesTest extends Controller_Test_Case {
 	}
 
 	/**
-	 * It should not filter editor data if data not array
-	 *
-	 * @test
-	 */
-	public function should_not_filter_editor_data_if_data_not_array(): void {
-		$controller = $this->make_controller();
-
-		$this->assertEquals( 'foo', $controller->add_pass_editor_data( 'foo' ) );
-	}
-
-	/**
-	 * It should filter editor data correctly
-	 *
-	 * @test
-	 */
-	public function should_filter_editor_data_correctly(): void {
-		$controller = $this->make_controller();
-
-		$this->assertMatchesJsonSnapshot( json_encode( $controller->add_pass_editor_data( [] ), JSON_PRETTY_PRINT ) );
-	}
-
-	/**
 	 * It should reorder series content once
 	 *
 	 * @test

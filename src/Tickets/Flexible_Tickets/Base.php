@@ -67,9 +67,6 @@ class Base extends Controller {
 			return;
 		}
 
-		$this->container->get( Admin_Views::class )->template( 'ticket-type-options', [
-			'ticket_type' => 'series_pass',
-			'editor_data' => $this->container->get( Editor_Data::class )
-		] );
+		$this->container->get( Admin_Views::class )->template( 'ticket-type-options' );
 	}
 }
