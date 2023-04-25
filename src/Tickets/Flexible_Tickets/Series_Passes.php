@@ -362,14 +362,30 @@ class Series_Passes extends Controller {
 			return $data;
 		}
 
-		$data['ticket_name_label_series_pass'] = esc_html_x(
+		$data['ticket_name_label_series_pass']         = _x(
 			'Name:',
 			'The label for the Series Pass name field in the ticket form.',
 			'event-tickets'
 		);
-		$data['ticket_name_note_series_pass']  = esc_html_x(
+		$data['ticket_name_note_series_pass']          = _x(
 			'The ticket name is displayed on the frontend of your website and within ticket emails.',
 			'The note for the Series Pass name field in the ticket form.',
+			'event-tickets'
+		);
+		$data['ticket_type_icon_url_series_pass']      = tribe_resource_url( 'icons/series-pass.svg', false, null, \Tribe__Tickets__Main::instance() );
+		$data['ticket_type_icon_alt_text_series_pass'] = _x(
+			'Series Pass',
+			'The alt text for the Series Pass icon in the ticket form.',
+			'event-tickets'
+		);
+		$data['ticket_type_help_series_pass']          = _x(
+			'A Series Pass provides an attendee with access to all events in a Series.',
+			'The help text for the Series Pass icon in the ticket form.',
+			'event-tickets'
+		);
+		$data['ticket_type_name_series_pass']          = _x(
+			'Series Pass',
+			'The name of the Series Pass ticket type.',
 			'event-tickets'
 		);
 

@@ -224,7 +224,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		settings: '#tribe_panel_settings',
 	};
 
-	obj.swapPanelData = function (ticketType) {
+	obj.setupSwapPanelData = function (ticketType) {
 		[
 			'ticket_name_label',
 			'ticket_name_note'
@@ -239,6 +239,12 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			const typeText = getEditorData(id + '_' + ticketType);
 			element.innerHTML = typeText ? typeText : defaultText;
 		});
+
+		if (ticketType === 'default') {
+			$('#ticket_type_options').addClass('hidden');
+		} else {
+			$('#ticket_type_options').removeClass('hidden');
+		}
 	};
 
 	/**
@@ -259,7 +265,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			$panel = $base_panel;
 		}
 
-		obj.swapPanelData( ticketType );
+		obj.setupSwapPanelData( ticketType );
 
 		var $eventTickets = $( '#event_tickets' );
 

@@ -60,6 +60,7 @@ $start_date_errors = [
 ];
 
 $ticket_name        = $ticket ? $ticket->name : '';
+$ticket_type        = $ticket ? $ticket->type() : 'default';
 $ticket_description = $ticket ? $ticket->description : '';
 $ticket_start_time  = $ticket ? $ticket->start_time : '';
 $ticket_end_time    = $ticket ? $ticket->end_time : '';
@@ -255,6 +256,19 @@ $editor_data = tribe( Editor_Data::class );
 			</div>
 			<section id="ticket_form_main" class="main" data-datepicker_format="<?php echo esc_attr( Tribe__Date_Utils::get_datepicker_format_index() ); ?>">
 				<div class="input_block">
+					<?php
+					/**
+					 * Allows for the insertion of additional elements into the start of the main ticket form.
+					 *
+					 * @since TBD
+					 *
+					 * @param int $post_id Post ID
+					 * @param int $ticket_id Ticket ID
+					 */
+					do_action( 'tec_tickets_ticket_form_main_start', $post_id, $ticket_id ); ?>
+
+				</div>
+				<div class="input_block">
 					<label class="ticket_form_label ticket_form_left" id="ticket_name_label" for="ticket_name">
 						<?php echo esc_html( $editor_data->get_raw_data_entry( 'ticket_name_label_default' ) ); ?>
 					</label>
@@ -357,7 +371,7 @@ $editor_data = tribe( Editor_Data::class );
 							data-step="<?php echo esc_attr( $timepicker_step ); ?>"
 							data-round="<?php echo esc_attr( $timepicker_round ); ?>"
 							value="<?php echo esc_attr( $ticket_start_time ); ?>"
-							aria-label="<?php echo esc_attr( $msg_ticket_start_time_aria ); ?>"
+							aria-label="<?php echo esc_attr( $msg_ticket_stssssssssssssssssssssrt_time_aria ); ?>"
 						/>
 						<span class="helper-text hide-if-js"><?php esc_html_e( 'HH:MM', 'event-tickets' ); ?></span>
 						<span class="dashicons dashicons-editor-help" title="<?php echo esc_attr( $msg_ticket_start_date ); ?>">
