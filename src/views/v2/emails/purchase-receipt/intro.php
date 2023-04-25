@@ -1,9 +1,9 @@
 <?php
 /**
- * Event Tickets Emails: Order Ticket Totals - Ticket Row
+ * Event Tickets Emails: Purchase Receipt > Intro.
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/emails/template-parts/body/order/ticket-totals/ticket-row.php
+ * [your-theme]/tribe/tickets/v2/emails/purchase-receipt/intro.php
  *
  * See more documentation about our views templating system.
  *
@@ -23,13 +23,34 @@
  * @var \WP_Post                           $order              The order object.
  */
 
-if ( empty( $ticket ) ) {
+if ( empty( $order ) ) {
 	return;
 }
 
+$hello = empty( trim( $order->purchaser_name ) ) ?
+	__( 'Hello!', 'event-tickets' ) :
+	sprintf(
+		// Translators: %s - First name of purchaser.
+		__( 'Hi, %s!', 'event-tickets' ),
+		$order->purchaser_name
+	);
+
 ?>
-<tr class="tec-tickets__email-table-content-order-ticket-totals-ticket-row">
-	<?php $this->template( 'template-parts/body/order/ticket-totals/ticket-title' ); ?>
-	<?php $this->template( 'template-parts/body/order/ticket-totals/ticket-quantity' ); ?>
-	<?php $this->template( 'template-parts/body/order/ticket-totals/ticket-price' ); ?>
+<tr>
+	<td class="tec-tickets__email-table-content-greeting-container">
+		<div>
+			<?php echo esc_html( $hello ); ?>
+		</div>
+		<div>&nbsp;</div>
+		<div>
+			<?php
+				sprintf(
+					// Translators: %1$s - ticket label singular, %2$s - Tickets label plural.
+					esc_html__( 'Below are the details of your recent %1$s purchase. Your %2$s will arrive in a separate email.', 'event-tickets' ),
+					tribe_get_ticket_label_singular_lowercase( 'tec-tickets-emails-purchase-receipt-intro' ),
+					tribe_get_ticket_label_plural_lowercase( 'tec-tickets-emails-purchase-receipt-intro' )
+				);
+				?>
+		</div>
+	</td>
 </tr>

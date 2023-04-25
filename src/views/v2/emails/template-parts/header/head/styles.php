@@ -13,21 +13,29 @@
  *
  * @since 5.5.9
  *
- * @var Tribe_Template  $this  Current template object.
- * @var string $header_bg_color   Hex value for the header background color.
- * @var string $header_text_color Hex value for the header text color
- * @var string $ticket_bg_color   Hex value for the ticket background color.
- * @var string $ticket_text_color Hex value for the ticket text color.
+ * @var Tribe__Template                    $this               Current template object.
+ * @var string                             $header_bg_color    Hex value for the header background color.
+ * @var string                             $header_text_color  Hex value for the header text color
+ * @var string                             $ticket_bg_color    Hex value for the ticket background color.
+ * @var string                             $ticket_text_color  Hex value for the ticket text color.
+ * @var \TEC\Tickets\Emails\Email_Abstract $email              The email object.
+ * @var string                             $heading            The email heading.
+ * @var string                             $title              The email title.
+ * @var bool                               $preview            Whether the email is in preview mode or not.
+ * @var string                             $additional_content The email additional content.
+ * @var bool                               $is_tec_active      Whether `The Events Calendar` is active or not.
+ * @var WP_Post|null                       $event              The event post object with properties added by the `tribe_get_event` function.
+ *
+ * @see tribe_get_event() For the format of the event object.
  */
 
-// @todo @codingmusician @juanfra @rafsuntaskin: Order properties alphabetically.
 ?>
 <style type="text/css">
 	body {
+		color: #3C434A;
 		margin: 0;
 		padding: 0;
 		text-align: <?php echo is_rtl() ? 'right' : 'left'; ?>;
-		color: #3C434A;
 	}
 
 	body, table, td, div, h1, p { font-family: Helvetica, Arial, sans-serif; }
@@ -43,49 +51,49 @@
 
 	.tec-tickets__email-body,
 	div.tec-tickets__email-body {
-		width: 100%;
-		border-collapse: collapse;
-		border: 0;
-		border-spacing: 0;
 		background: #f0eeeb;
+		border: 0;
+		border-collapse: collapse;
+		border-spacing: 0;
 		color: #3C434A;
 		padding-bottom: 30px;
+		width: 100%;
 	}
 
 	.tec-tickets__email-preview-link,
 	div.tec-tickets__email-preview-link {
-		padding: 15px;
-		text-align: center;
 		font-size: 11px;
-		max-width: 600px;
+		padding: 15px;
 		margin: 0 auto;
+		max-width: 600px;
+		text-align: center;
 	}
 
 	.tec-tickets__email-table-main,
 	table.tec-tickets__email-table-main {
-		width: 100%;
-		max-width: 600px;
-		border-collapse: collapse;
-		border: 0;
-		border-spacing: 0;
-		text-align: left;
 		background: #ffffff;
+		border: 0;
+		border-collapse: collapse;
+		border-spacing: 0;
 		margin:0 auto;
+		max-width: 600px;
+		text-align: left;
+		width: 100%;
 	}
 
 	.tec-tickets__email-table-main-header,
 	td.tec-tickets__email-table-main-header {
-		padding: 5px 5px 0px 5px;
 		background: <?php echo esc_attr( $header_bg_color ); ?>;
+		padding: 5px 5px 0px 5px;
 		text-align: <?php echo esc_attr( $header_image_alignment ); ?>;
 	}
 
 	.tec-tickets__email-table-content,
 	table.tec-tickets__email-table-content {
-		width: 100%;
 		border: 0;
 		border-spacing: 0;
 		padding: 15px 30px;
+		width: 100%;
 	}
 
 	.tec-tickets__email-table-content,
@@ -95,31 +103,31 @@
 
 	.tec-tickets__email-table-content-title,
 	h1.tec-tickets__email-table-content-title {
+		color: #141827;
 		font-size: 28px;
 		font-weight: 700;
 		letter-spacing: 0px;
-		text-align: left;
-		color: #141827;
-		padding: 24px 0 !important;
 		margin: 0;
+		padding: 24px 0 !important;
+		text-align: left;
 	}
 
 	.tec-tickets__email-table-content-event-title,
 	h3.tec-tickets__email-table-content-event-title {
 		color: #141827;
+		font-size: 18px;
 		font-style: normal;
 		font-weight: 700;
-		font-size: 18px;
-		padding: 20px 0 !important;
 		margin: 0;
+		padding: 20px 0 !important;
 	}
 
 	.tec-tickets__email-table-content-tickets-total {
-		padding:10px;
-		text-align: center;
-		font-weight: 700;
 		background-color: <?php echo esc_attr( $header_bg_color ); ?>;
 		color: <?php echo esc_attr( $header_text_color ); ?>;
+		font-weight: 700;
+		padding:10px;
+		text-align: center;
 	}
 
 	.tec-tickets__email-table-content-tickets tbody > tr:last-child > td {
@@ -128,56 +136,56 @@
 
 	.tec-tickets__email-table-content-ticket,
 	td.tec-tickets__email-table-content-ticket {
-		padding: 20px 25px;
 		background:<?php echo esc_attr( $ticket_bg_color ); ?>;
 		border-bottom: 1px solid rgba(0,0,0,.08);
+		padding: 20px 25px;
 	}
 
 	.tec-tickets__email-table-content-ticket-holder-name,
 	h2.tec-tickets__email-table-content-ticket-holder-name {
+		background:transparent;
+		color: <?php echo esc_attr( $ticket_text_color ); ?>;
 		font-size: 21px;
 		font-weight: 700;
 		line-height: 24px;
 		margin: 0;
 		padding: 0;
-		background:transparent;
-		color: <?php echo esc_attr( $ticket_text_color ); ?>;
 	}
 
 	.tec-tickets__email-table-content-ticket-type-name,
 	div.tec-tickets__email-table-content-ticket-type-name {
+		color: <?php echo esc_attr( $ticket_text_color ); ?>;
 		font-size: 16px;
 		margin-top: 8px;
 		padding: 0;
-		color: <?php echo esc_attr( $ticket_text_color ); ?>;
 	}
 
 	.tec-tickets__email-table-content-ticket-security-code,
 	div.tec-tickets__email-table-content-ticket-security {
+		color: <?php echo esc_attr( $ticket_text_color ); ?>;
+		display: block;
 		font-size: 14px;
 		font-weight: 400;
-		display: block;
 		margin: 0 !important;
-		padding: 15px 0 0 0 !important;
-		color: <?php echo esc_attr( $ticket_text_color ); ?>;
 		opacity: .7;
+		padding: 15px 0 0 0 !important;
 	}
 
 	.tec-tickets__email-table-content-ticket-number-from-total,
 	div.tec-tickets__email-table-content-ticket-number-from-total {
+		color: <?php echo esc_attr( $ticket_text_color ); ?>;
 		font-size: 14px;
 		font-weight: 700;
 		display: block;
 		margin: 0 !important;
 		padding: 15px 0 0 0 !important;
-		color: <?php echo esc_attr( $ticket_text_color ); ?>;
 	}
 
 	.tec-tickets__email-table-main-footer,
 	td.tec-tickets__email-table-main-footer {
-		padding: 0px 20px 10px 20px;
-		border-top: 1px solid #efefef;
 		background-color: <?php echo esc_attr( $header_bg_color ); ?>;
+		border-top: 1px solid #efefef;
+		padding: 0px 20px 10px 20px;
 	}
 
 	.tec-tickets__email-table-main-footer table {
@@ -323,5 +331,16 @@
 	th.tec-tickets__email-table-content-order-ticket-totals-cell,
 	td.tec-tickets__email-table-content-order-ticket-totals-cell {
 		padding: 0 6px;
+	}
+
+	.tec-tickets__email-table-content-greeting-container,
+	td.tec-tickets__email-table-content-greeting-container {
+		line-height: 21px;
+		padding-bottom: 40px;
+	}
+
+	.tec-tickets__email-table-content-add-content-container,
+	td.tec-tickets__email-table-content-add-content-container {
+		padding-bottom: 40px;
 	}
 </style>

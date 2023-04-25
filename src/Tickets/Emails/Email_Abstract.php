@@ -165,15 +165,15 @@ abstract class Email_Abstract {
 	abstract public function get_settings_fields(): array;
 
 	/**
-	 * Get preview context.
+	 * Get default preview context.
 	 *
-	 * @since 5.5.10
+	 * @since TBD
 	 *
 	 * @param array $args The arguments.
 	 *
 	 * @return string The email preview context.
 	 */
-	abstract public function get_preview_context( $args ): array;
+	abstract public function get_default_preview_context( $args = [] ): array;
 
 	/**
 	 * Get the default template context.
@@ -669,6 +669,9 @@ abstract class Email_Abstract {
 		$option_key = $this->get_option_key( 'add-content' );
 		$content    = tribe_get_option( $option_key, $this->get_default_additional_content() );
 
+		// Convert linebreaks into paragraphs.
+		$content = wpautop( $content );
+
 		// @todo: Probably we want more data parsed, or maybe move the filters somewhere else as we're always gonna
 
 		/**
@@ -772,6 +775,46 @@ abstract class Email_Abstract {
 		 * @param Email_Abstract $this     The email object.
 		 */
 		$args = apply_filters( "tec_tickets_emails_{$this->slug}_template_args", $args, $this->id, $this->template, $this );
+
+		return $args;
+	}
+
+	/**
+	 * Get template preview context for email.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $args The arguments.
+	 * @return array $args The modified arguments
+	 */
+	public function get_preview_context( $args = [] ): array {
+		$defaults = $this->get_default_preview_context();
+
+		$args = wp_parse_args( $args, $defaults );
+
+		/**
+		 * Allow filtering the template preview context globally.
+		 *
+		 * @since TBD
+		 *
+		 * @param array          $args     The email preview arguments.
+		 * @param string         $id       The email id.
+		 * @param string         $template Template name.
+		 * @param Email_Abstract $this     The email object.
+		 */
+		$args = apply_filters( 'tec_tickets_emails_preview_args', $args, $this->id, $this->template, $this );
+
+		/**
+		 * Allow filtering the template context.
+		 *
+		* @since TBD
+		 *
+		 * @param array          $args     The email arguments.
+		 * @param string         $id       The email id.
+		 * @param string         $template Template name.
+		 * @param Email_Abstract $this     The email object.
+		 */
+		$args = apply_filters( "tec_tickets_emails_{$this->slug}_preview_args", $args, $this->id, $this->template, $this );
 
 		return $args;
 	}

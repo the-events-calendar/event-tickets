@@ -36,6 +36,7 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 		$this->enable_provisional_id_normalizer();
 		$this->set_wp_screen();
 		$this->disable_promoter_trigger();
+		$GLOBALS['hook_suffix'] = 'tribe_events_page_tickets-attendees';
 	}
 
 	public function _tearDown() {

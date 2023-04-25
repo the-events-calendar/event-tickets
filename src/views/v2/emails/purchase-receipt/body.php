@@ -1,9 +1,9 @@
 <?php
 /**
- * Event Tickets Emails: Order Attendees Table
+ * Event Tickets Emails: Purchase Receipt Body template
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/emails/template-parts/body/order/attendees-table.php
+ * [your-theme]/tribe/tickets/v2/emails/purchase-receipt/body.php
  *
  * See more documentation about our views templating system.
  *
@@ -13,7 +13,7 @@
  *
  * @since TBD
  *
- * @var Tribe__Template                    $this              Current template object.
+ * @var Tribe__Template                    $this               Current template object.
  * @var \TEC\Tickets\Emails\Email_Abstract $email              The email object.
  * @var string                             $heading            The email heading.
  * @var string                             $title              The email title.
@@ -23,18 +23,20 @@
  * @var \WP_Post                           $order              The order object.
  */
 
-if ( empty( $attendees ) ) {
-	return;
-}
+$this->template( 'template-parts/body/title' );
 
-?>
-<tr>
-	<td class="tec-tickets__email-table-content-order-attendees-table-container">
-		<table class="tec-tickets__email-table-content-order-attendees-table">
-			<?php $this->template( 'template-parts/body/order/attendees-table/header-row' ); ?>
-			<?php foreach ( $attendees as $attendee ) : ?>
-				<?php $this->template( 'template-parts/body/order/attendees-table/attendee-info', [ 'attendee' => $attendee ] ); ?>
-			<?php endforeach; ?>
-		</table>
-	</td>
-</tr>
+$this->template( 'purchase-receipt/intro' );
+
+$this->template( 'template-parts/body/order/customer-purchaser-details' );
+
+$this->template( 'template-parts/body/order/event-title' );
+
+$this->template( 'template-parts/body/order/ticket-totals' );
+
+$this->template( 'template-parts/body/order/order-total' );
+
+$this->template( 'template-parts/body/order/payment-info' );
+
+$this->template( 'template-parts/body/order/attendees-table' );
+
+$this->template( 'template-parts/body/add-content' );
