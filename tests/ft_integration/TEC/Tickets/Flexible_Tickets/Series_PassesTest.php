@@ -1404,4 +1404,27 @@ class Series_PassesTest extends Controller_Test_Case {
 
 		$this->assertMatchesJsonSnapshot( json_encode( $controller->add_pass_editor_data( [] ), JSON_PRETTY_PRINT ) );
 	}
+
+	/**
+	 * It should reorder series content once
+	 *
+	 * @test
+	 */
+	public function should_reorder_series_content_once(): void {
+		$controller = $this->make_controller();
+
+		$series_id = static::factory()->post->create( [
+			'post_type' => Series_Post_Type::POSTTYPE,
+		] );
+
+		$ticket_id = $this->create_tc_series_pass( $series_id, 2389, [
+			'tribe-ticket' => $this->capacity_payload( 'unlimited' ),
+		] );
+
+		$controller->register();
+
+		$this->assertSame( 0, has_filter( 'the_content', [ $controller, 'reorder_series_content' ] ) );
+		$this->assertSame( 'test content', $controller->reorder_series_content( 'test content' ) );
+		$this->assertSame( false, has_filter( 'the_content', [ $controller, 'reorder_series_content' ] ) );
+	}
 }

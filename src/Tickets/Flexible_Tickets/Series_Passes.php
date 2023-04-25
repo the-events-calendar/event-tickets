@@ -14,6 +14,7 @@ use tad_DI52_Container;
 use TEC\Common\Provider\Controller;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
+use TEC\Events_Pro\Custom_Tables\V1\Templates\Series_Filters;
 use TEC\Tickets\Flexible_Tickets\Custom_Tables\Capacities;
 use TEC\Tickets\Flexible_Tickets\Custom_Tables\Posts_And_Posts;
 use TEC\Tickets\Flexible_Tickets\Exceptions\Invalid_Data_Exception;
@@ -80,6 +81,7 @@ class Series_Passes extends Controller {
 		add_action( 'event_tickets_attendee_ticket_deleted', [ $this, 'delete_pass_custom_tables_data' ], 5, 2 );
 		add_action( 'tec_tickets_ticket_update', [ $this, 'update_pass_custom_tables_data' ], 10, 2 );
 		add_filter( 'tec_tickets_localized_editor_data', [ $this, 'add_pass_editor_data' ] );
+		add_filter( 'the_content', [ $this, 'reorder_series_content' ], 0 );
 
 		$this->container->singleton( Series_Passes\Capacity_Updater::class, Series_Passes\Capacity_Updater::class );
 	}
@@ -97,6 +99,7 @@ class Series_Passes extends Controller {
 		remove_action( 'event_tickets_attendee_ticket_deleted', [ $this, 'delete_pass_custom_tables_data' ], 5 );
 		remove_action( 'tec_tickets_ticket_update', [ $this, 'update_pass_custom_tables_data' ] );
 		remove_filter( 'tec_tickets_localized_editor_data', [ $this, 'add_pass_editor_data' ] );
+		remove_filter( 'the_content', [ $this, 'reorder_series_content' ], 0 );
 	}
 
 	/**
@@ -371,5 +374,30 @@ class Series_Passes extends Controller {
 		);
 
 		return $data;
+	}
+
+	/**
+	 * Re-orders the Series content filter to run after the ticket content filter to
+	 * have the tickets display after the Series content and before the Series list
+	 * of Events.
+	 *
+	 * This method uses `the_content` filter priority 0 to run once before the Series or Ticket
+	 * logic run
+	 *
+	 * @since TBD
+	 *
+	 * @param string $content The post content.
+	 *
+	 * @return string The filtered post content.
+	 */
+	public function reorder_series_content( $content ) {
+		$series_filters = $this->container->make( Series_Filters::class );
+		// Move the Series content filter from its default priority of 10 to 20; tickest are injected at 11.
+		remove_filter( 'the_content', [ $series_filters, 'inject_content' ] );
+		add_filter( 'the_content', [ $series_filters, 'inject_content' ], 20 );
+		// It's enough to run this once.
+		remove_filter( 'the_content', [ $this, 'reorder_series_content' ], 0 );
+
+		return $content;
 	}
 }
