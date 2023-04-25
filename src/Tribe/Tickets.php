@@ -3419,10 +3419,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/**
 			 * Filters the unavailability message for a ticket collection
 			 *
-			 * @param string Unavailability message
-			 * @param array Collection of tickets
+			 * @param $message string Unavailability message
+			 * @param $tickets array Collection of tickets
 			 */
-			$message = apply_filters( 'event_tickets_unvailable_message', $message, $tickets );
+			$message = apply_filters( 'tec_tickets_unavailable_message', $message, $tickets );
 
 			return $message;
 		}
@@ -3432,7 +3432,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * event are currently unavailable and unless a different ticket provider reports differently
 		 * the "tickets unavailable" message should be displayed.
 		 *
-		 * @since TBD Added event_tickets_unvailable_message filter for unavailable messages.
+		 * @since TBD Added tec_tickets_unavailable_message filter for unavailable messages.
 		 *
 		 * @param array $tickets
 		 * @param int $post_id ID of parent "event" post (defaults to the current post)
@@ -3460,10 +3460,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				 *
 				 * @since TBD
 				 *
-				 * @param string Unavailability message
-				 * @param array Collection of tickets
+				 * @param $message string Unavailability message
+				 * @param $tickets array  Collection of tickets
 				 */
-				echo (string) apply_filters( 'event_tickets_unvailable_message', $message, $tickets );
+				echo (string) apply_filters( 'tec_tickets_unavailable_message', $message, $tickets );
 			}
 		}
 

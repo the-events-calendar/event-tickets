@@ -65,10 +65,12 @@ $message = $is_sale_past
 /**
  * Filters the unavailability message for a ticket collection
  *
+ * @since TBD
+ *
  * @param $message string Unavailability message
  * @param $tickets array Collection of tickets
  */
-$message = apply_filters( 'event_tickets_unvailable_message', $message, $tickets );
+$message = apply_filters( 'tec_tickets_unavailable_message', $message, $tickets );
 
 ?>
 <div <?php tribe_classes( $classes ); ?>>

@@ -16,7 +16,7 @@ use WP_Error;
  * form and then gone to Gateway for payment.  We have the record of sale, but they haven't completed their payment yet.
  *
  * @since   5.1.9
- * @since TBD Added event_tickets_unvailable_message filter for unavailable messages.
+ * @since TBD Added tec_tickets_unavailable_message filter for unavailable messages.
  *
  * @package TEC\Tickets\Commerce\Status
  */
@@ -171,10 +171,10 @@ class Pending extends Status_Abstract {
 				 *
 				 * @since TBD
 				 *
-				 * @param string Unavailability message
-				 * @param array Collection of tickets
+				 * @param $message string Unavailability message
+				 * @param $ticket array Collection of tickets
 				 */
-				$message = (string) apply_filters( 'event_tickets_unvailable_message', $message, array( $ticket ) );
+				$message = (string) apply_filters( 'tec_tickets_unavailable_message', $message, [ $ticket ] );
 
 				return new WP_Error(
 					'tec-tc-ticket-unavailable',
