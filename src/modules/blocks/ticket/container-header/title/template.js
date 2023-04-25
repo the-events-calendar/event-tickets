@@ -45,7 +45,7 @@ const TicketContainerHeaderTitle = ( {
 							<TextareaAutosize
 								className="tribe-editor__ticket__container-header-title-input"
 								value={ tempTitle }
-								placeholder={ __( 'Ticket Type *', 'event-tickets' ) }
+								placeholder={ __( 'Ticket Name', 'event-tickets' ) }
 								onChange={ onTempTitleChange }
 								disabled={ isDisabled }
 								required={ true }

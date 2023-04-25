@@ -44,7 +44,7 @@ const getTitle = (
 				<TextareaAutosize
 					className="tribe-editor__rsvp-container-header__title-input"
 					value={ tempTitle }
-					placeholder={ __( 'RSVP Title', 'event-tickets' ) }
+					placeholder={ __( 'RSVP Name', 'event-tickets' ) }
 					onChange={ onTempTitleChange }
 					disabled={ isDisabled }
 				/>
