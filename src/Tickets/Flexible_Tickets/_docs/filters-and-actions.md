@@ -9,5 +9,7 @@ This document describes the filters and actions that have been added by the Flex
 
 ## Filters
 
-* `tec_tickets_localized_editor_data` - Filters the data that is localized to the Ticket editor forms. The data used to
-  control some of the UI wording.
+* `tec_tickets_series_pass_singular_lowercase` - Filters the singular lowercase label for the Series Pass; defaults
+  to `series pass`.
+* `tec_tickets_series_pass_singular_uppercase` - Filters the singular uppercase label for the Series Pass; defaults
+  to `Series Pass`.

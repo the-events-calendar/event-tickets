@@ -121,7 +121,7 @@ class Series_Passes extends Controller {
 		}
 
 		$ticket_providing_modules = array_diff_key( Tickets::modules(), [ RSVP::class => true ] );
-		$this->admin_views->template( 'form-toggle', [
+		$this->admin_views->template( 'series-pass-form-toggle', [
 			'disabled' => count( $ticket_providing_modules ) === 0,
 		] );
 	}
