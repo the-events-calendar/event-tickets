@@ -308,9 +308,12 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 
 		$args['order'] = Preview_Data::get_order();
 		$args['tickets'] = Preview_Data::get_tickets();
-		$args['heading'] = count($args['tickets']) > 1 ?
-			$this->get_heading_plural() :
-			$this->get_heading();
+		$args['heading'] = $this->get_heading();
+
+		// If more than one ticket, use plural heading.
+		if ( count( $args['tickets'] ) > 1 ) {
+			$args['heading'] = $this->get_heading_plural();
+		}
 
 		return wp_parse_args( $args, $defaults );
 	}
