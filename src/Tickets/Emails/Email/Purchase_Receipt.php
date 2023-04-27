@@ -191,7 +191,7 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 			'title'              => $this->get_title(),
 			'heading'            => $this->get_heading(),
 			'additional_content' => $this->get_additional_content(),
-			'order'              => $this->__get( 'order' ),
+			'order'              => $this->get( 'order' ),
 		];
 
 		return $defaults;
@@ -236,7 +236,7 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 			return false;
 		}
 
-		$order = $this->__get( 'order' );
+		$order = $this->get( 'order' );
 
 		// Bail if there's no order.
 		if ( empty( $order ) ) {

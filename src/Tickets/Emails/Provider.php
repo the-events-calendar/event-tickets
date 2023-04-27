@@ -36,7 +36,8 @@ class Provider extends tad_DI52_ServiceProvider {
 
 		// Register singletons.
 		$this->container->singleton( static::class, $this );
-		$this->container->singleton( 'tickets.emails.provider', $this );
+
+		$this->container->singleton( Post_Type::class );
 
 		$this->container->singleton( Admin\Emails_Tab::class );
 
@@ -52,12 +53,11 @@ class Provider extends tad_DI52_ServiceProvider {
 	 *
 	 * @since 5.5.6
 	 */
-	protected function register_assets() {
+	protected function register_assets(): void {
 		$assets = new Assets( $this->container );
 		$assets->register();
 
 		$this->container->singleton( Assets::class, $assets );
-		$this->container->singleton( 'tickets.emails.assets', $assets );
 	}
 
 	/**
@@ -65,12 +65,11 @@ class Provider extends tad_DI52_ServiceProvider {
 	 *
 	 * @since 5.5.6
 	 */
-	protected function register_hooks() {
+	protected function register_hooks(): void {
 		$hooks = new Hooks( $this->container );
 		$hooks->register();
 
-		// Allow Hooks to be removed, by having the them registered to the container.
+		// Allow Hooks to be removed, by having them registered to the container.
 		$this->container->singleton( Hooks::class, $hooks );
-		$this->container->singleton( 'tickets.emails.hooks', $hooks );
 	}
 }
