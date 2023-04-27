@@ -220,7 +220,7 @@ class Preview_Data {
 	 */
 	public static function get_tickets( $args = [] ): array {
 		$default = [
-			[
+			new WP_Post( (object) [
 				'ID' => -98,
 				'post_author'     => 1,
 				'post_date'       => current_time( 'mysql' ),
@@ -256,7 +256,7 @@ class Preview_Data {
 					'sub_total' => 50.0,
 					'event_id'  => -96,
 				],
-			],
+			] ),
 		];
 		return wp_parse_args( $args, $default );
 	}
@@ -274,8 +274,8 @@ class Preview_Data {
 		$tickets = self::get_tickets();
 		$order   = self::get_order();
 		$default = [
-			'{attendee_name}'  => $tickets[0]['purchaser_name'],
-			'{attendee_email}' => $tickets[0]['purchaser_email'],
+			'{attendee_name}'  => $tickets[0]->purchaser_name,
+			'{attendee_email}' => $tickets[0]->purchaser_email,
 			'{order_number}'   => $order->ID,
 		];
 		return wp_parse_args( $args, $default );
