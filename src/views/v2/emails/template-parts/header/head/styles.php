@@ -57,6 +57,7 @@
 		border-spacing: 0;
 		color: #3C434A;
 		padding-bottom: 30px;
+		padding-top: 30px;
 		width: 100%;
 	}
 
