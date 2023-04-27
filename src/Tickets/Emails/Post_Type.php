@@ -60,8 +60,6 @@ class Post_Type {
 	 * Populate the Tickets Emails post type with the system emails.
 	 *
 	 * @since TBD
-	 *
-	 * @return void
 	 */
 	public function populate_email_template_posts(): void {
 		global $wp_rewrite;
