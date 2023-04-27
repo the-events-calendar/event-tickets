@@ -258,7 +258,7 @@ class Failed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 			return false;
 		}
 
-		$order = $this->__get( 'order' );
+		$order = $this->get( 'order' );
 
 		// Bail if there's no order.
 		if ( empty( $order ) ) {

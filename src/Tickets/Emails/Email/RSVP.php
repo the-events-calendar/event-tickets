@@ -338,8 +338,8 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 			'title'              => $this->get_title(),
 			'heading'            => $this->get_heading(),
 			'additional_content' => $this->get_additional_content(),
-			'tickets'            => $this->__get( 'tickets' ),
-			'post_id'            => $this->__get( 'post_id' ),
+			'tickets'            => $this->get( 'tickets' ),
+			'post_id'            => $this->get( 'post_id' ),
 		];
 
 		return $defaults;
@@ -384,8 +384,8 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 			return false;
 		}
 
-		$tickets = $this->__get( 'tickets' );
-		$post_id = $this->__get( 'post_id' );
+		$tickets = $this->get( 'tickets' );
+		$post_id = $this->get( 'post_id' );
 
 		// Bail if there's no tickets or post ID.
 		if ( empty( $tickets ) || empty( $post_id ) ) {

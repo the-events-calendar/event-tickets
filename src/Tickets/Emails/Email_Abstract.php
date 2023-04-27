@@ -15,6 +15,7 @@ use WP_Error;
 use TEC\Tickets\Emails\Admin\Emails_Tab;
 use TEC\Tickets\Emails\Admin\Settings as Emails_Settings;
 use Tribe\Tickets\Admin\Settings as Plugin_Settings;
+use Tribe__Utils__Array as Arr;
 
 /**
  * Class Email_Abstract.
@@ -445,6 +446,8 @@ abstract class Email_Abstract {
 	 *
 	 * @since 5.5.9
 	 *
+	 * @todo This doesnt belong on the abstracts, it's more like a template helper.
+	 *
 	 * @return string
 	 */
 	public function get_blogname(): string {
@@ -469,7 +472,7 @@ abstract class Email_Abstract {
 	 *
 	 * @return WP_Post|null;
 	 */
-	public function get_post() {
+	public function get_post(): ?WP_Post {
 		return get_page_by_path( $this->id, OBJECT, Post_Type::SLUG );
 	}
 
@@ -516,7 +519,7 @@ abstract class Email_Abstract {
 	 *
 	 * @return string
 	 */
-	public function get_edit_url() {
+	public function get_edit_url(): string {
 		// Force the `emails` tab.
 		$args = [
 			'tab'     => Emails_Tab::$slug,
@@ -860,13 +863,13 @@ abstract class Email_Abstract {
 	/**
 	 * Set a value to a dynamic property.
 	 *
-	 * @since 5.5.10
+	 * @since TBD
 	 *
-	 * @param string $name  The name of the property.
-	 * @param mixed  $value The value of the property.
+	 * @param string|array $name  The name of the property.
+	 * @param mixed        $value The value of the property.
 	 */
-	public function __set( $name, $value ) {
-		$this->data[ $name ] = $value;
+	public function set( $name, $value ) {
+		Arr::set( $this->data, $name, $value );
 	}
 
 	/**
@@ -874,24 +877,12 @@ abstract class Email_Abstract {
 	 *
 	 * @since 5.5.10
 	 *
-	 * @param string $name The name of the property.
+	 * @param string|array $name The name of the property.
 	 *
 	 * @return mixed|null null if the value does not exist mixed otherwise the value to the dynamic property.
 	 */
-	public function __get( $name ) {
-
-		if ( array_key_exists( $name, $this->data ) ) {
-			// Try to find a method on this instance, for example `get_subject()`.
-			$method = 'get_' . strtolower( $name );
-
-			if ( method_exists( $this, $method ) ) {
-				return $this->{$method}();
-			}
-
-			return $this->data[ $name ];
-		}
-
-		return null;
+	public function get( $name, $default = null ) {
+		return Arr::get( $this->data, $name, $default );
 	}
 
 	/**
