@@ -241,7 +241,7 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 			$this->get_option_key( 'use-ticket-email' ) => [
 				'type'                => 'toggle',
 				'label'               => esc_html__( 'Use Ticket Email', 'event-tickets' ),
-				'placeholder'         => esc_html__( 'Use the ticket email settings and template.', 'event-tickets' ),
+				'tooltip'             => esc_html__( 'Use the ticket email settings and template.', 'event-tickets' ),
 				'default'             => true,
 				'validation_type'     => 'boolean',
 			],
