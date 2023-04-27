@@ -876,7 +876,7 @@ abstract class Email_Abstract {
 	 *
 	 * @param string $name The name of the property.
 	 *
-	 * @return mixed|null null if the value does not exist mixed otherwise the value to the dynamic property.
+	 * @return mixed|null The value of the passed property. Null if the value does not exist. 
 	 */
 	public function __get( $name ) {
 
