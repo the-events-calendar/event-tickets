@@ -4,9 +4,11 @@
  *
  * @since  5.5.6   Recipient for list item of email templates for Emails settings tab.
  *
- * @var Email_Abstract[]  $emails  Array of email info.
- * @var Email_Abstract    $email   Email info.
+ * @var array<Email_Abstract> $emails Array of email info.
+ * @var Email_Abstract        $email  Email info.
  */
+
+use TEC\Tickets\Emails\Email_Abstract;
 
 // If no email, bail.
 if ( empty( $email ) ) {
@@ -16,10 +18,10 @@ if ( empty( $email ) ) {
 ?>
 <div class="tec-tickets__admin-settings-emails-template-list-item-recipient">
 	<?php
-		echo sprintf(
-			// Translators: %s: The email "to".
-			esc_html__( 'To: %s', 'event-tickets' ),
-			esc_html( $email->get_to() )
-		);
-		?>
+	echo sprintf(
+	// Translators: %s: The email "to".
+		esc_html__( 'To: %s', 'event-tickets' ),
+		esc_html( $email->get_to() )
+	);
+	?>
 </div>

@@ -54,7 +54,7 @@ class Send_Email_Purchase_Receipt extends Flag_Action_Abstract {
 
 		$email_class = tribe( \TEC\Tickets\Emails\Email\Purchase_Receipt::class );
 
-		$email_class->__set( 'order', $order );
+		$email_class->set( 'order', $order );
 		$email_class->recipient = $order->purchaser['email'];
 
 		return $email_class->send();

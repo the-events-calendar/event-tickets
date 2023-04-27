@@ -52,8 +52,8 @@ class Send_Email_Completed_Order extends Flag_Action_Abstract {
 		$attendees = $provider->get_attendees_by_order_id( $order->id );
 
 		$email_class = tribe( \TEC\Tickets\Emails\Email\Completed_Order::class );
-		$email_class->__set( 'order', $order );
-		$email_class->__set( 'attendees', $attendees );
+		$email_class->set( 'order', $order );
+		$email_class->set( 'attendees', $attendees );
 
 		return $email_class->send();
 	}

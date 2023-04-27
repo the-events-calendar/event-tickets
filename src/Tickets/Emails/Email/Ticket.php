@@ -330,8 +330,8 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 			'email'              => $this,
 			'title'              => $this->get_title(),
 			'heading'            => $this->get_heading(),
-			'post_id'            => $this->__get( 'post_id' ),
-			'tickets'            => $this->__get( 'tickets' ),
+			'post_id'            => $this->get( 'post_id' ),
+			'tickets'            => $this->get( 'tickets' ),
 			'additional_content' => $this->get_additional_content(),
 		];
 
@@ -376,8 +376,8 @@ class Ticket extends \TEC\Tickets\Emails\Email_Abstract {
 			return false;
 		}
 
-		$tickets = $this->__get( 'tickets' );
-		$post_id = $this->__get( 'post_id' );
+		$tickets = $this->get( 'tickets' );
+		$post_id = $this->get( 'post_id' );
 
 		// Bail if there's no tickets or post ID.
 		if ( empty( $tickets ) || empty( $post_id ) ) {
