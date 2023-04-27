@@ -4,8 +4,10 @@
  *
  * @since  5.5.6  List of email message templates for Emails settings tab.
  *
- * @var Email_Abstract[]  $emails  Array of template info.
+ * @var array<Email_Abstract>  $emails  Array of template info.
  */
+
+use TEC\Tickets\Emails\Email_Abstract;
 
 // @todo $templates variable will be an array of Message_Template objects in the future.
 
