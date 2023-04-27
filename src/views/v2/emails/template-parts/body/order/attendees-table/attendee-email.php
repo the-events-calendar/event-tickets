@@ -18,11 +18,11 @@
  * @var bool            $is_tec_active [Global] Whether `The Events Calendar` is active or not.
  */
 
-if ( empty( $attendee['email'] ) ) {
+if ( empty( $attendee['holder_email'] ) ) {
 	return;
 }
 
 ?>
 <div>
-	<?php echo esc_html( $attendee['email'] ); ?>
+	<?php echo esc_html( $attendee['holder_email'] ); ?>
 </div>
