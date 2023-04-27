@@ -41,7 +41,6 @@ class Email_Handler extends \tad_DI52_ServiceProvider {
 		Email\RSVP::class,
 		Email\RSVP_Not_Going::class,
 		Email\Purchase_Receipt::class,
-		Email\Failed_Order::class,
 		Email\Completed_Order::class,
 	];
 
