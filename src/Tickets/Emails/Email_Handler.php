@@ -27,7 +27,7 @@ class Email_Handler extends \tad_DI52_ServiceProvider {
 	 *
 	 * @var Email_Abstract[]
 	 */
-	protected array $emails = [];
+	protected array<string> $emails = [];
 
 	/**
 	 * Default emails registered by Event Tickets.
