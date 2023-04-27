@@ -35,15 +35,8 @@ class Web_View {
 	 * @return string The email web view URL.
 	 */
 	public function get_url(): string {
-		// @todo @juanfra: Implement a method to get the link to the web view link URL.
-		$url = add_query_arg(
-			[
-				self::$url_slug => 1,
-			],
-			site_url()
-		);
-
-		return $url;
+		// @todo @juanfra: Implement a method to get the link to the web view link URL based on the email.
+		return '';
 	}
 
 	/**

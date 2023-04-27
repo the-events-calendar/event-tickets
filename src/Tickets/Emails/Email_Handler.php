@@ -25,7 +25,7 @@ class Email_Handler extends \tad_DI52_ServiceProvider {
 	 *
 	 * @since 5.5.9
 	 *
-	 * @var Email_Abstract[]
+	 * @var array<Email_Abstract>
 	 */
 	protected array $emails = [];
 
@@ -34,14 +34,13 @@ class Email_Handler extends \tad_DI52_ServiceProvider {
 	 *
 	 * @since 5.5.9
 	 *
-	 * @var string[]
+	 * @var array<string>
 	 */
 	protected array $default_emails = [
 		Email\Ticket::class,
 		Email\RSVP::class,
 		Email\RSVP_Not_Going::class,
 		Email\Purchase_Receipt::class,
-		Email\Failed_Order::class,
 		Email\Completed_Order::class,
 	];
 
@@ -65,7 +64,7 @@ class Email_Handler extends \tad_DI52_ServiceProvider {
 	 *
 	 * @since 5.5.9
 	 *
-	 * @return Email_Abstract[]
+	 * @return array<Email_Abstract>
 	 */
 	public function get_emails(): array {
 		/**

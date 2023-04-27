@@ -174,7 +174,7 @@ abstract class Email_Abstract {
 	 *
 	 * @param array $args The arguments.
 	 *
-	 * @return array The email preview context.
+	 * @return array<string,mixed> The email preview context.
 	 */
 	abstract public function get_default_preview_context( $args = [] ): array;
 
@@ -481,7 +481,7 @@ abstract class Email_Abstract {
 	 *
 	 * @since TBD
 	 *
-     * @return int|WP_Error The post ID on success. The value 0 or WP_Error on failure.
+	 * @return int|WP_Error The post ID on success. The value 0 or WP_Error on failure.
 	 */
 	public function create_template_post() {
 		if ( $post = $this->get_post() ) {
@@ -879,7 +879,7 @@ abstract class Email_Abstract {
 	 *
 	 * @param string|array $name The name of the property.
 	 *
-	 * @return mixed|null null if the value does not exist mixed otherwise the value to the dynamic property.
+	 * @return mixed|null The value of the passed property. Null if the value does not exist. 
 	 */
 	public function get( $name, $default = null ) {
 		return Arr::get( $this->data, $name, $default );
