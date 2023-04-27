@@ -173,7 +173,7 @@ abstract class Email_Abstract {
 	 *
 	 * @param array $args The arguments.
 	 *
-	 * @return array The email preview context.
+	 * @return array<string,mixed> The email preview context.
 	 */
 	abstract public function get_default_preview_context( $args = [] ): array;
 
