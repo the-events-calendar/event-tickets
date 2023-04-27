@@ -19,6 +19,7 @@ namespace TEC\Tickets\Emails;
 
 use \tad_DI52_ServiceProvider;
 use TEC\Tickets\Emails\Admin\Emails_Tab;
+use Tribe__Tickets__Tickets as Tickets_Module;
 
 /**
  * Class Hooks.
@@ -69,6 +70,10 @@ class Hooks extends tad_DI52_ServiceProvider {
 		add_filter( 'tribe_tickets_admin_manager_request', [ $this, 'filter_add_preview_modal_content' ], 15, 2 );
 
 		add_filter( 'wp_redirect', [ $this, 'filter_redirect_url' ] );
+
+		// Legacy emails.
+		add_filter( 'tec_tickets_send_rsvp_email_pre', [ $this, 'filter_legacy_sent_rsvp_emails' ], 20, 4 );
+		add_filter( 'tec_tickets_send_tickets_email_for_attendee_pre', [ $this, 'filter_legacy_sent_tickets_attendees_emails' ], 20, 5 );
 	}
 
 	/**
@@ -215,6 +220,42 @@ class Hooks extends tad_DI52_ServiceProvider {
 		}
 
 		return $this->container->make( Admin\Preview_Modal::class )->get_modal_content_ajax( $render_response, $vars );
+	}
+
+	/**
+	 * Hooks to the legacy modules to send RSVP emails with the new system.
+	 *
+	 * @see Legacy::send_rsvp_email
+	 *
+	 * @since TBD
+	 *
+	 * @param null|boolean   $pre      Previous value from the filter, mostly will be null.
+	 * @param int            $order_id The order ID.
+	 * @param int            $event_id The event ID.
+	 * @param Tickets_Module $module   Commerce module we are using for these emails.
+	 */
+	public function filter_legacy_sent_rsvp_emails( $pre, $order_id, $event_id = null, $module = null ) {
+		return $this->container->make( Legacy::class )->send_rsvp_email( $pre, $order_id, $event_id, $module );
+	}
+
+	/**
+	 * Hooks to the legacy modules to send Tickets emails with the new system.
+	 *
+	 * @since TBD
+	 *
+	 * @see Legacy::send_tickets_email_for_attendee
+	 *
+	 * @param null|boolean   $pre         Previous value from the filter, mostly will be null.
+	 * @param string         $to          The email to send the tickets to.
+	 * @param array          $tickets     The list of tickets to send.
+	 * @param array          $args        See the rest of the documentation for this on Legacy::send_tickets_email_for_attendee
+	 *
+	 * @param Tickets_Module $module      Commerce module we are using for these emails.
+	 *
+	 * @return bool Whether email was sent to attendees.
+	 */
+	public function filter_legacy_sent_tickets_attendees_emails( $pre, $to, $tickets, $args = [], $module = null ) {
+		return $this->container->make( Legacy::class )->send_tickets_email_for_attendee( $pre, $to, $tickets, $args, $module );
 	}
 
 	/**
