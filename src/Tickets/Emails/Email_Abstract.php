@@ -879,7 +879,7 @@ abstract class Email_Abstract {
 	 *
 	 * @param string|array $name The name of the property.
 	 *
-	 * @return mixed|null null if the value does not exist mixed otherwise the value to the dynamic property.
+	 * @return mixed|null The value of the passed property. Null if the value does not exist. 
 	 */
 	public function get( $name, $default = null ) {
 		return Arr::get( $this->data, $name, $default );
