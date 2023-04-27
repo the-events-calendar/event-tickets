@@ -478,7 +478,7 @@ abstract class Email_Abstract {
 	 *
 	 * @since TBD
 	 *
-     * @return int|WP_Error The post ID on success. The value 0 or WP_Error on failure.
+	 * @return int|WP_Error The post ID on success. The value 0 or WP_Error on failure.
 	 */
 	public function create_template_post() {
 		if ( $post = $this->get_post() ) {
