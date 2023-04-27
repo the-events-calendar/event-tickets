@@ -9,8 +9,10 @@
 
 namespace TEC\Tickets\Emails;
 
-use TEC\Tickets\Emails\Admin\Emails_Tab;
 use WP_Post;
+use WP_Error;
+
+use TEC\Tickets\Emails\Admin\Emails_Tab;
 use TEC\Tickets\Emails\Admin\Settings as Emails_Settings;
 use Tribe\Tickets\Admin\Settings as Plugin_Settings;
 
@@ -171,7 +173,7 @@ abstract class Email_Abstract {
 	 *
 	 * @param array $args The arguments.
 	 *
-	 * @return string The email preview context.
+	 * @return array The email preview context.
 	 */
 	abstract public function get_default_preview_context( $args = [] ): array;
 
@@ -180,7 +182,7 @@ abstract class Email_Abstract {
 	 *
 	 * @since 5.5.11
 	 *
-	 * @return string The email template context.
+	 * @return array The email template context.
 	 */
 	abstract public function get_default_template_context(): array;
 
@@ -468,7 +470,43 @@ abstract class Email_Abstract {
 	 * @return WP_Post|null;
 	 */
 	public function get_post() {
-		return get_page_by_path( $this->id, OBJECT, Email_Handler::POSTTYPE );
+		return get_page_by_path( $this->id, OBJECT, Post_Type::SLUG );
+	}
+
+	/**
+	 * Creates the Post in the Database for this Email.
+	 *
+	 * @since TBD
+	 *
+     * @return int|WP_Error The post ID on success. The value 0 or WP_Error on failure.
+	 */
+	public function create_template_post() {
+		if ( $post = $this->get_post() ) {
+			return new WP_Error( 'tec-tickets-emails-email-template-already-exists', 'Template post already exists for this email.', [ 'post' => $post, 'email' => $this ] );
+		}
+
+		$args     = [
+			'post_name'   => $this->get_id(),
+			'post_title'  => $this->get_title(),
+			'post_status' => 'publish',
+			'post_type'   => Post_Type::SLUG,
+			'meta_input'  => [
+				'email_to'       => $this->to,
+				'email_template' => $this->template,
+				'email_version'  => \Tribe__Tickets__Main::VERSION,
+			],
+		];
+		$inserted = wp_insert_post( $args );
+
+		if ( $inserted instanceof WP_Error ) {
+			do_action( 'tribe_log', 'error', 'Error creating email post.', [
+				'class'      => __CLASS__,
+				'post_title' => $this->get_title(),
+				'error'      => $inserted->get_error_message(),
+			] );
+		}
+
+		return $inserted;
 	}
 
 	/**
@@ -838,7 +876,7 @@ abstract class Email_Abstract {
 	 *
 	 * @param string $name The name of the property.
 	 *
-	 * @return mixed|null null if the value does not exists mixed otherwise the the value to the dynamic property.
+	 * @return mixed|null null if the value does not exist mixed otherwise the value to the dynamic property.
 	 */
 	public function __get( $name ) {
 

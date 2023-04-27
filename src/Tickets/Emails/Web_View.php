@@ -71,7 +71,7 @@ class Web_View {
 			//new WP_Error( 'tec-tickets-emails-web-view-no-security-code', 'The `security_code` parameter is empty.' );
 		}
 
-		/** @var Tribe__Tickets__Data_API $data_api */
+		/** @var \Tribe__Tickets__Data_API $data_api */
 		$data_api = tribe( 'tickets.data_api' );
 
 		$service_provider = $data_api->get_ticket_provider( $attendee_id );
