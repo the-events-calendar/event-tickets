@@ -38,7 +38,7 @@ class Legacy {
 	 *
 	 * @return null|boolean  When we return boolean we disable the legacy emails regardless of status of this email, null lets the old emails trigger.
 	 */
-	public function send_tickets_email_for_attendee( $pre, $to, $tickets, $args = [], $module = null ) {
+	public function send_tickets_email_for_attendee( $pre, $to, $tickets, $args = [], $module = null ): ?bool {
 		// Only send back to the old email in case people opted-out of the Tickets Emails feature.
 		if ( ! tec_tickets_emails_is_enabled() ) {
 			return null;
@@ -144,7 +144,7 @@ class Legacy {
 	 *
 	 * @return null|boolean  When we return boolean we disable the legacy emails regardless of status of this email, null lets the old emails trigger.
 	 */
-	public function send_rsvp_email( $pre, $order_id, $event_id = null, $module = null ) {
+	public function send_rsvp_email( $pre, $order_id, $event_id = null, $module = null ): ?bool {
 		// Only send back to the old email in case people opted-out of the Tickets Emails feature.
 		if ( ! tec_tickets_emails_is_enabled() ) {
 			return null;
@@ -212,6 +212,8 @@ class Legacy {
 
 		$email_class->set( 'post_id', $event_id );
 		$email_class->set( 'tickets', $all_attendees );
+
+		// @todo We need to refactor this piece to use the correct sender functionality.
 		$subject     = $email_class->get_subject();
 		$content     = $email_class->get_content( [ 'tickets' => $all_attendees ] );
 		$headers     = $email_class->get_headers();

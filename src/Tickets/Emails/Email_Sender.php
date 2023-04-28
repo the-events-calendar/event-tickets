@@ -1,6 +1,6 @@
 <?php
 /**
- * Tickets Emails Email Sender class.
+ * Email Sender class.
  *
  * @since 5.5.9
  *

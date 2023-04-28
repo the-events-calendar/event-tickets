@@ -71,13 +71,13 @@ class Hooks extends tad_DI52_ServiceProvider {
 
 		add_filter( 'wp_redirect', [ $this, 'filter_redirect_url' ] );
 
-		// Legacy emails.
+		// Inject the new email into the legacy codebase for emails.
 		add_filter( 'tec_tickets_send_rsvp_email_pre', [ $this, 'filter_legacy_sent_rsvp_emails' ], 20, 4 );
 		add_filter( 'tec_tickets_send_tickets_email_for_attendee_pre', [ $this, 'filter_legacy_sent_tickets_attendees_emails' ], 20, 5 );
 	}
 
 	/**
-	 * Filters the redirect URL to determine whether or not section key needs to be added.
+	 * Filters the redirect URL to determine whether section key needs to be added.
 	 *
 	 * @since 5.5.9
 	 *
@@ -136,7 +136,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * @since 5.5.7
 	 */
 	public function action_add_preview_modal() {
-		echo $this->container->make( Admin\Preview_Modal::class )->render_modal();
+		$this->container->make( Admin\Preview_Modal::class )->render_modal();
 	}
 
 	/**
@@ -239,7 +239,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	}
 
 	/**
-	 * Hooks to the legacy modules to send Tickets emails with the new system.
+	 * Hooks to the legacy Tickets Module to send Tickets emails with the new system.
 	 *
 	 * @since TBD
 	 *

@@ -884,22 +884,4 @@ abstract class Email_Abstract {
 	public function get( $name, $default = null ) {
 		return Arr::get( $this->data, $name, $default );
 	}
-
-	/**
-	 * Get the `post_type` data for this email.
-	 *
-	 * @since 5.5.10
-	 *
-	 * @return array
-	 */
-	public function get_post_type_data(): array {
-		$data = [
-			'slug'     => $this->slug,
-			'title'    => $this->get_title(),
-			'template' => $this->template,
-			'to'       => $this->get_to(),
-		];
-
-		return $data;
-	}
 }
