@@ -1,4 +1,7 @@
 <?php
+
+use TEC\Tickets\Admin\Panel_Data;
+use TEC\Tickets\Admin\Panels_Data\Ticket_Panel_Data;
 use TEC\Tickets\Event;
 
 /**
@@ -179,9 +182,15 @@ class Tribe__Tickets__Metabox {
 		$admin_views = tribe( 'tickets.admin.views' );
 
 		$panels = [
-			'list'     => $admin_views->template( 'editor/panel/list', [ 'post_id' => $post->ID, 'tickets' => $tickets ], false ),
+			'list'     => $admin_views->template( 'editor/panel/list', [
+				'post_id' => $post->ID,
+				'tickets' => $tickets
+			], false ),
 			'settings' => $admin_views->template( 'editor/panel/settings', [ 'post_id' => $post->ID ], false ),
-			'ticket'   => $admin_views->template( 'editor/panel/ticket', [ 'post_id' => $post->ID, 'ticket_id' => $ticket_id ], false ),
+			'ticket' => $admin_views->template(
+				'editor/panel/ticket',
+				( new Ticket_Panel_Data( $post->ID, $ticket_id ) )->to_array(),
+				false )
 		];
 
 		return $panels;
@@ -919,6 +928,5 @@ class Tribe__Tickets__Metabox {
 	public static function add_admin_scripts( $unused_hook ) {
 		_deprecated_function( __METHOD__, '4.6', 'Tribe__Tickets__Assets::admin_enqueue_scripts' );
 	}
-
 	// @codingStandardsIgnoreEnd
 }

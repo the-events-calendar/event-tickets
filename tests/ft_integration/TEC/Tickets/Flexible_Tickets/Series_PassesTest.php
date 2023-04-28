@@ -1405,4 +1405,17 @@ class Series_PassesTest extends Controller_Test_Case {
 		$this->assertSame( 'test content', $controller->reorder_series_content( 'test content' ) );
 		$this->assertSame( false, has_filter( 'the_content', [ $controller, 'reorder_series_content' ] ) );
 	}
+
+	/**
+	 * It should filter ticket admin strings correctly
+	 *
+	 * @test
+	 */
+	public function should_filter_ticket_admin_strings_correctly(): void {
+		$controller = $this->make_controller();
+
+		$this->assertEquals( 'foo-bar', $controller->add_admin_strings( 'foo-bar' ) );
+
+		$this->assertMatchesJsonSnapshot( json_encode( $controller->add_admin_strings( [] ), JSON_PRETTY_PRINT ) );
+	}
 }

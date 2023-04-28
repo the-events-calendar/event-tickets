@@ -1,5 +1,5 @@
 /* global tribe_event_tickets_plus, tribe, jQuery, _, tribe_l10n_datatables,
- tribe_ticket_datepicker_format, TribeTickets, tribe_timepickers, tecTicketsAdminStrings */
+ tribe_ticket_datepicker_format, TribeTickets, tribe_timepickers */
 
 // For compatibility purposes we add this
 if ( 'undefined' === typeof tribe.tickets ) {
@@ -13,8 +13,6 @@ if ( 'undefined' === typeof ajaxurl ) {
 tribe.tickets.editor = {};
 
 var ticketHeaderImage = window.ticketHeaderImage || {};
-
-var tecTicketsAdminStrings = window.tecTicketsAdminStrings || {};
 
 (function( window, $, _, obj ) {
 	'use strict';
@@ -213,26 +211,6 @@ var tecTicketsAdminStrings = window.tecTicketsAdminStrings || {};
 		settings: '#tribe_panel_settings',
 	};
 
-	obj.setupSwapPanelData = function (ticketType) {
-		// Show the ticket type selector if the ticket is not default; might end up always showing.
-		if (ticketType === 'default') {
-			$('#ticket_type_options').addClass('hidden');
-		} else {
-			$('#ticket_type_options').removeClass('hidden');
-		}
-
-		// Set the end date help text, if possible.
-		const endDateHelpText = document.getElementById('ticket_end_date_help_text');
-		if (endDateHelpText) {
-			const currentEndDateHelpText = endDateHelpText.getAttribute('title');
-			if(!defaultStrings['defaultEndDateHelpText']){
-				defaultStrings['defaultEndDateHelpText'] = currentEndDateHelpText;
-			}
-			const endDateHelpTextForTicketType = tecTicketsAdminStrings['end_date_help_text_' + ticketType] || defaultEndDateHelpText;
-			endDateHelpText.setAttribute('title', endDateHelpTextForTicketType);
-		}
-	};
-
 	/**
 	 * Switch from one panel to another
 	 * @param  event  e      triggering event
@@ -250,8 +228,6 @@ var tecTicketsAdminStrings = window.tecTicketsAdminStrings || {};
 		} else {
 			$panel = $base_panel;
 		}
-
-		obj.setupSwapPanelData( ticketType );
 
 		var $eventTickets = $( '#event_tickets' );
 

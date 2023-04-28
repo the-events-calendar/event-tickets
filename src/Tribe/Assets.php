@@ -295,17 +295,6 @@ class Tribe__Tickets__Assets {
 							];
 						},
 					],
-					[
-						'name' => 'tecTicketsAdminStrings',
-						/**
-						 * Filter the strings used in the tickets admin.
-						 *
-						 * @since 4.6.1
-						 *
-						 * @param array<string> $strings The strings used in the tickets admin.
-						 */
-						'data' => apply_filters( 'tec_tickets_admin_strings', [] ),
-					]
 				],
 			]
 		);

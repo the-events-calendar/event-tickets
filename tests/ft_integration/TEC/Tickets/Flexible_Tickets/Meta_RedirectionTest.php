@@ -9,36 +9,41 @@ class Meta_RedirectionTest extends Controller_Test_Case {
 
 	public function bad_redirect_metadata_input(): array {
 		return [
-			'empty'                                   => [
+			'empty'                                      => [
 				'object_id' => '',
 				'meta_key'  => '',
 				'single'    => '',
 			],
-			'null'                                    => [
+			'null'                                       => [
 				'object_id' => null,
 				'meta_key'  => null,
 				'single'    => null,
 			],
-			'zero'                                    => [
+			'zero'                                       => [
 				'object_id' => 0,
 				'meta_key'  => 0,
 				'single'    => 0,
 			],
-			'zero object_id, meta_key is string'      => [
+			'zero object_id, meta_key is string'         => [
 				'object_id' => 0,
 				'meta_key'  => 'foo',
 				'single'    => true,
 			],
-			'zero object_id, single is string'        => [
+			'zero object_id, single is string'           => [
 				'object_id' => 0,
 				'meta_key'  => 'foo',
 				'single'    => 'bar',
 			],
-			'object_id int, meta_key is not a string' => [
+			'object_id int, meta_key is not a string'    => [
 				'object_id' => 1,
 				'meta_key'  => 1,
 				'single'    => true,
 			],
+			'object_id int, meta_key string, not single' => [
+				'object_id' => 1,
+				'meta_key'  => 'foo',
+				'single'    => false,
+			]
 		];
 	}
 
@@ -53,5 +58,18 @@ class Meta_RedirectionTest extends Controller_Test_Case {
 		$redirected = $controller->redirect_metadata( null, $object_id, $meta_key, $single );
 
 		$this->assertSame( null, $redirected );
+	}
+
+	/**
+	 * It should not filter meta for non ticket posts
+	 *
+	 * @test
+	 */
+	public function should_not_filter_meta_for_non_ticket_posts(): void {
+		$controller = $this->make_controller();
+		$object_id  = static::factory()->post->create();
+		$redirected = $controller->redirect_metadata( '__input', $object_id, 'foo', true );
+
+		$this->assertSame( '__input', $redirected );
 	}
 }

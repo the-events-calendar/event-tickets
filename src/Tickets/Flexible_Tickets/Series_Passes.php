@@ -44,7 +44,7 @@ class Series_Passes extends Controller {
 	public const HANDLED_TICKET_TYPE = 'series_pass';
 
 	/**
-	 * A reference to the templates handler.
+	 * A reference to the templates' handler.
 	 *
 	 * @since TBD
 	 *
@@ -81,6 +81,7 @@ class Series_Passes extends Controller {
 		add_action( 'event_tickets_attendee_ticket_deleted', [ $this, 'delete_pass_custom_tables_data' ], 5, 2 );
 		add_action( 'tec_tickets_ticket_update', [ $this, 'update_pass_custom_tables_data' ], 10, 3 );
 		add_filter( 'the_content', [ $this, 'reorder_series_content' ], 0 );
+		add_filter( 'tec_tickets_ticket_panel_data', [ $this, 'update_panel_data' ], 10, 3 );
 
 		$this->container->singleton( Series_Passes\Capacity_Updater::class, Series_Passes\Capacity_Updater::class );
 	}
@@ -98,6 +99,8 @@ class Series_Passes extends Controller {
 		remove_action( 'event_tickets_attendee_ticket_deleted', [ $this, 'delete_pass_custom_tables_data' ], 5 );
 		remove_action( 'tec_tickets_ticket_update', [ $this, 'update_pass_custom_tables_data' ] );
 		remove_filter( 'the_content', [ $this, 'reorder_series_content' ], 0 );
+		remove_filter( 'tec_tickets_ticket_panel_data', [ $this, 'update_panel_data' ] );
+
 	}
 
 	/**
@@ -368,5 +371,83 @@ class Series_Passes extends Controller {
 		remove_filter( 'the_content', [ $this, 'reorder_series_content' ], 0 );
 
 		return $content;
+	}
+
+	/**
+	 * Adds Series Passes' admin strings to the list of admin strings.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string> $data      The panel data to filter.
+	 * @param int           $post_id   The post ID the panel is being displayed for.
+	 * @param int|null      $ticket_id The ticket ID the panel is being displayed for, if any.
+	 *
+	 * @return array<string> The list of admin strings.
+	 */
+	public function update_panel_data( array $data, int $post_id, ?int $ticket_id ): array {
+		$this->container->get( Meta_Redirection::class )->stop();
+
+		if ( get_post_meta( $ticket_id, '_type', true ) !== self::HANDLED_TICKET_TYPE ) {
+			$this->container->get( Meta_Redirection::class )->resume();
+
+			return $data;
+		}
+
+		$data['ticket_end_date_help_text'] = esc_attr_x(
+			'If you do not set an end sale date, passes will be available until the last event in the Series.',
+			'Help text for the end date field in the Series Passes meta box.',
+			'event-tickets'
+		);
+
+		$set_end_date = get_post_meta( $ticket_id, '_ticket_end_date', true );
+		$set_end_time = get_post_meta( $ticket_id, '_ticket_end_time', true );
+		$this->container->get( Meta_Redirection::class )->resume();
+
+		if ( $set_end_date || $set_end_time ) {
+			return $data;
+		}
+
+		$data['ticket_end_date'] = '';
+		$data['ticket_end_time'] = '';
+
+		return $data;
+	}
+
+	/**
+	 * Get the ticket metadata.
+	 *
+	 * This method will run while the Meta Redirection controller is not filtering calls.
+	 *
+	 * @param mixed  $value     The original value to be filtered.
+	 * @param int    $ticket_id The ticket post ID.
+	 * @param string $meta_key  The meta key.
+	 *
+	 * @return mixed Either the original value or the filtered value.
+	 */
+	public function get_ticket_metadata( $value, int $ticket_id, string $meta_key ) {
+		switch ( $meta_key ) {
+			case '_ticket_end_date':
+				$meta_value = get_post_meta( $ticket_id, '_ticket_end_date', true );
+				if ( ! empty( $meta_value ) ) {
+					return $meta_value;
+				}
+
+				$last = $this->container->get( Repositories\Series_Passes::class )
+				                        ->get_last_occurrence_by_ticket( $ticket_id );
+
+				return $last ? $last->dates->start->format( 'Y-m-d' ) : $value;
+			case '_ticket_end_time':
+				$meta_value = get_post_meta( $ticket_id, '_ticket_end_time', true );
+				if ( ! empty( $meta_value ) ) {
+					return $meta_value;
+				}
+
+				$last = $this->container->get( Repositories\Series_Passes::class )
+				                        ->get_last_occurrence_by_ticket( $ticket_id );
+
+				return $last ? $last->dates->start->format( 'H:i:s' ) : $value;
+			default:
+				return $value;
+		}
 	}
 }
