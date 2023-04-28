@@ -406,7 +406,7 @@ $msg_rsvp_form_save = sprintf(
 							aria-label="<?php echo esc_attr( $msg_ticket_end_date_aria ); ?>"
 						/>
 						<span class="helper-text hide-if-js"><?php esc_html_e( 'HH:MM', 'event-tickets' ); ?></span>
-						<span class="dashicons dashicons-editor-help"
+						<span class="dashicons dashicons-editor-help" id="ticket_end_date_help_text"
 						<?php
 						if (
 							class_exists( 'Tribe__Events__Main' )
