@@ -869,7 +869,7 @@ abstract class Email_Abstract {
 	 * @param mixed        $value The value of the property.
 	 */
 	public function set( $name, $value ) {
-		Arr::set( $this->data, $name, $value );
+		$this->data = Arr::set( $this->data, $name, $value );
 	}
 
 	/**
@@ -879,7 +879,7 @@ abstract class Email_Abstract {
 	 *
 	 * @param string|array $name The name of the property.
 	 *
-	 * @return mixed|null The value of the passed property. Null if the value does not exist. 
+	 * @return mixed|null The value of the passed property. Null if the value does not exist.
 	 */
 	public function get( $name, $default = null ) {
 		return Arr::get( $this->data, $name, $default );
