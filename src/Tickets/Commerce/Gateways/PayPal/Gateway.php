@@ -232,7 +232,7 @@ class Gateway extends Abstract_Gateway {
 	 *
 	 * @since TBD
 	 */
-	public function get_order_details_link_by_order( \WP_Post $order ): string {
+	public function get_order_details_link_by_order( \WP_Post $order ) : string {
 		$status          = tribe( Status_Handler::class )->get_by_wp_slug( $order->post_status );
 		$payload         = $order->gateway_payload[ $status::SLUG ];
 		$capture_payload = end( $payload );
@@ -258,7 +258,7 @@ class Gateway extends Abstract_Gateway {
 	 *
 	 * @return string The dashboard url.
 	 */
-	public function get_dashboard_url_from_payload( $capture_payload ): string {
+	public function get_dashboard_url_from_payload( $capture_payload ) : string {
 		$link = 'https://www.paypal.com/';
 		$capture_link = Arr::get( $capture_payload, [ 'links', 0, 'href' ] );
 		// check if the link contains sandbox
