@@ -869,7 +869,7 @@ abstract class Email_Abstract {
 	 * @param mixed        $value The value of the property.
 	 */
 	public function set( $name, $value ) {
-		Arr::set( $this->data, $name, $value );
+		$this->data = Arr::set( $this->data, $name, $value );
 	}
 
 	/**
