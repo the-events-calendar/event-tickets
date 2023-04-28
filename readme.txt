@@ -3,7 +3,7 @@
 Contributors: theeventscalendar, brianjessee, camwynsp, aguseo, bordoni, borkweb, GeoffBel, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra, moraleida.me
 Tags: tickets, registration, event registration, RSVP, ticket sales, attendee management
 Requires at least: 5.8.5
-Tested up to: 6.1.1
+Tested up to: 6.2.0
 Stable tag: 5.6.0
 Requires PHP: 7.4
 License: GPLv2 or later
@@ -190,11 +190,17 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [TBD] TBD =
+= [5.6.0] TBD =
+
+
+
+= [5.5.11] 2023-05-03 =
+
 * Enhancement - Add Ticket data with attendee data as checkin response. [ET-1694]
 * Enhancement - Added the ability to disable the Attendees column on the Events admin dashboard using `tec_tickets_admin_post_type_table_column` or `tec_tickets_admin_post_type_table_column_{$column}`. [ET-1701]
 * Enhancement - Save number of attendees checked-in via Event Tickets Plus app. [ET-1695]
 * Fix - When using Tickets Commerce tickets under the price of $1 will no longer display improperly. Deprecated `maybe_reset_cost_format`. [ET-1697]
+* Language - 21 new strings added, 85 updated, 0 fuzzied, and 10 obsoleted
 
 = [5.5.10] 2023-04-03 =
 

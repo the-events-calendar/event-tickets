@@ -11,7 +11,7 @@
  *
  * @version 5.5.9
  *
- * @since TBD
+ * @since 5.5.11
  *
  * @var Tribe__Template                    $this               Current template object.
  * @var \TEC\Tickets\Emails\Email_Abstract $email              The email object.

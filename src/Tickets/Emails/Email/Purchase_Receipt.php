@@ -61,7 +61,7 @@ class Purchase_Receipt extends Email_Abstract {
 	/**
 	 * Get email to.
 	 *
-	 * @since TBD
+	 * @since 5.5.11
 	 *
 	 * @return string The email "to".
 	 */
@@ -161,7 +161,7 @@ class Purchase_Receipt extends Email_Abstract {
 	/**
 	 * Get default preview context for email.
 	 *
-	 * @since TBD
+	 * @since 5.5.11
 	 *
 	 * @param array $args The arguments.
 	 * @return array $args The modified arguments
@@ -182,7 +182,7 @@ class Purchase_Receipt extends Email_Abstract {
 	/**
 	 * Get default template context for email.
 	 *
-	 * @since TBD
+	 * @since 5.5.11
 	 *
 	 * @return array $args The default arguments
 	 */
@@ -221,7 +221,7 @@ class Purchase_Receipt extends Email_Abstract {
 	/**
 	 * Send the email.
 	 *
-	 * @since TBD
+	 * @since 5.5.11
 	 *
 	 * @return bool Whether the email was sent or not.
 	 */
