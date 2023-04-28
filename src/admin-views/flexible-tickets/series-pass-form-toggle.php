@@ -34,7 +34,7 @@
 							'Series Pass form toggle button text',
 							'event-tickets'
 					),
-					tec_tickets_get_series_pass_singular_lowercase( 'admin_ticket_new_button_text' )
+					tec_tickets_get_series_pass_singular_uppercase( 'admin_ticket_new_button_text' )
 			)
 	); ?>
 </button>
