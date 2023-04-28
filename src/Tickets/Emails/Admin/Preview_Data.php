@@ -220,7 +220,7 @@ class Preview_Data {
 	 */
 	public static function get_tickets( $args = [] ): array {
 		$default = [
-			new WP_Post( (object) [
+			[
 				'ID' => -98,
 				'post_author'     => 1,
 				'post_date'       => current_time( 'mysql' ),
@@ -240,11 +240,15 @@ class Preview_Data {
 				'ticket_id'       => -98,
 				'qr_ticket_id'    => -98,
 				'security_code'   => 'abcdefg12345',
+				'security'        => 'abcdefg12345',
 				'is_subscribed'   => false,
 				'is_purchaser'    => true,
 				'iac'             => 'none',
 				'attendee_meta'   => '',
 				'ticket_exists'   => true,
+				'event_id'        => 999,
+				'product_id'      => 998,
+				'attendee_id'     => 997,
 				'ticket_data'     => [
 					'ticket_id' => -98,
 					'quantity'  => 2,
@@ -256,7 +260,7 @@ class Preview_Data {
 					'sub_total' => 50.0,
 					'event_id'  => -96,
 				],
-			] ),
+			],
 		];
 		return wp_parse_args( $args, $default );
 	}
