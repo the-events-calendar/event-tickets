@@ -494,7 +494,7 @@ abstract class Email_Abstract {
 			'post_status' => 'publish',
 			'post_type'   => Post_Type::SLUG,
 			'meta_input'  => [
-				'email_to'       => $this->to,
+				'email_to'       => $this->recipient,
 				'email_template' => $this->template,
 				'email_version'  => \Tribe__Tickets__Main::VERSION,
 			],
