@@ -9,6 +9,7 @@ namespace TEC\Tickets\Emails\Email;
 
 use \TEC\Tickets\Emails\Email_Template;
 use TEC\Tickets\Emails\Admin\Preview_Data;
+use \TEC\Tickets\Emails\Email_Abstract;
 
 /**
  * Class Completed_Order
@@ -17,7 +18,7 @@ use TEC\Tickets\Emails\Admin\Preview_Data;
  *
  * @package TEC\Tickets\Emails
  */
-class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
+class Completed_Order extends Email_Abstract {
 
 	/**
 	 * Email ID.
@@ -279,6 +280,6 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 		$headers     = $this->get_headers();
 		$attachments = $this->get_attachments();
 
-		return tribe( \TEC\Tickets\Emails\Email_Sender::class )->send( $recipient, $subject, $content, $headers, $attachments );
+		return $this->get_dispatcher()->send( $recipient, $subject, $content, $headers, $attachments );
 	}
 }

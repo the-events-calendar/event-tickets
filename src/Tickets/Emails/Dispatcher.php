@@ -1,8 +1,8 @@
 <?php
 /**
- * Email Sender class.
+ * Email Dispatcher class.
  *
- * @since 5.5.9
+ * @since TBD
  *
  * @package TEC\Tickets\Emails
  */
@@ -10,18 +10,18 @@
 namespace TEC\Tickets\Emails;
 
 /**
- * Class Email_Sender.
+ * Class Dispatcher.
  *
- * @since 5.5.9
+ * @since TBD
  *
  * @package TEC\Tickets\Emails
  */
-class Email_Sender {
+class Dispatcher {
 
 	/**
 	 * Send an email.
 	 *
-	 * @since 5.5.9
+	 * @since TBD
 	 *
 	 * @param string $to          Email to.
 	 * @param string $subject     Email subject.

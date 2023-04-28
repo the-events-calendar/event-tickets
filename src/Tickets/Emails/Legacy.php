@@ -219,7 +219,7 @@ class Legacy {
 		$headers     = $email_class->get_headers();
 		$attachments = $email_class->get_attachments();
 
-		$sent = tribe( Email_Sender::class )->send( $to, $subject, $content, $headers, $attachments );
+		$sent = $email_class->get_dispatcher()->send( $to, $subject, $content, $headers, $attachments );
 
 		if ( $sent ) {
 			foreach ( $all_attendees as $attendee ) {

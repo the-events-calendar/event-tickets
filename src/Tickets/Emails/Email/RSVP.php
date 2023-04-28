@@ -9,6 +9,7 @@ namespace TEC\Tickets\Emails\Email;
 
 use TEC\Tickets\Commerce\Settings as Settings;
 use \TEC\Tickets\Emails\Email_Template;
+use \TEC\Tickets\Emails\Email_Abstract;
 
 /**
  * Class RSVP
@@ -17,7 +18,7 @@ use \TEC\Tickets\Emails\Email_Template;
  *
  * @package TEC\Tickets\Emails
  */
-class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
+class RSVP extends Email_Abstract {
 
 	/**
 	 * Email ID.
@@ -404,6 +405,6 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 		$headers     = $this->get_headers();
 		$attachments = $this->get_attachments();
 
-		return tribe( \TEC\Tickets\Emails\Email_Sender::class )->send( $recipient, $subject, $content, $headers, $attachments );
+		return $this->get_dispatcher()->send( $recipient, $subject, $content, $headers, $attachments );
 	}
 }

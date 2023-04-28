@@ -108,6 +108,15 @@ abstract class Email_Abstract {
 	protected $data = [];
 
 	/**
+	 * Instance of the Dispatcher class associated with this
+	 *
+	 * @since TBD
+	 *
+	 * @var ?Dispatcher Storage of the dispatcher instance associated with this Email Instance.
+	 */
+	protected ?Dispatcher $dispatcher;
+
+	/**
 	 * Handles the hooking of a given email to the correct actions in WP.
 	 *
 	 * @since 5.5.9
@@ -120,6 +129,33 @@ abstract class Email_Abstract {
 		];
 
 		$this->set_placeholders( $default_placeholders );
+	}
+
+	/**
+	 * Sets the Dispatcher instance used by this email.
+	 * If no dispatcher instance was passed it will the default one for Tickets Emails.
+	 *
+	 * @since TBD
+	 *
+	 * @param Dispatcher|null $dispatcher
+	 */
+	public function set_dispatcher( ?Dispatcher $dispatcher = null ): void {
+		if ( null === $dispatcher ) {
+			$dispatcher = new Dispatcher;
+		}
+
+		$this->dispatcher = $dispatcher;
+	}
+
+	/**
+	 * Gets the defined instance of the dispatcher for this email.
+	 *
+	 * @since TBD
+	 *
+	 * @return Dispatcher
+	 */
+	public function get_dispatcher(): Dispatcher {
+		return $this->dispatcher;
 	}
 
 	/**
