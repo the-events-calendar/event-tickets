@@ -131,7 +131,7 @@ abstract class Email_Abstract {
 	/**
 	 * Get email "to".
 	 *
-	 * @since TBD
+	 * @since 5.5.11
 	 *
 	 * @return string
 	 */
@@ -167,7 +167,7 @@ abstract class Email_Abstract {
 	/**
 	 * Get default preview context.
 	 *
-	 * @since TBD
+	 * @since 5.5.11
 	 *
 	 * @param array $args The arguments.
 	 *
@@ -178,7 +178,7 @@ abstract class Email_Abstract {
 	/**
 	 * Get the default template context.
 	 *
-	 * @since TBD
+	 * @since 5.5.11
 	 *
 	 * @return string The email template context.
 	 */
@@ -742,7 +742,7 @@ abstract class Email_Abstract {
 	/**
 	 * Get template context for email.
 	 *
-	 * @since TBD
+	 * @since 5.5.11
 	 *
 	 * @param array $args The arguments.
 	 * @return array $args The modified arguments
@@ -755,7 +755,7 @@ abstract class Email_Abstract {
 		/**
 		 * Allow filtering the template context globally.
 		 *
-		 * @since TBD
+		 * @since 5.5.11
 		 *
 		 * @param array          $args     The email arguments.
 		 * @param string         $id       The email id.
@@ -767,7 +767,7 @@ abstract class Email_Abstract {
 		/**
 		 * Allow filtering the template context.
 		 *
-		* @since TBD
+		* @since 5.5.11
 		 *
 		 * @param array          $args     The email arguments.
 		 * @param string         $id       The email id.
@@ -782,7 +782,7 @@ abstract class Email_Abstract {
 	/**
 	 * Get template preview context for email.
 	 *
-	 * @since TBD
+	 * @since 5.5.11
 	 *
 	 * @param array $args The arguments.
 	 * @return array $args The modified arguments
@@ -795,7 +795,7 @@ abstract class Email_Abstract {
 		/**
 		 * Allow filtering the template preview context globally.
 		 *
-		 * @since TBD
+		 * @since 5.5.11
 		 *
 		 * @param array          $args     The email preview arguments.
 		 * @param string         $id       The email id.
@@ -807,7 +807,7 @@ abstract class Email_Abstract {
 		/**
 		 * Allow filtering the template context.
 		 *
-		* @since TBD
+		* @since 5.5.11
 		 *
 		 * @param array          $args     The email arguments.
 		 * @param string         $id       The email id.
