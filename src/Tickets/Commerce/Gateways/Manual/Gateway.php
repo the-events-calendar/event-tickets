@@ -68,7 +68,7 @@ class Gateway extends Abstract_Gateway {
 	 *
 	 * @since TBD
 	 */
-	public function get_order_details_link_by_order( $order ): string {
-		return $order->gateway_order_id;
+	public function get_order_details_link_by_order( $order ) : string {
+		return (string) $order->gateway_order_id;
 	}
 }
