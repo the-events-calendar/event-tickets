@@ -55,7 +55,7 @@ class Dispatcher {
 	 *
 	 * @since TBD
 	 *
-	 * @return bool success True if the email was sent.
+	 * @return bool Whether the email was sent successfully.
 	 */
 	public function send(): bool {
 		$email = $this->get_email();

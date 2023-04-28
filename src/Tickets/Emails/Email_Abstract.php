@@ -108,7 +108,7 @@ abstract class Email_Abstract {
 	protected $data = [];
 
 	/**
-	 * Instance of the Dispatcher class associated with this
+	 * Instance of the Dispatcher class associated with this Email Instance.
 	 *
 	 * @since TBD
 	 *
