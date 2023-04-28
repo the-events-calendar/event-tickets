@@ -25,12 +25,6 @@ class Provider extends tad_DI52_ServiceProvider {
 	 */
 	public function register() {
 
-		// If not enabled, do not load Tickets Emails system.
-		// @todo @codingmusician @rafsuntaskin @juanfra: Remove this for 5.7.0 (When we release Tickets Emails)
-		if ( ! tec_tickets_emails_is_enabled() ) {
-			return;
-		}
-
 		$this->register_assets();
 		$this->register_hooks();
 
