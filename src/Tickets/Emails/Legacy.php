@@ -34,12 +34,16 @@ class Legacy {
 	 * @type int             $post_id     The post/event ID to send the emails for.
 	 * @type string|int      $order_id    The order ID to send the emails for.
 	 *                                    }
-	 *
 	 * @param Tickets_Module $module      Commerce module we are using for these emails.
 	 *
-	 * @return bool Whether email was sent to attendees.
+	 * @return null|boolean  When we return boolean we disable the legacy emails regardless of status of this email, null lets the old emails trigger.
 	 */
 	public function send_tickets_email_for_attendee( $pre, $to, $tickets, $args = [], $module = null ) {
+		// Only send back to the old email in case people opted-out of the Tickets Emails feature.
+		if ( ! tec_tickets_emails_is_enabled() ) {
+			return null;
+		}
+
 		if ( ! $module instanceof Tickets_Module ) {
 			return false;
 		}
@@ -137,8 +141,15 @@ class Legacy {
 	 * @param int            $order_id The order ID.
 	 * @param int            $event_id The event ID.
 	 * @param Tickets_Module $module   Commerce module we are using for these emails.
+	 *
+	 * @return null|boolean  When we return boolean we disable the legacy emails regardless of status of this email, null lets the old emails trigger.
 	 */
 	public function send_rsvp_email( $pre, $order_id, $event_id = null, $module = null ) {
+		// Only send back to the old email in case people opted-out of the Tickets Emails feature.
+		if ( ! tec_tickets_emails_is_enabled() ) {
+			return null;
+		}
+
 		if ( ! $module instanceof Tickets_Module ) {
 			return false;
 		}
