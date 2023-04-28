@@ -142,6 +142,7 @@ abstract class Email_Abstract {
 	public function set_dispatcher( ?Dispatcher $dispatcher = null ): void {
 		if ( null === $dispatcher ) {
 			$dispatcher = new Dispatcher;
+			$dispatcher->set_email( $this );
 		}
 
 		$this->dispatcher = $dispatcher;

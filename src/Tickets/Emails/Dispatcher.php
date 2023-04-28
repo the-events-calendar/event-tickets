@@ -19,6 +19,38 @@ namespace TEC\Tickets\Emails;
 class Dispatcher {
 
 	/**
+	 * Stores the Email used in this Dispatcher.
+	 *
+	 * @since TBD
+	 *
+	 * @var Email_Abstract|null
+	 */
+	protected ?Email_Abstract $email;
+
+	/**
+	 * Sets the Email instance that will be used for this Dispatcher.
+	 *
+	 * @since TBD
+	 *
+	 * @param Email_Abstract $email
+	 *
+	 */
+	public function set_email( Email_Abstract $email ): void {
+		$this->email = $email;
+	}
+
+	/**
+	 * Gets the email instance for this Dispatcher.
+	 *
+	 * @since TBD
+	 *
+	 * @return Email_Abstract|null
+	 */
+	public function get_email(): ?Email_Abstract {
+		return $this->email;
+	}
+
+	/**
 	 * Send an email.
 	 *
 	 * @since TBD
