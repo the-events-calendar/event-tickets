@@ -55,16 +55,22 @@ class Dispatcher {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $to          Email to.
-	 * @param string $subject     Email subject.
-	 * @param string $message     Email message.
-	 * @param string $headers     Email headers.
-	 * @param array  $attachments Email attachments.
-	 *
 	 * @return bool success True if the email was sent.
 	 */
-	public function send( $to, $subject, $message, $headers, $attachments ): bool {
-		// @todo @bordoni @moraleida: Update this to Pigeon when it's ready.
+	public function send(): bool {
+		$email = $this->get_email();
+
+		// We cannot send if there is no email instance attached to this dispatcher.
+		if ( ! $email ) {
+			return false;
+		}
+
+		$to          = $email->get_recipient();
+		$subject     = $email->get_subject();
+		$message     = $email->get_content();
+		$headers     = $email->get_headers();
+		$attachments = $email->get_attachments();
+
 		return wp_mail( $to, wp_specialchars_decode( $subject ), $message, $headers, $attachments );
 	}
 }

@@ -214,12 +214,9 @@ class Legacy {
 		$email_class->set( 'tickets', $all_attendees );
 
 		// @todo We need to refactor this piece to use the correct sender functionality.
-		$subject     = $email_class->get_subject();
 		$content     = $email_class->get_content( [ 'tickets' => $all_attendees ] );
-		$headers     = $email_class->get_headers();
-		$attachments = $email_class->get_attachments();
 
-		$sent = $email_class->get_dispatcher()->send( $to, $subject, $content, $headers, $attachments );
+		$sent = $email_class->get_dispatcher()->send();
 
 		if ( $sent ) {
 			foreach ( $all_attendees as $attendee ) {

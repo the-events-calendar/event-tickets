@@ -400,11 +400,6 @@ class RSVP extends Email_Abstract {
 
 		$this->set_placeholders( $placeholders );
 
-		$subject     = $this->get_subject();
-		$content     = $this->get_content();
-		$headers     = $this->get_headers();
-		$attachments = $this->get_attachments();
-
-		return $this->get_dispatcher()->send( $recipient, $subject, $content, $headers, $attachments );
+		return $this->get_dispatcher()->send();
 	}
 }
