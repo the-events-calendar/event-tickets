@@ -2,7 +2,7 @@
 /**
  * Tickets Emails Preview Data class.
  *
- * @since TBD
+ * @since 5.5.11
  *
  * @package TEC\Tickets\Emails\Admin
  */
@@ -17,7 +17,7 @@ use WP_Post;
 /**
  * Class Preview_Data.
  *
- * @since TBD
+ * @since 5.5.11
  *
  * @package TEC\Tickets\Emails\Admin
  */
@@ -25,7 +25,7 @@ class Preview_Data {
 	/**
 	 * Get default preview data.
 	 *
-	 * @since TBD
+	 * @since 5.5.11
 	 *
 	 * @return array The default preview data.
 	 */
@@ -47,7 +47,7 @@ class Preview_Data {
 	/**
 	 * Get Order preview data.
 	 *
-	 * @since TBD
+	 * @since 5.5.11
 	 *
 	 * @param string $args Array of preview data.
 	 *
@@ -87,7 +87,7 @@ class Preview_Data {
 	/**
 	 * Get Attendees preview data.
 	 *
-	 * @since TBD
+	 * @since 5.5.11
 	 *
 	 * @param string $args Array of preview data.
 	 *
@@ -212,7 +212,7 @@ class Preview_Data {
 	/**
 	 * Get Tickets preview data.
 	 *
-	 * @since TBD
+	 * @since 5.5.11
 	 *
 	 * @param string $args Array of preview data.
 	 *
