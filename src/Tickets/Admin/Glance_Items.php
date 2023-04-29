@@ -29,19 +29,24 @@ class Glance_Items {
 	 */
 	public function hooks() {
 		add_filter( 'dashboard_glance_items', [ $this, 'custom_glance_items_attendees' ], 10, 1 );
+		add_action( 'tec_tickets_update_glance_item_attendee_counts', [ $this, 'update_attendee_count' ] );
 	}
 
 	/**
 	 * Custom glance item for Attendees count.
 	 *
+	 * @since TBD Make use of transients and cron jobs to avoid performance issues.
+	 *
 	 * @param array $items The array of items to be displayed.
 	 * @return array $items The maybe modified array of items to be displayed.
 	 */
 	public function custom_glance_items_attendees( $items = [] ): array {
-		$results = Tribe__Tickets__Tickets::get_attendees_by_args( [] );
-		$total   = count( $results['attendees'] );
+		$total = get_transient( $this->attendee_count_key );
 
-		if ( empty( $total ) ) {
+		if ( false === $total ) {
+			if ( ! wp_next_scheduled( 'tec_tickets_update_glance_item_attendee_counts' ) ) {
+				wp_schedule_single_event( time() + 60, 'tec_tickets_update_glance_item_attendee_counts' );
+			}
 			return $items;
 		}
 
