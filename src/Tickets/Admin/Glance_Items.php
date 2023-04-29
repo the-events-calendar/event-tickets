@@ -14,6 +14,15 @@ use Tribe__Tickets__Tickets;
 class Glance_Items {
 
 	/**
+	 * The key for the transient that stores the attendee count.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private string $attendee_count_key = 'tec_tickets_glance_item_attendees_count';
+
+	/**
 	 * Method to register glance items related hooks.
 	 *
 	 * @since 5.5.10
