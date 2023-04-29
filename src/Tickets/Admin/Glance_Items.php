@@ -53,4 +53,20 @@ class Glance_Items {
 
 		return $items;
 	}
+
+	/**
+	 * Update the attendee count.
+	 *
+	 * @since TBD
+	 */
+	public function update_attendee_count() {
+		$results = Tribe__Tickets__Tickets::get_attendees_by_args( [] );
+		$total   = count( $results['attendees'] );
+
+		if ( empty( $total ) ) {
+			return;
+		}
+
+		set_transient( $this->attendee_count_key, $total, DAY_IN_SECONDS );
+	}
 }
