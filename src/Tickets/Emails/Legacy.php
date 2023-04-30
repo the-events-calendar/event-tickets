@@ -216,7 +216,10 @@ class Legacy {
 		// @todo We need to refactor this piece to use the correct sender functionality.
 		$content     = $email_class->get_content( [ 'tickets' => $all_attendees ] );
 
-		$sent = $email_class->get_dispatcher()->send();
+		// @todo we need to avoid setting the recipient like this.
+		$email_class->recipient = $to;
+
+		$sent = $email_class->send();
 
 		if ( $sent ) {
 			foreach ( $all_attendees as $attendee ) {
