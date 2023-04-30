@@ -31,6 +31,9 @@ class Provider extends tad_DI52_ServiceProvider {
 		// Register singletons.
 		$this->container->singleton( static::class, $this );
 
+		// Dispatcher is not a singleton!
+		$this->container->bind( Dispatcher::class, Dispatcher::class );
+
 		$this->container->singleton( Post_Type::class );
 
 		$this->container->singleton( Admin\Emails_Tab::class );

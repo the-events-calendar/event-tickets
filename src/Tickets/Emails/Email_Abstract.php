@@ -130,7 +130,7 @@ abstract class Email_Abstract {
 	 * @return Dispatcher
 	 */
 	public function get_dispatcher(): Dispatcher {
-		$dispatcher = new Dispatcher;
+		$dispatcher = tribe( Dispatcher::class );
 		$dispatcher->set_email( $this );
 		$dispatcher = $this->prepare_dispatcher( $dispatcher );
 
