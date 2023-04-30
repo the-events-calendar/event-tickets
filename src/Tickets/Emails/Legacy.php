@@ -53,6 +53,7 @@ class Legacy {
 			return false;
 		}
 
+		$sent = false;
 		$defaults = [
 			'provider'     => 'ticket',
 			'post_id'      => 0,
