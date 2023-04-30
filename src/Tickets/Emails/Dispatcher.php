@@ -25,7 +25,7 @@ class Dispatcher {
 	 *
 	 * @var Email_Abstract|null
 	 */
-	protected ?Email_Abstract $email;
+	protected ?Email_Abstract $email = null;
 
 	/**
 	 * Stores the all the headers used on the email.
@@ -50,27 +50,27 @@ class Dispatcher {
 	 *
 	 * @since TBD
 	 *
-	 * @var string
+	 * @var ?string
 	 */
-	protected string $content;
+	protected ?string $content = null;
 
 	/**
 	 * Stores where we will dispatch to.
 	 *
 	 * @since TBD
 	 *
-	 * @var string
+	 * @var ?string
 	 */
-	protected string $to;
+	protected ?string $to = null;
 
 	/**
 	 * Stores the subject to be dispatched.
 	 *
 	 * @since TBD
 	 *
-	 * @var string
+	 * @var ?string
 	 */
-	protected string $subject;
+	protected ?string $subject = null;
 
 	/**
 	 * Sets the Email instance that will be used for this Dispatcher.
@@ -209,9 +209,9 @@ class Dispatcher {
 	 *
 	 * @since TBD
 	 *
-	 * @return string The email recipient.
+	 * @return ?string The email recipient.
 	 */
-	public function get_to(): string {
+	public function get_to(): ?string {
 		/**
 		 * Allow filtering the email recipient globally.
 		 *
@@ -253,9 +253,9 @@ class Dispatcher {
 	 *
 	 * @since TBD
 	 *
-	 * @return string
+	 * @return ?string
 	 */
-	public function get_subject(): string {
+	public function get_subject(): ?string {
 		/**
 		 * Allow filtering the email subject globally.
 		 *
@@ -301,9 +301,9 @@ class Dispatcher {
 	 *
 	 * @since TBD
 	 *
-	 * @return string
+	 * @return ?string
 	 */
-	public function get_content(): string {
+	public function get_content(): ?string {
 		/**
 		 * Allow filtering the email content globally.
 		 *
@@ -341,13 +341,13 @@ class Dispatcher {
 	}
 
 	/**
-	 * Send an email.
+	 * Determines if at the current state the dispatcher can send an email.
 	 *
 	 * @since TBD
 	 *
-	 * @return bool Whether the email was sent successfully.
+	 * @return bool
 	 */
-	public function send(): bool {
+	public function can_send(): bool {
 		$email = $this->get_email();
 
 		// We cannot send if there is no email instance attached to this dispatcher.
@@ -355,7 +355,37 @@ class Dispatcher {
 			return false;
 		}
 
-		return wp_mail(
+		$subject = $this->get_subject();
+		if ( null === $subject ) {
+			return false;
+		}
+
+		$to = $this->get_to();
+		if ( null === $to ) {
+			return false;
+		}
+
+		$content = $this->get_content();
+		if ( null === $content ) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Send an email.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether the email was sent successfully.
+	 */
+	public function send(): bool {
+		if ( ! $this->can_send() ) {
+			return false;
+		}
+
+		return (bool) wp_mail(
 			$this->get_to(),
 			$this->get_subject(),
 			$this->get_content(),
