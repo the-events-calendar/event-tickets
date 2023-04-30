@@ -19,6 +19,15 @@ namespace TEC\Tickets\Emails;
 class Dispatcher {
 
 	/**
+	 * Determined if this dispatcher was used.
+	 *
+	 * @since TBD
+	 *
+	 * @var bool
+	 */
+	protected bool $used = false;
+
+	/**
 	 * Stores the Email used in this Dispatcher.
 	 *
 	 * @since TBD
@@ -348,6 +357,10 @@ class Dispatcher {
 	 * @return bool
 	 */
 	public function can_send(): bool {
+		if ( $this->was_used() ) {
+			return false;
+		}
+
 		$email = $this->get_email();
 
 		// We cannot send if there is no email instance attached to this dispatcher.
@@ -374,6 +387,33 @@ class Dispatcher {
 	}
 
 	/**
+	 * Determine if this dispatcher was used.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function was_used(): bool {
+		return $this->used;
+	}
+
+	/**
+	 * Please don't use this method unless you know why you are marking the dispatcher as not used.
+	 *
+	 * Once a dispatcher was used it should not be re-used, since there is no way to determine for certain that
+	 * the wp_mail was actually sent at this moment.
+	 *
+	 * If you need to make another email using a similar dispatcher please make use of the Email associated with
+	 * this dispatcher by `$dispatcher->get_email()->get_dispatcher()->send()` which will generate a new dispatcher
+	 * and attempt to send the email.
+	 *
+	 * @since TBD
+	 */
+	public function dangerously_mark_as_not_used(): void {
+		$this->used = false;
+	}
+
+	/**
 	 * Send an email.
 	 *
 	 * @since TBD
@@ -385,12 +425,16 @@ class Dispatcher {
 			return false;
 		}
 
-		return (bool) wp_mail(
+		$sent = (bool) wp_mail(
 			$this->get_to(),
 			$this->get_subject(),
 			$this->get_content(),
 			$this->get_headers_formatted(),
 			$this->get_attachments()
 		);
+
+		$this->used = true;
+
+		return $sent;
 	}
 }
