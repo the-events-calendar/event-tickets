@@ -19,7 +19,7 @@ namespace TEC\Tickets\Emails;
 class Dispatcher {
 
 	/**
-	 * Determined if this dispatcher was used.
+	 * Whether this dispatcher was used.
 	 *
 	 * @since TBD
 	 *
