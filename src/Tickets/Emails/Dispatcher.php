@@ -105,23 +105,16 @@ class Dispatcher {
 	}
 
 	/**
-	 * Prepares the dispatcher for this Email.
+	 * Prepares the current dispatcher for sending an email.
 	 *
 	 * @since TBD
 	 *
-	 * @param Dispatcher $dispatcher
-	 *
-	 * @return Dispatcher
+	 * @param Email_Abstract $email Email Instance used to prepare the dispatcher with.
 	 */
-	protected function prepare_dispatcher( Dispatcher $dispatcher ): Dispatcher {
+	protected function prepare_dispatcher( Email_Abstract $email ): void {
 		// Enforce text/html content type header.
-		$dispatcher->add_header( 'Content-Type', 'text/html; charset=utf-8' );
-
-		$email = $dispatcher->get_email();
-
-		if ( ! $email ) {
-			return $dispatcher;
-		}
+		$this->add_header( 'Content-Type', 'text/html; charset=utf-8' );
+		$this->set_email( $email );
 
 		$from_email = $email->get_from_email();
 		$from_name  = $email->get_from_name();
@@ -130,20 +123,18 @@ class Dispatcher {
 		if ( ! empty( $from_name ) && ! empty( $from_email ) && is_email( $from_email ) ) {
 			$from_email = sanitize_email( $from_email );
 
-			$dispatcher->add_header( 'From', sprintf(
+			$this->add_header( 'From', sprintf(
 				'%1$s <%2$s>',
 				stripcslashes( $from_name ),
 				$from_email
 			) );
 
-			$dispatcher->add_header( 'Reply-To', $from_email );
+			$this->add_header( 'Reply-To', $from_email );
 		}
 
-		$dispatcher->set_to( $email->get_recipient() );
-		$dispatcher->set_subject( $email->get_subject() );
-		$dispatcher->set_content( $email->get_content() );
-
-		return $dispatcher;
+		$this->set_to( $email->get_recipient() );
+		$this->set_subject( $email->get_subject() );
+		$this->set_content( $email->get_content() );
 	}
 
 	/**
@@ -159,11 +150,8 @@ class Dispatcher {
 		// Generate a new dispatcher every time.
 		$dispatcher = tribe( static::class );
 
-		// Associate this email to the dispatcher.
-		$dispatcher->set_email( $email );
-
 		// Prepare the dispatcher to send an email.
-		$dispatcher = $dispatcher->prepare_dispatcher( $dispatcher );
+		$dispatcher->prepare_dispatcher( $email );
 
 		/**
 		 * Allows modifications of the Email Dispatcher to all Email Types.
