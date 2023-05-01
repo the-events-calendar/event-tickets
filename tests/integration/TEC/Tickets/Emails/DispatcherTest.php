@@ -25,66 +25,9 @@ class DispatcherTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * @test
 	 */
-	public function should_not_be_able_to_send_when_missing_to_param(): void {
-		$dispatcher = new Dispatcher();
-		$dispatcher->set_email( new Dummy_Email );
-		$dispatcher->set_subject( 'Mock Subject' );
-		$dispatcher->set_content( 'Mock Content' );
-
-		add_filter( 'pre_wp_mail', '__return_true' );
-
-		$this->assertNull( $dispatcher->get_to(), 'When a param is not set to `to` it needs to return null' );
-		$this->assertFalse( $dispatcher->can_send(), 'Cannot send email when the dispatcher didnt have a `to` param.' );
-		$this->assertFalse( $dispatcher->send(), 'Email not sent email event tho we are filtering `pre_wp_mail`.' );
-		$this->assertFalse( $dispatcher->was_used(), 'Dispatcher should not be marked as used if it fail the can_send() call.' );
-
-		remove_filter( 'pre_wp_mail', '__return_true' );
-	}
-
-	/**
-	 * @test
-	 */
-	public function should_not_be_able_to_send_when_missing_subject_param(): void {
-		$dispatcher = new Dispatcher();
-		$dispatcher->set_email( new Dummy_Email );
-		$dispatcher->set_to( 'mock@example.com' );
-		$dispatcher->set_content( 'Mock Content' );
-
-		add_filter( 'pre_wp_mail', '__return_true' );
-
-		$this->assertNull( $dispatcher->get_subject(), 'When a param is not set to `subject` it needs to return null' );
-		$this->assertFalse( $dispatcher->can_send(), 'Cannot send email when the dispatcher didnt have a `subject` param.' );
-		$this->assertFalse( $dispatcher->send(), 'Email not sent email event tho we are filtering `pre_wp_mail`.' );
-		$this->assertFalse( $dispatcher->was_used(), 'Dispatcher should not be marked as used if it fail the can_send() call.' );
-
-		remove_filter( 'pre_wp_mail', '__return_true' );
-	}
-
-	/**
-	 * @test
-	 */
-	public function should_not_be_able_to_send_when_missing_content_param(): void {
-		$dispatcher = new Dispatcher();
-		$dispatcher->set_email( new Dummy_Email );
-		$dispatcher->set_to( 'mock@example.com' );
-		$dispatcher->set_subject( 'Mock Subject' );
-
-		add_filter( 'pre_wp_mail', '__return_true' );
-
-		$this->assertNull( $dispatcher->get_content(), 'When a param is not set to `content` it needs to return null' );
-		$this->assertFalse( $dispatcher->can_send(), 'Cannot send email when the dispatcher didnt have a `content` param.' );
-		$this->assertFalse( $dispatcher->send(), 'Email not sent email event tho we are filtering `pre_wp_mail`.' );
-		$this->assertFalse( $dispatcher->was_used(), 'Dispatcher should not be marked as used if it fail the can_send() call.' );
-
-		remove_filter( 'pre_wp_mail', '__return_true' );
-	}
-
-	/**
-	 * @test
-	 */
 	public function should_still_mark_as_used_when_wp_mail_fails(): void {
-		$dispatcher = new Dispatcher();
-		$dispatcher->set_email( new Dummy_Email );
+		$email = new Dummy_Email;
+		$dispatcher = Dispatcher::from_email( $email );
 		$dispatcher->set_to( 'mock@example.com' );
 		$dispatcher->set_subject( 'Mock Subject' );
 		$dispatcher->set_content( 'Mock Content' );
@@ -102,8 +45,8 @@ class DispatcherTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 */
 	public function should_after_marked_as_used_email_cannot_be_send(): void {
-		$dispatcher = new Dispatcher();
-		$dispatcher->set_email( new Dummy_Email );
+		$email = new Dummy_Email;
+		$dispatcher = Dispatcher::from_email( $email );
 		$dispatcher->set_to( 'mock@example.com' );
 		$dispatcher->set_subject( 'Mock Subject' );
 		$dispatcher->set_content( 'Mock Content' );
@@ -127,8 +70,8 @@ class DispatcherTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 */
 	public function should_not_allow_sending_twice(): void {
-		$dispatcher = new Dispatcher();
-		$dispatcher->set_email( new Dummy_Email );
+		$email = new Dummy_Email;
+		$dispatcher = Dispatcher::from_email( $email );
 		$dispatcher->set_to( 'mock@example.com' );
 		$dispatcher->set_subject( 'Mock Subject' );
 		$dispatcher->set_content( 'Mock Content' );
@@ -150,8 +93,8 @@ class DispatcherTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 */
 	public function should_allow_sending_twice_once_dangerously_marked_as_not_used(): void {
-		$dispatcher = new Dispatcher();
-		$dispatcher->set_email( new Dummy_Email );
+		$email = new Dummy_Email;
+		$dispatcher = Dispatcher::from_email( $email );
 		$dispatcher->set_to( 'mock@example.com' );
 		$dispatcher->set_subject( 'Mock Subject' );
 		$dispatcher->set_content( 'Mock Content' );

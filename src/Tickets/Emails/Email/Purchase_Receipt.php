@@ -7,6 +7,7 @@
 
 namespace TEC\Tickets\Emails\Email;
 
+use TEC\Tickets\Emails\Dispatcher;
 use \TEC\Tickets\Emails\Email_Template;
 use TEC\Tickets\Emails\Admin\Preview_Data;
 use TEC\Tickets\Emails\Email_Abstract;
@@ -251,6 +252,6 @@ class Purchase_Receipt extends Email_Abstract {
 
 		$this->set_placeholders( $placeholders );
 
-		return $this->get_dispatcher()->send();
+		return Dispatcher::from_email( $this )->send();
 	}
 }

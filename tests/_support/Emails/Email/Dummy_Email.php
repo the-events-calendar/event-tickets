@@ -2,6 +2,7 @@
 
 namespace TEC\Tickets\Tests\Emails\Email;
 
+use TEC\Tickets\Emails\Dispatcher;
 use TEC\Tickets\Emails\Email_Abstract;
 
 /**
@@ -20,19 +21,40 @@ class Dummy_Email extends Email_Abstract {
 
 	public $recipient = 'recipient_dummy@example.dev';
 
-	public bool $test_is_enabled = true;
+	public $test_is_enabled = true;
+
+	public $test_title = '%%TITLE%%';
+
+	public $test_to = '%%TO%%';
+
+	public $test_content = '%%CONTENT%%';
+
+	public $test_subject = '%%SUBJECT%%';
 
 	public function is_enabled(): bool {
 		return $this->test_is_enabled;
 	}
 
 	public function get_title(): string {
-		return '%%TITLE%%';
+		return $this->test_title;
 	}
 
 	public function get_to(): string {
-		return '%%TO%%';
+		return $this->test_to;
 	}
+
+	public function get_recipient(): string {
+		return $this->recipient;
+	}
+
+	public function get_subject(): string {
+		return $this->test_subject;
+	}
+
+	public function get_content( $args = [] ): string {
+		return $this->test_content;
+	}
+
 
 	public function get_default_recipient(): string {
 		return 'default_recipient_dummy@example.dev';
@@ -58,10 +80,6 @@ class Dummy_Email extends Email_Abstract {
 		return [];
 	}
 
-	public function get_content( $args = [] ): string {
-		return '%%CONTENT%%';
-	}
-
 	public function send() {
 		$recipient = $this->get_recipient();
 
@@ -74,6 +92,6 @@ class Dummy_Email extends Email_Abstract {
 			return false;
 		}
 
-		return $this->get_dispatcher()->send();
+		return Dispatcher::from_email( $this )->send();
 	}
 }

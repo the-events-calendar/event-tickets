@@ -122,81 +122,7 @@ abstract class Email_Abstract {
 		$this->set_placeholders( $default_placeholders );
 	}
 
-	/**
-	 * Gets a new instance of the dispatcher for this email.
-	 *
-	 * @since TBD
-	 *
-	 * @return Dispatcher
-	 */
-	public function get_dispatcher(): Dispatcher {
-		// Generate a new dispatcher every time.
-		$dispatcher = tribe( Dispatcher::class );
 
-		// Associate this email to the dispatcher.
-		$dispatcher->set_email( $this );
-
-		// Prepare the dispatcher to send an email.
-		$dispatcher = $this->prepare_dispatcher( $dispatcher );
-
-		/**
-		 * Allows modifications of the Email Dispatcher to all Email Types.
-		 *
-		 * @since TBD
-		 *
-		 * @param Dispatcher     $dispatcher Which dispatcher instance will be used for the email sent.
-		 * @param Email_Abstract $email      Which instance of the email that will be attached to this dispatcher.
-		 */
-		$dispatcher = apply_filters( 'tec_tickets_emails_get_dispatcher', $dispatcher, $this );
-
-		$email_slug = $this->slug;
-
-		/**
-		 * Allows modifications of the Email Dispatcher specific to this Email Type.
-		 *
-		 * @since TBD
-		 *
-		 * @param Dispatcher     $dispatcher Which dispatcher instance will be used for the email sent.
-		 * @param Email_Abstract $email      Which instance of the email that will be attached to this dispatcher.
-		 */
-		return apply_filters( "tec_tickets_emails_{$email_slug}_get_dispatcher", $dispatcher, $this );
-	}
-
-	/**
-	 * Prepares the dispatcher for this Email.
-	 *
-	 * @since TBD
-	 *
-	 * @param Dispatcher $dispatcher
-	 *
-	 * @return Dispatcher
-	 */
-	protected function prepare_dispatcher( Dispatcher $dispatcher ): Dispatcher {
-		// Enforce text/html content type header.
-		$dispatcher->add_header( 'Content-Type', 'text/html; charset=utf-8' );
-
-		$from_email = $this->get_from_email();
-		$from_name  = $this->get_from_name();
-
-		// Add From name/email to headers if no headers set yet, and we have a valid From email address.
-		if ( ! empty( $from_name ) && ! empty( $from_email ) && is_email( $from_email ) ) {
-			$from_email = sanitize_email( $from_email );
-
-			$dispatcher->add_header( 'From', sprintf(
-				'%1$s <%2$s>',
-				stripcslashes( $from_name ),
-				$from_email
-			) );
-
-			$dispatcher->add_header( 'Reply-To', $from_email );
-		}
-
-		$dispatcher->set_to( $this->get_recipient() );
-		$dispatcher->set_subject( $this->get_subject() );
-		$dispatcher->set_content( $this->get_content() );
-
-		return $dispatcher;
-	}
 
 	/**
 	 * Get default email subject.
@@ -270,9 +196,9 @@ abstract class Email_Abstract {
 	 *
 	 * @param array $args The arguments.
 	 *
-	 * @return string The email content.
+	 * @return ?string The email content.
 	 */
-	abstract public function get_content( $args ): string;
+	abstract public function get_content( $args ): ?string;
 
 	/**
 	 * Get the "From" email.
@@ -557,9 +483,9 @@ abstract class Email_Abstract {
 	 *
 	 * @since 5.5.10
 	 *
-	 * @return string The email recipient.
+	 * @return ?string The email recipient.
 	 */
-	public function get_recipient(): string {
+	public function get_recipient(): ?string {
 		$recipient = $this->recipient;
 
 		if ( empty( $recipient ) ) {
@@ -599,9 +525,9 @@ abstract class Email_Abstract {
 	 *
 	 * @since 5.5.10
 	 *
-	 * @return string
+	 * @return ?string
 	 */
-	public function get_subject(): string {
+	public function get_subject(): ?string {
 		$option_key = $this->get_option_key( 'subject' );
 		$subject    = tribe_get_option( $option_key, $this->get_default_subject() );
 

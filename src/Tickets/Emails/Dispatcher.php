@@ -82,13 +82,14 @@ class Dispatcher {
 	protected ?string $subject = null;
 
 	/**
-	 * Sets the Email instance that will be used for this Dispatcher.
+	 * Sets the Email instance that will be used for this Dispatcher, intentionally this is protected method.
+	 * You can only generate a new Dispatcher from the Factory Method.
 	 *
 	 * @since TBD
 	 *
 	 * @param Email_Abstract $email
 	 */
-	public function set_email( Email_Abstract $email ): void {
+	protected function set_email( Email_Abstract $email ): void {
 		$this->email = $email;
 	}
 
@@ -101,6 +102,90 @@ class Dispatcher {
 	 */
 	public function get_email(): ?Email_Abstract {
 		return $this->email;
+	}
+
+	/**
+	 * Prepares the dispatcher for this Email.
+	 *
+	 * @since TBD
+	 *
+	 * @param Dispatcher $dispatcher
+	 *
+	 * @return Dispatcher
+	 */
+	protected function prepare_dispatcher( Dispatcher $dispatcher ): Dispatcher {
+		// Enforce text/html content type header.
+		$dispatcher->add_header( 'Content-Type', 'text/html; charset=utf-8' );
+
+		$email = $dispatcher->get_email();
+
+		if ( ! $email ) {
+			return $dispatcher;
+		}
+
+		$from_email = $email->get_from_email();
+		$from_name  = $email->get_from_name();
+
+		// Add From name/email to headers if no headers set yet, and we have a valid From email address.
+		if ( ! empty( $from_name ) && ! empty( $from_email ) && is_email( $from_email ) ) {
+			$from_email = sanitize_email( $from_email );
+
+			$dispatcher->add_header( 'From', sprintf(
+				'%1$s <%2$s>',
+				stripcslashes( $from_name ),
+				$from_email
+			) );
+
+			$dispatcher->add_header( 'Reply-To', $from_email );
+		}
+
+		$dispatcher->set_to( $email->get_recipient() );
+		$dispatcher->set_subject( $email->get_subject() );
+		$dispatcher->set_content( $email->get_content() );
+
+		return $dispatcher;
+	}
+
+	/**
+	 * From a given email type instance generate a new Dispatcher and prepare it for usage.
+	 *
+	 * @since TBD
+	 *
+	 * @param Email_Abstract $email
+	 *
+	 * @return Dispatcher
+	 */
+	public static function from_email( Email_Abstract $email ): Dispatcher {
+		// Generate a new dispatcher every time.
+		$dispatcher = tribe( static::class );
+
+		// Associate this email to the dispatcher.
+		$dispatcher->set_email( $email );
+
+		// Prepare the dispatcher to send an email.
+		$dispatcher = $dispatcher->prepare_dispatcher( $dispatcher );
+
+		/**
+		 * Allows modifications of the Email Dispatcher to all Email Types.
+		 *
+		 * @since TBD
+		 *
+		 * @param Dispatcher     $dispatcher Which dispatcher instance will be used for the email sent.
+		 * @param Email_Abstract $email      Which instance of the email that will be attached to this dispatcher.
+		 */
+		$dispatcher = apply_filters( 'tec_tickets_emails_dispatcher', $dispatcher, $email );
+
+		$email_slug = $email->slug;
+
+		/**
+		 * Allows modifications of the Email Dispatcher specific to this Email Type.
+		 *
+		 * @since TBD
+		 *
+		 * @param Dispatcher     $dispatcher Which dispatcher instance will be used for the email sent.
+		 * @param Email_Abstract $email      Which instance of the email that will be attached to this dispatcher.
+		 */
+		return apply_filters( "tec_tickets_emails_{$email_slug}_dispatcher", $dispatcher, $email );
 	}
 
 	/**
@@ -318,8 +403,8 @@ class Dispatcher {
 		 *
 		 * @since TBD
 		 *
-		 * @param string         $content  The email subject.
-		 * @param Email_Abstract $this     The email object.
+		 * @param string         $content The email subject.
+		 * @param Email_Abstract $this    The email object.
 		 */
 		$content = apply_filters( 'tec_tickets_emails_dispatcher_content', $this->content, $this );
 
@@ -330,12 +415,12 @@ class Dispatcher {
 		 *
 		 * @since TBD
 		 *
-		 * @param string         $content  The email subject.
-		 * @param Email_Abstract $this     The email object.
+		 * @param string         $content The email subject.
+		 * @param Email_Abstract $this    The email object.
 		 */
 		$content = apply_filters( "tec_tickets_emails_dispatcher_{$email_slug}_content", $content, $this );
 
-		return null === $content ? $content :  (string) $content;
+		return null === $content ? $content : (string) $content;
 	}
 
 	/**
@@ -404,7 +489,7 @@ class Dispatcher {
 	 * the wp_mail was actually sent at this moment.
 	 *
 	 * If you need to make another email using a similar dispatcher please make use of the Email associated with
-	 * this dispatcher by `$dispatcher->get_email()->get_dispatcher()->send()` which will generate a new dispatcher
+	 * this dispatcher by `Dispatcher::from_email( $dispatcher->get_email() )->send()` which will generate a new dispatcher
 	 * and attempt to send the email.
 	 *
 	 * @since TBD
