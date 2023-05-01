@@ -9,7 +9,7 @@ namespace TEC\Tickets\Emails\Email;
 
 use \TEC\Tickets\Emails\Email_Template;
 use TEC\Tickets\Emails\Admin\Preview_Data;
-use \TEC\Tickets\Emails\Email_Abstract;
+use TEC\Tickets\Emails\Email_Abstract;
 
 /**
  * Class Completed_Order
