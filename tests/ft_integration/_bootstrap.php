@@ -3,6 +3,7 @@
 use Codeception\Events;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Events\Custom_Tables\V1\Activation;
+use TEC\Events_Pro\Custom_Tables\V1\Activation as Events_Pro_Activation;
 use \TEC\Events\Custom_Tables\V1\Tables\Events as Events_Table;
 use TEC\Events\Custom_Tables\V1\Tables\Occurrences as Occurrences_Table;
 use TEC\Events_Pro\Custom_Tables\V1\Tables\Series_Relationships as Series_Relationships_Table;
@@ -14,6 +15,7 @@ putenv( 'TEC_CUSTOM_TABLES_V1_DISABLED=1' );
 $_ENV['TEC_CUSTOM_TABLES_V1_DISABLED'] = 1;
 
 Activation::init();
+Events_Pro_Activation::init();
 
 $ct1_active = tribe()->getVar( 'ct1_fully_activated' );
 
