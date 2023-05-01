@@ -6,15 +6,16 @@ use Closure;
 use Codeception\TestCase\WPTestCase;
 use Generator;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use TEC\Tickets\Flexible_Tickets\Test\Traits\Series_Pass_Factory;
 use Tribe\Tests\Traits\With_Uopz;
-use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
-use Tribe__Tickets__Metabox as Metabox;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
+use Tribe__Tickets__Metabox as Metabox;
+use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 
 class MetaboxTest extends WPTestCase {
 	use SnapshotAssertions;
-	use Ticket_Maker;
 	use RSVP_Ticket_Maker;
+	use Series_Pass_Factory;
 	use With_Uopz;
 
 	public function get_panels_provider(): Generator {
@@ -92,6 +93,15 @@ class MetaboxTest extends WPTestCase {
 						'_ticket_end_date'   => '2021-01-31 12:00:00',
 					]
 				] );
+
+				return [ $post_id, $ticket_id ];
+			},
+		];
+
+		yield 'series with Series Pass' => [
+			function (): array {
+				$post_id   = static::factory()->post->create( [ 'post_type' => Series_Post_Type::POSTTYPE ] );
+				$ticket_id = $this->create_tc_series_pass( $post_id, 23 )->ID;
 
 				return [ $post_id, $ticket_id ];
 			},

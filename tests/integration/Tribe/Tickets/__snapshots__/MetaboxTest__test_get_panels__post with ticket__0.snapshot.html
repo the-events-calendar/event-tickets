@@ -1,4 +1,4 @@
-a:3:{s:4:"list";s:1240:"<div
+<div
 	id="tribe_panel_base"
 	class="ticket_panel panel_base"
 	aria-hidden="false"
@@ -8,7 +8,7 @@ a:3:{s:4:"list";s:1240:"<div
 					<div class="ticket_table_intro">
 								<a
 					class="button-secondary"
-					href="http://wordpress.test/wp-admin/edit.php?post_type=post&#038;page=tickets-attendees&#038;event_id=5097"
+					href="http://wordpress.test/wp-admin/edit.php?post_type=post&#038;page=tickets-attendees&#038;event_id={{ post_id }}"
 				>
 					View Attendees				</a>
 			</div>
@@ -42,7 +42,7 @@ a:3:{s:4:"list";s:1240:"<div
 		
 	</div>
 	
-</div>";s:8:"settings";s:1886:"
+</div>
 <div id="tribe_panel_settings" class="ticket_panel panel_settings" aria-hidden="true" >
 	<h4>Ticket Settings	</h4>
 
@@ -99,7 +99,7 @@ a:3:{s:4:"list";s:1240:"<div
 	<input type="button" id="tribe_settings_form_save" name="tribe_settings_form_save" value="Save settings" class="button-primary" />
 	<input type="button" id="tribe_settings_form_cancel" name="tribe_settings_form_cancel" value="Cancel" class="button-secondary" />
 </div>
-";s:6:"ticket";s:15596:"
+
 <div id="tribe_panel_edit" class="ticket_panel panel_edit tribe-validation" aria-hidden="true"
 	 data-default-provider="TEC\Tickets\Commerce\Module">
 	
@@ -580,7 +580,7 @@ a:3:{s:4:"list";s:1240:"<div
 						name="ticket_id"
 						id="ticket_id"
 						class="ticket_field"
-						value="5098"
+						value="{{ ticket_id }}"
 				/>
 				<input
 						type="button"
@@ -615,4 +615,3 @@ a:3:{s:4:"list";s:1240:"<div
 		</div>
 	</div>
 </div>
-";}
