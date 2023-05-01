@@ -47,7 +47,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 */
 	protected function add_actions() {
 		add_action( 'init', [ $this, 'action_register_post_type' ] );
-		add_action( 'init', [ $this, 'populate_email_template_posts' ], 25 );
+		add_action( 'wp_loaded', [ $this, 'populate_email_template_posts' ], 25 );
 		add_action( 'tribe_settings_do_tabs', [ $this, 'register_emails_tab' ], 17 );
 		add_action( 'tribe_settings_after_form_element_tab_emails', [ $this, 'action_add_preview_modal_button' ] );
 		add_action( 'admin_footer', [ $this, 'action_add_preview_modal' ] );
