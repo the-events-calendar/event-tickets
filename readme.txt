@@ -192,7 +192,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.6.0] TBD =
 
-
+* Enhancement - Display order details link for TicketsCommerce providers on Orders page Gateway ID column. [ET-1729]
 
 = [5.5.11] 2023-05-03 =
 
