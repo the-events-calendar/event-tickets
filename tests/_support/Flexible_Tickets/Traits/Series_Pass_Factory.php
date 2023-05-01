@@ -27,8 +27,8 @@ trait Series_Pass_Factory {
 	use Ticket_Maker;
 
 	protected function create_tc_series_pass( int $post_id, int $price, array $overrides = [] ): Ticket {
-		$ticket_id = $this->create_tc_ticket( $post_id, $price, $overrides );
-		update_post_meta( $ticket_id, '_type', Series_Passes::HANDLED_TICKET_TYPE );
+		$overrides['ticket_type'] = Series_Passes::HANDLED_TICKET_TYPE;
+		$ticket_id                = $this->create_tc_ticket( $post_id, $price, $overrides );
 
 		return Commerce\Module::get_instance()->get_ticket( $post_id, $ticket_id );
 	}
