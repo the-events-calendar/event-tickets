@@ -6,6 +6,7 @@
 Codeception\Util\Autoload::addNamespace( 'Tribe__Events__WP_UnitTestCase', __DIR__ . '/_support' );
 Codeception\Util\Autoload::addNamespace( 'Tribe\Events\Test', __DIR__ . '/_support' );
 Codeception\Util\Autoload::addNamespace( 'Tribe\Tickets\Test', __DIR__ . '/_support' );
+Codeception\Util\Autoload::addNamespace( 'TEC\Tickets\Tests', __DIR__ . '/_support' );
 
 $common_tests_dir = __DIR__ . '/../common/tests/';
 $common_support_dir = $common_tests_dir . '/_support';

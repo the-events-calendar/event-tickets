@@ -243,7 +243,7 @@ class Dispatcher {
 		 */
 		$to = apply_filters( "tec_tickets_emails_dispatcher_{$email_slug}_to", $to, $this );
 
-		return (string) $to;
+		return null === $to ? $to : (string) $to;
 	}
 
 	/**
@@ -291,7 +291,7 @@ class Dispatcher {
 		 */
 		$subject = apply_filters( "tec_tickets_emails_dispatcher_{$email_slug}_subject", $subject, $this );
 
-		return (string) $subject;
+		return null === $subject ? $subject : (string) $subject;
 	}
 
 	/**
@@ -335,7 +335,7 @@ class Dispatcher {
 		 */
 		$content = apply_filters( "tec_tickets_emails_dispatcher_{$email_slug}_content", $content, $this );
 
-		return (string) $content;
+		return null === $content ? $content :  (string) $content;
 	}
 
 	/**
