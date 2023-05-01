@@ -217,6 +217,7 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 			'heading'            => $this->get_heading(),
 			'additional_content' => $this->get_additional_content(),
 			'order'              => $this->get( 'order' ),
+			'json_ld'            => $this->get_json_data(),
 		];
 
 		return $defaults;
