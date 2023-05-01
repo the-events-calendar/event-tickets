@@ -455,7 +455,7 @@ abstract class Email_Abstract {
 	}
 
 	/**
-	 * Default default content to show below email content.
+	 * Default content to show below email content.
 	 *
 	 * @since 5.5.10
 	 *
@@ -494,7 +494,7 @@ abstract class Email_Abstract {
 			'post_status' => 'publish',
 			'post_type'   => Post_Type::SLUG,
 			'meta_input'  => [
-				'email_to'       => $this->to,
+				'email_to'       => $this->get_to(),
 				'email_template' => $this->template,
 				'email_version'  => \Tribe__Tickets__Main::VERSION,
 			],
@@ -883,23 +883,5 @@ abstract class Email_Abstract {
 	 */
 	public function get( $name, $default = null ) {
 		return Arr::get( $this->data, $name, $default );
-	}
-
-	/**
-	 * Get the `post_type` data for this email.
-	 *
-	 * @since 5.5.10
-	 *
-	 * @return array
-	 */
-	public function get_post_type_data(): array {
-		$data = [
-			'slug'     => $this->slug,
-			'title'    => $this->get_title(),
-			'template' => $this->template,
-			'to'       => $this->get_to(),
-		];
-
-		return $data;
 	}
 }
