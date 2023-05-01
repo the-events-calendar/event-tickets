@@ -36,6 +36,8 @@ class Provider extends tad_DI52_ServiceProvider {
 
 		$this->container->singleton( Post_Type::class );
 
+		$this->container->singleton( Legacy_Hijack::class );
+
 		$this->container->singleton( Admin\Emails_Tab::class );
 
 		$this->container->singleton( Admin\Preview_Modal::class );

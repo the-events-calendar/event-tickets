@@ -72,8 +72,8 @@ class Hooks extends tad_DI52_ServiceProvider {
 		add_filter( 'wp_redirect', [ $this, 'filter_redirect_url' ] );
 
 		// Inject the new email into the legacy codebase for emails.
-		add_filter( 'tec_tickets_send_rsvp_email_pre', [ $this, 'filter_legacy_sent_rsvp_emails' ], 20, 4 );
-		add_filter( 'tec_tickets_send_tickets_email_for_attendee_pre', [ $this, 'filter_legacy_sent_tickets_attendees_emails' ], 20, 5 );
+		add_filter( 'tec_tickets_send_rsvp_email_pre', [ $this, 'filter_hijack_legacy_sent_rsvp_emails' ], 20, 4 );
+		add_filter( 'tec_tickets_send_tickets_email_for_attendee_pre', [ $this, 'filter_hijack_legacy_sent_tickets_attendees_emails' ], 20, 5 );
 	}
 
 	/**
@@ -223,9 +223,9 @@ class Hooks extends tad_DI52_ServiceProvider {
 	}
 
 	/**
-	 * Hooks to the legacy modules to send RSVP emails with the new system.
+	 * Hooks to the legacy modules and hijacks the sending of RSVP emails from the old system to Tickets Emails.
 	 *
-	 * @see Legacy::send_rsvp_email
+	 * @see Legacy_Hijack::send_rsvp_email
 	 *
 	 * @since TBD
 	 *
@@ -234,16 +234,16 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * @param int            $event_id The event ID.
 	 * @param Tickets_Module $module   Commerce module we are using for these emails.
 	 */
-	public function filter_legacy_sent_rsvp_emails( $pre, $order_id, $event_id = null, $module = null ) {
-		return $this->container->make( Legacy::class )->send_rsvp_email( $pre, $order_id, $event_id, $module );
+	public function filter_hijack_legacy_sent_rsvp_emails( $pre, $order_id, $event_id = null, $module = null ) {
+		return $this->container->make( Legacy_Hijack::class )->send_rsvp_email( $pre, $order_id, $event_id, $module );
 	}
 
 	/**
-	 * Hooks to the legacy Tickets Module to send Tickets emails with the new system.
+	 * Hooks to the legacy modules and hijacks the sending of Tickets emails from the old system to Tickets Emails.
 	 *
 	 * @since TBD
 	 *
-	 * @see Legacy::send_tickets_email_for_attendee
+	 * @see Legacy_Hijack::send_tickets_email_for_attendee
 	 *
 	 * @param null|boolean   $pre         Previous value from the filter, mostly will be null.
 	 * @param string         $to          The email to send the tickets to.
@@ -254,8 +254,8 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 *
 	 * @return bool Whether email was sent to attendees.
 	 */
-	public function filter_legacy_sent_tickets_attendees_emails( $pre, $to, $tickets, $args = [], $module = null ) {
-		return $this->container->make( Legacy::class )->send_tickets_email_for_attendee( $pre, $to, $tickets, $args, $module );
+	public function filter_hijack_legacy_sent_tickets_attendees_emails( $pre, $to, $tickets, $args = [], $module = null ) {
+		return $this->container->make( Legacy_Hijack::class )->send_tickets_email_for_attendee( $pre, $to, $tickets, $args, $module );
 	}
 
 	/**

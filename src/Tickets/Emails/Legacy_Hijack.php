@@ -11,7 +11,7 @@ use Tribe__Tickets__Tickets as Tickets_Module;
  *
  * @package TEC\Tickets\Emails
  */
-class Legacy {
+class Legacy_Hijack {
 
 	/**
 	 * Send RSVPs/tickets email for an attendee by injecting itself into the legacy Tickets codebase.
