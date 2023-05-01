@@ -278,8 +278,8 @@ class Preview_Data {
 		$tickets = self::get_tickets();
 		$order   = self::get_order();
 		$default = [
-			'{attendee_name}'  => $tickets[0]->purchaser_name,
-			'{attendee_email}' => $tickets[0]->purchaser_email,
+			'{attendee_name}'  => $tickets[0]['purchaser_name'],
+			'{attendee_email}' => $tickets[0]['purchaser_email'],
 			'{order_number}'   => $order->ID,
 		];
 		return wp_parse_args( $args, $default );
