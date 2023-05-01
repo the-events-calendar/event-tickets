@@ -25,7 +25,10 @@
  * @see tribe_get_event() For the format of the event object.
  */
 
-// @todo Update link URL
+if ( empty( $web_view_url ) ) {
+	return;
+}
+
 ?>
 	<div class="tec-tickets__email-preview-link" align="center">
 		<?php

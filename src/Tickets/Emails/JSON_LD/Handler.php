@@ -32,7 +32,7 @@ class Handler {
 		if (
 			$email::$slug === Completed_Order::$slug
 			|| $email::$slug === Purchase_Receipt::$slug ) {
-			$order = $email->__get( 'order' );
+			$order = $email->get( 'order' );
 
 			if ( empty( $order ) ) {
 				return [];

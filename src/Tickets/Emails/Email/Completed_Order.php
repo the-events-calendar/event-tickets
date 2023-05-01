@@ -216,8 +216,7 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 			'title'              => $this->get_title(),
 			'heading'            => $this->get_heading(),
 			'additional_content' => $this->get_additional_content(),
-			'order'              => $this->__get( 'order' ),
-			'json_ld'            => $this->get_json_data(),
+			'order'              => $this->get( 'order' ),
 		];
 
 		return $defaults;
@@ -261,7 +260,7 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 			return false;
 		}
 
-		$order = $this->__get( 'order' );
+		$order = $this->get( 'order' );
 
 		// Bail if there's no order.
 		if ( empty( $order ) ) {
