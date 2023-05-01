@@ -7,8 +7,8 @@
 
 namespace TEC\Tickets\Emails\Email;
 
-use \TEC\Tickets\Emails\Email_Template;
-use \TEC\Tickets\Emails\Email_Abstract;
+use TEC\Tickets\Emails\Email_Template;
+use TEC\Tickets\Emails\Email_Abstract;
 
 /**
  * Class RSVP_Not_Going
