@@ -12,6 +12,7 @@ namespace TEC\Tickets\Emails;
 use Tribe__Template;
 use Tribe__Tickets__Main;
 use Tribe__Utils__Color;
+use TEC\Tickets\Emails\Admin\Preview_Data;
 
 /**
  * Class Email_Template
@@ -72,9 +73,10 @@ class Email_Template {
 	 *
 	 * @return string The HTML of the template.
 	 */
-	public function get_html( $context = [], $email = 'template' ) {
+	public function get_html( $email = 'template', $context = [] ) {
 		$template = $this->get_template();
-		$context  = wp_parse_args( $context, $this->get_context( $email ) );
+		$defaults = $this->get_context( $email );
+		$context  = wp_parse_args( $context, $defaults );
 
 		return $template->template( $email, $context, false );
 	}
@@ -146,13 +148,11 @@ class Email_Template {
 			'footer_content'         => tribe_get_option( Admin\Settings::$option_footer_content, '' ),
 			'footer_credit'          => true,
 			'web_view_url'           => tribe( Web_View::class )->get_url(),
+			'is_tec_active'          => defined( 'TRIBE_EVENTS_FILE' ) && function_exists( 'tribe_get_event' ),
 		];
 		$context['header_text_color'] = Tribe__Utils__Color::get_contrast_color( $context['header_bg_color'] );
 		$context['ticket_text_color'] = Tribe__Utils__Color::get_contrast_color( $context['ticket_bg_color'] );
 
-		if ( $this->preview ) {
-			$this->context_data = $this->get_preview_context_array();
-		}
 
 		$this->context_data = wp_parse_args( $this->context_data, $context );
 
@@ -169,47 +169,11 @@ class Email_Template {
 	/**
 	 * Get the context data in the case of a template preview.
 	 *
-	 * @since 5.5.7
+	 * @since 5.5.10
 	 *
 	 * @return array Context data.
 	 */
-	private function get_preview_context_array() {
-		$current_user = wp_get_current_user();
-		$title        = empty( $current_user->first_name ) ?
-		__( 'Here\'s your ticket!', 'event-tickets' ) :
-		sprintf(
-			// Translators: %s - First name of email recipient.
-			__( 'Here\'s your ticket, %s!', 'event-tickets' ),
-			$current_user->first_name
-		);
-
-		return [
-			'title'   => $title,
-			'tickets' => [
-				[
-					'ticket_id'         => '1234',
-					'ticket_name'       => esc_html__( 'General Admission', 'event-tickets' ),
-					'holder_name'       => $current_user->first_name . ' ' . $current_user->last_name,
-					'holder_first_name' => $current_user->first_name,
-					'holder_last_name'  => $current_user->last_name,
-					'security_code'     => '17e4a14cec',
-					// @todo @juanfra @codingmusician @rafsuntaskin: These should come from TEC.
-					'event' => [
-						'title'          => esc_html__( 'Rebirth Brass Band', 'event-tickets' ),
-						'description'    => '<h4>Additional Information</h4><p>Age Restriction: 18+<br>Door Time: 8:00PM<br>Event Time: 9:00PM</p>',
-						'date'           => esc_html__( 'September 22 @ 7:00 pm - 11:00 pm', 'event-tickets' ),
-						'image_url'      => esc_url( plugins_url( '/event-tickets/src/resources/images/example-event-image.png' ) ),
-						'venue'          => [
-							'name'       => esc_html__( 'Saturn', 'event-tickets' ),
-							'address1'   => esc_html__( '200 41st Street South', 'event-tickets' ),
-							'address2'   => esc_html__( 'Birmingham, AL, 35222', 'event-tickets' ),
-							'phone'      => esc_html__( '(987) 654-3210', 'event-tickets' ),
-							'website'    => esc_url( get_site_url() ),
-						]
-					],
-
-				],
-			]
-		];
+	public function get_preview_context( $args = [] ): array {
+		return tribe( Preview_Data::class )->get_default_preview_data();
 	}
 }

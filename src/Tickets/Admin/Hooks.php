@@ -35,6 +35,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	public function register() {
 		tribe( Upsell::class )->hooks();
 		tribe( Plugin_Action_Links::class )->hooks();
+		tribe( Glance_Items::class )->hooks();
 	}
 
 }

@@ -279,7 +279,7 @@ class Settings {
 				'type'                => 'color',
 				'label'               => esc_html__( 'Header/Footer Background', 'event-tickets' ),
 				'size'                => 'medium',
-				'default'             => '#ffffff',
+				'default'             => '#50B078',
 				'validation_callback' => 'is_string',
 				'validation_type'     => 'color',
 			],
@@ -287,7 +287,7 @@ class Settings {
 				'type'                => 'color',
 				'label'               => esc_html__( 'Ticket Color', 'event-tickets' ),
 				'size'                => 'medium',
-				'default'             => '#007363',
+				'default'             => '#2D2E33',
 				'validation_callback' => 'is_string',
 				'validation_type'     => 'color',
 			],
@@ -343,14 +343,36 @@ class Settings {
 			return $fields;
 		}
 
-		$new_fields = [
-			self::$option_enabled => [
-				'type'            => 'checkbox_bool',
-				'label'           => esc_html__( 'Enable Tickets Emails', 'event-tickets-plus' ),
-				'tooltip'         => esc_html__( 'Start using the new Tickets Emails for your site.', 'event-tickets' ),
-				'default'         => false,
-				'validation_type' => 'boolean',
-			],
+		$new_fields                = [];
+		$is_tickets_emails_enabled = tribe_get_option( self::$option_enabled, tec_tickets_emails_is_enabled() );
+
+		$new_fields['tickets-emails-header'] = [
+			'type' => 'html',
+			'html' => '<div class="tec-tickets__admin-settings-toggle-large-wrapper">
+							<label class="tec-tickets__admin-settings-toggle-large">
+								<input
+									type="checkbox"
+									name="' . self::$option_enabled . '"
+									' . checked( $is_tickets_emails_enabled, true, false ) . '
+									id="tickets-emails-enable-input"
+									class="tec-tickets__admin-settings-toggle-large-checkbox tribe-dependency tribe-dependency-verified">
+									<span class="tec-tickets__admin-settings-toggle-large-switch"></span>
+									<span class="tec-tickets__admin-settings-toggle-large-label">' . esc_html__( 'Enable Tickets Emails', 'event-tickets' ) . '</span>
+							</label>
+						</div>',
+
+		];
+
+		$description = esc_html__( 'Start using the new Tickets Emails for your site.', 'event-tickets' );
+
+		$new_fields['tickets-emails-description'] = [
+			'type' => 'html',
+			'html' => '<div class="tec-tickets__admin-settings-emails-description">' . $description . '</div>',
+		];
+
+		$fields[ self::$option_enabled ] = [
+			'type'            => 'hidden',
+			'validation_type' => 'boolean',
 		];
 
 		return array_merge( $fields, $new_fields );
