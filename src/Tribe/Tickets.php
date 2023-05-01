@@ -1043,7 +1043,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Save the attendee checkin details.
 		 *
 		 * @since 5.5.2
-		 * @since TBD Update attendee scan count via tec_tickets_plus_app_attendees_checked_in option.
+		 * @since 5.5.11 Update attendee scan count via tec_tickets_plus_app_attendees_checked_in option.
 		 *
 		 * @param int   $attendee_id     The ID of the attendee that's being checked-in.
 		 * @param mixed $qr              True if the check-in is from a QR code.
@@ -3432,8 +3432,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * event are currently unavailable and unless a different ticket provider reports differently
 		 * the "tickets unavailable" message should be displayed.
 		 *
-		 * @since TBD Added event_tickets_unvailable_message filter for unavailable messages.
-		 *
 		 * @param array $tickets
 		 * @param int $post_id ID of parent "event" post (defaults to the current post)
 		 */
@@ -3450,21 +3448,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			self::$currently_unavailable_tickets[ (int) $post_id ] = array_merge( $existing_tickets, $tickets );
 
-			if ( ! empty( self::$currently_unavailable_tickets ) ) {
-				$message = sprintf(
-					__( 'There are no %s available at this time.', 'event-tickets' ), tribe_get_ticket_label_plural( 'unavailable_mixed' )
-				);
 
-				/**
-				 * Filters the unavailability message for a ticket collection
-				 *
-				 * @since TBD
-				 *
-				 * @param string Unavailability message
-				 * @param array Collection of tickets
-				 */
-				echo (string) apply_filters( 'event_tickets_unvailable_message', $message, $tickets );
-			}
 		}
 
 		/**

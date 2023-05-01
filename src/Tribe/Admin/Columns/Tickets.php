@@ -45,7 +45,7 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 	/**
 	 * Filters the list columns to add the ticket related ones.
 	 *
-	 * @since TBD Moved to shorthand array syntax.
+	 * @since 5.5.11 Moved to shorthand array syntax.
 	 *
 	 * @param array $columns
 	 *
@@ -81,7 +81,7 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 		/**
 		 * Filter whether a column should be displayed in the admin post type table.
 		 *
-		 * @since TBD
+		 * @since 5.5.11
 		 *
 		 * @param bool   $should_display_column Whether the column should be displayed or not. Default true.
 		 * @param string $column                The current column name.
@@ -98,7 +98,7 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 		 *
 		 * The dynamic portion of the hook name, `$column`, refers to the current column name. Example, tickets
 		 *
-		 * @since TBD
+		 * @since 5.5.11
 		 *
 		 * @param bool   $should_display_column Whether the column should be displayed or not. Default true.
 		 * @param string $column                The current column name.
@@ -147,7 +147,7 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 	 *
 	 * @since 4.6.2 Deprecated the second parameter.
 	 * @since 4.10.6 Added $total and $not_going parameters to further optimize requests.
-	 * @since TBD Added caching and reorganized code to further optimize requests.
+	 * @since 5.5.11 Added caching and reorganized code to further optimize requests.
 	 *
 	 * @param int $post_id   The current post ID.
 	 * @param  null    $deprecated
