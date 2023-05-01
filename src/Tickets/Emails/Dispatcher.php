@@ -441,7 +441,7 @@ class Dispatcher {
 	 *
 	 * @return bool
 	 */
-	public function can_send(): bool {
+	protected function can_send(): bool {
 		if ( $this->was_used() ) {
 			return false;
 		}
@@ -478,7 +478,7 @@ class Dispatcher {
 	 *
 	 * @return bool
 	 */
-	public function was_used(): bool {
+	protected function was_used(): bool {
 		return $this->used;
 	}
 
