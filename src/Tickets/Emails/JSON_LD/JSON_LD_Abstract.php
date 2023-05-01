@@ -17,7 +17,18 @@ abstract class JSON_LD_Abstract {
 	 *
 	 * @var string
 	 */
-	private string $type;
+	public static string $type = 'Thing';
+
+	/**
+	 * Get the type of the schema.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_type(): string {
+		return static::$type;
+	}
 
 	/**
 	 * Get the data for the schema.
@@ -29,7 +40,7 @@ abstract class JSON_LD_Abstract {
 	public function get_basic_data(): array {
 		$data = [
 			'@context' => 'https://schema.org',
-			'@type'    => $this->type,
+			'@type'    => self::get_type(),
 			'merchant' => [
 				'@type' => 'Organization',
 				'name'  => get_bloginfo( 'name' ),
@@ -46,5 +57,5 @@ abstract class JSON_LD_Abstract {
 	 *
 	 * @return array<string,mixed> The data for the schema.
 	 */
-	abstract public function get_data() : array;
+	abstract public function get_data(): array;
 }

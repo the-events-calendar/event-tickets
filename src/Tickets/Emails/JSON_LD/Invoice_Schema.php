@@ -16,12 +16,12 @@ class Invoice_Schema extends JSON_LD_Abstract {
 	 *
 	 * @var string
 	 */
-	private $type = 'Invoice';
+	public static string $type = 'Invoice';
 
-	public function get_data() {
+	public function get_data(): array {
 		$data = [
 			'@context' => 'https://schema.org',
-			'@type'    => $this->type,
+			'@type'    => self::get_type(),
 		];
 
 		return $data;

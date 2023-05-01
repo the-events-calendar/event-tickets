@@ -18,7 +18,7 @@ class Order_Schema extends JSON_LD_Abstract {
 	 *
 	 * @var string
 	 */
-	private string $type = 'Order';
+	public static string $type = 'Order';
 
 	/**
 	 * The order object.
