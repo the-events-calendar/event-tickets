@@ -56,7 +56,8 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * It should allow fetching ticket attendees by event.
 	 *
-	 * @todo @bordoni fix this particular test to be more consistent
+	 * @todo @bordoni fix this particular test to be more consistent [TECENG-37]
+	 * @link https://theeventscalendar.atlassian.net/browse/TECENG-37
 	 *
 	 * @test
 	 */
