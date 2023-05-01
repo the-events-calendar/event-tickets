@@ -52,9 +52,13 @@ class Send_Email_Purchase_Receipt extends Flag_Action_Abstract {
 			return;
 		}
 
+		$provider  = tribe( $order->provider );
+		$attendees = $provider->get_attendees_by_order_id( $order->id );
+
 		$email_class = tribe( \TEC\Tickets\Emails\Email\Purchase_Receipt::class );
 
 		$email_class->set( 'order', $order );
+		$email_class->set( 'attendees', $attendees );
 		$email_class->recipient = $order->purchaser['email'];
 
 		return $email_class->send();

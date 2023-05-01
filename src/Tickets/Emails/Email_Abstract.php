@@ -669,6 +669,7 @@ abstract class Email_Abstract {
 	public function get_heading(): string {
 		$option_key = $this->get_option_key( 'heading' );
 		$heading    = tribe_get_option( $option_key, $this->get_default_heading() );
+		$heading    = stripslashes( $heading );
 
 		// @todo: Probably we want more data parsed, or maybe move the filters somewhere else as we're always gonna
 

@@ -222,6 +222,7 @@ class Preview_Modal {
 
 			if ( ! empty( $email ) ) {
 				$email_class = tribe( get_class( $email ) );
+				$email_class->set_placeholders( Preview_Data::get_placeholders() );
 				$html        = $email_class->get_content( $email_class->get_preview_context() );
 			}
 

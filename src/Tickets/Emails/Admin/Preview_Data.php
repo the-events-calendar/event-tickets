@@ -11,6 +11,7 @@ namespace TEC\Tickets\Emails\Admin;
 
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Utils\Value;
+use TEC\Tickets\Emails\Email\Ticket;
 use WP_Post;
 
 /**
@@ -29,31 +30,17 @@ class Preview_Data {
 	 * @return array The default preview data.
 	 */
 	public static function get_default_preview_data(): array {
-		$current_user = wp_get_current_user();
-		$title        = __( 'Here\'s your ticket!', 'event-tickets' );
 
-		if ( ! empty( $current_user->first_name ) ) {
-			$title = sprintf(
-				// Translators: %s - First name of email recipient.
-				__( 'Here\'s your ticket, %s!', 'event-tickets' ),
-				$current_user->first_name
-			);
-		}
+		// We'll borrow from the Ticket class.
+		$ticket_email = tribe( Ticket::class );
+		$ticket_email->set_placeholders( self::get_placeholders() );
 
 		return [
-			'title'      => $title,
-			'heading'    => $title,
+			'title'      => $ticket_email->get_heading(),
+			'heading'    => $ticket_email->get_heading(),
 			'is_preview' => true,
-			'tickets'    => [
-				[
-					'ticket_id'         => '1234',
-					'ticket_name'       => esc_html__( 'General Admission', 'event-tickets' ),
-					'holder_name'       => $current_user->first_name . ' ' . $current_user->last_name,
-					'holder_first_name' => $current_user->first_name,
-					'holder_last_name'  => $current_user->last_name,
-					'security_code'     => '17e4a14cec',
-				],
-			],
+			'order'      => self::get_order(),
+			'tickets'    => self::get_tickets(),
 		];
 	}
 
@@ -109,36 +96,114 @@ class Preview_Data {
 	public static function get_attendees( $args = [] ): array {
 		$default = [
 			[
-				'ticket_title' => __( 'General Admission', 'event-tickets' ),
-				'ticket_id'    => '17e4a14cec',
-				'name'         => __( 'John Doe', 'event-tickets' ),
-				'email'        => 'john@doe.com',
-				'custom_fields' => [
-					[
-						'label' => __( 'Shirt size', 'event-tickets' ),
-						'value' => __( 'large', 'event-tickets' ),
-					],
-					[
-						'label' => __( 'Backstage pass', 'event-tickets' ),
-						'value' => __( 'yes', 'event-tickets' ),
-					],
-				],
+				'ID'                    => 9999,
+				'post_author'           => '1',
+				'post_date'             => '2023-04-17 17:06:56',
+				'post_date_gmt'         => '2023-04-17 22:06:56',
+				'post_content'          => '',
+				'post_title'            => '',
+				'post_excerpt'          => '',
+				'post_status'           => 'publish',
+				'comment_status'        => 'closed',
+				'ping_status'           => 'closed',
+				'post_password'         => '',
+				'post_name'             => '9999',
+				'to_ping'               => '',
+				'pinged'                => '',
+				'post_modified'         => '2023-04-17 17:06:56',
+				'post_modified_gmt'     => '2023-04-17 22:06:56',
+				'post_content_filtered' => '',
+				'post_parent'           => 9998,
+				'guid'                  => '',
+				'menu_order'            => 0,
+				'post_type'             => 'tec_tc_attendee',
+				'post_mime_type'        => '',
+				'comment_count'         => '0',
+				'filter'                => 'raw',
+				'order_id'              => 9999,
+				'order_status'          => 'Completed',
+				'optout'                => true,
+				'ticket'                => 'General Admission',
+				'attendee_id'           => 9997,
+				'security'              => 'abcde12345',
+				'product_id'            => '1',
+				'check_in'              => NULL,
+				'ticket_sent'           => 0,
+				'price_paid'            => '50',
+				'currency'              => 'USD',
+				'provider'              => 'TEC\\Tickets\\Commerce\\Module',
+				'provider_slug'         => 'tc',
+				'purchaser_id'          => 1,
+				'purchaser_name'        => 'John Doe',
+				'purchaser_email'       => 'john@doe.com',
+				'event_id'              => '9991',
+				'ticket_name'           => 'General Admission',
+				'user_id'               => '1',
+				'holder_name'           => 'John Doe',
+				'holder_email'          => 'john@doe.com',
+				'ticket_id'             => 9999,
+				'qr_ticket_id'          => 9999,
+				'security_code'         => 'abcde12345',
+				'is_subscribed'         => false,
+				'is_purchaser'          => true,
+				'iac'                   => 'none',
+				'attendee_meta'         => '',
+				'ticket_exists'         => true,
 			],
 			[
-				'ticket_title' => __( 'General Admission', 'event-tickets' ),
-				'ticket_id'    => '55e5e14w4',
-				'name'         => __( 'Jane Doe', 'event-tickets' ),
-				'email'        => 'jane@doe.com',
-				'custom_fields' => [
-					[
-						'label' => __( 'Shirt size', 'event-tickets' ),
-						'value' => __( 'small', 'event-tickets' ),
-					],
-					[
-						'label' => __( 'Backstage pass', 'event-tickets' ),
-						'value' => __( 'yes', 'event-tickets' ),
-					],
-				],
+				'ID'                    => 10000,
+				'post_author'           => '1',
+				'post_date'             => '2023-04-17 17:06:56',
+				'post_date_gmt'         => '2023-04-17 22:06:56',
+				'post_content'          => '',
+				'post_title'            => '',
+				'post_excerpt'          => '',
+				'post_status'           => 'publish',
+				'comment_status'        => 'closed',
+				'ping_status'           => 'closed',
+				'post_password'         => '',
+				'post_name'             => '9999',
+				'to_ping'               => '',
+				'pinged'                => '',
+				'post_modified'         => '2023-04-17 17:06:56',
+				'post_modified_gmt'     => '2023-04-17 22:06:56',
+				'post_content_filtered' => '',
+				'post_parent'           => 9998,
+				'guid'                  => '',
+				'menu_order'            => 0,
+				'post_type'             => 'tec_tc_attendee',
+				'post_mime_type'        => '',
+				'comment_count'         => '0',
+				'filter'                => 'raw',
+				'order_id'              => 10000,
+				'order_status'          => 'Completed',
+				'optout'                => true,
+				'ticket'                => 'General Admission',
+				'attendee_id'           => 9997,
+				'security'              => 'abcde12345',
+				'product_id'            => '1',
+				'check_in'              => NULL,
+				'ticket_sent'           => 0,
+				'price_paid'            => '50',
+				'currency'              => 'USD',
+				'provider'              => 'TEC\\Tickets\\Commerce\\Module',
+				'provider_slug'         => 'tc',
+				'purchaser_id'          => 1,
+				'purchaser_name'        => 'John Doe',
+				'purchaser_email'       => 'john@doe.com',
+				'event_id'              => '9991',
+				'ticket_name'           => 'General Admission',
+				'user_id'               => '1',
+				'holder_name'           => 'Jane Doe',
+				'holder_email'          => 'jane@doe.com',
+				'ticket_id'             => 10000,
+				'qr_ticket_id'          => 10000,
+				'security_code'         => '12345abcde',
+				'is_subscribed'         => false,
+				'is_purchaser'          => true,
+				'iac'                   => 'none',
+				'attendee_meta'         => '',
+				'ticket_exists'         => true,
 			],
 		];
 		return wp_parse_args( $args, $default );
@@ -154,30 +219,69 @@ class Preview_Data {
 	 * @return array
 	 */
 	public static function get_tickets( $args = [] ): array {
-		$tickets = [
-			new WP_Post( (object) [
+		$default = [
+			[
 				'ID' => -98,
-				'post_author'   => 1,
-				'post_date'     => current_time( 'mysql' ),
-				'post_date_gmt' => current_time( 'mysql', 1 ),
-				'post_title'    => __( 'General Admission', 'event-tickets' ),
-				'post_status'   => 'publish',
-				'post_name'     => 'preview-order-' . rand( 1, 9999 ),
-				'post_type'     => Order::POSTTYPE,
-				'filter'        => 'raw',
-				'ticket_data'   => [
+				'post_author'     => 1,
+				'post_date'       => current_time( 'mysql' ),
+				'post_date_gmt'   => current_time( 'mysql', 1 ),
+				'post_title'      => __( 'General Admission', 'event-tickets' ),
+				'post_status'     => 'publish',
+				'post_name'       => 'preview-order-' . rand( 1, 9999 ),
+				'post_type'       => Order::POSTTYPE,
+				'filter'          => 'raw',
+				'ticket'          => __( 'General Admission', 'event-tickets' ),
+				'ticket_name'     => __( 'General Admission', 'event-tickets' ),
+				'purchaser_id'    => 1,
+				'purchaser_name'  => __( 'John Doe', 'event-tickets' ),
+				'purchaser_email' => __( 'john@doe.com', 'event-tickets' ),
+				'holder_name'     => __( 'John Doe', 'event-tickets' ),
+				'holder_email'    => __( 'john@doe.com', 'event-tickets' ),
+				'ticket_id'       => -98,
+				'qr_ticket_id'    => -98,
+				'security_code'   => 'abcdefg12345',
+				'security'        => 'abcdefg12345',
+				'is_subscribed'   => false,
+				'is_purchaser'    => true,
+				'iac'             => 'none',
+				'attendee_meta'   => '',
+				'ticket_exists'   => true,
+				'event_id'        => 999,
+				'product_id'      => 998,
+				'attendee_id'     => 997,
+				'ticket_data'     => [
 					'ticket_id' => -98,
 					'quantity'  => 2,
-					'extra' => [
+					'extra'     => [
 						'optout' => true,
-						'iac' => 'none',
+						'iac'    => 'none',
 					],
-					'price' => 50.0,
+					'price'     => 50.0,
 					'sub_total' => 50.0,
-					'event_id' => -97,
+					'event_id'  => -96,
 				],
-			] ),
+			],
 		];
-		return $tickets;
+		return wp_parse_args( $args, $default );
+	}
+
+	/**
+	 * Get preview placeholders.
+	 * 
+	 * @since TBD
+	 *
+	 * @param array $args Override arguments.
+	 * 
+	 * @return array
+	 */
+	public static function get_placeholders( $args = [] ): array {
+		$tickets = self::get_tickets();
+		$order   = self::get_order();
+		$default = [
+			'{attendee_name}'  => $tickets[0]->purchaser_name,
+			'{attendee_email}' => $tickets[0]->purchaser_email,
+			'{order_number}'   => $order->ID,
+		];
+		return wp_parse_args( $args, $default );
 	}
 }
