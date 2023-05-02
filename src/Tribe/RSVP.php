@@ -1201,6 +1201,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 */
 	public function send_tickets_email( $order_id, $event_id = null ) {
 		/**
+		 * Allows the short-circuiting of the sending of RSVP emails to attendees.
+		 *
 		 * @since TBD
 		 *
 		 * @param null|mixed $pre      Determine if we should continue.
