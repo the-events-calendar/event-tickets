@@ -943,7 +943,6 @@ abstract class Email_Abstract {
 		 */
 		$data = apply_filters( "tec_tickets_emails_" . self::get_slug() . "_json_data", $data, $this );
 
-		error_log( print_r( "tec_tickets_emails_" . self::get_slug() . "_json_data", true ) );
 		return $data;
 	}
 }
