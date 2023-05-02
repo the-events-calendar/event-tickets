@@ -5,13 +5,15 @@ namespace TEC\Tickets\Emails;
 use Tribe__Tickets__Tickets as Tickets_Module;
 
 /**
- * Class Legacy
+ * Class Legacy_Hijack.
+ *
+ * Mostly used to take over legacy methods of sending emails and using the new ones.w
  *
  * @since   TBD
  *
  * @package TEC\Tickets\Emails
  */
-class Legacy {
+class Legacy_Hijack {
 
 	/**
 	 * Send RSVPs/tickets email for an attendee by injecting itself into the legacy Tickets codebase.
@@ -53,6 +55,7 @@ class Legacy {
 			return false;
 		}
 
+		$sent = false;
 		$defaults = [
 			'provider'     => 'ticket',
 			'post_id'      => 0,
@@ -214,12 +217,12 @@ class Legacy {
 		$email_class->set( 'tickets', $all_attendees );
 
 		// @todo We need to refactor this piece to use the correct sender functionality.
-		$subject     = $email_class->get_subject();
 		$content     = $email_class->get_content( [ 'tickets' => $all_attendees ] );
-		$headers     = $email_class->get_headers();
-		$attachments = $email_class->get_attachments();
 
-		$sent = tribe( Email_Sender::class )->send( $to, $subject, $content, $headers, $attachments );
+		// @todo we need to avoid setting the recipient like this.
+		$email_class->recipient = $to;
+
+		$sent = $email_class->send();
 
 		if ( $sent ) {
 			foreach ( $all_attendees as $attendee ) {

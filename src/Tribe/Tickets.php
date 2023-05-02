@@ -2450,6 +2450,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		public function send_tickets_email_for_attendee( $to, $tickets, $args = [] ) {
 			/**
+			 * Allows the short-circuiting of the sending of emails to the Attendees.
+			 *
 			 * @since TBD
 			 *
 			 * @param null|mixed $pre     Determine if we should continue.
