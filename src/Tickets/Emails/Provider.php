@@ -23,8 +23,7 @@ class Provider extends tad_DI52_ServiceProvider {
 	 *
 	 * @since 5.5.6
 	 */
-	public function register() {
-
+	public function register(): void {
 		$this->register_assets();
 		$this->register_hooks();
 
