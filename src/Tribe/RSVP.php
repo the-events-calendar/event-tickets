@@ -1360,7 +1360,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 */
 	public function send_non_attendance_confirmation( $order_id, $event_id ) {
 		/**
-		 * Allows the short-circuiting of the sending of RSVP emails to attendees.
+		 * Allows the short-circuiting sending of RSVP emails to attendees for the confirmation of non-attendance.
 		 *
 		 * @since TBD
 		 *
