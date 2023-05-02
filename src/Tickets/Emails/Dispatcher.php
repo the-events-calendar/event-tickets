@@ -156,6 +156,11 @@ class Dispatcher {
 		/**
 		 * Allows modifications of the Email Dispatcher to all Email Types.
 		 *
+		 * Filtering the dispatcher hooks will allow you to modify the values being used for this instance of the
+		 * Dispatcher.
+		 *
+		 * Each new email send will generate a new Dispatcher to avoid sending the same email multiple times.
+		 *
 		 * @since TBD
 		 *
 		 * @param Dispatcher     $dispatcher Which dispatcher instance will be used for the email sent.
@@ -167,6 +172,11 @@ class Dispatcher {
 
 		/**
 		 * Allows modifications of the Email Dispatcher specific to this Email Type.
+		 *
+		 * Filtering the dispatcher hooks will allow you to modify the values being used for this instance of the
+		 * Dispatcher.
+		 *
+		 * Each new email send will generate a new Dispatcher to avoid sending the same email multiple times.
 		 *
 		 * @since TBD
 		 *
@@ -208,24 +218,34 @@ class Dispatcher {
 	 */
 	public function get_headers(): array {
 		/**
-		 * Filter the headers for all dispatchers.
+		 * Allow filtering the Dispatcher Email "Headers" for all Email Types.
+		 *
+		 * Filtering the dispatcher hooks will allow you to modify the values being used for this instance of the
+		 * Dispatcher.
+		 *
+		 * Each new email send will generate a new Dispatcher to avoid sending the same email multiple times.
 		 *
 		 * @since TBD
 		 *
 		 * @param array      $headers The headers.
-		 * @param Dispatcher $this    The email object.
+		 * @param Dispatcher $this    The Dispatcher object for this specific email.
 		 */
 		$headers = apply_filters( 'tec_tickets_emails_dispatcher_headers', $this->headers, $this );
 
 		$email_slug = $this->get_email()->slug;
 
 		/**
-		 * Filter the headers for the particular email using this dispatcher.
+		 * Allow filtering the Dispatcher Email "Headers" for a specific Email Type.
+		 *
+		 * Filtering the dispatcher hooks will allow you to modify the values being used for this instance of the
+		 * Dispatcher.
+		 *
+		 * Each new email send will generate a new Dispatcher to avoid sending the same email multiple times.
 		 *
 		 * @since TBD
 		 *
 		 * @param array      $headers The headers.
-		 * @param Dispatcher $this    The email object.
+		 * @param Dispatcher $this    The Dispatcher object for this specific email.
 		 */
 		$headers = apply_filters( "tec_tickets_emails_dispatcher_{$email_slug}_headers", $headers, $this );
 
@@ -260,24 +280,34 @@ class Dispatcher {
 	 */
 	public function get_attachments(): array {
 		/**
-		 * Filter the attachments.
+		 * Allow filtering the Dispatcher Email "Attachments" for all Email Types.
+		 *
+		 * Filtering the dispatcher hooks will allow you to modify the values being used for this instance of the
+		 * Dispatcher.
+		 *
+		 * Each new email send will generate a new Dispatcher to avoid sending the same email multiple times.
 		 *
 		 * @since TBD
 		 *
 		 * @param array      $attachments The attachments.
-		 * @param Dispatcher $this        The email object.
+		 * @param Dispatcher $this        The Dispatcher object for this specific email.
 		 */
 		$attachments = apply_filters( 'tec_tickets_emails_dispatcher_attachments', $this->attachments, $this );
 
 		$email_slug = $this->get_email()->slug;
 
 		/**
-		 * Filter the attachments for the particular email.
+		 * Allow filtering the Dispatcher Email "Attachments" for a specific Email Type.
+		 *
+		 * Filtering the dispatcher hooks will allow you to modify the values being used for this instance of the
+		 * Dispatcher.
+		 *
+		 * Each new email send will generate a new Dispatcher to avoid sending the same email multiple times.
 		 *
 		 * @since TBD
 		 *
 		 * @param array      $attachments The attachments.
-		 * @param Dispatcher $this        The email object.
+		 * @param Dispatcher $this        The Dispatcher object for this specific email.
 		 */
 		$attachments = apply_filters( "tec_tickets_emails_dispatcher_{$email_slug}_attachments", $attachments, $this );
 
@@ -293,24 +323,34 @@ class Dispatcher {
 	 */
 	public function get_to(): ?string {
 		/**
-		 * Allow filtering the email recipient globally.
+		 * Allow filtering the Dispatcher Email "To" for all Email Types.
+		 *
+		 * Filtering the dispatcher hooks will allow you to modify the values being used for this instance of the
+		 * Dispatcher.
+		 *
+		 * Each new email send will generate a new Dispatcher to avoid sending the same email multiple times.
 		 *
 		 * @since TBD
 		 *
 		 * @param string     $to   The email recipient.
-		 * @param Dispatcher $this The email object.
+		 * @param Dispatcher $this The Dispatcher object for this specific email.
 		 */
 		$to = apply_filters( 'tec_tickets_emails_dispatcher_to', $this->to, $this );
 
 		$email_slug = $this->get_email()->slug;
 
 		/**
-		 * Allow filtering the email recipient for the particular email.
+		 * Allow filtering the Dispatcher Email "To" for a specific Email Type.
+		 *
+		 * Filtering the dispatcher hooks will allow you to modify the values being used for this instance of the
+		 * Dispatcher.
+		 *
+		 * Each new email send will generate a new Dispatcher to avoid sending the same email multiple times.
 		 *
 		 * @since TBD
 		 *
 		 * @param string     $to   The email recipient.
-		 * @param Dispatcher $this The email object.
+		 * @param Dispatcher $this The Dispatcher object for this specific email.
 		 */
 		$to = apply_filters( "tec_tickets_emails_dispatcher_{$email_slug}_to", $to, $this );
 
@@ -337,24 +377,34 @@ class Dispatcher {
 	 */
 	public function get_subject(): ?string {
 		/**
-		 * Allow filtering the email subject globally.
+		 * Allow filtering the Dispatcher Email "Subject" for all Email Types.
+		 *
+		 * Filtering the dispatcher hooks will allow you to modify the values being used for this instance of the
+		 * Dispatcher.
+		 *
+		 * Each new email send will generate a new Dispatcher to avoid sending the same email multiple times.
 		 *
 		 * @since TBD
 		 *
 		 * @param string     $subject The email subject.
-		 * @param Dispatcher $this    The email object.
+		 * @param Dispatcher $this    The Dispatcher object for this specific email.
 		 */
 		$subject = apply_filters( 'tec_tickets_emails_dispatcher_subject', $this->subject, $this );
 
 		$email_slug = $this->get_email()->slug;
 
 		/**
-		 * Allow filtering the email subject.
+		 * Allow filtering the Dispatcher Email "Subject" for a specific Email Type.
+		 *
+		 * Filtering the dispatcher hooks will allow you to modify the values being used for this instance of the
+		 * Dispatcher.
+		 *
+		 * Each new email send will generate a new Dispatcher to avoid sending the same email multiple times.
 		 *
 		 * @since TBD
 		 *
-		 * @param string         $subject The email subject.
-		 * @param Email_Abstract $this    The email object.
+		 * @param string     $subject The email subject.
+		 * @param Dispatcher $this    The Dispatcher object for this specific email.
 		 */
 		$subject = apply_filters( "tec_tickets_emails_dispatcher_{$email_slug}_subject", $subject, $this );
 
@@ -381,24 +431,34 @@ class Dispatcher {
 	 */
 	public function get_content(): ?string {
 		/**
-		 * Allow filtering the email content globally.
+		 * Allow filtering the Dispatcher Email "Content" for all Email Types.
+		 *
+		 * Filtering the dispatcher hooks will allow you to modify the values being used for this instance of the
+		 * Dispatcher.
+		 *
+		 * Each new email send will generate a new Dispatcher to avoid sending the same email multiple times.
 		 *
 		 * @since TBD
 		 *
 		 * @param string     $content The email subject.
-		 * @param Dispatcher $this    The email object.
+		 * @param Dispatcher $this    The Dispatcher object for this specific email.
 		 */
 		$content = apply_filters( 'tec_tickets_emails_dispatcher_content', $this->content, $this );
 
 		$email_slug = $this->get_email()->slug;
 
 		/**
-		 * Allow filtering the email content.
+		 * Allow filtering the Dispatcher Email "Content" for a specific Email Type.
+		 *
+		 * Filtering the dispatcher hooks will allow you to modify the values being used for this instance of the
+		 * Dispatcher.
+		 *
+		 * Each new email send will generate a new Dispatcher to avoid sending the same email multiple times.
 		 *
 		 * @since TBD
 		 *
 		 * @param string     $content The email subject.
-		 * @param Dispatcher $this    The email object.
+		 * @param Dispatcher $this    The Dispatcher object for this specific email.
 		 */
 		$content = apply_filters( "tec_tickets_emails_dispatcher_{$email_slug}_content", $content, $this );
 
