@@ -339,7 +339,7 @@ class Order extends Abstract_Order {
 		$cart = tribe( Cart::class );
 
 		$items      = $cart->get_items_in_cart();
-		$items      = array_map(
+		$items      = array_filter( array_map(
 			static function ( $item ) {
 				/** @var Value $ticket_value */
 				$ticket_value = tribe( Ticket::class )->get_price_value( $item['ticket_id'] );
@@ -355,7 +355,7 @@ class Order extends Abstract_Order {
 				return $item;
 			},
 			$items
-		);
+		) );
 		$total = $this->get_value_total( array_filter( $items ) );
 
 		$order_args = [
