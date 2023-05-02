@@ -172,9 +172,9 @@ class TicketArchiveByPostCest extends BaseRestCest {
 
 	protected function invalid_include_post() { return [
 			'empty_string'      => [ '' ],
-			'non_existing'      => [ '23' ],
+			'non_existing'      => [ '1234124312323' ],
 			'bad_list_1'        => [ 'foo, bar' ],
-			'non_existing_list' => [ '23, 89' ],
+			'non_existing_list' => [ '21231233, 831231239' ],
 		];
 	}
 }
