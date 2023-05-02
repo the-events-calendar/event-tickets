@@ -20,8 +20,7 @@ jobs:
           - wpunit --group="capacity"
           - integration
           - functional
-          - restv1 --skip-group="capacity"
-          - restv1 --group="capacity"
+          - restv1
           - acceptance
           - views_integration
     runs-on: ubuntu-latest
