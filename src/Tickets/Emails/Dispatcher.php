@@ -212,8 +212,8 @@ class Dispatcher {
 		 *
 		 * @since TBD
 		 *
-		 * @param array          $headers The headers.
-		 * @param Email_Abstract $this    The email object.
+		 * @param array      $headers The headers.
+		 * @param Dispatcher $this    The email object.
 		 */
 		$headers = apply_filters( 'tec_tickets_emails_dispatcher_headers', $this->headers, $this );
 
@@ -224,8 +224,8 @@ class Dispatcher {
 		 *
 		 * @since TBD
 		 *
-		 * @param array          $headers The headers.
-		 * @param Email_Abstract $this    The email object.
+		 * @param array      $headers The headers.
+		 * @param Dispatcher $this    The email object.
 		 */
 		$headers = apply_filters( "tec_tickets_emails_dispatcher_{$email_slug}_headers", $headers, $this );
 
@@ -264,8 +264,8 @@ class Dispatcher {
 		 *
 		 * @since TBD
 		 *
-		 * @param array          $attachments The attachments.
-		 * @param Email_Abstract $this        The email object.
+		 * @param array      $attachments The attachments.
+		 * @param Dispatcher $this        The email object.
 		 */
 		$attachments = apply_filters( 'tec_tickets_emails_dispatcher_attachments', $this->attachments, $this );
 
@@ -276,8 +276,8 @@ class Dispatcher {
 		 *
 		 * @since TBD
 		 *
-		 * @param array          $attachments The attachments.
-		 * @param Email_Abstract $this        The email object.
+		 * @param array      $attachments The attachments.
+		 * @param Dispatcher $this        The email object.
 		 */
 		$attachments = apply_filters( "tec_tickets_emails_dispatcher_{$email_slug}_attachments", $attachments, $this );
 
@@ -297,8 +297,8 @@ class Dispatcher {
 		 *
 		 * @since TBD
 		 *
-		 * @param string         $to   The email recipient.
-		 * @param Email_Abstract $this The email object.
+		 * @param string     $to   The email recipient.
+		 * @param Dispatcher $this The email object.
 		 */
 		$to = apply_filters( 'tec_tickets_emails_dispatcher_to', $this->to, $this );
 
@@ -309,8 +309,8 @@ class Dispatcher {
 		 *
 		 * @since TBD
 		 *
-		 * @param string         $to   The email recipient.
-		 * @param Email_Abstract $this The email object.
+		 * @param string     $to   The email recipient.
+		 * @param Dispatcher $this The email object.
 		 */
 		$to = apply_filters( "tec_tickets_emails_dispatcher_{$email_slug}_to", $to, $this );
 
@@ -341,8 +341,8 @@ class Dispatcher {
 		 *
 		 * @since TBD
 		 *
-		 * @param string         $subject  The email subject.
-		 * @param Email_Abstract $this     The email object.
+		 * @param string     $subject The email subject.
+		 * @param Dispatcher $this    The email object.
 		 */
 		$subject = apply_filters( 'tec_tickets_emails_dispatcher_subject', $this->subject, $this );
 
@@ -353,8 +353,8 @@ class Dispatcher {
 		 *
 		 * @since TBD
 		 *
-		 * @param string         $subject  The email subject.
-		 * @param Email_Abstract $this     The email object.
+		 * @param string         $subject The email subject.
+		 * @param Email_Abstract $this    The email object.
 		 */
 		$subject = apply_filters( "tec_tickets_emails_dispatcher_{$email_slug}_subject", $subject, $this );
 
@@ -385,8 +385,8 @@ class Dispatcher {
 		 *
 		 * @since TBD
 		 *
-		 * @param string         $content The email subject.
-		 * @param Email_Abstract $this    The email object.
+		 * @param string     $content The email subject.
+		 * @param Dispatcher $this    The email object.
 		 */
 		$content = apply_filters( 'tec_tickets_emails_dispatcher_content', $this->content, $this );
 
@@ -397,8 +397,8 @@ class Dispatcher {
 		 *
 		 * @since TBD
 		 *
-		 * @param string         $content The email subject.
-		 * @param Email_Abstract $this    The email object.
+		 * @param string     $content The email subject.
+		 * @param Dispatcher $this    The email object.
 		 */
 		$content = apply_filters( "tec_tickets_emails_dispatcher_{$email_slug}_content", $content, $this );
 
