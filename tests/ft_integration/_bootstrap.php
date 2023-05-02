@@ -40,7 +40,7 @@ global $wpdb;
 DB::query( "ALTER TABLE $wpdb->posts AUTO_INCREMENT = 5096" );
 
 // After each test truncate Event Ticket and TEC CT1 custom tables.
-addListener( Events::TEST_AFTER, function () use ( $custom_tables ) {
+addListener( Events::TEST_BEFORE, function () use ( $custom_tables ) {
 	$custom_tables->truncate_tables();
 
 	DB::query( 'SET FOREIGN_KEY_CHECKS=0' );

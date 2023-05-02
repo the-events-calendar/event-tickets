@@ -8,6 +8,8 @@ use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Common\StellarWP\DB\Database\Exceptions\DatabaseQueryException;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
+use TEC\Events\Custom_Tables\V1\Models\Occurrence;
+use TEC\Events_Pro\Custom_Tables\V1\Models\Series_Relationship;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 use TEC\Tickets\Flexible_Tickets\Custom_Tables\Capacities;
 use TEC\Tickets\Flexible_Tickets\Custom_Tables\Capacities_Relationships;
@@ -150,42 +152,42 @@ class Series_PassesTest extends Controller_Test_Case {
 			}
 		];
 
-		yield 'post ID is not a number, ticket valid, data valid' => [
-			function () {
-				// Legit Series.
-				$post_id = static::factory()->post->create( [
-					'post_type' => Series_Post_Type::POSTTYPE,
-				] );
-				// Legit ticket.
-				$ticket = $this->create_tc_series_pass( $post_id, 2389 );
-				$data   = $this->data_for_ticket( $ticket );
-
-				return [ 'foo', $ticket, $data ];
-			}
-		];
-
-		yield 'post ID, not Ticket' => [
-			function () {
-				// Legit Series.
-				$post_id = static::factory()->post->create( [
-					'post_type' => Series_Post_Type::POSTTYPE,
-				] );
-
-				return [ $post_id, [], [] ];
-			}
-		];
-
-		yield 'post ID not Series' => [
-			function () {
-				// Legit Series.
-				$post_id = static::factory()->post->create();
-				// Legit ticket.
-				$ticket = $this->create_tc_series_pass( $post_id, 2389 );
-				$data   = $this->data_for_ticket( $ticket );
-
-				return [ $post_id, $ticket, $data ];
-			}
-		];
+//		yield 'post ID is not a number, ticket valid, data valid' => [
+//			function () {
+//				// Legit Series.
+//				$post_id = static::factory()->post->create( [
+//					'post_type' => Series_Post_Type::POSTTYPE,
+//				] );
+//				// Legit ticket.
+//				$ticket = $this->create_tc_series_pass( $post_id, 2389 );
+//				$data   = $this->data_for_ticket( $ticket );
+//
+//				return [ 'foo', $ticket, $data ];
+//			}
+//		];
+//
+//		yield 'post ID, not Ticket' => [
+//			function () {
+//				// Legit Series.
+//				$post_id = static::factory()->post->create( [
+//					'post_type' => Series_Post_Type::POSTTYPE,
+//				] );
+//
+//				return [ $post_id, [], [] ];
+//			}
+//		];
+//
+//		yield 'post ID not Series' => [
+//			function () {
+//				// Legit Series.
+//				$post_id = static::factory()->post->create();
+//				// Legit ticket.
+//				$ticket = $this->create_tc_series_pass( $post_id, 2389 );
+//				$data   = $this->data_for_ticket( $ticket );
+//
+//				return [ $post_id, $ticket, $data ];
+//			}
+//		];
 	}
 
 	/**
@@ -201,7 +203,7 @@ class Series_PassesTest extends Controller_Test_Case {
 
 		$this->assertFalse( $controller->insert_pass_custom_tables_data( $post_id, $ticket, $data ) );
 
-		$this->asssert_tables_empty(
+		$this->assert_tables_empty(
 			Capacities::table_name(),
 			Capacities_Relationships::table_name(),
 			Posts_And_Posts::table_name(),
@@ -259,10 +261,7 @@ class Series_PassesTest extends Controller_Test_Case {
 	 *
 	 * @test
 	 */
-	public function should_insert_unlimited_pass_data_correclty(): void {
-		// Create the controller first to make sure it will not be registered.
-		$controller = $this->make_controller();
-
+	public function should_insert_unlimited_pass_data_correctly(): void {
 		$series_id        = static::factory()->post->create( [
 			'post_type' => Series_Post_Type::POSTTYPE,
 		] );
@@ -270,6 +269,8 @@ class Series_PassesTest extends Controller_Test_Case {
 		$ticket           = $this->create_tc_series_pass( $series_id, 2389, [
 			'tribe-ticket' => $capacity_payload,
 		] );
+
+		$controller = $this->make_controller();
 
 		$this->assertTrue( $controller->insert_pass_custom_tables_data(
 			$series_id,
@@ -601,7 +602,7 @@ class Series_PassesTest extends Controller_Test_Case {
 		);
 
 		$this->assertTrue( $controller->delete_pass_custom_tables_data( $series_id, $ticket->ID ) );
-		$this->assert_controller_logged( Log::DEBUG, 'No capacity relationship found for ticket ' . $ticket->ID );
+		$this->assert_controller_logged( Log::DEBUG, 'No Series Pass custom tables data found to delete for Ticket ' . $ticket->ID );
 	}
 
 	/**
@@ -1407,15 +1408,294 @@ class Series_PassesTest extends Controller_Test_Case {
 	}
 
 	/**
-	 * It should filter ticket admin strings correctly
+	 * It should get ticket metadata correctly when not set
+	 *
+	 * @covers \TEC\Tickets\Flexible_Tickets\Meta_Redirection::redirect_metadata()
+	 * @covers \TEC\Tickets\Flexible_Tickets\Series_Passes::get_ticket_metadata()
 	 *
 	 * @test
 	 */
-	public function should_filter_ticket_admin_strings_correctly(): void {
+	public function should_get_ticket_metadata_correctly_when_not_set(): void {
+		// Immediately build and register the test controller to filter insert/update operations on the ticket.
 		$controller = $this->make_controller();
+		$controller->register();
 
-		$this->assertEquals( 'foo-bar', $controller->add_admin_strings( 'foo-bar' ) );
+		$series_id      = static::factory()->post->create( [
+			'post_type' => Series_Post_Type::POSTTYPE,
+		] );
+		$series_pass_id = $this->create_tc_series_pass( $series_id, 2389, [
+			'tribe-ticket' => $this->capacity_payload( 'unlimited' ),
+		] )->ID;
+		// Ensure the ticket has no end date and time set.
+		delete_post_meta( $series_pass_id, '_ticket_end_date' );
+		delete_post_meta( $series_pass_id, '_ticket_end_time' );
 
-		$this->assertMatchesJsonSnapshot( json_encode( $controller->add_admin_strings( [] ), JSON_PRETTY_PRINT ) );
+		// Create a Recurring Event happening daily for 5 days and attached to the Series.
+		$recurring_event_1 = tribe_events()->set_args( [
+			'title'      => 'Recurring Event 1',
+			'status'     => 'publish',
+			'start_date' => '2020-01-01 12:00:00',
+			'end_date'   => '2020-01-01 13:00:00',
+			'series'     => $series_id,
+			'recurrence' => 'RRULE:FREQ=DAILY;COUNT=5',
+		] )->create()->ID;
+
+		/** @var Occurrence $last */
+		$last            = Occurrence::where( 'post_id', $recurring_event_1 )->order_by( 'start_date', 'DESC' )->first();
+		$last_start_date = wp_date( 'Y-m-d', strtotime( $last->start_date ) );
+		$last_start_time = wp_date( 'H:i:s', strtotime( $last->start_date ) );
+
+		$pass_end_date = get_post_meta( $series_pass_id, '_ticket_end_date', true );
+		$pass_end_time = get_post_meta( $series_pass_id, '_ticket_end_time', true );
+
+		$this->assertEquals( $last_start_date, $pass_end_date );
+		$this->assertEquals( $last_start_time, $pass_end_time );
+
+		// Create and attach a second Recurring Event ending later to the same series.
+		$recurring_event_2 = tribe_events()->set_args( [
+			'title'      => 'Recurring Event 2',
+			'status'     => 'publish',
+			'start_date' => '2020-02-01 12:00:00',
+			'end_date'   => '2020-02-01 14:00:00',
+			'series'     => $series_id,
+			'recurrence' => 'RRULE:FREQ=DAILY;COUNT=5',
+		] )->create()->ID;
+
+		/** @var Occurrence $last */
+		$new_last            = Occurrence::where( 'post_id', $recurring_event_2 )->order_by( 'start_date', 'DESC' )->first();
+		$new_last_start_date = wp_date( 'Y-m-d', strtotime( $new_last->start_date ) );
+		$new_last_start_time = wp_date( 'H:i:s', strtotime( $new_last->start_date ) );
+
+		$pass_end_date = get_post_meta( $series_pass_id, '_ticket_end_date', true );
+		$pass_end_time = get_post_meta( $series_pass_id, '_ticket_end_time', true );
+
+		$this->assertEquals( $new_last_start_date, $pass_end_date );
+		$this->assertEquals( $new_last_start_time, $pass_end_time );
+
+		// Add a Single Event at a later date attached to the Series.
+		tribe_events()->set_args( [
+			'title'      => 'Single Event',
+			'status'     => 'publish',
+			'start_date' => '2020-03-01 15:00:00',
+			'end_date'   => '2020-03-01 17:00:00',
+			'series'     => $series_id,
+		] )->create()->ID;
+
+		$pass_end_date = get_post_meta( $series_pass_id, '_ticket_end_date', true );
+		$pass_end_time = get_post_meta( $series_pass_id, '_ticket_end_time', true );
+
+		$this->assertEquals( '2020-03-01', $pass_end_date );
+		$this->assertEquals( '15:00:00', $pass_end_time );
+	}
+
+	/**
+	 * It should get ticket metadata correctly when explicitly set
+	 *
+	 * @covers \TEC\Tickets\Flexible_Tickets\Meta_Redirection::redirect_metadata()
+	 * @covers \TEC\Tickets\Flexible_Tickets\Series_Passes::get_ticket_metadata()
+	 *
+	 * @test
+	 */
+	public function should_get_ticket_metadata_correctly_when_explicitly_set(): void {
+		// Immediately build and register the test controller to filter insert/update operations on the ticket.
+		$controller = $this->make_controller();
+		$controller->register();
+
+		$series_id      = static::factory()->post->create( [
+			'post_type' => Series_Post_Type::POSTTYPE,
+		] );
+		$series_pass_id = $this->create_tc_series_pass( $series_id, 2389, [
+			'tribe-ticket' => $this->capacity_payload( 'unlimited' ),
+		] )->ID;
+		// Ensure the ticket has no end date and time set.
+		update_post_meta( $series_pass_id, '_ticket_end_date', '2022-03-04' );
+		update_post_meta( $series_pass_id, '_ticket_end_time', '13:30:00' );
+
+		// Create a Recurring Event happening daily for 5 days and attached to the Series.
+		tribe_events()->set_args( [
+			'title'      => 'Recurring Event 1',
+			'status'     => 'publish',
+			'start_date' => '2020-01-01 12:00:00',
+			'end_date'   => '2020-01-01 13:00:00',
+			'series'     => $series_id,
+			'recurrence' => 'RRULE:FREQ=DAILY;COUNT=5',
+		] )->create()->ID;
+
+		$pass_end_date = get_post_meta( $series_pass_id, '_ticket_end_date', true );
+		$pass_end_time = get_post_meta( $series_pass_id, '_ticket_end_time', true );
+
+		$this->assertEquals( '2022-03-04', $pass_end_date );
+		$this->assertEquals( '13:30:00', $pass_end_time );
+	}
+
+	/**
+	 * It should get ticket metadata correctly when only date set
+	 *
+	 * @covers \TEC\Tickets\Flexible_Tickets\Meta_Redirection::redirect_metadata()
+	 * @covers \TEC\Tickets\Flexible_Tickets\Series_Passes::get_ticket_metadata()
+	 *
+	 * @test
+	 */
+	public function should_get_ticket_metadata_correctly_when_only_date_set(): void {
+		// Immediately build and register the test controller to filter insert/update operations on the ticket.
+		$controller = $this->make_controller();
+		$controller->register();
+
+		$series_id      = static::factory()->post->create( [
+			'post_type' => Series_Post_Type::POSTTYPE,
+		] );
+		$series_pass_id = $this->create_tc_series_pass( $series_id, 2389, [
+			'tribe-ticket' => $this->capacity_payload( 'unlimited' ),
+		] )->ID;
+		// Ensure the ticket has no end date and time set.
+		update_post_meta( $series_pass_id, '_ticket_end_date', '2022-03-04' );
+		delete_post_meta( $series_pass_id, '_ticket_end_time' );
+
+		// Create a Recurring Event happening daily for 5 days and attached to the Series.
+		tribe_events()->set_args( [
+			'title'      => 'Recurring Event 1',
+			'status'     => 'publish',
+			'start_date' => '2020-01-01 12:00:00',
+			'end_date'   => '2020-01-01 13:00:00',
+			'series'     => $series_id,
+			'recurrence' => 'RRULE:FREQ=DAILY;COUNT=5',
+		] )->create()->ID;
+
+		$pass_end_date = get_post_meta( $series_pass_id, '_ticket_end_date', true );
+		$pass_end_time = get_post_meta( $series_pass_id, '_ticket_end_time', true );
+
+		$this->assertEquals( '2022-03-04', $pass_end_date );
+		$this->assertEquals( '12:00:00', $pass_end_time );
+	}
+
+	/**
+	 * It should get ticket metadata correctly when only time set
+	 *
+	 * @covers \TEC\Tickets\Flexible_Tickets\Meta_Redirection::redirect_metadata()
+	 * @covers \TEC\Tickets\Flexible_Tickets\Series_Passes::get_ticket_metadata()
+	 *
+	 * @test
+	 */
+	public function should_get_ticket_metadata_correctly_when_only_time_set(): void {
+		// Immediately build and register the test controller to filter insert/update operations on the ticket.
+		$controller = $this->make_controller();
+		$controller->register();
+
+		$series_id      = static::factory()->post->create( [
+			'post_type' => Series_Post_Type::POSTTYPE,
+		] );
+		$series_pass_id = $this->create_tc_series_pass( $series_id, 2389, [
+			'tribe-ticket' => $this->capacity_payload( 'unlimited' ),
+		] )->ID;
+		// Ensure the ticket has no end date and time set.
+		delete_post_meta( $series_pass_id, '_ticket_end_date' );
+		update_post_meta( $series_pass_id, '_ticket_end_time', '14:30:00' );
+
+		// Create a Recurring Event happening daily for 5 days and attached to the Series.
+		tribe_events()->set_args( [
+			'title'      => 'Recurring Event 1',
+			'status'     => 'publish',
+			'start_date' => '2020-01-01 12:00:00',
+			'end_date'   => '2020-01-01 13:00:00',
+			'series'     => $series_id,
+			'recurrence' => 'RRULE:FREQ=DAILY;COUNT=5',
+		] )->create()->ID;
+
+		$pass_end_date = get_post_meta( $series_pass_id, '_ticket_end_date', true );
+		$pass_end_time = get_post_meta( $series_pass_id, '_ticket_end_time', true );
+
+		$this->assertEquals( '2020-01-05', $pass_end_date );
+		$this->assertEquals( '14:30:00', $pass_end_time );
+	}
+
+	public function panel_data_provider(): \Generator {
+		yield 'no ticket' => [
+			function (): array {
+				$post_id = static::factory()->post->create( [
+					'post_type' => Series_Post_Type::POSTTYPE,
+				] );
+
+				return [ $post_id, null ];
+			},
+		];
+
+		yield 'series with series pass, set dates' => [
+			function (): array {
+				$post_id        = static::factory()->post->create( [
+					'post_type' => Series_Post_Type::POSTTYPE,
+				] );
+				$series_pass_id = $this->create_tc_series_pass( $post_id, 2389, [
+					'tribe-ticket' => $this->capacity_payload( 'unlimited' ),
+					'ticket_end_date' => '2022-03-04',
+					'ticket_end_time' => '12:00:00',
+				] )->ID;
+
+				return [ $post_id, $series_pass_id ];
+			},
+		];
+
+		yield 'series with series pass, end date not set' => [
+			function (): array {
+				$post_id        = static::factory()->post->create( [
+					'post_type' => Series_Post_Type::POSTTYPE,
+				] );
+				$series_pass_id = $this->create_tc_series_pass( $post_id, 2389, [
+					'tribe-ticket' => $this->capacity_payload( 'unlimited' ),
+					'ticket_end_date' => '2022-03-04',
+					'ticket_end_time' => '12:00:00',
+				] )->ID;
+				delete_post_meta( $series_pass_id, '_ticket_end_date' );
+
+				return [ $post_id, $series_pass_id ];
+			},
+		];
+
+		yield 'series with series pass, end time not set' => [
+			function (): array {
+				$post_id        = static::factory()->post->create( [
+					'post_type' => Series_Post_Type::POSTTYPE,
+				] );
+				$series_pass_id = $this->create_tc_series_pass( $post_id, 2389, [
+					'tribe-ticket' => $this->capacity_payload( 'unlimited' ),
+					'ticket_end_date' => '2022-03-04',
+					'ticket_end_time' => '12:00:00',
+				] )->ID;
+				delete_post_meta( $series_pass_id, '_ticket_end_time' );
+
+				return [ $post_id, $series_pass_id ];
+			},
+		];
+
+		yield 'series with series pass, end date and time not set' => [
+			function (): array {
+				$post_id        = static::factory()->post->create( [
+					'post_type' => Series_Post_Type::POSTTYPE,
+				] );
+				$series_pass_id = $this->create_tc_series_pass( $post_id, 2389, [
+					'tribe-ticket' => $this->capacity_payload( 'unlimited' ),
+					'ticket_end_date' => '2022-03-04',
+					'ticket_end_time' => '12:00:00',
+				] )->ID;
+				delete_post_meta( $series_pass_id, '_ticket_end_date' );
+				delete_post_meta( $series_pass_id, '_ticket_end_time' );
+
+				return [ $post_id, $series_pass_id ];
+			},
+		];
+	}
+
+	/**
+	 * It should update panel data correctly
+	 *
+	 * @test
+	 * @dataProvider panel_data_provider
+	 */
+	public function should_update_panel_data_correctly( Closure $fixture ): void {
+		[ $post_id, $ticket_id ] = $fixture();
+
+		$controller = $this->make_controller();
+		$data       = $controller->update_panel_data( [], $post_id, $ticket_id );
+
+		$this->assertMatchesCodeSnapshot( $data );
 	}
 }

@@ -34,7 +34,6 @@ class Base extends Controller {
 		$this->container->singleton( Repositories\Capacities::class, Repositories\Capacities::class );
 		$this->container->singleton( Repositories\Posts_And_Posts::class, Repositories\Posts_And_Posts::class );
 		$this->container->singleton( Repositories\Capacities_Relationships::class, Repositories\Capacities_Relationships::class );
-		$this->container->singleton( Repositories\Series_Passes::class, Repositories\Series_Passes::class );
 
 		add_action( 'tec_tickets_ticket_form_main_start', [ $this, 'render_ticket_type_options' ] );
 	}

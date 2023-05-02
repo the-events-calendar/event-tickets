@@ -3,8 +3,12 @@
 namespace TEC\Tickets\Flexible_Tickets;
 
 use TEC\Common\Tests\Provider\Controller_Test_Case;
+use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
+use TEC\Tickets\Flexible_Tickets\Test\Traits\Series_Pass_Factory;
 
 class Meta_RedirectionTest extends Controller_Test_Case {
+	use Series_Pass_Factory;
+
 	protected string $controller_class = Meta_Redirection::class;
 
 	public function bad_redirect_metadata_input(): array {

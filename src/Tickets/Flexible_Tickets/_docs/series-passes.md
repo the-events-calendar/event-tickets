@@ -22,7 +22,7 @@ Downloads.
 The UI to create, edit and delete a Series Pass is the almost the same as for any other ticket type.
 
 Code-wise, the Controller responsible for the handling of Series Passes is
-the `TEC\Tickets\Flexible_Tickets\Series_Passes` one.
+the `TEC\Tickets\Flexible_Tickets\Repository` one.
 The controller will hook on the existing AJAX actions to handle the CRUD operations to insert, update and remove the
 information stored in the custom tables.
 

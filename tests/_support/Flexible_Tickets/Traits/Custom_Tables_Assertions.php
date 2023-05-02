@@ -47,8 +47,6 @@ trait Custom_Tables_Assertions {
 
 		$capacity = $capacities[0];
 
-		codecept_debug( $capacity );
-
 		foreach ( $capacities_criteria as $key => $value ) {
 			$this->assertEquals(
 				$value,
@@ -58,7 +56,7 @@ trait Custom_Tables_Assertions {
 		}
 	}
 
-	protected function asssert_tables_empty( string ...$tables ): void {
+	protected function assert_tables_empty( string ...$tables ): void {
 		global $wpdb;
 		foreach ( $tables as $table ) {
 			$this->assertEmpty( $wpdb->get_var( "SELECT COUNT(*) FROM $table" ) );

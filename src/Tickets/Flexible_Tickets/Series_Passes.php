@@ -10,26 +10,19 @@
 namespace TEC\Tickets\Flexible_Tickets;
 
 use Exception;
-use tad_DI52_Container;
 use TEC\Common\Provider\Controller;
-use TEC\Common\StellarWP\DB\DB;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 use TEC\Events_Pro\Custom_Tables\V1\Templates\Series_Filters;
-use TEC\Tickets\Flexible_Tickets\Custom_Tables\Capacities;
-use TEC\Tickets\Flexible_Tickets\Custom_Tables\Posts_And_Posts;
-use TEC\Tickets\Flexible_Tickets\Exceptions\Invalid_Data_Exception;
-use TEC\Tickets\Flexible_Tickets\Models\Capacity;
-use TEC\Tickets\Flexible_Tickets\Models\Capacity_Relationship;
-use TEC\Tickets\Flexible_Tickets\Models\Post_And_Post;
+use TEC\Tickets\Flexible_Tickets\Series_Passes\Metadata;
+use TEC\Tickets\Flexible_Tickets\Series_Passes\Repository as Series_Passes_Repository;
 use TEC\Tickets\Flexible_Tickets\Templates\Admin_Views;
-use Tribe__Tickets__Global_Stock as Global_Stock;
 use Tribe__Tickets__RSVP as RSVP;
 use Tribe__Tickets__Ticket_Object as Ticket;
 use Tribe__Tickets__Tickets as Tickets;
 use WP_Post;
 
 /**
- * Class Series_Passes.
+ * Class Repository.
  *
  * @since   TBD
  *
@@ -42,31 +35,6 @@ class Series_Passes extends Controller {
 	 * @since TBD
 	 */
 	public const HANDLED_TICKET_TYPE = 'series_pass';
-
-	/**
-	 * A reference to the templates' handler.
-	 *
-	 * @since TBD
-	 *
-	 * @var Admin_Views
-	 */
-	private Admin_Views $admin_views;
-
-	/**
-	 * Series_Passes constructor.
-	 *
-	 * since TBD
-	 *
-	 * @param tad_DI52_Container $container   The container instance.
-	 * @param Admin_Views        $admin_views The templates handler.
-	 */
-	public function __construct(
-		tad_DI52_Container $container,
-		Admin_Views $admin_views
-	) {
-		parent::__construct( $container );
-		$this->admin_views = $admin_views;
-	}
 
 	/**
 	 * {@inheritDoc}
@@ -83,7 +51,8 @@ class Series_Passes extends Controller {
 		add_filter( 'the_content', [ $this, 'reorder_series_content' ], 0 );
 		add_filter( 'tec_tickets_ticket_panel_data', [ $this, 'update_panel_data' ], 10, 3 );
 
-		$this->container->singleton( Series_Passes\Capacity_Updater::class, Series_Passes\Capacity_Updater::class );
+		$this->container->singleton( Series_Passes\Repository::class, Series_Passes\Repository::class );
+		$this->container->singleton( Series_Passes\Metadata::class, Series_Passes\Metadata::class );
 	}
 
 	/**
@@ -100,7 +69,6 @@ class Series_Passes extends Controller {
 		remove_action( 'tec_tickets_ticket_update', [ $this, 'update_pass_custom_tables_data' ] );
 		remove_filter( 'the_content', [ $this, 'reorder_series_content' ], 0 );
 		remove_filter( 'tec_tickets_ticket_panel_data', [ $this, 'update_panel_data' ] );
-
 	}
 
 	/**
@@ -124,9 +92,33 @@ class Series_Passes extends Controller {
 		}
 
 		$ticket_providing_modules = array_diff_key( Tickets::modules(), [ RSVP::class => true ] );
-		$this->admin_views->template( 'series-pass-form-toggle', [
+		$admin_views              = $this->container->get( Admin_Views::class );
+		$admin_views->template( 'series-pass-form-toggle', [
 			'disabled' => count( $ticket_providing_modules ) === 0,
 		] );
+	}
+
+	/**
+	 * Parses the data passed as input to insert or update a Series Pass to make sure
+	 * it's correct.
+	 *
+	 * @since TBD
+	 *
+	 * @param int    $post_id The post ID the ticket has been created or updated for.
+	 * @param Ticket $ticket  The created or updated ticket object.
+	 * @param array  $data    The data to insert or update for the ticket.
+	 *
+	 * @return bool Whether the data is correct.
+	 */
+	private function check_upsert_data( $post_id, $ticket, $data ): bool {
+		return is_int( $post_id ) && $post_id > 0
+		       && (
+			       ( $series = get_post( $post_id ) ) instanceof WP_Post
+			       && $series->post_type === Series_Post_Type::POSTTYPE
+		       )
+		       && $ticket instanceof Ticket
+		       && ( $ticket->type() ?? 'default' ) === self::HANDLED_TICKET_TYPE
+		       && is_array( $data );
 	}
 
 	/**
@@ -141,100 +133,18 @@ class Series_Passes extends Controller {
 	 * @throws Exception If the data could not be added.
 	 */
 	public function insert_pass_custom_tables_data( $post_id, $ticket, $data ): bool {
-		if ( ! ( $this->check_upsert_data( $post_id, $ticket, $data ) ) ) {
+		if ( ! $this->check_upsert_data( $post_id, $ticket, $data ) ) {
 			return false;
 		}
 
-		// Reload the ticket object to make sure we have the latest data and the global stock information.
-		$ticket = Tickets::load_ticket_object( $ticket->ID );
+		$inserted = $this->container->get( Series_Passes_Repository::class )
+		                            ->insert_pass_data( $post_id, $ticket, $data );
 
-		$capacity_data = $data['tribe-ticket'];
-		// No mode means unlimited.
-		$capacity_mode = $capacity_data['mode'] ?: Capacities::MODE_UNLIMITED;
-		$ticket_id     = $ticket->ID;
+		if ( $inserted ) {
+			$this->debug( "Added Series Pass custom tables data for Ticket {$ticket->ID} and Series {$post_id}" );
+		}
 
-		DB::transaction( function () use ( $ticket_id, $post_id, $capacity_mode, $capacity_data ) {
-			$capacities_relationships = $this->container->get( Repositories\Capacities_Relationships::class );
-
-			// Start by inserting the post_and_post relationship between the ticket and the series.
-			Post_And_Post::create( [
-				'post_id_1' => (int) $ticket_id,
-				'post_id_2' => (int) $post_id,
-				'type'      => Posts_And_Posts::TYPE_TICKET_AND_POST_PREFIX . Series_Post_Type::POSTTYPE,
-			] );
-
-			if ( $capacity_mode === Capacities::MODE_UNLIMITED ) {
-				Capacity_Relationship::create( [
-					'object_id'          => $ticket_id,
-					'capacity_id'        => Capacity::create_unlimited()->id,
-					'parent_capacity_id' => 0,
-				] );
-
-				return;
-			}
-
-			if ( ! isset( $capacity_data['capacity'] ) ) {
-				throw new Invalid_Data_Exception( 'The capacity data is missing.', Invalid_Data_Exception::CAPACITY_VALUE_MISSING );
-			}
-
-			if ( in_array( $capacity_mode, [
-				Global_Stock::GLOBAL_STOCK_MODE,
-				Global_Stock::CAPPED_STOCK_MODE
-			], true ) ) {
-				if ( ! isset( $capacity_data['event_capacity'] ) ) {
-					throw new Invalid_Data_Exception( 'The post capacity data is missing.', Invalid_Data_Exception::EVENT_CAPACITY_VALUE_MISSING );
-				}
-
-				// Update or insert the global capacity for the Event.
-				$global_capacity_relationship = $capacities_relationships->find_by_object_id( $post_id );
-
-				if ( $global_capacity_relationship === null ) {
-					$global_capacity              = Capacity::create_global( $capacity_data['event_capacity'] );
-					$global_capacity_relationship = Capacity_Relationship::create( [
-						'object_id'          => $post_id,
-						'capacity_id'        => $global_capacity->id,
-						'parent_capacity_id' => 0,
-					] );
-				}
-
-				if ( $capacity_mode === Global_Stock::GLOBAL_STOCK_MODE ) {
-					// Relate the ticket with the global capacity for the Event.
-					Capacity_Relationship::create( [
-						'object_id'          => $ticket_id,
-						'capacity_id'        => $global_capacity_relationship->capacity_id,
-						'parent_capacity_id' => 0,
-					] );
-
-					return;
-				}
-
-				// Capped; create a new capacity for the ticket subordinated to the global capacity for the Event.
-				Capacity_Relationship::create( [
-					'object_id'          => $ticket_id,
-					'capacity_id'        => Capacity::create_capped( $capacity_data['capacity'] )->id,
-					'parent_capacity_id' => $global_capacity_relationship->id,
-				] );
-
-				return;
-			}
-
-			if ( $capacity_mode === Global_Stock::OWN_STOCK_MODE ) {
-				// Create a new capacity for the ticket.
-				Capacity_Relationship::create( [
-					'object_id'          => $ticket_id,
-					'capacity_id'        => Capacity::create_own( $capacity_data['capacity'] )->id,
-					'parent_capacity_id' => 0,
-				] );
-
-				return;
-			}
-
-			throw new Invalid_Data_Exception( 'The capacity mode is invalid.', Invalid_Data_Exception::CAPACITY_MODE_INVALID );
-		} );
-
-		$this->debug( "Added Series Pass custom tables data for Ticket {$ticket->ID} and Series {$post_id}" );
-
-		return true;
+		return $inserted;
 	}
 
 	/**
@@ -263,32 +173,16 @@ class Series_Passes extends Controller {
 			return false;
 		}
 
-		DB::transaction( function () use ( $post_id, $ticket_id ) {
-			$capacities_relationships = $this->container->get( Repositories\Capacities_Relationships::class );
-			$capacity_relationship    = $capacities_relationships->find_by_object_id( $ticket_id );
+		$deleted = $this->container->get( Series_Passes_Repository::class )
+		                           ->delete_pass_data( $post_id, $ticket_id );
 
-			if ( $capacity_relationship === null ) {
-				// No point in continuing if there is no capacity relationship, it might have been deleted already.
-				$this->debug( 'No capacity relationship found for ticket ' . $ticket_id );
+		if ( $deleted ) {
+			$this->debug( 'Series Pass custom tables data deleted for Ticket ' . $ticket_id );
+		} else {
+			$this->debug( 'No Series Pass custom tables data found to delete for Ticket ' . $ticket_id );
+		}
 
-				return;
-			}
-
-			$capacity_relationship->delete();
-
-			$capacities = $this->container->get( Repositories\Capacities::class );
-			$capacities->prepareQuery()
-			           ->where( 'id', $capacity_relationship->capacity_id )
-			           ->delete();
-
-			$posts_and_posts = $this->container->get( Repositories\Posts_And_Posts::class );
-			$posts_and_posts->prepareQuery()
-			                ->where( 'post_id_1', $ticket_id )
-			                ->where( 'post_id_2', $post_id )
-			                ->where( 'type', Posts_And_Posts::TYPE_TICKET_AND_POST_PREFIX . Series_Post_Type::POSTTYPE )
-			                ->delete();
-		} );
-
+		// The method is idem-potent: the data was deleted, just not this time.
 		return true;
 	}
 
@@ -306,46 +200,18 @@ class Series_Passes extends Controller {
 	 * @throws Exception If the data could not be updated.
 	 */
 	public function update_pass_custom_tables_data( $post_id, $ticket, $data ): bool {
-		if ( ! ( $this->check_upsert_data( $post_id, $ticket, $data ) ) ) {
+		if ( ! $this->check_upsert_data( $post_id, $ticket, $data ) ) {
 			return false;
 		}
 
-		// Reload the ticket object to make sure we have the latest data and the global stock information.
-		$ticket        = Tickets::load_ticket_object( $ticket->ID );
-		$ticket_id     = $ticket->ID;
-		$capacity_data = $data['tribe-ticket'];
-		// No mode means unlimited.
-		$new_mode = $capacity_data['mode'] ?: Capacities::MODE_UNLIMITED;
+		$updated = $this->container->get( Series_Passes_Repository::class )
+		                           ->update_pass_data( (int) $post_id, $ticket, $data );
 
-		DB::transaction( function () use ( $post_id, $ticket_id, $new_mode, $capacity_data ) {
-			$updater = $this->container->make( Series_Passes\Capacity_Updater::class );
-			$updater->update( $post_id, $ticket_id, $new_mode, $capacity_data );
-		} );
+		if ( $updated ) {
+			$this->debug( "Updated Series Pass custom tables data for Ticket {$ticket->ID} and Series {$post_id}" );
+		}
 
-		return true;
-	}
-
-	/**
-	 * Parses the data passed as input to insert or update a Series Pass to make sure
-	 * it's correct.
-	 *
-	 * @since TBD
-	 *
-	 * @param int    $post_id The post ID the ticket has been created or updated for.
-	 * @param Ticket $ticket  The created or updated ticket object.
-	 * @param array  $data    The data to insert or update for the ticket.
-	 *
-	 * @return bool Whether the data is correct.
-	 */
-	private function check_upsert_data( $post_id, $ticket, $data ): bool {
-		return is_int( $post_id ) && $post_id > 0
-		       && (
-			       ( $series = get_post( $post_id ) ) instanceof WP_Post
-			       && $series->post_type === Series_Post_Type::POSTTYPE
-		       )
-		       && $ticket instanceof Ticket
-		       && ( $ticket->type() ?? 'default' ) === self::HANDLED_TICKET_TYPE
-		       && is_array( $data );
+		return $updated;
 	}
 
 	/**
@@ -385,10 +251,13 @@ class Series_Passes extends Controller {
 	 * @return array<string> The list of admin strings.
 	 */
 	public function update_panel_data( array $data, int $post_id, ?int $ticket_id ): array {
-		$this->container->get( Meta_Redirection::class )->stop();
+		$meta_redirection = $this->container->get( Meta_Redirection::class );
+
+		// Stop the meta redirection to avoid infinite loops.
+		$meta_redirection->stop();
 
 		if ( get_post_meta( $ticket_id, '_type', true ) !== self::HANDLED_TICKET_TYPE ) {
-			$this->container->get( Meta_Redirection::class )->resume();
+			$meta_redirection->resume();
 
 			return $data;
 		}
@@ -401,14 +270,16 @@ class Series_Passes extends Controller {
 
 		$set_end_date = get_post_meta( $ticket_id, '_ticket_end_date', true );
 		$set_end_time = get_post_meta( $ticket_id, '_ticket_end_time', true );
-		$this->container->get( Meta_Redirection::class )->resume();
 
-		if ( $set_end_date || $set_end_time ) {
-			return $data;
+		$meta_redirection->resume();
+
+		if ( ! $set_end_date ) {
+			$data['ticket_end_date'] = '';
 		}
 
-		$data['ticket_end_date'] = '';
-		$data['ticket_end_time'] = '';
+		if ( ! $set_end_time ) {
+			$data['ticket_end_time'] = '';
+		}
 
 		return $data;
 	}
@@ -425,29 +296,16 @@ class Series_Passes extends Controller {
 	 * @return mixed Either the original value or the filtered value.
 	 */
 	public function get_ticket_metadata( $value, int $ticket_id, string $meta_key ) {
-		switch ( $meta_key ) {
-			case '_ticket_end_date':
-				$meta_value = get_post_meta( $ticket_id, '_ticket_end_date', true );
-				if ( ! empty( $meta_value ) ) {
-					return $meta_value;
-				}
-
-				$last = $this->container->get( Repositories\Series_Passes::class )
-				                        ->get_last_occurrence_by_ticket( $ticket_id );
-
-				return $last ? $last->dates->start->format( 'Y-m-d' ) : $value;
-			case '_ticket_end_time':
-				$meta_value = get_post_meta( $ticket_id, '_ticket_end_time', true );
-				if ( ! empty( $meta_value ) ) {
-					return $meta_value;
-				}
-
-				$last = $this->container->get( Repositories\Series_Passes::class )
-				                        ->get_last_occurrence_by_ticket( $ticket_id );
-
-				return $last ? $last->dates->start->format( 'H:i:s' ) : $value;
-			default:
-				return $value;
+		if ( ! in_array( $meta_key, [ '_ticket_end_date', '_ticket_end_time' ], true ) ) {
+			return $value;
 		}
+
+		$metadata = $this->container->get( Metadata::class );
+
+		if ( $meta_key === '_ticket_end_date' ) {
+			return $metadata->get_ticket_end_date( $ticket_id );
+		}
+
+		return $metadata->get_ticket_end_time( $ticket_id );
 	}
 }
