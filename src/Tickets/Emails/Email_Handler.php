@@ -53,7 +53,9 @@ class Email_Handler extends \tad_DI52_ServiceProvider {
 		foreach ( $this->default_emails as $email_class ) {
 			// Register as a singleton for internal ease of use.
 			$this->container->singleton( $email_class, $email_class, [ 'hook' ] );
-			$this->emails[] = new $email_class;
+
+			// Create all the instance and save.
+			$this->emails[] = $this->container->make( $email_class );
 		}
 
 		$this->container->singleton( static::class, $this );
