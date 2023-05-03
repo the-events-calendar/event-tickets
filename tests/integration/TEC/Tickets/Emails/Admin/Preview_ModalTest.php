@@ -79,7 +79,7 @@ class Preview_ModalTest extends WPTestCase {
 		$this->set_class_fn_return( Emails_Tab::class, 'is_on_tab', true );
 
 		$modal = new Preview_Modal;
-		$ajax_content = $modal->get_modal_content_ajax( '', [ 'currentEmail' => $email->slug ] );
+		$ajax_content = $modal->get_modal_content_ajax( '', [ 'currentEmail' => $email->get_id() ] );
 		$this->assertMatchesSnapshot( $ajax_content );
 	}
 }

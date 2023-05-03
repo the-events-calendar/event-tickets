@@ -220,7 +220,7 @@ class Preview_Data {
 	 */
 	public static function get_tickets( $args = [] ): array {
 		$default = [
-			[
+			(object) [
 				'ID' => -98,
 				'post_author'     => 1,
 				'post_date'       => current_time( 'mysql' ),
@@ -267,19 +267,19 @@ class Preview_Data {
 
 	/**
 	 * Get preview placeholders.
-	 * 
+	 *
 	 * @since TBD
 	 *
 	 * @param array $args Override arguments.
-	 * 
+	 *
 	 * @return array
 	 */
 	public static function get_placeholders( $args = [] ): array {
 		$tickets = self::get_tickets();
 		$order   = self::get_order();
 		$default = [
-			'{attendee_name}'  => $tickets[0]['purchaser_name'],
-			'{attendee_email}' => $tickets[0]['purchaser_email'],
+			'{attendee_name}'  => $tickets[0]->purchaser_name,
+			'{attendee_email}' => $tickets[0]->purchaser_email,
 			'{order_number}'   => $order->ID,
 		];
 		return wp_parse_args( $args, $default );
