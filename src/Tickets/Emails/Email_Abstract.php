@@ -2,7 +2,7 @@
 /**
  * Tickets Emails Email abstract class.
  *
- * @since 5.5.9
+ * @since   5.5.9
  *
  * @package TEC\Tickets\Emails
  */
@@ -16,12 +16,11 @@ use TEC\Tickets\Emails\Admin\Emails_Tab;
 use TEC\Tickets\Emails\Admin\Settings as Emails_Settings;
 use Tribe\Tickets\Admin\Settings as Plugin_Settings;
 use Tribe__Utils__Array as Arr;
-use TEC\Tickets\Emails\JSON_LD\Handler;
 
 /**
  * Class Email_Abstract.
  *
- * @since 5.5.9
+ * @since   5.5.9
  *
  * @package TEC\Tickets\Emails
  */
@@ -43,7 +42,7 @@ abstract class Email_Abstract {
 	 *
 	 * @var string
 	 */
-	public static $slug;
+	public $slug;
 
 	/**
 	 * Email template filename.
@@ -109,17 +108,6 @@ abstract class Email_Abstract {
 	protected $data = [];
 
 	/**
-	 * Returns the slug.
-	 *
-	 * @since TBD
-	 *
-	 * @return string
-	 */
-	public static function get_slug(): string {
-		return static::$slug;
-	}
-
-	/**
 	 * Handles the hooking of a given email to the correct actions in WP.
 	 *
 	 * @since 5.5.9
@@ -133,6 +121,8 @@ abstract class Email_Abstract {
 
 		$this->set_placeholders( $default_placeholders );
 	}
+
+
 
 	/**
 	 * Get default email subject.
@@ -206,9 +196,9 @@ abstract class Email_Abstract {
 	 *
 	 * @param array $args The arguments.
 	 *
-	 * @return string The email content.
+	 * @return ?string The email content.
 	 */
-	abstract public function get_content( $args ): string;
+	abstract public function get_content( $args ): ?string;
 
 	/**
 	 * Get the "From" email.
@@ -240,7 +230,7 @@ abstract class Email_Abstract {
 		 * @param string         $id         The email ID.
 		 * @param Email_Abstract $this       The email object.
 		 */
-		$from_email = apply_filters( "tec_tickets_emails_" . self::get_slug() . "_from_email", $from_email, $this->id, $this );
+		$from_email = apply_filters( "tec_tickets_emails_{$this->slug}_from_email", $from_email, $this->id, $this );
 
 		return $from_email;
 	}
@@ -275,108 +265,9 @@ abstract class Email_Abstract {
 		 * @param string         $id         The email ID.
 		 * @param Email_Abstract $this       The email object.
 		 */
-		$from_name = apply_filters( "tec_tickets_emails_" . self::get_slug() . "_from_name", $from_name, $this->id, $this );
+		$from_name = apply_filters( "tec_tickets_emails_{$this->slug}_from_name", $from_name, $this->id, $this );
 
 		return $from_name;
-	}
-
-	/**
-	 * Get email headers.
-	 *
-	 * @since 5.5.9
-	 *
-	 * @param array $headers The email headers.
-	 *
-	 * @return string
-	 */
-	public function get_headers( $headers = [] ): array {
-		$from_email = $this->get_from_email();
-		$from_name  = $this->get_from_name();
-
-		// Enforce headers array.
-		if ( ! is_array( $headers ) ) {
-			$headers = explode( "\r\n", $headers );
-		}
-
-		// Add From name/email to headers if no headers set yet and we have a valid From email address.
-		if ( empty( $headers ) && ! empty( $from_name ) && ! empty( $from_email ) && is_email( $from_email ) ) {
-			$from_email = filter_var( $from_email, FILTER_SANITIZE_EMAIL );
-
-			$headers[] = sprintf(
-				'From: %1$s <%2$s>',
-				stripcslashes( $from_name ),
-				$from_email
-			);
-
-			$headers[] = sprintf(
-				'Reply-To: %s',
-				$from_email
-			);
-		}
-
-		// Enforce text/html content type header.
-		if ( ! in_array( 'Content-type: text/html', $headers, true ) || ! in_array( 'Content-type: text/html; charset=utf-8', $headers, true ) ) {
-			$headers[] = 'Content-type: text/html; charset=utf-8';
-		}
-
-		/**
-		 * Filter the headers.
-		 *
-		 * @since 5.5.9
-		 *
-		 * @param array          $headers The headers.
-		 * @param string         $id      The email ID.
-		 * @param Email_Abstract $this    The email object.
-		 */
-		$headers = apply_filters( 'tec_tickets_emails_headers', $headers, $this->id, $this );
-
-		/**
-		 * Filter the headers for the particular email.
-		 *
-		 * @since 5.5.10
-		 *
-		 * @param array          $headers The headers.
-		 * @param string         $id      The email ID.
-		 * @param Email_Abstract $this    The email object.
-		 */
-		$headers = apply_filters( "tec_tickets_emails_" . self::get_slug() . "_headers", $headers, $this->id, $this );
-
-		return $headers;
-	}
-
-	/**
-	 * Get email attachments.
-	 *
-	 * @since 5.5.9
-	 *
-	 * @param array $attachments The attachments.
-	 *
-	 * @return array
-	 */
-	public function get_attachments( $attachments = [] ): array {
-		/**
-		 * Filter the attachments.
-		 *
-		 * @since 5.5.9
-		 *
-		 * @param array          $attachments The attachments.
-		 * @param string         $id          The email ID.
-		 * @param Email_Abstract $this        The email object.
-		 */
-		$attachments = apply_filters( 'tec_tickets_emails_attachments', $attachments, $this->id, $this );
-
-		/**
-		 * Filter the attachments for the particular email.
-		 *
-		 * @since 5.5.10
-		 *
-		 * @param array          $attachments The attachments.
-		 * @param string         $id          The email ID.
-		 * @param Email_Abstract $this        The email object.
-		 */
-		$attachments = apply_filters( "tec_tickets_emails_" . self::get_slug() . "_attachments", $attachments, $this->id, $this );
-
-		return $attachments;
 	}
 
 	/**
@@ -425,7 +316,7 @@ abstract class Email_Abstract {
 		 * @param string         $id           The email ID.
 		 * @param Email_Abstract $this         The email object.
 		 */
-		$placeholders = apply_filters( "tec_tickets_emails_" . self::get_slug() . "_placeholders", $placeholders, $this->id, $this );
+		$placeholders = apply_filters( "tec_tickets_emails_{$this->slug}_placeholders", $placeholders, $this->id, $this );
 
 		return $placeholders;
 	}
@@ -434,6 +325,7 @@ abstract class Email_Abstract {
 	 * Format email string.
 	 *
 	 * @param mixed $string Text to replace placeholders in.
+	 *
 	 * @return string
 	 */
 	public function format_string( $string ): string {
@@ -456,9 +348,9 @@ abstract class Email_Abstract {
 	/**
 	 * Get WordPress blog name.
 	 *
-	 * @since 5.5.9
+	 * @todo  This doesnt belong on the abstracts, it's more like a template helper.
 	 *
-	 * @todo This doesnt belong on the abstracts, it's more like a template helper.
+	 * @since 5.5.9
 	 *
 	 * @return string
 	 */
@@ -467,7 +359,7 @@ abstract class Email_Abstract {
 	}
 
 	/**
-	 * Default default content to show below email content.
+	 * Default content to show below email content.
 	 *
 	 * @since 5.5.10
 	 *
@@ -497,7 +389,14 @@ abstract class Email_Abstract {
 	 */
 	public function create_template_post() {
 		if ( $post = $this->get_post() ) {
-			return new WP_Error( 'tec-tickets-emails-email-template-already-exists', 'Template post already exists for this email.', [ 'post' => $post, 'email' => $this ] );
+			return new WP_Error(
+				'tec-tickets-emails-email-template-already-exists',
+				'Template post already exists for this email.',
+				[
+					'post'  => $post,
+					'email' => $this,
+				]
+			);
 		}
 
 		$args     = [
@@ -506,7 +405,7 @@ abstract class Email_Abstract {
 			'post_status' => 'publish',
 			'post_type'   => Post_Type::SLUG,
 			'meta_input'  => [
-				'email_to'       => $this->to,
+				'email_to'       => $this->get_to(),
 				'email_template' => $this->template,
 				'email_version'  => \Tribe__Tickets__Main::VERSION,
 			],
@@ -563,7 +462,7 @@ abstract class Email_Abstract {
 	 * @return string
 	 */
 	public function get_option_key( $option ): string {
-		return "tec-tickets-emails-" . self::get_slug() . "-{$option}";
+		return "tec-tickets-emails-{$this->slug}-{$option}";
 	}
 
 	/**
@@ -575,6 +474,7 @@ abstract class Email_Abstract {
 	 */
 	public function is_enabled(): bool {
 		$option_key = $this->get_option_key( 'enabled' );
+
 		return tribe_is_truthy( tribe_get_option( $option_key, true ) );
 	}
 
@@ -583,9 +483,9 @@ abstract class Email_Abstract {
 	 *
 	 * @since 5.5.10
 	 *
-	 * @return string The email recipient.
+	 * @return ?string The email recipient.
 	 */
-	public function get_recipient(): string {
+	public function get_recipient(): ?string {
 		$recipient = $this->recipient;
 
 		if ( empty( $recipient ) ) {
@@ -598,10 +498,10 @@ abstract class Email_Abstract {
 		 *
 		 * @since 5.5.10
 		 *
-		 * @param string         $recipient  The email recipient.
-		 * @param string         $id         The email id.
-		 * @param string         $template   Template name.
-		 * @param Email_Abstract $this     The email object.
+		 * @param string         $recipient The email recipient.
+		 * @param string         $id        The email id.
+		 * @param string         $template  Template name.
+		 * @param Email_Abstract $this      The email object.
 		 */
 		$recipient = apply_filters( 'tec_tickets_emails_recipient', $recipient, $this->id, $this->template, $this );
 
@@ -610,25 +510,14 @@ abstract class Email_Abstract {
 		 *
 		 * @since 5.5.10
 		 *
-		 * @param string         $recipient  The email recipient.
-		 * @param string         $id         The email id.
-		 * @param string         $template   Template name.
-		 * @param Email_Abstract $this     The email object.
+		 * @param string         $recipient The email recipient.
+		 * @param string         $id        The email id.
+		 * @param string         $template  Template name.
+		 * @param Email_Abstract $this      The email object.
 		 */
-		$recipient = apply_filters( "tec_tickets_emails_" . self::get_slug() . "_recipient", $recipient, $this->id, $this->template, $this );
+		$recipient = apply_filters( "tec_tickets_emails_{$this->slug}_recipient", $recipient, $this->id, $this->template, $this );
 
 		return $recipient;
-	}
-
-	/**
-	 * Get default recipient.
-	 *
-	 * @since 5.5.10
-	 *
-	 * @return string
-	 */
-	public function get_default_recipient(): string {
-		return '';
 	}
 
 	/**
@@ -636,9 +525,9 @@ abstract class Email_Abstract {
 	 *
 	 * @since 5.5.10
 	 *
-	 * @return string
+	 * @return ?string
 	 */
-	public function get_subject(): string {
+	public function get_subject(): ?string {
 		$option_key = $this->get_option_key( 'subject' );
 		$subject    = tribe_get_option( $option_key, $this->get_default_subject() );
 
@@ -666,10 +555,22 @@ abstract class Email_Abstract {
 		 * @param string         $template Template name.
 		 * @param Email_Abstract $this     The email object.
 		 */
-		$subject = apply_filters( "tec_tickets_emails_" . self::get_slug() . "_subject", $subject, $this->id, $this->template, $this );
+		$subject = apply_filters( "tec_tickets_emails_{$this->slug}_subject", $subject, $this->id, $this->template, $this );
 
 		return $this->format_string( $subject );
 	}
+
+	/**
+	 * Get default recipient.
+	 *
+	 * @since 5.5.10
+	 *
+	 * @return string
+	 */
+	public function get_default_recipient(): string {
+		return '';
+	}
+
 
 	/**
 	 * Get email heading.
@@ -681,6 +582,7 @@ abstract class Email_Abstract {
 	public function get_heading(): string {
 		$option_key = $this->get_option_key( 'heading' );
 		$heading    = tribe_get_option( $option_key, $this->get_default_heading() );
+		$heading    = stripslashes( $heading );
 
 		// @todo: Probably we want more data parsed, or maybe move the filters somewhere else as we're always gonna
 
@@ -706,7 +608,7 @@ abstract class Email_Abstract {
 		 * @param string         $template Template name.
 		 * @param Email_Abstract $this     The email object.
 		 */
-		$heading = apply_filters( "tec_tickets_emails_" . self::get_slug() . "_heading", $heading, $this->id, $this->template, $this );
+		$heading = apply_filters( "tec_tickets_emails_{$this->slug}_heading", $heading, $this->id, $this->template, $this );
 
 		return $this->format_string( $heading );
 	}
@@ -749,7 +651,7 @@ abstract class Email_Abstract {
 		 * @param string         $template Template name.
 		 * @param Email_Abstract $this     The email object.
 		 */
-		$content = apply_filters( "tec_tickets_emails_" . self::get_slug() . "_additional_content", $content, $this->id, $this->template, $this );
+		$content = apply_filters( "tec_tickets_emails_{$this->slug}_additional_content", $content, $this->id, $this->template, $this );
 
 		return $this->format_string( $content );
 	}
@@ -787,7 +689,7 @@ abstract class Email_Abstract {
 		 * @param string         $id       Email ID.
 		 * @param Email_Abstract $this     The email object.
 		 */
-		$settings = apply_filters( "tec_tickets_emails_" . self::get_slug() . "_settings", $settings, $this->id, $this );
+		$settings = apply_filters( "tec_tickets_emails_{$this->slug}_settings", $settings, $this->id, $this );
 
 		return $settings;
 	}
@@ -798,6 +700,7 @@ abstract class Email_Abstract {
 	 * @since 5.5.11
 	 *
 	 * @param array $args The arguments.
+	 *
 	 * @return array $args The modified arguments
 	 */
 	public function get_template_context( $args = [] ): array {
@@ -820,14 +723,14 @@ abstract class Email_Abstract {
 		/**
 		 * Allow filtering the template context.
 		 *
-		* @since 5.5.11
+		 * @since 5.5.11
 		 *
 		 * @param array          $args     The email arguments.
 		 * @param string         $id       The email id.
 		 * @param string         $template Template name.
 		 * @param Email_Abstract $this     The email object.
 		 */
-		$args = apply_filters( "tec_tickets_emails_" . self::get_slug() . "_template_args", $args, $this->id, $this->template, $this );
+		$args = apply_filters( "tec_tickets_emails_{$this->slug}_template_args", $args, $this->id, $this->template, $this );
 
 		return $args;
 	}
@@ -838,6 +741,7 @@ abstract class Email_Abstract {
 	 * @since 5.5.11
 	 *
 	 * @param array $args The arguments.
+	 *
 	 * @return array $args The modified arguments
 	 */
 	public function get_preview_context( $args = [] ): array {
@@ -860,14 +764,14 @@ abstract class Email_Abstract {
 		/**
 		 * Allow filtering the template context.
 		 *
-		* @since 5.5.11
+		 * @since 5.5.11
 		 *
 		 * @param array          $args     The email arguments.
 		 * @param string         $id       The email id.
 		 * @param string         $template Template name.
 		 * @param Email_Abstract $this     The email object.
 		 */
-		$args = apply_filters( "tec_tickets_emails_" . self::get_slug() . "_preview_args", $args, $this->id, $this->template, $this );
+		$args = apply_filters( "tec_tickets_emails_{$this->slug}_preview_args", $args, $this->id, $this->template, $this );
 
 		return $args;
 	}
@@ -895,54 +799,5 @@ abstract class Email_Abstract {
 	 */
 	public function get( $name, $default = null ) {
 		return Arr::get( $this->data, $name, $default );
-	}
-
-	/**
-	 * Get the `post_type` data for this email.
-	 *
-	 * @since 5.5.10
-	 *
-	 * @return array
-	 */
-	public function get_post_type_data(): array {
-		$data = [
-			'slug'     => $this->slug,
-			'title'    => $this->get_title(),
-			'template' => $this->template,
-			'to'       => $this->get_to(),
-		];
-
-		return $data;
-	}
-
-	/**
-	 * Get the related JSON data for this email.
-	 *
-	 * @since TBD
-	 *
-	 * @return array
-	 */
-	public function get_json_data() : array {
-		/**
-		 * Allow filtering the JSON data for this email.
-		 *
-		 * @since TBD
-		 *
-		 * @param array $data The JSON data.
-		 * @param Email_Abstract $this The email object.
-		 */
-		$data = apply_filters( 'tec_tickets_emails_json_data', Handler::get_data( $this ), $this );
-
-		/**
-		 * Allow filtering the JSON data for this email.
-		 *
-		 * @since TBD
-		 *
-		 * @param array $data The JSON data.
-		 * @param Email_Abstract $this The email object.
-		 */
-		$data = apply_filters( "tec_tickets_emails_" . self::get_slug() . "_json_data", $data, $this );
-
-		return $data;
 	}
 }

@@ -62,9 +62,7 @@ class Post_Type {
 	 * @since TBD
 	 */
 	public function populate_email_template_posts(): void {
-		global $wp_rewrite;
-
-		if ( ! ( isset( $wp_rewrite ) && $wp_rewrite instanceof \WP_Rewrite ) ) {
+		if ( ! did_action( 'init' ) ) {
 			// The global rewrite object is not available, bail. It's required to create the post type.
 			return;
 		}

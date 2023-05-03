@@ -7,8 +7,10 @@
 
 namespace TEC\Tickets\Emails\Email;
 
+use TEC\Tickets\Emails\Dispatcher;
 use \TEC\Tickets\Emails\Email_Template;
 use TEC\Tickets\Emails\Admin\Preview_Data;
+use TEC\Tickets\Emails\Email_Abstract;
 
 /**
  * Class Completed_Order
@@ -17,7 +19,7 @@ use TEC\Tickets\Emails\Admin\Preview_Data;
  *
  * @package TEC\Tickets\Emails
  */
-class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
+class Completed_Order extends Email_Abstract {
 
 	/**
 	 * Email ID.
@@ -198,6 +200,7 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 			'heading'            => $this->get_heading(),
 			'additional_content' => $this->get_additional_content(),
 			'order'              => $order,
+			'attendees'          => Preview_Data::get_attendees(),
 		];
 
 		return wp_parse_args( $args, $defaults );
@@ -275,11 +278,6 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 
 		$this->set_placeholders( $placeholders );
 
-		$subject     = $this->get_subject();
-		$content     = $this->get_content();
-		$headers     = $this->get_headers();
-		$attachments = $this->get_attachments();
-
-		return tribe( \TEC\Tickets\Emails\Email_Sender::class )->send( $recipient, $subject, $content, $headers, $attachments );
+		return Dispatcher::from_email( $this )->send();
 	}
 }

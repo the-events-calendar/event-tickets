@@ -4,6 +4,7 @@ namespace TEC\Tickets\Emails\Admin;
 use Tribe__Utils__Array as Arr;
 use TEC\Tickets\Emails\Assets as Assets;
 use TEC\Tickets\Emails\Admin\Emails_Tab as Emails_Tab;
+use TEC\Tickets\Emails\Email\Ticket;
 use TEC\Tickets\Emails\Email_Template as Email_Template;
 
 /**
@@ -222,14 +223,15 @@ class Preview_Modal {
 
 			if ( ! empty( $email ) ) {
 				$email_class = tribe( get_class( $email ) );
+				$email_class->set_placeholders( Preview_Data::get_placeholders() );
 				$html        = $email_class->get_content( $email_class->get_preview_context() );
 			}
 
 		} else {
-			$email_template = tribe( Email_Template::class );
-			$email_template->set_preview( true );
-			$context = $email_template->get_preview_context( $context );
-			$html    = $email_template->get_html( 'ticket', $context );
+			// Show Ticket email by default.
+			$email_class = tribe( Ticket::class );
+			$email_class->set_placeholders( Preview_Data::get_placeholders() );
+			$html        = $email_class->get_content( $email_class->get_preview_context() );
 		}
 
 		$html .= $tickets_template->template( 'v2/components/loader/loader', [], false );
