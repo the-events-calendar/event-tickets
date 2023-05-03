@@ -9,6 +9,7 @@
 
 namespace TEC\Tickets\Emails\Admin;
 
+use TEC\Tickets\Emails\Email_Abstract;
 use TEC\Tickets\Emails\Email_Handler;
 use Tribe\Tickets\Admin\Settings as Plugin_Settings;
 use \Tribe__Template;
@@ -188,20 +189,20 @@ class Emails_Tab {
 	 *
 	 * @since 5.5.9
 	 *
-	 * @param Email_Abstract $email
+	 * @param ?Email_Abstract $email
 	 *
 	 * @return boolean
 	 */
-	public function is_editing_email( $email = null ) {
+	public function is_editing_email( ?Email_Abstract $email = null ): bool {
 		// Get `section` query string from URL.
 		$editing_email  = tribe_get_request_var( 'section' );
 
-		// If email wasn't passed, just return whether or not string is empty.
+		// If email wasn't passed, just return whether string is empty.
 		if ( empty( $email ) ) {
 			return ! empty( $editing_email );
 		}
 
-		// Otherwise, return whether or not supplied email is being edited.
+		// Otherwise, return whether supplied email is being edited.
 		return $email->id === $editing_email;
 	}
 
