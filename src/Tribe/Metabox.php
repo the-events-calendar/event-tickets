@@ -100,7 +100,12 @@ class Tribe__Tickets__Metabox {
 		/** @var Tribe__Tickets__Admin__Views $admin_views */
 		$admin_views = tribe( 'tickets.admin.views' );
 
-		return $admin_views->template( [ 'editor', 'metabox' ], get_defined_vars() );
+		$context = get_defined_vars();
+
+		// Add the data required by each panel to render correctly.
+		$context = array_merge( $context, ( new Ticket_Panel_Data( $post->ID ) )->to_array() );
+
+		return $admin_views->template( [ 'editor', 'metabox' ], $context );
 	}
 
 	/**
