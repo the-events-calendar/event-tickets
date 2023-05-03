@@ -348,26 +348,6 @@ class RSVP extends Email_Abstract {
 	}
 
 	/**
-	 * Get email content.
-	 *
-	 * @since 5.5.10
-	 *
-	 * @param array $args The arguments.
-	 *
-	 * @return string The email content.
-	 */
-	public function get_content( $args = [] ): string {
-		// @todo: Parse args, etc.
-		$is_preview = ! empty( $args['is_preview'] ) ? tribe_is_truthy( $args['is_preview'] ) : false;
-		$args       = $this->get_template_context( $args );
-
-		$email_template = tribe( Email_Template::class );
-		$email_template->set_preview( $is_preview );
-
-		return $email_template->get_html( $this->template, $args );
-	}
-
-	/**
 	 * Send the email.
 	 *
 	 * @since 5.5.11
