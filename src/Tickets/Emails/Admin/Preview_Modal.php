@@ -183,8 +183,6 @@ class Preview_Modal {
 	 * @return string $html The response with the HTML of the form, depending on the call.
 	 */
 	public function get_modal_content_ajax( $render_response, $vars ) {
-		$html = '';
-
 		/** @var \Tribe__Tickets__Editor__Template $template */
 		$tickets_template = tribe( 'tickets.editor.template' );
 
