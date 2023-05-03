@@ -36,6 +36,7 @@ class Legacy_Hijack {
 	 * @type int             $post_id     The post/event ID to send the emails for.
 	 * @type string|int      $order_id    The order ID to send the emails for.
 	 *                                    }
+	 *
 	 * @param Tickets_Module $module      Commerce module we are using for these emails.
 	 *
 	 * @return null|boolean  When we return boolean we disable the legacy emails regardless of status of this email, null lets the old emails trigger.
@@ -55,7 +56,7 @@ class Legacy_Hijack {
 			return false;
 		}
 
-		$sent = false;
+		$sent     = false;
 		$defaults = [
 			'provider'     => 'ticket',
 			'post_id'      => 0,
@@ -217,7 +218,7 @@ class Legacy_Hijack {
 		$email_class->set( 'tickets', $all_attendees );
 
 		// @todo We need to refactor this piece to use the correct sender functionality.
-		$content     = $email_class->get_content( [ 'tickets' => $all_attendees ] );
+		$content = $email_class->get_content( [ 'tickets' => $all_attendees ] );
 
 		// @todo we need to avoid setting the recipient like this.
 		$email_class->recipient = $to;
@@ -238,6 +239,51 @@ class Legacy_Hijack {
 				);
 			}
 		}
+
+		return $sent;
+	}
+
+	/**
+	 * Dispatches a confirmation email that acknowledges the user has RSVP'd
+	 * in cases where they have indicated that they will *not* be attending.
+	 *
+	 * @since TBD
+	 *
+	 * @param null|boolean   $pre      Previous value from the filter, mostly will be null.
+	 * @param int            $order_id The order ID.
+	 * @param int            $event_id The event ID.
+	 * @param Tickets_Module $module   Commerce module we are using for these emails.
+	 *
+	 * @return bool Whether the email was sent or not.
+	 */
+	public function send_rsvp_non_attendance_confirmation( $pre, $order_id, $event_id, $module ) {
+		// Only send back to the old email in case people opted-out of the Tickets Emails feature.
+		if ( ! tec_tickets_emails_is_enabled() ) {
+			return null;
+		}
+
+		if ( ! $module instanceof Tickets_Module ) {
+			return false;
+		}
+
+		$attendees = $module->get_attendees_by_order_id( $order_id );
+
+		if ( empty( $attendees ) ) {
+			return false;
+		}
+
+		// For now all ticket holders in an order share the same email.
+		$to = $attendees['0']['holder_email'];
+
+		if ( ! is_email( $to ) ) {
+			return false;
+		}
+
+		$email_class = tribe( Email\RSVP_Not_Going::class );
+		$email_class->set( 'post_id', $event_id );
+		$email_class->set( 'tickets', $attendees );
+		$email_class->recipient = $to;
+		$sent                   = $email_class->send();
 
 		return $sent;
 	}
