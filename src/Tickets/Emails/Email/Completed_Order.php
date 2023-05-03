@@ -11,6 +11,7 @@ use TEC\Tickets\Emails\Dispatcher;
 use \TEC\Tickets\Emails\Email_Template;
 use TEC\Tickets\Emails\Admin\Preview_Data;
 use TEC\Tickets\Emails\Email_Abstract;
+use TEC\Tickets\Emails\JSON_LD\Order_Schema;
 
 /**
  * Class Completed_Order
@@ -279,5 +280,19 @@ class Completed_Order extends Email_Abstract {
 		$this->set_placeholders( $placeholders );
 
 		return Dispatcher::from_email( $this )->send();
+	}
+
+	/**
+	 * Get the related JSON data for this email.
+	 *
+	 * @since TBD
+	 *
+	 * @return mixed|null
+	 */
+	public function get_json_data() {
+		$order  = $this->get( 'order' );
+		$schema = new Order_Schema( $order );
+
+		return apply_filters( "tribe_tickets_email_{$this->slug}_json_data", $schema->get_data(), $order, $this );
 	}
 }
