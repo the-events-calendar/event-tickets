@@ -19,6 +19,7 @@ namespace TEC\Tickets\Emails;
 
 use \tad_DI52_ServiceProvider;
 use TEC\Tickets\Emails\Admin\Emails_Tab;
+use Tribe__Tickets__Tickets as Tickets_Module;
 
 /**
  * Class Hooks.
@@ -46,7 +47,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 */
 	protected function add_actions() {
 		add_action( 'init', [ $this, 'action_register_post_type' ] );
-		add_action( 'init', [ $this, 'action_maybe_populate_email_post_types' ] );
+		add_action( 'wp_loaded', [ $this, 'populate_email_template_posts' ], 25 );
 		add_action( 'tribe_settings_do_tabs', [ $this, 'register_emails_tab' ], 17 );
 		add_action( 'tribe_settings_after_form_element_tab_emails', [ $this, 'action_add_preview_modal_button' ] );
 		add_action( 'admin_footer', [ $this, 'action_add_preview_modal' ] );
@@ -69,10 +70,15 @@ class Hooks extends tad_DI52_ServiceProvider {
 		add_filter( 'tribe_tickets_admin_manager_request', [ $this, 'filter_add_preview_modal_content' ], 15, 2 );
 
 		add_filter( 'wp_redirect', [ $this, 'filter_redirect_url' ] );
+
+		// Inject the new email into the legacy codebase for emails.
+		add_filter( 'tec_tickets_send_rsvp_email_pre', [ $this, 'filter_hijack_legacy_sent_rsvp_emails' ], 20, 4 );
+		add_filter( 'tec_tickets_send_tickets_email_for_attendee_pre', [ $this, 'filter_hijack_legacy_sent_tickets_attendees_emails' ], 20, 5 );
+		add_filter( 'tec_tickets_send_rsvp_non_attendance_confirmation_pre', [ $this, 'filter_hijack_legacy_send_rsvp_non_attendance_confirmation' ], 20, 4 );
 	}
 
 	/**
-	 * Filters the redirect URL to determine whether or not section key needs to be added.
+	 * Filters the redirect URL to determine whether section key needs to be added.
 	 *
 	 * @since 5.5.9
 	 *
@@ -91,17 +97,18 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 *
 	 */
 	public function action_register_post_type() {
-		$this->container->make( Email_Handler::class )->register_post_type();
+		$this->container->make( Post_Type::class )->register_post_type();
 	}
 
 	/**
-	 * Action to possibly create default email post types.
+	 * Action to create the default posts for email templates.
 	 *
-	 * @since 5.5.9
+	 * @since TBD
 	 *
+	 * @return void
 	 */
-	public function action_maybe_populate_email_post_types() {
-		$this->container->make( Email_Handler::class )->maybe_populate_tec_tickets_emails_post_type();
+	public function populate_email_template_posts(): void {
+		$this->container->make( Post_Type::class )->populate_email_template_posts();
 	}
 
 	/**
@@ -121,7 +128,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * @since 5.5.7
 	 */
 	public function action_add_preview_modal_button() {
-		echo $this->container->make( Admin\Preview_modal::class )->get_modal_button();
+		echo $this->container->make( Admin\Preview_Modal::class )->get_modal_button();
 	}
 
 	/**
@@ -130,7 +137,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * @since 5.5.7
 	 */
 	public function action_add_preview_modal() {
-		echo $this->container->make( Admin\Preview_modal::class )->render_modal();
+		$this->container->make( Admin\Preview_Modal::class )->render_modal();
 	}
 
 	/**
@@ -138,7 +145,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 *
 	 * @since 5.5.6
 	 *
-	 * @param  array $tabs Current array of tabs ids.
+	 * @param array $tabs Current array of tabs ids.
 	 *
 	 * @return array $tabs Filtered array of tabs ids.
 	 */
@@ -151,7 +158,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 *
 	 * @since 5.5.9
 	 *
-	 * @param  array $fields Current array of Tickets Emails settings fields.
+	 * @param array $fields Current array of Tickets Emails settings fields.
 	 *
 	 * @return array $fields Filtered array of Tickets Emails settings fields.
 	 */
@@ -164,7 +171,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 *
 	 * @since 5.5.6
 	 *
-	 * @param  array $fields Current array of Tickets Emails settings fields.
+	 * @param array $fields Current array of Tickets Emails settings fields.
 	 *
 	 * @return array $fields Filtered array of Tickets Emails settings fields.
 	 */
@@ -213,7 +220,61 @@ class Hooks extends tad_DI52_ServiceProvider {
 			return $render_response;
 		}
 
-		return $this->container->make( Admin\Preview_modal::class )->get_modal_content_ajax( $render_response, $vars );
+		return $this->container->make( Admin\Preview_Modal::class )->get_modal_content_ajax( $render_response, $vars );
+	}
+
+	/**
+	 * Hooks to the legacy modules and hijacks the sending of RSVP emails from the old system to Tickets Emails.
+	 *
+	 * @see   Legacy_Hijack::send_rsvp_email
+	 *
+	 * @since TBD
+	 *
+	 * @param null|boolean   $pre      Previous value from the filter, mostly will be null.
+	 * @param int            $order_id The order ID.
+	 * @param int            $event_id The event ID.
+	 * @param Tickets_Module $module   Commerce module we are using for these emails.
+	 */
+	public function filter_hijack_legacy_sent_rsvp_emails( $pre, $order_id, $event_id = null, $module = null ) {
+		return $this->container->make( Legacy_Hijack::class )->send_rsvp_email( $pre, $order_id, $event_id, $module );
+	}
+
+	/**
+	 * Hooks to the legacy modules and hijacks the sending of Tickets emails from the old system to Tickets Emails.
+	 *
+	 * @see   Legacy_Hijack::send_tickets_email_for_attendee
+	 *
+	 * @since TBD
+	 *
+	 * @param null|boolean   $pre     Previous value from the filter, mostly will be null.
+	 * @param string         $to      The email to send the tickets to.
+	 * @param array          $tickets The list of tickets to send.
+	 * @param array          $args    See the rest of the documentation for this on Legacy::send_tickets_email_for_attendee
+	 *
+	 * @param Tickets_Module $module  Commerce module we are using for these emails.
+	 *
+	 * @return bool Whether email was sent to attendees.
+	 */
+	public function filter_hijack_legacy_sent_tickets_attendees_emails( $pre, $to, $tickets, $args = [], $module = null ) {
+		return $this->container->make( Legacy_Hijack::class )->send_tickets_email_for_attendee( $pre, $to, $tickets, $args, $module );
+	}
+
+	/**
+	 * Hooks to the legacy module of RSVP and hijacks the sending of RSVP email for non-attendance confirmation from the old system to Tickets Emails.
+	 *
+	 * @see   Legacy_Hijack::send_rsvp_non_attendance_confirmation
+	 *
+	 * @since TBD
+	 *
+	 * @param null|boolean   $pre      Previous value from the filter, mostly will be null.
+	 * @param int            $order_id The order ID.
+	 * @param int            $event_id The event ID.
+	 * @param Tickets_Module $module   Commerce module we are using for these emails.
+	 *
+	 * @return bool Whether email was sent to attendees.
+	 */
+	public function filter_hijack_legacy_send_rsvp_non_attendance_confirmation( $pre, $order_id, $event_id, $module = null ) {
+		return $this->container->make( Legacy_Hijack::class )->send_rsvp_non_attendance_confirmation( $pre, $order_id, $event_id, $module );
 	}
 
 	/**

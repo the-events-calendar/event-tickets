@@ -8,7 +8,9 @@
 namespace TEC\Tickets\Emails\Email;
 
 use TEC\Tickets\Commerce\Settings as Settings;
+use TEC\Tickets\Emails\Dispatcher;
 use \TEC\Tickets\Emails\Email_Template;
+use TEC\Tickets\Emails\Email_Abstract;
 
 /**
  * Class RSVP
@@ -17,7 +19,7 @@ use \TEC\Tickets\Emails\Email_Template;
  *
  * @package TEC\Tickets\Emails
  */
-class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
+class RSVP extends Email_Abstract {
 
 	/**
 	 * Email ID.
@@ -241,7 +243,7 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 			$this->get_option_key( 'use-ticket-email' ) => [
 				'type'                => 'toggle',
 				'label'               => esc_html__( 'Use Ticket Email', 'event-tickets' ),
-				'placeholder'         => esc_html__( 'Use the ticket email settings and template.', 'event-tickets' ),
+				'tooltip'             => esc_html__( 'Use the ticket email settings and template.', 'event-tickets' ),
 				'default'             => true,
 				'validation_type'     => 'boolean',
 			],
@@ -338,8 +340,8 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 			'title'              => $this->get_title(),
 			'heading'            => $this->get_heading(),
 			'additional_content' => $this->get_additional_content(),
-			'tickets'            => $this->__get( 'tickets' ),
-			'post_id'            => $this->__get( 'post_id' ),
+			'tickets'            => $this->get( 'tickets' ),
+			'post_id'            => $this->get( 'post_id' ),
 		];
 
 		return $defaults;
@@ -384,8 +386,8 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 			return false;
 		}
 
-		$tickets = $this->__get( 'tickets' );
-		$post_id = $this->__get( 'post_id' );
+		$tickets = $this->get( 'tickets' );
+		$post_id = $this->get( 'post_id' );
 
 		// Bail if there's no tickets or post ID.
 		if ( empty( $tickets ) || empty( $post_id ) ) {
@@ -399,11 +401,6 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 
 		$this->set_placeholders( $placeholders );
 
-		$subject     = $this->get_subject();
-		$content     = $this->get_content();
-		$headers     = $this->get_headers();
-		$attachments = $this->get_attachments();
-
-		return tribe( \TEC\Tickets\Emails\Email_Sender::class )->send( $recipient, $subject, $content, $headers, $attachments );
+		return Dispatcher::from_email( $this )->send();
 	}
 }

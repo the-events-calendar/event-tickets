@@ -7,8 +7,10 @@
 
 namespace TEC\Tickets\Emails\Email;
 
+use TEC\Tickets\Emails\Dispatcher;
 use \TEC\Tickets\Emails\Email_Template;
 use TEC\Tickets\Emails\Admin\Preview_Data;
+use TEC\Tickets\Emails\Email_Abstract;
 
 /**
  * Class Purchase_Receipt
@@ -17,7 +19,7 @@ use TEC\Tickets\Emails\Admin\Preview_Data;
  *
  * @package TEC\Tickets\Emails
  */
-class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
+class Purchase_Receipt extends Email_Abstract {
 
 	/**
 	 * Email ID.
@@ -173,6 +175,7 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 			'heading'            => $this->get_heading(),
 			'additional_content' => $this->get_additional_content(),
 			'order'              => Preview_Data::get_order(),
+			'attendees'          => Preview_Data::get_attendees(),
 		];
 
 		return wp_parse_args( $args, $defaults );
@@ -191,7 +194,7 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 			'title'              => $this->get_title(),
 			'heading'            => $this->get_heading(),
 			'additional_content' => $this->get_additional_content(),
-			'order'              => $this->__get( 'order' ),
+			'order'              => $this->get( 'order' ),
 		];
 
 		return $defaults;
@@ -236,7 +239,7 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 			return false;
 		}
 
-		$order = $this->__get( 'order' );
+		$order = $this->get( 'order' );
 
 		// Bail if there's no order.
 		if ( empty( $order ) ) {
@@ -250,11 +253,6 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 
 		$this->set_placeholders( $placeholders );
 
-		$subject     = $this->get_subject();
-		$content     = $this->get_content();
-		$headers     = $this->get_headers();
-		$attachments = $this->get_attachments();
-
-		return tribe( \TEC\Tickets\Emails\Email_Sender::class )->send( $recipient, $subject, $content, $headers, $attachments );
+		return Dispatcher::from_email( $this )->send();
 	}
 }

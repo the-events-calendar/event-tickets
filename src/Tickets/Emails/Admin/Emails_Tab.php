@@ -210,9 +210,9 @@ class Emails_Tab {
 	 *
 	 * @since 5.5.9
 	 *
-	 * @return array|null Settings array
+	 * @return array Settings array
 	 */
-	public function get_email_settings() {
+	public function get_email_settings(): array {
 		$email_id  = tribe_get_request_var( 'section' );
 		$email = tribe( Email_Handler::class )->get_email_by_id( $email_id );
 
