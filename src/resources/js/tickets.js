@@ -25,7 +25,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	const recurrence_rule_panel_selector = '.tribe-event-recurrence-rule';
 	const ticket_button_selectors = '#rsvp_form_toggle, #ticket_form_toggle, #settings_form_toggle';
 	const tickets_panel_table_selector = '.tribe-tickets-editor-table-tickets-body';
-	const tickets_panel_form_selector = '#tribe_panel_edit';
 	const noTicketsOnRecurring = document.body.classList.contains( 'tec-no-tickets-on-recurring' );
 	// Initialize the ticket type to `null`.
 	let ticketType = null;
@@ -57,9 +56,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	var $base_panel = $( document.getElementById( 'tribe_panel_base' ) );
 	var $edit_panel = $( document.getElementById( 'tribe_panel_edit' ) );
 	var $settings_panel = $( document.getElementById( 'tribe_panel_settings' ) );
-
-	// Default strings.
-	const defaultStrings = {};
 
 	// Datepicker and Timepicker variables
 	var datepickerFormats = [
