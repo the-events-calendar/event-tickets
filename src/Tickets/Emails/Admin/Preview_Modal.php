@@ -71,12 +71,10 @@ class Preview_Modal {
 	 *
 	 * @since 5.5.7
 	 *
-	 * @param array $args Override default args by sending them in the `$args`.
-	 *
 	 * @return array The default modal args.
 	 */
-	public function get_modal_args( $args = [] ): array {
-		$default_args = [
+	public function get_modal_args(): array {
+		return [
 			'append_target'           => '#' . static::$modal_target,
 			'button_display'          => false,
 			'close_event'             => 'tribeDialogCloseEmailsPreviewModal.tribeTickets',
@@ -90,8 +88,6 @@ class Preview_Modal {
 				'tribe-modal__title--emails-preview',
 			],
 		];
-
-		return wp_parse_args( $args, $default_args );
 	}
 
 	/**
@@ -99,17 +95,15 @@ class Preview_Modal {
 	 *
 	 * @since 5.5.7
 	 *
-	 * @param array $args Override default args by sending them in the `$args`.
-	 *
 	 * @return string The modal content.
 	 */
-	public function get_modal_content( $args = [] ): string {
-		/** @var Tribe__Tickets__Editor__Template $template */
+	public function get_modal_content(): string {
+		/** @var \Tribe__Tickets__Editor__Template $template */
 		$template = tribe( 'tickets.editor.template' );
 
 		$content = $template->template( 'v2/components/loader/loader', [], false );
 
-		$args = $this->get_modal_args( $args );
+		$args = $this->get_modal_args();
 
 		$dialog_view = tribe( 'dialog.view' );
 
