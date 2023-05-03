@@ -38,7 +38,7 @@ class Ticket extends Email_Abstract {
 	 *
 	 * @var string
 	 */
-	public static $slug = 'ticket';
+	public $slug = 'ticket';
 
 	/**
 	 * Email template.

@@ -37,7 +37,7 @@ class Purchase_Receipt extends Email_Abstract {
 	 *
 	 * @var string
 	 */
-	public static $slug = 'purchase-receipt';
+	public $slug = 'purchase-receipt';
 
 	/**
 	 * Email template.

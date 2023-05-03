@@ -36,7 +36,7 @@ class RSVP_Not_Going extends Email_Abstract {
 	 *
 	 * @var string
 	 */
-	public static $slug = 'rsvp-not-going';
+	public $slug = 'rsvp-not-going';
 
 	/**
 	 * Email template.

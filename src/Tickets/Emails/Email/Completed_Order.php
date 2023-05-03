@@ -37,7 +37,7 @@ class Completed_Order extends Email_Abstract {
 	 *
 	 * @var string
 	 */
-	public static $slug = 'completed-order';
+	public $slug = 'completed-order';
 
 	/**
 	 * Email template.
