@@ -32,7 +32,8 @@ class Tribe__Tickets__Attendees {
 	 * @return void
 	 */
 	public function hook() {
-		add_action( 'admin_menu', [ $this, 'register_page' ] );
+		// Register before the default priority of 10 to avoid submenu hook issues.
+		add_action( 'admin_menu', [ $this, 'register_page' ], 5 );
 
 		add_action( 'tribe_report_page_after_text_label', [ $this, 'include_export_button_title' ], 25, 2 );
 		add_action( 'tribe_tabbed_view_heading_after_text_label', [ $this, 'include_export_button_title' ], 25, 2 );
