@@ -161,7 +161,8 @@ class Orders extends Report_Abstract {
 	 */
 	public function hook() {
 		add_filter( 'post_row_actions', [ $this, 'add_orders_row_action' ], 10, 2 );
-		add_action( 'admin_menu', [ $this, 'register_orders_page' ] );
+		// Register before the default priority of 10 to avoid submenu hook issues.
+		add_action( 'admin_menu', [ $this, 'register_orders_page' ], 5 );
 	}
 
 	/**

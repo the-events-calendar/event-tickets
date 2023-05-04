@@ -64,7 +64,8 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 
 		add_filter( 'post_row_actions', [ $this, 'add_orders_row_action' ], 10, 2 );
 		add_action( 'tribe_tickets_attendees_page_inside', [ $this, 'render_tabbed_view' ] );
-		add_action( 'admin_menu', [ $this, 'register_orders_page' ] );
+		// Register before the default priority of 10 to avoid submenu hook issues.
+		add_action( 'admin_menu', [ $this, 'register_orders_page' ], 5 );
 
 		// register the tabbed view
 		$paypal_tabbed_view = new Tribe__Tickets__Commerce__PayPal__Orders__Tabbed_View();

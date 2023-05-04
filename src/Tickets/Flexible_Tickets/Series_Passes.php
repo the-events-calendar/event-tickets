@@ -20,6 +20,7 @@ use Tribe__Tickets__RSVP as RSVP;
 use Tribe__Tickets__Ticket_Object as Ticket;
 use Tribe__Tickets__Tickets as Tickets;
 use WP_Post;
+use Tribe__Events__Main as TEC;
 
 /**
  * Class Repository.
@@ -37,6 +38,19 @@ class Series_Passes extends Controller {
 	public const HANDLED_TICKET_TYPE = 'series_pass';
 
 	/**
+	 * The entire provider should not be active if Series are not ticketable.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function is_active(): bool {
+		$ticketable_post_types = (array) tribe_get_option( 'ticket-enabled-post-types', [] );
+
+		return in_array( Series_Post_Type::POSTTYPE, $ticketable_post_types, true );
+	}
+
+	/**
 	 * {@inheritDoc}
 	 *
 	 * @since TBD
@@ -44,12 +58,16 @@ class Series_Passes extends Controller {
 	 * @return void
 	 */
 	protected function do_register(): void {
-		add_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'render_form_toggle' ] );
 		// add_action( 'tec_tickets_ticket_add', [ $this, 'insert_pass_custom_tables_data' ], 10, 3 );
 		// add_action( 'event_tickets_attendee_ticket_deleted', [ $this, 'delete_pass_custom_tables_data' ], 5, 2 );
 		// add_action( 'tec_tickets_ticket_update', [ $this, 'update_pass_custom_tables_data' ], 10, 3 );
 		add_filter( 'the_content', [ $this, 'reorder_series_content' ], 0 );
-		add_filter( 'tec_tickets_ticket_panel_data', [ $this, 'update_panel_data' ], 10, 3 );
+
+		if ( is_admin() ) {
+			add_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'render_form_toggle' ] );
+			add_action( 'admin_menu', [ $this, 'enable_reports' ], 20 );
+			add_filter( 'tec_tickets_ticket_panel_data', [ $this, 'update_panel_data' ], 10, 3 );
+		}
 
 		$this->container->singleton( Series_Passes\Repository::class, Series_Passes\Repository::class );
 		$this->container->singleton( Series_Passes\Metadata::class, Series_Passes\Metadata::class );
@@ -69,6 +87,7 @@ class Series_Passes extends Controller {
 		// remove_action( 'tec_tickets_ticket_update', [ $this, 'update_pass_custom_tables_data' ] );
 		remove_filter( 'the_content', [ $this, 'reorder_series_content' ], 0 );
 		remove_filter( 'tec_tickets_ticket_panel_data', [ $this, 'update_panel_data' ] );
+		remove_action( 'admin_menu', [ $this, 'enable_reports' ], 20 );
 	}
 
 	/**
@@ -307,5 +326,37 @@ class Series_Passes extends Controller {
 		}
 
 		return $metadata->get_ticket_end_time( $ticket_id );
+	}
+
+	/**
+	 * Enables the reports for the Series Passes for all the possible ticket providers.
+	 *
+	 * Since providers can be set per-Series, all are pre-emptively activated.
+	 *
+	 * @since TBD
+	 *
+	 * @return void Reports are enabled for the Series Passes.
+	 */
+	public function enable_reports(): void {
+		global $_registered_pages;
+
+		if ( ! is_array( $_registered_pages ) ) {
+			return;
+		}
+
+		// Attendee reports for all providers.
+		$_registered_pages[ TEC::POSTTYPE . '_page_tickets-attendees' ] = true;
+
+		// Order reports for Tickets Commerce provider.
+		$_registered_pages[ TEC::POSTTYPE . '_page_tickets-commerce-orders' ] = true;
+
+		// Order reports for PayPal Tickets provider.
+		$_registered_pages[ TEC::POSTTYPE . '_page_tpp-orders' ] = true;
+
+		// Order reports for WooCommerce provider.
+		$_registered_pages[ TEC::POSTTYPE . '_page_tickets-orders' ] = true;
+
+		// Order reports for Easy Digital Downloads provider.
+		$_registered_pages[ TEC::POSTTYPE . '_page_edd-orders' ] = true;
 	}
 }
