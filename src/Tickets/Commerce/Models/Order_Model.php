@@ -14,8 +14,10 @@ use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use Tribe\Models\Post_Types\Base;
+use Tribe\Utils\Lazy_Collection;
 use Tribe__Date_Utils as Dates;
 use Tribe__Utils__Array as Arr;
+use WP_Post;
 
 /**
  * Class Order.
@@ -57,14 +59,30 @@ class Order_Model extends Base {
 			$events_in_order  = (array) Arr::get( $post_meta, [ Order::$events_in_order_meta_key ] );
 			$tickets_in_order = (array) Arr::get( $post_meta, [ Order::$tickets_in_order_meta_key ] );
 
-			$tickets = [];
-			if ( ! empty( $items ) ) {
-				foreach ( $items as $item ) {
-					$post = get_post( $item['ticket_id'] );
-					$post->ticket_data = $item;
-					$tickets[] = $post;
+			$tickets = new Lazy_Collection( static function () use ( $items ) {
+				if ( empty( $items ) ) {
+					return [];
 				}
-			}
+
+				$tickets = [];
+
+				foreach ( $items as $item ) {
+					if ( empty( $item['ticket_id'] ) ) {
+						continue;
+					}
+
+					$post = get_post( $item['ticket_id'] );
+
+					if ( ! $post instanceof WP_Post ) {
+						continue;
+					}
+
+					$post->ticket_data = $item;
+					$tickets[]         = $post;
+				}
+
+				return $tickets;
+			} );
 
 			$properties = [
 				'order_id'            => $post_id,
