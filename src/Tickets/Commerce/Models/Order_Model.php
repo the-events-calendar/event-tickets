@@ -14,10 +14,8 @@ use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use Tribe\Models\Post_Types\Base;
-use Tribe\Utils\Lazy_Collection;
 use Tribe__Date_Utils as Dates;
 use Tribe__Utils__Array as Arr;
-use WP_Post;
 
 /**
  * Class Order.
