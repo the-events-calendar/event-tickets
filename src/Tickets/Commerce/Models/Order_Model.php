@@ -87,7 +87,6 @@ class Order_Model extends Base {
 				'events_in_order'     => $events_in_order,
 				'tickets_in_order'    => $tickets_in_order,
 				'flag_action_markers' => $flag_action_markers,
-				'tickets'             => ( new Lazy_Collection( $this->get_ticket_data_callback( $items ) ) )->on_resolve( $cache_this ),
 			];
 		} catch ( \Exception $e ) {
 			return [];
@@ -170,45 +169,5 @@ class Order_Model extends Base {
 	 */
 	protected function get_cache_slug() {
 		return 'tc_orders';
-	}
-
-	/**
-	 * Returns a callback that will return the ticket data for the order items.
-	 *
-	 * @since TBD
-	 *
-	 * @param $items array The order items.
-	 *
-	 * @return \Closure
-	 */
-	public function get_ticket_data_callback( $items ): \Closure {
-		/**
-		 * Filters the callback that will return the ticket data for the order items.
-		 *
-		 * Returning a non `null` value here will skip the default logic.
-		 *
-		 * @since TBD
-		 *
-		 * @param null|\Closure $callback The callback that will return the ticket data for the order items.
-		 * @param array $items The order items.
-		 */
-		$callback = apply_filters( 'tec_tickets_order_items_ticket_data_callback', null, $items );
-
-		if ( null !== $callback ) {
-			return $callback;
-		}
-
-		return static function() use ( $items ) {
-			return array_reduce( $items, function( $tickets, $item ) {
-				// @todo @rafsuntaskin should be updated later to make use of `tec_tc_get_ticket` function, once Ticket Model is updated.
-				$post = get_post( $item['ticket_id'] );
-				if ( ! $post instanceof WP_Post ) {
-					return $tickets;
-				}
-				$post->ticket_data = $item;
-				$tickets[] = $post;
-				return $tickets;
-			}, []);
-		};
 	}
 }
