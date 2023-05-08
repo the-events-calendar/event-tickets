@@ -190,6 +190,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Fix - Fatal error occuring for some Tickets Commerce users. [GTRIA-1001]
+
 = [5.5.11] 2023-05-04 =
 
 * Enhancement - Add Ticket data with attendee data as checkin response. [ET-1694]
