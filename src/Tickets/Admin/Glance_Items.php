@@ -20,7 +20,7 @@ class Glance_Items {
 	 *
 	 * @var string
 	 */
-	private string $attendee_count_key = 'tec_tickets_glance_item_attendees_count';
+	protected static string $attendee_count_key = 'tec_tickets_glance_item_attendees_count';
 
 	/**
 	 * Method to register glance items related hooks.
@@ -41,11 +41,11 @@ class Glance_Items {
 	 * @return array $items The maybe modified array of items to be displayed.
 	 */
 	public function custom_glance_items_attendees( $items = [] ): array {
-		$total = get_transient( $this->attendee_count_key );
+		$total = get_transient( static::$attendee_count_key );
 
 		if ( false === $total ) {
 			if ( ! wp_next_scheduled( 'tec_tickets_update_glance_item_attendee_counts' ) ) {
-				wp_schedule_single_event( time() + 60, 'tec_tickets_update_glance_item_attendee_counts' );
+				wp_schedule_single_event( time(), 'tec_tickets_update_glance_item_attendee_counts' );
 			}
 			return $items;
 		}
@@ -72,6 +72,6 @@ class Glance_Items {
 			return;
 		}
 
-		set_transient( $this->attendee_count_key, $total, DAY_IN_SECONDS );
+		set_transient( static::$attendee_count_key, $total, DAY_IN_SECONDS );
 	}
 }
