@@ -1,7 +1,7 @@
 <?php
 
+use TEC\Events\Custom_Tables\V1\Models\Occurrence;
 use Tribe__Utils__Array as Arr;
-use TEC\Tickets\Commerce\Attendee;
 
 if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 	/**
@@ -434,8 +434,16 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 					return false;
 				}
 
-				if ( class_exists( '\TEC\Events\Custom_Tables\V1\Models\Occurrence' ) ) {
-					$post_id = \TEC\Events\Custom_Tables\V1\Models\Occurrence::normalize_id( $post->ID );
+				if ( class_exists( Occurrence::class ) ) {
+					/**
+					 * Filters the post ID to use when fetching tickets for an Occurrence.
+					 *
+					 * @since TBD
+					 *
+					 * @param int $post_id The post ID to use when fetching tickets for an Occurrence; this might
+					 *                     be a real post ID, or a provisional one.
+					 */
+					$post_id = apply_filters( 'tec_tickets_normalize_occurrence_id', Occurrence::normalize_id( $post->ID ) );
 				}
 			}
 
