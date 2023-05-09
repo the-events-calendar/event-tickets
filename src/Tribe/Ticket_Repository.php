@@ -1,4 +1,6 @@
 <?php
+
+use TEC\Tickets\Commerce\Repositories\Tickets_Repository;
 use TEC\Tickets\Event;
 /**
  * Class Tribe__Tickets__Ticket_Repository
@@ -40,7 +42,6 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 			'attendees_max'     => [ $this, 'filter_by_attendees_max' ],
 			'attendees_between' => [ $this, 'filter_by_attendees_between' ],
 			'checkedin_min'     => [ $this, 'filter_by_checkedin_min' ],
-			'checkedin_max'     => [ $this, 'filter_by_checkedin_max' ],
 			'checkedin_between' => [ $this, 'filter_by_checkedin_between' ],
 			'capacity_min'      => [ $this, 'filter_by_capacity_min' ],
 			'capacity_max'      => [ $this, 'filter_by_capacity_max' ],
@@ -75,8 +76,9 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 * Filters tickets by a specific event.
 	 *
 	 * @since 4.8
+	 * @since TBD Apply the `tec_tickets_repository_filter_by_event_id` filter.
 	 *
-	 * @param int|array $event_id
+	 * @param int|array $event_id The post ID or array of post IDs to filter by.
 	 */
 	public function filter_by_event( $event_id ) {
 		if ( is_array( $event_id ) ) {
@@ -85,6 +87,23 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 			}
 		} else {
 			$event_id = Event::filter_event_id( $event_id );
+		}
+
+		/**
+		 * Filters the post ID used to filter tickets.
+		 *
+		 * By default, only the ticketed post ID is used. This filter allows fetching tickets from related posts.
+		 *
+		 * @since TBD
+		 *
+		 * @param int|array          $event_id The event ID or array of event IDs to filter by.
+		 * @param Tickets_Repository $this     The current repository object.
+		 */
+		$event_id = apply_filters( 'tec_tickets_repository_filter_by_event_id', $event_id, $this );
+
+		if ( empty( $event_id ) ) {
+			// Early exit if no event ID is provided.
+			return;
 		}
 
 		$this->by( 'meta_in', $this->ticket_to_event_keys(), $event_id );

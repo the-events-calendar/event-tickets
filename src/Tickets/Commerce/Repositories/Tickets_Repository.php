@@ -87,8 +87,9 @@ class Tickets_Repository extends Tribe__Repository {
 	 * Filters tickets by a specific event.
 	 *
 	 * @since 5.2.2
+	 * @since TBD Apply the `tec_tickets_repository_filter_by_event_id` filter.
 	 *
-	 * @param int|array $event_id
+	 * @param int|array $event_id The post ID or array of post IDs to filter by.
 	 */
 	public function filter_by_event( $event_id ) {
 		/**
@@ -101,7 +102,12 @@ class Tickets_Repository extends Tribe__Repository {
 		 * @param int|array          $event_id The event ID or array of event IDs to filter by.
 		 * @param Tickets_Repository $this     The current repository object.
 		 */
-		$event_id = apply_filters( 'tec_tickets_commerce_repository_filter_by_event', $event_id, $this );
+		$event_id = apply_filters( 'tec_tickets_repository_filter_by_event_id', $event_id, $this );
+
+		if ( empty( $event_id ) ) {
+			// Early exit if no event ID is provided.
+			return;
+		}
 
 		$this->by( 'meta_in', Ticket::$event_relation_meta_key, $event_id );
 	}
