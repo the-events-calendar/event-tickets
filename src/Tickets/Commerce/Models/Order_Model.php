@@ -57,15 +57,6 @@ class Order_Model extends Base {
 			$events_in_order  = (array) Arr::get( $post_meta, [ Order::$events_in_order_meta_key ] );
 			$tickets_in_order = (array) Arr::get( $post_meta, [ Order::$tickets_in_order_meta_key ] );
 
-			$tickets = [];
-			if ( ! empty( $items ) ) {
-				foreach ( $items as $item ) {
-					$post = get_post( $item['ticket_id'] );
-					$post->ticket_data = $item;
-					$tickets[] = $post;
-				}
-			}
-
 			$properties = [
 				'order_id'            => $post_id,
 				'provider'            => Module::class,
@@ -94,7 +85,6 @@ class Order_Model extends Base {
 				'events_in_order'     => $events_in_order,
 				'tickets_in_order'    => $tickets_in_order,
 				'flag_action_markers' => $flag_action_markers,
-				'tickets'             => $tickets,
 			];
 		} catch ( \Exception $e ) {
 			return [];
@@ -178,5 +168,4 @@ class Order_Model extends Base {
 	protected function get_cache_slug() {
 		return 'tc_orders';
 	}
-
 }
