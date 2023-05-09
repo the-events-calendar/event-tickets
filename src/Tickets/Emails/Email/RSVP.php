@@ -11,6 +11,9 @@ use TEC\Tickets\Commerce\Settings as Settings;
 use TEC\Tickets\Emails\Dispatcher;
 use \TEC\Tickets\Emails\Email_Template;
 use TEC\Tickets\Emails\Email_Abstract;
+use TEC\Tickets\Emails\JSON_LD\Order_Schema;
+use TEC\Tickets\Emails\JSON_LD\Reservation_Schema;
+use TEC\Tickets\Emails\JSON_LD\Event_Schema;
 
 /**
  * Class RSVP
@@ -342,6 +345,7 @@ class RSVP extends Email_Abstract {
 			'additional_content' => $this->get_additional_content(),
 			'tickets'            => $this->get( 'tickets' ),
 			'post_id'            => $this->get( 'post_id' ),
+			'json_ld'            => $this->get_json_data(),
 		];
 
 		return $defaults;
@@ -402,5 +406,43 @@ class RSVP extends Email_Abstract {
 		$this->set_placeholders( $placeholders );
 
 		return Dispatcher::from_email( $this )->send();
+	}
+
+	/**
+	 * Get the related JSON data for this email.
+	 *
+	 * @since TBD
+	 *
+	 * @return mixed|[]
+	 */
+	public function get_json_data() {
+		$event_id  = $this->get( 'post_id' );
+		$tickets   = $this->get( 'tickets' );
+
+		// Bail if there's no tickets or post ID.
+		if ( ! tec_tickets_tec_events_is_active() || empty( $tickets ) || empty( $event_id ) ) {
+			return [];
+		}
+
+		$event = tribe_get_event( $event_id );
+
+		// Bail if there's no event.
+		if ( ! $event ) {
+			return [];
+		}
+
+		$event_schema  = new Event_Schema( $event );
+		$ticket_schema = new Reservation_Schema( $event_schema->get_data(), $tickets );
+
+		/**
+		 * Filter the JSON data for this email.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $data The JSON data.
+		 * @param \WP_Post $order The order object.
+		 * @param Email_Abstract $email The email object.
+		 */
+		return apply_filters( "tec_tickets_emails_{$this->slug}_json_data", $ticket_schema->get_data(), $this );
 	}
 }
