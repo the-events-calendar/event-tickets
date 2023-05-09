@@ -192,6 +192,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.5.11.1] 2023-05-09 =
 
+* Fix - Admin Dashboard loading slowly while counting attendees. [ET-1698]
 * Fix - Resolve Fatal occurring for some Tickets Commerce users around Order Models and Cart usage. [ET-1735]
 
 = [5.5.11] 2023-05-04 =
