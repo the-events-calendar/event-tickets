@@ -8,8 +8,6 @@ namespace TEC\Tickets\Emails\JSON_LD;
  */
 abstract class JSON_LD_Abstract {
 
-	// @todo @rafsuntaskin Fill in later if needed.
-
 	/**
 	 * The type of the schema.
 	 *
@@ -38,16 +36,26 @@ abstract class JSON_LD_Abstract {
 	 * @return array<string,mixed> The data for the schema.
 	 */
 	public function get_basic_data(): array {
-		$data = [
+		return [
 			'@context' => 'https://schema.org',
 			'@type'    => self::get_type(),
+		];
+	}
+
+	/**
+	 * Get the data for the schema.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string,mixed> The data for the schema.
+	 */
+	public function get_merchant_data(): array {
+		return [
 			'merchant' => [
 				'@type' => 'Organization',
 				'name'  => get_bloginfo( 'name' ),
 			],
 		];
-
-		return $data;
 	}
 
 	/**

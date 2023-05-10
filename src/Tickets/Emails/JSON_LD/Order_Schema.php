@@ -7,7 +7,9 @@ use TEC\Tickets\Commerce\Module;
 /**
  * Class Order_Schema
  *
- * @todo @rafsuntaskin Fill in later if needed.
+ * @since TBD
+ *
+ * @pacakge TEC\Tickets\Emails\JSON_LD
  */
 class Order_Schema extends JSON_LD_Abstract {
 
@@ -77,6 +79,6 @@ class Order_Schema extends JSON_LD_Abstract {
 			];
 		}
 
-		return array_merge( $this->get_basic_data(), $data );
+		return array_merge( $this->get_basic_data(), $this->get_merchant_data(), $data );
 	}
 }
