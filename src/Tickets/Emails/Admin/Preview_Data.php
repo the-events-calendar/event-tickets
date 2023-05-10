@@ -61,6 +61,7 @@ class Preview_Data {
 			'gateway_order_id' => -99,
 			'items' =>  [
 				[
+					'ticket_title' => __( 'General Admission', 'event-tickets' ),
 					'ticket_id' => -98,
 					'quantity'  => 2,
 					'extra'     => [

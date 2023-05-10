@@ -375,7 +375,7 @@
 </tr>
 							<tr class="tec-tickets__email-table-content-order-ticket-totals-ticket-row">
 	<td class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-left" align="left">
-	</td>
+	General Admission</td>
 	<td class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-center" align="center">
 	2</td>
 	<td class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-right" align="right">

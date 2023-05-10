@@ -24,11 +24,14 @@
  * @var array<string, mixed>               $cart_item          The cart item.
  */
 
+use Tribe__Utils__Array as Arr;
+
 if ( empty( $cart_item['ticket_id'] ) ) {
 	return;
 }
 
-$ticket_title = get_the_title( $cart_item['ticket_id'] );
+$fallback_title = get_the_title( $cart_item['ticket_id'] );
+$ticket_title = Arr::get( $cart_item, 'ticket_title', $fallback_title );
 
 ?>
 <td class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-left" align="left">
