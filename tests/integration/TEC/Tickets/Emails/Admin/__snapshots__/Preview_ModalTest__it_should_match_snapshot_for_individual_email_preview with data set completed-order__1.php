@@ -346,7 +346,7 @@
 			</tr>
 			<tr>
 				<td class="tec-tickets__email-table-content-order-purchaser-details-bottom tec-tickets__email-table-content-align-left" align="left">
-	May 3, 2023</td>
+	May 10, 2023</td>
 				<td class="tec-tickets__email-table-content-order-purchaser-details-bottom tec-tickets__email-table-content-align-right" align="right">
 	john@doe.com</td>
 			</tr>
@@ -366,11 +366,11 @@
 </tr>
 							<tr class="tec-tickets__email-table-content-order-ticket-totals-ticket-row">
 	<td class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-left" align="left">
-	General Admission</td>
+	</td>
 	<td class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-center" align="center">
 	2</td>
 	<td class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-right" align="right">
-	&#x24;50.00</td>
+	&#x24;0.00</td>
 </tr>
 					</table>
 	</td>

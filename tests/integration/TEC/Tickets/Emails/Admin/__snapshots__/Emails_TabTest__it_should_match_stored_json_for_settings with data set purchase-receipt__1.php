@@ -13,7 +13,7 @@
     },
     "3": {
         "type": "html",
-        "html": "<p>The ticket purchaser will receive an email about the purchase that was completed.<\\/p>"
+        "html": "<p>The ticket purchaser will receive an email about the purchase that was completed. Customize the content of this specific email using the tools below. You can also use email placeholders and customize email templates. <a href=\\"https:\\/\\/evnt.is\\/event-tickets-emails\\" target=\\"_blank\\" rel=\\"noopener noreferrer\\">Learn more<\\/a>.<\\/p>"
     },
     "tec-tickets-emails-purchase-receipt-enabled": {
         "type": "toggle",

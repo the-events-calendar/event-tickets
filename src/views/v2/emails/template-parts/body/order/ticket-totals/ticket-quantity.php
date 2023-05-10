@@ -23,7 +23,7 @@
  * @var \WP_Post                           $order              The order object.
  */
 
-$ticket_qty = empty( $ticket->ticket_data['quantity'] ) ? 0 : $ticket->ticket_data['quantity'];
+$ticket_qty = $this->get( [ 'ticket', 'ticket_data', 'quantity' ], 0 );
 
 ?>
 <td class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-center" align="center">
