@@ -370,7 +370,7 @@
 	<td class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-center" align="center">
 	2</td>
 	<td class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-right" align="right">
-	&#x24;0.00</td>
+	&#x24;50.00</td>
 </tr>
 					</table>
 	</td>

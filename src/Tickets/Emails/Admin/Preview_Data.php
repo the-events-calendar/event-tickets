@@ -59,6 +59,19 @@ class Preview_Data {
 		$order = new WP_Post( (object) [
 			'ID'               => -99,
 			'gateway_order_id' => -99,
+			'items' =>  [
+				[
+					'ticket_id' => -98,
+					'quantity'  => 2,
+					'extra'     => [
+						'optout' => true,
+						'iac'    => 'none',
+					],
+					'price'     => 50.0,
+					'sub_total' => 50.0,
+					'event_id'  => -96,
+				]
+			],
 			'total'            => $total_value,
 			'total_value'      => $total_value,
 			'purchaser'        => [
@@ -249,17 +262,6 @@ class Preview_Data {
 				'event_id'        => 999,
 				'product_id'      => 998,
 				'attendee_id'     => 997,
-				'ticket_data'     => [
-					'ticket_id' => -98,
-					'quantity'  => 2,
-					'extra'     => [
-						'optout' => true,
-						'iac'    => 'none',
-					],
-					'price'     => 50.0,
-					'sub_total' => 50.0,
-					'event_id'  => -96,
-				],
 			],
 		];
 		return wp_parse_args( $args, $default );
