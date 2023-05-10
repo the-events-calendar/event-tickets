@@ -25,11 +25,11 @@
  * @see tribe_get_event() For the format of the event object.
  */
 
-if ( empty( $ticket->ticket_name ) ) {
+if ( empty( $ticket['ticket_name'] ) ) {
 	return;
 }
 
 ?>
 <div class="tec-tickets__email-table-content-ticket-type-name">
-	<?php echo esc_html( $ticket->ticket_name ); ?>
+	<?php echo esc_html( $ticket['ticket_name'] ); ?>
 </div>
