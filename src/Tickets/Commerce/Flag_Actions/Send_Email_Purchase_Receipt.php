@@ -54,25 +54,9 @@ class Send_Email_Purchase_Receipt extends Flag_Action_Abstract {
 
 		$email_class = tribe( \TEC\Tickets\Emails\Email\Purchase_Receipt::class );
 
-		// Bail if the `Purchase Receipt` email is not enabled.
-		if ( ! $email_class->is_enabled() ) {
-			return false;
-		}
+		$email_class->__set( 'order', $order );
+		$email_class->recipient = $order->purchaser['email'];
 
-		// @todo @juanfra: See if we handle the placeholders here or not.
-		$placeholders = [
-			'{order_number}' => $order->ID,
-			'{order_id}'     => $order->ID,
-		];
-
-		$email_class->set_placeholders( $placeholders );
-
-		$to          = $order->purchaser['email'];
-		$subject     = $email_class->get_subject();
-		$content     = $email_class->get_content( [] );
-		$headers     = $email_class->get_headers();
-		$attachments = $email_class->get_attachments();
-
-		$sent = tribe( \TEC\Tickets\Emails\Email_Sender::class )->send( $to, $subject, $content, $headers, $attachments );
+		return $email_class->send();
 	}
 }
