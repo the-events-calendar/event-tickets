@@ -311,7 +311,7 @@ class Completed_Order extends Email_Abstract {
 		 *
 		 * @param array $data The JSON data.
 		 * @param \WP_Post $order The order object.
-		 * @param \TEC\Tickets\Emails\Email_Abstract $email The email object.
+		 * @param Email_Abstract $email The email object.
 		 */
 		return apply_filters( "tec_tickets_emails_{$this->slug}_json_data", $schema->get_data(), $order, $this );
 	}
