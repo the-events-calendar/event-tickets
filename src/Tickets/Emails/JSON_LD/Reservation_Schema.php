@@ -54,8 +54,7 @@ class Reservation_Schema extends JSON_LD_Abstract {
 	/**
 	 * @inheritDoc
 	 */
-	public function get_data(): array {
-
+	public function build_data(): array {
 		$data = [];
 		foreach ( $this->tickets as $ticket ) {
 			$ticket_data = [
@@ -74,14 +73,16 @@ class Reservation_Schema extends JSON_LD_Abstract {
 			$data[] = array_merge( $this->get_basic_data(), $ticket_data );
 		}
 
-		/**
-		 * Filter the reservation ticket data for the JSON-LD schema.
-		 *
-		 * @since TBD
-		 *
-		 * @param array $data The event data.
-		 * @param \WP_Post $event The event object.
-		 */
-		return apply_filters( 'tec_tickets_emails_json_ld_event_reservation_data', $data, $this->event_data, $this->tickets );
+		return $data;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function get_args(): array {
+		return [
+			'event'   => $this->event_data,
+			'tickets' => $this->tickets,
+		];
 	}
 }

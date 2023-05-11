@@ -2,8 +2,6 @@
 
 namespace TEC\Tickets\Emails\JSON_LD;
 
-use TEC\Tickets\Emails\JSON_LD\JSON_LD_Abstract;
-
 class Event_Schema extends JSON_LD_Abstract {
 
 	/**
@@ -35,19 +33,23 @@ class Event_Schema extends JSON_LD_Abstract {
 		$this->event = $event;
 	}
 
-	public function get_data(): array {
+	/**
+	 * @inheritDoc
+	 */
+	public function build_data(): array {
 		$data = [
 			"@type" => self::get_type(),
 		];
 
-		/**
-		 * Filter the event data for the JSON-LD schema.
-		 *
-		 * @since TBD
-		 *
-		 * @param array $data The event data.
-		 * @param \WP_Post $event The event object.
-		 */
-		return apply_filters( 'tec_tickets_email_json_ld_event_data', $data, $this->event );
+		return $data;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function get_args(): array {
+		return [
+			'event' => $this->event,
+		];
 	}
 }

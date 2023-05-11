@@ -29,7 +29,7 @@ class Order_Schema extends JSON_LD_Abstract {
 	 *
 	 * @var \WP_Post
 	 */
-	public \WP_Post $order;
+	protected \WP_Post $order;
 
 	/**
 	 * Order_Schema constructor.
@@ -45,7 +45,7 @@ class Order_Schema extends JSON_LD_Abstract {
 	/**
 	 * @inheritDoc
 	 */
-	public function get_data(): array {
+	public function build_data(): array {
 		$order       = $this->order;
 		$commerce    = tribe( Module::class );
 		$report_link = $commerce->get_event_reports_link( $order->events_in_order[0], true );
@@ -87,5 +87,14 @@ class Order_Schema extends JSON_LD_Abstract {
 		}
 
 		return array_merge( $this->get_basic_data(), $this->get_merchant_data(), $data );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function get_args(): array {
+		return [
+			'order' => $this->order,
+		];
 	}
 }
