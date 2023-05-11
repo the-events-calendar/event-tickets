@@ -7,6 +7,7 @@ namespace TEC\Tickets\Emails\JSON_LD;
  *
  * @since TBD
  *
+ * @package TEC\Tickets\Emails\JSON_LD
  */
 class Reservation_Schema extends JSON_LD_Abstract {
 
@@ -50,6 +51,14 @@ class Reservation_Schema extends JSON_LD_Abstract {
 			$data[] = array_merge( $this->get_basic_data(), $ticket_data );
 		}
 
-		return $data;
+		/**
+		 * Filter the reservation ticket data for the JSON-LD schema.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $data The event data.
+		 * @param \WP_Post $event The event object.
+		 */
+		return apply_filters( 'tec_tickets_emails_json_ld_event_reservation_data', $data, $this->event_data, $this->tickets );
 	}
 }
