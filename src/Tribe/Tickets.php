@@ -3984,7 +3984,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			// Pass the control to the child object.
 			$save_ticket = $this->save_ticket( $post_id, $ticket, $data );
 
-			// Set the ticket type.
+			// Set the ticket type before the module saves the ticket.
 			$ticket_type = 'default';
 			if ( $update ) {
 				$ticket_type = get_post_meta( $ticket->ID, '_type', true ) ?: 'default';

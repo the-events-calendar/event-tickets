@@ -15,12 +15,8 @@ class Custom_TablesTest extends Controller_Test_Case {
 
 	public function custom_tables_provider(): array {
 		return [
-			'capacities'               => [ 'capacities' => Capacities::class ],
-			'capacities_relationships' => [ 'capacities_relationships' => Capacities_Relationships::class ],
-			'posts_and_posts'          => [ 'posts_and_posts' => Posts_And_Posts::class ],
-			'posts_and_ticket_groups'  => [ 'posts_and_ticket_groups' => Posts_And_Ticket_Groups::class ],
-			'posts_and_users'          => [ 'posts_and_users' => Posts_And_Users::class ],
-			'ticket_groups'            => [ 'ticket_groups' => Ticket_Groups::class ],
+			'posts_and_ticket_groups' => [ 'posts_and_ticket_groups' => Posts_And_Ticket_Groups::class ],
+			'ticket_groups'           => [ 'ticket_groups' => Ticket_Groups::class ],
 		];
 	}
 
@@ -45,7 +41,7 @@ class Custom_TablesTest extends Controller_Test_Case {
 	/*
 	 * Why is there no test for the drop_tables() method?
 	 * This test case is running in the context of a transaction managed by the integration suite.
-	 * DROP and CREATE TABLE statements will be fitered to TEMPORARY.
+	 * DROP and CREATE TABLE statements will be filtered to TEMPORARY.
 	 * The drop and create statements are executed in suite _bootstrap.php file and there is the their check.
 	 */
 }

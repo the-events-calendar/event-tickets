@@ -8,7 +8,7 @@
  * @package TEC\Tickets\Custom_Tables\V1\Migration\Maintenance_Mode;
  */
 
-namespace TEC\Tickets\Custom_Tables\V1\Migration\Maintenance_Mode;
+namespace TEC\Tickets\Commerce\Custom_Tables\V1\Migration\Maintenance_Mode;
 
 use tad_DI52_ServiceProvider;
 

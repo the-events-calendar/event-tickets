@@ -454,6 +454,9 @@ class Ticket {
 				'post_excerpt' => $ticket->description,
 				'post_title'   => $ticket->name,
 				'menu_order'   => tribe_get_request_var( 'menu_order', - 1 ),
+				'meta_input' => [
+					'_type' => $raw_data['ticket_type'] ?? 'default',
+				]
 			);
 
 			$ticket->ID = wp_insert_post( $args );
@@ -467,6 +470,9 @@ class Ticket {
 				'post_excerpt' => $ticket->description,
 				'post_title'   => $ticket->name,
 				'menu_order'   => $ticket->menu_order,
+				'meta_input' => [
+					'_type' => $raw_data['ticket_type'] ?? 'default',
+				]
 			);
 
 			$ticket->ID = wp_update_post( $args );
@@ -491,7 +497,6 @@ class Ticket {
 		}
 
 		update_post_meta( $ticket->ID, '_price', $ticket->price );
-		update_post_meta( $ticket->ID, '_type', $ticket->type() ?? 'default' );
 
 		$ticket_data = \Tribe__Utils__Array::get( $raw_data, 'tribe-ticket', array() );
 		tribe( Module::class )->update_capacity( $ticket, $ticket_data, $save_type );

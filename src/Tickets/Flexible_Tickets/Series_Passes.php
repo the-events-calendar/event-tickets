@@ -9,18 +9,14 @@
 
 namespace TEC\Tickets\Flexible_Tickets;
 
-use Exception;
 use TEC\Common\Provider\Controller;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 use TEC\Events_Pro\Custom_Tables\V1\Templates\Series_Filters;
-use TEC\Tickets\Flexible_Tickets\Series_Passes\Metadata;
-use TEC\Tickets\Flexible_Tickets\Series_Passes\Repository as Series_Passes_Repository;
 use TEC\Tickets\Flexible_Tickets\Templates\Admin_Views;
+use Tribe__Events__Main as TEC;
 use Tribe__Tickets__RSVP as RSVP;
-use Tribe__Tickets__Ticket_Object as Ticket;
 use Tribe__Tickets__Tickets as Tickets;
 use WP_Post;
-use Tribe__Events__Main as TEC;
 
 /**
  * Class Repository.
@@ -35,7 +31,7 @@ class Series_Passes extends Controller {
 	 *
 	 * @since TBD
 	 */
-	public const HANDLED_TICKET_TYPE = 'series_pass';
+	public const TICKET_TYPE = 'series_pass';
 
 	/**
 	 * The entire provider should not be active if Series are not ticketable.
@@ -58,19 +54,39 @@ class Series_Passes extends Controller {
 	 * @return void
 	 */
 	protected function do_register(): void {
-		// add_action( 'tec_tickets_ticket_add', [ $this, 'insert_pass_custom_tables_data' ], 10, 3 );
-		// add_action( 'event_tickets_attendee_ticket_deleted', [ $this, 'delete_pass_custom_tables_data' ], 5, 2 );
-		// add_action( 'tec_tickets_ticket_update', [ $this, 'update_pass_custom_tables_data' ], 10, 3 );
-		add_filter( 'the_content', [ $this, 'reorder_series_content' ], 0 );
-
-		if ( is_admin() ) {
-			add_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'render_form_toggle' ] );
-			add_action( 'admin_menu', [ $this, 'enable_reports' ], 20 );
-			add_filter( 'tec_tickets_ticket_panel_data', [ $this, 'update_panel_data' ], 10, 3 );
-		}
-
 		$this->container->singleton( Series_Passes\Repository::class, Series_Passes\Repository::class );
 		$this->container->singleton( Series_Passes\Metadata::class, Series_Passes\Metadata::class );
+
+		add_filter( 'the_content', [ $this, 'reorder_series_content' ], 0 );
+		add_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'render_form_toggle' ] );
+		add_action( 'admin_menu', [ $this, 'enable_reports' ], 20 );
+		add_filter( 'tec_tickets_ticket_panel_data', [ $this, 'update_panel_data' ], 10, 3 );
+
+		// Subscribe to the ticket post updates.
+		foreach ( Enums\Ticket_Post_Types::all() as $post_type ) {
+			add_action( "save_post_{$post_type}", [ $this, 'update_pass' ], 20 );
+			add_action( "edit_post_{$post_type}", [ $this, 'update_pass' ], 20 );
+		}
+
+		// Subscribe to Tickets' metadata updates.
+		add_action( 'added_post_meta', [ $this, 'update_pass_meta' ], 20, 4 );
+		add_action( 'updated_post_meta', [ $this, 'update_pass_meta' ], 20, 4 );
+
+		// An Event is attached to a Series.
+		add_action( 'tec_events_pro_custom_tables_v1_event_relationship_updated', [
+			$this,
+			'update_passes_for_event'
+		], 20, 2 );
+
+		// Multiple Events are attached to a Series.
+		add_action( 'tec_events_pro_custom_tables_v1_series_relationships_updated', [
+			$this,
+			'update_passes_for_series'
+		] );
+
+		// Event Occurrences have been updated
+		add_action( 'tec_events_custom_tables_v1_after_save_occurrences', [ $this, 'update_passes_for_event' ] );
+
 	}
 
 	/**
@@ -82,12 +98,22 @@ class Series_Passes extends Controller {
 	 */
 	public function unregister(): void {
 		remove_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'render_form_toggle' ] );
-		// remove_action( 'tec_tickets_ticket_add', [ $this, 'insert_pass_custom_tables_data' ] );
-		// remove_action( 'event_tickets_attendee_ticket_deleted', [ $this, 'delete_pass_custom_tables_data' ], 5 );
-		// remove_action( 'tec_tickets_ticket_update', [ $this, 'update_pass_custom_tables_data' ] );
 		remove_filter( 'the_content', [ $this, 'reorder_series_content' ], 0 );
 		remove_filter( 'tec_tickets_ticket_panel_data', [ $this, 'update_panel_data' ] );
 		remove_action( 'admin_menu', [ $this, 'enable_reports' ], 20 );
+		foreach ( Enums\Ticket_Post_Types::all() as $post_type ) {
+			remove_action( "save_post_{$post_type}", [ $this, 'update_pass' ], 20 );
+			remove_action( "edit_post_{$post_type}", [ $this, 'update_pass' ], 20 );
+		}
+		remove_action( 'tec_events_pro_custom_tables_v1_event_relationship_updated', [
+			$this,
+			'update_passes_for_event'
+		], 20, 2 );
+		remove_action( 'tec_events_pro_custom_tables_v1_series_relationships_updated', [
+			$this,
+			'update_passes_for_series'
+		] );
+		remove_action( 'tec_events_custom_tables_v1_after_save_occurrences', [ $this, 'update_passes_for_event' ] );
 	}
 
 	/**
@@ -115,122 +141,6 @@ class Series_Passes extends Controller {
 		$admin_views->template( 'series-pass-form-toggle', [
 			'disabled' => count( $ticket_providing_modules ) === 0,
 		] );
-	}
-
-	/**
-	 * Parses the data passed as input to insert or update a Series Pass to make sure
-	 * it's correct.
-	 *
-	 * @since TBD
-	 *
-	 * @param int    $post_id The post ID the ticket has been created or updated for.
-	 * @param Ticket $ticket  The created or updated ticket object.
-	 * @param array  $data    The data to insert or update for the ticket.
-	 *
-	 * @return bool Whether the data is correct.
-	 */
-	private function check_upsert_data( $post_id, $ticket, $data ): bool {
-		return is_int( $post_id ) && $post_id > 0
-		       && (
-			       ( $series = get_post( $post_id ) ) instanceof WP_Post
-			       && $series->post_type === Series_Post_Type::POSTTYPE
-		       )
-		       && $ticket instanceof Ticket
-		       && ( $ticket->type() ?? 'default' ) === self::HANDLED_TICKET_TYPE
-		       && is_array( $data );
-	}
-
-	/**
-	 * Inserts or updates the data to the custom tables for the series pass.
-	 *
-	 * @since TBD
-	 *
-	 * @param int    $post_id The Series post ID to add the pass to.
-	 * @param Ticket $ticket  A reference to the ticket object.
-	 *
-	 * @return bool Whether the data was added successfully.
-	 * @throws Exception If the data could not be added.
-	 */
-	public function insert_pass_custom_tables_data( $post_id, $ticket, $data ): bool {
-		if ( ! $this->check_upsert_data( $post_id, $ticket, $data ) ) {
-			return false;
-		}
-
-		$inserted = $this->container->get( Series_Passes_Repository::class )
-		                            ->insert_pass_data( $post_id, $ticket, $data );
-
-		if ( $inserted ) {
-			$this->debug( "Added Series Pass custom tables data for Ticket {$ticket->ID} and Series {$post_id}" );
-		}
-
-		return $inserted;
-	}
-
-	/**
-	 * Deletes data from the custom tables when a Series Pass is deleted.
-	 *
-	 * @since TBD
-	 *
-	 * @param int $post_id   The Series post ID to delete the pass from.
-	 * @param int $ticket_id The ticket ID to delete the pass from.
-	 *
-	 * @return bool Whether the data was deleted successfully.
-	 *
-	 * @throws Exception If the data could not be deleted.
-	 */
-	public function delete_pass_custom_tables_data( $post_id, $ticket_id ): bool {
-		$check_args = is_int( $post_id ) && $post_id > 0
-		              && (
-			              ( $series = get_post( $post_id ) ) instanceof WP_Post
-			              && $series->post_type === Series_Post_Type::POSTTYPE
-		              )
-		              && is_int( $ticket_id ) && $ticket_id > 0
-		              && ( $ticket = Tickets::load_ticket_object( $ticket_id ) ) instanceof Ticket
-		              && $ticket->type() === self::HANDLED_TICKET_TYPE;
-
-		if ( ! $check_args ) {
-			return false;
-		}
-
-		$deleted = $this->container->get( Series_Passes_Repository::class )
-		                           ->delete_pass_data( $post_id, $ticket_id );
-
-		if ( $deleted ) {
-			$this->debug( 'Series Pass custom tables data deleted for Ticket ' . $ticket_id );
-		} else {
-			$this->debug( 'No Series Pass custom tables data found to delete for Ticket ' . $ticket_id );
-		}
-
-		// The method is idem-potent: the data was deleted, just not this time.
-		return true;
-	}
-
-	/**
-	 * Updates data in the custom tables when a Series Pass is updated.
-	 *
-	 * @since TBD
-	 *
-	 * @param int                 $post_id The Series post ID to update the pass for.
-	 * @param Ticket              $ticket  The ticket object to update the pass for.
-	 * @param array<string,mixed> $data    The data to update the pass with.
-	 *
-	 * @return bool Whether the data was updated successfully.
-	 *
-	 * @throws Exception If the data could not be updated.
-	 */
-	public function update_pass_custom_tables_data( $post_id, $ticket, $data ): bool {
-		if ( ! $this->check_upsert_data( $post_id, $ticket, $data ) ) {
-			return false;
-		}
-
-		$updated = $this->container->get( Series_Passes_Repository::class )
-		                           ->update_pass_data( (int) $post_id, $ticket, $data );
-
-		if ( $updated ) {
-			$this->debug( "Updated Series Pass custom tables data for Ticket {$ticket->ID} and Series {$post_id}" );
-		}
-
-		return $updated;
 	}
 
 	/**
@@ -270,12 +180,12 @@ class Series_Passes extends Controller {
 	 * @return array<string> The list of admin strings.
 	 */
 	public function update_panel_data( array $data, int $post_id, ?int $ticket_id ): array {
-		$meta_redirection = $this->container->get( Meta_Redirection::class );
+		$meta_redirection = $this->container->get( Meta_Operations::class );
 
 		// Stop the meta redirection to avoid infinite loops.
 		$meta_redirection->stop();
 
-		if ( get_post_meta( $ticket_id, '_type', true ) !== self::HANDLED_TICKET_TYPE ) {
+		if ( get_post_meta( $ticket_id, '_type', true ) !== self::TICKET_TYPE ) {
 			$meta_redirection->resume();
 
 			return $data;
@@ -304,31 +214,6 @@ class Series_Passes extends Controller {
 	}
 
 	/**
-	 * Get the ticket metadata.
-	 *
-	 * This method will run while the Meta Redirection controller is not filtering calls.
-	 *
-	 * @param mixed  $value     The original value to be filtered.
-	 * @param int    $ticket_id The ticket post ID.
-	 * @param string $meta_key  The meta key.
-	 *
-	 * @return mixed Either the original value or the filtered value.
-	 */
-	public function get_ticket_metadata( $value, int $ticket_id, string $meta_key ) {
-		if ( ! in_array( $meta_key, [ '_ticket_end_date', '_ticket_end_time' ], true ) ) {
-			return $value;
-		}
-
-		$metadata = $this->container->get( Metadata::class );
-
-		if ( $meta_key === '_ticket_end_date' ) {
-			return $metadata->get_ticket_end_date( $ticket_id );
-		}
-
-		return $metadata->get_ticket_end_time( $ticket_id );
-	}
-
-	/**
 	 * Enables the reports for the Series Passes for all the possible ticket providers.
 	 *
 	 * Since providers can be set per-Series, all are pre-emptively activated.
@@ -344,19 +229,143 @@ class Series_Passes extends Controller {
 			return;
 		}
 
-		// Attendee reports for all providers.
-		$_registered_pages[ TEC::POSTTYPE . '_page_tickets-attendees' ] = true;
+		// The post type is the Event one because in the menu Series are listed under Events.
+		$event_post_type = TEC::POSTTYPE;
 
-		// Order reports for Tickets Commerce provider.
-		$_registered_pages[ TEC::POSTTYPE . '_page_tickets-commerce-orders' ] = true;
+		// Attendee reports for all providers (ET).
+		$_registered_pages[ $event_post_type . '_page_tickets-attendees' ] = true;
 
-		// Order reports for PayPal Tickets provider.
-		$_registered_pages[ TEC::POSTTYPE . '_page_tpp-orders' ] = true;
+		// Order reports for Tickets Commerce provider (ET).
+		$_registered_pages[ $event_post_type . '_page_tickets-commerce-orders' ] = true;
 
-		// Order reports for WooCommerce provider.
-		$_registered_pages[ TEC::POSTTYPE . '_page_tickets-orders' ] = true;
+		// Order reports for PayPal Tickets provider (ET).
+		$_registered_pages[ $event_post_type . '_page_tpp-orders' ] = true;
 
-		// Order reports for Easy Digital Downloads provider.
-		$_registered_pages[ TEC::POSTTYPE . '_page_edd-orders' ] = true;
+		// Order reports for WooCommerce provider (ET+).
+		$_registered_pages[ $event_post_type . '_page_tickets-orders' ] = true;
+
+		// Order reports for Easy Digital Downloads provider (ET+).
+		$_registered_pages[ $event_post_type . '_page_edd-orders' ] = true;
+	}
+
+	private function update_ticket_end_meta( int $ticket_id, string $meta_key, bool $dynamic ): void {
+		// Unregister to avoid infinite loops.
+		$this->unregister();
+
+		$dynamic_meta_key = $meta_key === '_ticket_end_date' ? '_dynamic_end_date' : '_dynamic_end_time';
+
+		if ( ! $dynamic ) {
+			update_post_meta( $ticket_id, $dynamic_meta_key, '0' );
+
+			// Re-register the controller.
+			$this->do_register();
+
+			return;
+		}
+
+		// Set the end date dynamically from the start date of the last Occurrence in the Series.
+		$last       = $this->container->get( Series_Passes\Repository::class )->get_last_occurrence_by_ticket( $ticket_id );
+		$format     = $meta_key === '_ticket_end_date' ? 'Y-m-d' : 'H:i:s';
+		$meta_value = $last instanceof WP_Post ? $last->dates->start->format( $format ) : '';
+
+		update_post_meta( $ticket_id, $meta_key, $meta_value );
+		update_post_meta( $ticket_id, $dynamic_meta_key, '1' );
+		// Re-register the controller.
+		$this->do_register();
+	}
+
+	/**
+	 * Updates the Series Passes meta when its meta is updated.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|null $meta_id    The meta ID, unused.
+	 * @param int      $ticket_id  The ticket ID.
+	 * @param string   $meta_key   The meta key.
+	 * @param mixed    $meta_value The meta value.
+	 *
+	 * @return void The meta is updated.
+	 */
+	public function update_pass_meta( $meta_id, $ticket_id, $meta_key, $meta_value ): void {
+		if ( ! in_array( $meta_key, [ '_ticket_end_date', '_ticket_end_time' ], true ) ) {
+			return;
+		}
+
+		// At this stage, the post and its meta are cached, these are fast checks.
+		if ( ! (
+			get_post_meta( $ticket_id, '_type', true ) !== self::TICKET_TYPE
+			&& in_array( get_post_type( $ticket_id ), Enums\Ticket_Post_Types::all(), true ) )
+		) {
+			return;
+		}
+
+		// The meta value is being directly updated: it will be dynamic if it's empty.
+		$this->update_ticket_end_meta( $ticket_id, $meta_key, empty( $meta_value ) );
+	}
+
+	/**
+	 * Updates a Series Pass post or custom fields when it's saved.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_id The ticket post ID.
+	 *
+	 * @return void The Series Pass post is updated.
+	 */
+	public function update_pass( $ticket_id ): void {
+		if ( get_post_meta( $ticket_id, '_type', true ) !== self::TICKET_TYPE ) {
+			return;
+		}
+
+		$end_date_is_dynamic = get_post_meta( $ticket_id, '_dynamic_end_date', true )
+		                       || empty( get_post_meta( $ticket_id, '_ticket_end_date', true ) );
+		$this->update_ticket_end_meta( $ticket_id, '_ticket_end_date', $end_date_is_dynamic );
+
+		$end_time_is_dynamic = get_post_meta( $ticket_id, '_dynamic_end_time', true )
+		                       || empty( get_post_meta( $ticket_id, '_ticket_end_time', true ) );
+		$this->update_ticket_end_meta( $ticket_id, '_ticket_end_time', $end_time_is_dynamic );
+	}
+
+	/**
+	 * Updates the Series Passes when a Series relationships with Events are updated.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $series_id The Series post ID.
+	 *
+	 * @return void The Series Passes are updated.
+	 */
+	public function update_passes_for_series( int $series_id ): void {
+		// Theoretically unbound; in practice it's unlikely a Series will have more than a few Series Passes attached.
+		$passes = tribe_tickets()->where( 'event', $series_id )->get_ids();
+
+		if ( ! count( $passes ) ) {
+			return;
+		}
+
+		foreach ( $passes as $pass ) {
+			$this->update_pass( $pass );
+		}
+	}
+
+	/**
+	 * Updates the Series Passes when an Event relationship with Series are updated.
+	 *
+	 * @since TBD
+	 *
+	 * @param int             $event_id   The Event post ID.
+	 * @param array<int>|null $series_ids The Series post IDs, if known.
+	 *
+	 * @return void The Series Passes are updated.
+	 */
+	public function update_passes_for_event( int $event_id, array $series_ids = null ): void {
+		// Get the Series the Event belongs to if not provided.
+		$series_ids = $series_ids ?? tec_series()->where( 'event_post_id', $event_id )->fields( 'ids' )->get_ids();
+
+		if ( empty( $series_ids ) ) {
+			return;
+		}
+
+		$this->update_passes_for_series( reset( $series_ids ) );
 	}
 }

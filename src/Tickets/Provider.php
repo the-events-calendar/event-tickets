@@ -8,10 +8,10 @@
 
 namespace TEC\Tickets;
 
-use \tad_DI52_ServiceProvider;
+use tad_DI52_ServiceProvider;
 use TEC\Events\Custom_Tables\V1\Provider as TEC_CT1_Provider;
-use TEC\Tickets\Custom_Tables\V1\Provider as ET_CT1_Provider;
-use \Tribe__Tickets__Main as Tickets_Plugin;
+use TEC\Tickets\Commerce\Custom_Tables\V1\Provider as ET_CT1_Provider;
+use Tribe__Tickets__Main as Tickets_Plugin;
 
 /**
  * Class Provider for all the Tickets loading.

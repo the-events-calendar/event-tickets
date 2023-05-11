@@ -1150,6 +1150,9 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 				'post_excerpt' => $ticket->description,
 				'post_title'   => $ticket->name,
 				'menu_order'   => tribe_get_request_var( 'menu_order', -1 ),
+				'meta_input' => [
+					'_type' => $raw_data['ticket_type'] ?? 'default',
+				]
 			);
 
 			$ticket->ID = wp_insert_post( $args );
@@ -1163,6 +1166,9 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 				'post_excerpt' => $ticket->description,
 				'post_title'   => $ticket->name,
 				'menu_order'   => $ticket->menu_order,
+				'meta_input' => [
+					'_type' => $raw_data['ticket_type'] ?? 'default',
+				]
 			);
 
 			$ticket->ID = wp_update_post( $args );

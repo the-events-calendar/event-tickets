@@ -31,9 +31,8 @@ class Base extends Controller {
 	 * @return void
 	 */
 	protected function do_register(): void {
-		$this->container->singleton( Repositories\Capacities::class, Repositories\Capacities::class );
-		$this->container->singleton( Repositories\Posts_And_Posts::class, Repositories\Posts_And_Posts::class );
-		$this->container->singleton( Repositories\Capacities_Relationships::class, Repositories\Capacities_Relationships::class );
+		$this->container->singleton( Repositories\Ticket_Groups::class, Repositories\Ticket_Groups::class );
+		$this->container->singleton( Repositories\Posts_And_Ticket_Groups::class, Repositories\Posts_And_Ticket_Groups::class );
 
 		add_action( 'tec_tickets_ticket_form_main_start', [ $this, 'render_ticket_type_options' ] );
 	}
@@ -67,6 +66,6 @@ class Base extends Controller {
 			return;
 		}
 
-		$this->container->get( Admin_Views::class )->template( 'ticket-type-options');
+		$this->container->get( Admin_Views::class )->template( 'ticket-type-options' );
 	}
 }

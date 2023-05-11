@@ -7,13 +7,12 @@
  * @package TEC\Events_Community\Custom_Tables\V1;
  */
 
-namespace TEC\Tickets\Custom_Tables\V1;
+namespace TEC\Tickets\Commerce\Custom_Tables\V1;
 
 use tad_DI52_ServiceProvider;
 use TEC\Events\Custom_Tables\V1\Migration\State;
 use TEC\Events\Custom_Tables\V1\Models\Occurrence;
 use Tribe__Utils__Array as Arr;
-use WP_Query;
 
 /**
  * Class Provider.
@@ -79,7 +78,7 @@ class Provider extends tad_DI52_ServiceProvider {
 		$state = $this->container->make( State::class );
 
 		if ( $state->should_lock_for_maintenance() ) {
-			$this->container->register( Migration\Maintenance_Mode\Provider::class );
+			$this->container->register( \TEC\Tickets\Commerce\Custom_Tables\V1\Migration\Maintenance_Mode\Provider::class );
 		}
 	}
 

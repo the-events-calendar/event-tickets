@@ -41,7 +41,7 @@ class Custom_Tables extends Controller {
 		Schema_Config::set_container( $this->container );
 		Schema_Config::set_db( DB::class );
 		Model_Config::reset();
-		Model_Config::setHookPrefix('tec-tickets-flexible-tickets');
+		Model_Config::setHookPrefix( 'tec-tickets-flexible-tickets' );
 
 		add_action( 'tribe_plugins_loaded', [ $this, 'register_tables' ] );
 	}
@@ -65,11 +65,7 @@ class Custom_Tables extends Controller {
 	 * @return void
 	 */
 	public function register_tables(): void {
-		$this->container->singleton( Capacities::class, Schema_Register::table( Capacities::class ) );
 		$this->container->singleton( Ticket_Groups::class, Schema_Register::table( Ticket_Groups::class ) );
-		$this->container->singleton( Posts_And_Posts::class, Schema_Register::table( Posts_And_Posts::class ) );
-		$this->container->singleton( Posts_And_Users::class, Schema_Register::table( Posts_And_Users::class ) );
-		$this->container->singleton( Capacities_Relationships::class, Schema_Register::table( Capacities_Relationships::class ) );
 		$this->container->singleton( Posts_And_Ticket_Groups::class, Schema_Register::table( Posts_And_Ticket_Groups::class ) );
 	}
 
@@ -86,11 +82,7 @@ class Custom_Tables extends Controller {
 		DB::query( 'SET FOREIGN_KEY_CHECKS = 0' );
 		foreach (
 			[
-				Capacities::table_name(),
 				Ticket_Groups::table_name(),
-				Posts_And_Posts::table_name(),
-				Posts_And_Users::table_name(),
-				Capacities_Relationships::table_name(),
 			] as $table
 		) {
 			$dropped += DB::query( "DROP TABLE IF EXISTS $table" );
@@ -113,11 +105,8 @@ class Custom_Tables extends Controller {
 		DB::query( 'SET FOREIGN_KEY_CHECKS = 0' );
 		foreach (
 			[
-				Capacities::table_name(),
 				Ticket_Groups::table_name(),
-				Posts_And_Posts::table_name(),
-				Posts_And_Users::table_name(),
-				Capacities_Relationships::table_name(),
+				Posts_And_Ticket_Groups::table_name()
 			] as $table
 		) {
 			$truncated += DB::query( "TRUNCATE TABLE $table" );
