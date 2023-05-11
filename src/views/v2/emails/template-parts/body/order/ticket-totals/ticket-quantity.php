@@ -10,7 +10,6 @@
  * @link    https://evnt.is/tickets-emails-tpl Help article for Tickets Emails template files.
  *
  * @version 5.5.11
- *
  * @since   5.5.11
  *
  * @var Tribe__Template                    $this               Current template object.
