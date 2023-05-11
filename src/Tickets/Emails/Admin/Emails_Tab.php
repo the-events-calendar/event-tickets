@@ -197,12 +197,12 @@ class Emails_Tab {
 		// Get `section` query string from URL.
 		$editing_email  = tribe_get_request_var( 'section' );
 
-		// If email wasn't passed, just return whether string is empty.
+		// If email wasn't passed, just return whether the string is empty.
 		if ( empty( $email ) ) {
 			return ! empty( $editing_email );
 		}
 
-		// Otherwise, return whether supplied email is being edited.
+		// Otherwise, return whether the supplied email is being edited.
 		return $email->id === $editing_email;
 	}
 
