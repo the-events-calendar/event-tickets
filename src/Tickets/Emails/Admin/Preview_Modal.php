@@ -105,11 +105,9 @@ class Preview_Modal {
 
 		$args = $this->get_modal_args();
 
-		$dialog_view = tribe( 'dialog.view' );
-
 		$modal = '<div class="tribe-common event-tickets">';
 		$modal .= '<span id="' . esc_attr( static::$modal_target ) . '"></span>';
-		$modal .= $dialog_view->render_modal( $content, $args, static::$modal_id, false );
+		$modal .= tribe( 'dialog.view' )->render_modal( $content, $args, static::$modal_id, false );
 		$modal .= '</div>';
 
 		return $modal;
