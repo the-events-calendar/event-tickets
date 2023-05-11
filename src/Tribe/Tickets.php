@@ -1043,6 +1043,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Save the attendee checkin details.
 		 *
 		 * @since 5.5.2
+		 * @since 5.5.11 Update attendee scan count via tec_tickets_plus_app_attendees_checked_in option.
 		 *
 		 * @param int   $attendee_id     The ID of the attendee that's being checked-in.
 		 * @param mixed $qr              True if the check-in is from a QR code.
@@ -1057,6 +1058,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			if ( ! empty( $qr ) ) {
 				// Save the latest date in which a ticket was scanned with the APP.
 				tribe_update_option( 'tec_tickets_plus_app_last_checkin_time', time() );
+
+				// Save the attendee scan count.
+				$attendee_scan_count = (int) tribe_get_option( 'tec_tickets_plus_app_attendees_checked_in' );
+				tribe_update_option( 'tec_tickets_plus_app_attendees_checked_in', ++$attendee_scan_count );
 			}
 
 			/**
@@ -2503,13 +2508,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			foreach ( $tickets_by_event as $event_id => $event_tickets ) {
 				$email_class->__set( 'post_id', $event_id );
 				$email_class->__set( 'tickets', $event_tickets );
-				// @todo @juanfra @codingmusician: Set tickets data to the email class.
-				$subject     = $email_class->get_subject();
-				$content     = $email_class->get_content( [ 'tickets' => $event_tickets ] );
-				$headers     = $email_class->get_headers();
-				$attachments = $email_class->get_attachments();
+				$email_class->recipient = $to;
 
-				$sent = tribe( TEC\Tickets\Emails\Email_Sender::class )->send( $to, $subject, $content, $headers, $attachments );
+				$sent = $email_class->send();
 
 				// Handle marking the attendee ticket email as being sent.
 				if ( $sent ) {
