@@ -37,7 +37,6 @@ $payment_info = empty( $order->status ) || 'completed' !== strtolower( $order->s
 		__( 'Payment completed with %s', 'event-tickets' ),
 		$order->gateway
 	);
-1
 ?>
 <tr>
 	<td class="tec-tickets__email-table-content-order-payment-info-container" align="right">

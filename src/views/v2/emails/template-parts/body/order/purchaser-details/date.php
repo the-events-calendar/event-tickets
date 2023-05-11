@@ -28,5 +28,5 @@ use Tribe__Date_Utils as Dates;
 $order_date = Dates::build_date_object( $order->purchase_time )->format( get_option( 'date_format' ) );
 ?>
 <td class="tec-tickets__email-table-content-order-purchaser-details-bottom tec-tickets__email-table-content-align-left" align="left">
-	<?php echo esc_html( $order_date ); ?>w
+	<?php echo esc_html( $order_date ); ?>
 </td>

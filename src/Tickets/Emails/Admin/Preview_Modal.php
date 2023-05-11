@@ -12,7 +12,7 @@ use TEC\Tickets\Emails\Email_Template as Email_Template;
 /**
  * Class Preview_Modal
  *
- * @since   5.5.7
+ * @since 5.5.7
  * @package TEC\Tickets\Emails
  *
  */
@@ -213,7 +213,7 @@ class Preview_Modal {
 				$email_class = tribe( get_class( $email ) );
 				$email_class->set_placeholders( Preview_Data::get_placeholders() );
 
-				// @todo @bordoni this is extremely temporary, we will move to use date internally and directly.
+				// @todo @bordoni this is extremely temporary, we will move to use data internally and directly.
 				foreach ( $email_class->get_preview_context() as $key => $template_var_value ) {
 					$email_class->set( $key, $template_var_value );
 				}
@@ -226,7 +226,7 @@ class Preview_Modal {
 			$email_class = tribe( Ticket::class );
 			$email_class->set_placeholders( Preview_Data::get_placeholders() );
 
-			// @todo @bordoni this is extremely temporary, we will move to use date internally and directly.
+			// @todo @bordoni this is extremely temporary, we will move to use data internally and directly.
 			foreach ( $email_class->get_preview_context() as $key => $template_var_value ) {
 				$email_class->set( $key, $template_var_value );
 			}
