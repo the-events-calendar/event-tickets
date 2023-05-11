@@ -157,7 +157,7 @@ class Emails_Tab {
 		];
 		$fields['tribe-tickets-emails-header'] = [
 			'type' => 'html',
-			'html' => '<h2>' . esc_html__( 'Tickets Emails', 'event-tickets' ) . '</h2>',
+			'html' => '<h2 class="tec-tickets__admin-settings-tab-heading">' . esc_html__( 'Tickets Emails', 'event-tickets' ) . '</h2>',
 		];
 		$kb_link_html = sprintf( '<a href="%s" target="_blank" rel="nofollow">%s</a>',
 			'https://www.theeventscalendar.com', // @todo Replace with correct KB URL.

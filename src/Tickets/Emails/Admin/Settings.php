@@ -309,6 +309,7 @@ class Settings {
 						'alignleft',
 						'aligncenter',
 						'alignright',
+						'link',
 					],
 				],
 			],
