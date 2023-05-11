@@ -65,5 +65,35 @@ abstract class JSON_LD_Abstract {
 	 *
 	 * @return array<string,mixed> The data for the schema.
 	 */
-	abstract public function get_data(): array;
+	public function get_data(): array {
+		$type = strtolower( static::$type );
+
+		/**
+		 * Filter the generated JSON-LD schema data.
+		 *
+		 * @since TBD
+		 *
+		 * @param array<string,mixed> $data The JSON-LD schema data.
+		 * @param array<string,mixed> $args The arguments for the schema.
+		 */
+		return apply_filters( "tec_tickets_email_json_ld_{$type}_schema_data", $this->build_data(), $this->get_args() );
+	}
+
+	/**
+	 * Build the data for the schema.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string,mixed> The data for the schema.
+	 */
+	abstract public function build_data(): array;
+
+	/**
+	 * Get the arguments for the schema.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string,mixed> The arguments for the schema.
+	 */
+	abstract public function get_args(): array;
 }
