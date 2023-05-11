@@ -224,6 +224,17 @@ class RSVP extends Email_Abstract {
 	 * @return array
 	 */
 	public function get_settings_fields(): array {
+		$kb_link = sprintf(
+			'<a href="https://evnt.is/event-tickets-emails" target="_blank" rel="noopener noreferrer">%s</a>',
+			esc_html__( 'Learn more', 'event-tickets' )
+		);
+
+		$email_description = sprintf(
+			// Translators: %1$s: RSVP Emails knowledgebase article link.
+			esc_html_x( 'Registrants will receive an email including their RSVP info upon registration. Customize the content of this specific email using the tools below. You can also use email placeholders and customize email templates. %1$s.', 'about RSVP email', 'event-tickets' ),
+			$kb_link
+		);
+
 		$settings = [
 			[
 				'type' => 'html',
@@ -235,7 +246,7 @@ class RSVP extends Email_Abstract {
 			],
 			[
 				'type' => 'html',
-				'html' => '<p>' . esc_html__( 'Registrants will receive an email including their RSVP info upon registration. Customize the content of this specific email using the tools below. The brackets {event_name}, {event_date}, and {rsvp_name} can be used to pull dynamic content from the RSVP into your email. Learn more about customizing email templates in our Knowledgebase.' ) . '</p>',
+				'html' => '<p>' . $email_description . '</p>',
 			],
 			$this->get_option_key( 'enabled' ) => [
 				'type'                => 'toggle',
