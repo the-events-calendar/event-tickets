@@ -29,8 +29,15 @@ class Order_Schema extends JSON_LD_Abstract {
 	 *
 	 * @var \WP_Post
 	 */
-	private \WP_Post $order;
+	public \WP_Post $order;
 
+	/**
+	 * Order_Schema constructor.
+	 *
+	 * @since TBD
+	 *
+	 * @param \WP_Post $order The order object.
+	 */
 	public function __construct( \WP_Post $order ) {
 		$this->order = $order;
 	}
@@ -38,7 +45,7 @@ class Order_Schema extends JSON_LD_Abstract {
 	/**
 	 * @inheritDoc
 	 */
-	public function get_data() : array {
+	public function get_data(): array {
 		$order       = $this->order;
 		$commerce    = tribe( Module::class );
 		$report_link = $commerce->get_event_reports_link( $order->events_in_order[0], true );

@@ -20,9 +20,32 @@ class Reservation_Schema extends JSON_LD_Abstract {
 	 */
 	public static string $type = 'EventReservation';
 
-	private array $event_data;
-	private array $tickets;
+	/**
+	 * The event data.
+	 *
+	 * @since TBD
+	 *
+	 * @var array
+	 */
+	public array $event_data;
 
+	/**
+	 * Tickets data.
+	 *
+	 * @since TBD
+	 *
+	 * @var array
+	 */
+	public array $tickets;
+
+	/**
+	 * Reservation_Schema constructor.
+	 *
+	 * @param array $event_data The event data.
+	 * @param array $tickets The tickets data.
+	 *
+	 * @since TBD
+	 */
 	public function __construct( array $event_data, array $tickets ) {
 		$this->event_data = $event_data;
 		$this->tickets    = $tickets;
