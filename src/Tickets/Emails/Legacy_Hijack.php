@@ -217,9 +217,6 @@ class Legacy_Hijack {
 		$email_class->set( 'post_id', $event_id );
 		$email_class->set( 'tickets', $all_attendees );
 
-		// @todo We need to refactor this piece to use the correct sender functionality.
-		$content = $email_class->get_content( [ 'tickets' => $all_attendees ] );
-
 		// @todo we need to avoid setting the recipient like this.
 		$email_class->recipient = $to;
 

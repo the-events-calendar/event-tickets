@@ -123,7 +123,7 @@ tribe.tickets.emails = {};
 		$modalContent.on(
 			'afterAjaxSuccess.tribeTicketsAdmin',
 			{ container: $modalContent, requestData: data },
-			obj.bindModalEvents,
+			obj.bindModalEvents
 		);
 	};
 
