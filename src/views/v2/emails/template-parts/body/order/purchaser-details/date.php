@@ -23,9 +23,10 @@
  * @var \WP_Post                           $order              The order object.
  */
 
-$order_date = get_the_date( get_option( 'date_format' ), $order );
+use Tribe__Date_Utils as Dates;
 
+$order_date = Dates::build_date_object( $order->purchase_time )->format( get_option( 'date_format' ) );
 ?>
 <td class="tec-tickets__email-table-content-order-purchaser-details-bottom tec-tickets__email-table-content-align-left" align="left">
-	<?php echo esc_html( $order_date ); ?>
+	<?php echo esc_html( $order_date ); ?>w
 </td>

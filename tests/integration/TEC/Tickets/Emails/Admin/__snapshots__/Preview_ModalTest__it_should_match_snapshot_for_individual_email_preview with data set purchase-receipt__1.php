@@ -355,7 +355,8 @@
 			</tr>
 			<tr>
 				<td class="tec-tickets__email-table-content-order-purchaser-details-bottom tec-tickets__email-table-content-align-left" align="left">
-	May 10, 2023</td>
+	May 11, 2023w
+</td>
 				<td class="tec-tickets__email-table-content-order-purchaser-details-bottom tec-tickets__email-table-content-align-right" align="right">
 	john@doe.com</td>
 			</tr>
