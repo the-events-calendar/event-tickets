@@ -364,13 +364,6 @@ class Settings {
 
 		];
 
-		$description = esc_html__( 'Start using the new Tickets Emails for your site.', 'event-tickets' );
-
-		$new_fields['tickets-emails-description'] = [
-			'type' => 'html',
-			'html' => '<div class="tec-tickets__admin-settings-emails-description">' . $description . '</div>',
-		];
-
 		$fields[ self::$option_enabled ] = [
 			'type'            => 'hidden',
 			'validation_type' => 'boolean',
