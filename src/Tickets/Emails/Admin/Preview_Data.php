@@ -88,6 +88,8 @@ class Preview_Data {
 			'post_author'      => 1,
 			'post_date'        => '2023-04-17 17:06:56',
 			'post_date_gmt'    => '2023-04-17 22:06:56',
+			'purchase_time'    => '2023-04-17 17:06:56',
+			'purchase_date'    => '2023-04-17 17:06:56',
 			'post_title'       => __( 'Preview Order', 'event-tickets' ),
 			'post_status'      => 'publish',
 			'post_name'        => 'preview-order-' . rand( 1, 9999 ),
