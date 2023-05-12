@@ -21,9 +21,17 @@
  * @var string                             $additional_content The email additional content.
  * @var bool                               $is_tec_active      Whether `The Events Calendar` is active or not.
  * @var \WP_Post                           $order              The order object.
+ * @var array<string, mixed>               $cart_item          The cart item.
  */
 
-$ticket_title = get_the_title( $ticket );
+use Tribe__Utils__Array as Arr;
+
+if ( empty( $cart_item['ticket_id'] ) ) {
+	return;
+}
+
+$fallback_title = get_the_title( $cart_item['ticket_id'] );
+$ticket_title = Arr::get( $cart_item, 'ticket_title', $fallback_title );
 
 ?>
 <td class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-left" align="left">

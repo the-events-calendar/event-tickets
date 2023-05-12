@@ -59,6 +59,20 @@ class Preview_Data {
 		$order = new WP_Post( (object) [
 			'ID'               => -99,
 			'gateway_order_id' => -99,
+			'items' =>  [
+				[
+					'ticket_title' => __( 'General Admission', 'event-tickets' ),
+					'ticket_id' => -98,
+					'quantity'  => 2,
+					'extra'     => [
+						'optout' => true,
+						'iac'    => 'none',
+					],
+					'price'     => 50.0,
+					'sub_total' => 50.0,
+					'event_id'  => -96,
+				]
+			],
 			'total'            => $total_value,
 			'total_value'      => $total_value,
 			'purchaser'        => [
@@ -72,8 +86,8 @@ class Preview_Data {
 			'status'           => 'completed',
 			'tickets'          => self::get_tickets(),
 			'post_author'      => 1,
-			'post_date'        => current_time( 'mysql' ),
-			'post_date_gmt'    => current_time( 'mysql', 1 ),
+			'post_date'        => '2023-04-17 17:06:56',
+			'post_date_gmt'    => '2023-04-17 22:06:56',
 			'post_title'       => __( 'Preview Order', 'event-tickets' ),
 			'post_status'      => 'publish',
 			'post_name'        => 'preview-order-' . rand( 1, 9999 ),
@@ -249,17 +263,6 @@ class Preview_Data {
 				'event_id'        => 999,
 				'product_id'      => 998,
 				'attendee_id'     => 997,
-				'ticket_data'     => [
-					'ticket_id' => -98,
-					'quantity'  => 2,
-					'extra'     => [
-						'optout' => true,
-						'iac'    => 'none',
-					],
-					'price'     => 50.0,
-					'sub_total' => 50.0,
-					'event_id'  => -96,
-				],
 			],
 		];
 		return wp_parse_args( $args, $default );
@@ -267,11 +270,11 @@ class Preview_Data {
 
 	/**
 	 * Get preview placeholders.
-	 * 
+	 *
 	 * @since TBD
 	 *
 	 * @param array $args Override arguments.
-	 * 
+	 *
 	 * @return array
 	 */
 	public static function get_placeholders( $args = [] ): array {

@@ -1,6 +1,8 @@
 <?php
+
 namespace TEC\Tickets\Emails\Admin;
 
+use TEC\Tickets\Emails\Email_Handler;
 use Tribe__Utils__Array as Arr;
 use TEC\Tickets\Emails\Assets as Assets;
 use TEC\Tickets\Emails\Admin\Emails_Tab as Emails_Tab;
@@ -10,9 +12,9 @@ use TEC\Tickets\Emails\Email_Template as Email_Template;
 /**
  * Class Preview_Modal
  *
+ * @since 5.5.7
  * @package TEC\Tickets\Emails
  *
- * @since 5.5.7
  */
 class Preview_Modal {
 
@@ -69,12 +71,10 @@ class Preview_Modal {
 	 *
 	 * @since 5.5.7
 	 *
-	 * @param array $args Override default args by sending them in the `$args`.
-	 *
 	 * @return array The default modal args.
 	 */
-	public function get_modal_args( $args = [] ): array {
-		$default_args = [
+	public function get_modal_args(): array {
+		return [
 			'append_target'           => '#' . static::$modal_target,
 			'button_display'          => false,
 			'close_event'             => 'tribeDialogCloseEmailsPreviewModal.tribeTickets',
@@ -88,8 +88,6 @@ class Preview_Modal {
 				'tribe-modal__title--emails-preview',
 			],
 		];
-
-		return wp_parse_args( $args, $default_args );
 	}
 
 	/**
@@ -97,27 +95,19 @@ class Preview_Modal {
 	 *
 	 * @since 5.5.7
 	 *
-	 * @param array $args Override default args by sending them in the `$args`.
-	 *
 	 * @return string The modal content.
 	 */
-	public function get_modal_content( $args = [] ): string {
-		/** @var Tribe__Tickets__Editor__Template $template */
+	public function get_modal_content(): string {
+		/** @var \Tribe__Tickets__Editor__Template $template */
 		$template = tribe( 'tickets.editor.template' );
 
 		$content = $template->template( 'v2/components/loader/loader', [], false );
 
-		$args = $this->get_modal_args( $args );
+		$args = $this->get_modal_args();
 
-		$dialog_view = tribe( 'dialog.view' );
-
-		ob_start();
-		$dialog_view->render_modal( $content, $args, static::$modal_id );
-		$modal_content = ob_get_clean();
-
-		$modal  = '<div class="tribe-common event-tickets">';
+		$modal = '<div class="tribe-common event-tickets">';
 		$modal .= '<span id="' . esc_attr( static::$modal_target ) . '"></span>';
-		$modal .= $modal_content;
+		$modal .= tribe( 'dialog.view' )->render_modal( $content, $args, static::$modal_id, false );
 		$modal .= '</div>';
 
 		return $modal;
@@ -187,9 +177,7 @@ class Preview_Modal {
 	 * @return string $html The response with the HTML of the form, depending on the call.
 	 */
 	public function get_modal_content_ajax( $render_response, $vars ) {
-		$html = '';
-
-		/** @var Tribe__Tickets__Editor__Template $template */
+		/** @var \Tribe__Tickets__Editor__Template $template */
 		$tickets_template = tribe( 'tickets.editor.template' );
 
 		$context = [
@@ -219,19 +207,31 @@ class Preview_Modal {
 		$html = '';
 
 		if ( ! empty( $current_email ) ) {
-			$email = tribe( \TEC\Tickets\Emails\Email_Handler::class )->get_email_by_id( $current_email );
+			$email = tribe( Email_Handler::class )->get_email_by_id( $current_email );
 
 			if ( ! empty( $email ) ) {
 				$email_class = tribe( get_class( $email ) );
 				$email_class->set_placeholders( Preview_Data::get_placeholders() );
-				$html        = $email_class->get_content( $email_class->get_preview_context() );
+
+				// @todo @bordoni this is extremely temporary, we will move to use data internally and directly.
+				foreach ( $email_class->get_preview_context() as $key => $template_var_value ) {
+					$email_class->set( $key, $template_var_value );
+				}
+
+				$html = $email_class->get_content();
 			}
 
 		} else {
 			// Show Ticket email by default.
 			$email_class = tribe( Ticket::class );
 			$email_class->set_placeholders( Preview_Data::get_placeholders() );
-			$html        = $email_class->get_content( $email_class->get_preview_context() );
+
+			// @todo @bordoni this is extremely temporary, we will move to use data internally and directly.
+			foreach ( $email_class->get_preview_context() as $key => $template_var_value ) {
+				$email_class->set( $key, $template_var_value );
+			}
+
+			$html = $email_class->get_content();
 		}
 
 		$html .= $tickets_template->template( 'v2/components/loader/loader', [], false );

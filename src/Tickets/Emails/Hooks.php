@@ -46,8 +46,6 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 * @since 5.5.6
 	 */
 	protected function add_actions() {
-		add_action( 'init', [ $this, 'action_register_post_type' ] );
-		add_action( 'wp_loaded', [ $this, 'populate_email_template_posts' ], 25 );
 		add_action( 'tribe_settings_do_tabs', [ $this, 'register_emails_tab' ], 17 );
 		add_action( 'tribe_settings_after_form_element_tab_emails', [ $this, 'action_add_preview_modal_button' ] );
 		add_action( 'admin_footer', [ $this, 'action_add_preview_modal' ] );
@@ -88,27 +86,6 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 */
 	public function filter_redirect_url( $url ) {
 		return $this->container->make( Emails_Tab::class )->filter_redirect_url( $url );
-	}
-
-	/**
-	 * Action to register the post type with emails.
-	 *
-	 * @since 5.5.9
-	 *
-	 */
-	public function action_register_post_type() {
-		$this->container->make( Post_Type::class )->register_post_type();
-	}
-
-	/**
-	 * Action to create the default posts for email templates.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	public function populate_email_template_posts(): void {
-		$this->container->make( Post_Type::class )->populate_email_template_posts();
 	}
 
 	/**
