@@ -6,18 +6,25 @@ use Closure;
 use Codeception\TestCase\WPTestCase;
 use Generator;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
-use TEC\Tickets\Flexible_Tickets\Series_Passes;
+use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
+use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Flexible_Tickets\Test\Traits\Series_Pass_Factory;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 use Tribe__Tickets__Metabox as Metabox;
-use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 
 class MetaboxTest extends WPTestCase {
 	use SnapshotAssertions;
 	use RSVP_Ticket_Maker;
 	use Series_Pass_Factory;
 	use With_Uopz;
+
+	/**
+	 * @before
+	 */
+	public function ensure_commerce_module_active():void{
+		tribe( Module::class );
+	}
 
 	public function get_panels_provider(): Generator {
 		yield 'post without ticket' => [

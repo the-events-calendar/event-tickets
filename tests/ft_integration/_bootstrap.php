@@ -3,13 +3,15 @@
 use Codeception\Events;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Events\Custom_Tables\V1\Activation;
-use TEC\Events_Pro\Custom_Tables\V1\Activation as Events_Pro_Activation;
-use \TEC\Events\Custom_Tables\V1\Tables\Events as Events_Table;
+use TEC\Events\Custom_Tables\V1\Tables\Events as Events_Table;
 use TEC\Events\Custom_Tables\V1\Tables\Occurrences as Occurrences_Table;
+use TEC\Events_Pro\Custom_Tables\V1\Activation as Events_Pro_Activation;
+use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 use TEC\Events_Pro\Custom_Tables\V1\Tables\Series_Relationships as Series_Relationships_Table;
+use TEC\Tickets\Commerce\Module as Commerce_Module;
+use TEC\Tickets\Commerce\Provider as Commerce_Provider;
 use TEC\Tickets\Flexible_Tickets\Custom_Tables;
 use function tad\WPBrowser\addListener;
-use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 
 putenv( 'TEC_CUSTOM_TABLES_V1_DISABLED=1' );
 $_ENV['TEC_CUSTOM_TABLES_V1_DISABLED'] = 1;
@@ -31,6 +33,13 @@ if ( empty( tribe()->getVar( 'ct1_fully_activated' ) ) ) {
 $custom_tables = tribe( Custom_Tables::class );
 $custom_tables->drop_tables();
 $custom_tables->register_tables();
+
+// Ensure Ticket Commerce is enabled.
+if ( ! tec_tickets_commerce_is_enabled() ) {
+	add_filter( 'tec_tickets_commerce_is_enabled', '__return_true', 100 );
+	tribe()->register( Commerce_Provider::class );
+}
+tribe( Commerce_Module::class);
 
 // Start the posts auto-increment from a high number to make it easier to replace the post IDs in HTML snapshots.
 global $wpdb;
