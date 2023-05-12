@@ -6,7 +6,6 @@ use Closure;
 use Generator;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
-use TEC\Events\Custom_Tables\V1\Models\Occurrence;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 use TEC\Tickets\Flexible_Tickets\Test\Traits\Series_Pass_Factory;
 use TEC\Tickets\Flexible_Tickets\Test\Traits\Ticket_Data_Factory;
@@ -212,6 +211,7 @@ class Series_PassesTest extends Controller_Test_Case {
 	 * @covers \TEC\Tickets\Flexible_Tickets\Series_Passes::update_pass
 	 * @covers \TEC\Tickets\Flexible_Tickets\Series_Passes::update_pass_meta
 	 * @covers \TEC\Tickets\Flexible_Tickets\Series_Passes::update_passes_for_event
+	 * @covers \TEC\Tickets\Flexible_Tickets\Series_Passes::update_passes_for_series
 	 *
 	 * @test
 	 */
@@ -268,50 +268,265 @@ class Series_PassesTest extends Controller_Test_Case {
 		$this->assertEquals( '17:30:00', get_post_meta( $series_pass_id, '_ticket_end_time', true ) );
 		$this->assertEquals( '1', get_post_meta( $series_pass_id, '_dynamic_end_date', true ) );
 		$this->assertEquals( '1', get_post_meta( $series_pass_id, '_dynamic_end_time', true ) );
-	}
 
-	/**
-	 * It should get ticket metadata correctly when explicitly set
-	 *
-	 * @covers \TEC\Tickets\Flexible_Tickets\Series_Passes::update_pass
-	 * @covers \TEC\Tickets\Flexible_Tickets\Series_Passes::update_pass_meta
-	 * @covers \TEC\Tickets\Flexible_Tickets\Series_Passes::update_passes_for_event
-	 *
-	 * @test
-	 */
-	public function should_get_ticket_metadata_correctly_when_explicitly_set(): void {
+		// Adding another recurring Event whose last Occurrence is before the current last end date will not change the end date.
+		tribe_events()->set_args( [
+			'title'      => 'Recurring Event 2',
+			'status'     => 'publish',
+			'start_date' => '2020-01-10 21:00:00',
+			'end_date'   => '2020-01-10 22:00:00',
+			'series'     => $series_id,
+			'recurrence' => 'RRULE:FREQ=DAILY;COUNT=5',
+		] )->create()->ID;
+
+		// End date and time should not have been updated.
+		$this->assertEquals( '2020-02-11', get_post_meta( $series_pass_id, '_ticket_end_date', true ) );
+		$this->assertEquals( '17:30:00', get_post_meta( $series_pass_id, '_ticket_end_time', true ) );
+		$this->assertEquals( '1', get_post_meta( $series_pass_id, '_dynamic_end_date', true ) );
+		$this->assertEquals( '1', get_post_meta( $series_pass_id, '_dynamic_end_time', true ) );
 	}
 
 	/**
 	 * It should not set pass end date and time dynamically when explicitly set
 	 *
+	 * @covers \TEC\Tickets\Flexible_Tickets\Series_Passes::update_pass
+	 * @covers \TEC\Tickets\Flexible_Tickets\Series_Passes::update_pass_meta
+	 * @covers \TEC\Tickets\Flexible_Tickets\Series_Passes::update_passes_for_event
+	 * @covers \TEC\Tickets\Flexible_Tickets\Series_Passes::update_passes_for_series
+	 *
 	 * @test
 	 */
 	public function should_not_set_pass_end_date_and_time_dynamically_when_explicitly_set(): void {
+		// Immediately build and register the test controller to filter insert/update operations on the ticket.
+		$controller = $this->make_controller();
+		$controller->register();
+
+		// Create a Series.
+		$series_id = static::factory()->post->create( [
+			'post_type' => Series_Post_Type::POSTTYPE,
+		] );
+
+		// Create a Series Pass attached to the Series with no end date and time set.
+		$series_pass_id = $this->create_tc_series_pass( $series_id, 2389, [
+			'tribe-ticket'    => $this->capacity_payload( 'unlimited' ),
+			'ticket_end_date' => '2022-10-13',
+			'ticket_end_time' => '18:30:00',
+		] )->ID;
+
+		// End date and time should be the ones set when the ticket has been created.
+		$this->assertEquals( '2022-10-13', get_post_meta( $series_pass_id, '_ticket_end_date', true ) );
+		$this->assertEquals( '18:30:00', get_post_meta( $series_pass_id, '_ticket_end_time', true ) );
+		$this->assertEquals( '0', get_post_meta( $series_pass_id, '_dynamic_end_date', true ) );
+		$this->assertEquals( '0', get_post_meta( $series_pass_id, '_dynamic_end_time', true ) );
+
+		// Create a Recurring Event happening daily for 5 days and attached to the Series.
+		tribe_events()->set_args( [
+			'title'      => 'Recurring Event 1',
+			'status'     => 'publish',
+			'start_date' => '2020-01-01 12:00:00',
+			'end_date'   => '2020-01-01 13:00:00',
+			'series'     => $series_id,
+			'recurrence' => 'RRULE:FREQ=DAILY;COUNT=5',
+		] )->create()->ID;
+
+		// End date and time should be the ones set when the ticket has been created.
+		$this->assertEquals( '2022-10-13', get_post_meta( $series_pass_id, '_ticket_end_date', true ) );
+		$this->assertEquals( '18:30:00', get_post_meta( $series_pass_id, '_ticket_end_time', true ) );
+		$this->assertEquals( '0', get_post_meta( $series_pass_id, '_dynamic_end_date', true ) );
+		$this->assertEquals( '0', get_post_meta( $series_pass_id, '_dynamic_end_time', true ) );
+
+		// Add a new Single Event to the Series that happens after the last Occurrence of the Recurring Event.
+		tribe_events()->set_args( [
+			'title'      => 'Single Event 1',
+			'status'     => 'publish',
+			'start_date' => '2020-02-11 17:30:00',
+			'end_date'   => '2020-02-11 18:00:00',
+			'series'     => $series_id,
+		] )->create()->ID;
+
+		// End date and time should be the ones set when the ticket has been created.
+		$this->assertEquals( '2022-10-13', get_post_meta( $series_pass_id, '_ticket_end_date', true ) );
+		$this->assertEquals( '18:30:00', get_post_meta( $series_pass_id, '_ticket_end_time', true ) );
+		$this->assertEquals( '0', get_post_meta( $series_pass_id, '_dynamic_end_date', true ) );
+		$this->assertEquals( '0', get_post_meta( $series_pass_id, '_dynamic_end_time', true ) );
+
+		// Adding another recurring Event whose last Occurrence is before the current last end date.
+		tribe_events()->set_args( [
+			'title'      => 'Recurring Event 2',
+			'status'     => 'publish',
+			'start_date' => '2020-01-10 21:00:00',
+			'end_date'   => '2020-01-10 22:00:00',
+			'series'     => $series_id,
+			'recurrence' => 'RRULE:FREQ=DAILY;COUNT=5',
+		] )->create()->ID;
+
+		// End date and time should be the ones set when the ticket has been created.
+		$this->assertEquals( '2022-10-13', get_post_meta( $series_pass_id, '_ticket_end_date', true ) );
+		$this->assertEquals( '18:30:00', get_post_meta( $series_pass_id, '_ticket_end_time', true ) );
+		$this->assertEquals( '0', get_post_meta( $series_pass_id, '_dynamic_end_date', true ) );
+		$this->assertEquals( '0', get_post_meta( $series_pass_id, '_dynamic_end_time', true ) );
 	}
 
 	/**
-	 * It should get ticket metadata correctly when only date set
+	 * It should not set end time dynamically if end date is manually set
 	 *
 	 * @covers \TEC\Tickets\Flexible_Tickets\Series_Passes::update_pass
 	 * @covers \TEC\Tickets\Flexible_Tickets\Series_Passes::update_pass_meta
 	 * @covers \TEC\Tickets\Flexible_Tickets\Series_Passes::update_passes_for_event
+	 * @covers \TEC\Tickets\Flexible_Tickets\Series_Passes::update_passes_for_series
 	 *
 	 * @test
 	 */
-	public function should_get_ticket_metadata_correctly_when_only_date_set(): void {
+	public function should_not_set_end_time_dynamically_if_end_date_is_manually_set(): void {
+		// Immediately build and register the test controller to filter insert/update operations on the ticket.
+		$controller = $this->make_controller();
+		$controller->register();
+
+		// Create a Series.
+		$series_id = static::factory()->post->create( [
+			'post_type' => Series_Post_Type::POSTTYPE,
+		] );
+
+		// Create a Series Pass attached to the Series with no end date and time set.
+		$series_pass_id = $this->create_tc_series_pass( $series_id, 2389, [
+			'tribe-ticket'    => $this->capacity_payload( 'unlimited' ),
+			'ticket_end_date' => '2022-10-13',
+			'ticket_end_time' => '',
+		] )->ID;
+
+		// End date and time should be the ones set when the ticket has been created.
+		$this->assertEquals( '2022-10-13', get_post_meta( $series_pass_id, '_ticket_end_date', true ) );
+		$this->assertEquals( '', get_post_meta( $series_pass_id, '_ticket_end_time', true ) );
+		$this->assertEquals( '0', get_post_meta( $series_pass_id, '_dynamic_end_date', true ) );
+		$this->assertEquals( '0', get_post_meta( $series_pass_id, '_dynamic_end_time', true ) );
+
+		// Create a Recurring Event happening daily for 5 days and attached to the Series.
+		tribe_events()->set_args( [
+			'title'      => 'Recurring Event 1',
+			'status'     => 'publish',
+			'start_date' => '2020-01-01 12:00:00',
+			'end_date'   => '2020-01-01 13:00:00',
+			'series'     => $series_id,
+			'recurrence' => 'RRULE:FREQ=DAILY;COUNT=5',
+		] )->create()->ID;
+
+		// End date and time should be the ones set when the ticket has been created.
+		$this->assertEquals( '2022-10-13', get_post_meta( $series_pass_id, '_ticket_end_date', true ) );
+		$this->assertEquals( '', get_post_meta( $series_pass_id, '_ticket_end_time', true ) );
+		$this->assertEquals( '0', get_post_meta( $series_pass_id, '_dynamic_end_date', true ) );
+		$this->assertEquals( '0', get_post_meta( $series_pass_id, '_dynamic_end_time', true ) );
+
+		// Add a new Single Event to the Series that happens after the last Occurrence of the Recurring Event.
+		tribe_events()->set_args( [
+			'title'      => 'Single Event 1',
+			'status'     => 'publish',
+			'start_date' => '2020-02-11 17:30:00',
+			'end_date'   => '2020-02-11 18:00:00',
+			'series'     => $series_id,
+		] )->create()->ID;
+
+		// End date and time should be the ones set when the ticket has been created.
+		$this->assertEquals( '2022-10-13', get_post_meta( $series_pass_id, '_ticket_end_date', true ) );
+		$this->assertEquals( '', get_post_meta( $series_pass_id, '_ticket_end_time', true ) );
+		$this->assertEquals( '0', get_post_meta( $series_pass_id, '_dynamic_end_date', true ) );
+		$this->assertEquals( '0', get_post_meta( $series_pass_id, '_dynamic_end_time', true ) );
+
+		// Adding another recurring Event whose last Occurrence is before the current last end date.
+		tribe_events()->set_args( [
+			'title'      => 'Recurring Event 2',
+			'status'     => 'publish',
+			'start_date' => '2020-01-10 21:00:00',
+			'end_date'   => '2020-01-10 22:00:00',
+			'series'     => $series_id,
+			'recurrence' => 'RRULE:FREQ=DAILY;COUNT=5',
+		] )->create()->ID;
+
+		// End date and time should be the ones set when the ticket has been created.
+		$this->assertEquals( '2022-10-13', get_post_meta( $series_pass_id, '_ticket_end_date', true ) );
+		$this->assertEquals( '', get_post_meta( $series_pass_id, '_ticket_end_time', true ) );
+		$this->assertEquals( '0', get_post_meta( $series_pass_id, '_dynamic_end_date', true ) );
+		$this->assertEquals( '0', get_post_meta( $series_pass_id, '_dynamic_end_time', true ) );
 	}
 
 	/**
-	 * It should get ticket metadata correctly when only time set
+	 * It should set the end date and time dynamically even when end time manually set.
 	 *
 	 * @covers \TEC\Tickets\Flexible_Tickets\Series_Passes::update_pass
 	 * @covers \TEC\Tickets\Flexible_Tickets\Series_Passes::update_pass_meta
 	 * @covers \TEC\Tickets\Flexible_Tickets\Series_Passes::update_passes_for_event
+	 * @covers \TEC\Tickets\Flexible_Tickets\Series_Passes::update_passes_for_series
 	 *
 	 * @test
 	 */
-	public function should_get_ticket_metadata_correctly_when_only_time_set(): void {
+	public function should_set_end_date_and_time_dynamically_even_when_end_time_manually_set(): void {
+		// Immediately build and register the test controller to filter insert/update operations on the ticket.
+		$controller = $this->make_controller();
+		$controller->register();
+
+		// Create a Series.
+		$series_id = static::factory()->post->create( [
+			'post_type' => Series_Post_Type::POSTTYPE,
+		] );
+
+		// Create a Series Pass attached to the Series with no end date and time set.
+		$series_pass_id = $this->create_tc_series_pass( $series_id, 2389, [
+			'tribe-ticket'    => $this->capacity_payload( 'unlimited' ),
+			'ticket_end_date' => '',
+			'ticket_end_time' => '18:30:00',
+		] )->ID;
+
+		// End date should be empty, end time should be the manually set one.
+		$this->assertEquals( '', get_post_meta( $series_pass_id, '_ticket_end_date', true ) );
+		$this->assertEquals( '', get_post_meta( $series_pass_id, '_ticket_end_time', true ) );
+		$this->assertEquals( '1', get_post_meta( $series_pass_id, '_dynamic_end_date', true ) );
+		$this->assertEquals( '1', get_post_meta( $series_pass_id, '_dynamic_end_time', true ) );
+
+		// Create a Recurring Event happening daily for 5 days and attached to the Series.
+		tribe_events()->set_args( [
+			'title'      => 'Recurring Event 1',
+			'status'     => 'publish',
+			'start_date' => '2020-01-01 12:00:00',
+			'end_date'   => '2020-01-01 13:00:00',
+			'series'     => $series_id,
+			'recurrence' => 'RRULE:FREQ=DAILY;COUNT=5',
+		] )->create()->ID;
+
+		// End date should be set from the current last, end time should be the manually set one.
+		$this->assertEquals( '2020-01-05', get_post_meta( $series_pass_id, '_ticket_end_date', true ) );
+		$this->assertEquals( '12:00:00', get_post_meta( $series_pass_id, '_ticket_end_time', true ) );
+		$this->assertEquals( '1', get_post_meta( $series_pass_id, '_dynamic_end_date', true ) );
+		$this->assertEquals( '1', get_post_meta( $series_pass_id, '_dynamic_end_time', true ) );
+
+		// Add a new Single Event to the Series that happens after the last Occurrence of the Recurring Event.
+		tribe_events()->set_args( [
+			'title'      => 'Single Event 1',
+			'status'     => 'publish',
+			'start_date' => '2020-02-11 17:30:00',
+			'end_date'   => '2020-02-11 18:00:00',
+			'series'     => $series_id,
+		] )->create()->ID;
+
+		// End date should be set from the current last, end time should be the manually set one.
+		$this->assertEquals( '2020-02-11', get_post_meta( $series_pass_id, '_ticket_end_date', true ) );
+		$this->assertEquals( '17:30:00', get_post_meta( $series_pass_id, '_ticket_end_time', true ) );
+		$this->assertEquals( '1', get_post_meta( $series_pass_id, '_dynamic_end_date', true ) );
+		$this->assertEquals( '1', get_post_meta( $series_pass_id, '_dynamic_end_time', true ) );
+
+		// Adding another recurring Event whose last Occurrence is before the current last end date.
+		tribe_events()->set_args( [
+			'title'      => 'Recurring Event 2',
+			'status'     => 'publish',
+			'start_date' => '2020-01-10 21:00:00',
+			'end_date'   => '2020-01-10 22:00:00',
+			'series'     => $series_id,
+			'recurrence' => 'RRULE:FREQ=DAILY;COUNT=5',
+		] )->create()->ID;
+
+		// End date should be set from the current last, end time should be the manually set one.
+		$this->assertEquals( '2020-02-11', get_post_meta( $series_pass_id, '_ticket_end_date', true ) );
+		$this->assertEquals( '17:30:00', get_post_meta( $series_pass_id, '_ticket_end_time', true ) );
+		$this->assertEquals( '1', get_post_meta( $series_pass_id, '_dynamic_end_date', true ) );
+		$this->assertEquals( '1', get_post_meta( $series_pass_id, '_dynamic_end_time', true ) );
 	}
 
 	public function panel_data_provider(): \Generator {

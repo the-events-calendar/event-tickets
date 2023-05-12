@@ -105,6 +105,8 @@ class Series_Passes extends Controller {
 			remove_action( "save_post_{$post_type}", [ $this, 'update_pass' ], 20 );
 			remove_action( "edit_post_{$post_type}", [ $this, 'update_pass' ], 20 );
 		}
+		remove_action( 'added_post_meta', [ $this, 'update_pass_meta' ], 20 );
+		remove_action( 'updated_post_meta', [ $this, 'update_pass_meta' ], 20 );
 		remove_action( 'tec_events_pro_custom_tables_v1_event_relationship_updated', [
 			$this,
 			'update_passes_for_event'
@@ -180,14 +182,7 @@ class Series_Passes extends Controller {
 	 * @return array<string> The list of admin strings.
 	 */
 	public function update_panel_data( array $data, int $post_id, ?int $ticket_id ): array {
-		$meta_redirection = $this->container->get( Meta_Operations::class );
-
-		// Stop the meta redirection to avoid infinite loops.
-		$meta_redirection->stop();
-
 		if ( get_post_meta( $ticket_id, '_type', true ) !== self::TICKET_TYPE ) {
-			$meta_redirection->resume();
-
 			return $data;
 		}
 
@@ -199,8 +194,6 @@ class Series_Passes extends Controller {
 
 		$set_end_date = get_post_meta( $ticket_id, '_ticket_end_date', true );
 		$set_end_time = get_post_meta( $ticket_id, '_ticket_end_time', true );
-
-		$meta_redirection->resume();
 
 		if ( ! $set_end_date ) {
 			$data['ticket_end_date'] = '';
@@ -248,6 +241,15 @@ class Series_Passes extends Controller {
 		$_registered_pages[ $event_post_type . '_page_edd-orders' ] = true;
 	}
 
+	/*
+	 * Updates a Series Pass' end date meta dynamic flag and values, if needed.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_id The ticket ID.
+	 *
+	 * @return void The ticket end date meta and dynamic flag is updated.
+	 */
 	private function update_ticket_end_meta( int $ticket_id, string $meta_key, bool $dynamic ): void {
 		// Unregister to avoid infinite loops.
 		$this->unregister();
@@ -270,6 +272,7 @@ class Series_Passes extends Controller {
 
 		update_post_meta( $ticket_id, $meta_key, $meta_value );
 		update_post_meta( $ticket_id, $dynamic_meta_key, '1' );
+
 		// Re-register the controller.
 		$this->do_register();
 	}
@@ -291,16 +294,19 @@ class Series_Passes extends Controller {
 			return;
 		}
 
-		// At this stage, the post and its meta are cached, these are fast checks.
-		if ( ! (
-			get_post_meta( $ticket_id, '_type', true ) !== self::TICKET_TYPE
-			&& in_array( get_post_type( $ticket_id ), Enums\Ticket_Post_Types::all(), true ) )
-		) {
+		if ( $meta_key === '_ticket_end_date' ) {
+			// We're updating the end date: if empty it's dynamic.
+			$end_date_is_dynamic = empty( $meta_value );
+			$this->update_ticket_end_meta( $ticket_id, '_ticket_end_date', $end_date_is_dynamic );
+			// Also update the end time and it's dynamic flag.
+			$this->update_ticket_end_meta( $ticket_id, '_ticket_end_time', $end_date_is_dynamic );
+
 			return;
 		}
 
-		// The meta value is being directly updated: it will be dynamic if it's empty.
-		$this->update_ticket_end_meta( $ticket_id, $meta_key, empty( $meta_value ) );
+		// We're updating the end time: read the dynamic flag of the end date.
+		$end_date_is_dynamic = get_post_meta( $ticket_id, '_dynamic_end_date', true );
+		$this->update_ticket_end_meta( $ticket_id, $meta_key, $end_date_is_dynamic );
 	}
 
 	/**
@@ -321,9 +327,8 @@ class Series_Passes extends Controller {
 		                       || empty( get_post_meta( $ticket_id, '_ticket_end_date', true ) );
 		$this->update_ticket_end_meta( $ticket_id, '_ticket_end_date', $end_date_is_dynamic );
 
-		$end_time_is_dynamic = get_post_meta( $ticket_id, '_dynamic_end_time', true )
-		                       || empty( get_post_meta( $ticket_id, '_ticket_end_time', true ) );
-		$this->update_ticket_end_meta( $ticket_id, '_ticket_end_time', $end_time_is_dynamic );
+		// End time follows end date: either they're both dynamic or both manually set.
+		$this->update_ticket_end_meta( $ticket_id, '_ticket_end_time', $end_date_is_dynamic );
 	}
 
 	/**

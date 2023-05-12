@@ -14,12 +14,16 @@ use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 putenv( 'TEC_CUSTOM_TABLES_V1_DISABLED=1' );
 $_ENV['TEC_CUSTOM_TABLES_V1_DISABLED'] = 1;
 
+// Ensure Series are ticket-able, in most scenarios this is what we want.
+$ticketable_post_types   = (array) tribe_get_option( 'ticket-enabled-post-types', [] );
+$ticketable_post_types[] = Series_Post_Type::POSTTYPE;
+tribe_update_option( 'ticket-enabled-post-types', $ticketable_post_types );
+
+// Activate CT1
 Activation::init();
 Events_Pro_Activation::init();
 
-$ct1_active = tribe()->getVar( 'ct1_fully_activated' );
-
-if ( empty( $ct1_active ) ) {
+if ( empty( tribe()->getVar( 'ct1_fully_activated' ) ) ) {
 	throw new Exception( 'TEC CT1 is not active' );
 }
 
@@ -27,13 +31,6 @@ if ( empty( $ct1_active ) ) {
 $custom_tables = tribe( Custom_Tables::class );
 $custom_tables->drop_tables();
 $custom_tables->register_tables();
-
-// Ensure Series are ticket-able, in most scenarios this is what we want.
-add_filter( 'tribe_tickets_post_types', function ( $post_types ) {
-	$post_types[] = Series_Post_Type::POSTTYPE;
-
-	return $post_types;
-} );
 
 // Start the posts auto-increment from a high number to make it easier to replace the post IDs in HTML snapshots.
 global $wpdb;

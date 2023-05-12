@@ -6,6 +6,7 @@ use Closure;
 use Codeception\TestCase\WPTestCase;
 use Generator;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use TEC\Tickets\Flexible_Tickets\Series_Passes;
 use TEC\Tickets\Flexible_Tickets\Test\Traits\Series_Pass_Factory;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
