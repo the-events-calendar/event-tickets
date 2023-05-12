@@ -167,6 +167,7 @@ class RSVP_Not_Going extends Email_Abstract {
 						'alignleft',
 						'aligncenter',
 						'alignright',
+						'link',
 					],
 				],
 			],

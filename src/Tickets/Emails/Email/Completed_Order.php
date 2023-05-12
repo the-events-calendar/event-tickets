@@ -182,6 +182,7 @@ class Completed_Order extends Email_Abstract {
 						'alignleft',
 						'aligncenter',
 						'alignright',
+						'link',
 					],
 				],
 			],
