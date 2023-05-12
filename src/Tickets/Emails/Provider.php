@@ -33,8 +33,6 @@ class Provider extends tad_DI52_ServiceProvider {
 		// Dispatcher is not a singleton!
 		$this->container->bind( Dispatcher::class, Dispatcher::class );
 
-		$this->container->singleton( Post_Type::class );
-
 		$this->container->singleton( Legacy_Hijack::class );
 
 		$this->container->singleton( Admin\Emails_Tab::class );

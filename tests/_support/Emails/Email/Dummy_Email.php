@@ -51,7 +51,7 @@ class Dummy_Email extends Email_Abstract {
 		return $this->test_subject;
 	}
 
-	public function get_content( $args = [] ): string {
+	public function get_content(): string {
 		return $this->test_content;
 	}
 

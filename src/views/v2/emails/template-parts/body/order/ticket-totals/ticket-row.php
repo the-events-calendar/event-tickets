@@ -21,9 +21,14 @@
  * @var string                             $additional_content The email additional content.
  * @var bool                               $is_tec_active      Whether `The Events Calendar` is active or not.
  * @var \WP_Post                           $order              The order object.
+ * @var array<string, mixed>               $cart_item          The cart item.
  */
 
-if ( empty( $ticket ) ) {
+if ( empty( $cart_item ) ) {
+	return;
+}
+
+if ( empty( $cart_item['ticket_id'] ) ) {
 	return;
 }
 
