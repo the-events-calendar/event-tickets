@@ -70,20 +70,21 @@
                 "strikethrough",
                 "alignleft",
                 "aligncenter",
-                "alignright"
+                "alignright",
+                "link"
             ]
         }
     },
     "tec-tickets-emails-ticket-add-event-links": {
         "type": "toggle",
-        "label": "Calendar links",
-        "tooltip": "Include iCal and Google event links in this email.",
+        "label": "Include &quot;Add to calendar&quot; links",
+        "tooltip": "Include links to add the event to the user&#039;s calendar.",
         "default": true,
         "validation_type": "boolean"
     },
     "tec-tickets-emails-ticket-add-event-ics": {
         "type": "toggle",
-        "label": "Calendar invites",
+        "label": "Attach calendar invites",
         "tooltip": "Attach calendar invites (.ics) to the ticket email.",
         "default": true,
         "validation_type": "boolean"
