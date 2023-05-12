@@ -48,6 +48,11 @@ class Order_Schema extends JSON_LD_Abstract {
 	public function build_data(): array {
 		$order       = $this->order;
 		$commerce    = tribe( Module::class );
+
+		if ( empty( $order->events_in_order ) ) {
+			return [];
+		}
+		
 		$report_link = $commerce->get_event_reports_link( $order->events_in_order[0], true );
 
 		$data = [
