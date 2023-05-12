@@ -192,6 +192,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.6.0] TBD =
 
+* Enhancement - Add support for Gmail JSON LD markup of Ticket Emails. [ET-1601][ET-1637]
 
 = [5.5.11] 2023-05-04 =
 
