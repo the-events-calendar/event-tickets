@@ -194,11 +194,17 @@ abstract class Email_Abstract {
 	 *
 	 * @since 5.5.10
 	 *
-	 * @param array $args The arguments.
-	 *
-	 * @return ?string The email content.
+	 * @return string The email content.
 	 */
-	abstract public function get_content( $args ): ?string;
+	public function get_content(): string {
+		$is_preview = tribe_is_truthy( $this->get( 'is_preview', false ) );
+		$args       = $this->get_template_context( $this->data );
+
+		$email_template = tribe( Email_Template::class );
+		$email_template->set_preview( $is_preview );
+
+		return $email_template->get_html( $this->template, $args );
+	}
 
 	/**
 	 * Get the "From" email.
@@ -367,60 +373,6 @@ abstract class Email_Abstract {
 	 */
 	public function get_default_additional_content(): string {
 		return '';
-	}
-
-	/**
-	 * Get post object of email.
-	 *
-	 * @since 5.5.9
-	 *
-	 * @return WP_Post|null;
-	 */
-	public function get_post(): ?WP_Post {
-		return get_page_by_path( $this->id, OBJECT, Post_Type::SLUG );
-	}
-
-	/**
-	 * Creates the Post in the Database for this Email.
-	 *
-	 * @since TBD
-	 *
-	 * @return int|WP_Error The post ID on success. The value 0 or WP_Error on failure.
-	 */
-	public function create_template_post() {
-		if ( $post = $this->get_post() ) {
-			return new WP_Error(
-				'tec-tickets-emails-email-template-already-exists',
-				'Template post already exists for this email.',
-				[
-					'post'  => $post,
-					'email' => $this,
-				]
-			);
-		}
-
-		$args     = [
-			'post_name'   => $this->get_id(),
-			'post_title'  => $this->get_title(),
-			'post_status' => 'publish',
-			'post_type'   => Post_Type::SLUG,
-			'meta_input'  => [
-				'email_to'       => $this->get_to(),
-				'email_template' => $this->template,
-				'email_version'  => \Tribe__Tickets__Main::VERSION,
-			],
-		];
-		$inserted = wp_insert_post( $args );
-
-		if ( $inserted instanceof WP_Error ) {
-			do_action( 'tribe_log', 'error', 'Error creating email post.', [
-				'class'      => __CLASS__,
-				'post_title' => $this->get_title(),
-				'error'      => $inserted->get_error_message(),
-			] );
-		}
-
-		return $inserted;
 	}
 
 	/**
