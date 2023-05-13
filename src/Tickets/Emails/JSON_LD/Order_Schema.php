@@ -45,7 +45,7 @@ class Order_Schema extends JSON_LD_Abstract {
 		$schema = tribe( Order_Schema::class );
 		$schema->order = $email->get( 'order' );
 
-		return $schema->filter_schema_instance( $email );
+		return $schema->filter_schema_by_email( $email );
 	}
 
 	/**

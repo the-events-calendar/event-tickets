@@ -44,7 +44,7 @@ class Event_Schema extends JSON_LD_Abstract {
 		$schema        = tribe( Event_Schema::class );
 		$schema->event = get_post( $email->get( 'post_id' ) );
 
-		return $schema->filter_schema_instance( $email );
+		return $schema->filter_schema_by_email( $email );
 	}
 
 	/**

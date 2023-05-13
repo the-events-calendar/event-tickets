@@ -88,7 +88,7 @@ abstract class JSON_LD_Abstract {
 	 *
 	 * @return JSON_LD_Abstract The schema instance.
 	 */
-	public function filter_schema_instance( Email_Abstract $email ): JSON_LD_Abstract {
+	public function filter_schema_by_email( Email_Abstract $email ): JSON_LD_Abstract {
 		/**
 		 * Filter the JSON schema object for this email.
 		 *

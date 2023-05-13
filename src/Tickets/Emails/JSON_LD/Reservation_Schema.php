@@ -55,7 +55,7 @@ class Reservation_Schema extends JSON_LD_Abstract {
 		$schema->tickets    = $tickets;
 		$schema->event_data = Event_Schema::build_from_email( $email )->get_data();
 
-		return $schema->filter_schema_instance( $email );
+		return $schema->filter_schema_by_email( $email );
 	}
 
 	/**
