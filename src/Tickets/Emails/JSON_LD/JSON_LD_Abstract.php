@@ -1,6 +1,8 @@
 <?php
 namespace TEC\Tickets\Emails\JSON_LD;
 
+use TEC\Tickets\Emails\Email_Abstract;
+
 /**
  * Abstract class for JSON LD schemas related to emails.
  *
@@ -77,6 +79,45 @@ abstract class JSON_LD_Abstract {
 		 * @param array<string,mixed> $args The arguments for the schema.
 		 */
 		return apply_filters( "tec_tickets_email_json_ld_{$type}_schema_data", $this->build_data(), $this->get_args() );
+	}
+
+	/**
+	 * Filter the schema instance.
+	 *
+	 * @since TBD
+	 *
+	 * @return JSON_LD_Abstract The schema instance.
+	 */
+	public function filter_schema_instance( Email_Abstract $email ): JSON_LD_Abstract {
+		/**
+		 * Filter the JSON schema object for this email.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $data The JSON data.
+		 * @param \WP_Post $order The order object.
+		 * @param Email_Abstract $email The email object.
+		 */
+		return apply_filters( "tec_tickets_emails_{$email->slug}_json_ld_schema", $this, $email );
+	}
+
+	/**
+	 * Get JSON encode options.
+	 *
+	 * @since TBD
+	 *
+	 * @return int The JSON encode options.
+	 */
+	public function get_json_encode_options() {
+		/**
+		 * Allows the filtering of the JSON options for testing and development purposes of the JSON encode options for the
+		 * view data JSON passed into the manager.
+		 *
+		 * @since TBD
+		 *
+		 * @param int $options The Options passed into the json_encode.
+		 */
+		return apply_filters( 'tec_tickets_emails_json_data_encode_options', 0 );
 	}
 
 	/**
