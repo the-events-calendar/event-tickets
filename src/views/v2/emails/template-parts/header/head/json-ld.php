@@ -20,6 +20,7 @@
  * @var bool                               $preview            Whether the email is in preview mode or not.
  * @var string                             $additional_content The email additional content.
  * @var bool                               $is_tec_active      Whether `The Events Calendar` is active or not.
+ * @var \TEC\Tickets\Emails\JSON_LD\JSON_LD_Abstract $json_ld  The JSON-LD object.
  *
  * @see tribe_get_event() For the format of the event object.
  */
@@ -27,17 +28,7 @@
 if ( ! empty( $preview ) || empty( $json_ld ) ) {
 	return;
 }
-
-/**
- * Allows the filtering of the JSON options for testing and development purposes of the JSON encode options for the
- * view data JSON passed into the manager.
- *
- * @since TBD
- *
- * @param int $options   The Options passed into the json_encode.
- */
-$json_options = apply_filters( 'tec_tickets_emails_json_data_encode_options', 0 );
 ?>
 <script type="application/ld+json">
-	<?php echo wp_json_encode( $json_ld, $json_options ); ?>
+	<?php echo wp_json_encode( $json_ld->get_data(), $json_ld->get_json_encode_options() ); ?>
 </script>

@@ -207,7 +207,7 @@ class Purchase_Receipt extends Email_Abstract {
 			'heading'            => $this->get_heading(),
 			'additional_content' => $this->get_additional_content(),
 			'order'              => $this->get( 'order' ),
-			'json_ld'            => $this->get_json_data(),
+			'json_ld'            => Order_Schema::build_from_email( $this ),
 		];
 
 		return $defaults;
@@ -247,28 +247,5 @@ class Purchase_Receipt extends Email_Abstract {
 		$this->set_placeholders( $placeholders );
 
 		return Dispatcher::from_email( $this )->send();
-	}
-
-	/**
-	 * Get the related JSON data for this email.
-	 *
-	 * @since TBD
-	 *
-	 * @return array The JSON data.
-	 */
-	public function get_json_data() {
-		$order  = $this->get( 'order' );
-		$schema = new Order_Schema( $order );
-
-		/**
-		 * Filter the JSON data for this email.
-		 *
-		 * @since TBD
-		 *
-		 * @param array $data The JSON data.
-		 * @param \WP_Post $order The order object.
-		 * @param Email_Abstract $email The email object.
-		 */
-		return apply_filters( "tec_tickets_emails_{$this->slug}_json_data", $schema->get_data(), $order, $this );
 	}
 }
