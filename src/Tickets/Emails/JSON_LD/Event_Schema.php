@@ -38,9 +38,14 @@ class Event_Schema extends JSON_LD_Abstract {
 	 *
 	 * @param Email_Abstract $email The email instance.
 	 *
-	 * @return Event_Schema The schema instance.
+	 * @return JSON_LD_Abstract The schema instance.
 	 */
-	public static function build_from_email( Email_Abstract $email ): Event_Schema {
+	public static function build_from_email( Email_Abstract $email ): JSON_LD_Abstract {
+		// If this is a preview email, we need to use the preview schema.
+		if ( $email->get( 'is_preview' ) ) {
+			return Preview_Schema::build_from_email( $email );
+		}
+
 		$schema        = tribe( Event_Schema::class );
 		$schema->event = get_post( $email->get( 'post_id' ) );
 
