@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Emails\JSON_LD;
 
 use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Emails\Email_Abstract;
 
 /**
  * Class Order_Schema
@@ -32,14 +33,19 @@ class Order_Schema extends JSON_LD_Abstract {
 	protected \WP_Post $order;
 
 	/**
-	 * Order_Schema constructor.
+	 * Build the schema object from an email.
 	 *
 	 * @since TBD
 	 *
-	 * @param \WP_Post $order The order object.
+	 * @param Email_Abstract $email The email instance.
+	 *
+	 * @return Order_Schema The schema instance.
 	 */
-	public function __construct( \WP_Post $order ) {
-		$this->order = $order;
+	public static function build_from_email( Email_Abstract $email ): Order_Schema {
+		$schema = tribe( Order_Schema::class );
+		$schema->order = $email->get( 'order' );
+
+		return $schema->filter_schema_instance( $email );
 	}
 
 	/**
@@ -49,10 +55,6 @@ class Order_Schema extends JSON_LD_Abstract {
 		$order       = $this->order;
 		$commerce    = tribe( Module::class );
 
-		if ( empty( $order->events_in_order ) ) {
-			return [];
-		}
-		
 		$report_link = $commerce->get_event_reports_link( $order->events_in_order[0], true );
 
 		$data = [
