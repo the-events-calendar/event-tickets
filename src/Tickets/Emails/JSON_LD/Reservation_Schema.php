@@ -2,6 +2,8 @@
 
 namespace TEC\Tickets\Emails\JSON_LD;
 
+use TEC\Tickets\Emails\Email_Abstract;
+
 /**
  * Class Reservation_Schema.
  *
@@ -39,16 +41,21 @@ class Reservation_Schema extends JSON_LD_Abstract {
 	public array $tickets;
 
 	/**
-	 * Reservation_Schema constructor.
-	 *
-	 * @param array $event_data The event data.
-	 * @param array $tickets The tickets data.
+	 * Build the schema object from an email.
 	 *
 	 * @since TBD
+	 *
+	 * @param Email_Abstract $email The email instance.
+	 *
+	 * @return Reservation_Schema The schema instance.
 	 */
-	public function __construct( array $event_data, array $tickets ) {
-		$this->event_data = $event_data;
-		$this->tickets    = $tickets;
+	public static function build_from_email( Email_Abstract $email ): Reservation_Schema {
+		$tickets            = $email->get( 'tickets' );
+		$schema             = tribe( Reservation_Schema::class );
+		$schema->tickets    = $tickets;
+		$schema->event_data = Event_Schema::build_from_email( $email )->get_data();
+
+		return $schema->filter_schema_instance( $email );
 	}
 
 	/**
@@ -56,6 +63,12 @@ class Reservation_Schema extends JSON_LD_Abstract {
 	 */
 	public function build_data(): array {
 		$data = [];
+
+		// Bail if there's no tickets or post ID.
+		if ( ! tec_tickets_tec_events_is_active() || empty( $this->tickets ) || empty( $this->event_data ) ) {
+			return [];
+		}
+
 		foreach ( $this->tickets as $ticket ) {
 			$ticket_data = [
 				'reservationNumber' => $ticket['order_id'],

@@ -2,6 +2,15 @@
 
 namespace TEC\Tickets\Emails\JSON_LD;
 
+use TEC\Tickets\Emails\Email_Abstract;
+
+/**
+ * Class Event_Schema.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Emails\JSON_LD
+ */
 class Event_Schema extends JSON_LD_Abstract {
 
 	/**
@@ -23,20 +32,30 @@ class Event_Schema extends JSON_LD_Abstract {
 	protected \WP_Post $event;
 
 	/**
-	 * Event_Schema constructor.
-	 *
-	 * @param \WP_Post $event The event object.
+	 * Build the schema object from an email.
 	 *
 	 * @since TBD
+	 *
+	 * @param Email_Abstract $email The email instance.
+	 *
+	 * @return Event_Schema The schema instance.
 	 */
-	public function __construct( \WP_Post $event ) {
-		$this->event = $event;
+	public static function build_from_email( Email_Abstract $email ): Event_Schema {
+		$schema        = tribe( Event_Schema::class );
+		$schema->event = get_post( $email->get( 'post_id' ) );
+
+		return $schema->filter_schema_instance( $email );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public function build_data(): array {
+
+		if ( ! tec_tickets_tec_events_is_active() || ! tribe_is_event( $this->event ) ) {
+			return [];
+		}
+
 		$data = [
 			"@type" => self::get_type(),
 		];
