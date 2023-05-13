@@ -76,9 +76,9 @@ abstract class JSON_LD_Abstract {
 		 * @since TBD
 		 *
 		 * @param array<string,mixed> $data The JSON-LD schema data.
-		 * @param array<string,mixed> $args The arguments for the schema.
+		 * @param JSON_LD_Abstract    $schema The schema instance.
 		 */
-		return apply_filters( "tec_tickets_email_json_ld_{$type}_schema_data", $this->build_data(), $this->get_args() );
+		return apply_filters( "tec_tickets_email_json_ld_{$type}_schema_data", $this->build_data(), $this );
 	}
 
 	/**
