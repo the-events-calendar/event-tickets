@@ -9,11 +9,9 @@ namespace TEC\Tickets\Emails\Email;
 
 use TEC\Tickets\Commerce\Settings as Settings;
 use TEC\Tickets\Emails\Dispatcher;
-use \TEC\Tickets\Emails\Email_Template;
+use TEC\Tickets\Emails\Email_Template;
 use TEC\Tickets\Emails\Email_Abstract;
-use TEC\Tickets\Emails\JSON_LD\Order_Schema;
 use TEC\Tickets\Emails\JSON_LD\Reservation_Schema;
-use TEC\Tickets\Emails\JSON_LD\Event_Schema;
 
 /**
  * Class RSVP

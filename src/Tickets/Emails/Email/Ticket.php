@@ -12,7 +12,6 @@ use TEC\Tickets\Emails\Dispatcher;
 use TEC\Tickets\Emails\Email_Template;
 use TEC\Tickets\Emails\Email_Abstract;
 use TEC\Tickets\Emails\Admin\Preview_Data;
-use TEC\Tickets\Emails\JSON_LD\Event_Schema;
 use TEC\Tickets\Emails\JSON_LD\Reservation_Schema;
 
 /**
