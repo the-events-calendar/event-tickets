@@ -12,6 +12,7 @@ use TEC\Tickets\Emails\Dispatcher;
 use TEC\Tickets\Emails\Email_Template;
 use TEC\Tickets\Emails\Email_Abstract;
 use TEC\Tickets\Emails\Admin\Preview_Data;
+use TEC\Tickets\Emails\JSON_LD\Reservation_Schema;
 
 /**
  * Class Ticket
@@ -346,6 +347,7 @@ class Ticket extends Email_Abstract {
 			'post_id'            => $this->get( 'post_id' ),
 			'tickets'            => $this->get( 'tickets' ),
 			'additional_content' => $this->get_additional_content(),
+			'json_ld'            => Reservation_Schema::build_from_email( $this ),
 		];
 
 		return $defaults;
