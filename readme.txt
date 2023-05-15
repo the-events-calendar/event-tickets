@@ -194,7 +194,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 * Enhancement - Display order details link for TicketsCommerce providers on Orders page Gateway ID column. [ET-1729]
 
-= [5.5.11] 2023-05-03 =
+= [5.5.11] 2023-05-04 =
 
 * Enhancement - Add Ticket data with attendee data as checkin response. [ET-1694]
 * Enhancement - Added the ability to disable the Attendees column on the Events admin dashboard using `tec_tickets_admin_post_type_table_column` or `tec_tickets_admin_post_type_table_column_{$column}`. [ET-1701]

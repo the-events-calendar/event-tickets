@@ -7,11 +7,10 @@
  *
  * See more documentation about our views templating system.
  *
- * @link https://evnt.is/tickets-emails-tpl Help article for Tickets Emails template files.
+ * @link    https://evnt.is/tickets-emails-tpl Help article for Tickets Emails template files.
  *
  * @version 5.5.11
- *
- * @since 5.5.11
+ * @since   5.5.11
  *
  * @var Tribe__Template                    $this               Current template object.
  * @var \TEC\Tickets\Emails\Email_Abstract $email              The email object.
@@ -21,11 +20,18 @@
  * @var string                             $additional_content The email additional content.
  * @var bool                               $is_tec_active      Whether `The Events Calendar` is active or not.
  * @var \WP_Post                           $order              The order object.
+ * @var array<string, mixed>               $cart_item          The cart item.
  */
 
-$ticket_qty = empty( $ticket->ticket_data['quantity'] ) ? 0 : $ticket->ticket_data['quantity'];
+if ( empty( $cart_item['ticket_id'] ) ) {
+	return;
+}
+
+if ( empty( $cart_item['quantity'] ) ) {
+	return;
+}
 
 ?>
 <td class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-center" align="center">
-	<?php echo esc_html( $ticket_qty ); ?>
+	<?php echo esc_html( $cart_item['quantity'] ); ?>
 </td>

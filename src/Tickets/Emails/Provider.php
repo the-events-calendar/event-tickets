@@ -23,15 +23,17 @@ class Provider extends tad_DI52_ServiceProvider {
 	 *
 	 * @since 5.5.6
 	 */
-	public function register() {
-
+	public function register(): void {
 		$this->register_assets();
 		$this->register_hooks();
 
 		// Register singletons.
 		$this->container->singleton( static::class, $this );
 
-		$this->container->singleton( Post_Type::class );
+		// Dispatcher is not a singleton!
+		$this->container->bind( Dispatcher::class, Dispatcher::class );
+
+		$this->container->singleton( Legacy_Hijack::class );
 
 		$this->container->singleton( Admin\Emails_Tab::class );
 

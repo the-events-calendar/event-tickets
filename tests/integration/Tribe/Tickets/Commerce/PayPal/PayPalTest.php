@@ -43,6 +43,7 @@ class PayPalTest extends \Codeception\TestCase\WPTestCase {
 
 		// Enable Tribe Commerce.
 		add_filter( 'tribe_tickets_commerce_paypal_is_active', '__return_true' );
+		add_filter( 'tec_tickets_emails_is_enabled', '__return_false' );
 		add_filter( 'tribe_tickets_get_modules', function ( $modules ) {
 			$modules['Tribe__Tickets__Commerce__PayPal__Main'] = tribe( 'tickets.commerce.paypal' )->plugin_name;
 
