@@ -29,14 +29,14 @@
         "validation_type": "boolean"
     },
     "tec-tickets-emails-rsvp-add-event-links": {
-        "type": "toggle",
+        "type": "checkbox_bool",
         "label": "Calendar links",
         "tooltip": "Include iCal and Google event links in this email.",
         "default": true,
         "validation_type": "boolean"
     },
     "tec-tickets-emails-rsvp-add-event-ics": {
-        "type": "toggle",
+        "type": "checkbox_bool",
         "label": "Calendar invites",
         "tooltip": "Attach calendar invites (.ics) to the RSVP email.",
         "default": true,
