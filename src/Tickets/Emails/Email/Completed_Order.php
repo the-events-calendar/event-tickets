@@ -8,9 +8,10 @@
 namespace TEC\Tickets\Emails\Email;
 
 use TEC\Tickets\Emails\Dispatcher;
-use \TEC\Tickets\Emails\Email_Template;
+use TEC\Tickets\Emails\Email_Template;
 use TEC\Tickets\Emails\Admin\Preview_Data;
 use TEC\Tickets\Emails\Email_Abstract;
+use TEC\Tickets\Emails\JSON_LD\Order_Schema;
 
 /**
  * Class Completed_Order
@@ -231,6 +232,7 @@ class Completed_Order extends Email_Abstract {
 			'heading'            => $this->get_heading(),
 			'additional_content' => $this->get_additional_content(),
 			'order'              => $this->get( 'order' ),
+			'json_ld'            => Order_Schema::build_from_email( $this ),
 		];
 
 		return $defaults;
