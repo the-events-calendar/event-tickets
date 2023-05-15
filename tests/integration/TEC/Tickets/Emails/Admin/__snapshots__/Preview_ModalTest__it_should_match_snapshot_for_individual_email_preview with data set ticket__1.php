@@ -1,4 +1,228 @@
 <?php return '<style type="text/css">
+	.tec-tickets__email-table-content-event-title-container,
+	td.tec-tickets__email-table-content-event-title-container,
+	.tec-tickets__email-table-content-event-links-container,
+	td.tec-tickets__email-table-content-event-links-container,
+	.tec-tickets__email-table-content-event-date-container,
+	td.tec-tickets__email-table-content-event-date-container,
+	.tec-tickets__email-table-content-event-description-container,
+	td.tec-tickets__email-table-content-event-description-container,
+	.tec-tickets__email-table-content-event-image-container,
+	td.tec-tickets__email-table-content-event-image-container {
+		padding: 0;
+	}
+
+	.tec-tickets__email-table-content-event-links-table,
+	table.tec-tickets__email-table-content-event-links-table {
+		border: 0;
+		border-collapse: collapse;
+		border-spacing: 0;
+		width: 100%;
+	}
+
+	.tec-tickets__email-table-content-event-links-table-data,
+	td.tec-tickets__email-table-content-event-links-table-data {
+		padding: 30px 10px;
+		text-align: center;
+		width: 100%;
+	}
+
+	.tec-tickets__email-table-content-event-links-ical-link,
+	a.tec-tickets__email-table-content-event-links-ical-link,
+	.tec-tickets__email-table-content-event-links-gcal-link,
+	a.tec-tickets__email-table-content-event-links-gcal-link {
+		padding: 0 8px;
+	}
+
+	.tec-tickets__email-table-content-event-date {
+		font-size: 14px;
+		font-weight: 400;
+		letter-spacing: 0px;
+		line-height: 23px;
+		text-align: left;
+	}
+	.tec-tickets__email-table-content-event-image,
+	img.tec-tickets__email-table-content-event-image {
+		display: block;
+		margin: 0;
+		width: 100%;
+	}
+	.tec-tickets__email-table-content-event-venue-title-container,
+	td.tec-tickets__email-table-content-event-venue-title-container {
+		padding: 54px 0 12px 0;
+	}
+	.tec-tickets__email-table-content-event-venue-title {
+		background: transparent;
+		color: #141827;
+		font-size: 16px;
+		font-weight: 700;
+		margin: 0;
+		padding: 0;
+	}
+	.tec-tickets__email-table-content-event-venue-container,
+	td.tec-tickets__email-table-content-event-venue-container {
+		border: 1px solid #d5d5d5;
+		padding: 25px;
+	}
+	.tec-tickets__email-table-content-event-venue-name {
+		background: transparent;
+		font-size: 18px;
+		font-weight: 700;
+		margin: 0; 
+		padding: 0;
+	}
+	.tec-tickets__email-table-content-event-venue-table {
+		border: 0;
+		border-collapse: collapse;
+		border-spacing: 0;
+		width: 100%;
+	}
+	.tec-tickets__email-table-content-event-venue-address-table-container,
+	td.tec-tickets__email-table-content-event-venue-address-table-container {
+		padding: 12px 0 0 0;
+		width: 50%;
+	}
+	.tec-tickets__email-table-content-event-venue-phone-website-container,
+	td.tec-tickets__email-table-content-event-venue-phone-website-container {
+		padding:0;
+		width: 50%;
+	}
+	.tec-tickets__email-table-content-event-venue-address-table {
+		border: 0;
+		border-collapse: collapse;
+		border-spacing:0;
+		width: 100%;
+	}
+	.tec-tickets__email-table-content-event-venue-address-pin-container,
+	td.tec-tickets__email-table-content-event-venue-address-pin-container {
+		display: inline-block;
+		text-align: center;
+		vertical-align: top;
+	}
+	.tec-tickets__email-table-content-event-venue-address-pin,
+	img.tec-tickets__email-table-content-event-venue-address-pin {
+		display: block;
+		height: 28px;
+		width: 20px;
+	}
+	.tec-tickets__email-table-content-event-venue-address-container,
+	td.tec-tickets__email-table-content-event-venue-address-container {
+		padding: 0;
+		text-align: left;
+	}
+</style><style type="text/css">
+	.tec-tickets__email-table-content-event-title-container,
+	td.tec-tickets__email-table-content-event-title-container,
+	.tec-tickets__email-table-content-event-links-container,
+	td.tec-tickets__email-table-content-event-links-container,
+	.tec-tickets__email-table-content-event-date-container,
+	td.tec-tickets__email-table-content-event-date-container,
+	.tec-tickets__email-table-content-event-description-container,
+	td.tec-tickets__email-table-content-event-description-container,
+	.tec-tickets__email-table-content-event-image-container,
+	td.tec-tickets__email-table-content-event-image-container {
+		padding: 0;
+	}
+
+	.tec-tickets__email-table-content-event-links-table,
+	table.tec-tickets__email-table-content-event-links-table {
+		border: 0;
+		border-collapse: collapse;
+		border-spacing: 0;
+		width: 100%;
+	}
+
+	.tec-tickets__email-table-content-event-links-table-data,
+	td.tec-tickets__email-table-content-event-links-table-data {
+		padding: 30px 10px;
+		text-align: center;
+		width: 100%;
+	}
+
+	.tec-tickets__email-table-content-event-links-ical-link,
+	a.tec-tickets__email-table-content-event-links-ical-link,
+	.tec-tickets__email-table-content-event-links-gcal-link,
+	a.tec-tickets__email-table-content-event-links-gcal-link {
+		padding: 0 8px;
+	}
+
+	.tec-tickets__email-table-content-event-date {
+		font-size: 14px;
+		font-weight: 400;
+		letter-spacing: 0px;
+		line-height: 23px;
+		text-align: left;
+	}
+	.tec-tickets__email-table-content-event-image,
+	img.tec-tickets__email-table-content-event-image {
+		display: block;
+		margin: 0;
+		width: 100%;
+	}
+	.tec-tickets__email-table-content-event-venue-title-container,
+	td.tec-tickets__email-table-content-event-venue-title-container {
+		padding: 54px 0 12px 0;
+	}
+	.tec-tickets__email-table-content-event-venue-title {
+		background: transparent;
+		color: #141827;
+		font-size: 16px;
+		font-weight: 700;
+		margin: 0;
+		padding: 0;
+	}
+	.tec-tickets__email-table-content-event-venue-container,
+	td.tec-tickets__email-table-content-event-venue-container {
+		border: 1px solid #d5d5d5;
+		padding: 25px;
+	}
+	.tec-tickets__email-table-content-event-venue-name {
+		background: transparent;
+		font-size: 18px;
+		font-weight: 700;
+		margin: 0; 
+		padding: 0;
+	}
+	.tec-tickets__email-table-content-event-venue-table {
+		border: 0;
+		border-collapse: collapse;
+		border-spacing: 0;
+		width: 100%;
+	}
+	.tec-tickets__email-table-content-event-venue-address-table-container,
+	td.tec-tickets__email-table-content-event-venue-address-table-container {
+		padding: 12px 0 0 0;
+		width: 50%;
+	}
+	.tec-tickets__email-table-content-event-venue-phone-website-container,
+	td.tec-tickets__email-table-content-event-venue-phone-website-container {
+		padding:0;
+		width: 50%;
+	}
+	.tec-tickets__email-table-content-event-venue-address-table {
+		border: 0;
+		border-collapse: collapse;
+		border-spacing:0;
+		width: 100%;
+	}
+	.tec-tickets__email-table-content-event-venue-address-pin-container,
+	td.tec-tickets__email-table-content-event-venue-address-pin-container {
+		display: inline-block;
+		text-align: center;
+		vertical-align: top;
+	}
+	.tec-tickets__email-table-content-event-venue-address-pin,
+	img.tec-tickets__email-table-content-event-venue-address-pin {
+		display: block;
+		height: 28px;
+		width: 20px;
+	}
+	.tec-tickets__email-table-content-event-venue-address-container,
+	td.tec-tickets__email-table-content-event-venue-address-container {
+		padding: 0;
+		text-align: left;
+	}
+</style><style type="text/css">
 	body {
 		color: #3C434A;
 		margin: 0;
@@ -336,6 +560,26 @@
 	</td>
 </tr>
 <tr>
+	<td class="tec-tickets__email-table-content-event-date-container">
+		<p class="tec-tickets__email-table-content-event-date">
+			September 22 @ 7:00 pm - 11:00 pm		</p>
+	</td>
+</tr>
+<tr>
+	<td class="tec-tickets__email-table-content-event-title-container">
+		<h3 class="tec-tickets__email-table-content-event-title">
+			Arts in the Park		</h3>
+	</td>
+</tr>
+<tr>
+	<td style="padding:0;" class="tec-tickets__email-table-content-event-image-container">
+		<img
+			class="tec-tickets__email-table-content-event-image"
+			src="http://wordpress.test/wp-content/plugins/the-events-calendar/src/resources/images/event-example-image.jpg"
+								/>
+	</td>
+</tr>
+<tr>
 	<td style="padding:0;">
 		<table class="tec-tickets__email-table-content-tickets" role="presentation">
 								<tr>
@@ -352,6 +596,87 @@
 								</td>
 			</tr>
 				</table>
+	</td>
+</tr>
+<tr>
+	<td class="tec-tickets__email-table-content-event-venue-title-container">
+		<h3 class="tec-tickets__email-table-content-event-venue-title">
+			Event Location		</h3>
+	</td>
+</tr>
+<tr>
+	<td class="tec-tickets__email-table-content-event-venue-container">
+		<h2 class="tec-tickets__email-table-content-event-venue-name">
+			Central Park		</h2>
+		<table role="presentation" class="tec-tickets__email-table-content-event-venue-table">
+			<tr>
+				<td class="tec-tickets__email-table-content-event-venue-address-table-container">
+					<table role="presentation" class="tec-tickets__email-table-content-event-venue-address-table">
+	<tr>
+		<td class="tec-tickets__email-table-content-event-venue-address-pin-container" valign="top" align="center">
+			<img
+				class="tec-tickets__email-table-content-event-venue-address-pin"
+				width="20"
+				height="28"
+				src="http://wordpress.test/wp-content/plugins/the-events-calendar/src/resources/icons/map-pin.svg"
+			/>
+		</td>
+		<td class="tec-tickets__email-table-content-event-venue-address-container">
+		41st Street<br />New York<br />NY 10001<br />United States				<br />
+				<a href="#">
+					Get Directions				</a>
+					</td>
+	</tr>
+</table>
+				</td>
+				<td class="tec-tickets__email-table-content-event-venue-phone-website-container">
+
+					<table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;margin-bottom:18px">
+	<tr>
+		<td style="display:inline-block;text-align:center;vertical-align:top;" valign="top" align="center">
+			<img
+				width="25"
+				height="24"
+				style="width:25px;height:24px;display:block;"
+				src="http://wordpress.test/wp-content/plugins/the-events-calendar/src/resources/icons/phone.svg"
+			/>
+		</td>
+		<td style="padding:0;">
+			(555) 555-5555		</td>
+	</tr>
+</table>
+
+									</td>
+			</tr>
+		</table>
+	</td>
+</tr>
+<tr>
+	<td class="tec-tickets__email-table-content-event-links-container">
+		<table role="presentation" class="tec-tickets__email-table-content-event-links-table">
+			<tr>
+				<td class="tec-tickets__email-table-content-event-links-table-data" align="center">
+
+					<a
+	target="_blank"
+	rel="noopener noreferrer"
+	href="#"
+	class="tec-tickets__email-table-content-event-links-ical-link"
+>
+	Add event to iCal</a>
+
+					
+<a
+	target="_blank"
+	rel="noopener noreferrer"
+	href="#"
+	class="tec-tickets__email-table-content-event-links-gcal-link"
+>
+	Add event to Google Calendar</a>
+
+				</td>
+			</tr>
+		</table>
 	</td>
 </tr>
 					</table>
