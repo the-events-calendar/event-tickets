@@ -374,7 +374,7 @@ class Module extends \Tribe__Tickets__Tickets {
 			$ticket_id = func_get_arg( 1 );
 		}
 
-		/** @var Tribe__Tickets__Attendee_Repository $repository */
+		/** @var \Tribe__Tickets__Attendee_Repository $repository */
 		$repository = tribe_attendees( $this->orm_provider );
 
 		$repository->by( 'parent', $order_id );

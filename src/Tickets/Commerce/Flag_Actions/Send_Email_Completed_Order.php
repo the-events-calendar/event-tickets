@@ -49,7 +49,7 @@ class Send_Email_Completed_Order extends Flag_Action_Abstract {
 		}
 
 		$provider  = tribe( $order->provider );
-		$attendees = $provider->get_attendees_by_order_id( $order->id );
+		$attendees = $provider->get_attendees_by_order_id( $order->ID );
 
 		$email_class = tribe( \TEC\Tickets\Emails\Email\Completed_Order::class );
 		$email_class->set( 'order', $order );
