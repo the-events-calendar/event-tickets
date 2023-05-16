@@ -38,7 +38,7 @@ class Emails_Tab {
 	 *
 	 * @since 5.5.9
 	 *
-	 * @var null|Tribe_Template
+	 * @var null|\Tribe__Template
 	 */
 	protected $template;
 
