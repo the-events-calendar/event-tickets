@@ -59,7 +59,7 @@ class Email_Template {
 		if ( empty( $this->template ) ) {
 			$this->template = new Tribe__Template();
 			$this->template->set_template_origin( Tribe__Tickets__Main::instance() );
-			$this->template->set_template_folder( 'src/views/v2/emails' );
+			$this->template->set_template_folder( 'src/views/emails' );
 			$this->template->set_template_context_extract( true );
 		}
 
