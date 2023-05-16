@@ -118,7 +118,7 @@ class Completed_Order extends Email_Abstract {
 		);
 
 		$email_description = sprintf(
-			// Translators: %1$s: Completed order Emails knowledgebase article link.
+			// Translators: %1$s: Completed order Emails knowledge base article link.
 			esc_html_x( 'The site admin will receive an email about any orders that were made. Customize the content of this specific email using the tools below. You can also use email placeholders and customize email templates. %1$s.', 'about Completed Order email', 'event-tickets' ),
 			$kb_link
 		);
