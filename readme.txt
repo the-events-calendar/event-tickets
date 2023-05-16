@@ -194,6 +194,11 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 * Enhancement - Add support for Gmail JSON LD markup of Ticket Emails. [ET-1601][ET-1637]
 
+= [5.5.11.1] 2023-05-09 =
+
+* Fix - Admin Dashboard loading slowly while counting attendees. [ET-1698]
+* Fix - Resolve Fatal occurring for some Tickets Commerce users around Order Models and Cart usage. [ET-1735]
+
 = [5.5.11] 2023-05-04 =
 
 * Enhancement - Add Ticket data with attendee data as checkin response. [ET-1694]

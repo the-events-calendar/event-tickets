@@ -168,5 +168,4 @@ class Order_Model extends Base {
 	protected function get_cache_slug() {
 		return 'tc_orders';
 	}
-
 }
