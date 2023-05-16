@@ -49,8 +49,8 @@ Whether your vision is big or small, you're in good company. Thousands of small 
 ✔️ Add RSVPs and tickets to posts, pages, or custom post types
 ✔️ Collect ticket fees by connecting your PayPal business or Stripe account
 ✔️ Generate sales and attendee reports
+✔️ Customize Tickets and RSVP confirmation emails
 ✔️ Ticket stock countdown
-✔️ Automatic ticket confirmation emails
 ✔️ Works out of the box with [The Events Calendar](https://evnt.is/18yi)
 ✔️ Responsive design works on all devices
 ✔️ Tested on the major theme frameworks such as Avada, Genesis, Kadence, Thesis and many more.
