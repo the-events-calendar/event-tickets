@@ -70,6 +70,7 @@ Additional helpful links:
 * [Guide: Getting Started with Event Tickets](https://evnt.is/1aot)
 * [Installing Event Tickets Video](https://evnt.is/1ao9)
 * [Using Tickets Commerce Video](https://evnt.is/1b5f)
+* [Configuring Tickets Emails](https://evnt.is/event-tickets-emails)
 * [Do I need Event Tickets or Event Tickets Plus?](https://evnt.is/1aoa)
 * [How to Make Money with Virtual Events](https://evnt.is/1aob)
 * [Implementing Stripe on Event Tickets and Event Tickets Plus](https://evnt.is/1b5g)
