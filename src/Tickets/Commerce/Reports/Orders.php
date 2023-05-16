@@ -43,8 +43,15 @@ class Orders extends Report_Abstract {
 	 *
 	 * @return string
 	 */
-	public function get_title() {
-		return __( 'Orders Report', 'event-tickets' );
+	public function get_title($post_id) {
+
+		return sprintf(
+		// Translators: %1$s: the post/event title, %2$d: the post/event ID.
+			_x( 'Orders for: %1$s [#%2$d]', 'orders report screen heading', 'event-tickets' ),
+			get_the_title( $post_id ),
+			$post_id
+		);
+
 	}
 
 	/**
@@ -372,7 +379,7 @@ class Orders extends Report_Abstract {
 
 
 		$this->template_vars = [
-			'title'               => $this->get_title(),
+			'title'               => $this->get_title($post_id),
 			'orders_table'        => tribe( Commerce\Admin_Tables\Orders::class ),
 			'post'                => $post,
 			'post_id'             => $post_id,
