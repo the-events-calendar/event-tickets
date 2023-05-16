@@ -13,7 +13,7 @@
  *
  * @since 5.5.11
  *
- * @var \Tribe__Template   $this               Current template object.
+ * @var \Tribe__Template  $this               Current template object.
  * @var \WP_Post         $order              The order object.
  * @var bool             $is_tec_active      Whether `The Events Calendar` is active or not.
  * @var string           $additional_content The additional content to be added to the email.

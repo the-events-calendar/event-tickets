@@ -13,7 +13,7 @@
  *
  * @since 5.5.11
  *
- * @var \Tribe__Template  $this          Current template object.
+ * @var \Tribe__Template $this          Current template object.
  * @var array           $order         [Global] The order object.
  * @var bool            $is_tec_active [Global] Whether `The Events Calendar` is active or not.
  */

@@ -13,7 +13,7 @@
  *
  * @since 5.5.9
  *
- * @var \Tribe__Template  $this  Current template object.
+ * @var \Tribe__Template $this  Current template object.
  */
 
 $this->template( 'template-parts/header' );
