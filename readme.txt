@@ -190,6 +190,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Fix - Updated the page heading when on the Orders Report page. [ET-1737]
+
 = [5.5.11.1] 2023-05-09 =
 
 * Fix - Admin Dashboard loading slowly while counting attendees. [ET-1698]
