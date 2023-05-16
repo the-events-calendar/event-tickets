@@ -5,11 +5,11 @@
     },
     "tribe-tickets-emails-header": {
         "type": "html",
-        "html": "<h2>Tickets Emails<\\/h2>"
+        "html": "<h2 class=\\"tec-tickets__admin-settings-tab-heading\\">Tickets Emails<\\/h2>"
     },
     "tribe-tickets-emails-description": {
         "type": "html",
-        "html": "<p>Customize your customer communications when tickets are purchased, RSVPs are submitted, and for Tickets Commerce order notifications.  Learn More about Tickets Commerce communications in our <a href=\\"https:\\/\\/www.theeventscalendar.com\\" target=\\"_blank\\" rel=\\"nofollow\\">Knowledgebase<\\/a>.<\\/p>"
+        "html": "<p>Customize your customer communications when tickets are purchased, RSVPs are submitted, and for Tickets Commerce order notifications.  Enabling Tickets Emails will overwrite any manual customization that has been done to the email templates within your theme. Learn More about Tickets Commerce communications in our <a href=\\"https:\\/\\/www.theeventscalendar.com\\" target=\\"_blank\\" rel=\\"nofollow\\">Knowledgebase<\\/a>.<\\/p>"
     },
     "0": {
         "type": "html",
@@ -101,7 +101,8 @@
                 "strikethrough",
                 "alignleft",
                 "aligncenter",
-                "alignright"
+                "alignright",
+                "link"
             ]
         }
     }

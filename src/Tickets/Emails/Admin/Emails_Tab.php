@@ -158,7 +158,7 @@ class Emails_Tab {
 		];
 		$fields['tribe-tickets-emails-header'] = [
 			'type' => 'html',
-			'html' => '<h2>' . esc_html__( 'Tickets Emails', 'event-tickets' ) . '</h2>',
+			'html' => '<h2 class="tec-tickets__admin-settings-tab-heading">' . esc_html__( 'Tickets Emails', 'event-tickets' ) . '</h2>',
 		];
 		$kb_link_html = sprintf( '<a href="%s" target="_blank" rel="nofollow">%s</a>',
 			'https://www.theeventscalendar.com', // @todo Replace with correct KB URL.
@@ -166,7 +166,7 @@ class Emails_Tab {
 		);
 		$description_text = sprintf(
 			// Translators: %s Link to knowledgebase article.
-			esc_html__( 'Customize your customer communications when tickets are purchased, RSVPs are submitted, and for Tickets Commerce order notifications.  Learn More about Tickets Commerce communications in our %s.', 'event-tickets' ),
+			esc_html__( 'Customize your customer communications when tickets are purchased, RSVPs are submitted, and for Tickets Commerce order notifications.  Enabling Tickets Emails will overwrite any manual customization that has been done to the email templates within your theme. Learn More about Tickets Commerce communications in our %s.', 'event-tickets' ),
 			$kb_link_html
 		);
 		$fields['tribe-tickets-emails-description'] = [

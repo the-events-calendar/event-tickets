@@ -54,7 +54,8 @@
                 "strikethrough",
                 "alignleft",
                 "aligncenter",
-                "alignright"
+                "alignright",
+                "link"
             ]
         }
     },

@@ -317,6 +317,7 @@ class RSVP extends Email_Abstract {
 						'alignleft',
 						'aligncenter',
 						'alignright',
+						'link',
 					],
 				],
 			],
