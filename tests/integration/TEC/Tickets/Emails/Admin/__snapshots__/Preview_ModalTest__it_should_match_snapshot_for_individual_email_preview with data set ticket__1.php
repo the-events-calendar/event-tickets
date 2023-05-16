@@ -618,7 +618,7 @@
 				class="tec-tickets__email-table-content-event-venue-address-pin"
 				width="20"
 				height="28"
-				src="http://wordpress.test/wp-content/plugins/the-events-calendar/src/resources/icons/map-pin.svg"
+				src="http://wordpress.test/wp-content/plugins/the-events-calendar/src/resources/images/icons/bitmap/map-pin.png"
 			/>
 		</td>
 		<td class="tec-tickets__email-table-content-event-venue-address-container">
@@ -638,7 +638,7 @@
 				width="25"
 				height="24"
 				style="width:25px;height:24px;display:block;"
-				src="http://wordpress.test/wp-content/plugins/the-events-calendar/src/resources/icons/phone.svg"
+				src="http://wordpress.test/wp-content/plugins/the-events-calendar/src/resources/images/icons/bitmap/phone.png"
 			/>
 		</td>
 		<td style="padding:0;">
