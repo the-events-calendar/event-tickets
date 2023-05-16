@@ -108,6 +108,7 @@
 		font-size: 28px;
 		font-weight: 700;
 		letter-spacing: 0px;
+		line-height: 1.25;
 		margin: 0;
 		padding: 24px 0 !important;
 		text-align: left;
