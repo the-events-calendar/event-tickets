@@ -3,7 +3,7 @@
  * Event Tickets Emails: Order Purchaser Details
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/emails/template-parts/body/order/purchaser-details.php
+ * [your-theme]/tribe/tickets/emails/template-parts/body/order/customer-purchaser-details.php
  *
  * See more documentation about our views templating system.
  *
