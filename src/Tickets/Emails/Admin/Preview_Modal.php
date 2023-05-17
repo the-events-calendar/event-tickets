@@ -225,7 +225,7 @@ class Preview_Modal {
 		$heading = Arr::get( $vars, 'heading', '' );
 
 		if ( ! empty( $heading ) ) {
-			$preview_context['heading'] = wp_kses( $heading, [] );
+			$preview_context['heading'] = sanitize_text_field( stripslashes( $heading ) );
 		}
 
 		$additional_content = Arr::get( $vars, 'addContent', '' );
@@ -240,11 +240,7 @@ class Preview_Modal {
 			$preview_context['add_qr_codes'] = tribe_is_truthy( $add_qr_codes );
 		}
 
-		$add_event_links = Arr::get( $vars, 'eventLinks', '' );
-
-		if ( ! empty( $add_event_links ) ) {
-			$preview_context['add_event_links'] = tribe_is_truthy( $add_event_links );
-		}
+		$preview_context['add_event_links'] = tribe_is_truthy( Arr::get( $vars, 'eventLinks', '' ) );
 
 		$current_email = Arr::get( $vars, 'currentEmail', '' );
 
