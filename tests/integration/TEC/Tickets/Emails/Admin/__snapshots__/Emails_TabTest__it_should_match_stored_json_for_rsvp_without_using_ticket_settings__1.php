@@ -17,7 +17,8 @@
     },
     "tec-tickets-emails-rsvp-enabled": {
         "type": "toggle",
-        "label": "Enabled",
+        "label": "RSVP Email",
+        "tooltip": "Enabled",
         "default": true,
         "validation_type": "boolean"
     },
