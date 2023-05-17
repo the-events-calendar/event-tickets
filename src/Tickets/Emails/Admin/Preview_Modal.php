@@ -171,6 +171,8 @@ class Preview_Modal {
 	 *
 	 * @since 5.5.7
 	 *
+	 * @todo This method should not be handling variables from other Add-ons but it currently does.
+	 *
 	 * @param string|\WP_Error $render_response The render response HTML content or WP_Error with list of errors.
 	 * @param array            $vars            The request variables.
 	 *
@@ -187,61 +189,61 @@ class Preview_Modal {
 		$ticket_bg_color = Arr::get( $vars, 'ticketBgColor', '' );
 
 		if ( ! empty( $ticket_bg_color ) ) {
-			$preview_context['ticket_bg_color'] = $ticket_bg_color;
+			$preview_context['ticket_bg_color'] = wp_kses( $ticket_bg_color, [] );
 		}
 
 		$footer_content = Arr::get( $vars, 'footerContent', '' );
 
 		if ( ! empty( $footer_content ) ) {
-			$preview_context['footer_content'] = $footer_content;
+			$preview_context['footer_content'] = wp_kses_post( $footer_content );
 		}
 
 		$footer_credit = Arr::get( $vars, 'footerCredit', '' );
 
 		if ( ! empty( $footer_credit ) ) {
-			$preview_context['footer_credit'] = $footer_credit;
+			$preview_context['footer_credit'] = tribe_is_truthy( $footer_credit );
 		}
 
 		$header_bg_color = Arr::get( $vars, 'headerBgColor', '' );
 
 		if ( ! empty( $header_bg_color ) ) {
-			$preview_context['header_bg_color'] = $header_bg_color;
+			$preview_context['header_bg_color'] = wp_kses( $header_bg_color, [] );
 		}
 
 		$header_img_url = Arr::get( $vars, 'headerImageUrl', '' );
 
 		if ( ! empty( $header_img_url ) ) {
-			$preview_context['header_image_url'] = $header_img_url;
+			$preview_context['header_image_url'] = esc_url( $header_img_url );
 		}
 
 		$header_image_alignment = Arr::get( $vars, 'headerImageAlignment', '' );
 
 		if ( ! empty( $header_image_alignment ) ) {
-			$preview_context['header_image_alignment'] = strtolower( $header_image_alignment );
+			$preview_context['header_image_alignment'] = sanitize_key( strtolower( $header_image_alignment ) );
 		}
 
 		$heading = Arr::get( $vars, 'heading', '' );
 
 		if ( ! empty( $heading ) ) {
-			$preview_context['heading'] = $heading;
+			$preview_context['heading'] = wp_kses( $heading, [] );
 		}
 
 		$additional_content = Arr::get( $vars, 'addContent', '' );
 
 		if ( ! empty( $additional_content ) ) {
-			$preview_context['additional_content'] = $additional_content;
+			$preview_context['additional_content'] = wp_kses_post( $additional_content );
 		}
 
 		$add_qr_codes = Arr::get( $vars, 'qrCodes', '' );
 
 		if ( ! empty( $add_qr_codes ) ) {
-			$preview_context['add_qr_codes'] = $add_qr_codes;
+			$preview_context['add_qr_codes'] = tribe_is_truthy( $add_qr_codes );
 		}
 
 		$add_event_links = Arr::get( $vars, 'eventLinks', '' );
 
 		if ( ! empty( $add_event_links ) ) {
-			$preview_context['add_event_links'] = $add_event_links;
+			$preview_context['add_event_links'] = tribe_is_truthy( $add_event_links );
 		}
 
 		$current_email = Arr::get( $vars, 'currentEmail', '' );
