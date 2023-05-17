@@ -300,6 +300,7 @@
 		font-size: 28px;
 		font-weight: 700;
 		letter-spacing: 0px;
+		line-height: 1.25;
 		margin: 0;
 		padding: 24px 0 !important;
 		text-align: left;
@@ -618,7 +619,7 @@
 				class="tec-tickets__email-table-content-event-venue-address-pin"
 				width="20"
 				height="28"
-				src="http://wordpress.test/wp-content/plugins/the-events-calendar/src/resources/icons/map-pin.svg"
+				src="http://wordpress.test/wp-content/plugins/the-events-calendar/src/resources/images/icons/bitmap/map-pin.png"
 			/>
 		</td>
 		<td class="tec-tickets__email-table-content-event-venue-address-container">
@@ -638,7 +639,7 @@
 				width="25"
 				height="24"
 				style="width:25px;height:24px;display:block;"
-				src="http://wordpress.test/wp-content/plugins/the-events-calendar/src/resources/icons/phone.svg"
+				src="http://wordpress.test/wp-content/plugins/the-events-calendar/src/resources/images/icons/bitmap/phone.png"
 			/>
 		</td>
 		<td style="padding:0;">
@@ -647,34 +648,6 @@
 </table>
 
 									</td>
-			</tr>
-		</table>
-	</td>
-</tr>
-<tr>
-	<td class="tec-tickets__email-table-content-event-links-container">
-		<table role="presentation" class="tec-tickets__email-table-content-event-links-table">
-			<tr>
-				<td class="tec-tickets__email-table-content-event-links-table-data" align="center">
-
-					<a
-	target="_blank"
-	rel="noopener noreferrer"
-	href="#"
-	class="tec-tickets__email-table-content-event-links-ical-link"
->
-	Add event to iCal</a>
-
-					
-<a
-	target="_blank"
-	rel="noopener noreferrer"
-	href="#"
-	class="tec-tickets__email-table-content-event-links-gcal-link"
->
-	Add event to Google Calendar</a>
-
-				</td>
 			</tr>
 		</table>
 	</td>

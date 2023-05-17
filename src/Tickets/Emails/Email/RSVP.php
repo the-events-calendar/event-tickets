@@ -261,8 +261,7 @@ class RSVP extends Email_Abstract {
 			],
 		];
 
-		// If using the ticket email settings, no need to show the remaining settings.
-		if ( tribe_is_truthy( tribe_get_option( $this->get_option_key( 'use-ticket-email' ), true ) ) ) {
+		if ( $this->is_using_ticket_email_settings() ) {
 			return $settings;
 		}
 
@@ -359,6 +358,18 @@ class RSVP extends Email_Abstract {
 		];
 
 		return $defaults;
+	}
+
+	/**
+	 * Check if following the ticket email settings.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function is_using_ticket_email_settings(): bool {
+		// If using the ticket email settings, no need to show the remaining settings.
+		return tribe_is_truthy( tribe_get_option( $this->get_option_key( 'use-ticket-email' ), true ) );
 	}
 
 	/**
