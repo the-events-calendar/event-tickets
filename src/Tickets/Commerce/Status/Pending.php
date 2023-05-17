@@ -164,6 +164,35 @@ class Pending extends Status_Abstract {
 				} else {
 					$message = sprintf( __( 'There are no %s available at this time.', 'event-tickets' ), tribe_get_ticket_label_plural( 'unavailable_mixed' ) );
 				}
+
+				$tickets[] = $ticket;
+
+				/**
+				 * Filters the unavailability message for a ticket collection.
+				 * This function applies filters to modify the unavailability message for a collection of tickets.
+				 *
+				 * @since TBD
+				 *
+				 * @param string $message The unavailability message.
+				 * @param array $tickets The collection of tickets.
+				 *
+				 * @return string The modified unavailability message.
+				 */
+				$message = apply_filters( 'event_tickets_unavailable_message', $message, $tickets );
+
+				/**
+				 * Filters the unavailability message for a ticket collection.
+				 * This function applies filters to modify the unavailability message for a collection of tickets.
+				 *
+				 * @since TBD
+				 *
+				 * @param string $message The unavailability message.
+				 * @param array $tickets The collection of tickets.
+				 *
+				 * @return string The modified unavailability message.
+				 */
+				$message = apply_filters( 'tec_tickets_tickets_commerce_unavailable_message', $message, $tickets );
+
 				return new WP_Error(
 					'tec-tc-ticket-unavailable',
 					$message,
