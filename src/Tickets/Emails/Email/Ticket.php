@@ -163,6 +163,7 @@ class Ticket extends Email_Abstract {
 				'type'                => 'wysiwyg',
 				'label'               => esc_html__( 'Additional content', 'event-tickets' ),
 				'default'             => '',
+				'size'                => 'large',
 				'tooltip'             => esc_html__( 'Additional content will be displayed below the tickets in your email.', 'event-tickets' ),
 				'validation_type'     => 'html',
 				'settings'        => [
