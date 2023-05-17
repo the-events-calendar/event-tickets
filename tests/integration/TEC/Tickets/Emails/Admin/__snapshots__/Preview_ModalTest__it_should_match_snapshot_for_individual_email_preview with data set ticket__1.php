@@ -39,6 +39,8 @@
 		font-weight: 400;
 		letter-spacing: 0px;
 		line-height: 23px;
+		margin: 0;
+		padding: 15px 0 0;
 		text-align: left;
 	}
 	.tec-tickets__email-table-content-event-image,
@@ -80,11 +82,13 @@
 	.tec-tickets__email-table-content-event-venue-address-table-container,
 	td.tec-tickets__email-table-content-event-venue-address-table-container {
 		padding: 12px 0 0 0;
+		vertical-align: top;
 		width: 50%;
 	}
 	.tec-tickets__email-table-content-event-venue-phone-website-container,
 	td.tec-tickets__email-table-content-event-venue-phone-website-container {
-		padding:0;
+		padding: 12px 0 0;
+		vertical-align: top;
 		width: 50%;
 	}
 	.tec-tickets__email-table-content-event-venue-address-table {
@@ -95,9 +99,10 @@
 	}
 	.tec-tickets__email-table-content-event-venue-address-pin-container,
 	td.tec-tickets__email-table-content-event-venue-address-pin-container {
-		display: inline-block;
-		text-align: center;
+		padding-right: 14px;
+		text-align: left;
 		vertical-align: top;
+		width: 20px;
 	}
 	.tec-tickets__email-table-content-event-venue-address-pin,
 	img.tec-tickets__email-table-content-event-venue-address-pin {
@@ -109,6 +114,61 @@
 	td.tec-tickets__email-table-content-event-venue-address-container {
 		padding: 0;
 		text-align: left;
+	}
+
+	.tec-tickets__email-table-content-event-venue-address-table,
+	table.tec-tickets__email-table-content-event-venue-address-table {
+		border: 0;
+		border-collapse: collapse;
+		border-spacing: 0;
+		margin-bottom: 18px;
+		width: 100%;
+	}
+
+	.tec-tickets__email-table-content-event-venue-phone-icon-container,
+	td.tec-tickets__email-table-content-event-venue-phone-icon-container {
+		padding-right: 14px;
+		text-align: left;
+		vertical-align: top;
+		width: 25px;
+	}
+
+	.tec-tickets__email-table-content-event-venue-phone-icon-image {
+		display: block;
+		height: 24px;
+		width: 25px;
+	}
+
+	.tec-tickets__email-table-content-event-venue-phone-container,
+	td.tec-tickets__email-table-content-event-venue-phone-container {
+		padding: 0;
+	}
+
+	.tec-tickets__email-table-content-event-venue-website-table,
+	table.tec-tickets__email-table-content-event-venue-website-table {
+		border: 0;
+		border-collapse: collapse;
+		border-spacing: 0;
+		width: 100%;
+	}
+
+	.tec-tickets__email-table-content-event-venue-website-icon-container,
+	td.tec-tickets__email-table-content-event-venue-website-icon-container {
+		padding-right: 14px;
+		text-align: left;
+		vertical-align: top;
+		width: 24px;
+	}
+
+	.tec-tickets__email-table-content-event-venue-website-icon-image {
+		display: block;
+		height: 23px;
+		width: 24px;
+	}
+
+	.tec-tickets__email-table-content-event-venue-website-container,
+	td.tec-tickets__email-table-content-event-venue-website-container {
+		padding: 0;
 	}
 </style><style type="text/css">
 	.tec-tickets__email-table-content-event-title-container,
@@ -151,6 +211,8 @@
 		font-weight: 400;
 		letter-spacing: 0px;
 		line-height: 23px;
+		margin: 0;
+		padding: 15px 0 0;
 		text-align: left;
 	}
 	.tec-tickets__email-table-content-event-image,
@@ -192,11 +254,13 @@
 	.tec-tickets__email-table-content-event-venue-address-table-container,
 	td.tec-tickets__email-table-content-event-venue-address-table-container {
 		padding: 12px 0 0 0;
+		vertical-align: top;
 		width: 50%;
 	}
 	.tec-tickets__email-table-content-event-venue-phone-website-container,
 	td.tec-tickets__email-table-content-event-venue-phone-website-container {
-		padding:0;
+		padding: 12px 0 0;
+		vertical-align: top;
 		width: 50%;
 	}
 	.tec-tickets__email-table-content-event-venue-address-table {
@@ -207,9 +271,10 @@
 	}
 	.tec-tickets__email-table-content-event-venue-address-pin-container,
 	td.tec-tickets__email-table-content-event-venue-address-pin-container {
-		display: inline-block;
-		text-align: center;
+		padding-right: 14px;
+		text-align: left;
 		vertical-align: top;
+		width: 20px;
 	}
 	.tec-tickets__email-table-content-event-venue-address-pin,
 	img.tec-tickets__email-table-content-event-venue-address-pin {
@@ -221,6 +286,61 @@
 	td.tec-tickets__email-table-content-event-venue-address-container {
 		padding: 0;
 		text-align: left;
+	}
+
+	.tec-tickets__email-table-content-event-venue-address-table,
+	table.tec-tickets__email-table-content-event-venue-address-table {
+		border: 0;
+		border-collapse: collapse;
+		border-spacing: 0;
+		margin-bottom: 18px;
+		width: 100%;
+	}
+
+	.tec-tickets__email-table-content-event-venue-phone-icon-container,
+	td.tec-tickets__email-table-content-event-venue-phone-icon-container {
+		padding-right: 14px;
+		text-align: left;
+		vertical-align: top;
+		width: 25px;
+	}
+
+	.tec-tickets__email-table-content-event-venue-phone-icon-image {
+		display: block;
+		height: 24px;
+		width: 25px;
+	}
+
+	.tec-tickets__email-table-content-event-venue-phone-container,
+	td.tec-tickets__email-table-content-event-venue-phone-container {
+		padding: 0;
+	}
+
+	.tec-tickets__email-table-content-event-venue-website-table,
+	table.tec-tickets__email-table-content-event-venue-website-table {
+		border: 0;
+		border-collapse: collapse;
+		border-spacing: 0;
+		width: 100%;
+	}
+
+	.tec-tickets__email-table-content-event-venue-website-icon-container,
+	td.tec-tickets__email-table-content-event-venue-website-icon-container {
+		padding-right: 14px;
+		text-align: left;
+		vertical-align: top;
+		width: 24px;
+	}
+
+	.tec-tickets__email-table-content-event-venue-website-icon-image {
+		display: block;
+		height: 23px;
+		width: 24px;
+	}
+
+	.tec-tickets__email-table-content-event-venue-website-container,
+	td.tec-tickets__email-table-content-event-venue-website-container {
+		padding: 0;
 	}
 </style><style type="text/css">
 	body {
@@ -557,7 +677,7 @@
 <tr>
 	<td>
 		<h1 class="tec-tickets__email-table-content-title">
-			Here&#039;s your ticket, John Doe!		</h1>
+			Here&#039;s your tickets, John Doe!		</h1>
 	</td>
 </tr>
 <tr>
@@ -632,22 +752,43 @@
 				</td>
 				<td class="tec-tickets__email-table-content-event-venue-phone-website-container">
 
-					<table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;margin-bottom:18px">
+					<table role="presentation" class="tec-tickets__email-table-content-event-venue-address-table">
 	<tr>
-		<td style="display:inline-block;text-align:center;vertical-align:top;" valign="top" align="center">
+		<td class="tec-tickets__email-table-content-event-venue-phone-icon-container" valign="top" align="center">
 			<img
 				width="25"
 				height="24"
-				style="width:25px;height:24px;display:block;"
+				class="tec-tickets__email-table-content-event-venue-phone-icon-image"
 				src="http://wordpress.test/wp-content/plugins/the-events-calendar/src/resources/images/icons/bitmap/phone.png"
 			/>
 		</td>
-		<td style="padding:0;">
+		<td class="tec-tickets__email-table-content-event-venue-phone-container">
 			(555) 555-5555		</td>
 	</tr>
 </table>
 
-									</td>
+					<table role="presentation" class="tec-tickets__email-table-content-event-venue-website-table">
+	<tr>
+		<td class="tec-tickets__email-table-content-event-venue-website-icon-container" valign="top" align="center">
+			<img
+				width="24"
+				height="23"
+				class="tec-tickets__email-table-content-event-venue-website-icon-image"
+				src="http://wordpress.test/wp-content/plugins/the-events-calendar/src/resources/images/icons/bitmap/link.png"
+			/>
+		</td>
+		<td class="tec-tickets__email-table-content-event-venue-website-container">
+			<a
+				href="http://wordpress.test"
+				target="_blank"
+				rel="noopener noreferrer"
+				style="overflow-wrap: anywhere;"
+			>
+				http://wordpress.test			</a>
+		</td>
+	</tr>
+</table>
+				</td>
 			</tr>
 		</table>
 	</td>
