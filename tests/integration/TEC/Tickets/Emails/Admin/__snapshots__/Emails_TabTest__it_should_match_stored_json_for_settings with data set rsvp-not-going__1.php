@@ -17,7 +17,8 @@
     },
     "tec-tickets-emails-rsvp-not-going-enabled": {
         "type": "toggle",
-        "label": "Enabled",
+        "label": "RSVP &quot;Not Going&quot; Email",
+        "tooltip": "Enabled",
         "default": true,
         "validation_type": "boolean"
     },
