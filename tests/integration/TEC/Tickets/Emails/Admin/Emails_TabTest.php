@@ -4,6 +4,7 @@ namespace TEC\Tickets\Emails\Admin;
 
 use Codeception\TestCase\WPTestCase;
 use Spatie\Snapshots\MatchesSnapshots;
+use TEC\Tickets\Emails\Admin\Emails_Tab as Emails_Tab;
 use TEC\Tickets\Emails\Email\Completed_Order;
 use TEC\Tickets\Emails\Email\Purchase_Receipt;
 use TEC\Tickets\Emails\Email\RSVP;
@@ -83,6 +84,24 @@ class Emails_TabTest extends WPTestCase {
 		$tab = new Emails_Tab;
 
 		$settings = $tab->get_fields();
+		$json_encoded_settings = wp_json_encode( $settings, JSON_PRETTY_PRINT );
+
+		$this->assertMatchesSnapshot( $json_encoded_settings );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_match_stored_json_for_rsvp_without_using_ticket_settings(): void {
+		$tab = new Emails_Tab;
+
+		$rsvp_email = tribe( RSVP::class );
+		$_GET['section'] = $rsvp_email->get_id();
+
+		// Set the RSVP email to use ticket settings.
+		$this->set_class_fn_return( RSVP::class, 'is_using_ticket_email_settings', false );
+
+		$settings = $tab->get_email_settings();
 		$json_encoded_settings = wp_json_encode( $settings, JSON_PRETTY_PRINT );
 
 		$this->assertMatchesSnapshot( $json_encoded_settings );
