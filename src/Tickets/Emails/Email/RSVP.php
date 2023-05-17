@@ -80,65 +80,10 @@ class RSVP extends Email_Abstract {
 	 */
 	public function get_default_heading(): string {
 		return sprintf(
-			// Translators: %s Lowercase singular of ticket.
+			// Translators: %s Lowercase plural of ticket.
 			esc_html__( 'Here\'s your %s, {attendee_name}!', 'event-tickets' ),
-			tribe_get_ticket_label_singular_lowercase()
-		);
-	}
-
-	/**
-	 * Get default email heading for plural rsvps.
-	 *
-	 * @since 5.5.10
-	 *
-	 * @return string
-	 */
-	public function get_default_heading_plural(): string {
-		return sprintf(
-			// Translators: %s Lowercase plural of tickets.
-			esc_html__( 'Here are your %s, {attendee_name}!', 'event-tickets' ),
 			tribe_get_ticket_label_plural_lowercase()
 		);
-	}
-
-	/**
-	 * Get heading for plural tickets.
-	 *
-	 * @since 5.5.10
-	 *
-	 * @return string
-	 */
-	public function get_heading_plural(): string {
-		$option_key = $this->get_option_key( 'heading-plural' );
-		$heading    = tribe_get_option( $option_key, $this->get_default_heading_plural() );
-
-		// @todo: Probably we want more data parsed, or maybe move the filters somewhere else as we're always gonna
-
-		/**
-		 * Allow filtering the email heading globally.
-		 *
-		 * @since 5.5.10
-		 *
-		 * @param string         $heading  The email heading.
-		 * @param string         $id       The email id.
-		 * @param string         $template Template name.
-		 * @param Email_Abstract $this     The email object.
-		 */
-		$heading = apply_filters( 'tec_tickets_emails_heading_plural', $heading, $this->id, $this->template, $this );
-
-		/**
-		 * Allow filtering the email heading.
-		 *
-		 * @since 5.5.10
-		 *
-		 * @param string         $heading  The email heading.
-		 * @param string         $id       The email id.
-		 * @param string         $template Template name.
-		 * @param Email_Abstract $this     The email object.
-		 */
-		$heading = apply_filters( "tec_tickets_emails_{$this->slug}_heading_plural", $heading, $this->id, $this->template, $this );
-
-		return $this->format_string( $heading );
 	}
 
 	/**
@@ -150,68 +95,13 @@ class RSVP extends Email_Abstract {
 	 */
 	public function get_default_subject(): string {
 		$default_subject = sprintf(
-			// Translators: %s - Lowercase singular of ticket.
+			// Translators: %s - Lowercase plural of ticket.
 			esc_html__( 'Your %s from {site_title}', 'event-tickets' ),
-			tribe_get_ticket_label_singular_lowercase()
+			tribe_get_ticket_label_plural_lowercase()
 		);
 
 		// If they already had a subject set in Tickets Commerce, let's make it the default.
 		return tribe_get_option( Settings::$option_confirmation_email_subject, $default_subject );
-	}
-
-	/**
-	 * Get default email subject for plural rsvps.
-	 *
-	 * @since 5.5.10
-	 *
-	 * @return string
-	 */
-	public function get_default_subject_plural() {
-		return sprintf(
-			// Translators: %s - Lowercase plural of tickets.
-			esc_html__( 'Your %s from {site_title}', 'event-tickets' ),
-			tribe_get_ticket_label_plural_lowercase()
-		);
-	}
-
-	/**
-	 * Get subject for plural rsvps.
-	 *
-	 * @since 5.5.10
-	 *
-	 * @return string
-	 */
-	public function get_subject_plural(): string {
-		$option_key = $this->get_option_key( 'subject-plural' );
-		$subject    = tribe_get_option( $option_key, $this->get_default_subject_plural() );
-
-		// @todo: Probably we want more data parsed, or maybe move the filters somewhere else as we're always gonna
-
-		/**
-		 * Allow filtering the email subject globally.
-		 *
-		 * @since 5.5.10
-		 *
-		 * @param string         $subject  The email subject.
-		 * @param string         $id       The email id.
-		 * @param string         $template Template name.
-		 * @param Email_Abstract $this     The email object.
-		 */
-		$subject = apply_filters( 'tec_tickets_emails_subject_plural', $subject, $this->id, $this->template, $this );
-
-		/**
-		 * Allow filtering the email subject.
-		 *
-		 * @since 5.5.10
-		 *
-		 * @param string         $subject  The email subject.
-		 * @param string         $id       The email id.
-		 * @param string         $template Template name.
-		 * @param Email_Abstract $this     The email object.
-		 */
-		$subject = apply_filters( "tec_tickets_emails_{$this->slug}_subject_plural", $subject, $this->id, $this->template, $this );
-
-		return $this->format_string( $subject );
 	}
 
 	/**
@@ -275,14 +165,6 @@ class RSVP extends Email_Abstract {
 				'size'                => 'large',
 				'validation_callback' => 'is_string',
 			],
-			$this->get_option_key( 'subject-plural' ) => [
-				'type'                => 'text',
-				'label'               => esc_html__( 'Subject (plural)', 'event-tickets' ),
-				'default'             => $this->get_default_subject_plural(),
-				'placeholder'         => $this->get_default_subject_plural(),
-				'size'                => 'large',
-				'validation_callback' => 'is_string',
-			],
 			$this->get_option_key( 'heading' ) => [
 				'type'                => 'text',
 				'label'               => esc_html__( 'Heading', 'event-tickets' ),
@@ -291,18 +173,11 @@ class RSVP extends Email_Abstract {
 				'size'                => 'large',
 				'validation_callback' => 'is_string',
 			],
-			$this->get_option_key( 'heading-plural' ) => [
-				'type'                => 'text',
-				'label'               => esc_html__( 'Heading (plural)', 'event-tickets' ),
-				'default'             => $this->get_default_heading_plural(),
-				'placeholder'         => $this->get_default_heading_plural(),
-				'size'                => 'large',
-				'validation_callback' => 'is_string',
-			],
 			$this->get_option_key( 'add-content' ) => [
 				'type'                => 'wysiwyg',
 				'label'               => esc_html__( 'Additional content', 'event-tickets' ),
 				'default'             => '',
+				'size'                => 'large',
 				'tooltip'             => esc_html__( 'Additional content will be displayed below the RSVP information in your email.', 'event-tickets' ),
 				'validation_type'     => 'html',
 				'settings'        => [
