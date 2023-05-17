@@ -249,7 +249,8 @@ class Ticket extends Email_Abstract {
 			],
 			$this->get_option_key( 'enabled' ) => [
 				'type'                => 'toggle',
-				'label'               => esc_html__( 'Enabled', 'event-tickets' ),
+				'label'               => $this->get_title(),
+				'tooltip'             => esc_html__( 'Enabled', 'event-tickets' ),
 				'default'             => true,
 				'validation_type'     => 'boolean',
 			],
