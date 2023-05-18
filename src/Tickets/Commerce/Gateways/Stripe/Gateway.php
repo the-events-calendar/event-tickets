@@ -209,7 +209,7 @@ class Gateway extends Abstract_Gateway {
 	 */
 	public function get_order_details_link_by_order( $order ) : string {
 		$status          = tribe( Status_Handler::class )->get_by_wp_slug( $order->post_status );
-		$payload         = $order->gateway_payload[ $status::SLUG ];
+		$payload         = isset( $order->gateway_payload[ $status::SLUG ] ) ? $order->gateway_payload[ $status::SLUG ] : end( $order->gateway_payload );
 		$capture_payload = end( $payload );
 		$link            = $this->get_dashboard_url_from_payload( $capture_payload );
 
