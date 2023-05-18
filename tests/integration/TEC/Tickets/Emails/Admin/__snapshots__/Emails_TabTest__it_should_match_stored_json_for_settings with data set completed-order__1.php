@@ -17,7 +17,8 @@
     },
     "tec-tickets-emails-completed-order-enabled": {
         "type": "toggle",
-        "label": "Enabled",
+        "label": "Completed Order",
+        "tooltip": "Enabled",
         "default": true,
         "validation_type": "boolean"
     },
