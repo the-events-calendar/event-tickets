@@ -787,7 +787,7 @@
 		<table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;">
 						<tr>
 	<td style="padding:10px 0px 0px 0px;text-align:right;color:#000000;" align="right">
-		Ticket powered by <a href="#" style="color:#000000">Event Tickets</a>	</td>
+		Powered by <a href="https://evnt.is/et-in-app-email-credit" style="color:#000000">Event Tickets</a>	</td>
 </tr>
 		</table>
 	</td>
