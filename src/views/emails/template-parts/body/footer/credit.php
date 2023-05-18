@@ -31,14 +31,14 @@ if ( ! tribe_is_truthy( $footer_credit ) ) {
 }
 
 $et_link     = sprintf(
-	'<a href="%s" style="color:%s;">%s</a>',
-	'#', // @todo Update link to ET.
+	'<a href="%1$s" style="color:%2$s;">%3$s</a>',
+	'https://evnt.is/et-in-app-email-credit',
 	esc_attr( $header_text_color ),
 	esc_html__( 'Event Tickets', 'event-tickets' )
 );
 $credit_html = sprintf(
 	// Translators: %s - HTML link to `Event Tickets` website.
-	__( 'Ticket powered by %s', 'event-tickets' ),
+	__( 'Powered by %1$s', 'event-tickets' ),
 	$et_link
 );
 
