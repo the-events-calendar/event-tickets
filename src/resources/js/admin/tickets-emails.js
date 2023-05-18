@@ -180,6 +180,7 @@ tribe.tickets.emails = {};
 			let addContent = '';
 
 			if (
+				tinyMCE.length &&
 				tinyMCE.editors.length &&
 				tinyMCE.editors[ currentEmailOptionPrefix + '-add-content' ] !== typeof 'undefined'
 			) {

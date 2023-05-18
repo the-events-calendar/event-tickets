@@ -677,7 +677,7 @@
 <tr>
 	<td>
 		<h1 class="tec-tickets__email-table-content-title">
-			Here&#039;s your ticket, John Doe!		</h1>
+			Here&#039;s your tickets, John Doe!		</h1>
 	</td>
 </tr>
 <tr>
