@@ -177,6 +177,11 @@ tribe.tickets.emails = {};
 
 			context.eventLinks = eventLinks;
 
+			const arFields = $document
+				.find( 'input[name=' + currentEmailOptionPrefix + '-include-ar-fields]' ).is( ':checked' );
+
+			context.arFields = arFields;
+
 			let addContent = '';
 
 			if (
