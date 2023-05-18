@@ -17,7 +17,8 @@
     },
     "tec-tickets-emails-rsvp-enabled": {
         "type": "toggle",
-        "label": "Enabled",
+        "label": "RSVP Email",
+        "tooltip": "Enabled",
         "default": true,
         "validation_type": "boolean"
     },
@@ -31,14 +32,6 @@
     "tec-tickets-emails-rsvp-subject": {
         "type": "text",
         "label": "Subject",
-        "default": "Your ticket from {site_title}",
-        "placeholder": "Your ticket from {site_title}",
-        "size": "large",
-        "validation_callback": "is_string"
-    },
-    "tec-tickets-emails-rsvp-subject-plural": {
-        "type": "text",
-        "label": "Subject (plural)",
         "default": "Your tickets from {site_title}",
         "placeholder": "Your tickets from {site_title}",
         "size": "large",
@@ -47,16 +40,8 @@
     "tec-tickets-emails-rsvp-heading": {
         "type": "text",
         "label": "Heading",
-        "default": "Here&#039;s your ticket, {attendee_name}!",
-        "placeholder": "Here&#039;s your ticket, {attendee_name}!",
-        "size": "large",
-        "validation_callback": "is_string"
-    },
-    "tec-tickets-emails-rsvp-heading-plural": {
-        "type": "text",
-        "label": "Heading (plural)",
-        "default": "Here are your tickets, {attendee_name}!",
-        "placeholder": "Here are your tickets, {attendee_name}!",
+        "default": "Here&#039;s your tickets, {attendee_name}!",
+        "placeholder": "Here&#039;s your tickets, {attendee_name}!",
         "size": "large",
         "validation_callback": "is_string"
     },
@@ -64,6 +49,7 @@
         "type": "wysiwyg",
         "label": "Additional content",
         "default": "",
+        "size": "large",
         "tooltip": "Additional content will be displayed below the RSVP information in your email.",
         "validation_type": "html",
         "settings": {
