@@ -39,9 +39,24 @@ class Provider extends tad_DI52_ServiceProvider {
 
 		$this->container->singleton( Admin\Preview_Modal::class );
 
+		$this->container->singleton( Admin\Notice_Upgrade::class, Admin\Notice_Upgrade::class, [ 'hook' ] );
+		$this->container->singleton( Admin\Notice_Extension::class, Admin\Notice_Extension::class, [ 'hook' ] );
+
 		$this->container->register( Email_Handler::class );
 
 		$this->container->singleton( Web_View::class );
+
+		$this->boot();
+	}
+
+	/**
+	 * Boot the provider.
+	 *
+	 * @since TBD
+	 */
+	public function boot(): void {
+		$this->container->make( Admin\Notice_Upgrade::class );
+		$this->container->make( Admin\Notice_Extension::class );
 	}
 
 	/**
