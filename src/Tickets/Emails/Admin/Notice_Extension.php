@@ -65,7 +65,7 @@ class Notice_Extension {
 	}
 
 	/**
-	 * HTML for the notice for sites using V1.
+	 * HTML for the notice for sites using the Event Tickets Email Settings extension.
 	 *
 	 * @since TBD
 	 *
@@ -75,7 +75,7 @@ class Notice_Extension {
 		$link = sprintf(
 			'<a href="%1$s" target="_blank" rel="noopener noreferrer">%2$s</a>',
 			'https://evnt.is/1arx',
-			esc_html_x( 'Learn More', 'Upgrade notice for Tickets Emails.', 'event-tickets' )
+			esc_html_x( 'Learn More', 'Extension notice for Tickets Emails.', 'event-tickets' )
 		);
 
 		return '<strong>' . esc_html__( 'Ticket Email Settings extension is no longer supported', 'event-tickets' ) . '</strong>' .
