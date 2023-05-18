@@ -39,6 +39,8 @@
 		font-weight: 400;
 		letter-spacing: 0px;
 		line-height: 23px;
+		margin: 0;
+		padding: 15px 0 0;
 		text-align: left;
 	}
 	.tec-tickets__email-table-content-event-image,
@@ -80,11 +82,13 @@
 	.tec-tickets__email-table-content-event-venue-address-table-container,
 	td.tec-tickets__email-table-content-event-venue-address-table-container {
 		padding: 12px 0 0 0;
+		vertical-align: top;
 		width: 50%;
 	}
 	.tec-tickets__email-table-content-event-venue-phone-website-container,
 	td.tec-tickets__email-table-content-event-venue-phone-website-container {
-		padding:0;
+		padding: 12px 0 0;
+		vertical-align: top;
 		width: 50%;
 	}
 	.tec-tickets__email-table-content-event-venue-address-table {
@@ -95,9 +99,10 @@
 	}
 	.tec-tickets__email-table-content-event-venue-address-pin-container,
 	td.tec-tickets__email-table-content-event-venue-address-pin-container {
-		display: inline-block;
-		text-align: center;
+		padding-right: 14px;
+		text-align: left;
 		vertical-align: top;
+		width: 20px;
 	}
 	.tec-tickets__email-table-content-event-venue-address-pin,
 	img.tec-tickets__email-table-content-event-venue-address-pin {
@@ -109,6 +114,61 @@
 	td.tec-tickets__email-table-content-event-venue-address-container {
 		padding: 0;
 		text-align: left;
+	}
+
+	.tec-tickets__email-table-content-event-venue-address-table,
+	table.tec-tickets__email-table-content-event-venue-address-table {
+		border: 0;
+		border-collapse: collapse;
+		border-spacing: 0;
+		margin-bottom: 18px;
+		width: 100%;
+	}
+
+	.tec-tickets__email-table-content-event-venue-phone-icon-container,
+	td.tec-tickets__email-table-content-event-venue-phone-icon-container {
+		padding-right: 14px;
+		text-align: left;
+		vertical-align: top;
+		width: 25px;
+	}
+
+	.tec-tickets__email-table-content-event-venue-phone-icon-image {
+		display: block;
+		height: 24px;
+		width: 25px;
+	}
+
+	.tec-tickets__email-table-content-event-venue-phone-container,
+	td.tec-tickets__email-table-content-event-venue-phone-container {
+		padding: 0;
+	}
+
+	.tec-tickets__email-table-content-event-venue-website-table,
+	table.tec-tickets__email-table-content-event-venue-website-table {
+		border: 0;
+		border-collapse: collapse;
+		border-spacing: 0;
+		width: 100%;
+	}
+
+	.tec-tickets__email-table-content-event-venue-website-icon-container,
+	td.tec-tickets__email-table-content-event-venue-website-icon-container {
+		padding-right: 14px;
+		text-align: left;
+		vertical-align: top;
+		width: 24px;
+	}
+
+	.tec-tickets__email-table-content-event-venue-website-icon-image {
+		display: block;
+		height: 23px;
+		width: 24px;
+	}
+
+	.tec-tickets__email-table-content-event-venue-website-container,
+	td.tec-tickets__email-table-content-event-venue-website-container {
+		padding: 0;
 	}
 </style><style type="text/css">
 	.tec-tickets__email-table-content-event-title-container,
@@ -151,6 +211,8 @@
 		font-weight: 400;
 		letter-spacing: 0px;
 		line-height: 23px;
+		margin: 0;
+		padding: 15px 0 0;
 		text-align: left;
 	}
 	.tec-tickets__email-table-content-event-image,
@@ -192,11 +254,13 @@
 	.tec-tickets__email-table-content-event-venue-address-table-container,
 	td.tec-tickets__email-table-content-event-venue-address-table-container {
 		padding: 12px 0 0 0;
+		vertical-align: top;
 		width: 50%;
 	}
 	.tec-tickets__email-table-content-event-venue-phone-website-container,
 	td.tec-tickets__email-table-content-event-venue-phone-website-container {
-		padding:0;
+		padding: 12px 0 0;
+		vertical-align: top;
 		width: 50%;
 	}
 	.tec-tickets__email-table-content-event-venue-address-table {
@@ -207,9 +271,10 @@
 	}
 	.tec-tickets__email-table-content-event-venue-address-pin-container,
 	td.tec-tickets__email-table-content-event-venue-address-pin-container {
-		display: inline-block;
-		text-align: center;
+		padding-right: 14px;
+		text-align: left;
 		vertical-align: top;
+		width: 20px;
 	}
 	.tec-tickets__email-table-content-event-venue-address-pin,
 	img.tec-tickets__email-table-content-event-venue-address-pin {
@@ -221,6 +286,61 @@
 	td.tec-tickets__email-table-content-event-venue-address-container {
 		padding: 0;
 		text-align: left;
+	}
+
+	.tec-tickets__email-table-content-event-venue-address-table,
+	table.tec-tickets__email-table-content-event-venue-address-table {
+		border: 0;
+		border-collapse: collapse;
+		border-spacing: 0;
+		margin-bottom: 18px;
+		width: 100%;
+	}
+
+	.tec-tickets__email-table-content-event-venue-phone-icon-container,
+	td.tec-tickets__email-table-content-event-venue-phone-icon-container {
+		padding-right: 14px;
+		text-align: left;
+		vertical-align: top;
+		width: 25px;
+	}
+
+	.tec-tickets__email-table-content-event-venue-phone-icon-image {
+		display: block;
+		height: 24px;
+		width: 25px;
+	}
+
+	.tec-tickets__email-table-content-event-venue-phone-container,
+	td.tec-tickets__email-table-content-event-venue-phone-container {
+		padding: 0;
+	}
+
+	.tec-tickets__email-table-content-event-venue-website-table,
+	table.tec-tickets__email-table-content-event-venue-website-table {
+		border: 0;
+		border-collapse: collapse;
+		border-spacing: 0;
+		width: 100%;
+	}
+
+	.tec-tickets__email-table-content-event-venue-website-icon-container,
+	td.tec-tickets__email-table-content-event-venue-website-icon-container {
+		padding-right: 14px;
+		text-align: left;
+		vertical-align: top;
+		width: 24px;
+	}
+
+	.tec-tickets__email-table-content-event-venue-website-icon-image {
+		display: block;
+		height: 23px;
+		width: 24px;
+	}
+
+	.tec-tickets__email-table-content-event-venue-website-container,
+	td.tec-tickets__email-table-content-event-venue-website-container {
+		padding: 0;
 	}
 </style><style type="text/css">
 	body {
@@ -572,7 +692,7 @@
 		<table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;">
 						<tr>
 	<td style="padding:10px 0px 0px 0px;text-align:right;color:#000000;" align="right">
-		Ticket powered by <a href="#" style="color:#000000">Event Tickets</a>	</td>
+		Powered by <a href="https://evnt.is/et-in-app-email-credit" style="color:#000000">Event Tickets</a>	</td>
 </tr>
 		</table>
 	</td>
