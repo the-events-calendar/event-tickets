@@ -117,8 +117,10 @@ class Tribe__Tickets__Commerce__Orders_Tabbed_View {
 
 		// Check $page_type to confirm if we are on Order or Attendees page.
 		if ( $page_type === 'tickets-orders' ) {
+			// Translators: %1$s: the post/event title, %2$d: the post/event ID.
 			$title = _x( 'Orders for: %1$s [#%2$d]', 'orders report screen heading', 'event-tickets' );
 		} else {
+			// Translators: %1$s: the post/event title, %2$d: the post/event ID.
 			$title = _x( 'Attendees for: %1$s [#%2$d]', 'attendees report screen heading', 'event-tickets' );
 		}
 
