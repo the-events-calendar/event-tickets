@@ -183,6 +183,11 @@ tribe.tickets.emails = {};
 
 			context.arFields = arFields;
 
+			const usingTicketEmail = $document
+				.find( obj.selectors.formRsvpUsingTicketEmail ).is( ':checked' );
+
+			context.useTicketEmail = usingTicketEmail;
+
 			let addContent = '';
 
 			if (

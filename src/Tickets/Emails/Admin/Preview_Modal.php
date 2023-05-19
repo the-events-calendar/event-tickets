@@ -240,8 +240,9 @@ class Preview_Modal {
 			$preview_context['add_qr_codes'] = tribe_is_truthy( $add_qr_codes );
 		}
 
-		$preview_context['add_event_links'] = tribe_is_truthy( Arr::get( $vars, 'eventLinks', '' ) );
-		$preview_context['add_ar_fields']   = tribe_is_truthy( Arr::get( $vars, 'arFields', '' ) );
+		$preview_context['add_event_links']    = tribe_is_truthy( Arr::get( $vars, 'eventLinks', '' ) );
+		$preview_context['add_ar_fields']      = tribe_is_truthy( Arr::get( $vars, 'arFields', '' ) );
+		$preview_context['using_ticket_email'] = tribe_is_truthy( Arr::get( $vars, 'useTicketEmail', '' ) );
 
 		$current_email = Arr::get( $vars, 'currentEmail', '' );
 
