@@ -221,6 +221,7 @@ tribe.tickets.emails = {};
 			let footerContent = '';
 
 			if (
+				tinyMCE.length &&
 				tinyMCE.editors.length &&
 				tinyMCE.editors[ obj.selectors.formFooterContent ] !== typeof 'undefined'
 			) {
@@ -229,8 +230,10 @@ tribe.tickets.emails = {};
 
 			context.footerContent = footerContent;
 
-			// If we're in the main Emails settings, we show the event links.
+			// If we're in the main Emails settings, we show the all options.
 			context.eventLinks = true;
+			context.qrCodes = true;
+			context.arFields = true;
 		}
 
 		return context;
