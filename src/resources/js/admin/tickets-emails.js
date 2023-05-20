@@ -47,6 +47,7 @@ tribe.tickets.emails = {};
 		formFooterCredit: 'tec-tickets-emails-footer-credit',
 		formQrCodes: 'tec-tickets-emails-ticket-include-qr-codes',
 		formRsvpUsingTicketEmail: 'input[name=tec-tickets-emails-rsvp-use-ticket-email]',
+		formPreviewButton: 'button[name=tec-tickets-emails-preview]',
 	};
 
 	/**
@@ -268,12 +269,14 @@ tribe.tickets.emails = {};
 		if ( $rsvpFields.length ) {
 			const $regularFields = $rsvpFields.slice(2);
 			const $useTicketEmail = $( event.target );
-			if ( $useTicketEmail.is(':checked')) {
+			if ( $useTicketEmail.is(':checked') ) {
 				$regularFields.hide();
 			} else {
 				$regularFields.show();
 			}
 		}
+		// toggle the preview button state to inverse of current state.
+		$document.find( obj.selectors.formPreviewButton ).prop( 'disabled', function( i, v ) { return !v; });
 	};
 
 	/**
@@ -287,7 +290,6 @@ tribe.tickets.emails = {};
 			return;
 		}
 		$useTicketEmail.on( 'change', obj.toggleRsvpFields );
-		$useTicketEmail.trigger( 'change' );
 	};
 
 	/**
