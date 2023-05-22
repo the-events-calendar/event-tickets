@@ -27,7 +27,10 @@
         "label": "Use Ticket Email",
         "tooltip": "Use the ticket email settings and template.",
         "default": true,
-        "validation_type": "boolean"
+        "validation_type": "boolean",
+        "attributes": {
+            "id": "tec-tickets-emails-rsvp-use-ticket-email"
+        }
     },
     "4": {
         "type": "html",
