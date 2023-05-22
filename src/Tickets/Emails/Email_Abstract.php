@@ -574,7 +574,7 @@ abstract class Email_Abstract {
 	 */
 	public function get_additional_content(): string {
 		$option_key = $this->get_option_key( 'additional-content' );
-		$content    = tribe_get_option( $option_key, $this->get_default_additional_content() );
+		$content    = wp_unslash( tribe_get_option( $option_key, $this->get_default_additional_content() ) );
 
 		// Convert linebreaks into paragraphs.
 		$content = wpautop( $content );

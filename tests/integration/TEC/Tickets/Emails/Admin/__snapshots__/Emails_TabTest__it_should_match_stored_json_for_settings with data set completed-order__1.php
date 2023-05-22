@@ -45,7 +45,7 @@
         "size": "large",
         "validation_callback": "is_string"
     },
-    "tec-tickets-emails-completed-order-add-content": {
+    "tec-tickets-emails-completed-order-additional-content": {
         "type": "wysiwyg",
         "label": "Additional content",
         "default": "",

@@ -38,7 +38,7 @@
         "size": "large",
         "validation_callback": "is_string"
     },
-    "tec-tickets-emails-purchase-receipt-add-content": {
+    "tec-tickets-emails-purchase-receipt-additional-content": {
         "type": "wysiwyg",
         "label": "Additional content",
         "default": "",

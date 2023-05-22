@@ -3,7 +3,7 @@
  * Event Tickets Emails: Main template > Body > Additional Content.
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/emails/template-parts/body/additional-content.php
+ * [your-theme]/tribe/tickets/emails/template-parts/body/w.php
  *
  * See more documentation about our views templating system.
  *

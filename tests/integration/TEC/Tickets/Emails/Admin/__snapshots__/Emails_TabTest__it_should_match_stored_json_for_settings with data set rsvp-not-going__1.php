@@ -38,7 +38,7 @@
         "size": "large",
         "validation_callback": "is_string"
     },
-    "tec-tickets-emails-rsvp-not-going-add-content": {
+    "tec-tickets-emails-rsvp-not-going-additional-content": {
         "type": "wysiwyg",
         "label": "Additional content",
         "default": "",

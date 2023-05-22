@@ -653,8 +653,8 @@
 		padding-bottom: 40px;
 	}
 
-	.tec-tickets__email-table-content-add-content-container,
-	td.tec-tickets__email-table-content-add-content-container {
+	.tec-tickets__email-table-content-additional-content-container,
+	td.tec-tickets__email-table-content-additional-content-container {
 		padding-bottom: 40px;
 	}
 </style>
@@ -680,10 +680,12 @@
 			You confirmed you will not be attending		</h1>
 	</td>
 </tr>
+
 <tr>
 	<td>
 		Thank you for confirming that you will not be attending.	</td>
 </tr>
+
 					</table>
 				</td>
 			</tr>
