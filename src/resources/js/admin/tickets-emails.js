@@ -46,8 +46,6 @@ tribe.tickets.emails = {};
 		formFooterContent: 'tec-tickets-emails-footer-content',
 		formFooterCredit: 'tec-tickets-emails-footer-credit',
 		formQrCodes: 'tec-tickets-emails-ticket-include-qr-codes',
-		formRsvpUsingTicketEmail: 'input[name=tec-tickets-emails-rsvp-use-ticket-email]',
-		formPreviewButton: 'button[name=tec-tickets-emails-preview]',
 	};
 
 	/**
@@ -185,7 +183,7 @@ tribe.tickets.emails = {};
 			context.arFields = arFields;
 
 			const usingTicketEmail = $document
-				.find( obj.selectors.formRsvpUsingTicketEmail ).is( ':checked' );
+				.find( 'input[name=tec-tickets-emails-rsvp-use-ticket-email]' ).is( ':checked' );
 
 			context.useTicketEmail = usingTicketEmail;
 
