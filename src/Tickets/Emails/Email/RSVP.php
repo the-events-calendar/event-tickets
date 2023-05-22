@@ -162,10 +162,10 @@ class RSVP extends Email_Abstract {
 				'default'             => $this->get_default_subject(),
 				'placeholder'         => $this->get_default_subject(),
 				'size'                => 'large',
-				'validation_callback' => 'is_string',
+				'validation_type'     => 'textarea',
 				'fieldset_attributes' => [
-					'data-depends'              => '#' . $this->get_option_key( 'use-ticket-email' ),
-					'data-condition-is-checked' => true,
+					'data-depends'                  => '#' . $this->get_option_key( 'use-ticket-email' ),
+					'data-condition-is-not-checked' => true,
 				],
 				'class'               => 'tribe-dependent',
 			],
@@ -175,11 +175,12 @@ class RSVP extends Email_Abstract {
 				'default'             => $this->get_default_heading(),
 				'placeholder'         => $this->get_default_heading(),
 				'size'                => 'large',
-				'validation_callback' => 'is_string',
+				'validation_type'     => 'textarea',
 				'fieldset_attributes' => [
-					'data-depends'              => '#' . $this->get_option_key( 'use-ticket-email' ),
-					'data-condition-is-checked' => true,
+					'data-depends'                  => '#' . $this->get_option_key( 'use-ticket-email' ),
+					'data-condition-is-not-checked' => true,
 				],
+				'class'               => 'tribe-dependent',
 			],
 			$this->get_option_key( 'add-content' ) => [
 				'type'                => 'wysiwyg',
@@ -204,9 +205,10 @@ class RSVP extends Email_Abstract {
 					],
 				],
 				'fieldset_attributes' => [
-					'data-depends'              => '#' . $this->get_option_key( 'use-ticket-email' ),
-					'data-condition-is-checked' => true,
+					'data-depends'                  => '#' . $this->get_option_key( 'use-ticket-email' ),
+					'data-condition-is-not-checked' => true,
 				],
+				'class'               => 'tribe-dependent',
 			],
 		];
 
