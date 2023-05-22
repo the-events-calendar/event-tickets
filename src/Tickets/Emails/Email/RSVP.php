@@ -155,10 +155,6 @@ class RSVP extends Email_Abstract {
 			],
 		];
 
-		if ( $this->is_using_ticket_email_settings() ) {
-			return $settings;
-		}
-
 		$add_settings = [
 			$this->get_option_key( 'subject' ) => [
 				'type'                => 'text',
