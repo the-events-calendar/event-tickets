@@ -29,11 +29,11 @@ class OrdersTest extends WPTestCase {
 	 *
 	 * @param string $eventTitle
 	 */
-	public function get_title_follows_format( string $eventTitle ) {
-		$event_id = $this->create_event_with_tickets_and_attendees( $eventTitle, 10 );
+	public function get_title_follows_format( string $event_title, int $event_id ) {
+		$event_id = $this->create_event_with_tickets_and_attendees( $event_title, 10 );
 
 		$this->orders = new Orders();
-		$expected = "Orders for: {$eventTitle} [#{$event_id}]";
+		$expected = "Orders for: {$event_title} [#{$event_id}]";
 		$actual = $this->orders->get_title( $event_id );
 		$this->assertSame( $expected, $actual );
 	}
@@ -42,10 +42,10 @@ class OrdersTest extends WPTestCase {
 	 * Data provider for different event titles.
 	 */
 	public function event_title_data_provider(): \Generator {
-		yield 'Empty Title' => [ '' ];
-		yield 'Empty Event ID' => [ 'Custom Event Title' ];
-		yield 'Event Title with Emoji' => [ 'Event Title with Emoji 😃' ];
-		yield 'Event Title with Chinese' => [ '活動標題中國' ];
+		yield 'Empty Title' => [ '', $this->create_event_with_tickets_and_attendees( '', 10 ) ];
+		yield 'Event with an ID that does not exist' => [ 'Custom Title', 999 ];
+		yield 'Event Title with Emoji' => [ 'Event Title with Emoji 😃', $this->create_event_with_tickets_and_attendees( 'Event Title with Emoji 😃', 10 ) ];
+		yield 'Event Title with Chinese' => [ '活動標題中國', $this->create_event_with_tickets_and_attendees( '活動標題中國', 10 ) ];
 	}
 
 	/**
@@ -56,16 +56,16 @@ class OrdersTest extends WPTestCase {
 	 *
 	 * @return int Event ID
 	 */
-	protected function create_event_with_tickets_and_attendees( string $eventTitle, int $numTickets ): int {
+	protected function create_event_with_tickets_and_attendees( string $event_title, int $num_tickets ): int {
 		$eventFactory = new Event();
 		$event_id = $eventFactory->create();
 
 		$eventFactory->update_object( $event_id, [
-			'post_title' => $eventTitle,
+			'post_title' => $event_title,
 		] );
 
-		$ticket_a_id = $this->create_tc_ticket( $event_id, $numTickets );
-		$this->create_many_attendees_for_ticket( $numTickets, $ticket_a_id, $event_id );
+		$ticket_a_id = $this->create_tc_ticket( $event_id, $num_tickets );
+		$this->create_many_attendees_for_ticket( $num_tickets, $ticket_a_id, $event_id );
 
 		return $event_id;
 	}
