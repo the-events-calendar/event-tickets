@@ -481,8 +481,8 @@
 		padding-bottom: 40px;
 	}
 
-	.tec-tickets__email-table-content-add-content-container,
-	td.tec-tickets__email-table-content-add-content-container {
+	.tec-tickets__email-table-content-additional-content-container,
+	td.tec-tickets__email-table-content-additional-content-container {
 		padding-bottom: 40px;
 	}
 </style>
