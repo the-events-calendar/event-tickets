@@ -187,9 +187,9 @@ tribe.tickets.emails = {};
 			if (
 				tinyMCE.length &&
 				tinyMCE.editors.length &&
-				tinyMCE.editors[ currentEmailOptionPrefix + '-add-content' ] !== typeof 'undefined'
+				tinyMCE.editors[ currentEmailOptionPrefix + '-additional-content' ] !== typeof 'undefined'
 			) {
-				addContent = tinyMCE.editors[ currentEmailOptionPrefix + '-add-content' ].getContent();
+				addContent = tinyMCE.editors[ currentEmailOptionPrefix + '-additional-content' ].getContent();
 			}
 			context.addContent = addContent;
 		} else {

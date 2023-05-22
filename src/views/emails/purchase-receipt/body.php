@@ -39,4 +39,4 @@ $this->template( 'template-parts/body/order/payment-info' );
 
 $this->template( 'template-parts/body/order/attendees-table' );
 
-$this->template( 'template-parts/body/add-content' );
+$this->template( 'template-parts/body/additional-content' );
