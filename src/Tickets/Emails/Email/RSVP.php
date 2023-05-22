@@ -149,6 +149,9 @@ class RSVP extends Email_Abstract {
 				'tooltip'             => esc_html__( 'Use the ticket email settings and template.', 'event-tickets' ),
 				'default'             => true,
 				'validation_type'     => 'boolean',
+				'attributes'          => [
+					'id' => $this->get_option_key( 'use-ticket-email' ),
+				],
 			],
 		];
 
@@ -164,6 +167,11 @@ class RSVP extends Email_Abstract {
 				'placeholder'         => $this->get_default_subject(),
 				'size'                => 'large',
 				'validation_callback' => 'is_string',
+				'fieldset_attributes' => [
+					'data-depends'              => '#' . $this->get_option_key( 'use-ticket-email' ),
+					'data-condition-is-checked' => true,
+				],
+				'class'               => 'tribe-dependent',
 			],
 			$this->get_option_key( 'heading' ) => [
 				'type'                => 'text',
@@ -172,6 +180,10 @@ class RSVP extends Email_Abstract {
 				'placeholder'         => $this->get_default_heading(),
 				'size'                => 'large',
 				'validation_callback' => 'is_string',
+				'fieldset_attributes' => [
+					'data-depends'              => '#' . $this->get_option_key( 'use-ticket-email' ),
+					'data-condition-is-checked' => true,
+				],
 			],
 			$this->get_option_key( 'add-content' ) => [
 				'type'                => 'wysiwyg',
@@ -194,6 +206,10 @@ class RSVP extends Email_Abstract {
 						'alignright',
 						'link',
 					],
+				],
+				'fieldset_attributes' => [
+					'data-depends'              => '#' . $this->get_option_key( 'use-ticket-email' ),
+					'data-condition-is-checked' => true,
 				],
 			],
 		];
