@@ -258,39 +258,6 @@ tribe.tickets.emails = {};
 			obj.modalOpen,
 		);
 	};
-	/**
-	 * Toggle the visibiliy to RSVP email fields depending on settings.
-	 *
-	 * @since TBD
-	 * @param {Event} event The event object.
-	 */
-	obj.toggleRsvpFields = function( event ) {
-		const $rsvpFields = $document.find('fieldset[id*="tec-tickets-emails-rsvp"]');
-		if ( $rsvpFields.length ) {
-			const $regularFields = $rsvpFields.slice(2);
-			const $useTicketEmail = $( event.target );
-			if ( $useTicketEmail.is(':checked') ) {
-				$regularFields.hide();
-			} else {
-				$regularFields.show();
-			}
-		}
-		// toggle the preview button state to inverse of current state.
-		$document.find( obj.selectors.formPreviewButton ).prop( 'disabled', function( i, v ) { return !v; });
-	};
-
-	/**
-	 * Binds the event handler for toggling RSVP fields.
-	 *
-	 * @since TBD
-	 */
-	obj.bindToggleRsvpFields = function() {
-		const $useTicketEmail = $document.find( obj.selectors.formRsvpUsingTicketEmail );
-		if ( ! $useTicketEmail.length ) {
-			return;
-		}
-		$useTicketEmail.on( 'change', obj.toggleRsvpFields );
-	};
 
 	/**
 	 * Handles the initialization of the scripts when Document is ready.
@@ -301,7 +268,6 @@ tribe.tickets.emails = {};
 	obj.ready = function() {
 		obj.bindModalOpen();
 		obj.bindModalClose();
-		obj.bindToggleRsvpFields();
 	};
 
 	// Configure on document ready.
