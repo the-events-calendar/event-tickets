@@ -167,13 +167,13 @@ class Emails_Tab {
 		if ( tribe_installed_before( \Tribe__Tickets__Main::class, '5.6.0' ) ) {
 			$description_text = sprintf(
 				// Translators: %s Link to knowledgebase article.
-				esc_html__( 'Customize your customer communications when tickets are purchased, RSVPs are submitted, and for Tickets Commerce order notifications. Enabling Tickets Emails will overwrite any manual customization that has been done to our previous email templates. Learn More about Event Tickets and Tickets Commerce communications in our %s.', 'event-tickets' ),
+				esc_html__( 'Customize your customer communications when tickets are purchased, RSVPs are submitted, and for Tickets Commerce order notifications. Enabling Tickets Emails will overwrite any manual customization that has been done to our previous email templates. Learn more about Event Tickets and Tickets Commerce communications in our %s.', 'event-tickets' ),
 				$kb_link_html
 			);
 		} else {
 			$description_text = sprintf(
 				// Translators: %s Link to knowledgebase article.
-				esc_html__( 'Customize your customer communications when tickets are purchased, RSVPs are submitted, and for Tickets Commerce order notifications. Learn More about Event Tickets and Tickets Commerce communications in our %s.', 'event-tickets' ),
+				esc_html__( 'Customize your customer communications when tickets are purchased, RSVPs are submitted, and for Tickets Commerce order notifications. Learn more about Event Tickets and Tickets Commerce communications in our %s.', 'event-tickets' ),
 				$kb_link_html
 			);
 		}
