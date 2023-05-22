@@ -241,6 +241,7 @@ class Preview_Modal {
 		}
 
 		$preview_context['add_event_links'] = tribe_is_truthy( Arr::get( $vars, 'eventLinks', '' ) );
+		$preview_context['add_ar_fields']   = tribe_is_truthy( Arr::get( $vars, 'arFields', '' ) );
 
 		$current_email = Arr::get( $vars, 'currentEmail', '' );
 
