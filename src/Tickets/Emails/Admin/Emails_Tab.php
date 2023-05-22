@@ -145,7 +145,6 @@ class Emails_Tab {
 	 * @return array[]
 	 */
 	public function get_fields(): array {
-
 		// Check to see if we're editing an email, first.
 		if ( $this->is_editing_email() ) {
 			return $this->get_email_settings();
@@ -161,14 +160,24 @@ class Emails_Tab {
 			'html' => '<h2 class="tec-tickets__admin-settings-tab-heading">' . esc_html__( 'Tickets Emails', 'event-tickets' ) . '</h2>',
 		];
 		$kb_link_html = sprintf( '<a href="%s" target="_blank" rel="nofollow">%s</a>',
-			'https://www.theeventscalendar.com', // @todo Replace with correct KB URL.
+			'https://evnt.is/event-tickets-emails',
 			esc_html__( 'Knowledgebase', 'event-tickets' )
 		);
-		$description_text = sprintf(
-			// Translators: %s Link to knowledgebase article.
-			esc_html__( 'Customize your customer communications when tickets are purchased, RSVPs are submitted, and for Tickets Commerce order notifications.  Enabling Tickets Emails will overwrite any manual customization that has been done to the email templates within your theme. Learn More about Tickets Commerce communications in our %s.', 'event-tickets' ),
-			$kb_link_html
-		);
+
+		if ( tribe_installed_before( \Tribe__Tickets__Main::class, '5.6.0' ) ) {
+			$description_text = sprintf(
+				// Translators: %s Link to knowledgebase article.
+				esc_html__( 'Customize your customer communications when tickets are purchased, RSVPs are submitted, and for Tickets Commerce order notifications. Enabling Tickets Emails will overwrite any manual customization that has been done to our previous email templates. Learn more about Event Tickets and Tickets Commerce communications in our %s.', 'event-tickets' ),
+				$kb_link_html
+			);
+		} else {
+			$description_text = sprintf(
+				// Translators: %s Link to knowledgebase article.
+				esc_html__( 'Customize your customer communications when tickets are purchased, RSVPs are submitted, and for Tickets Commerce order notifications. Learn more about Event Tickets and Tickets Commerce communications in our %s.', 'event-tickets' ),
+				$kb_link_html
+			);
+		}
+
 		$fields['tribe-tickets-emails-description'] = [
 			'type' => 'html',
 			'html' => sprintf( '<p>%s</p>', $description_text ),
@@ -195,7 +204,7 @@ class Emails_Tab {
 	 */
 	public function is_editing_email( ?Email_Abstract $email = null ): bool {
 		// Get `section` query string from URL.
-		$editing_email  = tribe_get_request_var( 'section' );
+		$editing_email = tribe_get_request_var( 'section' );
 
 		// If email wasn't passed, just return whether the string is empty.
 		if ( empty( $email ) ) {
@@ -214,8 +223,8 @@ class Emails_Tab {
 	 * @return array Settings array
 	 */
 	public function get_email_settings(): array {
-		$email_id  = tribe_get_request_var( 'section' );
-		$email = tribe( Email_Handler::class )->get_email_by_id( $email_id );
+		$email_id = tribe_get_request_var( 'section' );
+		$email    = tribe( Email_Handler::class )->get_email_by_id( $email_id );
 
 		$back_link = [
 			[
