@@ -20,7 +20,6 @@ class WarningsTest extends \Codeception\TestCase\WPTestCase {
 		$warnings->render_notice( $message, $type, $depends_on, $condition, $additionalClasses );
 
 		$rendered = ob_get_clean();
-		codecept_debug( $rendered );
 		$this->assertMatchesSnapshot( $rendered );
 	}
 

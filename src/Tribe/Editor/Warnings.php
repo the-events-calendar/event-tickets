@@ -139,7 +139,8 @@ class Warnings {
 
 		$classes = [
 			'ticket-editor-notice',
-			$type . ' ' . $has_dependency,
+			$type,
+			$has_dependency
 		];
 		$classes = array_merge( $classes, $additionalClasses );
 
