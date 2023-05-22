@@ -160,7 +160,7 @@ class Ticket extends Email_Abstract {
 				'size'                => 'large',
 				'validation_callback' => 'is_string',
 			],
-			$this->get_option_key( 'add-content' ) => [
+			$this->get_option_key( 'additional-content' ) => [
 				'type'                => 'wysiwyg',
 				'label'               => esc_html__( 'Additional content', 'event-tickets' ),
 				'default'             => '',

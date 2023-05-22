@@ -28,8 +28,11 @@
 $this->template( 'template-parts/body/title' );
 
 ?>
+
 <tr>
 	<td>
 		<?php echo esc_html( __( 'Thank you for confirming that you will not be attending.', 'event-tickets' ) ); ?>
 	</td>
 </tr>
+
+<?php $this->template( 'template-parts/body/additional-content' ); ?>

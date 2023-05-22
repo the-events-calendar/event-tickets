@@ -573,7 +573,7 @@ abstract class Email_Abstract {
 	 * @return string The email heading.
 	 */
 	public function get_additional_content(): string {
-		$option_key = $this->get_option_key( 'add-content' );
+		$option_key = $this->get_option_key( 'additional-content' );
 		$content    = tribe_get_option( $option_key, $this->get_default_additional_content() );
 
 		// Convert linebreaks into paragraphs.
