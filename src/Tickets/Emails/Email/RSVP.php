@@ -182,7 +182,7 @@ class RSVP extends Email_Abstract {
 				],
 				'class'               => 'tribe-dependent',
 			],
-			$this->get_option_key( 'add-content' ) => [
+			$this->get_option_key( 'additional-content' ) => [
 				'type'                => 'wysiwyg',
 				'label'               => esc_html__( 'Additional content', 'event-tickets' ),
 				'default'             => '',

@@ -3,7 +3,7 @@
  * Event Tickets Emails: Main template > Body > Additional Content.
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/emails/template-parts/body/add-content.php
+ * [your-theme]/tribe/tickets/emails/template-parts/body/additional-content.php
  *
  * See more documentation about our views templating system.
  *
@@ -27,7 +27,7 @@ if ( empty( $additional_content ) ) {
 }
 ?>
 <tr>
-	<td class="tec-tickets__email-table-content-add-content-container">
+	<td class="tec-tickets__email-table-content-additional-content-container">
 		<?php echo wp_kses_post( $additional_content ); ?>
 	</td>
 </tr>

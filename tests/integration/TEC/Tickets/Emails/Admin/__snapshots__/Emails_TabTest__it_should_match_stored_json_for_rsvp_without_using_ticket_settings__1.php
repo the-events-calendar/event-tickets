@@ -57,7 +57,7 @@
             "data-condition-is-checked": true
         }
     },
-    "tec-tickets-emails-rsvp-add-content": {
+    "tec-tickets-emails-rsvp-additional-content": {
         "type": "wysiwyg",
         "label": "Additional content",
         "default": "",

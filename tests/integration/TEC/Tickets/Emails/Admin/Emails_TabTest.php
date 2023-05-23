@@ -83,6 +83,9 @@ class Emails_TabTest extends WPTestCase {
 	public function it_should_match_stored_json_for_general_settings(): void {
 		$tab = new Emails_Tab;
 
+		// Force a certain version set;
+		tribe_update_option( 'previous_event_tickets_versions', [] );
+
 		$settings = $tab->get_fields();
 		$json_encoded_settings = wp_json_encode( $settings, JSON_PRETTY_PRINT );
 
