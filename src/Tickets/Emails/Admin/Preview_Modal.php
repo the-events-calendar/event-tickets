@@ -246,37 +246,26 @@ class Preview_Modal {
 
 		$current_email = Arr::get( $vars, 'currentEmail', '' );
 
-		$html = '';
+		// Show Ticket email by default.
+		$email_class = tribe( Ticket::class );
 
-		if ( ! empty( $current_email ) ) {
+		// Select email class to preview, if not using ticket email.
+		if ( ! $preview_context['using_ticket_email'] && ! empty( $current_email ) ) {
 			$email = tribe( Email_Handler::class )->get_email_by_id( $current_email );
-
 			if ( ! empty( $email ) ) {
 				$email_class = tribe( get_class( $email ) );
-				$email_class->set_placeholders( Preview_Data::get_placeholders() );
-
-				// @todo @bordoni this is extremely temporary, we will move to use data internally and directly.
-				foreach ( $email_class->get_preview_context( $preview_context ) as $key => $template_var_value ) {
-					$email_class->set( $key, $template_var_value );
-				}
-
-				$html = $email_class->get_content();
 			}
-
-		} else {
-			// Show Ticket email by default.
-			$email_class = tribe( Ticket::class );
-			$email_class->set_placeholders( Preview_Data::get_placeholders() );
-
-			// @todo @bordoni this is extremely temporary, we will move to use data internally and directly.
-			foreach ( $email_class->get_preview_context( $preview_context ) as $key => $template_var_value ) {
-				$email_class->set( $key, $template_var_value );
-			}
-			$html = $email_class->get_content();
 		}
 
-		$html .= $tickets_template->template( 'v2/components/loader/loader', [], false );
+		$email_class->set_placeholders( Preview_Data::get_placeholders() );
 
+		// @todo @bordoni this is extremely temporary, we will move to use data internally and directly.
+		foreach ( $email_class->get_preview_context( $preview_context ) as $key => $template_var_value ) {
+			$email_class->set( $key, $template_var_value );
+		}
+
+		$html  = $email_class->get_content();
+		$html .= $tickets_template->template( 'v2/components/loader/loader', [], false );
 		return $html;
 	}
 }
