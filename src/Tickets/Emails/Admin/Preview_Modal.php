@@ -242,7 +242,11 @@ class Preview_Modal {
 
 		$preview_context['add_event_links']    = tribe_is_truthy( Arr::get( $vars, 'eventLinks', '' ) );
 		$preview_context['add_ar_fields']      = tribe_is_truthy( Arr::get( $vars, 'arFields', '' ) );
-		$preview_context['using_ticket_email'] = tribe_is_truthy( Arr::get( $vars, 'useTicketEmail', '' ) );
+
+		$rsvp_using_ticket_email               = tribe_is_truthy( Arr::get( $vars, 'useTicketEmail', '' ) );
+		if ( $rsvp_using_ticket_email ) {
+			$preview_context['using_ticket_email'] = true;
+		}
 
 		$current_email = Arr::get( $vars, 'currentEmail', '' );
 
@@ -250,7 +254,7 @@ class Preview_Modal {
 		$email_class = tribe( Ticket::class );
 
 		// Select email class to preview, if not using ticket email.
-		if ( ! $preview_context['using_ticket_email'] && ! empty( $current_email ) ) {
+		if ( ! $rsvp_using_ticket_email && ! empty( $current_email ) ) {
 			$email = tribe( Email_Handler::class )->get_email_by_id( $current_email );
 			if ( ! empty( $email ) ) {
 				$email_class = tribe( get_class( $email ) );
