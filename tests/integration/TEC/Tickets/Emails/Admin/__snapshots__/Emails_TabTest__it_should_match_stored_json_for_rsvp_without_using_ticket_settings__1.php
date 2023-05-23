@@ -38,10 +38,10 @@
         "default": "Your tickets from {site_title}",
         "placeholder": "Your tickets from {site_title}",
         "size": "large",
-        "validation_callback": "is_string",
+        "validation_type": "textarea",
         "fieldset_attributes": {
             "data-depends": "#tec-tickets-emails-rsvp-use-ticket-email",
-            "data-condition-is-checked": true
+            "data-condition-is-not-checked": true
         },
         "class": "tribe-dependent"
     },
@@ -51,11 +51,12 @@
         "default": "Here&#039;s your tickets, {attendee_name}!",
         "placeholder": "Here&#039;s your tickets, {attendee_name}!",
         "size": "large",
-        "validation_callback": "is_string",
+        "validation_type": "textarea",
         "fieldset_attributes": {
             "data-depends": "#tec-tickets-emails-rsvp-use-ticket-email",
-            "data-condition-is-checked": true
-        }
+            "data-condition-is-not-checked": true
+        },
+        "class": "tribe-dependent"
     },
     "tec-tickets-emails-rsvp-additional-content": {
         "type": "wysiwyg",
@@ -81,8 +82,9 @@
         },
         "fieldset_attributes": {
             "data-depends": "#tec-tickets-emails-rsvp-use-ticket-email",
-            "data-condition-is-checked": true
-        }
+            "data-condition-is-not-checked": true
+        },
+        "class": "tribe-dependent"
     },
     "tec-tickets-emails-rsvp-add-event-links": {
         "type": "checkbox_bool",
@@ -92,7 +94,7 @@
         "validation_type": "boolean",
         "fieldset_attributes": {
             "data-depends": "#tec-tickets-emails-rsvp-use-ticket-email",
-            "data-condition-is-checked": true
+            "data-condition-is-not-checked": true
         }
     },
     "tec-tickets-emails-rsvp-add-event-ics": {
@@ -103,7 +105,7 @@
         "validation_type": "boolean",
         "fieldset_attributes": {
             "data-depends": "#tec-tickets-emails-rsvp-use-ticket-email",
-            "data-condition-is-checked": true
+            "data-condition-is-not-checked": true
         }
     },
     "4": {
