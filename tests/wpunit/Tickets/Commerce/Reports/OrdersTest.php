@@ -30,9 +30,6 @@ class OrdersTest extends WPTestCase {
 	 * @param string $eventTitle
 	 */
 	public function get_title_follows_format( string $event_title, int $event_id ) {
-
-		$this->markTestSkipped('Testing');
-
 		$event_id = $this->create_event_with_tickets_and_attendees( $event_title, 10 );
 
 		$this->orders = new Orders();
