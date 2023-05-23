@@ -113,6 +113,22 @@ class SingleTicketCest extends BaseRestCest {
 				'sold'    => 7,
 				'pending' => 0,
 			],
+			'ticket'            => [
+				'id'              => $ticket_id,
+				'title'           => $ticket_post->post_title,
+				'description'     => $ticket_post->post_excerpt,
+				'raw_price'       => '0',
+				'formatted_price' => '0.00',
+				'currency_config' => [
+					"symbol"             => '&#x24;',
+					"placement"          => 'prefix',
+					"decimal_point"      => '.',
+					"thousands_sep"      => ',',
+					"number_of_decimals" => 2,
+				],
+				'start_sale'      => trim( $repository->get_ticket_start_date( $ticket_id ) ),
+				'end_sale'        => trim( $repository->get_ticket_end_date( $ticket_id ) ),
+			],
 		];
 
 		$response = json_decode( $I->grabResponse(), true );
@@ -170,6 +186,22 @@ class SingleTicketCest extends BaseRestCest {
 			'optout'            => false,
 			'is_subscribed'     => false,
 			'is_purchaser'      => true,
+			'ticket'            => [
+				'id'              => $ticket_id,
+				'title'           => $ticket_post->post_title,
+				'description'     => $ticket_post->post_excerpt,
+				'raw_price'       => '',
+				'formatted_price' => '0.00',
+				'currency_config' => [
+					"symbol"             => '&#x24;',
+					"placement"          => 'prefix',
+					"decimal_point"      => '.',
+					"thousands_sep"      => ',',
+					"number_of_decimals" => 2,
+				],
+				'start_sale'      => explode( ' ', trim( $repository->get_ticket_start_date( $ticket_id ) ) )[0],
+				'end_sale'        => explode( ' ', trim( $repository->get_ticket_end_date( $ticket_id ) ) )[0],
+			],
 		];
 
 		$I->assertEquals( $expected_first_attendee, $first_attendee_from_response );
@@ -299,6 +331,22 @@ class SingleTicketCest extends BaseRestCest {
 			'rest_url'          => $this->attendees_url . '/' . $first_attendee_id,
 			'title'             => $first_attendee_object['holder_name'],
 			'optout'            => false,
+			'ticket'            => [
+				'id'              => $ticket_id,
+				'title'           => $ticket_post->post_title,
+				'description'     => $ticket_post->post_excerpt,
+				'raw_price'       => '',
+				'formatted_price' => '0.00',
+				'currency_config' => [
+					"symbol"             => '&#x24;',
+					"placement"          => 'prefix',
+					"decimal_point"      => '.',
+					"thousands_sep"      => ',',
+					"number_of_decimals" => 2,
+				],
+				'start_sale'      => explode( ' ', trim( $repository->get_ticket_start_date( $ticket_id ) ) )[0],
+				'end_sale'        => explode( ' ', trim( $repository->get_ticket_end_date( $ticket_id ) ) )[0],
+			],
 		];
 		$I->assertEquals( $expected_first_attendee, $first_attendee_from_response );
 	}
@@ -309,7 +357,7 @@ class SingleTicketCest extends BaseRestCest {
 	 * @test
 	 */
 	public function should_return_404_when_trying_to_get_non_existing_post_id( Restv1Tester $I ) {
-		$ticket_rest_url = $this->tickets_url . '/23';
+		$ticket_rest_url = $this->tickets_url . '/346571892312/';
 		$I->sendGET( $ticket_rest_url );
 
 		$I->seeResponseCodeIs( 404 );
