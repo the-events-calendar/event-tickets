@@ -10,6 +10,7 @@
 namespace TEC\Tickets\Site_Health;
 
 use TEC\Common\Site_Health\Info_Section_Abstract;
+use TEC\Common\Site_Health\Factory;
 use Tribe__Events__Main;
 use Tribe__Utils__Array as Arr;
 
@@ -69,6 +70,7 @@ class Info_Section extends Info_Section_Abstract {
 	public function __construct() {
 		$this->label       = esc_html__( 'Event Tickets', 'event-tickets' );
 		$this->description = esc_html__( 'This section contains information on the Events Tickets Plugin.', 'event-tickets' );
+		$this->add_fields();
 	}
 
 	/**
@@ -81,41 +83,60 @@ class Info_Section extends Info_Section_Abstract {
 	 * @return array The debug information to be added to the core information page.
 	 */
 	public function add_fields() {
-		$fields = [
-			'ticket_enabled_post_types' => [
-				'label' => esc_html__( 'Ticket-enabled post types', 'event-tickets' ),
-				'value' => Arr::to_list( array_filter( (array) tribe_get_option( 'ticket-enabled-post-types', [] ) ), ', ' ),
-			],
-			'previous_versions' => [
-				'label' => esc_html__( 'Previous ET versions', 'event-tickets' ),
-				'value' => Arr::to_list( array_filter( (array) tribe_get_option( 'previous_event_tickets_versions', [] ) ), ', ' ),
-			],
-			'ticketed_posts' => [
-				'label' => esc_html__( 'Total ticketed posts', 'event-tickets' ),
-				'value' => tribe( 'tickets.post-repository' )->per_page( -1 )->where( 'has_tickets' )->count(),
-			],
-			'rsvp_posts' => [
-				'label' => esc_html__( 'Total posts with RSVPs', 'event-tickets' ),
-				'value' => tribe( 'tickets.post-repository' )->per_page( -1 )->where( 'has_rsvp' )->count(),
-			],
-		];
+		$this->add_field(
+			Factory::generate_generic_field(
+				'ticket_enabled_post_types',
+				esc_html__( 'Ticket-enabled post types', 'event-tickets' ),
+				Arr::to_list( array_filter( (array) tribe_get_option( 'ticket-enabled-post-types', [] ) ), ', ' ),
+				10
+			)
+		);
+
+		$this->add_field(
+			Factory::generate_generic_field(
+				'previous_versions',
+				esc_html__( 'Previous ET versions', 'event-tickets' ),
+				Arr::to_list( array_filter( (array) tribe_get_option( 'previous_event_tickets_versions', [] ) ), ', ' ),
+				20
+			)
+		);
+
+		$this->add_field(
+			Factory::generate_generic_field(
+				'ticketed_posts',
+				esc_html__( 'Total ticketed posts', 'event-tickets' ),
+				tribe( 'tickets.post-repository' )->per_page( -1 )->where( 'has_tickets' )->count(),
+				30
+			)
+		);
+
+		$this->add_field(
+			Factory::generate_generic_field(
+				'rsvp_posts',
+				esc_html__( 'Total posts with RSVPs', 'event-tickets' ),
+				tribe( 'tickets.post-repository' )->per_page( -1 )->where( 'has_rsvp' )->count(),
+				40
+			)
+		);
 
 		if ( class_exists( 'Tribe__Events__Main' ) ) {
-			$fields[ 'ticketed_events' ] = [
-				'label' => esc_html__( 'Total ticketed events', 'event-tickets' ),
-				'value' => tribe( 'tickets.event-repository' )->per_page( -1 )->where( 'has_tickets' )->count(),
-			];
-			$fields[ 'rsvp_events' ] = [
-				'label' => esc_html__( 'Total events with RSVPs', 'event-tickets' ),
-				'value' => tribe( 'tickets.event-repository' )->per_page( -1 )->where( 'has_rsvp' )->count(),
-			];
-		}
+			$this->add_field(
+				Factory::generate_generic_field(
+					'ticketed_events',
+					esc_html__( 'Total ticketed events', 'event-tickets' ),
+					tribe( 'tickets.event-repository' )->per_page( -1 )->where( 'has_tickets' )->count(),
+					50
+				)
+			);
 
-		return $fields;
+			$this->add_field(
+				Factory::generate_generic_field(
+					'rsvp_events',
+					esc_html__( 'Total events with RSVPs', 'event-tickets' ),
+					tribe( 'tickets.event-repository' )->per_page( -1 )->where( 'has_rsvp' )->count(),
+					60
+				)
+			);
+		}
 	}
 }
-
-/**
-number of ticketed events
-number of RSVP'd events
- */
