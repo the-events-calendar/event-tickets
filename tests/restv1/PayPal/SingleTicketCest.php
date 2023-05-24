@@ -117,6 +117,22 @@ class SingleTicketCest extends BaseRestCest {
 				'pending' => 0,
 			],
 			'suffix'                        => null,
+			'ticket'                        => [
+				'id'              => $ticket_id,
+				'title'           => $ticket_post->post_title,
+				'description'     => $ticket_post->post_excerpt,
+				'raw_price'       => '5',
+				'formatted_price' => '5.00',
+				'currency_config' => [
+					"symbol"             => '&#x24;',
+					"placement"          => 'prefix',
+					"decimal_point"      => '.',
+					"thousands_sep"      => ',',
+					"number_of_decimals" => 2,
+				],
+				'start_sale'      => trim( $repository->get_ticket_start_date( $ticket_id ) ),
+				'end_sale'        => trim( $repository->get_ticket_end_date( $ticket_id ) ),
+			],
 		];
 
 		$response = json_decode( $I->grabResponse(), true );
@@ -187,6 +203,22 @@ class SingleTicketCest extends BaseRestCest {
 			'optout'            => false,
 			'is_subscribed'     => false,
 			'is_purchaser'      => true,
+			'ticket'            => [
+				'id'              => $ticket_id,
+				'title'           => $ticket_post->post_title,
+				'description'     => $ticket_post->post_excerpt,
+				'raw_price'       => '5',
+				'formatted_price' => '5.00',
+				'currency_config' => [
+					"symbol"             => '&#x24;',
+					"placement"          => 'prefix',
+					"decimal_point"      => '.',
+					"thousands_sep"      => ',',
+					"number_of_decimals" => 2,
+				],
+				'start_sale'      => trim( $repository->get_ticket_start_date( $ticket_id ) ),
+				'end_sale'        => trim( $repository->get_ticket_end_date( $ticket_id ) ),
+			],
 		];
 		$I->assertEquals( $expected_first_attendee, $first_attendee_from_response );
 	}
@@ -196,16 +228,16 @@ class SingleTicketCest extends BaseRestCest {
 	 *
 	 * @test
 	 */
-	public function should_hide_private_fields_to_public_queries(Restv1Tester $I) {
-		$post_id                     = $I->havePostInDatabase( [ 'post_content' => '[tribe_attendees_list]' ] );
-		$attendees_count             = 7;
-		$optout_count = 3;
-		$ticket_id                   = $this->create_paypal_ticket_basic( $post_id, 5, [
+	public function should_hide_private_fields_to_public_queries( Restv1Tester $I ) {
+		$post_id         = $I->havePostInDatabase( [ 'post_content' => '[tribe_attendees_list]' ] );
+		$attendees_count = 7;
+		$optout_count    = 3;
+		$ticket_id       = $this->create_paypal_ticket_basic( $post_id, 5, [
 			'meta_input' => [
 				'total_sales' => $attendees_count,
 				'_stock'      => 30 - $attendees_count,
 				'_capacity'   => 30,
-			]
+			],
 		] );
 		// make some attendees optout
 		$opting_in_attendees  = $this->create_many_attendees_for_ticket( $attendees_count - 1 - $optout_count, $ticket_id, $post_id );
@@ -234,7 +266,7 @@ class SingleTicketCest extends BaseRestCest {
 		$image_id = $I->factory()->attachment->create_upload_object( codecept_data_dir( 'images/test-image-1.jpg' ) );
 		update_post_meta( $post_id, $handler->key_image_header, $image_id );
 
-		$ticket_rest_url             = $this->tickets_url . "/{$ticket_id}";
+		$ticket_rest_url = $this->tickets_url . "/{$ticket_id}";
 
 		$I->sendGET( $ticket_rest_url );
 
@@ -250,7 +282,7 @@ class SingleTicketCest extends BaseRestCest {
 
 		$I->assertCount( count( $opting_in_attendees ) + 1, $response_attendees );
 
-		$expectedJson = array(
+		$expectedJson = [
 			'id'                            => $ticket_id,
 			'post_id'                       => $post_id,
 			'global_id'                     => $repository->get_ticket_global_id( $ticket_id ),
@@ -272,7 +304,7 @@ class SingleTicketCest extends BaseRestCest {
 			'available_until_details'       => $repository->get_ticket_end_date( $ticket_id, true ),
 			'capacity'                      => 30,
 			'capacity_details'              => [
-				'available_percentage' => (int)floor( ( 23 / 30 ) * 100 ),
+				'available_percentage' => (int) floor( ( 23 / 30 ) * 100 ),
 				'available'            => 23,
 			],
 			'is_available'                  => true,
@@ -286,13 +318,13 @@ class SingleTicketCest extends BaseRestCest {
 			'supports_attendee_information' => false, //no ET+ installed
 			'price_suffix'                  => null,
 			'iac'                           => 'none',
-		);
+		];
 
 		$I->assertEquals( $expectedJson, $response );
 
 		// @todo - move this to dedicated test when Attendees endpoint is done
 		$attendees_objects            = tribe_tickets_get_ticket_provider( $ticket_id )->get_attendees_by_id( $ticket_id );
-		$first_attendee_object = array_values( array_filter( $attendees_objects, function ( $attendee ) use ( $first_attendee_id ) {
+		$first_attendee_object        = array_values( array_filter( $attendees_objects, function ( $attendee ) use ( $first_attendee_id ) {
 			return $attendee['attendee_id'] === $first_attendee_id;
 		} ) )[0];
 		$first_attendee_from_response = array_values( array_filter( $response_attendees, function ( $attendee ) use ( $first_attendee_id ) {
@@ -317,7 +349,24 @@ class SingleTicketCest extends BaseRestCest {
 			'rest_url'          => $this->attendees_url . '/' . $first_attendee_id,
 			'title'             => $first_attendee_object['holder_name'],
 			'optout'            => false,
+			'ticket'            => [
+				'id'              => $ticket_id,
+				'title'           => $ticket_post->post_title,
+				'description'     => $ticket_post->post_excerpt,
+				'raw_price'       => '5',
+				'formatted_price' => '5.00',
+				'currency_config' => [
+					"symbol"             => '&#x24;',
+					"placement"          => 'prefix',
+					"decimal_point"      => '.',
+					"thousands_sep"      => ',',
+					"number_of_decimals" => 2,
+				],
+				'start_sale'      => trim( $repository->get_ticket_start_date( $ticket_id ) ),
+				'end_sale'        => trim( $repository->get_ticket_end_date( $ticket_id ) ),
+			],
 		];
+
 		$I->assertEquals( $expected_first_attendee, $first_attendee_from_response );
 	}
 
@@ -327,7 +376,7 @@ class SingleTicketCest extends BaseRestCest {
 	 * @test
 	 */
 	public function should_return_404_when_trying_to_get_non_existing_post_id( Restv1Tester $I ) {
-		$ticket_rest_url = $this->tickets_url . '/23';
+		$ticket_rest_url = $this->tickets_url . '/12312421345125';
 		$I->sendGET( $ticket_rest_url );
 
 		$I->seeResponseCodeIs( 404 );
@@ -347,7 +396,7 @@ class SingleTicketCest extends BaseRestCest {
 				'total_sales' => 0,
 				'_stock'      => 30,
 				'_capacity'   => 30,
-			]
+			],
 		] );
 
 		$ticket_rest_url = $this->tickets_url . "/{$ticket_id}";
