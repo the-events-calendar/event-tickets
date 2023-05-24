@@ -222,7 +222,7 @@ tribe.tickets.emails = {};
 				.find( 'input[name=' + obj.selectors.formFooterCredit + ']' ).is( ':checked' );
 
 			context.footerCredit  = footerCredit;
-			context.footerContent = tinyMCE !== undefined ? tinyMCE.activeEditor.getContent() : '';
+			context.footerContent = tinyMCE !== undefined ? tinyMCE.get( obj.selectors.formFooterContent ).getContent() : '';
 
 			// If we're in the main Emails settings, we show the all options.
 			context.eventLinks = true;
