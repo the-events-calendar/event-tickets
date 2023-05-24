@@ -5,13 +5,9 @@ namespace Tribe\Tickets\Commerce\Reports;
 use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Commerce\Reports\Orders;
 use Tribe\Events\Test\Factories\Event;
-use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
-use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 
 class OrdersTest extends WPTestCase {
 
-	use Ticket_Maker;
-	use Attendee_Maker;
 
 	/**
 	 * Instance of the class being tested.
@@ -64,8 +60,6 @@ class OrdersTest extends WPTestCase {
 			'post_title' => $event_title,
 		] );
 
-		$ticket_a_id = $this->create_tc_ticket( $event_id, $num_tickets );
-		$this->create_many_attendees_for_ticket( $num_tickets, $ticket_a_id, $event_id );
 
 		return $event_id;
 	}
