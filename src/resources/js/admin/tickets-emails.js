@@ -152,7 +152,7 @@ tribe.tickets.emails = {};
 	 */
 	obj.getSettingsContext = function() {
 		const context = {};
-		const tinyMCE = window.tinyMCE || {};
+		const tinyMCE = window.tinyMCE || undefined;
 
 		const currentEmail = $document
 			.find( 'input[name=' + obj.selectors.formCurrentEmail + ']' ).val();
@@ -221,19 +221,8 @@ tribe.tickets.emails = {};
 			const footerCredit = $document
 				.find( 'input[name=' + obj.selectors.formFooterCredit + ']' ).is( ':checked' );
 
-			context.footerCredit = footerCredit;
-
-			let footerContent = '';
-
-			if (
-				tinyMCE.length &&
-				tinyMCE.editors.length &&
-				tinyMCE.editors[ obj.selectors.formFooterContent ] !== typeof 'undefined'
-			) {
-				footerContent = tinyMCE.editors[ obj.selectors.formFooterContent ].getContent();
-			}
-
-			context.footerContent = footerContent;
+			context.footerCredit  = footerCredit;
+			context.footerContent = tinyMCE !== undefined ? tinyMCE.activeEditor.getContent() : '';
 
 			// If we're in the main Emails settings, we show the all options.
 			context.eventLinks = true;
