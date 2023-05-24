@@ -187,16 +187,8 @@ tribe.tickets.emails = {};
 
 			context.useTicketEmail = usingTicketEmail;
 
-			let addContent = '';
-
-			if (
-				tinyMCE.length &&
-				tinyMCE.editors.length &&
-				tinyMCE.editors[ currentEmailOptionPrefix + '-additional-content' ] !== typeof 'undefined'
-			) {
-				addContent = tinyMCE.editors[ currentEmailOptionPrefix + '-additional-content' ].getContent();
-			}
-			context.addContent = addContent;
+			// fetch additional content from the editor.
+			context.addContent = tinyMCE !== undefined ? tinyMCE.get( currentEmailOptionPrefix + '-additional-content' ).getContent() : '';
 		} else {
 			const ticketBgColor = $document
 				.find( 'input[name=' + obj.selectors.formTicketBgColorName + ']' ).val();
@@ -222,6 +214,8 @@ tribe.tickets.emails = {};
 				.find( 'input[name=' + obj.selectors.formFooterCredit + ']' ).is( ':checked' );
 
 			context.footerCredit  = footerCredit;
+
+			// fetch footer content from the editor.
 			context.footerContent = tinyMCE !== undefined ? tinyMCE.get( obj.selectors.formFooterContent ).getContent() : '';
 
 			// If we're in the main Emails settings, we show the all options.
