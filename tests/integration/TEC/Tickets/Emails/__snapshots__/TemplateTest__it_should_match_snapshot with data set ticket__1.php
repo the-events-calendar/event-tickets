@@ -571,8 +571,7 @@
 			/>
 		</td>
 		<td class="tec-tickets__email-table-content-event-venue-address-container">
-		41st Street<br />New York<br />NY 10001<br />United States				<br />
-				<a href="#">
+		41st Street<br />New York, NY 10001<br />United States<br />				<a href="#">
 					Get Directions				</a>
 					</td>
 	</tr>
