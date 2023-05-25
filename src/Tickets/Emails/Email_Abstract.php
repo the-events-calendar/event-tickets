@@ -203,7 +203,7 @@ abstract class Email_Abstract {
 		$email_template = tribe( Email_Template::class );
 		$email_template->set_preview( $is_preview );
 
-		return $email_template->get_html( $this->template, $args );
+		return $this->format_string( $email_template->get_html( $this->template, $args ) );
 	}
 
 	/**
