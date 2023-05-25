@@ -73,6 +73,46 @@ class Hooks extends tad_DI52_ServiceProvider {
 		add_filter( 'tec_tickets_send_rsvp_email_pre', [ $this, 'filter_hijack_legacy_sent_rsvp_emails' ], 20, 4 );
 		add_filter( 'tec_tickets_send_tickets_email_for_attendee_pre', [ $this, 'filter_hijack_legacy_sent_tickets_attendees_emails' ], 20, 5 );
 		add_filter( 'tec_tickets_send_rsvp_non_attendance_confirmation_pre', [ $this, 'filter_hijack_legacy_send_rsvp_non_attendance_confirmation' ], 20, 4 );
+
+		// skip saving hidden fields for RSVP emails.
+		add_filter( 'tribe_settings_fields', [ $this, 'filter_rsvp_fields_for_validation' ], 90, 2 );
+	}
+
+	/**
+	 * Filters the values to be saved while saving RSVP Email settings.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $fields The fields to be saved.
+	 * @param string $admin_page The admin page being saved.
+	 *
+	 * @return array
+	 */
+	public function filter_rsvp_fields_for_validation( array $fields, $admin_page ): array {
+		$emails_slug = Emails_Tab::$slug;
+
+		if ( \Tribe\Tickets\Admin\Settings::$settings_page_id !== $admin_page
+		     || ! isset( $fields[ $emails_slug ] )
+		     || tribe_get_request_var( 'section', false ) !== 'tec_tickets_emails_rsvp'
+		     || empty( $_POST )
+		) {
+			return $fields;
+		}
+
+		if ( ! tribe_is_truthy( tribe_get_request_var( 'tec-tickets-emails-rsvp-use-ticket-email' ) ) ) {
+			return $fields;
+		}
+
+		// filter out hidden fields from the fields to be saved.
+		$fields[ $emails_slug ] = array_filter(
+			$fields[ $emails_slug ],
+			function ( $field, $key ) {
+				return isset( $_POST[ $key ] ) || $field['type'] === 'toggle';
+			},
+			ARRAY_FILTER_USE_BOTH
+		);
+
+		return $fields;
 	}
 
 	/**
