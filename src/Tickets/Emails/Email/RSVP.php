@@ -8,6 +8,7 @@
 namespace TEC\Tickets\Emails\Email;
 
 use TEC\Tickets\Commerce\Settings as Settings;
+use TEC\Tickets\Emails\Admin\Emails_Tab;
 use TEC\Tickets\Emails\Dispatcher;
 use TEC\Tickets\Emails\Email_Template;
 use TEC\Tickets\Emails\Email_Abstract;
@@ -260,6 +261,44 @@ class RSVP extends Email_Abstract {
 	public function is_using_ticket_email_settings(): bool {
 		// If using the ticket email settings, no need to show the remaining settings.
 		return tribe_is_truthy( tribe_get_option( $this->get_option_key( 'use-ticket-email' ), true ) );
+	}
+
+	/**
+	 * Filters the hidden dependent fields while saving `using_ticket_email` option from being saved.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $fields The fields to be saved.
+	 * @param string $admin_page The admin page being saved.
+	 *
+	 * @return array The fields to be saved.
+	 */
+	public function filter_rsvp_fields_before_saving( array $fields, $admin_page ): array {
+		$emails_slug = Emails_Tab::$slug;
+
+		if ( \Tribe\Tickets\Admin\Settings::$settings_page_id !== $admin_page
+		     || ! isset( $fields[ $emails_slug ] )
+		     || tribe_get_request_var( 'section', false ) !== 'tec_tickets_emails_rsvp'
+		     || empty( $_POST )
+		) {
+			return $fields;
+		}
+
+		// If not updating the ticket email settings, no need to filter the fields.
+		if ( ! tribe_is_truthy( tribe_get_request_var( 'tec-tickets-emails-rsvp-use-ticket-email' ) ) ) {
+			return $fields;
+		}
+
+		// filters the hidden fields and toggle type fields.
+		$fields[ $emails_slug ] = array_filter(
+			$fields[ $emails_slug ],
+			function ( $field, $key ) {
+				return isset( $_POST[ $key ] ) || $field['type'] === 'toggle';
+			},
+			ARRAY_FILTER_USE_BOTH
+		);
+
+		return $fields;
 	}
 
 	/**

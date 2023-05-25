@@ -19,6 +19,7 @@ namespace TEC\Tickets\Emails;
 
 use \tad_DI52_ServiceProvider;
 use TEC\Tickets\Emails\Admin\Emails_Tab;
+use TEC\Tickets\Emails\Email\RSVP;
 use Tribe__Tickets__Tickets as Tickets_Module;
 
 /**
@@ -73,6 +74,23 @@ class Hooks extends tad_DI52_ServiceProvider {
 		add_filter( 'tec_tickets_send_rsvp_email_pre', [ $this, 'filter_hijack_legacy_sent_rsvp_emails' ], 20, 4 );
 		add_filter( 'tec_tickets_send_tickets_email_for_attendee_pre', [ $this, 'filter_hijack_legacy_sent_tickets_attendees_emails' ], 20, 5 );
 		add_filter( 'tec_tickets_send_rsvp_non_attendance_confirmation_pre', [ $this, 'filter_hijack_legacy_send_rsvp_non_attendance_confirmation' ], 20, 4 );
+
+		// skip saving hidden fields for RSVP emails.
+		add_filter( 'tribe_settings_fields', [ $this, 'filter_rsvp_fields_before_saving' ], 90, 2 );
+	}
+
+	/**
+	 * Filters the values to be saved while saving RSVP Email settings.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $fields The fields to be saved.
+	 * @param string $admin_page The admin page being saved.
+	 *
+	 * @return array
+	 */
+	public function filter_rsvp_fields_before_saving( array $fields, $admin_page ): array {
+		return $this->container->make( RSVP::class )->filter_rsvp_fields_before_saving( $fields, $admin_page );
 	}
 
 	/**
