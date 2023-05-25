@@ -17,8 +17,7 @@
     },
     "tec-tickets-emails-ticket-enabled": {
         "type": "toggle",
-        "label": "Ticket Email",
-        "tooltip": "Enabled",
+        "label": "Enable Ticket Email",
         "default": true,
         "validation_type": "boolean"
     },

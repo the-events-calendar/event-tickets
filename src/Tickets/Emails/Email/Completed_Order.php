@@ -138,8 +138,11 @@ class Completed_Order extends Email_Abstract {
 			],
 			$this->get_option_key( 'enabled' ) => [
 				'type'                => 'toggle',
-				'label'               => $this->get_title(),
-				'tooltip'             => esc_html__( 'Enabled', 'event-tickets' ),
+				'label'               => sprintf( 
+					// Translators: %s - Title of email.
+					esc_html__( 'Enable %s', 'event-tickets' ),
+					$this->get_title() 
+				),
 				'default'             => true,
 				'validation_type'     => 'boolean',
 			],

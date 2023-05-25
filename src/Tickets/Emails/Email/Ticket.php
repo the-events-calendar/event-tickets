@@ -137,12 +137,15 @@ class Ticket extends Email_Abstract {
 				'type' => 'html',
 				'html' => '<p>' . $email_description . '</p>',
 			],
-			$this->get_option_key( 'enabled' )            => [
-				'type'            => 'toggle',
-				'label'           => $this->get_title(),
-				'tooltip'         => esc_html__( 'Enabled', 'event-tickets' ),
-				'default'         => true,
-				'validation_type' => 'boolean',
+			$this->get_option_key( 'enabled' ) => [
+				'type'                => 'toggle',
+				'label'               => sprintf( 
+					// Translators: %s - Title of email.
+					esc_html__( 'Enable %s', 'event-tickets' ),
+					$this->get_title() 
+				),
+				'default'             => true,
+				'validation_type'     => 'boolean',
 			],
 			$this->get_option_key( 'subject' )            => [
 				'type'                => 'text',
