@@ -170,6 +170,10 @@
 	td.tec-tickets__email-table-content-event-venue-website-container {
 		padding: 0;
 	}
+	
+	h3.tec-tickets__email-table-content-event-title a {
+		text-decoration: none;
+	}
 </style><style type="text/css">
 	body {
 		color: #3C434A;
@@ -517,7 +521,9 @@
 <tr>
 	<td class="tec-tickets__email-table-content-event-title-container">
 		<h3 class="tec-tickets__email-table-content-event-title">
-			Arts in the Park		</h3>
+			<a href="#" target="_blank">
+				Arts in the Park			</a>
+		</h3>
 	</td>
 </tr>
 <tr>
