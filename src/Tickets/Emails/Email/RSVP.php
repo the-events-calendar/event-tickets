@@ -240,7 +240,9 @@ class RSVP extends Email_Abstract {
 	public function get_default_template_context(): array {
 		
 		if ( $this->is_using_ticket_email_settings() ) {
-			return tribe( Ticket::class )->get_default_template_context();
+			$context = tribe( Ticket::class )->get_default_template_context();
+			$context['email'] = $this;
+			return $context;
 		}
 		
 		$defaults = [
