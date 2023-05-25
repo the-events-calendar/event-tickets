@@ -49,7 +49,7 @@ class RSVP extends Email_Abstract {
 	 * @var string
 	 */
 	public $template = 'rsvp';
-	
+
 	/**
 	 * Get email title.
 	 *
@@ -250,7 +250,6 @@ class RSVP extends Email_Abstract {
 	 * @return array $args The default arguments
 	 */
 	public function get_default_template_context(): array {
-		
 		$defaults = [
 			'email'              => $this,
 			'title'              => $this->get_title(),
@@ -260,7 +259,7 @@ class RSVP extends Email_Abstract {
 			'post_id'            => $this->get( 'post_id' ),
 			'json_ld'            => Reservation_Schema::build_from_email( $this ),
 		];
-		
+
 		if ( $this->is_using_ticket_email_settings() ) {
 			$ticket = tribe( Ticket::class );
 			$defaults['heading']            = $ticket->get_heading();
