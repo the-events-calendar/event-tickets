@@ -301,6 +301,9 @@ class Settings {
 					'media_buttons' => false,
 					'quicktags'     => false,
 					'editor_height' => 200,
+					'tinymce'       => [
+						'width' => 448,
+					],
 					'buttons'       => [
 						'bold',
 						'italic',

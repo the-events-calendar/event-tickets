@@ -17,7 +17,7 @@ use TEC\Tickets\Emails\JSON_LD\Reservation_Schema;
 /**
  * Class Ticket
  *
- * @since 5.5.9
+ * @since   5.5.9
  *
  * @package TEC\Tickets\Emails
  */
@@ -81,7 +81,7 @@ class Ticket extends Email_Abstract {
 	 */
 	public function get_default_heading(): string {
 		return sprintf(
-			// Translators: %s Lowercase plural of ticket.
+		// Translators: %s Lowercase plural of ticket.
 			esc_html__( 'Here\'s your %s, {attendee_name}!', 'event-tickets' ),
 			tribe_get_ticket_label_plural_lowercase()
 		);
@@ -96,7 +96,7 @@ class Ticket extends Email_Abstract {
 	 */
 	public function get_default_subject(): string {
 		$default_subject = sprintf(
-			// Translators: %s - Lowercase plural of ticket.
+		// Translators: %s - Lowercase plural of ticket.
 			esc_html__( 'Your %s from {site_title}', 'event-tickets' ),
 			tribe_get_ticket_label_plural_lowercase()
 		);
@@ -119,7 +119,7 @@ class Ticket extends Email_Abstract {
 		);
 
 		$email_description = sprintf(
-			// Translators: %1$s: Tickets Emails knowledgebase article link.
+		// Translators: %1$s: Tickets Emails knowledgebase article link.
 			esc_html_x( 'Ticket purchasers will receive an email including their ticket and additional info upon completion of purchase. Customize the content of this specific email using the tools below. You can also use email placeholders and customize email templates. %1$s.', 'about Ticket Email', 'event-tickets' ),
 			$kb_link
 		);
@@ -137,14 +137,14 @@ class Ticket extends Email_Abstract {
 				'type' => 'html',
 				'html' => '<p>' . $email_description . '</p>',
 			],
-			$this->get_option_key( 'enabled' ) => [
-				'type'                => 'toggle',
-				'label'               => $this->get_title(),
-				'tooltip'             => esc_html__( 'Enabled', 'event-tickets' ),
-				'default'             => true,
-				'validation_type'     => 'boolean',
+			$this->get_option_key( 'enabled' )            => [
+				'type'            => 'toggle',
+				'label'           => $this->get_title(),
+				'tooltip'         => esc_html__( 'Enabled', 'event-tickets' ),
+				'default'         => true,
+				'validation_type' => 'boolean',
 			],
-			$this->get_option_key( 'subject' ) => [
+			$this->get_option_key( 'subject' )            => [
 				'type'                => 'text',
 				'label'               => esc_html__( 'Subject', 'event-tickets' ),
 				'default'             => $this->get_default_subject(),
@@ -152,7 +152,7 @@ class Ticket extends Email_Abstract {
 				'size'                => 'large',
 				'validation_callback' => 'is_string',
 			],
-			$this->get_option_key( 'heading' ) => [
+			$this->get_option_key( 'heading' )            => [
 				'type'                => 'text',
 				'label'               => esc_html__( 'Heading', 'event-tickets' ),
 				'default'             => $this->get_default_heading(),
@@ -161,16 +161,19 @@ class Ticket extends Email_Abstract {
 				'validation_callback' => 'is_string',
 			],
 			$this->get_option_key( 'additional-content' ) => [
-				'type'                => 'wysiwyg',
-				'label'               => esc_html__( 'Additional content', 'event-tickets' ),
-				'default'             => '',
-				'size'                => 'large',
-				'tooltip'             => esc_html__( 'Additional content will be displayed below the tickets in your email.', 'event-tickets' ),
-				'validation_type'     => 'html',
+				'type'            => 'wysiwyg',
+				'label'           => esc_html__( 'Additional content', 'event-tickets' ),
+				'default'         => '',
+				'size'            => 'large',
+				'tooltip'         => esc_html__( 'Additional content will be displayed below the tickets in your email.', 'event-tickets' ),
+				'validation_type' => 'html',
 				'settings'        => [
 					'media_buttons' => false,
 					'quicktags'     => false,
 					'editor_height' => 200,
+					'tinymce'       => [
+						'width' => 448,
+					],
 					'buttons'       => [
 						'bold',
 						'italic',
@@ -192,12 +195,13 @@ class Ticket extends Email_Abstract {
 	 * @since 5.5.11
 	 *
 	 * @param array $args The arguments.
+	 *
 	 * @return array $args The modified arguments
 	 */
 	public function get_default_preview_context( $args = [] ): array {
 		$defaults = tribe( Email_Template::class )->get_preview_context( $args );
 
-		$args['order'] = Preview_Data::get_order();
+		$args['order']   = Preview_Data::get_order();
 		$args['tickets'] = Preview_Data::get_tickets();
 		$args['heading'] = $this->get_heading();
 

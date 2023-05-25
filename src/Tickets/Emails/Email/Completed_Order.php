@@ -176,6 +176,9 @@ class Completed_Order extends Email_Abstract {
 					'media_buttons' => false,
 					'quicktags'     => false,
 					'editor_height' => 200,
+					'tinymce'       => [
+						'width' => 448,
+					],
 					'buttons'       => [
 						'bold',
 						'italic',
