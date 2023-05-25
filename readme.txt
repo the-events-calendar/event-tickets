@@ -190,6 +190,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Fix - When no providers are enabled, a warning will display above the `New Ticket` and `New RSVP` area explaining that at least one must be enabled. [ET-1696]
+
 = [5.5.11.1] 2023-05-09 =
 
 * Fix - Admin Dashboard loading slowly while counting attendees. [ET-1698]
