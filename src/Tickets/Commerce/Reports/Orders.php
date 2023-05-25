@@ -379,7 +379,7 @@ class Orders extends Report_Abstract {
 
 
 		$this->template_vars = [
-			'title'               => $this->get_title($post_id),
+			'title'               => $this->get_title( $post_id ),
 			'orders_table'        => tribe( Commerce\Admin_Tables\Orders::class ),
 			'post'                => $post,
 			'post_id'             => $post_id,
