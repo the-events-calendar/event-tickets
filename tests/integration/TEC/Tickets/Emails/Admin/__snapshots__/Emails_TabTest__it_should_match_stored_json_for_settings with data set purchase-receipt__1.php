@@ -17,8 +17,7 @@
     },
     "tec-tickets-emails-purchase-receipt-enabled": {
         "type": "toggle",
-        "label": "Purchase Receipt",
-        "tooltip": "Enabled",
+        "label": "Enable Purchase Receipt",
         "default": true,
         "validation_type": "boolean"
     },
