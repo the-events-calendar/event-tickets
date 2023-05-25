@@ -222,30 +222,31 @@ class Preview_Modal {
 			$preview_context['header_image_alignment'] = sanitize_key( strtolower( $header_image_alignment ) );
 		}
 
-		$heading = Arr::get( $vars, 'heading', '' );
-
-		if ( ! empty( $heading ) ) {
-			$preview_context['heading'] = sanitize_text_field( stripslashes( $heading ) );
-		}
-
-		$additional_content = Arr::get( $vars, 'addContent', '' );
-
-		if ( ! empty( $additional_content ) ) {
-			$preview_context['additional_content'] = wp_kses_post( $additional_content );
-		}
-
-		$add_qr_codes = Arr::get( $vars, 'qrCodes', '' );
-
-		if ( ! empty( $add_qr_codes ) ) {
-			$preview_context['add_qr_codes'] = tribe_is_truthy( $add_qr_codes );
-		}
-
-		$preview_context['add_event_links']    = tribe_is_truthy( Arr::get( $vars, 'eventLinks', '' ) );
-		$preview_context['add_ar_fields']      = tribe_is_truthy( Arr::get( $vars, 'arFields', '' ) );
-
 		$rsvp_using_ticket_email               = tribe_is_truthy( Arr::get( $vars, 'useTicketEmail', '' ) );
-		if ( $rsvp_using_ticket_email ) {
-			$preview_context['using_ticket_email'] = true;
+		$preview_context['using_ticket_email'] = $rsvp_using_ticket_email;
+
+		// only apply JS preview context if we're not using the ticket email.
+		if ( ! $rsvp_using_ticket_email ) {
+			$heading = Arr::get( $vars, 'heading', '' );
+
+			if ( ! empty( $heading ) ) {
+				$preview_context['heading'] = sanitize_text_field( stripslashes( $heading ) );
+			}
+
+			$additional_content = Arr::get( $vars, 'addContent', '' );
+
+			if ( ! empty( $additional_content ) ) {
+				$preview_context['additional_content'] = wp_kses_post( $additional_content );
+			}
+
+			$add_qr_codes = Arr::get( $vars, 'qrCodes', '' );
+
+			if ( ! empty( $add_qr_codes ) ) {
+				$preview_context['add_qr_codes'] = tribe_is_truthy( $add_qr_codes );
+			}
+
+			$preview_context['add_event_links']    = tribe_is_truthy( Arr::get( $vars, 'eventLinks', '' ) );
+			$preview_context['add_ar_fields']      = tribe_is_truthy( Arr::get( $vars, 'arFields', '' ) );
 		}
 
 		$current_email = Arr::get( $vars, 'currentEmail', '' );
