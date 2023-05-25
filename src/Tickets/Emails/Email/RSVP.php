@@ -238,6 +238,11 @@ class RSVP extends Email_Abstract {
 	 * @return array $args The default arguments
 	 */
 	public function get_default_template_context(): array {
+		
+		if ( $this->is_using_ticket_email_settings() ) {
+			return tribe( Ticket::class )->get_default_template_context();
+		}
+		
 		$defaults = [
 			'email'              => $this,
 			'title'              => $this->get_title(),
