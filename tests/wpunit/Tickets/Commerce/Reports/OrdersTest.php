@@ -25,23 +25,23 @@ class OrdersTest extends WPTestCase {
 	 *
 	 * @param string $eventTitle
 	 */
-	public function get_title_follows_format( string $event_title, int $event_id ) {
+	public function get_title_follows_format( string $event_title ) {
 		$event_id = $this->create_event_with_tickets_and_attendees( $event_title, 10 );
-
 		$this->orders = new Orders();
 		$expected = "Orders for: {$event_title} [#{$event_id}]";
 		$actual = $this->orders->get_title( $event_id );
 		$this->assertSame( $expected, $actual );
 	}
 
+
 	/**
 	 * Data provider for different event titles.
 	 */
 	public function event_title_data_provider(): \Generator {
-		yield 'Empty Title' => [ '', $this->create_event_with_tickets_and_attendees( '', 10 ) ];
-		yield 'Event with an ID that does not exist' => [ 'Custom Title', 999 ];
-		yield 'Event Title with Emoji' => [ 'Event Title with Emoji 😃', $this->create_event_with_tickets_and_attendees( 'Event Title with Emoji 😃', 10 ) ];
-		yield 'Event Title with Chinese' => [ '活動標題中國', $this->create_event_with_tickets_and_attendees( '活動標題中國', 10 ) ];
+		yield 'Empty Title' => [ '' ];
+		yield 'Event Title with Emoji' => [ 'Event Title with Emoji 😃' ];
+		yield 'Event Title with Chinese' => [ '活動標題中國' ];
+		yield 'Ordinary Event Title' => [ 'Event Title' ];
 	}
 
 	/**

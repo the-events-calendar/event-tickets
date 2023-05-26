@@ -113,10 +113,27 @@ class Tribe__Tickets__Commerce__Orders_Tabbed_View {
 	 * @return string The generated title.
 	 */
 	public function get_title( int $post_id ): string {
+
+		/**
+		 * Filters whether to show the view title.
+		 *
+		 * @since 5.0.1
+		 *
+		 * @depreacated TBD
+		 *
+		 * @param bool $show_title Whether to show the view title.
+		 * @param int $post_id The post ID.
+		 */
+		$show_title = apply_filters_deprecated( 'tribe_tickets_attendees_show_view_title', [ true, $post_id ], 'TBD' );
+
+		if ( !$show_title ) {
+			return '';
+		}
+
 		$page_type = tribe_get_request_var( 'page' );
 
 		// Check $page_type to confirm if we are on Order or Attendees page.
-		if ( $page_type === 'tickets-orders' ) {
+		if ( 'tickets-orders' === $page_type ) {
 			// Translators: %1$s: the post/event title, %2$d: the post/event ID.
 			$title = _x( 'Orders for: %1$s [#%2$d]', 'orders report screen heading', 'event-tickets' );
 		} else {
@@ -124,24 +141,19 @@ class Tribe__Tickets__Commerce__Orders_Tabbed_View {
 			$title = _x( 'Attendees for: %1$s [#%2$d]', 'attendees report screen heading', 'event-tickets' );
 		}
 
-		$view_title = sprintf( // Translators: %1$s: the post/event title, %2$d: the post/event ID.
-			$title, get_the_title( $post_id ), $post_id );
+		$view_title = sprintf( $title, get_the_title( $post_id ), $post_id );
 
 		/**
-		 * Filters whether to show the view title.
+		 * Filters the title on the Attendees, and Order list page.
 		 *
-		 * @since 5.0.1
+		 * @since TBD
 		 *
-		 * @param bool $show_title Whether to show the view title.
+		 * @param string $view_title The view title.
 		 * @param int $post_id The post ID.
+		 * @param string $page_type Possible values `tickets-attendees` or `tickets-orders`.
 		 */
-		$show_title = apply_filters( 'tribe_tickets_attendees_show_view_title', true, $post_id );
+		return apply_filters( 'tec_tickets_attendees_order_view_title', $view_title, $post_id, $page_type );
 
-		if ( ! $show_title ) {
-			$view_title = '';
-		}
-
-		return $view_title;
 	}
 
 	/**
