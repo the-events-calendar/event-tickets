@@ -174,18 +174,6 @@
 	h3.tec-tickets__email-table-content-event-title a {
 		text-decoration: none;
 	}
-	
-	.tec-tickets__email-table-content-order-event-title,
-	td.tec-tickets__email-table-content-order-event-title {
-		font-size: 16px;
-		font-weight: 700;
-		padding-top:43px;
-	}
-	
-	.tec-tickets__email-table-content-order-event-title a,
-	td.tec-tickets__email-table-content-order-event-title a {
-		text-decoration: none;
-	}
 </style><style type="text/css">
 	body {
 		color: #3C434A;
