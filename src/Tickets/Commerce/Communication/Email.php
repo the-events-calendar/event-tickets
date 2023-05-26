@@ -17,13 +17,13 @@ class Email {
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param string $order_id Order post ID
-	 * @param int    $post_id  Parent post ID (optional)
+	 * @param string $order_id Order post ID.
+	 * @param int    $post_id  Parent post ID (optional).
 	 */
 	public function send_tickets_email( $order_id, $post_id = null ) {
 		$all_attendees = tribe( Module::class )->get_attendees_by_order_id( $order_id );
 
-		$to_send = array();
+		$to_send = [];
 
 		if ( empty( $all_attendees ) ) {
 			return;
@@ -33,7 +33,7 @@ class Email {
 		// has not yet been sent we should a) send the ticket out by email and b) record the
 		// fact it was sent
 		foreach ( $all_attendees as $single_attendee ) {
-			// Only add those attendees/tickets that haven't already been sent
+			// Only add those attendees/tickets that haven't already been sent.
 			if ( ! empty( $single_attendee['ticket_sent'] ) ) {
 				continue;
 			}
@@ -50,7 +50,6 @@ class Email {
 		 * @param array  $all_attendees list of all attendees/tickets, including those already sent out
 		 * @param int    $post_id
 		 * @param string $order_id
-		 *
 		 */
 		$to_send = (array) apply_filters( 'tec_tickets_commerce_legacy_email_tickets_to_send', $to_send, $all_attendees, $post_id, $order_id );
 

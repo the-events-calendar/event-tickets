@@ -38,6 +38,8 @@ class Completed extends Status_Abstract {
 		'attendee_dispatch',
 		'stock_reduced',
 		'send_email',
+		'send_email_completed_order',
+		'send_email_purchase_receipt',
 		'count_attendee',
 		'count_completed',
 		'count_sales',

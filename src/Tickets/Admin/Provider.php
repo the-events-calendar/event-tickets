@@ -32,6 +32,8 @@ class Provider extends \tad_DI52_ServiceProvider {
 
 		// Register singleton classes.
 		$this->container->singleton( Upsell::class );
+		$this->container->singleton( Plugin_Action_Links::class );
+		$this->container->singleton( Glance_Items::class );
 
 	}
 
@@ -44,7 +46,7 @@ class Provider extends \tad_DI52_ServiceProvider {
 		$hooks = new Hooks( $this->container );
 		$hooks->register();
 
-		// Allow Hooks to be removed, by having the them registered to the container
+		// Allow Hooks to be removed, by having them registered to the container
 		$this->container->singleton( Hooks::class, $hooks );
 		$this->container->singleton( 'tickets.admin.hooks', $hooks );
 	}

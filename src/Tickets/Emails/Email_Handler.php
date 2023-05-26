@@ -10,6 +10,7 @@
 namespace TEC\Tickets\Emails;
 
 use Tribe__Tickets__Main;
+use WP_Error;
 
 /**
  * Class Email_Handler.
@@ -47,6 +48,11 @@ class Email_Handler extends \tad_DI52_ServiceProvider {
 	 */
 	protected $default_emails = [
 		\TEC\Tickets\Emails\Email\Ticket::class,
+		\TEC\Tickets\Emails\Email\RSVP::class,
+		\TEC\Tickets\Emails\Email\RSVP_Not_Going::class,
+		\TEC\Tickets\Emails\Email\Purchase_Receipt::class,
+		\TEC\Tickets\Emails\Email\Failed_Order::class,
+		\TEC\Tickets\Emails\Email\Completed_Order::class,
 	];
 
 	/**
@@ -132,7 +138,7 @@ class Email_Handler extends \tad_DI52_ServiceProvider {
 			'show_in_menu'    => false,
 			'query_var'       => false,
 			'rewrite'         => false,
-			'capability_type' => 'post',
+			'capability_type' => 'page',
 			'has_archive'     => false,
 			'hierarchical'    => false,
 		];
@@ -155,18 +161,28 @@ class Email_Handler extends \tad_DI52_ServiceProvider {
 	 *
 	 * @since 5.5.9
 	 *
-	 * @return void
+	 * @return int The number of emails created.
 	 */
-	public function maybe_populate_tec_tickets_emails_post_type() {
-		$emails = $this->get_emails();
+	public function maybe_populate_tec_tickets_emails_post_type(): int {
+		global $wp_rewrite;
+
+		if ( ! ( isset( $wp_rewrite ) && $wp_rewrite instanceof \WP_Rewrite ) ) {
+			// The global rewrite object is not available, bail. It's required to create the post type.
+			return false;
+		}
+
+		$emails  = $this->get_emails();
+		$created = 0;
 
 		// iterate on emails, check if exists by slug and create if not.
 		foreach ( $emails as $email_class ) {
 			$email = tribe( $email_class );
 			if ( empty( $email->get_post() ) ) {
-				$this->create_tec_tickets_emails_post_type( $email );
+				$created += $this->create_tec_tickets_emails_post_type( $email );
 			}
 		}
+
+		return $created;
 	}
 
 	/**
@@ -176,21 +192,31 @@ class Email_Handler extends \tad_DI52_ServiceProvider {
 	 *
 	 * @param Email_Abstract $email The email.
 	 *
-	 * @return void
+	 * @return int The number of emails created.
 	 */
-	public function create_tec_tickets_emails_post_type( $email ) {
-		$args = [
-			'post_name'   => $email->id,
+	public function create_tec_tickets_emails_post_type( $email ): int {
+		$args     = [
+			'post_name'   => $email->get_id(),
 			'post_title'  => $email->get_title(),
 			'post_status' => 'publish',
 			'post_type'   => static::POSTTYPE,
 			'meta_input'  => [
-				'email_recipient' => $email->recipient,
-				'email_template'  => $email->template,
-				'email_version'   => Tribe__Tickets__Main::VERSION,
+				'email_to'       => $email->to,
+				'email_template' => $email->template,
+				'email_version'  => Tribe__Tickets__Main::VERSION,
 			],
 		];
-		wp_insert_post( $args );
+		$inserted = wp_insert_post( $args );
+
+		if ( $inserted instanceof WP_Error ) {
+			do_action( 'tribe_log', 'error', 'Error creating email post.', [
+				'class'      => __CLASS__,
+				'post_title' => $email->get_title(),
+				'error'      => $inserted->get_error_message(),
+			] );
+		}
+
+		return $inserted instanceof WP_Error ? 0 : 1;
 	}
 
 	/**
@@ -206,7 +232,7 @@ class Email_Handler extends \tad_DI52_ServiceProvider {
 		$emails = $this->get_emails();
 
 		foreach ( $emails as $email ) {
-			if ( $email->id === $id ) {
+			if ( $email->get_id() === $id ) {
 				return $email;
 			}
 		}

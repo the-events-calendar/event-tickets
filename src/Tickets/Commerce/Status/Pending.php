@@ -164,7 +164,6 @@ class Pending extends Status_Abstract {
 				} else {
 					$message = sprintf( __( 'There are no %s available at this time.', 'event-tickets' ), tribe_get_ticket_label_plural( 'unavailable_mixed' ) );
 				}
-
 				return new WP_Error(
 					'tec-tc-ticket-unavailable',
 					$message,

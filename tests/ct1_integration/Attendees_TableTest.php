@@ -20,6 +20,7 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 	public function _setUp() {
 		parent::_setUp();
 		$this->enable_provisional_id_normalizer();
+		$GLOBALS['hook_suffix'] = 'tribe_events_page_tickets-attendees';
 	}
 
 	public function _tearDown() {

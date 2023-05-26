@@ -271,7 +271,7 @@ class Settings {
 				'html' => '<h3>' . __( 'General', 'event-tickets' ) . '</h3>',
 			],
 			static::$option_sandbox                         => [
-				'type'            => 'checkbox_bool',
+				'type'            => 'toggle',
 				'label'           => esc_html__( 'Enable Test Mode', 'event-tickets' ),
 				'tooltip'         => esc_html__( 'Enables Test mode for testing payments. Any payments made will be done on "sandbox" accounts.', 'event-tickets' ),
 				'default'         => false,

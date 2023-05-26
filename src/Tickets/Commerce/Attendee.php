@@ -277,6 +277,8 @@ class Attendee {
 	 *
 	 * @since 5.2.1
 	 *
+	 * @since 5.5.10 Avoid force delete of WP_Post objects and integrate stock management.
+	 *
 	 * @param int     $attendee_id The Attendee ID.
 	 * @param boolean $force       Force the deletion.
 	 */
@@ -291,6 +293,8 @@ class Attendee {
 		 */
 		$attendee_id = apply_filters( 'tec_tickets_commerce_attendee_to_delete', $attendee_id, $force );
 
+		$event_id = (int) get_post_meta( $attendee_id, static::$event_relation_meta_key, true );
+
 		/**
 		 * Allows actions to run right before deleting an attendee.
 		 *
@@ -301,7 +305,7 @@ class Attendee {
 		 */
 		do_action( 'tec_tickets_commerce_attendee_before_delete', $attendee_id, $force );
 
-		$result = wp_delete_post( $attendee_id, true );
+		$result = wp_delete_post( $attendee_id );
 
 		/**
 		 * Allows actions to run right after deleting an attendee.
@@ -365,6 +369,7 @@ class Attendee {
 
 		if ( ! empty( $args['full_name'] ) ) {
 			$create_args['full_name'] = $args['full_name'];
+			$create_args['title']     = $args['full_name'];
 		}
 
 		if (
@@ -372,6 +377,7 @@ class Attendee {
 			&& ! empty( $order->purchaser['full_name'] )
 		) {
 			$create_args['full_name'] = $order->purchaser['full_name'];
+			$create_args['title']     = $order->purchaser['full_name'];
 		}
 
 		$fields = Arr::get( $args, 'fields', [] );

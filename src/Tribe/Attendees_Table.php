@@ -903,11 +903,19 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			return $failed;
 		}
 
+		$attendee_type = get_post_type( $id );
+
+		// Bail if the attendee type is not valid.
+		if ( ! $attendee_type ) {
+			return $failed;
+		}
+
 		if (
-			tec_tickets_commerce_is_enabled()
-			&& get_post_type( $id ) === \TEC\Tickets\Commerce\Attendee::POSTTYPE
+			$attendee_type === \TEC\Tickets\Commerce\Attendee::POSTTYPE
+			&& tec_tickets_commerce_is_enabled()
 		) {
 			$addon = tribe( \TEC\Tickets\Commerce\Module::class );
+			return [ $id, $addon ];
 		} else {
 			$addon = call_user_func( [ $parts[1], 'get_instance' ] );
 

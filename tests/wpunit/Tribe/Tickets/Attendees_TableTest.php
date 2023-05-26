@@ -78,6 +78,7 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 		$sut = $this->make_instance();
 
 		$_GET['event_id'] = $post_id;
+		$_GET['paged'] = 1;
 		$sut->prepare_items();
 		$attendee_ids = wp_list_pluck( $sut->items, 'attendee_id' );
 
@@ -87,6 +88,7 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertEquals( count( array_merge( $paypal_attendee_ids, $rsvp_attendee_ids ) ), $sut->get_pagination_arg( 'total_items' ) );
 
 		$_GET['event_id'] = $post_id2;
+		$_GET['paged'] = 1;
 		$sut->prepare_items();
 		$attendee_ids2 = wp_list_pluck( $sut->items, 'attendee_id' );
 

@@ -13,11 +13,14 @@
  *
  * @since 5.5.9
  *
- * @var Tribe_Template  $this  Current template object.
+ * @var Tribe__Template $this  Current template object.
+ * @var WP_Post|null    $event The event post object with properties added by the `tribe_get_event` function.
+ *
+ * @see tribe_get_event() For the format of the event object.
  */
 
 // If not viewing preview, bail.
-if ( empty( $preview ) ) {
+if ( empty( $preview ) || ! tribe_is_truthy( $preview ) ) {
 	return;
 }
 ?>

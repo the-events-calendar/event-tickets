@@ -10,15 +10,15 @@
 
 ?>
 <div class="tec-tickets__admin-settings-tickets-commerce-gateways-item-toggle">
-	<label class="tec-tickets__admin-settings-tickets-commerce-toggle">
+	<label class="tec-tickets__admin-settings-toggle-large">
 		<input
 			type="checkbox"
 			disabled="disabled"
 			name="tickets_commerce_enabled"
 			<?php checked( $checked, true ); ?>
 			id="tickets-commerce-enable-input"
-			class="tec-tickets__admin-settings-tickets-commerce-toggle-checkbox"
+			class="tec-tickets__admin-settings-toggle-large-checkbox"
 		/>
-		<span class="tec-tickets__admin-settings-tickets-commerce-toggle-switch"></span>
+		<span class="tec-tickets__admin-settings-toggle-large-switch"></span>
 	</label>
 </div>

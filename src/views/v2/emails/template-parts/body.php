@@ -13,20 +13,16 @@
  *
  * @since 5.5.9
  *
- * @var Tribe_Template  $this  Current template object.
+ * @var Tribe__Template                    $this           Current template object.
+ * @var \TEC\Tickets\Emails\Email_Abstract $email          The email object.
+ * @var bool                               $preview        Whether the email is in preview mode or not.
+ * @var bool                               $is_tec_active  Whether `The Events Calendar` is active or not.
+ * @var WP_Post|null                       $event          The event post object with properties added by the `tribe_get_event` function.
+ * @var WP_Post|null                       $order          The order object.
+ *
+ * @see tribe_get_event() For the format of the event object.
+ *
+ * @see tribe_get_event() For the format of the event object.
  */
 
 $this->template( 'template-parts/body/title' );
-
-// @todo @codingmusician @juanfra: We need to move these to TEC and the `tickets` folder.
-$this->template( 'template-parts/body/event/date' );
-
-$this->template( 'template-parts/body/event/title' );
-
-$this->template( 'template-parts/body/event/image' );
-
-$this->template( 'template-parts/body/tickets' );
-
-$this->template( 'template-parts/body/event/venue' );
-
-$this->template( 'template-parts/body/event/links' );

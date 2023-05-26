@@ -432,4 +432,25 @@ class EventStockTest extends \Codeception\TestCase\WPTestCase {
 		// Make sure that we have the proper initial data.
 		$this->assertEqualSets( $expected, $data );
 	}
+
+	/**
+	 * @test Test attendance count with unlimited tickets.
+	 *
+	 * @todo @rafsuntaskin Maybe shift this test to Attendee related test class when available.
+	 */
+	public function test_created_attendee_has_post_title() {
+		$maker = new Event();
+		$event_id = $maker->create();
+
+		// create ticket with default capacity of 100.
+		$ticket_a_id = $this->create_tc_ticket( $event_id, 10 );
+
+		$order = $this->create_order( [
+			$ticket_a_id => 1,
+		] );
+
+		$attendee = tec_tc_attendees()->by( 'event_id', $event_id )->first();
+
+		$this->assertNotEmpty( $attendee->post_title );
+	}
 }
