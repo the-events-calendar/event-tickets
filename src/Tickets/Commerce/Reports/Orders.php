@@ -59,8 +59,8 @@ class Orders extends Report_Abstract {
 		 *
 		 * @since TBD
 		 *
-		 * @param string $title The title.
-		 * @param int $post_id The post ID.
+		 * @param string 	$title The title.
+		 * @param int 		$post_id The post ID.
 		 */
 		return apply_filters( 'tec_tickets_commerce_order_page_title', $title, $post_id );
 

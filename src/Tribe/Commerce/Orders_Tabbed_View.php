@@ -121,8 +121,8 @@ class Tribe__Tickets__Commerce__Orders_Tabbed_View {
 		 *
 		 * @depreacated TBD
 		 *
-		 * @param bool $show_title Whether to show the view title.
-		 * @param int $post_id The post ID.
+		 * @param bool 	$show_title Whether to show the view title.
+		 * @param int 	$post_id The post ID.
 		 */
 		$show_title = apply_filters_deprecated( 'tribe_tickets_attendees_show_view_title', [ true, $post_id ], 'TBD' );
 
@@ -148,9 +148,9 @@ class Tribe__Tickets__Commerce__Orders_Tabbed_View {
 		 *
 		 * @since TBD
 		 *
-		 * @param string $view_title The view title.
-		 * @param int $post_id The post ID.
-		 * @param string $page_type Possible values `tickets-attendees` or `tickets-orders`.
+		 * @param string 	$view_title The view title.
+		 * @param int 		$post_id The post ID.
+		 * @param string 	$page_type Possible values `tickets-attendees` or `tickets-orders`.
 		 */
 		return apply_filters( 'tec_tickets_attendees_order_view_title', $view_title, $post_id, $page_type );
 
