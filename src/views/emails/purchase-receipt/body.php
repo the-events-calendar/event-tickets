@@ -29,8 +29,6 @@ $this->template( 'purchase-receipt/intro' );
 
 $this->template( 'template-parts/body/order/customer-purchaser-details' );
 
-$this->template( 'template-parts/body/order/event-title' );
-
 $this->template( 'template-parts/body/order/ticket-totals' );
 
 $this->template( 'template-parts/body/order/order-total' );
