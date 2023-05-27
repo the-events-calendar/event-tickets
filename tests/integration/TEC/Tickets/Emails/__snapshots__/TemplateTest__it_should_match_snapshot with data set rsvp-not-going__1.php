@@ -313,6 +313,13 @@
 	td.tec-tickets__email-table-content-additional-content-container {
 		padding-bottom: 40px;
 	}
+	
+	.tec-tickets__email-table-content-additional-content-container p,
+	td.tec-tickets__email-table-content-additional-content-container p {
+		color: #141827 !important;
+		font-size: 16px !important;
+		line-height: 1.5;
+	}
 </style>
 <div class="tec-tickets__email-body">
 
