@@ -104,6 +104,18 @@ class RSVP extends Email_Abstract {
 		// If they already had a subject set in Tickets Commerce, let's make it the default.
 		return tribe_get_option( Settings::$option_confirmation_email_subject, $default_subject );
 	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function get_subject(): ?string {
+		// Send ticket subject if using ticket settings.
+		if ( $this->is_using_ticket_email_settings() ) {
+			return tribe( Ticket::class )->get_subject();
+		}
+		
+		return parent::get_subject();
+	}
 
 	/**
 	 * Get email settings fields.
@@ -250,6 +262,12 @@ class RSVP extends Email_Abstract {
 			'post_id'            => $this->get( 'post_id' ),
 			'json_ld'            => Reservation_Schema::build_from_email( $this ),
 		];
+
+		if ( $this->is_using_ticket_email_settings() ) {
+			$ticket = tribe( Ticket::class );
+			$defaults['heading']            = $ticket->get_heading();
+			$defaults['additional_content'] = $ticket->get_additional_content();
+		}
 
 		return $defaults;
 	}
