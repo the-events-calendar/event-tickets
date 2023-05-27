@@ -238,7 +238,7 @@ class Preview_Modal {
 			$additional_content = Arr::get( $vars, 'addContent', '' );
 
 			if ( ! empty( $additional_content ) ) {
-				$preview_context['additional_content'] = wp_kses_post( $additional_content );
+				$preview_context['additional_content'] = wp_unslash( wp_kses_post( $additional_content ) );
 			}
 
 			$add_qr_codes = Arr::get( $vars, 'qrCodes', '' );
