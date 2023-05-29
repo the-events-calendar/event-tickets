@@ -28,9 +28,9 @@ if ( empty( $post->post_title ) ) {
 <tr>
 	<td class="tec-tickets__email-table-content-event-title-container">
 		<h3 class="tec-tickets__email-table-content-event-title">
-			<a href="<?php echo esc_url( get_permalink( $post->ID ) ); ?>" target="_blank" rel="noopener noreferrer">
+			<a href="<?php echo esc_url( get_permalink( $post ) ); ?>" target="_blank" rel="noopener noreferrer">
 				<?php
-				echo esc_html( $post->post_title );
+					echo esc_html( $post->post_title );
 				?>
 			</a>
 		</h3>
