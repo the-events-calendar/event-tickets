@@ -41,6 +41,7 @@ class Preview_Data {
 			'is_preview' => true,
 			'order'      => self::get_order(),
 			'tickets'    => self::get_tickets(),
+			'post'       => self::get_post(),
 		];
 	}
 
@@ -268,6 +269,33 @@ class Preview_Data {
 			],
 		];
 		return wp_parse_args( $args, $default );
+	}
+
+	/**
+	 * Get Post Data for preview.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $args Array of preview data.
+	 *
+	 * @return object
+	 */
+	public static function get_post( $args = [] ) {
+		$default = [
+			'ID'             => -91,
+			'post_author'    => 1,
+			'post_date'      => '2023-04-17 17:06:56',
+			'post_date_gmt'  => '2023-04-17 17:06:56',
+			'post_title'     => __( 'Arts in the Park', 'event-tickets' ),
+			'post_excerpt'   => __( 'Experience the magic of creativity in nature at "Arts in the Park." Immerse in art, live performances, and interactive activities, celebrating artistic expressions for all ages. Join us for an enchanting day of vibrant installations and captivating music—an unforgettable event that inspires and connects. Save the date and indulge your senses at "Arts in the Park"! (This excerpt is for demonstration purposes only.)', 'event-tickets' ),
+			'post_status'    => 'publish',
+			'post_permalink' => '#',
+			'post_name'      => 'preview-post-' . rand( 1, 9999 ),
+			'post_type'      => 'post',
+			'filter'         => 'raw',
+		];
+
+		return (object) wp_parse_args( $args, $default );
 	}
 
 	/**
