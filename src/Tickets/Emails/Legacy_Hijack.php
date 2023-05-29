@@ -107,6 +107,7 @@ class Legacy_Hijack {
 		// loop the tickets by event and send one email for each event.
 		foreach ( $tickets_by_event as $event_id => $event_tickets ) {
 			$email_class->set( 'post_id', $event_id );
+			$email_class->set( 'post', get_post( $event_id ) );
 			$email_class->set( 'tickets', $event_tickets );
 			$email_class->recipient = $to;
 
