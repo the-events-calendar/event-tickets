@@ -1,0 +1,33 @@
+<?php
+/**
+ * Event Tickets Emails: Main template > Body > Event > Description.
+ *
+ * Override this template in your own theme by creating a file at:
+ * [your-theme]/tribe/tickets/emails/template-parts/body/post-description.php
+ *
+ * See more documentation about our views templating system.
+ *
+ * @link    https://evnt.is/tickets-emails-tpl Help article for Tickets Emails template files.
+ *
+ * @version TBD
+ *
+ * @since TBD
+ *
+ * @var WP_Post $post The post object with properties.
+ *
+ * @see get_post() For the format of the event object.
+ */
+
+if ( empty( $post ) ) {
+	return;
+}
+if ( empty( $post->post_excerpt ) ) {
+	return;
+}
+
+?>
+<tr>
+	<td style="padding:0;" class="tec-tickets__email-table-content-event-description-container">
+		<?php echo esc_html__( $post->post_excerpt, 'event-tickets' ); ?>
+	</td>
+</tr>
