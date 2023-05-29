@@ -6,6 +6,7 @@ use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Gateway;
 use TEC\Tickets\Commerce\Gateways\Stripe\REST\Return_Endpoint;
 use TEC\Tickets\Commerce\Payments_Tab;
 use TEC\Tickets\Commerce\Settings as TC_Settings;
+use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Utils\Currency;
 use \Tribe__Tickets__Main;
 use Tribe__Utils__Array as Arr;
@@ -202,4 +203,40 @@ class Gateway extends Abstract_Gateway {
 			$notice_text
 		);
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function get_order_details_link_by_order( $order ) : string {
+		$status          = tribe( Status_Handler::class )->get_by_wp_slug( $order->post_status );
+		$payload         = isset( $order->gateway_payload[ $status::SLUG ] ) ? $order->gateway_payload[ $status::SLUG ] : end( $order->gateway_payload );
+		$capture_payload = end( $payload );
+		$link            = $this->get_dashboard_url_from_payload( $capture_payload );
+
+		return sprintf(
+			'<a href="%s" target="_blank" rel="noopener noreferrer">%s</a>',
+			$link,
+			$order->gateway_order_id
+		);
+	}
+
+	/**
+	 * Determine the dashboard url from the capture payload.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $capture_payload The capture payload.
+	 *
+	 * @return string The dashboard url.
+	 */
+	public function get_dashboard_url_from_payload( $capture_payload ) : string {
+		$live = Arr::get( $capture_payload, 'livemode' );
+
+		if ( tribe_is_truthy( $live ) ) {
+			return sprintf( 'https://dashboard.stripe.com/payments/%s', Arr::get( $capture_payload, 'id' ) );
+		}
+
+		return sprintf( 'https://dashboard.stripe.com/test/payments/%s', Arr::get( $capture_payload, 'id' ) );
+	}
+
 }

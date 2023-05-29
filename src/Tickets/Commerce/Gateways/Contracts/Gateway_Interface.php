@@ -124,4 +124,15 @@ interface Gateway_Interface {
 	 * @return string
 	 */
 	public function render_checkout_template( \Tribe__Template $template ): string;
+
+	/**
+	 * Get the order details link by order ID.
+	 *
+	 * @since TBD
+	 *
+	 * @param \WP_Post $order The order post object.
+	 *
+	 * @return string
+	 */
+	public function get_order_details_link_by_order( \WP_Post $order ): string;
 }
