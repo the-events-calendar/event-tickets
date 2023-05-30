@@ -52,21 +52,24 @@
  * @var Tribe__Tickets__Privacy            $privacy                     Tribe Privacy instance.
  */
 
-if ( method_exists( $provider, 'get_cart_url' ) ) {
+
+if ( is_callable( [ $provider, 'get_cart_url' ] ) ) {
 	$cart_url = $provider->get_cart_url( $post_id );
 } else {
 	$cart_url = '';
 }
 
-if ( method_exists( $provider, 'get_checkout_url' ) ) {
+
+if ( is_callable( [ $provider, 'get_caget_checkout_urlrt_url' ] ) ) {
 	$checkout_url = $provider->get_checkout_url( $post_id );
 } else {
 	$checkout_url = '';
 }
 
+
 if (
 	! $is_mini
-	|| strtok( $cart_url, '?' ) === strtok( $checkout_url, '?' ) // If URLs are the same before the '?'.
+	|| strtok( $cart_url, '?' )===strtok( $checkout_url, '?' ) // If URLs are the same before the '?'.
 ) {
 	return;
 }

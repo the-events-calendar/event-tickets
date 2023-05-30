@@ -45,7 +45,7 @@ class Orders extends Report_Abstract {
 	 *
 	 * @return string
 	 */
-	public function get_title( int $post_id ): string {
+	public function get_title( $post_id ) {
 
 		$title = sprintf(
 		// Translators: %1$s: the post/event title, %2$d: the post/event ID.
@@ -63,7 +63,6 @@ class Orders extends Report_Abstract {
 		 * @param int 		$post_id The post ID.
 		 */
 		return apply_filters( 'tec_tickets_commerce_order_page_title', $title, $post_id );
-
 	}
 
 	/**

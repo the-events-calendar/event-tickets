@@ -113,7 +113,6 @@ class Tribe__Tickets__Commerce__Orders_Tabbed_View {
 	 * @return string The generated title.
 	 */
 	public function get_title( int $post_id ): string {
-
 		/**
 		 * Filters whether to show the view title.
 		 *
@@ -126,7 +125,7 @@ class Tribe__Tickets__Commerce__Orders_Tabbed_View {
 		 */
 		$show_title = apply_filters_deprecated( 'tribe_tickets_attendees_show_view_title', [ true, $post_id ], 'TBD' );
 
-		if ( !$show_title ) {
+		if ( ! $show_title ) {
 			return '';
 		}
 
