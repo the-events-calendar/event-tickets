@@ -10,21 +10,21 @@ The suite `ft_integration` is dedicated to integration tests.
 The purpose of the suite is to provide a fast, reliable and comprehensive test coverage of the feature's integration
 with the rest of the plugin and WordPress core.
 The suite loads Event Tickets, The Events Calendar and The Events Calendar PRO plugins.
-Furthermore, the feature requires The Events Calendar Custom Table v1 (CT1) feature to
-be active.
+Since the feature requires The Events Calendar Custom Table v1 (CT1) feature to
+be active, that will be activated by default.
 
 Controllers MUST be covered by direct, dedicated tests in this suite. The specialized classes used by Controllers CAN be
 covered by tests in this suite, if required or more efficient.
 Due to the inherent "global" nature of Controllers, they should be tested using test case extending
-the `TEC\Tickets\Flexible_Tickets\Test\Controller_Test_Case` test case; the test case will set up a "sandbox" container
+the `TEC\Common\Tests\Provider\Controller_Test_Case` class; the test case will set up a "sandbox" container
 for the Controller under test to act that will diverge from the global container to avoid testing Controllers affecting
 the global state and, thus, the following tests.
 
 Tests should be named with a strict relation to the class they are testing; e.g. the tests for
-the `src/Tickets/Flexible_Tickets/Provider.php` class should be named `src/Tickets/Flexible_Tickets/ProviderTest.php`.
+the `src/Tickets/Flexible_Tickets/Some_Controller.php` class should be named `src/Tickets/Flexible_Tickets/Some_Controller_Test.php`.
 
 The test case should be in the same namespace as the class being tested,
-e.g. `src/Tickets/Flexible_Tickets/ProviderTest.php` should define the `ProviderTest` class in
+e.g. `src/Tickets/Flexible_Tickets/Some_Controller_Test.php` should define the `Some_Controller_Test` class in
 the `Tribe\Tickets\Tickets\Flexible_Tickets` namespace.
 
 ### Smoke tests

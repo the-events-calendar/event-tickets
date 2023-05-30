@@ -32,9 +32,9 @@ the [Knowledge Base article][1].
 The Flexible Tickets feature provides a set of template tags that can be used in custom templates to render HTML
 provided, or affected, by the feature.
 
-* `tec_tickets_get_series_pass_singular_label` - returns the singular label for the Series Pass; defaults
+* `tec_tickets_get_series_pass_singular_lowercase` - returns the singular label for a Series Pass; defaults
   to `series pass`; filterable with `tec_tickets_series_pass_singular_lowercase`.
-* `tec_tickets_get_series_pass_singular_uppercase` - returns the singular uppercase label for the Series Pass; defaults
+* `tec_tickets_get_series_pass_singular_uppercase` - returns the singular uppercase label for a Series Pass; defaults
   to `Series Pass`; filterable with `tec_tickets_series_pass_singular_uppercase`.
 
 [1]:https://theeventscalendar.com/knowledgebase/k/customizing-template-files-2/
