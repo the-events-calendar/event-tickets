@@ -352,4 +352,9 @@
 		font-size: 16px !important;
 		line-height: 1.5;
 	}
+
+	.tec-tickets__email-table-content-not-going-confirmation-container,
+	td.tec-tickets__email-table-content-not-going-confirmation-container {
+		padding-bottom: 30px;
+	}
 </style>

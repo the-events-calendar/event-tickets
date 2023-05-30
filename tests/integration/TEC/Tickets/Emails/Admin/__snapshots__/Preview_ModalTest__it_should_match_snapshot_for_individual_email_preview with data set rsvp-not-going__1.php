@@ -320,6 +320,11 @@
 		font-size: 16px !important;
 		line-height: 1.5;
 	}
+
+	.tec-tickets__email-table-content-not-going-confirmation-container,
+	td.tec-tickets__email-table-content-not-going-confirmation-container {
+		padding-bottom: 30px;
+	}
 </style>
 <div class="tec-tickets__email-body">
 
@@ -345,7 +350,7 @@
 </tr>
 
 <tr>
-	<td>
+	<td class="tec-tickets__email-table-content-not-going-confirmation-container">
 		Thank you for confirming that you will not be attending.	</td>
 </tr>
 
