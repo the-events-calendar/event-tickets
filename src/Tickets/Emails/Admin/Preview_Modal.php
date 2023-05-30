@@ -189,7 +189,8 @@ class Preview_Modal {
 		$ticket_bg_color = Arr::get( $vars, 'ticketBgColor', '' );
 
 		if ( ! empty( $ticket_bg_color ) ) {
-			$preview_context['ticket_bg_color'] = wp_kses( $ticket_bg_color, [] );
+			$preview_context['ticket_bg_color']   = wp_kses( $ticket_bg_color, [] );
+			$preview_context['ticket_text_color'] = \Tribe__Utils__Color::get_contrast_color( $preview_context['ticket_bg_color'] );
 		}
 
 		$footer_content = Arr::get( $vars, 'footerContent', '' );
@@ -207,7 +208,8 @@ class Preview_Modal {
 		$header_bg_color = Arr::get( $vars, 'headerBgColor', '' );
 
 		if ( ! empty( $header_bg_color ) ) {
-			$preview_context['header_bg_color'] = wp_kses( $header_bg_color, [] );
+			$preview_context['header_bg_color']   = wp_kses( $header_bg_color, [] );
+			$preview_context['header_text_color'] = \Tribe__Utils__Color::get_contrast_color( $preview_context['header_bg_color'] );
 		}
 
 		$header_img_url = Arr::get( $vars, 'headerImageUrl', '' );
@@ -236,7 +238,7 @@ class Preview_Modal {
 			$additional_content = Arr::get( $vars, 'addContent', '' );
 
 			if ( ! empty( $additional_content ) ) {
-				$preview_context['additional_content'] = wp_kses_post( $additional_content );
+				$preview_context['additional_content'] = wp_unslash( wp_kses_post( $additional_content ) );
 			}
 
 			$add_qr_codes = Arr::get( $vars, 'qrCodes', '' );
