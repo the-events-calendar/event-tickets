@@ -30,7 +30,7 @@ $this->template( 'template-parts/body/title' );
 ?>
 
 <tr>
-	<td>
+	<td class="tec-tickets__email-table-content-not-going-confirmation-container">
 		<?php echo esc_html( __( 'Thank you for confirming that you will not be attending.', 'event-tickets' ) ); ?>
 	</td>
 </tr>
