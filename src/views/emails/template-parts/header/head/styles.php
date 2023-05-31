@@ -269,8 +269,8 @@
 		padding: 24px 0 40px;
 	}
 
-	.tec-tickets__email-table-content-order-event-title,
-	td.tec-tickets__email-table-content-order-event-title {
+	.tec-tickets__email-table-content-order-post-title,
+	td.tec-tickets__email-table-content-order-post-title {
 		font-size: 16px;
 		font-weight: 700;
 		padding-top:43px;
