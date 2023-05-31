@@ -220,6 +220,7 @@ class Ticket extends Email_Abstract {
 			'title'              => $this->get_title(),
 			'heading'            => $this->get_heading(),
 			'post_id'            => $this->get( 'post_id' ),
+			'post'               => get_post( $this->get( 'post_id' ) ),
 			'tickets'            => $this->get( 'tickets' ),
 			'additional_content' => $this->get_additional_content(),
 			'json_ld'            => Reservation_Schema::build_from_email( $this ),
