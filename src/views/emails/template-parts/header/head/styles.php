@@ -357,4 +357,22 @@
 	td.tec-tickets__email-table-content-post-description-container {
 		padding-bottom: 20px;
 	}
+
+	.tec-tickets__email-table-content-not-going-confirmation-container,
+	td.tec-tickets__email-table-content-not-going-confirmation-container {
+		padding-bottom: 30px;
+	}
+
+	@media screen and ( max-width: 570px ) {
+		.tec-tickets__email-table-content-title,
+		h1.tec-tickets__email-table-content-title {
+			font-size: 21px;
+			line-height: 28px;
+		}
+
+		.tec-tickets__email-table-content,
+		table.tec-tickets__email-table-content {
+			padding: 15px 25px;
+		}
+	}
 </style>
