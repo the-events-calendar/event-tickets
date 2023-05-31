@@ -49,6 +49,15 @@
 		text-decoration: underline;
 	}
 
+	h3.tec-tickets__email-table-content-post-title a {
+		text-decoration: none;
+	}
+
+	.tec-tickets__email-table-content-post-title-container,
+	td.tec-tickets__email-table-content-post-title-container {
+		padding: 0;
+	}
+
 	.tec-tickets__email-body,
 	div.tec-tickets__email-body {
 		background: #f0eeeb;
@@ -114,8 +123,8 @@
 		text-align: left;
 	}
 
-	.tec-tickets__email-table-content-event-title,
-	h3.tec-tickets__email-table-content-event-title {
+	.tec-tickets__email-table-content-post-title,
+	h3.tec-tickets__email-table-content-post-title {
 		color: #141827;
 		font-size: 18px;
 		font-style: normal;
