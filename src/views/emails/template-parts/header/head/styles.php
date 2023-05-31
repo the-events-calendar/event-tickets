@@ -345,11 +345,16 @@
 	td.tec-tickets__email-table-content-additional-content-container {
 		padding-bottom: 40px;
 	}
-	
+
 	.tec-tickets__email-table-content-additional-content-container p,
 	td.tec-tickets__email-table-content-additional-content-container p {
 		color: #141827 !important;
 		font-size: 16px !important;
 		line-height: 1.5;
+	}
+
+	.tec-tickets__email-table-content-post-description-container,
+	td.tec-tickets__email-table-content-post-description-container {
+		padding-bottom: 20px;
 	}
 </style>

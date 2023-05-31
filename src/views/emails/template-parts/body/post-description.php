@@ -27,7 +27,7 @@ if ( empty( $post->post_excerpt ) ) {
 
 ?>
 <tr>
-	<td style="padding:0;" class="tec-tickets__email-table-content-event-description-container">
-		<?php echo esc_html( $post->post_excerpt, 'event-tickets' ); ?>
+	<td class="tec-tickets__email-table-content-post-description-container">
+		<?php echo esc_html( $post->post_excerpt ); ?>
 	</td>
 </tr>
