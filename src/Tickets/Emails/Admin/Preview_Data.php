@@ -39,9 +39,9 @@ class Preview_Data {
 			'title'      => $ticket_email->get_heading(),
 			'heading'    => $ticket_email->get_heading(),
 			'is_preview' => true,
-			'order'      => self::get_order(),
-			'tickets'    => self::get_tickets(),
-			'post'       => self::get_post(),
+			'order'      => static::get_order(),
+			'tickets'    => static::get_tickets(),
+			'post'       => static::get_post(),
 		];
 	}
 
@@ -290,7 +290,7 @@ class Preview_Data {
 			'post_excerpt'   => __( 'Experience the magic of creativity in nature at "Arts in the Park." Immerse in art, live performances, and interactive activities, celebrating artistic expressions for all ages. Join us for an enchanting day of vibrant installations and captivating music—an unforgettable event that inspires and connects. Save the date and indulge your senses at "Arts in the Park"! (This excerpt is for demonstration purposes only.)', 'event-tickets' ),
 			'post_status'    => 'publish',
 			'post_permalink' => '#',
-			'post_name'      => 'preview-post-' . rand( 1, 9999 ),
+			'post_name'      => 'preview-post-91',
 			'post_type'      => 'post',
 			'filter'         => 'raw',
 		];
