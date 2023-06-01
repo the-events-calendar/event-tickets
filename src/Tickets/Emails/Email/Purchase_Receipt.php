@@ -245,8 +245,8 @@ class Purchase_Receipt extends Email_Abstract {
 		}
 
 		$placeholders = [
-			'{order_number}' => $order->gateway_order_id,
-			'{order_id}'     => $order->gateway_order_id,
+			'{order_number}' => $order->ID,
+			'{order_id}'     => $order->ID,
 		];
 
 		$this->set_placeholders( $placeholders );
