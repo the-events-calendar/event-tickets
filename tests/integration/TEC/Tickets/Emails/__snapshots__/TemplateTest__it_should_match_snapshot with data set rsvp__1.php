@@ -1,8 +1,12 @@
 <?php return '<style type="text/css">
+	.tec-tickets__email-table-content-event-title-container,
+	td.tec-tickets__email-table-content-event-title-container,
 	.tec-tickets__email-table-content-event-links-container,
 	td.tec-tickets__email-table-content-event-links-container,
 	.tec-tickets__email-table-content-event-date-container,
 	td.tec-tickets__email-table-content-event-date-container,
+	.tec-tickets__email-table-content-event-description-container,
+	td.tec-tickets__email-table-content-event-description-container,
 	.tec-tickets__email-table-content-event-image-container,
 	td.tec-tickets__email-table-content-event-image-container {
 		padding: 0;
@@ -71,7 +75,7 @@
 		color: #141827;
 		font-size: 18px;
 		font-weight: 700 !important;
-		margin: 0;
+		margin: 0; 
 		padding: 0;
 	}
 	.tec-tickets__email-table-content-event-venue-table {
@@ -173,6 +177,11 @@
 	td.tec-tickets__email-table-content-event-venue-website-container {
 		color: #141827;
 		padding: 0;
+	}
+	
+	h3.tec-tickets__email-table-content-event-title a {
+		color: #141827;
+		text-decoration: none;
 	}
 </style><style type="text/css">
 	body {
@@ -567,6 +576,14 @@
 	<td class="tec-tickets__email-table-content-event-date-container">
 		<p class="tec-tickets__email-table-content-event-date">
 			September 22 @ 7:00 pm - 11:00 pm		</p>
+	</td>
+</tr>
+<tr>
+	<td class="tec-tickets__email-table-content-event-title-container">
+		<h3 class="tec-tickets__email-table-content-event-title">
+			<a href="#" target="_blank">
+				Arts in the Park			</a>
+		</h3>
 	</td>
 </tr>
 <tr>
