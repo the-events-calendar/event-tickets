@@ -401,6 +401,10 @@
 			text-align: left;
 		}
 
+		.tec-tickets__email-table-content-ticket-security-code {
+			padding: 15px 0 30px 0 !important;
+		}
+
 		.tec-tickets__email-table-content-ticket-security-code-container,
 		td.tec-tickets__email-table-content-ticket-security-code-container {
 			display: block;
