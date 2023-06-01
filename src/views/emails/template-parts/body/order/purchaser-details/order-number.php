@@ -23,13 +23,13 @@
  * @var \WP_Post                           $order              The order object.
  */
 
-$order_number = empty( $order->gateway_order_id ) ? 0 : $order->gateway_order_id;
-$order_string = sprintf(
-	// Translators: %s - The order number.
-	__( 'Order #%s', 'event-tickets' ),
-	$order_number
-);
+$order_id = empty( $order->ID ) ? 0 : $order->ID;
 
+$order_string = sprintf(
+	// Translators: %s - The order ID.
+	__( 'Order #%s', 'event-tickets' ),
+	$order_id
+);
 ?>
 <td class="tec-tickets__email-table-content-order-purchaser-details-top tec-tickets__email-table-content-align-left" align="left">
 	<?php echo esc_html( $order_string ); ?>

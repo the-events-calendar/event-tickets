@@ -26,6 +26,6 @@
 $purchaser_name = empty( $order->purchaser_name ) ? '' : $order->purchaser_name;
 
 ?>
-<td class="tec-tickets__email-table-content-order-purchaser-details-top tec-tickets__email-table-content-align-right" align="right">
+<td class="tec-tickets__email-table-content-order-purchaser-details-top tec-tickets__email-table-content-align-right" align="right" style="vertical-align: top;">
 	<?php echo esc_html( $purchaser_name ); ?>
 </td>

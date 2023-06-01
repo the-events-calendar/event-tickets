@@ -9,6 +9,7 @@
 
 namespace TEC\Tickets\Emails\Admin;
 
+use TEC\Tickets\Commerce\Gateways\Manual\Gateway;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Utils\Value;
 use TEC\Tickets\Emails\Email\Ticket;
@@ -58,7 +59,7 @@ class Preview_Data {
 
 		$order = new WP_Post( (object) [
 			'ID'               => -99,
-			'gateway_order_id' => -99,
+			'gateway_order_id' => 'test_cd7d068a5ef24c02',
 			'items' =>  [
 				[
 					'ticket_title' => __( 'General Admission', 'event-tickets' ),
@@ -92,7 +93,7 @@ class Preview_Data {
 			'purchase_date'    => '2023-04-17 17:06:56',
 			'post_title'       => __( 'Preview Order', 'event-tickets' ),
 			'post_status'      => 'publish',
-			'post_name'        => 'preview-order-' . rand( 1, 9999 ),
+			'post_name'        => 'preview-order-test_cd7d068a5ef24c02',
 			'post_type'        => Order::POSTTYPE,
 			'filter'           => 'raw',
 		] );
