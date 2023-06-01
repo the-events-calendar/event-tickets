@@ -113,15 +113,17 @@ abstract class Email_Abstract {
 	 * @since 5.5.9
 	 */
 	public function hook() {
+		$home_url  = home_url();
+		$url_parts = wp_parse_url( $home_url );
+
 		$default_placeholders = [
 			'{site_title}'   => $this->get_blogname(),
-			'{site_address}' => wp_parse_url( home_url(), PHP_URL_HOST ),
-			'{site_url}'     => wp_parse_url( home_url(), PHP_URL_HOST ),
+			'{site_address}' => $url_parts['host'] . $url_parts['path'] ?: '/',
+			'{site_url}'     => $home_url,
 		];
 
 		$this->set_placeholders( $default_placeholders );
 	}
-
 
 
 	/**
