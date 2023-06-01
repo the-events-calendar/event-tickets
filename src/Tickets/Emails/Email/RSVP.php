@@ -260,6 +260,7 @@ class RSVP extends Email_Abstract {
 			'additional_content' => $this->get_additional_content(),
 			'tickets'            => $this->get( 'tickets' ),
 			'post_id'            => $this->get( 'post_id' ),
+			'post'               => get_post( $this->get( 'post_id' ) ),
 			'json_ld'            => Reservation_Schema::build_from_email( $this ),
 		];
 

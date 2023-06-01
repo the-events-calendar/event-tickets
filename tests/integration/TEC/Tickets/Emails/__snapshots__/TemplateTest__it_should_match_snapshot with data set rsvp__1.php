@@ -1,12 +1,8 @@
 <?php return '<style type="text/css">
-	.tec-tickets__email-table-content-event-title-container,
-	td.tec-tickets__email-table-content-event-title-container,
 	.tec-tickets__email-table-content-event-links-container,
 	td.tec-tickets__email-table-content-event-links-container,
 	.tec-tickets__email-table-content-event-date-container,
 	td.tec-tickets__email-table-content-event-date-container,
-	.tec-tickets__email-table-content-event-description-container,
-	td.tec-tickets__email-table-content-event-description-container,
 	.tec-tickets__email-table-content-event-image-container,
 	td.tec-tickets__email-table-content-event-image-container {
 		padding: 0;
@@ -75,7 +71,7 @@
 		color: #141827;
 		font-size: 18px;
 		font-weight: 700 !important;
-		margin: 0; 
+		margin: 0;
 		padding: 0;
 	}
 	.tec-tickets__email-table-content-event-venue-table {
@@ -178,11 +174,6 @@
 		color: #141827;
 		padding: 0;
 	}
-	
-	h3.tec-tickets__email-table-content-event-title a {
-		color: #141827;
-		text-decoration: none;
-	}
 </style><style type="text/css">
 	body {
 		color: #3C434A;
@@ -200,6 +191,15 @@
 	.tec-tickets__email-body a:visited {
 		color: #141827;
 		text-decoration: underline;
+	}
+
+	h3.tec-tickets__email-table-content-post-title a {
+		text-decoration: none;
+	}
+
+	.tec-tickets__email-table-content-post-title-container,
+	td.tec-tickets__email-table-content-post-title-container {
+		padding: 0;
 	}
 
 	.tec-tickets__email-body,
@@ -267,8 +267,8 @@
 		text-align: left;
 	}
 
-	.tec-tickets__email-table-content-event-title,
-	h3.tec-tickets__email-table-content-event-title {
+	.tec-tickets__email-table-content-post-title,
+	h3.tec-tickets__email-table-content-post-title {
 		color: #141827;
 		font-size: 18px;
 		font-style: normal;
@@ -413,8 +413,8 @@
 		padding: 24px 0 40px;
 	}
 
-	.tec-tickets__email-table-content-order-event-title,
-	td.tec-tickets__email-table-content-order-event-title {
+	.tec-tickets__email-table-content-order-post-title,
+	td.tec-tickets__email-table-content-order-post-title {
 		font-size: 16px;
 		font-weight: 700;
 		padding-top:43px;
@@ -498,12 +498,35 @@
 	td.tec-tickets__email-table-content-additional-content-container {
 		padding-bottom: 40px;
 	}
-	
+
 	.tec-tickets__email-table-content-additional-content-container p,
 	td.tec-tickets__email-table-content-additional-content-container p {
 		color: #141827 !important;
 		font-size: 16px !important;
 		line-height: 1.5;
+	}
+
+	.tec-tickets__email-table-content-post-description-container,
+	td.tec-tickets__email-table-content-post-description-container {
+		padding-bottom: 20px;
+	}
+
+	.tec-tickets__email-table-content-not-going-confirmation-container,
+	td.tec-tickets__email-table-content-not-going-confirmation-container {
+		padding-bottom: 30px;
+	}
+
+	@media screen and ( max-width: 570px ) {
+		.tec-tickets__email-table-content-title,
+		h1.tec-tickets__email-table-content-title {
+			font-size: 21px;
+			line-height: 28px;
+		}
+
+		.tec-tickets__email-table-content,
+		table.tec-tickets__email-table-content {
+			padding: 15px 25px;
+		}
 	}
 </style>
 <div class="tec-tickets__email-body">
@@ -529,17 +552,21 @@
 	</td>
 </tr>
 <tr>
-	<td class="tec-tickets__email-table-content-event-date-container">
-		<p class="tec-tickets__email-table-content-event-date">
-			September 22 @ 7:00 pm - 11:00 pm		</p>
+	<td class="tec-tickets__email-table-content-post-title-container">
+		<h3 class="tec-tickets__email-table-content-post-title">
+			<a href="http://wordpress.test/?p=-91" target="_blank" rel="noopener noreferrer">
+				Arts in the Park			</a>
+		</h3>
 	</td>
 </tr>
 <tr>
-	<td class="tec-tickets__email-table-content-event-title-container">
-		<h3 class="tec-tickets__email-table-content-event-title">
-			<a href="#" target="_blank">
-				Arts in the Park			</a>
-		</h3>
+	<td class="tec-tickets__email-table-content-post-description-container">
+		Experience the magic of creativity in nature at &quot;Arts in the Park.&quot; Immerse in art, live performances, and interactive activities, celebrating artistic expressions for all ages. Join us for an enchanting day of vibrant installations and captivating music—an unforgettable event that inspires and connects. Save the date and indulge your senses at &quot;Arts in the Park&quot;! (This excerpt is for demonstration purposes only.)	</td>
+</tr>
+<tr>
+	<td class="tec-tickets__email-table-content-event-date-container">
+		<p class="tec-tickets__email-table-content-event-date">
+			September 22 @ 7:00 pm - 11:00 pm		</p>
 	</td>
 </tr>
 <tr>

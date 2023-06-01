@@ -27,7 +27,7 @@ $this->template( 'template-parts/body/title' );
 
 $this->template( 'template-parts/body/order/customer-purchaser-details' );
 
-$this->template( 'template-parts/body/order/event-title' );
+$this->template( 'template-parts/body/order/post-title' );
 
 $this->template( 'template-parts/body/order/ticket-totals' );
 
