@@ -426,8 +426,10 @@
 			</tr>
 		</table>
 	</td>
-</tr>
-<tr>
+</tr><tr>
+	<td class="tec-tickets__email-table-content-order-gateway-data-container" align="right">
+		Gateway Order #test_cd7d068a5ef24c02	</td>
+</tr><tr>
 	<td class="tec-tickets__email-table-content-order-attendees-table-container">
 		<table class="tec-tickets__email-table-content-order-attendees-table">
 			<tr class="tec-tickets__email-table-content-order-attendees-table-header-row">
