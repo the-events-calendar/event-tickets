@@ -31,6 +31,7 @@ class Tribe__Tickets__Attendee_Registration__Service_Provider extends tad_DI52_S
 		if ( ! class_exists( 'Tribe__Tickets_Plus__Main' ) ) {
 			return;
 		}
+
 		$this->add_attendee_registration_template_hook();
 
 		add_action( 'init', [ $this, 'add_attendee_registration_shortcode_hook' ] );
