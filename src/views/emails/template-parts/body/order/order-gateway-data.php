@@ -18,6 +18,8 @@
  * @var \WP_Post                           $order              The order object.
  */
 
+use TEC\Tickets\Commerce\Gateways\Manager;
+
 if ( empty( $order )  ) {
 	return;
 }
@@ -26,15 +28,21 @@ if ( empty( $order->gateway_order_id )  ) {
 	return;
 }
 
+$gateway = tribe( Manager::class )->get_gateway_by_key( $order->gateway );
+$link_or_id = $order->gateway_order_id;
+if (  $gateway ) {
+	$link_or_id = $gateway->get_order_details_link_by_order( $order );
+}
+
 $gateway_order_id_string = sprintf(
 	// Translators: %s - The order gateway ID.
 	__( 'Gateway Order #%s', 'event-tickets' ),
-	$order->gateway_order_id
+	$link_or_id
 );
 
 ?>
 <tr>
 	<td class="tec-tickets__email-table-content-order-gateway-data-container" align="right">
-		<?php echo esc_html( $gateway_order_id_string ); ?>
+		<?php echo wp_kses( $gateway_order_id_string, [ 'a' => [ 'target' => [], 'rel' => [], 'href' => [], ] ] ); ?>
 	</td>
 </tr>
