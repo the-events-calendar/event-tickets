@@ -271,7 +271,14 @@ class Preview_Modal {
 			$email_class->set( $key, $template_var_value );
 		}
 
+		$email_class->set( 'post_id', Preview_Data::get_post()->ID );
+
+		add_filter( 'tribe_is_event', '__return_true' );
+
 		$html  = $email_class->get_content();
+
+		remove_filter( 'tribe_is_event', '__return_true' );
+
 		$html .= $tickets_template->template( 'v2/components/loader/loader', [], false );
 		return $html;
 	}

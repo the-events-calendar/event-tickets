@@ -314,6 +314,7 @@ class Preview_Data {
 			'{attendee_name}'  => $tickets[0]['purchaser_name'],
 			'{attendee_email}' => $tickets[0]['purchaser_email'],
 			'{order_number}'   => $order->ID,
+			'{order_id}'       => $order->ID,
 		];
 		return wp_parse_args( $args, $default );
 	}
