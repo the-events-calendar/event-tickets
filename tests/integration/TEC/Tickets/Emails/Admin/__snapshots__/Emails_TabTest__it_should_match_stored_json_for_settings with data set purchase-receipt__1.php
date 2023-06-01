@@ -42,6 +42,7 @@
         "label": "Additional content",
         "default": "",
         "tooltip": "Additional content will be displayed below the purchase receipt details in the email.",
+        "size": "large",
         "validation_type": "html",
         "settings": {
             "media_buttons": false,

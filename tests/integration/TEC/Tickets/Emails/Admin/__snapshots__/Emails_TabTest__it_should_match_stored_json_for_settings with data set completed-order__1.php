@@ -49,6 +49,7 @@
         "label": "Additional content",
         "default": "",
         "tooltip": "Additional content will be displayed below the order details.",
+        "size": "large",
         "validation_type": "html",
         "settings": {
             "media_buttons": false,
