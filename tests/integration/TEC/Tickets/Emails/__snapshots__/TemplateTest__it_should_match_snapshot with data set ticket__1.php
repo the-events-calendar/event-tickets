@@ -516,7 +516,17 @@
 		padding-bottom: 30px;
 	}
 
-	@media screen and ( max-width: 570px ) {
+	.tec-tickets__email-table-content-ticket-holder-name-container,
+	td.tec-tickets__email-table-content-ticket-holder-name-container {
+		vertical-align: top;
+	}
+
+	.tec-tickets__email-table-content-ticket-security-code-container,
+	td.tec-tickets__email-table-content-ticket-security-code-container {
+		vertical-align: bottom;
+	}
+
+	@media screen and ( max-width: 500px ) {
 		.tec-tickets__email-table-content-title,
 		h1.tec-tickets__email-table-content-title {
 			font-size: 21px;
@@ -526,6 +536,23 @@
 		.tec-tickets__email-table-content,
 		table.tec-tickets__email-table-content {
 			padding: 15px 25px;
+		}
+
+		.tec-tickets__email-table-content-ticket-holder-name-container,
+		td.tec-tickets__email-table-content-ticket-holder-name-container {
+			display: block;
+			padding-bottom: 30px;
+			text-align: left;
+		}
+
+		.tec-tickets__email-table-content-ticket-security-code {
+			padding: 15px 0 30px 0 !important;
+		}
+
+		.tec-tickets__email-table-content-ticket-security-code-container,
+		td.tec-tickets__email-table-content-ticket-security-code-container {
+			display: block;
+			text-align: center;
 		}
 	}
 </style>
@@ -582,16 +609,23 @@
 		<table class="tec-tickets__email-table-content-tickets" role="presentation">
 								<tr>
 				<td class="tec-tickets__email-table-content-ticket">
-				<h2 class="tec-tickets__email-table-content-ticket-holder-name">
-	John Doe</h2>
-
-				<div class="tec-tickets__email-table-content-ticket-type-name">
-	General Admission</div>
-
-				<div class="tec-tickets__email-table-content-ticket-security-code">
-	abcdefg12345</div>
-
-								</td>
+					<table>
+						<tr>
+							<td class="tec-tickets__email-table-content-ticket-holder-name-container">
+	<h2 class="tec-tickets__email-table-content-ticket-holder-name">
+		John Doe	</h2>
+								<div class="tec-tickets__email-table-content-ticket-type-name">
+		General Admission	</div>
+</td>
+						</tr>
+						<tr>
+							<td class="tec-tickets__email-table-content-ticket-security-code-container">
+	<div class="tec-tickets__email-table-content-ticket-security-code">
+		abcdefg12345	</div>
+</td>
+						</tr>
+					</table>
+									</td>
 			</tr>
 				</table>
 	</td>

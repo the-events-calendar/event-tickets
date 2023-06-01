@@ -30,6 +30,8 @@ if ( empty( $ticket['security_code'] ) ) {
 }
 
 ?>
-<div class="tec-tickets__email-table-content-ticket-security-code">
-	<?php echo esc_html( $ticket['security_code'] ); ?>
-</div>
+<td class="tec-tickets__email-table-content-ticket-security-code-container">
+	<div class="tec-tickets__email-table-content-ticket-security-code">
+		<?php echo esc_html( $ticket['security_code'] ); ?>
+	</div>
+</td>
