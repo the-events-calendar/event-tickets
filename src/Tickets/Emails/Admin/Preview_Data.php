@@ -9,7 +9,6 @@
 
 namespace TEC\Tickets\Emails\Admin;
 
-use TEC\Tickets\Commerce\Gateways\Manual\Gateway;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Utils\Value;
 use TEC\Tickets\Emails\Email\Ticket;
