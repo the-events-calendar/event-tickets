@@ -386,7 +386,12 @@ class Orders extends WP_List_Table {
 		if ( ! $gateway ) {
 			return $item->gateway_order_id;
 		}
-		return $gateway->get_order_details_link_by_order( $item );
+
+		return sprintf(
+			'<a href="%s" target="_blank" rel="noopener noreferrer">%s</a>',
+			$gateway->get_order_controller()->get_gateway_admin_url_by_order( $item ),
+			$item->gateway_order_id
+		);
 	}
 
 	/**
