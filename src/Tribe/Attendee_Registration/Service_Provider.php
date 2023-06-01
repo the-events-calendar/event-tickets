@@ -24,7 +24,6 @@ class Tribe__Tickets__Attendee_Registration__Service_Provider extends tad_DI52_S
 	 *
 	 * @since 4.9
 	 * @since 5.0.3 Bail if ETP is not active.
-	 * @since TBD Added
 	 */
 	public function hooks() {
 		// Only run the code if Event Tickets Plus is active.
