@@ -156,6 +156,7 @@ class Purchase_Receipt extends Email_Abstract {
 				'label'               => esc_html__( 'Additional content', 'event-tickets' ),
 				'default'             => '',
 				'tooltip'             => esc_html__( 'Additional content will be displayed below the purchase receipt details in the email.', 'event-tickets' ),
+				'size'                => 'large',
 				'validation_type'     => 'html',
 				'settings'        => [
 					'media_buttons' => false,
