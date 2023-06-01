@@ -118,7 +118,7 @@ abstract class Email_Abstract {
 
 		$default_placeholders = [
 			'{site_title}'   => $this->get_blogname(),
-			'{site_address}' => $url_parts['host'] . $url_parts['path'] ?: '/',
+			'{site_address}' => $url_parts['host'] . ! empty( $url_parts['path'] ) ? $url_parts['path'] : '',
 			'{site_url}'     => $home_url,
 		];
 
