@@ -158,7 +158,7 @@ class Tribe__Tickets__Attendee_Registration__Service_Provider extends tad_DI52_S
 	 * This function is used to modify the behavior of the WordPress loop when the AR (Attendee Registration) page is being displayed.
 	 * It mimics a singular post, allowing certain operations and templates to function properly.
 	 *
-	 * @since 1.0.0
+	 * @since TBD
 	 *
 	 * @param array $posts Array of post objects.
 	 *
