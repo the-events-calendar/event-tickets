@@ -1,8 +1,12 @@
 <?php return '<style type="text/css">
+	.tec-tickets__email-table-content-event-title-container,
+	td.tec-tickets__email-table-content-event-title-container,
 	.tec-tickets__email-table-content-event-links-container,
 	td.tec-tickets__email-table-content-event-links-container,
 	.tec-tickets__email-table-content-event-date-container,
 	td.tec-tickets__email-table-content-event-date-container,
+	.tec-tickets__email-table-content-event-description-container,
+	td.tec-tickets__email-table-content-event-description-container,
 	.tec-tickets__email-table-content-event-image-container,
 	td.tec-tickets__email-table-content-event-image-container {
 		padding: 0;
@@ -71,7 +75,7 @@
 		color: #141827;
 		font-size: 18px;
 		font-weight: 700 !important;
-		margin: 0;
+		margin: 0; 
 		padding: 0;
 	}
 	.tec-tickets__email-table-content-event-venue-table {
@@ -173,6 +177,11 @@
 	td.tec-tickets__email-table-content-event-venue-website-container {
 		color: #141827;
 		padding: 0;
+	}
+	
+	h3.tec-tickets__email-table-content-event-title a {
+		color: #141827;
+		text-decoration: none;
 	}
 </style><style type="text/css">
 	body {
@@ -516,7 +525,17 @@
 		padding-bottom: 30px;
 	}
 
-	@media screen and ( max-width: 570px ) {
+	.tec-tickets__email-table-content-ticket-holder-name-container,
+	td.tec-tickets__email-table-content-ticket-holder-name-container {
+		vertical-align: top;
+	}
+
+	.tec-tickets__email-table-content-ticket-security-code-container,
+	td.tec-tickets__email-table-content-ticket-security-code-container {
+		vertical-align: bottom;
+	}
+
+	@media screen and ( max-width: 500px ) {
 		.tec-tickets__email-table-content-title,
 		h1.tec-tickets__email-table-content-title {
 			font-size: 21px;
@@ -526,6 +545,19 @@
 		.tec-tickets__email-table-content,
 		table.tec-tickets__email-table-content {
 			padding: 15px 25px;
+		}
+
+		.tec-tickets__email-table-content-ticket-holder-name-container,
+		td.tec-tickets__email-table-content-ticket-holder-name-container {
+			display: block;
+			padding-bottom: 30px;
+			text-align: left;
+		}
+
+		.tec-tickets__email-table-content-ticket-security-code-container,
+		td.tec-tickets__email-table-content-ticket-security-code-container {
+			display: block;
+			text-align: center;
 		}
 	}
 </style>
@@ -570,6 +602,14 @@
 	</td>
 </tr>
 <tr>
+	<td class="tec-tickets__email-table-content-event-title-container">
+		<h3 class="tec-tickets__email-table-content-event-title">
+			<a href="#" target="_blank">
+				Arts in the Park			</a>
+		</h3>
+	</td>
+</tr>
+<tr>
 	<td style="padding:0;" class="tec-tickets__email-table-content-event-image-container">
 		<img
 			class="tec-tickets__email-table-content-event-image"
@@ -582,16 +622,23 @@
 		<table class="tec-tickets__email-table-content-tickets" role="presentation">
 								<tr>
 				<td class="tec-tickets__email-table-content-ticket">
-				<h2 class="tec-tickets__email-table-content-ticket-holder-name">
-	John Doe</h2>
-
-				<div class="tec-tickets__email-table-content-ticket-type-name">
-	General Admission</div>
-
-				<div class="tec-tickets__email-table-content-ticket-security-code">
-	abcdefg12345</div>
-
-								</td>
+					<table>
+						<tr>
+							<td class="tec-tickets__email-table-content-ticket-holder-name-container">
+	<h2 class="tec-tickets__email-table-content-ticket-holder-name">
+		John Doe	</h2>
+								<div class="tec-tickets__email-table-content-ticket-type-name">
+		General Admission	</div>
+</td>
+						</tr>
+						<tr>
+							<td class="tec-tickets__email-table-content-ticket-security-code-container">
+	<div class="tec-tickets__email-table-content-ticket-security-code">
+		abcdefg12345	</div>
+</td>
+						</tr>
+					</table>
+									</td>
 			</tr>
 				</table>
 	</td>

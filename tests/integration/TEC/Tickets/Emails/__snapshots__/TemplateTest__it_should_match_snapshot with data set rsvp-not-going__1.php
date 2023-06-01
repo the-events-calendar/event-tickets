@@ -340,7 +340,17 @@
 		padding-bottom: 30px;
 	}
 
-	@media screen and ( max-width: 570px ) {
+	.tec-tickets__email-table-content-ticket-holder-name-container,
+	td.tec-tickets__email-table-content-ticket-holder-name-container {
+		vertical-align: top;
+	}
+
+	.tec-tickets__email-table-content-ticket-security-code-container,
+	td.tec-tickets__email-table-content-ticket-security-code-container {
+		vertical-align: bottom;
+	}
+
+	@media screen and ( max-width: 500px ) {
 		.tec-tickets__email-table-content-title,
 		h1.tec-tickets__email-table-content-title {
 			font-size: 21px;
@@ -350,6 +360,19 @@
 		.tec-tickets__email-table-content,
 		table.tec-tickets__email-table-content {
 			padding: 15px 25px;
+		}
+
+		.tec-tickets__email-table-content-ticket-holder-name-container,
+		td.tec-tickets__email-table-content-ticket-holder-name-container {
+			display: block;
+			padding-bottom: 30px;
+			text-align: left;
+		}
+
+		.tec-tickets__email-table-content-ticket-security-code-container,
+		td.tec-tickets__email-table-content-ticket-security-code-container {
+			display: block;
+			text-align: center;
 		}
 	}
 </style>
