@@ -42,7 +42,6 @@ class Tribe__Tickets__Attendee_Registration__Service_Provider extends tad_DI52_S
 		add_filter( 'generate_rewrite_rules', [ $this, 'filter_generate' ] );
 		add_filter( 'rewrite_rules_array', [ $this, 'remove_percent_placeholders' ], 25 );
 		add_filter( 'tribe_tickets_commerce_paypal_add_to_cart_args', [ $this, 'add_product_delete_to_paypal_url' ], 10, 1 );
-		add_filter( 'the_posts', [ $this, 'tec_tickets_mock_ar_as_singular' ], -5 );
 	}
 
 	/**
@@ -151,48 +150,5 @@ class Tribe__Tickets__Attendee_Registration__Service_Provider extends tad_DI52_S
 		$make = $this->container->make( 'tickets.attendee_registration.meta' );
 
 		return $make->add_product_delete_to_paypal_url( $args );
-	}
-
-	/**
-	 * Mock the AR page as a singular post.
-	 *
-	 * This function is used to modify the behavior of the WordPress loop when the AR (Attendee Registration) page is being displayed.
-	 * It mimics a singular post, allowing certain operations and templates to function properly.
-	 *
-	 * @since TBD
-	 *
-	 * @param array $posts Array of post objects.
-	 *
-	 * @return array The modified array of post objects.
-	 */
-	function tec_tickets_mock_ar_as_singular( array $posts ): array {
-		global $wp_query;
-
-		// Check if the required classes exist.
-		if ( ! class_exists( 'Tribe__Tickets__Main' ) || ! class_exists( 'Tribe__Tickets_Plus__Main' ) ) {
-			return $posts;
-		}
-
-		// Exclude the AR page in the admin and customize preview.
-		if ( is_admin() || is_customize_preview() ) {
-			return $posts;
-		}
-
-		// Check if the AR template is bound.
-		if ( ! tribe()->isBound( 'tickets.attendee_registration.template' ) ) {
-			return $posts;
-		}
-
-		$template = tribe( 'tickets.attendee_registration.template' );
-
-		// Check if the current page is the AR page.
-		if ( ! $template->is_on_ar_page() ) {
-			return $posts;
-		}
-
-		// Set the is_singular property of the global $wp_query to true.
-		$wp_query->is_singular = true;
-
-		return $posts;
 	}
 }
