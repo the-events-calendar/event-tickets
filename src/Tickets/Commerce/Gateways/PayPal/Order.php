@@ -9,7 +9,7 @@ use Tribe__Utils__Array as Arr;
 /**
  * Class Order
  *
- * @since   TBD
+ * @since TBD
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
