@@ -586,17 +586,17 @@
 	</td>
 </tr>
 <tr>
+	<td class="tec-tickets__email-table-content-event-date-container">
+		<p class="tec-tickets__email-table-content-event-date">
+			September 22 @ 7:00 pm - 11:00 pm		</p>
+	</td>
+</tr>
+<tr>
 	<td class="tec-tickets__email-table-content-post-title-container">
 		<h3 class="tec-tickets__email-table-content-post-title">
 			<a href="http://wordpress.test/?p=-91" target="_blank" rel="noopener noreferrer">
 				Arts in the Park			</a>
 		</h3>
-	</td>
-</tr>
-<tr>
-	<td class="tec-tickets__email-table-content-event-date-container">
-		<p class="tec-tickets__email-table-content-event-date">
-			September 22 @ 7:00 pm - 11:00 pm		</p>
 	</td>
 </tr>
 <tr>
