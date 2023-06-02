@@ -330,11 +330,6 @@
 		line-height: 1.5;
 	}
 
-	.tec-tickets__email-table-content-post-description-container,
-	td.tec-tickets__email-table-content-post-description-container {
-		padding-bottom: 20px;
-	}
-
 	.tec-tickets__email-table-content-not-going-confirmation-container,
 	td.tec-tickets__email-table-content-not-going-confirmation-container {
 		padding-bottom: 30px;
@@ -492,6 +487,79 @@
 	12345abcde</td>
 </tr>
 					</table>
+	</td>
+</tr>
+<tr>
+	<td class="tec-tickets__email-table-content-event-venue-title-container">
+		<h3 class="tec-tickets__email-table-content-event-venue-title">
+			Event Location		</h3>
+	</td>
+</tr>
+<tr>
+	<td class="tec-tickets__email-table-content-event-venue-container">
+		<h2 class="tec-tickets__email-table-content-event-venue-name">
+			Central Park		</h2>
+		<table role="presentation" class="tec-tickets__email-table-content-event-venue-table">
+			<tr>
+				<td class="tec-tickets__email-table-content-event-venue-address-table-container">
+					<table role="presentation" class="tec-tickets__email-table-content-event-venue-address-table">
+	<tr>
+		<td class="tec-tickets__email-table-content-event-venue-address-pin-container" valign="top" align="center">
+			<img
+				class="tec-tickets__email-table-content-event-venue-address-pin"
+				width="20"
+				height="28"
+				src="http://wordpress.test/wp-content/plugins/the-events-calendar/src/resources/images/icons/bitmap/map-pin.png"
+			/>
+		</td>
+		<td class="tec-tickets__email-table-content-event-venue-address-container">
+		41st Street<br />New York, NY 10001<br />United States<br />				<a href="#">
+					Get Directions				</a>
+					</td>
+	</tr>
+</table>
+				</td>
+				<td class="tec-tickets__email-table-content-event-venue-phone-website-container">
+
+					<table role="presentation" class="tec-tickets__email-table-content-event-venue-address-table">
+	<tr>
+		<td class="tec-tickets__email-table-content-event-venue-phone-icon-container" valign="top" align="center">
+			<img
+				width="25"
+				height="24"
+				class="tec-tickets__email-table-content-event-venue-phone-icon-image"
+				src="http://wordpress.test/wp-content/plugins/the-events-calendar/src/resources/images/icons/bitmap/phone.png"
+			/>
+		</td>
+		<td class="tec-tickets__email-table-content-event-venue-phone-container">
+			(555) 555-5555		</td>
+	</tr>
+</table>
+
+					<table role="presentation" class="tec-tickets__email-table-content-event-venue-website-table">
+	<tr>
+		<td class="tec-tickets__email-table-content-event-venue-website-icon-container" valign="top" align="center">
+			<img
+				width="24"
+				height="23"
+				class="tec-tickets__email-table-content-event-venue-website-icon-image"
+				src="http://wordpress.test/wp-content/plugins/the-events-calendar/src/resources/images/icons/bitmap/link.png"
+			/>
+		</td>
+		<td class="tec-tickets__email-table-content-event-venue-website-container">
+			<a
+				href="http://wordpress.test"
+				target="_blank"
+				rel="noopener noreferrer"
+				style="overflow-wrap: anywhere;"
+			>
+				http://wordpress.test			</a>
+		</td>
+	</tr>
+</table>
+				</td>
+			</tr>
+		</table>
 	</td>
 </tr>
 					</table>

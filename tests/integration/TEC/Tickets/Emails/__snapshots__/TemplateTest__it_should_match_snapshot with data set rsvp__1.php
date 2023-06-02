@@ -506,11 +506,6 @@
 		line-height: 1.5;
 	}
 
-	.tec-tickets__email-table-content-post-description-container,
-	td.tec-tickets__email-table-content-post-description-container {
-		padding-bottom: 20px;
-	}
-
 	.tec-tickets__email-table-content-not-going-confirmation-container,
 	td.tec-tickets__email-table-content-not-going-confirmation-container {
 		padding-bottom: 30px;
@@ -587,10 +582,6 @@
 	</td>
 </tr>
 <tr>
-	<td class="tec-tickets__email-table-content-post-description-container">
-		Experience the magic of creativity in nature at &quot;Arts in the Park.&quot; Immerse in art, live performances, and interactive activities, celebrating artistic expressions for all ages. Join us for an enchanting day of vibrant installations and captivating music—an unforgettable event that inspires and connects. Save the date and indulge your senses at &quot;Arts in the Park&quot;! (This excerpt is for demonstration purposes only.)	</td>
-</tr>
-<tr>
 	<td class="tec-tickets__email-table-content-event-date-container">
 		<p class="tec-tickets__email-table-content-event-date">
 			September 22 @ 7:00 pm - 11:00 pm		</p>
@@ -629,6 +620,10 @@
 			</tr>
 				</table>
 	</td>
+</tr>
+<tr>
+	<td class="tec-tickets__email-table-content-post-description-container">
+		Experience the magic of creativity in nature. Save the date and indulge your senses at &quot;Arts in the Park&quot;!  Join us for an enchanting day of vibrant musics and captivating... 	</td>
 </tr>
 <tr>
 	<td class="tec-tickets__email-table-content-event-venue-title-container">

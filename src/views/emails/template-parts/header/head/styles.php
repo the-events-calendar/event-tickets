@@ -362,11 +362,6 @@
 		line-height: 1.5;
 	}
 
-	.tec-tickets__email-table-content-post-description-container,
-	td.tec-tickets__email-table-content-post-description-container {
-		padding-bottom: 20px;
-	}
-
 	.tec-tickets__email-table-content-not-going-confirmation-container,
 	td.tec-tickets__email-table-content-not-going-confirmation-container {
 		padding-bottom: 30px;
