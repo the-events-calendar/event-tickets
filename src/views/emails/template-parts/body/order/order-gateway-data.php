@@ -33,7 +33,7 @@ $link_or_id = $order->gateway_order_id;
 if ( $gateway ) {
 	$link_or_id = sprintf(
 		'<a href="%s" target="_blank" rel="noopener noreferrer">%s</a>',
-		esc_url( $gateway->get_order_controller()->get_gateway_admin_url_by_order( $order ) ),
+		esc_url( $gateway->get_order_controller()->get_gateway_dashboard_url_by_order( $order ) ),
 		$order->gateway_order_id
 	);
 }

@@ -145,7 +145,7 @@ abstract class Abstract_Order {
 	 *
 	 * @return ?string
 	 */
-	public function get_gateway_admin_url_by_order( \WP_Post $order ): ?string {
+	public function get_gateway_dashboard_url_by_order( \WP_Post $order ): ?string {
 		return null;
 	}
 }

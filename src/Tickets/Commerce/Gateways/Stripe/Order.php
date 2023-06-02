@@ -17,7 +17,7 @@ class Order extends Abstract_Order {
 	/**
 	 * @inheritDoc
 	 */
-	public function get_gateway_admin_url_by_order( \WP_Post $order ): string {
+	public function get_gateway_dashboard_url_by_order( \WP_Post $order ): string {
 		$status          = tribe( Status_Handler::class )->get_by_wp_slug( $order->post_status );
 		$payload         = $order->gateway_payload[ $status::SLUG ] ?? end( $order->gateway_payload );
 		$capture_payload = end( $payload );
