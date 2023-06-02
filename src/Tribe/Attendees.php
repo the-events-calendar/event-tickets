@@ -609,6 +609,10 @@ class Tribe__Tickets__Attendees {
 
 		$event_id = absint( $_GET['event_id'] );
 
+		if ( class_exists( '\TEC\Events\Custom_Tables\V1\Models\Occurrence' ) ) {
+			$event_id = \TEC\Events\Custom_Tables\V1\Models\Occurrence::normalize_id( $event_id );
+		}
+
 		// Verify event ID is a valid integer and the nonce is accepted.
 		if ( empty( $event_id ) || ! wp_verify_nonce( $_GET['attendees_csv_nonce'], 'attendees_csv_nonce' ) ) {
 			return;
