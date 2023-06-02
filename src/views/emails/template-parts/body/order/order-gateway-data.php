@@ -30,19 +30,24 @@ if ( empty( $order->gateway_order_id )  ) {
 
 $gateway = tribe( Manager::class )->get_gateway_by_key( $order->gateway );
 $link_or_id = $order->gateway_order_id;
-if (  $gateway ) {
-	$link_or_id = $gateway->get_order_details_link_by_order( $order );
+if ( $gateway ) {
+	$link_or_id = sprintf(
+		'<a href="%s" target="_blank" rel="noopener noreferrer">%s</a>',
+		esc_url( $gateway->get_order_controller()->get_gateway_dashboard_url_by_order( $order ) ),
+		$order->gateway_order_id
+	);
 }
 
+// In this case we specifically escape before sprintf, because we want the link in the translation.
 $gateway_order_id_string = sprintf(
 	// Translators: %s - The order gateway ID.
-	__( 'Gateway Order #%s', 'event-tickets' ),
+	esc_html__( 'Gateway Order #%s', 'event-tickets' ),
 	$link_or_id
 );
 
 ?>
 <tr>
 	<td class="tec-tickets__email-table-content-order-gateway-data-container" align="right">
-		<?php echo wp_kses( $gateway_order_id_string, [ 'a' => [ 'target' => [], 'rel' => [], 'href' => [], ] ] ); ?>
+		<?php echo $gateway_order_id_string; ?>
 	</td>
 </tr>

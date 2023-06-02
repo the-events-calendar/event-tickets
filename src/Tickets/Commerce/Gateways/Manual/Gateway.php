@@ -20,6 +20,11 @@ class Gateway extends Abstract_Gateway {
 
 	/**
 	 * @inheritDoc
+	 */
+	protected string $order_controller_class = Order::class;
+
+	/**
+	 * @inheritDoc
 	 *
 	 * @since 5.2.0
 	 */
