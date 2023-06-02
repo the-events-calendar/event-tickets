@@ -351,6 +351,13 @@
 		width: 100%;
 	}
 
+	td.tec-tickets__email-table-content-post-description-container {
+		color: #141827 !important;
+		font-size: 16px !important;
+		line-height: 1.5;
+		padding-top: 30px;
+	}
+
 	@media screen and ( max-width: 500px ) {
 		.tec-tickets__email-table-content-title,
 		h1.tec-tickets__email-table-content-title {
