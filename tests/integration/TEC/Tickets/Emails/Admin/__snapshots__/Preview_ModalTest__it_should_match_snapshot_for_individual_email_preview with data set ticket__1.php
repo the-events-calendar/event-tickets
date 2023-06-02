@@ -189,7 +189,7 @@
 	.tec-tickets__email-body a,
 	.tec-tickets__email-body a:focus,
 	.tec-tickets__email-body a:visited {
-		color: #141827;
+		color: #141827 !important;
 		text-decoration: underline;
 	}
 
@@ -506,11 +506,6 @@
 		line-height: 1.5;
 	}
 
-	.tec-tickets__email-table-content-post-description-container,
-	td.tec-tickets__email-table-content-post-description-container {
-		padding-bottom: 20px;
-	}
-
 	.tec-tickets__email-table-content-not-going-confirmation-container,
 	td.tec-tickets__email-table-content-not-going-confirmation-container {
 		padding-bottom: 30px;
@@ -524,6 +519,11 @@
 	.tec-tickets__email-table-content-ticket-security-code-container,
 	td.tec-tickets__email-table-content-ticket-security-code-container {
 		vertical-align: bottom;
+	}
+
+	.tec-tickets__email-table-content-ticket-table,
+	table.tec-tickets__email-table-content-ticket-table {
+		width: 100%;
 	}
 
 	@media screen and ( max-width: 500px ) {
@@ -543,16 +543,22 @@
 			display: block;
 			padding-bottom: 30px;
 			text-align: left;
+			width: 100%;
 		}
 
 		.tec-tickets__email-table-content-ticket-security-code {
 			padding: 15px 0 30px 0 !important;
 		}
 
-		.tec-tickets__email-table-content-ticket-security-code-container,
-		td.tec-tickets__email-table-content-ticket-security-code-container {
+		.tec-tickets__email-table-content-ticket-table td,
+		table.tec-tickets__email-table-content-ticket-table td {
 			display: block;
 			text-align: center;
+		}
+
+		.tec-tickets__email-table-content-ticket-holder-name,
+		.tec-tickets__email-table-content-ticket-type-name {
+			text-align: left;
 		}
 	}
 </style>
@@ -587,10 +593,6 @@
 	</td>
 </tr>
 <tr>
-	<td class="tec-tickets__email-table-content-post-description-container">
-		Experience the magic of creativity in nature at &quot;Arts in the Park.&quot; Immerse in art, live performances, and interactive activities, celebrating artistic expressions for all ages. Join us for an enchanting day of vibrant installations and captivating music—an unforgettable event that inspires and connects. Save the date and indulge your senses at &quot;Arts in the Park&quot;! (This excerpt is for demonstration purposes only.)	</td>
-</tr>
-<tr>
 	<td class="tec-tickets__email-table-content-event-date-container">
 		<p class="tec-tickets__email-table-content-event-date">
 			September 22 @ 7:00 pm - 11:00 pm		</p>
@@ -609,7 +611,7 @@
 		<table class="tec-tickets__email-table-content-tickets" role="presentation">
 								<tr>
 				<td class="tec-tickets__email-table-content-ticket">
-					<table>
+					<table class="tec-tickets__email-table-content-ticket-table">
 						<tr>
 							<td class="tec-tickets__email-table-content-ticket-holder-name-container">
 	<h2 class="tec-tickets__email-table-content-ticket-holder-name">
@@ -629,6 +631,10 @@
 			</tr>
 				</table>
 	</td>
+</tr>
+<tr>
+	<td class="tec-tickets__email-table-content-post-description-container">
+		Experience the magic of creativity in nature. Save the date and indulge your senses at &quot;Arts in the Park&quot;!  Join us for an enchanting day of vibrant musics and captivating... 	</td>
 </tr>
 <tr>
 	<td class="tec-tickets__email-table-content-event-venue-title-container">

@@ -287,7 +287,7 @@ class Preview_Data {
 			'post_date'      => '2023-04-17 17:06:56',
 			'post_date_gmt'  => '2023-04-17 17:06:56',
 			'post_title'     => __( 'Arts in the Park', 'event-tickets' ),
-			'post_excerpt'   => __( 'Experience the magic of creativity in nature at "Arts in the Park." Immerse in art, live performances, and interactive activities, celebrating artistic expressions for all ages. Join us for an enchanting day of vibrant installations and captivating music—an unforgettable event that inspires and connects. Save the date and indulge your senses at "Arts in the Park"! (This excerpt is for demonstration purposes only.)', 'event-tickets' ),
+			'post_excerpt'   => __( 'Experience the magic of creativity in nature. Save the date and indulge your senses at "Arts in the Park"!  Join us for an enchanting day of vibrant musics and captivating... ', 'event-tickets' ),
 			'post_status'    => 'publish',
 			'post_permalink' => '#',
 			'post_name'      => 'preview-post-91',

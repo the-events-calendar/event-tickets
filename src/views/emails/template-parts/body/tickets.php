@@ -39,7 +39,7 @@ $this->template( 'template-parts/body/tickets-total' );
 			<?php $i++; ?>
 			<tr>
 				<td class="tec-tickets__email-table-content-ticket">
-					<table>
+					<table class="tec-tickets__email-table-content-ticket-table">
 						<tr>
 							<?php $this->template( 'template-parts/body/ticket/holder-name', [ 'ticket' => $ticket ] ); ?>
 							<?php $this->template( 'template-parts/body/ticket/ticket-name', [ 'ticket' => $ticket ] ); ?>
