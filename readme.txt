@@ -196,6 +196,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Updated the page heading when on the Orders Report page. [ET-1737]
 * Fix - When no providers are enabled, a warning will display above the `New Ticket` and `New RSVP` area explaining that at least one must be enabled. [ET-1696]
 * Fix - Corrected an issue with the `New ticket` button having invalid HTML. [ET-1631]
+* Fix - Resolved an issue that caused compatibility problems between specific themes and the Attendee Registration page. [ET-1767]
 
 = [5.5.11.1] 2023-05-09 =
 
