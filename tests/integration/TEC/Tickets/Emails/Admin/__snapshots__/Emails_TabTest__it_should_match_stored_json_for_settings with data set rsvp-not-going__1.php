@@ -42,6 +42,7 @@
         "label": "Additional content",
         "default": "",
         "tooltip": "Additional content will be displayed below the information in your email.",
+        "size": "large",
         "validation_type": "html",
         "settings": {
             "media_buttons": false,

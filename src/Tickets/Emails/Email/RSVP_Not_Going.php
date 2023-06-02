@@ -158,6 +158,7 @@ class RSVP_Not_Going extends Email_Abstract {
 				'label'           => esc_html__( 'Additional content', 'event-tickets' ),
 				'default'         => '',
 				'tooltip'         => esc_html__( 'Additional content will be displayed below the information in your email.', 'event-tickets' ),
+				'size'            => 'large',
 				'validation_type' => 'html',
 				'settings'        => [
 					'media_buttons' => false,

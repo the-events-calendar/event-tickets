@@ -174,6 +174,7 @@ class Completed_Order extends Email_Abstract {
 				'label'               => esc_html__( 'Additional content', 'event-tickets' ),
 				'default'             => $this->get_default_additional_content(),
 				'tooltip'             => esc_html__( 'Additional content will be displayed below the order details.', 'event-tickets' ),
+				'size'                => 'large',
 				'validation_type'     => 'html',
 				'settings'        => [
 					'media_buttons' => false,
