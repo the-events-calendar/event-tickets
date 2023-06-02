@@ -189,7 +189,7 @@
 	.tec-tickets__email-body a,
 	.tec-tickets__email-body a:focus,
 	.tec-tickets__email-body a:visited {
-		color: #141827;
+		color: #141827 !important;
 		text-decoration: underline;
 	}
 
