@@ -370,6 +370,7 @@
 	.tec-tickets__email-table-content-ticket-holder-name-container,
 	td.tec-tickets__email-table-content-ticket-holder-name-container {
 		vertical-align: top;
+		width: 100%;
 	}
 
 	.tec-tickets__email-table-content-ticket-security-code-container,
