@@ -345,6 +345,11 @@
 		vertical-align: bottom;
 	}
 
+	.tec-tickets__email-table-content-ticket-table,
+	table.tec-tickets__email-table-content-ticket-table {
+		width: 100%;
+	}
+
 	@media screen and ( max-width: 500px ) {
 		.tec-tickets__email-table-content-title,
 		h1.tec-tickets__email-table-content-title {
@@ -362,16 +367,22 @@
 			display: block;
 			padding-bottom: 30px;
 			text-align: left;
+			width: 100%;
 		}
 
 		.tec-tickets__email-table-content-ticket-security-code {
 			padding: 15px 0 30px 0 !important;
 		}
 
-		.tec-tickets__email-table-content-ticket-security-code-container,
-		td.tec-tickets__email-table-content-ticket-security-code-container {
+		.tec-tickets__email-table-content-ticket-table td,
+		table.tec-tickets__email-table-content-ticket-table td {
 			display: block;
 			text-align: center;
+		}
+
+		.tec-tickets__email-table-content-ticket-holder-name,
+		.tec-tickets__email-table-content-ticket-type-name {
+			text-align: left;
 		}
 	}
 </style>
