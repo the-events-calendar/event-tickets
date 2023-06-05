@@ -25,6 +25,7 @@
         "type": "text",
         "label": "Recipient(s)",
         "default": "admin@wordpress.test",
+        "tooltip": "Add additional recipient emails separated by commas.",
         "size": "large",
         "validation_type": "email_list"
     },

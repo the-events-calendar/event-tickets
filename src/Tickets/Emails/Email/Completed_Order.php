@@ -150,6 +150,7 @@ class Completed_Order extends Email_Abstract {
 				'type'                => 'text',
 				'label'               => esc_html__( 'Recipient(s)', 'event-tickets' ),
 				'default'             => $this->get_default_recipient(),
+				'tooltip'             => esc_html__( 'Add additional recipient emails separated by commas.', 'event-tickets' ),
 				'size'                => 'large',
 				'validation_type' => 'email_list',
 			],
