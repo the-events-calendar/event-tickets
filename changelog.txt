@@ -1,7 +1,8 @@
 == Changelog ==
 
-= [5.6.0] TBD =
+= [5.6.0] 2023-06-07 =
 
+* Feature - Introduction of Tickets Emails, the new and improved solution for managing Event Tickets related emails.
 * Enhancement - Display order details link for TicketsCommerce providers on Orders page Gateway ID column. [ET-1729]
 * Enhancement - Add support for Gmail JSON LD markup of Ticket Emails. [ET-1601][ET-1637]
 
