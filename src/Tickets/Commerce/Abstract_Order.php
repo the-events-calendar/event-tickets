@@ -139,7 +139,7 @@ abstract class Abstract_Order {
 	/**
 	 * Get the order Gateway Admin URL link by order ID
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @param \WP_Post $order The order post object.
 	 *
