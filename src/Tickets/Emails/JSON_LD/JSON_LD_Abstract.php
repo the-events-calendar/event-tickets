@@ -6,14 +6,14 @@ use TEC\Tickets\Emails\Email_Abstract;
 /**
  * Abstract class for JSON LD schemas related to emails.
  *
- * @since TBD
+ * @since 5.6.0
  */
 abstract class JSON_LD_Abstract {
 
 	/**
 	 * The type of the schema.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @var string
 	 */
@@ -22,7 +22,7 @@ abstract class JSON_LD_Abstract {
 	/**
 	 * Get the type of the schema.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @return string
 	 */
@@ -33,7 +33,7 @@ abstract class JSON_LD_Abstract {
 	/**
 	 * Get the data for the schema.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @return array<string,mixed> The data for the schema.
 	 */
@@ -47,7 +47,7 @@ abstract class JSON_LD_Abstract {
 	/**
 	 * Get the data for the schema.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @return array<string,mixed> The data for the schema.
 	 */
@@ -63,7 +63,7 @@ abstract class JSON_LD_Abstract {
 	/**
 	 * Get the JSON data for the schema.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @return array<string,mixed> The data for the schema.
 	 */
@@ -73,7 +73,7 @@ abstract class JSON_LD_Abstract {
 		/**
 		 * Filter the generated JSON-LD schema data.
 		 *
-		 * @since TBD
+		 * @since 5.6.0
 		 *
 		 * @param array<string,mixed> $data The JSON-LD schema data.
 		 * @param JSON_LD_Abstract    $schema The schema instance.
@@ -84,7 +84,7 @@ abstract class JSON_LD_Abstract {
 	/**
 	 * Filter the schema instance.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @return JSON_LD_Abstract The schema instance.
 	 */
@@ -92,7 +92,7 @@ abstract class JSON_LD_Abstract {
 		/**
 		 * Filter the JSON schema object for this email.
 		 *
-		 * @since TBD
+		 * @since 5.6.0
 		 *
 		 * @param array $data The JSON data.
 		 * @param \WP_Post $order The order object.
@@ -104,7 +104,7 @@ abstract class JSON_LD_Abstract {
 	/**
 	 * Get JSON encode options.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @return int The JSON encode options.
 	 */
@@ -113,7 +113,7 @@ abstract class JSON_LD_Abstract {
 		 * Allows the filtering of the JSON options for testing and development purposes of the JSON encode options for the
 		 * view data JSON passed into the manager.
 		 *
-		 * @since TBD
+		 * @since 5.6.0
 		 *
 		 * @param int $options The Options passed into the json_encode.
 		 */
@@ -123,7 +123,7 @@ abstract class JSON_LD_Abstract {
 	/**
 	 * Build the data for the schema.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @return array<string,mixed> The data for the schema.
 	 */
@@ -132,7 +132,7 @@ abstract class JSON_LD_Abstract {
 	/**
 	 * Get the arguments for the schema.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @return array<string,mixed> The arguments for the schema.
 	 */
