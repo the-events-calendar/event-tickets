@@ -26,7 +26,7 @@ use Tribe__Tickets__Main as ET_Plugin;
 class Telemetry {
 
 	/**
-	 * The Telemetry plugin slug for The Events Calendar.
+	 * The Telemetry plugin slug for Event Tickets.
 	 *
 	 * @since TBD
 	 *
@@ -35,7 +35,7 @@ class Telemetry {
 	protected static $plugin_slug = 'event-tickets';
 
 	/**
-	 * The "plugin path" for The Events Calendar main file.
+	 * The "plugin path" for Event Tickets main file.
 	 *
 	 * @since TBD
 	 *
@@ -171,7 +171,7 @@ class Telemetry {
 	}
 
 	/**
-	 * Adds The Events Calendar to the list of plugins
+	 * Adds Event Tickets to the list of plugins
 	 * to be opted in/out alongside tribe-common.
 	 *
 	 * @since TBD
@@ -180,7 +180,7 @@ class Telemetry {
 	 *
 	 * @see \TEC\Common\Telemetry\Telemetry::get_tec_telemetry_slugs()
 	 *
-	 * @return array<string,string> $slugs The same array with The Events Calendar added to it.
+	 * @return array<string,string> $slugs The same array with Event Tickets added to it.
 	 */
 	public function filter_tec_telemetry_slugs( $slugs ) {
 		$dir = ET_Plugin::instance()->plugin_dir;

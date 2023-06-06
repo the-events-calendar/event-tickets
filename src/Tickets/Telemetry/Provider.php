@@ -94,7 +94,7 @@ class Provider extends Service_Provider {
 	}
 
 	/**
-	 * Let The Events Calendar add itself to the list of registered plugins for Telemetry.
+	 * Let Event Tickets add itself to the list of registered plugins for Telemetry.
 	 *
 	 * @since TBD
 	 *
