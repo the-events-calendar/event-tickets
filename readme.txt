@@ -196,6 +196,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Feature - Introduction of Tickets Emails, the new and improved solution for managing Event Tickets related emails.
 * Enhancement - Display order details link for TicketsCommerce providers on Orders page Gateway ID column. [ET-1729]
 * Enhancement - Add support for Gmail JSON LD markup of Ticket Emails. [ET-1601][ET-1637]
+* Tweak - Removed Freemius integration in favor of Telemetry an in-house info solution.
 
 = [5.5.11.1] 2023-05-09 =
 
