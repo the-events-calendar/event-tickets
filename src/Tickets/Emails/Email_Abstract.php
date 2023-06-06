@@ -733,7 +733,7 @@ abstract class Email_Abstract {
 	/**
 	 * Set a value to a dynamic property.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @param string|array $name  The name of the property.
 	 * @param mixed        $value The value of the property.
