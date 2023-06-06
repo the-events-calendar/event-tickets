@@ -2428,7 +2428,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @since 5.0.3
 		 * @since 5.5.10 Adjusted the method to use the new Tickets Emails Handler.
-		 * @since TBD Reverted the methods back to before 5.5.10, new Tickets Emails Handler via filters.
+		 * @since 5.6.0 Reverted the methods back to before 5.5.10, new Tickets Emails Handler via filters.
 		 *
 		 * @param string $to      The email to send the tickets to.
 		 * @param array  $tickets The list of tickets to send.
@@ -2452,7 +2452,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/**
 			 * Allows the short-circuiting of the sending of emails to the Attendees.
 			 *
-			 * @since TBD
+			 * @since 5.6.0
 			 *
 			 * @param null|mixed $pre     Determine if we should continue.
 			 * @param string     $to      The email to send the tickets to.
