@@ -71,7 +71,7 @@ class Gateway extends Abstract_Gateway {
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 */
 	public function get_order_details_link_by_order( $order ) : string {
 		return (string) $order->gateway_order_id;
