@@ -9,9 +9,9 @@
  *
  * @link https://evnt.is/tickets-emails-tpl Help article for Tickets Emails template files.
  *
- * @version TBD
+ * @version 5.6.0
  *
- * @since TBD
+ * @since 5.6.0
  *
  * @var WP_Post $post The post object with properties.
  *
