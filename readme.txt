@@ -1,4 +1,4 @@
-=== Event Tickets and Registration ===
+                                                 === Event Tickets and Registration ===
 
 Contributors: theeventscalendar, brianjessee, camwynsp, aguseo, bordoni, borkweb, GeoffBel, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra
 Tags: tickets, registration, event registration, RSVP, ticket sales, attendee management
@@ -191,7 +191,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.6.0] TBD =
+= [5.6.0] 2023-06-07 =
 
 * Enhancement - Display order details link for TicketsCommerce providers on Orders page Gateway ID column. [ET-1729]
 * Enhancement - Add support for Gmail JSON LD markup of Ticket Emails. [ET-1601][ET-1637]

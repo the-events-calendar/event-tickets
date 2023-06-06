@@ -1,18 +1,22 @@
 <?php
+_deprecated_file( __FILE__, 'TBD', 'No direct replacement.' );
 
 /**
  * Class Tribe__Tickets__Integrations__Manager
  *
  * Loads and manages the third-party plugins integration implementations.
  *
- * @since 4.11.5
+ * @depreacated TBD
+ *
+ * @since       4.11.5
  */
 class Tribe__Tickets__Integrations__Manager {
 
 	/**
 	 * The current instance of the object.
 	 *
-	 * @since 4.11.5
+	 * @depreacated TBD
+	 * @since       4.11.5
 	 *
 	 * @var Tribe__Tickets__Integrations__Manager
 	 */
@@ -21,7 +25,8 @@ class Tribe__Tickets__Integrations__Manager {
 	/**
 	 * The class singleton constructor.
 	 *
-	 * @since 4.11.5
+	 * @depreacated TBD
+	 * @since       4.11.5
 	 *
 	 * @return Tribe__Tickets__Integrations__Manager
 	 */
@@ -39,7 +44,8 @@ class Tribe__Tickets__Integrations__Manager {
 	 * Third-party plugin integration classes and methods will be loaded only if
 	 * supported plugins are activated.
 	 *
-	 * @since 4.11.5
+	 * @depreacated TBD
+	 * @since       4.11.5
 	 */
 	public function load_integrations() {
 		tribe_singleton( 'tickets.integrations.freemius', Tribe__Tickets__Integrations__Freemius::class, [ 'setup' ] );
@@ -49,7 +55,8 @@ class Tribe__Tickets__Integrations__Manager {
 	/**
 	 * Loads our Freemius integration.
 	 *
-	 * @since 4.11.5
+	 * @depreacated TBD
+	 * @since       4.11.5
 	 */
 	public function load_freemius() {
 		tribe( 'tickets.integrations.freemius' );
@@ -58,7 +65,8 @@ class Tribe__Tickets__Integrations__Manager {
 	/**
 	 * Hooks for the integrations manager.
 	 *
-	 * @since 5.4.1
+	 * @depreacated TBD
+	 * @since       5.4.1
 	 */
 	public function hook() {
 		add_action( 'init', [ $this, 'load_freemius' ], 15 );
