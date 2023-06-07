@@ -1,4 +1,4 @@
-                                                 === Event Tickets and Registration ===
+=== Event Tickets and Registration ===
 
 Contributors: theeventscalendar, brianjessee, camwynsp, aguseo, bordoni, borkweb, GeoffBel, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra
 Tags: tickets, registration, event registration, RSVP, ticket sales, attendee management
