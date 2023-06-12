@@ -1,10 +1,10 @@
 === Event Tickets and Registration ===
 
-Contributors: theeventscalendar, brianjessee, camwynsp, aguseo, bordoni, borkweb, GeoffBel, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra, moraleida.me
+Contributors: theeventscalendar, brianjessee, camwynsp, aguseo, bordoni, borkweb, GeoffBel, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra
 Tags: tickets, registration, event registration, RSVP, ticket sales, attendee management
 Requires at least: 5.8.5
 Tested up to: 6.2.0
-Stable tag: 5.5.11.1
+Stable tag: 5.6.0
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -49,8 +49,8 @@ Whether your vision is big or small, you're in good company. Thousands of small 
 ✔️ Add RSVPs and tickets to posts, pages, or custom post types
 ✔️ Collect ticket fees by connecting your PayPal business or Stripe account
 ✔️ Generate sales and attendee reports
+✔️ Customize Tickets and RSVP confirmation emails
 ✔️ Ticket stock countdown
-✔️ Automatic ticket confirmation emails
 ✔️ Works out of the box with [The Events Calendar](https://evnt.is/18yi)
 ✔️ Responsive design works on all devices
 ✔️ Tested on the major theme frameworks such as Avada, Genesis, Kadence, Thesis and many more.
@@ -70,6 +70,7 @@ Additional helpful links:
 * [Guide: Getting Started with Event Tickets](https://evnt.is/1aot)
 * [Installing Event Tickets Video](https://evnt.is/1ao9)
 * [Using Tickets Commerce Video](https://evnt.is/1b5f)
+* [Configuring Tickets Emails](https://evnt.is/event-tickets-emails)
 * [Do I need Event Tickets or Event Tickets Plus?](https://evnt.is/1aoa)
 * [How to Make Money with Virtual Events](https://evnt.is/1aob)
 * [Implementing Stripe on Event Tickets and Event Tickets Plus](https://evnt.is/1b5g)
@@ -197,6 +198,14 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - When no providers are enabled, a warning will display above the `New Ticket` and `New RSVP` area explaining that at least one must be enabled. [ET-1696]
 * Fix - Corrected an issue with the `New ticket` button having invalid HTML. [ET-1631]
 * Fix - Resolved an issue that caused compatibility problems between specific themes and the Attendee Registration page. [ET-1767]
+
+= [5.6.0] 2023-06-07 =
+
+* Feature - Introduction of Tickets Emails, the new and improved solution for managing Event Tickets related emails.
+* Enhancement - Display order details link for TicketsCommerce providers on Orders page Gateway ID column. [ET-1729]
+* Enhancement - Add support for Gmail JSON LD markup of Ticket Emails. [ET-1601][ET-1637]
+* Tweak - Removed Freemius integration in favor of Telemetry an in-house info solution.
+* Fix - Tickets Commerce PayPal sandbox connection problem resolved.
 
 = [5.5.11.1] 2023-05-09 =
 

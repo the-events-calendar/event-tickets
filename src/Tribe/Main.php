@@ -8,7 +8,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '5.5.11.1';
+	const VERSION = '5.6.0';
 
 	/**
 	 * Used to store the version history.
@@ -745,9 +745,6 @@ class Tribe__Tickets__Main {
 	 * Hooked to the init action
 	 */
 	public function init() {
-		// Start the integrations manager.
-		Tribe__Tickets__Integrations__Manager::instance()->load_integrations();
-
 		// Provide continued support for legacy ticketing modules.
 		$this->legacy_provider_support = new Tribe__Tickets__Legacy_Provider_Support;
 		$this->settings_tab();

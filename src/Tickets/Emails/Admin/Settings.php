@@ -309,6 +309,7 @@ class Settings {
 						'alignleft',
 						'aligncenter',
 						'alignright',
+						'link',
 					],
 				],
 			],
@@ -337,7 +338,7 @@ class Settings {
 	 * @return array $fields Filtered array of Tickets Emails settings fields.
 	 */
 	public function maybe_add_upgrade_field( array $fields ): array {
-		$upgrade_option_available = tribe_installed_before( 'Tribe__Tickets__Main', '5.7.0' );
+		$upgrade_option_available = tribe_installed_before( 'Tribe__Tickets__Main', '5.6.0-dev' );
 
 		if ( ! $upgrade_option_available ) {
 			return $fields;
@@ -361,13 +362,6 @@ class Settings {
 							</label>
 						</div>',
 
-		];
-
-		$description = esc_html__( 'Start using the new Tickets Emails for your site.', 'event-tickets' );
-
-		$new_fields['tickets-emails-description'] = [
-			'type' => 'html',
-			'html' => '<div class="tec-tickets__admin-settings-emails-description">' . $description . '</div>',
 		];
 
 		$fields[ self::$option_enabled ] = [
