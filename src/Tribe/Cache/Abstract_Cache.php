@@ -57,23 +57,34 @@ abstract class Tribe__Tickets__Cache__Abstract_Cache implements Tribe__Tickets__
 
 		$post_types = "('" . implode( "','", $supported_types ) . "')";
 
-		$query = "SELECT DISTINCT(pm.meta_value) FROM {$wpdb->postmeta} pm
-				LEFT JOIN {$wpdb->posts} p
-				ON pm.meta_value = p.ID
-				WHERE p.post_type IN {$post_types}
-				AND (
-				    pm.meta_key LIKE '\\_tribe\\_%\\_for\\_event'
-				    OR
-				    pm.meta_key = '_tec_tickets_commerce_event'
-				    )
-				AND pm.meta_value IS NOT NULL";
+		if ( defined( 'TEC_TICKETS_META_KEY_INDEX' ) && TEC_TICKETS_META_KEY_INDEX ) {
+			// @todo UNBOUND! Refactor to bound.
+			$query = "SELECT DISTINCT(pm.meta_value) FROM {$wpdb->postmeta} pm
+					LEFT JOIN {$wpdb->posts} p
+					ON pm.meta_value = p.ID
+					WHERE p.post_type IN {$post_types}
+					AND p.post_status NOT IN ('auto-draft', 'trash')
+					AND pm.meta_key LIKE '_tec_ticket_for_post_%'
+					AND pm.meta_value IS NOT NULL AND pm.meta_value != ''";
+		} else {
+			$query = "SELECT DISTINCT(pm.meta_value) FROM {$wpdb->postmeta} pm
+					LEFT JOIN {$wpdb->posts} p
+					ON pm.meta_value = p.ID
+					WHERE p.post_type IN {$post_types}
+					AND (
+					    pm.meta_key LIKE '\\_tribe\\_%\\_for\\_event'
+					    OR
+					    pm.meta_key = '_tec_tickets_commerce_event'
+					    )
+					AND pm.meta_value IS NOT NULL";
+		}
 
 		if ( class_exists( 'Tribe__Events__Main' ) ) { // if events are among the supported post types then exclude past events
 			if ( in_array( Tribe__Events__Main::POSTTYPE, $supported_types ) && ! $this->include_past ) {
 				$past_events = $this->past_events();
 				if ( ! empty( $past_events ) ) {
 					$past_events_interval = '(' . implode( ',', $past_events ) . ')';
-					$query .= " AND pm.meta_value NOT IN {$past_events_interval}";
+					$query                .= " AND pm.meta_value NOT IN {$past_events_interval}";
 				}
 			}
 		}
@@ -86,17 +97,19 @@ abstract class Tribe__Tickets__Cache__Abstract_Cache implements Tribe__Tickets__
 			return $ids;
 		}
 
-		/**
-		 * The above will fetch posts based on the meta data regardless of the status of the post, however post
-		 * under the status of `trash` or `auto-draft` shouldn't be in the list.
-		 */
-		$ids = implode( ',', $ids );
-		$query = "SELECT DISTINCT(ID)
-				FROM {$wpdb->posts}
-				WHERE ID IN ({$ids})
-				AND post_status NOT IN ('auto-draft', 'trash')";
+		if ( ! get_option( 'tec_et_use_meta_key_index' ) ) {
+			/**
+			 * The above will fetch posts based on the meta data regardless of the status of the post, however post
+			 * under the status of `trash` or `auto-draft` shouldn't be in the list.
+			 */
+			$ids   = implode( ',', $ids );
+			$query = "SELECT DISTINCT(ID)
+					FROM {$wpdb->posts}
+					WHERE ID IN ({$ids})
+					AND post_status NOT IN ('auto-draft', 'trash')";
+			$ids   = $wpdb->get_col( $query );
+		}
 
-		$ids = $wpdb->get_col( $query );
 		return is_array( $ids ) ? $ids : array();
 	}
 
@@ -129,7 +142,7 @@ abstract class Tribe__Tickets__Cache__Abstract_Cache implements Tribe__Tickets__
 
 		if ( ! empty( $posts_with_tickets ) && is_array( $posts_with_tickets ) ) {
 			$excluded = implode( ',', $posts_with_tickets );
-			$query .= " AND ID NOT IN ({$excluded})";
+			$query    .= " AND ID NOT IN ({$excluded})";
 		}
 
 		$ids = $wpdb->get_col( $query );
