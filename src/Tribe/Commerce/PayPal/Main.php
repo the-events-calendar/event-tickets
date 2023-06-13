@@ -1486,6 +1486,11 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			return null;
 		}
 
+		$cached = wp_cache_get( (int) $ticket_id, 'tec_tickets' );
+		if ( $cached && is_array( $cached ) ) {
+			return new \Tribe__Tickets__Ticket_Object( $cached );
+		}
+
 		$return = new Tribe__Tickets__Ticket_Object();
 
 		$qty_sold = get_post_meta( $ticket_id, 'total_sales', true );
@@ -1545,7 +1550,13 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 * @param int    $post_id
 		 * @param int    $ticket_id
 		 */
-		return apply_filters( 'tribe_tickets_tpp_get_ticket', $return, $event_id, $ticket_id );
+		$ticket = apply_filters( 'tribe_tickets_tpp_get_ticket', $return, $event_id, $ticket_id );
+
+		if ( $ticket instanceof \Tribe__Tickets__Ticket_Object ) {
+			wp_cache_set( (int) $ticket->ID, $ticket->to_array(), 'tec_tickets' );
+		}
+
+		return $ticket;
 	}
 
 	/**

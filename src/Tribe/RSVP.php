@@ -1952,6 +1952,11 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			return null;
 		}
 
+		$cached = wp_cache_get( (int) $ticket_id, 'tec_tickets' );
+		if ( $cached && is_array( $cached ) ) {
+			return new \Tribe__Tickets__Ticket_Object( $cached );
+		}
+
 		$return            = new Tribe__Tickets__Ticket_Object();
 		$qty               = (int) get_post_meta( $ticket_id, 'total_sales', true );
 		$global_stock_mode = get_post_meta( $ticket_id, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
@@ -1998,7 +2003,13 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 * @param int                           $post_id   The ticket parent post ID.
 		 * @param int                           $ticket_id The ticket ID.
 		 */
-		return apply_filters( 'tribe_tickets_rsvp_get_ticket', $return, $event_id, $ticket_id );
+		$ticket = apply_filters( 'tribe_tickets_rsvp_get_ticket', $return, $event_id, $ticket_id );
+
+		if ( $ticket instanceof \Tribe__Tickets__Ticket_Object ) {
+			wp_cache_set( (int) $ticket->ID, $ticket->to_array(), 'tec_tickets' );
+		}
+
+		return $ticket;
 	}
 
 	/**
