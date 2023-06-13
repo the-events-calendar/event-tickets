@@ -746,6 +746,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 				unset( $cache[ $key ] );
 			}
+
+			$ticket_ids = $this->get_tickets_ids( $post_id );
+			foreach ( (array) $ticket_ids as $ticket_id ) {
+				clean_post_cache( $ticket_id );
+			}
 		}
 
 		/**
