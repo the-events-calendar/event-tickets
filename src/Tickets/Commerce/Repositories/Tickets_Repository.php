@@ -136,12 +136,12 @@ class Tickets_Repository extends Tribe__Repository {
 		if ( defined( 'TEC_TICKETS_META_KEY_INDEX' ) && TEC_TICKETS_META_KEY_INDEX ) {
 			global $wpdb;
 			$this->filter_query->join(
-				"JOIN $wpdb->postmeta meta_key_relationship ON meta_key_relationship.post_id = $wpdb->posts.ID"
+				"JOIN $wpdb->postmeta ticket_to_event ON ticket_to_event.post_id = $wpdb->posts.ID"
 			);
 			$interval = implode( ',', array_map( static function ( $id ) {
 				return "'_tec_ticket_for_post_$id'";
 			}, (array) $event_id ) );
-			$this->filter_query->where( "meta_key_relationship.meta_key IN ($interval)" );
+			$this->filter_query->where( "ticket_to_event.meta_key IN ($interval)" );
 		} else {
 			$this->by( 'meta_in', Ticket::$event_relation_meta_key, $event_id );
 		}

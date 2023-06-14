@@ -290,9 +290,11 @@ class Ticket {
 			return null;
 		}
 
-		$cached = wp_cache_get( (int) $ticket_id, 'tec_tickets' );
-		if ( $cached && is_array( $cached ) ) {
-			return new \Tribe__Tickets__Ticket_Object( $cached );
+		if ( defined( 'TEC_TICKETS_CACHE_TICKET_OBJECT' ) && TEC_TICKETS_CACHE_TICKET_OBJECT ) {
+			$cached = wp_cache_get( (int) $ticket_id, 'tec_tickets' );
+			if ( $cached && is_array( $cached ) ) {
+				return new \Tribe__Tickets__Ticket_Object( $cached );
+			}
 		}
 
 		$product = get_post( $ticket_id );
@@ -369,8 +371,10 @@ class Ticket {
 		 */
 		$ticket = apply_filters( 'tec_tickets_commerce_get_ticket_legacy', $return, $event_id, $ticket_id );
 
-		if ( $ticket instanceof \Tribe__Tickets__Ticket_Object ) {
-			wp_cache_set( (int) $ticket->ID, $ticket->to_array(), 'tec_tickets' );
+		if ( defined( 'TEC_TICKETS_CACHE_TICKET_OBJECT' ) && TEC_TICKETS_CACHE_TICKET_OBJECT ) {
+			if ( $ticket instanceof \Tribe__Tickets__Ticket_Object ) {
+				wp_cache_set( (int) $ticket->ID, $ticket->to_array(), 'tec_tickets' );
+			}
 		}
 
 		return $ticket;
