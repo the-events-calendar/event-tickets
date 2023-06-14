@@ -191,7 +191,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.6.0] 2023-06-07 =
+= [5.6.0] 2023-06-15 =
 
 * Feature - Introduction of Tickets Emails, the new and improved solution for managing Event Tickets related emails.
 * Enhancement - Display order details link for TicketsCommerce providers on Orders page Gateway ID column. [ET-1729]
