@@ -64,7 +64,13 @@ class Tribe__Tickets__Attendee_Registration__Rewrite extends Tribe__Rewrite {
 	 * @param Tribe__Tickets__Attendee_Registration__Rewrite $rewrite The rewrite instance.
 	 */
 	public function generate_core_rules( Tribe__Tickets__Attendee_Registration__Rewrite $rewrite ) {
-		$rewrite->add( [ '{{ ' . tribe( 'tickets.attendee_registration' )->key_query_var . ' }}' ], [ tribe( 'tickets.attendee_registration' )->key_query_var => 1 ] );
+		try {
+			$attendee_registration = tribe( 'tickets.attendee_registration' );
+		} catch ( \Exception $e ) {
+			return;
+		}
+
+		$rewrite->add( [ '{{ ' .$attendee_registration->key_query_var . ' }}' ], [ tribe( 'tickets.attendee_registration' )->key_query_var => 1 ] );
 	}
 
 	/**
@@ -73,7 +79,13 @@ class Tribe__Tickets__Attendee_Registration__Rewrite extends Tribe__Rewrite {
 	 * @since 4.9
 	 */
 	public function add_rewrite_tags() {
-		add_rewrite_tag( '%' . tribe( 'tickets.attendee_registration' )->key_query_var . '%', '([^&]+)' );
+		try {
+			$attendee_registration = tribe( 'tickets.attendee_registration' );
+		} catch ( \Exception $e ) {
+			return;
+		}
+
+		add_rewrite_tag( '%' . $attendee_registration->key_query_var . '%', '([^&]+)' );
 	}
 
 	/**

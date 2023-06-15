@@ -101,7 +101,11 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 * @return boolean
 	 */
 	public function is_on_ar_page() {
-		return tribe( 'tickets.attendee_registration' )->is_on_page();
+		try {
+			return tribe( 'tickets.attendee_registration' )->is_on_page();
+		} catch ( \Exception $e ) {
+			return false;
+		}
 	}
 
 	/**
@@ -112,9 +116,11 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 * @return bool Whether the Attendee Registration shortcode is being used.
 	 */
 	public function is_using_shortcode() {
-		/* @var $ar Tribe__Tickets__Attendee_Registration__Main */
-		$ar = tribe( 'tickets.attendee_registration' );
-		return $ar->is_using_shortcode();
+		try {
+			return tribe( 'tickets.attendee_registration' )->is_using_shortcode();
+		} catch ( \Exception $e ) {
+			return false;
+		}
 	}
 
 	/**
