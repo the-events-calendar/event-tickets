@@ -70,7 +70,7 @@ class Tribe__Tickets__Attendee_Registration__Rewrite extends Tribe__Rewrite {
 			return;
 		}
 
-		$rewrite->add( [ '{{ ' .$attendee_registration->key_query_var . ' }}' ], [ tribe( 'tickets.attendee_registration' )->key_query_var => 1 ] );
+		$rewrite->add( [ '{{ ' . $attendee_registration->key_query_var . ' }}' ], [ $attendee_registration->key_query_var => 1 ] );
 	}
 
 	/**
