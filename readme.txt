@@ -198,6 +198,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Enhancement - Add support for Gmail JSON LD markup of Ticket Emails. [ET-1601][ET-1637]
 * Tweak - Removed Freemius integration in favor of Telemetry an in-house info solution.
 * Fix - Tickets Commerce PayPal sandbox connection problem resolved.
+* Language - 19 new strings added, 154 updated, 1 fuzzied, and 24 obsoleted
 
 = [5.5.11.1] 2023-05-09 =
 
