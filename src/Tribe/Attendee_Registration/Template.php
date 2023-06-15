@@ -402,7 +402,11 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 */
 	public function get_page_title() {
 		$title = __( 'Attendee Registration', 'event-tickets' );
-		$page  = tribe( 'tickets.attendee_registration' )->get_attendee_registration_page();
+		try {
+			$page  = tribe( 'tickets.attendee_registration' )->get_attendee_registration_page();
+		} catch( Exception $e ) {
+			$page = null;
+		}
 
 		$title = $page ? $page->post_title : $title;
 
