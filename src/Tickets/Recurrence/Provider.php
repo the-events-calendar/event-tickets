@@ -12,7 +12,7 @@ class Provider extends tad_DI52_ServiceProvider {
 	 */
 	public function register() {
 
-		if ( ! class_exists( 'TEC\Events_Pro\Custom_Tables\V1\Provider' ) || ! class_exists( 'TEC\Events\Custom_Tables\V1\Migration\State' ) ) {
+		if ( ! class_exists( 'TEC\Events_Pro\Custom_Tables\V1\Provider', false ) || ! class_exists( 'TEC\Events\Custom_Tables\V1\Migration\State', false ) ) {
 			return;
 		}
 
