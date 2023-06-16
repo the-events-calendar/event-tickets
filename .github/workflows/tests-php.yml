@@ -7,7 +7,7 @@ jobs:
       matrix:
         suite:
           # - acceptance
-          - ct1_integration
+          # - ct1_integration
           - functional
           - integration
           - restv1

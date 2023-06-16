@@ -4202,10 +4202,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return;
 			}
 
-			/** @var Tribe__Tickets__Attendee_Registration__Main $attendee_reg */
-			$attendee_reg = tribe( 'tickets.attendee_registration' );
-
-			$url = $attendee_reg->get_url();
+			$url = $attendee_registration->get_url();
 
 			if ( ! empty( $q_provider ) ) {
 				$provider_slug = tribe_tickets_get_provider_query_slug();
