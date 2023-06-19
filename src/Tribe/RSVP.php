@@ -1194,7 +1194,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.5.2 added $event_id parameter
 	 * @since 5.5.10 Adjusted the method to use the new Tickets Emails Handler.
-	 * @since TBD Reverted the methods back to before 5.5.10, new Tickets Emails Handler via filters.
+	 * @since 5.6.0 Reverted the methods back to before 5.5.10, new Tickets Emails Handler via filters.
 	 *
 	 * @param int $order_id The order ID.
 	 * @param int $event_id The event ID.
@@ -1203,7 +1203,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		/**
 		 * Allows the short-circuiting of the sending of RSVP emails to attendees.
 		 *
-		 * @since TBD
+		 * @since 5.6.0
 		 *
 		 * @param null|mixed $pre      Determine if we should continue.
 		 * @param int        $order_id The order ID.
@@ -1351,7 +1351,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * in cases where they have indicated that they will *not* be attending.
 	 *
 	 * @since 5.5.10 Adjusted the method to use the new Tickets Emails Handler.
-	 * @since TBD Revert to use the code from before Tickets Emails.
+	 * @since 5.6.0 Revert to use the code from before Tickets Emails.
 	 *
 	 * @param int $order_id The order ID.
 	 * @param int $event_id The event ID.
@@ -1362,7 +1362,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		/**
 		 * Allows the short-circuiting sending of RSVP emails to attendees for the confirmation of non-attendance.
 		 *
-		 * @since TBD
+		 * @since 5.6.0
 		 *
 		 * @param null|mixed $pre      Determine if we should continue.
 		 * @param int        $order_id The order ID.

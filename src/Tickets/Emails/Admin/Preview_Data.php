@@ -39,8 +39,9 @@ class Preview_Data {
 			'title'      => $ticket_email->get_heading(),
 			'heading'    => $ticket_email->get_heading(),
 			'is_preview' => true,
-			'order'      => self::get_order(),
-			'tickets'    => self::get_tickets(),
+			'order'      => static::get_order(),
+			'tickets'    => static::get_tickets(),
+			'post'       => static::get_post(),
 		];
 	}
 
@@ -58,7 +59,7 @@ class Preview_Data {
 
 		$order = new WP_Post( (object) [
 			'ID'               => -99,
-			'gateway_order_id' => -99,
+			'gateway_order_id' => 'test_cd7d068a5ef24c02',
 			'items' =>  [
 				[
 					'ticket_title' => __( 'General Admission', 'event-tickets' ),
@@ -92,7 +93,7 @@ class Preview_Data {
 			'purchase_date'    => '2023-04-17 17:06:56',
 			'post_title'       => __( 'Preview Order', 'event-tickets' ),
 			'post_status'      => 'publish',
-			'post_name'        => 'preview-order-' . rand( 1, 9999 ),
+			'post_name'        => 'preview-order-test_cd7d068a5ef24c02',
 			'post_type'        => Order::POSTTYPE,
 			'filter'           => 'raw',
 		] );
@@ -271,9 +272,36 @@ class Preview_Data {
 	}
 
 	/**
+	 * Get Post Data for preview.
+	 *
+	 * @since 5.6.0
+	 *
+	 * @param string $args Array of preview data.
+	 *
+	 * @return object
+	 */
+	public static function get_post( $args = [] ) {
+		$default = [
+			'ID'             => -91,
+			'post_author'    => 1,
+			'post_date'      => '2023-04-17 17:06:56',
+			'post_date_gmt'  => '2023-04-17 17:06:56',
+			'post_title'     => __( 'Arts in the Park', 'event-tickets' ),
+			'post_excerpt'   => __( 'Experience the magic of creativity in nature. Save the date and indulge your senses at "Arts in the Park"!  Join us for an enchanting day of vibrant musics and captivating... ', 'event-tickets' ),
+			'post_status'    => 'publish',
+			'post_permalink' => '#',
+			'post_name'      => 'preview-post-91',
+			'post_type'      => 'post',
+			'filter'         => 'raw',
+		];
+
+		return (object) wp_parse_args( $args, $default );
+	}
+
+	/**
 	 * Get preview placeholders.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @param array $args Override arguments.
 	 *
@@ -286,6 +314,7 @@ class Preview_Data {
 			'{attendee_name}'  => $tickets[0]['purchaser_name'],
 			'{attendee_email}' => $tickets[0]['purchaser_email'],
 			'{order_number}'   => $order->ID,
+			'{order_id}'       => $order->ID,
 		];
 		return wp_parse_args( $args, $default );
 	}

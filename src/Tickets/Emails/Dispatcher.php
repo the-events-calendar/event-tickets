@@ -2,7 +2,7 @@
 /**
  * Email Dispatcher class.
  *
- * @since   TBD
+ * @since   5.6.0
  *
  * @package TEC\Tickets\Emails
  */
@@ -12,7 +12,7 @@ namespace TEC\Tickets\Emails;
 /**
  * Class Dispatcher.
  *
- * @since   TBD
+ * @since   5.6.0
  *
  * @package TEC\Tickets\Emails
  */
@@ -21,7 +21,7 @@ class Dispatcher {
 	/**
 	 * Whether this dispatcher was used.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @var bool
 	 */
@@ -30,7 +30,7 @@ class Dispatcher {
 	/**
 	 * Stores the Email used in this Dispatcher.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @var Email_Abstract|null
 	 */
@@ -39,7 +39,7 @@ class Dispatcher {
 	/**
 	 * Stores the all the headers used on the email.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @var array<string,string>
 	 */
@@ -48,7 +48,7 @@ class Dispatcher {
 	/**
 	 * Stores the all the attachments used on the email.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @var array<string>
 	 */
@@ -57,7 +57,7 @@ class Dispatcher {
 	/**
 	 * Stores the contents to be dispatched.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @var ?string
 	 */
@@ -66,7 +66,7 @@ class Dispatcher {
 	/**
 	 * Stores where we will dispatch to.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @var ?string
 	 */
@@ -75,7 +75,7 @@ class Dispatcher {
 	/**
 	 * Stores the subject to be dispatched.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @var ?string
 	 */
@@ -85,7 +85,7 @@ class Dispatcher {
 	 * Sets the Email instance that will be used for this Dispatcher, intentionally this is protected method.
 	 * You can only generate a new Dispatcher from the Factory Method.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @param Email_Abstract $email
 	 */
@@ -96,7 +96,7 @@ class Dispatcher {
 	/**
 	 * Gets the email instance for this Dispatcher.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @return Email_Abstract|null
 	 */
@@ -107,7 +107,7 @@ class Dispatcher {
 	/**
 	 * Prepares the current dispatcher for sending an email.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @param Email_Abstract $email Email Instance used to prepare the dispatcher with.
 	 */
@@ -140,7 +140,7 @@ class Dispatcher {
 	/**
 	 * From a given email type instance generate a new Dispatcher and prepare it for usage.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @param Email_Abstract $email
 	 *
@@ -161,7 +161,7 @@ class Dispatcher {
 		 *
 		 * Each new email send will generate a new Dispatcher to avoid sending the same email multiple times.
 		 *
-		 * @since TBD
+		 * @since 5.6.0
 		 *
 		 * @param Dispatcher     $dispatcher Which dispatcher instance will be used for the email sent.
 		 * @param Email_Abstract $email      Which instance of the email that will be attached to this dispatcher.
@@ -178,7 +178,7 @@ class Dispatcher {
 		 *
 		 * Each new email send will generate a new Dispatcher to avoid sending the same email multiple times.
 		 *
-		 * @since TBD
+		 * @since 5.6.0
 		 *
 		 * @param Dispatcher     $dispatcher Which dispatcher instance will be used for the email sent.
 		 * @param Email_Abstract $email      Which instance of the email that will be attached to this dispatcher.
@@ -189,7 +189,7 @@ class Dispatcher {
 	/**
 	 * Includes a new header to be dispatched.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @param string $key
 	 * @param string $value
@@ -201,7 +201,7 @@ class Dispatcher {
 	/**
 	 * Includes a new attachment to be dispatched.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @param string $path
 	 */
@@ -212,7 +212,7 @@ class Dispatcher {
 	/**
 	 * Get dispatcher headers.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @return array
 	 */
@@ -225,7 +225,7 @@ class Dispatcher {
 		 *
 		 * Each new email send will generate a new Dispatcher to avoid sending the same email multiple times.
 		 *
-		 * @since TBD
+		 * @since 5.6.0
 		 *
 		 * @param array      $headers The headers.
 		 * @param Dispatcher $this    The Dispatcher object for this specific email.
@@ -242,7 +242,7 @@ class Dispatcher {
 		 *
 		 * Each new email send will generate a new Dispatcher to avoid sending the same email multiple times.
 		 *
-		 * @since TBD
+		 * @since 5.6.0
 		 *
 		 * @param array      $headers The headers.
 		 * @param Dispatcher $this    The Dispatcher object for this specific email.
@@ -256,7 +256,7 @@ class Dispatcher {
 	/**
 	 * Get the formatted headers for this dispatcher.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @return array
 	 */
@@ -274,7 +274,7 @@ class Dispatcher {
 	/**
 	 * Get email attachments.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @return array
 	 */
@@ -287,7 +287,7 @@ class Dispatcher {
 		 *
 		 * Each new email send will generate a new Dispatcher to avoid sending the same email multiple times.
 		 *
-		 * @since TBD
+		 * @since 5.6.0
 		 *
 		 * @param array      $attachments The attachments.
 		 * @param Dispatcher $this        The Dispatcher object for this specific email.
@@ -304,7 +304,7 @@ class Dispatcher {
 		 *
 		 * Each new email send will generate a new Dispatcher to avoid sending the same email multiple times.
 		 *
-		 * @since TBD
+		 * @since 5.6.0
 		 *
 		 * @param array      $attachments The attachments.
 		 * @param Dispatcher $this        The Dispatcher object for this specific email.
@@ -317,7 +317,7 @@ class Dispatcher {
 	/**
 	 * Get email recipient.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @return ?string The email recipient.
 	 */
@@ -330,7 +330,7 @@ class Dispatcher {
 		 *
 		 * Each new email send will generate a new Dispatcher to avoid sending the same email multiple times.
 		 *
-		 * @since TBD
+		 * @since 5.6.0
 		 *
 		 * @param string     $to   The email recipient.
 		 * @param Dispatcher $this The Dispatcher object for this specific email.
@@ -347,7 +347,7 @@ class Dispatcher {
 		 *
 		 * Each new email send will generate a new Dispatcher to avoid sending the same email multiple times.
 		 *
-		 * @since TBD
+		 * @since 5.6.0
 		 *
 		 * @param string     $to   The email recipient.
 		 * @param Dispatcher $this The Dispatcher object for this specific email.
@@ -360,7 +360,7 @@ class Dispatcher {
 	/**
 	 * Sets where we will dispatch to.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @param string $value
 	 */
@@ -371,7 +371,7 @@ class Dispatcher {
 	/**
 	 * Get the subject of the email.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @return ?string
 	 */
@@ -384,7 +384,7 @@ class Dispatcher {
 		 *
 		 * Each new email send will generate a new Dispatcher to avoid sending the same email multiple times.
 		 *
-		 * @since TBD
+		 * @since 5.6.0
 		 *
 		 * @param string     $subject The email subject.
 		 * @param Dispatcher $this    The Dispatcher object for this specific email.
@@ -401,7 +401,7 @@ class Dispatcher {
 		 *
 		 * Each new email send will generate a new Dispatcher to avoid sending the same email multiple times.
 		 *
-		 * @since TBD
+		 * @since 5.6.0
 		 *
 		 * @param string     $subject The email subject.
 		 * @param Dispatcher $this    The Dispatcher object for this specific email.
@@ -414,7 +414,7 @@ class Dispatcher {
 	/**
 	 * Sets the subject for the dispatcher.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @param string $value
 	 */
@@ -425,7 +425,7 @@ class Dispatcher {
 	/**
 	 * Get the content of the dispatcher.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @return ?string
 	 */
@@ -438,7 +438,7 @@ class Dispatcher {
 		 *
 		 * Each new email send will generate a new Dispatcher to avoid sending the same email multiple times.
 		 *
-		 * @since TBD
+		 * @since 5.6.0
 		 *
 		 * @param string     $content The email subject.
 		 * @param Dispatcher $this    The Dispatcher object for this specific email.
@@ -455,7 +455,7 @@ class Dispatcher {
 		 *
 		 * Each new email send will generate a new Dispatcher to avoid sending the same email multiple times.
 		 *
-		 * @since TBD
+		 * @since 5.6.0
 		 *
 		 * @param string     $content The email subject.
 		 * @param Dispatcher $this    The Dispatcher object for this specific email.
@@ -468,7 +468,7 @@ class Dispatcher {
 	/**
 	 * Sets the content for the dispatcher.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @param string $value
 	 */
@@ -479,7 +479,7 @@ class Dispatcher {
 	/**
 	 * Determines if at the current state the dispatcher can send an email.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @return bool
 	 */
@@ -516,7 +516,7 @@ class Dispatcher {
 	/**
 	 * Determine if this dispatcher was used.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @return bool
 	 */
@@ -534,7 +534,7 @@ class Dispatcher {
 	 * this dispatcher by `Dispatcher::from_email( $dispatcher->get_email() )->send()` which will generate a new dispatcher
 	 * and attempt to send the email.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 */
 	public function dangerously_mark_as_not_used(): void {
 		$this->used = false;
@@ -543,7 +543,7 @@ class Dispatcher {
 	/**
 	 * Send an email.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @return bool Whether the email was sent successfully.
 	 */

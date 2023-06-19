@@ -5,7 +5,7 @@ namespace TEC\Tickets\Emails\Admin;
 /**
  * Class Notice_Upgrade
  *
- * @since   TBD
+ * @since   5.6.0
  *
  * @package TEC\Tickets\Emails\Admin
  */
@@ -13,7 +13,7 @@ class Notice_Upgrade {
 	/**
 	 * Register upgrade notice for Tickets Emails.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 */
 	public function hook(): void {
 		tribe_notice(
@@ -31,7 +31,7 @@ class Notice_Upgrade {
 	/**
 	 * Checks if we are in a page we need to display.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @return bool
 	 */
@@ -45,7 +45,7 @@ class Notice_Upgrade {
 	/**
 	 * Check if it's a preexisting installation.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @return bool
 	 */
@@ -56,7 +56,7 @@ class Notice_Upgrade {
 	/**
 	 * Checks all methods required for display.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @return bool
 	 */
@@ -67,7 +67,7 @@ class Notice_Upgrade {
 	/**
 	 * HTML for the notice for sites using V1.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @return string
 	 */

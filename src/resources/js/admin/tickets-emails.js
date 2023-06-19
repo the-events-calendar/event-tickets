@@ -79,7 +79,7 @@ tribe.tickets.emails = {};
 	/**
 	 * Binds events for the modal content container.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 * @param  {Event}  event    event object for 'afterAjaxSuccess.tribeTicketsAdmin' event.
 	 * @param  {jqXHR}  jqXHR    Request object.
 	 * @param  {object} settings Settings that this request was made with.

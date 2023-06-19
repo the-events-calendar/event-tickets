@@ -75,7 +75,7 @@ class Provider extends tad_DI52_ServiceProvider {
 	 * @since 5.5.0
 	 */
 	public function register_ct1_providers() {
-		if ( ! class_exists( TEC_CT1_Provider::class ) ) {
+		if ( ! class_exists( '\TEC\Events\Custom_Tables\V1\Provider', false ) ) {
 			return;
 		}
 

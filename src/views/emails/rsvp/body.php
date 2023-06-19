@@ -28,6 +28,10 @@
 
 $this->template( 'template-parts/body/title' );
 
+$this->template( 'template-parts/body/post-title' );
+
 $this->template( 'template-parts/body/tickets' );
+
+$this->template( 'template-parts/body/post-description' );
 
 $this->template( 'template-parts/body/additional-content' );

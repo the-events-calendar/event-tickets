@@ -30,6 +30,7 @@ if ( empty( $ticket['holder_name'] ) ) {
 }
 
 ?>
-<h2 class="tec-tickets__email-table-content-ticket-holder-name">
-	<?php echo esc_html( $ticket['holder_name'] ); ?>
-</h2>
+<td class="tec-tickets__email-table-content-ticket-holder-name-container">
+	<h2 class="tec-tickets__email-table-content-ticket-holder-name">
+		<?php echo esc_html( $ticket['holder_name'] ); ?>
+	</h2>

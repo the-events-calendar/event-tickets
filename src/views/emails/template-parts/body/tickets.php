@@ -39,13 +39,16 @@ $this->template( 'template-parts/body/tickets-total' );
 			<?php $i++; ?>
 			<tr>
 				<td class="tec-tickets__email-table-content-ticket">
-				<?php $this->template( 'template-parts/body/ticket/holder-name', [ 'ticket' => $ticket ] ); ?>
-
-				<?php $this->template( 'template-parts/body/ticket/ticket-name', [ 'ticket' => $ticket ] ); ?>
-
-				<?php $this->template( 'template-parts/body/ticket/security-code', [ 'ticket' => $ticket ] ); ?>
-
-				<?php $this->template( 'template-parts/body/ticket/number-from-total', [ 'i' => $i ] ); ?>
+					<table class="tec-tickets__email-table-content-ticket-table">
+						<tr>
+							<?php $this->template( 'template-parts/body/ticket/holder-name', [ 'ticket' => $ticket ] ); ?>
+							<?php $this->template( 'template-parts/body/ticket/ticket-name', [ 'ticket' => $ticket ] ); ?>
+						</tr>
+						<tr>
+							<?php $this->template( 'template-parts/body/ticket/security-code', [ 'ticket' => $ticket ] ); ?>
+						</tr>
+					</table>
+					<?php $this->template( 'template-parts/body/ticket/number-from-total', [ 'i' => $i ] ); ?>
 				</td>
 			</tr>
 		<?php endforeach; ?>

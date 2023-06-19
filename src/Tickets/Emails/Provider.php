@@ -52,7 +52,7 @@ class Provider extends tad_DI52_ServiceProvider {
 	/**
 	 * Boot the provider.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 */
 	public function boot(): void {
 		$this->container->make( Admin\Notice_Upgrade::class );

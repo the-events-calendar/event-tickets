@@ -9,7 +9,7 @@ use Tribe__Tickets__Tickets as Tickets_Module;
  *
  * Mostly used to take over legacy methods of sending emails and using the new ones.w
  *
- * @since   TBD
+ * @since   5.6.0
  *
  * @package TEC\Tickets\Emails
  */
@@ -18,7 +18,7 @@ class Legacy_Hijack {
 	/**
 	 * Send RSVPs/tickets email for an attendee by injecting itself into the legacy Tickets codebase.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @param null|boolean   $pre         Previous value from the filter, mostly will be null.
 	 * @param string         $to          The email to send the tickets to.
@@ -139,7 +139,7 @@ class Legacy_Hijack {
 	 * Dispatches a confirmation email that acknowledges the user has RSVP'd
 	 * including the tickets.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @param null|boolean   $pre      Previous value from the filter, mostly will be null.
 	 * @param int            $order_id The order ID.
@@ -244,7 +244,7 @@ class Legacy_Hijack {
 	 * Dispatches a confirmation email that acknowledges the user has RSVP'd
 	 * in cases where they have indicated that they will *not* be attending.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @param null|boolean   $pre      Previous value from the filter, mostly will be null.
 	 * @param int            $order_id The order ID.

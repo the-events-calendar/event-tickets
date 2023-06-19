@@ -7,7 +7,7 @@ use TEC\Tickets\Emails\Email_Abstract;
 /**
  * Class Reservation_Schema.
  *
- * @since TBD
+ * @since 5.6.0
  *
  * @package TEC\Tickets\Emails\JSON_LD
  */
@@ -16,7 +16,7 @@ class Reservation_Schema extends JSON_LD_Abstract {
 	/**
 	 * The type of the schema.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @var string
 	 */
@@ -25,7 +25,7 @@ class Reservation_Schema extends JSON_LD_Abstract {
 	/**
 	 * The event data.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @var array
 	 */
@@ -34,7 +34,7 @@ class Reservation_Schema extends JSON_LD_Abstract {
 	/**
 	 * Tickets data.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @var array
 	 */
@@ -43,7 +43,7 @@ class Reservation_Schema extends JSON_LD_Abstract {
 	/**
 	 * Build the schema object from an email.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @param Email_Abstract $email The email instance.
 	 *

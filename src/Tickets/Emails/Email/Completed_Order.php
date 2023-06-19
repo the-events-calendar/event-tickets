@@ -138,10 +138,10 @@ class Completed_Order extends Email_Abstract {
 			],
 			$this->get_option_key( 'enabled' ) => [
 				'type'                => 'toggle',
-				'label'               => sprintf( 
+				'label'               => sprintf(
 					// Translators: %s - Title of email.
 					esc_html__( 'Enable %s', 'event-tickets' ),
-					$this->get_title() 
+					$this->get_title()
 				),
 				'default'             => true,
 				'validation_type'     => 'boolean',
@@ -150,6 +150,7 @@ class Completed_Order extends Email_Abstract {
 				'type'                => 'text',
 				'label'               => esc_html__( 'Recipient(s)', 'event-tickets' ),
 				'default'             => $this->get_default_recipient(),
+				'tooltip'             => esc_html__( 'Add additional recipient emails separated by commas.', 'event-tickets' ),
 				'size'                => 'large',
 				'validation_type' => 'email_list',
 			],
@@ -174,6 +175,7 @@ class Completed_Order extends Email_Abstract {
 				'label'               => esc_html__( 'Additional content', 'event-tickets' ),
 				'default'             => $this->get_default_additional_content(),
 				'tooltip'             => esc_html__( 'Additional content will be displayed below the order details.', 'event-tickets' ),
+				'size'                => 'large',
 				'validation_type'     => 'html',
 				'settings'        => [
 					'media_buttons' => false,

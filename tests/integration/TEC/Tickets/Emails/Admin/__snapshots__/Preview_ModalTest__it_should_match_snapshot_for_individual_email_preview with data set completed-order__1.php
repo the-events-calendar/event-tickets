@@ -13,8 +13,17 @@
 	.tec-tickets__email-body a,
 	.tec-tickets__email-body a:focus,
 	.tec-tickets__email-body a:visited {
-		color: #141827;
+		color: #141827 !important;
 		text-decoration: underline;
+	}
+
+	h3.tec-tickets__email-table-content-post-title a {
+		text-decoration: none;
+	}
+
+	.tec-tickets__email-table-content-post-title-container,
+	td.tec-tickets__email-table-content-post-title-container {
+		padding: 0;
 	}
 
 	.tec-tickets__email-body,
@@ -82,8 +91,8 @@
 		text-align: left;
 	}
 
-	.tec-tickets__email-table-content-event-title,
-	h3.tec-tickets__email-table-content-event-title {
+	.tec-tickets__email-table-content-post-title,
+	h3.tec-tickets__email-table-content-post-title {
 		color: #141827;
 		font-size: 18px;
 		font-style: normal;
@@ -228,8 +237,8 @@
 		padding: 24px 0 40px;
 	}
 
-	.tec-tickets__email-table-content-order-event-title,
-	td.tec-tickets__email-table-content-order-event-title {
+	.tec-tickets__email-table-content-order-post-title,
+	td.tec-tickets__email-table-content-order-post-title {
 		font-size: 16px;
 		font-weight: 700;
 		padding-top:43px;
@@ -313,12 +322,76 @@
 	td.tec-tickets__email-table-content-additional-content-container {
 		padding-bottom: 40px;
 	}
-	
+
 	.tec-tickets__email-table-content-additional-content-container p,
 	td.tec-tickets__email-table-content-additional-content-container p {
 		color: #141827 !important;
 		font-size: 16px !important;
 		line-height: 1.5;
+	}
+
+	.tec-tickets__email-table-content-not-going-confirmation-container,
+	td.tec-tickets__email-table-content-not-going-confirmation-container {
+		padding-bottom: 30px;
+	}
+
+	.tec-tickets__email-table-content-ticket-holder-name-container,
+	td.tec-tickets__email-table-content-ticket-holder-name-container {
+		vertical-align: top;
+		width: 100%;
+	}
+
+	.tec-tickets__email-table-content-ticket-security-code-container,
+	td.tec-tickets__email-table-content-ticket-security-code-container {
+		vertical-align: bottom;
+	}
+
+	.tec-tickets__email-table-content-ticket-table,
+	table.tec-tickets__email-table-content-ticket-table {
+		width: 100%;
+	}
+
+	td.tec-tickets__email-table-content-post-description-container {
+		color: #141827 !important;
+		font-size: 16px !important;
+		line-height: 1.5;
+		padding-top: 30px;
+	}
+
+	@media screen and ( max-width: 500px ) {
+		.tec-tickets__email-table-content-title,
+		h1.tec-tickets__email-table-content-title {
+			font-size: 21px;
+			line-height: 28px;
+		}
+
+		.tec-tickets__email-table-content,
+		table.tec-tickets__email-table-content {
+			padding: 15px 25px;
+		}
+
+		.tec-tickets__email-table-content-ticket-holder-name-container,
+		td.tec-tickets__email-table-content-ticket-holder-name-container {
+			display: block;
+			padding-bottom: 30px;
+			text-align: left;
+			width: 100%;
+		}
+
+		.tec-tickets__email-table-content-ticket-security-code {
+			padding: 15px 0 30px 0 !important;
+		}
+
+		.tec-tickets__email-table-content-ticket-table td,
+		table.tec-tickets__email-table-content-ticket-table td {
+			display: block;
+			text-align: center;
+		}
+
+		.tec-tickets__email-table-content-ticket-holder-name,
+		.tec-tickets__email-table-content-ticket-type-name {
+			text-align: left;
+		}
 	}
 </style>
 <div class="tec-tickets__email-body">
@@ -394,8 +467,10 @@
 			</tr>
 		</table>
 	</td>
-</tr>
-<tr>
+</tr><tr>
+	<td class="tec-tickets__email-table-content-order-gateway-data-container" align="right">
+		Gateway Order #test_cd7d068a5ef24c02	</td>
+</tr><tr>
 	<td class="tec-tickets__email-table-content-order-attendees-table-container">
 		<table class="tec-tickets__email-table-content-order-attendees-table">
 			<tr class="tec-tickets__email-table-content-order-attendees-table-header-row">
