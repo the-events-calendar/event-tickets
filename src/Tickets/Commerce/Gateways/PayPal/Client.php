@@ -111,10 +111,16 @@ class Client {
 	 *
 	 * @since 5.1.6
 	 *
+	 * @param bool|null $sandbox Whether we are using the sandbox or not.
+	 *
 	 * @return string
 	 */
-	public function get_home_page_url() {
-		$subdomain = tribe( Merchant::class )->is_sandbox() ? 'sandbox.' : '';
+	public function get_home_page_url( $sandbox = null ) {
+		if ( null === $sandbox ) {
+			$sandbox = tribe( Merchant::class )->is_sandbox();
+		}
+
+		$subdomain = $sandbox ? 'sandbox.' : '';
 
 		return sprintf(
 			'https://%1$spaypal.com/',
