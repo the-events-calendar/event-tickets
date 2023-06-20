@@ -2,7 +2,7 @@
 /**
  * Class that handles interfacing with core Site Health.
  *
- * @since   TBD
+ * @since   5.1.1.1
  *
  * @package TEC\Tickets\Site_Health
  */
@@ -17,7 +17,7 @@ use Tribe__Utils__Array as Arr;
 /**
  * Class Site_Health
  *
- * @since   TBD
+ * @since   5.1.1.1
 
  * @package TEC\Tickets\Site_Health
  */
@@ -25,7 +25,7 @@ class Info_Section extends Info_Section_Abstract {
 	/**
 	 * Slug for the section.
 	 *
-	 * @since TBD
+	 * @since 5.1.1.1
 	 *
 	 * @var string $slug
 	 */
@@ -34,7 +34,7 @@ class Info_Section extends Info_Section_Abstract {
 	/**
 	 * Label for the section.
 	 *
-	 * @since TBD
+	 * @since 5.1.1.1
 	 *
 	 * @var string $label
 	 */
@@ -43,7 +43,7 @@ class Info_Section extends Info_Section_Abstract {
 	/**
 	 * If we should show the count of fields in the site health info page.
 	 *
-	 * @since TBD
+	 * @since 5.1.1.1
 	 *
 	 * @var bool $show_count
 	 */
@@ -52,7 +52,7 @@ class Info_Section extends Info_Section_Abstract {
 	/**
 	 * If this section is private.
 	 *
-	 * @since TBD
+	 * @since 5.1.1.1
 	 *
 	 * @var bool $is_private
 	 */
@@ -61,7 +61,7 @@ class Info_Section extends Info_Section_Abstract {
 	/**
 	 * Description for the section.
 	 *
-	 * @since TBD
+	 * @since 5.1.1.1
 	 *
 	 * @var string $description
 	 */
@@ -76,7 +76,7 @@ class Info_Section extends Info_Section_Abstract {
 	/**
 	 * Adds our default section to the Site Health Info tab.
 	 *
-	 * @since TBD
+	 * @since 5.1.1.1
 	 *
 	 * @param array $info The debug information to be added to the core information page.
 	 *

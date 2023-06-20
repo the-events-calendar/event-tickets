@@ -191,7 +191,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.6.0.1] 2023-06-19 =
+= [5.6.0.1] 2023-06-20 =
 
 * Fix - Increase the reliability of Telemetry initialization for Event Tickets loading [TEC-4836]
 * Fix - Resolved issues with Attendee Registration not being bound correctly on loading. [ET-1771]

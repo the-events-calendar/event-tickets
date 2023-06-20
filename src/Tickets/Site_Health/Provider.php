@@ -2,7 +2,7 @@
 /**
  * Service Provider for interfacing with tec-common Site Health.
  *
- * @since   TBD
+ * @since   5.1.1.1
  *
  * @package TEC\Tickets\Site_Health
  */
@@ -14,7 +14,7 @@ use TEC\Common\lucatume\DI52\ServiceProvider as ServiceProvider;
  /**
   * Class Provider
   *
-  * @since   TBD
+  * @since   5.1.1.1
 
   * @package TEC\Tickets\Site_Health
   */
@@ -23,7 +23,7 @@ class Provider extends ServiceProvider {
 	/**
 	 * Internal placeholder to pass around the section slug.
 	 *
-	 * @since TBD
+	 * @since 5.1.1.1
 	 *
 	 * @var string
 	 */
