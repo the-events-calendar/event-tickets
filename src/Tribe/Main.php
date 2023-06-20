@@ -335,6 +335,12 @@ class Tribe__Tickets__Main {
 		 */
 		$this->init_autoloading();
 
+		add_filter( 'tec_common_parent_plugin_file', function ( $paths ) {
+			$paths[] = EVENT_TICKETS_MAIN_PLUGIN_FILE;
+
+			return $paths;
+		} );
+
 		// Start Up Common.
 		Tribe__Main::instance();
 
