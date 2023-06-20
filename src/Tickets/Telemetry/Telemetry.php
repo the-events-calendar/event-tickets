@@ -2,7 +2,7 @@
 /**
  * Class that handles interfacing with TEC\Common\Telemetry.
  *
- * @since 5.1.1.1
+ * @since 5.6.0.1
  *
  * @package TEC\Tickets\Telemetry
  */
@@ -21,7 +21,7 @@ use Tribe\Tickets\Admin\Settings;
 /**
  * Class Telemetry
  *
- * @since 5.1.1.1
+ * @since 5.6.0.1
  * @package TEC\Tickets\Telemetry
  */
 class Telemetry {
@@ -29,7 +29,7 @@ class Telemetry {
 	/**
 	 * The Telemetry plugin slug for Event Tickets.
 	 *
-	 * @since 5.1.1.1
+	 * @since 5.6.0.1
 	 *
 	 * @var string
 	 */
@@ -38,7 +38,7 @@ class Telemetry {
 	/**
 	 * The "plugin path" for Event Tickets main file.
 	 *
-	 * @since 5.1.1.1
+	 * @since 5.6.0.1
 	 *
 	 * @var string
 	 */
@@ -47,7 +47,7 @@ class Telemetry {
 	/**
 	 * Filters the modal optin args to be specific to TEC
 	 *
-	 * @since 5.1.1.1
+	 * @since 5.6.0.1
 	 *
 	 * @param array<string|mixed> $original_optin_args The original args, provided by Common.
 	 *
@@ -80,7 +80,7 @@ class Telemetry {
 	 * Adds the opt in/out control to the general tab debug section.
 	 *
 	 *
-	 * @since 5.1.1.1
+	 * @since 5.6.0.1
 	 *
 	 * @param array<string|mixed> $fields The fields for the general tab Debugging section.
 	 *
@@ -132,7 +132,7 @@ class Telemetry {
 	 * We save this value in tribe_options but since that could get out of sync,
 	 * we always display the status from TEC\Common\StellarWP\Telemetry\Opt_In\Status directly.
 	 *
-	 * @since 5.1.1.1
+	 * @since 5.6.0.1
 	 *
 	 * @param mixed  $value  The value of the attribute.
 	 * @param string $field  The field object id.
@@ -155,7 +155,7 @@ class Telemetry {
 	 * Adds Event Tickets to the list of plugins
 	 * to be opted in/out alongside tribe-common.
 	 *
-	 * @since 5.1.1.1
+	 * @since 5.6.0.1
 	 *
 	 * @param array<string,string> $slugs The default array of slugs in the format  [ 'plugin_slug' => 'plugin_path' ]
 	 *
@@ -172,7 +172,7 @@ class Telemetry {
 	/**
 	 * Outputs the hook that renders the Telemetry action on all TEC admin pages.
 	 *
-	 * @since 5.1.1.1
+	 * @since 5.6.0.1
 	 */
 	public function inject_modal_link() {
 		$admin_helpers = Tribe__Admin__Helpers::instance();
@@ -198,7 +198,7 @@ class Telemetry {
 		 * Fires to trigger the modal content on admin pages.
 		 *
 		 *
-		 * @since 5.1.1.1
+		 * @since 5.6.0.1
 		 */
 		do_action( 'tec_telemetry_modal', $telemetry_slug );
 	}
@@ -207,7 +207,7 @@ class Telemetry {
 	 * Update our option and the stellar option when the user opts in/out via the TEC admin.
 	 *
 	 *
-	 * @since 5.1.1.1
+	 * @since 5.6.0.1
 	 *
 	 * @param bool $value The option value
 	 */
