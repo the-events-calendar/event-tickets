@@ -190,7 +190,7 @@ class Telemetry {
 		// 'event-tickets'
 		$telemetry_slug = \TEC\Common\Telemetry\Telemetry::get_plugin_slug();
 
-		$show = get_option( Config::get_container()->get( Opt_In_Template::class )->get_option_name( $telemetry_slug ) );
+		$show = Common_Telemetry::calculate_modal_status();
 
 		if ( ! $show ) {
 			return;
