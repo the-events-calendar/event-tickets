@@ -195,6 +195,8 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 * Fix - Increase the reliability of Telemetry initialization for Event Tickets loading [TEC-4836]
 * Fix - Resolved issues with Attendee Registration not being bound correctly on loading. [ET-1771]
+* Tweak - Added actions: `tec_telemetry_modal`
+* Tweak - Changed views: `blocks/tickets/submit`
 
 = [5.6.0] 2023-06-15 =
 
