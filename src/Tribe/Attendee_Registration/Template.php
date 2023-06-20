@@ -81,7 +81,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 
 		// Don't tell wp_query we're anything in particular - then we don't run into issues with defaults.
 		$wp_query->is_page        = false;
-		$wp_query->is_singular    = false;
+		$wp_query->is_singular    = true;
 		$wp_query->is_home        = false;
 		$wp_query->is_archive     = false;
 		$wp_query->is_category    = false;
