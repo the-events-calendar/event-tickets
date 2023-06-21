@@ -191,6 +191,11 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [5.6.0.2] 2023-06-21 =
+
+* Fix - Prevent Attendee list from throwing a notice on PHP 8+.
+* Fix - Adjusted our PHP Exception usage to protect against third-party code causing fatals when attempting to access objects that have not been initialized.
+
 = [5.6.0.1] 2023-06-20 =
 
 * Fix - Increase the reliability of Telemetry initialization for Event Tickets loading [TEC-4836]
