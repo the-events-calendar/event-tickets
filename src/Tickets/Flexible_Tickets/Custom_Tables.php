@@ -9,7 +9,7 @@
 
 namespace TEC\Tickets\Flexible_Tickets;
 
-use TEC\Common\Provider\Controller;
+use TEC\Common\Contracts\Provider\Controller;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Common\StellarWP\Schema\Config as Schema_Config;
 use TEC\Common\StellarWP\Schema\Register as Schema_Register;

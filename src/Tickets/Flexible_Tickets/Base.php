@@ -9,7 +9,7 @@
 
 namespace TEC\Tickets\Flexible_Tickets;
 
-use TEC\Common\Provider\Controller;
+use TEC\Common\Contracts\Provider\Controller;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 use TEC\Tickets\Admin\Editor_Data;
 use TEC\Tickets\Flexible_Tickets\Templates\Admin_Views;

@@ -13,7 +13,7 @@
 
 namespace TEC\Tickets\Flexible_Tickets;
 
-use tad_DI52_ServiceProvider as ServiceProvider;
+use TEC\Common\lucatume\DI52\ServiceProvider;
 use TEC\Tickets\Flexible_Tickets\Templates\Admin_Views;
 
 /**

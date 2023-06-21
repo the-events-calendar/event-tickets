@@ -9,7 +9,7 @@
 
 namespace TEC\Tickets\Flexible_Tickets;
 
-use TEC\Common\Provider\Controller;
+use TEC\Common\Contracts\Provider\Controller;
 
 /**
  * Class WP_Cli.
