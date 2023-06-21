@@ -59,6 +59,12 @@ class Provider extends tad_DI52_ServiceProvider {
 		// Loads admin area.
 		$this->container->register( Admin\Provider::class );
 
+		// Loads admin area.
+		$this->container->register( Site_Health\Provider::class );
+
+		// Loads admin area.
+		$this->container->register( Telemetry\Provider::class );
+
 		// RBE only Providers here.
 		$this->register_ct1_providers();
 		$this->has_registered = true;

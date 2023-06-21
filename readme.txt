@@ -4,7 +4,7 @@ Contributors: theeventscalendar, brianjessee, camwynsp, aguseo, bordoni, borkweb
 Tags: tickets, registration, event registration, RSVP, ticket sales, attendee management
 Requires at least: 5.8.5
 Tested up to: 6.2.0
-Stable tag: 5.6.0
+Stable tag: 5.6.0.1
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -198,6 +198,13 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - When no providers are enabled, a warning will display above the `New Ticket` and `New RSVP` area explaining that at least one must be enabled. [ET-1696]
 * Fix - Corrected an issue with the `New ticket` button having invalid HTML. [ET-1631]
 * Fix - Resolved an issue that caused compatibility problems between specific themes and the Attendee Registration page. [ET-1767]
+
+= [5.6.0.1] 2023-06-20 =
+
+* Fix - Increase the reliability of Telemetry initialization for Event Tickets loading [TEC-4836]
+* Fix - Resolved issues with Attendee Registration not being bound correctly on loading. [ET-1771]
+* Tweak - Added actions: `tec_telemetry_modal`
+* Tweak - Changed views: `blocks/tickets/submit`
 
 = [5.6.0] 2023-06-15 =
 
