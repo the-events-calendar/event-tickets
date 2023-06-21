@@ -199,6 +199,13 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Corrected an issue with the `New ticket` button having invalid HTML. [ET-1631]
 * Fix - Resolved an issue that caused compatibility problems between specific themes and the Attendee Registration page. [ET-1767]
 
+= [5.6.0.1] 2023-06-20 =
+
+* Fix - Increase the reliability of Telemetry initialization for Event Tickets loading [TEC-4836]
+* Fix - Resolved issues with Attendee Registration not being bound correctly on loading. [ET-1771]
+* Tweak - Added actions: `tec_telemetry_modal`
+* Tweak - Changed views: `blocks/tickets/submit`
+
 = [5.6.0] 2023-06-15 =
 
 * Feature - Introduction of Tickets Emails, the new and improved solution for managing Event Tickets related emails.
