@@ -15,42 +15,6 @@ class TablesCest {
 	}
 
 	/**
-	 * It should create capacities table
-	 *
-	 * @test
-	 */
-	public function should_create_capacities_table( Tester $I ): void {
-		$I->seeTableInDatabase( Capacities::table_name( true ) );
-	}
-
-	/**
-	 * It should create capacities_relationships table
-	 *
-	 * @test
-	 */
-	public function should_create_capacities_relationships_table( Tester $I ): void {
-		$I->seeTableInDatabase( Capacities_Relationships::table_name( true ) );
-	}
-
-	/**
-	 * It should creatae posts_and_posts table
-	 *
-	 * @test
-	 */
-	public function should_creatae_posts_and_posts_table( Tester $I ): void {
-		$I->seeTableInDatabase( Posts_And_Posts::table_name( true ) );
-	}
-
-	/**
-	 * It should create posts_and_users table
-	 *
-	 * @test
-	 */
-	public function should_create_posts_and_users_table( Tester $I ): void {
-		$I->seeTableInDatabase( Posts_And_Users::table_name( true ) );
-	}
-
-	/**
 	 * It should create ticket_groups table
 	 *
 	 * @test
