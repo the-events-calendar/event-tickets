@@ -9,7 +9,7 @@
 
 namespace TEC\Tickets\Commerce;
 
-use \tad_DI52_ServiceProvider;
+use \TEC\Common\Contracts\Service_Provider;
 use TEC\Tickets\Commerce\Utils\Value;
 
 /**
@@ -19,7 +19,7 @@ use TEC\Tickets\Commerce\Utils\Value;
  *
  * @package TEC\Tickets\Commerce
  */
-class Legacy_Compat extends tad_DI52_ServiceProvider {
+class Legacy_Compat extends Service_Provider {
 
 	/**
 	 * Binds and sets up implementations.
