@@ -10,7 +10,7 @@ use WP_REST_Server;
  * @since   5.1.9
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
-class REST extends \tad_DI52_ServiceProvider {
+class REST extends \TEC\Common\Contracts\Service_Provider {
 	public function register() {
 //		$this->container->singleton( REST\Webhook_Endpoint::class, [ $this, 'boot_webhook_endpoint' ] );
 		$this->container->singleton( REST\On_Boarding_Endpoint::class );
