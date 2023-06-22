@@ -131,8 +131,13 @@ class Tribe__Tickets__Commerce__Orders_Tabbed_View {
 
 		$page_type = tribe_get_request_var( 'page' );
 
+		// List of Order pages to display the 'Orders For...' heading.
+		$order_pages = [
+			'tickets-orders',
+			'edd-orders'
+		];
 		// Check $page_type to confirm if we are on Order or Attendees page.
-		if ( 'tickets-orders' === $page_type ) {
+		if ( in_array( $page_type, $order_pages ) ) {
 			// Translators: %1$s: the post/event title, %2$d: the post/event ID.
 			$title = _x( 'Orders for: %1$s [#%2$d]', 'orders report screen heading', 'event-tickets' );
 		} else {
