@@ -193,7 +193,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.6.1] 2023-06-22 =
 
-
+* Fix - Fix email templates overrides not working. [ET-1780]
 
 = [5.6.0.2] 2023-06-21 =
 
