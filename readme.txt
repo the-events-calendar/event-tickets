@@ -4,7 +4,7 @@ Contributors: theeventscalendar, brianjessee, camwynsp, aguseo, bordoni, borkweb
 Tags: tickets, registration, event registration, RSVP, ticket sales, attendee management
 Requires at least: 5.8.5
 Tested up to: 6.2.2
-Stable tag: 5.6.0.2
+Stable tag: 5.6.1
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -190,6 +190,14 @@ We've got a [LoopedIn](https://evnt.is/ideas) page where we're actively watching
 Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on using, tweaking, and troubleshooting our plugins.
 
 == Changelog ==
+
+= [5.6.1] 2023-06-22 =
+
+* Version - Event Tickets 5.6.1 is only compatible with The Events Calendar 6.1.2 and higher.
+* Version - Event Tickets 5.6.1 is only compatible with Event Tickets Plus 5.7.1 and higher.
+* Version - Event Tickets 5.6.1 is only compatible with Community Events 4.9.3 and higher.
+* Fix - Lock our container usage(s) to the new Service_Provider contract in tribe-common. This prevents conflicts and potential fatals with other plugins that use a di52 container.
+* Fix - Email templates overrides now works as expected. [ET-1780]
 
 = [5.6.0.2] 2023-06-21 =
 
