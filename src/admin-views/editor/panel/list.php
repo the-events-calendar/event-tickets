@@ -92,3 +92,4 @@ $container_class .= ( empty( $total_tickets ) ) ? ' tribe_no_capacity' : '';
 	do_action( 'tribe_events_tickets_after_new_ticket_panel', $post_id );
 	?>
 
+</div>

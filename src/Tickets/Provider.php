@@ -8,10 +8,10 @@
 
 namespace TEC\Tickets;
 
-use tad_DI52_ServiceProvider;
+use \tad_DI52_ServiceProvider;
 use TEC\Events\Custom_Tables\V1\Provider as TEC_CT1_Provider;
-use TEC\Tickets\Commerce\Custom_Tables\V1\Provider as ET_CT1_Provider;
-use Tribe__Tickets__Main as Tickets_Plugin;
+use TEC\Tickets\Custom_Tables\V1\Provider as ET_CT1_Provider;
+use \Tribe__Tickets__Main as Tickets_Plugin;
 
 /**
  * Class Provider for all the Tickets loading.
@@ -50,6 +50,9 @@ class Provider extends tad_DI52_ServiceProvider {
 		// Loads all of tickets commerce.
 		$this->container->register( Commerce\Provider::class );
 
+		// Load compatibility with ECP Recurrence engine.
+		$this->container->register( Recurrence\Provider::class );
+
 		// Loads all of tickets emails.
 		$this->container->register( Emails\Provider::class );
 
@@ -67,8 +70,12 @@ class Provider extends tad_DI52_ServiceProvider {
 		$this->has_registered = true;
 
 		// Register the Flexible Tickets feature if CT1 fully activated.
+//		add_action(
+//			'tec_events_custom_tables_v1_fully_activated',
+//			[ $this, 'register_flexible_tickets_provider' ]
+//		);
 		add_action(
-			'tec_events_custom_tables_v1_fully_activated',
+			'tec_events_pro_custom_tables_v1_fully_activated',
 			[ $this, 'register_flexible_tickets_provider' ]
 		);
 
