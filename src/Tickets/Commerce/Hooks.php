@@ -17,7 +17,7 @@
 
 namespace TEC\Tickets\Commerce;
 
-use \tad_DI52_ServiceProvider;
+use \TEC\Common\Contracts\Service_Provider;
 use TEC\Tickets\Commerce as Base_Commerce;
 use TEC\Tickets\Commerce\Reports\Orders;
 use TEC\Tickets\Commerce\Status\Completed;
@@ -32,7 +32,7 @@ use WP_Admin_Bar;
  *
  * @package TEC\Tickets\Commerce
  */
-class Hooks extends tad_DI52_ServiceProvider {
+class Hooks extends Service_Provider {
 
 	/**
 	 * Binds and sets up implementations.
