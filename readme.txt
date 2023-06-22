@@ -193,7 +193,11 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.6.1] 2023-06-22 =
 
-* Fix - Fix email templates overrides not working. [ET-1780]
+* Version - Event Tickets 5.6.1 is only compatible with The Events Calendar 6.1.2 and higher.
+* Version - Event Tickets 5.6.1 is only compatible with Event Tickets Plus 5.7.1 and higher.
+* Version - Event Tickets 5.6.1 is only compatible with Community Events 4.9.3 and higher.
+* Fix - Lock our container usage(s) to the new Service_Provider contract in tribe-common. This prevents conflicts and potential fatals with other plugins that use a di52 container.
+* Fix - Email templates overrides now works as expected. [ET-1780]
 
 = [5.6.0.2] 2023-06-21 =
 
