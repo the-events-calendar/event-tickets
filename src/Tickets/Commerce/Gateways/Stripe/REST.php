@@ -9,7 +9,7 @@ namespace TEC\Tickets\Commerce\Gateways\Stripe;
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe
  */
-class REST extends \tad_DI52_ServiceProvider {
+class REST extends \TEC\Common\Contracts\Service_Provider {
 
 	/**
 	 * @inheritDoc

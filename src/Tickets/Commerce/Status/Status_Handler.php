@@ -12,7 +12,7 @@ use TEC\Tickets\Commerce\Settings;
  *
  * @package TEC\Tickets\Commerce\Status
  */
-class Status_Handler extends \tad_DI52_ServiceProvider {
+class Status_Handler extends \TEC\Common\Contracts\Service_Provider {
 	/**
 	 * Statuses registered.
 	 *
