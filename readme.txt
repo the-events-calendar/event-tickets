@@ -193,6 +193,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.6.1.1] 2023-06-22 =
 
+* Fix - Prevent Telemetry from being initialized and triggering a Fatal when the correct conditionals are not met.
 
 = [5.6.1] 2023-06-22 =
 
