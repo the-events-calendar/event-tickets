@@ -104,7 +104,7 @@ class RSVP extends Email_Abstract {
 		// If they already had a subject set in Tickets Commerce, let's make it the default.
 		return tribe_get_option( Settings::$option_confirmation_email_subject, $default_subject );
 	}
-	
+
 	/**
 	 * @inheritDoc
 	 */
@@ -113,7 +113,7 @@ class RSVP extends Email_Abstract {
 		if ( $this->is_using_ticket_email_settings() ) {
 			return tribe( Ticket::class )->get_subject();
 		}
-		
+
 		return parent::get_subject();
 	}
 
@@ -151,10 +151,10 @@ class RSVP extends Email_Abstract {
 			],
 			$this->get_option_key( 'enabled' ) => [
 				'type'                => 'toggle',
-				'label'               => sprintf( 
+				'label'               => sprintf(
 					// Translators: %s - Title of email.
 					esc_html__( 'Enable %s', 'event-tickets' ),
-					$this->get_title() 
+					$this->get_title()
 				),
 				'default'             => true,
 				'validation_type'     => 'boolean',
@@ -276,7 +276,7 @@ class RSVP extends Email_Abstract {
 	/**
 	 * Check if following the ticket email settings.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @return bool
 	 */
@@ -288,7 +288,7 @@ class RSVP extends Email_Abstract {
 	/**
 	 * Filters the hidden dependent fields while saving `using_ticket_email` option from being saved.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @param array $fields The fields to be saved.
 	 * @param string $admin_page The admin page being saved.

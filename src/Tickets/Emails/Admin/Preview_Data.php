@@ -274,7 +274,7 @@ class Preview_Data {
 	/**
 	 * Get Post Data for preview.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @param string $args Array of preview data.
 	 *
@@ -301,7 +301,7 @@ class Preview_Data {
 	/**
 	 * Get preview placeholders.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @param array $args Override arguments.
 	 *

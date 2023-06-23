@@ -178,7 +178,7 @@ class Assets extends \tad_DI52_ServiceProvider {
 
 		return sprintf(
 			'%1$swebapps/merchantboarding/js/lib/lightbox/partner.js',
-			$client->get_home_page_url()
+			$client->get_home_page_url( false ) // Specifically dont use the sandbox URL here.
 		);
 	}
 

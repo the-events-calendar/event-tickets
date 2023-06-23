@@ -8,7 +8,7 @@ use TEC\Tickets\Emails\Email_Abstract;
 /**
  * Class Order_Schema
  *
- * @since TBD
+ * @since 5.6.0
  *
  * @pacakge TEC\Tickets\Emails\JSON_LD
  */
@@ -17,7 +17,7 @@ class Order_Schema extends JSON_LD_Abstract {
 	/**
 	 * The type of the schema.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @var string
 	 */
@@ -26,7 +26,7 @@ class Order_Schema extends JSON_LD_Abstract {
 	/**
 	 * The order object.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @var \WP_Post
 	 */
@@ -35,7 +35,7 @@ class Order_Schema extends JSON_LD_Abstract {
 	/**
 	 * Build the schema object from an email.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @param Email_Abstract $email The email instance.
 	 *

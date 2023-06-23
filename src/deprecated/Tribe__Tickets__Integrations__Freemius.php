@@ -1,10 +1,10 @@
 <?php
-_deprecated_file( __FILE__, 'TBD', 'No direct replacement.' );
+_deprecated_file( __FILE__, '5.6.0', 'No direct replacement.' );
 
 /**
  * Facilitates smoother integration with the Freemius.
  *
- * @depreacated TBD
+ * @depreacated 5.6.0
  * @since       4.11.5
  */
 class Tribe__Tickets__Integrations__Freemius {
@@ -12,7 +12,7 @@ class Tribe__Tickets__Integrations__Freemius {
 	/**
 	 * Stores the instance for the Freemius.
 	 *
-	 * @depreacated TBD
+	 * @depreacated 5.6.0
 	 * @since       4.11.5
 	 *
 	 * @var Freemius
@@ -22,7 +22,7 @@ class Tribe__Tickets__Integrations__Freemius {
 	/**
 	 * The object class used for assets.
 	 *
-	 * @depreacated TBD
+	 * @depreacated 5.6.0
 	 * @since       4.11.5
 	 *
 	 * @var string
@@ -32,7 +32,7 @@ class Tribe__Tickets__Integrations__Freemius {
 	/**
 	 * Stores the public key for Freemius.
 	 *
-	 * @depreacated TBD
+	 * @depreacated 5.6.0
 	 * @since       4.11.5
 	 *
 	 * @var string
@@ -42,7 +42,7 @@ class Tribe__Tickets__Integrations__Freemius {
 	/**
 	 * Stores the ID for the Freemius application.
 	 *
-	 * @depreacated TBD
+	 * @depreacated 5.6.0
 	 * @since       4.11.5
 	 *
 	 * @var string
@@ -52,7 +52,7 @@ class Tribe__Tickets__Integrations__Freemius {
 	/**
 	 * Stores the slug for the Freemius application.
 	 *
-	 * @depreacated TBD
+	 * @depreacated 5.6.0
 	 * @since       4.11.5
 	 *
 	 * @var string
@@ -62,7 +62,7 @@ class Tribe__Tickets__Integrations__Freemius {
 	/**
 	 * Stores the name for the Freemius application.
 	 *
-	 * @depreacated TBD
+	 * @depreacated 5.6.0
 	 * @since       4.11.5
 	 *
 	 * @var string
@@ -72,7 +72,7 @@ class Tribe__Tickets__Integrations__Freemius {
 	/**
 	 * Store the value from the 'page' in the request.
 	 *
-	 * @depreacated TBD
+	 * @depreacated 5.6.0
 	 * @since       4.11.5
 	 *
 	 * @var string
@@ -82,7 +82,7 @@ class Tribe__Tickets__Integrations__Freemius {
 	/**
 	 * Tribe__Tickets__Integrations__Freemius constructor.
 	 *
-	 * @depreacated TBD
+	 * @depreacated 5.6.0
 	 * @since       4.11.5
 	 *
 	 * @deprecated  5.4.1
@@ -93,7 +93,7 @@ class Tribe__Tickets__Integrations__Freemius {
 	/**
 	 * Performs setup for the Freemius integration singleton.
 	 *
-	 * @depreacated TBD
+	 * @depreacated 5.6.0
 	 * @since       4.11.5
 	 */
 	public function setup() {
@@ -196,7 +196,7 @@ class Tribe__Tickets__Integrations__Freemius {
 	 * For some reason Freemius is redirecting some customers to a page that doesn't exist. So we catch that page and
 	 * redirect them back to the actual page that we are using to setup the plugins integration.
 	 *
-	 * @depreacated TBD
+	 * @depreacated 5.6.0
 	 * @link        https://moderntribe.atlassian.net/browse/TEC-3218
 	 *
 	 * @since       4.11.5
@@ -230,7 +230,7 @@ class Tribe__Tickets__Integrations__Freemius {
 	/**
 	 * Get the connect page URL.
 	 *
-	 * @depreacated TBD
+	 * @depreacated 5.6.0
 	 * @since       4.11.5
 	 *
 	 * @param string $connect_url Current connect page URL.
@@ -255,7 +255,7 @@ class Tribe__Tickets__Integrations__Freemius {
 	/**
 	 * Get the Settings page URL.
 	 *
-	 * @depreacated TBD
+	 * @depreacated 5.6.0
 	 * @since       4.11.5
 	 *
 	 * @return string The Settings page URL.
@@ -267,7 +267,7 @@ class Tribe__Tickets__Integrations__Freemius {
 	/**
 	 * Get the Welcome page URL.
 	 *
-	 * @depreacated TBD
+	 * @depreacated 5.6.0
 	 * @since       5.0.2
 	 *
 	 * @return string The welcome page URL.
@@ -303,7 +303,7 @@ class Tribe__Tickets__Integrations__Freemius {
 	/**
 	 * Action to skip activation since Freemius code does not skip correctly here.
 	 *
-	 * @depreacated TBD
+	 * @depreacated 5.6.0
 	 * @since       4.11.5
 	 *
 	 * @return bool Whether activation was skipped.
@@ -333,7 +333,7 @@ class Tribe__Tickets__Integrations__Freemius {
 	/**
 	 * Filter the content for the Freemius Popup.
 	 *
-	 * @depreacated TBD
+	 * @depreacated 5.6.0
 	 * @since       4.11.5
 	 *
 	 * @param string $message         The message content.
@@ -375,7 +375,7 @@ class Tribe__Tickets__Integrations__Freemius {
 	/**
 	 * Returns the instance of Freemius plugin.
 	 *
-	 * @depreacated TBD
+	 * @depreacated 5.6.0
 	 * @since       4.11.5
 	 *
 	 * @return Freemius
@@ -387,7 +387,7 @@ class Tribe__Tickets__Integrations__Freemius {
 	/**
 	 * Method to remove the sticky message when the plugin is active for Freemius.
 	 *
-	 * @depreacated TBD
+	 * @depreacated 5.6.0
 	 * @since       4.11.5
 	 */
 	public function maybe_remove_activation_complete_notice() {

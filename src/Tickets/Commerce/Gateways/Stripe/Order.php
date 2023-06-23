@@ -9,7 +9,7 @@ use Tribe__Utils__Array as Arr;
 /**
  * Class Order
  *
- * @since TBD
+ * @since 5.6.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe
  */

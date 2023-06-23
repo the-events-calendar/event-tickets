@@ -82,7 +82,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	/**
 	 * Filters the values to be saved while saving RSVP Email settings.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @param array $fields The fields to be saved.
 	 * @param string $admin_page The admin page being saved.
@@ -223,7 +223,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 *
 	 * @see   Legacy_Hijack::send_rsvp_email
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @param null|boolean   $pre      Previous value from the filter, mostly will be null.
 	 * @param int            $order_id The order ID.
@@ -239,7 +239,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 *
 	 * @see   Legacy_Hijack::send_tickets_email_for_attendee
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @param null|boolean   $pre     Previous value from the filter, mostly will be null.
 	 * @param string         $to      The email to send the tickets to.
@@ -259,7 +259,7 @@ class Hooks extends tad_DI52_ServiceProvider {
 	 *
 	 * @see   Legacy_Hijack::send_rsvp_non_attendance_confirmation
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @param null|boolean   $pre      Previous value from the filter, mostly will be null.
 	 * @param int            $order_id The order ID.

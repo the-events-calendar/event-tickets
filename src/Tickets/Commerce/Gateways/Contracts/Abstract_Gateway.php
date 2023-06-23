@@ -78,7 +78,7 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	/**
 	 * Class used to manage the Orders for this Gateway
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @var string
 	 */
@@ -157,7 +157,7 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	/**
 	 * Fetches the Gateway Order Controller.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @return Commerce\Abstract_Order
 	 */
