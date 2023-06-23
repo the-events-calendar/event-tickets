@@ -69,11 +69,6 @@ class Provider extends tad_DI52_ServiceProvider {
 		$this->register_ct1_providers();
 		$this->has_registered = true;
 
-		// Register the Flexible Tickets feature if CT1 fully activated.
-//		add_action(
-//			'tec_events_custom_tables_v1_fully_activated',
-//			[ $this, 'register_flexible_tickets_provider' ]
-//		);
 		add_action(
 			'tec_events_pro_custom_tables_v1_fully_activated',
 			[ $this, 'register_flexible_tickets_provider' ]
