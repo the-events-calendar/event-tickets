@@ -354,7 +354,7 @@ class Tribe__Tickets__Assets {
 			$tickets_main,
 			'tribe-tickets-admin-attendees',
 			'tickets-admin-attendees.css',
-			[ 'tec-variables-full' ],
+			[ 'tec-variables-full', 'wp-components' ],
 			null,
 			[
 				'groups' => [
@@ -634,7 +634,7 @@ class Tribe__Tickets__Assets {
 	/**
 	 * Check if we should enqueue the Event Tickets WP admin assets.
 	 *
-	 * @since TBD
+	 * @since 5.5.10
 	 *
 	 * @return bool True if we should enqueue the assets, false otherwise.
 	 */

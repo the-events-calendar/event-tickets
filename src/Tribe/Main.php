@@ -8,7 +8,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '5.5.9.1';
+	const VERSION = '5.6.1.2';
 
 	/**
 	 * Used to store the version history.
@@ -43,7 +43,7 @@ class Tribe__Tickets__Main {
 	*
 	* @since 4.10
 	*/
-	protected $min_tec_version = '6.0.10-dev';
+	protected $min_tec_version = '6.1.2-dev';
 
 	/**
 	 * Name of the provider
@@ -153,6 +153,8 @@ class Tribe__Tickets__Main {
 			$dir_prefix = basename( dirname( dirname( EVENT_TICKETS_DIR ) ) ) . '/vendor/';
 		}
 
+		add_filter( 'tribe_events_integrations_should_load_freemius', '__return_false' );
+
 		$this->plugin_url = trailingslashit( plugins_url( $dir_prefix . $this->plugin_dir ) );
 
 		$this->maybe_set_common_lib_info();
@@ -160,6 +162,8 @@ class Tribe__Tickets__Main {
 		add_action( 'plugins_loaded', [ $this, 'maybe_bail_if_old_tec_is_present' ], -1 );
 		add_action( 'plugins_loaded', [ $this, 'maybe_bail_if_invalid_wp_or_php' ], -1 );
 		add_action( 'plugins_loaded', [ $this, 'plugins_loaded' ], 0 );
+
+
 		register_activation_hook( EVENT_TICKETS_MAIN_PLUGIN_FILE, [ $this, 'on_activation' ] );
 		register_deactivation_hook( EVENT_TICKETS_MAIN_PLUGIN_FILE, [ $this, 'on_deactivation' ] );
 	}
@@ -331,6 +335,8 @@ class Tribe__Tickets__Main {
 		 */
 		$this->init_autoloading();
 
+		add_filter( 'tec_common_parent_plugin_file', [ $this, 'include_parent_plugin_path_to_common' ] );
+
 		// Start Up Common.
 		Tribe__Main::instance();
 
@@ -338,6 +344,22 @@ class Tribe__Tickets__Main {
 
 		// Admin home.
 		tribe_register_provider( Tribe\Tickets\Admin\Home\Service_Provider::class );
+	}
+
+	/**
+	 * Adds our main plugin file to the list of paths.
+	 *
+	 * @since 6.1.0
+	 *
+	 *
+	 * @param array<string> $paths The paths to TCMN parent plugins.
+	 *
+	 * @return array<string>
+	 */
+	public function include_parent_plugin_path_to_common( $paths ): array {
+		$paths[] = EVENT_TICKETS_MAIN_PLUGIN_FILE;
+
+		return $paths;
 	}
 
 	/**
@@ -745,9 +767,6 @@ class Tribe__Tickets__Main {
 	 * Hooked to the init action
 	 */
 	public function init() {
-		// Start the integrations manager.
-		Tribe__Tickets__Integrations__Manager::instance()->load_integrations();
-
 		// Provide continued support for legacy ticketing modules.
 		$this->legacy_provider_support = new Tribe__Tickets__Legacy_Provider_Support;
 		$this->settings_tab();

@@ -9,7 +9,7 @@
 
 namespace TEC\Tickets\Commerce;
 
-use \tad_DI52_ServiceProvider;
+use \TEC\Common\Contracts\Service_Provider;
 
 /**
  * Class Assets.
@@ -18,7 +18,7 @@ use \tad_DI52_ServiceProvider;
  *
  * @package TEC\Tickets\Commerce
  */
-class Assets extends tad_DI52_ServiceProvider {
+class Assets extends Service_Provider {
 
 	/**
 	 * Binds and sets up implementations.
@@ -33,7 +33,7 @@ class Assets extends tad_DI52_ServiceProvider {
 			$tickets_main,
 			'tribe-tickets-admin-commerce-settings',
 			'admin/tickets-commerce-settings.js',
-			[ 
+			[
 				'jquery',
 				'tribe-dropdowns',
 				'tribe-select2',

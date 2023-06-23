@@ -2,7 +2,7 @@
 
 namespace Tribe\Tickets\Promoter;
 
-use tad_DI52_ServiceProvider;
+use TEC\Common\Contracts\Service_Provider as Service_Provider_Contract;
 use Tribe\Tickets\Promoter\Triggers\Dispatcher;
 use Tribe\Tickets\Promoter\Triggers\Factory;
 use Tribe\Tickets\Promoter\Triggers\Observers\Commerce;
@@ -15,7 +15,7 @@ use Tribe__Tickets__Promoter__Observer;
  *
  * @since 4.12.3
  */
-class Service_Provider extends tad_DI52_ServiceProvider {
+class Service_Provider extends Service_Provider_Contract {
 
 	/**
 	 * Binds and sets up implementations.

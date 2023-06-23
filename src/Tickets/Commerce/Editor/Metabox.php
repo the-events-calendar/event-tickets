@@ -60,7 +60,7 @@ class Metabox {
 	 * they want, specific to their implementation.
 	 *
 	 * @since 5.1.9
-	 * @since TBD removed `tribe_is_frontend` so the SKU displays when using Community Tickets.
+	 * @since 5.5.10 removed `tribe_is_frontend` so the SKU displays when using Community Tickets.
 	 *
 	 * @param int $post_id
 	 * @param int $ticket_id

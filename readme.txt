@@ -1,10 +1,10 @@
 === Event Tickets and Registration ===
 
-Contributors: theeventscalendar, brianjessee, camwynsp, aguseo, bordoni, borkweb, GeoffBel, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra, moraleida.me
+Contributors: theeventscalendar, brianjessee, camwynsp, aguseo, bordoni, borkweb, GeoffBel, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra
 Tags: tickets, registration, event registration, RSVP, ticket sales, attendee management
 Requires at least: 5.8.5
-Tested up to: 6.1.1
-Stable tag: 5.5.9.1
+Tested up to: 6.2.2
+Stable tag: 5.6.1.2
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -49,8 +49,8 @@ Whether your vision is big or small, you're in good company. Thousands of small 
 ✔️ Add RSVPs and tickets to posts, pages, or custom post types
 ✔️ Collect ticket fees by connecting your PayPal business or Stripe account
 ✔️ Generate sales and attendee reports
+✔️ Customize Tickets and RSVP confirmation emails
 ✔️ Ticket stock countdown
-✔️ Automatic ticket confirmation emails
 ✔️ Works out of the box with [The Events Calendar](https://evnt.is/18yi)
 ✔️ Responsive design works on all devices
 ✔️ Tested on the major theme frameworks such as Avada, Genesis, Kadence, Thesis and many more.
@@ -70,6 +70,7 @@ Additional helpful links:
 * [Guide: Getting Started with Event Tickets](https://evnt.is/1aot)
 * [Installing Event Tickets Video](https://evnt.is/1ao9)
 * [Using Tickets Commerce Video](https://evnt.is/1b5f)
+* [Configuring Tickets Emails](https://evnt.is/event-tickets-emails)
 * [Do I need Event Tickets or Event Tickets Plus?](https://evnt.is/1aoa)
 * [How to Make Money with Virtual Events](https://evnt.is/1aob)
 * [Implementing Stripe on Event Tickets and Event Tickets Plus](https://evnt.is/1b5g)
@@ -190,11 +191,71 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [TBD] TBD =
+= [5.6.1.2] 2023-06-23 =
 
+* Fix - Ensure there is backwards compatibility with Extensions and Pods.
+
+= [5.6.1.1] 2023-06-22 =
+
+* Fix - Prevent Telemetry from being initialized and triggering a Fatal when the correct conditionals are not met.
+
+= [5.6.1] 2023-06-22 =
+
+* Version - Event Tickets 5.6.1 is only compatible with The Events Calendar 6.1.2 and higher.
+* Version - Event Tickets 5.6.1 is only compatible with Event Tickets Plus 5.7.1 and higher.
+* Version - Event Tickets 5.6.1 is only compatible with Community Events 4.9.3 and higher.
+* Fix - Lock our container usage(s) to the new Service_Provider contract in tribe-common. This prevents conflicts and potential fatals with other plugins that use a di52 container.
+* Fix - Email templates overrides now works as expected. [ET-1780]
+
+= [5.6.0.2] 2023-06-21 =
+
+* Fix - Prevent Attendee list from throwing a notice on PHP 8+.
+* Fix - Adjusted our PHP Exception usage to protect against third-party code causing fatals when attempting to access objects that have not been initialized.
+
+= [5.6.0.1] 2023-06-20 =
+
+* Fix - Increase the reliability of Telemetry initialization for Event Tickets loading [TEC-4836]
+* Fix - Resolved issues with Attendee Registration not being bound correctly on loading. [ET-1771]
+* Tweak - Added actions: `tec_telemetry_modal`
+* Tweak - Changed views: `blocks/tickets/submit`
+
+= [5.6.0] 2023-06-15 =
+
+* Feature - Introduction of Tickets Emails, the new and improved solution for managing Event Tickets related emails.
+* Enhancement - Display order details link for TicketsCommerce providers on Orders page Gateway ID column. [ET-1729]
+* Enhancement - Add support for Gmail JSON LD markup of Ticket Emails. [ET-1601][ET-1637]
+* Tweak - Removed Freemius integration in favor of Telemetry an in-house info solution.
+* Fix - Tickets Commerce PayPal sandbox connection problem resolved.
+* Tweak - Added filters: `tec_tickets_emails_dispatcher`, `tec_tickets_emails_{$email_slug}_dispatcher`, `tec_tickets_emails_dispatcher_headers`, `tec_tickets_emails_dispatcher_{$email_slug}_headers`, `tec_tickets_emails_dispatcher_attachments`, `tec_tickets_emails_dispatcher_{$email_slug}_attachments`, `tec_tickets_emails_dispatcher_to`, `tec_tickets_emails_dispatcher_{$email_slug}_to`, `tec_tickets_emails_dispatcher_subject`, `tec_tickets_emails_dispatcher_{$email_slug}_subject`, `tec_tickets_emails_dispatcher_content`, `tec_tickets_emails_dispatcher_{$email_slug}_content`, `tec_tickets_email_json_ld_{$type}_schema_data`, `tec_tickets_emails_{$email->slug}_json_ld_schema`, `tec_tickets_emails_json_data_encode_options`, `tec_tickets_send_rsvp_email_pre`, `tec_tickets_send_rsvp_non_attendance_confirmation_pre`, `tec_tickets_send_tickets_email_for_attendee_pre`
+* Tweak - Removed filters: `tec_tickets_emails_heading_plural`, `tec_tickets_emails_{$this->slug}_heading_plural`, `tec_tickets_emails_subject_plural`, `tec_tickets_emails_{$this->slug}_subject_plural`, `tec_tickets_emails_headers`, `tec_tickets_emails_{$this->slug}_headers`, `tec_tickets_emails_attachments`, `tec_tickets_emails_{$this->slug}_attachments`, `tec_tickets_emails_default_emails`, `tec_tickets_emails_post_type_args`
+* Tweak - Changed views: `v2/emails/admin-new-order`, `v2/emails/customer-purchase-receipt`, `v2/emails/new-order/body`, `v2/emails/purchase-receipt/body`, `v2/emails/purchase-receipt/intro`, `v2/emails/rsvp-not-going`, `v2/emails/rsvp-not-going/body`, `v2/emails/rsvp`, `v2/emails/rsvp/body`, `v2/emails/template-parts/body`, `v2/emails/template-parts/body/add-content`, `v2/emails/template-parts/body/footer`, `v2/emails/template-parts/body/footer/content`, `v2/emails/template-parts/body/footer/credit`, `v2/emails/template-parts/body/header`, `v2/emails/template-parts/body/header/image`, `v2/emails/template-parts/body/order/attendees-table`, `v2/emails/template-parts/body/order/attendees-table/attendee-email`, `v2/emails/template-parts/body/order/attendees-table/attendee-info`, `emails/template-parts/body/order/attendees-table/attendee-name`, `v2/emails/template-parts/body/order/attendees-table/custom-fields`, `v2/emails/template-parts/body/order/attendees-table/header-row`, `v2/emails/template-parts/body/order/attendees-table/ticket-id`, `v2/emails/template-parts/body/order/attendees-table/ticket-title`, `v2/emails/template-parts/body/order/customer-purchaser-details`, `v2/emails/template-parts/body/order/error-message`, `emails/template-parts/body/order/order-gateway-data`, `v2/emails/template-parts/body/order/order-total`, `v2/emails/template-parts/body/order/payment-info`, `v2/emails/template-parts/body/order/event-title`, `v2/emails/template-parts/body/order/purchaser-details/date`, `v2/emails/template-parts/body/order/purchaser-details/email`, `v2/emails/template-parts/body/order/purchaser-details/name`, `v2/emails/template-parts/body/order/purchaser-details/order-number`, `v2/emails/template-parts/body/order/ticket-totals`, `v2/emails/template-parts/body/order/ticket-totals/header-row`, `v2/emails/template-parts/body/order/ticket-totals/ticket-price`, `v2/emails/template-parts/body/order/ticket-totals/ticket-quantity`, `v2/emails/template-parts/body/order/ticket-totals/ticket-row`, `v2/emails/template-parts/body/order/ticket-totals/ticket-title`, `emails/template-parts/body/post-description`, `emails/template-parts/body/post-title`, `v2/emails/template-parts/body/ticket/holder-name`, `v2/emails/template-parts/body/ticket/number-from-total`, `v2/emails/template-parts/body/ticket/security-code`, `v2/emails/template-parts/body/ticket/ticket-name`, `v2/emails/template-parts/body/tickets-total`, `v2/emails/template-parts/body/tickets`, `v2/emails/template-parts/body/title`, `v2/emails/template-parts/footer`, `v2/emails/template-parts/footer/footer-preview`, `v2/emails/template-parts/footer/footer`, `v2/emails/template-parts/header`, `v2/emails/template-parts/header/head/json-ld`, `v2/emails/template-parts/header/head/meta`, `v2/emails/template-parts/header/head/scripts`, `v2/emails/template-parts/header/head/styles`, `v2/emails/template-parts/header/head/title`, `v2/emails/template-parts/header/header-preview`, `v2/emails/template-parts/header/header`, `v2/emails/template-parts/header/top-link`, `v2/emails/ticket`, `v2/emails/ticket/body`, `v2/emails/admin-failed-order`, `v2/emails/failed-order/body`, `v2/emails/template-parts/body/order/attendees-table/attendee-name`, `v2/emails/template`
+* Language - 19 new strings added, 154 updated, 1 fuzzied, and 24 obsoleted
+
+= [5.5.11.1] 2023-05-09 =
+
+* Fix - Admin Dashboard loading slowly while counting attendees. [ET-1698]
+* Fix - Resolve Fatal occurring for some Tickets Commerce users around Order Models and Cart usage. [ET-1735]
+
+= [5.5.11] 2023-05-04 =
+
+* Enhancement - Add Ticket data with attendee data as checkin response. [ET-1694]
+* Enhancement - Added the ability to disable the Attendees column on the Events admin dashboard using `tec_tickets_admin_post_type_table_column` or `tec_tickets_admin_post_type_table_column_{$column}`. [ET-1701]
+* Enhancement - Save number of attendees checked-in via Event Tickets Plus app. [ET-1695]
+* Fix - When using Tickets Commerce tickets under the price of $1 will no longer display improperly. Deprecated `maybe_reset_cost_format`. [ET-1697]
+* Language - 21 new strings added, 85 updated, 0 fuzzied, and 10 obsoleted
+
+= [5.5.10] 2023-04-03 =
+
+* Enhancement - Added functionality to properly restock deleted attendee ticket for Tickets Commerce. [ETP-860]
 * Enhancement - Add the Attendee count for the site to the `At a Glance` admin widget. [ET-1654]
+* Enhancement - Add `post_title` data for attendees created using Tickets Commerce. [ET-1590]
 * Fix - When using Tickets Commerce the SKU will properly appear when creating a ticket using Community Tickets. [CT-64]
 * Fix - Fixed Tickets/RSVP blocks crashing when hovering over their tooltips. [ET-1674]
+* Fix - Undefined $going variable on Ajax request. [ET-1612]
+* Tweak - Added filters: `tec_tickets_emails_heading_plural`, `tec_tickets_emails_{$this->slug}_heading_plural`, `tec_tickets_emails_subject_plural`, `tec_tickets_emails_{$this->slug}_subject_plural`, `tec_tickets_emails_{$this->slug}_from_email`, `tec_tickets_emails_{$this->slug}_from_name`, `tec_tickets_emails_{$this->slug}_headers`, `tec_tickets_emails_{$this->slug}_attachments`, `tec_tickets_emails_{$this->slug}_placeholders`, `tec_tickets_emails_recipient`, `tec_tickets_emails_{$this->slug}_recipient`, `tec_tickets_emails_subject`, `tec_tickets_emails_{$this->slug}_subject`, `tec_tickets_emails_heading`, `tec_tickets_emails_{$this->slug}_heading`, `tec_tickets_emails_additional_content`, `tec_tickets_emails_{$this->slug}_additional_content`, `tec_tickets_emails_settings`, `tec_tickets_emails_{$this->slug}_settings`, `tribe_tickets_rsvp_tickets_to_send`
+* Tweak - Removed filters: `tec_tickets_emails_heading_`, `tec_tickets_emails_subject_`, `tribe_rsvp_non_attendance_email_subject`
+* Tweak - Changed views: `v2/emails/customer-completed-order`, `v2/emails/rsvp-not-going`, `v2/emails/rsvp-not-going/body`, `v2/emails/template-parts/body/title`
+* Language - 33 new strings added, 83 updated, 1 fuzzied, and 6 obsoleted
 
 = [5.5.9.1] 2023-03-13 =
 

@@ -7,11 +7,10 @@ jobs:
       matrix:
         suite:
           # - acceptance
-          - ct1_integration
+          # - ct1_integration
           - functional
           - integration
-          - restv1 --group="capacity"
-          - restv1 --skip-group="capacity"
+          - restv1
           - views_integration
           - commerce_integration
           - wpunit --group="capacity"

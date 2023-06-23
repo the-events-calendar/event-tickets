@@ -2,7 +2,9 @@
 
 namespace TEC\Tickets\Commerce;
 
+use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Utils\Value;
+use Tribe__Utils__Array as Arr;
 
 /**
  * @todo backend move common methods from Commerce/Order, Manual/Order and PayPal/Order here.
@@ -132,5 +134,18 @@ abstract class Abstract_Order {
 		 * @param array $data      the entire data array received from the checkout page.
 		 */
 		return apply_filters( 'tec_tickets_commerce_order_purchaser_data', $purchaser, $data );
+	}
+
+	/**
+	 * Get the order Gateway Admin URL link by order ID
+	 *
+	 * @since 5.6.0
+	 *
+	 * @param \WP_Post $order The order post object.
+	 *
+	 * @return ?string
+	 */
+	public function get_gateway_dashboard_url_by_order( \WP_Post $order ): ?string {
+		return null;
 	}
 }

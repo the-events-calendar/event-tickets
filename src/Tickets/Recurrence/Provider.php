@@ -2,17 +2,17 @@
 
 namespace TEC\Tickets\Recurrence;
 
-use tad_DI52_ServiceProvider;
+use TEC\Common\Contracts\Service_Provider;
 use TEC\Events\Custom_Tables\V1\Migration\State;
 
-class Provider extends tad_DI52_ServiceProvider {
+class Provider extends Service_Provider {
 
 	/**
 	 * @inheritDoc
 	 */
 	public function register() {
 
-		if ( ! class_exists( 'TEC\Events_Pro\Custom_Tables\V1\Provider' ) || ! class_exists( 'TEC\Events\Custom_Tables\V1\Migration\State' ) ) {
+		if ( ! class_exists( 'TEC\Events_Pro\Custom_Tables\V1\Provider', false ) || ! class_exists( 'TEC\Events\Custom_Tables\V1\Migration\State', false ) ) {
 			return;
 		}
 

@@ -35,15 +35,8 @@ class Web_View {
 	 * @return string The email web view URL.
 	 */
 	public function get_url(): string {
-		// @todo @juanfra: Implement a method to get the link to the web view link URL.
-		$url = add_query_arg(
-			[
-				self::$url_slug => 1,
-			],
-			site_url()
-		);
-
-		return $url;
+		// @todo @juanfra: Implement a method to get the link to the web view link URL based on the email.
+		return '';
 	}
 
 	/**
@@ -71,7 +64,7 @@ class Web_View {
 			//new WP_Error( 'tec-tickets-emails-web-view-no-security-code', 'The `security_code` parameter is empty.' );
 		}
 
-		/** @var Tribe__Tickets__Data_API $data_api */
+		/** @var \Tribe__Tickets__Data_API $data_api */
 		$data_api = tribe( 'tickets.data_api' );
 
 		$service_provider = $data_api->get_ticket_provider( $attendee_id );

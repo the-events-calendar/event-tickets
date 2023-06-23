@@ -2,7 +2,7 @@
 
 namespace TEC\Tickets\Recurrence;
 
-class Hooks extends \tad_DI52_ServiceProvider {
+class Hooks extends \TEC\Common\Contracts\Service_Provider {
 
 	/**
 	 * @inheritDoc
