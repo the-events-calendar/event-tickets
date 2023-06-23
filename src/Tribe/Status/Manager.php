@@ -411,6 +411,11 @@ class Tribe__Tickets__Status__Manager {
 			$module = $module->class_name;
 		}
 
+		// Only scalar values are valid for `array_key_exists`.
+		if ( ! is_scalar( $module ) ) {
+			return false;
+		}
+
 		$slugs_to_classes = array_flip( $this->module_slugs );
 
 		// If already a slug (case-sensitive).

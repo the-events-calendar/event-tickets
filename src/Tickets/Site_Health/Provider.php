@@ -9,7 +9,7 @@
 
 namespace TEC\Tickets\Site_Health;
 
-use TEC\Common\lucatume\DI52\ServiceProvider as ServiceProvider;
+use TEC\Common\Contracts\Service_Provider;
 
  /**
   * Class Provider
@@ -18,7 +18,7 @@ use TEC\Common\lucatume\DI52\ServiceProvider as ServiceProvider;
 
   * @package TEC\Tickets\Site_Health
   */
-class Provider extends ServiceProvider {
+class Provider extends Service_Provider {
 
 	/**
 	 * Internal placeholder to pass around the section slug.

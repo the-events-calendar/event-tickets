@@ -13,7 +13,7 @@ use TEC\Tickets\Commerce\Gateways\Stripe\Webhooks\Payment_Intent_Webhook;
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe
  */
-class Provider extends \tad_DI52_ServiceProvider {
+class Provider extends \TEC\Common\Contracts\Service_Provider {
 
 	/**
 	 * @inheritDoc

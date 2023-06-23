@@ -9,7 +9,7 @@
  *
  * @since 4.6
  */
-class Tribe__Tickets__Service_Provider extends tad_DI52_ServiceProvider {
+class Tribe__Tickets__Service_Provider extends \TEC\Common\Contracts\Service_Provider {
 	/**
 	 * Binds and sets up implementations.
 	 *
@@ -24,7 +24,7 @@ class Tribe__Tickets__Service_Provider extends tad_DI52_ServiceProvider {
 
 		// Caching
 		$this->container->singleton( 'tickets.cache-central', 'Tribe__Tickets__Cache__Central', [ 'hook' ] );
-		$this->container->singleton( 'tickets.cache', tribe( 'tickets.cache-central' )->get_cache() );
+		$this->container->singleton( 'tickets.cache', $this->container->make( 'tickets.cache-central' )->get_cache() );
 
 		// Query Vars
 		$this->container->singleton( 'tickets.query', 'Tribe__Tickets__Query', [ 'hook' ] );

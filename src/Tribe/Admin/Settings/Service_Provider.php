@@ -2,7 +2,7 @@
 
 namespace Tribe\Tickets\Admin\Settings;
 
-use tad_DI52_ServiceProvider;
+use TEC\Common\Contracts\Service_Provider as Service_Provider_Contract;
 use Tribe\Tickets\Admin\Settings;
 
 /**
@@ -12,7 +12,7 @@ use Tribe\Tickets\Admin\Settings;
  *
  * @since   5.1.2
  */
-class Service_Provider extends tad_DI52_ServiceProvider {
+class Service_Provider extends Service_Provider_Contract {
 	/**
 	 * Register the provider singletons.
 	 *

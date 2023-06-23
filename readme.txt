@@ -3,8 +3,8 @@
 Contributors: theeventscalendar, brianjessee, camwynsp, aguseo, bordoni, borkweb, GeoffBel, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra
 Tags: tickets, registration, event registration, RSVP, ticket sales, attendee management
 Requires at least: 5.8.5
-Tested up to: 6.2.0
-Stable tag: 5.6.0.1
+Tested up to: 6.2.2
+Stable tag: 5.6.1.2
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -198,6 +198,27 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - When no providers are enabled, a warning will display above the `New Ticket` and `New RSVP` area explaining that at least one must be enabled. [ET-1696]
 * Fix - Corrected an issue with the `New ticket` button having invalid HTML. [ET-1631]
 * Fix - Resolved an issue that caused compatibility problems between specific themes and the Attendee Registration page. [ET-1767]
+
+= [5.6.1.2] 2023-06-23 =
+
+* Fix - Ensure there is backwards compatibility with Extensions and Pods.
+
+= [5.6.1.1] 2023-06-22 =
+
+* Fix - Prevent Telemetry from being initialized and triggering a Fatal when the correct conditionals are not met.
+
+= [5.6.1] 2023-06-22 =
+
+* Version - Event Tickets 5.6.1 is only compatible with The Events Calendar 6.1.2 and higher.
+* Version - Event Tickets 5.6.1 is only compatible with Event Tickets Plus 5.7.1 and higher.
+* Version - Event Tickets 5.6.1 is only compatible with Community Events 4.9.3 and higher.
+* Fix - Lock our container usage(s) to the new Service_Provider contract in tribe-common. This prevents conflicts and potential fatals with other plugins that use a di52 container.
+* Fix - Email templates overrides now works as expected. [ET-1780]
+
+= [5.6.0.2] 2023-06-21 =
+
+* Fix - Prevent Attendee list from throwing a notice on PHP 8+.
+* Fix - Adjusted our PHP Exception usage to protect against third-party code causing fatals when attempting to access objects that have not been initialized.
 
 = [5.6.0.1] 2023-06-20 =
 
