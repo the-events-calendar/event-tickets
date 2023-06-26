@@ -200,6 +200,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Resolved an issue that caused compatibility problems between specific themes and the Attendee Registration page. [ET-1767]
 * Tweak - Added filters: `tec_tickets_commerce_order_page_title`, `tec_tickets_attendees_order_view_title`
 * Tweak - Removed filters: `tribe_tickets_attendees_show_view_title`
+* Language - 3 new strings added, 41 updated, 1 fuzzied, and 0 obsoleted
 
 = [5.6.1.2] 2023-06-23 =
 
