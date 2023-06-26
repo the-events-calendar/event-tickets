@@ -25,7 +25,7 @@ class Warnings {
 	/**
 	 * Show the Recurring Event warning message.
 	 *
-	 * @since TBD Added 'recurring_event_warning' as an $additionalClasses.
+	 * @since 5.6.2 Added 'recurring_event_warning' as an $additionalClasses.
 	 * @since 5.0.4
 	 *
 	 * @param int $post_id Post ID.
@@ -62,7 +62,7 @@ class Warnings {
 	/**
 	 * Add Provider missing warning for tickets.
 	 *
-	 * @since TBD Added 'provider_warning' as an $additionalClasses.
+	 * @since 5.6.2 Added 'provider_warning' as an $additionalClasses.
 	 * @since 5.0.4
 	 */
 	public function add_commerce_provider_warning() {
@@ -123,7 +123,7 @@ class Warnings {
 	/**
 	 * Render the notice block.
 	 *
-	 * @since TBD added the `$additionalClasses` attribute to allow customizing the notice.
+	 * @since 5.6.2 added the `$additionalClasses` attribute to allow customizing the notice.
 	 * @since 5.0.4
 	 *
 	 * @param string $message           The message to show.
