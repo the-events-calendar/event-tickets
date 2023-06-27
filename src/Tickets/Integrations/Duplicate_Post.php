@@ -9,8 +9,8 @@
 namespace TEC\Tickets\Integrations;
 
 use \TEC\Common\Contracts\Service_Provider;
-use TEC\Tickets\Commerce\Module;
 use Tribe__Tickets__Tickets;
+use WP_Error;
 
 class Duplicate_Post extends Service_Provider {
 
@@ -44,15 +44,14 @@ class Duplicate_Post extends Service_Provider {
 	 */
 	public function duplicate_tickets_to_new_post( $new_post_id, $post, $status ) {
 
-		$ticket_ids = Tribe__Tickets__Tickets::get_all_event_tickets( $post->ID );
+		$tickets = Tribe__Tickets__Tickets::get_all_event_tickets( $post->ID );
 
 		// If we have no tickets, return the new post ID.
-		if ( empty( $ticket_ids ) ) {
+		if ( empty( $tickets ) ) {
 			return $new_post_id;
 		}
 
-		// Since all providers for tickets should be the same, we check the first provider.
-		$provider = tribe_tickets_get_ticket_provider( $ticket_ids[ 0 ]->ID );
+		$provider = tribe( $tickets[ 0 ]->provider_class );
 
 		if ( empty( $provider ) || ! $provider instanceof Tribe__Tickets__Tickets ) {
 			return new WP_Error(
@@ -62,21 +61,9 @@ class Duplicate_Post extends Service_Provider {
 			);
 		}
 
-		$new_ticket_ids = [];
 
-		foreach ( $ticket_ids as $ticket_id ) {
-			$duplicate_ticket_id = $provider->clone_ticket_to_new_post( $post->ID, $new_post_id, $ticket_id );
-
-			if ( false===$duplicate_ticket_id ) {
-				// Handle failure to create duplicate ticket for this specific ticket.
-				$new_ticket_ids[] = new WP_Error(
-					'bad_request',
-					__( 'Failed to create duplicate ticket for ticket ID: ', 'event-tickets' ) . $ticket_id,
-					[ 'status' => 400 ]
-				);
-			} else {
-				$new_ticket_ids[] = $duplicate_ticket_id;
-			}
+		foreach ( $tickets as $ticket ) {
+			$provider->clone_ticket_to_new_post( $post->ID, $new_post_id, $ticket->ID );
 		}
 
 		return $new_post_id;
