@@ -65,6 +65,9 @@ class Provider extends Service_Provider {
 		// Loads admin area.
 		$this->container->register( Telemetry\Provider::class );
 
+		// Loads Integrations.
+		$this->container->register( Integrations\Duplicate_Post::class);
+
 		// RBE only Providers here.
 		$this->register_ct1_providers();
 		$this->has_registered = true;
