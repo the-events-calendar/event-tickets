@@ -43,16 +43,8 @@ class Duplicate_Post extends Service_Provider {
 	 * @return int|WP_Error $new_post_id New post ID or WP_Error object on failure.
 	 */
 	public function duplicate_tickets_to_new_post( $new_post_id, $post, $status ) {
-		/**
-		 * @todo Fix this logic, maybe it will be possible to find the provider straight from the post instead of getting the first ticket the way I'm doing it now.
-		 *  I should also try to figure out the best way for ET+ to hook into this for when woo/EDD is being used instead.
-		 */
-// For Tickets Commerce
-		$ticket_ids = (array)tribe( Module::class )->get_tickets_ids( $post );
-// For WooCommerce
-		$ticket_ids = tribe( 'tickets-plus.commerce.woo' )->get_tickets_ids( $post->ID );
-// For EDD
-		$ticket_ids = tribe( 'tickets-plus.commerce.edd' )->get_tickets_ids( $post->ID );
+
+		$ticket_ids = Tribe__Tickets__Tickets::get_all_event_tickets( $post->ID );
 
 		// If we have no tickets, return the new post ID.
 		if ( empty( $ticket_ids ) ) {
@@ -60,10 +52,7 @@ class Duplicate_Post extends Service_Provider {
 		}
 
 		// Since all providers for tickets should be the same, we check the first provider.
-		$provider = tribe_tickets_get_ticket_provider( $ticket_ids[ 0 ] );
-
-
-
+		$provider = tribe_tickets_get_ticket_provider( $ticket_ids[ 0 ]->ID );
 
 		if ( empty( $provider ) || ! $provider instanceof Tribe__Tickets__Tickets ) {
 			return new WP_Error(
