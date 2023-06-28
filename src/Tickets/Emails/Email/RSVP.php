@@ -8,7 +8,11 @@
 namespace TEC\Tickets\Emails\Email;
 
 use TEC\Tickets\Commerce\Settings as Settings;
-use \TEC\Tickets\Emails\Email_Template;
+use TEC\Tickets\Emails\Admin\Emails_Tab;
+use TEC\Tickets\Emails\Dispatcher;
+use TEC\Tickets\Emails\Email_Template;
+use TEC\Tickets\Emails\Email_Abstract;
+use TEC\Tickets\Emails\JSON_LD\Reservation_Schema;
 
 /**
  * Class RSVP
@@ -17,7 +21,7 @@ use \TEC\Tickets\Emails\Email_Template;
  *
  * @package TEC\Tickets\Emails
  */
-class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
+class RSVP extends Email_Abstract {
 
 	/**
 	 * Email ID.
@@ -77,65 +81,10 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 	 */
 	public function get_default_heading(): string {
 		return sprintf(
-			// Translators: %s Lowercase singular of ticket.
+			// Translators: %s Lowercase plural of ticket.
 			esc_html__( 'Here\'s your %s, {attendee_name}!', 'event-tickets' ),
-			tribe_get_ticket_label_singular_lowercase()
-		);
-	}
-
-	/**
-	 * Get default email heading for plural rsvps.
-	 *
-	 * @since 5.5.10
-	 *
-	 * @return string
-	 */
-	public function get_default_heading_plural(): string {
-		return sprintf(
-			// Translators: %s Lowercase plural of tickets.
-			esc_html__( 'Here are your %s, {attendee_name}!', 'event-tickets' ),
 			tribe_get_ticket_label_plural_lowercase()
 		);
-	}
-
-	/**
-	 * Get heading for plural tickets.
-	 *
-	 * @since 5.5.10
-	 *
-	 * @return string
-	 */
-	public function get_heading_plural(): string {
-		$option_key = $this->get_option_key( 'heading-plural' );
-		$heading    = tribe_get_option( $option_key, $this->get_default_heading_plural() );
-
-		// @todo: Probably we want more data parsed, or maybe move the filters somewhere else as we're always gonna
-
-		/**
-		 * Allow filtering the email heading globally.
-		 *
-		 * @since 5.5.10
-		 *
-		 * @param string         $heading  The email heading.
-		 * @param string         $id       The email id.
-		 * @param string         $template Template name.
-		 * @param Email_Abstract $this     The email object.
-		 */
-		$heading = apply_filters( 'tec_tickets_emails_heading_plural', $heading, $this->id, $this->template, $this );
-
-		/**
-		 * Allow filtering the email heading.
-		 *
-		 * @since 5.5.10
-		 *
-		 * @param string         $heading  The email heading.
-		 * @param string         $id       The email id.
-		 * @param string         $template Template name.
-		 * @param Email_Abstract $this     The email object.
-		 */
-		$heading = apply_filters( "tec_tickets_emails_{$this->slug}_heading_plural", $heading, $this->id, $this->template, $this );
-
-		return $this->format_string( $heading );
 	}
 
 	/**
@@ -147,9 +96,9 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 	 */
 	public function get_default_subject(): string {
 		$default_subject = sprintf(
-			// Translators: %s - Lowercase singular of ticket.
+			// Translators: %s - Lowercase plural of ticket.
 			esc_html__( 'Your %s from {site_title}', 'event-tickets' ),
-			tribe_get_ticket_label_singular_lowercase()
+			tribe_get_ticket_label_plural_lowercase()
 		);
 
 		// If they already had a subject set in Tickets Commerce, let's make it the default.
@@ -157,58 +106,15 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 	}
 
 	/**
-	 * Get default email subject for plural rsvps.
-	 *
-	 * @since 5.5.10
-	 *
-	 * @return string
+	 * @inheritDoc
 	 */
-	public function get_default_subject_plural() {
-		return sprintf(
-			// Translators: %s - Lowercase plural of tickets.
-			esc_html__( 'Your %s from {site_title}', 'event-tickets' ),
-			tribe_get_ticket_label_plural_lowercase()
-		);
-	}
+	public function get_subject(): ?string {
+		// Send ticket subject if using ticket settings.
+		if ( $this->is_using_ticket_email_settings() ) {
+			return tribe( Ticket::class )->get_subject();
+		}
 
-	/**
-	 * Get subject for plural rsvps.
-	 *
-	 * @since 5.5.10
-	 *
-	 * @return string
-	 */
-	public function get_subject_plural(): string {
-		$option_key = $this->get_option_key( 'subject-plural' );
-		$subject    = tribe_get_option( $option_key, $this->get_default_subject_plural() );
-
-		// @todo: Probably we want more data parsed, or maybe move the filters somewhere else as we're always gonna
-
-		/**
-		 * Allow filtering the email subject globally.
-		 *
-		 * @since 5.5.10
-		 *
-		 * @param string         $subject  The email subject.
-		 * @param string         $id       The email id.
-		 * @param string         $template Template name.
-		 * @param Email_Abstract $this     The email object.
-		 */
-		$subject = apply_filters( 'tec_tickets_emails_subject_plural', $subject, $this->id, $this->template, $this );
-
-		/**
-		 * Allow filtering the email subject.
-		 *
-		 * @since 5.5.10
-		 *
-		 * @param string         $subject  The email subject.
-		 * @param string         $id       The email id.
-		 * @param string         $template Template name.
-		 * @param Email_Abstract $this     The email object.
-		 */
-		$subject = apply_filters( "tec_tickets_emails_{$this->slug}_subject_plural", $subject, $this->id, $this->template, $this );
-
-		return $this->format_string( $subject );
+		return parent::get_subject();
 	}
 
 	/**
@@ -219,6 +125,17 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 	 * @return array
 	 */
 	public function get_settings_fields(): array {
+		$kb_link = sprintf(
+			'<a href="https://evnt.is/event-tickets-emails" target="_blank" rel="noopener noreferrer">%s</a>',
+			esc_html__( 'Learn more', 'event-tickets' )
+		);
+
+		$email_description = sprintf(
+			// Translators: %1$s: RSVP Emails knowledgebase article link.
+			esc_html_x( 'Registrants will receive an email including their RSVP info upon registration. Customize the content of this specific email using the tools below. You can also use email placeholders and customize email templates. %1$s.', 'about RSVP email', 'event-tickets' ),
+			$kb_link
+		);
+
 		$settings = [
 			[
 				'type' => 'html',
@@ -230,27 +147,29 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 			],
 			[
 				'type' => 'html',
-				'html' => '<p>' . esc_html__( 'Registrants will receive an email including their RSVP info upon registration. Customize the content of this specific email using the tools below. The brackets {event_name}, {event_date}, and {rsvp_name} can be used to pull dynamic content from the RSVP into your email. Learn more about customizing email templates in our Knowledgebase.' ) . '</p>',
+				'html' => '<p>' . $email_description . '</p>',
 			],
 			$this->get_option_key( 'enabled' ) => [
 				'type'                => 'toggle',
-				'label'               => esc_html__( 'Enabled', 'event-tickets' ),
+				'label'               => sprintf(
+					// Translators: %s - Title of email.
+					esc_html__( 'Enable %s', 'event-tickets' ),
+					$this->get_title()
+				),
 				'default'             => true,
 				'validation_type'     => 'boolean',
 			],
 			$this->get_option_key( 'use-ticket-email' ) => [
 				'type'                => 'toggle',
 				'label'               => esc_html__( 'Use Ticket Email', 'event-tickets' ),
-				'placeholder'         => esc_html__( 'Use the ticket email settings and template.', 'event-tickets' ),
+				'tooltip'             => esc_html__( 'Use the ticket email settings and template.', 'event-tickets' ),
 				'default'             => true,
 				'validation_type'     => 'boolean',
+				'attributes'          => [
+					'id' => $this->get_option_key( 'use-ticket-email' ),
+				],
 			],
 		];
-
-		// If using the ticket email settings, no need to show the remaining settings.
-		if ( tribe_is_truthy( tribe_get_option( $this->get_option_key( 'use-ticket-email' ), true ) ) ) {
-			return $settings;
-		}
 
 		$add_settings = [
 			$this->get_option_key( 'subject' ) => [
@@ -259,15 +178,12 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 				'default'             => $this->get_default_subject(),
 				'placeholder'         => $this->get_default_subject(),
 				'size'                => 'large',
-				'validation_callback' => 'is_string',
-			],
-			$this->get_option_key( 'subject-plural' ) => [
-				'type'                => 'text',
-				'label'               => esc_html__( 'Subject (plural)', 'event-tickets' ),
-				'default'             => $this->get_default_subject_plural(),
-				'placeholder'         => $this->get_default_subject_plural(),
-				'size'                => 'large',
-				'validation_callback' => 'is_string',
+				'validation_type'     => 'textarea',
+				'fieldset_attributes' => [
+					'data-depends'                  => '#' . $this->get_option_key( 'use-ticket-email' ),
+					'data-condition-is-not-checked' => true,
+				],
+				'class'               => 'tribe-dependent',
 			],
 			$this->get_option_key( 'heading' ) => [
 				'type'                => 'text',
@@ -275,20 +191,18 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 				'default'             => $this->get_default_heading(),
 				'placeholder'         => $this->get_default_heading(),
 				'size'                => 'large',
-				'validation_callback' => 'is_string',
+				'validation_type'     => 'textarea',
+				'fieldset_attributes' => [
+					'data-depends'                  => '#' . $this->get_option_key( 'use-ticket-email' ),
+					'data-condition-is-not-checked' => true,
+				],
+				'class'               => 'tribe-dependent',
 			],
-			$this->get_option_key( 'heading-plural' ) => [
-				'type'                => 'text',
-				'label'               => esc_html__( 'Heading (plural)', 'event-tickets' ),
-				'default'             => $this->get_default_heading_plural(),
-				'placeholder'         => $this->get_default_heading_plural(),
-				'size'                => 'large',
-				'validation_callback' => 'is_string',
-			],
-			$this->get_option_key( 'add-content' ) => [
+			$this->get_option_key( 'additional-content' ) => [
 				'type'                => 'wysiwyg',
 				'label'               => esc_html__( 'Additional content', 'event-tickets' ),
 				'default'             => '',
+				'size'                => 'large',
 				'tooltip'             => esc_html__( 'Additional content will be displayed below the RSVP information in your email.', 'event-tickets' ),
 				'validation_type'     => 'html',
 				'settings'        => [
@@ -303,8 +217,14 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 						'alignleft',
 						'aligncenter',
 						'alignright',
+						'link',
 					],
 				],
+				'fieldset_attributes' => [
+					'data-depends'                  => '#' . $this->get_option_key( 'use-ticket-email' ),
+					'data-condition-is-not-checked' => true,
+				],
+				'class'               => 'tribe-dependent',
 			],
 		];
 
@@ -338,31 +258,69 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 			'title'              => $this->get_title(),
 			'heading'            => $this->get_heading(),
 			'additional_content' => $this->get_additional_content(),
-			'tickets'            => $this->__get( 'tickets' ),
-			'post_id'            => $this->__get( 'post_id' ),
+			'tickets'            => $this->get( 'tickets' ),
+			'post_id'            => $this->get( 'post_id' ),
+			'post'               => get_post( $this->get( 'post_id' ) ),
+			'json_ld'            => Reservation_Schema::build_from_email( $this ),
 		];
+
+		if ( $this->is_using_ticket_email_settings() ) {
+			$ticket = tribe( Ticket::class );
+			$defaults['heading']            = $ticket->get_heading();
+			$defaults['additional_content'] = $ticket->get_additional_content();
+		}
 
 		return $defaults;
 	}
 
 	/**
-	 * Get email content.
+	 * Check if following the ticket email settings.
 	 *
-	 * @since 5.5.10
+	 * @since 5.6.0
 	 *
-	 * @param array $args The arguments.
-	 *
-	 * @return string The email content.
+	 * @return bool
 	 */
-	public function get_content( $args = [] ): string {
-		// @todo: Parse args, etc.
-		$is_preview = ! empty( $args['is_preview'] ) ? tribe_is_truthy( $args['is_preview'] ) : false;
-		$args       = $this->get_template_context( $args );
+	public function is_using_ticket_email_settings(): bool {
+		// If using the ticket email settings, no need to show the remaining settings.
+		return tribe_is_truthy( tribe_get_option( $this->get_option_key( 'use-ticket-email' ), true ) );
+	}
 
-		$email_template = tribe( Email_Template::class );
-		$email_template->set_preview( $is_preview );
+	/**
+	 * Filters the hidden dependent fields while saving `using_ticket_email` option from being saved.
+	 *
+	 * @since 5.6.0
+	 *
+	 * @param array $fields The fields to be saved.
+	 * @param string $admin_page The admin page being saved.
+	 *
+	 * @return array The fields to be saved.
+	 */
+	public function filter_rsvp_fields_before_saving( array $fields, $admin_page ): array {
+		$emails_slug = Emails_Tab::$slug;
 
-		return $email_template->get_html( $this->template, $args );
+		if ( \Tribe\Tickets\Admin\Settings::$settings_page_id !== $admin_page
+		     || ! isset( $fields[ $emails_slug ] )
+		     || tribe_get_request_var( 'section', false ) !== 'tec_tickets_emails_rsvp'
+		     || empty( $_POST )
+		) {
+			return $fields;
+		}
+
+		// If not updating the ticket email settings, no need to filter the fields.
+		if ( ! tribe_is_truthy( tribe_get_request_var( 'tec-tickets-emails-rsvp-use-ticket-email' ) ) ) {
+			return $fields;
+		}
+
+		// filters the hidden fields and toggle type fields.
+		$fields[ $emails_slug ] = array_filter(
+			$fields[ $emails_slug ],
+			function ( $field, $key ) {
+				return isset( $_POST[ $key ] ) || $field['type'] === 'toggle';
+			},
+			ARRAY_FILTER_USE_BOTH
+		);
+
+		return $fields;
 	}
 
 	/**
@@ -384,8 +342,8 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 			return false;
 		}
 
-		$tickets = $this->__get( 'tickets' );
-		$post_id = $this->__get( 'post_id' );
+		$tickets = $this->get( 'tickets' );
+		$post_id = $this->get( 'post_id' );
 
 		// Bail if there's no tickets or post ID.
 		if ( empty( $tickets ) || empty( $post_id ) ) {
@@ -399,11 +357,6 @@ class RSVP extends \TEC\Tickets\Emails\Email_Abstract {
 
 		$this->set_placeholders( $placeholders );
 
-		$subject     = $this->get_subject();
-		$content     = $this->get_content();
-		$headers     = $this->get_headers();
-		$attachments = $this->get_attachments();
-
-		return tribe( \TEC\Tickets\Emails\Email_Sender::class )->send( $recipient, $subject, $content, $headers, $attachments );
+		return Dispatcher::from_email( $this )->send();
 	}
 }

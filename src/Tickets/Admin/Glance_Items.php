@@ -16,7 +16,7 @@ class Glance_Items {
 	/**
 	 * The key for the transient that stores the attendee count.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 *
 	 * @var string
 	 */
@@ -35,7 +35,7 @@ class Glance_Items {
 	/**
 	 * Custom glance item for Attendees count.
 	 *
-	 * @since TBD Make use of transients and cron jobs to avoid performance issues.
+	 * @since 5.6.0 Make use of transients and cron jobs to avoid performance issues.
 	 *
 	 * @param array $items The array of items to be displayed.
 	 * @return array $items The maybe modified array of items to be displayed.
@@ -62,7 +62,7 @@ class Glance_Items {
 	/**
 	 * Update the attendee count.
 	 *
-	 * @since TBD
+	 * @since 5.6.0
 	 */
 	public function update_attendee_count() {
 		$results = Tribe__Tickets__Tickets::get_attendees_by_args( [] );

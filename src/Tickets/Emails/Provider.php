@@ -8,7 +8,7 @@
 
 namespace TEC\Tickets\Emails;
 
-use tad_DI52_ServiceProvider;
+use TEC\Common\Contracts\Service_Provider;
 
 /**
  * Service provider for the Tickets Emails.
@@ -16,35 +16,47 @@ use tad_DI52_ServiceProvider;
  * @since   5.5.6
  * @package TEC\Tickets\Emails
  */
-class Provider extends tad_DI52_ServiceProvider {
+class Provider extends Service_Provider {
 
 	/**
 	 * Register the provider singletons.
 	 *
 	 * @since 5.5.6
 	 */
-	public function register() {
-
-		// If not enabled, do not load Tickets Emails system.
-		// @todo @codingmusician @rafsuntaskin @juanfra: Remove this for 5.7.0 (When we release Tickets Emails)
-		if ( ! tec_tickets_emails_is_enabled() ) {
-			return;
-		}
-
+	public function register(): void {
 		$this->register_assets();
 		$this->register_hooks();
 
 		// Register singletons.
 		$this->container->singleton( static::class, $this );
-		$this->container->singleton( 'tickets.emails.provider', $this );
+
+		// Dispatcher is not a singleton!
+		$this->container->bind( Dispatcher::class, Dispatcher::class );
+
+		$this->container->singleton( Legacy_Hijack::class );
 
 		$this->container->singleton( Admin\Emails_Tab::class );
 
 		$this->container->singleton( Admin\Preview_Modal::class );
 
+		$this->container->singleton( Admin\Notice_Upgrade::class, Admin\Notice_Upgrade::class, [ 'hook' ] );
+		$this->container->singleton( Admin\Notice_Extension::class, Admin\Notice_Extension::class, [ 'hook' ] );
+
 		$this->container->register( Email_Handler::class );
 
 		$this->container->singleton( Web_View::class );
+
+		$this->boot();
+	}
+
+	/**
+	 * Boot the provider.
+	 *
+	 * @since 5.6.0
+	 */
+	public function boot(): void {
+		$this->container->make( Admin\Notice_Upgrade::class );
+		$this->container->make( Admin\Notice_Extension::class );
 	}
 
 	/**
@@ -52,12 +64,11 @@ class Provider extends tad_DI52_ServiceProvider {
 	 *
 	 * @since 5.5.6
 	 */
-	protected function register_assets() {
+	protected function register_assets(): void {
 		$assets = new Assets( $this->container );
 		$assets->register();
 
 		$this->container->singleton( Assets::class, $assets );
-		$this->container->singleton( 'tickets.emails.assets', $assets );
 	}
 
 	/**
@@ -65,12 +76,11 @@ class Provider extends tad_DI52_ServiceProvider {
 	 *
 	 * @since 5.5.6
 	 */
-	protected function register_hooks() {
+	protected function register_hooks(): void {
 		$hooks = new Hooks( $this->container );
 		$hooks->register();
 
-		// Allow Hooks to be removed, by having the them registered to the container.
+		// Allow Hooks to be removed, by having them registered to the container.
 		$this->container->singleton( Hooks::class, $hooks );
-		$this->container->singleton( 'tickets.emails.hooks', $hooks );
 	}
 }

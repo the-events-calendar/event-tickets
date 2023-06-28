@@ -1,6 +1,6 @@
 <?php
 
-class Tribe__Tickets__Attendee_Registration__Service_Provider extends tad_DI52_ServiceProvider {
+class Tribe__Tickets__Attendee_Registration__Service_Provider extends \TEC\Common\Contracts\Service_Provider {
 
 	/**
 	 * Register the Attendee Info Provider singletons.
@@ -49,10 +49,11 @@ class Tribe__Tickets__Attendee_Registration__Service_Provider extends tad_DI52_S
 	 * @since 5.0.3
 	 */
 	public function add_attendee_registration_template_hook() {
-		/** @var Tribe__Tickets__Attendee_Registration__Template $make */
-		$make = $this->container->make( 'tickets.attendee_registration.template' );
-
-		$make->hook();
+		try {
+			$this->container->make( 'tickets.attendee_registration.template' )->hook();
+		} catch ( \Exception $e ) {
+			// Do nothing.
+		}
 	}
 
 	/**
@@ -61,10 +62,11 @@ class Tribe__Tickets__Attendee_Registration__Service_Provider extends tad_DI52_S
 	 * @since 5.0.3
 	 */
 	public function add_attendee_registration_shortcode_hook() {
-		/** @var Tribe__Tickets__Attendee_Registration__Shortcode $make */
-		$make = $this->container->make( 'tickets.attendee_registration.shortcode' );
-
-		$make->hook();
+		try {
+			$this->container->make( 'tickets.attendee_registration.shortcode' )->hook();
+		} catch ( \Exception $e ) {
+			// Do nothing.
+		}
 	}
 
 	/**
@@ -73,10 +75,11 @@ class Tribe__Tickets__Attendee_Registration__Service_Provider extends tad_DI52_S
 	 * @since 5.0.3
 	 */
 	public function add_attendee_registration_modal_hook() {
-		/** @var Tribe__Tickets__Attendee_Registration__Modal $make */
-		$make = $this->container->make( 'tickets.attendee_registration.modal' );
-
-		$make->hook();
+		try {
+			$this->container->make( 'tickets.attendee_registration.modal' )->hook();
+		} catch ( \Exception $e ) {
+			// Do nothing.
+		}
 	}
 
 	/**
@@ -85,10 +88,11 @@ class Tribe__Tickets__Attendee_Registration__Service_Provider extends tad_DI52_S
 	 * @since 5.0.3
 	 */
 	public function add_rewrite_tags() {
-		/** @var Tribe__Tickets__Attendee_Registration__Rewrite $make */
-		$make = $this->container->make( 'tickets.attendee_registration.rewrite' );
-
-		$make->add_rewrite_tags();
+		try {
+			$this->container->make( 'tickets.attendee_registration.rewrite' )->add_rewrite_tags();
+		} catch ( \Exception $e ) {
+			// Do nothing.
+		}
 	}
 
 	/**
@@ -99,10 +103,11 @@ class Tribe__Tickets__Attendee_Registration__Service_Provider extends tad_DI52_S
 	 * @param Tribe__Tickets__Attendee_Registration__Rewrite $rewrite The rewrite instance.
 	 */
 	public function generate_core_rules( Tribe__Tickets__Attendee_Registration__Rewrite $rewrite ) {
-		/** @var Tribe__Tickets__Attendee_Registration__Rewrite $make */
-		$make = $this->container->make( 'tickets.attendee_registration.rewrite' );
-
-		$make->generate_core_rules( $rewrite );
+		try {
+			$this->container->make( 'tickets.attendee_registration.rewrite' )->generate_core_rules( $rewrite );
+		} catch ( \Exception $e ) {
+			// Do nothing.
+		}
 	}
 
 	/**
@@ -113,10 +118,11 @@ class Tribe__Tickets__Attendee_Registration__Service_Provider extends tad_DI52_S
 	 * @param WP_Rewrite $wp_rewrite WordPress rewrite that will be modified.
 	 */
 	public function filter_generate( WP_Rewrite $wp_rewrite ) {
-		/** @var Tribe__Tickets__Attendee_Registration__Rewrite $make */
-		$make = $this->container->make( 'tickets.attendee_registration.rewrite' );
-
-		$make->filter_generate( $wp_rewrite );
+		try {
+			$this->container->make( 'tickets.attendee_registration.rewrite' )->filter_generate( $wp_rewrite );
+		} catch ( \Exception $e ) {
+			// Do nothing.
+		}
 	}
 
 	/**
@@ -129,10 +135,11 @@ class Tribe__Tickets__Attendee_Registration__Service_Provider extends tad_DI52_S
 	 * @return array
 	 */
 	public function remove_percent_placeholders( array $rules ) {
-		/** @var Tribe__Tickets__Attendee_Registration__Rewrite $make */
-		$make = $this->container->make( 'tickets.attendee_registration.rewrite' );
-
-		return $make->remove_percent_placeholders( $rules );
+		try {
+			return $this->container->make( 'tickets.attendee_registration.rewrite' )->remove_percent_placeholders( $rules );
+		} catch ( \Exception $e ) {
+			return $rules;
+		}
 	}
 
 	/**
@@ -145,9 +152,10 @@ class Tribe__Tickets__Attendee_Registration__Service_Provider extends tad_DI52_S
 	 * @return array
 	 */
 	public function add_product_delete_to_paypal_url( array $args ) {
-		/** @var Tribe__Tickets__Attendee_Registration__Meta $make */
-		$make = $this->container->make( 'tickets.attendee_registration.meta' );
-
-		return $make->add_product_delete_to_paypal_url( $args );
+		try {
+			return $this->container->make( 'tickets.attendee_registration.meta' )->add_product_delete_to_paypal_url( $args );
+		} catch ( \Exception $e ) {
+			return $args;
+		}
 	}
 }

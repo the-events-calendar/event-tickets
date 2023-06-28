@@ -13,7 +13,7 @@ use Tribe\Tickets\Repositories\Order;
  *
  * @since 4.10.4
  */
-class Tribe__Tickets__Service_Providers__ORM extends tad_DI52_ServiceProvider {
+class Tribe__Tickets__Service_Providers__ORM extends \TEC\Common\Contracts\Service_Provider {
 
 	/**
 	 * Binds and sets up implementations.

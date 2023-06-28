@@ -17,7 +17,7 @@
 
 namespace TEC\Tickets;
 
-use \tad_DI52_ServiceProvider;
+use \TEC\Common\Contracts\Service_Provider;
 use TEC\Tickets\Commerce\Payments_Tab;
 
 /**
@@ -27,7 +27,7 @@ use TEC\Tickets\Commerce\Payments_Tab;
  *
  * @package TEC\Tickets
  */
-class Hooks extends tad_DI52_ServiceProvider {
+class Hooks extends Service_Provider {
 
 	/**
 	 * Binds and sets up implementations.

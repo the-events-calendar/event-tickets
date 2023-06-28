@@ -24,7 +24,7 @@ $event      = get_post( $event_id );
 try {
 	/** @var \Tribe__Tickets__Attendee_Registration__Main $attendee_registration */
 	$attendee_registration = tribe( 'tickets.attendee_registration' );
-} catch ( RuntimeException $exception ) {
+} catch ( \Exception $exception ) {
 	$attendee_registration = null;
 }
 

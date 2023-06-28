@@ -57,7 +57,7 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	protected static $supported_currencies = [];
 
 	/**
-	 * The option name prefix that configured whether or not a gateway is enabled.
+	 * The option name prefix that configured whether a gateway is enabled.
 	 * It is followed by the gateway 'key'
 	 *
 	 * @since 5.3.0
@@ -74,6 +74,15 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	 * @var string
 	 */
 	public static $checkout_container_template_name = 'container';
+
+	/**
+	 * Class used to manage the Orders for this Gateway
+	 *
+	 * @since 5.6.0
+	 *
+	 * @var string
+	 */
+	protected string $order_controller_class = Commerce\Order::class;
 
 	/**
 	 * @inheritDoc
@@ -143,6 +152,17 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 	 */
 	public static function should_show() {
 		return true;
+	}
+
+	/**
+	 * Fetches the Gateway Order Controller.
+	 *
+	 * @since 5.6.0
+	 *
+	 * @return Commerce\Abstract_Order
+	 */
+	public function get_order_controller(): Commerce\Abstract_Order {
+		return tribe( $this->order_controller_class );
 	}
 
 	/**

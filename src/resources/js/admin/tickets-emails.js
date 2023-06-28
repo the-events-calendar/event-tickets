@@ -40,8 +40,12 @@ tribe.tickets.emails = {};
 		hiddenElement: '.tribe-common-a11y-hidden',
 		formCurrentEmail: 'tec_tickets_emails_current_section',
 		formHeaderImageUrl: 'tec-tickets-emails-header-image-url',
+		formHeaderImageAlignment: 'tec-tickets-emails-header-image-alignment',
 		formTicketBgColorName: 'tec-tickets-emails-ticket-bg-color',
 		formHeaderBgColorName: 'tec-tickets-emails-header-bg-color',
+		formFooterContent: 'tec-tickets-emails-footer-content',
+		formFooterCredit: 'tec-tickets-emails-footer-credit',
+		formQrCodes: 'tec-tickets-emails-ticket-include-qr-codes',
 	};
 
 	/**
@@ -70,6 +74,19 @@ tribe.tickets.emails = {};
 			'tribeDialogCloseEmailsPreviewModal.tribeTickets',
 			obj.modalClose,
 		);
+	};
+
+	/**
+	 * Binds events for the modal content container.
+	 *
+	 * @since 5.6.0
+	 * @param  {Event}  event    event object for 'afterAjaxSuccess.tribeTicketsAdmin' event.
+	 * @param  {jqXHR}  jqXHR    Request object.
+	 * @param  {object} settings Settings that this request was made with.
+	 */
+	obj.bindModalEvents = ( event, jqXHR, settings ) => {
+		const $container = event.data.container;
+		const data = event.data.requestData;
 	};
 
 	/**
@@ -135,31 +152,77 @@ tribe.tickets.emails = {};
 	 */
 	obj.getSettingsContext = function() {
 		const context = {};
-		// @todo @juanfra: Get individual email settings and send them as context (once we have the settings per page).
-
-		// Get email.
-		// Get alignment.
-
-		// @todo @juanfra: check if the elements are found in the DOM.
-		const ticketBgColor = $document
-			.find( 'input[name=' + obj.selectors.formTicketBgColorName + ']' ).val();
-
-		context.ticketBgColor = ticketBgColor;
-
-		const headerBgColor = $document
-			.find( 'input[name=' + obj.selectors.formHeaderBgColorName + ']' ).val();
-
-		context.headerBgColor = headerBgColor;
-
-		const headerImageUrl = $document
-			.find( 'input[name=' + obj.selectors.formHeaderImageUrl + ']' ).val();
-
-		context.headerImageUrl = headerImageUrl;
+		const tinyMCE = window.tinyMCE || undefined;
 
 		const currentEmail = $document
 			.find( 'input[name=' + obj.selectors.formCurrentEmail + ']' ).val();
 
 		context.currentEmail = currentEmail;
+
+		if ( currentEmail ) {
+			const currentEmailOptionPrefix = currentEmail.replace( /_/g, '-' );
+
+			const heading = $document
+				.find( 'input[name=' + currentEmailOptionPrefix + '-heading]' ).val();
+
+			context.heading = heading;
+
+			const qrCodes = $document
+				.find( 'input[name=' + currentEmailOptionPrefix + '-include-qr-codes]' ).is( ':checked' );
+
+			context.qrCodes = qrCodes;
+
+			const eventLinks = $document
+				.find( 'input[name=' + currentEmailOptionPrefix + '-add-event-links]' ).is( ':checked' );
+
+			context.eventLinks = eventLinks;
+
+			const arFields = $document
+				.find( 'input[name=' + currentEmailOptionPrefix + '-include-ar-fields]' ).is( ':checked' );
+
+			context.arFields = arFields;
+
+			const usingTicketEmail = $document
+				.find( 'input[name=tec-tickets-emails-rsvp-use-ticket-email]' ).is( ':checked' );
+
+			context.useTicketEmail = usingTicketEmail;
+
+			// fetch additional content from the editor.
+			context.addContent = tinyMCE !== undefined ? tinyMCE.get( currentEmailOptionPrefix + '-additional-content' ).getContent() : '';
+		} else {
+			const ticketBgColor = $document
+				.find( 'input[name=' + obj.selectors.formTicketBgColorName + ']' ).val();
+
+			context.ticketBgColor = ticketBgColor;
+
+			const headerBgColor = $document
+				.find( 'input[name=' + obj.selectors.formHeaderBgColorName + ']' ).val();
+
+			context.headerBgColor = headerBgColor;
+
+			const headerImageUrl = $document
+				.find( 'input[name=' + obj.selectors.formHeaderImageUrl + ']' ).val();
+
+			context.headerImageUrl = headerImageUrl;
+
+			const headerImageAlignment = $document
+				.find( 'select[name=' + obj.selectors.formHeaderImageAlignment + ']' ).val();
+
+			context.headerImageAlignment = headerImageAlignment;
+
+			const footerCredit = $document
+				.find( 'input[name=' + obj.selectors.formFooterCredit + ']' ).is( ':checked' );
+
+			context.footerCredit  = footerCredit;
+
+			// fetch footer content from the editor.
+			context.footerContent = tinyMCE !== undefined ? tinyMCE.get( obj.selectors.formFooterContent ).getContent() : '';
+
+			// If we're in the main Emails settings, we show the all options.
+			context.eventLinks = true;
+			context.qrCodes = true;
+			context.arFields = true;
+		}
 
 		return context;
 	};

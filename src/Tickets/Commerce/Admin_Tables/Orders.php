@@ -382,7 +382,16 @@ class Orders extends WP_List_Table {
 	 * @return string
 	 */
 	public function column_gateway_order_id( $item ) {
-		return $item->gateway_order_id;
+		$gateway = tribe( Manager::class )->get_gateway_by_key( $item->gateway );
+		if ( ! $gateway ) {
+			return $item->gateway_order_id;
+		}
+
+		return sprintf(
+			'<a href="%s" target="_blank" rel="noopener noreferrer">%s</a>',
+			$gateway->get_order_controller()->get_gateway_dashboard_url_by_order( $item ),
+			$item->gateway_order_id
+		);
 	}
 
 	/**

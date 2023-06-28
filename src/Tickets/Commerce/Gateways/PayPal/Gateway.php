@@ -5,8 +5,10 @@ namespace TEC\Tickets\Commerce\Gateways\PayPal;
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Gateway;
 use TEC\Tickets\Commerce\Notice_Handler;
 use TEC\Tickets\Commerce\Settings as TC_Settings;
+use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Utils\Currency;
 use \Tribe__Tickets__Main;
+use Tribe__Utils__Array as Arr;
 
 /**
  * Class Gateway
@@ -29,6 +31,11 @@ class Gateway extends Abstract_Gateway {
 	 * @inheritDoc
 	 */
 	protected static $merchant = Merchant::class;
+
+	/**
+	 * @inheritDoc
+	 */
+	protected string $order_controller_class = Order::class;
 
 	/**
 	 * @inheritDoc

@@ -7,8 +7,11 @@
 
 namespace TEC\Tickets\Emails\Email;
 
-use \TEC\Tickets\Emails\Email_Template;
+use TEC\Tickets\Emails\Dispatcher;
+use TEC\Tickets\Emails\Email_Template;
 use TEC\Tickets\Emails\Admin\Preview_Data;
+use TEC\Tickets\Emails\Email_Abstract;
+use TEC\Tickets\Emails\JSON_LD\Order_Schema;
 
 /**
  * Class Completed_Order
@@ -17,7 +20,7 @@ use TEC\Tickets\Emails\Admin\Preview_Data;
  *
  * @package TEC\Tickets\Emails
  */
-class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
+class Completed_Order extends Email_Abstract {
 
 	/**
 	 * Email ID.
@@ -109,6 +112,17 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 	 * @return array
 	 */
 	public function get_settings_fields(): array {
+		$kb_link = sprintf(
+			'<a href="https://evnt.is/event-tickets-emails" target="_blank" rel="noopener noreferrer">%s</a>',
+			esc_html__( 'Learn more', 'event-tickets' )
+		);
+
+		$email_description = sprintf(
+			// Translators: %1$s: Completed order Emails knowledge base article link.
+			esc_html_x( 'The site admin will receive an email about any orders that were made. Customize the content of this specific email using the tools below. You can also use email placeholders and customize email templates. %1$s.', 'about Completed Order email', 'event-tickets' ),
+			$kb_link
+		);
+
 		return [
 			[
 				'type' => 'html',
@@ -120,11 +134,15 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 			],
 			[
 				'type' => 'html',
-				'html' => '<p>' . esc_html__( 'The site admin will receive an email about any orders that were made. Customize the content of this specific email using the tools below. The brackets {event_name}, {event_date}, and {ticket_name} can be used to pull dynamic content from the ticket into your email. Learn more about customizing email templates in our Knowledgebase.' ) . '</p>',
+				'html' => '<p>' . $email_description . '</p>',
 			],
 			$this->get_option_key( 'enabled' ) => [
 				'type'                => 'toggle',
-				'label'               => esc_html__( 'Enabled', 'event-tickets' ),
+				'label'               => sprintf(
+					// Translators: %s - Title of email.
+					esc_html__( 'Enable %s', 'event-tickets' ),
+					$this->get_title()
+				),
 				'default'             => true,
 				'validation_type'     => 'boolean',
 			],
@@ -132,6 +150,7 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 				'type'                => 'text',
 				'label'               => esc_html__( 'Recipient(s)', 'event-tickets' ),
 				'default'             => $this->get_default_recipient(),
+				'tooltip'             => esc_html__( 'Add additional recipient emails separated by commas.', 'event-tickets' ),
 				'size'                => 'large',
 				'validation_type' => 'email_list',
 			],
@@ -151,11 +170,12 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 				'size'                => 'large',
 				'validation_callback' => 'is_string',
 			],
-			$this->get_option_key( 'add-content' ) => [
+			$this->get_option_key( 'additional-content' ) => [
 				'type'                => 'wysiwyg',
 				'label'               => esc_html__( 'Additional content', 'event-tickets' ),
 				'default'             => $this->get_default_additional_content(),
 				'tooltip'             => esc_html__( 'Additional content will be displayed below the order details.', 'event-tickets' ),
+				'size'                => 'large',
 				'validation_type'     => 'html',
 				'settings'        => [
 					'media_buttons' => false,
@@ -169,6 +189,7 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 						'alignleft',
 						'aligncenter',
 						'alignright',
+						'link',
 					],
 				],
 			],
@@ -198,6 +219,7 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 			'heading'            => $this->get_heading(),
 			'additional_content' => $this->get_additional_content(),
 			'order'              => $order,
+			'attendees'          => Preview_Data::get_attendees(),
 		];
 
 		return wp_parse_args( $args, $defaults );
@@ -216,29 +238,11 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 			'title'              => $this->get_title(),
 			'heading'            => $this->get_heading(),
 			'additional_content' => $this->get_additional_content(),
-			'order'              => $this->__get( 'order' ),
+			'order'              => $this->get( 'order' ),
+			'json_ld'            => Order_Schema::build_from_email( $this ),
 		];
 
 		return $defaults;
-	}
-
-	/**
-	 * Get email content.
-	 *
-	 * @since 5.5.10
-	 *
-	 * @param array $args The arguments.
-	 *
-	 * @return string The email content.
-	 */
-	public function get_content( $args = [] ): string {
-		$is_preview = ! empty( $args['is_preview'] ) ? tribe_is_truthy( $args['is_preview'] ) : false;
-		$args       = $this->get_template_context( $args );
-
-		$email_template = tribe( Email_Template::class );
-		$email_template->set_preview( $is_preview );
-
-		return $email_template->get_html( $this->template, $args );
 	}
 
 	/**
@@ -260,7 +264,7 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 			return false;
 		}
 
-		$order = $this->__get( 'order' );
+		$order = $this->get( 'order' );
 
 		// Bail if there's no order.
 		if ( empty( $order ) ) {
@@ -274,11 +278,6 @@ class Completed_Order extends \TEC\Tickets\Emails\Email_Abstract {
 
 		$this->set_placeholders( $placeholders );
 
-		$subject     = $this->get_subject();
-		$content     = $this->get_content();
-		$headers     = $this->get_headers();
-		$attachments = $this->get_attachments();
-
-		return tribe( \TEC\Tickets\Emails\Email_Sender::class )->send( $recipient, $subject, $content, $headers, $attachments );
+		return Dispatcher::from_email( $this )->send();
 	}
 }
