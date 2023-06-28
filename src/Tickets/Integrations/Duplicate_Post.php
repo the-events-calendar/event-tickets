@@ -29,8 +29,8 @@ class Duplicate_Post extends Service_Provider {
 	 * @since TBD
 	 */
 	public function hooks() {
-		add_action( 'dp_duplicate_post', [ $this, 'duplicate_tickets_to_new_post' ], 10, 3 );
-		add_action( 'dp_duplicate_page', [ $this, 'duplicate_tickets_to_new_post' ], 10, 3 );
+		add_action( 'dp_duplicate_post', [ $this, 'duplicate_tickets_to_new_post' ], 10, 2 );
+		add_action( 'dp_duplicate_page', [ $this, 'duplicate_tickets_to_new_post' ], 10, 2 );
 	}
 
 	/**
@@ -38,11 +38,10 @@ class Duplicate_Post extends Service_Provider {
 	 *
 	 * @param int    $new_post_id ID of the new post.
 	 * @param object $post        Original post object.
-	 * @param string $status      Duplicate status.
 	 *
 	 * @return int|WP_Error $new_post_id New post ID or WP_Error object on failure.
 	 */
-	public function duplicate_tickets_to_new_post( $new_post_id, $post, $status ) {
+	public function duplicate_tickets_to_new_post( $new_post_id, $post ) {
 
 		$tickets = Tribe__Tickets__Tickets::get_all_event_tickets( $post->ID );
 
