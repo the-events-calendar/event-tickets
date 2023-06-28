@@ -618,7 +618,6 @@ class Tribe__Tickets__Attendees {
 		 */
 		$event_id = apply_filters( 'tec_tickets_filter_event_id', $event_id );
 
-
 		// Verify event ID is a valid integer and the nonce is accepted.
 		if ( empty( $event_id ) || ! wp_verify_nonce( $_GET['attendees_csv_nonce'], 'attendees_csv_nonce' ) ) {
 			return;
