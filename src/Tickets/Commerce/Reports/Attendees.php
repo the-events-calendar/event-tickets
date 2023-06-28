@@ -363,9 +363,14 @@ class Attendees extends Report_Abstract {
 
 		$event_id = absint( $_GET['event_id'] );
 
-		if ( class_exists( '\TEC\Events\Custom_Tables\V1\Models\Occurrence' ) ) {
-			$event_id = \TEC\Events\Custom_Tables\V1\Models\Occurrence::normalize_id( $event_id );
-		}
+		/**
+		 * This filter allows retrieval of an event ID to be filtered before being accessed elsewhere.
+		 *
+		 * @since TBD
+		 *
+		 * @param int|null The event ID to be filtered.
+		 */
+		$event_id = apply_filters( 'tec_tickets_filter_event_id', $event_id );
 
 		// Verify event ID is a valid integer and the nonce is accepted.
 		if ( empty( $event_id ) || ! wp_verify_nonce( $_GET['attendees_csv_nonce'], 'attendees_csv_nonce' ) ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
