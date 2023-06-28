@@ -1048,6 +1048,8 @@ class Tribe__Tickets__Tickets_View {
 
 		$tickets = $provider->get_tickets( $post_id );
 
+		$attendees_list = tribe( 'tickets.events.attendees-list' );
+
 		$args = [
 			'post_id'                     => $post_id,
 			'provider'                    => $provider,
@@ -1069,7 +1071,10 @@ class Tribe__Tickets__Tickets_View {
 			'submit_button_name'          => $submit_button_name,
 			'cart_url'                    => method_exists( $provider, 'get_cart_url' ) ? $provider->get_cart_url() : '',
 			'checkout_url'                => method_exists( $provider, 'get_checkout_url' ) ? $provider->get_checkout_url() : '',
+			'attendees'                   => $attendees_list->get_attendees_for_post( $post_id ),
+			'attendees_total'             => $attendees_list->get_attendance_counts( $post_id ),
 		];
+
 
 		/**
 		 * Add the rendering attributes into global context.
@@ -1144,7 +1149,14 @@ class Tribe__Tickets__Tickets_View {
 				add_filter( 'tribe_tickets_order_link_template_already_rendered', '__return_true' );
 			}
 
-			return $before_content . $template->template( 'v2/tickets', [], $echo );
+			$rendered_content = $before_content;
+			$rendered_content .= $template->template( 'v2/tickets', [], $echo );
+
+
+			$rendered_content .= $template->template( 'blocks/attendees', [], $echo );
+
+
+			return $rendered_content;
 		}
 
 		return $template->template( 'blocks/tickets', [], $echo );
