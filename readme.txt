@@ -4,7 +4,7 @@ Contributors: theeventscalendar, brianjessee, camwynsp, aguseo, bordoni, borkweb
 Tags: tickets, registration, event registration, RSVP, ticket sales, attendee management
 Requires at least: 5.8.5
 Tested up to: 6.2.2
-Stable tag: 5.6.1.2
+Stable tag: 5.6.2
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -190,6 +190,17 @@ We've got a [LoopedIn](https://evnt.is/ideas) page where we're actively watching
 Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on using, tweaking, and troubleshooting our plugins.
 
 == Changelog ==
+
+= [5.6.2] 2023-06-29 =
+
+* Enhancement - Introduced new the filters `tec_tickets_commerce_order_page_title` and `tec_tickets_attendees_order_view_title` to allow customizing the Order Report Page title [ET-1737]
+* Fix - Updated the page heading when on the Orders Report page. [ET-1737]
+* Fix - When no providers are enabled, a warning will display above the `New Ticket` and `New RSVP` area explaining that at least one must be enabled. [ET-1696]
+* Fix - Corrected an issue with the `New ticket` button having invalid HTML. [ET-1631]
+* Fix - Resolved an issue that caused compatibility problems between specific themes and the Attendee Registration page. [ET-1767]
+* Tweak - Added filters: `tec_tickets_commerce_order_page_title`, `tec_tickets_attendees_order_view_title`
+* Tweak - Removed filters: `tribe_tickets_attendees_show_view_title`
+* Language - 3 new strings added, 41 updated, 1 fuzzied, and 0 obsoleted
 
 = [5.6.1.2] 2023-06-23 =
 

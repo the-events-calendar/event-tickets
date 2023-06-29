@@ -27,19 +27,14 @@ class Provider extends Service_Provider {
 	 * @since 5.1.6
 	 */
 	public function register() {
-
-		$this->container->register( Payments_Tab::class );
-		$this->register_assets();
-
 		// Specifically prevents anything else from loading.
 		if ( ! tec_tickets_commerce_is_enabled() ) {
 			return;
 		}
 
+		$this->register_assets();
 		$this->register_hooks();
-
 		$this->load_functions();
-
 		$this->register_legacy_compat();
 
 		// Register the SP on the container.

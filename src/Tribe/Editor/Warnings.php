@@ -25,6 +25,7 @@ class Warnings {
 	/**
 	 * Show the Recurring Event warning message.
 	 *
+	 * @since 5.6.2 Added 'recurring_event_warning' as an $additionalClasses.
 	 * @since 5.0.4
 	 *
 	 * @param int $post_id Post ID.
@@ -55,12 +56,13 @@ class Warnings {
 			return;
 		}
 
-		$this->render_notice( $this->get_recurring_event_warning_message(), 'info', '#tribe-recurrence-active', 'checked' );
+		$this->render_notice( $this->get_recurring_event_warning_message(), 'info', '#tribe-recurrence-active', 'checked', [ 'recurring_event_warning' ] );
 	}
 
 	/**
 	 * Add Provider missing warning for tickets.
 	 *
+	 * @since 5.6.2 Added 'provider_warning' as an $additionalClasses.
 	 * @since 5.0.4
 	 */
 	public function add_commerce_provider_warning() {
@@ -70,7 +72,7 @@ class Warnings {
 			return;
 		}
 
-		$this->render_notice( $this->get_commerce_provider_missing_warning_message() );
+		$this->render_notice( $this->get_commerce_provider_missing_warning_message(), 'info', '', '', [ 'provider-warning' ] );
 	}
 
 	/**
@@ -121,20 +123,29 @@ class Warnings {
 	/**
 	 * Render the notice block.
 	 *
+	 * @since 5.6.2 added the `$additionalClasses` attribute to allow customizing the notice.
 	 * @since 5.0.4
 	 *
-	 * @param string $message Tee message to show.
-	 * @param string $type    Type of message.
-	 * @param string $depends_on Dependency selector.
-	 * @param string $condition Dependency condition like 'checked' | 'not-checked' | 'numeric'.
+	 * @param string $message           The message to show.
+	 * @param string $type              Type of message. Default is 'info'.
+	 * @param string $depends_on        Dependency selector. Default is empty.
+	 * @param string $condition         Dependency condition like 'checked' | 'not-checked' | 'numeric'. Default is empty.
+	 * @param array  $additionalClasses Additional CSS classes to add to the notice block. Default is an empty array.
 	 */
-	public function render_notice( $message, $type = 'info', $depends_on = '', $condition = '' ) {
+	public function render_notice( $message, $type = 'info', $depends_on = '', $condition = '', $additionalClasses = [] ) {
 		$icon           = 'dashicons-' . $type;
 		$has_dependency = empty( $depends_on ) ? '' : 'tribe-dependent';
-		$classes        = $type . ' ' . $has_dependency;
 		$condition_attr = empty( $condition ) ? '' : 'data-condition-is-' . $condition;
+
+		$classes = [
+			'ticket-editor-notice',
+			$type,
+			$has_dependency
+		];
+		$classes = array_merge( $classes, $additionalClasses );
+
 		?>
-		<div class="ticket-editor-notice <?php echo esc_attr( $classes ); ?>"
+		<div <?php tribe_classes( $classes ); ?>
 			<?php if ( $depends_on ) { ?>
 				data-depends="<?php echo esc_attr( $depends_on ); ?>"
 			<?php } ?>
@@ -145,4 +156,5 @@ class Warnings {
 		</div>
 		<?php
 	}
+
 }

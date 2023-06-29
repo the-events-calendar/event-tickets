@@ -852,7 +852,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			$( ticket_button_selectors ).hide();
 			$( ticket_button_selectors ).
 					parent().
-					find( '.ticket-editor-notice' ).
+					find( '.ticket-editor-notice.recurring_event_warning' ).
 					show();
 		} );
 
@@ -863,7 +863,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			$( ticket_button_selectors ).show();
 			$( ticket_button_selectors ).
 					parent().
-					find( '.ticket-editor-notice' ).
+					find( '.ticket-editor-notice.recurring_event_warning' ).
 					hide();
 		} );
 

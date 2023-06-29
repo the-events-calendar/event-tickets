@@ -71,7 +71,7 @@ $add_new_ticket_label = count( $ticket_providing_modules ) > 0
 			id="ticket_form_toggle"
 			class="button-secondary ticket_form_toggle tribe-button-icon tribe-button-icon-plus"
 			aria-label="<?php echo $add_new_ticket_label ?>"
-			"<?php echo disabled( count( $ticket_providing_modules ) === 0 ) ?>"
+			<?php echo disabled( count( $ticket_providing_modules ) === 0 ) ?>
 		>
 		<?php
 		echo esc_html(
