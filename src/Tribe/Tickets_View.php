@@ -1048,8 +1048,6 @@ class Tribe__Tickets__Tickets_View {
 
 		$tickets = $provider->get_tickets( $post_id );
 
-		$attendees_list = tribe( 'tickets.events.attendees-list' );
-
 		$args = [
 			'post_id'                     => $post_id,
 			'provider'                    => $provider,
@@ -1071,10 +1069,24 @@ class Tribe__Tickets__Tickets_View {
 			'submit_button_name'          => $submit_button_name,
 			'cart_url'                    => method_exists( $provider, 'get_cart_url' ) ? $provider->get_cart_url() : '',
 			'checkout_url'                => method_exists( $provider, 'get_checkout_url' ) ? $provider->get_checkout_url() : '',
-			'attendees'                   => $attendees_list->get_attendees_for_post( $post_id ),
-			'attendees_total'             => $attendees_list->get_attendance_counts( $post_id ),
+			'attendees'                   => null,
+			'attendees_total'             => null,
 		];
 
+		// Check to see if attendees list is being hidden or not.
+		if ( class_exists( 'Tribe__Tickets_Plus__Attendees_List', false ) ) {
+			// Handle Event Tickets Plus compatible logic.
+			$hide_attendee_list_optout = Tribe__Tickets_Plus__Attendees_List::is_hidden_on( $post_id );
+		} else {
+			// Handle Event Tickets logic.
+			$hide_attendee_list_optout = \Tribe\Tickets\Events\Attendees_List::is_hidden_on( $post_id );
+		}
+		// If we are not hiding the attendees output, than grab the data.
+		if ( ! $hide_attendee_list_optout ) {
+			$attendees_list            = tribe( 'tickets.events.attendees-list' );
+			$args[ 'attendees' ]       = $attendees_list->get_attendees_for_post( $post_id );
+			$args[ 'attendees_total' ] = $attendees_list->get_attendance_counts( $post_id );
+		}
 
 		/**
 		 * Add the rendering attributes into global context.
@@ -1102,6 +1114,8 @@ class Tribe__Tickets__Tickets_View {
 		 * @var string                             $submit_button_name          [Global] The button name for the tickets block.
 		 * @var string                             $cart_url                    [Global] Link to Cart (could be empty).
 		 * @var string                             $checkout_url                [Global] Link to Checkout (could be empty).
+		 * @var array                              $attendees                   [Global]  Array List of public attendees for display.
+		 * @var int                                $attendees_total             [Global] Total number of attendees attending the event.
 		 */
 		$template->add_template_globals( $args );
 
@@ -1151,8 +1165,6 @@ class Tribe__Tickets__Tickets_View {
 
 			$rendered_content = $before_content;
 			$rendered_content .= $template->template( 'v2/tickets', [], $echo );
-
-
 			$rendered_content .= $template->template( 'blocks/attendees', [], $echo );
 
 
