@@ -123,7 +123,7 @@ class Tribe__Tickets__Commerce__Orders_Tabbed_View {
 		 * @param bool 	$show_title Whether to show the view title.
 		 * @param int 	$post_id The post ID.
 		 */
-		$show_title = apply_filters_deprecated( 'tribe_tickets_attendees_show_view_title', [ true, $post_id ], 'TBD' );
+		$show_title = apply_filters_deprecated( 'tribe_tickets_attendees_show_view_title', [ true, $post_id ], '5.6.2' );
 
 		if ( ! $show_title ) {
 			return '';
