@@ -21,7 +21,7 @@ class Tribe__Tickets__Commerce__Orders_Tabbed_View {
 	/**
 	 * Renders the tabbed view for the current post.
 	 *
-	 * @since TBD Moved the Page Title logic into a separate method.
+	 * @since 5.6.2 Moved the Page Title logic into a separate method.
 	 * @since 4.7
 	 * @since 4.12.1 Added Post ID to page title.
 	 */
@@ -106,7 +106,7 @@ class Tribe__Tickets__Commerce__Orders_Tabbed_View {
 	/**
 	 * Generates the title based on the page type and post ID.
 	 *
-	 * @since TBD
+	 * @since 5.6.2
 	 *
 	 * @param int $post_id The post ID.
 	 *
@@ -123,7 +123,7 @@ class Tribe__Tickets__Commerce__Orders_Tabbed_View {
 		 * @param bool 	$show_title Whether to show the view title.
 		 * @param int 	$post_id The post ID.
 		 */
-		$show_title = apply_filters_deprecated( 'tribe_tickets_attendees_show_view_title', [ true, $post_id ], 'TBD' );
+		$show_title = apply_filters_deprecated( 'tribe_tickets_attendees_show_view_title', [ true, $post_id ], '5.6.2' );
 
 		if ( ! $show_title ) {
 			return '';
@@ -131,8 +131,13 @@ class Tribe__Tickets__Commerce__Orders_Tabbed_View {
 
 		$page_type = tribe_get_request_var( 'page' );
 
+		// List of Order pages to display the 'Orders For...' heading.
+		$order_pages = [
+			'tickets-orders',
+			'edd-orders'
+		];
 		// Check $page_type to confirm if we are on Order or Attendees page.
-		if ( 'tickets-orders' === $page_type ) {
+		if ( in_array( $page_type, $order_pages ) ) {
 			// Translators: %1$s: the post/event title, %2$d: the post/event ID.
 			$title = _x( 'Orders for: %1$s [#%2$d]', 'orders report screen heading', 'event-tickets' );
 		} else {
@@ -145,7 +150,7 @@ class Tribe__Tickets__Commerce__Orders_Tabbed_View {
 		/**
 		 * Filters the title on the Attendees, and Order list page.
 		 *
-		 * @since TBD
+		 * @since 5.6.2
 		 *
 		 * @param string 	$view_title The view title.
 		 * @param int 		$post_id The post ID.

@@ -39,7 +39,7 @@ class Orders extends Report_Abstract {
 	/**
 	 * Gets the Orders Report title.
 	 *
-	 * @since TBD
+	 * @since 5.6.2
 	 *
 	 * @param int $post_id
 	 *
@@ -57,7 +57,7 @@ class Orders extends Report_Abstract {
 		/**
 		 * Filters the title on Order list page for Tickets Commerce.
 		 *
-		 * @since TBD
+		 * @since 5.6.2
 		 *
 		 * @param string 	$title The title.
 		 * @param int 		$post_id The post ID.
