@@ -8,7 +8,7 @@ namespace TEC\Tickets\Commerce\Gateways\Manual;
  * @since   5.2.0
  * @package TEC\Tickets\Commerce\Gateways\Manual
  */
-class Provider extends \tad_DI52_ServiceProvider {
+class Provider extends \TEC\Common\Contracts\Service_Provider {
 
 	/**
 	 * Register the provider singletons.

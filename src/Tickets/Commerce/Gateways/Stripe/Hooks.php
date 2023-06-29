@@ -12,7 +12,7 @@ use TEC\Tickets\Commerce\Notice_Handler;
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe
  */
-class Hooks extends \tad_DI52_ServiceProvider {
+class Hooks extends \TEC\Common\Contracts\Service_Provider {
 
 	/**
 	 * @inheritDoc

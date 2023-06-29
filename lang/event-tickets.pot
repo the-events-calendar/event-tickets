@@ -2,25 +2,26 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Event Tickets 5.5.11\n"
+"Project-Id-Version: Event Tickets 5.6.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/event-tickets\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2023-04-27T19:45:07-07:00\n"
-"PO-Revision-Date: 2023-04-28 02:45\n"
+"POT-Creation-Date: 2023-06-26T09:36:55-07:00\n"
+"PO-Revision-Date: 2023-06-26 16:36\n"
 "X-Generator: WP-CLI 2.7.1\n"
 "X-Domain: event-tickets\n"
 
 #. Plugin Name of the plugin
 #: event-tickets.php:61
 #: src/admin-views/admin-welcome-message.php:73
+#: src/Tickets/Site_Health/Info_Section.php:71
 #: src/Tribe/Admin/Notices.php:95
-#: src/Tribe/Main.php:724
+#: src/Tribe/Main.php:746
 #: src/Tribe/Privacy.php:59
-#: src/views/v2/emails/template-parts/body/footer/credit.php:37
+#: src/views/emails/template-parts/body/footer/credit.php:37
 msgid "Event Tickets"
 msgstr ""
 
@@ -66,7 +67,7 @@ msgstr ""
 #: src/admin-views/tribe-commerce-settings.php:4
 #: src/Tickets/Commerce/Payments_Tab.php:300
 #: src/Tribe/Admin/Notices.php:217
-#: src/Tribe/Main.php:699
+#: src/Tribe/Main.php:721
 msgid "Event Tickets Plus"
 msgstr ""
 
@@ -191,6 +192,11 @@ msgstr ""
 #: src/admin-views/admin-welcome-message.php:185
 #: src/admin-views/admin-welcome-message.php:205
 #: src/Tickets/Commerce/Gateways/Stripe/Settings.php:194
+#: src/Tickets/Emails/Email/Completed_Order.php:117
+#: src/Tickets/Emails/Email/Purchase_Receipt.php:106
+#: src/Tickets/Emails/Email/RSVP.php:130
+#: src/Tickets/Emails/Email/RSVP_Not_Going.php:108
+#: src/Tickets/Emails/Email/Ticket.php:118
 #: src/Tribe/Admin/Settings/Service_Provider.php:147
 #: src/Tribe/Admin/Settings/Service_Provider.php:195
 msgid "Learn more"
@@ -286,7 +292,7 @@ msgstr ""
 
 #. Translators: %1$s: the post/event title, %2$d: the post/event ID.
 #: src/admin-views/attendees/attendees-event/title.php:34
-#: src/Tribe/Commerce/Orders_Tabbed_View.php:36
+#: src/Tribe/Commerce/Orders_Tabbed_View.php:145
 msgctxt "attendees report screen heading"
 msgid "Attendees for: %1$s [#%2$d]"
 msgstr ""
@@ -398,13 +404,13 @@ msgid "Price:"
 msgstr ""
 
 #: src/admin-views/editor/column-body-price.php:23
-#: src/Tribe/RSVP.php:1779
+#: src/Tribe/RSVP.php:1681
 msgid "Free"
 msgstr ""
 
 #: src/admin-views/editor/column-head-price.php:1
+#: src/views/emails/template-parts/body/order/ticket-totals/header-row.php:35
 #: src/views/registration/summary/tickets-header.php:19
-#: src/views/v2/emails/template-parts/body/order/ticket-totals/header-row.php:35
 msgid "Price"
 msgstr ""
 
@@ -992,7 +998,7 @@ msgid "Enable \"Can't Go\" responses"
 msgstr ""
 
 #. Translators: %s: The email "to".
-#: src/admin-views/settings/emails/message-templates/list-recipient.php:21
+#: src/admin-views/settings/emails/message-templates/list-recipient.php:23
 msgid "To: %s"
 msgstr ""
 
@@ -1200,12 +1206,6 @@ msgid "Disabled"
 msgstr ""
 
 #: src/admin-views/settings/tickets-commerce/stripe/connect/active/stripe-status.php:40
-#: src/Tickets/Emails/Email/Completed_Order.php:127
-#: src/Tickets/Emails/Email/Failed_Order.php:127
-#: src/Tickets/Emails/Email/Purchase_Receipt.php:116
-#: src/Tickets/Emails/Email/RSVP.php:237
-#: src/Tickets/Emails/Email/RSVP_Not_Going.php:119
-#: src/Tickets/Emails/Email/Ticket.php:237
 msgid "Enabled"
 msgstr ""
 
@@ -1316,7 +1316,6 @@ msgid "Click to hide history"
 msgstr ""
 
 #: src/admin-views/tpp-orders.php:32
-#: src/Tickets/Commerce/Reports/Orders.php:47
 msgid "Orders Report"
 msgstr ""
 
@@ -1767,7 +1766,7 @@ msgid "guests"
 msgstr ""
 
 #. Translators: %s Is the number of attendees.
-#: src/Tickets/Admin/Glance_Items.php:40
+#: src/Tickets/Admin/Glance_Items.php:54
 msgid "%s Attendee"
 msgid_plural "%s Attendees"
 msgstr[0] ""
@@ -1787,15 +1786,15 @@ msgstr ""
 msgid "Manually add attendees with %s"
 msgstr ""
 
-#: src/Tickets/Commerce/Abstract_Order.php:105
+#: src/Tickets/Commerce/Abstract_Order.php:107
 msgid "Please provide a valid purchaser name and email."
 msgstr ""
 
-#: src/Tickets/Commerce/Abstract_Order.php:111
+#: src/Tickets/Commerce/Abstract_Order.php:113
 msgid "Please provide a valid purchaser name."
 msgstr ""
 
-#: src/Tickets/Commerce/Abstract_Order.php:115
+#: src/Tickets/Commerce/Abstract_Order.php:117
 msgid "Please provide a valid purchaser email."
 msgstr ""
 
@@ -1852,7 +1851,7 @@ msgid "Checkbox"
 msgstr ""
 
 #: src/Tickets/Commerce/Admin_Tables/Attendees.php:153
-#: src/views/v2/emails/template-parts/body/order/ticket-totals/header-row.php:29
+#: src/views/emails/template-parts/body/order/ticket-totals/header-row.php:29
 msgid "Ticket"
 msgstr ""
 
@@ -1970,7 +1969,7 @@ msgid "Order"
 msgstr ""
 
 #: src/Tickets/Commerce/Admin_Tables/Orders.php:116
-#: src/Tickets/Emails/Email/Purchase_Receipt.php:68
+#: src/Tickets/Emails/Email/Purchase_Receipt.php:71
 #: src/Tribe/Commerce/PayPal/Orders/Table.php:99
 msgid "Purchaser"
 msgstr ""
@@ -2024,23 +2023,23 @@ msgstr ""
 msgid "%1$s"
 msgstr ""
 
-#: src/Tickets/Commerce/Admin_Tables/Orders.php:436
+#: src/Tickets/Commerce/Admin_Tables/Orders.php:445
 msgid "Search by Purchaser Name"
 msgstr ""
 
-#: src/Tickets/Commerce/Admin_Tables/Orders.php:437
+#: src/Tickets/Commerce/Admin_Tables/Orders.php:446
 msgid "Search by Purchaser Email"
 msgstr ""
 
-#: src/Tickets/Commerce/Admin_Tables/Orders.php:438
+#: src/Tickets/Commerce/Admin_Tables/Orders.php:447
 msgid "Search by Gateway"
 msgstr ""
 
-#: src/Tickets/Commerce/Admin_Tables/Orders.php:439
+#: src/Tickets/Commerce/Admin_Tables/Orders.php:448
 msgid "Search by Gateway ID"
 msgstr ""
 
-#: src/Tickets/Commerce/Admin_Tables/Orders.php:440
+#: src/Tickets/Commerce/Admin_Tables/Orders.php:449
 msgid "Search by Order ID"
 msgstr ""
 
@@ -2064,20 +2063,20 @@ msgstr ""
 msgid "Tickets Commerce Checkout Page"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Contracts/Abstract_Gateway.php:174
+#: src/Tickets/Commerce/Gateways/Contracts/Abstract_Gateway.php:194
 #: src/views/v2/commerce/checkout.php:55
 msgid "Something went wrong!"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Contracts/Abstract_Gateway.php:175
+#: src/Tickets/Commerce/Gateways/Contracts/Abstract_Gateway.php:195
 msgid "Unexpected response recieved."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Contracts/Abstract_Gateway.php:271
+#: src/Tickets/Commerce/Gateways/Contracts/Abstract_Gateway.php:291
 msgid "Enabled for Checkout"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Manual/Gateway.php:27
+#: src/Tickets/Commerce/Gateways/Manual/Gateway.php:32
 msgid "Manually Generated"
 msgstr ""
 
@@ -2129,85 +2128,85 @@ msgstr ""
 msgid "E.g.: 01020"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Client.php:774
+#: src/Tickets/Commerce/Gateways/PayPal/Client.php:780
 msgid "The PayPal webhook does not exist"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Client.php:777
+#: src/Tickets/Commerce/Gateways/PayPal/Client.php:783
 msgid "Unexpected PayPal response when getting webhook"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Client.php:824
+#: src/Tickets/Commerce/Gateways/PayPal/Client.php:830
 msgid "Unexpected PayPal response when creating webhook"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Client.php:835
+#: src/Tickets/Commerce/Gateways/PayPal/Client.php:841
 msgid "PayPal webhook limit has been reached, you need to go into your developer.paypal.com account and remove webhooks from the associated account"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Client.php:894
+#: src/Tickets/Commerce/Gateways/PayPal/Client.php:900
 msgid "Unexpected PayPal response when updating webhook"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:66
+#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:73
 msgid "PayPal"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:76
+#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:83
 msgid "PayPal is now connected."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:81
+#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:88
 msgid "Failed to disconnect PayPal account."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:86
+#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:93
 msgid "Disconnected PayPal account."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:91
+#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:98
 msgid "Failed to refresh PayPal access token."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:96
+#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:103
 msgid "PayPal access token was refreshed successfully."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:101
+#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:108
 msgid "Failed to refresh PayPal user info."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:106
+#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:113
 msgid "PayPal user info was refreshed successfully."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:111
+#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:118
 msgid "Failed to refresh PayPal webhooks."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:116
+#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:123
 msgid "PayPal webhooks refreshed successfully."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:121
+#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:128
 msgid "A valid SSL certificate is required to set up your PayPal account and accept payments"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:140
+#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:147
 msgid "Enable payments through PayPal, Venmo, and credit card."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:211
-#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:189
+#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:218
+#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:195
 msgid "here"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:213
+#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:220
 msgid "PayPal doesn't support your selected currency"
 msgstr ""
 
 #. Translators: %1$s: Currency Name. %2$s: Link to gateway provider's currency documentation.
-#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:216
+#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:223
 msgid "Unfortunately PayPal doesn't support payments in %1$s. Please try using a different gateway or adjusting your Tickets Commerce currency setting. You can see a list of supported currencies %2$s."
 msgstr ""
 
@@ -6327,39 +6326,39 @@ msgstr ""
 #. Translators: %1$s: The HTML <a> tag, %2$s: The closing HTML </a> tag.
 #: src/Tickets/Commerce/Gateways/PayPal/Tickets_Form.php:77
 #: src/Tribe/Commerce/PayPal/Main.php:1906
-#: src/Tribe/RSVP.php:2529
+#: src/Tribe/RSVP.php:2431
 msgid "Return to the %1$sAttendees Report%2$s."
 msgstr ""
 
 #. Translators: %1$s: The return link.
 #: src/Tickets/Commerce/Gateways/PayPal/Tickets_Form.php:84
 #: src/Tribe/Commerce/PayPal/Main.php:1913
-#: src/Tribe/RSVP.php:2537
+#: src/Tribe/RSVP.php:2439
 msgid "Post updated. %1$s"
 msgstr ""
 
 #. Translators: %1$s: The return link.
 #: src/Tickets/Commerce/Gateways/PayPal/Tickets_Form.php:88
 #: src/Tribe/Commerce/PayPal/Main.php:1917
-#: src/Tribe/RSVP.php:2542
+#: src/Tribe/RSVP.php:2444
 msgid "Post published. %1$s"
 msgstr ""
 
 #: src/Tickets/Commerce/Gateways/PayPal/Tickets_Form.php:91
 #: src/Tribe/Commerce/PayPal/Main.php:1920
-#: src/Tribe/RSVP.php:2545
+#: src/Tribe/RSVP.php:2447
 msgid "Post submitted."
 msgstr ""
 
 #: src/Tickets/Commerce/Gateways/PayPal/Tickets_Form.php:92
 #: src/Tribe/Commerce/PayPal/Main.php:1921
-#: src/Tribe/RSVP.php:2546
+#: src/Tribe/RSVP.php:2448
 msgid "Post scheduled."
 msgstr ""
 
 #: src/Tickets/Commerce/Gateways/PayPal/Tickets_Form.php:93
 #: src/Tribe/Commerce/PayPal/Main.php:1922
-#: src/Tribe/RSVP.php:2547
+#: src/Tribe/RSVP.php:2449
 msgid "Post draft updated."
 msgstr ""
 
@@ -6405,42 +6404,42 @@ msgstr ""
 msgid "Change %1$s in PayPal from webhook: %2$s"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:69
-#: src/Tickets/Emails/Admin/Preview_Data.php:84
+#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:75
+#: src/Tickets/Emails/Admin/Preview_Data.php:86
 msgid "Stripe"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:79
+#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:85
 msgid "Stripe wasn't able to complete your connection request. Try again."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:84
+#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:90
 msgid "Stripe signup was successful but the authentication tokens could not be retrieved. Try refreshing the tokens."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:89
+#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:95
 msgid "Disconnecting from Stripe failed. Please try again."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:99
+#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:105
 msgid "Due to Regulatory Issues between Stripe and the country listed in your Stripe account, the free version of Event Tickets cannot accept connections from accounts in your country. Please use a Stripe account from a different country or purchase Event Tickets Plus to continue."
 msgstr ""
 
 #. Translators: %1$s is the opening <a> tag for the Payments Tab page link. %2$s is the closing <a> tag.
-#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:106
+#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:112
 msgid "Your stripe account was disconnected from the Stripe dashboard. If you believe this is an error, you can re-connect in the %1$sPayments Tab of the Settings Page%2$s."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:128
+#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:134
 msgid "Enable credit card payments, Afterpay, AliPay, Giropay, Klarna and more."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:191
+#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:197
 msgid "Stripe doesn't support your selected currency"
 msgstr ""
 
 #. Translators: %1$s: Currency Name. %2$s: Link to gateway provider's currency documentation.
-#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:194
+#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:200
 msgid "Unfortunately, Stripe doesn't support payments in %1$s. Please try using a different gateway or adjusting your Tickets Commerce currency setting. You can see a list of supported currencies %2$s."
 msgstr ""
 
@@ -6698,12 +6697,12 @@ msgstr ""
 
 #: src/Tickets/Commerce/Models/Attendee_Model.php:62
 #: src/Tribe/Commerce/PayPal/Main.php:2957
-#: src/Tribe/RSVP.php:2187
+#: src/Tribe/RSVP.php:2089
 msgid "(deleted)"
 msgstr ""
 
 #: src/Tickets/Commerce/Order.php:191
-#: src/Tickets/Commerce/Reports/Orders.php:199
+#: src/Tickets/Commerce/Reports/Orders.php:217
 #: src/Tribe/Commerce/PayPal/Main.php:468
 msgid "Orders"
 msgstr ""
@@ -6723,7 +6722,13 @@ msgid "Enable Tickets Commerce"
 msgstr ""
 
 #. Translators: %s: Name of payment gateway.
+#. Translators: %s - Title of email.
 #: src/Tickets/Commerce/Payments_Tab.php:357
+#: src/Tickets/Emails/Email/Completed_Order.php:143
+#: src/Tickets/Emails/Email/Purchase_Receipt.php:132
+#: src/Tickets/Emails/Email/RSVP.php:156
+#: src/Tickets/Emails/Email/RSVP_Not_Going.php:134
+#: src/Tickets/Emails/Email/Ticket.php:144
 msgid "Enable %s"
 msgstr ""
 
@@ -6815,25 +6820,32 @@ msgctxt "attendee export"
 msgid "Purchaser Email Address"
 msgstr ""
 
-#: src/Tickets/Commerce/Reports/Orders.php:91
+#. Translators: %1$s: the post/event title, %2$d: the post/event ID.
+#: src/Tickets/Commerce/Reports/Orders.php:52
+#: src/Tribe/Commerce/Orders_Tabbed_View.php:142
+msgctxt "orders report screen heading"
+msgid "Orders for: %1$s [#%2$d]"
+msgstr ""
+
+#: src/Tickets/Commerce/Reports/Orders.php:109
 #: src/Tribe/Commerce/PayPal/Main.php:1722
 msgid "Sales report"
 msgstr ""
 
-#: src/Tickets/Commerce/Reports/Orders.php:132
+#: src/Tickets/Commerce/Reports/Orders.php:150
 #: src/Tribe/Commerce/PayPal/Main.php:1748
 msgid "Report"
 msgstr ""
 
-#: src/Tickets/Commerce/Reports/Orders.php:197
+#: src/Tickets/Commerce/Reports/Orders.php:215
 msgid "See Tickets Commerce purchases for this %s"
 msgstr ""
 
-#: src/Tickets/Commerce/Reports/Orders.php:227
+#: src/Tickets/Commerce/Reports/Orders.php:245
 msgid "Tickets Commerce Orders"
 msgstr ""
 
-#: src/Tickets/Commerce/Reports/Orders.php:287
+#: src/Tickets/Commerce/Reports/Orders.php:305
 msgctxt "Browser title"
 msgid "%s - Tickets Commerce Orders"
 msgstr ""
@@ -6933,7 +6945,7 @@ msgid "After a successful order, users will be redirected to this page. Use the 
 msgstr ""
 
 #: src/Tickets/Commerce/Settings.php:398
-#: src/Tickets/Emails/Admin/Emails_Tab.php:73
+#: src/Tickets/Emails/Admin/Emails_Tab.php:74
 msgid "Emails"
 msgstr ""
 
@@ -6996,12 +7008,12 @@ msgid "%s will be available on %s at %s"
 msgstr ""
 
 #: src/Tickets/Commerce/Status/Pending.php:163
-#: src/Tribe/Tickets.php:3414
+#: src/Tribe/Tickets.php:3321
 msgid "%s are no longer available."
 msgstr ""
 
 #: src/Tickets/Commerce/Status/Pending.php:165
-#: src/Tribe/Tickets.php:3416
+#: src/Tribe/Tickets.php:3323
 msgid "There are no %s available at this time."
 msgstr ""
 
@@ -7633,85 +7645,96 @@ msgid "Tickets Emails"
 msgstr ""
 
 #. Translators: %s Link to knowledgebase article.
-#: src/Tickets/Emails/Admin/Emails_Tab.php:168
-msgid "Customize your customer communications when tickets are purchased, RSVPs are submitted, and for Tickets Commerce order notifications.  Learn More about Tickets Commerce communications in our %s."
+#: src/Tickets/Emails/Admin/Emails_Tab.php:170
+msgid "Customize your customer communications when tickets are purchased, RSVPs are submitted, and for Tickets Commerce order notifications. Enabling Tickets Emails will overwrite any manual customization that has been done to our previous email templates. Learn more about Event Tickets and Tickets Commerce communications in our %s."
 msgstr ""
 
-#: src/Tickets/Emails/Admin/Emails_Tab.php:224
+#. Translators: %s Link to knowledgebase article.
+#: src/Tickets/Emails/Admin/Emails_Tab.php:176
+msgid "Customize your customer communications when tickets are purchased, RSVPs are submitted, and for Tickets Commerce order notifications. Learn more about Event Tickets and Tickets Commerce communications in our %s."
+msgstr ""
+
+#: src/Tickets/Emails/Admin/Emails_Tab.php:234
 msgid "Back to Email Settings"
 msgstr ""
 
-#: src/Tickets/Emails/Admin/Emails_Tab.php:235
+#: src/Tickets/Emails/Admin/Emails_Tab.php:245
 msgid "Invalid email id selected."
 msgstr ""
 
-#: src/Tickets/Emails/Admin/Preview_Data.php:33
-msgid "Here's your ticket!"
+#: src/Tickets/Emails/Admin/Notice_Extension.php:78
+msgctxt "Extension notice for Tickets Emails."
+msgid "Learn More"
 msgstr ""
 
-#. Translators: %s - First name of email recipient.
-#: src/Tickets/Emails/Admin/Preview_Data.php:38
-msgid "Here's your ticket, %s!"
+#: src/Tickets/Emails/Admin/Notice_Extension.php:81
+msgid "Ticket Email Settings extension is no longer supported"
 msgstr ""
 
-#: src/Tickets/Emails/Admin/Preview_Data.php:50
-#: src/Tickets/Emails/Admin/Preview_Data.php:112
-#: src/Tickets/Emails/Admin/Preview_Data.php:128
-#: src/Tickets/Emails/Admin/Preview_Data.php:163
+#: src/Tickets/Emails/Admin/Notice_Extension.php:84
+msgctxt "extension usage notice for tickets emails"
+msgid "We noticed you have the Ticket Email Settings extension active. The settings from the extension, living in the \"Ticket Emails\" tab, will no longer affect email functionality, and the extension will no longer be supported. Please be sure you configure your emails from the \"Emails\" tab. %1$s."
+msgstr ""
+
+#: src/Tickets/Emails/Admin/Notice_Upgrade.php:78
+msgctxt "Upgrade notice for Tickets Emails."
+msgid "Learn More"
+msgstr ""
+
+#: src/Tickets/Emails/Admin/Notice_Upgrade.php:81
+msgid "A new way to manage your emails"
+msgstr ""
+
+#: src/Tickets/Emails/Admin/Notice_Upgrade.php:84
+msgctxt "upgrade notice for tickets emails"
+msgid "There's a new way to manage your Event Tickets related emails. Enable the functionality, configure the look and feel, and much more from the Emails tab. Customizations in old templates won't have an effect when using the new emails, feel free to update when you are ready. %1$s."
+msgstr ""
+
+#: src/Tickets/Emails/Admin/Preview_Data.php:65
+#: src/Tickets/Emails/Admin/Preview_Data.php:245
+#: src/Tickets/Emails/Admin/Preview_Data.php:250
+#: src/Tickets/Emails/Admin/Preview_Data.php:251
 msgid "General Admission"
 msgstr ""
 
-#: src/Tickets/Emails/Admin/Preview_Data.php:78
+#: src/Tickets/Emails/Admin/Preview_Data.php:80
 msgid "John"
 msgstr ""
 
-#: src/Tickets/Emails/Admin/Preview_Data.php:79
-#: src/Tickets/Emails/Admin/Preview_Data.php:82
-#: src/Tickets/Emails/Admin/Preview_Data.php:114
+#: src/Tickets/Emails/Admin/Preview_Data.php:81
+#: src/Tickets/Emails/Admin/Preview_Data.php:84
+#: src/Tickets/Emails/Admin/Preview_Data.php:253
+#: src/Tickets/Emails/Admin/Preview_Data.php:255
 msgid "John Doe"
 msgstr ""
 
-#: src/Tickets/Emails/Admin/Preview_Data.php:90
+#: src/Tickets/Emails/Admin/Preview_Data.php:94
 msgid "Preview Order"
 msgstr ""
 
-#: src/Tickets/Emails/Admin/Preview_Data.php:118
-#: src/Tickets/Emails/Admin/Preview_Data.php:134
-msgid "Shirt size"
+#: src/Tickets/Emails/Admin/Preview_Data.php:254
+#: src/Tickets/Emails/Admin/Preview_Data.php:256
+msgid "john@doe.com"
 msgstr ""
 
-#: src/Tickets/Emails/Admin/Preview_Data.php:119
-msgid "large"
+#: src/Tickets/Emails/Admin/Preview_Data.php:289
+msgid "Arts in the Park"
 msgstr ""
 
-#: src/Tickets/Emails/Admin/Preview_Data.php:122
-#: src/Tickets/Emails/Admin/Preview_Data.php:138
-msgid "Backstage pass"
+#: src/Tickets/Emails/Admin/Preview_Data.php:290
+msgid "Experience the magic of creativity in nature. Save the date and indulge your senses at \"Arts in the Park\"!  Join us for an enchanting day of vibrant musics and captivating... "
 msgstr ""
 
-#: src/Tickets/Emails/Admin/Preview_Data.php:123
-#: src/Tickets/Emails/Admin/Preview_Data.php:139
-msgid "yes"
-msgstr ""
-
-#: src/Tickets/Emails/Admin/Preview_Data.php:130
-msgid "Jane Doe"
-msgstr ""
-
-#: src/Tickets/Emails/Admin/Preview_Data.php:135
-msgid "small"
-msgstr ""
-
-#: src/Tickets/Emails/Admin/Preview_Modal.php:82
+#: src/Tickets/Emails/Admin/Preview_Modal.php:83
 msgid "Email Preview"
 msgstr ""
 
+#: src/Tickets/Emails/Admin/Preview_Modal.php:130
 #: src/Tickets/Emails/Admin/Preview_Modal.php:139
-#: src/Tickets/Emails/Admin/Preview_Modal.php:148
 msgid "Preview Email"
 msgstr ""
 
-#: src/Tickets/Emails/Admin/Preview_Modal.php:143
+#: src/Tickets/Emails/Admin/Preview_Modal.php:134
 msgctxt "Preview email button on the settings"
 msgid "Preview Email"
 msgstr ""
@@ -7776,202 +7799,236 @@ msgstr ""
 msgid "Add custom links and instructions to the bottom of your emails."
 msgstr ""
 
-#: src/Tickets/Emails/Admin/Settings.php:360
+#: src/Tickets/Emails/Admin/Settings.php:361
 msgid "Enable Tickets Emails"
 msgstr ""
 
-#: src/Tickets/Emails/Admin/Settings.php:366
-msgid "Start using the new Tickets Emails for your site."
-msgstr ""
-
-#: src/Tickets/Emails/Email/Completed_Order.php:57
+#: src/Tickets/Emails/Email/Completed_Order.php:60
 msgid "Completed Order"
 msgstr ""
 
-#: src/Tickets/Emails/Email/Completed_Order.php:68
-#: src/Tickets/Emails/Email/Failed_Order.php:68
+#: src/Tickets/Emails/Email/Completed_Order.php:71
 msgid "Admin"
 msgstr ""
 
-#: src/Tickets/Emails/Email/Completed_Order.php:90
+#: src/Tickets/Emails/Email/Completed_Order.php:93
 msgid "Completed order: #{order_number}"
 msgstr ""
 
-#: src/Tickets/Emails/Email/Completed_Order.php:101
+#: src/Tickets/Emails/Email/Completed_Order.php:104
 msgid "[{site_title}]: Completed order #{order_number}"
 msgstr ""
 
-#: src/Tickets/Emails/Email/Completed_Order.php:119
-msgid "Completed Order Email Settings"
+#. Translators: %1$s: Completed order Emails knowledge base article link.
+#: src/Tickets/Emails/Email/Completed_Order.php:122
+msgctxt "about Completed Order email"
+msgid "The site admin will receive an email about any orders that were made. Customize the content of this specific email using the tools below. You can also use email placeholders and customize email templates. %1$s."
 msgstr ""
 
 #: src/Tickets/Emails/Email/Completed_Order.php:133
-#: src/Tickets/Emails/Email/Failed_Order.php:133
+msgid "Completed Order Email Settings"
+msgstr ""
+
+#: src/Tickets/Emails/Email/Completed_Order.php:151
 msgid "Recipient(s)"
 msgstr ""
 
-#: src/Tickets/Emails/Email/Completed_Order.php:140
-#: src/Tickets/Emails/Email/Failed_Order.php:140
-#: src/Tickets/Emails/Email/Purchase_Receipt.php:122
-#: src/Tickets/Emails/Email/RSVP.php:258
-#: src/Tickets/Emails/Email/RSVP_Not_Going.php:125
-#: src/Tickets/Emails/Email/Ticket.php:243
+#: src/Tickets/Emails/Email/Completed_Order.php:153
+msgid "Add additional recipient emails separated by commas."
+msgstr ""
+
+#: src/Tickets/Emails/Email/Completed_Order.php:159
+#: src/Tickets/Emails/Email/Purchase_Receipt.php:140
+#: src/Tickets/Emails/Email/RSVP.php:177
+#: src/Tickets/Emails/Email/RSVP_Not_Going.php:142
+#: src/Tickets/Emails/Email/Ticket.php:152
 msgid "Subject"
 msgstr ""
 
-#: src/Tickets/Emails/Email/Completed_Order.php:148
-#: src/Tickets/Emails/Email/Failed_Order.php:148
-#: src/Tickets/Emails/Email/Purchase_Receipt.php:130
-#: src/Tickets/Emails/Email/RSVP.php:274
-#: src/Tickets/Emails/Email/RSVP_Not_Going.php:133
-#: src/Tickets/Emails/Email/Ticket.php:259
+#: src/Tickets/Emails/Email/Completed_Order.php:167
+#: src/Tickets/Emails/Email/Purchase_Receipt.php:148
+#: src/Tickets/Emails/Email/RSVP.php:190
+#: src/Tickets/Emails/Email/RSVP_Not_Going.php:150
+#: src/Tickets/Emails/Email/Ticket.php:160
 msgid "Heading"
 msgstr ""
 
-#: src/Tickets/Emails/Email/Completed_Order.php:156
-#: src/Tickets/Emails/Email/Failed_Order.php:156
-#: src/Tickets/Emails/Email/Purchase_Receipt.php:138
-#: src/Tickets/Emails/Email/RSVP.php:290
-#: src/Tickets/Emails/Email/RSVP_Not_Going.php:141
-#: src/Tickets/Emails/Email/Ticket.php:275
+#: src/Tickets/Emails/Email/Completed_Order.php:175
+#: src/Tickets/Emails/Email/Purchase_Receipt.php:156
+#: src/Tickets/Emails/Email/RSVP.php:203
+#: src/Tickets/Emails/Email/RSVP_Not_Going.php:158
+#: src/Tickets/Emails/Email/Ticket.php:168
 msgid "Additional content"
 msgstr ""
 
-#: src/Tickets/Emails/Email/Completed_Order.php:158
+#: src/Tickets/Emails/Email/Completed_Order.php:177
 msgid "Additional content will be displayed below the order details."
 msgstr ""
 
-#: src/Tickets/Emails/Email/Failed_Order.php:57
-msgid "Failed Order"
-msgstr ""
-
-#: src/Tickets/Emails/Email/Failed_Order.php:90
-msgid "Failed order: #{order_number}"
-msgstr ""
-
-#: src/Tickets/Emails/Email/Failed_Order.php:101
-msgid "[{site_title}]: Failed order #{order_number}"
-msgstr ""
-
-#: src/Tickets/Emails/Email/Failed_Order.php:119
-msgid "Failed Order Email Settings"
-msgstr ""
-
-#: src/Tickets/Emails/Email/Failed_Order.php:158
-msgid "Additional content will be displayed below the failed order details in your email."
-msgstr ""
-
-#: src/Tickets/Emails/Email/Failed_Order.php:197
-msgid "Stripe payment processing was unsuccessful."
-msgstr ""
-
-#: src/Tickets/Emails/Email/Purchase_Receipt.php:57
+#: src/Tickets/Emails/Email/Purchase_Receipt.php:60
 msgid "Purchase Receipt"
 msgstr ""
 
-#: src/Tickets/Emails/Email/Purchase_Receipt.php:79
-#: src/Tickets/Emails/Email/Purchase_Receipt.php:90
+#: src/Tickets/Emails/Email/Purchase_Receipt.php:82
+#: src/Tickets/Emails/Email/Purchase_Receipt.php:93
 msgid "Your purchase receipt for #{order_number}"
 msgstr ""
 
-#: src/Tickets/Emails/Email/Purchase_Receipt.php:108
+#. Translators: %1$s: Purchase Receipt Emails knowledgebase article link.
+#: src/Tickets/Emails/Email/Purchase_Receipt.php:111
+msgctxt "about Purchase Receipt email"
+msgid "The ticket purchaser will receive an email about the purchase that was completed. Customize the content of this specific email using the tools below. You can also use email placeholders and customize email templates. %1$s."
+msgstr ""
+
+#: src/Tickets/Emails/Email/Purchase_Receipt.php:122
 msgid "Purchase Receipt Email Settings"
 msgstr ""
 
-#: src/Tickets/Emails/Email/Purchase_Receipt.php:140
+#: src/Tickets/Emails/Email/Purchase_Receipt.php:158
 msgid "Additional content will be displayed below the purchase receipt details in the email."
 msgstr ""
 
-#: src/Tickets/Emails/Email/RSVP.php:57
+#: src/Tickets/Emails/Email/RSVP.php:61
 msgid "RSVP Email"
 msgstr ""
 
-#: src/Tickets/Emails/Email/RSVP.php:68
-#: src/Tickets/Emails/Email/RSVP_Not_Going.php:67
-#: src/Tickets/Emails/Email/Ticket.php:68
+#: src/Tickets/Emails/Email/RSVP.php:72
+#: src/Tickets/Emails/Email/RSVP_Not_Going.php:69
+#: src/Tickets/Emails/Email/Ticket.php:72
 msgid "Attendee(s)"
 msgstr ""
 
-#. Translators: %s Lowercase singular of ticket.
-#: src/Tickets/Emails/Email/RSVP.php:81
-#: src/Tickets/Emails/Email/Ticket.php:81
+#. Translators: %s Lowercase plural of ticket.
+#: src/Tickets/Emails/Email/RSVP.php:85
+#: src/Tickets/Emails/Email/Ticket.php:85
 msgid "Here's your %s, {attendee_name}!"
 msgstr ""
 
-#. Translators: %s Lowercase plural of tickets.
-#: src/Tickets/Emails/Email/RSVP.php:96
-#: src/Tickets/Emails/Email/Ticket.php:96
-msgid "Here are your %s, {attendee_name}!"
-msgstr ""
-
-#. Translators: %s - Lowercase singular of ticket.
-#. Translators: %s - Lowercase plural of tickets.
-#. Translators: %s - Lowercase singular of tickets.
-#: src/Tickets/Emails/Email/RSVP.php:151
-#: src/Tickets/Emails/Email/RSVP.php:169
-#: src/Tickets/Emails/Email/Ticket.php:151
-#: src/Tickets/Emails/Email/Ticket.php:169
+#. Translators: %s - Lowercase plural of ticket.
+#: src/Tickets/Emails/Email/RSVP.php:100
+#: src/Tickets/Emails/Email/Ticket.php:100
 msgid "Your %s from {site_title}"
 msgstr ""
 
-#: src/Tickets/Emails/Email/RSVP.php:229
+#. Translators: %1$s: RSVP Emails knowledgebase article link.
+#: src/Tickets/Emails/Email/RSVP.php:135
+msgctxt "about RSVP email"
+msgid "Registrants will receive an email including their RSVP info upon registration. Customize the content of this specific email using the tools below. You can also use email placeholders and customize email templates. %1$s."
+msgstr ""
+
+#: src/Tickets/Emails/Email/RSVP.php:146
 msgid "RSVP Email Settings"
 msgstr ""
 
-#: src/Tickets/Emails/Email/RSVP.php:243
+#: src/Tickets/Emails/Email/RSVP.php:164
 msgid "Use Ticket Email"
 msgstr ""
 
-#: src/Tickets/Emails/Email/RSVP.php:244
+#: src/Tickets/Emails/Email/RSVP.php:165
 msgid "Use the ticket email settings and template."
 msgstr ""
 
-#: src/Tickets/Emails/Email/RSVP.php:266
-#: src/Tickets/Emails/Email/Ticket.php:251
-msgid "Subject (plural)"
-msgstr ""
-
-#: src/Tickets/Emails/Email/RSVP.php:282
-#: src/Tickets/Emails/Email/Ticket.php:267
-msgid "Heading (plural)"
-msgstr ""
-
-#: src/Tickets/Emails/Email/RSVP.php:292
+#: src/Tickets/Emails/Email/RSVP.php:206
 msgid "Additional content will be displayed below the RSVP information in your email."
 msgstr ""
 
-#: src/Tickets/Emails/Email/RSVP_Not_Going.php:56
+#: src/Tickets/Emails/Email/RSVP_Not_Going.php:58
 msgid "RSVP \"Not Going\" Email"
 msgstr ""
 
-#: src/Tickets/Emails/Email/RSVP_Not_Going.php:78
-#: src/Tickets/Emails/Email/RSVP_Not_Going.php:91
+#: src/Tickets/Emails/Email/RSVP_Not_Going.php:80
+#: src/Tickets/Emails/Email/RSVP_Not_Going.php:93
 msgid "You confirmed you will not be attending"
 msgstr ""
 
-#: src/Tickets/Emails/Email/RSVP_Not_Going.php:111
+#. Translators: %1$s: RSVP "Not going" Emails knowledgebase article link.
+#: src/Tickets/Emails/Email/RSVP_Not_Going.php:113
+msgctxt "about RSVP Not going email"
+msgid "Registrants will receive an email confirming that they will not be attending. Customize the content of this specific email using the tools below. You can also use email placeholders and customize email templates. %1$s."
+msgstr ""
+
+#: src/Tickets/Emails/Email/RSVP_Not_Going.php:124
 msgid "RSVP \"Not Going\" Email Settings"
 msgstr ""
 
-#: src/Tickets/Emails/Email/RSVP_Not_Going.php:143
+#: src/Tickets/Emails/Email/RSVP_Not_Going.php:160
 msgid "Additional content will be displayed below the information in your email."
 msgstr ""
 
-#: src/Tickets/Emails/Email/Ticket.php:57
-#: src/Tickets/Emails/Email_Template.php:143
+#: src/Tickets/Emails/Email/Ticket.php:61
+#: src/Tickets/Emails/Email_Template.php:144
 msgid "Ticket Email"
 msgstr ""
 
-#: src/Tickets/Emails/Email/Ticket.php:229
+#. Translators: %1$s: Tickets Emails knowledgebase article link.
+#: src/Tickets/Emails/Email/Ticket.php:123
+msgctxt "about Ticket Email"
+msgid "Ticket purchasers will receive an email including their ticket and additional info upon completion of purchase. Customize the content of this specific email using the tools below. You can also use email placeholders and customize email templates. %1$s."
+msgstr ""
+
+#: src/Tickets/Emails/Email/Ticket.php:134
 msgid "Ticket Email Settings"
 msgstr ""
 
-#: src/Tickets/Emails/Email/Ticket.php:277
+#: src/Tickets/Emails/Email/Ticket.php:171
 msgid "Additional content will be displayed below the tickets in your email."
 msgstr ""
 
-#: src/Tickets/Emails/Email_Handler.php:135
-msgid "Event Tickets Emails"
+#: src/Tickets/Emails/JSON_LD/Order_Schema.php:74
+msgid "View Order"
+msgstr ""
+
+#: src/Tickets/Site_Health/Info_Section.php:72
+msgid "This section contains information on the Events Tickets Plugin."
+msgstr ""
+
+#: src/Tickets/Site_Health/Info_Section.php:89
+msgid "Ticket-enabled post types"
+msgstr ""
+
+#: src/Tickets/Site_Health/Info_Section.php:98
+msgid "Previous ET versions"
+msgstr ""
+
+#: src/Tickets/Site_Health/Info_Section.php:107
+msgid "Total ticketed posts"
+msgstr ""
+
+#: src/Tickets/Site_Health/Info_Section.php:116
+msgid "Total posts with RSVPs"
+msgstr ""
+
+#: src/Tickets/Site_Health/Info_Section.php:126
+msgid "Total ticketed events"
+msgstr ""
+
+#: src/Tickets/Site_Health/Info_Section.php:135
+msgid "Total events with RSVPs"
+msgstr ""
+
+#. Translators: %1$s - the user name.
+#: src/Tickets/Telemetry/Telemetry.php:61
+msgid "Hi, %1$s! This is an invitation to help our StellarWP community."
+msgstr ""
+
+#: src/Tickets/Telemetry/Telemetry.php:65
+msgid "If you opt-in, some data about your usage of Event Tickets and future StellarWP Products will be shared with our teams (so they can work their butts off to improve)."
+msgstr ""
+
+#: src/Tickets/Telemetry/Telemetry.php:66
+msgid "We will also share some helpful info on WordPress, and our products from time to time."
+msgstr ""
+
+#: src/Tickets/Telemetry/Telemetry.php:67
+msgid "And if you skip this, that’s okay! Our products still work just fine."
+msgstr ""
+
+#: src/Tickets/Telemetry/Telemetry.php:72
+msgid "We hope you love Event Tickets!"
+msgstr ""
+
+#: src/Tickets/Telemetry/Telemetry.php:102
+msgid "Telemetry"
 msgstr ""
 
 #: src/Tribe/Abstract_Attendance_Totals.php:67
@@ -7985,7 +8042,7 @@ msgid "Includes ticketed attendees with orders marked Completed."
 msgstr ""
 
 #: src/Tribe/Admin/Home/Service_Provider.php:80
-#: src/Tribe/Main.php:862
+#: src/Tribe/Main.php:881
 msgid "Welcome to Event Tickets!"
 msgstr ""
 
@@ -8393,7 +8450,7 @@ msgstr ""
 msgid "Undo Check in"
 msgstr ""
 
-#: src/Tribe/Attendee_Registration/Template.php:398
+#: src/Tribe/Attendee_Registration/Template.php:404
 #: src/views/v2/rsvp/ari/sidebar/title.php:15
 msgid "Attendee Registration"
 msgstr ""
@@ -8619,29 +8676,29 @@ msgid "Are you sure you want to cancel?"
 msgstr ""
 
 #: src/Tribe/Editor/Blocks/Tickets.php:282
-#: src/Tribe/Tickets.php:4544
+#: src/Tribe/Tickets.php:4448
 msgctxt "Error message title, will be followed by the error code."
 msgid "API Error"
 msgstr ""
 
 #: src/Tribe/Editor/Blocks/Tickets.php:283
-#: src/Tribe/Tickets.php:4545
+#: src/Tribe/Tickets.php:4449
 msgid "Refresh this page or wait a few minutes before trying again. If this happens repeatedly, please contact the Site Admin."
 msgstr ""
 
 #: src/Tribe/Editor/Blocks/Tickets.php:284
-#: src/Tribe/Tickets.php:4546
+#: src/Tribe/Tickets.php:4450
 msgid "The ticket for this event has sold out and has been removed from your cart."
 msgstr ""
 
 #: src/Tribe/Editor/Blocks/Tickets.php:285
-#: src/Tribe/Tickets.php:4547
+#: src/Tribe/Tickets.php:4451
 #: src/views/v2/commerce/order/header/title-empty.php:28
 msgid "Whoops!"
 msgstr ""
 
 #: src/Tribe/Editor/Blocks/Tickets.php:286
-#: src/Tribe/Tickets.php:4548
+#: src/Tribe/Tickets.php:4452
 msgctxt "The %s will change based on the error produced."
 msgid "You have %s ticket(s) with a field that requires information."
 msgstr ""
@@ -8672,17 +8729,17 @@ msgstr ""
 msgid "%s was not able to be updated"
 msgstr ""
 
-#: src/Tribe/Editor/Warnings.php:90
+#: src/Tribe/Editor/Warnings.php:92
 msgctxt "Helper link in Ticket Editor"
 msgid "Learn More"
 msgstr ""
 
 #. translators: %1$s: link to help article.
-#: src/Tribe/Editor/Warnings.php:96
+#: src/Tribe/Editor/Warnings.php:98
 msgid "There is no payment gateway configured. To create tickets, you'll need to enable and configure an ecommerce solution. %1$s"
 msgstr ""
 
-#: src/Tribe/Editor/Warnings.php:111
+#: src/Tribe/Editor/Warnings.php:113
 msgid "Tickets and RSVPs are not yet supported on recurring events. %1$s%2$s Read about our plans for future features %3$s"
 msgstr ""
 
@@ -8722,99 +8779,83 @@ msgctxt "list view buy now ticket button"
 msgid "Get %s"
 msgstr ""
 
-#: src/Tribe/Integrations/Freemius.php:339
-msgid "We hope you love %1$s"
-msgstr ""
-
-#: src/Tribe/Integrations/Freemius.php:344
-msgid "Hi, %1$s! This is an invitation to help our %2$s community. If you opt-in, some data about your usage of %2$s will be shared with our teams (so they can work their butts off to improve). We will also share some helpful info on events management, WordPress, and our products from time to time."
-msgstr ""
-
-#: src/Tribe/Integrations/Freemius.php:348
-msgid "And if you skip this, that's okay! %1$s will still work just fine."
-msgstr ""
-
-#: src/Tribe/Integrations/Freemius.php:352
-msgid "Powered by"
-msgstr ""
-
 #: src/Tribe/Main.php:145
 msgctxt "provider_plugin_name"
 msgid "Tickets"
 msgstr ""
 
 #. Translators: %1$s is the min required version of The Events Calendar. %2$s Is the update link opening `<a>`. %3$s Is the update link closing `</a>`.
-#: src/Tribe/Main.php:462
+#: src/Tribe/Main.php:484
 msgid "When The Events Calendar and Event Tickets are both activated, The Events Calendar must be running version %1$s or greater. Please %2$supdate now.%3$s"
 msgstr ""
 
-#: src/Tribe/Main.php:525
+#: src/Tribe/Main.php:547
 msgid "Sorry, Event Tickets requires WordPress %s or higher. Please upgrade your WordPress install."
 msgstr ""
 
-#: src/Tribe/Main.php:529
+#: src/Tribe/Main.php:551
 msgid "Sorry, Event Tickets requires PHP %s or higher. Talk to your Web host about moving you to a newer version of PHP."
 msgstr ""
 
-#: src/Tribe/Main.php:654
+#: src/Tribe/Main.php:676
 msgid "Support for Event Tickets"
 msgstr ""
 
-#: src/Tribe/Main.php:656
+#: src/Tribe/Main.php:678
 msgid "Settings overview"
 msgstr ""
 
-#: src/Tribe/Main.php:657
+#: src/Tribe/Main.php:679
 msgid "Features overview"
 msgstr ""
 
-#: src/Tribe/Main.php:658
+#: src/Tribe/Main.php:680
 msgid "Troubleshooting common problems"
 msgstr ""
 
-#: src/Tribe/Main.php:659
+#: src/Tribe/Main.php:681
 msgid "Customizing Event Tickets"
 msgstr ""
 
-#: src/Tribe/Main.php:676
+#: src/Tribe/Main.php:698
 msgid "New User Primer"
 msgstr ""
 
-#: src/Tribe/Main.php:678
+#: src/Tribe/Main.php:700
 msgctxt "help feature box section"
 msgid "We are committed to helping you sell %1$s for your event. Check out our handy %2$s to get started."
 msgstr ""
 
-#: src/Tribe/Main.php:695
+#: src/Tribe/Main.php:717
 msgid "open-source forum on WordPress.org"
 msgstr ""
 
-#: src/Tribe/Main.php:696
+#: src/Tribe/Main.php:718
 msgid "If you have tried the above steps and are still having trouble, you can post a new thread to our %s. Our support staff monitors these forums once a week and would be happy to assist you there."
 msgstr ""
 
-#: src/Tribe/Main.php:698
+#: src/Tribe/Main.php:720
 msgid "premium support on our website"
 msgstr ""
 
-#: src/Tribe/Main.php:700
+#: src/Tribe/Main.php:722
 msgid "Looking for more immediate support? We offer %1$s with the purchase of any of our premium plugins (like %2$s). Pick up a license and you can post there directly and expect a response within 24-48 hours during weekdays."
 msgstr ""
 
-#: src/Tribe/Main.php:702
-#: src/Tribe/Main.php:707
+#: src/Tribe/Main.php:724
+#: src/Tribe/Main.php:729
 msgid "post a thread"
 msgstr ""
 
-#: src/Tribe/Main.php:703
+#: src/Tribe/Main.php:725
 msgid "Already have Event Tickets Plus? You can %s in our premium support forums. Our support team monitors the forums and will respond to your thread within 24-48 hours (during the week)."
 msgstr ""
 
-#: src/Tribe/Main.php:708
+#: src/Tribe/Main.php:730
 msgid "If you have a valid license for one of our paid plugins, you can %s in our premium support forums. Our support team monitors the forums and will respond to your thread within 24-48 hours (during the week)."
 msgstr ""
 
-#: src/Tribe/Main.php:1024
+#: src/Tribe/Main.php:1043
 msgid "Buy"
 msgstr ""
 
@@ -8947,8 +8988,8 @@ msgid "Order Number"
 msgstr ""
 
 #: src/Tribe/Privacy.php:549
+#: src/views/emails/template-parts/body/order/order-total.php:36
 #: src/views/tickets/tpp-success.php:136
-#: src/views/v2/emails/template-parts/body/order/order-total.php:36
 msgid "Order Total"
 msgstr ""
 
@@ -9653,41 +9694,41 @@ msgid "Invalid data! Missing required attendee details!"
 msgstr ""
 
 #. Translators: %1$s: The plural ticket label, %2$s: The site name.
-#: src/Tribe/RSVP.php:1389
+#: src/Tribe/RSVP.php:1311
 msgid "Your %1$s from %2$s"
 msgstr ""
 
 #. Translators: %s: Event name.
-#: src/Tribe/RSVP.php:1539
+#: src/Tribe/RSVP.php:1441
 msgid "You confirmed you will not be attending %s"
 msgstr ""
 
-#: src/Tribe/RSVP.php:1896
+#: src/Tribe/RSVP.php:1798
 msgid "Your %1$s has been received! Check your email for your %1$s confirmation."
 msgstr ""
 
-#: src/Tribe/RSVP.php:1903
+#: src/Tribe/RSVP.php:1805
 msgid "You can't %1$s more than the total remaining %2$s."
 msgstr ""
 
-#: src/Tribe/RSVP.php:1911
+#: src/Tribe/RSVP.php:1813
 msgid "In order to %s, you must enter your name and a valid email address."
 msgstr ""
 
-#: src/Tribe/RSVP.php:2713
+#: src/Tribe/RSVP.php:2615
 msgid "Invalid parent ID provided!"
 msgstr ""
 
-#: src/Tribe/RSVP.php:2720
+#: src/Tribe/RSVP.php:2622
 msgid "Invalid Ticket ID provided!"
 msgstr ""
 
-#: src/Tribe/RSVP.php:2735
-#: src/Tribe/RSVP.php:2741
+#: src/Tribe/RSVP.php:2637
+#: src/Tribe/RSVP.php:2643
 msgid "Missing required RSVP field: %s"
 msgstr ""
 
-#: src/Tribe/RSVP.php:2779
+#: src/Tribe/RSVP.php:2681
 msgid "Requested amount of Tickets are not available!"
 msgstr ""
 
@@ -9752,29 +9793,29 @@ msgid "Set capacity for this ticket only"
 msgstr ""
 
 #. translators: %1$s: The singular of "RSVP" or "ticket", %2$s: The plural of "RSVPs" or "tickets", %3$s: The site name.
-#: src/Tribe/Tickets.php:2618
+#: src/Tribe/Tickets.php:2525
 msgctxt "The default RSVP/ticket email subject"
 msgid "Your %1$s from %3$s"
 msgid_plural "Your %2$s from %3$s"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Tribe/Tickets.php:3366
+#: src/Tribe/Tickets.php:3273
 msgid "%s are not available as this %s has passed."
 msgstr ""
 
-#: src/Tribe/Tickets.php:3402
+#: src/Tribe/Tickets.php:3309
 msgid "%s will be available on "
 msgstr ""
 
 #. translators: %s: Tickets label
-#: src/Tribe/Tickets.php:3411
+#: src/Tribe/Tickets.php:3318
 #: src/views/blocks/tickets/content-inactive.php:19
 #: src/views/v2/tickets/item/content/inactive.php:53
 msgid "%s are not yet available"
 msgstr ""
 
-#: src/Tribe/Tickets.php:3863
+#: src/Tribe/Tickets.php:3770
 msgid "(copy)"
 msgstr ""
 
@@ -10061,6 +10102,80 @@ msgstr ""
 msgid "Loading..."
 msgstr ""
 
+#: src/views/emails/purchase-receipt/intro.php:31
+msgid "Hello!"
+msgstr ""
+
+#. Translators: %s - First name of purchaser.
+#: src/views/emails/purchase-receipt/intro.php:34
+msgid "Hi, %s!"
+msgstr ""
+
+#. Translators: %1$s - ticket label singular, %2$s - Tickets label plural.
+#: src/views/emails/purchase-receipt/intro.php:49
+msgid "Below are the details of your recent %1$s purchase. Your %2$s will arrive in a separate email."
+msgstr ""
+
+#: src/views/emails/rsvp-not-going/body.php:34
+msgid "Thank you for confirming that you will not be attending."
+msgstr ""
+
+#. Translators: %s - HTML link to `Event Tickets` website.
+#: src/views/emails/template-parts/body/footer/credit.php:41
+msgid "Powered by %1$s"
+msgstr ""
+
+#: src/views/emails/template-parts/body/order/attendees-table/header-row.php:24
+#: src/views/registration-js/attendees/fields.php:19
+#: src/views/registration/attendees/fields.php:15
+#: src/views/tickets/email.php:454
+msgid "Attendee"
+msgstr ""
+
+#: src/views/emails/template-parts/body/order/attendees-table/header-row.php:27
+msgid "Type"
+msgstr ""
+
+#: src/views/emails/template-parts/body/order/attendees-table/header-row.php:30
+msgid "Ticket ID"
+msgstr ""
+
+#: src/views/emails/template-parts/body/order/error-message.php:33
+msgid "The following attempted purchase has failed because:"
+msgstr ""
+
+#. Translators: %s - The order gateway ID.
+#: src/views/emails/template-parts/body/order/order-gateway-data.php:44
+msgid "Gateway Order #%s"
+msgstr ""
+
+#. Translators: %s - Payment provider's name.
+#: src/views/emails/template-parts/body/order/payment-info.php:33
+msgid "Payment unsuccessful with %s"
+msgstr ""
+
+#. Translators: %s - Payment provider's name.
+#: src/views/emails/template-parts/body/order/payment-info.php:37
+msgid "Payment completed with %s"
+msgstr ""
+
+#. Translators: %s - The order ID.
+#: src/views/emails/template-parts/body/order/purchaser-details/order-number.php:30
+msgid "Order #%s"
+msgstr ""
+
+#: src/views/emails/template-parts/body/order/ticket-totals/header-row.php:32
+msgid "Qty"
+msgstr ""
+
+#: src/views/emails/template-parts/header/top-link.php:37
+msgid "Having trouble viewing this email?"
+msgstr ""
+
+#: src/views/emails/template-parts/header/top-link.php:38
+msgid "Click here"
+msgstr ""
+
 #: src/views/login-before-purchase.php:21
 msgctxt "Login link on Tribe Commerce checkout page"
 msgid "Log in before purchasing"
@@ -10103,7 +10218,7 @@ msgstr ""
 
 #: src/views/modal/registration-js.php:119
 #: src/views/modal/registration.php:36
-#: src/views/registration/content.php:111
+#: src/views/registration/content.php:115
 msgid "Save and Checkout"
 msgstr ""
 
@@ -10116,15 +10231,8 @@ msgid "Checkout Now"
 msgstr ""
 
 #: src/views/modal/registration.php:38
-#: src/views/registration/content.php:113
+#: src/views/registration/content.php:117
 msgid "Save Attendee Info"
-msgstr ""
-
-#: src/views/registration-js/attendees/fields.php:19
-#: src/views/registration/attendees/fields.php:15
-#: src/views/tickets/email.php:454
-#: src/views/v2/emails/template-parts/body/order/attendees-table/header-row.php:24
-msgid "Attendee"
 msgstr ""
 
 #: src/views/registration-js/mini-cart.php:50
@@ -10546,68 +10654,6 @@ msgstr ""
 
 #: src/views/v2/commerce/order/header/title.php:28
 msgid "Order Received!"
-msgstr ""
-
-#: src/views/v2/emails/purchase-receipt/intro.php:31
-msgid "Hello!"
-msgstr ""
-
-#. Translators: %s - First name of purchaser.
-#: src/views/v2/emails/purchase-receipt/intro.php:34
-msgid "Hi, %s!"
-msgstr ""
-
-#. Translators: %1$s - ticket label singular, %2$s - Tickets label plural.
-#: src/views/v2/emails/purchase-receipt/intro.php:49
-msgid "Below are the details of your recent %1$s purchase. Your %2$s will arrive in a separate email."
-msgstr ""
-
-#: src/views/v2/emails/rsvp-not-going/body.php:33
-msgid "Thank you for confirming that you will not be attending."
-msgstr ""
-
-#. Translators: %s - HTML link to `Event Tickets` website.
-#: src/views/v2/emails/template-parts/body/footer/credit.php:41
-msgid "Ticket powered by %s"
-msgstr ""
-
-#: src/views/v2/emails/template-parts/body/order/attendees-table/header-row.php:27
-msgid "Type"
-msgstr ""
-
-#: src/views/v2/emails/template-parts/body/order/attendees-table/header-row.php:30
-msgid "Ticket ID"
-msgstr ""
-
-#: src/views/v2/emails/template-parts/body/order/error-message.php:33
-msgid "The following attempted purchase has failed because:"
-msgstr ""
-
-#. Translators: %s - Payment provider's name.
-#: src/views/v2/emails/template-parts/body/order/payment-info.php:33
-msgid "Payment unsuccessful with %s"
-msgstr ""
-
-#. Translators: %s - Payment provider's name.
-#: src/views/v2/emails/template-parts/body/order/payment-info.php:37
-msgid "Payment completed with %s"
-msgstr ""
-
-#. Translators: %s - The order number.
-#: src/views/v2/emails/template-parts/body/order/purchaser-details/order-number.php:29
-msgid "Order #%s"
-msgstr ""
-
-#: src/views/v2/emails/template-parts/body/order/ticket-totals/header-row.php:32
-msgid "Qty"
-msgstr ""
-
-#: src/views/v2/emails/template-parts/header/top-link.php:34
-msgid "Having trouble viewing this email?"
-msgstr ""
-
-#: src/views/v2/emails/template-parts/header/top-link.php:35
-msgid "Click here"
 msgstr ""
 
 #: src/views/v2/rsvp/actions/full.php:22

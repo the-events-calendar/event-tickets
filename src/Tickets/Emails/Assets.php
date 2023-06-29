@@ -9,7 +9,7 @@
 
 namespace TEC\Tickets\Emails;
 
-use \tad_DI52_ServiceProvider;
+use \TEC\Common\Contracts\Service_Provider;
 
 /**
  * Class Assets.
@@ -18,7 +18,7 @@ use \tad_DI52_ServiceProvider;
  *
  * @package TEC\Tickets\Emails
  */
-class Assets extends tad_DI52_ServiceProvider {
+class Assets extends Service_Provider {
 
 	/**
 	 * Key for this group of assets.

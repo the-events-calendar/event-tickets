@@ -8,7 +8,7 @@
 
 namespace TEC\Tickets\Emails;
 
-use tad_DI52_ServiceProvider;
+use TEC\Common\Contracts\Service_Provider;
 
 /**
  * Service provider for the Tickets Emails.
@@ -16,7 +16,7 @@ use tad_DI52_ServiceProvider;
  * @since   5.5.6
  * @package TEC\Tickets\Emails
  */
-class Provider extends tad_DI52_ServiceProvider {
+class Provider extends Service_Provider {
 
 	/**
 	 * Register the provider singletons.
