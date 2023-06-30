@@ -287,7 +287,7 @@ class Tribe__Tickets__Admin__Notices {
 		}
 
 		// Bail if Paystack plugin is installed and activated.
-		if ( class_exists( 'paystack\tec\classes\Core' ) ) {
+		if ( class_exists( 'paystack\tec\classes\Core', false ) ) {
 			return;
 		}
 
