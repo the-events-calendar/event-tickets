@@ -324,7 +324,7 @@ class Tribe__Tickets__Admin__Notices {
 		);
 
 		tribe_notice(
-			"event-tickets-commerce-paystack-notice",
+			'event-tickets-commerce-paystack-notice',
 			$message,
 			[
 				'dismiss' => true,
