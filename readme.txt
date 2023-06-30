@@ -193,7 +193,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [TBD] TBD =
 
-
+* Enhancement - Integrated Yoast Duplicate Post for seamless duplication of events, including ticket cloning. [ET-760]
 
 = [5.6.2] 2023-06-29 =
 
