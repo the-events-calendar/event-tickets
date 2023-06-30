@@ -272,6 +272,13 @@ class Tribe__Tickets__Admin__Notices {
 		);
 	}
 
+	/**
+	 * Display notices for Paystack promotion.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
 	function maybe_display_paystack_notice() {
 
 		// Bail if we aren't in Tickets > Settings.
