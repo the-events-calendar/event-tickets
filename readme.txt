@@ -45,7 +45,7 @@ Whether your vision is big or small, you're in good company. Thousands of small 
 
 ✔️ Attendees can purchase tickets to events
 ✔️ Attendees can RSVP to events
-✔️ Sell tickets with PayPal and/or Stripe using our free commerce solution, Tickets Commerce.
+✔️ Sell tickets with PayPal, [Paystack](https://evnt.is/et-tc-paystack-wp-org), and/or Stripe using our free commerce solution, Tickets Commerce.
 ✔️ Add RSVPs and tickets to posts, pages, or custom post types
 ✔️ Collect ticket fees by connecting your PayPal business or Stripe account
 ✔️ Generate sales and attendee reports
@@ -193,7 +193,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [TBD] TBD =
 
-
+* Enhancement - Add notice about the availability of Paystack for Tickets Commerce [ET-1764]
 
 = [5.6.2] 2023-06-29 =
 
