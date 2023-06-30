@@ -85,6 +85,28 @@
         },
         "class": "tribe-dependent"
     },
+    "tec-tickets-emails-rsvp-add-event-links": {
+        "type": "checkbox_bool",
+        "label": "Calendar links",
+        "tooltip": "Include iCal and Google event links in this email.",
+        "default": true,
+        "validation_type": "boolean",
+        "fieldset_attributes": {
+            "data-depends": "#tec-tickets-emails-rsvp-use-ticket-email",
+            "data-condition-is-not-checked": true
+        }
+    },
+    "tec-tickets-emails-rsvp-add-event-ics": {
+        "type": "checkbox_bool",
+        "label": "Calendar invites",
+        "tooltip": "Attach calendar invites (.ics) to the RSVP email.",
+        "default": true,
+        "validation_type": "boolean",
+        "fieldset_attributes": {
+            "data-depends": "#tec-tickets-emails-rsvp-use-ticket-email",
+            "data-condition-is-not-checked": true
+        }
+    },
     "4": {
         "type": "html",
         "html": "<input type=\\"hidden\\" name=\\"tec_tickets_emails_current_section\\" id=\\"tec_tickets_emails_current_section\\" value=\\"tec_tickets_emails_rsvp\\" \\/>"

@@ -7,7 +7,7 @@ use TEC\Tickets\Commerce\Utils\Currency;
 /**
  * Class to test Currency Format Settings.
  *
- * @since TBD
+ * @since 5.6.2
  *
  * @covers \TEC\Tickets\Commerce\Utils\Currency
  */
