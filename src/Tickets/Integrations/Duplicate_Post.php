@@ -36,6 +36,8 @@ class Duplicate_Post extends Service_Provider {
 	/**
 	 * Duplicate tickets to a new post.
 	 *
+	 * @since TBD
+	 *
 	 * @param int    $new_post_id ID of the new post.
 	 * @param object $post        Original post object.
 	 *
