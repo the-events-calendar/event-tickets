@@ -273,7 +273,7 @@ class Tribe__Tickets__Admin__Notices {
 	}
 
 	/**
-	 * Display notices for Paystack promotion.
+	 * Display notice for Paystack promotion.
 	 *
 	 * @since TBD
 	 *
