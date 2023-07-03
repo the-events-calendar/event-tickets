@@ -197,7 +197,6 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Enhancement - Improve performance in admin due to unnecessary Tickets Commerce calls being made [ET-1736]
 * Fix - The Attendee List will now be correctly displayed when the 'Show attendees list on event page' option is enabled within the classic editor.  [ETP-623]
 
-
 = [5.6.2] 2023-06-29 =
 
 * Enhancement - Introduced new the filters `tec_tickets_commerce_order_page_title` and `tec_tickets_attendees_order_view_title` to allow customizing the Order Report Page title [ET-1737]
