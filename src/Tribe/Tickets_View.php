@@ -1167,7 +1167,6 @@ class Tribe__Tickets__Tickets_View {
 			$rendered_content .= $template->template( 'v2/tickets', [], $echo );
 			$rendered_content .= $template->template( 'blocks/attendees', [], $echo );
 
-
 			return $rendered_content;
 		}
 
