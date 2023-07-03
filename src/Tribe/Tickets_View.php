@@ -1073,14 +1073,20 @@ class Tribe__Tickets__Tickets_View {
 			'attendees_total'             => null,
 		];
 
-		// Check to see if attendees list is being hidden or not.
-		if ( class_exists( 'Tribe__Tickets_Plus__Attendees_List', false ) ) {
-			// Handle Event Tickets Plus compatible logic.
-			$hide_attendee_list_optout = Tribe__Tickets_Plus__Attendees_List::is_hidden_on( $post_id );
-		} else {
-			// Handle Event Tickets logic.
-			$hide_attendee_list_optout = \Tribe\Tickets\Events\Attendees_List::is_hidden_on( $post_id );
-		}
+
+		// Handle Event Tickets logic.
+		$hide_attendee_list_optout = \Tribe\Tickets\Events\Attendees_List::is_hidden_on( $post_id );
+
+		/**
+		 * Filters whether to hide the attendee list opt-out option.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool        $hide_attendee_list_optout Whether to hide the attendee list opt-out option.
+		 * @param int|WP_Post $post                      The post object or ID.
+		 */
+		$hide_attendee_list_optout = apply_filters( 'tec_tickets_hide_attendee_list_optout', $hide_attendee_list_optout, $post_id );
+
 		// If we are not hiding the attendees output, than grab the data.
 		if ( ! $hide_attendee_list_optout ) {
 			$attendees_list            = tribe( 'tickets.events.attendees-list' );
@@ -1165,8 +1171,11 @@ class Tribe__Tickets__Tickets_View {
 
 			$rendered_content  = $before_content;
 			$rendered_content .= $template->template( 'v2/tickets', [], $echo );
-			$rendered_content .= $template->template( 'blocks/attendees', [], $echo );
 
+			// Only append the attendees section if they did not hide the attendee list.
+			if ( ! $hide_attendee_list_optout ) {
+				$rendered_content .= $template->template( 'blocks/attendees', [], $echo );
+			}
 			return $rendered_content;
 		}
 
