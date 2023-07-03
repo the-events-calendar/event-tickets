@@ -1084,8 +1084,8 @@ class Tribe__Tickets__Tickets_View {
 		// If we are not hiding the attendees output, than grab the data.
 		if ( ! $hide_attendee_list_optout ) {
 			$attendees_list            = tribe( 'tickets.events.attendees-list' );
-			$args[ 'attendees' ]       = $attendees_list->get_attendees_for_post( $post_id );
-			$args[ 'attendees_total' ] = $attendees_list->get_attendance_counts( $post_id );
+			$args['attendees']       = $attendees_list->get_attendees_for_post( $post_id );
+			$args['attendees_total'] = $attendees_list->get_attendance_counts( $post_id );
 		}
 
 		/**
