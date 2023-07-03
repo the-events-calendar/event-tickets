@@ -193,7 +193,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [TBD] TBD =
 
-
+* Fix - The attendee export functionality for old converted recurring events has been improved to accurately export attendees. [ET-1739]
 
 = [5.6.2] 2023-06-29 =
 
