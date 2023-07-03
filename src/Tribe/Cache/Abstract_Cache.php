@@ -88,7 +88,7 @@ abstract class Tribe__Tickets__Cache__Abstract_Cache implements Tribe__Tickets__
 		 * under the status of `trash` or `auto-draft` shouldn't be in the list.
 		 */
 		$ids = implode( ',', $ids );
-		$query = "SELECT DISTINCT(ID)
+		$query = "SELECT DISTINCT(ID) 
 				FROM {$wpdb->posts}
 				WHERE ID IN ({$ids})
 				AND post_status NOT IN ('auto-draft', 'trash')";
