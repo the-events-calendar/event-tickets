@@ -61,7 +61,11 @@ abstract class Tribe__Tickets__Cache__Abstract_Cache implements Tribe__Tickets__
 				LEFT JOIN {$wpdb->posts} p
 				ON pm.meta_value = p.ID
 				WHERE p.post_type IN {$post_types}
-				AND pm.meta_key LIKE '\\_tribe\\_%\\_for\\_event'
+				AND (
+				    pm.meta_key LIKE '\\_tribe\\_%\\_for\\_event'
+				    OR
+				    pm.meta_key = '_tec_tickets_commerce_event'
+				    )
 				AND pm.meta_value IS NOT NULL";
 
 		if ( class_exists( 'Tribe__Events__Main' ) ) { // if events are among the supported post types then exclude past events
@@ -87,7 +91,7 @@ abstract class Tribe__Tickets__Cache__Abstract_Cache implements Tribe__Tickets__
 		 * under the status of `trash` or `auto-draft` shouldn't be in the list.
 		 */
 		$ids = implode( ',', $ids );
-		$query = "SELECT DISTINCT(ID) 
+		$query = "SELECT DISTINCT(ID)
 				FROM {$wpdb->posts}
 				WHERE ID IN ({$ids})
 				AND post_status NOT IN ('auto-draft', 'trash')";
@@ -121,7 +125,7 @@ abstract class Tribe__Tickets__Cache__Abstract_Cache implements Tribe__Tickets__
 				WHERE post_type IN {$post_types}
 				AND post_status NOT IN ( 'auto-draft', 'trash' )";
 
-		$posts_with_tickets = $this->posts_with_ticket_types( null, true );
+		$posts_with_tickets = $this->posts_with_ticket_types( $supported_types, true );
 
 		if ( ! empty( $posts_with_tickets ) && is_array( $posts_with_tickets ) ) {
 			$excluded = implode( ',', $posts_with_tickets );
