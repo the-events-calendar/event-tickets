@@ -1,6 +1,6 @@
 === Event Tickets and Registration ===
 
-Contributors: theeventscalendar, brianjessee, camwynsp, aguseo, bordoni, borkweb, GeoffBel, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra
+Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, GeoffBel, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra
 Tags: tickets, registration, event registration, RSVP, ticket sales, attendee management
 Requires at least: 5.8.5
 Tested up to: 6.2.2
@@ -45,7 +45,7 @@ Whether your vision is big or small, you're in good company. Thousands of small 
 
 ✔️ Attendees can purchase tickets to events
 ✔️ Attendees can RSVP to events
-✔️ Sell tickets with PayPal and/or Stripe using our free commerce solution, Tickets Commerce.
+✔️ Sell tickets with PayPal, [Paystack](https://evnt.is/et-tc-paystack-wp-org), and/or Stripe using our free commerce solution, Tickets Commerce.
 ✔️ Add RSVPs and tickets to posts, pages, or custom post types
 ✔️ Collect ticket fees by connecting your PayPal business or Stripe account
 ✔️ Generate sales and attendee reports
@@ -191,7 +191,12 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.6.2] TBD =
+= [TBD] TBD =
+
+* Enhancement - Add notice about the availability of Paystack for Tickets Commerce [ET-1764]
+* Enhancement - Improve performance in admin due to unnecessary Tickets Commerce calls being made [ET-1736]
+
+= [5.6.2] 2023-06-29 =
 
 * Enhancement - Introduced new the filters `tec_tickets_commerce_order_page_title` and `tec_tickets_attendees_order_view_title` to allow customizing the Order Report Page title [ET-1737]
 * Fix - Updated the page heading when on the Orders Report page. [ET-1737]

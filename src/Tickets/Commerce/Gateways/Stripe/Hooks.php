@@ -110,8 +110,14 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	 * Handle stripe errors into the admin UI.
 	 *
 	 * @since 5.3.0
+	 * @since TBD   Added check for ajax call.
 	 */
 	public function handle_stripe_errors() {
+
+		// Bail if this is an ajax call.
+		if ( wp_doing_ajax() ) {
+			return;
+		}
 
 		$merchant_denied = tribe( Merchant::class )->is_merchant_unauthorized();
 
