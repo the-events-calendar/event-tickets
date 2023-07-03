@@ -195,6 +195,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 * Enhancement - Add notice about the availability of Paystack for Tickets Commerce [ET-1764]
 * Enhancement - Improve performance in admin due to unnecessary Tickets Commerce calls being made [ET-1736]
+* Fix - Ticketed Commerce events will now be accurately categorized and counted under the ticketed tab in the Dashboard Event List. [ET-1774]
 
 = [5.6.2] 2023-06-29 =
 
