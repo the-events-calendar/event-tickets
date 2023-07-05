@@ -9,7 +9,7 @@
 
 namespace TEC\Tickets;
 
-use TEC\Common\Contracts\Service_Provider;
+use TEC\Common\Contracts\Provider\Controller;
 use TEC\Tickets\Commerce\Attendee as Commerce_Attendee;
 use TEC\Tickets\Commerce\Order as Commerce_Order;
 use TEC\Tickets\Commerce\Ticket as Commerce_Ticket;
@@ -26,28 +26,15 @@ use WP_Post;
  *
  * @package TEC\Tickets;
  */
-class Ticket_Cache_Controller extends Service_Provider {
+class Ticket_Cache_Controller extends Controller {
 	/**
-	 * Hooks this Controller to the appropriate actions and filters.
+	 * The action to fire when the provider is registered.
 	 *
 	 * @since TBD
 	 *
-	 * @return void
+	 * @var string
 	 */
-	public function register() {
-		// Flush the ticket cache when a ticket is saved.
-		add_action( 'event_tickets_after_save_ticket', [ $this, 'clean_ticket_cache_on_save' ], 10, 2 );
-		// Flush the cache when a Ticket post cache is programmatically cleared.
-		add_action( 'clean_post_cache', [ $this, 'clean_ticket_cache' ], 10, 2 );
-		// This will cover both creation and update of related posts like Attendees and Orders.
-		add_action( 'save_post', [ $this, 'clean_ticket_cache_from_related_post' ], 10, 2 );
-		// Use the `before` hook to be able to access the metadata of Attendees and Orders.
-		add_action( 'before_delete_post', [ $this, 'clean_ticket_cache_from_related_post' ], 10, 2 );
-		// Clean the cache when a Ticket meta changes in any way: this is on the cautious side.
-		add_action( 'add_post_meta', [ $this, 'clean_ticket_cache_on_meta_update' ], 10, 1 );
-		add_action( 'update_post_meta', [ $this, 'clean_ticket_cache_on_meta_update_delete' ], 10, 2 );
-		add_action( 'delete_post_meta', [ $this, 'clean_ticket_cache_on_meta_update_delete' ], 10, 2 );
-	}
+	protected static string $registration_action = 'tec_tickets_cache_controller_registered';
 
 	/**
 	 * Clean the ticket cache when a ticket is saved.
@@ -224,5 +211,44 @@ class Ticket_Cache_Controller extends Service_Provider {
 		}
 
 		$this->clean_ticket_cache_on_meta_update( $object_id );
+	}
+
+	/**
+	 * Hooks the Cache Controller to the appropriate actions.
+	 *
+	 * @since TBD
+	 *
+	 * @return void The Cache Controller is hooked to the appropriate actions.
+	 */
+	protected function do_register(): void {
+		// Flush the ticket cache when a ticket is saved.
+		add_action( 'event_tickets_after_save_ticket', [ $this, 'clean_ticket_cache_on_save' ], 10, 2 );
+		// Flush the cache when a Ticket post cache is programmatically cleared.
+		add_action( 'clean_post_cache', [ $this, 'clean_ticket_cache' ], 10, 2 );
+		// This will cover both creation and update of related posts like Attendees and Orders.
+		add_action( 'save_post', [ $this, 'clean_ticket_cache_from_related_post' ], 10, 2 );
+		// Use the `before` hook to be able to access the metadata of Attendees and Orders.
+		add_action( 'before_delete_post', [ $this, 'clean_ticket_cache_from_related_post' ], 10, 2 );
+		// Clean the cache when a Ticket meta changes in any way: this is on the cautious side.
+		add_action( 'add_post_meta', [ $this, 'clean_ticket_cache_on_meta_update' ], 10, 1 );
+		add_action( 'update_post_meta', [ $this, 'clean_ticket_cache_on_meta_update_delete' ], 10, 2 );
+		add_action( 'delete_post_meta', [ $this, 'clean_ticket_cache_on_meta_update_delete' ], 10, 2 );
+	}
+
+	/**
+	 * Unregister the cache controller.
+	 *
+	 * @since TBD
+	 *
+	 * @return void The cache controller is unregistered.
+	 */
+	public function unregister(): void {
+		remove_action( 'event_tickets_after_save_ticket', [ $this, 'clean_ticket_cache_on_save' ], 10, 2 );
+		remove_action( 'clean_post_cache', [ $this, 'clean_ticket_cache' ], 10, 2 );
+		remove_action( 'save_post', [ $this, 'clean_ticket_cache_from_related_post' ], 10, 2 );
+		remove_action( 'before_delete_post', [ $this, 'clean_ticket_cache_from_related_post' ], 10, 2 );
+		remove_action( 'add_post_meta', [ $this, 'clean_ticket_cache_on_meta_update' ], 10, 1 );
+		remove_action( 'update_post_meta', [ $this, 'clean_ticket_cache_on_meta_update_delete' ], 10, 2 );
+		remove_action( 'delete_post_meta', [ $this, 'clean_ticket_cache_on_meta_update_delete' ], 10, 2 );
 	}
 }
