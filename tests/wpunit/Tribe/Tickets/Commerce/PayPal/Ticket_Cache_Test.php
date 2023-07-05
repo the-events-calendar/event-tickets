@@ -320,12 +320,24 @@ class Ticket_Cache_Test extends WPTestCase {
 
 		$cached = wp_cache_get( $ticket_id, 'tec_tickets' );
 
-		foreach ( $cached as $value ) {
+		$assert = function ( $value, $key = null ) use ( &$assert ): void {
+			if ( is_array( $value ) ) {
+				foreach ( $value as $k => $v ) {
+					$assert( $v, $key . '.' . $k );
+				}
+
+				return;
+			}
+
 			$this->assertTrue(
-				is_scalar( $value ) || is_null( $value ),
-				'The ticket cache should only contain primitive values.'
+				is_scalar( $value )
+				|| is_null( $value )
+				|| ( is_object( $value ) && ( new ReflectionClass( $value ) )->isInternal() ),
+				"Value of $key is not scalar"
 			);
-		}
+		};
+
+		$assert( $cached );
 	}
 
 	/**

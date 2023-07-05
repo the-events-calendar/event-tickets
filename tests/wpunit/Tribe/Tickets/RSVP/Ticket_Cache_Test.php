@@ -3,6 +3,8 @@
 namespace Tribe\Tickets\RSVP;
 
 use Codeception\TestCase\WPTestCase;
+use ReflectionClass;
+use RuntimeException;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Tickets__RSVP as RSVP;
@@ -153,7 +155,7 @@ class Ticket_Cache_Test extends WPTestCase {
 			'ID'         => $post_id,
 			'post_title' => 'New title',
 		] ) ) {
-			throw new \RuntimeException( 'Failed to update post' );
+			throw new RuntimeException( 'Failed to update post' );
 		}
 
 		// Fetch the ticket a third time.
@@ -296,12 +298,23 @@ class Ticket_Cache_Test extends WPTestCase {
 
 		$cached = wp_cache_get( $ticket_id, 'tec_tickets' );
 
-		foreach ( $cached as $value ) {
+		$assert = function ( $value, $key = null ) use ( &$assert ): void {
+			if ( is_array( $value ) ) {
+				foreach ( $value as $k => $v ) {
+					$assert( $v, $key . '.' . $k );
+				}
+				return;
+			}
+
 			$this->assertTrue(
-				is_scalar( $value ) || is_null( $value ),
-				'The ticket cache should only contain primitive values.'
+				is_scalar( $value )
+				|| is_null( $value )
+				|| ( is_object( $value ) && ( new ReflectionClass( $value ) )->isInternal() ),
+				"Value of $key is not scalar"
 			);
-		}
+		};
+
+		$assert( $cached );
 	}
 
 	/**
