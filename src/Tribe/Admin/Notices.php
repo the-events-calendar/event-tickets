@@ -350,13 +350,40 @@ class Tribe__Tickets__Admin__Notices {
 	 * @return void
 	 */
 	function maybe_display_stellar_sale_banner() {
+
+		// // Sale starts July 24, 2023 UTC and ends Aug 2, 2023.
+		// $startDate = new \DateTime( '2023-07-24 00:00:00', new \DateTimeZone( 'UTC' ) );
+		// $endDate   = new \DateTime( '2023-08-02 23:59:59', new \DateTimeZone( 'UTC' ) );
+
+		// // Convert to timestamps.
+		// $currentTime = current_time( 'timestamp', true );
+		// $startTime   = $startDate->format( 'U' );
+		// $endTime     = $endDate->format( 'U' );
+
+		// // Bail if we aren't within the sale period.
+		// if ( $currentTime < $startTime || $currentTime > $endTime ) {
+		// 	return;
+		// }
+
+		// Check to see if premium plugins are installed.
+		$is_premium = false;
+		$premiumClasses = [
+			'Tribe__Tickets_Plus__Main',
+			'Tribe__Events__Community__Tickets__Main',
+		];
+		foreach ( $premiumClasses as $class ) {
+			if ( ! class_exists( $class, false ) ) {
+				$is_premium = true;
+			}
+		}
+
 		$template = new Tribe__Template();
 		$template->set_template_origin( Tribe__Tickets__Main::instance() );
 		$template->set_template_folder( 'src/admin-views' );
 		$template->set_template_context_extract( true );
 
 		$message = $template->template( 'stellar-sale-banner', [
-			'is_premium' => false,
+			'is_premium' => $is_premium,
 		], false );
 
 		tribe_notice(
@@ -364,7 +391,6 @@ class Tribe__Tickets__Admin__Notices {
 			$message,
 			[
 				'dismiss' => true,
-				'type'    => 'warning',
 			]
 		);
 	}
