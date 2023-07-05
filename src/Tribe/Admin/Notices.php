@@ -34,6 +34,7 @@ class Tribe__Tickets__Admin__Notices {
 
 		include_once ABSPATH . 'wp-admin/includes/plugin.php';
 
+		$this->maybe_display_stellar_sale_banner();
 		$this->maybe_display_rsvp_new_views_options_notice();
 		$this->maybe_display_classic_editor_ecp_recurring_tickets_notice();
 		$this->maybe_display_plus_commerce_notice();
@@ -339,5 +340,32 @@ class Tribe__Tickets__Admin__Notices {
 			]
 		);
 
+	}
+
+	/**
+	 * Display banner for Stellar Sale.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	function maybe_display_stellar_sale_banner() {
+		$template = new Tribe__Template();
+		$template->set_template_origin( Tribe__Tickets__Main::instance() );
+		$template->set_template_folder( 'src/admin-views' );
+		$template->set_template_context_extract( true );
+
+		$message = $template->template( 'stellar-sale-banner', [
+			'is_premium' => false,
+		], false );
+
+		tribe_notice(
+			'event-tickets-stellar-sale-banner',
+			$message,
+			[
+				'dismiss' => true,
+				'type'    => 'warning',
+			]
+		);
 	}
 }

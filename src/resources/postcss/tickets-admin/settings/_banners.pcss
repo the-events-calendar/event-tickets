@@ -128,3 +128,110 @@ a.tec-tickets__admin-tc-banner-link {
 		text-decoration: none;
 	}
 }
+
+.tribe-notice-event-tickets-stellar-sale-banner {
+	background: #1D202F;
+	border: none;
+	padding: 37px 52px;
+	background-image: url(../images/stellar-sale23-in-app-graphic.png);
+	background-repeat: no-repeat;
+	background-position: bottom right;
+
+	.notice-dismiss::before {
+		color: #F9FAF9;
+		content: "\f335";
+		font-size: 30px;
+		line-height: 30px;
+		width: 30px;
+	}
+
+	@media (max-width: 768px) {
+		background-size: 150px;
+	}
+
+	@media (max-width: 375px) {
+		background-image: none;
+	}
+}
+
+.tec-tickets__admin-stellar-sale-banner-column-one {
+	padding-right: 92px;
+
+	@media (max-width: 768px) {
+		padding-right: 0;
+	}
+}
+
+.tec-tickets__admin-stellar-sale-banner-column-two {
+	margin-right: 280px;
+	max-width: 400px;
+
+	@media (max-width: 768px) {
+		margin: 0;
+		max-width: 100%;
+	}
+}
+
+.tec-tickets__admin-stellar-sale-banner-container {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.tec-tickets__admin-stellar-sale-header {
+	color: #F9FAF9;
+	font-size: 24px;
+	font-weight: 700;
+	line-height: 1.2;
+	margin: 0;
+	padding: 0;
+}
+
+.tec-tickets__admin-stellar-sale-subheader {
+	color: #F9FAF9;
+	font-size: 22px;
+	font-weight: 400;
+	line-height: 1.1;
+	margin: 0 0 20px 0;
+	padding: 0;
+}
+
+a.tec-tickets__admin-stellar-sale-button {
+	background: #3849F5;
+	border-radius: 20px;
+	color: #F9FAF9;
+	display: inline-block;
+	font-size: 12px;
+	font-weight: 200;
+	margin: 0;
+	padding: 12px 27px;
+	text-decoration: none;
+	text-transform: uppercase;
+
+	&:hover {
+		background: #3849F599;
+		color: #F9FAF9;
+	}
+}
+
+p.tec-tickets__admin-stellar-sale-text {
+	color: #F9FAF9;
+	font-size: 14px;
+	font-weight: 400;
+	line-height: 1.6;
+	margin: 20px 0;
+	padding: 0;
+}
+
+a.tec-tickets__admin-stellar-sale-link {
+	color: #F9FAF9;
+	font-size: 14px;
+	font-weight: 700;
+	line-height: 1.6;
+	margin: 0;
+	padding: 0;
+	text-decoration: underline;
+
+	&:hover {
+		color: #F9FAF999;
+	}
+}
