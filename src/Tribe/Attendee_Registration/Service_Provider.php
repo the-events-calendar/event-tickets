@@ -1,6 +1,6 @@
 <?php
 
-class Tribe__Tickets__Attendee_Registration__Service_Provider extends tad_DI52_ServiceProvider {
+class Tribe__Tickets__Attendee_Registration__Service_Provider extends \TEC\Common\Contracts\Service_Provider {
 
 	/**
 	 * Register the Attendee Info Provider singletons.

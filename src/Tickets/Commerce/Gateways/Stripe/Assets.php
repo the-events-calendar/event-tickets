@@ -13,7 +13,7 @@ use TEC\Tickets\Commerce\Payments_Tab;
  *
  * @package TEC\Tickets\Commerce\Gateways\Stripe
  */
-class Assets extends \tad_DI52_ServiceProvider {
+class Assets extends \TEC\Common\Contracts\Service_Provider {
 
 	/**
 	 * The nonce action to use when requesting the creation of a new order

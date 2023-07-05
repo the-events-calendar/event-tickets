@@ -8,7 +8,7 @@
 
 namespace TEC\Tickets;
 
-use \tad_DI52_ServiceProvider;
+use TEC\Common\Contracts\Service_Provider;
 use TEC\Events\Custom_Tables\V1\Provider as TEC_CT1_Provider;
 use TEC\Tickets\Custom_Tables\V1\Provider as ET_CT1_Provider;
 use \Tribe__Tickets__Main as Tickets_Plugin;
@@ -19,7 +19,7 @@ use \Tribe__Tickets__Main as Tickets_Plugin;
  * @since   5.1.6
  * @package TEC\Tickets
  */
-class Provider extends tad_DI52_ServiceProvider {
+class Provider extends Service_Provider {
 	/**
 	 * @var bool Flag whether this provider has registered itself and dependencies yet or not.
 	 */

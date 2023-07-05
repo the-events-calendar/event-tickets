@@ -10,7 +10,7 @@ use TEC\Tickets\Commerce\Module;
 /**
  * Test Attendees_List class.
  *
- * @since TBD
+ * @since 5.6.2
  *
  * @covers \Tribe\Tickets\Events\Attendees_List
  */

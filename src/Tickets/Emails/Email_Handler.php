@@ -19,7 +19,7 @@ use WP_Error;
  *
  * @package TEC\Tickets\Emails
  */
-class Email_Handler extends \tad_DI52_ServiceProvider {
+class Email_Handler extends \TEC\Common\Contracts\Service_Provider {
 	/**
 	 * Registered emails.
 	 *

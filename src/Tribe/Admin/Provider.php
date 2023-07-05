@@ -1,7 +1,7 @@
 <?php
 namespace Tribe\Tickets\Admin;
 
-class Provider extends \tad_DI52_ServiceProvider {
+class Provider extends \TEC\Common\Contracts\Service_Provider {
 	/**
 	 * Register implementations.
 	 *
