@@ -34,7 +34,7 @@ class Ticket_Cache_Controller extends Controller {
 	 *
 	 * @var string
 	 */
-	protected static string $registration_action = 'tec_tickets_cache_controller_registered';
+	public static string $registration_action = 'tec_tickets_cache_controller_registered';
 
 	/**
 	 * Hooks the Cache Controller to the appropriate actions.
