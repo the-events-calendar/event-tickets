@@ -179,12 +179,18 @@ class Telemetry {
 		$admin_pages   = tribe( 'admin.pages' );
 		$admin_page    = $admin_pages->get_current_page();
 
-		// Load specifically on Ticket Settings page only.
-		$show = $admin_helpers->is_screen() && Settings::$settings_page_id === $admin_page;
-
-		if ( ! $show ) {
+		if ( ! $admin_helpers->is_screen() ) {
 			return;
 		}
+
+		$pages = [
+			Settings::$settings_page_id,
+			Settings::$help_page_id,
+			Settings::$troubleshooting_page_id
+		];
+
+		// Load specifically on Ticket Settings page only.
+		$show = in_array( $admin_page, $pages );
 
 		// 'event-tickets'
 		$telemetry_slug = \TEC\Common\Telemetry\Telemetry::get_plugin_slug();
