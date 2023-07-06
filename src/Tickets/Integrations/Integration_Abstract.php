@@ -11,7 +11,7 @@ use TEC\Common\Integrations\Integration_Abstract as Common_Integration_Abstract;
  *
  * @link    https://docs.theeventscalendar.com/apis/integrations/including-new-integrations/
  *
- * @package TEC\Events\Integrations
+ * @package TEC\Tickets\Integrations
  */
 abstract class Integration_Abstract extends Common_Integration_Abstract {
 
