@@ -2,7 +2,7 @@
 
 namespace TEC\Tickets\Integrations\Plugins\Yoast_Duplicate_Post;
 
-use TEC\Events\Integrations\Integration_Abstract;
+use TEC\Tickets\Integrations\Integration_Abstract;
 use TEC\Common\Integrations\Traits\Plugin_Integration;
 use Tribe__Tickets__Tickets;
 use WP_Error;
