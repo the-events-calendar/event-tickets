@@ -193,8 +193,6 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [TBD] TBD =
 
-* Enhancement - Add notice about the availability of Paystack for Tickets Commerce [ET-1764]
-* Enhancement - Improve performance in admin due to unnecessary Tickets Commerce calls being made [ET-1736]
 * Fix - Include Commerce tickets in cached results; correctly fetch posts without tickets. [TBD]
 * Tweak - Cache Tickets objects for performance improvements. [TBD]
 * Enhancement - Add notice about the availability of Paystack for Tickets Commerce. [ET-1764]
