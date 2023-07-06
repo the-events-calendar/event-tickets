@@ -175,6 +175,11 @@ class Telemetry {
 	 * @since 5.6.0.1
 	 */
 	public function inject_modal_link() {
+		// Don't double-dip on the action.
+		if ( did_action( 'tec_telemetry_modal' ) ) {
+			return;
+		}
+
 		$admin_helpers = Tribe__Admin__Helpers::instance();
 		$admin_pages   = tribe( 'admin.pages' );
 		$admin_page    = $admin_pages->get_current_page();
