@@ -193,10 +193,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [TBD] TBD =
 
-* Fix - The attendee export functionality for old converted recurring events has been improved to accurately export attendees. [ET-1739]
-* Enhancement - Add notice about the availability of Paystack for Tickets Commerce [ET-1764]
-* Enhancement - Improve performance in admin due to unnecessary Tickets Commerce calls being made [ET-1736]
+* Enhancement - Add notice about the availability of Paystack for Tickets Commerce. [ET-1764]
+* Enhancement - Improve performance in admin due to unnecessary Tickets Commerce calls being made. [ET-1736]
 * Enhancement - Refactored CSS for Tickets Emails to better conform to email client CSS standards. [ET-1802]
+* Fix - The attendee export functionality for old converted recurring events has been improved to accurately export attendees. [ET-1739]
 
 = [5.6.2] 2023-06-29 =
 
