@@ -180,12 +180,30 @@ class Telemetry {
 			return;
 		}
 
+		$current_screen = get_current_screen();
 		$admin_helpers = Tribe__Admin__Helpers::instance();
 		$admin_pages   = tribe( 'admin.pages' );
 		$admin_page    = $admin_pages->get_current_page();
 
 		if ( ! $admin_helpers->is_screen() ) {
 			return;
+		}
+
+		if (
+			$admin_helpers->is_post_type_screen( 'tribe_venue' )
+			|| $admin_helpers->is_post_type_screen( 'tribe_organizer' )
+		) {
+			return false;
+		}
+
+		// Are we on a post edit screen?
+		if ( $current_screen instanceof \WP_Screen && tribe_get_request_var( 'action' ) === 'edit' ) {
+			return false;
+		}
+
+		// Are we on a new post screen?
+		if ( $current_screen instanceof \WP_Screen && $current_screen->action === 'add' ) {
+			return false;
 		}
 
 		$pages = [
