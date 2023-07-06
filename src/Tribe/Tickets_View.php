@@ -1088,7 +1088,7 @@ class Tribe__Tickets__Tickets_View {
 		$hide_attendee_list_optout = apply_filters( 'tec_tickets_hide_attendee_list_optout', $hide_attendee_list_optout, $post_id );
 
 		// If we are not hiding the attendees output, than grab the data.
-		if ( ! $hide_attendee_list_optout ) {
+		if ( ! tribe_is_truthy( $hide_attendee_list_optout ) ) {
 			$attendees_list           = tribe( 'tickets.events.attendees-list' );
 			$args['attendees']       = $attendees_list->get_attendees_for_post( $post_id );
 			$args['attendees_total'] = $attendees_list->get_attendance_counts( $post_id );
@@ -1173,7 +1173,7 @@ class Tribe__Tickets__Tickets_View {
 			$rendered_content .= $template->template( 'v2/tickets', [], $echo );
 
 			// Only append the attendees section if they did not hide the attendee list.
-			if ( ! $hide_attendee_list_optout ) {
+			if ( ! tribe_is_truthy( $hide_attendee_list_optout ) ) {
 				$rendered_content .= $template->template( 'blocks/attendees', [], $echo );
 			}
 			return $rendered_content;
