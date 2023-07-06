@@ -99,6 +99,8 @@ class Tickets implements \ArrayAccess, \Serializable {
 	 *
 	 * @since 4.10.9
 	 *
+	 * @since TBD Add support for the updated anchor link from new ticket templates.
+	 *
 	 * @return array An array of objects containing the post thumbnail data.
 	 */
 	public function fetch_data() {
