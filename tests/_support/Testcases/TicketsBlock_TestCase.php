@@ -4,14 +4,14 @@ namespace Tribe\Tickets\Test\Testcases;
 
 use Codeception\TestCase\WPTestCase;
 use Spatie\Snapshots\MatchesSnapshots;
-use tad\FunctionMocker\FunctionMocker as Test;
 use tad\WP\Snapshots\WPHtmlOutputDriver;
+use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Traits\CapacityMatrix;
 use Tribe__Tickets__Data_API as Data_API;
 use Tribe__Tickets__Editor__Template as Template;
 
 class TicketsBlock_TestCase extends WPTestCase {
-
+	use With_Uopz;
 	use MatchesSnapshots;
 	use CapacityMatrix;
 
@@ -27,7 +27,6 @@ class TicketsBlock_TestCase extends WPTestCase {
 	 */
 	public function setUp() {
 		parent::setUp();
-		Test::setUp();
 
 		// Enable post as ticket type.
 		add_filter( 'tribe_tickets_post_types', function () {
@@ -35,7 +34,7 @@ class TicketsBlock_TestCase extends WPTestCase {
 		} );
 
 		// Override all nonce generation to use this one for testing purposes.
-		Test::replace( 'wp_create_nonce', '2ab7cc6b39' );
+		$this->set_fn_return( 'wp_create_nonce', '2ab7cc6b39' );
 
 		// Reset Data_API object so it sees Tribe Commerce.
 		tribe_singleton( 'tickets.data_api', new Data_API );
@@ -67,8 +66,6 @@ class TicketsBlock_TestCase extends WPTestCase {
 
 		// Delete high initial post ID.
 		$wpdb->delete( $wpdb->posts, [ 'ID' => 9999 ] );
-
-		Test::tearDown();
 		parent::tearDown();
 	}
 
