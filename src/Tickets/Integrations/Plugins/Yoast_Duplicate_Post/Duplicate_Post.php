@@ -6,29 +6,38 @@
  * Handles the duplication of tickets to new posts.
  */
 
-namespace TEC\Tickets\Integrations;
+namespace TEC\Tickets\Integrations\Plugins\Yoast_Duplicate_Post;
 
-use \TEC\Common\Contracts\Service_Provider;
+use TEC\Events\Integrations\Integration_Abstract;
+use TEC\Common\Integrations\Traits\Plugin_Integration;
 use Tribe__Tickets__Tickets;
 use WP_Error;
 
-class Duplicate_Post extends Service_Provider {
+class Duplicate_Post extends Integration_Abstract {
+
+	use Plugin_Integration;
+
 
 	/**
-	 * Binds and sets up implementations.
-	 *
-	 * @since TBD
+	 * @inheritDoc
 	 */
-	public function register() {
-		$this->hooks();
+	public static function get_slug(): string {
+		return 'yoast-duplicate-post';
 	}
 
 	/**
-	 * Hook into actions for duplicating posts and pages.
+	 * @inheritDoc
 	 *
-	 * @since TBD
+	 * @return bool Whether or not integrations should load.
 	 */
-	public function hooks() {
+	public function load_conditionals(): bool {
+		return defined( 'DUPLICATE_POST_FILE' ) && ! empty( DUPLICATE_POST_FILE );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	protected function load(): void {
 		add_action( 'dp_duplicate_post', [ $this, 'duplicate_tickets_to_new_post' ], 10, 2 );
 		add_action( 'dp_duplicate_page', [ $this, 'duplicate_tickets_to_new_post' ], 10, 2 );
 	}
