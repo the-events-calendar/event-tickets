@@ -66,7 +66,7 @@ class Provider extends Service_Provider {
 		$this->container->register( Telemetry\Provider::class );
 
 		// Loads Integrations.
-		$this->container->register( Integrations\Plugins\Yoast_Duplicate_Post\Duplicate_Post::class);
+		$this->container->register( Integrations\Provider::class);
 
 		// RBE only Providers here.
 		$this->register_ct1_providers();
