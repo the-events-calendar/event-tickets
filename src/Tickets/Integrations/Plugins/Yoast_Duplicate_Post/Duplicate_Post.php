@@ -1,11 +1,5 @@
 <?php
 
-/**
- * Class Duplicate_Post
- *
- * Handles the duplication of tickets to new posts.
- */
-
 namespace TEC\Tickets\Integrations\Plugins\Yoast_Duplicate_Post;
 
 use TEC\Events\Integrations\Integration_Abstract;
@@ -13,6 +7,16 @@ use TEC\Common\Integrations\Traits\Plugin_Integration;
 use Tribe__Tickets__Tickets;
 use WP_Error;
 
+/**
+ * Class Duplicate_Post
+ *
+ * Extends the cloning capability introduced by Yoast Duplicate Post plugin to also handle the duplication of tickets
+ * to new posts.
+ *
+ * @since   TBD
+ *
+ * @package TEC\Events\Integrations\Plugins\Yoast_Duplicate_Post
+ */
 class Duplicate_Post extends Integration_Abstract {
 
 	use Plugin_Integration;
