@@ -197,6 +197,8 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Enhancement - Improve performance in admin due to unnecessary Tickets Commerce calls being made. [ET-1736]
 * Enhancement - Refactored CSS for Tickets Emails to better conform to email client CSS standards. [ET-1802]
 * Enhancement - Integrated Yoast Duplicate Post for seamless duplication of events, including ticket cloning. [ET-760]
+* Fix - The attendee export functionality for old converted recurring events has been improved to accurately export attendees. [ET-1739]
+* Fix - The Attendee List will now be correctly displayed when the 'Show attendees list on event page' option is enabled within the classic editor.  [ETP-623]
 
 = [5.6.2] 2023-06-29 =
 
