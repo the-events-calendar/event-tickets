@@ -11,7 +11,7 @@ namespace TEC\Tickets;
 use TEC\Common\Contracts\Service_Provider;
 use TEC\Events\Custom_Tables\V1\Provider as TEC_CT1_Provider;
 use TEC\Tickets\Custom_Tables\V1\Provider as ET_CT1_Provider;
-use \Tribe__Tickets__Main as Tickets_Plugin;
+use Tribe__Tickets__Main as Tickets_Plugin;
 
 /**
  * Class Provider for all the Tickets loading.
@@ -64,6 +64,9 @@ class Provider extends Service_Provider {
 
 		// Loads admin area.
 		$this->container->register( Telemetry\Provider::class );
+
+		// Loads Integrations.
+		$this->container->register( Integrations\Provider::class);
 
 		// RBE only Providers here.
 		$this->register_ct1_providers();

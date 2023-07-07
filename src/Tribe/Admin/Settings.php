@@ -24,6 +24,24 @@ class Settings {
 	public static $settings_page_id = 'tec-tickets-settings';
 
 	/**
+	 * Event Tickets Help page slug.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $help_page_id = 'tec-tickets-help';
+
+	/**
+	 * Event Tickets Help page slug.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $troubleshooting_page_id = 'tec-tickets-troubleshooting';
+
+	/**
 	 * Settings tabs.
 	 */
 	public $tabs = [];
@@ -209,10 +227,10 @@ class Settings {
 
 		$admin_pages->register_page(
 			[
-				'id'       => 'tec-tickets-help',
+				'id'       => static::$help_page_id,
 				'parent'   => static::$parent_slug,
 				'title'    => esc_html__( 'Help', 'event-tickets' ),
-				'path'     => 'tec-tickets-help',
+				'path'     => static::$help_page_id,
 				'callback' => [
 					tribe( 'settings.manager' ),
 					'do_help_tab',
@@ -239,10 +257,10 @@ class Settings {
 
 		$admin_pages->register_page(
 			[
-				'id'         => 'tec-tickets-troubleshooting',
+				'id'         => static::$troubleshooting_page_id,
 				'parent'     => 'tec-tickets',
 				'title'      => esc_html__( 'Troubleshooting', 'event-tickets' ),
-				'path'       => 'tec-tickets-troubleshooting',
+				'path'       => static::$troubleshooting_page_id,
 				'capability' => $troubleshooting->get_required_capability(),
 				'callback'   => [
 					$troubleshooting,
