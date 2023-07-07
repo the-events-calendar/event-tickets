@@ -7,7 +7,7 @@ use TEC\Common\Integrations\Integration_Abstract as Common_Integration_Abstract;
 /**
  * Class Integration_Abstract
  *
- * @since	TBD
+ * @since TBD
  *
  * @link    https://docs.theeventscalendar.com/apis/integrations/including-new-integrations/
  *
