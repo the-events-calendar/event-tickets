@@ -198,6 +198,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Enhancement - Refactored CSS for Tickets Emails to better conform to email client CSS standards. [ET-1802]
 * Fix - The attendee export functionality for old converted recurring events has been improved to accurately export attendees. [ET-1739]
 * Fix - The Attendee List will now be correctly displayed when the 'Show attendees list on event page' option is enabled within the classic editor.  [ETP-623]
+* Fix - Fixed moving attendees from deleted tickets to new tickets of same type. [ET-1577]
 
 = [5.6.2] 2023-06-29 =
 
