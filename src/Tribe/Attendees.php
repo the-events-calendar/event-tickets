@@ -151,16 +151,25 @@ class Tribe__Tickets__Attendees {
 	 * Returns the full URL to the attendees report page.
 	 *
 	 * @since 4.6.2
+	 * @since TBD - Added $post_id parameter to allow for conversion of provisional ID's into regular Post ID's.
 	 *
 	 * @param WP_Post $post
+	 * @param int $post_id The Post ID of the event.
 	 *
 	 * @return string
 	 */
 	public function get_report_link( $post ) {
+		// Convert provisional ID's into regular Post ID's.
+		if ( class_exists( '\TEC\Events\Custom_Tables\V1\Models\Occurrence', false ) ) {
+			$post_id = \TEC\Events\Custom_Tables\V1\Models\Occurrence::normalize_id( $post->ID );
+		} else {
+			$post_id = $post->ID;
+		}
+
 		$args = [
 			'post_type' => $post->post_type,
 			'page'      => $this->slug(),
-			'event_id'  => $post->ID,
+			'event_id'  => $post_id,
 		];
 
 		$url = add_query_arg( $args, admin_url( 'edit.php' ) );

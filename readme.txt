@@ -199,6 +199,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Ticketed Commerce events will now be accurately categorized and counted under the ticketed tab in the Dashboard Event List. [ET-1774]
 * Fix - The attendee export functionality for old converted recurring events has been improved to accurately export attendees. [ET-1739]
 * Fix - The Attendee List will now be correctly displayed when the 'Show attendees list on event page' option is enabled within the classic editor.  [ETP-623]
+* Fix - Ensure the Attendees page displays correctly when accessed through the Events Manager. [ECP-1527]
 
 = [5.6.2] 2023-06-29 =
 
