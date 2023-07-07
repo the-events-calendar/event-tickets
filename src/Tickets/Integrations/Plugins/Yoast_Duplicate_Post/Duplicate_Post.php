@@ -13,7 +13,7 @@ use WP_Error;
  * Extends the cloning capability introduced by Yoast Duplicate Post plugin to also handle the duplication of tickets
  * to new posts.
  *
- * @since   TBD
+ * @since TBD
  *
  * @package TEC\Events\Integrations\Plugins\Yoast_Duplicate_Post
  */
