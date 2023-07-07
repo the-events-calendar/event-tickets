@@ -196,6 +196,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Enhancement - Add notice about the availability of Paystack for Tickets Commerce. [ET-1764]
 * Enhancement - Improve performance in admin due to unnecessary Tickets Commerce calls being made. [ET-1736]
 * Enhancement - Refactored CSS for Tickets Emails to better conform to email client CSS standards. [ET-1802]
+* Fix - Ticketed Commerce events will now be accurately categorized and counted under the ticketed tab in the Dashboard Event List. [ET-1774]
 * Fix - The attendee export functionality for old converted recurring events has been improved to accurately export attendees. [ET-1739]
 * Fix - The Attendee List will now be correctly displayed when the 'Show attendees list on event page' option is enabled within the classic editor.  [ETP-623]
 * Fix - Fixed moving attendees from deleted tickets to new tickets of same type. [ET-1577]
