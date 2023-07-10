@@ -765,6 +765,7 @@ class GetPostTotalsTest extends \Codeception\TestCase\WPTestCase {
 
 		//simulate sales.
 		$global = new Global_Stock( $this->event_id );
+		$global->set_stock_level( $total_event_capacity );
 
 		foreach ( $ticket_ids as $ticket_id ) {
 			$sales_count = 5;
