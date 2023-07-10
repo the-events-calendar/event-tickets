@@ -1,9 +1,9 @@
 === Event Tickets and Registration ===
 
-Contributors: theeventscalendar, brianjessee, camwynsp, aguseo, bordoni, borkweb, GeoffBel, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra
+Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, GeoffBel, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra
 Tags: tickets, registration, event registration, RSVP, ticket sales, attendee management
 Requires at least: 5.8.5
-Tested up to: 6.2.0
+Tested up to: 6.2.2
 Stable tag: 5.7.0-dev
 Requires PHP: 7.4
 License: GPLv2 or later
@@ -45,7 +45,7 @@ Whether your vision is big or small, you're in good company. Thousands of small 
 
 ✔️ Attendees can purchase tickets to events
 ✔️ Attendees can RSVP to events
-✔️ Sell tickets with PayPal and/or Stripe using our free commerce solution, Tickets Commerce.
+✔️ Sell tickets with PayPal, [Paystack](https://evnt.is/et-tc-paystack-wp-org), and/or Stripe using our free commerce solution, Tickets Commerce.
 ✔️ Add RSVPs and tickets to posts, pages, or custom post types
 ✔️ Collect ticket fees by connecting your PayPal business or Stripe account
 ✔️ Generate sales and attendee reports
@@ -193,11 +193,46 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [TBD] TBD =
 
+* Fix - Fixed get tickets link anchor from event listings for new ticket views. [ET-1768]
+* Enhancement - Add notice about the availability of Paystack for Tickets Commerce. [ET-1764]
+* Enhancement - Improve performance in admin due to unnecessary Tickets Commerce calls being made. [ET-1736]
+* Enhancement - Refactored CSS for Tickets Emails to better conform to email client CSS standards. [ET-1802]
+* Enhancement - Integrated Yoast Duplicate Post for seamless duplication of tickets, while cloning events. [ET-760]
+* Fix - Ticketed Commerce events will now be accurately categorized and counted under the ticketed tab in the Dashboard Event List. [ET-1774]
+* Fix - The attendee export functionality for old converted recurring events has been improved to accurately export attendees. [ET-1739]
+* Fix - The Attendee List will now be correctly displayed when the 'Show attendees list on event page' option is enabled within the classic editor.  [ETP-623]
+
+= [5.6.2] 2023-06-29 =
+
 * Enhancement - Introduced new the filters `tec_tickets_commerce_order_page_title` and `tec_tickets_attendees_order_view_title` to allow customizing the Order Report Page title [ET-1737]
 * Fix - Updated the page heading when on the Orders Report page. [ET-1737]
 * Fix - When no providers are enabled, a warning will display above the `New Ticket` and `New RSVP` area explaining that at least one must be enabled. [ET-1696]
 * Fix - Corrected an issue with the `New ticket` button having invalid HTML. [ET-1631]
 * Fix - Resolved an issue that caused compatibility problems between specific themes and the Attendee Registration page. [ET-1767]
+* Tweak - Added filters: `tec_tickets_commerce_order_page_title`, `tec_tickets_attendees_order_view_title`
+* Tweak - Removed filters: `tribe_tickets_attendees_show_view_title`
+* Language - 3 new strings added, 41 updated, 1 fuzzied, and 0 obsoleted
+
+= [5.6.1.2] 2023-06-23 =
+
+* Fix - Ensure there is backwards compatibility with Extensions and Pods.
+
+= [5.6.1.1] 2023-06-22 =
+
+* Fix - Prevent Telemetry from being initialized and triggering a Fatal when the correct conditionals are not met.
+
+= [5.6.1] 2023-06-22 =
+
+* Version - Event Tickets 5.6.1 is only compatible with The Events Calendar 6.1.2 and higher.
+* Version - Event Tickets 5.6.1 is only compatible with Event Tickets Plus 5.7.1 and higher.
+* Version - Event Tickets 5.6.1 is only compatible with Community Events 4.9.3 and higher.
+* Fix - Lock our container usage(s) to the new Service_Provider contract in tribe-common. This prevents conflicts and potential fatals with other plugins that use a di52 container.
+* Fix - Email templates overrides now works as expected. [ET-1780]
+
+= [5.6.0.2] 2023-06-21 =
+
+* Fix - Prevent Attendee list from throwing a notice on PHP 8+.
+* Fix - Adjusted our PHP Exception usage to protect against third-party code causing fatals when attempting to access objects that have not been initialized.
 
 = [5.6.0.1] 2023-06-20 =
 

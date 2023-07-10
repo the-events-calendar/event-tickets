@@ -8,7 +8,7 @@
 
 namespace TEC\Tickets\Commerce;
 
-use tad_DI52_ServiceProvider;
+use TEC\Common\Contracts\Service_Provider;
 use TEC\Tickets\Commerce\Gateways;
 use \Tribe__Tickets__Main as Tickets_Plugin;
 
@@ -19,7 +19,7 @@ use \Tribe__Tickets__Main as Tickets_Plugin;
  * @since   5.1.6
  * @package TEC\Tickets\Commerce
  */
-class Provider extends tad_DI52_ServiceProvider {
+class Provider extends Service_Provider {
 
 	/**
 	 * Register the provider singletons.

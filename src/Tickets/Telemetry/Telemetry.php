@@ -175,16 +175,45 @@ class Telemetry {
 	 * @since 5.6.0.1
 	 */
 	public function inject_modal_link() {
+		// Don't double-dip on the action.
+		if ( did_action( 'tec_telemetry_modal' ) ) {
+			return;
+		}
+
+		$current_screen = get_current_screen();
 		$admin_helpers = Tribe__Admin__Helpers::instance();
 		$admin_pages   = tribe( 'admin.pages' );
 		$admin_page    = $admin_pages->get_current_page();
 
-		// Load specifically on Ticket Settings page only.
-		$show = $admin_helpers->is_screen() && Settings::$settings_page_id === $admin_page;
-
-		if ( ! $show ) {
+		if ( ! $admin_helpers->is_screen() ) {
 			return;
 		}
+
+		if (
+			$admin_helpers->is_post_type_screen( 'tribe_venue' )
+			|| $admin_helpers->is_post_type_screen( 'tribe_organizer' )
+		) {
+			return false;
+		}
+
+		// Are we on a post edit screen?
+		if ( $current_screen instanceof \WP_Screen && tribe_get_request_var( 'action' ) === 'edit' ) {
+			return false;
+		}
+
+		// Are we on a new post screen?
+		if ( $current_screen instanceof \WP_Screen && $current_screen->action === 'add' ) {
+			return false;
+		}
+
+		$pages = [
+			Settings::$settings_page_id,
+			Settings::$help_page_id,
+			Settings::$troubleshooting_page_id
+		];
+
+		// Load specifically on Ticket Settings page only.
+		$show = in_array( $admin_page, $pages );
 
 		// 'event-tickets'
 		$telemetry_slug = \TEC\Common\Telemetry\Telemetry::get_plugin_slug();

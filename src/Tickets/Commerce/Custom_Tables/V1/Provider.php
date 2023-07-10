@@ -9,7 +9,7 @@
 
 namespace TEC\Tickets\Commerce\Custom_Tables\V1;
 
-use tad_DI52_ServiceProvider;
+use TEC\Common\Contracts\Service_Provider;
 use TEC\Events\Custom_Tables\V1\Migration\State;
 use TEC\Events\Custom_Tables\V1\Models\Occurrence;
 use Tribe__Utils__Array as Arr;
@@ -21,7 +21,7 @@ use Tribe__Utils__Array as Arr;
  *
  * @package TEC\Tickets\Custom_Tables\V1;
  */
-class Provider extends tad_DI52_ServiceProvider {
+class Provider extends Service_Provider {
 	/**
 	 * @var bool
 	 */

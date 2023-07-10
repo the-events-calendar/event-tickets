@@ -20,7 +20,7 @@ use TEC\Tickets\Commerce\Gateways\PayPal\REST\Order_Endpoint;
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
-class Assets extends \tad_DI52_ServiceProvider {
+class Assets extends \TEC\Common\Contracts\Service_Provider {
 
 	/**
 	 * Binds and sets up implementations.

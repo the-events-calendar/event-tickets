@@ -53,12 +53,10 @@
 		text-decoration: none;
 	}
 
-	.tec-tickets__email-table-content-post-title-container,
 	td.tec-tickets__email-table-content-post-title-container {
 		padding: 0;
 	}
 
-	.tec-tickets__email-body,
 	div.tec-tickets__email-body {
 		background: #f0eeeb;
 		border: 0;
@@ -70,7 +68,6 @@
 		width: 100%;
 	}
 
-	.tec-tickets__email-preview-link,
 	div.tec-tickets__email-preview-link {
 		font-size: 11px;
 		padding: 15px;
@@ -79,7 +76,6 @@
 		text-align: center;
 	}
 
-	.tec-tickets__email-table-main,
 	table.tec-tickets__email-table-main {
 		background: #ffffff;
 		border: 0;
@@ -91,14 +87,12 @@
 		width: 100%;
 	}
 
-	.tec-tickets__email-table-main-header,
 	td.tec-tickets__email-table-main-header {
 		background: <?php echo esc_attr( $header_bg_color ); ?>;
 		padding: 5px 5px 0px 5px;
 		text-align: <?php echo esc_attr( $header_image_alignment ); ?>;
 	}
 
-	.tec-tickets__email-table-content,
 	table.tec-tickets__email-table-content {
 		border: 0;
 		border-spacing: 0;
@@ -106,12 +100,10 @@
 		width: 100%;
 	}
 
-	.tec-tickets__email-table-content,
 	.tec-tickets__email-table-content table {
 		font-size: 14px;
 	}
 
-	.tec-tickets__email-table-content-title,
 	h1.tec-tickets__email-table-content-title {
 		color: #141827;
 		font-size: 28px;
@@ -123,7 +115,6 @@
 		text-align: left;
 	}
 
-	.tec-tickets__email-table-content-post-title,
 	h3.tec-tickets__email-table-content-post-title {
 		color: #141827;
 		font-size: 18px;
@@ -145,14 +136,12 @@
 		border-bottom: 0;
 	}
 
-	.tec-tickets__email-table-content-ticket,
 	td.tec-tickets__email-table-content-ticket {
 		background:<?php echo esc_attr( $ticket_bg_color ); ?>;
 		border-bottom: 1px solid rgba(0,0,0,.08);
 		padding: 20px 25px;
 	}
 
-	.tec-tickets__email-table-content-ticket-holder-name,
 	h2.tec-tickets__email-table-content-ticket-holder-name {
 		background:transparent;
 		color: <?php echo esc_attr( $ticket_text_color ); ?>;
@@ -163,7 +152,6 @@
 		padding: 0;
 	}
 
-	.tec-tickets__email-table-content-ticket-type-name,
 	div.tec-tickets__email-table-content-ticket-type-name {
 		color: <?php echo esc_attr( $ticket_text_color ); ?>;
 		font-size: 16px;
@@ -171,7 +159,6 @@
 		padding: 0;
 	}
 
-	.tec-tickets__email-table-content-ticket-security-code,
 	div.tec-tickets__email-table-content-ticket-security {
 		color: <?php echo esc_attr( $ticket_text_color ); ?>;
 		display: block;
@@ -182,7 +169,6 @@
 		padding: 15px 0 0 0 !important;
 	}
 
-	.tec-tickets__email-table-content-ticket-number-from-total,
 	div.tec-tickets__email-table-content-ticket-number-from-total {
 		color: <?php echo esc_attr( $ticket_text_color ); ?>;
 		font-size: 14px;
@@ -192,7 +178,6 @@
 		padding: 15px 0 0 0 !important;
 	}
 
-	.tec-tickets__email-table-main-footer,
 	td.tec-tickets__email-table-main-footer {
 		background-color: <?php echo esc_attr( $header_bg_color ); ?>;
 		border-top: 1px solid #efefef;
@@ -203,18 +188,15 @@
 		font-size: 12px;
 	}
 
-	.tec-tickets__email-table-content-order-attendees-table-container,
 	td.tec-tickets__email-table-content-order-attendees-table-container {
 		padding-bottom: 50px;
 	}
 
-	.tec-tickets__email-table-content-order-attendees-table,
 	table.tec-tickets__email-table-content-order-attendees-table {
 		border-collapse: collapse;
 		margin-top: 10px;
 	}
 
-	.tec-tickets__email-table-content-order-attendees-table-header-row,
 	tr.tec-tickets__email-table-content-order-attendees-table-header-row {
 		border: 1px solid #d5d5d5;
 		color: #727272;
@@ -223,12 +205,10 @@
 		line-height: 24px;
 	}
 
-	.tec-tickets__email-table-content-order-attendees-table-header-cell,
 	td.tec-tickets__email-table-content-order-attendees-table-header-cell {
 		padding:0 6px;
 	}
 
-	.tec-tickets__email-table-content-order-attendee-info-row,
 	tr.tec-tickets__email-table-content-order-attendee-info-row {
 		border: 1px solid #d5d5d5;
 		font-size: 12px;
@@ -236,7 +216,6 @@
 		line-height: 24px;
 	}
 
-	.tec-tickets__email-table-content-order-attendee-info,
 	td.tec-tickets__email-table-content-order-attendee-info {
 		line-height: 18px;
 		padding: 0 6px;
@@ -261,7 +240,6 @@
 		padding-top: 10px;
 	}
 
-	.tec-tickets__email-table-content-order-error-bottom-text,
 	td.tec-tickets__email-table-content-order-error-bottom-text {
 		color: #da394d;
 		font-size: 14px;
@@ -269,14 +247,12 @@
 		padding: 24px 0 40px;
 	}
 
-	.tec-tickets__email-table-content-order-post-title,
 	td.tec-tickets__email-table-content-order-post-title {
 		font-size: 16px;
 		font-weight: 700;
 		padding-top:43px;
 	}
 
-	.tec-tickets__email-table-content-order-total-container,
 	td.tec-tickets__email-table-content-order-total-container {
 		padding-top: 20px;
 		text-align: right;
@@ -287,7 +263,6 @@
 		width: auto;
 	}
 
-	.tec-tickets__email-table-content-order-total-left-cell,
 	td.tec-tickets__email-table-content-order-total-left-cell {
 		font-size: 14px;
 		font-weight: 400;
@@ -301,7 +276,6 @@
 		line-height: 24px;
 	}
 
-	.tec-tickets__email-table-content-order-payment-info-container,
 	td.tec-tickets__email-table-content-order-payment-info-container {
 		font-size: 14px;
 		font-weight: 400;
@@ -321,7 +295,6 @@
 		line-height: 23px;
 	}
 
-	.tec-tickets__email-table-content-order-ticket-totals-header-row,
 	tr.tec-tickets__email-table-content-order-ticket-totals-header-row {
 		border: 1px solid #d5d5d5;
 		color: #727272;
@@ -330,7 +303,6 @@
 		line-height: 24px;
 	}
 
-	.tec-tickets__email-table-content-order-ticket-totals-ticket-row,
 	tr.tec-tickets__email-table-content-order-ticket-totals-ticket-row {
 		border: 1px solid #d5d5d5;
 		font-size: 14px;
@@ -338,47 +310,43 @@
 		line-height: 24px;
 	}
 
-	.tec-tickets__email-table-content-order-ticket-totals-cell,
 	th.tec-tickets__email-table-content-order-ticket-totals-cell,
 	td.tec-tickets__email-table-content-order-ticket-totals-cell {
 		padding: 0 6px;
 	}
 
-	.tec-tickets__email-table-content-greeting-container,
 	td.tec-tickets__email-table-content-greeting-container {
 		line-height: 21px;
 		padding-bottom: 40px;
 	}
 
-	.tec-tickets__email-table-content-additional-content-container,
 	td.tec-tickets__email-table-content-additional-content-container {
 		padding-bottom: 40px;
 	}
 
-	.tec-tickets__email-table-content-additional-content-container p,
 	td.tec-tickets__email-table-content-additional-content-container p {
 		color: #141827 !important;
 		font-size: 16px !important;
 		line-height: 1.5;
 	}
 
-	.tec-tickets__email-table-content-not-going-confirmation-container,
 	td.tec-tickets__email-table-content-not-going-confirmation-container {
 		padding-bottom: 30px;
 	}
 
-	.tec-tickets__email-table-content-ticket-holder-name-container,
 	td.tec-tickets__email-table-content-ticket-holder-name-container {
 		vertical-align: top;
 		width: 100%;
 	}
 
-	.tec-tickets__email-table-content-ticket-security-code-container,
 	td.tec-tickets__email-table-content-ticket-security-code-container {
 		vertical-align: bottom;
 	}
 
-	.tec-tickets__email-table-content-ticket-table,
+	.tec-tickets__email-table-content-ticket-security-code {
+		color: <?php echo $ticket_text_color; ?>AA;
+	}
+
 	table.tec-tickets__email-table-content-ticket-table {
 		width: 100%;
 	}
@@ -391,18 +359,15 @@
 	}
 
 	@media screen and ( max-width: 500px ) {
-		.tec-tickets__email-table-content-title,
 		h1.tec-tickets__email-table-content-title {
 			font-size: 21px;
 			line-height: 28px;
 		}
 
-		.tec-tickets__email-table-content,
 		table.tec-tickets__email-table-content {
 			padding: 15px 25px;
 		}
 
-		.tec-tickets__email-table-content-ticket-holder-name-container,
 		td.tec-tickets__email-table-content-ticket-holder-name-container {
 			display: block;
 			padding-bottom: 30px;
@@ -410,19 +375,13 @@
 			width: 100%;
 		}
 
-		.tec-tickets__email-table-content-ticket-security-code {
-			padding: 15px 0 30px 0 !important;
-		}
-
-		.tec-tickets__email-table-content-ticket-table td,
-		table.tec-tickets__email-table-content-ticket-table td {
+		td.tec-tickets__email-table-content-ticket-security-code-container {
 			display: block;
 			text-align: center;
 		}
 
-		.tec-tickets__email-table-content-ticket-holder-name,
-		.tec-tickets__email-table-content-ticket-type-name {
-			text-align: left;
+		.tec-tickets__email-table-content-ticket-security-code {
+			padding: 15px 0 30px 0 !important;
 		}
 	}
 </style>

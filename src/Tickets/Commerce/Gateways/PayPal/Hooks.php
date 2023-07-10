@@ -34,7 +34,7 @@ use Tribe__Utils__Array as Arr;
  *
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
-class Hooks extends \tad_DI52_ServiceProvider {
+class Hooks extends \TEC\Common\Contracts\Service_Provider {
 
 	/**
 	 * Binds and sets up implementations.
