@@ -193,11 +193,13 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [TBD] TBD =
 
-* Fix - Include Commerce tickets in cached results; correctly fetch posts without tickets. [TBD]
-* Tweak - Cache Tickets objects for performance improvements. [TBD]
+* Fix - Include Commerce tickets in cached results; correctly fetch posts without tickets. [ET-1808]
+* Tweak - Cache Tickets objects for performance improvements. [ET-1808]
+* Fix - Fixed get tickets link anchor from event listings for new ticket views. [ET-1768]
 * Enhancement - Add notice about the availability of Paystack for Tickets Commerce. [ET-1764]
 * Enhancement - Improve performance in admin due to unnecessary Tickets Commerce calls being made. [ET-1736]
 * Enhancement - Refactored CSS for Tickets Emails to better conform to email client CSS standards. [ET-1802]
+* Enhancement - Integrated Yoast Duplicate Post for seamless duplication of tickets, while cloning events. [ET-760]
 * Fix - Ticketed Commerce events will now be accurately categorized and counted under the ticketed tab in the Dashboard Event List. [ET-1774]
 * Fix - The attendee export functionality for old converted recurring events has been improved to accurately export attendees. [ET-1739]
 * Fix - The Attendee List will now be correctly displayed when the 'Show attendees list on event page' option is enabled within the classic editor.  [ETP-623]

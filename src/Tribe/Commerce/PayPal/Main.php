@@ -2337,12 +2337,13 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @param string   $redirect URL to redirect to.
 	 * @param null|int $post_id  Post ID for cart.
 	 */
-	public function maybe_redirect_to_attendees_registration_screen( $redirect = null, $post_id = null ) {
+	public function maybe_redirect_to_attendees_registration_screen( $redirect = '', $post_id = null ) {
 		if ( ! empty( $_POST ) ) {
 			return;
 		}
 
-		$redirect = tribe_get_request_var( 'tribe_tickets_redirect_to', null );
+		$redirect = tribe_get_request_var( 'tribe_tickets_redirect_to', '' );
+
 		$redirect = base64_encode( $redirect );
 
 		$post_id = tribe_get_request_var( 'tribe_tickets_post_id', null );
