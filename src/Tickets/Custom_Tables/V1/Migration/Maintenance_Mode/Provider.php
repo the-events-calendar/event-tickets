@@ -10,7 +10,7 @@
 
 namespace TEC\Tickets\Custom_Tables\V1\Migration\Maintenance_Mode;
 
-use tad_DI52_ServiceProvider;
+use TEC\Common\Contracts\Service_Provider;
 
 /**
  * Class Provider.
@@ -19,7 +19,7 @@ use tad_DI52_ServiceProvider;
  *
  * @package TEC\Tickets\Custom_Tables\V1\Migration\Maintenance_Mode;
  */
-class Provider extends tad_DI52_ServiceProvider {
+class Provider extends Service_Provider {
 	/**
 	 * @var bool Flag whether we have registered already yet or not.
 	 */

@@ -17,7 +17,7 @@
 
 namespace TEC\Tickets\Emails;
 
-use \tad_DI52_ServiceProvider;
+use \TEC\Common\Contracts\Service_Provider;
 use TEC\Tickets\Emails\Admin\Emails_Tab;
 use TEC\Tickets\Emails\Email\RSVP;
 use Tribe__Tickets__Tickets as Tickets_Module;
@@ -29,7 +29,7 @@ use Tribe__Tickets__Tickets as Tickets_Module;
  *
  * @package TEC\Tickets\Emails
  */
-class Hooks extends tad_DI52_ServiceProvider {
+class Hooks extends Service_Provider {
 
 	/**
 	 * Binds and sets up implementations.

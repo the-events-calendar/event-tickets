@@ -8,7 +8,7 @@ use TEC\Tickets\Commerce\Gateways\Manager;
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Gateway as Gateway;
 use TEC\Tickets\Settings as Tickets_Commerce_Settings;
 use Tribe\Tickets\Admin\Settings as Plugin_Settings;
-use \tad_DI52_ServiceProvider;
+use \TEC\Common\Contracts\Service_Provider;
 use \Tribe__Template;
 use Tribe__Tickets__Main;
 
@@ -19,7 +19,7 @@ use Tribe__Tickets__Main;
  *
  * @package TEC\Tickets\Commerce
  */
-class Payments_Tab extends tad_DI52_ServiceProvider {
+class Payments_Tab extends Service_Provider {
 
 	/**
 	 * Slug for the tab.

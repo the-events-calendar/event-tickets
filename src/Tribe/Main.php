@@ -8,7 +8,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '5.6.0';
+	const VERSION = '5.6.2';
 
 	/**
 	 * Used to store the version history.
@@ -43,7 +43,7 @@ class Tribe__Tickets__Main {
 	*
 	* @since 4.10
 	*/
-	protected $min_tec_version = '6.0.10-dev';
+	protected $min_tec_version = '6.1.2-dev';
 
 	/**
 	 * Name of the provider
@@ -335,6 +335,8 @@ class Tribe__Tickets__Main {
 		 */
 		$this->init_autoloading();
 
+		add_filter( 'tec_common_parent_plugin_file', [ $this, 'include_parent_plugin_path_to_common' ] );
+
 		// Start Up Common.
 		Tribe__Main::instance();
 
@@ -342,6 +344,22 @@ class Tribe__Tickets__Main {
 
 		// Admin home.
 		tribe_register_provider( Tribe\Tickets\Admin\Home\Service_Provider::class );
+	}
+
+	/**
+	 * Adds our main plugin file to the list of paths.
+	 *
+	 * @since 6.1.0
+	 *
+	 *
+	 * @param array<string> $paths The paths to TCMN parent plugins.
+	 *
+	 * @return array<string>
+	 */
+	public function include_parent_plugin_path_to_common( $paths ): array {
+		$paths[] = EVENT_TICKETS_MAIN_PLUGIN_FILE;
+
+		return $paths;
 	}
 
 	/**

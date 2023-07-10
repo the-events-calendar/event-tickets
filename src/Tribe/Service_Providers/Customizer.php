@@ -16,7 +16,7 @@ use Tribe__Utils__Color;
  *
  * @since 4.12.3
  */
-class Customizer extends \tad_DI52_ServiceProvider {
+class Customizer extends \TEC\Common\Contracts\Service_Provider {
 
 	/**
 	 * Binds and sets up implementations.

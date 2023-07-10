@@ -388,14 +388,19 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$args['opt_in_nonce']        = $args['process_result']['opt_in_args']['opt_in_nonce'];
 		}
 
-		// Check to see if attendees list is being hidden or not.
-		if ( class_exists( 'Tribe__Tickets_Plus__Attendees_List' ) ) {
-			// Handle Event Tickets Plus compatible logic.
-			$hide_attendee_list_optout = Tribe__Tickets_Plus__Attendees_List::is_hidden_on( $post_id );
-		} else {
-			// Handle Event Tickets logic.
-			$hide_attendee_list_optout = \Tribe\Tickets\Events\Attendees_List::is_hidden_on( $post_id );
-		}
+		// Handle Event Tickets logic.
+		$hide_attendee_list_optout = \Tribe\Tickets\Events\Attendees_List::is_hidden_on( $post_id );
+
+		/**
+		 * Filters whether to hide the attendee list opt-out option.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool        $hide_attendee_list_optout Whether to hide the attendee list opt-out option.
+		 * @param int|WP_Post $post                      The post object or ID.
+		 */
+		$hide_attendee_list_optout = apply_filters( 'tec_tickets_hide_attendee_list_optout', $hide_attendee_list_optout, $post_id );
+
 
 		/**
 		 * Allow filtering of whether to show the opt-in option for attendees.
@@ -1649,7 +1654,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		}
 
 		// Try to kill the actual ticket/attendee post.
-		$delete = wp_delete_post( $ticket_id, true );
+		$delete = wp_delete_post( $ticket_id );
 		if ( ! isset( $delete->ID ) || is_wp_error( $delete ) ) {
 			return false;
 		}
