@@ -585,8 +585,9 @@ class Tribe__Tickets__Tickets_Handler {
 
 		$completes = [];
 
+		$provider = Tribe__Tickets__Tickets::get_event_ticket_provider_object( $object_id );
 		// Get all Tickets.
-		$tickets = $this->get_tickets_ids( $object_id );
+		$tickets = $provider->get_tickets_ids( $object_id );
 
 		// If no tickets are available and capacity is set then it should be true.
 		$has_shared_cap_tickets = empty( $tickets );
