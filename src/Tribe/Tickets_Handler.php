@@ -605,20 +605,18 @@ class Tribe__Tickets__Tickets_Handler {
 
 			$has_shared_cap_tickets = true;
 
-			$capacity = tribe_tickets_get_capacity( $ticket );
+			$new_capacity = $existing_capacity = tribe_tickets_get_capacity( $ticket );
 
-			// When Global Capacity is higher than local ticket one's we bail.
+			// Update the ticket capacity only if the event capacity is lower while capped, or ticket capacity is global.
 			if (
-				Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $mode
+				( Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $mode && $event_capacity < $existing_capacity )
+				|| Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $mode
 			) {
-				$capped_capacity = $capacity;
-				if ( $event_capacity < $capacity ) {
-					$capped_capacity = $event_capacity;
-				}
-
-				// Otherwise we update tickets required.
-				tribe_tickets_update_capacity( $ticket, $capped_capacity );
+				$new_capacity = $event_capacity;
 			}
+
+			// update tickets capacity to new value as required.
+			tribe_tickets_update_capacity( $ticket, $new_capacity );
 
 			$totals = $this->get_ticket_totals( $ticket );
 			$completes[] = $complete = $totals['pending'] + $totals['sold'];
