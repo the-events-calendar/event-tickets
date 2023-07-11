@@ -11,7 +11,9 @@ use TEC\Events_Pro\Custom_Tables\V1\Tables\Series_Relationships;
 use function tad\WPBrowser\addListener;
 use function tad\WPBrowser\importDumpWithMysqlBin;
 
-Autoload::addNamespace( 'TEC\Events_Pro\Custom_Tables\V1', __DIR__ . '/../_support/ct1' );
+$ecp_dir = dirname( __DIR__, 3 ) . '/events-pro';
+Autoload::addNamespace( 'TEC\Events_Pro\Custom_Tables\V1', $ecp_dir . '/tests/_support/ct1' );
+Autoload::addNamespace( 'Tribe\Events_Pro\Tests', $ecp_dir . '/tests/_support' );
 
 // If the `uopz` extension is installed, let's make sure to `exit` and `die` will work properly.
 if ( function_exists( 'uopz_allow_exit' ) ) {
@@ -87,4 +89,10 @@ addListener( Codeception\Events::SUITE_BEFORE, static function () {
 	TEC_Activation::init();
 	Activation::init();
 	do_action( 'tec_events_custom_tables_v1_load_action_scheduler' );
+
+	global $wpdb;
+	// Increase the posts table auto increment value to avoid conflicts with the test data.
+	if ( $wpdb->query( "ALTER TABLE $wpdb->posts AUTO_INCREMENT = 12389" ) === false ) {
+		throw new RuntimeException( 'Failed to set the posts table auto increment value.' );
+	}
 } );

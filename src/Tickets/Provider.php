@@ -9,8 +9,6 @@
 namespace TEC\Tickets;
 
 use TEC\Common\Contracts\Service_Provider;
-use TEC\Events\Custom_Tables\V1\Provider as TEC_CT1_Provider;
-use TEC\Tickets\Custom_Tables\V1\Provider as ET_CT1_Provider;
 use Tribe__Tickets__Main as Tickets_Plugin;
 
 /**
@@ -68,8 +66,6 @@ class Provider extends Service_Provider {
 		// Loads Integrations.
 		$this->container->register( Integrations\Provider::class);
 
-		// RBE only Providers here.
-		$this->register_ct1_providers();
 		$this->has_registered = true;
 
 		add_action(
@@ -78,23 +74,6 @@ class Provider extends Service_Provider {
 		);
 
 		return true;
-	}
-
-	/**
-	 * The RBE (Custom Tables) providers to be registered. Validates the conditions required to register providers.
-	 *
-	 * @since 5.5.0
-	 */
-	public function register_ct1_providers() {
-		if ( ! class_exists( '\TEC\Events\Custom_Tables\V1\Provider', false ) ) {
-			return;
-		}
-
-		if ( ! TEC_CT1_Provider::is_active() ) {
-			return;
-		}
-
-		$this->container->register( ET_CT1_Provider::class );
 	}
 
 	/**

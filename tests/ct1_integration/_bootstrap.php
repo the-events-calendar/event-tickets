@@ -5,7 +5,6 @@ use TEC\Common\Monolog\Logger;
 use TEC\Events\Custom_Tables\V1\Activation;
 use TEC\Tickets\Provider;
 
-
 $tec_support = dirname( __DIR__, 3 ) . '/the-events-calendar/tests/_support';
 Codeception\Util\Autoload::addNamespace( 'Tribe\Events\Test', $tec_support );
 
