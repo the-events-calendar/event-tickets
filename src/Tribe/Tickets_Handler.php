@@ -621,7 +621,7 @@ class Tribe__Tickets__Tickets_Handler {
 			$totals = $this->get_ticket_totals( $ticket );
 			$completes[] = $complete = $totals['pending'] + $totals['sold'];
 
-			$stock = $event_capacity - $complete;
+			$stock = $new_capacity - $complete;
 			update_post_meta( $ticket, '_stock', $stock );
 
 			// Makes sure we mark it as in Stock for the status.
