@@ -590,7 +590,7 @@ class Tribe__Tickets__Tickets_Handler {
 		$tickets = $provider->get_tickets_ids( $object_id );
 
 		// If no tickets are available and capacity is set then it should be true.
-		$has_shared_cap_tickets = empty( $tickets );
+		$has_shared_cap_tickets = ! empty( $tickets ) || ! $object_stock->is_enabled();
 
 		foreach ( $tickets as $ticket ) {
 			$mode = get_post_meta( $ticket, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
