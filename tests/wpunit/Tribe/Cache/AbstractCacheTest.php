@@ -1,7 +1,5 @@
 <?php
 
-use Tribe__Tickets__Cache__Abstract_Cache;
-
 class AbstractCacheTest extends \Codeception\TestCase\WPTestCase {
 
 
