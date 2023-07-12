@@ -4,7 +4,7 @@ namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Notice_Handler;
-use Tribe\Tickets\Admin\Settings;
+use Tribe\Tickets\Admin\Settings as Admin_Settings;
 
 /**
  * Class Hooks
@@ -116,7 +116,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	public function handle_stripe_errors() {
 
 		// Bail out if not on Stripe Settings Page or TicketsCommerce Checkout page.
-		if ( ! tribe( Settings::class )->is_on_tab_section( 'payments', 'stripe' ) || ! tribe( Module::class )->is_checkout_page() ) {
+		if ( ! tribe( Admin_Settings::class )->is_on_tab_section( 'payments', 'stripe' ) || ! tribe( Module::class )->is_checkout_page() ) {
 			return;
 		}
 
