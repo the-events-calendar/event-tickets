@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/FT_CT1_Migration_Test_Case.php';
+require_once __DIR__ . '/Test_Case.php';
 
 use Codeception\Util\Autoload;
 use TEC\Events\Custom_Tables\V1\Activation as TEC_Activation;
@@ -13,7 +13,9 @@ use function tad\WPBrowser\importDumpWithMysqlBin;
 
 $ecp_dir = dirname( __DIR__, 3 ) . '/events-pro';
 Autoload::addNamespace( 'TEC\Events_Pro\Custom_Tables\V1', $ecp_dir . '/tests/_support/ct1' );
+Autoload::addNamespace( 'TEC\Events_Pro', $ecp_dir . '/src/Events_Pro' );
 Autoload::addNamespace( 'Tribe\Events_Pro\Tests', $ecp_dir . '/tests/_support' );
+Autoload::addNamespace( 'TEC\Tickets\Tests\FT_CT1_Migration', __DIR__ );
 
 // If the `uopz` extension is installed, let's make sure to `exit` and `die` will work properly.
 if ( function_exists( 'uopz_allow_exit' ) ) {
