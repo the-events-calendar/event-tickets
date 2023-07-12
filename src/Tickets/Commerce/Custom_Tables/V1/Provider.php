@@ -9,7 +9,7 @@
 
 namespace TEC\Tickets\Commerce\Custom_Tables\V1;
 
-use TEC\Common\Contracts\Service_Provider;
+use TEC\Common\Contracts\Provider\Controller;
 use TEC\Events\Custom_Tables\V1\Migration\State;
 use TEC\Events\Custom_Tables\V1\Models\Occurrence;
 use Tribe__Utils__Array as Arr;
@@ -21,37 +21,29 @@ use Tribe__Utils__Array as Arr;
  *
  * @package TEC\Tickets\Custom_Tables\V1;
  */
-class Provider extends Service_Provider {
+class Provider extends Controller {
 	/**
-	 * @var bool
-	 */
-	protected $has_registered = false;
-
-	/**
-	 * Registers any dependent providers.
+	 * Registers the filters and implementations required by the Custom Tables implementation.
 	 *
 	 * @since 5.5.0
-	 *
-	 * @return bool Whether the Event-wide maintenance mode was activated or not.
 	 */
-	public function register() {
-		if ( $this->has_registered ) {
-			return false;
-		}
-
-		if ( ! defined( 'TEC_ET_CUSTOM_TABLES_V1_ROOT' ) ) {
-			define( 'TEC_ET_CUSTOM_TABLES_V1_ROOT', __DIR__ );
-		}
-
+	protected function do_register(): void {
 		$this->lock_for_maintenance();
 
 		add_filter( 'admin_body_class', [ $this, 'prevent_tickets_on_recurring_events' ] );
 		add_filter( 'body_class', [ $this, 'prevent_tickets_on_recurring_events_front_end' ] );
 		add_filter( 'tec_tickets_filter_event_id', [ $this, 'normalize_event_id' ] );
+	}
 
-		$this->has_registered = true;
-
-		return true;
+	/**
+	 * Do cleanup stuff.
+	 *
+	 * @since 5.5.6
+	 */
+	public function unregister(): void {
+		remove_filter( 'admin_body_class', [ $this, 'prevent_tickets_on_recurring_events' ] );
+		remove_filter( 'body_class', [ $this, 'prevent_tickets_on_recurring_events_front_end' ] );
+		remove_filter( 'tec_tickets_filter_event_id', [ $this, 'normalize_event_id' ] );
 	}
 
 	/**
@@ -78,7 +70,7 @@ class Provider extends Service_Provider {
 		$state = $this->container->make( State::class );
 
 		if ( $state->should_lock_for_maintenance() ) {
-			$this->container->register( \TEC\Tickets\Commerce\Custom_Tables\V1\Migration\Maintenance_Mode\Provider::class );
+			$this->container->register( Migration\Maintenance_Mode\Provider::class );
 		}
 	}
 
@@ -122,17 +114,7 @@ class Provider extends Service_Provider {
 	public function prevent_tickets_on_recurring_events_front_end( array $body_classes ): array {
 		$classes = implode( ' ', $body_classes );
 		$classes = $this->prevent_tickets_on_recurring_events( $classes );
-		return explode( ' ', $classes );
-	}
 
-	/**
-	 * Do cleanup stuff.
-	 *
-	 * @since 5.5.6
-	 */
-	public function unregister() {
-		remove_filter( 'admin_body_class', [ $this, 'prevent_tickets_on_recurring_events' ] );
-		remove_filter( 'body_class', [ $this, 'prevent_tickets_on_recurring_events_front_end' ] );
-		remove_filter( 'tec_tickets_filter_event_id', [ $this, 'normalize_event_id' ] );
+		return explode( ' ', $classes );
 	}
 }
