@@ -1,11 +1,10 @@
 <?php
 
-namespace Tribe\src;
+namespace TEC\Tickets\Flexible_Tickets;
 
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
-use TEC\Tickets\Flexible_Tickets\Base;
 
 class BaseTest extends Controller_Test_Case {
 	use SnapshotAssertions;
