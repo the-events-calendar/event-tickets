@@ -1640,17 +1640,17 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		// Stock Adjustment handled by $this->update_stock_from_attendees_page().
 
 		// Store name so we can still show it in the attendee list.
-		$attendees = [];
 
-		if ( get_post_type( $ticket_id ) === $this->ticket_object ) {
+		$post_to_delete      = get_post( $ticket_id );
+		$post_to_delete_type = get_post_type( $ticket_id );
+
+		// Check if we are deleting the RSVP ticket product.
+		if ( $post_to_delete_type === $this->ticket_object ) {
 			$attendees = $this->get_attendees_by_ticket_id( $ticket_id );
-		}
-
-		$post_to_delete = get_post( $ticket_id );
-
-		// Loop through attendees of ticket (if deleting ticket and not a specific attendee).
-		foreach ( $attendees as $attendee ) {
-			update_post_meta( $attendee['attendee_id'], $this->deleted_product, esc_html( $post_to_delete->post_title ) );
+			// Loop through attendees of ticket (if deleting ticket and not a specific attendee).
+			foreach ( $attendees as $attendee ) {
+				update_post_meta( $attendee['attendee_id'], $this->deleted_product, esc_html( $post_to_delete->post_title ) );
+			}
 		}
 
 		// Try to kill the actual ticket/attendee post.
@@ -1659,9 +1659,12 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			return false;
 		}
 
-		Tribe__Tickets__Attendance::instance( $event_id )->increment_deleted_attendees_count();
+		if ( $post_to_delete_type === $this->attendee_object ) {
+			Tribe__Tickets__Attendance::instance( $event_id )->increment_deleted_attendees_count();
+			Tribe__Post_Transient::instance()->delete( $event_id, Tribe__Tickets__Tickets::ATTENDEES_CACHE );
+		}
+
 		do_action( 'tickets_rsvp_ticket_deleted', $ticket_id, $event_id, $product_id );
-		Tribe__Post_Transient::instance()->delete( $event_id, Tribe__Tickets__Tickets::ATTENDEES_CACHE );
 
 		return true;
 	}
