@@ -5,6 +5,7 @@ namespace TEC\Tickets\Commerce\Gateways\Stripe;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Notice_Handler;
 use Tribe\Tickets\Admin\Settings as Admin_Settings;
+
 /**
  * Class Hooks
  *
