@@ -156,7 +156,6 @@ class Settings {
 	 */
 	public function is_on_tab_section( $tab = '', $section = '' ): bool {
 		if ( ! $this->is_on_tab( $tab ) || empty( $section ) ) {
-			printr("I am false");
 			return false;
 		}
 
