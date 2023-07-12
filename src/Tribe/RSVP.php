@@ -1641,7 +1641,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		// Store name so we can still show it in the attendee list.
 
-		$post_to_delete      = get_post( $ticket_id );
+		$post_to_delete       = get_post( $ticket_id );
 		$deleting_rsvp_ticket = get_post_type( $ticket_id ) === $this->ticket_object;
 
 		// Check if we are deleting the RSVP ticket product.
