@@ -1642,10 +1642,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		// Store name so we can still show it in the attendee list.
 
 		$post_to_delete      = get_post( $ticket_id );
-		$post_to_delete_type = get_post_type( $ticket_id );
+		$deleting_rsvp_ticket = get_post_type( $ticket_id ) === $this->ticket_object;
 
 		// Check if we are deleting the RSVP ticket product.
-		if ( $post_to_delete_type === $this->ticket_object ) {
+		if ( $deleting_rsvp_ticket ) {
 			$attendees = $this->get_attendees_by_ticket_id( $ticket_id );
 			// Loop through attendees of ticket (if deleting ticket and not a specific attendee).
 			foreach ( $attendees as $attendee ) {
@@ -1654,12 +1654,12 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		}
 
 		// Try to kill the actual ticket/attendee post.
-		$delete = wp_trash_post( $ticket_id );
+		$delete = $deleting_rsvp_ticket ? wp_trash_post( $ticket_id ) : wp_delete_post( $ticket_id );
 		if ( ! isset( $delete->ID ) || is_wp_error( $delete ) ) {
 			return false;
 		}
 
-		if ( $post_to_delete_type === $this->attendee_object ) {
+		if ( ! $deleting_rsvp_ticket ) {
 			Tribe__Tickets__Attendance::instance( $event_id )->increment_deleted_attendees_count();
 			Tribe__Post_Transient::instance()->delete( $event_id, Tribe__Tickets__Tickets::ATTENDEES_CACHE );
 		}
