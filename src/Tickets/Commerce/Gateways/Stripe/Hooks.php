@@ -115,7 +115,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	 */
 	public function handle_stripe_errors() {
 
-		// Only run this code when you are on the Stripe Payment page/tab and on the checkout page.
+		// Bail out if not on Stripe Settings Page or TicketsCommerce Checkout page.
 		if ( ! tribe( Settings::class )->is_on_tab_section( 'payments', 'stripe' ) || ! tribe( Module::class )->is_checkout_page() ) {
 			return;
 		}
