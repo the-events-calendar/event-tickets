@@ -1654,7 +1654,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		}
 
 		// Try to kill the actual ticket/attendee post.
-		$delete = wp_delete_post( $ticket_id );
+		$delete = wp_trash_post( $ticket_id );
 		if ( ! isset( $delete->ID ) || is_wp_error( $delete ) ) {
 			return false;
 		}
