@@ -167,7 +167,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	 */
 	public function maybe_create_stripe_payment_intent() {
 
-		if ( ! tribe( Merchant::class )->is_connected() || ! tribe( Module::class )->is_checkout_page() ) {
+		if ( ! tribe( Module::class )->is_checkout_page() || ! tribe( Merchant::class )->is_connected() ) {
 			return;
 		}
 
