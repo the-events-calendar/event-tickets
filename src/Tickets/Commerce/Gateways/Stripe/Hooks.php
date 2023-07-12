@@ -4,6 +4,7 @@ namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Notice_Handler;
+use Tribe\Tickets\Admin\Settings;
 
 /**
  * Class Hooks
@@ -110,9 +111,19 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	 * Handle stripe errors into the admin UI.
 	 *
 	 * @since 5.3.0
-	 * @since TBD   Added check for ajax call.
+	 * @since TBD   Added check for ajax call, and additional logic to only run logic on checkout page and when Stripe is connected.
 	 */
 	public function handle_stripe_errors() {
+
+		// Only run this code when you are on the Stripe Payment page/tab.
+		if ( ! tribe( Settings::class )->is_on_tab_section( 'payments', 'stripe' ) ) {
+			return;
+		}
+
+		// Only run the logic if you are on the checkout page, or you are connected.
+		if ( ! tribe( Module::class )->is_checkout_page() || ! tribe( Merchant::class )->is_connected() ) {
+			return;
+		}
 
 		// Bail if this is an ajax call.
 		if ( wp_doing_ajax() ) {
