@@ -115,13 +115,8 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	 */
 	public function handle_stripe_errors() {
 
-		// Only run this code when you are on the Stripe Payment page/tab.
-		if ( ! tribe( Settings::class )->is_on_tab_section( 'payments', 'stripe' ) ) {
-			return;
-		}
-
-		// Only run the logic if you are on the checkout page, or you are connected.
-		if ( ! tribe( Module::class )->is_checkout_page() || ! tribe( Merchant::class )->is_connected() ) {
+		// Only run this code when you are on the Stripe Payment page/tab and on the checkout page.
+		if ( ! tribe( Settings::class )->is_on_tab_section( 'payments', 'stripe' ) || ! tribe( Module::class )->is_checkout_page() ) {
 			return;
 		}
 
