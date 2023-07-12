@@ -2,18 +2,19 @@
 
 namespace Tribe\Tickets;
 
+use Codeception\TestCase\WPTestCase;
 use TEC\Events\Custom_Tables\V1\Models\Occurrence;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Gateways\PayPal\Gateway;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Status\Pending;
-use Tribe\Tickets\Promoter\Triggers\Dispatcher;
+use TEC\Tickets\Tests\CT1_Integration_Test_Case;
+use Tribe\Events\Test\Traits\CT1\CT1_Fixtures;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
-use Tribe\Tickets\Test\Traits\CT1\CT1_Fixtures;
 use Tribe__Tickets__Attendees_Table as Attendees_Table;
 
-class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
+class Attendees_TableTest extends WPTestCase {
 	use CT1_Fixtures;
 	use Attendee_Maker;
 	use Ticket_Maker;
@@ -27,22 +28,15 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 		$wp_screen              = \WP_Screen::get();
 	}
 
-	private function disable_promoter_trigger(): void {
-		remove_action( 'tribe_tickets_promoter_trigger', [ tribe( Dispatcher::class ), 'trigger' ] );
-	}
-
 	public function _setUp() {
 		parent::_setUp();
-		$this->enable_provisional_id_normalizer();
 		$this->set_wp_screen();
-		$this->disable_promoter_trigger();
 		$GLOBALS['hook_suffix'] = 'tribe_events_page_tickets-attendees';
 	}
 
 	public function _tearDown() {
 		$GLOBALS['wp_screen'] = $this->wp_screen_backup;
 		parent::_tearDown();
-		$this->disable_provisional_id_normalizer();
 	}
 
 	/**
@@ -89,7 +83,7 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 		$occurrence = Occurrence::find_by_post_id( $post_id );
 
 		// Create a faux provisional id.
-		$provisional_id = $occurrence->occurrence_id + $this->get_provisional_id_base();
+		$provisional_id = $occurrence->provisional_id;
 		$ticket_a_id    = $this->create_tc_ticket( $post_id, 10 );
 
 		$this->create_order_for_ticket( $ticket_a_id, $quantity );
