@@ -193,6 +193,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [TBD] TBD =
 
+* Fix - Updating total shared capacity should properly update each ticket capacity and stock. [ETP-854]
 * Fix - Fixed get tickets link anchor from event listings for new ticket views. [ET-1768]
 * Enhancement - Add notice about the availability of Paystack for Tickets Commerce. [ET-1764]
 * Enhancement - Improve performance in admin due to unnecessary Tickets Commerce calls being made. [ET-1736]
@@ -201,6 +202,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Ticketed Commerce events will now be accurately categorized and counted under the ticketed tab in the Dashboard Event List. [ET-1774]
 * Fix - The attendee export functionality for old converted recurring events has been improved to accurately export attendees. [ET-1739]
 * Fix - The Attendee List will now be correctly displayed when the 'Show attendees list on event page' option is enabled within the classic editor.  [ETP-623]
+* Fix - Fixed moving attendees from deleted tickets to new tickets of same type. [ET-1577]
 * Fix - Ensure the Attendees page displays correctly when accessed through the Events Manager. [ECP-1527]
 
 = [5.6.2] 2023-06-29 =

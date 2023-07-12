@@ -191,7 +191,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 				$this->has_multiple_providers = true;
 			}
 
-			$this->ticket_provider = $provider;
+			$this->ticket_provider = empty( $provider ) && isset( $attendee['provider'] ) ? $attendee['provider'] : $provider;
 		}
 	}
 
