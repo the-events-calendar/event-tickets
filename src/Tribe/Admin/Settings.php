@@ -146,6 +146,7 @@ class Settings {
 	/**
 	 * Check if the current page is on a specific tab for the Tickets settings.
 	 *
+	 * @since TBD Added the ability to also check `tc-section` request var.
 	 * @since 5.5.9
 	 *
 	 * @param string $tab The tab name.
@@ -158,7 +159,7 @@ class Settings {
 			return false;
 		}
 
-		return tribe_get_request_var( 'section' ) === $section;
+		return tribe_get_request_var( 'section' ) === $section || tribe_get_request_var( 'tc-section' ) === $section;
 	}
 
 	/**
