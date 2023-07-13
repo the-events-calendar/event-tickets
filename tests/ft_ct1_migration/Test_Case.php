@@ -8,6 +8,7 @@ use TEC\Events\Custom_Tables\V1\Migration\Events;
 use TEC\Events\Custom_Tables\V1\Migration\Process_Worker;
 use TEC\Events\Custom_Tables\V1\Migration\Reports\Event_Report;
 use TEC\Events\Custom_Tables\V1\Migration\State;
+use TEC\Events\Custom_Tables\V1\Migration\Strategies\Single_Event_Migration_Strategy;
 
 class FT_CT1_Migration_Test_Case extends Unit {
 	protected static $factory;
@@ -18,15 +19,6 @@ class FT_CT1_Migration_Test_Case extends Unit {
 	 * @var array<Event_Report>
 	 */
 	private array $reports = [];
-
-	/**
-	 * @var array<string,string>
-	 */
-	private $strategy_to_short_form_map = [
-		'tec-single-event-strategy'    => 'single',
-		'tec-ecp-single-rule-strategy' => 'recurring-single-rule',
-		'tec-ecp-multi-rule-strategy'  => 'recurring-multi-rule',
-	];
 
 	public static function setUpBeforeClass() {
 		// This will load all the factories.
@@ -182,12 +174,22 @@ class FT_CT1_Migration_Test_Case extends Unit {
 		);
 	}
 
-	protected function assert_migration_success(): void {
+	protected function assert_migration_succeeded(): void {
 		[ , $failures ] = $this->split_reports_by_status();
 
 		$this->assertCount( 0,
 			$failures,
 			'Expected no failures, but got ' . count( $failures ) . ' failures.'
+			. PHP_EOL . 'Failures: ' . json_encode( $failures, JSON_PRETTY_PRINT )
+		);
+	}
+
+	protected function assert_migration_failed(): void {
+		[ $successes, $failures ] = $this->split_reports_by_status();
+
+		$this->assertGreaterThan( 0,
+			$failures,
+			'Expected at least one failure, but got ' . count( $successes ) . ' successes'
 		);
 	}
 
@@ -197,9 +199,10 @@ class FT_CT1_Migration_Test_Case extends Unit {
 		foreach ( $criteria as $key => $expected_count ) {
 			$this->assertCount(
 				$expected_count,
-				$by_strategy[ $key ],
+				$by_strategy[ $key ] ?? [],
 				"Expected $expected_count $key events migrated using the $key strategy, but got "
-				. count( $by_strategy[ $key ] ) . '.'
+				. count( $by_strategy[ $key ] ?? [] ) . '.' . PHP_EOL .
+				'Reports by strategy: ' . json_encode( $by_strategy, JSON_PRETTY_PRINT )
 			);
 		}
 	}
@@ -215,13 +218,12 @@ class FT_CT1_Migration_Test_Case extends Unit {
 		return array_reduce(
 			$this->reports,
 			function ( array $carry, Event_Report $report ): array {
-				$strategy           = reset( $report->strategies_applied );
-				$mapped             = $this->strategy_to_short_form_map[ $strategy ];
-				$carry[ $mapped ][] = $report;
+				$strategy             = reset( $report->strategies_applied );
+				$carry[ $strategy ][] = $report;
 
 				return $carry;
 			},
-			[ 'single' => [], 'recurring-single-rule' => [], 'recurring-multi-rule' => [] ]
+			[]
 		);
 	}
 

@@ -1,6 +1,7 @@
 <?php
 
 // Ensure the CT1 code branch is enabled.
+use Codeception\Util\Autoload;
 use TEC\Common\Monolog\Logger;
 use TEC\Events\Custom_Tables\V1\Activation as TEC_CT1_Activation;
 use TEC\Events\Custom_Tables\V1\Migration\State as CT1_State;
@@ -12,6 +13,8 @@ use Tribe\Tickets\Promoter\Triggers\Dispatcher;
 
 $tec_support = dirname( __DIR__, 3 ) . '/the-events-calendar/tests/_support';
 Codeception\Util\Autoload::addNamespace( 'Tribe\Events\Test', $tec_support );
+$ecp_dir = dirname( __DIR__, 3 ) . '/events-pro';
+Autoload::addNamespace( 'Tribe\Events_Pro\Tests', $ecp_dir . '/tests/_support' );
 
 // Let's  make sure Views v2 are activated if not.
 putenv( 'TEC_TICKETS_COMMERCE=1' );

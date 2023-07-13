@@ -1,5 +1,6 @@
 <?php
 use Codeception\Events;
+use Codeception\Util\Autoload;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Events\Custom_Tables\V1\Activation as TEC_CT1_Activation;
 use TEC\Events\Custom_Tables\V1\Provider as TEC_CT1_Provider;
@@ -13,6 +14,10 @@ use TEC\Tickets\Commerce\Module as Commerce_Module;
 use TEC\Tickets\Commerce\Provider as Commerce_Provider;
 use TEC\Tickets\Flexible_Tickets\Custom_Tables;
 use function tad\WPBrowser\addListener;
+
+// Load utils from ECP
+$ecp_dir = dirname( __DIR__, 3 ) . '/events-pro';
+Autoload::addNamespace( 'Tribe\Events_Pro\Tests', $ecp_dir . '/tests/_support' );
 
 // Ensure TEC CT1 Feature is active.
 putenv( 'TEC_CUSTOM_TABLES_V1_DISABLED=0' );

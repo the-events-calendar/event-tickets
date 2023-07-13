@@ -82,6 +82,7 @@ class Provider extends ServiceProvider {
 		$this->container->register( WP_Cli::class );
 		$this->container->register( Base::class );
 		$this->container->register( Series_Passes::class );
+		$this->container->register( CT1_Migration::class );
 	}
 
 	/**
