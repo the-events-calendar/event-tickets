@@ -8,6 +8,7 @@ jobs:
         suite:
           - ft_smoketest
           - ft_integration
+          - ft_ct1_migration
     runs-on: ubuntu-latest
     steps:
       # ------------------------------------------------------------------------------
