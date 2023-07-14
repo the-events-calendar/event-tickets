@@ -748,7 +748,7 @@ class Ticket {
 		}
 
 		// Try to kill the actual ticket/attendee post
-		$delete = wp_delete_post( $ticket_id );
+		$delete = wp_trash_post( $ticket_id );
 		if ( is_wp_error( $delete ) || ! isset( $delete->ID ) ) {
 			return false;
 		}
