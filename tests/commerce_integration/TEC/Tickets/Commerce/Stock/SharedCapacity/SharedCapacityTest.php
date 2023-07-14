@@ -111,7 +111,7 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 
 	}
 
-	public function test_tc_total_shared_capacity_decreased_update_after_purchase() {
+	public function test_tc_total_shared_capacity_decreased_after_purchase() {
 		$maker = new Event();
 		$event_id = $maker->create();
 
@@ -176,7 +176,7 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 
 	}
 
-	public function test_tc_total_shared_capacity_increased_update_after_purchase() {
+	public function test_tc_total_shared_capacity_increased_after_purchase() {
 		$maker = new Event();
 		$event_id = $maker->create();
 
