@@ -3829,7 +3829,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Clones a ticket to a new post.
 		 *
-		 * @since TBD
+		 * @since 5.6.3
 		 *
 		 * @param int $original_post_id ID of the original "event" post.
 		 * @param int $new_post_id      ID of the new "event" post.

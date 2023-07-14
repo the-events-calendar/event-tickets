@@ -7,7 +7,7 @@ use TEC\Common\Integrations\Integration_Abstract as Common_Integration_Abstract;
 /**
  * Class Integration_Abstract
  *
- * @since TBD
+ * @since 5.6.3
  *
  * @link    https://docs.theeventscalendar.com/apis/integrations/including-new-integrations/
  *
@@ -25,7 +25,7 @@ abstract class Integration_Abstract extends Common_Integration_Abstract {
 	/**
 	 * Filters whether the integration should load.
 	 *
-	 * @since TBD
+	 * @since 5.6.3
 	 *
 	 * @param bool $value Whether the integration should load.
 	 *
