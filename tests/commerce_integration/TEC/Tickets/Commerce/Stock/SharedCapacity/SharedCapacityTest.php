@@ -339,4 +339,92 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertEqualSets( $expected_ticket_counts, $event_ticket_counts['tickets'] );
 	}
+
+	public function test_tc_total_shared_capacity_decrease_should_decrease_capped_capacity() {
+		$maker = new Event();
+		$event_id = $maker->create();
+
+		$overrides_a = [
+			'tribe-ticket' => [
+				'mode'           => \Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE,
+				'event_capacity' => 30,
+				'capacity'       => 20,
+			],
+		];
+
+		$overrides_b = [
+			'tribe-ticket' => [
+				'mode'           => \Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE,
+				'event_capacity' => 30,
+				'capacity'       => 30,
+			],
+		];
+
+		$ticket_a_id   = $this->create_tc_ticket( $event_id, 20, $overrides_a );
+		$ticket_b_id   = $this->create_tc_ticket( $event_id, 20, $overrides_b );
+
+		// get the ticket objects.
+		$ticket_a = tribe( Module::class )->get_ticket( $event_id, $ticket_a_id );
+		$ticket_b = tribe( Module::class )->get_ticket( $event_id, $ticket_b_id );
+
+		// Make sure both tickets are valid Ticket Object.
+		$this->assertInstanceOf( \Tribe__Tickets__Ticket_Object::class, $ticket_a );
+		$this->assertInstanceOf( \Tribe__Tickets__Ticket_Object::class, $ticket_b );
+
+		// create order for Global stock ticket.
+		$cart = new Cart();
+		$cart->get_repository()->add_item( $ticket_a_id, 5 );
+		$cart->get_repository()->add_item( $ticket_b_id, 5 );
+		$purchaser = [
+			'purchaser_user_id'    => 0,
+			'purchaser_full_name'  => 'Test Purchaser',
+			'purchaser_first_name' => 'Test',
+			'purchaser_last_name'  => 'Purchaser',
+			'purchaser_email'      => 'test@test.com',
+		];
+
+		$order     = tribe( Order::class )->create_from_cart( tribe( Gateway::class ), $purchaser );
+		$pending   = tribe( Order::class )->modify_status( $order->ID, Pending::SLUG );
+		$completed = tribe( Order::class )->modify_status( $order->ID, Completed::SLUG );
+
+		$new_global_capacity = 15;
+
+		/** @var \Tribe__Tickets__Tickets_Handler $handler */
+		$handler = tribe( 'tickets.handler' );
+		$handler->sync_shared_capacity( $event_id, $new_global_capacity );
+
+		// update the Event's capacity manually.
+		tribe_tickets_update_capacity( $event_id, $new_global_capacity );
+
+		$global_stock = new \Tribe__Tickets__Global_Stock( $event_id );
+		$global_stock_level = $global_stock->get_stock_level();
+
+		// refresh the ticket objects.
+		$ticket_a = tribe( Module::class )->get_ticket( $event_id, $ticket_a_id );
+		$ticket_b = tribe( Module::class )->get_ticket( $event_id, $ticket_b_id );
+
+		// capped tickets capacity decreased to lowered global capacity, so this should behave as a global capacity ticket.
+		$this->assertEquals( 15, $ticket_a->capacity(), 'Capped Ticket Capacity should be decreased to 15' );
+		$this->assertEquals( 15, tribe_tickets_get_capacity( $ticket_a_id ), 'Capped Ticket Capacity should be decreased to 15' );
+		$this->assertEquals( 15-10, $ticket_a->stock(), 'Capped Ticket Stock should be decreased to 5' );
+		$this->assertEquals( 15-10, $ticket_a->available(), 'Capped Ticket available should be decreased to 5' );
+		$this->assertEquals( 15-10, $ticket_a->inventory(), 'Capped Ticket inventory should be decreased to 5' );
+
+		$this->assertEquals( $new_global_capacity, $ticket_b->capacity(), 'Global Ticket Capacity should be decreased to 15' );
+		$this->assertEquals( $new_global_capacity, tribe_tickets_get_capacity( $ticket_b_id ), 'Global Ticket Capacity should be decreased to 15' );
+		$this->assertEquals( $global_stock_level, $ticket_b->stock(), 'Global Ticket Stock should be 5' );
+		$this->assertEquals( $global_stock_level, $ticket_b->available(), 'Global Ticket available should be 5' );
+		$this->assertEquals( $global_stock_level, $ticket_b->inventory(), 'Global Ticket inventory should be 5' );
+
+		$event_ticket_counts = \Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
+		$expected_ticket_counts = [
+			'count'     => 2,
+			'stock'     => 5,
+			'global'    => 1,
+			'unlimited' => 0,
+			'available' => 5,
+		];
+
+		$this->assertEqualSets( $expected_ticket_counts, $event_ticket_counts['tickets'] );
+	}
 }
