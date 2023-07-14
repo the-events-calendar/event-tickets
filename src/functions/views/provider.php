@@ -30,7 +30,7 @@ function tribe_events_tickets_views_v2_is_enabled() {
 function tribe_events_tickets_normalize_post_id( $post_id ) {
 	if ( class_exists( '\TEC\Events\Custom_Tables\V1\Models\Occurrence', false ) ) {
 		return \TEC\Events\Custom_Tables\V1\Models\Occurrence::normalize_id( $post_id );
-	} else {
-		return $post_id;
 	}
+
+	return $post_id;
 }
