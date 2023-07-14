@@ -118,7 +118,7 @@ class Tribe__Tickets__Commerce__Orders_Tabbed_View {
 		 *
 		 * @since 5.0.1
 		 *
-		 * @depreacated TBD
+		 * @deprecated 5.7.2
 		 *
 		 * @param bool 	$show_title Whether to show the view title.
 		 * @param int 	$post_id The post ID.

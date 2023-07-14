@@ -633,7 +633,7 @@ class Tribe__Tickets__Attendees {
 		/**
 		 * This filter allows retrieval of an event ID to be filtered before being accessed elsewhere.
 		 *
-		 * @since TBD
+		 * @since 5.6.3
 		 *
 		 * @param int|null The event ID to be filtered.
 		 */
