@@ -111,20 +111,9 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 
 	}
 
-	public function test_tc_shared_capacity_update_after_purchase() {
+	public function test_tc_total_shared_capacity_decreased_update_after_purchase() {
 		$maker = new Event();
 		$event_id = $maker->create();
-
-
-		$overrides = [
-			'tribe-ticket' => [
-				'mode'           => \Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE,
-				'event_capacity' => 20,
-				'capacity'       => 10,
-			],
-		];
-
-		$ticket_a_id   = $this->create_tc_ticket( $event_id, 10, $overrides );
 
 		$overrides = [
 			'tribe-ticket' => [
@@ -136,12 +125,10 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 
 		$ticket_b_id   = $this->create_tc_ticket( $event_id, 20, $overrides );
 
-		// get the ticket objects.
-		$ticket_a = tribe( Module::class )->get_ticket( $event_id, $ticket_a_id );
+		// get the ticket object.
 		$ticket_b = tribe( Module::class )->get_ticket( $event_id, $ticket_b_id );
 
-		// Make sure both tickets are valid Ticket Object.
-		$this->assertInstanceOf( \Tribe__Tickets__Ticket_Object::class, $ticket_a );
+		// Make sure it's a valid Ticket Object.
 		$this->assertInstanceOf( \Tribe__Tickets__Ticket_Object::class, $ticket_b );
 
 		// create order for Global stock ticket.
@@ -174,11 +161,12 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 		/** @var \Tribe__Tickets__Tickets_Handler $handler */
 		$handler = tribe( 'tickets.handler' );
 		$handler->sync_shared_capacity( $event_id, $new_global_capacity );
+		// update the Event's capacity manually.
+		tribe_tickets_update_capacity( $event_id, $new_global_capacity );
 
 		// refresh the ticket objects.
 		$ticket_b = tribe( Module::class )->get_ticket( $event_id, $ticket_b_id );
 
-		codecept_debug( $ticket_b );
 		$this->assertEquals( $new_global_capacity, $ticket_b->capacity(), 'Ticket Capacity should be 10' );
 		$this->assertEquals( $new_global_capacity, tribe_tickets_get_capacity( $ticket_b_id ), 'Ticket Capacity should be 10' );
 		$this->assertEquals( $new_global_capacity-5, $ticket_b->stock(), 'Ticket Stock should be 5' );
@@ -186,5 +174,67 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertEquals( $new_global_capacity-5, $ticket_b->inventory(), 'Ticket inventory should be 5' );
 		$this->assertEquals( $new_global_capacity-5, $global_stock->get_stock_level(), 'Global stock level should be 5' );
 
+	}
+
+	public function test_tc_total_shared_capacity_increased_update_after_purchase() {
+		$maker = new Event();
+		$event_id = $maker->create();
+
+		$overrides = [
+			'tribe-ticket' => [
+				'mode'           => \Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE,
+				'event_capacity' => 20,
+				'capacity'       => 20,
+			],
+		];
+
+		$ticket_b_id   = $this->create_tc_ticket( $event_id, 20, $overrides );
+
+		// get the ticket objects.
+		$ticket_b = tribe( Module::class )->get_ticket( $event_id, $ticket_b_id );
+
+		// Make sure both tickets are valid Ticket Object.
+		$this->assertInstanceOf( \Tribe__Tickets__Ticket_Object::class, $ticket_b );
+
+		// create order for Global stock ticket.
+		$cart = new Cart();
+		$cart->get_repository()->add_item( $ticket_b_id, 5 );
+
+		$purchaser = [
+			'purchaser_user_id'    => 0,
+			'purchaser_full_name'  => 'Test Purchaser',
+			'purchaser_first_name' => 'Test',
+			'purchaser_last_name'  => 'Purchaser',
+			'purchaser_email'      => 'test@test.com',
+		];
+
+		$order     = tribe( Order::class )->create_from_cart( tribe( Gateway::class ), $purchaser );
+		$pending   = tribe( Order::class )->modify_status( $order->ID, Pending::SLUG );
+		$completed = tribe( Order::class )->modify_status( $order->ID, Completed::SLUG );
+
+		// refresh the ticket objects.
+		$ticket_b = tribe( Module::class )->get_ticket( $event_id, $ticket_b_id );
+
+		$this->assertEquals( 20, $ticket_b->capacity() );
+		$this->assertEquals( 20-5, $ticket_b->stock() );
+		$this->assertEquals( 20-5, $ticket_b->available() );
+		$this->assertEquals( 20-5, $ticket_b->inventory() );
+
+		$new_global_capacity = 30;
+
+		/** @var \Tribe__Tickets__Tickets_Handler $handler */
+		$handler = tribe( 'tickets.handler' );
+		$handler->sync_shared_capacity( $event_id, $new_global_capacity );
+		// update the Event's capacity manually.
+		tribe_tickets_update_capacity( $event_id, $new_global_capacity );
+
+		// refresh the ticket objects.
+		$ticket_b = tribe( Module::class )->get_ticket( $event_id, $ticket_b_id );
+
+		$this->assertEquals( $new_global_capacity, $ticket_b->capacity(), 'Ticket Capacity should be 30' );
+		$this->assertEquals( $new_global_capacity, tribe_tickets_get_capacity( $ticket_b_id ), 'Ticket Capacity should be 30' );
+		$this->assertEquals( $new_global_capacity-5, $ticket_b->stock(), 'Ticket Stock should be 25' );
+		$this->assertEquals( $new_global_capacity-5, $ticket_b->available(), 'Ticket available should be 25' );
+		$this->assertEquals( $new_global_capacity-5, $ticket_b->inventory(), 'Ticket inventory should be 25' );
 	}
 }
