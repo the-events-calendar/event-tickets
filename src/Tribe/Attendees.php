@@ -148,23 +148,6 @@ class Tribe__Tickets__Attendees {
 	}
 
 	/**
-	 * Normalizes the post ID by converting provisional ID's into regular Post ID's, if necessary.
-	 * 
-	 * @since TBD
-	 *
-	 * @param int $post_id The Post ID to normalize.
-	 *
-	 * @return int The normalized post ID.
-	 */
-	public function normalize_post_id( $post_id ) {
-		if ( class_exists( '\TEC\Events\Custom_Tables\V1\Models\Occurrence', false ) ) {
-			return \TEC\Events\Custom_Tables\V1\Models\Occurrence::normalize_id( $post_id );
-		} else {
-			return $post_id;
-		}
-	}
-
-	/**
 	 * Returns the full URL to the attendees report page.
 	 *
 	 * @since 4.6.2
@@ -176,7 +159,7 @@ class Tribe__Tickets__Attendees {
 	 */
 	public function get_report_link( $post ) {
 		// Convert provisional ID's into regular Post ID's.
-		$post_id = $this->normalize_post_id( $post->ID );
+		$post_id = tribe_events_tickets_normalize_post_id( $post->ID );
 
 		$args = [
 			'post_type' => $post->post_type,
