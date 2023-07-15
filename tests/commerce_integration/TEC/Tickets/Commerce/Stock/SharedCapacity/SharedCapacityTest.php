@@ -27,6 +27,27 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 		$this->set_fn_return( \Tribe__Tickets__Ticket_Object::class, 'is_ticket_cache_enabled' , false );
 	}
 
+	protected function place_order_for_cart( $cart ) {
+
+		$purchaser = [
+			'purchaser_user_id'    => 0,
+			'purchaser_full_name'  => 'Test Purchaser',
+			'purchaser_first_name' => 'Test',
+			'purchaser_last_name'  => 'Purchaser',
+			'purchaser_email'      => 'test@test.com',
+		];
+
+		$order     = tribe( Order::class )->create_from_cart( tribe( Gateway::class ), $purchaser );
+		$pending   = tribe( Order::class )->modify_status( $order->ID, Pending::SLUG );
+		$completed = tribe( Order::class )->modify_status( $order->ID, Completed::SLUG );
+
+		$cart->clear_cart();
+
+		sleep( 3 );
+
+		return $order;
+	}
+
 	public function test_tc_shared_capacity_purchase() {
 
 		$maker = new Event();
@@ -80,18 +101,7 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 		$cart = new Cart();
 		$cart->get_repository()->add_item( $ticket_a_id, 5 );
 		$cart->get_repository()->add_item( $ticket_b_id, 5 );
-
-		$purchaser = [
-			'purchaser_user_id'    => 0,
-			'purchaser_full_name'  => 'Test Purchaser',
-			'purchaser_first_name' => 'Test',
-			'purchaser_last_name'  => 'Purchaser',
-			'purchaser_email'      => 'test@test.com',
-		];
-
-		$order     = tribe( Order::class )->create_from_cart( tribe( Gateway::class ), $purchaser );
-		$pending   = tribe( Order::class )->modify_status( $order->ID, Pending::SLUG );
-		$completed = tribe( Order::class )->modify_status( $order->ID, Completed::SLUG );
+		$this->place_order_for_cart( $cart );
 
 		// refresh the ticket objects.
 		$ticket_a = tribe( Module::class )->get_ticket( $event_id, $ticket_a_id );
@@ -128,27 +138,13 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 		// get the ticket object.
 		$ticket_b = tribe( Module::class )->get_ticket( $event_id, $ticket_b_id );
 
-		// update the Event's capacity manually.
-		tribe_tickets_update_capacity( $event_id, 20 );
-
 		// Make sure it's a valid Ticket Object.
 		$this->assertInstanceOf( \Tribe__Tickets__Ticket_Object::class, $ticket_b );
 
 		// create order for Global stock ticket.
 		$cart = new Cart();
 		$cart->get_repository()->add_item( $ticket_b_id, 5 );
-
-		$purchaser = [
-			'purchaser_user_id'    => 0,
-			'purchaser_full_name'  => 'Test Purchaser',
-			'purchaser_first_name' => 'Test',
-			'purchaser_last_name'  => 'Purchaser',
-			'purchaser_email'      => 'test@test.com',
-		];
-
-		$order     = tribe( Order::class )->create_from_cart( tribe( Gateway::class ), $purchaser );
-		$pending   = tribe( Order::class )->modify_status( $order->ID, Pending::SLUG );
-		$completed = tribe( Order::class )->modify_status( $order->ID, Completed::SLUG );
+		$this->place_order_for_cart( $cart );
 
 		// refresh the ticket objects.
 		$ticket_b = tribe( Module::class )->get_ticket( $event_id, $ticket_b_id );
@@ -203,18 +199,7 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 		$cart = new Cart();
 		$cart->get_repository()->add_item( $ticket_b_id, 5 );
 
-		$purchaser = [
-			'purchaser_user_id'    => 0,
-			'purchaser_full_name'  => 'Test Purchaser',
-			'purchaser_first_name' => 'Test',
-			'purchaser_last_name'  => 'Purchaser',
-			'purchaser_email'      => 'test@test.com',
-		];
-
-		$order     = tribe( Order::class )->create_from_cart( tribe( Gateway::class ), $purchaser );
-		$pending   = tribe( Order::class )->modify_status( $order->ID, Pending::SLUG );
-		$completed = tribe( Order::class )->modify_status( $order->ID, Completed::SLUG );
-
+		$this->place_order_for_cart( $cart );
 		// refresh the ticket objects.
 		$ticket_b = tribe( Module::class )->get_ticket( $event_id, $ticket_b_id );
 
@@ -276,18 +261,7 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 		$cart = new Cart();
 		$cart->get_repository()->add_item( $ticket_a_id, 5 );
 		$cart->get_repository()->add_item( $ticket_b_id, 5 );
-
-		$purchaser = [
-			'purchaser_user_id'    => 0,
-			'purchaser_full_name'  => 'Test Purchaser',
-			'purchaser_first_name' => 'Test',
-			'purchaser_last_name'  => 'Purchaser',
-			'purchaser_email'      => 'test@test.com',
-		];
-
-		$order     = tribe( Order::class )->create_from_cart( tribe( Gateway::class ), $purchaser );
-		$pending   = tribe( Order::class )->modify_status( $order->ID, Pending::SLUG );
-		$completed = tribe( Order::class )->modify_status( $order->ID, Completed::SLUG );
+		$this->place_order_for_cart( $cart );
 
 		// refresh the ticket objects.
 		$ticket_a = tribe( Module::class )->get_ticket( $event_id, $ticket_a_id );
@@ -378,18 +352,7 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 		$cart = new Cart();
 		$cart->get_repository()->add_item( $ticket_a_id, 5 );
 		$cart->get_repository()->add_item( $ticket_b_id, 5 );
-		$purchaser = [
-			'purchaser_user_id'    => 0,
-			'purchaser_full_name'  => 'Test Purchaser',
-			'purchaser_first_name' => 'Test',
-			'purchaser_last_name'  => 'Purchaser',
-			'purchaser_email'      => 'test@test.com',
-		];
-
-		$order     = tribe( Order::class )->create_from_cart( tribe( Gateway::class ), $purchaser );
-		$pending   = tribe( Order::class )->modify_status( $order->ID, Pending::SLUG );
-		$completed = tribe( Order::class )->modify_status( $order->ID, Completed::SLUG );
-
+		$this->place_order_for_cart( $cart );
 		$new_global_capacity = 15;
 
 		/** @var \Tribe__Tickets__Tickets_Handler $handler */
