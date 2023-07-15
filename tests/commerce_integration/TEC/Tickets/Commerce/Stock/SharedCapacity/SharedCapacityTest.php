@@ -52,6 +52,9 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 
 		$ticket_b_id   = $this->create_tc_ticket( $event_id, 20, $overrides );
 
+		// update the Event's capacity manually.
+		tribe_tickets_update_capacity( $event_id, 50 );
+
 		// get the ticket objects.
 		$ticket_a = tribe( Module::class )->get_ticket( $event_id, $ticket_a_id );
 		$ticket_b = tribe( Module::class )->get_ticket( $event_id, $ticket_b_id );
