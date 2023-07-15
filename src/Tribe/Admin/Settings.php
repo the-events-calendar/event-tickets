@@ -26,7 +26,7 @@ class Settings {
 	/**
 	 * Event Tickets Help page slug.
 	 *
-	 * @since TBD
+	 * @since 5.6.3
 	 *
 	 * @var string
 	 */
@@ -35,7 +35,7 @@ class Settings {
 	/**
 	 * Event Tickets Help page slug.
 	 *
-	 * @since TBD
+	 * @since 5.6.3
 	 *
 	 * @var string
 	 */
@@ -146,7 +146,7 @@ class Settings {
 	/**
 	 * Check if the current page is on a specific tab for the Tickets settings.
 	 *
-	 * @since TBD Added the ability to also check `tc-section` request var.
+	 * @since 5.6.3 Added the ability to also check `tc-section` request var.
 	 * @since 5.5.9
 	 *
 	 * @param string $tab The tab name.

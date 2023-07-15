@@ -394,7 +394,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		/**
 		 * Filters whether to hide the attendee list opt-out option.
 		 *
-		 * @since TBD
+		 * @since 5.6.3
 		 *
 		 * @param bool        $hide_attendee_list_optout Whether to hide the attendee list opt-out option.
 		 * @param int|WP_Post $post                      The post object or ID.
