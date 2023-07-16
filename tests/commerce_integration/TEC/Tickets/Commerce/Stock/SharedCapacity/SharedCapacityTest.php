@@ -12,6 +12,7 @@ use TEC\Tickets\Commerce\Status\Pending;
 use Tribe\Events\Test\Factories\Event;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
+use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 
 /**
  * Class SharedCapacityTest
@@ -21,31 +22,13 @@ use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 	use Ticket_Maker;
 	use With_Uopz;
+	use Order_Maker;
 
 	protected function setUp() {
 		parent::setUp();
 		$this->set_fn_return( \Tribe__Tickets__Ticket_Object::class, 'is_ticket_cache_enabled' , false );
 		// brute force attendee count as setting Order status to `tec-tc-completed` is not stable.
 		$this->set_fn_return( Module::class, 'attendee_decreases_inventory' , true );
-	}
-
-	protected function place_order_for_cart( $cart ) {
-
-		$purchaser = [
-			'purchaser_user_id'    => 0,
-			'purchaser_full_name'  => 'Test Purchaser',
-			'purchaser_first_name' => 'Test',
-			'purchaser_last_name'  => 'Purchaser',
-			'purchaser_email'      => 'test@test.com',
-		];
-
-		$order     = tribe( Order::class )->create_from_cart( tribe( Gateway::class ), $purchaser );
-		$pending   = tribe( Order::class )->modify_status( $order->ID, Pending::SLUG );
-		$completed = tribe( Order::class )->modify_status( $order->ID, Completed::SLUG );
-
-		$cart->clear_cart();
-
-		return $order;
 	}
 
 	public function test_tc_shared_capacity_purchase() {
@@ -97,12 +80,7 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertEquals( 50, tribe_get_event_capacity( $event_id ), 'Total Event capacity should be 50' );
 		$this->assertEquals( 50, $global_stock->get_stock_level(), 'Global stock should be 50' );
 
-		// create order.
-		$cart = new Cart();
-		$cart->get_repository()->add_item( $ticket_a_id, 5 );
-		$cart->get_repository()->add_item( $ticket_b_id, 5 );
-		$this->place_order_for_cart( $cart );
-
+		$order = $this->create_order( [ $ticket_a_id => 5, $ticket_b_id => 5 ] );
 		// refresh the ticket objects.
 		$ticket_a = tribe( Module::class )->get_ticket( $event_id, $ticket_a_id );
 		$ticket_b = tribe( Module::class )->get_ticket( $event_id, $ticket_b_id );
@@ -142,11 +120,7 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertInstanceOf( \Tribe__Tickets__Ticket_Object::class, $ticket_b );
 
 		// create order for Global stock ticket.
-		$cart = new Cart();
-		$cart->get_repository()->add_item( $ticket_b_id, 5 );
-		$order = $this->place_order_for_cart( $cart );
-
-//		$this->assertEquals( 'tec-tc-completed', tec_tc_get_order( $order->ID )->post_status, 'Order should be in completed status.' );
+		$order = $this->create_order( [ $ticket_b_id => 5 ] );
 
 		// refresh the ticket objects.
 		$ticket_b = tribe( Module::class )->get_ticket( $event_id, $ticket_b_id );
@@ -198,12 +172,7 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertInstanceOf( \Tribe__Tickets__Ticket_Object::class, $ticket_b );
 
 		// create order for Global stock ticket.
-		$cart = new Cart();
-		$cart->get_repository()->add_item( $ticket_b_id, 5 );
-
-		$order = $this->place_order_for_cart( $cart );
-//		$this->assertEquals( 'tec-tc-completed', tec_tc_get_order( $order->ID )->post_status, 'Order should be in completed status.' );
-
+		$order = $this->create_order( [ $ticket_b_id => 5 ] );
 		// refresh the ticket objects.
 		$ticket_b = tribe( Module::class )->get_ticket( $event_id, $ticket_b_id );
 
@@ -261,12 +230,8 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertInstanceOf( \Tribe__Tickets__Ticket_Object::class, $ticket_a );
 		$this->assertInstanceOf( \Tribe__Tickets__Ticket_Object::class, $ticket_b );
 
-		// create order for Global stock ticket.
-		$cart = new Cart();
-		$cart->get_repository()->add_item( $ticket_a_id, 5 );
-		$cart->get_repository()->add_item( $ticket_b_id, 5 );
-		$order = $this->place_order_for_cart( $cart );
-//		$this->assertEquals( 'tec-tc-completed', tec_tc_get_order( $order->ID )->post_status, 'Order should be in completed status.' );
+		// create order.
+		$order = $this->create_order( [ $ticket_a_id => 5, $ticket_b_id => 5 ] );
 
 		// refresh the ticket objects.
 		$ticket_a = tribe( Module::class )->get_ticket( $event_id, $ticket_a_id );
@@ -354,11 +319,7 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertInstanceOf( \Tribe__Tickets__Ticket_Object::class, $ticket_b );
 
 		// create order for Global stock ticket.
-		$cart = new Cart();
-		$cart->get_repository()->add_item( $ticket_a_id, 5 );
-		$cart->get_repository()->add_item( $ticket_b_id, 5 );
-		$order = $this->place_order_for_cart( $cart );
-//		$this->assertEquals( 'tec-tc-completed', tec_tc_get_order( $order->ID )->post_status, 'Order should be in completed status.' );
+		$order = $this->create_order( [ $ticket_a_id => 5, $ticket_b_id => 5 ] );
 
 		$new_global_capacity = 15;
 
