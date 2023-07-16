@@ -144,7 +144,9 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 		// create order for Global stock ticket.
 		$cart = new Cart();
 		$cart->get_repository()->add_item( $ticket_b_id, 5 );
-		$this->place_order_for_cart( $cart );
+		$order = $this->place_order_for_cart( $cart );
+
+		$this->assertEquals( 'tec-tc-completed', tec_tc_get_order( $order->ID )->post_status, 'Order should be in completed status.' );
 
 		// refresh the ticket objects.
 		$ticket_b = tribe( Module::class )->get_ticket( $event_id, $ticket_b_id );
@@ -199,7 +201,9 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 		$cart = new Cart();
 		$cart->get_repository()->add_item( $ticket_b_id, 5 );
 
-		$this->place_order_for_cart( $cart );
+		$order = $this->place_order_for_cart( $cart );
+		$this->assertEquals( 'tec-tc-completed', tec_tc_get_order( $order->ID )->post_status, 'Order should be in completed status.' );
+
 		// refresh the ticket objects.
 		$ticket_b = tribe( Module::class )->get_ticket( $event_id, $ticket_b_id );
 
@@ -261,7 +265,8 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 		$cart = new Cart();
 		$cart->get_repository()->add_item( $ticket_a_id, 5 );
 		$cart->get_repository()->add_item( $ticket_b_id, 5 );
-		$this->place_order_for_cart( $cart );
+		$order = $this->place_order_for_cart( $cart );
+		$this->assertEquals( 'tec-tc-completed', tec_tc_get_order( $order->ID )->post_status, 'Order should be in completed status.' );
 
 		// refresh the ticket objects.
 		$ticket_a = tribe( Module::class )->get_ticket( $event_id, $ticket_a_id );
@@ -352,7 +357,9 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 		$cart = new Cart();
 		$cart->get_repository()->add_item( $ticket_a_id, 5 );
 		$cart->get_repository()->add_item( $ticket_b_id, 5 );
-		$this->place_order_for_cart( $cart );
+		$order = $this->place_order_for_cart( $cart );
+		$this->assertEquals( 'tec-tc-completed', tec_tc_get_order( $order->ID )->post_status, 'Order should be in completed status.' );
+
 		$new_global_capacity = 15;
 
 		/** @var \Tribe__Tickets__Tickets_Handler $handler */
