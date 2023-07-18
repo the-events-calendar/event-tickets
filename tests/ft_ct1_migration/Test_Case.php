@@ -8,7 +8,8 @@ use TEC\Events\Custom_Tables\V1\Migration\Events;
 use TEC\Events\Custom_Tables\V1\Migration\Process_Worker;
 use TEC\Events\Custom_Tables\V1\Migration\Reports\Event_Report;
 use TEC\Events\Custom_Tables\V1\Migration\State;
-use TEC\Events\Custom_Tables\V1\Migration\Strategies\Single_Event_Migration_Strategy;
+use TEC\Events_Pro\Custom_Tables\V1\Events\Recurrence;
+use WP_Object_Cache;
 
 class FT_CT1_Migration_Test_Case extends Unit {
 	protected static $factory;
@@ -88,7 +89,7 @@ class FT_CT1_Migration_Test_Case extends Unit {
 		$wp_object_cache->stats          = array();
 		$wp_object_cache->memcache_debug = array();
 
-		if ( $wp_object_cache instanceof \WP_Object_Cache ) {
+		if ( $wp_object_cache instanceof WP_Object_Cache ) {
 			$wp_object_cache->flush();
 		} elseif ( isset( $wp_object_cache->cache ) ) {
 			$wp_object_cache->cache = [];
@@ -236,4 +237,31 @@ class FT_CT1_Migration_Test_Case extends Unit {
 
 		return null;
 	}
+
+	protected function given_a_non_migrated_multi_rule_recurring_event(): \WP_Post {
+		$recurrence = static function ( int $id ): array {
+			return ( new Recurrence() )
+				->with_start_date( get_post_meta( $id, '_EventStartDate', true ) )
+				->with_end_date( get_post_meta( $id, '_EventEndDate', true ) )
+				->with_daily_recurrence()
+				->with_end_after( 50 )
+				->with_weekly_recurrence()
+				->with_end_after( 5 )
+				->to_event_recurrence();
+		};
+
+		$timezone = new \DateTimeZone( 'Europe/Paris' );
+
+		return $this->given_a_non_migrated_recurring_event(
+			$recurrence,
+			false,
+			[
+				// A Sunday.
+				new \DateTimeImmutable( '2022-10-23 11:30:00', $timezone ),
+				new \DateInterval( 'PT7H' ),
+				$timezone
+			]
+		);
+	}
+
 }

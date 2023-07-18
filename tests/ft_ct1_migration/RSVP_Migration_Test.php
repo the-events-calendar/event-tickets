@@ -29,13 +29,19 @@ class RSVP_Migration_Test extends FT_CT1_Migration_Test_Case {
 	}
 
 	/**
+	 * @before
+	 */
+	public function set_migration_phase(): void {
+		$this->given_the_current_migration_phase_is( State::PHASE_MIGRATION_IN_PROGRESS );
+	}
+
+	/**
 	 * It should migrate Single Event with RSVP ticket
 	 *
 	 * @test
 	 * @dataProvider dry_run_provider
 	 */
 	public function should_migrate_single_event_with_rsvp_ticket( bool $dry_run ): void {
-		$this->given_the_current_migration_phase_is( State::PHASE_MIGRATION_IN_PROGRESS );
 		$single_event    = $this->given_a_non_migrated_single_event();
 		$single_event_id = $single_event->ID;
 		$rsvp_ticket_id  = $this->create_rsvp_ticket( $single_event_id );
@@ -60,7 +66,6 @@ class RSVP_Migration_Test extends FT_CT1_Migration_Test_Case {
 	 * @dataProvider dry_run_provider
 	 */
 	public function should_not_allow_migration_of_a_recurring_event_with_rsvp_ticket( bool $dry_run ): void {
-		$this->given_the_current_migration_phase_is( State::PHASE_MIGRATION_IN_PROGRESS );
 		$recurring_event    = $this->given_a_non_migrated_recurring_event();
 		$recurring_event_id = $recurring_event->ID;
 		$rsvp_ticket_id     = $this->create_rsvp_ticket( $recurring_event_id );
@@ -88,7 +93,6 @@ class RSVP_Migration_Test extends FT_CT1_Migration_Test_Case {
 	 * @dataProvider dry_run_provider
 	 */
 	public function should_not_allow_migration_of_a_recurring_event_with_multiple_rules_and_rsvp_tickets( bool $dry_run ): void {
-		$this->given_the_current_migration_phase_is( State::PHASE_MIGRATION_IN_PROGRESS );
 		$recurrence         = function ( $id ): array {
 			return ( new Recurrence )
 				->with_start_date( get_post_meta( $id, '_EventStartDate', true ) )
@@ -126,7 +130,6 @@ class RSVP_Migration_Test extends FT_CT1_Migration_Test_Case {
 	 * @dataProvider dry_run_provider
 	 */
 	public function should_not_allow_migration_of_recurring_event_with_rsvp_and_tickets( bool $dry_run ): void {
-		$this->given_the_current_migration_phase_is( State::PHASE_MIGRATION_IN_PROGRESS );
 		$recurring_event    = $this->given_a_non_migrated_recurring_event();
 		$recurring_event_id = $recurring_event->ID;
 		$rsvp_ticket_id     = $this->create_rsvp_ticket( $recurring_event_id );
@@ -155,7 +158,6 @@ class RSVP_Migration_Test extends FT_CT1_Migration_Test_Case {
 	 * @dataProvider dry_run_provider
 	 */
 	public function should_not_allow_migration_of_recurring_event_with_multiple_rules_rsvp_and_tickets( bool $dry_run ): void {
-		$this->given_the_current_migration_phase_is( State::PHASE_MIGRATION_IN_PROGRESS );
 		$recurrence         = function ( $id ): array {
 			return ( new Recurrence )
 				->with_start_date( get_post_meta( $id, '_EventStartDate', true ) )

@@ -2,12 +2,9 @@
 
 namespace TEC\Tickets\Tests\FT_CT1_Migration;
 
-use DateTimeImmutable;
-use DateTimeZone;
 use TEC\Events\Custom_Tables\V1\Migration\State;
 use TEC\Events\Custom_Tables\V1\Migration\Strategies\Single_Event_Migration_Strategy;
 use TEC\Events\Custom_Tables\V1\Models\Occurrence;
-use TEC\Events_Pro\Custom_Tables\V1\Events\Recurrence;
 use TEC\Events_Pro\Custom_Tables\V1\Migration\Strategy\Multi_Rule_Event_Migration_Strategy;
 use TEC\Events_Pro\Custom_Tables\V1\Migration\Strategy\Single_Rule_Event_Migration_Strategy;
 use TEC\Tickets\Flexible_Tickets\CT1_Migration\Strategies\RSVP_Ticketed_Recurring_Event_Strategy;
@@ -19,7 +16,6 @@ use Tribe\Events_Pro\Tests\Traits\CT1\CT1_Test_Utils;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
 use Tribe__Tickets__Commerce__PayPal__Main as PayPal;
-use WP_Post;
 
 class PayPal_Migration_Test extends FT_CT1_Migration_Test_Case {
 	use CT1_Fixtures;
@@ -39,32 +35,15 @@ class PayPal_Migration_Test extends FT_CT1_Migration_Test_Case {
 
 			return $modules;
 		} );
+		// Regenerate the Tickets Data API to pick up the filtered providers.
+		tribe()->singleton( 'tickets.data_api', new \Tribe__Tickets__Data_API() );
 	}
 
-	private function given_a_non_migrated_multi_rule_recurring_event(): WP_Post {
-		$recurrence = static function ( int $id ): array {
-			return ( new Recurrence() )
-				->with_start_date( get_post_meta( $id, '_EventStartDate', true ) )
-				->with_end_date( get_post_meta( $id, '_EventEndDate', true ) )
-				->with_daily_recurrence()
-				->with_end_after( 50 )
-				->with_weekly_recurrence()
-				->with_end_after( 5 )
-				->to_event_recurrence();
-		};
-
-		$timezone = new DateTimeZone( 'Europe/Paris' );
-
-		return $this->given_a_non_migrated_recurring_event(
-			$recurrence,
-			false,
-			[
-				// A Sunday.
-				new DateTimeImmutable( '2022-10-23 11:30:00', $timezone ),
-				new \DateInterval( 'PT7H' ),
-				$timezone
-			]
-		);
+	/**
+	 * @before
+	 */
+	public function set_migration_phase(): void {
+		$this->given_the_current_migration_phase_is( State::PHASE_MIGRATION_IN_PROGRESS );
 	}
 
 	/**
@@ -73,7 +52,6 @@ class PayPal_Migration_Test extends FT_CT1_Migration_Test_Case {
 	 * @test
 	 */
 	public function should_migrate_single_event_with_pay_pal_ticket(): void {
-		$this->given_the_current_migration_phase_is( State::PHASE_MIGRATION_IN_PROGRESS );
 		$single_event     = $this->given_a_non_migrated_single_event();
 		$single_event_id  = $single_event->ID;
 		$paypal_ticket_id = $this->create_paypal_ticket( $single_event_id, 23 );
@@ -97,7 +75,6 @@ class PayPal_Migration_Test extends FT_CT1_Migration_Test_Case {
 	 * @test
 	 */
 	public function should_preview_recurring_event_with_1_rrule_and_paypal_ticket_with_no_attendees(): void {
-		$this->given_the_current_migration_phase_is( State::PHASE_MIGRATION_IN_PROGRESS );
 		$recurring_event    = $this->given_a_non_migrated_recurring_event();
 		$recurring_event_id = $recurring_event->ID;
 		$paypal_ticket_id   = $this->create_paypal_ticket( $recurring_event_id, 23 );
@@ -146,7 +123,6 @@ class PayPal_Migration_Test extends FT_CT1_Migration_Test_Case {
 	 * @test
 	 */
 	public function should_preview_recurring_event_with_1_rrule_many_paypal_tickets_with_many_attendees(): void {
-		$this->given_the_current_migration_phase_is( State::PHASE_MIGRATION_IN_PROGRESS );
 		$recurring_event    = $this->given_a_non_migrated_recurring_event();
 		$recurring_event_id = $recurring_event->ID;
 		$ticket_1           = $this->create_paypal_ticket( $recurring_event_id, 23 );
@@ -199,7 +175,6 @@ class PayPal_Migration_Test extends FT_CT1_Migration_Test_Case {
 	 * @test
 	 */
 	public function should_migrate_recurring_event_with_1_rrule_and_paypal_ticket_with_no_attendees(): void {
-		$this->given_the_current_migration_phase_is( State::PHASE_MIGRATION_IN_PROGRESS );
 		$recurring_event          = $this->given_a_non_migrated_recurring_event();
 		$occurrences_before       = $this->last_insertion_post_id_to_dates_map;
 		$occurrences_count_before = count( $occurrences_before );
@@ -250,7 +225,6 @@ class PayPal_Migration_Test extends FT_CT1_Migration_Test_Case {
 	 * @test
 	 */
 	public function should_migrate_recurring_event_with_1_rrule_many_paypal_tickets_with_many_attendees(): void {
-		$this->given_the_current_migration_phase_is( State::PHASE_MIGRATION_IN_PROGRESS );
 		$recurring_event          = $this->given_a_non_migrated_recurring_event();
 		$occurrences_before       = $this->last_insertion_post_id_to_dates_map;
 		$occurrences_count_before = count( $occurrences_before );
@@ -315,7 +289,6 @@ class PayPal_Migration_Test extends FT_CT1_Migration_Test_Case {
 	 * @test
 	 */
 	public function should_preview_recurring_event_with_multiple_rules_tickets_and_attendees(): void {
-		$this->given_the_current_migration_phase_is( State::PHASE_MIGRATION_IN_PROGRESS );
 		$recurring_event    = $this->given_a_non_migrated_multi_rule_recurring_event();
 		$recurring_event_id = $recurring_event->ID;
 		$ticket_1           = $this->create_paypal_ticket( $recurring_event_id, 23 );
@@ -370,7 +343,6 @@ class PayPal_Migration_Test extends FT_CT1_Migration_Test_Case {
 	 * @test
 	 */
 	public function should_migrate_recurring_event_with_multiple_rules_tickets_and_attendees(): void {
-		$this->given_the_current_migration_phase_is( State::PHASE_MIGRATION_IN_PROGRESS );
 		$recurring_event          = $this->given_a_non_migrated_multi_rule_recurring_event();
 		$occurrences_before       = $this->last_insertion_post_id_to_dates_map;
 		$occurrences_count_before = count( $occurrences_before );
