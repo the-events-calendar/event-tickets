@@ -191,6 +191,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Tweak - Remove some PHP 8.1 deprecation warnings. [TBD]
+
 = [5.6.3] 2023-07-18 =
 
 * Feature - Integrated Yoast Duplicate Post for seamless duplication of tickets, while cloning events. [ET-760]
