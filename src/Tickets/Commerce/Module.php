@@ -83,7 +83,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 *
 	 * @var string
 	 */
-	const ATTENDEE_PRODUCT_KEY = '_tec_tickets_commerce_product';
+	const ATTENDEE_PRODUCT_KEY = '_tec_tickets_commerce_ticket';
 
 	/**
 	 * Meta key that relates Attendees and Orders.
