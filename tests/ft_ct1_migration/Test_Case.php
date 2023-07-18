@@ -146,12 +146,12 @@ class FT_CT1_Migration_Test_Case extends Unit {
 		$this->reports = [];
 	}
 
-	protected function run_migration( int $count = 100 ): void {
+	protected function run_migration( $dry_run = false, int $count = 100 ): void {
 		$events = tribe( Events::class );
 		$state  = tribe( State::class );
 		$worker = new Process_Worker( $events, $state );
 		foreach ( $events->get_ids_to_process( $count ) as $id ) {
-			$this->reports[] = $worker->migrate_event( $id, false );
+			$this->reports[] = $worker->migrate_event( $id, $dry_run );
 		}
 	}
 
@@ -217,7 +217,7 @@ class FT_CT1_Migration_Test_Case extends Unit {
 	protected function split_reports_by_strategy(): array {
 		return array_reduce(
 			$this->reports,
-			function ( array $carry, Event_Report $report ): array {
+			static function ( array $carry, Event_Report $report ): array {
 				$strategy             = reset( $report->strategies_applied );
 				$carry[ $strategy ][] = $report;
 

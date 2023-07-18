@@ -6,12 +6,20 @@ use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Events\Custom_Tables\V1\Migration\Strategies\Null_Migration_Strategy;
 use TEC\Events_Pro\Custom_Tables\V1\Events\Recurrence;
 use TEC\Tickets\Flexible_Tickets\CT1_Migration\Strategies\RSVP_Ticketed_Recurring_Event_Strategy;
+use TEC\Tickets\Flexible_Tickets\CT1_Migration\Strategies\Ticketed_Multi_Rule_Event_Migration_Strategy;
+use TEC\Tickets\Flexible_Tickets\CT1_Migration\Strategies\Ticketed_Single_Rule_Event_Migration_Strategy;
 use Tribe\Events_Pro\Tests\Traits\CT1\CT1_Fixtures;
+use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
+use Tribe__Tickets__Commerce__PayPal__Main as PayPal;
+use TEC\Tickets\Commerce\Module as Commerce;
+use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker as Commerce_Ticket_Maker;
 
 class CT1_Migration_Test extends Controller_Test_Case {
 	use CT1_Fixtures;
 	use RSVP_Ticket_Maker;
+	use PayPal_Ticket_Maker;
+	use Commerce_Ticket_Maker;
 
 	protected string $controller_class = CT1_Migration::class;
 
@@ -131,5 +139,144 @@ class CT1_Migration_Test extends Controller_Test_Case {
 		);
 
 		$this->assertInstanceOf( RSVP_Ticketed_Recurring_Event_Strategy::class, $strategy );
+	}
+
+	private function given_paypal_tickets_are_active(): void {
+		add_filter( 'tribe_tickets_get_modules', static function ( array $modules ): array {
+			$modules[ PayPal::class ] = 'PayPal';
+
+			return $modules;
+		} );
+	}
+
+	/**
+	 * It should not alter the strategy to migrate a single event with PayPal tickets
+	 *
+	 * @test
+	 */
+	public function should_not_alter_the_strategy_to_migrate_a_single_event_with_pay_pal_tickets(): void {
+		$this->given_paypal_tickets_are_active();
+		$single_event    = $this->given_a_non_migrated_single_event();
+		$single_event_id = $single_event->ID;
+		$this->create_paypal_ticket( $single_event_id, 23 );
+
+		$controller = $this->make_controller();
+		$strategy   = $controller->alter_migration_strategy(
+			new Null_Migration_Strategy(),
+			$single_event_id,
+			false
+		);
+
+		$this->assertInstanceOf( Null_Migration_Strategy::class, $strategy );
+	}
+
+	/**
+	 * It should alter the strategy to migrate a recurring event with PayPal tickets
+	 *
+	 * @test
+	 */
+	public function should_alter_the_strategy_to_migrate_a_recurring_event_with_pay_pal_tickets(): void {
+		$this->given_paypal_tickets_are_active();
+		$recurring_event    = $this->given_a_non_migrated_recurring_event();
+		$recurring_event_id = $recurring_event->ID;
+		$this->create_paypal_ticket( $recurring_event_id, 23 );
+
+		$controller = $this->make_controller();
+		$strategy   = $controller->alter_migration_strategy(
+			new Null_Migration_Strategy(),
+			$recurring_event_id,
+			false
+		);
+
+		$this->assertInstanceOf( Ticketed_Single_Rule_Event_Migration_Strategy::class, $strategy );
+	}
+
+	/**
+	 * It should alter the migration strategy of a recurring event with multiple rules and paypal tickets
+	 *
+	 * @test
+	 */
+	public function should_alter_the_migration_strategy_of_a_recurring_event_with_multiple_rules_and_paypal_tickets(): void {
+		$this->given_paypal_tickets_are_active();
+		$recurring_event    = $this->given_a_non_migrated_multi_rule_recurring_event();
+		$recurring_event_id = $recurring_event->ID;
+		$this->create_paypal_ticket( $recurring_event_id, 23 );
+
+		$controller = $this->make_controller();
+		$strategy   = $controller->alter_migration_strategy(
+			new Null_Migration_Strategy(),
+			$recurring_event_id,
+			false
+		);
+
+		$this->assertInstanceOf( Ticketed_Multi_Rule_Event_Migration_Strategy::class, $strategy );
+	}
+
+	private function given_commerce_tickets_are_active(): void {
+		add_filter( 'tribe_tickets_get_modules', static function ( array $modules ): array {
+			$modules[ Commerce::class ] = 'Tickets Commerce';
+
+			return $modules;
+		} );
+	}
+
+	/**
+	 * It should not alter the strategy to migrate a Single Event with Commerce tickets
+	 *
+	 * @test
+	 */
+	public function should_not_alter_the_strategy_to_migrate_a_single_event_with_commerce_tickets(): void {
+		$this->given_commerce_tickets_are_active();
+		$single_event    = $this->given_a_non_migrated_single_event();
+		$this->create_tc_ticket( $single_event->JID, 23 );
+
+		$controller = $this->make_controller();
+		$strategy   = $controller->alter_migration_strategy(
+			new Null_Migration_Strategy(),
+			$single_event->ID,
+			false
+		);
+
+		$this->assertInstanceOf( Null_Migration_Strategy::class, $strategy );
+	}
+
+	/**
+	 * It should alter the strategy to migrate a recurring event with commerce tickets
+	 *
+	 * @test
+	 */
+	public function should_alter_the_strategy_to_migrate_a_recurring_event_with_commerce_tickets(): void {
+		$this->given_commerce_tickets_are_active();
+		$recurring_event = $this->given_a_non_migrated_recurring_event();
+		$this->create_tc_ticket( $recurring_event->ID, 23 );
+
+		$controller = $this->make_controller();
+		$strategy   = $controller->alter_migration_strategy(
+			new Null_Migration_Strategy(),
+			$recurring_event->ID,
+			false
+		);
+
+		$this->assertInstanceOf( Ticketed_Single_Rule_Event_Migration_Strategy::class, $strategy );
+	}
+
+	/**
+	 * It should alter the strategy to migrate a recurring event with multiple rules and commerce tickets
+	 *
+	 * @test
+	 */
+	public function should_alter_the_strategy_to_migrate_a_recurring_event_with_multiple_rules_and_commerce_tickets(): void {
+		$this->given_commerce_tickets_are_active();
+		$recurring_event = $this->given_a_non_migrated_multi_rule_recurring_event();
+		$this->create_tc_ticket( $recurring_event->ID, 23 );
+
+		$controller = $this->make_controller();
+		$strategy   = $controller->alter_migration_strategy(
+			new Null_Migration_Strategy(),
+			$recurring_event->ID,
+			false
+		);
+
+		$this->assertInstanceOf( Ticketed_Multi_Rule_Event_Migration_Strategy::class, $strategy );
 	}
 }

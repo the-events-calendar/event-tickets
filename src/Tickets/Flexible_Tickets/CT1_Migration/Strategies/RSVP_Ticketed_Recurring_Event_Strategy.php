@@ -34,7 +34,7 @@ class RSVP_Ticketed_Recurring_Event_Strategy implements Strategy_Interface {
 	 *
 	 * @var int
 	 */
-	private int $post_id;
+	protected int $post_id;
 
 	/**
 	 * Whether the migration is being run in dry-run mode.
@@ -43,7 +43,7 @@ class RSVP_Ticketed_Recurring_Event_Strategy implements Strategy_Interface {
 	 *
 	 * @var bool
 	 */
-	private bool $dry_run;
+	protected bool $dry_run;
 
 	/**
 	 * Returns this strategy's slug.
