@@ -159,7 +159,7 @@ class Tribe__Tickets__Attendees {
 	 */
 	public function get_report_link( $post ) {
 		// Convert provisional ID's into regular Post ID's.
-		$post_id = tribe_events_tickets_normalize_post_id( $post->ID );
+		$post_id = tec_tickets_normalize_post_id( $post->ID );
 
 		$args = [
 			'post_type' => $post->post_type,
