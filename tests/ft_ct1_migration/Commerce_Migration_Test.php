@@ -34,7 +34,7 @@ class Commerce_Migration_Test extends FT_CT1_Migration_Test_Case {
 	 *
 	 * @before
 	 */
-	public function activate_paypal_tickets(): void {
+	public function activate_commerce_tickets(): void {
 		add_filter( 'tribe_tickets_get_modules', static function ( array $modules ): array {
 			$modules[ Commerce::class ] = 'Commerce';
 
