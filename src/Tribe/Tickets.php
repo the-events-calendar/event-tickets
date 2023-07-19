@@ -4630,6 +4630,17 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			wp_send_json_success( $data );
 		}
 
+		/**
+		 * Removes this module from the list of active modules.
+		 *
+		 * @since TBD
+		 *
+		 * @return void This module is removed from the list of active modules, if it was active.
+		 */
+		public function deactivate(): void {
+			unset( self::$active_modules[ get_class( $this ) ] );
+		}
+
 		// @codingStandardsIgnoreEnd
 	}
 }
