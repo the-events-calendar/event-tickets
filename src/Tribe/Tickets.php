@@ -434,7 +434,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 					return false;
 				}
 
-				if ( class_exists( '\TEC\Events\Custom_Tables\V1\Models\Occurrence' ) ) {
+				if ( class_exists( '\TEC\Events\Custom_Tables\V1\Models\Occurrence', false ) ) {
 					$post_id = \TEC\Events\Custom_Tables\V1\Models\Occurrence::normalize_id( $post->ID );
 				}
 			}
@@ -3830,6 +3830,52 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			return $duplicate_ticket_id;
 		}
+
+		/**
+		 * Clones a ticket to a new post.
+		 *
+		 * @since 5.6.3
+		 *
+		 * @param int $original_post_id ID of the original "event" post.
+		 * @param int $new_post_id      ID of the new "event" post.
+		 * @param int $ticket_id        ID of ticket to duplicate.
+		 *
+		 * @return int|boolean $duplicate_ticket_id New ticket ID or false, if unable to create duplicate.
+		 */
+		public function clone_ticket_to_new_post( $original_post_id, $new_post_id, $ticket_id ) {
+			// Get ticket data.
+			$ticket = $this->get_ticket( $original_post_id, $ticket_id );
+
+			if ( ! $ticket instanceof Tribe__Tickets__Ticket_Object ) {
+				return false;
+			}
+
+			// Create data for duplicate ticket.
+			$data = [
+				'ticket_name'             => $ticket->name,
+				'ticket_description'      => $ticket->description,
+				'ticket_price'            => $ticket->price,
+				'ticket_show_description' => $ticket->show_description,
+				'ticket_start_date'       => $ticket->start_date,
+				'ticket_start_time'       => $ticket->start_time,
+				'ticket_end_date'         => $ticket->end_date,
+				'ticket_end_time'         => $ticket->end_time,
+				'tribe-ticket'            => [
+					'capacity' => $ticket->capacity(),
+					'mode'     => $ticket->global_stock_mode(),
+				]
+			];
+
+			// Add the ticket.
+			$duplicate_ticket_id = $this->ticket_add( $new_post_id, $data );
+
+			if ( ! $duplicate_ticket_id ) {
+				return false;
+			}
+
+			return $duplicate_ticket_id;
+		}
+
 
 		/**
 		 * Creates a ticket object and calls the child save_ticket function
