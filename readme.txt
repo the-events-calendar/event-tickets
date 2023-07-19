@@ -191,6 +191,11 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [5.6.4] TBD =
+
+* Fix - Include Commerce tickets in cached results; correctly fetch posts without tickets. [ET-1808]
+* Tweak - Cache Tickets objects for performance improvements. [ET-1808]
+
 = [5.6.3] 2023-07-18 =
 
 * Feature - Integrated Yoast Duplicate Post for seamless duplication of tickets, while cloning events. [ET-760]
