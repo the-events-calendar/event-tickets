@@ -13,6 +13,8 @@ params:
   # read dynamic configuration parameters from the .env file
   - .env
 extensions:
+    enabled:
+      - tad\WPBrowser\Extension\Events
     commands:
         - 'Codeception\Command\GenerateWPUnit'
         - 'Codeception\Command\GenerateWPRestApi'
