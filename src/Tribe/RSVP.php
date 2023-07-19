@@ -394,7 +394,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		/**
 		 * Filters whether to hide the attendee list opt-out option.
 		 *
-		 * @since TBD
+		 * @since 5.6.3
 		 *
 		 * @param bool        $hide_attendee_list_optout Whether to hide the attendee list opt-out option.
 		 * @param int|WP_Post $post                      The post object or ID.
@@ -1640,28 +1640,31 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		// Stock Adjustment handled by $this->update_stock_from_attendees_page().
 
 		// Store name so we can still show it in the attendee list.
-		$attendees = [];
 
-		if ( get_post_type( $ticket_id ) === $this->ticket_object ) {
+		$post_to_delete       = get_post( $ticket_id );
+		$deleting_rsvp_ticket = get_post_type( $ticket_id ) === $this->ticket_object;
+
+		// Check if we are deleting the RSVP ticket product.
+		if ( $deleting_rsvp_ticket ) {
 			$attendees = $this->get_attendees_by_ticket_id( $ticket_id );
-		}
-
-		$post_to_delete = get_post( $ticket_id );
-
-		// Loop through attendees of ticket (if deleting ticket and not a specific attendee).
-		foreach ( $attendees as $attendee ) {
-			update_post_meta( $attendee['attendee_id'], $this->deleted_product, esc_html( $post_to_delete->post_title ) );
+			// Loop through attendees of ticket (if deleting ticket and not a specific attendee).
+			foreach ( $attendees as $attendee ) {
+				update_post_meta( $attendee['attendee_id'], $this->deleted_product, esc_html( $post_to_delete->post_title ) );
+			}
 		}
 
 		// Try to kill the actual ticket/attendee post.
-		$delete = wp_delete_post( $ticket_id, true );
+		$delete = $deleting_rsvp_ticket ? wp_trash_post( $ticket_id ) : wp_delete_post( $ticket_id );
 		if ( ! isset( $delete->ID ) || is_wp_error( $delete ) ) {
 			return false;
 		}
 
-		Tribe__Tickets__Attendance::instance( $event_id )->increment_deleted_attendees_count();
+		if ( ! $deleting_rsvp_ticket ) {
+			Tribe__Tickets__Attendance::instance( $event_id )->increment_deleted_attendees_count();
+			Tribe__Post_Transient::instance()->delete( $event_id, Tribe__Tickets__Tickets::ATTENDEES_CACHE );
+		}
+
 		do_action( 'tickets_rsvp_ticket_deleted', $ticket_id, $event_id, $product_id );
-		Tribe__Post_Transient::instance()->delete( $event_id, Tribe__Tickets__Tickets::ATTENDEES_CACHE );
 
 		return true;
 	}
@@ -1859,6 +1862,11 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			return null;
 		}
 
+		$cached = wp_cache_get( (int) $ticket_id, 'tec_tickets' );
+		if ( $cached && is_array( $cached ) ) {
+			return new \Tribe__Tickets__Ticket_Object( $cached );
+		}
+
 		$return            = new Tribe__Tickets__Ticket_Object();
 		$qty               = (int) get_post_meta( $ticket_id, 'total_sales', true );
 		$global_stock_mode = get_post_meta( $ticket_id, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
@@ -1905,7 +1913,13 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 * @param int                           $post_id   The ticket parent post ID.
 		 * @param int                           $ticket_id The ticket ID.
 		 */
-		return apply_filters( 'tribe_tickets_rsvp_get_ticket', $return, $event_id, $ticket_id );
+		$ticket = apply_filters( 'tribe_tickets_rsvp_get_ticket', $return, $event_id, $ticket_id );
+
+		if ( $ticket instanceof \Tribe__Tickets__Ticket_Object ) {
+			wp_cache_set( (int) $ticket->ID, $ticket->to_array(), 'tec_tickets' );
+		}
+
+		return $ticket;
 	}
 
 	/**

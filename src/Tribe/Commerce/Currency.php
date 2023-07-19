@@ -5,7 +5,7 @@ class Tribe__Tickets__Commerce__Currency {
 	/**
 	 * @var string
 	 *
-	 * @depreacated 5.2.2
+	 * @deprecated 5.2.2
 	 */
 	public $currency_code;
 

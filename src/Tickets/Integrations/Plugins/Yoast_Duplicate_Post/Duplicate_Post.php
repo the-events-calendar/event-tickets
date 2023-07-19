@@ -13,7 +13,7 @@ use WP_Error;
  * Extends the cloning capability introduced by Yoast Duplicate Post plugin to also handle the duplication of tickets
  * to new posts.
  *
- * @since TBD
+ * @since 5.6.3
  *
  * @package TEC\Events\Integrations\Plugins\Yoast_Duplicate_Post
  */
@@ -49,7 +49,7 @@ class Duplicate_Post extends Integration_Abstract {
 	/**
 	 * Duplicate tickets to a new post.
 	 *
-	 * @since TBD
+	 * @since 5.6.3
 	 *
 	 * @param int    $new_post_id ID of the new post.
 	 * @param object $post        Original post object.
@@ -65,18 +65,18 @@ class Duplicate_Post extends Integration_Abstract {
 			return $new_post_id;
 		}
 
-		$provider = tribe( $tickets[ 0 ]->provider_class );
-
-		if ( empty( $provider ) || ! $provider instanceof Tribe__Tickets__Tickets ) {
-			return new WP_Error(
-				'bad_request',
-				__( 'Commerce Module invalid', 'event-tickets' ),
-				[ 'status' => 400 ]
-			);
-		}
-
-
 		foreach ( $tickets as $ticket ) {
+
+			$provider = tribe( $ticket->provider_class );
+
+			if ( empty( $provider ) || ! $provider instanceof Tribe__Tickets__Tickets ) {
+				return new WP_Error(
+					'bad_request',
+					__( 'Commerce Module invalid', 'event-tickets' ),
+					[ 'status' => 400 ]
+				);
+			}
+
 			$provider->clone_ticket_to_new_post( $post->ID, $new_post_id, $ticket->ID );
 		}
 

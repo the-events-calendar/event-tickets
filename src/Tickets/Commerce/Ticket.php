@@ -284,6 +284,17 @@ class Ticket {
 	 * @return null|\Tribe__Tickets__Ticket_Object
 	 */
 	public function get_ticket( $ticket_id ) {
+		$ticket_id = $ticket_id instanceof \WP_Post ? $ticket_id->ID : $ticket_id;
+
+		if ( ! is_numeric( $ticket_id ) ) {
+			return null;
+		}
+
+		$cached = wp_cache_get( (int) $ticket_id, 'tec_tickets' );
+		if ( $cached && is_array( $cached ) ) {
+			return new \Tribe__Tickets__Ticket_Object( $cached );
+		}
+
 		$product = get_post( $ticket_id );
 
 		if ( ! $product ) {
@@ -356,7 +367,13 @@ class Ticket {
 		 * @param int    $post_id
 		 * @param int    $ticket_id
 		 */
-		return apply_filters( 'tec_tickets_commerce_get_ticket_legacy', $return, $event_id, $ticket_id );
+		$ticket = apply_filters( 'tec_tickets_commerce_get_ticket_legacy', $return, $event_id, $ticket_id );
+
+		if ( $ticket instanceof \Tribe__Tickets__Ticket_Object ) {
+			wp_cache_set( (int) $ticket->ID, $ticket->to_array(), 'tec_tickets' );
+		}
+
+		return $ticket;
 	}
 
 	/**
@@ -521,8 +538,8 @@ class Ticket {
 				$sku = $raw_data['ticket_sku'];
 			} else {
 				$post_author            = get_post( $ticket->ID )->post_author;
-				$str                    = $raw_data['ticket_name'];
-				$str                    = tribe_strtoupper( $str );
+				$ticket_name            = $raw_data['ticket_name'] ?? $ticket->name;
+				$str                    = tribe_strtoupper( $ticket_name );
 				$sku                    = "{$ticket->ID}-{$post_author}-" . str_replace( ' ', '-', $str );
 				$raw_data['ticket_sku'] = $sku;
 			}
@@ -754,7 +771,7 @@ class Ticket {
 		}
 
 		// Try to kill the actual ticket/attendee post
-		$delete = wp_delete_post( $ticket_id, true );
+		$delete = wp_trash_post( $ticket_id );
 		if ( is_wp_error( $delete ) || ! isset( $delete->ID ) ) {
 			return false;
 		}

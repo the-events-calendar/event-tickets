@@ -434,7 +434,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 					return false;
 				}
 
-				if ( class_exists( Occurrence::class ) ) {
+				if ( class_exists( Occurrence::class, false ) ) {
 					/**
 					 * Filters the post ID to use when fetching tickets for an Occurrence.
 					 *
@@ -754,6 +754,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$key = $class . '::' . $method . '-' . $post_id;
 
 				unset( $cache[ $key ] );
+			}
+
+			$ticket_ids = $this->get_tickets_ids( $post_id );
+			foreach ( (array) $ticket_ids as $ticket_id ) {
+				clean_post_cache( $ticket_id );
 			}
 		}
 
@@ -2056,8 +2061,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 				$types['tickets']['stock'] += $stock_level;
 
-				if ( 0 !== $types['tickets']['stock'] ) {
-					$types['tickets']['available'] ++;
+				// If current availability is unlimited (available = -1) and the ticket has stock, set it to 0.
+				if ( $types['tickets']['available'] < 0 && 0 !== $types['tickets']['stock'] ) {
+					$types['tickets']['available'] = 0;
 				}
 			}
 
@@ -3838,7 +3844,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Clones a ticket to a new post.
 		 *
-		 * @since TBD
+		 * @since 5.6.3
 		 *
 		 * @param int $original_post_id ID of the original "event" post.
 		 * @param int $new_post_id      ID of the new "event" post.
