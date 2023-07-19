@@ -1100,7 +1100,7 @@ class Tribe__Tickets__Main {
 	 *
 	 * @since 4.10.6
 	 *
-	 * @return \Tribe__Autoloader Teh singleton common Autoloader instance.
+	 * @return \Tribe__Autoloader The singleton common Autoloader instance.
 	 */
 	public function get_autoloader_instance() {
 		if ( ! class_exists( 'Tribe__Autoloader' ) ) {

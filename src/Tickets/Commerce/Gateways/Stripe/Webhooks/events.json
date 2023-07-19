@@ -152,7 +152,7 @@
     "recipient.deleted": "Occurs whenever a recipient is deleted.",
     "recipient.updated": "Occurs whenever a recipient is updated.",
     "reporting.report_run.failed": "Occurs whenever a requested ReportRun failed to complete.",
-    "reporting.report_run.succeeded": "Occurs whenever a requested ReportRun completed succesfully.",
+    "reporting.report_run.succeeded": "Occurs whenever a requested ReportRun completed successfully.",
     "reporting.report_type.updated": "Occurs whenever a ReportType is updated (typically to indicate that a new day’s data has come available).",
     "review.closed": "Occurs whenever a review is closed. The review’s reason field indicates why: approved, disputed, refunded, or refunded_as_fraud.",
     "review.opened": "Occurs whenever a review is opened.",

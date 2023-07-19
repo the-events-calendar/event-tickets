@@ -16,7 +16,7 @@ use Tribe__Date_Utils as Dates;
  */
 abstract class Flag_Action_Abstract implements Flag_Action_Interface {
 	/**
-	 * When will this particular flag wil be triggered
+	 * When this particular flag will be triggered
 	 *
 	 * @since 5.1.9
 	 *

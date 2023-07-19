@@ -154,7 +154,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		$custom_args['invoice'] = $invoice_number;
 
 		/**
-		 * Filters the custom arguments that will be sent ot PayPal.
+		 * Filters the custom arguments that will be sent to PayPal.
 		 *
 		 * @since 4.7
 		 *
@@ -548,7 +548,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		$notify_url = trim( $notify_url );
 
 		/**
-		 * Filters the custom arguments that will be sent ot PayPal.
+		 * Filters the custom arguments that will be sent to PayPal.
 		 *
 		 * @since 4.7
 		 *

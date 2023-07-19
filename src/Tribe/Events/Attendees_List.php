@@ -249,7 +249,7 @@ class Attendees_List {
 	}
 
 	/**
-	 * This keeps track of whether the Attendee List is being displayed becase of a shortcode
+	 * This keeps track of whether the Attendee List is being displayed because of a shortcode
 	 * in the content, and acts accordingly if said shortcode is removed.
 	 *
 	 * @since 4.12.0

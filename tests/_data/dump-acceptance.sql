@@ -235,7 +235,7 @@ CREATE TABLE `wp_posts` (
 
 LOCK TABLES `wp_posts` WRITE;
 /*!40000 ALTER TABLE `wp_posts` DISABLE KEYS */;
--- Instert Event
+-- Insert Event
 INSERT INTO `wp_posts` VALUES (
     1,
     1,

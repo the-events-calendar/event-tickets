@@ -237,7 +237,7 @@ class SingleTicketCest extends BaseRestCest {
 		] );
 		// here we decrease the going and optin count by 1 to account for the going and optin first attendee
 		$going_optin_attendees = $this->create_many_attendees_for_ticket( $going_optin_count -1, $ticket_id, $post_id, [ 'rsvp_status' => 'yes' ] );
-		$goin_optout_attendees = $this->create_many_attendees_for_ticket( $going_optout_count, $ticket_id, $post_id, [
+		$going_optout_attendees = $this->create_many_attendees_for_ticket( $going_optout_count, $ticket_id, $post_id, [
 			'rsvp_status' => 'yes',
 			'optout'      => 'yes'
 		] );

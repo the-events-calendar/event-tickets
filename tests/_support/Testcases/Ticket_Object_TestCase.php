@@ -197,7 +197,7 @@ class Ticket_Object_TestCase extends Test_Case {
 	}
 
 	/**
-	 * reate event and Tribe Commerce Ticket with shared capacity, return Ticket object.
+	 * Create event and Tribe Commerce Ticket with shared capacity, return Ticket object.
 	 * Also sets timezone for event as this is needed for some tests.
 	 *
 	 * @param integer $cost

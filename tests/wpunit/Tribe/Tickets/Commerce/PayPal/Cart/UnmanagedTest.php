@@ -20,11 +20,11 @@ class UnmanagedTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	/**
-	 * It should allow addding and removing the same item from the cart
+	 * It should allow adding and removing the same item from the cart
 	 *
 	 * @test
 	 */
-	public function should_allow_addding_and_removing_the_same_item_from_the_cart() {
+	public function should_allow_adding_and_removing_the_same_item_from_the_cart() {
 		$cart = new Cart();
 		$cart->set_id( 'foo' );
 		$cart->add_item( 'id1', 3 );

@@ -436,7 +436,7 @@ class Client {
 	 *
 	 * @type string                            $reference_id       Reference ID to PayPal.
 	 * @type string                            $description        Description of this Purchase Unit.
-	 * @type string                            $value              Value to be payed.
+	 * @type string                            $value              Value to be paid.
 	 * @type string                            $currency           Which currency.
 	 * @type string                            $merchant_id        Merchant ID.
 	 * @type string                            $merchant_paypal_id PayPal Merchant ID.

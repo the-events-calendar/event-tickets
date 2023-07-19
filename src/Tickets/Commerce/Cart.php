@@ -298,7 +298,7 @@ class Cart {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @parem string $value Value used for the cookie or empty to purge the cookie.
+	 * @param string $value Value used for the cookie or empty to purge the cookie.
 	 *
 	 * @return boolean
 	 */

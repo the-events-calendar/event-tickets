@@ -600,7 +600,7 @@ class Hooks extends Service_Provider {
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param array $args Context arraay for the modal template.
+	 * @param array $args Context array for the modal template.
 	 *
 	 * @return array
 	 */

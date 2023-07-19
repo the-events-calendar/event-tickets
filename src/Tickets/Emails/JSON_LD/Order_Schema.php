@@ -10,7 +10,7 @@ use TEC\Tickets\Emails\Email_Abstract;
  *
  * @since 5.6.0
  *
- * @pacakge TEC\Tickets\Emails\JSON_LD
+ * @package TEC\Tickets\Emails\JSON_LD
  */
 class Order_Schema extends JSON_LD_Abstract {
 

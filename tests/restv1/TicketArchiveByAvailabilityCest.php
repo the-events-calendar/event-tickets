@@ -41,7 +41,7 @@ class TicketArchiveByAvailabilityCest extends BaseRestCest {
 			return $acc;
 		}, [] );
 		// 2 posts, 2 tickets per post w/ 0 capacity = 4 tickets w/ 0 capacity
-		$not_availble = array_reduce( $post_ids, function ( array $acc, $post_id ) {
+		$not_available = array_reduce( $post_ids, function ( array $acc, $post_id ) {
 			$acc[] = $this->create_rsvp_ticket( $post_id, [ 'meta_input' => [ '_stock' => 0, '_capacity' => 0 ] ] );
 			$acc[] = $this->create_paypal_ticket_basic( $post_id, 2, [
 				'meta_input' => [
@@ -52,14 +52,14 @@ class TicketArchiveByAvailabilityCest extends BaseRestCest {
 
 			return $acc;
 		}, [] );
-		$all          = array_merge( $available, $not_availble );
+		$all          = array_merge( $available, $not_available );
 
 		// no availability specified
 		$I->sendGET( $this->tickets_url );
 		$I->seeResponseIsJson();
 		$I->seeResponseCodeIs( 200 );
 		$expected_tickets = tribe_tickets( 'restv1' )
-			->where( 'post__in', array_merge( $available, $not_availble ) )
+			->where( 'post__in', array_merge( $available, $not_available ) )
 			->all();
 		$I->seeResponseContainsJson( [
 			'rest_url'    => $this->tickets_url . '/',
@@ -85,7 +85,7 @@ class TicketArchiveByAvailabilityCest extends BaseRestCest {
 		$I->seeResponseIsJson();
 		$I->seeResponseCodeIs( 200 );
 		$expected_tickets = tribe_tickets( 'restv1' )
-			->where( 'post__in', $not_availble )
+			->where( 'post__in', $not_available )
 			->all();
 		$I->seeResponseContainsJson( [
 			'rest_url'    => add_query_arg( [ 'is_available' => false ], $this->tickets_url . '/' ),
@@ -100,7 +100,7 @@ class TicketArchiveByAvailabilityCest extends BaseRestCest {
 		$I->seeResponseIsJson();
 		$I->seeResponseCodeIs( 200 );
 		$expected_tickets = tribe_tickets( 'restv1' )
-			->where( 'post__in', array_merge( $available, $not_availble ) )
+			->where( 'post__in', array_merge( $available, $not_available ) )
 			->all();
 		$I->seeResponseContainsJson( [
 			'rest_url'    => add_query_arg( [ 'capacity_min' => 10 ], $this->tickets_url . '/' ),
@@ -148,7 +148,7 @@ class TicketArchiveByAvailabilityCest extends BaseRestCest {
 		$I->seeResponseIsJson();
 		$I->seeResponseCodeIs( 200 );
 		$expected_tickets = tribe_tickets( 'restv1' )
-			->where( 'post__in', array_merge( \array_slice( $available, 0, 3 ), $not_availble ) )
+			->where( 'post__in', array_merge( \array_slice( $available, 0, 3 ), $not_available ) )
 			->all();
 		$I->seeResponseContainsJson( [
 			'rest_url'    => add_query_arg( [ 'capacity_max' => 10 ], $this->tickets_url . '/' ),

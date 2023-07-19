@@ -7,7 +7,7 @@
  *
  * See more documentation about our views templating system.
  *
- * @link {INSERT_ARTCILE_LINK_HERE}
+ * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 5.0.4 Update template to use icons from Tribe Common.
  * @since 5.0.4.1 Call dot views using template class to prevent issues where this template was included outside of a template class.
