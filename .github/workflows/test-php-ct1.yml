@@ -166,8 +166,7 @@ jobs:
         with:
           fetch-depth: 1
           repository: the-events-calendar/the-events-calendar
-          # ref: ${{ env.TEC_BRANCH }}
-          ref: release/B23.data # Provisional, to be removed when data is merged into master.
+          ref: ${{ env.TEC_BRANCH }}
           token: ${{ secrets.GH_BOT_TOKEN }}
           path: the-events-calendar
           submodules: recursive
@@ -203,8 +202,7 @@ jobs:
         with:
           fetch-depth: 1
           repository: the-events-calendar/events-pro
-          # ref: ${{ env.ECP_BRANCH }}
-          ref: release/B23.data # Provisional, to be removed when data is merged into master.
+          ref: ${{ env.ECP_BRANCH }}
           token: ${{ secrets.GH_BOT_TOKEN }}
           path: events-pro
           submodules: recursive
