@@ -7,11 +7,6 @@
 	<div class="tribe_sectionheader ticket_list_container tribe_no_capacity">
 			</div>
 	<div class="tribe-ticket-control-wrap">
-				<div class="ticket-editor-notice info "
-								>
-			<span class="dashicons dashicons-info"></span>
-			<span class="message">There is no payment gateway configured. To create tickets, you'll need to enable and configure an ecommerce solution. <a href="https://evnt.is/1ao5" target="_blank" rel="noopener noreferrer">Learn More</a></span>
-		</div>
 		
 		<button id="settings_form_toggle" class="button-secondary tribe-button-icon tribe-button-icon-settings">
 			Settings		</button>
@@ -26,7 +21,15 @@
 	<section class="settings_main">
 		
 	<fieldset class="screen-reader-text">
-								</fieldset>
+									<input
+					type="radio"
+					class="tribe-ticket-editor-field-default_provider settings_field"
+					name="tribe-tickets[settings][default_provider]"
+					id="provider_TEC_Tickets_Commerce_Module_radio"
+					value="TEC\Tickets\Commerce\Module"
+					checked
+				>
+						</fieldset>
 	</section>
 	<section id="tribe-tickets-image">
 		<div class="tribe-tickets-image-upload">
@@ -70,7 +73,7 @@
 </div>
 
 <div id="tribe_panel_edit" class="ticket_panel panel_edit tribe-validation" aria-hidden="true"
-	 data-default-provider="Tribe__Tickets__RSVP">
+	 data-default-provider="TEC\Tickets\Commerce\Module">
 	
 	<div id="ticket_form" class="ticket_form tribe_sectionheader tribe-validation">
 		<div id="ticket_form_table" class="eventtable ticket_form">
@@ -238,9 +241,19 @@
 								value="Tribe__Tickets__RSVP"
 								class="ticket_field ticket_provider"
 								tabindex="-1"
-								 checked='checked'						>
+														>
 						<span>
 							RSVPs						</span>
+											<input
+								type="radio"
+								name="ticket_provider"
+								id="TEC\Tickets\Commerce\Module_radio"
+								value="TEC\Tickets\Commerce\Module"
+								class="ticket_field ticket_provider"
+								tabindex="-1"
+								 checked='checked'						>
+						<span>
+							Tickets Commerce						</span>
 									</fieldset>
 				<div
 	class="price tribe-dependent"
@@ -256,10 +269,8 @@
 			class="ticket_field ticket_form_right"
 			size="7"
 			value=""
-						data-validation-error="Ticket price must be greater than zero."		/>
-					<p class="description ticket_form_right">
-				Leave blank for free Ticket			</p>
-				</div>
+						data-validation-error="Ticket price must be greater than zero." data-required data-validation-is-greater-than="0"		/>
+			</div>
 
 	</div><div
 	class="input_block ticket_advanced_Tribe__Tickets__RSVP tribe-dependent"
@@ -299,6 +310,86 @@
 		value="yes"
 			/>
 	<span class="tribe_soft_note ticket_form_right">Enable &quot;Can&#039;t Go&quot; responses</span>
+</div>
+
+<div
+	class="input_block ticket_advanced_TEC_Tickets_Commerce_Module tribe-dependent"
+	data-depends="#Tribe__Tickets__RSVP_radio"
+	data-condition-is-not-checked
+>
+	<label
+		for="TEC_Tickets_Commerce_Module_capacity"
+		class="ticket_form_label ticket_form_left"
+	>
+		Capacity:	</label>
+	<input
+		type='text' id='TEC_Tickets_Commerce_Module_capacity'
+		name='tribe-ticket[capacity]'
+		class="ticket_field tribe-tpp-field-capacity ticket_form_right"
+		size='7'
+		value=''
+	/>
+	<span class="tribe_soft_note ticket_form_right">Leave blank for unlimited</span>
+</div>
+
+<div
+	class="input_block ticket_advanced_TEC_Tickets_Commerce_Module tribe-dependent"
+	data-depends="#Tribe__Tickets__RSVP_radio"
+	data-condition-is-not-checked
+>
+	<label
+		for="TEC_Tickets_Commerce_Module_capacity"
+		class="ticket_form_label ticket_form_left"
+	>
+		Capacity:	</label>
+	<input
+		type='text' id='TEC_Tickets_Commerce_Module_capacity'
+		name='tribe-ticket[capacity]'
+		class="ticket_field tribe-tpp-field-capacity ticket_form_right"
+		size='7'
+		value=''
+	/>
+	<span class="tribe_soft_note ticket_form_right">Leave blank for unlimited</span>
+</div>
+
+<div
+	class="input_block ticket_advanced_TEC_Tickets_Commerce_Module tribe-dependent"
+	data-depends="#Tribe__Tickets__RSVP_radio"
+	data-condition-is-not-checked
+>
+	<label
+		for="TEC_Tickets_Commerce_Module_capacity"
+		class="ticket_form_label ticket_form_left"
+	>
+		Capacity:	</label>
+	<input
+		type='text' id='TEC_Tickets_Commerce_Module_capacity'
+		name='tribe-ticket[capacity]'
+		class="ticket_field tribe-tpp-field-capacity ticket_form_right"
+		size='7'
+		value=''
+	/>
+	<span class="tribe_soft_note ticket_form_right">Leave blank for unlimited</span>
+</div>
+
+<div
+	class="input_block ticket_advanced_TEC_Tickets_Commerce_Module tribe-dependent"
+	data-depends="#Tribe__Tickets__RSVP_radio"
+	data-condition-is-not-checked
+>
+	<label
+		for="TEC_Tickets_Commerce_Module_capacity"
+		class="ticket_form_label ticket_form_left"
+	>
+		Capacity:	</label>
+	<input
+		type='text' id='TEC_Tickets_Commerce_Module_capacity'
+		name='tribe-ticket[capacity]'
+		class="ticket_field tribe-tpp-field-capacity ticket_form_right"
+		size='7'
+		value=''
+	/>
+	<span class="tribe_soft_note ticket_form_right">Leave blank for unlimited</span>
 </div>
 			</section>
 			<div class="accordion">
