@@ -1213,7 +1213,6 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		public function to_array(): array {
 			return get_object_vars( $this );
 		}
-	}
 
 		/**
 		 * Returns the ticket type.
