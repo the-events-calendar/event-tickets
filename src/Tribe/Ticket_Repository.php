@@ -41,6 +41,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 			'attendees_min'     => [ $this, 'filter_by_attendees_min' ],
 			'attendees_max'     => [ $this, 'filter_by_attendees_max' ],
 			'attendees_between' => [ $this, 'filter_by_attendees_between' ],
+			'checkedin_max'     => [ $this, 'filter_by_checkedin_max' ],
 			'checkedin_min'     => [ $this, 'filter_by_checkedin_min' ],
 			'checkedin_between' => [ $this, 'filter_by_checkedin_between' ],
 			'capacity_min'      => [ $this, 'filter_by_capacity_min' ],
