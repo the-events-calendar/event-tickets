@@ -112,8 +112,15 @@ class CT1_Migration extends Controller {
 	 */
 	public function add_migration_strings( array $map ): array {
 		$map ['migration-error-recurring-with-rsvp-tickets']                                      = _x(
-			'The event %s cannot be migrated because we do not support RSVPs on recurring events. Remove the ' .
-			'RSVPs or convert the occurrences to single events (%sRead more%s).',
+			// translators: %1$s is the singular label for events, %2$s is the event title, %3$s and %4$s are HTML tags for a link.
+			sprintf(
+				'The %1$s %2$s cannot be migrated because we do not support RSVPs on recurring events. Remove the ' .
+				'RSVPs or convert the occurrences to single events (%3$sRead more%4$s).',
+				tribe_get_event_label_singular_lowercase(),
+				'%1$s', // A trick to make this placeholder survive the sprintf and store, when compiled, the title.
+				'<a href="https://evnt.is/r-rsvp" target="_blank">',
+				'</a>'
+			),
 			'The error message displayed when a recurring event with RSVP tickets is being migrated.',
 			'event-tickets'
 		);
@@ -123,7 +130,7 @@ class CT1_Migration extends Controller {
 			'event-tickets'
 		);
 		$map[ 'migration-prompt-' . Ticketed_Single_Rule_Event_Migration_Strategy::get_slug() ]   = _x(
-		// translators: %1$s is the plural label for events, %2$s and %3$s are HTML tags for a link.
+			// translators: %1$s is the plural label for events, %2$s and %3$s are HTML tags for a link.
 			sprintf(
 				'The following recurring %1$s will be part of a new Series of the same name, and tickets will ' .
 				'be converted to %2$sSeries Passes%3$s:',
@@ -135,7 +142,7 @@ class CT1_Migration extends Controller {
 			'event-tickets'
 		);
 		$map[ 'migration-complete-' . Ticketed_Single_Rule_Event_Migration_Strategy::get_slug() ] = _x(
-		// translators: %1$s is the plural label for events, %2$s and %3$s are HTML tags for a link.
+			// translators: %1$s is the plural label for events, %2$s and %3$s are HTML tags for a link.
 			sprintf(
 				'The following recurring %1$s  are now part of a new Series of the same name. Ticket(s) have ' .
 				'been converted to %2$sSeries Passes%3$s:',
@@ -147,7 +154,7 @@ class CT1_Migration extends Controller {
 			'event-tickets'
 		);
 		$map[ 'migration-prompt-' . Ticketed_Multi_Rule_Event_Migration_Strategy::get_slug() ]    = _x(
-		// translators: %1$s and %2$s are plural and singular labels for events, %3$s and %4$s are HTML tags for a link.
+			// translators: %1$s and %2$s are plural and singular labels for events, %3$s and %4$s are HTML tags for a link.
 			sprintf(
 				'The following %1$s have multiple recurrence rules and will be split into multiple recurring %1$s ' .
 				'with identical content. Each recurring %2$s will be part of a new Series of the same name, and tickets ' .
@@ -161,7 +168,7 @@ class CT1_Migration extends Controller {
 			'event-tickets'
 		);
 		$map[ 'migration-complete-' . Ticketed_Multi_Rule_Event_Migration_Strategy::get_slug() ]  = _x(
-		// translators: %1$s and %2$s are plural and singular labels for events, %3$s and %4$s are HTML tags for a link.
+			// translators: %1$s and %2$s are plural and singular labels for events, %3$s and %4$s are HTML tags for a link.
 			sprintf(
 				'The following %1$s had multiple recurrence rules and were split into multiple recurring ' .
 				'%1$s with identical content. Each recurring %2$s is part of a new Series of the same name. ' .
