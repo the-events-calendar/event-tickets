@@ -64,13 +64,17 @@ class Provider extends Service_Provider {
 		$this->container->register( Telemetry\Provider::class );
 
 		// Loads Integrations.
-		$this->container->register( Integrations\Provider::class);
+		$this->container->register( Integrations\Provider::class );
 
 		$this->has_registered = true;
 
-		add_action(
+		// Always register the CT1 migration component of Flexible Tickets.
+		$this->container->register_on_action( 'tec_ct1_provider_registered', Flexible_Tickets\CT1_Migration::class );
+
+		// Upon CT1 full activation register the rest of the components.
+		$this->container->register_on_action(
 			'tec_events_pro_custom_tables_v1_fully_activated',
-			[ $this, 'register_flexible_tickets_provider' ]
+			Flexible_Tickets\Provider::class
 		);
 
 		return true;
@@ -100,16 +104,5 @@ class Provider extends Service_Provider {
 		// Allow Hooks to be removed, by having the them registered to the container
 		$this->container->singleton( Hooks::class, $hooks );
 		$this->container->singleton( 'tickets.hooks', $hooks );
-	}
-
-	/**
-	 * Register the Flexible Tickets feature if CT1 fully activated.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	public function register_flexible_tickets_provider(): void {
-		$this->container->register( Flexible_Tickets\Provider::class );
 	}
 }
