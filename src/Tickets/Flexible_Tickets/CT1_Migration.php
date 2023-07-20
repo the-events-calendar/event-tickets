@@ -10,7 +10,9 @@
 namespace TEC\Tickets\Flexible_Tickets;
 
 use TEC\Common\Contracts\Provider\Controller;
+use TEC\Events\Custom_Tables\V1\Migration\State;
 use TEC\Events\Custom_Tables\V1\Migration\Strategies\Strategy_Interface;
+use TEC\Events\Custom_Tables\V1\Migration\String_Dictionary;
 use TEC\Tickets\Flexible_Tickets\CT1_Migration\CT1_Migration_Checks;
 use TEC\Tickets\Flexible_Tickets\CT1_Migration\Strategies\RSVP_Ticketed_Recurring_Event_Strategy;
 use TEC\Tickets\Flexible_Tickets\CT1_Migration\Strategies\Ticketed_Multi_Rule_Event_Migration_Strategy;
@@ -36,6 +38,10 @@ class CT1_Migration extends Controller {
 	protected function do_register(): void {
 		add_filter( 'tec_events_custom_tables_v1_migration_strategy', [ $this, 'alter_migration_strategy' ], 10, 3 );
 		add_filter( 'tec_events_custom_tables_v1_migration_strings', [ $this, 'add_migration_strings' ] );
+		add_filter( 'tec_events_custom_tables_v1_migration_event_report_categories', [
+			$this,
+			'filter_report_headers'
+		], 10, 2 );
 	}
 
 	/**
@@ -48,6 +54,10 @@ class CT1_Migration extends Controller {
 	public function unregister(): void {
 		remove_filter( 'tec_events_custom_tables_v1_migration_strategy', [ $this, 'alter_migration_strategy' ] );
 		remove_filter( 'tec_events_custom_tables_v1_migration_strings', [ $this, 'add_migration_strings' ] );
+		remove_filter( 'tec_events_custom_tables_v1_migration_event_report_categories', [
+			$this,
+			'filter_report_headers'
+		] );
 	}
 
 	/**
@@ -129,7 +139,7 @@ class CT1_Migration extends Controller {
 			'The error message displayed when a recurring event with tickets is being migrated and the Series cannot be found.',
 			'event-tickets'
 		);
-		$map[ 'migration-prompt-' . Ticketed_Single_Rule_Event_Migration_Strategy::get_slug() ]   = _x(
+		$map[ 'migration-prompt-strategy-' . Ticketed_Single_Rule_Event_Migration_Strategy::get_slug() ]   = _x(
 			// translators: %1$s is the plural label for events, %2$s and %3$s are HTML tags for a link.
 			sprintf(
 				'The following recurring %1$s will be part of a new Series of the same name, and tickets will ' .
@@ -141,7 +151,7 @@ class CT1_Migration extends Controller {
 			'The header message displayed to preview the migration of ticketed Recurring Events with 1 recurrence rule.',
 			'event-tickets'
 		);
-		$map[ 'migration-complete-' . Ticketed_Single_Rule_Event_Migration_Strategy::get_slug() ] = _x(
+		$map[ 'migration-complete-strategy-' . Ticketed_Single_Rule_Event_Migration_Strategy::get_slug() ] = _x(
 			// translators: %1$s is the plural label for events, %2$s and %3$s are HTML tags for a link.
 			sprintf(
 				'The following recurring %1$s  are now part of a new Series of the same name. Ticket(s) have ' .
@@ -153,7 +163,7 @@ class CT1_Migration extends Controller {
 			'The header message displayed after the migration of ticketed Recurring Events with 1 recurrence rule.',
 			'event-tickets'
 		);
-		$map[ 'migration-prompt-' . Ticketed_Multi_Rule_Event_Migration_Strategy::get_slug() ]    = _x(
+		$map[ 'migration-prompt-strategy-' . Ticketed_Multi_Rule_Event_Migration_Strategy::get_slug() ]    = _x(
 			// translators: %1$s and %2$s are plural and singular labels for events, %3$s and %4$s are HTML tags for a link.
 			sprintf(
 				'The following %1$s have multiple recurrence rules and will be split into multiple recurring %1$s ' .
@@ -167,7 +177,7 @@ class CT1_Migration extends Controller {
 			'The header message displayed to preview the migration of ticketed Recurring Events with multiple recurrence rules.',
 			'event-tickets'
 		);
-		$map[ 'migration-complete-' . Ticketed_Multi_Rule_Event_Migration_Strategy::get_slug() ]  = _x(
+		$map[ 'migration-complete-strategy-' . Ticketed_Multi_Rule_Event_Migration_Strategy::get_slug() ]  = _x(
 			// translators: %1$s and %2$s are plural and singular labels for events, %3$s and %4$s are HTML tags for a link.
 			sprintf(
 				'The following %1$s had multiple recurrence rules and were split into multiple recurring ' .
@@ -182,7 +192,36 @@ class CT1_Migration extends Controller {
 			'event-tickets'
 		);
 
-
 		return $map;
+	}
+
+	/**
+	 * Filters the CT1 Migration report headers to add headers for this plugin.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<int,array{key: string , label: string}> $report_headers
+	 * @param String_Dictionary                             $text A reference to the String Dictionary used to
+	 *                                                            localize the headers.
+	 *
+	 * @return array<int,array{key: string , label: string}> The altered headers.
+	 */
+	public function filter_report_headers( array $report_headers, $text ): array {
+		$phase            = $this->container->get( State::class )->get_phase();
+		$report_headers[] = [
+			'key'   => RSVP_Ticketed_Recurring_Event_Strategy::get_slug(),
+			'label' => $text->get( 'migration-error-recurring-with-rsvp-tickets' ),
+		];
+		$report_headers[] = [
+			'key'   => Ticketed_Single_Rule_Event_Migration_Strategy::get_slug(),
+			'label' => $text->get( "$phase-strategy-" . Ticketed_Single_Rule_Event_Migration_Strategy::get_slug() ),
+		];
+		$report_headers[] =
+			[
+				'key'   => Ticketed_Multi_Rule_Event_Migration_Strategy::get_slug(),
+				'label' => $text->get( "$phase-strategy-" . Ticketed_Multi_Rule_Event_Migration_Strategy::get_slug() ),
+			];
+
+		return $report_headers;
 	}
 }

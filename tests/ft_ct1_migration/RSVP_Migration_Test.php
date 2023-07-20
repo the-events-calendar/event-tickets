@@ -6,6 +6,7 @@ namespace TEC\Tickets\Tests\FT_CT1_Migration;
 use TEC\Events\Custom_Tables\V1\Migration\State;
 use TEC\Events\Custom_Tables\V1\Migration\Strategies\Single_Event_Migration_Strategy;
 use TEC\Events\Custom_Tables\V1\Migration\String_Dictionary;
+use TEC\Events\Custom_Tables\V1\Traits\With_String_Dictionary;
 use TEC\Events_Pro\Custom_Tables\V1\Events\Recurrence;
 use TEC\Events_Pro\Custom_Tables\V1\Migration\Strategy\Multi_Rule_Event_Migration_Strategy;
 use TEC\Events_Pro\Custom_Tables\V1\Migration\Strategy\Single_Rule_Event_Migration_Strategy;
@@ -20,6 +21,7 @@ class RSVP_Migration_Test extends FT_CT1_Migration_Test_Case {
 	use CT1_Test_Utils;
 	use RSVP_Ticket_Maker;
 	use Commerce_Ticket_Maker;
+	use With_String_Dictionary;
 
 	public function dry_run_provider(): array {
 		return [
@@ -79,11 +81,10 @@ class RSVP_Migration_Test extends FT_CT1_Migration_Test_Case {
 			Multi_Rule_Event_Migration_Strategy::get_slug()    => 0,
 			RSVP_Ticketed_Recurring_Event_Strategy::get_slug() => 1,
 		] );
-		$report = $this->get_migration_report_for_event( $recurring_event_id );
-		$this->assertStringMatchesFormat(
-			tribe( String_Dictionary::class )->get( 'migration-error-recurring-with-rsvp-tickets' ),
-			$report->error
-		);
+		$report   = $this->get_migration_report_for_event( $recurring_event_id );
+		$format = tribe( String_Dictionary::class )->get( 'migration-error-recurring-with-rsvp-tickets' );
+		$expected = sprintf( $format, $this->get_event_link_markup( $recurring_event_id ) );
+		$this->assertEquals( $expected, $report->error );
 	}
 
 	/**
@@ -117,10 +118,9 @@ class RSVP_Migration_Test extends FT_CT1_Migration_Test_Case {
 			RSVP_Ticketed_Recurring_Event_Strategy::get_slug() => 1,
 		] );
 		$report = $this->get_migration_report_for_event( $recurring_event_id );
-		$this->assertStringMatchesFormat(
-			tribe( String_Dictionary::class )->get( 'migration-error-recurring-with-rsvp-tickets' ),
-			$report->error
-		);
+		$format = tribe( String_Dictionary::class )->get( 'migration-error-recurring-with-rsvp-tickets' );
+		$expected = sprintf( $format, $this->get_event_link_markup( $recurring_event_id ) );
+		$this->assertEquals( $expected, $report->error );
 	}
 
 	/**
@@ -145,10 +145,9 @@ class RSVP_Migration_Test extends FT_CT1_Migration_Test_Case {
 			RSVP_Ticketed_Recurring_Event_Strategy::get_slug() => 1,
 		] );
 		$report = $this->get_migration_report_for_event( $recurring_event_id );
-		$this->assertStringMatchesFormat(
-			tribe( String_Dictionary::class )->get( 'migration-error-recurring-with-rsvp-tickets' ),
-			$report->error
-		);
+		$format = tribe( String_Dictionary::class )->get( 'migration-error-recurring-with-rsvp-tickets' );
+		$expected = sprintf( $format, $this->get_event_link_markup( $recurring_event_id ) );
+		$this->assertEquals( $expected, $report->error );
 	}
 
 	/**
@@ -183,9 +182,8 @@ class RSVP_Migration_Test extends FT_CT1_Migration_Test_Case {
 			RSVP_Ticketed_Recurring_Event_Strategy::get_slug() => 1,
 		] );
 		$report = $this->get_migration_report_for_event( $recurring_event_id );
-		$this->assertStringMatchesFormat(
-			tribe( String_Dictionary::class )->get( 'migration-error-recurring-with-rsvp-tickets' ),
-			$report->error
-		);
+		$format = tribe( String_Dictionary::class )->get( 'migration-error-recurring-with-rsvp-tickets' );
+		$expected = sprintf( $format, $this->get_event_link_markup( $recurring_event_id ) );
+		$this->assertEquals( $expected, $report->error );
 	}
 }

@@ -2,8 +2,11 @@
 
 namespace TEC\Tickets\Flexible_Tickets;
 
+use Spatie\Snapshots\MatchesSnapshots;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
+use TEC\Events\Custom_Tables\V1\Migration\State;
 use TEC\Events\Custom_Tables\V1\Migration\Strategies\Null_Migration_Strategy;
+use TEC\Events\Custom_Tables\V1\Migration\String_Dictionary;
 use TEC\Events_Pro\Custom_Tables\V1\Events\Recurrence;
 use TEC\Tickets\Flexible_Tickets\CT1_Migration\Strategies\RSVP_Ticketed_Recurring_Event_Strategy;
 use TEC\Tickets\Flexible_Tickets\CT1_Migration\Strategies\Ticketed_Multi_Rule_Event_Migration_Strategy;
@@ -20,6 +23,7 @@ class CT1_Migration_Test extends Controller_Test_Case {
 	use RSVP_Ticket_Maker;
 	use PayPal_Ticket_Maker;
 	use Commerce_Ticket_Maker;
+	use MatchesSnapshots;
 
 	protected string $controller_class = CT1_Migration::class;
 
@@ -278,5 +282,33 @@ class CT1_Migration_Test extends Controller_Test_Case {
 		);
 
 		$this->assertInstanceOf( Ticketed_Multi_Rule_Event_Migration_Strategy::class, $strategy );
+	}
+
+	/**
+	 * It should correctly filter report headers in preview
+	 *
+	 * @test
+	 */
+	public function should_correctly_filter_report_headers_in_preview(): void {
+		$controller = $this->make_controller();
+		$controller->register();
+		tribe( State::class )->set( 'phase', State::PHASE_MIGRATION_PROMPT );
+		$headers = $controller->filter_report_headers( [], tribe( String_Dictionary::class )->reinit() );
+
+		$this->assertMatchesSnapshot( $headers );
+	}
+
+	/**
+	 * It should correctly filter report headers in execution
+	 *
+	 * @test
+	 */
+	public function should_correctly_filter_report_headers_in_execution(): void {
+		$controller = $this->make_controller();
+		$controller->register();
+		tribe( State::class )->set( 'phase', State::PHASE_MIGRATION_COMPLETE );
+		$headers = $controller->filter_report_headers( [], tribe( String_Dictionary::class )->reinit() );
+
+		$this->assertMatchesSnapshot( $headers );
 	}
 }

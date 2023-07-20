@@ -9,71 +9,20 @@
 
 namespace TEC\Tickets\Flexible_Tickets\CT1_Migration\Strategies;
 
-use TEC\Events\Custom_Tables\V1\Migration\Migration_Exception;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 use TEC\Tickets\Flexible_Tickets\CT1_Migration\CT1_Migration_Checks;
 use TEC\Tickets\Flexible_Tickets\Series_Passes;
-use Tribe__Events__Main as TEC;
 use Tribe__Tickets__Main as Tickets;
 
 /**
- * Class Abstract_Ticketed_Recurring_Event_Strategy.
+ * Trait Ticketed_Recurring_Event_Strategy_Trait.
  *
  * @since   TBD
  *
  * @package TEC\Tickets\Flexible_Tickets\CT1_Migration\Strategies;
  */
-class Abstract_Ticketed_Recurring_Event_Strategy {
+trait Ticketed_Recurring_Event_Strategy_Trait {
 	use CT1_Migration_Checks;
-
-	/**
-	 * The ID of the Event being migrated.
-	 *
-	 * @since TBD
-	 *
-	 * @var int
-	 */
-	protected int $post_id;
-
-	/**
-	 * Whether the migration is being run in dry-run mode.
-	 *
-	 * @since TBD
-	 *
-	 * @var bool
-	 */
-	protected bool $dry_run;
-
-	/**
-	 * Ticketed_Single_Rule_Event_Migration_Strategy constructor.
-	 *
-	 * since TBD
-	 *
-	 * @param int  $post_id The ID of the Event being migrated.
-	 * @param bool $dry_run Whether the migration is being run in dry-run mode.
-	 *
-	 * @throws Migration_Exception
-	 */
-	public function __construct( int $post_id, bool $dry_run ) {
-		$this->post_id = $post_id;
-		$this->dry_run = $dry_run;
-
-		$post_type = get_post_type( $post_id );
-
-		if ( $post_type !== TEC::POSTTYPE ) {
-			throw new Migration_Exception( 'Post is not an Event.' );
-		}
-
-		$recurrence_meta = get_post_meta( $post_id, '_EventRecurrence', true );
-
-		if ( ! ( is_array( $recurrence_meta ) && isset( $recurrence_meta['rules'] ) ) ) {
-			throw new Migration_Exception( 'Event Post is not recurring.' );
-		}
-
-		if ( ! $this->has_tickets( $post_id ) ) {
-			throw new Migration_Exception( 'Event Post does not have tickets attached.' );
-		}
-	}
 
 	/**
 	 * Returns a list of meta keys relating a Ticket or an Attende to the Event.

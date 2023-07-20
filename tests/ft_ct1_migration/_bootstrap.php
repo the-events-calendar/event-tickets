@@ -11,6 +11,8 @@ use TEC\Events_Pro\Custom_Tables\V1\Tables\Series_Relationships;
 use function tad\WPBrowser\addListener;
 use function tad\WPBrowser\importDumpWithMysqlBin;
 
+$tec_dir = dirname( __DIR__, 3 ) . '/the-events-calendar';
+Autoload::addNamespace( 'TEC\Events', $tec_dir . '/src/Events' );
 $ecp_dir = dirname( __DIR__, 3 ) . '/events-pro';
 Autoload::addNamespace( 'TEC\Events_Pro\Custom_Tables\V1', $ecp_dir . '/tests/_support/ct1' );
 Autoload::addNamespace( 'TEC\Events_Pro', $ecp_dir . '/src/Events_Pro' );

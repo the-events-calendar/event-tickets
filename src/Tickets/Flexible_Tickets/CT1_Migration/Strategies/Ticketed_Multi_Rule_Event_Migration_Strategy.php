@@ -26,9 +26,10 @@ use WP_Post;
  * @package TEC\Tickets\Flexible_Tickets\CT1_Migration\Strategies;
  */
 class Ticketed_Multi_Rule_Event_Migration_Strategy
-	extends Abstract_Ticketed_Recurring_Event_Strategy
+	extends Multi_Rule_Event_Migration_Strategy
 	implements Strategy_Interface {
 	use With_String_Dictionary;
+	use Ticketed_Recurring_Event_Strategy_Trait;
 
 	/**
 	 * Returns this strategy's slug.
@@ -48,12 +49,11 @@ class Ticketed_Multi_Rule_Event_Migration_Strategy
 	 *
 	 * @param Event_Report $event_report The Event_Report to update.
 	 */
-	public function apply( Event_Report $event_report ) {
-		$base_strategy = new Multi_Rule_Event_Migration_Strategy( $this->post_id, $this->dry_run );
-		$base_strategy->apply( $event_report );
+	public function apply( Event_Report $event_report ): Event_Report {
+		parent::apply( $event_report );
 
 		if ( $event_report->status !== 'success' ) {
-			return;
+			return $event_report;
 		}
 
 		$strings = tribe( String_Dictionary::class );
@@ -73,7 +73,7 @@ class Ticketed_Multi_Rule_Event_Migration_Strategy
 
 		$event_report->set( 'moved_tickets', $moved_tickets );
 		$event_report->set( 'moved_attendees', $moved_attendees );
-		// Replace the applied strategies with this one to have one single strategy in the report.
-		$event_report->strategies_applied = [ static::get_slug() ];
+
+		return $event_report;
 	}
 }
