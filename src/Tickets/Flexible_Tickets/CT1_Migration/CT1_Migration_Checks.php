@@ -44,12 +44,12 @@ trait CT1_Migration_Checks {
 	 * @return int[] The post IDs of the tickets attached to the Event.
 	 */
 	protected function get_ticket_ids( int $post_id ): array {
-
 		$remove_rsvp_tickets = static function ( array $modules ): array {
 			unset( $modules[ RSVP::class ] );
 
 			return $modules;
 		};
+
 		add_filter( 'tribe_tickets_get_modules', $remove_rsvp_tickets );
 		$ticket_ids = tribe_tickets()->where( 'event', $post_id )->get_ids();
 		remove_filter( 'tribe_tickets_get_modules', $remove_rsvp_tickets );

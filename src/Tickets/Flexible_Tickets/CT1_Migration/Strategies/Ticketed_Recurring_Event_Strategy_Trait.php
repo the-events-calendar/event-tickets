@@ -12,7 +12,8 @@ namespace TEC\Tickets\Flexible_Tickets\CT1_Migration\Strategies;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 use TEC\Tickets\Flexible_Tickets\CT1_Migration\CT1_Migration_Checks;
 use TEC\Tickets\Flexible_Tickets\Series_Passes;
-use Tribe__Tickets__Main as Tickets;
+use Tribe__Tickets__Main as Tickets_Main;
+use Tribe__Tickets__Tickets as Tickets;
 
 /**
  * Trait Ticketed_Recurring_Event_Strategy_Trait.
@@ -56,7 +57,7 @@ trait Ticketed_Recurring_Event_Strategy_Trait {
 	 * @since TBD
 	 */
 	protected function ensure_series_ticketable(): void {
-		$ticketable_post_types   = Tickets::instance()->post_types();
+		$ticketable_post_types   = Tickets_Main::instance()->post_types();
 		$ticketable_post_types[] = Series_Post_Type::POSTTYPE;
 		$ticketable_post_types   = array_unique( $ticketable_post_types );
 		tribe_update_option( 'ticket-enabled-post-types', $ticketable_post_types );
@@ -127,5 +128,22 @@ trait Ticketed_Recurring_Event_Strategy_Trait {
 		}
 
 		return [ $moved_tickets, $moved_attendees ];
+	}
+
+	/**
+	 * Sets the default ticket provider for the given Series by either using the one set for the Event or the default
+	 * one.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $series_id The ID of the Series.
+	 */
+	protected function set_default_ticket_provider( int $series_id ): void {
+		$meta_key        = tribe( 'tickets.handler' )->key_provider_field;
+		$ticket_provider = get_post_meta( $this->post_id, $meta_key, true );
+		if ( empty( $ticket_provider ) ) {
+			$ticket_provider = Tickets::get_default_module();
+		}
+		update_post_meta( $series_id, $meta_key, str_replace( '\\', '\\\\', $ticket_provider ) );
 	}
 }

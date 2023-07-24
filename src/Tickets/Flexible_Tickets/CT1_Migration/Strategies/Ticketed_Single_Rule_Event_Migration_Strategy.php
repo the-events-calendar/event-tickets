@@ -73,6 +73,8 @@ class Ticketed_Single_Rule_Event_Migration_Strategy
 
 		[ $moved_tickets, $moved_attendees ] = $this->move_tickets_to_series( $series->ID );
 
+		$this->set_default_ticket_provider( $series->ID );
+
 		$event_report->set( 'moved_tickets', $moved_tickets );
 		$event_report->set( 'moved_attendees', $moved_attendees );
 
