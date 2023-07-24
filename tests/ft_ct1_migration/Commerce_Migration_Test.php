@@ -115,6 +115,7 @@ class Commerce_Migration_Test extends FT_CT1_Migration_Test_Case {
 		$this->assertEquals( [], tribe_tickets()->where( 'event', $series_id )->get_ids() );
 		$this->assertEquals( [], tribe_attendees()->where( 'event', $series_id )->get_ids() );
 		$this->assertEquals( 'default', Commerce::get_instance()->get_ticket( $series_id, $ticket_id )->type() );
+		$this->assertEquals( '', get_post_meta( $series_id, '_tribe_default_ticket_provider', true ) );
 	}
 
 	/**
@@ -167,6 +168,7 @@ class Commerce_Migration_Test extends FT_CT1_Migration_Test_Case {
 		$this->assertEquals( 'default', Commerce::get_instance()->get_ticket( $series_id, $ticket_1 )->type() );
 		$this->assertEquals( 'default', Commerce::get_instance()->get_ticket( $series_id, $ticket_2 )->type() );
 		$this->assertEquals( 'default', Commerce::get_instance()->get_ticket( $series_id, $ticket_3 )->type() );
+		$this->assertEquals( '', get_post_meta( $series_id, '_tribe_default_ticket_provider', true ) );
 	}
 
 	/**
@@ -217,6 +219,7 @@ class Commerce_Migration_Test extends FT_CT1_Migration_Test_Case {
 		$this->assertEquals( [ $paypal_ticket_id ], tribe_tickets()->where( 'event', $series_id )->get_ids() );
 		$this->assertEquals( [], tribe_attendees()->where( 'event', $series_id )->get_ids() );
 		$this->assertEquals( Series_Passes::TICKET_TYPE, Commerce::get_instance()->get_ticket( $series_id, $paypal_ticket_id )->type() );
+		$this->assertEquals( Commerce::class, get_post_meta( $series_id, '_tribe_default_ticket_provider', true ) );
 	}
 
 	/**
@@ -281,6 +284,7 @@ class Commerce_Migration_Test extends FT_CT1_Migration_Test_Case {
 		$this->assertEquals( Series_Passes::TICKET_TYPE, Commerce::get_instance()->get_ticket( $series_id, $ticket_1 )->type() );
 		$this->assertEquals( Series_Passes::TICKET_TYPE, Commerce::get_instance()->get_ticket( $series_id, $ticket_2 )->type() );
 		$this->assertEquals( Series_Passes::TICKET_TYPE, Commerce::get_instance()->get_ticket( $series_id, $ticket_3 )->type() );
+		$this->assertEquals( Commerce::class, get_post_meta( $series_id, '_tribe_default_ticket_provider', true ) );
 	}
 
 	/**
@@ -335,6 +339,7 @@ class Commerce_Migration_Test extends FT_CT1_Migration_Test_Case {
 		$this->assertEquals( 'default', Commerce::get_instance()->get_ticket( $series_id, $ticket_1 )->type() );
 		$this->assertEquals( 'default', Commerce::get_instance()->get_ticket( $series_id, $ticket_2 )->type() );
 		$this->assertEquals( 'default', Commerce::get_instance()->get_ticket( $series_id, $ticket_3 )->type() );
+		$this->assertEquals( '', get_post_meta( $series_id, '_tribe_default_ticket_provider', true ) );
 	}
 
 	/**
@@ -402,5 +407,6 @@ class Commerce_Migration_Test extends FT_CT1_Migration_Test_Case {
 		$this->assertEquals( Series_Passes::TICKET_TYPE, Commerce::get_instance()->get_ticket( $series_id, $ticket_1 )->type() );
 		$this->assertEquals( Series_Passes::TICKET_TYPE, Commerce::get_instance()->get_ticket( $series_id, $ticket_2 )->type() );
 		$this->assertEquals( Series_Passes::TICKET_TYPE, Commerce::get_instance()->get_ticket( $series_id, $ticket_3 )->type() );
+		$this->assertEquals( Commerce::class, get_post_meta( $series_id, '_tribe_default_ticket_provider', true ) );
 	}
 }
