@@ -128,6 +128,7 @@ class Tribe__Tickets__Metabox {
 
 		$post = get_post( $post_id );
 		$data = wp_parse_args( tribe_get_request_var( array( 'data' ), array() ), array() );
+		$ticket_type = $data['ticket_type'] ?? 'default';
 		$notice = tribe_get_request_var( 'tribe-notice', false );
 
 		$data = Tribe__Utils__Array::get( $data, array( 'tribe-tickets' ), null );
@@ -141,7 +142,7 @@ class Tribe__Tickets__Metabox {
 			$tickets_handler->save_form_settings( $post->ID, isset( $data['settings'] ) ? $data['settings'] : null );
 		}
 
-		$return = $this->get_panels( $post );
+		$return = $this->get_panels( $post, null, $ticket_type );
 		$return['notice'] = $this->notice( $notice );
 
 		/**
@@ -162,12 +163,14 @@ class Tribe__Tickets__Metabox {
 	 *
 	 * @since  4.6.2
 	 *
-	 * @param int|WP_Post $post
-	 * @param int         $ticket_id
+	 * @param int|WP_Post $post        The post object or ID the tickets are for.
+	 * @param int|null    $ticket_id   The ID of the ticket to render the panels for, or `null` if rendering for a new
+	 *                                 ticket.
+	 * @param string|null $ticket_type The ticket type to render the panels for.
 	 *
-	 * @return array
+	 * @return array<string,string> A map from panel name to panel HTML content.
 	 */
-	public function get_panels( $post, $ticket_id = null ) {
+	public function get_panels( $post, $ticket_id = null, string $ticket_type = null ) {
 		if ( ! $post instanceof WP_Post ) {
 			$post = get_post( $post );
 		}
@@ -177,6 +180,12 @@ class Tribe__Tickets__Metabox {
 			return [];
 		}
 
+		// Try to work out the ticket type if it's not provided.
+		if ( empty( $ticket_type ) && $ticket_id ) {
+			$ticket_type = get_post_meta( $ticket_id, '_type', true );
+		}
+		$ticket_type = $ticket_type ?: 'default';
+
 		// Overwrites for a few templates that use get_the_ID() and get_post()
 		$GLOBALS['post'] = $post;
 
@@ -185,6 +194,17 @@ class Tribe__Tickets__Metabox {
 
 		/** @var Tribe__Tickets__Admin__Views $admin_views */
 		$admin_views = tribe( 'tickets.admin.views' );
+
+		/**
+		 * Fire action before the panels are rendered.
+		 *
+		 * @since TBD
+		 *
+		 * @param int|WP_Post $post        The post object or ID context of the panel rendering.
+		 * @param int|null    $ticket_id   The ID of the ticket being rendered, `null` if a new ticket.
+		 * @param string      $ticket_type The ticket type being rendered, `default` if not specified.
+		 */
+		do_action( 'tec_tickets_panels_before', $post, $ticket_id, $ticket_type );
 
 		$panels = [
 			'list'     => $admin_views->template( 'editor/panel/list', [
@@ -197,6 +217,17 @@ class Tribe__Tickets__Metabox {
 				( new Ticket_Panel_Data( $post->ID, $ticket_id ) )->to_array(),
 				false )
 		];
+
+		/**
+		 * Fire action after the panels are rendered.
+		 *
+		 * @since TBD
+		 *
+		 * @param int|WP_Post $post        The post object or ID context of the panel rendering.
+		 * @param int|null    $ticket_id   The ID of the ticket being rendered, `null` if a new ticket.
+		 * @param string      $ticket_type The ticket type being rendered, `default` if not specified.
+		 */
+		do_action( 'tec_tickets_panels_after', $post, $ticket_id, $ticket_type );
 
 		return $panels;
 	}

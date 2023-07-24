@@ -251,9 +251,19 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		$eventTickets.trigger( 'after_panel_swap.tickets', { panel: $panel } );
 	};
 
-	obj.fetchPanels = function( data, swapTo ) {
-		if ( 'undefined' === typeof data ) {
-			data = [];
+	/**
+	 *
+	 * @param {string|null} data The data to send to the server in URL-encoded format, or `null` if no data needs to be sent.
+	 * @param {string|null} swapTo The panel to swap to after the request is done.
+	 * @param {string|null} ticketType The ticket type to fetch the panels for.
+	 */
+	obj.fetchPanels = function( data, swapTo, ticketType ) {
+		ticketType = ticketType || 'default';
+
+		if ('undefined' === typeof data || data === null) {
+			data = {'ticket_type': ticketType};
+		} else {
+			data += encodeURIComponent('&ticket_type=' + ticketType);
 		}
 
 		var params = {
@@ -594,7 +604,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		// Triggers Dependency
 		$edit_panel.find( '.tribe-dependency' ).trigger( 'verify.dependency' );
 
-		obj.swapPanel( 'ticket' );
+		// Refresh the panels to get the ones corresponding to the ticket type.
+		obj.fetchPanels(null,'ticket', ticketType);
 
 		// Make it safe that it wont submit
 		return false;

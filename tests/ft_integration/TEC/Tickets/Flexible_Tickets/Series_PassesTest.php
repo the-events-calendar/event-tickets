@@ -619,4 +619,65 @@ class Series_PassesTest extends Controller_Test_Case {
 
 		$this->assertMatchesCodeSnapshot( $data );
 	}
+
+	public function ticket_type_provider(): array {
+		return [
+			'default'     => [ 'default' ],
+			'series pass' => [ Series_Passes::TICKET_TYPE ],
+		];
+	}
+
+	/**
+	 * It should filter panel labels during panel rendering
+	 *
+	 * @test
+	 * @dataProvider ticket_type_provider
+	 */
+	public function should_filter_panel_labels_correctly( string $ticket_type ): void {
+		$controller = $this->make_controller();
+		$controller->register();
+
+		$post      = static::factory()->post->create_and_get( [
+			'post_type' => Series_Post_Type::POSTTYPE,
+		] );
+		$ticket_id = $this->create_tc_series_pass( $post->ID, 2389, [
+			'tribe-ticket'    => $this->capacity_payload( 'unlimited' ),
+			'ticket_end_date' => '2022-03-04',
+			'ticket_end_time' => '12:00:00',
+		] )->ID;
+
+		do_action( 'tec_tickets_panels_before', $post, $ticket_id, $ticket_type );
+
+		$labels = [
+			'during_panel_rendering' => [],
+			'after_panel_rendering'  => [],
+		];
+
+		$labels['during_panel_rendering'] = [
+			'ticket_label_plural_lowercase_no_context'         => tribe_get_ticket_label_plural_lowercase(),
+			'ticket_label_singular_lowercase_no_context'       => tribe_get_ticket_label_singular_lowercase(),
+			'ticket_label_plural_no_context'                   => tribe_get_ticket_label_plural(),
+			'ticket_label_singular_no_context'                 => tribe_get_ticket_label_singular(),
+			'ticket_label_plural_lowercase_metabox_capacity'   => tribe_get_ticket_label_plural_lowercase( 'metabox_capacity' ),
+			'ticket_label_singular_lowercase_metabox_capacity' => tribe_get_ticket_label_singular_lowercase( 'metabox_capacity' ),
+			'ticket_label_plural_metabox_capacity'             => tribe_get_ticket_label_plural( 'metabox_capacity' ),
+			'ticket_label_singular_metabox_capacity'           => tribe_get_ticket_label_singular( 'metabox_capacity' ),
+		];
+
+		// The filtering of the labels should stop here.
+		do_action( 'tec_tickets_panels_after', $post, $ticket_id, $ticket_type );
+
+		$labels['after_panel_rendering'] = [
+			'ticket_label_plural_lowercase_no_context'         => tribe_get_ticket_label_plural_lowercase(),
+			'ticket_label_singular_lowercase_no_context'       => tribe_get_ticket_label_singular_lowercase(),
+			'ticket_label_plural_no_context'                   => tribe_get_ticket_label_plural(),
+			'ticket_label_singular_no_context'                 => tribe_get_ticket_label_singular(),
+			'ticket_label_plural_lowercase_metabox_capacity'   => tribe_get_ticket_label_plural_lowercase( 'metabox_capacity' ),
+			'ticket_label_singular_lowercase_metabox_capacity' => tribe_get_ticket_label_singular_lowercase( 'metabox_capacity' ),
+			'ticket_label_plural_metabox_capacity'             => tribe_get_ticket_label_plural( 'metabox_capacity' ),
+			'ticket_label_singular_metabox_capacity'           => tribe_get_ticket_label_singular( 'metabox_capacity' ),
+		];
+
+		$this->assertMatchesStringSnapshot( var_export( $labels, true ) );
+	}
 }

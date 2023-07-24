@@ -10,6 +10,7 @@
 namespace TEC\Tickets\Flexible_Tickets;
 
 use TEC\Common\Contracts\Provider\Controller;
+use TEC\Common\lucatume\DI52\Container;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 use TEC\Events_Pro\Custom_Tables\V1\Templates\Series_Filters;
 use TEC\Tickets\Flexible_Tickets\Templates\Admin_Views;
@@ -32,6 +33,20 @@ class Series_Passes extends Controller {
 	 * @since TBD
 	 */
 	public const TICKET_TYPE = 'series_pass';
+
+	/**
+	 * A reference to the labels' handler.
+	 *
+	 * @since TBD
+	 *
+	 * @var Labels
+	 */
+	private Labels $labels;
+
+	public function __construct( Container $container, Labels $labels ) {
+		parent::__construct( $container );
+		$this->labels = $labels;
+	}
 
 	/**
 	 * The entire provider should not be active if Series are not ticketable.
@@ -87,6 +102,8 @@ class Series_Passes extends Controller {
 		// Event Occurrences have been updated
 		add_action( 'tec_events_custom_tables_v1_after_save_occurrences', [ $this, 'update_passes_for_event' ] );
 
+		add_action( 'tec_tickets_panels_before', [ $this, 'start_filtering_labels' ], 10, 3 );
+		add_action( 'tec_tickets_panels_after', [ $this->labels, 'stop_filtering_labels' ] );
 	}
 
 	/**
@@ -116,6 +133,8 @@ class Series_Passes extends Controller {
 			'update_passes_for_series'
 		] );
 		remove_action( 'tec_events_custom_tables_v1_after_save_occurrences', [ $this, 'update_passes_for_event' ] );
+		remove_action( 'tec_tickets_panels_before', [ $this, 'start_filtering_labels' ] );
+		remove_action( 'tec_tickets_panels_after', [ $this->labels, 'stop_filtering_labels' ] );
 	}
 
 	/**
@@ -372,5 +391,24 @@ class Series_Passes extends Controller {
 		}
 
 		$this->update_passes_for_series( reset( $series_ids ) );
+	}
+
+	/**
+	 * Starts filtering the ticket labels during panel rendering.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|WP_Post|null $post        The post the panel is being rendered for.
+	 * @param int|null         $ticket_id   The ticket ID the panel is being rendered for, if any.
+	 * @param string|null      $ticket_type The ticket type the panel is being rendered for, if any.
+	 *
+	 * @return void
+	 */
+	public function start_filtering_labels( $post = null, $ticket_id = null, $ticket_type = null ): void {
+		if ( $ticket_type !== self::TICKET_TYPE ) {
+			return;
+		}
+
+		$this->labels->start_filtering_labels();
 	}
 }
