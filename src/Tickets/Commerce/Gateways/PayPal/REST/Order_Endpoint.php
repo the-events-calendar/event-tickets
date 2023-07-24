@@ -120,7 +120,8 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		foreach ( $order->items as $item ) {
 			$ticket          = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
 			$unit['items'][] = [
-				'name'        => $ticket->name,
+				'name'        => sprintf( '%s - %s', $ticket->name, get_the_title( $item['event_id'] ) ),
+				'description' => get_the_title( $item['event_id'] ),
 				'unit_amount' => [ 'value' => (string) $item['price'], 'currency_code' => $order->currency ],
 				'quantity'    => $item['quantity'],
 				'item_total'  => [ 'value' => (string) $item['sub_total'], 'currency_code' => $order->currency ],
