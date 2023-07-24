@@ -59,7 +59,7 @@ if ( ! function_exists( 'tec_tickets_get_series_pass_singular_uppercase' ) ) {
 	}
 }
 
-if ( function_exists( 'tec_tickets_get_series_pass_plural_lowercase' ) ) {
+if ( ! function_exists( 'tec_tickets_get_series_pass_plural_lowercase' ) ) {
 	/**
 	 * Returns the filtered, lowercase plural version of the Series Pass label.
 	 *
