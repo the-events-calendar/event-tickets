@@ -57,7 +57,7 @@ class Provider extends Integration_Abstract {
 	}
 
 	/**
-	 * Disable static CSS generation for specific posts in the Divi theme.
+	 * Disable static CSS generation for the Attendee Registration page.
 	 *
 	 * @return void
 	 */
@@ -70,7 +70,7 @@ class Provider extends Integration_Abstract {
 	}
 
 	/**
-	 * Hide the page heading for specific posts in the Divi theme.
+	 * Hide the page heading for the Attendee Registration page.
 	 *
 	 * @param string $title The current title.
 	 *
