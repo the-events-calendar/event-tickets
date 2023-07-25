@@ -43,6 +43,25 @@ class Ticketed_Multi_Rule_Event_Migration_Strategy
 	}
 
 	/**
+	 * Ticketed_Multi_Rule_Event_Migration_Strategy constructor.
+	 *
+	 * since TBD
+	 *
+	 * @param int  $post_id The post ID of the Event to migrate.
+	 * @param bool $dry_run Whether the migration should actually commit information or not.
+	 *
+	 * @throws Migration_Exception If the post is not an Event or the Event is not Recurring, or the Event has no
+	 *                             tickets.
+	 */
+	public function __construct( $post_id, $dry_run ) {
+		parent::__construct( $post_id, $dry_run );
+
+		if ( ! count( $this->get_ticket_ids( $post_id ) ) ) {
+			throw new Migration_Exception( 'Recurring Event has no tickets.' );
+		}
+	}
+
+	/**
 	 * Applies the strategy to the given Event and updates the Event_Report.
 	 *
 	 * @since TBD
