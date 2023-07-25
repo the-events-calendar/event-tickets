@@ -55,6 +55,7 @@ class PayPal_Migration_Test extends FT_CT1_Migration_Test_Case {
 		$single_event     = $this->given_a_non_migrated_single_event();
 		$single_event_id  = $single_event->ID;
 		$paypal_ticket_id = $this->create_paypal_ticket( $single_event_id, 23 );
+		update_post_meta( $single_event_id, '_tribe_default_ticket_provider', PayPal::class );
 
 		$this->run_migration();
 
@@ -77,6 +78,7 @@ class PayPal_Migration_Test extends FT_CT1_Migration_Test_Case {
 	public function should_preview_recurring_event_with_1_rrule_and_paypal_ticket_with_no_attendees(): void {
 		$recurring_event    = $this->given_a_non_migrated_recurring_event();
 		$recurring_event_id = $recurring_event->ID;
+		update_post_meta( $recurring_event_id, '_tribe_default_ticket_provider', PayPal::class );
 		$paypal_ticket_id   = $this->create_paypal_ticket( $recurring_event_id, 23 );
 
 		$this->run_migration( true );
@@ -126,6 +128,7 @@ class PayPal_Migration_Test extends FT_CT1_Migration_Test_Case {
 	public function should_preview_recurring_event_with_1_rrule_many_paypal_tickets_with_many_attendees(): void {
 		$recurring_event    = $this->given_a_non_migrated_recurring_event();
 		$recurring_event_id = $recurring_event->ID;
+		update_post_meta( $recurring_event_id, '_tribe_default_ticket_provider', PayPal::class );
 		$ticket_1           = $this->create_paypal_ticket( $recurring_event_id, 23 );
 		$ticket_2           = $this->create_paypal_ticket( $recurring_event_id, 89 );
 		$ticket_3           = $this->create_paypal_ticket( $recurring_event_id, 66 );
@@ -181,6 +184,7 @@ class PayPal_Migration_Test extends FT_CT1_Migration_Test_Case {
 		$occurrences_before       = $this->last_insertion_post_id_to_dates_map;
 		$occurrences_count_before = count( $occurrences_before );
 		$recurring_event_id       = $recurring_event->ID;
+		update_post_meta( $recurring_event_id, '_tribe_default_ticket_provider', PayPal::class );
 		$paypal_ticket_id         = $this->create_paypal_ticket( $recurring_event_id, 23 );
 
 		$this->run_migration( false );
@@ -232,6 +236,7 @@ class PayPal_Migration_Test extends FT_CT1_Migration_Test_Case {
 		$occurrences_before       = $this->last_insertion_post_id_to_dates_map;
 		$occurrences_count_before = count( $occurrences_before );
 		$recurring_event_id       = $recurring_event->ID;
+		update_post_meta( $recurring_event_id, '_tribe_default_ticket_provider', PayPal::class );
 		$ticket_1                 = $this->create_paypal_ticket( $recurring_event_id, 23 );
 		$ticket_2                 = $this->create_paypal_ticket( $recurring_event_id, 89 );
 		$ticket_3                 = $this->create_paypal_ticket( $recurring_event_id, 66 );
@@ -295,6 +300,7 @@ class PayPal_Migration_Test extends FT_CT1_Migration_Test_Case {
 	public function should_preview_recurring_event_with_multiple_rules_tickets_and_attendees(): void {
 		$recurring_event    = $this->given_a_non_migrated_multi_rule_recurring_event();
 		$recurring_event_id = $recurring_event->ID;
+		update_post_meta( $recurring_event_id, '_tribe_default_ticket_provider', PayPal::class );
 		$ticket_1           = $this->create_paypal_ticket( $recurring_event_id, 23 );
 		$ticket_2           = $this->create_paypal_ticket( $recurring_event_id, 89 );
 		$ticket_3           = $this->create_paypal_ticket( $recurring_event_id, 66 );
@@ -352,6 +358,7 @@ class PayPal_Migration_Test extends FT_CT1_Migration_Test_Case {
 		$occurrences_before       = $this->last_insertion_post_id_to_dates_map;
 		$occurrences_count_before = count( $occurrences_before );
 		$recurring_event_id       = $recurring_event->ID;
+		update_post_meta( $recurring_event_id, '_tribe_default_ticket_provider', PayPal::class );
 		$ticket_1                 = $this->create_paypal_ticket( $recurring_event_id, 23 );
 		$ticket_2                 = $this->create_paypal_ticket( $recurring_event_id, 89 );
 		$ticket_3                 = $this->create_paypal_ticket( $recurring_event_id, 66 );
