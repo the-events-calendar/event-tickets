@@ -57,6 +57,9 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	var $edit_panel = $( document.getElementById( 'tribe_panel_edit' ) );
 	var $settings_panel = $( document.getElementById( 'tribe_panel_settings' ) );
 
+	// Ticket provider state.
+	let ticketProviderModule = null;
+
 	// Datepicker and Timepicker variables
 	var datepickerFormats = [
 		'yy-mm-dd',
@@ -138,7 +141,9 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			provider_id = $checkedProvider.val() + '_radio';
 		}
 
-		$( document.getElementById( provider_id ) ).prop( 'checked', true ).trigger( 'change' );
+		const ticketProviderInput = $( document.getElementById( provider_id ) );
+		ticketProviderModule = ticketProviderInput.val();
+		ticketProviderInput.prop( 'checked', true ).trigger( 'change' );
 	}
 
 	/**
@@ -677,9 +682,13 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		var ticketID = $edit_panel.find( '#ticket_id' ).val();
 		var $editParent = $base_panel.find( `[data-ticket-type-id="${ticketID}"]` );
 		var orders = $editParent.find( '.tribe-ticket-field-order' ).val();
+		let ticketData = $edit_panel.find( 'input,textarea,select' ).serialize().replace( /\'/g, '%27' ).replace( /\:/g, '%3A' );
+		if (!ticketData.includes('ticket_provider')) {
+			ticketData += '&ticket_provider=' + encodeURIComponent(ticketProviderModule);
+		}
 		var params = {
 			action: 'tribe-ticket-add',
-			data: $edit_panel.find( 'input,textarea,select' ).serialize().replace( /\'/g, '%27' ).replace( /\:/g, '%3A' ),
+			data: ticketData,
 			post_id: $post_id.val(),
 			nonce: TribeTickets.add_ticket_nonce,
 			menu_order: orders,
