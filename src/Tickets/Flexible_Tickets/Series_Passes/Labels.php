@@ -8,7 +8,7 @@
  * @package TEC\Tickets\Flexible_Tickets;
  */
 
-namespace TEC\Tickets\Flexible_Tickets;
+namespace TEC\Tickets\Flexible_Tickets\Series_Passes;
 
 /**
  * Class Labels.

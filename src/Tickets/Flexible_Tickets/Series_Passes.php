@@ -13,11 +13,15 @@ use TEC\Common\Contracts\Provider\Controller;
 use TEC\Common\lucatume\DI52\Container;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 use TEC\Events_Pro\Custom_Tables\V1\Templates\Series_Filters;
+use TEC\Tickets\Flexible_Tickets\Series_Passes\Labels;
+use TEC\Tickets\Flexible_Tickets\Series_Passes\Meta;
 use TEC\Tickets\Flexible_Tickets\Templates\Admin_Views;
 use Tribe__Events__Main as TEC;
 use Tribe__Tickets__RSVP as RSVP;
+use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Tickets__Tickets as Tickets;
 use WP_Post;
+use Tribe__Date_Utils as Dates;
 
 /**
  * Class Repository.
@@ -42,10 +46,19 @@ class Series_Passes extends Controller {
 	 * @var Labels
 	 */
 	private Labels $labels;
+	/**
+	 * A reference to the Series Passes' meta handler.
+	 *
+	 * @since TBD
+	 *
+	 * @var Meta
+	 */
+	private Meta $meta;
 
-	public function __construct( Container $container, Labels $labels ) {
+	public function __construct( Container $container, Labels $labels, Meta $meta ) {
 		parent::__construct( $container );
 		$this->labels = $labels;
+		$this->meta   = $meta;
 	}
 
 	/**
@@ -86,6 +99,7 @@ class Series_Passes extends Controller {
 		// Subscribe to Tickets' metadata updates.
 		add_action( 'added_post_meta', [ $this, 'update_pass_meta' ], 20, 4 );
 		add_action( 'updated_post_meta', [ $this, 'update_pass_meta' ], 20, 4 );
+		add_action( 'tribe_tickets_ticket_add', [ $this, 'update_pass_meta_on_save' ], 10, 2 );
 
 		// An Event is attached to a Series.
 		add_action( 'tec_events_pro_custom_tables_v1_event_relationship_updated', [
@@ -124,6 +138,7 @@ class Series_Passes extends Controller {
 		}
 		remove_action( 'added_post_meta', [ $this, 'update_pass_meta' ], 20 );
 		remove_action( 'updated_post_meta', [ $this, 'update_pass_meta' ], 20 );
+		remove_action( 'tribe_tickets_ticket_add', [ $this, 'update_pass_meta_on_save' ] );
 		remove_action( 'tec_events_pro_custom_tables_v1_event_relationship_updated', [
 			$this,
 			'update_passes_for_event'
@@ -214,13 +229,9 @@ class Series_Passes extends Controller {
 		$set_end_date = get_post_meta( $ticket_id, '_ticket_end_date', true );
 		$set_end_time = get_post_meta( $ticket_id, '_ticket_end_time', true );
 
-		if ( ! $set_end_date ) {
-			$data['ticket_end_date'] = '';
-		}
-
-		if ( ! $set_end_time ) {
-			$data['ticket_end_time'] = '';
-		}
+		$datepicker_format       = Dates::datepicker_formats( Dates::get_datepicker_format_index() );
+		$data['ticket_end_date'] = $set_end_date ? Dates::date_only( $set_end_date, false, $datepicker_format ) : '';
+		$data['ticket_end_time'] = $set_end_time ? Dates::time_only( $set_end_time ) : '';
 
 		return $data;
 	}
@@ -263,6 +274,8 @@ class Series_Passes extends Controller {
 	/*
 	 * Updates a Series Pass' end date meta dynamic flag and values, if needed.
 	 *
+	 * The method wraps the Meta low-level operation to unregister and re-register the provider as required.
+	 *
 	 * @since TBD
 	 *
 	 * @param int $ticket_id The ticket ID.
@@ -271,29 +284,14 @@ class Series_Passes extends Controller {
 	 */
 	private function update_ticket_end_meta( int $ticket_id, string $meta_key, bool $dynamic ): void {
 		// Unregister to avoid infinite loops.
-		$this->unregister();
+		remove_action( 'added_post_meta', [ $this, 'update_pass_meta' ], 20 );
+		remove_action( 'updated_post_meta', [ $this, 'update_pass_meta' ], 20 );
 
-		$dynamic_meta_key = $meta_key === '_ticket_end_date' ? '_dynamic_end_date' : '_dynamic_end_time';
-
-		if ( ! $dynamic ) {
-			update_post_meta( $ticket_id, $dynamic_meta_key, '0' );
-
-			// Re-register the controller.
-			$this->do_register();
-
-			return;
-		}
-
-		// Set the end date dynamically from the start date of the last Occurrence in the Series.
-		$last       = $this->container->get( Series_Passes\Repository::class )->get_last_occurrence_by_ticket( $ticket_id );
-		$format     = $meta_key === '_ticket_end_date' ? 'Y-m-d' : 'H:i:s';
-		$meta_value = $last instanceof WP_Post ? $last->dates->start->format( $format ) : '';
-
-		update_post_meta( $ticket_id, $meta_key, $meta_value );
-		update_post_meta( $ticket_id, $dynamic_meta_key, '1' );
+		$this->meta->update_end_meta( $ticket_id, $meta_key, $dynamic );
 
 		// Re-register the controller.
-		$this->do_register();
+		add_action( 'added_post_meta', [ $this, 'update_pass_meta' ], 20, 4 );
+		add_action( 'updated_post_meta', [ $this, 'update_pass_meta' ], 20, 4 );
 	}
 
 	/**
@@ -309,23 +307,11 @@ class Series_Passes extends Controller {
 	 * @return void The meta is updated.
 	 */
 	public function update_pass_meta( $meta_id, $ticket_id, $meta_key, $meta_value ): void {
-		if ( ! in_array( $meta_key, [ '_ticket_end_date', '_ticket_end_time' ], true ) ) {
+		if ( get_post_meta( $ticket_id, '_type', true ) !== self::TICKET_TYPE ) {
 			return;
 		}
 
-		if ( $meta_key === '_ticket_end_date' ) {
-			// We're updating the end date: if empty it's dynamic.
-			$end_date_is_dynamic = empty( $meta_value );
-			$this->update_ticket_end_meta( $ticket_id, '_ticket_end_date', $end_date_is_dynamic );
-			// Also update the end time and it's dynamic flag.
-			$this->update_ticket_end_meta( $ticket_id, '_ticket_end_time', $end_date_is_dynamic );
-
-			return;
-		}
-
-		// We're updating the end time: read the dynamic flag of the end date.
-		$end_date_is_dynamic = get_post_meta( $ticket_id, '_dynamic_end_date', true );
-		$this->update_ticket_end_meta( $ticket_id, $meta_key, $end_date_is_dynamic );
+		$this->meta->update_pass_meta( $ticket_id, $meta_key, $meta_value );
 	}
 
 	/**
@@ -348,6 +334,20 @@ class Series_Passes extends Controller {
 
 		// End time follows end date: either they're both dynamic or both manually set.
 		$this->update_ticket_end_meta( $ticket_id, '_ticket_end_time', $end_date_is_dynamic );
+	}
+
+	/**
+	 * Updates a Series Pass meta when created or edited.
+	 *
+	 * @since TBD
+	 *
+	 * @param int           $post_id The ID of the post the Ticket is being saved for.
+	 * @param Ticket_Object $ticket  The Ticket being saved.
+	 *
+	 * @return void The Series Pass meta is updated, if the Ticket is a Series Pass and it's required.
+	 */
+	public function update_pass_meta_on_save( $post_id, Ticket_Object $ticket ): void {
+		$this->update_pass( $ticket->ID );
 	}
 
 	/**

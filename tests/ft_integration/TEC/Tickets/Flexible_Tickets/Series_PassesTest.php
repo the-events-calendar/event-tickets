@@ -680,4 +680,42 @@ class Series_PassesTest extends Controller_Test_Case {
 
 		$this->assertMatchesStringSnapshot( var_export( $labels, true ) );
 	}
+
+	/**
+	 * It should correctly set dynamic end meta when ticket save deletes empty meta
+	 *
+	 * Ticket Commerce is an example of a provider that will delete empty meta when saving a ticket.
+	 * The Controller hooks on create/insert post and meta operations that will come **before** the
+	 * meta is deleted. This test ensures the Controller jumps correctly into the ticket save flow.
+	 *
+	 * @test
+	 */
+	public function should_correctly_set_dynamic_end_meta_when_ticket_save_deletes_empty_meta(): void {
+		$controller = $this->make_controller();
+		$controller->register();
+
+		// Create a Series.
+		$series = static::factory()->post->create_and_get( [
+			'post_type' => Series_Post_Type::POSTTYPE,
+		] );
+		// Create a Single Event attached to Series.
+		$event = tribe_events()->set_args( [
+			'title'      => 'Single Event 1',
+			'status'     => 'publish',
+			'start_date' => '2020-02-11 17:30:00',
+			'end_date'   => '2020-02-11 18:00:00',
+			'series'     => $series->ID,
+		] )->create();
+		// Insert a ticket with no start and end date/time.
+		$ticket_id = $this->create_tc_series_pass( $series->ID, 2389, [
+			'tribe-ticket' => $this->capacity_payload( 'unlimited' ),
+			'ticket_start_date' => '',
+			'ticket_start_time' => '',
+			'ticket_end_date'   => '',
+			'ticket_end_time'   => '',
+		] )->ID;
+
+		$this->assertEquals( '2020-02-11', get_post_meta( $ticket_id, '_ticket_end_date', true ) );
+		$this->assertEquals( '17:30:00', get_post_meta( $ticket_id, '_ticket_end_time', true ) );
+	}
 }
