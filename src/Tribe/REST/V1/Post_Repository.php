@@ -513,7 +513,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 			get_post_meta( $ticket_id, $handler->key_start_date, true ),
 			get_post_meta( $ticket_id, $handler->key_start_time, true )
 		];
-		$start_string = implode( ' ', $start_info );
+		$start_string = implode( ' ', array_filter( $start_info ) );
 
 		return $get_details
 			? $this->get_date_details( $start_string )
@@ -538,7 +538,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 			get_post_meta( $ticket_id, $handler->key_end_date, true ),
 			get_post_meta( $ticket_id, $handler->key_end_time, true ),
 		];
-		$end_string = implode( ' ', $end_info );
+		$end_string = implode( ' ', array_filter( $end_info ) );
 
 		return $get_details
 			? $this->get_date_details( $end_string )
