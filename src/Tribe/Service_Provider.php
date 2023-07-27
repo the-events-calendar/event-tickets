@@ -15,6 +15,7 @@ use TEC\Tickets\Custom_Tables\V1\Provider as ET_Custom_Tables;
 class Tribe__Tickets__Service_Provider extends \TEC\Common\Contracts\Service_Provider {
 	/**
 	 * Binds and sets up implementations.
+	 *
 	 * @since TBD Added `register_on_action` for `tec_events_custom_tables_v1_fully_activated` to activate ET CT1 logic when TEC CT1 is fully activated.
 	 * @since 4.6
 	 */
@@ -58,7 +59,7 @@ class Tribe__Tickets__Service_Provider extends \TEC\Common\Contracts\Service_Pro
 		// Migration queues.
 		$this->container->singleton( 'tickets.migration.queue_4_12', \Tribe\Tickets\Migration\Queue_4_12::class, [ 'hooks' ] );
 
-		// Class defined by the Event Events plugin.
+		// Enabled ET CT1 when TEC CT1 is fully activated.
 		$this->container->register_on_action( 'tec_events_custom_tables_v1_fully_activated', ET_Custom_Tables::class );
 
 		$this->load();
