@@ -150,7 +150,6 @@ class Warnings {
 				data-depends="<?php echo esc_attr( $depends_on ); ?>"
 			<?php } ?>
 			<?php echo esc_attr( $condition_attr ); ?>
-			style="display: none;"
 		>
 			<span class="dashicons <?php echo esc_attr( $icon ); ?>"></span>
 			<span class="message"><?php echo wp_kses_post( $message ); ?></span>
