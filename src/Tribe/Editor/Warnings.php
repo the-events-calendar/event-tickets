@@ -56,7 +56,7 @@ class Warnings {
 			return;
 		}
 
-		$this->render_notice( $this->get_recurring_event_warning_message(), 'info', '#tribe-recurrence-active', 'checked', [ 'recurring_event_warning' ] );
+		$this->render_notice( $this->get_recurring_event_warning_message(), 'info', null, null, [ 'recurring_event_warning' ] );
 	}
 
 	/**
