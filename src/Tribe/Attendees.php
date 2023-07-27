@@ -150,16 +150,22 @@ class Tribe__Tickets__Attendees {
 	/**
 	 * Returns the full URL to the attendees report page.
 	 *
+	 * @since TBD - tec_tickets_filter_event_id filter to normalize the $post_id.
 	 * @since 4.6.2
-	 * @since TBD - Added $post_id parameter to allow for conversion of provisional ID's into regular Post ID's.
 	 *
 	 * @param WP_Post $post
 	 *
 	 * @return string
 	 */
 	public function get_report_link( $post ) {
-		// Convert provisional ID's into regular Post ID's.
-		$post_id = tec_tickets_normalize_post_id( $post->ID );
+		/**
+		 * This filter allows retrieval of an event ID to be filtered before being accessed elsewhere.
+		 *
+		 * @since TBD
+		 *
+		 * @param int|null The event ID to be filtered.
+		 */
+		$post_id = apply_filters( 'tec_tickets_filter_event_id', $post->ID );
 
 		$args = [
 			'post_type' => $post->post_type,
