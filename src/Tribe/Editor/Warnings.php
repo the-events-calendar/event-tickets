@@ -25,6 +25,7 @@ class Warnings {
 	/**
 	 * Show the Recurring Event warning message.
 	 *
+	 * @since TBD   Remove dependency on `#tribe-recurrence-active`.
 	 * @since 5.6.2 Added 'recurring_event_warning' as an $additionalClasses.
 	 * @since 5.0.4
 	 *
