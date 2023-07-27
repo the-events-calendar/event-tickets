@@ -24,15 +24,6 @@ use WP_Query;
  */
 class Provider extends Service_Provider {
 	/**
-	 * The action to fire when the provider is registered.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	public static string $registration_action =  'tec_tickets_custom_tables_controller_registered';
-
-	/**
 	 * @var bool
 	 */
 	protected $has_registered = false;
