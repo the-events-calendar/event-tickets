@@ -353,11 +353,32 @@
 
 /* Styles for Initial View */
 .ticket_table_intro {
+	display: flex;
+	justify-content: flex-start;
+
 	.button-secondary {
-		float: right;
-		margin-bottom: 15px;
-		margin-left: 5px;
+		margin-left: var(--tec-spacer-3);
+		&:first-of-type {
+			margin-left: 0;
+		}
 	}
+}
+
+.tribe_ticket_list_table {
+	.table-header .ticket_name {
+		display: flex;
+		justify-content: flex-start;
+		align-items: center;
+
+		.tribe-tickets-svgicon {
+			margin-right: var(--tec-spacer-0);
+		}
+	}
+}
+
+.tribe-ticket-control-wrap {
+	display: flex;
+	justify-content: space-between;
 
 	#ticket_form_total_capacity {
 		display: inline-block;
@@ -383,6 +404,34 @@
 				transform: none;
 				width: 100%;
 			}
+		}
+	}
+
+	.tribe-ticket-control-wrap__ctas {
+		display: flex;
+		justify-content: flex-start;
+		align-items: center;
+
+		a:not(:first-of-type):before {
+			color: #2c3338;
+			content: '|';
+			margin-right: 2px;
+			margin-left: 2px;
+			text-decoration: none;
+		}
+	}
+
+	.tribe-ticket-control-wrap__settings {
+		display: flex;
+		justify-content: flex-end;
+		align-items: center;
+
+		& > * {
+			margin-right: var(--tec-spacer-1);
+		}
+
+		&:last-child {
+			margin-right: 0;
 		}
 	}
 }

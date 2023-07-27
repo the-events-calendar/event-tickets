@@ -20,66 +20,131 @@ $container_class .= ( empty( $total_tickets ) ) ? ' tribe_no_capacity' : '';
 			<div class="ticket_table_intro">
 				<?php
 				/**
-				 * Allows for the insertion of total capacity element into the main ticket admin panel "header".
+				 * Allows for the insertion of additional content into the main ticket admin panel after the tickets listing.
 				 *
 				 * @since 4.6
+				 * @since TBD All metabox buttons to toggle ticket forms are now loaded from this action; moved to
+				 *        list intro from after list.
 				 *
 				 * @param int $post_id Post ID.
 				 */
-				do_action( 'tribe_events_tickets_capacity', $post_id );
+				do_action( 'tribe_events_tickets_new_ticket_buttons', $post_id );
 
 				/**
-				 * Allows for the insertion of additional elements (buttons/links) into the main ticket admin panel "header".
+				 * Allows for the insertion of warnings before the settings button.
 				 *
 				 * @since 4.6
+				 * @since TBD Moved to list intro from after list.
 				 *
-				 * @param int $post_id Post ID.
+				 * @param int Post ID.
 				 */
-				do_action( 'tribe_events_tickets_post_capacity', $post_id );
+				do_action( 'tribe_events_tickets_new_ticket_warnings', $post_id );
 				?>
-				<a
-					class="button-secondary"
-					href="<?php echo esc_url( $attendees_url ); ?>"
-				>
-					<?php esc_html_e( 'View Attendees', 'event-tickets' ); ?>
-				</a>
 			</div>
+
 			<?php
+
 			/** @var Tribe__Tickets__Admin__Views $admin_views */
 			$admin_views = tribe( 'tickets.admin.views' );
 
-			$admin_views->template( 'editor/list-table', [ 'tickets' => $tickets ] );
+			// Split tickets by type to render a list for each type of ticket.
+			$ticket_types = [];
+			foreach ( $tickets as $ticket ) {
+				$provider_class = $ticket->provider_class ?? null;
+
+				if ( $provider_class === 'Tribe__Tickets__RSVP' ) {
+					// RSVP is its own type.
+					$ticket_types['rsvp'][] = $ticket;
+					continue;
+				}
+
+				$ticket_type                    = $ticket->type ?? 'default';
+				$ticket_types[ $ticket_type ][] = $ticket;
+			}
+
+			foreach ( $ticket_types as $ticket_type => $tickets ) {
+				$table_data = [ 'ticket_type' => $ticket_type, 'tickets' => $tickets ];
+
+				switch ( $ticket_type ) {
+					case 'rsvp':
+						$table_data ['table_title'] = tribe_get_rsvp_label_plural( 'list-table' );
+						break;
+					case 'default':
+					default:
+						$table_data['table_title'] = tribe_get_ticket_label_plural( 'list-table' );
+						break;
+				}
+
+				/**
+				 * Filters the data that will be passed to the tickets list table template.
+				 *
+				 * Emptying the 'tickets' key will prevent the table from being rendered.
+				 *
+				 * @since TBD
+				 *
+				 * @param array<string,mixed> $table_data  The list table data.
+				 * @param string              $ticket_type The ticket type.
+				 */
+				$table_data = apply_filters( "tec_tickets_editor_list_table_data", $table_data, $ticket_type );
+
+				/**
+				 * Filters the data that will be passed to the tickets list table template for a specific ticket type.
+				 *
+				 * Emptying the 'tickets' key will prevent the table from being rendered.
+				 *
+				 * @since TBD
+				 *
+				 * @param array<string,mixed> $table_data The list table data.
+				 */
+				$table_data = apply_filters( "tec_tickets_editor_list_table_data_{$ticket_type}", $table_data );
+
+				// If a filtering function emptied the tickets, do not render the table at all.
+				if ( ! ( isset( $table_data['tickets'] ) && count( $table_data['tickets'] ) ) ) {
+					continue;
+				}
+
+				$admin_views->template( 'editor/list-table', $table_data );
+			}
 			?>
 		<?php endif; ?>
 	</div>
 	<div class="tribe-ticket-control-wrap">
-		<?php
-		/**
-		 * Allows for the insertion of additional content into the main ticket admin panel after the tickets listing.
-		 *
-		 * @since 4.6
-		 * @since TBD all metabox buttons to toggle ticket forms are now loaded from this action.
-		 *
-		 * @param int $post_id Post ID.
-		 */
-		do_action( 'tribe_events_tickets_new_ticket_buttons', $post_id );
-		?>
+		<div class="tribe-ticket-control-wrap__ctas">
+			<a
+				href="<?php echo esc_url( $attendees_url ); ?>"
+			>
+				<?php esc_html_e( 'View Attendees', 'event-tickets' ); ?>
+			</a>
 
-		<button id="settings_form_toggle" class="button-secondary tribe-button-icon tribe-button-icon-settings">
-			<?php esc_html_e( 'Settings', 'event-tickets' ); ?>
-		</button>
+			<?php
+			/**
+			 * Allows for the insertion of additional elements (buttons/links) into the main ticket admin panel "header".
+			 *
+			 * @since 4.6
+			 *
+			 * @param int $post_id Post ID.
+			 */
+			do_action( 'tribe_events_tickets_post_capacity', $post_id );
+			?>
+		</div>
 
-		<?php
-		/**
-		 * Allows for the insertion of warnings before the settings button.
-		 *
-		 * @since 4.6
-		 *
-		 * @param int Post ID.
-		 */
-		do_action( 'tribe_events_tickets_new_ticket_warnings', $post_id );
-		?>
+		<div class="tribe-ticket-control-wrap__settings">
+			<?php
+			/**
+			 * Allows for the insertion of total capacity element into the main ticket admin panel "header".
+			 *
+			 * @since 4.6
+			 *
+			 * @param int $post_id Post ID.
+			 */
+			do_action( 'tribe_events_tickets_capacity', $post_id );
+			?>
 
+			<button id="settings_form_toggle" class="button-secondary tribe-button-icon tribe-button-icon-settings">
+				<?php esc_html_e( 'Settings', 'event-tickets' ); ?>
+			</button>
+
+		</div>
 	</div>
 	<?php
 	/**

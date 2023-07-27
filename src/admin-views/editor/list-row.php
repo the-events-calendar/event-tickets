@@ -1,4 +1,8 @@
 <?php
+/**
+ * @var Tribe__Tickets__Ticket_Object $ticket The ticket object the row is being rendered for.
+ */
+
 $provider              = $ticket->provider_class;
 $provider_obj          = Tribe__Tickets__Tickets::get_ticket_provider_instance( $provider );
 $inventory             = $ticket->inventory();

@@ -17,13 +17,13 @@ if ( empty( $total_tickets ) ) {
 		<?php
 		switch ( $total_tickets ) {
 			case -1:
-				printf( '<i>%s</i>', esc_html( $handler->unlimited_term ) );
+				printf( '<a href="#" id="capacity_form_toggle">%s</a>', esc_html( $handler->unlimited_term ) );
 				break;
 			case 0:
-				printf( '<i>%s</i>', esc_html__( 'No tickets created yet', 'event-tickets' ) );
+				printf( '<a href="#" id="capacity_form_toggle">%s</a>', esc_html__( 'No tickets created yet', 'event-tickets' ) );
 				break;
 			default:
-				echo esc_html( number_format_i18n( $total_tickets ) );
+				printf( '<a href="#" id="capacity_form_toggle">%s</a>', esc_html( number_format_i18n( $total_tickets ) ) );
 				break;
 		}
 		?>

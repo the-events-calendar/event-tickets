@@ -26,8 +26,19 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	const ticket_button_selectors = '#rsvp_form_toggle, #ticket_form_toggle, #settings_form_toggle';
 	const tickets_panel_table_selector = '.tribe-tickets-editor-table-tickets-body';
 	const noTicketsOnRecurring = document.body.classList.contains( 'tec-no-tickets-on-recurring' );
-	// Initialize the ticket type to `null`.
-	let ticketType = null;
+
+	/*
+	 * Null or 'default' are the default ticket; 'rsvp' is the RSVP ticket.
+	 * The backend might use the value, sent over with AJAX panel requests, to modify panels
+	 * and handle save operations. This value will persist across AJAX requests.
+	 */
+	let ticketType = null; //
+
+	/*
+	 * The current default Ticket provider module.
+	 * This value will persist across AJAX requests.
+	 */
+	let defaultTicketProviderModule = null;
 
 	// Bail if we don't have what we need
 	if ( 0 === $tribe_tickets.length ) {
@@ -56,9 +67,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	var $base_panel = $( document.getElementById( 'tribe_panel_base' ) );
 	var $edit_panel = $( document.getElementById( 'tribe_panel_edit' ) );
 	var $settings_panel = $( document.getElementById( 'tribe_panel_settings' ) );
-
-	// Ticket provider state.
-	let ticketProviderModule = null;
 
 	// Datepicker and Timepicker variables
 	var datepickerFormats = [
@@ -142,7 +150,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		}
 
 		const ticketProviderInput = $( document.getElementById( provider_id ) );
-		ticketProviderModule = ticketProviderInput.val();
+		defaultTicketProviderModule = ticketProviderInput.val();
 		ticketProviderInput.prop( 'checked', true ).trigger( 'change' );
 	}
 
@@ -220,6 +228,9 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	 * @return void
 	 */
 	obj.swapPanel = function( panel ) {
+		// Reset the default provider again, if we're running this code after an update.
+		set_default_provider_radio( ticketType === 'rsvp' );
+
 		var $panel;
 
 		if ( panel instanceof jQuery ) {
@@ -563,6 +574,18 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		return false;
 	} );
 
+	/* Capacity link button action */
+	$document.on( 'click', '#capacity_form_toggle', function( event ) {
+		// Prevent Form Submit on button click
+		event.preventDefault();
+
+		// Fetches as fresh set of panels
+		obj.fetchPanels( null, 'settings' );
+
+		// Make it safe that it wont submit
+		return false;
+	} );
+
 	/**
 	 * Cancel buttons, which refresh and swap to list
 	 */
@@ -602,9 +625,10 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		var $button = $( this );
 
 		// Set the current ticket type reading the data from the button, if possible.
-		ticketType = $button.data('ticket-type');
+		const isRSVP = 'rsvp_form_toggle' === $button.attr( 'id' );
+		ticketType = isRSVP ? 'rsvp' : $button.data( 'ticket-type' );
 
-		set_default_provider_radio( 'rsvp_form_toggle' === $button.attr( 'id' ) );
+		set_default_provider_radio( isRSVP );
 
 		// Triggers Dependency
 		$edit_panel.find( '.tribe-dependency' ).trigger( 'verify.dependency' );
@@ -684,7 +708,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		var orders = $editParent.find( '.tribe-ticket-field-order' ).val();
 		let ticketData = $edit_panel.find( 'input,textarea,select' ).serialize().replace( /\'/g, '%27' ).replace( /\:/g, '%3A' );
 		if (!ticketData.includes('ticket_provider')) {
-			ticketData += '&ticket_provider=' + encodeURIComponent(ticketProviderModule);
+			ticketData += '&ticket_provider=' + encodeURIComponent(defaultTicketProviderModule);
 		}
 		var params = {
 			action: 'tribe-ticket-add',

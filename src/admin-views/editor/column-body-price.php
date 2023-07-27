@@ -1,4 +1,18 @@
 <?php
+/**
+ * @var Tribe__Tickets__Ticket_Object $ticket The ticket object the price column is being rendered for.
+ * @var Tribe__Tickets__Tickets $provider_obj The ticket provider object for this ticket.
+ */
+
+use TEC\Tickets\Commerce\Utils\Value;
+
+if ( $provider_obj instanceof Tribe__Tickets__RSVP ) {
+	// If the ticket is an RSVP, we don't need to render the price column.
+	echo '<td></td>';
+
+	return;
+}
+
 $price = null;
 if ( method_exists( $provider_obj, 'get_price_value' ) ) {
 	$price = $provider_obj->get_price_value( $ticket->ID );
@@ -10,7 +24,7 @@ if ( method_exists( $provider_obj, 'get_price_value' ) ) {
 	<?php
 	if ( $price ) {
 
-		if ( $price instanceof \TEC\Tickets\Commerce\Utils\Value ) {
+		if ( $price instanceof Value ) {
 			echo esc_html( $price->get_currency() );
 		} else {
 		    echo $provider_obj->get_price_html( $ticket->ID );
