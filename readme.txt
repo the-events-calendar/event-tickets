@@ -195,6 +195,8 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 * Fix - Include Commerce tickets in cached results; correctly fetch posts without tickets. [ET-1808]
 * Tweak - Cache Tickets objects for performance improvements. [ET-1808]
+* Fix - Prevention of creating tickets in Classic Editor for recurring events when using custom tables. [ET-1826]
+* Fix - Prevention of creating tickets in Block Editor for recurring events when using custom tables. [ET-1827]
 
 = [5.6.3] 2023-07-18 =
 
