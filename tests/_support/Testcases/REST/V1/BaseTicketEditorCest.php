@@ -175,7 +175,7 @@ class BaseTicketEditorCest extends BaseRestCest {
 				'_tribe_ticket_capacity'         => '',
 				'_ticket_start_date'             => '2020-01-02 08:00:00',
 				'_ticket_end_date'               => '2050-03-02 20:00:00',
-				'_tribe_ticket_show_not_going'   => 'false',
+				'_tribe_ticket_show_not_going'   => false,
 				'_tribe_rsvp_for_event'          => $post_id,
 				'_tribe_ticket_show_description' => 'yes',
 			],
