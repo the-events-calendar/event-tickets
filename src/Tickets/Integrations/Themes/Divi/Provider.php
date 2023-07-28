@@ -64,9 +64,10 @@ class Provider extends Integration_Abstract {
 	public function disable_static_css_generation(): void {
 		$is_on_ar_page = tribe( 'Tribe__Tickets__Attendee_Registration__Template' )->is_on_ar_page();
 
-		if ( $is_on_ar_page ) {
-			$this->divi_disable_dynamic_assets();
+		if ( ! $is_on_ar_page ) {
+			return;
 		}
+		$this->divi_disable_dynamic_assets();
 	}
 
 	/**
