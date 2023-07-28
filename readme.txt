@@ -191,6 +191,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Tweak - The Attendee Registration page will now display properly when using Divi with dynamic CSS enabled. [ETP-864]
+
 = [5.6.4] TBD =
 
 * Fix - Include Commerce tickets in cached results; correctly fetch posts without tickets. [ET-1808]
