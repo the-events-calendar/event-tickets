@@ -81,12 +81,12 @@ class Provider extends Integration_Abstract {
 
 		$is_on_ar_page = tribe( 'Tribe__Tickets__Attendee_Registration__Template' )->is_on_ar_page();
 
-		if ( $is_on_ar_page ) {
-			// Return an empty title to hide the heading
-			return '';
+		if ( ! $is_on_ar_page ) {
+			// Return the original title for other pages/posts.
+			return $title;
 		}
 
-		// Return the original title for other pages/posts
-		return $title;
+		// Return an empty title to hide the heading.
+		return '';
 	}
 }
