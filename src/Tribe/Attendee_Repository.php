@@ -600,8 +600,8 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			)
 		";
 
-		// Allow extending classes to alter the JOIN and WHERE clauses.
-		$this->filter_by_order_status_where( $et_where_clause, $value_operator, $value_clause );
+		// Allow extending classes to alter the JOIN and WHERE clauses. DISABLED for check.
+		//$this->filter_by_order_status_where( $et_where_clause, $value_operator, $value_clause );
 	}
 
 	/**
