@@ -16,7 +16,6 @@ $container_class .= ( empty( $total_tickets ) ) ? ' tribe_no_capacity' : '';
 	data-save-prompt="<?php echo esc_attr( __( 'You have unsaved changes to your tickets. Discard those changes?', 'event-tickets' ) ); ?>"
 >
 	<div class="<?php echo esc_attr( $container_class ); ?>">
-		<?php if ( ! empty( $tickets ) ) : ?>
 			<div class="ticket_table_intro">
 				<?php
 				/**
@@ -40,10 +39,15 @@ $container_class .= ( empty( $total_tickets ) ) ? ' tribe_no_capacity' : '';
 				 */
 				do_action( 'tribe_events_tickets_new_ticket_warnings', $post_id );
 				?>
+
+				<?php if ( empty( $tickets ) ) : ?>
+					<button id="settings_form_toggle" class="button-secondary tribe-button-icon tribe-button-icon-settings">
+						<?php esc_html_e( 'Settings', 'event-tickets' ); ?>
+					</button>
+				<?php endif; ?>
 			</div>
 
-			<?php
-
+		<?php if ( ! empty( $tickets ) ) {
 			/** @var Tribe__Tickets__Admin__Views $admin_views */
 			$admin_views = tribe( 'tickets.admin.views' );
 
@@ -105,45 +109,50 @@ $container_class .= ( empty( $total_tickets ) ) ? ' tribe_no_capacity' : '';
 
 				$admin_views->template( 'editor/list-table', $table_data );
 			}
-			?>
-		<?php endif; ?>
+		}
+		?>
 	</div>
 	<div class="tribe-ticket-control-wrap">
 		<div class="tribe-ticket-control-wrap__ctas">
-			<a
-				href="<?php echo esc_url( $attendees_url ); ?>"
-			>
-				<?php esc_html_e( 'View Attendees', 'event-tickets' ); ?>
-			</a>
+			<?php if ( ! empty( $tickets ) ) : ?>
+				<a
+					href="<?php echo esc_url( $attendees_url ); ?>"
+				>
+					<?php esc_html_e( 'View Attendees', 'event-tickets' ); ?>
+				</a>
 
-			<?php
-			/**
-			 * Allows for the insertion of additional elements (buttons/links) into the main ticket admin panel "header".
-			 *
-			 * @since 4.6
-			 *
-			 * @param int $post_id Post ID.
-			 */
-			do_action( 'tribe_events_tickets_post_capacity', $post_id );
-			?>
+				<?php
+				/**
+				 * Allows for the insertion of additional elements (buttons/links) into the main ticket admin panel "header".
+				 *
+				 * @since 4.6
+				 *
+				 * @param int $post_id Post ID.
+				 */
+				do_action( 'tribe_events_tickets_post_capacity', $post_id );
+				?>
+			<?php endif; ?>
 		</div>
 
 		<div class="tribe-ticket-control-wrap__settings">
-			<?php
-			/**
-			 * Allows for the insertion of total capacity element into the main ticket admin panel "header".
-			 *
-			 * @since 4.6
-			 *
-			 * @param int $post_id Post ID.
-			 */
-			do_action( 'tribe_events_tickets_capacity', $post_id );
-			?>
+			<?php if ( ! empty( $tickets ) ) : ?>
+				<?php
+				/**
+				 * Allows for the insertion of total capacity element into the main ticket admin panel.
+				 *
+				 * @since 4.6
+				 *
+				 * @param int $post_id Post ID.
+				 */
+				do_action( 'tribe_events_tickets_capacity', $post_id );
+				?>
+			<?php endif; ?>
 
-			<button id="settings_form_toggle" class="button-secondary tribe-button-icon tribe-button-icon-settings">
-				<?php esc_html_e( 'Settings', 'event-tickets' ); ?>
-			</button>
-
+			<?php if ( ! empty( $tickets ) ) : ?>
+				<button id="settings_form_toggle" class="button-secondary tribe-button-icon tribe-button-icon-settings">
+					<?php esc_html_e( 'Settings', 'event-tickets' ); ?>
+				</button>
+			<?php endif; ?>
 		</div>
 	</div>
 	<?php
