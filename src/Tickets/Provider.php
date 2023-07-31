@@ -9,6 +9,7 @@
 namespace TEC\Tickets;
 
 use TEC\Common\Contracts\Service_Provider;
+use TEC\Tickets\Custom_Tables\V1\Provider as ET_CT1_Provider;
 use Tribe__Tickets__Main as Tickets_Plugin;
 
 /**
@@ -26,6 +27,7 @@ class Provider extends Service_Provider {
 	/**
 	 * Binds and sets up implementations.
 	 *
+	 * @since TBD   Use `register_on_action` method to register custom table providers.
 	 * @since 5.5.0
 	 * @since 5.1.6
 	 */
@@ -66,16 +68,19 @@ class Provider extends Service_Provider {
 		// Loads Integrations.
 		$this->container->register( Integrations\Provider::class );
 
-		$this->has_registered = true;
+		// RBE only Providers here.
+		$this->container->register_on_action( 'tec_events_custom_tables_v1_fully_activated', ET_CT1_Provider::class );
 
+		// Flexible Tickets Providers.
 		// Always register the CT1 migration component of Flexible Tickets.
 		$this->container->register_on_action( 'tec_ct1_provider_registered', Flexible_Tickets\CT1_Migration::class );
-
 		// Upon CT1 full activation register the rest of the components.
 		$this->container->register_on_action(
 			'tec_events_pro_custom_tables_v1_fully_activated',
 			Flexible_Tickets\Provider::class
 		);
+
+		$this->has_registered = true;
 
 		return true;
 	}
