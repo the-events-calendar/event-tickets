@@ -20,6 +20,9 @@ if ( ! empty( $is_merchant_connected ) ) {
 	return;
 }
 
+// Determine whether or not site is using SSL.
+$is_ssl = is_ssl();
+
 ?>
 
 <h2 class="tec-tickets__admin-settings-tickets-commerce-gateway-title">
@@ -30,7 +33,7 @@ if ( ! empty( $is_merchant_connected ) ) {
 	<p>
 		<?php esc_html_e( 'Start selling tickets to your events today with PayPal. Attendees can purchase tickets directly on your site using debit or credit cards with no additional fees.', 'event-tickets' ); ?>
 	</p>
-	<?php $this->template( 'settings/tickets-commerce/paypal/connect/signup-link' ); ?>
-	<?php $this->template( 'settings/tickets-commerce/paypal/connect/non-ssl-notice' ); ?>
+	<?php $this->template( 'settings/tickets-commerce/paypal/connect/signup-link', [ 'is_ssl' => $is_ssl ] ); ?>
+	<?php $this->template( 'settings/tickets-commerce/paypal/connect/non-ssl-notice', [ 'is_ssl' => $is_ssl ] ); ?>
 	<?php $this->template( 'settings/tickets-commerce/paypal/connect/help-links' ); ?>
 </div>
