@@ -746,6 +746,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 				unset( $cache[ $key ] );
 			}
+
+			$ticket_ids = $this->get_tickets_ids( $post_id );
+			foreach ( (array) $ticket_ids as $ticket_id ) {
+				clean_post_cache( $ticket_id );
+			}
 		}
 
 		/**
@@ -2047,8 +2052,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 				$types['tickets']['stock'] += $stock_level;
 
-				if ( 0 !== $types['tickets']['stock'] ) {
-					$types['tickets']['available'] ++;
+				// If current availability is unlimited (available = -1) and the ticket has stock, set it to 0.
+				if ( $types['tickets']['available'] < 0 && 0 !== $types['tickets']['stock'] ) {
+					$types['tickets']['available'] = 0;
 				}
 			}
 
