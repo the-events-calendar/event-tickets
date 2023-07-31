@@ -191,7 +191,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [TBD] TBD =
+= [5.6.4] TBD =
 
 * Fix - Ensure the Attendees page displays correctly when accessed through the Events Manager. [ECP-1527]
 * Tweak - The Attendee Registration page will now display properly when using Divi with dynamic CSS enabled. [ETP-864]
