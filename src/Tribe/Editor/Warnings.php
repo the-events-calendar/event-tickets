@@ -111,8 +111,7 @@ class Warnings {
 	 */
 	public function get_recurring_event_warning_message() {
 		return sprintf(
-				__( 'Tickets and RSVPs are not yet supported on recurring events. %1$s%2$s Read about our plans for future features %3$s', 'event-tickets' ),
-				'<br />',
+				__( 'Single tickets and RSVPs are not yet supported on recurring events. %1$s Read about our plans for future features %2$s', 'event-tickets' ),
 				'<a className="tribe-editor__not-supported-message-link"
 					href="https://evnt.is/1b7a"
 					target="_blank"
@@ -152,7 +151,6 @@ class Warnings {
 			<?php } ?>
 			<?php echo esc_attr( $condition_attr ); ?>
 		>
-			<span class="dashicons <?php echo esc_attr( $icon ); ?>"></span>
 			<span class="message"><?php echo wp_kses_post( $message ); ?></span>
 		</div>
 		<?php
