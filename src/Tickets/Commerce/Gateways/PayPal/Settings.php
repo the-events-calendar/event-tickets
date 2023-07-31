@@ -63,6 +63,7 @@ class Settings extends Abstract_Settings {
 			'is_merchant_active'    => $merchant->is_active(),
 			'signup'                => $signup,
 			'gateway_key'           => tribe( Gateway::class )->get_key(),
+			'is_ssl'                => is_ssl(),
 		];
 
 		$admin_views->add_template_globals( $context );
