@@ -13,6 +13,7 @@
  * @var TEC\Tickets\Commerce\Gateways\PayPal\Signup   $signup                [Global] The Signup class.
  * @var bool                                          $is_merchant_active    [Global] Whether the merchant is active or not.
  * @var bool                                          $is_merchant_connected [Global] Whether the merchant is connected or not.
+ * @var bool                                          $is_ssl                [Global] Whether the site is SSL or not.
  */
 
 if ( ! empty( $is_merchant_connected ) ) {
@@ -29,10 +30,7 @@ if ( ! empty( $is_merchant_connected ) ) {
 	<p>
 		<?php esc_html_e( 'Start selling tickets to your events today with PayPal. Attendees can purchase tickets directly on your site using debit or credit cards with no additional fees.', 'event-tickets' ); ?>
 	</p>
-
-	<div class="tec-tickets__admin-settings-tickets-commerce-gateway-signup-links">
-		<?php echo $signup->get_link_html(); // phpcs:ignore ?>
-	</div>
-
+	<?php $this->template( 'settings/tickets-commerce/paypal/connect/signup-link' ); ?>
+	<?php $this->template( 'settings/tickets-commerce/paypal/connect/non-ssl-notice' ); ?>
 	<?php $this->template( 'settings/tickets-commerce/paypal/connect/help-links' ); ?>
 </div>
