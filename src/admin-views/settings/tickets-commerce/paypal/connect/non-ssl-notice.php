@@ -15,7 +15,7 @@
  * @var bool                                          $is_ssl                [Global] Whether the site is SSL or not.
  */
 
-if ( ! is_ssl() ) {
+if ( is_ssl() ) {
 	return;
 }
 
