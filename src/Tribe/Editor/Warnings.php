@@ -18,8 +18,8 @@ class Warnings {
 	 * @since 5.0.4
 	 */
 	public function hook() {
-		add_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'show_recurring_event_warning_message' ] );
-		add_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'add_commerce_provider_warning' ] );
+		add_action( 'tribe_events_tickets_new_ticket_warnings', [ $this, 'show_recurring_event_warning_message' ] );
+		add_action( 'tribe_events_tickets_new_ticket_warnings', [ $this, 'add_commerce_provider_warning' ] );
 	}
 
 	/**
@@ -133,7 +133,6 @@ class Warnings {
 	 * @param array  $additionalClasses Additional CSS classes to add to the notice block. Default is an empty array.
 	 */
 	public function render_notice( $message, $type = 'info', $depends_on = '', $condition = '', $additionalClasses = [] ) {
-		$icon           = 'dashicons-' . $type;
 		$has_dependency = empty( $depends_on ) ? '' : 'tribe-dependent';
 		$condition_attr = empty( $condition ) ? '' : 'data-condition-is-' . $condition;
 

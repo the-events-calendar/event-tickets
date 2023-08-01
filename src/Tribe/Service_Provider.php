@@ -1,6 +1,6 @@
 <?php
 
-use TEC\Tickets\Custom_Tables\V1\Provider as ET_Custom_Tables;
+use TEC\Tickets\Commerce\Custom_Tables\V1\Provider as ET_CT1_Provider;
 
 /**
  * Class Tribe__Tickets__Service_Provider
@@ -60,7 +60,7 @@ class Tribe__Tickets__Service_Provider extends \TEC\Common\Contracts\Service_Pro
 		$this->container->singleton( 'tickets.migration.queue_4_12', \Tribe\Tickets\Migration\Queue_4_12::class, [ 'hooks' ] );
 
 		// Enabled ET CT1 when TEC CT1 is fully activated.
-		$this->container->register_on_action( 'tec_events_custom_tables_v1_fully_activated', ET_Custom_Tables::class );
+		$this->container->register_on_action( 'tec_events_custom_tables_v1_fully_activated', ET_CT1_Provider::class );
 
 		$this->load();
 	}

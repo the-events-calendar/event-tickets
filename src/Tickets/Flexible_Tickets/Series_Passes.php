@@ -11,6 +11,9 @@ namespace TEC\Tickets\Flexible_Tickets;
 
 use TEC\Common\Contracts\Provider\Controller;
 use TEC\Common\lucatume\DI52\Container;
+use TEC\Events\Custom_Tables\V1\Models\Occurrence;
+use TEC\Events_Pro\Custom_Tables\V1\Models\Provisional_Post;
+use TEC\Events_Pro\Custom_Tables\V1\Models\Series_Relationship;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 use TEC\Events_Pro\Custom_Tables\V1\Templates\Series_Filters;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Labels;
@@ -20,6 +23,7 @@ use Tribe__Events__Main as TEC;
 use Tribe__Tickets__RSVP as RSVP;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Tickets__Tickets as Tickets;
+use Tribe__Tickets__Tickets_Handler as Tickets_Handler;
 use WP_Post;
 use Tribe__Date_Utils as Dates;
 
@@ -118,6 +122,12 @@ class Series_Passes extends Controller {
 
 		add_action( 'tec_tickets_panels_before', [ $this, 'start_filtering_labels' ], 10, 3 );
 		add_action( 'tec_tickets_panels_after', [ $this->labels, 'stop_filtering_labels' ] );
+		add_action( 'tribe_events_tickets_new_ticket_warnings', [ $this, 'display_pass_notice' ], 5, 2 );
+
+		add_filter( 'tec_tickets_repository_filter_by_event_id', [ $this, 'add_series_to_searched_events' ] );
+		add_action( 'added_post_meta', [ $this, 'propagate_ticket_provider_from_series' ], 20, 4 );
+		add_action( 'updated_post_meta', [ $this, 'propagate_ticket_provider_from_series' ], 20, 4 );
+		add_action( 'deleted_post_meta', [ $this, 'delete_ticket_provider_from_series' ], 20, 4 );
 	}
 
 	/**
@@ -410,5 +420,112 @@ class Series_Passes extends Controller {
 		}
 
 		$this->labels->start_filtering_labels();
+	}
+
+	public function display_pass_notice( int $post_id, int $total_tickets ): void {
+		if ( $total_tickets > 0 || get_post_type( $post_id ) !== TEC::POSTTYPE ) {
+			return;
+		}
+
+		$series_ids = tec_series()->where( 'event_post_id', $post_id )->get_ids();
+
+		if ( ! count( $series_ids ) ) {
+			return;
+		}
+
+		$series = reset( $series_ids );
+
+		$admin_views = $this->container->get( Admin_Views::class );
+		$admin_views->template( 'series-pass-event-notice', [
+			'series_edit_link' => get_edit_post_link( $series ),
+			'series_title'     => get_the_title( $series ),
+		] );
+	}
+
+	public function add_series_to_searched_events( $post_id ) {
+		if ( ! ( get_post_type( $post_id ) === TEC::POSTTYPE ) ) {
+			return $post_id;
+		}
+
+		$series_ids = tec_series()->where( 'event_post_id', $post_id )->get_ids();
+
+		if ( ! count( $series_ids ) ) {
+			return $post_id;
+		}
+
+		$series = reset( $series_ids );
+
+		return [ $series, ...(array) $post_id ];
+	}
+
+	/**
+	 * Updates the ticket provider when a Series ticket provider is updated.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<int> $meta_ids   Unused, the meta IDs that were updated.
+	 * @param int        $object_id  The post ID.
+	 * @param string     $meta_key   The meta key.
+	 * @param mixed      $meta_value The meta value.
+	 *
+	 * @return void The ticket provider is updated.
+	 */
+	public function propagate_ticket_provider_from_series( $meta_ids, $object_id, $meta_key, $meta_value ): void {
+		$this->update_ticket_provider_from_series( $object_id, $meta_key, $meta_value, false );
+	}
+
+	/**
+	 * Deleted the ticket provider when a Series ticket provider is deleted.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<int> $meta_ids   Unused, the meta IDs that were deleted.
+	 * @param int        $object_id  The post ID.
+	 * @param string     $meta_key   The meta key.
+	 * @param mixed      $meta_value The meta value.
+	 *
+	 * @return void The ticket provider is deleted.
+	 */
+	public function delete_ticket_provider_from_series( $meta_ids, $object_id, $meta_key, $meta_value ): void {
+		$this->update_ticket_provider_from_series( $object_id, $meta_key, $meta_value, true );
+	}
+
+	/**
+	 * Updates the ticket provider when a Series ticket provider is updated or deleted.
+	 *
+	 * @since TBD
+	 *
+	 * @param int    $object_id  The post ID.
+	 * @param string $meta_key   The meta key.
+	 * @param mixed  $meta_value The meta value.
+	 * @param bool   $delete     Whether the meta was deleted.
+	 *
+	 * @return void The ticket provider is updated.
+	 */
+	private function update_ticket_provider_from_series( $object_id, $meta_key, $meta_value, $delete = false ): void {
+		if ( ! (
+			// Hard-coding the meta key to avoid having to retrieve, and possibly build, a controller for it.
+			$meta_key === '_tribe_default_ticket_provider'
+			&& get_post_type( $object_id ) === Series_Post_Type::POSTTYPE )
+		) {
+			return;
+		}
+
+		foreach ( tribe_events()->where( 'series', $object_id )->get_ids_generator() as $event_id ) {
+			if ( $delete ) {
+				delete_post_meta( $event_id, $meta_key );
+			} else {
+				update_post_meta( $event_id, $meta_key, $meta_value );
+			}
+		}
+
+		foreach ( Series_Relationship::where( 'series_post_id', '=', $object_id )->all() as $relationship ) {
+			$event_id = $relationship->event_post_id;
+			if ( $delete ) {
+				delete_post_meta( $event_id, $meta_key );
+			} else {
+				update_post_meta( $event_id, $meta_key, $meta_value );
+			}
+		}
 	}
 }

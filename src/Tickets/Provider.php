@@ -9,7 +9,7 @@
 namespace TEC\Tickets;
 
 use TEC\Common\Contracts\Service_Provider;
-use TEC\Tickets\Custom_Tables\V1\Provider as ET_CT1_Provider;
+use TEC\Tickets\Commerce\Custom_Tables\V1\Provider as ET_CT1_Provider;
 use Tribe__Tickets__Main as Tickets_Plugin;
 
 /**
