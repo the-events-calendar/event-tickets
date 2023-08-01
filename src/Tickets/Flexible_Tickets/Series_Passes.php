@@ -11,21 +11,18 @@ namespace TEC\Tickets\Flexible_Tickets;
 
 use TEC\Common\Contracts\Provider\Controller;
 use TEC\Common\lucatume\DI52\Container;
-use TEC\Events\Custom_Tables\V1\Models\Occurrence;
-use TEC\Events_Pro\Custom_Tables\V1\Models\Provisional_Post;
 use TEC\Events_Pro\Custom_Tables\V1\Models\Series_Relationship;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 use TEC\Events_Pro\Custom_Tables\V1\Templates\Series_Filters;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Labels;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Meta;
 use TEC\Tickets\Flexible_Tickets\Templates\Admin_Views;
+use Tribe__Date_Utils as Dates;
 use Tribe__Events__Main as TEC;
 use Tribe__Tickets__RSVP as RSVP;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Tickets__Tickets as Tickets;
-use Tribe__Tickets__Tickets_Handler as Tickets_Handler;
 use WP_Post;
-use Tribe__Date_Utils as Dates;
 
 /**
  * Class Repository.
@@ -356,7 +353,11 @@ class Series_Passes extends Controller {
 	 *
 	 * @return void The Series Pass meta is updated, if the Ticket is a Series Pass and it's required.
 	 */
-	public function update_pass_meta_on_save( $post_id, Ticket_Object $ticket ): void {
+	public function update_pass_meta_on_save( $post_id, Ticket_Object $ticket = null ): void {
+		if ( $ticket === null ) {
+			return;
+		}
+
 		$this->update_pass( $ticket->ID );
 	}
 
