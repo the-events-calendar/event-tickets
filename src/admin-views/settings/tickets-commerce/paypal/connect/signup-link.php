@@ -1,6 +1,6 @@
 <?php
 /**
- * The Template for displaying the Tickets Commerce PayPal Settings sgnup link.
+ * The Template for displaying the Tickets Commerce PayPal Settings signup link.
  *
  * @version TBD
  *
