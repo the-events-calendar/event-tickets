@@ -125,6 +125,8 @@ class Series_Passes extends Controller {
 		add_action( 'added_post_meta', [ $this, 'propagate_ticket_provider_from_series' ], 20, 4 );
 		add_action( 'updated_post_meta', [ $this, 'propagate_ticket_provider_from_series' ], 20, 4 );
 		add_action( 'deleted_post_meta', [ $this, 'delete_ticket_provider_from_series' ], 20, 4 );
+
+		add_action( 'tec_tickets_list_row_edit', [ $this, 'render_link_to_series' ], 10, 2 );
 	}
 
 	/**
@@ -528,5 +530,22 @@ class Series_Passes extends Controller {
 				update_post_meta( $event_id, $meta_key, $meta_value );
 			}
 		}
+	}
+
+	public function render_link_to_series( Ticket_object $ticket, int $post_id = null ): void {
+		if ( $post_id === $ticket->get_event_id() ) {
+			// Let the default controls render.
+			return;
+		}
+
+		if ( get_post_meta( $ticket->ID, '_type', true ) !== self::TICKET_TYPE ) {
+			// Not a Series Pass, bail.
+			return;
+		}
+
+		$admin_views = $this->container->get( Admin_Views::class );
+		$admin_views->template( 'series-pass-edit-link', [
+			'series_edit_link' => get_edit_post_link( $ticket->ID ),
+		] );
 	}
 }
