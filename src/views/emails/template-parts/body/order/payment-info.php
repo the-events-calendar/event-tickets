@@ -12,6 +12,7 @@
  * @version 5.5.11
  *
  * @since 5.5.11
+ * @since TBD    Capitalize payment gateway name.
  *
  * @var Tribe__Template                    $this               Current template object.
  * @var \TEC\Tickets\Emails\Email_Abstract $email              The email object.
@@ -27,15 +28,21 @@ if ( empty( $order ) || empty( $order->provider ) ) {
 	return;
 }
 
+// Make sure payment gateway name is uppercase. If gateway is PayPal, ensure proper capitalization.
+$gateway_name = strtoupper( $order->gateway );
+if ( 'Paypal' === $gateway_name ) {
+	$gateway_name = esc_html__( 'PayPal', 'event-tickets' );
+}
+
 $payment_info = empty( $order->status ) || 'completed' !== strtolower( $order->status ) ?
 	sprintf(
 		// Translators: %s - Payment provider's name.
 		__( 'Payment unsuccessful with %s', 'event-tickets' ),
-		$order->gateway
+		$gateway_name
 	) : sprintf(
 		// Translators: %s - Payment provider's name.
 		__( 'Payment completed with %s', 'event-tickets' ),
-		$order->gateway
+		$gateway_name
 	);
 ?>
 <tr>
