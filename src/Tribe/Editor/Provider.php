@@ -4,6 +4,7 @@
  */
 
 use Tribe\Tickets\Editor\Warnings;
+use Tribe__Tickets__Ticket_Object as Ticket_Object;
 
 /**
  * Register Event Tickets provider
@@ -121,6 +122,7 @@ class Tribe__Tickets__Editor__Provider extends \TEC\Common\Contracts\Service_Pro
 		}
 
 		add_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'render_form_toggle_buttons'] );
+		add_action( 'tec_tickets_list_row_edit', [ $this, 'render_ticket_edit_controls' ], 10, 2 );
 	}
 
 	/**
@@ -154,10 +156,27 @@ class Tribe__Tickets__Editor__Provider extends \TEC\Common\Contracts\Service_Pro
 	}
 
 	/**
-	 * Binds and sets up implementations at boot time.
+	 * Render the ticket edit controls for the ticket list table.
 	 *
-	 * @since 4.9
+	 * @since TBD
+	 *
+	 * @param Ticket_Object $ticket  The ticket object.
+	 * @param int|null      $post_id The ID of the post context of the print.
 	 */
-	public function boot() {
+	public function render_ticket_edit_controls( Ticket_Object $ticket, int $post_id = null ): void {
+		if ( $ticket->get_event_id() !== $post_id ) {
+			// If the ticket is not associated with the current post, don't render the controls.
+			return;
+		}
+
+		/** @var Tribe__Tickets__Admin__Views $admin_views */
+		$admin_views           = tribe( 'tickets.admin.views' );
+		$show_duplicate_button = ! function_exists( 'tribe_is_community_edit_event_page' )
+		                         || ! tribe_is_community_edit_event_page();
+
+		$admin_views->template( 'editor/list-row/edit', [
+			'ticket'                => $ticket,
+			'show_duplicate_button' => $show_duplicate_button,
+		] );
 	}
 }

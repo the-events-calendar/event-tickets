@@ -72,7 +72,7 @@ $ticket_type = $ticket_type ?? 'default';
 		<?php
 		if ( ! empty( $tickets ) ) {
 			foreach ( $tickets as $ticket ) {
-				$admin_views->template( [ 'editor', 'list-row' ], [ 'ticket' => $ticket ] );
+				$admin_views->template( [ 'editor', 'list-row' ], [ 'ticket' => $ticket, 'post_id' => $post_id ] );
 			}
 		}
 		?>

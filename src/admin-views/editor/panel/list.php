@@ -11,7 +11,7 @@ $tickets_attendees = tribe( 'tickets.attendees' );
 
 $attendees_url = $tickets_attendees->get_report_link( get_post( $post_id ) );
 
-$total_tickets = tribe_get_event_capacity( $post_id );
+$total_tickets = (int) tribe_get_event_capacity( $post_id );
 
 $container_class = 'tribe_sectionheader ticket_list_container';
 $container_class .= ( empty( $total_tickets ) ) ? ' tribe_no_capacity' : '';
@@ -39,27 +39,27 @@ $container_class .= ( empty( $total_tickets ) ) ? ' tribe_no_capacity' : '';
 				do_action( 'tribe_events_tickets_new_ticket_buttons', $post_id, $total_tickets, $tickets );
 				?>
 
-				<div class="ticket_table_intro__warnings">
-					<?php
-					/**
-					 * Allows for the insertion of warnings before the settings button.
-					 *
-					 * @since 4.6
-					 * @since TBD Moved to list intro from after list. Pass `$total_tickets` and `$tickets` parameters.
-					 *
-					 * @param int $post_id The ID Of the post the ticket lists are being displayed for.
-					 * @param int $total_tickets The total number of tickets available for the event, any type.
-					 * @param array<Ticket_Object> $tickets The tickets for the event, any type.
-					 */
-					do_action( 'tribe_events_tickets_new_ticket_warnings', $post_id, $total_tickets, $tickets );
-					?>
-				</div>
-
 				<?php if ( empty( $tickets ) ) : ?>
 					<button id="settings_form_toggle" class="button-secondary tribe-button-icon tribe-button-icon-settings">
 						<?php esc_html_e( 'Settings', 'event-tickets' ); ?>
 					</button>
 				<?php endif; ?>
+			</div>
+
+			<div class="ticket_table_intro__warnings">
+				<?php
+				/**
+				 * Allows for the insertion of warnings before the settings button.
+				 *
+				 * @since 4.6
+				 * @since TBD Moved to list intro from after list. Pass `$total_tickets` and `$tickets` parameters.
+				 *
+				 * @param int $post_id The ID Of the post the ticket lists are being displayed for.
+				 * @param int $total_tickets The total number of tickets available for the event, any type.
+				 * @param array<Ticket_Object> $tickets The tickets for the event, any type.
+				 */
+				do_action( 'tribe_events_tickets_new_ticket_warnings', $post_id, $total_tickets, $tickets );
+				?>
 			</div>
 
 		<?php if ( ! empty( $tickets ) ) {

@@ -1,6 +1,7 @@
 <?php
 /**
  * @var Tribe__Tickets__Ticket_Object $ticket The ticket object the row is being rendered for.
+ * @var int $post_id The ID of the post context of the print.
  */
 
 $provider              = $ticket->provider_class;
@@ -13,7 +14,6 @@ $needs_warning         = false;
 $stk_warning           = false;
 $mode                  = $ticket->global_stock_mode();
 $event                 = $ticket->get_event();
-$show_duplicate_button = ! function_exists( 'tribe_is_community_edit_event_page' ) || ! tribe_is_community_edit_event_page();
 
 // If we don't have an event we shouldn't even continue
 if ( ! $event ) {
@@ -119,44 +119,15 @@ if (
 
 	<td class="ticket_edit">
 		<?php
-		printf(
-			"<button data-provider='%s' data-ticket-id='%s' title='%s' class='ticket_edit_button'><span class='ticket_edit_text'>%s</span></a>",
-			esc_attr( $ticket->provider_class ),
-			esc_attr( $ticket->ID ),
-			esc_attr( sprintf(
-				_x( 'Edit %s ID: %d', 'ticket ID title attribute', 'event-tickets' ),
-				tribe_get_ticket_label_singular( 'ticket_id_title_attribute' ),
-				$ticket->ID
-			) ),
-			esc_html( $ticket->name )
-		);
-
-        if ( $show_duplicate_button ) {
-            printf(
-                "<button data-provider='%s' data-ticket-id='%s' title='%s' class='ticket_duplicate'><span class='ticket_duplicate_text'>%s</span></a>",
-                esc_attr($ticket->provider_class),
-                esc_attr($ticket->ID),
-                esc_attr(sprintf(
-                    // Translators: %s: dynamic "ticket" text, %d: ticket ID #.
-                    _x('Duplicate %s ID: %d', 'ticket ID title attribute', 'event-tickets'),
-                    tribe_get_ticket_label_singular('ticket_id_title_attribute'),
-                    $ticket->ID
-                )),
-                esc_html($ticket->name)
-            );
-        }
-
-		printf(
-			"<button attr-provider='%s' attr-ticket-id='%s' title='%s' class='ticket_delete'><span class='ticket_delete_text'>%s</span></a>",
-			esc_attr( $ticket->provider_class ),
-			esc_attr( $ticket->ID ),
-			esc_attr( sprintf(
-				_x( 'Delete %s ID: %d', 'ticket ID title attribute', 'event-tickets' ),
-				tribe_get_ticket_label_singular( 'ticket_id_title_attribute' ),
-				$ticket->ID
-			) ),
-			esc_html( $ticket->name )
-		);
+		/**
+		 * Allows custom content to be added to the edit section of a ticket list row.
+		 *
+		 * @since TBD
+		 *
+		 * @param Tribe__Tickets__Ticket_Object $ticket  The ticket object.
+		 * @param int                           $post_id The ID of the post context of the print.
+		 */
+		do_action( 'tec_tickets_list_row_edit', $ticket, $post_id );
 		?>
 	</td>
 </tr>
