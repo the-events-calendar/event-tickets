@@ -204,6 +204,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Tweak - Remove some PHP 8.1 deprecation warnings. [ET-1830]
 * Fix - Prevention of creating tickets in Classic Editor for recurring events when using custom tables. [ET-1826]
 * Fix - Prevention of creating tickets in Block Editor for recurring events when using custom tables. [ET-1827]
+* Fix - Removal of double-escaped characters in Tickets Emails sender's name. [ET-1777]
 
 = [5.6.3] 2023-07-18 =
 
