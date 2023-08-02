@@ -12,6 +12,7 @@ namespace TEC\Tickets\Emails\Admin;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Utils\Value;
 use TEC\Tickets\Emails\Email\Ticket;
+use TEC\Tickets\Commerce\Module;
 use WP_Post;
 
 /**
@@ -96,6 +97,7 @@ class Preview_Data {
 			'post_name'        => 'preview-order-test_cd7d068a5ef24c02',
 			'post_type'        => Order::POSTTYPE,
 			'filter'           => 'raw',
+			'provider'         => Module::class,
 		] );
 
 		return $order;
