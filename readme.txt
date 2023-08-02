@@ -195,6 +195,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 * Fix - Ensure the Attendees page displays correctly when accessed through the Events Manager. [ECP-1527]
 * Tweak - The Attendee Registration page will now display properly when using Divi with dynamic CSS enabled. [ETP-864]
+* Tweak - Include Event/Post title alongside Ticket name on PayPal order notification emails. [ET-1770]
 * Fix - Include Commerce tickets in cached results; correctly fetch posts without tickets. [ET-1808]
 * Tweak - Cache Tickets objects for performance improvements. [ET-1808]
 * Tweak - Remove some PHP 8.1 deprecation warnings. [ET-1830]
