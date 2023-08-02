@@ -215,7 +215,7 @@ class Settings {
 		}
 
 		// Return the site name as default.
-		return esc_attr( get_bloginfo( 'name', 'display' ) );
+		return get_bloginfo( 'name', 'display' );
 	}
 
 	/**
