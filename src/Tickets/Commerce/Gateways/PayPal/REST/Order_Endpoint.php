@@ -88,6 +88,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * Handles the request that creates an order with Tickets Commerce and the PayPal gateway.
 	 *
 	 * @since 5.1.9
+	 * @since TBD Include Event/Post title in the Ticket name.
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
