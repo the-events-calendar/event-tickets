@@ -36,7 +36,7 @@ class Warnings {
 			return;
 		}
 
-		if ( ! function_exists( 'tribe_is_recurring_event' ) ) {
+		if ( ! function_exists( 'tribe_is_recurring_event' ) || ! tribe_is_recurring_event( $post_id ) ) {
 			return;
 		}
 
