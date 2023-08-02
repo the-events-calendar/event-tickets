@@ -660,10 +660,11 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 * Filters attendees depending on their checkedin status.
 	 *
 	 * @since 4.8
+	 * @since TBD Refactored the logic to use `Tribe__Repository__Query_Filters::meta_not` on `false`.
 	 *
 	 * @param bool $checkedin
 	 *
-	 * @return array
+	 * @return array|null Either the filtered query or `null` if the query filtering does not require arguments.
 	 */
 	public function filter_by_checkedin( $checkedin ) {
 		$meta_keys = $this->checked_in_keys();
@@ -672,7 +673,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			return Tribe__Repository__Query_Filters::meta_in( $meta_keys, '1', 'is-checked-in' );
 		}
 
-		return Tribe__Repository__Query_Filters::meta_not_in_or_not_exists( $meta_keys, '1', 'is-not-checked-in' );
+		$this->filter_query->meta_not( $meta_keys, '1', 'is-not-checked-in' );
 	}
 
 	/**
