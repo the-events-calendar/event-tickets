@@ -29,7 +29,7 @@ if ( empty( $order ) || empty( $order->provider ) ) {
 }
 
 // Make sure payment gateway name is uppercase. If gateway is PayPal, ensure proper capitalization.
-$gateway_name = strtoupper( $order->gateway );
+$gateway_name = ucwords( $order->gateway );
 if ( 'Paypal' === $gateway_name ) {
 	$gateway_name = esc_html__( 'PayPal', 'event-tickets' );
 }
