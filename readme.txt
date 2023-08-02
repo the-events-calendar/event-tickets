@@ -197,6 +197,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Tweak - The Attendee Registration page will now display properly when using Divi with dynamic CSS enabled. [ETP-864]
 * Fix - Include Commerce tickets in cached results; correctly fetch posts without tickets. [ET-1808]
 * Tweak - Cache Tickets objects for performance improvements. [ET-1808]
+* Tweak - Remove some PHP 8.1 deprecation warnings. [ET-1830]
 * Fix - Prevention of creating tickets in Classic Editor for recurring events when using custom tables. [ET-1826]
 * Fix - Prevention of creating tickets in Block Editor for recurring events when using custom tables. [ET-1827]
 * Tweak - Add a notice in the Tickets Commerce Paypal settings for non-https sites. [ET-1773]
