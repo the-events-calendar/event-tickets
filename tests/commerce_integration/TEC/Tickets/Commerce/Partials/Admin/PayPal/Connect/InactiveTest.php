@@ -16,7 +16,12 @@ class InactiveTest extends Html_Partial_Test_Case {
 	protected $partial_path = 'settings/tickets-commerce/paypal/connect/inactive';
 	protected $folder_path = 'src/admin-views';
 
-	public function test_should_render_signup_link() {
+	/**
+	 * Should render signup link.
+	 *
+	 * @test
+	 */
+	public function should_render_signup_link() {
 
 		$this->set_fn_return( 'is_ssl', true );
 
@@ -40,7 +45,12 @@ class InactiveTest extends Html_Partial_Test_Case {
 
 	}
 
-	public function test_should_render_non_ssl_notice() {
+	/**
+	 * Should render non-ssl notice.
+	 * 
+	 * @test
+	 */
+	public function should_render_non_ssl_notice() {
 
 		$this->set_fn_return( 'is_ssl', false );
 
