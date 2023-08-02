@@ -7,10 +7,12 @@ use Generator;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
+use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Flexible_Tickets\Test\Traits\Series_Pass_Factory;
 use TEC\Tickets\Flexible_Tickets\Test\Traits\Ticket_Data_Factory;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe__Tickets__Tickets as Tickets;
+use Tribe__Tickets__Commerce__PayPal__Main as PayPal;
 
 class Series_PassesTest extends Controller_Test_Case {
 	use SnapshotAssertions;
@@ -708,7 +710,7 @@ class Series_PassesTest extends Controller_Test_Case {
 		] )->create();
 		// Insert a ticket with no start and end date/time.
 		$ticket_id = $this->create_tc_series_pass( $series->ID, 2389, [
-			'tribe-ticket' => $this->capacity_payload( 'unlimited' ),
+			'tribe-ticket'      => $this->capacity_payload( 'unlimited' ),
 			'ticket_start_date' => '',
 			'ticket_start_time' => '',
 			'ticket_end_date'   => '',
@@ -717,5 +719,55 @@ class Series_PassesTest extends Controller_Test_Case {
 
 		$this->assertEquals( '2020-02-11', get_post_meta( $ticket_id, '_ticket_end_date', true ) );
 		$this->assertEquals( '17:30:00', get_post_meta( $ticket_id, '_ticket_end_time', true ) );
+	}
+
+	/**
+	 * It should add and update the Series ticket provider to the Series Events
+	 *
+	 * @test
+	 */
+	public function should_add_and_update_the_series_ticket_provider_to_the_series_events(): void {
+		$series  = static::factory()->post->create( [
+			'post_type' => Series_Post_Type::POSTTYPE,
+		] );
+		$event_1 = tribe_events()->set_args( [
+			'title'      => 'Event 1',
+			'status'     => 'publish',
+			'start_date' => '2020-02-11 17:30:00',
+			'end_date'   => '2020-02-11 18:00:00',
+			'series'     => $series
+		] )->create();
+		$event_2 = tribe_events()->set_args( [
+			'title'      => 'Event 2',
+			'status'     => 'publish',
+			'start_date' => '2020-02-12 17:30:00',
+			'end_date'   => '2020-02-12 18:00:00',
+			'series'     => $series
+		] )->create();
+
+		$this->assertEquals( '', get_post_meta( $series, '_tribe_default_ticket_provider', true ) );
+		$this->assertEauals( '', get_post_meta( $event_1, '_tribe_default_ticket_provider', true ) );
+		$this->assertEauals( '', get_post_meta( $event_2, '_tribe_default_ticket_provider', true ) );
+
+		// Add the provider to the Series.
+		add_post_meta( $series, '_tribe_default_ticket_provider', Module::class );
+
+		$this->assertEquals( Module::class, get_post_meta( $series, '_tribe_default_ticket_provider', true ) );
+		$this->assertEquals( Module::class, get_post_meta( $event_1, '_tribe_default_ticket_provider', true ) );
+		$this->assertEquals( Module::class, get_post_meta( $event_2, '_tribe_default_ticket_provider', true ) );
+
+		// Update the provider on the Series.
+		update_post_meta( $series, '_tribe_default_ticket_provider', PayPal::class );
+
+		$this->assertEquals( PayPal::class, get_post_meta( $series, '_tribe_default_ticket_provider', true ) );
+		$this->assertEquals( PayPal::class, get_post_meta( $event_1, '_tribe_default_ticket_provider', true ) );
+		$this->assertEquals( PayPal::class, get_post_meta( $event_2, '_tribe_default_ticket_provider', true ) );
+
+		// Remove the provider from the Series.
+		delete_post_meta( $series, '_tribe_default_ticket_provider' );
+
+		$this->assertEauals( '', get_post_meta( $series, '_tribe_default_ticket_provider', true ) );
+		$this->assertEquals( '', get_post_meta( $event_1, '_tribe_default_ticket_provider', true ) );
+		$this->assertEquals( '', get_post_meta( $event_2, '_tribe_default_ticket_provider', true ) );
 	}
 }
