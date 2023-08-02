@@ -239,12 +239,10 @@ class Tickets implements \ArrayAccess, \Serializable {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function offsetGet( $offset ): mixed {
+	public function offsetGet( $offset ) {
 		$this->data = $this->fetch_data();
 
-		return isset( $this->data[ $offset ] )
-			? $this->data[ $offset ]
-			: null;
+		return $this->data[ $offset ] ?? null;
 	}
 
 	/**
@@ -291,25 +289,11 @@ class Tickets implements \ArrayAccess, \Serializable {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function __serialize() {
-		return $this->serialize();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public function unserialize( $serialized ) {
 		$data          = unserialize( $serialized );
 		$this->post_id = $data['post_id'];
 		unset( $data['post_id'] );
 		$this->data = $data;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function __unserialize( $serialized ) {
-		return $this->unserialize( $serialized );
 	}
 
 	/**
