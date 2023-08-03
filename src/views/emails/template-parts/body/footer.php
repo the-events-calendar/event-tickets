@@ -37,7 +37,7 @@ if ( empty( $footer_content ) && empty( $footer_credit ) ) {
 ?>
 <tr>
 	<td class="tec-tickets__email-table-main-footer">
-		<table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;">
+		<table role="presentation" class="tec-tickets__email-table-main-footer-table">
 			<?php $this->template( 'template-parts/body/footer/content' ); ?>
 			<?php $this->template( 'template-parts/body/footer/credit' ); ?>
 		</table>

@@ -331,8 +331,28 @@
 		padding: 0px 20px 10px 20px;
 	}
 
-	.tec-tickets__email-table-main-footer table {
+	table.tec-tickets__email-table-main-footer-table {
+		border: 0;
+		border-collapse: collapse;
+		border-spacing: 0;
 		font-size: 12px;
+		width:100%;
+	}
+
+	td.tec-tickets__email-table-main-footer-content-container {
+		color: #000000;
+		padding: 20px 0;
+	}
+
+	td.tec-tickets__email-table-main-footer-credit-container {
+		color: #000000;
+		padding: 10px 0px 0px 0px;
+		text-align: right;
+	}
+
+	a.tec-tickets__email-table-main-footer-credit-link {
+		color: #000000 !important;
+		text-decoration: underline;
 	}
 
 	td.tec-tickets__email-table-content-order-attendees-table-container {
@@ -684,10 +704,10 @@
 			</tr>
 			<tr>
 	<td class="tec-tickets__email-table-main-footer">
-		<table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;">
+		<table role="presentation" class="tec-tickets__email-table-main-footer-table">
 						<tr>
-	<td style="padding:10px 0px 0px 0px;text-align:right;color:#000000;" align="right">
-		Powered by <a href="https://evnt.is/et-in-app-email-credit" style="color:#000000">Event Tickets</a>	</td>
+	<td class="tec-tickets__email-table-main-footer-credit-container" align="right">
+		Powered by <a href="https://evnt.is/et-in-app-email-credit" class="tec-tickets__email-table-main-footer-credit-link">Event Tickets</a>	</td>
 </tr>
 		</table>
 	</td>
