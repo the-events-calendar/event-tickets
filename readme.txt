@@ -202,6 +202,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Prevention of creating tickets in Classic Editor for recurring events when using custom tables. [ET-1826]
 * Fix - Prevention of creating tickets in Block Editor for recurring events when using custom tables. [ET-1827]
 * Tweak - Add a notice in the Tickets Commerce Paypal settings for non-https sites. [ET-1773]
+* Fix - Footer links in Tickets Emails template using the wrong color. [ET-1784]
 * Tweak - Capitalize payment provider names in Tickets Emails. [ET-1776]
 
 = [5.6.3] 2023-07-18 =
