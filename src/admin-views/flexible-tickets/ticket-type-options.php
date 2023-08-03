@@ -5,7 +5,6 @@
  * @since TBD
  */
 
-$origin = \Tribe__Tickets__Main::instance();
 ?>
 
 <div id="ticket_type_options" class="input_block">
@@ -22,7 +21,7 @@ $origin = \Tribe__Tickets__Main::instance();
 		 style="display: flex; align-items: center">
 		<img
 				class="tribe-tickets-svgicon tec-tickets-icon tec-tickets-icon__ticket-type"
-				src="<?php echo esc_url( tribe_resource_url( 'icons/series-pass.svg', false, null, $origin ) ); ?>"
+				src="<?php echo esc_url( tribe_resource_url( 'icons/series-pass.svg', false, null, \Tribe__Tickets__Main::instance() ) ); ?>"
 				alt="<?php echo esc_html( tec_tickets_get_series_pass_singular_uppercase( 'admin_ticket_type_alt_text' ) ); ?>"
 		/>
 		<span class="ticket-type__text">

@@ -21,10 +21,10 @@
 					
 <img
 	class="tribe-tickets-svgicon tec-tickets-icon tec-tickets-icon__ticket-type"
-	src="http://wordpress.test/wp-content/plugins/event-tickets/src/resources/icons/ticket-default-icon.svg"
-	alt="Ticket"
+	src="http://wordpress.test/wp-content/plugins/event-tickets/src/resources/icons/ticket-rsvp-icon.svg"
+	alt="RSVP"
 />
-					Tickets				</th>
+					RSVPs				</th>
 				
 <th class="ticket_price"></th>
 				<th class="ticket_capacity">Capacity</th>
@@ -33,17 +33,17 @@
 			</tr>
 		</thead>
 				<tbody class="tribe-tickets-editor-table-tickets-body">
-		<tr class="TEC\Tickets\Commerce\Module is-expanded"
+		<tr class="Tribe__Tickets__RSVP is-expanded"
 	data-ticket-order-id="order_{{ID}}"
 	data-ticket-type-id="{{ID}}"
 	data-ticket-type="default">
-	<td class="column-primary ticket_name TEC\Tickets\Commerce\Module" data-label="Ticket Type:">
+	<td class="column-primary ticket_name Tribe__Tickets__RSVP" data-label="Ticket Type:">
 		<input
 			type="hidden"
 			class="tribe-ticket-field-order"
 			name="tribe-tickets[list][{{ID}}][order]"
-			value="-1"
-					>
+			value="0"
+			disabled		>
 		<div class="tribe-tickets__tickets-editor-ticket-name">
 			<div class="tribe-tickets__tickets-editor-ticket-name-sortable">
 				<span class="dashicons dashicons-screenoptions tribe-handle"></span>
@@ -51,15 +51,13 @@
 			<div class="tribe-tickets__tickets-editor-ticket-name-title">
 
 				
-				Test TC ticket for {{ID}}
+				Test RSVP ticket for {{ID}}
 				<div  class="tribe-tickets__tickets-editor-ticket-available-dates dashicons-before dashicons-clock" >
-	January 2, 2020 - March 1, 2050</div>			</div>
+	August 2, 2023 - August 4, 2023</div>			</div>
 		</div>
 	</td>
 
-	<td class="ticket_price" data-label="Price:">
-	&#x24;23.00</td>
-
+	<td></td>
 	<td class="ticket_capacity">
 		<span class='tribe-mobile-only'>Capacity:</span>
 		100	</td>
@@ -79,16 +77,11 @@
 	<div class="tribe-ticket-control-wrap">
 		<div class="tribe-ticket-control-wrap__ctas">
 							<a
-					href="http://wordpress.test/wp-admin/edit.php?post_type=post&#038;page=tickets-attendees&#038;event_id={{ID}}"
+					href="http://wordpress.test/wp-admin/edit.php?post_type=tribe_events&#038;page=tickets-attendees&#038;event_id={{ID}}"
 				>
 					View Attendees				</a>
 
-				
-	<a
-		href="http://wordpress.test/wp-admin/edit.php?post_type=post&#038;page=tickets-commerce-orders&#038;event_id={{ID}}"
-	>
-		View Orders	</a>
-					</div>
+									</div>
 
 		<div class="tribe-ticket-control-wrap__settings">
 							<span id="ticket_form_total_capacity">
@@ -315,7 +308,7 @@
 						/>
 						<span class="helper-text hide-if-js">HH:MM</span>
 						<span class="dashicons dashicons-editor-help"
-							  title="If you do not set an end sale date, tickets will be available forever."
+							  title="If you do not set an end sale date, tickets will be available until the event begins."
 						></span>
 					</div>
 				</div>

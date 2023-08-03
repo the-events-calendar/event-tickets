@@ -5,31 +5,125 @@
 	data-save-prompt="You have unsaved changes to your tickets. Discard those changes?"
 >
 	<div class="tribe_sectionheader ticket_list_container">
-					<div class="ticket_table_intro">
-				<span id="ticket_form_total_capacity">
-	Total Event Capacity:	<span id="ticket_form_total_capacity_value" title="The total number of possible attendees for this event">
-		100	</span>
-</span>
-
-	<a
-		href="http://wordpress.test/wp-admin/edit.php?post_type=tribe_events&#038;page=tickets-commerce-orders&#038;event_id={{ post_id }}"
-		class="button-secondary"
-	>
-		View Orders	</a>
-				<a
-					class="button-secondary"
-					href="http://wordpress.test/wp-admin/edit.php?post_type=tribe_events&#038;page=tickets-attendees&#038;event_id={{ post_id }}"
-				>
-					View Attendees				</a>
-			</div>
+		<div class="ticket_table_intro">
 			
-<div id="ticket_list_wrapper">
+					</div>
 
-	<table id="tribe_ticket_list_table" class="tribe-tickets-editor-table eventtable ticket_list eventForm widefat fixed">
+		<div class="ticket_table_intro__warnings">
+					</div>
+
+		
+<div class="ticket_list_wrapper">
+	<table class="tribe_ticket_list_table tribe-tickets-editor-table eventtable ticket_list eventForm widefat fixed">
 		<thead>
 			<tr class="table-header">
-				<th class="ticket_name column-primary">Tickets</th>
-				<th class="ticket_price">Price</th>
+				<th class="ticket_name column-primary">
+					
+<img
+	class="tribe-tickets-svgicon tec-tickets-icon tec-tickets-icon__ticket-type"
+	src="http://wordpress.test/wp-content/plugins/event-tickets/src/resources/icons/ticket-rsvp-icon.svg"
+	alt="RSVP"
+/>
+					RSVPs				</th>
+				
+<th class="ticket_price"></th>
+				<th class="ticket_capacity">Capacity</th>
+				<th class="ticket_available">Available</th>
+				<th class="ticket_edit"></th>
+			</tr>
+		</thead>
+				<tbody class="tribe-tickets-editor-table-tickets-body">
+		<tr class="Tribe__Tickets__RSVP is-expanded"
+	data-ticket-order-id="order_{{ID}}"
+	data-ticket-type-id="{{ID}}"
+	data-ticket-type="default">
+	<td class="column-primary ticket_name Tribe__Tickets__RSVP" data-label="Ticket Type:">
+		<input
+			type="hidden"
+			class="tribe-ticket-field-order"
+			name="tribe-tickets[list][{{ID}}][order]"
+			value="0"
+			disabled		>
+		<div class="tribe-tickets__tickets-editor-ticket-name">
+			<div class="tribe-tickets__tickets-editor-ticket-name-sortable">
+				<span class="dashicons dashicons-screenoptions tribe-handle"></span>
+			</div>
+			<div class="tribe-tickets__tickets-editor-ticket-name-title">
+
+				
+				Test RSVP ticket for {{ID}}
+				<div  class="tribe-tickets__tickets-editor-ticket-available-dates dashicons-before dashicons-clock" >
+	August 2, 2023 - August 4, 2023</div>			</div>
+		</div>
+	</td>
+
+	<td></td>
+	<td class="ticket_capacity">
+		<span class='tribe-mobile-only'>Capacity:</span>
+		100	</td>
+
+	<td class="ticket_available">
+		<span class='tribe-mobile-only'>Available:</span>
+				100	</td>
+
+	<td class="ticket_edit">
+			</td>
+</tr>
+<tr class="Tribe__Tickets__RSVP is-expanded"
+	data-ticket-order-id="order_{{ID}}"
+	data-ticket-type-id="{{ID}}"
+	data-ticket-type="default">
+	<td class="column-primary ticket_name Tribe__Tickets__RSVP" data-label="Ticket Type:">
+		<input
+			type="hidden"
+			class="tribe-ticket-field-order"
+			name="tribe-tickets[list][{{ID}}][order]"
+			value="0"
+			disabled		>
+		<div class="tribe-tickets__tickets-editor-ticket-name">
+			<div class="tribe-tickets__tickets-editor-ticket-name-sortable">
+				<span class="dashicons dashicons-screenoptions tribe-handle"></span>
+			</div>
+			<div class="tribe-tickets__tickets-editor-ticket-name-title">
+
+				
+				Test RSVP ticket for {{ID}}
+				<div  class="tribe-tickets__tickets-editor-ticket-available-dates dashicons-before dashicons-clock" >
+	August 2, 2023 - August 4, 2023</div>			</div>
+		</div>
+	</td>
+
+	<td></td>
+	<td class="ticket_capacity">
+		<span class='tribe-mobile-only'>Capacity:</span>
+		100	</td>
+
+	<td class="ticket_available">
+		<span class='tribe-mobile-only'>Available:</span>
+				100	</td>
+
+	<td class="ticket_edit">
+			</td>
+</tr>
+		</tbody>
+	</table>
+
+</div>
+
+<div class="ticket_list_wrapper">
+	<table class="tribe_ticket_list_table tribe-tickets-editor-table eventtable ticket_list eventForm widefat fixed">
+		<thead>
+			<tr class="table-header">
+				<th class="ticket_name column-primary">
+					
+<img
+	class="tribe-tickets-svgicon tec-tickets-icon tec-tickets-icon__ticket-type"
+	src="http://wordpress.test/wp-content/plugins/event-tickets/src/resources/icons/ticket-default-icon.svg"
+	alt="Ticket"
+/>
+					Tickets				</th>
+				
+<th class="ticket_price"></th>
 				<th class="ticket_capacity">Capacity</th>
 				<th class="ticket_available">Available</th>
 				<th class="ticket_edit"></th>
@@ -37,14 +131,14 @@
 		</thead>
 				<tbody class="tribe-tickets-editor-table-tickets-body">
 		<tr class="TEC\Tickets\Commerce\Module is-expanded"
-	data-ticket-order-id="order_{{ ticket_id }}"
-	data-ticket-type-id="{{ ticket_id }}"
+	data-ticket-order-id="order_{{ID}}"
+	data-ticket-type-id="{{ID}}"
 	data-ticket-type="default">
 	<td class="column-primary ticket_name TEC\Tickets\Commerce\Module" data-label="Ticket Type:">
 		<input
 			type="hidden"
 			class="tribe-ticket-field-order"
-			name="tribe-tickets[list][{{ ticket_id }}][order]"
+			name="tribe-tickets[list][{{ID}}][order]"
 			value="-1"
 					>
 		<div class="tribe-tickets__tickets-editor-ticket-name">
@@ -54,7 +148,113 @@
 			<div class="tribe-tickets__tickets-editor-ticket-name-title">
 
 				
-				Test TC ticket for {{ post_id }}
+				Test TC ticket for {{ID}}
+				<div  class="tribe-tickets__tickets-editor-ticket-available-dates dashicons-before dashicons-clock" >
+	January 2, 2020 - March 1, 2050</div>			</div>
+		</div>
+	</td>
+
+	<td class="ticket_price" data-label="Price:">
+	&#x24;25.00</td>
+
+	<td class="ticket_capacity">
+		<span class='tribe-mobile-only'>Capacity:</span>
+		100	</td>
+
+	<td class="ticket_available">
+		<span class='tribe-mobile-only'>Available:</span>
+				100	</td>
+
+	<td class="ticket_edit">
+			</td>
+</tr>
+<tr class="TEC\Tickets\Commerce\Module is-expanded"
+	data-ticket-order-id="order_{{ID}}"
+	data-ticket-type-id="{{ID}}"
+	data-ticket-type="default">
+	<td class="column-primary ticket_name TEC\Tickets\Commerce\Module" data-label="Ticket Type:">
+		<input
+			type="hidden"
+			class="tribe-ticket-field-order"
+			name="tribe-tickets[list][{{ID}}][order]"
+			value="-1"
+					>
+		<div class="tribe-tickets__tickets-editor-ticket-name">
+			<div class="tribe-tickets__tickets-editor-ticket-name-sortable">
+				<span class="dashicons dashicons-screenoptions tribe-handle"></span>
+			</div>
+			<div class="tribe-tickets__tickets-editor-ticket-name-title">
+
+				
+				Test TC ticket for {{ID}}
+				<div  class="tribe-tickets__tickets-editor-ticket-available-dates dashicons-before dashicons-clock" >
+	January 2, 2020 - March 1, 2050</div>			</div>
+		</div>
+	</td>
+
+	<td class="ticket_price" data-label="Price:">
+	&#x24;26.00</td>
+
+	<td class="ticket_capacity">
+		<span class='tribe-mobile-only'>Capacity:</span>
+		100	</td>
+
+	<td class="ticket_available">
+		<span class='tribe-mobile-only'>Available:</span>
+				100	</td>
+
+	<td class="ticket_edit">
+			</td>
+</tr>
+		</tbody>
+	</table>
+
+</div>
+
+<div class="ticket-editor-notice info info--background table-stick--before series-pass-link">
+	<span class="dashicons dashicons-lightbulb"></span>
+	<span class="message">
+		This event is part of the Series <a href='' target='_blank'>Test series</a>. Create and manage Series Passes in the Series this event belongs to.	</span>
+</div>
+<div class="ticket_list_wrapper">
+	<table class="tribe_ticket_list_table tribe-tickets-editor-table eventtable ticket_list eventForm widefat fixed">
+		<thead>
+			<tr class="table-header">
+				<th class="ticket_name column-primary">
+					
+<img
+	class="tribe-tickets-svgicon tec-tickets-icon tec-tickets-icon__ticket-type"
+	src="http://wordpress.test/wp-content/plugins/event-tickets/src/resources/icons/ticket-series-pass-icon.svg"
+	alt="Series Pass"
+/>
+					Series Passes				</th>
+				
+<th class="ticket_price"></th>
+				<th class="ticket_capacity">Capacity</th>
+				<th class="ticket_available">Available</th>
+				<th class="ticket_edit"></th>
+			</tr>
+		</thead>
+				<tbody class="tribe-tickets-editor-table-tickets-body">
+		<tr class="TEC\Tickets\Commerce\Module is-expanded"
+	data-ticket-order-id="order_{{ID}}"
+	data-ticket-type-id="{{ID}}"
+	data-ticket-type="series_pass">
+	<td class="column-primary ticket_name TEC\Tickets\Commerce\Module" data-label="Ticket Type:">
+		<input
+			type="hidden"
+			class="tribe-ticket-field-order"
+			name="tribe-tickets[list][{{ID}}][order]"
+			value="-1"
+					>
+		<div class="tribe-tickets__tickets-editor-ticket-name">
+			<div class="tribe-tickets__tickets-editor-ticket-name-sortable">
+				<span class="dashicons dashicons-screenoptions tribe-handle"></span>
+			</div>
+			<div class="tribe-tickets__tickets-editor-ticket-name-title">
+
+				
+				Test TC ticket for {{ID}}
 				<div  class="tribe-tickets__tickets-editor-ticket-available-dates dashicons-before dashicons-clock" >
 	January 2, 2020 - March 1, 2050</div>			</div>
 		</div>
@@ -72,27 +272,80 @@
 				100	</td>
 
 	<td class="ticket_edit">
-		<button data-provider='TEC\Tickets\Commerce\Module' data-ticket-id='{{ ticket_id }}' title='Edit Ticket ID: {{ ticket_id }}' class='ticket_edit_button'><span class='ticket_edit_text'>Test TC ticket for {{ post_id }}</span></a><button data-provider='TEC\Tickets\Commerce\Module' data-ticket-id='{{ ticket_id }}' title='Duplicate Ticket ID: {{ ticket_id }}' class='ticket_duplicate'><span class='ticket_duplicate_text'>Test TC ticket for {{ post_id }}</span></a><button attr-provider='TEC\Tickets\Commerce\Module' attr-ticket-id='{{ ticket_id }}' title='Delete Ticket ID: {{ ticket_id }}' class='ticket_delete'><span class='ticket_delete_text'>Test TC ticket for {{ post_id }}</span></a>	</td>
+		
+<a href="" target="_blank">
+	Edit in Series</a>
+	</td>
+</tr>
+<tr class="TEC\Tickets\Commerce\Module is-expanded"
+	data-ticket-order-id="order_{{ID}}"
+	data-ticket-type-id="{{ID}}"
+	data-ticket-type="series_pass">
+	<td class="column-primary ticket_name TEC\Tickets\Commerce\Module" data-label="Ticket Type:">
+		<input
+			type="hidden"
+			class="tribe-ticket-field-order"
+			name="tribe-tickets[list][{{ID}}][order]"
+			value="-1"
+					>
+		<div class="tribe-tickets__tickets-editor-ticket-name">
+			<div class="tribe-tickets__tickets-editor-ticket-name-sortable">
+				<span class="dashicons dashicons-screenoptions tribe-handle"></span>
+			</div>
+			<div class="tribe-tickets__tickets-editor-ticket-name-title">
+
+				
+				Test TC ticket for {{ID}}
+				<div  class="tribe-tickets__tickets-editor-ticket-available-dates dashicons-before dashicons-clock" >
+	January 2, 2020 - March 1, 2050</div>			</div>
+		</div>
+	</td>
+
+	<td class="ticket_price" data-label="Price:">
+	&#x24;89.00</td>
+
+	<td class="ticket_capacity">
+		<span class='tribe-mobile-only'>Capacity:</span>
+		100	</td>
+
+	<td class="ticket_available">
+		<span class='tribe-mobile-only'>Available:</span>
+				100	</td>
+
+	<td class="ticket_edit">
+		
+<a href="" target="_blank">
+	Edit in Series</a>
+	</td>
 </tr>
 		</tbody>
-
-		<tbody>
-					</tbody>
 	</table>
 
 </div>
-			</div>
+	</div>
 	<div class="tribe-ticket-control-wrap">
-				<div  class="ticket-editor-notice info tribe-dependent recurring_event_warning" 							data-depends="#tribe-recurrence-active"
-						data-condition-is-checked		>
-			<span class="dashicons dashicons-info"></span>
-			<span class="message">Tickets and RSVPs are not yet supported on recurring events. <br /><a href="https://evnt.is/1b7a" target="_blank" rel="noopener noreferrer"> Read about our plans for future features </a></span>
-		</div>
-		
-		<button id="settings_form_toggle" class="button-secondary tribe-button-icon tribe-button-icon-settings">
-			Settings		</button>
+		<div class="tribe-ticket-control-wrap__ctas">
+							<a
+					href="http://wordpress.test/wp-admin/edit.php?post_type=tribe_events&#038;page=tickets-attendees&#038;event_id={{ID}}"
+				>
+					View Attendees				</a>
 
-		
+				
+	<a
+		href="http://wordpress.test/wp-admin/edit.php?post_type=tribe_events&#038;page=tickets-commerce-orders&#038;event_id={{ID}}"
+	>
+		View Orders	</a>
+					</div>
+
+		<div class="tribe-ticket-control-wrap__settings">
+							<span id="ticket_form_total_capacity">
+	Total Event Capacity:	<span id="ticket_form_total_capacity_value" title="The total number of possible attendees for this event">
+		<a href="#" id="capacity_form_toggle">600</a>	</span>
+</span>
+			
+							<button id="settings_form_toggle" class="button-secondary tribe-button-icon tribe-button-icon-settings">
+					Settings				</button>
+					</div>
 	</div>
 	
 </div>
@@ -211,7 +464,7 @@
 							name='ticket_name'
 							class="ticket_field ticket_form_right"
 							size='25'
-							value="Test TC ticket for {{ post_id }}"
+							value=""
 							data-validation-is-required
 							data-validation-error="RSVP type is a required field"
 					/>
@@ -235,7 +488,7 @@
 							name="ticket_description"
 							class="ticket_field ticket_form_right"
 							id="ticket_description"
-					>Test TC ticket description for {{ post_id }}</textarea>
+					></textarea>
 					<div class="input_block">
 						<label class="tribe_soft_note">
 							<input
@@ -258,7 +511,7 @@
 								class="tribe-datepicker tribe-field-start_date ticket_field"
 								name="ticket_start_date"
 								id="ticket_start_date"
-								value="1/2/2020"
+								value=""
 								data-validation-type="datepicker"
 								data-validation-is-less-or-equal-to="#ticket_end_date"
 								data-validation-error="{&quot;is-required&quot;:&quot;Start sale date cannot be empty.&quot;,&quot;is-less-or-equal-to&quot;:&quot;Start sale date cannot be greater than End Sale date&quot;}"
@@ -273,7 +526,7 @@
 								id="ticket_start_time"
 																data-step="30"
 								data-round="00:00:00"
-								value="08:00:00"
+								value=""
 								aria-label="Ticket start date"
 						/>
 						<span class="helper-text hide-if-js">HH:MM</span>
@@ -292,7 +545,7 @@
 								class="tribe-datepicker tribe-field-end_date ticket_field"
 								name="ticket_end_date"
 								id="ticket_end_date"
-								value="3/1/2050"
+								value=""
 						/>
 						<span class="helper-text hide-if-js">YYYY-MM-DD</span>
 						<span class="datetime_seperator"> at </span>
@@ -304,7 +557,7 @@
 								id="ticket_end_time"
 																data-step="30"
 								data-round="00:00:00"
-								value="20:00:00"
+								value=""
 								aria-label="Ticket end date"
 						/>
 						<span class="helper-text hide-if-js">HH:MM</span>
@@ -349,7 +602,7 @@
 			name="ticket_price"
 			class="ticket_field ticket_form_right"
 			size="7"
-			value="23"
+			value=""
 						data-validation-error="Ticket price must be greater than zero." data-required data-validation-is-greater-than="0"		/>
 			</div>
 
@@ -368,7 +621,7 @@
 		name='tribe-ticket[capacity]'
 		class="ticket_field tribe-rsvp-field-capacity ticket_form_right"
 		size='7'
-		value='100'
+		value=''
 	/>
 	<span class="tribe_soft_note ticket_form_right">Leave blank for unlimited</span>
 </div>
@@ -408,7 +661,7 @@
 		name='tribe-ticket[capacity]'
 		class="ticket_field tribe-tpp-field-capacity ticket_form_right"
 		size='7'
-		value='100'
+		value=''
 	/>
 	<span class="tribe_soft_note ticket_form_right">Leave blank for unlimited</span>
 </div>
@@ -433,7 +686,7 @@
 		name="ticket_sku"
 		class="ticket_field sku_input ticket_form_right"
 		size="14"
-		value="TEST-TKT-{{ post_id }}"
+		value=""
 	>
 	<p class="description ticket_form_right">
 		A unique identifying code for each ticket type you&#039;re selling	</p>
@@ -449,7 +702,7 @@
 						name="ticket_id"
 						id="ticket_id"
 						class="ticket_field"
-						value="{{ ticket_id }}"
+						value=""
 				/>
 				<input
 						type="button"
@@ -479,7 +732,7 @@
 
 				
 				<div id="ticket_bottom_right">
-					<a href="?dialog=move_ticket_types&ticket_type_id={{ ticket_id }}&check=33333333&TB_iframe=true" class="thickbox tribe-ticket-move-link">Move Ticket</a> | <span><a href="#" attr-provider="TEC\Tickets\Commerce\Module" attr-ticket-id="{{ ticket_id }}" id="ticket_delete_{{ ticket_id }}" class="ticket_delete">Delete Ticket</a></span>				</div>
+									</div>
 			</div>
 		</div>
 	</div>

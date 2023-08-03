@@ -11,17 +11,12 @@ namespace TEC\Tickets\Flexible_Tickets;
 
 use TEC\Common\Contracts\Provider\Controller;
 use TEC\Common\lucatume\DI52\Container;
-use TEC\Events_Pro\Custom_Tables\V1\Models\Series_Relationship;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 use TEC\Events_Pro\Custom_Tables\V1\Templates\Series_Filters;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Labels;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Meta;
-use TEC\Tickets\Flexible_Tickets\Templates\Admin_Views;
-use Tribe__Date_Utils as Dates;
 use Tribe__Events__Main as TEC;
-use Tribe__Tickets__RSVP as RSVP;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
-use Tribe__Tickets__Tickets as Tickets;
 use WP_Post;
 
 /**
@@ -47,6 +42,7 @@ class Series_Passes extends Controller {
 	 * @var Labels
 	 */
 	private Labels $labels;
+
 	/**
 	 * A reference to the Series Passes' meta handler.
 	 *
@@ -56,10 +52,41 @@ class Series_Passes extends Controller {
 	 */
 	private Meta $meta;
 
-	public function __construct( Container $container, Labels $labels, Meta $meta ) {
+	/**
+	 * A reference to the Series Passes' metabox handler.
+	 *
+	 * @since TBD
+	 *
+	 * @var Metabox
+	 */
+	private Metabox $metabox;
+
+	/**
+	 * A reference to the Series Passes' ticket provider handler.
+	 *
+	 * @since TBD
+	 *
+	 * @var Ticket_Provider_Handler
+	 */
+	private Ticket_Provider_Handler $ticket_provider_handler;
+
+	/**
+	 * Series_Passes constructor.
+	 *
+	 * since TBD
+	 *
+	 * @param Container               $container               The dependency injection container.
+	 * @param Labels                  $labels                  The labels' handler.
+	 * @param Meta                    $meta                    The Series Passes' meta handler.
+	 * @param Metabox                 $metabox                 The Series Passes' metabox handler.
+	 * @param Ticket_Provider_Handler $ticket_provider_handler The Series Passes' ticket provider handler.
+	 */
+	public function __construct( Container $container, Labels $labels, Meta $meta, Metabox $metabox, Ticket_Provider_Handler $ticket_provider_handler ) {
 		parent::__construct( $container );
-		$this->labels = $labels;
-		$this->meta   = $meta;
+		$this->labels                  = $labels;
+		$this->meta                    = $meta;
+		$this->metabox                 = $metabox;
+		$this->ticket_provider_handler = $ticket_provider_handler;
 	}
 
 	/**
@@ -119,7 +146,11 @@ class Series_Passes extends Controller {
 
 		add_action( 'tec_tickets_panels_before', [ $this, 'start_filtering_labels' ], 10, 3 );
 		add_action( 'tec_tickets_panels_after', [ $this->labels, 'stop_filtering_labels' ] );
-		add_action( 'tribe_events_tickets_new_ticket_warnings', [ $this, 'display_pass_notice' ], 5, 2 );
+		add_action( 'tribe_events_tickets_new_ticket_warnings', [ $this, 'display_pass_notice_in_warnings' ], 5, 2 );
+		add_action( 'tec_tickets_editor_list_table_before', [
+			$this,
+			'display_pass_notice_before_passes_list'
+		], 10, 3 );
 
 		add_filter( 'tec_tickets_repository_filter_by_event_id', [ $this, 'add_series_to_searched_events' ] );
 		add_action( 'added_post_meta', [ $this, 'propagate_ticket_provider_from_series' ], 20, 4 );
@@ -127,6 +158,13 @@ class Series_Passes extends Controller {
 		add_action( 'deleted_post_meta', [ $this, 'delete_ticket_provider_from_series' ], 20, 4 );
 
 		add_action( 'tec_tickets_list_row_edit', [ $this, 'render_link_to_series' ], 10, 2 );
+		add_filter( 'tec_tickets_editor_list_ticket_types', [ $this, 'display_series_passes_list' ] );
+		$ticket_type = self::TICKET_TYPE;
+		add_filter( "tec_tickets_editor_list_table_data_{$ticket_type}", [ $this, 'update_table_data' ] );
+		add_action( "tec_tickets_editor_list_table_title_icon_{$ticket_type}", [
+			$this,
+			'print_series_pass_icon'
+		] );
 	}
 
 	/**
@@ -137,28 +175,58 @@ class Series_Passes extends Controller {
 	 * @return void
 	 */
 	public function unregister(): void {
-		remove_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'render_form_toggle' ] );
 		remove_filter( 'the_content', [ $this, 'reorder_series_content' ], 0 );
-		remove_filter( 'tec_tickets_ticket_panel_data', [ $this, 'update_panel_data' ] );
+		remove_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'render_form_toggle' ] );
 		remove_action( 'admin_menu', [ $this, 'enable_reports' ], 20 );
+		remove_filter( 'tec_tickets_ticket_panel_data', [ $this, 'update_panel_data' ], 10, 3 );
+
+		// Subscribe to the ticket post updates.
 		foreach ( Enums\Ticket_Post_Types::all() as $post_type ) {
 			remove_action( "save_post_{$post_type}", [ $this, 'update_pass' ], 20 );
 			remove_action( "edit_post_{$post_type}", [ $this, 'update_pass' ], 20 );
 		}
+
+		// Subscribe to Tickets' metadata updates.
 		remove_action( 'added_post_meta', [ $this, 'update_pass_meta' ], 20 );
 		remove_action( 'updated_post_meta', [ $this, 'update_pass_meta' ], 20 );
 		remove_action( 'tribe_tickets_ticket_add', [ $this, 'update_pass_meta_on_save' ] );
+
+		// An Event is attached to a Series.
 		remove_action( 'tec_events_pro_custom_tables_v1_event_relationship_updated', [
 			$this,
 			'update_passes_for_event'
-		], 20, 2 );
+		], 20 );
+
+		// Multiple Events are attached to a Series.
 		remove_action( 'tec_events_pro_custom_tables_v1_series_relationships_updated', [
 			$this,
 			'update_passes_for_series'
 		] );
+
+		// Event Occurrences have been updated
 		remove_action( 'tec_events_custom_tables_v1_after_save_occurrences', [ $this, 'update_passes_for_event' ] );
+
 		remove_action( 'tec_tickets_panels_before', [ $this, 'start_filtering_labels' ] );
 		remove_action( 'tec_tickets_panels_after', [ $this->labels, 'stop_filtering_labels' ] );
+		remove_action( 'tribe_events_tickets_new_ticket_warnings', [ $this, 'display_pass_notice_in_warnings' ], 5, 2 );
+		remove_action( 'tec_tickets_editor_list_table_before', [
+			$this,
+			'display_pass_notice_before_passes_list'
+		] );
+
+		remove_filter( 'tec_tickets_repository_filter_by_event_id', [ $this, 'add_series_to_searched_events' ] );
+		remove_action( 'added_post_meta', [ $this, 'propagate_ticket_provider_from_series' ], 20, 4 );
+		remove_action( 'updated_post_meta', [ $this, 'propagate_ticket_provider_from_series' ], 20, 4 );
+		remove_action( 'deleted_post_meta', [ $this, 'delete_ticket_provider_from_series' ], 20, 4 );
+
+		remove_action( 'tec_tickets_list_row_edit', [ $this, 'render_link_to_series' ], );
+		remove_filter( 'tec_tickets_editor_list_ticket_types', [ $this, 'display_series_passes_list' ] );
+		$ticket_type = self::TICKET_TYPE;
+		remove_filter( "tec_tickets_editor_list_table_data_{$ticket_type}", [ $this, 'update_table_data' ] );
+		remove_action( "tec_tickets_editor_list_table_title_icon_{$ticket_type}", [
+			$this,
+			'print_series_pass_icon'
+		] );
 	}
 
 	/**
@@ -175,17 +243,7 @@ class Series_Passes extends Controller {
 			return;
 		}
 
-		$post = get_post( $post_id );
-
-		if ( ! ( $post instanceof WP_Post && $post->post_type === Series_Post_Type::POSTTYPE ) ) {
-			return;
-		}
-
-		$ticket_providing_modules = array_diff_key( Tickets::modules(), [ RSVP::class => true ] );
-		$admin_views              = $this->container->get( Admin_Views::class );
-		$admin_views->template( 'series-pass-form-toggle', [
-			'disabled' => count( $ticket_providing_modules ) === 0,
-		] );
+		$this->metabox->render_form_toggle( $post_id );
 	}
 
 	/**
@@ -229,20 +287,7 @@ class Series_Passes extends Controller {
 			return $data;
 		}
 
-		$data['ticket_end_date_help_text'] = esc_attr_x(
-			'If you do not set an end sale date, passes will be available until the last event in the Series.',
-			'Help text for the end date field in the Series Passes meta box.',
-			'event-tickets'
-		);
-
-		$set_end_date = get_post_meta( $ticket_id, '_ticket_end_date', true );
-		$set_end_time = get_post_meta( $ticket_id, '_ticket_end_time', true );
-
-		$datepicker_format       = Dates::datepicker_formats( Dates::get_datepicker_format_index() );
-		$data['ticket_end_date'] = $set_end_date ? Dates::date_only( $set_end_date, false, $datepicker_format ) : '';
-		$data['ticket_end_time'] = $set_end_time ? Dates::time_only( $set_end_time ) : '';
-
-		return $data;
+		return $this->metabox->update_panel_data( $data, $ticket_id );
 	}
 
 	/**
@@ -373,16 +418,11 @@ class Series_Passes extends Controller {
 	 * @return void The Series Passes are updated.
 	 */
 	public function update_passes_for_series( int $series_id ): void {
-		// Theoretically unbound; in practice it's unlikely a Series will have more than a few Series Passes attached.
-		$passes = tribe_tickets()->where( 'event', $series_id )->get_ids();
-
-		if ( ! count( $passes ) ) {
-			return;
-		}
-
-		foreach ( $passes as $pass ) {
+		foreach ( tribe_tickets()->where( 'event', $series_id )->get_ids_generator() as $pass ) {
 			$this->update_pass( $pass );
 		}
+
+		$this->ticket_provider_handler->update_from_series( $series_id );
 	}
 
 	/**
@@ -425,32 +465,74 @@ class Series_Passes extends Controller {
 		$this->labels->start_filtering_labels();
 	}
 
-	public function display_pass_notice( int $post_id, int $total_tickets ): void {
-		if ( $total_tickets > 0 || get_post_type( $post_id ) !== TEC::POSTTYPE ) {
+	/**
+	 * Renders the notice about Series Passes being managed from the Series in the context of Events related to the
+	 * Series.
+	 *
+	 * The notice will render if the Event has no other tickets, and the Event is related to a Series.
+	 *
+	 * @since TBD
+	 *
+	 * @param int                  $post_id The post ID.
+	 * @param array<Ticket_Object> $tickets The tickets for the post.
+	 *
+	 * @return void The notice is rendered, if the post is an Event related to a Series.
+	 */
+	public function display_pass_notice_in_warnings( int $post_id, array $tickets ): void {
+		if ( count( $tickets ) > 0 || get_post_type( $post_id ) !== TEC::POSTTYPE ) {
 			return;
 		}
 
-		$series_ids = tec_series()->where( 'event_post_id', $post_id )->get_ids();
-
-		if ( ! count( $series_ids ) ) {
-			return;
-		}
-
-		$series = reset( $series_ids );
-
-		$admin_views = $this->container->get( Admin_Views::class );
-		$admin_views->template( 'series-pass-event-notice', [
-			'series_edit_link' => get_edit_post_link( $series ),
-			'series_title'     => get_the_title( $series ),
-		] );
+		$this->metabox->display_pass_notice( $post_id );
 	}
 
-	public function add_series_to_searched_events( $post_id ) {
-		if ( ! ( get_post_type( $post_id ) === TEC::POSTTYPE ) ) {
-			return $post_id;
+	public function print_series_pass_icon(): void {
+		$this->metabox->print_series_pass_icon();
+	}
+
+	/**
+	 * Renders the notice about Series Passes being managed from the Series before printing the list of Series
+	 * Passes in the context of Events related to the Series.
+	 *
+	 * The notice will render if the Event has other tickets, and the Event is related to a Series.
+	 *
+	 * @since TBD
+	 *
+	 * @param int    $post_id
+	 * @param array  $tickets
+	 * @param string $ticket_type
+	 *
+	 * @return void
+	 */
+	public function display_pass_notice_before_passes_list( int $post_id, array $tickets, string $ticket_type ): void {
+		if ( $ticket_type !== self::TICKET_TYPE ) {
+			return;
 		}
 
-		$series_ids = tec_series()->where( 'event_post_id', $post_id )->get_ids();
+		$this->metabox->display_pass_notice( $post_id );
+	}
+
+	/**
+	 * Adds the Series post ID to the list of IDs that should be searched for tickets when, in the context
+	 * of a repository query, searching for an Event's tickets.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<int>|int $post_id The Event post ID, or a list of IDs.
+	 *
+	 * @return array<int> The list of IDs to search for tickets.
+	 */
+	public function add_series_to_searched_events( $post_id ) {
+		// At least one of the IDs must be an Event.
+		$event_ids = array_filter( (array) $post_id, function ( $id ) {
+			return get_post_type( $id ) === TEC::POSTTYPE;
+		} );
+
+		if ( empty( $event_ids ) ) {
+			return (array) $post_id;
+		}
+
+		$series_ids = tec_series()->where( 'event_post_id', $event_ids )->get_ids();
 
 		if ( ! count( $series_ids ) ) {
 			return $post_id;
@@ -474,7 +556,7 @@ class Series_Passes extends Controller {
 	 * @return void The ticket provider is updated.
 	 */
 	public function propagate_ticket_provider_from_series( $meta_ids, $object_id, $meta_key, $meta_value ): void {
-		$this->update_ticket_provider_from_series( $object_id, $meta_key, $meta_value, false );
+		$this->update_ticket_provider_from_series( $object_id, $meta_key, $meta_value );
 	}
 
 	/**
@@ -514,24 +596,24 @@ class Series_Passes extends Controller {
 			return;
 		}
 
-		foreach ( tribe_events()->where( 'series', $object_id )->get_ids_generator() as $event_id ) {
-			if ( $delete ) {
-				delete_post_meta( $event_id, $meta_key );
-			} else {
-				update_post_meta( $event_id, $meta_key, $meta_value );
-			}
-		}
-
-		foreach ( Series_Relationship::where( 'series_post_id', '=', $object_id )->all() as $relationship ) {
-			$event_id = $relationship->event_post_id;
-			if ( $delete ) {
-				delete_post_meta( $event_id, $meta_key );
-			} else {
-				update_post_meta( $event_id, $meta_key, $meta_value );
-			}
+		if ( $delete ) {
+			$this->ticket_provider_handler->delete_from_series( $object_id );
+		} else {
+			$this->ticket_provider_handler->update_from_series( $object_id, $meta_value );
 		}
 	}
 
+	/**
+	 * Renders a link to the Series edit screen in place of the edit controls for Series Passes
+	 * when displaying the Series Pass in the context of a Series' Event.
+	 *
+	 * @since TBD
+	 *
+	 * @param Ticket_Object $ticket  The ticket object.
+	 * @param int|null      $post_id The post ID the ticket is being rendered for, if any.
+	 *
+	 * @return void The link is rendered.
+	 */
 	public function render_link_to_series( Ticket_object $ticket, int $post_id = null ): void {
 		if ( $post_id === $ticket->get_event_id() ) {
 			// Let the default controls render.
@@ -543,9 +625,40 @@ class Series_Passes extends Controller {
 			return;
 		}
 
-		$admin_views = $this->container->get( Admin_Views::class );
-		$admin_views->template( 'series-pass-edit-link', [
-			'series_edit_link' => get_edit_post_link( $ticket->ID ),
-		] );
+		$this->metabox->render_link_to_series( $ticket->ID );
+	}
+
+	/**
+	 * Adds the Series Pass ticket type to the list of ticket types to display a table for.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,array<Ticket_Object>> $ticket_types A map from ticket type to list of tickets
+	 *                                                         for that type.
+	 *
+	 * @return array<string,array<Ticket_Object>> The updated map.
+	 */
+	public function display_series_passes_list( array $ticket_types ): array {
+		if ( empty( $ticket_types[ self::TICKET_TYPE ] ) ) {
+			$ticket_types[ self::TICKET_TYPE ] = [];
+		}
+
+		return $ticket_types;
+	}
+
+	/**
+	 * Updates the data displayed in the Series Pass list table to use the Series Pass plural name
+	 * for the title.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $table_data The table data.
+	 *
+	 * @return array<string,mixed> The updated table data.
+	 */
+	public function update_table_data( array $table_data ): array {
+		$table_data['table_title'] = tec_tickets_get_series_pass_plural_uppercase( 'ticket_list_title' );
+
+		return $table_data;
 	}
 }

@@ -7,6 +7,14 @@
 	<div class="tribe_sectionheader ticket_list_container">
 		<div class="ticket_table_intro">
 			
+<button
+		id="series_pass_form_toggle"
+		class="button-secondary ticket_form_toggle tribe-button-icon tribe-button-icon-plus"
+		aria-label="Add a new Series Pass"
+				data-ticket-type="series_pass"
+>
+	New Series Pass</button>
+
 					</div>
 
 		<div class="ticket_table_intro__warnings">
@@ -21,10 +29,10 @@
 					
 <img
 	class="tribe-tickets-svgicon tec-tickets-icon tec-tickets-icon__ticket-type"
-	src="http://wordpress.test/wp-content/plugins/event-tickets/src/resources/icons/ticket-default-icon.svg"
-	alt="Ticket"
+	src="http://wordpress.test/wp-content/plugins/event-tickets/src/resources/icons/ticket-series-pass-icon.svg"
+	alt="Series Pass"
 />
-					Tickets				</th>
+					Series Passes				</th>
 				
 <th class="ticket_price"></th>
 				<th class="ticket_capacity">Capacity</th>
@@ -36,7 +44,7 @@
 		<tr class="TEC\Tickets\Commerce\Module is-expanded"
 	data-ticket-order-id="order_{{ID}}"
 	data-ticket-type-id="{{ID}}"
-	data-ticket-type="default">
+	data-ticket-type="series_pass">
 	<td class="column-primary ticket_name TEC\Tickets\Commerce\Module" data-label="Ticket Type:">
 		<input
 			type="hidden"
@@ -71,6 +79,44 @@
 	<td class="ticket_edit">
 			</td>
 </tr>
+<tr class="TEC\Tickets\Commerce\Module is-expanded"
+	data-ticket-order-id="order_{{ID}}"
+	data-ticket-type-id="{{ID}}"
+	data-ticket-type="series_pass">
+	<td class="column-primary ticket_name TEC\Tickets\Commerce\Module" data-label="Ticket Type:">
+		<input
+			type="hidden"
+			class="tribe-ticket-field-order"
+			name="tribe-tickets[list][{{ID}}][order]"
+			value="-1"
+					>
+		<div class="tribe-tickets__tickets-editor-ticket-name">
+			<div class="tribe-tickets__tickets-editor-ticket-name-sortable">
+				<span class="dashicons dashicons-screenoptions tribe-handle"></span>
+			</div>
+			<div class="tribe-tickets__tickets-editor-ticket-name-title">
+
+				
+				Test TC ticket for {{ID}}
+				<div  class="tribe-tickets__tickets-editor-ticket-available-dates dashicons-before dashicons-clock" >
+	January 2, 2020 - March 1, 2050</div>			</div>
+		</div>
+	</td>
+
+	<td class="ticket_price" data-label="Price:">
+	&#x24;89.00</td>
+
+	<td class="ticket_capacity">
+		<span class='tribe-mobile-only'>Capacity:</span>
+		100	</td>
+
+	<td class="ticket_available">
+		<span class='tribe-mobile-only'>Available:</span>
+				100	</td>
+
+	<td class="ticket_edit">
+			</td>
+</tr>
 		</tbody>
 	</table>
 
@@ -79,13 +125,13 @@
 	<div class="tribe-ticket-control-wrap">
 		<div class="tribe-ticket-control-wrap__ctas">
 							<a
-					href="http://wordpress.test/wp-admin/edit.php?post_type=post&#038;page=tickets-attendees&#038;event_id={{ID}}"
+					href="http://wordpress.test/wp-admin/edit.php?post_type=tribe_event_series&#038;page=tickets-attendees&#038;event_id={{ID}}"
 				>
 					View Attendees				</a>
 
 				
 	<a
-		href="http://wordpress.test/wp-admin/edit.php?post_type=post&#038;page=tickets-commerce-orders&#038;event_id={{ID}}"
+		href="http://wordpress.test/wp-admin/edit.php?post_type=tribe_event_series&#038;page=tickets-commerce-orders&#038;event_id={{ID}}"
 	>
 		View Orders	</a>
 					</div>
@@ -93,7 +139,7 @@
 		<div class="tribe-ticket-control-wrap__settings">
 							<span id="ticket_form_total_capacity">
 	Total Event Capacity:	<span id="ticket_form_total_capacity_value" title="The total number of possible attendees for this event">
-		<a href="#" id="capacity_form_toggle">100</a>	</span>
+		<a href="#" id="capacity_form_toggle">200</a>	</span>
 </span>
 			
 							<button id="settings_form_toggle" class="button-secondary tribe-button-icon tribe-button-icon-settings">
@@ -208,6 +254,30 @@
 					 data-datepicker_format="1">
 
 				
+<div id="ticket_type_options" class="input_block">
+	<label class="ticket_form_label ticket_form_left" id="ticket_type_label" for="ticket_type">
+		Type:	</label>
+	<input
+			type='hidden'
+			id='ticket_type'
+			name='ticket_type'
+			value="series_pass"
+	/>
+	<div class="ticket_form_right"
+		 style="display: flex; align-items: center">
+		<img
+				class="tribe-tickets-svgicon tec-tickets-icon tec-tickets-icon__ticket-type"
+				src="http://wordpress.test/wp-content/plugins/event-tickets/src/resources/icons/series-pass.svg"
+				alt="Series Pass"
+		/>
+		<span class="ticket-type__text">
+		Series Pass		</span>
+		<span class="dashicons dashicons-editor-help ticket-type__help-icon"
+			  title="A Series Pass provides an attendee with access to all events in a Series.">
+		</span>
+	</div>
+</div>
+
 				<div class="input_block">
 					<label class="ticket_form_label ticket_form_left" for="ticket_name">
 						Name:					</label>

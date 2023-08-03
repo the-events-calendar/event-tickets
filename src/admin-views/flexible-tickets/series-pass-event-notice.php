@@ -5,7 +5,7 @@
  */
 ?>
 
-<div class="ticket-editor-notice info info--background series-pass-link">
+<div class="ticket-editor-notice info info--background table-stick--before series-pass-link">
 	<span class="dashicons dashicons-lightbulb"></span>
 	<span class="message">
 		<?php echo wp_kses(

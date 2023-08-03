@@ -31,9 +31,8 @@ $ticket_type = $ticket_type ?? 'default';
 ?>
 
 <?php if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) : ?>
-<div id="ticket_list_wrapper">
+<div class="ticket_list_wrapper">
 <?php endif; ?>
-
 	<table class="tribe_ticket_list_table tribe-tickets-editor-table eventtable ticket_list eventForm widefat fixed">
 		<thead>
 			<tr class="table-header">

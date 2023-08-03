@@ -6,7 +6,10 @@ use Closure;
 use Generator;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
+use TEC\Events\Custom_Tables\V1\Models\Event;
+use TEC\Events_Pro\Custom_Tables\V1\Models\Series_Relationship;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
+use TEC\Events_Pro\Custom_Tables\V1\Series\Relationship;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Flexible_Tickets\Test\Traits\Series_Pass_Factory;
 use TEC\Tickets\Flexible_Tickets\Test\Traits\Ticket_Data_Factory;
@@ -746,28 +749,127 @@ class Series_PassesTest extends Controller_Test_Case {
 		] )->create();
 
 		$this->assertEquals( '', get_post_meta( $series, '_tribe_default_ticket_provider', true ) );
-		$this->assertEauals( '', get_post_meta( $event_1, '_tribe_default_ticket_provider', true ) );
-		$this->assertEauals( '', get_post_meta( $event_2, '_tribe_default_ticket_provider', true ) );
+		$this->assertEquals( '', get_post_meta( $event_1->ID, '_tribe_default_ticket_provider', true ) );
+		$this->assertEquals( '', get_post_meta( $event_2->ID, '_tribe_default_ticket_provider', true ) );
+
+		// Build and register the Controller.
+		$controller = $this->make_controller()->register();
 
 		// Add the provider to the Series.
 		add_post_meta( $series, '_tribe_default_ticket_provider', Module::class );
 
 		$this->assertEquals( Module::class, get_post_meta( $series, '_tribe_default_ticket_provider', true ) );
-		$this->assertEquals( Module::class, get_post_meta( $event_1, '_tribe_default_ticket_provider', true ) );
-		$this->assertEquals( Module::class, get_post_meta( $event_2, '_tribe_default_ticket_provider', true ) );
+		$this->assertEquals( Module::class, get_post_meta( $event_1->ID, '_tribe_default_ticket_provider', true ) );
+		$this->assertEquals( Module::class, get_post_meta( $event_2->ID, '_tribe_default_ticket_provider', true ) );
 
 		// Update the provider on the Series.
 		update_post_meta( $series, '_tribe_default_ticket_provider', PayPal::class );
 
 		$this->assertEquals( PayPal::class, get_post_meta( $series, '_tribe_default_ticket_provider', true ) );
-		$this->assertEquals( PayPal::class, get_post_meta( $event_1, '_tribe_default_ticket_provider', true ) );
-		$this->assertEquals( PayPal::class, get_post_meta( $event_2, '_tribe_default_ticket_provider', true ) );
+		$this->assertEquals( PayPal::class, get_post_meta( $event_1->ID, '_tribe_default_ticket_provider', true ) );
+		$this->assertEquals( PayPal::class, get_post_meta( $event_2->ID, '_tribe_default_ticket_provider', true ) );
 
 		// Remove the provider from the Series.
 		delete_post_meta( $series, '_tribe_default_ticket_provider' );
 
-		$this->assertEauals( '', get_post_meta( $series, '_tribe_default_ticket_provider', true ) );
-		$this->assertEquals( '', get_post_meta( $event_1, '_tribe_default_ticket_provider', true ) );
-		$this->assertEquals( '', get_post_meta( $event_2, '_tribe_default_ticket_provider', true ) );
+		$this->assertEquals( '', get_post_meta( $series, '_tribe_default_ticket_provider', true ) );
+		$this->assertEquals( '', get_post_meta( $event_1->ID, '_tribe_default_ticket_provider', true ) );
+		$this->assertEquals( '', get_post_meta( $event_2->ID, '_tribe_default_ticket_provider', true ) );
+	}
+
+	/**
+	 * It should set default ticket provider from Series when Event added to Series
+	 *
+	 * @test
+	 */
+	public function should_set_default_ticket_provider_from_series_when_event_added_to_series(): void {
+		// Create a single Event and set the ticket provider to PayPal.
+		$event = tribe_events()->set_args( [
+			'title'      => 'Event 1',
+			'status'     => 'publish',
+			'start_date' => '2020-02-11 17:30:00',
+			'end_date'   => '2020-02-11 18:00:00',
+		] )->create();
+		update_post_meta( $event->ID, '_tribe_default_ticket_provider', PayPal::class );
+		// Create a recurring Event and set the ticket provider to Ticket Commerce.
+		$recurring_event = tribe_events()->set_args( [
+			'title'      => 'Recurring Event',
+			'status'     => 'publish',
+			'start_date' => '2020-02-11 17:30:00',
+			'end_date'   => '2020-02-11 18:00:00',
+			'recurrence' => 'RRULE:FREQ=DAILY;COUNT=2'
+		] )->create();
+		update_post_meta( $recurring_event->ID, '_tribe_default_ticket_provider', PayPal::class );
+		// Create a Series and set the ticket provider to Ticket Commerce.
+		$series = static::factory()->post->create( [
+			'post_type' => Series_Post_Type::POSTTYPE,
+		] );
+		// Set the Series
+		update_post_meta( $series, '_tribe_default_ticket_provider', Module::class );
+
+		// Build and register the controller to hook.
+		$this->make_controller()->register();
+
+		// Relate the single Event to the Series.
+		tribe( Relationship::class )->with_series( get_post( $series ), [ $event->ID ] );
+
+		$this->assertEquals( Module::class, get_post_meta( $event->ID, '_tribe_default_ticket_provider', true ) );
+		$this->assertEquals( Module::class, get_post_meta( $series, '_tribe_default_ticket_provider', true ) );
+		$this->assertEquals( PayPal::class, get_post_meta( $recurring_event->ID, '_tribe_default_ticket_provider', true ) );
+
+		// Relate the recurring Event to the Series.
+		tribe( Relationship::class )->with_series( get_post( $series ), [ $recurring_event->ID ] );
+
+		$this->assertEquals( Module::class, get_post_meta( $event->ID, '_tribe_default_ticket_provider', true ) );
+		$this->assertEquals( Module::class, get_post_meta( $series, '_tribe_default_ticket_provider', true ) );
+		$this->assertEquals( Module::class, get_post_meta( $recurring_event->ID, '_tribe_default_ticket_provider', true ) );
+	}
+
+	/**
+	 * It should set default ticket provider from Series to Events when connected from Event
+	 *
+	 * @test
+	 */
+	public function should_set_default_ticket_provider_from_series_to_events_when_connected_from_event(): void {
+		// Create a single Event and set the ticket provider to PayPal.
+		$event = tribe_events()->set_args( [
+			'title'      => 'Event 1',
+			'status'     => 'publish',
+			'start_date' => '2020-02-11 17:30:00',
+			'end_date'   => '2020-02-11 18:00:00',
+		] )->create();
+		update_post_meta( $event->ID, '_tribe_default_ticket_provider', PayPal::class );
+		// Create a recurring Event and set the ticket provider to Ticket Commerce.
+		$recurring_event = tribe_events()->set_args( [
+			'title'      => 'Recurring Event',
+			'status'     => 'publish',
+			'start_date' => '2020-02-11 17:30:00',
+			'end_date'   => '2020-02-11 18:00:00',
+			'recurrence' => 'RRULE:FREQ=DAILY;COUNT=2'
+		] )->create();
+		update_post_meta( $recurring_event->ID, '_tribe_default_ticket_provider', PayPal::class );
+		// Create a Series and set the ticket provider to Ticket Commerce.
+		$series = static::factory()->post->create( [
+			'post_type' => Series_Post_Type::POSTTYPE,
+		] );
+		// Set the Series
+		update_post_meta( $series, '_tribe_default_ticket_provider', Module::class );
+
+		// Build and register the controller to hook.
+		$this->make_controller()->register();
+
+		// Relate the single Event to the Series.
+		tribe( Relationship::class )->with_event( Event::find( $event->ID, 'post_id' ), [ $series ] );
+
+		$this->assertEquals( Module::class, get_post_meta( $event->ID, '_tribe_default_ticket_provider', true ) );
+		$this->assertEquals( Module::class, get_post_meta( $series, '_tribe_default_ticket_provider', true ) );
+		$this->assertEquals( PayPal::class, get_post_meta( $recurring_event->ID, '_tribe_default_ticket_provider', true ) );
+
+		// Relate the recurring Event to the Series.
+		tribe( Relationship::class )->with_event( Event::find( $recurring_event->ID, 'post_id' ), [ $series ] );
+
+		$this->assertEquals( Module::class, get_post_meta( $event->ID, '_tribe_default_ticket_provider', true ) );
+		$this->assertEquals( Module::class, get_post_meta( $series, '_tribe_default_ticket_provider', true ) );
+		$this->assertEquals( Module::class, get_post_meta( $recurring_event->ID, '_tribe_default_ticket_provider', true ) );
 	}
 }

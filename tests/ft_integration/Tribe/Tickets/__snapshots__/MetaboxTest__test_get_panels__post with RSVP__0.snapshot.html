@@ -4,42 +4,94 @@
 	aria-hidden="false"
 	data-save-prompt="You have unsaved changes to your tickets. Discard those changes?"
 >
-	<div class="tribe_sectionheader ticket_list_container tribe_no_capacity">
-					<div class="ticket_table_intro">
-								<a
-					class="button-secondary"
-					href="http://wordpress.test/wp-admin/edit.php?post_type=post&#038;page=tickets-attendees&#038;event_id={{ post_id }}"
-				>
-					View Attendees				</a>
-			</div>
+	<div class="tribe_sectionheader ticket_list_container">
+		<div class="ticket_table_intro">
 			
-<div id="ticket_list_wrapper">
+					</div>
 
-	<table id="tribe_ticket_list_table" class="tribe-tickets-editor-table eventtable ticket_list eventForm widefat fixed">
+		<div class="ticket_table_intro__warnings">
+					</div>
+
+		
+<div class="ticket_list_wrapper">
+	<table class="tribe_ticket_list_table tribe-tickets-editor-table eventtable ticket_list eventForm widefat fixed">
 		<thead>
 			<tr class="table-header">
-				<th class="ticket_name column-primary">Tickets</th>
-				<th class="ticket_price">Price</th>
+				<th class="ticket_name column-primary">
+					
+<img
+	class="tribe-tickets-svgicon tec-tickets-icon tec-tickets-icon__ticket-type"
+	src="http://wordpress.test/wp-content/plugins/event-tickets/src/resources/icons/ticket-rsvp-icon.svg"
+	alt="RSVP"
+/>
+					RSVPs				</th>
+				
+<th class="ticket_price"></th>
 				<th class="ticket_capacity">Capacity</th>
 				<th class="ticket_available">Available</th>
 				<th class="ticket_edit"></th>
 			</tr>
 		</thead>
 				<tbody class="tribe-tickets-editor-table-tickets-body">
-				</tbody>
+		<tr class="Tribe__Tickets__RSVP is-expanded"
+	data-ticket-order-id="order_{{ID}}"
+	data-ticket-type-id="{{ID}}"
+	data-ticket-type="default">
+	<td class="column-primary ticket_name Tribe__Tickets__RSVP" data-label="Ticket Type:">
+		<input
+			type="hidden"
+			class="tribe-ticket-field-order"
+			name="tribe-tickets[list][{{ID}}][order]"
+			value="0"
+			disabled		>
+		<div class="tribe-tickets__tickets-editor-ticket-name">
+			<div class="tribe-tickets__tickets-editor-ticket-name-sortable">
+				<span class="dashicons dashicons-screenoptions tribe-handle"></span>
+			</div>
+			<div class="tribe-tickets__tickets-editor-ticket-name-title">
 
-		<tbody>
-					</tbody>
+				
+				Test RSVP ticket for {{ID}}
+				<div  class="tribe-tickets__tickets-editor-ticket-available-dates dashicons-before dashicons-clock" >
+	August 2, 2023 - August 4, 2023</div>			</div>
+		</div>
+	</td>
+
+	<td></td>
+	<td class="ticket_capacity">
+		<span class='tribe-mobile-only'>Capacity:</span>
+		100	</td>
+
+	<td class="ticket_available">
+		<span class='tribe-mobile-only'>Available:</span>
+				100	</td>
+
+	<td class="ticket_edit">
+			</td>
+</tr>
+		</tbody>
 	</table>
 
 </div>
-			</div>
+	</div>
 	<div class="tribe-ticket-control-wrap">
-		
-		<button id="settings_form_toggle" class="button-secondary tribe-button-icon tribe-button-icon-settings">
-			Settings		</button>
+		<div class="tribe-ticket-control-wrap__ctas">
+							<a
+					href="http://wordpress.test/wp-admin/edit.php?post_type=post&#038;page=tickets-attendees&#038;event_id={{ID}}"
+				>
+					View Attendees				</a>
 
-		
+									</div>
+
+		<div class="tribe-ticket-control-wrap__settings">
+							<span id="ticket_form_total_capacity">
+	Total Event Capacity:	<span id="ticket_form_total_capacity_value" title="The total number of possible attendees for this event">
+		<a href="#" id="capacity_form_toggle">100</a>	</span>
+</span>
+			
+							<button id="settings_form_toggle" class="button-secondary tribe-button-icon tribe-button-icon-settings">
+					Settings				</button>
+					</div>
 	</div>
 	
 </div>
@@ -158,7 +210,7 @@
 							name='ticket_name'
 							class="ticket_field ticket_form_right"
 							size='25'
-							value="Test RSVP ticket for {{ post_id }}"
+							value=""
 							data-validation-is-required
 							data-validation-error="RSVP type is a required field"
 					/>
@@ -182,7 +234,7 @@
 							name="ticket_description"
 							class="ticket_field ticket_form_right"
 							id="ticket_description"
-					>Ticket RSVP ticket excerpt for {{ post_id }}</textarea>
+					></textarea>
 					<div class="input_block">
 						<label class="tribe_soft_note">
 							<input
@@ -205,7 +257,7 @@
 								class="tribe-datepicker tribe-field-start_date ticket_field"
 								name="ticket_start_date"
 								id="ticket_start_date"
-								value="1/1/2021"
+								value=""
 								data-validation-type="datepicker"
 								data-validation-is-less-or-equal-to="#ticket_end_date"
 								data-validation-error="{&quot;is-required&quot;:&quot;Start sale date cannot be empty.&quot;,&quot;is-less-or-equal-to&quot;:&quot;Start sale date cannot be greater than End Sale date&quot;}"
@@ -220,7 +272,7 @@
 								id="ticket_start_time"
 																data-step="30"
 								data-round="00:00:00"
-								value="10:00:00"
+								value=""
 								aria-label="Ticket start date"
 						/>
 						<span class="helper-text hide-if-js">HH:MM</span>
@@ -239,7 +291,7 @@
 								class="tribe-datepicker tribe-field-end_date ticket_field"
 								name="ticket_end_date"
 								id="ticket_end_date"
-								value="1/31/2021"
+								value=""
 						/>
 						<span class="helper-text hide-if-js">YYYY-MM-DD</span>
 						<span class="datetime_seperator"> at </span>
@@ -251,7 +303,7 @@
 								id="ticket_end_time"
 																data-step="30"
 								data-round="00:00:00"
-								value="12:00:00"
+								value=""
 								aria-label="Ticket end date"
 						/>
 						<span class="helper-text hide-if-js">HH:MM</span>
@@ -269,7 +321,7 @@
 								value="Tribe__Tickets__RSVP"
 								class="ticket_field ticket_provider"
 								tabindex="-1"
-								 checked='checked'						>
+														>
 						<span>
 							RSVPs						</span>
 											<input
@@ -279,7 +331,7 @@
 								value="TEC\Tickets\Commerce\Module"
 								class="ticket_field ticket_provider"
 								tabindex="-1"
-														>
+								 checked='checked'						>
 						<span>
 							Tickets Commerce						</span>
 									</fieldset>
@@ -297,10 +349,8 @@
 			class="ticket_field ticket_form_right"
 			size="7"
 			value=""
-						data-validation-error="Ticket price must be greater than zero."		/>
-					<p class="description ticket_form_right">
-				Leave blank for free Ticket			</p>
-				</div>
+						data-validation-error="Ticket price must be greater than zero." data-required data-validation-is-greater-than="0"		/>
+			</div>
 
 	</div><div
 	class="input_block ticket_advanced_Tribe__Tickets__RSVP tribe-dependent"
@@ -317,7 +367,7 @@
 		name='tribe-ticket[capacity]'
 		class="ticket_field tribe-rsvp-field-capacity ticket_form_right"
 		size='7'
-		value='100'
+		value=''
 	/>
 	<span class="tribe_soft_note ticket_form_right">Leave blank for unlimited</span>
 </div>
@@ -341,6 +391,26 @@
 			/>
 	<span class="tribe_soft_note ticket_form_right">Enable &quot;Can&#039;t Go&quot; responses</span>
 </div>
+
+<div
+	class="input_block ticket_advanced_TEC_Tickets_Commerce_Module tribe-dependent"
+	data-depends="#Tribe__Tickets__RSVP_radio"
+	data-condition-is-not-checked
+>
+	<label
+		for="TEC_Tickets_Commerce_Module_capacity"
+		class="ticket_form_label ticket_form_left"
+	>
+		Capacity:	</label>
+	<input
+		type='text' id='TEC_Tickets_Commerce_Module_capacity'
+		name='tribe-ticket[capacity]'
+		class="ticket_field tribe-tpp-field-capacity ticket_form_right"
+		size='7'
+		value=''
+	/>
+	<span class="tribe_soft_note ticket_form_right">Leave blank for unlimited</span>
+</div>
 			</section>
 			<div class="accordion">
 				<div class="tribe-dependent" data-depends="#Tribe__Tickets__RSVP_radio" data-condition-is-not-checked>
@@ -349,7 +419,25 @@
 	<section id="ticket_form_advanced" class="advanced accordion-content" data-datepicker_format="1">
 		<h4 class="accordion-label screen_reader_text">Advanced Settings</h4>
 		<div id="advanced_fields">
-			<div id="Tribe__Tickets__Commerce__PayPal__Main_advanced" class="tribe-dependent" data-depends="#Tribe__Tickets__Commerce__PayPal__Main_radio" data-condition-is-checked></div><div id="TECTicketsCommerceEditorMetabox_advanced" class="tribe-dependent" data-depends="#provider_TEC_Tickets_Commerce_Module_radio" data-condition-is-checked></div>		</div>
+			<div id="Tribe__Tickets__Commerce__PayPal__Main_advanced" class="tribe-dependent" data-depends="#Tribe__Tickets__Commerce__PayPal__Main_radio" data-condition-is-checked></div><div id="TECTicketsCommerceEditorMetabox_advanced" class="tribe-dependent" data-depends="#provider_TEC_Tickets_Commerce_Module_radio" data-condition-is-checked>
+<div
+	class="ticket_advanced_TECTicketsCommerceModule input_block tribe-dependent"
+	data-depends="#provider_TEC_Tickets_Commerce_Module_radio"
+	data-condition-is-checked
+>
+	<label for="ticket_tpp_sku" class="ticket_form_label ticket_form_left">SKU:</label>
+	<input
+		type="text"
+		id="ticket_sku"
+		name="ticket_sku"
+		class="ticket_field sku_input ticket_form_right"
+		size="14"
+		value=""
+	>
+	<p class="description ticket_form_right">
+		A unique identifying code for each ticket type you&#039;re selling	</p>
+</div>
+</div>		</div>
 	</section><!-- #ticket_form_advanced -->
 </div>
 			</div>
@@ -360,7 +448,7 @@
 						name="ticket_id"
 						id="ticket_id"
 						class="ticket_field"
-						value="{{ ticket_id }}"
+						value=""
 				/>
 				<input
 						type="button"
@@ -390,7 +478,7 @@
 
 				
 				<div id="ticket_bottom_right">
-					<a href="?dialog=move_ticket_types&ticket_type_id={{ ticket_id }}&check=33333333&TB_iframe=true" class="thickbox tribe-ticket-move-link">Move RSVP</a> | <span><a href="#" attr-provider="Tribe__Tickets__RSVP" attr-ticket-id="{{ ticket_id }}" id="ticket_delete_{{ ticket_id }}" class="ticket_delete">Delete RSVP</a></span>				</div>
+									</div>
 			</div>
 		</div>
 	</div>
