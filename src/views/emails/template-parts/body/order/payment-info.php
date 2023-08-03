@@ -28,21 +28,15 @@ if ( empty( $order ) || empty( $order->provider ) ) {
 	return;
 }
 
-// Make sure payment gateway name is uppercase. If gateway is PayPal, ensure proper capitalization.
-$gateway_name = ucwords( $order->gateway );
-if ( 'Paypal' === $gateway_name ) {
-	$gateway_name = esc_html__( 'PayPal', 'event-tickets' );
-}
-
 $payment_info = empty( $order->status ) || 'completed' !== strtolower( $order->status ) ?
 	sprintf(
 		// Translators: %s - Payment provider's name.
 		__( 'Payment unsuccessful with %s', 'event-tickets' ),
-		$gateway_name
+		$order->gateway_name
 	) : sprintf(
 		// Translators: %s - Payment provider's name.
 		__( 'Payment completed with %s', 'event-tickets' ),
-		$gateway_name
+		$order->gateway_name
 	);
 ?>
 <tr>

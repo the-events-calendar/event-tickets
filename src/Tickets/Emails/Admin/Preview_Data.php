@@ -85,6 +85,7 @@ class Preview_Data {
 			'purchaser_name'   => __( 'John Doe', 'event-tickets' ),
 			'purchaser_email'  => 'john@doe.com',
 			'gateway'          => __( 'Stripe', 'event-tickets' ),
+			'gateway_name'     => __( 'Stripe', 'event-tickets' ),
 			'status'           => 'completed',
 			'tickets'          => self::get_tickets(),
 			'post_author'      => 1,
