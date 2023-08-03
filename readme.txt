@@ -204,6 +204,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Tweak - Add a notice in the Tickets Commerce Paypal settings for non-https sites. [ET-1773]
 * Fix - Footer links in Tickets Emails template using the wrong color. [ET-1784]
 * Tweak - Capitalize payment provider names in Tickets Emails. [ET-1776]
+* Fix - Removal of double-escaped characters in Tickets Emails sender's name. [ET-1777]
 
 = [5.6.3] 2023-07-18 =
 
