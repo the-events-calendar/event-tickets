@@ -12,6 +12,7 @@
  * @version 5.5.11
  *
  * @since 5.5.11
+ * @since TBD    Capitalize payment gateway name.
  *
  * @var Tribe__Template                    $this               Current template object.
  * @var \TEC\Tickets\Emails\Email_Abstract $email              The email object.
@@ -31,11 +32,11 @@ $payment_info = empty( $order->status ) || 'completed' !== strtolower( $order->s
 	sprintf(
 		// Translators: %s - Payment provider's name.
 		__( 'Payment unsuccessful with %s', 'event-tickets' ),
-		$order->gateway
+		$order->gateway_name
 	) : sprintf(
 		// Translators: %s - Payment provider's name.
 		__( 'Payment completed with %s', 'event-tickets' ),
-		$order->gateway
+		$order->gateway_name
 	);
 ?>
 <tr>
