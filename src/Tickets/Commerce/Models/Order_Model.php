@@ -46,7 +46,7 @@ class Order_Model extends Base {
 			$gateway_order_id    = Arr::get( $post_meta, [ Order::$gateway_order_id_meta_key, 0 ] );
 			$gateway_payload     = $this->get_gateway_payloads( $post_meta );
 			$gateway             = tribe( Manager::class )->get_gateway_by_key( $gateway_slug );
-			$gateway_name        = $gateway ? $gateway->get_label() : ucwords( str_replace( '_', ' ', $gateway_slug ) );
+			$gateway_name        = $gateway ? $gateway::get_label() : ucwords( str_replace( '_', ' ', $gateway_slug ) );
 			$status_log          = $this->get_status_log( $post_meta );
 			$status              = tribe( Status_Handler::class )->get_by_wp_slug( $this->post->post_status );
 			$flag_action_markers = $this->get_flag_action_markers( $post_meta );
