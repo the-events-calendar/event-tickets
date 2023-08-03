@@ -456,6 +456,10 @@
 		</table>
 	</td>
 </tr><tr>
+	<td class="tec-tickets__email-table-content-order-payment-info-container" align="right">
+		Payment completed with Stripe	</td>
+</tr>
+<tr>
 	<td class="tec-tickets__email-table-content-order-attendees-table-container">
 		<table class="tec-tickets__email-table-content-order-attendees-table">
 			<tr class="tec-tickets__email-table-content-order-attendees-table-header-row">
