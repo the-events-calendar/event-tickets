@@ -188,6 +188,7 @@
 		border: 0;
 		border-collapse: collapse;
 		border-spacing: 0;
+		font-size: 12px;
 		width:100%;
 	}
 
@@ -202,8 +203,9 @@
 		text-align: right;
 	}
 
-	.tec-tickets__email-table-main-footer table {
-		font-size: 12px;
+	a.tec-tickets__email-table-main-footer-credit-link {
+		color: <?php echo esc_attr( $header_text_color ); ?> !important;
+		text-decoration: underline;
 	}
 
 	td.tec-tickets__email-table-content-order-attendees-table-container {
