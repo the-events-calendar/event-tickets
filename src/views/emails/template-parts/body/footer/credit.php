@@ -31,9 +31,8 @@ if ( ! tribe_is_truthy( $footer_credit ) ) {
 }
 
 $et_link     = sprintf(
-	'<a href="%1$s" style="color:%2$s;">%3$s</a>',
+	'<a href="%1$s" class="tec-tickets__email-table-main-footer-credit-link">%2$s</a>',
 	'https://evnt.is/et-in-app-email-credit',
-	esc_attr( $header_text_color ),
 	esc_html__( 'Event Tickets', 'event-tickets' )
 );
 $credit_html = sprintf(
@@ -44,7 +43,7 @@ $credit_html = sprintf(
 
 ?>
 <tr>
-	<td style="padding:10px 0px 0px 0px;text-align:right;color:<?php echo esc_attr( $header_text_color ); ?>;" align="right">
+	<td class="tec-tickets__email-table-main-footer-credit-container" align="right">
 		<?php echo wp_kses_post( $credit_html ); ?>
 	</td>
 </tr>

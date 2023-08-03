@@ -184,8 +184,28 @@
 		padding: 0px 20px 10px 20px;
 	}
 
-	.tec-tickets__email-table-main-footer table {
+	table.tec-tickets__email-table-main-footer-table {
+		border: 0;
+		border-collapse: collapse;
+		border-spacing: 0;
 		font-size: 12px;
+		width:100%;
+	}
+
+	td.tec-tickets__email-table-main-footer-content-container {
+		color: <?php echo esc_attr( $header_text_color ); ?>;
+		padding: 20px 0;
+	}
+
+	td.tec-tickets__email-table-main-footer-credit-container {
+		color: <?php echo esc_attr( $header_text_color ); ?>;
+		padding: 10px 0px 0px 0px;
+		text-align: right;
+	}
+
+	a.tec-tickets__email-table-main-footer-credit-link {
+		color: <?php echo esc_attr( $header_text_color ); ?> !important;
+		text-decoration: underline;
 	}
 
 	td.tec-tickets__email-table-content-order-attendees-table-container {
