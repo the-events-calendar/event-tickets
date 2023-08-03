@@ -31,7 +31,7 @@ if ( empty( $footer_content ) ) {
 }
 ?>
 <tr>
-	<td style="padding: 20px 0;color:<?php echo esc_attr( $header_text_color ); ?>;">
+	<td class="tec-tickets__email-table-main-footer-content-container">
 		<?php echo wp_kses_post( $footer_content ); ?>
 	</td>
 </tr>
