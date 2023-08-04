@@ -38,6 +38,7 @@ class Tribe__Tickets__Admin__Notices {
 		$this->maybe_display_classic_editor_ecp_recurring_tickets_notice();
 		$this->maybe_display_plus_commerce_notice();
 		$this->maybe_display_unsupported_currency_notice();
+		$this->maybe_display_paystack_notice();
 	}
 
 	/**
@@ -269,5 +270,74 @@ class Tribe__Tickets__Admin__Notices {
 				'type'    => 'warning',
 			]
 		);
+	}
+
+	/**
+	 * Display notice for Paystack promotion.
+	 *
+	 * @since 5.6.3
+	 *
+	 * @return void
+	 */
+	function maybe_display_paystack_notice() {
+
+		// Bail if we aren't in Tickets > Settings.
+		if ( \Tribe\Tickets\Admin\Settings::$settings_page_id !== tribe_get_request_var( 'page' ) ) {
+			return;
+		}
+
+		// Bail if Paystack plugin is installed and activated.
+		if ( class_exists( 'paystack\tec\classes\Core', false ) ) {
+			return;
+		}
+
+		// Bail if we aren't in the correct timezone.
+		$timezone = get_option( 'timezone_string' );
+		$paystack_timezones = [
+			'Africa/Lagos',
+			'Africa/Accra',
+			'Africa/Johannesburg',
+		];
+		if ( ! in_array( $timezone, $paystack_timezones, true ) ) {
+			return;
+		}
+
+		$heading = _x(
+			'Sell tickets with Paystack',
+			'heading for Paystack notice',
+			'event-tickets'
+		);
+
+		$learn_more_link = sprintf(
+			'<a target="_blank" rel="noopener nofollow" href="%s">%s</a>',
+			esc_attr( 'https://evnt.is/et-tc-paystack-in-app' ),
+			esc_html__( 'Learn more', 'event-tickets' )
+		);
+
+		$text = _x(
+			sprintf(
+				// Translators: %s: dynamic "Learn more" link.
+				'Install and activate the Paystack for The Events Calendar plugin to start selling tickets with Paystack using our free commerce solution, Tickets Commerce. %s',
+				$learn_more_link
+			),
+			'text for Paystack notice',
+			'event-tickets'
+		);
+
+		$message = sprintf(
+			'<h3>%1$s</h3><p>%2$s</p>',
+			esc_html( $heading ),
+			wp_kses( $text, 'post' )
+		);
+
+		tribe_notice(
+			'event-tickets-commerce-paystack-notice',
+			$message,
+			[
+				'dismiss' => true,
+				'type'    => 'warning',
+			]
+		);
+
 	}
 }

@@ -37,14 +37,32 @@ class Orders extends Report_Abstract {
 	public $orders_page;
 
 	/**
-	 * Gets the Orders Report.
+	 * Gets the Orders Report title.
 	 *
-	 * @since 5.2.0
+	 * @since 5.6.2
+	 *
+	 * @param int $post_id
 	 *
 	 * @return string
 	 */
-	public function get_title() {
-		return __( 'Orders Report', 'event-tickets' );
+	public function get_title( $post_id ) {
+
+		$title = sprintf(
+		// Translators: %1$s: the post/event title, %2$d: the post/event ID.
+			_x( 'Orders for: %1$s [#%2$d]', 'orders report screen heading', 'event-tickets' ),
+			get_the_title( $post_id ),
+			$post_id
+		);
+
+		/**
+		 * Filters the title on Order list page for Tickets Commerce.
+		 *
+		 * @since 5.6.2
+		 *
+		 * @param string 	$title The title.
+		 * @param int 		$post_id The post ID.
+		 */
+		return apply_filters( 'tec_tickets_commerce_order_page_title', $title, $post_id );
 	}
 
 	/**
@@ -372,7 +390,7 @@ class Orders extends Report_Abstract {
 
 
 		$this->template_vars = [
-			'title'               => $this->get_title(),
+			'title'               => $this->get_title( $post_id ),
 			'orders_table'        => tribe( Commerce\Admin_Tables\Orders::class ),
 			'post'                => $post,
 			'post_id'             => $post_id,

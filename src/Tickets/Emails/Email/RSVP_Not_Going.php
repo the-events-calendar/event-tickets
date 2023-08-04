@@ -7,7 +7,9 @@
 
 namespace TEC\Tickets\Emails\Email;
 
-use \TEC\Tickets\Emails\Email_Template;
+use TEC\Tickets\Emails\Dispatcher;
+use TEC\Tickets\Emails\Email_Template;
+use TEC\Tickets\Emails\Email_Abstract;
 
 /**
  * Class RSVP_Not_Going
@@ -16,7 +18,7 @@ use \TEC\Tickets\Emails\Email_Template;
  *
  * @package TEC\Tickets\Emails
  */
-class RSVP_Not_Going extends \TEC\Tickets\Emails\Email_Abstract {
+class RSVP_Not_Going extends Email_Abstract {
 
 	/**
 	 * Email ID.
@@ -46,15 +48,6 @@ class RSVP_Not_Going extends \TEC\Tickets\Emails\Email_Abstract {
 	public $template = 'rsvp-not-going';
 
 	/**
-	 * Email recipient.
-	 *
-	 * @since 5.5.10
-	 *
-	 * @var string
-	 */
-	public $recipient = 'customer';
-
-	/**
 	 * Get email title.
 	 *
 	 * @since 5.5.10
@@ -66,14 +59,14 @@ class RSVP_Not_Going extends \TEC\Tickets\Emails\Email_Abstract {
 	}
 
 	/**
-	 * Get default recipient.
+	 * Get email to.
 	 *
-	 * @since 5.5.10
+	 * @since 5.5.11
 	 *
-	 * @return string
+	 * @return string The email "to".
 	 */
-	public function get_default_recipient(): string {
-		return '{attendee_email}';
+	public function get_to(): string {
+		return esc_html__( 'Attendee(s)', 'event-tickets' );
 	}
 
 	/**
@@ -110,6 +103,17 @@ class RSVP_Not_Going extends \TEC\Tickets\Emails\Email_Abstract {
 	 * @return array
 	 */
 	public function get_settings_fields(): array {
+		$kb_link = sprintf(
+			'<a href="https://evnt.is/event-tickets-emails" target="_blank" rel="noopener noreferrer">%s</a>',
+			esc_html__( 'Learn more', 'event-tickets' )
+		);
+
+		$email_description = sprintf(
+			// Translators: %1$s: RSVP "Not going" Emails knowledgebase article link.
+			esc_html_x( 'Registrants will receive an email confirming that they will not be attending. Customize the content of this specific email using the tools below. You can also use email placeholders and customize email templates. %1$s.', 'about RSVP Not going email', 'event-tickets' ),
+			$kb_link
+		);
+
 		$settings = [
 			[
 				'type' => 'html',
@@ -121,11 +125,15 @@ class RSVP_Not_Going extends \TEC\Tickets\Emails\Email_Abstract {
 			],
 			[
 				'type' => 'html',
-				'html' => '<p>' . esc_html__( 'Registrants will receive an email confirming that they will not be attending. Customize the content of this specific email using the tools below. The brackets {event_name}, {event_date}, and {rsvp_name} can be used to pull dynamic content from the RSVP into your email. Learn more about customizing email templates in our Knowledgebase.' ) . '</p>',
+				'html' => '<p>' . $email_description . '</p>',
 			],
 			$this->get_option_key( 'enabled' )     => [
 				'type'            => 'toggle',
-				'label'           => esc_html__( 'Enabled', 'event-tickets' ),
+				'label'           => sprintf( 
+					// Translators: %s - Title of email.
+					esc_html__( 'Enable %s', 'event-tickets' ),
+					$this->get_title() 
+				),
 				'default'         => true,
 				'validation_type' => 'boolean',
 			],
@@ -145,11 +153,12 @@ class RSVP_Not_Going extends \TEC\Tickets\Emails\Email_Abstract {
 				'size'                => 'large',
 				'validation_callback' => 'is_string',
 			],
-			$this->get_option_key( 'add-content' ) => [
+			$this->get_option_key( 'additional-content' ) => [
 				'type'            => 'wysiwyg',
 				'label'           => esc_html__( 'Additional content', 'event-tickets' ),
 				'default'         => '',
 				'tooltip'         => esc_html__( 'Additional content will be displayed below the information in your email.', 'event-tickets' ),
+				'size'            => 'large',
 				'validation_type' => 'html',
 				'settings'        => [
 					'media_buttons' => false,
@@ -163,6 +172,7 @@ class RSVP_Not_Going extends \TEC\Tickets\Emails\Email_Abstract {
 						'alignleft',
 						'aligncenter',
 						'alignright',
+						'link',
 					],
 				],
 			],
@@ -172,48 +182,77 @@ class RSVP_Not_Going extends \TEC\Tickets\Emails\Email_Abstract {
 	}
 
 	/**
-	 * Get preview context for email.
+	 * Get default preview context for email.
 	 *
-	 * @since 5.5.10
+	 * @since 5.5.11
 	 *
 	 * @param array $args The arguments.
 	 * @return array $args The modified arguments
 	 */
-	public function get_preview_context( $args = [] ): array {
+	public function get_default_preview_context( $args = [] ): array {
 		$defaults = [
-			'is_preview' => true,
-			'title'      => $this->get_heading(),
-			'heading'    => $this->get_heading(),
+			'email'              => $this,
+			'is_preview'         => true,
+			'title'              => $this->get_heading(),
+			'heading'            => $this->get_heading(),
+			'additional_content' => $this->get_additional_content(),
 		];
 
 		return wp_parse_args( $args, $defaults );
 	}
 
 	/**
-	 * Get email content.
+	 * Get default template context for email.
 	 *
-	 * @since 5.5.10
+	 * @since 5.5.11
 	 *
-	 * @param array $args The arguments.
-	 *
-	 * @return string The email content.
+	 * @return array $args The default arguments
 	 */
-	public function get_content( $args = [] ): string {
-		// @todo: Parse args, etc.
-		$is_preview = ! empty( $args['is_preview'] ) ? tribe_is_truthy( $args['is_preview'] ) : false;
-
-		// @todo @juanfra @codingmusician: we need to see if we initialize tickets.
+	public function get_default_template_context(): array {
 		$defaults = [
+			'email'              => $this,
 			'title'              => $this->get_title(),
 			'heading'            => $this->get_heading(),
-			'additional_content' => $this->format_string( tribe_get_option( $this->get_option_key( 'add-content' ), '' ) ),
+			'additional_content' => $this->get_additional_content(),
 		];
 
-		$args = wp_parse_args( $args, $defaults );
+		return $defaults;
+	}
 
-		$email_template = tribe( Email_Template::class );
-		$email_template->set_preview( $is_preview );
+	/**
+	 * Send the email.
+	 *
+	 * @since 5.5.11
+	 *
+	 * @return bool Whether the email was sent or not.
+	 */
+	public function send() {
+		$recipient = $this->get_recipient();
 
-		return $email_template->get_html( $this->template, $args );
+		// Bail if there is no email address to send to.
+		if ( empty( $recipient ) ) {
+			return false;
+		}
+
+		if ( ! $this->is_enabled() ) {
+			return false;
+		}
+
+		$tickets = $this->get( 'tickets' );
+		$post_id = $this->get( 'post_id' );
+
+		// Bail if there's no tickets or post ID.
+		if ( empty( $tickets ) || empty( $post_id ) ) {
+			return false;
+		}
+
+		$placeholders = [
+			'{attendee_name}'  => $tickets[0]['holder_name'],
+			'{attendee_email}' => $tickets[0]['holder_email'],
+		];
+
+		$this->set_placeholders( $placeholders );
+
+		return Dispatcher::from_email( $this )->send();
 	}
 }

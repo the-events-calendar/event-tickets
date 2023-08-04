@@ -434,7 +434,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 					return false;
 				}
 
-				if ( class_exists( '\TEC\Events\Custom_Tables\V1\Models\Occurrence' ) ) {
+				if ( class_exists( '\TEC\Events\Custom_Tables\V1\Models\Occurrence', false ) ) {
 					$post_id = \TEC\Events\Custom_Tables\V1\Models\Occurrence::normalize_id( $post->ID );
 				}
 			}
@@ -1043,6 +1043,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Save the attendee checkin details.
 		 *
 		 * @since 5.5.2
+		 * @since 5.5.11 Update attendee scan count via tec_tickets_plus_app_attendees_checked_in option.
 		 *
 		 * @param int   $attendee_id     The ID of the attendee that's being checked-in.
 		 * @param mixed $qr              True if the check-in is from a QR code.
@@ -1057,6 +1058,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			if ( ! empty( $qr ) ) {
 				// Save the latest date in which a ticket was scanned with the APP.
 				tribe_update_option( 'tec_tickets_plus_app_last_checkin_time', time() );
+
+				// Save the attendee scan count.
+				$attendee_scan_count = (int) tribe_get_option( 'tec_tickets_plus_app_attendees_checked_in' );
+				tribe_update_option( 'tec_tickets_plus_app_attendees_checked_in', ++$attendee_scan_count );
 			}
 
 			/**
@@ -2423,6 +2428,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @since 5.0.3
 		 * @since 5.5.10 Adjusted the method to use the new Tickets Emails Handler.
+		 * @since 5.6.0 Reverted the methods back to before 5.5.10, new Tickets Emails Handler via filters.
 		 *
 		 * @param string $to      The email to send the tickets to.
 		 * @param array  $tickets The list of tickets to send.
@@ -2443,121 +2449,23 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return bool Whether email was sent to attendees.
 		 */
 		public function send_tickets_email_for_attendee( $to, $tickets, $args = [] ) {
-			// If no tickets to send for, do not send email.
-			if ( empty( $tickets ) ) {
-				return false;
+			/**
+			 * Allows the short-circuiting of the sending of emails to the Attendees.
+			 *
+			 * @since 5.6.0
+			 *
+			 * @param null|mixed $pre     Determine if we should continue.
+			 * @param string     $to      The email to send the tickets to.
+			 * @param array      $tickets The list of tickets to send.
+			 * @param array      $args    The list of arguments to use for sending ticket emails.
+			 * @param static     $module  Instance of the Tickets Module.
+			 */
+			$pre = apply_filters( 'tec_tickets_send_tickets_email_for_attendee_pre', null, $to, $tickets, $args, $this );
+
+			if ( null !== $pre ) {
+				return $pre;
 			}
 
-			if ( ! tec_tickets_emails_is_enabled() ) {
-				return $this->send_tickets_email_for_attendee_legacy( $to, $tickets, $args );
-			}
-
-			$defaults = [
-				'provider'      => 'ticket',
-				'post_id'       => 0,
-				'order_id'      => '',
-				'order_status'  => '',
-			];
-
-			// Set up the default arguments.
-			$args = wp_parse_args( $args, $defaults );
-
-			$provider      = $args['provider'];
-			$post_id       = $args['post_id'];
-			$order_id      = $args['order_id'];
-			$is_rsvp       = 'rsvp' === $provider || ( is_object( $provider ) && 'Tribe__Tickets__RSVP' === get_class( $provider ) );
-
-			if ( $is_rsvp ) {
-				if ( 'no' !== strtolower( $args['order_status'] ) ) {
-					$email_class      = tribe( TEC\Tickets\Emails\Email\RSVP::class );
-					$use_ticket_email = tribe_get_option( $email_class->get_option_key( 'use-ticket-email' ), false );
-					if ( ! empty( $use_ticket_email ) ) {
-						$email_class = tribe( TEC\Tickets\Emails\Email\Ticket::class );
-					}
-				} else {
-					$email_class = tribe( TEC\Tickets\Emails\Email\RSVP_Not_Going::class );
-				}
-
-			} else {
-				$email_class = tribe( TEC\Tickets\Emails\Email\Ticket::class );
-			}
-
-			if ( ! $email_class->is_enabled() ) {
-				return false;
-			}
-
-			// Filter the array so that we have a list of tickets by event.
-			$tickets_by_event = [];
-
-			foreach ( $tickets as $ticket ) {
-				$event_id = $ticket['event_id']; // @todo: check what happens with tickets from posts/pages.
-
-				if ( ! isset( $tickets_by_event[ $event_id ] ) ) {
-					$tickets_by_event[ $event_id ] = [];
-				}
-
-				$tickets_by_event[ $event_id ][] = $ticket;
-			}
-
-			// loop the tickets by event and send one email for each event.
-			foreach ( $tickets_by_event as $event_id => $event_tickets ) {
-				$email_class->__set( 'post_id', $event_id );
-				$email_class->__set( 'tickets', $event_tickets );
-				// @todo @juanfra @codingmusician: Set tickets data to the email class.
-				$subject     = $email_class->get_subject();
-				$content     = $email_class->get_content( [ 'tickets' => $event_tickets ] );
-				$headers     = $email_class->get_headers();
-				$attachments = $email_class->get_attachments();
-
-				$sent = tribe( TEC\Tickets\Emails\Email_Sender::class )->send( $to, $subject, $content, $headers, $attachments );
-
-				// Handle marking the attendee ticket email as being sent.
-				if ( $sent ) {
-					// Mark attendee ticket email as being sent for each attendee ticket.
-					foreach ( $event_tickets as $attendee ) {
-						$this->update_ticket_sent_counter( $attendee['attendee_id'] );
-
-						$this->update_attendee_activity_log(
-							$attendee['attendee_id'],
-							[
-								'type'  => 'email',
-								'name'  => $attendee['holder_name'],
-								'email' => $attendee['holder_email'],
-							]
-						);
-					}
-				} else {
-					break;
-				}
-			}
-
-			return $sent;
-		}
-
-		/**
-		 * Send RSVPs/tickets email for an attendee (legacy).
-		 *
-		 * @since 5.5.10
-		 *
-		 * @param string $to      The email to send the tickets to.
-		 * @param array  $tickets The list of tickets to send.
-		 * @param array  $args    {
-		 *      The list of arguments to use for sending ticket emails.
-		 *
-		 *      @type string       $subject     The email subject.
-		 *      @type string       $content     The email content.
-		 *      @type string       $from_name   The name to send tickets from.
-		 *      @type string       $from_email  The email to send tickets from.
-		 *      @type array|string $headers     The list of headers to send.
-		 *      @type array        $attachments The list of attachments to send.
-		 *      @type string       $provider    The provider slug (rsvp, tpp, woo, edd).
-		 *      @type int          $post_id     The post/event ID to send the emails for.
-		 *      @type string|int   $order_id    The order ID to send the emails for.
-		 * }
-		 *
-		 * @return bool Whether email was sent to attendees.
-		 */
-		public function send_tickets_email_for_attendee_legacy( $to, $tickets, $args = [] ) {
 			// If no tickets to send for, do not send email.
 			if ( empty( $tickets ) ) {
 				return false;
@@ -3919,6 +3827,52 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
+		 * Clones a ticket to a new post.
+		 *
+		 * @since 5.6.3
+		 *
+		 * @param int $original_post_id ID of the original "event" post.
+		 * @param int $new_post_id      ID of the new "event" post.
+		 * @param int $ticket_id        ID of ticket to duplicate.
+		 *
+		 * @return int|boolean $duplicate_ticket_id New ticket ID or false, if unable to create duplicate.
+		 */
+		public function clone_ticket_to_new_post( $original_post_id, $new_post_id, $ticket_id ) {
+			// Get ticket data.
+			$ticket = $this->get_ticket( $original_post_id, $ticket_id );
+
+			if ( ! $ticket instanceof Tribe__Tickets__Ticket_Object ) {
+				return false;
+			}
+
+			// Create data for duplicate ticket.
+			$data = [
+				'ticket_name'             => $ticket->name,
+				'ticket_description'      => $ticket->description,
+				'ticket_price'            => $ticket->price,
+				'ticket_show_description' => $ticket->show_description,
+				'ticket_start_date'       => $ticket->start_date,
+				'ticket_start_time'       => $ticket->start_time,
+				'ticket_end_date'         => $ticket->end_date,
+				'ticket_end_time'         => $ticket->end_time,
+				'tribe-ticket'            => [
+					'capacity' => $ticket->capacity(),
+					'mode'     => $ticket->global_stock_mode(),
+				]
+			];
+
+			// Add the ticket.
+			$duplicate_ticket_id = $this->ticket_add( $new_post_id, $data );
+
+			if ( ! $duplicate_ticket_id ) {
+				return false;
+			}
+
+			return $duplicate_ticket_id;
+		}
+
+
+		/**
 		 * Creates a ticket object and calls the child save_ticket function
 		 *
 		 * @param int $post_id ID of parent "event" post
@@ -4294,10 +4248,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return;
 			}
 
-			/** @var Tribe__Tickets__Attendee_Registration__Main $attendee_reg */
-			$attendee_reg = tribe( 'tickets.attendee_registration' );
-
-			$url = $attendee_reg->get_url();
+			$url = $attendee_registration->get_url();
 
 			if ( ! empty( $q_provider ) ) {
 				$provider_slug = tribe_tickets_get_provider_query_slug();

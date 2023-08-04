@@ -7,7 +7,11 @@
 
 namespace TEC\Tickets\Emails\Email;
 
-use \TEC\Tickets\Emails\Email_Template;
+use TEC\Tickets\Emails\Dispatcher;
+use TEC\Tickets\Emails\Email_Template;
+use TEC\Tickets\Emails\Admin\Preview_Data;
+use TEC\Tickets\Emails\Email_Abstract;
+use TEC\Tickets\Emails\JSON_LD\Order_Schema;
 
 /**
  * Class Purchase_Receipt
@@ -16,7 +20,7 @@ use \TEC\Tickets\Emails\Email_Template;
  *
  * @package TEC\Tickets\Emails
  */
-class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
+class Purchase_Receipt extends Email_Abstract {
 
 	/**
 	 * Email ID.
@@ -46,26 +50,6 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 	public $template = 'customer-purchase-receipt';
 
 	/**
-	 * Email recipient.
-	 *
-	 * @since 5.5.10
-	 *
-	 * @var string
-	 */
-	public $recipient = 'purchaser';
-
-	/**
-	 * Checks if this email is sent to customer.
-	 *
-	 * @since 5.5.10
-	 *
-	 * @return bool
-	 */
-	public function is_customer_email(): bool {
-		return true;
-	}
-
-	/**
 	 * Get email title.
 	 *
 	 * @since 5.5.10
@@ -77,14 +61,14 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 	}
 
 	/**
-	 * Get default recipient.
+	 * Get email to.
 	 *
-	 * @since 5.5.10
+	 * @since 5.5.11
 	 *
-	 * @return string
+	 * @return string The email "to".
 	 */
-	public function get_default_recipient(): string {
-		return '{purchaser_email}';
+	public function get_to(): string {
+		return esc_html__( 'Purchaser', 'event-tickets' );
 	}
 
 	/**
@@ -117,6 +101,17 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 	 * @return array
 	 */
 	public function get_settings_fields(): array {
+		$kb_link = sprintf(
+			'<a href="https://evnt.is/event-tickets-emails" target="_blank" rel="noopener noreferrer">%s</a>',
+			esc_html__( 'Learn more', 'event-tickets' )
+		);
+
+		$email_description = sprintf(
+			// Translators: %1$s: Purchase Receipt Emails knowledgebase article link.
+			esc_html_x( 'The ticket purchaser will receive an email about the purchase that was completed. Customize the content of this specific email using the tools below. You can also use email placeholders and customize email templates. %1$s.', 'about Purchase Receipt email', 'event-tickets' ),
+			$kb_link
+		);
+
 		return [
 			[
 				'type' => 'html',
@@ -128,11 +123,15 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 			],
 			[
 				'type' => 'html',
-				'html' => '<p>' . esc_html__( 'The ticket purchaser will receive an email about the purchase that was completed.' ) . '</p>',
+				'html' => '<p>' . $email_description . '</p>',
 			],
 			$this->get_option_key( 'enabled' ) => [
 				'type'                => 'toggle',
-				'label'               => esc_html__( 'Enabled', 'event-tickets' ),
+				'label'               => sprintf(
+					// Translators: %s - Title of email.
+					esc_html__( 'Enable %s', 'event-tickets' ),
+					$this->get_title()
+				),
 				'default'             => true,
 				'validation_type'     => 'boolean',
 			],
@@ -152,11 +151,12 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 				'size'                => 'large',
 				'validation_callback' => 'is_string',
 			],
-			$this->get_option_key( 'add-content' ) => [
+			$this->get_option_key( 'additional-content' ) => [
 				'type'                => 'wysiwyg',
 				'label'               => esc_html__( 'Additional content', 'event-tickets' ),
 				'default'             => '',
 				'tooltip'             => esc_html__( 'Additional content will be displayed below the purchase receipt details in the email.', 'event-tickets' ),
+				'size'                => 'large',
 				'validation_type'     => 'html',
 				'settings'        => [
 					'media_buttons' => false,
@@ -170,6 +170,7 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 						'alignleft',
 						'aligncenter',
 						'alignright',
+						'link',
 					],
 				],
 			],
@@ -177,47 +178,80 @@ class Purchase_Receipt extends \TEC\Tickets\Emails\Email_Abstract {
 	}
 
 	/**
-	 * Get preview context for email.
+	 * Get default preview context for email.
 	 *
-	 * @since 5.5.10
+	 * @since 5.5.11
 	 *
 	 * @param array $args The arguments.
 	 * @return array $args The modified arguments
 	 */
-	public function get_preview_context( $args = [] ): array {
+	public function get_default_preview_context( $args = [] ): array {
 		$defaults = [
-			'is_preview' => true,
-			'title'      => $this->get_heading(),
-			'heading'    => $this->get_heading(),
+			'email'              => $this,
+			'is_preview'         => true,
+			'title'              => $this->get_heading(),
+			'heading'            => $this->get_heading(),
+			'additional_content' => $this->get_additional_content(),
+			'order'              => Preview_Data::get_order(),
+			'attendees'          => Preview_Data::get_attendees(),
 		];
 
 		return wp_parse_args( $args, $defaults );
 	}
 
 	/**
-	 * Get email content.
+	 * Get default template context for email.
 	 *
-	 * @since 5.5.10
+	 * @since 5.5.11
 	 *
-	 * @param array $args The arguments.
-	 *
-	 * @return string The email content.
+	 * @return array $args The default arguments
 	 */
-	public function get_content( $args = [] ): string {
-		// @todo: We need to grab the proper information that's going to be sent as context.
-		$is_preview = ! empty( $args['is_preview'] ) ? tribe_is_truthy( $args['is_preview'] ) : false;
-
+	public function get_default_template_context(): array {
 		$defaults = [
+			'email'              => $this,
 			'title'              => $this->get_title(),
 			'heading'            => $this->get_heading(),
-			'additional_content' => $this->format_string( tribe_get_option( $this->get_option_key( 'add-content' ), '' ) ),
+			'additional_content' => $this->get_additional_content(),
+			'order'              => $this->get( 'order' ),
+			'json_ld'            => Order_Schema::build_from_email( $this ),
 		];
 
-		$args = wp_parse_args( $args, $defaults );
+		return $defaults;
+	}
 
-		$email_template = tribe( Email_Template::class );
-		$email_template->set_preview( $is_preview );
+	/**
+	 * Send the email.
+	 *
+	 * @since 5.5.11
+	 *
+	 * @return bool Whether the email was sent or not.
+	 */
+	public function send() {
+		$recipient = $this->get_recipient();
 
-		return $email_template->get_html( $this->template, $args );
+		// Bail if there is no email address to send to.
+		if ( empty( $recipient ) ) {
+			return false;
+		}
+
+		if ( ! $this->is_enabled() ) {
+			return false;
+		}
+
+		$order = $this->get( 'order' );
+
+		// Bail if there's no order.
+		if ( empty( $order ) ) {
+			return false;
+		}
+
+		$placeholders = [
+			'{order_number}' => $order->ID,
+			'{order_id}'     => $order->ID,
+		];
+
+		$this->set_placeholders( $placeholders );
+
+		return Dispatcher::from_email( $this )->send();
 	}
 }

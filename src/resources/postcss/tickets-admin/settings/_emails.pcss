@@ -4,6 +4,10 @@
  * @since 5.5.6
  */
 
+ .tec-tickets__admin-settings-tab-heading {
+	margin-top: 55px;
+ }
+
 .tec-tickets__admin-settings-emails-description {
 	color: #8e8e8e;
 	font-size: 13px;
@@ -17,6 +21,8 @@
 	border: 1px var(--tec-color-border-default) solid;
 	border-radius: var(--tec-border-radius-default);
 	margin-bottom: var(--tec-spacer-5);
+	margin-top: var(--tec-spacer-8);
+	max-width: 800px;
 }
 
 .tec-tickets__admin-settings-emails-template-list-item {
@@ -40,7 +46,7 @@
 }
 
 .tec-tickets__admin-settings-emails-template-list-item-icon {
-	padding: 0 var(--tec-spacer-4);
+	padding: 0 var(--tec-spacer-2);
 	width: 25px;
 
 	& > span.dashicons-yes {
@@ -53,37 +59,54 @@
 			font-weight: var(--tec-font-weight-regular);
 		}
 	}
+
+	@media (--viewport-medium) {
+		padding: 0 var(--tec-spacer-4);
+	}
 }
 
 .tec-tickets__admin-settings-emails-template-list-item-title {
 	min-width: 90px;
-	padding: 0 var(--tec-spacer-4) 0 0;
+	padding: 0 var(--tec-spacer-2) 0 0;
 
 	@media (--viewport-medium) {
 		min-width: 200px;
+		padding: 0 var(--tec-spacer-4) 0 0;
 	}
 }
 
 .tec-tickets__admin-settings-emails-template-list-item-title-link {
 	color: #000;
-	font-size: 15px;
+	font-size: 13px;
 	font-weight: var(--tec-font-weight-bold);
 	text-decoration: none;
 
 	&:hover {
 		color: #000;
 	}
+
+	@media (--viewport-medium) {
+		font-size: 15px;
+	}
 }
 
 .tec-tickets__admin-settings-emails-template-list-item-recipient {
 	flex-grow: 1;
-	font-size: 13px;
+	font-size: 11px;
 	font-weight: var(--tec-font-weight-regular);
 	padding: 0;
+
+	@media (--viewport-medium) {
+		font-size: 13px;
+	}
 }
 
 .tec-tickets__admin-settings-emails-template-list-item-action {
-	padding: 0 var(--tec-spacer-4);
+	padding: 0 var(--tec-spacer-2);
+
+	@media (--viewport-medium) {
+		padding: 0 var(--tec-spacer-4);
+	}
 }
 
 .tec-tickets__admin-settings-emails-template-list-item-action-link {
@@ -95,7 +118,11 @@
 }
 
 .button.tec-tickets__admin-settings-emails-preview-button {
-	margin-left: var(--tec-spacer-2);
+	font-size: 13px;
+	line-height: 2.15384615;
+	margin: 0 0 0 var(--tec-spacer-2);
+	min-height: 30px;
+	padding: 0 10px;
 }
 
 .event-tickets,

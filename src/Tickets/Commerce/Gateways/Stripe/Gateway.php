@@ -6,6 +6,7 @@ use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Gateway;
 use TEC\Tickets\Commerce\Gateways\Stripe\REST\Return_Endpoint;
 use TEC\Tickets\Commerce\Payments_Tab;
 use TEC\Tickets\Commerce\Settings as TC_Settings;
+use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Utils\Currency;
 use \Tribe__Tickets__Main;
 use Tribe__Utils__Array as Arr;
@@ -33,6 +34,11 @@ class Gateway extends Abstract_Gateway {
 	 * @inheritDoc
 	 */
 	protected static $merchant = Merchant::class;
+
+	/**
+	 * @inheritDoc
+	 */
+	protected string $order_controller_class = Order::class;
 
 	/**
 	 * @inheritDoc

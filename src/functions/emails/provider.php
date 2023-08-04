@@ -20,7 +20,7 @@ function tec_tickets_emails_is_enabled(): bool {
 	}
 
 	// The version in which Tickets Emails was introduced.
-	$should_default_to_on = ! tribe_installed_before( 'Tribe__Tickets__Main', '5.7.0' );
+	$should_default_to_on = ! tribe_installed_before( 'Tribe__Tickets__Main', '5.6.0-dev' );
 
 	// Check for settings UI option.
 	$enabled = (bool) tribe_get_option( TEC\Tickets\Emails\Admin\Settings::$option_enabled, $should_default_to_on );
