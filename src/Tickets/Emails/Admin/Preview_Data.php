@@ -13,6 +13,7 @@ use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Utils\Value;
 use TEC\Tickets\Emails\Email\Ticket;
 use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Commerce\Gateways\Manual\Gateway;
 use WP_Post;
 
 /**
@@ -84,7 +85,7 @@ class Preview_Data {
 			],
 			'purchaser_name'   => __( 'John Doe', 'event-tickets' ),
 			'purchaser_email'  => 'john@doe.com',
-			'gateway'          => __( 'stripe', 'event-tickets' ),
+			'gateway'          => Gateway::get_key(),
 			'status'           => 'completed',
 			'tickets'          => self::get_tickets(),
 			'post_author'      => 1,
