@@ -11,7 +11,6 @@ use TEC\Tickets\Emails\Email\RSVP_Not_Going;
 use TEC\Tickets\Emails\Email\Ticket;
 use Tribe\Tests\Traits\With_Uopz;
 use Codeception\TestCase\WPTestCase;
-use TEC\Tickets\Commerce\Gateways\Manual\Gateway;
 
 /**
  * Class Preview_ModalTest
@@ -80,13 +79,7 @@ class Preview_ModalTest extends WPTestCase {
 		$this->set_class_fn_return( Emails_Tab::class, 'is_on_tab', true );
 
 		$modal = new Preview_Modal;
-		$gateway = new Gateway;
-
-		add_filter( 'tec_tickets_commerce_gateways', [ $gateway, 'register_gateway' ] );
-		add_filter( 'tec_tickets_commerce_is_enabled', '__return_true' );
 		$ajax_content = $modal->get_modal_content_ajax( '', [ 'currentEmail' => $email->get_id() ] );
-		remove_filter( 'tec_tickets_commerce_gateways', [ $gateway, 'register_gateway' ] );
-		remove_filter( 'tec_tickets_commerce_is_enabled', '__return_true' );
 
 		$this->assertMatchesSnapshot( $ajax_content );
 	}
