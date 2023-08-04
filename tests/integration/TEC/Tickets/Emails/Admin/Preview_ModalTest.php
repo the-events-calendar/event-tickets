@@ -80,7 +80,6 @@ class Preview_ModalTest extends WPTestCase {
 
 		$modal = new Preview_Modal;
 		$ajax_content = $modal->get_modal_content_ajax( '', [ 'currentEmail' => $email->get_id() ] );
-
 		$this->assertMatchesSnapshot( $ajax_content );
 	}
 }
