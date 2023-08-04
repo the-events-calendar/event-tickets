@@ -28,15 +28,17 @@ if ( empty( $order ) || empty( $order->provider ) ) {
 	return;
 }
 
+$gateway_name = tribe( TEC\Tickets\Commerce\Order::class )->get_gateway_label( $order );
+
 $payment_info = empty( $order->status ) || 'completed' !== strtolower( $order->status ) ?
 	sprintf(
 		// Translators: %s - Payment provider's name.
 		__( 'Payment unsuccessful with %s', 'event-tickets' ),
-		$order->gateway_name
+		$gateway_name
 	) : sprintf(
 		// Translators: %s - Payment provider's name.
 		__( 'Payment completed with %s', 'event-tickets' ),
-		$order->gateway_name
+		$gateway_name
 	);
 ?>
 <tr>
