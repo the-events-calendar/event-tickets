@@ -84,8 +84,7 @@ class Preview_Data {
 			],
 			'purchaser_name'   => __( 'John Doe', 'event-tickets' ),
 			'purchaser_email'  => 'john@doe.com',
-			'gateway'          => __( 'Stripe', 'event-tickets' ),
-			'gateway_name'     => __( 'Stripe', 'event-tickets' ),
+			'gateway'          => __( 'stripe', 'event-tickets' ),
 			'status'           => 'completed',
 			'tickets'          => self::get_tickets(),
 			'post_author'      => 1,
@@ -94,11 +93,14 @@ class Preview_Data {
 			'purchase_time'    => '2023-04-17 17:06:56',
 			'purchase_date'    => '2023-04-17 17:06:56',
 			'post_title'       => __( 'Preview Order', 'event-tickets' ),
-			'post_status'      => 'publish',
+			'post_status'      => 'tec-tc-completed',
 			'post_name'        => 'preview-order-test_cd7d068a5ef24c02',
 			'post_type'        => Order::POSTTYPE,
 			'filter'           => 'raw',
 			'provider'         => Module::class,
+			'gateway_payload'  => [
+				'tec-tc-completed' => [],
+			],
 		] );
 
 		return $order;
