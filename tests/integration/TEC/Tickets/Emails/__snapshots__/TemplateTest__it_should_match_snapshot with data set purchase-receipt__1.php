@@ -457,7 +457,7 @@
 	</td>
 </tr><tr>
 	<td class="tec-tickets__email-table-content-order-payment-info-container" align="right">
-		Payment completed with Stripe	</td>
+		Payment completed with Manually Generated	</td>
 </tr>
 <tr>
 	<td class="tec-tickets__email-table-content-order-attendees-table-container">

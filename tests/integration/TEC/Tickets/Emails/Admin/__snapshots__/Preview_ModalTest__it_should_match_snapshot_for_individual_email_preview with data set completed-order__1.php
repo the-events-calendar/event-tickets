@@ -448,10 +448,10 @@
 	</td>
 </tr><tr>
 	<td class="tec-tickets__email-table-content-order-gateway-data-container" align="right">
-		Gateway Order #test_cd7d068a5ef24c02	</td>
+		Gateway Order #<a href="" target="_blank" rel="noopener noreferrer">test_cd7d068a5ef24c02</a>	</td>
 </tr><tr>
 	<td class="tec-tickets__email-table-content-order-payment-info-container" align="right">
-		Payment completed with Stripe	</td>
+		Payment completed with Manually Generated	</td>
 </tr>
 <tr>
 	<td class="tec-tickets__email-table-content-order-attendees-table-container">
