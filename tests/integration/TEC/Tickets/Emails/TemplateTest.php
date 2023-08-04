@@ -4,6 +4,7 @@ namespace TEC\Tickets\Emails;
 
 use Codeception\TestCase\WPTestCase;
 use Spatie\Snapshots\MatchesSnapshots;
+use TEC\Tickets\Commerce\Gateways\Manual\Gateway;
 use TEC\Tickets\Emails\Admin\Preview_Data;
 use TEC\Tickets\Emails\Email\Completed_Order;
 use TEC\Tickets\Emails\Email\Purchase_Receipt;
@@ -46,11 +47,20 @@ class TemplateTest extends WPTestCase {
 			'additional_content' => '',
 		];
 
+		// Add filters to make sure the gateway is registered and enabled.
+		$gateway = new Gateway;
+		add_filter( 'tec_tickets_commerce_gateways', [ $gateway, 'register_gateway' ] );
+		add_filter( 'tec_tickets_commerce_is_enabled', '__return_true' );
+
 		foreach ( $email->get_preview_context( $preview_context ) as $key => $template_var_value ) {
 			$email->set( $key, $template_var_value );
 		}
 		$email->set_placeholders( Preview_Data::get_placeholders() );
 		$html = $email->get_content();
+
+		// Remove filters to make sure the gateway is registered and enabled.
+		remove_filter( 'tec_tickets_commerce_gateways', [ $gateway, 'register_gateway' ] );
+		remove_filter( 'tec_tickets_commerce_is_enabled', '__return_true' );
 
 		$this->assertMatchesSnapshot( $html );
 	}
