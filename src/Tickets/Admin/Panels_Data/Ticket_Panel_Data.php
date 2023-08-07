@@ -21,11 +21,36 @@ use Tribe__Tickets__Tickets as Tickets;
  * @package TEC\Tickets\Admin\Panels_Data;
  */
 class Ticket_Panel_Data {
+	/**
+	 * The ID of the post the Ticket is being edited on.
+	 *
+	 * @since TBD
+	 *
+	 * @var int
+	 */
+	private int $post_id;
+
+	/**
+	 * The post ID of the Ticket being edited, or `null` if a new Ticket is being created.
+	 *
+	 * @since TBD
+	 *
+	 * @var int|null
+	 */
+	private ?int $ticket_id;
+
 	public function __construct( int $post_id, ?int $ticket_id = null ) {
 		$this->post_id   = $post_id;
 		$this->ticket_id = $ticket_id;
 	}
 
+	/**
+	 * Dumps the data to array format.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string,mixed> The data in array format.
+	 */
 	public function to_array(): array {
 		$ticket_id         = $this->ticket_id;
 		$is_admin          = tribe_is_truthy( tribe_get_request_var( 'is_admin', is_admin() ) );
