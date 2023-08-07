@@ -191,17 +191,20 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [TBD] TBD =
+= [5.6.4] TBD =
 
 * Fix - Ensure the Attendees page displays correctly when accessed through the Events Manager. [ECP-1527]
 * Tweak - The Attendee Registration page will now display properly when using Divi with dynamic CSS enabled. [ETP-864]
-
-= [5.6.4] TBD =
-
+* Tweak - Include Event/Post title alongside Ticket name on PayPal order notification emails. [ET-1770]
 * Fix - Include Commerce tickets in cached results; correctly fetch posts without tickets. [ET-1808]
 * Tweak - Cache Tickets objects for performance improvements. [ET-1808]
+* Tweak - Remove some PHP 8.1 deprecation warnings. [ET-1830]
 * Fix - Prevention of creating tickets in Classic Editor for recurring events when using custom tables. [ET-1826]
 * Fix - Prevention of creating tickets in Block Editor for recurring events when using custom tables. [ET-1827]
+* Tweak - Add a notice in the Tickets Commerce Paypal settings for non-https sites. [ET-1773]
+* Fix - Footer links in Tickets Emails template using the wrong color. [ET-1784]
+* Tweak - Capitalize payment provider names in Tickets Emails. [ET-1776]
+* Fix - Removal of double-escaped characters in Tickets Emails sender's name. [ET-1777]
 
 = [5.6.3] 2023-07-18 =
 
