@@ -20,6 +20,15 @@ use Tribe__Tickets__Main as Tickets_Plugin;
  */
 class Provider extends Service_Provider {
 	/**
+	 * The action that will fire once this provider has registered.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static string $registration_action = 'tec_tickets_provider_registered';
+
+	/**
 	 * @var bool Flag whether this provider has registered itself and dependencies yet or not.
 	 */
 	private $has_registered = false;
