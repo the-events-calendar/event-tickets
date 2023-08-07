@@ -1,10 +1,22 @@
 <?php
+
+use Tribe__Tickets__Admin__Views as Admin_Views;
+
 /**
  * Initialize Gutenberg Event Meta fields.
  *
  * @since 4.9
  */
 class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
+	/**
+	 * A reference to the Admin Views class.
+	 *
+	 * @since TBD
+	 *
+	 * @var Admin_Views
+	 */
+	private Admin_Views $admin_views;
+
 	/**
 	 * Register the required Meta fields for good Gutenberg saving.
 	 *
@@ -133,6 +145,17 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 			'_tribe_ticket_has_attendee_info_fields',
 			$this->boolean_or_null()
 		);
+	}
+
+	/**
+	 * Tribe__Tickets__Editor__Meta constructor.
+	 *
+	 * since TBD
+	 *
+	 * @param Tribe__Tickets__Admin__Views $admin_views A reference to the Admin Views class.
+	 */
+	public function __construct(Admin_Views $admin_views){
+		$this->admin_views = $admin_views;
 	}
 
 	/**
@@ -400,27 +423,33 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 	}
 
 	/**
-	 * Render the New Ticket and New RSVP buttons in the metabox, as appropriate.
+	 * Renders the New Ticket form in the metabox, as appropriate.
 	 *
 	 * @since TBD
 	 *
-	 * @param int $post_id The Post ID.
+	 * @param int $post_id The ID of the post the form is being rendered for.
 	 */
-	public function render_form_toggle_buttons( $post_id ): void {
+	public function render_ticket_form_toggle( int $post_id ): void {
 		$ticket_providing_modules = array_diff_key( tribe__tickets__tickets::modules(), [ 'tribe__tickets__rsvp' => true ] );
 		$add_new_ticket_label     = count( $ticket_providing_modules ) > 0
 			? esc_attr__( 'Add a new ticket', 'event-tickets' )
 			: esc_attr__( 'No commerce providers available', 'event-tickets' );
 
-		/** @var Tribe__Tickets__Admin__Views $admin_views */
-		$admin_views = tribe( 'tickets.admin.views' );
-
-		$admin_views->template( 'editor/elements/new-ticket', [
+		$this->admin_views->template( 'editor/elements/new-ticket', [
 			'post_id'                  => $post_id,
 			'add_new_ticket_label'     => $add_new_ticket_label,
 			'ticket_providing_modules' => $ticket_providing_modules,
 		] );
+	}
 
-		$admin_views->template( 'editor/elements/new-rsvp', [ 'post_id' => $post_id ] );
+	/**
+	 * Renders the New RSVP form in the metabox, as appropriate.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id The ID of the post the form is being rendered for.
+	 */
+	public function render_rsvp_form_toggle( int $post_id ): void {
+		$this->admin_views->template( 'editor/elements/new-rsvp', [ 'post_id' => $post_id ] );
 	}
 }

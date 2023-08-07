@@ -121,7 +121,7 @@ class Tribe__Tickets__Editor__Provider extends \TEC\Common\Contracts\Service_Pro
 			add_action( 'block_categories_all', tribe_callback( 'tickets.editor', 'block_categories' ) );
 		}
 
-		add_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'render_form_toggle_buttons'] );
+		add_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'render_form_toggle_buttons' ] );
 		add_action( 'tec_tickets_list_row_edit', [ $this, 'render_ticket_edit_controls' ], 10, 2 );
 	}
 
@@ -133,13 +133,27 @@ class Tribe__Tickets__Editor__Provider extends \TEC\Common\Contracts\Service_Pro
 	 * @param int $post_id The post id.
 	 */
 	public function render_form_toggle_buttons( $post_id ): void {
+		// By default, any ticket-able post type can have tickets and RSVPs.
+		$enabled = [ 'default' => true, 'rsvp' => true ];
 
-		if ( did_action( 'tec_flexible_tickets_activated' )
-			&& \TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type::POSTTYPE === get_post_type( $post_id ) ) {
-			return;
+		$post_type = get_post_field( 'post_type', $post_id );
+
+		/**
+		 * Filters the default ticket forms enabled for a given post type.
+		 *
+		 * @since TBD
+		 *
+		 * @param array<string,bool> $enabled The default enabled forms, a map from ticket types to their enabled status.
+		 * @param int                $post_id The ID of the post being edited.
+		 */
+		$enabled = apply_filters( "tec_tickets_enabled_ticket_forms_{$post_type}", $enabled, $post_id );
+
+		if ( ! empty( $enabled['default'] ) ) {
+			tribe( Tribe__Tickets__Editor__Meta::class )->render_ticket_form_toggle( $post_id );
 		}
-
-		tribe( Tribe__Tickets__Editor__Meta::class )->render_form_toggle_buttons( $post_id );
+		if ( ! empty( $enabled['rsvp'] ) ) {
+			tribe( Tribe__Tickets__Editor__Meta::class )->render_rsvp_form_toggle( $post_id );
+		}
 	}
 
 	/**
