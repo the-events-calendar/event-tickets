@@ -212,9 +212,12 @@ class Tribe__Tickets__Metabox {
 				'tickets' => $tickets
 			], false ),
 			'settings' => $admin_views->template( 'editor/panel/settings', [ 'post_id' => $post->ID ], false ),
-			'ticket' => $admin_views->template(
+			'ticket'   => $admin_views->template(
 				'editor/panel/ticket',
-				( new Ticket_Panel_Data( $post->ID, $ticket_id ) )->to_array(),
+				array_merge(
+					( new Ticket_Panel_Data( $post->ID, $ticket_id ) )->to_array(),
+					[ 'ticket_type' => $ticket_type ]
+				),
 				false )
 		];
 
