@@ -165,6 +165,12 @@ class Series_Passes extends Controller {
 			$this,
 			'print_series_pass_icon'
 		] );
+		add_action( "tec_tickets_ticket_form_main_start_{$ticket_type}", [ $this, 'render_type_header' ] );
+
+		add_filter( 'tec_tickets_ticket_type_default_header_description', [
+			$this,
+			'filter_ticket_type_default_header_description'
+		], 10, 2 );
 	}
 
 	/**
@@ -179,33 +185,22 @@ class Series_Passes extends Controller {
 		remove_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'render_form_toggle' ] );
 		remove_action( 'admin_menu', [ $this, 'enable_reports' ], 20 );
 		remove_filter( 'tec_tickets_ticket_panel_data', [ $this, 'update_panel_data' ], 10, 3 );
-
-		// Subscribe to the ticket post updates.
 		foreach ( Enums\Ticket_Post_Types::all() as $post_type ) {
 			remove_action( "save_post_{$post_type}", [ $this, 'update_pass' ], 20 );
 			remove_action( "edit_post_{$post_type}", [ $this, 'update_pass' ], 20 );
 		}
-
-		// Subscribe to Tickets' metadata updates.
 		remove_action( 'added_post_meta', [ $this, 'update_pass_meta' ], 20 );
 		remove_action( 'updated_post_meta', [ $this, 'update_pass_meta' ], 20 );
 		remove_action( 'tribe_tickets_ticket_add', [ $this, 'update_pass_meta_on_save' ] );
-
-		// An Event is attached to a Series.
 		remove_action( 'tec_events_pro_custom_tables_v1_event_relationship_updated', [
 			$this,
 			'update_passes_for_event'
 		], 20 );
-
-		// Multiple Events are attached to a Series.
 		remove_action( 'tec_events_pro_custom_tables_v1_series_relationships_updated', [
 			$this,
 			'update_passes_for_series'
 		] );
-
-		// Event Occurrences have been updated
 		remove_action( 'tec_events_custom_tables_v1_after_save_occurrences', [ $this, 'update_passes_for_event' ] );
-
 		remove_action( 'tec_tickets_panels_before', [ $this, 'start_filtering_labels' ] );
 		remove_action( 'tec_tickets_panels_after', [ $this->labels, 'stop_filtering_labels' ] );
 		remove_action( 'tribe_events_tickets_new_ticket_warnings', [ $this, 'display_pass_notice_in_warnings' ], 5, 2 );
@@ -213,12 +208,10 @@ class Series_Passes extends Controller {
 			$this,
 			'display_pass_notice_before_passes_list'
 		] );
-
 		remove_filter( 'tec_tickets_repository_filter_by_event_id', [ $this, 'add_series_to_searched_events' ] );
 		remove_action( 'added_post_meta', [ $this, 'propagate_ticket_provider_from_series' ], 20, 4 );
 		remove_action( 'updated_post_meta', [ $this, 'propagate_ticket_provider_from_series' ], 20, 4 );
 		remove_action( 'deleted_post_meta', [ $this, 'delete_ticket_provider_from_series' ], 20, 4 );
-
 		remove_action( 'tec_tickets_list_row_edit', [ $this, 'render_link_to_series' ], );
 		remove_filter( 'tec_tickets_editor_list_ticket_types', [ $this, 'display_series_passes_list' ] );
 		$ticket_type = self::TICKET_TYPE;
@@ -226,6 +219,12 @@ class Series_Passes extends Controller {
 		remove_action( "tec_tickets_editor_list_table_title_icon_{$ticket_type}", [
 			$this,
 			'print_series_pass_icon'
+		] );
+		remove_action( "tec_tickets_ticket_form_main_start_{$ticket_type}", [ $this, 'render_type_header' ] );
+
+		remove_filter( 'tec_tickets_ticket_type_default_header_description', [
+			$this,
+			'filter_ticket_type_default_header_description'
 		] );
 	}
 
@@ -660,5 +659,30 @@ class Series_Passes extends Controller {
 		$table_data['table_title'] = tec_tickets_get_series_pass_plural_uppercase( 'ticket_list_title' );
 
 		return $table_data;
+	}
+
+	/**
+	 * Renders the Series Pass type header in the context of the Ticket add and edit form.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function render_type_header(): void {
+		$this->metabox->render_type_header();
+	}
+
+	public function filter_ticket_type_default_header_description( string $description, int $post_id ): string {
+		if ( get_post_type( $post_id ) !== TEC::POSTTYPE ) {
+			return $description;
+		}
+
+		$series = tec_series()->where( 'event_post_id', $post_id )->first();
+
+		if ( ! $series instanceof WP_Post ) {
+			return $description;
+		}
+
+		return $this->metabox->get_default_ticket_type_header_description( $post_id, $series->ID );
 	}
 }

@@ -12,32 +12,22 @@ class BaseTest extends Controller_Test_Case {
 	protected string $controller_class = Base::class;
 
 	/**
-	 * It should not render ticket type options on post
+	 * It should disable Tickets and RSVPs for Series
 	 *
 	 * @test
 	 */
-	public function should_not_render_ticket_type_options_on_post(): void {
-		$post_id = static::factory()->post->create();
-
+	public function should_disable_tickets_and_rsv_ps_for_series(): void {
 		$controller = $this->make_controller();
 
-		$this->expectOutputString( '' );
-		$controller->render_ticket_type_options( $post_id );
-	}
+		$filtered = $controller->enable_ticket_forms_for_series( [
+			'default' => true,
+			'rsvp'    => true,
+		] );
 
-	/**
-	 * It should render ticket options in Series post type
-	 *
-	 * @test
-	 */
-	public function should_render_ticket_options_in_series_post_type(): void {
-		$series_id = static::factory()->post->create( [ 'post_type' => Series_Post_Type::POSTTYPE ] );
-
-		$controller = $this->make_controller();
-		ob_start();
-		$controller->render_ticket_type_options( $series_id );
-		$html = ob_get_clean();
-
-		$this->assertMatchesHtmlSnapshot( $html );
+		$this->assertEquals( [
+			'default'                  => false,
+			'rsvp'                     => false,
+			Series_Passes::TICKET_TYPE => true,
+		], $filtered );
 	}
 }

@@ -53,7 +53,7 @@
 				
 				Test RSVP ticket for {{ID}}
 				<div  class="tribe-tickets__tickets-editor-ticket-available-dates dashicons-before dashicons-clock" >
-	August 2, 2023 - August 4, 2023</div>			</div>
+	January 2, 2020 - March 1, 2050</div>			</div>
 		</div>
 	</td>
 
@@ -89,7 +89,7 @@
 				
 				Test RSVP ticket for {{ID}}
 				<div  class="tribe-tickets__tickets-editor-ticket-available-dates dashicons-before dashicons-clock" >
-	August 2, 2023 - August 4, 2023</div>			</div>
+	January 2, 2020 - March 1, 2050</div>			</div>
 		</div>
 	</td>
 
@@ -343,6 +343,31 @@
 					 data-datepicker_format="1">
 
 				
+<div id="ticket_type_options" class="input_block">
+	<label class="ticket_form_label ticket_form_left" id="ticket_type_label" for="ticket_type">
+		Type:	</label>
+
+	<div class="ticket_form_right ticket_form_right--flex">
+		<img
+			class="tribe-tickets-svgicon tec-tickets-icon tec-tickets-icon__ticket-type"
+			src="http://wordpress.test/wp-content/plugins/event-tickets/src/resources/icons/ticket-default-icon.svg"
+			alt="Ticket"
+		/>
+		<span class="ticket-type__text ticket-type__text--default">
+		Single Ticket		</span>
+	</div>
+
+	<span class="tribe_soft_note ticket_form_right tribe-active">
+		A single ticket is specific to this post.	</span>
+</div>
+
+				<input
+					type='hidden'
+					id='ticket_type'
+					name='ticket_type'
+					value="default"
+				/>
+
 				<div class="input_block">
 					<label class="ticket_form_label ticket_form_left" for="ticket_name">
 						Name:					</label>

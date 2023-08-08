@@ -8,71 +8,78 @@ use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 class Admin_ViewsTest extends WPTestCase {
 	use SnapshotAssertions;
 
-	public function disabled_provider() {
+	public function template_fixture_provider(): array {
 		return [
-			'disabled' => [ true ],
-			'enabled'  => [ false ],
+			'series-pass-edit-link'             => [
+				'series-pass-edit-link',
+				[
+					'series_edit_link' => 'https://wordpress.test/wp-admin/post.php?post=10&action=edit'
+				]
+			],
+			'series-pass-event-notice'          => [
+				'series-pass-event-notice',
+				[
+					'series_edit_link' => 'https://wordpress.test/wp-admin/post.php?post=10&action=edit',
+					'series_title'     => 'A Series',
+				]
+			],
+			'series-pass-form-toggle--disabled' => [
+				'series-pass-form-toggle',
+				[
+					'disabled' => true,
+				]
+			],
+			'series-pass-form-toggle--enabled'  => [
+				'series-pass-form-toggle',
+				[
+					'disabled' => false,
+				]
+			],
+			'series-pass-icon'                  => [ 'series-pass-icon' ],
+			'series-pass-type-header'           => [ 'series-pass-type-header' ],
 		];
 	}
 
 	/**
-	 * It should render series pass form toggle correctly
+	 * It should render template correctly
 	 *
 	 * @test
-	 *
-	 * @dataProvider disabled_provider
+	 * @dataProvider template_fixture_provider
 	 */
-	public function should_render_series_pass_form_toggle_correctly( bool $disabled ): void {
+	public function should_render_template_correctly( string $template, array $context = [] ): void {
 		$view = new Admin_Views();
 
-		$html = $view->template( 'series-pass-form-toggle', [ 'disabled' => $disabled ], false );
+		$html = $view->template( $template, $context, false );
 
 		$this->assertMatchesHtmlSnapshot( $html );
 	}
 
 	/**
-	 * It should render series passs form toggle correctly when filtering series pass name
+	 * It should render template correctly when filtering Series Pass labels
 	 *
 	 * @test
-	 *
-	 * @dataProvider disabled_provider
+	 * @dataProvider template_fixture_provider
 	 */
-	public function should_render_series_passs_form_toggle_correctly_when_filtering_series_pass_name( bool $disabled ): void {
-		add_filter( 'tec_tickets_series_pass_singular_lowercase', static fn() => 'group ticket' );
-		add_filter( 'tec_tickets_series_pass_singular_uppercase', static fn() => 'Group Ticket' );
+	public function should_render_template_correctly_when_filtering_series_pass_labels( string $template, array $context = [] ): void {
+		add_filter( 'tec_tickets_series_pass_singular_lowercase', static function (): string {
+			return 'badge';
+		} );
+
+		add_filter( 'tec_tickets_series_pass_singular_uppercase', static function (): string {
+			return 'Badge';
+		} );
+
+		add_filter( 'tec_tickets_series_pass_plural_lowercase', static function (): string {
+			return 'badges';
+		} );
+
+		add_filter( 'tec_tickets_series_pass_plural_uppercase', static function (): string {
+			return 'Badges';
+		} );
 
 		$view = new Admin_Views();
 
-		$html = $view->template( 'series-pass-form-toggle', [ 'disabled' => $disabled ], false );
-
-		$this->assertMatchesHtmlSnapshot( $html );
-	}
-
-	/**
-	 * It should render ticket type options correctly
-	 *
-	 * @test
-	 */
-	public function should_render_ticket_type_options_correctly(): void {
-		$view = new Admin_Views();
-
-		$html = $view->template( 'ticket-type-options', [], false );
-
-		$this->assertMatchesHtmlSnapshot( $html );
-	}
-
-	/**
-	 * It should render ticket type options correctly when filtering series pass name
-	 *
-	 * @test
-	 */
-	public function should_render_ticket_type_options_correctly_when_filtering_series_pass_name(): void {
-		add_filter( 'tec_tickets_series_pass_singular_lowercase', static fn() => 'group ticket' );
-		add_filter( 'tec_tickets_series_pass_singular_uppercase', static fn() => 'Group Ticket' );
-
-		$view = new Admin_Views();
-
-		$html = $view->template( 'ticket-type-options', [], false );
+		$html = $view->template( $template, $context, false );
 
 		$this->assertMatchesHtmlSnapshot( $html );
 	}

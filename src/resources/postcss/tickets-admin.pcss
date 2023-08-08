@@ -491,12 +491,21 @@
 		display: block;
 		margin-top: 0;
 
+		&.ticket_form_right--flex {
+			display: flex;
+			align-items: center;
+		}
+
 		@media (min-width: 782px) {
 			margin-left: 132px;
 		}
 
 		&:last-child {
 			margin-bottom: 0;
+		}
+
+		.ticket-type__text--default {
+			margin-left: var(--tec-spacer-0);
 		}
 	}
 

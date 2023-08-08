@@ -109,4 +109,38 @@ class Metabox {
 	public function print_series_pass_icon(): void {
 		$this->admin_views->template( 'series-pass-icon' );
 	}
+
+	/**
+	 * Renders the Series Pass type header in the context of the Ticket add and edit form.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function render_type_header(): void {
+		$this->admin_views->template( 'series-pass-type-header' );
+	}
+
+	public function get_default_ticket_type_header_description( int $event_id, int $series_id ): string {
+		$edit_link        = get_edit_post_link( $series_id, 'admin' ) . '#tribetickets';
+		$series_edit_link = sprintf(
+			'<a href="%s" target="_blank">%s</a>',
+			$edit_link,
+			get_post_field( 'post_title', $series_id )
+		);
+		$description      = sprintf(
+		// Translators: %1$s is the ticket type label, %2$s is the Event type label, %3$s is the Series Pass type label, %4$s is the Series edit link.
+			_x(
+				'A single %1$s is specific to this %2$s. You can add a %3$s from the %4$s Series page.',
+				'The help text for the default ticket type in the ticket form.',
+				'event-tickets'
+			),
+			tribe_get_ticket_label_singular( 'ticket_type_default_header_description' ),
+			tribe_get_event_label_singular_lowercase(),
+			tec_tickets_get_series_pass_singular_uppercase( 'ticket_type_default_header_description' ),
+			$series_edit_link
+		);
+
+		return $description;
+	}
 }

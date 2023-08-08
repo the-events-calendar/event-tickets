@@ -23,6 +23,7 @@
  * @var string                             $ticket_start_date_help_text      The ticket start date help text.
  * @var string                             $ticket_start_time                The ticket start time.
  * @var string                             $timepicker_round                 The timepicker round.
+ * @var string                             $ticket_type                      The type of Ticket the form is for.
  */
 ?>
 
@@ -142,10 +143,32 @@
 				 *
 				 * @since TBD
 				 *
-				 * @param int $post_id   Post ID
-				 * @param int $ticket_id Ticket ID
+				 * @param int      $post_id     The post ID of the post the ticket is attached to.
+				 * @param string   $ticket_type The type of ticket the form is being rendered for.
+				 * @param int|null $ticket_id   The post ID of the ticket that is being edited, `null` if the ticket is
+				 *                              being added.
 				 */
-				do_action( 'tec_tickets_ticket_form_main_start', $post_id, $ticket_id ); ?>
+				do_action( 'tec_tickets_ticket_form_main_start', $post_id, $ticket_type, $ticket_id );
+
+				/**
+				 * Allows for the insertion of additional elements into the start of the main ticket form for a specific
+				 * ticket type.
+				 *
+				 * @since TBD
+				 *
+				 * @param int      $post_id     The post ID of the post the ticket is attached to.
+				 * @param int|null $ticket_id   The post ID of the ticket that is being edited, `null` if the ticket is
+				 *                              being added.
+				 */
+				do_action( "tec_tickets_ticket_form_main_start_{$ticket_type}", $post_id, $ticket_id );
+				?>
+
+				<input
+					type='hidden'
+					id='ticket_type'
+					name='ticket_type'
+					value="<?php echo esc_attr( $ticket_type ?? 'default' ); ?>"
+				/>
 
 				<div class="input_block">
 					<label class="ticket_form_label ticket_form_left" for="ticket_name">

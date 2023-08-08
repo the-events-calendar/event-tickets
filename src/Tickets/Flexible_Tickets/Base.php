@@ -13,6 +13,7 @@ use TEC\Common\Contracts\Provider\Controller;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 use TEC\Tickets\Admin\Editor_Data;
 use TEC\Tickets\Flexible_Tickets\Templates\Admin_Views;
+use Tribe\Tickets\Editor\Warnings;
 
 /**
  * Class Base.
@@ -34,7 +35,18 @@ class Base extends Controller {
 		$this->container->singleton( Repositories\Ticket_Groups::class, Repositories\Ticket_Groups::class );
 		$this->container->singleton( Repositories\Posts_And_Ticket_Groups::class, Repositories\Posts_And_Ticket_Groups::class );
 
-		add_action( 'tec_tickets_ticket_form_main_start', [ $this, 'render_ticket_type_options' ] );
+		$series_post_type = Series_Post_Type::POSTTYPE;
+		add_filter( "tec_tickets_enabled_ticket_forms_{$series_post_type}", [
+			$this,
+			'enable_ticket_forms_for_series'
+		] );
+
+		// Remove the warnings about Recurring Events and Tickets not being supported.
+		$editor_warnings = tribe( 'tickets.editor.warnings' );
+		remove_action( 'tribe_events_tickets_new_ticket_warnings', [
+			$editor_warnings,
+			'show_recurring_event_warning_message'
+		] );
 	}
 
 	/**
@@ -45,27 +57,34 @@ class Base extends Controller {
 	 * @return void
 	 */
 	public function unregister(): void {
-		remove_action( 'tec_tickets_ticket_form_main_start', [ $this, 'render_ticket_type_options' ] );
+		$series_post_type = Series_Post_Type::POSTTYPE;
+		remove_filter( "tec_tickets_enabled_ticket_forms_{$series_post_type}", [
+			$this,
+			'enable_ticket_forms_for_series'
+		] );
+
+		// Remove the warnings about Recurring Events and Tickets not being supported.
+		$editor_warnings = tribe( 'tickets.editor.warnings' );
+		add_action( 'tribe_events_tickets_new_ticket_warnings', [
+			$editor_warnings,
+			'show_recurring_event_warning_message'
+		] );
 	}
 
 	/**
-	 * Renders the ticket type options.
+	 * Disables default ticket types for Series.
 	 *
 	 * @since TBD
 	 *
-	 * @param int $post_id The ID of the post being edited.
+	 * @param array<string,bool> $enabled The default enabled forms, a map from ticket types to their enabled status.
 	 *
-	 * @return void The ticket type options are rendered.
+	 * @return array<string,bool> The updated enabled forms.
 	 */
-	public function render_ticket_type_options( $post_id ): void {
-		if ( ! (
-			is_numeric( $post_id )
-			&& ( $post = get_post( $post_id ) ) instanceof \WP_Post
-			&& $post->post_type === Series_Post_Type::POSTTYPE
-		) ) {
-			return;
-		}
+	public function enable_ticket_forms_for_series( array $enabled ): array {
+		$enabled['default']                    = false;
+		$enabled['rsvp']                       = false;
+		$enabled[ Series_Passes::TICKET_TYPE ] = true;
 
-		$this->container->get( Admin_Views::class )->template( 'ticket-type-options' );
+		return $enabled;
 	}
 }
