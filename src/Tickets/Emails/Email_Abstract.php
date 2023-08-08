@@ -275,7 +275,7 @@ abstract class Email_Abstract {
 		 */
 		$from_name = apply_filters( "tec_tickets_emails_{$this->slug}_from_name", $from_name, $this->id, $this );
 
-		return $from_name;
+		return wp_specialchars_decode( $from_name );
 	}
 
 	/**
