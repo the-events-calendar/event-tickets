@@ -5,13 +5,23 @@
 	data-save-prompt="You have unsaved changes to your tickets. Discard those changes?"
 >
 	<div class="tribe_sectionheader ticket_list_container tribe_no_capacity">
+		<div class="ticket_table_intro">
+			
+							<button id="settings_form_toggle" class="button-secondary tribe-button-icon tribe-button-icon-settings">
+					Settings				</button>
+					</div>
+
+		<div class="ticket_table_intro__warnings">
+					</div>
+
 			</div>
 	<div class="tribe-ticket-control-wrap">
-		
-		<button id="settings_form_toggle" class="button-secondary tribe-button-icon tribe-button-icon-settings">
-			Settings		</button>
+		<div class="tribe-ticket-control-wrap__ctas">
+					</div>
 
-		
+		<div class="tribe-ticket-control-wrap__settings">
+			
+					</div>
 	</div>
 	
 </div>
@@ -121,6 +131,31 @@
 					 data-datepicker_format="1">
 
 				
+<div id="ticket_type_options" class="input_block">
+	<label class="ticket_form_label ticket_form_left" id="ticket_type_label" for="ticket_type">
+		Type:	</label>
+
+	<div class="ticket_form_right ticket_form_right--flex">
+		<img
+			class="tribe-tickets-svgicon tec-tickets-icon tec-tickets-icon__ticket-type"
+			src="http://wordpress.test/wp-content/plugins/event-tickets/src/resources/icons/ticket-default-icon.svg"
+			alt="Ticket"
+		/>
+		<span class="ticket-type__text ticket-type__text--default">
+		Single Ticket		</span>
+	</div>
+
+	<span class="tribe_soft_note ticket_form_right tribe-active">
+		A single ticket is specific to this post.	</span>
+</div>
+
+				<input
+					type='hidden'
+					id='ticket_type'
+					name='ticket_type'
+					value="default"
+				/>
+
 				<div class="input_block">
 					<label class="ticket_form_label ticket_form_left" for="ticket_name">
 						Name:					</label>
@@ -311,86 +346,6 @@
 			/>
 	<span class="tribe_soft_note ticket_form_right">Enable &quot;Can&#039;t Go&quot; responses</span>
 </div>
-
-<div
-	class="input_block ticket_advanced_TEC_Tickets_Commerce_Module tribe-dependent"
-	data-depends="#Tribe__Tickets__RSVP_radio"
-	data-condition-is-not-checked
->
-	<label
-		for="TEC_Tickets_Commerce_Module_capacity"
-		class="ticket_form_label ticket_form_left"
-	>
-		Capacity:	</label>
-	<input
-		type='text' id='TEC_Tickets_Commerce_Module_capacity'
-		name='tribe-ticket[capacity]'
-		class="ticket_field tribe-tpp-field-capacity ticket_form_right"
-		size='7'
-		value=''
-	/>
-	<span class="tribe_soft_note ticket_form_right">Leave blank for unlimited</span>
-</div>
-
-<div
-	class="input_block ticket_advanced_TEC_Tickets_Commerce_Module tribe-dependent"
-	data-depends="#Tribe__Tickets__RSVP_radio"
-	data-condition-is-not-checked
->
-	<label
-		for="TEC_Tickets_Commerce_Module_capacity"
-		class="ticket_form_label ticket_form_left"
-	>
-		Capacity:	</label>
-	<input
-		type='text' id='TEC_Tickets_Commerce_Module_capacity'
-		name='tribe-ticket[capacity]'
-		class="ticket_field tribe-tpp-field-capacity ticket_form_right"
-		size='7'
-		value=''
-	/>
-	<span class="tribe_soft_note ticket_form_right">Leave blank for unlimited</span>
-</div>
-
-<div
-	class="input_block ticket_advanced_TEC_Tickets_Commerce_Module tribe-dependent"
-	data-depends="#Tribe__Tickets__RSVP_radio"
-	data-condition-is-not-checked
->
-	<label
-		for="TEC_Tickets_Commerce_Module_capacity"
-		class="ticket_form_label ticket_form_left"
-	>
-		Capacity:	</label>
-	<input
-		type='text' id='TEC_Tickets_Commerce_Module_capacity'
-		name='tribe-ticket[capacity]'
-		class="ticket_field tribe-tpp-field-capacity ticket_form_right"
-		size='7'
-		value=''
-	/>
-	<span class="tribe_soft_note ticket_form_right">Leave blank for unlimited</span>
-</div>
-
-<div
-	class="input_block ticket_advanced_TEC_Tickets_Commerce_Module tribe-dependent"
-	data-depends="#Tribe__Tickets__RSVP_radio"
-	data-condition-is-not-checked
->
-	<label
-		for="TEC_Tickets_Commerce_Module_capacity"
-		class="ticket_form_label ticket_form_left"
-	>
-		Capacity:	</label>
-	<input
-		type='text' id='TEC_Tickets_Commerce_Module_capacity'
-		name='tribe-ticket[capacity]'
-		class="ticket_field tribe-tpp-field-capacity ticket_form_right"
-		size='7'
-		value=''
-	/>
-	<span class="tribe_soft_note ticket_form_right">Leave blank for unlimited</span>
-</div>
 			</section>
 			<div class="accordion">
 				<div class="tribe-dependent" data-depends="#Tribe__Tickets__RSVP_radio" data-condition-is-not-checked>
@@ -399,7 +354,25 @@
 	<section id="ticket_form_advanced" class="advanced accordion-content" data-datepicker_format="1">
 		<h4 class="accordion-label screen_reader_text">Advanced Settings</h4>
 		<div id="advanced_fields">
-			<div id="Tribe__Tickets__Commerce__PayPal__Main_advanced" class="tribe-dependent" data-depends="#Tribe__Tickets__Commerce__PayPal__Main_radio" data-condition-is-checked></div>		</div>
+			<div id="Tribe__Tickets__Commerce__PayPal__Main_advanced" class="tribe-dependent" data-depends="#Tribe__Tickets__Commerce__PayPal__Main_radio" data-condition-is-checked></div><div id="TECTicketsCommerceEditorMetabox_advanced" class="tribe-dependent" data-depends="#provider_TEC_Tickets_Commerce_Module_radio" data-condition-is-checked>
+<div
+	class="ticket_advanced_TECTicketsCommerceModule input_block tribe-dependent"
+	data-depends="#provider_TEC_Tickets_Commerce_Module_radio"
+	data-condition-is-checked
+>
+	<label for="ticket_tpp_sku" class="ticket_form_label ticket_form_left">SKU:</label>
+	<input
+		type="text"
+		id="ticket_sku"
+		name="ticket_sku"
+		class="ticket_field sku_input ticket_form_right"
+		size="14"
+		value=""
+	>
+	<p class="description ticket_form_right">
+		A unique identifying code for each ticket type you&#039;re selling	</p>
+</div>
+</div>		</div>
 	</section><!-- #ticket_form_advanced -->
 </div>
 			</div>

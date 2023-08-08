@@ -5,21 +5,28 @@
 	data-save-prompt="You have unsaved changes to your tickets. Discard those changes?"
 >
 	<div class="tribe_sectionheader ticket_list_container tribe_no_capacity">
-					<div class="ticket_table_intro">
-								<a
-					class="button-secondary"
-					href="http://wordpress.test/wp-admin/edit.php?post_type=post&#038;page=tickets-attendees&#038;event_id={{ post_id }}"
-				>
-					View Attendees				</a>
-			</div>
+		<div class="ticket_table_intro">
 			
-<div id="ticket_list_wrapper">
+					</div>
 
-	<table id="tribe_ticket_list_table" class="tribe-tickets-editor-table eventtable ticket_list eventForm widefat fixed">
+		<div class="ticket_table_intro__warnings">
+					</div>
+
+		
+<div class="ticket_list_wrapper">
+	<table class="tribe_ticket_list_table tribe-tickets-editor-table eventtable ticket_list eventForm widefat fixed">
 		<thead>
 			<tr class="table-header">
-				<th class="ticket_name column-primary">Tickets</th>
-				<th class="ticket_price">Price</th>
+				<th class="ticket_name column-primary">
+					
+<img
+	class="tribe-tickets-svgicon tec-tickets-icon tec-tickets-icon__ticket-type"
+	src="http://wordpress.test/wp-content/plugins/event-tickets/src/resources/icons/ticket-rsvp-icon.svg"
+	alt="RSVP"
+/>
+					RSVPs				</th>
+				
+<th class="ticket_price"></th>
 				<th class="ticket_capacity">Capacity</th>
 				<th class="ticket_available">Available</th>
 				<th class="ticket_edit"></th>
@@ -27,19 +34,24 @@
 		</thead>
 				<tbody class="tribe-tickets-editor-table-tickets-body">
 				</tbody>
-
-		<tbody>
-					</tbody>
 	</table>
 
 </div>
-			</div>
+	</div>
 	<div class="tribe-ticket-control-wrap">
-		
-		<button id="settings_form_toggle" class="button-secondary tribe-button-icon tribe-button-icon-settings">
-			Settings		</button>
+		<div class="tribe-ticket-control-wrap__ctas">
+							<a
+					href="http://wordpress.test/wp-admin/edit.php?post_type=post&#038;page=tickets-attendees&#038;event_id={{ post_id }}"
+				>
+					View Attendees				</a>
 
-		
+									</div>
+
+		<div class="tribe-ticket-control-wrap__settings">
+										
+							<button id="settings_form_toggle" class="button-secondary tribe-button-icon tribe-button-icon-settings">
+					Settings				</button>
+					</div>
 	</div>
 	
 </div>
@@ -149,6 +161,31 @@
 					 data-datepicker_format="1">
 
 				
+<div id="ticket_type_options" class="input_block">
+	<label class="ticket_form_label ticket_form_left" id="ticket_type_label" for="ticket_type">
+		Type:	</label>
+
+	<div class="ticket_form_right ticket_form_right--flex">
+		<img
+			class="tribe-tickets-svgicon tec-tickets-icon tec-tickets-icon__ticket-type"
+			src="http://wordpress.test/wp-content/plugins/event-tickets/src/resources/icons/ticket-default-icon.svg"
+			alt="Ticket"
+		/>
+		<span class="ticket-type__text ticket-type__text--default">
+		Single Ticket		</span>
+	</div>
+
+	<span class="tribe_soft_note ticket_form_right tribe-active">
+		A single ticket is specific to this post.	</span>
+</div>
+
+				<input
+					type='hidden'
+					id='ticket_type'
+					name='ticket_type'
+					value="default"
+				/>
+
 				<div class="input_block">
 					<label class="ticket_form_label ticket_form_left" for="ticket_name">
 						Name:					</label>
@@ -349,7 +386,7 @@
 	<section id="ticket_form_advanced" class="advanced accordion-content" data-datepicker_format="1">
 		<h4 class="accordion-label screen_reader_text">Advanced Settings</h4>
 		<div id="advanced_fields">
-			<div id="Tribe__Tickets__Commerce__PayPal__Main_advanced" class="tribe-dependent" data-depends="#Tribe__Tickets__Commerce__PayPal__Main_radio" data-condition-is-checked></div>		</div>
+			<div id="Tribe__Tickets__Commerce__PayPal__Main_advanced" class="tribe-dependent" data-depends="#Tribe__Tickets__Commerce__PayPal__Main_radio" data-condition-is-checked></div><div id="TECTicketsCommerceEditorMetabox_advanced" class="tribe-dependent" data-depends="#provider_TEC_Tickets_Commerce_Module_radio" data-condition-is-checked></div>		</div>
 	</section><!-- #ticket_form_advanced -->
 </div>
 			</div>
