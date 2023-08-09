@@ -171,6 +171,9 @@ class Series_Passes extends Controller {
 			$this,
 			'filter_ticket_type_default_header_description'
 		], 10, 2 );
+
+		add_filter( 'tec_tickets_attendees_filter_by_event', [ $this, 'include_series_to_fetch_attendees' ] );
+		add_filter( 'tec_tickets_attendees_filter_by_event_not_in', [ $this, 'include_series_to_fetch_attendees' ] );
 	}
 
 	/**
@@ -684,5 +687,18 @@ class Series_Passes extends Controller {
 		}
 
 		return $this->metabox->get_default_ticket_type_header_description( $post_id, $series->ID );
+	}
+
+	public function include_series_to_fetch_attendees( $post_id ): array {
+		$post_ids  = (array) $post_id;
+		$event_ids = array_filter( $post_ids, fn( int $id ) => get_post_type( $id ) === TEC::POSTTYPE );
+
+		if ( ! count( $event_ids ) ) {
+			return $post_id;
+		}
+
+		$series_ids = iterator_to_array( tec_series()->where( 'event_post_id', $event_ids )->get_ids_generator(), false );
+
+		return array_values( array_unique( array_merge( $post_ids, $series_ids ) ) );
 	}
 }

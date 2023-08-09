@@ -14,6 +14,7 @@ use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Flexible_Tickets\Test\Traits\Series_Pass_Factory;
 use TEC\Tickets\Flexible_Tickets\Test\Traits\Ticket_Data_Factory;
 use Tribe\Tests\Traits\With_Uopz;
+use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe__Tickets__Tickets as Tickets;
 use Tribe__Tickets__Commerce__PayPal__Main as PayPal;
 
@@ -22,6 +23,7 @@ class Series_PassesTest extends Controller_Test_Case {
 	use With_Uopz;
 	use Series_Pass_Factory;
 	use Ticket_Data_Factory;
+	use Attendee_Maker;
 
 	protected $controller_class = Series_Passes::class;
 
@@ -871,5 +873,91 @@ class Series_PassesTest extends Controller_Test_Case {
 		$this->assertEquals( Module::class, get_post_meta( $event->ID, '_tribe_default_ticket_provider', true ) );
 		$this->assertEquals( Module::class, get_post_meta( $series, '_tribe_default_ticket_provider', true ) );
 		$this->assertEquals( Module::class, get_post_meta( $recurring_event->ID, '_tribe_default_ticket_provider', true ) );
+	}
+
+	/**
+	 * It should add Series ID to Event IDs when fetching Attendees of Event in Series
+	 *
+	 * @test
+	 */
+	public function should_add_series_id_to_event_i_ds_when_fetching_attendees_of_event_in_series(): void {
+		$series              = static::factory()->post->create( [
+			'post_type' => Series_Post_Type::POSTTYPE,
+		] );
+		$event_in_series     = tribe_events()->set_args( [
+			'title'      => 'Event in Series',
+			'status'     => 'publish',
+			'start_date' => '2020-02-11 17:30:00',
+			'end_date'   => '2020-02-11 18:00:00',
+			'series'     => $series,
+		] )->create()->ID;
+		$event_not_in_series = tribe_events()->set_args( [
+			'title'      => 'Event not in Series',
+			'status'     => 'publish',
+			'start_date' => '2020-02-11 17:30:00',
+			'end_date'   => '2020-02-11 18:00:00',
+		] )->create()->ID;
+		$series_pass         = $this->create_tc_series_pass( $series, 66 )->ID;
+		$ticket_1            = $this->create_tc_ticket( $event_in_series, 23 );
+		$ticket_2            = $this->create_tc_ticket( $event_not_in_series, 89 );
+		[ $attendee_1, $attendee_2 ] = $this->create_many_attendees_for_ticket( 2, $ticket_1, $event_in_series );
+		[ $attendee_3, $attendee_4 ] = $this->create_many_attendees_for_ticket( 2, $ticket_2, $event_not_in_series );
+		[
+			$pass_attendee_1,
+			$pass_attendee_2
+		] = $this->create_many_attendees_for_ticket( 2, $series_pass, $series );
+
+		$this->assertEqualSets(
+			[ $attendee_1, $attendee_2 ],
+			tribe_attendees()->where( 'event', $event_in_series )->get_ids()
+		);
+		$this->assertEqualSets(
+			[ $attendee_3, $attendee_4 ],
+			tribe_attendees()->where( 'event', $event_not_in_series )->get_ids()
+		);
+		$this->assertEqualSets(
+			[ $pass_attendee_1, $pass_attendee_2 ],
+			tribe_attendees()->where( 'event', $series )->get_ids()
+		);
+		$this->assertEqualSets(
+			[ $attendee_3, $attendee_4, $pass_attendee_1, $pass_attendee_2],
+			tribe_attendees()->where( 'event__not_in', $event_in_series )->get_ids()
+		);
+		$this->assertEqualSets(
+			[ $attendee_1, $attendee_2, $pass_attendee_1, $pass_attendee_2],
+			tribe_attendees()->where( 'event__not_in', $event_not_in_series )->get_ids()
+		);
+		$this->assertEqualSets(
+			[ $attendee_1, $attendee_2, $attendee_3, $attendee_4],
+			tribe_attendees()->where( 'event__not_in', $series )->get_ids()
+		);
+
+		// Build and register the controller.
+		$controller = $this->make_controller()->register();
+
+		$this->assertEqualSets(
+			[ $attendee_1, $attendee_2, $pass_attendee_1, $pass_attendee_2 ],
+			tribe_attendees()->where( 'event', $event_in_series )->get_ids()
+		);
+		$this->assertEqualSets(
+			[ $attendee_3, $attendee_4 ],
+			tribe_attendees()->where( 'event', $event_not_in_series )->get_ids()
+		);
+		$this->assertEqualSets(
+			[ $pass_attendee_1, $pass_attendee_2 ],
+			tribe_attendees()->where( 'event', $series )->get_ids()
+		);
+		$this->assertEqualSets(
+			[ $attendee_3, $attendee_4 ],
+			tribe_attendees()->where( 'event__not_in', $event_in_series )->get_ids()
+		);
+		$this->assertEqualSets(
+			[ $attendee_1, $attendee_2, $pass_attendee_1, $pass_attendee_2 ],
+			tribe_attendees()->where( 'event__not_in', $event_not_in_series )->get_ids()
+		);
+		$this->assertEqualSets(
+			[ $attendee_1, $attendee_2, $attendee_3, $attendee_4 ],
+			tribe_attendees()->where( 'event__not_in', $series )->get_ids()
+		);
 	}
 }
