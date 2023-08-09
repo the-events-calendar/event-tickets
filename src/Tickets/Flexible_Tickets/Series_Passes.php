@@ -694,13 +694,13 @@ class Series_Passes extends Controller {
 			return $description;
 		}
 
-		$series = tec_series()->where( 'event_post_id', $post_id )->first();
+		$series = tec_series()->where( 'event_post_id', $post_id )->first_id();
 
-		if ( ! $series instanceof WP_Post ) {
+		if ( $series === null ) {
 			return $description;
 		}
 
-		return $this->metabox->get_default_ticket_type_header_description( $post_id, $series->ID );
+		return $this->metabox->get_default_ticket_type_header_description( $post_id, $series );
 	}
 
 	/**
