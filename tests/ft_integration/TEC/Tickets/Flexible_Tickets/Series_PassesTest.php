@@ -920,15 +920,15 @@ class Series_PassesTest extends Controller_Test_Case {
 			tribe_attendees()->where( 'event', $series )->get_ids()
 		);
 		$this->assertEqualSets(
-			[ $attendee_3, $attendee_4, $pass_attendee_1, $pass_attendee_2],
+			[ $attendee_3, $attendee_4, $pass_attendee_1, $pass_attendee_2 ],
 			tribe_attendees()->where( 'event__not_in', $event_in_series )->get_ids()
 		);
 		$this->assertEqualSets(
-			[ $attendee_1, $attendee_2, $pass_attendee_1, $pass_attendee_2],
+			[ $attendee_1, $attendee_2, $pass_attendee_1, $pass_attendee_2 ],
 			tribe_attendees()->where( 'event__not_in', $event_not_in_series )->get_ids()
 		);
 		$this->assertEqualSets(
-			[ $attendee_1, $attendee_2, $attendee_3, $attendee_4],
+			[ $attendee_1, $attendee_2, $attendee_3, $attendee_4 ],
 			tribe_attendees()->where( 'event__not_in', $series )->get_ids()
 		);
 

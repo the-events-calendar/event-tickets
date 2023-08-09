@@ -30,7 +30,7 @@ class Ticket_Provider_Handler {
 	 * @return void The ticket provider of the Events part of the Series are deleted.
 	 */
 	public function delete_from_series( int $series_id ): void {
-		foreach ( tribe_events()->where( 'series', $series_id )->get_ids_generator() as $event_id ) {
+		foreach ( tribe_events()->where( 'series', $series_id )->get_ids( true ) as $event_id ) {
 			delete_post_meta( $event_id, '_tribe_default_ticket_provider' );
 		}
 
@@ -56,7 +56,7 @@ class Ticket_Provider_Handler {
 			$value = get_post_meta( $series_id, '_tribe_default_ticket_provider', true );
 		}
 
-		foreach ( tribe_events()->where( 'series', $series_id )->get_ids_generator() as $event_id ) {
+		foreach ( tribe_events()->where( 'series', $series_id )->get_ids( true ) as $event_id ) {
 			update_post_meta( $event_id, '_tribe_default_ticket_provider', $value );
 		}
 

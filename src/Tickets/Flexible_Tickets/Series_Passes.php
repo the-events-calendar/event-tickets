@@ -173,7 +173,10 @@ class Series_Passes extends Controller {
 		], 10, 2 );
 
 		add_filter( 'tec_tickets_attendees_filter_by_event', [ $this, 'include_series_to_fetch_attendees' ] );
-		add_filter( 'tec_tickets_attendees_filter_by_event_not_in', [ $this, 'include_series_to_fetch_attendees' ] );
+		add_filter( 'tec_tickets_attendees_filter_by_event_not_in', [
+			$this,
+			'include_series_to_fetch_attendees'
+		] );
 	}
 
 	/**
@@ -224,11 +227,12 @@ class Series_Passes extends Controller {
 			'print_series_pass_icon'
 		] );
 		remove_action( "tec_tickets_ticket_form_main_start_{$ticket_type}", [ $this, 'render_type_header' ] );
-
 		remove_filter( 'tec_tickets_ticket_type_default_header_description', [
 			$this,
 			'filter_ticket_type_default_header_description'
 		] );
+		remove_filter( 'tec_tickets_attendees_filter_by_event', [ $this, 'include_series_to_fetch_attendees' ] );
+		remove_filter( 'tec_tickets_attendees_filter_by_event_not_in', [ $this, 'include_series_to_fetch_attendees' ] );
 	}
 
 	/**
@@ -420,7 +424,7 @@ class Series_Passes extends Controller {
 	 * @return void The Series Passes are updated.
 	 */
 	public function update_passes_for_series( int $series_id ): void {
-		foreach ( tribe_tickets()->where( 'event', $series_id )->get_ids_generator() as $pass ) {
+		foreach ( tribe_tickets()->where( 'event', $series_id )->get_ids( true ) as $pass ) {
 			$this->update_pass( $pass );
 		}
 
@@ -675,6 +679,16 @@ class Series_Passes extends Controller {
 		$this->metabox->render_type_header();
 	}
 
+	/**
+	 * Filters the default Ticket type description in the context of Events part of a Series.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $description The default Ticket type description.
+	 * @param int    $post_id     The post ID the description is being rendered for.
+	 *
+	 * @return string The updated description.
+	 */
 	public function filter_ticket_type_default_header_description( string $description, int $post_id ): string {
 		if ( get_post_type( $post_id ) !== TEC::POSTTYPE ) {
 			return $description;
@@ -689,6 +703,16 @@ class Series_Passes extends Controller {
 		return $this->metabox->get_default_ticket_type_header_description( $post_id, $series->ID );
 	}
 
+	/**
+	 * Filters the post IDs used to fetch an Event attendees to include the Series the Event belongs to and,
+	 * thus, include Series Passes into the results.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|array<int> $post_id The post ID or IDs.
+	 *
+	 * @return int|array<int> The updated post ID or IDs.
+	 */
 	public function include_series_to_fetch_attendees( $post_id ): array {
 		$post_ids  = (array) $post_id;
 		$event_ids = array_filter( $post_ids, fn( int $id ) => get_post_type( $id ) === TEC::POSTTYPE );
@@ -697,7 +721,12 @@ class Series_Passes extends Controller {
 			return $post_id;
 		}
 
-		$series_ids = iterator_to_array( tec_series()->where( 'event_post_id', $event_ids )->get_ids_generator(), false );
+		$ids_generator = tec_series()->where( 'event_post_id', $event_ids )->get_ids( true );
+		$series_ids    = iterator_to_array( $ids_generator, false );
+
+		if ( ! count( $series_ids ) ) {
+			return $post_id;
+		}
 
 		return array_values( array_unique( array_merge( $post_ids, $series_ids ) ) );
 	}
