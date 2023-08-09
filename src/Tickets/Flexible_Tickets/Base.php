@@ -9,11 +9,14 @@
 
 namespace TEC\Tickets\Flexible_Tickets;
 
+use TEC\Common\Contracts\Container;
 use TEC\Common\Contracts\Provider\Controller;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 use TEC\Tickets\Admin\Editor_Data;
+use Tribe__Template as Template;
 use TEC\Tickets\Flexible_Tickets\Templates\Admin_Views;
-use Tribe\Tickets\Editor\Warnings;
+use Tribe__Events__Main as TEC;
+use WP_Post;
 
 /**
  * Class Base.
@@ -23,6 +26,27 @@ use Tribe\Tickets\Editor\Warnings;
  * @package TEC\Tickets\Flexible_Tickets;
  */
 class Base extends Controller {
+	/**
+	 * ${CARET}
+	 *
+	 * @since TBD
+	 *
+	 * @var Admin_Views
+	 */
+	private Admin_Views $admin_views;
+
+	/**
+	 * Base constructor.
+	 *
+	 * since TBD
+	 *
+	 * @param Container   $container   A reference to the Container.
+	 * @param Admin_Views $admin_views A reference to the Admin Views handler for Flexible Tickets.
+	 */
+	public function __construct( Container $container, Admin_Views $admin_views ) {
+		parent::__construct( $container );
+		$this->admin_views = $admin_views;
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -47,6 +71,25 @@ class Base extends Controller {
 			$editor_warnings,
 			'show_recurring_event_warning_message'
 		] );
+
+		// Filter the HTML template used to render Tickets on the front-end.
+		add_filter( 'tribe_template_pre_html:tickets/v2/tickets/items', [
+			$this,
+			'classic_editor_ticket_items'
+		], 10, 5 );
+
+		tribe_asset(
+			tribe( 'tickets.main' ),
+			'tec-tickets-flexible-tickets-style',
+			'flexible-tickets.css',
+			[],
+			null,
+			[
+				'groups' => [
+					'flexible-tickets',
+				],
+			],
+		);
 	}
 
 	/**
@@ -69,6 +112,11 @@ class Base extends Controller {
 			$editor_warnings,
 			'show_recurring_event_warning_message'
 		] );
+
+		remove_Filter( 'tribe_template_pre_html:tickets/v2/tickets/items', [
+			$this,
+			'classic_editor_ticket_items'
+		] );
 	}
 
 	/**
@@ -86,5 +134,45 @@ class Base extends Controller {
 		$enabled[ Series_Passes::TICKET_TYPE ] = true;
 
 		return $enabled;
+	}
+
+	/**
+	 * Provides an alternate Tickets form on the front-end when looking at an Event part of a Series.
+	 *
+	 * @since TBD
+	 *
+	 * @param string|null         $html          The HTML code as provided by the template, initially `null`.
+	 * @param string              $file          The file path to the template file, unused.
+	 * @param string|string[]     $name          The name of the template, or an array of name fragments, unused.
+	 * @param Template            $template      The template object, unused.
+	 * @param array<string,mixed> $local_context The context to render the template, it does not include the global
+	 *                                           context.
+	 *
+	 * @return string|null The alternate HTML code to use for rendering the Tickets form, if the current Event is part
+	 *                     of a Series.
+	 */
+	public function classic_editor_ticket_items( ?string $html, string $file, $name, Template $template, array $local_context ): ?string {
+		$context = $template->merge_context( $local_context, $file, $name );
+		$post_id = $context['post_id'] ?? 0;
+
+		if ( get_post_type( $post_id ) !== TEC::POSTTYPE ) {
+			// Not an Event, bail.
+			return $html;
+		}
+
+		$series = tec_series()->where( 'event_post_id', $post_id )->first_id();
+
+		if ( $series === null ) {
+			// Not part of a Series, bail.
+			return $html;
+		}
+
+		tribe_asset_enqueue( 'tec-tickets-flexible-tickets-style' );
+
+		$context['tickets_template'] = $template;
+		$context['series_permalink'] = get_post_permalink( $series );
+		$buffer                      = $this->admin_views->template( 'frontend/tickets/items', $context, false );
+
+		return $buffer;
 	}
 }
