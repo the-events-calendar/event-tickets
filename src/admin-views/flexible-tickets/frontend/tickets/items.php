@@ -82,7 +82,7 @@ foreach ( $ticket_types as $ticket_type => $data ) {
 	</div>
 
 	<?php
-	foreach ( $data['tickets'] as $ticket ) {
+	foreach ( $data['tickets'] as $key => $ticket ) {
 		$available_count = $ticket->available();
 
 		/**

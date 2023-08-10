@@ -960,4 +960,106 @@ class Series_PassesTest extends Controller_Test_Case {
 			tribe_attendees()->where( 'event__not_in', $series )->get_ids()
 		);
 	}
+
+	/**
+	 * It should filter Event cost to add cost of Series Passes
+	 *
+	 * @test
+	 */
+	public function should_filter_event_cost_to_add_cost_of_series_passes() {
+		$series                           = static::factory()->post->create( [ 'post_type' => Series_Post_Type::POSTTYPE ] );
+		$pass_1                           = $this->create_tc_series_pass( $series, 66 );
+		$pass_2                           = $this->create_tc_series_pass( $series, 99 );
+		$event_in_series_with_own_tickets = tribe_events()->set_args( [
+			'title'      => 'Event in Series with own Tickets',
+			'status'     => 'publish',
+			'start_date' => '2020-02-11 17:30:00',
+			'end_date'   => '2020-02-11 18:00:00',
+			'series'     => $series,
+		] )->create()->ID;
+		$ticket_1                         = $this->create_tc_ticket( $event_in_series_with_own_tickets, 23 );
+		add_post_meta( $event_in_series_with_own_tickets, '_EventCost', 23 );
+		$ticket_2 = $this->create_tc_ticket( $event_in_series_with_own_tickets, 89 );
+		add_post_meta( $event_in_series_with_own_tickets, '_EventCost', 89 );
+		$event_in_series_wo_tickets       = tribe_events()->set_args( [
+			'title'      => 'Event in Series without own Tickets',
+			'status'     => 'publish',
+			'start_date' => '2020-02-11 17:30:00',
+			'end_date'   => '2020-02-11 18:00:00',
+			'series'     => $series,
+		] )->create()->ID;
+		$event_not_in_series_with_tickets = tribe_events()->set_args( [
+			'title'      => 'Event not in Series',
+			'status'     => 'publish',
+			'start_date' => '2020-02-11 17:30:00',
+			'end_date'   => '2020-02-11 18:00:00',
+		] )->create()->ID;
+		$ticket_3                         = $this->create_tc_ticket( $event_not_in_series_with_tickets, 11 );
+		add_post_meta( $event_not_in_series_with_tickets, '_EventCost', 11 );
+		$ticket_4 = $this->create_tc_ticket( $event_not_in_series_with_tickets, 17 );
+		add_post_meta( $event_not_in_series_with_tickets, '_EventCost', 17 );
+		$event_not_in_series_wo_tickets = tribe_events()->set_args( [
+			'title'      => 'Event not in Series without own Tickets',
+			'status'     => 'publish',
+			'start_date' => '2020-02-11 17:30:00',
+			'end_date'   => '2020-02-11 18:00:00',
+		] )->create()->ID;
+
+		// Baseline: the controller is not filtering the costs.
+		$this->assertEqualSets(
+			[ '23', '89' ],
+			tribe_get_event_meta( $event_in_series_with_own_tickets, '_EventCost', false )
+		);
+		$this->assertEqualSets(
+			[ '11', '17' ],
+			tribe_get_event_meta( $event_not_in_series_with_tickets, '_EventCost', false )
+		);
+		$this->assertEqualSets(
+			[],
+			tribe_get_event_meta( $event_in_series_wo_tickets, '_EventCost', false )
+		);
+		$this->assertEqualSets(
+			[],
+			tribe_get_event_meta( $event_not_in_series_wo_tickets, '_EventCost', false )
+		);
+
+		// Build and register the controller.
+		$this->make_controller()->register();
+
+		// The controller is filtering the costs.
+		$this->assertEqualSets(
+			[ '23', '89', '66', '99' ],
+			tribe_get_event_meta( $event_in_series_with_own_tickets, '_EventCost', false )
+		);
+		$this->assertEqualSets(
+			[ '11', '17' ],
+			tribe_get_event_meta( $event_not_in_series_with_tickets, '_EventCost', false )
+		);
+		$this->assertEqualSets(
+			[ '66', '99' ],
+			tribe_get_event_meta( $event_in_series_wo_tickets, '_EventCost', false )
+		);
+		$this->assertEqualSets(
+			[],
+			tribe_get_event_meta( $event_not_in_series_wo_tickets, '_EventCost', false )
+		);
+
+		// Leave single meta values untouched.
+		$this->assertEquals(
+			'23',
+			tribe_get_event_meta( $event_in_series_with_own_tickets, '_EventCost', true )
+		);
+		$this->assertEquals(
+			'11',
+			tribe_get_event_meta( $event_not_in_series_with_tickets, '_EventCost', true )
+		);
+		$this->assertEquals(
+			'',
+			tribe_get_event_meta( $event_in_series_wo_tickets, '_EventCost', true )
+		);
+		$this->assertEquals(
+			'',
+			tribe_get_event_meta( $event_not_in_series_wo_tickets, '_EventCost', true )
+		);
+	}
 }

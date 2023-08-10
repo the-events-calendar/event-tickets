@@ -17,6 +17,7 @@ use TEC\Tickets\Flexible_Tickets\Series_Passes\Labels;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Meta;
 use Tribe__Events__Main as TEC;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
+use Tribe__Tickets__Tickets as Tickets;
 use WP_Post;
 
 /**
@@ -177,6 +178,7 @@ class Series_Passes extends Controller {
 			$this,
 			'include_series_to_fetch_attendees'
 		] );
+		add_filter( 'tribe_get_event_meta', [ $this, 'add_pass_costs_to_event_cost' ], 10, 4 );
 	}
 
 	/**
@@ -233,6 +235,7 @@ class Series_Passes extends Controller {
 		] );
 		remove_filter( 'tec_tickets_attendees_filter_by_event', [ $this, 'include_series_to_fetch_attendees' ] );
 		remove_filter( 'tec_tickets_attendees_filter_by_event_not_in', [ $this, 'include_series_to_fetch_attendees' ] );
+		remove_filter( 'tribe_get_event_meta', [ $this, 'add_pass_costs_to_event_cost' ] );
 	}
 
 	/**
@@ -729,5 +732,40 @@ class Series_Passes extends Controller {
 		}
 
 		return array_values( array_unique( array_merge( $post_ids, $series_ids ) ) );
+	}
+
+	/**
+	 * Filters the costs of an Event to include the costs of Series Passes if the Event is part of a Series.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed|null  $meta_value The meta value.
+	 * @param int         $post_id    The Event post ID.
+	 * @param string|null $meta_key   The meta key, or `null` if the current request is to fetch all meta.
+	 * @param bool        $single     Whether to return a single value.
+	 *
+	 * @return mixed The original meta value, or the updated meta value if the Event is part of a Series and the key
+	 *               is `_EventCost`.
+	 */
+	public function add_pass_costs_to_event_cost( $meta_value = null, $post_id = null, $meta_key = false, bool $single = true ) {
+		if ( $meta_key !== '_EventCost' || $single ) {
+			return $meta_value;
+		}
+
+		$series = tec_series()->where( 'event_post_id', $post_id )->first_id();
+
+		if ( $series === null ) {
+			return $meta_value;
+		}
+
+		$passes = Tickets::get_all_event_tickets( $series );
+
+		return array_merge(
+			(array) $meta_value,
+			array_map(
+				static fn( Ticket_Object $ticket ) => $ticket->price,
+				$passes
+			)
+		);
 	}
 }
