@@ -42,6 +42,8 @@ class Ticket_Cache_Test extends WPTestCase {
 	 */
 	public function should_fetch_ticket_from_cache_if_possible(): void {
 		$post_id   = static::factory()->post->create();
+		// Ensure the post ticket provider is PayPal.
+		update_post_meta( $post_id, '_tribe_default_ticket_provider', PayPal::class );
 		$ticket_id = $this->create_paypal_ticket( $post_id, 23 );
 
 		$this->assertEquals(
@@ -95,6 +97,8 @@ class Ticket_Cache_Test extends WPTestCase {
 	 */
 	public function should_flush_ticket_cache_when_ticket_is_saved(): void {
 		$post_id   = static::factory()->post->create();
+		// Ensure the post ticket provider is PayPal.
+		update_post_meta( $post_id, '_tribe_default_ticket_provider', PayPal::class );
 		$ticket_id = $this->create_paypal_ticket( $post_id, 23 );
 
 		$this->assertEquals(
@@ -145,6 +149,8 @@ class Ticket_Cache_Test extends WPTestCase {
 	 */
 	public function should_not_flush_the_ticket_cache_on_update_of_the_post_the_ticket_is_attached_to(): void {
 		$post_id   = static::factory()->post->create();
+		// Ensure the post ticket provider is PayPal.
+		update_post_meta( $post_id, '_tribe_default_ticket_provider', PayPal::class );
 		$ticket_id = $this->create_paypal_ticket( $post_id, 23 );
 
 		$this->assertEquals(
@@ -197,6 +203,8 @@ class Ticket_Cache_Test extends WPTestCase {
 	 */
 	public function should_flush_the_ticket_cache_on_post_cache_flush(): void {
 		$post_id   = static::factory()->post->create();
+		// Ensure the post ticket provider is PayPal.
+		update_post_meta( $post_id, '_tribe_default_ticket_provider', PayPal::class );
 		$ticket_id = $this->create_paypal_ticket( $post_id, 23 );
 
 		$this->assertEquals(
@@ -233,6 +241,8 @@ class Ticket_Cache_Test extends WPTestCase {
 	 */
 	public function should_flush_the_ticket_cache_on_post_trashing(): void {
 		$post_id   = static::factory()->post->create();
+		// Ensure the post ticket provider is PayPal.
+		update_post_meta( $post_id, '_tribe_default_ticket_provider', PayPal::class );
 		$ticket_id = $this->create_paypal_ticket( $post_id, 23 );
 
 		$this->assertEquals(
@@ -269,6 +279,8 @@ class Ticket_Cache_Test extends WPTestCase {
 	 */
 	public function should_flush_the_ticket_cache_on_post_deletion(): void {
 		$post_id   = static::factory()->post->create();
+		// Ensure the post ticket provider is PayPal.
+		update_post_meta( $post_id, '_tribe_default_ticket_provider', PayPal::class );
 		$ticket_id = $this->create_paypal_ticket( $post_id, 23 );
 
 		$this->assertEquals(
@@ -305,6 +317,8 @@ class Ticket_Cache_Test extends WPTestCase {
 	 */
 	public function should_only_cache_primitive_values(): void {
 		$post_id   = static::factory()->post->create();
+		// Ensure the post ticket provider is PayPal.
+		update_post_meta( $post_id, '_tribe_default_ticket_provider', PayPal::class );
 		$ticket_id = $this->create_paypal_ticket( $post_id, 23 );
 
 		$this->assertEquals(
@@ -347,6 +361,8 @@ class Ticket_Cache_Test extends WPTestCase {
 	 */
 	public function should_invalidate_the_ticket_cache_when_its_meta_is_added_updated_deleted(): void {
 		$post_id   = static::factory()->post->create();
+		// Ensure the post ticket provider is PayPal.
+		update_post_meta( $post_id, '_tribe_default_ticket_provider', PayPal::class );
 		$ticket_id = $this->create_paypal_ticket( $post_id, 23 );
 
 		$this->assertEquals(
@@ -417,6 +433,8 @@ class Ticket_Cache_Test extends WPTestCase {
 	 */
 	public function should_invalidate_the_cache_when_an_order_for_the_ticket_is_created_updated_deleted(): void {
 		$post_id   = static::factory()->post->create();
+		// Ensure the post ticket provider is PayPal.
+		update_post_meta( $post_id, '_tribe_default_ticket_provider', PayPal::class );
 		$ticket_id = $this->create_paypal_ticket( $post_id, 23 );
 		$ticket    = tribe( PayPal::class );
 
