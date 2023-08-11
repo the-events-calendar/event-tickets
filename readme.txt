@@ -193,6 +193,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.6.4] TBD =
 
+* Fix - Fixed translation issues with translating month names in other languages while displaying ticket available message. [ET-1820]
 * Fix - Ensure the Attendees page displays correctly when accessed through the Events Manager. [ECP-1527]
 * Tweak - The Attendee Registration page will now display properly when using Divi with dynamic CSS enabled. [ETP-864]
 * Tweak - Include Event/Post title alongside Ticket name on PayPal order notification emails. [ET-1770]
