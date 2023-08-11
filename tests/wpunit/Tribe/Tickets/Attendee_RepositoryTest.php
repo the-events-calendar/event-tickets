@@ -2,12 +2,29 @@
 
 namespace Tribe\Tickets;
 
+use TEC\Tickets\Commerce\Module as Commerce;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker as Commerce_Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 
 class Attendee_RepositoryTest extends \Codeception\TestCase\WPTestCase {
 	use Commerce_Ticket_Maker;
 	use Attendee_Maker;
+
+	/**
+	 * Low-level registration of the Commerce provider. There is no need for a full-blown registration
+	 * at this stage: having the module as active and as a valid provider is enough.
+	 *
+	 * @before
+	 */
+	public function activate_commerce_tickets(): void {
+		add_filter( 'tribe_tickets_get_modules', static function ( array $modules ): array {
+			$modules[ Commerce::class ] = 'Commerce';
+
+			return $modules;
+		} );
+		// Regenerate the Tickets Data API to pick up the filtered providers.
+		tribe()->singleton( 'tickets.data_api', new \Tribe__Tickets__Data_API() );
+	}
 
 	/**
 	 * It should allow filtering attendees by event
