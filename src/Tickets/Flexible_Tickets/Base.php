@@ -72,6 +72,13 @@ class Base extends Controller {
 			'show_recurring_event_warning_message'
 		] );
 
+		// Prevent the "New Ticket" and "New RSVP" buttons from being shown on the editor for recurring events.
+		$post_type = TEC::POSTTYPE;
+		add_filter( "tec_tickets_enabled_ticket_forms_{$post_type}", [
+			$this,
+			'disable_tickets_on_recurring_events'
+		], 10, 2 );
+
 		// Filter the HTML template used to render Tickets on the front-end.
 		add_filter( 'tribe_template_pre_html:tickets/v2/tickets/items', [
 			$this,
@@ -116,6 +123,12 @@ class Base extends Controller {
 		remove_Filter( 'tribe_template_pre_html:tickets/v2/tickets/items', [
 			$this,
 			'classic_editor_ticket_items'
+		] );
+
+		$post_type = TEC::POSTTYPE;
+		remove_filter( "tec_tickets_enabled_ticket_forms_{$post_type}", [
+			$this,
+			'disable_tickets_on_recurring_events'
 		] );
 	}
 
@@ -174,5 +187,24 @@ class Base extends Controller {
 		$buffer                      = $this->admin_views->template( 'frontend/tickets/items', $context, false );
 
 		return $buffer;
+	}
+
+	/**
+	 * Disables Tickets and RSVPs on recurring events.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,bool> $enabled The default enabled forms, a map from ticket types to their enabled status.
+	 * @param int                $post_id The ID of the Event being checked.
+	 *
+	 * @return array<string,bool> The updated enabled forms.
+	 */
+	public function disable_tickets_on_recurring_events( array $enabled, int $post_id ): array {
+		if ( tribe_is_recurring_event( $post_id ) ) {
+			$enabled['default'] = false;
+			$enabled['rsvp']    = false;
+		}
+
+		return $enabled;
 	}
 }

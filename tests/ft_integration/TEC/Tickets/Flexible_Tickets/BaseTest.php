@@ -4,6 +4,7 @@ namespace TEC\Tickets\Flexible_Tickets;
 
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
+use TEC\Events_Pro\Custom_Tables\V1\Events\Recurrence;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 use TEC\Tickets\Commerce\Tickets_View;
 use TEC\Tickets\Flexible_Tickets\Test\Traits\Series_Pass_Factory;
@@ -162,5 +163,64 @@ class BaseTest extends Controller_Test_Case {
 		);
 
 		$this->assertMatchesHtmlSnapshot( $html );
+	}
+
+	/**
+	 * It should disable tickets and RSVPs for recurring event
+	 *
+	 * @test
+	 */
+	public function should_disable_tickets_and_rsvps_for_recurring_event(): void {
+		$recurrence      = ( new Recurrence() )
+			->with_start_date( '2020-01-01 00:00:00' )
+			->with_end_date( '2020-01-01 10:00:00' )
+			->with_weekly_recurrence()
+			->with_end_after( 3 )
+			->to_event_recurrence();
+		$recurring_event = tribe_events()->set_args( [
+			'title'      => 'Single Event',
+			'status'     => 'publish',
+			'start_date' => '2020-01-01 00:00:00',
+			'end_date'   => '2020-01-01 10:00:00',
+			'recurrence' => $recurrence
+		] )->create();
+
+		$controller = $this->make_controller();
+
+		$filtered = $controller->disable_tickets_on_recurring_events( [
+			'default' => true,
+			'rsvp'    => true,
+		], $recurring_event->ID );
+
+		$this->assertEqualSets( [
+			'default' => false,
+			'rsvp'    => false,
+		], $filtered );
+	}
+
+	/**
+	 * It should not disable tickets and RSVPs for single event
+	 *
+	 * @test
+	 */
+	public function should_not_disable_tickets_and_rsvps_for_single_event(): void {
+		$single_event = tribe_events()->set_args( [
+			'title'      => 'Single Event',
+			'status'     => 'publish',
+			'start_date' => '2020-01-01 00:00:00',
+			'end_date'   => '2020-01-01 10:00:00',
+		] )->create();
+
+		$controller = $this->make_controller();
+
+		$filtered = $controller->disable_tickets_on_recurring_events( [
+			'default' => true,
+			'rsvp'    => true,
+		], $single_event->ID );
+
+		$this->assertEqualSets( [
+			'default' => true,
+			'rsvp'    => true,
+		], $filtered );
 	}
 }

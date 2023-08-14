@@ -5,6 +5,8 @@
 
 namespace Tribe\Tickets\Editor;
 
+use Tribe__Events__Main as TEC;
+
 /**
  * Warnings handling class.
  *
@@ -32,7 +34,7 @@ class Warnings {
 	 * @param int $post_id Post ID.
 	 */
 	public function show_recurring_event_warning_message( $post_id ) {
-		if ( ! class_exists( 'Tribe__Events__Pro__Main' ) || ! class_exists( 'Tribe__Events__Main' ) ) {
+		if ( ! class_exists( 'Tribe__Events__Pro__Main' ) || ! class_exists( TEC::class ) ) {
 			return;
 		}
 
@@ -40,7 +42,7 @@ class Warnings {
 			return;
 		}
 
-		if ( \Tribe__Events__Main::POSTTYPE != get_post_type( $post_id ) && ! tribe_is_frontend() ) {
+		if ( TEC::POSTTYPE != get_post_type( $post_id ) && ! tribe_is_frontend() ) {
 			return;
 		}
 
