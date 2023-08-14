@@ -313,6 +313,13 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 			return $validate_status;
 		}
 
+		// validate if trying to update the check_in data.
+		if ( ! empty( $updated_data['check_in'] ) ) {
+			$validate_check_in = $this->validate_check_in( $attendee, $updated_data['check_in'] );
+			if ( is_wp_error( $validate_check_in ) ) {
+				return $validate_check_in;
+			}
+		}
 		/**
 		 * Filter REST API attendee data before creating an attendee.
 		 *
@@ -371,5 +378,32 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 	 */
 	public function validate_user_permission() {
 		return tribe( 'tickets.rest-v1.main' )->request_has_manage_access();
+	}
+
+	/**
+	 * Validate whether the check_in value is valid for this attendee.
+	 *
+	 * @since TBD
+	 *
+	 * @param $attendee array Attendee data.
+	 * @param $check_in bool Check in value.
+	 *
+	 * @return bool|WP_Error
+	 */
+	public function validate_check_in( $attendee, $check_in ) {
+
+		if ( ! tribe_is_truthy( $check_in ) ) {
+			return true;
+		}
+
+		$provider = tribe_tickets_get_ticket_provider( $attendee['ticket_id'] );
+		/** @var Tribe__Tickets__Status__Manager $status */
+		$status = tribe( 'tickets.status' );
+		$complete_statuses = (array) $status->get_completed_status_by_provider_name( $provider );
+		if ( ! in_array( $attendee['order_status'], $complete_statuses, true ) ) {
+			return new WP_Error( 'invalid-check-in', __( 'Attendee Order status is not authorized for check-in.', 'event-tickets' ), [ 'status' => 400 ] );
+		}
+
+		return $check_in;
 	}
 }
