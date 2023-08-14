@@ -557,6 +557,8 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			}
 		}
 
+		// set a status for tc only, that fetches the wp_slug from the given slugs in $statuses array.
+
 		// Allow the user to define singular statuses or the meta-status "public"
 		if ( in_array( 'public', $statuses, true ) ) {
 			$statuses = array_unique( array_merge( $statuses, self::$public_order_statuses ) );
@@ -599,6 +601,14 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 				AND order_status_meta.meta_value {$value_operator} {$value_clause}
 			)
 		";
+
+
+		$this->filter_query->join( "LEFT JOIN {$wpdb->posts} tc_order_status ON (
+		 {$wpdb->posts}.post_parent = tc_order_status.ID
+		  AND tc_order_status.post_type = 'tec_tc_order'
+		  AND tc_order_status.post_status IN ( 'tec-tc-completed' ) )" );
+
+		$et_where_clause .= " OR {$wpdb->posts}.post_parent IN ( tc_order_status.ID )";
 
 		// Allow extending classes to alter the JOIN and WHERE clauses.
 		$this->filter_by_order_status_where( $et_where_clause, $value_operator, $value_clause );
