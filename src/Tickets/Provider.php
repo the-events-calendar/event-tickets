@@ -27,7 +27,7 @@ class Provider extends Service_Provider {
 	/**
 	 * Binds and sets up implementations.
 	 *
-	 * @since TBD   Use `register_on_action` method to register custom table providers.
+	 * @since 5.6.4   Use `register_on_action` method to register custom table providers.
 	 * @since 5.5.0
 	 * @since 5.1.6
 	 */

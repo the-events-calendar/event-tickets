@@ -150,7 +150,7 @@ class Tribe__Tickets__Attendees {
 	/**
 	 * Returns the full URL to the attendees report page.
 	 *
-	 * @since TBD - tec_tickets_filter_event_id filter to normalize the $post_id.
+	 * @since 5.6.4 - tec_tickets_filter_event_id filter to normalize the $post_id.
 	 * @since 4.6.2
 	 *
 	 * @param WP_Post $post
@@ -161,7 +161,7 @@ class Tribe__Tickets__Attendees {
 		/**
 		 * This filter allows retrieval of an event ID to be filtered before being accessed elsewhere.
 		 *
-		 * @since TBD
+		 * @since 5.6.4
 		 *
 		 * @param int|null The event ID to be filtered.
 		 */
