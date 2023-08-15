@@ -3319,14 +3319,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 					}
 
 					$date_format = tribe_get_date_format( true );
-					$start_sale_date = Tribe__Date_Utils::reformat( $start_sale_date, $date_format );
+					$start_sale_date = Tribe__Date_Utils::build_date_object( $start_sale_date )->format_i18n( $date_format );
 
 					$message = esc_html( sprintf( __( '%s will be available on ', 'event-tickets' ), tribe_get_ticket_label_plural( 'unavailable_future_display_date' ) ) );
 					$message .= $start_sale_date;
 
 					if ( $display_time ) {
 						$time_format = tribe_get_time_format();
-						$start_sale_time = Tribe__Date_Utils::reformat( $start_sale_time, $time_format );
+						$start_sale_time = Tribe__Date_Utils::build_date_object( $start_sale_time )->format_i18n( $time_format );
 						$message .= __( ' at ', 'event_tickets' ) . $start_sale_time;
 					}
 				} else {

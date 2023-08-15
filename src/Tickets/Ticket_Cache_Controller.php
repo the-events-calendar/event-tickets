@@ -2,7 +2,7 @@
 /**
  * Handles the caching of Ticket objects.
  *
- * @since   TBD
+ * @since   5.6.4
  *
  * @package TEC\Tickets;
  */
@@ -22,7 +22,7 @@ use WP_Post;
 /**
  * Class Ticket_Cache_Controller.
  *
- * @since   TBD
+ * @since   5.6.4
  *
  * @package TEC\Tickets;
  */
@@ -30,7 +30,7 @@ class Ticket_Cache_Controller extends Controller {
 	/**
 	 * The action to fire when the provider is registered.
 	 *
-	 * @since TBD
+	 * @since 5.6.4
 	 *
 	 * @var string
 	 */
@@ -39,7 +39,7 @@ class Ticket_Cache_Controller extends Controller {
 	/**
 	 * Hooks the Cache Controller to the appropriate actions.
 	 *
-	 * @since TBD
+	 * @since 5.6.4
 	 *
 	 * @return void The Cache Controller is hooked to the appropriate actions.
 	 */
@@ -61,7 +61,7 @@ class Ticket_Cache_Controller extends Controller {
 	/**
 	 * Unregister the cache controller.
 	 *
-	 * @since TBD
+	 * @since 5.6.4
 	 *
 	 * @return void The cache controller is unregistered.
 	 */
@@ -80,7 +80,7 @@ class Ticket_Cache_Controller extends Controller {
 	 *
 	 * The ticket cache will be rehydrated on the next request for the Ticket.
 	 *
-	 * @since TBD
+	 * @since 5.6.4
 	 *
 	 * @param int    $post_id The ID of the Post the ticket is attached to, unused by this method.
 	 * @param Ticket $ticket  The Ticket object that was saved.
@@ -98,7 +98,7 @@ class Ticket_Cache_Controller extends Controller {
 	/**
 	 * Clean the ticket cache when the post cache is cleaned.
 	 *
-	 * @since TBD
+	 * @since 5.6.4
 	 *
 	 * @param int $post_id The ID of the Ticket post.
 	 *
@@ -116,7 +116,7 @@ class Ticket_Cache_Controller extends Controller {
 	/**
 	 * Fetches the ticket IDs from a PayPal order.
 	 *
-	 * @since TBD
+	 * @since 5.6.4
 	 *
 	 * @param int $order_id The ID of the PayPal order.
 	 *
@@ -135,7 +135,7 @@ class Ticket_Cache_Controller extends Controller {
 	/**
 	 * Clean the ticket cache when a related post is created, updated or deleted.
 	 *
-	 * @since TBD
+	 * @since 5.6.4
 	 *
 	 * @param int     $post_id The ID of the post being deleted.
 	 * @param WP_Post $post    The post object being deleted.
@@ -166,7 +166,7 @@ class Ticket_Cache_Controller extends Controller {
 		 * Filter the map from post types to the meta key used to store the related ticket IDs for the
 		 * purpose of cache invalidation or the callable used to retrieve the ticket IDs.
 		 *
-		 * @since TBD
+		 * @since 5.6.4
 		 *
 		 * @param array<string,string|callable> $ticket_related_post_types The map from post types to the meta key used
 		 *                                                                 to store the related ticket IDs. If the value
@@ -200,7 +200,7 @@ class Ticket_Cache_Controller extends Controller {
 	/**
 	 * Clean the ticket cache when one of its meta fields is added, updated or deleted.
 	 *
-	 * @since TBD
+	 * @since 5.6.4
 	 *
 	 * @param int $object_id The ID of the object the meta data is attached to.
 	 *
@@ -223,7 +223,7 @@ class Ticket_Cache_Controller extends Controller {
 		 * Filter the list of post types that are considered to be tickets for the purpose of cache
 		 * invalidation.
 		 *
-		 * @since TBD
+		 * @since 5.6.4
 		 *
 		 * @param array<string> $ticket_post_types The list of post types that are considered to be tickets.
 		 */
@@ -237,7 +237,7 @@ class Ticket_Cache_Controller extends Controller {
 	/**
 	 * Clean the ticket cache when one of its meta fields is deleted or updated.
 	 *
-	 * @since TBD
+	 * @since 5.6.4
 	 *
 	 * @param int|array<int> $meta_ids  The ID(s) of the meta data being deleted; unused by this method.
 	 * @param int            $object_id The ID of the object the meta data is attached to.

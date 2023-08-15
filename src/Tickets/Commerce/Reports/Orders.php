@@ -68,7 +68,7 @@ class Orders extends Report_Abstract {
 	/**
 	 * Links to sales report for all tickets in Tickets Commerce for this event.
 	 *
-	 * @since TBD - tec_tickets_filter_event_id filter to normalize the $post_id.
+	 * @since 5.6.4 - tec_tickets_filter_event_id filter to normalize the $post_id.
 	 * @since 5.2.0
 	 *
 	 * @param int  $event_id
@@ -87,7 +87,7 @@ class Orders extends Report_Abstract {
 		/**
 		 * This filter allows retrieval of an event ID to be filtered before being accessed elsewhere.
 		 *
-		 * @since TBD
+		 * @since 5.6.4
 		 *
 		 * @param int|null The event ID to be filtered.
 		 */

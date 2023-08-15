@@ -12,7 +12,7 @@
  * @version 5.5.11
  *
  * @since 5.5.11
- * @since TBD    Capitalize payment gateway name.
+ * @since 5.6.4    Capitalize payment gateway name.
  *
  * @var Tribe__Template                    $this               Current template object.
  * @var \TEC\Tickets\Emails\Email_Abstract $email              The email object.

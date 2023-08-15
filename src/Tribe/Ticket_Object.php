@@ -262,7 +262,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * Tribe__Tickets__Ticket_Object constructor.
 		 *
-		 * since TBD
+		 * since 5.6.4
 		 *
 		 * @param array<string,mixed>|null $data The data to populate the object with, if any.
 		 */
@@ -1206,7 +1206,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * Dumps the Ticket Object into an array.
 		 *
-		 * @since TBD
+		 * @since 5.6.4
 		 *
 		 * @return array<string,mixed> The Ticket Object in array format.
 		 */
