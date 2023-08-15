@@ -602,11 +602,19 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			)
 		";
 
+		// filter $statuses to only get proper TC status slugs.
+		$tc_order_statuses = array_filter( array_map( function( $status ) {
+			$status_obj = tribe( \TEC\Tickets\Commerce\Status\Status_Handler::class )->get_by_slug( $status );
+			return $status_obj ? $status_obj->get_wp_slug() : '';
+		}, $statuses ) );
+
+
+		$tc_order_statuses = "( '" . implode( "','", array_map( [ $wpdb, '_escape' ], $tc_order_statuses ) ) . "' )";
 
 		$this->filter_query->join( "LEFT JOIN {$wpdb->posts} tc_order_status ON (
 		 {$wpdb->posts}.post_parent = tc_order_status.ID
 		  AND tc_order_status.post_type = 'tec_tc_order'
-		  AND tc_order_status.post_status IN ( 'tec-tc-completed' ) )" );
+		  AND tc_order_status.post_status IN {$tc_order_statuses} )" );
 
 		$et_where_clause .= " OR {$wpdb->posts}.post_parent IN ( tc_order_status.ID )";
 
