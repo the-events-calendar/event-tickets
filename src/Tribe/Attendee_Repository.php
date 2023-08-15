@@ -608,12 +608,12 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			return $status_obj ? $status_obj->get_wp_slug() : '';
 		}, $statuses ) );
 
-
-		$tc_order_statuses = "( '" . implode( "','", array_map( [ $wpdb, '_escape' ], $tc_order_statuses ) ) . "' )";
+		$tc_order_statuses  = "( '" . implode( "','", array_map( [ $wpdb, '_escape' ], $tc_order_statuses ) ) . "' )";
+		$tc_order_post_type = \TEC\Tickets\Commerce\Order::POSTTYPE;
 
 		$this->filter_query->join( "LEFT JOIN {$wpdb->posts} tc_order_status ON (
 		 {$wpdb->posts}.post_parent = tc_order_status.ID
-		  AND tc_order_status.post_type = 'tec_tc_order'
+		  AND tc_order_status.post_type = '{$tc_order_post_type}'
 		  AND tc_order_status.post_status IN {$tc_order_statuses} )" );
 
 		$et_where_clause .= " OR {$wpdb->posts}.post_parent IN ( tc_order_status.ID )";
