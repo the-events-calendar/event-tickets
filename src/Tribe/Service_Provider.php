@@ -16,7 +16,7 @@ class Tribe__Tickets__Service_Provider extends \TEC\Common\Contracts\Service_Pro
 	/**
 	 * Binds and sets up implementations.
 	 *
-	 * @since TBD Added `register_on_action` for `tec_events_custom_tables_v1_fully_activated` to activate ET CT1 logic when TEC CT1 is fully activated.
+	 * @since 5.6.4 Added `register_on_action` for `tec_events_custom_tables_v1_fully_activated` to activate ET CT1 logic when TEC CT1 is fully activated.
 	 * @since 4.6
 	 */
 	public function register() {

@@ -3,7 +3,7 @@
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, GeoffBel, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra
 Tags: tickets, registration, event registration, RSVP, ticket sales, attendee management
 Requires at least: 5.8.5
-Tested up to: 6.2.2
+Tested up to: 6.3.0
 Stable tag: 5.6.4
 Requires PHP: 7.4
 License: GPLv2 or later
@@ -191,7 +191,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.6.4] TBD =
+= [5.6.4] 2023-08-16 =
 
 * Fix - Fixed translation issues with translating month names in other languages while displaying ticket available message. [ET-1820]
 * Fix - Ensure the Attendees page displays correctly when accessed through the Events Manager. [ECP-1527]
@@ -206,6 +206,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Footer links in Tickets Emails template using the wrong color. [ET-1784]
 * Tweak - Capitalize payment provider names in Tickets Emails. [ET-1776]
 * Fix - Removal of double-escaped characters in Tickets Emails sender's name. [ET-1777]
+* Language - 2 new strings added, 89 updated, 0 fuzzied, and 0 obsoleted
 
 = [5.6.3] 2023-07-18 =
 

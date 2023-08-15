@@ -6,7 +6,7 @@
  *
  * @since   5.1.10
  * @since   5.3.0 Using generic CSS classes for gateway instead of PayPal.
- * @since   TBD   Move signup link into its own partial and add non-ssl notice.
+ * @since   5.6.4   Move signup link into its own partial and add non-ssl notice.
  *
  * @var Tribe__Tickets__Admin__Views                  $this                  [Global] Template object.
  * @var string                                        $plugin_url            [Global] The plugin URL.

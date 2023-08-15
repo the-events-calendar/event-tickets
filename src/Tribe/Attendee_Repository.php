@@ -520,7 +520,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	/**
 	 * Applies the WHERE and JOIN clauses to filter Attendees by a specific order status.
 	 *
-	 * @since TBD
+	 * @since 5.6.4
 	 *
 	 * @param string $where_clause   The WHERE clause to apply.
 	 * @param string $value_operator The operator to use for the value clause.
@@ -534,7 +534,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 * Filters attendee to only get those related to orders with a specific status.
 	 *
 	 * @since 4.8
-	 * @since TBD Refactored the logic to remove Event Tickets Plus logic.
+	 * @since 5.6.4 Refactored the logic to remove Event Tickets Plus logic.
 	 *
 	 * @throws Tribe__Repository__Void_Query_Exception If the requested statuses are not accessible by the user.
 	 *
@@ -678,7 +678,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 * Filters attendees depending on their checkedin status.
 	 *
 	 * @since 4.8
-	 * @since TBD Refactored the logic to use `Tribe__Repository__Query_Filters::meta_not` on `false`.
+	 * @since 5.6.4 Refactored the logic to use `Tribe__Repository__Query_Filters::meta_not` on `false`.
 	 *
 	 * @param bool $checkedin
 	 *

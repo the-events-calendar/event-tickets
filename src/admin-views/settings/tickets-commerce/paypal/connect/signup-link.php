@@ -2,9 +2,9 @@
 /**
  * The Template for displaying the Tickets Commerce PayPal Settings signup link.
  *
- * @version TBD
+ * @version 5.6.4
  *
- * @since TBD
+ * @since 5.6.4
  *
  * @var Tribe__Tickets__Admin__Views                  $this                  [Global] Template object.
  * @var string                                        $plugin_url            [Global] The plugin URL.
