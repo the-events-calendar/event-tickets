@@ -14,6 +14,7 @@ use TEC\Tickets\Flexible_Tickets\CT1_Migration\CT1_Migration_Checks;
 use TEC\Tickets\Flexible_Tickets\Series_Passes;
 use Tribe__Tickets__Main as Tickets_Main;
 use Tribe__Tickets__Tickets as Tickets;
+use Tribe__Tickets__Global_Stock as Global_Stock;
 
 /**
  * Trait Ticketed_Recurring_Event_Strategy_Trait.
@@ -145,5 +146,33 @@ trait Ticketed_Recurring_Event_Strategy_Trait {
 			$ticket_provider = Tickets::get_default_module();
 		}
 		update_post_meta( $series_id, $meta_key, str_replace( '\\', '\\\\', $ticket_provider ) );
+	}
+
+	/**
+	 * Sets the meta related to global capacity for the given Series using the one set for the Event.
+	 *
+	 * This method is non-destructive by design: the Event meta will not be removed.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $series_id The ID of the Series.
+	 */
+	protected function set_global_capacity( int $series_id ): void {
+		foreach (
+			[
+				tribe( 'tickets.handler' )->key_capacity,
+				Global_Stock::GLOBAL_STOCK_ENABLED,
+				Global_Stock::GLOBAL_STOCK_LEVEL,
+			] as $meta_key
+		) {
+			$meta_value = get_post_meta( $this->post_id, $meta_key, true );
+
+			if ( $meta_value === '' ) {
+				// No need to set if not set on the event to begin with.
+				return;
+			}
+
+			update_post_meta( $series_id, $meta_key, $meta_value );
+		}
 	}
 }
