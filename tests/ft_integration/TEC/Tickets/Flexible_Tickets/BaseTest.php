@@ -30,6 +30,7 @@ class BaseTest extends Controller_Test_Case {
 		$ticketable_post_types[] = 'post';
 		$ticketable_post_types[] = TEC::POSTTYPE;
 		$ticketable_post_types[] = Series_Post_Type::POSTTYPE;
+		$ticketable_post_types   = array_values( array_unique( $ticketable_post_types ) );
 		tribe_update_option( 'ticket-enabled-post-types', $ticketable_post_types );
 	}
 
@@ -362,5 +363,39 @@ class BaseTest extends Controller_Test_Case {
 
 		$notice = $notices->get( $notice_slug );
 		$this->assertNull( $notice, 'When the controller is registered no notice should ever show.' );
+	}
+
+	/**
+	 * It should mark series as ticketables when registering
+	 *
+	 * @test
+	 */
+	public function should_mark_series_as_ticketables_when_registering(): void {
+		// Start a request with Series not ticketable.
+		$option_name           = 'ticket-enabled-post-types';
+		$cpt                   = Series_Post_Type::POSTTYPE;
+		$ticketable_post_types = (array) tribe_get_option( $option_name, [] );
+		if ( ( $index = array_search( $cpt, $ticketable_post_types, true ) ) !== false ) {
+			unset( $ticketable_post_types[ $index ] );
+		}
+		tribe_update_option( $option_name, $ticketable_post_types );
+
+		// Sanity check.
+		$index = array_search( $cpt, (array) tribe_get_option( $option_name, [] ), true );
+		$this->assertFalse( $index );
+
+		// Build and register the controller.
+		$controller = $this->make_controller();
+		$controller->register();
+
+		// Check that Series is ticketable.
+		$index = array_search( $cpt, (array) tribe_get_option( $option_name, [] ), true );
+		$this->assertNotFalse( $index );
+
+		$controller->unregister();
+
+		// Check that Series is not ticketable.
+		$index = array_search( $cpt, (array) tribe_get_option( $option_name, [] ), true );
+		$this->assertFalse( $index );
 	}
 }

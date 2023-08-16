@@ -98,12 +98,14 @@ class Base extends Controller {
 			],
 		);
 
-		// Do not display the admin notice about recurring events and tickets.
+		// Remove the warning about Tickets added to a Recurring Event.
 		$ticket_admin_notices = tribe( 'tickets.admin.notices' );
 		remove_action( 'admin_init', [
 			$ticket_admin_notices,
 			'maybe_display_classic_editor_ecp_recurring_tickets_notice'
 		] );
+
+		$this->series_are_ticketable();
 	}
 
 	/**
@@ -120,7 +122,7 @@ class Base extends Controller {
 			'enable_ticket_forms_for_series'
 		] );
 
-		// Remove the warnings about Recurring Events and Tickets not being supported.
+		// Restore the warnings about Recurring Events and Tickets not being supported.
 		$editor_warnings = tribe( 'tickets.editor.warnings' );
 		add_action( 'tribe_events_tickets_new_ticket_warnings', [
 			$editor_warnings,
@@ -138,11 +140,15 @@ class Base extends Controller {
 			'disable_tickets_on_recurring_events'
 		] );
 
+		// Restore the warning about Tickets added to a Recurring Event.
 		$ticket_admin_notices = tribe( 'tickets.admin.notices' );
 		add_action( 'admin_init', [
 			$ticket_admin_notices,
 			'maybe_display_classic_editor_ecp_recurring_tickets_notice'
 		] );
+
+		// Remove Series from the list of ticketable post types.
+		$this->series_are_ticketable( false );
 	}
 
 	/**
@@ -219,5 +225,25 @@ class Base extends Controller {
 		}
 
 		return $enabled;
+	}
+
+	private function series_are_ticketable( bool $ticketable = true ): void {
+		$ticketable_post_types = (array) tribe_get_option( 'ticket-enabled-post-types', [] );
+
+		if ( $ticketable ) {
+			$ticketable_post_types[] = Series_Post_Type::POSTTYPE;
+			$ticketable_post_types   = array_values( array_unique( $ticketable_post_types ) );
+			tribe_update_option( 'ticket-enabled-post-types', $ticketable_post_types );
+
+			return;
+		}
+
+		$index = array_search( Series_Post_Type::POSTTYPE, $ticketable_post_types, true );
+
+		if ( $index !== false ) {
+			unset( $ticketable_post_types[ $index ] );
+			$ticketable_post_types = array_values( $ticketable_post_types );
+			tribe_update_option( 'ticket-enabled-post-types', $ticketable_post_types );
+		}
 	}
 }
