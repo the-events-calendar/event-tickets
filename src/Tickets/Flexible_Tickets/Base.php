@@ -97,6 +97,13 @@ class Base extends Controller {
 				],
 			],
 		);
+
+		// Do not display the admin notice about recurring events and tickets.
+		$ticket_admin_notices = tribe( 'tickets.admin.notices' );
+		remove_action( 'admin_init', [
+			$ticket_admin_notices,
+			'maybe_display_classic_editor_ecp_recurring_tickets_notice'
+		] );
 	}
 
 	/**
@@ -129,6 +136,12 @@ class Base extends Controller {
 		remove_filter( "tec_tickets_enabled_ticket_forms_{$post_type}", [
 			$this,
 			'disable_tickets_on_recurring_events'
+		] );
+
+		$ticket_admin_notices = tribe( 'tickets.admin.notices' );
+		add_action( 'admin_init', [
+			$ticket_admin_notices,
+			'maybe_display_classic_editor_ecp_recurring_tickets_notice'
 		] );
 	}
 

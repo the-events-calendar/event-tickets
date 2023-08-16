@@ -2,14 +2,18 @@
 
 namespace TEC\Tickets\Flexible_Tickets;
 
+use Closure;
+use Generator;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
+use TEC\Events\Custom_Tables\V1\Models\Occurrence;
 use TEC\Events_Pro\Custom_Tables\V1\Events\Recurrence;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 use TEC\Tickets\Commerce\Tickets_View;
 use TEC\Tickets\Flexible_Tickets\Test\Traits\Series_Pass_Factory;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe__Events__Main as TEC;
+use Tribe__Admin__Notices as Notices;
 
 class BaseTest extends Controller_Test_Case {
 	use SnapshotAssertions;
@@ -222,5 +226,141 @@ class BaseTest extends Controller_Test_Case {
 			'default' => true,
 			'rsvp'    => true,
 		], $filtered );
+	}
+
+	public function recurring_events_and_tickets_admin_notices_provider(): Generator {
+		yield 'single event' => [
+			function () {
+				$event = tribe_events()->set_args( [
+					'title'      => 'Single Event',
+					'status'     => 'publish',
+					'start_date' => '2020-01-01 00:00:00',
+					'end_date'   => '2020-01-01 10:00:00',
+				] )->create()->ID;
+
+				return [ $event, null, false ];
+			}
+		];
+
+		yield 'single event with tickets' => [
+			function () {
+				$event     = tribe_events()->set_args( [
+					'title'      => 'Single Event',
+					'status'     => 'publish',
+					'start_date' => '2020-01-01 00:00:00',
+					'end_date'   => '2020-01-01 10:00:00',
+				] )->create()->ID;
+				$ticket_id = $this->create_tc_ticket( $event );
+
+				return [ $event, $ticket_id, false ];
+			}
+		];
+
+		yield 'recurring event' => [
+			function () {
+				$event = tribe_events()->set_args( [
+					'title'      => 'Recurring Event',
+					'status'     => 'publish',
+					'start_date' => '2020-01-01 00:00:00',
+					'end_date'   => '2020-01-01 10:00:00',
+					'recurrence' => 'RRULE:FREQ=WEEKLY;COUNT=3',
+				] )->create()->ID;
+
+				return [ $event, null, false ];
+			}
+		];
+
+		yield 'recurring event with tickets' => [
+			function () {
+				$event     = tribe_events()->set_args( [
+					'title'      => 'Recurring Event',
+					'status'     => 'publish',
+					'start_date' => '2020-01-01 00:00:00',
+					'end_date'   => '2020-01-01 10:00:00',
+					'recurrence' => 'RRULE:FREQ=WEEKLY;COUNT=3',
+				] )->create()->ID;
+				$ticket_id = $this->create_tc_ticket( $event );
+
+				return [ $event, $ticket_id, true ];
+			}
+		];
+
+		yield 'recurring event occurrence' => [
+			function () {
+				$event = tribe_events()->set_args( [
+					'title'      => 'Recurring Event',
+					'status'     => 'publish',
+					'start_date' => '2020-01-01 00:00:00',
+					'end_date'   => '2020-01-01 10:00:00',
+					'recurrence' => 'RRULE:FREQ=WEEKLY;COUNT=3',
+				] )->create()->ID;
+
+				// Second occurrence.
+				$occurrence = Occurrence::where( 'post_id', $event )->offset( 1 )->first();
+
+				return [ $occurrence->provisional_id, null, false ];
+			}
+		];
+
+		yield 'recurring event with tickets occurrence' => [
+			function () {
+				$event     = tribe_events()->set_args( [
+					'title'      => 'Recurring Event',
+					'status'     => 'publish',
+					'start_date' => '2020-01-01 00:00:00',
+					'end_date'   => '2020-01-01 10:00:00',
+					'recurrence' => 'RRULE:FREQ=WEEKLY;COUNT=3',
+				] )->create()->ID;
+				$ticket_id = $this->create_tc_ticket( $event );
+
+				// Second occurrence.
+				$occurrence = Occurrence::where( 'post_id', $event )->offset( 1 )->first();
+
+				return [ $occurrence->provisional_id, $ticket_id, true ];
+			}
+		];
+	}
+
+	/**
+	 * It should control the notice about recurring events and tickets correctly
+	 *
+	 * @test
+	 * @dataProvider recurring_events_and_tickets_admin_notices_provider
+	 */
+	public function should_control_the_notice_about_recurring_events_and_tickets_correctly( Closure $fixture ): void {
+		[ $event_id, $ticket_id, $expect_notice_when_unregistered ] = array_replace( [ null, null, null ], $fixture() );
+
+		$notices     = Notices::instance();
+		$notice_slug = 'tribe_notice_classic_editor_ecp_recurring_tickets-' . $event_id;
+		// Simulate a request to edit the event.
+		$_GET['post'] = $event_id;
+		// Remove other hooked functions to avoid side effects.
+		$GLOBALS['wp_filter']['admin_init'] = new \WP_Hook();
+		// Hook the admin notices.
+		tribe( 'tickets.admin.notices' )->hook();
+		// Finally dispatch the `admin_init` action.
+		do_action( 'admin_init' );
+
+		$notice = $notices->get( $notice_slug );
+
+		if ( $expect_notice_when_unregistered ) {
+			$this->assertNotNull( $notice );
+		} else {
+			$this->assertNull( $notice );
+		}
+
+		// Build and register the controller.
+		$controller = $this->make_controller()->register();
+
+		// Simulate a request to edit the event.
+		$_GET['post'] = $event_id;
+		// Remove the previous notice.
+		$notice = $notices->remove( $notice_slug );
+		$this->assertNull( $notices->get( $notice_slug ) );
+		// Dispatch the `admin_init` action again.
+		do_action( 'admin_init' );
+
+		$notice = $notices->get( $notice_slug );
+		$this->assertNull( $notice, 'When the controller is registered no notice should ever show.' );
 	}
 }
