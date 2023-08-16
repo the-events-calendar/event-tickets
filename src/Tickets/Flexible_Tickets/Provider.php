@@ -25,6 +25,15 @@ use TEC\Tickets\Flexible_Tickets\Templates\Admin_Views;
  */
 class Provider extends ServiceProvider {
 	/**
+	 * The action that will be dispatched when the provider is registered.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static string $registration_action = 'tec_flexible_tickets_registered';
+
+	/**
 	 * The name of the constant that will be used to disable the feature.
 	 * Setting it to a truthy value will disable the feature.
 	 *
