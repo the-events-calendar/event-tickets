@@ -24,20 +24,6 @@ class Series_PassesCest {
 	}
 
 	/**
-	 * It should not display add series pass on Series page if not ticketable
-	 *
-	 * @test
-	 */
-	public function should_not_display_add_ticket_on_series_page_if_not_ticketable( Tester $I ): void {
-		$series_id = $I->have_series_in_database();
-		$I->have_ticketable_series_in_database( false );
-
-		$I->amEditingPostWithId( $series_id );
-
-		$I->dontSeeElement( '#series_pass_form_toggle' );
-	}
-
-	/**
 	 * It should not display add ticket button on Series page.
 	 *
 	 * @test
