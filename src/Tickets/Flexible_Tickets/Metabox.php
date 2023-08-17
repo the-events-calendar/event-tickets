@@ -45,6 +45,15 @@ class Metabox {
 		$this->admin_views = $admin_views;
 	}
 
+	/**
+	 * Renders the button to toggle the Series Pass form.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id The post ID context of the metabox.
+	 *
+	 * @return void
+	 */
 	public function render_form_toggle( int $post_id ) {
 		$post = get_post( $post_id );
 
@@ -85,6 +94,16 @@ class Metabox {
 		return $data;
 	}
 
+	/**
+	 * Prints a notice letting the user know that the event is part of a Series
+	 * and Series Passes should be edited from the Series edit screen.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id The post ID context of the metabox.
+	 *
+	 * @return void
+	 */
 	public function display_pass_notice( int $post_id ): void {
 		$series_ids = tec_series()->where( 'event_post_id', $post_id )->get_ids();
 
@@ -100,12 +119,29 @@ class Metabox {
 		] );
 	}
 
+	/**
+	 * Prints the link to the Series edit screen in the context of the Ticket list,
+	 * replacing the default Ticket edit actions.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_post_id The post ID of the Series Pass.
+	 *
+	 * @return void
+	 */
 	public function render_link_to_series( int $ticket_post_id ): void {
 		$this->admin_views->template( 'series-pass-edit-link', [
 			'series_edit_link' => get_edit_post_link( $ticket_post_id ),
 		] );
 	}
 
+	/**
+	 * Prints the Series Pass icon in the context of the Ticket list.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
 	public function print_series_pass_icon(): void {
 		$this->admin_views->template( 'series-pass-icon' );
 	}
@@ -121,6 +157,16 @@ class Metabox {
 		$this->admin_views->template( 'series-pass-type-header' );
 	}
 
+	/**
+	 * Returns the help text for the default ticket type in the ticket form.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $event_id  The post ID context of the metabox.
+	 * @param int $series_id The post ID of the Series Pass.
+	 *
+	 * @return string The help text for the default ticket type in the ticket form.
+	 */
 	public function get_default_ticket_type_header_description( int $event_id, int $series_id ): string {
 		$edit_link        = get_edit_post_link( $series_id, 'admin' ) . '#tribetickets';
 		$series_edit_link = sprintf(

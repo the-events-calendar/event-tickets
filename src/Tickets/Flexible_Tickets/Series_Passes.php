@@ -634,7 +634,7 @@ class Series_Passes extends Controller {
 			return;
 		}
 
-		$this->metabox->render_link_to_series( $ticket->ID );
+		$this->metabox->render_link_to_series( $ticket->get_event_id() );
 	}
 
 	/**

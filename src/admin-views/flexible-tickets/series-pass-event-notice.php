@@ -12,7 +12,7 @@
 			sprintf(
 				'This %1$s is part of the Series %2$s. Create and manage %3$s in the Series this %1$s belongs to.',
 				tribe_get_event_label_singular_lowercase(),
-				"<a href='$series_edit_link' target='_blank'>$series_title</a>",
+				'<a href="' . $series_edit_link . '" target="_blank">' . $series_title . '</a>',
 				tec_tickets_get_series_pass_plural_uppercase(),
 			),
 			[
