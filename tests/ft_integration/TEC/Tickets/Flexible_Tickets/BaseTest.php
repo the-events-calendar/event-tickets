@@ -91,6 +91,9 @@ class BaseTest extends Controller_Test_Case {
 		] );
 		$pass_1 = $this->create_tc_series_pass( $series, 23 )->ID;
 		$pass_2 = $this->create_tc_series_pass( $series, 89 )->ID;
+		// Sort the tickets "manually".
+		wp_update_post( [ 'ID' => $pass_1, 'menu_order' => 1 ] );
+		wp_update_post( [ 'ID' => $pass_2, 'menu_order' => 0 ] );
 
 		$this->make_controller()->register();
 
@@ -120,6 +123,9 @@ class BaseTest extends Controller_Test_Case {
 		] )->create()->ID;
 		$ticket_1 = $this->create_tc_ticket( $event, 23 );
 		$ticket_2 = $this->create_tc_ticket( $event, 89 );
+		// Sort the tickets "manually".
+		wp_update_post( [ 'ID' => $ticket_1, 'menu_order' => 1 ] );
+		wp_update_post( [ 'ID' => $ticket_2, 'menu_order' => 0 ] );
 
 		$this->make_controller()->register();
 
@@ -141,7 +147,7 @@ class BaseTest extends Controller_Test_Case {
 	 * @test
 	 */
 	public function should_replace_tickets_block_on_events_in_series(): void {
-		$series   = static::factory()->post->create( [
+		$series = static::factory()->post->create( [
 			'post_type' => Series_Post_Type::POSTTYPE,
 		] );
 		$pass_1 = $this->create_tc_series_pass( $series, 23 )->ID;
@@ -158,7 +164,7 @@ class BaseTest extends Controller_Test_Case {
 			'end_date'   => '2020-01-01 00:00:00',
 			'series'     => $series,
 		] )->create()->ID;
-		$ticket_1 = $this->create_tc_ticket( $event, 23);
+		$ticket_1 = $this->create_tc_ticket( $event, 23 );
 		$ticket_2 = $this->create_tc_ticket( $event, 89 );
 		$ticket_3 = $this->create_tc_ticket( $event, 89 );
 		// Sort the tickets "manually".

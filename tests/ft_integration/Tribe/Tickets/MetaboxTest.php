@@ -275,7 +275,10 @@ class MetaboxTest extends WPTestCase {
 				] );
 				$pass_1    = $this->create_tc_series_pass( $series_id, 23 )->ID;
 				$pass_2    = $this->create_tc_series_pass( $series_id, 89 )->ID;
-				$post_id   = tribe_events()->set_args( [
+				// Sort the tickets "manually".
+				wp_update_post( [ 'ID' => $pass_1, 'menu_order' => 1 ] );
+				wp_update_post( [ 'ID' => $pass_2, 'menu_order' => 0 ] );
+				$post_id = tribe_events()->set_args( [
 					'title'      => 'Test event',
 					'status'     => 'publish',
 					'start_date' => '2021-01-01 10:00:00',
@@ -307,6 +310,9 @@ class MetaboxTest extends WPTestCase {
 				] );
 				$pass_1    = $this->create_tc_series_pass( $series_id, 23 )->ID;
 				$pass_2    = $this->create_tc_series_pass( $series_id, 89 )->ID;
+				// Sort the tickets "manually".
+				wp_update_post( [ 'ID' => $pass_1, 'menu_order' => 1 ] );
+				wp_update_post( [ 'ID' => $pass_2, 'menu_order' => 0 ] );
 
 				return [ $series_id, $pass_1, $pass_2 ];
 			}
