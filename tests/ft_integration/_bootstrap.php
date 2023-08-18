@@ -1,4 +1,5 @@
 <?php
+
 use Codeception\Events;
 use Codeception\Util\Autoload;
 use TEC\Common\StellarWP\DB\DB;
@@ -48,7 +49,7 @@ if ( ! tec_tickets_commerce_is_enabled() ) {
 	add_filter( 'tec_tickets_commerce_is_enabled', '__return_true', 100 );
 	tribe()->register( Commerce_Provider::class );
 }
-tribe( Commerce_Module::class);
+tribe( Commerce_Module::class );
 
 // Start the posts auto-increment from a high number to make it easier to replace the post IDs in HTML snapshots.
 global $wpdb;
@@ -70,3 +71,7 @@ addListener( Events::TEST_BEFORE, function () use ( $custom_tables ) {
 	}
 	DB::query( 'SET FOREIGN_KEY_CHECKS=0' );
 } );
+
+// Deactivate logging.
+global $wp_filter;
+$wp_filter['tribe_log'] = new WP_Hook();
