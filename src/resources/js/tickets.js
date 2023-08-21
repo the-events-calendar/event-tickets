@@ -884,6 +884,11 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			$( recurrence_row_selectors ).show();
 			$( recurrence_not_supported_row_selector ).hide();
 		} );
+	} else {
+		$( ticket_button_selectors ).
+			parent().
+			find( '.ticket-editor-notice.recurring_event_warning' ).
+			hide();
 	}
 
 

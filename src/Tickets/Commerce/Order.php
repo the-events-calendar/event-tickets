@@ -456,13 +456,16 @@ class Order extends Abstract_Order {
 			$order = tec_tc_get_order( $order );
 		}
 
-		if ( ! $order instanceof \WP_Post ) {
+		if ( empty( $order->gateway ) ) {
 			return null;
 		}
 
 		$gateway = tribe( Gateways\Manager::class )->get_gateway_by_key( $order->gateway );
+		if ( empty( $gateway ) ) {
+			return null;
+		}
 
-		return $gateway ? $gateway::get_label() : null;
+		return $gateway::get_label();
 	}
 
 	/**

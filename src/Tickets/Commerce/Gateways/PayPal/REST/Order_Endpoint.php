@@ -88,6 +88,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * Handles the request that creates an order with Tickets Commerce and the PayPal gateway.
 	 *
 	 * @since 5.1.9
+	 * @since 5.6.4 Include Event/Post title in the Ticket name.
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -119,8 +120,9 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 		foreach ( $order->items as $item ) {
 			$ticket          = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
+			$post_title      = get_the_title( $item['event_id'] );
 			$unit['items'][] = [
-				'name'        => $ticket->name,
+				'name'        => sprintf( '%s - %s', $ticket->name, $post_title ),
 				'unit_amount' => [ 'value' => (string) $item['price'], 'currency_code' => $order->currency ],
 				'quantity'    => $item['quantity'],
 				'item_total'  => [ 'value' => (string) $item['sub_total'], 'currency_code' => $order->currency ],

@@ -589,9 +589,6 @@ class Tribe__Tickets__Tickets_Handler {
 		// Get all Tickets.
 		$tickets = $provider->get_tickets_ids( $object_id );
 
-		// If no tickets are available and capacity is set then it should be true.
-		$has_shared_cap_tickets = ! empty( $tickets ) || ! $object_stock->is_enabled();
-
 		foreach ( $tickets as $ticket ) {
 			$mode = get_post_meta( $ticket, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
 
@@ -602,8 +599,6 @@ class Tribe__Tickets__Tickets_Handler {
 			) {
 				continue;
 			}
-
-			$has_shared_cap_tickets = true;
 
 			$new_capacity = $existing_capacity = tribe_tickets_get_capacity( $ticket );
 
@@ -633,12 +628,6 @@ class Tribe__Tickets__Tickets_Handler {
 		// Setup the Stock level.
 		$new_object_stock = $event_capacity - array_sum( $completes );
 		$object_stock->set_stock_level( $new_object_stock );
-
-		if ( ! $has_shared_cap_tickets ) {
-			$object_stock->disable();
-			$object_stock->set_stock_level( 0 );
-			tribe_tickets_delete_capacity( $object_id );
-		}
 
 		return true;
 	}

@@ -19,7 +19,7 @@ class Order extends Abstract_Order {
 	 */
 	public function get_gateway_dashboard_url_by_order( \WP_Post $order ): string {
 		$status          = tribe( Status_Handler::class )->get_by_wp_slug( $order->post_status );
-		$payload         = $order->gateway_payload[ $status::SLUG ];
+		$payload         = isset( $order->gateway_payload[ $status::SLUG ] ) ? $order->gateway_payload[ $status::SLUG ] : current( $order->gateway_payload );
 		$capture_payload = end( $payload );
 		$capture_id      = Arr::get( $capture_payload, [ 'purchase_units', 0, 'payments', 'captures', 0, 'id' ] );
 
