@@ -83,10 +83,27 @@ class Tribe__Tickets__Attendees {
 	public function event_details_top( $event_id ) {
 		$pto = get_post_type_object( get_post_type( $event_id ) );
 
+		if ( $pto === null ) {
+			return;
+		}
+
+		$label = strtolower( $pto->labels->singular_name );
+
+		/**
+		 * Filters the label used in the Attendees page for the event post type.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $label    The label used in the Attendees page for the event post type.
+		 * @param int    $event_id The ID of the post the Attendees page is for.
+		 * @param WP_Post_Type|null The post type object.
+		 */
+		$label = apply_filters( 'tec_tickets_attendees_event_details_top_label', $label, $event_id, $pto );
+
 		echo '
 			<li class="post-type">
 				<strong>' . esc_html__( 'Post type', 'event-tickets' ) . ': </strong>
-				' . esc_html( strtolower( $pto->labels->singular_name ) ) . '
+				' . esc_html( $label ) . '
 			</li>
 		';
 	}

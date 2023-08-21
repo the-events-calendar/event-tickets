@@ -106,6 +106,11 @@ class Base extends Controller {
 		] );
 
 		$this->series_are_ticketable();
+
+		add_filter( 'tec_tickets_attendees_event_details_top_label', [
+			$this,
+			'filter_attendees_event_details_top_label'
+		], 10, 2 );
 	}
 
 	/**
@@ -149,6 +154,11 @@ class Base extends Controller {
 
 		// Remove Series from the list of ticketable post types.
 		$this->series_are_ticketable( false );
+
+		remove_filter( 'tec_tickets_attendees_event_details_top_label', [
+			$this,
+			'filter_attendees_event_details_top_label'
+		] );
 	}
 
 	/**
@@ -227,6 +237,15 @@ class Base extends Controller {
 		return $enabled;
 	}
 
+	/**
+	 * Ensures the Series post type ticketable status.
+	 *
+	 * @since TBD
+	 *
+	 * @param bool $ticketable Whether the Series post type should be ticketable or not.
+	 *
+	 * @return void
+	 */
 	private function series_are_ticketable( bool $ticketable = true ): void {
 		$ticketable_post_types = (array) tribe_get_option( 'ticket-enabled-post-types', [] );
 
@@ -245,5 +264,24 @@ class Base extends Controller {
 			$ticketable_post_types = array_values( $ticketable_post_types );
 			tribe_update_option( 'ticket-enabled-post-types', $ticketable_post_types );
 		}
+	}
+
+	/**
+	 * Filters the label for the Series post type in the Attendees meta box top header.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $label   The label for the Attendees meta box top header.
+	 * @param int    $post_id The ID of the post Attendees are being displayed for.
+	 *
+	 * @return string The updated label.
+	 */
+	public function filter_attendees_event_details_top_label( string $label, int $post_id ): string {
+		if ( get_post_type( $post_id ) !== Series_Post_Type::POSTTYPE ) {
+			return $label;
+		}
+
+		// This controller will not register if ECP is not active: we can assume we'll have ECP translations available.
+		return __( 'Series', 'tribe-events-calendar-pro' );
 	}
 }

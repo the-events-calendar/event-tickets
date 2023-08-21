@@ -4,6 +4,7 @@ namespace TEC\Tickets\Flexible_Tickets;
 
 use Closure;
 use Generator;
+use Stripe\SearchResult;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Events\Custom_Tables\V1\Models\Occurrence;
@@ -14,6 +15,7 @@ use TEC\Tickets\Flexible_Tickets\Test\Traits\Series_Pass_Factory;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe__Events__Main as TEC;
 use Tribe__Admin__Notices as Notices;
+use Tribe__Tickets__Attendees as Attendees;
 
 class BaseTest extends Controller_Test_Case {
 	use SnapshotAssertions;
@@ -431,5 +433,62 @@ class BaseTest extends Controller_Test_Case {
 		// Check that Series is not ticketable.
 		$index = array_search( $cpt, (array) tribe_get_option( $option_name, [] ), true );
 		$this->assertFalse( $index );
+	}
+
+	public function attendees_page_top_header_details_provider(): Generator {
+		yield 'post' => [
+			function () {
+				$post_id = static::factory()->post->create();
+
+				return $post_id;
+			}
+		];
+
+		yield 'event' => [
+			function () {
+				$post_id = tribe_events()->set_args( [
+					'title'      => 'Test Event',
+					'status'     => 'publish',
+					'start_date' => '2020-01-01 09:00:00',
+					'end_date'   => '2020-01-01 11:30:00',
+				] )->create()->ID;
+
+				return $post_id;
+			}
+		];
+
+		yield 'series' => [
+			function () {
+				$post_id = static::factory()->post->create( [
+					'post_type' => Series_Post_Type::POSTTYPE
+				] );
+
+				return $post_id;
+			}
+		];
+	}
+
+	/**
+	 * It should correctly filter the Attendees page top header details
+	 *
+	 * @test
+	 * @dataProvider attendees_page_top_header_details_provider
+	 */
+	public function should_correctly_filter_the_attendees_page_top_header_details( Closure $fixture ): void {
+		$post_id = $fixture();
+
+		// Build and register the controller.
+		$controller = $this->make_controller()->register();
+
+		// Run the test again.
+		ob_start();
+		$attendees = new Attendees();
+		$attendees->event_details_top( $post_id );
+		$html = ob_get_contents();
+		// Replace post IDs with a placeholder to avoid snapshot mismatches.
+		$html = str_replace( $post_id, '{{POST_ID}}', $html );
+		ob_end_clean();
+
+		$this->assertMatchesHtmlSnapshot( $html );
 	}
 }
