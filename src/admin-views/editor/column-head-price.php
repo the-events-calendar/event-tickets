@@ -12,4 +12,4 @@ if ( isset( $ticket_type ) && $ticket_type === 'rsvp' ) {
 }
 ?>
 
-<th class="ticket_price"><?php esc_html( $label ); ?></th>
+<th class="ticket_price"><?php echo esc_html( $label ); ?></th>
