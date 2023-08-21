@@ -39,7 +39,7 @@ $ticket_types = [
 		'header_link_text' => sprintf(
 		// Translators: %1$s is the ticket label plural lowercase; i.e. "events".
 			_x(
-				'See all %1$s in this Series',
+				'See all %1$s in this series',
 				'Link text for Series Passes in frontend ticket form',
 				'event-tickets'
 			),
