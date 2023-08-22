@@ -2,12 +2,16 @@
 
 namespace TEC\Tickets\Flexible_Tickets;
 
+use Generator;
 use Spatie\Snapshots\MatchesSnapshots;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Events\Custom_Tables\V1\Migration\State;
 use TEC\Events\Custom_Tables\V1\Migration\Strategies\Null_Migration_Strategy;
+use TEC\Events\Custom_Tables\V1\Migration\Strategies\Single_Event_Migration_Strategy;
 use TEC\Events\Custom_Tables\V1\Migration\String_Dictionary;
 use TEC\Events_Pro\Custom_Tables\V1\Events\Recurrence;
+use TEC\Events_Pro\Custom_Tables\V1\Migration\Strategy\Multi_Rule_Event_Migration_Strategy;
+use TEC\Events_Pro\Custom_Tables\V1\Migration\Strategy\Single_Rule_Event_Migration_Strategy;
 use TEC\Tickets\Flexible_Tickets\CT1_Migration\Strategies\RSVP_Ticketed_Recurring_Event_Strategy;
 use TEC\Tickets\Flexible_Tickets\CT1_Migration\Strategies\Ticketed_Multi_Rule_Event_Migration_Strategy;
 use TEC\Tickets\Flexible_Tickets\CT1_Migration\Strategies\Ticketed_Single_Rule_Event_Migration_Strategy;
@@ -17,6 +21,7 @@ use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 use Tribe__Tickets__Commerce__PayPal__Main as PayPal;
 use TEC\Tickets\Commerce\Module as Commerce;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker as Commerce_Ticket_Maker;
+use WP_Post;
 
 class CT1_Migration_Test extends Controller_Test_Case {
 	use CT1_Fixtures;
@@ -27,7 +32,7 @@ class CT1_Migration_Test extends Controller_Test_Case {
 
 	protected string $controller_class = CT1_Migration::class;
 
-	private function given_a_non_migrated_multi_rule_recurring_event(): \WP_Post {
+	private function given_a_non_migrated_multi_rule_recurring_event(): WP_Post {
 		$recurrence = static function ( int $id ): array {
 			return ( new Recurrence() )
 				->with_start_date( get_post_meta( $id, '_EventStartDate', true ) )
@@ -231,7 +236,7 @@ class CT1_Migration_Test extends Controller_Test_Case {
 	 */
 	public function should_not_alter_the_strategy_to_migrate_a_single_event_with_commerce_tickets(): void {
 		$this->given_commerce_tickets_are_active();
-		$single_event    = $this->given_a_non_migrated_single_event();
+		$single_event = $this->given_a_non_migrated_single_event();
 		$this->create_tc_ticket( $single_event->JID, 23 );
 
 		$controller = $this->make_controller();
@@ -284,16 +289,37 @@ class CT1_Migration_Test extends Controller_Test_Case {
 		$this->assertInstanceOf( Ticketed_Multi_Rule_Event_Migration_Strategy::class, $strategy );
 	}
 
+	public function report_headers_provider(): Generator {
+		yield 'no headers' => [ [] ];
+		yield 'TEC and ECP headers' => [
+			[
+				[
+					'key'   => Multi_Rule_Event_Migration_Strategy::get_slug(),
+					'label' => 'Multi Rule Event Migration Strategy'
+				],
+				[
+					'key'   => Single_Rule_Event_Migration_Strategy::get_slug(),
+					'label' => 'Single Rule Event Migration Strategy'
+				],
+				[
+					'key'   => Single_Event_Migration_Strategy::get_slug(),
+					'label' => 'Single Migration Strategy'
+				],
+			]
+		];
+	}
+
 	/**
 	 * It should correctly filter report headers in preview
 	 *
 	 * @test
+	 * @dataProvider report_headers_provider
 	 */
-	public function should_correctly_filter_report_headers_in_preview(): void {
+	public function should_correctly_filter_report_headers_in_preview( array $headers ): void {
 		$controller = $this->make_controller();
 		$controller->register();
 		tribe( State::class )->set( 'phase', State::PHASE_MIGRATION_PROMPT );
-		$headers = $controller->filter_report_headers( [], tribe( String_Dictionary::class )->reinit() );
+		$headers = $controller->filter_report_headers( $headers, tribe( String_Dictionary::class )->reinit() );
 
 		$this->assertMatchesSnapshot( $headers );
 	}
@@ -302,12 +328,13 @@ class CT1_Migration_Test extends Controller_Test_Case {
 	 * It should correctly filter report headers in execution
 	 *
 	 * @test
+	 * @dataProvider report_headers_provider
 	 */
-	public function should_correctly_filter_report_headers_in_execution(): void {
+	public function should_correctly_filter_report_headers_in_execution( array $headers ): void {
 		$controller = $this->make_controller();
 		$controller->register();
 		tribe( State::class )->set( 'phase', State::PHASE_MIGRATION_COMPLETE );
-		$headers = $controller->filter_report_headers( [], tribe( String_Dictionary::class )->reinit() );
+		$headers = $controller->filter_report_headers( $headers, tribe( String_Dictionary::class )->reinit() );
 
 		$this->assertMatchesSnapshot( $headers );
 	}
