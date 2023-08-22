@@ -17,6 +17,7 @@ use Tribe__Template as Template;
 use TEC\Tickets\Flexible_Tickets\Templates\Admin_Views;
 use Tribe__Events__Main as TEC;
 use WP_Post;
+use Tribe__Main;
 
 /**
  * Class Base.
@@ -111,6 +112,13 @@ class Base extends Controller {
 			$this,
 			'filter_attendees_event_details_top_label'
 		], 10, 2 );
+
+		// Filter the columns displayed in the series editor events list.
+		add_filter(
+			'tec_events_pro_custom_tables_v1_series_occurrent_list_columns', [
+				$this,
+				'filter_series_editor_occurrence_list_columns'
+		] );
 	}
 
 	/**
@@ -158,6 +166,13 @@ class Base extends Controller {
 		remove_filter( 'tec_tickets_attendees_event_details_top_label', [
 			$this,
 			'filter_attendees_event_details_top_label'
+		] );
+
+		// Remove the columns displayed in the series editor event List.
+		remove_filter(
+			'tec_events_pro_custom_tables_v1_series_occurrent_list_columns', [
+			$this,
+			'filter_series_editor_occurrence_list_columns'
 		] );
 	}
 
@@ -283,5 +298,23 @@ class Base extends Controller {
 
 		// This controller will not register if ECP is not active: we can assume we'll have ECP translations available.
 		return __( 'Series', 'tribe-events-calendar-pro' );
+	}
+
+	/**
+	 * Filters the columns displayed in the Series editor events List.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,string> $columns The list of columns to filter.
+	 *
+	 * @return array<string,string> The filtered list of columns.
+	 */
+	public function filter_series_editor_occurrence_list_columns( array $columns ): array {
+		return Tribe__Main::array_insert_before_key( 'actions',
+			$columns,
+			[
+				'ticket_types' => esc_html__( 'Attached Ticket Types', 'event-tickets' )
+			]
+		);
 	}
 }
