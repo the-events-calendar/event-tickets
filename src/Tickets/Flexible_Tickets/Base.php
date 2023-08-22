@@ -11,6 +11,7 @@ namespace TEC\Tickets\Flexible_Tickets;
 
 use TEC\Common\Contracts\Container;
 use TEC\Common\Contracts\Provider\Controller;
+use TEC\Events\Custom_Tables\V1\Models\Occurrence;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 use TEC\Tickets\Admin\Editor_Data;
 use Tribe__Template as Template;
@@ -119,6 +120,11 @@ class Base extends Controller {
 				$this,
 				'filter_series_editor_occurrence_list_columns'
 		] );
+
+		add_action( 'tec_events_pro_custom_tables_v1_series_occurrent_list_column_ticket_types', [
+			$this,
+			'render_series_editor_occurrence_list_column_ticket_types'
+		] );
 	}
 
 	/**
@@ -173,6 +179,11 @@ class Base extends Controller {
 			'tec_events_pro_custom_tables_v1_series_occurrent_list_columns', [
 			$this,
 			'filter_series_editor_occurrence_list_columns'
+		] );
+
+		remove_action( 'tec_events_pro_custom_tables_v1_series_occurrent_list_column_ticket_types', [
+			$this,
+			'render_series_editor_occurrence_list_column_ticket_types'
 		] );
 	}
 
@@ -316,5 +327,18 @@ class Base extends Controller {
 				'ticket_types' => esc_html__( 'Attached Ticket Types', 'event-tickets' )
 			]
 		);
+	}
+
+	/**
+	 * Renders the content of the "Attached Ticket Types" column in the Series editor events List.
+	 *
+	 * @since TBD
+	 *
+	 * @param Occurrence $occurrence
+	 *
+	 * @return void
+	 */
+	public function render_series_editor_occurrence_list_column_ticket_types( Occurrence $occurrence ) {
+		// fetch all ticket types and render them.
 	}
 }
