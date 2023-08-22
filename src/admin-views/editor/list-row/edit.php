@@ -38,7 +38,7 @@ $delete_title    = sprintf(
 		data-provider='<?php echo esc_attr( $ticket->provider_class ); ?>'
 		data-ticket-id='<?php echo esc_attr( $ticket->ID ); ?>'
 		title='<?php echo esc_attr( $duplicate_title ); ?>'
-		class='ticket_edit_button'>
+		class='ticket_duplicate'>
 	<span class='ticket_duplicate_text'>%s
 		<?php echo esc_html( $ticket->name ); ?>
 	</span>
