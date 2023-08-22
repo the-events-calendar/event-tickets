@@ -284,4 +284,6 @@ class Base extends Controller {
 		// This controller will not register if ECP is not active: we can assume we'll have ECP translations available.
 		return __( 'Series', 'tribe-events-calendar-pro' );
 	}
+
+	// trigger tests.
 }
