@@ -191,6 +191,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Fix - Incorrect ticket count in Ticket email within the Tickets Emails feature. [ET-1832]
+
 = [5.6.4] 2023-08-16 =
 
 * Fix - Fixed translation issues with translating month names in other languages while displaying ticket available message. [ET-1820]
