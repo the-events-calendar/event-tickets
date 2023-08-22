@@ -19,6 +19,8 @@ use TEC\Tickets\Flexible_Tickets\Templates\Admin_Views;
 use Tribe__Events__Main as TEC;
 use WP_Post;
 use Tribe__Main;
+use Tribe__Tickets__Tickets as Tickets;
+use Tribe__Tickets__RSVP as RSVP;
 
 /**
  * Class Base.
@@ -339,6 +341,46 @@ class Base extends Controller {
 	 * @return void
 	 */
 	public function render_series_editor_occurrence_list_column_ticket_types( Occurrence $occurrence ) {
-		// fetch all ticket types and render them.
+		$event_id = $occurrence->post_id;
+		$tickets  = Tickets::get_event_tickets( $event_id );
+
+		if ( empty( $tickets ) ) {
+			echo "-";
+			return;
+		}
+
+		$has_rsvp        = false;
+		$has_ticket      = false;
+		$has_series_pass = false;
+
+		foreach ( $tickets as $ticket ) {
+			// check if RSVP available.
+			if ( $ticket->provider_class === RSVP::class ) {
+				$has_rsvp = true;
+				continue;
+			}
+			// check if ticket type is series pass or general ticket.
+			if ( get_post_meta( $ticket->ID, '_type', true ) === Series_Passes::TICKET_TYPE ) {
+				$has_series_pass = true;
+			} else {
+				$has_ticket = true;
+			}
+		}
+
+		// @todo add admin views templates for the ticket types.
+		$html = '';
+		if ( $has_rsvp ) {
+			$html .= 'RSVP' . '<br>';
+		}
+
+		if ( $has_ticket ) {
+			$html .= 'Ticket' . '<br>';
+		}
+
+		if ( $has_series_pass ) {
+			$html .= 'Series Pass';
+		}
+
+		echo $html;
 	}
 }
