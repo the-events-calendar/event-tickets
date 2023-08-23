@@ -367,20 +367,12 @@ class Base extends Controller {
 			}
 		}
 
-		// @todo add admin views templates for the ticket types.
-		$html = '';
-		if ( $has_rsvp ) {
-			$html .= 'RSVP' . '<br>';
-		}
-
-		if ( $has_ticket ) {
-			$html .= 'Ticket' . '<br>';
-		}
-
-		if ( $has_series_pass ) {
-			$html .= 'Series Pass';
-		}
-
-		echo $html;
+		$admin_views = new Admin_Views;
+		$admin_views->template( 'ticket-types-column/types', [
+			'has_rsvp'        => $has_rsvp,
+			'has_ticket'      => $has_ticket,
+			'has_series_pass' => $has_series_pass,
+			'admin_views'     => $admin_views,
+		] );
 	}
 }
