@@ -493,7 +493,7 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 	 *
 	 * @return string
 	 */
-	function tribe_tickets_get_ticket_stock_message( Tribe__Tickets__Ticket_Object $ticket ) {
+	function tribe_tickets_get_ticket_stock_message( Tribe__Tickets__Ticket_Object $ticket, string $sold_label_override = '' ) {
 		$event        = Tribe__Tickets__Tickets::find_matching_event( $ticket );
 		$global_stock = new Tribe__Tickets__Global_Stock( $event->ID );
 
@@ -529,6 +529,9 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 		$sold_label = __( 'issued', 'event-tickets' );
 		if ( 'Tribe__Tickets__RSVP' === $ticket->provider_class ) {
 			$sold_label = sprintf( _x( "%s'd going", 'RSVPs going', 'event-tickets' ), tribe_get_rsvp_label_singular() );
+		}
+		if ( ! empty( $sold_label_override ) ) {
+			$sold_label = $sold_label_override;
 		}
 
 		// Message for how many remain available.
