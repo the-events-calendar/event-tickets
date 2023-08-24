@@ -104,7 +104,7 @@ foreach ( $tickets_by_types as $type_name => $type_tickets ) {
 			<span>
 				<?php 
 					echo sprintf(
-						// Translators: %1$s is the number of tickets issues.
+						// Translators: %1$s is the number of tickets issued.
 						__( '%s issued', 'event-tickets'),
 						esc_html_e( $ticket_totals['sold'] )
 					); 
