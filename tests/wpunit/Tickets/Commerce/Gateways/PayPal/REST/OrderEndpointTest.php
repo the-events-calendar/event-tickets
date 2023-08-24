@@ -7,7 +7,7 @@ use TEC\Tickets\Commerce\Gateways\PayPal\REST\Order_Endpoint;
 class OrderEndpointTest extends \Codeception\TestCase\WPTestCase {
 
 	/**
-	 * @dataProvider textProvider
+	 * @dataProvider order_item_name_provider
 	 */
 	public function test_format_order_item_name( string $text, string $expected ): void {
 		$order_endpoint = new Order_Endpoint();
@@ -15,9 +15,12 @@ class OrderEndpointTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertSame( $expected, $result );
 	}
 
-	public function textProvider() {
+	public function order_item_name_provider() {
 		yield "Short text should not be truncated" => [ "Short text", "Short text" ];
-		yield "Text with exact max length should not be truncated" => [ str_repeat( "A", 127 ), str_repeat( "A", 127 ) ];
+		yield "Text with exact max length should not be truncated" => [
+			str_repeat( "A", 127 ),
+			str_repeat( "A", 127 )
+		];
 		yield "Long text without spaces should be truncated at max length minus ellipsis" => [
 			str_repeat( "A", 137 ),
 			substr( str_repeat( "A", 137 ), 0, 124 ) . '...'
