@@ -391,12 +391,12 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 	 * @return bool|WP_Error
 	 */
 	public function validate_check_in( $attendee, $check_in ) {
-
 		if ( ! tribe_is_truthy( $check_in ) ) {
 			return true;
 		}
 
-		$provider = tribe_tickets_get_ticket_provider( $attendee['ticket_id'] );
+		$provider = $attendee['provider'] ?? tribe_tickets_get_ticket_provider( $attendee['attendee_id'] );
+
 		/** @var Tribe__Tickets__Status__Manager $status */
 		$status = tribe( 'tickets.status' );
 		$complete_statuses = (array) $status->get_completed_status_by_provider_name( $provider );
