@@ -194,6 +194,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [TBD] TBD =
 
 * Fix - Incorrect ticket count in Ticket email within the Tickets Emails feature. [ET-1832]
+* Tweak - Ticket names over 125 characters will now be truncated when being sent to Paypal. [ET-1865]
 
 = [5.6.4] 2023-08-16 =
 
