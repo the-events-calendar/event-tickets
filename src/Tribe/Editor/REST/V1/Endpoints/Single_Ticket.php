@@ -205,6 +205,7 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 	 * @since  4.9
 	 * @since  4.10.9 Use customizable ticket name functions.
 	 * @since  4.12.3 Update detecting ticket provider to account for possibly inactive provider.
+	 * @since  TBD    Validates if price is grather than 0 when provider is PayPal or Tickets Commerce
 	 *
 	 * @param  WP_REST_Request $request
 	 * @param  $nonce_action
@@ -250,6 +251,17 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 			return new WP_Error(
 				'bad_request',
 				__( 'Commerce Module invalid', 'event-tickets' ),
+				[ 'status' => 400 ]
+			);
+		}
+
+		$is_paypal_ticket = $provider instanceof Tribe__Tickets__Commerce__PayPal__Main || $provider instanceof \TEC\Tickets\Commerce\Module;
+		$price            = (float)$body['price'];
+
+		if ( $is_paypal_ticket && $price <= 0) {
+			return new WP_Error(
+				'bad_request',
+				__( 'Invalid price', 'event-tickets' ),
 				[ 'status' => 400 ]
 			);
 		}
