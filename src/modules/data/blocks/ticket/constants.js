@@ -4,12 +4,13 @@ export const WOO = 'woo';
 export const RSVP = 'rsvp';
 
 export const RSVP_CLASS = 'Tribe__Tickets__RSVP';
-export const TC_CLASS = 'Tribe__Tickets__Commerce__PayPal__Main';
+export const TC_CLASS = 'TEC\\Tickets\\Commerce\\Module';
+export const TPP_CLASS = 'Tribe__Tickets__Commerce__PayPal__Main';
 export const EDD_CLASS = 'Tribe__Tickets_Plus__Commerce__EDD__Main';
 export const WOO_CLASS = 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main';
 
 export const PROVIDER_CLASS_TO_PROVIDER_MAPPING = {
-	[ TC_CLASS ]: TC,
+	[ TPP_CLASS ]: TC,
 	[ EDD_CLASS ]: EDD,
 	[ WOO_CLASS ]: WOO,
 };
@@ -22,7 +23,7 @@ export const WOO_ORDERS = 'tickets-orders';
 
 export const TICKET_ORDERS_PAGE_SLUG = {
 	[ EDD_CLASS ]: EDD_ORDERS,
-	[ TC_CLASS ]: TC_ORDERS,
+	[ TPP_CLASS ]: TC_ORDERS,
 	[ WOO_CLASS ]: WOO_ORDERS,
 };
 
