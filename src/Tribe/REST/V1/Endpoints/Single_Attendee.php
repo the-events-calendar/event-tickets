@@ -383,16 +383,21 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 	/**
 	 * Validate whether the check_in value is valid for this attendee.
 	 *
-	 * @since TBD
+	 * @since TBD Validate check-in data before allowing check-in.
 	 *
 	 * @param $attendee array Attendee data.
 	 * @param $check_in bool Check in value.
 	 *
 	 * @return bool|WP_Error
 	 */
-	public function validate_check_in( $attendee, $check_in ) {
+	public function validate_check_in( array $attendee, bool $check_in ) {
 		if ( ! tribe_is_truthy( $check_in ) ) {
 			return true;
+		}
+
+		// check if attendee already checked in.
+		if ( tribe_is_truthy( $attendee['check_in'] ) ) {
+			return new WP_Error( 'already-checked-in', __( 'Attendee is already checked in.', 'event-tickets' ), [ 'status' => 400 ] );
 		}
 
 		$provider = $attendee['provider'] ?? tribe_tickets_get_ticket_provider( $attendee['attendee_id'] );
