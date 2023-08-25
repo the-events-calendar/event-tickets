@@ -11,9 +11,35 @@
  * @var string $total_cancelled_tooltip
  */
 ?>
-
-<ul>
-	<li> <strong><?php esc_html_e( $total_sold_label ); ?></strong> <?php esc_html_e( $total_sold ); ?> <?php echo wp_kses_post( $total_sold_tooltip ); ?> </li>
-	<li> <?php esc_html_e( $total_complete_label . ' ' . $total_complete ); ?> <?php echo wp_kses_post( $total_completed_tooltip ); ?> </li>
-	<li> <?php esc_html_e( $total_cancelled_label . ' ' . $total_cancelled ); ?> </li>
-</ul>
+<div class="tec-tickets__admin-attendees-attendance-type">
+	<div class="tec-tickets__admin-attendees-attendance-type-heading">
+		<div class="tec-tickets__admin-attendees-attendance-type-heading-label">
+			<?php esc_html_e( $total_type_label ); ?>
+		</div>
+		<div class="tec-tickets__admin-attendees-attendance-type-heading-border"></div>
+		<div class="tec-tickets__admin-attendees-attendance-type-heading-total">
+			<span class="tec-tickets__admin-attendees-attendance-type-heading-total-label">
+				<?php echo esc_html__( 'Total', 'event-tickets' ); ?>
+			</span>
+			<span class="tec-tickets__admin-attendees-attendance-type-heading-total-amt">
+				<?php esc_html_e( $total_sold ); ?>
+			</span>
+		</div>
+	</div>
+	<div class="tec-tickets__admin-attendees-attendance-type-complete">
+		<div class="tec-tickets__admin-attendees-attendance-type-complete-label">
+			<?php esc_html_e( $total_complete_label ); ?>
+		</div>
+		<div class="tec-tickets__admin-attendees-attendance-type-complete-amt">
+			<?php esc_html_e( $total_complete ); ?>
+		</div>
+	</div>
+	<div class="tec-tickets__admin-attendees-attendance-type-cancelled">
+		<div class="tec-tickets__admin-attendees-attendance-type-cancelled-label">
+			<?php esc_html_e( $total_cancelled_label ); ?>
+		</div>
+		<div class="tec-tickets__admin-attendees-attendance-type-cancelled-amt">
+			<?php esc_html_e( $total_cancelled ); ?>
+		</div>
+	</div>
+</div>
