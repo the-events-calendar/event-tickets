@@ -566,7 +566,10 @@ export const isTempSharedCapacityValid = createSelector(
 
 export const isZeroPriceValid = createSelector(
 	[ getTicketTempPrice, getTicketsProvider ],
-	( price, provider ) => 0 < parseInt( price, 10 ) || ! [constants.TC_CLASS, constants.TPP_CLASS].includes(provider),
+	( price, provider ) => {
+		return 0 < parseInt( price, 10 ) ||
+			! [constants.TC_CLASS, constants.TEC_TICKETS_COMMERCE_MODULE_CLASS].includes(provider)
+	},
 );
 
 export const isTicketValid = createSelector(

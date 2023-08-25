@@ -47,7 +47,7 @@ exports[`Ticket Constants SUFFIX 1`] = `"postfix"`;
 
 exports[`Ticket Constants TC 1`] = `"tribe-commerce"`;
 
-exports[`Ticket Constants TC_CLASS 1`] = `"TEC\\\\Tickets\\\\Commerce\\\\Module"`;
+exports[`Ticket Constants TC_CLASS 1`] = `"Tribe__Tickets__Commerce__PayPal__Main"`;
 
 exports[`Ticket Constants TC_ORDERS 1`] = `"tpp-orders"`;
 
@@ -74,8 +74,6 @@ Array [
   "own",
 ]
 `;
-
-exports[`Ticket Constants TPP_CLASS 1`] = `"Tribe__Tickets__Commerce__PayPal__Main"`;
 
 exports[`Ticket Constants UNLIMITED 1`] = `"unlimited"`;
 
