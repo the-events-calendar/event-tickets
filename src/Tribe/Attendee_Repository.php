@@ -535,6 +535,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 *
 	 * @since 4.8
 	 * @since 5.6.4 Refactored the logic to remove Event Tickets Plus logic.
+	 * @since TBD Added support to filter by TicketsCommerce order status.
 	 *
 	 * @throws Tribe__Repository__Void_Query_Exception If the requested statuses are not accessible by the user.
 	 *
