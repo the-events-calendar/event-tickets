@@ -7,7 +7,6 @@
  * @version TBD
  *
  * @var boolean $has_series_pass Whether the event has Series Pass enabled.
- * @var Tribe__Tickets__Admin__Views $admin_views The admin views instance for flexible tickets.
  */
 
 if ( empty( $has_series_pass ) ) {
