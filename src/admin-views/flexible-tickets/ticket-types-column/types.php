@@ -12,7 +12,7 @@
  * @var Tribe__Tickets__Admin__Views $admin_views The admin views instance for flexible tickets.
  */
 ?>
-<div class="tec-tickets__series_attached_ticket_types">
+<div class="tec-tickets__series_attached_ticket-types">
 	<?php
 		$admin_views->template( 'ticket-types-column/rsvp', [ 'has_rsvp' => $has_rsvp ] );
 		$admin_views->template( 'ticket-types-column/ticket', [ 'has_ticket' => $has_ticket ] );

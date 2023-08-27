@@ -13,9 +13,11 @@ if ( empty( $has_ticket ) ) {
 	return;
 }
 ?>
-<div class="tec-tickets__series_attached_ticket_types__label">
-	<?php
-		tribe( 'tickets.admin.views' )->template( 'editor/icons/ticket' );
-		echo esc_html( tribe_get_ticket_label_singular() );
-	?>
+<div class="tec-tickets__series_attached_ticket-type">
+	<div class="tec-tickets__series_attached_ticket-type__icon tec-tickets__series_attached_ticket-type__icon--ticket"></div>
+	<div class="tickets__series_attached_ticket-type__title">
+		<?php
+			echo esc_html( tribe_get_ticket_label_singular() );
+		?>
+	</div>
 </div>
