@@ -729,3 +729,37 @@ p.description {
 		padding: var(--tec-spacer-1) 0;
 	}
 }
+
+.tec-tickets__series_attached_ticket-types {
+
+	.tec-tickets__series_attached_ticket-type {
+		display: flex;
+		align-items: center;
+		margin-bottom: var(--tec-spacer-2);
+	}
+
+	.tec-tickets__series_attached_ticket-type__icon {
+		background-repeat: no-repeat;
+		display: inline-block;
+		height: 20px;
+		margin-right: var(--tec-spacer-0);
+		width: 20px;
+	}
+
+	.tec-tickets__series_attached_ticket-type__icon--rsvp {
+		background-image: url( '../icons/ticket-rsvp-icon.svg' );
+		margin-top: 5px;
+	}
+
+	.tec-tickets__series_attached_ticket-type__icon--ticket {
+		background-image: url( '../icons/ticket-default-icon.svg' );
+	}
+
+	.tec-tickets__series_attached_ticket-type__icon--series-pass {
+		background-image: url( '../icons/ticket-series-pass-icon.svg' );
+	}
+
+	.tickets__series_attached_ticket-type__title {
+		font-size: var(--tec-font-size-2);
+	}
+}
