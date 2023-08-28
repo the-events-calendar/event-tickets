@@ -256,11 +256,10 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 		}
 
 		$is_paypal_ticket = $provider instanceof Tribe__Tickets__Commerce__PayPal__Main || $provider instanceof \TEC\Tickets\Commerce\Module;
-		$price            = (float)$body['price'];
 
-		if ( $is_paypal_ticket && $price <= 0) {
+		if ( $is_paypal_ticket && ( ! is_numeric( $body['price'] ) || (float)$body['price'] <= 0 )) {
 			return new WP_Error(
-				'bad_request',
+				'invalid_price',
 				__( 'Invalid price', 'event-tickets' ),
 				[ 'status' => 400 ]
 			);
