@@ -197,6 +197,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Added support for filtering attendees by TicketsCommerce order status. [ET-1863]
 * Tweak - Ticket names over 125 characters will now be truncated when being sent to Paypal. [ET-1865]
 * Tweak - Removed some deprecated filter_vars to avoid PHP 8.1 warnings. [ET-1800]
+* Fix - Corrected settings names for Google Wallet and Apple Wallet in Tickets Commerce Stripe checkout code. [ET-1866]
 
 = [5.6.4] 2023-08-16 =
 
