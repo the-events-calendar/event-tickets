@@ -198,6 +198,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Tweak - Ticket names over 125 characters will now be truncated when being sent to Paypal. [ET-1865]
 * Tweak - Validate check-in data before updating with attendee update REST endpoint. [ET-1863]
 * Tweak - Removed some deprecated filter_vars to avoid PHP 8.1 warnings. [ET-1800]
+* Tweak - Added notice regfarding the availability of Paystack for Tickets Commerce. [ET-1763]
 
 = [5.6.4] 2023-08-16 =
 
