@@ -196,6 +196,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Incorrect ticket count in Ticket email within the Tickets Emails feature. [ET-1832]
 * Fix - Added support for filtering attendees by TicketsCommerce order status. [ET-1863]
 * Tweak - Ticket names over 125 characters will now be truncated when being sent to Paypal. [ET-1865]
+* Tweak - Removed some deprecated filter_vars to avoid PHP 8.1 warnings. [ET-1800]
 
 = [5.6.4] 2023-08-16 =
 
