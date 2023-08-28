@@ -1,7 +1,16 @@
 <?php
-
-
-
+/**
+ * Event Attendance Totals template.
+ *
+ * @since  TBD
+ *
+ * @var \Tribe__Template          $this               Current template object.
+ * @var int                       $event_id           The event/post/page id.
+ * @var Tribe__Tickets__Attendees $attendees          The Attendees object.
+ * @var int                       $total_checked_in   The total number of attendees checked in.
+ * @var int                       $total_attendees    The total number of attendees.
+ * @var string                    $percent_checked_in The percentage of attendees checked in.
+ */
 
 ?>
 <div class="tec-tickets__admin-attendees-attendance-totals-row">

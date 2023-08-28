@@ -3,6 +3,7 @@
  * Event Attendees Summary template.
  *
  * @since  5.5.9
+ * @since  TBD    Moved Attendance Overview section to its own template.
  *
  * @var \Tribe__Template          $this      Current template object.
  * @var int                       $event_id  The event/post/page id.

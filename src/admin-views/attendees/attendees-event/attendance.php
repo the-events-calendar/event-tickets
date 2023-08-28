@@ -1,8 +1,8 @@
 <?php
 /**
- * Event Attendees Summary template.
+ * Event Attendance Overview template.
  *
- * @since  5.5.9
+ * @since  TBD
  *
  * @var \Tribe__Template          $this      Current template object.
  * @var int                       $event_id  The event/post/page id.
