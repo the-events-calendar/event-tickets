@@ -345,7 +345,7 @@ class Base extends Controller {
 		$tickets  = Tickets::get_event_tickets( $event_id );
 
 		if ( empty( $tickets ) ) {
-			echo "-";
+			echo '&mdash;';
 			return;
 		}
 
