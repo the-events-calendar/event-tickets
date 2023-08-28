@@ -1,14 +1,18 @@
 <?php
 /**
- * @var string $total_sold_label
- * @var string $total_complete_label
- * @var string $total_cancelled_label
- * @var string $total_sold
- * @var string $total_complete
- * @var string $total_cancelled
- * @var string $total_sold_tooltip
- * @var string $total_completed_tooltip
- * @var string $total_cancelled_tooltip
+ * Attendance ticket totals template
+ * 
+ * @since TBD
+ * 
+ * @var string $total_sold_label        The label for the total sold tickets.
+ * @var string $total_complete_label    The label for the total completed tickets.
+ * @var string $total_cancelled_label   The label for the total cancelled tickets.
+ * @var string $total_sold              The total sold tickets.
+ * @var string $total_complete          The total completed tickets.
+ * @var string $total_cancelled         The total cancelled tickets.
+ * @var string $total_sold_tooltip      The tooltip for the total sold tickets.
+ * @var string $total_completed_tooltip The tooltip for the total completed tickets.
+ * @var string $total_cancelled_tooltip The tooltip for the total cancelled tickets.
  */
 ?>
 <div class="tec-tickets__admin-attendees-attendance-type">
