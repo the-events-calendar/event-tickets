@@ -140,8 +140,14 @@ class Tribe__Tickets__Attendees {
 	 * Print Check In Totals at top of Column.
 	 *
 	 * @since 4.6.2
+	 * @since TBD   Added $post_id parameter.
 	 */
 	public function print_checkedin_totals( $post_id ) {
+		// Bail if we don't have a post ID.
+		if ( ! $post_id ) {
+			return;
+		}
+
 		$total_checked_in = $this->get_checkedin_total();
 		$check_in_percent = $this->get_checkedin_percentage( $post_id );
 		$total_attendees  = Tribe__Tickets__Tickets::get_event_attendees_count( $post_id );
@@ -168,7 +174,7 @@ class Tribe__Tickets__Attendees {
 	}
 
 	/**
-	 * Get Check In Percentage.\
+	 * Get Check In Percentage.
 	 * 
 	 * @since TBD
 	 * 
