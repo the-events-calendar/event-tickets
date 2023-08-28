@@ -18,10 +18,20 @@
 			<?php echo wp_kses( esc_html_e( 'Accept payments for your ticket sales in Nigeria, Ghana, South Africa, and Kenya with Paystack.  Install the free plugin to get started.', 'event-tickets' ), 'post' ); ?>
 		</div>
 		<div class="tec-tickets__admin-after-pay-promo-links-container">
-			<a href="#" class="tec-tickets__admin-after-pay-promo-link">
+			<a 
+				href="https://evnt.is/et-tc-paystack-in-app"
+				target="_blank"
+				rel="noopener nofollow"
+				class="tec-tickets__admin-after-pay-promo-link"
+			>
 				<?php esc_html_e( 'Download the plugin', 'event-tickets' ); ?>
 			</a>
-			<a href="#" class="tec-tickets__admin-after-pay-promo-link">
+			<a 
+				href="https://theeventscalendar.com/knowledgebase/k/using-event-tickets-with-paystack/" 
+				target="_blank"
+				rel="noopener nofollow"
+				class="tec-tickets__admin-after-pay-promo-link"
+			>
 				<?php esc_html_e( 'Learn more in the knowledgebase', 'event-tickets' ); ?>
 			</a>
 		</div>
