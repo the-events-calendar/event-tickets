@@ -397,7 +397,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 
 		// check if attendee already checked in.
 		if ( tribe_is_truthy( $attendee['check_in'] ) ) {
-			return new WP_Error( 'already-checked-in', __( 'Attendee is already checked in.', 'event-tickets' ), [ 'status' => 400 ] );
+			return new WP_Error( 'tec-et-attendee-already-checked-in', __( 'Attendee is already checked in.', 'event-tickets' ), [ 'status' => 400 ] );
 		}
 
 		$provider = $attendee['provider'] ?? tribe_tickets_get_ticket_provider( $attendee['attendee_id'] );
@@ -406,7 +406,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 		$status = tribe( 'tickets.status' );
 		$complete_statuses = (array) $status->get_completed_status_by_provider_name( $provider );
 		if ( ! in_array( $attendee['order_status'], $complete_statuses, true ) ) {
-			return new WP_Error( 'invalid-check-in', __( 'Attendee Order status is not authorized for check-in.', 'event-tickets' ), [ 'status' => 400 ] );
+			return new WP_Error( 'tec-et-attendee-invalid-check-in', __( 'Attendee Order status is not authorized for check-in.', 'event-tickets' ), [ 'status' => 400 ] );
 		}
 
 		return $check_in;
