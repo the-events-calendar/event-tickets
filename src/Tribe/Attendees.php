@@ -180,6 +180,8 @@ class Tribe__Tickets__Attendees {
 	 * 
 	 * @since TBD
 	 * 
+	 * @param int $post_id The post ID.
+	 * 
 	 * @return string
 	 */
 	public function get_checkedin_percentage( $post_id ): string {
