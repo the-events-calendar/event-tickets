@@ -191,6 +191,18 @@ $container_class .= ( empty( $total_capacity ) ) ? ' tribe_no_capacity' : '';
 			<?php endif; ?>
 		</div>
 	</div>
+	<div class="tec_ticket-panel__helper_text__wrap">
+		<p>
+			<?php
+			$helper_link = sprintf(
+				'<a href="%1$s" target="_blank" rel="noopener noreferrer ">%2$s</a>',
+				esc_url( 'https://evnt.is/manage-tickets' ),
+				esc_html__( 'Learn more about ticket management', 'event-tickets' )
+			);
+			echo sprintf( esc_html__( 'Create and manage Series Passes for this Series. %s', 'event-tickets' ), $helper_link );
+			?>
+		</p>
+	</div>
 	<?php
 	/**
 	 * Allows for the insertion of content at the end of the new ticket admin panel.
