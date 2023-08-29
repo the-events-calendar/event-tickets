@@ -263,7 +263,7 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 			&& $is_invalid_price
 		) {
 			return new WP_Error(
-				'invalid_price',
+				'tec-tickets-rest-invalid_price',
 				__( 'Invalid price', 'event-tickets' ),
 				[ 'status' => 400 ]
 			);
