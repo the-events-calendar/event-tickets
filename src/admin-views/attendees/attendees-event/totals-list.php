@@ -18,7 +18,7 @@
 <div class="tec-tickets__admin-attendees-attendance-type">
 	<div class="tec-tickets__admin-attendees-attendance-type-heading">
 		<div class="tec-tickets__admin-attendees-attendance-type-heading-label">
-			<?php esc_html_e( $total_type_label ); ?>
+			<?php echo esc_html( $total_type_label ); ?>
 		</div>
 		<div class="tec-tickets__admin-attendees-attendance-type-heading-border"></div>
 		<div class="tec-tickets__admin-attendees-attendance-type-heading-total">
@@ -26,24 +26,24 @@
 				<?php echo esc_html__( 'Total', 'event-tickets' ); ?>
 			</span>
 			<span class="tec-tickets__admin-attendees-attendance-type-heading-total-amt">
-				<?php esc_html_e( $total_sold ); ?>
+				<?php echo esc_html( $total_sold ); ?>
 			</span>
 		</div>
 	</div>
 	<div class="tec-tickets__admin-attendees-attendance-type-complete">
 		<div class="tec-tickets__admin-attendees-attendance-type-complete-label">
-			<?php esc_html_e( $total_complete_label ); ?>
+			<?php echo esc_html( $total_complete_label ); ?>
 		</div>
-		<div class="tec-tickets__admin-attendees-attendance-type-complete-amt">
-			<?php esc_html_e( $total_complete ); ?>
+		<div class="tec-tickets__admin-attendees-attendance-type-complete-amount">
+			<?php echo esc_html( $total_complete ); ?>
 		</div>
 	</div>
 	<div class="tec-tickets__admin-attendees-attendance-type-cancelled">
 		<div class="tec-tickets__admin-attendees-attendance-type-cancelled-label">
-			<?php esc_html_e( $total_cancelled_label ); ?>
+			<?php echo esc_html( $total_cancelled_label ); ?>
 		</div>
 		<div class="tec-tickets__admin-attendees-attendance-type-cancelled-amt">
-			<?php esc_html_e( $total_cancelled ); ?>
+			<?php echo esc_html( $total_cancelled ); ?>
 		</div>
 	</div>
 </div>

@@ -141,6 +141,8 @@ class Tribe__Tickets__Attendees {
 	 *
 	 * @since 4.6.2
 	 * @since TBD   Added $post_id parameter.
+	 * 
+	 * @param int $post_id The post ID.
 	 */
 	public function print_checkedin_totals( $post_id ) {
 		// Bail if we don't have a post ID.
@@ -184,7 +186,7 @@ class Tribe__Tickets__Attendees {
 		$total_checked_in = $this->get_checkedin_total();
 		$total            = Tribe__Tickets__Tickets::get_event_attendees_count( $post_id );
 
-		// Remove the "Not Going" RSVPs
+		// Remove the "Not Going" RSVPs.
 		$not_going = tribe( 'tickets.rsvp' )->get_attendees_count_not_going( $post_id );
 		$total    -= $not_going;
 
