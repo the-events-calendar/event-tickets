@@ -27,7 +27,7 @@
 				<?php esc_html_e( 'Download the plugin', 'event-tickets' ); ?>
 			</a>
 			<a 
-				href="https://theeventscalendar.com/knowledgebase/k/using-event-tickets-with-paystack/" 
+				href="https://evnt.is/et-in-app-paystack-kb" 
 				target="_blank"
 				rel="noopener nofollow"
 				class="tec-tickets__admin-after-pay-promo-link"
