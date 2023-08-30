@@ -3,7 +3,7 @@
  * Event Attendees Summary template.
  *
  * @since  5.5.9
- * @since  TBD    Moved Attendance Overview section to its own template.
+ * @since  TBD    Moved Attendance and Ticket Overview section to their own templates.
  *
  * @var \Tribe__Template          $this      Current template object.
  * @var int                       $event_id  The event/post/page id.
@@ -77,33 +77,8 @@ $tickets  = Tribe__Tickets__Tickets::get_event_tickets( $event_id );
 				do_action( 'tribe_events_tickets_attendees_event_details_bottom', $event_id ); ?>
 
 			</div>
-			<div class="welcome-panel-column welcome-panel-middle">
-				<h3><?php echo esc_html_x( 'Overview', 'attendee screen summary', 'event-tickets' ); ?></h3>
-				<?php do_action( 'tribe_events_tickets_attendees_ticket_sales_top', $event_id ); ?>
 
-				<ul>
-					<?php
-					/** @var Tribe__Tickets__Ticket_Object $ticket */
-					foreach ( $tickets as $ticket ) {
-						$ticket_name = sprintf( '%s [#%d]', $ticket->name, $ticket->ID );
-						?>
-						<li>
-							<strong><?php echo esc_html( $ticket_name ) ?>:&nbsp;</strong><?php
-							echo esc_html( tribe_tickets_get_ticket_stock_message( $ticket ) );
-
-							/**
-							 * Adds an entry point to inject additional info for ticket.
-							 *
-							 * @since 5.0.3
-							 */
-							$this->set( 'ticket_item_for_overview', $ticket );
-							$this->do_entry_point( 'overview_section_after_ticket_name' );
-							?>
-						</li>
-					<?php } ?>
-				</ul>
-				<?php do_action( 'tribe_events_tickets_attendees_ticket_sales_bottom', $event_id ); ?>
-			</div>
+			<?php $this->template( 'attendees/attendees-event/overview', [ 'tickets' => $tickets ] ); ?>
 			<?php $this->template( 'attendees/attendees-event/attendance' ); ?>
 			<?php
 			/**
