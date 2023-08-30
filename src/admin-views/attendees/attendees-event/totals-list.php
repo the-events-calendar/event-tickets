@@ -25,7 +25,7 @@
 			<span class="tec-tickets__admin-attendees-attendance-type-heading-total-label">
 				<?php echo esc_html__( 'Total', 'event-tickets' ); ?>
 			</span>
-			<span class="tec-tickets__admin-attendees-attendance-type-heading-total-amt">
+			<span class="tec-tickets__admin-attendees-attendance-type-heading-total-amount">
 				<?php echo esc_html( $total_sold ); ?>
 			</span>
 		</div>
