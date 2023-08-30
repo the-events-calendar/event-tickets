@@ -42,7 +42,7 @@
 		<div class="tec-tickets__admin-attendees-attendance-type-cancelled-label">
 			<?php echo esc_html( $total_cancelled_label ); ?>
 		</div>
-		<div class="tec-tickets__admin-attendees-attendance-type-cancelled-amt">
+		<div class="tec-tickets__admin-attendees-attendance-type-cancelled-amount">
 			<?php echo esc_html( $total_cancelled ); ?>
 		</div>
 	</div>
