@@ -158,12 +158,12 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	/**
 	 * Builds the wallets object to use when creating a Payment Element
 	 *
-	 * @returns {{apple_pay: string, google_pay: string}}
+	 * @returns {{applePay: string, googlePay: string}}
 	 */
 	obj.getWallets = () => {
 		const settings = {
-			apple_pay: 'never',
-			google_pay: 'never',
+			applePay: 'never',
+			googlePay: 'never',
 		};
 
 		if ( ! obj.checkout.wallet_settings ) {
@@ -173,11 +173,11 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		const wallet = obj.checkout.wallet_settings;
 
 		if ( wallet.apple_pay === true ) {
-			settings.apple_pay = 'auto';
+			settings.applePay = 'auto';
 		}
 
 		if ( wallet.google_pay === true ) {
-			settings.google_pay = 'auto';
+			settings.googlePay = 'auto';
 		}
 
 		return settings;
@@ -504,7 +504,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * @since 5.3.0
 	 */
 	obj.setupPaymentElement = () => {
-		const wallets = obj.getWallets();
+		const walletSettings = obj.getWallets();
 		// Instantiate the PaymentElement
 		obj.paymentElement = obj.stripeElements.create( 'payment', {
 			fields: {
@@ -513,7 +513,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 				phone: 'auto',
 				address: 'auto'
 			},
-			wallets
+			wallets: walletSettings
 		} );
 		obj.paymentElement.mount( obj.selectors.paymentElement );
 	};
