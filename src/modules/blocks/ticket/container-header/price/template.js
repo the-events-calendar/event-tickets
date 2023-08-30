@@ -22,6 +22,7 @@ const TicketContainerHeaderPriceInput = ( {
 	currencySymbol,
 	onTempPriceChange,
 	tempPrice,
+	minDefaultPrice,
 } ) => {
 	return (
 		<Fragment>
@@ -37,7 +38,7 @@ const TicketContainerHeaderPriceInput = ( {
 				onChange={ onTempPriceChange }
 				disabled={ isDisabled }
 				type="number"
-				min="0"
+				min={minDefaultPrice}
 			/>
 			{ currencyPosition === SUFFIX && (
 				<span className="tribe-editor__ticket__container-header-price-currency">
@@ -54,6 +55,7 @@ TicketContainerHeaderPriceInput.propTypes = {
 	currencySymbol: PropTypes.string,
 	onTempPriceChange: PropTypes.func,
 	tempPrice: PropTypes.string,
+	minDefaultPrice: PropTypes.string,
 };
 
 const TicketContainerHeaderPriceLabel = ( {
@@ -94,6 +96,7 @@ const TicketContainerHeaderPrice = ( {
 	onTempPriceChange,
 	tempPrice,
 	price,
+	minDefaultPrice,
 } ) => (
 	<div className="tribe-editor__ticket__container-header-price">
 		{ isSelected
@@ -104,6 +107,7 @@ const TicketContainerHeaderPrice = ( {
 					onTempPriceChange={ onTempPriceChange }
 					tempPrice={ tempPrice }
 					isDisabled={ isDisabled }
+					minDefaultPrice={ minDefaultPrice }
 				/>
 			)
 			: (
@@ -125,6 +129,7 @@ TicketContainerHeaderPrice.propTypes = {
 	onTempPriceChange: PropTypes.func,
 	tempPrice: PropTypes.string,
 	price: PropTypes.string,
+	minDefaultPrice: PropTypes.string,
 };
 
 export default TicketContainerHeaderPrice;
