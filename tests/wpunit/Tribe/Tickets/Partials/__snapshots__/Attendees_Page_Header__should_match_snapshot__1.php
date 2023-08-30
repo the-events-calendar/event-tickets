@@ -7,13 +7,13 @@
 				<h3>
 					Post Details				</h3>
 
-				<ul>
+				<ul class="tec-tickets__admin-attendees-attendance-type-list">
 					
 			<li class="post-type">
 				<strong>Post type: </strong>
 				post
 			</li>
-		<li class="event-actions"><a href="" title="Edit">Edit Post</a> | <a href="http://wordpress.test/?p=3107" title="View">View Post</a></li>				</ul>
+		<li class="event-actions"><a href="" title="Edit">Edit Post</a> | <a href="http://wordpress.test/?p=12639" title="View">View Post</a></li>				</ul>
 				
 			</div>
 
@@ -30,9 +30,9 @@
 							<li class="tec-tickets__admin-attendees-overview-ticket-type-list-item">
 					<div>
 						<span class="tec-tickets__admin-attendees-overview-ticket-type-list-item-ticket-name">
-							Test RSVP ticket for 3107						</span>
+							Test RSVP ticket for 12639						</span>
 						<span class="tec-tickets__admin-attendees-overview-ticket-type-list-item-ticket-id">
-							#3108						</span>
+							#12640						</span>
 					</div>
 					<div class="tec-tickets__admin-attendees-overview-ticket-type-list-item-stat">
 						0 issued (90 available)					</div>
@@ -48,26 +48,71 @@
 				(90 available)			</span>
 		</div>
 	</div>
+	</div>			<div class="welcome-panel-column welcome-panel-last alternate">
+	<h3>Attendance Overview</h3>
+		<div class="tec-tickets__admin-attendees-attendance-type-list">
+		<div class="tec-tickets__admin-attendees-attendance-type">
+	<div class="tec-tickets__admin-attendees-attendance-type-heading">
+		<div class="tec-tickets__admin-attendees-attendance-type-heading-label">
+			RSVPs		</div>
+		<div class="tec-tickets__admin-attendees-attendance-type-heading-border"></div>
+		<div class="tec-tickets__admin-attendees-attendance-type-heading-total">
+			<span class="tec-tickets__admin-attendees-attendance-type-heading-total-label">
+				Total			</span>
+			<span class="tec-tickets__admin-attendees-attendance-type-heading-total-amount">
+				10			</span>
+		</div>
 	</div>
-			<div class="welcome-panel-column welcome-panel-last alternate">
-				<div class="totals-header"><h3>Checked in:</h3> <span id="total_checkedin">0</span></div>
-<ul>
-	<li> <strong>Total RSVPs:</strong> 10  </li>
-	<li> Going: 10  </li>
-	<li> Not Going: 0 </li>
-</ul>
-
-<ul>
-	<li> <strong>Total Tickets:</strong> 0  </li>
-	<li> Complete: 0  </li>
-	<li> Cancelled: 0 </li>
-</ul>
+	<div class="tec-tickets__admin-attendees-attendance-type-complete">
+		<div class="tec-tickets__admin-attendees-attendance-type-complete-label">
+			Going:		</div>
+		<div class="tec-tickets__admin-attendees-attendance-type-complete-amount">
+			10		</div>
+	</div>
+	<div class="tec-tickets__admin-attendees-attendance-type-cancelled">
+		<div class="tec-tickets__admin-attendees-attendance-type-cancelled-label">
+			Not Going:		</div>
+		<div class="tec-tickets__admin-attendees-attendance-type-cancelled-amount">
+			0		</div>
+	</div>
+</div>
+<div class="tec-tickets__admin-attendees-attendance-type">
+	<div class="tec-tickets__admin-attendees-attendance-type-heading">
+		<div class="tec-tickets__admin-attendees-attendance-type-heading-label">
+			Tickets		</div>
+		<div class="tec-tickets__admin-attendees-attendance-type-heading-border"></div>
+		<div class="tec-tickets__admin-attendees-attendance-type-heading-total">
+			<span class="tec-tickets__admin-attendees-attendance-type-heading-total-label">
+				Total			</span>
+			<span class="tec-tickets__admin-attendees-attendance-type-heading-total-amount">
+				0			</span>
+		</div>
+	</div>
+	<div class="tec-tickets__admin-attendees-attendance-type-complete">
+		<div class="tec-tickets__admin-attendees-attendance-type-complete-label">
+			Complete:		</div>
+		<div class="tec-tickets__admin-attendees-attendance-type-complete-amount">
+			0		</div>
+	</div>
+	<div class="tec-tickets__admin-attendees-attendance-type-cancelled">
+		<div class="tec-tickets__admin-attendees-attendance-type-cancelled-label">
+			Cancelled:		</div>
+		<div class="tec-tickets__admin-attendees-attendance-type-cancelled-amount">
+			0		</div>
+	</div>
+</div>
 
 			<ul>
 				
 			</ul>
-					</div>
-					</div>
+			</div>
+	<div class="tec-tickets__admin-attendees-attendance-totals-row">
+	<div class="tec-tickets__admin-attendees-attendance-totals-title">
+		Total	</div>
+	<div class="tec-tickets__admin-attendees-attendance-totals-amount">
+		Checked in <span id="total_checkedin">0</span> (<span id="percent_checkedin" data-total-attendees="10">0%</span>)
+	</div>
+</div></div>					</div>
 	</div>
 </div>
 ';
