@@ -21,17 +21,13 @@ $delete_title    = sprintf(
 	$ticket->ID
 );
 ?>
-
 <button
 	data-provider='<?php echo esc_attr( $ticket->provider_class ); ?>'
 	data-ticket-id='<?php echo esc_attr( $ticket->ID ); ?>'
 	title='<?php echo esc_attr( $edit_title ); ?>'
 	class='ticket_edit_button'>
-	<span class='ticket_edit_text'>%s
-		<?php echo esc_html( $ticket->name ); ?>
-	</span>
+	<span class='ticket_edit_text'><?php echo esc_html( $ticket->name ); ?></span>
 </button>
-
 
 <?php if ( $show_duplicate_button ) : ?>
 	<button
@@ -39,9 +35,7 @@ $delete_title    = sprintf(
 		data-ticket-id='<?php echo esc_attr( $ticket->ID ); ?>'
 		title='<?php echo esc_attr( $duplicate_title ); ?>'
 		class='ticket_duplicate'>
-	<span class='ticket_duplicate_text'>%s
-		<?php echo esc_html( $ticket->name ); ?>
-	</span>
+	<span class='ticket_duplicate_text'><?php echo esc_html( $ticket->name ); ?></span>
 	</button>
 <?php endif; ?>
 
@@ -50,7 +44,5 @@ $delete_title    = sprintf(
 	attr-ticket-id='<?php echo esc_attr( $ticket->ID ); ?>'
 	title='<?php echo esc_attr( $delete_title ); ?>'
 	class='ticket_delete'>
-	<span class='ticket_delete_text'>
-		<?php echo esc_html( $ticket->name ); ?>
-	</span>
+	<span class='ticket_delete_text'><?php echo esc_html( $ticket->name ); ?></span>
 </button>
