@@ -29,4 +29,94 @@
 		border-bottom: 1px solid #e0e0e0;
 		color: #50575e;
 	}
+
+	.tec-tickets__admin-attendees-overview-title {
+		margin-bottom: 10px;
+	}
+
+	.tec-tickets__admin-attendees-overview-ticket-type {
+		align-items: center;
+		display: flex;
+	}
+
+	.tec-tickets__admin-attendees-overview-ticket-type-label {
+		color: #000000;
+		font-size: var(--tec-font-size-2);
+		font-weight: var(--tec-font-weight-bold);
+		padding-right: var(--tec-spacer-1);
+	}
+
+	.tec-tickets__admin-attendees-overview-ticket-type-icon {
+		background-repeat: no-repeat;
+		display: inline-block;
+		height: 20px;
+		margin-right: var(--tec-spacer-0);
+		width: 20px;
+	}
+
+	.tec-tickets__admin-attendees-overview-ticket-type-icon--ticket {
+		background-image: url( '../icons/icon-ticket-left.svg' );
+		
+	}
+
+	.tec-tickets__admin-attendees-overview-ticket-type-icon--rsvp {
+		background-image: url( '../icons/icon-rsvp-left.svg' );
+	}
+
+	.tec-tickets__admin-attendees-overview-ticket-type-icon--pass {
+		background-image: url( '../icons/icon-pass-left.svg' );
+	}
+
+	.tec-tickets__admin-attendees-overview-ticket-type-border {
+		border-bottom: 1px solid #DCDCDE; 
+		flex: 1;
+		height: 1px;
+	}
+
+	ul.tec-tickets__admin-attendees-overview-ticket-type-list {
+		margin: 0;
+		padding: var(--tec-spacer-0) var(--tec-spacer-2) var(--tec-spacer-3) var(--tec-spacer-5);
+	}
+
+	.tec-tickets__admin-attendees-overview-ticket-type-list-item {
+		display: flex;
+		justify-content: space-between;
+		margin-right: 0;
+	}
+
+	.tec-tickets__admin-attendees-overview-ticket-type-list-item-ticket-name,
+	.tec-tickets__admin-attendees-overview-ticket-type-list-item-ticket-id {
+		font-size: 13px;;
+	}
+
+	.tec-tickets__admin-attendees-overview-ticket-type-list-item-ticket-name {
+		color: #000000;
+	}
+
+	.tec-tickets__admin-attendees-overview-ticket-type-list-item-ticket-id {
+		color: #646970;
+	}
+
+	.tec-tickets__admin-attendees-overview-ticket-type-list-item-stat {
+		font-size: var(--tec-font-size-1);
+	}
+
+	.tec-tickets__admin-attendees-overview-ticket-totals {
+		border-top: 1px solid #DCDCDE;
+		display: flex;
+		justify-content: space-between;
+		margin-top: var(--tec-spacer-0);
+		padding: var(--tec-spacer-1) 0 0 var(--tec-spacer-5);
+	}
+
+	.tec-tickets__admin-attendees-overview-ticket-totals-title {
+		color: #1D2327;
+		font-size: 13px;
+		font-weight: var(--tec-font-weight-bold);
+	}
+
+	.tec-tickets__admin-attendees-overview-ticket-totals-stat {
+		font-size: var(--tec-font-size-1);
+		padding-right: var(--tec-spacer-2);
+	}
 }
