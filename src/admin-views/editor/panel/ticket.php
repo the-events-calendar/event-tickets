@@ -25,6 +25,8 @@
  * @var string                             $timepicker_round                 The timepicker round.
  * @var string                             $ticket_type                      The type of Ticket the form is for.
  */
+
+$ticket_type = $ticket_type ?: 'default';
 ?>
 
 <div id="tribe_panel_edit" class="ticket_panel panel_edit tribe-validation" aria-hidden="true"
