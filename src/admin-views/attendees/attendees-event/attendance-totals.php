@@ -18,6 +18,8 @@
 		<?php echo esc_html_x( 'Total', 'attendee summary', 'event-tickets' ); ?>
 	</div>
 	<div class="tec-tickets__admin-attendees-attendance-totals-amount">
-		<?php esc_html_e( 'Checked in', 'event-tickets' ); ?> <span id="total_checkedin"><?php esc_html_e( $total_checked_in ); ?></span> (<span id="percent_checkedin" data-total-attendees="<?php echo esc_attr( $total_attendees ); ?>"><?php esc_html_e( $percent_checked_in ); ?></span>)
+		<?php esc_html_e( 'Checked in', 'event-tickets' ); ?> 
+		<span id="total_checkedin"><?php echo esc_html( $total_checked_in ); ?></span> 
+		(<span id="percent_checkedin" data-total-attendees="<?php echo esc_attr( $total_attendees ); ?>"><?php echo esc_html( $percent_checked_in ); ?></span>)
 	</div>
 </div>
