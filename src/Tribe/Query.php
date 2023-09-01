@@ -57,6 +57,7 @@ class Tribe__Tickets__Query {
 
 			// Build the additional WHERE clause.
 			$post_types = (array) $query->get( 'post_type', [ 'post' ] );
+
 			global $wpdb;
 
 			/**
@@ -75,32 +76,23 @@ class Tribe__Tickets__Query {
 				$meta_keys_in = $this->build_meta_keys_in();
 
 				$post_types_in = implode( "','", $post_types );
-				if ( $has_tickets ) {
-					/*
-					 * A fast sub-query on the indexed `wp_postmeta.meta_key` column; then a slow comparison on few values
-					 * in the `wp_postmeta.meta_value` column for a fast query.
-					 */
-					$query = "SELECT p.ID FROM $wpdb->posts p
-					JOIN $wpdb->postmeta pm ON ( $meta_keys_in ) AND pm.meta_value = p.ID
-					WHERE p.post_type IN ('$post_types_in')";
-				} else {
-					/*
-					 * The `wp_postmeta.meta_value` column is not indexed, negative comparisons (!=) on it are slow as there
-					 * are way more values that are not equal and must be checked.
-					 * So we make the sub-query fast by fetching unticketed as all the posts that are not ticketed.
-					 * The SELECT sub-sub-query to pull ticketed is fast, and then we run a query on `wp_posts.ID`: another
-					 * indexed column for another fast sub-query.
-					 */
-					$query = "SELECT p.ID FROM $wpdb->posts p
-					WHERE p.ID NOT IN (
-						SELECT p.ID FROM $wpdb->posts p
-									JOIN $wpdb->postmeta pm ON ( $meta_keys_in ) AND pm.meta_value = p.ID
-									WHERE p.post_type IN ('$post_types_in')
-					) AND p.post_type IN ('$post_types_in')";
-				}
+
+				/*
+				 * A fast sub-query on the indexed `wp_postmeta.meta_key` column; then a slow comparison on few values
+				 * in the `wp_postmeta.meta_value` column for a fast query.
+				 */
+				$query = "SELECT p.ID FROM $wpdb->posts p
+				 JOIN $wpdb->postmeta pm ON ( $meta_keys_in ) AND pm.meta_value = p.ID
+				 WHERE p.post_type IN ('$post_types_in')";
 			}
 
-			$where .= " AND $wpdb->posts.ID IN ($query)";
+			if ( $has_tickets ) {
+				// Include only the posts that have tickets.
+				$where .= " AND $wpdb->posts.ID IN ($query)";
+			} else {
+				// We need to exclude the posts that have tickets.
+				$where .= " AND $wpdb->posts.ID NOT IN ($query)";
+			}
 
 			return $where;
 		};
@@ -139,6 +131,8 @@ class Tribe__Tickets__Query {
 		 */
 		$query = apply_filters( 'tec_tickets_query_ticketed_count_query', null, $post_type );
 
+		global $wpdb;
+
 		if ( $query === null ) {
 			// Build a complete list of meta keys to leverage the meta_key index; LIKE will not hit the index.
 			$meta_keys_in = $this->build_meta_keys_in();
@@ -147,7 +141,6 @@ class Tribe__Tickets__Query {
 			 * A fast query on the indexed `wp_postmeta.meta_key` column; then a slow comparison on few values
 			 * in the `wp_postmeta.meta_value` column for a fast query.
 			 */
-			global $wpdb;
 			$query = $wpdb->prepare(
 				"SELECT COUNT(DISTINCT(p.ID)) FROM $wpdb->posts p
 					JOIN $wpdb->postmeta pm ON ( $meta_keys_in ) AND pm.meta_value = p.ID
@@ -171,6 +164,8 @@ class Tribe__Tickets__Query {
 		 */
 		$query = apply_filters( 'tec_tickets_query_unticketed_count_query', null, $post_type );
 
+		global $wpdb;
+
 		if ( $query === null ) {
 			// Build a complete list of meta keys to leverage the meta_key index; LIKE will not hit the index.
 			$meta_keys_in = $this->build_meta_keys_in();
@@ -182,7 +177,6 @@ class Tribe__Tickets__Query {
 			 * The SELECT sub-query to pull ticketed is fast, and then we run a query on `wp_posts.ID`: another
 			 * indexed column for another fast query.
 			 */
-			global $wpdb;
 			$query = $wpdb->prepare(
 				"SELECT COUNT(DISTINCT(p.ID)) FROM $wpdb->posts p
 					WHERE p.ID NOT IN (
@@ -208,7 +202,7 @@ class Tribe__Tickets__Query {
 	 *
 	 * @return string The query part based on `meta_key`s to "unroll" it into compiled values.
 	 */
-	protected function build_meta_keys_in(): string {
+	public function build_meta_keys_in(): string {
 		/** @var class-string $class */
 		foreach ( Tribe__Tickets__Tickets::modules() as $class => $module ) {
 			$instance    = $class::get_instance();

@@ -12,9 +12,11 @@ namespace TEC\Tickets\Flexible_Tickets;
 use TEC\Common\Contracts\Provider\Controller;
 use TEC\Common\lucatume\DI52\Container;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
+use TEC\Events_Pro\Custom_Tables\V1\Tables\Series_Relationships;
 use TEC\Events_Pro\Custom_Tables\V1\Templates\Series_Filters;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Labels;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Meta;
+use TEC\Tickets\Flexible_Tickets\Series_Passes\Queries;
 use Tribe__Events__Main as TEC;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Tickets__Tickets as Tickets;
@@ -72,6 +74,15 @@ class Series_Passes extends Controller {
 	private Ticket_Provider_Handler $ticket_provider_handler;
 
 	/**
+	 * A reference to the Series Passes' queries handler.
+	 *
+	 * @since TBD
+	 *
+	 * @var Queries
+	 */
+	private Queries $queries;
+
+	/**
 	 * Series_Passes constructor.
 	 *
 	 * since TBD
@@ -82,12 +93,20 @@ class Series_Passes extends Controller {
 	 * @param Metabox                 $metabox                 The Series Passes' metabox handler.
 	 * @param Ticket_Provider_Handler $ticket_provider_handler The Series Passes' ticket provider handler.
 	 */
-	public function __construct( Container $container, Labels $labels, Meta $meta, Metabox $metabox, Ticket_Provider_Handler $ticket_provider_handler ) {
+	public function __construct(
+		Container $container,
+		Labels $labels,
+		Meta $meta,
+		Metabox $metabox,
+		Ticket_Provider_Handler $ticket_provider_handler,
+		Queries $queries
+	) {
 		parent::__construct( $container );
 		$this->labels                  = $labels;
 		$this->meta                    = $meta;
 		$this->metabox                 = $metabox;
 		$this->ticket_provider_handler = $ticket_provider_handler;
+		$this->queries                 = $queries;
 	}
 
 	/**
@@ -179,6 +198,10 @@ class Series_Passes extends Controller {
 			'include_series_to_fetch_attendees'
 		] );
 		add_filter( 'tribe_get_event_meta', [ $this, 'add_pass_costs_to_event_cost' ], 10, 4 );
+
+		add_filter( 'tec_tickets_query_ticketed_status_subquery', [ $this, 'filter_ticketed_status_query' ], 10, 3 );
+		add_filter( 'tec_tickets_query_ticketed_count_query', [ $this, 'filter_ticketed_count_query' ], 10, 2 );
+		add_filter( 'tec_tickets_query_unticketed_count_query', [ $this, 'filter_unticketed_count_query' ], 10, 2 );
 	}
 
 	/**
@@ -236,6 +259,10 @@ class Series_Passes extends Controller {
 		remove_filter( 'tec_tickets_attendees_filter_by_event', [ $this, 'include_series_to_fetch_attendees' ] );
 		remove_filter( 'tec_tickets_attendees_filter_by_event_not_in', [ $this, 'include_series_to_fetch_attendees' ] );
 		remove_filter( 'tribe_get_event_meta', [ $this, 'add_pass_costs_to_event_cost' ] );
+
+		remove_filter( 'tec_tickets_query_ticketed_status_subquery', [ $this, 'filter_ticketed_status_query' ] );
+		remove_filter( 'tec_tickets_query_ticketed_count_query', [ $this, 'filter_ticketed_count_query' ] );
+		remove_filter( 'tec_tickets_query_unticketed_count_query', [ $this, 'filter_unticketed_count_query' ] );
 	}
 
 	/**
@@ -767,5 +794,64 @@ class Series_Passes extends Controller {
 				$passes
 			)
 		);
+	}
+
+	/**
+	 * Filters the query to fetch post types by their ticketed status to include Events that are ticketed "by proxy"
+	 * by being associated with a Series that has one or more Series Passes.
+	 *
+	 * @since TBD
+	 *
+	 * @param string|null   $query       The SQL query to filter.
+	 * @param bool          $has_tickets Whether to filter by ticketed or unticketed status.
+	 * @param array<string> $post_types  The list of post types to filter.
+	 *
+	 * @return string|null The filtered SQL query, if required.
+	 */
+	public function filter_ticketed_status_query( string $query = null, bool $has_tickets, array $post_types ): ?string {
+		// Filter if working with Events alone.
+		if ( $post_types !== [ TEC::POSTTYPE ] ) {
+			return $query;
+		}
+
+		return $this->queries->filter_ticketed_status_query();
+	}
+
+	/**
+	 * Filters the query used to get the number of ticketed posts of a certain type to include Events that are ticketed
+	 * "by proxy" by being associated with a Series that has one or more Series Passes.
+	 *
+	 * @since TBD
+	 *
+	 * @param string|null $query     The SQL query to filter.
+	 * @param string      $post_type The post type the unticketed count is being calculated for.
+	 *
+	 * @return string|null The filtered SQL query, if required.
+	 */
+	public function filter_ticketed_count_query( string $query = null, string $post_type ): ?string {
+		if ( $post_type !== TEC::POSTTYPE ) {
+			return $query;
+		}
+
+		return $this->queries->filter_ticketed_count_query();
+	}
+
+	/**
+	 * Filters the query used to get the number of unticketed posts of a certain type to include Events that are
+	 * ticketed "by proxy" by being associated with a Series that has one or more Series Passes.
+	 *
+	 * @since TBD
+	 *
+	 * @param string|null $query     The SQL query to filter.
+	 * @param string      $post_type The post type the unticketed count is being calculated for.
+	 *
+	 * @return string|null The filtered SQL query, if required.
+	 */
+	public function filter_unticketed_count_query( string $query = null, string $post_type ): ?string {
+		if ( $post_type !== TEC::POSTTYPE ) {
+			return $query;
+		}
+
+		return $this->queries->filter_unticketed_count_query();
 	}
 }

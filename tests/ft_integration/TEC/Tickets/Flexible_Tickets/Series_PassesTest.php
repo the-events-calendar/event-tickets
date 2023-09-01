@@ -7,6 +7,7 @@ use Generator;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Events\Custom_Tables\V1\Models\Event;
+use TEC\Events_Pro\Custom_Tables\V1\Models\Series_Relationship;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Relationship;
 use TEC\Tickets\Commerce\Module;
@@ -16,6 +17,8 @@ use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe__Tickets__Commerce__PayPal__Main as PayPal;
 use Tribe__Tickets__Tickets as Tickets;
+use Tribe__Tickets__Admin__Views__Ticketed as Ticketed;
+use Tribe__Events__Main as TEC;
 
 class Series_PassesTest extends Controller_Test_Case {
 	use SnapshotAssertions;
@@ -1060,5 +1063,181 @@ class Series_PassesTest extends Controller_Test_Case {
 			'',
 			tribe_get_event_meta( $event_not_in_series_wo_tickets, '_EventCost', true )
 		);
+	}
+
+	public function ticketed_and_unticketed_counts_provider(): Generator {
+		yield 'no posts' => [
+			static function (): string {
+				return 'post';
+			}
+		];
+
+		yield '3 unticketed posts' => [
+			function (): string {
+				$this->factory()->post->create_many( 3 );
+
+				return 'post';
+			}
+
+		];
+
+		yield '3 ticketed posts' => [
+			function (): string {
+				foreach ( $this->factory()->post->create_many( 3 ) as $post ) {
+					$this->create_tc_ticket( $post );
+				}
+
+				return 'post';
+			}
+		];
+
+		yield '3 ticketed and 4 unticketed posts' => [
+			function (): string {
+				foreach ( $this->factory()->post->create_many( 3 ) as $post ) {
+					$this->create_tc_ticket( $post );
+				}
+
+				$this->factory()->post->create_many( 4 );
+
+				return 'post';
+			}
+		];
+
+		yield '3 ticketed, 4 unticketed single events' => [
+			function (): string {
+				foreach ( range( 1, 7 ) as $k ) {
+					$event_id = tribe_events()->set_args( [
+						'title'      => "Event $k",
+						'status'     => 'publish',
+						'start_date' => '2020-02-11 17:30:00',
+						'duration'   => 2 * HOUR_IN_SECONDS,
+					] )->create()->ID;
+
+					if ( $k <= 3 ) {
+						$this->create_tc_ticket( $event_id );
+					}
+				}
+
+				return TEC::POSTTYPE;
+			}
+		];
+
+		yield '3 series with passes, each with 2 events' => [
+			function (): string {
+				foreach ( range( 1, 3 ) as $k ) {
+					$event_id = tribe_events()->set_args( [
+						'title'      => "Recurring Event $k",
+						'status'     => 'publish',
+						'start_date' => '2020-02-11 17:30:00',
+						'duration'   => 2 * HOUR_IN_SECONDS,
+						'recurrence' => 'RRULE:FREQ=DAILY;COUNT=4',
+					] )->create()->ID;
+
+
+					$series_id = Series_Relationship::where( 'event_post_id', '=', $event_id )
+					                                ->first()->series_post_id;
+
+					$this->create_tc_series_pass( $series_id );
+
+					// Create another event part of the series
+					$event_id = tribe_events()->set_args( [
+						'title'      => "Recurring Event $k-2",
+						'status'     => 'publish',
+						'start_date' => '2020-02-12 17:30:00',
+						'duration'   => 2 * HOUR_IN_SECONDS,
+						'series'     => $series_id,
+					] )->create()->ID;
+				}
+
+				return TEC::POSTTYPE;
+			}
+		];
+
+		yield '2 series with passes and 2 events each, 3 ticketed, 4 unticketed single events' => [
+			function (): string {
+				foreach ( range( 1, 2 ) as $k ) {
+					$event_id = tribe_events()->set_args( [
+						'title'      => "Recurring Event $k",
+						'status'     => 'publish',
+						'start_date' => '2020-02-11 17:30:00',
+						'duration'   => 2 * HOUR_IN_SECONDS,
+						'recurrence' => 'RRULE:FREQ=DAILY;COUNT=4',
+					] )->create()->ID;
+
+
+					$series_id = Series_Relationship::where( 'event_post_id', '=', $event_id )
+					                                ->first()->series_post_id;
+
+					$this->create_tc_series_pass( $series_id );
+
+					// Create another event part of the series
+					$event_id = tribe_events()->set_args( [
+						'title'      => "Recurring Event $k-2",
+						'status'     => 'publish',
+						'start_date' => '2020-02-12 17:30:00',
+						'duration'   => 2 * HOUR_IN_SECONDS,
+						'series'     => $series_id,
+					] )->create()->ID;
+				}
+
+				foreach ( range( 1, 7 ) as $k ) {
+					$event_id = tribe_events()->set_args( [
+						'title'      => "Event $k",
+						'status'     => 'publish',
+						'start_date' => '2020-02-11 17:30:00',
+						'duration'   => 2 * HOUR_IN_SECONDS,
+					] )->create()->ID;
+
+					if ( $k <= 3 ) {
+						$this->create_tc_ticket( $event_id );
+					}
+				}
+
+				return TEC::POSTTYPE;
+			}
+		];
+
+		yield 'series screen, 2 ticketed, 1 unticketed series with ticketed events' => [
+			function (): string {
+				foreach ( range( 1, 3 ) as $k ) {
+					$series_id = static::factory()->post->create( [ 'post_type' => Series_Post_Type::POSTTYPE ] );
+
+					if ( $k < 3 ) {
+						$this->create_tc_series_pass( $series_id );
+					}
+					if ( $k === 3 ) {
+						// Add a ticketed event to the Series.
+						$event_id = tribe_events()->set_args( [
+							'title'      => "Event $k",
+							'status'     => 'publish',
+							'start_date' => '2020-02-11 17:30:00',
+							'duration'   => 2 * HOUR_IN_SECONDS,
+							'series'     => $series_id,
+						] )->create()->ID;
+
+						$this->create_tc_ticket( $event_id );
+					}
+				}
+
+				return Series_Post_Type::POSTTYPE;
+			}
+		];
+	}
+
+	/**
+	 * It should correctly filter the Ticketec/Unticketed labels
+	 *
+	 * @test
+	 * @dataProvider ticketed_and_unticketed_counts_provider
+	 */
+	public function should_correctly_filter_the_ticketed_unticketed_labels( Closure $fixture ): void {
+		$post_type = $fixture();
+
+		$this->make_controller()->register();
+
+		$ticketed = new Ticketed( $post_type );
+		$filtered = $ticketed->filter_edit_link( [] );
+
+		$this->assertMatchesHtmlSnapshot( implode( "\n", array_values( $filtered ) ) );
 	}
 }
