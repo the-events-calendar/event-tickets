@@ -17,10 +17,8 @@ use TEC\Tickets\Admin\Editor_Data;
 use Tribe__Template as Template;
 use TEC\Tickets\Flexible_Tickets\Templates\Admin_Views;
 use Tribe__Events__Main as TEC;
-use WP_Post;
 use Tribe__Main;
 use Tribe__Tickets__Tickets as Tickets;
-use Tribe__Tickets__RSVP as RSVP;
 
 /**
  * Class Base.
@@ -349,30 +347,37 @@ class Base extends Controller {
 			return;
 		}
 
-		$has_rsvp        = false;
-		$has_ticket      = false;
-		$has_series_pass = false;
-
+		$tickets_by_types = [];
 		foreach ( $tickets as $ticket ) {
-			// check if RSVP available.
-			if ( $ticket->provider_class === RSVP::class ) {
-				$has_rsvp = true;
-				continue;
-			}
-			// check if ticket type is series pass or general ticket.
-			if ( get_post_meta( $ticket->ID, '_type', true ) === Series_Passes::TICKET_TYPE ) {
-				$has_series_pass = true;
-			} else {
-				$has_ticket = true;
+			$tickets_by_types[ $ticket->type ][] = $ticket;
+		}
+
+		$default_types =  [
+			'rsvp',
+			'default',
+			Series_Passes::TICKET_TYPE
+		];
+
+		// Order the tickets by types.
+		$ordered_by_types = [
+			'rsvp'    => $tickets_by_types['rsvp'] ?? [],
+			'default' => $tickets_by_types['default'] ?? [],
+		];
+
+		// Place all other ticket types in between.
+		foreach ( $tickets_by_types as $type => $tickets ) {
+			if ( ! in_array( $type, $default_types ) ) {
+				$ordered_by_types[ $type ] = $tickets;
 			}
 		}
 
-		$admin_views = new Admin_Views;
+		// Series passes should always be placed at the end.
+		$ordered_by_types[Series_Passes::TICKET_TYPE] = $tickets_by_types[Series_Passes::TICKET_TYPE] ?? [];
+
+		$admin_views = new Admin_Views();
 		$admin_views->template( 'ticket-types-column/types', [
-			'has_rsvp'        => $has_rsvp,
-			'has_ticket'      => $has_ticket,
-			'has_series_pass' => $has_series_pass,
-			'admin_views'     => $admin_views,
+			'tickets_by_types' => $ordered_by_types,
+			'admin_views'      => $admin_views,
 		] );
 	}
 }
