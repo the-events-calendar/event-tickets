@@ -200,6 +200,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Tweak - Removed some deprecated filter_vars to avoid PHP 8.1 warnings. [ET-1800]
 * Fix - Corrected wallet settings names in Tickets Commerce Stripe checkout code. [ET-1866]
 * Tweak - Implement new design for Attendees Page, Ticket Overview. [ET-1840]
+* Tweak - Added notice regarding the availability of Paystack for Tickets Commerce. [ET-1763]
 
 = [5.6.4] 2023-08-16 =
 

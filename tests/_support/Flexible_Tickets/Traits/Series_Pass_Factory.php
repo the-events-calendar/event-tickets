@@ -9,12 +9,10 @@
 
 namespace TEC\Tickets\Flexible_Tickets\Test\Traits;
 
-use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 use TEC\Tickets\Commerce;
 use TEC\Tickets\Flexible_Tickets\Series_Passes;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe__Tickets__Ticket_Object as Ticket;
-use Tribe__Tickets__Global_Stock as Global_Stock;
 
 /**
  * Class Series_Pass_Factory.
