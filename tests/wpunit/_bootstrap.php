@@ -23,3 +23,7 @@ update_option( 'stylesheet', 'twentytwenty' );
 
 // Disable Promoter.
 remove_action( 'tribe_tickets_promoter_trigger', [ tribe( Dispatcher::class ), 'trigger' ] );
+
+// Start the posts auto-increment from a high number to make it easier to replace the post IDs in HTML snapshots.
+global $wpdb;
+$wpdb->query( "ALTER TABLE $wpdb->posts AUTO_INCREMENT = 5096" );
