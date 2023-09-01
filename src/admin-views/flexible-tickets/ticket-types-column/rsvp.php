@@ -6,10 +6,10 @@
  *
  * @version TBD
  *
- * @var string $has_rsvp Whether the event has RSVP enabled.
+ * @var array $tickets Array of RSVP tickets.
  */
 
-if ( empty( $has_rsvp ) ) {
+if ( empty( $tickets ) ) {
 	return;
 }
 ?>

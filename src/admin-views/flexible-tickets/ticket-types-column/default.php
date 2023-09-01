@@ -6,10 +6,10 @@
  *
  * @version TBD
  *
- * @var string $has_ticket Whether the event has Tickets enabled.
+ * @var array $tickets Array of default tickets.
  */
 
-if ( empty( $has_ticket ) ) {
+if ( empty( $tickets ) ) {
 	return;
 }
 ?>

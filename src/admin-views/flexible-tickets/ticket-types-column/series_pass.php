@@ -6,10 +6,10 @@
  *
  * @version TBD
  *
- * @var boolean $has_series_pass Whether the event has Series Pass enabled.
+ * @var array $tickets Array of Series-pass tickets.
  */
 
-if ( empty( $has_series_pass ) ) {
+if ( empty( $tickets ) ) {
 	return;
 }
 ?>
