@@ -24,7 +24,7 @@ use Tribe__Tickets__Ticket_Object as Ticket;
 trait Series_Pass_Factory {
 	use Ticket_Maker;
 
-	protected function create_tc_series_pass( int $post_id, int $price, array $overrides = [] ): Ticket {
+	protected function create_tc_series_pass( int $post_id, int $price = 1, array $overrides = [] ): Ticket {
 		$overrides['ticket_type'] = Series_Passes::TICKET_TYPE;
 		$ticket_id                = $this->create_tc_ticket( $post_id, $price, $overrides );
 
