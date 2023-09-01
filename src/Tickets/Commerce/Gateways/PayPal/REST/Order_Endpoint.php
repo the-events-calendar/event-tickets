@@ -513,19 +513,19 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		}
 
 		// Cut the text to the desired length
-		$truncatedText = substr( $text, 0, $truncate_length );
+		$truncated_text = substr( $text, 0, $truncate_length );
 
 		// Find the last space within the truncated text
-		$lastSpace = strrpos( $truncatedText, ' ' );
+		$last_space = strrpos( $truncated_text, ' ' );
 
 		// Cut the text at the last space to avoid cutting in the middle of a word
-		if ( $lastSpace !== false ) {
-			$truncatedText = substr( $truncatedText, 0, $lastSpace );
+		if ( $last_space !== false ) {
+			$truncated_text = substr( $truncated_text, 0, $last_space );
 		}
 
 		// Add an ellipsis at the end
-		$truncatedText .= $ellipsis;
+		$truncated_text .= $ellipsis;
 
-		return $truncatedText;
+		return $truncated_text;
 	}
 }
