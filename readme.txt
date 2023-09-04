@@ -191,6 +191,17 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Fix - Incorrect ticket count in Ticket email within the Tickets Emails feature. [ET-1832]
+* Fix - Added support for filtering attendees by TicketsCommerce order status. [ET-1863]
+* Tweak - Ticket names over 125 characters will now be truncated when being sent to Paypal. [ET-1865]
+* Tweak - Validate check-in data before updating with attendee update REST endpoint. [ET-1863]
+* Tweak - Removed some deprecated filter_vars to avoid PHP 8.1 warnings. [ET-1800]
+* Fix - Corrected wallet settings names in Tickets Commerce Stripe checkout code. [ET-1866]
+* Tweak - Implement new design for Attendees Page, Ticket Overview. [ET-1840]
+* Tweak - Added notice regarding the availability of Paystack for Tickets Commerce. [ET-1763]
+
 = [5.6.4] 2023-08-16 =
 
 * Fix - Fixed translation issues with translating month names in other languages while displaying ticket available message. [ET-1820]

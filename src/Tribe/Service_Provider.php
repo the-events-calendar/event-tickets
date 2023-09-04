@@ -26,10 +26,6 @@ class Tribe__Tickets__Service_Provider extends \TEC\Common\Contracts\Service_Pro
 		$this->container->singleton( 'tickets.version', 'Tribe__Tickets__Version', [ 'hook' ] );
 		$this->container->singleton( 'tickets.metabox', 'Tribe__Tickets__Metabox', [ 'hook' ] );
 
-		// Caching
-		$this->container->singleton( 'tickets.cache-central', 'Tribe__Tickets__Cache__Central', [ 'hook' ] );
-		$this->container->singleton( 'tickets.cache', $this->container->make( 'tickets.cache-central' )->get_cache() );
-
 		// Query Vars
 		$this->container->singleton( 'tickets.query', 'Tribe__Tickets__Query', [ 'hook' ] );
 
