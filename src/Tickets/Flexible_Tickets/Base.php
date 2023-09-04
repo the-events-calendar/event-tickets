@@ -11,12 +11,14 @@ namespace TEC\Tickets\Flexible_Tickets;
 
 use TEC\Common\Contracts\Container;
 use TEC\Common\Contracts\Provider\Controller;
+use TEC\Events\Custom_Tables\V1\Models\Occurrence;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 use TEC\Tickets\Admin\Editor_Data;
 use Tribe__Template as Template;
 use TEC\Tickets\Flexible_Tickets\Templates\Admin_Views;
 use Tribe__Events__Main as TEC;
-use WP_Post;
+use Tribe__Main;
+use Tribe__Tickets__Tickets as Tickets;
 
 /**
  * Class Base.
@@ -111,6 +113,18 @@ class Base extends Controller {
 			$this,
 			'filter_attendees_event_details_top_label'
 		], 10, 2 );
+
+		// Filter the columns displayed in the series editor events list.
+		add_filter(
+			'tec_events_pro_custom_tables_v1_series_occurrent_list_columns', [
+				$this,
+				'filter_series_editor_occurrence_list_columns'
+		] );
+
+		add_action( 'tec_events_pro_custom_tables_v1_series_occurrent_list_column_ticket_types', [
+			$this,
+			'render_series_editor_occurrence_list_column_ticket_types'
+		] );
 	}
 
 	/**
@@ -158,6 +172,18 @@ class Base extends Controller {
 		remove_filter( 'tec_tickets_attendees_event_details_top_label', [
 			$this,
 			'filter_attendees_event_details_top_label'
+		] );
+
+		// Remove the columns displayed in the series editor event List.
+		remove_filter(
+			'tec_events_pro_custom_tables_v1_series_occurrent_list_columns', [
+			$this,
+			'filter_series_editor_occurrence_list_columns'
+		] );
+
+		remove_action( 'tec_events_pro_custom_tables_v1_series_occurrent_list_column_ticket_types', [
+			$this,
+			'render_series_editor_occurrence_list_column_ticket_types'
 		] );
 	}
 
@@ -283,5 +309,74 @@ class Base extends Controller {
 
 		// This controller will not register if ECP is not active: we can assume we'll have ECP translations available.
 		return __( 'Series', 'tribe-events-calendar-pro' );
+	}
+
+	/**
+	 * Filters the columns displayed in the Series editor events List.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,string> $columns The list of columns to filter.
+	 *
+	 * @return array<string,string> The filtered list of columns.
+	 */
+	public function filter_series_editor_occurrence_list_columns( array $columns ): array {
+		return Tribe__Main::array_insert_before_key( 'actions',
+			$columns,
+			[
+				'ticket_types' => sprintf(
+					// translators: %s Ticket singular label text.
+					__( 'Attached %s Types', 'event-tickets' ),
+					tribe_get_ticket_label_singular()
+				),
+			]
+		);
+	}
+
+	/**
+	 * Renders the content of the "Attached Ticket Types" column in the Series editor events List.
+	 *
+	 * @since TBD
+	 *
+	 * @param Occurrence $occurrence
+	 *
+	 * @return void
+	 */
+	public function render_series_editor_occurrence_list_column_ticket_types( Occurrence $occurrence ) {
+		$event_id = $occurrence->post_id;
+		$tickets  = Tickets::get_event_tickets( $event_id );
+
+		if ( empty( $tickets ) ) {
+			echo '&mdash;';
+			return;
+		}
+
+		$tickets_by_types = [];
+		foreach ( $tickets as $ticket ) {
+			$tickets_by_types[ $ticket->type ][] = $ticket;
+		}
+
+		// Order the tickets by types.
+		$ordered_by_types = [
+			'rsvp'    => $tickets_by_types['rsvp'] ?? [],
+			'default' => $tickets_by_types['default'] ?? [],
+		];
+
+		// Place all other ticket types in between.
+		foreach ( $tickets_by_types as $type => $tickets ) {
+			if ( isset( $ordered_by_types[ $type ] ) || Series_Passes::TICKET_TYPE === $type ) {
+				continue;
+			}
+			$ordered_by_types[ $type ] = $tickets;
+		}
+
+		// Series passes should always be placed at the end.
+		$ordered_by_types[Series_Passes::TICKET_TYPE] = $tickets_by_types[Series_Passes::TICKET_TYPE] ?? [];
+
+		$admin_views = new Admin_Views();
+		$admin_views->template( 'ticket-types-column/types', [
+			'tickets_by_types' => $ordered_by_types,
+			'admin_views'      => $admin_views,
+		] );
 	}
 }
