@@ -356,12 +356,6 @@ class Base extends Controller {
 			$tickets_by_types[ $ticket->type ][] = $ticket;
 		}
 
-		$default_types =  [
-			'rsvp',
-			'default',
-			Series_Passes::TICKET_TYPE
-		];
-
 		// Order the tickets by types.
 		$ordered_by_types = [
 			'rsvp'    => $tickets_by_types['rsvp'] ?? [],
@@ -370,9 +364,10 @@ class Base extends Controller {
 
 		// Place all other ticket types in between.
 		foreach ( $tickets_by_types as $type => $tickets ) {
-			if ( ! in_array( $type, $default_types ) ) {
-				$ordered_by_types[ $type ] = $tickets;
+			if ( isset( $ordered_by_types[ $type ] ) || Series_Passes::TICKET_TYPE === $type ) {
+				continue;
 			}
+			$ordered_by_types[ $type ] = $tickets;
 		}
 
 		// Series passes should always be placed at the end.
