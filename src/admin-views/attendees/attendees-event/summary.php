@@ -3,7 +3,7 @@
  * Event Attendees Summary template.
  *
  * @since  5.5.9
- * @since  TBD   Moved Ticket Overview section into its own template. 
+ * @since  TBD    Moved Attendance and Ticket Overview section to their own templates.
  *
  * @var \Tribe__Template          $this      Current template object.
  * @var int                       $event_id  The event/post/page id.
@@ -42,7 +42,7 @@ $tickets  = Tribe__Tickets__Tickets::get_event_tickets( $event_id );
 					?>
 				</h3>
 
-				<ul>
+				<ul class="tec-tickets__admin-attendees-attendance-type-list">
 					<?php
 					/**
 					 * Provides an action that allows for the injections of fields at the top of the event details meta ul
@@ -79,32 +79,7 @@ $tickets  = Tribe__Tickets__Tickets::get_event_tickets( $event_id );
 			</div>
 
 			<?php $this->template( 'attendees/attendees-event/overview', [ 'tickets' => $tickets ] ); ?>
-
-			<div class="welcome-panel-column welcome-panel-last alternate">
-				<?php
-				/**
-				 * Fires before the main body of attendee totals are rendered.
-				 *
-				 * @param int $event_id
-				 */
-				do_action( 'tribe_events_tickets_attendees_totals_top', $event_id );
-
-				/**
-				 * Trigger for the creation of attendee totals within the attendee
-				 * screen summary box.
-				 *
-				 * @param int $event_id
-				 */
-				do_action( 'tribe_tickets_attendees_totals', $event_id );
-
-				/**
-				 * Fires after the main body of attendee totals are rendered.
-				 *
-				 * @param int $event_id
-				 */
-				do_action( 'tribe_events_tickets_attendees_totals_bottom', $event_id );
-				?>
-			</div>
+			<?php $this->template( 'attendees/attendees-event/attendance' ); ?>
 			<?php
 			/**
 			 * Fires after the last column so that "extra" content can be displayed.
