@@ -139,33 +139,35 @@ class Series_MetaboxesTest extends WPTestCase {
 			}
 		];
 
-		// @todo recurring event is not showing the series pass tickets.
-//		yield 'Series has recurring event with series pass' => [
-//			function () {
-//				$recurring = tribe_events()->set_args( [
-//					'title'      => 'Recurring event 1',
-//					'start_date' => '2222-02-15 17:30:00',
-//					'duration'   => 5 * HOUR_IN_SECONDS,
-//					'recurrence' => 'RRULE:FREQ=WEEKLY;COUNT=3',
-//				] )->create();
-//
-//				$series    = Series_Relationship::where( 'event_post_id', '=', $recurring->ID )->first();
-//				$series_id = $series->series_post_id;
-//				$occurrences = Occurrence::where( 'post_id', '=', $recurring->ID )
-//				                         ->all();
-//				foreach ( $occurrences as $occurrence ) {
-//					$occurrence_provisional_ids[] = $occurrence->provisional_id;
-//				}
-//
-//				$series_pass = $this->create_tc_series_pass( $series_id, 10 );
-//				return [
-//					$series_id,
-//					$recurring->ID,
-//					...$occurrence_provisional_ids,
-//					$series_pass->ID
-//				];
-//			}
-//		];
+		yield 'Series has recurring event with series pass' => [
+			function () {
+
+				// A private Recurring Event will generate a private Series.
+				$recurring = tribe_events()->set_args( [
+					'title'      => 'Recurring event 1',
+					'status'     => 'publish',
+					'start_date' => '2222-02-15 17:30:00',
+					'duration'   => 5 * HOUR_IN_SECONDS,
+					'recurrence' => 'RRULE:FREQ=WEEKLY;COUNT=3',
+				] )->create();
+
+				$series_id   = tec_series()->where( 'event_post_id', $recurring->ID )->first_id();
+				$occurrences = Occurrence::where( 'post_id', '=', $recurring->ID )
+				                         ->all();
+				foreach ( $occurrences as $occurrence ) {
+					$occurrence_provisional_ids[] = $occurrence->provisional_id;
+				}
+
+				$series_pass = $this->create_tc_series_pass( $series_id, 10 );
+
+				return [
+					$series_id,
+					$recurring->ID,
+					...$occurrence_provisional_ids,
+					$series_pass->ID
+				];
+			}
+		];
 	}
 
 	public function placehold_post_ids( string $snapshot, array $ids ): string {
