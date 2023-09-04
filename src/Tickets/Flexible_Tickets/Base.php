@@ -324,7 +324,11 @@ class Base extends Controller {
 		return Tribe__Main::array_insert_before_key( 'actions',
 			$columns,
 			[
-				'ticket_types' => esc_html__( 'Attached Ticket Types', 'event-tickets' )
+				'ticket_types' => sprintf(
+					// translators: %s Ticket singular label text.
+					__( 'Attached %s Types', 'event-tickets' ),
+					tribe_get_ticket_label_singular()
+				),
 			]
 		);
 	}
