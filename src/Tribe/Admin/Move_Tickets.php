@@ -341,6 +341,17 @@ class Tribe__Tickets__Admin__Move_Tickets {
 			'post__not_in_series' => true,
 		];
 
+		/**
+		 * Filters the query arguments used to find posts that can serve as ticket hosts.
+		 *
+		 * @since TBD
+		 *
+		 * @param array<string,mixed> $query_args The query arguments that will be used to find posts that can serve
+		 *                                        as ticket hosts.
+		 * @param array<string,mixed> $request    The request parameters that were used to generate the query arguments.
+		 */
+		$query_args = apply_filters( 'tec_tickets_find_ticket_type_host_posts_query_args', $query_args, $request );
+
 		return $this->format_post_list( new \WP_Query( $query_args ) );
 	}
 

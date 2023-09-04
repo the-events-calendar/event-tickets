@@ -125,6 +125,11 @@ class Base extends Controller {
 			$this,
 			'render_series_editor_occurrence_list_column_ticket_types'
 		] );
+
+		add_filter( 'tec_tickets_find_ticket_type_host_posts_query_args', [
+			$this,
+			'include_all_events_in_move_ticket_choices'
+		] );
 	}
 
 	/**
@@ -184,6 +189,11 @@ class Base extends Controller {
 		remove_action( 'tec_events_pro_custom_tables_v1_series_occurrent_list_column_ticket_types', [
 			$this,
 			'render_series_editor_occurrence_list_column_ticket_types'
+		] );
+
+		remove_filter( 'tec_tickets_find_ticket_type_host_posts_query_args', [
+			$this,
+			'include_all_events_in_move_ticket_choices'
 		] );
 	}
 
@@ -378,5 +388,23 @@ class Base extends Controller {
 			'tickets_by_types' => $ordered_by_types,
 			'admin_views'      => $admin_views,
 		] );
+	}
+
+	/**
+	 * Updates the query arguments used to fetch the available Events when moving Tickets to remove the argument that
+	 * would prevent, in CT1 context, Events in Series from being included.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $query_args The query arguments used to fetch the available Events.
+	 *
+	 * @return array<string,mixed> The updated query arguments.
+	 */
+	public function include_all_events_in_move_ticket_choices( array $query_args ): array {
+		if ( array_key_exists( 'post__not_in_series', $query_args ) ) {
+			$query_args['post__not_in_series'] = null;
+		}
+
+		return $query_args;
 	}
 }
