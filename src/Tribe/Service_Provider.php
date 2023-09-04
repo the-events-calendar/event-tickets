@@ -1,6 +1,6 @@
 <?php
 
-use TEC\Tickets\Commerce\Custom_Tables\V1\Provider as ET_CT1_Provider;
+use TEC\Tickets\Custom_Tables\V1\Provider as ET_CT1_Provider;
 
 /**
  * Class Tribe__Tickets__Service_Provider
