@@ -67,7 +67,7 @@ class Provider extends ServiceProvider {
 		$this->did_register = true;
 
 		// Whether the feature is enabled or not, allow fetching this provider.
-		$this->container->singleton( self::class, self::class );
+		$this->container->singleton( self::class, $this );
 
 		// Bind some implementations common to all Controllers.
 		$this->container->singleton( Admin_Views::class, Admin_Views::class );
@@ -93,6 +93,22 @@ class Provider extends ServiceProvider {
 		$this->container->register( Series_Passes::class );
 		$this->container->register( CT1_Integration::class );
 		$this->container->register( CT1_Migration::class );
+	}
+
+	/**
+	 * Unregisters the bindings, service providers and controllers part of the feature.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function unregister(): void {
+		$this->container->get( Custom_Tables::class )->unregister();
+		$this->container->get( WP_Cli::class )->unregister();
+		$this->container->get( Base::class )->unregister();
+		$this->container->get( Series_Passes::class )->unregister();
+		$this->container->get( CT1_Integration::class )->unregister();
+		$this->container->get( CT1_Migration::class )->unregister();
 	}
 
 	/**
