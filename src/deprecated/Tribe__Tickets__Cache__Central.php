@@ -1,6 +1,11 @@
 <?php
+_deprecated_file( __FILE__, 'TBD', 'No direct replacement.' );
 
-
+/**
+ * Class Tribe__Tickets__Cache__Central.
+ *
+ * @deprecated TBD
+ */
 class Tribe__Tickets__Cache__Central {
 
 	/**
@@ -16,6 +21,8 @@ class Tribe__Tickets__Cache__Central {
 	/**
 	 *  The class singleton constructor.
 	 *
+	 * @deprecated TBD
+	 *
 	 * @return Tribe__Tickets__Cache__Central
 	 */
 	public static function instance() {
@@ -29,6 +36,8 @@ class Tribe__Tickets__Cache__Central {
 	/**
 	 * Tribe__Tickets__Cache__Central constructor.
 	 *
+	 * @deprecated TBD
+	 *
 	 * @param Tribe__Tickets__Cache__Cache_Interface|null $cache An injectable cache object instance.
 	 */
 	public function __construct( Tribe__Tickets__Cache__Cache_Interface $cache = null ) {
@@ -38,6 +47,8 @@ class Tribe__Tickets__Cache__Central {
 
 	/**
 	 * Hooks the class to relevant filters.
+	 *
+	 * @deprecated TBD
 	 */
 	public function hook() {
 		/**
@@ -81,6 +92,8 @@ class Tribe__Tickets__Cache__Central {
 	/**
 	 * Use a filter as an action to reset all caches.
 	 *
+	 * @deprecated TBD
+	 *
 	 * @param mixed $value
 	 *
 	 * @return mixed The original value.
@@ -93,6 +106,8 @@ class Tribe__Tickets__Cache__Central {
 
 	/**
 	 * Returns an instance of the currently used cache.
+	 *
+	 * @deprecated TBD
 	 *
 	 * @return null|Tribe__Tickets__Cache__Cache_Interface|Tribe__Tickets__Cache__Transient_Cache
 	 */

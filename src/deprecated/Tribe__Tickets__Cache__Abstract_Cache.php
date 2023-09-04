@@ -1,8 +1,10 @@
 <?php
-
+_deprecated_file( __FILE__, 'TBD', 'No direct replacement.' );
 
 /**
  * Implements methods common to all caches implementations.
+ *
+ * @deprecated TBD
  */
 abstract class Tribe__Tickets__Cache__Abstract_Cache implements Tribe__Tickets__Cache__Cache_Interface {
 
@@ -28,6 +30,8 @@ abstract class Tribe__Tickets__Cache__Abstract_Cache implements Tribe__Tickets__
 	/**
 	 * Sets the expiration time for the cache.
 	 *
+	 * @deprecated TBD
+	 *
 	 * @param int $seconds
 	 *
 	 * @return void
@@ -37,6 +41,8 @@ abstract class Tribe__Tickets__Cache__Abstract_Cache implements Tribe__Tickets__
 	}
 
 	/**
+	 * @deprecated TBD
+	 *
 	 * @param array $post_types An array of post types overriding the supported ones.
 	 *
 	 * @return array
@@ -70,7 +76,7 @@ abstract class Tribe__Tickets__Cache__Abstract_Cache implements Tribe__Tickets__
 				$past_events = $this->past_events();
 				if ( ! empty( $past_events ) ) {
 					$past_events_interval = '(' . implode( ',', $past_events ) . ')';
-					$query .= " AND pm.meta_value NOT IN {$past_events_interval}";
+					$query                .= " AND pm.meta_value NOT IN {$past_events_interval}";
 				}
 			}
 		}
@@ -87,17 +93,20 @@ abstract class Tribe__Tickets__Cache__Abstract_Cache implements Tribe__Tickets__
 		 * The above will fetch posts based on the meta data regardless of the status of the post, however post
 		 * under the status of `trash` or `auto-draft` shouldn't be in the list.
 		 */
-		$ids = implode( ',', $ids );
+		$ids   = implode( ',', $ids );
 		$query = "SELECT DISTINCT(ID)
 				FROM {$wpdb->posts}
 				WHERE ID IN ({$ids})
 				AND post_status NOT IN ('auto-draft', 'trash')";
 
 		$ids = $wpdb->get_col( $query );
+
 		return is_array( $ids ) ? $ids : array();
 	}
 
 	/**
+	 * @deprecated TBD
+	 *
 	 * @param array $post_types An array of post types overriding the supported ones.
 	 *
 	 * @return array
@@ -126,7 +135,7 @@ abstract class Tribe__Tickets__Cache__Abstract_Cache implements Tribe__Tickets__
 
 		if ( ! empty( $posts_with_tickets ) && is_array( $posts_with_tickets ) ) {
 			$excluded = implode( ',', $posts_with_tickets );
-			$query .= " AND ID NOT IN ({$excluded})";
+			$query    .= " AND ID NOT IN ({$excluded})";
 		}
 
 		$ids = $wpdb->get_col( $query );
@@ -137,6 +146,8 @@ abstract class Tribe__Tickets__Cache__Abstract_Cache implements Tribe__Tickets__
 	}
 
 	/**
+	 * @deprecated TBD
+	 *
 	 * @return array
 	 */
 	protected function fetch_past_events() {
@@ -160,6 +171,8 @@ abstract class Tribe__Tickets__Cache__Abstract_Cache implements Tribe__Tickets__
 	 *
 	 * Some post types, like Events, have a notion of "past". By default the cache
 	 * will not take "past" posts into account.
+	 *
+	 * @deprecated TBD
 	 *
 	 * @param bool $include_past
 	 */
