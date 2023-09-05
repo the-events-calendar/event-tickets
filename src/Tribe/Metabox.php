@@ -99,6 +99,7 @@ class Tribe__Tickets__Metabox {
 
 		/** @var Tribe__Tickets__Admin__Views $admin_views */
 		$admin_views = tribe( 'tickets.admin.views' );
+		$helper_text = $this->get_list_panel_helper_text( $post );
 
 		$context = get_defined_vars();
 
@@ -208,8 +209,9 @@ class Tribe__Tickets__Metabox {
 
 		$panels = [
 			'list'     => $admin_views->template( 'editor/panel/list', [
-				'post_id' => $post->ID,
-				'tickets' => $tickets
+				'post_id'     => $post->ID,
+				'tickets'     => $tickets,
+				'helper_text' => $this->get_list_panel_helper_text( $post ),
 			], false ),
 			'settings' => $admin_views->template( 'editor/panel/settings', [ 'post_id' => $post->ID ], false ),
 			'ticket'   => $admin_views->template(
@@ -902,6 +904,43 @@ class Tribe__Tickets__Metabox {
 			'decimal' => $decimal,
 			'decimal_error' => __( 'Please enter in without thousand separators and currency symbols.', 'event-tickets' ),
 		) );
+	}
+
+	/**
+	 * Get the list panel helper text.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post $post The post object.
+	 *
+	 * @return string The helper text with link.
+	 */
+	protected function get_list_panel_helper_text( WP_Post $post ): string {
+		$helper_link   = sprintf(
+			'<a href="%1$s" target="_blank" rel="noopener noreferrer ">%2$s</a>',
+			esc_url( 'https://evnt.is/manage-tickets' ),
+			esc_html__( 'Learn more about ticket management', 'event-tickets' )
+		);
+
+		$object_labels = get_post_type_object( $post->post_type );
+		$text          = sprintf(
+			// Translators: %1$s: dynamic "tickets" label text, %2$s: dynamic "RSVPs" label, %3$s: dynamic post type label plural, %4$s the learn more link.
+			esc_html__( 'Create and manage single %1$s and %2$s for this %3$s. %4$s.', 'event-tickets' ),
+			tribe_get_ticket_label_plural(),
+			tribe_get_rsvp_label_plural(),
+			strtolower( $object_labels->labels->singular_name ),
+			$helper_link,
+		);
+
+		/**
+		 * Filters the helper text shown at the bottom of Ticket panel meta box.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $text The helper text with link.
+		 * @param WP_Post $post The Post object.
+		 */
+		return apply_filters( 'tec_tickets_panel_list_helper_text', $text, $post );
 	}
 
 
