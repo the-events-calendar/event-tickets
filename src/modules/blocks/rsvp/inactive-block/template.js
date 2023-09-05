@@ -11,12 +11,12 @@ import { __ } from '@wordpress/i18n';
 
 const RSVPInactiveBlock = ({ created }) => {
 	const title = created
-		? __('RSVP is not currently active', 'event-tickets')
-		: __('Add an RSVP', 'event-tickets');
+		? __( 'RSVP is not currently active', 'event-tickets' )
+		: __( 'Add an RSVP', 'event-tickets' );
 
 	const description = created
-		? __('Edit this block to change RSVP settings.', 'event-tickets')
-		: __('Allow users to confirm their attendance.', 'event-tickets');
+		? __( 'Edit this block to change RSVP settings.', 'event-tickets' )
+		: __( 'Allow users to confirm their attendance.', 'event-tickets' );
 
 	return (
 		<div class="tribe-common tribe-editor__inactive-block--rsvp">
@@ -39,7 +39,7 @@ const RSVPInactiveBlock = ({ created }) => {
 							<div class="tribe-editor__rsvp-actions-rsvp">
 								<div class="tribe-editor__rsvp-actions-rsvp-create">
 									<button class="tribe-common-c-btn tribe-common-b1 tribe-common-b2--min-medium">
-										{ __('Create RSVP', 'event-tickets')}
+										{ __( 'Create RSVP', 'event-tickets' )}
 									</button>
 								</div>
 							</div>
