@@ -195,16 +195,16 @@ $container_class .= ( empty( $total_capacity ) ) ? ' tribe_no_capacity' : '';
 	</div>
 	<div class="tec_ticket-panel__helper_text__wrap">
 		<p>
-			<?php
-			echo wp_kses( $helper_text, [
-					'a' => [
-						'class'      => [],
-						'href'       => [],
-						'target'     => [],
-						'rel'        => [],
-					],
-				] );
-			?>
+		<?php
+		echo wp_kses( $helper_text, [
+			'a' => [
+				'class'      => [],
+				'href'       => [],
+				'target'     => [],
+				'rel'        => [],
+			],
+		] );
+		?>
 		</p>
 	</div>
 	<?php

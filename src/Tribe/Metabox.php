@@ -913,9 +913,9 @@ class Tribe__Tickets__Metabox {
 	 *
 	 * @param WP_Post $post The post object.
 	 *
-	 * @return string
+	 * @return string The helper text with link.
 	 */
-	public function get_list_panel_helper_text( $post ) {
+	protected function get_list_panel_helper_text( WP_Post $post ): string {
 		$helper_link   = sprintf(
 			'<a href="%1$s" target="_blank" rel="noopener noreferrer ">%2$s</a>',
 			esc_url( 'https://evnt.is/manage-tickets' ),
