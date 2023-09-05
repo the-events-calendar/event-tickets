@@ -870,7 +870,7 @@ class Series_Passes extends Controller {
 	 *
 	 * @return string
 	 */
-	public function filter_tickets_panel_list_helper_text( $text, $post ) {
+	public function filter_tickets_panel_list_helper_text( string $text, WP_Post $post ): string {
 		if ( Series_Post_Type::POSTTYPE != $post->post_type ) {
 			return $text;
 		}
