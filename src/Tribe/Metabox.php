@@ -922,7 +922,7 @@ class Tribe__Tickets__Metabox {
 			esc_html__( 'Learn more about ticket management', 'event-tickets' )
 		);
 
-		$object_labels = get_post_type_object( get_post_type( $post ) );
+		$object_labels = get_post_type_object( $post->post_type );
 		$text          = sprintf(
 			esc_html__( 'Create and manage single %1$s and %2$s for this %3$s. %4$s.', 'event-tickets' ),
 			tribe_get_ticket_label_plural(),
