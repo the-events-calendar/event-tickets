@@ -201,6 +201,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Corrected wallet settings names in Tickets Commerce Stripe checkout code. [ET-1866]
 * Tweak - Implement new design for Attendees Page, Ticket Overview. [ET-1840]
 * Tweak - Added notice regarding the availability of Paystack for Tickets Commerce. [ET-1763]
+* Tweak - Improve performance of the post admin list. [ET-1870]
 
 = [5.6.4] 2023-08-16 =
 

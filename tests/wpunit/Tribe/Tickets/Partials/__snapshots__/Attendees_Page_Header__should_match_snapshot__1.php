@@ -13,7 +13,7 @@
 				<strong>Post type: </strong>
 				post
 			</li>
-		<li class="event-actions"><a href="" title="Edit">Edit Post</a> | <a href="http://wordpress.test/?p=3107" title="View">View Post</a></li>				</ul>
+		<li class="event-actions"><a href="" title="Edit">Edit Post</a> | <a href="http://wordpress.test/?p=POST_ID" title="View">View Post</a></li>				</ul>
 				
 			</div>
 
@@ -30,9 +30,9 @@
 							<li class="tec-tickets__admin-attendees-overview-ticket-type-list-item">
 					<div>
 						<span class="tec-tickets__admin-attendees-overview-ticket-type-list-item-ticket-name">
-							Test RSVP ticket for 3107						</span>
+							Test RSVP ticket for POST_ID						</span>
 						<span class="tec-tickets__admin-attendees-overview-ticket-type-list-item-ticket-id">
-							#3108						</span>
+							#RSVP_TICKET_ID						</span>
 					</div>
 					<div class="tec-tickets__admin-attendees-overview-ticket-type-list-item-stat">
 						0 issued (90 available)					</div>

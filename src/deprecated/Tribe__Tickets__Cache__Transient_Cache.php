@@ -1,16 +1,20 @@
 <?php
-
+_deprecated_file( __FILE__, 'TBD', 'No direct replacement.' );
 
 /**
  * Class Tribe__Ticket__Cache__Transient_Cache
  *
  * Stores and return costly site-wide information.
+ *
+ * @deprecated TBD
  */
 class Tribe__Tickets__Cache__Transient_Cache extends Tribe__Tickets__Cache__Abstract_Cache implements Tribe__Tickets__Cache__Cache_Interface {
 
 
 	/**
 	 * Resets all caches.
+	 *
+	 * @deprecated TBD
 	 *
 	 * @param int $post_id
 	 */
@@ -40,6 +44,8 @@ class Tribe__Tickets__Cache__Transient_Cache extends Tribe__Tickets__Cache__Abst
 	 *
 	 * Please note that the list is aware of supported types.
 	 *
+	 * @deprecated TBD
+	 *
 	 * @param array $post_types An array of post types overriding the supported ones.
 	 * @param bool $refetch Whether the method should try to get the data from the cache first or not.
 	 *
@@ -68,6 +74,8 @@ class Tribe__Tickets__Cache__Transient_Cache extends Tribe__Tickets__Cache__Abst
 	 *
 	 * Please note that the list is aware of supported types.
 	 *
+	 * @deprecated TBD
+	 *
 	 * @param array $post_types An array of post types overriding the supported ones.
 	 * @param bool $refetch Whether the method should try to get the data from the cache first or not.
 	 *
@@ -93,6 +101,8 @@ class Tribe__Tickets__Cache__Transient_Cache extends Tribe__Tickets__Cache__Abst
 
 	/**
 	 * Returns an array of all past events post IDs.
+	 *
+	 * @deprecated TBD
 	 *
 	 * @param bool $refetch Whether the method should try to get the data from the cache first or not.
 	 *

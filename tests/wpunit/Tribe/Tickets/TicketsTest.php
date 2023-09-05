@@ -2,6 +2,7 @@
 
 namespace Tribe\Tickets;
 
+use TEC\Tickets\Commerce\Module;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
@@ -25,9 +26,11 @@ class TicketsTest extends \Codeception\TestCase\WPTestCase {
 			return [ 'post' ];
 		} );
 
-		// Enable Tribe Commerce.
+		// Enable Tribe Commerce (PayPal).
 		add_filter( 'tribe_tickets_commerce_paypal_is_active', '__return_true' );
+		// Ensure PayPal is the only commerce provider active.
 		add_filter( 'tribe_tickets_get_modules', function ( $modules ) {
+			unset( $modules[ Module::class ] );
 			$modules['Tribe__Tickets__Commerce__PayPal__Main'] = tribe( 'tickets.commerce.paypal' )->plugin_name;
 
 			return $modules;

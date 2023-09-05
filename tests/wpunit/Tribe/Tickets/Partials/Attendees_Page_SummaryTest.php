@@ -38,7 +38,7 @@ class Attendees_Page_Header extends WPTestCase {
 		$rsvp_ticket_id = $this->create_rsvp_ticket( $post_id );
 
 		// Create attendee records.
-		$this->create_many_attendees_for_ticket( 10, $rsvp_ticket_id, $post_id );
+		$attendee_ids = $this->create_many_attendees_for_ticket( 10, $rsvp_ticket_id, $post_id );
 
 		// Create attendees object.
 		$_GET['event_id']           = $post_id;
@@ -52,6 +52,15 @@ class Attendees_Page_Header extends WPTestCase {
 			'event_id'  => $post_id,
 		];
 		$html = $template->template( $this->partial_path, $args, false );
+
+		// Replace post IDs in the snapshot to stabilize it.
+		// Start from the end to avoid replacing the same ID twice.
+		$post_ids = [ ...$attendee_ids, $rsvp_ticket_id, $post_id ];
+		$html = str_replace(
+			$post_ids,
+			[ ...array_fill( 0, count( $attendee_ids ), 'ATTENDEE_ID' ), 'RSVP_TICKET_ID', 'POST_ID' ],
+			$html
+		);
 
 		$this->assertMatchesSnapshot( $html );
 	}
