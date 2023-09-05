@@ -12,12 +12,12 @@ namespace TEC\Tickets\Flexible_Tickets;
 use TEC\Common\Contracts\Provider\Controller;
 use TEC\Common\lucatume\DI52\Container;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
-use TEC\Events_Pro\Custom_Tables\V1\Tables\Series_Relationships;
 use TEC\Events_Pro\Custom_Tables\V1\Templates\Series_Filters;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Labels;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Meta;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Queries;
 use Tribe__Events__Main as TEC;
+use Tribe__Repository__Interface as ORM;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Tickets__Tickets as Tickets;
 use WP_Post;
@@ -172,7 +172,7 @@ class Series_Passes extends Controller {
 			'display_pass_notice_before_passes_list'
 		], 10, 3 );
 
-		add_filter( 'tec_tickets_repository_filter_by_event_id', [ $this, 'add_series_to_searched_events' ] );
+		add_filter( 'tec_tickets_repository_filter_by_event_id', [ $this, 'add_series_to_searched_events' ], 10, 2 );
 		add_action( 'added_post_meta', [ $this, 'propagate_ticket_provider_from_series' ], 20, 4 );
 		add_action( 'updated_post_meta', [ $this, 'propagate_ticket_provider_from_series' ], 20, 4 );
 		add_action( 'deleted_post_meta', [ $this, 'delete_ticket_provider_from_series' ], 20, 4 );
@@ -558,7 +558,14 @@ class Series_Passes extends Controller {
 	 *
 	 * @return array<int> The list of IDs to search for tickets.
 	 */
-	public function add_series_to_searched_events( $post_id ) {
+	public function add_series_to_searched_events( $post_id, ORM $repository ) {
+		$context = $repository->get_request_context();
+
+		// Bail if the context of the fetch is not one we want to interfere with.
+		if ( $context === 'manual-attendees' ) {
+			return $post_id;
+		}
+
 		// At least one of the IDs must be an Event.
 		$event_ids = array_filter( (array) $post_id, function ( $id ) {
 			return get_post_type( $id ) === TEC::POSTTYPE;

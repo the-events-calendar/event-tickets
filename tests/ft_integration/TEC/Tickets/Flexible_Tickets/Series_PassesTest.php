@@ -964,6 +964,46 @@ class Series_PassesTest extends Controller_Test_Case {
 	}
 
 	/**
+	 * It should add Series ID to Event IDs when fetching Tickets by Event
+	 *
+	 * @test
+	 */
+	public function should_add_series_id_to_event_ids_when_fetching_tickets_by_event(): void {
+		$series          = static::factory()->post->create( [
+			'post_type' => Series_Post_Type::POSTTYPE,
+		] );
+		$series_pass     = $this->create_tc_series_pass( $series )->ID;
+		$event_in_series = tribe_events()->set_args( [
+			'title'      => 'Event in Series',
+			'status'     => 'publish',
+			'start_date' => '2020-02-11 17:30:00',
+			'end_date'   => '2020-02-11 18:00:00',
+			'series'     => $series,
+		] )->create()->ID;
+
+		// Start with the controller unregistered.
+		$this->assertEqualSets(
+			[],
+			tribe_tickets()->where( 'event', $event_in_series )->get_ids()
+		);
+
+		// Build and register the controller.
+		$controller = $this->make_controller()->register();
+
+		$this->assertEqualSets(
+			[ $series_pass ],
+			tribe_tickets()->where( 'event', $event_in_series )->get_ids()
+		);
+
+		// Run the same query, but change the context to one the controller should not interfere with.
+		$this->assertEqualSets(
+			[],
+			tribe_tickets()->set_request_context( 'manual-attendees' )
+			               ->where( 'event', $event_in_series, 'metabox_capacity' )->get_ids()
+		);
+	}
+
+	/**
 	 * It should filter Event cost to add cost of Series Passes
 	 *
 	 * @test

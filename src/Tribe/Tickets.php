@@ -378,14 +378,17 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @since  5.5.0 refactored to use the tickets ORM.
 		 * @since  4.6
 		 * @since 5.5.2 Set default query args.
+		 * @since TBD Added the `$context` parameter.
 		 *
 		 * @param int|WP_Post $post_id Build the args to query only
 		 *                             for tickets related to this post ID.
+		 * @param string|null $context The context of the query.
 		 *
 		 * @return Tribe__Repository__Interface
 		 */
-		public function set_tickets_query_args( $post_id = null ) {
+		public function set_tickets_query_args( $post_id = null, string $context = null ) {
 			$repository = tribe_tickets( $this->orm_provider );
+			$repository->set_request_context( $context );
 			$repository->by( 'event', $post_id );
 			$repository->by( 'status', 'publish' );
 			$repository->by( 'posts_per_page', -1 );
@@ -413,14 +416,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Retrieve the ID numbers of all tickets assigned to an event.
 		 *
-		 * @since  5.5.0 refactored to use the tickets ORM.
 		 * @since  4.6
+		 * @since  5.5.0 refactored to use the tickets ORM.
+		 * @since TBD Added the `$context` parameter.
 		 *
 		 * @param int|WP_Post $post Only get tickets assigned to this post ID.
 		 *
 		 * @return array|false
 		 */
-		public function get_tickets_ids( $post = 0 ) {
+		public function get_tickets_ids( $post = 0, string $context = null ) {
 			$post_id = 0;
 			if ( is_numeric( $post ) ) {
 				$post_id = (int) $post;
@@ -447,7 +451,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				}
 			}
 
-			return $this->set_tickets_query_args( $post_id )->get_ids();
+			return $this->set_tickets_query_args( $post_id, $context )->get_ids();
 		}
 
 		/**
@@ -766,12 +770,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Returns all the tickets for an event, of the active ticket providers.
 		 *
 		 * @since 4.12.0 Changed from protected abstract to public with duplicated child classes' logic consolidated here.
+		 * @since TBD Added the `$context` parameter.
 		 *
 		 * @param int $post_id ID of parent "event" post.
+		 * @param string|null $context The context of the request.
 		 *
 		 * @return Tribe__Tickets__Ticket_Object[] List of ticket objects.
 		 */
-		public function get_tickets( $post_id ) {
+		public function get_tickets( $post_id, string $context = null ) {
 
 			/** @var Tribe__Cache $cache */
 			$cache = tribe( 'cache' );
@@ -795,7 +801,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return [];
 			}
 
-			$ticket_ids = $this->get_tickets_ids( $post_id );
+			$ticket_ids = $this->get_tickets_ids( $post_id, $context );
 
 			if ( ! $ticket_ids ) {
 				return [];
@@ -1742,10 +1748,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Returns all tickets for an event (all providers are queried for this information).
 		 *
+		 * @since TBD Added the `$context` parameter.
+		 *
 		 * @param int $post_id ID of parent "event" post
+		 * @param string|null $context The context of the request.
+		 *
 		 * @return array
 		 */
-		public static function get_all_event_tickets( $post_id ) {
+		public static function get_all_event_tickets( $post_id, string $context = null ) {
 
 			/** @var Tribe__Cache $cache */
 			$cache = tribe( 'cache' );
@@ -1760,7 +1770,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			foreach ( $modules as $class => $module ) {
 				$obj              = call_user_func( [ $class, 'get_instance' ] );
-				$provider_tickets = $obj->get_tickets( $post_id );
+				$provider_tickets = $obj->get_tickets( $post_id, $context );
 				if ( is_array( $provider_tickets ) && ! empty( $provider_tickets ) ) {
 					$tickets[] = $provider_tickets;
 				}
