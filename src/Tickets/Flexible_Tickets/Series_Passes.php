@@ -876,11 +876,6 @@ class Series_Passes extends Controller {
 	 * @return string The helper text with link
 	 */
 	public function filter_tickets_panel_list_helper_text( string $text, WP_Post $post ): string {
-		// Do not show the helper text for recurring events.
-		if ( tribe_is_recurring_event( $post->ID )  ) {
-			return "";
-		}
-
 		if ( Series_Post_Type::POSTTYPE != $post->post_type ) {
 			return $text;
 		}
