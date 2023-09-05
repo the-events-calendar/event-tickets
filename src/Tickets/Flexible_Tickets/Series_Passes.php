@@ -882,6 +882,7 @@ class Series_Passes extends Controller {
 		);
 
 		return sprintf(
+			// Translators: %1$s: dynamic "series pass" label text, %2$s: dynamic learn more link.
 			esc_html__( 'Create and manage %1$s for this series. %2$s', 'event-tickets' ),
 			tec_tickets_get_series_pass_plural_uppercase(),
 			$helper_link,
