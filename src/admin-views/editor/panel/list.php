@@ -5,6 +5,8 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
 /**
  * @var Tribe__Tickets__Attendees $tickets_attendees The Attendees class instance.
  * @var Ticket_Object[]           $tickets           The tickets for the event, any type.
+ * @var string                    $helper_text       The helper text with link to knowledge base article.
+ * @var int                       $post_id           The post id for the current edited post.
  */
 $tickets_attendees = tribe( 'tickets.attendees' );
 
@@ -194,12 +196,14 @@ $container_class .= ( empty( $total_capacity ) ) ? ' tribe_no_capacity' : '';
 	<div class="tec_ticket-panel__helper_text__wrap">
 		<p>
 			<?php
-			$helper_link = sprintf(
-				'<a href="%1$s" target="_blank" rel="noopener noreferrer ">%2$s</a>',
-				esc_url( 'https://evnt.is/manage-tickets' ),
-				esc_html__( 'Learn more about ticket management', 'event-tickets' )
-			);
-			echo sprintf( esc_html__( 'Create and manage Series Passes for this Series. %s', 'event-tickets' ), $helper_link );
+			echo wp_kses( $helper_text, [
+					'a' => [
+						'class'      => [],
+						'href'       => [],
+						'target'     => [],
+						'rel'        => [],
+					],
+				] );
 			?>
 		</p>
 	</div>
