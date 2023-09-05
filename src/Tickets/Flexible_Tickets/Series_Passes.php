@@ -559,10 +559,8 @@ class Series_Passes extends Controller {
 	 * @return array<int> The list of IDs to search for tickets.
 	 */
 	public function add_series_to_searched_events( $post_id, ORM $repository ) {
-		$context = $repository->get_request_context();
-
 		// Bail if the context of the fetch is not one we want to interfere with.
-		if ( $context === 'manual-attendees' ) {
+		if ( $repository->get_request_context() === 'manual-attendees' ) {
 			return $post_id;
 		}
 
