@@ -189,4 +189,29 @@ class Metabox {
 
 		return $description;
 	}
+
+	/**
+	 * Get the helper text for series post type ticket panel.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $text The helper text with link.
+	 * @param WP_Post $post The Post object.
+	 *
+	 * @return string The helper text with link.
+	 */
+	public function get_tickets_panel_list_helper_text( string $text, WP_Post $post ): string {
+		$helper_link = sprintf(
+			'<a href="%1$s" target="_blank" rel="noopener noreferrer ">%2$s</a>',
+			esc_url( 'https://evnt.is/manage-tickets' ),
+			esc_html__( 'Learn more about ticket management', 'event-tickets' )
+		);
+
+		return sprintf(
+		// Translators: %1$s: dynamic "series pass" label text, %2$s: dynamic learn more link.
+			esc_html__( 'Create and manage %1$s for this series. %2$s', 'event-tickets' ),
+			tec_tickets_get_series_pass_plural_uppercase(),
+			$helper_link,
+		);
+	}
 }
