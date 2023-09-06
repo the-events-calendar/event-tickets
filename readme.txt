@@ -202,6 +202,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Tweak - Implement new design for Attendees Page, Ticket Overview. [ET-1840]
 * Tweak - Added notice regarding the availability of Paystack for Tickets Commerce. [ET-1763]
 * Tweak - Improve performance of the post admin list. [ET-1870]
+* Fix - Restore possibility to move Tickets and Attendees to Single Events that are part of a Series. [ET-1862]
 
 = [5.6.4] 2023-08-16 =
 
