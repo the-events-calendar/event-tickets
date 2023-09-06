@@ -10,12 +10,29 @@ use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe__Tickets__Metabox as Metabox;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
+use TEC\Tickets\Commerce\Module as Commerce;
 
 class MetaboxTest extends WPTestCase {
 	use SnapshotAssertions;
 	use Ticket_Maker;
 	use RSVP_Ticket_Maker;
 	use With_Uopz;
+
+	/**
+	 * Low-level registration of the Commerce provider. There is no need for a full-blown registration
+	 * at this stage: having the module as active and as a valid provider is enough.
+	 *
+	 * @before
+	 */
+	public function activate_commerce_tickets(): void {
+		add_filter( 'tribe_tickets_get_modules', static function ( array $modules ): array {
+			$modules[ Commerce::class ] = 'Tickets Commerce';
+
+			return $modules;
+		} );
+		// Regenerate the Tickets Data API to pick up the filtered providers.
+		tribe()->singleton( 'tickets.data_api', new \Tribe__Tickets__Data_API() );
+	}
 
 	public function get_panels_provider(): Generator {
 		yield 'post without ticket' => [

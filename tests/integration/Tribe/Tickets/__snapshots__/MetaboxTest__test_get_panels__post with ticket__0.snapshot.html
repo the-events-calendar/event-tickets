@@ -55,7 +55,7 @@
 	</div>
 	<div class="tec_ticket-panel__helper_text__wrap">
 		<p>
-			Create and manage single Tickets and RSVPs for this post. <a href="https://evnt.is/manage-tickets" target="_blank" rel="noopener noreferrer ">Learn more about ticket management</a>.		</p>
+		Create and manage single Tickets and RSVPs for this post. <a href="https://evnt.is/manage-tickets" target="_blank" rel="noopener noreferrer ">Learn more about ticket management</a>.		</p>
 	</div>
 	
 </div>
@@ -379,6 +379,26 @@
 		value="yes"
 			/>
 	<span class="tribe_soft_note ticket_form_right">Enable &quot;Can&#039;t Go&quot; responses</span>
+</div>
+
+<div
+	class="input_block ticket_advanced_TEC_Tickets_Commerce_Module tribe-dependent"
+	data-depends="#Tribe__Tickets__RSVP_radio"
+	data-condition-is-not-checked
+>
+	<label
+		for="TEC_Tickets_Commerce_Module_capacity"
+		class="ticket_form_label ticket_form_left"
+	>
+		Capacity:	</label>
+	<input
+		type='text' id='TEC_Tickets_Commerce_Module_capacity'
+		name='tribe-ticket[capacity]'
+		class="ticket_field tribe-tpp-field-capacity ticket_form_right"
+		size='7'
+		value='100'
+	/>
+	<span class="tribe_soft_note ticket_form_right">Leave blank for unlimited</span>
 </div>
 			</section>
 			<div class="accordion">
