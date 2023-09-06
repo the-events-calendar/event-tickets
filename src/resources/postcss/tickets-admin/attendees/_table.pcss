@@ -4,8 +4,9 @@
  * @since 5.5.9
  */
 .tec-tickets__admin-attendees {
-	.welcome-panel-last {
-		display: inline-block !important;
+	.tribe-report-panel .welcome-panel-last {
+		display: inline-block;
+		width: auto;
 	}
 
 	td {
@@ -126,6 +127,11 @@
 	.tec-tickets__admin-attendees-overview-ticket-type {
 		align-items: center;
 		display: flex;
+		padding: 0 2px;
+
+		@media (--viewport-medium) {
+			padding: 0;
+		}
 	}
 
 	.tec-tickets__admin-attendees-overview-ticket-type-label {
@@ -164,7 +170,7 @@
 
 	ul.tec-tickets__admin-attendees-overview-ticket-type-list {
 		margin: 0;
-		padding: var(--tec-spacer-0) var(--tec-spacer-2) var(--tec-spacer-3) var(--tec-spacer-5);
+		padding: var(--tec-spacer-0) var(--tec-spacer-2) var(--tec-spacer-3) var(--tec-spacer-5) !important;
 	}
 
 	.tec-tickets__admin-attendees-overview-ticket-type-list-item {
@@ -195,13 +201,19 @@
 		display: flex;
 		justify-content: space-between;
 		margin-top: var(--tec-spacer-0);
-		padding: var(--tec-spacer-1) 0 0 var(--tec-spacer-5);
+		padding: var(--tec-spacer-1) 0 0 var(--tec-spacer-5) !important;
+		margin: var(--tec-spacer-0) var(--tec-spacer-3) 0;
+
+		@media (--viewport-medium) {
+			margin: var(--tec-spacer-0) 0 0;
+		}
 	}
 
 	.tec-tickets__admin-attendees-overview-ticket-totals-title {
 		color: #1D2327;
 		font-size: 13px;
 		font-weight: var(--tec-font-weight-bold);
+		margin-right: var(--tec-spacer-0);
 	}
 
 	.tec-tickets__admin-attendees-overview-ticket-totals-stat {
