@@ -27,31 +27,17 @@ class Warnings {
 	/**
 	 * Show the Recurring Event warning message.
 	 *
-	 * @since 5.6.4   Remove dependency on `#tribe-recurrence-active`.
+	 * @since TBD Moved out logic to display warning in a separate method.
+	 * @since 5.6.4 Remove dependency on `#tribe-recurrence-active`.
 	 * @since 5.6.2 Added 'recurring_event_warning' as an $additionalClasses.
 	 * @since 5.0.4
 	 *
 	 * @param int $post_id Post ID.
 	 */
 	public function show_recurring_event_warning_message( $post_id ) {
-		if ( ! class_exists( 'Tribe__Events__Pro__Main' ) || ! class_exists( TEC::class ) ) {
+
+		if ( ! $this->should_display_recurring_warning_for_tickets( $post_id ) ) {
 			return;
-		}
-
-		if ( ! function_exists( 'tribe_is_recurring_event' ) || ! tribe_is_recurring_event( $post_id ) ) {
-			return;
-		}
-
-		if ( TEC::POSTTYPE != get_post_type( $post_id ) && ! tribe_is_frontend() ) {
-			return;
-		}
-
-		if ( class_exists( '\TEC\Events\Custom_Tables\V1\Migration\State' ) ) {
-			$migrated = tribe( \TEC\Events\Custom_Tables\V1\Migration\State::class )->is_migrated();
-
-			if ( ! $migrated ) {
-				return;
-			}
 		}
 
 		if ( tribe_is_frontend() ) {
@@ -157,4 +143,36 @@ class Warnings {
 		<?php
 	}
 
+	/**
+	 * Check whether the recurring warning should be displayed or not.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id The current edited post id.
+	 *
+	 * @return bool
+	 */
+	protected function should_display_recurring_warning_for_tickets( int $post_id ): bool {
+		if ( ! class_exists( 'Tribe__Events__Pro__Main' ) || ! class_exists( TEC::class ) ) {
+			return false;
+		}
+
+		if ( ! function_exists( 'tribe_is_recurring_event' ) || ! tribe_is_recurring_event( $post_id ) ) {
+			return false;
+		}
+
+		if ( TEC::POSTTYPE != get_post_type( $post_id ) && ! tribe_is_frontend() ) {
+			return false;
+		}
+
+		if ( class_exists( '\TEC\Events\Custom_Tables\V1\Migration\State' ) ) {
+			$migrated = tribe( \TEC\Events\Custom_Tables\V1\Migration\State::class )->is_migrated();
+
+			if ( ! $migrated ) {
+				return false;
+			}
+		}
+
+		return true;
+	}
 }
