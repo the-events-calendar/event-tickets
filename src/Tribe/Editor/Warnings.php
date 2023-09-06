@@ -6,6 +6,7 @@
 namespace Tribe\Tickets\Editor;
 
 use Tribe__Events__Main as TEC;
+use WP_Post;
 
 /**
  * Warnings handling class.
@@ -22,6 +23,7 @@ class Warnings {
 	public function hook() {
 		add_action( 'tribe_events_tickets_new_ticket_warnings', [ $this, 'show_recurring_event_warning_message' ] );
 		add_action( 'tribe_events_tickets_new_ticket_warnings', [ $this, 'add_commerce_provider_warning' ] );
+		add_filter( 'tec_tickets_panel_list_helper_text', [ $this, 'filter_tickets_panel_list_helper_text' ], 10, 2 );
 	}
 
 	/**
@@ -174,5 +176,23 @@ class Warnings {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Filter tickets panel helper text to inject recurring ticket warning.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $text The helper text.
+	 * @param WP_Post $post The Post Object.
+	 *
+	 * @return string The helper text.
+	 */
+	public function filter_tickets_panel_list_helper_text( string $text, WP_Post $post ): string {
+		if ( ! $this->should_display_recurring_warning_for_tickets( $post->ID ) ) {
+			return $text;
+		}
+
+		return $this->get_recurring_event_warning_message();
 	}
 }
