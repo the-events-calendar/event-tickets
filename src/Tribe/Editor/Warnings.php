@@ -103,11 +103,12 @@ class Warnings {
 	 */
 	public function get_recurring_event_warning_message() {
 		return sprintf(
-				__( 'Single %1$s and %2$s are not yet supported on recurring events. %3$s Read about our plans for future features %4$s', 'event-tickets' ),
-				tribe_get_ticket_label_plural_lowercase(),
-				tribe_get_rsvp_label_plural(),
-				'<a href="https://evnt.is/1b7a" target="_blank" rel="noopener noreferrer">',
-				'</a>'
+			// Translators: %1$s: dynamic "tickets" text, %2$s: dynamic "RSVP" text, %3$s opening tag <a> of link,  %4$s closing tag </a> of link
+			__( 'Single %1$s and %2$s are not yet supported on recurring events. %3$s Read about our plans for future features %4$s', 'event-tickets' ),
+			tribe_get_ticket_label_plural_lowercase(),
+			tribe_get_rsvp_label_plural(),
+			'<a href="https://evnt.is/1b7a" target="_blank" rel="noopener noreferrer">',
+			'</a>'
 		);
 	}
 
