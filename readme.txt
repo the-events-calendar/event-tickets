@@ -193,6 +193,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.6.5] TBD =
 
+* Version - Event Tickets 5.6.5 is only compatible with The Events Calendar 6.2.2 and higher.
 * Tweak - Ticket names over 125 characters will now be truncated when being sent to Paypal. [ET-1865]
 * Tweak - Validate check-in data before updating with attendee update REST endpoint. [ET-1863]
 * Tweak - Implement new design for Attendees Page, Ticket Overview. [ET-1840]
