@@ -2,17 +2,21 @@
 
 namespace Tribe\Tickets;
 
+use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 use Tribe__Tickets__Attendees_Table as Attendees_Table;
 use Tribe__Tickets__Data_API as Data_API;
+use function EDD\Blocks\Orders\confirmation;
 
 class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
-
 	use RSVP_Ticket_Maker;
 	use PayPal_Ticket_Maker;
 	use Attendee_Maker;
+	use SnapshotAssertions;
+	use With_Uopz;
 
 	/**
 	 * {@inheritdoc}
@@ -62,8 +66,6 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 */
 	public function should_allow_fetching_attendees_by_event() {
-		$this->markTestSkipped( 'This test keeps failing due to TZ issue' );
-
 		$post_id  = $this->factory->post->create();
 		$post_id2 = $this->factory->post->create();
 
@@ -83,7 +85,7 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 		$sut = $this->make_instance();
 
 		$_GET['event_id'] = $post_id;
-		$_GET['paged'] = 1;
+		$_GET['paged']    = 1;
 		$sut->prepare_items();
 		$attendee_ids = wp_list_pluck( $sut->items, 'attendee_id' );
 
@@ -93,7 +95,7 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertEquals( count( array_merge( $paypal_attendee_ids, $rsvp_attendee_ids ) ), $sut->get_pagination_arg( 'total_items' ) );
 
 		$_GET['event_id'] = $post_id2;
-		$_GET['paged'] = 1;
+		$_GET['paged']    = 1;
 		$sut->prepare_items();
 		$attendee_ids2 = wp_list_pluck( $sut->items, 'attendee_id' );
 
@@ -125,7 +127,7 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 
 		$sut = $this->make_instance();
 
-		$_REQUEST['search']                  = 'robbbbb';
+		$_GET['search']                      = 'robbbbb';
 		$_POST['tribe_attendee_search_type'] = 'purchaser_name';
 
 		$_GET['event_id'] = $post_id;
@@ -160,7 +162,7 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 
 		$sut = $this->make_instance();
 
-		$_REQUEST['search']                  = 'likestests';
+		$_GET['search']                      = 'likestests';
 		$_POST['tribe_attendee_search_type'] = 'purchaser_email';
 
 		$_GET['event_id'] = $post_id;
@@ -189,7 +191,7 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 
 		$sut = $this->make_instance();
 
-		$_REQUEST['search']                  = $rsvp_ticket_id;
+		$_GET['search']                      = $rsvp_ticket_id;
 		$_POST['tribe_attendee_search_type'] = 'product_id';
 
 		$_GET['event_id'] = $post_id;
@@ -224,7 +226,7 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 
 		$sut = $this->make_instance();
 
-		$_REQUEST['search']                  = 'robba';
+		$_GET['search']                      = 'robba';
 		$_POST['tribe_attendee_search_type'] = 'security_code';
 
 		$_GET['event_id'] = $post_id;
@@ -259,7 +261,7 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 
 		$sut = $this->make_instance();
 
-		$_REQUEST['search']                  = '1234567890';
+		$_GET['search']                      = '1234567890';
 		$_POST['tribe_attendee_search_type'] = 'user';
 
 		$_GET['event_id'] = $post_id;
@@ -290,7 +292,7 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 
 		$sut = $this->make_instance();
 
-		$_REQUEST['search']                  = 'yes';
+		$_GET['search']                      = 'yes';
 		$_POST['tribe_attendee_search_type'] = 'order_status';
 
 		$_GET['event_id'] = $post_id;
@@ -303,4 +305,62 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertEquals( 5, $sut->get_pagination_arg( 'total_items' ) );
 	}
 
+	public function test_display(): void {
+		$this->set_fn_return( 'wp_create_nonce', '1234567890' );
+
+		$post_id = $this->factory->post->create();
+
+		$paypal_ticket_id = $this->create_paypal_ticket_basic( $post_id, 1 );
+		$rsvp_ticket_id   = $this->create_rsvp_ticket( $post_id );
+
+		$paypal_attendee_ids = $this->create_many_attendees_for_ticket( 2, $paypal_ticket_id, $post_id );
+		$rsvp_attendee_ids   = $this->create_many_attendees_for_ticket( 2, $rsvp_ticket_id, $post_id );
+
+		$_GET['event_id'] = $post_id;
+		$_GET['search']   = '';
+
+		$table = $this->make_instance();
+		$table->prepare_items();
+
+		$attendee_ids  = wp_list_pluck( $table->items, 'attendee_id' );
+		$attendee_data = array_reduce( $attendee_ids, function ( array $carry, int $id ) {
+			foreach (
+				[
+					'_tribe_tpp_security_code',
+					'_tribe_tpp_full_name',
+					'_tribe_tpp_email',
+					'_tribe_rsvp_security_code',
+					'_tribe_rsvp_full_name',
+					'_tribe_rsvp_email',
+				] as $meta_key
+			) {
+				$meta_value = get_post_meta( $id, $meta_key, true );
+				if ( empty( $meta_value ) ) {
+					continue;
+				}
+				$carry[] = $meta_value;
+				$carry[] = urlencode( $meta_value );
+			}
+
+			return $carry;
+		}, [] );
+
+		ob_start();
+		$table->display();
+		$html = ob_get_clean();
+
+		// Stabilize snapshots.
+		$html = str_replace( [
+			...$attendee_ids,
+			$post_id,
+			$paypal_ticket_id,
+			$rsvp_ticket_id,
+			...$rsvp_attendee_ids,
+			...$paypal_attendee_ids
+		], 'POST_ID', $html );
+
+		$html = str_replace( $attendee_data, 'ATTENDEE_DATA', $html );
+
+		$this->assertMatchesHtmlSnapshot( $html );
+	}
 }

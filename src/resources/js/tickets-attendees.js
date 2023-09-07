@@ -60,7 +60,19 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 		});
 
 		$( 'span.trash a' ).on( 'click', function ( e ) {
-			return confirm( Attendees.confirmation );
+			const ticketType = $( this ).closest( 'tr' ).data( 'ticket-type');
+			// Set the confirmation message to the default one.
+			let confirmationMessage = Attendees.confirmation_singular;
+
+
+			if(
+				Attendees.confirmation
+				&& Attendees.confirmation[ticketType]
+				&& Attendees.confirmation[ticketType].singular
+			) {
+				confirmationMessage = Attendees.confirmation[ticketType].singular || confirmationMessage;
+			}
+			return confirm( confirmationMessage );
 		});
 
 		$( '.event-tickets__attendees-admin-form' ).on( 'submit', function ( e ) {
@@ -75,7 +87,28 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 				return;
 			}
 
-			return confirm( Attendees.bulk_confirmation );
+			const selectedAttendees = this.querySelectorAll('tr:has(input[name="attendee[]"]:checked)');
+			const ticketTypes = Array.from( selectedAttendees ).map( attendee => attendee.dataset.ticketType );
+			const multipleTicketTypes = new Set( ticketTypes ).size > 1;
+			const multipleAttendees = selectedAttendees.length > 1;
+			const ticketType = ticketTypes[0];
+
+			let confirmationMessage = multipleAttendees ? Attendees.confirmation_plural
+				: Attendees.confirmation_singular;
+
+			if( ! multipleTicketTypes
+				&& Attendees.confirmation
+				&& Attendees.confirmation[ticketType]
+			) {
+				// If there is only one ticket type, use the confirmation message for that ticket type, if available.
+				if( multipleAttendees  ) {
+					confirmationMessage = Attendees.confirmation[ticketType].plural || confirmationMessage;
+				} else {
+					confirmationMessage = Attendees.confirmation[ticketType].singular || confirmationMessage;
+				}
+			}
+
+			return confirm( confirmationMessage );
 		} );
 
 		$( '.tickets_checkin' ).on( 'click', function( e ) {
