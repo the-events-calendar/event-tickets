@@ -1600,6 +1600,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				// Set the `ticket_exists` flag on attendees if the ticket they are associated with does not exist.
 				$attendee_data['ticket_exists'] = ! empty( $attendee_data['product_id'] ) && get_post( $attendee_data['product_id'] );
 
+				// Set the ticket type from the ticket oject, if possible.
+				$attendee_data['ticket_type'] = 'default';
+				if ( isset( $attendee_data['event_id'], $attendee_data['product_id'] )
+				     && $ticket = $provider->get_ticket( $attendee_data['event_id'], $attendee_data['product_id'] ) ) {
+					$attendee_data['ticket_type'] = $ticket->type();
+				}
+
 				$attendees_from_modules[] = $attendee_data;
 			}
 

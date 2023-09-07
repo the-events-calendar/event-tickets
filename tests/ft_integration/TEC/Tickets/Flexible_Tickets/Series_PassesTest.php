@@ -1280,4 +1280,17 @@ class Series_PassesTest extends Controller_Test_Case {
 
 		$this->assertMatchesHtmlSnapshot( implode( "\n", array_values( $filtered ) ) );
 	}
+
+	/**
+	 * It should correctly filter the JS Attendee report configuration
+	 *
+	 * @test
+	 */
+	public function should_correctly_filter_the_js_attendee_report_configuration(): void {
+		$this->make_controller()->register();
+
+		$filtered = apply_filters( 'tribe_tickets_attendees_report_js_config', [] );
+
+		$this->assertMatchesJsonSnapshot( json_encode( $filtered, JSON_PRETTY_PRINT ) );
+	}
 }
