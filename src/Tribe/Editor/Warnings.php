@@ -209,11 +209,14 @@ class Warnings {
 	 */
 	public function render_hidden_recurring_warning_for_ticket_meta_box( int $post_id ): void {
 		// Only render when recurring is available and for events post-type.
-		if ( ! function_exists( 'tribe_is_recurring_event' ) || TEC::POSTTYPE !== get_post_type( $post_id ) ) {
+		if ( ! function_exists( 'tribe_is_recurring_event' )
+			 || TEC::POSTTYPE !== get_post_type( $post_id )
+			 || tribe_is_recurring_event( $post_id )
+		) {
 			return;
 		}
 
-		$html  = '<p class="tec-tickets__ticket-panel-meta-box__recurring-event-warning" style="display: none">';
+		$html  = '<p class="tec_ticket-panel__hidden-recurring-warning" style="display: none">';
 		$html .= $this->get_recurring_event_warning_message();
 		$html .= '<p>';
 
