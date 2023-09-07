@@ -97,7 +97,7 @@ class Warnings {
 	 * Get the Recurring Event warning message.
 	 *
 	 * @since 5.0.4
-	 * @since TBD Fixed `class` attribute typo for the link.
+	 * @since TBD Fixed `class` attribute typo for the link, dynamize ticket and rsvp labels.
 	 *
 	 * @return string The Recurring Event warning message.
 	 */
@@ -205,17 +205,19 @@ class Warnings {
 	 *
 	 * @since TBD
 	 *
-	 * @param $post_id
+	 * @param int $post_id The current post ID.
 	 *
 	 * @return void
 	 */
 	public function render_hidden_recurring_warning_for_new_posts( $post_id ): void {
 		$post = get_post( $post_id );
-		if (  'auto-draft' !== $post->post_status ) {
+
+		// Only render on new event pages with auto draft status.
+		if (  'auto-draft' !== $post->post_status || TEC::POSTTYPE !== $post->post_type ) {
 			return;
 		}
 
-		$html = '<p class="recurring_event_warning" style="display: none">';
+		$html  = '<p class="recurring_event_warning" style="display: none">';
 		$html .= $this->get_recurring_event_warning_message();
 		$html .= '<p>';
 
