@@ -24,7 +24,7 @@ class Warnings {
 		add_action( 'tribe_events_tickets_new_ticket_warnings', [ $this, 'show_recurring_event_warning_message' ] );
 		add_action( 'tribe_events_tickets_new_ticket_warnings', [ $this, 'add_commerce_provider_warning' ] );
 		add_filter( 'tec_tickets_panel_list_helper_text', [ $this, 'filter_tickets_panel_list_helper_text' ], 10, 2 );
-		add_action( 'tribe_events_tickets_after_new_ticket_panel', [ $this, 'render_hidden_recurring_warning_for_new_posts' ] );
+		add_action( 'tribe_events_tickets_after_new_ticket_panel', [ $this, 'render_hidden_recurring_warning_for_ticket_meta_box' ] );
 	}
 
 	/**
@@ -207,15 +207,13 @@ class Warnings {
 	 *
 	 * @return void
 	 */
-	public function render_hidden_recurring_warning_for_new_posts( $post_id ): void {
-		$post = get_post( $post_id );
-
-		// Only render on new event pages with auto draft status.
-		if (  'auto-draft' !== $post->post_status || TEC::POSTTYPE !== $post->post_type ) {
+	public function render_hidden_recurring_warning_for_ticket_meta_box( int $post_id ): void {
+		// Only render when recurring is available and for events post-type.
+		if ( ! function_exists( 'tribe_is_recurring_event' ) || TEC::POSTTYPE !== get_post_type( $post_id ) ) {
 			return;
 		}
 
-		$html  = '<p class="recurring_event_warning" style="display: none">';
+		$html  = '<p class="tec-tickets__ticket-panel-meta-box__recurring-event-warning" style="display: none">';
 		$html .= $this->get_recurring_event_warning_message();
 		$html .= '<p>';
 
