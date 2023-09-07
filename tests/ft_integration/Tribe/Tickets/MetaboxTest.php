@@ -45,6 +45,17 @@ class MetaboxTest extends WPTestCase {
 			},
 		];
 
+		yield 'blank auto-draft status post' => [
+			function (): array {
+				$post_id = $this->factory()->post->create( [
+					'post_title'  => 'Test post',
+					'post_status' => 'auto-draft', // Simulate New Post page.
+				] );
+
+				return [ $post_id ];
+			},
+		];
+
 		yield 'post with ticket' => [
 			function (): array {
 				$post_id   = $this->factory()->post->create( [ 'post_title' => 'Test post' ] );
@@ -94,6 +105,19 @@ class MetaboxTest extends WPTestCase {
 
 				return [ $post_id, $rsvp_1, $rsvp_2, $ticket_1, $ticket_2 ];
 			}
+		];
+
+		yield 'blank auto-draft status event' => [
+			function (): array {
+				$post_id = tribe_events()->set_args( [
+					'title'      => 'Test event',
+					'status'     => 'auto-draft',
+					'start_date' => '2021-01-01 10:00:00',
+					'end_date'   => '2021-01-01 12:00:00',
+				] )->create()->ID;
+
+				return [ $post_id ];
+			},
 		];
 
 		yield 'single event without tickets' => [
