@@ -97,19 +97,16 @@ class Warnings {
 	 * Get the Recurring Event warning message.
 	 *
 	 * @since 5.0.4
-	 * @since TBD Fixed `class` attribute typo for the link, dynamize ticket and rsvp labels.
+	 * @since TBD Removed `class` attribute, dynamize ticket and rsvp labels.
 	 *
 	 * @return string The Recurring Event warning message.
 	 */
 	public function get_recurring_event_warning_message() {
 		return sprintf(
 				__( 'Single %1$s and %2$s are not yet supported on recurring events. %3$s Read about our plans for future features %4$s', 'event-tickets' ),
-				tribe_get_ticket_label_plural(),
+				tribe_get_ticket_label_plural_lowercase(),
 				tribe_get_rsvp_label_plural(),
-				'<a class="tribe-editor__not-supported-message-link"
-					href="https://evnt.is/1b7a"
-					target="_blank"
-					rel="noopener noreferrer">',
+				'<a href="https://evnt.is/1b7a" target="_blank" rel="noopener noreferrer">',
 				'</a>'
 		);
 	}
