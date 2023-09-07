@@ -192,7 +192,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 == Changelog ==
 
 = [TBD] TBD =
-* Tweak - Re-styled Inactive RSVP Block in Block Editor
+* Tweak - Re-styled Inactive RSVP Block in Block Editor to match frontend design. Styles will be the same in block editor and in the user interface [ET-1818]
 
 = [5.6.4] 2023-08-16 =
 
