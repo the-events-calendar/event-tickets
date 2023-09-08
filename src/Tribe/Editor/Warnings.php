@@ -7,6 +7,7 @@ namespace Tribe\Tickets\Editor;
 
 use Tribe__Events__Main as TEC;
 use WP_Post;
+use TEC\Events\Custom_Tables\V1\Migration\State as Migration_State;
 
 /**
  * Warnings handling class.
@@ -157,7 +158,7 @@ class Warnings {
 	 * @return bool
 	 */
 	protected function should_display_recurring_warning_for_tickets( int $post_id ): bool {
-		if ( ! class_exists( 'Tribe__Events__Pro__Main' ) || ! class_exists( TEC::class ) ) {
+		if ( ! class_exists( 'Tribe__Events__Pro__Main', false ) || ! class_exists( TEC::class, false ) ) {
 			return false;
 		}
 
@@ -169,8 +170,8 @@ class Warnings {
 			return false;
 		}
 
-		if ( class_exists( '\TEC\Events\Custom_Tables\V1\Migration\State' ) ) {
-			$migrated = tribe( \TEC\Events\Custom_Tables\V1\Migration\State::class )->is_migrated();
+		if ( class_exists( Migration_State::class, false ) ) {
+			$migrated = tribe( Migration_State::class )->is_migrated();
 
 			if ( ! $migrated ) {
 				return false;
