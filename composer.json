@@ -31,7 +31,7 @@
     "the-events-calendar/coding-standards": "dev-master",
     "the-events-calendar/tec-testing-facilities": "dev-master",
     "wp-coding-standards/wpcs": "^2.1",
-    "lucatume/codeception-snapshot-assertions": "^0.2.4"
+    "lucatume/codeception-snapshot-assertions": "~0.3.0"
   },
   "repositories": [
     {

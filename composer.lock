@@ -4,21 +4,21 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1805027e2c2703237137287b47a22652",
+    "content-hash": "94a0c6ca63e6b5ed5f81294c8dce3498",
     "packages": [],
     "packages-dev": [
         {
             "name": "antecedent/patchwork",
-            "version": "2.1.21",
+            "version": "2.1.25",
             "source": {
                 "type": "git",
                 "url": "https://github.com/antecedent/patchwork.git",
-                "reference": "25c1fa0cd9a6e6d0d13863d8df8f050b6733f16d"
+                "reference": "17314e042d45e0dacb0a494c2d1ef50e7621136a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/antecedent/patchwork/zipball/25c1fa0cd9a6e6d0d13863d8df8f050b6733f16d",
-                "reference": "25c1fa0cd9a6e6d0d13863d8df8f050b6733f16d",
+                "url": "https://api.github.com/repos/antecedent/patchwork/zipball/17314e042d45e0dacb0a494c2d1ef50e7621136a",
+                "reference": "17314e042d45e0dacb0a494c2d1ef50e7621136a",
                 "shasum": ""
             },
             "require": {
@@ -51,34 +51,34 @@
             ],
             "support": {
                 "issues": "https://github.com/antecedent/patchwork/issues",
-                "source": "https://github.com/antecedent/patchwork/tree/2.1.21"
+                "source": "https://github.com/antecedent/patchwork/tree/2.1.25"
             },
-            "time": "2022-02-07T07:28:34+00:00"
+            "time": "2023-02-19T12:51:24+00:00"
         },
         {
             "name": "automattic/vipwpcs",
-            "version": "2.3.3",
+            "version": "2.3.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Automattic/VIP-Coding-Standards.git",
-                "reference": "6cd0a6a82bc0ac988dbf9d6a7c2e293dc8ac640b"
+                "reference": "b8610e3837f49c5f2fcc4b663b6c0a7c9b3509b6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Automattic/VIP-Coding-Standards/zipball/6cd0a6a82bc0ac988dbf9d6a7c2e293dc8ac640b",
-                "reference": "6cd0a6a82bc0ac988dbf9d6a7c2e293dc8ac640b",
+                "url": "https://api.github.com/repos/Automattic/VIP-Coding-Standards/zipball/b8610e3837f49c5f2fcc4b663b6c0a7c9b3509b6",
+                "reference": "b8610e3837f49c5f2fcc4b663b6c0a7c9b3509b6",
                 "shasum": ""
             },
             "require": {
-                "dealerdirect/phpcodesniffer-composer-installer": "^0.4.1 || ^0.5 || ^0.6.2 || ^0.7",
+                "dealerdirect/phpcodesniffer-composer-installer": "^0.4.1 || ^0.5 || ^0.6.2 || ^0.7 || ^1.0",
                 "php": ">=5.4",
-                "sirbrillig/phpcs-variable-analysis": "^2.11.1",
-                "squizlabs/php_codesniffer": "^3.5.5",
+                "sirbrillig/phpcs-variable-analysis": "^2.11.17",
+                "squizlabs/php_codesniffer": "^3.7.1",
                 "wp-coding-standards/wpcs": "^2.3"
             },
             "require-dev": {
-                "php-parallel-lint/php-console-highlighter": "^0.5",
-                "php-parallel-lint/php-parallel-lint": "^1.0",
+                "php-parallel-lint/php-console-highlighter": "^1.0.0",
+                "php-parallel-lint/php-parallel-lint": "^1.3.2",
                 "phpcompatibility/php-compatibility": "^9",
                 "phpcsstandards/phpcsdevtools": "^1.0",
                 "phpunit/phpunit": "^4 || ^5 || ^6 || ^7"
@@ -98,6 +98,7 @@
             "keywords": [
                 "phpcs",
                 "standards",
+                "static analysis",
                 "wordpress"
             ],
             "support": {
@@ -105,7 +106,7 @@
                 "source": "https://github.com/Automattic/VIP-Coding-Standards",
                 "wiki": "https://github.com/Automattic/VIP-Coding-Standards/wiki"
             },
-            "time": "2021-09-29T16:20:23+00:00"
+            "time": "2023-08-24T15:11:13+00:00"
         },
         {
             "name": "behat/gherkin",
@@ -1178,23 +1179,40 @@
             ],
             "support": {
                 "issues": "https://github.com/doctrine/instantiator/issues",
-                "source": "https://github.com/doctrine/instantiator/tree/master"
+                "source": "https://github.com/doctrine/instantiator/tree/1.0.5"
             },
+            "funding": [
+                {
+                    "url": "https://www.doctrine-project.org/sponsorship.html",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://www.patreon.com/phpdoctrine",
+                    "type": "patreon"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/doctrine%2Finstantiator",
+                    "type": "tidelift"
+                }
+            ],
             "time": "2015-06-14T21:17:01+00:00"
         },
         {
             "name": "electrolinux/phpquery",
-            "version": "0.9.6",
+            "version": "0.9.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/electrolinux/phpquery.git",
-                "reference": "6cb8afcfe8cd4ce45f2f8c27d561383037c27a3a"
+                "reference": "90029e2acffebebdb6e309509c778fe34e8028ba"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/electrolinux/phpquery/zipball/6cb8afcfe8cd4ce45f2f8c27d561383037c27a3a",
-                "reference": "6cb8afcfe8cd4ce45f2f8c27d561383037c27a3a",
+                "url": "https://api.github.com/repos/electrolinux/phpquery/zipball/90029e2acffebebdb6e309509c778fe34e8028ba",
+                "reference": "90029e2acffebebdb6e309509c778fe34e8028ba",
                 "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
             },
             "type": "library",
             "autoload": {
@@ -1208,22 +1226,23 @@
             ],
             "authors": [
                 {
+                    "name": "didier Belot",
+                    "homepage": "https://github.com/electrolinux/phpquery",
+                    "role": "Packager, maintainer"
+                },
+                {
                     "name": "Tobiasz Cudnik",
                     "email": "tobiasz.cudnik@gmail.com",
                     "homepage": "https://github.com/TobiaszCudnik",
                     "role": "Developer"
-                },
-                {
-                    "name": "didier Belot",
-                    "role": "Packager"
                 }
             ],
             "description": "phpQuery is a server-side, chainable, CSS3 selector driven Document Object Model (DOM) API based on jQuery JavaScript Library",
             "homepage": "http://code.google.com/p/phpquery/",
             "support": {
-                "source": "https://github.com/electrolinux/phpquery/tree/0.9.6"
+                "source": "https://github.com/electrolinux/phpquery/tree/0.9.7"
             },
-            "time": "2013-03-21T12:39:33+00:00"
+            "time": "2023-05-02T18:27:16+00:00"
         },
         {
             "name": "fzaninotto/faker",
@@ -1446,16 +1465,16 @@
         },
         {
             "name": "guzzlehttp/promises",
-            "version": "1.5.2",
+            "version": "1.5.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/promises.git",
-                "reference": "b94b2807d85443f9719887892882d0329d1e2598"
+                "reference": "67ab6e18aaa14d753cc148911d273f6e6cb6721e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/promises/zipball/b94b2807d85443f9719887892882d0329d1e2598",
-                "reference": "b94b2807d85443f9719887892882d0329d1e2598",
+                "url": "https://api.github.com/repos/guzzle/promises/zipball/67ab6e18aaa14d753cc148911d273f6e6cb6721e",
+                "reference": "67ab6e18aaa14d753cc148911d273f6e6cb6721e",
                 "shasum": ""
             },
             "require": {
@@ -1465,11 +1484,6 @@
                 "symfony/phpunit-bridge": "^4.4 || ^5.1"
             },
             "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.5-dev"
-                }
-            },
             "autoload": {
                 "files": [
                     "src/functions_include.php"
@@ -1510,7 +1524,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/promises/issues",
-                "source": "https://github.com/guzzle/promises/tree/1.5.2"
+                "source": "https://github.com/guzzle/promises/tree/1.5.3"
             },
             "funding": [
                 {
@@ -1526,20 +1540,20 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-08-28T14:55:35+00:00"
+            "time": "2023-05-21T12:31:43+00:00"
         },
         {
             "name": "guzzlehttp/psr7",
-            "version": "1.9.0",
+            "version": "1.9.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/psr7.git",
-                "reference": "e98e3e6d4f86621a9b75f623996e6bbdeb4b9318"
+                "reference": "e4490cabc77465aaee90b20cfc9a770f8c04be6b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/psr7/zipball/e98e3e6d4f86621a9b75f623996e6bbdeb4b9318",
-                "reference": "e98e3e6d4f86621a9b75f623996e6bbdeb4b9318",
+                "url": "https://api.github.com/repos/guzzle/psr7/zipball/e4490cabc77465aaee90b20cfc9a770f8c04be6b",
+                "reference": "e4490cabc77465aaee90b20cfc9a770f8c04be6b",
                 "shasum": ""
             },
             "require": {
@@ -1558,11 +1572,6 @@
                 "laminas/laminas-httphandlerrunner": "Emit PSR-7 responses"
             },
             "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.9-dev"
-                }
-            },
             "autoload": {
                 "files": [
                     "src/functions_include.php"
@@ -1620,7 +1629,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/psr7/issues",
-                "source": "https://github.com/guzzle/psr7/tree/1.9.0"
+                "source": "https://github.com/guzzle/psr7/tree/1.9.1"
             },
             "funding": [
                 {
@@ -1636,7 +1645,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-06-20T21:43:03+00:00"
+            "time": "2023-04-17T16:00:37+00:00"
         },
         {
             "name": "illuminate/contracts",
@@ -1881,61 +1890,17 @@
             "time": "2020-04-07T20:44:10+00:00"
         },
         {
-            "name": "lucatume/args",
-            "version": "1.0.1.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/lucatume/args.git",
-                "reference": "9ab69f5c995813b2dfbb067100ada500ee2893e8"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/lucatume/args/zipball/9ab69f5c995813b2dfbb067100ada500ee2893e8",
-                "reference": "9ab69f5c995813b2dfbb067100ada500ee2893e8",
-                "shasum": ""
-            },
-            "require": {
-                "xrstf/composer-php52": "1.*"
-            },
-            "require-dev": {
-                "codeception/codeception": "*"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Arg": "src/",
-                    "tad_": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-2.0"
-            ],
-            "authors": [
-                {
-                    "name": "Luca Tumedei",
-                    "email": "luca@theaveragedev.com"
-                }
-            ],
-            "description": "A PHP 5.2 compatible arguments handling library.",
-            "support": {
-                "issues": "https://github.com/lucatume/args/issues",
-                "source": "https://github.com/lucatume/args/tree/master"
-            },
-            "time": "2018-02-11T12:20:29+00:00"
-        },
-        {
             "name": "lucatume/codeception-snapshot-assertions",
-            "version": "0.2.4",
+            "version": "0.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lucatume/codeception-snapshot-assertions.git",
-                "reference": "077108237a121d3ddcf7070aa8519dea25459a6a"
+                "reference": "8de42335abf18e59cc8e84d27182559a2dbdd12e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lucatume/codeception-snapshot-assertions/zipball/077108237a121d3ddcf7070aa8519dea25459a6a",
-                "reference": "077108237a121d3ddcf7070aa8519dea25459a6a",
+                "url": "https://api.github.com/repos/lucatume/codeception-snapshot-assertions/zipball/8de42335abf18e59cc8e84d27182559a2dbdd12e",
+                "reference": "8de42335abf18e59cc8e84d27182559a2dbdd12e",
                 "shasum": ""
             },
             "require": {
@@ -1965,115 +1930,22 @@
             "description": "Snapshot assertions sugar for Codeception.",
             "support": {
                 "issues": "https://github.com/lucatume/codeception-snapshot-assertions/issues",
-                "source": "https://github.com/lucatume/codeception-snapshot-assertions/tree/master"
+                "source": "https://github.com/lucatume/codeception-snapshot-assertions/tree/0.3.0"
             },
-            "time": "2020-02-05T20:17:49+00:00"
-        },
-        {
-            "name": "lucatume/function-mocker",
-            "version": "1.3.8",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/lucatume/function-mocker.git",
-                "reference": "97dbec0d806dfa2745fd1f793a86bec9a852629e"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/lucatume/function-mocker/zipball/97dbec0d806dfa2745fd1f793a86bec9a852629e",
-                "reference": "97dbec0d806dfa2745fd1f793a86bec9a852629e",
-                "shasum": ""
-            },
-            "require": {
-                "antecedent/patchwork": "^2.0",
-                "lucatume/args": "^1.0",
-                "php": ">=5.6.0",
-                "phpunit/phpunit": ">=5.7"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^5.7"
-            },
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "src/shims.php",
-                    "src/functions.php"
-                ],
-                "psr-0": {
-                    "tad\\FunctionMocker": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-2.0+"
-            ],
-            "authors": [
-                {
-                    "name": "theAverageDev",
-                    "email": "luca@theaveragedev.com"
-                }
-            ],
-            "description": "Function mocking with Patchwork",
-            "support": {
-                "issues": "https://github.com/lucatume/function-mocker/issues",
-                "source": "https://github.com/lucatume/function-mocker/tree/1.3.8"
-            },
-            "time": "2018-04-18T15:25:42+00:00"
-        },
-        {
-            "name": "lucatume/function-mocker-le",
-            "version": "1.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/lucatume/function-mocker-le.git",
-                "reference": "20e12ae2e6350c5b11a6bdbe763c749f7f88603e"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/lucatume/function-mocker-le/zipball/20e12ae2e6350c5b11a6bdbe763c749f7f88603e",
-                "reference": "20e12ae2e6350c5b11a6bdbe763c749f7f88603e",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.4"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^6.3"
-            },
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "src/function-mocker-le.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-2.0"
-            ],
-            "authors": [
-                {
-                    "name": "theAverageDev (Luca Tumedei)",
-                    "email": "luca@theaveragedev.com"
-                }
-            ],
-            "description": "A lightweight function mocking solution.",
-            "support": {
-                "issues": "https://github.com/lucatume/function-mocker-le/issues",
-                "source": "https://github.com/lucatume/function-mocker-le/tree/master"
-            },
-            "time": "2017-09-02T10:37:47+00:00"
+            "time": "2023-09-08T10:12:49+00:00"
         },
         {
             "name": "lucatume/wp-browser",
-            "version": "3.1.6",
+            "version": "3.1.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lucatume/wp-browser.git",
-                "reference": "5cefdab50d16f69447c48e5a8668d67d4892d6ef"
+                "reference": "d591a12891305b29ff0e1e08e2a173e6f915abf4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lucatume/wp-browser/zipball/5cefdab50d16f69447c48e5a8668d67d4892d6ef",
-                "reference": "5cefdab50d16f69447c48e5a8668d67d4892d6ef",
+                "url": "https://api.github.com/repos/lucatume/wp-browser/zipball/d591a12891305b29ff0e1e08e2a173e6f915abf4",
+                "reference": "d591a12891305b29ff0e1e08e2a173e6f915abf4",
                 "shasum": ""
             },
             "require": {
@@ -2102,11 +1974,10 @@
             },
             "require-dev": {
                 "erusev/parsedown": "^1.7",
-                "ext-pcntl": "*",
-                "ext-sockets": "*",
                 "gumlet/php-image-resize": "^1.6",
                 "lucatume/codeception-snapshot-assertions": "^0.2",
                 "mikey179/vfsstream": "^1.6",
+                "symfony/translation": "^3.4",
                 "victorjonsson/markdowndocs": "dev-master",
                 "vlucas/phpdotenv": "^3.0",
                 "wp-cli/wp-cli-bundle": "*"
@@ -2157,7 +2028,7 @@
             ],
             "support": {
                 "issues": "https://github.com/lucatume/wp-browser/issues",
-                "source": "https://github.com/lucatume/wp-browser/tree/3.1.6"
+                "source": "https://github.com/lucatume/wp-browser/tree/3.1.10"
             },
             "funding": [
                 {
@@ -2165,7 +2036,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-04-28T06:45:08+00:00"
+            "time": "2023-07-20T16:11:45+00:00"
         },
         {
             "name": "lucatume/wp-snaphot-assertions",
@@ -2218,16 +2089,16 @@
         },
         {
             "name": "mikehaertl/php-shellcommand",
-            "version": "1.6.4",
+            "version": "1.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mikehaertl/php-shellcommand.git",
-                "reference": "3488d7803df1e8f1a343d3d0ca452d527ad8d5e5"
+                "reference": "e79ea528be155ffdec6f3bf1a4a46307bb49e545"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mikehaertl/php-shellcommand/zipball/3488d7803df1e8f1a343d3d0ca452d527ad8d5e5",
-                "reference": "3488d7803df1e8f1a343d3d0ca452d527ad8d5e5",
+                "url": "https://api.github.com/repos/mikehaertl/php-shellcommand/zipball/e79ea528be155ffdec6f3bf1a4a46307bb49e545",
+                "reference": "e79ea528be155ffdec6f3bf1a4a46307bb49e545",
                 "shasum": ""
             },
             "require": {
@@ -2258,9 +2129,9 @@
             ],
             "support": {
                 "issues": "https://github.com/mikehaertl/php-shellcommand/issues",
-                "source": "https://github.com/mikehaertl/php-shellcommand/tree/1.6.4"
+                "source": "https://github.com/mikehaertl/php-shellcommand/tree/1.7.0"
             },
-            "time": "2021-03-17T06:54:33+00:00"
+            "time": "2023-04-19T08:25:22+00:00"
         },
         {
             "name": "mikemclin/laravel-wp-password",
@@ -3680,66 +3551,6 @@
             "time": "2019-03-08T08:55:37+00:00"
         },
         {
-            "name": "rmccue/requests",
-            "version": "v1.8.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/WordPress/Requests.git",
-                "reference": "82e6936366eac3af4d836c18b9d8c31028fe4cd5"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/WordPress/Requests/zipball/82e6936366eac3af4d836c18b9d8c31028fe4cd5",
-                "reference": "82e6936366eac3af4d836c18b9d8c31028fe4cd5",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.2"
-            },
-            "require-dev": {
-                "dealerdirect/phpcodesniffer-composer-installer": "^0.7",
-                "php-parallel-lint/php-console-highlighter": "^0.5.0",
-                "php-parallel-lint/php-parallel-lint": "^1.3",
-                "phpcompatibility/php-compatibility": "^9.0",
-                "phpunit/phpunit": "^4.8 || ^5.7 || ^6.5 || ^7.5",
-                "requests/test-server": "dev-master",
-                "squizlabs/php_codesniffer": "^3.5",
-                "wp-coding-standards/wpcs": "^2.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Requests": "library/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "ISC"
-            ],
-            "authors": [
-                {
-                    "name": "Ryan McCue",
-                    "homepage": "http://ryanmccue.info"
-                }
-            ],
-            "description": "A HTTP library written in PHP, for human beings.",
-            "homepage": "http://github.com/WordPress/Requests",
-            "keywords": [
-                "curl",
-                "fsockopen",
-                "http",
-                "idna",
-                "ipv6",
-                "iri",
-                "sockets"
-            ],
-            "support": {
-                "issues": "https://github.com/WordPress/Requests/issues",
-                "source": "https://github.com/WordPress/Requests/tree/v1.8.1"
-            },
-            "time": "2021-06-04T09:56:25+00:00"
-        },
-        {
             "name": "sebastian/code-unit-reverse-lookup",
             "version": "1.0.2",
             "source": {
@@ -4374,16 +4185,16 @@
         },
         {
             "name": "sirbrillig/phpcs-variable-analysis",
-            "version": "v2.11.10",
+            "version": "v2.11.17",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sirbrillig/phpcs-variable-analysis.git",
-                "reference": "0f25a3766f26df91d6bdda0c8931303fc85499d7"
+                "reference": "3b71162a6bf0cde2bff1752e40a1788d8273d049"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sirbrillig/phpcs-variable-analysis/zipball/0f25a3766f26df91d6bdda0c8931303fc85499d7",
-                "reference": "0f25a3766f26df91d6bdda0c8931303fc85499d7",
+                "url": "https://api.github.com/repos/sirbrillig/phpcs-variable-analysis/zipball/3b71162a6bf0cde2bff1752e40a1788d8273d049",
+                "reference": "3b71162a6bf0cde2bff1752e40a1788d8273d049",
                 "shasum": ""
             },
             "require": {
@@ -4428,7 +4239,7 @@
                 "source": "https://github.com/sirbrillig/phpcs-variable-analysis",
                 "wiki": "https://github.com/sirbrillig/phpcs-variable-analysis/wiki"
             },
-            "time": "2023-01-05T18:45:16+00:00"
+            "time": "2023-08-05T23:46:11+00:00"
         },
         {
             "name": "softcreatr/jsonpath",
@@ -4551,16 +4362,16 @@
         },
         {
             "name": "squizlabs/php_codesniffer",
-            "version": "3.7.1",
+            "version": "3.7.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/squizlabs/PHP_CodeSniffer.git",
-                "reference": "1359e176e9307e906dc3d890bcc9603ff6d90619"
+                "reference": "ed8e00df0a83aa96acf703f8c2979ff33341f879"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/1359e176e9307e906dc3d890bcc9603ff6d90619",
-                "reference": "1359e176e9307e906dc3d890bcc9603ff6d90619",
+                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/ed8e00df0a83aa96acf703f8c2979ff33341f879",
+                "reference": "ed8e00df0a83aa96acf703f8c2979ff33341f879",
                 "shasum": ""
             },
             "require": {
@@ -4596,14 +4407,15 @@
             "homepage": "https://github.com/squizlabs/PHP_CodeSniffer",
             "keywords": [
                 "phpcs",
-                "standards"
+                "standards",
+                "static analysis"
             ],
             "support": {
                 "issues": "https://github.com/squizlabs/PHP_CodeSniffer/issues",
                 "source": "https://github.com/squizlabs/PHP_CodeSniffer",
                 "wiki": "https://github.com/squizlabs/PHP_CodeSniffer/wiki"
             },
-            "time": "2022-06-18T07:21:10+00:00"
+            "time": "2023-02-22T23:07:41+00:00"
         },
         {
             "name": "symfony/browser-kit",
@@ -6045,16 +5857,16 @@
         },
         {
             "name": "wp-cli/php-cli-tools",
-            "version": "v0.11.17",
+            "version": "v0.11.19",
             "source": {
                 "type": "git",
                 "url": "https://github.com/wp-cli/php-cli-tools.git",
-                "reference": "f6be76b7c4ee2ef93c9531b8a37bdb7ce42c3728"
+                "reference": "2d27f0db5c36f5aa0064abecddd6d05f28c4d001"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wp-cli/php-cli-tools/zipball/f6be76b7c4ee2ef93c9531b8a37bdb7ce42c3728",
-                "reference": "f6be76b7c4ee2ef93c9531b8a37bdb7ce42c3728",
+                "url": "https://api.github.com/repos/wp-cli/php-cli-tools/zipball/2d27f0db5c36f5aa0064abecddd6d05f28c4d001",
+                "reference": "2d27f0db5c36f5aa0064abecddd6d05f28c4d001",
                 "shasum": ""
             },
             "require": {
@@ -6102,29 +5914,28 @@
             ],
             "support": {
                 "issues": "https://github.com/wp-cli/php-cli-tools/issues",
-                "source": "https://github.com/wp-cli/php-cli-tools/tree/v0.11.17"
+                "source": "https://github.com/wp-cli/php-cli-tools/tree/v0.11.19"
             },
-            "time": "2023-01-12T01:18:21+00:00"
+            "time": "2023-07-21T11:37:15+00:00"
         },
         {
             "name": "wp-cli/wp-cli",
-            "version": "v2.7.1",
+            "version": "v2.8.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/wp-cli/wp-cli.git",
-                "reference": "1ddc754f1c15e56fb2cdd1a4e82bd0ec6ca32a76"
+                "reference": "5dd2340b9a01c3cfdbaf5e93a140759fdd190eee"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wp-cli/wp-cli/zipball/1ddc754f1c15e56fb2cdd1a4e82bd0ec6ca32a76",
-                "reference": "1ddc754f1c15e56fb2cdd1a4e82bd0ec6ca32a76",
+                "url": "https://api.github.com/repos/wp-cli/wp-cli/zipball/5dd2340b9a01c3cfdbaf5e93a140759fdd190eee",
+                "reference": "5dd2340b9a01c3cfdbaf5e93a140759fdd190eee",
                 "shasum": ""
             },
             "require": {
                 "ext-curl": "*",
                 "mustache/mustache": "^2.14.1",
                 "php": "^5.6 || ^7.0 || ^8.0",
-                "rmccue/requests": "^1.8",
                 "symfony/finder": ">2.7",
                 "wp-cli/mustangostang-spyc": "^0.6.3",
                 "wp-cli/php-cli-tools": "~0.11.2"
@@ -6148,7 +5959,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.8.x-dev"
+                    "dev-main": "2.9.x-dev"
                 }
             },
             "autoload": {
@@ -6175,7 +5986,7 @@
                 "issues": "https://github.com/wp-cli/wp-cli/issues",
                 "source": "https://github.com/wp-cli/wp-cli"
             },
-            "time": "2022-10-17T23:10:42+00:00"
+            "time": "2023-06-05T06:55:55+00:00"
         },
         {
             "name": "wp-coding-standards/wpcs",
@@ -6227,41 +6038,6 @@
                 "wiki": "https://github.com/WordPress/WordPress-Coding-Standards/wiki"
             },
             "time": "2020-05-13T23:57:56+00:00"
-        },
-        {
-            "name": "xrstf/composer-php52",
-            "version": "v1.0.21",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/composer-php52/composer-php52.git",
-                "reference": "670ac996f93792f8de0427605cfef342b3429ff3"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/composer-php52/composer-php52/zipball/670ac996f93792f8de0427605cfef342b3429ff3",
-                "reference": "670ac996f93792f8de0427605cfef342b3429ff3",
-                "shasum": ""
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-default": "1.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "xrstf\\Composer52": "lib/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "support": {
-                "issues": "https://github.com/composer-php52/composer-php52/issues",
-                "source": "https://github.com/composer-php52/composer-php52"
-            },
-            "time": "2022-06-08T03:23:46+00:00"
         },
         {
             "name": "zordius/lightncandy",
@@ -6333,5 +6109,5 @@
     "platform-overrides": {
         "php": "7.0"
     },
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.6.0"
 }
