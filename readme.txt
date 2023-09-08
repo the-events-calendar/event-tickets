@@ -204,6 +204,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Incorrect ticket count in Ticket email within the Tickets Emails feature. [ET-1832]
 * Fix - Added support for filtering attendees by TicketsCommerce order status. [ET-1863]
 * Fix - Prevent Fatal error around Promoter usage of Firebase\JWT\JWT for encryption. [ET-1876]
+* Fix - Prevent some button background styles from being overridden by theme editors. [ET-1815]
 
 = [5.6.4] 2023-08-16 =
 
