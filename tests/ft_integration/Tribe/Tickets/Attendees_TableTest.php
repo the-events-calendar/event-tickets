@@ -22,6 +22,7 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 		return array_reduce( $attendees, function ( array $carry, array $attendee ): array {
 			foreach (
 				[
+					'ID',
 					'purchaser_name',
 					'purchaser_email',
 					'ticket_name',
@@ -85,7 +86,12 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 		$_GET['search']   = '';
 
 		ob_start();
-		$table = new Attendees_Table();
+		/*
+		Columns headers are cached in the `get_column_headers` function
+		by screen id. To avoid the cache, we need to set the screen id
+		to something different from the default one.
+		*/
+		$table = new Attendees_Table( [ 'screen' => uniqid( 'screen_', true ) ] );
 		$table->prepare_items();
 		$attendee_data = $this->get_attendee_data( $table->items );
 		$table->display();
