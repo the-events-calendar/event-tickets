@@ -22,6 +22,7 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 		return array_reduce( $attendees, function ( array $carry, array $attendee ): array {
 			foreach (
 				[
+					'ID',
 					'purchaser_name',
 					'purchaser_email',
 					'ticket_name',
