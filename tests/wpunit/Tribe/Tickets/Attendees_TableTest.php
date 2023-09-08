@@ -9,7 +9,7 @@ use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 use Tribe__Tickets__Attendees_Table as Attendees_Table;
 use Tribe__Tickets__Data_API as Data_API;
-use function EDD\Blocks\Orders\confirmation;
+use Tribe__Date_Utils as Dates;
 
 class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 	use RSVP_Ticket_Maker;
@@ -82,10 +82,31 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 		$paypal_attendee_ids2 = $this->create_many_attendees_for_ticket( 25, $paypal_ticket_id2, $post_id2 );
 		$rsvp_attendee_ids2   = $this->create_many_attendees_for_ticket( 25, $rsvp_ticket_id2, $post_id2 );
 
+		/*
+		 Attendees will be ordered by `post_date` and `post_title`. Since we're creating the Attendees with a factory,
+		the `post_date` will be the same for pretty much all of them. The purpose of the test is to assert we get the
+		correct Attendees so we make the order deterministic among posts that would have an undetermined order by
+		setting the `post_title` to a string including a progressive number.
+		 */
+		foreach (
+			[
+				...$paypal_attendee_ids,
+				...$rsvp_attendee_ids,
+				...$paypal_attendee_ids2,
+				...$rsvp_attendee_ids2
+			] as $k => $id
+		) {
+			wp_update_post( [
+				'ID'         => $id,
+				'post_title' => 'Attendee #' . str_pad( $k, '3', '0', STR_PAD_LEFT ),
+			] );
+		}
+
 		$sut = $this->make_instance();
 
 		$_GET['event_id'] = $post_id;
 		$_GET['paged']    = 1;
+
 		$sut->prepare_items();
 		$attendee_ids = wp_list_pluck( $sut->items, 'attendee_id' );
 
