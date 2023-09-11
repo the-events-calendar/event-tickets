@@ -26,7 +26,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	const ticket_button_selectors = '#rsvp_form_toggle, #ticket_form_toggle, #settings_form_toggle';
 	const tickets_panel_table_selector = '.tribe-tickets-editor-table-tickets-body';
 	const noTicketsOnRecurring = document.body.classList.contains( 'tec-no-tickets-on-recurring' );
-
+	const tickets_panel_helper_text_selector = '.tec_ticket-panel__helper_text__wrap';
+	const tickets_panel_hidden_recurrence_warning = '.tec_ticket-panel__hidden-recurring-warning';
 	/*
 	 * Null or 'default' are the default ticket; 'rsvp' is the RSVP ticket.
 	 * The backend might use the value, sent over with AJAX panel requests, to modify panels
@@ -903,10 +904,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		 */
 		$document.on( 'tribe-recurrence-active', function( event ) {
 			$( ticket_button_selectors ).hide();
-			$( ticket_button_selectors ).
-					parent().
-					find( '.ticket-editor-notice.recurring_event_warning' ).
-					show();
+			$( tickets_panel_helper_text_selector ).hide();
+			$( tickets_panel_hidden_recurrence_warning ).show();
 		} );
 
 		/**
@@ -914,10 +913,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		 */
 		$document.on( 'tribe-recurrence-inactive', function( event ) {
 			$( ticket_button_selectors ).show();
-			$( ticket_button_selectors ).
-					parent().
-					find( '.ticket-editor-notice.recurring_event_warning' ).
-					hide();
+			$( tickets_panel_helper_text_selector ).show();
+			$( tickets_panel_hidden_recurrence_warning ).hide();
 		} );
 
 		/**
