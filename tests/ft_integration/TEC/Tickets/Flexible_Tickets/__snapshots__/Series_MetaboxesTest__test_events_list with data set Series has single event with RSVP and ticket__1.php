@@ -28,7 +28,7 @@
 		<table class="wp-list-table widefat fixed striped table-view-list series">
 	<thead>
 	<tr>
-		<th scope="col" id=\'title\' class=\'manage-column column-title column-primary\'>Title</th><th scope="col" id=\'ticket_types\' class=\'manage-column column-ticket_types\'>Attached Ticket Types</th><th scope="col" id=\'actions\' class=\'manage-column column-actions\'>Actions</th>	</tr>
+		<th scope="col" id=\'title\' class=\'manage-column column-title column-primary\'>Title</th><th scope="col" id=\'ticket_types\' class=\'manage-column column-ticket_types\'>Attached Tickets</th><th scope="col" id=\'actions\' class=\'manage-column column-actions\'>Actions</th>	</tr>
 	</thead>
 
 	<tbody id="the-list"
@@ -46,12 +46,12 @@
 </div><div class="tec-tickets__series_attached_ticket-type">
 	<div class="tec-tickets__series_attached_ticket-type__icon tec-tickets__series_attached_ticket-type__icon--ticket"></div>
 	<div class="tickets__series_attached_ticket-type__title">
-		Ticket	</div>
+		Single Ticket	</div>
 </div></div></td><td><a href="" target="_blank" rel="noreferrer noopener">Edit</a> - <a href="http://wordpress.test/?post_type=tribe_events&amp;p=10000001" target="_blank" rel="noreferrer noopener">View</a></td></tr>	</tbody>
 
 	<tfoot>
 	<tr>
-		<th scope="col"  class=\'manage-column column-title column-primary\'>Title</th><th scope="col"  class=\'manage-column column-ticket_types\'>Attached Ticket Types</th><th scope="col"  class=\'manage-column column-actions\'>Actions</th>	</tr>
+		<th scope="col"  class=\'manage-column column-title column-primary\'>Title</th><th scope="col"  class=\'manage-column column-ticket_types\'>Attached Tickets</th><th scope="col"  class=\'manage-column column-actions\'>Actions</th>	</tr>
 	</tfoot>
 
 </table>
