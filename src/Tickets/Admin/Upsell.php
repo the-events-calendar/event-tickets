@@ -91,11 +91,11 @@ class Upsell {
 
 	/**
 	 * Maybe show upsell for Paystack.
-	 * 
-	 * @since TBD
-	 * 
+	 *
+	 * @since 5.6.5
+	 *
 	 * @param array $settings
-	 * 
+	 *
 	 * @return array
 	 */
 	public function maybe_show_paystack_promo( $settings ) {
@@ -119,7 +119,7 @@ class Upsell {
 		/** @var \Tribe__Template $template  */
 		$template = tribe( Settings::class )->get_template();
 		$html = $template->template( 'paystack-promo', [], false );
-		
+
 		// Create the new setting.
 		$new_setting = [
 			'afterpay_promo' => [

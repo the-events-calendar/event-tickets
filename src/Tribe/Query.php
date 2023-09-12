@@ -37,7 +37,7 @@ class Tribe__Tickets__Query {
 	 * Builds and returns the Closure that will be applied to the query `posts_where` filter to restrict
 	 * posts by their ticketed status.
 	 *
-	 * @since TBD
+	 * @since 5.6.5
 	 *
 	 * @param WP_Query $query       The WP_Query instance.
 	 * @param bool     $has_tickets Whether the posts should be restricted to those that have tickets or not.
@@ -63,7 +63,7 @@ class Tribe__Tickets__Query {
 			/**
 			 * Filter the subquery used to filter posts by their ticketed status.
 			 *
-			 * @since TBD
+			 * @since 5.6.5
 			 *
 			 * @param string        $query       The subquery used to filter posts by their ticketed status as built by the default logic.
 			 * @param bool          $has_tickets Whether the posts should be restricted to those that have tickets or not.
@@ -123,7 +123,7 @@ class Tribe__Tickets__Query {
 		/**
 		 * Filters the query used to get the number of ticketed posts of a certain type.
 		 *
-		 * @since TBD
+		 * @since 5.6.5
 		 *
 		 * @param string|null $query     The query used to get the number of ticketed posts of a certain type.
 		 *                               If null, the default query will be used.
@@ -156,7 +156,7 @@ class Tribe__Tickets__Query {
 		/**
 		 * Filters the query used to get the number of unticketed posts of a certain type.
 		 *
-		 * @since TBD
+		 * @since 5.6.5
 		 *
 		 * @param string|null $query     The query used to get the number of unticketed posts of a certain type.
 		 *                               If null, the default query will be used.
@@ -198,7 +198,7 @@ class Tribe__Tickets__Query {
 	 * Why? The `wp_postmeta.meta_key` column is indexed. Running a LIKE query will not use the index
 	 * and will generate a slow query, using complete keys will be fast as it's a byte comparison.
 	 *
-	 * @since TBD
+	 * @since 5.6.5
 	 *
 	 * @return string The query part based on `meta_key`s to "unroll" it into compiled values.
 	 */
