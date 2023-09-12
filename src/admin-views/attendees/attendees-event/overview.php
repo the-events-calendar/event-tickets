@@ -2,7 +2,7 @@
 /**
  * Event Attendees Summary Ticket Overview template.
  *
- * @since  TBD
+ * @since  5.6.5
  *
  * @var \Tribe__Template          $this      Current template object.
  * @var int                       $event_id  The event/post/page id.
@@ -102,16 +102,16 @@ foreach ( $tickets_by_types as $type_name => $type_tickets ) {
 		</div>
 		<div class="tec-tickets__admin-attendees-overview-ticket-totals-stat">
 			<span>
-				<?php 
+				<?php
 					echo sprintf(
 						// Translators: %1$s is the number of tickets issued.
 						__( '%s issued', 'event-tickets'),
 						esc_html_e( $ticket_totals['sold'] )
-					); 
+					);
 				?>
 			</span>
 			<span>
-				<?php 
+				<?php
 					echo sprintf(
 						// Translators: %1$s is the number of tickets available.
 						__( '(%s available)', 'event-tickets'),

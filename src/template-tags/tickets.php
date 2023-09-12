@@ -488,7 +488,7 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 	 *
 	 * @since 4.10.9 Use customizable ticket name functions.
 	 * @since 4.11.5 Correct the sprintf placeholders that were forcing the readable amount to an integer.
-	 * @since TBD    Added `$sold_label_override` parameter.
+	 * @since 5.6.5    Added `$sold_label_override` parameter.
 	 *
 	 * @param Tribe__Tickets__Ticket_Object $ticket Ticket to analyze.
 	 *
