@@ -68,7 +68,7 @@ class MyTicketsTest extends WPTestCase {
 
 		/** @var \Tribe__Tickets__Editor__Template $template */
 		$template = tribe( 'tickets.editor.template' );
-		$html = $template->template( 'blocks/attendees/view-link', [], false );
+		$html = $template->template( 'blocks/attendees/view-link', [ 'post_id' => $post->ID ], false );
 
 		$this->assertMatchesHtmlSnapshot( $html );
 	}
