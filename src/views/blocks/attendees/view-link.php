@@ -60,14 +60,13 @@ if ( $rsvp_count > 0 ) {
 	$counters[] = sprintf(
 		_n( '%1$d %2$s', '%1$d %3$s', $rsvp_count, 'event-tickets' ),
 		$rsvp_count,
-		tribe_get_rsvp_label_singular( basename( __FILE__ ) ),
-		tribe_get_rsvp_label_plural( basename( __FILE__ )
-		)
+		tribe_get_rsvp_label_singular( 'my-tickets-view-link' ),
+		tribe_get_rsvp_label_plural( 'my-tickets-view-link' )
 	);
 
 	// Append label on link.
 	if ( empty( $ticket_count ) ) {
-		$link_label .= _n( tribe_get_rsvp_label_singular(), tribe_get_rsvp_label_plural(), $rsvp_count, 'event-tickets' );
+		$link_label .= _n( tribe_get_rsvp_label_singular( 'my-tickets-view-link' ), tribe_get_rsvp_label_plural( 'my-tickets-view-link' ), $rsvp_count, 'event-tickets' );
 	}
 }
 
@@ -76,14 +75,13 @@ if ( $ticket_count > 0 ) {
 	$counters[] = sprintf(
 		_n( '%1$d %2$s', '%1$d %3$s', $ticket_count, 'event-tickets' ),
 		$ticket_count,
-		tribe_get_ticket_label_singular( basename( __FILE__ ) ),
-		tribe_get_ticket_label_plural( basename( __FILE__ )
-		)
+		tribe_get_ticket_label_singular( 'my-tickets-view-link' ),
+		tribe_get_ticket_label_plural( 'my-tickets-view-link' )
 	);
 
 	// Append label on link.
 	if ( empty( $rsvp_count ) ) {
-		$link_label .= _n( tribe_get_ticket_label_singular(), tribe_get_ticket_label_plural(), $ticket_count, 'event-tickets' );
+		$link_label .= _n( tribe_get_ticket_label_singular( 'my-tickets-view-link' ), tribe_get_ticket_label_plural( 'my-tickets-view-link' ), $ticket_count, 'event-tickets' );
 	}
 }
 
