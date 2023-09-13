@@ -9,7 +9,6 @@ use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 use Tribe__Tickets__Attendees_Table as Attendees_Table;
 use Tribe__Tickets__Data_API as Data_API;
-use Tribe__Date_Utils as Dates;
 
 class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 	use RSVP_Ticket_Maker;
