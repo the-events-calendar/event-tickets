@@ -47,24 +47,30 @@ $counters           = [];
 $rsvp_count         = $view->count_rsvp_attendees( $event_id, $user_id );
 $ticket_count       = $view->count_ticket_attendees( $event_id, $user_id );
 
-if ( 1 === $rsvp_count ) {
-	// Translators: 1: the number one, 2: singular RSVP label.
-	$counters[] = sprintf( _x( '%1$d %2$s', 'RSVP count singular', 'event-tickets' ), $rsvp_count, tribe_get_rsvp_label_singular( basename( __FILE__ ) ) );
-} elseif ( 1 < $rsvp_count ) {
-	// Translators: 1: the plural number of RSVPs, 2: plural RSVP label.
-	$counters[] = sprintf( _x( '%1$d %2$s', 'RSVP count plural', 'event-tickets' ), $rsvp_count, tribe_get_rsvp_label_plural( basename( __FILE__ ) ) );
+if ( empty( $rsvp_count ) && empty( $ticket_count ) ) {
+	return;
 }
 
-if ( 1 === $ticket_count ) {
-	// Translators: 1: the number one, 2: singular Ticket label.
-	$counters[] = sprintf( _x( '%1$d %2$s', 'Ticket count singular', 'event-tickets' ), $ticket_count, tribe_get_ticket_label_singular( basename( __FILE__ ) ) );
-} elseif ( 1 < $ticket_count ) {
-	// Translators: 1: the plural number of Tickets, 2: plural Ticket label.
-	$counters[] = sprintf( _x( '%1$d %2$s', 'Ticket count plural', 'event-tickets' ), $ticket_count, tribe_get_ticket_label_plural( basename( __FILE__ ) ) );
+if ( $rsvp_count > 0 ) {
+	// Translators: 1: the number of RSVPs, 2: singular RSVP label, 3: plural RSVP label.
+	$counters[] = sprintf(
+		_n( '%1$d %2$s', '%1$d %3$s', $rsvp_count, 'RSVP count', 'event-tickets' ),
+		$rsvp_count,
+		tribe_get_rsvp_label_singular( basename( __FILE__ ) ),
+		tribe_get_rsvp_label_plural( basename( __FILE__ )
+		)
+	);
 }
 
-if ( empty( $counters ) ) {
-	return false;
+if ( $ticket_count > 0 ) {
+	// Translators: 1: the number of Tickets, 2: singular Ticket label, 3: plural Ticket label.
+	$counters[] = sprintf(
+		_n( '%1$d %2$s', '%1$d %3$s', $ticket_count, 'Ticket count', 'event-tickets' ),
+		$ticket_count,
+		tribe_get_ticket_label_singular( basename( __FILE__ ) ),
+		tribe_get_ticket_label_plural( basename( __FILE__ )
+		)
+	);
 }
 
 $link = $view->get_tickets_page_url( $event_id, $is_event_page );
