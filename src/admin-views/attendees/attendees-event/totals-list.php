@@ -1,9 +1,9 @@
 <?php
 /**
  * Attendance ticket totals template
- * 
- * @since TBD
- * 
+ *
+ * @since 5.6.5
+ *
  * @var string $total_sold_label        The label for the total sold tickets.
  * @var string $total_complete_label    The label for the total completed tickets.
  * @var string $total_cancelled_label   The label for the total cancelled tickets.

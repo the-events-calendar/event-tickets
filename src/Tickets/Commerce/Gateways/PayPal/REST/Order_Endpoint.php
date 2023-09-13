@@ -497,7 +497,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * If the text exceeds the maximum character length, it is truncated at the last space
 	 * within the limit and an ellipsis is added at the end.
 	 *
-	 * @since TBD
+	 * @since 5.6.5
 	 *
 	 * @param string $text The original order item name text.
 	 *

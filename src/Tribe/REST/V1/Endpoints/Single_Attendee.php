@@ -383,7 +383,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 	/**
 	 * Validate whether the check_in value is valid for this attendee.
 	 *
-	 * @since TBD Validate check-in data before allowing check-in.
+	 * @since 5.6.5 Validate check-in data before allowing check-in.
 	 *
 	 * @param $attendee array Attendee data.
 	 * @param $check_in bool Check in value.

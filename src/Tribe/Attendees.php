@@ -158,8 +158,8 @@ class Tribe__Tickets__Attendees {
 	 * Print Check In Totals at top of Column.
 	 *
 	 * @since 4.6.2
-	 * @since TBD   Added $post_id parameter.
-	 * 
+	 * @since 5.6.5   Added $post_id parameter.
+	 *
 	 * @param int $post_id The post ID.
 	 */
 	public function print_checkedin_totals( $post_id ) {
@@ -185,8 +185,8 @@ class Tribe__Tickets__Attendees {
 	/**
 	 * Get Check In Total.
 	 *
-	 * @since TBD
-	 * 
+	 * @since 5.6.5
+	 *
 	 * @return int
 	 */
 	public function get_checkedin_total(): int {
@@ -195,11 +195,11 @@ class Tribe__Tickets__Attendees {
 
 	/**
 	 * Get Check In Percentage.
-	 * 
-	 * @since TBD
-	 * 
+	 *
+	 * @since 5.6.5
+	 *
 	 * @param int $post_id The post ID.
-	 * 
+	 *
 	 * @return string
 	 */
 	public function get_checkedin_percentage( $post_id ): string {

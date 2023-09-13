@@ -28,7 +28,7 @@
 		<table class="wp-list-table widefat fixed striped table-view-list series">
 	<thead>
 	<tr>
-		<th scope="col" id=\'title\' class=\'manage-column column-title column-primary\'>Title</th><th scope="col" id=\'ticket_types\' class=\'manage-column column-ticket_types\'>Attached Ticket Types</th><th scope="col" id=\'actions\' class=\'manage-column column-actions\'>Actions</th>	</tr>
+		<th scope="col" id=\'title\' class=\'manage-column column-title column-primary\'>Title</th><th scope="col" id=\'ticket_types\' class=\'manage-column column-ticket_types\'>Attached Tickets</th><th scope="col" id=\'actions\' class=\'manage-column column-actions\'>Actions</th>	</tr>
 	</thead>
 
 	<tbody id="the-list"
@@ -79,7 +79,7 @@
 
 	<tfoot>
 	<tr>
-		<th scope="col"  class=\'manage-column column-title column-primary\'>Title</th><th scope="col"  class=\'manage-column column-ticket_types\'>Attached Ticket Types</th><th scope="col"  class=\'manage-column column-actions\'>Actions</th>	</tr>
+		<th scope="col"  class=\'manage-column column-title column-primary\'>Title</th><th scope="col"  class=\'manage-column column-ticket_types\'>Attached Tickets</th><th scope="col"  class=\'manage-column column-actions\'>Actions</th>	</tr>
 	</tfoot>
 
 </table>

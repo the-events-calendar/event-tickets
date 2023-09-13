@@ -191,7 +191,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.6.5] TBD =
+= [5.6.5] 2023-09-13 =
 
 * Version - Event Tickets 5.6.5 is only compatible with The Events Calendar 6.2.2 and higher.
 * Tweak - Ticket names over 125 characters will now be truncated when being sent to Paypal. [ET-1865]
@@ -205,6 +205,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Added support for filtering attendees by TicketsCommerce order status. [ET-1863]
 * Fix - Prevent Fatal error around Promoter usage of Firebase\JWT\JWT for encryption. [ET-1876]
 * Fix - Prevent some button background styles from being overridden by theme editors. [ET-1815]
+* Language - 15 new strings added, 67 updated, 1 fuzzied, and 1 obsoleted
 
 = [5.6.4] 2023-08-16 =
 

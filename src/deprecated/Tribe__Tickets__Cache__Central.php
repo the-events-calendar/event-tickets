@@ -1,10 +1,10 @@
 <?php
-_deprecated_file( __FILE__, 'TBD', 'No direct replacement.' );
+_deprecated_file( __FILE__, '5.6.5', 'No direct replacement.' );
 
 /**
  * Class Tribe__Tickets__Cache__Central.
  *
- * @deprecated TBD
+ * @deprecated 5.6.5
  */
 class Tribe__Tickets__Cache__Central {
 
@@ -21,7 +21,7 @@ class Tribe__Tickets__Cache__Central {
 	/**
 	 *  The class singleton constructor.
 	 *
-	 * @deprecated TBD
+	 * @deprecated 5.6.5
 	 *
 	 * @return Tribe__Tickets__Cache__Central
 	 */
@@ -36,7 +36,7 @@ class Tribe__Tickets__Cache__Central {
 	/**
 	 * Tribe__Tickets__Cache__Central constructor.
 	 *
-	 * @deprecated TBD
+	 * @deprecated 5.6.5
 	 *
 	 * @param Tribe__Tickets__Cache__Cache_Interface|null $cache An injectable cache object instance.
 	 */
@@ -48,7 +48,7 @@ class Tribe__Tickets__Cache__Central {
 	/**
 	 * Hooks the class to relevant filters.
 	 *
-	 * @deprecated TBD
+	 * @deprecated 5.6.5
 	 */
 	public function hook() {
 		/**
@@ -92,7 +92,7 @@ class Tribe__Tickets__Cache__Central {
 	/**
 	 * Use a filter as an action to reset all caches.
 	 *
-	 * @deprecated TBD
+	 * @deprecated 5.6.5
 	 *
 	 * @param mixed $value
 	 *
@@ -107,7 +107,7 @@ class Tribe__Tickets__Cache__Central {
 	/**
 	 * Returns an instance of the currently used cache.
 	 *
-	 * @deprecated TBD
+	 * @deprecated 5.6.5
 	 *
 	 * @return null|Tribe__Tickets__Cache__Cache_Interface|Tribe__Tickets__Cache__Transient_Cache
 	 */
