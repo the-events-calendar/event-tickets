@@ -818,12 +818,11 @@ class Tribe__Tickets__Tickets_View {
 	 *
 	 * @return string
 	 */
-	public function get_description_rsvp_ticket( $event_id, $user_id = null, $deprecated = null ) {
+	public function get_description_rsvp_ticket( $event_id, $user_id = null, $rsvp_count = null, $ticket_count = null ) {
 		$descriptions = [];
 
-		$rsvp_count = $this->count_rsvp_attendees( $event_id, $user_id );
-
-		$ticket_count = $this->count_ticket_attendees( $event_id, $user_id );
+		$rsvp_count   = $rsvp_count ?? $this->count_rsvp_attendees( $event_id, $user_id );
+		$ticket_count = $ticket_count ?? $this->count_ticket_attendees( $event_id, $user_id );
 
 		if ( 1 === $rsvp_count ) {
 			$descriptions[] = tribe_get_rsvp_label_singular( 'tickets_view_description' );

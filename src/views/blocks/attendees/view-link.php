@@ -75,5 +75,5 @@ $message = esc_html( sprintf( __( 'You have %1s for this %2s.', 'event-tickets' 
 
 <div class="tribe-link-view-attendee">
 	<?php echo $message ?>
-	<a href="<?php echo esc_url( $link ) ?>"><?php echo sprintf( esc_html__( 'View your %s', 'event-tickets' ), $view->get_description_rsvp_ticket( $event_id, $user_id ) ) ?></a>
+	<a href="<?php echo esc_url( $link ) ?>"><?php echo sprintf( esc_html__( 'View your %s', 'event-tickets' ), $view->get_description_rsvp_ticket( $event_id, $user_id, $rsvp_count, $ticket_count ) ) ?></a>
 </div>
