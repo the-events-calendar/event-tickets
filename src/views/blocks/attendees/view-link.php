@@ -51,29 +51,40 @@ if ( empty( $rsvp_count ) && empty( $ticket_count ) ) {
 	return;
 }
 
+$link       = $view->get_tickets_page_url( $event_id, $is_event_page );
+$link_label = $rsvp_count > 0 && $ticket_count > 0 ? __( 'View all' ) : __( 'View ', 'event-tickets' );
+
 if ( $rsvp_count > 0 ) {
 	// Translators: 1: the number of RSVPs, 2: singular RSVP label, 3: plural RSVP label.
 	$counters[] = sprintf(
-		_n( '%1$d %2$s', '%1$d %3$s', $rsvp_count, 'RSVP count', 'event-tickets' ),
+		_n( '%1$d %2$s', '%1$d %3$s', $rsvp_count, 'event-tickets' ),
 		$rsvp_count,
 		tribe_get_rsvp_label_singular( basename( __FILE__ ) ),
 		tribe_get_rsvp_label_plural( basename( __FILE__ )
 		)
 	);
+
+	// Append label on link.
+	if ( empty( $ticket_count ) ) {
+		$link_label .= _n( tribe_get_rsvp_label_singular(), tribe_get_rsvp_label_plural(), $rsvp_count, 'event-tickets' );
+	}
 }
 
 if ( $ticket_count > 0 ) {
 	// Translators: 1: the number of Tickets, 2: singular Ticket label, 3: plural Ticket label.
 	$counters[] = sprintf(
-		_n( '%1$d %2$s', '%1$d %3$s', $ticket_count, 'Ticket count', 'event-tickets' ),
+		_n( '%1$d %2$s', '%1$d %3$s', $ticket_count, 'event-tickets' ),
 		$ticket_count,
 		tribe_get_ticket_label_singular( basename( __FILE__ ) ),
 		tribe_get_ticket_label_plural( basename( __FILE__ )
 		)
 	);
-}
 
-$link = $view->get_tickets_page_url( $event_id, $is_event_page );
+	// Append label on link.
+	if ( empty( $rsvp_count ) ) {
+		$link_label .= _n( tribe_get_ticket_label_singular(), tribe_get_ticket_label_plural(), $ticket_count, 'event-tickets' );
+	}
+}
 
 // Translators: 1: number of RSVPs and/or Tickets with accompanying ticket type text, 2: post type label
 $message = esc_html( sprintf( __( 'You have %1s for this %2s.', 'event-tickets' ), implode( _x( ' and ', 'separator if there are both RSVPs and Tickets', 'event-tickets' ), $counters ), $post_type_singular ) );
@@ -81,5 +92,5 @@ $message = esc_html( sprintf( __( 'You have %1s for this %2s.', 'event-tickets' 
 
 <div class="tribe-link-view-attendee">
 	<?php echo $message ?>
-	<a href="<?php echo esc_url( $link ) ?>"><?php echo sprintf( esc_html__( 'View your %s', 'event-tickets' ), $view->get_description_rsvp_ticket( $event_id, $user_id, $rsvp_count, $ticket_count ) ) ?></a>
+	<a href="<?php echo esc_url( $link ) ?>"><?php echo sprintf( esc_html__( '%s', 'event-tickets' ), $link_label ) ?></a>
 </div>
