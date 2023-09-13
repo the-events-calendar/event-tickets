@@ -113,6 +113,52 @@ class MyTicketsTest extends WPTestCase {
 				return [ $post_id ];
 			}
 		];
+
+		yield 'post with 1 ticket and 2 RSVP purchased' => [
+			function (): array {
+				$post_id = $this->factory()->post->create();
+				// create a tc ticket.
+				$ticket_id = $this->create_tc_ticket( $post_id, 10 );
+				$attendee  = $this->create_many_attendees_for_ticket( 1, $ticket_id, $post_id, [ 'user_id' => get_current_user_id() ] );
+
+				// create rsvp ticket.
+				$rsvp_ticket_id = $this->create_rsvp_ticket( $post_id );
+				$attendee       = $this->create_many_attendees_for_ticket( 2, $rsvp_ticket_id, $post_id, [ 'user_id' => get_current_user_id() ] );
+
+				return [ $post_id ];
+			}
+		];
+
+		yield 'post with 2 ticket and 1 RSVP purchased' => [
+			function (): array {
+				$post_id = $this->factory()->post->create();
+				// create a tc ticket.
+				$ticket_id = $this->create_tc_ticket( $post_id, 10 );
+				$attendee  = $this->create_many_attendees_for_ticket( 2, $ticket_id, $post_id, [ 'user_id' => get_current_user_id() ] );
+
+				// create rsvp ticket.
+				$rsvp_ticket_id = $this->create_rsvp_ticket( $post_id );
+				$attendee       = $this->create_many_attendees_for_ticket( 1, $rsvp_ticket_id, $post_id, [ 'user_id' => get_current_user_id() ] );
+
+				return [ $post_id ];
+			}
+		];
+	}
+
+	/**
+	 * Replace dynamic ids with placeholders to avoid snapshot collision.
+	 *
+	 * @param string $snapshot
+	 * @param array $ids
+	 *
+	 * @return string
+	 */
+	public function placehold_post_ids( string $snapshot, array $ids ): string {
+		return str_replace(
+			array_values( $ids ),
+			array_map( static fn( string $name ) => "{{ $name }}", array_keys( $ids ) ),
+			$snapshot
+		);
 	}
 
 	/**
@@ -128,7 +174,9 @@ class MyTicketsTest extends WPTestCase {
 		/** @var \Tribe__Tickets__Editor__Template $template */
 		$template = tribe( 'tickets.editor.template' );
 		$html     = $template->template( 'blocks/attendees/view-link', [ 'post_id' => $post->ID ], false );
-
+		$html     = $this->placehold_post_ids( $html, [
+			'post_id'   => $post_id
+		] );
 		$this->assertMatchesHtmlSnapshot( $html );
 	}
 }
