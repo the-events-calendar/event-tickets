@@ -36,7 +36,7 @@ class MyTicketsTest extends WPTestCase {
 				//create a rsvp ticket for that post.
 				$rsvp_ticket_id = $this->create_rsvp_ticket( $post_id );
 
-				return [ $post_id ];
+				return [ $post_id, 'is_empty' => true ];
 			}
 		];
 
@@ -166,7 +166,9 @@ class MyTicketsTest extends WPTestCase {
 	 * @dataProvider get_purchased_ticket_data
 	 */
 	public function test_my_tickets_view_link( Closure $fixture ): void {
-		[ $post_id ] = $fixture();
+		$data     = $fixture();
+		$post_id  = reset( $data );
+		$is_empty = $data['is_empty'] ?? false;
 
 		global $post;
 		$post = get_post( $post_id );
@@ -175,8 +177,9 @@ class MyTicketsTest extends WPTestCase {
 		$template = tribe( 'tickets.editor.template' );
 		$html     = $template->template( 'blocks/attendees/view-link', [ 'post_id' => $post->ID ], false );
 		$html     = $this->placehold_post_ids( $html, [
-			'post_id'   => $post_id
+			'post_id' => $post_id
 		] );
-		$this->assertMatchesHtmlSnapshot( $html );
+
+		$is_empty ? $this->assertEmpty( $html ) : $this->assertMatchesHtmlSnapshot( $html );
 	}
 }
