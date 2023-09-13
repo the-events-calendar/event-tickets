@@ -202,4 +202,26 @@ class MyTicketsTest extends WPTestCase {
 
 		$is_empty ? $this->assertEmpty( $html ) : $this->assertMatchesHtmlSnapshot( $html );
 	}
+
+	/**
+	 * @test
+	 * @dataProvider get_purchased_ticket_data
+	 */
+	public function test_legacy_my_tickets_view_link( Closure $fixture ): void {
+		$data     = $fixture();
+		$post_id  = reset( $data );
+		$is_empty = $data['is_empty'] ?? false;
+
+		global $post;
+		$post = get_post( $post_id );
+
+		/** @var \Tribe__Tickets__Editor__Template $template */
+		$template = tribe( 'tickets.editor.template' );
+		$html     = $template->template( '/tickets/view-link', [ 'post_id' => $post->ID ], false );
+		$html     = $this->placehold_post_ids( $html, [
+			'post_id' => $post_id
+		] );
+
+		$is_empty ? $this->assertEmpty( $html ) : $this->assertMatchesHtmlSnapshot( $html );
+	}
 }
