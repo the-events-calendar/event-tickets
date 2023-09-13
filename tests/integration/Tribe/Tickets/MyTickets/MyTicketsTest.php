@@ -78,7 +78,7 @@ class MyTicketsTest extends WPTestCase {
 				$post_id = $this->factory()->post->create();
 				// create a tc ticket..
 				$ticket_id = $this->create_tc_ticket( $post_id, 10 );
-				$attendee  = $this->create_attendee_for_ticket( $ticket_id, $post_id, [ 'user_id' => get_current_user_id() ] );
+				$attendee  = $this->create_many_attendees_for_ticket( 3,  $ticket_id, $post_id, [ 'user_id' => get_current_user_id() ] );
 
 				return [ $post_id ];
 			}
