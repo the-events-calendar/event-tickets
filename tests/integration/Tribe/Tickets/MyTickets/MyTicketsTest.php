@@ -84,7 +84,7 @@ class MyTicketsTest extends WPTestCase {
 			}
 		];
 
-		yield 'post with 1 ticket and 1 RSVP purchased' => [
+		yield 'post with 1 RSVP and 1 ticket purchased' => [
 			function (): array {
 				$post_id = $this->factory()->post->create();
 				// create a tc ticket..
@@ -99,7 +99,7 @@ class MyTicketsTest extends WPTestCase {
 			}
 		];
 
-		yield 'post with 2 ticket and 3 RSVP purchased' => [
+		yield 'post with 3 RSRVP and 2 Ticket purchased' => [
 			function (): array {
 				$post_id = $this->factory()->post->create();
 				// create a tc ticket.
@@ -114,7 +114,7 @@ class MyTicketsTest extends WPTestCase {
 			}
 		];
 
-		yield 'post with 1 ticket and 2 RSVP purchased' => [
+		yield 'post with 2 RSVP and 1 ticket purchased' => [
 			function (): array {
 				$post_id = $this->factory()->post->create();
 				// create a tc ticket.
@@ -129,7 +129,7 @@ class MyTicketsTest extends WPTestCase {
 			}
 		];
 
-		yield 'post with 2 ticket and 1 RSVP purchased' => [
+		yield 'post with 1 RSVP and 2 ticket purchased' => [
 			function (): array {
 				$post_id = $this->factory()->post->create();
 				// create a tc ticket.
