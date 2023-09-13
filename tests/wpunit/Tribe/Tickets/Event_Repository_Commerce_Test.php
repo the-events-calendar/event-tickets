@@ -2,14 +2,15 @@
 
 namespace Tribe\Tickets;
 
+use TEC\Tickets\Commerce\Module;
 use Tribe\Events\Test\Factories\Event;
-use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
+use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe__Tickets__Data_API as Data_API;
 
-class Event_RepositoryTest extends \Codeception\TestCase\WPTestCase {
+class Event_Repository_Commerce_Test extends \Codeception\TestCase\WPTestCase {
 	use RSVP_Ticket_Maker;
-	use PayPal_Ticket_Maker;
+	use Ticket_Maker;
 
 	/**
 	 * An array of events grouped by their cost.
@@ -18,27 +19,27 @@ class Event_RepositoryTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	protected $events = [];
 
-	public function setUp() : void {
+	public function setUp(): void {
 		// before
 		parent::setUp();
 
 		$this->factory()->event = new Event();
 
-		// Ensure the PayPal module is active.
-		add_filter( 'tribe_tickets_commerce_paypal_is_active', '__return_true' );
+		// Ensure the Tickets Commerce module is active.
+		add_filter( 'tec_tickets_commerce_is_enabled', '__return_true' );
 		add_filter( 'tribe_tickets_get_modules', function ( $modules ) {
-			$modules['Tribe__Tickets__Commerce__PayPal__Main'] = tribe( 'tickets.commerce.paypal' )->plugin_name;
+			$modules[ Module::class ] = tribe( Module::class )->plugin_name;
 
 			return $modules;
 		} );
 
-		// Reset Data_API object, so it sees PayPal.
+		// Reset Data_API object, so it sees Tribe Commerce.
 		tribe_singleton( 'tickets.data_api', new Data_API );
 	}
 
 	public function _before() {
-		tribe_events()->per_page( -1 )->delete();
-		tribe_tickets()->per_page( -1 )->delete();
+		tribe_events()->per_page( - 1 )->delete();
+		tribe_tickets()->per_page( - 1 )->delete();
 	}
 
 	/**
@@ -54,28 +55,28 @@ class Event_RepositoryTest extends \Codeception\TestCase\WPTestCase {
 			tribe_events()->get_ids()
 		);
 		$this->assertEqualSets( [
-			$this->events['paypal_eq'],
+			$this->events['commerce_eq'],
 		], tribe_events()->where( 'cost', 3 )->get_ids() );
 		$this->assertEqualSets( [
-			$this->events['paypal_gt'],
+			$this->events['commerce_gt'],
 		], tribe_events()->where( 'cost', 3, '>' )->get_ids() );
 		$this->assertEqualSets( [
 			$this->events['rsvp'],
-			$this->events['paypal_lt'],
+			$this->events['commerce_lt'],
 		], tribe_events()->where( 'cost', 3, '<' )->get_ids() );
 		$this->assertEqualSets( [
 			$this->events['rsvp'],
-			$this->events['paypal_lt'],
-			$this->events['paypal_eq'],
+			$this->events['commerce_lt'],
+			$this->events['commerce_eq'],
 		], tribe_events()->where( 'cost', 3, '<=' )->get_ids() );
 		$this->assertEqualSets( [
-			$this->events['paypal_eq'],
-			$this->events['paypal_gt'],
+			$this->events['commerce_eq'],
+			$this->events['commerce_gt'],
 		], tribe_events()->where( 'cost', 3, '>=' )->get_ids() );
 		$this->assertEqualSets( [
 			$this->events['rsvp'],
-			$this->events['paypal_lt'],
-			$this->events['paypal_gt'],
+			$this->events['commerce_lt'],
+			$this->events['commerce_gt'],
 		], tribe_events()->where( 'cost', 3, '!=' )->get_ids() );
 	}
 
@@ -108,9 +109,9 @@ class Event_RepositoryTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * Returns a map in the shape [ <name> => <ID> ] relating names to event IDs.
 	 *
-	 * The method will setup 4 events: one with an RSVP ticket, one with a PayPal ticket with
-	 * a cost less than the cost pivot, one with a PayPal ticket with a cost equal to the
-	 *cost pivot and one with a PayPal ticket with a cost greater than the cost pivot.
+	 * The method will setup 4 events: one with an RSVP ticket, one with a Tickets Commerce ticket with
+	 * a cost less than the cost pivot, one with a Tickets Commerce ticket with a cost equal to the
+	 *cost pivot and one with a Tickets Commerce ticket with a cost greater than the cost pivot.
 	 *
 	 * @param float $cost_pivot        The cost that will be used to create the tickets.
 	 * @param float $cost_delta        The delta that will be used to create events with costs less than and
@@ -132,14 +133,14 @@ class Event_RepositoryTest extends \Codeception\TestCase\WPTestCase {
 			'gt' => $cost_pivot + $cost_delta
 		];
 
-		// For each cost create a PayPal ticket assigned to an event.
+		// For each cost create a Tickets Commerce ticket assigned to an event.
 		$events = [];
 		foreach ( $costs as $cost_name => $cost ) {
-			$this_name                  = sprintf( 'paypal_%s', $cost_name );
+			$this_name                  = sprintf( 'commerce_%s', $cost_name );
 			$this_event_id              = $this->factory()->event->create();
 			$this->events[ $this_name ] = $this_event_id;
 			$events[]                   = $this_event_id;
-			$this->create_paypal_ticket_basic( $this_event_id, $cost );
+			$this->create_tc_ticket( $this_event_id, $cost );
 		}
 
 		// Create an RSVP ticket for another event.
@@ -177,20 +178,20 @@ class Event_RepositoryTest extends \Codeception\TestCase\WPTestCase {
 			tribe_events()->get_ids()
 		);
 		$this->assertEqualSets( [
-			$this->events['paypal_eq'],
+			$this->events['commerce_eq'],
 		], tribe_events()->where( 'cost', 3 )->get_ids() );
 		$where  = tribe_events()->where( 'cost_greater_than', 3 );
 		$actual = $where->get_ids();
 		$this->assertEqualSets( [
-			$this->events['paypal_gt'],
+			$this->events['commerce_gt'],
 		], $actual );
 		$this->assertEqualSets( [
 			$this->events['rsvp'],
-			$this->events['paypal_lt'],
+			$this->events['commerce_lt'],
 		], tribe_events()->where( 'cost_less_than', 3 )->get_ids() );
 		$this->assertEqualSets( [
-			$this->events['paypal_eq'],
-			$this->events['paypal_gt'],
+			$this->events['commerce_eq'],
+			$this->events['commerce_gt'],
 		], tribe_events()->where( 'cost_between', 2, 6 )->get_ids() );
 	}
 
@@ -205,26 +206,26 @@ class Event_RepositoryTest extends \Codeception\TestCase\WPTestCase {
 		$currency            = tribe( 'tickets.commerce.currency' );
 		$tpp_currency_code   = $currency->get_currency_code();
 		$tpp_currency_symbol = array_map(
-			                       'html_entity_decode',
-			                       array_values( $currency->get_symbols_for_codes( $tpp_currency_code ) )
-		                       )[0];
+			'html_entity_decode',
+			array_values( $currency->get_symbols_for_codes( $tpp_currency_code ) )
+		)[0];
 
 		$this->assertEqualSets( [
-			$this->events['paypal_lt'],
-			$this->events['paypal_eq'],
-			$this->events['paypal_gt'],
+			$this->events['commerce_lt'],
+			$this->events['commerce_eq'],
+			$this->events['commerce_gt'],
 		], tribe_events()->where( 'cost', [ 1, 6 ], 'BETWEEN', $tpp_currency_code )->get_ids() );
 		$this->assertEqualSets( [
-			$this->events['paypal_lt'],
-			$this->events['paypal_eq'],
-			$this->events['paypal_gt'],
+			$this->events['commerce_lt'],
+			$this->events['commerce_eq'],
+			$this->events['commerce_gt'],
 		], tribe_events()->where( 'cost', [ 1, 6 ], 'BETWEEN', $tpp_currency_symbol )->get_ids() );
 		$this->assertEmpty( tribe_events()->where( 'cost', [ 0, 6 ], 'BETWEEN', 'ƒ' )->get_ids() );
 		$this->assertEmpty( tribe_events()->where( 'cost', [ 0, 6 ], 'BETWEEN', 'CAD' )->get_ids() );
 		$this->assertEqualSets( [
-			$this->events['paypal_lt'],
-			$this->events['paypal_eq'],
-			$this->events['paypal_gt'],
+			$this->events['commerce_lt'],
+			$this->events['commerce_eq'],
+			$this->events['commerce_gt'],
 		], tribe_events()->where( 'cost', [ 0, 6 ], 'BETWEEN', [ 'USD', '$' ] )->get_ids() );
 	}
 
@@ -242,9 +243,9 @@ class Event_RepositoryTest extends \Codeception\TestCase\WPTestCase {
 			[ $this->events['rsvp'] ]
 		), tribe_events()->where( 'has_tickets', false )->get_ids() );
 		$this->assertEqualSets( [
-			$this->events['paypal_lt'],
-			$this->events['paypal_eq'],
-			$this->events['paypal_gt'],
+			$this->events['commerce_lt'],
+			$this->events['commerce_eq'],
+			$this->events['commerce_gt'],
 		], tribe_events()->where( 'has_tickets', true )->get_ids() );
 	}
 
@@ -261,9 +262,9 @@ class Event_RepositoryTest extends \Codeception\TestCase\WPTestCase {
 			$this->events['with_cost_meta'],
 			$this->events['without_tickets'],
 			[
-				$this->events['paypal_lt'],
-				$this->events['paypal_eq'],
-				$this->events['paypal_gt'],
+				$this->events['commerce_lt'],
+				$this->events['commerce_eq'],
+				$this->events['commerce_gt'],
 			]
 		), $actual );
 		$this->assertEqualSets( [
