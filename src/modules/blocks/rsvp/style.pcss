@@ -41,8 +41,8 @@
 
 .tribe-editor__inactive-block--rsvp {
 	display: flex;
-	justify-content: space-between;
 	flex-direction: row;
+	justify-content: space-between;
 	padding: var( --tec-spacer-10 ) 0;
 
 	.tribe-editor__rsvp-details-wrapper {
@@ -66,12 +66,16 @@
 
 	.tribe-editor__rsvp-actions-wrapper {
 		align-items: center;
-		border-left: 1px dashed var( --tec-color-border-secondary );
+		border-left: 1px dashed var(--tec-color-border-secondary);
 		display: flex;
 		flex: none;
-		padding: 0 var( --tec-spacer-5 ) 0 var( --tec-spacer-9 );
+		padding: 0 var(--tec-spacer-5) 0 var(--tec-spacer-4);
 		justify-content: center;
 		text-align: center;
+
+		@media screen and (min-width: 1024px) {
+			padding: 0 var(--tec-spacer-5) 0 var(--tec-spacer-9);
+		}
 	}
 
 	.tribe-editor__rsvp-actions {
@@ -87,6 +91,6 @@
 	}
 
 	.tribe-editor__rsvp-actions-rsvp-create {
-		margin-top: var( --tec-spacer-2 );
+		margin-top: var(--tec-spacer-2);
 	}
 }

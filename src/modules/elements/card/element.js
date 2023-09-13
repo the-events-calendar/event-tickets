@@ -30,7 +30,6 @@ const Card = ( {
 Card.propTypes = {
 	className: PropTypes.string,
 	children: PropTypes.node,
-	header: PropTypes.node,
 };
 
 export default Card;
