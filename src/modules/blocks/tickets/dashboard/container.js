@@ -13,6 +13,7 @@ import { withStore } from '@moderntribe/common/hoc';
 
 const mapStateToProps = ( state ) => ( {
 	isSettingsOpen: selectors.getTicketsIsSettingsOpen( state ),
+	hideDashboard: selectors.hasATicketSelected( state ),
 } );
 
 export default compose(

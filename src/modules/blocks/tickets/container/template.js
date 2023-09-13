@@ -15,9 +15,7 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import Availability from '../availability/container';
-import { InactiveBlock } from '@moderntribe/tickets/elements';
-import { LAYOUT } from '@moderntribe/tickets/elements/inactive-block';
-import { TicketInactive } from '@moderntribe/tickets/icons';
+import InactiveTicket from '@moderntribe/tickets/blocks/tickets/inactive/inactive';
 import './style.pcss';
 
 const TicketsOverlay = () => <div className="tribe-editor__tickets__overlay" />;
@@ -25,8 +23,11 @@ const TicketsOverlay = () => <div className="tribe-editor__tickets__overlay" />;
 const TicketsContainer = ( {
 	allTicketsPast,
 	canCreateTickets,
+	clientId,
 	hasCreatedTickets,
 	hasOverlay,
+	isSelected,
+	isSettingsOpen,
 	showAvailability,
 	showInactiveBlock,
 } ) => {
@@ -63,13 +64,8 @@ const TicketsContainer = ( {
 				/>
 			</div>
 			{
-				showInactiveBlock && (
-					<InactiveBlock
-						layout={ LAYOUT.ticket }
-						title={ messages.title }
-						description={ messages.description }
-						icon={ <TicketInactive /> }
-					/>
+				showInactiveBlock && ! isSettingsOpen && (
+					<InactiveTicket />
 				)
 			}
 			{ showAvailability && <Availability /> }
@@ -83,6 +79,8 @@ TicketsContainer.propTypes = {
 	canCreateTickets: PropTypes.bool,
 	hasCreatedTickets: PropTypes.bool,
 	hasOverlay: PropTypes.bool,
+	isSelected: PropTypes.bool,
+	isSettingsOpen: PropTypes.bool,
 	showAvailability: PropTypes.bool,
 	showInactiveBlock: PropTypes.bool,
 };
