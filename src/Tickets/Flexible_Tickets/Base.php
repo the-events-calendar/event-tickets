@@ -336,8 +336,8 @@ class Base extends Controller {
 			[
 				'ticket_types' => sprintf(
 					// translators: %s Ticket singular label text.
-					__( 'Attached %s Types', 'event-tickets' ),
-					tribe_get_ticket_label_singular()
+					__( 'Attached %s', 'event-tickets' ),
+					tribe_get_ticket_label_plural()
 				),
 			]
 		);
