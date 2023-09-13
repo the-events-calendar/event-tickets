@@ -1851,8 +1851,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
 	 * Gets an individual ticket
 	 *
-	 * @param $event_id The event post ID.
-	 * @param $ticket_id The ticket ID.
+	 * @param int $event_id The event post ID.
+	 * @param int $ticket_id The ticket ID.
 	 *
 	 * @return null|Tribe__Tickets__Ticket_Object
 	 */

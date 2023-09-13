@@ -20,8 +20,9 @@
  * @since 4.12.1 Account for empty post type object, such as if post type got disabled. Fix typo in sprintf placeholders.
  * @since 5.0.2 Fix template path in documentation block.
  * @since 5.3.2 Added use of $hide_view_my_tickets_link variable to hide link as an option.
+ * @since TBD Simplified the template's logic and updated link label.
  *
- * @version 5.3.2
+ * @version TBD
  *
  * @var Tribe__Tickets__Editor__Template $this
  */
@@ -47,27 +48,42 @@ $counters           = [];
 $rsvp_count         = $view->count_rsvp_attendees( $event_id, $user_id );
 $ticket_count       = $view->count_ticket_attendees( $event_id, $user_id );
 
-if ( 1 === $rsvp_count ) {
-	// Translators: 1: the number one, 2: singular RSVP label.
-	$counters[] = sprintf( _x( '%1$d %2$s', 'RSVP count singular', 'event-tickets' ), $rsvp_count, tribe_get_rsvp_label_singular( basename( __FILE__ ) ) );
-} elseif ( 1 < $rsvp_count ) {
-	// Translators: 1: the plural number of RSVPs, 2: plural RSVP label.
-	$counters[] = sprintf( _x( '%1$d %2$s', 'RSVP count plural', 'event-tickets' ), $rsvp_count, tribe_get_rsvp_label_plural( basename( __FILE__ ) ) );
+if ( empty( $rsvp_count ) && empty( $ticket_count ) ) {
+	return;
 }
 
-if ( 1 === $ticket_count ) {
-	// Translators: 1: the number one, 2: singular Ticket label.
-	$counters[] = sprintf( _x( '%1$d %2$s', 'Ticket count singular', 'event-tickets' ), $ticket_count, tribe_get_ticket_label_singular( basename( __FILE__ ) ) );
-} elseif ( 1 < $ticket_count ) {
-	// Translators: 1: the plural number of Tickets, 2: plural Ticket label.
-	$counters[] = sprintf( _x( '%1$d %2$s', 'Ticket count plural', 'event-tickets' ), $ticket_count, tribe_get_ticket_label_plural( basename( __FILE__ ) ) );
+$link       = $view->get_tickets_page_url( $event_id, $is_event_page );
+$link_label = $rsvp_count > 0 && $ticket_count > 0 ? __( 'View all' ) : __( 'View ', 'event-tickets' );
+
+if ( $rsvp_count > 0 ) {
+	// Translators: 1: the number of RSVPs, 2: singular RSVP label, 3: plural RSVP label.
+	$counters[] = sprintf(
+		_n( '%1$d %2$s', '%1$d %3$s', $rsvp_count, 'event-tickets' ),
+		$rsvp_count,
+		tribe_get_rsvp_label_singular( 'my-tickets-view-link' ),
+		tribe_get_rsvp_label_plural( 'my-tickets-view-link' )
+	);
+
+	// Append label on link.
+	if ( empty( $ticket_count ) ) {
+		$link_label .= _n( tribe_get_rsvp_label_singular( 'my-tickets-view-link' ), tribe_get_rsvp_label_plural( 'my-tickets-view-link' ), $rsvp_count, 'event-tickets' );
+	}
 }
 
-if ( empty( $counters ) ) {
-	return false;
-}
+if ( $ticket_count > 0 ) {
+	// Translators: 1: the number of Tickets, 2: singular Ticket label, 3: plural Ticket label.
+	$counters[] = sprintf(
+		_n( '%1$d %2$s', '%1$d %3$s', $ticket_count, 'event-tickets' ),
+		$ticket_count,
+		tribe_get_ticket_label_singular( 'my-tickets-view-link' ),
+		tribe_get_ticket_label_plural( 'my-tickets-view-link' )
+	);
 
-$link = $view->get_tickets_page_url( $event_id, $is_event_page );
+	// Append label on link.
+	if ( empty( $rsvp_count ) ) {
+		$link_label .= _n( tribe_get_ticket_label_singular( 'my-tickets-view-link' ), tribe_get_ticket_label_plural( 'my-tickets-view-link' ), $ticket_count, 'event-tickets' );
+	}
+}
 
 // Translators: 1: number of RSVPs and/or Tickets with accompanying ticket type text, 2: post type label
 $message = esc_html( sprintf( __( 'You have %1s for this %2s.', 'event-tickets' ), implode( _x( ' and ', 'separator if there are both RSVPs and Tickets', 'event-tickets' ), $counters ), $post_type_singular ) );
@@ -75,5 +91,5 @@ $message = esc_html( sprintf( __( 'You have %1s for this %2s.', 'event-tickets' 
 
 <div class="tribe-link-view-attendee">
 	<?php echo $message ?>
-	<a href="<?php echo esc_url( $link ) ?>"><?php echo sprintf( esc_html__( 'View your %s', 'event-tickets' ), $view->get_description_rsvp_ticket( $event_id, $user_id ) ) ?></a>
+	<a href="<?php echo esc_url( $link ) ?>"><?php echo sprintf( esc_html__( '%s', 'event-tickets' ), $link_label ) ?></a>
 </div>
