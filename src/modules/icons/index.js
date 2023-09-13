@@ -13,3 +13,5 @@ export { default as AttendeesGravatar } from './gravatar.svg';
 
 export { default as Attendees } from './attendees.svg';
 export { default as Orders } from './orders.svg';
+
+export { default as Settings } from './settings.svg';

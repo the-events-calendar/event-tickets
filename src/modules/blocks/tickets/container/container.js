@@ -33,6 +33,7 @@ const mapStateToProps = ( state, ownProps ) => ( {
 	canCreateTickets: selectors.canCreateTickets(),
 	hasCreatedTickets: selectors.hasCreatedTickets( state ),
 	hasOverlay: getHasOverlay( state, ownProps ),
+	isSettingsOpen: selectors.getTicketsIsSettingsOpen( state ),
 	showAvailability: ownProps.isSelected && selectors.hasCreatedTickets( state ),
 	showInactiveBlock: getShowInactiveBlock( state, ownProps ),
 } );

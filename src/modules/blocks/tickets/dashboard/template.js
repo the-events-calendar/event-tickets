@@ -12,10 +12,10 @@ import TicketsSettingsDashboard from '@moderntribe/tickets/blocks/tickets/settin
 
 const TicketsDashboard = ( {
 	clientId,
-	isSelected,
+	hideDashboard,
 	isSettingsOpen,
 } ) => {
-	if ( ! isSelected ) {
+	if ( hideDashboard ) {
 		return null;
 	}
 
@@ -27,7 +27,7 @@ const TicketsDashboard = ( {
 
 TicketsDashboard.propTypes = {
 	clientId: PropTypes.string,
-	isSelected: PropTypes.bool,
+	hideDashboard: PropTypes.bool,
 	isSettingsOpen: PropTypes.bool,
 };
 
