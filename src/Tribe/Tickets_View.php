@@ -811,6 +811,7 @@ class Tribe__Tickets__Tickets_View {
 	 *
 	 * @since 4.2
 	 * @since 4.10.8 Deprecated the 3rd parameter (whether or not to use 'plurals') in favor of figuring it out per type.
+	 * @since TBD Updated signature to accept RSVP and ticket count arguments and removed deprecated 3rd parameter.
 	 *
 	 * @param int      $event_id   The Event ID we're checking.
 	 * @param int|null $user_id    An optional User ID.

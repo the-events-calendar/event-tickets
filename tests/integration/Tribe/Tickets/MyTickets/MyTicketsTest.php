@@ -143,6 +143,26 @@ class MyTicketsTest extends WPTestCase {
 				return [ $post_id ];
 			}
 		];
+
+		yield 'event with 1 RSVP and 2 ticket purchased' => [
+			function (): array {
+				$event_id = tribe_events()->set_args( [
+					'title'      => 'Test event',
+					'status'     => 'publish',
+					'start_date' => '2021-01-01 10:00:00',
+					'end_date'   => '2021-01-01 12:00:00',
+				] )->create()->ID;
+				// create a tc ticket.
+				$ticket_id = $this->create_tc_ticket( $event_id, 10 );
+				$attendee  = $this->create_many_attendees_for_ticket( 2, $ticket_id, $event_id, [ 'user_id' => get_current_user_id() ] );
+
+				// create rsvp ticket.
+				$rsvp_ticket_id = $this->create_rsvp_ticket( $event_id );
+				$attendee       = $this->create_many_attendees_for_ticket( 1, $rsvp_ticket_id, $event_id, [ 'user_id' => get_current_user_id() ] );
+
+				return [ $event_id ];
+			}
+		];
 	}
 
 	/**
