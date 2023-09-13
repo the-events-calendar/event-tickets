@@ -811,7 +811,6 @@ class Tribe__Tickets__Tickets_View {
 	 *
 	 * @since 4.2
 	 * @since 4.10.8 Deprecated the 3rd parameter (whether or not to use 'plurals') in favor of figuring it out per type.
-	 * @since TBD Updated signature to accept RSVP and ticket count arguments and removed deprecated 3rd parameter.
 	 *
 	 * @param int      $event_id   The Event ID we're checking.
 	 * @param int|null $user_id    An optional User ID.
@@ -819,11 +818,12 @@ class Tribe__Tickets__Tickets_View {
 	 *
 	 * @return string
 	 */
-	public function get_description_rsvp_ticket( $event_id, $user_id = null, $rsvp_count = null, $ticket_count = null ) {
+	public function get_description_rsvp_ticket( $event_id, $user_id = null, $deprecated = null ) {
 		$descriptions = [];
 
-		$rsvp_count   = $rsvp_count ?? $this->count_rsvp_attendees( $event_id, $user_id );
-		$ticket_count = $ticket_count ?? $this->count_ticket_attendees( $event_id, $user_id );
+		$rsvp_count = $this->count_rsvp_attendees( $event_id, $user_id );
+
+		$ticket_count = $this->count_ticket_attendees( $event_id, $user_id );
 
 		if ( 1 === $rsvp_count ) {
 			$descriptions[] = tribe_get_rsvp_label_singular( 'tickets_view_description' );
