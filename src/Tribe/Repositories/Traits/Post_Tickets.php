@@ -103,7 +103,17 @@ trait Post_Tickets {
 					)
 			)" );
 
-		$prepared_value = is_array( $value ) ? $repo->prepare_interval( $value, '%d', $operator ) : $wpdb->prepare( '%d', $value );
+		if($operator !== 'BETWEEN' && $operator !== 'NOT BETWEEN'){
+			$prepared_value = is_array( $value ) ?
+				$repo->prepare_interval( $value, '%d', $operator )
+				: $wpdb->prepare( '%d', $value );
+		} else {
+			if ( ! ( is_array( $value ) && count( $value ) === 2 ) ) {
+				throw Usage_Error::because_this_comparison_operator_requires_an_value_of_type( $operator, 'filter_by_cost', 'array of two numbers' );
+			}
+			// (NOT )BETWEEN requires two values in the shape `(NOT )BETWEEN) %d AND %d` for full SQL compatibility.
+			$prepared_value = implode( ' AND ', (array) $value );
+		}
 
 		// Default the cost to `0` if not set to make RSVP tickets show as "free" tickets, with a cost of 0.
 		$repo->where_clause( "IFNULL( {$prefix}_ticket_cost.meta_value, 0 ) {$operator} {$prepared_value}" );
@@ -240,10 +250,11 @@ trait Post_Tickets {
 		}
 
 		$prefix                    = 'has_no_tickets';
+		$meta_key_compare_clause = $this->ticket_to_post_meta_key_compare( "{$prefix}_ticket_event" );
 		$meta_value_compare_clause = $this->ticket_to_post_meta_value_compare( "{$prefix}_ticket_event" );
 		// Keep events that have no tickets assigned or are assigned RSVP tickets.
 		$repo->join_clause( "LEFT JOIN {$wpdb->postmeta} {$prefix}_ticket_event
-					ON ({$meta_value_compare_clause}) AND ({$meta_value_compare_clause})" );
+					ON ({$meta_key_compare_clause}) AND ({$meta_value_compare_clause})" );
 		$repo->where_clause( "{$prefix}_ticket_event.meta_key = '_tribe_rsvp_for_event' OR {$prefix}_ticket_event.meta_id IS NULL" );
 	}
 
@@ -364,7 +375,7 @@ trait Post_Tickets {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $alias The alias to use for the post meta table.
+	 * @param string $alias      The alias to use for the post meta table.
 	 *
 	 * @return string The SQL clause to compare meta values to the ones relating tickets to posts.
 	 */

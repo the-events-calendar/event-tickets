@@ -14,6 +14,7 @@ use TEC\Common\Contracts\Provider\Controller;
 use TEC\Events\Custom_Tables\V1\Models\Occurrence;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 use TEC\Tickets\Admin\Editor_Data;
+use TEC\Tickets\Flexible_Tickets\Repositories\Event_Repository;
 use Tribe__Template as Template;
 use TEC\Tickets\Flexible_Tickets\Templates\Admin_Views;
 use Tribe__Events__Main as TEC;
@@ -130,6 +131,7 @@ class Base extends Controller {
 			$this,
 			'include_all_events_in_move_ticket_choices'
 		] );
+		add_filter( 'tribe_events_event_repository_map', [ $this, 'filter_events_repository_map' ], 50 );
 	}
 
 	/**
@@ -195,6 +197,7 @@ class Base extends Controller {
 			$this,
 			'include_all_events_in_move_ticket_choices'
 		] );
+		remove_filter( 'tribe_events_event_repository_map', [ $this, 'filter_events_repository_map' ], 50 );
 	}
 
 	/**
@@ -406,5 +409,23 @@ class Base extends Controller {
 		}
 
 		return $query_args;
+	}
+
+	/**
+	 * Overrides the default Events repository to use the one provided by the Flexible Tickets feature.
+	 *
+	 * The repository provided is one that will decorate either the Event Tickets or Event Tickets Plus repository
+	 * depending on which is available.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,string> $map A map from repository aliases to repository classes.
+	 *
+	 * @return array<string,string> The updated map.
+	 */
+	public function filter_events_repository_map( array $map ): array {
+		$map['default'] = Event_Repository::class;
+
+		return $map;
 	}
 }
