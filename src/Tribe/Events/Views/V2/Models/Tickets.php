@@ -1,9 +1,7 @@
 <?php
 /**
- * The Tickets abstraction objece, used to add tickets-related properties to the event object crated by the
- * `trib_get_event` function.
- *
- * @todo  @sc0ttkclark This model class needs to move into `src/Tribe` when Tickets model is implemented by Green Team
+ * The Tickets abstraction object, used to add tickets-related properties to the event object crated by the
+ * `tribe_get_event` function.
  *
  * @since   4.10.9
  *
@@ -232,7 +230,7 @@ class Tickets implements \ArrayAccess, \Serializable {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function offsetExists( $offset ) {
+	public function offsetExists( $offset ): bool {
 		$this->data = $this->fetch_data();
 
 		return isset( $this->data[ $offset ] );
@@ -244,15 +242,13 @@ class Tickets implements \ArrayAccess, \Serializable {
 	public function offsetGet( $offset ) {
 		$this->data = $this->fetch_data();
 
-		return isset( $this->data[ $offset ] )
-			? $this->data[ $offset ]
-			: null;
+		return $this->data[ $offset ] ?? null;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function offsetSet( $offset, $value ) {
+	public function offsetSet( $offset, $value ): void {
 		$this->data = $this->fetch_data();
 
 		$this->data[ $offset ] = $value;
@@ -261,7 +257,7 @@ class Tickets implements \ArrayAccess, \Serializable {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function offsetUnset( $offset ) {
+	public function offsetUnset( $offset ): void {
 		$this->data = $this->fetch_data();
 
 		unset( $this->data[ $offset ] );

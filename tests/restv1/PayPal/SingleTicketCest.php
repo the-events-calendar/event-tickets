@@ -405,4 +405,367 @@ class SingleTicketCest extends BaseRestCest {
 		$I->seeResponseCodeIs( 401 );
 		$I->seeResponseIsJson();
 	}
+
+	/**
+	 * It should return 400 when trying to create a ticket with invalid price
+	 *
+	 * @test
+	 */
+	public function should_return_400_when_trying_to_create_a_ticket_ticket_with_invalid_price( Restv1Tester $I ) {
+		$I->generate_nonce_for_role('administrator');
+
+		$post_id = $I->havePostInDatabase();
+		$ticket_create_rest_url = $this->tickets_url . '/';
+
+		$create_args = [
+			'post_id'          => $post_id,
+			'name'             => 'Test ticket name qwerty 555',
+			'description'      => 'Test description text',
+			'price'            => 0,
+			'start_date'       => '2023-08-24',
+			'start_time'       => '08:00:00',
+			'end_date'         => '2023-12-31',
+			'end_time'         => '20:00:00',
+			'sku'              => 'TKT-111',
+			'menu_order'       => 1,
+			'add_ticket_nonce' => wp_create_nonce( 'add_ticket_nonce' ),
+			'provider'         => 'TEC\Tickets\Commerce\Module',
+			'ticket' => [
+				'mode' => 'capped',
+				'capacity' => 100,
+				'event_capacity' => 100
+			]
+		];
+
+		$I->sendPOST( $ticket_create_rest_url, $create_args );
+
+		$I->seeResponseCodeIs( 400 );
+		$I->seeResponseIsJson();
+
+		$create_args = [
+			'post_id'          => $post_id,
+			'name'             => 'Test ticket name test 213',
+			'description'      => 'Test description text',
+			'price'            => -5,
+			'start_date'       => '2023-08-24',
+			'start_time'       => '08:00:00',
+			'end_date'         => '2023-12-31',
+			'end_time'         => '20:00:00',
+			'sku'              => 'TKT-222',
+			'menu_order'       => 1,
+			'add_ticket_nonce' => wp_create_nonce( 'add_ticket_nonce' ),
+			'provider'         => 'TEC\Tickets\Commerce\Module',
+			'ticket' => [
+				'mode' => 'capped',
+				'capacity' => 100,
+				'event_capacity' => 100
+			]
+		];
+
+		$I->sendPOST( $ticket_create_rest_url, $create_args );
+
+		$I->seeResponseCodeIs( 400 );
+		$I->seeResponseIsJson();
+
+		$create_args = [
+			'post_id'          => $post_id,
+			'name'             => 'Test ticket name test 213',
+			'description'      => 'Test description text',
+			'price'            => '',
+			'start_date'       => '2023-08-24',
+			'start_time'       => '08:00:00',
+			'end_date'         => '2023-12-31',
+			'end_time'         => '20:00:00',
+			'sku'              => 'TKT-555',
+			'menu_order'       => 1,
+			'add_ticket_nonce' => wp_create_nonce( 'add_ticket_nonce' ),
+			'provider'         => 'TEC\Tickets\Commerce\Module',
+			'ticket' => [
+				'mode' => 'capped',
+				'capacity' => 100,
+				'event_capacity' => 100
+			]
+		];
+
+		$I->sendPOST( $ticket_create_rest_url, $create_args );
+
+		$I->seeResponseCodeIs( 400 );
+		$I->seeResponseIsJson();
+
+		$create_args = [
+			'post_id'          => $post_id,
+			'name'             => 'Test ticket name test 213',
+			'description'      => 'Test description text',
+			'price'            => 0.0,
+			'start_date'       => '2023-08-24',
+			'start_time'       => '08:00:00',
+			'end_date'         => '2023-12-31',
+			'end_time'         => '20:00:00',
+			'sku'              => 'TKT-777',
+			'menu_order'       => 1,
+			'add_ticket_nonce' => wp_create_nonce( 'add_ticket_nonce' ),
+			'provider'         => 'TEC\Tickets\Commerce\Module',
+			'ticket' => [
+				'mode' => 'capped',
+				'capacity' => 100,
+				'event_capacity' => 100
+			]
+		];
+
+		$I->sendPOST( $ticket_create_rest_url, $create_args );
+
+		$I->seeResponseCodeIs( 400 );
+		$I->seeResponseIsJson();
+
+		$create_args = [
+			'post_id'          => $post_id,
+			'name'             => 'Test ticket name test 213',
+			'description'      => 'Test description text',
+			'price'            => "0,0",
+			'start_date'       => '2023-08-24',
+			'start_time'       => '08:00:00',
+			'end_date'         => '2023-12-31',
+			'end_time'         => '20:00:00',
+			'sku'              => 'TKT-444',
+			'menu_order'       => 1,
+			'add_ticket_nonce' => wp_create_nonce( 'add_ticket_nonce' ),
+			'provider'         => 'TEC\Tickets\Commerce\Module',
+			'ticket' => [
+				'mode' => 'capped',
+				'capacity' => 100,
+				'event_capacity' => 100
+			]
+		];
+
+		$I->sendPOST( $ticket_create_rest_url, $create_args );
+
+		$I->seeResponseCodeIs( 400 );
+		$I->seeResponseIsJson();
+
+		$create_args = [
+			'post_id'          => $post_id,
+			'name'             => 'Test ticket name test 213',
+			'description'      => 'Test description text',
+			'price'            => "000",
+			'start_date'       => '2023-08-24',
+			'start_time'       => '08:00:00',
+			'end_date'         => '2023-12-31',
+			'end_time'         => '20:00:00',
+			'sku'              => 'TKT-444',
+			'menu_order'       => 1,
+			'add_ticket_nonce' => wp_create_nonce( 'add_ticket_nonce' ),
+			'provider'         => 'TEC\Tickets\Commerce\Module',
+			'ticket' => [
+				'mode' => 'capped',
+				'capacity' => 100,
+				'event_capacity' => 100
+			]
+		];
+
+		$I->sendPOST( $ticket_create_rest_url, $create_args );
+
+		$I->seeResponseCodeIs( 400 );
+		$I->seeResponseIsJson();
+
+		$create_args = [
+			'post_id'          => $post_id,
+			'name'             => 'Test ticket name test 213',
+			'description'      => 'Test description text',
+			'price'            => ' ',
+			'start_date'       => '2023-08-24',
+			'start_time'       => '08:00:00',
+			'end_date'         => '2023-12-31',
+			'end_time'         => '20:00:00',
+			'sku'              => 'TKT-444',
+			'menu_order'       => 1,
+			'add_ticket_nonce' => wp_create_nonce( 'add_ticket_nonce' ),
+			'provider'         => 'TEC\Tickets\Commerce\Module',
+			'ticket' => [
+				'mode' => 'capped',
+				'capacity' => 100,
+				'event_capacity' => 100
+			]
+		];
+
+		$I->sendPOST( $ticket_create_rest_url, $create_args );
+
+		$I->seeResponseCodeIs( 400 );
+		$I->seeResponseIsJson();
+
+		$create_args = [
+			'post_id'          => $post_id,
+			'name'             => 'Test ticket name qwerty 555',
+			'description'      => 'Test description text',
+			'price'            => 0,
+			'start_date'       => '2023-08-24',
+			'start_time'       => '08:00:00',
+			'end_date'         => '2023-12-31',
+			'end_time'         => '20:00:00',
+			'sku'              => 'TKT-333',
+			'menu_order'       => 1,
+			'add_ticket_nonce' => wp_create_nonce( 'add_ticket_nonce' ),
+			'provider'         => 'Tribe__Tickets__Commerce__PayPal__Main',
+			'ticket' => [
+				'mode' => 'capped',
+				'capacity' => 100,
+				'event_capacity' => 100
+			]
+		];
+
+		$I->sendPOST( $ticket_create_rest_url, $create_args );
+
+		$I->seeResponseCodeIs( 400 );
+		$I->seeResponseIsJson();
+
+		$create_args = [
+			'post_id'          => $post_id,
+			'name'             => 'Test ticket name test 213',
+			'description'      => 'Test description text',
+			'price'            => -5,
+			'start_date'       => '2023-08-24',
+			'start_time'       => '08:00:00',
+			'end_date'         => '2023-12-31',
+			'end_time'         => '20:00:00',
+			'sku'              => 'TKT-444',
+			'menu_order'       => 1,
+			'add_ticket_nonce' => wp_create_nonce( 'add_ticket_nonce' ),
+			'provider'         => 'Tribe__Tickets__Commerce__PayPal__Main',
+			'ticket' => [
+				'mode' => 'capped',
+				'capacity' => 100,
+				'event_capacity' => 100
+			]
+		];
+
+		$I->sendPOST( $ticket_create_rest_url, $create_args );
+
+		$I->seeResponseCodeIs( 400 );
+		$I->seeResponseIsJson();
+
+		$create_args = [
+			'post_id'          => $post_id,
+			'name'             => 'Test ticket name test 213',
+			'description'      => 'Test description text',
+			'price'            => '',
+			'start_date'       => '2023-08-24',
+			'start_time'       => '08:00:00',
+			'end_date'         => '2023-12-31',
+			'end_time'         => '20:00:00',
+			'sku'              => 'TKT-555',
+			'menu_order'       => 1,
+			'add_ticket_nonce' => wp_create_nonce( 'add_ticket_nonce' ),
+			'provider'         => 'Tribe__Tickets__Commerce__PayPal__Main',
+			'ticket' => [
+				'mode' => 'capped',
+				'capacity' => 100,
+				'event_capacity' => 100
+			]
+		];
+
+		$I->sendPOST( $ticket_create_rest_url, $create_args );
+
+		$I->seeResponseCodeIs( 400 );
+		$I->seeResponseIsJson();
+
+		$create_args = [
+			'post_id'          => $post_id,
+			'name'             => 'Test ticket name test 213',
+			'description'      => 'Test description text',
+			'price'            => 0.0,
+			'start_date'       => '2023-08-24',
+			'start_time'       => '08:00:00',
+			'end_date'         => '2023-12-31',
+			'end_time'         => '20:00:00',
+			'sku'              => 'TKT-777',
+			'menu_order'       => 1,
+			'add_ticket_nonce' => wp_create_nonce( 'add_ticket_nonce' ),
+			'provider'         => 'Tribe__Tickets__Commerce__PayPal__Main',
+			'ticket' => [
+				'mode' => 'capped',
+				'capacity' => 100,
+				'event_capacity' => 100
+			]
+		];
+
+		$I->sendPOST( $ticket_create_rest_url, $create_args );
+
+		$I->seeResponseCodeIs( 400 );
+		$I->seeResponseIsJson();
+
+		$create_args = [
+			'post_id'          => $post_id,
+			'name'             => 'Test ticket name test 213',
+			'description'      => 'Test description text',
+			'price'            => "0,0",
+			'start_date'       => '2023-08-24',
+			'start_time'       => '08:00:00',
+			'end_date'         => '2023-12-31',
+			'end_time'         => '20:00:00',
+			'sku'              => 'TKT-444',
+			'menu_order'       => 1,
+			'add_ticket_nonce' => wp_create_nonce( 'add_ticket_nonce' ),
+			'provider'         => 'Tribe__Tickets__Commerce__PayPal__Main',
+			'ticket' => [
+				'mode' => 'capped',
+				'capacity' => 100,
+				'event_capacity' => 100
+			]
+		];
+
+		$I->sendPOST( $ticket_create_rest_url, $create_args );
+
+		$I->seeResponseCodeIs( 400 );
+		$I->seeResponseIsJson();
+
+		$create_args = [
+			'post_id'          => $post_id,
+			'name'             => 'Test ticket name test 213',
+			'description'      => 'Test description text',
+			'price'            => "000",
+			'start_date'       => '2023-08-24',
+			'start_time'       => '08:00:00',
+			'end_date'         => '2023-12-31',
+			'end_time'         => '20:00:00',
+			'sku'              => 'TKT-444',
+			'menu_order'       => 1,
+			'add_ticket_nonce' => wp_create_nonce( 'add_ticket_nonce' ),
+			'provider'         => 'Tribe__Tickets__Commerce__PayPal__Main',
+			'ticket' => [
+				'mode' => 'capped',
+				'capacity' => 100,
+				'event_capacity' => 100
+			]
+		];
+
+		$I->sendPOST( $ticket_create_rest_url, $create_args );
+
+		$I->seeResponseCodeIs( 400 );
+		$I->seeResponseIsJson();
+
+		$create_args = [
+			'post_id'          => $post_id,
+			'name'             => 'Test ticket name test 213',
+			'description'      => 'Test description text',
+			'price'            => ' ',
+			'start_date'       => '2023-08-24',
+			'start_time'       => '08:00:00',
+			'end_date'         => '2023-12-31',
+			'end_time'         => '20:00:00',
+			'sku'              => 'TKT-444',
+			'menu_order'       => 1,
+			'add_ticket_nonce' => wp_create_nonce( 'add_ticket_nonce' ),
+			'provider'         => 'Tribe__Tickets__Commerce__PayPal__Main',
+			'ticket' => [
+				'mode' => 'capped',
+				'capacity' => 100,
+				'event_capacity' => 100
+			]
+		];
+
+		$I->sendPOST( $ticket_create_rest_url, $create_args );
+
+		$I->seeResponseCodeIs( 400 );
+		$I->seeResponseIsJson();
+
+	}
 }

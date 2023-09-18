@@ -49,7 +49,8 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		'yes',     // RSVP
 		'completed', // PayPal Legacy
 		'wc-completed', // WooCommerce
-		'publish', // Easy Digital Downloads
+		'publish', // Easy Digital Downloads, Legacy
+		'complete', // Easy Digital Downloads
 	];
 
 	/**
@@ -517,9 +518,24 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	}
 
 	/**
+	 * Applies the WHERE and JOIN clauses to filter Attendees by a specific order status.
+	 *
+	 * @since 5.6.4
+	 *
+	 * @param string $where_clause   The WHERE clause to apply.
+	 * @param string $value_operator The operator to use for the value clause.
+	 * @param string $value_clause   The value clause to use.
+	 */
+	protected function filter_by_order_status_where( string $where_clause, string $value_operator, string $value_clause ): void {
+		$this->filter_query->where( $where_clause );
+	}
+
+	/**
 	 * Filters attendee to only get those related to orders with a specific status.
 	 *
 	 * @since 4.8
+	 * @since 5.6.4 Refactored the logic to remove Event Tickets Plus logic.
+	 * @since 5.6.5 Added support to filter by TicketsCommerce order status.
 	 *
 	 * @throws Tribe__Repository__Void_Query_Exception If the requested statuses are not accessible by the user.
 	 *
@@ -541,6 +557,8 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 				return;
 			}
 		}
+
+		// set a status for tc only, that fetches the wp_slug from the given slugs in $statuses array.
 
 		// Allow the user to define singular statuses or the meta-status "public"
 		if ( in_array( 'public', $statuses, true ) ) {
@@ -573,9 +591,6 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			$value_operator = 'NOT IN';
 		}
 
-		$has_plus_providers = class_exists( 'Tribe__Tickets_Plus__Commerce__EDD__Main' )
-		                      || class_exists( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' );
-
 		$this->filter_query->join( "
 			LEFT JOIN {$wpdb->postmeta} order_status_meta
 			ON order_status_meta.post_id = {$wpdb->posts}.ID
@@ -588,24 +603,24 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			)
 		";
 
-		if ( ! $has_plus_providers ) {
-			$this->filter_query->where( $et_where_clause );
-		} else {
-			$this->filter_query->join( "
-				LEFT JOIN {$wpdb->posts} order_status_post
-				ON order_status_post.ID = order_status_meta.meta_value
-			", 'order-status-post' );
+		// filter $statuses to only get proper TC status slugs.
+		$tc_order_statuses = array_filter( array_map( function( $status ) {
+			$status_obj = tribe( \TEC\Tickets\Commerce\Status\Status_Handler::class )->get_by_slug( $status );
+			return $status_obj ? $status_obj->get_wp_slug() : '';
+		}, $statuses ) );
 
-			$this->filter_query->where( "
-				(
-					{$et_where_clause}
-					OR (
-						order_status_meta.meta_key IN ( '_tribe_wooticket_order','_tribe_eddticket_order' )
-						AND order_status_post.post_status {$value_operator} {$value_clause}
-					)
-				)
-			" );
-		}
+		$tc_order_statuses  = "( '" . implode( "','", array_map( [ $wpdb, '_escape' ], $tc_order_statuses ) ) . "' )";
+		$tc_order_post_type = \TEC\Tickets\Commerce\Order::POSTTYPE;
+
+		$this->filter_query->join( "LEFT JOIN {$wpdb->posts} tc_order_status ON (
+		 {$wpdb->posts}.post_parent = tc_order_status.ID
+		  AND tc_order_status.post_type = '{$tc_order_post_type}'
+		  AND tc_order_status.post_status IN {$tc_order_statuses} )" );
+
+		$et_where_clause .= " OR {$wpdb->posts}.post_parent IN ( tc_order_status.ID )";
+
+		// Allow extending classes to alter the JOIN and WHERE clauses.
+		$this->filter_by_order_status_where( $et_where_clause, $value_operator, $value_clause );
 	}
 
 	/**
@@ -664,10 +679,11 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 * Filters attendees depending on their checkedin status.
 	 *
 	 * @since 4.8
+	 * @since 5.6.4 Refactored the logic to use `Tribe__Repository__Query_Filters::meta_not` on `false`.
 	 *
 	 * @param bool $checkedin
 	 *
-	 * @return array
+	 * @return array|null Either the filtered query or `null` if the query filtering does not require arguments.
 	 */
 	public function filter_by_checkedin( $checkedin ) {
 		$meta_keys = $this->checked_in_keys();
@@ -676,7 +692,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			return Tribe__Repository__Query_Filters::meta_in( $meta_keys, '1', 'is-checked-in' );
 		}
 
-		return Tribe__Repository__Query_Filters::meta_not_in_or_not_exists( $meta_keys, '1', 'is-not-checked-in' );
+		$this->filter_query->meta_not( $meta_keys, '1', 'is-not-checked-in' );
 	}
 
 	/**

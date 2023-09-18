@@ -746,6 +746,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 				unset( $cache[ $key ] );
 			}
+
+			$ticket_ids = $this->get_tickets_ids( $post_id );
+			foreach ( (array) $ticket_ids as $ticket_id ) {
+				clean_post_cache( $ticket_id );
+			}
 		}
 
 		/**
@@ -2047,8 +2052,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 				$types['tickets']['stock'] += $stock_level;
 
-				if ( 0 !== $types['tickets']['stock'] ) {
-					$types['tickets']['available'] ++;
+				// If current availability is unlimited (available = -1) and the ticket has stock, set it to 0.
+				if ( $types['tickets']['available'] < 0 && 0 !== $types['tickets']['stock'] ) {
+					$types['tickets']['available'] = 0;
 				}
 			}
 
@@ -3304,14 +3310,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 					}
 
 					$date_format = tribe_get_date_format( true );
-					$start_sale_date = Tribe__Date_Utils::reformat( $start_sale_date, $date_format );
+					$start_sale_date = Tribe__Date_Utils::build_date_object( $start_sale_date )->format_i18n( $date_format );
 
 					$message = esc_html( sprintf( __( '%s will be available on ', 'event-tickets' ), tribe_get_ticket_label_plural( 'unavailable_future_display_date' ) ) );
 					$message .= $start_sale_date;
 
 					if ( $display_time ) {
 						$time_format = tribe_get_time_format();
-						$start_sale_time = Tribe__Date_Utils::reformat( $start_sale_time, $time_format );
+						$start_sale_time = Tribe__Date_Utils::build_date_object( $start_sale_time )->format_i18n( $time_format );
 						$message .= __( ' at ', 'event_tickets' ) . $start_sale_time;
 					}
 				} else {

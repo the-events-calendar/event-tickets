@@ -14,7 +14,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 
 		/**
 		 * Unique identifier
-		 * @var
+		 * @var int
 		 */
 		public $ID;
 		/**
@@ -257,6 +257,24 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * @var null|int
 		 */
 		private $event_id = null;
+
+
+		/**
+		 * Tribe__Tickets__Ticket_Object constructor.
+		 *
+		 * since 5.6.4
+		 *
+		 * @param array<string,mixed>|null $data The data to populate the object with, if any.
+		 */
+		public function __construct( array $data = null ) {
+			if ( empty( $data ) ) {
+				return;
+			}
+
+			foreach ( $data as $key => $value ) {
+				$this->$key = $value;
+			}
+		}
 
 		/**
 		 * Get the ticket's start date
@@ -1170,6 +1188,17 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			 * @param int  $ticket_id The ticket ID.
 			 */
 			return (bool) apply_filters( 'tribe_tickets_ticket_object_is_ticket_cache_enabled', true, $this->ID );
+		}
+
+		/**
+		 * Dumps the Ticket Object into an array.
+		 *
+		 * @since 5.6.4
+		 *
+		 * @return array<string,mixed> The Ticket Object in array format.
+		 */
+		public function to_array(): array {
+			return get_object_vars( $this );
 		}
 	}
 

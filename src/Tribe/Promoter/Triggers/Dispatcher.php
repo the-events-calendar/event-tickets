@@ -2,7 +2,7 @@
 
 namespace Tribe\Tickets\Promoter\Triggers;
 
-use Firebase\JWT\JWT;
+use TEC\Common\Firebase\JWT\JWT;
 use RuntimeException;
 use Tribe\Tickets\Promoter\Triggers\Contracts\Triggered;
 use Tribe__Promoter__Connector;

@@ -3,8 +3,8 @@
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, GeoffBel, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra
 Tags: tickets, registration, event registration, RSVP, ticket sales, attendee management
 Requires at least: 5.8.5
-Tested up to: 6.2.2
-Stable tag: 5.6.3
+Tested up to: 6.3.1
+Stable tag: 5.6.5
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -190,6 +190,39 @@ We've got a [LoopedIn](https://evnt.is/ideas) page where we're actively watching
 Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on using, tweaking, and troubleshooting our plugins.
 
 == Changelog ==
+
+= [5.6.5] 2023-09-13 =
+
+* Version - Event Tickets 5.6.5 is only compatible with The Events Calendar 6.2.2 and higher.
+* Tweak - Ticket names over 125 characters will now be truncated when being sent to Paypal. [ET-1865]
+* Tweak - Validate check-in data before updating with attendee update REST endpoint. [ET-1863]
+* Tweak - Implement new design for Attendees Page, Ticket Overview. [ET-1840]
+* Tweak - Added notice regarding the availability of Paystack for Tickets Commerce. [ET-1763]
+* Tweak - Improve performance of the post admin list. [ET-1870]
+* Tweak - Removed some deprecated filter_vars to avoid PHP 8.1 warnings. [ET-1800]
+* Fix - Corrected wallet settings names in Tickets Commerce Stripe checkout code. [ET-1866]
+* Fix - Incorrect ticket count in Ticket email within the Tickets Emails feature. [ET-1832]
+* Fix - Added support for filtering attendees by TicketsCommerce order status. [ET-1863]
+* Fix - Prevent Fatal error around Promoter usage of Firebase\JWT\JWT for encryption. [ET-1876]
+* Fix - Prevent some button background styles from being overridden by theme editors. [ET-1815]
+* Language - 15 new strings added, 67 updated, 1 fuzzied, and 1 obsoleted
+
+= [5.6.4] 2023-08-16 =
+
+* Fix - Fixed translation issues with translating month names in other languages while displaying ticket available message. [ET-1820]
+* Fix - Ensure the Attendees page displays correctly when accessed through the Events Manager. [ECP-1527]
+* Tweak - The Attendee Registration page will now display properly when using Divi with dynamic CSS enabled. [ETP-864]
+* Tweak - Include Event/Post title alongside Ticket name on PayPal order notification emails. [ET-1770]
+* Fix - Include Commerce tickets in cached results; correctly fetch posts without tickets. [ET-1808]
+* Tweak - Cache Tickets objects for performance improvements. [ET-1808]
+* Tweak - Remove some PHP 8.1 deprecation warnings. [ET-1830]
+* Fix - Prevention of creating tickets in Classic Editor for recurring events when using custom tables. [ET-1826]
+* Fix - Prevention of creating tickets in Block Editor for recurring events when using custom tables. [ET-1827]
+* Tweak - Add a notice in the Tickets Commerce Paypal settings for non-https sites. [ET-1773]
+* Fix - Footer links in Tickets Emails template using the wrong color. [ET-1784]
+* Tweak - Capitalize payment provider names in Tickets Emails. [ET-1776]
+* Fix - Removal of double-escaped characters in Tickets Emails sender's name. [ET-1777]
+* Language - 2 new strings added, 89 updated, 0 fuzzied, and 0 obsoleted
 
 = [5.6.3] 2023-07-18 =
 
