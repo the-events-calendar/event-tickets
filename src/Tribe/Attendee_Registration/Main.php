@@ -211,6 +211,7 @@ class Tribe__Tickets__Attendee_Registration__Main {
 	 * Check if the modal is enabled.
 	 *
 	 * @since 4.11.0
+	 * @since TBD Defaulted ticket-attendee-modal setting to true if never set.
 	 *
 	 * @param int|WP_Post|null $post The post (or its ID) we're testing. Defaults to null.
 	 *
@@ -220,9 +221,11 @@ class Tribe__Tickets__Attendee_Registration__Main {
 		/** @var $settings_manager Tribe__Settings_Manager */
 		$settings_manager = tribe( 'settings.manager' );
 
-		$event_tickets_plus = class_exists( 'Tribe__Tickets_Plus__Main' );
+		$event_tickets_plus = class_exists( 'Tribe__Tickets_Plus__Main', false );
 
-		$option = $settings_manager::get_option( 'ticket-attendee-modal' );
+		codecept_debug("Does the class exist?". $event_tickets_plus);
+
+		$option = tribe_get_option( 'ticket-attendee-modal', true );
 
 		$activate_modal = $event_tickets_plus && $option;
 
