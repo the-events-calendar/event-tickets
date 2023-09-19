@@ -219,7 +219,7 @@ class Tribe__Tickets__Attendee_Registration__Main {
 	 */
 	public function is_modal_enabled( $post = null ) {
 
-		$event_tickets_plus = class_exists( 'Tribe__Tickets_Plus__Main' );
+		$event_tickets_plus = class_exists( 'Tribe__Tickets_Plus__Main', false );
 
 		$option = tribe_get_option( 'ticket-attendee-modal', true );
 
