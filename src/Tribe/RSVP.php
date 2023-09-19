@@ -1713,6 +1713,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				continue;
 			}
 
+			$ticket->setType( 'rsvp' );
+
 			$tickets[] = $ticket;
 		}
 
