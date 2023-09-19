@@ -223,8 +223,6 @@ class Tribe__Tickets__Attendee_Registration__Main {
 
 		$event_tickets_plus = class_exists( 'Tribe__Tickets_Plus__Main', false );
 
-		codecept_debug("Does the class exist?". $event_tickets_plus);
-
 		$option = tribe_get_option( 'ticket-attendee-modal', true );
 
 		$activate_modal = $event_tickets_plus && $option;

@@ -195,7 +195,6 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 * Fix - On a new installation of Event Tickets Plus, the Attendee Registration feature will now use the modal by default.  [ETP-882]
 
-
 = [5.6.5] 2023-09-13 =
 
 * Version - Event Tickets 5.6.5 is only compatible with The Events Calendar 6.2.2 and higher.
