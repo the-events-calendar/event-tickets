@@ -10,6 +10,7 @@ use TEC\Tickets\Commerce\Gateways\PayPal\Gateway;
 use TEC\Tickets\Commerce\Status\Pending;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
+use Tribe\Tickets\Test\Commerce\Attendee_Maker as Attendee_Maker;
 use Tribe\Events\Test\Factories\Event;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 
@@ -18,6 +19,7 @@ class EventStockTest extends \Codeception\TestCase\WPTestCase {
 	use Ticket_Maker;
 	use Order_Maker;
 	use RSVP_Ticket_Maker;
+	use Attendee_Maker;
 
 	/**
 	 * @inheritDoc
@@ -444,7 +446,7 @@ class EventStockTest extends \Codeception\TestCase\WPTestCase {
 
 		// create ticket with default capacity of 100.
 		$ticket_a_id = $this->create_tc_ticket( $event_id, 10 );
-
+		$ticket_b_id = $this->create_tc_ticket( $event_id, 10 );
 		$order = $this->create_order( [
 			$ticket_a_id => 1,
 		] );
@@ -452,5 +454,35 @@ class EventStockTest extends \Codeception\TestCase\WPTestCase {
 		$attendee = tec_tc_attendees()->by( 'event_id', $event_id )->first();
 
 		$this->assertNotEmpty( $attendee->post_title );
+	}
+
+	/**
+	 * @test
+	 */
+	public function shared_capacity_tickets_should_update_calendar_views(){
+		$maker = new Event();
+		$event_id = $maker->create();
+
+		// create ticket with default capacity of 100.
+		$ticket_a_id = $this->create_tc_ticket( $event_id, 10 );
+
+		$ticket_b_id = $this->create_tc_ticket( $event_id, 10 );
+
+		$this->create_many_attendees_for_ticket(1,$ticket_a_id,$event_id);
+		$this->create_many_attendees_for_ticket(2,$ticket_b_id,$event_id);
+
+		$order = $this->create_order( [
+			                              $ticket_a_id => 1,
+			                              $ticket_b_id => 2,
+		                              ] );
+
+		//Move the event around...?
+		$test = \Tribe__Tickets__Admin__Move_Tickets::move_tickets([$ticket_a_id],$ticket_b_id,$event_id,$event_id);
+
+		codecept_debug($test);
+		$counts = \Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
+
+		codecept_debug($counts);
+
 	}
 }
