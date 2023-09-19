@@ -35,9 +35,19 @@ trait Order_Maker {
 			'purchaser_email'      => 'test-'.uniqid().'@test.com',
 		];
 
-		$order     = tribe( Order::class )->create_from_cart( tribe( Gateway::class ), $purchaser );
-		$completed = tribe( Order::class )->modify_status( $order->ID, Pending::SLUG );
-		$completed = tribe( Order::class )->modify_status( $order->ID, Completed::SLUG );
+		$orders = tribe( Order::class );
+		$order = $orders->create_from_cart( tribe( Gateway::class ), $purchaser );
+
+		if ( ! $orders->modify_status( $order->ID, Pending::SLUG ) ) {
+			return false;
+		}
+
+		if ( ! $orders->modify_status( $order->ID, Completed::SLUG ) ) {
+			return false;
+		}
+
+		clean_post_cache( $order->ID );
+
 		$cart->clear_cart();
 
 		return $order;
