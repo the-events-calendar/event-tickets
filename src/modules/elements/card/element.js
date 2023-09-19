@@ -13,6 +13,7 @@ import './style.pcss';
 const Card = ( {
 	className,
 	children,
+	header,
 } ) => {
 
 	return (
@@ -22,6 +23,7 @@ const Card = ( {
 				className,
 			) }
 		>
+			{ header && (<div className="tickets-heading tickets-row-line">{ header }</div>) }
 			{ children }
 		</div>
 	);
@@ -30,6 +32,7 @@ const Card = ( {
 Card.propTypes = {
 	className: PropTypes.string,
 	children: PropTypes.node,
+	header: PropTypes.string,
 };
 
 export default Card;

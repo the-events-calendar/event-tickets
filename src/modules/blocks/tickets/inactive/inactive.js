@@ -1,6 +1,7 @@
 /**
  * External dependencies
  */
+import PropTypes from 'prop-types';
 import React from 'react';
 
 /**
@@ -14,14 +15,19 @@ import { __ } from '@wordpress/i18n';
  */
 import { Card } from '@moderntribe/tickets/elements';
 
-const InactiveTickets = () => {
+const InactiveTickets = ({ title }) => {
 	return (
-		<Card className="tribe-editor__card-no-bottom-border">
-			<div className="tickets-heading tickets-row-line">{ __( 'Tickets', 'event-tickets' ) }</div>
-			<div className="tickets-description tickets-row-line">{ __( 'Add a ticket to get started.', 'event-tickets' ) }</div>
+		<Card
+			className="tribe-editor__card-no-bottom-border"
+			header={ __( 'Tickets', 'event-tickets' ) }
+		>
+			<div className="tickets-description tickets-row-line">{ title }</div>
 		</Card>
-
 	);
 }
+
+InactiveTickets.propTypes = {
+	title: PropTypes.string,
+};
 
 export default InactiveTickets;

@@ -29,6 +29,7 @@ const getShowInactiveBlock = ( state, ownProps ) => {
 };
 
 const mapStateToProps = ( state, ownProps ) => ( {
+	allTicketsFuture: selectors.allTicketsFuture( state ),
 	allTicketsPast: selectors.allTicketsPast( state ),
 	canCreateTickets: selectors.canCreateTickets(),
 	hasCreatedTickets: selectors.hasCreatedTickets( state ),

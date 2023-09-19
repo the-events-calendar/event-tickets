@@ -57,10 +57,18 @@ TicketContainerHeaderPriceInput.propTypes = {
 };
 
 const TicketContainerHeaderPriceLabel = ( {
+	available,
 	currencyPosition,
 	currencySymbol,
 	price,
+	isUnlimited,
 } ) => {
+	const getAvailableLabel = () => (
+		isUnlimited
+		? __( 'unlimited', 'event-tickets' )
+		: `${available} ${ __( 'available', 'event-tickets' ) }`
+	)
+
 	return (
 		<Fragment>
 			{ currencyPosition === PREFIX && (
@@ -76,19 +84,25 @@ const TicketContainerHeaderPriceLabel = ( {
 					{ currencySymbol }
 				</span>
 			) }
+			<div className="tribe-editor__ticket__container-header-label">
+				{ getAvailableLabel() }
+			</div>
 		</Fragment>
 	);
 };
 
 TicketContainerHeaderPriceLabel.propTypes = {
+	available: PropTypes.number,
 	currencyPosition: PropTypes.oneOf( PRICE_POSITIONS ),
 	currencySymbol: PropTypes.string,
 	price: PropTypes.string,
 };
 
 const TicketContainerHeaderPrice = ( {
+	available,
 	isDisabled,
 	isSelected,
+	isUnlimited,
 	currencyPosition,
 	currencySymbol,
 	onTempPriceChange,
@@ -108,9 +122,11 @@ const TicketContainerHeaderPrice = ( {
 			)
 			: (
 				<TicketContainerHeaderPriceLabel
+					available={ available }
 					currencyPosition={ currencyPosition }
 					currencySymbol={ currencySymbol }
 					price={ price }
+					isUnlimited={ isUnlimited }
 				/>
 			)
 		}
@@ -118,13 +134,15 @@ const TicketContainerHeaderPrice = ( {
 );
 
 TicketContainerHeaderPrice.propTypes = {
-	isDisabled: PropTypes.bool,
-	isSelected: PropTypes.bool,
+	available: PropTypes.number,
 	currencyPosition: PropTypes.oneOf( PRICE_POSITIONS ),
 	currencySymbol: PropTypes.string,
+	isDisabled: PropTypes.bool,
+	isSelected: PropTypes.bool,
+	isUnlimited: PropTypes.bool,
 	onTempPriceChange: PropTypes.func,
-	tempPrice: PropTypes.string,
 	price: PropTypes.string,
+	tempPrice: PropTypes.string,
 };
 
 export default TicketContainerHeaderPrice;
