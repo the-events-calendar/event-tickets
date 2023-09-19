@@ -70,6 +70,18 @@ class Tribe__Tickets__Main {
 	public $plugin_url;
 
 	/**
+	 * Slug for the plugin
+	 * @var string
+	 */
+	public $plugin_slug;
+
+	/**
+	 * Registration object for this plugin.
+	 * @var Tribe__Tickets__Plugin_Register
+	 */
+	public $registered;
+
+	/**
 	 * @var Tribe__Tickets__Legacy_Provider_Support
 	 */
 	public $legacy_provider_support;
