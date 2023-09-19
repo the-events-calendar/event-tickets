@@ -446,7 +446,6 @@ class EventStockTest extends \Codeception\TestCase\WPTestCase {
 
 		// create ticket with default capacity of 100.
 		$ticket_a_id = $this->create_tc_ticket( $event_id, 10 );
-		$ticket_b_id = $this->create_tc_ticket( $event_id, 10 );
 		$order = $this->create_order( [
 			$ticket_a_id => 1,
 		] );
