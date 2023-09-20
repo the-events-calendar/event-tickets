@@ -48,7 +48,7 @@ class AttendeesTest extends WPTestCase {
 					continue;
 				}
 
-				$carry[] = urlencode( $value );
+				$carry[] = esc_html( $value );
 				$carry[] = $value;
 			}
 
@@ -161,6 +161,15 @@ class AttendeesTest extends WPTestCase {
 	 * @dataProvider display_provider
 	 */
 	public function test_display( Closure $fixture ): void {
+		// Filter the insertion of the Attendees post to import an order by `post_title` and stabilize the snapshot.
+		add_filter( 'wp_insert_post_data', function ( $data ) {
+			static $k = 1;
+			if ( str_ends_with( $data['post_type'], '_attendee' ) || str_ends_with( $data['post_type'], '_attendees' ) ) {
+				$data['post_title'] = 'Test Attendee ' . str_pad( $k ++, 3, '0', STR_PAD_LEFT );
+			}
+
+			return $data;
+		}, PHP_INT_MAX );
 		[ $post_id, $post_ids ] = $fixture();
 		$this->set_fn_return( 'wp_create_nonce', '1234567890' );
 
