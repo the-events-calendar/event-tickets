@@ -194,6 +194,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [TBD] TBD =
 
 * Fix - On a new installation of Event Tickets Plus, the Attendee Registration feature will now use the modal by default.  [ETP-882]
+* Fix - Restore possibility to move Tickets and Attendees to Single Events that are part of a Series. [ET-1862]
 
 = [5.6.5] 2023-09-13 =
 
