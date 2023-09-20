@@ -194,6 +194,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [TBD] TBD =
 
 * Fix - Restore possibility to move Tickets and Attendees to Single Events that are part of a Series. [ET-1862]
+* Fix - When using the block editor, the Attendee Information modal will be properly sized. [ETP-883]
 
 = [5.6.5] 2023-09-13 =
 
