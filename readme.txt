@@ -191,6 +191,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Tweak - Update some classes to avoid php 8.1+ dynamic property warnings. [TBD]
+
 = [5.6.5] 2023-09-13 =
 
 * Version - Event Tickets 5.6.5 is only compatible with The Events Calendar 6.2.2 and higher.
