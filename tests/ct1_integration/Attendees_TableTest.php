@@ -39,15 +39,6 @@ class Attendees_TableTest extends WPTestCase {
 		parent::_tearDown();
 	}
 
-	/**
-	 * @inheritDoc
-	 */
-	public static function setUpBeforeClass() {
-		parent::setUpBeforeClass();
-
-		add_filter( 'tribe_tickets_ticket_object_is_ticket_cache_enabled', '__return_false' );
-	}
-
 	private function make_instance() {
 		return new Attendees_Table();
 	}

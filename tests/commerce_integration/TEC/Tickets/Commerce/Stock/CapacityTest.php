@@ -15,15 +15,6 @@ class CapacityTest extends \Codeception\TestCase\WPTestCase {
 
 	use Ticket_Maker;
 
-	/**
-	 * @inheritDoc
-	 */
-	public static function setUpBeforeClass() {
-		parent::setUpBeforeClass();
-
-		add_filter( 'tribe_tickets_ticket_object_is_ticket_cache_enabled', '__return_false' );
-	}
-
 	public function test_if_provider_is_loaded() {
 		$provider = tribe( Module::class );
 
@@ -31,7 +22,6 @@ class CapacityTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	public function test_if_tickets_can_be_created_and_purchased() {
-
 		$maker = new Event();
 		$event_id = $maker->create();
 

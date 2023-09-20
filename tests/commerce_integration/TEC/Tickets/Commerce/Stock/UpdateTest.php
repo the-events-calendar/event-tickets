@@ -15,15 +15,6 @@ class UpdateTest extends \Codeception\TestCase\WPTestCase {
 	use Order_Maker;
 	use RSVP_Ticket_Maker;
 
-	/**
-	 * @inheritDoc
-	 */
-	public static function setUpBeforeClass() {
-		parent::setUpBeforeClass();
-
-		add_filter( 'tribe_tickets_ticket_object_is_ticket_cache_enabled', '__return_false' );
-	}
-
 	public function test_ticket_restock_after_attendee_deletion_with_individual_capacity() {
 		$maker = new Event();
 		$event_id = $maker->create();
