@@ -6,6 +6,7 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
  * @var Tribe__Tickets__Attendees $tickets_attendees The Attendees class instance.
  * @var Ticket_Object[]           $tickets           The tickets for the event, any type.
  * @var string                    $helper_text       The helper text with link to knowledge base article.
+ * @var string                    $helper_link       The helper link to knowledge base article.
  * @var int                       $post_id           The post id for the current edited post.
  */
 $tickets_attendees = tribe( 'tickets.attendees' );
@@ -44,6 +45,23 @@ $container_class .= ( empty( $total_capacity ) ) ? ' tribe_no_capacity' : '';
 				<button id="settings_form_toggle" class="button-secondary tribe-button-icon tribe-button-icon-settings">
 					<?php esc_html_e( 'Settings', 'event-tickets' ); ?>
 				</button>
+			<?php endif; ?>
+
+			<?php if ( ! empty( $tickets ) ) : ?>
+				<div class="tec_ticket-panel__helper_link__wrap">
+					<p>
+					<?php
+					echo wp_kses( $helper_link, [
+						'a' => [
+							'class'      => [],
+							'href'       => [],
+							'target'     => [],
+							'rel'        => [],
+						],
+					] );
+					?>
+					</p>
+				</div>
 			<?php endif; ?>
 		</div>
 
@@ -193,6 +211,7 @@ $container_class .= ( empty( $total_capacity ) ) ? ' tribe_no_capacity' : '';
 			<?php endif; ?>
 		</div>
 	</div>
+	<?php if ( empty( $tickets ) ): ?>
 	<div class="tec_ticket-panel__helper_text__wrap">
 		<p>
 		<?php
@@ -207,13 +226,14 @@ $container_class .= ( empty( $total_capacity ) ) ? ' tribe_no_capacity' : '';
 		?>
 		</p>
 	</div>
+	<?php endif; ?>
 	<?php
 	/**
 	 * Allows for the insertion of content at the end of the new ticket admin panel.
 	 *
 	 * @since 4.6
 	 *
-	 * @param int Post ID.
+	 * @param int $post_id The Post ID.
 	 */
 	do_action( 'tribe_events_tickets_after_new_ticket_panel', $post_id );
 	?>
