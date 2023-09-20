@@ -1,11 +1,11 @@
 .tribe-editor__tickets {
 	.tribe-editor__action-dashboard {
-		background-color: #f8f9fb;
+		background-color: var(--tec-color-background-secondary);
 		display: flex;
 		position: relative;
 
 		@media (min-width: 600px) {
-			padding: 15px 28px;
+			padding: var(--tec-spacer-3) var(--tec-spacer-6);
 		}
 	}
 
@@ -24,7 +24,7 @@
 
 	.tribe-editor__action-dashboard__action-wrapper {
 		flex: none;
-		margin-right: 25px;
+		margin-right: var(--tec-spacer-5);
 
 		&:last-child {
 			margin-right: 0;
@@ -42,8 +42,8 @@
 
 		.tribe-editor__action-dashboard__cancel-button {
 			background-color: transparent;
-			font-size: 15px;
-			line-height: 18px;
+			font-size: var(--tec-font-size-2);
+			line-height: var(--tec-line-height-2);
 			margin-right: var(--tec-spacer-4);
 			padding: 0;
 			transition: color 0.2s ease;
@@ -54,7 +54,7 @@
 
 			&:hover,
 			&:focus {
-				color: #009fd4;
+				color: var(--tec-color-accent-primary-hover);
 			}
 
 			&[disabled] {
