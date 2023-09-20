@@ -11,15 +11,9 @@
  * @var  string  $title   The title.
  * 
  */
-
-
-
-
 ?>
 <div class="tec-my_tickets-title-container">
 	<div class="tec-my_tickets-title">
-		<?php
-			echo esc_html( $title ); 
-		?>
+		<?php echo esc_html( $title ); ?>
 	</div>
 </div>
