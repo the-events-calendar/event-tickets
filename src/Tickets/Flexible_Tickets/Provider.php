@@ -76,7 +76,11 @@ class Provider extends ServiceProvider {
 			return;
 		}
 
-		do_action( 'tribe_log', 'debug', 'TEC Flexible Tickets activated.' );
+		add_action( 'tec_debug_data', function ( $data ) {
+			$data['tec_flexible_tickets'] = true;
+
+			return $data;
+		} );
 
 		/**
 		 * Fires when the TEC Flexible Tickets feature is activated.
