@@ -62,7 +62,10 @@
 					do_action( 'event_tickets_user_details_tickets', $attendees, $post_id );
 					?>
 				</div>
-				<?php $this->template( 'tickets/my-tickets/title' ); ?>
+				<?php 
+					// @todo Need to determine title based on ticket type. RIght now, it's being passed into the main template.
+					$this->template( 'tickets/my-tickets/title' ); 
+				?>
 				<ul class="tribe-tickets-list tribe-list">
 					<?php foreach ( $attendees as $i => $attendee ) : ?>
 						<li class="tribe-item" id="ticket-<?php echo esc_attr( $order_id ); ?>">
