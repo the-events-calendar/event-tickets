@@ -339,7 +339,7 @@ class Order extends Abstract_Order {
 		$cart = tribe( Cart::class );
 
 		$items      = $cart->get_items_in_cart();
-		$items      = array_map(
+		$items      = array_filter( array_map(
 			static function ( $item ) {
 				/** @var Value $ticket_value */
 				$ticket_value = tribe( Ticket::class )->get_price_value( $item['ticket_id'] );
@@ -355,7 +355,7 @@ class Order extends Abstract_Order {
 				return $item;
 			},
 			$items
-		);
+		) );
 		$total = $this->get_value_total( array_filter( $items ) );
 
 		$order_args = [
@@ -456,13 +456,16 @@ class Order extends Abstract_Order {
 			$order = tec_tc_get_order( $order );
 		}
 
-		if ( ! $order instanceof \WP_Post ) {
+		if ( empty( $order->gateway ) ) {
 			return null;
 		}
 
 		$gateway = tribe( Gateways\Manager::class )->get_gateway_by_key( $order->gateway );
+		if ( empty( $gateway ) ) {
+			return null;
+		}
 
-		return $gateway ? $gateway::get_label() : null;
+		return $gateway::get_label();
 	}
 
 	/**

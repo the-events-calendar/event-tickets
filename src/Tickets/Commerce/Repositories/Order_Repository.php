@@ -4,12 +4,15 @@ namespace TEC\Tickets\Commerce\Repositories;
 
 use TEC\Tickets\Commerce;
 use TEC\Tickets\Commerce\Module;
-use \Tribe__Repository;
+use Tribe__Repository;
 use TEC\Tickets\Commerce\Order;
+use Tribe__Repository__Interface;
 use Tribe__Repository__Usage_Error as Usage_Error;
 
 use Tribe__Utils__Array as Arr;
 use Tribe__Date_Utils as Dates;
+use WP_Post;
+use WP_Query;
 
 /**
  * Class Order
@@ -33,7 +36,7 @@ class Order_Repository extends Tribe__Repository {
 	 *
 	 * @var string
 	 */
-	protected $key_name = \TEC\Tickets\Commerce::ABBR;
+	protected $key_name = Commerce::ABBR;
 
 	/**
 	 * {@inheritdoc}
@@ -83,9 +86,11 @@ class Order_Repository extends Tribe__Repository {
 		$this->add_simple_meta_schema_entry( 'currency', Order::$currency_meta_key, 'meta_equals' );
 		$this->add_simple_meta_schema_entry( 'purchaser_user_id', Order::$purchaser_user_id_meta_key, 'meta_equals' );
 		$this->add_simple_meta_schema_entry( 'purchaser_full_name', Order::$purchaser_full_name_meta_key, 'meta_equals' );
+		$this->add_simple_meta_schema_entry( 'purchaser_full_name__like', Order::$purchaser_full_name_meta_key, 'meta_like' );
 		$this->add_simple_meta_schema_entry( 'purchaser_first_name', Order::$purchaser_first_name_meta_key, 'meta_equals' );
 		$this->add_simple_meta_schema_entry( 'purchaser_last_name', Order::$purchaser_last_name_meta_key, 'meta_equals' );
 		$this->add_simple_meta_schema_entry( 'purchaser_email', Order::$purchaser_email_meta_key, 'meta_equals' );
+		$this->add_simple_meta_schema_entry( 'purchaser_email__like', Order::$purchaser_email_meta_key, 'meta_like' );
 		$this->add_simple_meta_schema_entry( 'hash', Order::$hash_meta_key, 'meta_equals' );
 	}
 
@@ -102,9 +107,9 @@ class Order_Repository extends Tribe__Repository {
 		 *
 		 * @since 5.1.9
 		 *
-		 * @param mixed|\WP_Post                $formatted The formatted event result, usually a post object.
+		 * @param mixed|WP_Post                 $formatted The formatted event result, usually a post object.
 		 * @param int                           $id        The formatted post ID.
-		 * @param \Tribe__Repository__Interface $this      The current repository object.
+		 * @param Tribe__Repository__Interface $this      The current repository object.
 		 */
 		$formatted = apply_filters( 'tec_tickets_commerce_repository_order_format', $formatted, $id, $this );
 
@@ -275,6 +280,8 @@ class Order_Repository extends Tribe__Repository {
 		if ( ! empty( $items ) ) {
 			$ticket_ids    = array_unique( array_filter( array_values( wp_list_pluck( $items, 'ticket_id' ) ) ) );
 			$event_objects = array_map( [ tribe( Module::class ), 'get_event_for_ticket' ], $ticket_ids );
+			// Filter out any non Post objects.
+			$event_objects = array_filter( $event_objects, static fn( $object ) => $object instanceof WP_Post );
 			$event_ids     = array_unique( array_filter( array_values( wp_list_pluck( $event_objects, 'ID' ) ) ) );
 
 			// These will be remove right before actually creating the order.
@@ -369,7 +376,7 @@ class Order_Repository extends Tribe__Repository {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param int|\WP_Post|int[]|\WP_Post[] $posts Which posts we are filtering by.
+	 * @param int|WP_Post|int[]|WP_Post[] $posts Which posts we are filtering by.
 	 *
 	 * @return array
 	 */
@@ -379,7 +386,7 @@ class Order_Repository extends Tribe__Repository {
 				return $post;
 			}
 
-			if ( $post instanceof \WP_Post ) {
+			if ( $post instanceof WP_Post ) {
 				return $post->ID;
 			}
 
@@ -392,7 +399,7 @@ class Order_Repository extends Tribe__Repository {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param int|\WP_Post|int[]|\WP_Post[] $tickets Which tickets we are filtering by.
+	 * @param int|WP_Post|int[]|WP_Post[] $tickets Which tickets we are filtering by.
 	 *
 	 * @return null
 	 */
@@ -417,7 +424,7 @@ class Order_Repository extends Tribe__Repository {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param int|\WP_Post|int[]|\WP_Post[] $tickets Which tickets we are filtering by.
+	 * @param int|WP_Post|int[]|WP_Post[] $tickets Which tickets we are filtering by.
 	 *
 	 * @return null
 	 */
@@ -442,7 +449,7 @@ class Order_Repository extends Tribe__Repository {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param int|\WP_Post|int[]|\WP_Post[] $events Which events we are filtering by.
+	 * @param int|WP_Post|int[]|WP_Post[] $events Which events we are filtering by.
 	 *
 	 * @return null
 	 */
@@ -467,7 +474,7 @@ class Order_Repository extends Tribe__Repository {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param int|\WP_Post|int[]|\WP_Post[] $events Which events we are filtering by.
+	 * @param int|WP_Post|int[]|WP_Post[] $events Which events we are filtering by.
 	 *
 	 * @return null
 	 */
@@ -492,7 +499,7 @@ class Order_Repository extends Tribe__Repository {
 	 *
 	 * @since 5.5.0
 	 *
-	 * @return \WP_Query The built query object.
+	 * @return WP_Query The built query object.
 	 */
 	protected function build_query_internally() {
 		$order_by = Arr::get_in_any( [ $this->query_args, $this->default_args ], 'orderby', 'event_date' );

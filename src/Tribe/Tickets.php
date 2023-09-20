@@ -434,7 +434,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 					return false;
 				}
 
-				if ( class_exists( '\TEC\Events\Custom_Tables\V1\Models\Occurrence' ) ) {
+				if ( class_exists( '\TEC\Events\Custom_Tables\V1\Models\Occurrence', false ) ) {
 					$post_id = \TEC\Events\Custom_Tables\V1\Models\Occurrence::normalize_id( $post->ID );
 				}
 			}
@@ -746,6 +746,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 				unset( $cache[ $key ] );
 			}
+
+			$ticket_ids = $this->get_tickets_ids( $post_id );
+			foreach ( (array) $ticket_ids as $ticket_id ) {
+				clean_post_cache( $ticket_id );
+			}
 		}
 
 		/**
@@ -1043,6 +1048,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Save the attendee checkin details.
 		 *
 		 * @since 5.5.2
+		 * @since 5.5.11 Update attendee scan count via tec_tickets_plus_app_attendees_checked_in option.
 		 *
 		 * @param int   $attendee_id     The ID of the attendee that's being checked-in.
 		 * @param mixed $qr              True if the check-in is from a QR code.
@@ -1053,6 +1059,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				'source' => ! empty( $qr ) ? 'app' : 'site',
 				'author' => get_current_user_id(),
 			];
+
+			if ( ! empty( $qr ) ) {
+				// Save the latest date in which a ticket was scanned with the APP.
+				tribe_update_option( 'tec_tickets_plus_app_last_checkin_time', time() );
+
+				// Save the attendee scan count.
+				$attendee_scan_count = (int) tribe_get_option( 'tec_tickets_plus_app_attendees_checked_in' );
+				tribe_update_option( 'tec_tickets_plus_app_attendees_checked_in', ++$attendee_scan_count );
+			}
 
 			/**
 			 * Filters the checkin details for this attendee checkin.
@@ -1374,6 +1389,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Returns all the attendees for an event with filtered by arguments. Queries all registered providers.
 		 *
 		 * @since 4.10.6
+		 * @since 5.5.9 Move the logic to `get_attendees_by_args` and use the method to return the attendees.
 		 *
 		 * @static
 		 *
@@ -1403,6 +1419,38 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return $attendee_data;
 			}
 
+			return self::get_attendees_by_args( $args, $post_id );
+		}
+
+		/**
+		 * Returns all the attendees with filtered by arguments. Queries all registered providers.
+		 *
+		 * @since 5.5.9
+		 *
+		 * @static
+		 *
+		 * @param int   $post_id ID of parent "event" post.
+		 * @param array $args {
+		 *      List of arguments to filter attendees by.
+		 *
+		 *      @type boolean $return_total_found Whether to return total_found count in an array along with list of
+		 *                                        attendees. Default is off.
+		 *      @type int     $page               Page number of attendees to return. Default is page 1.
+		 *      @type int     $per_page           How many attendees to return per page. Default is all.
+		 *      @type string  $fields             Which fields to return. Default is all.
+		 *      @type array   $by                 List of ORM->by() filters to use. [what=>[args...]], [what=>arg], or
+		 *                                        [[what,args...]] format.
+		 *      @type array   $where_multi        List of ORM->where_multi() filters to use. [[what,args...]] format.
+		 * }
+		 *
+		 * @return array List of attendees and total_found.
+		 */
+		public static function get_attendees_by_args( $args = [], $post_id = 0 ) {
+			$attendee_data = [
+				'total_found' => 0,
+				'attendees'   => [],
+			];
+
 			$provider = 'default';
 
 			if ( ! empty( $args['provider'] ) ) {
@@ -1413,7 +1461,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$repository = tribe_attendees( $provider );
 
 			// Limit by post ID.
-			$repository->by( 'event', $post_id );
+			if ( ! empty( $post_id ) ) {
+				$repository->by( 'event', $post_id );
+			}
 
 			self::pass_args_to_repository( $repository, $args );
 
@@ -1958,57 +2008,53 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 					continue;
 				}
 
-				// if ticket and not rsvp add to ticket array
-				if ( 'Tribe__Tickets__RSVP' !== $ticket->provider_class ) {
-					$types['tickets']['count'] ++;
+				if ( 'Tribe__Tickets__RSVP' === $ticket->provider_class ) {
+					$types = static::process_rsvp_counts( $ticket, $types );
+					continue;
+				}
 
-					$global_stock_mode = $ticket->global_stock_mode();
+				// we have a ticket type so increasing the ticket count.
+				$types['tickets']['count'] ++;
 
-					if (
-						$global_stock_mode === Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE
-						&& 0 === $types['tickets']['global']
-					) {
-						$types['tickets']['global'] ++;
-					} elseif (
-						$global_stock_mode === Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE
-						&& 1 === $types['tickets']['global']
-					) {
-						continue;
-					}
+				$global_stock_mode = $ticket->global_stock_mode();
 
-					if ( Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $global_stock_mode ) {
-						continue;
-					}
-
-					$stock_level = Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $global_stock_mode ? $ticket->global_stock_cap() : $ticket->available();
-
-					// whether the stock level is negative because it represents unlimited stock (`-1`)
-					// or because it's oversold we normalize to `0` for the sake of displaying
-					$stock_level = max( 0, (int) $stock_level );
-
-					$types['tickets']['stock'] += $stock_level;
-
-					if ( 0 !== $types['tickets']['stock'] ) {
-						$types['tickets']['available'] ++;
-					}
-
+				// Handle tickets with unlimited capacity.
+				if ( empty( $global_stock_mode ) ) {
 					if ( ! $ticket->manage_stock() || -1 === $ticket->capacity ) {
 						$types['tickets']['unlimited'] ++;
 						$types['tickets']['available'] ++;
 					}
-				} else {
-					$types['rsvp']['count'] ++;
+					continue;
+				}
 
-					$types['rsvp']['stock'] += $ticket->stock;
-
-					if ( 0 !== $types['rsvp']['stock'] ) {
-						$types['rsvp']['available'] ++;
+				// for individual tickets.
+				if ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $global_stock_mode ) {
+					$stock_level = $ticket->available();
+					$types['tickets']['stock'] += $stock_level;
+					$types['tickets']['available'] += $stock_level;
+					if ( ! $ticket->manage_stock() || -1 === $ticket->capacity ) {
+						$types['tickets']['unlimited'] ++;
 					}
+					continue;
+				}
 
-					if ( ! $ticket->manage_stock() ) {
-						$types['rsvp']['unlimited'] ++;
-						$types['rsvp']['available'] ++;
-					}
+				// flag if we have any shared capacity tickets.
+				if ( Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $global_stock_mode ) {
+					$types['tickets']['global'] = 1;
+					continue;
+				}
+
+				$stock_level = Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $global_stock_mode ? $ticket->global_stock_cap() : $ticket->available();
+
+				// whether the stock level is negative because it represents unlimited stock (`-1`)
+				// or because it's oversold we normalize to `0` for the sake of displaying
+				$stock_level = max( 0, (int) $stock_level );
+
+				$types['tickets']['stock'] += $stock_level;
+
+				// If current availability is unlimited (available = -1) and the ticket has stock, set it to 0.
+				if ( $types['tickets']['available'] < 0 && 0 !== $types['tickets']['stock'] ) {
+					$types['tickets']['available'] = 0;
 				}
 			}
 
@@ -2020,6 +2066,41 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			// If there's at least one ticket with shared capacity
 			if ( ! self::tickets_own_stock( $post_id ) ) {
 				$types['tickets']['stock'] += $global_stock;
+			}
+
+			/**
+			 * Allow filtering of ticket counts by event.
+			 *
+			 * @since 5.5.10
+			 *
+			 * @param array $types   An array of ticket types.
+			 * @param int   $post_id The event post ID.
+			 */
+			return apply_filters( 'tec_tickets_get_ticket_counts', $types, $post_id );
+		}
+
+		/**
+		 * Process RSVP counts.
+		 *
+		 * @since 5.5.9
+		 *
+		 * @param Tribe__Tickets__Ticket_Object $rsvp RSVP ticket object.
+		 * @param array                         $types Array of ticket types.
+		 *
+		 * @return array
+		 */
+		public static function process_rsvp_counts( $rsvp, $types ) {
+			$types['rsvp']['count'] ++;
+
+			$types['rsvp']['stock'] += $rsvp->stock;
+
+			if ( 0 !== $types['rsvp']['stock'] ) {
+				$types['rsvp']['available'] ++;
+			}
+
+			if ( ! $rsvp->manage_stock() ) {
+				$types['rsvp']['unlimited'] ++;
+				$types['rsvp']['available'] ++;
 			}
 
 			return $types;
@@ -2352,6 +2433,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Send RSVPs/tickets email for an attendee.
 		 *
 		 * @since 5.0.3
+		 * @since 5.5.10 Adjusted the method to use the new Tickets Emails Handler.
+		 * @since 5.6.0 Reverted the methods back to before 5.5.10, new Tickets Emails Handler via filters.
 		 *
 		 * @param string $to      The email to send the tickets to.
 		 * @param array  $tickets The list of tickets to send.
@@ -2372,6 +2455,23 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return bool Whether email was sent to attendees.
 		 */
 		public function send_tickets_email_for_attendee( $to, $tickets, $args = [] ) {
+			/**
+			 * Allows the short-circuiting of the sending of emails to the Attendees.
+			 *
+			 * @since 5.6.0
+			 *
+			 * @param null|mixed $pre     Determine if we should continue.
+			 * @param string     $to      The email to send the tickets to.
+			 * @param array      $tickets The list of tickets to send.
+			 * @param array      $args    The list of arguments to use for sending ticket emails.
+			 * @param static     $module  Instance of the Tickets Module.
+			 */
+			$pre = apply_filters( 'tec_tickets_send_tickets_email_for_attendee_pre', null, $to, $tickets, $args, $this );
+
+			if ( null !== $pre ) {
+				return $pre;
+			}
+
 			// If no tickets to send for, do not send email.
 			if ( empty( $tickets ) ) {
 				return false;
@@ -3210,14 +3310,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 					}
 
 					$date_format = tribe_get_date_format( true );
-					$start_sale_date = Tribe__Date_Utils::reformat( $start_sale_date, $date_format );
+					$start_sale_date = Tribe__Date_Utils::build_date_object( $start_sale_date )->format_i18n( $date_format );
 
 					$message = esc_html( sprintf( __( '%s will be available on ', 'event-tickets' ), tribe_get_ticket_label_plural( 'unavailable_future_display_date' ) ) );
 					$message .= $start_sale_date;
 
 					if ( $display_time ) {
 						$time_format = tribe_get_time_format();
-						$start_sale_time = Tribe__Date_Utils::reformat( $start_sale_time, $time_format );
+						$start_sale_time = Tribe__Date_Utils::build_date_object( $start_sale_time )->format_i18n( $time_format );
 						$message .= __( ' at ', 'event_tickets' ) . $start_sale_time;
 					}
 				} else {
@@ -3733,6 +3833,52 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
+		 * Clones a ticket to a new post.
+		 *
+		 * @since 5.6.3
+		 *
+		 * @param int $original_post_id ID of the original "event" post.
+		 * @param int $new_post_id      ID of the new "event" post.
+		 * @param int $ticket_id        ID of ticket to duplicate.
+		 *
+		 * @return int|boolean $duplicate_ticket_id New ticket ID or false, if unable to create duplicate.
+		 */
+		public function clone_ticket_to_new_post( $original_post_id, $new_post_id, $ticket_id ) {
+			// Get ticket data.
+			$ticket = $this->get_ticket( $original_post_id, $ticket_id );
+
+			if ( ! $ticket instanceof Tribe__Tickets__Ticket_Object ) {
+				return false;
+			}
+
+			// Create data for duplicate ticket.
+			$data = [
+				'ticket_name'             => $ticket->name,
+				'ticket_description'      => $ticket->description,
+				'ticket_price'            => $ticket->price,
+				'ticket_show_description' => $ticket->show_description,
+				'ticket_start_date'       => $ticket->start_date,
+				'ticket_start_time'       => $ticket->start_time,
+				'ticket_end_date'         => $ticket->end_date,
+				'ticket_end_time'         => $ticket->end_time,
+				'tribe-ticket'            => [
+					'capacity' => $ticket->capacity(),
+					'mode'     => $ticket->global_stock_mode(),
+				]
+			];
+
+			// Add the ticket.
+			$duplicate_ticket_id = $this->ticket_add( $new_post_id, $data );
+
+			if ( ! $duplicate_ticket_id ) {
+				return false;
+			}
+
+			return $duplicate_ticket_id;
+		}
+
+
+		/**
 		 * Creates a ticket object and calls the child save_ticket function
 		 *
 		 * @param int $post_id ID of parent "event" post
@@ -4108,10 +4254,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return;
 			}
 
-			/** @var Tribe__Tickets__Attendee_Registration__Main $attendee_reg */
-			$attendee_reg = tribe( 'tickets.attendee_registration' );
-
-			$url = $attendee_reg->get_url();
+			$url = $attendee_registration->get_url();
 
 			if ( ! empty( $q_provider ) ) {
 				$provider_slug = tribe_tickets_get_provider_query_slug();

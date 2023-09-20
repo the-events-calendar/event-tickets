@@ -585,11 +585,9 @@ class Tribe__Tickets__Tickets_Handler {
 
 		$completes = [];
 
+		$provider = Tribe__Tickets__Tickets::get_event_ticket_provider_object( $object_id );
 		// Get all Tickets.
-		$tickets = $this->get_tickets_ids( $object_id );
-
-		// If no tickets are available and capacity is set then it should be true.
-		$has_shared_cap_tickets = empty( $tickets );
+		$tickets = $provider->get_tickets_ids( $object_id );
 
 		foreach ( $tickets as $ticket ) {
 			$mode = get_post_meta( $ticket, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
@@ -602,27 +600,23 @@ class Tribe__Tickets__Tickets_Handler {
 				continue;
 			}
 
-			$has_shared_cap_tickets = true;
+			$new_capacity = $existing_capacity = tribe_tickets_get_capacity( $ticket );
 
-			$capacity = tribe_tickets_get_capacity( $ticket );
-
-			// When Global Capacity is higher than local ticket one's we bail.
+			// Update the ticket capacity only if the event capacity is lower while capped, or ticket capacity is global.
 			if (
-				Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $mode
+				( Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $mode && $event_capacity < $existing_capacity )
+				|| Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $mode
 			) {
-				$capped_capacity = $capacity;
-				if ( $event_capacity < $capacity ) {
-					$capped_capacity = $event_capacity;
-				}
-
-				// Otherwise we update tickets required.
-				tribe_tickets_update_capacity( $ticket, $capped_capacity );
+				$new_capacity = $event_capacity;
 			}
+
+			// update tickets capacity to new value as required.
+			tribe_tickets_update_capacity( $ticket, $new_capacity );
 
 			$totals = $this->get_ticket_totals( $ticket );
 			$completes[] = $complete = $totals['pending'] + $totals['sold'];
 
-			$stock = $event_capacity - $complete;
+			$stock = $new_capacity - $complete;
 			update_post_meta( $ticket, '_stock', $stock );
 
 			// Makes sure we mark it as in Stock for the status.
@@ -634,12 +628,6 @@ class Tribe__Tickets__Tickets_Handler {
 		// Setup the Stock level.
 		$new_object_stock = $event_capacity - array_sum( $completes );
 		$object_stock->set_stock_level( $new_object_stock );
-
-		if ( ! $has_shared_cap_tickets ) {
-			$object_stock->disable();
-			$object_stock->set_stock_level( 0 );
-			tribe_tickets_delete_capacity( $object_id );
-		}
 
 		return true;
 	}

@@ -81,7 +81,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 
 		// Don't tell wp_query we're anything in particular - then we don't run into issues with defaults.
 		$wp_query->is_page        = false;
-		$wp_query->is_singular    = false;
+		$wp_query->is_singular    = true;
 		$wp_query->is_home        = false;
 		$wp_query->is_archive     = false;
 		$wp_query->is_category    = false;
@@ -101,7 +101,11 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 * @return boolean
 	 */
 	public function is_on_ar_page() {
-		return tribe( 'tickets.attendee_registration' )->is_on_page();
+		try {
+			return tribe( 'tickets.attendee_registration' )->is_on_page();
+		} catch ( \Exception $e ) {
+			return false;
+		}
 	}
 
 	/**
@@ -112,9 +116,11 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 * @return bool Whether the Attendee Registration shortcode is being used.
 	 */
 	public function is_using_shortcode() {
-		/* @var $ar Tribe__Tickets__Attendee_Registration__Main */
-		$ar = tribe( 'tickets.attendee_registration' );
-		return $ar->is_using_shortcode();
+		try {
+			return tribe( 'tickets.attendee_registration' )->is_using_shortcode();
+		} catch ( \Exception $e ) {
+			return false;
+		}
 	}
 
 	/**
@@ -396,7 +402,11 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 */
 	public function get_page_title() {
 		$title = __( 'Attendee Registration', 'event-tickets' );
-		$page  = tribe( 'tickets.attendee_registration' )->get_attendee_registration_page();
+		try {
+			$page  = tribe( 'tickets.attendee_registration' )->get_attendee_registration_page();
+		} catch( Exception $e ) {
+			$page = null;
+		}
 
 		$title = $page ? $page->post_title : $title;
 

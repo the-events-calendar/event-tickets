@@ -175,7 +175,7 @@ class BaseTicketEditorCest extends BaseRestCest {
 				'_tribe_ticket_capacity'         => '',
 				'_ticket_start_date'             => '2020-01-02 08:00:00',
 				'_ticket_end_date'               => '2050-03-02 20:00:00',
-				'_tribe_ticket_show_not_going'   => 'false',
+				'_tribe_ticket_show_not_going'   => false,
 				'_tribe_rsvp_for_event'          => $post_id,
 				'_tribe_ticket_show_description' => 'yes',
 			],
@@ -538,7 +538,7 @@ class BaseTicketEditorCest extends BaseRestCest {
 				'_ticket_start_date'                     => '',
 				'_ticket_end_date'                       => '',
 				'_tribe_ticket_show_description'         => '',
-				'_tribe_ticket_show_not_going'           => false,
+				'_tribe_ticket_show_not_going'           => 0,
 				'_tribe_ticket_use_global_stock'         => '',
 				'_tribe_ticket_global_stock_level'       => '',
 				'_global_stock_mode'                     => '',
@@ -547,7 +547,7 @@ class BaseTicketEditorCest extends BaseRestCest {
 				'_tribe_ticket_going_count'              => '',
 				'_tribe_ticket_not_going_count'          => '',
 				'_tribe_tickets_list'                    => [],
-				'_tribe_ticket_has_attendee_info_fields' => false,
+				'_tribe_ticket_has_attendee_info_fields' => 0,
 			],
 		];
 

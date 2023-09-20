@@ -2,7 +2,7 @@
 
 namespace TEC\Tickets\Commerce\Admin;
 
-use \tad_DI52_ServiceProvider;
+use \TEC\Common\Contracts\Service_Provider;
 use TEC\Tickets\Commerce\Checkout;
 use TEC\Tickets\Commerce\Success;
 use Tribe\Tickets\Admin\Settings as Plugin_Settings;
@@ -14,7 +14,7 @@ use Tribe\Tickets\Admin\Settings as Plugin_Settings;
  *
  * @package TEC\Tickets\Commerce\Admin
  */
-class Notices extends tad_DI52_ServiceProvider {
+class Notices extends Service_Provider {
 
 	/**
 	 * @inheritdoc

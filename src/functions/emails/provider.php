@@ -1,12 +1,11 @@
 <?php
-
 /**
  * Checks whether out new Tickets Emails system should load.
  *
  * In order the function will check the `TEC_TICKETS_EMAILS` constant,
  * the `TEC_TICKETS_EMAILS` environment variable and, finally, the `Manager::$option_enabled` option.
  *
- * @since TBD
+ * @since 5.5.6
  *
  * @return bool Whether Tickets Emails is enabled or not.
  */
@@ -20,12 +19,18 @@ function tec_tickets_emails_is_enabled(): bool {
 		return (bool) $env_var;
 	}
 
+	// The version in which Tickets Emails was introduced.
+	$should_default_to_on = ! tribe_installed_before( 'Tribe__Tickets__Main', '5.6.0-dev' );
+
+	// Check for settings UI option.
+	$enabled = (bool) tribe_get_option( TEC\Tickets\Emails\Admin\Settings::$option_enabled, $should_default_to_on );
+
 	/**
 	 * Allows filtering of the Tickets Emails provider.
 	 *
-	 * @since TBD
+	 * @since 5.5.6
 	 *
 	 * @param boolean $enabled Determining if Tickets Emails is enabled
 	 */
-	return apply_filters( 'tec_tickets_emails_is_enabled', false );
+	return apply_filters( 'tec_tickets_emails_is_enabled', $enabled );
 }

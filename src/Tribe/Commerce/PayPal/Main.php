@@ -1211,8 +1211,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 				$sku = $raw_data['ticket_sku'];
 			} else {
 				$post_author            = get_post( $ticket->ID )->post_author;
-				$str                    = $raw_data['ticket_name'];
-				$str                    = tribe_strtoupper( $str );
+				$ticket_name            = $raw_data['ticket_name'] ?? $ticket->name;
+				$str                    = tribe_strtoupper( $ticket_name );
 				$sku                    = "{$ticket->ID}-{$post_author}-" . str_replace( ' ', '-', $str );
 				$raw_data['ticket_sku'] = $sku;
 			}
@@ -1228,7 +1228,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		// Only need to do this if we haven't already set one - they shouldn't be able to edit it from here otherwise
 		if ( ! $event_stock->is_enabled() ) {
 			if ( isset( $data['event_capacity'] ) ) {
-				$data['event_capacity'] = trim( filter_var( $data['event_capacity'], FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH ) );
+				$data['event_capacity'] = trim( tec_sanitize_string( $data['event_capacity'] ) );
 
 				// If empty we need to modify to -1
 				if ( '' === $data['event_capacity'] ) {
@@ -1486,6 +1486,11 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			return null;
 		}
 
+		$cached = wp_cache_get( (int) $ticket_id, 'tec_tickets' );
+		if ( $cached && is_array( $cached ) ) {
+			return new \Tribe__Tickets__Ticket_Object( $cached );
+		}
+
 		$return = new Tribe__Tickets__Ticket_Object();
 
 		$qty_sold = get_post_meta( $ticket_id, 'total_sales', true );
@@ -1545,7 +1550,13 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 * @param int    $post_id
 		 * @param int    $ticket_id
 		 */
-		return apply_filters( 'tribe_tickets_tpp_get_ticket', $return, $event_id, $ticket_id );
+		$ticket = apply_filters( 'tribe_tickets_tpp_get_ticket', $return, $event_id, $ticket_id );
+
+		if ( $ticket instanceof \Tribe__Tickets__Ticket_Object ) {
+			wp_cache_set( (int) $ticket->ID, $ticket->to_array(), 'tec_tickets' );
+		}
+
+		return $ticket;
 	}
 
 	/**
@@ -2326,12 +2337,13 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @param string   $redirect URL to redirect to.
 	 * @param null|int $post_id  Post ID for cart.
 	 */
-	public function maybe_redirect_to_attendees_registration_screen( $redirect = null, $post_id = null ) {
+	public function maybe_redirect_to_attendees_registration_screen( $redirect = '', $post_id = null ) {
 		if ( ! empty( $_POST ) ) {
 			return;
 		}
 
-		$redirect = tribe_get_request_var( 'tribe_tickets_redirect_to', null );
+		$redirect = tribe_get_request_var( 'tribe_tickets_redirect_to', '' );
+
 		$redirect = base64_encode( $redirect );
 
 		$post_id = tribe_get_request_var( 'tribe_tickets_post_id', null );

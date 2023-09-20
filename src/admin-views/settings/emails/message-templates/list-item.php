@@ -1,25 +1,25 @@
 <?php
 /**
- * Tickets Emails Message Template List Item
+ * Tickets Emails List Item
  *
- * @since  TBD  List item of email message templates for Emails settings tab.
- * 
- * @var Array[]  $templates  Array of template info.
- * @var Array    $template   Template info.
+ * @since  5.5.6  List item of email templates for Emails settings tab.
+ *
+ * @var array<Email_Abstract>  $emails  Array of email info.
+ * @var array<Email_Abstract>    $email   Email info.
  */
 
-// @todo $templates variable will be an array of Message_Template objects in the future.
-// @todo $template variable will be a Message_Template object in the future.
+use TEC\Tickets\Emails\Email_Abstract;
 
-// If no template, bail.
-if ( empty( $template ) ) {
+// If no email, bail.
+if ( empty( $email ) ) {
 	return;
 }
 
-$item_classes   = [ 'tec-tickets__admin-settings-emails-template-list-item' ];
-$item_classes[] = tribe_is_truthy( $template['enabled'] ) ? 
-    'tec-tickets__admin-settings-emails-template-list-item--enabled' : 
-    'tec-tickets__admin-settings-emails-template-list-item--disabled';
+$item_classes   = [
+	'tec-tickets__admin-settings-emails-template-list-item',
+	'tec-tickets__admin-settings-emails-template-list-item--enabled'  => $email->is_enabled(),
+	'tec-tickets__admin-settings-emails-template-list-item--disabled' => ! $email->is_enabled(),
+];
 
 ?>
 <div <?php tribe_classes( $item_classes ); ?> >

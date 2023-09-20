@@ -8,10 +8,9 @@
 
 namespace TEC\Tickets;
 
-use \tad_DI52_ServiceProvider;
-use TEC\Events\Custom_Tables\V1\Provider as TEC_CT1_Provider;
+use TEC\Common\Contracts\Service_Provider;
 use TEC\Tickets\Custom_Tables\V1\Provider as ET_CT1_Provider;
-use \Tribe__Tickets__Main as Tickets_Plugin;
+use Tribe__Tickets__Main as Tickets_Plugin;
 
 /**
  * Class Provider for all the Tickets loading.
@@ -19,7 +18,7 @@ use \Tribe__Tickets__Main as Tickets_Plugin;
  * @since   5.1.6
  * @package TEC\Tickets
  */
-class Provider extends tad_DI52_ServiceProvider {
+class Provider extends Service_Provider {
 	/**
 	 * @var bool Flag whether this provider has registered itself and dependencies yet or not.
 	 */
@@ -28,6 +27,7 @@ class Provider extends tad_DI52_ServiceProvider {
 	/**
 	 * Binds and sets up implementations.
 	 *
+	 * @since 5.6.4   Use `register_on_action` method to register custom table providers.
 	 * @since 5.5.0
 	 * @since 5.1.6
 	 */
@@ -55,32 +55,24 @@ class Provider extends tad_DI52_ServiceProvider {
 
 		// Loads all of tickets emails.
 		$this->container->register( Emails\Provider::class );
-		
+
 		// Loads admin area.
 		$this->container->register( Admin\Provider::class );
 
+		// Loads admin area.
+		$this->container->register( Site_Health\Provider::class );
+
+		// Loads admin area.
+		$this->container->register( Telemetry\Provider::class );
+
+		// Loads Integrations.
+		$this->container->register( Integrations\Provider::class);
+
 		// RBE only Providers here.
-		$this->register_ct1_providers();
+		$this->container->register_on_action( 'tec_events_custom_tables_v1_fully_activated', ET_CT1_Provider::class );
 		$this->has_registered = true;
 
 		return true;
-	}
-
-	/**
-	 * The RBE (Custom Tables) providers to be registered. Validates the conditions required to register providers.
-	 *
-	 * @since 5.5.0
-	 */
-	public function register_ct1_providers() {
-		if ( ! class_exists( TEC_CT1_Provider::class ) ) {
-			return;
-		}
-
-		if ( ! TEC_CT1_Provider::is_active() ) {
-			return;
-		}
-
-		$this->container->register( ET_CT1_Provider::class );
 	}
 
 	/**

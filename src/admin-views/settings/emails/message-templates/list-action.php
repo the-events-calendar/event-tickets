@@ -1,22 +1,23 @@
 <?php
 /**
- * Tickets Emails Message Template List Action
+ * Tickets Emails List Action
  *
- * @since  TBD   Action links for list item of email message templates for Emails settings tab.
- * 
- * @var Array[]  $templates  Array of template info.
- * @var Array    $template   Template info.
+ * @since  5.5.6   Action links for list item of email templates for Emails settings tab.
+ *
+ * @var array<Email_Abstract> $emails Array of email info.
+ * @var Email_Abstract        $email  Email info.
  */
 
-// @todo $templates variable will be an array of Message_Template objects in the future.
-// @todo $template variable will be a Message_Template object in the future.
+use TEC\Tickets\Emails\Email_Abstract;
 
-// If no template, bail.
-if ( empty( $template ) ) {
+// If no email, bail.
+if ( empty( $email ) ) {
 	return;
 }
 
+
+
 ?>
 <div class="tec-tickets__admin-settings-emails-template-list-item-action">
-	<a href="#" class="tec-tickets__admin-settings-emails-template-list-item-action-link dashicons dashicons-edit"></a>
+	<a href="<?php echo esc_url( $email->get_edit_url() ); ?>" class="tec-tickets__admin-settings-emails-template-list-item-action-link dashicons dashicons-edit"></a>
 </div>

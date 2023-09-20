@@ -25,7 +25,7 @@ namespace TEC\Tickets\Admin;
  *
  * @package TEC\Tickets\Admin
  */
-class Hooks extends \tad_DI52_ServiceProvider {
+class Hooks extends \TEC\Common\Contracts\Service_Provider {
 
 	/**
 	 * Binds and sets up implementations.
@@ -35,6 +35,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	public function register() {
 		tribe( Upsell::class )->hooks();
 		tribe( Plugin_Action_Links::class )->hooks();
+		tribe( Glance_Items::class )->hooks();
 	}
 
 }

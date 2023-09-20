@@ -54,6 +54,33 @@ class Settings {
 	public static $option_currency_code = 'tickets-commerce-currency-code';
 
 	/**
+	 * The option key for currency decimal separator.
+	 *
+	 * @since 5.5.7
+	 *
+	 * @var string
+	 */
+	public static $option_currency_decimal_separator = 'tickets-commerce-currency-decimal-separator';
+
+	/**
+	 * The option key for currency thousands separator.
+	 *
+	 * @since 5.5.7
+	 *
+	 * @var string
+	 */
+	public static $option_currency_thousands_separator = 'tickets-commerce-currency-thousands-separator';
+
+	/**
+	 * The option key for currency number of decimals.
+	 *
+	 * @since 5.5.7
+	 *
+	 * @var string
+	 */
+	public static $option_currency_number_of_decimals = 'tickets-commerce-currency-number-of-decimals';
+
+	/**
 	 * The option key for currency position.
 	 *
 	 * @since 5.4.2
@@ -244,7 +271,7 @@ class Settings {
 				'html' => '<h3>' . __( 'General', 'event-tickets' ) . '</h3>',
 			],
 			static::$option_sandbox                         => [
-				'type'            => 'checkbox_bool',
+				'type'            => 'toggle',
 				'label'           => esc_html__( 'Enable Test Mode', 'event-tickets' ),
 				'tooltip'         => esc_html__( 'Enables Test mode for testing payments. Any payments made will be done on "sandbox" accounts.', 'event-tickets' ),
 				'default'         => false,
@@ -265,14 +292,14 @@ class Settings {
 				'options'         => [
 					Pending::SLUG   => sprintf(
 					// Translators: %1$s: The word "ticket" in lowercase. %2$s: `<strong>` opening tag. %3$s: `</strong>` closing tag.
-						esc_html__( 'Decrease available %1$s stock as soon as a %2$sPending%3$s order is created.', 'event-tickets' ),
+						esc_html__( 'Decrease available %1$s stock and send the %1$s to the customer as soon as a %2$sPending%3$s order is created.', 'event-tickets' ),
 						tribe_get_ticket_label_singular_lowercase( 'stock_handling' ),
 						'<strong>',
 						'</strong>'
 					),
 					Completed::SLUG => sprintf(
 					// Translators: %1$s: The word "ticket" in lowercase. %2$s: `<strong>` opening tag. %3$s: `</strong>` closing tag.
-						esc_html__( 'Only decrease available %1$s stock if an order is confirmed as %2$sCompleted%3$s by the payment gateway.', 'event-tickets' ),
+						esc_html__( 'Only decrease available %1$s stock and send the %1$s to the customer if an order is confirmed as %2$sCompleted%3$s by the payment gateway.', 'event-tickets' ),
 						tribe_get_ticket_label_singular_lowercase( 'stock_handling' ),
 						'<strong>',
 						'</strong>'
@@ -288,10 +315,35 @@ class Settings {
 				'type'            => 'dropdown',
 				'label'           => esc_html__( 'Currency Code', 'event-tickets' ),
 				'tooltip'         => esc_html__( 'The currency that will be used for Tickets Commerce transactions.', 'event-tickets' ),
-				'default'         => 'USD',
+				'default'         => Currency::$currency_code_fallback,
 				'validation_type' => 'options',
 				'options'         => $tc_currency_options,
 			],
+
+			static::$option_currency_decimal_separator      => [
+				'type'            => 'text',
+				'label'           => esc_html__( 'Decimal Separator', 'event-tickets' ),
+				'tooltip'         => esc_html__( 'This sets the decimal separator of displayed prices.', 'event-tickets' ),
+				'default'         => Currency::$currency_code_decimal_separator,
+				'validation_callback' => 'is_string',
+			],
+
+			static::$option_currency_thousands_separator    => [
+				'type'            => 'text',
+				'label'           => esc_html__( 'Thousands Separator', 'event-tickets' ),
+				'tooltip'         => esc_html__( 'This sets the thousand separator of displayed prices', 'event-tickets' ),
+				'default'         => Currency::$currency_code_thousands_separator,
+				'validation_callback' => 'is_string',
+			],
+
+			static::$option_currency_number_of_decimals => [
+				'type'            => 'text',
+				'label'           => esc_html__( 'Number of Decimals', 'event-tickets' ),
+				'tooltip'         => esc_html__( 'This sets the number of decimal points shown in displayed prices.', 'event-tickets' ),
+				'default'         => Currency::$currency_code_number_of_decimals,
+				'validation_type' => 'int',
+			],
+
 			static::$option_currency_position               => [
 				'type'            => 'dropdown',
 				'label'           => esc_html__( 'Currency Position', 'event-tickets' ),
@@ -337,62 +389,69 @@ class Settings {
 				'options'         => $pages,
 				'required'        => true,
 			],
-			'tickets-commerce-email-settings-heading'       => [
-				'type' => 'html',
-				'html' => '<h3>' . __( 'Emails', 'event-tickets' ) . '</h3>',
-			],
-			static::$option_confirmation_email_sender_email => [
-				'type'            => 'email',
-				'label'           => esc_html__( 'Confirmation email sender address', 'event-tickets' ),
-				'tooltip'         => esc_html(
-					sprintf(
-					// Translators: %s: The word "tickets" in lowercase.
-						_x( 'Email address that %s customers will receive confirmation from. Leave empty to use the default WordPress site email address.', 'tickets fields settings confirmation email', 'event-tickets' ),
-						tribe_get_ticket_label_plural_lowercase( 'tickets_fields_settings_paypal_confirmation_email' )
-					)
-				),
-				'size'            => 'medium',
-				'default'         => $current_user->user_email,
-				'validation_type' => 'email',
-				'can_be_empty'    => true,
-			],
-			static::$option_confirmation_email_sender_name  => [
-				'type'                => 'text',
-				'label'               => esc_html__( 'Confirmation email sender name', 'event-tickets' ),
-				'tooltip'             => esc_html(
-					sprintf(
-					// Translators: %s: The word "ticket" in lowercase.
-						_x( 'Sender name of the confirmation email sent to customers when confirming a %s purchase.', 'tickets fields settings paypal email sender', 'event-tickets' ),
-						tribe_get_ticket_label_singular_lowercase( 'tickets_fields_settings_paypal_email_sender' )
-					)
-				),
-				'size'                => 'medium',
-				'default'             => $current_user->user_nicename,
-				'validation_callback' => 'is_string',
-				'validation_type'     => 'textarea',
-			],
-			static::$option_confirmation_email_subject      => [
-				'type'                => 'text',
-				'label'               => esc_html__( 'Confirmation email subject', 'event-tickets' ),
-				'tooltip'             => esc_html(
-					sprintf(
-					// Translators: %s: The word "ticket" in lowercase.
-						_x( 'Subject of the confirmation email sent to customers when confirming a %s purchase.', 'tickets fields settings paypal email subject', 'event-tickets' ),
-						tribe_get_ticket_label_singular_lowercase( 'tickets_fields_settings_paypal_email_subject' )
-					)
-				),
-				'size'                => 'large',
-				'default'             => esc_html(
-					sprintf(
-					// Translators: %s: The word "tickets" in lowercase.
-						_x( 'You have %s!', 'tickets fields settings paypal email subject', 'event-tickets' ),
-						tribe_get_ticket_label_plural_lowercase( 'tickets_fields_settings_paypal_email_subject' )
-					)
-				),
-				'validation_callback' => 'is_string',
-				'validation_type'     => 'textarea',
-			],
 		];
+
+		if ( ! tec_tickets_emails_is_enabled() ) {
+			$email_settings = [
+				'tickets-commerce-email-settings-heading' => [
+					'type' => 'html',
+					'html' => '<h3>' . __( 'Emails', 'event-tickets' ) . '</h3>',
+				],
+				static::$option_confirmation_email_sender_email => [
+					'type'            => 'email',
+					'label'           => esc_html__( 'Confirmation email sender address', 'event-tickets' ),
+					'tooltip'         => esc_html(
+						sprintf(
+						// Translators: %s: The word "tickets" in lowercase.
+							_x( 'Email address that %s customers will receive confirmation from. Leave empty to use the default WordPress site email address.', 'tickets fields settings confirmation email', 'event-tickets' ),
+							tribe_get_ticket_label_plural_lowercase( 'tickets_fields_settings_paypal_confirmation_email' )
+						)
+					),
+					'size'            => 'medium',
+					'default'         => $current_user->user_email,
+					'validation_type' => 'email',
+					'can_be_empty'    => true,
+				],
+				static::$option_confirmation_email_sender_name  => [
+					'type'                => 'text',
+					'label'               => esc_html__( 'Confirmation email sender name', 'event-tickets' ),
+					'tooltip'             => esc_html(
+						sprintf(
+						// Translators: %s: The word "ticket" in lowercase.
+							_x( 'Sender name of the confirmation email sent to customers when confirming a %s purchase.', 'tickets fields settings paypal email sender', 'event-tickets' ),
+							tribe_get_ticket_label_singular_lowercase( 'tickets_fields_settings_paypal_email_sender' )
+						)
+					),
+					'size'                => 'medium',
+					'default'             => $current_user->user_nicename,
+					'validation_callback' => 'is_string',
+					'validation_type'     => 'textarea',
+				],
+				static::$option_confirmation_email_subject      => [
+					'type'                => 'text',
+					'label'               => esc_html__( 'Confirmation email subject', 'event-tickets' ),
+					'tooltip'             => esc_html(
+						sprintf(
+						// Translators: %s: The word "ticket" in lowercase.
+							_x( 'Subject of the confirmation email sent to customers when confirming a %s purchase.', 'tickets fields settings paypal email subject', 'event-tickets' ),
+							tribe_get_ticket_label_singular_lowercase( 'tickets_fields_settings_paypal_email_subject' )
+						)
+					),
+					'size'                => 'large',
+					'default'             => esc_html(
+						sprintf(
+						// Translators: %s: The word "tickets" in lowercase.
+							_x( 'You have %s!', 'tickets fields settings paypal email subject', 'event-tickets' ),
+							tribe_get_ticket_label_plural_lowercase( 'tickets_fields_settings_paypal_email_subject' )
+						)
+					),
+					'validation_callback' => 'is_string',
+					'validation_type'     => 'textarea',
+				],
+			];
+
+			$settings = array_merge( $settings, $email_settings );
+		}
 
 		// Add featured settings to top of other settings.
 		$featured_settings = [
@@ -524,6 +583,6 @@ class Settings {
 		/**
 		 * @todo we need to make sure we actually validate the PUE key.
 		 */
-		return $pue->get_pue()->is_valid_key_format() ;
+		return $pue->get_pue()->is_valid_key_format();
 	}
 }

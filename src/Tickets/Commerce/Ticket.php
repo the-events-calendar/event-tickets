@@ -284,6 +284,17 @@ class Ticket {
 	 * @return null|\Tribe__Tickets__Ticket_Object
 	 */
 	public function get_ticket( $ticket_id ) {
+		$ticket_id = $ticket_id instanceof \WP_Post ? $ticket_id->ID : $ticket_id;
+
+		if ( ! is_numeric( $ticket_id ) ) {
+			return null;
+		}
+
+		$cached = wp_cache_get( (int) $ticket_id, 'tec_tickets' );
+		if ( $cached && is_array( $cached ) ) {
+			return new \Tribe__Tickets__Ticket_Object( $cached );
+		}
+
 		$product = get_post( $ticket_id );
 
 		if ( ! $product ) {
@@ -356,7 +367,13 @@ class Ticket {
 		 * @param int    $post_id
 		 * @param int    $ticket_id
 		 */
-		return apply_filters( 'tec_tickets_commerce_get_ticket_legacy', $return, $event_id, $ticket_id );
+		$ticket = apply_filters( 'tec_tickets_commerce_get_ticket_legacy', $return, $event_id, $ticket_id );
+
+		if ( $ticket instanceof \Tribe__Tickets__Ticket_Object ) {
+			wp_cache_set( (int) $ticket->ID, $ticket->to_array(), 'tec_tickets' );
+		}
+
+		return $ticket;
 	}
 
 	/**
@@ -515,8 +532,8 @@ class Ticket {
 				$sku = $raw_data['ticket_sku'];
 			} else {
 				$post_author            = get_post( $ticket->ID )->post_author;
-				$str                    = $raw_data['ticket_name'];
-				$str                    = tribe_strtoupper( $str );
+				$ticket_name            = $raw_data['ticket_name'] ?? $ticket->name;
+				$str                    = tribe_strtoupper( $ticket_name );
 				$sku                    = "{$ticket->ID}-{$post_author}-" . str_replace( ' ', '-', $str );
 				$raw_data['ticket_sku'] = $sku;
 			}
@@ -532,7 +549,7 @@ class Ticket {
 		// Only need to do this if we haven't already set one - they shouldn't be able to edit it from here otherwise
 		if ( ! $event_stock->is_enabled() ) {
 			if ( isset( $data['event_capacity'] ) ) {
-				$data['event_capacity'] = trim( filter_var( $data['event_capacity'], FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH ) );
+				$data['event_capacity'] = trim( tec_sanitize_string( $data['event_capacity'] ) );
 
 				// If empty we need to modify to -1
 				if ( '' === $data['event_capacity'] ) {
@@ -748,7 +765,7 @@ class Ticket {
 		}
 
 		// Try to kill the actual ticket/attendee post
-		$delete = wp_delete_post( $ticket_id, true );
+		$delete = wp_trash_post( $ticket_id );
 		if ( is_wp_error( $delete ) || ! isset( $delete->ID ) ) {
 			return false;
 		}
@@ -761,25 +778,31 @@ class Ticket {
 	}
 
 	/**
-	 * Update Stock and Global Stock when deleting an Attendee
-	 *
-	 * @todo  TribeCommerceLegacy: This should be moved into using a Flag Action.
+	 * Update Ticket Stock and Global Stock after deleting an Attendee.
 	 *
 	 * @since 5.1.9
+	 * @since 5.5.10 updated method signature to match new action signature.
 	 *
-	 * @param int $ticket_id  the attendee id being deleted
-	 * @param int $post_id    the post or event id for the attendee
-	 * @param int $product_id the ticket-product id in Tribe Commerce
+	 * @param int $attendee_id Attendee ID.
 	 */
-	public function update_stock_after_deletion( $ticket_id, $post_id, $product_id ) {
+	public function update_stock_after_attendee_deletion( $attendee_id ) {
+		$event_id    = (int) get_post_meta( $attendee_id, Attendee::$event_relation_meta_key, true );
+		$product_id = (int) get_post_meta( $attendee_id, Attendee::$ticket_relation_meta_key, true );
 
-		$global_stock    = new \Tribe__Tickets__Global_Stock( $post_id );
+		$global_stock    = new \Tribe__Tickets__Global_Stock( $event_id );
 		$shared_capacity = false;
 		if ( $global_stock->is_enabled() ) {
 			$shared_capacity = true;
 		}
 
-		tribe( Module::class )->decrease_ticket_sales_by( $product_id, 1, $shared_capacity, $global_stock );
+		$this->decrease_ticket_sales_by( $product_id, 1, $shared_capacity, $global_stock );
+		$this->increase_ticket_stock_by( $product_id );
+
+		// Increase the deleted attendees count.
+		\Tribe__Tickets__Attendance::instance( $event_id )->increment_deleted_attendees_count();
+
+		// Update the cache.
+		\Tribe__Post_Transient::instance()->delete( $event_id, \Tribe__Tickets__Tickets::ATTENDEES_CACHE );
 	}
 
 	/**
@@ -912,5 +935,51 @@ class Ticket {
 	 */
 	public function get_related_event_id( $ticket_id ) {
 		return get_post_meta( $ticket_id, static::$event_relation_meta_key, true );
+	}
+
+	/**
+	 * Update attendee data for moved attendees.
+	 *
+	 * @since 5.5.9
+	 *
+	 * @param int $ticket_id                The ticket which has been moved.
+	 * @param int $src_ticket_type_id       The ticket type it belonged to originally.
+	 * @param int $tgt_ticket_type_id       The ticket type it now belongs to.
+	 * @param int $src_event_id             The event/post which the ticket originally belonged to.
+	 * @param int $tgt_event_id             The event/post which the ticket now belongs to.
+	 * @param int $instigator_id            The user who initiated the change.
+	 *
+	 * @return void
+	 */
+	public function handle_moved_ticket_updates( $attendee_id, $src_ticket_type_id, $tgt_ticket_type_id, $src_event_id, $tgt_event_id, $instigator_id ) {
+		$attendee = tec_tc_attendees()->where( 'ID', $attendee_id );
+
+		try {
+			$attendee->set( 'ticket_id', $tgt_ticket_type_id );
+			$attendee->set( 'event_id', $tgt_event_id );
+		} catch ( \Exception $e ) {
+			do_action( 'tribe_log', 'error', __CLASS__, [ 'message' => $e->getMessage() ] );
+		}
+
+		$attendee_data = $attendee->save();
+
+		if ( $attendee_data ) {
+			$this->decrease_ticket_sales_by( $src_ticket_type_id, 1 );
+		}
+	}
+
+	/**
+	 * Increase the ticket stock.
+	 *
+	 * @since 5.5.10
+	 *
+	 * @param $ticket_id int The ticket post ID.
+	 * @param $quantity  int The quantity to increase the ticket stock by.
+	 *
+	 * @return bool|int
+	 */
+	public function increase_ticket_stock_by( $ticket_id, $quantity = 1 ) {
+		$stock = (int) get_post_meta( $ticket_id,  static::$stock_meta_key, true ) + $quantity;
+		return update_post_meta( $ticket_id,  static::$stock_meta_key, $stock );
 	}
 }

@@ -8,7 +8,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '5.5.5';
+	const VERSION = '5.6.5';
 
 	/**
 	 * Used to store the version history.
@@ -43,7 +43,7 @@ class Tribe__Tickets__Main {
 	*
 	* @since 4.10
 	*/
-	protected $min_tec_version = '6.0.3-dev';
+	protected $min_tec_version = '6.2.2-dev';
 
 	/**
 	 * Name of the provider
@@ -153,6 +153,8 @@ class Tribe__Tickets__Main {
 			$dir_prefix = basename( dirname( dirname( EVENT_TICKETS_DIR ) ) ) . '/vendor/';
 		}
 
+		add_filter( 'tribe_events_integrations_should_load_freemius', '__return_false' );
+
 		$this->plugin_url = trailingslashit( plugins_url( $dir_prefix . $this->plugin_dir ) );
 
 		$this->maybe_set_common_lib_info();
@@ -160,7 +162,10 @@ class Tribe__Tickets__Main {
 		add_action( 'plugins_loaded', [ $this, 'maybe_bail_if_old_tec_is_present' ], -1 );
 		add_action( 'plugins_loaded', [ $this, 'maybe_bail_if_invalid_wp_or_php' ], -1 );
 		add_action( 'plugins_loaded', [ $this, 'plugins_loaded' ], 0 );
+
+
 		register_activation_hook( EVENT_TICKETS_MAIN_PLUGIN_FILE, [ $this, 'on_activation' ] );
+		register_deactivation_hook( EVENT_TICKETS_MAIN_PLUGIN_FILE, [ $this, 'on_deactivation' ] );
 	}
 
 	/**
@@ -170,6 +175,39 @@ class Tribe__Tickets__Main {
 		// Set a transient we can use when deciding whether or not to show update/welcome splash pages
 		if ( ! is_network_admin() && ! isset( $_GET['activate-multi'] ) ) {
 			set_transient( '_tribe_tickets_activation_redirect', 1, 30 );
+		}
+
+		// Set plugin activation time for all installs.
+		if ( is_admin() ) {
+			// Avoid a race condition and fatal by waiting until Common is loaded before we try to run this.
+			add_action(
+				'tribe_common_loaded',
+				[ $this, 'set_activation_time' ]
+			);
+		}
+	}
+
+	/**
+	 * Set the plugin activation time.
+	 * Activated on plugin activation, runs on tribe_common_loaded.
+	 *
+	 * @since 5.5.9
+	 *
+	 * @return void
+	 */
+	public function set_activation_time() {
+		tribe_update_option( 'tec_tickets_activation_time', time() );
+	}
+
+	/**
+	 * Fires when the plugin is deactivated.
+	 *
+	 * @since 5.5.9
+	 */
+	public function on_deactivation() {
+		// Remove plugin activation time on deactivation.
+		if ( is_admin() ) {
+			tribe_remove_option( 'tec_tickets_activation_time' );
 		}
 	}
 
@@ -297,6 +335,8 @@ class Tribe__Tickets__Main {
 		 */
 		$this->init_autoloading();
 
+		add_filter( 'tec_common_parent_plugin_file', [ $this, 'include_parent_plugin_path_to_common' ] );
+
 		// Start Up Common.
 		Tribe__Main::instance();
 
@@ -304,6 +344,22 @@ class Tribe__Tickets__Main {
 
 		// Admin home.
 		tribe_register_provider( Tribe\Tickets\Admin\Home\Service_Provider::class );
+	}
+
+	/**
+	 * Adds our main plugin file to the list of paths.
+	 *
+	 * @since 6.1.0
+	 *
+	 *
+	 * @param array<string> $paths The paths to TCMN parent plugins.
+	 *
+	 * @return array<string>
+	 */
+	public function include_parent_plugin_path_to_common( $paths ): array {
+		$paths[] = EVENT_TICKETS_MAIN_PLUGIN_FILE;
+
+		return $paths;
 	}
 
 	/**
@@ -599,7 +655,7 @@ class Tribe__Tickets__Main {
 		add_action( 'admin_enqueue_scripts', tribe_callback( 'tickets.assets', 'enqueue_editor_scripts' ) );
 		add_filter( 'tribe_asset_data_add_object_tribe_l10n_datatables', tribe_callback( 'tickets.assets', 'add_data_strings' ) );
 
-		// Redirections
+		// Redirections.
 		add_action( 'wp_loaded', tribe_callback( 'tickets.redirections', 'maybe_redirect' ) );
 
 		// Cart handling.
@@ -711,9 +767,6 @@ class Tribe__Tickets__Main {
 	 * Hooked to the init action
 	 */
 	public function init() {
-		// Start the integrations manager.
-		Tribe__Tickets__Integrations__Manager::instance()->load_integrations();
-
 		// Provide continued support for legacy ticketing modules.
 		$this->legacy_provider_support = new Tribe__Tickets__Legacy_Provider_Support;
 		$this->settings_tab();
@@ -918,6 +971,8 @@ class Tribe__Tickets__Main {
 
 	/**
 	 * Returns the supported post types for tickets
+	 *
+	 * @return array<string>
 	 */
 	public function post_types() {
 		$options = (array) get_option( Tribe__Main::OPTIONNAME, [] );

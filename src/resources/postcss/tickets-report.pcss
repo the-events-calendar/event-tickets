@@ -21,6 +21,7 @@
 	}
 
 	.welcome-panel-content {
+		border: 1px solid #c3c4c7;
 		min-height: initial;
 	}
 
@@ -184,9 +185,6 @@
 
 	.tickets_uncheckin {
 		display: none;
-		height: auto;
-		line-height: 1.5;
-		white-space: normal;
 	}
 
 	.tickets_checked {
@@ -386,5 +384,23 @@ table.orders {
 	}
 	.tec-admin__upsell-text {
 		color: #1d2327;
+	}
+}
+
+.tec-tc-report-page {
+	p.search-box {
+		display: flex;
+	}
+	select, input {
+		margin: 0 5px;
+	}
+
+	@media screen and (max-width: 768px) {
+		p.search-box {
+			flex-direction: column;
+		}
+		select, input {
+			margin: 5px 0;
+		}
 	}
 }

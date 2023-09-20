@@ -45,12 +45,14 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 	/**
 	 * Filters the list columns to add the ticket related ones.
 	 *
+	 * @since 5.5.11 Moved to shorthand array syntax.
+	 *
 	 * @param array $columns
 	 *
 	 * @return array
 	 */
-	public function filter_manage_post_columns( array $columns = array() ) {
-		$additional_columns = array();
+	public function filter_manage_post_columns( array $columns = [] ) {
+		$additional_columns = [];
 
 		if ( isset( $this->supported_columns['tickets'] ) ) {
 			$additional_columns['tickets'] = __( 'Attendees', 'event-tickets' );
@@ -63,19 +65,52 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 	 * Renders a column content calling the right render method.
 	 *
 	 * @param string $column  The current column name.
-	 * @param int    $post_id The current post ID.
+	 * @param int $post_id The current post ID.
 	 *
 	 * @return bool Whether the column content was rendered or not if the column
 	 *              type is not supported.
 	 */
-	public function render_column( $column, $post_id ) {
+	public function render_column( string $column, int $post_id ): bool {
 		if ( ! isset( $this->supported_columns[ $column ] ) ) {
 			return false;
 		}
 
 		$method = $this->supported_columns[ $column ];
 
-		echo call_user_func( array( $this, $method ), $post_id );
+
+		/**
+		 * Filter whether a column should be displayed in the admin post type table.
+		 *
+		 * @since 5.5.11
+		 *
+		 * @param bool   $should_display_column Whether the column should be displayed or not. Default true.
+		 * @param string $column                The current column name.
+		 * @param int    $post_id               The current post ID.
+		 * @param object $instance              The current instance of the plugin class.
+		 */
+		$should_display_column = apply_filters( 'tec_tickets_admin_post_type_table_column', true, $column, $post_id, $this );
+		if ( ! $should_display_column ) {
+			return false;
+		}
+
+		/**
+		 * Filter whether a specific column should be displayed in the admin post type table.
+		 *
+		 * The dynamic portion of the hook name, `$column`, refers to the current column name. Example, tickets
+		 *
+		 * @since 5.5.11
+		 *
+		 * @param bool   $should_display_column Whether the column should be displayed or not. Default true.
+		 * @param string $column                The current column name.
+		 * @param int    $post_id               The current post ID.
+		 * @param object $instance              The current instance of the plugin class.
+		 */
+		$should_display_column = apply_filters( "tec_tickets_admin_post_type_table_column_{$column}", $should_display_column, $column, $post_id, $this );
+		if ( ! $should_display_column ) {
+			return false;
+		}
+
+		echo call_user_func( [ $this, $method ], $post_id );
 
 		return true;
 	}
@@ -87,7 +122,7 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 	 *
 	 * @return string The column HTML.
 	 */
-	protected function render_tickets_entry( $post_id ) {
+	protected function render_tickets_entry( int $post_id ): string {
 		$post = get_post( $post_id );
 
 		$total = Tribe__Tickets__Tickets::get_event_attendees_count( $post_id );
@@ -100,7 +135,8 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 			return '&mdash;';
 		}
 
-		$content = sprintf( '<div>%s</div>%s', $total - $not_going, $this->get_percentage_string( $post_id, null, $total, $not_going ) );
+		$percentage     = $this->get_percentage_string( $post_id, null, $total, $not_going );
+		$content        = sprintf( '<div>%s</div>%s', $total - $not_going, $percentage );
 		$attendees_link = tribe( 'tickets.attendees' )->get_report_link( $post );
 
 		return sprintf( '<a href="%s" target="_blank" class="tribe-tickets-column-attendees-link">%s</a>', $attendees_link, $content );
@@ -111,16 +147,26 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 	 *
 	 * @since 4.6.2 Deprecated the second parameter.
 	 * @since 4.10.6 Added $total and $not_going parameters to further optimize requests.
+	 * @since 5.5.11 Added caching and reorganized code to further optimize requests.
 	 *
-	 * @param  int     $post_id   The current post ID.
+	 * @param int $post_id   The current post ID.
 	 * @param  null    $deprecated
-	 * @param null|int $total     Total attendees found for post (if already calculated).
-	 * @param null|int $not_going Total attendees not going for post (if already calculated).
+	 * @param int|null $total     Total attendees found for post (if already calculated).
+	 * @param int|null $not_going Total attendees not going for post (if already calculated).
 	 *
 	 * @return string The percentage HTML or an empty string if one of the
 	 *                post tickets has unlimited stock.
 	 */
-	protected function get_percentage_string( $post_id, $deprecated = null, $total = null, $not_going = null ) {
+	protected function get_percentage_string( int $post_id, $deprecated = null, int $total = null, int $not_going = null ): string {
+
+		/** @var Tribe__Cache $cache */
+		$cache = tribe( 'cache' );
+		$key   = __METHOD__ . '-' . $post_id . '_' . (int) $total . '_' . (int) $not_going;
+
+		if ( isset( $cache[ $key ] ) ) {
+			return $cache[ $key ];
+		}
+
 		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
 		$tickets_handler = tribe( 'tickets.handler' );
 
@@ -139,14 +185,22 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 
 		// Bail early for unlimited
 		if ( $ticket['has_unlimited'] ) {
-			return tribe_tickets_get_readable_amount( -1 );
+
+			$unlimited_amount = tribe_tickets_get_readable_amount( - 1 );
+
+			// Set our cache to the unlimited text.
+			$cache[ $key ] = $unlimited_amount;
+
+			return $unlimited_amount;
 		}
 
-		$shared_capacity_obj  = new Tribe__Tickets__Global_Stock( $post_id );
-		$global_stock_enabled = $shared_capacity_obj->is_enabled();
-		$global_stock         = $shared_capacity_obj->get_stock_level();
+		$stock = $ticket['stock'];
 
-		$stock = $global_stock_enabled ? $global_stock : $ticket['stock'];
+		if ( $ticket['has_shared'] ) {
+			$shared_capacity_obj = new Tribe__Tickets__Global_Stock( $post_id );
+			$global_stock        = $shared_capacity_obj->get_stock_level();
+			$stock               = $global_stock;
+		}
 
 		if ( 1 > $total || 0 === $ticket['capacity'] ) {
 			// If there have been zero sales we need not do any further arithmetic
@@ -159,7 +213,11 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 			$percentage = round( ( 100 / $ticket['capacity'] ) * $total );
 		}
 
-		return ' <div><small>(' . $percentage . '%)</small></div>';
+		// Set our cache to the percentage.
+		$cache[ $key ] = $percentage;
+
+		// To escape percent in sprintf use %%.
+		return sprintf( '<div><small>(%s%%)</small></div>', $percentage );
 	}
 
 	/************************

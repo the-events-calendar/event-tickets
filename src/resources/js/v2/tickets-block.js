@@ -264,7 +264,7 @@ tribe.tickets.block = {
 	/**
 	 * When multiple of the same ticket forms are on a page, sync them on change.
 	 *
-	 * @since TBD
+	 * @since 5.5.6
 	 * @param {jQuery} $input The ticket input being changed.
 	 * @param {number} newValue The value being updated to.
 	 * @return {void}

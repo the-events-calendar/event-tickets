@@ -1,9 +1,7 @@
 <?php
 /**
- * The Tickets abstraction objece, used to add tickets-related properties to the event object crated by the
- * `trib_get_event` function.
- *
- * @todo  @sc0ttkclark This model class needs to move into `src/Tribe` when Tickets model is implemented by Green Team
+ * The Tickets abstraction object, used to add tickets-related properties to the event object crated by the
+ * `tribe_get_event` function.
  *
  * @since   4.10.9
  *
@@ -98,6 +96,8 @@ class Tickets implements \ArrayAccess, \Serializable {
 	 * Returns the data about the event tickets, if any.
 	 *
 	 * @since 4.10.9
+	 *
+	 * @since 5.6.3 Add support for the updated anchor link from new ticket templates.
 	 *
 	 * @return array An array of objects containing the post thumbnail data.
 	 */
@@ -209,7 +209,7 @@ class Tickets implements \ArrayAccess, \Serializable {
 				} else {
 					/* Translators: Tickets plural label. */
 					$link_label  = esc_html( sprintf( _x( 'Get %s', 'list view buy now ticket button', 'event-tickets' ), tribe_get_ticket_label_plural( 'list_view_buy_now_button' ) ) );
-					$link_anchor = '#tribe-tickets';
+					$link_anchor = tribe_tickets_new_views_is_enabled() ? '#tribe-tickets__tickets-form' : '#tribe-tickets';
 				}
 			}
 		}
@@ -230,7 +230,7 @@ class Tickets implements \ArrayAccess, \Serializable {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function offsetExists( $offset ) {
+	public function offsetExists( $offset ): bool {
 		$this->data = $this->fetch_data();
 
 		return isset( $this->data[ $offset ] );
@@ -242,15 +242,13 @@ class Tickets implements \ArrayAccess, \Serializable {
 	public function offsetGet( $offset ) {
 		$this->data = $this->fetch_data();
 
-		return isset( $this->data[ $offset ] )
-			? $this->data[ $offset ]
-			: null;
+		return $this->data[ $offset ] ?? null;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function offsetSet( $offset, $value ) {
+	public function offsetSet( $offset, $value ): void {
 		$this->data = $this->fetch_data();
 
 		$this->data[ $offset ] = $value;
@@ -259,7 +257,7 @@ class Tickets implements \ArrayAccess, \Serializable {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function offsetUnset( $offset ) {
+	public function offsetUnset( $offset ): void {
 		$this->data = $this->fetch_data();
 
 		unset( $this->data[ $offset ] );

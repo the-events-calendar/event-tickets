@@ -108,7 +108,7 @@
 		<div class="tribe-tickets__rsvp-ar-form">
 
 	<input type="hidden" name="tribe_tickets[TICKET_ID][ticket_id]" value="TICKET_ID">
-	<input type="hidden" name="tribe_tickets[TICKET_ID][attendees][0][order_status]" value="not-going">
+	<input type="hidden" name="tribe_tickets[TICKET_ID][attendees][0][order_status]" value="yes">
 	<input type="hidden" name="tribe_tickets[TICKET_ID][attendees][0][optout]" value="1">
 
 	

@@ -12,7 +12,7 @@ use \TEC\Tickets\Commerce\Admin_Tables\Orders;
 
 ?>
 
-<div class="wrap tribe-report-page">
+<div class="wrap tribe-report-page tec-tc-report-page">
 	<?php if ( ! empty( $title ) ) : ?>
 		<h1><?php echo esc_html( $title ); ?></h1>
 	<?php endif; ?>
@@ -35,7 +35,7 @@ use \TEC\Tickets\Commerce\Admin_Tables\Orders;
 			value="<?php echo esc_attr( $post->post_type ); ?>"
 		/>
 		<?php
-		$orders_table->search_box( __( 'Search Orders', 'event-tickets' ), 'tpp-orders' );
+		$orders_table->search_box( __( 'Search Orders', 'event-tickets' ), 'tc-orders' );
 		$orders_table->display();
 		?>
 	</form>

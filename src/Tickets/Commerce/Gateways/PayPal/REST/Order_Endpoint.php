@@ -88,6 +88,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	 * Handles the request that creates an order with Tickets Commerce and the PayPal gateway.
 	 *
 	 * @since 5.1.9
+	 * @since 5.6.4 Include Event/Post title in the Ticket name.
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -119,8 +120,10 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 
 		foreach ( $order->items as $item ) {
 			$ticket          = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
+			$post_title      = get_the_title( $item['event_id'] );
+			$item_name       = sprintf( '%s - %s', $ticket->name, $post_title );
 			$unit['items'][] = [
-				'name'        => $ticket->name,
+				'name'        => $this->format_order_item_name( $item_name ),
 				'unit_amount' => [ 'value' => (string) $item['price'], 'currency_code' => $order->currency ],
 				'quantity'    => $item['quantity'],
 				'item_total'  => [ 'value' => (string) $item['sub_total'], 'currency_code' => $order->currency ],
@@ -487,5 +490,42 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		 * @param array $messages Array of error messages.
 		 */
 		return apply_filters( 'tec_tickets_commerce_order_endpoint_error_messages', $messages );
+	}
+
+	/**
+	 * Formats the order item name by truncating it to a specified length.
+	 * If the text exceeds the maximum character length, it is truncated at the last space
+	 * within the limit and an ellipsis is added at the end.
+	 *
+	 * @since 5.6.5
+	 *
+	 * @param string $text The original order item name text.
+	 *
+	 * @return string The formatted order item name text.
+	 */
+	public function format_order_item_name( string $text ): string {
+		$max_character_length = 127;
+		$ellipsis             = '...';
+		$truncate_length      = $max_character_length - strlen( $ellipsis );
+
+		if ( strlen( $text ) <= $max_character_length ) {
+			return $text;
+		}
+
+		// Cut the text to the desired length
+		$truncated_text = substr( $text, 0, $truncate_length );
+
+		// Find the last space within the truncated text
+		$last_space = strrpos( $truncated_text, ' ' );
+
+		// Cut the text at the last space to avoid cutting in the middle of a word
+		if ( $last_space !== false ) {
+			$truncated_text = substr( $truncated_text, 0, $last_space );
+		}
+
+		// Add an ellipsis at the end
+		$truncated_text .= $ellipsis;
+
+		return $truncated_text;
 	}
 }

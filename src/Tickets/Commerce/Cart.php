@@ -247,7 +247,6 @@ class Cart {
 			$tries     = 1;
 			$max_tries = 20;
 
-			$this->clear_cart();
 			// While we dont find an empty transient to store this cart we loop, but avoid more than 20 tries.
 			while (
 				( ! empty( $cart_hash_transient ) || empty( $cart_hash ) )
@@ -316,23 +315,18 @@ class Cart {
 		 * @param int $expires The expiry time, as passed to setcookie().
 		 */
 		$expire  = apply_filters( 'tec_tickets_commerce_cart_expiration', time() + 1 * HOUR_IN_SECONDS );
-		$referer = wp_get_referer();
-
-		if ( $referer ) {
-			$secure = ( 'https' === parse_url( $referer, PHP_URL_SCHEME ) );
-		} else {
-			$secure = false;
-		}
 
 		// When null means we are deleting.
 		if ( null === $value ) {
 			$expire = 1;
 		}
 
-		$is_cookie_set = setcookie( static::$cart_hash_cookie_name, $value, $expire, COOKIEPATH ?: '/', COOKIE_DOMAIN, $secure );
+		$is_cookie_set = setcookie( static::$cart_hash_cookie_name, $value, $expire, COOKIEPATH ?: '/', COOKIE_DOMAIN, is_ssl(), true );
 
-		// Overwrite local variable so we can use it right away.
-		$_COOKIE[ static::$cart_hash_cookie_name ] = $value;
+		if ( $is_cookie_set ) {
+			// Overwrite local variable, so we can use it right away.
+			$_COOKIE[ static::$cart_hash_cookie_name ] = $value;
+		}
 
 		return $is_cookie_set;
 	}
