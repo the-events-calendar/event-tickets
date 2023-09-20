@@ -54,7 +54,7 @@ const Availability = ( { available, total } ) => {
 					'Ticket availability is based on the lowest number of inventory, stock, and capacity.',
 					'event-tickets',
 				) }
-			>{ Available }<span className="dashicons dashicons-info"></span></span>
+			>{ Available }<span className="dashicons dashicons-info-outline"></span></span>
 			{ Total }
 		</div>
 	);

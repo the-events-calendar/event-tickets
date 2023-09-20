@@ -4,14 +4,14 @@
 	/* extra class to override gutenberg styles */
 	&.tribe-editor__button,
 	&.tribe-editor__link {
-		display: flex;
 		align-items: center;
-		font-family: 'Helvetica Neue', Helvetica, -apple-system, BlinkMacSystemFont, Roboto, Arial, sans-serif;
-		font-size: 15px;
-		line-height: 18px;
-		letter-spacing: 0.38px;
-		color: #545D66;
-		text-decoration: none;
+		color: var(--tec-color-icon-primary-alt) !important;
+		display: flex;
+		font-family: var(--tec-font-family-sans-serif);
+		font-size: var(--tec-font-size-2);
+		letter-spacing: 0.4px;
+		line-height: var(--tec-line-height-3);
+		text-decoration: none !important;;
 		transition: none;
 
 		& > svg {
@@ -59,6 +59,6 @@
 .tribe-editor__action-button--icon-left {
 
 	& > svg {
-		margin-right: 6px;
+		margin-right: var(--tec-spacer-0);
 	}
 }

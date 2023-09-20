@@ -16,17 +16,17 @@ import { __ } from '@wordpress/i18n';
  */
 import Availability from '../availability/container';
 import InactiveTicket from '@moderntribe/tickets/blocks/tickets/inactive/inactive';
+import { Card } from '@moderntribe/tickets/elements';
 import './style.pcss';
 
 const TicketsOverlay = () => <div className="tribe-editor__tickets__overlay" />;
 
 const TicketsContainer = ( {
+	allTicketsFuture,
 	allTicketsPast,
 	canCreateTickets,
-	clientId,
 	hasCreatedTickets,
 	hasOverlay,
-	isSelected,
 	isSettingsOpen,
 	showAvailability,
 	showInactiveBlock,
@@ -43,10 +43,10 @@ const TicketsContainer = ( {
 			'event-tickets',
 		);
 	} else if ( ! hasCreatedTickets ) {
-		messages.title = __( 'There are no tickets yet', 'event-tickets' );
+		messages.title = __( 'Add a ticket to get started.', 'event-tickets' );
 		messages.description = __( 'Edit this block to create your first ticket.', 'event-tickets' );
-	} else if ( allTicketsPast ) {
-		messages.title = __( 'Tickets are no longer available', 'event-tickets' );
+	} else if ( allTicketsPast || allTicketsFuture) {
+		messages.title = __( 'There are no active tickets. Adjust sale duration to make tickets available', 'event-tickets' );
 	} else {
 		messages.title = __( 'Tickets are not yet available', 'event-tickets' );
 	}
@@ -59,13 +59,21 @@ const TicketsContainer = ( {
 	return (
 		<div className="tribe-editor__tickets__container">
 			<div className={ innerBlocksClassName }>
+			<Card
+				className="tribe-editor__card-no-bottom-border"
+				header={ __( 'Tickets', 'event-tickets' ) }
+			>
 				<InnerBlocks
 					allowedBlocks={ [ 'tribe/tickets-item' ] }
 				/>
+			</Card>
+
 			</div>
 			{
 				showInactiveBlock && ! isSettingsOpen && (
-					<InactiveTicket />
+					<InactiveTicket
+						title={ messages.title }
+					/>
 				)
 			}
 			{ showAvailability && <Availability /> }
@@ -75,11 +83,11 @@ const TicketsContainer = ( {
 };
 
 TicketsContainer.propTypes = {
+	allTicketsFuture: PropTypes.bool,
 	allTicketsPast: PropTypes.bool,
 	canCreateTickets: PropTypes.bool,
 	hasCreatedTickets: PropTypes.bool,
 	hasOverlay: PropTypes.bool,
-	isSelected: PropTypes.bool,
 	isSettingsOpen: PropTypes.bool,
 	showAvailability: PropTypes.bool,
 	showInactiveBlock: PropTypes.bool,
