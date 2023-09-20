@@ -3,8 +3,8 @@
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, GeoffBel, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra
 Tags: tickets, registration, event registration, RSVP, ticket sales, attendee management
 Requires at least: 5.8.5
-Tested up to: 6.3.0
-Stable tag: 5.6.4
+Tested up to: 6.3.1
+Stable tag: 5.6.6
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -193,16 +193,23 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [TBD] TBD =
 
-* Fix - Incorrect ticket count in Ticket email within the Tickets Emails feature. [ET-1832]
-* Fix - Added support for filtering attendees by TicketsCommerce order status. [ET-1863]
+* Fix - Restore possibility to move Tickets and Attendees to Single Events that are part of a Series. [ET-1862]
+
+= [5.6.5] 2023-09-13 =
+
+* Version - Event Tickets 5.6.5 is only compatible with The Events Calendar 6.2.2 and higher.
 * Tweak - Ticket names over 125 characters will now be truncated when being sent to Paypal. [ET-1865]
 * Tweak - Validate check-in data before updating with attendee update REST endpoint. [ET-1863]
-* Tweak - Removed some deprecated filter_vars to avoid PHP 8.1 warnings. [ET-1800]
-* Fix - Corrected wallet settings names in Tickets Commerce Stripe checkout code. [ET-1866]
 * Tweak - Implement new design for Attendees Page, Ticket Overview. [ET-1840]
 * Tweak - Added notice regarding the availability of Paystack for Tickets Commerce. [ET-1763]
 * Tweak - Improve performance of the post admin list. [ET-1870]
-* Fix - Restore possibility to move Tickets and Attendees to Single Events that are part of a Series. [ET-1862]
+* Tweak - Removed some deprecated filter_vars to avoid PHP 8.1 warnings. [ET-1800]
+* Fix - Corrected wallet settings names in Tickets Commerce Stripe checkout code. [ET-1866]
+* Fix - Incorrect ticket count in Ticket email within the Tickets Emails feature. [ET-1832]
+* Fix - Added support for filtering attendees by TicketsCommerce order status. [ET-1863]
+* Fix - Prevent Fatal error around Promoter usage of Firebase\JWT\JWT for encryption. [ET-1876]
+* Fix - Prevent some button background styles from being overridden by theme editors. [ET-1815]
+* Language - 15 new strings added, 67 updated, 1 fuzzied, and 1 obsoleted
 
 = [5.6.4] 2023-08-16 =
 

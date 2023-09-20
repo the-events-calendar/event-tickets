@@ -1,10 +1,10 @@
 <?php
-_deprecated_file( __FILE__, 'TBD', 'No direct replacement.' );
+_deprecated_file( __FILE__, '5.6.5', 'No direct replacement.' );
 
 /**
  * Implements methods common to all caches implementations.
  *
- * @deprecated TBD
+ * @deprecated 5.6.5
  */
 abstract class Tribe__Tickets__Cache__Abstract_Cache implements Tribe__Tickets__Cache__Cache_Interface {
 
@@ -30,7 +30,7 @@ abstract class Tribe__Tickets__Cache__Abstract_Cache implements Tribe__Tickets__
 	/**
 	 * Sets the expiration time for the cache.
 	 *
-	 * @deprecated TBD
+	 * @deprecated 5.6.5
 	 *
 	 * @param int $seconds
 	 *
@@ -41,7 +41,7 @@ abstract class Tribe__Tickets__Cache__Abstract_Cache implements Tribe__Tickets__
 	}
 
 	/**
-	 * @deprecated TBD
+	 * @deprecated 5.6.5
 	 *
 	 * @param array $post_types An array of post types overriding the supported ones.
 	 *
@@ -105,7 +105,7 @@ abstract class Tribe__Tickets__Cache__Abstract_Cache implements Tribe__Tickets__
 	}
 
 	/**
-	 * @deprecated TBD
+	 * @deprecated 5.6.5
 	 *
 	 * @param array $post_types An array of post types overriding the supported ones.
 	 *
@@ -146,7 +146,7 @@ abstract class Tribe__Tickets__Cache__Abstract_Cache implements Tribe__Tickets__
 	}
 
 	/**
-	 * @deprecated TBD
+	 * @deprecated 5.6.5
 	 *
 	 * @return array
 	 */
@@ -172,7 +172,7 @@ abstract class Tribe__Tickets__Cache__Abstract_Cache implements Tribe__Tickets__
 	 * Some post types, like Events, have a notion of "past". By default the cache
 	 * will not take "past" posts into account.
 	 *
-	 * @deprecated TBD
+	 * @deprecated 5.6.5
 	 *
 	 * @param bool $include_past
 	 */
