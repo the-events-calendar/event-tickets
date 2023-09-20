@@ -264,9 +264,9 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 *
 		 * @since TBD
 		 *
-		 * @var string
+		 * @var string|null
 		 */
-		private string $type = 'default';
+		private ?string $type;
 
 		/**
 		 * Tribe__Tickets__Ticket_Object constructor.
