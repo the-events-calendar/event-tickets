@@ -101,7 +101,7 @@ $is_event_page = class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::P
 		<a href="<?php echo esc_url( get_permalink( $event_id ) ); ?>">
 			<?php
 			// Translators: %s: post type label.
-			printf( '&laquo; ' . esc_html__( 'View %s', 'event-tickets' ), $post_type_singular );
+			echo esc_html( '&laquo; ' . $post_type_singular );
 			?>
 		</a>
 	</p>
@@ -110,15 +110,12 @@ $is_event_page = class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::P
 		<?php the_title( '<h1 class="tribe-events-single-event-title">', '</h1>' ); ?>
 
 		<div class="tribe-events-schedule tribe-clearfix">
-			<?php echo tribe_events_event_schedule_details( $event_id, '<h2>', '</h2>' ); ?>
+			<?php echo tribe_events_event_schedule_details( $event_id, '<div>', '</div>' ); ?>
 			<?php if ( tribe_get_cost() ) : ?>
 				<span class="tribe-events-cost"><?php echo tribe_get_cost( null, true ) ?></span>
 			<?php endif; ?>
 		</div>
 	<?php endif; ?>
-
-	<!-- Notices -->
-	<?php tribe_the_notices() ?>
 
 	<div
 		class="tribe-tickets__tickets-page-wrapper"
