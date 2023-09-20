@@ -355,11 +355,13 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 				] as $meta_key
 			) {
 				$meta_value = get_post_meta( $id, $meta_key, true );
+
 				if ( empty( $meta_value ) ) {
 					continue;
 				}
+
+				$carry[] = esc_html( $meta_value );
 				$carry[] = $meta_value;
-				$carry[] = urlencode( $meta_value );
 			}
 
 			return $carry;
@@ -370,6 +372,7 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 		$html = ob_get_clean();
 
 		// Stabilize snapshots.
+		$html = str_replace( $attendee_data, 'ATTENDEE_DATA', $html );
 		$html = str_replace( [
 			...$attendee_ids,
 			$post_id,
@@ -378,8 +381,6 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 			...$rsvp_attendee_ids,
 			...$paypal_attendee_ids
 		], 'POST_ID', $html );
-
-		$html = str_replace( $attendee_data, 'ATTENDEE_DATA', $html );
 
 		$this->assertMatchesHtmlSnapshot( $html );
 	}
