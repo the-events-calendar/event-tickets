@@ -100,6 +100,7 @@ class Tribe__Tickets__Metabox {
 		/** @var Tribe__Tickets__Admin__Views $admin_views */
 		$admin_views = tribe( 'tickets.admin.views' );
 		$helper_text = $this->get_list_panel_helper_text( $post );
+		$helper_link = $this->get_helper_link();
 
 		$context = get_defined_vars();
 
@@ -212,6 +213,7 @@ class Tribe__Tickets__Metabox {
 				'post_id'     => $post->ID,
 				'tickets'     => $tickets,
 				'helper_text' => $this->get_list_panel_helper_text( $post ),
+				'helper_link' => $this->get_helper_link(),
 			], false ),
 			'settings' => $admin_views->template( 'editor/panel/settings', [ 'post_id' => $post->ID ], false ),
 			'ticket'   => $admin_views->template(
@@ -916,12 +918,6 @@ class Tribe__Tickets__Metabox {
 	 * @return string The helper text with link.
 	 */
 	protected function get_list_panel_helper_text( WP_Post $post ): string {
-		$helper_link   = sprintf(
-			'<a href="%1$s" target="_blank" rel="noopener noreferrer ">%2$s</a>',
-			esc_url( 'https://evnt.is/manage-tickets' ),
-			esc_html__( 'Learn more about ticket management', 'event-tickets' )
-		);
-
 		$object_labels = get_post_type_object( $post->post_type );
 		$text          = sprintf(
 			// Translators: %1$s: dynamic "tickets" label text, %2$s: dynamic "RSVPs" label, %3$s: dynamic post type label plural, %4$s the learn more link.
@@ -929,7 +925,7 @@ class Tribe__Tickets__Metabox {
 			tribe_get_ticket_label_plural(),
 			tribe_get_rsvp_label_plural(),
 			strtolower( $object_labels->labels->singular_name ),
-			$helper_link,
+			$this->get_helper_link()
 		);
 
 		/**
@@ -943,6 +939,20 @@ class Tribe__Tickets__Metabox {
 		return apply_filters( 'tec_tickets_panel_list_helper_text', $text, $post );
 	}
 
+	/**
+	 * Get the helper link.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The helper link.
+	 */
+	protected function get_helper_link() {
+		return sprintf(
+			'<a href="%1$s" target="_blank" rel="noopener noreferrer ">%2$s</a>',
+			esc_url( 'https://evnt.is/manage-tickets' ),
+			esc_html__( 'Learn more about ticket management', 'event-tickets' )
+		);
+	}
 
 	/************************
 	 *                      *

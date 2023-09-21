@@ -88,13 +88,4 @@ class Tribe__Tickets__Service_Provider extends \TEC\Common\Contracts\Service_Pro
 			tribe( 'tickets.admin.settings.display' );
 		}
 	}
-
-	/**
-	 * Binds and sets up implementations at boot time.
-	 *
-	 * @since 4.6
-	 */
-	public function boot() {
-		// no ops
-	}
 }
