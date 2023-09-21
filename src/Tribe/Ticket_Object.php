@@ -555,7 +555,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 
 				if ( $cached !== null && is_string( $cached ) && in_array( $cached, [ 'yes', 'no' ], true ) ) {
 					$is_in_stock = tribe_is_truthy( $cached );
-					$cache->set( $cache_key, $is_in_stock ? 'yes' : 'no', Cache::TRIGGER_SAVE_POST );
+					$cache->set( $cache_key, $is_in_stock ? 'yes' : 'no', 0, Cache::TRIGGER_SAVE_POST );
 
 					return $is_in_stock;
 				}
@@ -567,7 +567,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			$is_in_stock = false === $remaining || $remaining > 0 || $is_unlimited;
 
 			if( $is_ticket_cache_enabled){
-				$cache->set( $cache_key, $is_in_stock ? 'yes' : 'no', Cache::TRIGGER_SAVE_POST );
+				$cache->set( $cache_key, $is_in_stock ? 'yes' : 'no', 0, Cache::TRIGGER_SAVE_POST );
 			}
 
 			return $is_in_stock;
@@ -629,7 +629,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				$inventory = $capacity - $this->qty_sold() - $this->qty_pending();
 
 				if ( $is_ticket_cache_enabled ) {
-					$cache->set( $cache_key, $inventory, Cache::TRIGGER_SAVE_POST );
+					$cache->set( $cache_key, $inventory, 0, Cache::TRIGGER_SAVE_POST );
 				}
 
 				return $inventory;
@@ -638,7 +638,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			// If we aren't tracking stock, then always assume it is in stock or capacity is unlimited.
 			if ( ! $this->managing_stock() || - 1 === $capacity ) {
 				if ( $is_ticket_cache_enabled ) {
-					$cache->set( $cache_key, - 1, Cache::TRIGGER_SAVE_POST );
+					$cache->set( $cache_key, - 1, 0, Cache::TRIGGER_SAVE_POST );
 				}
 
 				return - 1;
@@ -709,7 +709,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			$inventory = max( $inventory, 0 );
 
 			if ( $is_ticket_cache_enabled ) {
-				$cache->set( $cache_key, $inventory, Cache::TRIGGER_SAVE_POST );
+				$cache->set( $cache_key, $inventory, 0, Cache::TRIGGER_SAVE_POST );
 			}
 
 			return $inventory;
@@ -755,7 +755,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			// If not managing stock or the capacity is unlimited, then the availability is unlimited.
 			if ( ! $this->managing_stock() || - 1 === $this->capacity() ) {
 				if ( $is_ticket_cache_enabled ) {
-					$cache->set( $cache_key, - 1, Cache::TRIGGER_SAVE_POST );
+					$cache->set( $cache_key, - 1, 0, Cache::TRIGGER_SAVE_POST );
 				}
 
 				return - 1;
@@ -812,7 +812,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			// Unlimited is always unlimited
 			if ( - 1 === (int) $this->capacity ) {
 				if ( $is_ticket_cache_enabled ) {
-					$cache->set( $cache_key, - 1, Cache::TRIGGER_SAVE_POST );
+					$cache->set( $cache_key, - 1, 0, Cache::TRIGGER_SAVE_POST );
 				}
 
 				return - 1;
@@ -824,7 +824,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				|| Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $stock_mode
 			) {
 				if ( $is_ticket_cache_enabled ) {
-					$cache->set( $cache_key, (int) $this->capacity, Cache::TRIGGER_SAVE_POST );
+					$cache->set( $cache_key, (int) $this->capacity, 0, Cache::TRIGGER_SAVE_POST );
 				}
 
 				return (int) $this->capacity;
@@ -833,7 +833,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			$event_capacity = (int) tribe_tickets_get_capacity( $this->get_event() );
 
 			if ( $is_ticket_cache_enabled ) {
-				$cache->set( $cache_key, $event_capacity, Cache::TRIGGER_SAVE_POST );
+				$cache->set( $cache_key, $event_capacity, 0, Cache::TRIGGER_SAVE_POST );
 			}
 
 			return $event_capacity;
