@@ -566,7 +566,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 
 			$is_in_stock = false === $remaining || $remaining > 0 || $is_unlimited;
 
-			if( $is_ticket_cache_enabled){
+			if( $is_ticket_cache_enabled ) {
 				$cache->set( $cache_key, $is_in_stock ? 'yes' : 'no', Cache::TRIGGER_SAVE_POST );
 			}
 
