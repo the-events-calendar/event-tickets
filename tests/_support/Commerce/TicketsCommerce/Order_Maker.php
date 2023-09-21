@@ -1,5 +1,4 @@
 <?php
-
 namespace Tribe\Tickets\Test\Commerce\TicketsCommerce;
 
 use TEC\Tickets\Commerce\Cart;
@@ -31,9 +30,9 @@ trait Order_Maker {
 		$purchaser = [
 			'purchaser_user_id'    => 0,
 			'purchaser_full_name'  => 'Test Purchaser',
-			'purchaser_first_name' => 'Test ',
+			'purchaser_first_name' => 'Test',
 			'purchaser_last_name'  => 'Purchaser',
-			'purchaser_email'      => 'test-' . uniqid() . '@test.com',
+			'purchaser_email'      => 'test-'.uniqid().'@test.com',
 		];
 
 		$orders = tribe( Order::class );
@@ -47,9 +46,9 @@ trait Order_Maker {
 			return false;
 		}
 
-		$cart->clear_cart();
-
 		clean_post_cache( $order->ID );
+
+		$cart->clear_cart();
 
 		return $order;
 	}
