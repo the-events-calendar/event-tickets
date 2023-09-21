@@ -147,9 +147,9 @@ class Provider extends Service_Provider {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $post_types
+	 * @param string[] $post_types The list of post types that should trigger a cache invalidation on `save_post`.
 	 *
-	 * @return array
+	 * @return string[] The filtered list of post types that should trigger a cache invalidation on `save_post`.
 	 */
 	public function filter_cache_listener_save_post_types( array $post_types = [] ): array {
 		$post_types[] = Ticket::POSTTYPE;
