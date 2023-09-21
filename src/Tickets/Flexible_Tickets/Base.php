@@ -412,8 +412,8 @@ class Base extends Controller {
 	 * @return array<string,mixed> The updated query arguments.
 	 */
 	public function include_all_events_in_move_ticket_choices( array $query_args ): array {
-		if ( array_key_exists( 'post__not_in_series', $query_args ) ) {
-			$query_args['post__not_in_series'] = null;
+		if ( array_key_exists( 'post__not_recurring', $query_args ) ) {
+			$query_args['post__not_recurring'] = null;
 		}
 
 		return $query_args;
