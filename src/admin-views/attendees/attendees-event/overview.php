@@ -17,7 +17,7 @@
 
 <div class="welcome-panel-column welcome-panel-middle">
 	<h3 class="tec-tickets__admin-attendees-overview-title">
-		<?php echo esc_html_x( 'Ticket Overview', 'attendee screen summary', 'event-tickets' ); ?>
+		<?php echo esc_html_x( 'Tickets Overview', 'attendee screen summary', 'event-tickets' ); ?>
 	</h3>
 
 	<?php

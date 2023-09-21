@@ -20,7 +20,7 @@
 			
 <div class="welcome-panel-column welcome-panel-middle">
 	<h3 class="tec-tickets__admin-attendees-overview-title">
-		Ticket Overview	</h3>
+		Tickets Overview	</h3>
 
 	
 			
