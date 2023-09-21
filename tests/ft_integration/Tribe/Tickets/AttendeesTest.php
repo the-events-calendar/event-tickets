@@ -6,6 +6,7 @@ use Closure;
 use Codeception\TestCase\WPTestCase;
 use Generator;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use TEC\Events\Custom_Tables\V1\Models\Occurrence;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
@@ -145,6 +146,7 @@ class AttendeesTest extends WPTestCase {
 					$event_id,
 					[
 						$event_id,
+						...Occurrence::where( 'post_id', '=', $event_id )->pluck( 'provisional_id' ),
 						$ticket_1_id,
 						$ticket_2_id,
 						$rsvp_1_ticket_id,
@@ -161,6 +163,10 @@ class AttendeesTest extends WPTestCase {
 	 * @dataProvider display_provider
 	 */
 	public function test_display( Closure $fixture ): void {
+		// The global hook suffix is used to set the table static cache, randomize it to avoid collisions with other tests.
+		$GLOBALS['hook_suffix'] = uniqid( 'tribe_events_page_tickets-attendees', true );
+		// Ensure we're using a user that can check-in Attendees and manage the posts.
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
 		// Filter the insertion of the Attendees post to import an order by `post_title` and stabilize the snapshot.
 		add_filter( 'wp_insert_post_data', function ( $data ) {
 			static $k = 1;
