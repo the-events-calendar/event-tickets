@@ -34,7 +34,7 @@ if ( ! $display_sku ) {
 		<?php
 		echo esc_html(
 			sprintf(
-				__( 'A unique identifying code for each %s type you\'re selling', 'event-tickets' ),
+				__( 'A unique identifying code for each %s you\'re selling', 'event-tickets' ),
 				tribe_get_ticket_label_singular_lowercase( 'sku' )
 			)
 		);

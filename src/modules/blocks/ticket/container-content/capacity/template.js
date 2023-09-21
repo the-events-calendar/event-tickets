@@ -220,7 +220,7 @@ class Capacity extends PureComponent {
 					isLabel={ true }
 					label={ __( 'Ticket Capacity', 'event-tickets' ) }
 					tooltipText={ __(
-						'Ticket capacity will only be used by attendees buying this ticket type',
+						'Ticket capacity will only be used by attendees buying this ticket.',
 						'event-tickets',
 					) }
 					tooltipLabel={
