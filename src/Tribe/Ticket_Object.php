@@ -566,7 +566,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 
 			$is_in_stock = false === $remaining || $remaining > 0 || $is_unlimited;
 
-			if( $is_ticket_cache_enabled){
+			if( $is_ticket_cache_enabled ) {
 				$cache->set( $cache_key, $is_in_stock ? 'yes' : 'no', 0, Cache::TRIGGER_SAVE_POST );
 			}
 
@@ -772,7 +772,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			$available = max( $available, 0 );
 
 			if ( $is_ticket_cache_enabled ) {
-				$cache->set( $cache_key, $available, Cache::TRIGGER_SAVE_POST );
+				$cache->set( $cache_key, $available, 0, Cache::TRIGGER_SAVE_POST );
 			}
 
 			return $available;
