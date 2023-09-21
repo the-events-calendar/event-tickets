@@ -191,6 +191,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Fix - Restore possibility to move Tickets and Attendees to Single Events that are part of a Series. [ET-1862]
+
 = [5.6.5] 2023-09-13 =
 
 * Version - Event Tickets 5.6.5 is only compatible with The Events Calendar 6.2.2 and higher.
