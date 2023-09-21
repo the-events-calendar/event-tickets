@@ -14,8 +14,6 @@
  *
  */
 
-
-
 ?>
 <div class="tribe-tickets">
 	<?php 

@@ -11,8 +11,6 @@
  * @var  int  $attendee_label  The label for the attendee.
  */
  
-
-
 ?>
 <p class="list-attendee">
 	<?php echo esc_html( $attendee_label ); ?>
