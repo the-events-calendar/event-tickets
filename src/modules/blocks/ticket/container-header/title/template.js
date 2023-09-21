@@ -15,9 +15,11 @@ import { __ } from '@wordpress/i18n';
  */
 import { Tooltip } from '@moderntribe/common/elements';
 import { Clipboard, Pencil } from '@moderntribe/common/icons';
+import AttendeeRegistrationIcons from './attendee-registration-icons/container';
 import './style.pcss';
 
 const TicketContainerHeaderTitle = ( {
+	clientId,
 	hasAttendeeInfoFields,
 	isDisabled,
 	isSelected,
@@ -57,6 +59,7 @@ const TicketContainerHeaderTitle = ( {
 						<Fragment>
 							<h3 className="tribe-editor__ticket__container-header-title-label">
 								{ title }
+								<AttendeeRegistrationIcons clientId={ clientId } />
 							</h3>
 							{ clipboard }
 							<Pencil />
@@ -68,6 +71,7 @@ const TicketContainerHeaderTitle = ( {
 };
 
 TicketContainerHeaderTitle.propTypes = {
+	clientId: PropTypes.string,
 	hasAttendeeInfoFields: PropTypes.bool,
 	isDisabled: PropTypes.bool,
 	isSelected: PropTypes.bool,
