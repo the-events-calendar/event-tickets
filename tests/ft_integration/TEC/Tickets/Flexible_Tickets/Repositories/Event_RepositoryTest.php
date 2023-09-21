@@ -548,7 +548,6 @@ class Event_RepositoryTest extends WPTestCase {
 
 		$repo = tribe_events();
 		$actual = $repo->where( 'has_tickets', false )->get_ids();
-		codecept_debug( $repo->get_last_sql() );
 		$this->assert_equal_set_of_provisional_ids( array_merge(
 			$this->events['with_cost_meta'],
 			$this->events['without_tickets'],
