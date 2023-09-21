@@ -2,26 +2,38 @@
 
 namespace Tribe\Tickets;
 
+use Codeception\TestCase\WPTestCase;
+use TEC\Events\Custom_Tables\V1\Models\Event;
 use TEC\Events\Custom_Tables\V1\Models\Occurrence;
-use Tribe\Tickets\Test\Traits\CT1\CT1_Fixtures;
+use Tribe\Events\Test\Traits\CT1\CT1_Fixtures;
 use Tribe__Tickets__Metabox;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker;
+use WP_Post;
 
-class MetaboxTest extends \Codeception\TestCase\WPTestCase {
+class MetaboxTest extends WPTestCase {
 	use CT1_Fixtures;
 	use Ticket_Maker;
 
 	public function _setUp() {
 		parent::_setUp();
-		// @todo How should we be doing this in tests?
-		$user = get_user_by( 'email', defined( 'WP_TESTS_EMAIL' ) ? WP_TESTS_EMAIL : 'admin@tribe.localhost' );
-		wp_set_current_user( $user->ID );
-		$this->enable_provisional_id_normalizer();
+		$user = static::factory()->user->create(['role' => 'administrator']);
+		wp_set_current_user( $user );
 	}
 
-	public function _tearDown() {
-		parent::_tearDown();
-		$this->disable_provisional_id_normalizer();
+	/**
+	 * This method _should_ be provided by the base CT1 test utility, but it's currently bugged.
+	 *
+	 * @todo Remove this when the base CT1 test utility is fixed.
+	 */
+	private function given_a_migrated_single_event( $args = [] ) {
+		$post = $this->given_a_non_migrated_single_event( $args );
+		Event::upsert( [ 'post_id' ], Event::data_from_post( $post->ID ) );
+		$event = Event::find( $post->ID, 'post_id' );
+		$this->assertInstanceOf( Event::class, $event );
+		$event->occurrences()->save_occurrences();
+		$this->assertEquals( 1, Occurrence::where( 'post_id', '=', $post->ID )->count() );
+
+		return $post;
 	}
 
 	public function given_an_event_with_ticket_request( $ticket_request, $nonce_action ) {
@@ -35,12 +47,14 @@ class MetaboxTest extends \Codeception\TestCase\WPTestCase {
 			return $caps;
 		}, 10, 2 );
 		// Create a provisional ID.
-		$provisional_id = $occurrence->occurrence_id + $this->get_provisional_id_base();
+		$provisional_id = $occurrence->provisional_id;
 		$nonce          = wp_create_nonce( $nonce_action );
 		$_POST          = array_merge(
 			[ 'post_id' => $provisional_id, 'nonce' => $nonce ],
 			$ticket_request
 		);
+
+		$this->assertInstanceOf( WP_Post::class, get_post( $provisional_id ) );
 
 		return $post_id;
 	}
@@ -51,7 +65,6 @@ class MetaboxTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 */
 	public function should_ajax_ticket_add_with_provisional_id() {
-
 		$this->given_an_event_with_ticket_request( [
 			'is_admin' => 'true',
 			'action'   => 'tribe-ticket-add',
