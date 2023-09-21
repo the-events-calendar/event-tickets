@@ -32,6 +32,6 @@ class ActivationCest {
 	public function should_have_tec_ct_1_activated( Tester $I ): void {
 		$I->amOnPage( '/' );
 
-		$I->assert_log( 'debug', 'TEC Flexible Tickets activated.' );
+		$I->assert_data_key( 'tec_flexible_tickets', true );
 	}
 }

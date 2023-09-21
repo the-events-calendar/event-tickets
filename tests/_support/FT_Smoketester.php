@@ -27,7 +27,7 @@ class FT_Smoketester extends \Codeception\Actor {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $level The log level to look for, e.g. 'debug', 'warning', 'error'.
+	 * @param string $level   The log level to look for, e.g. 'debug', 'warning', 'error'.
 	 * @param string $message The log message to look for.
 	 *
 	 * @return void
@@ -76,7 +76,7 @@ class FT_Smoketester extends \Codeception\Actor {
 		$enabled_post_types = tribe_get_option( 'ticket-enabled-post-types' );
 		if ( $series_are_ticketable ) { // Ensure Tickets can be added to Series.
 			$enabled_post_types[] = Series_Post_Type::POSTTYPE;
-			$enabled_post_types   = array_unique( $enabled_post_types );
+			$enabled_post_types = array_unique( $enabled_post_types );
 		} else {
 			$enabled_post_types = array_diff( $enabled_post_types, [ Series_Post_Type::POSTTYPE ] );
 		}
@@ -93,9 +93,26 @@ class FT_Smoketester extends \Codeception\Actor {
 	 * @return int The post ID of the inserted Series post.
 	 */
 	public function have_series_in_database( array $overrides = [] ): int {
-		$data              = $overrides;
+		$data = $overrides;
 		$data['post_type'] = Series_Post_Type::POSTTYPE;
 
 		return $this->havePostInDatabase( $data );
+	}
+
+	/**
+	 * Asserts that a key is present in the debug data and that its value matches the expected one.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $key   The key to look for in the debug data.
+	 * @param mixed  $value The expected value.
+	 */
+	public function assert_data_key( string $key, $value = null ): void {
+		$expected = $this->grab_debug_data( $key );
+		$this->assertEquals(
+			$value,
+			$expected,
+			'Failed asserting that the debug data key ' . $key . ' has the expected value.'
+		);
 	}
 }
