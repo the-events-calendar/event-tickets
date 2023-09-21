@@ -121,13 +121,13 @@ $is_event_page = class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::P
 	<?php tribe_the_notices() ?>
 
 	<div
-		class="tribe-tickets__tickets-page-wrapper"
+		class="event-tickets tribe-tickets__tickets-page-wrapper tribe-common"
 		data-post-id="<?php echo esc_attr( $event_id ); ?>"
 		data-provider="<?php echo esc_attr( $provider ); ?>"
 		data-attendee-resend-email="<?php echo esc_attr( $allow_resending_email ); ?>"
 	>
 
-		<form method="post" autocomplete="off">
+		<form method="post" autocomplete="off" class="tribe-tickets__form">
 
 			<?php $template->template( 'tickets/orders-rsvp' ); ?>
 
@@ -164,7 +164,7 @@ $is_event_page = class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::P
 						type="submit"
 						name="process-tickets"
 						value="1"
-						class="button alt"
+						class="button alt tribe-common-c-btn tribe-common-c-btn--small"
 					>
 						<?php echo sprintf( esc_html__( 'Update %s', 'event-tickets' ), $view->get_description_rsvp_ticket( $event_id, get_current_user_id() ) ); ?>
 					</button>
