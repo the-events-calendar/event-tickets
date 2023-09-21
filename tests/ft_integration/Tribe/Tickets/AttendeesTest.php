@@ -48,8 +48,8 @@ class AttendeesTest extends WPTestCase {
 					continue;
 				}
 
-				$carry[] = esc_html( $value );
-				$carry[] = $value;
+				$carry[ esc_html( $value ) ] = strtoupper( $key );
+				$carry[ $value ] = $key = strtoupper( $key );
 			}
 
 			return $carry;
@@ -161,8 +161,6 @@ class AttendeesTest extends WPTestCase {
 	 * @dataProvider display_provider
 	 */
 	public function test_display( Closure $fixture ): void {
-		$this->markTestIncomplete( 'leaky global state' );
-
 		// Filter the insertion of the Attendees post to import an order by `post_title` and stabilize the snapshot.
 		add_filter( 'wp_insert_post_data', function ( $data ) {
 			static $k = 1;
@@ -190,9 +188,12 @@ class AttendeesTest extends WPTestCase {
 		$html = ob_get_clean();
 
 		// Stabilize snapshots.
-		$html = str_replace( $post_ids, 'POST_ID', $html );
 		$attendee_data = $this->get_attendee_data( $attendees->attendees_table->items );
-		$html = str_replace( $attendee_data, 'ATTENDEE_DATA', $html );
+		$replace = array_combine( $post_ids, array_fill( 0, count( $post_ids ), 'POST_ID' ) ) + $attendee_data;
+		uksort( $replace, function ( $a, $b ) {
+			return strlen( $b ) <=> strlen( $a );
+		} );
+		$html = str_replace( array_keys( $replace ), (array) $replace, $html );
 
 		$this->assertMatchesHtmlSnapshot( $html );
 	}
