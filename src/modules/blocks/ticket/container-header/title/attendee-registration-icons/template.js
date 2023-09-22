@@ -42,7 +42,7 @@ const AttendeeRegistrationIcons = ( {
 			}
 
 			<IconWithTooltip
-				propertyName={ __( saleWindowLabel, 'event-tickets' ) }
+				propertyName={ saleWindowLabel }
 				description={ saleWindowText }
 				icon={ <SaleWindowIcon /> }
 			/>
