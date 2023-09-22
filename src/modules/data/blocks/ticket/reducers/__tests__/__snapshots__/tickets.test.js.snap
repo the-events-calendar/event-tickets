@@ -23,6 +23,7 @@ Object {
     "currencyPosition": "prefix",
     "currencySymbol": undefined,
     "details": Object {
+      "attendeeInfoFields": Array [],
       "capacity": "",
       "capacityType": "unlimited",
       "description": "",

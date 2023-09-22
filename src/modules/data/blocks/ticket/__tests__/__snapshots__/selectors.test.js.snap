@@ -51,6 +51,7 @@ Object {
         "currencyPosition": "prefix",
         "currencySymbol": undefined,
         "details": Object {
+          "attendeeInfoFields": Array [],
           "capacity": "",
           "capacityType": "unlimited",
           "description": "",
@@ -160,6 +161,7 @@ exports[`Ticket block selectors Ticket details selectors getTicketDescription 1`
 
 exports[`Ticket block selectors Ticket details selectors getTicketDetails 1`] = `
 Object {
+  "attendeeInfoFields": Array [],
   "capacity": "",
   "capacityType": "unlimited",
   "description": "",
@@ -232,6 +234,7 @@ Object {
   "currencyPosition": "prefix",
   "currencySymbol": undefined,
   "details": Object {
+    "attendeeInfoFields": Array [],
     "capacity": "",
     "capacityType": "unlimited",
     "description": "",
@@ -391,6 +394,7 @@ Object {
       "currencyPosition": "prefix",
       "currencySymbol": undefined,
       "details": Object {
+        "attendeeInfoFields": Array [],
         "capacity": "",
         "capacityType": "unlimited",
         "description": "",
@@ -456,6 +460,7 @@ Array [
     "currencyPosition": "prefix",
     "currencySymbol": undefined,
     "details": Object {
+      "attendeeInfoFields": Array [],
       "capacity": "",
       "capacityType": "unlimited",
       "description": "",
@@ -514,6 +519,7 @@ Object {
     "currencyPosition": "prefix",
     "currencySymbol": undefined,
     "details": Object {
+      "attendeeInfoFields": Array [],
       "capacity": "",
       "capacityType": "unlimited",
       "description": "",
@@ -576,6 +582,7 @@ Array [
     "currencyPosition": "prefix",
     "currencySymbol": undefined,
     "details": Object {
+      "attendeeInfoFields": Array [],
       "capacity": "",
       "capacityType": "unlimited",
       "description": "",
