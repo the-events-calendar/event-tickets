@@ -8,6 +8,9 @@
  * 
  * @version TBD
  * 
+ * @var array   $attendees The attendees for the current order.
+ * @var int     $order_id  The ID of the order.
+ * @var WP_Post $post      The post object.
  */
 
 ?>

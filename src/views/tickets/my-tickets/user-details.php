@@ -8,7 +8,10 @@
  * 
  * @version TBD
  * 
- * 
+ * @var int    $order_id  The ID of the order.
+ * @var array  $order     The order data.
+ * @var array  $attendees The attendees for the current order.
+ * @var int    $post_id   The ID of the post the tickets are for.
  */
 
  ?>

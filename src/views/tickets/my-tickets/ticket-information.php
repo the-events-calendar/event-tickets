@@ -8,6 +8,9 @@
  * 
  * @version TBD
  * 
+ * @var Tribe__Tickets__Tickets $provider The ticket provider.
+ * @var array                   $attendee The attendee data.
+ * 
  */
 
 ?>
