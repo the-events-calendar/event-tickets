@@ -18,27 +18,38 @@ import {
 
 const { select } = wp.data;
 
-const ticketStatusMap = {
-	isTicketFuture: __( 'Scheduled', 'your-text-domain' ),
-	isTicketPast: __( 'Expired', 'your-text-domain' ),
-	isTicketOnSale: __( 'On sale', 'your-text-domain' ),
-};
-
 /**
+ * Given a Sale status that is present on the map return a translated label.
  *
- * @param { boolean } isTicketFuture
- * @param { boolean } isTicketPast
- * @param { boolean } isTicketOnSale
+ * @param { string } saleStatus
  * @returns { string } The translated sale window label
  */
-const getSaleWindowLabel = ( isTicketFuture, isTicketPast, isTicketOnSale ) => {
-	switch(true) {
-		case isTicketFuture:
-			return ticketStatusMap[ 'isTicketFuture' ];
-		case isTicketPast:
-			return ticketStatusMap[ 'isTicketPast' ];
-		case isTicketOnSale:
-			return ticketStatusMap[ 'isTicketOnSale' ];
+const getSaleWindowLabel = ( saleStatus ) => {
+	const labelMap = {
+		future: __( 'Scheduled', 'event-tickets' ),
+		past: __( 'Expired', 'event-tickets' ),
+		onSale: __( 'On sale', 'event-tickets' ),
+	};
+	return labelMap[ saleStatus ];
+}
+
+/**
+ * Determine the sale status of the ticket.
+ *
+ * @since TBD
+ *
+ * @param { object } state
+ * @param { object } ownProps
+ * @returns { string } Sale status slug.
+ */
+const getSalesStatus = ( state, ownProps ) => {
+	switch( true ) {
+		case selectors.isTicketFuture( state, ownProps ):
+			return 'future';
+		case selectors.isTicketPast( state, ownProps ):
+			return 'past';
+		case selectors.isTicketOnSale( state, ownProps ):
+			return 'onSale';
 	}
 	return '';
 }
@@ -68,12 +79,10 @@ const mapStateToProps = ( state, ownProps ) => {
 	const attendeeInfoFieldsLabel = getAttendeeInfoFieldsLabel( attendeeInfoFields );
 	const hasAttendeeInfoFields = selectors.getTicketHasAttendeeInfoFields( state, ownProps );
 
-	const isTicketFuture = selectors.isTicketFuture( state, ownProps );
-	const isTicketPast = selectors.isTicketPast( state, ownProps );
-	const isTicketOnSale = selectors.isTicketOnSale( state, ownProps );
-	const saleWindowLabel = getSaleWindowLabel( isTicketFuture, isTicketPast, isTicketOnSale );
+	const saleStatus = getSalesStatus( state, ownProps );
+	const saleWindowLabel = getSaleWindowLabel( saleStatus );
 
-	const dateFormat = momentUtil.toFormat( globals.dateSettings()?.formats?.date );
+	const dateFormat = momentUtil.toFormat( globals.dateSettings().formats.date );
 	const startDateMoment = selectors.getTicketTempStartDateMoment( state, ownProps );
 	const endDateMoment = selectors.getTicketTempEndDateMoment( state, ownProps );
 	const fromDate = startDateMoment && startDateMoment.format( dateFormat );
@@ -88,7 +97,6 @@ const mapStateToProps = ( state, ownProps ) => {
 		toDate,
 	}
 };
-
 
 export default compose(
 	withStore(),
