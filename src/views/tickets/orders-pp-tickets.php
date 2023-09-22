@@ -32,21 +32,11 @@ $post_type_singular = $post_type ? $post_type->labels->singular_name : _x( 'Post
 $attendee_groups = $view->get_post_attendees_by_purchaser( $post_id, $user_id );
 ?>
 <div class="tribe-pp">
-	<h2><?php
-		echo esc_html(
-			sprintf(
-				__( 'My %1$s for this %2$s', 'event-tickets' ),
-				tribe_get_ticket_label_plural( basename( __FILE__ ) ),
-				$post_type_singular
-			)
-		); ?>
-	</h2>
 	<?php foreach ( $attendee_groups as $attendee_group ) : ?>
 		<?php
 		$first_attendee = reset( $attendee_group );
 		?>
 		<div class="user-details">
-			<p>
 				<?php
 				printf(
 					esc_html__( 'Purchased by %1$s (%2$s)', 'event-tickets' ),
@@ -59,7 +49,6 @@ $attendee_groups = $view->get_post_attendees_by_purchaser( $post_id, $user_id );
 					date_i18n( Tribe__Date_Utils::DATEONLYFORMAT, strtotime( esc_attr( $first_attendee['purchase_time'] ) ) )
 				);
 				?>
-			</p>
 			<?php
 				/**
 				* Inject content into the RSVP User Details block on the orders page
@@ -70,11 +59,26 @@ $attendee_groups = $view->get_post_attendees_by_purchaser( $post_id, $user_id );
 				do_action( 'event_tickets_user_details_tpp', $attendee_group, $post_id );
 				?>
 		</div>
+		<?php
+			$this->template( 'tickets/my-tickets/title', [
+				'title'  => sprintf(
+					// Translators: 1: post type singular name, 2: ticket label plural.
+					__( '%1$s %2$s', 'event-tickets' ),
+					$post_type_singular,
+					tribe_get_ticket_label_plural( basename( __FILE__ ) )
+				),
+			] );
+		?>
 		<ul class="tribe-tpp-list tribe-list">
 			<?php foreach ( $attendee_group as $i => $attendee ) : ?>
 				<?php $key = $attendee['order_id']; ?>
 				<li class="tribe-item<?php echo $view->is_tpp_ticket_restricted( $post_id, $attendee['product_id'] ) ? 'tribe-disabled' : ''; ?>" <?php echo $view->get_restriction_attr( $post_id, $attendee['product_id'] ); ?> id="attendee-<?php echo $attendee['order_id']; ?>">
-					<p class="list-attendee"><?php printf( esc_html__( 'Attendee %d', 'event-tickets' ), $i + 1 ); ?></p>
+					<?php 
+						$this->template( 'tickets/my-tickets/attendee-label', [ 
+							// Translators: %d is the attendee number.
+							'attendee_label' => sprintf( esc_html__( 'Attendee %d', 'event-tickets' ), $i + 1 )
+						] );
+					?>
 					<div class="tribe-answer">
 						<!-- Wrapping <label> around both the text and the <select> will implicitly associate the text with the label. -->
 						<!-- See https://www.w3.org/WAI/tutorials/forms/labels/#associating-labels-implicitly -->
