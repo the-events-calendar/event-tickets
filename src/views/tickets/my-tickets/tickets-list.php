@@ -2,7 +2,7 @@
 /**
  * My Tickets: Tickets List
  * 
- * Override this template in your own theme by creating a file at [your-theme]/tribe-events/tickets/my-tickets/tickets-list.php
+ * Override this template in your own theme by creating a file at [your-theme]/tribe-events/tickets/tickets/my-tickets/tickets-list.php
  * 
  * @since TBD
  * 
@@ -34,6 +34,16 @@
 			 * @param WP_Post $post     Post object that the tickets are tied to.
 			 */
 			do_action( 'event_tickets_orders_attendee_contents', $attendee, $post );
+			
+			/**
+			 * Inject content into a Ticket's attendee block on the Tickets orders page.
+			 * 
+			 * @since TBD
+			 *
+			 * @param array   $attendee Attendee array.
+			 * @param WP_Post $post     Post object that the tickets are tied to.
+			 */
+			do_action( 'tec_tickets_orders_attendee_contents', $attendee, $post );
 			?>
 		</li>
 	<?php endforeach; ?>

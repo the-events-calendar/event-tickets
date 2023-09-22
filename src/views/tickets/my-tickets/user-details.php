@@ -2,7 +2,7 @@
 /**
  * My Tickets: User Details
  * 
- * Override this template in your own theme by creating a file at [your-theme]/tribe-events/tickets/my-tickets/user-details.php
+ * Override this template in your own theme by creating a file at [your-theme]/tribe-events/tickets/tickets/my-tickets/user-details.php
  * 
  * @since TBD
  * 
@@ -35,10 +35,20 @@
 		
 		/**
 		 * Inject content into the Tickets User Details block on the orders page
-		*
-		* @param array   $attendees Attendee array.
-		* @param WP_Post $post_id   Post object that the tickets are tied to.
-		*/
+		 *
+		 * @param array   $attendees Attendee array.
+		 * @param WP_Post $post_id   Post object that the tickets are tied to.
+		 */
 		do_action( 'event_tickets_user_details_tickets', $attendees, $post_id );
+		
+		/**
+		 * Inject content into the Tickets User Details block on the orders page
+		 * 
+		 * @since TBD
+		 *
+		 * @param array   $attendees Attendee array.
+		 * @param WP_Post $post_id   Post object that the tickets are tied to.
+		 */
+		do_action( 'tec_tickets_user_details_tickets', $attendees, $post_id );
 	?>
 </div>
