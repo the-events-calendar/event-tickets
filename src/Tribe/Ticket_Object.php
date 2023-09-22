@@ -1,5 +1,7 @@
 <?php
 
+use Tribe__Cache_Listener as Cache;
+
 if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 	/**
 	 *    Generic object to hold information about a single ticket
@@ -536,10 +538,18 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 
 			/** @var Tribe__Cache $cache */
 			$cache = tribe( 'cache' );
-			$key   = __METHOD__ . '-' . $this->ID;
+			$cache_key   = __METHOD__ . '-' . $this->ID;
+			$is_ticket_cache_enabled = $this->is_ticket_cache_enabled();
 
-			if ( $this->is_ticket_cache_enabled() && false !== $cache[ $key ] ) {
-				return tribe_is_truthy( $cache[ $key ] );
+			if ( $is_ticket_cache_enabled ) {
+				$cached = $cache->get( $cache_key, Cache::TRIGGER_SAVE_POST, null );
+
+				if ( $cached !== null && is_string( $cached ) && in_array( $cached, [ 'yes', 'no' ], true ) ) {
+					$is_in_stock = tribe_is_truthy( $cached );
+					$cache->set( $cache_key, $is_in_stock ? 'yes' : 'no', 0, Cache::TRIGGER_SAVE_POST );
+
+					return $is_in_stock;
+				}
 			}
 
 			$remaining    = $this->inventory();
@@ -547,7 +557,9 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 
 			$is_in_stock = false === $remaining || $remaining > 0 || $is_unlimited;
 
-			$cache[ $key ] = $is_in_stock ? 'yes' : 'no';
+			if( $is_ticket_cache_enabled ) {
+				$cache->set( $cache_key, $is_in_stock ? 'yes' : 'no', 0, Cache::TRIGGER_SAVE_POST );
+			}
 
 			return $is_in_stock;
 		}
@@ -585,14 +597,19 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * @return int
 		 */
 		public function inventory() {
-
 			/** @var Tribe__Cache $cache */
 			$cache = tribe( 'cache' );
-			$key   = __METHOD__ . '-' . $this->ID;
+			$cache_key   = __METHOD__ . '-' . $this->ID;
+			$is_ticket_cache_enabled = $this->is_ticket_cache_enabled();
 
-			if ( $this->is_ticket_cache_enabled() && false !== $cache[ $key ] ) {
-				return $cache[ $key ];
+			if ( $is_ticket_cache_enabled ) {
+				$cached = $cache->get( $cache_key, Cache::TRIGGER_SAVE_POST, null );
+
+				if ( $cached && is_int( $cached ) ) {
+					return $cached;
+				}
 			}
+
 			// Fetch provider (also sets if found).
 			$provider = $this->get_provider();
 
@@ -600,17 +617,22 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 
 			// If we don't have the provider, get the result from inventory.
 			if ( empty( $provider ) ) {
-				$cache[ $key ] = $capacity - $this->qty_sold() - $this->qty_pending();
-				return $cache[ $key ];
+				$inventory = $capacity - $this->qty_sold() - $this->qty_pending();
+
+				if ( $is_ticket_cache_enabled ) {
+					$cache->set( $cache_key, $inventory, 0, Cache::TRIGGER_SAVE_POST );
+				}
+
+				return $inventory;
 			}
 
 			// If we aren't tracking stock, then always assume it is in stock or capacity is unlimited.
-			if (
-				! $this->managing_stock()
-				|| -1 === $capacity
-			) {
-				$cache[ $key ] = -1;
-				return $cache[ $key ];
+			if ( ! $this->managing_stock() || - 1 === $capacity ) {
+				if ( $is_ticket_cache_enabled ) {
+					$cache->set( $cache_key, - 1, 0, Cache::TRIGGER_SAVE_POST );
+				}
+
+				return - 1;
 			}
 
 			/** @var Tribe__Tickets__Status__Manager $status_mgr */
@@ -674,10 +696,14 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			}
 
 			$inventory = min( $inventory );
-
 			// Prevents Negative
-			$cache[ $key ] = max( $inventory, 0 );
-			return $cache[ $key ];
+			$inventory = max( $inventory, 0 );
+
+			if ( $is_ticket_cache_enabled ) {
+				$cache->set( $cache_key, $inventory, 0, Cache::TRIGGER_SAVE_POST );
+			}
+
+			return $inventory;
 		}
 
 		/**
@@ -706,17 +732,24 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			// if we aren't tracking stock, then always assume it is in stock or capacity is unlimited.
 			/** @var Tribe__Cache $cache */
 			$cache = tribe( 'cache' );
-			$key   = __METHOD__ . '-' . $this->ID;
+			$cache_key   = __METHOD__ . '-' . $this->ID;
+			$is_ticket_cache_enabled = $this->is_ticket_cache_enabled();
 
-			if ( $this->is_ticket_cache_enabled() && false !== $cache[ $key ] ) {
-				return $cache[ $key ];
+			if ( $is_ticket_cache_enabled ) {
+				$cached = $cache->get( $cache_key, Cache::TRIGGER_SAVE_POST, null );
+
+				if ( is_int( $cached ) && $cached >= 0 ) {
+					return $cached;
+				}
 			}
 
-			if (
-				! $this->managing_stock()
-				|| -1 === $this->capacity()
-			) {
-				return -1;
+			// If not managing stock or the capacity is unlimited, then the availability is unlimited.
+			if ( ! $this->managing_stock() || - 1 === $this->capacity() ) {
+				if ( $is_ticket_cache_enabled ) {
+					$cache->set( $cache_key, - 1, 0, Cache::TRIGGER_SAVE_POST );
+				}
+
+				return - 1;
 			}
 
 			$values[] = $this->inventory();
@@ -729,7 +762,9 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			// Prevents Negative
 			$available = max( $available, 0 );
 
-			$cache[ $key ] = $available;
+			if ( $is_ticket_cache_enabled ) {
+				$cache->set( $cache_key, $available, 0, Cache::TRIGGER_SAVE_POST );
+			}
 
 			return $available;
 		}
@@ -748,10 +783,15 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 
 			/** @var Tribe__Cache $cache */
 			$cache = tribe( 'cache' );
-			$key   = __METHOD__ . '-' . $this->ID;
+			$cache_key = __METHOD__ . '-' . $this->ID;
+			$is_ticket_cache_enabled = $this->is_ticket_cache_enabled();
 
-			if ( $this->is_ticket_cache_enabled() && false !== $cache[ $key ] ) {
-				return $cache[ $key ];
+			if ( $is_ticket_cache_enabled ) {
+				$cached = $cache->get( $cache_key, Cache::TRIGGER_SAVE_POST, null );
+
+				if ( is_int( $cached ) && $cached >= 0 ) {
+					return $cached;
+				}
 			}
 
 			if ( is_null( $this->capacity ) ) {
@@ -761,9 +801,12 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			$stock_mode = $this->global_stock_mode();
 
 			// Unlimited is always unlimited
-			if ( -1 === (int) $this->capacity ) {
-				$cache[ $key ] = (int) $this->capacity;
-				return $cache[ $key ];
+			if ( - 1 === (int) $this->capacity ) {
+				if ( $is_ticket_cache_enabled ) {
+					$cache->set( $cache_key, - 1, 0, Cache::TRIGGER_SAVE_POST );
+				}
+
+				return - 1;
 			}
 
 			// If Capped or we used the local Capacity
@@ -771,14 +814,20 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $stock_mode
 				|| Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $stock_mode
 			) {
-				$cache[ $key ] = (int) $this->capacity;
-				return $cache[ $key ];
+				if ( $is_ticket_cache_enabled ) {
+					$cache->set( $cache_key, (int) $this->capacity, 0, Cache::TRIGGER_SAVE_POST );
+				}
+
+				return (int) $this->capacity;
 			}
 
-			$event_capacity = tribe_tickets_get_capacity( $this->get_event() );
+			$event_capacity = (int) tribe_tickets_get_capacity( $this->get_event() );
 
-			$cache[ $key ] = (int) $event_capacity;
-			return $cache[ $key ];
+			if ( $is_ticket_cache_enabled ) {
+				$cache->set( $cache_key, $event_capacity, 0, Cache::TRIGGER_SAVE_POST );
+			}
+
+			return $event_capacity;
 		}
 
 		/**
@@ -937,8 +986,11 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * Magic getter to handle fetching protected properties
 		 *
-		 * @deprecated 4.0
-		 * @todo Remove when event-tickets-* plugins are fully de-supported
+		 * @since TBD Add the `type` property to the list of properties that can be fetched.
+		 *
+		 * @param string $var Property to fetch.
+		 *
+		 * @return mixed Value of the property.
 		 */
 		public function __get( $var ) {
 			switch ( $var ) {
@@ -960,6 +1012,9 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				case 'qty_cancelled':
 					return $this->qty_cancelled();
 					break;
+				case 'type':
+					return $this->type();
+					break;
 			}
 
 			return null;
@@ -968,8 +1023,10 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * Magic setter to handle setting protected properties
 		 *
-		 * @deprecated 4.0
-		 * @todo Remove when event-tickets-* plugins are fully de-supported
+		 * @since TBD Add the `type` property to the list of properties that can be set.
+		 *
+		 * @param string $var   Property to set.
+		 * @param mixed  $value Value to set the property to.
 		 */
 		public function __set( $var, $value ) {
 			switch ( $var ) {
@@ -987,6 +1044,11 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 					break;
 				case 'qty_cancelled':
 					return $this->qty_cancelled( $value );
+					break;
+				case 'type':
+					if ( $this->ID ) {
+						update_post_meta( $this->ID, '_type', $value );
+					}
 					break;
 			}
 
