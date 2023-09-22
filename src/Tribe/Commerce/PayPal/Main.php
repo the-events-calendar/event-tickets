@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Class Tribe__Tickets__Commerce__PayPal__Main
  *
@@ -348,6 +349,9 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		add_filter( 'tribe_tickets_cart_urls', [ $this, 'add_cart_url' ], 10, 2 );
 		add_filter( 'tribe_tickets_checkout_urls', [ $this, 'add_checkout_url' ], 10, 2 );
+
+		// Cache invalidation.
+		add_filter( 'tec_cache_listener_save_post_types', [ $this, 'filter_cache_listener_save_post_types' ] );
 	}
 
 	/**
@@ -3158,5 +3162,23 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		}
 
 		return $provider_obj;
+	}
+
+	/**
+	 * Filters the list of post types that should trigger a cache invalidation on `save_post` to add
+	 * all the ones modeling PayPal Tickets, Attendees and Orders.
+	 *
+	 * @since TBD
+	 *
+	 * @param string[] $post_types The list of post types that should trigger a cache invalidation on `save_post`.
+	 *
+	 * @return string[] The filtered list of post types that should trigger a cache invalidation on `save_post`.
+	 */
+	public function filter_cache_listener_save_post_types( array $post_types = [] ): array {
+		$post_types[] = $this->ticket_object;
+		$post_types[] = $this->order_object;
+		$post_types[] = $this->attendee_object;
+
+		return $post_types;
 	}
 }
