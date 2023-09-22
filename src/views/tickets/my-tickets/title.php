@@ -12,8 +12,8 @@
  * 
  */
 ?>
-<div class="tec-tickets__my_tickets-tickets-list-title-container">
-	<div class="tec-tickets__my_tickets-tickets-list-title">
+<div class="tec-tickets__my-tickets-list-title-container">
+	<div class="tec-tickets__my-tickets-list-title">
 		<?php echo esc_html( $title ); ?>
 	</div>
 </div>
