@@ -69,7 +69,7 @@
 
 		<div id="choose-ticket-type" class="stage">
 			<p>
-				<label for="ticket-type-choice"> <?php esc_html_e( 'Select the ticket that the tickets should be transferred to:', 'event-tickets' ); ?></label>
+				<label for="ticket-type-choice"> <?php esc_html_e( 'Select the ticket where the tickets should be transferred to:', 'event-tickets' ); ?></label>
 			</p>
 			<div id="ticket-type-choice" class="select-single-container"></div>
 
