@@ -62,6 +62,7 @@ $attendee_groups = $view->get_post_attendees_by_purchaser( $post_id, $user_id );
 		<?php
 			$this->template( 'tickets/my-tickets/title', [
 				'title'  => sprintf(
+					// Translators: 1: post type singular name, 2: ticket label plural.
 					__( '%1$s %2$s', 'event-tickets' ),
 					$post_type_singular,
 					tribe_get_ticket_label_plural( basename( __FILE__ ) )
@@ -74,6 +75,7 @@ $attendee_groups = $view->get_post_attendees_by_purchaser( $post_id, $user_id );
 				<li class="tribe-item<?php echo $view->is_tpp_ticket_restricted( $post_id, $attendee['product_id'] ) ? 'tribe-disabled' : ''; ?>" <?php echo $view->get_restriction_attr( $post_id, $attendee['product_id'] ); ?> id="attendee-<?php echo $attendee['order_id']; ?>">
 					<?php 
 						$this->template( 'tickets/my-tickets/attendee-label', [ 
+							// Translators: %d is the attendee number.
 							'attendee_label' => sprintf( esc_html__( 'Attendee %d', 'event-tickets' ), $i + 1 )
 						] );
 					?>

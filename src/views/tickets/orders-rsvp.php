@@ -64,7 +64,8 @@ $attendee_groups = $view->get_event_rsvp_attendees_by_purchaser( $post_id, $user
 				<?php $key = $attendee['order_id']; ?>
 				<li class="tribe-item<?php echo $view->is_rsvp_restricted( $post_id, $attendee['product_id'] ) ? 'tribe-disabled' : ''; ?>" <?php echo $view->get_restriction_attr( $post_id, $attendee['product_id'] ); ?> id="attendee-<?php echo $attendee['order_id']; ?>">
 					<?php 
-						$this->template( 'tickets/my-tickets/attendee-label', [ 
+						$this->template( 'tickets/my-tickets/attendee-label', [
+							// Translators: %d is the attendee number.
 							'attendee_label' => sprintf( esc_html__( 'Attendee %d', 'event-tickets' ), $i + 1 )
 						] );
 					?>
