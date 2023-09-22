@@ -31,7 +31,7 @@ const getSaleWindowLabel = ( saleStatus ) => {
 		onSale: __( 'On sale', 'event-tickets' ),
 	};
 	return labelMap[ saleStatus ];
-}
+};
 
 /**
  * Determine the sale status of the ticket.
@@ -52,9 +52,10 @@ const getSalesStatus = ( state, ownProps ) => {
 			return 'onSale';
 	}
 	return '';
-}
+};
 
 /**
+ * Given an array of attendee info fields returs a label for the tooltip
  *
  * @param { Array } attendeeInfoFields
  * @returns { string } Returns the first 4 attendee fields joined by comma
@@ -72,7 +73,7 @@ const getAttendeeInfoFieldsLabel = ( attendeeInfoFields ) => {
 		.slice( 0, 4 )
 		.map( ( attendeeInformationField ) => attendeeInformationField.label )
 		.join( ', ' );
-}
+};
 
 const mapStateToProps = ( state, ownProps ) => {
 	const attendeeInfoFields = selectors.getTicketAttendeeInfoFields( state, ownProps );
