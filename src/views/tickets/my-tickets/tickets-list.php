@@ -20,7 +20,9 @@
 					'attendee_label' => sprintf( esc_html__( 'Attendee %d', 'event-tickets' ), $i + 1 )
 				] );
 			?>
-			<?php $this->template( 'tickets/my-tickets/ticket-information' ); ?>
+			<?php $this->template( 'tickets/my-tickets/ticket-information', [
+				'attendee' => $attendee,
+			] ); ?>
 			<?php
 			/**
 			 * Inject content into a Ticket's attendee block on the Tickets orders page.
