@@ -10,10 +10,9 @@
 	<span class="message">
 		<?php echo wp_kses(
 			sprintf(
-				'This %1$s is part of the Series %2$s. Create and manage %3$s from the Series admin.',
-				tribe_get_event_label_singular_lowercase(),
-				'<a href="' . $series_edit_link . '" target="_blank">' . $series_title . '</a>',
+				'Create and manage %1$s from the %2$s Series admin.',
 				tec_tickets_get_series_pass_plural_uppercase(),
+				'<a href="' . $series_edit_link . '" target="_blank">' . $series_title . '</a>',
 			),
 			[
 				'a' => [
