@@ -25,6 +25,10 @@ const { select } = wp.data;
  * @returns { string } The translated sale window label
  */
 const getSaleWindowLabel = ( saleStatus ) => {
+	if ( ! saleStatus ) {
+		return '';
+	}
+
 	const labelMap = {
 		future: __( 'Scheduled', 'event-tickets' ),
 		past: __( 'Expired', 'event-tickets' ),
