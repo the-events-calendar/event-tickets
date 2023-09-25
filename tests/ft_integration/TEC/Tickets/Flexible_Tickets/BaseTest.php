@@ -67,6 +67,9 @@ class BaseTest extends Controller_Test_Case {
 		] );
 		$ticket_1 = $this->create_tc_ticket( $post_id, 23 );
 		$ticket_2 = $this->create_tc_ticket( $post_id, 24 );
+		// Sort the tickets "manually".
+		wp_update_post( [ 'ID' => $ticket_1, 'menu_order' => 1 ] );
+		wp_update_post( [ 'ID' => $ticket_2, 'menu_order' => 2 ] );
 
 		$this->make_controller()->register();
 
