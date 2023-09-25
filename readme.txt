@@ -194,6 +194,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [TBD] TBD =
 
 * Fix - Restore possibility to move Tickets and Attendees to Single Events that are part of a Series. [ET-1862]
+* Fix - Ticket property invalidation to ensure capacity, inventory and availability are correctly invalidated. [ET-xxx]
 
 = [5.6.5] 2023-09-13 =
 

@@ -49,7 +49,6 @@ class Attendees_Page_Header extends WPTestCase {
 		// Get HTML from template.
 		$template = tribe( 'tickets.admin.views' );
 		$args = $attendees->get_render_context( $post_id );
-		codecept_debug($args);
 		$html = $template->template( $this->partial_path, $args, false );
 
 		// Replace post IDs in the snapshot to stabilize it.
