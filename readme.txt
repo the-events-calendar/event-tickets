@@ -4,7 +4,7 @@ Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, raf
 Tags: tickets, registration, event registration, RSVP, ticket sales, attendee management
 Requires at least: 5.8.5
 Tested up to: 6.3.1
-Stable tag: 5.6.5
+Stable tag: 5.6.5.1
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -190,6 +190,11 @@ We've got a [LoopedIn](https://evnt.is/ideas) page where we're actively watching
 Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on using, tweaking, and troubleshooting our plugins.
 
 == Changelog ==
+
+= [5.6.51] 2023-09-25 =
+
+* Version - Event Tickets 5.6.5.1 is only compatible with The Events Calendar 6.2.2.1 and higher.
+* Fix - Fix - Correct issue where Telemetry would register active plugins multiple times. [TEC-4920]
 
 = [5.6.5] 2023-09-13 =
 
