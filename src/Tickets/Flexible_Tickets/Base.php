@@ -136,6 +136,8 @@ class Base extends Controller {
 			$this,
 			'filter_attendees_report_context'
 		] );
+
+		add_action( 'tribe_tickets_attendees_event_details_list_top', [ $this, 'render_series_details_for_attached_event' ], 50 );
 	}
 
 	/**
@@ -206,6 +208,8 @@ class Base extends Controller {
 			$this,
 			'filter_attendees_report_context'
 		] );
+
+		remove_action( 'tribe_tickets_attendees_event_details_list_top', [ $this, 'render_series_details_for_attached_event' ], 50 );
 	}
 
 	/**
@@ -459,5 +463,36 @@ class Base extends Controller {
 		$context['type_labels'][ Series_Passes::TICKET_TYPE ] = tec_tickets_get_series_pass_plural_uppercase( 'Attendees Report' );
 
 		return $context;
+	}
+
+	public function render_series_details_for_attached_event( $post_id ) {
+		if ( get_post_type( $post_id ) === Series_Post_Type::POSTTYPE ) {
+			return;
+		}
+
+		// Check if event is part of a series.
+		$series_id = tec_series()->where( 'event_post_id', $post_id )->first_id();
+
+		if ( ! $series_id ) {
+			return;
+		}
+
+		// Generate series summary.
+		$title                = get_the_title( $series_id );
+		$edit_url             = get_edit_post_link( $series_id );
+		$edit_link            = sprintf( '<a href="%s" target="_blank">%s</a>', esc_url( $edit_url ), $title );
+		$attendee_report_link = tribe( 'tickets.attendees' )->get_report_link( get_post( $series_id ) );
+		$action_links         = [
+			sprintf( '<a href="%s" target="_blank">%s</a>', esc_url( $edit_url ), __( 'Edit Series', 'event-tickets' ) ),
+			sprintf( '<a href="%s" target="_blank">%s</a>', esc_url( get_permalink( $series_id ) ), __( 'View Series', 'event-tickets' ) ),
+			sprintf( '<a href="%s" target="_blank">%s</a>', esc_url( $attendee_report_link ), __( 'Series Attendees', 'event-tickets' ) ),
+		];
+
+		// Render series details.
+		$this->admin_views->template( 'admin/attendees/series-summary', [
+			'title'        => $title,
+			'edit_link'    => $edit_link,
+			'action_links' => $action_links
+		] );
 	}
 }
