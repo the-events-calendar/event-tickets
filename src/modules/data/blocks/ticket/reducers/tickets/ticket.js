@@ -29,6 +29,7 @@ export const DEFAULT_STATE = {
 
 export default ( state = DEFAULT_STATE, action ) => {
 	switch ( action.type ) {
+		case types.SET_TICKET_ATTENDEE_INFO_FIELDS:
 		case types.SET_TICKET_TITLE:
 		case types.SET_TICKET_DESCRIPTION:
 		case types.SET_TICKET_PRICE:

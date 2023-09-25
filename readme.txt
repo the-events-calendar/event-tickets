@@ -195,6 +195,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Tweak - Re-styled Inactive RSVP Block in Block Editor to match frontend design. Styles will be the same in block editor and in the user interface [ET-1818]
 * Tweak - Re-styled Inactive Tickets Block in Block Editor. Empty state now has a new design [ET-1817]
 * Tweak - Re-styled Inactive Tickets Block with tickets. Inactive state with tickets has a new design [ET-1822]
+* Tweak - Re-styled Active Tickets Block with tickets. Add information icons and tooltips.  [ET-1824]
 
 = [5.6.4] 2023-08-16 =
 
