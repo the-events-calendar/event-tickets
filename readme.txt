@@ -195,7 +195,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 * Fix - Restore possibility to move Tickets and Attendees to Single Events that are part of a Series. [ET-1862]
 * Fix - Ticket property invalidation to ensure capacity, inventory and availability are correctly invalidated. [ET-xxx]
-* Fix - Fix order status sometime showing incorrectly for sites in languages other than English. [ET-1875]
+* Fix - Fix order status sometimes showing incorrectly for sites in languages other than English. [ET-1875]
 
 = [5.6.5] 2023-09-13 =
 
