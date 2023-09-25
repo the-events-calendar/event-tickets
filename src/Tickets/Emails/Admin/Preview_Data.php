@@ -87,6 +87,7 @@ class Preview_Data {
 			'purchaser_email'  => 'john@doe.com',
 			'gateway'          => Gateway::get_key(),
 			'status'           => 'completed',
+			'status_slug'      => 'completed',
 			'tickets'          => self::get_tickets(),
 			'post_author'      => 1,
 			'post_date'        => '2023-04-17 17:06:56',
