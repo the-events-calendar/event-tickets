@@ -57,7 +57,7 @@ use TEC\Tickets\Commerce\Utils\Value;
 					<?php
 					echo esc_html(
 						sprintf(
-							__( 'Sales by %s Type', 'event-tickets' ),
+							__( 'Sales by %s', 'event-tickets' ),
 							tribe_get_ticket_label_singular( 'sales_by_type' )
 						)
 					);

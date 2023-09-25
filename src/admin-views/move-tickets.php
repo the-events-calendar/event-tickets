@@ -28,8 +28,8 @@
 
 		<div id="move-where" class="stage">
 			<p> <?php printf( _n(
-					'You have selected %1$s ticket for %2$s. You can move it to a different ticket type within the same event, or to a different event.',
-					'You have selected %1$s tickets for %2$s. You can move them to a different ticket type within the same event, or to a different event.',
+					'You have selected %1$s ticket for %2$s. You can move it to a different ticket within the same event, or to a different event.',
+					'You have selected %1$s tickets for %2$s. You can move them to a different ticket within the same event, or to a different event.',
 					count( $attendees ),
 					'event-tickets'
 				),
@@ -40,7 +40,7 @@
 			<p>
 				<label for="move-where-this">
 					<input type="radio" value="this-post" name="move-where" id="move-where-this"/>
-					<?php esc_html_e( 'Move to a different ticket type within the same event', 'event-tickets' ); ?>
+					<?php esc_html_e( 'Move to a different ticket within the same event', 'event-tickets' ); ?>
 				</label>
 				<label for="move-where-other">
 					<input type="radio" value="other" name="move-where" id="move-where-other"/>
@@ -61,7 +61,7 @@
 			</p>
 
 			<p>
-				<label for="post-choice"> <?php esc_html_e( 'Select the post you wish to move the ticket type to:', 'event-tickets' ); ?> </label>
+				<label for="post-choice"> <?php esc_html_e( 'Select the post you wish to move the ticket to:', 'event-tickets' ); ?> </label>
 			</p>
 			<div id="post-choice" class="select-single-container"></div>
 
@@ -69,7 +69,7 @@
 
 		<div id="choose-ticket-type" class="stage">
 			<p>
-				<label for="ticket-type-choice"> <?php esc_html_e( 'Select the ticket type that the tickets should be transferred to:', 'event-tickets' ); ?></label>
+				<label for="ticket-type-choice"> <?php esc_html_e( 'Select the ticket where the tickets should be transferred to:', 'event-tickets' ); ?></label>
 			</p>
 			<div id="ticket-type-choice" class="select-single-container"></div>
 
