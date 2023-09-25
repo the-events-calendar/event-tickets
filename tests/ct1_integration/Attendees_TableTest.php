@@ -3,12 +3,12 @@
 namespace Tribe\Tickets;
 
 use Codeception\TestCase\WPTestCase;
+use TEC\Events\Custom_Tables\V1\Models\Event;
 use TEC\Events\Custom_Tables\V1\Models\Occurrence;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Gateways\PayPal\Gateway;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Status\Pending;
-use TEC\Tickets\Tests\CT1_Integration_Test_Case;
 use Tribe\Events\Test\Traits\CT1\CT1_Fixtures;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
@@ -41,6 +41,22 @@ class Attendees_TableTest extends WPTestCase {
 
 	private function make_instance() {
 		return new Attendees_Table();
+	}
+
+	/**
+	 * This method _should_ be provided by the base CT1 test utility, but it's currently bugged.
+	 *
+	 * @todo Remove this when the base CT1 test utility is fixed.
+	 */
+	private function given_a_migrated_single_event( $args = [] ) {
+		$post = $this->given_a_non_migrated_single_event( $args );
+		Event::upsert( [ 'post_id' ], Event::data_from_post( $post->ID ) );
+		$event = Event::find( $post->ID, 'post_id' );
+		$this->assertInstanceOf( Event::class, $event );
+		$event->occurrences()->save_occurrences();
+		$this->assertEquals( 1, Occurrence::where( 'post_id', '=', $post->ID )->count() );
+
+		return $post;
 	}
 
 	public function create_order_for_ticket( $ticket_id, $quantity = 5 ) {

@@ -106,7 +106,10 @@ class Tribe__Tickets__Assets {
 			$tickets_main,
 			'tribe-tickets-orders-style',
 			'my-tickets.css',
-			[ 'tec-variables-full' ],
+			[
+				'tec-variables-full',
+				'tribe-tickets-forms-style',
+			],
 			null,
 			[
 				'groups' => [
