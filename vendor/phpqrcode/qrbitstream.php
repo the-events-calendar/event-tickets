@@ -1,4 +1,6 @@
 <?php
+namespace TEC\Tickets\phpqrcode;
+
 /*
  * PHP QR Code encoder
  *
@@ -24,30 +26,30 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
  */
-     
+
     class QRbitstream {
-    
+
         public $data = array();
-        
+
         //----------------------------------------------------------------------
         public function size()
         {
             return count($this->data);
         }
-        
+
         //----------------------------------------------------------------------
         public function allocate($setLength)
         {
             $this->data = array_fill(0, $setLength, 0);
             return 0;
         }
-    
+
         //----------------------------------------------------------------------
         public static function newFromNum($bits, $num)
         {
             $bstream = new QRbitstream();
             $bstream->allocate($bits);
-            
+
             $mask = 1 << ($bits - 1);
             for($i=0; $i<$bits; $i++) {
                 if($num & $mask) {
@@ -60,7 +62,7 @@
 
             return $bstream;
         }
-        
+
         //----------------------------------------------------------------------
         public static function newFromBytes($size, $data)
         {
@@ -83,36 +85,36 @@
 
             return $bstream;
         }
-        
+
         //----------------------------------------------------------------------
         public function append(QRbitstream $arg)
         {
             if (is_null($arg)) {
                 return -1;
             }
-            
+
             if($arg->size() == 0) {
                 return 0;
             }
-            
+
             if($this->size() == 0) {
                 $this->data = $arg->data;
                 return 0;
             }
-            
+
             $this->data = array_values(array_merge($this->data, $arg->data));
 
             return 0;
         }
-        
+
         //----------------------------------------------------------------------
         public function appendNum($bits, $num)
         {
-            if ($bits == 0) 
+            if ($bits == 0)
                 return 0;
 
             $b = QRbitstream::newFromNum($bits, $num);
-            
+
             if(is_null($b))
                 return -1;
 
@@ -125,11 +127,11 @@
         //----------------------------------------------------------------------
         public function appendBytes($size, $data)
         {
-            if ($size == 0) 
+            if ($size == 0)
                 return 0;
 
             $b = QRbitstream::newFromBytes($size, $data);
-            
+
             if(is_null($b))
                 return -1;
 
@@ -138,22 +140,22 @@
 
             return $ret;
         }
-        
+
         //----------------------------------------------------------------------
         public function toByte()
         {
-        
+
             $size = $this->size();
 
             if($size == 0) {
                 return array();
             }
-            
+
             $data = array_fill(0, (int)(($size + 7) / 8), 0);
             $bytes = (int)($size / 8);
 
             $p = 0;
-            
+
             for($i=0; $i<$bytes; $i++) {
                 $v = 0;
                 for($j=0; $j<8; $j++) {
@@ -163,7 +165,7 @@
                 }
                 $data[$i] = $v;
             }
-            
+
             if($size & 7) {
                 $v = 0;
                 for($j=0; $j<($size & 7); $j++) {

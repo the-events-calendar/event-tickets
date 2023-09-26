@@ -2,6 +2,8 @@
 
 namespace TEC\Tickets\QR;
 
+use TEC\Tickets\phpqrcode\QRcode;
+
 /**
  * Class Facade
  *
@@ -9,7 +11,7 @@ namespace TEC\Tickets\QR;
  *
  * @package TEC\Tickets\QR
  */
-class Facade {
+class QR {
 	/**
 	 * The level of the QR code.
 	 *
@@ -17,7 +19,7 @@ class Facade {
 	 *
 	 * @var int
 	 */
-	protected $level = QR_ECLEVEL_L;
+	protected $level = TEC_TICKETS_QR_ECLEVEL_L;
 
 	/**
 	 * The size of the QR code.
@@ -123,7 +125,7 @@ class Facade {
 	 */
 	public function get_png_as_string( string $data ): string {
 		ob_start();
-		\QRcode::png( $data, false, $this->get_level(), $this->get_size(), $this->get_margin() );
+		QRcode::png( $data, false, $this->get_level(), $this->get_size(), $this->get_margin() );
 		$png_string = ob_get_clean();
 		return $png_string;
 	}

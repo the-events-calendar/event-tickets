@@ -25,26 +25,12 @@ class Controller extends Controller_Contract {
 	}
 
 	/**
-	 * Boot the Controller.
-	 *
-	 * This function is used to instantiate the singleton classes and register any other providers.
-	 *
-	 * @since   TBD
-	 */
-	public function boot() {
-		$this->container->bind( Facade::class, [ $this, 'bind_facade_or_error' ] );
-	}
-
-	/**
 	 * Register the controller.
 	 *
 	 * @since   TBD
 	 */
 	public function do_register(): void {
-		$this->boot();
-
-		$this->add_actions();
-		$this->add_filters();
+		$this->container->bind( QR::class, [ $this, 'bind_facade_or_error' ] );
 	}
 
 	/**
@@ -55,51 +41,6 @@ class Controller extends Controller_Contract {
 	 * @return void
 	 */
 	public function unregister(): void {
-		$this->remove_actions();
-		$this->remove_filters();
-	}
-
-	/**
-	 * Add the action hooks.
-	 *
-	 * @since   TBD
-	 *
-	 * @return void
-	 */
-	protected function add_actions(): void {
-
-	}
-
-	/**
-	 * Add the action hooks.
-	 *
-	 * @since   TBD
-	 *
-	 * @return void
-	 */
-	protected function add_filters(): void {
-
-	}
-
-	/**
-	 * Removes actions.
-	 *
-	 * @since   TBD
-	 *
-	 * @return void
-	 */
-	protected function remove_actions(): void {
-
-	}
-
-	/**
-	 * Removes filters.
-	 *
-	 * @since   TBD
-	 *
-	 * @return void
-	 */
-	protected function remove_filters(): void {
 
 	}
 
@@ -108,7 +49,7 @@ class Controller extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @return \WP_Error|Facade
+	 * @return \WP_Error|QR
 	 */
 	public function bind_facade_or_error() {
 		if ( ! $this->can_use() ) {
@@ -121,7 +62,7 @@ class Controller extends Controller_Contract {
 		// Load the library if it's not loaded already.
 		$this->load_library();
 
-		return new Facade;
+		return new QR;
 	}
 
 	/**
@@ -132,7 +73,7 @@ class Controller extends Controller_Contract {
 	 * @return void
 	 */
 	protected function has_library_loaded(): bool {
-		return class_exists( 'QRencode', false ) || class_exists( 'QRcode', false );
+		return defined( 'TEC_TICKETS_QR_CACHEABLE' );
 	}
 
 	/**
