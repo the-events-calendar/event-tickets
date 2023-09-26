@@ -37,6 +37,7 @@ const mapStateToProps = ( state, ownProps ) => ( {
 	isSettingsOpen: selectors.getTicketsIsSettingsOpen( state ),
 	showAvailability: ownProps.isSelected && selectors.hasCreatedTickets( state ),
 	showInactiveBlock: getShowInactiveBlock( state, ownProps ),
+	hasATicketSelected: selectors.hasATicketSelected( state ),
 } );
 
 export default compose(

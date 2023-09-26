@@ -30,6 +30,7 @@ const TicketsContainer = ( {
 	isSettingsOpen,
 	showAvailability,
 	showInactiveBlock,
+	hasATicketSelected,
 } ) => {
 	const messages = {
 		title: '',
@@ -56,11 +57,16 @@ const TicketsContainer = ( {
 		'tribe-editor__tickets__inner-blocks--show': ! showInactiveBlock,
 	} );
 
+	const cardClassName = classNames ( {
+		'tribe-editor__card-no-bottom-border': ! hasATicketSelected,
+		'tribe-editor__card-padding-bottom': hasATicketSelected
+	} );
+
 	return (
 		<div className="tribe-editor__tickets__container">
 			<div className={ innerBlocksClassName }>
 			<Card
-				className="tribe-editor__card-no-bottom-border"
+				className={ cardClassName }
 				header={ __( 'Tickets', 'event-tickets' ) }
 			>
 				<InnerBlocks
