@@ -161,10 +161,10 @@ class QR {
 
 		// Filters the upload directory but still use `wp_upload_bits` to create the file.
 		$upload_bits_filter = static function( $arr ) use ( $folder ) {
-	        $arr['url'] = str_replace( $arr['subdir'], $folder, $arr['url'] );
-	        $arr['path'] = str_replace( $arr['subdir'], $folder, $arr['path'] );
+			$arr['url'] = str_replace( $arr['subdir'], $folder, $arr['url'] );
+			$arr['path'] = str_replace( $arr['subdir'], $folder, $arr['path'] );
 			$arr['subdir'] = $folder;
-		    return $arr;
+			return $arr;
 		};
 
 		add_filter( 'upload_dir', $upload_bits_filter );
