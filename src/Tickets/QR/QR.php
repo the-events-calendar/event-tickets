@@ -5,7 +5,7 @@ namespace TEC\Tickets\QR;
 use TEC\Tickets\phpqrcode\QRcode;
 
 /**
- * Class Facade
+ * A Facade for the QR code generator.
  *
  * @since   TBD
  *
