@@ -13,14 +13,19 @@
 ?>
 
 <li class="post-type series-summary">
-	<strong><?php echo esc_html__( 'Series', 'event-tickets' ); ?> : </strong>
+	<strong><?php echo esc_html__( 'Series', 'event-tickets' ); ?>: </strong>
 	<?php echo wp_kses( $edit_link, [
 		'a' => [
 			'href'   => [],
 			'target' => [],
-		],
+		]
 	] ); ?>
 </li>
 <li class="series-actions">
-	<?php echo implode( ' | ', $action_links ); ?>
+	<?php echo wp_kses( implode( ' | ', $action_links ), [
+		'a' => [
+			'href'   => [],
+			'target' => [],
+		]
+	] ); ?>
 </li>
