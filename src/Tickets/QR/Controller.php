@@ -147,7 +147,7 @@ class Controller extends Controller_Contract {
 			return;
 		}
 
-		require_once tribe( 'tickets.main' )->plugin_path . '/vendor/phpqrcode/qrlib.php';
+		require_once tribe( 'tickets.main' )->plugin_path . 'vendor/phpqrcode/qrlib.php';
 	}
 
 	/**
