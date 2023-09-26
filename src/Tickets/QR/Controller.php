@@ -103,7 +103,7 @@ class Controller extends Controller_Contract {
 
 	}
 
-/**
+	/**
 	 * Binds the facade or throws an error.
 	 *
 	 * @since TBD
