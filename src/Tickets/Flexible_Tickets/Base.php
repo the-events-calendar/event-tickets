@@ -465,7 +465,16 @@ class Base extends Controller {
 		return $context;
 	}
 
-	public function render_series_details_for_attached_event( $post_id ) {
+	/**
+	 * Renders the series details for an event attached to a series.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id The ID of the post being displayed.
+	 *
+	 * @return void
+	 */
+	public function render_series_details_for_attached_event( int $post_id ): void {
 		if ( get_post_type( $post_id ) === Series_Post_Type::POSTTYPE ) {
 			return;
 		}
