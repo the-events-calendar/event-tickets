@@ -193,7 +193,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [TBD] TBD =
 
-* Fix - On a new installation of Event Tickets Plus, the Attendee Registration feature will now use the modal by default.  [ETP-882]
+* Fix - The Attendee Registration feature will now use the modal by default.  [ETP-882]
 * Fix - Restore possibility to move Tickets and Attendees to Single Events that are part of a Series. [ET-1862]
 * Fix - Ticket property invalidation to ensure capacity, inventory and availability are correctly invalidated. [ET-xxx]
 * Fix - Fix order status sometimes showing incorrectly for sites in languages other than English. [ET-1875]
