@@ -195,6 +195,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 * Tweak - Include a QRCode Library in Event Tickets to improve conformity across other addons. [ETWP-29]
 * Fix - Restore possibility to move Tickets and Attendees to Single Events that are part of a Series. [ET-1862]
+* Fix - When using the block editor, the Attendee Information modal will be properly sized. [ETP-883]
 * Fix - Ticket property invalidation to ensure capacity, inventory and availability are correctly invalidated. [ET-xxx]
 * Fix - Fix order status sometimes showing incorrectly for sites in languages other than English. [ET-1875]
 

@@ -1,3 +1,12 @@
+// We need to add 100% height to the div so that the Iframe will size properly.
+.components-modal__content {
+	& > div {
+		&:not(.components-modal__header) {
+			height: 100%;
+		}
+	}
+}
+
 .tribe-editor__attendee-registration {
 	margin-top: 30px;
 }
