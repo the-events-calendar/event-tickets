@@ -176,7 +176,7 @@ class Telemetry {
 	 */
 	public function inject_modal_link() {
 		// Don't double-dip on the action.
-		if ( did_action( 'tec_telemetry_modal' ) ) {
+		if ( did_action( 'tec_telemetry_modal' ) && ! doing_action( 'tec_telemetry_modal' ) ) {
 			return;
 		}
 
@@ -212,17 +212,20 @@ class Telemetry {
 			Settings::$troubleshooting_page_id
 		];
 
-		// Load specifically on Ticket Settings page only.
-		$show = in_array( $admin_page, $pages );
+		// Load specifically on Ticket Settings pages only.
+		if ( ! in_array( $admin_page, $pages ) ) {
+			return false;
+		}
 
 		// 'event-tickets'
-		$telemetry_slug = \TEC\Common\Telemetry\Telemetry::get_plugin_slug();
+		$telemetry_slug = substr( basename( EVENT_TICKETS_MAIN_PLUGIN_FILE ), 0, -4 );
 
 		$show = Common_Telemetry::calculate_modal_status();
 
 		if ( ! $show ) {
 			return;
 		}
+
 		/**
 		 * Fires to trigger the modal content on admin pages.
 		 *
