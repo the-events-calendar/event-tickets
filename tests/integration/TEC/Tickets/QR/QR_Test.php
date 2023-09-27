@@ -2,8 +2,7 @@
 
 namespace TEC\Tickets\QR;
 
-use Spatie\Snapshots\MatchesSnapshots;
-use tad\WP\Snapshots\WPHtmlOutputDriver;
+use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 
 /**
  * Class QR_Test.
@@ -13,16 +12,9 @@ use tad\WP\Snapshots\WPHtmlOutputDriver;
  * @package TEC\Tickets\QR
  */
 class QR_Test extends \Codeception\TestCase\WPTestCase {
-	use MatchesSnapshots;
+	use SnapshotAssertions;
 
-	protected $driver;
-
-	public function setUp(): void {
-		parent::setUp();
-
-		// Setup a new HTML output driver to make sure our stuff is tolerable.
-		$this->driver = new WPHtmlOutputDriver( home_url(), 'http://views.dev' );
-	}
+	protected $uploads = [];
 
 	/**
 	 * @test
@@ -88,7 +80,7 @@ class QR_Test extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function should_create_png_as_base64( $data  ): void {
 		$qr_code = tribe( QR::class );
-		$this->assertMatchesSnapshot( $qr_code->get_png_as_base64( $data ), $this->driver );
+		$this->assertMatchesStringSnapshot( $qr_code->get_png_as_base64( $data ), $this->driver );
 	}
 
 	/**
@@ -97,7 +89,7 @@ class QR_Test extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function should_create_png_as_string( $data ): void {
 		$qr_code = tribe( QR::class );
-		$this->assertMatchesSnapshot( $qr_code->get_png_as_string( $data ), $this->driver );
+		$this->assertMatchesStringSnapshot( $qr_code->get_png_as_string( $data ), $this->driver );
 	}
 
 	/**
@@ -106,9 +98,9 @@ class QR_Test extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function should_create_png_as_file( $data, $slug, $folder ): void {
 		$qr_code = tribe( QR::class );
-		$upload = $qr_code->get_png_as_file( $data, $slug, $folder );
+		$this->uploads[] = $upload = $qr_code->get_png_as_file( $data, $slug, $folder );
 
-		$this->assertMatchesSnapshot( json_encode( $upload ), $this->driver );
+		$this->assertMatchesStringSnapshot( json_encode( $upload ), $this->driver );
 		$this->assertFileExists( $upload['file'] );
 		$this->assertEmpty( $upload['error'] );
 
@@ -116,8 +108,19 @@ class QR_Test extends \Codeception\TestCase\WPTestCase {
 			$this->assertContains( $folder, $upload['file'] );
 		}
 
-		unlink( $upload['file'] );
+		$this->assertContains( '.png', $upload['file'] );
 	}
 
+	/**
+	 * @after
+	 */
+	public function cleanup_uploads(): void {
+		foreach ( $this->uploads as $upload ) {
+			if ( ! file_exists( $upload['file'] ) ) {
+				return;
+			}
 
+			unlink( $upload['file'] );
+		}
+	}
 }
