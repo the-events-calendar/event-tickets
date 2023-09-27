@@ -12,10 +12,12 @@ use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Pending;
 use Tribe\Events\Test\Factories\Event;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
+use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe__Tickets__Tickets;
 
 class MoveTicketsTest extends \Codeception\TestCase\WPTestCase {
 	use Ticket_Maker;
+	use Attendee_Maker;
 
 	/**
 	 * @inheritDoc
@@ -66,33 +68,20 @@ class MoveTicketsTest extends \Codeception\TestCase\WPTestCase {
 			$this->create_tc_ticket( $events[1]['event_id'], 20, $overrides )
 		];
 
-		// Add two tickets from our first event.
-		$cart = new Cart();
-		$cart->get_repository()->add_item( $events[0]['tickets'][0], 5 );
-		$cart->get_repository()->add_item( $events[1]['tickets'][1], 5 );
 
-		$purchaser = [
-			'purchaser_user_id'    => 0,
-			'purchaser_full_name'  => 'Test Purchaser',
-			'purchaser_first_name' => 'Test',
-			'purchaser_last_name'  => 'Purchaser',
-			'purchaser_email'      => 'test@test.com',
-		];
+		$test = $this->create_attendee_for_ticket(  $events[0]['tickets'][0], $events[0]['event_id'] );
 
-		$order = tribe( Order::class )->create_from_cart( tribe( Gateway::class ), $purchaser );
 
-		$pending   = tribe( Order::class )->modify_status( $order->ID, Pending::SLUG );
-		$completed = tribe( Order::class )->modify_status( $order->ID, Completed::SLUG );
-
-		$ticket_a = tribe( Module::class )->get_ticket( $events[1]['event_id'], $events[0]['tickets'][0] );
-		$ticket_b = tribe( Module::class )->get_ticket( $events[1]['event_id'], $events[0]['tickets'][1] );
-
+		codecept_debug($events);
+		/**
+		 * Our goal is to move a single ticket from Event 0 to Event 1.
+		 */
 
 		// Now that our scenario is set up, lets move ticket_a to the second event.
-		$successful_moves = tribe( 'Tribe__Tickets__Admin__Move_Tickets' )->move_tickets( [ $events[1]['tickets'][0] ],
-		                                                              $events[1]['tickets'][0],
-		                                                              $events[0]['event_id'],
-		                                                              $events[1]['event_id'] );
+		$successful_moves = tribe( 'Tribe__Tickets__Admin__Move_Tickets' )->move_tickets( [ $events[0]['tickets'][0] ],
+		                                                                                  $events[1]['tickets'][0],
+		                                                                                  $events[0]['event_id'],
+		                                                                                  $events[1]['event_id'] );
 		codecept_debug("Moved ". $successful_moves . " tickets");
 
 
