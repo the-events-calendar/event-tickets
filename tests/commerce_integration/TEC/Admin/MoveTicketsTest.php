@@ -37,16 +37,10 @@ class MoveTicketsTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	public function test_tc_shared_capacity_purchase() {
+
 		$maker = new Event();
-
-
-		/**
-		 * Setup our test structure, Create two events, one event with 2 tickets, another with 1 ticket.
-		 */
-
-		$events = [];
-
-		$events[0]['event_id'] = $maker->create();
+		$event_1_id= $maker->create();
+		$event_2_id = $maker->create();
 
 		$overrides = [
 			'tribe-ticket' => [
@@ -55,33 +49,39 @@ class MoveTicketsTest extends \Codeception\TestCase\WPTestCase {
 				'capacity'       => 30,
 			],
 		];
+		$event_1_ticket   = $this->create_tc_ticket( $event_1_id, 10, $overrides );
 
-		$events[0]['tickets'] = [
-			$this->create_tc_ticket( $events[0]['event_id'], 10, $overrides ),
-			$this->create_tc_ticket( $events[0]['event_id'], 20, $overrides )
+		$overrides = [
+			'tribe-ticket' => [
+				'mode'           => \Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE,
+				'event_capacity' => 50,
+				'capacity'       => 50,
+			],
 		];
+		$event_2_ticket   = $this->create_tc_ticket( $event_2_id, 20, $overrides );
 
-		$events[1]['event_id'] = $maker->create();
-
-		$events[1]['tickets'] = [
-			$this->create_tc_ticket( $events[1]['event_id'], 10, $overrides ),
-			$this->create_tc_ticket( $events[1]['event_id'], 20, $overrides )
-		];
+		$attendees_for_event_1 = $this->create_many_attendees_for_ticket( 5, $event_1_ticket, $event_1_id );
 
 
-		$test = $this->create_attendee_for_ticket(  $events[0]['tickets'][0], $events[0]['event_id'] );
-
-
-		codecept_debug($events);
+		codecept_debug($attendees_for_event_1);
 		/**
 		 * Our goal is to move a single ticket from Event 0 to Event 1.
 		 */
 
+		/**
+		 * action    "move_tickets"
+		 * src_post_id    "14067" Event 1
+		 * target_post_id    "14070" Event 2
+		 * check    "227674bfdc"
+		 * ticket_ids[]    "14082" ID of Attendee
+		 * target_type_id    "14071" Event 2 Ticket
+		 */
+
 		// Now that our scenario is set up, lets move ticket_a to the second event.
-		$successful_moves = tribe( 'Tribe__Tickets__Admin__Move_Tickets' )->move_tickets( [ $events[0]['tickets'][0] ],
-		                                                                                  $events[1]['tickets'][0],
-		                                                                                  $events[0]['event_id'],
-		                                                                                  $events[1]['event_id'] );
+		$successful_moves = tribe( 'Tribe__Tickets__Admin__Move_Tickets' )->move_tickets( [ $attendees_for_event_1 ],
+		                                                                                  $event_2_ticket,
+		                                                                                  $event_1_id,
+		                                                                                  $event_2_id );
 		codecept_debug("Moved ". $successful_moves . " tickets");
 
 
