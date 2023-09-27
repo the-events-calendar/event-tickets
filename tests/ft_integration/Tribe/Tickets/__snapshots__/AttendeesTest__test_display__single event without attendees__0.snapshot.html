@@ -21,7 +21,7 @@
 				<strong>Post type: </strong>
 				event
 			</li>
-		<li class="event-actions"><a href="" title="Edit">Edit Event</a> | <a href="http://wordpress.test/?tribe_events=event-with-no-attendees" title="View">View Event</a></li>				</ul>
+		<li class="event-actions"><a href="http://wordpress.test/wp-admin/post.php?post=POST_ID&#038;action=edit" title="Edit">Edit Event</a> | <a href="http://wordpress.test/?tribe_events=event-with-no-attendees" title="View">View Event</a></li>				</ul>
 				
 			</div>
 
@@ -177,6 +177,8 @@
 		<input type="submit" id="search-submit" class="button" value="Search attendees"  /></p>
 			<input type="hidden" id="_wpnonce" name="_wpnonce" value="1234567890" /><input type="hidden" name="_wp_http_referer" value="" />	<div class="tablenav top">
 
+				<div class="alignleft actions attendees-actions"><input type="button" name="print" class="print button action" value="Print"><a target="_blank" href="?attendees_csv=1&#038;attendees_csv_nonce=1234567890" class="export button action" rel="noopener noreferrer">Export</a><a class="email button action thickbox" href="http://wordpress.test/wp-admin/admin.php?page=tickets-attendees&#038;action=email&#038;event_id=POST_ID&#038;TB_iframe=1&#038;width=410&#038;height=300&#038;post_type=tribe_events">Email</a></div>
+		<div class="alignright attendees-filter"></div>
 		<div class='tablenav-pages no-pages'><span class="displaying-num">0 items</span>
 <span class='pagination-links'><span class="tablenav-pages-navspan button disabled" aria-hidden="true">&laquo;</span>
 <span class="tablenav-pages-navspan button disabled" aria-hidden="true">&lsaquo;</span>
@@ -203,6 +205,8 @@
 </table>
 			<div class="tablenav bottom">
 
+				<div class="alignleft actions attendees-actions"><input type="button" name="print" class="print button action" value="Print"><a target="_blank" href="?attendees_csv=1&#038;attendees_csv_nonce=1234567890" class="export button action" rel="noopener noreferrer">Export</a><a class="email button action thickbox" href="http://wordpress.test/wp-admin/admin.php?page=tickets-attendees&#038;action=email&#038;event_id=POST_ID&#038;TB_iframe=1&#038;width=410&#038;height=300&#038;post_type=tribe_events">Email</a></div>
+		<div class="alignright attendees-filter"></div>
 		<div class='tablenav-pages no-pages'><span class="displaying-num">0 items</span>
 <span class='pagination-links'><span class="tablenav-pages-navspan button disabled" aria-hidden="true">&laquo;</span>
 <span class="tablenav-pages-navspan button disabled" aria-hidden="true">&lsaquo;</span>
