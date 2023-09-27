@@ -34,7 +34,9 @@ namespace TEC\Tickets\phpqrcode;
             $image = self::image($frame, $pixelPerPoint, $outerFrame);
 
             if ($filename === false) {
-                Header("Content-type: image/png");
+                if($saveandprint===TRUE){
+	                Header("Content-type: image/png");
+                }
                 ImagePng($image);
             } else {
                 if($saveandprint===TRUE){
