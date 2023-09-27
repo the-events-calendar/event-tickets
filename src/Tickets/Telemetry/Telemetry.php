@@ -179,7 +179,7 @@ class Telemetry {
 	 */
 	public function inject_modal_link() {
 		// Don't double-dip on the action.
-		if ( did_action( 'tec_telemetry_modal' ) && ! doing_action( 'tec_telemetry_modal' ) ) {
+		if ( did_action( 'tec_telemetry_modal' ) ) {
 			return;
 		}
 
