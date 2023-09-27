@@ -220,14 +220,14 @@ class Telemetry {
 			return false;
 		}
 
-		// 'event-tickets'
-		$telemetry_slug = substr( basename( EVENT_TICKETS_MAIN_PLUGIN_FILE ), 0, -4 );
-
 		$show = Common_Telemetry::calculate_modal_status();
 
 		if ( ! $show ) {
 			return;
 		}
+
+		// 'event-tickets'
+		$telemetry_slug = substr( basename( EVENT_TICKETS_MAIN_PLUGIN_FILE ), 0, -4 );
 
 		/**
 		 * Fires to trigger the modal content on admin pages.
