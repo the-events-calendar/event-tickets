@@ -49,7 +49,7 @@ class Controller extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @return \WP_Error|QR
+	 * @return \WP_Error|QR Either the build QR façade, or an error to detail the failure.
 	 */
 	public function bind_facade_or_error() {
 		if ( ! $this->can_use() ) {
@@ -69,8 +69,6 @@ class Controller extends Controller_Contract {
 	 * Determines if the QR code library is loaded.
 	 *
 	 * @since TBD
-	 *
-	 * @return void
 	 */
 	protected function has_library_loaded(): bool {
 		return defined( 'TEC_TICKETS_QR_CACHEABLE' );
@@ -80,8 +78,6 @@ class Controller extends Controller_Contract {
 	 * Loads the QR code library if it's not loaded already.
 	 *
 	 * @since TBD
-	 *
-	 * @return void
 	 */
 	protected function load_library(): void {
 		if ( $this->has_library_loaded() ) {
@@ -96,7 +92,7 @@ class Controller extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @return bool
+	 * @return bool Whether the current server configuration supports the QR functionality.
 	 */
 	public function can_use(): bool {
 		$can_use = function_exists( 'gzuncompress' ) && function_exists( 'ImageCreate' );

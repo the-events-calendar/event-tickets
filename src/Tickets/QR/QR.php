@@ -127,6 +127,7 @@ class QR {
 		ob_start();
 		QRcode::png( $data, false, $this->get_level(), $this->get_size(), $this->get_margin() );
 		$png_string = ob_get_clean();
+
 		return $png_string;
 	}
 
@@ -141,6 +142,7 @@ class QR {
 	 */
 	public function get_png_as_base64( string $data ): string {
 		$src = base64_encode( $this->get_png_as_string( $data ) );
+
 		return "data:image/png;base64," . $src;
 	}
 
@@ -153,7 +155,7 @@ class QR {
 	 * @param string $name
 	 * @param string $folder
 	 *
-	 * @return array
+	 * @return array{file: string, url: string, type: string, error: string|false} The QR uploaded file information.
 	 */
 	public function get_png_as_file( string $data, string $name, string $folder = 'tec-tickets-qr' ): array {
 		$folder = '/' . ltrim( $folder, '/' );
