@@ -17,7 +17,7 @@ class QR {
 	 *
 	 * @since TBD
 	 *
-	 * @var int
+	 * @var int What type of error correction will be used on the QR code.
 	 */
 	protected $level = TEC_TICKETS_QR_ECLEVEL_L;
 
@@ -26,7 +26,7 @@ class QR {
 	 *
 	 * @since TBD
 	 *
-	 * @var int
+	 * @var int Stores the size of the QR code.
 	 */
 	protected $size = 3;
 
@@ -35,16 +35,16 @@ class QR {
 	 *
 	 * @since TBD
 	 *
-	 * @var int
+	 * @var int Stores the margin used to generate the QR code.
 	 */
 	protected $margin = 4;
 
 	/**
-	 * Change the level of the QR code.
+	 * Change the level of Error Correction will be used on the QR code.
 	 *
 	 * @since TBD
 	 *
-	 * @param int $value
+	 * @param int $value What value will be set on level.
 	 *
 	 * @return $this
 	 */
@@ -58,7 +58,7 @@ class QR {
 	 *
 	 * @since TBD
 	 *
-	 * @param int $value
+	 * @param int $value What value will be set on size.
 	 *
 	 * @return $this
 	 */
@@ -72,7 +72,7 @@ class QR {
 	 *
 	 * @since TBD
 	 *
-	 * @param int $value
+	 * @param int $value What value will be set on margin.
 	 *
 	 * @return $this
 	 */
@@ -82,11 +82,11 @@ class QR {
 	}
 
 	/**
-	 * Get the level of the QR code.
+	 * Get the EC level of the QR code.
 	 *
 	 * @since TBD
 	 *
-	 * @return int
+	 * @return int Type of QR code used.
 	 */
 	protected function get_level(): int {
 		return $this->level;
@@ -97,7 +97,7 @@ class QR {
 	 *
 	 * @since TBD
 	 *
-	 * @return int
+	 * @return int Size of the QR code.
 	 */
 	protected function get_size(): int {
 		return $this->size;
@@ -108,7 +108,7 @@ class QR {
 	 *
 	 * @since TBD
 	 *
-	 * @return int
+	 * @return int Margin used to be included in the QR code, helps with readability.
 	 */
 	protected function get_margin(): int {
 		return $this->margin;
@@ -119,9 +119,9 @@ class QR {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $data
+	 * @param string $data String used to generate the QR code.
 	 *
-	 * @return string
+	 * @return string The QR code as a string, not an actual readable string, it's a binary.
 	 */
 	public function get_png_as_string( string $data ): string {
 		ob_start();
@@ -136,9 +136,9 @@ class QR {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $data
+	 * @param string $data String used to generate the QR code.
 	 *
-	 * @return string
+	 * @return string QR Code as an embeddable Base64 image.
 	 */
 	public function get_png_as_base64( string $data ): string {
 		$src = base64_encode( $this->get_png_as_string( $data ) );
@@ -151,9 +151,9 @@ class QR {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $data
-	 * @param string $name
-	 * @param string $folder
+	 * @param string $data String used to generate the QR code.
+	 * @param string $name File name without the extension.
+	 * @param string $folder Which folder under WP_CONTENT_DIR/uploads/ will be used to store the file.
 	 *
 	 * @return array{file: string, url: string, type: string, error: string|false} The QR uploaded file information.
 	 */
