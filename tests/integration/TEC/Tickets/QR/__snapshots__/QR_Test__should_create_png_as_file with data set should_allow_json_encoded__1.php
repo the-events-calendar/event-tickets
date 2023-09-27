@@ -1,1 +1,1 @@
-<?php return '{"file":"\\/var\\/www\\/html\\/wp-content\\/uploads\\/\\/json_encoded-3.png","url":"http:\\/\\/wordpress.test\\/wp-content\\/uploads\\/\\/json_encoded-3.png","type":"image\\/png","error":false}';
+<?php return '{"file":"\\/var\\/www\\/html\\/wp-content\\/uploads\\/\\/json_encoded.png","url":"http:\\/\\/wordpress.test\\/wp-content\\/uploads\\/\\/json_encoded.png","type":"image\\/png","error":false}';

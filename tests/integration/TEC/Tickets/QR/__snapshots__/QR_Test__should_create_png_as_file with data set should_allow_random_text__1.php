@@ -1,1 +1,1 @@
-<?php return '{"file":"\\/var\\/www\\/html\\/wp-content\\/uploads\\/\\/random_text-3.png","url":"http:\\/\\/wordpress.test\\/wp-content\\/uploads\\/\\/random_text-3.png","type":"image\\/png","error":false}';
+<?php return '{"file":"\\/var\\/www\\/html\\/wp-content\\/uploads\\/\\/random_text.png","url":"http:\\/\\/wordpress.test\\/wp-content\\/uploads\\/\\/random_text.png","type":"image\\/png","error":false}';
