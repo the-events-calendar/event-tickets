@@ -38,6 +38,7 @@ class Editor extends Controller {
 		);
 
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin_scripts' ] );
+		add_filter( 'tec_tickets_ticket_panel_data', [ $this, 'filter_ticket_panel_data' ], 10, 2 );
 	}
 
 	/**
@@ -53,6 +54,7 @@ class Editor extends Controller {
 			[ $this, 'include_ticket_provider_in_series_dropdown_data' ]
 		);
 		remove_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin_scripts' ] );
+		remove_filter( 'tec_tickets_ticket_panel_data', [ $this, 'filter_ticket_panel_data' ] );
 	}
 
 	/**
@@ -104,10 +106,10 @@ class Editor extends Controller {
 					'event-tickets'
 				)
 			],
-			'classic' => [
-				'ticketPanelEditSelector' => '#tribe_panel_edit',
+			'classic'            => [
+				'ticketPanelEditSelector'                 => '#tribe_panel_edit',
 				'ticketPanelEditDefaultProviderAttribute' => 'data-current-provider',
-				'ticketsMetaboxSelector' => '#event_tickets',
+				'ticketsMetaboxSelector'                  => '#event_tickets',
 			]
 		];
 
@@ -150,5 +152,45 @@ class Editor extends Controller {
 			],
 		);
 		tribe_asset_enqueue( 'tec-tickets-flexible-tickets-event-classic-editor-js' );
+	}
+
+	/**
+	 * Filters the data used to render the ticket panels to control settings related to the ticket provider.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $data    The data used to render the ticket panels.
+	 * @param int                 $post_id The post ID context of the metabox.
+	 *
+	 * @return array<string,mixed> The data used to render the ticket panels.
+	 */
+	public function filter_ticket_panel_data( array $data, int $post_id ): array {
+		$series_id = tec_series()->where( 'event_post_id', $post_id )->first_id();
+
+		if ( empty( $series_id ) ) {
+			return $data;
+		}
+
+		if ( ! isset( $data['active_providers'] ) ) {
+			return $data;
+		}
+
+		foreach ( $data['active_providers'] as &$provider ) {
+			$provider['disabled'] = true;
+		}
+		unset( $provider );
+
+		$edit_link = get_edit_post_link( $series_id, 'admin' ) . '#tribetickets';
+		$data['multiple_providers_notice'] = sprintf(
+			_x(
+			// Translators: %s is the series title with a link to edit it.
+				'The ecommerce provider is defined in the ticket settings for the Series %s.',
+				'The notice shown when there are multiple ticket providers available and the Event is part of a Series.',
+				'event-tickets'
+			),
+			'<a target="_blank" href="' . esc_url( $edit_link ) . '">' . esc_html( get_the_title( $series_id ) ) . '</a>'
+		);
+
+		return $data;
 	}
 }

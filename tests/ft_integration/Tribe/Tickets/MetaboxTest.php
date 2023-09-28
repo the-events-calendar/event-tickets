@@ -328,8 +328,7 @@ class MetaboxTest extends WPTestCase {
 		];
 	}
 
-	public
-	function placehold_post_ids(
+	public function placehold_post_ids(
 		string $snapshot, array $ids
 	): string {
 		return str_replace(
