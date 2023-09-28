@@ -18,7 +18,7 @@ class Controller extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @return bool
+	 * @return bool Whether the controller is active or not.
 	 */
 	public function is_active(): bool {
 		return true;
