@@ -54,8 +54,8 @@ class Ticket_Panel_Data {
 	public function to_array(): array {
 		$ticket_id         = $this->ticket_id;
 		$is_admin          = tribe_is_truthy( tribe_get_request_var( 'is_admin', is_admin() ) );
-		$provider          = null;
-		$provider_class    = null;
+		$provider_class    = Tickets::get_event_ticket_provider( $this->post_id ) ?: '';
+		$provider          = Tickets::get_ticket_provider_instance( $provider_class );
 		$ticket            = null;
 		$ticket_start_date = null;
 		$ticket_end_date   = null;

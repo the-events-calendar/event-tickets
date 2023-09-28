@@ -103,6 +103,11 @@ class Editor extends Controller {
 					'ticket provider.',
 					'event-tickets'
 				)
+			],
+			'classic' => [
+				'ticketPanelEditSelector' => '#tribe_panel_edit',
+				'ticketPanelEditDefaultProviderAttribute' => 'data-current-provider',
+				'ticketsMetaboxSelector' => '#event_tickets',
 			]
 		];
 
@@ -138,7 +143,10 @@ class Editor extends Controller {
 				'groups'   => [
 					'flexible-tickets',
 				],
-				'localize' => $editor_data,
+				'localize' => [
+					'name' => 'TECFtEditorData',
+					'data' => $editor_data,
+				]
 			],
 		);
 		tribe_asset_enqueue( 'tec-tickets-flexible-tickets-event-classic-editor-js' );
