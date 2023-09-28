@@ -52,11 +52,6 @@ class Warnings {
 			}
 		}
 
-		if ( tribe_is_frontend() ) {
-			$this->render_notice( $this->get_recurring_event_warning_message() );
-			return;
-		}
-
 		$this->render_notice( $this->get_recurring_event_warning_message(), 'info', null, null, [ 'recurring_event_warning' ] );
 	}
 
