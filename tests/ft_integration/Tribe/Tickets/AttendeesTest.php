@@ -152,7 +152,8 @@ class AttendeesTest extends WPTestCase {
 						$rsvp_1_ticket_id,
 						$rsvp_2_ticket_id,
 						$series_pass_1_id,
-						$series_pass_2_id
+						$series_pass_2_id,
+						$series_id
 					]
 				];
 			}
