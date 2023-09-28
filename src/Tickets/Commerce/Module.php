@@ -83,7 +83,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 *
 	 * @var string
 	 */
-	const ATTENDEE_PRODUCT_KEY = '_tec_tickets_commerce_product';
+	const ATTENDEE_PRODUCT_KEY = '_tec_tickets_commerce_ticket';
 
 	/**
 	 * Meta key that relates Attendees and Orders.
@@ -231,13 +231,6 @@ class Module extends \Tribe__Tickets__Tickets {
 		if ( $this->is_loaded ) {
 			return false;
 		}
-
-//		add_filter( 'post_updated_messages', [ $this, 'updated_messages' ] );
-
-//		add_action( 'init', tribe_callback( 'tickets.commerce.paypal.orders.report', 'hook' ) );
-//		add_action( 'tribe_tickets_attendees_page_inside', tribe_callback( 'tickets.commerce.paypal.orders.tabbed-view', 'render' ) );
-//		add_filter( 'tribe_tickets_stock_message_available_quantity', tribe_callback( 'tickets.commerce.paypal.orders.sales', 'filter_available' ), 10, 4 );
-//		add_action( 'admin_init', tribe_callback( 'tickets.commerce.paypal.oversell.request', 'handle' ) );```
 	}
 
 	/**
@@ -809,5 +802,4 @@ class Module extends \Tribe__Tickets__Tickets {
 
 		return $attendee;
 	}
-
 }
