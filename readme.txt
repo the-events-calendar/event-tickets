@@ -191,7 +191,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.6.5.1] 2023-09-27 =
+= [5.6.5.1] 2023-09-28 =
 
 * Version - Event Tickets 5.6.5.1 is only compatible with The Events Calendar 6.2.2.1 and higher.
 * Fix - Fix - Correct issue where Telemetry would register active plugins multiple times. [TEC-4920]
