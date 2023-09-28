@@ -2,27 +2,21 @@
 
 namespace TEC\Admin;
 
-use TEC\Tickets\Commerce\Cart;
-use TEC\Tickets\Commerce\Gateways\PayPal\Gateway;
-use TEC\Tickets\Commerce\Module;
-use TEC\Tickets\Commerce\Order;
-use TEC\Tickets\Commerce\Ticket;
-use TEC\Tickets\Commerce\Provider;
-use TEC\Tickets\Commerce\Status\Completed;
-use TEC\Tickets\Commerce\Status\Pending;
+
 use Tribe\Events\Test\Factories\Event;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
-use Tribe__Tickets__Tickets;
+use TEC\Tickets\Commerce\Module;
 
 class MoveTicketsTest extends \Codeception\TestCase\WPTestCase {
 	use Ticket_Maker;
 	use Order_Maker;
 
 	/**
-	 * Test the shared capacity purchase functionality.
+	 * Test the Move_Tickets functionality.
+	 * @test
 	 */
-	public function test_tc_shared_capacity_purchase() {
+	public function move_tickets_should_work_successfully() {
 
 		// Create two new events.
 		$maker      = new Event();
@@ -64,7 +58,6 @@ class MoveTicketsTest extends \Codeception\TestCase\WPTestCase {
 		/**
 		 * Our goal is to move a single ticket from Event 1 to Event 2.
 		 */
-
 		// Move the first ticket from the first event to the second event.
 		$successful_moves = tribe( 'Tribe__Tickets__Admin__Move_Tickets' )->move_tickets(
 			[ $attendees_objects[0]['ID'] ],
@@ -75,6 +68,34 @@ class MoveTicketsTest extends \Codeception\TestCase\WPTestCase {
 
 		// Assert that the move was successful.
 		$this->assertEquals(1, $successful_moves, 'The ticket move operation should be successful.' );
+
+		// refresh the ticket objects.
+		$ticket_event_1 = tribe( Module::class )->get_ticket( $event_1_id, $event_1_ticket );
+		$ticket_event_2 = tribe( Module::class )->get_ticket( $event_2_id, $event_2_ticket );
+
+		$this->assertEquals(25+1,$ticket_event_1->inventory(),"Inventory for ticket 1 should be less than original value.");
+		$this->assertEquals(50-1,$ticket_event_2->available(),"Available tickets for ticket 2 should be less than original value.");
+		$this->assertEquals(50-1,$ticket_event_2->inventory(),"Inventory for ticket 2 should be less than original value.");
+
+
+
+	}
+
+	/**
+	 * Test moving an invalid ticket ID.
+	 * @test
+	 */
+	public function move_tickets_should_return_0_for_invalid_data() {
+		// Try moving with invalid ID's
+		$successful_moves = tribe( 'Tribe__Tickets__Admin__Move_Tickets' )->move_tickets(
+			[ 999999 ],
+			1,
+			1,
+			1
+		);
+
+		// Assert that the move was not successful.
+		$this->assertEquals(0, $successful_moves, 'The ticket move operation for an invalid ticket ID should not be successful.' );
 	}
 
 }
