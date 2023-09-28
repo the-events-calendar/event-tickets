@@ -687,3 +687,13 @@ export const canCreateTickets = createSelector(
 	[ hasTicketProviders, hasValidTicketProvider ],
 	( providers, validDefaultProvider ) => providers && validDefaultProvider,
 );
+
+export const getMultipleProvidersNotice = () => {
+	const tickets = ticketsConfig();
+	return tickets.multiple_providers_notice || '';
+};
+
+export const isTicketProvidersChoiceDisabled = () => {
+	const tickets = ticketsConfig();
+	return tickets.choice_disabled || false;
+};

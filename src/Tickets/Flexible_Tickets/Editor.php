@@ -39,6 +39,7 @@ class Editor extends Controller {
 
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin_scripts' ] );
 		add_filter( 'tec_tickets_ticket_panel_data', [ $this, 'filter_ticket_panel_data' ], 10, 2 );
+		add_filter( 'tribe_editor_config', [ $this, 'filter_tickets_editor_config' ] );
 	}
 
 	/**
@@ -55,6 +56,7 @@ class Editor extends Controller {
 		);
 		remove_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin_scripts' ] );
 		remove_filter( 'tec_tickets_ticket_panel_data', [ $this, 'filter_ticket_panel_data' ] );
+		remove_filter( 'tribe_editor_config', [ $this, 'filter_tickets_editor_config' ] );
 	}
 
 	/**
@@ -154,6 +156,20 @@ class Editor extends Controller {
 		tribe_asset_enqueue( 'tec-tickets-flexible-tickets-event-classic-editor-js' );
 	}
 
+	private function get_series_related_to_event( int $post_id = null ): ?int {
+		if ( get_post_type( $post_id ) !== TEC::POSTTYPE ) {
+			return null;
+		}
+
+		$series_id = tec_series()->where( 'event_post_id', $post_id )->first_id();
+
+		if ( empty( $series_id ) ) {
+			return null;
+		}
+
+		return $series_id;
+	}
+
 	/**
 	 * Filters the data used to render the ticket panels to control settings related to the ticket provider.
 	 *
@@ -165,7 +181,7 @@ class Editor extends Controller {
 	 * @return array<string,mixed> The data used to render the ticket panels.
 	 */
 	public function filter_ticket_panel_data( array $data, int $post_id ): array {
-		$series_id = tec_series()->where( 'event_post_id', $post_id )->first_id();
+		$series_id = $this->get_series_related_to_event( $post_id );
 
 		if ( empty( $series_id ) ) {
 			return $data;
@@ -190,6 +206,38 @@ class Editor extends Controller {
 			),
 			'<a target="_blank" href="' . esc_url( $edit_link ) . '">' . esc_html( get_the_title( $series_id ) ) . '</a>'
 		);
+
+		return $data;
+	}
+
+	/**
+	 * Filters the data used to render the Tickets Block Editor control to alter its state for Events that
+	 * are part of a Series.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $data The data used to render the Tickets Block Editor control.
+	 *
+	 * @return array<string,mixed> The data used to render the Tickets Block Editor control.
+	 */
+	public function filter_tickets_editor_config( array $data ): array {
+		$series_id = $this->get_series_related_to_event( get_the_ID() );
+
+		if ( empty( $series_id ) ) {
+			return $data;
+		}
+
+		$edit_link = get_edit_post_link( $series_id, 'admin' ) . '#tribetickets';
+		$data['tickets']['multiple_providers_notice'] = sprintf(
+			_x(
+			// Translators: %s is the series title with a link to edit it.
+				'The ecommerce provider is defined in the ticket settings for the Series %s.',
+				'The notice shown when there are multiple ticket providers available and the Event is part of a Series.',
+				'event-tickets'
+			),
+			'<a target="_blank" href="' . esc_url( $edit_link ) . '">' . esc_html( get_the_title( $series_id ) ) . '</a>'
+		);
+		$data['tickets']['choice_disabled'] = true;
 
 		return $data;
 	}

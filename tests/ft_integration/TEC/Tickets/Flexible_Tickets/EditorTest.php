@@ -2,6 +2,8 @@
 
 namespace TEC\Tickets\Flexible_Tickets;
 
+use Closure;
+use Generator;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Events_Pro\Custom_Tables\V1\Editors\Classic\Events_Metaboxes;
@@ -51,8 +53,69 @@ class EditorTest extends Controller_Test_Case {
 
 		// Stabilize the snapshot.
 		$html = str_replace( [ $event_post_id ], [ 'EVENT_ID' ], $html );
-		$html = str_replace(  $tc_series , 'SERIES_ID', $html );
+		$html = str_replace( $tc_series, 'SERIES_ID', $html );
 
 		$this->assertMatchesHtmlSnapshot( $html );
+	}
+
+	public function filter_tickets_editor_config_provider(): Generator {
+		yield 'post' => [
+			function () {
+				$post = static::factory()->post->create_and_get();
+				$GLOBALS['post'] = $post;
+
+				return [ $post->ID ];
+			}
+		];
+
+		yield 'event not in series' => [
+			function () {
+				$event = tribe_events()->set_args( [
+					'title'      => 'Event',
+					'status'     => 'publish',
+					'start_date' => '2020-01-01 09:00:00',
+					'duration'   => 5 * HOUR_IN_SECONDS,
+				] )->create();
+				$GLOBALS['post'] = $event;
+
+				return [ $event->ID ];
+			}
+		];
+
+		yield 'event in series' => [
+			function () {
+				$series = static::factory()->post->create( [
+					'post_type'   => Series::POSTTYPE,
+					'post_status' => 'publish',
+					'post_title'  => 'Test Series',
+				] );
+				$event = tribe_events()->set_args( [
+					'title'      => 'Event',
+					'status'     => 'publish',
+					'start_date' => '2020-01-01 09:00:00',
+					'duration'   => 5 * HOUR_IN_SECONDS,
+					'series'     => $series
+				] )->create();
+				$GLOBALS['post'] = $event;
+
+				return [ $event->ID, $series ];
+			}
+		];
+	}
+
+	/**
+	 * @dataProvider filter_tickets_editor_config_provider
+	 */
+	public function test_filter_tickets_editor_config( Closure $fixture ): void {
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		$ids = $fixture();
+
+		$this->make_controller()->register();
+
+		$configuration = apply_filters( 'tribe_editor_config', [] );
+		$current = print_r( $configuration, true );
+		$current = str_replace( $ids, 'POST_ID', $current );
+
+		$this->assertMatchesCodeSnapshot( $current );
 	}
 }
