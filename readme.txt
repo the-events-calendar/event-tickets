@@ -199,6 +199,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - When using the block editor, the Attendee Information modal will be properly sized. [ETP-883]
 * Fix - Ticket property invalidation to ensure capacity, inventory and availability are correctly invalidated. [ET-xxx]
 * Fix - Fix order status sometimes showing incorrectly for sites in languages other than English. [ET-1875]
+* Fix - When transferring tickets from one event to another using Tickets Commerce, the capacity and stock levels for each ticket should be correctly updated. [ETP-866]
 * Fix - Avoid showing duplicate warning related to recurring event on ticket meta box for new event submissions using Community Events. [ECP-1538]
 
 = [5.6.5.1] 2023-09-28 =
