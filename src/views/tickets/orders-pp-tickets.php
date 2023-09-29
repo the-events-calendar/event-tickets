@@ -69,40 +69,53 @@ $attendee_groups = $view->get_post_attendees_by_purchaser( $post_id, $user_id );
 				),
 			] );
 		?>
-		<ul class="tribe-tpp-list tribe-list">
-			<?php foreach ( $attendee_group as $i => $attendee ) : ?>
-				<?php $key = $attendee['order_id']; ?>
-				<li class="tribe-item<?php echo $view->is_tpp_ticket_restricted( $post_id, $attendee['product_id'] ) ? 'tribe-disabled' : ''; ?>" <?php echo $view->get_restriction_attr( $post_id, $attendee['product_id'] ); ?> id="attendee-<?php echo $attendee['order_id']; ?>">
-					<?php 
-						$this->template( 'tickets/my-tickets/attendee-label', [ 
-							// Translators: %d is the attendee number.
-							'attendee_label' => sprintf( esc_html__( 'Attendee %d', 'event-tickets' ), $i + 1 )
-						] );
-					?>
-					<div class="tribe-answer">
-						<!-- Wrapping <label> around both the text and the <select> will implicitly associate the text with the label. -->
-						<!-- See https://www.w3.org/WAI/tutorials/forms/labels/#associating-labels-implicitly -->
-						<label>
-							<?php echo esc_html_x( 'Payment status: ', 'order status label', 'event-tickets' ); ?>
-							<?php
-								$view->render_ticket_status( $attendee['order_status'] );
-							?>
-						</label>
-						<div class="ticket-type"><span class="type-label"><?php esc_html_e( 'Type: ', 'event-tickets' );?></span><?php esc_html_e( $attendee['ticket'] );?></div>
-					</div>
-					<?php
-					/**
-					 * Inject content into an RSVP attendee block on the RVSP orders page
-					 *
-					 * @since 4.7
-					 *
-					 * @param array $attendee Attendee array
-					 * @param WP_Post $post Post object that the tickets are tied to
-					 */
-					do_action( 'event_tickets_orders_attendee_contents', $attendee, $post );
-					?>
-				</li>
-			<?php endforeach; ?>
-		</ul>
+		<div class="tec__tickets-my-tickets-order-tickets-list-wrapper">
+			<ul class="tribe-tpp-list tribe-list">
+				<?php foreach ( $attendee_group as $i => $attendee ) : ?>
+					<?php $key = $attendee['order_id']; ?>
+					<li class="tribe-item<?php echo $view->is_tpp_ticket_restricted( $post_id, $attendee['product_id'] ) ? 'tribe-disabled' : ''; ?>" <?php echo $view->get_restriction_attr( $post_id, $attendee['product_id'] ); ?> id="attendee-<?php echo $attendee['order_id']; ?>">
+						<?php 
+							$this->template( 'tickets/my-tickets/attendee-label', [ 
+								// Translators: %d is the attendee number.
+								'attendee_label' => sprintf( esc_html__( 'Attendee %d', 'event-tickets' ), $i + 1 )
+							] );
+						?>
+						<div class="tribe-answer">
+							<!-- Wrapping <label> around both the text and the <select> will implicitly associate the text with the label. -->
+							<!-- See https://www.w3.org/WAI/tutorials/forms/labels/#associating-labels-implicitly -->
+							<label>
+								<?php echo esc_html_x( 'Payment status: ', 'order status label', 'event-tickets' ); ?>
+								<?php
+									$view->render_ticket_status( $attendee['order_status'] );
+								?>
+							</label>
+							<div class="ticket-type"><span class="type-label"><?php esc_html_e( 'Type: ', 'event-tickets' );?></span><?php esc_html_e( $attendee['ticket'] );?></div>
+						</div>
+						<?php
+						/**
+						 * Inject content into an RSVP attendee block on the RVSP orders page
+						 *
+						 * @since 4.7
+						 *
+						 * @param array $attendee Attendee array
+						 * @param WP_Post $post Post object that the tickets are tied to
+						 */
+						do_action( 'event_tickets_orders_attendee_contents', $attendee, $post );
+						?>
+					</li>
+				<?php endforeach; ?>
+			</ul>
+			<?php
+			/**
+			 * Inject content after the Order Tickets List on the My Tickets page
+			 * 
+			 * @since TBD
+			 *
+			 * @param array   $attendees Attendee array.
+			 * @param WP_Post $post_id   Post object that the tickets are tied to.
+			 */
+			do_action( 'tec_tickets_my_tickets_after_tickets_list', $attendees, $post_id );
+			?>
+		</div>
 	<?php endforeach; ?>
 </div>
