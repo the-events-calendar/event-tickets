@@ -1,0 +1,1 @@
+<?php return '{"file":"\\/var\\/www\\/html\\/wp-content\\/uploads\\/\\/random_text.png","url":"http:\\/\\/wordpress.test\\/wp-content\\/uploads\\/\\/random_text.png","type":"image\\/png","error":false}';

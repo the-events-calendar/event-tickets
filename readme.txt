@@ -191,8 +191,9 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [TBD] TBD =
+= [5.6.6] TBD =
 
+* Tweak - Include a QRCode Library in Event Tickets to improve conformity across other addons. [ETWP-29]
 * Fix - The Attendee Registration feature will now use the modal by default.  [ETP-882]
 * Fix - Restore possibility to move Tickets and Attendees to Single Events that are part of a Series. [ET-1862]
 * Fix - When using the block editor, the Attendee Information modal will be properly sized. [ETP-883]
