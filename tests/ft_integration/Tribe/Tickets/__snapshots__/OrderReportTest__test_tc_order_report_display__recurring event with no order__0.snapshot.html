@@ -1,6 +1,6 @@
 
 <div class="wrap tribe-report-page tec-tc-report-page">
-			<h1>Orders for: Event with no attendees [#{{ID}}]</h1>
+			<h1>Orders for: Test event [#{{ID}}]</h1>
 		<div id="icon-edit" class="icon32 icon32-tickets-orders"><br></div>
 
 	<div id="tribe-order-summary" class="welcome-panel tribe-report-panel">
@@ -14,7 +14,13 @@
 				<strong>Post type: </strong>
 				event
 			</li>
-		<li class="event-actions"><a href="http://wordpress.test/wp-admin/post.php?post={{ID}}&#038;action=edit" title="Edit">Edit Event</a> | <a href="http://wordpress.test/?tribe_events=event-with-no-attendees" title="View">View Event</a></li>				</ul>
+		<li class="event-actions"><a href="http://wordpress.test/wp-admin/post.php?post=10000002&#038;action=edit" title="Edit">Edit Event</a> | <a href="http://wordpress.test/?tribe_events=test-event" title="View">View Event</a></li>
+<li class="post-type series-summary">
+	<strong>Series: </strong>
+	<a href="http://wordpress.test/wp-admin/post.php?post={{ID}}&#038;action=edit" target="_blank">Test event</a></li>
+<li class="series-actions">
+	<a href="http://wordpress.test/wp-admin/post.php?post={{ID}}&#038;action=edit" target="_blank">Edit Series</a> | <a href="http://wordpress.test/?tribe_event_series=test-event" target="_blank">View Series</a> | <a href="http://wordpress.test/wp-admin/edit.php?post_type=tribe_event_series&#038;page=tickets-attendees&#038;event_id={{ID}}" target="_blank">Series Attendees</a></li>
+				</ul>
 
 				
 			</div>
@@ -23,23 +29,19 @@
 					Sales by Ticket									</h3>
 				<ul>
 											<li>
-							Test TC ticket for {{ID}}: &#x24;1.00 (1)						</li>
+							Test TC ticket for {{ID}}: &#x24;0.00 (0)						</li>
 									</ul>
 			</div>
 			<div class="welcome-panel-column welcome-panel-last alternate">
 				<div class="totals-header">
 					<h3>
-						Total Ticket Sales: &#x24;1.00 (1)					</h3>
+						Total Ticket Sales: &#x24;0.00 (0)					</h3>
 
 					<div class="order-total">
-						Total Tickets Ordered: &#x24;1.00 (1)					</div>
+						Total Tickets Ordered: &#x24;0.00 (0)					</div>
 				</div>
 
 				<ul id="sales_breakdown_wrapper" class="tribe-event-meta-note">
-											<li>
-							<strong>Completed:</strong>
-							&#x24;1.00							<span id="total_issued">(1)</span>
-						</li>
 									</ul>
 			</div>
 		</div>
@@ -76,14 +78,12 @@
 	</select><input type="submit" id="search-submit" class="button" value="Search Orders"  /></p>
 		<input type="hidden" id="_wpnonce" name="_wpnonce" value="1234567890" /><input type="hidden" name="_wp_http_referer" value="" />	<div class="tablenav top">
 
-				<div class="alignleft actions bulkactions">
-					</div>
-			<div class='tablenav-pages one-page'><span class="displaying-num">1 item</span>
+		<div class='tablenav-pages no-pages'><span class="displaying-num">0 items</span>
 <span class='pagination-links'><span class="tablenav-pages-navspan button disabled" aria-hidden="true">&laquo;</span>
 <span class="tablenav-pages-navspan button disabled" aria-hidden="true">&lsaquo;</span>
-<span class="paging-input"><label for="current-page-selector" class="screen-reader-text">Current Page</label><input class='current-page' id='current-page-selector' type='text' name='paged' value='1' size='1' aria-describedby='table-paging' /><span class='tablenav-paging-text'> of <span class='total-pages'>1</span></span></span>
-<span class="tablenav-pages-navspan button disabled" aria-hidden="true">&rsaquo;</span>
-<span class="tablenav-pages-navspan button disabled" aria-hidden="true">&raquo;</span></span></div>
+<span class="paging-input"><label for="current-page-selector" class="screen-reader-text">Current Page</label><input class='current-page' id='current-page-selector' type='text' name='paged' value='1' size='1' aria-describedby='table-paging' /><span class='tablenav-paging-text'> of <span class='total-pages'>0</span></span></span>
+<a class='next-page button' href='http://wordpress.test?paged=0'><span class='screen-reader-text'>Next page</span><span aria-hidden='true'>&rsaquo;</span></a>
+<a class='last-page button' href='http://wordpress.test?paged=0'><span class='screen-reader-text'>Last page</span><span aria-hidden='true'>&raquo;</span></a></span></div>
 		<br class="clear" />
 	</div>
 		<table class="wp-list-table widefat striped tribe-tickets-commerce-report-orders">
@@ -94,7 +94,7 @@
 
 	<tbody id="the-list"
 		 data-wp-lists='list:order'		>
-		<tr class="tec-tc-completed"><td class='order column-order has-row-actions column-primary' data-colname="Order">{{ID}}<div class="order-status order-status-completed">Completed</div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class='purchaser column-purchaser' data-colname="Purchaser">Test Purchaser</td><td class='email column-email' data-colname="Email">purchaser@test.com</td><td class='purchased column-purchased' data-colname="Purchased"><div class='tribe-line-item'>1 - Test TC ticket for {{ID}}</div></td><td class='date column-date' data-colname="Date">February 22, 2020</td><td class='gateway column-gateway' data-colname="Gateway">PayPal</td><td class='gateway_order_id column-gateway_order_id' data-colname="Gateway ID"><a href="" target="_blank" rel="noopener noreferrer"></a></td><td class='status column-status' data-colname="Status">Completed</td><td class='total column-total' data-colname="Total">&#x24;1.00</td></tr>	</tbody>
+		<tr class="no-items"><td class="colspanchange" colspan="9">No matching orders found.</td></tr>	</tbody>
 
 	<tfoot>
 	<tr>
@@ -104,14 +104,12 @@
 </table>
 			<div class="tablenav bottom">
 
-				<div class="alignleft actions bulkactions">
-					</div>
-			<div class='tablenav-pages one-page'><span class="displaying-num">1 item</span>
+		<div class='tablenav-pages no-pages'><span class="displaying-num">0 items</span>
 <span class='pagination-links'><span class="tablenav-pages-navspan button disabled" aria-hidden="true">&laquo;</span>
 <span class="tablenav-pages-navspan button disabled" aria-hidden="true">&lsaquo;</span>
-<span class="screen-reader-text">Current Page</span><span id="table-paging" class="paging-input"><span class="tablenav-paging-text">1 of <span class='total-pages'>1</span></span></span>
-<span class="tablenav-pages-navspan button disabled" aria-hidden="true">&rsaquo;</span>
-<span class="tablenav-pages-navspan button disabled" aria-hidden="true">&raquo;</span></span></div>
+<span class="screen-reader-text">Current Page</span><span id="table-paging" class="paging-input"><span class="tablenav-paging-text">1 of <span class='total-pages'>0</span></span></span>
+<a class='next-page button' href='http://wordpress.test?paged=0'><span class='screen-reader-text'>Next page</span><span aria-hidden='true'>&rsaquo;</span></a>
+<a class='last-page button' href='http://wordpress.test?paged=0'><span class='screen-reader-text'>Last page</span><span aria-hidden='true'>&raquo;</span></a></span></div>
 		<br class="clear" />
 	</div>
 			</form>
