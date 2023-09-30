@@ -53,6 +53,8 @@ class OrderReportTest extends WPTestCase {
 					'duration'   => 2 * HOUR_IN_SECONDS,
 				] )->create()->ID;
 				$ticket_id = $this->create_tc_ticket( $event_id );
+
+				$this->set_fn_return( 'current_time', '2020-02-22 22:22:22' );
 				$order     = $this->create_order( [ $ticket_id => 1 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
 
 				return [ $event_id, [ $event_id, $ticket_id, $order->ID ] ];
@@ -92,9 +94,48 @@ class OrderReportTest extends WPTestCase {
 					'series'     => $series_id,
 				] )->create()->ID;
 				$ticket_id = $this->create_tc_ticket( $event_id );
+
+				$this->set_fn_return( 'current_time', '2020-02-22 22:22:22' );
 				$order     = $this->create_order( [ $ticket_id => 1 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
 
 				return [ $event_id, [ $series_id, $event_id, $ticket_id, $order->ID ] ];
+			}
+		];
+
+		yield 'recurring event with no order' => [
+			function (): array {
+				$event_id   = tribe_events()->set_args( [
+					'title'      => 'Test event',
+					'status'     => 'publish',
+					'start_date' => '2021-01-01 10:00:00',
+					'end_date'   => '2021-01-01 12:00:00',
+					'recurrence' => 'RRULE:FREQ=DAILY;COUNT=2',
+				] )->create()->ID;
+
+				$ticket_id = $this->create_tc_ticket( $event_id );
+				$series_id = tec_series()->where( 'event_post_id', $event_id )->first_id();
+
+				return [ $event_id, [ $event_id, $ticket_id, $series_id ] ];
+			}
+		];
+
+		yield 'recurring event with one order' => [
+			function (): array {
+				$event_id   = tribe_events()->set_args( [
+					'title'      => 'Test event',
+					'status'     => 'publish',
+					'start_date' => '2021-01-01 10:00:00',
+					'end_date'   => '2021-01-01 12:00:00',
+					'recurrence' => 'RRULE:FREQ=DAILY;COUNT=2',
+				] )->create()->ID;
+
+				$ticket_id = $this->create_tc_ticket( $event_id );
+				$series_id = tec_series()->where( 'event_post_id', $event_id )->first_id();
+
+				$this->set_fn_return( 'current_time', '2020-02-22 22:22:22' );
+				$order     = $this->create_order( [ $ticket_id => 1 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
+
+				return [ $event_id, [ $event_id, $ticket_id, $series_id, $order->ID ] ];
 			}
 		];
 	}
@@ -103,9 +144,7 @@ class OrderReportTest extends WPTestCase {
 	 * @dataProvider tc_order_report_data_provider
 	 */
 	public function test_tc_order_report_display( Closure $fixture ) {
-		// The global hook suffix is used to set the table static cache, randomize it to avoid collisions with other tests.
-		$GLOBALS['hook_suffix'] = uniqid( 'tickets-commerce-orders-report', true );
-		// Ensure we're using a user that can check-in Attendees and manage the posts.
+		// Ensure we're using a user that can manage posts.
 		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
 
 		[ $post_id, $post_ids ] = $fixture();
