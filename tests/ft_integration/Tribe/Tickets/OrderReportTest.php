@@ -144,6 +144,8 @@ class OrderReportTest extends WPTestCase {
 	 * @dataProvider tc_order_report_data_provider
 	 */
 	public function test_tc_order_report_display( Closure $fixture ) {
+		// The global hook suffix is used to set the table static cache, randomize it to avoid collisions with other tests.
+		$GLOBALS['hook_suffix'] = uniqid( 'tec-tc-reports-orders', true );
 		// Ensure we're using a user that can manage posts.
 		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
 
