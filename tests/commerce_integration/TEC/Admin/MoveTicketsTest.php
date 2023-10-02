@@ -14,9 +14,10 @@ class MoveTicketsTest extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * Test the Move_Tickets functionality.
+	 *
 	 * @test
 	 */
-	public function move_tickets_should_work_successfully() {
+	public function move_tickets_between_events_with_capped_stock_mode() {
 
 		// Create two new events.
 		$maker      = new Event();
@@ -84,6 +85,7 @@ class MoveTicketsTest extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * Test moving an invalid ticket ID.
+	 *
 	 * @test
 	 */
 	public function move_tickets_should_return_0_for_invalid_data() {
@@ -96,7 +98,253 @@ class MoveTicketsTest extends \Codeception\TestCase\WPTestCase {
 		);
 
 		// Assert that the move was not successful.
-		$this->assertEquals(0, $successful_moves, 'The ticket move operation for an invalid ticket ID should not be successful.' );
+		$this->assertEquals( 0, $successful_moves,
+		                     'The ticket move operation for an invalid ticket ID should not be successful.' );
+	}
+
+	/**
+	 * Move Tickets between the same event using capped stock mode
+	 *
+	 * @test
+	 */
+	public function move_tickets_between_same_event_with_capped_Stock_mode() {
+
+		// Create two new events.
+		$maker      = new Event();
+		$event_1_id = $maker->create();
+
+		// Create a ticket for the first event with capped stock mode and specific capacities.
+		$overrides        = [
+			'tribe-ticket' => [
+				'mode'           => \Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE,
+				'event_capacity' => 50,
+				'capacity'       => 30,
+			],
+		];
+		$event_1_ticket_1 = $this->create_tc_ticket( $event_1_id, 10, $overrides );
+		$event_1_ticket_2 = $this->create_tc_ticket( $event_1_id, 10, $overrides );
+
+
+		// Create an order for 5 tickets of the first event.
+		$order = $this->create_order( [ $event_1_ticket_1 => 5 ] );
+
+		// Fetch the attendees for the first event ticket.
+		$attendees_objects = tribe_tickets_get_ticket_provider( $event_1_ticket_1 )->get_attendees_by_id( $event_1_ticket_1 );
+		// Assert that the attendees_objects array is not empty.
+		$this->assertNotEmpty( $attendees_objects, 'The attendees_objects array should not be empty.' );
+
+		// Assert that the first item in the array has the 'ID' key.
+		$this->assertArrayHasKey( 'ID', $attendees_objects[0], 'The first item in the array should have an "ID" key.' );
+
+
+		$successful_moves = tribe( 'Tribe__Tickets__Admin__Move_Tickets' )->move_tickets(
+			[ $attendees_objects[0]['ID'] ],
+			$event_1_ticket_2,
+			$event_1_id,
+			$event_1_id
+		);
+
+		// Assert that the move was successful.
+		$this->assertEquals( 1, $successful_moves, 'The ticket move operation should be successful.' );
+
+		$ticket_event_1_ticket_1 = tribe( Module::class )->get_ticket( $event_1_id, $event_1_ticket_1 );
+		$ticket_event_1_ticket_2 = tribe( Module::class )->get_ticket( $event_1_id, $event_1_ticket_2 );
+
+		$this->assertEquals( 25 + 1, $ticket_event_1_ticket_1->inventory(),
+		                     "Inventory for ticket 1 should be greater than original value." );
+		$this->assertEquals( 25 + 1, $ticket_event_1_ticket_1->stock(),
+		                     "Stock for ticket 1 should be greater than original value." );
+
+		$this->assertEquals( 30 - 1, $ticket_event_1_ticket_2->inventory(),
+		                     "Inventory for ticket 2 should be less than original value." );
+		$this->assertEquals( 30 - 1, $ticket_event_1_ticket_2->stock(),
+		                     "Stock for ticket 2 should be less than original value." );
+
+	}
+
+	/**
+	 * Move Tickets between the same event
+	 *
+	 * @test
+	 */
+	public function move_tickets_between_same_event_with_global_Stock_mode() {
+
+		// Create two new events.
+		$maker      = new Event();
+		$event_1_id = $maker->create();
+
+		// Create a ticket for the first event with capped stock mode and specific capacities.
+		$overrides        = [
+			'tribe-ticket' => [
+				'mode'           => \Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE,
+				'event_capacity' => 50,
+				'capacity'       => 30,
+			],
+		];
+		$event_1_ticket_1 = $this->create_tc_ticket( $event_1_id, 10, $overrides );
+		$event_1_ticket_2 = $this->create_tc_ticket( $event_1_id, 10, $overrides );
+
+
+		// Create an order for 5 tickets of the first event.
+		$order = $this->create_order( [ $event_1_ticket_1 => 5 ] );
+
+		// Fetch the attendees for the first event ticket.
+		$attendees_objects = tribe_tickets_get_ticket_provider( $event_1_ticket_1 )->get_attendees_by_id( $event_1_ticket_1 );
+		// Assert that the attendees_objects array is not empty.
+		$this->assertNotEmpty( $attendees_objects, 'The attendees_objects array should not be empty.' );
+
+		// Assert that the first item in the array has the 'ID' key.
+		$this->assertArrayHasKey( 'ID', $attendees_objects[0], 'The first item in the array should have an "ID" key.' );
+
+
+		$successful_moves = tribe( 'Tribe__Tickets__Admin__Move_Tickets' )->move_tickets(
+			[ $attendees_objects[0]['ID'] ],
+			$event_1_ticket_2,
+			$event_1_id,
+			$event_1_id
+		);
+
+		// Assert that the move was successful.
+		$this->assertEquals( 1, $successful_moves, 'The ticket move operation should be successful.' );
+
+		$ticket_event_1_ticket_1 = tribe( Module::class )->get_ticket( $event_1_id, $event_1_ticket_1 );
+		$ticket_event_1_ticket_2 = tribe( Module::class )->get_ticket( $event_1_id, $event_1_ticket_2 );
+
+		$this->assertEquals( 45, $ticket_event_1_ticket_1->inventory(),
+		                     "Inventory for ticket 1 should be greater than original value." );
+		$this->assertEquals( 45, $ticket_event_1_ticket_1->stock(),
+		                     "Stock for ticket 1 should be greater than original value." );
+
+		$this->assertEquals( 45, $ticket_event_1_ticket_2->inventory(),
+		                     "Inventory for ticket 2 should be less than original value." );
+		$this->assertEquals( 45, $ticket_event_1_ticket_2->stock(),
+		                     "Stock for ticket 2 should be less than original value." );
+
+	}
+
+	/**
+	 * Move Tickets between the same event using regular tickets
+	 *
+	 * @test
+	 */
+	public function move_tickets_between_same_event_with_regular_ticket() {
+		// Create two new events.
+		$maker      = new Event();
+		$event_1_id = $maker->create();
+
+		// Create a ticket for the first event with capped stock mode and specific capacities.
+		$overrides        = [
+			'tribe-ticket' => [
+				'event_capacity' => 50,
+				'capacity'       => 30,
+			],
+		];
+		$event_1_ticket_1 = $this->create_tc_ticket( $event_1_id, 10, $overrides );
+		$event_1_ticket_2 = $this->create_tc_ticket( $event_1_id, 10, $overrides );
+
+
+		// Create an order for 5 tickets of the first event.
+		$order = $this->create_order( [ $event_1_ticket_1 => 5 ] );
+
+		// Fetch the attendees for the first event ticket.
+		$attendees_objects = tribe_tickets_get_ticket_provider( $event_1_ticket_1 )->get_attendees_by_id( $event_1_ticket_1 );
+		// Assert that the attendees_objects array is not empty.
+		$this->assertNotEmpty( $attendees_objects, 'The attendees_objects array should not be empty.' );
+
+		// Assert that the first item in the array has the 'ID' key.
+		$this->assertArrayHasKey( 'ID', $attendees_objects[0], 'The first item in the array should have an "ID" key.' );
+
+		$successful_moves = tribe( 'Tribe__Tickets__Admin__Move_Tickets' )->move_tickets(
+			[ $attendees_objects[0]['ID'] ],
+			$event_1_ticket_2,
+			$event_1_id,
+			$event_1_id
+		);
+
+		// Assert that the move was successful.
+		$this->assertEquals( 1, $successful_moves, 'The ticket move operation should be successful.' );
+
+		$ticket_event_1_ticket_1 = tribe( Module::class )->get_ticket( $event_1_id, $event_1_ticket_1 );
+		$ticket_event_1_ticket_2 = tribe( Module::class )->get_ticket( $event_1_id, $event_1_ticket_2 );
+
+		$this->assertEquals( 25 + 1, $ticket_event_1_ticket_1->inventory(),
+		                     "Inventory for ticket 1 should be greater than original value." );
+		$this->assertEquals( 25, $ticket_event_1_ticket_1->stock(),
+		                     "Stock should be the same." );
+
+		$this->assertEquals( 30 - 1, $ticket_event_1_ticket_2->inventory(),
+		                     "Inventory for ticket 2 should be less than original value." );
+		$this->assertEquals( 30, $ticket_event_1_ticket_2->stock(),
+		                     "Stock should be the same." );
+
+
+	}
+
+	/**
+	 * Move Tickets between the same event using capped stock mode
+	 *
+	 * @test
+	 */
+	public function move_tickets_between_same_event_with_one_shared_one_regular() {
+
+		// Create two new events.
+		$maker      = new Event();
+		$event_1_id = $maker->create();
+
+		// Create a ticket for the first event with capped stock mode and specific capacities.
+		$overrides        = [
+			'tribe-ticket' => [
+				'mode'           => \Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE,
+				'event_capacity' => 50,
+				'capacity'       => 30,
+			],
+		];
+		$event_1_ticket_1 = $this->create_tc_ticket( $event_1_id, 10, $overrides );
+		// Create a ticket for the first event with capped stock mode and specific capacities.
+		$overrides        = [
+			'tribe-ticket' => [
+				'event_capacity' => 50,
+				'capacity'       => 30,
+			],
+		];
+		$event_1_ticket_2 = $this->create_tc_ticket( $event_1_id, 10, $overrides );
+
+
+		// Create an order for 5 tickets of the first event.
+		$order = $this->create_order( [ $event_1_ticket_1 => 5 ] );
+
+		// Fetch the attendees for the first event ticket.
+		$attendees_objects = tribe_tickets_get_ticket_provider( $event_1_ticket_1 )->get_attendees_by_id( $event_1_ticket_1 );
+		// Assert that the attendees_objects array is not empty.
+		$this->assertNotEmpty( $attendees_objects, 'The attendees_objects array should not be empty.' );
+
+		// Assert that the first item in the array has the 'ID' key.
+		$this->assertArrayHasKey( 'ID', $attendees_objects[0], 'The first item in the array should have an "ID" key.' );
+
+
+		$successful_moves = tribe( 'Tribe__Tickets__Admin__Move_Tickets' )->move_tickets(
+			[ $attendees_objects[0]['ID'] ],
+			$event_1_ticket_2,
+			$event_1_id,
+			$event_1_id
+		);
+		
+		// Assert that the move was successful.
+		$this->assertEquals( 1, $successful_moves, 'The ticket move operation should be successful.' );
+
+		$ticket_event_1_ticket_1 = tribe( Module::class )->get_ticket( $event_1_id, $event_1_ticket_1 );
+		$ticket_event_1_ticket_2 = tribe( Module::class )->get_ticket( $event_1_id, $event_1_ticket_2 );
+
+		$this->assertEquals( 25 + 1, $ticket_event_1_ticket_1->inventory(),
+		                     "Inventory for ticket 1 should be greater than original value." );
+		$this->assertEquals( 25 + 1, $ticket_event_1_ticket_1->stock(),
+		                     "Stock for ticket 1 should be greater than original value." );
+
+		$this->assertEquals( 30 - 1, $ticket_event_1_ticket_2->inventory(),
+		                     "Inventory for ticket 2 should be less than original value." );
+		$this->assertEquals( 30, $ticket_event_1_ticket_2->stock(),
+		                     "Stock for ticket 2 should be less than original value." );
+
 	}
 
 }
