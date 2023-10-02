@@ -181,9 +181,9 @@ class Series_MetaboxesTest extends WPTestCase {
 	/**
 	 * @dataProvider series_data_provider
 	 *
-	 * @covers \TEC\Tickets\Flexible_Tickets\Base::filter_attendees_event_details_top_label
-	 * @covers \TEC\Tickets\Flexible_Tickets\Base::filter_series_editor_occurrence_list_columns
-	 * @covers \TEC\Tickets\Flexible_Tickets\Base::render_series_editor_occurrence_list_column_ticket_types
+	 * @covers       \TEC\Tickets\Flexible_Tickets\Base::filter_attendees_event_details_top_label
+	 * @covers       \TEC\Tickets\Flexible_Tickets\Base::filter_series_editor_occurrence_list_columns
+	 * @covers       \TEC\Tickets\Flexible_Tickets\Base::render_series_editor_occurrence_list_column_ticket_types
 	 */
 	public function test_events_list( Closure $fixture ) {
 		$post_ids  = $fixture();
@@ -197,6 +197,125 @@ class Series_MetaboxesTest extends WPTestCase {
 
 		ob_start();
 		$series_metabox->events_list();
+		$html = ob_get_clean();
+
+		$html = $this->placehold_post_ids( $html, $post_ids );
+
+		$this->assertMatchesSnapshot( $html );
+	}
+
+	public function relationship_data_provider(): Generator {
+		yield 'no available events, one ticket provider' => [
+			function (): array {
+				$series_id = $this->factory()->post->create_and_get( [
+					'post_type'  => Series_Post_Type::POSTTYPE,
+					'post_title' => 'Test Series',
+				] )->ID;
+
+				add_filter(
+					'tribe_tickets_get_modules',
+					fn() => [ 'Provider_One' => 'A custom ticket provider' ],
+					PHP_INT_MAX
+				);
+
+				return [ $series_id ];
+			}
+		];
+		yield 'no available events, multiple ticket providers' => [
+			function (): array {
+				$series_id = $this->factory()->post->create_and_get( [
+					'post_type'  => Series_Post_Type::POSTTYPE,
+					'post_title' => 'Test Series',
+				] )->ID;
+
+				add_filter(
+					'tribe_tickets_get_modules',
+					fn() => [
+						'Provider_One' => 'A custom ticket provider',
+						'Provider_Two' => 'Another custom ticket provider',
+					],
+					PHP_INT_MAX
+				);
+
+				return [ $series_id ];
+			}
+		];
+		yield 'events available , one ticket provider' => [
+			function (): array {
+				$series_id = $this->factory()->post->create_and_get( [
+					'post_type'  => Series_Post_Type::POSTTYPE,
+					'post_title' => 'Test Series',
+				] )->ID;
+
+				$event_ids = [];
+				foreach ( range( 1, 3 ) as $k ) {
+					$event_ids[] = tribe_events()->set_args( [
+						'title'      => 'Event ' . $k,
+						'status'     => 'publish',
+						'start_date' => "2222-0$k-10 17:30:00",
+						'duration'   => 5 * HOUR_IN_SECONDS,
+					] )->create()->ID;
+				}
+
+				add_filter(
+					'tribe_tickets_get_modules',
+					fn() => [
+						'Provider_One' => 'A custom ticket provider',
+					],
+					PHP_INT_MAX
+				);
+
+				return [ $series_id, ...$event_ids ];
+			}
+		];
+
+		yield 'events available , multiple ticket provider' => [
+			function (): array {
+				$series_id = $this->factory()->post->create_and_get( [
+					'post_type'  => Series_Post_Type::POSTTYPE,
+					'post_title' => 'Test Series',
+				] )->ID;
+
+				$event_ids = [];
+				foreach ( range( 1, 3 ) as $k ) {
+					$event_ids[] = tribe_events()->set_args( [
+						'title'      => 'Event ' . $k,
+						'status'     => 'publish',
+						'start_date' => "2222-0$k-10 17:30:00",
+						'duration'   => 5 * HOUR_IN_SECONDS,
+					] )->create()->ID;
+				}
+
+				add_filter(
+					'tribe_tickets_get_modules',
+					fn() => [
+						'Provider_One' => 'A custom ticket provider',
+						'Provider_Two' => 'Another custom ticket provider',
+					],
+					PHP_INT_MAX
+				);
+
+				return [ $series_id, ...$event_ids ];
+			}
+		];
+	}
+
+	/**
+	 * @dataProvider relationship_data_provider
+	 */
+	public function test_series_event_relationship( Closure $fixture ): void {
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		$post_ids  = $fixture();
+		$series_id = reset( $post_ids );
+
+		global $post;
+		$post = get_post( $series_id );
+
+		$this->set_fn_return( 'wp_create_nonce', '###' );
+		$series_metabox = tribe( Series_Metaboxes::class );
+
+		ob_start();
+		$series_metabox->relationship();
 		$html = ob_get_clean();
 
 		$html = $this->placehold_post_ids( $html, $post_ids );

@@ -13,7 +13,7 @@ use TEC\Common\Contracts\Provider\Controller;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Relationship;
 use Tribe__Tickets__Tickets as Tickets;
 use Tribe__Events__Main as TEC;
-use Tribe__Editor as Block_Editor_Feature_Detection;
+use Tribe__Tickets__RSVP as RSVP;
 
 /**
  * Class Editor.
@@ -40,6 +40,14 @@ class Editor extends Controller {
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin_scripts' ] );
 		add_filter( 'tec_tickets_ticket_panel_data', [ $this, 'filter_ticket_panel_data' ], 10, 2 );
 		add_filter( 'tribe_editor_config', [ $this, 'filter_tickets_editor_config' ] );
+		add_filter( 'tec_events_pro_custom_tables_v1_add_to_series_available_events', [
+			$this,
+			'remove_diff_ticket_provider_events'
+		], 10, 2 );
+		add_action( 'tec_events_pro_custom_tables_v1_series_relationships_after', [
+			$this,
+			'print_multiple_providers_notice'
+		], 10, 0 );
 	}
 
 	/**
@@ -57,6 +65,14 @@ class Editor extends Controller {
 		remove_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin_scripts' ] );
 		remove_filter( 'tec_tickets_ticket_panel_data', [ $this, 'filter_ticket_panel_data' ] );
 		remove_filter( 'tribe_editor_config', [ $this, 'filter_tickets_editor_config' ] );
+		remove_filter( 'tec_events_pro_custom_tables_v1_add_to_series_available_events', [
+			$this,
+			'remove_diff_ticket_provider_events'
+		] );
+		remove_action( 'tec_events_pro_custom_tables_v1_series_relationships_after', [
+			$this,
+			'print_multiple_providers_notice'
+		] );
 	}
 
 	/**
@@ -196,7 +212,7 @@ class Editor extends Controller {
 		}
 		unset( $provider );
 
-		$edit_link = get_edit_post_link( $series_id, 'admin' ) . '#tribetickets';
+		$edit_link                         = get_edit_post_link( $series_id, 'admin' ) . '#tribetickets';
 		$data['multiple_providers_notice'] = sprintf(
 			_x(
 			// Translators: %s is the series title with a link to edit it.
@@ -242,8 +258,78 @@ class Editor extends Controller {
 			),
 			'<a target="_blank" href="' . esc_url( $edit_link ) . '">' . esc_html( get_the_title( $series_id ) ) . '</a>'
 		);
-		$data['tickets']['choice_disabled'] = true;
+		$data['tickets']['choice_disabled']           = true;
 
 		return $data;
+	}
+
+	/**
+	 * Checks if there are multiple ticket providers active.
+	 *
+	 * The count does not include RSVP.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether there are multiple ticket providers active.
+	 */
+	private function multiple_providers_are_active(): bool {
+		$providers = Tickets::modules();
+		// Do not count RSVP.
+		unset( $providers[ RSVP::class ] );
+
+		return count( $providers ) > 1;
+	}
+
+	/**
+	 * Filters the list of events eligible to be attached to a Series to remove the ones that do not have the same
+	 * ticket provider as the Series.
+	 *
+	 * @since TBD
+	 *
+	 * @param int[] $events         The list of events eligible to be attached to a Series.
+	 * @param int   $series_post_id The ID of the Series.
+	 *
+	 * @return int[] The list of events eligible to be attached to a Series.
+	 */
+	public function remove_diff_ticket_provider_events( array $events, int $series_post_id ): array {
+		if ( ! $this->multiple_providers_are_active() ) {
+			return $events;
+		}
+
+		$series_provider = Tickets::get_event_ticket_provider( $series_post_id );
+
+		if ( empty( $series_provider ) ) {
+			// The Series has no provider, keep all the events.
+			return $events;
+		}
+
+		return array_filter(
+			$events,
+			static function ( int $event_id ) use ( $series_provider ) {
+				return Tickets::get_event_ticket_provider( $event_id ) === $series_provider;
+			}
+		);
+	}
+
+	/**
+	 * Prints a notice under the Series to Events relationship metabox when there are multiple ticket providers
+	 * to let the user know that Events that do not have the same ticket provider as the Series will not be listed.
+	 *
+	 * @since TBD
+	 *
+	 * @return void The notice is printed.
+	 */
+	public function print_multiple_providers_notice(): void {
+		if ( ! $this->multiple_providers_are_active() ) {
+			return;
+		}
+
+		echo '<div><p>' . esc_html_x(
+				'The ecommerce provider for events must match the provider for the Series. Events with a mismatched ' .
+				'provider will not be listed. Change the provider using the Sell tickets using option in the ' .
+				'tickets settings.',
+				'Notice shown under the Series to Events relationship metabox when there are multiple ticket providers ',
+				'event-tickets'
+			) . '</p></div>';
 	}
 }
