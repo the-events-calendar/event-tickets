@@ -48,7 +48,6 @@ class MoveTicketsTest extends \Codeception\TestCase\WPTestCase {
 
 		// Fetch the attendees for the first event ticket.
 		$attendees_objects = tribe_tickets_get_ticket_provider( $event_1_ticket )->get_attendees_by_id( $event_1_ticket );
-
 		// Assert that the attendees_objects array is not empty.
 		$this->assertNotEmpty( $attendees_objects, 'The attendees_objects array should not be empty.' );
 
@@ -67,18 +66,20 @@ class MoveTicketsTest extends \Codeception\TestCase\WPTestCase {
 		);
 
 		// Assert that the move was successful.
-		$this->assertEquals(1, $successful_moves, 'The ticket move operation should be successful.' );
+		$this->assertEquals( 1, $successful_moves, 'The ticket move operation should be successful.' );
 
 		// refresh the ticket objects.
 		$ticket_event_1 = tribe( Module::class )->get_ticket( $event_1_id, $event_1_ticket );
 		$ticket_event_2 = tribe( Module::class )->get_ticket( $event_2_id, $event_2_ticket );
 
-		$this->assertEquals(25+1,$ticket_event_1->inventory(),"Inventory for ticket 1 should be less than original value.");
-		$this->assertEquals(50-1,$ticket_event_2->available(),"Available tickets for ticket 2 should be less than original value.");
-		$this->assertEquals(50-1,$ticket_event_2->inventory(),"Inventory for ticket 2 should be less than original value.");
-
-
-
+		$this->assertEquals( 25 + 1, $ticket_event_1->inventory(),
+		                     "Inventory for ticket 1 should be greater than original value." );
+		$this->assertEquals( 25 + 1, $ticket_event_1->stock(),
+		                     "Stock for ticket 1 should be greater than original value." );
+		$this->assertEquals( 50 - 1, $ticket_event_2->available(),
+		                     "Available tickets for ticket 2 should be less than original value." );
+		$this->assertEquals( 50 - 1, $ticket_event_2->inventory(),
+		                     "Inventory for ticket 2 should be less than original value." );
 	}
 
 	/**
