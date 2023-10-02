@@ -10,6 +10,7 @@ use TEC\Events_Pro\Custom_Tables\V1\Editors\Classic\Events_Metaboxes;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series;
 use Tribe__Tickets__Tickets_Handler as Tickets_Handler;
 use TEC\Tickets\Commerce\Module as Commerce;
+use \WP_Hook;
 
 class EditorTest extends Controller_Test_Case {
 	use SnapshotAssertions;
@@ -111,6 +112,9 @@ class EditorTest extends Controller_Test_Case {
 	public function should_not_filter_editor_config_data_if_post_not_event(): void {
 		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
 		$GLOBALS['post'] = static::factory()->post->create_and_get();
+		// Unhook any filtering function from `tribe_editor_config`: they will only add noise to the tests.
+		global $wp_filter;
+		$wp_filter['tribe_editor_config'] = new WP_Hook();
 
 		$this->make_controller()->register();
 
@@ -133,6 +137,9 @@ class EditorTest extends Controller_Test_Case {
 			'duration'   => 5 * HOUR_IN_SECONDS,
 		] )->create();
 		$GLOBALS['post'] = $event;
+		// Unhook any filtering function from `tribe_editor_config`: they will only add noise to the tests.
+		global $wp_filter;
+		$wp_filter['tribe_editor_config'] = new WP_Hook();
 
 		$this->make_controller()->register();
 
@@ -161,6 +168,9 @@ class EditorTest extends Controller_Test_Case {
 			'series'     => $series
 		] )->create();
 		$GLOBALS['post'] = $event;
+		// Unhook any filtering function from `tribe_editor_config`: they will only add noise to the tests.
+		global $wp_filter;
+		$wp_filter['tribe_editor_config'] = new WP_Hook();
 
 		$this->make_controller()->register();
 
