@@ -228,6 +228,11 @@ class Editor extends Controller {
 		}
 
 		$edit_link = get_edit_post_link( $series_id, 'admin' ) . '#tribetickets';
+
+		if ( ! isset( $data['tickets'] ) ) {
+			$data['tickets'] = [];
+		}
+
 		$data['tickets']['multiple_providers_notice'] = sprintf(
 			_x(
 			// Translators: %s is the series title with a link to edit it.

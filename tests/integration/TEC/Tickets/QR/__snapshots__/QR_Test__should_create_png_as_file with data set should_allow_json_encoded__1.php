@@ -1,0 +1,1 @@
+<?php return '{"file":"\\/var\\/www\\/html\\/wp-content\\/uploads\\/\\/json_encoded.png","url":"http:\\/\\/wordpress.test\\/wp-content\\/uploads\\/\\/json_encoded.png","type":"image\\/png","error":false}';

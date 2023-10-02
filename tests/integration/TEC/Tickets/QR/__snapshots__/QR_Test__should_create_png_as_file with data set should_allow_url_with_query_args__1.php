@@ -1,0 +1,1 @@
+<?php return '{"file":"\\/var\\/www\\/html\\/wp-content\\/uploads\\/\\/url_with_query_args.png","url":"http:\\/\\/wordpress.test\\/wp-content\\/uploads\\/\\/url_with_query_args.png","type":"image\\/png","error":false}';

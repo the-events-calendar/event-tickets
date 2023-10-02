@@ -9,8 +9,6 @@
   ],
   "homepage": "http://tri.be/shop/wordpress-events-calendar/",
   "license": "GPL-2.0",
-  "require": {
-  },
   "require-dev": {
     "bordoni/phpass": "^0.3.5",
     "automattic/vipwpcs": "^2.0",
@@ -31,7 +29,7 @@
     "the-events-calendar/coding-standards": "dev-master",
     "the-events-calendar/tec-testing-facilities": "dev-master",
     "wp-coding-standards/wpcs": "^2.1",
-    "lucatume/codeception-snapshot-assertions": "~0.3.0"
+    "lucatume/codeception-snapshot-assertions": "^0.3.0"
   },
   "repositories": [
     {
