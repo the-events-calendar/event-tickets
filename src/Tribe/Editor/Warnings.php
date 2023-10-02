@@ -31,7 +31,7 @@ class Warnings {
 	/**
 	 * Show the Recurring Event warning message.
 	 *
-	 * @since TBD Moved out logic to display warning in a separate method.
+	 * @since TBD Remove rendering the warning message for CE.
 	 * @since 5.6.4 Remove dependency on `#tribe-recurrence-active`.
 	 * @since 5.6.2 Added 'recurring_event_warning' as an $additionalClasses.
 	 * @since 5.0.4
@@ -44,9 +44,20 @@ class Warnings {
 			return;
 		}
 
-		if ( tribe_is_frontend() ) {
-			$this->render_notice( $this->get_recurring_event_warning_message() );
+		if ( ! function_exists( 'tribe_is_recurring_event' ) ) {
 			return;
+		}
+
+		if ( \Tribe__Events__Main::POSTTYPE != get_post_type( $post_id ) && ! tribe_is_frontend() ) {
+			return;
+		}
+
+		if ( class_exists( '\TEC\Events\Custom_Tables\V1\Migration\State' ) ) {
+			$migrated = tribe( \TEC\Events\Custom_Tables\V1\Migration\State::class )->is_migrated();
+
+			if ( ! $migrated ) {
+				return;
+			}
 		}
 
 		$this->render_notice( $this->get_recurring_event_warning_message(), 'info', null, null, [ 'recurring_event_warning' ] );
