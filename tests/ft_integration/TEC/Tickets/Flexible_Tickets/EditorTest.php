@@ -18,7 +18,7 @@ class EditorTest extends Controller_Test_Case {
 
 	public function test_render_of_event_series_relationship(): void {
 		/** @var Tickets_Handler $tickets_handler */
-		$tickets_handler = tribe( 'tickets.handler' );
+		$tickets_handler   = tribe( 'tickets.handler' );
 		$provider_meta_key = $tickets_handler->key_provider_field;
 
 		$event_post_id = tribe_events()->set_args( [
@@ -61,7 +61,7 @@ class EditorTest extends Controller_Test_Case {
 	public function filter_tickets_editor_config_provider(): Generator {
 		yield 'post' => [
 			function () {
-				$post = static::factory()->post->create_and_get();
+				$post            = static::factory()->post->create_and_get();
 				$GLOBALS['post'] = $post;
 
 				return [ $post->ID ];
@@ -70,7 +70,7 @@ class EditorTest extends Controller_Test_Case {
 
 		yield 'event not in series' => [
 			function () {
-				$event = tribe_events()->set_args( [
+				$event           = tribe_events()->set_args( [
 					'title'      => 'Event',
 					'status'     => 'publish',
 					'start_date' => '2020-01-01 09:00:00',
@@ -84,12 +84,12 @@ class EditorTest extends Controller_Test_Case {
 
 		yield 'event in series' => [
 			function () {
-				$series = static::factory()->post->create( [
+				$series          = static::factory()->post->create( [
 					'post_type'   => Series::POSTTYPE,
 					'post_status' => 'publish',
 					'post_title'  => 'Test Series',
 				] );
-				$event = tribe_events()->set_args( [
+				$event           = tribe_events()->set_args( [
 					'title'      => 'Event',
 					'status'     => 'publish',
 					'start_date' => '2020-01-01 09:00:00',
@@ -104,18 +104,69 @@ class EditorTest extends Controller_Test_Case {
 	}
 
 	/**
-	 * @dataProvider filter_tickets_editor_config_provider
+	 * It should not filter editor config data if post not event
+	 *
+	 * @test
 	 */
-	public function test_filter_tickets_editor_config( Closure $fixture ): void {
+	public function should_not_filter_editor_config_data_if_post_not_event(): void {
 		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
-		$ids = $fixture();
+		$GLOBALS['post'] = static::factory()->post->create_and_get();
 
 		$this->make_controller()->register();
 
 		$configuration = apply_filters( 'tribe_editor_config', [] );
-		$current = print_r( $configuration, true );
-		$current = str_replace( $ids, 'POST_ID', $current );
 
-		$this->assertMatchesCodeSnapshot( $current );
+		$this->assertEquals( [], $configuration );
+	}
+
+	/**
+	 * It should not filter editor config data if event not in series
+	 *
+	 * @test
+	 */
+	public function should_not_filter_editor_config_data_if_event_not_in_series(): void {
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		$event           = tribe_events()->set_args( [
+			'title'      => 'Event',
+			'status'     => 'publish',
+			'start_date' => '2020-01-01 09:00:00',
+			'duration'   => 5 * HOUR_IN_SECONDS,
+		] )->create();
+		$GLOBALS['post'] = $event;
+
+		$this->make_controller()->register();
+
+		$configuration = apply_filters( 'tribe_editor_config', [] );
+
+		$this->assertEquals( [], $configuration );
+	}
+
+	/**
+	 * It should filter editor config data if event in series
+	 *
+	 * @test
+	 */
+	public function should_filter_editor_config_data_if_event_in_series(): void {
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		$series          = static::factory()->post->create( [
+			'post_type'   => Series::POSTTYPE,
+			'post_status' => 'publish',
+			'post_title'  => 'Test Series',
+		] );
+		$event           = tribe_events()->set_args( [
+			'title'      => 'Event',
+			'status'     => 'publish',
+			'start_date' => '2020-01-01 09:00:00',
+			'duration'   => 5 * HOUR_IN_SECONDS,
+			'series'     => $series
+		] )->create();
+		$GLOBALS['post'] = $event;
+
+		$this->make_controller()->register();
+
+		$configuration = apply_filters( 'tribe_editor_config', [] );
+
+		$this->assertMatchesStringSnapshot( str_replace( $series, 'SERIES_ID', $configuration['tickets']['multiple_providers_notice'] ) );
+		$this->assertTrue( $configuration['tickets']['choice_disabled'] );
 	}
 }
