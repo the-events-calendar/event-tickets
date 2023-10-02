@@ -30,15 +30,6 @@
 					data-status="publish"
 					data-status-label="Published"
 					data-recurring="0"
-											data-start-date="February 10, 2222"
-															>
-					Event 2				</option>
-							<option
-					class="tec-events-pro-series__dropdown-option"
-					value="{{ID}}"
-					data-status="publish"
-					data-status-label="Published"
-					data-recurring="0"
 											data-start-date="March 10, 2222"
 															>
 					Event 3				</option>
