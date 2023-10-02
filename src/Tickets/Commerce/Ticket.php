@@ -963,6 +963,11 @@ class Ticket {
 		}
 
 		$attendee_data = $attendee->save();
+
+		// Sync our capacity as well now.
+		/** @var Tribe__Tickets__Tickets_Handler $handler */
+		$handler = tribe( 'tickets.handler' );
+		$handler->sync_shared_capacity( $src_event_id, tribe_tickets_get_capacity( $src_event_id ) );
 	}
 
 	/**
