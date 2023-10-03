@@ -13,10 +13,10 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { ActionButton } from '@moderntribe/tickets/elements';
-import { Cog as CogIcon } from '@moderntribe/common/icons';
+import { Settings } from '@moderntribe/tickets/icons';
 
 const SettingsActionButton = ( { onClick } ) => (
-	<ActionButton icon={ <CogIcon /> } onClick={ onClick }>
+	<ActionButton icon={ <Settings /> } onClick={ onClick }>
 		{ __( 'Settings', 'event-tickets' ) }
 	</ActionButton>
 );

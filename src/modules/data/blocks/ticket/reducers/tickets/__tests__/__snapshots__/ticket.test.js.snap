@@ -6,6 +6,7 @@ Object {
   "currencyPosition": "prefix",
   "currencySymbol": undefined,
   "details": Object {
+    "attendeeInfoFields": Array [],
     "capacity": "",
     "capacityType": "unlimited",
     "description": "",
@@ -62,6 +63,7 @@ Object {
   "currencyPosition": "postfix",
   "currencySymbol": undefined,
   "details": Object {
+    "attendeeInfoFields": Array [],
     "capacity": "",
     "capacityType": "unlimited",
     "description": "",
@@ -118,6 +120,7 @@ Object {
   "currencyPosition": "prefix",
   "currencySymbol": "$",
   "details": Object {
+    "attendeeInfoFields": Array [],
     "capacity": "",
     "capacityType": "unlimited",
     "description": "",
@@ -174,6 +177,7 @@ Object {
   "currencyPosition": "prefix",
   "currencySymbol": undefined,
   "details": Object {
+    "attendeeInfoFields": Array [],
     "capacity": "",
     "capacityType": "unlimited",
     "description": "",
@@ -230,6 +234,7 @@ Object {
   "currencyPosition": "prefix",
   "currencySymbol": undefined,
   "details": Object {
+    "attendeeInfoFields": Array [],
     "capacity": "",
     "capacityType": "unlimited",
     "description": "",
@@ -286,6 +291,7 @@ Object {
   "currencyPosition": "prefix",
   "currencySymbol": undefined,
   "details": Object {
+    "attendeeInfoFields": Array [],
     "capacity": "",
     "capacityType": "unlimited",
     "description": "",
@@ -342,6 +348,7 @@ Object {
   "currencyPosition": "prefix",
   "currencySymbol": undefined,
   "details": Object {
+    "attendeeInfoFields": Array [],
     "capacity": "",
     "capacityType": "unlimited",
     "description": "",
@@ -398,6 +405,7 @@ Object {
   "currencyPosition": "prefix",
   "currencySymbol": undefined,
   "details": Object {
+    "attendeeInfoFields": Array [],
     "capacity": "",
     "capacityType": "unlimited",
     "description": "",
@@ -454,6 +462,7 @@ Object {
   "currencyPosition": "prefix",
   "currencySymbol": undefined,
   "details": Object {
+    "attendeeInfoFields": Array [],
     "capacity": "",
     "capacityType": "unlimited",
     "description": "",
@@ -510,6 +519,7 @@ Object {
   "currencyPosition": "prefix",
   "currencySymbol": undefined,
   "details": Object {
+    "attendeeInfoFields": Array [],
     "capacity": "",
     "capacityType": "unlimited",
     "description": "",
@@ -566,6 +576,7 @@ Object {
   "currencyPosition": "prefix",
   "currencySymbol": undefined,
   "details": Object {
+    "attendeeInfoFields": Array [],
     "capacity": "",
     "capacityType": "unlimited",
     "description": "",
@@ -622,6 +633,7 @@ Object {
   "currencyPosition": "prefix",
   "currencySymbol": undefined,
   "details": Object {
+    "attendeeInfoFields": Array [],
     "capacity": "",
     "capacityType": "unlimited",
     "description": "",
@@ -678,6 +690,7 @@ Object {
   "currencyPosition": "prefix",
   "currencySymbol": undefined,
   "details": Object {
+    "attendeeInfoFields": Array [],
     "capacity": "",
     "capacityType": "unlimited",
     "description": "",

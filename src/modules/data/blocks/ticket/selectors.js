@@ -435,6 +435,11 @@ export const allTicketsFuture = createSelector(
 	}, true ),
 );
 
+export const getTicketAttendeeInfoFields = createSelector(
+	[ getTicketDetails ],
+	( details ) => details.attendeeInfoFields || []
+);
+
 //
 // ─── TICKET TEMP DETAILS SELECTORS ──────────────────────────────────────────────
 //

@@ -53,9 +53,6 @@ const ContainerPanel = ( {
 				className,
 			) }
 		>
-			<div className="tribe-editor__container-panel__icon">
-				{ icon }
-			</div>
 			{ getHeaderAndContent() }
 		</div>
 	);

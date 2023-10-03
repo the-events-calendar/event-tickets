@@ -12,25 +12,44 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import InactiveBlock, { LAYOUT } from '@moderntribe/tickets/elements/inactive-block';
-import { RSVPInactive } from '@moderntribe/tickets/icons';
+import { Card } from '@moderntribe/tickets/elements';
 
-const inactiveBlockProps = {
-	className: 'tribe-editor__rsvp__inactive-block',
-	icon: <RSVPInactive />,
-	layout: LAYOUT.rsvp,
-};
-
-const RSVPInactiveBlock = ( { created } ) => {
-	inactiveBlockProps.title = created
+const RSVPInactiveBlock = ({ created }) => {
+	const title = created
 		? __( 'RSVP is not currently active', 'event-tickets' )
-		: __( 'There is no RSVP configured', 'event-tickets' );
+		: __( 'Add an RSVP', 'event-tickets' );
 
-	inactiveBlockProps.description = created
+	const description = created
 		? __( 'Edit this block to change RSVP settings.', 'event-tickets' )
-		: __( 'Edit this block to create an RSVP form.', 'event-tickets' );
+		: __( 'Allow users to confirm their attendance.', 'event-tickets' );
 
-	return <InactiveBlock { ...inactiveBlockProps } />;
+	return (
+		<Card className="tribe-common tribe-editor__inactive-block--rsvp">
+			<div className="tribe-editor__rsvp-details-wrapper">
+				<div className="tribe-editor__rsvp-details">
+					<h3 className="tribe-editor__rsvp-title tribe-common-h2 tribe-common-h4--min-medium">
+						{title}
+					</h3>
+
+					<div className="tribe-editor__rsvp-description tribe-common-h6 tribe-common-h--alt tribe-common-b3--min-medium">
+						{description}
+					</div>
+				</div>
+			</div>
+
+			<div className="tribe-editor__rsvp-actions-wrapper">
+				<div className="tribe-editor__rsvp-actions">
+					<div className="tribe-editor__rsvp-actions-rsvp">
+						<div className="tribe-editor__rsvp-actions-rsvp-create">
+							<button className="tribe-common-c-btn tribe-common-b1 tribe-common-b2--min-medium">
+								{ __( 'Add RSVP', 'event-tickets' )}
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</Card>
+	);
 };
 
 RSVPInactiveBlock.propTypes = {
