@@ -22,6 +22,7 @@ import './style.pcss';
 class Price extends PureComponent {
 	static propTypes = {
 		isDisabled: PropTypes.bool,
+		minDefaultPrice: PropTypes.string,
 		onTempPriceChange: PropTypes.func.isRequired,
 		tempPrice: PropTypes.string,
 	};
@@ -39,6 +40,7 @@ class Price extends PureComponent {
 			currencySymbol,
 			currencyThousandsSep,
 			isDisabled,
+			minDefaultPrice,
 			onTempPriceChange,
 			tempPrice,
 		} = this.props;
@@ -46,6 +48,12 @@ class Price extends PureComponent {
 		const numericFormatProps = {
 			...(currencyPosition === PREFIX && { prefix: currencySymbol}),
 			...(currencyPosition === SUFFIX && { suffix: currencySymbol}),
+		}
+
+		const handleChange = (e) => {
+			if ( !isNaN( e.value ) && e.value >= minDefaultPrice ) {
+				onTempPriceChange(e);
+			}
 		}
 
 		return (
@@ -62,6 +70,7 @@ class Price extends PureComponent {
 				/>
 
 				<NumericFormat
+					allowNegative={ false }
 					className="tribe-editor__input tribe-editor__ticket__price-input"
 					decimalScale={ currencyNumberOfDecimals }
 					decimalSeparator={ currencyDecimalPoint }
@@ -69,7 +78,7 @@ class Price extends PureComponent {
 					displayType="input"
 					fixedDecimalScale={ true }
 					{ ...numericFormatProps }
-					onValueChange={ onTempPriceChange }
+					onValueChange={ handleChange }
 					thousandSeparator={ currencyThousandsSep }
 					value={ tempPrice }
 				/>

@@ -40,6 +40,7 @@ const TicketContainerHeaderPriceLabel = ( {
 	return (
 		<Fragment>
 			<NumericFormat
+				allowNegative={ false }
 				decimalScale={ currencyNumberOfDecimals }
 				decimalSeparator={ currencyDecimalPoint }
 				displayType="text"

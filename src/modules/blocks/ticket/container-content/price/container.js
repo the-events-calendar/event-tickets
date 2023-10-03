@@ -18,6 +18,7 @@ const mapStateToProps = ( state, ownProps ) => ( {
 	currencySymbol: selectors.getTicketCurrencySymbol( state, ownProps ),
 	currencyThousandsSep: selectors.getTicketCurrencyThousandsSep( state, ownProps ),
 	isDisabled: selectors.isTicketDisabled( state, ownProps ),
+	minDefaultPrice: selectors.isZeroPriceValid( state, ownProps ) ? 0 : 1,
 	tempPrice: selectors.getTicketTempPrice( state, ownProps ),
 } );
 
