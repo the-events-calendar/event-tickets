@@ -4,7 +4,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import NumberFormat from 'react-number-format';
+import { NumericFormat } from 'react-number-format';
 
 /**
  * Wordpress dependencies
@@ -61,7 +61,7 @@ class Price extends PureComponent {
 					label={ __( 'Ticket price', 'event-tickets' ) }
 				/>
 
-				<NumberFormat
+				<NumericFormat
 					className="tribe-editor__input tribe-editor__ticket__price-input"
 					decimalScale={ currencyNumberOfDecimals }
 					decimalSeparator={ currencyDecimalPoint }

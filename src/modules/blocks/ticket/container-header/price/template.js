@@ -3,7 +3,7 @@
  */
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
-import NumberFormat from 'react-number-format';
+import { NumericFormat } from 'react-number-format';
 
 /**
  * Wordpress dependencies
@@ -39,7 +39,7 @@ const TicketContainerHeaderPriceLabel = ( {
 
 	return (
 		<Fragment>
-			<NumberFormat
+			<NumericFormat
 				decimalScale={ currencyNumberOfDecimals }
 				decimalSeparator={ currencyDecimalPoint }
 				displayType="text"
