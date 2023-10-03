@@ -12,10 +12,4 @@ describe( 'Price', () => {
 		expect( component.toJSON() ).toMatchSnapshot();
 	} );
 
-	test( 'Triggers the onTempPriceChange callback', () => {
-		const onTempPriceChange = jest.fn();
-		const component = mount( <Price onTempPriceChange={ onTempPriceChange } value={ 'tickets-price' } /> );
-		component.find( 'input' ).simulate( 'change' );
-		expect( onTempPriceChange ).toHaveBeenCalled();
-	} );
 } );

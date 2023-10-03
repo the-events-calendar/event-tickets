@@ -13,8 +13,11 @@ import { selectors, actions } from '@moderntribe/tickets/data/blocks/ticket';
 
 const mapStateToProps = ( state, ownProps ) => ( {
 	available: selectors.getTicketAvailable( state, ownProps ),
+	currencyDecimalPoint: selectors.getTicketCurrencyDecimalPoint( state, ownProps ),
+	currencyNumberOfDecimals: selectors.getTicketCurrencyNumberOfDecimals( state, ownProps ),
 	currencyPosition: selectors.getTicketCurrencyPosition( state, ownProps ),
 	currencySymbol: selectors.getTicketCurrencySymbol( state, ownProps ),
+	currencyThousandsSep: selectors.getTicketCurrencyThousandsSep( state, ownProps ),
 	isDisabled: selectors.isTicketDisabled( state, ownProps ),
 	isUnlimited: selectors.isUnlimitedTicket( state, ownProps ),
 	price: selectors.getTicketPrice( state, ownProps ) || '0',

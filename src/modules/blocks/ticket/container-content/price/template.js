@@ -4,6 +4,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import NumberFormat from 'react-number-format';
 
 /**
  * Wordpress dependencies
@@ -14,7 +15,7 @@ import uniqid from 'uniqid';
 /**
  * Internal dependencies
  */
-import { Input } from '@moderntribe/common/elements';
+import { PREFIX, SUFFIX } from '@moderntribe/tickets/data/blocks/ticket/constants';
 import { LabeledItem } from '@moderntribe/common/elements';
 import './style.pcss';
 
@@ -32,12 +33,20 @@ class Price extends PureComponent {
 
 	render() {
 		const {
+			currencyDecimalPoint,
+			currencyNumberOfDecimals,
+			currencyPosition,
+			currencySymbol,
+			currencyThousandsSep,
 			isDisabled,
 			onTempPriceChange,
 			tempPrice,
-			currencyPosition,
-			currencySymbol,
 		} = this.props;
+
+		const numericFormatProps = {
+			...(currencyPosition === PREFIX && { prefix: currencySymbol}),
+			...(currencyPosition === SUFFIX && { suffix: currencySymbol}),
+		}
 
 		return (
 			<div className={ classNames(
@@ -52,14 +61,17 @@ class Price extends PureComponent {
 					label={ __( 'Ticket price', 'event-tickets' ) }
 				/>
 
-				<Input
-					id={ this.id }
-					className="tribe-editor__ticket__price-input"
-					value={ tempPrice }
-					onChange={ onTempPriceChange }
+				<NumberFormat
+					className="tribe-editor__input tribe-editor__ticket__price-input"
+					decimalScale={ currencyNumberOfDecimals }
+					decimalSeparator={ currencyDecimalPoint }
 					disabled={ isDisabled }
-					type="number"
-					min="0"
+					displayType="input"
+					fixedDecimalScale={ true }
+					{ ...numericFormatProps }
+					onValueChange={ onTempPriceChange }
+					thousandSeparator={ currencyThousandsSep }
+					value={ tempPrice }
 				/>
 			</div>
 		);
