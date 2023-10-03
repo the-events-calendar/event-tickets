@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "04c99ba5bf8213ef1a12738ba68502e3",
+    "content-hash": "96fc994de9cf730d1350642ff0270d94",
     "packages": [],
     "packages-dev": [
         {
@@ -1891,16 +1891,16 @@
         },
         {
             "name": "lucatume/codeception-snapshot-assertions",
-            "version": "0.2.4",
+            "version": "0.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lucatume/codeception-snapshot-assertions.git",
-                "reference": "077108237a121d3ddcf7070aa8519dea25459a6a"
+                "reference": "8de42335abf18e59cc8e84d27182559a2dbdd12e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lucatume/codeception-snapshot-assertions/zipball/077108237a121d3ddcf7070aa8519dea25459a6a",
-                "reference": "077108237a121d3ddcf7070aa8519dea25459a6a",
+                "url": "https://api.github.com/repos/lucatume/codeception-snapshot-assertions/zipball/8de42335abf18e59cc8e84d27182559a2dbdd12e",
+                "reference": "8de42335abf18e59cc8e84d27182559a2dbdd12e",
                 "shasum": ""
             },
             "require": {
@@ -1930,9 +1930,9 @@
             "description": "Snapshot assertions sugar for Codeception.",
             "support": {
                 "issues": "https://github.com/lucatume/codeception-snapshot-assertions/issues",
-                "source": "https://github.com/lucatume/codeception-snapshot-assertions/tree/master"
+                "source": "https://github.com/lucatume/codeception-snapshot-assertions/tree/0.3.0"
             },
-            "time": "2020-02-05T20:17:49+00:00"
+            "time": "2023-09-08T10:12:49+00:00"
         },
         {
             "name": "lucatume/wp-browser",

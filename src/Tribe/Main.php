@@ -43,7 +43,7 @@ class Tribe__Tickets__Main {
 	*
 	* @since 4.10
 	*/
-	protected $min_tec_version = '6.2.2-dev';
+	protected $min_tec_version = '6.2.2.1-dev';
 
 	/**
 	 * Name of the provider
@@ -380,9 +380,6 @@ class Tribe__Tickets__Main {
 	 * @since 4.10
 	 */
 	public function bootstrap() {
-		// Initialize the Service Provider for Tickets.
-		tribe_register_provider( 'Tribe__Tickets__Service_Provider' );
-
 		$this->hooks();
 
 		$this->register_active_plugin();
@@ -412,6 +409,9 @@ class Tribe__Tickets__Main {
 	 */
 	public function bind_implementations() {
 		tribe_singleton( 'tickets.main', $this );
+
+		// Initialize the Service Provider for Tickets.
+		tribe_register_provider( Tribe__Tickets__Service_Provider::class );
 
 		// Tickets Commerce providers.
 		tribe_register_provider( TEC\Tickets\Provider::class );

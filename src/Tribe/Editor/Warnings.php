@@ -25,7 +25,8 @@ class Warnings {
 	/**
 	 * Show the Recurring Event warning message.
 	 *
-	 * @since 5.6.4   Remove dependency on `#tribe-recurrence-active`.
+	 * @since TBD Remove rendering the warning message for CE.
+	 * @since 5.6.4 Remove dependency on `#tribe-recurrence-active`.
 	 * @since 5.6.2 Added 'recurring_event_warning' as an $additionalClasses.
 	 * @since 5.0.4
 	 *
@@ -50,11 +51,6 @@ class Warnings {
 			if ( ! $migrated ) {
 				return;
 			}
-		}
-
-		if ( tribe_is_frontend() ) {
-			$this->render_notice( $this->get_recurring_event_warning_message() );
-			return;
 		}
 
 		$this->render_notice( $this->get_recurring_event_warning_message(), 'info', null, null, [ 'recurring_event_warning' ] );
