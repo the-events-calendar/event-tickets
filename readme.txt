@@ -198,6 +198,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Tweak - Re-styled Active Tickets Block with tickets. Add information icons and tooltips.  [ET-1824]
 * Tweak - Re-styled Create and Edit Tickets in Block Editor.  [ET-1835]
 * Tweak - Re-styled Tickets Settings in Block Editor.  [ET-1834]
+* Tweak - Using react-number-format to display price.  [ET-1885]
 
 = [5.6.4] 2023-08-16 =
 
