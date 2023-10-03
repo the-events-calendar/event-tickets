@@ -535,6 +535,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 *
 	 * @since 4.8
 	 * @since 5.6.4 Refactored the logic to remove Event Tickets Plus logic.
+	 * @since 5.6.5 Added support to filter by TicketsCommerce order status.
 	 *
 	 * @throws Tribe__Repository__Void_Query_Exception If the requested statuses are not accessible by the user.
 	 *
@@ -556,6 +557,8 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 				return;
 			}
 		}
+
+		// set a status for tc only, that fetches the wp_slug from the given slugs in $statuses array.
 
 		// Allow the user to define singular statuses or the meta-status "public"
 		if ( in_array( 'public', $statuses, true ) ) {
@@ -599,6 +602,22 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 				AND order_status_meta.meta_value {$value_operator} {$value_clause}
 			)
 		";
+
+		// filter $statuses to only get proper TC status slugs.
+		$tc_order_statuses = array_filter( array_map( function( $status ) {
+			$status_obj = tribe( \TEC\Tickets\Commerce\Status\Status_Handler::class )->get_by_slug( $status );
+			return $status_obj ? $status_obj->get_wp_slug() : '';
+		}, $statuses ) );
+
+		$tc_order_statuses  = "( '" . implode( "','", array_map( [ $wpdb, '_escape' ], $tc_order_statuses ) ) . "' )";
+		$tc_order_post_type = \TEC\Tickets\Commerce\Order::POSTTYPE;
+
+		$this->filter_query->join( "LEFT JOIN {$wpdb->posts} tc_order_status ON (
+		 {$wpdb->posts}.post_parent = tc_order_status.ID
+		  AND tc_order_status.post_type = '{$tc_order_post_type}'
+		  AND tc_order_status.post_status IN {$tc_order_statuses} )" );
+
+		$et_where_clause .= " OR {$wpdb->posts}.post_parent IN ( tc_order_status.ID )";
 
 		// Allow extending classes to alter the JOIN and WHERE clauses.
 		$this->filter_by_order_status_where( $et_where_clause, $value_operator, $value_clause );

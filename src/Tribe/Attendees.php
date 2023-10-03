@@ -36,7 +36,7 @@ class Tribe__Tickets__Attendees {
 
 		add_action( 'tribe_report_page_after_text_label', [ $this, 'include_export_button_title' ], 25, 2 );
 		add_action( 'tribe_tabbed_view_heading_after_text_label', [ $this, 'include_export_button_title' ], 25, 2 );
-		add_action( 'tribe_events_tickets_attendees_totals_top', [ $this, 'print_checkedin_totals' ], 0 );
+		add_action( 'tribe_events_tickets_attendees_totals_bottom', [ $this, 'print_checkedin_totals' ], 0 );
 		add_action( 'tribe_tickets_attendees_event_details_list_top', [ $this, 'event_details_top' ], 20 );
 		add_action( 'tribe_tickets_plus_report_event_details_list_top', [ $this, 'event_details_top' ], 20 );
 		add_action( 'tribe_tickets_report_event_details_list_top', [ $this, 'event_details_top' ], 20 );
@@ -140,11 +140,63 @@ class Tribe__Tickets__Attendees {
 	 * Print Check In Totals at top of Column.
 	 *
 	 * @since 4.6.2
+	 * @since 5.6.5   Added $post_id parameter.
+	 *
+	 * @param int $post_id The post ID.
 	 */
-	public function print_checkedin_totals() {
-		$total_checked_in = Tribe__Tickets__Main::instance()->attendance_totals()->get_total_checked_in();
+	public function print_checkedin_totals( $post_id ) {
+		// Bail if we don't have a post ID.
+		if ( ! $post_id ) {
+			return;
+		}
 
-		echo '<div class="totals-header"><h3>' . esc_html_x( 'Checked in:', 'attendee summary', 'event-tickets' ) . '</h3> <span id="total_checkedin">' . absint( $total_checked_in ) . '</span></div>';
+		$total_checked_in = $this->get_checkedin_total();
+		$check_in_percent = $this->get_checkedin_percentage( $post_id );
+		$total_attendees  = Tribe__Tickets__Tickets::get_event_attendees_count( $post_id );
+
+		/** @var Tribe__Tickets__Admin__Views $admin_views */
+		$admin_views = tribe( 'tickets.admin.views' );
+		$args = [
+			'total_attendees'    => absint( $total_attendees ),
+			'total_checked_in'   => absint( $total_checked_in ),
+			'percent_checked_in' => $check_in_percent,
+		];
+		$admin_views->template( 'attendees/attendees-event/attendance-totals', $args, true );
+	}
+
+	/**
+	 * Get Check In Total.
+	 *
+	 * @since 5.6.5
+	 *
+	 * @return int
+	 */
+	public function get_checkedin_total(): int {
+		return (int) Tribe__Tickets__Main::instance()->attendance_totals()->get_total_checked_in();
+	}
+
+	/**
+	 * Get Check In Percentage.
+	 *
+	 * @since 5.6.5
+	 *
+	 * @param int $post_id The post ID.
+	 *
+	 * @return string
+	 */
+	public function get_checkedin_percentage( $post_id ): string {
+		$total_checked_in = $this->get_checkedin_total();
+		$total            = Tribe__Tickets__Tickets::get_event_attendees_count( $post_id );
+
+		// Remove the "Not Going" RSVPs.
+		$not_going = tribe( 'tickets.rsvp' )->get_attendees_count_not_going( $post_id );
+		$total    -= $not_going;
+
+		if ( $total_checked_in === 0 || $total <= 0 ) {
+			return '0%';
+		}
+
+		return round( ( $total_checked_in / $total ) * 100 ) . '%';
 	}
 
 	/**

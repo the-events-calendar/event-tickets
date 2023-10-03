@@ -6,6 +6,7 @@ use Codeception\TestCase\WPTestCase;
 use Tribe\Events\Test\Factories\Event;
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\PayPal\Order_Maker as PayPal_Order_Maker;
+use Tribe__Tickets__Commerce__PayPal__Main as PayPal;
 
 class ConfigState {
 
@@ -42,8 +43,10 @@ class ConfigState {
 	public $global_stock;
 
 	public function __construct() {
-		$maker = new Event();
+		$maker          = new Event();
 		$this->event_id = $maker->create();
+		// Ensure the provider used by the Event is the one the tickets are being created for.
+		update_post_meta( $this->event_id, '_tribe_default_ticket_provider', PayPal::class );
 
 		$this->provider = tribe( 'tickets.commerce.paypal' );
 
@@ -58,14 +61,14 @@ class ConfigState {
 	}
 
 	public function create_shared_cap_tickets() {
-		$overrides = [
+		$overrides   = [
 			'tribe-ticket' => [
 				'mode'           => \Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE,
 				'event_capacity' => $this->shared_config['total_cap'],
 				'capacity'       => $this->shared_config['capped_limit'],
 			],
 		];
-		$ticket_a_id   = $this->create_paypal_ticket( $this->event_id, 10, $overrides );
+		$ticket_a_id = $this->create_paypal_ticket( $this->event_id, 10, $overrides );
 
 		$overrides = [
 			'tribe-ticket' => [
@@ -75,12 +78,13 @@ class ConfigState {
 			],
 		];
 
-		$ticket_b_id   = $this->create_paypal_ticket( $this->event_id, 20, $overrides );
+		$ticket_b_id = $this->create_paypal_ticket( $this->event_id, 20, $overrides );
 
 		$this->ticket_a = $this->provider->get_ticket( $this->event_id, $ticket_a_id );
 		$this->ticket_b = $this->provider->get_ticket( $this->event_id, $ticket_b_id );
 	}
 }
+
 /**
  * Test Shared capacity Calculations
  *
@@ -94,13 +98,13 @@ class SharedCapacityTest extends WPTestCase {
 	use PayPal_Order_Maker;
 
 	public function setUp() {
-    	parent::setUp();
+		parent::setUp();
 
 
 		// Enable Tribe Commerce.
 		add_filter( 'tribe_tickets_commerce_paypal_is_active', '__return_true' );
 		add_filter( 'tribe_tickets_get_modules', function ( $modules ) {
-			$modules['Tribe__Tickets__Commerce__PayPal__Main'] = tribe( 'tickets.commerce.paypal' )->plugin_name;
+			$modules[ PayPal::class ] = tribe( 'tickets.commerce.paypal' )->plugin_name;
 
 			return $modules;
 		} );
@@ -110,7 +114,6 @@ class SharedCapacityTest extends WPTestCase {
 	 * @test
 	 */
 	public function it_should_create_tickets_correctly() {
-
 		$config = new ConfigState();
 		// Make sure both tickets are valid Ticket Object.
 		$this->assertInstanceOf( \Tribe__Tickets__Ticket_Object::class, $config->ticket_a );
@@ -127,7 +130,10 @@ class SharedCapacityTest extends WPTestCase {
 		$this->assertEquals( $config->shared_config['total_cap'], $config->ticket_b->capacity() );
 		$this->assertEquals( $config->shared_config['total_cap'], $config->ticket_b->stock() );
 
-		$this->assertEquals( $config->shared_config['total_cap'], tribe_get_event_capacity( $config->event_id ) );
+		$tribe_get_event_capacity = tribe_get_event_capacity( $config->event_id );
+		global $wpdb;
+		codecept_debug( $wpdb->last_query );
+		$this->assertEquals( $config->shared_config['total_cap'], $tribe_get_event_capacity );
 	}
 
 	/**

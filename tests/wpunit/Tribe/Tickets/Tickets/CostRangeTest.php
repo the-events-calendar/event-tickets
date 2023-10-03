@@ -3,6 +3,7 @@
 namespace Tribe\Tickets\Tickets;
 
 use Tribe\Tickets\Test\Testcases\Ticket_Object_TestCase;
+use Tribe__Tickets__Commerce__PayPal__Main as PayPal;
 
 class CostRangeTest extends Ticket_Object_TestCase {
 
@@ -20,6 +21,9 @@ class CostRangeTest extends Ticket_Object_TestCase {
 	 */
 	public function should_show_all_costs_of_an_event() {
 		$event_id = $this->make_event();
+
+		// Ensure the post ticket provider is PayPal.
+		update_post_meta( $event_id, '_tribe_default_ticket_provider', PayPal::class );
 
 		$ticket1 = $this->create_paypal_ticket( $event_id, 10 );
 		$ticket2 = $this->create_paypal_ticket( $event_id, 20 );
@@ -43,6 +47,9 @@ class CostRangeTest extends Ticket_Object_TestCase {
 	 */
 	public function should_show_hide_costs_for_past_tickets() {
 		$event_id = $this->make_event();
+
+		// Ensure the post ticket provider is PayPal.
+		update_post_meta( $event_id, '_tribe_default_ticket_provider', PayPal::class );
 
 		$overrides = [
 			'ticket_start_date' => '2021-01-01',
@@ -72,6 +79,9 @@ class CostRangeTest extends Ticket_Object_TestCase {
 	 */
 	public function should_hide_costs_for_future_tickets() {
 		$event_id = $this->make_event();
+
+		// Ensure the post ticket provider is PayPal.
+		update_post_meta( $event_id, '_tribe_default_ticket_provider', PayPal::class );
 
 		$overrides = [
 			'ticket_start_date' => '2030-01-01',
@@ -103,6 +113,9 @@ class CostRangeTest extends Ticket_Object_TestCase {
 	 */
 	public function should_not_hide_costs_for_past_events_if_filter_is_off() {
 		$event_id = $this->make_event();
+
+		// Ensure the post ticket provider is PayPal.
+		update_post_meta( $event_id, '_tribe_default_ticket_provider', PayPal::class );
 
 		$overrides = [
 			'ticket_start_date' => '2021-01-01',
