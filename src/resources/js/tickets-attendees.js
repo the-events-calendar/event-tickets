@@ -102,8 +102,12 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 				function( response ) {
 					if ( response.success ) {
 						obj.closest( 'tr' ).addClass( 'tickets_checked' );
+						var total_attendees    = parseInt( $( '#percent_checkedin' ).data( 'total-attendees' ) );
+						var total_checked_in   = parseInt( $( '#total_checkedin' ).text() ) + 1;
+						var percent_checked_in = Math.round( ( total_checked_in / total_attendees ) * 100 ).toString() + '%';
 
-						$( '#total_checkedin' ).text( parseInt( $( '#total_checkedin' ).text() ) + 1 );
+						$( '#total_checkedin' ).text( total_checked_in );
+						$( '#percent_checkedin' ).text( percent_checked_in );
 					}
 
 					obj.prop( 'disabled', false );
