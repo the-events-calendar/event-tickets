@@ -37,6 +37,10 @@ const TicketsContainer = ( {
 		description: '',
 	};
 
+	if ( isSettingsOpen ) {
+		return null;
+	}
+
 	if ( ! canCreateTickets ) {
 		messages.title = __( 'There is no ecommerce available', 'event-tickets' );
 		messages.description = __(
