@@ -133,7 +133,7 @@ class Capacity extends PureComponent {
 			}
 
 			extraProps.label = tempCapacityType === TICKET_TYPES[ SHARED ]
-				? __( '(optional) Limit sales of this ticket to:', 'event-tickets' )
+				? __( 'Limit sales of this ticket to:', 'event-tickets' )
 				: __( 'Number of tickets available', 'event-tickets' );
 
 			inputs.push(

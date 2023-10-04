@@ -2030,6 +2030,7 @@ describe( 'Ticket Block sagas', () => {
 			const endTimeInput = '19:48:42';
 			const capacityType = 'own';
 			const capacity = 100;
+			const attendeeInfoFields = [];
 
 			const CLIENT_ID = 'modern-tribe';
 			const action = {
@@ -2053,6 +2054,7 @@ describe( 'Ticket Block sagas', () => {
 						endTimeInput,
 						capacityType,
 						capacity,
+						attendeeInfoFields,
 					},
 				},
 			};
@@ -2060,6 +2062,7 @@ describe( 'Ticket Block sagas', () => {
 			const gen = sagas.setTicketDetails( action );
 			expect( gen.next().value ).toEqual(
 				all( [
+					put( actions.setTicketAttendeeInfoFields( CLIENT_ID, attendeeInfoFields ) ),
 					put( actions.setTicketTitle( CLIENT_ID, title ) ),
 					put( actions.setTicketDescription( CLIENT_ID, description ) ),
 					put( actions.setTicketPrice( CLIENT_ID, price ) ),

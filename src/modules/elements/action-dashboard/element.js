@@ -49,7 +49,7 @@ const ActionDashboard = ( {
 
 	const confirmButton = showConfirm && (
 		<Button
-			className="tribe-editor__action-dashboard__confirm-button tribe-editor__button--sm"
+			className="tribe-editor__action-dashboard__confirm-button tribe-editor__button--sm tribe-common-c-btn"
 			isDisabled={ isConfirmDisabled }
 			onClick={ onConfirmClick }
 		>

@@ -8,17 +8,23 @@ import { Button } from '@moderntribe/common/elements';
 import './style.pcss';
 
 const MoveDelete = ( {
+	ticketIsSelected,
 	moveTicket,
 	removeTicket,
 	isDisabled,
 } ) => {
+
+	if ( ! ticketIsSelected ) {
+		return null;
+	}
+
 	return (
 		<div className="tribe-editor__ticket__content-row--move-delete">
-			<Button type="button" onClick={ moveTicket } disabled={ isDisabled }>
-				{ __( 'Move Ticket', 'event-tickets' ) }
-			</Button>
 			<Button type="button" onClick={ removeTicket } disabled={ isDisabled }>
 				{ __( 'Remove Ticket', 'event-tickets' ) }
+			</Button>
+			<Button type="button" onClick={ moveTicket } disabled={ isDisabled }>
+				{ __( 'Move Ticket', 'event-tickets' ) }
 			</Button>
 		</div>
 	);

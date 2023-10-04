@@ -211,6 +211,21 @@ export const getTicketCurrencyPosition = createSelector(
 	( ticket ) => ticket.currencyPosition,
 );
 
+export const getTicketCurrencyDecimalPoint = createSelector(
+	[ getTicket ],
+	( ticket ) => ticket.currencyDecimalPoint,
+);
+
+export const getTicketCurrencyNumberOfDecimals = createSelector(
+	[ getTicket ],
+	( ticket ) => ticket.currencyNumberOfDecimals,
+);
+
+export const getTicketCurrencyThousandsSep = createSelector(
+	[ getTicket ],
+	( ticket ) => ticket.currencyThousandsSep,
+);
+
 export const getTicketProvider = createSelector(
 	[ getTicket ],
 	( ticket ) => ticket.provider,
@@ -433,6 +448,11 @@ export const allTicketsFuture = createSelector(
 				: isFuture
 		);
 	}, true ),
+);
+
+export const getTicketAttendeeInfoFields = createSelector(
+	[ getTicketDetails ],
+	( details ) => details.attendeeInfoFields || []
 );
 
 //
