@@ -138,6 +138,8 @@ class Base extends Controller {
 		] );
 
 		add_action( 'tribe_tickets_attendees_event_details_list_top', [ $this, 'render_series_details_for_attached_event' ], 50 );
+		add_action( 'tribe_tickets_plus_report_event_details_list_top', [ $this, 'render_series_details_for_attached_event' ], 50 );
+		add_action( 'tribe_tickets_report_event_details_list_top', [ $this, 'render_series_details_for_attached_event' ], 50 );
 	}
 
 	/**
@@ -210,6 +212,8 @@ class Base extends Controller {
 		] );
 
 		remove_action( 'tribe_tickets_attendees_event_details_list_top', [ $this, 'render_series_details_for_attached_event' ], 50 );
+		remove_action( 'tribe_tickets_plus_report_event_details_list_top', [ $this, 'render_series_details_for_attached_event' ], 50 );
+		remove_action( 'tribe_tickets_report_event_details_list_top', [ $this, 'render_series_details_for_attached_event' ], 50 );
 	}
 
 	/**
