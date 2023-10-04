@@ -666,7 +666,7 @@ class Tribe__Tickets__Commerce__Currency {
 		}
 
 		if ( 'Tribe__Tickets_Plus__Commerce__EDD__Main' === $provider && function_exists( 'edd_get_option' ) ) {
-			return edd_get_option( 'thousands_separator', '.' );
+			return edd_get_option( 'thousands_separator', ',' );
 		}
 
 		if ( \TEC\Tickets\Commerce\Module::class === $provider && function_exists( 'tec_tickets_commerce_currency_thousands_separator' ) ) {
