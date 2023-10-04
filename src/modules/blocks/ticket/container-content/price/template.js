@@ -4,6 +4,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import { NumericFormat } from 'react-number-format';
 
 /**
  * Wordpress dependencies
@@ -14,13 +15,14 @@ import uniqid from 'uniqid';
 /**
  * Internal dependencies
  */
-import { Input } from '@moderntribe/common/elements';
+import { PREFIX, SUFFIX } from '@moderntribe/tickets/data/blocks/ticket/constants';
 import { LabeledItem } from '@moderntribe/common/elements';
 import './style.pcss';
 
 class Price extends PureComponent {
 	static propTypes = {
 		isDisabled: PropTypes.bool,
+		minDefaultPrice: PropTypes.string,
 		onTempPriceChange: PropTypes.func.isRequired,
 		tempPrice: PropTypes.string,
 	};
@@ -32,12 +34,27 @@ class Price extends PureComponent {
 
 	render() {
 		const {
-			isDisabled,
-			onTempPriceChange,
-			tempPrice,
+			currencyDecimalPoint,
+			currencyNumberOfDecimals,
 			currencyPosition,
 			currencySymbol,
+			currencyThousandsSep,
+			isDisabled,
+			minDefaultPrice,
+			onTempPriceChange,
+			tempPrice,
 		} = this.props;
+
+		const numericFormatProps = {
+			...(currencyPosition === PREFIX && { prefix: currencySymbol}),
+			...(currencyPosition === SUFFIX && { suffix: currencySymbol}),
+		}
+
+		const handleChange = (e) => {
+			if ( !isNaN( e.value ) && e.value >= minDefaultPrice ) {
+				onTempPriceChange(e);
+			}
+		}
 
 		return (
 			<div className={ classNames(
@@ -52,14 +69,18 @@ class Price extends PureComponent {
 					label={ __( 'Ticket price', 'event-tickets' ) }
 				/>
 
-				<Input
-					id={ this.id }
-					className="tribe-editor__ticket__price-input"
-					value={ tempPrice }
-					onChange={ onTempPriceChange }
+				<NumericFormat
+					allowNegative={ false }
+					className="tribe-editor__input tribe-editor__ticket__price-input"
+					decimalScale={ currencyNumberOfDecimals }
+					decimalSeparator={ currencyDecimalPoint }
 					disabled={ isDisabled }
-					type="number"
-					min="0"
+					displayType="input"
+					fixedDecimalScale={ true }
+					{ ...numericFormatProps }
+					onValueChange={ handleChange }
+					thousandSeparator={ currencyThousandsSep }
+					value={ tempPrice }
 				/>
 			</div>
 		);
