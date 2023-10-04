@@ -17,17 +17,18 @@ trait Order_Maker {
 	 * Takes a list of tickets and creates an order for them.
 	 *
 	 * @param array $items An array of ticket_id => quantity pairs.
+	 * @param array $overrides An array of overrides for the purchaser.
 	 *
 	 * @return false|\WP_Post The order post object or false if the order could not be created.
 	 */
-	protected function create_order( array $items ) {
+	protected function create_order( array $items, array $overrides = [] ) {
 		$cart = new Cart();
 
 		foreach ( $items as $id => $quantity ) {
 			$cart->get_repository()->add_item( $id, $quantity );
 		}
 
-		$purchaser = [
+		$default_purchaser = [
 			'purchaser_user_id'    => 0,
 			'purchaser_full_name'  => 'Test Purchaser',
 			'purchaser_first_name' => 'Test',
@@ -35,9 +36,20 @@ trait Order_Maker {
 			'purchaser_email'      => 'test-'.uniqid().'@test.com',
 		];
 
-		$order     = tribe( Order::class )->create_from_cart( tribe( Gateway::class ), $purchaser );
-		$completed = tribe( Order::class )->modify_status( $order->ID, Pending::SLUG );
-		$completed = tribe( Order::class )->modify_status( $order->ID, Completed::SLUG );
+		$purchaser = wp_parse_args( $overrides, $default_purchaser );
+		$orders    = tribe( Order::class );
+		$order     = $orders->create_from_cart( tribe( Gateway::class ), $purchaser );
+
+		if ( ! $orders->modify_status( $order->ID, Pending::SLUG ) ) {
+			return false;
+		}
+
+		if ( ! $orders->modify_status( $order->ID, Completed::SLUG ) ) {
+			return false;
+		}
+
+		clean_post_cache( $order->ID );
+
 		$cart->clear_cart();
 
 		return $order;
