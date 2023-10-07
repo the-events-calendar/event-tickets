@@ -288,15 +288,6 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		}
 
 		/**
-		 * The ticket type.
-		 *
-		 * @since TBD
-		 *
-		 * @var string
-		 */
-		public string $type = 'default';
-
-		/**
 		 * Get the ticket's start date
 		 *
 		 * @since 4.2
