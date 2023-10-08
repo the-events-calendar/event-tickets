@@ -191,13 +191,13 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.6.6] TBD =
+= [5.6.6] 2023-10-10 =
 
 * Tweak - Include a QRCode Library in Event Tickets to improve conformity across other addons. [ETWP-29]
 * Fix - The Attendee Registration feature will now use the modal by default.  [ETP-882]
 * Fix - Restore possibility to move Tickets and Attendees to Single Events that are part of a Series. [ET-1862]
 * Fix - When using the block editor, the Attendee Information modal will be properly sized. [ETP-883]
-* Fix - Ticket property invalidation to ensure capacity, inventory and availability are correctly invalidated. [ET-xxx]
+* Fix - Ticket property invalidation to ensure capacity, inventory and availability are correctly invalidated. [ET-1887]
 * Fix - Fix order status sometimes showing incorrectly for sites in languages other than English. [ET-1875]
 * Fix - When transferring tickets from one event to another using Tickets Commerce, the capacity and stock levels for each ticket should be correctly updated. [ETP-866]
 * Fix - Avoid showing duplicate warning related to recurring event on ticket meta box for new event submissions using Community Events. [ECP-1538]
