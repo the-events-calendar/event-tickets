@@ -1,5 +1,19 @@
 <?php
+/**
+ * Template to render the Orders Report Summary.
+ *
+ * @version TBD
+ *
+ * @var int $post_id The current post ID.
+ * @var WP_Post $post The current post object.
+ * @var string $post_singular_label The post type singular label.
+ * @var array $tickets A list of PayPal tickets that have at least one sale.
+ * @var array $tickets_data A list of PayPal tickets that have at least one sale.
+ * @var array $event_data A list of PayPal tickets that have at least one sale.
+ * @var Order_Summary $order_summary The data object.
+ */
 
+use TEC\Tickets\Commerce\Reports\Data\Order_Summary;
 use \TEC\Tickets\Commerce\Status\Completed;
 use \TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Utils\Value;
@@ -53,17 +67,41 @@ use TEC\Tickets\Commerce\Utils\Value;
 
 			</div>
 			<div class="welcome-panel-column welcome-panel-middle">
-				<h3>
+				<h3 class="tec-tickets__admin-orders-report-overview-title">
 					<?php
 					echo esc_html(
 						sprintf(
-							__( 'Sales by %s Type', 'event-tickets' ),
+							__( 'Sales by %s', 'event-tickets' ),
 							tribe_get_ticket_label_singular( 'sales_by_type' )
 						)
 					);
 					?>
-					<?php echo $tooltip->render_tooltip( esc_html__( 'Sold counts tickets from completed orders only.', 'event-tickets' ) ); ?>
 				</h3>
+				<div class="tec-tickets__admin-orders-report-overview-ticket-type">
+					<?php
+					$tickets_by_type = $order_summary->get_tickets_by_type();
+					foreach ( $tickets_by_type as $type => $items ): ?>
+						<div class="tec-tickets__admin-orders-report-overview-ticket-type-icon tec-tickets__admin-orders-report-overview-ticket-type-icon--default"></div>
+						<div class="tec-tickets__admin-orders-report-overview-ticket-type-label">
+							<?php echo esc_html( $order_summary->get_label_for_type( $type ) ); ?>
+						</div>
+						<div class="tec-tickets__admin-orders-report-overview-ticket-type-border"></div>
+				</div>
+				<ul class="tec-tickets__admin-orders-report-overview-ticket-type-list">
+					<?php foreach ( $items as $item ): ?>
+						<li class="tec-tickets__admin-orders-report-overview-ticket-type-list-item">
+							<div>
+								<span class="tec-tickets__admin-orders-report-overview-ticket-type-list-item-ticket-name">
+									<?php echo esc_html( $item['label'] ) ?>
+								</span>
+							</div>
+							<div class="tec-tickets__admin-orders-report-overview-ticket-type-list-item-stat">
+								<?php echo esc_html( $item['qty_string'] ) ?>
+							</div>
+						</li>
+					<?php endforeach; ?>
+				</ul>
+					<?php endforeach; ?>
 				<ul>
 					<?php
 					/**
@@ -108,10 +146,6 @@ use TEC\Tickets\Commerce\Utils\Value;
 							$event_data['qty_by_status'][ Completed::SLUG ]
 						);
 						echo esc_html( $totals_header );
-						echo $tooltip->render_tooltip( sprintf(
-							esc_html__( 'Total Sales counts %s from all completed orders.', 'event-tickets' ),
-							tribe_get_ticket_label_plural_lowercase( 'total_sales' )
-						) );
 						?>
 					</h3>
 
@@ -135,7 +169,6 @@ use TEC\Tickets\Commerce\Utils\Value;
 							$event_data['qty_by_status'][ Completed::SLUG ] + $event_data['qty_by_status'][ Pending::SLUG ]
 						);
 						echo esc_html( $totals_header );
-						echo $tooltip->render_tooltip( esc_html__( 'Total Ordered counts tickets from orders of any status, including pending and refunded.', 'event-tickets' ) );
 						?>
 					</div>
 				</div>

@@ -398,6 +398,7 @@ class Orders extends Report_Abstract {
 			$event_data['total_by_status']
 		);
 
+		$order_summary = new Commerce\Reports\Data\Order_Summary( $post_id );
 
 		$this->template_vars = [
 			'title'               => $this->get_title( $post_id ),
@@ -409,8 +410,7 @@ class Orders extends Report_Abstract {
 			'tickets'             => $tickets,
 			'tickets_data'        => $tickets_data,
 			'event_data'          => $event_data,
-			'tooltip'             => tribe( 'tooltip.view' ),
-			'thousands_sep'       => $thousands_sep,
+			'order_summary'       => $order_summary,
 		];
 
 		return $this->template_vars;
