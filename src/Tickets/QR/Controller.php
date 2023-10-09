@@ -27,21 +27,108 @@ class Controller extends Controller_Contract {
 	/**
 	 * Register the controller.
 	 *
-	 * @since   TBD
+	 * @since TBD
+	 *
+	 * @uses  Notices::register_admin_notices()
+	 *
+	 * @return void
 	 */
 	public function do_register(): void {
 		$this->container->bind( QR::class, [ $this, 'bind_facade_or_error' ] );
+		$this->container->singleton( Settings::class, Settings::class );
+		$this->container->singleton( Notices::class, Notices::class );
+		$this->container->singleton( Connector::class, Connector::class );
+		$this->container->singleton( Observer::class, Observer::class );
+
+		// Register the Admin Notices right away.
+		$this->container->make( Notices::class )->register_admin_notices();
+
+		$this->add_actions();
+		$this->add_filters();
+
+		$this->register_assets();
 	}
 
 	/**
 	 * Unregister the controller.
 	 *
-	 * @since   TBD
+	 * @since TBD
 	 *
 	 * @return void
 	 */
 	public function unregister(): void {
+		$this->remove_actions();
+		$this->remove_filters();
+	}
 
+	/**
+	 * Adds the actions required by the controller.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	protected function add_actions(): void {
+		$connector_ajax_action = tribe( Connector::class )->get_ajax_action_key();
+		add_action( "wp_ajax_{$connector_ajax_action}", [ tribe( Connector::class ), 'handle_ajax_generate_api_hash' ] );
+	}
+
+	/**
+	 * Removes the actions required by the controller.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	protected function remove_actions(): void {
+		$connector_ajax_action = tribe( Connector::class )->get_ajax_action_key();
+		remove_action( "wp_ajax_{$connector_ajax_action}", [ tribe( Connector::class ), 'handle_ajax_generate_api_hash' ] );
+	}
+
+	/**
+	 * Adds the filters required by the QR controller.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	protected function add_filters(): void {
+		$observer = tribe( Observer::class );
+		add_filter( 'template_redirect', [ $observer, 'handle_checkin_redirect' ], 10 );
+		add_filter( 'admin_notices', [ $observer, 'legacy_handler_admin_notice' ], 10 );
+	}
+
+	/**
+	 * Removes the filters required by the QR controller.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	protected function remove_filters(): void {
+		$observer = tribe( Observer::class );
+		remove_filter( 'template_redirect', [ $observer, 'handle_checkin_redirect' ], 10 );
+		remove_filter( 'admin_notices', [ $observer, 'legacy_handler_admin_notice' ], 10 );
+	}
+
+	/**
+	 * Register the assets related to the QR module.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	protected function register_assets(): void {
+		tribe_asset(
+			\Tribe__Tickets__Main::instance(),
+			'tec-tickets-qr-connector',
+			'qr-connector.js',
+			[ 'jquery', 'tribe-common' ],
+			null,
+			[
+				'priority' => 0,
+			]
+		);
 	}
 
 	/**
@@ -70,7 +157,7 @@ class Controller extends Controller_Contract {
 	 *
 	 * @since TBD
 	 */
-	protected function has_library_loaded(): bool {
+	public function has_library_loaded(): bool {
 		return defined( 'TEC_TICKETS_QR_CACHEABLE' );
 	}
 
