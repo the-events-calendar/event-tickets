@@ -359,7 +359,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 				$error_message  = sprintf(
 					// Translators: %s - List of valid statuses.
 					__( 'Supported statuses for this attendee are: %s', 'event-tickets' ),
-					implode( $statuses, ' | ' )
+					implode( ' | ', $statuses )
 				);
 				return new WP_Error( 'invalid-attendee-status', $error_message, [ 'status' => 400 ] );
 			}
