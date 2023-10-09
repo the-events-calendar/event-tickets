@@ -6,7 +6,7 @@
 	&.welcome-panel {
 		background: none;
 		overflow: visible;
-		
+
 		&:before {
 			content: none;
 		}
@@ -29,7 +29,7 @@
 		display: grid;
 		gap: unset;
 		grid-template-columns: repeat(3, 1fr);
-		grid-template-areas: 
+		grid-template-areas:
 			"first middle last"
 			"extra extra last";
 		margin-top: 0px;
@@ -39,8 +39,8 @@
 
 		@media screen and (max-width: 768px) {
 			grid-template-columns: 1fr;
-			grid-template-areas: 
-				"first" 
+			grid-template-areas:
+				"first"
 				"middle"
 				"last"
 				"extra";
@@ -105,7 +105,7 @@
 
 	.welcome-panel-middle {
 		grid-area: middle;
-		
+
 		> div {
 			@media screen and (max-width: 768px) {
 				padding: 0 15px;
@@ -114,56 +114,10 @@
 	}
 
 	.welcome-panel-last {
-		align-content: start;
-		border-left: 1px solid #eee;
-		display: flex;
-		flex-flow: row wrap;
-		grid-area: last;
-		padding: 10px 20px 5px;
-		*zoom: 1;
-
+		display: inline-block;
+		width: auto;
 		@media screen and (max-width: 768px) {
 			width: 100%;
-		}
-
-		li {
-			margin-bottom: 2px;
-		}
-
-		.totals-header {
-			flex: 0 0 100%;
-
-			h3 {
-				display: inline-block;
-				width: auto;
-			}
-
-			.order-total {
-				font-size: 16px;
-				margin: 1.2em 0 0;
-				font-weight: 600;
-			}
-		}
-
-		h4 {
-			font-size: 1.5em;
-			text-align: center;
-		}
-
-		li {
-			font-size: 1.1em;
-		}
-
-		ul {
-			@media screen and (max-width: 870px) {
-				width: 50%;
-			}
-
-			@media screen and (min-width: 870px) {
-				&:first-child {
-					margin-bottom: 0;
-				}
-			}
 		}
 	}
 }
@@ -541,7 +495,7 @@ h3.tec-tickets__admin-orders-report-overview-title {
 	background-image: url( '../icons/icon-pass-left.svg' );
 }
 
-.tec-tickets__admin-orders-report-overview-ticket-type-border {
+.tec-tickets__admin-orders-report-overview--border {
 	border-bottom: 1px solid #DCDCDE;
 	flex: 1;
 	height: 1px;
@@ -598,4 +552,29 @@ ul.tec-tickets__admin-orders-report-overview-ticket-type-list {
 .tec-tickets__admin-orders-report-overview-ticket-totals-stat {
 	font-size: var(--tec-font-size-1);
 	padding-right: var(--tec-spacer-2);
+}
+
+.tec-tickets__admin-orders-report__sales-overview__title {
+	margin-bottom: 10px;
+}
+
+.tec-tickets__admin-orders-report__sales-overview__by-status {
+	margin-bottom: 10px;
+}
+
+.tec-tickets__admin-orders-report__sales-overview__list__item {
+	align-items: center;
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 8px;
+	font-size: 14px;
+}
+
+.tec-tickets__admin-orders-report__sales-overview__total {
+	margin-top: 8px;
+	.tec-tickets__admin-orders-report__sales-overview__list__item-label {
+		font-weight: 700;
+		font-size: 13px;
+		line-height: 18px;
+	}
 }
