@@ -33,6 +33,11 @@ class Order_Summary {
 	 */
 	public function __construct( int $post_id ) {
 		$this->post_id = $post_id;
+		$this->total_sales = [
+			'qty'    => 0,
+			'amount' => 0,
+			'price'  => Value::create()->get_currency(),
+		];
 		$this->build_data();
 	}
 
