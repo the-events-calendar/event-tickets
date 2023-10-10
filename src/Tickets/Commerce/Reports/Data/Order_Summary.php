@@ -1,6 +1,7 @@
 <?php
 namespace TEC\Tickets\Commerce\Reports\Data;
 
+use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\Commerce\Utils\Value;
@@ -11,7 +12,7 @@ class Order_Summary {
 	private int $post_id;
 
 	/**
-	 * @var \Tribe__Tickets__Ticket_Object[]
+	 * @var Ticket_Object[]
 	 */
 	private array $tickets;
 
@@ -25,6 +26,7 @@ class Order_Summary {
 	 */
 	private array $event_sales_by_status = [];
 	private array $total_sales = [];
+	private array $total_ordered = [];
 
 	/**
 	 * Order_Summary constructor.
@@ -34,6 +36,11 @@ class Order_Summary {
 	public function __construct( int $post_id ) {
 		$this->post_id = $post_id;
 		$this->total_sales = [
+			'qty'    => 0,
+			'amount' => 0,
+			'price'  => Value::create()->get_currency(),
+		];
+		$this->total_ordered = [
 			'qty'    => 0,
 			'amount' => 0,
 			'price'  => Value::create()->get_currency(),
@@ -68,9 +75,9 @@ class Order_Summary {
 	/**
 	 * Get the tickets by type.
 	 *
+	 * @return Ticket_Object[]
 	 * @since TBD
 	 *
-	 * @return \Tribe__Tickets__Ticket_Object[]
 	 */
 	public function get_tickets_by_type(): array {
 		/**
@@ -126,18 +133,33 @@ class Order_Summary {
 			$this->event_sales_by_status[ $status_slug ]['total_sales_amount'] += $quantity * $ticket->price;
 			$this->event_sales_by_status[ $status_slug ]['total_sales_price']  = Value::create( $this->event_sales_by_status[ $status_slug ]['total_sales_amount'] )->get_currency();
 
-			// process the total sales data.
-			$this->total_sales['qty']    += $this->event_sales_by_status[ $status_slug ]['qty_sold'];
-			$this->total_sales['amount'] += $this->event_sales_by_status[ $status_slug ]['total_sales_amount'];
-			$this->total_sales['price']  = Value::create( $this->total_sales['amount'] )->get_currency();
+			// process the total ordered data.
+			$this->total_ordered['qty']    += $this->event_sales_by_status[ $status_slug ]['qty_sold'];
+			$this->total_ordered['amount'] += $this->event_sales_by_status[ $status_slug ]['total_sales_amount'];
+			$this->total_ordered['price']  = Value::create( $this->total_ordered['amount'] )->get_currency();
+
+			// Only completed orders should be counted in the total sales.
+			if ( Completed::SLUG === $status_slug ) {
+				$this->total_sales['qty']    += $this->event_sales_by_status[ $status_slug ]['qty_sold'];
+				$this->total_sales['amount'] += $this->event_sales_by_status[ $status_slug ]['total_sales_amount'];
+				$this->total_sales['price']  = Value::create( $this->total_sales['amount'] )->get_currency();
+			}
 		}
 	}
 
+	/**
+	 * Get the event sales data.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
 	public function get_event_sales_data(): array {
 
 		$data = [
-			'by_status'   => $this->event_sales_by_status,
-			'total_sales' => $this->total_sales,
+			'by_status'     => $this->event_sales_by_status,
+			'total_sales'   => $this->total_sales,
+			'total_ordered' => $this->total_ordered,
 		];
 
 		/**
