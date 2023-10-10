@@ -6,6 +6,7 @@ use Closure;
 use Generator;
 use Codeception\TestCase\WPTestCase;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use TEC\Tickets\Commerce\Status\Pending;
 use Tribe\Tests\Traits\With_Uopz;
 use TEC\Tickets\Commerce\Reports\Orders as Order_Report;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
@@ -55,6 +56,25 @@ class OrderReportTest extends WPTestCase {
 				$order     = $this->create_order( [ $ticket_id => 1 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
 
 				return [ $event_id, [ $event_id, $ticket_id, $order->ID ] ];
+			}
+		];
+
+		yield 'event with 1 pending and 2 completed order' => [
+			function (): array {
+				$event_id  = tribe_events()->set_args( [
+					'title'      => 'Event with no attendees',
+					'status'     => 'publish',
+					'start_date' => '2020-01-01 00:00:00',
+					'duration'   => 2 * HOUR_IN_SECONDS,
+				] )->create()->ID;
+				$ticket_id = $this->create_tc_ticket( $event_id, 10 );
+
+				$this->set_fn_return( 'current_time', '2020-02-22 22:22:22' );
+
+				$order_a = $this->create_order( [ $ticket_id => 2 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
+				$order_b = $this->create_order( [ $ticket_id => 3 ], [ 'purchaser_email' => 'purchaser@test.com', 'order_status' => Pending::SLUG ] );
+
+				return [ $event_id, [ $event_id, $ticket_id, $order_a->ID, $order_b->ID ] ];
 			}
 		];
 	}

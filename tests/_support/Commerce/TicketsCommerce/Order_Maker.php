@@ -36,6 +36,8 @@ trait Order_Maker {
 			'purchaser_email'      => 'test-'.uniqid().'@test.com',
 		];
 
+		$order_status = $overrides['order_status'] ?? Completed::SLUG;
+
 		$purchaser = wp_parse_args( $overrides, $default_purchaser );
 		$orders    = tribe( Order::class );
 		$order     = $orders->create_from_cart( tribe( Gateway::class ), $purchaser );
@@ -44,8 +46,8 @@ trait Order_Maker {
 			return false;
 		}
 
-		if ( ! $orders->modify_status( $order->ID, Completed::SLUG ) ) {
-			return false;
+		if ( ! $orders->modify_status( $order->ID, $order_status ) ) {
+			return $order;
 		}
 
 		clean_post_cache( $order->ID );
