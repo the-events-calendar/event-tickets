@@ -4,7 +4,7 @@ Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, raf
 Tags: tickets, registration, event registration, RSVP, ticket sales, attendee management
 Requires at least: 5.8.5
 Tested up to: 6.3.1
-Stable tag: 5.6.5.1
+Stable tag: 5.6.6
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -190,6 +190,20 @@ We've got a [LoopedIn](https://evnt.is/ideas) page where we're actively watching
 Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on using, tweaking, and troubleshooting our plugins.
 
 == Changelog ==
+
+= [5.6.6] 2023-10-10 =
+
+* Version - Event Tickets 5.6.6 is only compatible with Event Tickets Plus 5.7.6 and higher.
+* Tweak - Include a QRCode Library in Event Tickets to improve conformity across other addons. [ETWP-29]
+* Fix - The Attendee Registration feature will now use the modal by default.  [ETP-882]
+* Fix - Restore possibility to move Tickets and Attendees to Single Events that are part of a Series. [ET-1862]
+* Fix - When using the block editor, the Attendee Information modal will be properly sized. [ETP-883]
+* Fix - Ticket property invalidation to ensure capacity, inventory and availability are correctly invalidated. [ET-1887]
+* Fix - Fix order status sometimes showing incorrectly for sites in languages other than English. [ET-1875]
+* Fix - When transferring tickets from one event to another using Tickets Commerce, the capacity and stock levels for each ticket should be correctly updated. [ETP-866]
+* Fix - Avoid showing duplicate warning related to recurring event on ticket meta box for new event submissions using Community Events. [ECP-1538]
+* Fix - Prevent fatal related to Events Calendar Pro on older versions triggering internal service provider to be loaded when it shouldn't be. [ET-1886]
+* Language - 1 new strings added, 13 updated, 0 fuzzied, and 0 obsoleted
 
 = [5.6.5.1] 2023-09-28 =
 

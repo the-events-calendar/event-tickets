@@ -245,6 +245,9 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		// Handle RSVP AJAX.
 		add_action( 'wp_ajax_nopriv_tribe_tickets_rsvp_handle', [ $this, 'ajax_handle_rsvp' ] );
 		add_action( 'wp_ajax_tribe_tickets_rsvp_handle', [ $this, 'ajax_handle_rsvp' ] );
+
+		// Cache invalidation.
+		add_filter( 'tec_cache_listener_save_post_types', [ $this, 'filter_cache_listener_save_post_types' ] );
 	}
 
 	/**
@@ -2935,5 +2938,22 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 */
 	public function is_not_going_enabled( $ticket_id ): bool {
 		return tribe_is_truthy( get_post_meta( $ticket_id, $this->show_not_going, true ) );
+	}
+
+	/**
+	 * Filters the list of post types that should trigger a cache invalidation on `save_post` to add
+	 * all the ones modeling RSVP Tickets and Attendees.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $post_types
+	 *
+	 * @return array
+	 */
+	public function filter_cache_listener_save_post_types( array $post_types = [] ): array {
+		$post_types[] = $this->ticket_object;
+		$post_types[] = $this->attendee_object;
+
+		return $post_types;
 	}
 }

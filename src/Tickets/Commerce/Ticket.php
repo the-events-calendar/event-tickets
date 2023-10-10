@@ -940,6 +940,7 @@ class Ticket {
 	/**
 	 * Update attendee data for moved attendees.
 	 *
+	 * @since TBD removed the use of `$this->decrease_ticket_sales_by` as the move method already takes care of stock.
 	 * @since 5.5.9
 	 *
 	 * @param int $ticket_id                The ticket which has been moved.
@@ -963,9 +964,10 @@ class Ticket {
 
 		$attendee_data = $attendee->save();
 
-		if ( $attendee_data ) {
-			$this->decrease_ticket_sales_by( $src_ticket_type_id, 1 );
-		}
+		// Sync our capacity as well now.
+		/** @var Tribe__Tickets__Tickets_Handler $handler */
+		$handler = tribe( 'tickets.handler' );
+		$handler->sync_shared_capacity( $src_event_id, tribe_tickets_get_capacity( $src_event_id ) );
 	}
 
 	/**

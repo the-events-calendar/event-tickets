@@ -858,7 +858,7 @@ class Tribe__Tickets__Tickets_View {
 		$options = $this->get_rsvp_options();
 
 		?>
-		<select <?php echo $this->get_restriction_attr( $event_id, $ticket_id ); ?> name="<?php echo esc_attr( $name ); ?>">
+		<select class="tribe-answer-select" <?php echo $this->get_restriction_attr( $event_id, $ticket_id ); ?> name="<?php echo esc_attr( $name ); ?>">
 		<?php foreach ( $options as $value => $label ): ?>
 			<option <?php selected( $selected, $value ); ?> value="<?php echo esc_attr( $value ); ?>"><?php echo esc_html( $label ); ?></option>
 		<?php endforeach; ?>
