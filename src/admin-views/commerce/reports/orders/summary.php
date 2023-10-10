@@ -7,14 +7,12 @@
  * @var int $post_id The current post ID.
  * @var WP_Post $post The current post object.
  * @var string $post_singular_label The post type singular label.
- * @var array $tickets A list of PayPal tickets that have at least one sale.
- * @var array $tickets_data A list of PayPal tickets that have at least one sale.
- * @var array $event_data A list of PayPal tickets that have at least one sale.
  * @var Order_Summary $order_summary The data object.
  */
 use TEC\Tickets\Commerce\Reports\Data\Order_Summary;
 
-$sales_totals = $order_summary->get_event_sales_data();
+$sales_totals    = $order_summary->get_event_sales_data();
+$tickets_by_type = $order_summary->get_tickets_by_type();
 ?>
 <div id="tribe-order-summary" class="welcome-panel tribe-report-panel">
 	<div class="welcome-panel-content">
@@ -76,7 +74,6 @@ $sales_totals = $order_summary->get_event_sales_data();
 				</h3>
 				<div class="tec-tickets__admin-orders-report-overview-ticket-type">
 					<?php
-					$tickets_by_type = $order_summary->get_tickets_by_type();
 					foreach ( $tickets_by_type as $type => $items ): ?>
 						<div class="tec-tickets__admin-orders-report-overview-ticket-type-icon tec-tickets__admin-orders-report-overview-ticket-type-icon--default"></div>
 						<div class="tec-tickets__admin-orders-report-overview-ticket-type-label">
