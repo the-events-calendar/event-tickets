@@ -25,7 +25,7 @@ const tooltipLabel = (
 const RSVPDurationLabel = ( { tooltipDisabled } ) => (
 	<LabelWithTooltip
 		className="tribe-editor__rsvp-duration__duration-label"
-		label={ __( 'Duration', 'event-tickets' ) }
+		label={ __( 'RSVP Duration', 'event-tickets' ) }
 		tooltipDisabled={ tooltipDisabled }
 		tooltipLabel={ tooltipLabel }
 		// @TODO: get tooltip text based on post type

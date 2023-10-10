@@ -42,6 +42,7 @@ const onCancelClick = ( state, dispatch ) => () => {
 		tempEndTimeInput: selectors.getRSVPEndTimeInput( state ),
 	} ) );
 	dispatch( actions.setRSVPHasChanges( false ) );
+	dispatch( actions.setRSVPIsAddEditOpen( false ) );
 	wpDispatch( 'core/editor' ).clearSelectedBlock();
 };
 
