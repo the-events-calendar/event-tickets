@@ -37,7 +37,6 @@ const RSVPDescription = ({
 				isLabel={ true }
 				label={ __( 'Description', 'event-tickets' ) }
 			/>
-
 			<Input
 				className="tribe-editor__ticket__description-input"
 				id={ descriptionId }
