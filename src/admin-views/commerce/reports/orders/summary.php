@@ -84,13 +84,11 @@ $tickets_by_type = $order_summary->get_tickets_by_type();
 				<ul class="tec-tickets__admin-orders-report-overview-ticket-type-list">
 					<?php foreach ( $items as $item ): ?>
 						<li class="tec-tickets__admin-orders-report-overview-ticket-type-list-item">
-							<div>
-								<span class="tec-tickets__admin-orders-report-overview-ticket-type-list-item-ticket-name">
-									<?php echo esc_html( $item['label'] ) ?>
-								</span>
+							<div class="tec-tickets__admin-orders-report-overview-ticket-type-list-item-ticket-name">
+								<?php echo esc_html( $item['label'] ); ?>
 							</div>
 							<div class="tec-tickets__admin-orders-report-overview-ticket-type-list-item-stat">
-								<?php echo esc_html( $item['qty_by_status'] ) ?>
+								<?php echo esc_html( $item['qty_by_status'] ); ?>
 							</div>
 						</li>
 					<?php endforeach; ?>
@@ -101,27 +99,29 @@ $tickets_by_type = $order_summary->get_tickets_by_type();
 				<div class="tec-tickets__admin-orders-report__sales-overview__title">
 					<h3><?php echo esc_html__( 'Sales Totals', 'event-tickets' ); ?></h3>
 				</div>
-				<div class="tec-tickets__admin-orders-report__sales-overview__by-status">
-				<?php foreach ( $sales_totals['by_status'] as $status ): ?>
-					<div class="tec-tickets__admin-orders-report__sales-overview__list__item">
-						<div class="tec-tickets__admin-orders-report__sales-overview__list__item-label"><?php echo esc_html( $status['label'] ); ?></div>
-						<div class="tec-tickets__admin-orders-report__sales-overview__list__item-amount"><?php echo esc_html( sprintf( '%1$s (%2$s)', $status['total_sales_price'], $status['qty_sold'] ) )?></div>
+				<div class="tec-tickets__admin-orders-report__sales-overview__data">
+					<div class="tec-tickets__admin-orders-report__sales-overview__by-status">
+						<?php foreach ( $sales_totals['by_status'] as $status ): ?>
+							<div class="tec-tickets__admin-orders-report__sales-overview__list__item">
+								<div class="tec-tickets__admin-orders-report__sales-overview__list__item-label"><?php echo esc_html( $status['label'] ); ?></div>
+								<div class="tec-tickets__admin-orders-report__sales-overview__list__item-amount"><?php echo esc_html( sprintf( '%1$s (%2$s)', $status['total_sales_price'], $status['qty_sold'] ) )?></div>
+							</div>
+						<?php endforeach; ?>
 					</div>
-				<?php endforeach; ?>
-				</div>
-				<div class="tec-tickets__admin-orders-report-overview--border"></div>
-				<div class="tec-tickets__admin-orders-report__sales-overview__total">
-					<div class="tec-tickets__admin-orders-report__sales-overview__list__item">
-						<div class="tec-tickets__admin-orders-report__sales-overview__list__item-label">
-							<div class="tec-tickets__admin-orders-report__sales-overview__total-label"><?php echo esc_html__( 'Total Tickets Ordered', 'event-tickets' ); ?></div>
+					<div class="tec-tickets__admin-orders-report-overview--border"></div>
+					<div class="tec-tickets__admin-orders-report__sales-overview__total">
+						<div class="tec-tickets__admin-orders-report__sales-overview__list__item">
+							<div class="tec-tickets__admin-orders-report__sales-overview__list__item-label">
+								<div class="tec-tickets__admin-orders-report__sales-overview__total-label"><?php echo esc_html__( 'Total Tickets Ordered', 'event-tickets' ); ?></div>
+							</div>
+							<div class="tec-tickets__admin-orders-report__sales-overview__list__item-amount"><?php echo esc_html( sprintf( '%1$s (%2$s)', $sales_totals['total_ordered']['price'], $sales_totals['total_ordered']['qty'] ) ); ?></div>
 						</div>
-						<div class="tec-tickets__admin-orders-report__sales-overview__list__item-amount"><?php echo esc_html( sprintf( '%1$s (%2$s)', $sales_totals['total_ordered']['price'], $sales_totals['total_ordered']['qty'] ) ); ?></div>
-					</div>
-					<div class="tec-tickets__admin-orders-report__sales-overview__list__item">
-						<div class="tec-tickets__admin-orders-report__sales-overview__list__item-label">
-							<div class="tec-tickets__admin-orders-report__sales-overview__total-label"><?php echo esc_html__( 'Total Ticket Sales', 'event-tickets' ); ?></div>
+						<div class="tec-tickets__admin-orders-report__sales-overview__list__item">
+							<div class="tec-tickets__admin-orders-report__sales-overview__list__item-label">
+								<div class="tec-tickets__admin-orders-report__sales-overview__total-label"><?php echo esc_html__( 'Total Ticket Sales', 'event-tickets' ); ?></div>
+							</div>
+							<div class="tec-tickets__admin-orders-report__sales-overview__list__item-amount"><?php echo esc_html( sprintf( '%1$s (%2$s)', $sales_totals['total_sales']['price'], $sales_totals['total_sales']['qty'] ) ); ?></div>
 						</div>
-						<div class="tec-tickets__admin-orders-report__sales-overview__list__item-amount"><?php echo esc_html( sprintf( '%1$s (%2$s)', $sales_totals['total_sales']['price'], $sales_totals['total_sales']['qty'] ) ); ?></div>
 					</div>
 				</div>
 			</div>

@@ -208,7 +208,6 @@ class Order_Summary {
 	 * @return array
 	 */
 	public function get_event_sales_data(): array {
-
 		$data = [
 			'by_status'     => $this->event_sales_by_status,
 			'total_sales'   => $this->total_sales,
@@ -221,8 +220,8 @@ class Order_Summary {
 		 * @since TBD
 		 *
 		 * @param array $event_sales_data The event sales data.
-		 * @param int   $post_id The post ID.
+		 * @param Order_Summary $this The order summary object.
 		 */
-		return apply_filters( 'tec_tickets_commerce_order_report_summary_event_sales_data', $data, $this->post_id );
+		return apply_filters( 'tec_tickets_commerce_order_report_summary_event_sales_data', $data, $this );
 	}
 }
