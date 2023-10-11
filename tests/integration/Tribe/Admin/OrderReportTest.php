@@ -6,6 +6,7 @@ use Closure;
 use Generator;
 use Codeception\TestCase\WPTestCase;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Pending;
 use Tribe\Tests\Traits\With_Uopz;
 use TEC\Tickets\Commerce\Reports\Orders as Order_Report;
@@ -75,6 +76,28 @@ class OrderReportTest extends WPTestCase {
 				$order_b = $this->create_order( [ $ticket_id => 3 ], [ 'purchaser_email' => 'purchaser@test.com', 'order_status' => Pending::SLUG ] );
 
 				return [ $event_id, [ $event_id, $ticket_id, $order_a->ID, $order_b->ID ] ];
+			}
+		];
+
+		yield 'event with multiple tickets and orders' => [
+			function (): array {
+				$event_id  = tribe_events()->set_args( [
+					'title'      => 'Event with no attendees',
+					'status'     => 'publish',
+					'start_date' => '2020-01-01 00:00:00',
+					'duration'   => 2 * HOUR_IN_SECONDS,
+				] )->create()->ID;
+				$ticket_id_a = $this->create_tc_ticket( $event_id, 10 );
+				$ticket_id_b = $this->create_tc_ticket( $event_id, 20.50 );
+
+				$this->set_fn_return( 'current_time', '2020-02-22 22:22:22' );
+
+				$order_a = $this->create_order( [ $ticket_id_a => 2 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
+				$order_b = $this->create_order( [ $ticket_id_a => 3 ], [ 'purchaser_email' => 'purchaser@test.com', 'order_status' => Pending::SLUG ] );
+				$order_c = $this->create_order( [ $ticket_id_b => 1 ], [ 'purchaser_email' => 'purchaser@test.com', 'order_status' => Completed::SLUG ] );
+				$order_d = $this->create_order( [ $ticket_id_b => 4 ], [ 'purchaser_email' => 'purchaser@test.com', 'order_status' => Pending::SLUG ] );
+
+				return [ $event_id, [ $event_id, $ticket_id_a, $ticket_id_b, $order_a->ID, $order_b->ID, $order_c->ID, $order_d->ID ] ];
 			}
 		];
 	}
