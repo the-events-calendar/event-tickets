@@ -10,14 +10,14 @@ import PropTypes from 'prop-types';
 import './style.pcss';
 
 const SplitContainer = ({
-	leftSide,
-	rightSide,
+	leftColumn,
+	rightColumn,
 }) => {
 	return (
 		<>
 			<div className="tribe-editor__rsvp-details-wrapper">
 				<div className="tribe-editor__rsvp-details">
-					{ leftSide }
+					{ leftColumn }
 				</div>
 			</div>
 
@@ -25,7 +25,7 @@ const SplitContainer = ({
 				<div className="tribe-editor__rsvp-actions">
 					<div className="tribe-editor__rsvp-actions-rsvp">
 						<div className="tribe-editor__rsvp-actions-rsvp-create">
-							{ rightSide }
+							{ rightColumn }
 						</div>
 					</div>
 				</div>
@@ -35,8 +35,8 @@ const SplitContainer = ({
 }
 
 SplitContainer.propTypes = {
-	leftSide: PropTypes.node,
-	rightSide: PropTypes.node,
+	leftColumn: PropTypes.node,
+	rightColumn: PropTypes.node,
 };
 
 export default SplitContainer;

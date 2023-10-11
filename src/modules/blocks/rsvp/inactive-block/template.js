@@ -24,7 +24,7 @@ const RSVPInactiveBlock = ({ created, setAddEditOpen }) => {
 		? __( 'Edit this block to change RSVP settings.', 'event-tickets' )
 		: __( 'Allow users to confirm their attendance.', 'event-tickets' );
 
-	const leftSide = (
+	const leftColumn = (
 		<>
 			<h3 className="tribe-editor__rsvp-title tribe-common-h2 tribe-common-h4--min-medium">
 				{title}
@@ -36,7 +36,7 @@ const RSVPInactiveBlock = ({ created, setAddEditOpen }) => {
 		</>
 	);
 
-	const rightSide = (
+	const rightColumn = (
 		<>
 			<button id="add-rsvp" className="tribe-common-c-btn tribe-common-b1 tribe-common-b2--min-medium" onClick={ setAddEditOpen }>
 				{ __( 'Add RSVP', 'event-tickets' )}
@@ -47,8 +47,8 @@ const RSVPInactiveBlock = ({ created, setAddEditOpen }) => {
 	return (
 		<Card className="tribe-common tribe-editor__inactive-block--rsvp">
 			<SplitContainer
-				leftSide={ leftSide }
-				rightSide={ rightSide }
+				leftColumn={ leftColumn }
+				rightColumn={ rightColumn }
 			/>
 		</Card>
 	);

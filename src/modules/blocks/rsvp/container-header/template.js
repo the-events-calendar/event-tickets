@@ -56,7 +56,7 @@ const RSVPContainerHeader = ( {
 		return null;
 	}
 
-	const leftSide = (
+	const leftColumn = (
 		<>
 			<h3 className="tribe-editor__rsvp-title tribe-common-h2 tribe-common-h4--min-medium">
 				{ title }
@@ -71,7 +71,7 @@ const RSVPContainerHeader = ( {
 		</>
 	);
 
-	const rightSide = (
+	const rightColumn = (
 		<>
 			<button id="edit-rsvp" className="tribe-common-c-btn tribe-common-b1 tribe-common-b2--min-medium" onClick={ setAddEditOpen }>
 				{ __( 'Edit RSVP', 'event-tickets' )}
@@ -86,8 +86,8 @@ const RSVPContainerHeader = ( {
 		<>
 			<div className="tribe-common tribe-editor__inactive-block--rsvp tribe-editor__rsvp-container-header">
 				<SplitContainer
-					leftSide={ leftSide }
-					rightSide={ rightSide }
+					leftColumn={ leftColumn }
+					rightColumn={ rightColumn }
 				/>
 			</div>
 		</>
