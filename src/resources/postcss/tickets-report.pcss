@@ -28,7 +28,7 @@
 	.welcome-panel-column-container {
 		display: grid;
 		gap: unset;
-		grid-template-columns: repeat(3, 1fr);
+		grid-template-columns: 25% 50% 25%;
 		grid-template-areas:
 			"first middle last"
 			"extra extra last";
@@ -484,7 +484,6 @@ h3.tec-tickets__admin-orders-report-overview-title {
 
 .tec-tickets__admin-orders-report-overview-ticket-type-icon--default {
 	background-image: url( '../icons/icon-ticket-left.svg' );
-
 }
 
 .tec-tickets__admin-orders-report-overview-ticket-type-icon--rsvp {
@@ -514,11 +513,12 @@ ul.tec-tickets__admin-orders-report-overview-ticket-type-list {
 
 .tec-tickets__admin-orders-report-overview-ticket-type-list-item-ticket-name,
 .tec-tickets__admin-orders-report-overview-ticket-type-list-item-ticket-price {
-	font-size: 13px;;
+	font-size: var(--tec-font-size-2);
 }
 
 .tec-tickets__admin-orders-report-overview-ticket-type-list-item-ticket-name {
 	color: #000000;
+	width: 50%;
 }
 
 .tec-tickets__admin-orders-report-overview-ticket-type-list-item-ticket-id {
@@ -533,7 +533,6 @@ ul.tec-tickets__admin-orders-report-overview-ticket-type-list {
 	border-top: 1px solid #DCDCDE;
 	display: flex;
 	justify-content: space-between;
-	margin-top: var(--tec-spacer-0);
 	padding: var(--tec-spacer-1) 0 0 var(--tec-spacer-5) !important;
 	margin: var(--tec-spacer-0) var(--tec-spacer-3) 0;
 
@@ -544,7 +543,7 @@ ul.tec-tickets__admin-orders-report-overview-ticket-type-list {
 
 .tec-tickets__admin-orders-report-overview-ticket-totals-title {
 	color: #1D2327;
-	font-size: 13px;
+	font-size: var(--tec-font-size-2);
 	font-weight: var(--tec-font-weight-bold);
 	margin-right: var(--tec-spacer-0);
 }
@@ -555,26 +554,34 @@ ul.tec-tickets__admin-orders-report-overview-ticket-type-list {
 }
 
 .tec-tickets__admin-orders-report__sales-overview__title {
-	margin-bottom: 10px;
+	margin-bottom: var(--tec-spacer-1);
 }
 
 .tec-tickets__admin-orders-report__sales-overview__by-status {
-	margin-bottom: 10px;
+	margin-bottom: var(--tec-spacer-1);
 }
 
 .tec-tickets__admin-orders-report__sales-overview__list__item {
 	align-items: center;
 	display: flex;
 	justify-content: space-between;
-	margin-bottom: 8px;
-	font-size: 14px;
+	margin-bottom: var(--tec-spacer-1);
+	font-size: var(--tec-font-size-2);
 }
 
 .tec-tickets__admin-orders-report__sales-overview__total {
-	margin-top: 8px;
+	margin-top: var(--tec-spacer-1);
 	.tec-tickets__admin-orders-report__sales-overview__list__item-label {
-		font-weight: 700;
-		font-size: 13px;
-		line-height: 18px;
+		font-weight: var(--tec-font-weight-bold);
+		font-size: var(--tec-font-size-2);
+		line-height: var(--tec-line-height-2);
+	}
+}
+
+.tec-tickets__admin-orders-report__sales-overview__data {
+	padding: 0 var(--tec-spacer-4);
+
+	@media (--viewport-medium) {
+		padding: var(--tec-spacer-1) 0;
 	}
 }
