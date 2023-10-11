@@ -60,7 +60,7 @@ class OrderReportTest extends WPTestCase {
 			}
 		];
 
-		yield 'event with 1 pending and 2 completed order' => [
+		yield 'event with 1 pending and 1 completed order' => [
 			function (): array {
 				$event_id  = tribe_events()->set_args( [
 					'title'      => 'Event with no attendees',
