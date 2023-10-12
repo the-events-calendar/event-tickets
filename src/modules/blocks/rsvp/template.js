@@ -56,7 +56,7 @@ const RSVP = ( {
 		document.addEventListener( 'click', handleAddEditClose );
 
 		return () => document.removeEventListener( 'click', handleAddEditClose );
-	}, [  handleAddEditClose, initializeRSVP, rsvpId ] );
+	}, [ handleAddEditClose, initializeRSVP, rsvpId ] );
 
 	const renderBlock = () => {
 		const displayInactive = ! isAddEditOpen && ( ( created && isInactive ) || ! created );

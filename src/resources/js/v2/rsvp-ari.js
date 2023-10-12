@@ -2,7 +2,7 @@
  * Makes sure we have all the required levels on the Tribe Object
  *
  * @since 5.0.0
- * @type {object}
+ * @type {Object}
  */
 tribe.tickets = tribe.tickets || {};
 tribe.tickets.rsvp = tribe.tickets.rsvp || {};
@@ -11,7 +11,7 @@ tribe.tickets.rsvp = tribe.tickets.rsvp || {};
  * Configures RSVP ARI Object in the Global Tribe variable
  *
  * @since 5.0.0
- * @type {object}
+ * @type {Object}
  */
 tribe.tickets.rsvp.ari = {};
 
@@ -19,8 +19,8 @@ tribe.tickets.rsvp.ari = {};
  * Initializes in a Strict env the code that manages the RSVP ARI.
  *
  * @since 5.0.0
- * @param  {object} $   jQuery
- * @param  {object} obj tribe.tickets.rsvp.ari
+ * @param  {Object} $   jQuery
+ * @param  {Object} obj tribe.tickets.rsvp.ari
  * @return {void}
  */
 ( function( $, obj ) {
@@ -30,7 +30,7 @@ tribe.tickets.rsvp.ari = {};
 	 * Selectors used for configuration and setup
 	 *
 	 * @since 5.0.0
-	 * @type {object}
+	 * @type {Object}
 	 */
 	obj.selectors = {
 		container: '.tribe-tickets__rsvp-wrapper',
@@ -550,7 +550,7 @@ tribe.tickets.rsvp.ari = {};
 	 * @since 5.0.0
 	 * @param  {Event}            event    event object for 'beforeAjaxSuccess.tribeTicketsRsvp' event
 	 * @param  {XMLHttpRequest}   jqXHR    Request object
-	 * @param  {object}           settings Settings that this request was made with
+	 * @param  {Object}           settings Settings that this request was made with
 	 * @return {void}
 	 */
 	obj.unbindEvents = function( event, jqXHR, settings ) { // eslint-disable-line no-unused-vars
