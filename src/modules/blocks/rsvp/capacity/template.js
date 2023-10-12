@@ -17,11 +17,11 @@ import { __ } from '@wordpress/i18n';
 import { LabeledItem, NumberInput } from '@moderntribe/common/elements';
 import './styles.pcss';
 
-const RSVPCapacity = ({
+const RSVPCapacity = ( {
 	isDisabled,
 	onTempCapacityChange,
-	tempCapacity
-}) => {
+	tempCapacity,
+} ) => {
 	const capacityId = uniqid();
 
 	return (
@@ -51,7 +51,7 @@ const RSVPCapacity = ({
 			</div>
 		</div>
 	);
-}
+};
 
 RSVPCapacity.propTypes = {
 	isDisabled: PropTypes.bool,

@@ -9,10 +9,10 @@ import PropTypes from 'prop-types';
  */
 import './style.pcss';
 
-const SplitContainer = ({
+const SplitContainer = ( {
 	leftColumn,
 	rightColumn,
-}) => {
+} ) => {
 	return (
 		<>
 			<div className="tribe-editor__rsvp-details-wrapper">
@@ -32,7 +32,7 @@ const SplitContainer = ({
 			</div>
 		</>
 	);
-}
+};
 
 SplitContainer.propTypes = {
 	leftColumn: PropTypes.node,

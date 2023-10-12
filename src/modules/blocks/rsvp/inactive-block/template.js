@@ -12,10 +12,10 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { Card } from '@moderntribe/tickets/elements';
-import { SplitContainer } from '@moderntribe/tickets/elements';
+import { Card, SplitContainer } from '@moderntribe/tickets/elements';
 
-const RSVPInactiveBlock = ({ created, setAddEditOpen }) => {
+
+const RSVPInactiveBlock = ( { created, setAddEditOpen } ) => {
 	const title = created
 		? __( 'RSVP is not currently active', 'event-tickets' )
 		: __( 'Add an RSVP', 'event-tickets' );
@@ -24,6 +24,7 @@ const RSVPInactiveBlock = ({ created, setAddEditOpen }) => {
 		? __( 'Edit this block to change RSVP settings.', 'event-tickets' )
 		: __( 'Allow users to confirm their attendance.', 'event-tickets' );
 
+	/* eslint-disable max-len */
 	const leftColumn = (
 		<>
 			<h3 className="tribe-editor__rsvp-title tribe-common-h2 tribe-common-h4--min-medium">
@@ -43,6 +44,7 @@ const RSVPInactiveBlock = ({ created, setAddEditOpen }) => {
 			</button>
 		</>
 	);
+	/* eslint-enable max-len */
 
 	return (
 		<Card className="tribe-common tribe-editor__inactive-block--rsvp">

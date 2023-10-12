@@ -17,11 +17,11 @@ import { __ } from '@wordpress/i18n';
 import { LabeledItem, Checkbox } from '@moderntribe/common/elements';
 import './styles.pcss';
 
-const RSVPNotGoingResponses = ({
+const RSVPNotGoingResponses = ( {
 	isDisabled,
 	onTempNotGoingResponsesChange,
-	tempNotGoingResponses
-}) => {
+	tempNotGoingResponses,
+} ) => {
 	const notGoingId = uniqid();
 
 	return (
@@ -51,7 +51,7 @@ const RSVPNotGoingResponses = ({
 			</div>
 		</div>
 	);
-}
+};
 
 RSVPNotGoingResponses.propTypes = {
 	isDisabled: PropTypes.bool,

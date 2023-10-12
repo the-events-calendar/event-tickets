@@ -2,6 +2,7 @@
  * External dependencies
  */
 import React from 'react';
+import PropTypes from 'prop-types';
 
 /**
  * WordPress dependencies
@@ -35,5 +36,9 @@ const RSVPDurationLabel = ( { tooltipDisabled } ) => (
 		) }
 	/>
 );
+
+RSVPDurationLabel.propTypes = {
+	tooltipDisabled: PropTypes.bool,
+};
 
 export default RSVPDurationLabel;

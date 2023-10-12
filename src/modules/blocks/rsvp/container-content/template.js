@@ -5,11 +5,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 /**
- * WordPress dependencies
- */
-import { __ } from '@wordpress/i18n';
-
-/**
  * Internal dependencies
  */
 import RSVPCapacity from './../capacity/container';
@@ -20,11 +15,10 @@ import RSVPDuration from './../duration/container';
 import RSVPAttendeeRegistration from '../attendee-registration/container';
 import './style.pcss';
 
-const RSVPContainerContent = ({
+const RSVPContainerContent = ( {
 	isAddEditOpen,
 	hasTicketsPlus,
-}) => {
-
+} ) => {
 	if ( ! isAddEditOpen ) {
 		return null;
 	}
@@ -39,7 +33,7 @@ const RSVPContainerContent = ({
 			{ hasTicketsPlus && <RSVPAttendeeRegistration /> }
 		</>
 	);
-}
+};
 
 RSVPContainerContent.propTypes = {
 	isAddEditOpen: PropTypes.bool,

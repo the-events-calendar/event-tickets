@@ -24,9 +24,11 @@ class Tickets extends PureComponent {
 		canCreateTickets: PropTypes.bool,
 		clientId: PropTypes.string,
 		hasProviders: PropTypes.bool,
+		hasRecurrenceRules: PropTypes.bool,
 		header: PropTypes.string,
 		isSelected: PropTypes.bool,
 		isSettingsOpen: PropTypes.bool,
+		noTicketsOnRecurring: PropTypes.bool,
 		onBlockUpdate: PropTypes.func,
 	};
 

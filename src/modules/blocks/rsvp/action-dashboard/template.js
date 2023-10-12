@@ -26,6 +26,7 @@ const cancelLabel = __( 'Cancel', 'event-tickets' );
 
 class RSVPActionDashboard extends PureComponent {
 	static propTypes = {
+		clientId: PropTypes.string.isRequired,
 		created: PropTypes.bool.isRequired,
 		hasRecurrenceRules: PropTypes.bool.isRequired,
 		isCancelDisabled: PropTypes.bool.isRequired,
@@ -55,7 +56,6 @@ class RSVPActionDashboard extends PureComponent {
 
 		return actions;
 	}
-
 
 	render() {
 		const {

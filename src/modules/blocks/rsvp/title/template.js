@@ -14,15 +14,14 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { Input } from '@moderntribe/common/elements';
-import { LabeledItem } from '@moderntribe/common/elements';
+import { Input, LabeledItem } from '@moderntribe/common/elements';
 import './styles.pcss';
 
-const RSVPTitle = ({
+const RSVPTitle = ( {
 	isDisabled,
 	onTempTitleChange,
 	tempTitle,
-}) => {
+} ) => {
 	const titleId = uniqid();
 
 	return (
@@ -49,7 +48,7 @@ const RSVPTitle = ({
 			/>
 		</div>
 	);
-}
+};
 
 RSVPTitle.propTypes = {
 	isDisabled: PropTypes.bool,

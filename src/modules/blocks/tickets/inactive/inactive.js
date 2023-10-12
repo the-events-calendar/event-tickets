@@ -9,13 +9,12 @@ import React from 'react';
  */
 import { __ } from '@wordpress/i18n';
 
-
 /**
  * Internal dependencies
  */
 import { Card } from '@moderntribe/tickets/elements';
 
-const InactiveTickets = ({ title }) => {
+const InactiveTickets = ( { title } ) => {
 	return (
 		<Card
 			className="tribe-editor__card-no-bottom-border"
@@ -24,7 +23,7 @@ const InactiveTickets = ({ title }) => {
 			<div className="tickets-description tickets-row-line">{ title }</div>
 		</Card>
 	);
-}
+};
 
 InactiveTickets.propTypes = {
 	title: PropTypes.string,

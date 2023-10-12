@@ -51,11 +51,11 @@ const RSVPContainerHeader = ( {
 	available,
 	setAddEditOpen,
 } ) => {
-
 	if ( isAddEditOpen ) {
 		return null;
 	}
 
+	/* eslint-disable max-len */
 	const leftColumn = (
 		<>
 			<h3 className="tribe-editor__rsvp-title tribe-common-h2 tribe-common-h4--min-medium">
@@ -81,7 +81,6 @@ const RSVPContainerHeader = ( {
 		</>
 	);
 
-
 	return (
 		<>
 			<div className="tribe-common tribe-editor__inactive-block--rsvp tribe-editor__rsvp-container-header">
@@ -92,6 +91,7 @@ const RSVPContainerHeader = ( {
 			</div>
 		</>
 	);
+	/* eslint-enable max-len */
 };
 
 RSVPContainerHeader.propTypes = {

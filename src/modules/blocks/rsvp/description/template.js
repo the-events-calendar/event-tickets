@@ -14,15 +14,14 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { Input } from '@moderntribe/common/elements';
-import { LabeledItem } from '@moderntribe/common/elements';
+import { Input, LabeledItem } from '@moderntribe/common/elements';
 import './styles.pcss';
 
-const RSVPDescription = ({
+const RSVPDescription = ( {
 	isDisabled,
 	onTempDescriptionChange,
 	tempDescription,
-}) => {
+} ) => {
 	const descriptionId = uniqid();
 
 	return (
@@ -47,7 +46,7 @@ const RSVPDescription = ({
 			/>
 		</div>
 	);
-}
+};
 
 RSVPDescription.propTypes = {
 	isDisabled: PropTypes.bool,

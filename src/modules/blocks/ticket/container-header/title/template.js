@@ -5,11 +5,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 /**
- * Wordpress dependencies
- */
-import { __ } from '@wordpress/i18n';
-
-/**
  * Internal dependencies
  */
 import AttendeeRegistrationIcons from './attendee-registration-icons/container';
@@ -19,7 +14,6 @@ const TicketContainerHeaderTitle = ( {
 	clientId,
 	title,
 } ) => {
-
 	return (
 		<div className="tribe-editor__ticket__container-header-title">
 			<h3 className="tribe-editor__ticket__container-header-title-label">

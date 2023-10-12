@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import React, { useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
@@ -22,7 +22,7 @@ import MoveModal from '@moderntribe/tickets/elements/move-modal';
 import { Card } from '@moderntribe/tickets/elements';
 import './style.pcss';
 
-const RSVP = ({
+const RSVP = ( {
 	clientId,
 	created,
 	hasRecurrenceRules,
@@ -36,28 +36,27 @@ const RSVP = ({
 	noTicketsOnRecurring,
 	rsvpId,
 	setAddEditClosed,
-}) => {
-
+} ) => {
 	const rsvpBlockRef = useRef( null );
+
+	const handleAddEditClose = useCallback( ( event ) => {
+		const rsvpButtons = [ 'add-rsvp', 'edit-rsvp', 'attendees-rsvp', 'settings-rsvp' ];
+
+		if (
+			rsvpBlockRef.current &&
+			! rsvpBlockRef.current.contains( event.target ) &&
+			! rsvpButtons.includes( event.target.id )
+		) {
+			setAddEditClosed();
+		}
+	}, [] );
 
 	useEffect( () => {
 		! rsvpId && initializeRSVP();
 		document.addEventListener( 'click', handleAddEditClose );
 
 		return () => document.removeEventListener( 'click', handleAddEditClose );
-	}, [] );
-
-	const handleAddEditClose = (event) => {
-		const rsvpButtons = [ 'add-rsvp', 'edit-rsvp', 'attendees-rsvp', 'settings-rsvp'];
-
-		if (
-			rsvpBlockRef.current
-			&& ! rsvpBlockRef.current.contains( event.target )
-			&& ! rsvpButtons.includes( event.target.id )
-		) {
-			setAddEditClosed();
-		}
-	};
+	}, [  handleAddEditClose, initializeRSVP, rsvpId ] );
 
 	const renderBlock = () => {
 		const displayInactive = ! isAddEditOpen && ( ( created && isInactive ) || ! created );
@@ -66,8 +65,7 @@ const RSVP = ({
 			<div ref={ rsvpBlockRef }>
 				{
 					displayInactive
-						?
-							<RSVPInactiveBlock />
+						? <RSVPInactiveBlock />
 						: (
 							! isSettingsOpen &&
 							(
@@ -90,7 +88,7 @@ const RSVP = ({
 				{ isModalShowing && <MoveModal /> }
 			</div>
 		);
-	}
+	};
 
 	const renderBlockNotSupported = () => {
 		return (
@@ -115,14 +113,14 @@ const RSVP = ({
 				</p>
 			</div>
 		);
-	}
+	};
 
 	if ( hasRecurrenceRules && noTicketsOnRecurring ) {
 		return renderBlockNotSupported();
 	}
 
 	return renderBlock();
-}
+};
 
 RSVP.propTypes = {
 	clientId: PropTypes.string.isRequired,

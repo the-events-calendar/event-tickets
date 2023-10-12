@@ -14,7 +14,7 @@ describe( 'Title', () => {
 
 	test( 'Triggers the onTempTitleChange callback', () => {
 		const onTempTitleChange = jest.fn();
-		const component = mount( <Title onTempTitleChange={ onTempTitleChange } value={ 'tickets-title' } /> );
+		const component = mount( <Title onTempTitleChange={ onTempTitleChange } value={ 'tickets-title' } /> ); // eslint-disable-line max-len
 		component.find( 'input' ).simulate( 'change' );
 		expect( onTempTitleChange ).toHaveBeenCalled();
 	} );

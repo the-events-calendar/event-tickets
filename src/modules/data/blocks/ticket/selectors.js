@@ -452,7 +452,7 @@ export const allTicketsFuture = createSelector(
 
 export const getTicketAttendeeInfoFields = createSelector(
 	[ getTicketDetails ],
-	( details ) => details.attendeeInfoFields || []
+	( details ) => details.attendeeInfoFields || [],
 );
 
 //
@@ -588,7 +588,7 @@ export const isZeroPriceValid = createSelector(
 	[ getTicketTempPrice, getTicketsProvider ],
 	( price, provider ) => {
 		return 0 < parseInt( price, 10 ) ||
-			! [constants.TC_CLASS, constants.TICKETS_COMMERCE_MODULE_CLASS].includes(provider)
+			! [ constants.TC_CLASS, constants.TICKETS_COMMERCE_MODULE_CLASS ].includes( provider );
 	},
 );
 

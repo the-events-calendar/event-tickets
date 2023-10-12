@@ -28,14 +28,14 @@ const TicketContainerHeaderPriceLabel = ( {
 } ) => {
 	const getAvailableLabel = () => (
 		isUnlimited
-		? __( 'unlimited', 'event-tickets' )
-		: `${available} ${ __( 'available', 'event-tickets' ) }`
-	)
+			? __( 'unlimited', 'event-tickets' )
+			: `${available} ${ __( 'available', 'event-tickets' ) }`
+	);
 
 	const numericFormatProps = {
-		...(currencyPosition === PREFIX && { prefix: currencySymbol}),
-		...(currencyPosition === SUFFIX && { suffix: currencySymbol}),
-	}
+		...( currencyPosition === PREFIX && { prefix: currencySymbol } ),
+		...( currencyPosition === SUFFIX && { suffix: currencySymbol } ),
+	};
 
 	return (
 		<Fragment>
@@ -63,6 +63,7 @@ TicketContainerHeaderPriceLabel.propTypes = {
 	currencyPosition: PropTypes.oneOf( PRICE_POSITIONS ),
 	currencySymbol: PropTypes.string,
 	currencyThousandsSep: PropTypes.string,
+	isUnlimited: PropTypes.bool,
 	price: PropTypes.string,
 };
 
@@ -92,8 +93,11 @@ const TicketContainerHeaderPrice = ( {
 
 TicketContainerHeaderPrice.propTypes = {
 	available: PropTypes.number,
+	currencyDecimalPoint: PropTypes.string,
+	currencyNumberOfDecimals: PropTypes.number,
 	currencyPosition: PropTypes.oneOf( PRICE_POSITIONS ),
 	currencySymbol: PropTypes.string,
+	currencyThousandsSep: PropTypes.string,
 	isDisabled: PropTypes.bool,
 	isSelected: PropTypes.bool,
 	isUnlimited: PropTypes.bool,

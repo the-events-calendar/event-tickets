@@ -18,7 +18,7 @@ import { Button } from '@moderntribe/common/elements';
 import { Card } from '@moderntribe/tickets/elements';
 import {
 	Close as CloseIcon,
-	Settings as SettingsIcon
+	Settings as SettingsIcon,
 } from '@moderntribe/tickets/icons';
 import './style.pcss';
 

@@ -6,11 +6,6 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 /**
- * WordPress dependencies
- */
-import { __ } from '@wordpress/i18n';
-
-/**
  * Internal dependencies
  */
 import { ContainerPanel } from '@moderntribe/tickets/elements';
