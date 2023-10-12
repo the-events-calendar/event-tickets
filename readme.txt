@@ -191,6 +191,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [5.6.6.1] 2023-10-12 =
+
+* Fix - Correct a problem that can cause a fatal when plugins are deactivated in a certain order. [TEC-4951]
+
 = [5.6.6] 2023-10-11 =
 
 * Version - Event Tickets 5.6.6 is only compatible with Event Tickets Plus 5.7.6 and higher.
