@@ -52,7 +52,7 @@ RadioInput.propTypes = {
 	provider: PropTypes.shape( {
 		name: PropTypes.string,
 		class: PropTypes.string,
-	}),
+	} ),
 	onProviderChange: PropTypes.func,
 
 };
