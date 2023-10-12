@@ -191,7 +191,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.6.6] 2023-10-10 =
+= [5.6.6] 2023-10-11 =
 
 * Version - Event Tickets 5.6.6 is only compatible with Event Tickets Plus 5.7.6 and higher.
 * Tweak - Include a QRCode Library in Event Tickets to improve conformity across other addons. [ETWP-29]
