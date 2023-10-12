@@ -14,7 +14,6 @@ import { __ } from '@wordpress/i18n';
  */
 import { Card, SplitContainer } from '@moderntribe/tickets/elements';
 
-
 const RSVPInactiveBlock = ( { created, setAddEditOpen } ) => {
 	const title = created
 		? __( 'RSVP is not currently active', 'event-tickets' )

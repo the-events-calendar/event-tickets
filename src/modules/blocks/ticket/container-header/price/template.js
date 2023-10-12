@@ -29,7 +29,7 @@ const TicketContainerHeaderPriceLabel = ( {
 	const getAvailableLabel = () => (
 		isUnlimited
 			? __( 'unlimited', 'event-tickets' )
-			: `${available} ${ __( 'available', 'event-tickets' ) }`
+			: `${ available } ${ __( 'available', 'event-tickets' ) }`
 	);
 
 	const numericFormatProps = {

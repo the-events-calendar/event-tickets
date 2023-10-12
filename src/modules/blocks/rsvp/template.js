@@ -49,7 +49,7 @@ const RSVP = ( {
 		) {
 			setAddEditClosed();
 		}
-	}, [] );
+	}, [ setAddEditClosed ] );
 
 	useEffect( () => {
 		! rsvpId && initializeRSVP();

@@ -48,6 +48,7 @@ class TicketsDashboardAction extends PureComponent {
 			hasRecurrenceRules,
 		} = this.props;
 
+		// eslint-disable-next-line react/jsx-key
 		const actions = [ <SettingsActionButton /> ];
 		if ( hasCreatedTickets ) {
 			actions.push( <AttendeesActionButton /> );

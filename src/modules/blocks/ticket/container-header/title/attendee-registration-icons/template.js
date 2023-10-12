@@ -10,7 +10,7 @@ import { __, sprintf } from '@wordpress/i18n';
  */
 import {
 	ARF as ARFIcon,
-	SaleWindow as SaleWindowIcon
+	SaleWindow as SaleWindowIcon,
 } from '@moderntribe/tickets/icons';
 import { IconWithTooltip } from '@moderntribe/tickets/elements';
 import './style.pcss';
