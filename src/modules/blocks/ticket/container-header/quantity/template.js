@@ -29,6 +29,7 @@ const TicketContainerHeaderDescription = ( {
 
 	const getLabel = () => sprintf( __( '%d sold', 'event-tickets' ), sold );
 
+	/* eslint-disable max-len */
 	const getQuantityBar = () => (
 		isUnlimited
 			? (
@@ -46,6 +47,7 @@ const TicketContainerHeaderDescription = ( {
 				/>
 			)
 	);
+	/* eslint-enable max-len */
 
 	return ! isSelected && (
 		<div
@@ -53,7 +55,7 @@ const TicketContainerHeaderDescription = ( {
 			title={ __( 'This pertains to Orders that have been marked Completed.', 'event-tickets' ) }
 		>
 			<span className="tribe-editor__ticket__container-header-quantity-label">
-				{ getLabel() }<span class="dashicons dashicons-info-outline"></span>
+				{ getLabel() }<span className="dashicons dashicons-info-outline"></span>
 			</span>
 			{ getQuantityBar() }
 		</div>

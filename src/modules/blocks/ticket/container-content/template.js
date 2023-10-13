@@ -33,6 +33,7 @@ const TicketContainerContent = ( { clientId, hasTicketsPlus, hasIacVars } ) => (
 TicketContainerContent.propTypes = {
 	clientId: PropTypes.string.isRequired,
 	hasTicketsPlus: PropTypes.bool,
+	hasIacVars: PropTypes.bool,
 };
 
 export default TicketContainerContent;

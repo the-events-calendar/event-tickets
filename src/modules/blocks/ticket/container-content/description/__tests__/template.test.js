@@ -5,6 +5,7 @@ import React from 'react';
 
 import Description from './../template';
 
+/* eslint-disable max-len */
 describe( 'Description', () => {
 	test( 'Render the component with no errors', () => {
 		const onTempDescriptionChange = jest.fn();
@@ -19,3 +20,4 @@ describe( 'Description', () => {
 		expect( onTempDescriptionChange ).toHaveBeenCalled();
 	} );
 } );
+/* eslint-enable max-len */

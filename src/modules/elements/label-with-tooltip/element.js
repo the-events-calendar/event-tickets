@@ -12,6 +12,7 @@ import { LabeledItem } from '@moderntribe/common/elements';
 import { Tooltip } from '@wordpress/components';
 import './style.pcss';
 
+/* eslint-disable max-len */
 const LabelWithTooltip = ( {
 	className,
 	forId,
@@ -31,7 +32,7 @@ const LabelWithTooltip = ( {
 		<Tooltip text={ tooltipText } position={ tooltipPosition }>
 			<button
 				aria-label={ tooltipText }
-				className={ classNames( 'tribe-editor__tooltip-label', "tribe-editor__label-with-tooltip__tooltip-label" ) }
+				className={ classNames( 'tribe-editor__tooltip-label', 'tribe-editor__label-with-tooltip__tooltip-label' ) }
 				disabled={ tooltipDisabled }
 			>
 				{ tooltipLabel }
@@ -39,6 +40,7 @@ const LabelWithTooltip = ( {
 		</Tooltip>
 	</LabeledItem>
 );
+/* eslint-enable max-len */
 
 LabelWithTooltip.defaultProps = {
 	label: '',

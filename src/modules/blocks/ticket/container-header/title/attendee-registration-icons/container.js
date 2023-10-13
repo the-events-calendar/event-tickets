@@ -21,7 +21,7 @@ const { select } = wp.data;
 /**
  * Given a Sale status that is present on the map return a translated label.
  *
- * @param { string } saleStatus
+ * @param { string } saleStatus The sale status
  * @returns { string } The translated sale window label
  */
 const getSaleWindowLabel = ( saleStatus ) => {
@@ -41,13 +41,12 @@ const getSaleWindowLabel = ( saleStatus ) => {
  * Determine the sale status of the ticket.
  *
  * @since TBD
- *
- * @param { object } state
- * @param { object } ownProps
+ * @param { Object } state The redux state
+ * @param { Object } ownProps The ownProps of the component
  * @returns { string } Sale status slug.
  */
 const getSalesStatus = ( state, ownProps ) => {
-	switch( true ) {
+	switch ( true ) {
 		case selectors.isTicketFuture( state, ownProps ):
 			return 'future';
 		case selectors.isTicketPast( state, ownProps ):
@@ -61,7 +60,7 @@ const getSalesStatus = ( state, ownProps ) => {
 /**
  * Given an array of attendee info fields returs a label for the tooltip
  *
- * @param { Array } attendeeInfoFields
+ * @param { Array } attendeeInfoFields The attendee info fields array
  * @returns { string } Returns the first 4 attendee fields joined by comma
  */
 const getAttendeeInfoFieldsLabel = ( attendeeInfoFields ) => {
@@ -100,7 +99,7 @@ const mapStateToProps = ( state, ownProps ) => {
 		fromDate,
 		saleWindowLabel,
 		toDate,
-	}
+	};
 };
 
 export default compose(

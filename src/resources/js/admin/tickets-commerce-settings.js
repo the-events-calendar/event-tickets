@@ -2,7 +2,7 @@
  * Makes sure we have all the required levels on the Tribe Object
  *
  * @since 5.1.6
- * @type {object}
+ * @type {Object}
  */
 tribe.tickets = tribe.tickets || {};
 tribe.tickets.admin = tribe.tickets.admin || {};
@@ -13,7 +13,7 @@ tribe.dialogs.events = tribe.dialogs.events || {};
  * Configures admin commerce settings Object in the Global Tribe variable
  *
  * @since 5.1.6
- * @type {object}
+ * @type {Object}
  */
 tribe.tickets.admin.commerceSettings = {};
 
@@ -21,9 +21,9 @@ tribe.tickets.admin.commerceSettings = {};
  * Initializes in a Strict env the code that manages the Tickets Commerce settings page.
  *
  * @since 5.1.6
- * @param  {object} $   jQuery
- * @param  {object} _   Underscore.js
- * @param  {object} obj tribe.tickets.admin.commerceSettings
+ * @param  {Object} $   jQuery
+ * @param  {Object} _   Underscore.js
+ * @param  {Object} obj tribe.tickets.admin.commerceSettings
  * @return {void}
  */
 ( function( $, _, obj ) {
@@ -33,7 +33,7 @@ tribe.tickets.admin.commerceSettings = {};
 	 * Selectors used for configuration and setup
 	 *
 	 * @since 5.1.6
-	 * @type {object}
+	 * @type {Object}
 	 */
 	// @todo Replace ID/class names.
 	obj.selectors = {
