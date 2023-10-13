@@ -5,11 +5,11 @@ exports[`Availability render component 1`] = `
   className="tribe-editor__tickets__availability"
 >
   <span
-    class="tribe-tooltip"
+    className="tribe-tooltip"
     title="Ticket availability is based on the lowest number of inventory, stock, and capacity."
   >
     <span
-      className="dashicons dashicons-info"
+      className="dashicons dashicons-info-outline"
     />
   </span>
 </div>
@@ -20,7 +20,7 @@ exports[`Availability render component with available property 1`] = `
   className="tribe-editor__tickets__availability"
 >
   <span
-    class="tribe-tooltip"
+    className="tribe-tooltip"
     title="Ticket availability is based on the lowest number of inventory, stock, and capacity."
   >
     <span
@@ -39,7 +39,7 @@ exports[`Availability render component with available property 1`] = `
       </span>
     </span>
     <span
-      className="dashicons dashicons-info"
+      className="dashicons dashicons-info-outline"
     />
   </span>
 </div>
@@ -50,7 +50,7 @@ exports[`Availability renders component with available and total properties 1`] 
   className="tribe-editor__tickets__availability"
 >
   <span
-    class="tribe-tooltip"
+    className="tribe-tooltip"
     title="Ticket availability is based on the lowest number of inventory, stock, and capacity."
   >
     <span
@@ -69,7 +69,7 @@ exports[`Availability renders component with available and total properties 1`] 
       </span>
     </span>
     <span
-      className="dashicons dashicons-info"
+      className="dashicons dashicons-info-outline"
     />
   </span>
   <span
@@ -95,11 +95,11 @@ exports[`Availability renders component with total property 1`] = `
   className="tribe-editor__tickets__availability"
 >
   <span
-    class="tribe-tooltip"
+    className="tribe-tooltip"
     title="Ticket availability is based on the lowest number of inventory, stock, and capacity."
   >
     <span
-      className="dashicons dashicons-info"
+      className="dashicons dashicons-info-outline"
     />
   </span>
   <span

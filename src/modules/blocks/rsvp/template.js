@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import React, { PureComponent, Fragment } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
@@ -15,63 +15,82 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import RSVPContainer from './container/container';
-import RSVPDashboard from './dashboard/container';
+import RSVPActionDashboard from '@moderntribe/tickets/blocks/rsvp/action-dashboard/container';
+import RSVPSettingsDashboard from '@moderntribe/tickets/blocks/rsvp/settings-dashboard/container';
 import RSVPInactiveBlock from './inactive-block/container';
 import MoveModal from '@moderntribe/tickets/elements/move-modal';
+import { Card } from '@moderntribe/tickets/elements';
 import './style.pcss';
 
-class RSVP extends PureComponent {
-	static propTypes = {
-		clientId: PropTypes.string.isRequired,
-		created: PropTypes.bool.isRequired,
-		initializeRSVP: PropTypes.func.isRequired,
-		isInactive: PropTypes.bool.isRequired,
-		isLoading: PropTypes.bool.isRequired,
-		isModalShowing: PropTypes.bool.isRequired,
-		isSelected: PropTypes.bool.isRequired,
-		rsvpId: PropTypes.number.isRequired,
-	};
+const RSVP = ( {
+	clientId,
+	created,
+	hasRecurrenceRules,
+	initializeRSVP,
+	isAddEditOpen,
+	isInactive,
+	isLoading,
+	isModalShowing,
+	isSelected,
+	isSettingsOpen,
+	noTicketsOnRecurring,
+	rsvpId,
+	setAddEditClosed,
+} ) => {
+	const rsvpBlockRef = useRef( null );
 
-	componentDidMount() {
-		! this.props.rsvpId && this.props.initializeRSVP();
-	}
+	const handleAddEditClose = useCallback( ( event ) => {
+		const rsvpButtons = [ 'add-rsvp', 'edit-rsvp', 'attendees-rsvp', 'settings-rsvp' ];
 
-	renderBlock() {
-		const {
-			created,
-			isInactive,
-			isLoading,
-			isSelected,
-			clientId,
-			isModalShowing,
-		} = this.props;
+		if (
+			rsvpBlockRef.current &&
+			! rsvpBlockRef.current.contains( event.target ) &&
+			! rsvpButtons.includes( event.target.id )
+		) {
+			setAddEditClosed();
+		}
+	}, [ setAddEditClosed ] );
+
+	useEffect( () => {
+		! rsvpId && initializeRSVP();
+		document.addEventListener( 'click', handleAddEditClose );
+
+		return () => document.removeEventListener( 'click', handleAddEditClose );
+	}, [ handleAddEditClose, initializeRSVP, rsvpId ] );
+
+	const renderBlock = () => {
+		const displayInactive = ! isAddEditOpen && ( ( created && isInactive ) || ! created );
 
 		return (
-			<Fragment>
+			<div ref={ rsvpBlockRef }>
 				{
-					! isSelected && ( ( created && isInactive ) || ! created )
+					displayInactive
 						? <RSVPInactiveBlock />
 						: (
-							<div className={
-								classNames(
-									'tribe-editor__rsvp',
-									{ 'tribe-editor__rsvp--selected': isSelected },
-									{ 'tribe-editor__rsvp--loading': isLoading },
-								) }
-							>
-								<RSVPContainer isSelected={ isSelected } clientId={ clientId } />
-								<RSVPDashboard isSelected={ isSelected } />
-								{ isLoading && <Spinner /> }
-							</div>
+							! isSettingsOpen &&
+							(
+								<Card className={
+									classNames(
+										'tribe-editor__rsvp',
+										{ 'tribe-editor__rsvp--add-edit-open': isAddEditOpen },
+										{ 'tribe-editor__rsvp--selected': isSelected },
+										{ 'tribe-editor__rsvp--loading': isLoading },
+									) }
+								>
+									<RSVPContainer isSelected={ isSelected } clientId={ clientId } />
+									{ isAddEditOpen && <RSVPActionDashboard clientId={ clientId } /> }
+									{ isLoading && <Spinner /> }
+								</Card>
+							)
 						)
 				}
+				{ isSettingsOpen && <RSVPSettingsDashboard />}
 				{ isModalShowing && <MoveModal /> }
-			</Fragment>
+			</div>
 		);
-	}
+	};
 
-	renderBlockNotSupported() {
-		const { clientId } = this.props;
+	const renderBlockNotSupported = () => {
 		return (
 			<div className="tribe-editor__not-supported-message">
 				<p className="tribe-editor__not-supported-message-text">
@@ -94,15 +113,29 @@ class RSVP extends PureComponent {
 				</p>
 			</div>
 		);
+	};
+
+	if ( hasRecurrenceRules && noTicketsOnRecurring ) {
+		return renderBlockNotSupported();
 	}
 
-	render() {
-		if ( this.props.hasRecurrenceRules && this.props.noTicketsOnRecurring ) {
-			return this.renderBlockNotSupported();
-		}
+	return renderBlock();
+};
 
-		return this.renderBlock();
-	}
-}
+RSVP.propTypes = {
+	clientId: PropTypes.string.isRequired,
+	created: PropTypes.bool.isRequired,
+	hasRecurrenceRules: PropTypes.bool.isRequired,
+	initializeRSVP: PropTypes.func.isRequired,
+	isAddEditOpen: PropTypes.bool.isRequired,
+	isInactive: PropTypes.bool.isRequired,
+	isLoading: PropTypes.bool.isRequired,
+	isModalShowing: PropTypes.bool.isRequired,
+	isSelected: PropTypes.bool.isRequired,
+	isSettingsOpen: PropTypes.bool.isRequired,
+	noTicketsOnRecurring: PropTypes.bool.isRequired,
+	rsvpId: PropTypes.number.isRequired,
+	setAddEditClosed: PropTypes.func.isRequired,
+};
 
 export default RSVP;

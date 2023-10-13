@@ -27,16 +27,13 @@ const TicketContainerHeaderDescription = ( {
 } ) => {
 	const total = isShared ? sharedCapacity : capacity;
 
-	const getLabel = () => (
-		isUnlimited
-			? sprintf( __( '%d sold', 'event-tickets' ), sold )
-			: sprintf( __( '%d of %d sold', 'event-tickets' ), sold, total )
-	);
+	const getLabel = () => sprintf( __( '%d sold', 'event-tickets' ), sold );
 
+	/* eslint-disable max-len */
 	const getQuantityBar = () => (
 		isUnlimited
 			? (
-				<span className="tribe-editor__ticket__container-header-quantity-unlimited">
+				<span className="tribe-editor__ticket__container-header-quantity-unlimited tribe-editor__ticket__container-header-label">
 					{ __( 'unlimited', 'event-tickets' ) }
 				</span>
 			)
@@ -50,6 +47,7 @@ const TicketContainerHeaderDescription = ( {
 				/>
 			)
 	);
+	/* eslint-enable max-len */
 
 	return ! isSelected && (
 		<div
@@ -57,7 +55,7 @@ const TicketContainerHeaderDescription = ( {
 			title={ __( 'This pertains to Orders that have been marked Completed.', 'event-tickets' ) }
 		>
 			<span className="tribe-editor__ticket__container-header-quantity-label">
-				{ getLabel() }<span class="dashicons dashicons-info"></span>
+				{ getLabel() }<span className="dashicons dashicons-info-outline"></span>
 			</span>
 			{ getQuantityBar() }
 		</div>

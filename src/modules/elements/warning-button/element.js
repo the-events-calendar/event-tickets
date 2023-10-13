@@ -39,6 +39,7 @@ const WarningButton = ( {
 };
 
 WarningButton.propTypes = {
+	children: PropTypes.node,
 	className: PropTypes.string,
 	icon: PropTypes.string.isRequired,
 };

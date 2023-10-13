@@ -17,6 +17,7 @@ import {
 
 const mapStateToProps = ( state, ownProps ) => ( {
 	isDisabled: selectors.isTicketDisabled( state, ownProps ),
+	ticketIsSelected: selectors.getTicketIsSelected( state, ownProps ),
 	ticketId: selectors.getTicketId( state, ownProps ),
 } );
 

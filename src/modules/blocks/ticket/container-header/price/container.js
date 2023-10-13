@@ -12,12 +12,16 @@ import { withStore } from '@moderntribe/common/hoc';
 import { selectors, actions } from '@moderntribe/tickets/data/blocks/ticket';
 
 const mapStateToProps = ( state, ownProps ) => ( {
-	isDisabled: selectors.isTicketDisabled( state, ownProps ),
+	available: selectors.getTicketAvailable( state, ownProps ),
+	currencyDecimalPoint: selectors.getTicketCurrencyDecimalPoint( state, ownProps ),
+	currencyNumberOfDecimals: selectors.getTicketCurrencyNumberOfDecimals( state, ownProps ),
 	currencyPosition: selectors.getTicketCurrencyPosition( state, ownProps ),
 	currencySymbol: selectors.getTicketCurrencySymbol( state, ownProps ),
-	tempPrice: selectors.getTicketTempPrice( state, ownProps ),
+	currencyThousandsSep: selectors.getTicketCurrencyThousandsSep( state, ownProps ),
+	isDisabled: selectors.isTicketDisabled( state, ownProps ),
+	isUnlimited: selectors.isUnlimitedTicket( state, ownProps ),
 	price: selectors.getTicketPrice( state, ownProps ) || '0',
-	minDefaultPrice: selectors.isZeroPriceValid( state, ownProps ) ? 0 : 1,
+	tempPrice: selectors.getTicketTempPrice( state, ownProps ),
 } );
 
 const mapDispatchToProps = ( dispatch, ownProps ) => ( {

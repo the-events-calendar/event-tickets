@@ -191,6 +191,18 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [TBD] TBD =
+* Tweak - Re-styled Empty RSVP Block in Block Editor to match frontend design. Styles will be the same in block editor and in the user interface [ET-1818]
+* Tweak - Re-styled Inactive RSVP Block in Block Editor to match frontend design. Styles will be the same in block editor and in the user interface [ET-1823]
+* Tweak - Re-styled Active RSVP Block in Block Editor to match frontend design. Styles will be the same in block editor and in the user interface [ET-1825]
+* Tweak - Re-styled Create and Edit RSVP Tickets in Block Editor.  [ET-1836]
+* Tweak - Re-styled Inactive Tickets Block in Block Editor. Empty state now has a new design [ET-1817]
+* Tweak - Re-styled Inactive Tickets Block with tickets. Inactive state with tickets has a new design [ET-1822]
+* Tweak - Re-styled Active Tickets Block with tickets. Add information icons and tooltips.  [ET-1824]
+* Tweak - Re-styled Create and Edit Tickets in Block Editor.  [ET-1835]
+* Tweak - Re-styled Tickets Settings in Block Editor.  [ET-1834]
+* Tweak - Using react-number-format to display price.  [ET-1885]
+
 = [5.6.6.1] 2023-10-12 =
 
 * Fix - Correct a problem that can cause a fatal when plugins are deactivated in a certain order. [TEC-4951]
