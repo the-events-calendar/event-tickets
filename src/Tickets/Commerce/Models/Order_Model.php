@@ -64,6 +64,7 @@ class Order_Model extends Base {
 				'status_log'          => $status_log,
 				'status_obj'          => $status,
 				'status'              => $status->get_name(),
+				'status_slug'         => $status->get_slug(),
 				'gateway'             => $gateway_slug,
 				'gateway_order_id'    => $gateway_order_id,
 				'gateway_payload'     => $gateway_payload,

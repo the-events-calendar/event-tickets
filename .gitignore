@@ -5,10 +5,15 @@
 
 # Composer / Package files
 node_modules
-/vendor
 /files
 /vcs
 /repo
+
+# Vendor handling.
+/vendor
+
+# Allow certain vendor files.
+!vendor/phpqrcode
 
 # Some people makes...
 Makefile

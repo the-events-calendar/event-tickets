@@ -47,6 +47,9 @@ class Provider extends Service_Provider {
 		$this->container->singleton( static::class, $this );
 		$this->container->singleton( 'tickets.provider', $this );
 
+		// Loads the QR code controller.
+		$this->container->register( QR\Controller::class );
+
 		// Loads all of tickets commerce.
 		$this->container->register( Commerce\Provider::class );
 
@@ -68,7 +71,7 @@ class Provider extends Service_Provider {
 		// Loads Integrations.
 		$this->container->register( Integrations\Provider::class);
 
-		// RBE only Providers here.
+		// CT1 only Providers here.
 		$this->container->register_on_action( 'tec_events_custom_tables_v1_fully_activated', ET_CT1_Provider::class );
 		$this->has_registered = true;
 

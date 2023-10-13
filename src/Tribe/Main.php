@@ -8,7 +8,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '5.6.5.1';
+	const VERSION = '5.6.6.1';
 
 	/**
 	 * Used to store the version history.
@@ -368,9 +368,6 @@ class Tribe__Tickets__Main {
 	 * @since 4.10
 	 */
 	public function bootstrap() {
-		// Initialize the Service Provider for Tickets.
-		tribe_register_provider( 'Tribe__Tickets__Service_Provider' );
-
 		$this->hooks();
 
 		$this->register_active_plugin();
@@ -400,6 +397,9 @@ class Tribe__Tickets__Main {
 	 */
 	public function bind_implementations() {
 		tribe_singleton( 'tickets.main', $this );
+
+		// Initialize the Service Provider for Tickets.
+		tribe_register_provider( Tribe__Tickets__Service_Provider::class );
 
 		// Tickets Commerce providers.
 		tribe_register_provider( TEC\Tickets\Provider::class );

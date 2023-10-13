@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Class Tribe__Tickets__Query
  *
@@ -119,6 +118,15 @@ class Tribe__Tickets__Query {
 		add_filter( 'posts_where', $this->filter_by_ticketed_status( $query, $has_tickets ), 10, 2 );
 	}
 
+	/**
+	 * Returns the number of ticketed posts of a certain type.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $post_type The post type the ticketed count is being calculated for.
+	 *
+	 * @return int The number of ticketed posts of a certain type.
+	 */
 	public function get_ticketed_count( string $post_type ): int {
 		/**
 		 * Filters the query used to get the number of ticketed posts of a certain type.
@@ -143,8 +151,8 @@ class Tribe__Tickets__Query {
 			 */
 			$query = $wpdb->prepare(
 				"SELECT COUNT(DISTINCT(p.ID)) FROM $wpdb->posts p
-					JOIN $wpdb->postmeta pm ON ( $meta_keys_in ) AND pm.meta_value = p.ID
-					WHERE p.post_type = %s",
+				  JOIN $wpdb->postmeta pm ON ( $meta_keys_in ) AND pm.meta_value = p.ID
+				  WHERE p.post_type = %s AND p.post_status NOT IN ('auto-draft', 'trash')",
 				$post_type
 			);
 		}
@@ -152,6 +160,15 @@ class Tribe__Tickets__Query {
 		return $wpdb->get_var( $query );
 	}
 
+	/**
+	 * Returns the number of unticketed posts of a certain type.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $post_type The post type the unticketed count is being calculated for.
+	 *
+	 * @return int The number of unticketed posts of a certain type.
+	 */
 	public function get_unticketed_count( string $post_type ): int {
 		/**
 		 * Filters the query used to get the number of unticketed posts of a certain type.
@@ -183,7 +200,7 @@ class Tribe__Tickets__Query {
 						SELECT p.ID FROM $wpdb->posts p
 									JOIN $wpdb->postmeta pm ON ( $meta_keys_in ) AND pm.meta_value = p.ID
 									WHERE p.post_type = %s
-					) AND p.post_type = %s",
+					) AND p.post_type = %s AND p.post_status NOT IN ('auto-draft', 'trash')",
 				$post_type,
 				$post_type
 			);

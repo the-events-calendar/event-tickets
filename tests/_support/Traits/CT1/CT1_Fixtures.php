@@ -227,7 +227,7 @@ trait CT1_Fixtures {
 
 	private function given_a_migrated_single_event() {
 		$post = $this->given_a_non_migrated_single_event();
-		Event::upsert( [ 'post_id' ], Event::data_from_post( $post ) );
+		Event::upsert( [ 'post_id' ], Event::data_from_post( $post->ID ) );
 		$event = Event::find( $post->ID, 'post_id' );
 		$this->assertInstanceOf( Event::class, $event );
 		$event->occurrences()->save_occurrences();
