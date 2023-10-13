@@ -49,11 +49,6 @@ class TicketsBlock_TestCase extends WPTestCase {
 			add_filter( 'tribe_tickets_new_views_is_enabled', '__return_false' );
 			add_filter( 'tribe_tickets_rsvp_new_views_is_enabled', '__return_false' );
 		}
-		
-		add_filter( 'tribe_dialog_args', function ( $args ) {
-			$args['id'] = 'DIALOG_ID';
-			return $args;
-		} );
 
 		/** @var \wpdb $wpdb */
 		global $wpdb;
@@ -160,11 +155,14 @@ class TicketsBlock_TestCase extends WPTestCase {
 
 		$html = $tickets_view->get_tickets_block( get_post( $post_id ) );
 
+		$dialog_id = preg_match( '/dialog-content-([a-f0-9]+)/', $html, $matches ) ? $matches[1] : null;
+
 		$driver = new WPHtmlOutputDriver( home_url(), TRIBE_TESTS_HOME_URL );
 
 		$driver->setTolerableDifferences( [
 			$ticket_id,
 			$post_id,
+			$dialog_id,
 		] );
 
 		$driver->setTolerableDifferencesPrefixes( [
@@ -182,6 +180,8 @@ class TicketsBlock_TestCase extends WPTestCase {
 			'Test WooCommerce ticket description for ',
 			'Test RSVP ticket for ',
 			'Ticket RSVP ticket excerpt for ',
+			'dialog-content-',
+			'trigger-dialog-',
 		] );
 
 		$driver->setTimeDependentAttributes( [
@@ -196,10 +196,12 @@ class TicketsBlock_TestCase extends WPTestCase {
 			[
 				$post_id,
 				$ticket_id,
+				$dialog_id,
 			],
 			[
 				'[EVENT_ID]',
 				'[TICKET_ID]',
+				'[DIALOG_ID]',
 			],
 			$html
 		);
@@ -240,11 +242,14 @@ class TicketsBlock_TestCase extends WPTestCase {
 
 		$html = $tickets_view->get_tickets_block( get_post( $post_id ) );
 
+		$dialog_id = preg_match( '/dialog-content-([a-f0-9]+)/', $html, $matches ) ? $matches[1] : null;
+
 		$driver = new WPHtmlOutputDriver( home_url(), TRIBE_TESTS_HOME_URL );
 
 		$driver->setTolerableDifferences( [
 			$ticket_id,
 			$post_id,
+			$dialog_id,
 		] );
 		$driver->setTolerableDifferencesPrefixes( [
 			'post-',
@@ -259,6 +264,8 @@ class TicketsBlock_TestCase extends WPTestCase {
 			'Test WooCommerce ticket description for ',
 			'Test RSVP ticket for ',
 			'Ticket RSVP ticket excerpt for ',
+			'dialog-content-',
+			'trigger-dialog-',
 		] );
 		$driver->setTimeDependentAttributes( [
 			'data-ticket-id',
@@ -272,10 +279,12 @@ class TicketsBlock_TestCase extends WPTestCase {
 			[
 				$post_id,
 				$ticket_id,
+				$dialog_id,
 			],
 			[
 				'[EVENT_ID]',
 				'[TICKET_ID]',
+				'[DIALOG_ID]'
 			],
 			$html
 		);
