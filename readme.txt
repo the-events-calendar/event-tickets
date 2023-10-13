@@ -192,6 +192,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 == Changelog ==
 
 = [TBD] TBD =
+
 * Tweak - Re-styled Inactive RSVP Block in Block Editor to match frontend design. Styles will be the same in block editor and in the user interface [ET-1818]
 * Tweak - Re-styled Inactive Tickets Block in Block Editor. Empty state now has a new design [ET-1817]
 * Tweak - Re-styled Inactive Tickets Block with tickets. Inactive state with tickets has a new design [ET-1822]
@@ -200,7 +201,11 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Tweak - Re-styled Tickets Settings in Block Editor.  [ET-1834]
 * Tweak - Using react-number-format to display price.  [ET-1885]
 
-= [5.6.6] 2023-10-10 =
+= [5.6.6.1] 2023-10-12 =
+
+* Fix - Correct a problem that can cause a fatal when plugins are deactivated in a certain order. [TEC-4951]
+
+= [5.6.6] 2023-10-11 =
 
 * Version - Event Tickets 5.6.6 is only compatible with Event Tickets Plus 5.7.6 and higher.
 * Tweak - Include a QRCode Library in Event Tickets to improve conformity across other addons. [ETWP-29]
