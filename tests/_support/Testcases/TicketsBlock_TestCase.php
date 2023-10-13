@@ -49,6 +49,11 @@ class TicketsBlock_TestCase extends WPTestCase {
 			add_filter( 'tribe_tickets_new_views_is_enabled', '__return_false' );
 			add_filter( 'tribe_tickets_rsvp_new_views_is_enabled', '__return_false' );
 		}
+		
+		add_filter( 'tribe_dialog_args', function ( $args ) {
+			$args['id'] = 'DIALOG_ID';
+			return $args;
+		} );
 
 		/** @var \wpdb $wpdb */
 		global $wpdb;
