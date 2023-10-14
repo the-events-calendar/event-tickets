@@ -19,32 +19,37 @@ class Order_Summary {
 	/**
 	 * @var int The post ID.
 	 */
-	private int $post_id;
+	protected int $post_id;
 
 	/**
 	 * @var Ticket_Object[] The tickets.
 	 */
-	private array $tickets;
+	protected array $tickets = [];
 
 	/**
 	 * @var array|array[] The tickets by type.
 	 */
-	private array $tickets_by_type;
+	protected array $tickets_by_type = [];
 
 	/**
 	 * @var array|array[] The event sales by status.
 	 */
-	private array $event_sales_by_status = [];
+	protected array $event_sales_by_status = [];
 
 	/**
 	 * @var array|array[] The total sales.
 	 */
-	private array $total_sales = [];
+	protected array $total_sales = [];
 
 	/**
 	 * @var array|array[] The total ordered.
 	 */
-	private array $total_ordered = [];
+	protected array $total_ordered = [];
+
+	/**
+	 * @var array|array[] The total ordered.
+	 */
+	protected array $event_sales_data = [];
 
 	/**
 	 * Order_Summary constructor.
@@ -52,19 +57,41 @@ class Order_Summary {
 	 * @param int $post_id The post ID.
 	 */
 	public function __construct( int $post_id ) {
-		$this->post_id       = $post_id;
+		$this->post_id = $post_id;
+		$this->init_vars();
+		$this->build_data();
+	}
+
+	/**
+	 * Format the price.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $price The price.
+	 *
+	 * @return string The formatted price.
+	 */
+	protected function format_price( string $price ): string {
+		return Value::create( $price )->get_currency();
+	}
+
+	/**
+	 * Initialize the variables.
+	 *
+	 * @since TBD
+	 *
+	 */
+	protected function init_vars(): void {
 		$this->total_sales   = [
 			'qty'    => 0,
 			'amount' => 0,
-			'price'  => Value::create()->get_currency(),
+			'price'  => $this->format_price( 0 ),
 		];
 		$this->total_ordered = [
 			'qty'    => 0,
 			'amount' => 0,
-			'price'  => Value::create()->get_currency(),
+			'price'  => $this->format_price( 0 ),
 		];
-
-		$this->build_data();
 	}
 
 	/**
@@ -85,7 +112,7 @@ class Order_Summary {
 
 			$ticket_data = [
 				'ticket'        => $ticket,
-				'label'         => sprintf( '%1$s %2$s', $ticket->name, Value::create( $ticket->price )->get_currency() ),
+				'label'         => sprintf( '%1$s %2$s', $ticket->name, $this->format_price( $ticket->price ) ),
 				'type'          => $ticket->type(),
 				'qty_data'      => $quantities,
 				'qty_by_status' => implode( ' | ', array_map( fn( $k, $v ) => "$v $k", array_keys( $quantities ), $quantities ) ),
@@ -93,6 +120,59 @@ class Order_Summary {
 
 			$this->tickets_by_type[ $ticket->type ][] = $ticket_data;
 		}
+	}
+
+	/**
+	 * Process the event sales data.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $quantity_by_status The quantity by status.
+	 * @param Ticket_Object $ticket The ticket object.
+	 */
+	protected function process_event_sales_data( array $quantity_by_status, Ticket_Object $ticket ): void {
+		foreach ( $quantity_by_status as $status_slug => $quantity ) {
+			if ( ! isset( $this->event_sales_by_status[ $status_slug ] ) ) {
+				$status = tribe( Status_Handler::class )->get_by_slug( $status_slug );
+
+				// This is the first time we've seen this status, so initialize it.
+				$this->event_sales_by_status[ $status_slug ] = [
+					'label'              => $status->get_name(),
+					'qty_sold'           => 0,
+					'total_sales_amount' => 0,
+					'total_sales_price'  => $this->format_price( 0 ),
+				];
+			}
+			$this->event_sales_by_status[ $status_slug ]['qty_sold']           += $quantity;
+			$this->event_sales_by_status[ $status_slug ]['total_sales_amount'] += $quantity * $ticket->price;
+			$this->event_sales_by_status[ $status_slug ]['total_sales_price']  = $this->format_price( $this->event_sales_by_status[ $status_slug ]['total_sales_amount'] );
+
+			// process the total ordered data.
+			$this->total_ordered['qty']    += $this->event_sales_by_status[ $status_slug ]['qty_sold'];
+			$this->total_ordered['amount'] += $this->event_sales_by_status[ $status_slug ]['total_sales_amount'];
+			$this->total_ordered['price']  = $this->format_price( $this->total_ordered['amount'] );
+
+			// Only completed orders should be counted in the total sales.
+			if ( Completed::SLUG === $status_slug ) {
+				$this->total_sales['qty']    += $this->event_sales_by_status[ $status_slug ]['qty_sold'];
+				$this->total_sales['amount'] += $this->event_sales_by_status[ $status_slug ]['total_sales_amount'];
+				$this->total_sales['price']  = $this->format_price( $this->total_sales['amount'] );
+			}
+		}
+	}
+
+	/**
+	 * Build the event sales data.
+	 *
+	 * @since TBD
+	 *
+	 */
+	protected function build_event_sales_data(): void {
+		$this->event_sales_data = [
+			'by_status'     => $this->event_sales_by_status,
+			'total_sales'   => $this->total_sales,
+			'total_ordered' => $this->total_ordered,
+		];
 	}
 
 	/**
@@ -162,45 +242,6 @@ class Order_Summary {
 	}
 
 	/**
-	 * Process the event sales data.
-	 *
-	 * @since TBD
-	 *
-	 * @param array $quantity_by_status The quantity by status.
-	 * @param Ticket_Object $ticket The ticket object.
-	 */
-	protected function process_event_sales_data( array $quantity_by_status, Ticket_Object $ticket ): void {
-		foreach ( $quantity_by_status as $status_slug => $quantity ) {
-			if ( ! isset( $this->event_sales_by_status[ $status_slug ] ) ) {
-				$status = tribe( Status_Handler::class )->get_by_slug( $status_slug );
-
-				// This is the first time we've seen this status, so initialize it.
-				$this->event_sales_by_status[ $status_slug ] = [
-					'label'              => $status->get_name(),
-					'qty_sold'           => 0,
-					'total_sales_amount' => 0,
-					'total_sales_price'  => Value::create()->get_currency(),
-				];
-			}
-			$this->event_sales_by_status[ $status_slug ]['qty_sold']           += $quantity;
-			$this->event_sales_by_status[ $status_slug ]['total_sales_amount'] += $quantity * $ticket->price;
-			$this->event_sales_by_status[ $status_slug ]['total_sales_price']  = Value::create( $this->event_sales_by_status[ $status_slug ]['total_sales_amount'] )->get_currency();
-
-			// process the total ordered data.
-			$this->total_ordered['qty']    += $this->event_sales_by_status[ $status_slug ]['qty_sold'];
-			$this->total_ordered['amount'] += $this->event_sales_by_status[ $status_slug ]['total_sales_amount'];
-			$this->total_ordered['price']  = Value::create( $this->total_ordered['amount'] )->get_currency();
-
-			// Only completed orders should be counted in the total sales.
-			if ( Completed::SLUG === $status_slug ) {
-				$this->total_sales['qty']    += $this->event_sales_by_status[ $status_slug ]['qty_sold'];
-				$this->total_sales['amount'] += $this->event_sales_by_status[ $status_slug ]['total_sales_amount'];
-				$this->total_sales['price']  = Value::create( $this->total_sales['amount'] )->get_currency();
-			}
-		}
-	}
-
-	/**
 	 * Get the event sales data.
 	 *
 	 * @since TBD
@@ -208,11 +249,7 @@ class Order_Summary {
 	 * @return array
 	 */
 	public function get_event_sales_data(): array {
-		$data = [
-			'by_status'     => $this->event_sales_by_status,
-			'total_sales'   => $this->total_sales,
-			'total_ordered' => $this->total_ordered,
-		];
+		$this->build_event_sales_data();
 
 		/**
 		 * Filters the event sales data in the order summary report.
@@ -222,6 +259,6 @@ class Order_Summary {
 		 * @param array $event_sales_data The event sales data.
 		 * @param Order_Summary $this The order summary object.
 		 */
-		return apply_filters( 'tec_tickets_commerce_order_report_summary_event_sales_data', $data, $this );
+		return apply_filters( 'tec_tickets_commerce_order_report_summary_event_sales_data', $this->event_sales_data, $this );
 	}
 }
