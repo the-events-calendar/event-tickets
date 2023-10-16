@@ -22,9 +22,17 @@ const ClockIcon = ( { isDisabled } ) => (
 	isDisabled ? <ClockInactive /> : <ClockActive />
 );
 
+ClockIcon.propTypes = {
+	isDisabled: PropTypes.bool.isRequired,
+};
+
 const TicketIcon = ( { isDisabled } ) => (
 	isDisabled ? <TicketInactive /> : <TicketActive />
 );
+
+TicketIcon.propTypes = {
+	isDisabled: PropTypes.bool.isRequired,
+};
 
 const TicketContainerIcon = ( { isDisabled, isFuture, isPast } ) => (
 	isFuture || isPast

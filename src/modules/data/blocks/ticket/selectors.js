@@ -211,6 +211,21 @@ export const getTicketCurrencyPosition = createSelector(
 	( ticket ) => ticket.currencyPosition,
 );
 
+export const getTicketCurrencyDecimalPoint = createSelector(
+	[ getTicket ],
+	( ticket ) => ticket.currencyDecimalPoint,
+);
+
+export const getTicketCurrencyNumberOfDecimals = createSelector(
+	[ getTicket ],
+	( ticket ) => ticket.currencyNumberOfDecimals,
+);
+
+export const getTicketCurrencyThousandsSep = createSelector(
+	[ getTicket ],
+	( ticket ) => ticket.currencyThousandsSep,
+);
+
 export const getTicketProvider = createSelector(
 	[ getTicket ],
 	( ticket ) => ticket.provider,
@@ -435,6 +450,11 @@ export const allTicketsFuture = createSelector(
 	}, true ),
 );
 
+export const getTicketAttendeeInfoFields = createSelector(
+	[ getTicketDetails ],
+	( details ) => details.attendeeInfoFields || [],
+);
+
 //
 // ─── TICKET TEMP DETAILS SELECTORS ──────────────────────────────────────────────
 //
@@ -568,7 +588,7 @@ export const isZeroPriceValid = createSelector(
 	[ getTicketTempPrice, getTicketsProvider ],
 	( price, provider ) => {
 		return 0 < parseInt( price, 10 ) ||
-			! [constants.TC_CLASS, constants.TICKETS_COMMERCE_MODULE_CLASS].includes(provider)
+			! [ constants.TC_CLASS, constants.TICKETS_COMMERCE_MODULE_CLASS ].includes( provider );
 	},
 );
 

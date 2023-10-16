@@ -1,15 +1,12 @@
 .tribe-editor__ticket {
-	/*
-	this negative margin is to fit the blocks to the bounds of the pseudo element :before of
-	the drag block
-	 */
-	margin: -19px 0;
-	border: 1px solid #e1e3e6;
-	position: relative;
+	border-bottom: 1px solid var(--tec-color-border-secondary);
 	font-family: 'Helvetica Neue', Helvetica, -apple-system, BlinkMacSystemFont, Roboto, Arial, sans-serif;
+	padding: var(--tec-spacer-2) 0 var(--tec-spacer-3) 0;
+	position: relative;
 
 	&--selected {
 		border: 1px solid #b1b5b8;
+		padding: 0;
 	}
 }
 

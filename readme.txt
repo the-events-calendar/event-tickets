@@ -4,7 +4,7 @@ Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, raf
 Tags: tickets, registration, event registration, RSVP, ticket sales, attendee management
 Requires at least: 5.8.5
 Tested up to: 6.3.1
-Stable tag: 5.6.6
+Stable tag: 5.6.6.1
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -190,6 +190,22 @@ We've got a [LoopedIn](https://evnt.is/ideas) page where we're actively watching
 Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on using, tweaking, and troubleshooting our plugins.
 
 == Changelog ==
+
+= [TBD] TBD =
+* Tweak - Re-styled Empty RSVP Block in Block Editor to match frontend design. Styles will be the same in block editor and in the user interface [ET-1818]
+* Tweak - Re-styled Inactive RSVP Block in Block Editor to match frontend design. Styles will be the same in block editor and in the user interface [ET-1823]
+* Tweak - Re-styled Active RSVP Block in Block Editor to match frontend design. Styles will be the same in block editor and in the user interface [ET-1825]
+* Tweak - Re-styled Create and Edit RSVP Tickets in Block Editor.  [ET-1836]
+* Tweak - Re-styled Inactive Tickets Block in Block Editor. Empty state now has a new design [ET-1817]
+* Tweak - Re-styled Inactive Tickets Block with tickets. Inactive state with tickets has a new design [ET-1822]
+* Tweak - Re-styled Active Tickets Block with tickets. Add information icons and tooltips.  [ET-1824]
+* Tweak - Re-styled Create and Edit Tickets in Block Editor.  [ET-1835]
+* Tweak - Re-styled Tickets Settings in Block Editor.  [ET-1834]
+* Tweak - Using react-number-format to display price.  [ET-1885]
+
+= [5.6.6.1] 2023-10-12 =
+
+* Fix - Correct a problem that can cause a fatal when plugins are deactivated in a certain order. [TEC-4951]
 
 = [5.6.6] 2023-10-11 =
 

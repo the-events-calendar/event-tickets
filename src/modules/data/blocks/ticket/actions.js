@@ -446,6 +446,14 @@ export const setTicketHasAttendeeInfoFields = ( clientId, hasAttendeeInfoFields 
 	},
 } );
 
+export const setTicketAttendeeInfoFields = ( clientId, attendeeInfoFields ) => ( {
+	type: types.SET_TICKET_ATTENDEE_INFO_FIELDS,
+	payload: {
+		clientId,
+		attendeeInfoFields,
+	},
+} );
+
 export const setTicketIsLoading = ( clientId, isLoading ) => ( {
 	type: types.SET_TICKET_IS_LOADING,
 	payload: {

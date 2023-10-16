@@ -82,7 +82,7 @@ tribe.tickets.emails = {};
 	 * @since 5.6.0
 	 * @param  {Event}  event    event object for 'afterAjaxSuccess.tribeTicketsAdmin' event.
 	 * @param  {jqXHR}  jqXHR    Request object.
-	 * @param  {object} settings Settings that this request was made with.
+	 * @param  {Object} settings Settings that this request was made with.
 	 */
 	obj.bindModalEvents = ( event, jqXHR, settings ) => {
 		const $container = event.data.container;
@@ -188,7 +188,7 @@ tribe.tickets.emails = {};
 			context.useTicketEmail = usingTicketEmail;
 
 			// fetch additional content from the editor.
-			context.addContent = tinyMCE !== undefined ? tinyMCE.get( currentEmailOptionPrefix + '-additional-content' ).getContent() : '';
+			context.addContent = tinyMCE !== undefined ? tinyMCE.get( currentEmailOptionPrefix + '-additional-content' ).getContent() : ''; // eslint-disable-line max-len
 		} else {
 			const ticketBgColor = $document
 				.find( 'input[name=' + obj.selectors.formTicketBgColorName + ']' ).val();
@@ -213,10 +213,10 @@ tribe.tickets.emails = {};
 			const footerCredit = $document
 				.find( 'input[name=' + obj.selectors.formFooterCredit + ']' ).is( ':checked' );
 
-			context.footerCredit  = footerCredit;
+			context.footerCredit = footerCredit;
 
 			// fetch footer content from the editor.
-			context.footerContent = tinyMCE !== undefined ? tinyMCE.get( obj.selectors.formFooterContent ).getContent() : '';
+			context.footerContent = tinyMCE !== undefined ? tinyMCE.get( obj.selectors.formFooterContent ).getContent() : ''; // eslint-disable-line max-len
 
 			// If we're in the main Emails settings, we show the all options.
 			context.eventLinks = true;

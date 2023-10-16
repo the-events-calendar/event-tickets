@@ -8,14 +8,18 @@ import { compose } from 'redux';
  * Internal dependencies
  */
 import RSVPInactiveBlock from './template';
-import { selectors } from '@moderntribe/tickets/data/blocks/rsvp';
+import { actions, selectors } from '@moderntribe/tickets/data/blocks/rsvp';
 import { withStore } from '@moderntribe/common/hoc';
 
 const mapStateToProps = ( state ) => ( {
 	created: selectors.getRSVPCreated( state ),
 } );
 
+const mapDispatchToProps = ( dispatch ) => ( {
+	setAddEditOpen: () => dispatch( actions.setRSVPIsAddEditOpen( true ) ),
+} );
+
 export default compose(
 	withStore(),
-	connect( mapStateToProps ),
+	connect( mapStateToProps, mapDispatchToProps ),
 )( RSVPInactiveBlock );

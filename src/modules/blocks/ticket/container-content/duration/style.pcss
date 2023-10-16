@@ -7,11 +7,20 @@
 	padding-top: 12px;
 	position: relative;
 	z-index: 1;
+
+	.dashicons-info-outline.tribe-editor__ticket__tooltip-label {
+		margin-left: var(--tec-spacer-2);
+	}
 }
 
 .tribe-editor__ticket__duration-picker {
 	flex: 1;
 	margin-left: -55px;
+
+	.tribe-editor__day-picker-input.DayPickerInput input,
+	.tribe-editor__timepicker .components-dropdown.tribe-editor__timepicker__toggle {
+		border-radius: var(--tec-spacer-0);
+	}
 }
 
 .tribe-editor__date-time-range-picker .tribe-editor__date-time-range-picker__separator {
@@ -27,6 +36,6 @@
 	font-size: 15px;
 	line-height: 18px;
 	margin-top: 10px;
-	padding-left: 160px;
-	width: calc(100% - 160px);
+	padding-left: 140px;
+	width: calc(100% - 140px);
 }
