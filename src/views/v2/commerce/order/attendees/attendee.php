@@ -1,16 +1,15 @@
 <?php
 /**
- * Tickets Commerce: Success Order Page
+ * Tickets Commerce: Success Order Page Attendee list - Attendee template
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/commerce/success.php
+ * [your-theme]/tribe/tickets/v2/commerce/order/attendees/attendee.php
  *
  * See more documentation about our views templating system.
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   5.1.10
- * @since   TBD Added attendee information list for the purchase.
+ * @since   TBD
  *
  * @version TBD
  *
@@ -21,15 +20,16 @@
  * @var int              $order_id              [Global] The order ID.
  * @var bool             $is_tec_active         [Global] Whether `The Events Calendar` is active or not.
  * @var array            $attendees             [Global] List of attendees for the given order.
+ * @var array            $attendee              The current attendee.
  */
 
+if ( empty( $order ) || empty( $attendee ) ) {
+	return;
+}
+
+use TEC\Tickets\Commerce\Utils\Value;
+$total = Value::create( $attendee['price_paid'] );
 ?>
-<div class="tribe-common event-tickets">
-	<section class="tribe-tickets__commerce-order">
-		<?php $this->template( 'order/header' ); ?>
-		<?php $this->template( 'order/description' ); ?>
-		<?php $this->template( 'order/details' ); ?>
-		<?php $this->template( 'order/attendees' ); ?>
-		<?php $this->template( 'order/footer' ); ?>
-	</section>
+<div class="tribe-tickets__commerce-order-attendees-list-attendee-details">
+	<?php echo esc_html( $attendee['ticket'] ) . ' - ' . esc_html( $total->get_currency() ); ?>
 </div>
