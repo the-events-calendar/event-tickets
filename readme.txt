@@ -191,6 +191,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= TBD [TBD] =
+
+* Tweak - Add tickets to the Tickets Commerce success page. [ETWP-30]
+
 = [5.6.6.1] 2023-10-12 =
 
 * Fix - Correct a problem that can cause a fatal when plugins are deactivated in a certain order. [TEC-4951]
