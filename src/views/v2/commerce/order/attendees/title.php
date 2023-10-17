@@ -1,16 +1,15 @@
 <?php
 /**
- * Tickets Commerce: Success Order Page
+ * Tickets Commerce: Success Order Page Attendee list title
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/commerce/success.php
+ * [your-theme]/tribe/tickets/v2/commerce/order/attendees/title.php
  *
  * See more documentation about our views templating system.
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   5.1.10
- * @since   TBD Added attendee information list for the purchase.
+ * @since   TBD
  *
  * @version TBD
  *
@@ -23,13 +22,15 @@
  * @var array            $attendees             [Global] List of attendees for the given order.
  */
 
+if ( empty( $order ) || empty( $attendees ) ) {
+	return;
+}
 ?>
-<div class="tribe-common event-tickets">
-	<section class="tribe-tickets__commerce-order">
-		<?php $this->template( 'order/header' ); ?>
-		<?php $this->template( 'order/description' ); ?>
-		<?php $this->template( 'order/details' ); ?>
-		<?php $this->template( 'order/attendees' ); ?>
-		<?php $this->template( 'order/footer' ); ?>
-	</section>
-</div>
+<h4 class="tribe-common-h4 tribe-common-h--alt">
+	<?php
+	echo sprintf(
+		// Translators: %s is the plural label for tickets.
+		esc_html__( 'Your %s', 'event-tickets' ),
+		tribe_get_ticket_label_plural( 'tickets_commerce_success_page_your_tickets' )
+	); ?>
+</h4>

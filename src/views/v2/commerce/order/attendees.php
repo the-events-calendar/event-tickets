@@ -1,16 +1,15 @@
 <?php
 /**
- * Tickets Commerce: Success Order Page
+ * Tickets Commerce: Success Order Page Attendee list.
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/commerce/success.php
+ * [your-theme]/tribe/tickets/v2/commerce/order/attendees.php
  *
  * See more documentation about our views templating system.
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   5.1.10
- * @since   TBD Added attendee information list for the purchase.
+ * @since   TBD
  *
  * @version TBD
  *
@@ -23,13 +22,19 @@
  * @var array            $attendees             [Global] List of attendees for the given order.
  */
 
+if ( empty( $order ) || empty( $attendees ) ) {
+	return;
+}
+
 ?>
-<div class="tribe-common event-tickets">
-	<section class="tribe-tickets__commerce-order">
-		<?php $this->template( 'order/header' ); ?>
-		<?php $this->template( 'order/description' ); ?>
-		<?php $this->template( 'order/details' ); ?>
-		<?php $this->template( 'order/attendees' ); ?>
-		<?php $this->template( 'order/footer' ); ?>
-	</section>
+<div class="tribe-common-b1 tribe-tickets__commerce-order-attendees">
+	<?php $this->template( 'order/attendees/title' ); ?>
+
+	<div class="tribe-tickets__commerce-order-attendees-list">
+		<?php foreach ( $attendees as $attendee ) : ?>
+			<div class="tribe-tickets__commerce-order-attendees-list-attendee">
+				<?php $this->template( 'order/attendees/attendee', [ 'attendee' => $attendee ] ); ?>
+			</div>
+		<?php endforeach; ?>
+	</div>
 </div>
