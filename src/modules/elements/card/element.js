@@ -15,7 +15,6 @@ const Card = ( {
 	children,
 	header,
 } ) => {
-
 	return (
 		<div
 			className={ classNames(
@@ -23,7 +22,7 @@ const Card = ( {
 				className,
 			) }
 		>
-			{ header && (<div className="tickets-heading tickets-row-line">{ header }</div>) }
+			{ header && ( <div className="tickets-heading tickets-row-line">{ header }</div> ) }
 			{ children }
 		</div>
 	);

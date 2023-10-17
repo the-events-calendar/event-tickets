@@ -21,6 +21,11 @@ import './style.pcss';
 
 class Price extends PureComponent {
 	static propTypes = {
+		currencyDecimalPoint: PropTypes.string,
+		currencyNumberOfDecimals: PropTypes.number,
+		currencyPosition: PropTypes.string,
+		currencySymbol: PropTypes.string,
+		currencyThousandsSep: PropTypes.string,
 		isDisabled: PropTypes.bool,
 		minDefaultPrice: PropTypes.string,
 		onTempPriceChange: PropTypes.func.isRequired,
@@ -46,15 +51,15 @@ class Price extends PureComponent {
 		} = this.props;
 
 		const numericFormatProps = {
-			...(currencyPosition === PREFIX && { prefix: currencySymbol}),
-			...(currencyPosition === SUFFIX && { suffix: currencySymbol}),
-		}
+			...( currencyPosition === PREFIX && { prefix: currencySymbol } ),
+			...( currencyPosition === SUFFIX && { suffix: currencySymbol } ),
+		};
 
-		const handleChange = (e) => {
-			if ( !isNaN( e.value ) && e.value >= minDefaultPrice ) {
-				onTempPriceChange(e);
+		const handleChange = ( e ) => {
+			if ( ! isNaN( e.value ) && e.value >= minDefaultPrice ) {
+				onTempPriceChange( e );
 			}
-		}
+		};
 
 		return (
 			<div className={ classNames(

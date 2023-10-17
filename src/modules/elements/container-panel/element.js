@@ -19,7 +19,6 @@ const ContainerPanel = ( {
 	className,
 	content,
 	header,
-	icon,
 	layout,
 } ) => {
 	const headerAndContent = (
@@ -62,7 +61,6 @@ ContainerPanel.propTypes = {
 	className: PropTypes.string,
 	content: PropTypes.node,
 	header: PropTypes.node,
-	icon: PropTypes.node,
 	layout: PropTypes.oneOf( Object.keys( LAYOUT ) ).isRequired,
 };
 

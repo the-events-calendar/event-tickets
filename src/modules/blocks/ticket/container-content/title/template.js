@@ -14,8 +14,7 @@ import uniqid from 'uniqid';
 /**
  * Internal dependencies
  */
-import { Input } from '@moderntribe/common/elements';
-import { LabeledItem } from '@moderntribe/common/elements';
+import { Input, LabeledItem } from '@moderntribe/common/elements';
 import './styles.pcss';
 
 class Title extends PureComponent {

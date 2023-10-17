@@ -13,7 +13,6 @@ const MoveDelete = ( {
 	removeTicket,
 	isDisabled,
 } ) => {
-
 	if ( ! ticketIsSelected ) {
 		return null;
 	}
@@ -34,6 +33,7 @@ MoveDelete.propTypes = {
 	moveTicket: PropTypes.func.isRequired,
 	removeTicket: PropTypes.func.isRequired,
 	isDisabled: PropTypes.bool.isRequired,
+	ticketIsSelected: PropTypes.bool.isRequired,
 };
 
 export default MoveDelete;

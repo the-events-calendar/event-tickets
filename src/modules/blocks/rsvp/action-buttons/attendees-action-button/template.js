@@ -20,11 +20,12 @@ const AttendeesActionButton = ( { href, isDisabled } ) => (
 		asLink={ true }
 		className="tribe-editor__rsvp__action-button tribe-editor__rsvp__action-button--attendees"
 		disabled={ isDisabled }
+		id="attendees-rsvp"
 		href={ href }
 		icon={ <Attendees /> }
 		target="_blank"
 	>
-		{ __( 'Attendees', 'event-tickets' ) }
+		{ __( 'View Attendees', 'event-tickets' ) }
 	</ActionButton>
 );
 

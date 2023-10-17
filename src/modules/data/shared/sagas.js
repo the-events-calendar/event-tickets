@@ -103,7 +103,7 @@ export function createWPEditorNotSavingChannel() {
  * @export
  * @yields
  * @param {string} date datetime string
- * @returns {object} Object of dates/moments
+ * @returns {Object} Object of dates/moments
  */
 export function* createDates( date ) {
 	const { datepickerFormat } = yield call( [ globals, 'tecDateSettings' ] );

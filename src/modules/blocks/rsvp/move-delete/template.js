@@ -14,11 +14,11 @@ const MoveDelete = ( {
 } ) => {
 	return (
 		<div className="tribe-editor__rsvp__content-row--move-delete">
-			<Button type="button" onClick={ moveRSVP } disabled={ isDisabled }>
-				{ __( 'Move RSVP', 'event-tickets' ) }
-			</Button>
 			<Button type="button" onClick={ removeRSVP } disabled={ isDisabled }>
 				{ __( 'Remove RSVP', 'event-tickets' ) }
+			</Button>
+			<Button type="button" onClick={ moveRSVP } disabled={ isDisabled }>
+				{ __( 'Move RSVP', 'event-tickets' ) }
 			</Button>
 		</div>
 	);

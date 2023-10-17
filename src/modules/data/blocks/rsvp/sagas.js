@@ -40,7 +40,7 @@ import {
  *
  * @export
  * @yields
- * @param {object} action redux action
+ * @param {Object} action redux action
  */
 export function* setRSVPDetails( action ) {
 	const {
@@ -82,7 +82,7 @@ export function* setRSVPDetails( action ) {
  *
  * @export
  * @yields
- * @param {object} action redux action
+ * @param {Object} action redux action
  */
 export function* setRSVPTempDetails( action ) {
 	const {

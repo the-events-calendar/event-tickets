@@ -16,6 +16,7 @@ const getIsDisabled = ( state ) => (
 );
 
 const mapStateToProps = ( state ) => ( {
+	isAddEditOpen: selectors.getRSVPIsAddEditOpen( state ),
 	isDisabled: getIsDisabled( state ),
 } );
 

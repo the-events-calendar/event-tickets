@@ -39,6 +39,15 @@ const RadioInput = ( { provider, onProviderChange, ...additionalProps } ) => (
 	</div>
 );
 
+RadioInput.propTypes = {
+	provider: PropTypes.shape( {
+		name: PropTypes.string,
+		class: PropTypes.string,
+	} ),
+	onProviderChange: PropTypes.func,
+
+};
+
 const Controls = ( {
 	hasMultipleProviders,
 	providers,

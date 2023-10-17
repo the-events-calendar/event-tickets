@@ -21,7 +21,7 @@ const IconWithTooltip = ( {
 			{ description && ': ' }
 			{ description && <em>{description}</em> }
 		</div>
-		);
+	);
 
 	return (
 		<Tooltip
@@ -30,7 +30,7 @@ const IconWithTooltip = ( {
 		>
 			<span>{ icon }</span>
 		</Tooltip>
-	)
+	);
 };
 
 IconWithTooltip.defaultProps = {
@@ -51,6 +51,5 @@ IconWithTooltip.propTypes = {
 	] ),
 	propertyName: PropTypes.string,
 };
-
 
 export default IconWithTooltip;
