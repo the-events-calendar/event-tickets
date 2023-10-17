@@ -29,6 +29,7 @@ if ( empty( $order ) || empty( $attendees ) ) {
 <h4 class="tribe-common-h4 tribe-common-h--alt">
 	<?php
 	echo sprintf(
+		// Translators: %s is the plural label for tickets.
 		esc_html__( 'Your %s', 'event-tickets' ),
 		tribe_get_ticket_label_plural( 'tickets_commerce_success_page_your_tickets' )
 	); ?>
