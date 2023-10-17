@@ -192,6 +192,8 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 == Changelog ==
 
 = [TBD] TBD =
+
+* Feature - Tickets Commerce orders report page design update. [ET-1810]
 * Tweak - Re-styled Empty RSVP Block in Block Editor to match frontend design. Styles will be the same in block editor and in the user interface [ET-1818]
 * Tweak - Re-styled Inactive RSVP Block in Block Editor to match frontend design. Styles will be the same in block editor and in the user interface [ET-1823]
 * Tweak - Re-styled Active RSVP Block in Block Editor to match frontend design. Styles will be the same in block editor and in the user interface [ET-1825]
