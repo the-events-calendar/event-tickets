@@ -32,7 +32,7 @@ class OrderReportTest extends WPTestCase {
 		yield 'event with no orders' => [
 			function (): array {
 				$event_id  = tribe_events()->set_args( [
-					'title'      => 'Event with no attendees',
+					'title'      => 'Event with no orders',
 					'status'     => 'publish',
 					'start_date' => '2020-01-01 00:00:00',
 					'duration'   => 2 * HOUR_IN_SECONDS,
@@ -46,7 +46,7 @@ class OrderReportTest extends WPTestCase {
 		yield 'event with one order' => [
 			function (): array {
 				$event_id  = tribe_events()->set_args( [
-					'title'      => 'Event with no attendees',
+					'title'      => 'Event with one order',
 					'status'     => 'publish',
 					'start_date' => '2020-01-01 00:00:00',
 					'duration'   => 2 * HOUR_IN_SECONDS,
@@ -63,7 +63,7 @@ class OrderReportTest extends WPTestCase {
 		yield 'event with 1 pending and 1 completed order' => [
 			function (): array {
 				$event_id  = tribe_events()->set_args( [
-					'title'      => 'Event with no attendees',
+					'title'      => 'Event with 1 pending and 1 completed order',
 					'status'     => 'publish',
 					'start_date' => '2020-01-01 00:00:00',
 					'duration'   => 2 * HOUR_IN_SECONDS,
@@ -82,7 +82,7 @@ class OrderReportTest extends WPTestCase {
 		yield 'event with multiple tickets and orders' => [
 			function (): array {
 				$event_id  = tribe_events()->set_args( [
-					'title'      => 'Event with no attendees',
+					'title'      => 'Event multiple tickets and orders',
 					'status'     => 'publish',
 					'start_date' => '2020-01-01 00:00:00',
 					'duration'   => 2 * HOUR_IN_SECONDS,
@@ -104,7 +104,7 @@ class OrderReportTest extends WPTestCase {
 		yield 'event with multiple tickets in same order' => [
 			function (): array {
 				$event_id  = tribe_events()->set_args( [
-					'title'      => 'Event with no attendees',
+					'title'      => 'Event with multiple tickets in same order',
 					'status'     => 'publish',
 					'start_date' => '2020-01-01 00:00:00',
 					'duration'   => 2 * HOUR_IN_SECONDS,
