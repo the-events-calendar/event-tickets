@@ -94,10 +94,33 @@ class OrderReportTest extends WPTestCase {
 
 				$order_a = $this->create_order( [ $ticket_id_a => 2 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
 				$order_b = $this->create_order( [ $ticket_id_a => 3 ], [ 'purchaser_email' => 'purchaser@test.com', 'order_status' => Pending::SLUG ] );
-				$order_c = $this->create_order( [ $ticket_id_b => 1 ], [ 'purchaser_email' => 'purchaser@test.com', 'order_status' => Completed::SLUG ] );
+				$order_c = $this->create_order( [ $ticket_id_b => 1 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
 				$order_d = $this->create_order( [ $ticket_id_b => 4 ], [ 'purchaser_email' => 'purchaser@test.com', 'order_status' => Pending::SLUG ] );
 
 				return [ $event_id, [ $event_id, $ticket_id_a, $ticket_id_b, $order_a->ID, $order_b->ID, $order_c->ID, $order_d->ID ] ];
+			}
+		];
+
+		yield 'event with multiple tickets in same order' => [
+			function (): array {
+				$event_id  = tribe_events()->set_args( [
+					'title'      => 'Event with no attendees',
+					'status'     => 'publish',
+					'start_date' => '2020-01-01 00:00:00',
+					'duration'   => 2 * HOUR_IN_SECONDS,
+				] )->create()->ID;
+				$ticket_id_a = $this->create_tc_ticket( $event_id, 10 );
+				$ticket_id_b = $this->create_tc_ticket( $event_id, 20.50 );
+
+				$this->set_fn_return( 'current_time', '2020-02-22 22:22:22' );
+
+				$order_a = $this->create_order( [ $ticket_id_a => 1 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
+				$order_b = $this->create_order( [ $ticket_id_a => 1 ], [ 'purchaser_email' => 'purchaser@test.com', 'order_status' => Pending::SLUG ] );
+				$order_c = $this->create_order( [ $ticket_id_b => 1 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
+				$order_d = $this->create_order( [ $ticket_id_b => 1 ], [ 'purchaser_email' => 'purchaser@test.com', 'order_status' => Pending::SLUG ] );
+				$order_e = $this->create_order( [ $ticket_id_a => 1, $ticket_id_b => 1 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
+
+				return [ $event_id, [ $event_id, $ticket_id_a, $ticket_id_b, $order_a->ID, $order_b->ID, $order_c->ID, $order_d->ID, $order_e->ID ] ];
 			}
 		];
 	}
