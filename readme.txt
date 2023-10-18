@@ -194,6 +194,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = TBD [TBD] =
 
 * Tweak - Add tickets to the Tickets Commerce success page. [ETWP-30]
+* Tweak - Add tickets to the RSVP block confirmation state. [ETWP-62]
 
 = [5.6.6.1] 2023-10-12 =
 
