@@ -29,6 +29,7 @@ class Tribe__Tickets__Editor__Assets {
 				'wp-i18n',
 				'wp-element',
 				'wp-editor',
+				'wp-block-editor'
 			],
 			'enqueue_block_editor_assets',
 			[
