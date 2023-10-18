@@ -13,6 +13,11 @@ use TEC\Tickets\Commerce\Reports\Orders as Order_Report;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 
+/**
+ * Class OrderReportTest tests the order report.
+ *
+ * @package Tribe\Admin
+ */
 class OrderReportTest extends WPTestCase {
 
 	use SnapshotAssertions;
@@ -54,7 +59,7 @@ class OrderReportTest extends WPTestCase {
 				$ticket_id = $this->create_tc_ticket( $event_id );
 
 				$this->set_fn_return( 'current_time', '2020-02-22 22:22:22' );
-				$order     = $this->create_order( [ $ticket_id => 1 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
+				$order = $this->create_order( [ $ticket_id => 1 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
 
 				return [ $event_id, [ $event_id, $ticket_id, $order->ID ] ];
 			}
