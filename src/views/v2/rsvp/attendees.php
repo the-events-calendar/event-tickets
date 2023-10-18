@@ -1,7 +1,7 @@
 <?php
 /**
  * Block: RSVP
- * Content
+ * Attendees
  *
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/v2/rsvp/attendees.php
