@@ -17,42 +17,58 @@ use Tribe__Tickets__Tickets;
  */
 class Order_Summary {
 	/**
+	 * @since TBD
+	 *
 	 * @var int The post ID.
 	 */
 	protected int $post_id;
 
 	/**
+	 * @since TBD
+	 *
 	 * @var Ticket_Object[] The tickets.
 	 */
 	protected array $tickets = [];
 
 	/**
-	 * @var array|array[] The tickets by type.
+	 * @since TBD
+	 *
+	 * @var array<string,array<string,mixed>> The tickets by type.
 	 */
 	protected array $tickets_by_type = [];
 
 	/**
-	 * @var array|array[] The event sales by status.
+	 * @since TBD
+	 *
+	 * @var array<string,array{label: string, qty_sold: int, total_sales_amount: float|string, total_sales_price: string}> The event sales by status.
 	 */
 	protected array $event_sales_by_status = [];
 
 	/**
-	 * @var array|array[] The total sales.
+	 * @since TBD
+	 *
+	 * @var array{qty: int, amount: float|string, price: string} The total sales.
 	 */
 	protected array $total_sales = [];
 
 	/**
-	 * @var array|array[] The total ordered.
+	 * @since TBD
+	 *
+	 * @var array{qty: int, amount: float|string, price: string} The total ordered.
 	 */
 	protected array $total_ordered = [];
 
 	/**
+	 * @since TBD
+	 *
 	 * @var array|array[] The total ordered.
 	 */
 	protected array $event_sales_data = [];
 
 	/**
 	 * Order_Summary constructor.
+	 *
+	 * @since TBD
 	 *
 	 * @param int $post_id The post ID.
 	 */
@@ -79,7 +95,6 @@ class Order_Summary {
 	 * Initialize the variables.
 	 *
 	 * @since TBD
-	 *
 	 */
 	protected function init_vars(): void {
 		$this->total_sales   = [
@@ -98,7 +113,6 @@ class Order_Summary {
 	 * Build the data.
 	 *
 	 * @since TBD
-	 *
 	 */
 	protected function build_data(): void {
 		foreach ( $this->get_tickets() as $ticket ) {
@@ -127,7 +141,7 @@ class Order_Summary {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $quantity_by_status The quantity by status.
+	 * @param array<string,int> $quantity_by_status The quantity by status.
 	 * @param Ticket_Object $ticket The ticket object.
 	 */
 	protected function process_event_sales_data( array $quantity_by_status, Ticket_Object $ticket ): void {
@@ -166,7 +180,6 @@ class Order_Summary {
 	 * Build the event sales data.
 	 *
 	 * @since TBD
-	 *
 	 */
 	protected function build_event_sales_data(): void {
 		$this->event_sales_data = [
@@ -181,7 +194,7 @@ class Order_Summary {
 	 *
 	 * @since TBD
 	 *
-	 * @return array
+	 * @return Ticket_Object[]
 	 */
 	public function get_tickets(): array {
 		$provider      = Tribe__Tickets__Tickets::get_event_ticket_provider_object( $this->post_id );
