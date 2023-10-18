@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "96fc994de9cf730d1350642ff0270d94",
+    "content-hash": "7f4f6117d20e0c4ff4bf4290bc2f93d7",
     "packages": [],
     "packages-dev": [
         {
@@ -1891,20 +1891,20 @@
         },
         {
             "name": "lucatume/codeception-snapshot-assertions",
-            "version": "0.3.0",
+            "version": "0.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lucatume/codeception-snapshot-assertions.git",
-                "reference": "8de42335abf18e59cc8e84d27182559a2dbdd12e"
+                "reference": "dd231b17a4a7f74e33a27749edab64688e3ecc2b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lucatume/codeception-snapshot-assertions/zipball/8de42335abf18e59cc8e84d27182559a2dbdd12e",
-                "reference": "8de42335abf18e59cc8e84d27182559a2dbdd12e",
+                "url": "https://api.github.com/repos/lucatume/codeception-snapshot-assertions/zipball/dd231b17a4a7f74e33a27749edab64688e3ecc2b",
+                "reference": "dd231b17a4a7f74e33a27749edab64688e3ecc2b",
                 "shasum": ""
             },
             "require": {
-                "codeception/codeception": "^2.5 || ^3.0 || ^4.0",
+                "codeception/codeception": "^4.0",
                 "ext-dom": "*",
                 "gajus/dindent": "^2.0"
             },
@@ -1930,9 +1930,9 @@
             "description": "Snapshot assertions sugar for Codeception.",
             "support": {
                 "issues": "https://github.com/lucatume/codeception-snapshot-assertions/issues",
-                "source": "https://github.com/lucatume/codeception-snapshot-assertions/tree/0.3.0"
+                "source": "https://github.com/lucatume/codeception-snapshot-assertions/tree/0.4.0"
             },
-            "time": "2023-09-08T10:12:49+00:00"
+            "time": "2023-10-14T14:42:12+00:00"
         },
         {
             "name": "lucatume/wp-browser",
@@ -5520,12 +5520,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/the-events-calendar/coding-standards",
-                "reference": "a6c655ae65d0782299f518b04343dceee2d096e5"
+                "reference": "4b099406fb45b9dcf625dc8a205fea89ca0739d2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/the-events-calendar/coding-standards/zipball/a6c655ae65d0782299f518b04343dceee2d096e5",
-                "reference": "a6c655ae65d0782299f518b04343dceee2d096e5",
+                "url": "https://api.github.com/repos/the-events-calendar/coding-standards/zipball/4b099406fb45b9dcf625dc8a205fea89ca0739d2",
+                "reference": "4b099406fb45b9dcf625dc8a205fea89ca0739d2",
                 "shasum": ""
             },
             "require": {
@@ -5581,7 +5581,7 @@
                 "phpcs",
                 "standards"
             ],
-            "time": "2022-08-10T16:50:50+00:00"
+            "time": "2023-10-04T17:46:54+00:00"
         },
         {
             "name": "the-events-calendar/tec-testing-facilities",
