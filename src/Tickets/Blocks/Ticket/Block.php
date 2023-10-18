@@ -1,13 +1,13 @@
 <?php
 /**
- * Provides the information required to register the Tickets block server-side.
+ * Provides the information required to register the Ticket (singular) block server-side.
  *
  * @since   TBD
  *
  * @package TEC\Tickets\Blocks\Tickets;
  */
 
-namespace TEC\Tickets\Blocks\Tickets;
+namespace TEC\Tickets\Blocks\Ticket;
 
 use TEC\Common\Blocks\Block_Interface;
 
@@ -16,7 +16,7 @@ use TEC\Common\Blocks\Block_Interface;
  *
  * @since   TBD
  *
- * @package TEC\Tickets\Blocks\Tickets;
+ * @package TEC\Tickets\Blocks\Ticket;
  */
 class Block implements Block_Interface {
 
@@ -27,7 +27,7 @@ class Block implements Block_Interface {
 	 */
 	public static function getName(): string {
 		// Using this name for back-compatibility reasons.
-		return 'tribe/tickets';
+		return 'tribe/tickets-item';
 	}
 
 	/**
@@ -37,8 +37,8 @@ class Block implements Block_Interface {
 	 */
 	public function get_block_registration_args(): array {
 		return [
-			'title'       => _x( 'Tickets', 'Block title', 'event-tickets' ),
-			'description' => _x( 'Sell tickets and register attendees.', 'Block description', 'event-tickets' ),
+			'title'       => _x( 'Event Ticket', '', 'event-tickets' ),
+			'description' => _x( 'A single configured ticket type.', '', 'event-tickets' ),
 		];
 	}
 }

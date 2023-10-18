@@ -53,10 +53,7 @@ export default {
 	edit: function() {
 		const blockProps = useBlockProps();
 
-		return (
-		<div {...blockProps}>
-			<Tickets/>
-		</div> );
+		return ( <div { ...blockProps }><Tickets/></div> );
 	} ,
 
 	save: () => (

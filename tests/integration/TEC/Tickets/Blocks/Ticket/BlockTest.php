@@ -1,9 +1,10 @@
 <?php
 
-namespace TEC\Tickets\Blocks\Tickets;
+namespace TEC\Tickets\Blocks\Ticket;
 
 use Codeception\TestCase\WPTestCase;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use TEC\Tickets\Blocks\Tickets\Block;
 
 class BlockTest extends WPTestCase {
 	use SnapshotAssertions;
