@@ -1142,9 +1142,6 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$order_id              = $attendee_details['order_id'];
 		$attendee_order_status = $attendee_details['order_status'];
 
-		error_log( 'ATTENDEE IDS' );
-		error_log( var_export( $attendee_ids, true ) );
-
 		/**
 		 * Fires when an RSVP attendee tickets have been generated.
 		 *
