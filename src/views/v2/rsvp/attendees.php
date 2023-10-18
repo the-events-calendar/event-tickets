@@ -12,7 +12,7 @@
  *
  * @var Tribe__Tickets__Ticket_Object $rsvp The rsvp ticket object.
  * @var string|null $step The step the views are on.
- * @var array $attendees  List of attendees for the given order.
+ * @var array $attendees List of attendees IDs confirmed for the RSVP.
  *
  * @since TBD
  *
