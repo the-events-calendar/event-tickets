@@ -43,4 +43,25 @@ class Block extends Abstract_Block {
 		// This block has no render.
 		return '';
 	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @since TBD
+	 */
+	protected function get_registration_block_type() {
+		return __DIR__ . '/block.json';
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @since TBD
+	 */
+	protected function get_registration_args( array $args ): array {
+		$args['title']       = _x( 'Event Ticket', 'Block title', 'event-tickets' );
+		$args['description'] = _x( 'A single configured ticket type.', 'Block description', 'event-tickets' );
+
+		return $args;
+	}
 }
