@@ -27,6 +27,11 @@ use Tribe__Tickets__Tickets_View as Tickets_View;
  * @package TEC\Tickets\Blocks\Tickets;
  */
 class Block extends Abstract_Block {
+	/**
+	 * Hooks the block on the required actions.
+	 *
+	 * @since TBD
+	 */
 	public function hook() {
 		add_action( 'wp_ajax_ticket_availability_check', [ $this, 'ticket_availability' ] );
 		add_action( 'wp_ajax_nopriv_ticket_availability_check', [ $this, 'ticket_availability' ] );
@@ -308,5 +313,21 @@ class Block extends Abstract_Block {
 		];
 
 		return $messages;
+	}
+
+	protected function get_registration_block_type() {
+		return __DIR__ . '/block.json';
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @since TBD
+	 */
+	protected function get_registration_args( array $args ): array {
+		$args['title']       = _x( 'Tickets', 'Block title', 'event-tickets' );
+		$args['description'] = _x( 'Sell tickets and register attendees.', 'Block description', 'event-tickets' );
+
+		return $args;
 	}
 }
