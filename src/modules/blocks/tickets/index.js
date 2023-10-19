@@ -25,7 +25,7 @@ import Tickets from './container';
  */
 export default {
 	id: 'tickets',
-	icon: <TicketsIcon />,
+	icon: <TicketsIcon/>,
 
 	attributes: {
 		sharedCapacity: {
@@ -50,8 +50,12 @@ export default {
 		},
 	},
 
-	edit: Tickets,
+	edit: function ( editProps ) {
+		const blockProps = useBlockProps ();
+
+		return ( <div { ...blockProps }><Tickets { ...editProps }/></div> );
+	},
 	save: () => (
-		<div><InnerBlocks.Content /></div>
+		<div><InnerBlocks.Content/></div>
 	),
 };
