@@ -50,11 +50,7 @@ export default {
 		},
 	},
 
-	edit: function ( editProps ) {
-		const blockProps = useBlockProps ();
-
-		return ( <div { ...blockProps }><Tickets { ...editProps }/></div> );
-	},
+	edit: Tickets,
 	save: () => (
 		<div><InnerBlocks.Content/></div>
 	),
