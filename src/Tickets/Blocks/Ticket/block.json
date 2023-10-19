@@ -1,0 +1,20 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "tribe/tickets-item",
+  "title": "Event Ticket",
+  "description": "A single configured ticket type.",
+  "category": "tribe-tickets",
+  "keywords": [
+    "event",
+    "event-tickets",
+    "tribe"
+  ],
+  "parent": [
+    "tribe/tickets"
+  ],
+  "supports": {
+    "html": false,
+    "customClassName": false
+  }
+}
