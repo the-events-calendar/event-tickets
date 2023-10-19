@@ -6,7 +6,8 @@ import React from 'react';
 /**
  * WordPress dependencies
  */
-const { InnerBlocks, useBlockProps } = wp.blockEditor;
+import { __ } from '@wordpress/i18n';
+const { InnerBlocks } = wp.blockEditor;
 
 /**
  * Internal dependencies
@@ -25,7 +26,17 @@ import Tickets from './container';
  */
 export default {
 	id: 'tickets',
+	title: __( 'Tickets', 'event-tickets' ),
+	description: __( 'Sell tickets and register attendees.', 'event-tickets' ),
 	icon: <TicketsIcon />,
+	category: 'tribe-tickets',
+	keywords: [ 'event', 'events-gutenberg', 'tribe' ],
+
+	supports: {
+		html: false,
+		multiple: false,
+		customClassName: false,
+	},
 
 	attributes: {
 		sharedCapacity: {
@@ -50,12 +61,7 @@ export default {
 		},
 	},
 
-	edit: function() {
-		const blockProps = useBlockProps();
-
-		return ( <div { ...blockProps }><Tickets/></div> );
-	} ,
-
+	edit: Tickets,
 	save: () => (
 		<div><InnerBlocks.Content /></div>
 	),

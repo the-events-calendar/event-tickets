@@ -45,7 +45,7 @@ class SKU extends PureComponent {
 					isLabel={ true }
 					label={ __( 'Ticket SKU', 'event-tickets' ) }
 					tooltipText={ __(
-						'A unique identifying code for each ticket you\'re selling',
+						'A unique identifying code for each ticket type you\'re selling',
 						'event-tickets',
 					) }
 					tooltipLabel={

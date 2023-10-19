@@ -9,7 +9,7 @@
 
 namespace TEC\Tickets\Blocks\Ticket;
 
-use TEC\Common\Blocks\Block_Interface;
+use Tribe__Editor__Blocks__Abstract as Abstract_Block;
 
 /**
  * Class Block.
@@ -18,27 +18,29 @@ use TEC\Common\Blocks\Block_Interface;
  *
  * @package TEC\Tickets\Blocks\Ticket;
  */
-class Block implements Block_Interface {
-
+class Block extends Abstract_Block {
 	/**
-	 * {@inheritDoc}
+	 * Which is the name/slug of this block
 	 *
-	 * @since TBD
+	 * @since 4.9.2
+	 *
+	 * @return string
 	 */
-	public static function getName(): string {
-		// Using this name for back-compatibility reasons.
-		return 'tribe/tickets-item';
+	public function slug() {
+		return 'tickets-item';
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Since we are dealing with a Dynamic type of Block we need a PHP method to render it
 	 *
-	 * @since TBD
+	 * @since 4.9.2
+	 *
+	 * @param array $attributes
+	 *
+	 * @return string
 	 */
-	public function get_block_registration_args(): array {
-		return [
-			'title'       => _x( 'Event Ticket', '', 'event-tickets' ),
-			'description' => _x( 'A single configured ticket type.', '', 'event-tickets' ),
-		];
+	public function render( $attributes = [] ) {
+		// This block has no render.
+		return '';
 	}
 }

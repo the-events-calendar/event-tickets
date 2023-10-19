@@ -424,7 +424,7 @@ class Tribe__Tickets__Main {
 		tribe_register_provider( 'Tribe__Tickets__Editor__REST__V1__Service_Provider' );
 
 		// Blocks editor
-		tribe_register_provider( 'Tribe__Tickets__Editor__Provider' );
+		tribe_register_provider( TEC\Tickets\Blocks\Controller::class );
 
 		// Privacy
 		tribe_singleton( 'tickets.privacy', 'Tribe__Tickets__Privacy', [ 'hook' ] );

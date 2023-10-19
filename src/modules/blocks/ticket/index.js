@@ -6,7 +6,8 @@ import React from 'react';
 /**
  * WordPress dependencies
  */
-const { InnerBlocks, useBlockProps } = wp.blockEditor;
+import { __ } from '@wordpress/i18n';
+const { InnerBlocks } = wp.blockEditor;
 
 /**
  * Internal dependencies
@@ -16,7 +17,18 @@ import Ticket from './container';
 
 export default {
 	id: 'tickets-item',
+	title: __( 'Event Ticket', 'event-tickets' ),
+	description: __( 'A single configured ticket type.', 'event-tickets' ),
 	icon: <TicketsIcon />,
+	category: 'tribe-tickets',
+	keywords: [ 'event', 'event-tickets', 'tribe' ],
+
+	parent: [ 'tribe/tickets' ],
+
+	supports: {
+		html: false,
+		customClassName: false,
+	},
 
 	attributes: {
 		hasBeenCreated: {
@@ -29,10 +41,6 @@ export default {
 		},
 	},
 
-	edit: function (){
-		const blockProps = useBlockProps();
-
-		return ( <div { ...blockProps }><Ticket/></div> );
-	},
+	edit: Ticket,
 	save: () => <div><InnerBlocks.Content /></div>,
 };

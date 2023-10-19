@@ -16,8 +16,6 @@ const mapStateToProps = ( state ) => ( {
 	hasMultipleProviders: selectors.hasMultipleTicketProviders(),
 	providers: selectors.getTicketProviders(),
 	selectedProvider: selectors.getTicketsProvider( state ),
-	multipleProvidersNotice: selectors.getMultipleProvidersNotice(),
-	choiceDisabled: selectors.isTicketProvidersChoiceDisabled(),
 } );
 
 const mapDispatchToProps = ( dispatch ) => ( {

@@ -9,13 +9,22 @@ import PropTypes from 'prop-types';
  */
 import { PanelBody, PanelRow } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import { RawHTML } from '@wordpress/element';
 import { InspectorControls } from '@wordpress/editor';
 
 /**
  * Internal dependencies
  */
 import './style.pcss';
+
+const message = __(
+	'It looks like you have multiple ecommerce plugins active. We recommend running only one at a time. However, if you need to run multiple, please select which one to use to sell tickets for this event. ', // eslint-disable-line max-len
+	'event-tickets',
+);
+
+const note = __(
+	'Note: adjusting this setting will only impact new tickets. Existing tickets will not change. We highly recommend that all tickets for one event use the same ecommerce plugin.', // eslint-disable-line max-len
+	'event-tickets',
+);
 
 /**
  * @todo: create radio input element, move this over to element
@@ -53,8 +62,6 @@ const Controls = ( {
 	providers,
 	selectedProvider,
 	onProviderChange,
-	multipleProvidersNotice,
-	choiceDisabled
 } ) => (
 	hasMultipleProviders && (
 		<InspectorControls key="inspector">
@@ -63,7 +70,8 @@ const Controls = ( {
 					<fieldset className="tribe-editor__tickets-controls-provider">
 						<legend>{ __( 'Sell tickets using', 'event-tickets' ) }</legend>
 						<p>
-							{ RawHTML ( { children: multipleProvidersNotice } ) }
+							{ message }
+							<em>{ note }</em>
 						</p>
 						{ providers.map( ( provider, key ) => (
 							<RadioInput
@@ -71,7 +79,6 @@ const Controls = ( {
 								provider={ provider }
 								onProviderChange={ onProviderChange }
 								checked={ selectedProvider === provider.class }
-								disabled={ choiceDisabled }
 							/>
 						) ) }
 					</fieldset>
@@ -89,8 +96,6 @@ Controls.propTypes = {
 	} ) ),
 	selectedProvider: PropTypes.string,
 	onProviderChange: PropTypes.func,
-	multipleProvidersNotice: PropTypes.string,
-	choiceDisabled: PropTypes.bool
 };
 
 export default Controls;
