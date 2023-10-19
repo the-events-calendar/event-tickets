@@ -787,6 +787,7 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 			[
 				'success'     => true,
 				'errors'      => [],
+				'attendees'   => [ 'FAKE_ATTENDEE_ID' ],
 				'opt_in_args' => [
 					'is_going' => true,
 					'checked' => false,
@@ -918,6 +919,10 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 		];
 
 		$process_result = $sut->process_rsvp_step( $args );
+
+		if ( ! empty( $expected_response['attendees'] ) ) {
+			$process_result['attendees'] = [ 'FAKE_ATTENDEE_ID' ];
+		}
 
 		if ( isset( $expected_response['opt_in_args'], $process_result['opt_in_args'] ) ) {
 			$process_result['opt_in_args'] = array_merge( $process_result['opt_in_args'], $expected_response['opt_in_args'] );
