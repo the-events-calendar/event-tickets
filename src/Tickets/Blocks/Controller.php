@@ -218,6 +218,13 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 	 * @return void
 	 */
 	public function unregister(): void {
-		// TODO: Implement unregister() method.
+		remove_action( 'init', tribe_callback( 'tickets.editor.meta', 'register' ), 15 );
+		remove_filter( 'register_meta_args', tribe_callback( 'tickets.editor.meta', 'register_meta_args' ) );
+		remove_action( 'tribe_plugins_loaded', [ $this, 'register_blocks' ], 300 );
+		remove_filter( 'rest_dispatch_request', tribe_callback( 'tickets.editor.meta', 'filter_rest_dispatch_request' ) );
+		remove_action( 'block_categories', tribe_callback( 'tickets.editor', 'block_categories' ) );
+		remove_action( 'block_categories_all', tribe_callback( 'tickets.editor', 'block_categories' ) );
+		remove_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'render_form_toggle_buttons' ] );
+		remove_action( 'tec_tickets_list_row_edit', [ $this, 'render_ticket_edit_controls' ] );
 	}
 }
