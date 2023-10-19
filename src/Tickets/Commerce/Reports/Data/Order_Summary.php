@@ -61,7 +61,7 @@ class Order_Summary {
 	/**
 	 * @since TBD
 	 *
-	 * @var array|array[] The total ordered.
+	 * @var array<string, array> All event sales data.
 	 */
 	protected array $event_sales_data = [];
 
@@ -194,7 +194,7 @@ class Order_Summary {
 	 *
 	 * @since TBD
 	 *
-	 * @return Ticket_Object[]
+	 * @return Ticket_Object[] A list of tickets associated with the post.
 	 */
 	public function get_tickets(): array {
 		$provider      = Tribe__Tickets__Tickets::get_event_ticket_provider_object( $this->post_id );
@@ -205,7 +205,7 @@ class Order_Summary {
 		 *
 		 * @since TBD
 		 *
-		 * @param array $tickets The tickets.
+		 * @param Ticket_Object[] $tickets A list of tickets associated with the post.
 		 * @param Order_Summary $this The order summary object.
 		 */
 		return apply_filters( 'tec_tickets_commerce_order_report_summary_tickets', $this->tickets, $this );
@@ -216,7 +216,7 @@ class Order_Summary {
 	 *
 	 * @since TBD
 	 *
-	 * @return array
+	 * @return array<string, array{ ticket: Ticket_Object, label: string, type: string, qty_data: array, qty_by_status: string }> A map from ticket types to the Tickets of that type.
 	 */
 	public function get_tickets_by_type(): array {
 		/**
@@ -224,7 +224,7 @@ class Order_Summary {
 		 *
 		 * @since TBD
 		 *
-		 * @param array $tickets_by_type The tickets by type.
+		 * @param array<string, array{ ticket: Ticket_Object, label: string, type: string, qty_data: array, qty_by_status: string }> $tickets_by_type The tickets by type.
 		 * @param Order_Summary $this The order summary object.
 		 */
 		return apply_filters( 'tec_tickets_commerce_order_report_summary_tickets_by_type', $this->tickets_by_type, $this );
@@ -260,7 +260,7 @@ class Order_Summary {
 	 *
 	 * @since TBD
 	 *
-	 * @return array
+	 * @return array<string, array> The event sales data.
 	 */
 	public function get_event_sales_data(): array {
 		$this->build_event_sales_data();
@@ -270,7 +270,7 @@ class Order_Summary {
 		 *
 		 * @since TBD
 		 *
-		 * @param array $event_sales_data The event sales data.
+		 * @param array<string, array> $event_sales_data The event sales data.
 		 * @param Order_Summary $this The order summary object.
 		 */
 		return apply_filters( 'tec_tickets_commerce_order_report_summary_event_sales_data', $this->event_sales_data, $this );
