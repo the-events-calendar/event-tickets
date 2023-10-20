@@ -160,7 +160,6 @@ class Connector {
 			return null;
 		}
 
-		// @ToDo @rafsuntaskin @juanfra change the default directory to `tec/tickets-plus/qr-codes` for storing images.
 		$file_name = 'qr_' . md5( $link );
 		$upload    = $qr_code->get_png_as_file( $link, $file_name, '' );
 
@@ -223,11 +222,11 @@ class Connector {
 		$qr_src = $this->get_base64_code_src();
 
 		if ( empty( $qr_src ) || is_wp_error( $qr_src ) ) {
-			wp_send_json_error( __( 'The QR API key was generated, but generating the connection QR Code image failed.', 'event-tickets-plus' ) );
+			wp_send_json_error( __( 'The QR API key was generated, but generating the connection QR Code image failed.', 'event-tickets' ) );
 		}
 
 		$data = [
-			'msg'    => __( 'QR API Key Generated', 'event-tickets-plus' ),
+			'msg'    => __( 'QR API Key Generated', 'event-tickets' ),
 			'key'    => $api_key,
 			'qr_src' => $qr_src,
 		];
