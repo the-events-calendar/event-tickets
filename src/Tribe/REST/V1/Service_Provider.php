@@ -106,6 +106,7 @@ class Tribe__Tickets__REST__V1__Service_Provider extends \TEC\Common\Contracts\S
 		$this->register_single_attendee_endpoint();
 		$this->register_attendee_archive_endpoint();
 		$this->register_cart_endpoint();
+		$this->register_qr_endpoint();
 
 		// @todo add the endpoints as documentation providers here
 		$doc_endpoint->register_documentation_provider( '/doc', $doc_endpoint );
@@ -143,6 +144,7 @@ class Tribe__Tickets__REST__V1__Service_Provider extends \TEC\Common\Contracts\S
 		$endpoint->register_definition_provider( 'CheckinReport', new Tribe__Tickets__REST__V1__Documentation__Checkin_Report_Definition_Provider() );
 		$endpoint->register_definition_provider( 'Ticket', new Tribe__Tickets__REST__V1__Documentation__Ticket_Definition_Provider() );
 		$endpoint->register_definition_provider( 'Attendee', new Tribe__Tickets__REST__V1__Documentation__Attendee_Definition_Provider() );
+		$endpoint->register_definition_provider( 'QR', new Tribe__Tickets__REST__V1__Documentation__QR_Definition_Provider() );
 
 		return $endpoint;
 	}
@@ -319,6 +321,42 @@ class Tribe__Tickets__REST__V1__Service_Provider extends \TEC\Common\Contracts\S
 		);
 
 		tribe( 'tickets.rest-v1.endpoints.documentation' )->register_documentation_provider( '/attendees', $endpoint );
+
+		return $endpoint;
+	}
+
+	/**
+	 * Register the QR endpoint.
+	 *
+	 * @return Tribe__Tickets__REST__V1__Endpoints__QR
+	 */
+	protected function register_qr_endpoint() {
+		/** @var Tribe__Tickets__REST__V1__Endpoints__QR $endpoint */
+		$endpoint = tribe( 'tickets.rest-v1.endpoints.qr' );
+
+		register_rest_route(
+			$this->namespace,
+			'/qr/(?P<id>\\d+)',
+			[
+				[
+					'methods'             => WP_REST_Server::READABLE,
+					'args'                => $endpoint->READ_args(),
+					'callback'            => [ $endpoint, 'get' ],
+					'permission_callback' => '__return_true',
+				],
+			]
+		);
+
+		register_rest_route(
+			$this->namespace,
+			'/qr',
+			[
+				'methods'             => WP_REST_Server::READABLE,
+				'args'                => $endpoint->CHECK_IN_args(),
+				'callback'            => [ $endpoint, 'check_in' ],
+				'permission_callback' => '__return_true',
+			]
+		);
 
 		return $endpoint;
 	}
