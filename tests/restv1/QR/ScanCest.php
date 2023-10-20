@@ -1,12 +1,11 @@
 <?php
 
-namespace Tribe\Tickets\Test\REST\V1;
+namespace Tribe\Tickets\Test\REST\V1\QR;
 
 use Restv1Tester;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 use Tribe\Tickets\Test\Testcases\REST\V1\BaseRestCest;
-use Tribe__Tickets_Plus__Meta as Meta;
 
 class ScanCest extends BaseRestCest {
 	use RSVP_Ticket_Maker;
