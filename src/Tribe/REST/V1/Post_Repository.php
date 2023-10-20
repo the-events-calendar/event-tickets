@@ -12,7 +12,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 *
 	 * @var array
 	 */
-	protected $types_get_map = array();
+	protected $types_get_map = [];
 
 	/**
 	 * @var Tribe__REST__Messages_Interface
@@ -1043,8 +1043,8 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 *
 	 * @since 4.8
 	 *
-	 * @param int                     $attendee_id
-	 * @param Tribe__Tickets__Tickets $provider
+	 * @param int                     $attendee_id The attendee ID.
+	 * @param Tribe__Tickets__Tickets $provider The ticket provider.
 	 *
 	 * @return int|mixed
 	 *
@@ -1055,7 +1055,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 			$attendee_id = $attendee_id->ID;
 		}
 
-		// the order is the the attendee ID itself for RSVP orders
+		// The order is the the attendee ID itself for RSVP orders.
 		if ( $provider instanceof Tribe__Tickets__RSVP ) {
 			return (int) $attendee_id;
 		}
@@ -1075,10 +1075,9 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 *
 	 * @since 4.8
 	 *
-	 *
-	 * @param                         int $attendee_id
-	 * @param                         int $order_id
-	 * @param Tribe__Tickets__Tickets     $provider
+	 * @param int                     $attendee_id The attendee ID.
+	 * @param int                     $order_id The order ID.
+	 * @param Tribe__Tickets__Tickets $provider The ticket provider.
 	 *
 	 * @return string
 	 */
