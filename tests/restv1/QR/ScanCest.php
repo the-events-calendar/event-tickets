@@ -15,6 +15,10 @@ class ScanCest extends BaseRestCest {
 	public function _before( Restv1Tester $I ) {
 		parent::_before( $I );
 		$this->rest_url = $this->site_url . '/wp-json/tribe/tickets/v1/qr';
+		// Avoid tests breaking due to deprecation warnings.
+		define( 'WP_DEBUG', false );
+		define( 'WP_DEBUG_LOG', false );
+		define( 'WP_DEBUG_DISPLAY', false );
 	}
 
 	/**

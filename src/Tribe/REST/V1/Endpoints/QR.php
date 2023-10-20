@@ -509,7 +509,6 @@ implements Tribe__REST__Endpoints__READ_Endpoint_Interface, Tribe__Documentation
 	 * @return array|mixed|void
 	 */
 	protected function prepare_qr_arr( WP_REST_Request $request ) {
-
 		$qr_arr = [
 			'api_key'       => $request['api_key'],
 			'ticket_id'     => $request['ticket_id'],
