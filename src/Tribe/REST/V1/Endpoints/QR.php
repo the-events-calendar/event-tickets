@@ -57,7 +57,7 @@ implements Tribe__REST__Endpoints__READ_Endpoint_Interface, Tribe__Documentation
 		 * @param array           $data    The retrieved data.
 		 * @param WP_REST_Request $request The original request.
 		 */
-		$data = apply_filters_deprecated( 'tribe_tickets_plus_rest_qr_data', $data, $request );
+		$data = apply_filters_deprecated( 'tribe_tickets_plus_rest_qr_data', [ $data, $request ], 'TBD', 'tribe_tickets_rest_qr_data' );
 
 		/**
 		 * Filters the data that will be returned for a single qr ticket request.
@@ -401,7 +401,12 @@ implements Tribe__REST__Endpoints__READ_Endpoint_Interface, Tribe__Documentation
 		 * @param int  $event_id                          The ID of the event, from the current attendee of the QR code.
 		 * @param int  $attendee_id                       The ID of the current attendee of the QR code.
 		 */
-		$should_checkin_qr_events_happening_now = (bool) apply_filters_deprecated( 'tec_tickets_plus_qr_checkin_events_happening_now', $should_checkin_qr_events_happening_now, $event_id, $attendee_id );
+		$should_checkin_qr_events_happening_now = (bool) apply_filters_deprecated(
+			'tec_tickets_plus_qr_checkin_events_happening_now',
+			[ $should_checkin_qr_events_happening_now, $event_id, $attendee_id ],
+			'TBD',
+			'tec_tickets_qr_checkin_events_happening_now'
+		);
 
 		/**
 		 * Filter the option for QR codes to be only checked in when an event is happening.
@@ -448,7 +453,12 @@ implements Tribe__REST__Endpoints__READ_Endpoint_Interface, Tribe__Documentation
 		 * @param int $buffer   The time buffer in minutes.
 		 * @param int $event_id The event ID.
 		 */
-		$time_buffer = (int) apply_filters_deprecated( 'tec_tickets_plus_qr_checkin_events_happening_now_buffer', $time_buffer, $event_id );
+		$time_buffer = (int) apply_filters_deprecated(
+			'tec_tickets_plus_qr_checkin_events_happening_now_buffer',
+			[ $time_buffer, $event_id ],
+			'TBD',
+			'tec_tickets_qr_checkin_events_happening_now_buffer'
+		);
 
 		/**
 		 * Filter the time buffer, in minutes.
@@ -525,7 +535,12 @@ implements Tribe__REST__Endpoints__READ_Endpoint_Interface, Tribe__Documentation
 		 * @since 4.7.5
 		 * @deprecated TBD Use `tribe_tickets_rest_qr_prepare_qr_arr` instead.
 		 */
-		$qr_arr = apply_filters_deprecated( 'tribe_tickets_plus_rest_qr_prepare_qr_arr', $qr_arr, $request );
+		$qr_arr = apply_filters_deprecated(
+			'tribe_tickets_plus_rest_qr_prepare_qr_arr',
+			[ $qr_arr, $request ],
+			'TBD',
+			'tribe_tickets_rest_qr_prepare_qr_arr'
+		);
 
 		/**
 		 * Allow filtering of $postarr data with additional $request arguments.

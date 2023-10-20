@@ -1136,7 +1136,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		 * @param array   $data     The data that will be returned in the response.
 		 * @param WP_Post $attendee The requested attendee.
 		 */
-		$data = apply_filters_deprecated( 'tribe_tickets_plus_rest_qr_data', $data, $attendee );
+		$data = apply_filters_deprecated( 'tribe_tickets_plus_rest_qr_data', [ $data, $attendee ], 'TBD', 'tribe_tickets_rest_qr_data' );
 
 		/**
 		 * Filters the data that will be returned for a single attendee.
