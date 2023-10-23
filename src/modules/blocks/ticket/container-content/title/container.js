@@ -14,13 +14,13 @@ import { selectors, actions } from '@moderntribe/tickets/data/blocks/ticket';
 /**
  * Decodes HTML entities in a given input string and returns the decoded text.
  *
- * @param {string} input - The input string containing HTML entities to be decoded.
+ * @param {string} title - The input string containing HTML entities to be decoded.
  * @returns {string} The decoded text without HTML entities.
  */
-export function htmlEntityDecode( string ) {
-	const doc = new DOMParser().parseFromString( string, 'text/html' );
+export function htmlEntityDecode( title ) {
+	const doc = new DOMParser().parseFromString( title, 'text/html' );
 	return doc.documentElement.textContent;
-  }
+};
 
 const mapStateToProps = ( state, ownProps ) => ( {
 	isDisabled: selectors.isTicketDisabled( state, ownProps ),

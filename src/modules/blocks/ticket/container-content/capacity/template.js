@@ -96,13 +96,13 @@ class Capacity extends PureComponent {
 			if ( e.target.value === '' || e.target.value > 0 ) {
 				onTempSharedCapacityChange( e );
 			}
-		}
+		};
 
 		const handleTempCapacityChange = ( e, max ) => {
 			if ( e.target.value === '' || e.target.value > 0 && e.target.value <= max ) {
 				onTempCapacityChange( e );
 			}
-		}
+		};
 
 		// If capacity type is shared and does not have shared capacity
 		if ( tempCapacityType === TICKET_TYPES[ SHARED ] && sharedCapacity === '' ) {
@@ -158,7 +158,7 @@ class Capacity extends PureComponent {
 					) }
 					id={ this.ids.capacity }
 					value={ tempCapacity }
-					onChange={ (e) => handleTempCapacityChange(e, extraProps?.max) }
+					onChange={ ( e ) => handleTempCapacityChange( e, extraProps?.max ) }
 					disabled={ isDisabled }
 					min={ 0 }
 					{ ...extraProps }

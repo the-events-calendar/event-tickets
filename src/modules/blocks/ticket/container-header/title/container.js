@@ -10,7 +10,7 @@ import { compose } from 'redux';
 import Template from './template';
 import { withStore } from '@moderntribe/common/hoc';
 import { selectors, actions } from '@moderntribe/tickets/data/blocks/ticket';
-import { htmlEntityDecode } from '@moderntribe/tickets/blocks/ticket/container-content/title/container';
+import { htmlEntityDecode } from '@moderntribe/tickets/blocks/ticket/container-content/title/container'; //eslint-disable max-len
 
 const mapStateToProps = ( state, ownProps ) => ( {
 	hasAttendeeInfoFields: selectors.getTicketHasAttendeeInfoFields( state, ownProps ),
