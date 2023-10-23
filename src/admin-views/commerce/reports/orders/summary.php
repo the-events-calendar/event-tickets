@@ -129,7 +129,7 @@ $tickets_by_type = $order_summary->get_tickets_by_type();
 					 *
 					 * @since TBD
 					 *
-					 * @param WP_Post $post_id The post ID.
+					 * @param WP_Post $post_id The current post ID.
 					 */
 					do_action( 'tec_tickets_commerce_order_report_after_sales_breakdown', $post_id );
 					?>
