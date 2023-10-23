@@ -205,6 +205,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Tweak - Re-styled Tickets Settings in Block Editor.  [ET-1834]
 * Tweak - Using react-number-format to display price.  [ET-1885]
 * Fix - Orders title in admin page.  [ET-1868]
+* Tweak - Declared dynamic properties for Attendees page to avoid deprecation warnings.
 
 = [5.6.6.1] 2023-10-12 =
 
