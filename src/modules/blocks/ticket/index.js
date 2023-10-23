@@ -7,13 +7,14 @@ import React from 'react';
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-const { InnerBlocks } = wp.blockEditor;
+const { InnerBlocks, useBlockProps } = wp.blockEditor;
 
 /**
  * Internal dependencies
  */
 import { Tickets as TicketsIcon } from '@moderntribe/tickets/icons';
 import Ticket from './container';
+import Tickets from "../tickets/container";
 
 export default {
 	id: 'tickets-item',
@@ -41,6 +42,8 @@ export default {
 		},
 	},
 
-	edit: Ticket,
+	edit: function ( editProps ) {
+		return ( <div { ...useBlockProps () }><Ticket { ...editProps }/></div> )
+	},
 	save: () => <div><InnerBlocks.Content /></div>,
 };
