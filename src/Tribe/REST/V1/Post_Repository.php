@@ -1044,7 +1044,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 * @since 4.8
 	 *
 	 * @param int                     $attendee_id The attendee ID.
-	 * @param Tribe__Tickets__Tickets $provider The ticket provider.
+	 * @param Tribe__Tickets__Tickets $provider    The ticket provider.
 	 *
 	 * @return int|mixed
 	 *
@@ -1076,8 +1076,8 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 * @since 4.8
 	 *
 	 * @param int                     $attendee_id The attendee ID.
-	 * @param int                     $order_id The order ID.
-	 * @param Tribe__Tickets__Tickets $provider The ticket provider.
+	 * @param int                     $order_id    The order ID.
+	 * @param Tribe__Tickets__Tickets $provider    The ticket provider.
 	 *
 	 * @return string
 	 */
