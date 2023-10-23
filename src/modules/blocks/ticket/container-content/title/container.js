@@ -20,7 +20,7 @@ import { selectors, actions } from '@moderntribe/tickets/data/blocks/ticket';
 export function htmlEntityDecode( title ) {
 	const doc = new DOMParser().parseFromString( title, 'text/html' );
 	return doc.documentElement.textContent;
-};
+}
 
 const mapStateToProps = ( state, ownProps ) => ( {
 	isDisabled: selectors.isTicketDisabled( state, ownProps ),
