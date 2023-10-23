@@ -21,7 +21,7 @@ class Order extends Abstract_Order {
 		$status          = tribe( Status_Handler::class )->get_by_wp_slug( $order->post_status );
 		$payload         = isset( $order->gateway_payload[ $status::SLUG ] ) ? $order->gateway_payload[ $status::SLUG ] : current( $order->gateway_payload );
 
-		if ( ! is_array( $payload ) ) {
+		if ( ! is_array( $payload ) || empty( $payload ) ) {
 			return '';
 		}
 

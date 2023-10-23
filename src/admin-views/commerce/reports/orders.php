@@ -3,8 +3,6 @@
  * @var int     $post_id             The current post ID.
  * @var WP_Post $post                The current post object.
  * @var string  $post_singular_label The post type singular label.
- * @var int     $total_sold          The total number of tickets sold.
- * @var array   $tickets_sold        A list of PayPal tickets that have at least one sale.
  * @var Orders  $orders_table        The orders table output.
  */
 
