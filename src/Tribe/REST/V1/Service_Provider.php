@@ -328,6 +328,8 @@ class Tribe__Tickets__REST__V1__Service_Provider extends \TEC\Common\Contracts\S
 	/**
 	 * Register the QR endpoint.
 	 *
+	 * @since TBD
+	 *
 	 * @return Tribe__Tickets__REST__V1__Endpoints__QR
 	 */
 	protected function register_qr_endpoint() {
