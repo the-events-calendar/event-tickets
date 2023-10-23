@@ -26,6 +26,11 @@ const config = merge( common, {
 	},
 } );
 
+// If COMPILE_SOURCE_MAPS env var is set, then set devtool=eval-source-map
+if ( process.env.COMPILE_SOURCE_MAPS ) {
+	config.devtool = 'eval-source-map';
+}
+
 //
 // ──────────────────────────────────────────────────────────────────────────────────────────── II ──────────
 //   :::::: G E N E R A T E   S T Y L E S   F R O M   V I E W S : :  :   :    :     :        :          :
