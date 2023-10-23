@@ -69,7 +69,7 @@ describe( 'Action Dashboard Element', () => {
 	it( 'executes the confirm handler', () => {
 		const onClick = jest.fn();
 		const component = mount( <ActionDashboard onConfirmClick={ onClick } /> );
-		component.find( 'button.tribe-editor__action-dashboard__confirm-button' ).simulate( 'click' );
+		component.find( 'button.tribe-editor__action-dashboard__confirm-button' ).simulate( 'mouseDown' );
 		expect( onClick ).toHaveBeenCalled();
 		expect( onClick ).toHaveBeenCalledTimes( 1 );
 	} );
