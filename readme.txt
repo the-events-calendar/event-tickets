@@ -4,7 +4,7 @@ Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, raf
 Tags: tickets, registration, event registration, RSVP, ticket sales, attendee management
 Requires at least: 5.8.5
 Tested up to: 6.3.1
-Stable tag: 5.6.6.1
+Stable tag: 5.6.7
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -192,6 +192,8 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 == Changelog ==
 
 = [TBD] TBD =
+
+* Feature - Tickets Commerce orders report page design update. [ET-1810]
 * Tweak - Re-styled Empty RSVP Block in Block Editor to match frontend design. Styles will be the same in block editor and in the user interface [ET-1818]
 * Tweak - Re-styled Inactive RSVP Block in Block Editor to match frontend design. Styles will be the same in block editor and in the user interface [ET-1823]
 * Tweak - Re-styled Active RSVP Block in Block Editor to match frontend design. Styles will be the same in block editor and in the user interface [ET-1825]
@@ -202,6 +204,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Tweak - Re-styled Create and Edit Tickets in Block Editor.  [ET-1835]
 * Tweak - Re-styled Tickets Settings in Block Editor.  [ET-1834]
 * Tweak - Using react-number-format to display price.  [ET-1885]
+* Tweak - Declared dynamic properties for Attendees page to avoid deprecation warnings.
 
 = [5.6.6.1] 2023-10-12 =
 

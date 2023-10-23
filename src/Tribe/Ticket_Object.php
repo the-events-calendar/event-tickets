@@ -259,7 +259,16 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * @var null|int
 		 */
 		private $event_id = null;
-
+		/**
+		 * The type of ticket.
+		 *
+		 * E.g. 'RSVP', 'default' (for Single Tickets) or other.
+		 *
+		 * @since TBD
+		 *
+		 * @var string|null
+		 */
+		private ?string $type;
 
 		/**
 		 * Tribe__Tickets__Ticket_Object constructor.
@@ -1262,6 +1271,38 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		public function to_array(): array {
 			return get_object_vars( $this );
 		}
-	}
 
+		/**
+		 * Returns the ticket type.
+		 *
+		 * @since TBD
+		 *
+		 * @return string The ticket type.
+		 */
+		public function type(): string {
+			if ( ! $this->ID ) {
+				return 'default';
+			}
+
+			if ( ! isset( $this->type ) ) {
+				$this->type = get_post_meta( $this->ID, '_type', true ) ?: 'default';
+			}
+
+			return $this->type;
+		}
+
+		/**
+		 * Updates the ticket type.
+		 *
+		 * Note: this method will NOT update the `_type` meta key used to store the Ticket type permanently, just
+		 * the Ticket object `type` property.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $type The ticket type.
+		 */
+		public function setType( string $type = 'default' ): void {
+			$this->type = $type;
+		}
+	}
 }

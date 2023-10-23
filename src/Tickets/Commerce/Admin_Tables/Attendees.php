@@ -39,6 +39,27 @@ class Attendees extends WP_List_Table {
 	private $search_box_input_name = 's';
 
 	/**
+	 * The page ID.
+	 *
+	 * @var string
+	 */
+	private $page_id;
+
+	/**
+	 * The count of per page items.
+	 *
+	 * @var int
+	 */
+	private $per_page_option;
+
+	/**
+	 * The event ID.
+	 *
+	 * @var int
+	 */
+	private $event;
+
+	/**
 	 *  Documented in WP_List_Table
 	 *
 	 * @since 5.2.0
