@@ -1101,7 +1101,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 * @since TBD
 	 *
 	 * @param int    $attendee_id A attendee post ID.
-	 * @param string $context  Context of data.
+	 * @param string $context     Context of data.
 	 *
 	 * @return array|WP_Error Either the array representation of an attendee or an error object.
 	 */
