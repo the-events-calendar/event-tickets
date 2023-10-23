@@ -123,6 +123,16 @@ $tickets_by_type = $order_summary->get_tickets_by_type();
 							<div class="tec-tickets__admin-orders-report__sales-overview__list__item-amount"><?php echo esc_html( sprintf( '%1$s (%2$s)', $sales_totals['total_sales']['price'], $sales_totals['total_sales']['qty'] ) ); ?></div>
 						</div>
 					</div>
+					<?php
+					/**
+					 * Fires after sales breakdown in the Orders Report admin view.
+					 *
+					 * @since TBD
+					 *
+					 * @param WP_Post $post_id The current post ID.
+					 */
+					do_action( 'tec_tickets_commerce_order_report_after_sales_breakdown', $post_id );
+					?>
 				</div>
 			</div>
 		</div>
