@@ -6,6 +6,8 @@ import React from 'react';
 /**
  * WordPress dependencies
  */
+import { registerBlockType } from '@wordpress/blocks';
+
 const { InnerBlocks, useBlockProps } = wp.blockEditor;
 
 /**
@@ -20,11 +22,7 @@ import {
 } from '@moderntribe/tickets/data/utils';
 import Tickets from './container';
 
-/**
- * Module Code
- */
-export default {
-	id: 'tickets',
+const block = {
 	icon: <TicketsIcon/>,
 
 	attributes: {
@@ -57,3 +55,5 @@ export default {
 		<div { ...useBlockProps () }><InnerBlocks.Content/></div>
 	),
 };
+
+registerBlockType ( `tribe/tickets`, block );

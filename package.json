@@ -75,7 +75,9 @@
     "lint:stylelint": "gulp stylelint",
     "jest": "TZ=UTC gulp jest",
     "zip": "node node_modules/@the-events-calendar/product-taskmaster/util/zip.js",
-    "glotpress": "gulp glotpress"
+    "glotpress": "gulp glotpress",
+    "build:blocks": "export NODE_OPTIONS=--openssl-legacy-provider && COMPILE_BLOCKS=1 npm run build:webpack && npm run build:gulp",
+    "dev:blocks": "export NODE_OPTIONS=--openssl-legacy-provider && cross-env COMPILE_BLOCKS=1 COMPILE_SOURCEMAPS=1 NODE_ENV=development webpack -d --watch"
   },
   "engines": { "node": "18.13.0", "npm": "8.19.3" },
   "devDependencies": {

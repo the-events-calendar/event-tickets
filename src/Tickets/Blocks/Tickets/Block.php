@@ -76,6 +76,18 @@ class Block extends Abstract_Block {
 	public function assets() {
 		$plugin = Tickets_Main::instance();
 
+		tribe_asset(
+			$plugin,
+			'tec-tickets-tickets-block-editor-script',
+			$plugin->plugin_dir . '/build/Tickets/Blocks/Tickets/editor.js'
+		);
+
+		tribe_asset(
+			$plugin,
+			'tec-tickets-tickets-block-editor-style',
+			$plugin->plugin_dir . '/build/Tickets/Blocks/Tickets/editor.css'
+		);
+
 		// Check whether we use v1 or v2. We need to update this when we deprecate tickets v1.
 		$tickets_js = tribe_tickets_new_views_is_enabled() ? 'v2/tickets-block.js' : 'tickets-block.js';
 

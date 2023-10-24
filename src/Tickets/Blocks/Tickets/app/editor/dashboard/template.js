@@ -7,8 +7,8 @@ import PropTypes from 'prop-types';
 /**
  * Internal dependencies
  */
-import TicketsActionDashboard from '@moderntribe/tickets/blocks/tickets/action-dashboard/container';
-import TicketsSettingsDashboard from '@moderntribe/tickets/blocks/tickets/settings-dashboard/container'; // eslint-disable-line max-len
+import TicketsActionDashboard from '../action-dashboard/container';
+import TicketsSettingsDashboard from '../settings-dashboard/container'; // eslint-disable-line max-len
 
 const TicketsDashboard = ( {
 	clientId,
