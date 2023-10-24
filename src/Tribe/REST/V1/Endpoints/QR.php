@@ -214,6 +214,8 @@ implements Tribe__REST__Endpoints__READ_Endpoint_Interface, Tribe__Documentation
 			return $response;
 		}
 
+		$api_key_is_valid = $this->has_api( $qr_arr );
+
 		/**
 		 * Allow filtering the API key validation status.
 		 *
@@ -222,10 +224,20 @@ implements Tribe__REST__Endpoints__READ_Endpoint_Interface, Tribe__Documentation
 		 * @param bool  $is_valid Whether the provided API key is valid or not.
 		 * @param array $qr_arr The request data for Check in.
 		 */
-		$api_check = apply_filters( 'event_tickets_plus_requested_api_is_valid', $this->has_api( $qr_arr ), $qr_arr );
+		$api_key_is_valid = apply_filters_deprecated( 'event_tickets_plus_requested_api_is_valid', [ $api_key_is_valid, $qr_arr ], 'TBD', 'tec_tickets_requested_api_is_valid' );
+
+		/**
+		 * Allow filtering the API key validation status.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool  $is_valid Whether the provided API key is valid or not.
+		 * @param array $qr_arr The request data for Check in.
+		 */
+		$api_key_is_valid = apply_filters( 'tec_tickets_requested_api_is_valid', $api_key_is_valid, $qr_arr );
 
 		// Check all the data we need is there.
-		if ( empty( $api_check ) || empty( $qr_arr['ticket_id'] ) ) {
+		if ( empty( $api_key_is_valid ) || empty( $qr_arr['ticket_id'] ) ) {
 			$response = new WP_REST_Response( $qr_arr );
 			$response->set_status( 400 );
 
