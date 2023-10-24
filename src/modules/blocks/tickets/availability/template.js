@@ -13,6 +13,7 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
+import { IconWithTooltip } from '@moderntribe/tickets/elements';
 import { NumericLabel } from '@moderntribe/tickets/elements';
 import './style.pcss';
 
@@ -48,19 +49,21 @@ const Availability = ( { available, total } ) => {
 
 	return (
 		<div className="tribe-editor__tickets__availability">
-			<span
-				className="tribe-tooltip"
-				title={ __(
-					'Ticket availability is based on the lowest number of inventory, stock, and capacity.',
-					'event-tickets',
-				) }
-			>
+			<>
 				{ Available }
 				{ available
-					? ( <span className="dashicons dashicons-info-outline"></span> )
+					? (
+						<IconWithTooltip
+							propertyName={ __(
+								'Ticket availability is based on the lowest number of inventory, stock, and capacity.',
+								'event-tickets',
+							) }
+							icon={ <span className="dashicons dashicons-info-outline" /> }
+						/>
+					)
 					: null
 				}
-			</span>
+			</>
 			{ Total }
 		</div>
 	);
