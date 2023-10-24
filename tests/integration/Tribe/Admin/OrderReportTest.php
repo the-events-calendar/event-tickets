@@ -12,6 +12,7 @@ use Tribe\Tests\Traits\With_Uopz;
 use TEC\Tickets\Commerce\Reports\Orders as Order_Report;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
+use Tribe__Tickets__Global_Stock as Global_Stock;
 
 /**
  * Class OrderReportTest tests the order report.
@@ -116,6 +117,12 @@ class OrderReportTest extends WPTestCase {
 				] )->create()->ID;
 				$ticket_id_a = $this->create_tc_ticket( $event_id, 10 );
 				$ticket_id_b = $this->create_tc_ticket( $event_id, 20.50 );
+				$ticket_id_c = $this->create_tc_ticket( $event_id, 0, [
+					'tribe-ticket' => [
+						'mode'     => Global_Stock::OWN_STOCK_MODE,
+						'capacity' => -1,
+					],
+				] );
 
 				$this->set_fn_return( 'current_time', '2020-02-22 22:22:22' );
 
