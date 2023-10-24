@@ -12,6 +12,7 @@ import { __, sprintf } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
+import { IconWithTooltip } from '@moderntribe/tickets/elements';
 import QuantityBar from './quantity-bar/element';
 import './style.pcss';
 
@@ -50,12 +51,13 @@ const TicketContainerHeaderDescription = ( {
 	/* eslint-enable max-len */
 
 	return ! isSelected && (
-		<div
-			className="tribe-editor__ticket__container-header-quantity tribe-tooltip"
-			title={ __( 'This pertains to Orders that have been marked Completed.', 'event-tickets' ) }
-		>
+		<div className="tribe-editor__ticket__container-header-quantity">
 			<span className="tribe-editor__ticket__container-header-quantity-label">
-				{ getLabel() }<span className="dashicons dashicons-info-outline"></span>
+				{ getLabel() }
+				<IconWithTooltip
+					propertyName={ __( 'This pertains to Orders that have been marked Completed.', 'event-tickets' ) }
+					icon={ <span className="dashicons dashicons-info-outline" /> }
+				/>
 			</span>
 			{ getQuantityBar() }
 		</div>
