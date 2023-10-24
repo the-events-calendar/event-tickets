@@ -115,7 +115,7 @@ class Order_Summary {
 	 * @since TBD
 	 *
 	 * @param array<string,int> $quantities The quantities.
-	 * @param Ticket_Object $ticket The ticket object.
+	 * @param Ticket_Object     $ticket     The ticket object.
 	 *
 	 * @return array<string,int> The quantities with stock data added.
 	 */
