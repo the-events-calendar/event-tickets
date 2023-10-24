@@ -16,5 +16,7 @@
   "supports": {
     "html": false,
     "customClassName": false
-  }
+  },
+  "editorScript": "tec-tickets-ticket-item-block-editor-script",
+  "editorStyle": "tec-tickets-ticket-item-block-editor-style"
 }

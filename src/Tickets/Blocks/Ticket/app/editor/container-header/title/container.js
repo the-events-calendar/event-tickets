@@ -11,7 +11,7 @@ import Template from './template';
 import { withStore } from '@moderntribe/common/hoc';
 import { selectors, actions } from '@moderntribe/tickets/data/blocks/ticket';
 /* eslint-disable-next-line max-len */
-import { htmlEntityDecode } from '@moderntribe/tickets/blocks/ticket/container-content/title/container';
+import { htmlEntityDecode } from '../../container-content/title/container';
 
 const mapStateToProps = ( state, ownProps ) => ( {
 	hasAttendeeInfoFields: selectors.getTicketHasAttendeeInfoFields( state, ownProps ),

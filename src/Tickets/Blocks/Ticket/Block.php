@@ -10,6 +10,7 @@
 namespace TEC\Tickets\Blocks\Ticket;
 
 use Tribe__Editor__Blocks__Abstract as Abstract_Block;
+use Tribe__Tickets__Main as Tickets_Main;
 
 /**
  * Class Block.
@@ -63,5 +64,21 @@ class Block extends Abstract_Block {
 		$args['description'] = _x( 'A single configured ticket type.', 'Block description', 'event-tickets' );
 
 		return $args;
+	}
+
+	public function assets() {
+		$plugin = Tickets_Main::instance();
+
+		tribe_asset(
+			$plugin,
+			'tec-tickets-ticket-item-block-editor-script',
+			$plugin->plugin_dir . '/build/Tickets/Blocks/Ticket/editor.js'
+		);
+
+		tribe_asset(
+			$plugin,
+			'tec-tickets-ticket-item-block-editor-style',
+			$plugin->plugin_dir . '/build/Tickets/Blocks/Ticket/editor.css'
+		);
 	}
 }
