@@ -140,6 +140,7 @@ class Base extends Controller {
 		add_action( 'tribe_tickets_attendees_event_details_list_top', [ $this, 'render_series_details_for_attached_event' ], 50 );
 		add_action( 'tribe_tickets_plus_report_event_details_list_top', [ $this, 'render_series_details_for_attached_event' ], 50 );
 		add_action( 'tribe_tickets_report_event_details_list_top', [ $this, 'render_series_details_for_attached_event' ], 50 );
+		add_filter( 'tec_tickets_commerce_order_report_summary_label_for_type', [ $this, 'filter_series_type_label_for_ticket' ] );
 	}
 
 	/**
@@ -214,6 +215,7 @@ class Base extends Controller {
 		remove_action( 'tribe_tickets_attendees_event_details_list_top', [ $this, 'render_series_details_for_attached_event' ], 50 );
 		remove_action( 'tribe_tickets_plus_report_event_details_list_top', [ $this, 'render_series_details_for_attached_event' ], 50 );
 		remove_action( 'tribe_tickets_report_event_details_list_top', [ $this, 'render_series_details_for_attached_event' ], 50 );
+		remove_filter( 'tec_tickets_commerce_order_report_summary_label_for_type', [ $this, 'filter_series_type_label_for_ticket' ] );
 	}
 
 	/**
@@ -508,4 +510,22 @@ class Base extends Controller {
 			'action_links' => $action_links
 		] );
 	}
+
+	/**
+	 * Filters the label for the Series post type for the report pages.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $type The type of ticket.
+	 *
+	 * @return string The updated label.
+	 */
+	public function filter_series_type_label_for_ticket( $type ) {
+		if ( $type !== Series_Passes::TICKET_TYPE ) {
+			return $type;
+		}
+
+		return tec_tickets_get_series_pass_plural_uppercase( 'order summary report' );
+	}
+
 }
