@@ -118,7 +118,7 @@ class OrderReportTest extends WPTestCase {
 				$ticket_id_a = $this->create_tc_ticket( $event_id, 10 );
 				$ticket_id_b = $this->create_tc_ticket( $event_id, 20.50 );
 				$ticket_id_c = $this->create_tc_ticket( $event_id, 0, [
-					'tribe-ticket'            => [
+					'tribe-ticket' => [
 						'mode'     => Global_Stock::OWN_STOCK_MODE,
 						'capacity' => -1,
 					],
