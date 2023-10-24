@@ -24,7 +24,7 @@ $orders             = $view->get_event_attendees_by_order( $post_id, $user_id );
 $order              = array_values( $orders );
 $title              = sprintf(
 	// Translators: 1: post type singular name, 2: ticket label plural.
-	__( '$1$s $2$d', 'event-tickets' ),
+	__( '%1$s %2$s', 'event-tickets' ),
 	$post_type_singular,
 	tribe_get_ticket_label_plural( 'orders_tickets_heading' )
 );
