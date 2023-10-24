@@ -20,11 +20,13 @@ export const PROVIDER_TYPES = [ TC, EDD, WOO ];
 export const EDD_ORDERS = 'edd-orders';
 export const TC_ORDERS = 'tpp-orders';
 export const WOO_ORDERS = 'tickets-orders';
+export const TICKETS_COMMERCE_ORDERS = 'tickets-commerce-orders';
 
 export const TICKET_ORDERS_PAGE_SLUG = {
 	[ EDD_CLASS ]: EDD_ORDERS,
 	[ TC_CLASS ]: TC_ORDERS,
 	[ WOO_CLASS ]: WOO_ORDERS,
+	[ TICKETS_COMMERCE_MODULE_CLASS ]: TICKETS_COMMERCE_ORDERS,
 };
 
 export const UNLIMITED = 'unlimited';

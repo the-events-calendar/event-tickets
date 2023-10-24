@@ -11,9 +11,20 @@ import Template from './template';
 import { withStore } from '@moderntribe/common/hoc';
 import { selectors, actions } from '@moderntribe/tickets/data/blocks/ticket';
 
+/**
+ * Decodes HTML entities in a given input string and returns the decoded text.
+ *
+ * @param {string} title - The input string containing HTML entities to be decoded.
+ * @returns {string} The decoded text without HTML entities.
+ */
+export function htmlEntityDecode( title ) {
+	const doc = new DOMParser().parseFromString( title, 'text/html' );
+	return doc.documentElement.textContent;
+}
+
 const mapStateToProps = ( state, ownProps ) => ( {
 	isDisabled: selectors.isTicketDisabled( state, ownProps ),
-	tempTitle: selectors.getTicketTempTitle( state, ownProps ),
+	tempTitle: htmlEntityDecode( selectors.getTicketTempTitle( state, ownProps ) ),
 } );
 
 const mapDispatchToProps = ( dispatch, ownProps ) => ( {

@@ -23,7 +23,7 @@ exports[`ActionButton component rendered 1`] = `
 exports[`ActionButton component rendered as link 1`] = `
 <a
   className="tribe-editor__link tribe-editor__action-button tribe-editor__action-button--icon-left"
-  href="#"
+  onMouseDown={[Function]}
 >
   <span
     aria-label="Emoji"
