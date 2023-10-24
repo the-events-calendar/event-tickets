@@ -31,7 +31,7 @@ class Observer {
 
 		$is_qr_code_request = tribe_get_request_var( 'event_qr_code', false );
 
-		// Not as fancy as a custom permalink handler, but way less likely to fail depending on setup and settings
+		// Not as fancy as a custom permalink handler, but way less likely to fail depending on setup and settings.
 		if ( $is_qr_code_request ) {
 			return;
 		}
@@ -39,7 +39,7 @@ class Observer {
 		$ticket_id = tribe_get_request_var( 'ticket_id', false );
 		$event_id  = tribe_get_request_var( 'event_id', false );
 
-		// Check all the data we need is there
+		// Check all the data we need is there.
 		if ( empty( $ticket_id ) || empty( $event_id ) ) {
 			return;
 		}
@@ -48,7 +48,7 @@ class Observer {
 		$ticket_id     = (int) $ticket_id;
 		$security_code = (string) esc_attr( tribe_get_request_var( 'security_code' ) );
 
-		// See if the user had access or not to the checkin process
+		// See if the user had access or not to the checkin process.
 		[ $url, $user_had_access ] = $this->authorized_check_in( $event_id, $ticket_id, $security_code );
 
 		/**
@@ -62,7 +62,9 @@ class Observer {
 		$url = apply_filters_deprecated( 'tribe_tickets_plus_qr_handle_redirects', [ $url, $event_id, $ticket_id, $user_had_access ], 'TBD', 'Use `tec_tickets_qr_observer_handle_handle_checkin_redirect` instead.' );
 
 		/**
-		 * Filters the redirect URL if the user can access the QR checkin
+		 * Filters the redirect URL if the user can access the QR checkin.
+		 *
+		 * @since TBD
 		 *
 		 * @param string $url             URL to redirect to, gets escaped upstream.
 		 * @param int    $event_id        Event Post ID.
@@ -80,9 +82,9 @@ class Observer {
 	 *
 	 * @since TBD
 	 *
-	 * @param $event_id      int event post ID.
-	 * @param $ticket_id     int ticket post ID.
-	 * @param $security_code string ticket security code.
+	 * @param int    $event_id      Event post ID.
+	 * @param int    $ticket_id     Ticket post ID.
+	 * @param string $security_code Ticket security code.
 	 *
 	 * @return array
 	 */
@@ -112,6 +114,7 @@ class Observer {
 		 * Filters the check for security code when checking in a ticket
 		 *
 		 * @since 4.11.2 Change the default to true.
+		 * @deprecated TBD Use `tec_tickets_qr_observer_should_check_security_code` instead.
 		 *
 		 * @param bool $check_security_code The default is to check the security code.
 		 */
@@ -161,7 +164,7 @@ class Observer {
 			return $checkin_arr;
 		}
 
-		// If the user is the site owner (or similar), Check in the user to the event
+		// If the user is the site owner (or similar), Check in the user to the event.
 		$this->check_in( $ticket_id );
 
 		$url = add_query_arg(
@@ -210,27 +213,43 @@ class Observer {
 		if ( false === $ticket_status || 'trash' === $ticket_status ) {
 
 			echo '<div class="error"><p>';
-			printf( esc_html__( 'The ticket with ID %s was deleted and cannot be checked-in.', 'event-tickets-plus' ), esc_html( $ticket_id ) );
+			printf(
+				// Translators: %s is the ticket ID.
+				esc_html__( 'The ticket with ID %s was deleted and cannot be checked-in.', 'event-tickets' ),
+				esc_html( $ticket_id )
+			);
 			echo '</p></div>';
 
-			// If Security Code does not match
+			// If Security Code does not match.
 		} elseif ( $no_match ) {
 			echo '<div class="error"><p>';
-			printf( esc_html__( 'The security code for ticket with ID %s does not match.', 'event-tickets-plus' ), esc_html( $ticket_id ) );
+			printf(
+				// Translators: %s is the ticket ID.
+				esc_html__( 'The security code for ticket with ID %s does not match.', 'event-tickets' ),
+				esc_html( $ticket_id )
+			);
 			echo '</p></div>';
 
 			// If status is QR then display already checked-in warning.
 		} elseif ( $checked_status ) {
 
 			echo '<div class="error"><p>';
-			printf( esc_html__( 'The ticket with ID %s has already been checked in.', 'event-tickets-plus' ), esc_html( $ticket_id ) );
+			printf(
+				// Translators: %s is the ticket ID.
+				esc_html__( 'The ticket with ID %s has already been checked in.', 'event-tickets' ),
+				esc_html( $ticket_id )
+			);
 			echo '</p></div>';
 
 			// Otherwise, just check-in like normal.
 		} else {
 
 			echo '<div class="updated"><p>';
-			printf( esc_html__( 'The ticket with ID %s was checked in.', 'event-tickets-plus' ), esc_html( $ticket_id ) );
+			printf(
+				// Translators: %s is the ticket ID.
+				esc_html__( 'The ticket with ID %s was checked in.', 'event-tickets' ),
+				esc_html( $ticket_id )
+			);
 			echo '</p></div>';
 
 			// Update the checked-in status when using the QR code here.
