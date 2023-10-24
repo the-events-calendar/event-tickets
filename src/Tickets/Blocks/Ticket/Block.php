@@ -69,14 +69,12 @@ class Block extends Abstract_Block {
 	public function assets() {
 		$plugin = Tickets_Main::instance();
 
-		tribe_asset(
-			$plugin,
+		wp_register_script(
 			'tec-tickets-ticket-item-block-editor-script',
 			$plugin->plugin_dir . '/build/Tickets/Blocks/Ticket/editor.js'
 		);
 
-		tribe_asset(
-			$plugin,
+		wp_register_style(
 			'tec-tickets-ticket-item-block-editor-style',
 			$plugin->plugin_dir . '/build/Tickets/Blocks/Ticket/editor.css'
 		);
