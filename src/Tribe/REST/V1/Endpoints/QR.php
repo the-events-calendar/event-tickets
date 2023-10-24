@@ -558,7 +558,7 @@ implements Tribe__REST__Endpoints__READ_Endpoint_Interface, Tribe__Documentation
 	/**
 	 * Check in attendee and on first success return
 	 *
-	 * @since 4.7.5
+	 * @since TBD
 	 *
 	 * @param int $attendee_id The attendee ID.
 	 * @param
