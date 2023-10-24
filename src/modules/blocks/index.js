@@ -2,6 +2,7 @@
  * Wordpress dependencies
  */
 import { registerBlockType } from '@wordpress/blocks';
+import { applyFilters, doAction } from wp.hooks;
 
 const { applyFilters, doAction } = wp.hooks;
 
