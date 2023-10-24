@@ -25,14 +25,14 @@
 if ( empty( $order ) || empty( $attendees ) ) {
 	return;
 }
-
 ?>
-<div class="tribe-common-b1 tribe-tickets__commerce-order-attendees">
+
+<div class="tribe-common tribe-common-b1 tec-tickets__attendees-list-order-attendees">
 	<?php $this->template( 'order/attendees/title' ); ?>
 
-	<div class="tribe-tickets__commerce-order-attendees-list">
+	<div class="tec-tickets__attendees-list-listing">
 		<?php foreach ( $attendees as $attendee ) : ?>
-			<div class="tribe-tickets__commerce-order-attendees-list-attendee">
+			<div class="tec-tickets__attendees-list-attendee-row">
 				<?php $this->template( 'order/attendees/attendee', [ 'attendee' => $attendee ] ); ?>
 			</div>
 		<?php endforeach; ?>

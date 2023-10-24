@@ -27,9 +27,10 @@ if ( empty( $order ) || empty( $attendee ) ) {
 	return;
 }
 
-use TEC\Tickets\Commerce\Utils\Value;
-$total = Value::create( $attendee['price_paid'] );
+$provider     = Tribe__Tickets__Tickets::get_ticket_provider_instance($attendee['provider']);
+$ticket_price = $provider->get_price_html($attendee['product_id']);
+
 ?>
-<div class="tribe-tickets__commerce-order-attendees-list-attendee-details">
-	<?php echo esc_html( $attendee['ticket'] ) . ' - ' . esc_html( $total->get_currency() ); ?>
+<div class="tec-tickets__attendees-order-attendees-list-attendee-details">
+	<div><?php echo esc_html( $attendee['ticket'] ) . ' - ' . $ticket_price; ?></div>
 </div>
