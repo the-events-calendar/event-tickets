@@ -138,6 +138,31 @@ class OrderReportTest extends WPTestCase {
 				return [ $event_id, [ $event_id, $ticket_id, $series_id, $order->ID ] ];
 			}
 		];
+
+		yield 'event with a series pass and single ticket orders' => [
+			function (): array {
+				$series_id = static::factory()->post->create( [
+					'post_type'  => Series_Post_Type::POSTTYPE,
+					'post_title' => 'Test series',
+				] );
+				$event_id  = tribe_events()->set_args( [
+					'title'      => 'Test event',
+					'status'     => 'publish',
+					'start_date' => '2021-01-01 10:00:00',
+					'end_date'   => '2021-01-01 12:00:00',
+					'series'     => $series_id,
+				] )->create()->ID;
+
+				$ticket_id      = $this->create_tc_ticket( $event_id, 10 );
+				$series_pass_id = $this->create_tc_series_pass( $series_id, 55 )->ID;
+
+				$this->set_fn_return( 'current_time', '2020-02-22 22:22:22' );
+				$order_a = $this->create_order( [ $ticket_id => 1 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
+				$order_b = $this->create_order( [ $series_pass_id => 1 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
+
+				return [ $event_id, [ $series_id, $event_id, $ticket_id, $order_a->ID, $order_b->ID ] ];
+			}
+		];
 	}
 
 	/**
