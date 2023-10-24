@@ -29,7 +29,14 @@ const TicketContainerHeaderPriceLabel = ( {
 	const getAvailableLabel = () => (
 		isUnlimited
 			? __( 'unlimited', 'event-tickets' )
-			: `${ available } ${ __( 'available', 'event-tickets' ) }`
+			: (
+				<>
+					<span className="tribe-editor__ticket__container-header-label__available">
+						{ available }
+					</span>
+					{ __( 'available', 'event-tickets' ) }
+				</>
+			)
 	);
 
 	const numericFormatProps = {

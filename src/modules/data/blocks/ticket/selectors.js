@@ -102,7 +102,7 @@ export const getTickets = createSelector(
 
 export const getTicketsAllClientIds = createSelector(
 	[ getTickets ],
-	( tickets ) => tickets.allClientIds,
+	( tickets ) => [ ...new Set( tickets.allClientIds ) ],
 );
 
 export const getTicketsByClientId = createSelector(
@@ -576,12 +576,12 @@ export const isTempTitleValid = createSelector(
 
 export const isTempCapacityValid = createSelector(
 	[ getTicketTempCapacity ],
-	( capacity ) => trim( capacity ) !== '' && ! isNaN( capacity ),
+	( capacity ) => trim( capacity ) !== '' && ! isNaN( capacity ) && capacity > 0,
 );
 
 export const isTempSharedCapacityValid = createSelector(
 	[ getTicketsTempSharedCapacity ],
-	( capacity ) => trim( capacity ) !== '' && ! isNaN( capacity ),
+	( capacity ) => trim( capacity ) !== '' && ! isNaN( capacity ) && capacity > 0,
 );
 
 export const isZeroPriceValid = createSelector(
