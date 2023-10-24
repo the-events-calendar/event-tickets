@@ -27,7 +27,7 @@ implements Tribe__REST__Endpoints__READ_Endpoint_Interface, Tribe__Documentation
 	/**
 	 * Get attendee by id
 	 *
-	 * @since 4.7.5
+	 * @since TBD
 	 *
 	 * @param WP_REST_Request $request The request.
 	 *
@@ -80,7 +80,7 @@ implements Tribe__REST__Endpoints__READ_Endpoint_Interface, Tribe__Documentation
 	 * The intelligence lies in the "gatherer" of information rather than in the single "providers" implementing this
 	 * interface.
 	 *
-	 * @since 4.7.5
+	 * @since TBD
 	 *
 	 * @link http://swagger.io/
 	 *
@@ -125,7 +125,7 @@ implements Tribe__REST__Endpoints__READ_Endpoint_Interface, Tribe__Documentation
 	/**
 	 * Provides the content of the `args` array to register the endpoint support for GET requests.
 	 *
-	 * @since 4.7.5
+	 * @since TBD
 	 *
 	 * @return array
 	 */
@@ -151,7 +151,7 @@ implements Tribe__REST__Endpoints__READ_Endpoint_Interface, Tribe__Documentation
 	 * Returns the content of the `args` array that should be used to register the endpoint
 	 * with the `register_rest_route` function.
 	 *
-	 * @since 4.7.5
+	 * @since TBD
 	 *
 	 * @return array
 	 */
@@ -196,7 +196,7 @@ implements Tribe__REST__Endpoints__READ_Endpoint_Interface, Tribe__Documentation
 	/**
 	 * Check in attendee.
 	 *
-	 * @since 4.7.5
+	 * @since TBD
 	 *
 	 * @param WP_REST_Request $request The request.
 	 *
