@@ -99,8 +99,12 @@ class Capacity extends PureComponent {
 		};
 
 		const handleTempCapacityChange = ( e, max ) => {
-			if ( e.target.value === '' || e.target.value > 0 && e.target.value <= max ) {
-				onTempCapacityChange( e );
+			if ( e.target.value === '' || e.target.value > 0 ) {
+				if ( max === undefined ) {
+					onTempCapacityChange( e );
+				} else if ( e.target.value <= max ) {
+					onTempCapacityChange( e );
+				}
 			}
 		};
 
