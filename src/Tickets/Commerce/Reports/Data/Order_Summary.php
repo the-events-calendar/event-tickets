@@ -110,6 +110,22 @@ class Order_Summary {
 	}
 
 	/**
+	 * Add the ticket available data.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,int> $quantities The quantities.
+	 * @param Ticket_Object     $ticket     The ticket object.
+	 *
+	 * @return array<string,int> The quantities with stock data added.
+	 */
+	protected function add_available_data( array $quantities, Ticket_Object $ticket ): array {
+		$ticket_available = $ticket->available();
+		$quantities[ $ticket->availability_slug() ] = -1 === $ticket_available ? __( 'Unlimited', 'event-tickets' ) : $ticket_available;
+		return $quantities;
+	}
+
+	/**
 	 * Build the data.
 	 *
 	 * @since TBD
@@ -122,7 +138,7 @@ class Order_Summary {
 			$this->process_event_sales_data( $quantities, $ticket );
 
 			// We need to show the total available for each ticket type.
-			$quantities[ $ticket->availability_slug() ] = $ticket->available();
+			$quantities = $this->add_available_data( $quantities, $ticket );
 
 			$ticket_data = [
 				'ticket'        => $ticket,

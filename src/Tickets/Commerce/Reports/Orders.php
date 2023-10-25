@@ -311,8 +311,11 @@ class Orders extends Report_Abstract {
 	 * @return string
 	 */
 	public function filter_admin_title( $admin_title ) {
-		if ( ! empty( $_GET['post_id'] ) ) {
-			$event       = get_post( $_GET['post_id'] );
+		$post_id = tribe_get_request_var( 'post_id' );
+		$post_id = tribe_get_request_var( 'event_id', $post_id );
+
+		if ( ! empty( $post_id ) ) {
+			$event       = get_post( $post_id );
 			$admin_title = sprintf( esc_html_x( '%s - Tickets Commerce Orders', 'Browser title', 'event-tickets' ), $event->post_title );
 		}
 
