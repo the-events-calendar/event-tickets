@@ -67,16 +67,19 @@ class Block extends Abstract_Block {
 	}
 
 	public function assets() {
-		$plugin = Tickets_Main::instance();
+		add_action( 'admin_enqueue_scripts', function () {
+			$plugin = Tickets_Main::instance();
 
-		wp_register_script(
-			'tec-tickets-ticket-item-block-editor-script',
-			$plugin->plugin_dir . '/build/Tickets/Blocks/Ticket/editor.js'
-		);
+			wp_register_script(
+				'tec-tickets-ticket-item-block-editor-script',
+				$plugin->plugin_url . 'build/Tickets/Blocks/Ticket/editor.js',
+				[ 'tribe-common-gutenberg-vendor', 'tribe-tickets-gutenberg-vendor' ]
+			);
 
-		wp_register_style(
-			'tec-tickets-ticket-item-block-editor-style',
-			$plugin->plugin_dir . '/build/Tickets/Blocks/Ticket/editor.css'
-		);
+			wp_register_style(
+				'tec-tickets-ticket-item-block-editor-style',
+				$plugin->plugin_url . 'build/Tickets/Blocks/Ticket/editor.css'
+			);
+		} );
 	}
 }
