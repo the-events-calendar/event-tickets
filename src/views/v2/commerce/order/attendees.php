@@ -13,21 +13,28 @@
  *
  * @version TBD
  *
- * @var \Tribe__Template $this                  [Global] Template object.
- * @var Module           $provider              [Global] The tickets provider instance.
- * @var string           $provider_id           [Global] The tickets provider class name.
- * @var \WP_Post         $order                 [Global] The order object.
- * @var int              $order_id              [Global] The order ID.
- * @var bool             $is_tec_active         [Global] Whether `The Events Calendar` is active or not.
- * @var array            $attendees             [Global] List of attendees for the given order.
+ * @var \Tribe__Template $this          [Global] Template object.
+ * @var Module           $provider      [Global] The tickets provider instance.
+ * @var string           $provider_id   [Global] The tickets provider class name.
+ * @var \WP_Post         $order         [Global] The order object.
+ * @var int              $order_id      [Global] The order ID.
+ * @var bool             $is_tec_active [Global] Whether `The Events Calendar` is active or not.
+ * @var array            $attendees     [Global] List of attendees for the given order.
  */
 
 if ( empty( $order ) || empty( $attendees ) ) {
 	return;
 }
+
+$parent_classes = [
+	'tribe-common',
+	'tribe-common-b1',
+	'tec-tickets__attendees-list-order-attendees',
+	$provider->orm_provider
+]
 ?>
 
-<div class="tribe-common tribe-common-b1 tec-tickets__attendees-list-order-attendees">
+<div <?php tribe_classes( $parent_classes ); ?>>
 	<?php $this->template( 'order/attendees/title' ); ?>
 
 	<div class="tec-tickets__attendees-list-listing">
