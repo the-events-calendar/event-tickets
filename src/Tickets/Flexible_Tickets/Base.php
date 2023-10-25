@@ -20,6 +20,7 @@ use TEC\Tickets\Flexible_Tickets\Templates\Admin_Views;
 use Tribe__Events__Main as TEC;
 use Tribe__Main;
 use Tribe__Tickets__Tickets as Tickets;
+use Tribe__Tickets__Ticket_Object as Ticket_Object;
 
 /**
  * Class Base.
@@ -141,6 +142,7 @@ class Base extends Controller {
 		add_action( 'tribe_tickets_plus_report_event_details_list_top', [ $this, 'render_series_details_for_attached_event' ], 50 );
 		add_action( 'tribe_tickets_report_event_details_list_top', [ $this, 'render_series_details_for_attached_event' ], 50 );
 		add_filter( 'tec_tickets_commerce_order_report_summary_label_for_type', [ $this, 'filter_series_type_label_for_ticket' ] );
+		add_filter( 'tec_tickets_commerce_order_report_summary_tickets', [ $this, 'filter_out_series_type_tickets_from_order_report' ] );
 	}
 
 	/**
@@ -216,6 +218,7 @@ class Base extends Controller {
 		remove_action( 'tribe_tickets_plus_report_event_details_list_top', [ $this, 'render_series_details_for_attached_event' ], 50 );
 		remove_action( 'tribe_tickets_report_event_details_list_top', [ $this, 'render_series_details_for_attached_event' ], 50 );
 		remove_filter( 'tec_tickets_commerce_order_report_summary_label_for_type', [ $this, 'filter_series_type_label_for_ticket' ] );
+		remove_filter( 'tec_tickets_commerce_order_report_summary_tickets', [ $this, 'filter_out_series_type_tickets_from_order_report' ] );
 	}
 
 	/**
@@ -528,4 +531,20 @@ class Base extends Controller {
 		return tec_tickets_get_series_pass_plural_uppercase( 'order summary report' );
 	}
 
+	/**
+	 * Filters out Series Passes from the list of tickets in the Order Report.
+	 *
+	 * @since TBD
+	 *
+	 * @param Ticket_Object[] $tickets The list of tickets to filter.
+	 *
+	 * @return Ticket_Object[] The filtered list of tickets.
+	 */
+	public function filter_out_series_type_tickets_from_order_report( array $tickets ): array {
+		$skip_series_pass = array_filter( $tickets, function( $ticket ) {
+			return $ticket->type != Series_Passes::TICKET_TYPE;
+		} );
+
+		return $skip_series_pass;
+	}
 }
