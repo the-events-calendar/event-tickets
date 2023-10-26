@@ -352,16 +352,18 @@ class Block extends Abstract_Block {
 	 */
 	public function register_editor_scripts() {
 		$plugin = Tickets_Main::instance();
+		$min    = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
+		// Using WordPress functions to register since we just need to register them.
 		wp_register_script(
 			'tec-tickets-tickets-block-editor-script',
-			$plugin->plugin_url . 'build/Tickets/Blocks/Tickets/editor.js',
+			$plugin->plugin_url . "build/Tickets/Blocks/Tickets/editor{$min}.js",
 			[ 'tribe-common-gutenberg-vendor', 'tribe-tickets-gutenberg-vendor' ]
 		);
 
 		wp_register_style(
 			'tec-tickets-tickets-block-editor-style',
-			$plugin->plugin_url . 'build/Tickets/Blocks/Tickets/editor.css',
+			$plugin->plugin_url . "build/Tickets/Blocks/Tickets/editor{$min}.css",
 			[ 'tribe-tickets-gutenberg-main-styles' ]
 		);
 	}
