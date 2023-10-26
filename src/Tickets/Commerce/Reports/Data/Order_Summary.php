@@ -161,6 +161,11 @@ class Order_Summary {
 	 * @param Ticket_Object $ticket The ticket object.
 	 */
 	protected function process_event_sales_data( array $quantity_by_status, Ticket_Object $ticket ): void {
+
+		if ( ! $this->should_include_event_sales_data( $ticket, $quantity_by_status ) ) {
+			return;
+		}
+
 		foreach ( $quantity_by_status as $status_slug => $quantity ) {
 			if ( ! isset( $this->event_sales_by_status[ $status_slug ] ) ) {
 				$status = tribe( Status_Handler::class )->get_by_slug( $status_slug );
@@ -290,5 +295,29 @@ class Order_Summary {
 		 * @param Order_Summary $this The order summary object.
 		 */
 		return apply_filters( 'tec_tickets_commerce_order_report_summary_event_sales_data', $this->event_sales_data, $this );
+	}
+
+	/**
+	 * Get if the ticket sales data should be included into event sales data.
+	 *
+	 * @since TBD
+	 *
+	 * @param Ticket_Object $ticket The ticket object.
+	 * @param array<string,int> $quantity_by_status The quantity by status.
+	 *
+	 * @return bool Whether to include the sales data into event sales data.
+	 */
+	private function should_include_event_sales_data( Ticket_Object $ticket, array $quantity_by_status ) {
+		/**
+		 * Filters if the ticket sales data should be included into event sales data.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool $should_include Whether to include the sales data into event sales data.
+		 * @param Ticket_Object $ticket The ticket object.
+		 * @param array<string,int> $quantity_by_status The quantity by status.
+		 * @param Order_Summary $this The order summary object.
+		 */
+		return apply_filters( 'tec_tickets_commerce_order_report_summary_should_include_event_sales_data', true, $ticket, $quantity_by_status, $this );
 	}
 }

@@ -142,7 +142,7 @@ class Base extends Controller {
 		add_action( 'tribe_tickets_plus_report_event_details_list_top', [ $this, 'render_series_details_for_attached_event' ], 50 );
 		add_action( 'tribe_tickets_report_event_details_list_top', [ $this, 'render_series_details_for_attached_event' ], 50 );
 		add_filter( 'tec_tickets_commerce_order_report_summary_label_for_type', [ $this, 'filter_series_type_label_for_ticket' ] );
-		add_filter( 'tec_tickets_commerce_order_report_summary_tickets', [ $this, 'filter_out_series_type_tickets_from_order_report' ] );
+		add_filter( 'tec_tickets_commerce_order_report_summary_should_include_event_sales_data', [ $this, 'filter_out_series_type_tickets_from_order_report' ], 10, 2 );
 	}
 
 	/**
@@ -218,7 +218,7 @@ class Base extends Controller {
 		remove_action( 'tribe_tickets_plus_report_event_details_list_top', [ $this, 'render_series_details_for_attached_event' ], 50 );
 		remove_action( 'tribe_tickets_report_event_details_list_top', [ $this, 'render_series_details_for_attached_event' ], 50 );
 		remove_filter( 'tec_tickets_commerce_order_report_summary_label_for_type', [ $this, 'filter_series_type_label_for_ticket' ] );
-		remove_filter( 'tec_tickets_commerce_order_report_summary_tickets', [ $this, 'filter_out_series_type_tickets_from_order_report' ] );
+		remove_filter( 'tec_tickets_commerce_order_report_summary_should_include_event_sales_data', [ $this, 'filter_out_series_type_tickets_from_order_report' ], 10, 2 );
 	}
 
 	/**
@@ -532,19 +532,20 @@ class Base extends Controller {
 	}
 
 	/**
-	 * Filters out Series Passes from the list of tickets in the Order Report.
+	 * Filters the order report to remove the series passes from the event sales data.
 	 *
 	 * @since TBD
 	 *
-	 * @param Ticket_Object[] $tickets The list of tickets to filter.
+	 * @param bool          $include Whether to include the event sales data.
+	 * @param Ticket_Object $ticket  The ticket object.
 	 *
-	 * @return Ticket_Object[] The filtered list of tickets.
+	 * @return bool Whether to include the event sales data.
 	 */
-	public function filter_out_series_type_tickets_from_order_report( array $tickets ): array {
-		$skip_series_pass = array_filter( $tickets, function( $ticket ) {
-			return $ticket->type != Series_Passes::TICKET_TYPE;
-		} );
+	public function filter_out_series_type_tickets_from_order_report( $include, $ticket ): bool {
+		if ( Series_Passes::TICKET_TYPE === $ticket->type() ) {
+			return false;
+		}
 
-		return $skip_series_pass;
+		return $include;
 	}
 }
