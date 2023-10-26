@@ -92,10 +92,12 @@ const mapStateToProps = ( state, ownProps ) => {
 	const fromDate = startDateMoment && startDateMoment.format( dateFormat );
 	const toDate = endDateMoment && endDateMoment.format( dateFormat );
 
+	const selectedBlock = select( 'core/editor' ).getSelectedBlock();
+
 	return {
 		attendeeInfoFieldsLabel,
 		hasAttendeeInfoFields,
-		isBlockSelected: select( 'core/editor' ).getSelectedBlock() !== null,
+		isBlockSelected: selectedBlock?.name === 'tribe/tickets',
 		fromDate,
 		saleWindowLabel,
 		toDate,
