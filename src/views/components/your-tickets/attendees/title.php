@@ -1,9 +1,9 @@
 <?php
 /**
- * Tickets Commerce: Success Order Page Attendee list title
+ * Generic: Success Order Page Attendee list (Your Tickets) - title
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/commerce/order/attendees/title.php
+ * [your-theme]/tribe/tickets/components/your-tickets/attendees/title.php
  *
  * See more documentation about our views templating system.
  *
