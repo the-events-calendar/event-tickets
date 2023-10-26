@@ -62,10 +62,12 @@
     "analyze": "webpack-bundle-analyzer -m static stats.json",
     "bootstrap": "./scripts/linkDependencies",
     "build:webpack": "export NODE_OPTIONS=--openssl-legacy-provider && cross-env NODE_ENV=production webpack -p",
+    "build:webpack:inspect": "export NODE_OPTIONS=--openssl-legacy-provider && cross-env NODE_ENV=production node --inspect node_modules/webpack/bin/webpack.js -p",
     "build:gulp": "cross-env NODE_ENV=production gulp",
     "build:common": "cd common && npm run build",
     "prebuild": "node node_modules/@the-events-calendar/product-taskmaster/scripts/syncBrowserslistConfig.js",
     "build": "export NODE_OPTIONS=--openssl-legacy-provider && npm run build:webpack && npm run build:gulp",
+    "build:inspect": "export NODE_OPTIONS=--openssl-legacy-provider && npm run build:webpack:inspect && npm run build:gulp",
     "dev": "export NODE_OPTIONS=--openssl-legacy-provider && cross-env NODE_ENV=development webpack -d --watch",
     "gettext-strings": "export NODE_OPTIONS=--openssl-legacy-provider && cross-env BABEL_ENV=gettext webpack",
     "preanalyze": "export NODE_OPTIONS=--openssl-legacy-provider && cross-env NODE_ENV=production webpack -p --profile --json > stats.json",
@@ -75,9 +77,7 @@
     "lint:stylelint": "gulp stylelint",
     "jest": "TZ=UTC gulp jest",
     "zip": "node node_modules/@the-events-calendar/product-taskmaster/util/zip.js",
-    "glotpress": "gulp glotpress",
-    "build:blocks": "export NODE_OPTIONS=--openssl-legacy-provider && COMPILE_BLOCKS=1 npm run build:webpack && npm run build:gulp",
-    "dev:blocks": "export NODE_OPTIONS=--openssl-legacy-provider && cross-env COMPILE_BLOCKS=1 COMPILE_SOURCEMAPS=1 NODE_ENV=development webpack -d --watch"
+    "glotpress": "gulp glotpress"
   },
   "engines": { "node": "18.13.0", "npm": "8.19.3" },
   "devDependencies": {

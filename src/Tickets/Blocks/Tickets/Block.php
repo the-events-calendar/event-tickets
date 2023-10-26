@@ -74,21 +74,6 @@ class Block extends Abstract_Block {
 	 * @return void
 	 */
 	public function assets() {
-		add_action('admin_enqueue_scripts',function(){
-			$plugin = Tickets_Main::instance();
-
-			wp_register_script(
-				'tec-tickets-tickets-block-editor-script',
-				$plugin->plugin_url . 'build/Tickets/Blocks/Tickets/editor.js',
-				[ 'tribe-common-gutenberg-vendor', 'tribe-tickets-gutenberg-vendor' ]
-			);
-
-			wp_register_style(
-				'tec-tickets-tickets-block-editor-style',
-				$plugin->plugin_url . 'build/Tickets/Blocks/Tickets/editor.css'
-			);
-		});
-
 		// Check whether we use v1 or v2. We need to update this when we deprecate tickets v1.
 		$tickets_js = tribe_tickets_new_views_is_enabled() ? 'v2/tickets-block.js' : 'tickets-block.js';
 
@@ -136,6 +121,18 @@ class Block extends Abstract_Block {
 		);
 
 		Tickets::$frontend_script_enqueued = true;
+	}
+
+	/**
+	 * Overrides the parent method to register the editor scripts.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function register() {
+		parent::register();
+		add_action( 'admin_enqueue_scripts', [ $this, 'register_editor_scripts' ] );
 	}
 
 	/**
@@ -344,5 +341,28 @@ class Block extends Abstract_Block {
 		$args['description'] = _x( 'Sell tickets and register attendees.', 'Block description', 'event-tickets' );
 
 		return $args;
+	}
+
+	/**
+	 * Registers the editor scripts.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function register_editor_scripts() {
+		$plugin = Tickets_Main::instance();
+
+		wp_register_script(
+			'tec-tickets-tickets-block-editor-script',
+			$plugin->plugin_url . 'build/Tickets/Blocks/Tickets/editor.js',
+			[ 'tribe-common-gutenberg-vendor', 'tribe-tickets-gutenberg-vendor' ]
+		);
+
+		wp_register_style(
+			'tec-tickets-tickets-block-editor-style',
+			$plugin->plugin_url . 'build/Tickets/Blocks/Tickets/editor.css',
+			[ 'tribe-tickets-gutenberg-main-styles' ]
+		);
 	}
 }

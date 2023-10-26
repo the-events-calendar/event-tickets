@@ -43,9 +43,13 @@ const block = {
 	},
 
 	edit: function ( editProps ) {
-		return ( <div { ...useBlockProps () }><Ticket { ...editProps }/></div> )
+		const blockProps = useBlockProps ();
+		return ( <div { ...blockProps }><Ticket { ...editProps }/></div> )
 	},
-	save: () => <div { ...useBlockProps () }><InnerBlocks.Content/></div>,
+	save: function () {
+		const blockProps = useBlockProps ();
+		return <div { ...blockProps }><InnerBlocks.Content/></div>;
+	}
 };
 
-registerBlockType ( `tribe/ticket-item`, block );
+registerBlockType ( `tribe/tickets-item`, block );

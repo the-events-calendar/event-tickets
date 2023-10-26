@@ -49,11 +49,13 @@ const block = {
 	},
 
 	edit: function ( editProps ) {
-		return ( <div { ...useBlockProps () }><Tickets { ...editProps }/></div> )
+		const blockProps = useBlockProps ();
+		return ( <div { ...blockProps }><Tickets { ...editProps }/></div> )
 	},
-	save: () => (
-		<div { ...useBlockProps () }><InnerBlocks.Content/></div>
-	),
+	save: () => {
+		const blockProps = useBlockProps ();
+		return ( <div { ...blockProps }><InnerBlocks.Content/></div> );
+	}
 };
 
 registerBlockType ( `tribe/tickets`, block );

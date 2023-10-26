@@ -66,20 +66,38 @@ class Block extends Abstract_Block {
 		return $args;
 	}
 
-	public function assets() {
-		add_action( 'admin_enqueue_scripts', function () {
-			$plugin = Tickets_Main::instance();
+	/**
+	 * Overrides the parent method to register the editor scripts.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function register() {
+		parent::register();
+		add_action( 'admin_enqueue_scripts', [ $this, 'register_editor_scripts' ] );
+	}
 
-			wp_register_script(
-				'tec-tickets-ticket-item-block-editor-script',
-				$plugin->plugin_url . 'build/Tickets/Blocks/Ticket/editor.js',
-				[ 'tribe-common-gutenberg-vendor', 'tribe-tickets-gutenberg-vendor' ]
-			);
+	/**
+	 * Registers the editor scripts.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function register_editor_scripts() {
+		$plugin = Tickets_Main::instance();
 
-			wp_register_style(
-				'tec-tickets-ticket-item-block-editor-style',
-				$plugin->plugin_url . 'build/Tickets/Blocks/Ticket/editor.css'
-			);
-		} );
+		wp_register_script(
+			'tec-tickets-ticket-item-block-editor-script',
+			$plugin->plugin_url . 'build/Tickets/Blocks/Ticket/editor.js',
+			[ 'tribe-common-gutenberg-vendor', 'tribe-tickets-gutenberg-vendor' ]
+		);
+
+		wp_register_style(
+			'tec-tickets-ticket-item-block-editor-style',
+			$plugin->plugin_url . 'build/Tickets/Blocks/Ticket/editor.css',
+			[ 'tribe-tickets-gutenberg-main-styles' ]
+		);
 	}
 }
