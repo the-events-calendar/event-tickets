@@ -77,7 +77,6 @@ class Connector {
 		 * @param string     $base_url
 		 * @param int|string $ticket_id
 		 * @param int|string $event_id
-		 *
 		 */
 		$base_url = apply_filters_deprecated( 'tribe_tickets_qr_code_base_url', [ $base_url, $ticket_id, $event_id ], 'TBD', 'Use `tec_tickets_qr_code_base_url` instead.' );
 		/**
@@ -95,7 +94,7 @@ class Connector {
 
 		$query_args = [
 			'event_qr_code' => 1,
-			'ticket_id'     => 1,
+			'ticket_id'     => $ticket_id,
 			'event_id'      => $event_id,
 			'security_code' => $security_code,
 			'path'          => urlencode( tribe_tickets_rest_url_prefix() . '/qr' ),
@@ -112,7 +111,6 @@ class Connector {
 		 * @param int|string $ticket_id
 		 * @param int|string $event_id
 		 * @param string     $security_code
-		 *
 		 */
 		return apply_filters( 'tec_tickets_qr_code_checkin_url', $url, $ticket_id, $event_id, $security_code );
 	}
