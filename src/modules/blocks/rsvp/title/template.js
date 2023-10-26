@@ -25,9 +25,9 @@ const RSVPTitle = ( {
 	const titleId = uniqid();
 	const inputRef = useRef( null );
 
-	useEffect(() => {
+	useEffect( () => {
 		inputRef?.current?.focus();
-	}, [ inputRef ]);
+	}, [ inputRef ] );
 
 	return (
 		<div className={ classNames(

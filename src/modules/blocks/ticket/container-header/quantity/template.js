@@ -55,6 +55,7 @@ const TicketContainerHeaderDescription = ( {
 			<span className="tribe-editor__ticket__container-header-quantity-label">
 				{ getLabel() }
 				<IconWithTooltip
+					/* eslint-disable-next-line max-len */
 					propertyName={ __( 'This pertains to Orders that have been marked Completed.', 'event-tickets' ) }
 					icon={ <span className="dashicons dashicons-info-outline" /> }
 				/>
