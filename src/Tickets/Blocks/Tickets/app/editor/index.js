@@ -49,11 +49,11 @@ const block = {
 	},
 
 	edit: function ( editProps ) {
-		const blockProps = useBlockProps ();
+		const blockProps = useBlockProps();
 		return ( <div { ...blockProps }><Tickets { ...editProps }/></div> )
 	},
-	save: () => {
-		const blockProps = useBlockProps ();
+	save: function () {
+		const blockProps = useBlockProps.save ()
 		return ( <div { ...blockProps }><InnerBlocks.Content/></div> );
 	}
 };
