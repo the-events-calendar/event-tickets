@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import uniqid from 'uniqid';
@@ -14,7 +14,7 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { Input, LabeledItem } from '@moderntribe/common/elements';
+import { LabeledItem } from '@moderntribe/common/elements';
 import './styles.pcss';
 
 const RSVPTitle = ( {
@@ -23,6 +23,11 @@ const RSVPTitle = ( {
 	tempTitle,
 } ) => {
 	const titleId = uniqid();
+	const inputRef = useRef( null );
+
+	useEffect(() => {
+		inputRef?.current?.focus();
+	}, [ inputRef ]);
 
 	return (
 		<div className={ classNames(
@@ -37,14 +42,14 @@ const RSVPTitle = ( {
 				label={ __( 'RSVP name', 'event-tickets' ) }
 			/>
 
-			<Input
-				className="tribe-editor__ticket__title-input"
+			<input
+				className="tribe-editor__input tribe-editor__ticket__title-input"
 				id={ titleId }
 				disabled={ isDisabled }
 				type="text"
 				value={ tempTitle }
 				onChange={ onTempTitleChange }
-
+				ref={ inputRef }
 			/>
 		</div>
 	);
