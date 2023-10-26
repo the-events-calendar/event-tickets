@@ -1126,4 +1126,21 @@ class Tribe__Tickets__Main {
 
 		$this->get_autoloader_instance()->register_prefixes( $prefixes );
 	}
+
+	/**
+	 * Get the component template.
+	 *
+	 * @since TBD
+	 *
+	 * @return Tribe__Template
+	 */
+	public function get_component_template(): Tribe__Template {
+		// Initialize the Tribe__Template instance.
+		$template = new Tribe__Template();
+		$template->set_template_origin( Tribe__Tickets__Main::instance() );
+		$template->set_template_folder( 'src/views/components' );
+		$template->set_template_context_extract( true );
+		$template->set_template_folder_lookup( true );
+		return $template;
+	}
 }

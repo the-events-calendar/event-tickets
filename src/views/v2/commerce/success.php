@@ -29,12 +29,7 @@
 		<?php $this->template( 'order/header' ); ?>
 		<?php $this->template( 'order/description' ); ?>
 		<?php $this->template( 'order/details' ); ?>
-		<?php
-		$original_folder = $this->get_template_folder();
-		$this->set_template_folder( 'src/views/components' );
-		$this->template( 'your-tickets/attendees' );
-		$this->set_template_folder( $original_folder );
-		?>
+		<?php tribe( 'tickets.main' )->get_component_template()->template( 'your-tickets/attendees', $this->get_global_values(), true ); ?>
 		<?php $this->template( 'order/footer' ); ?>
 	</section>
 </div>
