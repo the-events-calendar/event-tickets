@@ -139,7 +139,7 @@ class Base extends Controller {
 		] );
 
 		add_action( 'tribe_tickets_attendees_event_details_list_top', [ $this, 'render_series_details_for_attached_event_attendee_report' ], 50 );
-		add_action( 'tribe_tickets_report_event_details_list_top', [ $this, 'render_series_details_for_attached_event_order_report' ], 99 );
+		add_action( 'tribe_tickets_report_event_details_list_top', [ $this, 'render_series_details_for_attached_event_order_report' ], 50 );
 		add_filter( 'tec_tickets_commerce_order_report_summary_label_for_type', [ $this, 'filter_series_type_label_for_ticket' ] );
 		add_filter( 'tec_tickets_commerce_order_report_summary_should_include_event_sales_data', [ $this, 'filter_out_series_type_tickets_from_order_report' ], 10, 2 );
 	}
@@ -213,9 +213,8 @@ class Base extends Controller {
 			'filter_attendees_report_context'
 		] );
 
-		remove_action( 'tribe_tickets_attendees_event_details_list_top', [ $this, 'render_series_details_for_attached_event' ], 50 );
-		remove_action( 'tribe_tickets_plus_report_event_details_list_top', [ $this, 'render_series_details_for_attached_event' ], 50 );
-		remove_action( 'tribe_tickets_report_event_details_list_top', [ $this, 'render_series_details_for_attached_event' ], 50 );
+		remove_action( 'tribe_tickets_attendees_event_details_list_top', [ $this, 'render_series_details_for_attached_event_attendee_report' ], 50 );
+		remove_action( 'tribe_tickets_report_event_details_list_top', [ $this, 'render_series_details_for_attached_event_order_report' ], 50 );
 		remove_filter( 'tec_tickets_commerce_order_report_summary_label_for_type', [ $this, 'filter_series_type_label_for_ticket' ] );
 		remove_filter( 'tec_tickets_commerce_order_report_summary_should_include_event_sales_data', [ $this, 'filter_out_series_type_tickets_from_order_report' ], 10, 2 );
 	}
