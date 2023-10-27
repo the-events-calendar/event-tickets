@@ -35,10 +35,10 @@ class Controller extends Controller_Contract {
 	 */
 	public function do_register(): void {
 		$this->container->bind( QR::class, [ $this, 'bind_facade_or_error' ] );
-		$this->container->singleton( Settings::class, Settings::class );
-		$this->container->singleton( Notices::class, Notices::class );
-		$this->container->singleton( Connector::class, Connector::class );
-		$this->container->singleton( Observer::class, Observer::class );
+		$this->container->singleton( Settings::class );
+		$this->container->singleton( Notices::class );
+		$this->container->singleton( Connector::class );
+		$this->container->singleton( Observer::class );
 
 		// Register the Admin Notices right away.
 		$this->container->make( Notices::class )->register_admin_notices();
