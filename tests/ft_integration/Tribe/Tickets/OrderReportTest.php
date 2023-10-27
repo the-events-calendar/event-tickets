@@ -163,6 +163,24 @@ class OrderReportTest extends WPTestCase {
 				return [ $event_id, [ $series_id, $event_id, $ticket_id, $order_a->ID, $order_b->ID ] ];
 			}
 		];
+
+		yield 'order report page for a series with multiple pass and orders' => [
+			function (): array {
+				$series_id = static::factory()->post->create( [
+					'post_type'  => Series_Post_Type::POSTTYPE,
+					'post_title' => 'Test Series Order page',
+				] );
+
+				$series_pass_id_a = $this->create_tc_series_pass( $series_id, 10 )->ID;
+				$series_pass_id_b = $this->create_tc_series_pass( $series_id, 20 )->ID;
+
+				$this->set_fn_return( 'current_time', '2020-02-22 22:22:22' );
+				$order_a = $this->create_order( [ $series_pass_id_a => 1 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
+				$order_b = $this->create_order( [ $series_pass_id_b => 1 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
+
+				return [ $series_id, [ $series_id, $series_pass_id_a, $order_a->ID, $order_b->ID ] ];
+			}
+		];
 	}
 
 	/**
