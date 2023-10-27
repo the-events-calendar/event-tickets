@@ -1128,13 +1128,13 @@ class Tribe__Tickets__Main {
 	}
 
 	/**
-	 * Get the component template.
+	 * Get the components template.
 	 *
 	 * @since TBD
 	 *
 	 * @return Tribe__Template
 	 */
-	public function get_component_template(): Tribe__Template {
+	public function get_components_template(): Tribe__Template {
 		// Initialize the Tribe__Template instance.
 		$template = new Tribe__Template();
 		$template->set_template_origin( Tribe__Tickets__Main::instance() );

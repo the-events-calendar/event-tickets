@@ -1,9 +1,9 @@
 <?php
 /**
- * Tickets Commerce: Success Order Page Attendee list.
+ * Generic: Success Order Page Attendee list.
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/commerce/order/attendees.php
+ * [your-theme]/tribe/tickets/components/attendees-list/attendees.php
  *
  * See more documentation about our views templating system.
  *
@@ -26,21 +26,21 @@ if ( empty( $order ) || empty( $attendees ) ) {
 	return;
 }
 
-$parent_classes = [
+$wrapper_classes = [
 	'tribe-common',
 	'tribe-common-b1',
 	'tec-tickets__attendees-list-order-attendees',
-	$provider->orm_provider
+	'tec-tickets__attendees-list-order-attendees--' . $provider->orm_provider,
 ]
 ?>
 
-<div <?php tribe_classes( $parent_classes ); ?>>
-	<?php $this->template( 'order/attendees/title' ); ?>
+<div <?php tribe_classes( $wrapper_classes ); ?>>
+	<?php $this->template( 'attendees-list/attendees/title' ); ?>
 
 	<div class="tec-tickets__attendees-list-listing">
 		<?php foreach ( $attendees as $attendee ) : ?>
 			<div class="tec-tickets__attendees-list-attendee-row">
-				<?php $this->template( 'order/attendees/attendee', [ 'attendee' => $attendee ] ); ?>
+				<?php $this->template( 'attendees-list/attendees/attendee', [ 'attendee' => $attendee ] ); ?>
 			</div>
 		<?php endforeach; ?>
 	</div>
