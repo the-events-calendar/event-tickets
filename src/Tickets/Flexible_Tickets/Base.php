@@ -14,6 +14,7 @@ use TEC\Common\Contracts\Provider\Controller;
 use TEC\Events\Custom_Tables\V1\Models\Occurrence;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 use TEC\Tickets\Admin\Editor_Data;
+use TEC\Tickets\Commerce\Reports\Data\Order_Summary;
 use TEC\Tickets\Flexible_Tickets\Repositories\Event_Repository;
 use Tribe__Template as Template;
 use TEC\Tickets\Flexible_Tickets\Templates\Admin_Views;
@@ -141,7 +142,7 @@ class Base extends Controller {
 		add_action( 'tribe_tickets_attendees_event_details_list_top', [ $this, 'render_series_details_for_attached_event_attendee_report' ], 50 );
 		add_action( 'tribe_tickets_report_event_details_list_top', [ $this, 'render_series_details_for_attached_event_order_report' ], 50 );
 		add_filter( 'tec_tickets_commerce_order_report_summary_label_for_type', [ $this, 'filter_series_type_label_for_ticket' ] );
-		add_filter( 'tec_tickets_commerce_order_report_summary_should_include_event_sales_data', [ $this, 'filter_out_series_type_tickets_from_order_report' ], 10, 2 );
+		add_filter( 'tec_tickets_commerce_order_report_summary_should_include_event_sales_data', [ $this, 'filter_out_series_type_tickets_from_order_report' ], 10, 4 );
 	}
 
 	/**
@@ -216,7 +217,7 @@ class Base extends Controller {
 		remove_action( 'tribe_tickets_attendees_event_details_list_top', [ $this, 'render_series_details_for_attached_event_attendee_report' ], 50 );
 		remove_action( 'tribe_tickets_report_event_details_list_top', [ $this, 'render_series_details_for_attached_event_order_report' ], 50 );
 		remove_filter( 'tec_tickets_commerce_order_report_summary_label_for_type', [ $this, 'filter_series_type_label_for_ticket' ] );
-		remove_filter( 'tec_tickets_commerce_order_report_summary_should_include_event_sales_data', [ $this, 'filter_out_series_type_tickets_from_order_report' ], 10, 2 );
+		remove_filter( 'tec_tickets_commerce_order_report_summary_should_include_event_sales_data', [ $this, 'filter_out_series_type_tickets_from_order_report' ], 10, 4 );
 	}
 
 	/**
@@ -582,10 +583,18 @@ class Base extends Controller {
 	 *
 	 * @param bool          $include Whether to include the event sales data.
 	 * @param Ticket_Object $ticket  The ticket object.
+	 * @param array         $quantity_by_status The quantity by status.
+	 * @param Order_Summary $order_summary The order summary object.
 	 *
 	 * @return bool Whether to include the event sales data.
 	 */
-	public function filter_out_series_type_tickets_from_order_report( $include, $ticket ): bool {
+	public function filter_out_series_type_tickets_from_order_report( $include, $ticket, $quantity_by_status, $order_summary ): bool {
+		// If we are processing order report page for the Series post type, then we want to include all the tickets.
+		if ( get_post_type( $order_summary->post_id ) === Series_Post_Type::POSTTYPE ) {
+			return $include;
+		}
+
+		// If we are on regular order pages, then we want to filter out the series passes.
 		if ( Series_Passes::TICKET_TYPE === $ticket->type() ) {
 			return false;
 		}
