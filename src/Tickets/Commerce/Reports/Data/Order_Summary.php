@@ -21,7 +21,7 @@ class Order_Summary {
 	 *
 	 * @var int The post ID.
 	 */
-	protected int $post_id;
+	public int $post_id;
 
 	/**
 	 * @since TBD
@@ -240,6 +240,9 @@ class Order_Summary {
 	 * @return array<string, array{ ticket: Ticket_Object, label: string, type: string, qty_data: array, qty_by_status: string }> A map from ticket types to the Tickets of that type.
 	 */
 	public function get_tickets_by_type(): array {
+		// Sort the tickets by keys to display default types first.
+		ksort( $this->tickets_by_type );
+
 		/**
 		 * Filters the tickets by type in the order summary report.
 		 *
