@@ -73,11 +73,11 @@ class Settings {
 	 */
 	public function is_enabled( $context = null ): bool {
 		$controller = tribe( Controller::class );
-		$enabled = false;
+		$enabled    = false;
 
 		// Only fetch from DB if the controller can use the QR code.
-		if ( $controller->can_use() && $controller->has_library_loaded() ) {
-			$enabled = tribe_is_truthy( tribe_get_option( static::get_enabled_key(), false ) );
+		if ( $controller->can_use() ) {
+			$enabled = tribe_is_truthy( tribe_get_option( static::get_enabled_key(), true ) );
 		}
 
 		/**
