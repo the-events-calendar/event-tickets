@@ -122,7 +122,7 @@ class OrderReportTest extends WPTestCase {
 		yield 'recurring event with one order' => [
 			function (): array {
 				$event_id   = tribe_events()->set_args( [
-					'title'      => 'Test event',
+					'title'      => 'Test recurring event with one order',
 					'status'     => 'publish',
 					'start_date' => '2021-01-01 10:00:00',
 					'end_date'   => '2021-01-01 12:00:00',
@@ -143,10 +143,10 @@ class OrderReportTest extends WPTestCase {
 			function (): array {
 				$series_id = static::factory()->post->create( [
 					'post_type'  => Series_Post_Type::POSTTYPE,
-					'post_title' => 'Test series',
+					'post_title' => 'Test Series',
 				] );
 				$event_id  = tribe_events()->set_args( [
-					'title'      => 'Test event',
+					'title'      => 'Test event with a series pass and single ticket orders',
 					'status'     => 'publish',
 					'start_date' => '2021-01-01 10:00:00',
 					'end_date'   => '2021-01-01 12:00:00',
