@@ -27,8 +27,8 @@ if ( empty( $order ) || empty( $attendee ) ) {
 	return;
 }
 
-$provider     = Tribe__Tickets__Tickets::get_ticket_provider_instance($attendee['provider']);
-$ticket_price = $provider->get_price_html($attendee['product_id']);
+$provider     = Tribe__Tickets__Tickets::get_ticket_provider_instance( $attendee['provider'] );
+$ticket_price = $provider->get_price_html( $attendee['product_id'] );
 
 ?>
 <div class="tec-tickets__attendees-order-attendees-list-attendee-details">
