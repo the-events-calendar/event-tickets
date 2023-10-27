@@ -58,9 +58,9 @@ class Connector {
 	 *
 	 * @since TBD
 	 *
-	 * @param int|string $ticket_id
-	 * @param int|string $event_id
-	 * @param string     $security_code
+	 * @param int|string $ticket_id The ticket ID.
+	 * @param int|string $event_id The Event ID.
+	 * @param string     $security_code The security code.
 	 *
 	 * @return string
 	 */
@@ -167,7 +167,6 @@ class Connector {
 
 		return $upload['url'];
 	}
-
 
 	/**
 	 * Gets the data used to engage with external connections to the site.
