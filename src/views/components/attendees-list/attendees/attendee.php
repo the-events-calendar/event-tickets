@@ -3,7 +3,7 @@
  * Generic: Success Order Page Attendee list (Your Tickets) - Attendee template
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/components/your-tickets/attendees/attendee.php
+ * [your-theme]/tribe/tickets/components/attendees-list/attendees/attendee.php
  *
  * See more documentation about our views templating system.
  *
