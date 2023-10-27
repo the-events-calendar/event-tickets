@@ -78,9 +78,9 @@ class Notices {
 	 * @return string
 	 */
 	public function get_dependency_notice_contents(): string {
-		$html = '<h2>' . esc_html__( 'QR codes for tickets not available.', 'event-tickets' ) . '</h2>';
+		$html  = '<h2>' . esc_html__( 'QR codes for tickets not available.', 'event-tickets' ) . '</h2>';
 		$html .= esc_html__( 'In order to have QR codes for your tickets you will need to have both the `php_gd2` and `gzuncompress` PHP extensions installed on your server. Please contact your hosting provider.', 'event-tickets' );
-		$html .= ' <a target="_blank" href="https://evnt.is/XXXX">' . esc_html__( 'Learn more.', 'event-tickets' ) . '</a>';
+		$html .= ' <a target="_blank" href="https://evnt.is/event-tickets-qr-support">' . esc_html__( 'Learn more.', 'event-tickets' ) . '</a>';
 
 		return $html;
 	}
