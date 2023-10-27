@@ -1,6 +1,6 @@
 <?php
 /**
- * Generic: Success Order Page Attendee list (Your Tickets) - title
+ * Generic: Success Order Page Attendee list - title
  *
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/components/attendees-list/attendees/title.php

@@ -1,6 +1,6 @@
 <?php
 /**
- * Generic: Success Order Page Attendee list (Your Tickets) - Attendee template
+ * Generic: Success Order Page Attendee list - Attendee template
  *
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/components/attendees-list/attendees/attendee.php
@@ -32,5 +32,5 @@ $ticket_price = $provider->get_price_html( $attendee['product_id'] );
 
 ?>
 <div class="tec-tickets__attendees-order-attendees-list-attendee-details">
-	<div><?php echo esc_html( $attendee['ticket'] ) . ' - ' . $ticket_price; ?></div>
+	<div><?php echo esc_html( $attendee['ticket'] ) . ' - ' . wp_kses_post( $ticket_price ); ?></div>
 </div>
