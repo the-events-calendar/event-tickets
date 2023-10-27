@@ -138,9 +138,8 @@ class Base extends Controller {
 			'filter_attendees_report_context'
 		] );
 
-		add_action( 'tribe_tickets_attendees_event_details_list_top', [ $this, 'render_series_details_for_attached_event' ], 50 );
-		add_action( 'tribe_tickets_plus_report_event_details_list_top', [ $this, 'render_series_details_for_attached_event' ], 50 );
-		add_action( 'tribe_tickets_report_event_details_list_top', [ $this, 'render_series_details_for_attached_event' ], 50 );
+		add_action( 'tribe_tickets_attendees_event_details_list_top', [ $this, 'render_series_details_for_attached_event_attendee_report' ], 50 );
+		add_action( 'tribe_tickets_report_event_details_list_top', [ $this, 'render_series_details_for_attached_event_order_report' ], 99 );
 		add_filter( 'tec_tickets_commerce_order_report_summary_label_for_type', [ $this, 'filter_series_type_label_for_ticket' ] );
 		add_filter( 'tec_tickets_commerce_order_report_summary_should_include_event_sales_data', [ $this, 'filter_out_series_type_tickets_from_order_report' ], 10, 2 );
 	}
@@ -475,7 +474,7 @@ class Base extends Controller {
 	}
 
 	/**
-	 * Renders the series details for an event attached to a series.
+	 * Renders the series details on attendee report page for an event attached to a series.
 	 *
 	 * @since TBD
 	 *
@@ -483,7 +482,7 @@ class Base extends Controller {
 	 *
 	 * @return void
 	 */
-	public function render_series_details_for_attached_event( int $post_id ): void {
+	public function render_series_details_for_attached_event_attendee_report( int $post_id ): void {
 		if ( get_post_type( $post_id ) === Series_Post_Type::POSTTYPE ) {
 			return;
 		}
@@ -504,6 +503,52 @@ class Base extends Controller {
 			sprintf( '<a href="%s" target="_blank">%s</a>', esc_url( $edit_url ), __( 'Edit Series', 'event-tickets' ) ),
 			sprintf( '<a href="%s" target="_blank">%s</a>', esc_url( get_permalink( $series_id ) ), __( 'View Series', 'event-tickets' ) ),
 			sprintf( '<a href="%s" target="_blank">%s</a>', esc_url( $attendee_report_link ), __( 'Series Attendees', 'event-tickets' ) ),
+		];
+
+		// Render series details.
+		$this->admin_views->template( 'admin/attendees/series-summary', [
+			'title'        => $title,
+			'edit_link'    => $edit_link,
+			'action_links' => $action_links
+		] );
+	}
+
+	/**
+	 * Renders the series details on order report page for an event attached to a series.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id The ID of the post being displayed.
+	 *
+	 * @return void
+	 */
+	public function render_series_details_for_attached_event_order_report( int $post_id ): void {
+		if ( get_post_type( $post_id ) === Series_Post_Type::POSTTYPE ) {
+			return;
+		}
+
+		// Check if event is part of a series.
+		$series_id = tec_series()->where( 'event_post_id', $post_id )->first_id();
+
+		if ( ! $series_id ) {
+			return;
+		}
+
+		$provider = Tickets::get_event_ticket_provider_object( $series_id );
+
+		if ( ! $provider ) {
+			return;
+		}
+
+		// Generate series summary.
+		$title                = get_the_title( $series_id );
+		$edit_url             = get_edit_post_link( $series_id );
+		$edit_link            = sprintf( '<a href="%s" target="_blank">%s</a>', esc_url( $edit_url ), $title );
+		$order_report_link    = $provider->get_event_reports_link( $series_id, true );
+		$action_links         = [
+			sprintf( '<a href="%s" target="_blank">%s</a>', esc_url( $edit_url ), __( 'Edit Series', 'event-tickets' ) ),
+			sprintf( '<a href="%s" target="_blank">%s</a>', esc_url( get_permalink( $series_id ) ), __( 'View Series', 'event-tickets' ) ),
+			sprintf( '<a href="%s" target="_blank">%s</a>', esc_url( $order_report_link ), __( 'Series Orders', 'event-tickets' ) ),
 		];
 
 		// Render series details.
