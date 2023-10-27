@@ -125,7 +125,7 @@ class Connector {
 	 * @return ?string
 	 */
 	public function get_image_url_from_ticket_data( $ticket ): ?string {
-		if ( tribe( Settings::class )->is_enabled( $ticket ) ) {
+		if ( ! tribe( Settings::class )->is_enabled( $ticket ) ) {
 			return null;
 		}
 
