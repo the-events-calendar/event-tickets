@@ -35,12 +35,12 @@ $wrapper_classes = [
 ?>
 
 <div <?php tribe_classes( $wrapper_classes ); ?>>
-	<?php $this->template( 'attendees-list/attendees/title' ); ?>
+	<?php $this->template( 'components/attendees-list/attendees/title' ); ?>
 
 	<div class="tec-tickets__attendees-list-listing">
 		<?php foreach ( $attendees as $attendee ) : ?>
 			<div class="tec-tickets__attendees-list-attendee-row">
-				<?php $this->template( 'attendees-list/attendees/attendee', [ 'attendee' => $attendee ] ); ?>
+				<?php $this->template( 'components/attendees-list/attendees/attendee', [ 'attendee' => $attendee ] ); ?>
 			</div>
 		<?php endforeach; ?>
 	</div>

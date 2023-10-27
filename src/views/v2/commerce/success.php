@@ -29,7 +29,7 @@
 		<?php $this->template( 'order/header' ); ?>
 		<?php $this->template( 'order/description' ); ?>
 		<?php $this->template( 'order/details' ); ?>
-		<?php tribe( 'tickets.main' )->get_components_template()->template( 'attendees-list/attendees', $this->get_global_values(), true ); ?>
+		<?php tribe( 'tickets.editor.template' )->template( 'components/attendees-list/attendees', $this->get_global_values(), true ); ?>
 		<?php $this->template( 'order/footer' ); ?>
 	</section>
 </div>
