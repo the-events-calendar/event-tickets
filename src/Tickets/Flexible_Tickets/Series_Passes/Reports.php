@@ -39,42 +39,6 @@ class Reports {
 	}
 
 	/**
-	 * Registers the hooks.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	public function register_hooks(): void {
-		add_filter( 'tribe_template_context:tickets/admin-views/attendees', [
-			$this,
-			'filter_attendees_report_context'
-		] );
-		add_action( 'tribe_tickets_attendees_event_details_list_top', [ $this, 'render_series_details_on_attendee_report' ], 50 );
-		add_action( 'tribe_tickets_report_event_details_list_top', [ $this, 'render_series_details_on_order_report' ], 50 );
-		add_filter( 'tec_tickets_commerce_order_report_summary_label_for_type', [ $this, 'filter_series_type_label' ] );
-		add_filter( 'tec_tickets_commerce_order_report_summary_should_include_event_sales_data', [ $this, 'filter_out_series_type_tickets_from_order_report' ], 10, 4 );
-	}
-
-	/**
-	 * Unregister the hooks.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	public function unregister_hooks(): void {
-		remove_filter( 'tribe_template_context:tickets/admin-views/attendees', [
-			$this,
-			'filter_attendees_report_context'
-		] );
-		remove_action( 'tribe_tickets_attendees_event_details_list_top', [ $this, 'render_series_details_on_attendee_report' ], 50 );
-		remove_action( 'tribe_tickets_report_event_details_list_top', [ $this, 'render_series_details_on_order_report' ], 50 );
-		remove_filter( 'tec_tickets_commerce_order_report_summary_label_for_type', [ $this, 'filter_series_type_label' ] );
-		remove_filter( 'tec_tickets_commerce_order_report_summary_should_include_event_sales_data', [ $this, 'filter_out_series_type_tickets_from_order_report' ], 10, 4 );
-	}
-
-	/**
 	 * Renders the series details on attendee report page for an event attached to a series.
 	 *
 	 * @since TBD

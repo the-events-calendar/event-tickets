@@ -16,7 +16,6 @@ use TEC\Events_Pro\Custom_Tables\V1\Templates\Series_Filters;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Labels;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Meta;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Queries;
-use TEC\Tickets\Flexible_Tickets\Series_Passes\Reports;
 use Tribe__Events__Main as TEC;
 use Tribe__Repository__Interface as ORM;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
@@ -84,15 +83,6 @@ class Series_Passes extends Controller {
 	private Queries $queries;
 
 	/**
-	 * A reference to the Series Passes' reports handler.
-	 *
-	 * @since TBD
-	 *
-	 * @var Reports
-	 */
-	private Reports $reports;
-
-	/**
 	 * Series_Passes constructor.
 	 *
 	 * since TBD
@@ -108,7 +98,6 @@ class Series_Passes extends Controller {
 		Labels $labels,
 		Meta $meta,
 		Metabox $metabox,
-		Reports $reports,
 		Ticket_Provider_Handler $ticket_provider_handler,
 		Queries $queries
 	) {
@@ -144,8 +133,6 @@ class Series_Passes extends Controller {
 	protected function do_register(): void {
 		$this->container->singleton( Series_Passes\Repository::class, Series_Passes\Repository::class );
 		$this->container->singleton( Series_Passes\Metadata::class, Series_Passes\Metadata::class );
-		// Register reporting functions.
-		$this->reports->register_hooks();
 
 		add_filter( 'the_content', [ $this, 'reorder_series_content' ], 0 );
 		add_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'render_form_toggle' ] );
@@ -233,8 +220,6 @@ class Series_Passes extends Controller {
 	 * @return void
 	 */
 	public function unregister(): void {
-		// Unregister reporting functions.
-		$this->reports->unregister_hooks();
 		remove_filter( 'the_content', [ $this, 'reorder_series_content' ], 0 );
 		remove_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'render_form_toggle' ] );
 		remove_action( 'admin_menu', [ $this, 'enable_reports' ], 20 );

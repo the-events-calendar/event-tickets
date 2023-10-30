@@ -14,12 +14,15 @@ use TEC\Common\Contracts\Provider\Controller;
 use TEC\Events\Custom_Tables\V1\Models\Occurrence;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 use TEC\Tickets\Admin\Editor_Data;
+use TEC\Tickets\Commerce\Reports\Data\Order_Summary;
 use TEC\Tickets\Flexible_Tickets\Repositories\Event_Repository;
 use Tribe__Template as Template;
 use TEC\Tickets\Flexible_Tickets\Templates\Admin_Views;
 use Tribe__Events__Main as TEC;
 use Tribe__Main;
 use Tribe__Tickets__Tickets as Tickets;
+use TEC\Tickets\Flexible_Tickets\Series_Passes\Reports;
+use Tribe__Tickets__Ticket_Object as Ticket_Object;
 
 /**
  * Class Base.
@@ -39,6 +42,15 @@ class Base extends Controller {
 	private Admin_Views $admin_views;
 
 	/**
+	 * A reference to the Reports handler.
+	 *
+	 * @since TBD
+	 *
+	 * @var Reports
+	 */
+	private Reports $reports;
+
+	/**
 	 * Base constructor.
 	 *
 	 * since TBD
@@ -46,9 +58,14 @@ class Base extends Controller {
 	 * @param Container   $container   A reference to the Container.
 	 * @param Admin_Views $admin_views A reference to the Admin Views handler for Flexible Tickets.
 	 */
-	public function __construct( Container $container, Admin_Views $admin_views ) {
+	public function __construct(
+		Container $container,
+		Admin_Views $admin_views,
+		Reports $reports
+	) {
 		parent::__construct( $container );
 		$this->admin_views = $admin_views;
+		$this->reports     = $reports;
 	}
 
 	/**
@@ -132,6 +149,14 @@ class Base extends Controller {
 			'include_all_events_in_move_ticket_choices'
 		] );
 		add_filter( 'tribe_events_event_repository_map', [ $this, 'filter_events_repository_map' ], 50 );
+		add_filter( 'tribe_template_context:tickets/admin-views/attendees', [
+			$this,
+			'filter_attendees_report_context'
+		] );
+		add_action( 'tribe_tickets_attendees_event_details_list_top', [ $this, 'render_series_details_on_attendee_report' ], 50 );
+		add_action( 'tribe_tickets_report_event_details_list_top', [ $this, 'render_series_details_on_order_report' ], 50 );
+		add_filter( 'tec_tickets_commerce_order_report_summary_label_for_type', [ $this, 'filter_series_type_label' ] );
+		add_filter( 'tec_tickets_commerce_order_report_summary_should_include_event_sales_data', [ $this, 'filter_out_series_type_tickets_from_order_report' ], 10, 4 );
 	}
 
 	/**
@@ -198,6 +223,14 @@ class Base extends Controller {
 			'include_all_events_in_move_ticket_choices'
 		] );
 		remove_filter( 'tribe_events_event_repository_map', [ $this, 'filter_events_repository_map' ], 50 );
+		remove_filter( 'tribe_template_context:tickets/admin-views/attendees', [
+			$this,
+			'filter_attendees_report_context'
+		] );
+		remove_action( 'tribe_tickets_attendees_event_details_list_top', [ $this, 'render_series_details_on_attendee_report' ], 50 );
+		remove_action( 'tribe_tickets_report_event_details_list_top', [ $this, 'render_series_details_on_order_report' ], 50 );
+		remove_filter( 'tec_tickets_commerce_order_report_summary_label_for_type', [ $this, 'filter_series_type_label' ] );
+		remove_filter( 'tec_tickets_commerce_order_report_summary_should_include_event_sales_data', [ $this, 'filter_out_series_type_tickets_from_order_report' ], 10, 4 );
 	}
 
 	/**
@@ -427,5 +460,61 @@ class Base extends Controller {
 		$map['default'] = Event_Repository::class;
 
 		return $map;
+	}
+
+	/**
+	 * Filters the context used to render the Attendees Report to add the data needed to support the additional ticket
+	 * types.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $context The context used to render the Attendees Report.
+	 *
+	 * @return array<string,mixed> The updated context.
+	 */
+	public function filter_attendees_report_context( array $context = [] ): array {
+		return $this->reports->filter_attendees_report_context( $context );
+	}
+
+	/**
+	 * Renders the series details on order report page for an event attached to a series.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id The ID of the post being displayed.
+	 *
+	 * @return void
+	 */
+	public function render_series_details_on_order_report( int $post_id ): void {
+		$this->reports->render_series_details_on_order_report( $post_id );
+	}
+
+	/**
+	 * Filters the label for the Series post type for the report pages.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $type The type of ticket.
+	 *
+	 * @return string The updated label.
+	 */
+	public function filter_series_type_label( $type ): string {
+		return $this->reports->filter_series_type_label( $type );
+	}
+
+	/**
+	 * Filters the order report to remove the series passes from the event sales data.
+	 *
+	 * @since TBD
+	 *
+	 * @param bool              $include Whether to include the event sales data.
+	 * @param Ticket_Object     $ticket  The ticket object.
+	 * @param array<string,int> $quantity_by_status The quantity of tickets by status.
+	 * @param Order_Summary     $order_summary The order summary object.
+	 *
+	 * @return bool Whether to include the event sales data.
+	 */
+	public function filter_out_series_type_tickets_from_order_report( $include, $ticket, $quantity_by_status, $order_summary ): bool {
+		return $this->reports->filter_out_series_type_tickets_from_order_report( $include, $ticket, $quantity_by_status, $order_summary );
 	}
 }
