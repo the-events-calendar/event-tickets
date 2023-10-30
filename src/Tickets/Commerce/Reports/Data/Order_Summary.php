@@ -21,7 +21,7 @@ class Order_Summary {
 	 *
 	 * @var int The post ID.
 	 */
-	private int $post_id;
+	protected int $post_id;
 
 	/**
 	 * @since TBD
