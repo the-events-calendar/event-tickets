@@ -16,7 +16,7 @@ import {
 	SettingsActionButton,
 	AttendeesActionButton,
 	OrdersActionButton,
-} from '@moderntribe/tickets/blocks/tickets/action-buttons';
+} from '../action-buttons';
 import { ActionDashboard, WarningButton } from '@moderntribe/tickets/elements';
 import './style.pcss';
 

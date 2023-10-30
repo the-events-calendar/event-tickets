@@ -13,8 +13,7 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { IconWithTooltip } from '@moderntribe/tickets/elements';
-import { NumericLabel } from '@moderntribe/tickets/elements';
+import { IconWithTooltip, NumericLabel } from '@moderntribe/tickets/elements';
 import './style.pcss';
 
 /**
@@ -55,6 +54,7 @@ const Availability = ( { available, total } ) => {
 					? (
 						<IconWithTooltip
 							propertyName={ __(
+								/* eslint-disable-next-line max-len */
 								'Ticket availability is based on the lowest number of inventory, stock, and capacity.',
 								'event-tickets',
 							) }

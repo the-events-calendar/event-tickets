@@ -15,7 +15,7 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import Availability from '../availability/container';
-import InactiveTicket from '@moderntribe/tickets/blocks/tickets/inactive/inactive';
+import InactiveTicket from '../inactive/inactive';
 import { Card } from '@moderntribe/tickets/elements';
 import './style.pcss';
 

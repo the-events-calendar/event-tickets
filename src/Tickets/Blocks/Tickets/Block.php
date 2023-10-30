@@ -74,10 +74,10 @@ class Block extends Abstract_Block {
 	 * @return void
 	 */
 	public function assets() {
-		$plugin = Tickets_Main::instance();
-
 		// Check whether we use v1 or v2. We need to update this when we deprecate tickets v1.
 		$tickets_js = tribe_tickets_new_views_is_enabled() ? 'v2/tickets-block.js' : 'tickets-block.js';
+
+		$plugin = Tickets_Main::instance();
 
 		tribe_asset(
 			$plugin,
@@ -121,6 +121,18 @@ class Block extends Abstract_Block {
 		);
 
 		Tickets::$frontend_script_enqueued = true;
+	}
+
+	/**
+	 * Overrides the parent method to register the editor scripts.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function register() {
+		parent::register();
+		add_action( 'admin_enqueue_scripts', [ $this, 'register_editor_scripts' ] );
 	}
 
 	/**
@@ -315,7 +327,12 @@ class Block extends Abstract_Block {
 		return $messages;
 	}
 
-	protected function get_registration_block_type() {
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @since TBD
+	 */
+	public function get_registration_block_type() {
 		return __DIR__ . '/block.json';
 	}
 
@@ -324,10 +341,35 @@ class Block extends Abstract_Block {
 	 *
 	 * @since TBD
 	 */
-	protected function get_registration_args( array $args ): array {
+	public function get_registration_args( array $args ): array {
 		$args['title']       = _x( 'Tickets', 'Block title', 'event-tickets' );
 		$args['description'] = _x( 'Sell tickets and register attendees.', 'Block description', 'event-tickets' );
 
 		return $args;
+	}
+
+	/**
+	 * Registers the editor scripts.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function register_editor_scripts() {
+		$plugin = Tickets_Main::instance();
+		$min    = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+
+		// Using WordPress functions to register since we just need to register them.
+		wp_register_script(
+			'tec-tickets-tickets-block-editor-script',
+			$plugin->plugin_url . "build/Tickets/Blocks/Tickets/editor{$min}.js",
+			[ 'tribe-common-gutenberg-vendor', 'tribe-tickets-gutenberg-vendor' ]
+		);
+
+		wp_register_style(
+			'tec-tickets-tickets-block-editor-style',
+			$plugin->plugin_url . "build/Tickets/Blocks/Tickets/editor{$min}.css",
+			[ 'tribe-tickets-gutenberg-main-styles' ]
+		);
 	}
 }

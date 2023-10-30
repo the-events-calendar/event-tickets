@@ -14,8 +14,8 @@ import { Spinner } from '@wordpress/components';
  * Internal dependencies
  */
 import { SettingsDashboard } from '@moderntribe/tickets/elements';
-import CapacityTable from '@moderntribe/tickets/blocks/tickets/capacity-table/container';
-import HeaderImage from '@moderntribe/tickets/blocks/tickets/header-image/container';
+import CapacityTable from '../capacity-table/container';
+import HeaderImage from '../header-image/container';
 import './style.pcss';
 
 const TicketsSettingsDashboard = ( {

@@ -14,5 +14,7 @@
     "html": false,
     "multiple": false,
     "customClassName": false
-  }
+  },
+  "editorScript": "tec-tickets-tickets-block-editor-script",
+  "editorStyle": "tec-tickets-tickets-block-editor-style"
 }
