@@ -10,6 +10,11 @@
 				<h3>Event Details				</h3>
 				<ul>
 					
+				<li>
+					<strong>Event Date:</strong>
+					January 1, 2021
+				</li>
+			
 			<li class="post-type">
 				<strong>Post type: </strong>
 				event
@@ -25,28 +30,50 @@
 				
 			</div>
 			<div class="welcome-panel-column welcome-panel-middle">
-				<h3>
-					Sales by Ticket									</h3>
-				<ul>
-											<li>
-							Test TC ticket for {{ID}}: &#x24;1.00 (1)						</li>
-									</ul>
-			</div>
-			<div class="welcome-panel-column welcome-panel-last alternate">
-				<div class="totals-header">
-					<h3>
-						Total Ticket Sales: &#x24;1.00 (1)					</h3>
-
-					<div class="order-total">
-						Total Tickets Ordered: &#x24;1.00 (1)					</div>
+				<h3 class="tec-tickets__admin-orders-report-overview-title">
+					Sales by Ticket				</h3>
+				<div class="tec-tickets__admin-orders-report-overview-ticket-type">
+											<div class="tec-tickets__admin-orders-report-overview-ticket-type-icon tec-tickets__admin-orders-report-overview-ticket-type-icon--default"></div>
+						<div class="tec-tickets__admin-orders-report-overview-ticket-type-label">
+							Single Ticket						</div>
+						<div class="tec-tickets__admin-orders-report-overview--border"></div>
 				</div>
-
-				<ul id="sales_breakdown_wrapper" class="tribe-event-meta-note">
-											<li>
-							<strong>Completed:</strong>
-							&#x24;1.00							<span id="total_issued">(1)</span>
+				<ul class="tec-tickets__admin-orders-report-overview-ticket-type-list">
+											<li class="tec-tickets__admin-orders-report-overview-ticket-type-list-item">
+							<div class="tec-tickets__admin-orders-report-overview-ticket-type-list-item-ticket-name">
+								Test TC ticket for {{ID}} &#x24;1.00							</div>
+							<div class="tec-tickets__admin-orders-report-overview-ticket-type-list-item-stat">
+								1 completed | 99 available							</div>
 						</li>
 									</ul>
+								</div>
+			<div class="welcome-panel-column welcome-panel-last alternate">
+				<div class="tec-tickets__admin-orders-report__sales-overview__title">
+					<h3>Sales Totals</h3>
+				</div>
+				<div class="tec-tickets__admin-orders-report__sales-overview__data">
+					<div class="tec-tickets__admin-orders-report__sales-overview__by-status">
+													<div class="tec-tickets__admin-orders-report__sales-overview__list__item">
+								<div class="tec-tickets__admin-orders-report__sales-overview__list__item-label">Completed</div>
+								<div class="tec-tickets__admin-orders-report__sales-overview__list__item-amount">&#x24;1.00 (1)</div>
+							</div>
+											</div>
+					<div class="tec-tickets__admin-orders-report-overview--border"></div>
+					<div class="tec-tickets__admin-orders-report__sales-overview__total">
+						<div class="tec-tickets__admin-orders-report__sales-overview__list__item">
+							<div class="tec-tickets__admin-orders-report__sales-overview__list__item-label">
+								<div class="tec-tickets__admin-orders-report__sales-overview__total-label">Total Tickets Ordered</div>
+							</div>
+							<div class="tec-tickets__admin-orders-report__sales-overview__list__item-amount">&#x24;1.00 (1)</div>
+						</div>
+						<div class="tec-tickets__admin-orders-report__sales-overview__list__item">
+							<div class="tec-tickets__admin-orders-report__sales-overview__list__item-label">
+								<div class="tec-tickets__admin-orders-report__sales-overview__total-label">Total Ticket Sales</div>
+							</div>
+							<div class="tec-tickets__admin-orders-report__sales-overview__list__item-amount">&#x24;1.00 (1)</div>
+						</div>
+					</div>
+									</div>
 			</div>
 		</div>
 	</div>
