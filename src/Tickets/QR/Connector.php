@@ -116,7 +116,7 @@ class Connector {
 	}
 
 	/**
-	 * Get QR Code URL from ticket.
+	 * Get QR image from ticket.
 	 *
 	 * @since TBD
 	 *
@@ -124,30 +124,30 @@ class Connector {
 	 *
 	 * @return ?string
 	 */
-	public function get_image_url_from_ticket_data( $ticket ): ?string {
+	public function get_image_from_ticket_data( $ticket ): ?array {
 		if ( ! tribe( Settings::class )->is_enabled( $ticket ) ) {
 			return null;
 		}
 
-		$link = $this->get_checkin_url( $ticket['qr_ticket_id'], $ticket['event_id'], $ticket['security_code'] );
-		$qr   = $this->get_image_url_for_link( $link );
+		$link   = $this->get_checkin_url( $ticket['qr_ticket_id'], $ticket['event_id'], $ticket['security_code'] );
+		$upload = $this->get_image_for_link( $link );
 
-		if ( ! $qr ) {
+		if ( ! $upload ) {
 			return null;
 		}
 
-		return $qr;
+		return $upload;
 	}
 
 	/**
 	 * Generates the QR image for a given link and stores it in /wp-content/uploads.
 	 * Returns the link to the new image.
 	 *
-	 * @param ?string $link
+	 * @param ?string $link The QR link.
 	 *
-	 * @return ?string
+	 * @return ?array
 	 */
-	public function get_image_url_for_link( ?string $link ): ?string {
+	public function get_image_for_link( ?string $link ): ?array {
 		$qr_code = tribe( QR::class );
 
 		if ( empty( $link ) ) {
@@ -165,7 +165,65 @@ class Connector {
 			return null;
 		}
 
-		return $upload['url'];
+		return $upload;
+	}
+
+	/**
+	 * Get QR Code URL from ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $ticket Ticket data we are using to get the QR code image from.
+	 *
+	 * @return ?string
+	 */
+	public function get_image_url_from_ticket_data( $ticket ): ?string {
+		$upload = $this->get_image_from_ticket_data( $ticket );
+
+		return ! empty( $upload['url'] ) ? $upload['url'] : null;
+	}
+
+	/**
+	 * Generates the QR image for a given link and stores it in /wp-content/uploads.
+	 * Returns the link to the new image.
+	 *
+	 * @param ?string $link The QR link.
+	 *
+	 * @return ?string
+	 */
+	public function get_image_url_for_link( ?string $link ): ?string {
+		$upload = $this->get_image_for_link( $link );
+
+		return ! empty( $upload['url'] ) ? $upload['url'] : null;
+	}
+
+	/**
+	 * Get QR Code file path from ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $ticket Ticket data we are using to get the QR code image from.
+	 *
+	 * @return ?string
+	 */
+	public function get_image_path_from_ticket_data( $ticket ): ?string {
+		$upload = $this->get_image_from_ticket_data( $ticket );
+
+		return ! empty( $upload['file'] ) ? $upload['file'] : null;
+	}
+
+	/**
+	 * Generates the QR image for a given link and stores it in /wp-content/uploads.
+	 * Returns the QR image path to the new image.
+	 *
+	 * @param ?string $link The QR link.
+	 *
+	 * @return ?string
+	 */
+	public function get_image_path_for_link( ?string $link ): ?string {
+		$upload = $this->get_image_for_link( $link );
+
+		return ! empty( $upload['file'] ) ? $upload['file'] : null;
 	}
 
 	/**
