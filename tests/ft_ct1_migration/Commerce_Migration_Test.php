@@ -261,7 +261,7 @@ class Commerce_Migration_Test extends FT_CT1_Migration_Test_Case {
 		$this->assertEquals( [ $paypal_ticket_id ], tribe_tickets()->where( 'event', $series_id )->get_ids() );
 		$this->assertEquals( [], tribe_attendees()->where( 'event', $series_id )->get_ids() );
 		$this->assertEquals( Series_Passes::TICKET_TYPE, Commerce::get_instance()->get_ticket( $series_id, $paypal_ticket_id )->type() );
-		$this->assertEquals( Commerce::class, get_post_meta( $series_id, '_tribe_default_ticket_provider', true ) );
+		$this->assertEquals( 'TECTicketsCommerceModule', get_post_meta( $series_id, '_tribe_default_ticket_provider', true ) );
 		$this->assertEquals( 280, get_post_meta( $series_id, '_tribe_ticket_capacity', true ) );
 		$this->assertTrue( tribe_is_truthy( get_post_meta( $series_id, Global_Stock::GLOBAL_STOCK_ENABLED, true ) ) );
 		$this->assertEquals( 215, get_post_meta( $series_id, Global_Stock::GLOBAL_STOCK_LEVEL, true ) );
@@ -346,7 +346,7 @@ class Commerce_Migration_Test extends FT_CT1_Migration_Test_Case {
 		$this->assertEquals( Series_Passes::TICKET_TYPE, Commerce::get_instance()->get_ticket( $series_id, $ticket_1 )->type() );
 		$this->assertEquals( Series_Passes::TICKET_TYPE, Commerce::get_instance()->get_ticket( $series_id, $ticket_2 )->type() );
 		$this->assertEquals( Series_Passes::TICKET_TYPE, Commerce::get_instance()->get_ticket( $series_id, $ticket_3 )->type() );
-		$this->assertEquals( Commerce::class, get_post_meta( $series_id, '_tribe_default_ticket_provider', true ) );
+		$this->assertEquals( 'TECTicketsCommerceModule', get_post_meta( $series_id, '_tribe_default_ticket_provider', true ) );
 		$this->assertEquals( 280, get_post_meta( $series_id, '_tribe_ticket_capacity', true ) );
 		$this->assertTrue( tribe_is_truthy( get_post_meta( $series_id, Global_Stock::GLOBAL_STOCK_ENABLED, true ) ) );
 		$this->assertEquals( 268, get_post_meta( $series_id, Global_Stock::GLOBAL_STOCK_LEVEL, true ) );
@@ -511,7 +511,7 @@ class Commerce_Migration_Test extends FT_CT1_Migration_Test_Case {
 		$this->assertEquals( Series_Passes::TICKET_TYPE, Commerce::get_instance()->get_ticket( $series_id, $ticket_1 )->type() );
 		$this->assertEquals( Series_Passes::TICKET_TYPE, Commerce::get_instance()->get_ticket( $series_id, $ticket_2 )->type() );
 		$this->assertEquals( Series_Passes::TICKET_TYPE, Commerce::get_instance()->get_ticket( $series_id, $ticket_3 )->type() );
-		$this->assertEquals( Commerce::class, get_post_meta( $series_id, '_tribe_default_ticket_provider', true ) );
+		$this->assertEquals( 'TECTicketsCommerceModule', get_post_meta( $series_id, '_tribe_default_ticket_provider', true ) );
 		$this->assertEquals( 280, get_post_meta( $series_id, '_tribe_ticket_capacity', true ) );
 		$this->assertTrue( tribe_is_truthy( get_post_meta( $series_id, Global_Stock::GLOBAL_STOCK_ENABLED, true ) ) );
 		$this->assertEquals( 268, get_post_meta( $series_id, Global_Stock::GLOBAL_STOCK_LEVEL, true ) );
