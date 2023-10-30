@@ -11,6 +11,6 @@ class BlockTest extends WPTestCase {
 	public function test_get_registration_args(): void {
 		$block = tribe( Block::class );
 
-		$this->assertMatchesJsonSnapshot( json_encode( $block->get_block_registration_args(), JSON_PRETTY_PRINT ) );
+		$this->assertMatchesJsonSnapshot( json_encode( $block->get_registration_args( [] ), JSON_PRETTY_PRINT ) );
 	}
 }

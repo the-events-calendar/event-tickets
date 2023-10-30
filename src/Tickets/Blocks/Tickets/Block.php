@@ -327,7 +327,12 @@ class Block extends Abstract_Block {
 		return $messages;
 	}
 
-	protected function get_registration_block_type() {
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @since TBD
+	 */
+	public function get_registration_block_type() {
 		return __DIR__ . '/block.json';
 	}
 
@@ -336,7 +341,7 @@ class Block extends Abstract_Block {
 	 *
 	 * @since TBD
 	 */
-	protected function get_registration_args( array $args ): array {
+	public function get_registration_args( array $args ): array {
 		$args['title']       = _x( 'Tickets', 'Block title', 'event-tickets' );
 		$args['description'] = _x( 'Sell tickets and register attendees.', 'Block description', 'event-tickets' );
 
