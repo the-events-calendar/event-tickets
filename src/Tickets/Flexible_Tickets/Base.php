@@ -581,16 +581,16 @@ class Base extends Controller {
 	 *
 	 * @since TBD
 	 *
-	 * @param bool          $include Whether to include the event sales data.
-	 * @param Ticket_Object $ticket  The ticket object.
-	 * @param array         $quantity_by_status The quantity by status.
-	 * @param Order_Summary $order_summary The order summary object.
+	 * @param bool              $include Whether to include the event sales data.
+	 * @param Ticket_Object     $ticket  The ticket object.
+	 * @param array<string,int> $quantity_by_status The quantity of tickets by status.
+	 * @param Order_Summary     $order_summary The order summary object.
 	 *
 	 * @return bool Whether to include the event sales data.
 	 */
 	public function filter_out_series_type_tickets_from_order_report( $include, $ticket, $quantity_by_status, $order_summary ): bool {
 		// If we are processing order report page for the Series post type, then we want to include all the tickets.
-		if ( get_post_type( $order_summary->post_id ) === Series_Post_Type::POSTTYPE ) {
+		if ( get_post_type( $order_summary->get_post_id() ) === Series_Post_Type::POSTTYPE ) {
 			return $include;
 		}
 

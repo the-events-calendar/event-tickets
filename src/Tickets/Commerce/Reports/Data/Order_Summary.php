@@ -21,7 +21,7 @@ class Order_Summary {
 	 *
 	 * @var int The post ID.
 	 */
-	public int $post_id;
+	private int $post_id;
 
 	/**
 	 * @since TBD
@@ -76,6 +76,17 @@ class Order_Summary {
 		$this->post_id = $post_id;
 		$this->init_vars();
 		$this->build_data();
+	}
+
+	/**
+	 * Get the post ID.
+	 *
+	 * @since TBD
+	 *
+	 * @return int The post ID.
+	 */
+	public function get_post_id() {
+		return $this->post_id;
 	}
 
 	/**
@@ -321,6 +332,11 @@ class Order_Summary {
 		 * @param array<string,int> $quantity_by_status The quantity by status.
 		 * @param Order_Summary $this The order summary object.
 		 */
-		return apply_filters( 'tec_tickets_commerce_order_report_summary_should_include_event_sales_data', true, $ticket, $quantity_by_status, $this );
+		return apply_filters( 'tec_tickets_commerce_order_report_summary_should_include_event_sales_data',
+			true,
+			$ticket,
+			$quantity_by_status,
+			$this
+		);
 	}
 }
