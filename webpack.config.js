@@ -20,10 +20,6 @@ const PLUGIN_SCOPE = 'tickets';
 // ──────────────────────────────────────────────────────────────────────────────────────────────
 //
 
-const compileContext = process.env.COMPILE_BLOCKS ? 'blocks' : 'default';
-let config;
-let miniCssExtractPlugin;
-// if ( compileContext === 'blocks' ) {
 const isProduction = process.env.NODE_ENV === 'production';
 const postfix = isProduction ? 'min.css' : 'css';
 
@@ -66,7 +62,7 @@ const targetEntries = reduce ( targets, ( carry, target ) => ( {
 } ), {} );
 
 // Configure multiple entry points.
-config = merge ( common, {
+const config = merge ( common, {
 	entry: targetEntries
 } );
 
