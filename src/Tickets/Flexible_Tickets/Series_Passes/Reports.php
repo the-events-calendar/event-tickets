@@ -1,7 +1,6 @@
 <?php
 /**
- * Filters the labels used by the Tickets plugin in  the admin and frontend of the site to suite the Series Passes
- * wording.
+ * Handles the reports integrations for the Series Passes.
  *
  * @since TBD
  *
@@ -18,7 +17,7 @@ use Tribe__Tickets__Tickets as Tickets;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 
 /**
- * Class Labels.
+ * Class Reports.
  *
  * @since TBD
  *
