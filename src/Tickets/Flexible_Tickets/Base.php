@@ -132,10 +132,6 @@ class Base extends Controller {
 			'include_all_events_in_move_ticket_choices'
 		] );
 		add_filter( 'tribe_events_event_repository_map', [ $this, 'filter_events_repository_map' ], 50 );
-		add_filter( 'tribe_template_context:tickets/admin-views/attendees', [
-			$this,
-			'filter_attendees_report_context'
-		] );
 	}
 
 	/**
@@ -202,10 +198,6 @@ class Base extends Controller {
 			'include_all_events_in_move_ticket_choices'
 		] );
 		remove_filter( 'tribe_events_event_repository_map', [ $this, 'filter_events_repository_map' ], 50 );
-		remove_filter( 'tribe_template_context:tickets/admin-views/attendees', [
-			$this,
-			'filter_attendees_report_context'
-		] );
 	}
 
 	/**

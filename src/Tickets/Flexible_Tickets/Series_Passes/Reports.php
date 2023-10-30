@@ -47,6 +47,10 @@ class Reports {
 	 * @return void
 	 */
 	public function register_hooks(): void {
+		add_filter( 'tribe_template_context:tickets/admin-views/attendees', [
+			$this,
+			'filter_attendees_report_context'
+		] );
 		add_action( 'tribe_tickets_attendees_event_details_list_top', [ $this, 'render_series_details_on_attendee_report' ], 50 );
 		add_action( 'tribe_tickets_report_event_details_list_top', [ $this, 'render_series_details_on_order_report' ], 50 );
 		add_filter( 'tec_tickets_commerce_order_report_summary_label_for_type', [ $this, 'filter_series_type_label' ] );
@@ -61,6 +65,10 @@ class Reports {
 	 * @return void
 	 */
 	public function unregister_hooks(): void {
+		remove_filter( 'tribe_template_context:tickets/admin-views/attendees', [
+			$this,
+			'filter_attendees_report_context'
+		] );
 		remove_action( 'tribe_tickets_attendees_event_details_list_top', [ $this, 'render_series_details_on_attendee_report' ], 50 );
 		remove_action( 'tribe_tickets_report_event_details_list_top', [ $this, 'render_series_details_on_order_report' ], 50 );
 		remove_filter( 'tec_tickets_commerce_order_report_summary_label_for_type', [ $this, 'filter_series_type_label' ] );
@@ -194,5 +202,29 @@ class Reports {
 		}
 
 		return $include;
+	}
+
+	/**
+	 * Filters the context used to render the Attendees Report to add the data needed to support the additional ticket
+	 * types.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $context The context used to render the Attendees Report.
+	 *
+	 * @return array<string,mixed> The updated context.
+	 */
+	public function filter_attendees_report_context( array $context = [] ): array {
+		if ( ! isset( $context['type_icon_classes'] ) ) {
+			$context['type_icon_classes'] = [];
+		}
+		$context['type_icon_classes'][ Series_Passes::TICKET_TYPE ] = 'tec-tickets__admin-attendees-overview-ticket-type-icon--series-pass';
+
+		if ( ! isset( $context['type_labels'] ) ) {
+			$context['type_labels'] = [];
+		}
+		$context['type_labels'][ Series_Passes::TICKET_TYPE ] = tec_tickets_get_series_pass_plural_uppercase( 'Attendees Report' );
+
+		return $context;
 	}
 }
