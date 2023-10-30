@@ -143,7 +143,7 @@ class OrderReportTest extends WPTestCase {
 			function (): array {
 				$series_id = static::factory()->post->create( [
 					'post_type'  => Series_Post_Type::POSTTYPE,
-					'post_title' => 'Test Series',
+					'post_title' => 'Test event with a series pass and single ticket orders',
 				] );
 				$event_id  = tribe_events()->set_args( [
 					'title'      => 'Test event with a series pass and single ticket orders',
@@ -156,8 +156,10 @@ class OrderReportTest extends WPTestCase {
 				$ticket_id      = $this->create_tc_ticket( $event_id, 10 );
 				$series_pass_id = $this->create_tc_series_pass( $series_id, 55 )->ID;
 
+				// Place orders in different dates.
 				$this->set_fn_return( 'current_time', '2020-02-22 22:22:22' );
 				$order_a = $this->create_order( [ $ticket_id => 1 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
+				$this->set_fn_return( 'current_time', '2020-02-23 22:22:22' );
 				$order_b = $this->create_order( [ $series_pass_id => 1 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
 
 				return [ $event_id, [ $series_id, $event_id, $ticket_id, $order_a->ID, $order_b->ID ] ];
@@ -168,14 +170,16 @@ class OrderReportTest extends WPTestCase {
 			function (): array {
 				$series_id = static::factory()->post->create( [
 					'post_type'  => Series_Post_Type::POSTTYPE,
-					'post_title' => 'Test Series Order page',
+					'post_title' => 'Test Series order report page for a series with multiple pass and orders',
 				] );
 
 				$series_pass_id_a = $this->create_tc_series_pass( $series_id, 10 )->ID;
 				$series_pass_id_b = $this->create_tc_series_pass( $series_id, 20 )->ID;
 
+				// Place orders in different dates.
 				$this->set_fn_return( 'current_time', '2020-02-22 22:22:22' );
 				$order_a = $this->create_order( [ $series_pass_id_a => 1 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
+				$this->set_fn_return( 'current_time', '2020-02-23 22:22:22' );
 				$order_b = $this->create_order( [ $series_pass_id_b => 1 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
 
 				return [ $series_id, [ $series_id, $series_pass_id_a, $order_a->ID, $order_b->ID ] ];
