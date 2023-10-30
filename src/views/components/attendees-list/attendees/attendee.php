@@ -1,9 +1,9 @@
 <?php
 /**
- * Tickets Commerce: Success Order Page Attendee list.
+ * Generic: Success Order Page Attendee list - Attendee template
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/commerce/order/attendees.php
+ * [your-theme]/tribe/tickets/components/attendees-list/attendees/attendee.php
  *
  * See more documentation about our views templating system.
  *
@@ -20,21 +20,17 @@
  * @var int              $order_id              [Global] The order ID.
  * @var bool             $is_tec_active         [Global] Whether `The Events Calendar` is active or not.
  * @var array            $attendees             [Global] List of attendees for the given order.
+ * @var array            $attendee              The current attendee.
  */
 
-if ( empty( $order ) || empty( $attendees ) ) {
+if ( empty( $order ) || empty( $attendee ) ) {
 	return;
 }
 
-?>
-<div class="tribe-common-b1 tribe-tickets__commerce-order-attendees">
-	<?php $this->template( 'order/attendees/title' ); ?>
+$provider     = Tribe__Tickets__Tickets::get_ticket_provider_instance( $attendee['provider'] );
+$ticket_price = $provider->get_price_html( $attendee['product_id'] );
 
-	<div class="tribe-tickets__commerce-order-attendees-list">
-		<?php foreach ( $attendees as $attendee ) : ?>
-			<div class="tribe-tickets__commerce-order-attendees-list-attendee">
-				<?php $this->template( 'order/attendees/attendee', [ 'attendee' => $attendee ] ); ?>
-			</div>
-		<?php endforeach; ?>
-	</div>
+?>
+<div class="tec-tickets__attendees-order-attendees-list-attendee-details">
+	<div><?php echo esc_html( $attendee['ticket'] ) . ' - ' . wp_kses_post( $ticket_price ); ?></div>
 </div>
