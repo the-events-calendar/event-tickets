@@ -477,6 +477,19 @@ class Base extends Controller {
 	}
 
 	/**
+	 * Renders the series details on attendee report page for an event attached to a series.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id The ID of the post being displayed.
+	 *
+	 * @return void
+	 */
+	public function render_series_details_on_attendee_report( int $post_id ): void {
+		$this->reports->render_series_details_on_attendee_report( $post_id );
+	}
+
+	/**
 	 * Renders the series details on order report page for an event attached to a series.
 	 *
 	 * @since TBD
