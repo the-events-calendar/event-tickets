@@ -28,6 +28,11 @@ class Orders extends Report_Abstract {
 	public static $page_slug = 'tickets-commerce-orders';
 
 	/**
+	 * @var string
+	 */
+	public static $tab_slug = 'tickets-commerce-orders-report';
+
+	/**
 	 * Order Pages ID on the menu.
 	 *
 	 * @since 5.2.0
@@ -190,6 +195,11 @@ class Orders extends Report_Abstract {
 	public function hook() {
 		add_filter( 'post_row_actions', [ $this, 'add_orders_row_action' ], 10, 2 );
 		add_action( 'admin_menu', [ $this, 'register_orders_page' ] );
+
+		// // register the tabbed view
+		$tc_tabbed_view = new Tabbed_View();
+		$tc_tabbed_view->set_active( self::$tab_slug );
+		$tc_tabbed_view->register();
 	}
 
 	/**
