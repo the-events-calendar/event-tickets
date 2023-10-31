@@ -236,7 +236,7 @@ class Connector {
 	protected function get_data(): array {
 		$data = [
 			'url'     => site_url(),
-			'api_key' => tribe( Settings::class )->get_api_hash(),
+			'api_key' => tribe( Settings::class )->get_api_key(),
 			'tec'     => tec_tickets_tec_events_is_active(),
 		];
 
@@ -257,19 +257,19 @@ class Connector {
 	 *
 	 * @return void
 	 */
-	public function handle_ajax_generate_api_hash(): void {
+	public function handle_ajax_generate_api_key(): void {
 		$confirm = tribe_get_request_var( 'confirm', false );
 
 		if ( ! $confirm || ! wp_verify_nonce( $confirm, $this->get_nonce_key() ) ) {
 			wp_send_json_error( __( 'Permission Error', 'event-tickets' ) );
 		}
 
-		$deleted_existing_hash = tribe( Settings::class )->delete_api_hash();
+		$deleted_existing_hash = tribe( Settings::class )->delete_api_key();
 		if ( false === $deleted_existing_hash && current_user_can( 'manage_options' ) ) {
 			wp_send_json_error( __( 'The QR API key could not be deleted, please try again.', 'event-tickets' ) );
 		}
 
-		$api_key = tribe( Settings::class )->get_api_hash();
+		$api_key = tribe( Settings::class )->get_api_key();
 		if ( empty( $api_key ) ) {
 			wp_send_json_error( __( 'The QR API key was not regenerated, please try again.', 'event-tickets' ) );
 		}

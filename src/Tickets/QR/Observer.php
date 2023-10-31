@@ -32,7 +32,7 @@ class Observer {
 		$is_qr_code_request = tribe_get_request_var( 'event_qr_code', false );
 
 		// Not as fancy as a custom permalink handler, but way less likely to fail depending on setup and settings.
-		if ( $is_qr_code_request ) {
+		if ( ! $is_qr_code_request ) {
 			return;
 		}
 

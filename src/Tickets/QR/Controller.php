@@ -44,7 +44,6 @@ class Controller extends Controller_Contract {
 		$this->container->make( Notices::class )->register_admin_notices();
 
 		$this->add_actions();
-		$this->add_filters();
 
 		$this->register_assets();
 	}
@@ -70,7 +69,9 @@ class Controller extends Controller_Contract {
 	 */
 	protected function add_actions(): void {
 		$connector_ajax_action = tribe( Connector::class )->get_ajax_action_key();
-		add_action( "wp_ajax_{$connector_ajax_action}", [ tribe( Connector::class ), 'handle_ajax_generate_api_hash' ] );
+		add_action( "wp_ajax_{$connector_ajax_action}", [ $this, 'handle_ajax_generate_api_key' ] );
+		add_action( 'admin_notices', [ $this, 'legacy_handler_admin_notice' ], 10 );
+		add_action( 'template_redirect', [ $this, 'handle_checkin_redirect' ], 10 );
 	}
 
 	/**
@@ -82,33 +83,9 @@ class Controller extends Controller_Contract {
 	 */
 	protected function remove_actions(): void {
 		$connector_ajax_action = tribe( Connector::class )->get_ajax_action_key();
-		remove_action( "wp_ajax_{$connector_ajax_action}", [ tribe( Connector::class ), 'handle_ajax_generate_api_hash' ] );
-	}
-
-	/**
-	 * Adds the filters required by the QR controller.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	protected function add_filters(): void {
-		$observer = tribe( Observer::class );
-		add_filter( 'template_redirect', [ $observer, 'handle_checkin_redirect' ], 10 );
-		add_filter( 'admin_notices', [ $observer, 'legacy_handler_admin_notice' ], 10 );
-	}
-
-	/**
-	 * Removes the filters required by the QR controller.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	protected function remove_filters(): void {
-		$observer = tribe( Observer::class );
-		remove_filter( 'template_redirect', [ $observer, 'handle_checkin_redirect' ], 10 );
-		remove_filter( 'admin_notices', [ $observer, 'legacy_handler_admin_notice' ], 10 );
+		remove_action( "wp_ajax_{$connector_ajax_action}", [ $this, 'handle_ajax_generate_api_key' ] );
+		remove_action( 'admin_notices', [ $this, 'legacy_handler_admin_notice' ], 10 );
+		remove_action( 'template_redirect', [ $this, 'handle_checkin_redirect' ], 10 );
 	}
 
 	/**
@@ -129,6 +106,39 @@ class Controller extends Controller_Contract {
 				'priority' => 0,
 			]
 		);
+	}
+
+	/**
+	 * Handles the checkin redirection.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function handle_checkin_redirect(): void {
+		tribe( Observer::class )->handle_checkin_redirect();
+	}
+
+	/**
+	 * Handles the admin notice in the legacy way. Needs to be deprecated at some point.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function legacy_handler_admin_notice(): void {
+		tribe( Observer::class )->legacy_handler_admin_notice();
+	}
+
+	/**
+	 * Handles the AJAX request to generate the API key.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function handle_ajax_generate_api_key(): void {
+		tribe( Connector::class )->handle_ajax_generate_api_key();
 	}
 
 	/**
