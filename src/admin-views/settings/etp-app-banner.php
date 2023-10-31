@@ -2,7 +2,7 @@
 /**
  * Event Tickets Plus App banner section.
  *
- * @since TBD
+ * @since TBD Moved from ETP to ET to provide support for extensions.
  * @version TBD
  *
  * @var string $qr_src     URL for the connection QR code image.
