@@ -29,17 +29,17 @@ if ( empty( $order ) || empty( $attendees ) ) {
 $wrapper_classes = [
 	'tribe-common',
 	'tribe-common-b1',
-	'tec-tickets__attendees-list-order-attendees',
-	'tec-tickets__attendees-list-order-attendees--' . $provider->orm_provider,
-]
+	'tec-tickets__attendees-list-wrapper',
+	'tec-tickets__attendees-list-wrapper--' . $provider->orm_provider,
+];
 ?>
 
 <div <?php tribe_classes( $wrapper_classes ); ?>>
-	<?php $this->template( 'components/attendees-list/attendees/title' ); ?>
+	<?php $this->template( 'components/attendees-list/title' ); ?>
 
-	<div class="tec-tickets__attendees-list-listing">
+	<div class="tec-tickets__attendees-list">
 		<?php foreach ( $attendees as $attendee ) : ?>
-			<div class="tec-tickets__attendees-list-attendee-row">
+			<div class="tec-tickets__attendees-list-item">
 				<?php $this->template( 'components/attendees-list/attendees/attendee', [ 'attendee' => $attendee ] ); ?>
 			</div>
 		<?php endforeach; ?>
