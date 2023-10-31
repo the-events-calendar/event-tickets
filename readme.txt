@@ -207,6 +207,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Tweak - Declared dynamic properties for Attendees page to avoid deprecation warnings.
 * Fix - Orders title in admin page.  [ET-1868]
 * Fix - Typo on My Tickets when using Ticket Commerce only. [ET-1909]
+* Language - 3 new strings added, 60 updated, 0 fuzzied, and 1 obsoleted
 
 = [5.6.6.1] 2023-10-12 =
 
