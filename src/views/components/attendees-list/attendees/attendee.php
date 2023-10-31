@@ -31,6 +31,8 @@ $provider     = Tribe__Tickets__Tickets::get_ticket_provider_instance( $attendee
 $ticket_price = $provider->get_price_html( $attendee['product_id'] );
 
 ?>
-<div class="tec-tickets__attendees-order-attendees-list-attendee-details">
-	<div><?php echo esc_html( $attendee['ticket'] ) . ' - ' . wp_kses_post( $ticket_price ); ?></div>
+<div class="tec-tickets__attendees-list-item-attendee-details">
+	<div class="tec-tickets__attendees-list-item-attendee-details-ticket">
+		<?php echo esc_html( $attendee['ticket'] ) . ' - ' . wp_kses_post( $ticket_price ); ?>
+	</div>
 </div>
