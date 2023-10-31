@@ -105,7 +105,6 @@ class Series_Passes extends Controller {
 		$this->labels                  = $labels;
 		$this->meta                    = $meta;
 		$this->metabox                 = $metabox;
-		$this->reports                 = $reports;
 		$this->ticket_provider_handler = $ticket_provider_handler;
 		$this->queries                 = $queries;
 	}
