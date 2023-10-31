@@ -128,3 +128,82 @@ a.tec-tickets__admin-tc-banner-link {
 		text-decoration: none;
 	}
 }
+
+.tec-tickets__admin-banner {
+	&.tec-tickets__admin-etp-app-settings-banner {
+		background-color: #fff;
+
+		.heading {
+			background: none;
+		}
+	}
+}
+
+.tec-tickets__admin-etp-app-settings-banner-help-text {
+	max-width: 690px;
+}
+
+.tec-tickets__admin-etp-app-settings-connection-wrapper {
+	align-items: center;
+	display: flex;
+	flex-direction: column;
+	max-width: 640px;
+	text-align: center;
+
+	@media (--viewport-medium) {
+		flex-direction: row;
+	}
+}
+
+.tec-tickets__admin-etp-app-settings-qr-code {
+	width: 246px;
+
+	img {
+		height: 100%;
+		width: 100%;
+	}
+}
+
+.tec-tickets__admin-etp-app-settings-manual-options {
+	align-items: center;
+	display: flex;
+	flex-direction: column;
+	margin: 20px 20px;
+	padding: 10px;
+	text-align: center;
+
+	.tec-tickets__admin-etp-app-settings-api-key {
+		background: #efeff0;
+		border: 0;
+		border-radius: 0;
+		box-shadow: none;
+		color: #000;
+		font-family: monospace, roboto, arial;
+		font-size: var(--tec-font-size-5);
+		font-weight: var(--tec-font-weight-regular);
+		height: 36px;
+		line-height: var(--tec-line-height-3);
+		margin: 0.25em 0 0.75em;
+		text-align: center;
+		width: 160px;
+	}
+}
+
+.tec-tickets__admin-etp-app-settings-site-url {
+	font-size: var(--tec-font-size-2);
+	font-weight: var(--tec-font-weight-regular);
+	line-height: var(--tec-line-height-2);
+	margin: 0.25em 0 1.25em;
+}
+
+.tec-tickets__admin-etp-app-settings-api-key-label,
+.tec-tickets__admin-etp-app-settings-site-url-label {
+	color: #3c434a;
+	font-size: var(--tec-font-size-1);
+	font-weight: var(--tec-font-weight-bold);
+	line-height: var(--tec-line-height-2);
+}
+
+.tec-tickets__admin-etp-app-settings-generate-api-key {
+	cursor: pointer;
+}
