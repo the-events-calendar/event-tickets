@@ -9,9 +9,7 @@
  * @var string $api_key    The API key string.
  * @var string $nonce      The nonce that will be used for regenerating the connector key.
  * @var string $action_key The AJAX action key that will be used to regenerate the connector key.
- *
  */
-
 ?>
 <div class="tec-tickets__admin-banner tec-tickets__admin-etp-app-settings-banner">
 	<h3 class="heading"><?php esc_html_e( 'Connect Your Event Tickets Plus App', 'event-tickets-plus' ); ?></h3>
