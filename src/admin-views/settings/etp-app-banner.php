@@ -2,7 +2,8 @@
 /**
  * Event Tickets Plus App banner section.
  *
- * @since 5.6.2
+ * @since TBD
+ * @version TBD
  *
  * @var string $qr_src     URL for the connection QR code image.
  * @var string $site_url   The website URL.
