@@ -1853,14 +1853,3 @@ function tribe_tickets_get_provider_query_slug() {
 function tec_tickets_tec_events_is_active() : bool {
 	return function_exists( 'tribe_events' );
 }
-
-/**
- * Return if `The Events Calendar PRO` is active.
- *
- * @since TBD
- *
- * @return bool True if The Events Calendar PRO is active.
- */
-function tec_tickets_tec_events_pro_is_active(): bool {
-	return class_exists( 'Tribe__Events__Pro__Main', false );
-}
