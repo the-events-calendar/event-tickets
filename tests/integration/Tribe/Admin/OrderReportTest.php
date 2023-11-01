@@ -77,8 +77,8 @@ class OrderReportTest extends WPTestCase {
 				$ticket_id = $this->create_tc_ticket( $event_id, 10 );
 
 				$this->set_fn_return( 'current_time', '2020-02-22 22:22:22' );
-
 				$order_a = $this->create_order( [ $ticket_id => 2 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
+				$this->set_fn_return( 'current_time', '2020-02-23 22:22:22' );
 				$order_b = $this->create_order( [ $ticket_id => 3 ], [ 'purchaser_email' => 'purchaser@test.com', 'order_status' => Pending::SLUG ] );
 
 				return [ $event_id, [ $event_id, $ticket_id, $order_a->ID, $order_b->ID ] ];
@@ -97,10 +97,12 @@ class OrderReportTest extends WPTestCase {
 				$ticket_id_b = $this->create_tc_ticket( $event_id, 20.50 );
 
 				$this->set_fn_return( 'current_time', '2020-02-22 22:22:22' );
-
 				$order_a = $this->create_order( [ $ticket_id_a => 2 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
+				$this->set_fn_return( 'current_time', '2020-02-23 22:22:22' );
 				$order_b = $this->create_order( [ $ticket_id_a => 3 ], [ 'purchaser_email' => 'purchaser@test.com', 'order_status' => Pending::SLUG ] );
+				$this->set_fn_return( 'current_time', '2020-02-24 22:22:22' );
 				$order_c = $this->create_order( [ $ticket_id_b => 1 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
+				$this->set_fn_return( 'current_time', '2020-02-25 22:22:22' );
 				$order_d = $this->create_order( [ $ticket_id_b => 4 ], [ 'purchaser_email' => 'purchaser@test.com', 'order_status' => Pending::SLUG ] );
 
 				return [ $event_id, [ $event_id, $ticket_id_a, $ticket_id_b, $order_a->ID, $order_b->ID, $order_c->ID, $order_d->ID ] ];
@@ -125,11 +127,14 @@ class OrderReportTest extends WPTestCase {
 				] );
 
 				$this->set_fn_return( 'current_time', '2020-02-22 22:22:22' );
-
 				$order_a = $this->create_order( [ $ticket_id_a => 1 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
+				$this->set_fn_return( 'current_time', '2020-02-23 22:22:22' );
 				$order_b = $this->create_order( [ $ticket_id_a => 1 ], [ 'purchaser_email' => 'purchaser@test.com', 'order_status' => Pending::SLUG ] );
+				$this->set_fn_return( 'current_time', '2020-02-24 22:22:22' );
 				$order_c = $this->create_order( [ $ticket_id_b => 1 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
+				$this->set_fn_return( 'current_time', '2020-02-25 22:22:22' );
 				$order_d = $this->create_order( [ $ticket_id_b => 1 ], [ 'purchaser_email' => 'purchaser@test.com', 'order_status' => Pending::SLUG ] );
+				$this->set_fn_return( 'current_time', '2020-02-26 22:22:22' );
 				$order_e = $this->create_order( [ $ticket_id_a => 1, $ticket_id_b => 1 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
 
 				return [ $event_id, [ $event_id, $ticket_id_a, $ticket_id_b, $order_a->ID, $order_b->ID, $order_c->ID, $order_d->ID, $order_e->ID ] ];
