@@ -1,25 +1,20 @@
 
 <div class="wrap tribe-report-page tec-tc-report-page">
-			<h1>Orders for: Event with 1 pending and 1 completed order [#{{ID}}]</h1>
+			<h1>Orders for: Test Series order report page for a series with multiple pass and orders [#{{ID}}]</h1>
 		<div id="icon-edit" class="icon32 icon32-tickets-orders"><br></div>
 
 	<div id="tribe-order-summary" class="welcome-panel tribe-report-panel">
 	<div class="welcome-panel-content">
 		<div class="welcome-panel-column-container">
 			<div class="welcome-panel-column welcome-panel-first">
-				<h3>Event Details				</h3>
+				<h3>Series Details				</h3>
 				<ul>
 					
-				<li>
-					<strong>Event Date:</strong>
-					January 1, 2020
-				</li>
-			
 			<li class="post-type">
 				<strong>Post type: </strong>
-				event
+				Series
 			</li>
-		<li class="event-actions"><a href="http://wordpress.test/wp-admin/post.php?post={{ID}}&#038;action=edit" title="Edit">Edit Event</a> | <a href="http://wordpress.test/?tribe_events=event-with-1-pending-and-1-completed-order" title="View">View Event</a></li>				</ul>
+		<li class="event-actions"><a href="http://wordpress.test/wp-admin/post.php?post={{ID}}&#038;action=edit" title="Edit">Edit Series</a> | <a href="http://wordpress.test/?tribe_event_series=test-series-order-report-page-for-a-series-with-multiple-pass-and-orders" title="View">View Series</a></li>				</ul>
 
 				
 			</div>
@@ -27,9 +22,9 @@
 				<h3 class="tec-tickets__admin-orders-report-overview-title">
 					Sales by Ticket				</h3>
 				<div class="tec-tickets__admin-orders-report-overview-ticket-type">
-											<div class="tec-tickets__admin-orders-report-overview-ticket-type-icon tec-tickets__admin-orders-report-overview-ticket-type-icon--default"></div>
+											<div class="tec-tickets__admin-orders-report-overview-ticket-type-icon tec-tickets__admin-orders-report-overview-ticket-type-icon--series_pass"></div>
 						<div class="tec-tickets__admin-orders-report-overview-ticket-type-label">
-							Single Ticket						</div>
+							Series Passes						</div>
 						<div class="tec-tickets__admin-orders-report-overview--border"></div>
 				</div>
 				<ul class="tec-tickets__admin-orders-report-overview-ticket-type-list">
@@ -37,7 +32,13 @@
 							<div class="tec-tickets__admin-orders-report-overview-ticket-type-list-item-ticket-name">
 								Test TC ticket for {{ID}} &#x24;10.00							</div>
 							<div class="tec-tickets__admin-orders-report-overview-ticket-type-list-item-stat">
-								2 completed | 3 pending | 95 available							</div>
+								1 completed | 99 available							</div>
+						</li>
+											<li class="tec-tickets__admin-orders-report-overview-ticket-type-list-item">
+							<div class="tec-tickets__admin-orders-report-overview-ticket-type-list-item-ticket-name">
+								Test TC ticket for {{ID}} &#x24;20.00							</div>
+							<div class="tec-tickets__admin-orders-report-overview-ticket-type-list-item-stat">
+								1 completed | 99 available							</div>
 						</li>
 									</ul>
 								</div>
@@ -49,11 +50,7 @@
 					<div class="tec-tickets__admin-orders-report__sales-overview__by-status">
 													<div class="tec-tickets__admin-orders-report__sales-overview__list__item">
 								<div class="tec-tickets__admin-orders-report__sales-overview__list__item-label">Completed</div>
-								<div class="tec-tickets__admin-orders-report__sales-overview__list__item-amount">&#x24;20.00 (2)</div>
-							</div>
-													<div class="tec-tickets__admin-orders-report__sales-overview__list__item">
-								<div class="tec-tickets__admin-orders-report__sales-overview__list__item-label">Pending</div>
-								<div class="tec-tickets__admin-orders-report__sales-overview__list__item-amount">&#x24;30.00 (3)</div>
+								<div class="tec-tickets__admin-orders-report__sales-overview__list__item-amount">&#x24;30.00 (2)</div>
 							</div>
 											</div>
 					<div class="tec-tickets__admin-orders-report-overview--border"></div>
@@ -62,13 +59,13 @@
 							<div class="tec-tickets__admin-orders-report__sales-overview__list__item-label">
 								<div class="tec-tickets__admin-orders-report__sales-overview__total-label">Total Tickets Ordered</div>
 							</div>
-							<div class="tec-tickets__admin-orders-report__sales-overview__list__item-amount">&#x24;50.00 (5)</div>
+							<div class="tec-tickets__admin-orders-report__sales-overview__list__item-amount">&#x24;30.00 (2)</div>
 						</div>
 						<div class="tec-tickets__admin-orders-report__sales-overview__list__item">
 							<div class="tec-tickets__admin-orders-report__sales-overview__list__item-label">
 								<div class="tec-tickets__admin-orders-report__sales-overview__total-label">Total Ticket Sales</div>
 							</div>
-							<div class="tec-tickets__admin-orders-report__sales-overview__list__item-amount">&#x24;20.00 (2)</div>
+							<div class="tec-tickets__admin-orders-report__sales-overview__list__item-amount">&#x24;30.00 (2)</div>
 						</div>
 					</div>
 									</div>
@@ -88,7 +85,7 @@
 		/>
 		<input
 			type="hidden" name="tribe[post_type]"
-			value="tribe_events"
+			value="tribe_event_series"
 		/>
 		<p class="search-box">
 	<label class="screen-reader-text" for="tc-orders-search-input">Search Orders:</label>
@@ -125,7 +122,7 @@
 
 	<tbody id="the-list"
 		 data-wp-lists='list:order'		>
-		<tr class="tec-tc-completed"><td class='order column-order has-row-actions column-primary' data-colname="Order">{{ID}}<div class="order-status order-status-completed">Completed</div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class='purchaser column-purchaser' data-colname="Purchaser">Test Purchaser</td><td class='email column-email' data-colname="Email">purchaser@test.com</td><td class='purchased column-purchased' data-colname="Purchased"><div class='tribe-line-item'>2 - Test TC ticket for {{ID}}</div></td><td class='date column-date' data-colname="Date">February 22, 2020</td><td class='gateway column-gateway' data-colname="Gateway">PayPal</td><td class='gateway_order_id column-gateway_order_id' data-colname="Gateway ID"><a href="" target="_blank" rel="noopener noreferrer"></a></td><td class='status column-status' data-colname="Status">Completed</td><td class='total column-total' data-colname="Total">&#x24;20.00</td></tr><tr class="tec-tc-pending"><td class='order column-order has-row-actions column-primary' data-colname="Order">{{ID}}<div class="order-status order-status-pending">Pending</div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class='purchaser column-purchaser' data-colname="Purchaser">Test Purchaser</td><td class='email column-email' data-colname="Email">purchaser@test.com</td><td class='purchased column-purchased' data-colname="Purchased"><div class='tribe-line-item'>3 - Test TC ticket for {{ID}}</div></td><td class='date column-date' data-colname="Date">February 23, 2020</td><td class='gateway column-gateway' data-colname="Gateway">PayPal</td><td class='gateway_order_id column-gateway_order_id' data-colname="Gateway ID"><a href="" target="_blank" rel="noopener noreferrer"></a></td><td class='status column-status' data-colname="Status">Pending</td><td class='total column-total' data-colname="Total">&#x24;30.00</td></tr>	</tbody>
+		<tr class="tec-tc-completed"><td class='order column-order has-row-actions column-primary' data-colname="Order">{{ID}}<div class="order-status order-status-completed">Completed</div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class='purchaser column-purchaser' data-colname="Purchaser">Test Purchaser</td><td class='email column-email' data-colname="Email">purchaser@test.com</td><td class='purchased column-purchased' data-colname="Purchased"><div class='tribe-line-item'>1 - Test TC ticket for {{ID}}</div></td><td class='date column-date' data-colname="Date">February 22, 2020</td><td class='gateway column-gateway' data-colname="Gateway">PayPal</td><td class='gateway_order_id column-gateway_order_id' data-colname="Gateway ID"><a href="" target="_blank" rel="noopener noreferrer"></a></td><td class='status column-status' data-colname="Status">Completed</td><td class='total column-total' data-colname="Total">&#x24;10.00</td></tr><tr class="tec-tc-completed"><td class='order column-order has-row-actions column-primary' data-colname="Order">{{ID}}<div class="order-status order-status-completed">Completed</div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class='purchaser column-purchaser' data-colname="Purchaser">Test Purchaser</td><td class='email column-email' data-colname="Email">purchaser@test.com</td><td class='purchased column-purchased' data-colname="Purchased"><div class='tribe-line-item'>1 - Test TC ticket for {{ID}}</div></td><td class='date column-date' data-colname="Date">February 23, 2020</td><td class='gateway column-gateway' data-colname="Gateway">PayPal</td><td class='gateway_order_id column-gateway_order_id' data-colname="Gateway ID"><a href="" target="_blank" rel="noopener noreferrer"></a></td><td class='status column-status' data-colname="Status">Completed</td><td class='total column-total' data-colname="Total">&#x24;20.00</td></tr>	</tbody>
 
 	<tfoot>
 	<tr>
