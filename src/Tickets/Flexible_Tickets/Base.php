@@ -553,7 +553,7 @@ class Base extends Controller {
 	 */
 	public function filter_ticket_type_header_description_to_include_upsell_notice( string $file, array $name, Template $template ): void {
 		// Don't show while ECP and TEC is active.
-		if ( tec_tickets_tec_events_pro_is_active() && tec_tickets_tec_events_is_active() ) {
+		if ( did_action( 'tec_events_pro_custom_tables_v1_fully_activated' ) && tec_tickets_tec_events_is_active() ) {
 			return;
 		}
 
