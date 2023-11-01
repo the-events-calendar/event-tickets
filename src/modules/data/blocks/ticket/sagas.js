@@ -60,7 +60,7 @@ const {
 const { wpREST } = api;
 
 export function* createMissingTicketBlocks( tickets ) {
-	const { insertBlock } = yield call( wpDispatch, 'core/editor' );
+	const { insertBlock, updateBlockListSettings } = yield call( wpDispatch, 'core/editor' );
 	const { getBlockCount, getBlocks } = yield call( wpSelect, 'core/editor' );
 	const ticketsBlocks = yield call(
 		[ getBlocks(), 'filter' ],
@@ -68,6 +68,11 @@ export function* createMissingTicketBlocks( tickets ) {
 	);
 
 	ticketsBlocks.forEach( ( { clientId } ) => {
+		// Since we're not using the store provided by WordPress, we need to update the block list
+		// settings for the Tickets block here to allow the tickets-item block to be inserted.
+		// If the WP store did not initialize yet when the `insertBlock` function is called, the
+		// block will not be inserted and there will be a silent failure.
+		updateBlockListSettings( clientId, { allowedBlocks: [ 'tribe/tickets-item' ] } );
 		tickets.forEach( ( ticketId ) => {
 			const attributes = {
 				hasBeenCreated: true,
