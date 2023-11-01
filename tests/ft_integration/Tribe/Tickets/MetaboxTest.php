@@ -335,9 +335,16 @@ class MetaboxTest extends WPTestCase {
 			},
 		];
 
-		yield 'post without ticket without TEC active' => [
+		yield 'post without ticket without ECP active' => [
 			function (): array {
-				$this->set_fn_return( 'tec_tickets_tec_events_pro_is_active', false );
+				$this->set_fn_return( 'did_action', function ( string $action ) {
+					if ( $action === 'tec_events_pro_custom_tables_v1_fully_activated' ) {
+						return 1;
+					}
+					return did_action( $action );
+				}, true );
+
+
 				$post_id = $this->factory()->post->create( [ 'post_title' => 'Test post without ECP' ] );
 				return [ $post_id ];
 			},
