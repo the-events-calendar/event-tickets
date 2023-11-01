@@ -3,7 +3,7 @@
  */
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
-import AutosizeInput from 'react-input-autosize';
+import { NumericFormat } from 'react-number-format';
 
 /**
  * Wordpress dependencies
@@ -16,120 +16,101 @@ import { __ } from '@wordpress/i18n';
 import { PREFIX, SUFFIX, PRICE_POSITIONS } from '@moderntribe/tickets/data/blocks/ticket/constants';
 import './style.pcss';
 
-const TicketContainerHeaderPriceInput = ( {
-	isDisabled,
-	currencyPosition,
-	currencySymbol,
-	onTempPriceChange,
-	tempPrice,
-	minDefaultPrice,
-} ) => {
-	return (
-		<Fragment>
-			{ currencyPosition === PREFIX && (
-				<span className="tribe-editor__ticket__container-header-price-currency">
-					{ currencySymbol }
-				</span>
-			) }
-			<AutosizeInput
-				className="tribe-editor__ticket__container-header-price-input"
-				value={ tempPrice }
-				placeholder={ __( '0', 'event-tickets' ) }
-				onChange={ onTempPriceChange }
-				disabled={ isDisabled }
-				type="number"
-				min={minDefaultPrice}
-			/>
-			{ currencyPosition === SUFFIX && (
-				<span className="tribe-editor__ticket__container-header-price-currency">
-					{ currencySymbol }
-				</span>
-			) }
-		</Fragment>
-	);
-};
-
-TicketContainerHeaderPriceInput.propTypes = {
-	isDisabled: PropTypes.bool,
-	currencyPosition: PropTypes.oneOf( PRICE_POSITIONS ),
-	currencySymbol: PropTypes.string,
-	onTempPriceChange: PropTypes.func,
-	tempPrice: PropTypes.string,
-	minDefaultPrice: PropTypes.string,
-};
-
 const TicketContainerHeaderPriceLabel = ( {
+	available,
+	currencyDecimalPoint,
+	currencyNumberOfDecimals,
+	currencyThousandsSep,
 	currencyPosition,
 	currencySymbol,
+	isUnlimited,
 	price,
 } ) => {
+	const getAvailableLabel = () => (
+		isUnlimited
+			? __( 'unlimited', 'event-tickets' )
+			: (
+				<>
+					<span className="tribe-editor__ticket__container-header-label__available">
+						{ available }
+					</span>
+					{ __( 'available', 'event-tickets' ) }
+				</>
+			)
+	);
+
+	const numericFormatProps = {
+		...( currencyPosition === PREFIX && { prefix: currencySymbol } ),
+		...( currencyPosition === SUFFIX && { suffix: currencySymbol } ),
+	};
+
 	return (
 		<Fragment>
-			{ currencyPosition === PREFIX && (
-				<span className="tribe-editor__ticket__container-header-price-currency">
-					{ currencySymbol }
-				</span>
-			) }
-			<span className="tribe-editor__ticket__container-header-price-value">
-				{ price }
-			</span>
-			{ currencyPosition === SUFFIX && (
-				<span className="tribe-editor__ticket__container-header-price-currency">
-					{ currencySymbol }
-				</span>
-			) }
+			<NumericFormat
+				allowNegative={ false }
+				decimalScale={ currencyNumberOfDecimals }
+				decimalSeparator={ currencyDecimalPoint }
+				displayType="text"
+				fixedDecimalScale={ true }
+				{ ...numericFormatProps }
+				thousandSeparator={ currencyThousandsSep }
+				value={ price }
+			/>
+			<div className="tribe-editor__ticket__container-header-label">
+				{ getAvailableLabel() }
+			</div>
 		</Fragment>
 	);
 };
 
 TicketContainerHeaderPriceLabel.propTypes = {
+	available: PropTypes.number,
+	currencyDecimalPoint: PropTypes.string,
+	currencyNumberOfDecimals: PropTypes.number,
 	currencyPosition: PropTypes.oneOf( PRICE_POSITIONS ),
 	currencySymbol: PropTypes.string,
+	currencyThousandsSep: PropTypes.string,
+	isUnlimited: PropTypes.bool,
 	price: PropTypes.string,
 };
 
 const TicketContainerHeaderPrice = ( {
-	isDisabled,
-	isSelected,
+	available,
+	currencyDecimalPoint,
+	currencyNumberOfDecimals,
 	currencyPosition,
 	currencySymbol,
-	onTempPriceChange,
-	tempPrice,
+	currencyThousandsSep,
+	isUnlimited,
 	price,
-	minDefaultPrice,
 } ) => (
 	<div className="tribe-editor__ticket__container-header-price">
-		{ isSelected
-			? (
-				<TicketContainerHeaderPriceInput
-					currencyPosition={ currencyPosition }
-					currencySymbol={ currencySymbol }
-					onTempPriceChange={ onTempPriceChange }
-					tempPrice={ tempPrice }
-					isDisabled={ isDisabled }
-					minDefaultPrice={ minDefaultPrice }
-				/>
-			)
-			: (
-				<TicketContainerHeaderPriceLabel
-					currencyPosition={ currencyPosition }
-					currencySymbol={ currencySymbol }
-					price={ price }
-				/>
-			)
-		}
+		<TicketContainerHeaderPriceLabel
+			available={ available }
+			currencyDecimalPoint={ currencyDecimalPoint }
+			currencyNumberOfDecimals={ currencyNumberOfDecimals }
+			currencyPosition={ currencyPosition }
+			currencySymbol={ currencySymbol }
+			currencyThousandsSep={ currencyThousandsSep }
+			isUnlimited={ isUnlimited }
+			price={ price }
+		/>
 	</div>
 );
 
 TicketContainerHeaderPrice.propTypes = {
-	isDisabled: PropTypes.bool,
-	isSelected: PropTypes.bool,
+	available: PropTypes.number,
+	currencyDecimalPoint: PropTypes.string,
+	currencyNumberOfDecimals: PropTypes.number,
 	currencyPosition: PropTypes.oneOf( PRICE_POSITIONS ),
 	currencySymbol: PropTypes.string,
+	currencyThousandsSep: PropTypes.string,
+	isDisabled: PropTypes.bool,
+	isSelected: PropTypes.bool,
+	isUnlimited: PropTypes.bool,
 	onTempPriceChange: PropTypes.func,
-	tempPrice: PropTypes.string,
 	price: PropTypes.string,
-	minDefaultPrice: PropTypes.string,
+	tempPrice: PropTypes.string,
 };
 
 export default TicketContainerHeaderPrice;

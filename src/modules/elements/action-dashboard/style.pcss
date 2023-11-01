@@ -1,67 +1,65 @@
-.tribe-editor__action-dashboard {
-	background-color: #f8f9fb;
-	display: flex;
-	position: relative;
-
-	@media (min-width: 600px) {
-		padding: 15px 28px;
+.tribe-editor__tickets, .tribe-editor__rsvp {
+	.tribe-editor__action-dashboard {
+		background-color: var(--tec-color-background-secondary);
+		display: flex;
+		padding: var(--tec-spacer-1) var(--tec-spacer-4) var(--tec-spacer-4) var(--tec-spacer-4);
+		position: relative;
 	}
-}
 
-.tribe-editor__action-dashboard__group-left {
-	display: flex;
-	align-items: center;
-	flex: 1;
-}
-
-.tribe-editor__action-dashboard__group-right {
-	display: flex;
-	align-items: center;
-	flex: none;
-	margin-left: auto;
-}
-
-.tribe-editor__action-dashboard__action-wrapper {
-	flex: none;
-	margin-right: 25px;
-
-	&:last-child {
-		margin-right: 0;
+	.tribe-editor__action-dashboard__group-left {
+		align-items: center;
+		display: flex;
+		flex: 1;
 	}
-}
 
-/* extra class to override gutenberg styles */
-.tribe-editor__action-dashboard {
-
-	.tribe-editor__action-dashboard__cancel-button,
-	.tribe-editor__action-dashboard__confirm-button {
+	.tribe-editor__action-dashboard__group-right {
+		align-items: center;
+		display: flex;
 		flex: none;
-		font-family: 'Helvetica Neue', Helvetica, -apple-system, BlinkMacSystemFont, Roboto, Arial, sans-serif;
+		margin-left: auto;
 	}
 
-	.tribe-editor__action-dashboard__cancel-button {
-		background-color: transparent;
-		font-size: 15px;
-		line-height: 18px;
-		padding: 0;
-		margin-right: 20px;
-		transition: color 0.2s ease;
+	.tribe-editor__action-dashboard__action-wrapper {
+		flex: none;
+		margin-right: var(--tec-spacer-5);
 
 		&:last-child {
 			margin-right: 0;
 		}
+	}
 
-		&:hover,
-		&:focus {
-			color: #009fd4;
+	/* extra class to override gutenberg styles */
+	.tribe-editor__action-dashboard {
+
+		.tribe-editor__action-dashboard__cancel-button,
+		.tribe-editor__action-dashboard__confirm-button {
+			font-family: 'Helvetica Neue', Helvetica, -apple-system, BlinkMacSystemFont, Roboto, Arial, sans-serif;
 		}
 
-		&[disabled] {
+		.tribe-editor__action-dashboard__cancel-button {
+			background-color: transparent;
+			font-size: var(--tec-font-size-2);
+			line-height: var(--tec-line-height-2);
+			margin-right: var(--tec-spacer-4);
+			padding: 0;
+			transition: color 0.2s ease;
 
-			&,
+			&:last-child {
+				margin-right: 0;
+			}
+
 			&:hover,
 			&:focus {
-				color: #8d949b;
+				color: var(--tec-color-accent-primary-hover);
+			}
+
+			&[disabled] {
+
+				&,
+				&:hover,
+				&:focus {
+					color: #8d949b;
+				}
 			}
 		}
 	}

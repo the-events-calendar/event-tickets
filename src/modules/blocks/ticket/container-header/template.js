@@ -17,6 +17,10 @@ const TicketContainerHeader = ( {
 	clientId,
 	isSelected,
 } ) => {
+	if ( isSelected ) {
+		return null;
+	}
+
 	return (
 		<Fragment>
 			<div className="tribe-editor__ticket__container-header-details">

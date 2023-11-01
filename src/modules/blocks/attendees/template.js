@@ -100,6 +100,13 @@ const UI = ( props ) => {
 	);
 };
 
+UI.propTypes = {
+	displaySubtitle: PropTypes.bool,
+	displayTitle: PropTypes.bool,
+	isSelected: PropTypes.bool,
+	title: PropTypes.string,
+};
+
 const Controls = ( {
 	isSelected,
 	displayTitle,
@@ -124,6 +131,14 @@ const Controls = ( {
 		</InspectorControls>
 	)
 );
+
+Controls.propTypes = {
+	displaySubtitle: PropTypes.bool,
+	displayTitle: PropTypes.bool,
+	isSelected: PropTypes.bool,
+	onSetDisplaySubtitleChange: PropTypes.func,
+	onSetDisplayTitleChange: PropTypes.func,
+};
 
 const Attendees = ( props ) => (
 	<Fragment>

@@ -550,6 +550,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * Gets an individual ticket.
 	 *
 	 * @since 5.1.9
+	 * @since TBD Set some provider-invariant ticket properties.
 	 *
 	 * @param int|\WP_Post $post_id
 	 * @param int|\WP_Post $ticket_id
@@ -557,7 +558,17 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * @return null|\Tribe__Tickets__Ticket_Object
 	 */
 	public function get_ticket( $post_id, $ticket_id ) {
-		return tribe( Ticket::class )->get_ticket( $ticket_id );
+		$ticket = tribe( Ticket::class )->get_ticket( $ticket_id );
+
+		if ( ! $ticket instanceof \Tribe__Tickets__Ticket_Object ) {
+			return null;
+		}
+
+		// Set provider-invariant ticket properties.
+		$ticket_type  = get_post_meta( $ticket_id, '_type', true ) ?: 'default';
+		$ticket->type = $ticket_type;
+
+		return $ticket;
 	}
 
 	/**

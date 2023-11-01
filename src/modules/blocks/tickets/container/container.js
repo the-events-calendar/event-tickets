@@ -29,12 +29,15 @@ const getShowInactiveBlock = ( state, ownProps ) => {
 };
 
 const mapStateToProps = ( state, ownProps ) => ( {
+	allTicketsFuture: selectors.allTicketsFuture( state ),
 	allTicketsPast: selectors.allTicketsPast( state ),
 	canCreateTickets: selectors.canCreateTickets(),
 	hasCreatedTickets: selectors.hasCreatedTickets( state ),
 	hasOverlay: getHasOverlay( state, ownProps ),
+	isSettingsOpen: selectors.getTicketsIsSettingsOpen( state ),
 	showAvailability: ownProps.isSelected && selectors.hasCreatedTickets( state ),
 	showInactiveBlock: getShowInactiveBlock( state, ownProps ),
+	hasATicketSelected: selectors.hasATicketSelected( state ),
 } );
 
 export default compose(

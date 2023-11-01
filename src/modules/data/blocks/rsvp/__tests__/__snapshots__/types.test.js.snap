@@ -46,6 +46,8 @@ exports[`RSVP block types SET_RSVP_HEADER_IMAGE 1`] = `"@@MT/TICKETS/SET_RSVP_HE
 
 exports[`RSVP block types SET_RSVP_ID 1`] = `"@@MT/TICKETS/SET_RSVP_ID"`;
 
+exports[`RSVP block types SET_RSVP_IS_ADD_EDIT_OPEN 1`] = `"@@MT/TICKETS/SET_RSVP_IS_ADD_EDIT_OPEN"`;
+
 exports[`RSVP block types SET_RSVP_IS_LOADING 1`] = `"@@MT/TICKETS/SET_RSVP_IS_LOADING"`;
 
 exports[`RSVP block types SET_RSVP_IS_MODAL_OPEN 1`] = `"@@MT/TICKETS/SET_RSVP_IS_MODAL_OPEN"`;
