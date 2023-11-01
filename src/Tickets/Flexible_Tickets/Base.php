@@ -552,10 +552,11 @@ class Base extends Controller {
 	 * @param Template $template Current instance of the Tribe__Template.
 	 */
 	public function filter_ticket_type_header_description_to_include_upsell_notice( string $file, array $name, Template $template ): void {
-		// Bail if Events calendar pro is active.
-		if ( class_exists( 'Tribe__Events__Pro__Main', false ) ) {
+		// Don't show while ECP and TEC is active.
+		if ( tec_tickets_tec_events_pro_is_active() && tec_tickets_tec_events_is_active() ) {
 			return;
 		}
+
 		$this->admin_views->template( 'admin/tickets/editor/upsell-notice' );
 	}
 }
