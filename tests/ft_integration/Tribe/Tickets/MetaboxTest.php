@@ -326,6 +326,22 @@ class MetaboxTest extends WPTestCase {
 				return [ $series_id, $pass_1, $pass_2 ];
 			}
 		];
+
+		yield 'post without ticket without TEC active' => [
+			function (): array {
+				$this->set_fn_return( 'tec_tickets_tec_events_is_active', false );
+				$post_id = $this->factory()->post->create( [ 'post_title' => 'Test post without TEC' ] );
+				return [ $post_id ];
+			},
+		];
+
+		yield 'post without ticket without TEC active' => [
+			function (): array {
+				$this->set_fn_return( 'tec_tickets_tec_events_pro_is_active', false );
+				$post_id = $this->factory()->post->create( [ 'post_title' => 'Test post without ECP' ] );
+				return [ $post_id ];
+			},
+		];
 	}
 
 	public function placehold_post_ids(
