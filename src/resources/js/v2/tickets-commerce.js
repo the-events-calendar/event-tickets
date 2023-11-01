@@ -2,7 +2,7 @@
  * Makes sure we have all the required levels on the Tribe Object
  *
  * @since 5.1.9
- * @type   {object}
+ * @type   {Object}
  */
 tribe.tickets = tribe.tickets || {};
 
@@ -10,7 +10,7 @@ tribe.tickets = tribe.tickets || {};
  * Configures ET Tickets Commerce Object in the Global Tribe variable
  *
  * @since 5.1.9
- * @type   {object}
+ * @type   {Object}
  */
 tribe.tickets.commerce = {};
 
@@ -18,8 +18,8 @@ tribe.tickets.commerce = {};
  * Initializes in a Strict env the code that manages the plugin tickets commerce.
  *
  * @since 5.1.9
- * @param  {object} $   jQuery
- * @param  {object} obj tribe.tickets.commerce
+ * @param  {Object} $   jQuery
+ * @param  {Object} obj tribe.tickets.commerce
  * @return {void}
  */
 ( function( $, obj ) {
@@ -175,7 +175,7 @@ tribe.tickets.commerce = {};
 	 *
 	 * @since 5.3.0
 	 * @param {jQuery} $container Container for the purchaser info fields.
-	 * @return {object}
+	 * @return {Object}
 	 */
 	obj.getPurchaserData = ( $container ) => {
 		const purchaser = {};

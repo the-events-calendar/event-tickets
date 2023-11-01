@@ -2,7 +2,7 @@
  * Makes sure we have all the required levels on the Tribe Object
  *
  * @since 5.0.0
- * @type {object}
+ * @type {Object}
  */
 tribe.tickets = tribe.tickets || {};
 tribe.tickets.rsvp = tribe.tickets.rsvp || {};
@@ -11,7 +11,7 @@ tribe.tickets.rsvp = tribe.tickets.rsvp || {};
  * Configures RSVP manager Object in the Global Tribe variable
  *
  * @since 5.0.0
- * @type {object}
+ * @type {Object}
  */
 tribe.tickets.rsvp.manager = {};
 
@@ -19,9 +19,9 @@ tribe.tickets.rsvp.manager = {};
  * Initializes in a Strict env the code that manages the RSVP Manager
  *
  * @since 5.0.0
- * @param  {object} $   jQuery
- * @param  {object} _   Underscore.js
- * @param  {object} obj tribe.tickets.rsvp.manager
+ * @param  {Object} $   jQuery
+ * @param  {Object} _   Underscore.js
+ * @param  {Object} obj tribe.tickets.rsvp.manager
  * @return {void}
  */
 ( function( $, _, obj ) {
@@ -29,7 +29,7 @@ tribe.tickets.rsvp.manager = {};
 	 * Selectors used for configuration and setup
 	 *
 	 * @since 5.0.0
-	 * @type {object}
+	 * @type {Object}
 	 */
 	obj.selectors = {
 		container: '.tribe-tickets__rsvp-wrapper',
@@ -100,7 +100,7 @@ tribe.tickets.rsvp.manager = {};
 	 * Performs an AJAX request.
 	 *
 	 * @since 5.0.0
-	 * @param  {object}         data       DOM Event related to the Click action
+	 * @param  {Object}         data       DOM Event related to the Click action
 	 * @param  {Element|jQuery} $container Which container we are dealing with
 	 * @return {void}
 	 */
@@ -118,7 +118,7 @@ tribe.tickets.rsvp.manager = {};
 	 *
 	 * @since 5.0.0
 	 * @param  {Element|jQuery} $container Which container we are dealing with.
-	 * @return {object} ajaxSettings
+	 * @return {Object} ajaxSettings
 	 */
 	obj.getAjaxSettings = function( $container ) {
 		const ajaxSettings = {
@@ -143,7 +143,7 @@ tribe.tickets.rsvp.manager = {};
 	 *
 	 * @since 5.0.0
 	 * @param  {jqXHR}       jqXHR    Request object
-	 * @param  {object} settings Settings that this request will be made with
+	 * @param  {Object} settings Settings that this request will be made with
 	 * @return {void}
 	 */
 	obj.ajaxBeforeSend = function( jqXHR, settings ) {
@@ -190,7 +190,7 @@ tribe.tickets.rsvp.manager = {};
 	 * Context with the RSVP container used to fire this AJAX call
 	 *
 	 * @since 5.0.0
-	 * @param  {object} response   Response sent from the AJAX response.
+	 * @param  {Object} response   Response sent from the AJAX response.
 	 * @param  {string} textStatus Status for the request
 	 * @param  {jqXHR}  jqXHR      Request object
 	 * @return {void}
@@ -236,7 +236,7 @@ tribe.tickets.rsvp.manager = {};
 	 *
 	 * @since 5.0.0
 	 * @param  {jqXHR}       jqXHR    Request object
-	 * @param  {object} settings Settings that this request was made with
+	 * @param  {Object} settings Settings that this request was made with
 	 * @return {void}
 	 */
 	obj.ajaxError = function( jqXHR, settings ) {

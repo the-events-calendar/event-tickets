@@ -73,9 +73,11 @@ const mapStateToProps = ( state ) => {
 
 	return {
 		created: selectors.getRSVPCreated( state ),
+		isAddEditOpen: selectors.getRSVPIsAddEditOpen( state ),
 		isInactive: getIsInactive( state ),
 		isLoading: selectors.getRSVPIsLoading( state ),
 		isModalShowing: isModalShowing( state ) && getModalTicketId( state ) === rsvpId,
+		isSettingsOpen: selectors.getRSVPSettingsOpen( state ),
 		hasRecurrenceRules: hasRecurrenceRules( state ),
 		noTicketsOnRecurring: noTicketsOnRecurring(),
 		rsvpId,
@@ -86,6 +88,7 @@ const mapDispatchToProps = ( dispatch, ownProps ) => ( {
 	initializeRSVP: () => dispatch( actions.initializeRSVP() ),
 	onBlockRemoved: () => dispatch( actions.deleteRSVP() ),
 	setInitialState: setInitialState( dispatch, ownProps ),
+	setAddEditClosed: () => dispatch( actions.setRSVPIsAddEditOpen( false ) ),
 } );
 
 export default compose(

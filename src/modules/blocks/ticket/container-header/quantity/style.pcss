@@ -1,26 +1,39 @@
 .tribe-editor__ticket__container-header-quantity {
-	margin-right: 13px;
 	min-width: 105px;
 }
 
 .tribe-editor__ticket__container-header-quantity-label {
+	color: var(--tec-color-text-primary);
 	display: block;
-	color: #000;
-	font-size: 15px;
-	line-height: 18px;
-	margin-bottom: 12px;
-	text-align: center;
+	font-family: var(--tec-font-family-sans-serif);
+	font-size: var(--tec-font-size-3);
+	font-style: normal;
+	font-weight: var(--tec-font-weight-bold);
+	line-height: 26px;
+	text-align: right;
 
-	.tribe-editor__ticket--disabled & {
-		color: #AEB4BB;
+	.dashicons-info-outline {
+		color: var(--tec-color-icon-primary-alt);
+		font-family: dashicons;
+		font-feature-settings: 'clig' off, 'liga' off;
+		font-size: var(--tec-font-size-3);
+		font-style: normal;
+		font-weight: var(--tec-font-weight-regular);
+		line-height: var(--tec-line-height-3);
+		margin-top: 1px;
+		margin-left: var(--tec-spacer-0);
+		text-align: right;
+		width: 16px;
 	}
 }
 
 .tribe-editor__ticket__container-header-quantity-unlimited {
+	color: var(--tec-color-icon-primary-alt);
 	display: block;
-	color: #AEB4BB;
-	font-size: 12px;
-	line-height: 14px;
-	padding: 2px 0;
-	text-align: center;
+	font-family: var(--tec-font-family-sans-serif);
+	font-size: var(--tec-font-size-1);
+	font-style: normal;
+	font-weight: var(--tec-font-weight-regular);
+	line-height: var(--tec-line-height-0);
+	text-align: right;
 }

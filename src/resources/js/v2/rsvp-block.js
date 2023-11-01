@@ -2,7 +2,7 @@
  * Makes sure we have all the required levels on the Tribe Object
  *
  * @since 5.0.0
- * @type {object}
+ * @type {Object}
  */
 tribe.tickets = tribe.tickets || {};
 tribe.tickets.rsvp = tribe.tickets.rsvp || {};
@@ -11,7 +11,7 @@ tribe.tickets.rsvp = tribe.tickets.rsvp || {};
  * Configures RSVP block Object in the Global Tribe variable
  *
  * @since 5.0.0
- * @type {object}
+ * @type {Object}
  */
 tribe.tickets.rsvp.block = {};
 
@@ -19,8 +19,8 @@ tribe.tickets.rsvp.block = {};
  * Initializes in a Strict env the code that manages the RSVP block.
  *
  * @since 5.0.0
- * @param  {object} $   jQuery
- * @param  {object} obj tribe.tickets.rsvp.block
+ * @param  {Object} $   jQuery
+ * @param  {Object} obj tribe.tickets.rsvp.block
  * @return {void}
  */
 ( function( $, obj ) {
@@ -30,7 +30,7 @@ tribe.tickets.rsvp.block = {};
 	 * Selectors used for configuration and setup
 	 *
 	 * @since 5.0.0
-	 * @type {object}
+	 * @type {Object}
 	 */
 	obj.selectors = {
 		container: '.tribe-tickets__rsvp-wrapper',
@@ -215,7 +215,7 @@ tribe.tickets.rsvp.block = {};
 	 * @since 5.0.0
 	 * @param  {Event}       event    event object for 'beforeAjaxSuccess.tribeTicketsRsvp' event
 	 * @param  {jqXHR}       jqXHR    Request object
-	 * @param  {object}      settings Settings that this request was made with
+	 * @param  {Object}      settings Settings that this request was made with
 	 * @return {void}
 	 */
 	obj.unbindEvents = function( event, jqXHR, settings ) { // eslint-disable-line no-unused-vars

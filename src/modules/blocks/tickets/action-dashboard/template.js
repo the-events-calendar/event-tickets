@@ -20,7 +20,7 @@ import {
 import { ActionDashboard, WarningButton } from '@moderntribe/tickets/elements';
 import './style.pcss';
 
-const confirmLabel = __( 'Add Tickets', 'event-tickets' );
+const confirmLabel = __( 'Add a Ticket', 'event-tickets' );
 
 class TicketsDashboardAction extends PureComponent {
 	static propTypes = {
@@ -48,6 +48,7 @@ class TicketsDashboardAction extends PureComponent {
 			hasRecurrenceRules,
 		} = this.props;
 
+		// eslint-disable-next-line react/jsx-key
 		const actions = [ <SettingsActionButton /> ];
 		if ( hasCreatedTickets ) {
 			actions.push( <AttendeesActionButton /> );
@@ -79,7 +80,7 @@ class TicketsDashboardAction extends PureComponent {
 		return (
 			<Fragment>
 				<ActionDashboard
-					className="tribe-editor__tickets__action-dashboard"
+					className="tribe-common tribe-editor__tickets__action-dashboard"
 					actions={ this.getActions() }
 					confirmLabel={ confirmLabel }
 					onConfirmClick={ onConfirmClick }

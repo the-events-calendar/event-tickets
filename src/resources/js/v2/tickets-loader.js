@@ -2,7 +2,7 @@
  * Makes sure we have all the required levels on the Tribe Object
  *
  * @since 5.0.3
- * @type   {object}
+ * @type   {Object}
  */
 tribe.tickets = tribe.tickets || {};
 
@@ -10,7 +10,7 @@ tribe.tickets = tribe.tickets || {};
  * Configures ET Loader Object in the Global Tribe variable
  *
  * @since 5.0.3
- * @type   {object}
+ * @type   {Object}
  */
 tribe.tickets.loader = {};
 
@@ -18,8 +18,8 @@ tribe.tickets.loader = {};
  * Initializes in a Strict env the code that manages the plugin "loader".
  *
  * @since 5.0.3
- * @param  {object} $   jQuery
- * @param  {object} obj tribe.tickets.loader
+ * @param  {Object} $   jQuery
+ * @param  {Object} obj tribe.tickets.loader
  * @return {void}
  */
 ( function( $, obj ) {
@@ -27,7 +27,7 @@ tribe.tickets.loader = {};
 	 * Selectors used for configuration and setup.
 	 *
 	 * @since 5.0.3
-	 * @type {object}
+	 * @type {Object}
 	 */
 	obj.selectors = {
 		loader: '.tribe-common-c-loader',
