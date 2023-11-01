@@ -196,7 +196,7 @@ class Orders extends Report_Abstract {
 		add_filter( 'post_row_actions', [ $this, 'add_orders_row_action' ], 10, 2 );
 		add_action( 'admin_menu', [ $this, 'register_orders_page' ] );
 
-		// // register the tabbed view
+		// register the tabbed view
 		$tc_tabbed_view = new Tabbed_View();
 		$tc_tabbed_view->set_active( self::$tab_slug );
 		$tc_tabbed_view->register();
@@ -337,6 +337,10 @@ class Orders extends Report_Abstract {
 	 * @since 5.2.0
 	 */
 	public function render_page() {
+		$tc_tabbed_view = new Tabbed_View();
+		$tc_tabbed_view->set_active( self::$tab_slug );
+		$tc_tabbed_view->render();
+
 		$this->get_template()->template( 'orders', $this->get_template_vars() );
 	}
 
@@ -344,6 +348,7 @@ class Orders extends Report_Abstract {
 	 * Sets up the template variables used to render the Orders Report Page.
 	 *
 	 * @since 5.2.0
+	 * @since TBD Removed title from template vars, title will be rendered by the Tabbed_View
 	 *
 	 * @return array
 	 */
@@ -358,7 +363,6 @@ class Orders extends Report_Abstract {
 		$order_summary = new Commerce\Reports\Data\Order_Summary( $post_id );
 
 		$this->template_vars = [
-			'title'               => $this->get_title( $post_id ),
 			'orders_table'        => tribe( Commerce\Admin_Tables\Orders::class ),
 			'post'                => $post,
 			'post_id'             => $post_id,
