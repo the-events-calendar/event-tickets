@@ -24,12 +24,12 @@ if ( empty( $attendees ) ) {
 }
 ?>
 <div class="tribe-tickets__rsvp-attendees-wrapper tribe-common-g-row">
-	<div class="tribe-tickets__rsvp-attendees tribe-common-b1 tribe-common-g-col">
+	<div class="tec-tickets__attendees-list-wrapper tribe-tickets__rsvp-attendees tribe-common-b1 tribe-common-g-col">
 		<?php $this->template( 'v2/rsvp/attendees/title' ); ?>
 
-		<div class="tribe-tickets__rsvp-attendees-list">
+		<div class="tec-tickets__attendees-list">
 			<?php foreach ( $attendees as $key => $attendee_id ) : ?>
-				<div class="tribe-tickets__rsvp-attendees-list-attendee">
+				<div class="tec-tickets__attendees-list-item">
 					<?php $this->template( 'v2/rsvp/attendees/attendee', [ 'attendee_id' => $attendee_id ] ); ?>
 				</div>
 			<?php endforeach; ?>
