@@ -23,6 +23,7 @@ use Tribe__Main;
 use Tribe__Tickets__Tickets as Tickets;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Reports;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
+use TEC\Tickets\Admin\Upsell as Ticket_Upsell;
 
 /**
  * Class Base.
@@ -158,10 +159,11 @@ class Base extends Controller {
 		add_filter( 'tec_tickets_commerce_order_report_summary_label_for_type', [ $this, 'filter_series_type_label' ] );
 		add_filter( 'tec_tickets_commerce_order_report_summary_should_include_event_sales_data', [ $this, 'filter_out_series_type_tickets_from_order_report' ], 10, 4 );
 
-		// Render ticket type upsell notice in ticket editor.
-		add_filter( 'tribe_template_after_include:tickets/admin-views/editor/ticket-type-default-header', [
-			$this,
-			'filter_ticket_type_header_description_to_include_upsell_notice'
+		// Remove the upsell notice for ticket types.
+		$ticket_upsell_notices = tribe( Ticket_Upsell::class );
+		remove_action( 'tribe_template_after_include:tickets/admin-views/editor/ticket-type-default-header', [
+			$ticket_upsell_notices,
+			'render_ticket_type_upsell_notice'
 		], 20, 3 );
 	}
 
@@ -238,9 +240,11 @@ class Base extends Controller {
 		remove_filter( 'tec_tickets_commerce_order_report_summary_label_for_type', [ $this, 'filter_series_type_label' ] );
 		remove_filter( 'tec_tickets_commerce_order_report_summary_should_include_event_sales_data', [ $this, 'filter_out_series_type_tickets_from_order_report' ], 10, 4 );
 
-		remove_filter( 'tribe_template_after_include:tickets/admin-views/editor/ticket-type-default-header', [
-			$this,
-			'filter_ticket_type_header_description_to_include_upsell_notice'
+		// Restore the upsell notice for ticket types.
+		$ticket_upsell_notices = tribe( Ticket_Upsell::class );
+		add_action( 'tribe_template_after_include:tickets/admin-views/editor/ticket-type-default-header', [
+			$ticket_upsell_notices,
+			'render_ticket_type_upsell_notice'
 		], 20, 3 );
 	}
 
@@ -540,23 +544,5 @@ class Base extends Controller {
 	 */
 	public function filter_out_series_type_tickets_from_order_report( $include, $ticket, $quantity_by_status, $order_summary ): bool {
 		return $this->reports->filter_out_series_type_tickets_from_order_report( $include, $ticket, $quantity_by_status, $order_summary );
-	}
-
-	/**
-	 * Filters the default Ticket type description in the context of Events part of a Series.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $file       Complete path to include the PHP File.
-	 * @param array $name        Template name.
-	 * @param Template $template Current instance of the Tribe__Template.
-	 */
-	public function filter_ticket_type_header_description_to_include_upsell_notice( string $file, array $name, Template $template ): void {
-		// Don't show while ECP and TEC is active.
-		if ( did_action( 'tec_events_pro_custom_tables_v1_fully_activated' ) && tec_tickets_tec_events_is_active() ) {
-			return;
-		}
-
-		$this->admin_views->template( 'admin/tickets/editor/upsell-notice' );
 	}
 }
