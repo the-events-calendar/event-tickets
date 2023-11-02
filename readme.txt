@@ -191,12 +191,11 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-<<<<<<< HEAD
-= TBD [TBD] =
+= [5.7.0] TBD =
 
 * Tweak - Add tickets to the Tickets Commerce success page. [ETWP-30]
 * Tweak - Add tickets to the RSVP block confirmation state. [ETWP-62]
-=======
+
 = [5.6.7] 2023-11-01 =
 
 * Feature - Tickets Commerce orders report page design update. [ET-1810]
@@ -214,7 +213,6 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Orders title in admin page.  [ET-1868]
 * Fix - Typo on My Tickets when using Ticket Commerce only. [ET-1909]
 * Language - 3 new strings added, 60 updated, 0 fuzzied, and 1 obsoleted
->>>>>>> 0b78d929cb4a329e06c57392bd49bf93c63a3bea
 
 = [5.6.6.1] 2023-10-12 =
 
