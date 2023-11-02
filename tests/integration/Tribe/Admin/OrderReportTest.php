@@ -95,6 +95,10 @@ class OrderReportTest extends WPTestCase {
 				] )->create()->ID;
 				$ticket_id_a = $this->create_tc_ticket( $event_id, 10 );
 				$ticket_id_b = $this->create_tc_ticket( $event_id, 20.50 );
+				
+				// Force ticket sorting order for display.
+				wp_update_post( [ 'ID' => $ticket_id_a, 'menu_order' => 0 ] );
+				wp_update_post( [ 'ID' => $ticket_id_b, 'menu_order' => 1 ] );
 
 				$this->set_fn_return( 'current_time', '2020-02-22 22:22:22' );
 				$order_a = $this->create_order( [ $ticket_id_a => 2 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
@@ -126,6 +130,12 @@ class OrderReportTest extends WPTestCase {
 					],
 				] );
 
+				// Force ticket sorting order for display.
+				wp_update_post( [ 'ID' => $ticket_id_a, 'menu_order' => 0 ] );
+				wp_update_post( [ 'ID' => $ticket_id_b, 'menu_order' => 1 ] );
+				wp_update_post( [ 'ID' => $ticket_id_c, 'menu_order' => 2 ] );
+
+				// Force order creation time.
 				$this->set_fn_return( 'current_time', '2020-02-22 22:22:22' );
 				$order_a = $this->create_order( [ $ticket_id_a => 1 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
 				$this->set_fn_return( 'current_time', '2020-02-23 22:22:22' );
