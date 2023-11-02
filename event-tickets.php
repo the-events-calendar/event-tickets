@@ -59,6 +59,7 @@ if ( tribe_is_not_min_php_version() ) {
 	 */
 	function tribe_tickets_not_php_version_plugin_name( $names ) {
 		$names['event-tickets'] = esc_html__( 'Event Tickets', 'event-tickets' );
+
 		return $names;
 	}
 
