@@ -8,7 +8,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '5.6.8';
+	const VERSION = '5.7.0';
 
 	/**
 	 * Used to store the version history.
@@ -43,7 +43,7 @@ class Tribe__Tickets__Main {
 	*
 	* @since 4.10
 	*/
-	protected $min_tec_version = '6.2.2.1-dev';
+	protected $min_tec_version = '6.2.6-dev';
 
 	/**
 	 * Name of the provider

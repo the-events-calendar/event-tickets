@@ -191,7 +191,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.7.0] TBD =
+= [5.7.0] 2023-11-15 =
 
 * Tweak - Add tickets to the Tickets Commerce success page. [ETWP-30]
 * Tweak - Add tickets to the RSVP block confirmation state. [ETWP-62]
