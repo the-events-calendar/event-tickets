@@ -148,8 +148,8 @@ class Upsell {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $file       Complete path to include the PHP File.
-	 * @param array $name        Template name.
+	 * @param string   $file     Complete path to include the PHP File.
+	 * @param string[] $name     Template name.
 	 * @param Template $template Current instance of the Tribe__Template.
 	 */
 	public function render_ticket_type_upsell_notice( string $file, array $name, Template $template ): void {
