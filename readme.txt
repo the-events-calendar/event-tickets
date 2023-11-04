@@ -4,7 +4,7 @@ Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, raf
 Tags: tickets, registration, event registration, RSVP, ticket sales, attendee management
 Requires at least: 5.8.5
 Tested up to: 6.3.1
-Stable tag: 5.7.0-dev
+Stable tag: 5.8.0-dev
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -190,6 +190,11 @@ We've got a [LoopedIn](https://evnt.is/ideas) page where we're actively watching
 Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on using, tweaking, and troubleshooting our plugins.
 
 == Changelog ==
+
+= [5.7.0] 2023-11-15 =
+
+* Tweak - Add tickets to the Tickets Commerce success page. [ETWP-30]
+* Tweak - Add tickets to the RSVP block confirmation state. [ETWP-62]
 
 = [5.6.7] 2023-11-01 =
 
