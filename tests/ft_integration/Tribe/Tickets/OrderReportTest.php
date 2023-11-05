@@ -176,6 +176,10 @@ class OrderReportTest extends WPTestCase {
 				$series_pass_id_a = $this->create_tc_series_pass( $series_id, 10 )->ID;
 				$series_pass_id_b = $this->create_tc_series_pass( $series_id, 20 )->ID;
 
+				// Force ticket sorting order for display.
+				wp_update_post( [ 'ID' => $series_pass_id_a, 'menu_order' => 0 ] );
+				wp_update_post( [ 'ID' => $series_pass_id_b, 'menu_order' => 1 ] );
+
 				// Place orders in different dates.
 				$this->set_fn_return( 'current_time', '2020-02-22 22:22:22' );
 				$order_a = $this->create_order( [ $series_pass_id_a => 1 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
