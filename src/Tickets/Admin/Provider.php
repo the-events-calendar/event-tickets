@@ -32,7 +32,6 @@ class Provider extends \TEC\Common\Contracts\Service_Provider {
 		$this->container->singleton( 'tickets.admin.provider', $this );
 
 		// Register singleton classes.
-		$this->container->singleton( Upsell::class );
 		$this->container->singleton( Plugin_Action_Links::class );
 		$this->container->singleton( Glance_Items::class );
 

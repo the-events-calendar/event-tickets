@@ -23,6 +23,7 @@ use Tribe__Main;
 use Tribe__Tickets__Tickets as Tickets;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Reports;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
+use TEC\Tickets\Admin\Upsell as Ticket_Upsell;
 
 /**
  * Class Base.
@@ -157,6 +158,13 @@ class Base extends Controller {
 		add_action( 'tribe_tickets_report_event_details_list_top', [ $this, 'render_series_details_on_order_report' ], 50 );
 		add_filter( 'tec_tickets_commerce_order_report_summary_label_for_type', [ $this, 'filter_series_type_label' ] );
 		add_filter( 'tec_tickets_commerce_order_report_summary_should_include_event_sales_data', [ $this, 'filter_out_series_type_tickets_from_order_report' ], 10, 4 );
+
+		// Remove the upsell notice for ticket types.
+		$ticket_upsell_notices = tribe( Ticket_Upsell::class );
+		remove_action( 'tribe_template_after_include:tickets/admin-views/editor/ticket-type-default-header', [
+			$ticket_upsell_notices,
+			'render_ticket_type_upsell_notice'
+		], 20, 3 );
 	}
 
 	/**
@@ -231,6 +239,13 @@ class Base extends Controller {
 		remove_action( 'tribe_tickets_report_event_details_list_top', [ $this, 'render_series_details_on_order_report' ], 50 );
 		remove_filter( 'tec_tickets_commerce_order_report_summary_label_for_type', [ $this, 'filter_series_type_label' ] );
 		remove_filter( 'tec_tickets_commerce_order_report_summary_should_include_event_sales_data', [ $this, 'filter_out_series_type_tickets_from_order_report' ], 10, 4 );
+
+		// Restore the upsell notice for ticket types.
+		$ticket_upsell_notices = tribe( Ticket_Upsell::class );
+		add_action( 'tribe_template_after_include:tickets/admin-views/editor/ticket-type-default-header', [
+			$ticket_upsell_notices,
+			'render_ticket_type_upsell_notice'
+		], 20, 3 );
 	}
 
 	/**
