@@ -49,6 +49,7 @@ export const DEFAULT_STATE = {
 	endTimeInput: momentUtil.toTime( endMoment ),
 	capacityType: constants.TICKET_TYPES[ constants.UNLIMITED ],
 	capacity: '',
+	type: 'default',
 };
 
 export default ( state = DEFAULT_STATE, action ) => {
@@ -142,6 +143,11 @@ export default ( state = DEFAULT_STATE, action ) => {
 			return {
 				...state,
 				attendeeInfoFields: action.payload.attendeeInfoFields,
+			};
+		case types.SET_TICKET_TYPE:
+			return {
+				...state,
+				type: action.payload.type,
 			};
 		default:
 			return state;

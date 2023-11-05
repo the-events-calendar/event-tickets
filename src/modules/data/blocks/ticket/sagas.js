@@ -46,6 +46,7 @@ import {
 	hasPostTypeChannel,
 	createDates,
 } from '@moderntribe/tickets/data/shared/sagas';
+import { applyFilters } from "@wordpress/hooks";
 
 const {
 	UNLIMITED,
@@ -60,7 +61,7 @@ const {
 const { wpREST } = api;
 
 export function* createMissingTicketBlocks( tickets ) {
-	const { insertBlock, updateBlockListSettings } = yield call( wpDispatch, 'core/editor' );
+	const { insertBlock, updateBlockListSettings } = yield call( wpDispatch, 'core/block-editor' );
 	const { getBlockCount, getBlocks } = yield call( wpSelect, 'core/editor' );
 	const ticketsBlocks = yield call(
 		[ getBlocks(), 'filter' ],
@@ -328,6 +329,7 @@ export function* fetchTicket( action ) {
 				capacity,
 				supports_attendee_information,
 				attendee_information_fields,
+				type,
 			} = ticket;
 			/* eslint-enable camelcase */
 
@@ -376,6 +378,7 @@ export function* fetchTicket( action ) {
 				endTimeInput,
 				capacityType: capacity_type,
 				capacity,
+				type
 			};
 
 			yield all( [
@@ -521,6 +524,26 @@ export function* updateTicket( action ) {
 	body.append( 'edit_ticket_nonce', edit_ticket_nonce );
 
 	const ticketId = yield select( selectors.getTicketId, props );
+
+	const ticket = yield select( selectors.getTicket, props );
+	const currentPost = yield call( [ wpSelect( 'core/editor' ), 'getCurrentPost' ] );
+
+	/**
+	 * Filters whether to save the ticket from the post.
+	 *
+	 * @since TBD
+	 *
+	 * @param {boolean} saveTicketFromPost Whether to save the ticket from the post.
+	 * @param {object} ticket The ticket object, the format is the one returned by the Tickets REST API.
+	 * @param {object} post The post object, the format is the one returned by the WP REST API.
+	 *
+	 * @type {boolean} Whether to save the ticket from the post or not.
+	 */
+	const saveTicketFromPost = applyFilters ( 'tec_tickets_save_ticket_from_post', true, ticket, currentPost );
+
+	if ( !saveTicketFromPost ) {
+		return;
+	}
 
 	try {
 		const data = [];
@@ -822,6 +845,7 @@ export function* setTicketDetails( action ) {
 		endTimeInput,
 		capacityType,
 		capacity,
+		type
 	} = details;
 
 	yield all( [
@@ -843,6 +867,7 @@ export function* setTicketDetails( action ) {
 		put( actions.setTicketEndTimeInput( clientId, endTimeInput ) ),
 		put( actions.setTicketCapacityType( clientId, capacityType ) ),
 		put( actions.setTicketCapacity( clientId, capacity ) ),
+		put( actions.setTicketType( clientId, type ) ),
 	] );
 }
 
@@ -866,6 +891,7 @@ export function* setTicketTempDetails( action ) {
 		endTimeInput,
 		capacityType,
 		capacity,
+		type
 	} = tempDetails;
 
 	yield all( [

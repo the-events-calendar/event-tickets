@@ -37,7 +37,7 @@ src/resources/**/app
 src/resources/css
 src/resources/js/**/*.min.js
 
-# Built files
+# Build files
 build
 
 # build files for js minification
