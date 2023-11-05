@@ -128,18 +128,36 @@ class AttendeesTest extends WPTestCase {
 					'duration'   => 2 * HOUR_IN_SECONDS,
 					'recurrence' => 'RRULE:FREQ=DAILY;COUNT=3',
 				] )->create()->ID;
+
 				$ticket_1_id = $this->create_tc_ticket( $event_id );
-				$this->create_order( [ $ticket_1_id => 3 ] );
 				$ticket_2_id = $this->create_tc_ticket( $event_id );
+
+				// Sort the tickets "manually".
+				wp_update_post( [ 'ID' => $ticket_1_id, 'menu_order' => 1 ] );
+				wp_update_post( [ 'ID' => $ticket_2_id, 'menu_order' => 0 ] );
+
+				$this->create_order( [ $ticket_1_id => 3 ] );
 				$this->create_order( [ $ticket_2_id => 2 ] );
+
 				$rsvp_1_ticket_id = $this->create_rsvp_ticket( $event_id );
-				$this->create_many_attendees_for_ticket( 3, $rsvp_1_ticket_id, $event_id );
 				$rsvp_2_ticket_id = $this->create_rsvp_ticket( $event_id );
+
+				// Sort the tickets "manually".
+				wp_update_post( [ 'ID' => $rsvp_1_ticket_id, 'menu_order' => 3 ] );
+				wp_update_post( [ 'ID' => $rsvp_2_ticket_id, 'menu_order' => 2 ] );
+
+				$this->create_many_attendees_for_ticket( 3, $rsvp_1_ticket_id, $event_id );
 				$this->create_many_attendees_for_ticket( 3, $rsvp_2_ticket_id, $event_id );
+
 				$series_id = tec_series()->where( 'event_post_id', $event_id )->first_id();
 				$series_pass_1_id = $this->create_tc_series_pass( $series_id )->ID;
-				$this->create_order( [ $series_pass_1_id => 3 ] );
 				$series_pass_2_id = $this->create_tc_series_pass( $series_id )->ID;
+
+				// Sort the tickets "manually".
+				wp_update_post( [ 'ID' => $series_pass_1_id, 'menu_order' => 5 ] );
+				wp_update_post( [ 'ID' => $series_pass_2_id, 'menu_order' => 4 ] );
+
+				$this->create_order( [ $series_pass_1_id => 3 ] );
 				$this->create_order( [ $series_pass_2_id => 3 ] );
 
 				return [
