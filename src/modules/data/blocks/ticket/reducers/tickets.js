@@ -60,6 +60,7 @@ export const byClientId = ( state = {}, action ) => {
 		case types.SET_TICKET_HAS_CHANGES:
 		case types.SET_TICKET_HAS_DURATION_ERROR:
 		case types.SET_TICKET_IS_SELECTED:
+		case types.SET_TICKET_TYPE:
 		case types.REGISTER_TICKET_BLOCK:
 			return {
 				...state,

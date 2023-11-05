@@ -149,6 +149,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		$data['post_id']  = $ticket->get_event_id();
 		$data['provider'] = $this->get_provider_slug( $ticket->provider_class );
 		$data['id'] = (int) $data['ID'];
+		$data['type'] = $ticket->type();
 
 		try {
 			$this->add_ticket_global_id_data( $data );

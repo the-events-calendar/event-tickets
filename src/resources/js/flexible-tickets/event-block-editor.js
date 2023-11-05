@@ -21,6 +21,39 @@
         subscribeToSeriesChange
     } = await import ( `./modules/series-relationship${min}.js` );
 
+	/**
+	 * Prevents Series Passes from being saved by the Block Editor when editing Events.
+	 *
+	 * @since TBD
+	 *
+	 * @param {bool} saveTicketFromPost Whether or not to save the Ticket from the Post.
+	 * @param {object} ticket The Ticket object that is being saved, the format is the one retruned by the Tickets REST API.
+	 * @param {object} post The Post object that is being saved, the format is the one retruned by the WP REST API.
+	 *
+	 * @returns {boolean} Whether or not to save the Ticket from the Post.
+	 */
+	function doNotSaveSeriesPassFromEvent( saveTicketFromPost, ticket, post ) {
+		const ticketType = ticket?.details?.type;
+		const postType = post?.type;
+
+		if ( !( typeof ticketType === 'string' && typeof postType === 'string' ) ) {
+			return saveTicketFromPost;
+		}
+
+		if ( ticketType === 'series_pass' && postType !== 'tribe_event_series' ) {
+			return false;
+		}
+
+		return saveTicketFromPost;
+	}
+
+	// Series Passes will appear in the tickets list of Events, but should not be saved by the Event.
+	wp.hooks.addFilter (
+		'tec_tickets_save_ticket_from_post',
+		'tec_tickets_flexible_tickets',
+		doNotSaveSeriesPassFromEvent
+	);
+
     /**
      * Get the event ticket provider from the TEC store state.
      *

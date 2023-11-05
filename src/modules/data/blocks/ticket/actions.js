@@ -228,6 +228,14 @@ export const setTicketCapacity = ( clientId, capacity ) => ( {
 	},
 } );
 
+export const setTicketType = ( clientId, type ) => ( {
+	type: types.SET_TICKET_TYPE,
+	payload: {
+		clientId,
+		type,
+	},
+} );
+
 //
 // ─── TICKET TEMP DETAILS ACTIONS ────────────────────────────────────────────────
 //
