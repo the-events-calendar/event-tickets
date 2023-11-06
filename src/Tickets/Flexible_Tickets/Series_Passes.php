@@ -21,6 +21,7 @@ use Tribe__Repository__Interface as ORM;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Tickets__Tickets as Tickets;
 use WP_Post;
+use Tribe__Template as Template;
 
 /**
  * Class Repository.
@@ -209,6 +210,8 @@ class Series_Passes extends Controller {
 			$this,
 			'filter_tickets_attendees_report_js_config'
 		] );
+
+		add_filter( 'tribe_template_pre_html:tickets/admin-views/editor/panel/header-image', [ $this, 'hide_header_image_option_from_ticket_settings' ], 10, 5 );
 	}
 
 	/**
@@ -278,6 +281,7 @@ class Series_Passes extends Controller {
 			$this,
 			'filter_tickets_attendees_report_js_config'
 		] );
+		remove_filter( 'tribe_template_pre_html:tickets/admin-views/editor/panel/header-image', [ $this, 'hide_header_image_option_from_ticket_settings' ], 10, 5 );
 	}
 
 	/**
@@ -920,5 +924,26 @@ class Series_Passes extends Controller {
 		];
 
 		return $config_data;
+	}
+
+	/**
+	 * Filters the HTML for the ticket editor to hide the header image option from the ticket settings.
+	 *
+	 * @since TBD
+	 *
+	 * @param null|string           $html       The initial HTML.
+	 * @param string                $file       Complete path to include the PHP File.
+	 * @param array                 $name       Template name.
+	 * @param Template              $template   Current instance of the Tribe__Template
+	 * @param array<string,mixed>   $context    The context data passed to the template.
+	 *
+	 * @return null|bool The filtered HTML, or `false` to hide the option.
+	 */
+	public function hide_header_image_option_from_ticket_settings( string $html = null, string $file, array $name, Template $template, array $context ): ?bool {
+		if ( ! isset( $context['post_id'] ) || get_post_type( $context['post_id'] ) !== Series_Post_Type::POSTTYPE ) {
+			return $html;
+		}
+
+		return false;
 	}
 }
