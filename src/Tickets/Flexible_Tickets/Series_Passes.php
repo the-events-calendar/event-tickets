@@ -21,7 +21,8 @@ use Tribe__Repository__Interface as ORM;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Tickets__Tickets as Tickets;
 use WP_Post;
-use Tribe__Template as Template;
+use Tribe__Tickets__Editor__Template as Template;
+use Tribe__Template as Base_Template;
 
 /**
  * Class Repository.
@@ -211,6 +212,7 @@ class Series_Passes extends Controller {
 			'filter_tickets_attendees_report_js_config'
 		] );
 
+		add_filter( 'tribe_template_after_include:tickets/v2/tickets/title', [ $this, 'render_series_passes_header_in_frontend_ticket_form' ], 10, 3 );
 		add_filter( 'tribe_template_pre_html:tickets/admin-views/editor/panel/header-image', [ $this, 'hide_header_image_option_from_ticket_settings' ], 10, 5 );
 	}
 
@@ -281,6 +283,7 @@ class Series_Passes extends Controller {
 			$this,
 			'filter_tickets_attendees_report_js_config'
 		] );
+		remove_filter( 'tribe_template_after_include:tickets/v2/tickets/title', [ $this, 'render_series_passes_header_in_frontend_ticket_form' ], 10, 3 );
 		remove_filter( 'tribe_template_pre_html:tickets/admin-views/editor/panel/header-image', [ $this, 'hide_header_image_option_from_ticket_settings' ], 10, 5 );
 	}
 
@@ -927,6 +930,30 @@ class Series_Passes extends Controller {
 	}
 
 	/**
+	 * Renders the Series Pass header for Ticket form in the frontend.
+	 *
+	 * @since TBD
+	 *
+	 * @param string    $file     The file to render.
+	 * @param array     $name     The name of the file to render.
+	 * @param Template  $template The template instance.
+	 *
+	 * @return void The header is rendered.
+	 */
+	public function render_series_passes_header_in_frontend_ticket_form( string $file, array $name, Template $template ): void {
+		$context = $template->get_values();
+
+		// Check if the current post is a Series.
+		if ( ! isset( $context['post_id'] ) || get_post_type( $context['post_id'] ) !== Series_Post_Type::POSTTYPE ) {
+			return;
+		}
+
+		$context['header'] = tec_tickets_get_series_pass_plural_uppercase( 'ticket form header' );
+
+		$template->template( 'v2/tickets/series-pass/header', $context );
+	}
+
+	/**
 	 * Filters the HTML for the ticket editor to hide the header image option from the ticket settings.
 	 *
 	 * @since TBD
@@ -934,12 +961,12 @@ class Series_Passes extends Controller {
 	 * @param null|string           $html       The initial HTML.
 	 * @param string                $file       Complete path to include the PHP File.
 	 * @param array                 $name       Template name.
-	 * @param Template              $template   Current instance of the Tribe__Template
+	 * @param Base_Template         $template   Current instance of the Tribe__Template
 	 * @param array<string,mixed>   $context    The context data passed to the template.
 	 *
 	 * @return null|bool The filtered HTML, or `false` to hide the option.
 	 */
-	public function hide_header_image_option_from_ticket_settings( string $html = null, string $file, array $name, Template $template, array $context ): ?bool {
+	public function hide_header_image_option_from_ticket_settings( string $html = null, string $file, array $name, Base_Template $template, array $context ): ?bool {
 		if ( ! isset( $context['post_id'] ) || get_post_type( $context['post_id'] ) !== Series_Post_Type::POSTTYPE ) {
 			return $html;
 		}

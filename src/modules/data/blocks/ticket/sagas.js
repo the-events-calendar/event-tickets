@@ -529,7 +529,7 @@ export function* updateTicket( action ) {
 	const currentPost = yield call( [ wpSelect( 'core/editor' ), 'getCurrentPost' ] );
 
 	/**
-	 * Filters whether to save the ticket from the post.
+	 * Filters whether to update a Ticket from a post context pushing the updated Ticket data to the backend.
 	 *
 	 * @since TBD
 	 *
@@ -539,7 +539,7 @@ export function* updateTicket( action ) {
 	 *
 	 * @type {boolean} Whether to save the ticket from the post or not.
 	 */
-	const saveTicketFromPost = applyFilters ( 'tec_tickets_save_ticket_from_post', true, ticket, currentPost );
+	const saveTicketFromPost = applyFilters ( 'tec_tickets_update_ticket_from_post', true, ticket, currentPost );
 
 	if ( !saveTicketFromPost ) {
 		return;

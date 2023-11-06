@@ -47,12 +47,19 @@
 		return saveTicketFromPost;
 	}
 
-	// Series Passes will appear in the tickets list of Events, but should not be saved by the Event.
+	// Series Passes will appear in the tickets list of Events, but should not be updated in the context of an Event post.
 	wp.hooks.addFilter (
-		'tec_tickets_save_ticket_from_post',
+		'tec_tickets_update_ticket_from_post',
 		'tec_tickets_flexible_tickets',
 		doNotSaveSeriesPassFromEvent
 	);
+
+    // Series Passes will appear in the tickets list of Events, but their block should not be saved in the context of an Event post.
+    wp.hooks.addFilter (
+        'tec_tickets_save_ticket_block_from_post',
+        'tec_tickets_flexible_tickets',
+        doNotSaveSeriesPassFromEvent
+    );
 
     /**
      * Get the event ticket provider from the TEC store state.
