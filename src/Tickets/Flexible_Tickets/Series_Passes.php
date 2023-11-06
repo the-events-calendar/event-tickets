@@ -21,6 +21,7 @@ use Tribe__Repository__Interface as ORM;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Tickets__Tickets as Tickets;
 use WP_Post;
+use Tribe__Tickets__Editor__Template as Template;
 
 /**
  * Class Repository.
@@ -209,6 +210,8 @@ class Series_Passes extends Controller {
 			$this,
 			'filter_tickets_attendees_report_js_config'
 		] );
+
+		add_filter( 'tribe_template_after_include:tickets/v2/tickets/title', [ $this, 'render_series_passes_header_in_frontend_ticket_form' ], 10, 3 );
 	}
 
 	/**
@@ -278,6 +281,8 @@ class Series_Passes extends Controller {
 			$this,
 			'filter_tickets_attendees_report_js_config'
 		] );
+
+		remove_filter( 'tribe_template_after_include:tickets/v2/tickets/title', [ $this, 'render_series_passes_header_in_frontend_ticket_form' ], 10, 3 );
 	}
 
 	/**
@@ -920,5 +925,29 @@ class Series_Passes extends Controller {
 		];
 
 		return $config_data;
+	}
+
+	/**
+	 * Renders the Series Pass header for Ticket form in the frontend.
+	 *
+	 * @since TBD
+	 *
+	 * @param string    $file     The file to render.
+	 * @param array     $name     The name of the file to render.
+	 * @param Template  $template The template instance.
+	 *
+	 * @return void The header is rendered.
+	 */
+	public function render_series_passes_header_in_frontend_ticket_form( string $file, array $name, Template $template ): void {
+		$context = $template->get_values();
+
+		// Check if the current post is a Series.
+		if ( ! isset( $context['post_id'] ) || get_post_type( $context['post_id'] ) !== Series_Post_Type::POSTTYPE ) {
+			return;
+		}
+
+		$context['header'] = tec_tickets_get_series_pass_plural_uppercase( 'ticket form header' );
+
+		$template->template( 'v2/tickets/series-pass/header', $context );
 	}
 }
