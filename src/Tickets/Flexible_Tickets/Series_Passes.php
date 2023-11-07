@@ -281,6 +281,7 @@ class Series_Passes extends Controller {
 			$this,
 			'filter_tickets_attendees_report_js_config'
 		] );
+
 		remove_filter( 'tribe_template_after_include:tickets/v2/tickets/title', [ $this, 'render_series_passes_header_in_frontend_ticket_form' ], 10, 3 );
 	}
 
