@@ -12,8 +12,7 @@ import { applyFilters } from '@wordpress/hooks';
 import { selectors } from '@moderntribe/tickets/data/blocks/ticket';
 
 const Save = (props) => {
-	const { tickets, blockProps, currentPost, getTicketObjectByClientId } =
-		props;
+	const { tickets, blockProps, currentPost, getBlock } = props;
 
 	/*
 	 * This block children are Ticket item blocks.
@@ -23,10 +22,8 @@ const Save = (props) => {
 	 */
 	const ticketsToSave = Object.entries(tickets).reduce(function (
 		toSave,
-		[clientId, ticketBlock]
+		[clientId, ticket]
 	) {
-		const ticket = getTicketObjectByClientId(clientId);
-
 		/**
 		 * Filters whether to save the Ticket block markup from the post.
 		 *
@@ -48,6 +45,8 @@ const Save = (props) => {
 		if (!doSave) {
 			return toSave;
 		}
+
+		const ticketBlock = getBlock(clientId);
 
 		return [...toSave, ticketBlock];
 	}, []);
@@ -77,8 +76,8 @@ const mapStateToProps = (state) => {
 	return {
 		currentPost: wp.data.select('core/editor').getCurrentPost(),
 		tickets: selectors.getTicketsByClientId(state),
-		getTicketObjectByClientId(clientId) {
-			return selectors.getTicket(state, { clientId });
+		getBlock(clientId) {
+			return wp.data.select('core/block-editor').getBlock(clientId);
 		},
 	};
 };
