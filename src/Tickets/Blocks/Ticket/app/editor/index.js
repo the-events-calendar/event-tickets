@@ -6,7 +6,6 @@ import React from 'react';
 /**
  * WordPress dependencies
  */
-import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
 
 const { InnerBlocks, useBlockProps } = wp.blockEditor;
@@ -18,7 +17,7 @@ import { Tickets as TicketsIcon } from '@moderntribe/tickets/icons';
 import Ticket from './container';
 
 const block = {
-	icon: <TicketsIcon/>,
+	icon: <TicketsIcon />,
 
 	attributes: {
 		hasBeenCreated: {
@@ -31,14 +30,22 @@ const block = {
 		},
 	},
 
-	edit: function ( editProps ) {
+	edit(editProps) {
 		const blockProps = useBlockProps();
-		return ( <div { ...blockProps }><Ticket { ...editProps }/></div> )
+		return (
+			<div {...blockProps}>
+				<Ticket {...editProps} />
+			</div>
+		);
 	},
-	save: function () {
-		const blockProps = useBlockProps.save ()
-		return <div { ...blockProps }><InnerBlocks.Content/></div>;
-	}
+	save() {
+		const blockProps = useBlockProps.save();
+		return (
+			<div {...blockProps}>
+				<InnerBlocks.Content />
+			</div>
+		);
+	},
 };
 
-registerBlockType ( `tribe/tickets-item`, block );
+registerBlockType(`tribe/tickets-item`, block);

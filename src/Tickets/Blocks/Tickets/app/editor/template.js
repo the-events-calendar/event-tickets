@@ -33,26 +33,27 @@ class Tickets extends PureComponent {
 	};
 
 	componentDidMount() {
-		this.props.onBlockUpdate( this.props.isSelected );
+		this.props.onBlockUpdate(this.props.isSelected);
 	}
 
-	componentDidUpdate( prevProps ) {
-		if ( prevProps.isSelected !== this.props.isSelected ) {
-			this.props.onBlockUpdate( this.props.isSelected );
+	componentDidUpdate(prevProps) {
+		if (prevProps.isSelected !== this.props.isSelected) {
+			this.props.onBlockUpdate(this.props.isSelected);
 		}
 	}
 
 	renderBlock() {
-		const {
-			isSelected,
-			clientId,
-			canCreateTickets,
-		} = this.props;
+		const { isSelected, clientId, canCreateTickets } = this.props;
 
 		return (
 			<Fragment>
-				<TicketsContainer isSelected={ isSelected } />
-				{ canCreateTickets && <TicketsDashboard isSelected={ isSelected } clientId={ clientId } /> }
+				<TicketsContainer isSelected={isSelected} />
+				{canCreateTickets && (
+					<TicketsDashboard
+						isSelected={isSelected}
+						clientId={clientId}
+					/>
+				)}
 				<TicketControls />
 			</Fragment>
 		);
@@ -63,7 +64,10 @@ class Tickets extends PureComponent {
 		return (
 			<div className="tribe-editor__not-supported-message">
 				<p className="tribe-editor__not-supported-message-text">
-					{ __( 'Tickets are not yet supported for on recurring events.', 'event-tickets' ) }
+					{__(
+						'Tickets are not yet supported for on recurring events.',
+						'event-tickets'
+					)}
 					<br />
 					<a
 						className="tribe-editor__not-supported-message-link"
@@ -71,13 +75,21 @@ class Tickets extends PureComponent {
 						target="_blank"
 						rel="noopener noreferrer"
 					>
-						{ __( 'Read about our plans for future features.', 'event-tickets' ) }
+						{__(
+							'Read about our plans for future features.',
+							'event-tickets'
+						)}
 					</a>
 					<br />
-					<Button variant="secondary" onClick={ () =>
-						wp.data.dispatch( 'core/block-editor' ).removeBlock( clientId )
-					}>
-						{ __( 'Remove block', 'event-tickets' ) }
+					<Button
+						variant="secondary"
+						onClick={() =>
+							wp.data
+								.dispatch('core/block-editor')
+								.removeBlock(clientId)
+						}
+					>
+						{__('Remove block', 'event-tickets')}
 					</Button>
 				</p>
 			</div>
@@ -85,7 +97,7 @@ class Tickets extends PureComponent {
 	}
 
 	renderContent() {
-		if ( this.props.hasRecurrenceRules && this.props.noTicketsOnRecurring ) {
+		if (this.props.hasRecurrenceRules && this.props.noTicketsOnRecurring) {
 			return this.renderBlockNotSupported();
 		}
 
@@ -97,11 +109,11 @@ class Tickets extends PureComponent {
 
 		return (
 			<div
-				className={ classNames(
+				className={classNames(
 					'tribe-editor__tickets',
 					{ 'tribe-editor__tickets--selected': isSelected },
-					{ 'tribe-editor__tickets--settings-open': isSettingsOpen },
-				) }
+					{ 'tribe-editor__tickets--settings-open': isSettingsOpen }
+				)}
 			>
 				{this.renderContent()}
 			</div>

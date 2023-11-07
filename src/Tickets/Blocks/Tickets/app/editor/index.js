@@ -24,7 +24,7 @@ import Tickets from './container';
 import Save from './save';
 
 const block = {
-	icon: <TicketsIcon/>,
+	icon: <TicketsIcon />,
 
 	attributes: {
 		sharedCapacity: {
@@ -49,14 +49,19 @@ const block = {
 		},
 	},
 
-	edit: function ( editProps ) {
+	edit(editProps) {
 		const blockProps = useBlockProps();
-		return ( <div { ...blockProps }><Tickets { ...editProps }/></div> )
+		return (
+			<div {...blockProps}>
+				<Tickets {...editProps} />
+			</div>
+		);
 	},
-	save: function ( saveProps ) {
-		const blockProps = useBlockProps.save ();
-		return ( <Save { ...saveProps } blockProps={ blockProps }/> );
-	}
+	save({ attributes }) {
+		const blockProps = useBlockProps.save();
+
+		return <Save attributes={attributes} blockProps={blockProps} />;
+	},
 };
 
-registerBlockType ( `tribe/tickets`, block );
+registerBlockType(`tribe/tickets`, block);
