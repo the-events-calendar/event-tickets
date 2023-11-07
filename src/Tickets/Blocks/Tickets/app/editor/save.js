@@ -11,9 +11,7 @@ import { withStore } from '@moderntribe/common/hoc';
 import { applyFilters } from "@wordpress/hooks";
 import { selectors } from '@moderntribe/tickets/data/blocks/ticket';
 
-const Save = ( { innerBlocks, state, blockProps } ) => {
-    const currentPost = wp.data.select ( 'core/editor' ).getCurrentPost ();
-
+const Save = ( { innerBlocks, state, blockProps, currentPost } ) => {
     /*
      * This block children are Ticket item blocks.
      * Depending on the context of the post context of this operation, some Ticket blocks should not be saved

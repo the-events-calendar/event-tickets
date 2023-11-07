@@ -22,6 +22,7 @@ import {
 } from '@moderntribe/tickets/data/utils';
 import Tickets from './container';
 import Save from './save';
+import { InnerBlocks } from "../../../../../../common/__mocks__/@wordpress/editor";
 
 const block = {
 	icon: <TicketsIcon/>,
@@ -55,7 +56,9 @@ const block = {
 	},
 	save: function ( saveProps ) {
 		const blockProps = useBlockProps.save ();
-		return ( <Save { ...saveProps } blockProps={ blockProps }/> );
+		const currentPost = wp.data.select ( 'core/editor' ).getCurrentPost ();
+
+		return ( <Save { ...saveProps } blockProps={ blockProps } currentPost={currentPost}/> );
 	}
 };
 
