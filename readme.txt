@@ -191,6 +191,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [5.6.8] 2023-11-08 =
+
+* Tweak - Added tabs for navigating between Attendees and Orders in the Tickets Commerce admin. [ET-1867]
+
 = [5.6.7] 2023-11-01 =
 
 * Feature - Tickets Commerce orders report page design update. [ET-1810]
