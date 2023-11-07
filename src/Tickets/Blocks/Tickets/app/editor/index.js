@@ -24,7 +24,7 @@ import Tickets from './container';
 import Save from './save';
 
 const block = {
-	icon: <TicketsIcon/>,
+	icon: <TicketsIcon />,
 
 	attributes: {
 		sharedCapacity: {
@@ -49,16 +49,26 @@ const block = {
 		},
 	},
 
-	edit: function ( editProps ) {
+	edit(editProps) {
 		const blockProps = useBlockProps();
-		return ( <div { ...blockProps }><Tickets { ...editProps }/></div> )
+		return (
+			<div {...blockProps}>
+				<Tickets {...editProps} />
+			</div>
+		);
 	},
-	save: function ( saveProps ) {
-		const blockProps = useBlockProps.save ();
-		const currentPost = wp.data.select ( 'core/editor' ).getCurrentPost ();
+	save(saveProps) {
+		const blockProps = useBlockProps.save();
+		const currentPost = wp.data.select('core/editor').getCurrentPost();
 
-		return ( <Save { ...saveProps } blockProps={ blockProps } currentPost={currentPost}/> );
-	}
+		return (
+			<Save
+				{...saveProps}
+				blockProps={blockProps}
+				currentPost={currentPost}
+			/>
+		);
+	},
 };
 
-registerBlockType ( `tribe/tickets`, block );
+registerBlockType(`tribe/tickets`, block);
