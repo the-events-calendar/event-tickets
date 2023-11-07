@@ -22,7 +22,6 @@ import {
 } from '@moderntribe/tickets/data/utils';
 import Tickets from './container';
 import Save from './save';
-import { InnerBlocks } from "../../../../../../common/__mocks__/@wordpress/editor";
 
 const block = {
 	icon: <TicketsIcon/>,
