@@ -37,7 +37,7 @@ const Save = ({ innerBlocks, state, blockProps, currentPost }) => {
 		 * @type {boolean} Whether to save the ticket from the post or not.
 		 */
 		return applyFilters(
-			'tec_tickets_save_ticket_block_from_post',
+			'tec.tickets.blocks.saveTicketFromPost',
 			true,
 			ticket,
 			currentPost

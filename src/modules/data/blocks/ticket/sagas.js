@@ -539,7 +539,7 @@ export function* updateTicket( action ) {
 	 *
 	 * @type {boolean} Whether to save the ticket from the post or not.
 	 */
-	const saveTicketFromPost = applyFilters ( 'tec_tickets_update_ticket_from_post', true, ticket, currentPost );
+	const saveTicketFromPost = applyFilters ( 'tec.tickets.blocks.updateTicketFromPost', true, ticket, currentPost );
 
 	if ( !saveTicketFromPost ) {
 		return;
