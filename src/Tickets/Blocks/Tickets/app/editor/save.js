@@ -11,19 +11,21 @@ import { withStore } from '@moderntribe/common/hoc';
 import { applyFilters } from '@wordpress/hooks';
 import { selectors } from '@moderntribe/tickets/data/blocks/ticket';
 
-const Save = ({ innerBlocks, state, blockProps, currentPost }) => {
+const Save = (props) => {
+	const { tickets, blockProps, currentPost, getTicketObjectByClientId } =
+		props;
+
 	/*
 	 * This block children are Ticket item blocks.
 	 * Depending on the context of the post context of this operation, some Ticket blocks should not be saved
 	 * in the `post_content`.
 	 * Here we filter out the Ticket blocks that should not be saved.
 	 */
-	const saveInnerBlocks = innerBlocks.filter(function (block) {
-		if (!block.clientId) {
-			return false;
-		}
-
-		const ticket = selectors.getTicket(state, { clientId: block.clientId });
+	const ticketsToSave = Object.entries(tickets).reduce(function (
+		toSave,
+		[clientId, ticketBlock]
+	) {
+		const ticket = getTicketObjectByClientId(clientId);
 
 		/**
 		 * Filters whether to save the Ticket block markup from the post.
@@ -36,13 +38,19 @@ const Save = ({ innerBlocks, state, blockProps, currentPost }) => {
 		 *
 		 * @type {boolean} Whether to save the ticket from the post or not.
 		 */
-		return applyFilters(
+		const doSave = applyFilters(
 			'tec.tickets.blocks.saveTicketFromPost',
 			true,
 			ticket,
 			currentPost
 		);
-	});
+
+		if (!doSave) {
+			return toSave;
+		}
+
+		return [...toSave, ticketBlock];
+	}, []);
 
 	/*
 	 * The `wp.blocks.serialize` function will "serialize" an array of blocks into a string of HTML and
@@ -50,7 +58,7 @@ const Save = ({ innerBlocks, state, blockProps, currentPost }) => {
 	 * E.g. running the function on a `wp/paragraph` block will yield the following HTML code:
 	 * <!-- wp:paragraph --><div class="wp-block-core-paragraph"><p>Lorem dolor</p></div><!-- /wp:paragraph -->
 	 */
-	const serializedInnerBlocks = wp.blocks.serialize(saveInnerBlocks);
+	const serializedInnerBlocks = wp.blocks.serialize(ticketsToSave);
 
 	/*
 	 * Having possibly filtered the inner blocks, we cannot rely on `InnerBlocks.Content` to render the markup.
@@ -67,7 +75,11 @@ const Save = ({ innerBlocks, state, blockProps, currentPost }) => {
 
 const mapStateToProps = (state) => {
 	return {
-		state,
+		currentPost: wp.data.select('core/editor').getCurrentPost(),
+		tickets: selectors.getTicketsByClientId(state),
+		getTicketObjectByClientId(clientId) {
+			return selectors.getTicket(state, { clientId });
+		},
 	};
 };
 

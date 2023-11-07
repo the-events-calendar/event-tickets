@@ -57,17 +57,10 @@ const block = {
 			</div>
 		);
 	},
-	save(saveProps) {
+	save({ attributes }) {
 		const blockProps = useBlockProps.save();
-		const currentPost = wp.data.select('core/editor').getCurrentPost();
 
-		return (
-			<Save
-				{...saveProps}
-				blockProps={blockProps}
-				currentPost={currentPost}
-			/>
-		);
+		return <Save attributes={attributes} blockProps={blockProps} />;
 	},
 };
 
