@@ -82,8 +82,9 @@ class Tabbed_View {
 		}
 
 		$post_id = tribe_get_request_var( 'event_id', tribe_get_request_var( 'post_id' ) );
+		$post = get_post( $post_id );
 
-		if ( empty( $post_id ) || ! $post = get_post( $post_id ) ) {
+		if ( empty( $post_id ) || ! $post ) {
 			return;
 		}
 
@@ -104,8 +105,9 @@ class Tabbed_View {
 	 */
 	public function render(): void {
 		$post_id = tribe_get_request_var( 'event_id', tribe_get_request_var( 'post_id' ) );
+		$post = get_post( $post_id );
 
-		if ( empty( $post_id ) || ! $post = get_post( $post_id ) ) {
+		if ( empty( $post_id ) || ! $post ) {
 			return;
 		}
 
@@ -120,7 +122,7 @@ class Tabbed_View {
 			'post_type' => tribe_get_request_var( 'post_type' ),
 		], admin_url( 'edit.php' ) );
 
-		$tabbed_view->set_url( remove_query_arg( 'tab', $request_uri ) );
+		$tabbed_view->set_url( $request_uri );
 
 		$tab_map = $this->get_tab_map();
 
