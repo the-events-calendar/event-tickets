@@ -213,7 +213,7 @@ class Tabbed_View {
 		 * @param int 		$post_id The post ID.
 		 * @param string 	$page_type Possible values `tickets-attendees` or `tickets-orders`.
 		 */
-		return apply_filters( 'tec_tickets_commerce_reports_tabbed_page_title', $view_title, $post_id, $page_type );
+		return (string) apply_filters( 'tec_tickets_commerce_reports_tabbed_page_title', $view_title, $post_id, $page_type );
 	}
 
 	/**
@@ -236,9 +236,7 @@ class Tabbed_View {
 		 * @param array $tab_map An associative array in the [ <query_var> => <tab_slug> ] format.
 		 *
 		 */
-		$tab_map = (array) apply_filters( 'tec_tickets_commerce_reports_tabbed_view_tab_map', $this->tab_map );
-
-		return $tab_map;
+		return (array) apply_filters( 'tec_tickets_commerce_reports_tabbed_view_tab_map', $this->tab_map );
 	}
 
 	/**
