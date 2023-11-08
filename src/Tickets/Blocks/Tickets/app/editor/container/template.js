@@ -18,10 +18,11 @@ import Availability from '../availability/container';
 import InactiveTicket from '../inactive/inactive';
 import { Card } from '@moderntribe/tickets/elements';
 import './style.pcss';
+import Uneditable from '../uneditable/uneditable';
 
 const TicketsOverlay = () => <div className="tribe-editor__tickets__overlay" />;
 
-const TicketsContainer = ( {
+const TicketsContainer = ({
 	allTicketsFuture,
 	allTicketsPast,
 	canCreateTickets,
@@ -31,62 +32,68 @@ const TicketsContainer = ( {
 	showAvailability,
 	showInactiveBlock,
 	hasATicketSelected,
-} ) => {
+}) => {
 	const messages = {
 		title: '',
 		description: '',
 	};
 
-	if ( isSettingsOpen ) {
+	if (isSettingsOpen) {
 		return null;
 	}
 
-	if ( ! canCreateTickets ) {
-		messages.title = __( 'There is no ecommerce available', 'event-tickets' );
+	if (!canCreateTickets) {
+		messages.title = __('There is no ecommerce available', 'event-tickets');
 		messages.description = __(
-			'To create tickets, you\'ll need to enable an ecommerce solution.',
-			'event-tickets',
+			"To create tickets, you'll need to enable an ecommerce solution.",
+			'event-tickets'
 		);
-	} else if ( ! hasCreatedTickets ) {
-		messages.title = __( 'Add a ticket to get started.', 'event-tickets' );
-		messages.description = __( 'Edit this block to create your first ticket.', 'event-tickets' );
-	} else if ( allTicketsPast || allTicketsFuture ) {
-		messages.title = __( 'There are no active tickets. Adjust sale duration to make tickets available', 'event-tickets' ); // eslint-disable-line max-len
+	} else if (!hasCreatedTickets) {
+		messages.title = __('Add a ticket to get started.', 'event-tickets');
+		messages.description = __(
+			'Edit this block to create your first ticket.',
+			'event-tickets'
+		);
+	} else if (allTicketsPast || allTicketsFuture) {
+		messages.title = __(
+			'There are no active tickets. Adjust sale duration to make tickets available',
+			'event-tickets'
+		); // eslint-disable-line max-len
 	} else {
-		messages.title = __( 'Tickets are not yet available', 'event-tickets' );
+		messages.title = __('Tickets are not yet available', 'event-tickets');
 	}
 
-	const innerBlocksClassName = classNames( {
+	const innerBlocksClassName = classNames({
 		'tribe-editor__tickets__inner-blocks': true,
-		'tribe-editor__tickets__inner-blocks--show': ! showInactiveBlock,
-	} );
+		'tribe-editor__tickets__inner-blocks--show': !showInactiveBlock,
+	});
 
-	const cardClassName = classNames( {
-		'tribe-editor__card-no-bottom-border': ! hasATicketSelected,
+	const cardClassName = classNames({
+		'tribe-editor__card-no-bottom-border': !hasATicketSelected,
 		'tribe-editor__card-padding-bottom': hasATicketSelected,
-	} );
+	});
+
+	// Mock, should come from state.
+	const showUneditableTickets = true;
 
 	return (
 		<div className="tribe-editor__tickets__container">
-			<div className={ innerBlocksClassName }>
+			<div className={innerBlocksClassName}>
 				<Card
-					className={ cardClassName }
-					header={ __( 'Tickets', 'event-tickets' ) }
+					className={cardClassName}
+					header={__('Tickets', 'event-tickets')}
 				>
-					<InnerBlocks
-						allowedBlocks={ [ 'tribe/tickets-item' ] }
-					/>
+					<InnerBlocks allowedBlocks={['tribe/tickets-item']} />
 				</Card>
 			</div>
-			{
-				showInactiveBlock && ! isSettingsOpen && (
-					<InactiveTicket
-						title={ messages.title }
-					/>
-				)
-			}
-			{ showAvailability && <Availability /> }
-			{ hasOverlay && <TicketsOverlay /> }
+			{showUneditableTickets && (
+				<Uneditable cardClassName={cardClassName} />
+			)}
+			{showInactiveBlock && !isSettingsOpen && (
+				<InactiveTicket title={messages.title} />
+			)}
+			{showAvailability && <Availability />}
+			{hasOverlay && <TicketsOverlay />}
 		</div>
 	);
 };
