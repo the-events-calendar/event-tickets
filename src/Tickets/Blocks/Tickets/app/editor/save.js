@@ -3,6 +3,7 @@
  */
 import { connect } from 'react-redux';
 import { compose } from 'redux';
+import PropTypes from 'prop-types';
 
 /**
  * Internal dependencies
@@ -70,6 +71,13 @@ const Save = (props) => {
 			dangerouslySetInnerHTML={{ __html: serializedInnerBlocks }}
 		></div>
 	);
+};
+
+Save.propTypes = {
+	blockProps: PropTypes.object,
+	currentPost: PropTypes.object,
+	tickets: PropTypes.arrayOf(PropTypes.object),
+	getBlock: PropTypes.func,
 };
 
 const mapStateToProps = (state) => {
