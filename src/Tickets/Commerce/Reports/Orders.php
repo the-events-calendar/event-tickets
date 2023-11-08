@@ -346,7 +346,7 @@ class Orders extends Report_Abstract {
 	 * Sets up the template variables used to render the Orders Report Page.
 	 *
 	 * @since 5.2.0
-	 * @since TBD Removed title from template vars, title will be rendered by the Tabbed_View
+	 * @since 5.6.8 Removed title from template vars, title will be rendered by the Tabbed_View
 	 *
 	 * @return array
 	 */
