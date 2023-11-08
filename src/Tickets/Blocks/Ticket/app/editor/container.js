@@ -18,9 +18,10 @@ import {
 } from '@moderntribe/tickets/data/shared/move/selectors';
 
 const getShowTicket = ( state, ownProps ) => (
-	selectors.getTicketsIsSelected( state ) ||
+	( selectors.getTicketsIsSelected( state ) ||
 		selectors.hasATicketSelected( state ) ||
-		selectors.isTicketOnSale( state, ownProps )
+		selectors.isTicketOnSale( state, ownProps ) ) &&
+	selectors.isDefaultTicket( state, ownProps )
 );
 
 const mapStateToProps = ( state, ownProps ) => {

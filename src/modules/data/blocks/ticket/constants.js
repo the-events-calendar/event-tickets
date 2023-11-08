@@ -34,6 +34,7 @@ export const SHARED = 'shared';
 export const INDEPENDENT = 'independent';
 export const CAPPED = 'capped';
 export const OWN = 'own';
+export const DEFAULT = 'default';
 
 export const TICKET_TYPES_VALUES = [ UNLIMITED, CAPPED, OWN ];
 
@@ -41,6 +42,7 @@ export const TICKET_TYPES = {
 	[ UNLIMITED ]: UNLIMITED,
 	[ SHARED ]: CAPPED,
 	[ INDEPENDENT ]: OWN,
+	[ DEFAULT ]: DEFAULT,
 };
 
 export const PREFIX = 'prefix';
