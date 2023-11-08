@@ -16,7 +16,6 @@ const {
 	UNLIMITED,
 	INDEPENDENT,
 	SHARED,
-	DEFAULT,
 	TICKET_TYPES,
 } = constants;
 const { tickets: ticketsConfig } = globals;
@@ -401,11 +400,6 @@ export const isSharedTicket = createSelector(
 export const isIndependentTicket = createSelector(
 	[ getTicketDetails ],
 	( details ) => details.capacityType === TICKET_TYPES[ INDEPENDENT ],
-);
-
-export const isDefaultTicket = createSelector(
-	[ getTicketDetails ],
-	( details ) => details.type === TICKET_TYPES[ DEFAULT ],
 );
 
 export const isTicketPast = createSelector(
