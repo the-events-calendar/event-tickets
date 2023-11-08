@@ -229,7 +229,7 @@ class Tabbed_View {
 		 *
 		 * The map will relate the GET query variable to the registered tab slugs.
 		 *
-		 * @since TBD
+		 * @since 5.6.8
 		 *
 		 * @param array $tab_map An associative array in the [ <query_var> => <tab_slug> ] format.
 		 *
