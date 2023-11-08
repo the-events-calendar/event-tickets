@@ -8,7 +8,7 @@ import React from 'react';
  */
 import { registerBlockType } from '@wordpress/blocks';
 
-const { useBlockProps } = wp.blockEditor;
+const { InnerBlocks, useBlockProps } = wp.blockEditor;
 
 /**
  * Internal dependencies
@@ -21,7 +21,6 @@ import {
 	KEY_TICKETS_LIST,
 } from '@moderntribe/tickets/data/utils';
 import Tickets from './container';
-import Save from './save';
 
 const block = {
 	icon: <TicketsIcon />,
@@ -57,10 +56,14 @@ const block = {
 			</div>
 		);
 	},
-	save({ attributes }) {
+	save() {
 		const blockProps = useBlockProps.save();
 
-		return <Save attributes={attributes} blockProps={blockProps} />;
+		return (
+			<div {...blockProps}>
+				<InnerBlocks.Content />
+			</div>
+		);
 	},
 };
 
