@@ -27,13 +27,13 @@
 	 * @since TBD
 	 *
 	 * @param {bool} saveTicketFromPost Whether or not to save the Ticket from the Post.
-	 * @param {object} ticket The Ticket object that is being saved, the format is the one retruned by the Tickets REST API.
+	 * @param {number} id The ID of the Ticket.
+	 * @param {string} ticketType The ticket types, e.g. `default`, `series_pass`, etc.
 	 * @param {object} post The Post object that is being saved, the format is the one retruned by the WP REST API.
 	 *
 	 * @returns {boolean} Whether or not to save the Ticket from the Post.
 	 */
-	function doNotSaveSeriesPassFromEvent( saveTicketFromPost, ticket, post ) {
-		const ticketType = ticket?.details?.type;
+	function doNotSaveSeriesPassFromEvent( saveTicketFromPost, id, ticketType, post ) {
 		const postType = post?.type;
 
 		if ( !( typeof ticketType === 'string' && typeof postType === 'string' ) ) {
@@ -47,16 +47,9 @@
 		return saveTicketFromPost;
 	}
 
-	// Series Passes will appear in the tickets list of Events, but should not be updated in the context of an Event post.
-	wp.hooks.addFilter (
-		'tec.tickets.blocks.updateTicketFromPost',
-		'tec.tickets.flexibleTickets',
-		doNotSaveSeriesPassFromEvent
-	);
-
-    // Series Passes will appear in the tickets list of Events, but their block should not be saved in the context of an Event post.
+    // Series Passes will appear in the tickets list of Events, but they should not be editable from Events.
     wp.hooks.addFilter (
-        'tec.tickets.blocks.saveTicketFromPost',
+        'tec.tickets.blocks.editTicketFromPost',
 		'tec.tickets.flexibleTickets',
         doNotSaveSeriesPassFromEvent
     );

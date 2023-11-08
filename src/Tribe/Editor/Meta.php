@@ -137,7 +137,14 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 		register_meta(
 			'post',
 			'_tribe_tickets_list',
-			$this->numeric_array()
+			[
+				'description'       => __( 'JSON object of all the post tickets', 'event-tickets' ),
+				'auth_callback'     => [ $this, 'auth_callback' ],
+				'sanitize_callback' => [ $this, 'sanitize_tickets_list' ],
+				'single'       => true,
+				'type'         => 'string',
+				'show_in_rest' => true,
+			]
 		);
 
 		register_meta(
@@ -321,10 +328,14 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 				continue;
 			}
 
-			$list_of_tickets[] = $ticket->ID;
+			$list_of_tickets[] = [
+				'id'   => $ticket->ID,
+				'type' => $ticket->type()
+			];
 		}
 
-		return $list_of_tickets;
+		// Return an array since this method is filtering a query to get all the meta for the key.
+		return [ json_encode( $list_of_tickets ) ?: '' ];
 	}
 
 	/**
@@ -451,5 +462,42 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 	 */
 	public function render_rsvp_form_toggle( int $post_id ): void {
 		$this->admin_views->template( 'editor/elements/new-rsvp', [ 'post_id' => $post_id ] );
+	}
+
+	/**
+	 * Sanitize the tickets list.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $tickets_list The tickets list to sanitize.
+	 *
+	 * @return false|string Either the sanitized tickets list or false if the tickets list is invalid.
+	 */
+	public function sanitize_tickets_list( $tickets_list ) {
+		if ( ! is_string( $tickets_list ) ) {
+			return false;
+		}
+
+		$decoded = @json_decode( $tickets_list, true );
+
+		if ( ! is_array( $decoded ) ) {
+			return false;
+		}
+
+		foreach ( $decoded as $ticket ) {
+			if ( ! ( is_array( $ticket ) && isset( $ticket['id'], $ticket['type'] ) ) ) {
+				return false;
+			}
+
+			if ( ! is_numeric( $ticket['id'] ) ) {
+				return false;
+			}
+
+			if ( ! is_string( $ticket['type'] ) ) {
+				return false;
+			}
+		}
+
+		return $tickets_list;
 	}
 }

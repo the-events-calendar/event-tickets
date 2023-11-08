@@ -42,7 +42,7 @@ const block = {
 			meta: KEY_TICKET_DEFAULT_PROVIDER,
 		},
 		tickets: {
-			type: 'array',
+			type: 'string',
 			source: 'meta',
 			meta: KEY_TICKETS_LIST,
 		},

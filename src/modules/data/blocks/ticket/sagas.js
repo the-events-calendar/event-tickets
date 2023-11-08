@@ -89,12 +89,29 @@ export function* createMissingTicketBlocks( tickets ) {
 export function* setTicketsInitialState( action ) {
 	const { get } = action.payload;
 
+	const currentPost = yield wpSelect( 'core/editor' ).getCurrentPost();
+
 	const header = parseInt( get( 'header', TICKET_HEADER_IMAGE_DEFAULT_STATE.id ), 10 );
 	const sharedCapacity = get( 'sharedCapacity' );
-	const ticketsList = get( 'tickets', [] );
+	const ticketsList = JSON.parse(get( 'tickets', '' ));
 	const ticketsInBlock = yield select( selectors.getTicketsIdsInBlocks );
-	// Get only the IDs of the tickets that are not in the block list already
-	const ticketsDiff = ticketsList.filter( ( item ) => ! includes( ticketsInBlock, item ) );
+	const ticketsDiff = ticketsList
+		 // Get only the IDs of the tickets that are not in the block list already.
+		.filter( ( item ) => ! includes( ticketsInBlock, item.id ) )
+		// Get only the IDs of the tickets that can be edited from this post.
+		.filter ( ( {id,type} ) => {
+			/**
+			 * Filters whether a ticket can be edited from a post.
+			 *
+			 * @since TBD
+			 *
+			 * @param {boolean} canEdit Whether or not the ticket can be edited from the post.
+			 * @param {number} ticketId The ticket ID.
+			 * @param {string} ticketType The ticket types, e.g. `default`, `series_pass`, etc.
+			 * @param {object} post The post object.
+			 */
+			return applyFilters ( 'tec.tickets.blocks.editTicketFromPost', true, id, type, currentPost );
+		} );
 
 	if ( ticketsDiff.length >= 1 ) {
 		yield call( createMissingTicketBlocks, ticketsDiff );
@@ -524,26 +541,6 @@ export function* updateTicket( action ) {
 	body.append( 'edit_ticket_nonce', edit_ticket_nonce );
 
 	const ticketId = yield select( selectors.getTicketId, props );
-
-	const ticket = yield select( selectors.getTicket, props );
-	const currentPost = yield call( [ wpSelect( 'core/editor' ), 'getCurrentPost' ] );
-
-	/**
-	 * Filters whether to update a Ticket from a post context pushing the updated Ticket data to the backend.
-	 *
-	 * @since TBD
-	 *
-	 * @param {boolean} saveTicketFromPost Whether to save the ticket from the post.
-	 * @param {object} ticket The ticket object, the format is the one returned by the Tickets REST API.
-	 * @param {object} post The post object, the format is the one returned by the WP REST API.
-	 *
-	 * @type {boolean} Whether to save the ticket from the post or not.
-	 */
-	const saveTicketFromPost = applyFilters ( 'tec.tickets.blocks.updateTicketFromPost', true, ticket, currentPost );
-
-	if ( !saveTicketFromPost ) {
-		return;
-	}
 
 	try {
 		const data = [];
