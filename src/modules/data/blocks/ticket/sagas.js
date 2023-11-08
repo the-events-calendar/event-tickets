@@ -93,6 +93,7 @@ export function* setTicketsInitialState( action ) {
 
 	const header = parseInt( get( 'header', TICKET_HEADER_IMAGE_DEFAULT_STATE.id ), 10 );
 	const sharedCapacity = get( 'sharedCapacity' );
+	// Shape: [ {id: int, type: string}, ... ].
 	const ticketsList = JSON.parse(get( 'tickets', '' ));
 	const ticketsInBlock = yield select( selectors.getTicketsIdsInBlocks );
 	const ticketsDiff = ticketsList
@@ -114,7 +115,7 @@ export function* setTicketsInitialState( action ) {
 		} );
 
 	if ( ticketsDiff.length >= 1 ) {
-		yield call( createMissingTicketBlocks, ticketsDiff );
+		yield call ( createMissingTicketBlocks, ticketsDiff.map ( ( ticket ) => ticket.id ) );
 	}
 
 	// Meta value is '0' however fields use empty string as default
