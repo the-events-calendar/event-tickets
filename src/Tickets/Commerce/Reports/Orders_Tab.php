@@ -2,38 +2,34 @@
 
 namespace TEC\Tickets\Commerce\Reports;
 
-use TEC\Tickets\Commerce\Reports\Orders;
-
 /**
  * Class Orders_Tab
  *
- * @since TBD
+ * @since 5.6.8
  */
 class Orders_Tab extends \Tribe__Tabbed_View__Tab {
 	/**
-	 * @var bool
+	 * @inerhitDoc
+	 *
+	 * @since 5.6.8
 	 */
 	protected $visible = true;
 
 	/**
-	 * Returns this tab slug.
+	 * @inerhitDoc
 	 *
-	 * @since TBD
-	 *
-	 * @return string
+	 * @since 5.6.8
 	 */
 	public function get_slug() {
 		return Orders::$tab_slug;
 	}
 
 	/**
-	 * Returns this tab label
+	 * @inerhitDoc
 	 *
-	 * @since TBD
-	 *
-	 * @return string
+	 * @since 5.6.8
 	 */
 	public function get_label() {
-		return __( 'Orders', 'event-tickets' );
+		return esc_html__( 'Orders', 'event-tickets' );
 	}
 }
