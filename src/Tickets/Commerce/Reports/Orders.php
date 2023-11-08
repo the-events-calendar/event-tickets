@@ -7,8 +7,6 @@ use TEC\Tickets\Commerce\Module;
 use WP_Post;
 
 use Tribe__Tickets__Main as Plugin;
-use Tribe__Utils__Array as Arr;
-
 
 /**
  * Class Orders Report.
