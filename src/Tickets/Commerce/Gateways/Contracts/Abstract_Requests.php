@@ -76,7 +76,7 @@ abstract class Abstract_Requests implements Requests_Interface {
 			// For all other methods we try to make the body into the correct type.
 			if (
 				! empty( $request_arguments['body'] )
-				&& 'application/json' === strtolower( $content_type )
+				&& 'application/json' === strtolower( $content_type ?? '' )
 			) {
 				$request_arguments['body'] = wp_json_encode( $request_arguments[ $key ] );
 			}
