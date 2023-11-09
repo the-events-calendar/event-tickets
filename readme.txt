@@ -191,6 +191,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [5.6.8.1] 2023-11-09 =
+
+* Fix - Update a common library to prevent possible fatals. [TEC-4978]
+
 = [5.6.8] 2023-11-08 =
 
 * Tweak - Added tabs for navigating between Attendees and Orders in the Tickets Commerce admin. [ET-1867]
