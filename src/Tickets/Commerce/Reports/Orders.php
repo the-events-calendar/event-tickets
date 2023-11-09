@@ -262,7 +262,7 @@ class Orders extends Report_Abstract {
 
 		$page_title        = __( 'Tickets Commerce Orders', 'event-tickets' );
 		$this->orders_page = add_submenu_page(
-			null,
+			'',
 			$page_title,
 			$page_title,
 			$cap,
