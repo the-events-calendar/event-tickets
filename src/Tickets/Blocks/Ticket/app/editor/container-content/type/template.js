@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import React, { useCallback } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
@@ -14,40 +14,31 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { LabeledItem } from '@moderntribe/common/elements';
-import {
-	Pass as PassIcon,
-	Ticket as TicketIcon
-} from '@moderntribe/tickets/icons';
+import { Ticket as TicketIcon } from '@moderntribe/tickets/icons';
 import './styles.pcss';
 
-const TYPES = {
-	default: {
-		title: 'Single Ticket',
-		icon: <TicketIcon />,
-	},
-
-	series: {
-		title: 'Series Pass',
-		icon: <PassIcon />,
-	},
-}
-
-const Type = ({
+const Type = ( {
 	postType,
-	seriesTitle,
 	type,
-}) => {
+	typeDescription,
+	typeIconUrl,
+	typeName,
+} ) => {
+	let ticketType = {};
 
-	const getDescription = useCallback( () => {
-		switch ( type ) {
-			case 'default':
-				return sprintf( 'A single ticket is specific to this %s.', postType );
-			case 'series':
-				return sprintf( 'A single ticket is specific to this %s. You can add a Series Pass from the %s Series page.', postType, seriesTitle );
-			default:
-				return '';
+	if ( type === 'default' ) {
+		ticketType = {
+			typeName: 'Single Ticket',
+			typeDescription: sprintf( 'A single ticket is specific to this %s.', postType ),
+			typeIcon: <TicketIcon />,
 		}
-	}, [ postType, seriesTitle, type ] );
+	} else {
+		ticketType = {
+			typeName,
+			typeDescription,
+			typeIcon: <img src={ typeIconUrl } alt="" />,
+		}
+	}
 
 	return(
 		<div className={ classNames(
@@ -63,10 +54,10 @@ const Type = ({
 
 			<div className="tribe-editor__ticket__type-description">
 				<div>
-					{ TYPES[ type ]?.icon }
-					<span>{ __( TYPES[ type ]?.title, 'event-tickets' ) }</span>
+					{ ticketType.typeIcon }
+					<span>{ __( ticketType.typeName, 'event-tickets' ) }</span>
 				</div>
-				<div>{ __( getDescription(), 'event_tickets' ) }</div>
+				<div>{ __( ticketType.typeDescription, 'event_tickets' ) }</div>
 			</div>
 		</div>
 	);
@@ -74,8 +65,10 @@ const Type = ({
 
 Type.propTypes = {
 	postType: PropTypes.string,
-	seriesTitle: PropTypes.string,
 	type: PropTypes.string,
+	typeDescription: PropTypes.string,
+	typeIconUrl: PropTypes.string,
+	typeName: PropTypes.string,
 };
 
 export default Type;

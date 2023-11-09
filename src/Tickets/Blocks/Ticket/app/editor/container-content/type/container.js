@@ -17,13 +17,16 @@ import { withStore } from '@moderntribe/common/hoc';
 import { selectors } from '@moderntribe/tickets/data/blocks/ticket';
 
 const mapStateToProps = ( state, ownProps ) => {
-	const postType = select( 'core/editor' ).getCurrentPostType();
+	let postType = select( 'core/editor' ).getCurrentPostType();
+	postType = postType.replace( 'tribe_events', 'event' );
 	const ticketDetails = selectors.getTicketDetails( state, ownProps );
 
 	return ( {
-		postType: postType.replace( 'tribe_events', 'event' ),
+		postType,
 		type: ticketDetails.type,
-		seriesTitle: 'TODO this',
+		typeDescription: ticketDetails.typeDescription,
+		typeIconUrl: ticketDetails.typeIconUrl,
+		typeName: ticketDetails.typeName,
 	}
 ) };
 
