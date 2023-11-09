@@ -15,10 +15,12 @@ import AttendeesRegistration from './attendees-registration/container';
 import Description from './description/container';
 import Price from './price/container';
 import Title from './title/container';
+import Type from './type/container';
 import './style.pcss';
 
 const TicketContainerContent = ( { clientId, hasTicketsPlus, hasIacVars } ) => (
 	<Fragment>
+		<Type clientId={ clientId } />
 		<Title clientId={ clientId } />
 		<Description clientId={ clientId } />
 		<Price clientId={ clientId } />
