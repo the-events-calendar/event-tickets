@@ -83,7 +83,7 @@ class Attendees extends Report_Abstract {
 
 		$page_title           = __( 'Tickets Commerce Attendees', 'event-tickets' );
 		$this->attendees_page = add_submenu_page(
-			null,
+			'',
 			$page_title,
 			$page_title,
 			$cap,
