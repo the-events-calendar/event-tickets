@@ -2,8 +2,8 @@
 
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, GeoffBel, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra
 Tags: tickets, registration, event registration, RSVP, ticket sales, attendee management
-Requires at least: 5.8.5
-Tested up to: 6.3.1
+Requires at least: 6.2
+Tested up to: 6.4
 Stable tag: 5.6.8.1
 Requires PHP: 7.4
 License: GPLv2 or later
@@ -190,6 +190,12 @@ We've got a [LoopedIn](https://evnt.is/ideas) page where we're actively watching
 Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on using, tweaking, and troubleshooting our plugins.
 
 == Changelog ==
+
+= [5.6.8] 2023-11-08 =
+
+* Tweak - Added tabs for navigating between Attendees and Orders in the Tickets Commerce admin. [ET-1867]
+* Tweak - Added action `tec_tickets_commerce_reports_tabbed_view_before_register_tab` and `tec_tickets_commerce_reports_tabbed_view_after_register_tab` allow adding third-party tabs. [ET-1867]
+* Tweak - Added filter `tec_tickets_commerce_reports_tabbed_page_title` and `tec_tickets_commerce_reports_tabbed_view_tab_map` allow granular control over how Tickets Commerce tabs behave. [ET-1867]
 
 = [5.6.7] 2023-11-01 =
 
