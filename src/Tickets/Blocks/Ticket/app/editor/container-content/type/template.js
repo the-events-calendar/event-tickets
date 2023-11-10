@@ -8,7 +8,7 @@ import classNames from 'classnames';
 /**
  * Wordpress dependencies
  */
-import { __ } from '@wordpress/i18n';
+import { _x } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -17,47 +17,55 @@ import { LabeledItem } from '@moderntribe/common/elements';
 import { Ticket as TicketIcon } from '@moderntribe/tickets/icons';
 import './styles.pcss';
 
-const Type = ( {
-	postType,
-	type,
-	typeDescription,
-	typeIconUrl,
-	typeName,
-} ) => {
+const Type = ({ postType, type, typeDescription, typeIconUrl, typeName }) => {
 	let ticketType = {};
 
-	if ( type === 'default' ) {
+	if (type === 'default') {
 		ticketType = {
-			typeName: 'Single Ticket',
-			typeDescription: sprintf( 'A single ticket is specific to this %s.', postType ),
+			typeName: _x(
+				'Single Ticket',
+				'Default ticket type label.',
+				'event-tickets'
+			),
+			typeDescription: sprintf(
+				// translators: %s is the post type name.
+				_x(
+					'A single ticket is specific to this %s.',
+					'Default ticket type description.',
+					'event-tickets'
+				),
+				postType
+			),
 			typeIcon: <TicketIcon />,
-		}
+		};
 	} else {
 		ticketType = {
 			typeName,
 			typeDescription,
-			typeIcon: <img src={ typeIconUrl } alt="" />,
-		}
+			typeIcon: <img src={typeIconUrl} alt="" />,
+		};
 	}
 
-	return(
-		<div className={ classNames(
-			'tribe-editor__ticket__type',
-			'tribe-editor__ticket__content-row',
-			'tribe-editor__ticket__content-row--type',
-		) }>
+	return (
+		<div
+			className={classNames(
+				'tribe-editor__ticket__type',
+				'tribe-editor__ticket__content-row',
+				'tribe-editor__ticket__content-row--type'
+			)}
+		>
 			<LabeledItem
 				className="tribe-editor__ticket__type-label"
-				isLabel={ true }
-				label={ __( 'Type', 'event-tickets' ) }
+				isLabel={true}
+				label={_x('Type', 'Ticket type label', 'event-tickets')}
 			/>
 
 			<div className="tribe-editor__ticket__type-description">
 				<div>
-					{ ticketType.typeIcon }
-					<span>{ __( ticketType.typeName, 'event-tickets' ) }</span>
+					{ticketType.typeIcon}
+					<span>{ticketType.typeName}</span>
 				</div>
-				<div>{ __( ticketType.typeDescription, 'event_tickets' ) }</div>
+				<div>{ticketType.typeDescription}</div>
 			</div>
 		</div>
 	);
