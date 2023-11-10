@@ -2,7 +2,7 @@
  * Makes sure we have all the required levels on the Tribe Object
  *
  * @since 5.0.0
- * @type   {object}
+ * @type   {Object}
  */
 tribe.tickets = tribe.tickets || {};
 tribe.tickets.rsvp = tribe.tickets.rsvp || {};
@@ -11,7 +11,7 @@ tribe.tickets.rsvp = tribe.tickets.rsvp || {};
  * Configures RSVP Tooltip Object in the Global Tribe variable
  *
  * @since 5.0.0
- * @type   {object}
+ * @type   {Object}
  */
 tribe.tickets.rsvp.tooltip = {};
 
@@ -19,8 +19,8 @@ tribe.tickets.rsvp.tooltip = {};
  * Initializes in a Strict env the code that manages the RSVP Tooltip
  *
  * @since 5.0.0
- * @param  {object} $   jQuery
- * @param  {object} obj tribe.tickets.rsvp.tooltip
+ * @param  {Object} $   jQuery
+ * @param  {Object} obj tribe.tickets.rsvp.tooltip
  * @return {void}
  */
 ( function( $, obj ) {
@@ -30,7 +30,7 @@ tribe.tickets.rsvp.tooltip = {};
 	 * Config used for tooltip setup.
 	 *
 	 * @since 5.0.0
-	 * @type {object}
+	 * @type {Object}
 	 */
 	obj.config = {
 		delayHoverIn: 300,
@@ -41,7 +41,7 @@ tribe.tickets.rsvp.tooltip = {};
 	 * Selectors used for configuration and setup.
 	 *
 	 * @since 5.0.0
-	 * @type {object}
+	 * @type {Object}
 	 */
 	obj.selectors = {
 		tooltipTrigger: '[data-js~="tribe-tickets-tooltip"]',
@@ -175,7 +175,7 @@ tribe.tickets.rsvp.tooltip = {};
 	 *
 	 * @since 5.0.0
 	 * @param {Function} instance instance of Tooltipster
-	 * @param {object}   helper   helper object with tooltip origin
+	 * @param {Object}   helper   helper object with tooltip origin
 	 * @return {void}
 	 */
 	obj.onFunctionInit = function( instance, helper ) {
@@ -196,7 +196,7 @@ tribe.tickets.rsvp.tooltip = {};
 	 *
 	 * @since 5.0.0
 	 * @param {Function} instance instance of Tooltipster
-	 * @param {object}   helper   helper object with tooltip origin
+	 * @param {Object}   helper   helper object with tooltip origin
 	 * @return {void}
 	 */
 	obj.onFunctionReady = function( instance, helper ) {
@@ -275,7 +275,7 @@ tribe.tickets.rsvp.tooltip = {};
 	 * @since 5.0.0
 	 * @param  {Event}  event    event object for 'beforeAjaxSuccess.tribeTicketsRsvp' event
 	 * @param  {jqXHR}  jqXHR    Request object
-	 * @param  {object} settings Settings that this request was made with
+	 * @param  {Object} settings Settings that this request was made with
 	 * @return {void}
 	 */
 	obj.deinit = function( event, jqXHR, settings ) { // eslint-disable-line no-unused-vars

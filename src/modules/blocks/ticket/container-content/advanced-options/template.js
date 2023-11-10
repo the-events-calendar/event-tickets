@@ -18,7 +18,6 @@ import { Accordion } from '@moderntribe/common/elements';
 import './style.pcss';
 import SKU from './sku/container';
 import EcommerceOptions from './ecommerce-options/container';
-import MoveDelete from './move-delete/container';
 
 class AdvancedOptions extends Component {
 	static propTypes = {
@@ -48,9 +47,6 @@ class AdvancedOptions extends Component {
 		<Fragment>
 			<SKU clientId={ this.props.clientId } />
 			<EcommerceOptions clientId={ this.props.clientId } />
-			{ this.props.hasBeenCreated && (
-				<MoveDelete clientId={ this.props.clientId } />
-			) }
 		</Fragment>
 	);
 

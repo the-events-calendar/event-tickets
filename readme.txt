@@ -2,9 +2,9 @@
 
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, GeoffBel, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra
 Tags: tickets, registration, event registration, RSVP, ticket sales, attendee management
-Requires at least: 5.8.5
-Tested up to: 6.3.1
-Stable tag: 5.6.6.1
+Requires at least: 6.2
+Tested up to: 6.4.0
+Stable tag: 5.6.8.1
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -194,6 +194,36 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [TBD] TBD =
 
 * Tweak - Update some classes to avoid php 8.1+ dynamic property warnings. [TBD]
+
+= [5.6.8.1] 2023-11-09 =
+
+* Version - Event Tickets 5.6.8.1 is only compatible with The Events Calendar 6.2.6.1 and higher
+* Fix - Update a common library to prevent possible fatals. [TEC-4978]
+* Language - 0 new strings added, 9 updated, 0 fuzzied, and 0 obsoleted
+
+= [5.6.8] 2023-11-08 =
+
+* Tweak - Added tabs for navigating between Attendees and Orders in the Tickets Commerce admin. [ET-1867]
+* Tweak - Added action `tec_tickets_commerce_reports_tabbed_view_before_register_tab` and `tec_tickets_commerce_reports_tabbed_view_after_register_tab` allow adding third-party tabs. [ET-1867]
+* Tweak - Added filter `tec_tickets_commerce_reports_tabbed_page_title` and `tec_tickets_commerce_reports_tabbed_view_tab_map` allow granular control over how Tickets Commerce tabs behave. [ET-1867]
+
+= [5.6.7] 2023-11-01 =
+
+* Feature - Tickets Commerce orders report page design update. [ET-1810]
+* Tweak - Re-styled Empty RSVP Block in Block Editor to match frontend design. Styles will be the same in block editor and in the user interface [ET-1818]
+* Tweak - Re-styled Inactive RSVP Block in Block Editor to match frontend design. Styles will be the same in block editor and in the user interface [ET-1823]
+* Tweak - Re-styled Active RSVP Block in Block Editor to match frontend design. Styles will be the same in block editor and in the user interface [ET-1825]
+* Tweak - Re-styled Create and Edit RSVP Tickets in Block Editor.  [ET-1836]
+* Tweak - Re-styled Inactive Tickets Block in Block Editor. Empty state now has a new design [ET-1817]
+* Tweak - Re-styled Inactive Tickets Block with tickets. Inactive state with tickets has a new design [ET-1822]
+* Tweak - Re-styled Active Tickets Block with tickets. Add information icons and tooltips.  [ET-1824]
+* Tweak - Re-styled Create and Edit Tickets in Block Editor.  [ET-1835]
+* Tweak - Re-styled Tickets Settings in Block Editor.  [ET-1834]
+* Tweak - Using react-number-format to display price.  [ET-1885]
+* Tweak - Declared dynamic properties for Attendees page to avoid deprecation warnings.
+* Fix - Orders title in admin page.  [ET-1868]
+* Fix - Typo on My Tickets when using Ticket Commerce only. [ET-1909]
+* Language - 3 new strings added, 60 updated, 0 fuzzied, and 1 obsoleted
 
 = [5.6.6.1] 2023-10-12 =
 

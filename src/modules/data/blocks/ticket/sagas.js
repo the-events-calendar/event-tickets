@@ -309,6 +309,7 @@ export function* fetchTicket( action ) {
 
 		if ( response.ok ) {
 			/* eslint-disable camelcase */
+
 			const {
 				totals = {},
 				available_from,
@@ -321,6 +322,7 @@ export function* fetchTicket( action ) {
 				capacity_type,
 				capacity,
 				supports_attendee_information,
+				attendee_information_fields,
 			} = ticket;
 			/* eslint-enable camelcase */
 
@@ -351,6 +353,7 @@ export function* fetchTicket( action ) {
 			}
 
 			const details = {
+				attendeeInfoFields: attendee_information_fields,
 				title,
 				description,
 				price: cost_details.values[ 0 ],
@@ -796,6 +799,7 @@ export function* deleteTicketsHeaderImage() {
 export function* setTicketDetails( action ) {
 	const { clientId, details } = action.payload;
 	const {
+		attendeeInfoFields,
 		title,
 		description,
 		price,
@@ -816,6 +820,7 @@ export function* setTicketDetails( action ) {
 	} = details;
 
 	yield all( [
+		put( actions.setTicketAttendeeInfoFields( clientId, attendeeInfoFields ) ),
 		put( actions.setTicketTitle( clientId, title ) ),
 		put( actions.setTicketDescription( clientId, description ) ),
 		put( actions.setTicketPrice( clientId, price ) ),

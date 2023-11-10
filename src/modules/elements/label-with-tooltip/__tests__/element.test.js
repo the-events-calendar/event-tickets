@@ -10,6 +10,7 @@ import renderer from 'react-test-renderer';
 import LabelWithTooltip from '../element';
 
 jest.mock( '@wordpress/components', () => ( {
+	/* eslint-disable react/prop-types */
 	Tooltip: ( { text, position, children } ) => (
 		<div>
 			<span>{ text }</span>
@@ -17,6 +18,7 @@ jest.mock( '@wordpress/components', () => ( {
 			<span>{ children }</span>
 		</div>
 	),
+	/* eslint-enable react/prop-types */
 } ) );
 
 describe( 'Tooltip Element', () => {

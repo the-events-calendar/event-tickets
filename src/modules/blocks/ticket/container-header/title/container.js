@@ -10,12 +10,14 @@ import { compose } from 'redux';
 import Template from './template';
 import { withStore } from '@moderntribe/common/hoc';
 import { selectors, actions } from '@moderntribe/tickets/data/blocks/ticket';
+/* eslint-disable-next-line max-len */
+import { htmlEntityDecode } from '@moderntribe/tickets/blocks/ticket/container-content/title/container';
 
 const mapStateToProps = ( state, ownProps ) => ( {
 	hasAttendeeInfoFields: selectors.getTicketHasAttendeeInfoFields( state, ownProps ),
 	isDisabled: selectors.isTicketDisabled( state, ownProps ),
-	tempTitle: selectors.getTicketTempTitle( state, ownProps ),
-	title: selectors.getTicketTitle( state, ownProps ),
+	tempTitle: htmlEntityDecode( selectors.getTicketTempTitle( state, ownProps ) ),
+	title: htmlEntityDecode( selectors.getTicketTitle( state, ownProps ) ),
 } );
 
 const mapDispatchToProps = ( dispatch, ownProps ) => ( {

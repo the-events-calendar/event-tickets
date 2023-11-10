@@ -2,7 +2,7 @@
  * Makes sure we have all the required levels on the Tribe Object
  *
  * @since 5.0.3
- * @type   {object}
+ * @type   {Object}
  */
 tribe.tickets = tribe.tickets || {};
 
@@ -10,7 +10,7 @@ tribe.tickets = tribe.tickets || {};
  * Configures ET Utils Object in the Global Tribe variable
  *
  * @since 5.0.3
- * @type   {object}
+ * @type   {Object}
  */
 tribe.tickets.utils = {};
 
@@ -18,8 +18,8 @@ tribe.tickets.utils = {};
  * Initializes in a Strict env the code that manages the plugin "utils".
  *
  * @since 5.0.3
- * @param  {object} $   jQuery
- * @param  {object} obj tribe.tickets.utils
+ * @param  {Object} $   jQuery
+ * @param  {Object} obj tribe.tickets.utils
  * @return {void}
  */
 ( function( $, obj ) {
@@ -29,7 +29,7 @@ tribe.tickets.utils = {};
 	 * Disable/Enable element.
 	 *
 	 * @since 5.0.3
-	 * @param {object} $element jQuery object that we want to disable/enable.
+	 * @param {Object} $element jQuery object that we want to disable/enable.
 	 * @param {boolean} isDisabled True if we want to disable the element.
 	 * @return {void}
 	 */
@@ -62,7 +62,7 @@ tribe.tickets.utils = {};
 	 *
 	 * @since 5.0.3
 	 * @param {string} provider The provider.
-	 * @returns {object} The appropriate currency format.
+	 * @returns {Object} The appropriate currency format.
 	 */
 	obj.getCurrencyFormatting = function( provider ) {
 		const currency = JSON.parse( TribeCurrency.formatting );
@@ -210,7 +210,7 @@ tribe.tickets.utils = {};
 	 *
 	 * @since 5.2.1
 	 * @param {jQuery} $ticketItem The ticket item
-	 * @param {object} provider The provider
+	 * @param {Object} provider The provider
 	 * @return {number} The ticket price.
 	 */
 	obj.getPrice = function( $ticketItem, provider ) {

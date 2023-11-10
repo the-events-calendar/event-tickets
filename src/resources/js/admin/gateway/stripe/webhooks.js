@@ -3,7 +3,7 @@
  * Makes sure we have all the required levels on the Tribe Object
  *
  * @since 4.8.14
- * @type   {object}
+ * @type   {Object}
  */
 tribe.tickets = tribe.tickets || {};
 
@@ -11,7 +11,7 @@ tribe.tickets = tribe.tickets || {};
  * Path to this script in the global tribe Object.
  *
  * @since 5.3.0
- * @type   {object}
+ * @type   {Object}
  */
 tribe.tickets.commerce = tribe.tickets.commerce || {};
 
@@ -19,7 +19,7 @@ tribe.tickets.commerce = tribe.tickets.commerce || {};
  * Path to this script in the global tribe Object.
  *
  * @since 5.2.0
- * @type   {object}
+ * @type   {Object}
  */
 tribe.tickets.commerce.gateway = tribe.tickets.commerce.gateway || {};
 
@@ -27,7 +27,7 @@ tribe.tickets.commerce.gateway = tribe.tickets.commerce.gateway || {};
  * Path to this script in the global tribe Object.
  *
  * @since 5.3.0
- * @type   {object}
+ * @type   {Object}
  */
 tribe.tickets.commerce.gateway.stripe = tribe.tickets.commerce.gateway.stripe || {};
 
@@ -35,7 +35,7 @@ tribe.tickets.commerce.gateway.stripe = tribe.tickets.commerce.gateway.stripe ||
  * This script Object for public usage of the methods.
  *
  * @since 5.3.0
- * @type   {object}
+ * @type   {Object}
  */
 tribe.tickets.commerce.gateway.stripe.webhooks = {};
 
@@ -44,7 +44,7 @@ tribe.tickets.commerce.gateway.stripe.webhooks = {};
 	 * Stores the all selectors used on this module.
 	 *
 	 * @since 5.3.0
-	 * @type {object}
+	 * @type {Object}
 	 */
 	obj.selectors = {
 		button: '.tribe-field-tickets-commerce-stripe-webhooks-copy',
@@ -59,7 +59,7 @@ tribe.tickets.commerce.gateway.stripe.webhooks = {};
 	 * Stores the ClipboardJS instance for later reference.
 	 *
 	 * @since 5.3.0
-	 * @type {object}
+	 * @type {Object}
 	 */
 	obj.clipboardButton = null;
 

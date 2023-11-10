@@ -1,0 +1,24 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Description Render the component with no errors 1`] = `
+<div
+  className="tribe-editor__ticket__description tribe-editor__ticket__content-row tribe-editor__ticket__content-row--description"
+>
+  <div
+    className="tribe-editor__labeled-item tribe-editor__ticket__description-label"
+  >
+    <label
+      className="tribe-editor__labeled-item__label"
+      htmlFor="ticket-description"
+    >
+      Description
+    </label>
+  </div>
+  <input
+    className="tribe-editor__input tribe-editor__ticket__description-input"
+    id="ticket-description"
+    onChange={[MockFunction]}
+    type="text"
+  />
+</div>
+`;
