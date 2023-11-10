@@ -2,9 +2,9 @@
 
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, GeoffBel, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra
 Tags: tickets, registration, event registration, RSVP, ticket sales, attendee management
-Requires at least: 5.8.5
-Tested up to: 6.4
-Stable tag: 5.6.8
+Requires at least: 6.2
+Tested up to: 6.4.0
+Stable tag: 5.6.8.1
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -190,6 +190,12 @@ We've got a [LoopedIn](https://evnt.is/ideas) page where we're actively watching
 Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on using, tweaking, and troubleshooting our plugins.
 
 == Changelog ==
+
+= [5.6.8.1] 2023-11-09 =
+
+* Version - Event Tickets 5.6.8.1 is only compatible with The Events Calendar 6.2.6.1 and higher
+* Fix - Update a common library to prevent possible fatals. [TEC-4978]
+* Language - 0 new strings added, 9 updated, 0 fuzzied, and 0 obsoleted
 
 = [5.6.8] 2023-11-08 =
 
