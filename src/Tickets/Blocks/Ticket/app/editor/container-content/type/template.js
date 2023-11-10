@@ -17,34 +17,37 @@ import { LabeledItem } from '@moderntribe/common/elements';
 import { Ticket as TicketIcon } from '@moderntribe/tickets/icons';
 import './styles.pcss';
 
-const Type = ({ postType, type, typeDescription, typeIconUrl, typeName }) => {
-	let ticketType = {};
-
-	if (type === 'default') {
-		ticketType = {
-			typeName: _x(
-				'Single Ticket',
-				'Default ticket type label.',
+const Type = ({ postType, typeDescription, typeIconUrl, typeName }) => {
+	const defaultTicketType = {
+		typeName: _x(
+			'Single Ticket',
+			'Default ticket type label.',
+			'event-tickets'
+		),
+		typeDescription: sprintf(
+			// translators: %s is the post type name.
+			_x(
+				'A single ticket is specific to this %s.',
+				'Default ticket type description.',
 				'event-tickets'
 			),
-			typeDescription: sprintf(
-				// translators: %s is the post type name.
-				_x(
-					'A single ticket is specific to this %s.',
-					'Default ticket type description.',
-					'event-tickets'
-				),
-				postType
-			),
-			typeIcon: <TicketIcon />,
-		};
-	} else {
-		ticketType = {
-			typeName,
-			typeDescription,
-			typeIcon: <img src={typeIconUrl} alt="" />,
-		};
-	}
+			postType
+		),
+		typeIcon: <TicketIcon />,
+	};
+
+	const ticketType = {
+		typeName: typeName || defaultTicketType.typeName,
+		typeDescription: typeDescription || defaultTicketType.typeDescription,
+		typeIcon: typeIconUrl ? (
+			<img src={typeIconUrl} alt="" />
+		) : (
+			defaultTicketType.typeIcon
+		),
+	};
+
+	// This is sanitized in the PHP section, furthermore this description will not go to the backend.
+	const htmlTypeDescription = { __html: ticketType.typeDescription };
 
 	return (
 		<div
@@ -65,7 +68,7 @@ const Type = ({ postType, type, typeDescription, typeIconUrl, typeName }) => {
 					{ticketType.typeIcon}
 					<span>{ticketType.typeName}</span>
 				</div>
-				<div>{ticketType.typeDescription}</div>
+				<div dangerouslySetInnerHTML={htmlTypeDescription}></div>
 			</div>
 		</div>
 	);
@@ -73,7 +76,6 @@ const Type = ({ postType, type, typeDescription, typeIconUrl, typeName }) => {
 
 Type.propTypes = {
 	postType: PropTypes.string,
-	type: PropTypes.string,
 	typeDescription: PropTypes.string,
 	typeIconUrl: PropTypes.string,
 	typeName: PropTypes.string,

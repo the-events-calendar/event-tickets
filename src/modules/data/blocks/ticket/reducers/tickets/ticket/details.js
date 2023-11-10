@@ -9,6 +9,7 @@ import moment from 'moment';
 import * as constants from '@moderntribe/tickets/data/blocks/ticket/constants';
 import * as types from '@moderntribe/tickets/data/blocks/ticket/types';
 import { globals, moment as momentUtil } from '@moderntribe/common/utils';
+import { PREFIX_TICKETS_STORE } from "@moderntribe/tickets/data/utils";
 
 const datePickerFormat = globals.tecDateSettings().datepickerFormat;
 const currentMoment = moment();
@@ -149,6 +150,21 @@ export default ( state = DEFAULT_STATE, action ) => {
 				...state,
 				type: action.payload.type,
 			};
+		case types.SET_TICKET_TYPE_DESCRIPTION:
+			return {
+				...state,
+				type: action.payload.typeDescription
+			}
+		case types.SET_TICKET_TYPE_ICON_URL:
+			return {
+				...state,
+				type: action.payload.typeIconUrl
+			}
+		case types.SET_TICKET_TYPE_NAME:
+			return {
+				...state,
+				type: action.payload.typeName
+			}
 		default:
 			return state;
 	}

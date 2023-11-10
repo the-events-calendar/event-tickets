@@ -26,7 +26,7 @@ let blocks = [
  *
  * @param {Object[]} blocks The blocks that will be registered.
  */
-blocks = applyFilters ( 'tec_tickets_blocks_registration_before', blocks );
+blocks = applyFilters ( 'tec.tickets.blocks.beforeRegistration', blocks );
 
 blocks.forEach ( ( block ) => registerBlockType ( `tribe/${ block.id }`, block ) );
 
@@ -37,7 +37,7 @@ blocks.forEach ( ( block ) => registerBlockType ( `tribe/${ block.id }`, block )
  *
  * @param {Object[]} blocks The blocks that were registered.
  */
-doAction ( 'tec_tickets_blocks_registration_after', blocks );
+doAction ( 'tec.tickets.blocks.afterRegistration', blocks );
 
 // Initialize AFTER blocks are registered
 // to avoid plugin shown as available in reducer

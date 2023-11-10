@@ -2,6 +2,7 @@
  * Internal dependencies
  */
 import { types } from '@moderntribe/tickets/data/blocks/ticket';
+import { put } from "redux-saga/effects";
 
 //
 // ─── TICKETS ACTIONS ────────────────────────────────────────────────────────────
@@ -233,6 +234,30 @@ export const setTicketType = ( clientId, type ) => ( {
 	payload: {
 		clientId,
 		type,
+	},
+} );
+
+export const setTicketTypeDescription = ( clientId, typeDescription ) => ( {
+	type: types.SET_TICKET_TYPE_DESCRIPTION,
+	payload: {
+		clientId,
+		typeDescription,
+	},
+} );
+
+export const setTicketTypeIconUrl = ( clientId, typeIconUrl ) => ( {
+	type: types.SET_TICKET_TYPE_ICON_URL,
+	payload: {
+		clientId,
+		typeIconUrl,
+	},
+} );
+
+export const setTicketTypeName = ( clientId, typeName ) => ( {
+	type: types.SET_TICKET_TYPE_NAME,
+	payload: {
+		clientId,
+		typeName,
 	},
 } );
 

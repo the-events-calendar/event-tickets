@@ -10,6 +10,7 @@
 namespace TEC\Tickets\Flexible_Tickets;
 
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
+use TEC\Tickets\Flexible_Tickets\Series_Passes\Labels;
 use TEC\Tickets\Flexible_Tickets\Templates\Admin_Views;
 use Tribe__Tickets__RSVP as RSVP;
 use Tribe__Tickets__Tickets as Tickets;
@@ -35,14 +36,24 @@ class Metabox {
 	private Admin_Views $admin_views;
 
 	/**
+	 * A reference to the labels' handler.
+	 *
+	 * @since TBD
+	 *
+	 * @var Labels
+	 */
+	private Labels $labels;
+
+	/**
 	 * Metabox constructor.
 	 *
 	 * since TBD
 	 *
 	 * @param Admin_Views $admin_views A reference to the Admin Views handler for Flexible Tickets.
 	 */
-	public function __construct( Admin_Views $admin_views ) {
+	public function __construct( Admin_Views $admin_views, Labels  $labels) {
 		$this->admin_views = $admin_views;
+		$this->labels = $labels;
 	}
 
 	/**
@@ -168,26 +179,7 @@ class Metabox {
 	 * @return string The help text for the default ticket type in the ticket form.
 	 */
 	public function get_default_ticket_type_header_description( int $event_id, int $series_id ): string {
-		$edit_link        = get_edit_post_link( $series_id, 'admin' ) . '#tribetickets';
-		$series_edit_link = sprintf(
-			'<a href="%s" target="_blank">%s</a>',
-			$edit_link,
-			get_post_field( 'post_title', $series_id )
-		);
-		$description      = sprintf(
-		// Translators: %1$s is the ticket type label, %2$s is the Event type label, %3$s is the Series Pass type label, %4$s is the Series edit link.
-			_x(
-				'A single %1$s is specific to this %2$s. You can add a %3$s from the %4$s Series page.',
-				'The help text for the default ticket type in the ticket form.',
-				'event-tickets'
-			),
-			tribe_get_ticket_label_singular_lowercase( 'ticket_type_default_header_description' ),
-			tribe_get_event_label_singular_lowercase(),
-			tec_tickets_get_series_pass_singular_uppercase( 'ticket_type_default_header_description' ),
-			$series_edit_link
-		);
-
-		return $description;
+		return $this->labels->get_default_ticket_type_event_in_series_description( $event_id, $series_id );
 	}
 
 	/**

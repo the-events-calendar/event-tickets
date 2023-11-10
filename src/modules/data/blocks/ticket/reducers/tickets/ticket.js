@@ -11,6 +11,7 @@ import {
 } from '@moderntribe/tickets/data/blocks/ticket/utils';
 import details, { DEFAULT_STATE as DETAILS_DEFAULT_STATE } from './ticket/details';
 import tempDetails, { DEFAULT_STATE as TEMP_DETAILS_DEFAULT_STATE } from './ticket/temp-details';
+import { PREFIX_TICKETS_STORE } from "@moderntribe/tickets/data/utils";
 
 export const DEFAULT_STATE = {
 	details: DETAILS_DEFAULT_STATE,
@@ -54,6 +55,9 @@ export default ( state = DEFAULT_STATE, action ) => {
 		case types.SET_TICKET_CAPACITY_TYPE:
 		case types.SET_TICKET_CAPACITY:
 		case types.SET_TICKET_TYPE:
+		case types.SET_TICKET_TYPE_DESCRIPTION:
+		case types.SET_TICKET_TYPE_ICON_URL:
+		case types.SET_TICKET_TYPE_NAME:
 			return {
 				...state,
 				details: details( state.details, action ),
