@@ -54,6 +54,20 @@
         doNotSaveSeriesPassFromEvent
     );
 
+	// Change the description of default tickets when editing an Event part of a Series.
+	wp.hooks.addFilter ( 'tec.tickets.blocks.ticket.typeDescription', 'tec.tickets.flexibleTickets', ( typeDescription, ticketDetails, postType ) => {
+		const ticketType = ticketDetails.type || 'default';
+		const isInSeries = tecEventDetails?.isInSeries;
+
+		if ( !( isInSeries && ticketType === 'default' ) ) {
+			return typeDescription;
+		}
+
+		const description = TECFtEditorData?.defaultTicketTypeEventInSeriesDescription;
+
+		return description || typeDescription;
+	} );
+
     /**
      * Get the event ticket provider from the TEC store state.
      *

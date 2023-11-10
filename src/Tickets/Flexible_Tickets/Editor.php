@@ -128,8 +128,18 @@ class Editor extends Controller {
 				'ticketPanelEditSelector'                 => '#tribe_panel_edit',
 				'ticketPanelEditDefaultProviderAttribute' => 'data-current-provider',
 				'ticketsMetaboxSelector'                  => '#event_tickets',
-			]
+			],
 		];
+
+		/**
+		 * Filters the data that will be localized by Flexible Tickets under the `TECFtEditorData` object
+		 * for both the Classic and Block Editor.
+		 *
+		 * @since TBD
+		 *
+		 * @param array<string,mixed> $editor_data The data that will be localized.
+		 */
+		$editor_data = apply_filters( 'tec_tickets_flexible_tickets_editor_data', $editor_data );
 
 		if ( $should_load_blocks && $use_block_editor_for_post ) {
 			tribe_asset(
@@ -331,5 +341,8 @@ class Editor extends Controller {
 				'Notice shown under the Series to Events relationship metabox when there are multiple ticket providers ',
 				'event-tickets'
 			) . '</p></div>';
+	}
+
+	private function get_event_in_series_default_type_description() {
 	}
 }

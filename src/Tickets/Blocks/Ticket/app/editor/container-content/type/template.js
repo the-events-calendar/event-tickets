@@ -1,72 +1,74 @@
 /**
  * External dependencies
  */
-import React, { useCallback } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 /**
  * Wordpress dependencies
  */
-import { __ } from '@wordpress/i18n';
+import { _x } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
 import { LabeledItem } from '@moderntribe/common/elements';
-import {
-	Pass as PassIcon,
-	Ticket as TicketIcon
-} from '@moderntribe/tickets/icons';
+import { Ticket as TicketIcon } from '@moderntribe/tickets/icons';
 import './styles.pcss';
 
-const TYPES = {
-	default: {
-		title: 'Single Ticket',
-		icon: <TicketIcon />,
-	},
+const Type = ({ postType, typeDescription, typeIconUrl, typeName }) => {
+	const defaultTicketType = {
+		typeName: _x(
+			'Single Ticket',
+			'Default ticket type label.',
+			'event-tickets'
+		),
+		typeDescription: sprintf(
+			// translators: %s is the post type name.
+			_x(
+				'A single ticket is specific to this %s.',
+				'Default ticket type description.',
+				'event-tickets'
+			),
+			postType
+		),
+		typeIcon: <TicketIcon />,
+	};
 
-	series: {
-		title: 'Series Pass',
-		icon: <PassIcon />,
-	},
-}
+	const ticketType = {
+		typeName: typeName || defaultTicketType.typeName,
+		typeDescription: typeDescription || defaultTicketType.typeDescription,
+		typeIcon: typeIconUrl ? (
+			<img src={typeIconUrl} alt="" />
+		) : (
+			defaultTicketType.typeIcon
+		),
+	};
 
-const Type = ({
-	postType,
-	seriesTitle,
-	type,
-}) => {
+	// This is sanitized in the PHP section, furthermore this description will not go to the backend.
+	const htmlTypeDescription = { __html: ticketType.typeDescription };
 
-	const getDescription = useCallback( () => {
-		switch ( type ) {
-			case 'default':
-				return sprintf( 'A single ticket is specific to this %s.', postType );
-			case 'series':
-				return sprintf( 'A single ticket is specific to this %s. You can add a Series Pass from the %s Series page.', postType, seriesTitle );
-			default:
-				return '';
-		}
-	}, [ postType, seriesTitle, type ] );
-
-	return(
-		<div className={ classNames(
-			'tribe-editor__ticket__type',
-			'tribe-editor__ticket__content-row',
-			'tribe-editor__ticket__content-row--type',
-		) }>
+	return (
+		<div
+			className={classNames(
+				'tribe-editor__ticket__type',
+				'tribe-editor__ticket__content-row',
+				'tribe-editor__ticket__content-row--type'
+			)}
+		>
 			<LabeledItem
 				className="tribe-editor__ticket__type-label"
-				isLabel={ true }
-				label={ __( 'Type', 'event-tickets' ) }
+				isLabel={true}
+				label={_x('Type', 'Ticket type label', 'event-tickets')}
 			/>
 
 			<div className="tribe-editor__ticket__type-description">
 				<div>
-					{ TYPES[ type ]?.icon }
-					<span>{ __( TYPES[ type ]?.title, 'event-tickets' ) }</span>
+					{ticketType.typeIcon}
+					<span>{ticketType.typeName}</span>
 				</div>
-				<div>{ __( getDescription(), 'event_tickets' ) }</div>
+				<div dangerouslySetInnerHTML={htmlTypeDescription}></div>
 			</div>
 		</div>
 	);
@@ -74,8 +76,9 @@ const Type = ({
 
 Type.propTypes = {
 	postType: PropTypes.string,
-	seriesTitle: PropTypes.string,
-	type: PropTypes.string,
+	typeDescription: PropTypes.string,
+	typeIconUrl: PropTypes.string,
+	typeName: PropTypes.string,
 };
 
 export default Type;

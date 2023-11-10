@@ -11,6 +11,9 @@ namespace TEC\Tickets\Flexible_Tickets;
 
 use TEC\Common\Contracts\Provider\Controller;
 use TEC\Common\lucatume\DI52\Container;
+use TEC\Events\Custom_Tables\V1\Models\Occurrence;
+use TEC\Events_Pro\Custom_Tables\V1\Models\Provisional_Post;
+use TEC\Events_Pro\Custom_Tables\V1\Models\Series_Relationship;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 use TEC\Events_Pro\Custom_Tables\V1\Templates\Series_Filters;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Labels;
@@ -212,6 +215,7 @@ class Series_Passes extends Controller {
 		] );
 
 		add_filter( 'tribe_template_after_include:tickets/v2/tickets/title', [ $this, 'render_series_passes_header_in_frontend_ticket_form' ], 10, 3 );
+		add_filter( 'tec_tickets_flexible_tickets_editor_data', [ $this, 'filter_editor_data' ] );
 	}
 
 	/**
@@ -283,6 +287,7 @@ class Series_Passes extends Controller {
 		] );
 
 		remove_filter( 'tribe_template_after_include:tickets/v2/tickets/title', [ $this, 'render_series_passes_header_in_frontend_ticket_form' ], 10, 3 );
+		remove_filter( 'tec_tickets_flexible_tickets_editor_data', [ $this, 'filter_editor_data' ] );
 	}
 
 	/**
@@ -949,5 +954,30 @@ class Series_Passes extends Controller {
 		$context['header'] = tec_tickets_get_series_pass_plural_uppercase( 'ticket form header' );
 
 		$template->template( 'v2/tickets/series-pass/header', $context );
+	}
+
+	/**
+	 * Filters the editor data localized by Flexible Tickets.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $editor_data The editor data.
+	 *
+	 * @return array<string,mixed> The updated editor data.
+	 */
+	public function filter_editor_data( array $editor_data ): array {
+		$post                                                     = get_post();
+		$event_id                                                 = $post instanceof WP_Post ? $post->ID : null;
+		$provisional_post                                         = tribe( Provisional_Post::class );
+		$event_id                                                 = $provisional_post->is_provisional_post_id( $event_id ) ?
+			$provisional_post->normalize_provisional_post_id( $event_id )
+			: $event_id;
+		$relationship                                             = $event_id ? Series_Relationship::find( $event_id, 'event_post_id' ) : null;
+		$series_id                                                = $relationship ? $relationship->series_post_id : null;
+		$editor_data['defaultTicketTypeEventInSeriesDescription'] = $series_id ?
+			$this->labels->get_default_ticket_type_event_in_series_description( $series_id, $event_id )
+			: '';
+
+		return $editor_data;
 	}
 }

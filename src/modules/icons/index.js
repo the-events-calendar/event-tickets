@@ -20,4 +20,3 @@ export { default as Orders } from './orders.svg';
 export { default as Settings } from './settings.svg';
 export { default as Close } from './close.svg';
 export { default as Ticket } from './ticket-left.svg';
-export { default as Pass } from './ticket-left.svg';
