@@ -28,6 +28,7 @@
 		padding: 0;
 
 		> .tribe-item {
+			container-type: inline-size;
 			margin: 0;
 			padding: 0;
 		}
@@ -86,22 +87,23 @@
 
 				& > div {
 					flex: 1 0 100%;
+					flex-basis: var(--tec-grid-width-1-of-4);
 				}
-		
+
 				@media(--viewport-medium) {
 					align-items: center;
 					flex-direction: row;
-		
+
 					& > div {
 						flex: 0 1 auto;
 						order: 2;
 					}
-		
+
 					& > div.list-attendee {
 						flex: 1 0 auto;
 						order: 1;
 					}
-		
+
 					& > div.tribe-ticket-information {
 						flex: 0 1 100%;
 						order: 3;
@@ -112,19 +114,19 @@
 						order: 2;
 					}
 				}
-		
+
 				@media(--viewport-full) {
-		
+
 					& > div {
 						flex: 0 1 auto;
 						order: 3;
 					}
-		
+
 					& > div.list-attendee {
 						flex: 0 1 auto;
 						order: 1;
 					}
-		
+
 					& > div.tribe-ticket-information {
 						flex: 0 1 auto;
 						order: 2;
