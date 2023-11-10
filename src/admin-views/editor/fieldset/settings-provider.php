@@ -8,7 +8,7 @@
 $post_id = get_the_ID();
 
 $multiple_providers = 1 < count( $active_providers );
-
+$current_provider   = Tribe__Tickets__Tickets::get_event_ticket_provider_object( $post_id );
 // We use 'screen-reader-text' to hide it if there really aren't any choices.
 $fieldset_class = $multiple_providers ? 'input_block' : 'screen-reader-text';
 ?>
@@ -42,7 +42,7 @@ $fieldset_class = $multiple_providers ? 'input_block' : 'screen-reader-text';
 				<?php foreach ( $active_providers as $active_provider ) : ?>
 					<label class="ticket_form_right" for="provider_<?php echo esc_attr( $active_provider['html_safe_class'] . '_radio' ); ?>">
 						<input
-							<?php checked( $default_module_class, $active_provider['class'] ); ?>
+							<?php checked( $current_provider->class_name, $active_provider['class'] ); ?>
 							type="radio"
 							name="tribe-tickets[settings][default_provider]"
 							id="provider_<?php echo esc_attr( $active_provider['html_safe_class'] . '_radio' ); ?>"

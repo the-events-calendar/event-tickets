@@ -280,7 +280,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		if ('undefined' === typeof data || data === null) {
 			data = {'ticket_type': ticketType};
 		} else {
-			data += encodeURIComponent('&ticket_type=' + ticketType);
+			data += '&ticket_type=' + ticketType;
 		}
 
 		var params = {
