@@ -36,7 +36,7 @@ if ( ! empty( $providers ) ) {
 	$provider            = $providers[0];
 	$provider_class      = $view->get_form_class( $providers_arr[0] );
 	$has_tpp             = in_array( Tribe__Tickets__Commerce__PayPal__Main::ATTENDEE_OBJECT, $providers, true );
-	$is_tickets_commerce = tec_tickets_commerce_is_enabled() && ( $provider_id === \TEC\Tickets\Commerce\Module::class || in_array( \TEC\Tickets\Commerce\Module::class, $providers, true ) );
+	$is_tickets_commerce = tec_tickets_commerce_is_enabled() && ( get_class( $provider ) === \TEC\Tickets\Commerce\Module::class || in_array( \TEC\Tickets\Commerce\Module::class, $providers, true ) );
 }
 ?>
 <div class="tribe-tickets__item__attendee__fields">
