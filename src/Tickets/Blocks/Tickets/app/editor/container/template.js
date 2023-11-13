@@ -18,7 +18,7 @@ import Availability from '../availability/container';
 import InactiveTicket from '../inactive/inactive';
 import { Card } from '@moderntribe/tickets/elements';
 import './style.pcss';
-import Uneditable from '../uneditable/uneditable';
+import Uneditable from '../uneditable/container';
 
 const TicketsOverlay = () => <div className="tribe-editor__tickets__overlay" />;
 
@@ -74,6 +74,12 @@ const TicketsContainer = ({
 		'tribe-editor__card-padding-bottom': hasATicketSelected,
 	});
 
+	const uneditableClassName = classNames({
+		'tribe-editor__card-no-bottom-border': !hasATicketSelected,
+		'tribe-editor__card-no-top-border': !hasATicketSelected,
+		'tribe-editor__card-padding-bottom': hasATicketSelected,
+	});
+
 	return (
 		<div className="tribe-editor__tickets__container">
 			<div className={innerBlocksClassName}>
@@ -85,7 +91,7 @@ const TicketsContainer = ({
 				</Card>
 			</div>
 			{showUneditableTickets && (
-				<Uneditable cardClassName={cardClassName} />
+				<Uneditable cardClassName={uneditableClassName} />
 			)}
 			{showInactiveBlock && !isSettingsOpen && (
 				<InactiveTicket title={messages.title} />
