@@ -32,6 +32,7 @@ const TicketsContainer = ({
 	showAvailability,
 	showInactiveBlock,
 	hasATicketSelected,
+	showUneditableTickets,
 }) => {
 	const messages = {
 		title: '',
@@ -73,9 +74,6 @@ const TicketsContainer = ({
 		'tribe-editor__card-padding-bottom': hasATicketSelected,
 	});
 
-	// Mock, should come from state.
-	const showUneditableTickets = true;
-
 	return (
 		<div className="tribe-editor__tickets__container">
 			<div className={innerBlocksClassName}>
@@ -108,6 +106,8 @@ TicketsContainer.propTypes = {
 	isSettingsOpen: PropTypes.bool,
 	showAvailability: PropTypes.bool,
 	showInactiveBlock: PropTypes.bool,
+	showUneditableTickets: PropTypes.bool,
+	tickets: PropTypes.arrayOf(PropTypes.object),
 };
 
 export default TicketsContainer;

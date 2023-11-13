@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withStore } from '@moderntribe/common/hoc';
 
-const Uneditable = ({ tickets, cardTitlesByType, cardClassName }) => {
+const Uneditable = ({ tickets, cardsByTicketType, cardClassName }) => {
 	const ticketTypes = tickets.reduce((acc, ticket) => {
 		return acc.indexOf(ticket.type) === -1 ? [...acc, ticket.type] : acc;
 	}, []);
@@ -21,7 +21,7 @@ const Uneditable = ({ tickets, cardTitlesByType, cardClassName }) => {
 		return (
 			<Card
 				className={cardClassName}
-				header={cardTitlesByType[ticketType]}
+				header={cardsByTicketType[ticketType].title}
 			>
 				{ticketsByType[ticketType].map((ticket, index) => (
 					<div key={index + ticketType}>{ticket.title}</div>
@@ -36,33 +36,34 @@ const mocks = {
 		{
 			type: 'series_pass',
 			title: 'Series Pass One',
+			description: 'This is a description for Series Pass One',
+			capacityType: 'unlimited',
+			price: '$23.00',
+			capacity: 100,
+			available: 89,
 		},
 		{
 			type: 'series_pass',
 			title: 'Series Pass Two',
-		},
-		{
-			type: 'series_pass',
-			title: 'Series Pass Three',
-		},
-		{
-			type: 'series_ticket',
-			title: 'Series Ticket One',
-		},
-		{
-			type: 'series_ticket',
-			title: 'Series Ticket Two',
+			description: 'This is a description for Series Pass Two',
+			capacityType: 'global',
+			price: '$89.00',
+			capacity: 200,
+			available: 12,
 		},
 	],
-	cardTitlesByType: {
-		series_pass: 'Series Passes',
-		series_ticket: 'Series Tickets',
+	cardsByTicketType: {
+		series_pass: {
+			title: 'Series Passes',
+			noticeHtml: 'This event is part of a Series ...', // This will be sanitized HTML, to be dang. set.
+			link: 'https://example.com',
+		},
 	},
 };
 
 const mapStateToProps = (state, ownProps) => ({
 	tickets: mocks.tickets,
-	cardTitlesByType: mocks.cardTitlesByType,
+	cardsByTicketType: mocks.cardsByTicketType,
 });
 
 export default compose(withStore(), connect(mapStateToProps))(Uneditable);

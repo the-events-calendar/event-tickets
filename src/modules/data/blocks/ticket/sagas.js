@@ -47,6 +47,7 @@ import {
 	createDates,
 } from '@moderntribe/tickets/data/shared/sagas';
 import { applyFilters } from "@wordpress/hooks";
+import { isTicketEditableFromPost } from "@moderntribe/tickets/data/blocks/ticket/utils";
 
 const {
 	UNLIMITED,
@@ -100,19 +101,7 @@ export function* setTicketsInitialState( action ) {
 		 // Get only the IDs of the tickets that are not in the block list already.
 		.filter( ( item ) => ! includes( ticketsInBlock, item.id ) )
 		// Get only the IDs of the tickets that can be edited from this post.
-		.filter ( ( {id,type} ) => {
-			/**
-			 * Filters whether a ticket can be edited from a post.
-			 *
-			 * @since TBD
-			 *
-			 * @param {boolean} canEdit Whether or not the ticket can be edited from the post.
-			 * @param {number} ticketId The ticket ID.
-			 * @param {string} ticketType The ticket types, e.g. `default`, `series_pass`, etc.
-			 * @param {object} post The post object.
-			 */
-			return applyFilters ( 'tec.tickets.blocks.editTicketFromPost', true, id, type, currentPost );
-		} );
+		.filter ( ( {id,type} ) => isTicketEditableFromPost ( id, type, currentPost ) );
 
 	if ( ticketsDiff.length >= 1 ) {
 		yield call ( createMissingTicketBlocks, ticketsDiff.map ( ( ticket ) => ticket.id ) );

@@ -43,11 +43,17 @@ class Tickets extends PureComponent {
 	}
 
 	renderBlock() {
-		const { isSelected, clientId, canCreateTickets } = this.props;
+		const {
+			isSelected,
+			clientId,
+			canCreateTickets,
+			attributes: { tickets: ticketsJSON = '[]' },
+		} = this.props;
+		const tickets = JSON.parse(ticketsJSON) || [];
 
 		return (
 			<Fragment>
-				<TicketsContainer isSelected={isSelected} />
+				<TicketsContainer isSelected={isSelected} tickets={tickets} />
 				{canCreateTickets && (
 					<TicketsDashboard
 						isSelected={isSelected}
