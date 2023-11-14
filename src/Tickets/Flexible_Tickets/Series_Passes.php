@@ -216,6 +216,10 @@ class Series_Passes extends Controller {
 
 		add_filter( 'tribe_template_after_include:tickets/v2/tickets/title', [ $this, 'render_series_passes_header_in_frontend_ticket_form' ], 10, 3 );
 		add_filter( 'tec_tickets_flexible_tickets_editor_data', [ $this, 'filter_editor_data' ] );
+		add_filter( 'tec_tickets_editor_configuration_localized_data', [
+			$this,
+			'filter_editor_configuration_data'
+		] );
 	}
 
 	/**
@@ -288,6 +292,10 @@ class Series_Passes extends Controller {
 
 		remove_filter( 'tribe_template_after_include:tickets/v2/tickets/title', [ $this, 'render_series_passes_header_in_frontend_ticket_form' ], 10, 3 );
 		remove_filter( 'tec_tickets_flexible_tickets_editor_data', [ $this, 'filter_editor_data' ] );
+		remove_filter( 'tec_tickets_editor_configuration_localized_data', [
+			$this,
+			'filter_editor_configuration_data'
+		] );
 	}
 
 	/**
@@ -979,5 +987,27 @@ class Series_Passes extends Controller {
 			: '';
 
 		return $editor_data;
+	}
+
+	/**
+	 * Filter the editor configuration data to add the information required to correctly represent
+	 * Series Passes in the editor.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $data The editor configuration data.
+	 *
+	 * @return array<string,mixed> The editor configuration data with the information required to correctly represent
+	 *                             Series Passes.
+	 */
+	public function filter_editor_configuration_data( array $data ): array {
+		if ( ! isset( $data['ticketTypes'] ) ) {
+			$data['ticketTypes'] = [];
+		}
+		$data['ticketTypes'][ self::TICKET_TYPE ] = [
+			'title' => esc_html( tec_tickets_get_series_pass_plural_uppercase( 'editor-configuration' ) ),
+		];
+
+		return $data;
 	}
 }

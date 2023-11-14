@@ -25,34 +25,52 @@ const Uneditable = ({ tickets, cardsByTicketType, cardClassName }) => {
 				header={cardsByTicketType[ticketType].title}
 			>
 				{ticketsByType[ticketType].map((ticket, index) => (
-					<article className="tribe-editor__ticket">
+					<article className="tribe-editor__ticket" key={index}>
 						<div className="tribe-editor__container-panel tribe-editor__container-panel--ticket tribe-editor__ticket__container">
 							<div className="tribe-editor__container-panel__header">
 								<>
 									<div className="tribe-editor__ticket__container-header-details">
 										<TicketContainerHeaderTitle
-											title={ ticket.title}
-											showAttendeeRegistrationIcons={ false }
+											title={ticket.title}
+											showAttendeeRegistrationIcons={
+												false
+											}
 										/>
-										<TicketContainerHeaderDescription description={ ticket.description } />
+										<TicketContainerHeaderDescription
+											description={ticket.description}
+										/>
 									</div>
 									<TicketContainerHeaderPrice
-										available={ ticket.available }
-										currencyDecimalPoint={ ticket.currencyDecimalPoint }
-										currencyNumberOfDecimals={ ticket.currencyNumberOfDecimals }
-										currencyPosition={ ticket.currencyPosition }
-										currencySymbol={ ticket.currencySymbol }
-										currencyThousandsSep={ ticket.currencyThousandsSep }
-										isUnlimited={ ticket.capacityType === 'unlimited' }
-										price={ ticket.price }
+										available={ticket.available}
+										currencyDecimalPoint={
+											ticket.currencyDecimalPoint
+										}
+										currencyNumberOfDecimals={
+											ticket.currencyNumberOfDecimals
+										}
+										currencyPosition={
+											ticket.currencyPosition
+										}
+										currencySymbol={ticket.currencySymbol}
+										currencyThousandsSep={
+											ticket.currencyThousandsSep
+										}
+										isUnlimited={
+											ticket.capacityType === 'unlimited'
+										}
+										price={ticket.price}
 									/>
 									<TicketContainerHeaderQuantity
-										isShared={ ticket.isShared }
-										isUnlimited={ ticket.capacityType === 'unlimited' }
-										sold={ ticket.sold }
-										capacity={ ticket.capacity }
-										sharedSold={ ticketType.sharedSold }
-										sharedCapacity={ ticketType.sharedCapacity }
+										isShared={ticket.isShared}
+										isUnlimited={
+											ticket.capacityType === 'unlimited'
+										}
+										sold={ticket.sold}
+										capacity={ticket.capacity}
+										sharedSold={ticketType.sharedSold}
+										sharedCapacity={
+											ticketType.sharedCapacity
+										}
 									/>
 								</>
 							</div>

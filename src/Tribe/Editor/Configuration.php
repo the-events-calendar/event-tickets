@@ -97,7 +97,7 @@ class Tribe__Tickets__Editor__Configuration implements Tribe__Editor__Configurat
 	 * @return array<string,mixed> The data to be localized for the Tickets Block Editor components.
 	 */
 	public function localize() {
-		return [
+		$localized =  [
 			'providers'                 => $this->get_providers(),
 			'default_provider'          => Tribe__Tickets__Tickets::get_default_module(),
 			'default_currency'          => tribe_get_option( 'defaultCurrencySymbol', '$' ),
@@ -114,8 +114,15 @@ class Tribe__Tickets__Editor__Configuration implements Tribe__Editor__Configurat
 				) . '</em>',
 			'choice_disabled'           => false,
 			'ticketTypes' => [
+				'default' => [
+					'title' => tribe_get_ticket_label_plural('editor-configuration'),
+				]
 			]
 		];
+
+		$localized = apply_filters( 'tec_tickets_editor_configuration_localized_data', $localized );
+
+		return $localized;
 	}
 
 	/**
