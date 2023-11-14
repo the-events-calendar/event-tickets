@@ -62,7 +62,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Adds the actions required by the controller.
 	 *
-	 * @since TBD
+	 * @since 5.7.0
 	 *
 	 * @return void
 	 */
@@ -76,7 +76,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Removes the actions required by the controller.
 	 *
-	 * @since TBD
+	 * @since 5.7.0
 	 *
 	 * @return void
 	 */
@@ -90,7 +90,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Register the assets related to the QR module.
 	 *
-	 * @since TBD
+	 * @since 5.7.0
 	 *
 	 * @return void
 	 */
@@ -110,7 +110,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Handles the checkin redirection.
 	 *
-	 * @since TBD
+	 * @since 5.7.0
 	 *
 	 * @return void
 	 */
@@ -121,7 +121,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Handles the admin notice in the legacy way. Needs to be deprecated at some point.
 	 *
-	 * @since TBD
+	 * @since 5.7.0
 	 *
 	 * @return void
 	 */
@@ -132,7 +132,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Handles the AJAX request to generate the API key.
 	 *
-	 * @since TBD
+	 * @since 5.7.0
 	 *
 	 * @return void
 	 */
