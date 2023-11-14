@@ -56,7 +56,7 @@ class Tickets implements \ArrayAccess, \Serializable {
 	 *
 	 * @var array
 	 */
-	 protected $all_tickets;
+	protected $all_tickets;
 
 	/**
 	 * Tickets constructor.
@@ -239,7 +239,7 @@ class Tickets implements \ArrayAccess, \Serializable {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function offsetGet( $offset ) {
+	public function offsetGet( $offset ): mixed {
 		$this->data = $this->fetch_data();
 
 		return $this->data[ $offset ] ?? null;
@@ -283,7 +283,33 @@ class Tickets implements \ArrayAccess, \Serializable {
 		$data            = $this->fetch_data();
 		$data['post_id'] = $this->post_id;
 
-		return serialize( $data );
+		return serialize( $this->__serialize() );
+	}
+
+	/**
+	 * PHP 8.0+ compatible implementation of the serialization logic.
+	 *
+	 * @since TBD
+	 *
+	 * @return array The data to serialize.
+	 */
+	public function __serialize(): array {
+		$data            = $this->fetch_data();
+		$data['post_id'] = $this->post_id;
+
+		return $data;
+	}
+
+	/**
+	 * PHP 8.0+ compatible implementation of the unserialization logic.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $data The data to unserialize.
+	 */
+	public function __unserialize( array $data ): void {
+		$this->post_id = $data['post_id'] ?? null;
+		$this->data    = $data;
 	}
 
 	/**
@@ -291,9 +317,8 @@ class Tickets implements \ArrayAccess, \Serializable {
 	 */
 	public function unserialize( $serialized ) {
 		$data          = unserialize( $serialized );
-		$this->post_id = $data['post_id'];
+		$this->__unserialize( $data );
 		unset( $data['post_id'] );
-		$this->data = $data;
 	}
 
 	/**

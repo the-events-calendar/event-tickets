@@ -209,7 +209,6 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 *
 		 * Was running into an issue of `get_permalink( $event_id )` returning
 		 * the wrong url because it was too early on the execution
-		 *
 		 */
 		add_action( 'template_redirect', [ $this, 'maybe_generate_tickets' ], 10, 0 );
 		add_action( 'event_tickets_attendee_update', [ $this, 'update_attendee_data' ], 10, 3 );
@@ -391,6 +390,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$args['opt_in_nonce']        = $args['process_result']['opt_in_args']['opt_in_nonce'];
 		}
 
+		if ( ! empty( $args['process_result']['attendees'] ) ) {
+			$args['attendees'] = $args['process_result']['attendees'];
+		}
+
 		// Handle Event Tickets logic.
 		$hide_attendee_list_optout = \Tribe\Tickets\Events\Attendees_List::is_hidden_on( $post_id );
 
@@ -403,7 +406,6 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 * @param int|WP_Post $post                      The post object or ID.
 		 */
 		$hide_attendee_list_optout = apply_filters( 'tec_tickets_hide_attendee_list_optout', $hide_attendee_list_optout, $post_id );
-
 
 		/**
 		 * Allow filtering of whether to show the opt-in option for attendees.
@@ -506,6 +508,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 				return $result;
 			}
+
+			$result['attendees'] = $attendee_ids;
 
 			$attendee_ids = implode( ',', $attendee_ids );
 

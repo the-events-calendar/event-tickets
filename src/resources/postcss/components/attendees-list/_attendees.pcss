@@ -1,0 +1,38 @@
+.tribe-common,
+.event-tickets {
+
+	.tec-tickets__attendees-list-wrapper {
+		margin-top: var(--tec-spacer-8);
+	}
+
+	.tec-tickets__attendees-list {
+		background-color: var(--tec-color-background);
+		margin-top: var(--tec-spacer-3);
+	}
+
+	.tec-tickets__attendees-list-item {
+		align-items: center;
+		border-left: 1px solid var(--tec-color-border-secondary);
+		border-right: 1px solid var(--tec-color-border-secondary);
+		border-top: 1px solid var(--tec-color-border-secondary);
+		container-type: inline-size;
+		display: flex;
+		flex-direction: column;
+		gap: var(--tec-spacer-1);
+		margin: 0;
+		padding: var(--tec-spacer-4);
+
+		&:last-child {
+			border-bottom: 1px solid var(--tec-color-border-secondary);
+		}
+
+		@media (--viewport-medium) {
+			flex-direction: row;
+		}
+	}
+
+	.tec-tickets__attendees-list-item-attendee-details {
+		align-self: center;
+		flex-grow: 1;
+	}
+}

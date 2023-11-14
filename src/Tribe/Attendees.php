@@ -292,7 +292,7 @@ class Tribe__Tickets__Attendees {
 		}
 
 		$this->page_id = add_submenu_page(
-			null,
+			'',
 			'Attendee list',
 			'Attendee list',
 			$cap,

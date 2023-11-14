@@ -28,20 +28,121 @@ class Controller extends Controller_Contract {
 	 * Register the controller.
 	 *
 	 * @since   5.6.7
+	 *
+	 * @uses  Notices::register_admin_notices()
+	 *
+	 * @return void
 	 */
 	public function do_register(): void {
 		$this->container->bind( QR::class, [ $this, 'bind_facade_or_error' ] );
+		$this->container->singleton( Settings::class );
+		$this->container->singleton( Notices::class );
+		$this->container->singleton( Connector::class );
+		$this->container->singleton( Observer::class );
+
+		// Register the Admin Notices right away.
+		$this->container->make( Notices::class )->register_admin_notices();
+
+		$this->add_actions();
+
+		$this->register_assets();
 	}
 
 	/**
 	 * Unregister the controller.
 	 *
+<<<<<<< HEAD
 	 * @since   5.6.7
+=======
+	 * @since TBD
+>>>>>>> ed3c94e2c69087d0c527eebc61eeedf72bd170f5
 	 *
 	 * @return void
 	 */
 	public function unregister(): void {
+		$this->remove_actions();
+		$this->remove_filters();
+	}
 
+	/**
+	 * Adds the actions required by the controller.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	protected function add_actions(): void {
+		$connector_ajax_action = tribe( Connector::class )->get_ajax_action_key();
+		add_action( "wp_ajax_{$connector_ajax_action}", [ $this, 'handle_ajax_generate_api_key' ] );
+		add_action( 'admin_notices', [ $this, 'legacy_handler_admin_notice' ], 10 );
+		add_action( 'template_redirect', [ $this, 'handle_checkin_redirect' ], 10 );
+	}
+
+	/**
+	 * Removes the actions required by the controller.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	protected function remove_actions(): void {
+		$connector_ajax_action = tribe( Connector::class )->get_ajax_action_key();
+		remove_action( "wp_ajax_{$connector_ajax_action}", [ $this, 'handle_ajax_generate_api_key' ] );
+		remove_action( 'admin_notices', [ $this, 'legacy_handler_admin_notice' ], 10 );
+		remove_action( 'template_redirect', [ $this, 'handle_checkin_redirect' ], 10 );
+	}
+
+	/**
+	 * Register the assets related to the QR module.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	protected function register_assets(): void {
+		tribe_asset(
+			\Tribe__Tickets__Main::instance(),
+			'tec-tickets-qr-connector',
+			'qr-connector.js',
+			[ 'jquery', 'tribe-common' ],
+			null,
+			[
+				'priority' => 0,
+			]
+		);
+	}
+
+	/**
+	 * Handles the checkin redirection.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function handle_checkin_redirect(): void {
+		tribe( Observer::class )->handle_checkin_redirect();
+	}
+
+	/**
+	 * Handles the admin notice in the legacy way. Needs to be deprecated at some point.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function legacy_handler_admin_notice(): void {
+		tribe( Observer::class )->legacy_handler_admin_notice();
+	}
+
+	/**
+	 * Handles the AJAX request to generate the API key.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function handle_ajax_generate_api_key(): void {
+		tribe( Connector::class )->handle_ajax_generate_api_key();
 	}
 
 	/**
@@ -70,7 +171,7 @@ class Controller extends Controller_Contract {
 	 *
 	 * @since 5.6.7
 	 */
-	protected function has_library_loaded(): bool {
+	public function has_library_loaded(): bool {
 		return defined( 'TEC_TICKETS_QR_CACHEABLE' );
 	}
 

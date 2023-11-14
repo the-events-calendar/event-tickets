@@ -17,6 +17,7 @@
 <div class="tec__tickets-my-tickets-order-tickets-list-wrapper">
 	<ul class="tribe-tickets-list tribe-list">
 		<?php foreach ( $attendees as $i => $attendee ) : ?>
+			<input type="hidden" name="attendee[<?php echo esc_attr( $order_id ); ?>][attendees][]" value="<?php echo esc_attr( $attendee['attendee_id'] ); ?>">
 			<li class="tribe-item" id="ticket-<?php echo esc_attr( $order_id ); ?>">
 				<input type="hidden" name="attendee[<?php echo esc_attr( $order_id ); ?>][attendees][]" value="<?php echo esc_attr( $attendee['attendee_id'] ); ?>">
 				<?php

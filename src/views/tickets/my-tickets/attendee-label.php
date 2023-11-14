@@ -12,6 +12,6 @@
  */
 
 ?>
-<p class="list-attendee">
+<div class="list-attendee">
 	<?php echo esc_html( $attendee_label ); ?>
-</p>
+</div>
