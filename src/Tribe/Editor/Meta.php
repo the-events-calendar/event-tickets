@@ -1,6 +1,7 @@
 <?php
 
 use Tribe__Tickets__Admin__Views as Admin_Views;
+use Tribe__Tickets__Global_Stock as Global_Stock;
 
 /**
  * Initialize Gutenberg Event Meta fields.
@@ -328,14 +329,39 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 				continue;
 			}
 
+			/** @var Tribe__Tickets__Commerce__Currency $currency */
+			$currency          = tribe( 'tickets.commerce.currency' );
+			// The `capacity` method will already take the shared nature of the ticket capacity into account.
+			$capacity    = $ticket->capacity();
+			$global_stock_mode = $ticket->global_stock_mode();
+			$sold = $ticket->qty_sold();
 			$list_of_tickets[] = [
-				'id'   => $ticket->ID,
-				'type' => $ticket->type()
+				'id'                       => $ticket->ID,
+				'type'                     => $ticket->type(),
+				'title'                    => $ticket->name,
+				'description'              => $ticket->description,
+				'capacityType'             => $global_stock_mode ?: 'unlimited',
+				'price'                    => $ticket->price,
+				'capacity'                 => $capacity,
+				'available'                => $ticket->available(),
+				'sharedCapacity'           => $capacity,
+				'sold'                     => $sold,
+				'shareSold'                => $sold,
+				'isShared'                 => $global_stock_mode !== Global_Stock::OWN_STOCK_MODE,
+				'currencyDecimalPoint'     => $currency->get_currency_decimal_point($ticket->provider_class),
+				'currencyNumberOfDecimals' => $currency->get_currency_number_of_decimals(),
+				'currencyPosition'         => $currency->get_currency_symbol_position($ticket->ID),
+				'currencySymbol'           => $currency->get_currency_symbol($ticket->ID,true),
+				'currencyThousandsSep'     => $currency->get_currency_thousands_sep($ticket->provider_class),
 			];
 		}
 
 		// Return an array since this method is filtering a query to get all the meta for the key.
-		return [ json_encode( $list_of_tickets ) ?: '' ];
+		try {
+			return [ json_encode( $list_of_tickets, JSON_THROW_ON_ERROR ) ?: '' ];
+		} catch ( \JsonException $e ) {
+			return [];
+		}
 	}
 
 	/**

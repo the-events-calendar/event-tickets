@@ -2,39 +2,10 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withStore } from '@moderntribe/common/hoc';
 import Uneditable from './template';
+import { isTicketEditableFromPost } from '@moderntribe/tickets/data/blocks/ticket/utils';
+import { memo } from 'react';
 
 const mocks = {
-	tickets: [
-		{
-			type: 'series_pass',
-			title: 'Series Pass One',
-			description: 'This is a description for Series Pass One',
-			capacityType: 'unlimited',
-			price: 23.00,
-			capacity: 100,
-			available: 89,
-		},
-		{
-			type: 'series_pass',
-			title: 'Series Pass Two',
-			description: 'This is a description for Series Pass Two',
-			capacityType: 'global',
-			price: 89.00,
-			capacity: 200,
-			available: 12,
-
-			// updated mock data
-			sharedCapacity: 150,
-			sold: 5,
-			sharedSold: 3,
-			isShared: true,
-			currencyDecimalPoint: '.',
-			currencyNumberOfDecimals: 2,
-			currencyPosition: 'prefix',
-			currencySymbol: '$',
-			currencyThousandsSep: ',',
-		},
-	],
 	cardsByTicketType: {
 		series_pass: {
 			title: 'Series Passes',
@@ -44,9 +15,21 @@ const mocks = {
 	},
 };
 
+const getUneditableTickets = (ownProps) => {
+	const currentPost = wp.data.select('core/editor').getCurrentPost();
+	return ownProps.tickets.filter((ticket) => {
+		return !isTicketEditableFromPost(
+			ticket.id,
+			ticket.type || 'default',
+			currentPost
+		);
+	});
+};
+
 const mapStateToProps = (state, ownProps) => ({
-	tickets: mocks.tickets,
+	tickets: getUneditableTickets(ownProps),
 	cardsByTicketType: mocks.cardsByTicketType,
 });
 
-export default compose(withStore(), connect(mapStateToProps))(Uneditable);
+// Safe to memoize the component as its properties will only be set once.
+export default memo(compose(withStore(), connect(mapStateToProps))(Uneditable));

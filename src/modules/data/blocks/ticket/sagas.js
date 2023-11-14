@@ -95,7 +95,7 @@ export function* setTicketsInitialState( action ) {
 	const header = parseInt( get( 'header', TICKET_HEADER_IMAGE_DEFAULT_STATE.id ), 10 );
 	const sharedCapacity = get( 'sharedCapacity' );
 	// Shape: [ {id: int, type: string}, ... ].
-	const ticketsList = JSON.parse(get( 'tickets', '' ));
+	const ticketsList = JSON.parse(get( 'tickets', '[]' ));
 	const ticketsInBlock = yield select( selectors.getTicketsIdsInBlocks );
 	const ticketsDiff = ticketsList
 		 // Get only the IDs of the tickets that are not in the block list already.

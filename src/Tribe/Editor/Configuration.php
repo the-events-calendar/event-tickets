@@ -113,6 +113,8 @@ class Tribe__Tickets__Editor__Configuration implements Tribe__Editor__Configurat
 					'event-tickets'
 				) . '</em>',
 			'choice_disabled'           => false,
+			'ticketTypes' => [
+			]
 		];
 	}
 

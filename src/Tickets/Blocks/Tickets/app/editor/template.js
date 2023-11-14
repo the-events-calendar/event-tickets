@@ -49,7 +49,13 @@ class Tickets extends PureComponent {
 			canCreateTickets,
 			attributes: { tickets: ticketsJSON = '[]' },
 		} = this.props;
-		const tickets = JSON.parse(ticketsJSON) || [];
+
+		let tickets = [];
+		try {
+			tickets = JSON.parse(ticketsJSON) || [];
+		} catch (e) {
+			// Do nothing.
+		}
 
 		return (
 			<Fragment>

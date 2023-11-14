@@ -33,6 +33,7 @@ const TicketsContainer = ({
 	showInactiveBlock,
 	hasATicketSelected,
 	showUneditableTickets,
+	tickets,
 }) => {
 	const messages = {
 		title: '',
@@ -91,7 +92,10 @@ const TicketsContainer = ({
 				</Card>
 			</div>
 			{showUneditableTickets && (
-				<Uneditable cardClassName={uneditableClassName} />
+				<Uneditable
+					tickets={tickets}
+					cardClassName={uneditableClassName}
+				/>
 			)}
 			{showInactiveBlock && !isSettingsOpen && (
 				<InactiveTicket title={messages.title} />
