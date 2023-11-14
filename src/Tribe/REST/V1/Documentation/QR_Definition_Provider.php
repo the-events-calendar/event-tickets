@@ -2,7 +2,7 @@
 /**
  * Class Tribe__Tickets__REST__V1__Documentation__QR_Definition_Provider
  *
- * @since TBD
+ * @since 5.7.0
  */
 class Tribe__Tickets__REST__V1__Documentation__QR_Definition_Provider
 	implements Tribe__Documentation__Swagger__Provider_Interface {
@@ -10,7 +10,7 @@ class Tribe__Tickets__REST__V1__Documentation__QR_Definition_Provider
 	/**
 	 * Returns an array in the format used by Swagger 2.0.
 	 *
-	 * @since TBD
+	 * @since 5.7.0
 	 *
 	 * While the structure must conform to that used by v2.0 of Swagger the structure can be that of a full document
 	 * or that of a document part.
@@ -47,7 +47,7 @@ class Tribe__Tickets__REST__V1__Documentation__QR_Definition_Provider
 		/**
 		 * Filters the Swagger documentation generated for an QR in the ET+ REST API.
 		 *
-		 * @since TBD
+		 * @since 5.7.0
 		 *
 		 * @param array $documentation An associative PHP array in the format supported by Swagger.
 		 *
