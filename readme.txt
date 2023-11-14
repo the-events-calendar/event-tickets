@@ -3,7 +3,7 @@
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, GeoffBel, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra
 Tags: tickets, registration, event registration, RSVP, ticket sales, attendee management
 Requires at least: 6.2
-Tested up to: 6.4.0
+Tested up to: 6.4.1
 Stable tag: 5.7.0
 Requires PHP: 7.4
 License: GPLv2 or later
@@ -198,8 +198,8 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [5.7.0] 2023-11-16 =
 
 * Version - Event Tickets 5.7.0 is only compatible with The Events Calendar 6.2.7 and higher.
-* Version - Event Tickets 5.7.0 is only compatible with Event Tickets Plus 6.3.0 and higher.
-* Feature - Include all the features to have Wallet Plus into Event Tickets.
+* Version - Event Tickets 5.7.0 is only compatible with Event Tickets Plus 5.8.0 and higher.
+* Feature - Include all the features to have Wallet Plus compatibility into Event Tickets.
 * Tweak - Add tickets to the Tickets Commerce success page. [ETWP-30]
 * Tweak - Add tickets to the RSVP block confirmation state. [ETWP-62]
 * Language - 30 new strings added, 30 updated, 0 fuzzied, and 0 obsoleted
