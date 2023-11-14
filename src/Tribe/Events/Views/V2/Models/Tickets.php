@@ -289,7 +289,7 @@ class Tickets implements \ArrayAccess, \Serializable {
 	/**
 	 * PHP 8.0+ compatible implementation of the serialization logic.
 	 *
-	 * @since TBD
+	 * @since 5.7.0
 	 *
 	 * @return array The data to serialize.
 	 */
@@ -303,7 +303,7 @@ class Tickets implements \ArrayAccess, \Serializable {
 	/**
 	 * PHP 8.0+ compatible implementation of the unserialization logic.
 	 *
-	 * @since TBD
+	 * @since 5.7.0
 	 *
 	 * @param array $data The data to unserialize.
 	 */
