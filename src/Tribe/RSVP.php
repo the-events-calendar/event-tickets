@@ -2946,7 +2946,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * Filters the list of post types that should trigger a cache invalidation on `save_post` to add
 	 * all the ones modeling RSVP Tickets and Attendees.
 	 *
-	 * @since TBD
+	 * @since 5.6.7
 	 *
 	 * @param array $post_types
 	 *
