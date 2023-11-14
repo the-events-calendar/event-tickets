@@ -1,5 +1,9 @@
 .tribe-editor__ticket__content-row--move-delete {
-	padding: 30px 0 0;
+	bottom: var(--tec-spacer-6);
+	padding-left: var(--tec-spacer-4);
+	position: absolute;
+	z-index: 1;
+
 
 	& > button {
 		font-size: 15px !important;
@@ -7,7 +11,7 @@
 		padding: 0;
 
 		&:first-child {
-			color: #009fd4;
+			color: var(--tec-color-icon-error);
 
 			&:after {
 				color: #8d949b;
@@ -17,7 +21,7 @@
 		}
 
 		&:last-child {
-			color: #da394d;
+			color: var(--tec-color-button-primary);
 		}
 	}
 }

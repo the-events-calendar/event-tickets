@@ -3,8 +3,11 @@
  */
 import * as types from '@moderntribe/tickets/data/blocks/ticket/types';
 import {
-	getDefaultProviderCurrency,
 	getDefaultCurrencyPosition,
+	getDefaultProviderCurrency,
+	getDefaultProviderCurrencyDecimalPoint,
+	getDefaultProviderCurrencyNumberOfDecimals,
+	getDefaultProviderCurrencyThousandsSep,
 } from '@moderntribe/tickets/data/blocks/ticket/utils';
 import details, { DEFAULT_STATE as DETAILS_DEFAULT_STATE } from './ticket/details';
 import tempDetails, { DEFAULT_STATE as TEMP_DETAILS_DEFAULT_STATE } from './ticket/temp-details';
@@ -15,8 +18,11 @@ export const DEFAULT_STATE = {
 	sold: 0,
 	available: 0,
 	ticketId: 0,
-	currencySymbol: getDefaultProviderCurrency(),
+	currencyDecimalPoint: getDefaultProviderCurrencyDecimalPoint(),
+	currencyNumberOfDecimals: getDefaultProviderCurrencyNumberOfDecimals(),
 	currencyPosition: getDefaultCurrencyPosition(),
+	currencySymbol: getDefaultProviderCurrency(),
+	currencyThousandsSep: getDefaultProviderCurrencyThousandsSep(),
 	provider: '',
 	hasAttendeeInfoFields: false,
 	isLoading: false,
@@ -29,6 +35,7 @@ export const DEFAULT_STATE = {
 
 export default ( state = DEFAULT_STATE, action ) => {
 	switch ( action.type ) {
+		case types.SET_TICKET_ATTENDEE_INFO_FIELDS:
 		case types.SET_TICKET_TITLE:
 		case types.SET_TICKET_DESCRIPTION:
 		case types.SET_TICKET_PRICE:

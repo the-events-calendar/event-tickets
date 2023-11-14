@@ -7,8 +7,6 @@ use TEC\Tickets\Commerce\Module;
 use WP_Post;
 
 use Tribe__Tickets__Main as Plugin;
-use Tribe__Utils__Array as Arr;
-
 
 /**
  * Class Orders Report.
@@ -26,6 +24,11 @@ class Orders extends Report_Abstract {
 	 * @var string
 	 */
 	public static $page_slug = 'tickets-commerce-orders';
+
+	/**
+	 * @var string
+	 */
+	public static $tab_slug = 'tickets-commerce-orders-report';
 
 	/**
 	 * Order Pages ID on the menu.
@@ -190,6 +193,11 @@ class Orders extends Report_Abstract {
 	public function hook() {
 		add_filter( 'post_row_actions', [ $this, 'add_orders_row_action' ], 10, 2 );
 		add_action( 'admin_menu', [ $this, 'register_orders_page' ] );
+
+		// register the tabbed view
+		$tc_tabbed_view = new Tabbed_View();
+		$tc_tabbed_view->set_active( self::$tab_slug );
+		$tc_tabbed_view->register();
 	}
 
 	/**
@@ -310,8 +318,11 @@ class Orders extends Report_Abstract {
 	 * @return string
 	 */
 	public function filter_admin_title( $admin_title ) {
-		if ( ! empty( $_GET['post_id'] ) ) {
-			$event       = get_post( $_GET['post_id'] );
+		$post_id = tribe_get_request_var( 'post_id' );
+		$post_id = tribe_get_request_var( 'event_id', $post_id );
+
+		if ( ! empty( $post_id ) ) {
+			$event       = get_post( $post_id );
 			$admin_title = sprintf( esc_html_x( '%s - Tickets Commerce Orders', 'Browser title', 'event-tickets' ), $event->post_title );
 		}
 
@@ -324,6 +335,10 @@ class Orders extends Report_Abstract {
 	 * @since 5.2.0
 	 */
 	public function render_page() {
+		$tc_tabbed_view = new Tabbed_View();
+		$tc_tabbed_view->set_active( self::$tab_slug );
+		$tc_tabbed_view->render();
+
 		$this->get_template()->template( 'orders', $this->get_template_vars() );
 	}
 
@@ -331,6 +346,7 @@ class Orders extends Report_Abstract {
 	 * Sets up the template variables used to render the Orders Report Page.
 	 *
 	 * @since 5.2.0
+	 * @since 5.6.8 Removed title from template vars, title will be rendered by the Tabbed_View
 	 *
 	 * @return array
 	 */
@@ -342,75 +358,15 @@ class Orders extends Report_Abstract {
 		$post_type_object    = get_post_type_object( $post->post_type );
 		$post_singular_label = $post_type_object->labels->singular_name;
 
-		$tickets    = \Tribe__Tickets__Tickets::get_event_tickets( $post_id );
-		$ticket_ids = tribe_get_request_var( 'product_ids', false );
-
-		if ( false !== $ticket_ids ) {
-			$ticket_ids = array_map( 'absint', explode( ',', $ticket_ids ) );
-			$ticket_ids = array_filter(
-				$ticket_ids,
-				static function ( $ticket_id ) {
-					return get_post_type( $ticket_id ) === Commerce\Ticket::POSTTYPE;
-				}
-			);
-			$tickets    = array_map( [ tribe( Commerce\Ticket::class ), 'get_ticket' ], $ticket_ids );
-		}
-
-		$tickets = array_filter(
-			$tickets,
-			static function ( $ticket ) {
-				return Module::class === $ticket->provider_class;
-			}
-		);
-
-		$event_data    = [];
-		$tickets_data  = [];
-		$thousands_sep = tribe( \Tribe__Tickets__Commerce__Currency::class )->get_currency_locale( 'thousands_sep' );
-
-		foreach ( $tickets as $ticket ) {
-			$quantities      = tribe( Commerce\Ticket::class )->get_status_quantity( $ticket->ID );
-			$total_by_status = [];
-			foreach ( $quantities as $status_slug => $status_count ) {
-				if ( ! isset( $event_data['qty_by_status'][ $status_slug ] ) ) {
-					$event_data['qty_by_status'][ $status_slug ] = 0;
-				}
-				if ( ! isset( $event_data['total_by_status'][ $status_slug ] ) ) {
-					$event_data['total_by_status'][ $status_slug ] = [];
-				}
-
-				$status_value = Commerce\Utils\Value::create( $ticket->price );
-				$event_data['total_by_status'][ $status_slug ][] = $total_by_status[ $status_slug ] = $status_value->sub_total( $status_count );
-
-				$event_data['qty_by_status'][ $status_slug ] += (int) $status_count;
-			}
-			$tickets_data[ $ticket->ID ] = [
-				'total_by_status' => $total_by_status,
-				'qty_by_status'   => $quantities,
-			];
-		}
-
-		$event_data['total_by_status'] = array_map(
-			static function ( $sub_totals ) {
-				$status_grand_total = Commerce\Utils\Value::create();
-				$status_grand_total->total( $sub_totals );
-				return $status_grand_total->get_currency();
-			},
-			$event_data['total_by_status']
-		);
-
+		$order_summary = new Commerce\Reports\Data\Order_Summary( $post_id );
 
 		$this->template_vars = [
-			'title'               => $this->get_title( $post_id ),
 			'orders_table'        => tribe( Commerce\Admin_Tables\Orders::class ),
 			'post'                => $post,
 			'post_id'             => $post_id,
 			'post_type_object'    => $post_type_object,
 			'post_singular_label' => $post_singular_label,
-			'tickets'             => $tickets,
-			'tickets_data'        => $tickets_data,
-			'event_data'          => $event_data,
-			'tooltip'             => tribe( 'tooltip.view' ),
-			'thousands_sep'       => $thousands_sep,
+			'order_summary'       => $order_summary,
 		];
 
 		return $this->template_vars;

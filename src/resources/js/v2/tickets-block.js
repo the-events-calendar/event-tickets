@@ -2,7 +2,7 @@
  * Makes sure we have all the required levels on the Tribe Object
  *
  * @since 5.0.3
- * @type {object}
+ * @type {Object}
  */
 tribe.tickets = tribe.tickets || {};
 
@@ -10,7 +10,7 @@ tribe.tickets = tribe.tickets || {};
  * Configures Tickets Block Object in the Global Tribe variable
  *
  * @since 5.0.3
- * @type {object}
+ * @type {Object}
  */
 tribe.tickets.block = {
 	num_attendees: 0,
@@ -21,8 +21,8 @@ tribe.tickets.block = {
  * Initializes in a Strict env the code that manages the Tickets Block
  *
  * @since 5.0.3
- * @param  {object} $   jQuery
- * @param  {object} obj tribe.tickets.block
+ * @param  {Object} $   jQuery
+ * @param  {Object} obj tribe.tickets.block
  * @return {void}
  */
 ( function( $, obj ) {
@@ -131,7 +131,7 @@ tribe.tickets.block = {
 	 * Adjust the footer count for +/-.
 	 *
 	 * @since 5.0.3
-	 * @param {object} $form The form we're updating.
+	 * @param {Object} $form The form we're updating.
 	 */
 	obj.updateFooterCount = function( $form ) {
 		const $field = $form
@@ -178,7 +178,7 @@ tribe.tickets.block = {
 	 * Adjust the footer total/amount for +/-.
 	 *
 	 * @since 5.0.3
-	 * @param {object} $form The form we're updating.
+	 * @param {Object} $form The form we're updating.
 	 */
 	obj.updateFooterAmount = function( $form ) {
 		const $field = $form.find( obj.selectors.blockFooter + ' ' + obj.selectors.blockFooterAmount );
@@ -401,7 +401,7 @@ tribe.tickets.block = {
 	 * @since 5.0.3
 	 * @param {jQuery} $form jQuery object that is the form we are checking.
 	 * @param {number} qty The quantity we desire.
-	 * @param {object} $target The ticket item that was clicked.
+	 * @param {Object} $target The ticket item that was clicked.
 	 * @returns {number} The quantity, limited by existing shared cap tickets.
 	 */
 	obj.checkSharedCapacity = function( $form, qty, $target ) {

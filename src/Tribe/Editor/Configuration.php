@@ -134,14 +134,32 @@ class Tribe__Tickets__Editor__Configuration implements Tribe__Editor__Configurat
 				$currency_position = $currency->get_provider_symbol_position( $class_name, null );
 			}
 
+			$currency_number_of_decimals = 2;
+			if ( is_callable( [ $currency, 'get_number_of_decimals' ] ) ) {
+				$currency_number_of_decimals = $currency->get_number_of_decimals( $class_name, null );
+			}
+
+			$currency_decimal_point = '.';
+			if ( is_callable( [ $currency, 'get_currency_decimal_point' ] ) ) {
+				$currency_decimal_point = $currency->get_currency_decimal_point( $class_name, null );
+			}
+
+			$currency_thousands_sep = ',';
+			if ( is_callable( [ $currency, 'get_currency_thousands_sep' ] ) ) {
+				$currency_thousands_sep = $currency->get_currency_thousands_sep( $class_name, null );
+			}
+
 			$html_safe_class = str_replace( [ '\\' ], [ '_' ], $class_name );
 
 			$providers[] = [
-				'name'              => $modules[ $class_name ],
-				'class'             => $class_name,
-				'html_safe_class'   => sanitize_html_class( $html_safe_class ),
-				'currency'          => html_entity_decode( $currency_symbol ),
-				'currency_position' => $currency_position,
+				'class'                       => $class_name,
+				'currency'                    => html_entity_decode( $currency_symbol ),
+				'currency_decimal_point'      => $currency_decimal_point,
+				'currency_number_of_decimals' => $currency_number_of_decimals,
+				'currency_position'           => $currency_position,
+				'currency_thousands_sep'      => $currency_thousands_sep,
+				'html_safe_class'             => sanitize_html_class( $html_safe_class ),
+				'name'                        => $modules[ $class_name ],
 			];
 		}
 

@@ -2,7 +2,7 @@
 	display: flex;
 
 	&--rsvp {
-		border: 1px solid #E1E3E6;
+		border: none;
 	}
 
 	&--ticket {
@@ -31,34 +31,26 @@
 
 .tribe-editor__container-panel__header-content-wrapper {
 	flex: auto;
-	background-color: #F7F8F9;
-	border-left: 1px dashed #B5BCC2;
 }
 
 .tribe-editor__container-panel__header {
 
-	.tribe-editor__container-panel--rsvp & {
-		padding: 25px;
-	}
-
 	.tribe-editor__container-panel--ticket & {
 		flex: none;
-		width: calc(100% - 100px);
+		width: 100%;
 	}
 }
 
 .tribe-editor__container-panel__content {
 
 	.tribe-editor__container-panel--rsvp & {
-		margin: 0 25px;
-		padding: 30px 0;
+		padding: var(--tec-spacer-5) var(--tec-spacer-3) var(--tec-spacer-2) var(--tec-spacer-3);
 	}
 
 	.tribe-editor__container-panel--ticket & {
 		flex: none;
 		width: calc(100% - 40px);
-		background-color: #F8F9F9;
-		padding: 30px 20px 25px;
-		border-top: 1px dashed #B5BCC2;
+		background-color: var(--tec-color-background-secondary);
+		padding: var(--tec-spacer-5) var(--tec-spacer-4) var(--tec-spacer-2) var(--tec-spacer-4);
 	}
 }

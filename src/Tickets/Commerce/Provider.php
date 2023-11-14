@@ -78,6 +78,9 @@ class Provider extends Service_Provider {
 
 		// Register and add hooks for admin notices.
 		$this->container->register( Admin\Notices::class );
+
+		// Cache invalidation.
+		add_filter( 'tec_cache_listener_save_post_types', [ $this, 'filter_cache_listener_save_post_types' ] );
 	}
 
 	/**
@@ -131,5 +134,23 @@ class Provider extends Service_Provider {
 
 		$this->container->singleton( Legacy_Compat::class, $v1_compat );
 		$this->container->singleton( 'tickets.commerce.legacy-compat', $v1_compat );
+	}
+
+	/**
+	 * Filters the list of post types that should trigger a cache invalidation on `save_post` to add
+	 * all the ones modeling Commerce Tickets, Attendees and Orders.
+	 *
+	 * @since TBD
+	 *
+	 * @param string[] $post_types The list of post types that should trigger a cache invalidation on `save_post`.
+	 *
+	 * @return string[] The filtered list of post types that should trigger a cache invalidation on `save_post`.
+	 */
+	public function filter_cache_listener_save_post_types( array $post_types = [] ): array {
+		$post_types[] = Ticket::POSTTYPE;
+		$post_types[] = Attendee::POSTTYPE;
+		$post_types[] = Order::POSTTYPE;
+
+		return $post_types;
 	}
 }

@@ -2,7 +2,7 @@
  * Makes sure we have all the required levels on the Tribe Object
  *
  * @since 5.0.3
- * @type   {object}
+ * @type   {Object}
  */
 tribe.tickets = tribe.tickets || {};
 
@@ -10,7 +10,7 @@ tribe.tickets = tribe.tickets || {};
  * Configures ET tickets page Object in the Global Tribe variable
  *
  * @since 5.0.3
- * @type   {object}
+ * @type   {Object}
  */
 tribe.tickets.page = {};
 
@@ -18,8 +18,8 @@ tribe.tickets.page = {};
  * Initializes in a Strict env the code that manages the plugin tickets page.
  *
  * @since 5.0.3
- * @param  {object} $   jQuery
- * @param  {object} obj tribe.tickets.page
+ * @param  {Object} $   jQuery
+ * @param  {Object} obj tribe.tickets.page
  * @return {void}
  */
 ( function( $, obj ) {

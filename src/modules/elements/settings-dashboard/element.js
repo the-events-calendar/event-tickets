@@ -15,7 +15,11 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { Button } from '@moderntribe/common/elements';
-import { Close as CloseIcon, Cog as CogIcon } from '@moderntribe/common/icons';
+import { Card } from '@moderntribe/tickets/elements';
+import {
+	Close as CloseIcon,
+	Settings as SettingsIcon,
+} from '@moderntribe/tickets/icons';
 import './style.pcss';
 
 const SettingsDashboard = ( {
@@ -26,7 +30,7 @@ const SettingsDashboard = ( {
 	headerLeft,
 	onCloseClick,
 } ) => (
-	<div className={ classNames(
+	<Card className={ classNames(
 		'tribe-editor__settings-dashboard',
 		className,
 	) }>
@@ -45,7 +49,7 @@ const SettingsDashboard = ( {
 		<div className="tribe-editor__settings-dashboard__content">
 			{ content }
 		</div>
-	</div>
+	</Card>
 );
 
 SettingsDashboard.defaultProps = {
@@ -59,9 +63,9 @@ SettingsDashboard.defaultProps = {
 	),
 	headerLeft: (
 		<Fragment>
-			<CogIcon />
+			<SettingsIcon />
 			<span className="tribe-editor__settings-dashboard__header-left-text">
-				{ __( 'Settings', 'event-tickets' ) }
+				{ __( 'Ticket Settings', 'event-tickets' ) }
 			</span>
 		</Fragment>
 	),

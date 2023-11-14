@@ -102,7 +102,7 @@ export const getTickets = createSelector(
 
 export const getTicketsAllClientIds = createSelector(
 	[ getTickets ],
-	( tickets ) => tickets.allClientIds,
+	( tickets ) => [ ...new Set( tickets.allClientIds ) ],
 );
 
 export const getTicketsByClientId = createSelector(
@@ -209,6 +209,21 @@ export const getTicketCurrencySymbol = createSelector(
 export const getTicketCurrencyPosition = createSelector(
 	[ getTicket ],
 	( ticket ) => ticket.currencyPosition,
+);
+
+export const getTicketCurrencyDecimalPoint = createSelector(
+	[ getTicket ],
+	( ticket ) => ticket.currencyDecimalPoint,
+);
+
+export const getTicketCurrencyNumberOfDecimals = createSelector(
+	[ getTicket ],
+	( ticket ) => ticket.currencyNumberOfDecimals,
+);
+
+export const getTicketCurrencyThousandsSep = createSelector(
+	[ getTicket ],
+	( ticket ) => ticket.currencyThousandsSep,
 );
 
 export const getTicketProvider = createSelector(
@@ -435,6 +450,11 @@ export const allTicketsFuture = createSelector(
 	}, true ),
 );
 
+export const getTicketAttendeeInfoFields = createSelector(
+	[ getTicketDetails ],
+	( details ) => details.attendeeInfoFields || [],
+);
+
 //
 // ─── TICKET TEMP DETAILS SELECTORS ──────────────────────────────────────────────
 //
@@ -556,19 +576,19 @@ export const isTempTitleValid = createSelector(
 
 export const isTempCapacityValid = createSelector(
 	[ getTicketTempCapacity ],
-	( capacity ) => trim( capacity ) !== '' && ! isNaN( capacity ),
+	( capacity ) => trim( capacity ) !== '' && ! isNaN( capacity ) && capacity > 0,
 );
 
 export const isTempSharedCapacityValid = createSelector(
 	[ getTicketsTempSharedCapacity ],
-	( capacity ) => trim( capacity ) !== '' && ! isNaN( capacity ),
+	( capacity ) => trim( capacity ) !== '' && ! isNaN( capacity ) && capacity > 0,
 );
 
 export const isZeroPriceValid = createSelector(
 	[ getTicketTempPrice, getTicketsProvider ],
 	( price, provider ) => {
 		return 0 < parseInt( price, 10 ) ||
-			! [constants.TC_CLASS, constants.TICKETS_COMMERCE_MODULE_CLASS].includes(provider)
+			! [ constants.TC_CLASS, constants.TICKETS_COMMERCE_MODULE_CLASS ].includes( provider );
 	},
 );
 

@@ -31,6 +31,7 @@ const iac = globals.iacVars().iacDefault
 	: 'none';
 
 export const DEFAULT_STATE = {
+	attendeeInfoFields: [],
 	title: '',
 	description: '',
 	price: '',
@@ -136,6 +137,11 @@ export default ( state = DEFAULT_STATE, action ) => {
 			return {
 				...state,
 				capacity: action.payload.capacity,
+			};
+		case types.SET_TICKET_ATTENDEE_INFO_FIELDS:
+			return {
+				...state,
+				attendeeInfoFields: action.payload.attendeeInfoFields,
 			};
 		default:
 			return state;

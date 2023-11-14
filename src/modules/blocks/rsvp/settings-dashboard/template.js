@@ -9,12 +9,14 @@ import classNames from 'classnames';
  * WordPress dependencies
  */
 import { Spinner } from '@wordpress/components';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
 import RSVPHeaderImage from '@moderntribe/tickets/blocks/rsvp/header-image/container';
 import { SettingsDashboard } from '@moderntribe/tickets/elements';
+import { Settings as SettingsIcon } from '@moderntribe/tickets/icons';
 import './style.pcss';
 
 const RSVPSettingsDashboard = ( { isSettingsLoading, onCloseClick } ) => (
@@ -28,6 +30,14 @@ const RSVPSettingsDashboard = ( { isSettingsLoading, onCloseClick } ) => (
 			<Fragment>
 				<RSVPHeaderImage />
 				{ isSettingsLoading && <Spinner /> }
+			</Fragment>
+		) }
+		headerLeft={ (
+			<Fragment>
+				<SettingsIcon />
+				<span className="tribe-editor__settings-dashboard__header-left-text">
+					{ __( 'RSVP Settings', 'event-tickets' ) }
+				</span>
 			</Fragment>
 		) }
 		onCloseClick={ onCloseClick }

@@ -2,9 +2,9 @@
 
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, GeoffBel, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra
 Tags: tickets, registration, event registration, RSVP, ticket sales, attendee management
-Requires at least: 5.8.5
-Tested up to: 6.3.1
-Stable tag: 5.6.5.1
+Requires at least: 6.2
+Tested up to: 6.4.0
+Stable tag: 5.6.8.1
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -190,6 +190,54 @@ We've got a [LoopedIn](https://evnt.is/ideas) page where we're actively watching
 Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on using, tweaking, and troubleshooting our plugins.
 
 == Changelog ==
+
+= [5.6.8.1] 2023-11-09 =
+
+* Version - Event Tickets 5.6.8.1 is only compatible with The Events Calendar 6.2.6.1 and higher
+* Fix - Update a common library to prevent possible fatals. [TEC-4978]
+* Language - 0 new strings added, 9 updated, 0 fuzzied, and 0 obsoleted
+
+= [5.6.8] 2023-11-08 =
+
+* Tweak - Added tabs for navigating between Attendees and Orders in the Tickets Commerce admin. [ET-1867]
+* Tweak - Added action `tec_tickets_commerce_reports_tabbed_view_before_register_tab` and `tec_tickets_commerce_reports_tabbed_view_after_register_tab` allow adding third-party tabs. [ET-1867]
+* Tweak - Added filter `tec_tickets_commerce_reports_tabbed_page_title` and `tec_tickets_commerce_reports_tabbed_view_tab_map` allow granular control over how Tickets Commerce tabs behave. [ET-1867]
+
+= [5.6.7] 2023-11-01 =
+
+* Feature - Tickets Commerce orders report page design update. [ET-1810]
+* Tweak - Re-styled Empty RSVP Block in Block Editor to match frontend design. Styles will be the same in block editor and in the user interface [ET-1818]
+* Tweak - Re-styled Inactive RSVP Block in Block Editor to match frontend design. Styles will be the same in block editor and in the user interface [ET-1823]
+* Tweak - Re-styled Active RSVP Block in Block Editor to match frontend design. Styles will be the same in block editor and in the user interface [ET-1825]
+* Tweak - Re-styled Create and Edit RSVP Tickets in Block Editor.  [ET-1836]
+* Tweak - Re-styled Inactive Tickets Block in Block Editor. Empty state now has a new design [ET-1817]
+* Tweak - Re-styled Inactive Tickets Block with tickets. Inactive state with tickets has a new design [ET-1822]
+* Tweak - Re-styled Active Tickets Block with tickets. Add information icons and tooltips.  [ET-1824]
+* Tweak - Re-styled Create and Edit Tickets in Block Editor.  [ET-1835]
+* Tweak - Re-styled Tickets Settings in Block Editor.  [ET-1834]
+* Tweak - Using react-number-format to display price.  [ET-1885]
+* Tweak - Declared dynamic properties for Attendees page to avoid deprecation warnings.
+* Fix - Orders title in admin page.  [ET-1868]
+* Fix - Typo on My Tickets when using Ticket Commerce only. [ET-1909]
+* Language - 3 new strings added, 60 updated, 0 fuzzied, and 1 obsoleted
+
+= [5.6.6.1] 2023-10-12 =
+
+* Fix - Correct a problem that can cause a fatal when plugins are deactivated in a certain order. [TEC-4951]
+
+= [5.6.6] 2023-10-11 =
+
+* Version - Event Tickets 5.6.6 is only compatible with Event Tickets Plus 5.7.6 and higher.
+* Tweak - Include a QRCode Library in Event Tickets to improve conformity across other addons. [ETWP-29]
+* Fix - The Attendee Registration feature will now use the modal by default.  [ETP-882]
+* Fix - Restore possibility to move Tickets and Attendees to Single Events that are part of a Series. [ET-1862]
+* Fix - When using the block editor, the Attendee Information modal will be properly sized. [ETP-883]
+* Fix - Ticket property invalidation to ensure capacity, inventory and availability are correctly invalidated. [ET-1887]
+* Fix - Fix order status sometimes showing incorrectly for sites in languages other than English. [ET-1875]
+* Fix - When transferring tickets from one event to another using Tickets Commerce, the capacity and stock levels for each ticket should be correctly updated. [ETP-866]
+* Fix - Avoid showing duplicate warning related to recurring event on ticket meta box for new event submissions using Community Events. [ECP-1538]
+* Fix - Prevent fatal related to Events Calendar Pro on older versions triggering internal service provider to be loaded when it shouldn't be. [ET-1886]
+* Language - 1 new strings added, 13 updated, 0 fuzzied, and 0 obsoleted
 
 = [5.6.5.1] 2023-09-28 =
 
