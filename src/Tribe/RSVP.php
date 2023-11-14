@@ -327,6 +327,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			'login_url'  => self::get_login_url( $post_id ),
 			'threshold'  => $blocks_rsvp->get_threshold( $post_id ),
 			'going'      => tribe_get_request_var( 'going', 'yes' ),
+			'attendees'  => [],
 		];
 
 		/**
