@@ -7,7 +7,7 @@ use \TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 /**
  * Class Controller.
  *
- * @since   TBD
+ * @since   5.6.7
  *
  * @package TEC\Tickets\QR
  */
@@ -16,7 +16,7 @@ class Controller extends Controller_Contract {
 	 * Determines if this controller will register.
 	 * This is present due to how UOPZ works, it will fail if method belongs to the parent/abstract class.
 	 *
-	 * @since TBD
+	 * @since 5.6.7
 	 *
 	 * @return bool Whether the controller is active or not.
 	 */
@@ -27,7 +27,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Register the controller.
 	 *
-	 * @since   TBD
+	 * @since   5.6.7
 	 */
 	public function do_register(): void {
 		$this->container->bind( QR::class, [ $this, 'bind_facade_or_error' ] );
@@ -36,7 +36,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Unregister the controller.
 	 *
-	 * @since   TBD
+	 * @since   5.6.7
 	 *
 	 * @return void
 	 */
@@ -47,7 +47,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Binds the facade or throws an error.
 	 *
-	 * @since TBD
+	 * @since 5.6.7
 	 *
 	 * @return \WP_Error|QR Either the build QR façade, or an error to detail the failure.
 	 */
@@ -68,7 +68,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Determines if the QR code library is loaded.
 	 *
-	 * @since TBD
+	 * @since 5.6.7
 	 */
 	protected function has_library_loaded(): bool {
 		return defined( 'TEC_TICKETS_QR_CACHEABLE' );
@@ -77,7 +77,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Loads the QR code library if it's not loaded already.
 	 *
-	 * @since TBD
+	 * @since 5.6.7
 	 */
 	protected function load_library(): void {
 		if ( $this->has_library_loaded() ) {
@@ -90,7 +90,7 @@ class Controller extends Controller_Contract {
 	/**
 	 * Determines if the QR code can be used.
 	 *
-	 * @since TBD
+	 * @since 5.6.7
 	 *
 	 * @return bool Whether the current server configuration supports the QR functionality.
 	 */
@@ -100,7 +100,7 @@ class Controller extends Controller_Contract {
 		/**
 		 * Filter to determine if the QR code can be used.
 		 *
-		 * @since TBD
+		 * @since 5.6.7
 		 *
 		 * @param bool $can_use Whether the QR code can be used based on the current environment.
 		 */
