@@ -11,7 +11,6 @@ import Template from './template';
 import { withStore } from '@moderntribe/common/hoc';
 import { selectors } from '@moderntribe/tickets/data/blocks/ticket';
 import { applyFilters } from '@wordpress/hooks';
-import { select as wpSelect } from '@wordpress/data';
 import { isTicketEditableFromPost } from '@moderntribe/tickets/data/blocks/ticket/utils';
 
 const getHasOverlay = (state, ownProps) =>
