@@ -5,7 +5,7 @@ namespace TEC\Tickets\QR;
 /**
  * Class Admin_Notice
  *
- * @since   TBD
+ * @since   5.7.0
  *
  * @package TEC\Tickets\QR
  */
@@ -14,7 +14,7 @@ class Notices {
 	/**
 	 * Registers the notices for the QR code handling.
 	 *
-	 * @since TBD
+	 * @since 5.7.0
 	 *
 	 * @return void
 	 */
@@ -34,7 +34,7 @@ class Notices {
 	/**
 	 * Determines if the Notice for QR code dependencies should be visible
 	 *
-	 * @since TBD
+	 * @since 5.7.0
 	 *
 	 * @return bool
 	 */
@@ -73,7 +73,7 @@ class Notices {
 	/**
 	 * Gets the notice for the QR code dependency.
 	 *
-	 * @since TBD
+	 * @since 5.7.0
 	 *
 	 * @return string
 	 */
