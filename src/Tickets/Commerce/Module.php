@@ -550,7 +550,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	 * Gets an individual ticket.
 	 *
 	 * @since 5.1.9
-	 * @since TBD Set some provider-invariant ticket properties.
+	 * @since 5.6.7 Set some provider-invariant ticket properties.
 	 *
 	 * @param int|\WP_Post $post_id
 	 * @param int|\WP_Post $ticket_id

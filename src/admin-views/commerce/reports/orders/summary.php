@@ -2,7 +2,7 @@
 /**
  * Template to render the Orders Report Summary.
  *
- * @version TBD
+ * @version 5.6.7
  *
  * @var int $post_id The current post ID.
  * @var WP_Post $post The current post object.
@@ -127,7 +127,7 @@ $tickets_by_type = $order_summary->get_tickets_by_type();
 					/**
 					 * Fires after sales breakdown in the Orders Report admin view.
 					 *
-					 * @since TBD
+					 * @since 5.6.7
 					 *
 					 * @param WP_Post $post_id The current post ID.
 					 */

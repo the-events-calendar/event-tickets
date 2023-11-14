@@ -211,7 +211,7 @@ class Tribe__Tickets__Attendee_Registration__Main {
 	 * Check if the modal is enabled.
 	 *
 	 * @since 4.11.0
-	 * @since TBD Defaulted ticket-attendee-modal setting to true if never set.
+	 * @since 5.6.7 Defaulted ticket-attendee-modal setting to true if never set.
 	 *
 	 * @param int|WP_Post|null $post The post (or its ID) we're testing. Defaults to null.
 	 *
