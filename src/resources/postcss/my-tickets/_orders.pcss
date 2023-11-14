@@ -49,7 +49,7 @@
 				border-bottom: 0;
 				display: flex;
 				flex-wrap: wrap;
-				gap: var(--tec-spacer-1);
+				gap: var(--tec-spacer-4);
 				justify-content: space-between;
 				margin: 0;
 				min-height: 105px;
@@ -87,7 +87,6 @@
 
 				& > div {
 					flex: 1 0 100%;
-					flex-basis: var(--tec-grid-width-1-of-4);
 				}
 
 				@media(--viewport-medium) {
@@ -97,6 +96,7 @@
 					& > div {
 						flex: 0 1 auto;
 						order: 2;
+						white-space: nowrap;
 					}
 
 					& > div.list-attendee {
@@ -107,6 +107,7 @@
 					& > div.tribe-ticket-information {
 						flex: 0 1 100%;
 						order: 3;
+						white-space: wrap;
 					}
 
 					& > div:last-child {
