@@ -195,10 +195,13 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.7.0] 2023-11-15 =
+= [5.7.0] 2023-11-16 =
 
+* Version - Event Tickets 5.7.0 is only compatible with The Events Calendar 6.2.7 and higher.
+* Version - Event Tickets 5.7.0 is only compatible with Event Tickets Plus 6.3.0 and higher.
 * Tweak - Add tickets to the Tickets Commerce success page. [ETWP-30]
 * Tweak - Add tickets to the RSVP block confirmation state. [ETWP-62]
+* Language - 30 new strings added, 30 updated, 0 fuzzied, and 0 obsoleted
 
 = [5.6.8.1] 2023-11-09 =
 
