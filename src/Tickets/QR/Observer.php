@@ -7,7 +7,7 @@ use Tribe__Tickets__Tickets as Tickets;
 /**
  * Class Observer
  *
- * @since   TBD
+ * @since   5.7.0
  *
  * @package TEC\Tickets\QR
  */
@@ -20,7 +20,7 @@ class Observer {
 	 *   - If the user is not logged in and/or does not have proper permissions, it will
 	 *     redirect to the homepage of the event (front end single event view).
 	 *
-	 * @since TBD
+	 * @since 5.7.0
 	 *
 	 * @return void
 	 */
@@ -59,12 +59,12 @@ class Observer {
 		 * @param int    $ticket_id       Ticket Post ID.
 		 * @param bool   $user_had_access Whether the logged-in user has permission to perform check ins.
 		 */
-		$url = apply_filters_deprecated( 'tribe_tickets_plus_qr_handle_redirects', [ $url, $event_id, $ticket_id, $user_had_access ], 'TBD', 'Use `tec_tickets_qr_observer_handle_handle_checkin_redirect` instead.' );
+		$url = apply_filters_deprecated( 'tribe_tickets_plus_qr_handle_redirects', [ $url, $event_id, $ticket_id, $user_had_access ], '5.7.0', 'Use `tec_tickets_qr_observer_handle_handle_checkin_redirect` instead.' );
 
 		/**
 		 * Filters the redirect URL if the user can access the QR checkin.
 		 *
-		 * @since TBD
+		 * @since 5.7.0
 		 *
 		 * @param string $url             URL to redirect to, gets escaped upstream.
 		 * @param int    $event_id        Event Post ID.
@@ -80,7 +80,7 @@ class Observer {
 	/**
 	 * Check if user is authorized to check in Ticket.
 	 *
-	 * @since TBD
+	 * @since 5.7.0
 	 *
 	 * @param int    $event_id      Event post ID.
 	 * @param int    $ticket_id     Ticket post ID.
@@ -114,16 +114,16 @@ class Observer {
 		 * Filters the check for security code when checking in a ticket
 		 *
 		 * @since 4.11.2 Change the default to true.
-		 * @deprecated TBD Use `tec_tickets_qr_observer_should_check_security_code` instead.
+		 * @deprecated 5.7.0 Use `tec_tickets_qr_observer_should_check_security_code` instead.
 		 *
 		 * @param bool $check_security_code The default is to check the security code.
 		 */
-		$check_security_code = apply_filters_deprecated( 'tribe_tickets_plus_qr_check_security_code', [ $check_security_code ], 'TBD', );
+		$check_security_code = apply_filters_deprecated( 'tribe_tickets_plus_qr_check_security_code', [ $check_security_code ], '5.7.0', );
 
 		/**
 		 * Filters the check for security code when checking in a ticket
 		 *
-		 * @since TBD
+		 * @since 5.7.0
 		 *
 		 * @param bool   $check_security_code The default is to check the security code.
 		 * @param int    $ticket_id           The ticket ID.
@@ -188,7 +188,7 @@ class Observer {
 	/**
 	 * Show a notice so the user knows the ticket was checked in.
 	 *
-	 * @since TBD
+	 * @since 5.7.0
 	 *
 	 * @return void
 	 */
@@ -260,7 +260,7 @@ class Observer {
 	/**
 	 * Checks the user in, for all the *Tickets modules running.
 	 *
-	 * @since TBD
+	 * @since 5.7.0
 	 *
 	 * @param string|int $ticket_id The ticket ID.
 	 *
