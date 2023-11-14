@@ -51,17 +51,12 @@ class Controller extends Controller_Contract {
 	/**
 	 * Unregister the controller.
 	 *
-<<<<<<< HEAD
-	 * @since   5.6.7
-=======
-	 * @since TBD
->>>>>>> ed3c94e2c69087d0c527eebc61eeedf72bd170f5
+	 * @since   5.6.
 	 *
 	 * @return void
 	 */
 	public function unregister(): void {
 		$this->remove_actions();
-		$this->remove_filters();
 	}
 
 	/**
