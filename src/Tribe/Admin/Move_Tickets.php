@@ -854,7 +854,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	 * This method is a hack to work around the lack of support for the `post__not_recurring` argument in CT1.
 	 * Once the `post__not_recurring` argument is supported in CT1, this method should be removed.
 	 *
-	 * @since TBD
+	 * @since 5.6.7
 	 *
 	 * @param string   $where The WHERE clause of the query.
 	 * @param WP_Query $query The WP_Query instance.
