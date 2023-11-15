@@ -239,7 +239,7 @@ class Tickets implements \ArrayAccess, \Serializable {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function offsetGet( $offset ): mixed {
+	public function offsetGet( $offset ) {
 		$this->data = $this->fetch_data();
 
 		return $this->data[ $offset ] ?? null;
