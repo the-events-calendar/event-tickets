@@ -91,14 +91,14 @@ const TicketsContainer = ({
 					<InnerBlocks allowedBlocks={['tribe/tickets-item']} />
 				</Card>
 			</div>
+			{showInactiveBlock && !isSettingsOpen && (
+				<InactiveTicket title={messages.title} />
+			)}
 			{showUneditableTickets && (
 				<Uneditable
 					tickets={tickets}
 					cardClassName={uneditableClassName}
 				/>
-			)}
-			{showInactiveBlock && !isSettingsOpen && (
-				<InactiveTicket title={messages.title} />
 			)}
 			{showAvailability && <Availability />}
 			{hasOverlay && <TicketsOverlay />}
