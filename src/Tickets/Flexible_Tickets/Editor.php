@@ -14,6 +14,7 @@ use TEC\Events_Pro\Custom_Tables\V1\Series\Relationship;
 use Tribe__Tickets__Tickets as Tickets;
 use Tribe__Events__Main as TEC;
 use Tribe__Tickets__RSVP as RSVP;
+use function remove_action;
 
 /**
  * Class Editor.
@@ -23,7 +24,6 @@ use Tribe__Tickets__RSVP as RSVP;
  * @package TEC\Tickets\Flexible_Tickets;
  */
 class Editor extends Controller {
-
 	/**
 	 * {@inheritDoc}
 	 *
@@ -38,6 +38,7 @@ class Editor extends Controller {
 		);
 
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin_scripts' ] );
+		add_action( 'enqueue_block_editor_assets', [ $this, 'enqueue_admin_scripts' ] );
 		add_filter( 'tec_tickets_ticket_panel_data', [ $this, 'filter_ticket_panel_data' ], 10, 2 );
 		add_filter( 'tribe_editor_config', [ $this, 'filter_tickets_editor_config' ] );
 		add_filter( 'tec_events_pro_custom_tables_v1_add_to_series_available_events', [
@@ -63,6 +64,7 @@ class Editor extends Controller {
 			[ $this, 'include_ticket_provider_in_series_dropdown_data' ]
 		);
 		remove_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin_scripts' ] );
+		remove_action( 'enqueue_block_editor_assets', [ $this, 'enqueue_admin_scripts' ] );
 		remove_filter( 'tec_tickets_ticket_panel_data', [ $this, 'filter_ticket_panel_data' ] );
 		remove_filter( 'tribe_editor_config', [ $this, 'filter_tickets_editor_config' ] );
 		remove_filter( 'tec_events_pro_custom_tables_v1_add_to_series_available_events', [
@@ -105,6 +107,10 @@ class Editor extends Controller {
 		if ( ! tribe_context()->is_editing_post( TEC::POSTTYPE ) ) {
 			return;
 		}
+
+		// Do not run this method again on either possible action.
+		remove_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin_scripts' ] );
+		remove_action( 'enqueue_block_editor_assets', [ $this, 'enqueue_admin_scripts' ] );
 
 		$should_load_blocks = $this->container->get( 'editor' )->should_load_blocks();
 		// The Editor code will not take Classic Editor into account, reinforce with the function introduced in WP 5.0.
@@ -149,6 +155,8 @@ class Editor extends Controller {
 				[ 'jquery' ],
 				null,
 				[
+					'action' => 'enqueue_block_editor_assets',
+					'priority' => 5,
 					'groups'   => [
 						'flexible-tickets',
 					],
@@ -341,8 +349,5 @@ class Editor extends Controller {
 				'Notice shown under the Series to Events relationship metabox when there are multiple ticket providers ',
 				'event-tickets'
 			) . '</p></div>';
-	}
-
-	private function get_event_in_series_default_type_description() {
 	}
 }
