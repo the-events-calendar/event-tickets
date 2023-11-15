@@ -120,6 +120,13 @@ class Tribe__Tickets__Editor__Configuration implements Tribe__Editor__Configurat
 			]
 		];
 
+		/**
+		 * Filters the localized data for the editor configuration.
+		 *
+		 * @since TBD
+		 *
+		 * @param array<string,mixed> $localized The localized data for the editor configuration.
+		 */
 		$localized = apply_filters( 'tec_tickets_editor_configuration_localized_data', $localized );
 
 		return $localized;
