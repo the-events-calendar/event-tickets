@@ -47,8 +47,8 @@ const getShowUneditableTickets = (state, ownProps) => {
 	);
 };
 
-const currentPost = wp.data.select('core/editor').getCurrentPost();
 const getUneditableTickets = (ownProps) => {
+	const currentPost = wp.data.select('core/editor').getCurrentPost();
 	const allTickets = ownProps.tickets || [];
 	return allTickets.filter((ticket) =>
 		isTicketEditableFromPost(ticket.id, ticket.type, currentPost)
