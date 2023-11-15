@@ -1293,4 +1293,17 @@ class Series_PassesTest extends Controller_Test_Case {
 
 		$this->assertMatchesJsonSnapshot( json_encode( $filtered, JSON_PRETTY_PRINT ) );
 	}
+
+	/**
+	 * It should correctly filter the editor configuration
+	 *
+	 * @test
+	 */
+	public function should_correctly_filter_the_editor_configuration(): void {
+		$controller = $this->make_controller();
+
+		$editor_configuration_data = $controller->filter_editor_configuration_data( [] );
+
+		$this->assertMatchesJsonSnapshot( json_encode( $editor_configuration_data, JSON_PRETTY_PRINT ) );
+	}
 }
