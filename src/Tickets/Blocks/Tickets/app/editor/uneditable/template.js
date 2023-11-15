@@ -21,11 +21,15 @@ const Uneditable = ({ tickets, cardsByTicketType, cardClassName }) => {
 	return ticketTypes.map((ticketType) => {
 		return (
 			<Card
+				key={ticketType}
 				className={cardClassName}
 				header={cardsByTicketType[ticketType].title}
 			>
 				{ticketsByType[ticketType].map((ticket, index) => (
-					<article className="tribe-editor__ticket" key={index}>
+					<article
+						className="tribe-editor__ticket"
+						key={ticketType + '-' + index}
+					>
 						<div className="tribe-editor__container-panel tribe-editor__container-panel--ticket tribe-editor__ticket__container">
 							<div className="tribe-editor__container-panel__header">
 								<>
