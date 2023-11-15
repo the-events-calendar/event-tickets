@@ -20,7 +20,7 @@ const InactiveTickets = ( { title } ) => {
 			className="tribe-editor__card-no-bottom-border"
 			header={ __( 'Tickets', 'event-tickets' ) }
 		>
-			<div className="tickets-description tickets-row-line">{ title }</div>
+			<div className="tickets-description tickets-row-line" dangerouslySetInnerHTML={{__html: title }} />
 		</Card>
 	);
 };
