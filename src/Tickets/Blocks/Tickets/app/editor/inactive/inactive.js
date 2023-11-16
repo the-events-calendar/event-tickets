@@ -26,7 +26,7 @@ const InactiveTickets = ( { title } ) => {
 };
 
 InactiveTickets.propTypes = {
-	title: PropTypes.ReactNode,
+	title: PropTypes.node,
 };
 
 export default InactiveTickets;
