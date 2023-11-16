@@ -1,16 +1,16 @@
 <?php
 /**
  * My Tickets: Ticket Information
- * 
+ *
  * Override this template in your own theme by creating a file at [your-theme]/tribe-events/tickets/tickets/my-tickets/ticket-information.php
- * 
- * @since TBD
- * 
- * @version TBD
- * 
+ *
+ * @since 5.6.7
+ *
+ * @version 5.6.7
+ *
  * @var Tribe__Tickets__Tickets $provider The ticket provider.
  * @var array                   $attendee The attendee data.
- * 
+ *
  */
 
 ?>

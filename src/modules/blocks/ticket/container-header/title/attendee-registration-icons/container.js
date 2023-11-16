@@ -40,7 +40,7 @@ const getSaleWindowLabel = ( saleStatus ) => {
 /**
  * Determine the sale status of the ticket.
  *
- * @since TBD
+ * @since 5.6.7
  * @param { Object } state The redux state
  * @param { Object } ownProps The ownProps of the component
  * @returns { string } Sale status slug.

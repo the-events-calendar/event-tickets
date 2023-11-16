@@ -1,13 +1,13 @@
 <?php
 /**
  * My Tickets: User Details
- * 
+ *
  * Override this template in your own theme by creating a file at [your-theme]/tribe-events/tickets/tickets/my-tickets/user-details.php
- * 
- * @since TBD
- * 
- * @version TBD
- * 
+ *
+ * @since 5.6.7
+ *
+ * @version 5.6.7
+ *
  * @var int    $order_id  The ID of the order.
  * @var array  $order     The order data.
  * @var array  $attendees The attendees for the current order.
@@ -32,7 +32,7 @@
 			'<a href="mailto:' . esc_url( $order['purchaser_email'] ) . '">' . esc_html( $order['purchaser_email'] ) . '</a>',
 			date_i18n( tribe_get_date_format( true ), strtotime( esc_attr( $order['purchase_time'] ) ) )
 		);
-		
+
 		/**
 		 * Inject content into the Tickets User Details block on the orders page
 		 *
@@ -40,11 +40,11 @@
 		 * @param WP_Post $post_id   Post object that the tickets are tied to.
 		 */
 		do_action( 'event_tickets_user_details_tickets', $attendees, $post_id );
-		
+
 		/**
 		 * Inject content into the Tickets User Details block on the orders page
-		 * 
-		 * @since TBD
+		 *
+		 * @since 5.6.7
 		 *
 		 * @param array   $attendees Attendee array.
 		 * @param WP_Post $post_id   Post object that the tickets are tied to.

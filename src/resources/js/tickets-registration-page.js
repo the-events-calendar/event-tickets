@@ -79,6 +79,8 @@ window.tribe.tickets.registration = {};
 		tribe_eddticket: 'edd',
 		tribe_tpp_attendees: 'tpp',
 		tribe_wooticket: 'woo',
+		tec_tc_attendee: 'tc',
+		tc: 'TEC\\Tickets\\Commerce\\Module',
 		woo: 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main',
 	};
 
@@ -642,8 +644,7 @@ window.tribe.tickets.registration = {};
 	 */
 	obj.getCurrencyFormatting = function() {
 		const currency = JSON.parse( TribeCurrency.formatting );
-		const format   = currency[ obj.commerceSelector[ obj.providerId ] ];
-		return format;
+		return currency[ obj.commerceSelector[ obj.providerId ] ];
 	};
 
 	/**

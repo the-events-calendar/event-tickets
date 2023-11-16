@@ -140,7 +140,7 @@ class Provider extends Service_Provider {
 	 * Filters the list of post types that should trigger a cache invalidation on `save_post` to add
 	 * all the ones modeling Commerce Tickets, Attendees and Orders.
 	 *
-	 * @since TBD
+	 * @since 5.6.7
 	 *
 	 * @param string[] $post_types The list of post types that should trigger a cache invalidation on `save_post`.
 	 *

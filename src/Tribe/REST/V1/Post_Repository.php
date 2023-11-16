@@ -12,7 +12,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 *
 	 * @var array
 	 */
-	protected $types_get_map = array();
+	protected $types_get_map = [];
 
 	/**
 	 * @var Tribe__REST__Messages_Interface
@@ -1043,8 +1043,8 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 *
 	 * @since 4.8
 	 *
-	 * @param int                     $attendee_id
-	 * @param Tribe__Tickets__Tickets $provider
+	 * @param int                     $attendee_id The attendee ID.
+	 * @param Tribe__Tickets__Tickets $provider    The ticket provider.
 	 *
 	 * @return int|mixed
 	 *
@@ -1055,7 +1055,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 			$attendee_id = $attendee_id->ID;
 		}
 
-		// the order is the the attendee ID itself for RSVP orders
+		// The order is the the attendee ID itself for RSVP orders.
 		if ( $provider instanceof Tribe__Tickets__RSVP ) {
 			return (int) $attendee_id;
 		}
@@ -1075,10 +1075,9 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 *
 	 * @since 4.8
 	 *
-	 *
-	 * @param                         int $attendee_id
-	 * @param                         int $order_id
-	 * @param Tribe__Tickets__Tickets     $provider
+	 * @param int                     $attendee_id The attendee ID.
+	 * @param int                     $order_id    The order ID.
+	 * @param Tribe__Tickets__Tickets $provider    The ticket provider.
 	 *
 	 * @return string
 	 */
@@ -1094,5 +1093,61 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		}
 
 		return $sku;
+	}
+
+	/**
+	 * Returns an array representation of an attendee.
+	 *
+	 * @since 5.7.0
+	 *
+	 * @param int    $attendee_id A attendee post ID.
+	 * @param string $context     Context of data.
+	 *
+	 * @return array|WP_Error Either the array representation of an attendee or an error object.
+	 */
+	public function get_qr_data( $attendee_id, $context = '' ) {
+		/** @var Tribe__Tickets__Data_API $data_api */
+		$data_api = tribe( 'tickets.data_api' );
+
+		$attendee      = get_post( $attendee_id );
+		$attendee_type = $data_api->detect_by_id( $attendee_id );
+
+		if ( empty( $attendee ) || empty( $attendee_type['class'] ) ) {
+			return new WP_Error( 'attendee-not-found', $this->messages->get_message( 'attendee-not-found' ) );
+		}
+
+		$service_provider = $data_api->get_ticket_provider( $attendee_id );
+		if ( empty( $service_provider->checkin_key ) ) {
+			return new WP_Error( 'attendee-check-in-not-found', $this->messages->get_message( 'attendee-check-in-not-found' ) );
+		}
+
+		$meta = array_map( 'reset', get_post_custom( $attendee_id ) );
+		$data = [
+			'id'         => $attendee_id,
+			'checked_in' => isset( $meta[ $service_provider->checkin_key ] ) ? $meta[ $service_provider->checkin_key ] : '',
+		];
+
+		/**
+		 * Filters the data that will be returned for a single attendee.
+		 *
+		 * @since 4.7.5
+		 * @deprecated 5.7.0 Use `tribe_tickets_rest_qr_data` instead.
+		 *
+		 * @param array   $data     The data that will be returned in the response.
+		 * @param WP_Post $attendee The requested attendee.
+		 */
+		$data = apply_filters_deprecated( 'tribe_tickets_plus_rest_qr_data', [ $data, $attendee ], '5.7.0', 'tribe_tickets_rest_qr_data' );
+
+		/**
+		 * Filters the data that will be returned for a single attendee.
+		 *
+		 * @since 5.7.0
+		 *
+		 * @param array   $data     The data that will be returned in the response.
+		 * @param WP_Post $attendee The requested attendee.
+		 */
+		$data = apply_filters( 'tribe_tickets_rest_qr_data', $data, $attendee );
+
+		return $data;
 	}
 }

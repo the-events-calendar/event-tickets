@@ -3168,7 +3168,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * Filters the list of post types that should trigger a cache invalidation on `save_post` to add
 	 * all the ones modeling PayPal Tickets, Attendees and Orders.
 	 *
-	 * @since TBD
+	 * @since 5.6.7
 	 *
 	 * @param string[] $post_types The list of post types that should trigger a cache invalidation on `save_post`.
 	 *

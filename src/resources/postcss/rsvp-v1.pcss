@@ -78,16 +78,21 @@ div.tec__tickets-my-tickets-rsvp-attendee-list-wrapper {
 	padding: 0;
 
 	> .tribe-item {
+		align-items: start;
 		background-color: var(--tec-color-background);
 		border: 1px solid var(--tec-color-border-default);
 		border-bottom: 0;
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--tec-spacer-4);
+		justify-content: space-between;
 		margin: 0;
 		min-height: 105px;
 		padding: var(--tec-spacer-5);
 
 		&:last-child {
 			border-bottom: 1px solid var(--tec-color-border-default);
-			margin-bottom: 20px;
+			margin-bottom: var(--tec-spacer-4);
 		}
 
 		&.tribe-disabled {
@@ -98,11 +103,10 @@ div.tec__tickets-my-tickets-rsvp-attendee-list-wrapper {
 			&:last-child {
 				border-bottom-color: #ddd;
 			}
-		}
 
-		.tribe-answer {
-			float: right;
-			display: inline-block;
+			label {
+				color: #717171;
+			}
 		}
 
 		table {
@@ -112,6 +116,53 @@ div.tec__tickets-my-tickets-rsvp-attendee-list-wrapper {
 
 		td {
 			border: 0;
+		}
+
+		& > div {
+			flex: 1 0 100%;
+		}
+
+		@media(--viewport-medium) {
+			align-items: center;
+			flex-direction: row;
+
+			& > div {
+				flex: 0 1 auto;
+				order: 2;
+			}
+
+			& > div.list-attendee {
+				flex: 1 0 auto;
+				order: 1;
+			}
+
+			& > div.tribe-answer {
+				flex: 0 1 100%;
+				order: 3;
+			}
+
+			& > div:last-child {
+				flex: 0 1 auto;
+				order: 2;
+			}
+		}
+
+		@media(--viewport-full) {
+
+			& > div {
+				flex: 0 1 auto;
+				order: 3;
+			}
+
+			& > div.list-attendee {
+				flex: 0 1 auto;
+				order: 1;
+			}
+
+			& > div.tribe-answer {
+				flex: 0 1 auto;
+				order: 2;
+			}
 		}
 	}
 }

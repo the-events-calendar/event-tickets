@@ -11,55 +11,55 @@ use Tribe__Tickets__Tickets;
 /**
  * Class Order_Summary.
  *
- * @since TBD
+ * @since 5.6.7
  *
  * @package TEC\Tickets\Commerce\Reports\Data
  */
 class Order_Summary {
 	/**
-	 * @since TBD
+	 * @since 5.6.7
 	 *
 	 * @var int The post ID.
 	 */
 	protected int $post_id;
 
 	/**
-	 * @since TBD
+	 * @since 5.6.7
 	 *
 	 * @var Ticket_Object[] The tickets.
 	 */
 	protected array $tickets = [];
 
 	/**
-	 * @since TBD
+	 * @since 5.6.7
 	 *
 	 * @var array<string,array<string,mixed>> The tickets by type.
 	 */
 	protected array $tickets_by_type = [];
 
 	/**
-	 * @since TBD
+	 * @since 5.6.7
 	 *
 	 * @var array<string,array{label: string, qty_sold: int, total_sales_amount: float|string, total_sales_price: string}> The event sales by status.
 	 */
 	protected array $event_sales_by_status = [];
 
 	/**
-	 * @since TBD
+	 * @since 5.6.7
 	 *
 	 * @var array{qty: int, amount: float|string, price: string} The total sales.
 	 */
 	protected array $total_sales = [];
 
 	/**
-	 * @since TBD
+	 * @since 5.6.7
 	 *
 	 * @var array{qty: int, amount: float|string, price: string} The total ordered.
 	 */
 	protected array $total_ordered = [];
 
 	/**
-	 * @since TBD
+	 * @since 5.6.7
 	 *
 	 * @var array<string, array> All event sales data.
 	 */
@@ -68,7 +68,7 @@ class Order_Summary {
 	/**
 	 * Order_Summary constructor.
 	 *
-	 * @since TBD
+	 * @since 5.6.7
 	 *
 	 * @param int $post_id The post ID.
 	 */
@@ -81,7 +81,7 @@ class Order_Summary {
 	/**
 	 * Format the price.
 	 *
-	 * @since TBD
+	 * @since 5.6.7
 	 *
 	 * @param string $price The price.
 	 *
@@ -94,7 +94,7 @@ class Order_Summary {
 	/**
 	 * Initialize the variables.
 	 *
-	 * @since TBD
+	 * @since 5.6.7
 	 */
 	protected function init_vars(): void {
 		$this->total_sales   = [
@@ -112,7 +112,7 @@ class Order_Summary {
 	/**
 	 * Add the ticket available data.
 	 *
-	 * @since TBD
+	 * @since 5.6.7
 	 *
 	 * @param array<string,int> $quantities The quantities.
 	 * @param Ticket_Object     $ticket     The ticket object.
@@ -128,7 +128,7 @@ class Order_Summary {
 	/**
 	 * Build the data.
 	 *
-	 * @since TBD
+	 * @since 5.6.7
 	 */
 	protected function build_data(): void {
 		foreach ( $this->get_tickets() as $ticket ) {
@@ -155,7 +155,7 @@ class Order_Summary {
 	/**
 	 * Process the event sales data.
 	 *
-	 * @since TBD
+	 * @since 5.6.7
 	 *
 	 * @param array<string,int> $quantity_by_status The quantity by status.
 	 * @param Ticket_Object $ticket The ticket object.
@@ -195,7 +195,7 @@ class Order_Summary {
 	/**
 	 * Build the event sales data.
 	 *
-	 * @since TBD
+	 * @since 5.6.7
 	 */
 	protected function build_event_sales_data(): void {
 		$this->event_sales_data = [
@@ -208,7 +208,7 @@ class Order_Summary {
 	/**
 	 * Get the tickets.
 	 *
-	 * @since TBD
+	 * @since 5.6.7
 	 *
 	 * @return Ticket_Object[] A list of tickets associated with the post.
 	 */
@@ -219,7 +219,7 @@ class Order_Summary {
 		/**
 		 * Filters the tickets in the order summary report.
 		 *
-		 * @since TBD
+		 * @since 5.6.7
 		 *
 		 * @param Ticket_Object[] $tickets A list of tickets associated with the post.
 		 * @param Order_Summary $this The order summary object.
@@ -230,7 +230,7 @@ class Order_Summary {
 	/**
 	 * Get the tickets by type.
 	 *
-	 * @since TBD
+	 * @since 5.6.7
 	 *
 	 * @return array<string, array{ ticket: Ticket_Object, label: string, type: string, qty_data: array, qty_by_status: string }> A map from ticket types to the Tickets of that type.
 	 */
@@ -238,7 +238,7 @@ class Order_Summary {
 		/**
 		 * Filters the tickets by type in the order summary report.
 		 *
-		 * @since TBD
+		 * @since 5.6.7
 		 *
 		 * @param array<string, array{ ticket: Ticket_Object, label: string, type: string, qty_data: array, qty_by_status: string }> $tickets_by_type The tickets by type.
 		 * @param Order_Summary $this The order summary object.
@@ -249,7 +249,7 @@ class Order_Summary {
 	/**
 	 * Get the ticket type label.
 	 *
-	 * @since TBD
+	 * @since 5.6.7
 	 *
 	 * @param string $type The ticket type.
 	 *
@@ -263,7 +263,7 @@ class Order_Summary {
 		/**
 		 * Filters the label for a ticket type in the order summary report.
 		 *
-		 * @since TBD
+		 * @since 5.6.7
 		 *
 		 * @param string $type The ticket type.
 		 * @param Order_Summary $this The post ID.
@@ -274,7 +274,7 @@ class Order_Summary {
 	/**
 	 * Get the event sales data.
 	 *
-	 * @since TBD
+	 * @since 5.6.7
 	 *
 	 * @return array<string, array> The event sales data.
 	 */
@@ -284,7 +284,7 @@ class Order_Summary {
 		/**
 		 * Filters the event sales data in the order summary report.
 		 *
-		 * @since TBD
+		 * @since 5.6.7
 		 *
 		 * @param array<string, array> $event_sales_data The event sales data.
 		 * @param Order_Summary $this The order summary object.

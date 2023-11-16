@@ -47,6 +47,7 @@ class Success_Shortcode extends Shortcode_Abstract {
 			'order'          => $order,
 			'is_tec_active'  => defined( 'TRIBE_EVENTS_FILE' ) && class_exists( 'Tribe__Events__Main' ),
 			'payment_method' => tribe( Order::class )->get_gateway_label( $order ),
+			'attendees'      => tribe( Module::class )->get_attendees_by_order_id( $order->ID ),
 		];
 
 		$this->template_vars = $args;

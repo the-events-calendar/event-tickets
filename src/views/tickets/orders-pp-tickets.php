@@ -74,8 +74,8 @@ $attendee_groups = $view->get_post_attendees_by_purchaser( $post_id, $user_id );
 				<?php foreach ( $attendee_group as $i => $attendee ) : ?>
 					<?php $key = $attendee['order_id']; ?>
 					<li class="tribe-item<?php echo $view->is_tpp_ticket_restricted( $post_id, $attendee['product_id'] ) ? 'tribe-disabled' : ''; ?>" <?php echo $view->get_restriction_attr( $post_id, $attendee['product_id'] ); ?> id="attendee-<?php echo $attendee['order_id']; ?>">
-						<?php 
-							$this->template( 'tickets/my-tickets/attendee-label', [ 
+						<?php
+							$this->template( 'tickets/my-tickets/attendee-label', [
 								// Translators: %d is the attendee number.
 								'attendee_label' => sprintf( esc_html__( 'Attendee %d', 'event-tickets' ), $i + 1 )
 							] );
@@ -108,8 +108,8 @@ $attendee_groups = $view->get_post_attendees_by_purchaser( $post_id, $user_id );
 			<?php
 			/**
 			 * Inject content after the Order Tickets List on the My Tickets page
-			 * 
-			 * @since TBD
+			 *
+			 * @since 5.6.7
 			 *
 			 * @param array   $attendees Attendee array.
 			 * @param WP_Post $post_id   Post object that the tickets are tied to.

@@ -7,7 +7,7 @@ use TEC\Tickets\phpqrcode\QRcode;
 /**
  * A Facade for the QR code generator.
  *
- * @since   TBD
+ * @since   5.6.7
  *
  * @package TEC\Tickets\QR
  */
@@ -15,7 +15,7 @@ class QR {
 	/**
 	 * The level of the QR code.
 	 *
-	 * @since TBD
+	 * @since 5.6.7
 	 *
 	 * @var int What type of error correction will be used on the QR code.
 	 */
@@ -24,7 +24,7 @@ class QR {
 	/**
 	 * The size of the QR code.
 	 *
-	 * @since TBD
+	 * @since 5.6.7
 	 *
 	 * @var int Stores the size of the QR code.
 	 */
@@ -33,7 +33,7 @@ class QR {
 	/**
 	 * The margin of the QR code.
 	 *
-	 * @since TBD
+	 * @since 5.6.7
 	 *
 	 * @var int Stores the margin used to generate the QR code.
 	 */
@@ -42,7 +42,7 @@ class QR {
 	/**
 	 * Change the level of Error Correction will be used on the QR code.
 	 *
-	 * @since TBD
+	 * @since 5.6.7
 	 *
 	 * @param int $value What value will be set on level.
 	 *
@@ -56,7 +56,7 @@ class QR {
 	/**
 	 * Change the size of the QR code image.
 	 *
-	 * @since TBD
+	 * @since 5.6.7
 	 *
 	 * @param int $value What value will be set on size.
 	 *
@@ -70,7 +70,7 @@ class QR {
 	/**
 	 * Change the margin of the QR code image.
 	 *
-	 * @since TBD
+	 * @since 5.6.7
 	 *
 	 * @param int $value What value will be set on margin.
 	 *
@@ -84,7 +84,7 @@ class QR {
 	/**
 	 * Get the EC level of the QR code.
 	 *
-	 * @since TBD
+	 * @since 5.6.7
 	 *
 	 * @return int Type of QR code used.
 	 */
@@ -95,7 +95,7 @@ class QR {
 	/**
 	 * Get the size of the QR code.
 	 *
-	 * @since TBD
+	 * @since 5.6.7
 	 *
 	 * @return int Size of the QR code.
 	 */
@@ -106,7 +106,7 @@ class QR {
 	/**
 	 * Get the margin of the QR code.
 	 *
-	 * @since TBD
+	 * @since 5.6.7
 	 *
 	 * @return int Margin used to be included in the QR code, helps with readability.
 	 */
@@ -117,7 +117,7 @@ class QR {
 	/**
 	 * Get the QR code as a string.
 	 *
-	 * @since TBD
+	 * @since 5.6.7
 	 *
 	 * @param string $data String used to generate the QR code.
 	 *
@@ -134,7 +134,7 @@ class QR {
 	/**
 	 * Get the QR code as a PNG base64 image, helpful to use when uploading the file would create duplicates.
 	 *
-	 * @since TBD
+	 * @since 5.6.7
 	 *
 	 * @param string $data String used to generate the QR code.
 	 *
@@ -149,7 +149,7 @@ class QR {
 	/**
 	 * Get the QR code as a file uploaded to WordPress.
 	 *
-	 * @since TBD
+	 * @since 5.6.7
 	 *
 	 * @param string $data String used to generate the QR code.
 	 * @param string $name File name without the extension.
@@ -163,15 +163,15 @@ class QR {
 
 		// Filters the upload directory but still use `wp_upload_bits` to create the file.
 		$upload_bits_filter = static function( $arr ) use ( $folder ) {
-			$arr['url'] = str_replace( $arr['subdir'], $folder, $arr['url'] );
-			$arr['path'] = str_replace( $arr['subdir'], $folder, $arr['path'] );
+			$arr['url']    = str_replace( $arr['subdir'], $folder, $arr['url'] );
+			$arr['path']   = str_replace( $arr['subdir'], $folder, $arr['path'] );
 			$arr['subdir'] = $folder;
 			return $arr;
 		};
 
 		add_filter( 'upload_dir', $upload_bits_filter );
 
-		$filename = sanitize_file_name( $name ) . '.png';
+		$filename    = sanitize_file_name( $name ) . '.png';
 		$file_upload = wp_upload_bits( $filename, null, $png_as_string );
 
 		remove_filter( 'upload_dir', $upload_bits_filter );

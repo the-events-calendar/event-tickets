@@ -28,6 +28,7 @@
 		padding: 0;
 
 		> .tribe-item {
+			container-type: inline-size;
 			margin: 0;
 			padding: 0;
 		}
@@ -42,10 +43,16 @@
 			padding: 0;
 
 			> .tribe-item {
+				align-items: center;
 				background-color: var(--tec-color-background);
 				border: 1px solid var(--tec-color-border-default);
 				border-bottom: 0;
+				display: flex;
+				flex-wrap: wrap;
+				gap: var(--tec-spacer-4);
+				justify-content: space-between;
 				margin: 0;
+				min-height: 105px;
 				padding: var(--tec-spacer-5);
 
 				&:last-child {
@@ -63,18 +70,10 @@
 				}
 
 				.tribe-ticket-information {
-					display: inline-block;
-					float: right;
 					font-family: var(--tec-font-family-sans-serif);
 					font-size: var(--tec-font-size-3);
 					font-weight: var(--tec-font-weight-regular);
 					line-height: var(--tec-line-height-0);
-					margin-bottom: var(--tec-spacer-5);
-				}
-
-				.tribe-answer {
-					display: block;
-					float: right;
 				}
 
 				table {
@@ -84,6 +83,55 @@
 
 				td {
 					border: 0;
+				}
+
+				& > div {
+					flex: 1 0 100%;
+				}
+
+				@media(--viewport-medium) {
+					align-items: center;
+					flex-direction: row;
+
+					& > div {
+						flex: 0 1 auto;
+						order: 2;
+						white-space: nowrap;
+					}
+
+					& > div.list-attendee {
+						flex: 1 0 auto;
+						order: 1;
+					}
+
+					& > div.tribe-ticket-information {
+						flex: 0 1 100%;
+						order: 3;
+						white-space: wrap;
+					}
+
+					& > div:last-child {
+						flex: 0 1 auto;
+						order: 2;
+					}
+				}
+
+				@media(--viewport-full) {
+
+					& > div {
+						flex: 0 1 auto;
+						order: 3;
+					}
+
+					& > div.list-attendee {
+						flex: 0 1 auto;
+						order: 1;
+					}
+
+					& > div.tribe-ticket-information {
+						flex: 0 1 auto;
+						order: 2;
+					}
 				}
 			}
 		}
