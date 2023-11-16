@@ -14,10 +14,10 @@ import { _x } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { LabeledItem } from '@moderntribe/common/elements';
-import { Ticket as TicketIcon } from '@moderntribe/tickets/icons';
+import { Ticket as TicketIcon, ECP as ECPIcon } from '@moderntribe/tickets/icons';
 import './styles.pcss';
 
-const Type = ({ postType, typeDescription, typeIconUrl, typeName }) => {
+const Type = ({ hasEventsPro, postType, typeDescription, typeIconUrl, typeName }) => {
 	const defaultTicketType = {
 		typeName: _x(
 			'Single Ticket',
@@ -33,6 +33,12 @@ const Type = ({ postType, typeDescription, typeIconUrl, typeName }) => {
 			),
 			postType
 		),
+		typeUpsellDescription:
+			_x(
+				'For more ticket types, <a href="https://evnt.is/tt-ecp" target="_blank" rel="noopener noreferrer">upgrade</a> to Events Calendar Pro',
+				'Default ticket type upsell description.',
+				'event-tickets'
+			),
 		typeIcon: <TicketIcon />,
 	};
 
@@ -48,6 +54,7 @@ const Type = ({ postType, typeDescription, typeIconUrl, typeName }) => {
 
 	// This is sanitized in the PHP section, furthermore this description will not go to the backend.
 	const htmlTypeDescription = { __html: ticketType.typeDescription };
+	const htmlTypeUpsellDescription = { __html: defaultTicketType.typeUpsellDescription };
 
 	return (
 		<div
@@ -63,18 +70,30 @@ const Type = ({ postType, typeDescription, typeIconUrl, typeName }) => {
 				label={_x('Type', 'Ticket type label', 'event-tickets')}
 			/>
 
-			<div className="tribe-editor__ticket__type-description">
-				<div>
+			<div className="tribe-editor__ticket__type__description">
+				<div className="tribe-editor__ticket__type__type-title">
 					{ticketType.typeIcon}
 					<span>{ticketType.typeName}</span>
 				</div>
-				<div dangerouslySetInnerHTML={htmlTypeDescription}></div>
+				<div className="tribe-editor__ticket__type__type-description" dangerouslySetInnerHTML={htmlTypeDescription} />
+				{
+					! hasEventsPro
+						? (
+							<div className="tribe-editor__ticket__type__type-upsell-description">
+								<ECPIcon />
+								<span dangerouslySetInnerHTML={htmlTypeUpsellDescription} />
+							</div>
+
+						)
+						: null
+				}
 			</div>
 		</div>
 	);
 };
 
 Type.propTypes = {
+	hasEventsPro: PropTypes.bool,
 	postType: PropTypes.string,
 	typeDescription: PropTypes.string,
 	typeIconUrl: PropTypes.string,

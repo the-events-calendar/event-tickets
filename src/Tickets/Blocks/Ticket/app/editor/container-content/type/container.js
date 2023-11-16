@@ -15,6 +15,7 @@ import { select } from '@wordpress/data';
 import Template from './template';
 import { withStore } from '@moderntribe/common/hoc';
 import { selectors } from '@moderntribe/tickets/data/blocks/ticket';
+import { plugins } from '@moderntribe/common/data';
 import { applyFilters } from '@wordpress/hooks';
 
 const mapStateToProps = (state, ownProps) => {
@@ -39,6 +40,7 @@ const mapStateToProps = (state, ownProps) => {
 	);
 
 	return {
+		hasEventsPro: plugins.selectors.hasPlugin( state )( plugins.constants.EVENTS_PRO_PLUGIN ),
 		postType,
 		typeDescription,
 		typeIconUrl: ticketDetails.typeIconUrl,
