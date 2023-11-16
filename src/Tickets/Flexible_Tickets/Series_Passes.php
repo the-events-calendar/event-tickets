@@ -16,6 +16,7 @@ use TEC\Events_Pro\Custom_Tables\V1\Models\Provisional_Post;
 use TEC\Events_Pro\Custom_Tables\V1\Models\Series_Relationship;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 use TEC\Events_Pro\Custom_Tables\V1\Templates\Series_Filters;
+use TEC\Tickets\Flexible_Tickets\Series_Passes\Edit;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Labels;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Meta;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Queries;
@@ -85,6 +86,14 @@ class Series_Passes extends Controller {
 	 * @var Queries
 	 */
 	private Queries $queries;
+	/**
+	 * A reference to the Series Passes' edit and editor handler.
+	 *
+	 * @since TBD
+	 *
+	 * @var Edit
+	 */
+	private Edit $edit;
 
 	/**
 	 * Series_Passes constructor.
@@ -96,6 +105,7 @@ class Series_Passes extends Controller {
 	 * @param Meta                    $meta                    The Series Passes' meta handler.
 	 * @param Metabox                 $metabox                 The Series Passes' metabox handler.
 	 * @param Ticket_Provider_Handler $ticket_provider_handler The Series Passes' ticket provider handler.
+	 * @param Edit                    $edit                    The Series Passes' edit and editor handler.
 	 */
 	public function __construct(
 		Container $container,
@@ -103,7 +113,8 @@ class Series_Passes extends Controller {
 		Meta $meta,
 		Metabox $metabox,
 		Ticket_Provider_Handler $ticket_provider_handler,
-		Queries $queries
+		Queries $queries,
+		Edit $edit
 	) {
 		parent::__construct( $container );
 		$this->labels                  = $labels;
@@ -111,6 +122,7 @@ class Series_Passes extends Controller {
 		$this->metabox                 = $metabox;
 		$this->ticket_provider_handler = $ticket_provider_handler;
 		$this->queries                 = $queries;
+		$this->edit = $edit;
 	}
 
 	/**
@@ -220,6 +232,7 @@ class Series_Passes extends Controller {
 			$this,
 			'filter_editor_configuration_data'
 		] );
+		add_filter( 'tec_tickets_is_ticket_editable_from_post', [ $this, 'is_ticket_editable_from_post' ], 10, 3 );
 	}
 
 	/**
@@ -296,6 +309,7 @@ class Series_Passes extends Controller {
 			$this,
 			'filter_editor_configuration_data'
 		] );
+		remove_filter( 'tec_tickets_is_ticket_editable_from_post', [ $this, 'is_ticket_editable_from_post' ] );
 	}
 
 	/**
@@ -922,22 +936,7 @@ class Series_Passes extends Controller {
 	 * @return array<string,mixed> The updated JavaScript configuration.
 	 */
 	public function filter_tickets_attendees_report_js_config( array $config_data ): array {
-		if ( ! isset( $config_data['confirmation'] ) ) {
-			$config_data['confirmation'] = [];
-		}
-
-		$config_data['confirmation'][ self::TICKET_TYPE ] = [
-			'singular' => esc_html__(
-				'Please confirm you would like to delete this attendee from the Series and all events.',
-				'event-tickets'
-			),
-			'plural'   => esc_html__( "Please confirm you would like to delete these attendees.\n" .
-			                          "Records for Series Pass attendees will be deleted from the Series and all events.",
-				'event-tickets'
-			),
-		];
-
-		return $config_data;
+		return $this->edit->filter_tickets_attendees_report_js_config( $config_data );
 	}
 
 	/**
@@ -974,23 +973,11 @@ class Series_Passes extends Controller {
 	 * @return array<string,mixed> The updated editor data.
 	 */
 	public function filter_editor_data( array $editor_data ): array {
-		$post                                                     = get_post();
-		$event_id                                                 = $post instanceof WP_Post ? $post->ID : null;
-		$provisional_post                                         = tribe( Provisional_Post::class );
-		$event_id                                                 = $provisional_post->is_provisional_post_id( $event_id ) ?
-			$provisional_post->normalize_provisional_post_id( $event_id )
-			: $event_id;
-		$relationship                                             = $event_id ? Series_Relationship::find( $event_id, 'event_post_id' ) : null;
-		$series_id                                                = $relationship ? $relationship->series_post_id : null;
-		$editor_data['defaultTicketTypeEventInSeriesDescription'] = $series_id ?
-			$this->labels->get_default_ticket_type_event_in_series_description( $series_id, $event_id )
-			: '';
-
-		return $editor_data;
+		return $this->edit->filter_editor_data( $editor_data );
 	}
 
 	/**
-	 * Filter the editor configuration data to add the information required to correctly represent
+	 * Filters the editor configuration data to add the information required to correctly represent
 	 * Series Passes in the editor.
 	 *
 	 * @since TBD
@@ -1001,13 +988,21 @@ class Series_Passes extends Controller {
 	 *                             Series Passes.
 	 */
 	public function filter_editor_configuration_data( array $data ): array {
-		if ( ! isset( $data['ticketTypes'] ) ) {
-			$data['ticketTypes'] = [];
-		}
-		$data['ticketTypes'][ self::TICKET_TYPE ] = [
-			'title' => esc_html( tec_tickets_get_series_pass_plural_uppercase( 'editor-configuration' ) ),
-		];
+		return $this->edit->filter_configuration_data( $data );
+	}
 
-		return $data;
+	/**
+	 * Prevent Series Passes from being edited outside the context of Series.
+	 *
+	 * @since TBD
+	 *
+	 * @param bool $is_ticket_editable Whether the ticket is editable in the context of the post.
+	 * @param int  $ticket_id          The ticket ID.
+	 * @param int  $post_id            The post ID.
+	 *
+	 * @return bool Whether the ticket is editable in the context of the post.
+	 */
+	public function is_ticket_editable_from_post( bool $is_ticket_editable, int $ticket_id, int $post_id ): bool {
+		return $this->edit->is_ticket_editable_from_post( $is_ticket_editable, $ticket_id, $post_id );
 	}
 }

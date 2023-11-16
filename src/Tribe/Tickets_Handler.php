@@ -590,6 +590,21 @@ class Tribe__Tickets__Tickets_Handler {
 		$tickets = $provider->get_tickets_ids( $object_id );
 
 		foreach ( $tickets as $ticket ) {
+			/**
+			 * Filters whether a ticket should be edited in the context of a post.
+			 *
+			 * @since TBD
+			 *
+			 * @param bool $editable  Whether the ticket is editable in the context of this post or not.
+			 * @param int  $ticket_id The Ticket ID.
+			 * @param int  $object_id The Post ID.
+			 */
+			$editable = apply_filters( 'tec_tickets_is_ticket_editable_from_post', true, (int) $ticket, (int) $object_id );
+
+			if ( ! $editable ) {
+				continue;
+			}
+
 			$mode = get_post_meta( $ticket, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
 
 			// Skip any tickets that are not Shared.

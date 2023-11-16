@@ -1306,4 +1306,90 @@ class Series_PassesTest extends Controller_Test_Case {
 
 		$this->assertMatchesJsonSnapshot( json_encode( $editor_configuration_data, JSON_PRETTY_PRINT ) );
 	}
+
+	/**
+	 * It should prevent editing a Series Pass outside of a Series post
+	 *
+	 * @test
+	 */
+	public function should_prevent_editing_a_series_pass_outside_of_a_series_post(): void {
+		$post_id                 = static::factory()->post->create( [] );
+		$series_post_id          = static::factory()->post->create( [
+			'post_type' => Series_Post_Type::POSTTYPE
+		] );
+		$event_post_id           = tribe_events()->set_args( [
+			'title'      => 'Test Event',
+			'status'     => 'publish',
+			'start_date' => '2022-01-01 09:00:00',
+			'end_date'   => '2022-01-01 10:00:00',
+		] )->create()->ID;
+		$event_in_series_post_id = tribe_events()->set_args( [
+			'title'      => 'Test Event',
+			'status'     => 'publish',
+			'start_date' => '2022-01-01 09:00:00',
+			'end_date'   => '2022-01-01 10:00:00',
+			'series'     => $series_post_id
+		] )->create()->ID;
+
+		/** @var Series_Passes $controller */
+		$controller = $this->make_controller();
+
+		// Sanity checks.
+		$this->assertTrue(
+			$controller->is_ticket_editable_from_post(
+				true,
+				$this->create_tc_ticket( $post_id ),
+				$post_id
+			)
+		);
+		$this->assertTrue(
+			$controller->is_ticket_editable_from_post(
+				true,
+				$this->create_tc_ticket( $event_post_id ),
+				$event_post_id
+			)
+		);
+		$this->assertTrue(
+			$controller->is_ticket_editable_from_post(
+				true,
+				$this->create_tc_ticket( $event_in_series_post_id ),
+				$event_in_series_post_id
+			)
+		);
+
+		$series_pass_id = $this->create_tc_series_pass( $series_post_id )->ID;
+
+		$this->assertTrue(
+			$controller->is_ticket_editable_from_post(
+				true,
+				$series_pass_id,
+				$series_post_id
+			),
+			'A series pass is editable from the series post'
+		);
+		$this->assertFalse(
+			$controller->is_ticket_editable_from_post(
+				true,
+				$series_pass_id,
+				$post_id
+			),
+			'A series pass is not editable from a post'
+		);
+		$this->assertFalse(
+			$controller->is_ticket_editable_from_post(
+				true,
+				$series_pass_id,
+				$event_post_id
+			),
+			'A series pass is not editable from an event post'
+		);
+		$this->assertFalse(
+			$controller->is_ticket_editable_from_post(
+				true,
+				$series_pass_id,
+				$event_in_series_post_id
+			),
+			'A series pass is not editable from an event post part of that series'
+		);
+	}
 }
