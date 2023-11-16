@@ -37,8 +37,8 @@ class Editor extends Controller {
 			[ $this, 'include_ticket_provider_in_series_dropdown_data' ]
 		);
 
-		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin_scripts' ] );
-		add_action( 'enqueue_block_editor_assets', [ $this, 'enqueue_admin_scripts' ] );
+		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin_scripts' ], 5 );
+		add_action( 'enqueue_block_editor_assets', [ $this, 'enqueue_admin_scripts' ], 5 );
 		add_filter( 'tec_tickets_ticket_panel_data', [ $this, 'filter_ticket_panel_data' ], 10, 2 );
 		add_filter( 'tribe_editor_config', [ $this, 'filter_tickets_editor_config' ] );
 		add_filter( 'tec_events_pro_custom_tables_v1_add_to_series_available_events', [
@@ -63,8 +63,8 @@ class Editor extends Controller {
 			'tec_events_pro_custom_tables_v1_series_relationships_dropdown_data',
 			[ $this, 'include_ticket_provider_in_series_dropdown_data' ]
 		);
-		remove_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin_scripts' ] );
-		remove_action( 'enqueue_block_editor_assets', [ $this, 'enqueue_admin_scripts' ] );
+		remove_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin_scripts' ], 5 );
+		remove_action( 'enqueue_block_editor_assets', [ $this, 'enqueue_admin_scripts' ], 5 );
 		remove_filter( 'tec_tickets_ticket_panel_data', [ $this, 'filter_ticket_panel_data' ] );
 		remove_filter( 'tribe_editor_config', [ $this, 'filter_tickets_editor_config' ] );
 		remove_filter( 'tec_events_pro_custom_tables_v1_add_to_series_available_events', [
@@ -155,8 +155,6 @@ class Editor extends Controller {
 				[ 'jquery' ],
 				null,
 				[
-					'action' => 'enqueue_block_editor_assets',
-					'priority' => 5,
 					'groups'   => [
 						'flexible-tickets',
 					],
