@@ -20,13 +20,13 @@ const InactiveTickets = ( { title } ) => {
 			className="tribe-editor__card-no-bottom-border"
 			header={ __( 'Tickets', 'event-tickets' ) }
 		>
-			<div className="tickets-description tickets-row-line" dangerouslySetInnerHTML={{__html: title }} />
+			<div className="tickets-description tickets-row-line">{ title }</div>
 		</Card>
 	);
 };
 
 InactiveTickets.propTypes = {
-	title: PropTypes.string,
+	title: PropTypes.ReactNode,
 };
 
 export default InactiveTickets;

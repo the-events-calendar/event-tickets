@@ -53,16 +53,18 @@ const TicketsContainer = ({
 			'event-tickets'
 		);
 	} else if (!hasCreatedTickets) {
-		if (! hasRecurrenceRules) {
-			// translators: %s is the post type name.
-			messages.title = sprintf(
-				_x( 'Create single tickets for this %s. <a class="helper-link" href="https://evnt.is/manage-tickets" target="_blank" rel="noopener noreferrer">Learn more about ticket management</a>',
-					'event-tickets'
-				),
-				postType
+		if ( ! hasRecurrenceRules ) {
+			messages.title = (
+				<div>
+					{
+						// translators: %s is the post type name.
+						sprintf( _x( 'Create single tickets for this %s. ', 'event-tickets' ), postType )
+					}
+					<a class="helper-link" href="https://evnt.is/manage-tickets" target="_blank" rel="noopener noreferrer">{ __( 'Learn more about ticket management', 'event-tickets' ) }</a>
+				</div>
 			);
 		} else {
-			messages.title = __('Add a ticket to get started.', 'event-tickets');
+			messages.title = __( 'Add a ticket to get started.', 'event-tickets' );
 		}
 
 		messages.description = __(

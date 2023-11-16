@@ -74,7 +74,7 @@ const mapStateToProps = (state, ownProps) => ({
 	showUneditableTickets: getShowUneditableTickets(state, ownProps),
 	uneditableTickets: getUneditableTickets(ownProps),
 	hasRecurrenceRules: hasRecurrenceRules( state ),
-	postType: select('core/editor').getCurrentPostType(),
+	postType: select('core/editor').getPostTypeLabel()?.toLowerCase(),
 });
 
 export default compose(withStore(), connect(mapStateToProps))(Template);
