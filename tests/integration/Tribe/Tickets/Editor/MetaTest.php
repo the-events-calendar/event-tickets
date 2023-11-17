@@ -18,6 +18,10 @@ class MetaTest extends \Codeception\TestCase\WPTestCase {
 		$ticketable   = tribe_get_option( 'ticket-enabled-post-types', [] );
 		$ticketable[] = 'post';
 		tribe_update_option( 'ticket-enabled-post-types', array_values( array_unique( $ticketable ) ) );
+		add_filter(
+			'tribe_tickets_post_types',
+			static fn( array $post_types ): array => array_values( array_unique( array_merge( $post_types, [ 'post' ] ) ) )
+		);
 	}
 
 	/**
