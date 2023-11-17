@@ -9,7 +9,7 @@ import classNames from 'classnames';
  * Wordpress dependencies
  */
 const { InnerBlocks } = wp.blockEditor;
-import { __ } from '@wordpress/i18n';
+import { __, _x } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -28,7 +28,9 @@ const TicketsContainer = ({
 	canCreateTickets,
 	hasCreatedTickets,
 	hasOverlay,
+	hasRecurrenceRules,
 	isSettingsOpen,
+	postType,
 	showAvailability,
 	showInactiveBlock,
 	hasATicketSelected,
@@ -51,7 +53,20 @@ const TicketsContainer = ({
 			'event-tickets'
 		);
 	} else if (!hasCreatedTickets) {
-		messages.title = __('Add a ticket to get started.', 'event-tickets');
+		if ( ! hasRecurrenceRules ) {
+			messages.title = (
+				<div>
+					{
+						// translators: %s is the post type name.
+						sprintf( _x( 'Create single tickets for this %s. ', 'event-tickets' ), postType )
+					}
+					<a class="helper-link" href="https://evnt.is/manage-tickets" target="_blank" rel="noopener noreferrer">{ __( 'Learn more about ticket management', 'event-tickets' ) }</a>
+				</div>
+			);
+		} else {
+			messages.title = __( 'Add a ticket to get started.', 'event-tickets' );
+		}
+
 		messages.description = __(
 			'Edit this block to create your first ticket.',
 			'event-tickets'
@@ -114,6 +129,7 @@ TicketsContainer.propTypes = {
 	hasCreatedTickets: PropTypes.bool,
 	hasOverlay: PropTypes.bool,
 	isSettingsOpen: PropTypes.bool,
+	postType: PropTypes.string,
 	showAvailability: PropTypes.bool,
 	showInactiveBlock: PropTypes.bool,
 	showUneditableTickets: PropTypes.bool,

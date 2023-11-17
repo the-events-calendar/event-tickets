@@ -5,6 +5,11 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 
 /**
+ * WordPress dependencies
+ */
+import { select } from '@wordpress/data';
+
+/**
  * Internal dependencies
  */
 import Template from './template';
@@ -12,6 +17,7 @@ import { withStore } from '@moderntribe/common/hoc';
 import { selectors } from '@moderntribe/tickets/data/blocks/ticket';
 import { applyFilters } from '@wordpress/hooks';
 import { isTicketEditableFromPost } from '@moderntribe/tickets/data/blocks/ticket/utils';
+import { hasRecurrenceRules } from '@moderntribe/common/utils/recurrence';
 
 const getHasOverlay = (state, ownProps) =>
 	selectors.getTicketsIsSettingsOpen(state) ||
@@ -67,6 +73,8 @@ const mapStateToProps = (state, ownProps) => ({
 	hasATicketSelected: selectors.hasATicketSelected(state),
 	showUneditableTickets: getShowUneditableTickets(state, ownProps),
 	uneditableTickets: getUneditableTickets(ownProps),
+	hasRecurrenceRules: hasRecurrenceRules( state ),
+	postType: select('core/editor').getPostTypeLabel()?.toLowerCase(),
 });
 
 export default compose(withStore(), connect(mapStateToProps))(Template);
