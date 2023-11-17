@@ -1158,6 +1158,11 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 */
 	protected function is_status_sortable() {
 		$event_id  = tribe_get_request_var( 'event_id' );
+
+		if ( empty( $event_id ) ) {
+			return false;
+		}
+
 		$providers = Tribe__Tickets__Tickets::get_active_providers_for_post( $event_id );
 
 		if ( count( $providers ) > 1 ) {
