@@ -70,9 +70,9 @@ class Tribe__Tickets__Editor__Attendee_Registration {
 	 * @return void
 	 */
 	public function admin_menu() {
-		// Setup attendee registration
+		// Setup attendee registration.
 		add_submenu_page(
-			null, // attach to null so it doesn't appear in sidebar.
+			'',
 			'Attendee Registration',
 			'Attendee Registration', // hidden.
 			'edit_posts',

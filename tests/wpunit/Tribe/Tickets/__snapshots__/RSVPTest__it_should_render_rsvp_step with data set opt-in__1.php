@@ -66,21 +66,5 @@
 
 	</div>
 
-	<div class="tribe-tickets__rsvp-attendees-wrapper tribe-common-g-row">
-	<div class="tec-tickets__attendees-list-wrapper tribe-tickets__rsvp-attendees tribe-common-b1 tribe-common-g-col">
-		<h4 class="tribe-common-h4 tribe-common-h6--min-medium">
-	Your RSVPs</h4>
-		<div class="tec-tickets__attendees-list">
-							<div class="tec-tickets__attendees-list-item">
-					<div class="tec-tickets__attendees-list-item-attendee-details">
-	Test RSVP ticket for 287</div>
-				</div>
-							<div class="tec-tickets__attendees-list-item">
-					<div class="tec-tickets__attendees-list-item-attendee-details">
-	Test RSVP ticket for 287</div>
-				</div>
-					</div>
-	</div>
-</div>
-
+	
 ';

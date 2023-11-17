@@ -10,9 +10,9 @@
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
  * @since   5.1.10
- * @since   TBD Added attendee information list for the purchase.
+ * @since   5.7.0 Added attendee information list for the purchase.
  *
- * @version TBD
+ * @version 5.7.0
  *
  * @var \Tribe__Template $this                  [Global] Template object.
  * @var Module           $provider              [Global] The tickets provider instance.

@@ -1,5 +1,14 @@
 name: 'Codeception Tests'
-on: [ pull_request ]
+on:
+  pull_request:
+    paths:
+      - 'tests/**.php'
+      - 'src/**.php'
+      - '*.php'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'codeception.dist.yml'
+      - '.github/workflows/tests-php.yaml'
 jobs:
   test:
     strategy:
@@ -210,13 +219,15 @@ jobs:
         if: steps.skip.outputs.value != 1
         run: |
           ${SLIC_BIN} up wordpress
-          ${SLIC_BIN} site-cli core version
+          ${SLIC_BIN} wp core version
+          ${SLIC_BIN} wp core update --force --version=6.4.1
+          ${SLIC_BIN} wp core version
       # ------------------------------------------------------------------------------
       # Install and activate TwentyTwenty
       # ------------------------------------------------------------------------------
       - name: Install and activate TwentyTwenty
         if: steps.skip.outputs.value != 1 && matrix.suite == 'acceptance'
-        run:  ${SLIC_BIN} site-cli theme install twentytwenty --activate
+        run:  ${SLIC_BIN} wp theme install twentytwenty --activate
       # ------------------------------------------------------------------------------
       # Run tests
       # ------------------------------------------------------------------------------

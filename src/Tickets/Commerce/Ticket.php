@@ -127,7 +127,7 @@ class Ticket {
 	/**
 	 * The meta key that holds the ticket type.
 	 *
-	 * @since TBD
+	 * @since 5.6.7
 	 *
 	 * @var string
 	 */
@@ -955,7 +955,7 @@ class Ticket {
 	/**
 	 * Update attendee data for moved attendees.
 	 *
-	 * @since TBD removed the use of `$this->decrease_ticket_sales_by` as the move method already takes care of stock.
+	 * @since 5.6.7 removed the use of `$this->decrease_ticket_sales_by` as the move method already takes care of stock.
 	 * @since 5.5.9
 	 *
 	 * @param int $ticket_id                The ticket which has been moved.

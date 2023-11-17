@@ -9,7 +9,7 @@ tribe.tickets.admin = tribe.tickets.admin || {};
 	/**
 	 * Selectors used for configuration and setup.
 	 *
-	 * @since TBD
+	 * @since 5.7.0
 	 *
 	 * @type {Object}
 	 */
@@ -23,7 +23,7 @@ tribe.tickets.admin = tribe.tickets.admin || {};
 	/**
 	 * Triggers when the document is ready.
 	 *
-	 * @since TBD
+	 * @since 5.7.0
 	 *
 	 * @return {void}
 	 */
@@ -34,7 +34,7 @@ tribe.tickets.admin = tribe.tickets.admin || {};
 	/**
 	 * Bind all the Connector Events happening on ready.
 	 *
-	 * @since TBD
+	 * @since 5.7.0
 	 *
 	 * @retun {void}
 	 */
@@ -45,7 +45,7 @@ tribe.tickets.admin = tribe.tickets.admin || {};
 	/**
 	 * Trigger Click Event for the QR Connector.
 	 *
-	 * @since TBD
+	 * @since 5.7.0
 	 *
 	 * @return {void}
 	 */
@@ -66,7 +66,7 @@ tribe.tickets.admin = tribe.tickets.admin || {};
 	/**
 	 * AJAX to Generate and Save QR Key
 	 *
-	 * @since TBD
+	 * @since 5.7.0
 	 *
 	 * @param {jQuery} $trigger The jQuery element that triggered the event.
 	 *

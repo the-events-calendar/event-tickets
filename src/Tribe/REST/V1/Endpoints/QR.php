@@ -27,7 +27,7 @@ implements Tribe__REST__Endpoints__READ_Endpoint_Interface, Tribe__Documentation
 	/**
 	 * Get attendee by id
 	 *
-	 * @since TBD
+	 * @since 5.7.0
 	 *
 	 * @param WP_REST_Request $request The request.
 	 *
@@ -52,17 +52,17 @@ implements Tribe__REST__Endpoints__READ_Endpoint_Interface, Tribe__Documentation
 		 * Filters the data that will be returned for a single qr ticket request.
 		 *
 		 * @since 4.5.13
-		 * @deprecated TBD Use `tribe_tickets_rest_qr_data` instead.
+		 * @deprecated 5.7.0 Use `tribe_tickets_rest_qr_data` instead.
 		 *
 		 * @param array           $data    The retrieved data.
 		 * @param WP_REST_Request $request The original request.
 		 */
-		$data = apply_filters_deprecated( 'tribe_tickets_plus_rest_qr_data', [ $data, $request ], 'TBD', 'tribe_tickets_rest_qr_data' );
+		$data = apply_filters_deprecated( 'tribe_tickets_plus_rest_qr_data', [ $data, $request ], '5.7.0', 'tribe_tickets_rest_qr_data' );
 
 		/**
 		 * Filters the data that will be returned for a single qr ticket request.
 		 *
-		 * @since TBD
+		 * @since 5.7.0
 		 *
 		 * @param array           $data    The retrieved data.
 		 * @param WP_REST_Request $request The original request.
@@ -80,7 +80,7 @@ implements Tribe__REST__Endpoints__READ_Endpoint_Interface, Tribe__Documentation
 	 * The intelligence lies in the "gatherer" of information rather than in the single "providers" implementing this
 	 * interface.
 	 *
-	 * @since TBD
+	 * @since 5.7.0
 	 *
 	 * @link http://swagger.io/
 	 *
@@ -125,7 +125,7 @@ implements Tribe__REST__Endpoints__READ_Endpoint_Interface, Tribe__Documentation
 	/**
 	 * Provides the content of the `args` array to register the endpoint support for GET requests.
 	 *
-	 * @since TBD
+	 * @since 5.7.0
 	 *
 	 * @return array
 	 */
@@ -151,7 +151,7 @@ implements Tribe__REST__Endpoints__READ_Endpoint_Interface, Tribe__Documentation
 	 * Returns the content of the `args` array that should be used to register the endpoint
 	 * with the `register_rest_route` function.
 	 *
-	 * @since TBD
+	 * @since 5.7.0
 	 *
 	 * @return array
 	 */
@@ -196,7 +196,7 @@ implements Tribe__REST__Endpoints__READ_Endpoint_Interface, Tribe__Documentation
 	/**
 	 * Check in attendee.
 	 *
-	 * @since TBD
+	 * @since 5.7.0
 	 *
 	 * @param WP_REST_Request $request The request.
 	 *
@@ -224,12 +224,12 @@ implements Tribe__REST__Endpoints__READ_Endpoint_Interface, Tribe__Documentation
 		 * @param bool  $is_valid Whether the provided API key is valid or not.
 		 * @param array $qr_arr The request data for Check in.
 		 */
-		$api_key_is_valid = apply_filters_deprecated( 'event_tickets_plus_requested_api_is_valid', [ $api_key_is_valid, $qr_arr ], 'TBD', 'tec_tickets_requested_api_is_valid' );
+		$api_key_is_valid = apply_filters_deprecated( 'event_tickets_plus_requested_api_is_valid', [ $api_key_is_valid, $qr_arr ], '5.7.0', 'tec_tickets_requested_api_is_valid' );
 
 		/**
 		 * Allow filtering the API key validation status.
 		 *
-		 * @since TBD
+		 * @since 5.7.0
 		 *
 		 * @param bool  $is_valid Whether the provided API key is valid or not.
 		 * @param array $qr_arr The request data for Check in.
@@ -382,7 +382,7 @@ implements Tribe__REST__Endpoints__READ_Endpoint_Interface, Tribe__Documentation
 	/**
 	 * Check if the QR codes should be only checked when the event is on date and time.
 	 *
-	 * @since TBD
+	 * @since 5.7.0
 	 *
 	 * @param int $event_id    The ID of the event.
 	 * @param int $attendee_id The ID of the current attendee of the QR code.
@@ -407,7 +407,7 @@ implements Tribe__REST__Endpoints__READ_Endpoint_Interface, Tribe__Documentation
 		 * Filter the option for QR codes to be only checked in when an event is happening.
 		 *
 		 * @since 5.6.2
-		 * @deprecated TBD Use `tec_tickets_qr_checkin_events_happening_now` instead.
+		 * @deprecated 5.7.0 Use `tec_tickets_qr_checkin_events_happening_now` instead.
 		 *
 		 * @param bool $should_checkin_qr_events_happening_now True if it should check in QR codes on events that are on date an time.
 		 * @param int  $event_id                          The ID of the event, from the current attendee of the QR code.
@@ -416,14 +416,14 @@ implements Tribe__REST__Endpoints__READ_Endpoint_Interface, Tribe__Documentation
 		$should_checkin_qr_events_happening_now = (bool) apply_filters_deprecated(
 			'tec_tickets_plus_qr_checkin_events_happening_now',
 			[ $should_checkin_qr_events_happening_now, $event_id, $attendee_id ],
-			'TBD',
+			'5.7.0',
 			'tec_tickets_qr_checkin_events_happening_now'
 		);
 
 		/**
 		 * Filter the option for QR codes to be only checked in when an event is happening.
 		 *
-		 * @since TBD
+		 * @since 5.7.0
 		 *
 		 * @param bool $should_checkin_qr_events_happening_now True if it should check in QR codes on events that are on date an time.
 		 * @param int  $event_id                          The ID of the event, from the current attendee of the QR code.
@@ -437,7 +437,7 @@ implements Tribe__REST__Endpoints__READ_Endpoint_Interface, Tribe__Documentation
 	/**
 	 * Check if an event is on date and time, in order to check-in QR codes.
 	 *
-	 * @since TBD
+	 * @since 5.7.0
 	 *
 	 * @param int $event_id The Event ID.
 	 *
@@ -460,7 +460,7 @@ implements Tribe__REST__Endpoints__READ_Endpoint_Interface, Tribe__Documentation
 		 * This buffer is for QR check-ins when it's set to only check-in when the event is on date and time.
 		 *
 		 * @since 5.6.2
-		 * @deprecated TBD Use `tec_tickets_qr_checkin_events_happening_now_buffer` instead.
+		 * @deprecated 5.7.0 Use `tec_tickets_qr_checkin_events_happening_now_buffer` instead.
 		 *
 		 * @param int $buffer   The time buffer in minutes.
 		 * @param int $event_id The event ID.
@@ -468,7 +468,7 @@ implements Tribe__REST__Endpoints__READ_Endpoint_Interface, Tribe__Documentation
 		$time_buffer = (int) apply_filters_deprecated(
 			'tec_tickets_plus_qr_checkin_events_happening_now_buffer',
 			[ $time_buffer, $event_id ],
-			'TBD',
+			'5.7.0',
 			'tec_tickets_qr_checkin_events_happening_now_buffer'
 		);
 
@@ -476,7 +476,7 @@ implements Tribe__REST__Endpoints__READ_Endpoint_Interface, Tribe__Documentation
 		 * Filter the time buffer, in minutes.
 		 * This buffer is for QR check-ins when it's set to only check-in when the event is on date and time.
 		 *
-		 * @since TBD
+		 * @since 5.7.0
 		 *
 		 * @param int $buffer   The time buffer in minutes.
 		 * @param int $event_id The event ID.
@@ -497,7 +497,7 @@ implements Tribe__REST__Endpoints__READ_Endpoint_Interface, Tribe__Documentation
 	/**
 	 * Check if API is present and matches key is settings
 	 *
-	 * @since TBD
+	 * @since 5.7.0
 	 *
 	 * @param array $qr_arr Array of QR data.
 	 *
@@ -524,7 +524,7 @@ implements Tribe__REST__Endpoints__READ_Endpoint_Interface, Tribe__Documentation
 	/**
 	 * Setup array of variables for check in
 	 *
-	 * @since TBD
+	 * @since 5.7.0
 	 *
 	 * @param WP_REST_Request $request The request.
 	 *
@@ -545,12 +545,12 @@ implements Tribe__REST__Endpoints__READ_Endpoint_Interface, Tribe__Documentation
 		 * @param WP_REST_Request $request REST request object
 		 *
 		 * @since 4.7.5
-		 * @deprecated TBD Use `tribe_tickets_rest_qr_prepare_qr_arr` instead.
+		 * @deprecated 5.7.0 Use `tribe_tickets_rest_qr_prepare_qr_arr` instead.
 		 */
 		$qr_arr = apply_filters_deprecated(
 			'tribe_tickets_plus_rest_qr_prepare_qr_arr',
 			[ $qr_arr, $request ],
-			'TBD',
+			'5.7.0',
 			'tribe_tickets_rest_qr_prepare_qr_arr'
 		);
 
@@ -560,7 +560,7 @@ implements Tribe__REST__Endpoints__READ_Endpoint_Interface, Tribe__Documentation
 		 * @param array           $qr_arr  Post array used for check in
 		 * @param WP_REST_Request $request REST request object
 		 *
-		 * @since TBD
+		 * @since 5.7.0
 		 */
 		$qr_arr = apply_filters( 'tribe_tickets_rest_qr_prepare_qr_arr', $qr_arr, $request );
 
@@ -570,7 +570,7 @@ implements Tribe__REST__Endpoints__READ_Endpoint_Interface, Tribe__Documentation
 	/**
 	 * Check in attendee and on first success return
 	 *
-	 * @since TBD
+	 * @since 5.7.0
 	 *
 	 * @param int $attendee_id The attendee ID.
 	 * @param

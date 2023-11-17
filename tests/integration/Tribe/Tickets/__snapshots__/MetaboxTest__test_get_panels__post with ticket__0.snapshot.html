@@ -4,7 +4,7 @@
 	aria-hidden="false"
 	data-save-prompt="You have unsaved changes to your tickets. Discard those changes?"
 >
-	<div class="tribe_sectionheader ticket_list_container tribe_no_capacity">
+	<div class="tribe_sectionheader ticket_list_container">
 		<div class="ticket_table_intro">
 			
 			
@@ -38,7 +38,45 @@
 			</tr>
 		</thead>
 				<tbody class="tribe-tickets-editor-table-tickets-body">
-				</tbody>
+		<tr class="TEC\Tickets\Commerce\Module is-expanded"
+	data-ticket-order-id="order_{{ ticket_id }}"
+	data-ticket-type-id="{{ ticket_id }}"
+	data-ticket-type="default">
+	<td class="column-primary ticket_name TEC\Tickets\Commerce\Module" data-label="Ticket Type:">
+		<input
+			type="hidden"
+			class="tribe-ticket-field-order"
+			name="tribe-tickets[list][{{ ticket_id }}][order]"
+			value="-1"
+					>
+		<div class="tribe-tickets__tickets-editor-ticket-name">
+			<div class="tribe-tickets__tickets-editor-ticket-name-sortable">
+				<span class="dashicons dashicons-screenoptions tribe-handle"></span>
+			</div>
+			<div class="tribe-tickets__tickets-editor-ticket-name-title">
+
+				
+				Test TC ticket for {{ post_id }}
+				<div  class="tribe-tickets__tickets-editor-ticket-available-dates dashicons-before dashicons-clock" >
+	January 2, 2020 - March 1, 2050</div>			</div>
+		</div>
+	</td>
+
+	<td class="ticket_price" data-label="Price:">
+	&#x24;23.00</td>
+
+	<td class="ticket_capacity">
+		<span class='tribe-mobile-only'>Capacity:</span>
+		100	</td>
+
+	<td class="ticket_available">
+		<span class='tribe-mobile-only'>Available:</span>
+				100	</td>
+
+	<td class="ticket_edit">
+			</td>
+</tr>
+		</tbody>
 	</table>
 
 </div>
@@ -50,10 +88,19 @@
 				>
 					View Attendees				</a>
 
-									</div>
+				
+	<a
+		href="http://wordpress.test/wp-admin/edit.php?post_type=post&#038;page=tickets-commerce-orders&#038;event_id={{ post_id }}"
+	>
+		View Orders	</a>
+					</div>
 
 		<div class="tribe-ticket-control-wrap__settings">
-										
+							<span id="ticket_form_total_capacity">
+	Total Event Capacity:	<span id="ticket_form_total_capacity_value" title="The total number of possible attendees for this event">
+		<a href="#" id="capacity_form_toggle">100</a>	</span>
+</span>
+			
 							<button id="settings_form_toggle" class="button-secondary tribe-button-icon tribe-button-icon-settings">
 					Settings				</button>
 					</div>
@@ -76,42 +123,43 @@
 				>
 						</fieldset>
 	</section>
-	<section id="tribe-tickets-image">
-		<div class="tribe-tickets-image-upload">
-			<div class="input_block">
-				<span class="ticket_form_label tribe-strong-label">Ticket header image:				</span>
-				<p class="description">
-					Select an image from your Media Library to display on emailed ticket. For best results, use a .jpg, .png, or .gif at least 1160px wide.				</p>
-			</div>
-			<input
-				type="button"
-				class="button"
-				name="tribe-tickets[settings][header_image]"
-				id="tribe_ticket_header_image"
-				value="Select an Image"
-			/>
 
-			<span id="tribe_tickets_image_preview_filename" class="">
+	<section id="tribe-tickets-image">
+	<div class="tribe-tickets-image-upload">
+		<div class="input_block">
+				<span class="ticket_form_label tribe-strong-label">Ticket header image:				</span>
+			<p class="description">
+				Select an image from your Media Library to display on emailed ticket. For best results, use a .jpg, .png, or .gif at least 1160px wide.			</p>
+		</div>
+		<input
+			type="button"
+			class="button"
+			name="tribe-tickets[settings][header_image]"
+			id="tribe_ticket_header_image"
+			value="Select an Image"
+		/>
+
+		<span id="tribe_tickets_image_preview_filename" class="">
 				<span class="dashicons dashicons-format-image"></span>
 				<span class="filename"></span>
 			</span>
-		</div>
-		<div class="tribe-tickets-image-preview">
-			<a class="tribe_preview" id="tribe_ticket_header_preview">
-							</a>
-			<p class="description">
-				<a href="#" id="tribe_ticket_header_remove">Remove</a>
-			</p>
+	</div>
+	<div class="tribe-tickets-image-preview">
+		<a class="tribe_preview" id="tribe_ticket_header_preview">
+					</a>
+		<p class="description">
+			<a href="#" id="tribe_ticket_header_remove">Remove</a>
+		</p>
 
-			<input
-				type="hidden"
-				id="tribe_ticket_header_image_id"
-				class="settings_field"
-				name="tribe-tickets[settings][header_image_id]"
-				value=""
-			/>
-		</div>
-	</section>
+		<input
+			type="hidden"
+			id="tribe_ticket_header_image_id"
+			class="settings_field"
+			name="tribe-tickets[settings][header_image_id]"
+			value=""
+		/>
+	</div>
+</section>
 
 	<input type="button" id="tribe_settings_form_save" name="tribe_settings_form_save" value="Save settings" class="button-primary" />
 	<input type="button" id="tribe_settings_form_cancel" name="tribe_settings_form_cancel" value="Cancel" class="button-secondary" />

@@ -1102,7 +1102,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	/**
 	 * Returns an array representation of an attendee.
 	 *
-	 * @since TBD
+	 * @since 5.7.0
 	 *
 	 * @param int    $attendee_id A attendee post ID.
 	 * @param string $context     Context of data.
@@ -1135,17 +1135,17 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		 * Filters the data that will be returned for a single attendee.
 		 *
 		 * @since 4.7.5
-		 * @deprecated TBD Use `tribe_tickets_rest_qr_data` instead.
+		 * @deprecated 5.7.0 Use `tribe_tickets_rest_qr_data` instead.
 		 *
 		 * @param array   $data     The data that will be returned in the response.
 		 * @param WP_Post $attendee The requested attendee.
 		 */
-		$data = apply_filters_deprecated( 'tribe_tickets_plus_rest_qr_data', [ $data, $attendee ], 'TBD', 'tribe_tickets_rest_qr_data' );
+		$data = apply_filters_deprecated( 'tribe_tickets_plus_rest_qr_data', [ $data, $attendee ], '5.7.0', 'tribe_tickets_rest_qr_data' );
 
 		/**
 		 * Filters the data that will be returned for a single attendee.
 		 *
-		 * @since TBD
+		 * @since 5.7.0
 		 *
 		 * @param array   $data     The data that will be returned in the response.
 		 * @param WP_Post $attendee The requested attendee.

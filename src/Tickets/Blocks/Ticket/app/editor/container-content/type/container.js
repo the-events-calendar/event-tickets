@@ -21,31 +21,36 @@ import { applyFilters } from '@wordpress/hooks';
 const mapStateToProps = (state, ownProps) => {
 	const postType = select('core/editor').getCurrentPostType();
 	const ticketDetails = selectors.getTicketDetails(state, ownProps);
-	let typeDescription = ticketDetails.typeDescription;
+	const typeDescription = ticketDetails.typeDescription;
 
-	/**
-	 * Filters the ticket type description.
-	 *
-	 * @since TBD
-	 *
-	 * @param {string} typeDescription The ticket type description.
-	 * @param {Object} ticketDetails   The ticket details.
-	 * @param {string} postType        The post type.
-	 */
-	typeDescription = applyFilters(
-		'tec.tickets.blocks.ticket.typeDescription',
-		typeDescription,
-		ticketDetails,
-		postType
-	);
-
-	return {
-		hasEventsPro: plugins.selectors.hasPlugin( state )( plugins.constants.EVENTS_PRO_PLUGIN ),
+	let mappedProps = {
+		hasEventsPro: plugins.selectors.hasPlugin(state)(
+			plugins.constants.EVENTS_PRO_PLUGIN
+		),
 		postType,
 		typeDescription,
 		typeIconUrl: ticketDetails.typeIconUrl,
 		typeName: ticketDetails.typeName,
 	};
+
+	/**
+	 * Filters the properties mapped from the state for the Ticket Type component.
+	 *
+	 * @since TBD
+	 *
+	 * @type {Object} mappedProps The properties mapped from the state for the Ticket Type component.
+	 * @param {Object} state    The current state.
+	 * @param {Object} ownProps The component props.
+	 */
+	mappedProps = applyFilters(
+		'tec.tickets.blocks.ticket.Type.mappedProps',
+		mappedProps,
+		state,
+		ownProps,
+		ticketDetails
+	);
+
+	return mappedProps;
 };
 
 export default compose(withStore(), connect(mapStateToProps))(Template);

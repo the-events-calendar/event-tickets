@@ -121,7 +121,7 @@ class Tribe__Tickets__Query {
 	/**
 	 * Returns the number of ticketed posts of a certain type.
 	 *
-	 * @since TBD
+	 * @since 5.6.7
 	 *
 	 * @param string $post_type The post type the ticketed count is being calculated for.
 	 *
@@ -163,7 +163,7 @@ class Tribe__Tickets__Query {
 	/**
 	 * Returns the number of unticketed posts of a certain type.
 	 *
-	 * @since TBD
+	 * @since 5.6.7
 	 *
 	 * @param string $post_type The post type the unticketed count is being calculated for.
 	 *

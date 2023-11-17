@@ -1,13 +1,13 @@
 <?php
 /**
  * My Tickets: Orders List
- * 
+ *
  * Override this template in your own theme by creating a file at [your-theme]/tribe-events/tickets/tickets/my-tickets/orders-list.php
- * 
- * @since TBD
- * 
- * @version TBD
- * 
+ *
+ * @since 5.6.7
+ *
+ * @version 5.6.7
+ *
  * @var  array  $orders  The orders for the current user.
  * @var  int    $post_id The ID of the post the tickets are for.
  */
@@ -28,7 +28,7 @@
 
 		?>
 		<li class="tribe-item" id="order-<?php echo esc_html( $order_id ); ?>">
-			<?php 
+			<?php
 				$this->template( 'tickets/my-tickets/user-details', [
 					'order'     => $order,
 					'attendees' => $attendees,
@@ -36,7 +36,7 @@
 				] );
 
 				// @todo Need to determine title based on ticket type. Right now, it's being passed into the main template.
-				$this->template( 'tickets/my-tickets/title' ); 
+				$this->template( 'tickets/my-tickets/title' );
 
 				$this->template( 'tickets/my-tickets/tickets-list', [
 					'order'     => $order,
