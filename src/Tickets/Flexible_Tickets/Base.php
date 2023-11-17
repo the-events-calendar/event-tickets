@@ -24,6 +24,7 @@ use Tribe__Tickets__Tickets as Tickets;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Reports;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use TEC\Tickets\Admin\Upsell as Ticket_Upsell;
+use TEC\Events_Pro\Custom_Tables\V1\Series\Provider as Series_Provider;
 
 /**
  * Class Base.
@@ -126,7 +127,10 @@ class Base extends Controller {
 			'maybe_display_classic_editor_ecp_recurring_tickets_notice'
 		] );
 
+		// Remove the filter that, in CT1 context, would prevent Events in Series from being ticketable.
 		$this->series_are_ticketable();
+		$series_provider = $this->container->get( Series_Provider::class );
+		remove_action( 'init', [ $series_provider, 'remove_series_from_ticketable_post_types' ] );
 
 		add_filter( 'tec_tickets_attendees_event_details_top_label', [
 			$this,
@@ -250,6 +254,12 @@ class Base extends Controller {
 		], 20, 3 );
 
 		remove_filter( 'tribe_template_pre_html:tickets/admin-views/editor/panel/header-image', [ $this, 'hide_header_image_option_from_ticket_settings' ], 10, 5 );
+
+		// Restore the filter that would prevent Series from being ticketable in CT1.
+		$series_provider = $this->container->get( Series_Provider::class );
+		if ( ! has_action( 'init', [ $series_provider, 'remove_series_from_ticketable_post_types' ] ) ) {
+			add_action( 'init', [ $series_provider, 'remove_series_from_ticketable_post_types' ] );
+		}
 	}
 
 	/**
