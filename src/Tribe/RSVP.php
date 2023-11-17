@@ -327,6 +327,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			'login_url'  => self::get_login_url( $post_id ),
 			'threshold'  => $blocks_rsvp->get_threshold( $post_id ),
 			'going'      => tribe_get_request_var( 'going', 'yes' ),
+			'attendees'  => [],
 		];
 
 		/**
@@ -2951,7 +2952,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * Filters the list of post types that should trigger a cache invalidation on `save_post` to add
 	 * all the ones modeling RSVP Tickets and Attendees.
 	 *
-	 * @since TBD
+	 * @since 5.6.7
 	 *
 	 * @param array $post_types
 	 *

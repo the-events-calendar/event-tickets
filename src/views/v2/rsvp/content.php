@@ -14,9 +14,9 @@
  * @var string|null $step The step the views are on.
  *
  * @since 4.12.3
- * @since TBD Add list of attendees that confirmed RSVP.
+ * @since 5.7.0 Add list of attendees that confirmed RSVP.
  *
- * @version TBD
+ * @version 5.7.0
  */
 
 ?>

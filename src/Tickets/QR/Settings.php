@@ -5,7 +5,7 @@ namespace TEC\Tickets\QR;
 /**
  * Class Settings
  *
- * @since   TBD
+ * @since   5.7.0
  *
  * @package TEC\Tickets\QR
  */
@@ -16,7 +16,7 @@ class Settings {
 	 * This particular setting was originally stored in the Event Tickets Plus settings, now ETP should ways use the
 	 * option key here.
 	 *
-	 * @since TBD
+	 * @since 5.7.0
 	 *
 	 * @var string The option key.
 	 */
@@ -27,7 +27,7 @@ class Settings {
 	 * This particular setting was originally stored in the Event Tickets Plus settings, now ETP should ways use the
 	 * option key here.
 	 *
-	 * @since TBD
+	 * @since 5.7.0
 	 *
 	 * @var string The option key.
 	 */
@@ -38,7 +38,7 @@ class Settings {
 	 *
 	 * Option keys that are user controlled, need to be kept as public.
 	 *
-	 * @since TBD
+	 * @since 5.7.0
 	 *
 	 * @return string
 	 */
@@ -52,7 +52,7 @@ class Settings {
 	 * Option keys that are not user controlled, should be kept as protected and interactions should be using
 	 * the methods related, like `$this->get_api_hash()`, avoids weird non-tested scenarios.
 	 *
-	 * @since TBD
+	 * @since 5.7.0
 	 *
 	 * @return string
 	 */
@@ -63,7 +63,7 @@ class Settings {
 	/**
 	 * Check if the QR code is enabled.
 	 *
-	 * @since TBD
+	 * @since 5.7.0
 	 *
 	 * @param mixed $context The context of the check.
 	 *
@@ -82,17 +82,17 @@ class Settings {
 		 * Filters the QR enabled value
 		 *
 		 * @since 5.6.10
-		 * @deprecated TBD Use tec_tickets_qr_code_enabled instead.
+		 * @deprecated 5.7.0 Use tec_tickets_qr_code_enabled instead.
 		 *
 		 * @param bool  $enabled The bool that comes from the options
 		 * @param array $context Context for this check, normally an Array with the ticket
 		 */
-		$enabled = apply_filters_deprecated( 'tribe_tickets_plus_qr_enabled', [ $enabled, $context ], 'TBD', 'Use `tec_tickets_qr_code_enabled` instead' );
+		$enabled = apply_filters_deprecated( 'tribe_tickets_plus_qr_enabled', [ $enabled, $context ], '5.7.0', 'Use `tec_tickets_qr_code_enabled` instead' );
 
 		/**
 		 * Filters the QR enabled value.
 		 *
-		 * @since TBD
+		 * @since 5.7.0
 		 *
 		 * @param bool  $enabled The bool that comes from the options.
 		 * @param array $context Context for this check, normally an Array with the ticket.
@@ -103,7 +103,7 @@ class Settings {
 	/**
 	 * Generate a hash key for QR API.
 	 *
-	 * @since TBD
+	 * @since 5.7.0
 	 *
 	 * @return string The QR API hash.
 	 */
@@ -116,16 +116,16 @@ class Settings {
 		 *
 		 * @since      4.7.5
 		 *
-		 * @deprecated TBD Use tec_tickets_qr_settings_generated_api_hash instead.
+		 * @deprecated 5.7.0 Use tec_tickets_qr_settings_generated_api_hash instead.
 		 *
 		 * @param string $api_key a API key string.
 		 */
-		$hash = apply_filters_deprecated( 'tribe_tickets_plus_qr_api_hash', [ $hash ], 'TBD', 'tec_tickets_qr_settings_generated_api_key' );
+		$hash = apply_filters_deprecated( 'tribe_tickets_plus_qr_api_hash', [ $hash ], '5.7.0', 'tec_tickets_qr_settings_generated_api_key' );
 
 		/**
 		 * Filters the generated hash key for QR API.
 		 *
-		 * @since TBD
+		 * @since 5.7.0
 		 *
 		 * @param string $hash The API hash string.
 		 */
@@ -135,7 +135,7 @@ class Settings {
 	/**
 	 * Get the API hash key, if none exists, generate one.
 	 *
-	 * @since TBD
+	 * @since 5.7.0
 	 *
 	 * @return string
 	 */
@@ -153,7 +153,7 @@ class Settings {
 	/**
 	 * Deletes the existing API hash key.
 	 *
-	 * @since TBD
+	 * @since 5.7.0
 	 *
 	 * @return bool
 	 */

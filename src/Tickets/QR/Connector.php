@@ -7,7 +7,7 @@ use WP_Error;
 /**
  * Class Proxy
  *
- * @since   TBD
+ * @since   5.7.0
  *
  * @package TEC\Tickets\QR
  */
@@ -15,7 +15,7 @@ class Connector {
 	/**
 	 * The nonce action used to generate the QR Code API Hash.
 	 *
-	 * @since TBD
+	 * @since 5.7.0
 	 *
 	 * @return string
 	 */
@@ -26,7 +26,7 @@ class Connector {
 	/**
 	 * The AJAX action used to generate the QR Code API Hash.
 	 *
-	 * @since TBD
+	 * @since 5.7.0
 	 *
 	 * @return string
 	 */
@@ -37,7 +37,7 @@ class Connector {
 	/**
 	 * Get the connection QR code image data src.
 	 *
-	 * @since TBD
+	 * @since 5.7.0
 	 *
 	 * @return string|WP_Error The data url to the QR code image or WP_Error.
 	 */
@@ -56,7 +56,7 @@ class Connector {
 	/**
 	 * Generates the link for the QR image.
 	 *
-	 * @since TBD
+	 * @since 5.7.0
 	 *
 	 * @param int|string $ticket_id The ticket ID.
 	 * @param int|string $event_id The Event ID.
@@ -72,18 +72,18 @@ class Connector {
 		 * the site's home_url() with a trailing slash.
 		 *
 		 * @since      4.7.3
-		 * @deprecated TBD Use `tec_tickets_qr_code_base_url` instead.
+		 * @deprecated 5.7.0 Use `tec_tickets_qr_code_base_url` instead.
 		 *
 		 * @param string     $base_url
 		 * @param int|string $ticket_id
 		 * @param int|string $event_id
 		 */
-		$base_url = apply_filters_deprecated( 'tribe_tickets_qr_code_base_url', [ $base_url, $ticket_id, $event_id ], 'TBD', 'Use `tec_tickets_qr_code_base_url` instead.' );
+		$base_url = apply_filters_deprecated( 'tribe_tickets_qr_code_base_url', [ $base_url, $ticket_id, $event_id ], '5.7.0', 'Use `tec_tickets_qr_code_base_url` instead.' );
 		/**
 		 * Allows filtering the base URL which QR code query args are appended to. Defaults to
 		 * the site's home_url() with a trailing slash.
 		 *
-		 * @since TBD
+		 * @since 5.7.0
 		 *
 		 * @param string     $base_url      The base URL.
 		 * @param int|string $ticket_id     The ticket ID.
@@ -105,7 +105,7 @@ class Connector {
 		/**
 		 * Allows filtering the checkin url.
 		 *
-		 * @since TBD
+		 * @since 5.7.0
 		 *
 		 * @param string     $url
 		 * @param int|string $ticket_id
@@ -118,7 +118,7 @@ class Connector {
 	/**
 	 * Get QR image from ticket.
 	 *
-	 * @since TBD
+	 * @since 5.7.0
 	 *
 	 * @param array $ticket Ticket data we are using to get the QR code image from.
 	 *
@@ -171,7 +171,7 @@ class Connector {
 	/**
 	 * Get QR Code URL from ticket.
 	 *
-	 * @since TBD
+	 * @since 5.7.0
 	 *
 	 * @param array $ticket Ticket data we are using to get the QR code image from.
 	 *
@@ -200,7 +200,7 @@ class Connector {
 	/**
 	 * Get QR Code file path from ticket.
 	 *
-	 * @since TBD
+	 * @since 5.7.0
 	 *
 	 * @param array $ticket Ticket data we are using to get the QR code image from.
 	 *
@@ -229,7 +229,7 @@ class Connector {
 	/**
 	 * Gets the data used to engage with external connections to the site.
 	 *
-	 * @since TBD
+	 * @since 5.7.0
 	 *
 	 * @return array
 	 */
@@ -243,7 +243,7 @@ class Connector {
 		/**
 		 * Filters the data that will be used to generate the QR code for connection purposes.
 		 *
-		 * @since TBD
+		 * @since 5.7.0
 		 *
 		 * @param array $data The data including the URL, API Key and TEC status by default.
 		 */
@@ -253,7 +253,7 @@ class Connector {
 	/**
 	 * Handles the regeneration of the QR Code API Hash via Admin AJAX request.
 	 *
-	 * @since TBD
+	 * @since 5.7.0
 	 *
 	 * @return void
 	 */

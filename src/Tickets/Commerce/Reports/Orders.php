@@ -26,6 +26,11 @@ class Orders extends Report_Abstract {
 	public static $page_slug = 'tickets-commerce-orders';
 
 	/**
+	 * @var string
+	 */
+	public static $tab_slug = 'tickets-commerce-orders-report';
+
+	/**
 	 * Order Pages ID on the menu.
 	 *
 	 * @since 5.2.0
@@ -189,6 +194,11 @@ class Orders extends Report_Abstract {
 		add_filter( 'post_row_actions', [ $this, 'add_orders_row_action' ], 10, 2 );
 		// Register before the default priority of 10 to avoid submenu hook issues.
 		add_action( 'admin_menu', [ $this, 'register_orders_page' ], 5 );
+
+		// Register the tabbed view.
+		$tc_tabbed_view = new Tabbed_View();
+		$tc_tabbed_view->set_active( self::$tab_slug );
+		$tc_tabbed_view->register();
 	}
 
 	/**
@@ -253,7 +263,7 @@ class Orders extends Report_Abstract {
 
 		$page_title        = __( 'Tickets Commerce Orders', 'event-tickets' );
 		$this->orders_page = add_submenu_page(
-			null,
+			'',
 			$page_title,
 			$page_title,
 			$cap,
@@ -326,6 +336,10 @@ class Orders extends Report_Abstract {
 	 * @since 5.2.0
 	 */
 	public function render_page() {
+		$tc_tabbed_view = new Tabbed_View();
+		$tc_tabbed_view->set_active( self::$tab_slug );
+		$tc_tabbed_view->render();
+
 		$this->get_template()->template( 'orders', $this->get_template_vars() );
 	}
 
@@ -333,6 +347,7 @@ class Orders extends Report_Abstract {
 	 * Sets up the template variables used to render the Orders Report Page.
 	 *
 	 * @since 5.2.0
+	 * @since 5.6.8 Removed title from template vars, title will be rendered by the Tabbed_View
 	 *
 	 * @return array
 	 */
@@ -347,7 +362,6 @@ class Orders extends Report_Abstract {
 		$order_summary = new Commerce\Reports\Data\Order_Summary( $post_id );
 
 		$this->template_vars = [
-			'title'               => $this->get_title( $post_id ),
 			'orders_table'        => tribe( Commerce\Admin_Tables\Orders::class ),
 			'post'                => $post,
 			'post_id'             => $post_id,

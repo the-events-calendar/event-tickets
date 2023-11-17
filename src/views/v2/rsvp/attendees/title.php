@@ -14,9 +14,9 @@
  * @var string|null $step The step the views are on.
  * @var array $attendees  List of attendees for the given order.
  *
- * @since TBD
+ * @since 5.7.0
  *
- * @version TBD
+ * @version 5.7.0
  */
 
 if ( empty( $attendees ) ) {
