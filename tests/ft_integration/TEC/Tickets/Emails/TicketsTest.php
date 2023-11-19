@@ -2,6 +2,8 @@
 
 namespace TEC\Tickets\Emails;
 
+use Closure;
+use Generator;
 use Codeception\TestCase\WPTestCase;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
@@ -28,20 +30,72 @@ class TicketsTest extends WPTestCase {
 		);
 	}
 
-	public function test_tickets_email_for_series_pass() {
-		$series_id = static::factory()->post->create( [
-			'post_type'    => Series_Post_Type::POSTTYPE,
-			'post_title'   => 'Test Series Pass Email',
-			'post_excerpt' => 'Test Series for Series pass email',
-		] );
+	public function series_data_provider(): Generator {
+		yield 'series with single series pass but no events' => [
+			function (): array {
+				$series_id = static::factory()->post->create( [
+					'post_type'    => Series_Post_Type::POSTTYPE,
+					'post_title'   => 'Test series with single series pass but no events',
+					'post_excerpt' => 'Test Series for Series pass email',
+				] );
 
-		$series_pass_id_a = $this->create_tc_series_pass( $series_id, 10 )->ID;
+				$series_pass_id = $this->create_tc_series_pass( $series_id, 10 )->ID;
+				$this->set_fn_return( 'current_time', '2020-02-22 22:22:22' );
+				$order = $this->create_order( [ $series_pass_id => 1 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
 
-		$this->set_fn_return( 'current_time', '2020-02-22 22:22:22' );
-		$order = $this->create_order( [ $series_pass_id_a => 1 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
+				return [ $series_id, $series_pass_id, $order->ID ];
+			}
+		];
 
+		yield 'series with single series pass and 3 attached events' => [
+			function (): array {
+				$series_id = static::factory()->post->create( [
+					'post_type'    => Series_Post_Type::POSTTYPE,
+					'post_title'   => 'Test series with single series pass and 3 attached events',
+					'post_excerpt' => 'Test Series for Series pass email',
+				] );
+
+				$series_pass_id = $this->create_tc_series_pass( $series_id, 10 )->ID;
+				$this->set_fn_return( 'current_time', '2020-02-22 22:22:22' );
+				$order = $this->create_order( [ $series_pass_id => 1 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
+
+				$event_a = tribe_events()->set_args( [
+					'title'      => 'Event A',
+					'status'     => 'publish',
+					'start_date' => '2024-01-01 00:00:00',
+					'duration'   => 2 * HOUR_IN_SECONDS,
+					'series'     => $series_id,
+				] )->create()->ID;
+
+				$event_b = tribe_events()->set_args( [
+					'title'      => 'Event B',
+					'status'     => 'publish',
+					'start_date' => '2025-01-02 00:00:00',
+					'duration'   => 2 * HOUR_IN_SECONDS,
+					'series'     => $series_id,
+				] )->create()->ID;
+
+				$event_c = tribe_events()->set_args( [
+					'title'      => 'Event C',
+					'status'     => 'publish',
+					'start_date' => '2026-01-03 00:00:00',
+					'duration'   => 2 * HOUR_IN_SECONDS,
+					'series'     => $series_id,
+				] )->create()->ID;
+
+				return [ $series_id, $series_pass_id, $order->ID ];
+			}
+		];
+	}
+
+	/**
+	 * @dataProvider series_data_provider
+	 */
+	public function test_tickets_email_for_series_pass( Closure $fixture ) {
+
+		[ $series_id, $series_pass_id, $order_id ] = $fixture();
 		// Generate Email content.
-		$attendees   = tribe( Module::class )->get_attendees_by_order_id( $order->ID );
+		$attendees   = tribe( Module::class )->get_attendees_by_order_id( $order_id );
 		$email_class = tribe( Email_Ticket::class );
 
 		$this->assertTrue( $email_class->is_enabled() );
@@ -53,7 +107,7 @@ class TicketsTest extends WPTestCase {
 		$html = $this->placehold_post_ids( $html, [
 			'series_id'        => $series_id,
 			'attendee_id'      => $attendees[0]['attendee_id'],
-			'series_pass_id_a' => $series_pass_id_a,
+			'series_pass_id_a' => $series_pass_id,
 			'security_code'    => $attendees[0]['security_code'],
 		] );
 
@@ -61,26 +115,20 @@ class TicketsTest extends WPTestCase {
 		$this->assertMatchesHtmlSnapshot( $html );
 	}
 
-	public function test_legacy_email_for_series_pass() {
-		$series_id = static::factory()->post->create( [
-			'post_type'  => Series_Post_Type::POSTTYPE,
-			'post_title' => 'Test Series Pass Email',
-		] );
-
-		$series_pass_id_a = $this->create_tc_series_pass( $series_id, 10 )->ID;
-
-		$this->set_fn_return( 'current_time', '2020-02-22 22:22:22' );
-		$order = $this->create_order( [ $series_pass_id_a => 1 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
+	/**
+	 * @dataProvider series_data_provider
+	 */
+	public function test_legacy_email_for_series_pass( Closure $fixture ) {
+		[ $series_id, $series_pass_id, $order_id ] = $fixture();
 		add_filter( 'tribe_events_event_schedule_details', static fn() => 'November 2020 @ 9.00 pm' );
-
 		// Generate Email content.
-		$attendees = tribe( Module::class )->get_attendees_by_order_id( $order->ID );
+		$attendees = tribe( Module::class )->get_attendees_by_order_id( $order_id );
 		$html      = tribe( Module::class )->generate_tickets_email_content( $attendees );
 
 		$html = $this->placehold_post_ids( $html, [
 			'series_id'        => $series_id,
 			'attendee_id'      => $attendees[0]['attendee_id'],
-			'series_pass_id_a' => $series_pass_id_a,
+			'series_pass_id_a' => $series_pass_id,
 			'security_code'    => $attendees[0]['security_code'],
 		] );
 
