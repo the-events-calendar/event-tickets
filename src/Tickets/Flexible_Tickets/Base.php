@@ -65,7 +65,6 @@ class Base extends Controller {
 		Container $container,
 		Admin_Views $admin_views,
 		Reports $reports,
-		Emails $emails
 	) {
 		parent::__construct( $container );
 		$this->admin_views = $admin_views;
