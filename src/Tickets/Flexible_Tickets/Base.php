@@ -16,7 +16,6 @@ use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 use TEC\Tickets\Admin\Editor_Data;
 use TEC\Tickets\Commerce\Reports\Data\Order_Summary;
 use TEC\Tickets\Flexible_Tickets\Repositories\Event_Repository;
-use TEC\Tickets\Flexible_Tickets\Series_Passes\Emails;
 use Tribe__Template as Template;
 use TEC\Tickets\Flexible_Tickets\Templates\Admin_Views;
 use Tribe__Events__Main as TEC;
@@ -26,12 +25,11 @@ use TEC\Tickets\Flexible_Tickets\Series_Passes\Reports;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use TEC\Tickets\Admin\Upsell as Ticket_Upsell;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Provider as Series_Provider;
-use WP_Post;
 
 /**
  * Class Base.
  *
- * @since   TBD
+ * @since TBD
  *
  * @package TEC\Tickets\Flexible_Tickets;
  */
@@ -55,15 +53,6 @@ class Base extends Controller {
 	private Reports $reports;
 
 	/**
-	 * A reference to the Emails handler.
-	 *
-	 * @since TBD
-	 *
-	 * @var Emails
-	 */
-	private Emails $emails;
-
-	/**
 	 * Base constructor.
 	 *
 	 * since TBD
@@ -71,7 +60,6 @@ class Base extends Controller {
 	 * @param Container   $container   A reference to the Container.
 	 * @param Admin_Views $admin_views A reference to the Admin Views handler for Flexible Tickets.
 	 * @param Reports     $reports     A reference to the Reports handler for Flexible Tickets.
-	 * @param Emails      $emails      A reference to the Emails handler for Flexible Tickets.
 	 */
 	public function __construct(
 		Container $container,
@@ -82,7 +70,6 @@ class Base extends Controller {
 		parent::__construct( $container );
 		$this->admin_views = $admin_views;
 		$this->reports     = $reports;
-		$this->emails      = $emails;
 	}
 
 	/**
@@ -186,11 +173,6 @@ class Base extends Controller {
 		], 20, 3 );
 
 		add_filter( 'tribe_template_pre_html:tickets/admin-views/editor/panel/header-image', [ $this, 'hide_header_image_option_from_ticket_settings' ], 10, 5 );
-
-		// Include series link for series pass email.
-		add_action( 'tribe_template_after_include:tickets/emails/template-parts/body/post-title', [ $this, 'include_series_dates_for_series_pass_email' ], 10, 3 );
-		add_action( 'tribe_template_after_include:tickets/emails/template-parts/body/post-title', [ $this, 'include_series_link_for_series_pass_email' ], 11, 3 );
-		add_action( 'tribe_tickets_ticket_email_after_details', [ $this, 'include_series_link_for_series_pass_for_legacy_email' ], 10, 2 );
 	}
 
 	/**
@@ -280,11 +262,6 @@ class Base extends Controller {
 		if ( ! has_action( 'init', [ $series_provider, 'remove_series_from_ticketable_post_types' ] ) ) {
 			add_action( 'init', [ $series_provider, 'remove_series_from_ticketable_post_types' ] );
 		}
-
-		// Remove series link for series pass email.
-		remove_action( 'tribe_template_after_include:tickets/emails/template-parts/body/post-title', [ $this, 'include_series_dates_for_series_pass_email' ], 10, 3 );
-		remove_action( 'tribe_template_after_include:tickets/emails/template-parts/body/post-title', [ $this, 'include_series_link_for_series_pass_email' ], 11, 3 );
-		remove_action( 'tribe_tickets_ticket_email_after_details', [ $this, 'include_series_link_for_series_pass_for_legacy_email' ], 10, 2 );
 	}
 
 	/**
@@ -604,71 +581,5 @@ class Base extends Controller {
 		}
 
 		return false;
-	}
-
-	/**
-	 * Include the Series list link in the ticket emails.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $file       Template file.
-	 * @param string $name       Template name.
-	 * @param Template $template Event Tickets template object.
-	 *
-	 * @return void
-	 */
-	public function include_series_link_for_series_pass_email( $file, $name, $template ): void {
-		if ( ! $template instanceof Template ) {
-			return;
-		}
-
-		$context = $template->get_values();
-		if ( ! isset( $context['post_id'] ) || get_post_type( $context['post_id'] ) !== Series_Post_Type::POSTTYPE ) {
-			return;
-		}
-
-		$this->emails->render_series_events_permalink_for_ticket_emails( $context['post_id'] );
-	}
-
-	/**
-	 * Include the Series date range in the ticket emails.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $file       Template file.
-	 * @param string $name       Template name.
-	 * @param Template $template Event Tickets template object.
-	 *
-	 * @return void
-	 */
-	public function include_series_dates_for_series_pass_email( $file, $name, $template ): void {
-		if ( ! $template instanceof Template ) {
-			return;
-		}
-
-		$context = $template->get_values();
-		if ( ! isset( $context['post_id'] ) || get_post_type( $context['post_id'] ) !== Series_Post_Type::POSTTYPE ) {
-			return;
-		}
-
-		$this->emails->render_series_events_date_range( $context['post_id'] );
-	}
-
-	/**
-	 * Include the series link for legacy ticket emails.
-	 *
-	 * @since TBD
-	 *
-	 * @param array $ticket Ticket information.
-	 * @param WP_Post $event Event post object.
-	 *
-	 * @return void
-	 */
-	public function include_series_link_for_series_pass_for_legacy_email( array $ticket, WP_Post $event ):void {
-		if (  get_post_type( $event ) !== Series_Post_Type::POSTTYPE ) {
-			return;
-		}
-
-		$this->emails->render_series_events_permalink_for_legacy_ticket_email( $event->ID );
 	}
 }
