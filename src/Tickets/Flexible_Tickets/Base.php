@@ -264,6 +264,9 @@ class Base extends Controller {
 		if ( ! has_action( 'init', [ $series_provider, 'remove_series_from_ticketable_post_types' ] ) ) {
 			add_action( 'init', [ $series_provider, 'remove_series_from_ticketable_post_types' ] );
 		}
+
+		remove_filter( 'tribe_get_start_date', [ $this, 'filter_start_date_for_series' ], 10, 4 );
+		remove_filter( 'tribe_get_end_date', [ $this, 'filter_end_date_for_series' ], 10, 4 );
 	}
 
 	/**
