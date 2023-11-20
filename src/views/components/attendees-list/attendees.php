@@ -26,6 +26,10 @@ if ( empty( $order ) || empty( $attendees ) ) {
 	return;
 }
 
+// Sort the Attendees by their ID.
+$attendee_ids = array_column($attendees, 'ID');
+array_multisort($attendee_ids, SORT_ASC, $attendees);
+
 $wrapper_classes = [
 	'tribe-common',
 	'tribe-common-b1',
