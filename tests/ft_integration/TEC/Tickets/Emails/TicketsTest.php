@@ -40,7 +40,6 @@ class TicketsTest extends WPTestCase {
 				] );
 
 				$series_pass_id = $this->create_tc_series_pass( $series_id, 10 )->ID;
-				$this->set_fn_return( 'current_time', '2020-02-22 22:22:22' );
 				$order = $this->create_order( [ $series_pass_id => 1 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
 
 				return [ $series_id, $series_pass_id, $order->ID ];
@@ -56,7 +55,6 @@ class TicketsTest extends WPTestCase {
 				] );
 
 				$series_pass_id = $this->create_tc_series_pass( $series_id, 10 )->ID;
-				$this->set_fn_return( 'current_time', '2020-02-22 22:22:22' );
 				$order = $this->create_order( [ $series_pass_id => 1 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
 
 				$event_a = tribe_events()->set_args( [
@@ -120,7 +118,6 @@ class TicketsTest extends WPTestCase {
 	 */
 	public function test_legacy_email_for_series_pass( Closure $fixture ) {
 		[ $series_id, $series_pass_id, $order_id ] = $fixture();
-		add_filter( 'tribe_events_event_schedule_details', static fn() => 'November 2020 @ 9.00 pm' );
 		// Generate Email content.
 		$attendees = tribe( Module::class )->get_attendees_by_order_id( $order_id );
 		$html      = tribe( Module::class )->generate_tickets_email_content( $attendees );
