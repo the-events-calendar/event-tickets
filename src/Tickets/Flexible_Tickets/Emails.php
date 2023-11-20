@@ -10,8 +10,6 @@
 namespace TEC\Tickets\Flexible_Tickets;
 
 use TEC\Common\Contracts\Provider\Controller;
-use TEC\Events\Custom_Tables\V1\Tables\Events;
-use TEC\Events_Pro\Custom_Tables\V1\Models\Series_Relationship;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 use Tribe__Date_Utils as Dates;
 use Tribe__Template as Template;
@@ -102,28 +100,12 @@ class Emails extends Controller {
 	 * @return void
 	 */
 	public function render_series_events_date_range( int $series_id ) {
-		$dates = [];
-		/** @var Series_Relationship $series_relationship */
-		$first_event = Series_Relationship::where( 'series_post_id', $series_id )
-		                                  ->join( Events::table_name( true ), 'event_id', 'event_id' )
-		                                  ->order_by( 'start_date' )
-		                                  ->first();
-		if ( $first_event !== null ) {
-			$start_date = Dates::immutable( $first_event->start_date, $first_event->timezone );
-			$format     = tribe_get_date_format( true );
-			$dates[]    = esc_html( $start_date->format( $format ) );
-		}
+		$dates = [
+			tribe_get_start_date( $series_id ),
+			tribe_get_end_date( $series_id ),
+		];
 
-		$last_event = Series_Relationship::where( 'series_post_id', $series_id )
-		                                 ->join( Events::table_name( true ), 'event_id', 'event_id' )
-		                                 ->order_by( 'start_date', 'DESC' )
-		                                 ->first();
-
-		if ( $last_event !== null ) {
-			$end_date = Dates::immutable( $last_event->start_date, $last_event->timezone );
-			$format   = tribe_get_date_format( true );
-			$dates[]  = esc_html( $end_date->format( $format ) );
-		}
+		$dates = array_filter( $dates );
 
 		if ( empty( $dates ) ) {
 			return;
