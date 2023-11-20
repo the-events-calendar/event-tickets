@@ -75,6 +75,11 @@ const mapStateToProps = (state, ownProps) => ({
 	uneditableTickets: getUneditableTickets(ownProps),
 	hasRecurrenceRules: hasRecurrenceRules( state ),
 	postType: select('core/editor').getPostTypeLabel()?.toLowerCase(),
-});
+
+	// mock data
+	seriesName: 'My Series Test Name',
+	seriesPassLink: 'https://theeventscalendar.com/',
+	hasAssociatedPasses: false,
+} );
 
 export default compose(withStore(), connect(mapStateToProps))(Template);

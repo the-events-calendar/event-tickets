@@ -21,11 +21,13 @@ import { hasRecurrenceRules, noTicketsOnRecurring } from '@moderntribe/common/ut
 const mapStateToProps = ( state, ownProps ) => {
 	const provider = selectors.getTicketsProvider( state );
 	const page = constants.TICKET_ORDERS_PAGE_SLUG[ provider ];
+	const selectedBlock = select( 'core/editor' ).getSelectedBlock();
 
 	return {
 		hasCreatedTickets: selectors.hasCreatedTickets( state ),
 		hasOrdersPage: Boolean( page ),
 		hasRecurrenceRules: hasRecurrenceRules( state ),
+		isBlockSelected: selectedBlock?.name === 'tribe/tickets',
 		noTicketsOnRecurring: noTicketsOnRecurring(),
 		onConfirmClick: () => { // eslint-disable-line wpcalypso/redux-no-bound-selectors
 			const { clientId } = ownProps;

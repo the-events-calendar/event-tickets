@@ -16,7 +16,7 @@ import { __, _x } from '@wordpress/i18n';
  */
 import Availability from '../availability/container';
 import InactiveTicket from '../inactive/inactive';
-import { Card } from '@moderntribe/tickets/elements';
+import { Card, Notice } from '@moderntribe/tickets/elements';
 import './style.pcss';
 import Uneditable from '../uneditable/container';
 
@@ -26,14 +26,17 @@ const TicketsContainer = ({
 	allTicketsFuture,
 	allTicketsPast,
 	canCreateTickets,
+	hasAssociatedPasses,
+	hasATicketSelected,
 	hasCreatedTickets,
 	hasOverlay,
 	hasRecurrenceRules,
 	isSettingsOpen,
 	postType,
+	seriesName,
+	seriesPassLink,
 	showAvailability,
 	showInactiveBlock,
-	hasATicketSelected,
 	showUneditableTickets,
 	tickets,
 }) => {
@@ -46,6 +49,35 @@ const TicketsContainer = ({
 		return null;
 	}
 
+	const renderHelperText = () => (
+		<div className="tickets-row-line">
+			{
+				// translators: %s is the post type name.
+				sprintf( _x( 'Create single tickets for this %s. ', 'event-tickets' ), postType ? postType : '' )
+			}
+			<a className="helper-link " href="https://evnt.is/manage-tickets" target="_blank" rel="noopener noreferrer">{ __( 'Learn more about ticket management', 'event-tickets' ) }</a>
+		</div>
+	);
+
+	const renderPromptInfo = () => (
+		<div>
+			<Notice
+				description={
+					<div>
+						{ __( 'Create and manage Series Passes from the ', 'event-tickets' ) }
+						<a className="helper-link" href={ seriesPassLink } target="_blank" rel="noopener noreferrer">
+							{
+								// translators: %s is the series name.
+								sprintf( _x( '%s', 'event-tickets' ), seriesName )
+							}
+						</a>
+						{ __( ' Series admin.', 'event-tickets' ) }
+					</div>
+				}
+			/>
+		</div>
+	);
+
 	if (!canCreateTickets) {
 		messages.title = __('There is no ecommerce available', 'event-tickets');
 		messages.description = __(
@@ -55,16 +87,17 @@ const TicketsContainer = ({
 	} else if (!hasCreatedTickets) {
 		if ( ! hasRecurrenceRules ) {
 			messages.title = (
-				<div>
-					{
-						// translators: %s is the post type name.
-						sprintf( _x( 'Create single tickets for this %s. ', 'event-tickets' ), postType )
-					}
-					<a class="helper-link" href="https://evnt.is/manage-tickets" target="_blank" rel="noopener noreferrer">{ __( 'Learn more about ticket management', 'event-tickets' ) }</a>
+				<div className="tribe-editor__title__help-messages">
+					{ renderHelperText() }
 				</div>
 			);
 		} else {
-			messages.title = __( 'Add a ticket to get started.', 'event-tickets' );
+			messages.title = (
+				<div className="tribe-editor__title__help-messages">
+					{ renderHelperText() }
+					{ renderPromptInfo() }
+				</div>
+			)
 		}
 
 		messages.description = __(
@@ -72,9 +105,17 @@ const TicketsContainer = ({
 			'event-tickets'
 		);
 	} else if (allTicketsPast || allTicketsFuture) {
-		messages.title = __(
-			'There are no active tickets. Adjust sale duration to make tickets available',
-			'event-tickets'
+		messages.title = (
+			<div className="tribe-editor__title__help-messages">
+				<div className="tickets-row-line">
+					{
+						__(
+							'There are no active tickets. Adjust sale duration to make tickets available',
+							'event-tickets'
+						)
+					}
+				</div>
+			</div>
 		); // eslint-disable-line max-len
 	} else {
 		messages.title = __('Tickets are not yet available', 'event-tickets');
@@ -109,12 +150,25 @@ const TicketsContainer = ({
 			{showInactiveBlock && !isSettingsOpen && (
 				<InactiveTicket title={messages.title} />
 			)}
-			{showUneditableTickets && (
-				<Uneditable
-					tickets={tickets}
-					cardClassName={uneditableClassName}
-				/>
-			)}
+			{ showUneditableTickets && ! hasATicketSelected && (
+				<>
+					{
+						hasAssociatedPasses
+						? (
+							<div className="tickets-description">
+								<div className="tribe-editor__tickets__container__helper__container">
+									{ renderPromptInfo() }
+								</div>
+							</div>
+						)
+						: null
+					}
+					<Uneditable
+						tickets={tickets}
+						cardClassName={uneditableClassName}
+					/>
+				</>
+			) }
 			{showAvailability && <Availability />}
 			{hasOverlay && <TicketsOverlay />}
 		</div>
@@ -130,6 +184,8 @@ TicketsContainer.propTypes = {
 	hasOverlay: PropTypes.bool,
 	isSettingsOpen: PropTypes.bool,
 	postType: PropTypes.string,
+	seriesName: PropTypes.string,
+	seriesPassLink: PropTypes.string,
 	showAvailability: PropTypes.bool,
 	showInactiveBlock: PropTypes.bool,
 	showUneditableTickets: PropTypes.bool,

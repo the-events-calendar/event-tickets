@@ -3,6 +3,7 @@
  */
 import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
 /**
  * WordPress dependencies
@@ -17,8 +18,10 @@ import {
 	AttendeesActionButton,
 	OrdersActionButton,
 } from '../action-buttons';
+import NotSupportedMessage from '../not-supported-message/container';
 import { ActionDashboard, WarningButton } from '@moderntribe/tickets/elements';
 import './style.pcss';
+import { hasRecurrenceRules } from '@moderntribe/common/utils/recurrence';
 
 const confirmLabel = __( 'Add a Ticket', 'event-tickets' );
 
@@ -45,7 +48,6 @@ class TicketsDashboardAction extends PureComponent {
 		const {
 			hasCreatedTickets,
 			hasOrdersPage,
-			hasRecurrenceRules,
 		} = this.props;
 
 		// eslint-disable-next-line react/jsx-key
@@ -57,43 +59,39 @@ class TicketsDashboardAction extends PureComponent {
 				actions.push( <OrdersActionButton /> );
 			}
 		}
-		if ( hasRecurrenceRules ) {
-			const icon = this.state.isWarningOpen ? 'no' : 'info-outline';
-			const text = this.state.isWarningOpen
-				? __( 'Hide Warning', 'event-tickets' )
-				: __( 'Warning', 'event-tickets' );
-			actions.push(
-				<WarningButton
-					icon={ icon }
-					onClick={ this.onWarningClick }
-				>
-					{ text }
-				</WarningButton>,
-			);
-		}
+
 		return actions;
 	};
 
 	render() {
-		const { onConfirmClick } = this.props;
+		const { hasRecurrenceRules, isBlockSelected, onConfirmClick } = this.props;
+
+		const actionDashboardlassName = classNames( 'tribe-common', 'tribe-editor__tickets__action-dashboard', {
+			'tribe-editor__tickets__action-dashboard__no-border-bottom': hasRecurrenceRules && isBlockSelected,
+		});
 
 		return (
 			<Fragment>
 				<ActionDashboard
-					className="tribe-common tribe-editor__tickets__action-dashboard"
+					className={ actionDashboardlassName }
 					actions={ this.getActions() }
 					confirmLabel={ confirmLabel }
 					onConfirmClick={ onConfirmClick }
 					showCancel={ false }
 				/>
-				{ this.state.isWarningOpen && (
-					<div className="tribe-editor__tickets__warning">
-						{ __(
-							'This is a recurring event. If you add tickets they will only show up on the next upcoming event in the recurrence pattern. The same ticket form will appear across all events in the series. Please configure your events accordingly.', // eslint-disable-line max-len
-							'event-tickets',
-						) }
-					</div>
-				) }
+				{
+					hasRecurrenceRules && isBlockSelected
+					? (
+						<div className="tribe-editor__tickets__action-dashboard__not-supported-message">
+							<div className="tickets-description">
+								<div className="tribe-editor__tickets__container__helper__container">
+									<NotSupportedMessage />
+								</div>
+							</div>
+						</div>
+					)
+					: null
+				}
 			</Fragment>
 		);
 	}
