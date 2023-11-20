@@ -188,7 +188,8 @@ class Base extends Controller {
 		add_filter( 'tribe_template_pre_html:tickets/admin-views/editor/panel/header-image', [ $this, 'hide_header_image_option_from_ticket_settings' ], 10, 5 );
 
 		// Include series link for series pass email.
-		add_action( 'tribe_template_after_include:tickets/emails/template-parts/body/post-title', [ $this, 'include_series_link_for_series_pass_email' ], 10, 3 );
+		add_action( 'tribe_template_after_include:tickets/emails/template-parts/body/post-title', [ $this, 'include_series_dates_for_series_pass_email' ], 10, 3 );
+		add_action( 'tribe_template_after_include:tickets/emails/template-parts/body/post-title', [ $this, 'include_series_link_for_series_pass_email' ], 11, 3 );
 		add_action( 'tribe_tickets_ticket_email_after_details', [ $this, 'include_series_link_for_series_pass_for_legacy_email' ], 10, 2 );
 	}
 
@@ -281,7 +282,8 @@ class Base extends Controller {
 		}
 
 		// Remove series link for series pass email.
-		remove_action( 'tribe_template_after_include:tickets/emails/template-parts/body/post-title', [ $this, 'include_series_link_for_series_pass_email' ], 10, 3 );
+		remove_action( 'tribe_template_after_include:tickets/emails/template-parts/body/post-title', [ $this, 'include_series_dates_for_series_pass_email' ], 10, 3 );
+		remove_action( 'tribe_template_after_include:tickets/emails/template-parts/body/post-title', [ $this, 'include_series_link_for_series_pass_email' ], 11, 3 );
 		remove_action( 'tribe_tickets_ticket_email_after_details', [ $this, 'include_series_link_for_series_pass_for_legacy_email' ], 10, 2 );
 	}
 
@@ -605,7 +607,7 @@ class Base extends Controller {
 	}
 
 	/**
-	 * Include the Event date in the ticket and RSVP emails.
+	 * Include the Series list link in the ticket emails.
 	 *
 	 * @since TBD
 	 *
@@ -626,6 +628,30 @@ class Base extends Controller {
 		}
 
 		$this->emails->render_series_events_permalink_for_ticket_emails( $context['post_id'] );
+	}
+
+	/**
+	 * Include the Series date range in the ticket emails.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $file       Template file.
+	 * @param string $name       Template name.
+	 * @param Template $template Event Tickets template object.
+	 *
+	 * @return void
+	 */
+	public function include_series_dates_for_series_pass_email( $file, $name, $template ): void {
+		if ( ! $template instanceof Template ) {
+			return;
+		}
+
+		$context = $template->get_values();
+		if ( ! isset( $context['post_id'] ) || get_post_type( $context['post_id'] ) !== Series_Post_Type::POSTTYPE ) {
+			return;
+		}
+
+		$this->emails->render_series_events_date_range( $context['post_id'] );
 	}
 
 	/**
