@@ -237,30 +237,6 @@ export const setTicketType = ( clientId, type ) => ( {
 	},
 } );
 
-export const setTicketTypeDescription = ( clientId, typeDescription ) => ( {
-	type: types.SET_TICKET_TYPE_DESCRIPTION,
-	payload: {
-		clientId,
-		typeDescription,
-	},
-} );
-
-export const setTicketTypeIconUrl = ( clientId, typeIconUrl ) => ( {
-	type: types.SET_TICKET_TYPE_ICON_URL,
-	payload: {
-		clientId,
-		typeIconUrl,
-	},
-} );
-
-export const setTicketTypeName = ( clientId, typeName ) => ( {
-	type: types.SET_TICKET_TYPE_NAME,
-	payload: {
-		clientId,
-		typeName,
-	},
-} );
-
 //
 // ─── TICKET TEMP DETAILS ACTIONS ────────────────────────────────────────────────
 //

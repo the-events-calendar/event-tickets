@@ -337,9 +337,6 @@ export function* fetchTicket( action ) {
 				supports_attendee_information,
 				attendee_information_fields,
 				type,
-				typeDescription,
-				typeIconUrl,
-				typeName,
 			} = ticket;
 			/* eslint-enable camelcase */
 
@@ -389,9 +386,6 @@ export function* fetchTicket( action ) {
 				capacityType: capacity_type,
 				capacity,
 				type,
-				typeDescription,
-				typeIconUrl,
-				typeName,
 			};
 
 			yield all( [
@@ -839,9 +833,6 @@ export function* setTicketDetails( action ) {
 		capacityType,
 		capacity,
 		type,
-		typeDescription,
-		typeIconUrl,
-		typeName,
 	} = details;
 
 	yield all( [
@@ -864,9 +855,6 @@ export function* setTicketDetails( action ) {
 		put( actions.setTicketCapacityType( clientId, capacityType ) ),
 		put( actions.setTicketCapacity( clientId, capacity ) ),
 		put( actions.setTicketType( clientId, type ) ),
-		put( actions.setTicketTypeDescription( clientId, typeDescription ) ),
-		put( actions.setTicketTypeIconUrl( clientId, typeIconUrl ) ),
-		put( actions.setTicketTypeName( clientId, typeName ) ),
 	] );
 }
 
