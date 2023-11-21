@@ -9,7 +9,7 @@ import classNames from 'classnames';
  * Wordpress dependencies
  */
 const { InnerBlocks } = wp.blockEditor;
-import { __, _x } from '@wordpress/i18n';
+import { __, _x, sprintf } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -53,18 +53,36 @@ const TicketsContainer = ({
 			'event-tickets'
 		);
 	} else if (!hasCreatedTickets) {
-		if ( ! hasRecurrenceRules ) {
+		if (!hasRecurrenceRules) {
 			messages.title = (
 				<div>
-					{
-						// translators: %s is the post type name.
-						sprintf( _x( 'Create single tickets for this %s. ', 'event-tickets' ), postType )
-					}
-					<a class="helper-link" href="https://evnt.is/manage-tickets" target="_blank" rel="noopener noreferrer">{ __( 'Learn more about ticket management', 'event-tickets' ) }</a>
+					{sprintf(
+						// Translators: %s is the post type name in human readable form.
+						_x(
+							'Create single tickets for this %s. ',
+							'The message displayed when there are no tickets and no recurrence rules.',
+							'event-tickets'
+						),
+						postType
+					)}
+					<a
+						className="helper-link"
+						href="https://evnt.is/manage-tickets"
+						target="_blank"
+						rel="noopener noreferrer"
+					>
+						{__(
+							'Learn more about ticket management',
+							'event-tickets'
+						)}
+					</a>
 				</div>
 			);
 		} else {
-			messages.title = __( 'Add a ticket to get started.', 'event-tickets' );
+			messages.title = __(
+				'Add a ticket to get started.',
+				'event-tickets'
+			);
 		}
 
 		messages.description = __(

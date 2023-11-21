@@ -21,7 +21,9 @@ import { applyFilters } from '@wordpress/hooks';
 import { Ticket as TicketIcon } from '@moderntribe/tickets/icons';
 
 const mapStateToProps = (state, ownProps) => {
-	const postType = select('core/editor').getCurrentPostType();
+	const postTypeLabel = select('core/editor')
+		.getPostTypeLabel()
+		.toLowerCase();
 	const ticketDetails = selectors.getTicketDetails(state, ownProps);
 	const typeName = _x(
 		'Single Ticket',
@@ -29,13 +31,13 @@ const mapStateToProps = (state, ownProps) => {
 		'event-tickets'
 	);
 	const typeDescription = sprintf(
-		// translators: %s is the post type name.
+		// translators: %s is the post type name in human readable form.
 		_x(
 			'A single ticket is specific to this %s.',
 			'Default ticket type description.',
 			'event-tickets'
 		),
-		postType
+		postTypeLabel
 	);
 	const typeUpsellDescription = _x(
 		'For more ticket types, <a href="https://evnt.is/tt-ecp" target="_blank" rel="noopener noreferrer">upgrade</a> to Events Calendar Pro',
