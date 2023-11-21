@@ -9,13 +9,14 @@
  * @since TBD
  *
  * @param {bool} saveTicketFromPost Whether or not to save the Ticket from the Post.
- * @param {number} id The ID of the Ticket.
- * @param {string} ticketType The ticket types, e.g. `default`, `series_pass`, etc.
- * @param {object} post The Post object that is being saved, the format is the one retruned by the WP REST API.
+ * @param {object} context The context of the filter.
+ * @param {number} context.ticketId The ID of the Ticket.
+ * @param {string} context.ticketType The ticket types, e.g. `default`, `series_pass`, etc.
+ * @param {object} context.post The Post object that is being saved, the format is the one retruned by the WP REST API.
  *
  * @returns {boolean} Whether or not to save the Ticket from the Post.
  */
-function doNotEditSeriesPassesOutsideSeries( saveTicketFromPost, id, ticketType, post ) {
+function doNotEditSeriesPassesOutsideSeries( saveTicketFromPost, { ticketId, ticketType, post } ) {
 	const postType = post?.type;
 
 	if ( !( typeof ticketType === 'string' && typeof postType === 'string' ) ) {
@@ -44,7 +45,7 @@ wp.hooks.addFilter (
  * @param {Object} mappedProps The properties mapped from the state for the Ticket Type component.
  * @param {Object} ticketDetails The ticket details.
  *
- * @returns {string} The ticket type description, possibly changed.
+ * @returns {Object} The modified properties mapped from the state for the Ticket Type component.
  */
 function changeTicketTypeDescriptionForEventPartOfSeries( mappedProps, { ticketDetails } ) {
 	const ticketType = ticketDetails?.type || 'default';
