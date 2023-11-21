@@ -23,7 +23,7 @@ import { Ticket as TicketIcon } from '@moderntribe/tickets/icons';
 const mapStateToProps = (state, ownProps) => {
 	const postTypeLabel = select('core/editor')
 		.getPostTypeLabel()
-		.toLowerCase();
+		?.toLowerCase();
 	const ticketDetails = selectors.getTicketDetails(state, ownProps);
 	const typeName = _x(
 		'Single Ticket',
