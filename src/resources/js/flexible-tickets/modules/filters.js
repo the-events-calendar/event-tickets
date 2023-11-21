@@ -41,13 +41,12 @@ wp.hooks.addFilter (
  *
  * @since TBD
  *
- * @param {string} typeDescription The ticket type description.
- * @param {Object} ticketDetails   The ticket details.
- * @param {string} postType        The post type.
+ * @param {Object} mappedProps The properties mapped from the state for the Ticket Type component.
+ * @param {Object} ticketDetails The ticket details.
  *
  * @returns {string} The ticket type description, possibly changed.
  */
-function changeTicketTypeDescriptionForEventPartOfSeries( { mappedProps, ticketDetails } ) {
+function changeTicketTypeDescriptionForEventPartOfSeries( mappedProps, { ticketDetails } ) {
 	const ticketType = ticketDetails?.type || 'default';
 	const isInSeries = tecEventDetails?.isInSeries;
 

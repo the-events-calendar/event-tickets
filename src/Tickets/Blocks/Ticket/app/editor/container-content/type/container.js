@@ -8,6 +8,7 @@ import { compose } from 'redux';
  * WordPress dependencies
  */
 import { select } from '@wordpress/data';
+import { _x, sprintf } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -17,20 +18,42 @@ import { withStore } from '@moderntribe/common/hoc';
 import { selectors } from '@moderntribe/tickets/data/blocks/ticket';
 import { plugins } from '@moderntribe/common/data';
 import { applyFilters } from '@wordpress/hooks';
+import { Ticket as TicketIcon } from '@moderntribe/tickets/icons';
 
 const mapStateToProps = (state, ownProps) => {
-	const postType = select('core/editor').getCurrentPostType();
+	const postTypeLabel = select('core/editor')
+		.getPostTypeLabel()
+		.toLowerCase();
 	const ticketDetails = selectors.getTicketDetails(state, ownProps);
-	const typeDescription = ticketDetails.typeDescription;
+	const typeName = _x(
+		'Single Ticket',
+		'Default ticket type label.',
+		'event-tickets'
+	);
+	const typeDescription = sprintf(
+		// translators: %s is the post type name in human readable form.
+		_x(
+			'A single ticket is specific to this %s.',
+			'Default ticket type description.',
+			'event-tickets'
+		),
+		postTypeLabel
+	);
+	const typeUpsellDescription = _x(
+		'For more ticket types, <a href="https://evnt.is/tt-ecp" target="_blank" rel="noopener noreferrer">upgrade</a> to Events Calendar Pro',
+		'Default ticket type upsell description.',
+		'event-tickets'
+	);
+	const typeIcon = <TicketIcon />;
 
 	let mappedProps = {
 		hasEventsPro: plugins.selectors.hasPlugin(state)(
 			plugins.constants.EVENTS_PRO_PLUGIN
 		),
-		postType,
+		typeName,
 		typeDescription,
-		typeIconUrl: ticketDetails.typeIconUrl,
-		typeName: ticketDetails.typeName,
+		typeUpsellDescription,
+		typeIcon,
 	};
 
 	/**
@@ -39,15 +62,19 @@ const mapStateToProps = (state, ownProps) => {
 	 * @since TBD
 	 *
 	 * @type {Object} mappedProps The properties mapped from the state for the Ticket Type component.
-	 * @param {Object} state    The current state.
-	 * @param {Object} ownProps The component props.
+	 * @type {Object} context The context of the filter.
+	 * @type {Object} context.state The current state.
+	 * @type {Object} context.ownProps The properties passed to the component.
+	 * @type {Object} context.ticketDetails The ticket details.
 	 */
 	mappedProps = applyFilters(
 		'tec.tickets.blocks.ticket.Type.mappedProps',
 		mappedProps,
-		state,
-		ownProps,
-		ticketDetails
+		{
+			state,
+			ownProps,
+			ticketDetails,
+		}
 	);
 
 	return mappedProps;
