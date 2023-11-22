@@ -5,6 +5,11 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 
 /**
+ * WordPress dependencies
+ */
+import { applyFilters } from '@wordpress/hooks';
+
+/**
  * Internal dependencies
  */
 import Template from './template';
@@ -16,9 +21,9 @@ import {
 	noTicketsOnRecurring,
 } from '@moderntribe/common/utils/recurrence';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
 	const headerImageId = selectors.getTicketsHeaderImageId(state);
-	return {
+	let mappedProps = {
 		header: headerImageId ? `${headerImageId}` : '',
 		hasProviders: selectors.hasTicketProviders(),
 		isSettingsOpen: selectors.getTicketsIsSettingsOpen(state),
@@ -28,6 +33,23 @@ const mapStateToProps = (state) => {
 		hasRecurrenceRules: hasRecurrenceRules(state),
 		noTicketsOnRecurring: noTicketsOnRecurring(),
 	};
+
+	/**
+	 * Filters the properties mapped from the state for the Tickets component.
+	 *
+	 * @since TBD
+	 *
+	 * @param {Object} mappedProps      The mapped props.
+	 * @param {Object} context.state    The state of the block.
+	 * @param {Object} context.ownProps The props passed to the block.
+	 */
+	mappedProps = applyFilters(
+		'tec.tickets.blocks.Tickets.mappedProps',
+		mappedProps,
+		{ state, ownProps }
+	);
+
+	return mappedProps;
 };
 
 const mapDispatchToProps = (dispatch) => ({

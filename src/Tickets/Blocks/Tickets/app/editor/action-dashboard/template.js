@@ -20,80 +20,89 @@ import {
 import { ActionDashboard, WarningButton } from '@moderntribe/tickets/elements';
 import './style.pcss';
 
-const confirmLabel = __( 'Add a Ticket', 'event-tickets' );
+const confirmLabel = __('Add a Ticket', 'event-tickets');
 
 class TicketsDashboardAction extends PureComponent {
 	static propTypes = {
 		hasCreatedTickets: PropTypes.bool,
 		hasOrdersPage: PropTypes.bool,
-		hasRecurrenceRules: PropTypes.bool,
+		showWarning: PropTypes.bool,
+		showConfirm: PropTypes.bool,
 		onConfirmClick: PropTypes.func,
+		disableSettings: PropTypes.bool,
 	};
 
-	constructor( props ) {
-		super( props );
+	constructor(props) {
+		super(props);
 		this.state = {
 			isWarningOpen: false,
 		};
 	}
 
 	onWarningClick = () => {
-		this.setState( { isWarningOpen: ! this.state.isWarningOpen } );
+		this.setState({ isWarningOpen: !this.state.isWarningOpen });
 	};
 
 	getActions = () => {
 		const {
 			hasCreatedTickets,
 			hasOrdersPage,
-			hasRecurrenceRules,
+			showWarning,
+			disableSettings,
 		} = this.props;
 
-		// eslint-disable-next-line react/jsx-key
-		const actions = [ <SettingsActionButton /> ];
-		if ( hasCreatedTickets ) {
-			actions.push( <AttendeesActionButton /> );
+		// Start with an empty set of actions.
+		const actions = [];
 
-			if ( hasOrdersPage ) {
-				actions.push( <OrdersActionButton /> );
+		if (!disableSettings) {
+			// eslint-disable-next-line react/jsx-key
+			actions.push(<SettingsActionButton />);
+		}
+
+		if (hasCreatedTickets) {
+			actions.push(<AttendeesActionButton />);
+
+			if (hasOrdersPage) {
+				actions.push(<OrdersActionButton />);
 			}
 		}
-		if ( hasRecurrenceRules ) {
+
+		if (showWarning) {
 			const icon = this.state.isWarningOpen ? 'no' : 'info-outline';
 			const text = this.state.isWarningOpen
-				? __( 'Hide Warning', 'event-tickets' )
-				: __( 'Warning', 'event-tickets' );
+				? __('Hide Warning', 'event-tickets')
+				: __('Warning', 'event-tickets');
 			actions.push(
-				<WarningButton
-					icon={ icon }
-					onClick={ this.onWarningClick }
-				>
-					{ text }
-				</WarningButton>,
+				<WarningButton icon={icon} onClick={this.onWarningClick}>
+					{text}
+				</WarningButton>
 			);
 		}
+
 		return actions;
 	};
 
 	render() {
-		const { onConfirmClick } = this.props;
+		const { onConfirmClick, showConfirm } = this.props;
 
 		return (
 			<Fragment>
 				<ActionDashboard
 					className="tribe-common tribe-editor__tickets__action-dashboard"
-					actions={ this.getActions() }
-					confirmLabel={ confirmLabel }
-					onConfirmClick={ onConfirmClick }
-					showCancel={ false }
+					actions={this.getActions()}
+					confirmLabel={confirmLabel}
+					onConfirmClick={onConfirmClick}
+					showCancel={false}
+					showConfirm={showConfirm}
 				/>
-				{ this.state.isWarningOpen && (
+				{this.state.isWarningOpen && (
 					<div className="tribe-editor__tickets__warning">
-						{ __(
+						{__(
 							'This is a recurring event. If you add tickets they will only show up on the next upcoming event in the recurrence pattern. The same ticket form will appear across all events in the series. Please configure your events accordingly.', // eslint-disable-line max-len
-							'event-tickets',
-						) }
+							'event-tickets'
+						)}
 					</div>
-				) }
+				)}
 			</Fragment>
 		);
 	}

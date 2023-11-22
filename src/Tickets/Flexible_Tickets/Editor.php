@@ -10,6 +10,8 @@
 namespace TEC\Tickets\Flexible_Tickets;
 
 use TEC\Common\Contracts\Provider\Controller;
+use TEC\Events_Pro\Custom_Tables\V1\Models\Provisional_Post;
+use TEC\Events_Pro\Custom_Tables\V1\Models\Series_Relationship;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Relationship;
 use Tribe__Tickets__Tickets as Tickets;
 use Tribe__Events__Main as TEC;
@@ -114,7 +116,16 @@ class Editor extends Controller {
 
 		$should_load_blocks = $this->container->get( 'editor' )->should_load_blocks();
 		// The Editor code will not take Classic Editor into account, reinforce with the function introduced in WP 5.0.
-		$use_block_editor_for_post = use_block_editor_for_post( get_the_ID() );
+		$post_id                   = get_the_ID();
+		$normalized_post_id = tribe( Provisional_Post::class )->is_provisional_post_id( $post_id ) ?
+			tribe( Provisional_Post::class )->get_occurrence_post_id( $post_id )
+			: $post_id;
+		$use_block_editor_for_post = use_block_editor_for_post( $normalized_post_id );
+		$series_relationship       = Series_Relationship::find( $normalized_post_id, 'event_post_id' );
+		$series_id                 = $series_relationship->series_post_id ?? null;
+		$series_passes_count       = $series_id ?
+			tribe_tickets()->where( 'event', $series_id )->where( 'type', Series_Passes::TICKET_TYPE )->count()
+			: 0;
 
 		$editor_data = [
 			'seriesRelationship' => [
@@ -134,6 +145,11 @@ class Editor extends Controller {
 				'ticketPanelEditSelector'                 => '#tribe_panel_edit',
 				'ticketPanelEditDefaultProviderAttribute' => 'data-current-provider',
 				'ticketsMetaboxSelector'                  => '#event_tickets',
+			],
+			'series'             => [
+				'seriesPassesCount'           => $series_passes_count,
+				'seriesPassTotalCapacity'     => $series_id ? tribe_get_event_capacity( $series_id ) : 0,
+				'seriesPassAvailableCapacity' => $series_id ? tribe_events_count_available_tickets( $series_id ) : 0,
 			],
 		];
 
