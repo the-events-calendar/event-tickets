@@ -31,7 +31,7 @@ Even more, you can [upgrade to Event Tickets Plus](https://evnt.is/1b54) and unl
 
 See Event Tickets in action on our [demo site](https://evnt.is/1ajs). Just getting started? Check out the [Getting Started Guide](https://evnt.is/1aoc) for an introduction to features, settings, and functionality.
 
-Looking for additional features like custom registration fields, QR check-in, Apple Wallet passes, PDF tickets, Zoom integration, and more? <strong>Check out [Event Tickets Plus](https://evnt.is/18th), [Event Tickets Wallet Plus](https://evnt.is/etwp) and our [other add-ons](https://evnt.is/2a)</strong>.
+Looking for additional features like custom registration fields, QR check-in, Apple Wallet passes, PDF tickets, Zoom integration, and more? <strong>Check out [Event Tickets Plus](https://evnt.is/18th), [Wallet Plus](https://evnt.is/etwp) and our [other add-ons](https://evnt.is/2a)</strong>.
 
 = 🔌🎨 Plug and Play or Customize =
 
@@ -61,7 +61,7 @@ Whether your vision is big or small, you're in good company. Thousands of small 
 
 Upgrade to [Event Tickets Plus](https://evnt.is/18th) for full WooCommerce integration to use additional payment gateways.
 
-Upgrade to [Event Tickets Wallet Plus](https://evnt.is/etwp) for digital tickets like Apple Wallet passes and PDF tickets.
+Upgrade to [Wallet Plus](https://evnt.is/etwp) for digital tickets like Apple Wallet passes and PDF tickets.
 
 == 📃 Documentation ==
 
@@ -91,7 +91,7 @@ Our Premium Plugins and Services:
 ⚡ [Events Calendar Pro](https://evnt.is/18wi)
 ↪️ [Event Aggregator](https://evnt.is/197u) (service)
 🎟️ [Event Tickets Plus](https://evnt.is/18wk)
-📱 [Event Tickets Wallet Plus](https://evnt.is/etwp)
+📱 [Wallet Plus](https://evnt.is/etwp)
 ✉️ [Promoter](https://evnt.is/1ajt)
 👥 [Community Events](https://evnt.is/2g)
 🎟️ [Community Tickets](https://evnt.is/18wl)
@@ -178,7 +178,7 @@ The following add-ons are available for The Events Calendar:
 * [Event Aggregator](https://evnt.is/197u), a service that effortlessly fills your calendar with events from Meetup, Google Calendar, iCalendar, Eventbrite, CSV, and ICS.
 * [Virtual Events](https://evnt.is/1aky), which optimizes your calendar for virtual events including Zoom integration, video and livestream embeds, SEO optimization for online events and more.
 * [Event Tickets Plus](https://evnt.is/18wk), which allows you to sell tickets for your events using your favorite e-commerce platform.
-* [Event Tickets Wallet Plus](https://evnt.is/etwp), for adding digital tickets like Apple Wallet passes and PDF tickets.
+* [Wallet Plus](https://evnt.is/etwp), for adding digital tickets like Apple Wallet passes and PDF tickets.
 * [Promoter](https://evnt.is/1ajt), automated email communication made just for The Events Calendar and Event Tickets. Stay in touch with your attendees every step of the way.
 * [Community Events](https://evnt.is/2g), for allowing frontend event submission from your readers.
 * [Community Tickets](https://evnt.is/18wl), which allows event organizers to sell tickets to the events they submit via Community Events.
