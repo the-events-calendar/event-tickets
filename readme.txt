@@ -197,7 +197,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [TBD] TBD =
 
-* Tweak -  Prevented Single Attendee endpoint from throwing a notice on PHP 8+.
+* Tweak -  Prevented Single Attendee endpoint from throwing a notice on PHP 8+. [ET-1935]
 
 = [5.7.0] 2023-11-16 =
 
