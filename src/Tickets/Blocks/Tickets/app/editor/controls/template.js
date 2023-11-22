@@ -18,84 +18,90 @@ import './style.pcss';
 
 const message = __(
 	'It looks like you have multiple ecommerce plugins active. We recommend running only one at a time. However, if you need to run multiple, please select which one to use to sell tickets for this event. ', // eslint-disable-line max-len
-	'event-tickets',
+	'event-tickets'
 );
 
 const note = __(
 	'Note: adjusting this setting will only impact new tickets. Existing tickets will not change. We highly recommend that all tickets for one event use the same ecommerce plugin.', // eslint-disable-line max-len
-	'event-tickets',
+	'event-tickets'
 );
 
 /**
  * @todo: create radio input element, move this over to element
  */
 
-const RadioInput = ( { provider, onProviderChange, ...additionalProps } ) => (
+const RadioInput = ({ provider, onProviderChange, ...additionalProps }) => (
 	<div className="tribe-editor__tickets-control-container">
 		<input
 			className="tribe-editor__tickets-control__input tribe-editor__tickets-control__input--radio"
 			type="radio"
-			id={ provider.class }
-			name={ provider.class }
-			onChange={ onProviderChange }
-			{ ...additionalProps }
+			id={provider.class}
+			name={provider.class}
+			onChange={onProviderChange}
+			{...additionalProps}
 		/>
 		<label
 			className="tribe-editor__tickets-control__label"
-			htmlFor={ provider.class }>
-			{ provider.name }
+			htmlFor={provider.class}
+		>
+			{provider.name}
 		</label>
 	</div>
 );
 
 RadioInput.propTypes = {
-	provider: PropTypes.shape( {
+	provider: PropTypes.shape({
 		name: PropTypes.string,
 		class: PropTypes.string,
-	} ),
+	}),
 	onProviderChange: PropTypes.func,
-
 };
 
-const Controls = ( {
+const Controls = ({
 	hasMultipleProviders,
 	providers,
 	selectedProvider,
 	onProviderChange,
-} ) => (
+	disabled,
+}) =>
 	hasMultipleProviders && (
 		<InspectorControls key="inspector">
-			<PanelBody title={ __( 'Tickets Settings', 'event-tickets' ) }>
+			<PanelBody title={__('Tickets Settings', 'event-tickets')}>
 				<PanelRow>
 					<fieldset className="tribe-editor__tickets-controls-provider">
-						<legend>{ __( 'Sell tickets using', 'event-tickets' ) }</legend>
+						<legend>
+							{__('Sell tickets using', 'event-tickets')}
+						</legend>
 						<p>
-							{ message }
-							<em>{ note }</em>
+							{message}
+							<em>{note}</em>
 						</p>
-						{ providers.map( ( provider, key ) => (
+						{providers.map((provider, key) => (
 							<RadioInput
-								key={ `provider-option-${ key + 1 }` }
-								provider={ provider }
-								onProviderChange={ onProviderChange }
-								checked={ selectedProvider === provider.class }
+								key={`provider-option-${key + 1}`}
+								provider={provider}
+								onProviderChange={onProviderChange}
+								checked={selectedProvider === provider.class}
+								disabled={disabled}
 							/>
-						) ) }
+						))}
 					</fieldset>
 				</PanelRow>
 			</PanelBody>
 		</InspectorControls>
-	)
-);
+	);
 
 Controls.propTypes = {
 	hasMultipleProviders: PropTypes.bool,
-	providers: PropTypes.arrayOf( PropTypes.shape( {
-		name: PropTypes.string,
-		class: PropTypes.string,
-	} ) ),
+	providers: PropTypes.arrayOf(
+		PropTypes.shape({
+			name: PropTypes.string,
+			class: PropTypes.string,
+		})
+	),
 	selectedProvider: PropTypes.string,
 	onProviderChange: PropTypes.func,
+	disabled: PropTypes.bool,
 };
 
 export default Controls;

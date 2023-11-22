@@ -62,13 +62,12 @@ const mapStateToProps = (state, ownProps) => {
 	 * @since TBD
 	 *
 	 * @type {Object} mappedProps The properties mapped from the state for the Ticket Type component.
-	 * @type {Object} context The context of the filter.
 	 * @type {Object} context.state The current state.
 	 * @type {Object} context.ownProps The properties passed to the component.
 	 * @type {Object} context.ticketDetails The ticket details.
 	 */
 	mappedProps = applyFilters(
-		'tec.tickets.blocks.ticket.Type.mappedProps',
+		'tec.tickets.blocks.Tickets.Type.mappedProps',
 		mappedProps,
 		{
 			state,
