@@ -195,6 +195,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Fix - Correct the counting logic for the total available number of tickets on the Attendees page. [GTRIA-1126]
+
 = [5.7.0] 2023-11-16 =
 
 * Version - Event Tickets 5.7.0 is only compatible with The Events Calendar 6.2.7 and higher.
