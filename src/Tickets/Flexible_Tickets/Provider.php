@@ -98,6 +98,7 @@ class Provider extends ServiceProvider {
 		$this->container->register( CT1_Integration::class );
 		$this->container->register( CT1_Migration::class );
 		$this->container->register( Editor::class );
+		$this->container->register( Emails::class );
 	}
 
 	/**
@@ -115,6 +116,7 @@ class Provider extends ServiceProvider {
 		$this->container->get( CT1_Integration::class )->unregister();
 		$this->container->get( CT1_Migration::class )->unregister();
 		$this->container->get( Editor::class )->unregister();
+		$this->container->get( Emails::class )->unregister();
 	}
 
 	/**

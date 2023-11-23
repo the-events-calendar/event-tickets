@@ -13,6 +13,7 @@ use TEC\Tickets\Commerce\Reports\Orders as Order_Report;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe__Tickets__Global_Stock as Global_Stock;
+use TEC\Tickets\Commerce\Admin_Tables\Orders as Orders_Table;
 
 /**
  * Class OrderReportTest tests the order report.
@@ -58,9 +59,7 @@ class OrderReportTest extends WPTestCase {
 					'duration'   => 2 * HOUR_IN_SECONDS,
 				] )->create()->ID;
 				$ticket_id = $this->create_tc_ticket( $event_id );
-
-				$this->set_fn_return( 'current_time', '2020-02-22 22:22:22' );
-				$order = $this->create_order( [ $ticket_id => 1 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
+				$order     = $this->create_order( [ $ticket_id => 1 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
 
 				return [ $event_id, [ $event_id, $ticket_id, $order->ID ] ];
 			}
@@ -76,9 +75,7 @@ class OrderReportTest extends WPTestCase {
 				] )->create()->ID;
 				$ticket_id = $this->create_tc_ticket( $event_id, 10 );
 
-				$this->set_fn_return( 'current_time', '2020-02-22 22:22:22' );
 				$order_a = $this->create_order( [ $ticket_id => 2 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
-				$this->set_fn_return( 'current_time', '2020-02-23 22:22:22' );
 				$order_b = $this->create_order( [ $ticket_id => 3 ], [ 'purchaser_email' => 'purchaser@test.com', 'order_status' => Pending::SLUG ] );
 
 				return [ $event_id, [ $event_id, $ticket_id, $order_a->ID, $order_b->ID ] ];
@@ -95,18 +92,14 @@ class OrderReportTest extends WPTestCase {
 				] )->create()->ID;
 				$ticket_id_a = $this->create_tc_ticket( $event_id, 10 );
 				$ticket_id_b = $this->create_tc_ticket( $event_id, 20.50 );
-				
+
 				// Force ticket sorting order for display.
 				wp_update_post( [ 'ID' => $ticket_id_a, 'menu_order' => 0 ] );
 				wp_update_post( [ 'ID' => $ticket_id_b, 'menu_order' => 1 ] );
 
-				$this->set_fn_return( 'current_time', '2020-02-22 22:22:22' );
 				$order_a = $this->create_order( [ $ticket_id_a => 2 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
-				$this->set_fn_return( 'current_time', '2020-02-23 22:22:22' );
 				$order_b = $this->create_order( [ $ticket_id_a => 3 ], [ 'purchaser_email' => 'purchaser@test.com', 'order_status' => Pending::SLUG ] );
-				$this->set_fn_return( 'current_time', '2020-02-24 22:22:22' );
 				$order_c = $this->create_order( [ $ticket_id_b => 1 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
-				$this->set_fn_return( 'current_time', '2020-02-25 22:22:22' );
 				$order_d = $this->create_order( [ $ticket_id_b => 4 ], [ 'purchaser_email' => 'purchaser@test.com', 'order_status' => Pending::SLUG ] );
 
 				return [ $event_id, [ $event_id, $ticket_id_a, $ticket_id_b, $order_a->ID, $order_b->ID, $order_c->ID, $order_d->ID ] ];
@@ -135,16 +128,10 @@ class OrderReportTest extends WPTestCase {
 				wp_update_post( [ 'ID' => $ticket_id_b, 'menu_order' => 1 ] );
 				wp_update_post( [ 'ID' => $ticket_id_c, 'menu_order' => 2 ] );
 
-				// Force order creation time.
-				$this->set_fn_return( 'current_time', '2020-02-22 22:22:22' );
 				$order_a = $this->create_order( [ $ticket_id_a => 1 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
-				$this->set_fn_return( 'current_time', '2020-02-23 22:22:22' );
 				$order_b = $this->create_order( [ $ticket_id_a => 1 ], [ 'purchaser_email' => 'purchaser@test.com', 'order_status' => Pending::SLUG ] );
-				$this->set_fn_return( 'current_time', '2020-02-24 22:22:22' );
 				$order_c = $this->create_order( [ $ticket_id_b => 1 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
-				$this->set_fn_return( 'current_time', '2020-02-25 22:22:22' );
 				$order_d = $this->create_order( [ $ticket_id_b => 1 ], [ 'purchaser_email' => 'purchaser@test.com', 'order_status' => Pending::SLUG ] );
-				$this->set_fn_return( 'current_time', '2020-02-26 22:22:22' );
 				$order_e = $this->create_order( [ $ticket_id_a => 1, $ticket_id_b => 1 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
 
 				return [ $event_id, [ $event_id, $ticket_id_a, $ticket_id_b, $order_a->ID, $order_b->ID, $order_c->ID, $order_d->ID, $order_e->ID ] ];
@@ -175,6 +162,14 @@ class OrderReportTest extends WPTestCase {
 		$html = ob_get_clean();
 
 		$html = $this->placehold_post_ids( $html, $post_ids );
+
+		/**
+		 * Stabilize order dates column.
+		 * @see Orders_Table::column_date()
+		 */
+		$order_date = esc_html( \Tribe__Date_Utils::reformat( current_time( 'mysql' ), \Tribe__Date_Utils::DATEONLYFORMAT ) );
+
+		$html = str_replace( $order_date, '{{order_date}}', $html );
 
 		$this->assertMatchesHtmlSnapshot( $html );
 	}

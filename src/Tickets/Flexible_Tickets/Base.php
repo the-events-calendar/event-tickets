@@ -25,11 +25,12 @@ use TEC\Tickets\Flexible_Tickets\Series_Passes\Reports;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use TEC\Tickets\Admin\Upsell as Ticket_Upsell;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Provider as Series_Provider;
+use WP_Post;
 
 /**
  * Class Base.
  *
- * @since   TBD
+ * @since TBD
  *
  * @package TEC\Tickets\Flexible_Tickets;
  */
@@ -59,6 +60,7 @@ class Base extends Controller {
 	 *
 	 * @param Container   $container   A reference to the Container.
 	 * @param Admin_Views $admin_views A reference to the Admin Views handler for Flexible Tickets.
+	 * @param Reports     $reports     A reference to the Reports handler for Flexible Tickets.
 	 */
 	public function __construct(
 		Container $container,
@@ -171,6 +173,8 @@ class Base extends Controller {
 		], 20, 3 );
 
 		add_filter( 'tribe_template_pre_html:tickets/admin-views/editor/panel/header-image', [ $this, 'hide_header_image_option_from_ticket_settings' ], 10, 5 );
+		add_filter( 'tribe_get_start_date', [ $this, 'filter_start_date_for_series' ], 10, 4 );
+		add_filter( 'tribe_get_end_date', [ $this, 'filter_end_date_for_series' ], 10, 4 );
 	}
 
 	/**
@@ -260,6 +264,9 @@ class Base extends Controller {
 		if ( ! has_action( 'init', [ $series_provider, 'remove_series_from_ticketable_post_types' ] ) ) {
 			add_action( 'init', [ $series_provider, 'remove_series_from_ticketable_post_types' ] );
 		}
+
+		remove_filter( 'tribe_get_start_date', [ $this, 'filter_start_date_for_series' ], 10, 4 );
+		remove_filter( 'tribe_get_end_date', [ $this, 'filter_end_date_for_series' ], 10, 4 );
 	}
 
 	/**
@@ -579,5 +586,61 @@ class Base extends Controller {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Filters the start date for a series to use the start date of the first event in the series.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $start_date The start date.
+	 * @param WP_Post $series The series post object.
+	 * @param bool $display_time Whether to display the time.
+	 * @param string $date_format The date format.
+	 *
+	 * @return string
+	 */
+	public function filter_start_date_for_series( string $start_date, WP_Post $series, bool $display_time, string $date_format ): string {
+		if ( get_post_type( $series ) !== Series_Post_Type::POSTTYPE ) {
+			return $start_date;
+		}
+
+		$first_event = tribe_events()->where( 'series', $series->ID )
+		                             ->order_by( 'start_date', 'ASC' )
+		                             ->per_page( -1 )
+		                             ->first();
+		if ( empty( $first_event ) ) {
+			return '';
+		}
+
+		return tribe_format_date( $first_event->start_date, $display_time, $date_format );
+	}
+
+	/**
+	 * Filters the end date for a series to use the start date of the last event in the series.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $end_date The end date.
+	 * @param WP_Post $series The series post object.
+	 * @param bool $display_time Whether to display the time.
+	 * @param string $date_format The date format.
+	 *
+	 * @return string
+	 */
+	public function filter_end_date_for_series( string $end_date, WP_Post $series, bool $display_time, string $date_format ): string {
+		if ( get_post_type( $series ) !== Series_Post_Type::POSTTYPE ) {
+			return $end_date;
+		}
+
+		$last_event = tribe_events()->where( 'series', $series->ID )
+		                             ->order_by( 'start_date', 'ASC' )
+		                             ->per_page( -1 )
+		                             ->last();
+		if ( empty( $last_event ) ) {
+			return '';
+		}
+
+		return tribe_format_date( $last_event->start_date, $display_time, $date_format );
 	}
 }

@@ -153,7 +153,8 @@ class BaseTest extends Controller_Test_Case {
 	 */
 	public function should_replace_tickets_block_on_events_in_series(): void {
 		$series = static::factory()->post->create( [
-			'post_type' => Series_Post_Type::POSTTYPE,
+			'post_type'  => Series_Post_Type::POSTTYPE,
+			'post_title' => 'Test Series block',
 		] );
 		$pass_1 = $this->create_tc_series_pass( $series, 23 )->ID;
 		$pass_2 = $this->create_tc_series_pass( $series, 89 )->ID;
