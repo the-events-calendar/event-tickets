@@ -598,7 +598,7 @@ class Base extends Controller {
 	 * @param bool $display_time Whether to display the time.
 	 * @param string $date_format The date format.
 	 *
-	 * @return string
+	 * @return string The updated start date.
 	 */
 	public function filter_start_date_for_series( string $start_date, WP_Post $series, bool $display_time, string $date_format ): string {
 		if ( get_post_type( $series ) !== Series_Post_Type::POSTTYPE ) {
@@ -626,7 +626,7 @@ class Base extends Controller {
 	 * @param bool $display_time Whether to display the time.
 	 * @param string $date_format The date format.
 	 *
-	 * @return string
+	 * @return string The updated end date.
 	 */
 	public function filter_end_date_for_series( string $end_date, WP_Post $series, bool $display_time, string $date_format ): string {
 		if ( get_post_type( $series ) !== Series_Post_Type::POSTTYPE ) {
