@@ -34,8 +34,9 @@ foreach ( $tickets as $ticket ) {
 	$tickets_by_types[ $type ][] = $ticket;
 }
 $ticket_totals = [
-	'sold'      => 0,
-	'available' => 0,
+	'sold'             => 0,
+	'available'        => 0,
+	'global_available' => [],
 ];
 foreach ( $tickets_by_types as $type_name => $type_tickets ) {
 	foreach ( $type_tickets as $ticket ) {
@@ -43,12 +44,15 @@ foreach ( $tickets_by_types as $type_name => $type_tickets ) {
 		if ( $ticket_totals['available'] > -1 ) {
 			if ( -1 === $ticket->available() ) {
 				$ticket_totals['available'] = -1;
+			} elseif ( $ticket->global_stock_mode() == 'global' || $ticket->global_stock_mode() == 'capped' ) {
+				$ticket_totals['global_available'][] = $ticket->available();
 			} else {
 				$ticket_totals['available'] += $ticket->available();
 			}
 		}
 	}
 }
+$ticket_totals['available'] += max( $ticket_totals['global_available'] );
 
 ?>
 <div class="welcome-panel-column welcome-panel-middle">
