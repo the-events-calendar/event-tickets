@@ -150,21 +150,6 @@ export default ( state = DEFAULT_STATE, action ) => {
 				...state,
 				type: action.payload.type,
 			};
-		case types.SET_TICKET_TYPE_DESCRIPTION:
-			return {
-				...state,
-				type: action.payload.typeDescription
-			}
-		case types.SET_TICKET_TYPE_ICON_URL:
-			return {
-				...state,
-				type: action.payload.typeIconUrl
-			}
-		case types.SET_TICKET_TYPE_NAME:
-			return {
-				...state,
-				type: action.payload.typeName
-			}
 		default:
 			return state;
 	}

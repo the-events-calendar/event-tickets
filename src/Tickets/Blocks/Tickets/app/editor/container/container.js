@@ -8,6 +8,7 @@ import { compose } from 'redux';
  * WordPress dependencies
  */
 import { select } from '@wordpress/data';
+import { applyFilters } from '@wordpress/hooks';
 
 /**
  * Internal dependencies
@@ -15,7 +16,6 @@ import { select } from '@wordpress/data';
 import Template from './template';
 import { withStore } from '@moderntribe/common/hoc';
 import { selectors } from '@moderntribe/tickets/data/blocks/ticket';
-import { applyFilters } from '@wordpress/hooks';
 import { isTicketEditableFromPost } from '@moderntribe/tickets/data/blocks/ticket/utils';
 import { hasRecurrenceRules } from '@moderntribe/common/utils/recurrence';
 
@@ -61,25 +61,45 @@ const getUneditableTickets = (ownProps) => {
 	);
 };
 
-const mapStateToProps = (state, ownProps) => ({
-	allTicketsFuture: selectors.allTicketsFuture(state),
-	allTicketsPast: selectors.allTicketsPast(state),
-	canCreateTickets: selectors.canCreateTickets(),
-	hasCreatedTickets: selectors.hasCreatedTickets(state),
-	hasOverlay: getHasOverlay(state, ownProps),
-	isSettingsOpen: selectors.getTicketsIsSettingsOpen(state),
-	showAvailability: ownProps.isSelected && selectors.hasCreatedTickets(state),
-	showInactiveBlock: getShowInactiveBlock(state, ownProps),
-	hasATicketSelected: selectors.hasATicketSelected(state),
-	showUneditableTickets: getShowUneditableTickets(state, ownProps),
-	uneditableTickets: getUneditableTickets(ownProps),
-	hasRecurrenceRules: hasRecurrenceRules( state ),
-	postType: select('core/editor').getPostTypeLabel()?.toLowerCase(),
+const mapStateToProps = (state, ownProps) => {
+	let mappedProps = {
+		allTicketsFuture: selectors.allTicketsFuture(state),
+		allTicketsPast: selectors.allTicketsPast(state),
+		canCreateTickets: selectors.canCreateTickets(),
+		hasCreatedTickets: selectors.hasCreatedTickets(state),
+		hasOverlay: getHasOverlay(state, ownProps),
+		isSettingsOpen: selectors.getTicketsIsSettingsOpen(state),
+		showAvailability:
+			ownProps.isSelected && selectors.hasCreatedTickets(state),
+		showInactiveBlock: getShowInactiveBlock(state, ownProps),
+		hasATicketSelected: selectors.hasATicketSelected(state),
+		showUneditableTickets: getShowUneditableTickets(state, ownProps),
+		uneditableTickets: getUneditableTickets(ownProps),
+		hasRecurrenceRules: hasRecurrenceRules(state),
+		postType: select('core/editor').getPostTypeLabel()?.toLowerCase(),
+	};
 
-	// mock data
-	seriesName: 'My Series Test Name',
-	seriesPassLink: 'https://theeventscalendar.com/',
-	hasAssociatedPasses: false,
-} );
+	/**
+	 * Filters the properties mapped from the state for the TicketsContainer component.
+	 *
+	 * @since TBD
+	 *
+	 * @param {Object} mappedProps      The mapped props.
+	 * @param {Object} context.state    The state of the block.
+	 * @param {Object} context.ownProps The props passed to the block.
+	 */
+	mappedProps = applyFilters(
+		'tec.tickets.blocks.Tickets.TicketsContainer.mappedProps',
+		mappedProps,
+		{ state, ownProps }
+	);
+
+	applyFilters(
+		'tec.tickets.blocks.Tickets.TicketsContainer.promptInfo',
+		mappedProps,
+	);
+
+	return mappedProps;
+};
 
 export default compose(withStore(), connect(mapStateToProps))(Template);

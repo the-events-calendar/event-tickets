@@ -19,44 +19,52 @@ import {
 	OrdersActionButton,
 } from '../action-buttons';
 import NotSupportedMessage from '../not-supported-message/container';
-import { ActionDashboard, WarningButton } from '@moderntribe/tickets/elements';
+import { ActionDashboard } from '@moderntribe/tickets/elements';
 import './style.pcss';
-import { hasRecurrenceRules } from '@moderntribe/common/utils/recurrence';
 
-const confirmLabel = __( 'Add a Ticket', 'event-tickets' );
+const confirmLabel = __('Add a Ticket', 'event-tickets');
 
 class TicketsDashboardAction extends PureComponent {
 	static propTypes = {
 		hasCreatedTickets: PropTypes.bool,
 		hasOrdersPage: PropTypes.bool,
-		hasRecurrenceRules: PropTypes.bool,
+		showWarning: PropTypes.bool,
+		showConfirm: PropTypes.bool,
 		onConfirmClick: PropTypes.func,
+		disableSettings: PropTypes.bool,
 	};
 
-	constructor( props ) {
-		super( props );
+	constructor(props) {
+		super(props);
 		this.state = {
 			isWarningOpen: false,
 		};
 	}
 
 	onWarningClick = () => {
-		this.setState( { isWarningOpen: ! this.state.isWarningOpen } );
+		this.setState({ isWarningOpen: !this.state.isWarningOpen });
 	};
 
 	getActions = () => {
 		const {
 			hasCreatedTickets,
 			hasOrdersPage,
+			disableSettings,
 		} = this.props;
 
-		// eslint-disable-next-line react/jsx-key
-		const actions = [ <SettingsActionButton /> ];
-		if ( hasCreatedTickets ) {
-			actions.push( <AttendeesActionButton /> );
+		// Start with an empty set of actions.
+		const actions = [];
 
-			if ( hasOrdersPage ) {
-				actions.push( <OrdersActionButton /> );
+		if (!disableSettings) {
+			// eslint-disable-next-line react/jsx-key
+			actions.push(<SettingsActionButton />);
+		}
+
+		if (hasCreatedTickets) {
+			actions.push(<AttendeesActionButton />);
+
+			if (hasOrdersPage) {
+				actions.push(<OrdersActionButton />);
 			}
 		}
 
@@ -64,23 +72,24 @@ class TicketsDashboardAction extends PureComponent {
 	};
 
 	render() {
-		const { hasRecurrenceRules, isBlockSelected, onConfirmClick } = this.props;
+		const { isBlockSelected, onConfirmClick, showConfirm, showWarning } = this.props;
 
-		const actionDashboardlassName = classNames( 'tribe-common', 'tribe-editor__tickets__action-dashboard', {
-			'tribe-editor__tickets__action-dashboard__no-border-bottom': hasRecurrenceRules && isBlockSelected,
+		const actionDashboardClassName = classNames( 'tribe-common', 'tribe-editor__tickets__action-dashboard', {
+			'tribe-editor__tickets__action-dashboard__no-border-bottom': showWarning && isBlockSelected,
 		});
 
 		return (
 			<Fragment>
 				<ActionDashboard
-					className={ actionDashboardlassName }
-					actions={ this.getActions() }
-					confirmLabel={ confirmLabel }
-					onConfirmClick={ onConfirmClick }
-					showCancel={ false }
+					className={actionDashboardClassName}
+					actions={this.getActions()}
+					confirmLabel={confirmLabel}
+					onConfirmClick={onConfirmClick}
+					showCancel={false}
+					showConfirm={showConfirm}
 				/>
 				{
-					hasRecurrenceRules && isBlockSelected
+					showWarning && isBlockSelected
 					? (
 						<div className="tribe-editor__tickets__action-dashboard__not-supported-message">
 							<div className="tickets-description">

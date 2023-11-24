@@ -137,6 +137,8 @@ class MetaboxTest extends WPTestCase {
 			'post_id'   => $post_id,
 			'ticket_id' => $ticket_id,
 		] );
+		// Depending on the Common versions, the assets might be loaded from ET or TEC; this should not break the tests.
+		$html = str_replace( 'the-events-calendar/common', 'event-tickets/common', $html );
 
 		$this->assertMatchesHtmlSnapshot( $html );
 	}

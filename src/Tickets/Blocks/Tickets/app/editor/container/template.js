@@ -9,14 +9,16 @@ import classNames from 'classnames';
  * Wordpress dependencies
  */
 const { InnerBlocks } = wp.blockEditor;
-import { __, _x } from '@wordpress/i18n';
+import { __, _x, sprintf } from '@wordpress/i18n';
+import { applyFilters } from '@wordpress/hooks';
 
 /**
  * Internal dependencies
  */
 import Availability from '../availability/container';
 import InactiveTicket from '../inactive/inactive';
-import { Card, Notice } from '@moderntribe/tickets/elements';
+import PromptInfo from '../series-pass-notice/container';
+import { Card } from '@moderntribe/tickets/elements';
 import './style.pcss';
 import Uneditable from '../uneditable/container';
 
@@ -26,15 +28,12 @@ const TicketsContainer = ({
 	allTicketsFuture,
 	allTicketsPast,
 	canCreateTickets,
-	hasAssociatedPasses,
 	hasATicketSelected,
 	hasCreatedTickets,
 	hasOverlay,
 	hasRecurrenceRules,
 	isSettingsOpen,
 	postType,
-	seriesName,
-	seriesPassLink,
 	showAvailability,
 	showInactiveBlock,
 	showUneditableTickets,
@@ -49,55 +48,67 @@ const TicketsContainer = ({
 		return null;
 	}
 
-	const renderHelperText = () => (
-		<div className="tickets-row-line">
-			{
-				// translators: %s is the post type name.
-				sprintf( _x( 'Create single tickets for this %s. ', 'event-tickets' ), postType ? postType : '' )
-			}
-			<a className="helper-link " href="https://evnt.is/manage-tickets" target="_blank" rel="noopener noreferrer">{ __( 'Learn more about ticket management', 'event-tickets' ) }</a>
-		</div>
-	);
+	const renderPromptInfo = () => applyFilters(
+		'tec.tickets.blocks.Tickets.TicketsContainer.promptInfo',
+		<PromptInfo />
+	)
 
-	const renderPromptInfo = () => (
-		<div>
-			<Notice
-				description={
-					<div>
-						{ __( 'Create and manage Series Passes from the ', 'event-tickets' ) }
-						<a className="helper-link" href={ seriesPassLink } target="_blank" rel="noopener noreferrer">
-							{
-								// translators: %s is the series name.
-								sprintf( _x( '%s', 'event-tickets' ), seriesName )
-							}
-						</a>
-						{ __( ' Series admin.', 'event-tickets' ) }
-					</div>
-				}
-			/>
-		</div>
-	);
 
 	if (!canCreateTickets) {
-		messages.title = __('There is no ecommerce available', 'event-tickets');
+		messages.title = (
+			<div className="tribe-editor__title__help-messages">
+				<div className="tickets-row-line">
+					{ __('There is no ecommerce available', 'event-tickets') }
+				</div>
+			</div>
+		);
 		messages.description = __(
 			"To create tickets, you'll need to enable an ecommerce solution.",
 			'event-tickets'
 		);
 	} else if (!hasCreatedTickets) {
-		if ( ! hasRecurrenceRules ) {
+		if (!hasRecurrenceRules) {
 			messages.title = (
 				<div className="tribe-editor__title__help-messages">
-					{ renderHelperText() }
+					<div className="tickets-row-line">
+						{
+							_x(
+								'Add a ticket to get started.',
+								'The message displayed when there are no tickets and no recurrence rules.',
+								'event-tickets'
+							)
+						}
+					</div>
 				</div>
 			);
 		} else {
 			messages.title = (
 				<div className="tribe-editor__title__help-messages">
-					{ renderHelperText() }
+					<div className="tickets-row-line">
+						{sprintf(
+							// Translators: %s is the post type name in human readable form.
+							_x(
+								'Create single tickets for this %s. ',
+								'The message displayed when there are no tickets and has recurrence rules.',
+								'event-tickets'
+							),
+							postType ? postType : ''
+						)}
+						<a
+							className="helper-link"
+							href="https://evnt.is/manage-tickets"
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+							{__(
+								'Learn more about ticket management',
+								'event-tickets'
+							)}
+						</a>
+					</div>
 					{ renderPromptInfo() }
 				</div>
-			)
+			);
 		}
 
 		messages.description = __(
@@ -150,18 +161,14 @@ const TicketsContainer = ({
 			{showInactiveBlock && !isSettingsOpen && (
 				<InactiveTicket title={messages.title} />
 			)}
-			{ showUneditableTickets && ! hasATicketSelected && (
+			{ showUneditableTickets && ! hasATicketSelected && hasCreatedTickets && (
 				<>
 					{
-						hasAssociatedPasses
-						? (
-							<div className="tickets-description">
-								<div className="tribe-editor__tickets__container__helper__container">
-									{ renderPromptInfo() }
-								</div>
+						<div className="tickets-description">
+							<div className="tribe-editor__tickets__container__helper__container">
+								{ renderPromptInfo() }
 							</div>
-						)
-						: null
+						</div>
 					}
 					<Uneditable
 						tickets={tickets}

@@ -53,6 +53,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 			'has_attendee_meta' => [ $this, 'filter_by_attendee_meta_existence' ],
 			'currency_code'     => [ $this, 'filter_by_currency_code' ],
 			'is_active'         => [ $this, 'filter_by_active' ],
+			'type'              => [ $this, 'filter_by_type' ],
 		] );
 	}
 
@@ -602,5 +603,31 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 		}
 
 		return parent::create();
+	}
+
+	/**
+	 * Filters the ticket to be returned by the value of the `_type` meta key.
+	 *
+	 * @since TBD
+	 *
+	 * @param string|string[] $type The ticket type or types to filter by.
+	 *
+	 * @return void The query is modified in place.
+	 */
+	public function filter_by_type( $type ) {
+		$hash = substr(md5(microtime()), -5);
+		$types = (array) $type;
+		global $wpdb;
+		$types_set = $wpdb->prepare(
+			implode( "','", $types ),
+			...array_fill( 0, count( $types ), '%s' )
+		);
+
+		// Include tickets that have their `_type` meta set to `default` or that have no `_type` meta.
+		$alias = 'ticket_type_filter_' . $hash;
+		$this->filter_query->join( "LEFT JOIN {$wpdb->postmeta} AS {$alias}
+			 ON {$wpdb->posts}.ID = {$alias}.post_id
+			 AND {$alias}.meta_key = '_type'" );
+		$this->filter_query->where( "COALESCE({$alias}.meta_value, 'default') IN ('" . $types_set . "')" );
 	}
 }

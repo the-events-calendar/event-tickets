@@ -318,6 +318,7 @@ class SingleTicketCest extends BaseRestCest {
 			'supports_attendee_information' => false, //no ET+ installed
 			'price_suffix'                  => null,
 			'iac'                           => 'none',
+			'type'                          => 'default',
 		];
 
 		$I->assertEquals( $expectedJson, $response );
