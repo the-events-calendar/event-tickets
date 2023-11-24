@@ -115,7 +115,7 @@ function filterTicketsContainerMappedProps( mappedProps, { ownProps: { isSelecte
         return mappedProps;
     }
 
-    mappedProps.showInactiveBlock = !mappedProps.hasRecurrenceRules;
+    mappedProps.showInactiveBlock = false;
     mappedProps.showAvailability = isSelected;
 
     return mappedProps;

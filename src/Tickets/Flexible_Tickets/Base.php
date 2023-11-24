@@ -175,6 +175,12 @@ class Base extends Controller {
 		add_filter( 'tribe_template_pre_html:tickets/admin-views/editor/panel/header-image', [ $this, 'hide_header_image_option_from_ticket_settings' ], 10, 5 );
 		add_filter( 'tribe_get_start_date', [ $this, 'filter_start_date_for_series' ], 10, 4 );
 		add_filter( 'tribe_get_end_date', [ $this, 'filter_end_date_for_series' ], 10, 4 );
+
+		// Series should show as ticket-able post types Tickets' settings
+		remove_filter( 'tribe_tickets_settings_post_types', [
+			$this->container->get( Series_Provider::class ),
+			'filter_remove_series_post_type'
+		] );
 	}
 
 	/**
@@ -267,6 +273,12 @@ class Base extends Controller {
 
 		remove_filter( 'tribe_get_start_date', [ $this, 'filter_start_date_for_series' ], 10, 4 );
 		remove_filter( 'tribe_get_end_date', [ $this, 'filter_end_date_for_series' ], 10, 4 );
+
+		// Restore the filter that would prevent Series from being ticket-able in CT1.
+		add_filter( 'tribe_tickets_settings_post_types', [
+			$this->container->get( Series_Provider::class ),
+			'filter_remove_series_post_type'
+		] );
 	}
 
 	/**
