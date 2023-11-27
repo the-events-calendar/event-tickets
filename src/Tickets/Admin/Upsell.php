@@ -43,7 +43,7 @@ class Upsell {
 				'tec-admin__upsell-tec-tickets-capacity-arf'
 			],
 			'text'    => sprintf(
-				// Translators: %s: Link to "Wallet Plus" plugin.
+				// Translators: %s: Link to "Event Tickets Plus" plugin.
 				esc_html__( 'Get individual information collection from each attendee and advanced capacity options with %s' , 'event-tickets' ),
 				''
 			 ),
@@ -146,7 +146,7 @@ class Upsell {
 				'tec-admin__upsell-tec-tickets-wallet-plus'
 			],
 			'text'    => sprintf(
-				// Translators: %s: Link to "Event Tickets Plus" plugin.
+				// Translators: %s: Link to "Wallet Plus" plugin.
 				esc_html__( 'Get additional ticketing flexibility including Apple Wallet and PDF tickets with %s' , 'event-tickets' ),
 				''
 			),
