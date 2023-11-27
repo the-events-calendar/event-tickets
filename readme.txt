@@ -199,6 +199,8 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 * Tweak - Prevented Single Attendee endpoint from throwing a notice on PHP 8+. [ET-1935]
 * Tweak - Attendees listed on the `Your Tickets` section will now match the order they were entered in. [ET-1924]
+* Tweak - Notify users of Wallet Plus availability on attendees page. [ET-1938]
+* Tweak - Notify users of Wallet Plus availability on Tickets Emails settings page. [ET-1937]
 
 = [5.7.0] 2023-11-16 =
 
