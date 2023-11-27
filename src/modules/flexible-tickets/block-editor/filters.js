@@ -2,6 +2,7 @@
  * This file contains all the functions that are used to filter the event block editor
  * in its various parts to support the Flexible Tickets feature.
  */
+import React from "react";
 
 /**
  * Prevents Series Passes from being saved by the Block Editor when editing Events.
@@ -117,6 +118,8 @@ function filterTicketsContainerMappedProps( mappedProps, { ownProps: { isSelecte
 
     mappedProps.showInactiveBlock = false;
     mappedProps.showAvailability = isSelected;
+    const className = 'tec-flexible-tickets';
+    mappedProps.someComponent = (<div className={className}><p>Hello World</p></div>);
 
     return mappedProps;
 }

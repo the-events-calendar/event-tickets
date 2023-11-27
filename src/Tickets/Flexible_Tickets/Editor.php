@@ -164,11 +164,10 @@ class Editor extends Controller {
 		 */
 		$editor_data = apply_filters( 'tec_tickets_flexible_tickets_editor_data', $editor_data );
 
-		if ( $should_load_blocks && $use_block_editor_for_post ) {
-			// Block Editor application will be loaded from the `/build` directory, not `/src/resources/js`.
-			$plugin    = \Tribe__Tickets__Main::instance();
-			$build_url = $plugin->plugin_url . 'build';
+		$plugin    = \Tribe__Tickets__Main::instance();
+		$build_url = $plugin->plugin_url . 'build';
 
+		if ( $should_load_blocks && $use_block_editor_for_post ) {
 			tribe_asset(
 				tribe( 'tickets.main' ),
 				'tec-tickets-flexible-tickets-block-editor-js',
@@ -193,7 +192,7 @@ class Editor extends Controller {
 		tribe_asset(
 			tribe( 'tickets.main' ),
 			'tec-tickets-flexible-tickets-event-classic-editor-js',
-			'flexible-tickets/event-classic-editor.js',
+			$build_url . '/FlexibleTickets/classic-editor.js',
 			[ 'jquery' ],
 			null,
 			[

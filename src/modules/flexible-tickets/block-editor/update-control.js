@@ -4,7 +4,7 @@ import {
     getSeriesProviderFromEvent, getSeriesProviderFromSelection, getSeriesTitleFromEvent, getSeriesTitleFromSelection,
     removeDiscordantProviderNotice,
     showDiscordantProviderNotice, subscribeToSeriesChange
-} from "./series-relationship";
+} from "../utils/series-relationship";
 
 const lockId = 'tec.flexible-tickets.different-ticket-provider';
 
