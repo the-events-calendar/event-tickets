@@ -5,9 +5,6 @@
 
 import { addFilter } from '@wordpress/hooks';
 
-const tecEventDetails = window.tecEventDetails || {};
-const TECFtEditorData = window.TECFtEditorData || {};
-
 /**
  * Prevents Series Passes from being saved by the Block Editor when editing Events.
  *
