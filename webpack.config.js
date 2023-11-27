@@ -62,7 +62,7 @@ const targets = [
 	},
 	{
 		name: 'flexible-tickets-block-editor',
-		entry: './src/modules/flexible-tickets/block-editor.js',
+		entry: './src/Tickets/Blocks/app/flexible-tickets/block-editor/index.js',
 		outputScript: './build/FlexibleTickets/block-editor.min.js',
 		outputStyle: `build/FlexibleTickets/block-editor.${postfix}`,
 		moveFromTo: {
@@ -74,7 +74,7 @@ const targets = [
 	},
 	{
 		name: 'flexible-tickets-classic-editor',
-		entry: './src/modules/flexible-tickets/classic-editor.js',
+		entry: './src/Tickets/Blocks/app/flexible-tickets/classic-editor/index.js',
 		outputScript: './build/FlexibleTickets/classic-editor.min.js',
 		outputStyle: `build/FlexibleTickets/classic-editor.${postfix}`,
 		moveFromTo: {
