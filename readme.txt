@@ -197,6 +197,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [TBD] TBD =
 
+* Tweak - Prevented Single Attendee endpoint from throwing a notice on PHP 8+. [ET-1935]
 * Tweak - Attendees listed on the `Your Tickets` section will now match the order they were entered in. [ET-1924]
 
 = [5.7.0] 2023-11-16 =
