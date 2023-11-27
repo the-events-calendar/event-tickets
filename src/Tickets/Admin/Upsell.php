@@ -113,7 +113,7 @@ class Upsell {
 		echo '<div class="welcome-panel-column welcome-panel-extra">';
 		tribe( Upsell_Notice\Main::class )->render( [
 			'classes' => [
-				'tec-admin__upsell-tec-tickets-wallet-plus'
+				'tec-admin__upsell-tec-tickets-manual-attendees'
 			],
 			'text'    => sprintf(
 				// Translators: %s: Link to "Event Tickets Plus" plugin.
