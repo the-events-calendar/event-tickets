@@ -240,7 +240,7 @@ class Upsell {
 						'tec-admin__upsell-link--underlined'
 					],
 					'text'    => 'Wallet Plus',
-					'url'     => 'https://evnt.is/1bd9',
+					'url'     => 'https://evnt.is/1bd8',
 				],
 			], false ),
 		];
