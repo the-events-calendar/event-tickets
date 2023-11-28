@@ -13,6 +13,7 @@ use TEC\Common\Contracts\Provider\Controller;
 use TEC\Events_Pro\Custom_Tables\V1\Models\Provisional_Post;
 use TEC\Events_Pro\Custom_Tables\V1\Models\Series_Relationship;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Relationship;
+use Tribe\Tickets\Promoter\Triggers\Director;
 use Tribe__Tickets__Tickets as Tickets;
 use Tribe__Events__Main as TEC;
 use Tribe__Tickets__RSVP as RSVP;
@@ -117,7 +118,7 @@ class Editor extends Controller {
 		$should_load_blocks = $this->container->get( 'editor' )->should_load_blocks();
 		// The Editor code will not take Classic Editor into account, reinforce with the function introduced in WP 5.0.
 		$post_id                   = get_the_ID();
-		$normalized_post_id = tribe( Provisional_Post::class )->is_provisional_post_id( $post_id ) ?
+		$normalized_post_id        = tribe( Provisional_Post::class )->is_provisional_post_id( $post_id ) ?
 			tribe( Provisional_Post::class )->get_occurrence_post_id( $post_id )
 			: $post_id;
 		$use_block_editor_for_post = use_block_editor_for_post( $normalized_post_id );
@@ -163,12 +164,15 @@ class Editor extends Controller {
 		 */
 		$editor_data = apply_filters( 'tec_tickets_flexible_tickets_editor_data', $editor_data );
 
+		$plugin    = \Tribe__Tickets__Main::instance();
+		$build_url = $plugin->plugin_url . 'build';
+
 		if ( $should_load_blocks && $use_block_editor_for_post ) {
 			tribe_asset(
 				tribe( 'tickets.main' ),
-				'tec-tickets-flexible-tickets-event-block-editor-js',
-				'flexible-tickets/event-block-editor.js',
-				[ 'jquery' ],
+				'tec-tickets-flexible-tickets-block-editor-js',
+				$build_url . '/FlexibleTickets/block-editor.js',
+				[],
 				null,
 				[
 					'groups'   => [
@@ -180,7 +184,7 @@ class Editor extends Controller {
 					]
 				],
 			);
-			tribe_asset_enqueue( 'tec-tickets-flexible-tickets-event-block-editor-js' );
+			tribe_asset_enqueue( 'tec-tickets-flexible-tickets-block-editor-js' );
 
 			return;
 		}
@@ -188,7 +192,7 @@ class Editor extends Controller {
 		tribe_asset(
 			tribe( 'tickets.main' ),
 			'tec-tickets-flexible-tickets-event-classic-editor-js',
-			'flexible-tickets/event-classic-editor.js',
+			$build_url . '/FlexibleTickets/classic-editor.js',
 			[ 'jquery' ],
 			null,
 			[

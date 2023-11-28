@@ -74,9 +74,11 @@ class TicketsDashboardAction extends PureComponent {
 	render() {
 		const { isBlockSelected, onConfirmClick, showConfirm, showWarning } = this.props;
 
-		const actionDashboardClassName = classNames( 'tribe-common', 'tribe-editor__tickets__action-dashboard', {
+		const actionDashboardClassName = classNames(
+			'tribe-common',
+			'tribe-editor__tickets__action-dashboard', {
 			'tribe-editor__tickets__action-dashboard__no-border-bottom': showWarning && isBlockSelected,
-		});
+		} );
 
 		return (
 			<Fragment>

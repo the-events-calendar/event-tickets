@@ -94,11 +94,6 @@ const mapStateToProps = (state, ownProps) => {
 		{ state, ownProps }
 	);
 
-	applyFilters(
-		'tec.tickets.blocks.Tickets.TicketsContainer.promptInfo',
-		mappedProps,
-	);
-
 	return mappedProps;
 };
 

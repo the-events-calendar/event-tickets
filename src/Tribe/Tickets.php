@@ -2084,14 +2084,29 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				}
 			}
 
-			$global_stock = new Tribe__Tickets__Global_Stock( $post_id );
-			$global_stock = $global_stock->is_enabled() ? $global_stock->get_stock_level() : 0;
+			/*
+			 * The Tickets that should be displayed on a post might not all be directly attached to this post.
+			 * We'll use the Ticket information to get the ID of the post the Ticket is attached to and
+			 * then get the Global Stock for that post.
+			 */
+			$ticket_post_ids = array_reduce( $tickets, static function ( array $post_ids, Tribe__Tickets__Ticket_Object $ticket ) {
+				$ticket_event_id = (int) $ticket->get_event_id();
+				if ( ! in_array( $ticket_event_id, $post_ids, true ) ) {
+					$post_ids[] = $ticket_event_id;
+				}
 
-			$types['tickets']['available'] += $global_stock;
+				return $post_ids;
+			}, [] );
 
-			// If there's at least one ticket with shared capacity
-			if ( ! self::tickets_own_stock( $post_id ) ) {
-				$types['tickets']['stock'] += $global_stock;
+			foreach ( $ticket_post_ids as $ticket_post_id ) {
+				$global_stock                  = new Tribe__Tickets__Global_Stock( $ticket_post_id );
+				$global_stock                  = $global_stock->is_enabled() ? $global_stock->get_stock_level() : 0;
+				$types['tickets']['available'] += $global_stock;
+
+				// If there's at least one ticket with shared capacity add the global stock to the stock total.
+				if ( ! self::tickets_own_stock( $ticket_post_id ) ) {
+					$types['tickets']['stock'] += $global_stock;
+				}
 			}
 
 			/**

@@ -18,7 +18,7 @@ const NotSupportedMessage = ({
 		? (
 			<div className="tribe-editor__not-supported">
 				{
-					__( 'Single tickets are not yet supported on recurring events. ' )
+					__( 'Single tickets are not yet supported on recurring events. ', 'event-tickets' )
 				}
 				<a
 					className="helper-link"
