@@ -113,10 +113,11 @@ addFilter(
  *
  * @since TBD
  *
- * @param {Object} mappedProps                   The properties mapped from the state for the TicketsContainer component.
- * @param {bool}   mappedProps.showInactiveBlock Whether or not to show the inactive block.
- * @param {bool}   mappedProps.showAvailability  Whether or not to show the availability.
- * @param {bool}   ownProps.isSelected           Whether or not the block is selected.
+ * @param {Object} mappedProps                    The properties mapped from the state for the TicketsContainer component.
+ * @param {bool}   mappedProps.showInactiveBlock  Whether or not to show the inactive block.
+ * @param {bool}   mappedProps.showAvailability   Whether or not to show the availability.
+ * @param {bool}   mappedProps.hasRecurrenceRules Whether or not the Event has recurrence rules.
+ * @param {bool}   ownProps.isSelected            Whether or not the block is selected.
  */
 function filterTicketsContainerMappedProps(
 	mappedProps,
@@ -128,7 +129,13 @@ function filterTicketsContainerMappedProps(
 		return mappedProps;
 	}
 
-	mappedProps.showInactiveBlock = false;
+	const hasRecurrenceRules = mappedProps.hasRecurrenceRules;
+	mappedProps.canCreateTickets = hasRecurrenceRules
+		? false
+		: mappedProps.canCreateTickets;
+	mappedProps.showInactiveBlock = hasRecurrenceRules
+		? false
+		: mappedProps.showInactiveBlock;
 	mappedProps.showAvailability = isSelected;
 
 	return mappedProps;
