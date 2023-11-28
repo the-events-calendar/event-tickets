@@ -4,6 +4,7 @@
  */
 
 import { addFilter } from '@wordpress/hooks';
+import SeriesPassNotice from '../../../../Tickets/app/editor/series-pass-notice/container';
 
 /**
  * Prevents Series Passes from being saved by the Block Editor when editing Events.
@@ -118,11 +119,15 @@ addFilter(
  * @param {bool}   mappedProps.showAvailability   Whether or not to show the availability.
  * @param {bool}   mappedProps.hasRecurrenceRules Whether or not the Event has recurrence rules.
  * @param {bool}   ownProps.isSelected            Whether or not the block is selected.
+ * @param {bool}   mappedProps.showWarning        Whether or not the Event has a warning to display.
+ * @param {Object} mappedProps.Warning            Warning component to be displayed in case there is one.
  */
 function filterTicketsContainerMappedProps(
 	mappedProps,
 	{ ownProps: { isSelected = false } }
 ) {
+	mappedProps.showWarning = false;
+
 	const isInSeries = tecEventDetails?.isInSeries;
 
 	if (!isInSeries) {
@@ -130,6 +135,10 @@ function filterTicketsContainerMappedProps(
 	}
 
 	const hasRecurrenceRules = mappedProps.hasRecurrenceRules;
+	const hasSeriesPasses =
+		( TECFtEditorData?.series?.seriesPassesCount || 0 ) > 0;
+	mappedProps.showWarning = hasSeriesPasses && isRecurring;
+
 	mappedProps.canCreateTickets = hasRecurrenceRules
 		? false
 		: mappedProps.canCreateTickets;
@@ -137,6 +146,10 @@ function filterTicketsContainerMappedProps(
 		? false
 		: mappedProps.showInactiveBlock;
 	mappedProps.showAvailability = isSelected;
+
+	if ( showWarning ) {
+		mappedProps.Warning = SeriesPassNotice;
+	}
 
 	return mappedProps;
 }

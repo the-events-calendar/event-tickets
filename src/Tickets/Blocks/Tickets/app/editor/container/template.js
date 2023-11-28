@@ -17,7 +17,6 @@ import { applyFilters } from '@wordpress/hooks';
  */
 import Availability from '../availability/container';
 import InactiveTicket from '../inactive/inactive';
-import PromptInfo from '../series-pass-notice/container';
 import { Card } from '@moderntribe/tickets/elements';
 import './style.pcss';
 import Uneditable from '../uneditable/container';
@@ -37,7 +36,9 @@ const TicketsContainer = ({
 	showAvailability,
 	showInactiveBlock,
 	showUneditableTickets,
+	showWarning,
 	tickets,
+	Warning,
 }) => {
 	const messages = {
 		title: '',
@@ -47,12 +48,6 @@ const TicketsContainer = ({
 	if (isSettingsOpen) {
 		return null;
 	}
-
-	const renderPromptInfo = () => applyFilters(
-		'tec.tickets.blocks.Tickets.TicketsContainer.promptInfo',
-		<PromptInfo />
-	)
-
 
 	if (!canCreateTickets) {
 		messages.title = (
@@ -106,7 +101,7 @@ const TicketsContainer = ({
 							)}
 						</a>
 					</div>
-					{ renderPromptInfo() }
+					{ showWarning ? <Warning /> : null }
 				</div>
 			);
 		}
@@ -166,7 +161,7 @@ const TicketsContainer = ({
 					{
 						<div className="tickets-description">
 							<div className="tribe-editor__tickets__container__helper__container">
-								{ renderPromptInfo() }
+								{ showWarning ? <Warning /> : null }
 							</div>
 						</div>
 					}
