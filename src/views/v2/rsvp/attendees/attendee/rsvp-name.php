@@ -1,10 +1,10 @@
 <?php
 /**
  * Block: RSVP
- * Attendees - Attendee
+ * Attendees - Attendee RSVP Name
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/rsvp/attendees/attendee.php
+ * [your-theme]/tribe/tickets/v2/rsvp/attendees/attendee/rsvp-name.php
  *
  * See more documentation about our Blocks Editor templating system.
  *
@@ -16,17 +16,15 @@
  * @var int $attendee_id The attendee ID.
  *
  * @since 5.7.0
- * @since TBD - Add attendee name and rsvp name templates.
  *
  * @version 5.7.0
  */
 
-if ( empty( $attendees ) ) {
+if ( empty( $attendees ) || empty( $rsvp ) ) {
 	return;
 }
 
 ?>
-<div class="tec-tickets__attendees-list-item-attendee-details">
-	<?php $this->template( 'v2/rsvp/attendees/attendee/name' ); ?>
-	<?php $this->template( 'v2/rsvp/attendees/attendee/rsvp-name' ); ?>
+<div class="tec-tickets__attendees-list-item-attendee-details-rsvp-name">
+	<?php echo wp_kses_post( $rsvp->name ); ?>
 </div>
