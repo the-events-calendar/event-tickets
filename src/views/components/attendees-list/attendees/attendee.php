@@ -9,8 +9,8 @@
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   5.7.0
  * @since   TBD - Add attendee name and ticket details templates.
+ * @since   5.7.0
  *
  * @version TBD
  *

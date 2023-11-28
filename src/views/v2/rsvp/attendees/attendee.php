@@ -15,8 +15,8 @@
  * @var array $attendees List of attendees for the given order.
  * @var int $attendee_id The attendee ID.
  *
- * @since 5.7.0
  * @since TBD - Add attendee name and rsvp name templates.
+ * @since 5.7.0
  *
  * @version 5.7.0
  */
