@@ -73,11 +73,19 @@
 		<div class="tec-tickets__attendees-list">
 							<div class="tec-tickets__attendees-list-item">
 					<div class="tec-tickets__attendees-list-item-attendee-details">
+	<div class="tec-tickets__attendees-list-item-attendee-details-name">
+	Jane Doe</div>
+	<div class="tec-tickets__attendees-list-item-attendee-details-rsvp-name">
 	Test RSVP ticket for 279</div>
+</div>
 				</div>
 							<div class="tec-tickets__attendees-list-item">
 					<div class="tec-tickets__attendees-list-item-attendee-details">
+	<div class="tec-tickets__attendees-list-item-attendee-details-name">
+	Jane Doe</div>
+	<div class="tec-tickets__attendees-list-item-attendee-details-rsvp-name">
 	Test RSVP ticket for 279</div>
+</div>
 				</div>
 					</div>
 	</div>
