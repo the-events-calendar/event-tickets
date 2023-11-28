@@ -615,12 +615,12 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 * @return void The query is modified in place.
 	 */
 	public function filter_by_type( $type ) {
-		$hash = substr(md5(microtime()), -5);
+		$hash  = substr( md5( microtime() ), - 5 );
 		$types = (array) $type;
 		global $wpdb;
 		$types_set = $wpdb->prepare(
-			implode( "','", $types ),
-			...array_fill( 0, count( $types ), '%s' )
+			implode( ",", array_fill( 0, count( $types ), '%s' ) ),
+			...$types
 		);
 
 		// Include tickets that have their `_type` meta set to `default` or that have no `_type` meta.
@@ -628,6 +628,6 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 		$this->filter_query->join( "LEFT JOIN {$wpdb->postmeta} AS {$alias}
 			 ON {$wpdb->posts}.ID = {$alias}.post_id
 			 AND {$alias}.meta_key = '_type'" );
-		$this->filter_query->where( "COALESCE({$alias}.meta_value, 'default') IN ('" . $types_set . "')" );
+		$this->filter_query->where( "COALESCE({$alias}.meta_value, 'default') IN (" . $types_set . ")" );
 	}
 }
