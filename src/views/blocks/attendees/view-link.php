@@ -37,59 +37,15 @@ if ( isset( $hide_view_my_tickets_link ) && tribe_is_truthy( $hide_view_my_ticke
 
 $view      = Tribe__Tickets__Tickets_View::instance();
 $event_id  = $this->get( 'post_id' );
-$event     = get_post( $event_id );
-$post_type = get_post_type_object( $event->post_type );
-$user_id   = get_current_user_id();
 
-$is_event_page = class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::POSTTYPE === $event->post_type;
+$data = $view->get_my_tickets_link_data( $event_id, get_current_user_id() );
 
-$post_type_singular = $post_type ? $post_type->labels->singular_name : _x( 'Post', 'fallback post type singular name', 'event-tickets' );
-$counters           = [];
-$rsvp_count         = $view->count_rsvp_attendees( $event_id, $user_id );
-$ticket_count       = $view->count_ticket_attendees( $event_id, $user_id );
-
-if ( empty( $rsvp_count ) && empty( $ticket_count ) ) {
+if ( ! $data['should_display'] ) {
 	return;
 }
 
-$link       = $view->get_tickets_page_url( $event_id, $is_event_page );
-$link_label = $rsvp_count > 0 && $ticket_count > 0 ? __( 'View all' ) : __( 'View ', 'event-tickets' );
-
-if ( $rsvp_count > 0 ) {
-	// Translators: 1: the number of RSVPs, 2: singular RSVP label, 3: plural RSVP label.
-	$counters[] = sprintf(
-		_n( '%1$d %2$s', '%1$d %3$s', $rsvp_count, 'event-tickets' ),
-		$rsvp_count,
-		tribe_get_rsvp_label_singular( 'my-tickets-view-link' ),
-		tribe_get_rsvp_label_plural( 'my-tickets-view-link' )
-	);
-
-	// Append label on link.
-	if ( empty( $ticket_count ) ) {
-		$link_label .= _n( tribe_get_rsvp_label_singular( 'my-tickets-view-link' ), tribe_get_rsvp_label_plural( 'my-tickets-view-link' ), $rsvp_count, 'event-tickets' );
-	}
-}
-
-if ( $ticket_count > 0 ) {
-	// Translators: 1: the number of Tickets, 2: singular Ticket label, 3: plural Ticket label.
-	$counters[] = sprintf(
-		_n( '%1$d %2$s', '%1$d %3$s', $ticket_count, 'event-tickets' ),
-		$ticket_count,
-		tribe_get_ticket_label_singular( 'my-tickets-view-link' ),
-		tribe_get_ticket_label_plural( 'my-tickets-view-link' )
-	);
-
-	// Append label on link.
-	if ( empty( $rsvp_count ) ) {
-		$link_label .= _n( tribe_get_ticket_label_singular( 'my-tickets-view-link' ), tribe_get_ticket_label_plural( 'my-tickets-view-link' ), $ticket_count, 'event-tickets' );
-	}
-}
-
-// Translators: 1: number of RSVPs and/or Tickets with accompanying ticket type text, 2: post type label
-$message = esc_html( sprintf( __( 'You have %1s for this %2s.', 'event-tickets' ), implode( _x( ' and ', 'separator if there are both RSVPs and Tickets', 'event-tickets' ), $counters ), $post_type_singular ) );
 ?>
-
 <div class="tribe-link-view-attendee">
-	<?php echo $message ?>
-	<a href="<?php echo esc_url( $link ) ?>"><?php echo sprintf( esc_html__( '%s', 'event-tickets' ), $link_label ) ?></a>
+	<?php echo $data['message'] ?>
+	<a href="<?php echo esc_url( $data['link'] ) ?>"><?php echo sprintf( esc_html__( '%s', 'event-tickets' ), $data['link_label'] ) ?></a>
 </div>
