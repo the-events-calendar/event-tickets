@@ -36,7 +36,7 @@ foreach ( $tickets as $ticket ) {
 $ticket_totals = [
 	'sold'             => 0,
 	'available'        => 0,
-	'global_available' => [],
+	'global_available' => [ 0 ],
 ];
 foreach ( $tickets_by_types as $type_name => $type_tickets ) {
 	foreach ( $type_tickets as $ticket ) {
