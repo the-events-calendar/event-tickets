@@ -35,6 +35,12 @@ class Success_Shortcode_Test extends WPTestCase {
 			$modules[ Module::class ] = Module::class;
 			return $modules;
 		} );
+
+		tribe_update_option( 'tickets-commerce-currency-code', 'USD' );
+		tribe_update_option( 'tickets-commerce-currency-decimal-separator', '.' );
+		tribe_update_option( 'tickets-commerce-currency-thousands-separator', ',' );
+		tribe_update_option( 'tickets-commerce-currency-number-of-decimals', '2' );
+		tribe_update_option( 'tickets-commerce-currency-position', 'prefix' );
 	}
 
 	/**
