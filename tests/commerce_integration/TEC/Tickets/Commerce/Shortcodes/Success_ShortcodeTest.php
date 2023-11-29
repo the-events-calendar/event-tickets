@@ -69,7 +69,10 @@ class Success_Shortcode_Test extends WPTestCase {
 	public function create_order_with_ticket_and_attendee( $gateway_order_id ) {
 		// Create a post and a ticket for it.
 		$post_id = $this->factory()->post->create();
-		$tickets_commerce_ticket_id = $this->create_tc_ticket( $post_id );
+		$tickets_commerce_ticket_id = $this->create_tc_ticket( $post_id, 10, [
+			'ticket_name'        => "Test TC ticket",
+			'ticket_description' => "Test TC ticket description",
+		] );
 
 		// Create an order for one ticket.
 		$order = $this->create_order( [ $tickets_commerce_ticket_id => 1 ], [
