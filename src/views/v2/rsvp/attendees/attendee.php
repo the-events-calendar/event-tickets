@@ -18,7 +18,7 @@
  * @since TBD - Add attendee name and rsvp name templates.
  * @since 5.7.0
  *
- * @version 5.7.0
+ * @version TBD
  */
 
 if ( empty( $attendees ) ) {
