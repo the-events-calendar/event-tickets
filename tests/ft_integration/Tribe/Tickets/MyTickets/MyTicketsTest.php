@@ -6,6 +6,8 @@ use Closure;
 use Codeception\TestCase\WPTestCase;
 use Generator;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
+use TEC\Tickets\Flexible_Tickets\Test\Traits\Series_Pass_Factory;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
@@ -17,6 +19,7 @@ class MyTicketsTest extends WPTestCase {
 	use RSVP_Ticket_Maker;
 	use With_Uopz;
 	use Attendee_Maker;
+	use Series_Pass_Factory;
 
 	/**
 	 * Setup a user to avoid 0 user ID.
@@ -161,6 +164,70 @@ class MyTicketsTest extends WPTestCase {
 				$attendee       = $this->create_many_attendees_for_ticket( 1, $rsvp_ticket_id, $event_id, [ 'user_id' => get_current_user_id() ] );
 
 				return [ $event_id ];
+			}
+		];
+
+		yield 'event with 1 series pass and 1 ticket purchased' => [
+			function(): array {
+				$series_id = static::factory()->post->create( [
+					'post_type'  => Series_Post_Type::POSTTYPE,
+					'post_title' => 'Test event with a series pass and single ticket orders',
+				] );
+
+				$event_id = tribe_events()->set_args( [
+					'title'      => 'Test event with a series pass and single ticket orders',
+					'status'     => 'publish',
+					'start_date' => '2021-01-01 10:00:00',
+					'end_date'   => '2021-01-01 12:00:00',
+					'series'     => $series_id,
+				] )->create()->ID;
+
+				$ticket_id      = $this->create_tc_ticket( $event_id, 10 );
+				$series_pass_id = $this->create_tc_series_pass( $series_id, 55 )->ID;
+
+				$attendee = $this->create_many_attendees_for_ticket( 1, $ticket_id, $event_id, [ 'user_id' => get_current_user_id() ] );
+				$attendee = $this->create_many_attendees_for_ticket( 1, $series_pass_id, $event_id, [ 'user_id' => get_current_user_id() ] );
+
+				return [ $event_id ];
+			}
+		];
+
+		yield 'event with 1 series pass and 1 ticket and 1 RSVP purchased' => [
+			function(): array {
+				$series_id = static::factory()->post->create( [
+					'post_type'  => Series_Post_Type::POSTTYPE,
+					'post_title' => 'Test event with a series pass and single ticket orders',
+				] );
+
+				$event_id = tribe_events()->set_args( [
+					'title'      => 'Test event with a series pass and single ticket orders',
+					'status'     => 'publish',
+					'start_date' => '2021-01-01 10:00:00',
+					'end_date'   => '2021-01-01 12:00:00',
+					'series'     => $series_id,
+				] )->create()->ID;
+
+				$ticket_id      = $this->create_tc_ticket( $event_id, 10 );
+				$series_pass_id = $this->create_tc_series_pass( $series_id, 55 )->ID;
+				$rsvp_ticket_id = $this->create_rsvp_ticket( $event_id );
+
+				$attendee = $this->create_many_attendees_for_ticket( 1, $ticket_id, $event_id, [ 'user_id' => get_current_user_id() ] );
+				$attendee = $this->create_many_attendees_for_ticket( 1, $series_pass_id, $event_id, [ 'user_id' => get_current_user_id() ] );
+				$attendee = $this->create_many_attendees_for_ticket( 1, $rsvp_ticket_id, $event_id, [ 'user_id' => get_current_user_id() ] );
+				return [ $event_id ];
+			}
+		];
+
+		yield 'series with 2 series pass purchased' => [
+			function (): array {
+				$series_id = static::factory()->post->create( [
+					'post_type'  => Series_Post_Type::POSTTYPE,
+					'post_title' => 'Test event with a series pass and single ticket orders',
+				] );
+				$series_pass_id = $this->create_tc_series_pass( $series_id, 55 )->ID;
+				$attendee  = $this->create_many_attendees_for_ticket( 2, $series_pass_id, $series_id, [ 'user_id' => get_current_user_id() ] );
+
+				return [ $series_id ];
 			}
 		];
 	}
