@@ -30,6 +30,6 @@ if ( empty( $attendee_name ) ) {
 }
 
 ?>
-<div class="tec-tickets__attendees-list-item-attendee-details-name">
+<div class="tribe-common-b1 tribe-common-b1--bold">
 	<?php echo esc_html( $attendee_name ); ?>
 </div>

@@ -28,5 +28,5 @@ if ( empty( $attendees ) ) {
 ?>
 <div class="tec-tickets__attendees-list-item-attendee-details">
 	<?php $this->template( 'v2/rsvp/attendees/attendee/name' ); ?>
-	<?php $this->template( 'v2/rsvp/attendees/attendee/rsvp-name' ); ?>
+	<?php $this->template( 'v2/rsvp/attendees/attendee/rsvp' ); ?>
 </div>
