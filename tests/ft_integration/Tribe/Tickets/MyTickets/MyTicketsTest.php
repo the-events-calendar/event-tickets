@@ -218,7 +218,20 @@ class MyTicketsTest extends WPTestCase {
 			}
 		];
 
-		yield 'series with 2 series pass purchased' => [
+		yield 'series with 1 series pass purchased' => [
+			function (): array {
+				$series_id = static::factory()->post->create( [
+					'post_type'  => Series_Post_Type::POSTTYPE,
+					'post_title' => 'Test event with a series pass and single ticket orders',
+				] );
+				$series_pass_id = $this->create_tc_series_pass( $series_id, 55 )->ID;
+				$attendee  = $this->create_many_attendees_for_ticket( 1, $series_pass_id, $series_id, [ 'user_id' => get_current_user_id() ] );
+
+				return [ $series_id ];
+			}
+		];
+
+		yield 'series with multiple series pass purchased' => [
 			function (): array {
 				$series_id = static::factory()->post->create( [
 					'post_type'  => Series_Post_Type::POSTTYPE,
