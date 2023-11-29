@@ -701,8 +701,8 @@ class Base extends Controller {
 			return $data;
 		}
 
-		// Process series level link.
-		$data['message']    = str_replace( 'Tickets', 'Passes', $data['message'] );
+		// We are on the series page which only shows series passes, so we just replace the Ticket label with Passes.
+		$data['message']    = str_replace( [ tribe_get_ticket_label_plural(), tribe_get_ticket_label_singular() ], [ 'Passes', 'Pass' ], $data['message'] );
 		$data['link_label'] = __( 'View passes', 'event-tickets' );
 
 		return $data;
