@@ -46,6 +46,6 @@ if ( ! $data['should_display'] ) {
 
 ?>
 <div class="tribe-link-view-attendee">
-	<?php echo $data['message'] ?>
+	<?php echo esc_html( $data['message'] ); ?>
 	<a href="<?php echo esc_url( $data['link'] ) ?>"><?php echo sprintf( esc_html__( '%s', 'event-tickets' ), $data['link_label'] ) ?></a>
 </div>
