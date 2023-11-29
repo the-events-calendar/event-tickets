@@ -511,6 +511,14 @@ export const setTicketIsSelected = ( clientId, isSelected ) => ( {
 	},
 } );
 
+export const setUneditableTickets = ( clientId, uneditableTickets ) => ( {
+	type: types.SET_UNEDITABLE_TICKETS,
+	payload: {
+		clientId,
+		uneditableTickets,
+	}
+} );
+
 //
 // ─── TICKET SAGA ACTIONS ────────────────────────────────────────────────────────
 //

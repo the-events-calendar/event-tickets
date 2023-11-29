@@ -53,14 +53,6 @@ const getShowUneditableTickets = (state, ownProps) => {
 	);
 };
 
-const getUneditableTickets = (ownProps) => {
-	const currentPost = wp.data.select('core/editor').getCurrentPost();
-	const allTickets = ownProps.tickets || [];
-	return allTickets.filter((ticket) =>
-		isTicketEditableFromPost(ticket.id, ticket.type, currentPost)
-	);
-};
-
 const mapStateToProps = (state, ownProps) => {
 	let mappedProps = {
 		allTicketsFuture: selectors.allTicketsFuture(state),
@@ -74,7 +66,7 @@ const mapStateToProps = (state, ownProps) => {
 		showInactiveBlock: getShowInactiveBlock(state, ownProps),
 		hasATicketSelected: selectors.hasATicketSelected(state),
 		showUneditableTickets: getShowUneditableTickets(state, ownProps),
-		uneditableTickets: getUneditableTickets(ownProps),
+		uneditableTickets: selectors.getUneditableTickets(state),
 		hasRecurrenceRules: hasRecurrenceRules(state),
 		postType: select('core/editor').getPostTypeLabel()?.toLowerCase(),
 	};

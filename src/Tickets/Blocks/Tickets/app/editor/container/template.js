@@ -35,7 +35,7 @@ const TicketsContainer = ({
 	showInactiveBlock,
 	hasATicketSelected,
 	showUneditableTickets,
-	tickets,
+	uneditableTickets,
 }) => {
 	const messages = {
 		title: '',
@@ -57,7 +57,7 @@ const TicketsContainer = ({
 			messages.title = (
 				<div>
 					{sprintf(
-						// Translators: %s is the post type name in human readable form.
+						// Translators: %s is the post type name in human-readable form.
 						_x(
 							'Create single tickets for this %s. ',
 							'The message displayed when there are no tickets and no recurrence rules.',
@@ -127,9 +127,9 @@ const TicketsContainer = ({
 			{showInactiveBlock && !isSettingsOpen && (
 				<InactiveTicket title={messages.title} />
 			)}
-			{showUneditableTickets && (
+			{showUneditableTickets && uneditableTickets.length && (
 				<Uneditable
-					tickets={tickets}
+					tickets={uneditableTickets}
 					cardClassName={uneditableClassName}
 				/>
 			)}

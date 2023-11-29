@@ -113,6 +113,11 @@ export default ( state = DEFAULT_STATE, action ) => {
 				...state,
 				tickets: tickets( state.tickets, action ),
 			};
+		case types.SET_UNEDITABLE_TICKETS:
+			return {
+				...state,
+				uneditableTickets: action.payload.uneditableTickets
+			};
 		default:
 			return state;
 	}

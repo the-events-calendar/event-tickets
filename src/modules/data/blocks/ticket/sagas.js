@@ -87,24 +87,39 @@ export function* createMissingTicketBlocks( tickets ) {
 	} );
 }
 
+export function* updateUneditableTickets( uneditableTickets ) {
+
+}
+
 export function* setTicketsInitialState( action ) {
-	const { get } = action.payload;
+	const { clientId, get } = action.payload;
 
 	const currentPost = yield wpSelect( 'core/editor' ).getCurrentPost();
 
 	const header = parseInt( get( 'header', TICKET_HEADER_IMAGE_DEFAULT_STATE.id ), 10 );
 	const sharedCapacity = get( 'sharedCapacity' );
 	// Shape: [ {id: int, type: string}, ... ].
-	const ticketsList = JSON.parse(get( 'tickets', '[]' ));
+	const allTickets = JSON.parse(get( 'tickets', '[]' ));
+
+	const {editableTickets, uneditableTickets} = allTickets.reduce( ( acc, ticket ) => {
+		if ( isTicketEditableFromPost ( ticket.id, ticket.type, currentPost ) ) {
+			acc.editableTickets.push( ticket );
+		} else {
+			acc.uneditableTickets.push( ticket );
+		}
+		return acc;
+	}, { editableTickets: [], uneditableTickets: [] } );
+
+	// Get only the IDs of the tickets that are not in the block list already.
 	const ticketsInBlock = yield select( selectors.getTicketsIdsInBlocks );
-	const ticketsDiff = ticketsList
-		 // Get only the IDs of the tickets that are not in the block list already.
-		.filter( ( item ) => ! includes( ticketsInBlock, item.id ) )
-		// Get only the IDs of the tickets that can be edited from this post.
-		.filter ( ( {id,type} ) => isTicketEditableFromPost ( id, type, currentPost ) );
+	const ticketsDiff = editableTickets.filter ( ( item ) => !includes ( ticketsInBlock, item.id ) );
 
 	if ( ticketsDiff.length >= 1 ) {
 		yield call ( createMissingTicketBlocks, ticketsDiff.map ( ( ticket ) => ticket.id ) );
+	}
+
+	if ( uneditableTickets.length >= 1 ) {
+		yield put ( actions.setUneditableTickets ( clientId, uneditableTickets ) );
 	}
 
 	// Meta value is '0' however fields use empty string as default

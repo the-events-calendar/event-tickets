@@ -175,6 +175,11 @@ export const getTicketsIdsInBlocks = createSelector(
 	}, [] ),
 );
 
+export const getUneditableTickets = createSelector (
+	[ getBlock ],
+	( block ) => block.uneditableTickets || [],
+);
+
 //
 // ─── TICKET SELECTORS ───────────────────────────────────────────────────────────
 //
