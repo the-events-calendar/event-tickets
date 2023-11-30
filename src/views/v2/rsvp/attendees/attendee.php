@@ -26,7 +26,7 @@ if ( empty( $attendees ) ) {
 }
 
 ?>
-<div class="tec-tickets__attendees-list-item-attendee-details">
+<div class="tec-tickets__attendees-list-item-attendee-details tribe-common-b1">
 	<?php $this->template( 'v2/rsvp/attendees/attendee/name' ); ?>
 	<?php $this->template( 'v2/rsvp/attendees/attendee/rsvp' ); ?>
 </div>

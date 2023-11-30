@@ -28,6 +28,6 @@ if ( empty( $attendee ) || empty( $attendee['holder_name'] ) ) {
 }
 
 ?>
-<div class="tribe-common-b1 tribe-common-b1--bold">
+<div class="tec-tickets__attendees-list-item-attendee-details-name tribe-common-b1--bold">
 	<?php echo esc_html( $attendee['holder_name'] ); ?>
 </div>

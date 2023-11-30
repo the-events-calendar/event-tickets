@@ -29,7 +29,7 @@ if ( empty( $order ) || empty( $attendee ) ) {
 }
 
 ?>
-<div class="tec-tickets__attendees-list-item-attendee-details">
+<div class="tec-tickets__attendees-list-item-attendee-details tribe-common-b1">
 	<?php $this->template( 'components/attendees-list/attendees/attendee/name' ); ?>
 	<?php $this->template( 'components/attendees-list/attendees/attendee/ticket' ); ?>
 </div>

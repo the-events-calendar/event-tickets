@@ -25,6 +25,6 @@ if ( empty( $attendees ) || empty( $rsvp ) ) {
 }
 
 ?>
-<div class="tribe-common-b1">
+<div class="tec-tickets__attendees-list-item-attendee-details-rsvp">
 	<?php echo wp_kses_post( $rsvp->name ); ?>
 </div>
