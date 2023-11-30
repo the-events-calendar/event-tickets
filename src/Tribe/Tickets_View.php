@@ -1393,10 +1393,11 @@ class Tribe__Tickets__Tickets_View {
 		$type_label  = '';
 
 		foreach ( $count_by_type as $type => $item ) {
-			if ( $item['count'] === 0 ) {
+			if ( empty( $item['count'] ) ) {
 				continue;
 			}
 
+			// Translators: 1: number of tickets, 2: ticket type label singular, 3: ticket type label plural.
 			$counters[] = sprintf(
 				_n( '%1$d %2$s', '%1$d %3$s', $item['count'], 'event-tickets' ),
 				$item['count'],
@@ -1410,18 +1411,16 @@ class Tribe__Tickets__Tickets_View {
 			$type_count ++;
 		}
 
-		$link_label = $type_count > 1 ? __( 'View all' ) : __( "View $type_label", 'event-tickets' );
+		$link_label = $type_count > 1 ? __( 'View all' ) : __( 'View ' . $type_label, 'event-tickets' );
 
 		// Translators: 1: number of RSVPs and/or Tickets with accompanying ticket type text, 2: post type label
-		$message = esc_html( sprintf( __( 'You have %1s for this %2s.', 'event-tickets' ), implode( _x( ' and ', 'separator if there are more multiple type of tickets.', 'event-tickets' ), $counters ), $post_type_singular ) );
+		$message = esc_html( sprintf( __( 'You have %1$s for this %2$s.', 'event-tickets' ), implode( _x( ' and ', 'separator if there are more multiple type of tickets.', 'event-tickets' ), $counters ), $post_type_singular ) );
 
-		$data = [
-			'total_count'  => $total_count,
-			'message'      => $message,
-			'link_label'   => $link_label,
-			'link'         => $this->get_tickets_page_url( $event_id, $is_event_page ),
+		return [
+			'total_count' => $total_count,
+			'message'     => $message,
+			'link_label'  => $link_label,
+			'link'        => $this->get_tickets_page_url( $event_id, $is_event_page ),
 		];
-
-		return $data;
 	}
 }

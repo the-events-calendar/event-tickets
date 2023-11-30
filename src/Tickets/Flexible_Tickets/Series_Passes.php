@@ -1053,12 +1053,12 @@ class Series_Passes extends Controller {
 		$post_type = get_post_type( $event_id );
 
 		// Only filter Events and Series, skip other post types.
-		if ( $post_type !== TEC::POSTTYPE && $post_type !== Series_Post_Type::POSTTYPE ) {
+		if (  TEC::POSTTYPE !== $post_type && Series_Post_Type::POSTTYPE !== $post_type ) {
 			return $data;
 		}
 
 		// If we are on series page then replace ticket data with series counts.
-		if ( $post_type === Series_Post_Type::POSTTYPE ) {
+		if ( Series_Post_Type::POSTTYPE === $post_type ) {
 			$data['series'] = [
 				'count'    => $data['ticket']['count'],
 				'singular' => __( 'Pass', 'event-tickets' ),
@@ -1080,7 +1080,7 @@ class Series_Passes extends Controller {
 		}
 
 		// Get the tickets purchased by this user and for this series.
-		$view = Tribe__Tickets__Tickets_View::instance();
+		$view              = Tribe__Tickets__Tickets_View::instance();
 		$series_pass_count = $view->count_ticket_attendees( $series, $user_id );
 
 		if ( empty( $series_pass_count ) ) {
