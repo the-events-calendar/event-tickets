@@ -183,7 +183,7 @@ class Base extends Controller {
 			'filter_remove_series_post_type'
 		] );
 
-		add_filter( 'tec_tickets_my_tickets_link_data', [ $this, 'filter_my_tickets_link_data' ], 10, 3 );
+		add_filter( 'tec_tickets_my_tickets_link_ticket_count_by_type', [ $this, 'filter_my_tickets_link_data' ], 10, 3 );
 	}
 
 	/**
@@ -283,7 +283,7 @@ class Base extends Controller {
 			'filter_remove_series_post_type'
 		] );
 
-		remove_filter( 'tec_tickets_my_tickets_link_data', [ $this, 'filter_my_tickets_link_data' ], 10, 3 );
+		remove_filter( 'tec_tickets_my_tickets_link_ticket_count_by_type', [ $this, 'filter_my_tickets_link_data' ], 10, 3 );
 	}
 
 	/**
@@ -670,7 +670,7 @@ class Base extends Controller {
 	 * @param int $event_id              The event ID.
 	 * @param int $user_id               The user ID.
 	 *
-	 * @return array<string, mixed> The updated data.
+	 * @return array<string, array> The updated data.
 	 */
 	public function filter_my_tickets_link_data( array $data, int $event_id, int $user_id ): array {
 		$post_type = get_post_type( $event_id );
@@ -679,31 +679,46 @@ class Base extends Controller {
 		if ( $post_type !== TEC::POSTTYPE && $post_type !== Series_Post_Type::POSTTYPE ) {
 			return $data;
 		}
-		// Process event level link.
-		if ( $post_type === TEC::POSTTYPE ) {
-			$series = tec_series()->where( 'event_post_id', $event_id )->first_id();
 
-			if ( empty( $series ) ) {
-				// Not part of a Series, bail.
-				return $data;
-			}
+		// If we are on series page then replace ticket data with series counts.
+		if ( $post_type === Series_Post_Type::POSTTYPE ) {
+			$data['series'] = [
+				'count'    => $data['ticket']['count'],
+				'singular' => __( 'Pass', 'event-tickets' ),
+				'plural'   => __( 'Passes', 'event-tickets' ),
+			];
 
-			// Get the tickets purchased by this user and for this series.
-			$view = Tribe__Tickets__Tickets_View::instance();
-			$series_pass_count = $view->count_ticket_attendees( $series, $user_id );
-
-			if ( empty( $series_pass_count ) ) {
-				return $data;
-			}
-
-			$data['message'] .= ' You have ' . $series_pass_count . ' series passes. ';
+			// Remove the ticket data.
+			$data['ticket']['count'] = 0;
 
 			return $data;
 		}
 
-		// We are on the series page which only shows series passes, so we just replace the Ticket label with Passes.
-		$data['message']    = str_replace( [ tribe_get_ticket_label_plural(), tribe_get_ticket_label_singular() ], [ 'Passes', 'Pass' ], $data['message'] );
-		$data['link_label'] = __( 'View passes', 'event-tickets' );
+		// Process series pass count for single event.
+		$series = tec_series()->where( 'event_post_id', $event_id )->first_id();
+
+		if ( empty( $series ) ) {
+			// Not part of a Series, bail.
+			return $data;
+		}
+
+		// Get the tickets purchased by this user and for this series.
+		$view = Tribe__Tickets__Tickets_View::instance();
+		$series_pass_count = $view->count_ticket_attendees( $series, $user_id );
+
+		if ( empty( $series_pass_count ) ) {
+			return $data;
+		}
+
+		$data['series'] = [
+			'count'    => $series_pass_count,
+			'singular' => __( 'Pass', 'event-tickets' ),
+			'plural'   => __( 'Passes', 'event-tickets' ),
+		];
+
+		if ( $data['ticket']['count'] > 0 ) {
+			$data['ticket']['count'] -= $series_pass_count;
+		}
 
 		return $data;
 	}
