@@ -72,18 +72,18 @@
 	Your RSVPs</h4>
 		<div class="tec-tickets__attendees-list">
 							<div class="tec-tickets__attendees-list-item">
-					<div class="tec-tickets__attendees-list-item-attendee-details">
-	<div class="tribe-common-b1 tribe-common-b1--bold">
+					<div class="tec-tickets__attendees-list-item-attendee-details tribe-common-b1">
+	<div class="tec-tickets__attendees-list-item-attendee-details-name tribe-common-b1--bold">
 	Jane Doe</div>
-	<div class="tribe-common-b1">
+	<div class="tec-tickets__attendees-list-item-attendee-details-rsvp">
 	Test RSVP ticket for 279</div>
 </div>
 				</div>
 							<div class="tec-tickets__attendees-list-item">
-					<div class="tec-tickets__attendees-list-item-attendee-details">
-	<div class="tribe-common-b1 tribe-common-b1--bold">
+					<div class="tec-tickets__attendees-list-item-attendee-details tribe-common-b1">
+	<div class="tec-tickets__attendees-list-item-attendee-details-name tribe-common-b1--bold">
 	Jane Doe</div>
-	<div class="tribe-common-b1">
+	<div class="tec-tickets__attendees-list-item-attendee-details-rsvp">
 	Test RSVP ticket for 279</div>
 </div>
 				</div>
