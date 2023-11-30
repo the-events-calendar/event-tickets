@@ -1411,7 +1411,8 @@ class Tribe__Tickets__Tickets_View {
 			$type_count ++;
 		}
 
-		$link_label = $type_count > 1 ? __( 'View all' ) : __( 'View ' . $type_label, 'event-tickets' );
+		$type_label = sprintf( __( 'View %s', 'event-tickets' ), $type_label );
+		$link_label = $type_count > 1 ? __( 'View all', 'event-tickets' ) : $type_label;
 
 		// Translators: 1: number of RSVPs and/or Tickets with accompanying ticket type text, 2: post type label
 		$message = esc_html( sprintf( __( 'You have %1$s for this %2$s.', 'event-tickets' ), implode( _x( ' and ', 'separator if there are more multiple type of tickets.', 'event-tickets' ), $counters ), $post_type_singular ) );

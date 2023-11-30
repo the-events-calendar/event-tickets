@@ -1053,7 +1053,7 @@ class Series_Passes extends Controller {
 		$post_type = get_post_type( $event_id );
 
 		// Only filter Events and Series, skip other post types.
-		if (  TEC::POSTTYPE !== $post_type && Series_Post_Type::POSTTYPE !== $post_type ) {
+		if ( TEC::POSTTYPE !== $post_type && Series_Post_Type::POSTTYPE !== $post_type ) {
 			return $data;
 		}
 
