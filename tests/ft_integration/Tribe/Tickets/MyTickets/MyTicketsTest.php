@@ -50,7 +50,7 @@ class MyTicketsTest extends WPTestCase {
 				$post_id = $this->factory()->post->create();
 				//create a rsvp ticket for that post.
 				$rsvp_ticket_id = $this->create_rsvp_ticket( $post_id );
-				$attendee       = $this->create_attendee_for_ticket( $rsvp_ticket_id, $post_id, [ 'user_id' => get_current_user_id() ] );
+				$attendee       = $this->create_attendee_for_ticket( $rsvp_ticket_id, $post_id, [ 'user_id' => get_current_user_id(), ] );
 
 				return [ $post_id ];
 			}
@@ -61,7 +61,7 @@ class MyTicketsTest extends WPTestCase {
 				$post_id = $this->factory()->post->create();
 				//create a rsvp ticket for that post.
 				$rsvp_ticket_id = $this->create_rsvp_ticket( $post_id );
-				$this->create_many_attendees_for_ticket( 3, $rsvp_ticket_id, $post_id, [ 'user_id' => get_current_user_id() ] );
+				$this->create_many_attendees_for_ticket( 3, $rsvp_ticket_id, $post_id, [ 'user_id' => get_current_user_id(), ] );
 
 				return [ $post_id ];
 			}
@@ -72,7 +72,7 @@ class MyTicketsTest extends WPTestCase {
 				$post_id = $this->factory()->post->create();
 				// create a tc ticket..
 				$ticket_id = $this->create_tc_ticket( $post_id, 10 );
-				$attendee  = $this->create_attendee_for_ticket( $ticket_id, $post_id, [ 'user_id' => get_current_user_id() ] );
+				$attendee  = $this->create_attendee_for_ticket( $ticket_id, $post_id, [ 'user_id' => get_current_user_id(), ] );
 
 				return [ $post_id ];
 			}
@@ -83,7 +83,7 @@ class MyTicketsTest extends WPTestCase {
 				$post_id = $this->factory()->post->create();
 				// create a tc ticket..
 				$ticket_id = $this->create_tc_ticket( $post_id, 10 );
-				$attendee  = $this->create_many_attendees_for_ticket( 3,  $ticket_id, $post_id, [ 'user_id' => get_current_user_id() ] );
+				$attendee  = $this->create_many_attendees_for_ticket( 3,  $ticket_id, $post_id, [ 'user_id' => get_current_user_id(), ] );
 
 				return [ $post_id ];
 			}
@@ -94,11 +94,11 @@ class MyTicketsTest extends WPTestCase {
 				$post_id = $this->factory()->post->create();
 				// create a tc ticket..
 				$ticket_id = $this->create_tc_ticket( $post_id, 10 );
-				$attendee  = $this->create_attendee_for_ticket( $ticket_id, $post_id, [ 'user_id' => get_current_user_id() ] );
+				$attendee  = $this->create_attendee_for_ticket( $ticket_id, $post_id, [ 'user_id' => get_current_user_id(), ] );
 
 				// create rsvp ticket.
 				$rsvp_ticket_id = $this->create_rsvp_ticket( $post_id );
-				$attendee       = $this->create_attendee_for_ticket( $rsvp_ticket_id, $post_id, [ 'user_id' => get_current_user_id() ] );
+				$attendee       = $this->create_attendee_for_ticket( $rsvp_ticket_id, $post_id, [ 'user_id' => get_current_user_id(), ] );
 
 				return [ $post_id ];
 			}
@@ -109,11 +109,11 @@ class MyTicketsTest extends WPTestCase {
 				$post_id = $this->factory()->post->create();
 				// create a tc ticket.
 				$ticket_id = $this->create_tc_ticket( $post_id, 10 );
-				$attendee  = $this->create_many_attendees_for_ticket( 2, $ticket_id, $post_id, [ 'user_id' => get_current_user_id() ] );
+				$attendee  = $this->create_many_attendees_for_ticket( 2, $ticket_id, $post_id, [ 'user_id' => get_current_user_id(), ] );
 
 				// create rsvp ticket.
 				$rsvp_ticket_id = $this->create_rsvp_ticket( $post_id );
-				$attendee       = $this->create_many_attendees_for_ticket( 3, $rsvp_ticket_id, $post_id, [ 'user_id' => get_current_user_id() ] );
+				$attendee       = $this->create_many_attendees_for_ticket( 3, $rsvp_ticket_id, $post_id, [ 'user_id' => get_current_user_id(), ] );
 
 				return [ $post_id ];
 			}
@@ -124,11 +124,11 @@ class MyTicketsTest extends WPTestCase {
 				$post_id = $this->factory()->post->create();
 				// create a tc ticket.
 				$ticket_id = $this->create_tc_ticket( $post_id, 10 );
-				$attendee  = $this->create_many_attendees_for_ticket( 1, $ticket_id, $post_id, [ 'user_id' => get_current_user_id() ] );
+				$attendee  = $this->create_many_attendees_for_ticket( 1, $ticket_id, $post_id, [ 'user_id' => get_current_user_id(), ] );
 
 				// create rsvp ticket.
 				$rsvp_ticket_id = $this->create_rsvp_ticket( $post_id );
-				$attendee       = $this->create_many_attendees_for_ticket( 2, $rsvp_ticket_id, $post_id, [ 'user_id' => get_current_user_id() ] );
+				$attendee       = $this->create_many_attendees_for_ticket( 2, $rsvp_ticket_id, $post_id, [ 'user_id' => get_current_user_id(), ] );
 
 				return [ $post_id ];
 			}
@@ -139,11 +139,11 @@ class MyTicketsTest extends WPTestCase {
 				$post_id = $this->factory()->post->create();
 				// create a tc ticket.
 				$ticket_id = $this->create_tc_ticket( $post_id, 10 );
-				$attendee  = $this->create_many_attendees_for_ticket( 2, $ticket_id, $post_id, [ 'user_id' => get_current_user_id() ] );
+				$attendee  = $this->create_many_attendees_for_ticket( 2, $ticket_id, $post_id, [ 'user_id' => get_current_user_id(), ] );
 
 				// create rsvp ticket.
 				$rsvp_ticket_id = $this->create_rsvp_ticket( $post_id );
-				$attendee       = $this->create_many_attendees_for_ticket( 1, $rsvp_ticket_id, $post_id, [ 'user_id' => get_current_user_id() ] );
+				$attendee       = $this->create_many_attendees_for_ticket( 1, $rsvp_ticket_id, $post_id, [ 'user_id' => get_current_user_id(), ] );
 
 				return [ $post_id ];
 			}
@@ -159,11 +159,11 @@ class MyTicketsTest extends WPTestCase {
 				] )->create()->ID;
 				// create a tc ticket.
 				$ticket_id = $this->create_tc_ticket( $event_id, 10 );
-				$attendee  = $this->create_many_attendees_for_ticket( 2, $ticket_id, $event_id, [ 'user_id' => get_current_user_id() ] );
+				$attendee  = $this->create_many_attendees_for_ticket( 2, $ticket_id, $event_id, [ 'user_id' => get_current_user_id(), ] );
 
 				// create rsvp ticket.
 				$rsvp_ticket_id = $this->create_rsvp_ticket( $event_id );
-				$attendee       = $this->create_many_attendees_for_ticket( 1, $rsvp_ticket_id, $event_id, [ 'user_id' => get_current_user_id() ] );
+				$attendee       = $this->create_many_attendees_for_ticket( 1, $rsvp_ticket_id, $event_id, [ 'user_id' => get_current_user_id(), ] );
 
 				return [ $event_id ];
 			}
@@ -215,7 +215,7 @@ class MyTicketsTest extends WPTestCase {
 
 				$order = $this->create_order( [ $ticket_id => 1 ], [ 'purchaser_user_id' => get_current_user_id() ] );
 				$order = $this->create_order( [ $series_pass_id => 1 ], [ 'purchaser_user_id' => get_current_user_id() ] );
-				$attendee = $this->create_many_attendees_for_ticket( 1, $rsvp_ticket_id, $event_id, [ 'user_id' => get_current_user_id() ] );
+				$attendee = $this->create_many_attendees_for_ticket( 1, $rsvp_ticket_id, $event_id, [ 'user_id' => get_current_user_id(), ] );
 				return [ $event_id ];
 			}
 		];
@@ -241,7 +241,7 @@ class MyTicketsTest extends WPTestCase {
 
 				$order = $this->create_order( [ $ticket_id => 2 ], [ 'purchaser_user_id' => get_current_user_id() ] );
 				$order = $this->create_order( [ $series_pass_id => 2 ], [ 'purchaser_user_id' => get_current_user_id() ] );
-				$attendee = $this->create_many_attendees_for_ticket( 2, $rsvp_ticket_id, $event_id, [ 'user_id' => get_current_user_id() ] );
+				$attendee = $this->create_many_attendees_for_ticket( 2, $rsvp_ticket_id, $event_id, [ 'user_id' => get_current_user_id(), ] );
 				return [ $event_id ];
 			}
 		];
@@ -253,7 +253,7 @@ class MyTicketsTest extends WPTestCase {
 					'post_title' => 'Test event with a series pass and single ticket orders',
 				] );
 				$series_pass_id = $this->create_tc_series_pass( $series_id, 55 )->ID;
-				$attendee  = $this->create_many_attendees_for_ticket( 1, $series_pass_id, $series_id, [ 'user_id' => get_current_user_id() ] );
+				$attendee  = $this->create_many_attendees_for_ticket( 1, $series_pass_id, $series_id, [ 'user_id' => get_current_user_id(), ] );
 
 				return [ $series_id ];
 			}
@@ -266,7 +266,7 @@ class MyTicketsTest extends WPTestCase {
 					'post_title' => 'Test event with a series pass and single ticket orders',
 				] );
 				$series_pass_id = $this->create_tc_series_pass( $series_id, 55 )->ID;
-				$attendee  = $this->create_many_attendees_for_ticket( 2, $series_pass_id, $series_id, [ 'user_id' => get_current_user_id() ] );
+				$attendee  = $this->create_many_attendees_for_ticket( 2, $series_pass_id, $series_id, [ 'user_id' => get_current_user_id(), ] );
 
 				return [ $series_id ];
 			}
