@@ -22,13 +22,16 @@ class Upsell {
 	 */
 	public function hooks() {
 		add_action( 'tribe_events_tickets_pre_edit', [ $this, 'maybe_show_capacity_arf' ] );
-		add_action( 'tec_tickets_attendees_event_summary_table_extra', [ $this, 'maybe_show_manual_attendees' ] );
+		add_action( 'tec_tickets_attendees_event_summary_table_extra', [ $this, 'show_on_attendees_page' ] );
 		add_filter( 'tribe_tickets_commerce_settings', [ $this, 'maybe_show_paystack_promo' ] );
+
 		// Display ticket type upsell notice.
 		add_action( 'tribe_template_after_include:tickets/admin-views/editor/ticket-type-default-header', [
 			$this,
 			'render_ticket_type_upsell_notice'
 		], 20, 3 );
+
+		add_filter( 'tec_tickets_emails_settings_template_list', [ $this, 'show_on_emails_settings_page' ] );
 	}
 
 	/**
@@ -63,16 +66,57 @@ class Upsell {
 	}
 
 	/**
-	 * Maybe show upsell for Manual Attendees.
-	 *
-	 * @since 5.5.7 - Added is_admin() to make sure upsells only display within the admin area.
-	 * @since 5.3.4
+	 * Show upsell on Attendees page.
+	 * 
+	 * @since TBD
+	 * 
+	 * @return void
 	 */
-	public function maybe_show_manual_attendees() {
-		// If they already have ET+ activated or are not within the admin area, then bail.
-		if ( class_exists( 'Tribe__Tickets_Plus__Main' ) || ! is_admin() ) {
+	public function show_on_attendees_page() {
+		// If not within the admin area, then bail.
+		if ( ! is_admin() ) {
 			return;
 		}
+
+		$has_tickets_plus = class_exists( '\Tribe__Tickets_Plus__Main', false );
+		$has_wallet_plus  = class_exists( '\TEC\Tickets_Wallet_Plus\Plugin', false );
+
+		// If both Tickets Plus and Wallet Plus are installed, then bail.
+		if ( $has_tickets_plus && $has_wallet_plus ) {
+			return;
+		}
+
+		// If Tickets Plus installed, but not Wallet Plus.
+		if ( $has_tickets_plus && ! $has_wallet_plus ) {
+			$this->show_wallet_plus();
+			return;
+		}
+
+		// If Wallet Plus installed, but not Tickets Plus.
+		if ( ! $has_tickets_plus && $has_wallet_plus ) {
+			$this->maybe_show_manual_attendees();
+			return;
+		}
+
+		// 50% chance of showing either upsell.
+		if ( wp_rand( 0, 1 ) ) {
+			$this->show_wallet_plus();
+			return;
+		}
+
+		$this->maybe_show_manual_attendees();
+	}
+
+	/**
+	 * Maybe show upsell for Manual Attendees.
+	 *
+	 * @since TBD   - Move logic into show_on_attendees_page().
+	 * @since 5.5.7 - Added is_admin() to make sure upsells only display within the admin area.
+	 * @since 5.3.4
+	 * 
+	 * @return void
+	 */
+	public function maybe_show_manual_attendees() {
 
 		echo '<div class="welcome-panel-column welcome-panel-extra">';
 		tribe( Upsell_Notice\Main::class )->render( [
@@ -90,6 +134,36 @@ class Upsell {
 				],
 				'text'    => 'Event Tickets Plus',
 				'url'     => 'https://evnt.is/et-in-app-manual-attendees',
+			],
+		] );
+		echo '</div>';
+	}
+
+	/**
+	 * Maybe show upsell for Wallet Plus.
+	 *
+	 * @since TBD
+	 * 
+	 * @return void
+	 */
+	public function show_wallet_plus() {
+
+		echo '<div class="welcome-panel-column welcome-panel-extra">';
+		tribe( Upsell_Notice\Main::class )->render( [
+			'classes' => [
+				'tec-admin__upsell-tec-tickets-wallet-plus'
+			],
+			'text'    => sprintf(
+				// Translators: %s: Link to "Wallet Plus" plugin.
+				esc_html__( 'Get additional ticketing flexibility including Apple Wallet and PDF tickets with %s' , 'event-tickets' ),
+				''
+			),
+			'link'    => [
+				'classes' => [
+					'tec-admin__upsell-link--underlined'
+				],
+				'text'    => 'Wallet Plus',
+				'url'     => 'https://evnt.is/1bd9',
 			],
 		] );
 		echo '</div>';
@@ -155,5 +229,44 @@ class Upsell {
 	public function render_ticket_type_upsell_notice( string $file, array $name, Template $template ): void {
 		$admin_views = tribe( 'tickets.admin.views' );
 		$admin_views->template( 'flexible-tickets/admin/tickets/editor/upsell-notice' );
+	}
+
+	/**
+	 * Show upsell on Emails Settings page.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $fields Template list settings fields.
+	 *
+	 * @return array Filtered template list settings fields.
+	 */
+	public function show_on_emails_settings_page( $fields ) {
+		// If they already have ET+ activated or are not within the admin area, then bail.
+		if ( class_exists( '\TEC\Tickets_Wallet_Plus\Plugin', false ) || ! is_admin() ) {
+			return $fields;
+		}
+
+		$fields[] = [
+			'type' => 'html',
+			'html'  => tribe( Upsell_Notice\Main::class )->render( [
+				'classes' => [
+					'tec-admin__upsell-tec-tickets-wallet-plus'
+				],
+				'text'    => sprintf(
+					// Translators: %s: Link to "Wallet Plus" plugin.
+					esc_html__( 'Get additional ticketing flexibility including Apple Wallet and PDF tickets with %s' , 'event-tickets' ),
+					''
+				),
+				'link'    => [
+					'classes' => [
+						'tec-admin__upsell-link--underlined'
+					],
+					'text'    => 'Wallet Plus',
+					'url'     => 'https://evnt.is/1bd8',
+				],
+			], false ),
+		];
+
+		return $fields;
 	}
 }
