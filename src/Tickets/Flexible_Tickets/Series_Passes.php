@@ -24,6 +24,7 @@ use Tribe__Events__Main as TEC;
 use Tribe__Repository__Interface as ORM;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Tickets__Tickets as Tickets;
+use Tribe__Tickets__Tickets_View;
 use WP_Post;
 use Tribe__Tickets__Editor__Template as Template;
 
@@ -233,6 +234,8 @@ class Series_Passes extends Controller {
 			'filter_editor_configuration_data'
 		] );
 		add_filter( 'tec_tickets_is_ticket_editable_from_post', [ $this, 'is_ticket_editable_from_post' ], 10, 3 );
+
+		add_filter( 'tec_tickets_my_tickets_link_ticket_count_by_type', [ $this, 'filter_my_tickets_link_data' ], 10, 3 );
 	}
 
 	/**
@@ -310,6 +313,7 @@ class Series_Passes extends Controller {
 			'filter_editor_configuration_data'
 		] );
 		remove_filter( 'tec_tickets_is_ticket_editable_from_post', [ $this, 'is_ticket_editable_from_post' ] );
+		remove_filter( 'tec_tickets_my_tickets_link_ticket_count_by_type', [ $this, 'filter_my_tickets_link_data' ], 10, 3 );
 	}
 
 	/**
@@ -1004,5 +1008,67 @@ class Series_Passes extends Controller {
 	 */
 	public function is_ticket_editable_from_post( bool $is_ticket_editable, int $ticket_id, int $post_id ): bool {
 		return $this->edit->is_ticket_editable_from_post( $is_ticket_editable, $ticket_id, $post_id );
+	}
+
+	/**
+	 * Filters the data for the "My Tickets" link.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $data The data for the "My Tickets" link.
+	 * @param int $event_id              The event ID.
+	 * @param int $user_id               The user ID.
+	 *
+	 * @return array<string, array> The updated data.
+	 */
+	public function filter_my_tickets_link_data( array $data, int $event_id, int $user_id ): array {
+		$post_type = get_post_type( $event_id );
+
+		// Only filter Events and Series, skip other post types.
+		if ( $post_type !== TEC::POSTTYPE && $post_type !== Series_Post_Type::POSTTYPE ) {
+			return $data;
+		}
+
+		// If we are on series page then replace ticket data with series counts.
+		if ( $post_type === Series_Post_Type::POSTTYPE ) {
+			$data['series'] = [
+				'count'    => $data['ticket']['count'],
+				'singular' => __( 'Pass', 'event-tickets' ),
+				'plural'   => __( 'Passes', 'event-tickets' ),
+			];
+
+			// Remove the ticket data.
+			$data['ticket']['count'] = 0;
+
+			return $data;
+		}
+
+		// Process series pass count for single event.
+		$series = tec_series()->where( 'event_post_id', $event_id )->first_id();
+
+		if ( empty( $series ) ) {
+			// Not part of a Series, bail.
+			return $data;
+		}
+
+		// Get the tickets purchased by this user and for this series.
+		$view = Tribe__Tickets__Tickets_View::instance();
+		$series_pass_count = $view->count_ticket_attendees( $series, $user_id );
+
+		if ( empty( $series_pass_count ) ) {
+			return $data;
+		}
+
+		$data['series'] = [
+			'count'    => $series_pass_count,
+			'singular' => __( 'Pass', 'event-tickets' ),
+			'plural'   => __( 'Passes', 'event-tickets' ),
+		];
+
+		if ( $data['ticket']['count'] > 0 ) {
+			$data['ticket']['count'] -= $series_pass_count;
+		}
+
+		return $data;
 	}
 }

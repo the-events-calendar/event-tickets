@@ -1406,7 +1406,7 @@ class Tribe__Tickets__Tickets_View {
 
 			$type_label   = $item['count'] > 1 ? $item['plural'] : $item['singular'];
 			$total_count += $item['count'];
-			
+
 			$type_count ++;
 		}
 
