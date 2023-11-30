@@ -1411,6 +1411,7 @@ class Tribe__Tickets__Tickets_View {
 			$type_count ++;
 		}
 
+		// Translators: 1: singular or plural label for ticket type on My Tickets page link label.
 		$type_label = sprintf( __( 'View %s', 'event-tickets' ), $type_label );
 		$link_label = $type_count > 1 ? __( 'View all', 'event-tickets' ) : $type_label;
 
