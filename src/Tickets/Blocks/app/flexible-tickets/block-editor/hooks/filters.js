@@ -4,7 +4,7 @@
  */
 
 import { addFilter } from '@wordpress/hooks';
-import SeriesPassNotice from '../../../../Tickets/app/editor/series-pass-notice/container';
+import SeriesPassNotice from '../components/series-pass-notice/container';
 
 /**
  * Prevents Series Passes from being saved by the Block Editor when editing Events.
@@ -137,7 +137,7 @@ function filterTicketsContainerMappedProps(
 	const hasRecurrenceRules = mappedProps.hasRecurrenceRules;
 	const hasSeriesPasses =
 		( TECFtEditorData?.series?.seriesPassesCount || 0 ) > 0;
-	mappedProps.showWarning = hasSeriesPasses && isRecurring;
+	mappedProps.showWarning = hasSeriesPasses && hasRecurrenceRules;
 
 	mappedProps.canCreateTickets = hasRecurrenceRules
 		? false
@@ -147,7 +147,7 @@ function filterTicketsContainerMappedProps(
 		: mappedProps.showInactiveBlock;
 	mappedProps.showAvailability = isSelected;
 
-	if ( showWarning ) {
+	if ( mappedProps.showWarning ) {
 		mappedProps.Warning = SeriesPassNotice;
 	}
 

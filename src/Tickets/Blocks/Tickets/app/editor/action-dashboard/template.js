@@ -18,7 +18,7 @@ import {
 	AttendeesActionButton,
 	OrdersActionButton,
 } from '../action-buttons';
-import NotSupportedMessage from '../not-supported-message/container';
+import NotSupportedMessage from '../not-supported-message/template';
 import { ActionDashboard } from '@moderntribe/tickets/elements';
 import './style.pcss';
 

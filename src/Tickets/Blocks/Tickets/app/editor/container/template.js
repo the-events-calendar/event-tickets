@@ -10,7 +10,6 @@ import classNames from 'classnames';
  */
 const { InnerBlocks } = wp.blockEditor;
 import { __, _x, sprintf } from '@wordpress/i18n';
-import { applyFilters } from '@wordpress/hooks';
 
 /**
  * Internal dependencies
