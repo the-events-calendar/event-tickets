@@ -10,6 +10,7 @@ use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 use TEC\Tickets\Flexible_Tickets\Test\Traits\Series_Pass_Factory;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
+use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 
@@ -19,6 +20,7 @@ class MyTicketsTest extends WPTestCase {
 	use RSVP_Ticket_Maker;
 	use With_Uopz;
 	use Attendee_Maker;
+	use Order_Maker;
 	use Series_Pass_Factory;
 
 	/**
@@ -185,8 +187,8 @@ class MyTicketsTest extends WPTestCase {
 				$ticket_id      = $this->create_tc_ticket( $event_id, 10 );
 				$series_pass_id = $this->create_tc_series_pass( $series_id, 55 )->ID;
 
-				$attendee = $this->create_many_attendees_for_ticket( 1, $ticket_id, $event_id, [ 'user_id' => get_current_user_id() ] );
-				$attendee = $this->create_many_attendees_for_ticket( 1, $series_pass_id, $event_id, [ 'user_id' => get_current_user_id() ] );
+				$order = $this->create_order( [ $ticket_id => 1 ], [ 'purchaser_user_id' => get_current_user_id() ] );
+				$order = $this->create_order( [ $series_pass_id => 1 ], [ 'purchaser_user_id' => get_current_user_id() ] );
 
 				return [ $event_id ];
 			}
@@ -211,8 +213,8 @@ class MyTicketsTest extends WPTestCase {
 				$series_pass_id = $this->create_tc_series_pass( $series_id, 55 )->ID;
 				$rsvp_ticket_id = $this->create_rsvp_ticket( $event_id );
 
-				$attendee = $this->create_many_attendees_for_ticket( 1, $ticket_id, $event_id, [ 'user_id' => get_current_user_id() ] );
-				$attendee = $this->create_many_attendees_for_ticket( 1, $series_pass_id, $event_id, [ 'user_id' => get_current_user_id() ] );
+				$order = $this->create_order( [ $ticket_id => 1 ], [ 'purchaser_user_id' => get_current_user_id() ] );
+				$order = $this->create_order( [ $series_pass_id => 1 ], [ 'purchaser_user_id' => get_current_user_id() ] );
 				$attendee = $this->create_many_attendees_for_ticket( 1, $rsvp_ticket_id, $event_id, [ 'user_id' => get_current_user_id() ] );
 				return [ $event_id ];
 			}
