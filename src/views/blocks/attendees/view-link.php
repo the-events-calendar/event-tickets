@@ -40,7 +40,7 @@ $event_id  = $this->get( 'post_id' );
 
 $data = $view->get_my_tickets_link_data( $event_id, get_current_user_id() );
 
-if ( ! $data['should_display'] ) {
+if ( empty( $data['total_count'] ) ) {
 	return;
 }
 
