@@ -220,6 +220,32 @@ class MyTicketsTest extends WPTestCase {
 			}
 		];
 
+		yield 'event with multiple series pass, ticket and RSVPs purchased' => [
+			function(): array {
+				$series_id = static::factory()->post->create( [
+					'post_type'  => Series_Post_Type::POSTTYPE,
+					'post_title' => 'Test event with a series pass and single ticket orders',
+				] );
+
+				$event_id = tribe_events()->set_args( [
+					'title'      => 'Test event with a series pass and single ticket orders',
+					'status'     => 'publish',
+					'start_date' => '2021-01-01 10:00:00',
+					'end_date'   => '2021-01-01 12:00:00',
+					'series'     => $series_id,
+				] )->create()->ID;
+
+				$ticket_id      = $this->create_tc_ticket( $event_id, 10 );
+				$series_pass_id = $this->create_tc_series_pass( $series_id, 55 )->ID;
+				$rsvp_ticket_id = $this->create_rsvp_ticket( $event_id );
+
+				$order = $this->create_order( [ $ticket_id => 2 ], [ 'purchaser_user_id' => get_current_user_id() ] );
+				$order = $this->create_order( [ $series_pass_id => 2 ], [ 'purchaser_user_id' => get_current_user_id() ] );
+				$attendee = $this->create_many_attendees_for_ticket( 2, $rsvp_ticket_id, $event_id, [ 'user_id' => get_current_user_id() ] );
+				return [ $event_id ];
+			}
+		];
+
 		yield 'series with 1 series pass purchased' => [
 			function (): array {
 				$series_id = static::factory()->post->create( [
