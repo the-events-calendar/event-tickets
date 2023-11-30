@@ -151,6 +151,8 @@ class Series_Passes extends Controller {
 		$this->container->singleton( Series_Passes\Metadata::class, Series_Passes\Metadata::class );
 
 		add_filter( 'the_content', [ $this, 'reorder_series_content' ], 0 );
+		add_filter( 'the_content', [ $this, 'skip_rendering_series_content_for_my_tickets_page' ], 1 );
+
 		add_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'render_form_toggle' ] );
 		add_action( 'admin_menu', [ $this, 'enable_reports' ], 20 );
 		add_filter( 'tec_tickets_ticket_panel_data', [ $this, 'update_panel_data' ], 10, 3 );
@@ -247,6 +249,7 @@ class Series_Passes extends Controller {
 	 */
 	public function unregister(): void {
 		remove_filter( 'the_content', [ $this, 'reorder_series_content' ], 0 );
+		remove_filter( 'the_content', [ $this, 'skip_rendering_series_content_for_my_tickets_page' ], 1 );
 		remove_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'render_form_toggle' ] );
 		remove_action( 'admin_menu', [ $this, 'enable_reports' ], 20 );
 		remove_filter( 'tec_tickets_ticket_panel_data', [ $this, 'update_panel_data' ], 10, 3 );
@@ -354,6 +357,31 @@ class Series_Passes extends Controller {
 		add_filter( 'the_content', [ $series_filters, 'inject_content' ], 20 );
 		// It's enough to run this once.
 		remove_filter( 'the_content', [ $this, 'reorder_series_content' ], 0 );
+
+		return $content;
+	}
+
+	/**
+	 * Skip rendering the Series content when on the My Tickets page.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $content The post content.
+	 *
+	 * @return string The filtered post content.
+	 */
+	public function skip_rendering_series_content_for_my_tickets_page( $content ) {
+		// Check if we are on my ticket page.
+		$is_ticket_edit_page = (bool) get_query_var( 'tribe-edit-orders', false );
+		if ( ! $is_ticket_edit_page ) {
+			return $content;
+		}
+
+		$series_filters = $this->container->make( Series_Filters::class );
+		remove_filter( 'the_content', [ $series_filters, 'inject_content' ], 20 );
+
+		// It's enough to run this once.
+		remove_filter( 'the_content', [ $this, 'skip_rendering_series_content_for_my_tickets_page' ], 1 );
 
 		return $content;
 	}
