@@ -308,12 +308,15 @@ class SingleTicketCest extends BaseRestCest {
 				'available'            => 23,
 			],
 			'is_available'                  => true,
-			'cost'                          => '$5.00',
-			'cost_details'                  => [
-				'currency_symbol'   => '$',
-				'currency_position' => 'prefix',
-				'values'            => [ 5 ],
-				'suffix'            => null,
+			'cost'         => '$5.00',
+			'cost_details' => [
+				'currency_symbol'             => '$',
+				'currency_position'           => 'prefix',
+				'values'                      => [ 5 ],
+				'suffix'                      => null,
+				'currency_decimal_separator'  => '.',
+				'currency_decimal_numbers'    => 2,
+				'currency_thousand_separator' => ',',
 			],
 			'supports_attendee_information' => false, //no ET+ installed
 			'price_suffix'                  => null,
