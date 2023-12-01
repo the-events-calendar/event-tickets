@@ -17,6 +17,7 @@ use TEC\Events_Pro\Custom_Tables\V1\Models\Series_Relationship;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 use TEC\Events_Pro\Custom_Tables\V1\Templates\Series_Filters;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Edit;
+use TEC\Tickets\Flexible_Tickets\Series_Passes\Frontend;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Labels;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Meta;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Queries;
@@ -93,7 +94,16 @@ class Series_Passes extends Controller {
 	 *
 	 * @var Edit
 	 */
-	private Edit $edit;
+	private Edit     $edit;
+
+	/**
+	 * A reference to the Series Passes' frontend handler.
+	 *
+	 * @since TBD
+	 *
+	 * @var Frontend
+	 */
+	private Frontend $frontend;
 
 	/**
 	 * Series_Passes constructor.
@@ -106,6 +116,7 @@ class Series_Passes extends Controller {
 	 * @param Metabox                 $metabox                 The Series Passes' metabox handler.
 	 * @param Ticket_Provider_Handler $ticket_provider_handler The Series Passes' ticket provider handler.
 	 * @param Edit                    $edit                    The Series Passes' edit and editor handler.
+	 * @param Frontend                $frontend                The Series Passes' frontend handler.
 	 */
 	public function __construct(
 		Container $container,
@@ -114,7 +125,8 @@ class Series_Passes extends Controller {
 		Metabox $metabox,
 		Ticket_Provider_Handler $ticket_provider_handler,
 		Queries $queries,
-		Edit $edit
+		Edit $edit,
+		Frontend $frontend
 	) {
 		parent::__construct( $container );
 		$this->labels                  = $labels;
@@ -122,7 +134,8 @@ class Series_Passes extends Controller {
 		$this->metabox                 = $metabox;
 		$this->ticket_provider_handler = $ticket_provider_handler;
 		$this->queries                 = $queries;
-		$this->edit = $edit;
+		$this->edit                    = $edit;
+		$this->frontend                = $frontend;
 	}
 
 	/**
@@ -150,6 +163,8 @@ class Series_Passes extends Controller {
 		$this->container->singleton( Series_Passes\Metadata::class, Series_Passes\Metadata::class );
 
 		add_filter( 'the_content', [ $this, 'reorder_series_content' ], 0 );
+		add_filter( 'the_content', [ $this, 'skip_rendering_series_content_for_my_tickets_page' ], 1 );
+
 		add_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'render_form_toggle' ] );
 		add_action( 'admin_menu', [ $this, 'enable_reports' ], 20 );
 		add_filter( 'tec_tickets_ticket_panel_data', [ $this, 'update_panel_data' ], 10, 3 );
@@ -233,6 +248,8 @@ class Series_Passes extends Controller {
 			'filter_editor_configuration_data'
 		] );
 		add_filter( 'tec_tickets_is_ticket_editable_from_post', [ $this, 'is_ticket_editable_from_post' ], 10, 3 );
+
+		add_filter( 'tec_tickets_my_tickets_link_ticket_count_by_type', [ $this, 'filter_my_tickets_link_data' ], 10, 3 );
 	}
 
 	/**
@@ -244,6 +261,7 @@ class Series_Passes extends Controller {
 	 */
 	public function unregister(): void {
 		remove_filter( 'the_content', [ $this, 'reorder_series_content' ], 0 );
+		remove_filter( 'the_content', [ $this, 'skip_rendering_series_content_for_my_tickets_page' ], 1 );
 		remove_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'render_form_toggle' ] );
 		remove_action( 'admin_menu', [ $this, 'enable_reports' ], 20 );
 		remove_filter( 'tec_tickets_ticket_panel_data', [ $this, 'update_panel_data' ], 10, 3 );
@@ -310,6 +328,7 @@ class Series_Passes extends Controller {
 			'filter_editor_configuration_data'
 		] );
 		remove_filter( 'tec_tickets_is_ticket_editable_from_post', [ $this, 'is_ticket_editable_from_post' ] );
+		remove_filter( 'tec_tickets_my_tickets_link_ticket_count_by_type', [ $this, 'filter_my_tickets_link_data' ], 10, 3 );
 	}
 
 	/**
@@ -352,6 +371,19 @@ class Series_Passes extends Controller {
 		remove_filter( 'the_content', [ $this, 'reorder_series_content' ], 0 );
 
 		return $content;
+	}
+
+	/**
+	 * Skip rendering the Series content when on the My Tickets page.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $content The post content.
+	 *
+	 * @return string The filtered post content.
+	 */
+	public function skip_rendering_series_content_for_my_tickets_page( string $content ): string {
+		return $this->frontend->skip_rendering_series_content_for_my_tickets_page( $content );
 	}
 
 	/**
@@ -1004,5 +1036,20 @@ class Series_Passes extends Controller {
 	 */
 	public function is_ticket_editable_from_post( bool $is_ticket_editable, int $ticket_id, int $post_id ): bool {
 		return $this->edit->is_ticket_editable_from_post( $is_ticket_editable, $ticket_id, $post_id );
+	}
+
+	/**
+	 * Filters the data for the "My Tickets" link.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string, mixed> $data The data for the "My Tickets" link.
+	 * @param int $event_id              The event ID.
+	 * @param int $user_id               The user ID.
+	 *
+	 * @return array<string, array> The updated data.
+	 */
+	public function filter_my_tickets_link_data( array $data, int $event_id, int $user_id ): array {
+		return $this->frontend->filter_my_tickets_link_data( $data, $event_id, $user_id );
 	}
 }
