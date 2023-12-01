@@ -6,6 +6,13 @@ use TEC\Events_Pro\Custom_Tables\V1\Templates\Series_Filters;
 use Tribe__Events__Main as TEC;
 use Tribe__Tickets__Tickets_View;
 
+/**
+ * Class Frontend handler.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Flexible_Tickets\Series_Passes;
+ */
 class Frontend {
 	/**
 	 * Filters the data for the "My Tickets" link.
@@ -93,5 +100,4 @@ class Frontend {
 
 		return $content;
 	}
-
 }

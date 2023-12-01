@@ -17,6 +17,7 @@ use TEC\Events_Pro\Custom_Tables\V1\Models\Series_Relationship;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 use TEC\Events_Pro\Custom_Tables\V1\Templates\Series_Filters;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Edit;
+use TEC\Tickets\Flexible_Tickets\Series_Passes\Frontend;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Labels;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Meta;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Queries;
@@ -24,7 +25,6 @@ use Tribe__Events__Main as TEC;
 use Tribe__Repository__Interface as ORM;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Tickets__Tickets as Tickets;
-use Tribe__Tickets__Tickets_View;
 use WP_Post;
 use Tribe__Tickets__Editor__Template as Template;
 
@@ -94,7 +94,16 @@ class Series_Passes extends Controller {
 	 *
 	 * @var Edit
 	 */
-	private Edit $edit;
+	private Edit     $edit;
+
+	/**
+	 * A reference to the Series Passes' frontend handler.
+	 *
+	 * @since TBD
+	 *
+	 * @var Frontend
+	 */
+	private Frontend $frontend;
 
 	/**
 	 * Series_Passes constructor.
@@ -107,6 +116,7 @@ class Series_Passes extends Controller {
 	 * @param Metabox                 $metabox                 The Series Passes' metabox handler.
 	 * @param Ticket_Provider_Handler $ticket_provider_handler The Series Passes' ticket provider handler.
 	 * @param Edit                    $edit                    The Series Passes' edit and editor handler.
+	 * @param Frontend                $frontend                The Series Passes' frontend handler.
 	 */
 	public function __construct(
 		Container $container,
@@ -115,7 +125,8 @@ class Series_Passes extends Controller {
 		Metabox $metabox,
 		Ticket_Provider_Handler $ticket_provider_handler,
 		Queries $queries,
-		Edit $edit
+		Edit $edit,
+		Frontend $frontend
 	) {
 		parent::__construct( $container );
 		$this->labels                  = $labels;
@@ -123,7 +134,8 @@ class Series_Passes extends Controller {
 		$this->metabox                 = $metabox;
 		$this->ticket_provider_handler = $ticket_provider_handler;
 		$this->queries                 = $queries;
-		$this->edit = $edit;
+		$this->edit                    = $edit;
+		$this->frontend                = $frontend;
 	}
 
 	/**
@@ -370,20 +382,8 @@ class Series_Passes extends Controller {
 	 *
 	 * @return string The filtered post content.
 	 */
-	public function skip_rendering_series_content_for_my_tickets_page( $content ) {
-		// Check if we are on my ticket page.
-		$is_ticket_edit_page = (bool) get_query_var( 'tribe-edit-orders', false );
-		if ( ! $is_ticket_edit_page ) {
-			return $content;
-		}
-
-		$series_filters = $this->container->make( Series_Filters::class );
-		remove_filter( 'the_content', [ $series_filters, 'inject_content' ], 20 );
-
-		// It's enough to run this once.
-		remove_filter( 'the_content', [ $this, 'skip_rendering_series_content_for_my_tickets_page' ], 1 );
-
-		return $content;
+	public function skip_rendering_series_content_for_my_tickets_page( string $content ): string {
+		return $this->frontend->skip_rendering_series_content_for_my_tickets_page( $content );
 	}
 
 	/**
@@ -1050,53 +1050,6 @@ class Series_Passes extends Controller {
 	 * @return array<string, array> The updated data.
 	 */
 	public function filter_my_tickets_link_data( array $data, int $event_id, int $user_id ): array {
-		$post_type = get_post_type( $event_id );
-
-		// Only filter Events and Series, skip other post types.
-		if ( TEC::POSTTYPE !== $post_type && Series_Post_Type::POSTTYPE !== $post_type ) {
-			return $data;
-		}
-
-		// If we are on series page then replace ticket data with series counts.
-		if ( Series_Post_Type::POSTTYPE === $post_type ) {
-			$data['series'] = [
-				'count'    => $data['ticket']['count'],
-				'singular' => __( 'Pass', 'event-tickets' ),
-				'plural'   => __( 'Passes', 'event-tickets' ),
-			];
-
-			// Remove the ticket data.
-			$data['ticket']['count'] = 0;
-
-			return $data;
-		}
-
-		// Process series pass count for single event.
-		$series = tec_series()->where( 'event_post_id', $event_id )->first_id();
-
-		if ( empty( $series ) ) {
-			// Not part of a Series, bail.
-			return $data;
-		}
-
-		// Get the tickets purchased by this user and for this series.
-		$view              = Tribe__Tickets__Tickets_View::instance();
-		$series_pass_count = $view->count_ticket_attendees( $series, $user_id );
-
-		if ( empty( $series_pass_count ) ) {
-			return $data;
-		}
-
-		$data['series'] = [
-			'count'    => $series_pass_count,
-			'singular' => __( 'Pass', 'event-tickets' ),
-			'plural'   => __( 'Passes', 'event-tickets' ),
-		];
-
-		if ( $data['ticket']['count'] > 0 ) {
-			$data['ticket']['count'] -= $series_pass_count;
-		}
-
-		return $data;
+		return $this->frontend->filter_my_tickets_link_data( $data, $event_id, $user_id );
 	}
 }
