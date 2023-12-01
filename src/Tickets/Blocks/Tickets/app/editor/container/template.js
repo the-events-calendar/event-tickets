@@ -10,6 +10,7 @@ import classNames from 'classnames';
  */
 const { InnerBlocks } = wp.blockEditor;
 import { __, _x, sprintf } from '@wordpress/i18n';
+import { Spinner } from '@wordpress/components';
 
 /**
  * Internal dependencies
@@ -36,6 +37,7 @@ const TicketsContainer = ({
 	hasATicketSelected,
 	showUneditableTickets,
 	uneditableTickets,
+	uneditableTicketsAreLoading,
 }) => {
 	const messages = {
 		title: '',
@@ -127,8 +129,9 @@ const TicketsContainer = ({
 			{showInactiveBlock && !isSettingsOpen && (
 				<InactiveTicket title={messages.title} />
 			)}
-			{showUneditableTickets && uneditableTickets.length && (
+			{showUneditableTickets && (
 				<Uneditable
+					loading={uneditableTicketsAreLoading}
 					tickets={uneditableTickets}
 					cardClassName={uneditableClassName}
 				/>

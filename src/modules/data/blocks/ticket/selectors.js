@@ -177,7 +177,16 @@ export const getTicketsIdsInBlocks = createSelector(
 
 export const getUneditableTickets = createSelector (
 	[ getBlock ],
-	( block ) => block.uneditableTickets || [],
+	function ( block ) {
+		return block.uneditableTickets || [];
+	},
+);
+
+export const getUneditableTicketsAreLoading = createSelector (
+	[ getBlock ],
+	function ( block ) {
+		return block.uneditableTicketsLoading || false;
+	},
 );
 
 //

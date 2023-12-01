@@ -16,7 +16,6 @@ import { applyFilters } from '@wordpress/hooks';
 import Template from './template';
 import { withStore } from '@moderntribe/common/hoc';
 import { selectors } from '@moderntribe/tickets/data/blocks/ticket';
-import { isTicketEditableFromPost } from '@moderntribe/tickets/data/blocks/ticket/utils';
 import { hasRecurrenceRules } from '@moderntribe/common/utils/recurrence';
 
 const getHasOverlay = (state, ownProps) =>
@@ -67,6 +66,8 @@ const mapStateToProps = (state, ownProps) => {
 		hasATicketSelected: selectors.hasATicketSelected(state),
 		showUneditableTickets: getShowUneditableTickets(state, ownProps),
 		uneditableTickets: selectors.getUneditableTickets(state),
+		uneditableTicketsAreLoading:
+			selectors.getUneditableTicketsAreLoading(state),
 		hasRecurrenceRules: hasRecurrenceRules(state),
 		postType: select('core/editor').getPostTypeLabel()?.toLowerCase(),
 	};
