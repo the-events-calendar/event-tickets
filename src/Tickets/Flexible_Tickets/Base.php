@@ -655,5 +655,4 @@ class Base extends Controller {
 
 		return tribe_format_date( $last_event->start_date, $display_time, $date_format );
 	}
-
 }
