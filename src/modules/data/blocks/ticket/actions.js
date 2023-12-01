@@ -68,6 +68,14 @@ export const setTicketsTempSharedCapacity = ( tempSharedCapacity ) => ( {
 } );
 
 //
+// ─── TICKETS SAGA ACTIONS ────────────────────────────────────────────────────────────
+//
+
+export const updateUneditableTickets = () => ( {
+	type: types.UPDATE_UNEDITABLE_TICKETS,
+} );
+
+//
 // ─── HEADER IMAGE SAGA ACTIONS ──────────────────────────────────────────────────
 //
 
@@ -510,6 +518,18 @@ export const setTicketIsSelected = ( clientId, isSelected ) => ( {
 		isSelected,
 	},
 } );
+
+export const setUneditableTickets = ( uneditableTickets ) => ( {
+	type: types.SET_UNEDITABLE_TICKETS,
+	payload: {
+		uneditableTickets,
+	}
+} );
+
+export const setUneditableTicketsLoading = () => ( {
+	type: types.SET_UNEDITABLE_TICKETS_LOADING
+} );
+
 
 //
 // ─── TICKET SAGA ACTIONS ────────────────────────────────────────────────────────

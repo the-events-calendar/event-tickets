@@ -16,7 +16,6 @@ import { applyFilters } from '@wordpress/hooks';
 import Template from './template';
 import { withStore } from '@moderntribe/common/hoc';
 import { selectors } from '@moderntribe/tickets/data/blocks/ticket';
-import { isTicketEditableFromPost } from '@moderntribe/tickets/data/blocks/ticket/utils';
 import { hasRecurrenceRules } from '@moderntribe/common/utils/recurrence';
 
 const getHasOverlay = (state, ownProps) =>
@@ -53,14 +52,6 @@ const getShowUneditableTickets = (state, ownProps) => {
 	);
 };
 
-const getUneditableTickets = (ownProps) => {
-	const currentPost = wp.data.select('core/editor').getCurrentPost();
-	const allTickets = ownProps.tickets || [];
-	return allTickets.filter((ticket) =>
-		isTicketEditableFromPost(ticket.id, ticket.type, currentPost)
-	);
-};
-
 const mapStateToProps = (state, ownProps) => {
 	let mappedProps = {
 		allTicketsFuture: selectors.allTicketsFuture(state),
@@ -74,7 +65,9 @@ const mapStateToProps = (state, ownProps) => {
 		showInactiveBlock: getShowInactiveBlock(state, ownProps),
 		hasATicketSelected: selectors.hasATicketSelected(state),
 		showUneditableTickets: getShowUneditableTickets(state, ownProps),
-		uneditableTickets: getUneditableTickets(ownProps),
+		uneditableTickets: selectors.getUneditableTickets(state),
+		uneditableTicketsAreLoading:
+			selectors.getUneditableTicketsAreLoading(state),
 		hasRecurrenceRules: hasRecurrenceRules(state),
 		postType: select('core/editor').getPostTypeLabel()?.toLowerCase(),
 	};

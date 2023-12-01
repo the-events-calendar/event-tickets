@@ -10,6 +10,7 @@ import classNames from 'classnames';
  */
 const { InnerBlocks } = wp.blockEditor;
 import { __, _x, sprintf } from '@wordpress/i18n';
+import { Spinner } from '@wordpress/components';
 
 /**
  * Internal dependencies
@@ -35,7 +36,8 @@ const TicketsContainer = ({
 	showInactiveBlock,
 	hasATicketSelected,
 	showUneditableTickets,
-	tickets,
+	uneditableTickets,
+	uneditableTicketsAreLoading,
 }) => {
 	const messages = {
 		title: '',
@@ -57,7 +59,7 @@ const TicketsContainer = ({
 			messages.title = (
 				<div>
 					{sprintf(
-						// Translators: %s is the post type name in human readable form.
+						// Translators: %s is the post type name in human-readable form.
 						_x(
 							'Create single tickets for this %s. ',
 							'The message displayed when there are no tickets and no recurrence rules.',
@@ -129,7 +131,8 @@ const TicketsContainer = ({
 			)}
 			{showUneditableTickets && (
 				<Uneditable
-					tickets={tickets}
+					loading={uneditableTicketsAreLoading}
+					tickets={uneditableTickets}
 					cardClassName={uneditableClassName}
 				/>
 			)}

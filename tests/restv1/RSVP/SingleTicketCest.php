@@ -93,6 +93,9 @@ class SingleTicketCest extends BaseRestCest {
 				'currency_symbol'   => '$',
 				'currency_position' => 'prefix',
 				'values'            => [ 0 ],
+				'currency_decimal_separator'  => '.',
+				'currency_decimal_numbers'    => 2,
+				'currency_thousand_separator' => ',',
 			],
 			'attendees'                     => $ticket_attendees,
 			'supports_attendee_information' => false, // we are on RSVP, no ET+ installed'
@@ -296,6 +299,9 @@ class SingleTicketCest extends BaseRestCest {
 				'currency_position' => 'prefix',
 				'values'            => [ 0 ],
 				'suffix'            => null,
+				'currency_decimal_separator'  => '.',
+				'currency_decimal_numbers'    => 2,
+				'currency_thousand_separator' => ',',
 			],
 			'supports_attendee_information' => false, // we are on RSVP, no ET+ installed'
 			'price_suffix'                  => null,
