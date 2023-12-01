@@ -13,6 +13,6 @@ class SettingsCest {
 		$I->loginAsAdmin();
 
 		$I->amOnAdminPage( '/admin.php?page=tec-tickets-settings' );
-		$I->dontSeeElement( 'input[value="' . Series_Post_Type::POSTTYPE . '"]' );
+		$I->seeElement( 'input[value="' . Series_Post_Type::POSTTYPE . '"]' );
 	}
 }
