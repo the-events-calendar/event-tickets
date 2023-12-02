@@ -83,7 +83,7 @@ class Webhooks extends Abstract_Webhooks {
 	 * @return string|bool|null
 	 */
 	protected function pool_to_get_valid_key( int $max_attempts = 20 ) {
-		$attempts = 0;
+		$attempts  = 0;
 		$valid_key = tribe_get_option( static::$option_is_valid_webhooks, false );
 
 		$remove_settings_from_wp_all_options_cache = static function ( $all_options ) {
@@ -102,7 +102,7 @@ class Webhooks extends Abstract_Webhooks {
 			)
 			&& $attempts < $max_attempts
 		) {
-			usleep( 500 ); // Wait half a second.
+			usleep( 500000 ); // Wait half a second.
 
 			// Resets the cache since we will want to attempt again.
 			tribe_set_var( Settings_Manager::OPTION_CACHE_VAR_NAME, [] );
@@ -110,7 +110,7 @@ class Webhooks extends Abstract_Webhooks {
 
 			$valid_key = tribe_get_option( static::$option_is_valid_webhooks, false );
 
-			$attempts++;
+			$attempts ++;
 		}
 		remove_filter( 'alloptions', $remove_settings_from_wp_all_options_cache, 15 );
 
@@ -129,7 +129,12 @@ class Webhooks extends Abstract_Webhooks {
 		$status = esc_html__( 'Webhooks not validated yet.', 'event-tickets' );
 
 		if ( ! wp_verify_nonce( $nonce, static::$nonce_key_handle_validation ) ) {
-			wp_send_json_error( [ 'updated' => false, 'status' => $status ] );
+			wp_send_json_error(
+				[
+					'updated' => false,
+					'status'  => $status,
+				]
+			);
 			exit;
 		}
 
@@ -139,13 +144,23 @@ class Webhooks extends Abstract_Webhooks {
 
 		if ( empty( $signing_key ) ) {
 			$status = esc_html__( 'Signing Secret cannot be empty.', 'event-tickets' );
-			wp_send_json_success( [ 'is_valid_webhook' => false, 'updated' => false, 'status' => $status ] );
+			wp_send_json_success(
+				[
+					'is_valid_webhook' => false,
+					'updated'          => false,
+					'status'           => $status,
+				]
+			);
 			exit;
 		}
 
 		if ( $signing_key === $stored_key && $current_status === md5( $signing_key ) ) {
 			$status = esc_html__( 'Webhooks were properly validated for sales.', 'event-tickets' );
-			wp_send_json_success( [ 'is_valid_webhook' => true, 'updated' => false, 'status' => $status ] );
+			wp_send_json_success( [
+				'is_valid_webhook' => true,
+				'updated'          => false,
+				'status'           => $status,
+			] );
 			exit;
 		}
 
@@ -153,7 +168,13 @@ class Webhooks extends Abstract_Webhooks {
 		if ( $signing_key === $stored_key && true === $current_status ) {
 			$status = esc_html__( 'Webhooks were properly validated for sales.', 'event-tickets' );
 			tribe_update_option( Webhooks::$option_is_valid_webhooks, md5( tribe_get_option( Webhooks::$option_webhooks_signing_key ) ) );
-			wp_send_json_success( [ 'is_valid_webhook' => true, 'updated' => false, 'status' => $status ] );
+			wp_send_json_success(
+				[
+					'is_valid_webhook' => true,
+					'updated'          => false,
+					'status'           => $status,
+				]
+			);
 			exit;
 		}
 
@@ -168,7 +189,13 @@ class Webhooks extends Abstract_Webhooks {
 			// payment creation failed
 			$status = esc_html__( 'Could not connect to Stripe for validation. Please check your connection configuration.', 'event-tickets' );
 			tribe_update_option( static::$option_webhooks_signing_key, $stored_key );
-			wp_send_json_success( [ 'is_valid_webhook' => false, 'updated' => false, 'status' => $status ] );
+			wp_send_json_success(
+				[
+					'is_valid_webhook' => false,
+					'updated'          => false,
+					'status'           => $status,
+				]
+			);
 			exit;
 		}
 
@@ -180,18 +207,18 @@ class Webhooks extends Abstract_Webhooks {
 		 * @param int $max_attempts How many attempts, each one takes half a second. Defaults to 20, total of 10 seconds of polling.
 		 */
 		$max_attempts = (int) apply_filters( 'tec_tickets_commerce_gateway_stripe_webhook_valid_key_polling_attempts', 20 );
-		$valid_key = $this->pool_to_get_valid_key( $max_attempts );
+		$valid_key    = $this->pool_to_get_valid_key( $max_attempts );
 
 		if ( false === $valid_key ) {
-			$status = esc_html__( 'We have not received any Stripe events yet. Please wait a few seconds and refresh the page.', 'event-tickets' );
+			$status   = esc_html__( 'We have not received any Stripe events yet. Please wait a few seconds and refresh the page.', 'event-tickets' );
 			$is_valid = false;
 		} elseif ( $valid_key === md5( $signing_key ) ) {
-			$status = esc_html__( 'Webhooks were properly validated for sales.', 'event-tickets' );
+			$status   = esc_html__( 'Webhooks were properly validated for sales.', 'event-tickets' );
 			$is_valid = true;
 		} else {
-			$status = esc_html__( 'This key has not been used in the latest events received. If you are setting up a new key, this status will be properly updated as soon as a new event is received.', 'event-tickets' );
+			$status   = esc_html__( 'This key has not been used in the latest events received. If you are setting up a new key, this status will be properly updated as soon as a new event is received.', 'event-tickets' );
 			$is_valid = false;
-			$updated = true;
+			$updated  = true;
 		}
 
 		wp_send_json_success( [ 'is_valid_webhook' => $is_valid, 'updated' => $updated, 'status' => $status ] );
@@ -277,15 +304,15 @@ class Webhooks extends Abstract_Webhooks {
 			'tickets-commerce-gateway-settings-group-description-webhook' => [
 				'type' => 'html',
 				'html' => '<p class="tec-tickets__admin-settings-tickets-commerce-gateway-group-description-stripe-webhooks contained">' .
-							wp_kses_post(
-								sprintf(
-									// Translators: %1$s A link to the KB article. %2$s closing `</a>` link.
-									__( 'Setting up webhooks will enable you to receive notifications on charge statuses and keep order information up to date for asynchronous payments. %1$sLearn more%2$s', 'event-tickets' ),
-									'<a target="_blank" rel="noopener noreferrer" href="https://evnt.is/1b3p">',
-									'</a>'
-								)
-							)
-							. '</p><div class="clear"></div>',
+				          wp_kses_post(
+					          sprintf(
+					          // Translators: %1$s A link to the KB article. %2$s closing `</a>` link.
+						          __( 'Setting up webhooks will enable you to receive notifications on charge statuses and keep order information up to date for asynchronous payments. %1$sLearn more%2$s', 'event-tickets' ),
+						          '<a target="_blank" rel="noopener noreferrer" href="https://evnt.is/1b3p">',
+						          '</a>'
+					          )
+				          )
+				          . '</p><div class="clear"></div>',
 			],
 			static::$option_webhooks_value                                => [
 				'type'       => 'text',

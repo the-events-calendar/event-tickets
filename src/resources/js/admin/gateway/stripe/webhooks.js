@@ -161,6 +161,11 @@ tribe.tickets.commerce.gateway.stripe.webhooks = {};
 		const $statusLabel = $tooltip.find( obj.selectors.statusLabel );
 		const $saveButton = $( obj.selectors.saveButton );
 
+		// Do not make any attempts when empty.
+		if ( $field.val().trim() === '' ) {
+			return;
+		}
+
 		$field.prop( 'disabled', true );
 		$saveButton.prop( 'disabled', true );
 
