@@ -156,11 +156,13 @@ class Webhooks extends Abstract_Webhooks {
 
 		if ( $signing_key === $stored_key && $current_status === md5( $signing_key ) ) {
 			$status = esc_html__( 'Webhooks were properly validated for sales.', 'event-tickets' );
-			wp_send_json_success( [
-				'is_valid_webhook' => true,
-				'updated'          => false,
-				'status'           => $status,
-			] );
+			wp_send_json_success(
+				[
+					'is_valid_webhook' => true,
+					'updated'          => false,
+					'status'           => $status,
+				]
+			);
 			exit;
 		}
 
@@ -304,15 +306,15 @@ class Webhooks extends Abstract_Webhooks {
 			'tickets-commerce-gateway-settings-group-description-webhook' => [
 				'type' => 'html',
 				'html' => '<p class="tec-tickets__admin-settings-tickets-commerce-gateway-group-description-stripe-webhooks contained">' .
-				          wp_kses_post(
-					          sprintf(
-					          // Translators: %1$s A link to the KB article. %2$s closing `</a>` link.
-						          __( 'Setting up webhooks will enable you to receive notifications on charge statuses and keep order information up to date for asynchronous payments. %1$sLearn more%2$s', 'event-tickets' ),
-						          '<a target="_blank" rel="noopener noreferrer" href="https://evnt.is/1b3p">',
-						          '</a>'
-					          )
-				          )
-				          . '</p><div class="clear"></div>',
+							wp_kses_post(
+								sprintf(
+									// Translators: %1$s A link to the KB article. %2$s closing `</a>` link.
+									__( 'Setting up webhooks will enable you to receive notifications on charge statuses and keep order information up to date for asynchronous payments. %1$sLearn more%2$s', 'event-tickets' ),
+									'<a target="_blank" rel="noopener noreferrer" href="https://evnt.is/1b3p">',
+									'</a>'
+								)
+							)
+							. '</p><div class="clear"></div>',
 			],
 			static::$option_webhooks_value                                => [
 				'type'       => 'text',
