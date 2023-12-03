@@ -2,7 +2,6 @@
  * External dependencies
  */
 import React from 'react';
-import PropTypes from 'prop-types';
 
 /**
  * Wordpress dependencies
@@ -25,10 +24,6 @@ const NotSupportedMessage = () => {
 			</a>
 		</div>
 	);
-};
-
-NotSupportedMessage.propTypes = {
-	isBlockSelected: PropTypes.bool,
 };
 
 export default NotSupportedMessage;
