@@ -9,14 +9,16 @@ import classNames from 'classnames';
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Button } from '@wordpress/components';
 
 /**
  * Internal dependencies
  */
+import { Card } from '@moderntribe/tickets/elements';
+import NotSupportedMessage from './not-supported-message/template';
 import TicketsDashboard from './dashboard/container';
 import TicketsContainer from './container/container';
 import TicketControls from './controls/container';
+import Uneditable from './uneditable/container';
 import './style.pcss';
 
 class Tickets extends PureComponent {
@@ -30,6 +32,8 @@ class Tickets extends PureComponent {
 		isSettingsOpen: PropTypes.bool,
 		noTicketsOnRecurring: PropTypes.bool,
 		onBlockUpdate: PropTypes.func,
+		showWarning: PropTypes.bool,
+		Warning: PropTypes.elementType,
 	};
 
 	componentDidMount() {
@@ -72,39 +76,45 @@ class Tickets extends PureComponent {
 	}
 
 	renderBlockNotSupported() {
-		const { clientId } = this.props;
+		const {
+			attributes: { tickets: ticketsJSON = '[]' },
+			showUneditableTickets,
+			showWarning,
+			Warning,
+		} = this.props;
+
+		let tickets = [];
+		try {
+			tickets = JSON.parse( ticketsJSON ) || [];
+		} catch ( e ) {
+			// Do nothing.
+		}
+
 		return (
-			<div className="tribe-editor__not-supported-message">
-				<p className="tribe-editor__not-supported-message-text">
-					{__(
-						'Tickets are not yet supported for on recurring events.',
-						'event-tickets'
-					)}
-					<br />
-					<a
-						className="tribe-editor__not-supported-message-link"
-						href="https://evnt.is/1b7a"
-						target="_blank"
-						rel="noopener noreferrer"
-					>
-						{__(
-							'Read about our plans for future features.',
-							'event-tickets'
-						)}
-					</a>
-					<br />
-					<Button
-						variant="secondary"
-						onClick={() =>
-							wp.data
-								.dispatch('core/block-editor')
-								.removeBlock(clientId)
-						}
-					>
-						{__('Remove block', 'event-tickets')}
-					</Button>
-				</p>
-			</div>
+			<>
+				<Card
+					className="tribe-editor__card tribe-editor__not-supported-message"
+					header={ __( 'Tickets', 'event-tickets' ) }
+				>
+					<div className="tribe-editor__title__help-messages">
+						{ showWarning && ( <Warning /> ) }
+					</div>
+					{
+						showUneditableTickets && (
+							<Uneditable cardClassName="tribe-editor__uneditable__card" tickets={ tickets } />
+						)
+					}
+					{
+						showWarning && (
+							<div className="tickets-description">
+								<div className="tribe-editor__tickets__container__helper__container">
+									<NotSupportedMessage />
+								</div>
+							</div>
+						)
+					}
+				</Card>
+			</>
 		);
 	}
 
