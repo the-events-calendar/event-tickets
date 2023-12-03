@@ -48,6 +48,31 @@ const TicketsContainer = ({
 		return null;
 	}
 
+	const renderCreateSingleTicketMessage = () => (
+		<div className="tickets-row-line">
+			{ sprintf(
+				// Translators: %s is the post type name in human readable form.
+				_x(
+					'Create single tickets for this %s. ',
+					'The message displayed when there are no tickets and has recurrence rules.',
+					'event-tickets'
+				),
+				postType ? postType : ''
+			) }
+			<a
+				className="helper-link"
+				href="https://evnt.is/manage-tickets"
+				target="_blank"
+				rel="noopener noreferrer"
+			>
+				{ __(
+					'Learn more about ticket management',
+					'event-tickets'
+				) }
+			</a>
+		</div>
+	);
+
 	if (!canCreateTickets) {
 		messages.title = (
 			<div className="tribe-editor__title__help-messages">
@@ -64,42 +89,13 @@ const TicketsContainer = ({
 		if (!hasRecurrenceRules) {
 			messages.title = (
 				<div className="tribe-editor__title__help-messages">
-					<div className="tickets-row-line">
-						{
-							_x(
-								'Add a ticket to get started.',
-								'The message displayed when there are no tickets and no recurrence rules.',
-								'event-tickets'
-							)
-						}
-					</div>
+					{ renderCreateSingleTicketMessage() }
 				</div>
 			);
 		} else {
 			messages.title = (
 				<div className="tribe-editor__title__help-messages">
-					<div className="tickets-row-line">
-						{sprintf(
-							// Translators: %s is the post type name in human readable form.
-							_x(
-								'Create single tickets for this %s. ',
-								'The message displayed when there are no tickets and has recurrence rules.',
-								'event-tickets'
-							),
-							postType ? postType : ''
-						)}
-						<a
-							className="helper-link"
-							href="https://evnt.is/manage-tickets"
-							target="_blank"
-							rel="noopener noreferrer"
-						>
-							{__(
-								'Learn more about ticket management',
-								'event-tickets'
-							)}
-						</a>
-					</div>
+					{ renderCreateSingleTicketMessage() }
 					{ showWarning ? <Warning /> : null }
 				</div>
 			);
@@ -123,7 +119,15 @@ const TicketsContainer = ({
 			</div>
 		); // eslint-disable-line max-len
 	} else {
-		messages.title = __('Tickets are not yet available', 'event-tickets');
+		messages.title = (
+			<div className="tribe-editor__title__help-messages">
+				<div className="tickets-row-line">
+					{
+						__( 'Tickets are not yet available', 'event-tickets' )
+					}
+				</div>
+			</div>
+		);
 	}
 
 	const innerBlocksClassName = classNames({
@@ -155,7 +159,7 @@ const TicketsContainer = ({
 			{showInactiveBlock && !isSettingsOpen && (
 				<InactiveTicket title={messages.title} />
 			)}
-			{ showUneditableTickets && ! hasATicketSelected && hasCreatedTickets && (
+			{ showUneditableTickets && ! hasATicketSelected && (
 				<>
 					{
 						<div className="tickets-description">
