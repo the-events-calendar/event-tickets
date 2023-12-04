@@ -9,13 +9,16 @@ import { compose } from 'redux';
  */
 import Template from './template';
 import { withStore } from '@moderntribe/common/hoc';
+import {
+	getSeriesTitleFromSelection,
+	getSeriesEditLinkFromMetaBox,
+} from '../../../series-relationship';
 
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = () => {
 	return {
-		// mock data
-		seriesName: 'My Series Test Name',
-		seriesPassLink: 'https://theeventscalendar.com/',
-	}
+		seriesName: getSeriesTitleFromSelection(),
+		seriesPassLink: getSeriesEditLinkFromMetaBox('#tribetickets'),
+	};
 };
 
 export default compose(withStore(), connect(mapStateToProps))(Template);

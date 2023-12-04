@@ -10,6 +10,8 @@ const noticeSelector =
 /**
  * Get the series data from the metabox dropdown element's value attribute.
  *
+ * @since TBD
+ *
  * @param {Element|null} element The metabox dropdown element.
  * @param {string}       key     The key of the series data to retrieve.
  *
@@ -32,6 +34,8 @@ export function getSeriesDataFromElement(element, key) {
 /**
  * Get the series data from the `change` event dispatched by Select2 when the series is changed
  *
+ * @since TBD
+ *
  * @param {Event}  event The `change` event dispatched by Select2.
  * @param {string} key   The key of the series data to retrieve.
  *
@@ -49,6 +53,8 @@ export function getSeriesDataFromEvent(event, key) {
  * Get the series title from the `change` event dispatched by Select2 when the series is changed
  * by the user in the metabox dropdown.
  *
+ * @since TBD
+ *
  * @param {Event} event The `change` event dispatched by Select2.
  *
  * @return {string} The title of the series read from the selected option data.
@@ -59,6 +65,8 @@ export function getSeriesTitleFromEvent(event) {
 
 /**
  * Get the series ticket provider from the `change` event dispatched by Select2 when the series is changed
+ *
+ * @since TBD
  *
  * @param {Event} event The `change` event dispatched by Select2.
  *
@@ -71,6 +79,8 @@ export function getSeriesProviderFromEvent(event) {
 /**
  * Get the series ticket provider from the currently selected series in the metabox dropdown.
  *
+ * @since TBD
+ *
  * @return {string|null} The ticket provider of the series read from the selected option data, `null` if not found.
  */
 export function getSeriesProviderFromSelection() {
@@ -81,6 +91,8 @@ export function getSeriesProviderFromSelection() {
 /**
  * Get the series title from the currently selected series in the metabox dropdown.
  *
+ * @since TBD
+ *
  * @return {string|null} The title of the series read from the selected option data, `null` if not found.
  */
 export function getSeriesTitleFromSelection() {
@@ -89,7 +101,27 @@ export function getSeriesTitleFromSelection() {
 }
 
 /**
+ * Get the series edit link from the metabox dropdown.
+ *
+ * @since TBD
+ *
+ * @param {string|null} append The string to append to the edit link.
+ *
+ * @return {string } The edit link of the series read from the selected option data, or an empty string if not found.
+ */
+export function getSeriesEditLinkFromMetaBox(append) {
+	const editLinkElement = document.querySelector(
+		containerSelector + ' a.tec-events-pro-series__edit-link'
+	);
+	const editLink = editLinkElement?.getAttribute('href') || '';
+
+	return editLink + (append ? append : '');
+}
+
+/**
  * Subscribe to the series change event.
+ *
+ * @since TBD
  *
  * This is the event triggered by the user selecting a series in the metabox dropdown.
  *
@@ -101,6 +133,8 @@ export function subscribeToSeriesChange(onChange) {
 
 /**
  * Remove the notice that the event and series have different ticket providers.
+ *
+ * @since TBD
  */
 export function removeDiscordantProviderNotice() {
 	Array.from(document.querySelectorAll(noticeSelector)).map((el) =>
@@ -110,6 +144,8 @@ export function removeDiscordantProviderNotice() {
 
 /**
  * Show a notice that the event and series have different ticket providers.
+ *
+ * @since TBD
  *
  * @param {string} eventTitle  The title of the event.
  * @param {string} seriesTitle The title of the series.
