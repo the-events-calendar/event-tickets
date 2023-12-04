@@ -8,13 +8,8 @@ import { Spinner } from '@wordpress/components';
 
 const Uneditable = ({ tickets, cardsByTicketType, cardClassName, loading }) => {
 	if (loading) {
-		const spinnerWrapperStyles = {
-			position: 'relative',
-			'padding-top': 'var(--tec-spacer-12)',
-		};
-
 		return (
-			<div style={spinnerWrapperStyles}>
+			<div className="tribe-editor__uneditable__loader">
 				<Spinner />
 			</div>
 		);
