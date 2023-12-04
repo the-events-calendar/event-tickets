@@ -183,6 +183,8 @@ function getShowWarning( mappedProps, isSelected ) {
 		showWarning = true;
 	} else if ( mappedProps.hasCreatedTickets && hasSeriesPasses && isSelected ) {
 		showWarning = true;
+	} else if ( ! mappedProps.hasCreatedTickets && ! hasSeriesPasses && ! isSelected) {
+		showWarning = true;
 	}
 
 	return showWarning;
