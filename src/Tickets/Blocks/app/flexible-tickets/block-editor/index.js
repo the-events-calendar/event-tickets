@@ -3,4 +3,5 @@
  */
 
 import './hooks/filters.js';
-import './update-control.js';
+import './series-relationship/update-control';
+import './series-relationship/uneditable-tickets';

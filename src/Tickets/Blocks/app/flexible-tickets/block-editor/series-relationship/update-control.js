@@ -8,7 +8,7 @@ import {
 	removeDiscordantProviderNotice,
 	showDiscordantProviderNotice,
 	subscribeToSeriesChange,
-} from '../series-relationship';
+} from '../../series-relationship';
 
 const lockId = 'tec.flexible-tickets.different-ticket-provider';
 

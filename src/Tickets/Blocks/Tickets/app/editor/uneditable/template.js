@@ -4,8 +4,22 @@ import TicketContainerHeaderTitle from '../../../../Ticket/app/editor/container-
 import TicketContainerHeaderDescription from '../../../../Ticket/app/editor/container-header/description/template';
 import TicketContainerHeaderPrice from '../../../../Ticket/app/editor/container-header/price/template';
 import TicketContainerHeaderQuantity from '../../../../Ticket/app/editor/container-header/quantity/template';
+import { Spinner } from '@wordpress/components';
 
-const Uneditable = ({ tickets, cardsByTicketType, cardClassName }) => {
+const Uneditable = ({ tickets, cardsByTicketType, cardClassName, loading }) => {
+	if (loading) {
+		const spinnerWrapperStyles = {
+			position: 'relative',
+			'padding-top': 'var(--tec-spacer-12)',
+		};
+
+		return (
+			<div style={spinnerWrapperStyles}>
+				<Spinner />
+			</div>
+		);
+	}
+
 	const ticketTypes = tickets.reduce((acc, ticket) => {
 		return acc.indexOf(ticket.type) === -1 ? [...acc, ticket.type] : acc;
 	}, []);
