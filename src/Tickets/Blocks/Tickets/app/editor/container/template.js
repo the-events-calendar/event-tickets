@@ -10,7 +10,6 @@ import classNames from 'classnames';
  */
 const { InnerBlocks } = wp.blockEditor;
 import { __, _x, sprintf } from '@wordpress/i18n';
-import { Spinner } from '@wordpress/components';
 
 /**
  * Internal dependencies
@@ -27,6 +26,7 @@ const TicketsContainer = ({
 	allTicketsFuture,
 	allTicketsPast,
 	canCreateTickets,
+	hasATicketSelected,
 	hasCreatedTickets,
 	hasOverlay,
 	hasRecurrenceRules,
@@ -34,8 +34,9 @@ const TicketsContainer = ({
 	postType,
 	showAvailability,
 	showInactiveBlock,
-	hasATicketSelected,
 	showUneditableTickets,
+	showWarning,
+	Warning,
 	uneditableTickets,
 	uneditableTicketsAreLoading,
 }) => {
@@ -48,8 +49,36 @@ const TicketsContainer = ({
 		return null;
 	}
 
+	const renderCreateSingleTicketMessage = () => (
+		<div className="tickets-row-line">
+			{sprintf(
+				// Translators: %s is the post type name in human readable form.
+				_x(
+					'Create single tickets for this %s. ',
+					'The message displayed when there are no tickets and has recurrence rules.',
+					'event-tickets'
+				),
+				postType ? postType : ''
+			)}
+			<a
+				className="helper-link"
+				href="https://evnt.is/manage-tickets"
+				target="_blank"
+				rel="noopener noreferrer"
+			>
+				{__('Learn more about ticket management', 'event-tickets')}
+			</a>
+		</div>
+	);
+
 	if (!canCreateTickets) {
-		messages.title = __('There is no ecommerce available', 'event-tickets');
+		messages.title = (
+			<div className="tribe-editor__title__help-messages">
+				<div className="tickets-row-line">
+					{__('There is no ecommerce available', 'event-tickets')}
+				</div>
+			</div>
+		);
 		messages.description = __(
 			"To create tickets, you'll need to enable an ecommerce solution.",
 			'event-tickets'
@@ -57,33 +86,16 @@ const TicketsContainer = ({
 	} else if (!hasCreatedTickets) {
 		if (!hasRecurrenceRules) {
 			messages.title = (
-				<div>
-					{sprintf(
-						// Translators: %s is the post type name in human-readable form.
-						_x(
-							'Create single tickets for this %s. ',
-							'The message displayed when there are no tickets and no recurrence rules.',
-							'event-tickets'
-						),
-						postType
-					)}
-					<a
-						className="helper-link"
-						href="https://evnt.is/manage-tickets"
-						target="_blank"
-						rel="noopener noreferrer"
-					>
-						{__(
-							'Learn more about ticket management',
-							'event-tickets'
-						)}
-					</a>
+				<div className="tribe-editor__title__help-messages">
+					{renderCreateSingleTicketMessage()}
 				</div>
 			);
 		} else {
-			messages.title = __(
-				'Add a ticket to get started.',
-				'event-tickets'
+			messages.title = (
+				<div className="tribe-editor__title__help-messages">
+					{renderCreateSingleTicketMessage()}
+					{showWarning ? <Warning /> : null}
+				</div>
 			);
 		}
 
@@ -92,12 +104,24 @@ const TicketsContainer = ({
 			'event-tickets'
 		);
 	} else if (allTicketsPast || allTicketsFuture) {
-		messages.title = __(
-			'There are no active tickets. Adjust sale duration to make tickets available',
-			'event-tickets'
+		messages.title = (
+			<div className="tribe-editor__title__help-messages">
+				<div className="tickets-row-line">
+					{__(
+						'There are no active tickets. Adjust sale duration to make tickets available',
+						'event-tickets'
+					)}
+				</div>
+			</div>
 		); // eslint-disable-line max-len
 	} else {
-		messages.title = __('Tickets are not yet available', 'event-tickets');
+		messages.title = (
+			<div className="tribe-editor__title__help-messages">
+				<div className="tickets-row-line">
+					{__('Tickets are not yet available', 'event-tickets')}
+				</div>
+			</div>
+		);
 	}
 
 	const innerBlocksClassName = classNames({
@@ -129,12 +153,21 @@ const TicketsContainer = ({
 			{showInactiveBlock && !isSettingsOpen && (
 				<InactiveTicket title={messages.title} />
 			)}
-			{showUneditableTickets && (
-				<Uneditable
-					loading={uneditableTicketsAreLoading}
-					tickets={uneditableTickets}
-					cardClassName={uneditableClassName}
-				/>
+			{showUneditableTickets && !hasATicketSelected && (
+				<>
+					{
+						<div className="tickets-description">
+							<div className="tribe-editor__tickets__container__helper__container">
+								{showWarning ? <Warning /> : null}
+							</div>
+						</div>
+					}
+					<Uneditable
+						loading={uneditableTicketsAreLoading}
+						tickets={uneditableTickets}
+						cardClassName={uneditableClassName}
+					/>
+				</>
 			)}
 			{showAvailability && <Availability />}
 			{hasOverlay && <TicketsOverlay />}
@@ -151,6 +184,8 @@ TicketsContainer.propTypes = {
 	hasOverlay: PropTypes.bool,
 	isSettingsOpen: PropTypes.bool,
 	postType: PropTypes.string,
+	seriesName: PropTypes.string,
+	seriesPassLink: PropTypes.string,
 	showAvailability: PropTypes.bool,
 	showInactiveBlock: PropTypes.bool,
 	showUneditableTickets: PropTypes.bool,

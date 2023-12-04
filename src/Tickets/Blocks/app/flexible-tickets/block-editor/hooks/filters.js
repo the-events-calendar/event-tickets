@@ -4,6 +4,7 @@
  */
 
 import { addFilter } from '@wordpress/hooks';
+import SeriesPassNotice from '../components/series-pass-notice/container';
 
 /**
  * Prevents Series Passes from being saved by the Block Editor when editing Events.
@@ -85,14 +86,27 @@ addFilter(
  *
  * @param {Object} mappedProps                      The properties mapped from the state for the Tickets component.
  * @param {bool}   mappedProps.noTicketsOnRecurring Whether or not to show the Tickets block on Recurring Events.
+ * @param {Object} context							The context of the filter.
+ * @param {bool}   context.ownProps.isSelected		Whether or not the block is selected.
+ * @param {Object} context.isRecurring				Whether or not the Event is currently recurring.
  *
  * @return {Object} The modified properties mapped from the state for the Tickets component.
  */
-function filterTicketsMappedProps(mappedProps) {
+function filterTicketsMappedProps(
+	mappedProps,
+	{ ownProps: { isSelected } }
+) {
 	const isInSeries = tecEventDetails?.isInSeries;
 
 	if (!isInSeries) {
 		return mappedProps;
+	}
+
+	const showWarning = getShowWarning( mappedProps, isSelected );
+
+	if ( showWarning ) {
+		mappedProps.showWarning = showWarning;
+		mappedProps.Warning = SeriesPassNotice;
 	}
 
 	mappedProps.noTicketsOnRecurring = false;
@@ -118,18 +132,29 @@ addFilter(
  * @param {bool}   mappedProps.showAvailability   Whether or not to show the availability.
  * @param {bool}   mappedProps.hasRecurrenceRules Whether or not the Event has recurrence rules.
  * @param {bool}   ownProps.isSelected            Whether or not the block is selected.
+ * @param {bool}   mappedProps.showWarning        Whether or not the Event has a warning to display.
+ * @param {Object} mappedProps.Warning            Warning component to be displayed in case there is one.
  */
 function filterTicketsContainerMappedProps(
 	mappedProps,
 	{ ownProps: { isSelected = false } }
 ) {
+
 	const isInSeries = tecEventDetails?.isInSeries;
 
 	if (!isInSeries) {
 		return mappedProps;
 	}
 
+	const showWarning = getShowWarning( mappedProps, isSelected);
+
+	if ( showWarning ) {
+		mappedProps.showWarning = showWarning;
+		mappedProps.Warning = SeriesPassNotice;
+	}
+
 	const hasRecurrenceRules = mappedProps.hasRecurrenceRules;
+
 	mappedProps.canCreateTickets = hasRecurrenceRules
 		? false
 		: mappedProps.canCreateTickets;
@@ -139,6 +164,28 @@ function filterTicketsContainerMappedProps(
 	mappedProps.showAvailability = isSelected;
 
 	return mappedProps;
+}
+
+/**
+ * @param {bool}	mappedProps.hasCreatedTickets 	Whether or not the user has created tickets.
+ * @param {bool}	mappedProps.hasRecurrenceRules	Whether or not the Event has recurrence rules.
+ * @param {bool}	mappedProps.hasCreatedTickets	Whether or not the user has created tickets.
+ * @param {bool}	isSelected						Whether or not the block is selected.
+ * @returns {bool}  Flag indicating whether or not to display the warning.
+ */
+function getShowWarning( mappedProps, isSelected ) {
+	const hasSeriesPasses =
+		( TECFtEditorData?.series?.seriesPassesCount || 0 ) > 0;
+
+	let showWarning = false;
+
+	if ( ! mappedProps.hasCreatedTickets && isSelected ) {
+		showWarning = true;
+	} else if ( mappedProps.hasCreatedTickets && hasSeriesPasses && isSelected ) {
+		showWarning = true;
+	}
+
+	return showWarning;
 }
 
 addFilter(
@@ -160,6 +207,7 @@ addFilter(
  * @param {bool}   mappedProps.hasOrdersPage     Whether or not the user has an Orders page.
  * @param {bool}   mappedProps.showConfirm       Whether or not to show the confirmation button.
  * @param {Object} context                       The context of the filter.
+ * @param {bool}   context.ownProps.isSelected   Whether or not the block is selected.
  * @param {Object} context.isRecurring           Whether or not the Event is currently recurring.
  *
  * @return {Object} The modified properties mapped from the state for the TicketsDashboardAction component.
@@ -174,7 +222,7 @@ function filterTicketsDashboardActionsMappedProps(
 		return mappedProps;
 	}
 
-	mappedProps.showWarning = false;
+	mappedProps.showWarning = isRecurring;
 	mappedProps.disableSettings = true;
 	const hasSeriesPasses =
 		(TECFtEditorData?.series?.seriesPassesCount || 0) > 0;

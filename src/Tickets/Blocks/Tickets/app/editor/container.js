@@ -16,6 +16,7 @@ import Template from './template';
 import { withStore } from '@moderntribe/common/hoc';
 import withSaveData from '@moderntribe/tickets/blocks/hoc/with-save-data';
 import { actions, selectors } from '@moderntribe/tickets/data/blocks/ticket';
+import { getShowUneditableTickets } from './container/container';
 import {
 	hasRecurrenceRules,
 	noTicketsOnRecurring,
@@ -32,6 +33,7 @@ const mapStateToProps = (state, ownProps) => {
 		canCreateTickets: selectors.canCreateTickets(),
 		hasRecurrenceRules: hasRecurrenceRules(state),
 		noTicketsOnRecurring: noTicketsOnRecurring(),
+		showUneditableTickets: getShowUneditableTickets(state, ownProps),
 	};
 
 	/**

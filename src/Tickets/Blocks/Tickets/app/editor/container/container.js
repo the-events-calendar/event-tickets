@@ -34,7 +34,7 @@ const getShowInactiveBlock = (state, ownProps) => {
 	return showIfBlockIsSelected || showIfBlockIsNotSelected;
 };
 
-const getShowUneditableTickets = (state, ownProps) => {
+export const getShowUneditableTickets = (state, ownProps) => {
 	/**
 	 * Filters whether to show uneditable tickets in the Ticket Container block.
 	 * Uneditable tickets are tickets that should appear in the container, but not be editable in
