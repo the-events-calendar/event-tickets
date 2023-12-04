@@ -35,7 +35,7 @@ class Provider extends \TEC\Common\Contracts\Service_Provider {
 		$this->container->singleton( Plugin_Action_Links::class );
 		$this->container->singleton( Glance_Items::class );
 
-		add_action( "tec_tickets_ticket_form_main_start_default", [ $this, 'render_default_ticket_type_header' ] );
+		add_action( "tribe_template_before_include_html:tickets/admin-views/editor/panel/fields/dates", [ $this, 'render_default_ticket_type_header' ], 20, 4 );
 	}
 
 	/**
@@ -57,13 +57,20 @@ class Provider extends \TEC\Common\Contracts\Service_Provider {
 	 *
 	 * @since TBD
 	 *
-	 * @param int $post_id The ID of the post the ticket is being added to, or rendered for.
-	 *
-	 * @return void
+	 * @param string        $html   The HTML to be rendered.
+	 * @param string        $file   The file being rendered.
+	 * @param array         $name   The name of the file being rendered.
+	 * @param Admin_Views   $admin_views The admin views instance.
 	 */
-	public function render_default_ticket_type_header( int $post_id ): void {
-		/** @var Admin_Views $admin_views */
-		$admin_views = tribe( 'tickets.admin.views' );
+	public function render_default_ticket_type_header( string $html,  string $file, array $name, Admin_Views $admin_views ): void {
+		$context = $admin_views->get_values();
+
+		$post_id     = $context['post_id'] ?? '';
+		$ticket_type = $context['ticket_type'] ?? '';
+
+		if ( 'default' !==  $ticket_type || empty( $post_id ) ) {
+			return;
+		}
 
 		$post_type_object = get_post_type_object( get_post_type( $post_id ) );
 		$post_type        = strtolower( get_post_type_labels( $post_type_object )->{'singular_name'} );
