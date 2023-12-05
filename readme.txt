@@ -202,6 +202,8 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Tweak - Notify users of Wallet Plus availability on attendees page. [ET-1938]
 * Tweak - Notify users of Wallet Plus availability on Tickets Emails settings page. [ET-1937]
 * Tweak - Add attendee name to attendees list after purchase or registration. [ET-1939]
+* Tweak - Added filter `tec_tickets_commerce_gateway_stripe_webhook_valid_key_polling_attempts` to allow the modification of how many attempts Tickets Commerce will poll for Stripe webhooks for validation.
+* Fix - Tickets Commerce Stripe webhooks properly handles internally validating the Secret Signing key. [ET-1511]
 
 = [5.7.0] 2023-11-16 =
 
