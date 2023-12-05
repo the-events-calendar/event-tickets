@@ -7,6 +7,11 @@ import { addFilter } from '@wordpress/hooks';
 import SeriesPassNotice from '../components/series-pass-notice/container';
 
 /**
+ * Pull the Flexible Tickets data from the dedicated store.
+ */
+const ftStore = wp.data.select('tec-tickets/flexible-tickets');
+
+/**
  * Prevents Series Passes from being saved by the Block Editor when editing Events.
  *
  * @since TBD
@@ -59,7 +64,7 @@ function changeTicketTypeDescriptionForEventPartOfSeries(
 	{ ticketDetails }
 ) {
 	const ticketType = ticketDetails?.type || 'default';
-	const isInSeries = tecEventDetails?.isInSeries;
+	const isInSeries = ftStore.isInSeries();
 
 	if (!(isInSeries && ticketType === 'default')) {
 		return mappedProps;
@@ -86,25 +91,23 @@ addFilter(
  *
  * @param {Object} mappedProps                      The properties mapped from the state for the Tickets component.
  * @param {bool}   mappedProps.noTicketsOnRecurring Whether or not to show the Tickets block on Recurring Events.
- * @param {Object} context							The context of the filter.
- * @param {bool}   context.ownProps.isSelected		Whether or not the block is selected.
- * @param {Object} context.isRecurring				Whether or not the Event is currently recurring.
+ * @param {Object} context                          The context of the filter.
+ * @param {bool}   context.ownProps.isSelected      Whether or not the block is selected.
+ * @param          context.ownProps
+ * @param {Object} context.isRecurring              Whether or not the Event is currently recurring.
  *
  * @return {Object} The modified properties mapped from the state for the Tickets component.
  */
-function filterTicketsMappedProps(
-	mappedProps,
-	{ ownProps: { isSelected } }
-) {
-	const isInSeries = tecEventDetails?.isInSeries;
+function filterTicketsMappedProps(mappedProps, { ownProps: { isSelected } }) {
+	const isInSeries = ftStore.isInSeries();
 
 	if (!isInSeries) {
 		return mappedProps;
 	}
 
-	const showWarning = getShowWarning( mappedProps, isSelected );
+	const showWarning = getShowWarning(mappedProps, isSelected);
 
-	if ( showWarning ) {
+	if (showWarning) {
 		mappedProps.showWarning = showWarning;
 		mappedProps.Warning = SeriesPassNotice;
 	}
@@ -139,16 +142,15 @@ function filterTicketsContainerMappedProps(
 	mappedProps,
 	{ ownProps: { isSelected = false } }
 ) {
-
-	const isInSeries = tecEventDetails?.isInSeries;
+	const isInSeries = ftStore.isInSeries();
 
 	if (!isInSeries) {
 		return mappedProps;
 	}
 
-	const showWarning = getShowWarning( mappedProps, isSelected);
+	const showWarning = getShowWarning(mappedProps, isSelected);
 
-	if ( showWarning ) {
+	if (showWarning) {
 		mappedProps.showWarning = showWarning;
 		mappedProps.Warning = SeriesPassNotice;
 	}
@@ -167,23 +169,27 @@ function filterTicketsContainerMappedProps(
 }
 
 /**
- * @param {bool}	mappedProps.hasCreatedTickets 	Whether or not the user has created tickets.
- * @param {bool}	mappedProps.hasRecurrenceRules	Whether or not the Event has recurrence rules.
- * @param {bool}	mappedProps.hasCreatedTickets	Whether or not the user has created tickets.
- * @param {bool}	isSelected						Whether or not the block is selected.
- * @returns {bool}  Flag indicating whether or not to display the warning.
+ * @param {bool} mappedProps.hasCreatedTickets  Whether or not the user has created tickets.
+ * @param {bool} mappedProps.hasRecurrenceRules Whether or not the Event has recurrence rules.
+ * @param {bool} mappedProps.hasCreatedTickets  Whether or not the user has created tickets.
+ * @param        mappedProps
+ * @param {bool} isSelected                     Whether or not the block is selected.
+ * @return {bool}  Flag indicating whether or not to display the warning.
  */
-function getShowWarning( mappedProps, isSelected ) {
-	const hasSeriesPasses =
-		( TECFtEditorData?.series?.seriesPassesCount || 0 ) > 0;
+function getShowWarning(mappedProps, isSelected) {
+	const hasSeriesPasses = ftStore.hasSeriesPasses();
 
 	let showWarning = false;
 
-	if ( ! mappedProps.hasCreatedTickets && isSelected ) {
+	if (!mappedProps.hasCreatedTickets && isSelected) {
 		showWarning = true;
-	} else if ( mappedProps.hasCreatedTickets && hasSeriesPasses && isSelected ) {
+	} else if (mappedProps.hasCreatedTickets && hasSeriesPasses && isSelected) {
 		showWarning = true;
-	} else if ( ! mappedProps.hasCreatedTickets && ! hasSeriesPasses && ! isSelected) {
+	} else if (
+		!mappedProps.hasCreatedTickets &&
+		!hasSeriesPasses &&
+		!isSelected
+	) {
 		showWarning = true;
 	}
 
@@ -218,7 +224,7 @@ function filterTicketsDashboardActionsMappedProps(
 	mappedProps,
 	{ isRecurring }
 ) {
-	const isInSeries = tecEventDetails?.isInSeries;
+	const isInSeries = ftStore.isInSeries();
 
 	if (!isInSeries) {
 		return mappedProps;
@@ -226,8 +232,7 @@ function filterTicketsDashboardActionsMappedProps(
 
 	mappedProps.showWarning = isRecurring;
 	mappedProps.disableSettings = true;
-	const hasSeriesPasses =
-		(TECFtEditorData?.series?.seriesPassesCount || 0) > 0;
+	const hasSeriesPasses = ftStore.hasSeriesPasses();
 	mappedProps.hasCreatedTickets = hasSeriesPasses;
 	mappedProps.hasOrdersPage = hasSeriesPasses;
 	mappedProps.showConfirm = !isRecurring;
@@ -259,7 +264,7 @@ function filterTicketsAvailabilityMappedProps(mappedProps) {
 		TECFtEditorData?.series?.seriesPassTotalCapacity || 0;
 	const seriesAvailability =
 		TECFtEditorData?.series?.seriesPassAvailableCapacity || 0;
-	const isInSeries = tecEventDetails?.isInSeries;
+	const isInSeries = ftStore.isInSeries();
 
 	if (isInSeries && seriesCapacity >= 0) {
 		mappedProps.total = currentCapacity + seriesCapacity;
@@ -279,7 +284,7 @@ function filterTicketsControlsMappedProps(
 	mappedProps,
 	{ isRecurring = false }
 ) {
-	const isInSeries = tecEventDetails?.isInSeries;
+	const isInSeries = ftStore.isInSeries();
 
 	if (!isInSeries) {
 		return mappedProps;
