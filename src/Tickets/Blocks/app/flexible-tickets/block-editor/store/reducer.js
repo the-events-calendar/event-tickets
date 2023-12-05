@@ -13,6 +13,37 @@ export default (state = defaultState, action) => {
 				...state,
 				isInSeries: Boolean(action.isInSeries).valueOf(),
 			};
+		case types.SET_DEFAULT_TICKET_DESCRIPTION:
+			return {
+				...state,
+				defaultTicketTypeDescription: String(
+					action.defaultTicketTypeDescription
+				),
+			};
+		case types.SET_SERIES_PASS_TOTAL_CAPACITY:
+			return {
+				...state,
+				series: {
+					...state.series,
+					passTotalCapacity: action.seriesPassTotalCapacity,
+				},
+			};
+		case types.SET_SERIES_PASS_TOTAL_AVAILABLE:
+			return {
+				...state,
+				series: {
+					...state.series,
+					passTotalAvailable: action.seriesPassTotalAvailable,
+				},
+			};
+		case types.SET_SERIES_INFORMATION:
+			return {
+				...state,
+				series: {
+					...state.series,
+					...action.seriesInformation,
+				},
+			};
 		default:
 			return state;
 	}

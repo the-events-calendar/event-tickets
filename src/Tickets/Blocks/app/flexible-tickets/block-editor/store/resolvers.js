@@ -4,6 +4,10 @@
  */
 
 import actions from './actions';
+import {
+	getSeriesTitleFromSelection,
+	getSeriesEditLinkFromMetaBox,
+} from '../../series-relationship';
 
 export default {
 	*hasSeriesPasses() {
@@ -13,5 +17,26 @@ export default {
 	},
 	*isInSeries() {
 		return actions.setIsInSeries(window.tecEventDetails?.isInSeries);
+	},
+	*getDefaultTicketTypeDescription() {
+		return actions.setDefaultTicketTypeDescription(
+			window.tecEventDetails?.defaultTicketTypeEventInSeriesDescription
+		);
+	},
+	*getSeriesPassTotalCapacity() {
+		return actions.setSeriesPassTotalCapacity(
+			window.TECFtEditorData?.series?.seriesPassTotalCapacity || 0
+		);
+	},
+	*getSeriesPassTotalAvailable() {
+		return actions.setSeriesPassTotalAvailable(
+			window.TECFtEditorData?.series?.seriesPassAvailableCapacity || 0
+		);
+	},
+	*getSeriesInformation() {
+		return actions.setSeriesInformation({
+			title: getSeriesTitleFromSelection(),
+			editLink: getSeriesEditLinkFromMetaBox(),
+		});
 	},
 };

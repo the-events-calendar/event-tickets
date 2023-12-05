@@ -2,4 +2,11 @@
 export default {
 	isInSeries: false,
 	hasSeriesPasses: false,
+	defaultTicketTypeDescription: '',
+	series: {
+		passTotalCapacity: 0,
+		passTotalAvailable: 0,
+		title: '',
+		editLink: '',
+	},
 };

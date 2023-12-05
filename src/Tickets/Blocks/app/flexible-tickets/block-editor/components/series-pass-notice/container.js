@@ -1,24 +1,14 @@
-/**
- * External dependencies
- */
-import { connect } from 'react-redux';
-import { compose } from 'redux';
-
-/**
- * Internal dependencies
- */
 import Template from './template';
-import { withStore } from '@moderntribe/common/hoc';
-import {
-	getSeriesTitleFromSelection,
-	getSeriesEditLinkFromMetaBox,
-} from '../../../series-relationship';
+import { withStore } from '../../store/hoc';
 
-const mapStateToProps = () => {
+const mapStateToProps = (store) => {
+	const { getSeriesInformation } = store;
+	const { title, editLink } = getSeriesInformation();
+
 	return {
-		seriesName: getSeriesTitleFromSelection(),
-		seriesPassLink: getSeriesEditLinkFromMetaBox('#tribetickets'),
+		seriesName: title,
+		seriesPassLink: editLink + '#tribetickets',
 	};
 };
 
-export default compose(withStore(), connect(mapStateToProps))(Template);
+export default withStore(mapStateToProps)(Template);

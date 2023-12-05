@@ -109,7 +109,7 @@ export function getSeriesTitleFromSelection() {
  *
  * @return {string } The edit link of the series read from the selected option data, or an empty string if not found.
  */
-export function getSeriesEditLinkFromMetaBox(append) {
+export function getSeriesEditLinkFromMetaBox(append = null) {
 	const editLinkElement = document.querySelector(
 		containerSelector + ' a.tec-events-pro-series__edit-link'
 	);

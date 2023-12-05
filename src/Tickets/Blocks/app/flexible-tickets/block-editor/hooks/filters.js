@@ -16,10 +16,10 @@ const ftStore = wp.data.select('tec-tickets/flexible-tickets');
  *
  * @since TBD
  *
- * @param {bool}   saveTicketFromPost Whether or not to save the Ticket from the Post.
- * @param {Object} context            The context of the filter.
- * @param {string} context.ticketType The ticket types, e.g. `default`, `series_pass`, etc.
- * @param {Object} context.post       The Post object that is being saved, the format is the one retruned by the WP REST API.
+ * @param {boolean} saveTicketFromPost Whether or not to save the Ticket from the Post.
+ * @param {Object}  context            The context of the filter.
+ * @param {string}  context.ticketType The ticket types, e.g. `default`, `series_pass`, etc.
+ * @param {Object}  context.post       The Post object that is being saved, the format is the one retruned by the WP REST API.
  *
  * @return {boolean} Whether or not to save the Ticket from the Post.
  */
@@ -70,8 +70,7 @@ function changeTicketTypeDescriptionForEventPartOfSeries(
 		return mappedProps;
 	}
 
-	const newDescription =
-		TECFtEditorData?.defaultTicketTypeEventInSeriesDescription;
+	const newDescription = ftStore.getDefaultTicketTypeDescription();
 	mappedProps.typeDescription = newDescription || mappedProps.typeDescription;
 
 	return mappedProps;
@@ -89,12 +88,11 @@ addFilter(
  *
  * @since TBD
  *
- * @param {Object} mappedProps                      The properties mapped from the state for the Tickets component.
- * @param {bool}   mappedProps.noTicketsOnRecurring Whether or not to show the Tickets block on Recurring Events.
- * @param {Object} context                          The context of the filter.
- * @param {bool}   context.ownProps.isSelected      Whether or not the block is selected.
- * @param          context.ownProps
- * @param {Object} context.isRecurring              Whether or not the Event is currently recurring.
+ * @param {Object}  mappedProps                      The properties mapped from the state for the Tickets component.
+ * @param {boolean} mappedProps.noTicketsOnRecurring Whether or not to show the Tickets block on Recurring Events.
+ * @param {Object}  context                          The context of the filter.
+ * @param {Object}  context.ownProps                 The props passed to the block.
+ * @param {boolean} context.ownProps.isSelected      Whether or not the block is selected.
  *
  * @return {Object} The modified properties mapped from the state for the Tickets component.
  */
@@ -130,13 +128,13 @@ addFilter(
  *
  * @since TBD
  *
- * @param {Object} mappedProps                    The properties mapped from the state for the TicketsContainer component.
- * @param {bool}   mappedProps.showInactiveBlock  Whether or not to show the inactive block.
- * @param {bool}   mappedProps.showAvailability   Whether or not to show the availability.
- * @param {bool}   mappedProps.hasRecurrenceRules Whether or not the Event has recurrence rules.
- * @param {bool}   ownProps.isSelected            Whether or not the block is selected.
- * @param {bool}   mappedProps.showWarning        Whether or not the Event has a warning to display.
- * @param {Object} mappedProps.Warning            Warning component to be displayed in case there is one.
+ * @param {Object}  mappedProps                    The properties mapped from the state for the TicketsContainer component.
+ * @param {boolean} mappedProps.showInactiveBlock  Whether or not to show the inactive block.
+ * @param {boolean} mappedProps.showAvailability   Whether or not to show the availability.
+ * @param {boolean} mappedProps.hasRecurrenceRules Whether or not the Event has recurrence rules.
+ * @param {boolean} ownProps.isSelected            Whether or not the block is selected.
+ * @param {boolean} mappedProps.showWarning        Whether or not the Event has a warning to display.
+ * @param {Object}  mappedProps.Warning            Warning component to be displayed in case there is one.
  */
 function filterTicketsContainerMappedProps(
 	mappedProps,
@@ -169,12 +167,12 @@ function filterTicketsContainerMappedProps(
 }
 
 /**
- * @param {bool} mappedProps.hasCreatedTickets  Whether or not the user has created tickets.
- * @param {bool} mappedProps.hasRecurrenceRules Whether or not the Event has recurrence rules.
- * @param {bool} mappedProps.hasCreatedTickets  Whether or not the user has created tickets.
- * @param        mappedProps
- * @param {bool} isSelected                     Whether or not the block is selected.
- * @return {bool}  Flag indicating whether or not to display the warning.
+ * @param {boolean} mappedProps.hasCreatedTickets  Whether or not the user has created tickets.
+ * @param {boolean} mappedProps.hasRecurrenceRules Whether or not the Event has recurrence rules.
+ * @param {boolean} mappedProps.hasCreatedTickets  Whether or not the user has created tickets.
+ * @param           mappedProps
+ * @param {boolean} isSelected                     Whether or not the block is selected.
+ * @return {boolean}  Flag indicating whether or not to display the warning.
  */
 function getShowWarning(mappedProps, isSelected) {
 	const hasSeriesPasses = ftStore.hasSeriesPasses();
@@ -208,15 +206,14 @@ addFilter(
  *
  * @since TBD
  *
- * @param {Object} mappedProps                   The properties mapped from the state for the TicketsDashboardAction component.
- * @param {bool}   mappedProps.showWarning       Whether or not to show the warning.
- * @param {bool}   mappedProps.disableSettings   Whether or not to disable the settings.
- * @param {bool}   mappedProps.hasCreatedTickets Whether or not the user has created tickets.
- * @param {bool}   mappedProps.hasOrdersPage     Whether or not the user has an Orders page.
- * @param {bool}   mappedProps.showConfirm       Whether or not to show the confirmation button.
- * @param {Object} context                       The context of the filter.
- * @param {bool}   context.ownProps.isSelected   Whether or not the block is selected.
- * @param {Object} context.isRecurring           Whether or not the Event is currently recurring.
+ * @param {Object}  mappedProps                   The properties mapped from the state for the TicketsDashboardAction component.
+ * @param {boolean} mappedProps.showWarning       Whether or not to show the warning.
+ * @param {boolean} mappedProps.disableSettings   Whether or not to disable the settings.
+ * @param {boolean} mappedProps.hasCreatedTickets Whether or not the user has created tickets.
+ * @param {boolean} mappedProps.hasOrdersPage     Whether or not the user has an Orders page.
+ * @param {boolean} mappedProps.showConfirm       Whether or not to show the confirmation button.
+ * @param {Object}  context                       The context of the filter.
+ * @param {Object}  context.isRecurring           Whether or not the Event is currently recurring.
  *
  * @return {Object} The modified properties mapped from the state for the TicketsDashboardAction component.
  */
@@ -260,10 +257,8 @@ addFilter(
 function filterTicketsAvailabilityMappedProps(mappedProps) {
 	const currentCapacity = mappedProps?.total || 0;
 	const currentAvailability = mappedProps?.available || 0;
-	const seriesCapacity =
-		TECFtEditorData?.series?.seriesPassTotalCapacity || 0;
-	const seriesAvailability =
-		TECFtEditorData?.series?.seriesPassAvailableCapacity || 0;
+	const seriesCapacity = ftStore.getSeriesPassTotalCapacity();
+	const seriesAvailability = ftStore.getSeriesPassTotalAvailable();
 	const isInSeries = ftStore.isInSeries();
 
 	if (isInSeries && seriesCapacity >= 0) {

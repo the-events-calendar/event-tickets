@@ -109,6 +109,10 @@ export function* updateUneditableTickets(  ) {
 
 	const post = yield call ( () => wpSelect ( 'core/editor' ).getCurrentPost() );
 
+	if (!post?.id) {
+		return;
+	}
+
 	// Get **all** the tickets, not just the uneditable ones. Filtering will take care of removing the editable ones.
 	const { response, data = { tickets: [] } } = yield call ( wpREST, {
 		namespace: 'tribe/tickets/v1',
