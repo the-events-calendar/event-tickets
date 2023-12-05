@@ -43,15 +43,17 @@ class Charge_Webhook implements Webhook_Event_Interface {
 		if (
 			$payment_intent
 			&& isset( $payment_intent['status'] )
-			&& $payment_intent['status'] === Status::SUCCEEDED
+			&& Status::SUCCEEDED === $payment_intent['status']
 		) {
 				$response->set_status( 200 );
-				$response->set_data( sprintf(
-				// Translators: %1$s is the event id and %2$s is the event type name.
-					__( 'Event %1$s was received and will not be handled because the Payment Intent %2$s was already moved to the Success status.', 'event-tickets' ),
-					esc_html( Arr::get( $event, 'id' ) ),
-					esc_html( $payment_intent_id )
-				) );
+				$response->set_data(
+					sprintf(
+						// Translators: %1$s is the event id and %2$s is the event type name.
+						__( 'Event %1$s was received and will not be handled because the Payment Intent %2$s was already moved to the Success status.', 'event-tickets' ),
+						esc_html( Arr::get( $event, 'id' ) ),
+						esc_html( $payment_intent_id )
+					)
+				);
 
 				return $response;
 		}
