@@ -30,7 +30,7 @@
  * @var string                             $ticket_start_time                The ticket start time.
  * @var string                             $timepicker_round                 The timepicker round.
  * @var string                             $ticket_type                      The type of Ticket the form is for.
- * @var Tribe__Tickets__Admin__Views	   $this                             The admin views instance.
+ * @var Tribe__Tickets__Admin__Views       $this                             The admin views instance.
  */
 
 $ticket_type = $ticket_type ?? 'default';

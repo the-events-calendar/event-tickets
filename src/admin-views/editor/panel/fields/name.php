@@ -9,6 +9,7 @@
  * @var string $ticket_name                      The ticket name.
  * @var string $rsvp_required_type_error_message The RSVP required type error message.
  */
+
 ?>
 <div class="input_block">
 	<label class="ticket_form_label ticket_form_left" for="ticket_name">
@@ -28,7 +29,8 @@
 		class="tribe_soft_note ticket_form_right"
 		data-depends="#Tribe__Tickets__RSVP_radio"
 		data-condition-not-checked
-	><?php
+	>
+	<?php
 		echo esc_html(
 			sprintf(
 			// Translators: %1$s: dynamic 'ticket' text.
@@ -46,7 +48,8 @@
 		class="tribe_soft_note ticket_form_right"
 		data-depends="#Tribe__Tickets__RSVP_radio"
 		data-condition-is-checked
-	><?php
+	>
+	<?php
 		echo esc_html(
 			sprintf(
 			// Translators: %1$s: dynamic 'RSVP' text.

@@ -57,9 +57,9 @@ class Provider extends \TEC\Common\Contracts\Service_Provider {
 	 *
 	 * @since TBD
 	 *
-	 * @param string        $file   The file being rendered.
-	 * @param array         $name   The name of the file being rendered.
-	 * @param Admin_Views   $admin_views The admin views instance.
+	 * @param string $file   The file being rendered.
+	 * @param array $name   The name of the file being rendered.
+	 * @param Admin_Views $admin_views The admin views instance.
 	 */
 	public function render_default_ticket_type_header( string $file, array $name, Admin_Views $admin_views ): void {
 		$context = $admin_views->get_values();
@@ -67,7 +67,7 @@ class Provider extends \TEC\Common\Contracts\Service_Provider {
 		$post_id     = $context['post_id'] ?? '';
 		$ticket_type = $context['ticket_type'] ?? '';
 
-		if ( 'default' !==  $ticket_type || empty( $post_id ) ) {
+		if ( 'default' !== $ticket_type || empty( $post_id ) ) {
 			return;
 		}
 

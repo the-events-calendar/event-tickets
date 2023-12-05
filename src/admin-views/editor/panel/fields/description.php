@@ -9,11 +9,12 @@
  * @var string $ticket_description The ticket description.
  * @var array  $ticket             The ticket.
  */
+
 ?>
 
 <div class="input_block">
-	<label class="ticket_form_label ticket_form_left"
-	       for="ticket_description"><?php esc_html_e( 'Description:', 'event-tickets' ); ?>
+	<label class="ticket_form_label ticket_form_left" for="ticket_description">
+		<?php esc_html_e( 'Description:', 'event-tickets' ); ?>
 	</label>
 	<textarea
 		rows="5"
