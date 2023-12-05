@@ -1,5 +1,11 @@
 <?php
 /**
+ * The start and end dates field for the ticket editor.
+ *
+ * @since TBD
+ *
+ * @version TBD
+ *
  * @var string $ticket_start_date The start date of the ticket.
  * @var string $ticket_end_date The end date of the ticket.
  * @var string $ticket_start_time The start time of the ticket.
@@ -15,7 +21,6 @@
  * @var array  $ticket The ticket.
  */
 ?>
-
 <div class="input_block">
 	<label class="ticket_form_label ticket_form_left"
 	       for="ticket_start_date"><?php esc_html_e( 'Start sale:', 'event-tickets' ); ?></label>
@@ -48,7 +53,7 @@
 		<span class="helper-text hide-if-js"><?php esc_html_e( 'HH:MM', 'event-tickets' ); ?></span>
 		<span class="dashicons dashicons-editor-help"
 		      title="<?php echo esc_attr( $ticket_start_date_help_text ); ?>">
-			</span>
+		</span>
 	</div>
 </div>
 <div class="input_block">

@@ -13,14 +13,17 @@
 
 <div class="input_block">
 	<label class="ticket_form_label ticket_form_left"
-	       for="ticket_description"><?php esc_html_e( 'Description:', 'event-tickets' ); ?></label>
+	       for="ticket_description"><?php esc_html_e( 'Description:', 'event-tickets' ); ?>
+	</label>
 	<textarea
 		rows="5"
 		cols="40"
 		name="ticket_description"
 		class="ticket_field ticket_form_right"
 		id="ticket_description"
-	><?php echo esc_textarea( $ticket_description ); ?></textarea>
+	>
+		<?php echo esc_textarea( $ticket_description ); ?>
+	</textarea>
 	<div class="input_block">
 		<label class="tribe_soft_note">
 			<input
@@ -47,4 +50,3 @@
 		</label>
 	</div>
 </div>
-

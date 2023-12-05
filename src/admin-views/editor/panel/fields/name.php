@@ -6,11 +6,10 @@
  *
  * @version TBD
  *
- * @var string $ticket_name The ticket name.
+ * @var string $ticket_name                      The ticket name.
  * @var string $rsvp_required_type_error_message The RSVP required type error message.
  */
 ?>
-
 <div class="input_block">
 	<label class="ticket_form_label ticket_form_left" for="ticket_name">
 		<?php echo esc_html_x( 'Name:', 'The ticket name label in the admin ticket edit panel.', 'event-tickets' ); ?>
@@ -42,7 +41,7 @@
 			)
 		);
 		?>
-					</span>
+	</span>
 	<span
 		class="tribe_soft_note ticket_form_right"
 		data-depends="#Tribe__Tickets__RSVP_radio"
@@ -60,5 +59,5 @@
 			)
 		);
 		?>
-					</span>
+	</span>
 </div>
