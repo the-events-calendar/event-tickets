@@ -7,7 +7,7 @@
  * @version TBD
  *
  * @var string $ticket_description The ticket description.
- * @var array  $ticket             The ticket.
+ * @var array<string, mixed> $ticket The ticket.
  */
 
 ?>
