@@ -27,6 +27,7 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Tickets__Tickets as Tickets;
 use WP_Post;
 use Tribe__Tickets__Editor__Template as Template;
+use Tribe__Tickets__Admin__Views as Admin_Views;
 
 /**
  * Class Repository.
@@ -216,7 +217,7 @@ class Series_Passes extends Controller {
 			$this,
 			'print_series_pass_icon'
 		] );
-		add_action( "tec_tickets_ticket_form_main_start_{$ticket_type}", [ $this, 'render_type_header' ] );
+		add_action( 'tribe_template_before_include:tickets/admin-views/editor/panel/fields/dates', [ $this, 'render_type_header' ], 10, 3 );
 
 		add_filter( 'tec_tickets_ticket_type_default_header_description', [
 			$this,
@@ -300,7 +301,7 @@ class Series_Passes extends Controller {
 			$this,
 			'print_series_pass_icon'
 		] );
-		remove_action( "tec_tickets_ticket_form_main_start_{$ticket_type}", [ $this, 'render_type_header' ] );
+		remove_action( 'tribe_template_before_include:tickets/admin-views/editor/panel/fields/dates', [ $this, 'render_type_header' ], 10, 3 );
 		remove_filter( 'tec_tickets_ticket_type_default_header_description', [
 			$this,
 			'filter_ticket_type_default_header_description'
@@ -787,9 +788,21 @@ class Series_Passes extends Controller {
 	 *
 	 * @since TBD
 	 *
+	 * @param string      $file         The file being rendered.
+	 * @param array       $name         The name of the file being rendered.
+	 * @param Admin_Views $admin_views  The admin views instance.
+	 *
 	 * @return void
 	 */
-	public function render_type_header(): void {
+	public function render_type_header( string $file, array $name, Admin_Views $admin_views ): void {
+		$context     = $admin_views->get_values();
+		$ticket_type = $context['ticket_type'] ?? '';
+		$post_id     = $context['post_id'] ?? '';
+
+		if ( self::TICKET_TYPE !== $ticket_type || empty( $post_id ) ) {
+			return;
+		}
+
 		$this->metabox->render_type_header();
 	}
 

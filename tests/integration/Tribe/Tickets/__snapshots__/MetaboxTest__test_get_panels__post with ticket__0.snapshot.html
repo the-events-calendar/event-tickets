@@ -216,6 +216,66 @@
 					 data-datepicker_format="1">
 
 				
+				<input
+					type='hidden'
+					id='ticket_type'
+					name='ticket_type'
+					value="default"
+				/>
+
+				<div class="input_block">
+	<label class="ticket_form_label ticket_form_left" for="ticket_name">
+		Name:	</label>
+	<input
+		type='text'
+		id='ticket_name'
+		name='ticket_name'
+		class="ticket_field ticket_form_right"
+		size='25'
+		value="Test TC ticket for {{ post_id }}"
+		data-validation-is-required
+		data-validation-error="RSVP type is a required field"
+	/>
+	<span
+		class="tribe_soft_note ticket_form_right"
+		data-depends="#Tribe__Tickets__RSVP_radio"
+		data-condition-not-checked
+	>
+	The ticket name is displayed on the frontend of your website and within ticket emails.	</span>
+	<span
+		class="tribe_soft_note ticket_form_right"
+		data-depends="#Tribe__Tickets__RSVP_radio"
+		data-condition-is-checked
+	>
+	The RSVP name is displayed on the frontend of your website and within RSVP emails.	</span>
+</div>
+
+				
+<div class="input_block">
+	<label class="ticket_form_label ticket_form_left" for="ticket_description">
+		Description:	</label>
+	<textarea
+		rows="5"
+		cols="40"
+		name="ticket_description"
+		class="ticket_field ticket_form_right"
+		id="ticket_description"
+	>
+		Test TC ticket description for {{ post_id }}	</textarea>
+	<div class="input_block">
+		<label class="tribe_soft_note">
+			<input
+				type="checkbox"
+				id="tribe_tickets_show_description"
+				name="ticket_show_description"
+				value="1"
+				class="ticket_field ticket_form_left"
+				 checked='checked'			>
+			Show description on frontend ticket form.		</label>
+	</div>
+</div>
+
+				
 <div id="ticket_type_options" class="input_block">
 	<label class="ticket_form_label ticket_form_left" id="ticket_type_label" for="ticket_type">
 		Type:	</label>
@@ -237,125 +297,68 @@
 	<img class="tec_tickets_editor__header__ticket-type-upsell-icon" src="http://wordpress.test/wp-content/plugins/event-tickets/common/src/resources/images/icons/circle-bolt.svg" alt="upsell-icon">
 	<span>
 		For more ticket types, <a href="https://evnt.is/tt-ecp" target="_blank" rel="noopener noreferrer">upgrade</a> to Events Calendar Pro.	</span>
+</div><div class="input_block">
+	<label class="ticket_form_label ticket_form_left" for="ticket_start_date">
+		Start sale:	</label>
+	<div class="ticket_form_right">
+		<input
+			autocomplete="off"
+			type="text"
+			class="tribe-datepicker tribe-field-start_date ticket_field"
+			name="ticket_start_date"
+			id="ticket_start_date"
+			value="1/2/2020"
+			data-validation-type="datepicker"
+			data-validation-is-less-or-equal-to="#ticket_end_date"
+			data-validation-error="{&quot;is-required&quot;:&quot;Start sale date cannot be empty.&quot;,&quot;is-less-or-equal-to&quot;:&quot;Start sale date cannot be greater than End Sale date&quot;}"
+		/>
+		<span class="helper-text hide-if-js">YYYY-MM-DD</span>
+		<span class="datetime_seperator"> at </span>
+		<input
+			autocomplete="off"
+			type="text"
+			class="tribe-timepicker tribe-field-start_time ticket_field"
+			name="ticket_start_time"
+			id="ticket_start_time"
+						data-step="30"
+			data-round="00:00:00"
+			value="08:00:00"
+			aria-label="Ticket start date"
+		/>
+		<span class="helper-text hide-if-js">HH:MM</span>
+		<span class="dashicons dashicons-editor-help" title="If you do not set a start sale date, tickets will be available immediately."></span>
+	</div>
 </div>
-				<input
-					type='hidden'
-					id='ticket_type'
-					name='ticket_type'
-					value="default"
-				/>
+<div class="input_block">
+	<label class="ticket_form_label ticket_form_left" for="ticket_end_date">
+		End sale:	</label>
+	<div class="ticket_form_right">
+		<input
+			autocomplete="off"
+			type="text"
+			class="tribe-datepicker tribe-field-end_date ticket_field"
+			name="ticket_end_date"
+			id="ticket_end_date"
+			value="3/1/2050"
+		/>
+		<span class="helper-text hide-if-js">YYYY-MM-DD</span>
+		<span class="datetime_seperator"> at </span>
+		<input
+			autocomplete="off"
+			type="text"
+			class="tribe-timepicker tribe-field-end_time ticket_field"
+			name="ticket_end_time"
+			id="ticket_end_time"
+						data-step="30"
+			data-round="00:00:00"
+			value="20:00:00"
+			aria-label="Ticket end date"
+		/>
+		<span class="helper-text hide-if-js">HH:MM</span>
+		<span class="dashicons dashicons-editor-help" title="If you do not set an end sale date, tickets will be available forever."></span>
+	</div>
+</div>
 
-				<div class="input_block">
-					<label class="ticket_form_label ticket_form_left" for="ticket_name">
-						Name:					</label>
-					<input
-							type='text'
-							id='ticket_name'
-							name='ticket_name'
-							class="ticket_field ticket_form_right"
-							size='25'
-							value="Test TC ticket for {{ post_id }}"
-							data-validation-is-required
-							data-validation-error="RSVP type is a required field"
-					/>
-					<span
-							class="tribe_soft_note ticket_form_right"
-							data-depends="#Tribe__Tickets__RSVP_radio"
-							data-condition-not-checked
-					>The ticket name is displayed on the frontend of your website and within ticket emails.					</span>
-					<span
-							class="tribe_soft_note ticket_form_right"
-							data-depends="#Tribe__Tickets__RSVP_radio"
-							data-condition-is-checked
-					>The RSVP name is displayed on the frontend of your website and within RSVP emails.					</span>
-				</div>
-				<div class="input_block">
-					<label class="ticket_form_label ticket_form_left"
-						   for="ticket_description">Description:</label>
-					<textarea
-							rows="5"
-							cols="40"
-							name="ticket_description"
-							class="ticket_field ticket_form_right"
-							id="ticket_description"
-					>Test TC ticket description for {{ post_id }}</textarea>
-					<div class="input_block">
-						<label class="tribe_soft_note">
-							<input
-									type="checkbox"
-									id="tribe_tickets_show_description"
-									name="ticket_show_description"
-									value="1"
-									class="ticket_field ticket_form_left"
-									 checked='checked'							>
-							Show description on frontend ticket form.						</label>
-					</div>
-				</div>
-				<div class="input_block">
-					<label class="ticket_form_label ticket_form_left"
-						   for="ticket_start_date">Start sale:</label>
-					<div class="ticket_form_right">
-						<input
-								autocomplete="off"
-								type="text"
-								class="tribe-datepicker tribe-field-start_date ticket_field"
-								name="ticket_start_date"
-								id="ticket_start_date"
-								value="1/2/2020"
-								data-validation-type="datepicker"
-								data-validation-is-less-or-equal-to="#ticket_end_date"
-								data-validation-error="{&quot;is-required&quot;:&quot;Start sale date cannot be empty.&quot;,&quot;is-less-or-equal-to&quot;:&quot;Start sale date cannot be greater than End Sale date&quot;}"
-						/>
-						<span class="helper-text hide-if-js">YYYY-MM-DD</span>
-						<span class="datetime_seperator"> at </span>
-						<input
-								autocomplete="off"
-								type="text"
-								class="tribe-timepicker tribe-field-start_time ticket_field"
-								name="ticket_start_time"
-								id="ticket_start_time"
-																data-step="30"
-								data-round="00:00:00"
-								value="08:00:00"
-								aria-label="Ticket start date"
-						/>
-						<span class="helper-text hide-if-js">HH:MM</span>
-						<span class="dashicons dashicons-editor-help"
-							  title="If you do not set a start sale date, tickets will be available immediately.">
-			</span>
-					</div>
-				</div>
-				<div class="input_block">
-					<label class="ticket_form_label ticket_form_left"
-						   for="ticket_end_date">End sale:</label>
-					<div class="ticket_form_right">
-						<input
-								autocomplete="off"
-								type="text"
-								class="tribe-datepicker tribe-field-end_date ticket_field"
-								name="ticket_end_date"
-								id="ticket_end_date"
-								value="3/1/2050"
-						/>
-						<span class="helper-text hide-if-js">YYYY-MM-DD</span>
-						<span class="datetime_seperator"> at </span>
-						<input
-								autocomplete="off"
-								type="text"
-								class="tribe-timepicker tribe-field-end_time ticket_field"
-								name="ticket_end_time"
-								id="ticket_end_time"
-																data-step="30"
-								data-round="00:00:00"
-								value="20:00:00"
-								aria-label="Ticket end date"
-						/>
-						<span class="helper-text hide-if-js">HH:MM</span>
-						<span class="dashicons dashicons-editor-help"
-							  title="If you do not set an end sale date, tickets will be available forever."
-						></span>
-					</div>
-				</div>
 				<fieldset id="tribe_ticket_provider_wrapper" class="input_block" aria-hidden="true">
 					<legend class="ticket_form_label">Sell using:</legend>
 											<input
