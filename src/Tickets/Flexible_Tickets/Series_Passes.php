@@ -217,7 +217,7 @@ class Series_Passes extends Controller {
 			$this,
 			'print_series_pass_icon'
 		] );
-		add_action( "tribe_template_before_include:tickets/admin-views/editor/panel/fields/dates", [ $this, 'render_type_header' ], 10, 3 );
+		add_action( 'tribe_template_before_include:tickets/admin-views/editor/panel/fields/dates', [ $this, 'render_type_header' ], 10, 3 );
 
 		add_filter( 'tec_tickets_ticket_type_default_header_description', [
 			$this,
@@ -301,7 +301,7 @@ class Series_Passes extends Controller {
 			$this,
 			'print_series_pass_icon'
 		] );
-		remove_action( "tribe_template_before_include:tickets/admin-views/editor/panel/fields/dates", [ $this, 'render_type_header' ], 10, 3 );
+		remove_action( 'tribe_template_before_include:tickets/admin-views/editor/panel/fields/dates', [ $this, 'render_type_header' ], 10, 3 );
 		remove_filter( 'tec_tickets_ticket_type_default_header_description', [
 			$this,
 			'filter_ticket_type_default_header_description'
@@ -788,9 +788,9 @@ class Series_Passes extends Controller {
 	 *
 	 * @since TBD
 	 *
-	 * @param string        $file           The file being rendered.
-	 * @param array         $name           The name of the file being rendered.
-	 * @param Admin_Views   $admin_views    The admin views instance.
+	 * @param string      $file         The file being rendered.
+	 * @param array       $name         The name of the file being rendered.
+	 * @param Admin_Views $admin_views  The admin views instance.
 	 *
 	 * @return void
 	 */

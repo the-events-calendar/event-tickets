@@ -23,8 +23,9 @@
 
 ?>
 <div class="input_block">
-	<label class="ticket_form_label ticket_form_left"
-	       for="ticket_start_date"><?php esc_html_e( 'Start sale:', 'event-tickets' ); ?></label>
+	<label class="ticket_form_label ticket_form_left" for="ticket_start_date">
+		<?php esc_html_e( 'Start sale:', 'event-tickets' ); ?>
+	</label>
 	<div class="ticket_form_right">
 		<input
 			autocomplete="off"
@@ -52,14 +53,13 @@
 			aria-label="<?php echo esc_attr( $ticket_start_date_aria_label ); ?>"
 		/>
 		<span class="helper-text hide-if-js"><?php esc_html_e( 'HH:MM', 'event-tickets' ); ?></span>
-		<span class="dashicons dashicons-editor-help"
-		      title="<?php echo esc_attr( $ticket_start_date_help_text ); ?>">
-		</span>
+		<span class="dashicons dashicons-editor-help" title="<?php echo esc_attr( $ticket_start_date_help_text ); ?>"></span>
 	</div>
 </div>
 <div class="input_block">
-	<label class="ticket_form_label ticket_form_left"
-	       for="ticket_end_date"><?php esc_html_e( 'End sale:', 'event-tickets' ); ?></label>
+	<label class="ticket_form_label ticket_form_left" for="ticket_end_date">
+		<?php esc_html_e( 'End sale:', 'event-tickets' ); ?>
+	</label>
 	<div class="ticket_form_right">
 		<input
 			autocomplete="off"
@@ -84,8 +84,6 @@
 			aria-label="<?php echo esc_attr( $ticket_end_date_aria_label ); ?>"
 		/>
 		<span class="helper-text hide-if-js"><?php esc_html_e( 'HH:MM', 'event-tickets' ); ?></span>
-		<span class="dashicons dashicons-editor-help"
-		      title="<?php echo esc_attr( $ticket_end_date_help_text ); ?>"
-		></span>
+		<span class="dashicons dashicons-editor-help" title="<?php echo esc_attr( $ticket_end_date_help_text ); ?>"></span>
 	</div>
 </div>
