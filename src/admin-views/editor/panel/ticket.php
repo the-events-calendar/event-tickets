@@ -1,5 +1,11 @@
 <?php
 /**
+ * Ticket editor panel template for classic editor.
+ *
+ * @since TBD Input fields moved to separate templates.
+ *
+ * @version TBD
+ *
  * @var Tribe__Tickets__Ticket_Object|null $ticket                           The ticket object.
  * @var Tribe__Tickets__Tickets            $provider                         The provider instance.
  * @var array<string,string>               $modules                          The available ticket modules.
@@ -24,6 +30,7 @@
  * @var string                             $ticket_start_time                The ticket start time.
  * @var string                             $timepicker_round                 The timepicker round.
  * @var string                             $ticket_type                      The type of Ticket the form is for.
+ * @var Tribe__Tickets__Admin__Views       $this                             The admin views instance.
  */
 
 $ticket_type = $ticket_type ?? 'default';
@@ -174,160 +181,12 @@ $ticket_type = $ticket_type ?? 'default';
 					value="<?php echo esc_attr( $ticket_type ?? 'default' ); ?>"
 				/>
 
-				<div class="input_block">
-					<label class="ticket_form_label ticket_form_left" for="ticket_name">
-						<?php echo esc_html_x( 'Name:', 'The ticket name label in the admin ticket edit panel.', 'event-tickets' ); ?>
-					</label>
-					<input
-							type='text'
-							id='ticket_name'
-							name='ticket_name'
-							class="ticket_field ticket_form_right"
-							size='25'
-							value="<?php echo esc_attr( $ticket_name ); ?>"
-							data-validation-is-required
-							data-validation-error="<?php echo esc_attr( $rsvp_required_type_error_message ); ?>"
-					/>
-					<span
-							class="tribe_soft_note ticket_form_right"
-							data-depends="#Tribe__Tickets__RSVP_radio"
-							data-condition-not-checked
-					><?php
-						echo esc_html(
-								sprintf(
-								// Translators: %1$s: dynamic 'ticket' text.
-										_x(
-												'The %1$s name is displayed on the frontend of your website and within ticket emails.',
-												'admin edit ticket panel note',
-												'event-tickets'
-										),
-										tribe_get_ticket_label_singular_lowercase( 'admin_edit_ticket_panel_note' )
-								)
-						);
-						?>
-					</span>
-					<span
-							class="tribe_soft_note ticket_form_right"
-							data-depends="#Tribe__Tickets__RSVP_radio"
-							data-condition-is-checked
-					><?php
-						echo esc_html(
-								sprintf(
-								// Translators: %1$s: dynamic 'RSVP' text.
-										_x(
-												'The %1$s name is displayed on the frontend of your website and within %1$s emails.',
-												'admin edit RSVP panel note',
-												'event-tickets'
-										),
-										tribe_get_rsvp_label_singular( 'admin_edit_rsvp_panel_note' )
-								)
-						);
-						?>
-					</span>
-				</div>
-				<div class="input_block">
-					<label class="ticket_form_label ticket_form_left"
-						   for="ticket_description"><?php esc_html_e( 'Description:', 'event-tickets' ); ?></label>
-					<textarea
-							rows="5"
-							cols="40"
-							name="ticket_description"
-							class="ticket_field ticket_form_right"
-							id="ticket_description"
-					><?php echo esc_textarea( $ticket_description ); ?></textarea>
-					<div class="input_block">
-						<label class="tribe_soft_note">
-							<input
-									type="checkbox"
-									id="tribe_tickets_show_description"
-									name="ticket_show_description"
-									value="1"
-									class="ticket_field ticket_form_left"
-									<?php checked( true, $ticket ? $ticket->show_description : true ); ?>
-							>
-							<?php
-							echo esc_html(
-									sprintf(
-									// Translators: %s: dynamic 'tickets' text.
-											_x(
-													'Show description on frontend %s form.',
-													'default ticket provider',
-													'event-tickets'
-											),
-											tribe_get_ticket_label_singular_lowercase( 'default_ticket_provider' )
-									)
-							);
-							?>
-						</label>
-					</div>
-				</div>
-				<div class="input_block">
-					<label class="ticket_form_label ticket_form_left"
-						   for="ticket_start_date"><?php esc_html_e( 'Start sale:', 'event-tickets' ); ?></label>
-					<div class="ticket_form_right">
-						<input
-								autocomplete="off"
-								type="text"
-								class="tribe-datepicker tribe-field-start_date ticket_field"
-								name="ticket_start_date"
-								id="ticket_start_date"
-								value="<?php echo esc_attr( $ticket ? $ticket_start_date : null ); ?>"
-								data-validation-type="datepicker"
-								data-validation-is-less-or-equal-to="#ticket_end_date"
-								data-validation-error="<?php echo esc_attr( wp_json_encode( $start_date_errors ) ); ?>"
-						/>
-						<span class="helper-text hide-if-js"><?php esc_html_e( 'YYYY-MM-DD', 'event-tickets' ); ?></span>
-						<span class="datetime_seperator"> <?php esc_html_e( 'at', 'event-tickets' ); ?> </span>
-						<input
-								autocomplete="off"
-								type="text"
-								class="tribe-timepicker tribe-field-start_time ticket_field"
-								name="ticket_start_time"
-								id="ticket_start_time"
-								<?php echo Tribe__View_Helpers::is_24hr_format() ? 'data-format="H:i"' : ''; ?>
-								data-step="<?php echo esc_attr( $timepicker_step ); ?>"
-								data-round="<?php echo esc_attr( $timepicker_round ); ?>"
-								value="<?php echo esc_attr( $ticket_start_time ); ?>"
-								aria-label="<?php echo esc_attr( $ticket_start_date_aria_label ); ?>"
-						/>
-						<span class="helper-text hide-if-js"><?php esc_html_e( 'HH:MM', 'event-tickets' ); ?></span>
-						<span class="dashicons dashicons-editor-help"
-							  title="<?php echo esc_attr( $ticket_start_date_help_text ); ?>">
-			</span>
-					</div>
-				</div>
-				<div class="input_block">
-					<label class="ticket_form_label ticket_form_left"
-						   for="ticket_end_date"><?php esc_html_e( 'End sale:', 'event-tickets' ); ?></label>
-					<div class="ticket_form_right">
-						<input
-								autocomplete="off"
-								type="text"
-								class="tribe-datepicker tribe-field-end_date ticket_field"
-								name="ticket_end_date"
-								id="ticket_end_date"
-								value="<?php echo esc_attr( $ticket ? $ticket_end_date : null ); ?>"
-						/>
-						<span class="helper-text hide-if-js"><?php esc_html_e( 'YYYY-MM-DD', 'event-tickets' ); ?></span>
-						<span class="datetime_seperator"> <?php esc_html_e( 'at', 'event-tickets' ); ?> </span>
-						<input
-								autocomplete="off"
-								type="text"
-								class="tribe-timepicker tribe-field-end_time ticket_field"
-								name="ticket_end_time"
-								id="ticket_end_time"
-								<?php echo Tribe__View_Helpers::is_24hr_format() ? 'data-format="H:i"' : ''; ?>
-								data-step="<?php echo esc_attr( $timepicker_step ); ?>"
-								data-round="<?php echo esc_attr( $timepicker_round ); ?>"
-								value="<?php echo esc_attr( $ticket_end_time ); ?>"
-								aria-label="<?php echo esc_attr( $ticket_end_date_aria_label ); ?>"
-						/>
-						<span class="helper-text hide-if-js"><?php esc_html_e( 'HH:MM', 'event-tickets' ); ?></span>
-						<span class="dashicons dashicons-editor-help"
-							  title="<?php echo esc_attr( $ticket_end_date_help_text ); ?>"
-						></span>
-					</div>
-				</div>
+				<?php $this->template( 'editor/panel/fields/name', get_defined_vars() ); ?>
+
+				<?php $this->template( 'editor/panel/fields/description', get_defined_vars() ); ?>
+
+				<?php $this->template( 'editor/panel/fields/dates', get_defined_vars() ); ?>
+
 				<fieldset id="tribe_ticket_provider_wrapper" class="input_block" aria-hidden="true">
 					<legend class="ticket_form_label"><?php esc_html_e( 'Sell using:', 'event-tickets' ); ?></legend>
 					<?php foreach ( $modules as $class => $module ) : ?>
