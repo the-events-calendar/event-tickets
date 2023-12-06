@@ -13,6 +13,7 @@ describe( 'MoveDelete', () => {
 			moveTicket: jest.fn(),
 			removeTicket: jest.fn(),
 			isDisabled: false,
+			ticketIsSelected: true,
 		};
 	} );
 
