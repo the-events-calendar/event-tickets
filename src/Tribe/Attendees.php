@@ -2,6 +2,7 @@
 
 use Tribe__Utils__Array as Arr;
 use Tribe__Tickets__Ticket_Object as Ticket;
+use Tribe__Tickets__Global_Stock as Global_Stock;
 
 /**
  * Handles most actions related to an Attendees or Multiple ones
@@ -1093,7 +1094,10 @@ class Tribe__Tickets__Attendees {
 			'available' => 0,
 		];
 
+		$available_contributors = [];
+
 		// Split Tickets by their type.
+		/** @var Ticket[] $tickets */
 		foreach ( $tickets as $ticket ) {
 			$ticket_type = $ticket->type();
 			if ( ! isset( $tickets_by_type[ $ticket_type ] ) ) {
@@ -1101,13 +1105,32 @@ class Tribe__Tickets__Attendees {
 			}
 			$tickets_by_type[ $ticket_type ][] = $ticket;
 			$ticket_totals['sold'] += $ticket->qty_sold();
-			if ( $ticket_totals['available'] > - 1 ) {
-				if ( - 1 === $ticket->available() ) {
-					$ticket_totals['available'] = - 1;
-				} else {
-					$ticket_totals['available'] += $ticket->available();
-				}
+
+			if ( $ticket_totals['available'] === - 1 ) {
+				// Unlimited capacity trumps any other capacity; if already unlimited, it will stay unlimited.
+				continue;
 			}
+
+			if ( - 1 === $ticket->available() ) {
+				// Unlimited capacity trumps any other capacity: set to unlimited.
+				$ticket_totals['available'] = - 1;
+				continue;
+			}
+
+			if ( $ticket->global_stock_mode() === Global_Stock::OWN_STOCK_MODE ) {
+				// Own stock: add to the available count.
+				$ticket_totals['available'] += $ticket->available();
+				continue;
+			}
+
+			if ( ! isset( $available_contributors[ (int) $ticket->get_event_id() ] ) ) {
+				// Shared or capped capacity: add to the available contributors only if we haven't already counted it.
+				$available_contributors[ (int) $ticket->get_event_id() ] = $ticket->available();
+			}
+		}
+
+		if ( $ticket_totals['available'] !== - 1 && count( $available_contributors ) ) {
+			$ticket_totals['available'] += array_sum( $available_contributors );
 		}
 
 		$context = [
