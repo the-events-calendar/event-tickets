@@ -56,7 +56,7 @@ const CapacityTable = ( {
 CapacityTable.propTypes = {
 	isSettingsLoading: PropTypes.bool,
 	independentCapacity: PropTypes.number,
-	sharedCapacity: PropTypes.string,
+	sharedCapacity: PropTypes.number,
 	independentAndSharedCapacity: PropTypes.number,
 	independentTicketItems: PropTypes.string,
 	sharedTicketItems: PropTypes.string,
