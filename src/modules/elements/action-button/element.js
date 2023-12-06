@@ -45,6 +45,7 @@ const ActionButton = ( {
 		const elemProps = { ...props };
 
 		if ( asLink && ! disabled ) {
+			elemProps.href = href;
 			elemProps.onMouseDown = () => {
 				window.open( href, target );
 			};
