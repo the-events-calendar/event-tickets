@@ -3,7 +3,7 @@
  */
 import * as actions from '../actions';
 
-describe( 'Move Actons', () => {
+describe( 'Move Actions', () => {
 	const keys = Object.keys( actions );
 	const payload = [ {}, 1, 2 ];
 
