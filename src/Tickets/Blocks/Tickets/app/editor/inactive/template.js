@@ -14,7 +14,7 @@ import { __, _x, sprintf } from '@wordpress/i18n';
  */
 import { Card } from '@moderntribe/tickets/elements';
 
-const getCreateSingleTicketMessage = (postType) => (
+const getCreateSingleTicketMessage = (postTypeLabel) => (
 	<div className="tickets-row-line">
 		{sprintf(
 			// Translators: %s is the post type name in human readable form.
@@ -23,7 +23,7 @@ const getCreateSingleTicketMessage = (postType) => (
 				'The message displayed when there are no tickets and has recurrence rules.',
 				'event-tickets'
 			),
-			postType ? postType : ''
+			postTypeLabel ? postTypeLabel : ''
 		)}
 		<a
 			className="helper-link"
@@ -37,14 +37,14 @@ const getCreateSingleTicketMessage = (postType) => (
 );
 
 const getInactiveTicketsMessage = ({
+	Warning = null,
 	allTicketsFuture = false,
 	allTicketsPast = false,
 	canCreateTickets = true,
 	hasCreatedTickets = false,
 	hasRecurrenceRules = false,
+	postTypeLabel = 'post',
 	showWarning = false,
-	Warning = null,
-	postType = 'post',
 }) => {
 	if (!canCreateTickets) {
 		return (
@@ -63,14 +63,14 @@ const getInactiveTicketsMessage = ({
 		if (!hasRecurrenceRules) {
 			return (
 				<div className="tribe-editor__title__help-messages">
-					{getCreateSingleTicketMessage(postType)}
+					{getCreateSingleTicketMessage(postTypeLabel)}
 				</div>
 			);
 		}
 
 		return (
 			<div className="tribe-editor__title__help-messages">
-				{getCreateSingleTicketMessage(postType)}
+				{getCreateSingleTicketMessage(postTypeLabel)}
 				{showWarning ? <Warning /> : null}
 			</div>
 		);
@@ -105,7 +105,7 @@ const InactiveTickets = ({
 	canCreateTickets = true,
 	hasCreatedTickets = false,
 	hasRecurrenceRules = false,
-	postType = 'post',
+	postTypeLabel = 'post',
 	showWarning = false,
 }) => {
 	return (
@@ -115,14 +115,14 @@ const InactiveTickets = ({
 		>
 			<div className="tickets-description">
 				{getInactiveTicketsMessage({
+					Warning,
 					allTicketsFuture,
 					allTicketsPast,
 					canCreateTickets,
 					hasCreatedTickets,
 					hasRecurrenceRules,
+					postTypeLabel,
 					showWarning,
-					postType,
-					Warning,
 				})}
 			</div>
 		</Card>
@@ -130,14 +130,14 @@ const InactiveTickets = ({
 };
 
 InactiveTickets.propTypes = {
+	Warning: PropTypes.node,
 	allTicketsFuture: PropTypes.bool,
 	allTicketsPast: PropTypes.bool,
 	canCreateTickets: PropTypes.bool,
 	hasCreatedTickets: PropTypes.bool,
 	hasRecurrenceRules: PropTypes.bool,
+	postTypeLabel: PropTypes.string,
 	showWarning: PropTypes.bool,
-	Warning: PropTypes.node,
-	postType: PropTypes.string,
 };
 
 export default InactiveTickets;

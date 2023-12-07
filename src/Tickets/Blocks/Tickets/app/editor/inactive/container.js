@@ -15,7 +15,7 @@ const mapStateToProps = (state, ownProps) => {
 		hasRecurrenceRules: hasRecurrenceRules(state),
 		showWarning: false,
 		Warning: null,
-		postType: selectors
+		postTypeLabel: selectors
 			.getCurrentPostTypeLabel('singular_name')
 			.toLowerCase(),
 	};
