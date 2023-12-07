@@ -18,7 +18,7 @@ const {
 	SHARED,
 	TICKET_TYPES,
 } = constants;
-const { tickets: ticketsConfig } = globals;
+const { tickets: ticketsConfig, post: postConfig } = globals;
 
 export const getState = ( state ) => state;
 export const getBlock = ( state ) => state.tickets.blocks.ticket;
@@ -731,3 +731,8 @@ export const isTicketProvidersChoiceDisabled = () => {
 	const tickets = ticketsConfig();
 	return tickets.choice_disabled || false;
 };
+
+export const getCurrentPostTypeLabel = (key = 'singular_name') => {
+	const post = postConfig();
+	return post?.labels?.[key] || 'Post';
+}

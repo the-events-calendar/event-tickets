@@ -3,7 +3,6 @@ import { compose } from 'redux';
 import { selectors } from '@moderntribe/tickets/data/blocks/ticket';
 import { withStore } from '@moderntribe/common/hoc';
 import { applyFilters } from '@wordpress/hooks';
-import { select } from '@wordpress/data';
 import { hasRecurrenceRules } from '@moderntribe/common/utils/recurrence';
 import Template from './template';
 
@@ -16,7 +15,9 @@ const mapStateToProps = (state, ownProps) => {
 		hasRecurrenceRules: hasRecurrenceRules(state),
 		showWarning: false,
 		Warning: null,
-		postType: select('core/editor').getPostTypeLabel()?.toLowerCase(),
+		postType: selectors
+			.getCurrentPostTypeLabel('singular_name')
+			.toLowerCase(),
 	};
 
 	mappedProps = applyFilters(

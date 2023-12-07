@@ -99,13 +99,14 @@ const getInactiveTicketsMessage = ({
 };
 
 const InactiveTickets = ({
+	Warning = null,
 	allTicketsFuture = false,
 	allTicketsPast = false,
 	canCreateTickets = true,
 	hasCreatedTickets = false,
 	hasRecurrenceRules = false,
+	postType = 'post',
 	showWarning = false,
-	Warning = null,
 }) => {
 	return (
 		<Card
@@ -120,6 +121,7 @@ const InactiveTickets = ({
 					hasCreatedTickets,
 					hasRecurrenceRules,
 					showWarning,
+					postType,
 					Warning,
 				})}
 			</div>
