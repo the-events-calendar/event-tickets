@@ -7,7 +7,6 @@ import { compose } from 'redux';
 /**
  * WordPress dependencies
  */
-import { select } from '@wordpress/data';
 import { _x, sprintf } from '@wordpress/i18n';
 
 /**
@@ -21,9 +20,9 @@ import { applyFilters } from '@wordpress/hooks';
 import { Ticket as TicketIcon } from '@moderntribe/tickets/icons';
 
 const mapStateToProps = (state, ownProps) => {
-	const postTypeLabel = select('core/editor')
-		.getPostTypeLabel()
-		?.toLowerCase();
+	const postTypeLabel = selectors
+		.getCurrentPostTypeLabel('singular_name')
+		.toLowerCase();
 	const ticketDetails = selectors.getTicketDetails(state, ownProps);
 	const typeName = _x(
 		'Single Ticket',
@@ -39,20 +38,26 @@ const mapStateToProps = (state, ownProps) => {
 		),
 		postTypeLabel
 	);
-	const typeUpsellDescription = _x(
-		'For more ticket types, <a href="https://evnt.is/tt-ecp" target="_blank" rel="noopener noreferrer">upgrade</a> to Events Calendar Pro',
-		'Default ticket type upsell description.',
-		'event-tickets'
+	const hasEventsPro = plugins.selectors.hasPlugin(state)(
+		plugins.constants.EVENTS_PRO_PLUGIN
 	);
+	const currentPostIsEvent = selectors.currentPostIsEvent();
+
+	// Show an ECP related upsell message if on an Event and the user doesn't have ECP activated.
+	const upsellMessage =
+		!hasEventsPro && currentPostIsEvent
+			? _x(
+					'For more ticket types, <a href="https://evnt.is/tt-ecp" target="_blank" rel="noopener noreferrer">upgrade</a> to Events Calendar Pro',
+					'Default ticket type upsell description.',
+					'event-tickets'
+			  )
+			: null;
 	const typeIcon = <TicketIcon />;
 
 	let mappedProps = {
-		hasEventsPro: plugins.selectors.hasPlugin(state)(
-			plugins.constants.EVENTS_PRO_PLUGIN
-		),
 		typeName,
 		typeDescription,
-		typeUpsellDescription,
+		upsellMessage,
 		typeIcon,
 	};
 

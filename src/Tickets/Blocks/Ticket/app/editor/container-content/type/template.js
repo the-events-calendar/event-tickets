@@ -13,21 +13,15 @@ import { _x } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { LabeledItem } from '@moderntribe/common/elements';
 import { ECP as ECPIcon } from '@moderntribe/tickets/icons';
 import './styles.pcss';
+import { LabelWithTooltip } from '@moderntribe/tickets/elements';
+import { Dashicon } from '@wordpress/components';
 
-const Type = ({
-	hasEventsPro,
-	typeName,
-	typeDescription,
-	typeUpsellDescription,
-	typeIcon,
-}) => {
+const Type = ({ typeName, typeDescription, upsellMessage, typeIcon }) => {
 	// This is sanitized in the PHP section, furthermore this description will not go to the backend.
-	const htmlTypeDescription = { __html: typeDescription };
 	const htmlTypeUpsellDescription = {
-		__html: typeUpsellDescription,
+		__html: upsellMessage || '',
 	};
 
 	return (
@@ -38,10 +32,22 @@ const Type = ({
 				'tribe-editor__ticket__content-row--type'
 			)}
 		>
-			<LabeledItem
+			<LabelWithTooltip
 				className="tribe-editor__ticket__type-label"
+				forId=""
 				isLabel={true}
-				label={_x('Type', 'Ticket type label', 'event-tickets')}
+				label={_x(
+					'Ticket type',
+					'Block Editor Ticket type label',
+					'event-tickets'
+				)}
+				tooltipText={typeDescription}
+				tooltipLabel={
+					<Dashicon
+						className="tribe-editor__ticket__tooltip-label"
+						icon="info-outline"
+					/>
+				}
 			/>
 
 			<div className="tribe-editor__ticket__type__description">
@@ -49,11 +55,7 @@ const Type = ({
 					{typeIcon}
 					<span>{typeName}</span>
 				</div>
-				<div
-					className="tribe-editor__ticket__type__type-description"
-					dangerouslySetInnerHTML={htmlTypeDescription}
-				/>
-				{!hasEventsPro ? (
+				{upsellMessage ? (
 					<div className="tribe-editor__ticket__type__type-upsell-description">
 						<ECPIcon />
 						<span
@@ -67,10 +69,9 @@ const Type = ({
 };
 
 Type.propTypes = {
-	hasEventsPro: PropTypes.bool,
 	typeName: PropTypes.string,
 	typeDescription: PropTypes.string,
-	typeUpsellDescription: PropTypes.string,
+	upsellMessage: PropTypes.string,
 	typeIcon: PropTypes.node,
 };
 

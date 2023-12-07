@@ -18,17 +18,19 @@ import Title from './title/container';
 import Type from './type/container';
 import './style.pcss';
 
-const TicketContainerContent = ( { clientId, hasTicketsPlus, hasIacVars } ) => (
+const TicketContainerContent = ({ clientId, hasTicketsPlus, hasIacVars }) => (
 	<Fragment>
-		<Type clientId={ clientId } />
-		<Title clientId={ clientId } />
-		<Description clientId={ clientId } />
-		<Price clientId={ clientId } />
-		<Capacity clientId={ clientId } />
-		<Duration clientId={ clientId } />
-		<AdvancedOptions clientId={ clientId } />
-		{ hasTicketsPlus && hasIacVars && <AttendeeCollection clientId={ clientId } /> }
-		{ hasTicketsPlus && <AttendeesRegistration clientId={ clientId } /> }
+		<Title clientId={clientId} />
+		<Description clientId={clientId} />
+		<Price clientId={clientId} />
+		<Type clientId={clientId} />
+		<Capacity clientId={clientId} />
+		<Duration clientId={clientId} />
+		<AdvancedOptions clientId={clientId} />
+		{hasTicketsPlus && hasIacVars && (
+			<AttendeeCollection clientId={clientId} />
+		)}
+		{hasTicketsPlus && <AttendeesRegistration clientId={clientId} />}
 	</Fragment>
 );
 

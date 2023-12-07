@@ -736,3 +736,8 @@ export const getCurrentPostTypeLabel = (key = 'singular_name') => {
 	const post = postConfig();
 	return post?.labels?.[key] || 'Post';
 }
+
+export const currentPostIsEvent = () => {
+	const post = postConfig();
+	return post?.type === 'tribe_events';
+}
