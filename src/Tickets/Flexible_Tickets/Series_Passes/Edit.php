@@ -104,8 +104,8 @@ class Edit {
 			: $event_id;
 		$relationship                                             = $event_id ? Series_Relationship::find( $event_id, 'event_post_id' ) : null;
 		$series_id                                                = $relationship ? $relationship->series_post_id : null;
-		$editor_data['defaultTicketTypeEventInSeriesDescription'] = $series_id ?
-			$this->labels->get_default_ticket_type_event_in_series_description( $series_id, $event_id )
+		$editor_data['defaultTicketTypeEventInSeriesDescriptionTemplate'] = $series_id ?
+			$this->labels->get_default_ticket_type_event_in_series_template()
 			: '';
 
 		return $editor_data;

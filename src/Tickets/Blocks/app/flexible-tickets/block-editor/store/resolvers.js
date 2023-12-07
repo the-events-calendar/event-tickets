@@ -18,9 +18,10 @@ export default {
 	*isInSeries() {
 		return actions.setIsInSeries(window.tecEventDetails?.isInSeries);
 	},
-	*getDefaultTicketTypeDescription() {
-		return actions.setDefaultTicketTypeDescription(
-			window.TECFtEditorData?.defaultTicketTypeEventInSeriesDescription
+	*getDefaultTicketTypeDescriptionTemplate() {
+		return actions.setDefaultTicketTypeDescriptionTemplate(
+			window.TECFtEditorData
+				?.defaultTicketTypeEventInSeriesDescriptionTemplate
 		);
 	},
 	*getSeriesPassTotalCapacity() {

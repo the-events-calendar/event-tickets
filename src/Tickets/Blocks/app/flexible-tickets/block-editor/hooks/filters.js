@@ -5,6 +5,7 @@
 
 import { addFilter } from '@wordpress/hooks';
 import SeriesPassNotice from '../components/series-pass-notice/container';
+import { sprintf } from '@wordpress/i18n';
 
 /**
  * Pull the Flexible Tickets data from the dedicated store.
@@ -70,7 +71,11 @@ function changeTicketTypeDescriptionForEventPartOfSeries(
 		return mappedProps;
 	}
 
-	const newDescription = ftStore.getDefaultTicketTypeDescription();
+	const { title: seriesTitle } = ftStore.getSeriesInformation();
+	const newDescription = sprintf(
+		ftStore.getDefaultTicketTypeDescriptionTemplate(),
+		seriesTitle
+	);
 	mappedProps.typeDescription = newDescription || mappedProps.typeDescription;
 
 	return mappedProps;
