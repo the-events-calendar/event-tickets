@@ -2,6 +2,7 @@
 
 namespace TEC\Tickets\Commerce\Communication;
 
+use TEC\Tickets\Commerce\Attendee;
 use TEC\Tickets\Commerce\Module;
 
 /**
@@ -65,5 +66,19 @@ class Email {
 
 		// Send the emails.
 		tribe( Module::class )->send_tickets_email_for_attendees( $to_send, $send_args );
+	}
+
+	/**
+	 * Update email sent counter for the attendee.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $attendee_id Attendee ID.
+	 *
+	 * @return bool
+	 */
+	public function update_ticket_sent_counter( int $attendee_id ): bool {
+		$prev_val = (int) get_post_meta( $attendee_id, Attendee::$ticket_sent_meta_key, true );
+		return update_post_meta( $attendee_id, Attendee::$ticket_sent_meta_key, $prev_val + 1 );
 	}
 }

@@ -5,6 +5,7 @@ namespace TEC\Tickets\Commerce;
 use TEC\Tickets\Commerce;
 use TEC\Tickets\Commerce\Status\Completed;
 use Tribe__Utils__Array as Arr;
+use TEC\Tickets\Commerce\Communication\Email as Email_Communication;
 
 /**
  * Class Tickets Provider class for Tickets Commerce
@@ -812,5 +813,16 @@ class Module extends \Tribe__Tickets__Tickets {
 		}
 
 		return $attendee;
+	}
+
+	/**
+	 * Update the email sent counter for attendee by increasing it +1.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $attendee_id The attendee ID.
+	 */
+	public function update_ticket_sent_counter( $attendee_id ) {
+		tribe( Email_Communication::class )->update_ticket_sent_counter( $attendee_id );
 	}
 }
