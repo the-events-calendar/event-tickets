@@ -23,17 +23,15 @@ import './style.pcss';
 
 class Tickets extends PureComponent {
 	static propTypes = {
+		Warning: PropTypes.elementType,
 		canCreateTickets: PropTypes.bool,
 		clientId: PropTypes.string,
-		hasProviders: PropTypes.bool,
 		hasRecurrenceRules: PropTypes.bool,
-		header: PropTypes.string,
 		isSelected: PropTypes.bool,
 		isSettingsOpen: PropTypes.bool,
 		noTicketsOnRecurring: PropTypes.bool,
 		onBlockUpdate: PropTypes.func,
 		showWarning: PropTypes.bool,
-		Warning: PropTypes.elementType,
 	};
 
 	componentDidMount() {
@@ -85,8 +83,8 @@ class Tickets extends PureComponent {
 
 		let tickets = [];
 		try {
-			tickets = JSON.parse( ticketsJSON ) || [];
-		} catch ( e ) {
+			tickets = JSON.parse(ticketsJSON) || [];
+		} catch (e) {
 			// Do nothing.
 		}
 
@@ -94,25 +92,24 @@ class Tickets extends PureComponent {
 			<>
 				<Card
 					className="tribe-editor__card tribe-editor__not-supported-message"
-					header={ __( 'Tickets', 'event-tickets' ) }
+					header={__('Tickets', 'event-tickets')}
 				>
 					<div className="tribe-editor__title__help-messages">
-						{ showWarning && ( <Warning /> ) }
+						{showWarning && <Warning />}
 					</div>
-					{
-						showUneditableTickets && (
-							<Uneditable cardClassName="tribe-editor__uneditable__card" tickets={ tickets } />
-						)
-					}
-					{
-						showWarning && (
-							<div className="tickets-description">
-								<div className="tribe-editor__tickets__container__helper__container">
-									<NotSupportedMessage />
-								</div>
+					{showUneditableTickets && (
+						<Uneditable
+							cardClassName="tribe-editor__uneditable__card"
+							tickets={tickets}
+						/>
+					)}
+					{showWarning && (
+						<div className="tickets-description">
+							<div className="tribe-editor__tickets__container__helper__container">
+								<NotSupportedMessage />
 							</div>
-						)
-					}
+						</div>
+					)}
 				</Card>
 			</>
 		);

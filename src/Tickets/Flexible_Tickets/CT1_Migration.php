@@ -11,7 +11,6 @@ namespace TEC\Tickets\Flexible_Tickets;
 
 use TEC\Common\Contracts\Provider\Controller;
 use TEC\Events\Custom_Tables\V1\Migration\State;
-use TEC\Events\Custom_Tables\V1\Migration\Strategies\Single_Event_Migration_Strategy;
 use TEC\Events\Custom_Tables\V1\Migration\Strategies\Strategy_Interface;
 use TEC\Events\Custom_Tables\V1\Migration\String_Dictionary;
 use TEC\Events_Pro\Custom_Tables\V1\Migration\Strategy\Multi_Rule_Event_Migration_Strategy;

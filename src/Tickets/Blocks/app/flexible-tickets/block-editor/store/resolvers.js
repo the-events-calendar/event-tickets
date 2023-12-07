@@ -20,7 +20,7 @@ export default {
 	},
 	*getDefaultTicketTypeDescription() {
 		return actions.setDefaultTicketTypeDescription(
-			window.tecEventDetails?.defaultTicketTypeEventInSeriesDescription
+			window.TECFtEditorData?.defaultTicketTypeEventInSeriesDescription
 		);
 	},
 	*getSeriesPassTotalCapacity() {

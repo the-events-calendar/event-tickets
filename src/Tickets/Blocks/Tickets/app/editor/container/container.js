@@ -7,7 +7,6 @@ import { compose } from 'redux';
 /**
  * WordPress dependencies
  */
-import { select } from '@wordpress/data';
 import { applyFilters } from '@wordpress/hooks';
 
 /**
@@ -16,7 +15,6 @@ import { applyFilters } from '@wordpress/hooks';
 import Template from './template';
 import { withStore } from '@moderntribe/common/hoc';
 import { selectors } from '@moderntribe/tickets/data/blocks/ticket';
-import { hasRecurrenceRules } from '@moderntribe/common/utils/recurrence';
 
 const getHasOverlay = (state, ownProps) =>
 	selectors.getTicketsIsSettingsOpen(state) ||
@@ -34,42 +32,20 @@ const getShowInactiveBlock = (state, ownProps) => {
 	return showIfBlockIsSelected || showIfBlockIsNotSelected;
 };
 
-export const getShowUneditableTickets = (state, ownProps) => {
-	/**
-	 * Filters whether to show uneditable tickets in the Ticket Container block.
-	 * Uneditable tickets are tickets that should appear in the container, but not be editable in
-	 * the context of this post.
-	 *
-	 * @since TBD
-	 *
-	 * @param {boolean} showUneditableTickets Whether to show uneditable tickets.
-	 */
-	return applyFilters(
-		'tec.tickets.blocks.tickets.showUneditableTickets',
-		true,
-		state,
-		ownProps
-	);
-};
-
 const mapStateToProps = (state, ownProps) => {
 	let mappedProps = {
-		allTicketsFuture: selectors.allTicketsFuture(state),
-		allTicketsPast: selectors.allTicketsPast(state),
-		canCreateTickets: selectors.canCreateTickets(),
-		hasCreatedTickets: selectors.hasCreatedTickets(state),
+		Warning: null,
+		hasATicketSelected: selectors.hasATicketSelected(state),
 		hasOverlay: getHasOverlay(state, ownProps),
 		isSettingsOpen: selectors.getTicketsIsSettingsOpen(state),
 		showAvailability:
 			ownProps.isSelected && selectors.hasCreatedTickets(state),
 		showInactiveBlock: getShowInactiveBlock(state, ownProps),
-		hasATicketSelected: selectors.hasATicketSelected(state),
-		showUneditableTickets: getShowUneditableTickets(state, ownProps),
+		showUneditableTickets: true,
+		showWarning: false,
 		uneditableTickets: selectors.getUneditableTickets(state),
 		uneditableTicketsAreLoading:
 			selectors.getUneditableTicketsAreLoading(state),
-		hasRecurrenceRules: hasRecurrenceRules(state),
-		postType: select('core/editor').getPostTypeLabel()?.toLowerCase(),
 	};
 
 	/**

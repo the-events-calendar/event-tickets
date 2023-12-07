@@ -16,24 +16,14 @@ import Template from './template';
 import { withStore } from '@moderntribe/common/hoc';
 import withSaveData from '@moderntribe/tickets/blocks/hoc/with-save-data';
 import { actions, selectors } from '@moderntribe/tickets/data/blocks/ticket';
-import { getShowUneditableTickets } from './container/container';
-import {
-	hasRecurrenceRules,
-	noTicketsOnRecurring,
-} from '@moderntribe/common/utils/recurrence';
+import { noTicketsOnRecurring } from '@moderntribe/common/utils/recurrence';
 
 const mapStateToProps = (state, ownProps) => {
-	const headerImageId = selectors.getTicketsHeaderImageId(state);
 	let mappedProps = {
-		header: headerImageId ? `${headerImageId}` : '',
-		hasProviders: selectors.hasTicketProviders(),
-		isSettingsOpen: selectors.getTicketsIsSettingsOpen(state),
-		provider: selectors.getTicketsProvider(state),
-		sharedCapacity: selectors.getTicketsSharedCapacity(state),
+		Warning: null,
 		canCreateTickets: selectors.canCreateTickets(),
-		hasRecurrenceRules: hasRecurrenceRules(state),
+		isSettingsOpen: selectors.getTicketsIsSettingsOpen(state),
 		noTicketsOnRecurring: noTicketsOnRecurring(),
-		showUneditableTickets: getShowUneditableTickets(state, ownProps),
 	};
 
 	/**
