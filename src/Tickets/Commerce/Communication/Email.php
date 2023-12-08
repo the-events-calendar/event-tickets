@@ -79,13 +79,9 @@ class Email {
 	 * @since TBD
 	 *
 	 * @param int $attendee_id Attendee ID.
-	 *
-	 * @return bool Whether the counter was updated or not.
 	 */
-	public function update_ticket_sent_counter( int $attendee_id ): bool {
+	public function update_ticket_sent_counter( int $attendee_id ): void {
 		$prev_val = (int) get_post_meta( $attendee_id, Attendee::$ticket_sent_meta_key, true );
 		update_post_meta( $attendee_id, Attendee::$ticket_sent_meta_key, $prev_val + 1 );
-		$new_val = (int) get_post_meta( $attendee_id, Attendee::$ticket_sent_meta_key, true );
-		return $new_val === $prev_val + 1;
 	}
 }
