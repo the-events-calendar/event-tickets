@@ -677,7 +677,7 @@ class Base extends Controller {
 		$sections = $args['sections'] ?? [];
 
 		// If there is only one section, we don't need to do anything.
-		if ( count( $sections ) < 2  ) {
+		if ( count( $sections ) < 2 ) {
 			return $args;
 		}
 
