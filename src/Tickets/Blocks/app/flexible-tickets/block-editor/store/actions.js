@@ -9,9 +9,11 @@ export default {
 		type: types.SET_IS_IN_SERIES,
 		isInSeries,
 	}),
-	setDefaultTicketTypeDescription: (defaultTicketTypeDescription) => ({
+	setDefaultTicketTypeDescriptionTemplate: (
+		defaultTicketTypeDescriptionTemplate
+	) => ({
 		type: types.SET_DEFAULT_TICKET_DESCRIPTION,
-		defaultTicketTypeDescription,
+		defaultTicketTypeDescriptionTemplate,
 	}),
 	setSeriesPassTotalCapacity: (seriesPassTotalCapacity) => ({
 		type: types.SET_SERIES_PASS_TOTAL_CAPACITY,

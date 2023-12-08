@@ -2,7 +2,7 @@
 export default {
 	isInSeries: false,
 	hasSeriesPasses: false,
-	defaultTicketTypeDescription: '',
+	defaultTicketTypeDescriptionTemplate: '',
 	series: {
 		passTotalCapacity: 0,
 		passTotalAvailable: 0,

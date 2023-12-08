@@ -16,8 +16,8 @@ export default (state = defaultState, action) => {
 		case types.SET_DEFAULT_TICKET_DESCRIPTION:
 			return {
 				...state,
-				defaultTicketTypeDescription: String(
-					action.defaultTicketTypeDescription
+				defaultTicketTypeDescriptionTemplate: String(
+					action.defaultTicketTypeDescriptionTemplate
 				),
 			};
 		case types.SET_SERIES_PASS_TOTAL_CAPACITY:

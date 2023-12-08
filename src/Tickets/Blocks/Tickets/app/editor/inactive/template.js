@@ -20,7 +20,7 @@ const getCreateSingleTicketMessage = (postTypeLabel) => (
 			// Translators: %s is the post type name in human readable form.
 			_x(
 				'Create single tickets for this %s. ',
-				'The message displayed when there are no tickets and has recurrence rules.',
+				'The message displayed when there are no tickets.',
 				'event-tickets'
 			),
 			postTypeLabel ? postTypeLabel : ''
@@ -70,7 +70,6 @@ const getInactiveTicketsMessage = ({
 
 		return (
 			<div className="tribe-editor__title__help-messages">
-				{getCreateSingleTicketMessage(postTypeLabel)}
 				{showWarning ? <Warning /> : null}
 			</div>
 		);
@@ -98,7 +97,7 @@ const getInactiveTicketsMessage = ({
 	);
 };
 
-const InactiveTickets = ({
+const Inactive = ({
 	Warning = null,
 	allTicketsFuture = false,
 	allTicketsPast = false,
@@ -129,7 +128,7 @@ const InactiveTickets = ({
 	);
 };
 
-InactiveTickets.propTypes = {
+Inactive.propTypes = {
 	Warning: PropTypes.node,
 	allTicketsFuture: PropTypes.bool,
 	allTicketsPast: PropTypes.bool,
@@ -140,4 +139,4 @@ InactiveTickets.propTypes = {
 	showWarning: PropTypes.bool,
 };
 
-export default InactiveTickets;
+export default Inactive;

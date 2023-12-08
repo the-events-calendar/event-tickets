@@ -15,7 +15,7 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import Availability from '../availability/container';
-import InactiveTicket from '../inactive/container';
+import Inactive from '../inactive/container';
 import { Card } from '@moderntribe/tickets/elements';
 import './style.pcss';
 import Uneditable from '../uneditable/container';
@@ -24,6 +24,7 @@ const TicketsOverlay = () => <div className="tribe-editor__tickets__overlay" />;
 
 const TicketsContainer = ({
 	Warning,
+	canCreateTickets,
 	hasATicketSelected,
 	hasOverlay,
 	isSettingsOpen,
@@ -61,34 +62,41 @@ const TicketsContainer = ({
 					className={cardClassName}
 					header={__('Tickets', 'event-tickets')}
 				>
-					<InnerBlocks allowedBlocks={['tribe/tickets-item']} />
+					{canCreateTickets && (
+						<InnerBlocks allowedBlocks={['tribe/tickets-item']} />
+					)}
 				</Card>
 			</div>
-			{showInactiveBlock && !isSettingsOpen && <InactiveTicket />}
-			{showUneditableTickets && !hasATicketSelected && (
-				<>
-					{
-						<div className="tickets-description">
-							<div className="tribe-editor__tickets__container__helper__container">
-								{showWarning ? <Warning /> : null}
+
+			{showInactiveBlock && !isSettingsOpen && <Inactive />}
+
+			{canCreateTickets &&
+				showUneditableTickets &&
+				!hasATicketSelected && (
+					<>
+						{
+							<div className="tickets-description">
+								<div className="tribe-editor__tickets__container__helper__container">
+									{showWarning ? <Warning /> : null}
+								</div>
 							</div>
-						</div>
-					}
-					<Uneditable
-						loading={uneditableTicketsAreLoading}
-						tickets={uneditableTickets}
-						cardClassName={uneditableClassName}
-					/>
-				</>
-			)}
-			{showAvailability && <Availability />}
-			{hasOverlay && <TicketsOverlay />}
+						}
+						<Uneditable
+							loading={uneditableTicketsAreLoading}
+							tickets={uneditableTickets}
+							cardClassName={uneditableClassName}
+						/>
+					</>
+				)}
+			{canCreateTickets && showAvailability && <Availability />}
+			{canCreateTickets && hasOverlay && <TicketsOverlay />}
 		</div>
 	);
 };
 
 TicketsContainer.propTypes = {
 	Warning: PropTypes.elementType,
+	canCreateTickets: PropTypes.bool,
 	hasATicketSelected: PropTypes.bool,
 	hasOverlay: PropTypes.bool,
 	isSettingsOpen: PropTypes.bool,

@@ -5,8 +5,8 @@ export default {
 	isInSeries(state) {
 		return state.isInSeries;
 	},
-	getDefaultTicketTypeDescription(state) {
-		return state.defaultTicketTypeDescription;
+	getDefaultTicketTypeDescriptionTemplate(state) {
+		return state.defaultTicketTypeDescriptionTemplate;
 	},
 	getSeriesPassTotalCapacity(state) {
 		return state.seriesPassTotalCapacity;

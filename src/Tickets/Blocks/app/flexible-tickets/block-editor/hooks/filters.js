@@ -5,6 +5,7 @@
 
 import { addFilter } from '@wordpress/hooks';
 import SeriesPassNotice from '../components/series-pass-notice/container';
+import { sprintf } from '@wordpress/i18n';
 
 /**
  * Pull the Flexible Tickets data from the dedicated store.
@@ -70,7 +71,11 @@ function changeTicketTypeDescriptionForEventPartOfSeries(
 		return mappedProps;
 	}
 
-	const newDescription = ftStore.getDefaultTicketTypeDescription();
+	const { title: seriesTitle } = ftStore.getSeriesInformation();
+	const newDescription = sprintf(
+		ftStore.getDefaultTicketTypeDescriptionTemplate(),
+		seriesTitle
+	);
 	mappedProps.typeDescription = newDescription || mappedProps.typeDescription;
 
 	return mappedProps;
@@ -90,6 +95,7 @@ addFilter(
  *
  * @param {Object}  mappedProps                      The properties mapped from the state for the Tickets component.
  * @param {boolean} mappedProps.noTicketsOnRecurring Whether or not to show the Tickets block on Recurring Events.
+ * @param {boolean} mappedProps.canCreateTickets     Whether or not the user can create tickets.
  * @param {Object}  context                          The context of the filter.
  * @param {Object}  context.ownProps                 The props passed to the block.
  * @param {boolean} context.ownProps.isSelected      Whether or not the block is selected.
@@ -98,8 +104,9 @@ addFilter(
  */
 function filterTicketsMappedProps(mappedProps, { ownProps: { isSelected } }) {
 	const isInSeries = ftStore.isInSeries();
+	const canCreateTickets = mappedProps?.canCreateTickets;
 
-	if (!isInSeries) {
+	if (!(isInSeries && canCreateTickets)) {
 		return mappedProps;
 	}
 
