@@ -179,7 +179,7 @@ class Metabox {
 	 * @return string The help text for the default ticket type in the ticket form.
 	 */
 	public function get_default_ticket_type_header_description( int $event_id, int $series_id ): string {
-		return $this->labels->get_default_ticket_type_event_in_series_description( $event_id, $series_id );
+		return $this->labels->get_default_ticket_type_event_in_series_description( $series_id, $event_id );
 	}
 
 	/**
