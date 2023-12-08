@@ -181,6 +181,8 @@ class Base extends Controller {
 			$this->container->get( Series_Provider::class ),
 			'filter_remove_series_post_type'
 		] );
+
+		add_filter( 'tec_tickets_commerce_shortcode_checkout_page_template_vars', [ $this, 'filter_tc_checkout_template_args' ] );
 	}
 
 	/**
@@ -279,6 +281,8 @@ class Base extends Controller {
 			$this->container->get( Series_Provider::class ),
 			'filter_remove_series_post_type'
 		] );
+
+		remove_filter( 'tec_tickets_commerce_shortcode_checkout_page_template_vars', [ $this, 'filter_tc_checkout_template_args' ] );
 	}
 
 	/**
@@ -654,5 +658,34 @@ class Base extends Controller {
 		}
 
 		return tribe_format_date( $last_event->start_date, $display_time, $date_format );
+	}
+
+	/**
+	 * Filters the template arguments used to render the checkout page.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $args The template arguments.
+	 *
+	 * @return array<string,mixed> The updated template arguments.
+	 */
+	public function filter_tc_checkout_template_args( array $args ): array {
+		$sections = $args['sections'] ?? [];
+
+		// If there is only one section, we don't need to do anything.
+		if ( count( $sections ) < 2  ) {
+			return $args;
+		}
+
+		// Filter out the series id from the section values.
+		$series_items = array_values( array_filter( $sections, fn( $event_id ) => get_post_type( $event_id ) === Series_Post_Type::POSTTYPE ) );
+
+		if ( empty( $series_items ) ) {
+			return $args;
+		}
+
+		$args['series_id'] = $series_items[0];
+
+		return $args;
 	}
 }
