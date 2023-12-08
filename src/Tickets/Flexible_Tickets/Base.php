@@ -698,11 +698,11 @@ class Base extends Controller {
 	 *
 	 * @since TBD
 	 *
-	 * @param string                $html       The initial HTML or null.
-	 * @param string                $file       Complete path to include the PHP File.
-	 * @param array<string,string>  $name       Template name.
-	 * @param Template              $template   Current instance of the Tribe__Template
-	 * @param array<string,mixed>   $context    The context data passed to the template.
+	 * @param string               $html        The initial HTML or null.
+	 * @param string               $file        Complete path to include the PHP File.
+	 * @param array<string,string> $name        Template name.
+	 * @param Template             $template    Current instance of the Tribe__Template.
+	 * @param array<string,mixed>  $context     The context data passed to the template.
 	 *
 	 * @return string|null The filtered HTML, or `false` to hide the option.
 	 */

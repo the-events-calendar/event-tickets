@@ -2,12 +2,12 @@
 namespace TEC\Tickets\Commerce\Checkout;
 
 use Closure;
-Use Generator;
+use Generator;
 use Codeception\TestCase\WPTestCase;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 use TEC\Tickets\Commerce\Cart;
-use TEC\Tickets\Commerce\Shortcodes\Checkout_Shortcode as Checkout_Shortcode;
+use TEC\Tickets\Commerce\Shortcodes\Checkout_Shortcode;
 use TEC\Tickets\Flexible_Tickets\Test\Traits\Series_Pass_Factory;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
@@ -51,12 +51,14 @@ class CheckoutTest extends WPTestCase {
 	 */
 	public function checkout_data_provider(): Generator {
 		yield 'single ticket from an event' => [
-			function(): array {
-				$event_id = tribe_events()->set_args( [
-					'title'      => 'Event 1',
-					'start_date' => '2222-02-10 17:30:00',
-					'duration'   => 5 * HOUR_IN_SECONDS,
-				] )->create()->ID;
+			function (): array {
+				$event_id = tribe_events()->set_args(
+					[
+						'title'      => 'Event 1',
+						'start_date' => '2222-02-10 17:30:00',
+						'duration'   => 5 * HOUR_IN_SECONDS,
+					] 
+				)->create()->ID;
 
 				$ticket_id = $this->create_tc_ticket( $event_id, 10 );
 
@@ -67,16 +69,18 @@ class CheckoutTest extends WPTestCase {
 				$cart->clear_cart();
 
 				return [ $html, [ $event_id, $ticket_id ] ];
-			}
+			},
 		];
 
 		yield 'multiple ticket from an event' => [
-			function(): array {
-				$event_id = tribe_events()->set_args( [
-					'title'      => 'Event 1',
-					'start_date' => '2222-02-10 17:30:00',
-					'duration'   => 5 * HOUR_IN_SECONDS,
-				] )->create()->ID;
+			function (): array {
+				$event_id = tribe_events()->set_args(
+					[
+						'title'      => 'Event 1',
+						'start_date' => '2222-02-10 17:30:00',
+						'duration'   => 5 * HOUR_IN_SECONDS,
+					] 
+				)->create()->ID;
 
 				$ticket_id_a = $this->create_tc_ticket( $event_id, 10 );
 				$ticket_id_b = $this->create_tc_ticket( $event_id, 20 );
@@ -89,23 +93,27 @@ class CheckoutTest extends WPTestCase {
 				$cart->clear_cart();
 
 				return [ $html, [ $event_id, $ticket_id_a, $ticket_id_b ] ];
-			}
+			},
 		];
 
 		yield 'ticket with series pass from an event' => [
-			function(): array {
-				$series_id = static::factory()->post->create( [
-					'post_type'  => Series_Post_Type::POSTTYPE,
-					'post_title' => 'Test series',
-				] );
+			function (): array {
+				$series_id = static::factory()->post->create(
+					[
+						'post_type'  => Series_Post_Type::POSTTYPE,
+						'post_title' => 'Test series',
+					] 
+				);
 
-				$event_id  = tribe_events()->set_args( [
-					'title'      => 'Test event',
-					'status'     => 'publish',
-					'start_date' => '2021-01-01 10:00:00',
-					'end_date'   => '2021-01-01 12:00:00',
-					'series'     => $series_id,
-				] )->create()->ID;
+				$event_id = tribe_events()->set_args(
+					[
+						'title'      => 'Test event',
+						'status'     => 'publish',
+						'start_date' => '2021-01-01 10:00:00',
+						'end_date'   => '2021-01-01 12:00:00',
+						'series'     => $series_id,
+					] 
+				)->create()->ID;
 
 				$ticket_id      = $this->create_tc_ticket( $event_id, 10 );
 				$series_pass_id = $this->create_tc_series_pass( $series_id, 20 )->ID;
@@ -118,23 +126,27 @@ class CheckoutTest extends WPTestCase {
 				$cart->clear_cart();
 
 				return [ $html, [ $event_id, $series_id, $ticket_id, $series_pass_id ] ];
-			}
+			},
 		];
 
 		yield 'multiple ticket with multiple series pass from an event' => [
-			function(): array {
-				$series_id = static::factory()->post->create( [
-					'post_type'  => Series_Post_Type::POSTTYPE,
-					'post_title' => 'Test series',
-				] );
+			function (): array {
+				$series_id = static::factory()->post->create(
+					[
+						'post_type'  => Series_Post_Type::POSTTYPE,
+						'post_title' => 'Test series',
+					] 
+				);
 
-				$event_id  = tribe_events()->set_args( [
-					'title'      => 'Test event',
-					'status'     => 'publish',
-					'start_date' => '2021-01-01 10:00:00',
-					'end_date'   => '2021-01-01 12:00:00',
-					'series'     => $series_id,
-				] )->create()->ID;
+				$event_id = tribe_events()->set_args(
+					[
+						'title'      => 'Test event',
+						'status'     => 'publish',
+						'start_date' => '2021-01-01 10:00:00',
+						'end_date'   => '2021-01-01 12:00:00',
+						'series'     => $series_id,
+					] 
+				)->create()->ID;
 
 				$ticket_id      = $this->create_tc_ticket( $event_id, 5 );
 				$ticket_id_b    = $this->create_tc_ticket( $event_id, 10 );
@@ -149,7 +161,7 @@ class CheckoutTest extends WPTestCase {
 				$cart->clear_cart();
 
 				return [ $html, [ $event_id, $series_id, $ticket_id, $ticket_id_b, $series_pass_id ] ];
-			}
+			},
 		];
 	}
 
@@ -166,5 +178,4 @@ class CheckoutTest extends WPTestCase {
 
 		$this->assertMatchesHtmlSnapshot( $html );
 	}
-
 }
