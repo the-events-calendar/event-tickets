@@ -20,4 +20,7 @@ export default {
 			editLink: state.series.editLink,
 		};
 	},
+	getMultipleProvidersNoticeTemplate(state) {
+		return state.multipleProvidersNoticeTemplate;
+	},
 };

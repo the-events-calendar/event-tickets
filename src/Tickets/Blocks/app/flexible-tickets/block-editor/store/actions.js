@@ -27,4 +27,8 @@ export default {
 		type: types.SET_SERIES_INFORMATION,
 		seriesInformation,
 	}),
+	setMultipleProvidersNoticeTemplate: (multipleProvidersNoticeTemplate) => ({
+		type: types.SET_MULTIPLE_PROVIDERS_NOTICE_TEMPLATE,
+		multipleProvidersNoticeTemplate,
+	}),
 };

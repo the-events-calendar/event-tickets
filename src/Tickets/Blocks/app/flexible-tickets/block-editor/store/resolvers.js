@@ -40,4 +40,10 @@ export default {
 			editLink: getSeriesEditLinkFromMetaBox(),
 		});
 	},
+	*getMultipleProvidersNoticeTemplate() {
+		return actions.setMultipleProvidersNoticeTemplate(
+			window?.tribe_editor_config?.tickets
+				?.multipleProvidersNoticeTemplate || ''
+		);
+	},
 };

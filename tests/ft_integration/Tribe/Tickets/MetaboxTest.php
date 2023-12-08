@@ -6,6 +6,7 @@ use Closure;
 use Codeception\TestCase\WPTestCase;
 use Generator;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use TEC\Events\Custom_Tables\V1\Models\Occurrence;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Flexible_Tickets\Test\Traits\Series_Pass_Factory;
@@ -271,8 +272,10 @@ class MetaboxTest extends WPTestCase {
 					'recurrence' => 'RRULE:FREQ=DAILY;COUNT=2',
 					'series'     => $series_id,
 				] )->create()->ID;
+                $occurrences_provisional_ids = occurrence::where('post_id', '=', $post_id)
+                    ->map(fn(occurrence $o) => $o->provisional_id);
 
-				return [ $post_id, $series_id ];
+				return [ $post_id, $series_id, ...$occurrences_provisional_ids ];
 			}
 		];
 
@@ -296,7 +299,10 @@ class MetaboxTest extends WPTestCase {
 					'series'     => $series_id,
 				] )->create()->ID;
 
-				return [ $post_id, $pass_1, $pass_2, $series_id ];
+                $occurrences_provisional_ids = Occurrence::where('post_id', '=', $post_id)
+                    ->map(fn(Occurrence $o) => $o->provisional_id);
+
+				return [ $post_id, $pass_1, $pass_2, $series_id, ...$occurrences_provisional_ids ];
 			}
 		];
 

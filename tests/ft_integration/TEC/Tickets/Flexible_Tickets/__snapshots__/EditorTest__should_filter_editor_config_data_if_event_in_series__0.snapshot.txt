@@ -1,1 +1,1 @@
-The ecommerce provider is defined in the ticket settings for the Series <a target="_blank" href="http://wordpress.test/wp-admin/post.php?post=SERIES_ID&#038;action=edit#tribetickets">Test Series</a>.
+The ecommerce provider is defined in the ticket settings for the Series %s.

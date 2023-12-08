@@ -722,16 +722,6 @@ export const canCreateTickets = createSelector(
 	( providers, validDefaultProvider ) => providers && validDefaultProvider,
 );
 
-export const getMultipleProvidersNotice = () => {
-	const tickets = ticketsConfig();
-	return tickets.multiple_providers_notice || '';
-};
-
-export const isTicketProvidersChoiceDisabled = () => {
-	const tickets = ticketsConfig();
-	return tickets.choice_disabled || false;
-};
-
 export const getCurrentPostTypeLabel = (key = 'singular_name') => {
 	const post = postConfig();
 	return post?.labels?.[key] || 'Post';

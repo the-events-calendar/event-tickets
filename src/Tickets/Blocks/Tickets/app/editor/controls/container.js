@@ -13,15 +13,32 @@ import withSaveData from '@moderntribe/tickets/blocks/hoc/with-save-data';
 import { selectors, actions } from '@moderntribe/tickets/data/blocks/ticket';
 import { applyFilters } from '@wordpress/hooks';
 import { hasRecurrenceRules } from '@moderntribe/common/utils/recurrence';
+import { __ } from '@wordpress/i18n';
 
 const mapStateToProps = (state, ownProps) => {
 	const isRecurring = hasRecurrenceRules(state);
+	const message = __(
+		'It looks like you have multiple ecommerce plugins active. We recommend running only one at a time. However, if you need to run multiple, please select which one to use to sell tickets for this event. ', // eslint-disable-line max-len
+		'event-tickets'
+	);
+
+	const note = __(
+		'Note: adjusting this setting will only impact new tickets. Existing tickets will not change. We highly recommend that all tickets for one event use the same ecommerce plugin.', // eslint-disable-line max-len
+		'event-tickets'
+	);
+	const messageElement = (
+		<p>
+			{message}
+			{<em>{note}</em>}
+		</p>
+	);
 
 	let mappedProps = {
+		disabled: false,
 		hasMultipleProviders: selectors.hasMultipleTicketProviders(),
+		message: messageElement,
 		providers: selectors.getTicketProviders(),
 		selectedProvider: selectors.getTicketsProvider(state),
-		disabled: false,
 	};
 
 	/**
