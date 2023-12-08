@@ -6,6 +6,7 @@
 import { addFilter } from '@wordpress/hooks';
 import SeriesPassNotice from '../components/series-pass-notice/container';
 import { sprintf } from '@wordpress/i18n';
+import { renderToString } from '@wordpress/element';
 
 /**
  * Pull the Flexible Tickets data from the dedicated store.
@@ -282,17 +283,33 @@ addFilter(
 	filterTicketsAvailabilityMappedProps
 );
 
-function filterTicketsControlsMappedProps(
-	mappedProps,
-	{ isRecurring = false }
-) {
+function filterTicketsControlsMappedProps(mappedProps) {
 	const isInSeries = ftStore.isInSeries();
 
 	if (!isInSeries) {
 		return mappedProps;
 	}
 
-	mappedProps.disabled = isRecurring;
+	mappedProps.disabled = true;
+	const { title: seriesTitle, editLink: seriesEditLink } =
+		ftStore.getSeriesInformation();
+	const link = (
+		<a
+			target="_blank"
+			href={seriesEditLink + '#tribetickets'}
+			rel="noreferrer"
+		>
+			{seriesTitle}
+		</a>
+	);
+	const messageTemplate = ftStore.getMultipleProvidersNoticeTemplate();
+	mappedProps.message = (
+		<p
+			dangerouslySetInnerHTML={{
+				__html: sprintf(messageTemplate, renderToString(link)),
+			}}
+		></p>
+	);
 
 	return mappedProps;
 }

@@ -44,6 +44,13 @@ export default (state = defaultState, action) => {
 					...action.seriesInformation,
 				},
 			};
+		case types.SET_MULTIPLE_PROVIDERS_NOTICE_TEMPLATE:
+			return {
+				...state,
+				multipleProvidersNoticeTemplate: String(
+					action.multipleProvidersNoticeTemplate
+				),
+			};
 		default:
 			return state;
 	}

@@ -176,7 +176,12 @@ class EditorTest extends Controller_Test_Case {
 
 		$configuration = apply_filters( 'tribe_editor_config', [] );
 
-		$this->assertMatchesStringSnapshot( str_replace( $series, 'SERIES_ID', $configuration['tickets']['multiple_providers_notice'] ) );
-		$this->assertTrue( $configuration['tickets']['choice_disabled'] );
+        $this->assertMatchesStringSnapshot(
+            str_replace(
+                $series,
+                'SERIES_ID',
+                $configuration['tickets']['multipleProvidersNoticeTemplate']
+            )
+        );
 	}
 }
