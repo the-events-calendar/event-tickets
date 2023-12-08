@@ -35,7 +35,7 @@ class Email {
 		// fact it was sent.
 		foreach ( $all_attendees as $single_attendee ) {
 			// If we have a post ID, only add those attendees/tickets that are for that event.
-			if ( $post_id && (int) $single_attendee['event_id'] !== $post_id ) {
+			if ( $post_id && (int) $single_attendee['event_id'] !== (int) $post_id ) {
 				continue;
 			}
 
@@ -80,10 +80,12 @@ class Email {
 	 *
 	 * @param int $attendee_id Attendee ID.
 	 *
-	 * @return bool
+	 * @return bool Whether the counter was updated or not.
 	 */
 	public function update_ticket_sent_counter( int $attendee_id ): bool {
 		$prev_val = (int) get_post_meta( $attendee_id, Attendee::$ticket_sent_meta_key, true );
-		return update_post_meta( $attendee_id, Attendee::$ticket_sent_meta_key, $prev_val + 1 );
+		update_post_meta( $attendee_id, Attendee::$ticket_sent_meta_key, $prev_val + 1 );
+		$new_val = (int) get_post_meta( $attendee_id, Attendee::$ticket_sent_meta_key, true );
+		return $new_val === $prev_val + 1;
 	}
 }
