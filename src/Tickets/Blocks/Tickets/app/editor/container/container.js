@@ -35,6 +35,7 @@ const getShowInactiveBlock = (state, ownProps) => {
 const mapStateToProps = (state, ownProps) => {
 	let mappedProps = {
 		Warning: null,
+		canCreateTickets: selectors.canCreateTickets(),
 		hasATicketSelected: selectors.hasATicketSelected(state),
 		hasOverlay: getHasOverlay(state, ownProps),
 		isSettingsOpen: selectors.getTicketsIsSettingsOpen(state),
