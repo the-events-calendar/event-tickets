@@ -182,7 +182,9 @@ class Base extends Controller {
 			'filter_remove_series_post_type'
 		] );
 
+		// TicketsCommerce Checkout handlers for Series.
 		add_filter( 'tec_tickets_commerce_shortcode_checkout_page_template_vars', [ $this, 'filter_tc_checkout_template_args' ] );
+		add_filter( 'tribe_template_pre_html:tickets/v2/commerce/checkout/cart/footer', [ $this, 'hide_non_series_cart_footer_html' ], 10, 5 );
 	}
 
 	/**
@@ -282,7 +284,9 @@ class Base extends Controller {
 			'filter_remove_series_post_type'
 		] );
 
+		// Remove the TicketsCommerce Checkout handlers for Series.
 		remove_filter( 'tec_tickets_commerce_shortcode_checkout_page_template_vars', [ $this, 'filter_tc_checkout_template_args' ] );
+		remove_filter( 'tribe_template_pre_html:tickets/v2/commerce/checkout/cart/footer', [ $this, 'hide_non_series_cart_footer_html' ], 10, 5 );
 	}
 
 	/**
@@ -687,5 +691,34 @@ class Base extends Controller {
 		$args['series_id'] = $series_items[0];
 
 		return $args;
+	}
+
+	/**
+	 * Filters HTML to hide the footer for regular event cart section when series pass is added in the cart.
+	 *
+	 * @since TBD
+	 *
+	 * @param string                $html       The initial HTML or null.
+	 * @param string                $file       Complete path to include the PHP File.
+	 * @param array<string,string>  $name       Template name.
+	 * @param Template              $template   Current instance of the Tribe__Template
+	 * @param array<string,mixed>   $context    The context data passed to the template.
+	 *
+	 * @return string|null The filtered HTML, or `false` to hide the option.
+	 */
+	public function hide_non_series_cart_footer_html( string $html = null, string $file, array $name, Template $template, array $context ) {
+		$template_data = $template->get_values();
+
+		// If the template data is not set, return the html.
+		if ( ! isset( $template_data['series_id'] ) || ! isset( $template_data['section'] ) ) {
+			return $html;
+		}
+
+		// If the current section is not the series id, return empty string to hide the footer.
+		if ( (int) $template_data['section'] !== (int) $template_data['series_id'] ) {
+			return '';
+		}
+
+		return $html;
 	}
 }
