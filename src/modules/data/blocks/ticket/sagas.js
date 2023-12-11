@@ -10,6 +10,7 @@ import { includes } from 'lodash';
 import { dispatch as wpDispatch, select as wpSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 import { createBlock } from '@wordpress/blocks';
+import { doAction } from "@wordpress/hooks";
 
 /**
  * Internal dependencies
@@ -82,6 +83,9 @@ export function formatTicketFromRestToAttributeFormat( ticket ) {
 	const available = ticket?.capacity_details?.available || 0;
 	const capacityType = ticket?.capacity_details?.global_stock_mode || constants.UNLIMITED;
 	const sold = ticket?.capacity_details?.sold || 0;
+	const isShared = capacityType === constants.SHARED
+		|| capacityType === constants.CAPPED
+		|| capacityType === constants.GLOBAL;
 
 	return {
 		"id": ticket.id,
@@ -95,7 +99,7 @@ export function formatTicketFromRestToAttributeFormat( ticket ) {
 		"sharedCapacity": capacity,
 		"sold": sold,
 		"shareSold": sold,
-		"isShared": capacityType === constants.SHARED || capacityType === constants.CAPPED,
+		"isShared": isShared,
 		"currencyDecimalPoint": ticket?.cost_details?.currency_decimal_separator || '.',
 		"currencyNumberOfDecimals": ticket?.cost_details?.currency_decimal_numbers || 2,
 		"currencyPosition": ticket?.cost_details?.currency_position || 'prefix',
@@ -105,7 +109,7 @@ export function formatTicketFromRestToAttributeFormat( ticket ) {
 }
 
 export function* updateUneditableTickets(  ) {
-	yield (put (actions.setUneditableTicketsLoading()))
+	yield (put (actions.setUneditableTicketsLoading(true)));
 
 	const post = yield call ( () => wpSelect ( 'core/editor' ).getCurrentPost() );
 
@@ -140,7 +144,17 @@ export function* updateUneditableTickets(  ) {
 		}
 	}
 
+	/**
+	 * Fires after the uneditable tickets have been updated from the backend.
+	 *
+	 * @since TBD
+	 *
+	 * @param {Object[]} uneditableTickets The uneditable tickets just fetched from the backend.
+	 */
+	doAction( 'tec.tickets.blocks.uneditableTicketsUpdated', uneditableTickets );
+
 	yield put ( actions.setUneditableTickets ( uneditableTickets ) );
+	yield (put (actions.setUneditableTicketsLoading(false)));
 }
 
 export function* setTicketsInitialState( action ) {

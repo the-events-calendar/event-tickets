@@ -11,7 +11,6 @@ import {
 } from '@moderntribe/tickets/data/blocks/ticket/utils';
 import details, { DEFAULT_STATE as DETAILS_DEFAULT_STATE } from './ticket/details';
 import tempDetails, { DEFAULT_STATE as TEMP_DETAILS_DEFAULT_STATE } from './ticket/temp-details';
-import { PREFIX_TICKETS_STORE } from "@moderntribe/tickets/data/utils";
 
 export const DEFAULT_STATE = {
 	details: DETAILS_DEFAULT_STATE,

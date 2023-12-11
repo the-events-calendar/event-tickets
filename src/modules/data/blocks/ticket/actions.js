@@ -526,10 +526,10 @@ export const setUneditableTickets = ( uneditableTickets ) => ( {
 	}
 } );
 
-export const setUneditableTicketsLoading = () => ( {
-	type: types.SET_UNEDITABLE_TICKETS_LOADING
+export const setUneditableTicketsLoading = ( loading ) => ( {
+	type: types.SET_UNEDITABLE_TICKETS_LOADING,
+	loading
 } );
-
 
 //
 // ─── TICKET SAGA ACTIONS ────────────────────────────────────────────────────────

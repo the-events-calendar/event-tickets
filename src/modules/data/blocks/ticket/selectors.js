@@ -666,6 +666,7 @@ export const getIndependentTicketsAvailable = createSelector(
 );
 
 export const getSharedTicketsSold = createSelector( getSharedTickets, _getTotalSold );
+
 export const getSharedTicketsAvailable = createSelector(
 	[ getTicketsSharedCapacityInt, getSharedTicketsSold ],
 	( sharedCapacity, sharedSold ) => Math.max( sharedCapacity - sharedSold, 0 ),

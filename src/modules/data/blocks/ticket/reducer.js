@@ -120,10 +120,16 @@ export default ( state = DEFAULT_STATE, action ) => {
 				uneditableTicketsLoading: false
 			};
 		case types.SET_UNEDITABLE_TICKETS_LOADING:
+			if (action.loading) {
+				return {
+					...state,
+					uneditableTickets: [],
+					uneditableTicketsLoading: true,
+				};
+			}
 			return {
 				...state,
-				uneditableTickets: [],
-				uneditableTicketsLoading: true
+				uneditableTicketsLoading: false,
 			};
 		default:
 			return state;
