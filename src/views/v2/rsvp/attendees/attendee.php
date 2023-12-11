@@ -15,10 +15,10 @@
  * @var array $attendees List of attendees for the given order.
  * @var int $attendee_id The attendee ID.
  *
- * @since TBD - Add attendee name and rsvp name templates.
+ * @since 5.7.1 - Add attendee name and rsvp name templates.
  * @since 5.7.0
  *
- * @version TBD
+ * @version 5.7.1
  */
 
 if ( empty( $attendees ) ) {
