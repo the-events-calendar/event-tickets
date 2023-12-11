@@ -109,7 +109,7 @@ export function getSeriesTitleFromSelection() {
  *
  * @return {string } The edit link of the series read from the selected option data, or an empty string if not found.
  */
-export function getSeriesEditLinkFromMetaBox(append = null) {
+export function getSeriesEditLinkFromMetaBox(append = '#tribetickets') {
 	const editLinkElement = document.querySelector(
 		containerSelector + ' a.tec-events-pro-series__edit-link'
 	);
@@ -160,4 +160,9 @@ export function showDiscordantProviderNotice(eventTitle, seriesTitle) {
 		.replace('%1$s', eventTitle)
 		.replace('%2$s', seriesTitle);
 	document.querySelector(containerSelector).append(noticeElement);
+}
+
+export function hasSelectedSeries() {
+	const seriesSelect = document.getElementById(fieldSelector.substring(1));
+	return seriesSelect?.value !== '' && seriesSelect?.value !== '-1';
 }

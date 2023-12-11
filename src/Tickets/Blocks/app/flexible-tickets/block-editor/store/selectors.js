@@ -1,6 +1,6 @@
 export default {
 	hasSeriesPasses(state) {
-		return state.hasSeriesPasses;
+		return state.series.hasSeriesPasses;
 	},
 	isInSeries(state) {
 		return state.isInSeries;
@@ -9,10 +9,10 @@ export default {
 		return state.defaultTicketTypeDescriptionTemplate;
 	},
 	getSeriesPassTotalCapacity(state) {
-		return state.seriesPassTotalCapacity;
+		return state.series.passTotalCapacity;
 	},
 	getSeriesPassTotalAvailable(state) {
-		return state.seriesPassTotalAvailable;
+		return state.series.passTotalAvailable;
 	},
 	getSeriesInformation(state) {
 		return {
