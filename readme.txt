@@ -205,6 +205,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Tweak - Added filter `tec_tickets_commerce_gateway_stripe_webhook_valid_key_polling_attempts` to allow the modification of how many attempts Tickets Commerce will poll for Stripe webhooks for validation.
 * Fix - Tickets Commerce Stripe webhooks properly handles internally validating the Secret Signing key. [ET-1511]
 * Fix - Tickets Commerce Stripe Charge and Payment Intent webhooks no longer create duplicated success emails for a single ticket purchase. [ET-1792]
+* Language - 3 new strings added, 42 updated, 0 fuzzied, and 0 obsoleted
 
 = [5.7.0] 2023-11-16 =
 
