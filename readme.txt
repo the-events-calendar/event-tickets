@@ -3,7 +3,7 @@
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, GeoffBel, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra
 Tags: tickets, registration, event registration, RSVP, ticket sales, attendee management
 Requires at least: 6.2
-Tested up to: 6.4.1
+Tested up to: 6.4.2
 Stable tag: 5.7.1
 Requires PHP: 7.4
 License: GPLv2 or later
@@ -195,7 +195,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [TBD] TBD =
+= [5.7.1] 2023-12-13 =
 
 * Tweak - Prevented Single Attendee endpoint from throwing a notice on PHP 8+. [ET-1935]
 * Tweak - Attendees listed on the `Your Tickets` section will now match the order they were entered in. [ET-1924]
