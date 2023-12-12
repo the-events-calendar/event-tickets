@@ -60,7 +60,7 @@ class TicketsTest extends WPTestCase {
 				$event_a = tribe_events()->set_args( [
 					'title'      => 'Event A',
 					'status'     => 'publish',
-					'start_date' => '2024-01-01 00:00:00',
+					'start_date' => '2019-01-01 00:00:00',
 					'duration'   => 2 * HOUR_IN_SECONDS,
 					'series'     => $series_id,
 				] )->create()->ID;
@@ -68,7 +68,7 @@ class TicketsTest extends WPTestCase {
 				$event_b = tribe_events()->set_args( [
 					'title'      => 'Event B',
 					'status'     => 'publish',
-					'start_date' => '2025-01-02 00:00:00',
+					'start_date' => '2020-01-02 00:00:00',
 					'duration'   => 2 * HOUR_IN_SECONDS,
 					'series'     => $series_id,
 				] )->create()->ID;
@@ -76,7 +76,7 @@ class TicketsTest extends WPTestCase {
 				$event_c = tribe_events()->set_args( [
 					'title'      => 'Event C',
 					'status'     => 'publish',
-					'start_date' => '2026-01-03 00:00:00',
+					'start_date' => '2021-01-03 00:00:00',
 					'duration'   => 2 * HOUR_IN_SECONDS,
 					'series'     => $series_id,
 				] )->create()->ID;
