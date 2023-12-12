@@ -92,6 +92,20 @@ class Provider extends Controller {
 			return $admin_body_classes;
 		}
 
+		/**
+		 * Filters whether tickets are allowed on recurring events or not.
+		 * By default, tickets are not allowed on Recurring Events.
+		 *
+		 * @since  TBD
+		 *
+		 * @params bool $allow_tickets_on_recurring Whether tickets are allowed on recurring events or not.
+		 */
+		$allow_tickets_on_recurring = apply_filters( 'tec_tickets_allow_tickets_on_recurring_events', false );
+
+		if ( $allow_tickets_on_recurring ) {
+			return $admin_body_classes;
+		}
+
 		$classes = array_unique(
 			array_merge(
 				Arr::list_to_array( $admin_body_classes ), [ 'tec-no-tickets-on-recurring' ]

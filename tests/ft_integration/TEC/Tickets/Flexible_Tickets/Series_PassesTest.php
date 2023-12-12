@@ -1392,4 +1392,19 @@ class Series_PassesTest extends Controller_Test_Case {
 			'A series pass is not editable from an event post part of that series'
 		);
 	}
+
+    /**
+     * It should allow tickets on recurring events
+     *
+     * @test
+     */
+    public function should_allow_tickets_on_recurring_events(): void
+    {
+	    $this->assertFalse( apply_filters( 'tec_tickets_allow_tickets_on_recurring_events', false ) );
+
+	    $controller = $this->make_controller();
+	    $controller->register();
+
+	    $this->assertTrue( apply_filters( 'tec_tickets_allow_tickets_on_recurring_events', true ) );
+    }
 }
