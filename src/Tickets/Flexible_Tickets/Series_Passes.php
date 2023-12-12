@@ -259,7 +259,7 @@ class Series_Passes extends Controller
          * The FT feature will only be available if the CT1 feature is active: this implies Recurring Events
          * will always be part of a Series.
          */
-	    add_filter( 'tec_tickets_allow_tickets_on_recurring_events', '__return_true' );
+	    add_filter( 'tec_tickets_allow_tickets_on_recurring_events', [ $this, 'allow_tickets_on_recurring_events' ] );
     }
 
     /**
@@ -340,7 +340,7 @@ class Series_Passes extends Controller
         ]);
         remove_filter('tec_tickets_is_ticket_editable_from_post', [$this, 'is_ticket_editable_from_post']);
         remove_filter('tec_tickets_my_tickets_link_ticket_count_by_type', [$this, 'filter_my_tickets_link_data'], 10, 3);
-	    remove_filter( 'tec_tickets_allow_tickets_on_recurring_events', '__return_true' );
+	    remove_filter( 'tec_tickets_allow_tickets_on_recurring_events', [ $this, 'allow_tickets_on_recurring_events' ] );
     }
 
     /**
@@ -1112,4 +1112,31 @@ class Series_Passes extends Controller
     {
         return $this->frontend->filter_my_tickets_link_data($data, $event_id, $user_id);
     }
+
+	/**
+	 * Filter whether tickets can be added to recurring events or not.
+	 *
+	 * The wording of the filter is confusing: the purpose of this filter is to allow an Event
+	 * to have recurrence rules and tickets at the same time or not.
+	 * Since Flexible Tickets supports Tickets on Recurring Events by means of Series Passes, an Event should
+	 * be allowed to have Tickets (really Series Passes) and recurrence rules at the same time.
+	 * The exception are Single Events (in a Series or not) that have their own Tickets: in this case,
+	 * the Event should not be allowed to have recurrence rules.
+	 *
+	 * @since TBD
+	 *
+	 * @param bool $allow
+	 *
+	 * @return bool
+	 */
+	public function allow_tickets_on_recurring_events(bool $allow):bool{
+		// If the event has own tickets, return false.
+		$has_own_tickets = tribe_tickets()->where( 'event_id', get_the_ID() )->where( 'type', 'default' )->count() > 0;
+
+		if ( $has_own_tickets ) {
+			return false;
+		}
+
+		return true;
+	}
 }

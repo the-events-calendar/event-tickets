@@ -1393,18 +1393,41 @@ class Series_PassesTest extends Controller_Test_Case {
 		);
 	}
 
-    /**
-     * It should allow tickets on recurring events
-     *
-     * @test
-     */
-    public function should_allow_tickets_on_recurring_events(): void
-    {
-	    $this->assertFalse( apply_filters( 'tec_tickets_allow_tickets_on_recurring_events', false ) );
+	/**
+	 * It should allow tickets on recurring events
+	 *
+	 * @test
+	 */
+	public function should_allow_tickets_on_recurring_events(): void {
+		$this->assertFalse( apply_filters( 'tec_tickets_allow_tickets_on_recurring_events', false ) );
 
-	    $controller = $this->make_controller();
-	    $controller->register();
+		$controller = $this->make_controller();
+		$controller->register();
 
-	    $this->assertTrue( apply_filters( 'tec_tickets_allow_tickets_on_recurring_events', true ) );
-    }
+		$this->assertTrue( apply_filters( 'tec_tickets_allow_tickets_on_recurring_events', true ) );
+	}
+
+	/**
+	 * It should not allow tickets on single events with own tickets
+	 *
+	 * @test
+	 */
+	public function should_not_allow_tickets_on_single_events_with_own_tickets(): void {
+		$single_event   = tribe_events()->set_args( [
+			'title'      => 'Test Event',
+			'status'     => 'publish',
+			'start_date' => '2022-01-01 09:00:00',
+			'duration'   => 3 * HOUR_IN_SECONDS,
+		] )->create();
+		$default_ticket = $this->create_tc_ticket( $single_event->ID );
+		// Simulate a request to the edit the Event.
+		$this->go_to( get_edit_post_link( $single_event ) );
+
+		$this->assertFalse( apply_filters( 'tec_tickets_allow_tickets_on_single_events_with_own_tickets', false ) );
+
+		$controller = $this->make_controller();
+		$controller->register();
+
+		$this->assertFalse( apply_filters( 'tec_tickets_allow_tickets_on_single_events_with_own_tickets', false ) );
+	}
 }
