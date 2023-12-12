@@ -7,6 +7,7 @@
  * @var string                             $series_permalink The permalink to the series page.
  */
 
+use TEC\Tickets\Flexible_Tickets\Editor;
 use TEC\Tickets\Flexible_Tickets\Series_Passes;
 
 if ( empty( $tickets_on_sale ) ) {
@@ -33,18 +34,10 @@ $ticket_types = [
 		'tickets' => [],
 	],
 	Series_Passes::TICKET_TYPE => [
-		'header'           => tec_tickets_get_series_pass_plural_uppercase( 'frontend_tickets_list_header' ),
-		'tickets'          => [],
-		'header_link'      => $series_permalink,
-		'header_link_text' => sprintf(
-		// Translators: %1$s is the ticket label plural lowercase; i.e. "events".
-			_x(
-				'See all %1$s in this series',
-				'Link text for Series Passes in frontend ticket form',
-				'event-tickets'
-			),
-			tribe_get_event_label_plural_lowercase()
-		)
+        'header'           => tec_tickets_get_series_pass_plural_uppercase('frontend_tickets_list_header'),
+        'tickets'          => [],
+        'header_link'      => $series_permalink,
+        'header_link_text' => tribe(Editor::class)->get_header_link_text(),
 	],
 ];
 

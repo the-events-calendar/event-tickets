@@ -33,6 +33,7 @@ const Uneditable = ({ tickets, cardsByTicketType, cardClassName, loading }) => {
 				key={ticketType}
 				className={cardClassName}
 				header={cardsByTicketType[ticketType].title}
+				description={cardsByTicketType[ticketType]?.description || null}
 			>
 				{ticketsByType[ticketType].map((ticket, index) => (
 					<article

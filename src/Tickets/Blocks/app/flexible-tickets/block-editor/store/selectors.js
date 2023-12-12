@@ -14,6 +14,15 @@ export default {
 	getSeriesPassTotalAvailable(state) {
 		return state.series.passTotalAvailable;
 	},
+	getSeriesHeaderLink(state) {
+		return state.series.headerLink;
+	},
+	getSeriesHeaderLinkTemplate(state) {
+		return state.series.headerLinkTemplate;
+	},
+	getSeriesHeaderLinkText(state) {
+		return state.series.headerLinkText;
+	},
 	getSeriesInformation(state) {
 		return {
 			title: state.series.title,

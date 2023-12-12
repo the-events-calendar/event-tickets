@@ -12,8 +12,12 @@ import {
 	getSeriesTitleFromSelection,
 	getSeriesEditLinkFromMetaBox,
 	hasSelectedSeries,
+	getSeriesPostIdFromSelection,
 } from '../../series-relationship';
 import { UNLIMITED } from '@moderntribe/tickets/data/blocks/ticket/constants';
+import { sprintf } from '@wordpress/i18n';
+
+const ftStore = wp.data.select('tec-tickets/flexible-tickets');
 
 const { setSeriesData } = wp.data.dispatch('tec-tickets/flexible-tickets');
 
@@ -54,6 +58,11 @@ export function updateSeriesData(uneditableTickets = []) {
 		(acc, ticket) => Math.max(acc, ticket?.available || 0),
 		0
 	);
+	const seriesPostId = getSeriesPostIdFromSelection();
+	const seriesPlainUrl = sprintf(
+		ftStore.getSeriesHeaderLinkTemplate(),
+		seriesPostId
+	);
 
 	setSeriesData(isInSeries, {
 		title: getSeriesTitleFromSelection(),
@@ -61,6 +70,7 @@ export function updateSeriesData(uneditableTickets = []) {
 		hasSeriesPasses: hasSelectedSeries(),
 		passTotalCapacity: sharedCapacity + independentCapacity,
 		passTotalAvailable: sharedAvailable + independentAvailable,
+		headerLink: seriesPlainUrl,
 	});
 }
 

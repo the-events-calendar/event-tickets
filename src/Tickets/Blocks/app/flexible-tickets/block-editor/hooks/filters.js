@@ -319,3 +319,30 @@ addFilter(
 	'tec.tickets.flexibleTickets',
 	filterTicketsControlsMappedProps
 );
+
+function filterUneditableMappedProps(mappedProps) {
+	if (!mappedProps?.cardsByTicketType?.series_pass) {
+		return mappedProps;
+	}
+
+	const link = ftStore.getSeriesHeaderLink();
+	const message = ftStore.getSeriesHeaderLinkText();
+	mappedProps.cardsByTicketType.series_pass.description = (
+		<a
+			href={link}
+			target="_blank"
+			rel="noreferrer"
+			className="tickets-heading__description__link"
+		>
+			{message}
+		</a>
+	);
+
+	return mappedProps;
+}
+
+addFilter(
+	'tec.tickets.blocks.Tickets.Uneditable.mappedProps',
+	'tec.tickets.flexibleTickets',
+	filterUneditableMappedProps
+);

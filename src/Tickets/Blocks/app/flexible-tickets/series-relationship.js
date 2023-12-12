@@ -162,7 +162,26 @@ export function showDiscordantProviderNotice(eventTitle, seriesTitle) {
 	document.querySelector(containerSelector).append(noticeElement);
 }
 
+/**
+ * Check if the user has selected a series in the metabox dropdown.
+ *
+ * @since TBD
+ *
+ * @return {boolean}
+ */
 export function hasSelectedSeries() {
 	const seriesSelect = document.getElementById(fieldSelector.substring(1));
 	return seriesSelect?.value !== '' && seriesSelect?.value !== '-1';
+}
+
+/**
+ * Get the post ID of the currently selected series in the metabox dropdown.
+ *
+ * @since TBD
+ *
+ * @return {number|null} The post ID of the selected series, `null` if not found.
+ */
+export function getSeriesPostIdFromSelection() {
+	const seriesSelect = document.getElementById(fieldSelector.substring(1));
+	return getSeriesDataFromElement(seriesSelect, 'id');
 }

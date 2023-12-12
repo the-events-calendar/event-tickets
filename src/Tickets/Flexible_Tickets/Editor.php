@@ -147,11 +147,16 @@ class Editor extends Controller {
 				'ticketPanelEditDefaultProviderAttribute' => 'data-current-provider',
 				'ticketsMetaboxSelector'                  => '#event_tickets',
 			],
-			'series'             => [
-				'seriesPassesCount'           => $series_passes_count,
-				'seriesPassTotalCapacity'     => $series_id ? tribe_get_event_capacity( $series_id ) : 0,
-				'seriesPassAvailableCapacity' => $series_id ? tribe_events_count_available_tickets( $series_id ) : 0,
-			],
+            'series' => [
+                'title'                       => $series_id ? get_the_title($series_id) : '',
+                'editLink'                    => $series_id ? get_edit_post_link($series_id, 'admin') : '',
+                'seriesPassesCount'           => $series_passes_count,
+                'seriesPassTotalCapacity'     => $series_id ? tribe_get_event_capacity($series_id) : 0,
+                'seriesPassAvailableCapacity' => $series_id ? tribe_events_count_available_tickets($series_id) : 0,
+                'headerLink'                  => get_permalink($series_id),
+                'headerLinkText'              => $this->get_header_link_text(),
+                'headerLinkTemplate'          => home_url() . '/?p=%d',
+            ],
 		];
 
 		/**
@@ -362,4 +367,17 @@ class Editor extends Controller {
 				'event-tickets'
 			) . '</p></div>';
 	}
+
+    public function get_header_link_text(): string
+    {
+        return sprintf(
+        // Translators: %1$s is the ticket label plural lowercase; i.e. "events".
+            _x(
+                'See all %1$s in this series',
+                'Link text for Series Passes in frontend ticket form',
+                'event-tickets'
+            ),
+            tribe_get_event_label_plural_lowercase()
+        );
+    }
 }
