@@ -15,9 +15,9 @@
  * @var array $attendees List of attendees for the given order.
  * @var int $attendee_id The attendee ID.
  *
- * @since TBD
+ * @since 5.7.1
  *
- * @version TBD
+ * @version 5.7.1
  */
 
 if ( empty( $attendees ) || empty( $attendee_id ) ) {

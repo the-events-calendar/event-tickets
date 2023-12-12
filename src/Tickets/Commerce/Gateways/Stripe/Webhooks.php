@@ -76,7 +76,7 @@ class Webhooks extends Abstract_Webhooks {
 	 * This will also check every half a second instead of a flat time. Allowing us in the future to chance how much we
 	 * are waiting without much work.
 	 *
-	 * @since TBD Modified from a simple `sleep(10)` it speeds the process by increasing the amount of times it checks the database.
+	 * @since 5.7.1 Modified from a simple `sleep(10)` it speeds the process by increasing the amount of times it checks the database.
 	 *
 	 * @param int $max_attempts Number of attempts we will try to poll the database option.
 	 *
@@ -204,7 +204,7 @@ class Webhooks extends Abstract_Webhooks {
 		/**
 		 * Allows changing the amount of attempts Stripe will check for the validated key on our database
 		 *
-		 * @since TBD
+		 * @since 5.7.1
 		 *
 		 * @param int $max_attempts How many attempts, each one takes half a second. Defaults to 20, total of 10 seconds of polling.
 		 */

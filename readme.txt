@@ -3,7 +3,7 @@
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, GeoffBel, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra
 Tags: tickets, registration, event registration, RSVP, ticket sales, attendee management
 Requires at least: 6.2
-Tested up to: 6.4.1
+Tested up to: 6.4.2
 Stable tag: 5.7.1
 Requires PHP: 7.4
 License: GPLv2 or later
@@ -195,7 +195,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [TBD] TBD =
+= [5.7.1] 2023-12-13 =
 
 * Tweak - Prevented Single Attendee endpoint from throwing a notice on PHP 8+. [ET-1935]
 * Tweak - Attendees listed on the `Your Tickets` section will now match the order they were entered in. [ET-1924]
@@ -205,6 +205,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Tweak - Added filter `tec_tickets_commerce_gateway_stripe_webhook_valid_key_polling_attempts` to allow the modification of how many attempts Tickets Commerce will poll for Stripe webhooks for validation.
 * Fix - Tickets Commerce Stripe webhooks properly handles internally validating the Secret Signing key. [ET-1511]
 * Fix - Tickets Commerce Stripe Charge and Payment Intent webhooks no longer create duplicated success emails for a single ticket purchase. [ET-1792]
+* Language - 3 new strings added, 42 updated, 0 fuzzied, and 0 obsoleted
 
 = [5.7.0] 2023-11-16 =
 

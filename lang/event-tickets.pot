@@ -2,15 +2,15 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Event Tickets 5.7.0\n"
+"Project-Id-Version: Event Tickets 5.7.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/event-tickets\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2023-11-14T09:06:17-08:00\n"
-"PO-Revision-Date: 2023-11-14 17:06\n"
+"POT-Creation-Date: 2023-12-11T06:29:50-08:00\n"
+"PO-Revision-Date: 2023-12-11 14:29\n"
 "X-Generator: WP-CLI 2.7.1\n"
 "X-Domain: event-tickets\n"
 
@@ -445,7 +445,7 @@ msgid "Price:"
 msgstr ""
 
 #: src/admin-views/editor/column-body-price.php:23
-#: src/Tribe/RSVP.php:1696
+#: src/Tribe/RSVP.php:1697
 msgid "Free"
 msgstr ""
 
@@ -1334,7 +1334,7 @@ msgid "You will have to confirm that the payments methods you have selected to s
 msgstr ""
 
 #: src/admin-views/settings/tickets-commerce/stripe/modal/signup-complete/content.php:35
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:213
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:304
 msgid "Webhooks"
 msgstr ""
 
@@ -1856,13 +1856,19 @@ msgid "Getting started"
 msgstr ""
 
 #. Translators: %s: Link to "Event Tickets Plus" plugin.
-#: src/Tickets/Admin/Upsell.php:46
+#: src/Tickets/Admin/Upsell.php:47
 msgid "Get individual information collection from each attendee and advanced capacity options with %s"
 msgstr ""
 
 #. Translators: %s: Link to "Event Tickets Plus" plugin.
-#: src/Tickets/Admin/Upsell.php:78
+#: src/Tickets/Admin/Upsell.php:120
 msgid "Manually add attendees with %s"
+msgstr ""
+
+#. Translators: %s: Link to "Wallet Plus" plugin.
+#: src/Tickets/Admin/Upsell.php:150
+#: src/Tickets/Admin/Upsell.php:235
+msgid "Get additional ticketing flexibility including Apple Wallet and PDF tickets with %s"
 msgstr ""
 
 #: src/Tickets/Commerce/Abstract_Order.php:107
@@ -6400,39 +6406,39 @@ msgstr ""
 #. Translators: %1$s: The HTML <a> tag, %2$s: The closing HTML </a> tag.
 #: src/Tickets/Commerce/Gateways/PayPal/Tickets_Form.php:77
 #: src/Tribe/Commerce/PayPal/Main.php:1921
-#: src/Tribe/RSVP.php:2459
+#: src/Tribe/RSVP.php:2460
 msgid "Return to the %1$sAttendees Report%2$s."
 msgstr ""
 
 #. Translators: %1$s: The return link.
 #: src/Tickets/Commerce/Gateways/PayPal/Tickets_Form.php:84
 #: src/Tribe/Commerce/PayPal/Main.php:1928
-#: src/Tribe/RSVP.php:2467
+#: src/Tribe/RSVP.php:2468
 msgid "Post updated. %1$s"
 msgstr ""
 
 #. Translators: %1$s: The return link.
 #: src/Tickets/Commerce/Gateways/PayPal/Tickets_Form.php:88
 #: src/Tribe/Commerce/PayPal/Main.php:1932
-#: src/Tribe/RSVP.php:2472
+#: src/Tribe/RSVP.php:2473
 msgid "Post published. %1$s"
 msgstr ""
 
 #: src/Tickets/Commerce/Gateways/PayPal/Tickets_Form.php:91
 #: src/Tribe/Commerce/PayPal/Main.php:1935
-#: src/Tribe/RSVP.php:2475
+#: src/Tribe/RSVP.php:2476
 msgid "Post submitted."
 msgstr ""
 
 #: src/Tickets/Commerce/Gateways/PayPal/Tickets_Form.php:92
 #: src/Tribe/Commerce/PayPal/Main.php:1936
-#: src/Tribe/RSVP.php:2476
+#: src/Tribe/RSVP.php:2477
 msgid "Post scheduled."
 msgstr ""
 
 #: src/Tickets/Commerce/Gateways/PayPal/Tickets_Form.php:93
 #: src/Tribe/Commerce/PayPal/Main.php:1937
-#: src/Tribe/RSVP.php:2477
+#: src/Tribe/RSVP.php:2478
 msgid "Post draft updated."
 msgstr ""
 
@@ -6658,49 +6664,53 @@ msgstr ""
 msgid "Klarna"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:78
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:201
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:129
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:292
 msgid "Webhooks not validated yet."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:90
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:97
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:127
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:159
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:203
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:146
+msgid "Signing Secret cannot be empty."
+msgstr ""
+
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:158
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:171
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:218
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:250
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:294
 msgid "Webhooks were properly validated for sales."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:112
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:192
 msgid "Could not connect to Stripe for validation. Please check your connection configuration."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:124
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:215
 msgid "We have not received any Stripe events yet. Please wait a few seconds and refresh the page."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:130
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:221
 msgid "This key has not been used in the latest events received. If you are setting up a new key, this status will be properly updated as soon as a new event is received."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:148
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:239
 msgid "The signing key appears to be invalid. Please check your webhook configuration in the Stripe Dashboard."
 msgstr ""
 
 #. Translators: %1$s A link to the KB article. %2$s closing `</a>` link.
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:221
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:312
 msgid "Setting up webhooks will enable you to receive notifications on charge statuses and keep order information up to date for asynchronous payments. %1$sLearn more%2$s"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:230
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:321
 msgid "Webhooks URL"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:241
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:332
 msgid "Signing Secret"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:249
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:340
 msgid "Validating signing key with Stripe, please wait. This can take up to one minute."
 msgstr ""
 
@@ -6709,18 +6719,23 @@ msgid "Account deauthorized is not the same as account connected."
 msgstr ""
 
 #. Translators: %1$s is the event id and %2$s is the event type name.
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks/Charge_Webhook.php:35
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks/Charge_Webhook.php:52
+msgid "Event %1$s was received and will not be handled because the Payment Intent %2$s was already moved to the Success status."
+msgstr ""
+
+#. Translators: %1$s is the event id and %2$s is the event type name.
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks/Charge_Webhook.php:67
 #: src/Tickets/Commerce/Gateways/Stripe/Webhooks/Payment_Intent_Webhook.php:42
 msgid "Event %1$s was received and will not be handled because the Payment Intent %2$s does not refer to an Event Tickets transaction."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks/Charge_Webhook.php:46
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks/Charge_Webhook.php:78
 #: src/Tickets/Commerce/Gateways/Stripe/Webhooks/Payment_Intent_Webhook.php:53
 msgid "Payment Intent Test Successful"
 msgstr ""
 
 #. Translators: %s is the payment intent id.
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks/Charge_Webhook.php:54
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks/Charge_Webhook.php:86
 #: src/Tickets/Commerce/Gateways/Stripe/Webhooks/Payment_Intent_Webhook.php:61
 msgid "Payment Intent %s does not correspond to a known order."
 msgstr ""
@@ -6770,7 +6785,7 @@ msgstr ""
 
 #: src/Tickets/Commerce/Models/Attendee_Model.php:62
 #: src/Tribe/Commerce/PayPal/Main.php:2973
-#: src/Tribe/RSVP.php:2117
+#: src/Tribe/RSVP.php:2118
 msgid "(deleted)"
 msgstr ""
 
@@ -9884,81 +9899,81 @@ msgstr ""
 msgid "An error happened while building the response: "
 msgstr ""
 
-#: src/Tribe/RSVP.php:546
+#: src/Tribe/RSVP.php:547
 msgid "Unable to verify your opt-in request, please try again."
 msgstr ""
 
-#: src/Tribe/RSVP.php:652
+#: src/Tribe/RSVP.php:653
 msgctxt "Attendee number"
 msgid "Attendee %1$s"
 msgstr ""
 
-#: src/Tribe/RSVP.php:691
+#: src/Tribe/RSVP.php:692
 msgid "RSVP Tickets"
 msgstr ""
 
-#: src/Tribe/RSVP.php:692
+#: src/Tribe/RSVP.php:693
 msgid "RSVP Ticket"
 msgstr ""
 
 #. translators: %s is the attendee field name.
-#: src/Tribe/RSVP.php:805
+#: src/Tribe/RSVP.php:806
 msgid "Attendee field \"%s\" is not set."
 msgstr ""
 
 #. translators: %s is the attendee field name.
-#: src/Tribe/RSVP.php:811
+#: src/Tribe/RSVP.php:812
 msgid "Attendee field \"%s\" is empty."
 msgstr ""
 
-#: src/Tribe/RSVP.php:849
+#: src/Tribe/RSVP.php:850
 msgid "Unable to process your request, invalid content resource."
 msgstr ""
 
-#: src/Tribe/RSVP.php:899
+#: src/Tribe/RSVP.php:900
 msgid "Unable to process your request, attendee creation failed."
 msgstr ""
 
-#: src/Tribe/RSVP.php:1098
+#: src/Tribe/RSVP.php:1099
 msgid "Invalid data! Missing required attendee details!"
 msgstr ""
 
 #. Translators: %1$s: The plural ticket label, %2$s: The site name.
-#: src/Tribe/RSVP.php:1323
+#: src/Tribe/RSVP.php:1324
 msgid "Your %1$s from %2$s"
 msgstr ""
 
 #. Translators: %s: Event name.
-#: src/Tribe/RSVP.php:1453
+#: src/Tribe/RSVP.php:1454
 msgid "You confirmed you will not be attending %s"
 msgstr ""
 
-#: src/Tribe/RSVP.php:1815
+#: src/Tribe/RSVP.php:1816
 msgid "Your %1$s has been received! Check your email for your %1$s confirmation."
 msgstr ""
 
-#: src/Tribe/RSVP.php:1822
+#: src/Tribe/RSVP.php:1823
 msgid "You can't %1$s more than the total remaining %2$s."
 msgstr ""
 
-#: src/Tribe/RSVP.php:1830
+#: src/Tribe/RSVP.php:1831
 msgid "In order to %s, you must enter your name and a valid email address."
 msgstr ""
 
-#: src/Tribe/RSVP.php:2643
+#: src/Tribe/RSVP.php:2644
 msgid "Invalid parent ID provided!"
 msgstr ""
 
-#: src/Tribe/RSVP.php:2650
+#: src/Tribe/RSVP.php:2651
 msgid "Invalid Ticket ID provided!"
 msgstr ""
 
-#: src/Tribe/RSVP.php:2665
-#: src/Tribe/RSVP.php:2671
+#: src/Tribe/RSVP.php:2666
+#: src/Tribe/RSVP.php:2672
 msgid "Missing required RSVP field: %s"
 msgstr ""
 
-#: src/Tribe/RSVP.php:2709
+#: src/Tribe/RSVP.php:2710
 msgid "Requested amount of Tickets are not available!"
 msgstr ""
 
