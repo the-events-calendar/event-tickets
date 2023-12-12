@@ -195,6 +195,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= TBD
+
+* Tweak - Updated sharedCapacity prop type to number. This avoids warnings in jest testing [ET-1058]
+
 = [5.7.1] 2023-12-13 =
 
 * Tweak - Prevented Single Attendee endpoint from throwing a notice on PHP 8+. [ET-1935]
