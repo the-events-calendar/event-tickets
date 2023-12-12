@@ -16,7 +16,10 @@ import Template from './template';
 import { withStore } from '@moderntribe/common/hoc';
 import withSaveData from '@moderntribe/tickets/blocks/hoc/with-save-data';
 import { actions, selectors } from '@moderntribe/tickets/data/blocks/ticket';
-import { noTicketsOnRecurring } from '@moderntribe/common/utils/recurrence';
+import {
+	hasRecurrenceRules,
+	noTicketsOnRecurring,
+} from '@moderntribe/common/utils/recurrence';
 
 const mapStateToProps = (state, ownProps) => {
 	let mappedProps = {
@@ -24,6 +27,14 @@ const mapStateToProps = (state, ownProps) => {
 		canCreateTickets: selectors.canCreateTickets(),
 		isSettingsOpen: selectors.getTicketsIsSettingsOpen(state),
 		noTicketsOnRecurring: noTicketsOnRecurring(),
+
+		/**
+		 * These properties are not required to render the template, but are
+		 * required by the `withSaveData` HOC to spot changes in the block.
+		 */
+		hasProviders: selectors.hasTicketProviders(),
+		provider: selectors.getTicketsProvider(state),
+		sharedCapacity: selectors.getTicketsSharedCapacity(state),
 	};
 
 	/**
