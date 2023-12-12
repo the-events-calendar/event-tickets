@@ -67,9 +67,9 @@ class Upsell {
 
 	/**
 	 * Show upsell on Attendees page.
-	 * 
-	 * @since TBD
-	 * 
+	 *
+	 * @since 5.7.1
+	 *
 	 * @return void
 	 */
 	public function show_on_attendees_page() {
@@ -110,10 +110,10 @@ class Upsell {
 	/**
 	 * Maybe show upsell for Manual Attendees.
 	 *
-	 * @since TBD   - Move logic into show_on_attendees_page().
+	 * @since 5.7.1   - Move logic into show_on_attendees_page().
 	 * @since 5.5.7 - Added is_admin() to make sure upsells only display within the admin area.
 	 * @since 5.3.4
-	 * 
+	 *
 	 * @return void
 	 */
 	public function maybe_show_manual_attendees() {
@@ -142,8 +142,8 @@ class Upsell {
 	/**
 	 * Maybe show upsell for Wallet Plus.
 	 *
-	 * @since TBD
-	 * 
+	 * @since 5.7.1
+	 *
 	 * @return void
 	 */
 	public function show_wallet_plus() {
@@ -234,7 +234,7 @@ class Upsell {
 	/**
 	 * Show upsell on Emails Settings page.
 	 *
-	 * @since TBD
+	 * @since 5.7.1
 	 *
 	 * @param array $fields Template list settings fields.
 	 *
