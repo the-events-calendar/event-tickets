@@ -63,7 +63,7 @@ class QR_Test extends \Codeception\TestCase\WPTestCase {
 			'',
 		];
 		yield 'should_allow_json_encoded' => [
-			json_encode( [ 'development' => 12345, 'devel' => true, 'dev' => gmdate( 'Y-m-d', '2023-10-20' ) ] ),
+			json_encode( [ 'development' => 12345, 'devel' => true, 'dev' => gmdate( 'Y-m-d', strtotime('2023-10-20' )) ] ),
 			'json_encoded',
 			'',
 		];
