@@ -10,10 +10,26 @@ $total_tickets = tribe_get_event_capacity( $post_id );
 if ( empty( $total_tickets ) ) {
 	return;
 }
+
+$post_labels          = get_post_type_labels( get_post_type_object( get_post_type( $post_id ) ) );
+$uppercase_post_label = $post_labels->singular_name ?? 'Event';
+$label                = sprintf(
+	/* translators: %s: uppercase post type label */
+	_x(
+		'Total %s Capacity:',
+		'event-tickets'
+	),
+	$uppercase_post_label
+);
+$title                = sprintf(
+	/* translators: %s: lowercase post type label */
+	__( 'The total number of possible attendees for this %s', 'event-tickets' ),
+	strtolower( $uppercase_post_label )
+);
 ?>
 <span id="ticket_form_total_capacity">
-	<?php esc_html_e( 'Total Event Capacity:', 'event-tickets' ); ?>
-	<span id="ticket_form_total_capacity_value" title="<?php esc_attr_e( 'The total number of possible attendees for this event', 'event-tickets' ); ?>">
+	<?php echo esc_html( $label ); ?>
+	<span id="ticket_form_total_capacity_value" title="<?php echo esc_attr( $title ); ?>">
 		<?php
 		switch ( $total_tickets ) {
 			case -1:
