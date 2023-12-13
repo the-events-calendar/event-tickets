@@ -443,8 +443,8 @@
 													<h6 style="color:#909090 !important; margin:0 0 10px 0; font-family: 'Helvetica Neue', Helvetica, sans-serif; text-transform:uppercase; font-size:13px; font-weight:700 !important;"><?php
 														echo esc_html(
 															sprintf(
-																_x( '%s Type', 'ticket type email heading', 'event-tickets' ),
-																tribe_get_ticket_label_singular( 'ticket_type_email_heading' )
+																_x( '%s Name', 'ticket name email heading', 'event-tickets' ),
+																tribe_get_ticket_label_singular( 'ticket_name_email_heading' )
 															)
 														); ?>
 													</h6>
