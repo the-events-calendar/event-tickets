@@ -100,10 +100,6 @@ class Info_Section extends Info_Section_Abstract {
 			tribe( Tickets_Commerce_Subsection::class )->get_subsection()
 		);
 
-		printr(
-			$fields,
-			"I am here"
-		);
 		foreach ( $fields as $field ) {
 			$this->add_field(
 				Factory::generate_generic_field(
