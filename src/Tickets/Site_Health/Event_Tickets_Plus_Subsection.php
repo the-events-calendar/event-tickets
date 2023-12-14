@@ -18,7 +18,7 @@ use Tribe\Tickets\Plus\Attendee_Registration\IAC;
  * @since   TBD
  * @package TEC\Tickets\Site_Health
  */
-class The_Events_Calendar_Subsection extends Abstract_Info_Subsection {
+class Event_Tickets_Plus_Subsection extends Abstract_Info_Subsection {
 
 	/**
 	 * @inheritDoc

@@ -68,7 +68,7 @@ class Info_Section extends Info_Section_Abstract {
 	 * Constructor
 	 */
 	public function __construct() {
-		$this->label = esc_html__(
+		$this->label       = esc_html__(
 			'Event Tickets',
 			'event-tickets'
 		);
@@ -98,6 +98,10 @@ class Info_Section extends Info_Section_Abstract {
 		$fields = array_merge(
 			$fields,
 			tribe( Tickets_Commerce_Subsection::class )->get_subsection()
+		);
+		$fields = array_merge(
+			$fields,
+			tribe( Event_Tickets_Plus_Subsection::class )->get_subsection()
 		);
 
 		foreach ( $fields as $field ) {
