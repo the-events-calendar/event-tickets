@@ -197,7 +197,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = TBD
 
-* Fix - Ticket is removed now when using the delete option from the block editor [ET-1879]
+* Fix - Ticket is removed now when using the delete option from the block editor. [ET-1879]
 
 = [5.7.1] 2023-12-13 =
 
