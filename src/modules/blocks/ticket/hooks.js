@@ -20,7 +20,7 @@ const filterBlockEdit = ( BlockEdit ) => ( props ) => {
 		null,
 		wp.element.createElement( BlockEdit, props ),
 	);
-}
+};
 
 /**
  * Filter to determine if a block was deleted using the delete block option,
@@ -32,4 +32,4 @@ export const initHook = () => {
 		'event-tickets',
 		filterBlockEdit,
 	);
-}
+};

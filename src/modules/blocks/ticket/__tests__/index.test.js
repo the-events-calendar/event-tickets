@@ -8,27 +8,27 @@ jest.mock( '@moderntribe/common/utils/globals', () => ( {
 	iacVars: () => {
 		return {
 			iacDefault: 'none',
-		}
+		};
 	},
 	priceSettings: () => {
 		return {
 			defaultCurrencyPosition: true,
-		}
+		};
 	},
 	settings: () => {
 		return {
 			reverseCurrencyPosition: false,
-		}
+		};
 	},
 	tecDateSettings: () => {
 		return {
 			datepickerFormat: '',
-		}
+		};
 	},
 	tickets: () => {
 		return {
 			end_sale_buffer_duration: 2,
-		}
+		};
 	},
 	wpHooks: {
 		addFilter: () => {},
@@ -37,7 +37,6 @@ jest.mock( '@moderntribe/common/utils/globals', () => ( {
 		MediaUpload: () => ( <button>Media Upload</button> ),
 	},
 } ) );
-
 
 describe( 'Single ticket block declaration', () => {
 	test( 'Block declaration', () => {
