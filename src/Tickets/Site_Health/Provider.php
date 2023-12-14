@@ -23,26 +23,50 @@ class Provider extends Service_Provider {
 	/**
 	 * Internal placeholder to pass around the section slug.
 	 *
-	 * @since 5.6.0.1
+	 * @since TBD
 	 *
 	 * @var string
 	 */
 	protected $slug;
 
+	/**
+	 * Register our service provider.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
 	public function register() {
 		$this->slug = Info_Section::get_slug();
 		$this->add_actions();
 		$this->add_filters();
 	}
 
+	/**
+	 * Add the action hooks.
+	 *
+	 * @since TBD
+	 */
 	public function add_actions() {
-
+		// no op.
 	}
 
+	/**
+	 * Add the filter hooks.
+	 *
+	 * @since TBD
+	 */
 	public function add_filters() {
 		add_filter( 'tec_debug_info_sections', [ $this, 'filter_include_sections' ] );
 	}
 
+	/**
+	 * This builds the Info_Section object and adds it to the Site Health screen.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $sections The array of sections to be displayed.
+	 */
 	public function filter_include_sections( $sections ) {
 		$sections[ Info_Section::get_slug() ] = $this->container->make( Info_Section::class );
 
