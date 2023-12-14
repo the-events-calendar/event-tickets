@@ -23,7 +23,7 @@ class Provider extends Service_Provider {
 	/**
 	 * Internal placeholder to pass around the section slug.
 	 *
-	 * @since TBD
+	 * @since 5.6.0.1
 	 *
 	 * @var string
 	 */
@@ -32,7 +32,7 @@ class Provider extends Service_Provider {
 	/**
 	 * Register our service provider.
 	 *
-	 * @since TBD
+	 * @since 5.6.0.1
 	 *
 	 * @return void
 	 */
@@ -45,7 +45,7 @@ class Provider extends Service_Provider {
 	/**
 	 * Add the action hooks.
 	 *
-	 * @since TBD
+	 * @since 5.6.0.1
 	 */
 	public function add_actions() {
 		// no op.
@@ -54,7 +54,7 @@ class Provider extends Service_Provider {
 	/**
 	 * Add the filter hooks.
 	 *
-	 * @since TBD
+	 * @since 5.6.0.1
 	 */
 	public function add_filters() {
 		add_filter( 'tec_debug_info_sections', [ $this, 'filter_include_sections' ] );
@@ -63,7 +63,7 @@ class Provider extends Service_Provider {
 	/**
 	 * This builds the Info_Section object and adds it to the Site Health screen.
 	 *
-	 * @since TBD
+	 * @since 5.6.0.1
 	 *
 	 * @param array $sections The array of sections to be displayed.
 	 */
