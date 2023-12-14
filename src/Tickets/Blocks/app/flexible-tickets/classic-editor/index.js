@@ -12,7 +12,7 @@ import {
  * Subscribe to Series relationship and ticket provider changes to lock/unlock the post publish button and
  * show/hide the notice.
  */
-async function onReady() {
+function onReady() {
 	// Localized data is required to run this script.
 	if (
 		window.TECFtEditorData === undefined ||
