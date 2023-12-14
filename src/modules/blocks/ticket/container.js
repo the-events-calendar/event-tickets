@@ -10,41 +10,15 @@ import { compose } from 'redux';
 import Template from './template';
 import { plugins } from '@moderntribe/common/data';
 import { withStore } from '@moderntribe/common/hoc';
-import { store } from '@moderntribe/common/store';
 import withSaveData from '@moderntribe/tickets/blocks/hoc/with-save-data';
 import { actions, selectors } from '@moderntribe/tickets/data/blocks/ticket';
 import {
 	isModalShowing,
 	getModalTicketId,
 } from '@moderntribe/tickets/data/shared/move/selectors';
+import { initHook } from './hooks';
 
-/**
- * Filter to determine if a block was deleted using the delete block option,
- * also validates if its a ticket block, then call deleteTicket on unmount
- */
-wp.hooks.addFilter(
-	'editor.BlockEdit',
-	'event-tickets',
-	( BlockEdit ) => ( props ) => {
-		const { dispatch } = store;
-
-		wp.element.useEffect( () => {
-			const { name, clientId } = props;
-
-			return () => {
-				if ( name === 'tribe/tickets-item' ) {
-					dispatch( actions.deleteTicket( clientId, false ) );
-				}
-			};
-		}, [] );
-
-		return wp.element.createElement(
-			wp.element.Fragment,
-			null,
-			wp.element.createElement( BlockEdit, props ),
-		);
-	}
-);
+initHook();
 
 const getShowTicket = ( state, ownProps ) => (
 	selectors.getTicketsIsSelected( state ) ||
