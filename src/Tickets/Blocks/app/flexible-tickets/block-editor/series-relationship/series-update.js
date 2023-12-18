@@ -67,7 +67,7 @@ export function updateSeriesData(uneditableTickets = []) {
 	setSeriesData(isInSeries, {
 		title: getSeriesTitleFromSelection(),
 		editLink: getSeriesEditLinkFromMetaBox(),
-		hasSeriesPasses: hasSelectedSeries(),
+		hasSeriesPasses: Boolean(independent.length || shared.length),
 		passTotalCapacity: sharedCapacity + independentCapacity,
 		passTotalAvailable: sharedAvailable + independentAvailable,
 		headerLink: seriesPlainUrl,
