@@ -1,5 +1,5 @@
 export default {
-	isInSeries: window?.tecEventDetails?.isInSeries || false,
+	isInSeries: window?.TECFtEditorData?.event.isInSeries || false,
 	defaultTicketTypeDescriptionTemplate:
 		window?.TECFtEditorData
 			?.defaultTicketTypeEventInSeriesDescriptionTemplate || '',

@@ -148,6 +148,7 @@ class Editor extends Controller {
 				'ticketsMetaboxSelector'                  => '#event_tickets',
 			],
 			'event' => [
+				'isInSeries' => $series_id !== null,
 				'isRecurring' => tribe_is_recurring_event( $post_id ),
 				'hasOwnTickets' => tribe_tickets()->where('event',$post_id)->count() > 0,
 			],

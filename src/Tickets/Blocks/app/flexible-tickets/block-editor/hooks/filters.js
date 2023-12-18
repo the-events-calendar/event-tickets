@@ -131,6 +131,34 @@ addFilter(
 );
 
 /**
+ * @param {boolean} mappedProps.hasCreatedTickets  Whether or not the user has created tickets.
+ * @param {boolean} mappedProps.hasRecurrenceRules Whether or not the Event has recurrence rules.
+ * @param {boolean} mappedProps.hasCreatedTickets  Whether or not the user has created tickets.
+ * @param           mappedProps
+ * @param {boolean} isSelected                     Whether or not the block is selected.
+ * @return {boolean}  Flag indicating whether or not to display the warning.
+ */
+function getShowWarning(mappedProps, isSelected) {
+	const hasSeriesPasses = ftStore.hasSeriesPasses();
+
+	let showWarning = false;
+
+	if (!mappedProps.hasCreatedTickets && isSelected) {
+		showWarning = true;
+	} else if (mappedProps.hasCreatedTickets && hasSeriesPasses && isSelected) {
+		showWarning = true;
+	} else if (
+		!mappedProps.hasCreatedTickets &&
+		!hasSeriesPasses &&
+		!isSelected
+	) {
+		showWarning = true;
+	}
+
+	return showWarning;
+}
+
+/**
  * Modifies the properties mapped from the state for the TicketsContainer component to conform
  * to the Flexible Tickets feature.
  *
@@ -169,37 +197,9 @@ function filterTicketsContainerMappedProps(
 	mappedProps.showInactiveBlock = hasRecurrenceRules
 		? false
 		: mappedProps.showInactiveBlock;
-	mappedProps.showAvailability = isSelected;
+	mappedProps.showAvailability = true;
 
 	return mappedProps;
-}
-
-/**
- * @param {boolean} mappedProps.hasCreatedTickets  Whether or not the user has created tickets.
- * @param {boolean} mappedProps.hasRecurrenceRules Whether or not the Event has recurrence rules.
- * @param {boolean} mappedProps.hasCreatedTickets  Whether or not the user has created tickets.
- * @param           mappedProps
- * @param {boolean} isSelected                     Whether or not the block is selected.
- * @return {boolean}  Flag indicating whether or not to display the warning.
- */
-function getShowWarning(mappedProps, isSelected) {
-	const hasSeriesPasses = ftStore.hasSeriesPasses();
-
-	let showWarning = false;
-
-	if (!mappedProps.hasCreatedTickets && isSelected) {
-		showWarning = true;
-	} else if (mappedProps.hasCreatedTickets && hasSeriesPasses && isSelected) {
-		showWarning = true;
-	} else if (
-		!mappedProps.hasCreatedTickets &&
-		!hasSeriesPasses &&
-		!isSelected
-	) {
-		showWarning = true;
-	}
-
-	return showWarning;
 }
 
 addFilter(
