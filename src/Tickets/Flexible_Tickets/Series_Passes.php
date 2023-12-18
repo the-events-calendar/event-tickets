@@ -1116,12 +1116,8 @@ class Series_Passes extends Controller
 	/**
 	 * Filter whether tickets can be added to recurring events or not.
 	 *
-	 * The wording of the filter is confusing: the purpose of this filter is to allow an Event
-	 * to have recurrence rules and tickets at the same time or not.
-	 * Since Flexible Tickets supports Tickets on Recurring Events by means of Series Passes, an Event should
-	 * be allowed to have Tickets (really Series Passes) and recurrence rules at the same time.
-	 * The exception are Single Events (in a Series or not) that have their own Tickets: in this case,
-	 * the Event should not be allowed to have recurrence rules.
+	 * This method will return `true` to allow tickets on recurring events by default and by controlling the
+	 * relevant parts of the UI using Javascript.
 	 *
 	 * @since TBD
 	 *
@@ -1129,14 +1125,7 @@ class Series_Passes extends Controller
 	 *
 	 * @return bool
 	 */
-	public function allow_tickets_on_recurring_events(bool $allow):bool{
-		// If the event has own tickets, return false.
-		$has_own_tickets = tribe_tickets()->where( 'event_id', get_the_ID() )->where( 'type', 'default' )->count() > 0;
-
-		if ( $has_own_tickets ) {
-			return false;
-		}
-
+	public function allow_tickets_on_recurring_events( bool $allow ): bool {
 		return true;
 	}
 }

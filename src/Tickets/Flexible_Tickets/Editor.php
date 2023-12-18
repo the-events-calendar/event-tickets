@@ -147,6 +147,10 @@ class Editor extends Controller {
 				'ticketPanelEditDefaultProviderAttribute' => 'data-current-provider',
 				'ticketsMetaboxSelector'                  => '#event_tickets',
 			],
+			'event' => [
+				'isRecurring' => tribe_is_recurring_event( $post_id ),
+				'hasOwnTickets' => tribe_tickets()->where('event',$post_id)->count() > 0,
+			],
             'series' => [
                 'title'                       => $series_id ? get_the_title($series_id) : '',
                 'editLink'                    => $series_id ? get_edit_post_link($series_id, 'admin') : '',
