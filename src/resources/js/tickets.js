@@ -21,6 +21,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	var $document = $( document );
 	var $tribe_tickets = $( document.getElementById( 'tribetickets' ) );
 	const recurrence_row_selectors = '.recurrence-row';
+	const recurrence_add_row_selector = '.recurrence-row.tribe-datetime-block:not(.tribe-recurrence-exclusion-row)';
 	const recurrence_not_supported_row_selector = '.recurrence-row.tribe-recurrence-not-supported';
 	const recurrence_rule_panel_selector = '.tribe-event-recurrence-rule';
 	const ticket_button_selectors = '#rsvp_form_toggle, #ticket_form_toggle, #settings_form_toggle';
@@ -931,7 +932,12 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		 * Enable creating recurrence rules if tickets are removed.
 		 */
 		$document.on( 'tribe-tickets-inactive', function( event ) {
-			$( recurrence_row_selectors ).show();
+			const hasRecurrenceRules = $( recurrence_rule_panel_selector ).find( '.tribe-recurrence-rule' ).length > 0;
+			if (hasRecurrenceRules) {
+				$(recurrence_row_selectors).show()
+			} else {
+				$(recurrence_add_row_selector).show();
+			}
 			$( recurrence_not_supported_row_selector ).hide();
 		} );
 	} else {
