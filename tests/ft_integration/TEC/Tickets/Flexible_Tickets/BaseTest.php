@@ -8,10 +8,13 @@ use Stripe\SearchResult;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Events\Custom_Tables\V1\Models\Occurrence;
+use TEC\Events_Pro\Custom_Tables\V1\Editors\Block\Ajax;
 use TEC\Events_Pro\Custom_Tables\V1\Events\Recurrence;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
+use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Tickets_View;
 use TEC\Tickets\Flexible_Tickets\Test\Traits\Series_Pass_Factory;
+use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe__Events__Main as TEC;
 use Tribe__Admin__Notices as Notices;
@@ -21,6 +24,7 @@ class BaseTest extends Controller_Test_Case {
 	use SnapshotAssertions;
 	use Ticket_Maker;
 	use Series_Pass_Factory;
+	use With_Uopz;
 
 	protected string $controller_class = Base::class;
 
@@ -494,5 +498,61 @@ class BaseTest extends Controller_Test_Case {
 		ob_end_clean();
 
 		$this->assertMatchesHtmlSnapshot( $html );
+	}
+
+	/**
+	 * It should filter series AJAX data to add ticket provider
+	 *
+	 * @test
+	 */
+	public function should_filter_series_ajax_data_to_add_ticket_provider(): void {
+		// Become administrator.
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		// Create a Series with the TC as provider,
+		$series        = static::factory()->post->create( [
+			'post_type' => Series_Post_Type::POSTTYPE,
+		] );
+		$event_post_id = tribe_events()->set_args( [
+			'title'      => 'Test Event',
+			'status'     => 'publish',
+			'start_date' => '2020-01-01 09:00:00',
+			'end_date'   => '2020-01-01 11:30:00',
+			'series'     => $series,
+		] )->create()->ID;
+		update_post_meta( $series, '_tribe_default_ticket_provider', Module::class );
+		$ct1_ajax = tribe( Ajax::class );
+		// Mock the `wp_send_json_success_function` to grab the response.
+		$response = null;
+		$this->set_fn_return( 'wp_send_json_success', static function ( $send_data ) use ( &$response ) {
+			$response = $send_data;
+
+			return null;
+		}, true );
+
+		// Execute the AJAX handler a first time, without the controller filtering the response.
+		$_REQUEST = [
+			Ajax::SERIES_NONCE_NAME => wp_create_nonce( Ajax::SERIES_ACTION ),
+			'event_id'              => $event_post_id,
+		];
+		$ct1_ajax->handle_series_data_ajax();
+
+		// What is actually there is not tested here, but in CT1 coverage.
+		$this->assertIsArray( $response );
+
+		// Register the controller and run the same AJAX handler again.
+		$this->make_controller()->register();
+		$ct1_ajax->handle_series_data_ajax();
+
+		// Check that the response has been filtered.
+		$this->assertIsArray( $response );
+		$this->assertArrayHasKey( 'ticket_provider', $response );
+		$this->assertEquals( Module::class, $response['ticket_provider'] );
+	}
+
+	/**
+	 * @after
+	 */
+	public function clean_up_request(): void {
+		$_REQUEST = [];
 	}
 }
