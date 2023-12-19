@@ -1430,4 +1430,19 @@ class Series_PassesTest extends Controller_Test_Case {
 
 		$this->assertFalse( apply_filters( 'tec_tickets_allow_tickets_on_single_events_with_own_tickets', false ) );
 	}
+
+	/**
+	 * It should filter the FT editor data
+	 *
+	 * @test
+	 */
+	public function should_filter_the_ft_editor_data(): void {
+		// Apply the filter while the controller is not registered.
+		$this->assertEquals( [], apply_filters( 'tec_tickets_flexible_tickets_editor_data', [] ) );
+
+		$this->make_controller()->register();
+
+		// Register the controller and re-apply the filter.
+		$this->assertMatchesJsonSnapshot( apply_filters( 'tec_tickets_flexible_tickets_editor_data', [] ) );
+	}
 }

@@ -96,17 +96,8 @@ class Edit {
 	 * @return array<string,mixed> The updated editor data.
 	 */
 	public function filter_editor_data( array $editor_data ): array {
-		$post                                                     = get_post();
-		$event_id                                                 = $post instanceof \WP_Post ? $post->ID : null;
-		$provisional_post                                         = tribe( Provisional_Post::class );
-		$event_id                                                 = $provisional_post->is_provisional_post_id( $event_id ) ?
-			$provisional_post->normalize_provisional_post_id( $event_id )
-			: $event_id;
-		$relationship                                             = $event_id ? Series_Relationship::find( $event_id, 'event_post_id' ) : null;
-		$series_id                                                = $relationship ? $relationship->series_post_id : null;
-		$editor_data['defaultTicketTypeEventInSeriesDescriptionTemplate'] = $series_id ?
-			$this->labels->get_default_ticket_type_event_in_series_template()
-			: '';
+		$editor_data['defaultTicketTypeEventInSeriesDescriptionTemplate'] =
+			$this->labels->get_default_ticket_type_event_in_series_template();
 
 		return $editor_data;
 	}
