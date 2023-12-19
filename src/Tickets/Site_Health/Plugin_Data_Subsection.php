@@ -31,7 +31,7 @@ class Plugin_Data_Subsection extends Abstract_Info_Subsection {
 	/**
 	 * @inheritDoc
 	 */
-	protected function generate_subsection() {
+	protected function generate_subsection(): array {
 		return [
 			[
 				'id'       => 'plugin_activation_date',
@@ -236,7 +236,7 @@ class Plugin_Data_Subsection extends Abstract_Info_Subsection {
 	 *
 	 * @return string List of previous versions.
 	 */
-	private function get_previous_versions() {
+	private function get_previous_versions(): string {
 		return Arr::to_list(
 			array_filter(
 				(array) tribe_get_option(
@@ -253,7 +253,7 @@ class Plugin_Data_Subsection extends Abstract_Info_Subsection {
 	 *
 	 * @return int Count of ticketed posts.
 	 */
-	private function get_ticketed_post_count() {
+	private function get_ticketed_post_count(): int {
 		return tribe( 'tickets.post-repository' )->per_page( -1 )->where( 'has_tickets' )->count();
 	}
 
@@ -262,7 +262,7 @@ class Plugin_Data_Subsection extends Abstract_Info_Subsection {
 	 *
 	 * @return int Count of posts with RSVPs.
 	 */
-	private function get_rsvp_post_count() {
+	private function get_rsvp_post_count(): int {
 		return tribe( 'tickets.post-repository' )->per_page( -1 )->where( 'has_rsvp' )->count();
 	}
 
@@ -271,7 +271,7 @@ class Plugin_Data_Subsection extends Abstract_Info_Subsection {
 	 *
 	 * @return string Activation date in 'Y-m-d' format.
 	 */
-	private function get_plugin_activation_date() {
+	private function get_plugin_activation_date(): string {
 		return tribe_format_date(
 			tribe_get_option( 'tec_tickets_activation_time' ),
 			false,
@@ -284,7 +284,7 @@ class Plugin_Data_Subsection extends Abstract_Info_Subsection {
 	 *
 	 * @return string Date of the last ticket creation.
 	 */
-	private function get_last_ticket_creation_date() {
+	private function get_last_ticket_creation_date(): string {
 		// Fetch the latest ticket's creation date.
 		$latest_ticket_date = tribe( 'tickets.ticket-repository' )
 			->per_page( 1 )
@@ -313,7 +313,7 @@ class Plugin_Data_Subsection extends Abstract_Info_Subsection {
 	 *
 	 * @return string Date of the last RSVP creation.
 	 */
-	private function get_last_rsvp_creation_date() {
+	private function get_last_rsvp_creation_date(): string {
 		$latest_rsvp_date = tribe( 'tickets.ticket-repository.rsvp' )
 			->per_page( 1 )
 			->order_by(
@@ -340,7 +340,7 @@ class Plugin_Data_Subsection extends Abstract_Info_Subsection {
 	 *
 	 * @return string Date of the last attendee creation.
 	 */
-	private function get_last_attendee_creation_date() {
+	private function get_last_attendee_creation_date(): string {
 		$latest_attendee_date = tribe( 'tickets.attendee-repository' )
 			->per_page( 1 )
 			->order_by(
@@ -369,7 +369,7 @@ class Plugin_Data_Subsection extends Abstract_Info_Subsection {
 	 *
 	 * @return string Last app check-in date in 'Y-m-d' format.
 	 */
-	private function get_last_app_check_in_date() {
+	private function get_last_app_check_in_date(): string {
 		return tribe_format_date(
 			tribe_get_option( 'tec_tickets_plus_app_last_checkin_time' ),
 			false,
@@ -382,7 +382,7 @@ class Plugin_Data_Subsection extends Abstract_Info_Subsection {
 	 *
 	 * @return int Total number of tickets.
 	 */
-	private function get_number_of_tickets() {
+	private function get_number_of_tickets(): int {
 		// @todo redscar switch this to ORM?
 		return tribe( Tribe__Tickets__Query::class )->get_ticketed_count( 'tribe_events' );
 	}
@@ -392,7 +392,7 @@ class Plugin_Data_Subsection extends Abstract_Info_Subsection {
 	 *
 	 * @return int Total number of RSVPs.
 	 */
-	private function get_number_of_rsvps() {
+	private function get_number_of_rsvps(): int {
 		return tribe( 'tickets.ticket-repository.rsvp' )->count();
 	}
 
@@ -401,7 +401,7 @@ class Plugin_Data_Subsection extends Abstract_Info_Subsection {
 	 *
 	 * @return int Total number of attendees.
 	 */
-	private function get_number_of_attendees() {
+	private function get_number_of_attendees(): int {
 		return tribe( 'tickets.attendee-repository' )->count();
 	}
 
@@ -410,7 +410,7 @@ class Plugin_Data_Subsection extends Abstract_Info_Subsection {
 	 *
 	 * @return int Average number of attendees per event.
 	 */
-	private function get_average_attendees_per_event() {
+	private function get_average_attendees_per_event(): int {
 		$attendee_count = (int) tribe( 'tickets.attendee-repository' )->count();
 		// @todo redscar Is this the proper place to get the ticketed amount? Should it be from another spot if TEC isn't enabled?
 		$ticketed_event_count = (int) tribe( 'tickets.event-repository' )->per_page( -1 )->where(

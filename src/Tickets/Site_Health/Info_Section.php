@@ -84,7 +84,7 @@ class Info_Section extends Info_Section_Abstract {
 	 *
 	 * @since 5.6.0.1
 	 */
-	public function add_fields() {
+	public function add_fields(): void {
 		$fields = [];
 
 		$fields = array_merge(

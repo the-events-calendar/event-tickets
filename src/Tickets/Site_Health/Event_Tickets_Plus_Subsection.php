@@ -33,7 +33,7 @@ class Event_Tickets_Plus_Subsection extends Abstract_Info_Subsection {
 	/**
 	 * @inheritDoc
 	 */
-	protected function generate_subsection() {
+	protected function generate_subsection(): array {
 		return [
 			[
 				'id'       => 'qr_codes_enabled',

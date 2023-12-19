@@ -34,7 +34,7 @@ class Tickets_Commerce_Subsection extends Abstract_Info_Subsection {
 	/**
 	 * @inheritDoc
 	 */
-	protected function generate_subsection() {
+	protected function generate_subsection(): array {
 		return [
 			[
 				'id'       => 'tickets_commerce_average_order_total',
@@ -101,7 +101,7 @@ class Tickets_Commerce_Subsection extends Abstract_Info_Subsection {
 	 *
 	 * @return int Formatted average price.
 	 * */
-	private function get_tickets_commerce_average_order_total() {
+	private function get_tickets_commerce_average_order_total(): int {
 		// @todo redscar This logic may be incorrect.
 		$tickets_commerce_ticket_prices = tribe( Tickets_Repository::class )->per_page( -1 )->pluck( 'price' );
 		$total                          = 0;

@@ -30,7 +30,7 @@ class The_Events_Calendar_Subsection extends Abstract_Info_Subsection {
 	/**
 	 * @inheritDoc
 	 */
-	protected function generate_subsection() {
+	protected function generate_subsection(): array {
 		return [
 			[
 				'id'       => 'number_of_ticketed_events',
@@ -67,7 +67,7 @@ class The_Events_Calendar_Subsection extends Abstract_Info_Subsection {
 	 *
 	 * @return int Count of ticketed events.
 	 */
-	public function get_number_of_ticketed_events() {
+	public function get_number_of_ticketed_events(): int {
 		return tribe( 'tickets.event-repository' )->per_page( -1 )->where( 'has_tickets' )->count();
 	}
 
@@ -76,7 +76,7 @@ class The_Events_Calendar_Subsection extends Abstract_Info_Subsection {
 	 *
 	 * @return int Count of ticketed events currently happening.
 	 */
-	private function get_number_of_ticketed_events_happening_now() {
+	private function get_number_of_ticketed_events_happening_now(): int {
 		return tribe( 'tickets.event-repository' )->where(
 			'ends_after',
 			'now'
@@ -88,7 +88,7 @@ class The_Events_Calendar_Subsection extends Abstract_Info_Subsection {
 	 *
 	 * @return int Average number of attendees per event.
 	 */
-	private function get_average_attendees_per_event() {
+	private function get_average_attendees_per_event(): int {
 		$attendee_count       = (int) tribe( 'tickets.attendee-repository' )->count();
 		$ticketed_event_count = (int) tribe( 'tickets.event-repository' )->per_page( -1 )->where(
 			'has_tickets'

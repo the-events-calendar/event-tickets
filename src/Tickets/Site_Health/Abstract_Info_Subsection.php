@@ -59,6 +59,8 @@ abstract class Abstract_Info_Subsection {
 	 *
 	 * This method should be implemented in the subclass to define the specific fields
 	 * for the subsection.
+	 *
+	 * @return array An array of fields.
 	 */
-	abstract protected function generate_subsection();
+	abstract protected function generate_subsection(): array;
 }
