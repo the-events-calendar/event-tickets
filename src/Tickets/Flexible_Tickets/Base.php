@@ -112,7 +112,7 @@ class Base extends Controller {
 		tribe_asset(
 			tribe( 'tickets.main' ),
 			'tec-tickets-flexible-tickets-style',
-			'flexible-tickets/flexible-tickets.css',
+			'flexible-tickets.css',
 			[],
 			null,
 			[
