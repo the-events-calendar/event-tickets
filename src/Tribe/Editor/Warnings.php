@@ -22,9 +22,7 @@ class Warnings {
 	 * @since 5.0.4
 	 */
 	public function hook() {
-		add_action( 'tribe_events_tickets_new_ticket_warnings', [ $this, 'show_recurring_event_warning_message' ] );
 		add_action( 'tribe_events_tickets_new_ticket_warnings', [ $this, 'add_commerce_provider_warning' ] );
-		add_filter( 'tec_tickets_panel_list_helper_text', [ $this, 'filter_tickets_panel_list_helper_text' ], 10, 2 );
 		add_action( 'tribe_events_tickets_after_new_ticket_panel', [ $this, 'render_hidden_recurring_warning_for_ticket_meta_box' ] );
 	}
 
@@ -35,32 +33,14 @@ class Warnings {
 	 * @since 5.6.4 Remove dependency on `#tribe-recurrence-active`.
 	 * @since 5.6.2 Added 'recurring_event_warning' as an $additionalClasses.
 	 * @since 5.0.4
+	 * @since TBD Deprecated.
+	 *
+	 * @deprecated TBD
 	 *
 	 * @param int $post_id Post ID.
 	 */
 	public function show_recurring_event_warning_message( $post_id ) {
-
-		if ( ! $this->should_display_recurring_warning_for_tickets( $post_id ) ) {
-			return;
-		}
-
-		if ( ! function_exists( 'tribe_is_recurring_event' ) ) {
-			return;
-		}
-
-		if ( \Tribe__Events__Main::POSTTYPE != get_post_type( $post_id ) && ! tribe_is_frontend() ) {
-			return;
-		}
-
-		if ( class_exists( '\TEC\Events\Custom_Tables\V1\Migration\State' ) ) {
-			$migrated = tribe( \TEC\Events\Custom_Tables\V1\Migration\State::class )->is_migrated();
-
-			if ( ! $migrated ) {
-				return;
-			}
-		}
-
-		$this->render_notice( $this->get_recurring_event_warning_message(), 'info', null, null, [ 'recurring_event_warning' ] );
+		_deprecated_function( __METHOD__, 'TBD', __CLASS__ . '::render_hidden_recurring_warning_for_ticket_meta_box' );
 	}
 
 	/**
@@ -160,75 +140,12 @@ class Warnings {
 	}
 
 	/**
-	 * Check whether the recurring warning should be displayed or not.
-	 *
-	 * @since TBD
-	 *
-	 * @param int $post_id The current edited post id.
-	 *
-	 * @return bool
-	 */
-	protected function should_display_recurring_warning_for_tickets( int $post_id ): bool {
-		if ( ! class_exists( 'Tribe__Events__Pro__Main', false ) || ! class_exists( TEC::class, false ) ) {
-			return false;
-		}
-
-		if ( ! function_exists( 'tribe_is_recurring_event' ) || ! tribe_is_recurring_event( $post_id ) ) {
-			return false;
-		}
-
-		if ( TEC::POSTTYPE != get_post_type( $post_id ) && ! tribe_is_frontend() ) {
-			return false;
-		}
-
-		if ( class_exists( Migration_State::class, false ) ) {
-			$migrated = tribe( Migration_State::class )->is_migrated();
-
-			if ( ! $migrated ) {
-				return false;
-			}
-		}
-
-		return true;
-	}
-
-	/**
-	 * Filter tickets panel helper text to inject recurring ticket warning.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $text The helper text.
-	 * @param WP_Post $post The Post Object.
-	 *
-	 * @return string The helper text.
-	 */
-	public function filter_tickets_panel_list_helper_text( string $text, WP_Post $post ): string {
-		if ( ! $this->should_display_recurring_warning_for_tickets( $post->ID ) ) {
-			return $text;
-		}
-
-		return $this->get_recurring_event_warning_message();
-	}
-
-	/**
 	 * Render hidden recurring warning message for new post/event creation page.
 	 *
 	 * @since TBD
-	 *
-	 * @param int $post_id The current post ID.
-	 *
-	 * @return void
 	 */
-	public function render_hidden_recurring_warning_for_ticket_meta_box( int $post_id ): void {
-		// Only render when recurring is available and for events post-type.
-		if ( ! function_exists( 'tribe_is_recurring_event' )
-			 || TEC::POSTTYPE !== get_post_type( $post_id )
-			 || tribe_is_recurring_event( $post_id )
-		) {
-			return;
-		}
-
-		$html  = '<p class="tec_ticket-panel__hidden-recurring-warning" style="display: none">';
+	public function render_hidden_recurring_warning_for_ticket_meta_box(): void {
+		$html  = '<p class="tec_ticket-panel__recurring-unsupported-warning" style="display: none">';
 		$html .= $this->get_recurring_event_warning_message();
 		$html .= '<p>';
 

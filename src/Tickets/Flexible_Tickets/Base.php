@@ -89,20 +89,6 @@ class Base extends Controller {
 			'enable_ticket_forms_for_series'
 		] );
 
-		// Remove the warnings about Recurring Events and Tickets not being supported.
-		$editor_warnings = tribe( 'tickets.editor.warnings' );
-		remove_action( 'tribe_events_tickets_new_ticket_warnings', [
-			$editor_warnings,
-			'show_recurring_event_warning_message'
-		] );
-
-		// Prevent the "New Ticket" and "New RSVP" buttons from being shown on the editor for recurring events.
-		$post_type = TEC::POSTTYPE;
-		add_filter( "tec_tickets_enabled_ticket_forms_{$post_type}", [
-			$this,
-			'disable_tickets_on_recurring_events'
-		], 10, 2 );
-
 		// Filter the HTML template used to render Tickets on the front-end.
 		add_filter( 'tribe_template_pre_html:tickets/v2/tickets/items', [
 			$this,
@@ -223,22 +209,9 @@ class Base extends Controller {
 			'enable_ticket_forms_for_series'
 		] );
 
-		// Restore the warnings about Recurring Events and Tickets not being supported.
-		$editor_warnings = tribe( 'tickets.editor.warnings' );
-		add_action( 'tribe_events_tickets_new_ticket_warnings', [
-			$editor_warnings,
-			'show_recurring_event_warning_message'
-		] );
-
 		remove_Filter( 'tribe_template_pre_html:tickets/v2/tickets/items', [
 			$this,
 			'classic_editor_ticket_items'
-		] );
-
-		$post_type = TEC::POSTTYPE;
-		remove_filter( "tec_tickets_enabled_ticket_forms_{$post_type}", [
-			$this,
-			'disable_tickets_on_recurring_events'
 		] );
 
 		// Restore the warning about Tickets added to a Recurring Event.

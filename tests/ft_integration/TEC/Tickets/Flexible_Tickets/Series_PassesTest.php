@@ -1443,6 +1443,11 @@ class Series_PassesTest extends Controller_Test_Case {
 		$this->make_controller()->register();
 
 		// Register the controller and re-apply the filter.
-		$this->assertMatchesJsonSnapshot( apply_filters( 'tec_tickets_flexible_tickets_editor_data', [] ) );
+		$this->assertMatchesCodeSnapshot(
+			var_export(
+				apply_filters( 'tec_tickets_flexible_tickets_editor_data', [] ),
+				true
+			)
+		);
 	}
 }
