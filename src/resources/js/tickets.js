@@ -28,7 +28,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	const tickets_panel_table_selector = '.tribe-tickets-editor-table-tickets-body';
 	const noTicketsOnRecurring = document.body.classList.contains( 'tec-no-tickets-on-recurring' );
 	const tickets_panel_helper_text_selector = '.tec_ticket-panel__helper_text__wrap';
-	const tickets_panel_hidden_recurrence_warning = '.tec_ticket-panel__hidden-recurring-warning';
+	const tickets_panel_hidden_recurrence_warning = '.tec_ticket-panel__recurring-unsupported-warning';
 	/*
 	 * Null or 'default' are the default ticket; 'rsvp' is the RSVP ticket.
 	 * The backend might use the value, sent over with AJAX panel requests, to modify panels

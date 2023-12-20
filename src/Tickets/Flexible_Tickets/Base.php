@@ -89,20 +89,6 @@ class Base extends Controller {
 			'enable_ticket_forms_for_series'
 		] );
 
-		// Remove the warnings about Recurring Events and Tickets not being supported.
-		$editor_warnings = tribe( 'tickets.editor.warnings' );
-		remove_action( 'tribe_events_tickets_new_ticket_warnings', [
-			$editor_warnings,
-			'show_recurring_event_warning_message'
-		] );
-
-		// Prevent the "New Ticket" and "New RSVP" buttons from being shown on the editor for recurring events.
-		$post_type = TEC::POSTTYPE;
-		add_filter( "tec_tickets_enabled_ticket_forms_{$post_type}", [
-			$this,
-			'disable_tickets_on_recurring_events'
-		], 10, 2 );
-
 		// Filter the HTML template used to render Tickets on the front-end.
 		add_filter( 'tribe_template_pre_html:tickets/v2/tickets/items', [
 			$this,
@@ -112,7 +98,7 @@ class Base extends Controller {
 		tribe_asset(
 			tribe( 'tickets.main' ),
 			'tec-tickets-flexible-tickets-style',
-			'flexible-tickets/flexible-tickets.css',
+			'flexible-tickets.css',
 			[],
 			null,
 			[
@@ -142,8 +128,8 @@ class Base extends Controller {
 		// Filter the columns displayed in the series editor events list.
 		add_filter(
 			'tec_events_pro_custom_tables_v1_series_occurrent_list_columns', [
-				$this,
-				'filter_series_editor_occurrence_list_columns'
+			$this,
+			'filter_series_editor_occurrence_list_columns'
 		] );
 
 		add_action( 'tec_events_pro_custom_tables_v1_series_occurrent_list_column_ticket_types', [
@@ -160,10 +146,19 @@ class Base extends Controller {
 			$this,
 			'filter_attendees_report_context'
 		] );
-		add_action( 'tribe_tickets_attendees_event_details_list_top', [ $this, 'render_series_details_on_attendee_report' ], 50 );
-		add_action( 'tribe_tickets_report_event_details_list_top', [ $this, 'render_series_details_on_order_report' ], 50 );
+		add_action( 'tribe_tickets_attendees_event_details_list_top', [
+			$this,
+			'render_series_details_on_attendee_report'
+		], 50 );
+		add_action( 'tribe_tickets_report_event_details_list_top', [
+			$this,
+			'render_series_details_on_order_report'
+		], 50 );
 		add_filter( 'tec_tickets_commerce_order_report_summary_label_for_type', [ $this, 'filter_series_type_label' ] );
-		add_filter( 'tec_tickets_commerce_order_report_summary_should_include_event_sales_data', [ $this, 'filter_out_series_type_tickets_from_order_report' ], 10, 4 );
+		add_filter( 'tec_tickets_commerce_order_report_summary_should_include_event_sales_data', [
+			$this,
+			'filter_out_series_type_tickets_from_order_report'
+		], 10, 4 );
 
 		// Remove the upsell notice for ticket types.
 		$ticket_upsell_notices = tribe( Ticket_Upsell::class );
@@ -172,7 +167,10 @@ class Base extends Controller {
 			'render_ticket_type_upsell_notice'
 		], 20, 3 );
 
-		add_filter( 'tribe_template_pre_html:tickets/admin-views/editor/panel/header-image', [ $this, 'hide_header_image_option_from_ticket_settings' ], 10, 5 );
+		add_filter( 'tribe_template_pre_html:tickets/admin-views/editor/panel/header-image', [
+			$this,
+			'hide_header_image_option_from_ticket_settings'
+		], 10, 5 );
 		add_filter( 'tribe_get_start_date', [ $this, 'filter_start_date_for_series' ], 10, 4 );
 		add_filter( 'tribe_get_end_date', [ $this, 'filter_end_date_for_series' ], 10, 4 );
 
@@ -183,8 +181,18 @@ class Base extends Controller {
 		] );
 
 		// TicketsCommerce Checkout handlers for Series.
-		add_filter( 'tec_tickets_commerce_shortcode_checkout_page_template_vars', [ $this, 'filter_tc_checkout_template_args' ] );
-		add_filter( 'tribe_template_pre_html:tickets/v2/commerce/checkout/cart/footer', [ $this, 'hide_non_series_cart_footer_html' ], 10, 5 );
+		add_filter( 'tec_tickets_commerce_shortcode_checkout_page_template_vars', [
+			$this,
+			'filter_tc_checkout_template_args'
+		] );
+		add_filter( 'tribe_template_pre_html:tickets/v2/commerce/checkout/cart/footer', [
+			$this,
+			'hide_non_series_cart_footer_html'
+		], 10, 5 );
+		add_filter( 'tec_events_pro_custom_tables_v1_block_editor_ajax_series_data', [
+			$this,
+			'filter_series_ajax_data'
+		], 10, 2 );
 	}
 
 	/**
@@ -201,22 +209,9 @@ class Base extends Controller {
 			'enable_ticket_forms_for_series'
 		] );
 
-		// Restore the warnings about Recurring Events and Tickets not being supported.
-		$editor_warnings = tribe( 'tickets.editor.warnings' );
-		add_action( 'tribe_events_tickets_new_ticket_warnings', [
-			$editor_warnings,
-			'show_recurring_event_warning_message'
-		] );
-
 		remove_Filter( 'tribe_template_pre_html:tickets/v2/tickets/items', [
 			$this,
 			'classic_editor_ticket_items'
-		] );
-
-		$post_type = TEC::POSTTYPE;
-		remove_filter( "tec_tickets_enabled_ticket_forms_{$post_type}", [
-			$this,
-			'disable_tickets_on_recurring_events'
 		] );
 
 		// Restore the warning about Tickets added to a Recurring Event.
@@ -255,10 +250,22 @@ class Base extends Controller {
 			$this,
 			'filter_attendees_report_context'
 		] );
-		remove_action( 'tribe_tickets_attendees_event_details_list_top', [ $this, 'render_series_details_on_attendee_report' ], 50 );
-		remove_action( 'tribe_tickets_report_event_details_list_top', [ $this, 'render_series_details_on_order_report' ], 50 );
-		remove_filter( 'tec_tickets_commerce_order_report_summary_label_for_type', [ $this, 'filter_series_type_label' ] );
-		remove_filter( 'tec_tickets_commerce_order_report_summary_should_include_event_sales_data', [ $this, 'filter_out_series_type_tickets_from_order_report' ], 10, 4 );
+		remove_action( 'tribe_tickets_attendees_event_details_list_top', [
+			$this,
+			'render_series_details_on_attendee_report'
+		], 50 );
+		remove_action( 'tribe_tickets_report_event_details_list_top', [
+			$this,
+			'render_series_details_on_order_report'
+		], 50 );
+		remove_filter( 'tec_tickets_commerce_order_report_summary_label_for_type', [
+			$this,
+			'filter_series_type_label'
+		] );
+		remove_filter( 'tec_tickets_commerce_order_report_summary_should_include_event_sales_data', [
+			$this,
+			'filter_out_series_type_tickets_from_order_report'
+		], 10, 4 );
 
 		// Restore the upsell notice for ticket types.
 		$ticket_upsell_notices = tribe( Ticket_Upsell::class );
@@ -267,7 +274,10 @@ class Base extends Controller {
 			'render_ticket_type_upsell_notice'
 		], 20, 3 );
 
-		remove_filter( 'tribe_template_pre_html:tickets/admin-views/editor/panel/header-image', [ $this, 'hide_header_image_option_from_ticket_settings' ], 10, 5 );
+		remove_filter( 'tribe_template_pre_html:tickets/admin-views/editor/panel/header-image', [
+			$this,
+			'hide_header_image_option_from_ticket_settings'
+		], 10, 5 );
 
 		// Restore the filter that would prevent Series from being ticketable in CT1.
 		$series_provider = $this->container->get( Series_Provider::class );
@@ -285,8 +295,18 @@ class Base extends Controller {
 		] );
 
 		// Remove the TicketsCommerce Checkout handlers for Series.
-		remove_filter( 'tec_tickets_commerce_shortcode_checkout_page_template_vars', [ $this, 'filter_tc_checkout_template_args' ] );
-		remove_filter( 'tribe_template_pre_html:tickets/v2/commerce/checkout/cart/footer', [ $this, 'hide_non_series_cart_footer_html' ], 10, 5 );
+		remove_filter( 'tec_tickets_commerce_shortcode_checkout_page_template_vars', [
+			$this,
+			'filter_tc_checkout_template_args'
+		] );
+		remove_filter( 'tribe_template_pre_html:tickets/v2/commerce/checkout/cart/footer', [
+			$this,
+			'hide_non_series_cart_footer_html'
+		], 10, 5 );
+		remove_filter( 'tec_events_pro_custom_tables_v1_block_editor_ajax_series_data', [
+			$this,
+			'filter_series_ajax_data'
+		] );
 	}
 
 	/**
@@ -427,7 +447,7 @@ class Base extends Controller {
 			$columns,
 			[
 				'ticket_types' => sprintf(
-					// translators: %s Ticket singular label text.
+				// translators: %s Ticket singular label text.
 					__( 'Attached %s', 'event-tickets' ),
 					tribe_get_ticket_label_plural()
 				),
@@ -450,6 +470,7 @@ class Base extends Controller {
 
 		if ( empty( $tickets ) ) {
 			echo '&mdash;';
+
 			return;
 		}
 
@@ -473,7 +494,7 @@ class Base extends Controller {
 		}
 
 		// Series passes should always be placed at the end.
-		$ordered_by_types[Series_Passes::TICKET_TYPE] = $tickets_by_types[Series_Passes::TICKET_TYPE] ?? [];
+		$ordered_by_types[ Series_Passes::TICKET_TYPE ] = $tickets_by_types[ Series_Passes::TICKET_TYPE ] ?? [];
 
 		$admin_views = new Admin_Views();
 		$admin_views->template( 'ticket-types-column/types', [
@@ -576,10 +597,10 @@ class Base extends Controller {
 	 *
 	 * @since TBD
 	 *
-	 * @param bool              $include Whether to include the event sales data.
-	 * @param Ticket_Object     $ticket  The ticket object.
+	 * @param bool              $include            Whether to include the event sales data.
+	 * @param Ticket_Object     $ticket             The ticket object.
 	 * @param array<string,int> $quantity_by_status The quantity of tickets by status.
-	 * @param Order_Summary     $order_summary The order summary object.
+	 * @param Order_Summary     $order_summary      The order summary object.
 	 *
 	 * @return bool Whether to include the event sales data.
 	 */
@@ -592,11 +613,11 @@ class Base extends Controller {
 	 *
 	 * @since TBD
 	 *
-	 * @param null|string           $html       The initial HTML.
-	 * @param string                $file       Complete path to include the PHP File.
-	 * @param string[]              $name       Template name.
-	 * @param Template              $template   Current instance of the Tribe__Template
-	 * @param array<string,mixed>   $context    The context data passed to the template.
+	 * @param null|string         $html     The initial HTML.
+	 * @param string              $file     Complete path to include the PHP File.
+	 * @param string[]            $name     Template name.
+	 * @param Template            $template Current instance of the Tribe__Template
+	 * @param array<string,mixed> $context  The context data passed to the template.
 	 *
 	 * @return null|bool The filtered HTML, or `false` to hide the option.
 	 */
@@ -613,10 +634,10 @@ class Base extends Controller {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $start_date The start date.
-	 * @param WP_Post $series The series post object.
-	 * @param bool $display_time Whether to display the time.
-	 * @param string $date_format The date format.
+	 * @param string  $start_date   The start date.
+	 * @param WP_Post $series       The series post object.
+	 * @param bool    $display_time Whether to display the time.
+	 * @param string  $date_format  The date format.
 	 *
 	 * @return string The updated start date.
 	 */
@@ -627,7 +648,7 @@ class Base extends Controller {
 
 		$first_event = tribe_events()->where( 'series', $series->ID )
 		                             ->order_by( 'start_date', 'ASC' )
-		                             ->per_page( -1 )
+		                             ->per_page( - 1 )
 		                             ->first();
 		if ( empty( $first_event ) ) {
 			return '';
@@ -641,10 +662,10 @@ class Base extends Controller {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $end_date The end date.
-	 * @param WP_Post $series The series post object.
-	 * @param bool $display_time Whether to display the time.
-	 * @param string $date_format The date format.
+	 * @param string  $end_date     The end date.
+	 * @param WP_Post $series       The series post object.
+	 * @param bool    $display_time Whether to display the time.
+	 * @param string  $date_format  The date format.
 	 *
 	 * @return string The updated end date.
 	 */
@@ -654,9 +675,9 @@ class Base extends Controller {
 		}
 
 		$last_event = tribe_events()->where( 'series', $series->ID )
-		                             ->order_by( 'start_date', 'ASC' )
-		                             ->per_page( -1 )
-		                             ->last();
+		                            ->order_by( 'start_date', 'ASC' )
+		                            ->per_page( - 1 )
+		                            ->last();
 		if ( empty( $last_event ) ) {
 			return '';
 		}
@@ -698,11 +719,11 @@ class Base extends Controller {
 	 *
 	 * @since TBD
 	 *
-	 * @param string               $html        The initial HTML or null.
-	 * @param string               $file        Complete path to include the PHP File.
-	 * @param array<string,string> $name        Template name.
-	 * @param Template             $template    Current instance of the Tribe__Template.
-	 * @param array<string,mixed>  $context     The context data passed to the template.
+	 * @param string               $html     The initial HTML or null.
+	 * @param string               $file     Complete path to include the PHP File.
+	 * @param array<string,string> $name     Template name.
+	 * @param Template             $template Current instance of the Tribe__Template.
+	 * @param array<string,mixed>  $context  The context data passed to the template.
 	 *
 	 * @return string|null The filtered HTML, or `false` to hide the option.
 	 */
@@ -720,5 +741,21 @@ class Base extends Controller {
 		}
 
 		return $html;
+	}
+
+	/**
+	 * Filters the data returned by the AJAX request to fetch the selected Series data.
+	 *
+	 * @since TBD
+	 *
+	 * @param array   $data
+	 * @param WP_Post $series_post
+	 *
+	 * @return array
+	 */
+	public function filter_series_ajax_data( array $data, \WP_Post $series_post ): array {
+		$data['ticket_provider'] = get_post_meta( $series_post->ID, '_tribe_default_ticket_provider', true );
+
+		return $data;
 	}
 }

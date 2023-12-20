@@ -2,8 +2,11 @@ import { onReady } from './utils.js';
 
 // The selectors that will be used to interact with the DOM.
 const recurrenceRowSelector = '.recurrence-row';
-const recurrenceRowSelectorDateTimeBlock =
+const newRecurrenceRowSelector =
 	'.recurrence-row.tribe-datetime-block:not(.tribe-recurrence-exclusion-row)';
+const existingRecurrenceRowSelector =
+	'.recurrence-row.tribe-recurrence-description,' +
+	' .recurrence-row.tribe-recurrence-exclusion-row';
 const recurrenceNotSupportedRowSelector =
 	'.recurrence-row.tec-events-pro-recurrence-not-supported';
 const recurrenceControls = '.recurrence-container';
@@ -13,7 +16,8 @@ const rsvpTicketsSelector = ticketTablesSelector + ' [data-ticket-type="rsvp"]';
 const defaultTicketsSelector =
 	ticketTablesSelector + ' [data-ticket-type="default"]';
 const ticketsMetaboxId = 'tribetickets';
-const ticketWarningSelector = '.tec_ticket-panel__hidden-recurring-warning';
+const ticketWarningSelector =
+	'.tec_ticket-panel__recurring-unsupported-warning';
 const ticketControlsSelector =
 	'#ticket_form_toggle, #rsvp_form_toggle, #settings_form_toggle, .tec_ticket-panel__helper_text__wrap';
 const ticketEditPanelActiveSelector = '#tribe_panel_edit[aria-hidden="false"]';
@@ -84,10 +88,14 @@ function showRecurrenceControls() {
 		});
 	} else {
 		document
-			.querySelectorAll(recurrenceRowSelectorDateTimeBlock)
+			.querySelectorAll(existingRecurrenceRowSelector)
 			.forEach((el) => {
-				el.style.display = '';
+				el.style.display = 'none';
 			});
+
+		document.querySelectorAll(newRecurrenceRowSelector).forEach((el) => {
+			el.style.display = '';
+		});
 	}
 
 	document

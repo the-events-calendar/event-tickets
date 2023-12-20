@@ -166,9 +166,8 @@ function getShowWarning(mappedProps, isSelected) {
  *
  * @param {Object}  mappedProps                    The properties mapped from the state for the TicketsContainer component.
  * @param {boolean} mappedProps.showInactiveBlock  Whether or not to show the inactive block.
- * @param {boolean} mappedProps.showAvailability   Whether or not to show the availability.
  * @param {boolean} mappedProps.hasRecurrenceRules Whether or not the Event has recurrence rules.
- * @param {boolean} ownProps.isSelected            Whether or not the block is selected.
+ * @param {boolean} mappedProps.isSelected         Whether or not the block is selected.
  * @param {boolean} mappedProps.showWarning        Whether or not the Event has a warning to display.
  * @param {Object}  mappedProps.Warning            Warning component to be displayed in case there is one.
  */
@@ -197,7 +196,6 @@ function filterTicketsContainerMappedProps(
 	mappedProps.showInactiveBlock = hasRecurrenceRules
 		? false
 		: mappedProps.showInactiveBlock;
-	mappedProps.showAvailability = true;
 
 	return mappedProps;
 }
