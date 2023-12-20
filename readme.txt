@@ -195,6 +195,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= TBD
+
+* Tweak - Declared dynamic properties in Tribe__Tickets__Main, Tribe__Tickets__Tickets_Handler, Tribe__Tickets__REST__V1__Messages to prevent warnings in php 8.2 [ET-1950]
+
 = [5.7.1] 2023-12-13 =
 
 * Tweak - Prevented Single Attendee endpoint from throwing a notice on PHP 8+. [ET-1935]

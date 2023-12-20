@@ -98,6 +98,11 @@ class Tribe__Tickets__Tickets_Handler {
 	public $unlimited_term = 'Unlimited';
 
 	/**
+	 * @var string
+	 */
+	public $path;
+
+	/**
 	 *    Class constructor.
 	 */
 	public function __construct() {
