@@ -129,7 +129,11 @@ abstract class Status_Abstract implements Status_Interface {
 	 * {@inheritdoc}
 	 */
 	public function can_apply_to( $order, $new_status ) {
-		$order = tec_tc_get_order( $order );
+		$order = tec_tc_get_order( $order, OBJECT, 'raw', true );
+		if ( ! $order instanceof \WP_Post ) {
+			return false;
+		}
+
 		$current_status = tribe( Status_Handler::class )->get_by_wp_slug( $order->post_status );
 
 		if ( $current_status->get_wp_slug() === $new_status->get_wp_slug() ) {
