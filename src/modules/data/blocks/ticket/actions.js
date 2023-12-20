@@ -578,10 +578,11 @@ export const updateTicket = ( clientId ) => ( {
 	},
 } );
 
-export const deleteTicket = ( clientId ) => ( {
+export const deleteTicket = ( clientId, askForDeletion ) => ( {
 	type: types.DELETE_TICKET,
 	payload: {
 		clientId,
+		askForDeletion,
 	},
 } );
 
