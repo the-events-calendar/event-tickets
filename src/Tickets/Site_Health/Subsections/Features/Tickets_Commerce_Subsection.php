@@ -2,16 +2,17 @@
 /**
  * Class that handles interfacing with core Site Health.
  *
- * @since   5.6.0.1
+ * @since   TBD
  *
  * @package TEC\Tickets\Site_Health
  */
 
-namespace TEC\Tickets\Site_Health;
+namespace TEC\Tickets\Site_Health\Subsections\Features;
 
 use TEC\Tickets\Commerce\Gateways\PayPal\Gateway as PayPal_Gateway;
 use TEC\Tickets\Commerce\Gateways\Stripe\Gateway as Stripe_Gateway;
 use TEC\Tickets\Commerce\Repositories\Tickets_Repository;
+use TEC\Tickets\Site_Health\Abstract_Info_Subsection;
 
 /**
  * Class Tickets_Commerce_Subsection
@@ -47,49 +48,73 @@ class Tickets_Commerce_Subsection extends Abstract_Info_Subsection {
 			],
 			[
 				'id'       => 'tickets_commerce_test_mode',
-				'title'    => 'Tickets Commerce Test Mode',
+				'title'    => esc_html__(
+					'Tickets Commerce Test Mode',
+					'event-tickets'
+				),
 				'value'    => $this->is_tickets_commerce_test_mode(),
 				'priority' => 260,
 			],
 			[
 				'id'       => 'tickets_commerce_stripe_connected',
-				'title'    => 'Tickets Commerce Stripe Connected',
+				'title'    => esc_html__(
+					'Tickets Commerce Stripe Connected',
+					'event-tickets'
+				),
 				'value'    => $this->is_tickets_commerce_stripe_connected(),
 				'priority' => 270,
 			],
 			[
 				'id'       => 'tickets_commerce_paypal_connected',
-				'title'    => 'Tickets Commerce PayPal Connected',
+				'title'    => esc_html__(
+					'Tickets Commerce PayPal Connected',
+					'event-tickets'
+				),
 				'value'    => $this->is_tickets_commerce_paypal_connected(),
 				'priority' => 280,
 			],
 			[
 				'id'       => 'tickets_commerce_currency_code',
-				'title'    => 'Tickets Commerce Currency Code',
+				'title'    => esc_html__(
+					'Tickets Commerce Currency Code',
+					'event-tickets'
+				),
 				'value'    => $this->get_tickets_commerce_currency_code(),
 				'priority' => 290,
 			],
 			[
 				'id'       => 'tickets_commerce_currency_position',
-				'title'    => 'Tickets Commerce Currency Position',
+				'title'    => esc_html__(
+					'Tickets Commerce Currency Position',
+					'event-tickets'
+				),
 				'value'    => $this->get_tickets_commerce_currency_position(),
 				'priority' => 300,
 			],
 			[
 				'id'       => 'tickets_commerce_decimal_separator',
-				'title'    => 'Tickets Commerce Decimal Separator',
+				'title'    => esc_html__(
+					'Tickets Commerce Decimal Separator',
+					'event-tickets'
+				),
 				'value'    => $this->get_tickets_commerce_decimal_separator(),
 				'priority' => 310,
 			],
 			[
 				'id'       => 'tickets_commerce_thousands_separator',
-				'title'    => 'Tickets Commerce Thousands Separator',
+				'title'    => esc_html__(
+					'Tickets Commerce Thousands Separator',
+					'event-tickets'
+				),
 				'value'    => $this->get_tickets_commerce_thousands_separator(),
 				'priority' => 320,
 			],
 			[
 				'id'       => 'tickets_commerce_number_of_decimals',
-				'title'    => 'Tickets Commerce Number of Decimals',
+				'title'    => esc_html__(
+					'Tickets Commerce Number of Decimals',
+					'event-tickets'
+				),
 				'value'    => $this->get_tickets_commerce_number_of_decimals(),
 				'priority' => 330,
 			],
@@ -99,9 +124,9 @@ class Tickets_Commerce_Subsection extends Abstract_Info_Subsection {
 	/**
 	 * Calculates the average order total for tickets commerce.
 	 *
-	 * @return int Formatted average price.
+	 * @return string Formatted average price.
 	 * */
-	private function get_tickets_commerce_average_order_total(): int {
+	private function get_tickets_commerce_average_order_total(): string {
 		// @todo redscar This logic may be incorrect.
 		$tickets_commerce_ticket_prices = tribe( Tickets_Repository::class )->per_page( -1 )->pluck( 'price' );
 		$total                          = 0;
@@ -154,6 +179,7 @@ class Tickets_Commerce_Subsection extends Abstract_Info_Subsection {
 	 * @return string 'True' if Tickets Commerce is in test mode, 'False' otherwise.
 	 */
 	private function is_tickets_commerce_test_mode(): string {
+		// @todo redscar Need to add translation.
 		return tribe_get_option(
 			'tickets-commerce-test-mode',
 			false

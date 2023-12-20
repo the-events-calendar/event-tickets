@@ -2,14 +2,15 @@
 /**
  * Class that handles interfacing with core Site Health.
  *
- * @since   5.6.0.1
+ * @since   TBD
  *
  * @package TEC\Tickets\Site_Health
  */
 
-namespace TEC\Tickets\Site_Health;
+namespace TEC\Tickets\Site_Health\Subsections\Plugins;
 
 use TEC\Tickets\QR\Settings as QR_Settings;
+use TEC\Tickets\Site_Health\Abstract_Info_Subsection;
 use Tribe\Tickets\Plus\Attendee_Registration\IAC;
 
 /**
@@ -37,13 +38,19 @@ class Event_Tickets_Plus_Subsection extends Abstract_Info_Subsection {
 		return [
 			[
 				'id'       => 'qr_codes_enabled',
-				'title'    => 'QR Codes Enabled',
+				'title'    => esc_html__(
+					'QR Codes Enabled',
+					'event-tickets'
+				),
 				'value'    => $this->are_qr_codes_enabled(),
 				'priority' => 340,
 			],
 			[
 				'id'       => 'iac_default_option',
-				'title'    => 'IAC Default Option',
+				'title'    => esc_html__(
+					'IAC Default Option',
+					'event-tickets'
+				),
 				'value'    => $this->get_iac_default_option(),
 				'priority' => 350,
 			],

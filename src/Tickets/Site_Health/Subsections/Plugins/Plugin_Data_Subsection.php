@@ -2,16 +2,16 @@
 /**
  * Class that handles interfacing with core Site Health.
  *
- * @since   5.6.0.1
+ * @since   TBD
  *
  * @package TEC\Tickets\Site_Health
  */
 
-namespace TEC\Tickets\Site_Health;
+namespace TEC\Tickets\Site_Health\Subsections\Plugins;
 
-use Tribe__Utils__Array as Arr;
-use TEC\Tickets\QR\Settings as QR_Settings;
+use TEC\Tickets\Site_Health\Abstract_Info_Subsection;
 use Tribe__Tickets__Query;
+use Tribe__Utils__Array as Arr;
 
 /**
  * Class Plugin_Data_Subsection
@@ -131,15 +131,6 @@ class Plugin_Data_Subsection extends Abstract_Info_Subsection {
 				),
 				'value'    => $this->get_number_of_attendees(),
 				'priority' => 130,
-			],
-			[
-				'id'       => 'average_number_of_attendees_per_event',
-				'title'    => esc_html__(
-					'Average Number of Attendees per Event',
-					'event-tickets'
-				),
-				'value'    => $this->get_average_attendees_per_event(),
-				'priority' => 140,
 			],
 			[
 				'id'       => 'average_ticket_price',
@@ -403,23 +394,6 @@ class Plugin_Data_Subsection extends Abstract_Info_Subsection {
 	 */
 	private function get_number_of_attendees(): int {
 		return tribe( 'tickets.attendee-repository' )->count();
-	}
-
-	/**
-	 * Calculates the average number of attendees per event.
-	 *
-	 * @return int Average number of attendees per event.
-	 */
-	private function get_average_attendees_per_event(): int {
-		$attendee_count = (int) tribe( 'tickets.attendee-repository' )->count();
-		// @todo redscar Is this the proper place to get the ticketed amount? Should it be from another spot if TEC isn't enabled?
-		$ticketed_event_count = (int) tribe( 'tickets.event-repository' )->per_page( -1 )->where(
-			'has_tickets'
-		)->count();
-		// @todo redscar Will need to add in logic for dividing by 0.
-		$average_attendees_per_event = floor( $attendee_count / $ticketed_event_count );
-
-		return $average_attendees_per_event;
 	}
 
 	/**

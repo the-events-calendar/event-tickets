@@ -9,8 +9,12 @@
 
 namespace TEC\Tickets\Site_Health;
 
-use TEC\Common\Site_Health\Info_Section_Abstract;
 use TEC\Common\Site_Health\Factory;
+use TEC\Common\Site_Health\Info_Section_Abstract;
+use TEC\Tickets\Site_Health\Subsections\Features\Tickets_Commerce_Subsection;
+use TEC\Tickets\Site_Health\Subsections\Plugins\Event_Tickets_Plus_Subsection;
+use TEC\Tickets\Site_Health\Subsections\Plugins\Plugin_Data_Subsection;
+use TEC\Tickets\Site_Health\Subsections\Plugins\The_Events_Calendar_Subsection;
 
 /**
  * Class Site_Health
@@ -85,25 +89,18 @@ class Info_Section extends Info_Section_Abstract {
 	 * @since 5.6.0.1
 	 */
 	public function add_fields(): void {
-		$fields = [];
+		$subsections = [
+			tribe( Plugin_Data_Subsection::class )->get_subsection(),
+			tribe( The_Events_Calendar_Subsection::class )->get_subsection(),
+			tribe( Tickets_Commerce_Subsection::class )->get_subsection(),
+			tribe( Event_Tickets_Plus_Subsection::class )->get_subsection(),
+		];
 
 		$fields = array_merge(
-			$fields,
-			tribe( Plugin_Data_Subsection::class )->get_subsection()
-		);
-		$fields = array_merge(
-			$fields,
-			tribe( The_Events_Calendar_Subsection::class )->get_subsection()
-		);
-		$fields = array_merge(
-			$fields,
-			tribe( Tickets_Commerce_Subsection::class )->get_subsection()
-		);
-		$fields = array_merge(
-			$fields,
-			tribe( Event_Tickets_Plus_Subsection::class )->get_subsection()
+			...$subsections
 		);
 
+		// Add each field to the section.
 		foreach ( $fields as $field ) {
 			$this->add_field(
 				Factory::generate_generic_field(

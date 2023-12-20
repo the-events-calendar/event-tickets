@@ -10,8 +10,12 @@
 namespace TEC\Tickets\Site_Health;
 
 use TEC\Common\Contracts\Service_Provider;
+use TEC\Tickets\Site_Health\Subsections\Features\Tickets_Commerce_Subsection;
+use TEC\Tickets\Site_Health\Subsections\Plugins\Event_Tickets_Plus_Subsection;
+use TEC\Tickets\Site_Health\Subsections\Plugins\Plugin_Data_Subsection;
+use TEC\Tickets\Site_Health\Subsections\Plugins\The_Events_Calendar_Subsection;
 
- /**
+/**
   * Class Provider
   *
   * @since   5.6.0.1
@@ -37,6 +41,14 @@ class Provider extends Service_Provider {
 	 * @return void
 	 */
 	public function register() {
+		// Plugin subsection.
+		$this->container->singleton( Event_Tickets_Plus_Subsection::class );
+		$this->container->singleton( The_Events_Calendar_Subsection::class );
+		$this->container->singleton( Plugin_Data_Subsection::class );
+
+		// Feature subsection.
+		$this->container->singleton( Tickets_Commerce_Subsection::class );
+
 		$this->slug = Info_Section::get_slug();
 		$this->add_actions();
 		$this->add_filters();
