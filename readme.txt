@@ -198,6 +198,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = TBD
 
 * Fix - Ticket is removed now when using the delete option from the block editor. [ET-1879]
+* Tweak - Declared dynamic properties in Tribe__Tickets__Main, Tribe__Tickets__Tickets_Handler, Tribe__Tickets__REST__V1__Messages to prevent warnings in php 8.2 [ET-1950]
 
 = [5.7.1] 2023-12-13 =
 
