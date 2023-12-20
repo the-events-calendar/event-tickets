@@ -369,7 +369,7 @@ class BaseTicketEditorCest extends BaseRestCest {
 				'values'            => [
 					(string) $price,
 				],
-				'suffix'            => null,
+				'suffix'            => '',
 				'currency_decimal_separator'  => '.',
 				'currency_decimal_numbers'    => 2,
 				'currency_thousand_separator' => ',',
@@ -384,7 +384,7 @@ class BaseTicketEditorCest extends BaseRestCest {
 				'checked_in_percentage'   => 100,
 				'unchecked_in_percentage' => 0,
 			],
-			'price_suffix'                  => null,
+			'price_suffix'                  => '',
 			'iac'                           => 'none',
 			'type'                          => 'default',
 		];
@@ -496,7 +496,7 @@ class BaseTicketEditorCest extends BaseRestCest {
 				'values'            => [
 					(string) $price,
 				],
-				'suffix'            => null,
+				'suffix'            => '',
 				'currency_decimal_separator'  => '.',
 				'currency_decimal_numbers'    => 2,
 				'currency_thousand_separator' => ',',
@@ -521,7 +521,7 @@ class BaseTicketEditorCest extends BaseRestCest {
 				'sold'    => 0,
 				'pending' => 0,
 			],
-			'price_suffix'                  => null,
+			'price_suffix'                  => '',
 			'iac'                           => 'none',
 			'type'                          => 'default',
 		];
@@ -693,7 +693,7 @@ class BaseTicketEditorCest extends BaseRestCest {
 				'unchecked_in_percentage' => 0,
 			],
 			'rest_url'                      => $ticket_update_rest_url,
-			'price_suffix'                  => null,
+			'price_suffix'                  => '',
 			'iac'                           => 'none',
 			'type'                          => 'default',
 		];
