@@ -48,7 +48,8 @@
 				(90 available)			</span>
 		</div>
 	</div>
-	</div>			<div class="welcome-panel-column welcome-panel-last alternate">
+	</div>
+			<div class="welcome-panel-column welcome-panel-last alternate">
 	<h3>Attendance Overview</h3>
 		<div class="tec-tickets__admin-attendees-attendance-type-list">
 		<div class="tec-tickets__admin-attendees-attendance-type">
