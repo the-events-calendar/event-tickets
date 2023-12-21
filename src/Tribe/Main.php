@@ -77,11 +77,11 @@ class Tribe__Tickets__Main {
 	public $plugin_slug;
 
 	/**
-     * The Plugin Register instance.
-     *
+	 * The Plugin Register instance.
+	 *
 	 * @var Tribe__Tickets__Plugin_Register
 	 */
-    public $registered;
+	public $registered;
 
 	/**
 	 * @var Tribe__Tickets__Legacy_Provider_Support
