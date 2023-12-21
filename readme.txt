@@ -195,6 +195,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Fix - Correct the counting logic for the total available number of tickets on the Attendees page. [GTRIA-1126]
+
 = [5.7.1] 2023-12-13 =
 
 * Tweak - Prevented Single Attendee endpoint from throwing a notice on PHP 8+. [ET-1935]
