@@ -7,6 +7,8 @@ use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Merchant;
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Webhooks;
 use TEC\Tickets\Commerce\Gateways\Stripe\REST\Webhook_Endpoint;
 
+use Tribe__Settings_Manager as Settings_Manager;
+
 /**
  * Class Webhooks
  *
@@ -67,6 +69,55 @@ class Webhooks extends Abstract_Webhooks {
 	}
 
 	/**
+	 * Attempts to get the database option for the valid key from Stripe
+	 * This function was introduced to enable a cache-free polling of the database for the Valid Key, it will include a
+	 * filter to the WordPress All Options and remove the WordPress request cache for the option we are looking at.
+	 *
+	 * This will also check every half a second instead of a flat time. Allowing us in the future to chance how much we
+	 * are waiting without much work.
+	 *
+	 * @since 5.7.1 Modified from a simple `sleep(10)` it speeds the process by increasing the amount of times it checks the database.
+	 *
+	 * @param int $max_attempts Number of attempts we will try to poll the database option.
+	 *
+	 * @return string|bool|null
+	 */
+	protected function pool_to_get_valid_key( int $max_attempts = 20 ) {
+		$attempts  = 0;
+		$valid_key = tribe_get_option( static::$option_is_valid_webhooks, false );
+
+		$remove_settings_from_wp_all_options_cache = static function ( $all_options ) {
+			if ( isset( $all_options[ \Tribe__Main::OPTIONNAME ] ) ) {
+				unset( $all_options[ \Tribe__Main::OPTIONNAME ] );
+			}
+
+			return $all_options;
+		};
+
+		add_filter( 'alloptions', $remove_settings_from_wp_all_options_cache, 15 );
+		while (
+			(
+				empty( $valid_key )
+				|| ! is_string( $valid_key )
+			)
+			&& $attempts < $max_attempts
+		) {
+			usleep( 500000 ); // Wait half a second.
+
+			// Resets the cache since we will want to attempt again.
+			tribe_set_var( Settings_Manager::OPTION_CACHE_VAR_NAME, [] );
+			wp_cache_delete( \Tribe__Main::OPTIONNAME, 'options' );
+
+			$valid_key = tribe_get_option( static::$option_is_valid_webhooks, false );
+
+			$attempts ++;
+		}
+		remove_filter( 'alloptions', $remove_settings_from_wp_all_options_cache, 15 );
+
+		return $valid_key;
+	}
+
+	/**
 	 * Testing if given Signing Key is valid on an AJAX request.
 	 *
 	 * @since 5.3.0
@@ -78,17 +129,40 @@ class Webhooks extends Abstract_Webhooks {
 		$status = esc_html__( 'Webhooks not validated yet.', 'event-tickets' );
 
 		if ( ! wp_verify_nonce( $nonce, static::$nonce_key_handle_validation ) ) {
-			wp_send_json_error( [ 'updated' => false, 'status' => $status ] );
+			wp_send_json_error(
+				[
+					'updated' => false,
+					'status'  => $status,
+				]
+			);
 			exit;
 		}
 
-		$signing_key    = tribe_get_request_var( 'signing_key' );
+		$signing_key    = trim( tribe_get_request_var( 'signing_key' ) );
 		$stored_key     = tribe_get_option( static::$option_webhooks_signing_key, false );
 		$current_status = tribe_get_option( static::$option_is_valid_webhooks, false );
 
+		if ( empty( $signing_key ) ) {
+			$status = esc_html__( 'Signing Secret cannot be empty.', 'event-tickets' );
+			wp_send_json_success(
+				[
+					'is_valid_webhook' => false,
+					'updated'          => false,
+					'status'           => $status,
+				]
+			);
+			exit;
+		}
+
 		if ( $signing_key === $stored_key && $current_status === md5( $signing_key ) ) {
 			$status = esc_html__( 'Webhooks were properly validated for sales.', 'event-tickets' );
-			wp_send_json_success( [ 'is_valid_webhook' => true, 'updated' => false, 'status' => $status ] );
+			wp_send_json_success(
+				[
+					'is_valid_webhook' => true,
+					'updated'          => false,
+					'status'           => $status,
+				]
+			);
 			exit;
 		}
 
@@ -96,7 +170,13 @@ class Webhooks extends Abstract_Webhooks {
 		if ( $signing_key === $stored_key && true === $current_status ) {
 			$status = esc_html__( 'Webhooks were properly validated for sales.', 'event-tickets' );
 			tribe_update_option( Webhooks::$option_is_valid_webhooks, md5( tribe_get_option( Webhooks::$option_webhooks_signing_key ) ) );
-			wp_send_json_success( [ 'is_valid_webhook' => true, 'updated' => false, 'status' => $status ] );
+			wp_send_json_success(
+				[
+					'is_valid_webhook' => true,
+					'updated'          => false,
+					'status'           => $status,
+				]
+			);
 			exit;
 		}
 
@@ -111,25 +191,36 @@ class Webhooks extends Abstract_Webhooks {
 			// payment creation failed
 			$status = esc_html__( 'Could not connect to Stripe for validation. Please check your connection configuration.', 'event-tickets' );
 			tribe_update_option( static::$option_webhooks_signing_key, $stored_key );
-			wp_send_json_success( [ 'is_valid_webhook' => false, 'updated' => false, 'status' => $status ] );
+			wp_send_json_success(
+				[
+					'is_valid_webhook' => false,
+					'updated'          => false,
+					'status'           => $status,
+				]
+			);
 			exit;
 		}
 
-		// Give it some time so Stripe talks back to the site.
-		sleep(10);
-
-		$valid_key = tribe_get_option( static::$option_is_valid_webhooks, false );
+		/**
+		 * Allows changing the amount of attempts Stripe will check for the validated key on our database
+		 *
+		 * @since 5.7.1
+		 *
+		 * @param int $max_attempts How many attempts, each one takes half a second. Defaults to 20, total of 10 seconds of polling.
+		 */
+		$max_attempts = (int) apply_filters( 'tec_tickets_commerce_gateway_stripe_webhook_valid_key_polling_attempts', 20 );
+		$valid_key    = $this->pool_to_get_valid_key( $max_attempts );
 
 		if ( false === $valid_key ) {
-			$status = esc_html__( 'We have not received any Stripe events yet. Please wait a few seconds and refresh the page.', 'event-tickets' );
+			$status   = esc_html__( 'We have not received any Stripe events yet. Please wait a few seconds and refresh the page.', 'event-tickets' );
 			$is_valid = false;
 		} elseif ( $valid_key === md5( $signing_key ) ) {
-			$status = esc_html__( 'Webhooks were properly validated for sales.', 'event-tickets' );
+			$status   = esc_html__( 'Webhooks were properly validated for sales.', 'event-tickets' );
 			$is_valid = true;
 		} else {
-			$status = esc_html__( 'This key has not been used in the latest events received. If you are setting up a new key, this status will be properly updated as soon as a new event is received.', 'event-tickets' );
+			$status   = esc_html__( 'This key has not been used in the latest events received. If you are setting up a new key, this status will be properly updated as soon as a new event is received.', 'event-tickets' );
 			$is_valid = false;
-			$updated = true;
+			$updated  = true;
 		}
 
 		wp_send_json_success( [ 'is_valid_webhook' => $is_valid, 'updated' => $updated, 'status' => $status ] );

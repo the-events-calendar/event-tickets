@@ -1,16 +1,15 @@
 <?php
 /**
- * Generic: Success Order Page Attendee list - Attendee template
+ * Generic: Success Order Page Attendee list - Attendee name template
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/components/attendees-list/attendees/attendee.php
+ * [your-theme]/tribe/tickets/components/attendees-list/attendees/attendee/name.php
  *
  * See more documentation about our views templating system.
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   5.7.1 - Add attendee name and ticket details templates.
- * @since   5.7.0
+ * @since 5.7.1
  *
  * @version 5.7.1
  *
@@ -24,12 +23,11 @@
  * @var array            $attendee              The current attendee.
  */
 
-if ( empty( $order ) || empty( $attendee ) ) {
+if ( empty( $attendee ) || empty( $attendee['holder_name'] ) ) {
 	return;
 }
 
 ?>
-<div class="tec-tickets__attendees-list-item-attendee-details tribe-common-b1">
-	<?php $this->template( 'components/attendees-list/attendees/attendee/name' ); ?>
-	<?php $this->template( 'components/attendees-list/attendees/attendee/ticket' ); ?>
+<div class="tec-tickets__attendees-list-item-attendee-details-name tribe-common-b1--bold">
+	<?php echo esc_html( $attendee['holder_name'] ); ?>
 </div>
