@@ -9,6 +9,13 @@ class Tribe__Tickets__REST__V1__Messages implements Tribe__REST__Messages_Interf
 	protected $message_prefix = 'rest-v1:';
 
 	/**
+	 * The list of messages.
+	 *
+	 * @var array<string,string>
+	 */
+	public array $messages = [];
+
+	/**
 	 * Tribe__Tickets__REST__V1__Messages constructor.
 	 *
 	 * @since 4.7.5
