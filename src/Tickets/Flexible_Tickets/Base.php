@@ -773,9 +773,9 @@ class Base extends Controller {
 	 */
 	public function skip_rendering_series_title_on_my_tickets_page(): void {
 		$is_ticket_edit_page = (bool) get_query_var( 'tribe-edit-orders', false );
-		$set_event_display   = 'tickets' !== get_query_var( 'eventDisplay', false );
+		$displaying_tickets  = 'tickets' === get_query_var( 'eventDisplay', false );
 
-		if ( ! $is_ticket_edit_page && ! $set_event_display ) {
+		if ( ! $is_ticket_edit_page && ! $displaying_tickets ) {
 			return;
 		}
 
