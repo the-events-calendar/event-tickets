@@ -13,6 +13,7 @@ use TEC\Common\Contracts\Container;
 use TEC\Common\Contracts\Provider\Controller;
 use TEC\Events\Custom_Tables\V1\Models\Occurrence;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
+use TEC\Events_Pro\Custom_Tables\V1\Templates\Provider as CT_Templates_Provider;
 use TEC\Tickets\Admin\Editor_Data;
 use TEC\Tickets\Commerce\Reports\Data\Order_Summary;
 use TEC\Tickets\Flexible_Tickets\Repositories\Event_Repository;
@@ -193,6 +194,8 @@ class Base extends Controller {
 			$this,
 			'filter_series_ajax_data'
 		], 10, 2 );
+
+		add_action( 'template_redirect', [ $this, 'skip_rendering_series_title_on_my_tickets_page' ] );
 	}
 
 	/**
@@ -307,6 +310,8 @@ class Base extends Controller {
 			$this,
 			'filter_series_ajax_data'
 		] );
+
+		remove_action( 'template_redirect', [ $this, 'skip_rendering_series_title_on_my_tickets_page' ] );
 	}
 
 	/**
@@ -748,14 +753,32 @@ class Base extends Controller {
 	 *
 	 * @since TBD
 	 *
-	 * @param array   $data
-	 * @param WP_Post $series_post
+	 * @param array   $data        The data to be returned.
+	 * @param WP_Post $series_post The Series post object.
 	 *
 	 * @return array
 	 */
-	public function filter_series_ajax_data( array $data, \WP_Post $series_post ): array {
+	public function filter_series_ajax_data( array $data, WP_Post $series_post ): array {
 		$data['ticket_provider'] = get_post_meta( $series_post->ID, '_tribe_default_ticket_provider', true );
 
 		return $data;
+	}
+
+	/**
+	 * Skips rendering the series title on the My Tickets page.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function skip_rendering_series_title_on_my_tickets_page(): void {
+		$is_ticket_edit_page = (bool) get_query_var( 'tribe-edit-orders', false );
+		$set_event_display   = 'tickets' !== get_query_var( 'eventDisplay', false );
+
+		if ( ! $is_ticket_edit_page && ! $set_event_display ) {
+			return;
+		}
+
+		remove_filter( 'tribe_the_notices', [ tribe( CT_Templates_Provider::class ), 'add_single_series_text_marker' ], 15, 2 );
 	}
 }
