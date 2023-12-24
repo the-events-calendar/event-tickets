@@ -196,7 +196,6 @@ class Base extends Controller {
 		], 10, 2 );
 
 		add_action( 'template_redirect', [ $this, 'skip_rendering_series_title_on_my_tickets_page' ] );
-		add_filter( 'tec_tickets_plus_my_tickets_order_list_ticket_type_titles', [ $this, 'include_series_type_label_for_my_tickets' ] );
 	}
 
 	/**
@@ -781,10 +780,5 @@ class Base extends Controller {
 		}
 
 		remove_filter( 'tribe_the_notices', [ tribe( CT_Templates_Provider::class ), 'add_single_series_text_marker' ], 15, 2 );
-	}
-
-	public function include_series_type_label_for_my_tickets( array $labels ): array {
-		 $labels[Series_Passes::TICKET_TYPE] = tec_tickets_get_series_pass_plural_uppercase( 'order list view' );
-		 return $labels;
 	}
 }
