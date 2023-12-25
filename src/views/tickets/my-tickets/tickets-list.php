@@ -16,6 +16,7 @@
  * @var int     $post_id   The current post ID.
  * @var array   $titles    List of ticket type titles.
  */
+
 $attendees_by_ticket_type = [];
 
 foreach ( $attendees as $attendee ) {
@@ -42,6 +43,7 @@ if ( isset( $attendees_by_ticket_type['default'] ) ) {
 						$this->template(
 							'tickets/my-tickets/attendee-label',
 							[
+								// Translators: %d is the attendee number.
 								'attendee_label' => sprintf( esc_html__( 'Attendee %d', 'event-tickets' ), $i + 1 ),
 							]
 						);
@@ -89,4 +91,3 @@ if ( isset( $attendees_by_ticket_type['default'] ) ) {
 		?>
 	</div>
 <?php endforeach; ?>
-
