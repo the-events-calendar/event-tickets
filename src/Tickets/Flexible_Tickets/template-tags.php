@@ -166,3 +166,57 @@ if ( ! function_exists( 'tec_tickets_get_default_ticket_type_label_lowercase' ) 
 		);
 	}
 }
+
+if ( ! function_exists( 'tec_tickets_get_default_ticket_type_label_plural' ) ) {
+	/**
+	 * Returns the filtered default Ticket Type label in plural.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.
+	 *
+	 * @return string The plural version of default ticket type label.
+	 */
+	function tec_tickets_get_default_ticket_type_label_plural( string $context = '' ): string {
+		/**
+		 * Allows customization of the default ticket type label plural.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $label   The default ticket type label, defaults to "Single Tickets".
+		 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.
+		 */
+		return apply_filters(
+			'tec_tickets_get_default_ticket_type_label_plural',
+			_x( 'Single Tickets', 'default ticket type label in plural', 'event-tickets' ),
+			$context
+		);
+	}
+}
+
+if ( ! function_exists( 'tec_tickets_get_default_ticket_type_label_plural_lowercase' ) ) {
+	/**
+	 * Returns the filtered default Ticket Type label in plural and lowercase.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.
+	 *
+	 * @return string The plural and lowercase version of default ticket type label.
+	 */
+	function tec_tickets_get_default_ticket_type_label_plural_lowercase( string $context = '' ): string {
+		/**
+		 * Allows customization of the default ticket type label plural and lowercase.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $label   The default ticket type label, defaults to "single tickets".
+		 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.
+		 */
+		return apply_filters(
+			'tec_tickets_get_default_ticket_type_label_plural_lowercase',
+			_x( 'single tickets', 'default ticket type label in plural and lowercase', 'event-tickets' ),
+			$context
+		);
+	}
+}
