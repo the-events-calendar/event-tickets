@@ -196,6 +196,7 @@ class Base extends Controller {
 		], 10, 2 );
 
 		add_action( 'template_redirect', [ $this, 'skip_rendering_series_title_on_my_tickets_page' ] );
+		add_action( 'tribe_template_after_include:tickets/tickets/my-tickets/title', [ $this, 'show_series_link_after_ticket_type_title' ], 10, 3 );
 	}
 
 	/**
@@ -312,6 +313,7 @@ class Base extends Controller {
 		] );
 
 		remove_action( 'template_redirect', [ $this, 'skip_rendering_series_title_on_my_tickets_page' ] );
+		remove_action( 'tribe_template_after_include:tickets/tickets/my-tickets/title', [ $this, 'show_series_link_after_ticket_type_title' ], 10, 3 );
 	}
 
 	/**
@@ -780,5 +782,40 @@ class Base extends Controller {
 		}
 
 		remove_filter( 'tribe_the_notices', [ tribe( CT_Templates_Provider::class ), 'add_single_series_text_marker' ], 15, 2 );
+	}
+
+	/**
+	 * Shows the series link after ticket type title.
+	 *
+	 * @since TBD
+	 *
+	 * @param string        $file     Complete path to include the PHP File.
+	 * @param array<string> $name     Template name.
+	 * @param Template      $template Current instance of the Tribe__Template.
+	 *
+	 * @return void
+	 */
+	public function show_series_link_after_ticket_type_title( string $file, array $name, Template $template ): void {
+		$template_data = $template->get_values();
+
+		if ( ! isset( $template_data['ticket_type'] ) || Series_Passes::TICKET_TYPE !== $template_data['ticket_type'] ) {
+			return;
+		}
+
+		$post_id = get_the_ID();
+		$series  = tec_series()->where( 'event_post_id', $post_id )->first_id();
+
+		if ( $series === null ) {
+			// Not part of a Series, bail.
+			return;
+		}
+
+		$series_link = sprintf(
+			'<a href="%1$s" target="_blank">%2$s</a>',
+			get_post_permalink( $series ),
+			__( 'See all the events in this series.', 'event-tickets' )
+		);
+
+		echo '<span class="tec-tickets__my-tickets-list__series-link">' . $series_link . '</span>';
 	}
 }
