@@ -6,11 +6,14 @@
  *
  * @since 5.6.7
  *
+ * @since TBD Display the ticket type label for each ticket group.
+ *
  * @version 5.6.7
  *
  * @var array   $attendees The attendees for the current order.
  * @var int     $order_id  The ID of the order.
  * @var WP_Post $post      The post object.
+ * @var int     $post_id   The current post ID.
  * @var array   $titles    List of ticket type titles.
  */
 $attendees_by_ticket_type = [];
@@ -24,10 +27,10 @@ if ( isset( $attendees_by_ticket_type['default'] ) ) {
 	$attendees_by_ticket_type = array_merge( [ 'default' => $attendees_by_ticket_type['default'] ], $attendees_by_ticket_type );
 }
 ?>
-<?php foreach ( $attendees_by_ticket_type as $type => $attendees ): ?>
+<?php foreach ( $attendees_by_ticket_type as $ticket_type => $attendees ) : ?>
 	<?php
-	$title = $titles[ $type ] ?? $titles['default'] ?? tec_tickets_get_default_ticket_type_label_lowercase( 'order list view' );
-	$this->template( 'tickets/my-tickets/title', [ 'title' => $title ] );
+	$label = $titles[ $ticket_type ] ?? $titles['default'] ?? tec_tickets_get_default_ticket_type_label_lowercase( 'order list view' );
+	$this->template( 'tickets/my-tickets/title', [ 'title' => $label ] );
 	?>
 	<div class="tec__tickets-my-tickets-order-tickets-list-wrapper">
 		<ul class="tribe-tickets-list tribe-list">
@@ -36,13 +39,21 @@ if ( isset( $attendees_by_ticket_type['default'] ) ) {
 				<li class="tribe-item" id="ticket-<?php echo esc_attr( $order_id ); ?>">
 					<input type="hidden" name="attendee[<?php echo esc_attr( $order_id ); ?>][attendees][]" value="<?php echo esc_attr( $attendee['attendee_id'] ); ?>">
 					<?php
-						$this->template( 'tickets/my-tickets/attendee-label', [
-							'attendee_label' => sprintf( esc_html__( 'Attendee %d', 'event-tickets' ), $i + 1 )
-						] );
+						$this->template(
+							'tickets/my-tickets/attendee-label',
+							[
+								'attendee_label' => sprintf( esc_html__( 'Attendee %d', 'event-tickets' ), $i + 1 ),
+							]
+						);
 					?>
-					<?php $this->template( 'tickets/my-tickets/ticket-information', [
-						'attendee' => $attendee,
-					] ); ?>
+					<?php
+					$this->template(
+						'tickets/my-tickets/ticket-information',
+						[
+							'attendee' => $attendee,
+						]
+					);
+					?>
 					<?php
 					/**
 					 * Inject content into a Ticket's attendee block on the Tickets orders page.
