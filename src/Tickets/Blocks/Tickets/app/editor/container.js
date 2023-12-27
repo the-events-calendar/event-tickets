@@ -25,6 +25,7 @@ const mapStateToProps = (state, ownProps) => {
 	let mappedProps = {
 		Warning: null,
 		canCreateTickets: selectors.canCreateTickets(),
+		hasRecurrenceRules: hasRecurrenceRules(state),
 		isSettingsOpen: selectors.getTicketsIsSettingsOpen(state),
 		noTicketsOnRecurring: noTicketsOnRecurring(),
 

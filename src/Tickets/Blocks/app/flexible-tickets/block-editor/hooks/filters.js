@@ -212,14 +212,16 @@ addFilter(
  *
  * @since TBD
  *
- * @param {Object}  mappedProps                   The properties mapped from the state for the TicketsDashboardAction component.
- * @param {boolean} mappedProps.showWarning       Whether or not to show the warning.
- * @param {boolean} mappedProps.disableSettings   Whether or not to disable the settings.
- * @param {boolean} mappedProps.hasCreatedTickets Whether or not the user has created tickets.
- * @param {boolean} mappedProps.hasOrdersPage     Whether or not the user has an Orders page.
- * @param {boolean} mappedProps.showConfirm       Whether or not to show the confirmation button.
- * @param {Object}  context                       The context of the filter.
- * @param {Object}  context.isRecurring           Whether or not the Event is currently recurring.
+ * @param {Object}  mappedProps                         The properties mapped from the state for the
+ *                                                      TicketsDashboardAction component.
+ * @param {boolean} mappedProps.showWarning             Whether or not to show the warning.
+ * @param {boolean} mappedProps.disableSettings         Whether or not to disable the settings.
+ * @param {boolean} mappedProps.hasCreatedTickets       Whether or not the user has created tickets.
+ * @param {boolean} mappedProps.hasOrdersPage           Whether or not the user has an Orders page.
+ * @param {boolean} mappedProps.showConfirm             Whether or not to show the confirmation button.
+ * @param {boolean} mappedProps.showNotSupportedMessage Whether or not to show the not supported message.
+ * @param {Object}  context                             The context of the filter.
+ * @param {Object}  context.isRecurring                 Whether or not the Event is currently recurring.
  *
  * @return {Object} The modified properties mapped from the state for the TicketsDashboardAction component.
  */
@@ -227,18 +229,22 @@ function filterTicketsDashboardActionsMappedProps(
 	mappedProps,
 	{ isRecurring }
 ) {
+	// These properties will always apply, whether or not the Event is part of a Series.
+	mappedProps.showWarning = isRecurring;
+	mappedProps.disableSettings = true;
+	mappedProps.showConfirm = !isRecurring;
+
 	const isInSeries = ftStore.isInSeries();
 
 	if (!isInSeries) {
+		// If the Event is not part of a Series and is recurring, it's saving: show the warning.
+		mappedProps.showNotSupportedMessage = isRecurring;
 		return mappedProps;
 	}
 
-	mappedProps.showWarning = isRecurring;
-	mappedProps.disableSettings = true;
 	const hasSeriesPasses = ftStore.hasSeriesPasses();
 	mappedProps.hasCreatedTickets = hasSeriesPasses;
 	mappedProps.hasOrdersPage = hasSeriesPasses;
-	mappedProps.showConfirm = !isRecurring;
 
 	return mappedProps;
 }
