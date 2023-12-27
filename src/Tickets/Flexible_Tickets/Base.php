@@ -754,7 +754,7 @@ class Base extends Controller {
 	 * @return array
 	 */
 	public function filter_series_ajax_data( array $data, \WP_Post $series_post ): array {
-		$data['ticket_provider'] = get_post_meta( $series_post->ID, '_tribe_default_ticket_provider', true );
+		$data['ticket_provider'] = Tickets::get_event_ticket_provider( $series_post->ID );
 
 		return $data;
 	}
