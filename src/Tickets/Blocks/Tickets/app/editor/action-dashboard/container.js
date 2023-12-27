@@ -23,13 +23,13 @@ const mapStateToProps = (state, ownProps) => {
 	const provider = selectors.getTicketsProvider(state);
 	const page = constants.TICKET_ORDERS_PAGE_SLUG[provider];
 	const isRecurring = hasRecurrenceRules(state);
-	const selectedBlock = select( 'core/editor' ).getSelectedBlock();
+	const selectedBlock = select('core/editor').getSelectedBlock();
+	const isBlockSelected = selectedBlock?.name === 'tribe/tickets';
 
 	let mappedProps = {
 		hasCreatedTickets: selectors.hasCreatedTickets(state),
 		hasOrdersPage: Boolean(page),
-		isBlockSelected: selectedBlock?.name === 'tribe/tickets',
-		showWarning: isRecurring,
+		showNotSupportedMessage: isRecurring && isBlockSelected,
 		showConfirm: true,
 		disableSettings: false,
 		onConfirmClick: () => {
