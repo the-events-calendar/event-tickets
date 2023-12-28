@@ -15,7 +15,7 @@ import { renderToString } from '@wordpress/element';
  */
 import { Notice } from '@moderntribe/tickets/elements';
 
-const PromptInfo = ({ seriesPassLink, seriesName }) => {
+const SeriesPassNotice = ({ seriesPassLink, seriesName }) => {
 	return (
 		<div>
 			<Notice
@@ -48,9 +48,9 @@ const PromptInfo = ({ seriesPassLink, seriesName }) => {
 	);
 };
 
-PromptInfo.propTypes = {
+SeriesPassNotice.propTypes = {
 	seriesPassLink: PropTypes.string,
 	seriesName: PropTypes.string,
 };
 
-export default PromptInfo;
+export default SeriesPassNotice;

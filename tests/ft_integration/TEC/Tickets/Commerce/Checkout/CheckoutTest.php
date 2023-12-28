@@ -57,7 +57,7 @@ class CheckoutTest extends WPTestCase {
 						'title'      => 'Event 1',
 						'start_date' => '2222-02-10 17:30:00',
 						'duration'   => 5 * HOUR_IN_SECONDS,
-					] 
+					]
 				)->create()->ID;
 
 				$ticket_id = $this->create_tc_ticket( $event_id, 10 );
@@ -79,7 +79,7 @@ class CheckoutTest extends WPTestCase {
 						'title'      => 'Event 1',
 						'start_date' => '2222-02-10 17:30:00',
 						'duration'   => 5 * HOUR_IN_SECONDS,
-					] 
+					]
 				)->create()->ID;
 
 				$ticket_id_a = $this->create_tc_ticket( $event_id, 10 );
@@ -102,7 +102,7 @@ class CheckoutTest extends WPTestCase {
 					[
 						'post_type'  => Series_Post_Type::POSTTYPE,
 						'post_title' => 'Test series',
-					] 
+					]
 				);
 
 				$event_id = tribe_events()->set_args(
@@ -112,7 +112,7 @@ class CheckoutTest extends WPTestCase {
 						'start_date' => '2021-01-01 10:00:00',
 						'end_date'   => '2021-01-01 12:00:00',
 						'series'     => $series_id,
-					] 
+					]
 				)->create()->ID;
 
 				$ticket_id      = $this->create_tc_ticket( $event_id, 10 );
@@ -135,7 +135,7 @@ class CheckoutTest extends WPTestCase {
 					[
 						'post_type'  => Series_Post_Type::POSTTYPE,
 						'post_title' => 'Test series',
-					] 
+					]
 				);
 
 				$event_id = tribe_events()->set_args(
@@ -145,7 +145,7 @@ class CheckoutTest extends WPTestCase {
 						'start_date' => '2021-01-01 10:00:00',
 						'end_date'   => '2021-01-01 12:00:00',
 						'series'     => $series_id,
-					] 
+					]
 				)->create()->ID;
 
 				$ticket_id      = $this->create_tc_ticket( $event_id, 5 );
@@ -175,6 +175,8 @@ class CheckoutTest extends WPTestCase {
 		[ $html, $tolerables ] = $fixture();
 
 		$html = $this->placehold_post_ids( $html, $tolerables );
+		// Replace TEC common path with ET common path to stabilize the snapshots.
+		$html = str_replace( 'wp-content/plugins/the-events-calendar/common', 'wp-content/plugins/event-tickets/common', $html );
 
 		$this->assertMatchesHtmlSnapshot( $html );
 	}

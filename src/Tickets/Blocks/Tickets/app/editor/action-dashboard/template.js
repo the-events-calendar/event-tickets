@@ -26,12 +26,12 @@ const confirmLabel = __('Add a Ticket', 'event-tickets');
 
 class TicketsDashboardAction extends PureComponent {
 	static propTypes = {
+		disableSettings: PropTypes.bool,
 		hasCreatedTickets: PropTypes.bool,
 		hasOrdersPage: PropTypes.bool,
-		showWarning: PropTypes.bool,
-		showConfirm: PropTypes.bool,
 		onConfirmClick: PropTypes.func,
-		disableSettings: PropTypes.bool,
+		showConfirm: PropTypes.bool,
+		showNotSupportedMessage: PropTypes.bool,
 	};
 
 	constructor(props) {
@@ -46,11 +46,8 @@ class TicketsDashboardAction extends PureComponent {
 	};
 
 	getActions = () => {
-		const {
-			hasCreatedTickets,
-			hasOrdersPage,
-			disableSettings,
-		} = this.props;
+		const { hasCreatedTickets, hasOrdersPage, disableSettings } =
+			this.props;
 
 		// Start with an empty set of actions.
 		const actions = [];
@@ -72,13 +69,17 @@ class TicketsDashboardAction extends PureComponent {
 	};
 
 	render() {
-		const { isBlockSelected, onConfirmClick, showConfirm, showWarning } = this.props;
+		const { onConfirmClick, showConfirm, showNotSupportedMessage } =
+			this.props;
 
 		const actionDashboardClassName = classNames(
 			'tribe-common',
-			'tribe-editor__tickets__action-dashboard', {
-			'tribe-editor__tickets__action-dashboard__no-border-bottom': showWarning && isBlockSelected,
-		} );
+			'tribe-editor__tickets__action-dashboard',
+			{
+				'tribe-editor__tickets__action-dashboard__no-border-bottom':
+					showNotSupportedMessage,
+			}
+		);
 
 		return (
 			<Fragment>
@@ -90,19 +91,15 @@ class TicketsDashboardAction extends PureComponent {
 					showCancel={false}
 					showConfirm={showConfirm}
 				/>
-				{
-					showWarning && isBlockSelected
-					? (
-						<div className="tribe-editor__tickets__action-dashboard__not-supported-message">
-							<div className="tickets-description">
-								<div className="tribe-editor__tickets__container__helper__container">
-									<NotSupportedMessage />
-								</div>
+				{showNotSupportedMessage ? (
+					<div className="tribe-editor__tickets__action-dashboard__not-supported-message">
+						<div className="tickets-description">
+							<div className="tribe-editor__tickets__container__helper__container">
+								<NotSupportedMessage />
 							</div>
 						</div>
-					)
-					: null
-				}
+					</div>
+				) : null}
 			</Fragment>
 		);
 	}
