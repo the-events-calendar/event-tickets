@@ -32,4 +32,10 @@ export default {
 	getMultipleProvidersNoticeTemplate(state) {
 		return state.multipleProvidersNoticeTemplate;
 	},
+	getSeriesPassSharedCapacity(state) {
+		return state.series.passSharedCapacity;
+	},
+	getSeriesPassIndependentCapacity(state) {
+		return state.series.passIndependentCapacity;
+	},
 };

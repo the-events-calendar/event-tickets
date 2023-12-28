@@ -7,6 +7,7 @@ import { addFilter } from '@wordpress/hooks';
 import SeriesPassNotice from '../components/series-pass-notice/container';
 import { sprintf } from '@wordpress/i18n';
 import { renderToString } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Pull the Flexible Tickets data from the dedicated store.
@@ -350,4 +351,48 @@ addFilter(
 	'tec.tickets.blocks.Tickets.Uneditable.mappedProps',
 	'tec.tickets.flexibleTickets',
 	filterUneditableMappedProps
+);
+
+function filterCapacityTableMappedProps(mappedProps) {
+	const isInSeries = ftStore.isInSeries();
+
+	if (!isInSeries) {
+		return mappedProps;
+	}
+
+	const seriesCapacity =
+		Number.parseInt(ftStore.getSeriesPassTotalCapacity()) || 0;
+
+	// If the number of Series Passes is unlimited, the Event capacity is unlimited.
+	const areSeriesPassesUnlimited = seriesCapacity === -1;
+	mappedProps.totalCapacity = areSeriesPassesUnlimited
+		? __('Unlimited', 'event-tickets')
+		: mappedProps.totalCapacity + seriesCapacity;
+
+	mappedProps.rowsAfter = mappedProps.rowsAfter || [];
+	mappedProps.rowsAfter.push({
+		label: __('Series Pass shared capacity', 'event-tickets'),
+		items: [],
+		right: ftStore.getSeriesPassSharedCapacity(),
+	});
+	mappedProps.rowsAfter.push({
+		label: __('Series Pass independent capacity', 'event-tickets'),
+		items: [],
+		right: ftStore.getSeriesPassIndependentCapacity(),
+	});
+	if (areSeriesPassesUnlimited) {
+		mappedProps.rowsAfter.push({
+			label: __('Series Pass unlimited capacity', 'event-tickets'),
+			items: [],
+			right: __('Unlimited', 'event-tickets'),
+		});
+	}
+
+	return mappedProps;
+}
+
+addFilter(
+	'tec.tickets.blocks.Tickets.CapacityTable.mappedProps',
+	'tec.tickets.flexibleTickets',
+	filterCapacityTableMappedProps
 );

@@ -70,6 +70,8 @@ export function updateSeriesData(uneditableTickets = []) {
 		hasSeriesPasses: Boolean(independent.length || shared.length),
 		passTotalCapacity: sharedCapacity + independentCapacity,
 		passTotalAvailable: sharedAvailable + independentAvailable,
+		seriesPassSharedCapacity: sharedCapacity,
+		seriesPassIndependentCapacity: independentCapacity,
 		headerLink: seriesPlainUrl,
 	});
 }

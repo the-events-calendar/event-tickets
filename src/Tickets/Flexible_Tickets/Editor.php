@@ -127,8 +127,21 @@ class Editor extends Controller {
 		$series_passes_count       = $series_id ?
 			tribe_tickets()->where( 'event', $series_id )->where( 'type', Series_Passes::TICKET_TYPE )->count()
 			: 0;
+		$series_pass_independent_capacity = 0;
+		$series_pass_shared_capacity      = 0;
 
-		$editor_data = [
+		if ( $series_id !== null ) {
+			$series_pass_independent_capacity = tribe_tickets()
+				->where( 'event', $series_id )
+				->where( 'type', Series_Passes::TICKET_TYPE )
+				->get_independent_capacity();
+			$series_pass_shared_capacity      = tribe_tickets()
+				->where( 'event', $series_id )
+				->where( 'type', Series_Passes::TICKET_TYPE )
+				->get_shared_capacity();
+		}
+
+		$editor_data                      = [
 			'seriesRelationship' => [
 				'fieldSelector'                   => '#' . Relationship::EVENTS_TO_SERIES_REQUEST_KEY,
 				'containerSelector'               => '#tec_event_series_relationship .inside .tec-events-pro-series',
@@ -147,21 +160,23 @@ class Editor extends Controller {
 				'ticketPanelEditDefaultProviderAttribute' => 'data-current-provider',
 				'ticketsMetaboxSelector'                  => '#event_tickets',
 			],
-			'event' => [
-				'isInSeries' => $series_id !== null,
-				'isRecurring' => tribe_is_recurring_event( $post_id ),
-				'hasOwnTickets' => tribe_tickets()->where('event',$post_id)->count() > 0,
+			'event'              => [
+				'isInSeries'    => $series_id !== null,
+				'isRecurring'   => tribe_is_recurring_event( $post_id ),
+				'hasOwnTickets' => tribe_tickets()->where( 'event', $post_id )->count() > 0,
 			],
-            'series' => [
-                'title'                       => $series_id ? get_the_title($series_id) : '',
-                'editLink'                    => $series_id ? get_edit_post_link($series_id, 'admin') : '',
-                'seriesPassesCount'           => $series_passes_count,
-                'seriesPassTotalCapacity'     => $series_id ? tribe_get_event_capacity($series_id) : 0,
-                'seriesPassAvailableCapacity' => $series_id ? tribe_events_count_available_tickets($series_id) : 0,
-                'headerLink'                  => get_permalink($series_id),
-                'headerLinkText'              => $this->get_header_link_text(),
-                'headerLinkTemplate'          => home_url() . '/?p=%d',
-            ],
+			'series'             => [
+				'title'                         => $series_id ? get_the_title( $series_id ) : '',
+				'editLink'                      => $series_id ? get_edit_post_link( $series_id, 'admin' ) : '',
+				'seriesPassesCount'             => $series_passes_count,
+				'seriesPassTotalCapacity'       => $series_id ? tribe_get_event_capacity( $series_id ) : 0,
+				'seriesPassAvailableCapacity'   => $series_id ? tribe_events_count_available_tickets( $series_id ) : 0,
+				'seriesPassSharedCapacity'      => $series_pass_shared_capacity,
+				'seriesPassIndependentCapacity' => $series_pass_independent_capacity,
+				'headerLink'                    => get_permalink( $series_id ),
+				'headerLinkText'                => $this->get_header_link_text(),
+				'headerLinkTemplate'            => home_url() . '/?p=%d',
+			],
 		];
 
 		/**
@@ -293,12 +308,12 @@ class Editor extends Controller {
 			$data['tickets'] = [];
 		}
 
-        $data['tickets']['multipleProvidersNoticeTemplate'] = _x(
-        // Translators: %s is the series title with a link to edit it.
-            'The ecommerce provider is defined in the ticket settings for the Series %s.',
-            'The notice shown when there are multiple ticket providers available and the Event is part of a Series.',
-            'event-tickets'
-        );
+		$data['tickets']['multipleProvidersNoticeTemplate'] = _x(
+		// Translators: %s is the series title with a link to edit it.
+			'The ecommerce provider is defined in the ticket settings for the Series %s.',
+			'The notice shown when there are multiple ticket providers available and the Event is part of a Series.',
+			'event-tickets'
+		);
 
 		return $data;
 	}
@@ -373,16 +388,15 @@ class Editor extends Controller {
 			) . '</p></div>';
 	}
 
-    public function get_header_link_text(): string
-    {
-        return sprintf(
-        // Translators: %1$s is the ticket label plural lowercase; i.e. "events".
-            _x(
-                'See all %1$s in this series',
-                'Link text for Series Passes in frontend ticket form',
-                'event-tickets'
-            ),
-            tribe_get_event_label_plural_lowercase()
-        );
-    }
+	public function get_header_link_text(): string {
+		return sprintf(
+		// Translators: %1$s is the ticket label plural lowercase; i.e. "events".
+			_x(
+				'See all %1$s in this series',
+				'Link text for Series Passes in frontend ticket form',
+				'event-tickets'
+			),
+			tribe_get_event_label_plural_lowercase()
+		);
+	}
 }

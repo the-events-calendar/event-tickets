@@ -11,6 +11,7 @@ import CapacityTable from './template';
 import { withStore } from '@moderntribe/common/hoc';
 import { selectors, actions } from '@moderntribe/tickets/data/blocks/ticket';
 import { __ } from '@wordpress/i18n';
+import { applyFilters } from '@wordpress/hooks';
 
 const getTicketItems = (tickets) => {
 	const items = tickets
@@ -40,15 +41,32 @@ const mapStateToProps = (state) => {
 		? __('Unlimited', 'event-tickets')
 		: independentAndSharedCapacity;
 
-	return {
+	let mappedProps = {
 		independentCapacity: selectors.getIndependentTicketsCapacity(state),
 		independentTicketItems: getIndependentTicketItems(state),
 		isSettingsLoading: selectors.getTicketsIsSettingsLoading(state),
+		rowsAfter: [],
 		sharedCapacity: selectors.getTicketsSharedCapacity(state),
 		sharedTicketItems: getSharedTicketItems(state),
 		totalCapacity,
 		unlimitedTicketItems,
 	};
+
+	/**
+	 * Filters the properties mapped from the state for the CapacityTable component.
+	 *
+	 * @since TBD
+	 *
+	 * @param {Object} mappedProps   The mapped props.
+	 * @param {Object} context.state The state of the block.
+	 */
+	mappedProps = applyFilters(
+		'tec.tickets.blocks.Tickets.CapacityTable.mappedProps',
+		mappedProps,
+		{ state }
+	);
+
+	return mappedProps;
 };
 
 const mapDispatchToProps = (dispatch) => ({

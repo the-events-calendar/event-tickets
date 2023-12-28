@@ -14,6 +14,10 @@ export default {
 			window?.TECFtEditorData?.series?.seriesPassTotalCapacity || 0,
 		passTotalAvailable:
 			window?.TECFtEditorData?.series?.seriesPassAvailableCapacity || 0,
+		passSharedCapacity:
+			window?.TECFtEditorData?.series?.seriesPassSharedCapacity || 0,
+		passIndependentCapacity:
+			window?.TECFtEditorData?.series?.seriesPassIndependentCapacity || 0,
 		headerLink: window?.TECFtEditorData?.series?.headerLink || '#',
 		headerLinkText: window?.TECFtEditorData?.series?.headerLinkText || '',
 		headerLinkTemplate:
