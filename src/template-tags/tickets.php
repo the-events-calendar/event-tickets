@@ -1148,7 +1148,16 @@ if ( ! function_exists( 'tribe_get_event_capacity' ) ) {
 
 		$value = (int) $rsvp_cap + (int) $tickets_cap;
 
-		return (int) $value;
+		/**
+		 * Filters the event capacity.
+		 *
+		 * @since TBD
+		 *
+		 * @param int $value The event capacity.
+		 * @param int $post_id The event ID.
+		 * @param bool|Tribe__Tickets__Tickets $provider The ticket provider.
+		 */
+		return apply_filters( 'tec_tickets_get_event_capacity', (int) $value, $post_id, $provider );
 	}
 }
 
