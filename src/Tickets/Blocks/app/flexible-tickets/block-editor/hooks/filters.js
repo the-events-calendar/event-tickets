@@ -229,9 +229,8 @@ function filterTicketsDashboardActionsMappedProps(
 	mappedProps,
 	{ isRecurring }
 ) {
-	// These properties will always apply, whether or not the Event is part of a Series.
 	mappedProps.showWarning = isRecurring;
-	mappedProps.disableSettings = true;
+	mappedProps.disableSettings = isRecurring;
 	mappedProps.showConfirm = !isRecurring;
 
 	const isInSeries = ftStore.isInSeries();
@@ -242,9 +241,11 @@ function filterTicketsDashboardActionsMappedProps(
 		return mappedProps;
 	}
 
+	// Show the Orders page link if the Event has own tickets.
+	mappedProps.hasOrdersPage = mappedProps.hasCreatedTickets;
+	// Show the Attendees page link if the Event has either own tickets or Series Passes.
 	const hasSeriesPasses = ftStore.hasSeriesPasses();
 	mappedProps.hasCreatedTickets = hasSeriesPasses;
-	mappedProps.hasOrdersPage = hasSeriesPasses;
 
 	return mappedProps;
 }
