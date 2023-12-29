@@ -72,9 +72,8 @@ $tickets_by_type = $order_summary->get_tickets_by_type();
 					);
 					?>
 				</h3>
+					<?php foreach ( $tickets_by_type as $type => $items ): ?>
 				<div class="tec-tickets__admin-orders-report-overview-ticket-type">
-					<?php
-					foreach ( $tickets_by_type as $type => $items ): ?>
 						<div class="tec-tickets__admin-orders-report-overview-ticket-type-icon tec-tickets__admin-orders-report-overview-ticket-type-icon--<?php echo esc_html( $type ); ?>"></div>
 						<div class="tec-tickets__admin-orders-report-overview-ticket-type-label">
 							<?php echo esc_html( $order_summary->get_label_for_type( $type ) ); ?>
