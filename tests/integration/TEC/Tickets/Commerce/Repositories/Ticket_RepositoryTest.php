@@ -101,59 +101,69 @@ class Ticket_RepositoryTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	/**
-	 * It should allow getting the shared capacity of tickets
+	 * It should allow getting the capacity of tickets
 	 *
 	 * @test
 	 */
-	public function should_allow_getting_the_shared_capacity_of_tickets(): void {
-		$post_1 = static::factory()->post->create();
-		update_post_meta( $post_1, Global_Stock::GLOBAL_STOCK_LEVEL, 117 );
+	public function should_allow_getting_the_capacity_of_tickets(): void {
+		$post = static::factory()->post->create();
 
-		$global_ticket    = $this->create_tc_ticket( $post_1, 1, [
+		$this->assertEquals( 0, tribe_get_event_capacity( $post ) );
+		$this->assertEquals( 0, tribe_tickets()->where( 'event', $post )->get_independent_capacity() );
+		$this->assertEquals( 0, tribe_tickets()->where( 'event', $post )->get_shared_capacity() );
+
+		update_post_meta( $post, Global_Stock::GLOBAL_STOCK_LEVEL, 117 );
+
+		$global_ticket   = $this->create_tc_ticket( $post, 1, [
 			'tribe-ticket' => [
 				'mode'     => Global_Stock::GLOBAL_STOCK_MODE,
 				'capacity' => 117,
 			],
 		] );
-		$capped_ticket    = $this->create_tc_ticket( $post_1, 1, [
+		$capped_ticket   = $this->create_tc_ticket( $post, 1, [
 			'tribe-ticket' => [
 				'mode'     => Global_Stock::CAPPED_STOCK_MODE,
 				'capacity' => 47,
 			],
 		] );
-		$capped_ticket_2  = $this->create_tc_ticket( $post_1, 1, [
+		$capped_ticket_2 = $this->create_tc_ticket( $post, 1, [
 			'tribe-ticket' => [
 				'mode'     => Global_Stock::CAPPED_STOCK_MODE,
 				'capacity' => 89,
 			],
 		] );
-		$unlimited_ticket = $this->create_tc_ticket( $post_1, 1, [
+
+		$this->assertEquals( 117, tribe_get_event_capacity( $post ) );
+		$this->assertEquals( 117, tribe_tickets()->where( 'event', $post )->get_shared_capacity() );
+		$this->assertEquals( 0, tribe_tickets()->where( 'event', $post )->get_independent_capacity() );
+
+		$unlimited_ticket = $this->create_tc_ticket( $post, 1, [
 			'tribe-ticket' => [
 				'mode'     => Global_Stock::OWN_STOCK_MODE,
 				'capacity' => - 1,
 			],
 		] );
-		$own_ticket       = $this->create_tc_ticket( $post_1, 1, [
+		$own_ticket       = $this->create_tc_ticket( $post, 1, [
 			'tribe-ticket' => [
 				'mode'     => Global_Stock::OWN_STOCK_MODE,
 				'capacity' => 17,
 			],
 		] );
-		$own_ticket_2     = $this->create_tc_ticket( $post_1, 1, [
+		$own_ticket_2     = $this->create_tc_ticket( $post, 1, [
 			'tribe-ticket' => [
 				'mode'     => Global_Stock::OWN_STOCK_MODE,
 				'capacity' => 41,
 			],
 		] );
 
-		$this->assertEquals( -1, tribe_get_event_capacity( $post_1 ) );
-		$this->assertEquals(
-			17 + 41,
-			tribe_tickets()->where( 'event', $post_1 )->get_independent_capacity()
-		);
+		$this->assertEquals( - 1, tribe_get_event_capacity( $post ) );
 		$this->assertEquals(
 			117,
-			tribe_tickets()->where( 'event', $post_1 )->get_shared_capacity()
+			tribe_tickets()->where( 'event', $post )->get_shared_capacity()
+		);
+		$this->assertEquals(
+			17 + 41,
+			tribe_tickets()->where( 'event', $post )->get_independent_capacity()
 		);
 	}
 }

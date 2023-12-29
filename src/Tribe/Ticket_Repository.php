@@ -699,7 +699,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 			Global_Stock::OWN_STOCK_MODE
 		);
 
-		return DB::get_var( $query );
+		return (int) DB::get_var( $query );
 	}
 
 	/**
@@ -745,6 +745,6 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 			Global_Stock::CAPPED_STOCK_MODE
 		);
 
-		return DB::get_var( $query );
+		return (int) DB::get_var( $query );
 	}
 }
