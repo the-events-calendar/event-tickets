@@ -505,4 +505,20 @@ class Orders extends WP_List_Table {
 
 		echo $search_box;
 	}
+
+	public function extra_tablenav( $which ) {
+		$nav = [
+			'left'  => [
+				'print' => sprintf( '<input type="button" name="print" class="print button action" value="%s">',
+									esc_attr__( 'Print', 'event-tickets' ) ),
+				],
+			'right' => [],
+		];
+
+		$nav = apply_filters( 'tribe_events_tickets_orders_table_nav', $nav, $which );
+		?>
+		<div class="alignleft actions attendees-actions"><?php echo implode( $nav['left'] ); ?></div>
+		<div class="alignright attendees-filter"><?php echo implode( $nav['right'] ) ?></div>
+		<?php
+	}
 }
