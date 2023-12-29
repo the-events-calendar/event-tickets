@@ -166,4 +166,123 @@ class Ticket_RepositoryTest extends \Codeception\TestCase\WPTestCase {
 			tribe_tickets()->where( 'event', $post )->get_independent_capacity()
 		);
 	}
+
+	/**
+	 * It should allow fetching tickets by global stock mode
+	 *
+	 * @test
+	 */
+	public function should_allow_fetching_tickets_by_global_stock_mode(): void {
+		$post = static::factory()->post->create();
+
+		$this->assertEquals( 0,
+			tribe_tickets()
+				->where( 'event', $post )
+				->where( 'global_stock_mode', Global_Stock::OWN_STOCK_MODE, $exclude_unimited = true )
+				->count() );
+		$this->assertEquals( 0,
+			tribe_tickets()
+				->where( 'event', $post )
+				->where( 'global_stock_mode', Global_Stock::OWN_STOCK_MODE, $exclude_unlimited = false )
+				->count() );
+		$this->assertEquals( 0,
+			tribe_tickets()
+				->where( 'event', $post )
+				->where( 'global_stock_mode', [
+					Global_Stock::GLOBAL_STOCK_MODE,
+					Global_Stock::CAPPED_STOCK_MODE
+				] )->count() );
+		$this->assertEquals( 0,
+			tribe_tickets()
+				->where( 'event', $post )
+				->where( 'global_stock_mode', Global_Stock::UNLIMITED_STOCK_MODE )->count()
+		);
+
+		// Set the Event to have a global stock level.
+		update_post_meta( $post, Global_Stock::GLOBAL_STOCK_LEVEL, 117 );
+
+		$global_ticket   = $this->create_tc_ticket( $post, 1, [
+			'tribe-ticket' => [
+				'mode'     => Global_Stock::GLOBAL_STOCK_MODE,
+				'capacity' => 117,
+			],
+		] );
+		$capped_ticket   = $this->create_tc_ticket( $post, 1, [
+			'tribe-ticket' => [
+				'mode'     => Global_Stock::CAPPED_STOCK_MODE,
+				'capacity' => 47,
+			],
+		] );
+		$capped_ticket_2 = $this->create_tc_ticket( $post, 1, [
+			'tribe-ticket' => [
+				'mode'     => Global_Stock::CAPPED_STOCK_MODE,
+				'capacity' => 89,
+			],
+		] );
+
+		$this->assertEquals( 0,
+			tribe_tickets()
+				->where( 'event', $post )
+				->where( 'global_stock_mode', Global_Stock::OWN_STOCK_MODE, $exclude_unlimited = true )
+				->count() );
+		$this->assertEquals( 0,
+			tribe_tickets()
+				->where( 'event', $post )
+				->where( 'global_stock_mode', Global_Stock::OWN_STOCK_MODE, $exclude_unlimited = false )
+				->count() );
+		$this->assertEquals( 3,
+			tribe_tickets()
+				->where( 'event', $post )
+				->where( 'global_stock_mode', [
+					Global_Stock::GLOBAL_STOCK_MODE,
+					Global_Stock::CAPPED_STOCK_MODE
+				] )->count() );
+		$this->assertEquals( 0,
+			tribe_tickets()
+				->where( 'event', $post )
+				->where( 'global_stock_mode', Global_Stock::UNLIMITED_STOCK_MODE )->count()
+		);
+
+		$unlimited_ticket = $this->create_tc_ticket( $post, 1, [
+			'tribe-ticket' => [
+				'mode'     => Global_Stock::OWN_STOCK_MODE,
+				'capacity' => - 1,
+			],
+		] );
+		$own_ticket       = $this->create_tc_ticket( $post, 1, [
+			'tribe-ticket' => [
+				'mode'     => Global_Stock::OWN_STOCK_MODE,
+				'capacity' => 17,
+			],
+		] );
+		$own_ticket_2     = $this->create_tc_ticket( $post, 1, [
+			'tribe-ticket' => [
+				'mode'     => Global_Stock::OWN_STOCK_MODE,
+				'capacity' => 41,
+			],
+		] );
+
+		$this->assertEquals( 2,
+			tribe_tickets()
+				->where( 'event', $post )
+				->where( 'global_stock_mode', Global_Stock::OWN_STOCK_MODE, $exclude_unlimited = true )
+				->count() );
+		$this->assertEquals( 3,
+			tribe_tickets()
+				->where( 'event', $post )
+				->where( 'global_stock_mode', Global_Stock::OWN_STOCK_MODE, $exclude_unlimited = false )
+				->count() );
+		$this->assertEquals( 3,
+			tribe_tickets()
+				->where( 'event', $post )
+				->where( 'global_stock_mode', [
+					Global_Stock::GLOBAL_STOCK_MODE,
+					Global_Stock::CAPPED_STOCK_MODE
+				] )->count() );
+		$this->assertEquals( 1,
+			tribe_tickets()
+				->where( 'event', $post )
+				->where( 'global_stock_mode', Global_Stock::UNLIMITED_STOCK_MODE )->count()
+		);
+	}
 }

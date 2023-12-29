@@ -58,6 +58,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 			'currency_code'     => [ $this, 'filter_by_currency_code' ],
 			'is_active'         => [ $this, 'filter_by_active' ],
 			'type'              => [ $this, 'filter_by_type' ],
+			'global_stock_mode' => [ $this, 'filter_by_global_stock_mode' ]
 		] );
 	}
 
@@ -746,5 +747,30 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 		);
 
 		return (int) DB::get_var( $query );
+	}
+
+	/**
+	 * Filters tickets by their global stock mode.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string>|string $modes             The global stock mode or modes to filter by, use the
+	 *                                                `Global_Stock::` constants.
+	 * @param bool                 $exclude_unlimited Whether to exclude tickets with Unlimited capacity or not,
+	 *                                                defaults to `false`.
+	 */
+	public function filter_by_global_stock_mode( $modes, bool $exclude_unlimited = false ): void {
+		if ( (array) $modes === [ Global_Stock::UNLIMITED_STOCK_MODE ] ) {
+			$this->where( 'meta_equals', Tickets_Handler::instance()->key_capacity, '-1' );
+
+			return;
+		}
+
+		$this->where( 'meta_in', Global_Stock::TICKET_STOCK_MODE, (array) $modes );
+
+		if ( $exclude_unlimited ) {
+			$capacity_meta_key = Tickets_Handler::instance()->key_capacity;
+			$this->where( 'meta_gte', $capacity_meta_key, 0 );
+		}
 	}
 }
