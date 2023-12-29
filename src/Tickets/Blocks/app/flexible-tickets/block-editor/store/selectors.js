@@ -9,10 +9,10 @@ export default {
 		return state.defaultTicketTypeDescriptionTemplate;
 	},
 	getSeriesPassTotalCapacity(state) {
-		return state.series.passTotalCapacity;
+		return state.series.seriesPassTotalCapacity;
 	},
 	getSeriesPassTotalAvailable(state) {
-		return state.series.passTotalAvailable;
+		return state.series.seriesPassTotalAvailable;
 	},
 	getSeriesHeaderLink(state) {
 		return state.series.headerLink;
@@ -33,9 +33,21 @@ export default {
 		return state.multipleProvidersNoticeTemplate;
 	},
 	getSeriesPassSharedCapacity(state) {
-		return state.series.passSharedCapacity;
+		return state.series.seriesPassSharedCapacity;
 	},
 	getSeriesPassIndependentCapacity(state) {
-		return state.series.passIndependentCapacity;
+		return state.series.seriesPassIndependentCapacity;
+	},
+	getSeriesPassSharedCapacityItems(state) {
+		return state.series.seriesPassSharedCapacityItems;
+	},
+	getSeriesPassIndependentCapacityItems(state) {
+		return state.series.seriesPassIndependentCapacityItems;
+	},
+	getSeriesPassUnlimitedCapacityItems(state) {
+		return state.series.seriesPassUnlimitedCapacityItems;
+	},
+	hasUnlimitedSeriesPasses(state) {
+		return state.series.hasUnlimitedSeriesPasses;
 	},
 };

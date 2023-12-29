@@ -26,10 +26,10 @@ export function updateSeriesData(uneditableTickets = []) {
 	const seriesPasses = uneditableTickets.filter(
 		(ticket) => ticket.type === 'series_pass'
 	);
-	const { independent, shared } = seriesPasses.reduce(
+	const { independent, shared, unlimited } = seriesPasses.reduce(
 		(acc, ticket) => {
 			if (ticket?.capacityType === UNLIMITED) {
-				// Unlimited tickets should not be counted in the totals.
+				acc.unlimited.push(ticket);
 				return acc;
 			}
 
@@ -38,9 +38,10 @@ export function updateSeriesData(uneditableTickets = []) {
 			} else {
 				acc.independent.push(ticket);
 			}
+
 			return acc;
 		},
-		{ independent: [], shared: [] }
+		{ independent: [], shared: [], unlimited: [] }
 	);
 	const independentCapacity = independent.reduce(
 		(acc, ticket) => acc + (ticket?.capacity || 0),
@@ -58,6 +59,7 @@ export function updateSeriesData(uneditableTickets = []) {
 		(acc, ticket) => Math.max(acc, ticket?.available || 0),
 		0
 	);
+	const hasUnlimitedSeriesPasses = Boolean(unlimited.length);
 	const seriesPostId = getSeriesPostIdFromSelection();
 	const seriesPlainUrl = sprintf(
 		ftStore.getSeriesHeaderLinkTemplate(),
@@ -68,10 +70,20 @@ export function updateSeriesData(uneditableTickets = []) {
 		title: getSeriesTitleFromSelection(),
 		editLink: getSeriesEditLinkFromMetaBox(),
 		hasSeriesPasses: Boolean(independent.length || shared.length),
-		passTotalCapacity: sharedCapacity + independentCapacity,
-		passTotalAvailable: sharedAvailable + independentAvailable,
+		seriesPassTotalCapacity: sharedCapacity + independentCapacity,
+		seriesPassTotalAvailable: sharedAvailable + independentAvailable,
 		seriesPassSharedCapacity: sharedCapacity,
 		seriesPassIndependentCapacity: independentCapacity,
+		seriesPassIndependentCapacityItems: independent
+			.map((ticket) => ticket?.title)
+			.join(', '),
+		seriesPassSharedCapacityItems: shared
+			.map((ticket) => ticket?.title)
+			.join(', '),
+		seriesPassUnlimitedCapacityItems: unlimited
+			.map((ticket) => ticket?.title)
+			.join(', '),
+		hasUnlimitedSeriesPasses,
 		headerLink: seriesPlainUrl,
 	});
 }

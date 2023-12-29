@@ -9,15 +9,15 @@
 
 namespace TEC\Tickets\Flexible_Tickets;
 
+use Symfony\Component\Finder\Glob;
 use TEC\Common\Contracts\Provider\Controller;
 use TEC\Events_Pro\Custom_Tables\V1\Models\Provisional_Post;
 use TEC\Events_Pro\Custom_Tables\V1\Models\Series_Relationship;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Relationship;
-use Tribe\Tickets\Promoter\Triggers\Director;
 use Tribe__Tickets__Tickets as Tickets;
 use Tribe__Events__Main as TEC;
 use Tribe__Tickets__RSVP as RSVP;
-use function remove_action;
+use Tribe__Tickets__Global_Stock as Global_Stock;
 
 /**
  * Class Editor.
@@ -117,31 +117,58 @@ class Editor extends Controller {
 
 		$should_load_blocks = $this->container->get( 'editor' )->should_load_blocks();
 		// The Editor code will not take Classic Editor into account, reinforce with the function introduced in WP 5.0.
-		$post_id                   = get_the_ID();
-		$normalized_post_id        = tribe( Provisional_Post::class )->is_provisional_post_id( $post_id ) ?
+		$post_id                                = get_the_ID();
+		$normalized_post_id                     = tribe( Provisional_Post::class )->is_provisional_post_id( $post_id ) ?
 			tribe( Provisional_Post::class )->get_occurrence_post_id( $post_id )
 			: $post_id;
-		$use_block_editor_for_post = use_block_editor_for_post( $normalized_post_id );
-		$series_relationship       = Series_Relationship::find( $normalized_post_id, 'event_post_id' );
-		$series_id                 = $series_relationship->series_post_id ?? null;
-		$series_passes_count       = $series_id ?
+		$use_block_editor_for_post              = use_block_editor_for_post( $normalized_post_id );
+		$series_relationship                    = Series_Relationship::find( $normalized_post_id, 'event_post_id' );
+		$series_id                              = $series_relationship->series_post_id ?? null;
+		$series_passes_count                    = $series_id ?
 			tribe_tickets()->where( 'event', $series_id )->where( 'type', Series_Passes::TICKET_TYPE )->count()
 			: 0;
-		$series_pass_independent_capacity = 0;
-		$series_pass_shared_capacity      = 0;
+		$series_pass_independent_capacity       = 0;
+		$series_pass_shared_capacity            = 0;
+		$series_pass_independent_capacity_items = '';
+		$series_pass_shared_capacity_items      = '';
+		$series_pass_unlimited_capacity_items   = '';
 
 		if ( $series_id !== null ) {
 			$series_pass_independent_capacity = tribe_tickets()
 				->where( 'event', $series_id )
 				->where( 'type', Series_Passes::TICKET_TYPE )
 				->get_independent_capacity();
-			$series_pass_shared_capacity      = tribe_tickets()
+
+			$series_pass_independent_capacity_items = implode( ', ',
+				tribe_tickets()
+					->where( 'event', $series_id )
+					->where( 'type', Series_Passes::TICKET_TYPE )
+					->where( 'global_stock_mode', Global_Stock::OWN_STOCK_MODE, false )
+					->map( fn( $ticket ) => $ticket->post_title )
+			);
+
+			$series_pass_shared_capacity = tribe_tickets()
 				->where( 'event', $series_id )
 				->where( 'type', Series_Passes::TICKET_TYPE )
 				->get_shared_capacity();
+
+			$series_pass_shared_capacity_items    = implode( ', ',
+				tribe_tickets()
+					->where( 'event', $series_id )
+					->where( 'type', Series_Passes::TICKET_TYPE )
+					->where( 'global_stock_mode', [ Global_Stock::GLOBAL_STOCK_MODE, Global_Stock::CAPPED_STOCK_MODE ] )
+					->map( fn( $ticket ) => $ticket->post_title )
+			);
+			$series_pass_unlimited_capacity_items = implode( ', ',
+				tribe_tickets()
+					->where( 'event', $series_id )
+					->where( 'type', Series_Passes::TICKET_TYPE )
+					->where( 'global_stock_mode', Global_Stock::UNLIMITED_STOCK_MODE, true )
+					->map( fn( $ticket ) => $ticket->post_title )
+			);
 		}
 
-		$editor_data                      = [
+		$editor_data = [
 			'seriesRelationship' => [
 				'fieldSelector'                   => '#' . Relationship::EVENTS_TO_SERIES_REQUEST_KEY,
 				'containerSelector'               => '#tec_event_series_relationship .inside .tec-events-pro-series',
@@ -166,16 +193,20 @@ class Editor extends Controller {
 				'hasOwnTickets' => tribe_tickets()->where( 'event', $post_id )->count() > 0,
 			],
 			'series'             => [
-				'title'                         => $series_id ? get_the_title( $series_id ) : '',
-				'editLink'                      => $series_id ? get_edit_post_link( $series_id, 'admin' ) : '',
-				'seriesPassesCount'             => $series_passes_count,
-				'seriesPassTotalCapacity'       => $series_id ? tribe_get_event_capacity( $series_id ) : 0,
-				'seriesPassAvailableCapacity'   => $series_id ? tribe_events_count_available_tickets( $series_id ) : 0,
-				'seriesPassSharedCapacity'      => $series_pass_shared_capacity,
-				'seriesPassIndependentCapacity' => $series_pass_independent_capacity,
-				'headerLink'                    => get_permalink( $series_id ),
-				'headerLinkText'                => $this->get_header_link_text(),
-				'headerLinkTemplate'            => home_url() . '/?p=%d',
+				'title'                              => $series_id ? get_the_title( $series_id ) : '',
+				'editLink'                           => $series_id ? get_edit_post_link( $series_id, 'admin' ) : '',
+				'seriesPassesCount'                  => $series_passes_count,
+				'seriesPassTotalCapacity'            => $series_id ? tribe_get_event_capacity( $series_id ) : 0,
+				'seriesPassAvailableCapacity'        => $series_id ? tribe_events_count_available_tickets( $series_id ) : 0,
+				'seriesPassSharedCapacity'           => $series_pass_shared_capacity,
+				'seriesPassSharedCapacityItems'      => $series_pass_shared_capacity_items,
+				'seriesPassIndependentCapacity'      => $series_pass_independent_capacity,
+				'seriesPassIndependentCapacityItems' => $series_pass_independent_capacity_items,
+				'seriesPassUnlimitedCapacityItems'   => $series_pass_unlimited_capacity_items,
+				'hasUnlimitedSeriesPasses'           => $series_pass_unlimited_capacity_items !== '',
+				'headerLink'                         => get_permalink( $series_id ),
+				'headerLinkText'                     => $this->get_header_link_text(),
+				'headerLinkTemplate'                 => home_url() . '/?p=%d',
 			],
 		];
 
@@ -233,6 +264,15 @@ class Editor extends Controller {
 		tribe_asset_enqueue( 'tec-tickets-flexible-tickets-event-classic-editor-js' );
 	}
 
+	/**
+	 * Returns the Series related to an Event.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|null $post_id The ID of the Event.
+	 *
+	 * @return int|null The ID of the Series related to the Event.
+	 */
 	private function get_series_related_to_event( int $post_id = null ): ?int {
 		if ( get_post_type( $post_id ) !== TEC::POSTTYPE ) {
 			return null;
@@ -388,6 +428,13 @@ class Editor extends Controller {
 			) . '</p></div>';
 	}
 
+	/**
+	 * Returns the Series link text.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The Series link text.
+	 */
 	public function get_header_link_text(): string {
 		return sprintf(
 		// Translators: %1$s is the ticket label plural lowercase; i.e. "events".
