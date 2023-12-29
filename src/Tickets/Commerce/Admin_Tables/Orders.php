@@ -507,8 +507,9 @@ class Orders extends WP_List_Table {
 	}
 
 	/**
-	 * @inheritDoc
-	 * @param string $which
+	 * Displays extra controls.
+	 *
+	 * @param string $which The location of the actions: 'left' or 'right'.
 	 */
 	public function extra_tablenav( $which ) {
 		$allowed_tags = [
@@ -520,14 +521,14 @@ class Orders extends WP_List_Table {
 			],
 		];
 
-		$nav         = [
+		$nav = [
 			'left'  => [
 				'print' => sprintf( '<input type="button" name="print" class="print button action" value="%s">', esc_attr__( 'Print', 'event-tickets' ) ),
 			],
 			'right' => [],
 		];
 
-		$nav        = apply_filters( 'tribe_events_tickets_orders_table_nav', $nav, $which );
+		$nav = apply_filters( 'tribe_events_tickets_orders_table_nav', $nav, $which );
 		?>
 		<div class="alignleft actions attendees-actions"><?php echo wp_kses( implode( $nav['left'] ), $allowed_tags ); ?></div>
 		<div class="alignright attendees-filter"><?php echo wp_kses( implode( $nav['right'] ), $allowed_tags ); ?></div>
