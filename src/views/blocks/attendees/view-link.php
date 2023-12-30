@@ -48,6 +48,6 @@ if ( empty( $data['total_count'] ) ) {
 <div class="tribe-link-view-attendee">
 	<?php echo esc_html( $data['message'] ); ?>
 	<a href="<?php echo esc_url( $data['link'] ); ?>">
-		<?php printf( esc_html__( '%s', 'event-tickets' ), $data['link_label'] ); ?>
+		<?php echo esc_html( $data['link_label'] ); ?>
 	</a>
 </div>
