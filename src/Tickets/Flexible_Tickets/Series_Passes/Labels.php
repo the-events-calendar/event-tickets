@@ -69,10 +69,10 @@ class Labels {
 
 		switch ( $type ) {
 			case 'plural_lowercase':
-				$label = \tec_tickets_get_series_pass_plural_lowercase();
+				$label = \tec_tickets_get_series_pass_plural_uppercase();
 				break;
 			case 'singular_lowercase':
-				$label = \tec_tickets_get_series_pass_singular_lowercase();
+				$label = \tec_tickets_get_series_pass_singular_uppercase();
 				break;
 			case 'singular_uppercase':
 				$label = \tec_tickets_get_series_pass_singular_uppercase();
