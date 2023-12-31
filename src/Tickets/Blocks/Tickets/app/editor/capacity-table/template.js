@@ -1,9 +1,10 @@
 /**
  * External dependencies
  */
-import React from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { __ } from '@wordpress/i18n';
+import { applyFilters } from '@wordpress/hooks';
 
 /**
  * Internal dependencies
@@ -21,6 +22,7 @@ const CapacityTable = ({
 	sharedTicketItems,
 	totalCapacity,
 	unlimitedTicketItems,
+	rowsAfter,
 }) => {
 	const sharedInput = (
 		<NumberInput
@@ -53,6 +55,19 @@ const CapacityTable = ({
 					right={__('Unlimited', 'event-tickets')}
 				/>
 			)}
+
+			{rowsAfter &&
+				rowsAfter.map((row, index) => {
+					return (
+						<Row
+							key={index}
+							label={row.label || ''}
+							items={row.items || ''}
+							right={row.right || ''}
+						/>
+					);
+				})}
+
 			<Row
 				label={__('Total Capacity', 'event-tickets')}
 				right={totalCapacity}
@@ -66,6 +81,13 @@ CapacityTable.propTypes = {
 	independentTicketItems: PropTypes.string,
 	isSettingsLoading: PropTypes.bool,
 	onSharedCapacityChange: PropTypes.func,
+	rowsAfter: PropTypes.arrayOf(
+		PropTypes.shape({
+			label: PropTypes.string,
+			items: PropTypes.string,
+			right: PropTypes.node,
+		})
+	),
 	sharedCapacity: PropTypes.string,
 	sharedTicketItems: PropTypes.string,
 	totalCapacity: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),

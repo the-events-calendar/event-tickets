@@ -3,6 +3,6 @@
  */
 
 import './store';
-import './hooks/filters.js';
+import './hooks/filters';
 import './series-relationship/update-control';
 import './series-relationship/series-update';

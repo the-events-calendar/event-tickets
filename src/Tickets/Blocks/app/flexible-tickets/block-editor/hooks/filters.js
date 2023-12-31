@@ -5,7 +5,7 @@
 
 import { addFilter } from '@wordpress/hooks';
 import SeriesPassNotice from '../components/series-pass-notice/container';
-import { sprintf } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { renderToString } from '@wordpress/element';
 
 /**
@@ -350,4 +350,56 @@ addFilter(
 	'tec.tickets.blocks.Tickets.Uneditable.mappedProps',
 	'tec.tickets.flexibleTickets',
 	filterUneditableMappedProps
+);
+
+function filterCapacityTableMappedProps(mappedProps) {
+	const isInSeries = ftStore.isInSeries();
+
+	if (!isInSeries) {
+		return mappedProps;
+	}
+
+	const seriesCapacity =
+		Number.parseInt(ftStore.getSeriesPassTotalCapacity()) || 0;
+
+	// If the number of Series Passes is unlimited, the Event capacity is unlimited.
+	const areSeriesPassesUnlimited = ftStore.hasUnlimitedSeriesPasses();
+	mappedProps.totalCapacity = areSeriesPassesUnlimited
+		? __('Unlimited', 'event-tickets')
+		: mappedProps.totalCapacity + seriesCapacity;
+
+	mappedProps.rowsAfter = mappedProps.rowsAfter || [];
+	const sharedCapacityItems = ftStore.getSeriesPassSharedCapacityItems();
+	const seriesPassSharedCapacity = ftStore.getSeriesPassSharedCapacity();
+	mappedProps.rowsAfter.push({
+		label: __('Series Pass shared capacity', 'event-tickets'),
+		items: sharedCapacityItems ? `(${sharedCapacityItems})` : '',
+		right: String(seriesPassSharedCapacity),
+	});
+	const independentCapacityItems =
+		ftStore.getSeriesPassIndependentCapacityItems();
+	const seriesPassIndependentCapacity =
+		ftStore.getSeriesPassIndependentCapacity();
+	mappedProps.rowsAfter.push({
+		label: __('Series Pass independent capacity', 'event-tickets'),
+		items: independentCapacityItems ? `(${independentCapacityItems})` : '',
+		right: String(seriesPassIndependentCapacity),
+	});
+	if (areSeriesPassesUnlimited) {
+		const unlimitedCapacityItems =
+			ftStore.getSeriesPassUnlimitedCapacityItems();
+		mappedProps.rowsAfter.push({
+			label: __('Series Pass unlimited capacity', 'event-tickets'),
+			items: unlimitedCapacityItems ? `(${unlimitedCapacityItems})` : '',
+			right: __('Unlimited', 'event-tickets'),
+		});
+	}
+
+	return mappedProps;
+}
+
+addFilter(
+	'tec.tickets.blocks.Tickets.CapacityTable.mappedProps',
+	'tec.tickets.flexibleTickets',
+	filterCapacityTableMappedProps
 );

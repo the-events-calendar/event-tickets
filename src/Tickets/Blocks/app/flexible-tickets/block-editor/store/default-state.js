@@ -10,10 +10,25 @@ export default {
 		title: window?.TECFtEditorData?.series?.title || '',
 		editLink: window?.TECFtEditorData?.series?.editLink || '',
 		hasSeriesPasses: window?.TECFtEditorData?.series?.seriesPassesCount > 0,
-		passTotalCapacity:
+		seriesPassTotalCapacity:
 			window?.TECFtEditorData?.series?.seriesPassTotalCapacity || 0,
-		passTotalAvailable:
+		seriesPassTotalAvailable:
 			window?.TECFtEditorData?.series?.seriesPassAvailableCapacity || 0,
+		seriesPassSharedCapacity:
+			window?.TECFtEditorData?.series?.seriesPassSharedCapacity || 0,
+		seriesPassSharedCapacityItems:
+			window?.TECFtEditorData?.series?.seriesPassSharedCapacityItems ||
+			'',
+		seriesPassIndependentCapacity:
+			window?.TECFtEditorData?.series?.seriesPassIndependentCapacity || 0,
+		seriesPassIndependentCapacityItems:
+			window?.TECFtEditorData?.series
+				?.seriesPassIndependentCapacityItems || '',
+		seriesPassUnlimitedCapacityItems:
+			window?.TECFtEditorData?.series?.seriesPassUnlimitedCapacityItems ||
+			'',
+		hasUnlimitedSeriesPasses:
+			window?.TECFtEditorData?.series?.hasUnlimitedSeriesPasses || false,
 		headerLink: window?.TECFtEditorData?.series?.headerLink || '#',
 		headerLinkText: window?.TECFtEditorData?.series?.headerLinkText || '',
 		headerLinkTemplate:
