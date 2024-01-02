@@ -127,7 +127,6 @@ class Tickets_Commerce_Subsection extends Abstract_Info_Subsection {
 	 * @return string Formatted average price.
 	 * */
 	private function get_tickets_commerce_average_order_total(): string {
-		// @todo redscar This logic may be incorrect.
 		$tickets_commerce_ticket_prices = tribe( Tickets_Repository::class )->per_page( -1 )->pluck( 'price' );
 		$total                          = 0;
 		$count                          = 0;
@@ -179,11 +178,12 @@ class Tickets_Commerce_Subsection extends Abstract_Info_Subsection {
 	 * @return string 'True' if Tickets Commerce is in test mode, 'False' otherwise.
 	 */
 	private function is_tickets_commerce_test_mode(): string {
-		// @todo redscar Need to add translation.
-		return tribe_get_option(
-			'tickets-commerce-test-mode',
-			false
-		) ? 'True' : 'False';
+		return $this->get_boolean_string(
+			tribe_get_option(
+				'tickets-commerce-test-mode',
+				false
+			)
+		);
 	}
 
 	/**

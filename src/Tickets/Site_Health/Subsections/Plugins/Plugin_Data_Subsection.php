@@ -374,7 +374,6 @@ class Plugin_Data_Subsection extends Abstract_Info_Subsection {
 	 * @return int Total number of tickets.
 	 */
 	private function get_number_of_tickets(): int {
-		// @todo redscar switch this to ORM?
 		return tribe( Tribe__Tickets__Query::class )->get_ticketed_count( 'tribe_events' );
 	}
 
@@ -528,7 +527,6 @@ class Plugin_Data_Subsection extends Abstract_Info_Subsection {
 	 * @return string 'TBD' indicating the status is to be determined.
 	 */
 	private function are_rsvp_views_v2_enabled(): string {
-		// @todo How do we check if RSVP v2 is enabled?
 		return $this->get_boolean_string( tribe_tickets_rsvp_new_views_is_enabled() );
 	}
 
