@@ -404,49 +404,13 @@ class Plugin_Data_Subsection extends Abstract_Info_Subsection {
 	private function get_formatted_prices(): array {
 		$ticket_prices = tribe( 'tickets.event-repository' )->per_page( -1 )->where( 'has_tickets' )->pluck( 'cost' );
 
-		$total     = 0;
-		$count     = 0;
-		$max_price = 0;
-		$min_price = PHP_FLOAT_MAX;
-
-		foreach ( $ticket_prices as $price ) {
-			if ( $price === 'Free' || $price === '' ) {
-				$total += 0;
-				++$count;
-				$min_price = 0;
-			} else {
-				// Match the number with international currency format.
-				preg_match(
-					'/\d+([,.]\d+)?/',
-					$price,
-					$matches
-				);
-				if ( isset( $matches[0] ) ) {
-					// Convert to a standard number format (replace comma with period).
-					$number = floatval(
-						str_replace(
-							',',
-							'.',
-							$matches[0]
-						)
-					);
-					$total  += $number;
-
-					++$count;
-
-					if ( $number > $max_price ) {
-						$max_price = $number;
-					}
-					if ( $number < $min_price ) {
-						$min_price = $number;
-					}
-				}
-			}
-		}
-
-		$average_price = $count > 0 ? $total / $count : 0;
-
-		//@todo redscar I'm sure there is something built to display this value correctly.
+		$total_and_count = $this->calculate_total_and_count( $ticket_prices );
+		$max_price       = $this->calculate_max_price( $ticket_prices );
+		$min_price       = $this->calculate_min_price( $ticket_prices );
+		$average_price   = $this->calculate_average_price(
+			$total_and_count['total'],
+			$total_and_count['count']
+		);
 
 		return [
 			'formatted_max_price'     => number_format(
@@ -499,13 +463,15 @@ class Plugin_Data_Subsection extends Abstract_Info_Subsection {
 		);
 
 		if ( empty( $login_requirements ) ) {
-			return 'False';
+			return $this->get_boolean_string( false );
 		}
 
-		return in_array(
-			'event-tickets_all',
-			$login_requirements
-		) ? 'True' : 'False';
+		return $this->get_boolean_string(
+			in_array(
+				'event-tickets_all',
+				$login_requirements
+			)
+		);
 	}
 
 	/**
@@ -520,13 +486,15 @@ class Plugin_Data_Subsection extends Abstract_Info_Subsection {
 		);
 
 		if ( empty( $login_requirements ) ) {
-			return 'False';
+			return $this->get_boolean_string( false );
 		}
 
-		return in_array(
-			'event-tickets_rsvp',
-			$login_requirements
-		) ? 'True' : 'False';
+		return $this->get_boolean_string(
+			in_array(
+				'event-tickets_rsvp',
+				$login_requirements
+			)
+		);
 	}
 
 	/**
@@ -540,7 +508,9 @@ class Plugin_Data_Subsection extends Abstract_Info_Subsection {
 			tec_tickets_emails_is_enabled()
 		);
 
-		return $email_enabled ? 'True' : 'False';
+		return $this->get_boolean_string(
+			$email_enabled
+		);
 	}
 
 	/**
@@ -549,7 +519,9 @@ class Plugin_Data_Subsection extends Abstract_Info_Subsection {
 	 * @return string 'True' if tickets views v2 are enabled, 'False' otherwise.
 	 */
 	private function are_tickets_views_v2_enabled(): string {
-		return tec_tickets_emails_is_enabled() ? 'True' : 'False';
+		return $this->get_boolean_string(
+			tec_tickets_emails_is_enabled()
+		);
 	}
 
 	/**
@@ -568,9 +540,119 @@ class Plugin_Data_Subsection extends Abstract_Info_Subsection {
 	 * @return string 'True' if Tickets Commerce is enabled, 'False' otherwise.
 	 */
 	private function is_tickets_commerce_enabled(): string {
-		return tribe_get_option(
-			'tickets_commerce_enabled',
-			false
-		) ? 'True' : 'False';
+		return $this->get_boolean_string(
+			tribe_get_option(
+				'tickets_commerce_enabled',
+				false
+			)
+		);
+	}
+
+	/**
+	 * Calculates the total and count of valid ticket prices.
+	 *
+	 * @param array $ticket_prices Array of ticket prices.
+	 *
+	 * @return array Associative array containing the total price and count of tickets.
+	 */
+	private function calculate_total_and_count( array $ticket_prices ): array {
+		$total = 0;
+		$count = 0;
+
+		foreach ( $ticket_prices as $price ) {
+			if ( $price === 'Free' || $price === '' ) {
+				$total += 0;
+				++$count;
+			} else {
+				$number = $this->parse_price( $price );
+				if ( $number !== null ) {
+					$total += $number;
+					++$count;
+				}
+			}
+		}
+
+		return [
+			'total' => $total,
+			'count' => $count,
+		];
+	}
+
+	/**
+	 * Parses the price from a string and converts it to a float.
+	 *
+	 * @param string $price Price string to parse.
+	 *
+	 * @return float|null Parsed price as a float, or null if parsing fails.
+	 */
+	private function parse_price( string $price ): ?float {
+		preg_match(
+			'/\d+([,.]\d+)?/',
+			$price,
+			$matches
+		);
+		return isset( $matches[0] ) ? floatval(
+			str_replace(
+				',',
+				'.',
+				$matches[0]
+			)
+		) : null;
+	}
+
+	/**
+	 * Calculates the maximum price from an array of ticket prices.
+	 *
+	 * @param array $ticket_prices Array of ticket prices.
+	 *
+	 * @return float Maximum ticket price.
+	 */
+	private function calculate_max_price( array $ticket_prices ): float {
+		$max_price = 0;
+
+		foreach ( $ticket_prices as $price ) {
+			$number = $this->parse_price( $price );
+			if ( $number !== null && $number > $max_price ) {
+				$max_price = $number;
+			}
+		}
+
+		return $max_price;
+	}
+
+
+	/**
+	 * Calculates the minimum price from an array of ticket prices.
+	 *
+	 * @param array $ticket_prices Array of ticket prices.
+	 *
+	 * @return float Minimum ticket price.
+	 */
+	private function calculate_min_price( array $ticket_prices ): float {
+		$min_price = PHP_FLOAT_MAX;
+
+		foreach ( $ticket_prices as $price ) {
+			$number = $this->parse_price( $price );
+			if ( $number !== null && $number < $min_price ) {
+				$min_price = $number;
+			}
+		}
+
+		return $min_price === PHP_FLOAT_MAX ? 0 : $min_price;
+	}
+
+	/**
+	 * Calculates the average price of tickets.
+	 *
+	 * @param float $total Total sum of ticket prices.
+	 * @param int   $count Number of tickets.
+	 *
+	 * @return float Average ticket price.
+	 */
+	private function calculate_average_price(
+		float $total,
+		int   $count
+	): float {
+		return $count > 0 ? $total / $count : 0;
 	}
 }

@@ -70,7 +70,7 @@ class Event_Tickets_Plus_Subsection extends Abstract_Info_Subsection {
 	 */
 	private function are_qr_codes_enabled(): string {
 		// Assuming the setting is stored in a boolean format.
-		return tribe( QR_Settings::class )->is_enabled() ? 'True' : 'False';
+		return $this->get_boolean_string( tribe( QR_Settings::class )->is_enabled() );
 	}
 
 	/**
@@ -90,6 +90,6 @@ class Event_Tickets_Plus_Subsection extends Abstract_Info_Subsection {
 	 */
 	private function is_attendee_registration_modal_enabled(): string {
 		// Check if attendee registration modal is enabled.
-		return tribe_get_option( 'ticket-attendee-modal' ) ? 'True' : 'False';
+		return $this->get_boolean_string( tribe_get_option( 'ticket-attendee-modal' ) );
 	}
 }

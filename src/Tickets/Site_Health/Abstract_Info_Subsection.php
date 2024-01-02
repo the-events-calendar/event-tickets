@@ -63,4 +63,21 @@ abstract class Abstract_Info_Subsection {
 	 * @return array An array of fields.
 	 */
 	abstract protected function generate_subsection(): array;
+
+	/**
+	 * Simplified method to return 'True' or 'False' string with translation.
+	 *
+	 * @param bool $condition The condition to check.
+	 *
+	 * @return string Translated 'True' or 'False'.
+	 */
+	protected function get_boolean_string( bool $condition ): string {
+		return $condition ? esc_html__(
+			'True',
+			'event-tickets'
+		) : esc_html__(
+			'False',
+			'event-tickets'
+		);
+	}
 }
