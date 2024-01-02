@@ -928,7 +928,7 @@ class Tribe__Tickets__Metabox {
 		$text          = sprintf(
 			// Translators: %1$s: dynamic "tickets" label text, %2$s: dynamic "RSVPs" label, %3$s: dynamic post type label plural, %4$s the learn more link.
 			esc_html__( 'Create and manage single %1$s and %2$s for this %3$s. %4$s.', 'event-tickets' ),
-			tribe_get_ticket_label_plural(),
+			tribe_get_ticket_label_plural_lowercase(),
 			tribe_get_rsvp_label_plural(),
 			strtolower( $object_labels->labels->singular_name ),
 			$this->get_helper_link()

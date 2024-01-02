@@ -94,7 +94,7 @@ if (
 
 $post_type_singular = $post_type ? $post_type->labels->singular_name : _x( 'Post', 'fallback post type singular name', 'event-tickets' );
 
-$is_event_page = class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::POSTTYPE === $event->post_type;
+$is_event_page = is_singular( 'tribe_events' ) || is_singular( 'tribe_event_series' );
 ?>
 <div id="tribe-events-content" class="tribe-events-single">
 	<p class="tribe-back">

@@ -22,9 +22,7 @@
 		name="ticket_description"
 		class="ticket_field ticket_form_right"
 		id="ticket_description"
-	>
-		<?php echo esc_textarea( $ticket_description ); ?>
-	</textarea>
+	><?php echo esc_textarea( $ticket_description ); ?></textarea>
 	<div class="input_block">
 		<label class="tribe_soft_note">
 			<input

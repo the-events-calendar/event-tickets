@@ -18,13 +18,15 @@ $tickets_by_type = $order_summary->get_tickets_by_type();
 	<div class="welcome-panel-content">
 		<div class="welcome-panel-column-container">
 			<div class="welcome-panel-column welcome-panel-first">
-				<h3><?php
+				<h3>
+				<?php
 					echo esc_html(
 						sprintf(
 							_x( '%s Details', 'post type details', 'event-tickets' ),
 							$post_singular_label
 						)
-					); ?>
+					);
+					?>
 				</h3>
 				<ul>
 					<?php
@@ -72,9 +74,8 @@ $tickets_by_type = $order_summary->get_tickets_by_type();
 					);
 					?>
 				</h3>
+					<?php foreach ( $tickets_by_type as $type => $items ) : ?>
 				<div class="tec-tickets__admin-orders-report-overview-ticket-type">
-					<?php
-					foreach ( $tickets_by_type as $type => $items ): ?>
 						<div class="tec-tickets__admin-orders-report-overview-ticket-type-icon tec-tickets__admin-orders-report-overview-ticket-type-icon--<?php echo esc_html( $type ); ?>"></div>
 						<div class="tec-tickets__admin-orders-report-overview-ticket-type-label">
 							<?php echo esc_html( $order_summary->get_label_for_type( $type ) ); ?>
@@ -82,15 +83,15 @@ $tickets_by_type = $order_summary->get_tickets_by_type();
 						<div class="tec-tickets__admin-orders-report-overview--border"></div>
 				</div>
 				<ul class="tec-tickets__admin-orders-report-overview-ticket-type-list">
-					<?php foreach ( $items as $item ): ?>
-						<li class="tec-tickets__admin-orders-report-overview-ticket-type-list-item">
-							<div class="tec-tickets__admin-orders-report-overview-ticket-type-list-item-ticket-name">
-								<?php echo esc_html( $item['label'] ); ?>
-							</div>
-							<div class="tec-tickets__admin-orders-report-overview-ticket-type-list-item-stat">
-								<?php echo esc_html( $item['qty_by_status'] ); ?>
-							</div>
-						</li>
+					<?php foreach ( $items as $item ) : ?>
+					<li class="tec-tickets__admin-orders-report-overview-ticket-type-list-item">
+						<div class="tec-tickets__admin-orders-report-overview-ticket-type-list-item-ticket-name">
+							<?php echo esc_html( $item['label'] ); ?>
+						</div>
+						<div class="tec-tickets__admin-orders-report-overview-ticket-type-list-item-stat">
+							<?php echo esc_html( $item['qty_by_status'] ); ?>
+						</div>
+					</li>
 					<?php endforeach; ?>
 				</ul>
 					<?php endforeach; ?>
@@ -101,10 +102,10 @@ $tickets_by_type = $order_summary->get_tickets_by_type();
 				</div>
 				<div class="tec-tickets__admin-orders-report__sales-overview__data">
 					<div class="tec-tickets__admin-orders-report__sales-overview__by-status">
-						<?php foreach ( $sales_totals['by_status'] as $status ): ?>
+						<?php foreach ( $sales_totals['by_status'] as $status ) : ?>
 							<div class="tec-tickets__admin-orders-report__sales-overview__list__item">
 								<div class="tec-tickets__admin-orders-report__sales-overview__list__item-label"><?php echo esc_html( $status['label'] ); ?></div>
-								<div class="tec-tickets__admin-orders-report__sales-overview__list__item-amount"><?php echo esc_html( sprintf( '%1$s (%2$s)', $status['total_sales_price'], $status['qty_sold'] ) )?></div>
+								<div class="tec-tickets__admin-orders-report__sales-overview__list__item-amount"><?php echo esc_html( sprintf( '%1$s (%2$s)', $status['total_sales_price'], $status['qty_sold'] ) ); ?></div>
 							</div>
 						<?php endforeach; ?>
 					</div>

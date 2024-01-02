@@ -14,7 +14,7 @@
 	<div class="ticket_form_right ticket_form_right--flex">
 		<img
 				class="tribe-tickets-svgicon tec-tickets-icon tec-tickets-icon__ticket-type"
-				src="<?php echo esc_url( tribe_resource_url( 'icons/series-pass.svg', false, null, \Tribe__Tickets__Main::instance() ) ); ?>"
+				src="<?php echo esc_url( tribe_resource_url( 'icons/ticket-series-pass-icon.svg', false, null, \Tribe__Tickets__Main::instance() ) ); ?>"
 				alt="<?php echo esc_html( tec_tickets_get_series_pass_singular_uppercase( 'admin_ticket_type_alt_text' ) ); ?>"
 		/>
 		<span class="ticket-type__text">

@@ -35,8 +35,8 @@ if ( isset( $hide_view_my_tickets_link ) && tribe_is_truthy( $hide_view_my_ticke
 	return;
 }
 
-$view      = Tribe__Tickets__Tickets_View::instance();
-$event_id  = $this->get( 'post_id' );
+$view     = Tribe__Tickets__Tickets_View::instance();
+$event_id = $this->get( 'post_id' ) ?? get_the_ID();
 
 $data = $view->get_my_tickets_link_data( $event_id, get_current_user_id() );
 
@@ -47,5 +47,7 @@ if ( empty( $data['total_count'] ) ) {
 ?>
 <div class="tribe-link-view-attendee">
 	<?php echo esc_html( $data['message'] ); ?>
-	<a href="<?php echo esc_url( $data['link'] ) ?>"><?php echo sprintf( esc_html__( '%s', 'event-tickets' ), $data['link_label'] ) ?></a>
+	<a href="<?php echo esc_url( $data['link'] ); ?>">
+		<?php echo esc_html( $data['link_label'] ); ?>
+	</a>
 </div>
