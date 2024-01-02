@@ -519,9 +519,7 @@ class Plugin_Data_Subsection extends Abstract_Info_Subsection {
 	 * @return string 'True' if tickets views v2 are enabled, 'False' otherwise.
 	 */
 	private function are_tickets_views_v2_enabled(): string {
-		return $this->get_boolean_string(
-			tec_tickets_emails_is_enabled()
-		);
+		return $this->get_boolean_string( tribe_events_tickets_views_v2_is_enabled() );
 	}
 
 	/**
