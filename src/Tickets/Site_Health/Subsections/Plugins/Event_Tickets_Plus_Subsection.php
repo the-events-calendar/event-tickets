@@ -80,7 +80,11 @@ class Event_Tickets_Plus_Subsection extends Abstract_Info_Subsection {
 	 */
 	private function get_iac_default_option(): string {
 		// Fetch the IAC default option value.
-		return tribe( IAC::class )->get_default_iac_setting();
+		$iac         = tribe( IAC::class );
+		$iac_options = $iac->get_iac_setting_options();
+		$iac_value   = tribe_get_option( $iac->get_default_iac_setting_option_name() );
+
+		return $iac_options[ $iac_value ];
 	}
 
 	/**
