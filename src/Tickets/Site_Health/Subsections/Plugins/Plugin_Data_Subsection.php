@@ -529,7 +529,7 @@ class Plugin_Data_Subsection extends Abstract_Info_Subsection {
 	 */
 	private function are_rsvp_views_v2_enabled(): string {
 		// @todo How do we check if RSVP v2 is enabled?
-		return 'TBD';
+		return $this->get_boolean_string( tribe_tickets_rsvp_new_views_is_enabled() );
 	}
 
 	/**
