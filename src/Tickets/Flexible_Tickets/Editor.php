@@ -419,13 +419,15 @@ class Editor extends Controller {
 			return;
 		}
 
-		echo '<div><p>' . esc_html_x(
-				'The ecommerce provider for events must match the provider for the Series. Events with a mismatched ' .
-				'provider will not be listed. Change the provider using the Sell tickets using option in the ' .
-				'tickets settings.',
-				'Notice shown under the Series to Events relationship metabox when there are multiple ticket providers ',
-				'event-tickets'
-			) . '</p></div>';
+		echo wp_kses(
+				__(
+					'The ecommerce provider for events must match the provider for the Series. Events with a mismatched provider will not be listed. Change the provider using the <em>Sell tickets using</em> option in the tickets settings.',
+					'event-tickets'
+				),
+				[
+					'em' => [],
+				]
+			);
 	}
 
 	/**
