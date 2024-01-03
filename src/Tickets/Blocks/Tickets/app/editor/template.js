@@ -14,7 +14,7 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { Card } from '@moderntribe/tickets/elements';
-import NotSupportedMessage from './not-supported-message/template';
+import NotSupportedMessage from './not-supported-message/container';
 import TicketsDashboard from './dashboard/container';
 import TicketsContainer from './container/container';
 import TicketControls from './controls/container';

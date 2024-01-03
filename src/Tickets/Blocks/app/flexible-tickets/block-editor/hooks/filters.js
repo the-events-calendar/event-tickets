@@ -5,8 +5,9 @@
 
 import { addFilter } from '@wordpress/hooks';
 import SeriesPassNotice from '../components/series-pass-notice/container';
-import { __, sprintf } from '@wordpress/i18n';
+import { __, _x, sprintf } from '@wordpress/i18n';
 import { renderToString } from '@wordpress/element';
+import { hasRecurrenceRules } from '@moderntribe/common/utils/recurrence';
 
 /**
  * Pull the Flexible Tickets data from the dedicated store.
@@ -402,4 +403,57 @@ addFilter(
 	'tec.tickets.blocks.Tickets.CapacityTable.mappedProps',
 	'tec.tickets.flexibleTickets',
 	filterCapacityTableMappedProps
+);
+
+/**
+ * Filters the message displayed to indicate tickets are not supported to customized the message in the case
+ * where an event is recurring and unsaved.
+ *
+ * @since TBD
+ *
+ * @param {Object}  mappedProps The component properties as mapped from the current state.
+ * @param {Object } state       The state of the main Event Tickets store.
+ *
+ * @return {Object} The mapped properties, altered if required.
+ */
+function filterNotSupportedMessageMappedProps(mappedProps, { state }) {
+	const { postStatus = 'auto-draft' } = mappedProps;
+
+	if (!(postStatus === 'auto-draft' && hasRecurrenceRules(state))) {
+		return mappedProps;
+	}
+
+	mappedProps.content = null;
+	const { seriesPassPluralUppercase } = ftStore.getLabels();
+	const link = (
+		<a
+			className="helper-link"
+			href="https://evnt.is/-series-passes"
+			target="_blank"
+			rel="noopener noreferrer"
+		>
+			{seriesPassPluralUppercase}
+		</a>
+	);
+	// Translators: %s is a link to Series Passes knowledge base that reads "Series Passes".
+	const messageTemplate = _x(
+		"Once you save this event, you'll be able to add %s from the Series admin.",
+		'Block editor not supported notice',
+		'event-tickets'
+	);
+	mappedProps.ctaLink = (
+		<span
+			dangerouslySetInnerHTML={{
+				__html: sprintf(messageTemplate, renderToString(link)),
+			}}
+		></span>
+	);
+
+	return mappedProps;
+}
+
+addFilter(
+	'tec.tickets.blocks.Tickets.NotSupportedMessage.mappedProps',
+	'tec.tickets.flexibleTickets',
+	filterNotSupportedMessageMappedProps
 );

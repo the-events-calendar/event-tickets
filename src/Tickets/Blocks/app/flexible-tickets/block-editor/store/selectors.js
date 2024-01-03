@@ -50,4 +50,7 @@ export default {
 	hasUnlimitedSeriesPasses(state) {
 		return state.series.hasUnlimitedSeriesPasses;
 	},
+	getLabels(state) {
+		return state.labels;
+	},
 };

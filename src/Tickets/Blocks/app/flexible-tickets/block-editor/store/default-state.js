@@ -34,4 +34,8 @@ export default {
 		headerLinkTemplate:
 			window?.TECFtEditorData?.series?.headerLinkTemplate || '',
 	},
+	labels: {
+		seriesPassPluralUppercase:
+			window?.TECFtEditorData?.labels?.seriesPassPluralUppercase || '',
+	},
 };

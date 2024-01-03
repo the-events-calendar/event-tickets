@@ -207,6 +207,9 @@ class Editor extends Controller {
 				'headerLinkText'                     => $this->get_header_link_text(),
 				'headerLinkTemplate'                 => home_url() . '/?p=%d',
 			],
+			'labels' => [
+				'seriesPassPluralUppercase' => tec_tickets_get_series_pass_plural_uppercase(),
+			]
 		];
 
 		/**
@@ -436,7 +439,7 @@ class Editor extends Controller {
 	 */
 	public function get_header_link_text(): string {
 		return sprintf(
-		// Translators: %1$s is the ticket label plural lowercase; i.e. "events".
+			// Translators: %1$s is the ticket label plural lowercase; i.e. "events".
 			_x(
 				'See all %1$s in this series',
 				'Link text for Series Passes in frontend ticket form',
