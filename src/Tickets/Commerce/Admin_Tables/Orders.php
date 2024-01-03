@@ -509,6 +509,8 @@ class Orders extends WP_List_Table {
 	/**
 	 * Displays extra controls.
 	 *
+	 * @since TBD
+	 *
 	 * @param string $which The location of the actions: 'left' or 'right'.
 	 */
 	public function extra_tablenav( $which ) {
