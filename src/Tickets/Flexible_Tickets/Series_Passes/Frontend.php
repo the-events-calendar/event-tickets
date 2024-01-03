@@ -11,7 +11,7 @@ use Tribe__Tickets__Tickets_View;
  *
  * @since TBD
  *
- * @package TEC\Tickets\Flexible_Tickets\Series_Passes;
+ * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
  */
 class Frontend {
 	/**

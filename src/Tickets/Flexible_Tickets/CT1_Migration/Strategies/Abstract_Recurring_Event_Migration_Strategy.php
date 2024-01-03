@@ -4,7 +4,7 @@
  *
  * @since   TBD
  *
- * @package TEC\Tickets\Flexible_Tickets\CT1_Migration\Strategies;
+ * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes\CT1_Migration\Strategies;
  */
 
 namespace TEC\Tickets\Flexible_Tickets\CT1_Migration\Strategies;
@@ -14,7 +14,7 @@ namespace TEC\Tickets\Flexible_Tickets\CT1_Migration\Strategies;
  *
  * @since   TBD
  *
- * @package TEC\Tickets\Flexible_Tickets\CT1_Migration\Strategies;
+ * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes\CT1_Migration\Strategies;
  */
 class Abstract_Recurring_Event_Migration_Strategy {
 

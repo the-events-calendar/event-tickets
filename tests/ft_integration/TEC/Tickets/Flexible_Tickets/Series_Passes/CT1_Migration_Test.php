@@ -1,6 +1,6 @@
 <?php
 
-namespace TEC\Tickets\Flexible_Tickets;
+namespace TEC\Tickets\Flexible_Tickets\Series_Passes;
 
 use Generator;
 use Spatie\Snapshots\MatchesSnapshots;
@@ -12,15 +12,15 @@ use TEC\Events\Custom_Tables\V1\Migration\String_Dictionary;
 use TEC\Events_Pro\Custom_Tables\V1\Events\Recurrence;
 use TEC\Events_Pro\Custom_Tables\V1\Migration\Strategy\Multi_Rule_Event_Migration_Strategy;
 use TEC\Events_Pro\Custom_Tables\V1\Migration\Strategy\Single_Rule_Event_Migration_Strategy;
+use TEC\Tickets\Commerce\Module as Commerce;
 use TEC\Tickets\Flexible_Tickets\CT1_Migration\Strategies\RSVP_Ticketed_Recurring_Event_Strategy;
 use TEC\Tickets\Flexible_Tickets\CT1_Migration\Strategies\Ticketed_Multi_Rule_Event_Migration_Strategy;
 use TEC\Tickets\Flexible_Tickets\CT1_Migration\Strategies\Ticketed_Single_Rule_Event_Migration_Strategy;
 use Tribe\Events_Pro\Tests\Traits\CT1\CT1_Fixtures;
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
-use Tribe__Tickets__Commerce__PayPal__Main as PayPal;
-use TEC\Tickets\Commerce\Module as Commerce;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker as Commerce_Ticket_Maker;
+use Tribe__Tickets__Commerce__PayPal__Main as PayPal;
 use WP_Post;
 
 class CT1_Migration_Test extends Controller_Test_Case {

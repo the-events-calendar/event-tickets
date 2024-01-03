@@ -4,14 +4,13 @@
  *
  * @since TBD
  *
- * @package TEC\Tickets\Flexible_Tickets;
+ * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
  */
 
-namespace TEC\Tickets\Flexible_Tickets;
+namespace TEC\Tickets\Flexible_Tickets\Series_Passes;
 
 use TEC\Common\Contracts\Provider\Controller;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
-use Tribe__Date_Utils as Dates;
 use Tribe__Template as Template;
 use WP_Post;
 
@@ -20,7 +19,7 @@ use WP_Post;
  *
  * @since TBD
  *
- * @package TEC\Tickets\Flexible_Tickets;
+ * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
  */
 class Emails extends Controller {
 

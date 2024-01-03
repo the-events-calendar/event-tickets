@@ -4,7 +4,7 @@
  *
  * @since   TBD
  *
- * @package TEC\Tickets\Flexible_Tickets\CT1_Migration\Strategies;
+ * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes\CT1_Migration\Strategies;
  */
 
 namespace TEC\Tickets\Flexible_Tickets\CT1_Migration\Strategies;
@@ -14,17 +14,17 @@ use TEC\Events\Custom_Tables\V1\Migration\Reports\Event_Report;
 use TEC\Events\Custom_Tables\V1\Migration\String_Dictionary;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 use TEC\Tickets\Flexible_Tickets\CT1_Migration\CT1_Migration_Checks;
-use TEC\Tickets\Flexible_Tickets\Series_Passes;
+use TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
+use Tribe__Tickets__Global_Stock as Global_Stock;
 use Tribe__Tickets__Main as Tickets_Main;
 use Tribe__Tickets__Tickets as Tickets;
-use Tribe__Tickets__Global_Stock as Global_Stock;
 
 /**
  * Trait Ticketed_Recurring_Event_Strategy_Trait.
  *
  * @since   TBD
  *
- * @package TEC\Tickets\Flexible_Tickets\CT1_Migration\Strategies;
+ * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes\CT1_Migration\Strategies;
  */
 trait Ticketed_Recurring_Event_Strategy_Trait {
 	use CT1_Migration_Checks;

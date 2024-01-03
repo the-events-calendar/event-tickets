@@ -4,7 +4,7 @@
  *
  * @since   TBD
  *
- * @package TEC\Tickets\Flexible_Tickets\Series_Passes;
+ * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
  */
 
 namespace TEC\Tickets\Flexible_Tickets\Series_Passes;
@@ -17,7 +17,7 @@ use WP_Post;
  *
  * @since   TBD
  *
- * @package TEC\Tickets\Flexible_Tickets\Series_Passes;
+ * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
  */
 class Meta {
 

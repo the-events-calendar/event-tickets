@@ -14,6 +14,7 @@
 namespace TEC\Tickets\Flexible_Tickets;
 
 use TEC\Common\lucatume\DI52\ServiceProvider;
+use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series;
 use TEC\Tickets\Flexible_Tickets\Templates\Admin_Views;
 
 /**
@@ -94,11 +95,21 @@ class Provider extends ServiceProvider {
 		$this->container->register( Custom_Tables::class );
 		$this->container->register( WP_Cli::class );
 		$this->container->register( Base::class );
-		$this->container->register( Series_Passes::class );
-		$this->container->register( CT1_Integration::class );
-		$this->container->register( CT1_Migration::class );
-		$this->container->register( Editor::class );
-		$this->container->register( Emails::class );
+
+		$series_are_ticketable = in_array(
+			Series::POSTTYPE,
+			(array) tribe_get_option( 'ticket-enabled-post-types', [] ),
+			true
+		);
+
+		if ( $series_are_ticketable ) {
+			$this->container->register( Series_Passes\Base::class );
+			$this->container->register( Series_Passes\Series_Passes::class );
+			$this->container->register( Series_Passes\CT1_Integration::class );
+			$this->container->register( Series_Passes\CT1_Migration::class );
+			$this->container->register( Series_Passes\Editor::class );
+			$this->container->register( Series_Passes\Emails::class );
+		}
 	}
 
 	/**
@@ -112,11 +123,17 @@ class Provider extends ServiceProvider {
 		$this->container->get( Custom_Tables::class )->unregister();
 		$this->container->get( WP_Cli::class )->unregister();
 		$this->container->get( Base::class )->unregister();
-		$this->container->get( Series_Passes::class )->unregister();
-		$this->container->get( CT1_Integration::class )->unregister();
-		$this->container->get( CT1_Migration::class )->unregister();
-		$this->container->get( Editor::class )->unregister();
-		$this->container->get( Emails::class )->unregister();
+
+		/*
+		 * In the course of the current request, the Series Pass provider might have registered.
+		 * Unregister them just to make sure, even if Series might currently not be ticketable.
+		 */
+		$this->container->get( Series_Passes\Base::class )->unregister();
+		$this->container->get( Series_Passes\Series_Passes::class )->unregister();
+		$this->container->get( Series_Passes\CT1_Integration::class )->unregister();
+		$this->container->get( Series_Passes\CT1_Migration::class )->unregister();
+		$this->container->get( Series_Passes\Editor::class )->unregister();
+		$this->container->get( Series_Passes\Emails::class )->unregister();
 	}
 
 	/**

@@ -2,10 +2,10 @@
 
 namespace Tribe\Tickets\REST\V1;
 
-use TEC\Tickets\Flexible_Tickets\Test\Traits\Series_Pass_Factory;
-use TEC\Tickets\Flexible_Tickets\Series_Passes;
-use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series;
+use TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
+use TEC\Tickets\Flexible_Tickets\Test\Traits\Series_Pass_Factory;
+use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 
 class Post_RepositoryTest extends \Codeception\TestCase\WPTestCase {
 	use Ticket_Maker;

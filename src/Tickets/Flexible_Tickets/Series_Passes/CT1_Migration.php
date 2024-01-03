@@ -4,10 +4,10 @@
  *
  * @since   TBD
  *
- * @package TEC\Tickets\Flexible_Tickets;
+ * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
  */
 
-namespace TEC\Tickets\Flexible_Tickets;
+namespace TEC\Tickets\Flexible_Tickets\Series_Passes;
 
 use TEC\Common\Contracts\Provider\Controller;
 use TEC\Events\Custom_Tables\V1\Migration\State;
@@ -25,7 +25,7 @@ use TEC\Tickets\Flexible_Tickets\CT1_Migration\Strategies\Ticketed_Single_Rule_E
  *
  * @since   TBD
  *
- * @package TEC\Tickets\Flexible_Tickets;
+ * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
  */
 class CT1_Migration extends Controller {
 	use CT1_Migration_Checks;

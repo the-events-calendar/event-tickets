@@ -4,37 +4,32 @@
  *
  * @since   TBD
  *
- * @package TEC\Tickets\Flexible_Tickets;
+ * @package TEC\Tickets\Flexible_Tickets\Series_Passes;
  */
 
-namespace TEC\Tickets\Flexible_Tickets;
+namespace TEC\Tickets\Flexible_Tickets\Series_Passes;
 
 use TEC\Common\Contracts\Provider\Controller;
 use TEC\Common\lucatume\DI52\Container;
-use TEC\Events\Custom_Tables\V1\Models\Occurrence;
-use TEC\Events_Pro\Custom_Tables\V1\Models\Provisional_Post;
-use TEC\Events_Pro\Custom_Tables\V1\Models\Series_Relationship;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 use TEC\Events_Pro\Custom_Tables\V1\Templates\Series_Filters;
-use TEC\Tickets\Flexible_Tickets\Series_Passes\Edit;
-use TEC\Tickets\Flexible_Tickets\Series_Passes\Frontend;
-use TEC\Tickets\Flexible_Tickets\Series_Passes\Labels;
-use TEC\Tickets\Flexible_Tickets\Series_Passes\Meta;
-use TEC\Tickets\Flexible_Tickets\Series_Passes\Queries;
+use TEC\Tickets\Flexible_Tickets\Enums;
+use TEC\Tickets\Flexible_Tickets\Metabox;
+use TEC\Tickets\Flexible_Tickets\Ticket_Provider_Handler;
 use Tribe__Events__Main as TEC;
 use Tribe__Repository__Interface as ORM;
+use Tribe__Tickets__Admin__Views as Admin_Views;
+use Tribe__Tickets__Editor__Template as Template;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Tickets__Tickets as Tickets;
 use WP_Post;
-use Tribe__Tickets__Editor__Template as Template;
-use Tribe__Tickets__Admin__Views as Admin_Views;
 
 /**
  * Class Repository.
  *
  * @since   TBD
  *
- * @package TEC\Tickets\Flexible_Tickets;
+ * @package TEC\Tickets\Flexible_Tickets\Series_Passes;
  */
 class Series_Passes extends Controller
 {

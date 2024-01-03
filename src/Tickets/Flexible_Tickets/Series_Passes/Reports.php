@@ -11,10 +11,9 @@ namespace TEC\Tickets\Flexible_Tickets\Series_Passes;
 
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 use TEC\Tickets\Commerce\Reports\Data\Order_Summary;
-use TEC\Tickets\Flexible_Tickets\Series_Passes;
 use TEC\Tickets\Flexible_Tickets\Templates\Admin_Views;
-use Tribe__Tickets__Tickets as Tickets;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
+use Tribe__Tickets__Tickets as Tickets;
 
 /**
  * Class Reports.

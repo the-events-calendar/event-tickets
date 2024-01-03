@@ -85,7 +85,7 @@ class Provider extends Service_Provider {
 
 		// Flexible Tickets Providers.
 		// Always register the CT1 migration component of Flexible Tickets.
-		$this->container->register_on_action( 'tec_pro_ct1_provider_registered', Flexible_Tickets\CT1_Migration::class );
+		$this->container->register_on_action( 'tec_pro_ct1_provider_registered', Flexible_Tickets\Series_Passes\CT1_Migration::class );
 		// Upon CT1 full activation register the rest of the components.
 		$this->container->register_on_action(
 			'tec_events_pro_custom_tables_v1_fully_activated',
