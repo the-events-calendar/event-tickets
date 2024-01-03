@@ -58,4 +58,4 @@
 			</div>
 		</script>
 	</div>
-<div><p>The ecommerce provider for events must match the provider for the Series. Events with a mismatched provider will not be listed. Change the provider using the Sell tickets using option in the tickets settings.</p></div>';
+The ecommerce provider for events must match the provider for the Series. Events with a mismatched provider will not be listed. Change the provider using the <em>Sell tickets using</em> option in the tickets settings.';
