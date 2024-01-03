@@ -4,7 +4,7 @@
  *
  * @since   TBD
  *
- * @package TEC\Tickets\Flexible_Tickets\Series_Passes;
+ * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
  */
 
 namespace TEC\Tickets\Flexible_Tickets\Series_Passes;
@@ -19,7 +19,7 @@ use Tribe__Events__Main as TEC;
  *
  * @since   TBD
  *
- * @package TEC\Tickets\Flexible_Tickets\Series_Passes;
+ * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
  */
 class Queries {
 	/**

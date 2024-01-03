@@ -4,22 +4,19 @@
  *
  * @since   TBD
  *
- * @package TEC\Tickets\Flexible_Tickets\Series_Passes;
+ * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
  */
 
 namespace TEC\Tickets\Flexible_Tickets\Series_Passes;
 
-use TEC\Events_Pro\Custom_Tables\V1\Models\Provisional_Post;
-use TEC\Events_Pro\Custom_Tables\V1\Models\Series_Relationship;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
-use TEC\Tickets\Flexible_Tickets\Series_Passes;
 
 /**
  * Class Edit.
  *
  * @since   TBD
  *
- * @package TEC\Tickets\Flexible_Tickets\Series_Passes;
+ * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
  */
 class Edit {
 	/**

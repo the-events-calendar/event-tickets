@@ -5,7 +5,7 @@
  *
  * @since   TBD
  *
- * @package TEC\Tickets\Flexible_Tickets\CT1_Migration;
+ * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes\CT1_Migration;
  */
 
 namespace TEC\Tickets\Flexible_Tickets\CT1_Migration;
@@ -17,7 +17,7 @@ use Tribe__Tickets__RSVP as RSVP;
  *
  * @since   TBD
  *
- * @package TEC\Tickets\Flexible_Tickets\CT1_Migration;
+ * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes\CT1_Migration;
  */
 trait CT1_Migration_Checks {
 

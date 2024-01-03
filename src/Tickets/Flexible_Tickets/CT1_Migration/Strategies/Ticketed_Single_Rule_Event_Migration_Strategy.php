@@ -4,7 +4,7 @@
  *
  * @since   TBD
  *
- * @package TEC\Tickets\Flexible_Tickets\CT1_Migration\Strategies;
+ * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes\CT1_Migration\Strategies;
  */
 
 namespace TEC\Tickets\Flexible_Tickets\CT1_Migration\Strategies;
@@ -18,7 +18,7 @@ use TEC\Events_Pro\Custom_Tables\V1\Migration\Strategy\Single_Rule_Event_Migrati
  *
  * @since   TBD
  *
- * @package TEC\Tickets\Flexible_Tickets\CT1_Migration\Strategies;
+ * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes\CT1_Migration\Strategies;
  */
 class Ticketed_Single_Rule_Event_Migration_Strategy
 	extends Single_Rule_Event_Migration_Strategy

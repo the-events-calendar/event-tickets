@@ -10,7 +10,7 @@
 namespace TEC\Tickets\Flexible_Tickets\Test\Traits;
 
 use TEC\Tickets\Commerce;
-use TEC\Tickets\Flexible_Tickets\Series_Passes;
+use TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe__Tickets__Ticket_Object as Ticket;
 

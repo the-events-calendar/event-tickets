@@ -4,27 +4,26 @@
  *
  * @since   TBD
  *
- * @package TEC\Tickets\Flexible_Tickets;
+ * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
  */
 
-namespace TEC\Tickets\Flexible_Tickets;
+namespace TEC\Tickets\Flexible_Tickets\Series_Passes;
 
-use Symfony\Component\Finder\Glob;
 use TEC\Common\Contracts\Provider\Controller;
 use TEC\Events_Pro\Custom_Tables\V1\Models\Provisional_Post;
 use TEC\Events_Pro\Custom_Tables\V1\Models\Series_Relationship;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Relationship;
-use Tribe__Tickets__Tickets as Tickets;
 use Tribe__Events__Main as TEC;
-use Tribe__Tickets__RSVP as RSVP;
 use Tribe__Tickets__Global_Stock as Global_Stock;
+use Tribe__Tickets__RSVP as RSVP;
+use Tribe__Tickets__Tickets as Tickets;
 
 /**
  * Class Editor.
  *
  * @since   TBD
  *
- * @package TEC\Tickets\Flexible_Tickets;
+ * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
  */
 class Editor extends Controller {
 	/**

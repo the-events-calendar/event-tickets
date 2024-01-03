@@ -1,6 +1,6 @@
 <?php
 
-namespace TEC\Tickets\Flexible_Tickets;
+namespace TEC\Tickets\Flexible_Tickets\Series_Passes;
 
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Events_Pro\Custom_Tables\V1\Models\Series_Relationship;

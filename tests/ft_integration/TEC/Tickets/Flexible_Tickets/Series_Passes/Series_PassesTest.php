@@ -1,6 +1,6 @@
 <?php
 
-namespace TEC\Tickets\Flexible_Tickets;
+namespace TEC\Tickets\Flexible_Tickets\Series_Passes;
 
 use Closure;
 use Generator;
@@ -15,10 +15,10 @@ use TEC\Tickets\Flexible_Tickets\Test\Traits\Series_Pass_Factory;
 use TEC\Tickets\Flexible_Tickets\Test\Traits\Ticket_Data_Factory;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
+use Tribe__Events__Main as TEC;
+use Tribe__Tickets__Admin__Views__Ticketed as Ticketed;
 use Tribe__Tickets__Commerce__PayPal__Main as PayPal;
 use Tribe__Tickets__Tickets as Tickets;
-use Tribe__Tickets__Admin__Views__Ticketed as Ticketed;
-use Tribe__Events__Main as TEC;
 
 class Series_PassesTest extends Controller_Test_Case {
 	use SnapshotAssertions;
@@ -217,10 +217,10 @@ class Series_PassesTest extends Controller_Test_Case {
 	/**
 	 * It should set pass end date time dynamically
 	 *
-	 * @covers \TEC\Tickets\Flexible_Tickets\Series_Passes::update_pass
-	 * @covers \TEC\Tickets\Flexible_Tickets\Series_Passes::update_pass_meta
-	 * @covers \TEC\Tickets\Flexible_Tickets\Series_Passes::update_passes_for_event
-	 * @covers \TEC\Tickets\Flexible_Tickets\Series_Passes::update_passes_for_series
+	 * @covers \TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes::update_pass
+	 * @covers \TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes::update_pass_meta
+	 * @covers \TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes::update_passes_for_event
+	 * @covers \TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes::update_passes_for_series
 	 *
 	 * @test
 	 */
@@ -298,10 +298,10 @@ class Series_PassesTest extends Controller_Test_Case {
 	/**
 	 * It should not set pass end date and time dynamically when explicitly set
 	 *
-	 * @covers \TEC\Tickets\Flexible_Tickets\Series_Passes::update_pass
-	 * @covers \TEC\Tickets\Flexible_Tickets\Series_Passes::update_pass_meta
-	 * @covers \TEC\Tickets\Flexible_Tickets\Series_Passes::update_passes_for_event
-	 * @covers \TEC\Tickets\Flexible_Tickets\Series_Passes::update_passes_for_series
+	 * @covers \TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes::update_pass
+	 * @covers \TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes::update_pass_meta
+	 * @covers \TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes::update_passes_for_event
+	 * @covers \TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes::update_passes_for_series
 	 *
 	 * @test
 	 */
@@ -379,10 +379,10 @@ class Series_PassesTest extends Controller_Test_Case {
 	/**
 	 * It should not set end time dynamically if end date is manually set
 	 *
-	 * @covers \TEC\Tickets\Flexible_Tickets\Series_Passes::update_pass
-	 * @covers \TEC\Tickets\Flexible_Tickets\Series_Passes::update_pass_meta
-	 * @covers \TEC\Tickets\Flexible_Tickets\Series_Passes::update_passes_for_event
-	 * @covers \TEC\Tickets\Flexible_Tickets\Series_Passes::update_passes_for_series
+	 * @covers \TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes::update_pass
+	 * @covers \TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes::update_pass_meta
+	 * @covers \TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes::update_passes_for_event
+	 * @covers \TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes::update_passes_for_series
 	 *
 	 * @test
 	 */
@@ -460,10 +460,10 @@ class Series_PassesTest extends Controller_Test_Case {
 	/**
 	 * It should set the end date and time dynamically even when end time manually set.
 	 *
-	 * @covers \TEC\Tickets\Flexible_Tickets\Series_Passes::update_pass
-	 * @covers \TEC\Tickets\Flexible_Tickets\Series_Passes::update_pass_meta
-	 * @covers \TEC\Tickets\Flexible_Tickets\Series_Passes::update_passes_for_event
-	 * @covers \TEC\Tickets\Flexible_Tickets\Series_Passes::update_passes_for_series
+	 * @covers \TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes::update_pass
+	 * @covers \TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes::update_pass_meta
+	 * @covers \TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes::update_passes_for_event
+	 * @covers \TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes::update_passes_for_series
 	 *
 	 * @test
 	 */

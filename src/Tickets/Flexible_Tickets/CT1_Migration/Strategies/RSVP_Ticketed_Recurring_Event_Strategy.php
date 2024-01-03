@@ -4,7 +4,7 @@
  *
  * @since   TBD
  *
- * @package TEC\Tickets\Flexible_Tickets\CT1_Migration\Strategies;
+ * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes\CT1_Migration\Strategies;
  */
 
 namespace TEC\Tickets\Flexible_Tickets\CT1_Migration\Strategies;
@@ -22,7 +22,7 @@ use Tribe__Events__Main as TEC;
  *
  * @since   TBD
  *
- * @package TEC\Tickets\Flexible_Tickets\CT1_Migration\Strategies;
+ * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes\CT1_Migration\Strategies;
  */
 class RSVP_Ticketed_Recurring_Event_Strategy implements Strategy_Interface {
 	use With_String_Dictionary;

@@ -1,6 +1,6 @@
 <?php
 
-namespace TEC\Tickets\Flexible_Tickets;
+namespace TEC\Tickets\Flexible_Tickets\Series_Passes;
 
 use Closure;
 use Codeception\TestCase\WPTestCase;
@@ -186,9 +186,9 @@ class Series_MetaboxesTest extends WPTestCase {
 	/**
 	 * @dataProvider series_data_provider
 	 *
-	 * @covers       \TEC\Tickets\Flexible_Tickets\Base::filter_attendees_event_details_top_label
-	 * @covers       \TEC\Tickets\Flexible_Tickets\Base::filter_series_editor_occurrence_list_columns
-	 * @covers       \TEC\Tickets\Flexible_Tickets\Base::render_series_editor_occurrence_list_column_ticket_types
+	 * @covers       \TEC\Tickets\Flexible_Tickets\Series_Passes\Base::filter_attendees_event_details_top_label
+	 * @covers       \TEC\Tickets\Flexible_Tickets\Series_Passes\Base::filter_series_editor_occurrence_list_columns
+	 * @covers       \TEC\Tickets\Flexible_Tickets\Series_Passes\Base::render_series_editor_occurrence_list_column_ticket_types
 	 */
 	public function test_events_list( Closure $fixture ) {
 		$post_ids  = $fixture();
@@ -332,8 +332,8 @@ class Series_MetaboxesTest extends WPTestCase {
 
 	/**
 	 * @dataProvider relationship_data_provider
-	 * @covers       \TEC\Tickets\Flexible_Tickets\Editor::remove_diff_ticket_provider_events
-	 * @covers       \TEC\Tickets\Flexible_Tickets\Editor::print_multiple_providers_notice
+	 * @covers       \TEC\Tickets\Flexible_Tickets\Series_Passes\Editor::remove_diff_ticket_provider_events
+	 * @covers       \TEC\Tickets\Flexible_Tickets\Series_Passes\Editor::print_multiple_providers_notice
 	 */
 	public function test_series_event_relationship( Closure $fixture ): void {
 		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );

@@ -11,7 +11,7 @@ use TEC\Tickets\Commerce\Module as Commerce;
 use TEC\Tickets\Flexible_Tickets\CT1_Migration\Strategies\RSVP_Ticketed_Recurring_Event_Strategy;
 use TEC\Tickets\Flexible_Tickets\CT1_Migration\Strategies\Ticketed_Multi_Rule_Event_Migration_Strategy;
 use TEC\Tickets\Flexible_Tickets\CT1_Migration\Strategies\Ticketed_Single_Rule_Event_Migration_Strategy;
-use TEC\Tickets\Flexible_Tickets\Series_Passes;
+use TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
 use Tribe\Events_Pro\Tests\Traits\CT1\CT1_Fixtures;
 use Tribe\Events_Pro\Tests\Traits\CT1\CT1_Test_Utils;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;

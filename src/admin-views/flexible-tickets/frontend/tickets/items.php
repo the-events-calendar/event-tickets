@@ -7,8 +7,8 @@
  * @var string                             $series_permalink The permalink to the series page.
  */
 
-use TEC\Tickets\Flexible_Tickets\Editor;
-use TEC\Tickets\Flexible_Tickets\Series_Passes;
+use TEC\Tickets\Flexible_Tickets\Series_Passes\Editor;
+use TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
 
 if ( empty( $tickets_on_sale ) ) {
 	return;
