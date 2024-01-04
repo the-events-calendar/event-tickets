@@ -197,6 +197,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [TBD] TBD =
 
+* Tweak - Added Print button to Ticket Commerce Orders. [ET-1873]
 * Fix - Ticket is removed now when using the delete option from the block editor. [ET-1879]
 * Tweak - Declared dynamic properties in Tribe__Tickets__Main, Tribe__Tickets__Tickets_Handler, Tribe__Tickets__REST__V1__Messages to prevent warnings in php 8.2 [ET-1950]
 * Fix - Resolve deprecation notices regarding `ArrayAccess::offsetGet()` [ET-1949]
