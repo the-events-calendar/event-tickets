@@ -5,6 +5,7 @@ import TicketContainerHeaderDescription from '../../../../Ticket/app/editor/cont
 import TicketContainerHeaderPrice from '../../../../Ticket/app/editor/container-header/price/template';
 import TicketContainerHeaderQuantity from '../../../../Ticket/app/editor/container-header/quantity/template';
 import { Spinner } from '@wordpress/components';
+import './style.pcss';
 
 const Uneditable = ({ tickets, cardsByTicketType, cardClassName, loading }) => {
 	if (loading) {
@@ -31,7 +32,7 @@ const Uneditable = ({ tickets, cardsByTicketType, cardClassName, loading }) => {
 		return (
 			<Card
 				key={ticketType}
-				className={cardClassName}
+				className={cardClassName + ' tribe-editor__card--uneditable'}
 				header={cardsByTicketType[ticketType].title}
 				description={cardsByTicketType[ticketType]?.description || null}
 			>
