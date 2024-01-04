@@ -172,6 +172,9 @@ class CheckoutTest extends WPTestCase {
 	 * @covers \TEC\Tickets\Commerce\Shortcodes\Checkout_Shortcode::get_html
 	 */
 	public function test_ticketscommerce_checkout_template( Closure $fixture ): void {
+		// Enqueue the assets now to avoid the snapshot containing the script tags.
+		Checkout_Shortcode::enqueue_assets();
+
 		[ $html, $tolerables ] = $fixture();
 
 		$html = $this->placehold_post_ids( $html, $tolerables );
