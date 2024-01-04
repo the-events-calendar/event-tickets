@@ -406,8 +406,8 @@ addFilter(
 );
 
 /**
- * Filters the message displayed to indicate tickets are not supported to customized the message in the case
- * where an event is recurring and unsaved.
+ * Filters the mapped properties to display a specific message when dealing with an unsaved Recurring Event.
+ * An unsaved Recurring Event is one that is Recurring but not yet part of a Series.
  *
  * @since TBD
  *
@@ -417,9 +417,9 @@ addFilter(
  * @return {Object} The mapped properties, altered if required.
  */
 function filterNotSupportedMessageMappedProps(mappedProps, { state }) {
-	const { postStatus = 'auto-draft' } = mappedProps;
+	const isInSeries = ftStore.isInSeries();
 
-	if (!(postStatus === 'auto-draft' && hasRecurrenceRules(state))) {
+	if (!hasRecurrenceRules(state) || isInSeries) {
 		return mappedProps;
 	}
 
