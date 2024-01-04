@@ -323,7 +323,7 @@ class Tribe__Tickets__Tickets_View {
 	 * @return bool
 	 */
 	public function is_edit_page() {
-		return false !== get_query_var( 'tribe-edit-orders', false );
+		return get_query_var( 'tribe-edit-orders', false ) || get_query_var( 'eventDisplay', false );
 	}
 
 	/**
@@ -1358,7 +1358,7 @@ class Tribe__Tickets__Tickets_View {
 	public function get_my_tickets_link_data( int $event_id, int $user_id ): array {
 		$event              = get_post( $event_id );
 		$post_type          = get_post_type_object( $event->post_type );
-		$is_event_page      = class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::POSTTYPE === $event->post_type;
+		$is_event_page      = class_exists( 'Tribe__Events__Main' ) && ( Tribe__Events__Main::POSTTYPE === $event->post_type || 'tribe_event_series' === $event->post_type );
 		$post_type_singular = $post_type ? $post_type->labels->singular_name : _x( 'Post', 'fallback post type singular name', 'event-tickets' );
 		$counters           = [];
 		$rsvp_count         = $this->count_rsvp_attendees( $event_id, $user_id );

@@ -87,7 +87,8 @@ class Frontend {
 	 */
 	public function skip_rendering_series_content_for_my_tickets_page( string $content ): string {
 		// Check if we are on my ticket page.
-		$is_ticket_edit_page = (bool) get_query_var( 'tribe-edit-orders', false );
+		$is_ticket_edit_page = 'tickets' === get_query_var( 'eventDisplay', false );
+
 		if ( ! $is_ticket_edit_page ) {
 			return $content;
 		}
