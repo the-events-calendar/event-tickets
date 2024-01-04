@@ -23,6 +23,7 @@ use Tribe__Tickets__Editor__Template as Template;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Tickets__Tickets as Tickets;
 use WP_Post;
+use WP_Rewrite;
 
 /**
  * Class Repository.
@@ -249,6 +250,7 @@ class Series_Passes extends Controller
         add_filter('tec_tickets_is_ticket_editable_from_post', [$this, 'is_ticket_editable_from_post'], 10, 3);
 
         add_filter('tec_tickets_my_tickets_link_ticket_count_by_type', [$this, 'filter_my_tickets_link_data'], 10, 3);
+		add_action( 'generate_rewrite_rules', [ $this, 'include_rewrite_rules_for_series_my_tickets_page' ] );
 
         /**
          * The FT feature will only be available if the CT1 feature is active: this implies Recurring Events
@@ -336,6 +338,7 @@ class Series_Passes extends Controller
         remove_filter('tec_tickets_is_ticket_editable_from_post', [$this, 'is_ticket_editable_from_post']);
         remove_filter('tec_tickets_my_tickets_link_ticket_count_by_type', [$this, 'filter_my_tickets_link_data'], 10, 3);
 	    remove_filter( 'tec_tickets_allow_tickets_on_recurring_events', [ $this, 'allow_tickets_on_recurring_events' ] );
+	    remove_action( 'generate_rewrite_rules', [ $this, 'include_rewrite_rules_for_series_my_tickets_page' ] );
     }
 
     /**
@@ -1122,5 +1125,25 @@ class Series_Passes extends Controller
 	 */
 	public function allow_tickets_on_recurring_events( bool $allow ): bool {
 		return true;
+	}
+
+	/**
+	 * Generate rewrite rules for the series my tickets page.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Rewrite $wp_rewrite Current WP_Rewrite instance (passed by reference).
+	 *
+	 * @return void
+	 */
+	public function include_rewrite_rules_for_series_my_tickets_page( WP_Rewrite $wp_rewrite ): void {
+		$post_type = get_post_type_object( Series_Post_Type::POSTTYPE );
+		$slug      = $post_type->rewrite['slug'];
+
+		$rules = [
+			'(?:'. $slug .')/([^/]+)/(?:tickets)/?$' => 'index.php?'. $post_type->name .'=$matches[1]&post_type='. $post_type->name .'&eventDisplay=tickets',
+		];
+
+		$wp_rewrite->rules = $rules + $wp_rewrite->rules;
 	}
 }
