@@ -250,7 +250,7 @@ class Series_Passes extends Controller
         add_filter('tec_tickets_is_ticket_editable_from_post', [$this, 'is_ticket_editable_from_post'], 10, 3);
 
         add_filter('tec_tickets_my_tickets_link_ticket_count_by_type', [$this, 'filter_my_tickets_link_data'], 10, 3);
-	    add_action( 'generate_rewrite_rules', [ $this, 'include_rewrite_rules_for_series_my_tickets_page' ] );
+		add_action( 'generate_rewrite_rules', [ $this, 'include_rewrite_rules_for_series_my_tickets_page' ] );
 
         /**
          * The FT feature will only be available if the CT1 feature is active: this implies Recurring Events
