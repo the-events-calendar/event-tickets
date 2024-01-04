@@ -552,7 +552,7 @@ class Tribe__Tickets__Attendees {
 
 		// Add additional expected columns.
 		$export_columns['order_id']           = esc_html_x( 'Order ID', 'attendee export', 'event-tickets' );
-		$export_columns['order_status_label'] = esc_html_x( 'Order Status', 'attendee export', 'event-tickets' );
+		$export_columns['order_status'] = esc_html_x( 'Order Status', 'attendee export', 'event-tickets' );
 		$export_columns['attendee_id']        = esc_html( sprintf( _x( '%s ID', 'attendee export', 'event-tickets' ), tribe_get_ticket_label_singular( 'attendee_export_ticket_id' ) ) );
 		$export_columns['holder_name']        = esc_html_x( 'Ticket Holder Name', 'attendee export', 'event-tickets' );
 		$export_columns['holder_email']       = esc_html_x( 'Ticket Holder Email Address', 'attendee export', 'event-tickets' );
