@@ -67,19 +67,22 @@ class Reports {
 			sprintf( '<a href="%s" target="_blank">%s</a>', esc_url( $edit_url ), __( 'Edit Series', 'event-tickets' ) ),
 			sprintf( '<a href="%s" target="_blank">%s</a>', esc_url( get_permalink( $series_id ) ), __( 'View Series', 'event-tickets' ) ),
 		];
-        
-        $series_passes = Tickets::get_event_tickets( $series_id );
-        
-        if ( ! empty( $series_passes ) ) {
-            $action_links[] = sprintf( '<a href="%s" target="_blank">%s</a>', esc_url( $attendee_report_link ), __( 'Series Attendees', 'event-tickets' ) );
-        }
+		
+		$series_passes = Tickets::get_event_tickets( $series_id );
+		
+		if ( ! empty( $series_passes ) ) {
+			$action_links[] = sprintf( '<a href="%s" target="_blank">%s</a>', esc_url( $attendee_report_link ), __( 'Series Attendees', 'event-tickets' ) );
+		}
 
 		// Render series details.
-		$this->admin_views->template( 'admin/attendees/series-summary', [
-			'title'        => $title,
-			'edit_link'    => $edit_link,
-			'action_links' => $action_links
-		] );
+		$this->admin_views->template(
+			'admin/attendees/series-summary',
+			[
+				'title'        => $title,
+				'edit_link'    => $edit_link,
+				'action_links' => $action_links,
+			] 
+		);
 	}
 
 	/**
@@ -110,27 +113,30 @@ class Reports {
 		}
 
 		// Generate series summary.
-		$title                = get_the_title( $series_id );
-		$edit_url             = get_edit_post_link( $series_id );
-		$edit_link            = sprintf( '<a href="%s" target="_blank">%s</a>', esc_url( $edit_url ), $title );
-		$order_report_link    = $provider->get_event_reports_link( $series_id, true );
-		$action_links         = [
+		$title             = get_the_title( $series_id );
+		$edit_url          = get_edit_post_link( $series_id );
+		$edit_link         = sprintf( '<a href="%s" target="_blank">%s</a>', esc_url( $edit_url ), $title );
+		$order_report_link = $provider->get_event_reports_link( $series_id, true );
+		$action_links      = [
 			sprintf( '<a href="%s" target="_blank">%s</a>', esc_url( $edit_url ), __( 'Edit Series', 'event-tickets' ) ),
 			sprintf( '<a href="%s" target="_blank">%s</a>', esc_url( get_permalink( $series_id ) ), __( 'View Series', 'event-tickets' ) ),
 		];
-        
-        $series_passes = Tickets::get_event_tickets( $series_id );
-        
-        if ( ! empty( $series_passes ) ) {
-            $action_links[] = sprintf( '<a href="%s" target="_blank">%s</a>', esc_url( $order_report_link ), __( 'Series Orders', 'event-tickets' ) );
-        }
+		
+		$series_passes = Tickets::get_event_tickets( $series_id );
+		
+		if ( ! empty( $series_passes ) ) {
+			$action_links[] = sprintf( '<a href="%s" target="_blank">%s</a>', esc_url( $order_report_link ), __( 'Series Orders', 'event-tickets' ) );
+		}
 
 		// Render series details.
-		$this->admin_views->template( 'admin/attendees/series-summary', [
-			'title'        => $title,
-			'edit_link'    => $edit_link,
-			'action_links' => $action_links
-		] );
+		$this->admin_views->template(
+			'admin/attendees/series-summary',
+			[
+				'title'        => $title,
+				'edit_link'    => $edit_link,
+				'action_links' => $action_links,
+			] 
+		);
 	}
 
 	/**
