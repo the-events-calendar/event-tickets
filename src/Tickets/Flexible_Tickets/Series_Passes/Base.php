@@ -171,6 +171,11 @@ class Base extends Controller {
 			$this,
 			'show_series_link_after_ticket_type_title'
 		], 10, 3 );
+        
+        add_filter( 'tribe_template_pre_html:tickets/admin-views/editor/panel/settings-button', [
+            $this,
+            'remove_settings_button_from_classic_metabox'
+        ], 10, 5 );
 	}
 
 	/**
@@ -287,6 +292,11 @@ class Base extends Controller {
 			$this,
 			'show_series_link_after_ticket_type_title'
 		], 10, 3 );
+        
+        remove_filter( 'tribe_template_pre_html:tickets/admin-views/editor/panel/settings-button', [
+            $this,
+            'remove_settings_button_from_classic_metabox'
+        ], 10, 5 );
 	}
 
 	/**
@@ -767,4 +777,25 @@ class Base extends Controller {
 
 		echo '<span class="tec-tickets__my-tickets-list__series-link">' . $series_link . '</span>';
 	}
+    
+    /**
+     * Hides the settings button from showing up for the classic editor metabox.
+     *
+     * @since TBD
+     *
+     * @param null|string         $html     The initial HTML.
+     * @param string              $file     Complete path to include the PHP File.
+     * @param string[]            $name     Template name.
+     * @param Template            $template Current instance of the Tribe__Template
+     * @param array<string,mixed> $context  The context data passed to the template.
+     *
+     * @return null|bool The filtered HTML, or `false` to hide the option.
+     */
+    public function remove_settings_button_from_classic_metabox( string $html = null, string $file, array $name, Template $template, array $context ): ?bool {
+        if ( ! isset( $context['post_id'] ) || get_post_type( $context['post_id'] ) !== Series_Post_Type::POSTTYPE ) {
+            return $html;
+        }
+        
+        return false;
+    }
 }
