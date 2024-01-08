@@ -191,7 +191,7 @@ class Tickets_Commerce_Subsection extends Abstract_Info_Subsection {
 	 * @return string 'True' if Stripe is connected, 'False' otherwise.
 	 */
 	private function is_tickets_commerce_stripe_connected(): string {
-		return $this->get_boolean_string( ( tribe( Stripe_Gateway::class ) );
+		return $this->get_boolean_string( tribe( Stripe_Gateway::class )->is_enabled() );
 	}
 
 	/**
