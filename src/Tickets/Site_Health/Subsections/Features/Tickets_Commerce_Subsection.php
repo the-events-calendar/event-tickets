@@ -12,6 +12,8 @@ namespace TEC\Tickets\Site_Health\Subsections\Features;
 use TEC\Tickets\Commerce\Gateways\PayPal\Gateway as PayPal_Gateway;
 use TEC\Tickets\Commerce\Gateways\Stripe\Gateway as Stripe_Gateway;
 use TEC\Tickets\Commerce\Repositories\Tickets_Repository;
+use TEC\Tickets\Commerce\Settings;
+use TEC\Tickets\Commerce\Utils\Currency;
 use TEC\Tickets\Site_Health\Abstract_Info_Subsection;
 
 /**
@@ -26,10 +28,7 @@ class Tickets_Commerce_Subsection extends Abstract_Info_Subsection {
 	 * @inheritDoc
 	 */
 	protected function is_subsection_enabled(): bool {
-		return tribe_get_option(
-			'tickets_commerce_enabled',
-			false
-		);
+		return tec_tickets_commerce_is_enabled();
 	}
 
 	/**
@@ -132,7 +131,7 @@ class Tickets_Commerce_Subsection extends Abstract_Info_Subsection {
 		$count                          = 0;
 
 		foreach ( $tickets_commerce_ticket_prices as $price ) {
-			if ( $price === 'Free' || $price === '' || $price === null ) {
+			if ( 'Free' === $price || '' === $price || null === $price ) {
 				// Skip free or empty prices for average calculation.
 				continue;
 			} else {
@@ -180,7 +179,7 @@ class Tickets_Commerce_Subsection extends Abstract_Info_Subsection {
 	private function is_tickets_commerce_test_mode(): string {
 		return $this->get_boolean_string(
 			tribe_get_option(
-				'tickets-commerce-test-mode',
+				Settings::$option_sandbox,
 				false
 			)
 		);
@@ -192,7 +191,7 @@ class Tickets_Commerce_Subsection extends Abstract_Info_Subsection {
 	 * @return string 'True' if Stripe is connected, 'False' otherwise.
 	 */
 	private function is_tickets_commerce_stripe_connected(): string {
-		return tribe( Stripe_Gateway::class )->is_enabled() ? 'True' : 'False';
+		return $this->get_boolean_string( ( tribe( Stripe_Gateway::class ) );
 	}
 
 	/**
@@ -201,7 +200,7 @@ class Tickets_Commerce_Subsection extends Abstract_Info_Subsection {
 	 * @return string 'True' if PayPal is connected, 'False' otherwise.
 	 */
 	private function is_tickets_commerce_paypal_connected(): string {
-		return tribe( PayPal_Gateway::class )->is_enabled() ? 'True' : 'False';
+		return $this->get_boolean_string( tribe( PayPal_Gateway::class )->is_enabled() );
 	}
 
 	/**
@@ -211,7 +210,8 @@ class Tickets_Commerce_Subsection extends Abstract_Info_Subsection {
 	 */
 	private function get_tickets_commerce_currency_code(): string {
 		return tribe_get_option(
-			'tickets-commerce-currency-code'
+			Settings::$option_currency_code,
+			Currency::$currency_code_fallback
 		);
 	}
 
@@ -222,7 +222,8 @@ class Tickets_Commerce_Subsection extends Abstract_Info_Subsection {
 	 */
 	private function get_tickets_commerce_currency_position(): string {
 		return tribe_get_option(
-			'tickets-commerce-currency-position'
+			Settings::$option_currency_position,
+			'prefix'
 		);
 	}
 
@@ -234,7 +235,8 @@ class Tickets_Commerce_Subsection extends Abstract_Info_Subsection {
 	 */
 	private function get_tickets_commerce_decimal_separator(): string {
 		return tribe_get_option(
-			'tickets-commerce-currency-decimal-separator'
+			Settings::$option_currency_decimal_separator,
+			Currency::$currency_code_decimal_separator
 		);
 	}
 
@@ -245,7 +247,8 @@ class Tickets_Commerce_Subsection extends Abstract_Info_Subsection {
 	 */
 	private function get_tickets_commerce_thousands_separator(): string {
 		return tribe_get_option(
-			'tickets-commerce-currency-thousands-separator'
+			Settings::$option_currency_thousands_separator,
+			Currency::$currency_code_thousands_separator
 		);
 	}
 
@@ -256,7 +259,8 @@ class Tickets_Commerce_Subsection extends Abstract_Info_Subsection {
 	 */
 	private function get_tickets_commerce_number_of_decimals(): string {
 		return tribe_get_option(
-			'tickets-commerce-currency-number-of-decimals'
+			Settings::$option_currency_number_of_decimals,
+			Currency::$currency_code_number_of_decimals
 		);
 	}
 }

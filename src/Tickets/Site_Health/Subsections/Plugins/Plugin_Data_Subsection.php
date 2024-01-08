@@ -556,12 +556,12 @@ class Plugin_Data_Subsection extends Abstract_Info_Subsection {
 		$count = 0;
 
 		foreach ( $ticket_prices as $price ) {
-			if ( $price === 'Free' || $price === '' ) {
+			if ( 'Free' === $price || '' === $price ) {
 				$total += 0;
 				++$count;
 			} else {
 				$number = $this->parse_price( $price );
-				if ( $number !== null ) {
+				if ( null !== $number ) {
 					$total += $number;
 					++$count;
 				}
@@ -608,7 +608,7 @@ class Plugin_Data_Subsection extends Abstract_Info_Subsection {
 
 		foreach ( $ticket_prices as $price ) {
 			$number = $this->parse_price( $price );
-			if ( $number !== null && $number > $max_price ) {
+			if ( null !== $number && $number > $max_price ) {
 				$max_price = $number;
 			}
 		}
@@ -629,12 +629,12 @@ class Plugin_Data_Subsection extends Abstract_Info_Subsection {
 
 		foreach ( $ticket_prices as $price ) {
 			$number = $this->parse_price( $price );
-			if ( $number !== null && $number < $min_price ) {
+			if ( null !== $number && $number < $min_price ) {
 				$min_price = $number;
 			}
 		}
 
-		return $min_price === PHP_FLOAT_MAX ? 0 : $min_price;
+		return PHP_FLOAT_MAX === $min_price ? 0 : $min_price;
 	}
 
 	/**
