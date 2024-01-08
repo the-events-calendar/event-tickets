@@ -16,11 +16,34 @@ test.beforeAll(async () => {
 test('series are ticketable', async ({ page }) => {
 	const wpAdmin = new WPAdmin(page);
 	await wpAdmin.loginAsAdmin();
-	await wpAdmin.amOnTicketsSettingsPage();
+	await wpAdmin.gotoTicketsSettingsPage();
 
 	await expect(
 		page.locator(
 			`#tribe-field-ticket-enabled-post-types input[value="${seriesPostType}"]`
 		)
 	).toBeDefined();
+});
+
+test('tickets are not available on non-ticketable type', async ({ page }) => {
+	const wpAdmin = new WPAdmin(page);
+	await wpAdmin.loginAsAdmin();
+
+	const ticketSettingsPage = await wpAdmin.gotoTicketsSettingsPage();
+	await ticketSettingsPage.setPostTypeTicketable('post', false);
+	await ticketSettingsPage.save();
+
+	await wpAdmin.gotoCreateNewPostTypePage('post');
+
+	await page.screenshot({
+		path: 'tests/_output/screenshot.png',
+		fullPage: true,
+	});
+
+	await page.isVisible('input.components-search-control__input');
+	await page.fill('input.components-search-control__input', 'Tickets');
+
+	await expect(
+		page.locator('.block-editor-inserter__quick-inserter-results')
+	).toHaveText('No results found.');
 });

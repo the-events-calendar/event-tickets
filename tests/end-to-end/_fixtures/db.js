@@ -39,4 +39,19 @@ export class Db {
 			process.exit(1);
 		}
 	}
+
+	async updateUserMeta(userId, metaKey, metaValue) {
+		try {
+			const output = execSync(
+				`wp user meta set ${userId} ${metaKey} ${metaValue}`,
+				{
+					stdio: [null, null, null],
+				}
+			);
+			process.stdout.write(`[Db.loadDump] ${output}`);
+		} catch (error) {
+			process.stdout.write(`[Db.loadDump]: ${error.message}`);
+			process.exit(1);
+		}
+	}
 }

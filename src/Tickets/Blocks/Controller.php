@@ -50,7 +50,15 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 		$this->container->singleton( 'tickets.editor.blocks.attendees', Attendees_Block::class, [ 'load' ] );
 		$this->container->singleton( 'tickets.editor.configuration', Configuration::class, [ 'hook' ] );
 
-		$this->register_for_blocks();
+		$ticketable = in_array(
+			(string) get_post_type(),
+			(array) tribe_get_option( 'ticket-enabled-post-types', [] ),
+			true
+		);
+
+		if ( $ticketable ) {
+			$this->register_for_blocks();
+		}
 
 		// Handle general non-block-specific instances.
 		tribe( 'tickets.editor.warnings' );
