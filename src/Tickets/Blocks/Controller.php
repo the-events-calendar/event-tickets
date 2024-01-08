@@ -51,7 +51,7 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 		$this->container->singleton( 'tickets.editor.configuration', Configuration::class, [ 'hook' ] );
 
 		$ticketable = in_array(
-			(string) get_post_type(),
+			get_post_type() ?: tribe_get_request_var( 'post_type', 'post' ),
 			(array) tribe_get_option( 'ticket-enabled-post-types', [] ),
 			true
 		);
