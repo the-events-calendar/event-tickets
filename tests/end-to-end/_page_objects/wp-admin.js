@@ -1,4 +1,7 @@
 const { adminUser, adminPassword } = require('../_constants/env');
+const { expect } = require('@playwright/test');
+const { TicketsSettingsPage } = require('./tickets-settings-page');
+const { Db } = require('./../_fixtures/db');
 
 exports.WPAdmin = class WPAdmin {
 	/**
@@ -15,9 +18,34 @@ exports.WPAdmin = class WPAdmin {
 		await this.page.fill('#user_pass', adminPassword);
 		await this.page.click('#wp-submit');
 		await this.page.goto('/wp-admin.php');
+		// No need to show the welcome panel each time we access the block editor.
+		const db = new Db();
+		await db.updateUserMeta(1, 'show_welcome_panel', 0);
 	}
 
-	async amOnTicketsSettingsPage() {
+	async gotoTicketsSettingsPage() {
 		await this.page.goto('/wp-admin/admin.php?page=tec-tickets-settings');
+		return new TicketsSettingsPage(this.page);
+	}
+
+	async gotoCreateNewPostTypePage(postType) {
+		expect(postType).isPrototypeOf(String);
+		expect(postType).not.toBe('');
+
+		// Disable welcome guide and fullscreen mode.
+		await this.page.evaluate(async () => {
+			const wpData = window.wp.data || null;
+			if (!wpData) {
+				return;
+			}
+			wpData.select('core/edit-post').isFeatureActive('welcomeGuide') &&
+				wpData.dispatch('core/edit-post').toggleFeature('welcomeGuide');
+			wpData.select('core/edit-post').isFeatureActive('fullscreenMode') &&
+				wpData
+					.dispatch('core/edit-post')
+					.toggleFeature('fullscreenMode');
+		});
+
+		await this.page.goto(`/wp-admin/post-new.php?post_type=${postType}`);
 	}
 };
