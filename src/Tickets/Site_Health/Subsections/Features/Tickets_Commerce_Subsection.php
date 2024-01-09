@@ -150,7 +150,7 @@ class Tickets_Commerce_Subsection extends Abstract_Info_Subsection {
 							$matches[0]
 						)
 					);
-					$total  += $number;
+					$total += $number;
 
 					++$count;
 				}
