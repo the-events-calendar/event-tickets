@@ -1,4 +1,11 @@
-<div
+
+<div class="tribe-tickets-editor-blocker">
+	<span class="spinner"></span>
+</div>
+
+<div id="event_tickets" class="eventtable" aria-live="polite">
+	<input type="hidden" id="tribe-tickets-post-settings" name="tribe-tickets-post-settings" value="33333333" /><input type="hidden" name="_wp_http_referer" value="" />
+	<div
 	id="tribe_panel_base"
 	class="ticket_panel panel_base"
 	aria-hidden="false"
@@ -6,19 +13,7 @@
 >
 	<div class="tribe_sectionheader ticket_list_container">
 		<div class="ticket_table_intro">
-			<button
-	id="ticket_form_toggle"
-	class="button-secondary ticket_form_toggle tribe-button-icon tribe-button-icon-plus"
-	aria-label="Add a new ticket"
-""
->
-New ticket</button><button
-	id="rsvp_form_toggle"
-	class="button-secondary ticket_form_toggle tribe-button-icon tribe-button-icon-plus"
-	aria-label="Add a new RSVP"
->
-	New RSVP</button>
-
+			
 							<div class="tec_ticket-panel__helper_link__wrap">
 					<p>
 					<a href="https://evnt.is/manage-tickets" target="_blank" rel="noopener noreferrer ">Learn more about ticket management</a>					</p>
@@ -37,29 +32,29 @@ New ticket</button><button
 					
 <img
 	class="tribe-tickets-svgicon tec-tickets-icon tec-tickets-icon__ticket-type"
-	src="http://wordpress.test/wp-content/plugins/event-tickets/src/resources/icons/ticket-rsvp-icon.svg"
-	alt="RSVP"
+	src="http://wordpress.test/wp-content/plugins/event-tickets/src/resources/icons/ticket-default-icon.svg"
+	alt="Ticket"
 />
-					RSVPs				</th>
+					Tickets				</th>
 				
-<th class="ticket_price"></th>
+<th class="ticket_price">Price</th>
 				<th class="ticket_capacity">Capacity</th>
 				<th class="ticket_available">Available</th>
 				<th class="ticket_edit"></th>
 			</tr>
 		</thead>
 				<tbody class="tribe-tickets-editor-table-tickets-body">
-		<tr class="Tribe__Tickets__RSVP is-expanded"
+		<tr class="TEC\Tickets\Commerce\Module is-expanded"
 	data-ticket-order-id="order_{{ID}}"
 	data-ticket-type-id="{{ID}}"
-	data-ticket-type="rsvp">
-	<td class="column-primary ticket_name Tribe__Tickets__RSVP" data-label="Ticket Type:">
+	data-ticket-type="default">
+	<td class="column-primary ticket_name TEC\Tickets\Commerce\Module" data-label="Ticket Type:">
 		<input
 			type="hidden"
 			class="tribe-ticket-field-order"
 			name="tribe-tickets[list][{{ID}}][order]"
-			value="0"
-			disabled		>
+			value="-1"
+					>
 		<div class="tribe-tickets__tickets-editor-ticket-name">
 			<div class="tribe-tickets__tickets-editor-ticket-name-sortable">
 				<span class="dashicons dashicons-screenoptions tribe-handle"></span>
@@ -67,46 +62,63 @@ New ticket</button><button
 			<div class="tribe-tickets__tickets-editor-ticket-name-title">
 
 				
-				Test RSVP ticket for {{ID}}
+				Test TC ticket for {{ID}}
 				<div  class="tribe-tickets__tickets-editor-ticket-available-dates dashicons-before dashicons-clock" >
 	January 2, 2020 - March 1, 2050</div>			</div>
 		</div>
 	</td>
 
-	<td></td>
+	<td class="ticket_price" data-label="Price:">
+	&#x24;1.00</td>
+
 	<td class="ticket_capacity">
 		<span class='tribe-mobile-only'>Capacity:</span>
-		100	</td>
+		89	</td>
 
 	<td class="ticket_available">
 		<span class='tribe-mobile-only'>Available:</span>
-				100	</td>
+				89	</td>
 
 	<td class="ticket_edit">
-		<button
-	data-provider='Tribe__Tickets__RSVP'
-	data-ticket-id='{{ID}}'
-	title='Edit Ticket ID: {{ID}}'
-	class='ticket_edit_button'>
-	<span class='ticket_edit_text'>Test RSVP ticket for {{ID}}</span>
-</button>
+			</td>
+</tr>
+<tr class="TEC\Tickets\Commerce\Module is-expanded"
+	data-ticket-order-id="order_{{ID}}"
+	data-ticket-type-id="{{ID}}"
+	data-ticket-type="default">
+	<td class="column-primary ticket_name TEC\Tickets\Commerce\Module" data-label="Ticket Type:">
+		<input
+			type="hidden"
+			class="tribe-ticket-field-order"
+			name="tribe-tickets[list][{{ID}}][order]"
+			value="-1"
+					>
+		<div class="tribe-tickets__tickets-editor-ticket-name">
+			<div class="tribe-tickets__tickets-editor-ticket-name-sortable">
+				<span class="dashicons dashicons-screenoptions tribe-handle"></span>
+			</div>
+			<div class="tribe-tickets__tickets-editor-ticket-name-title">
 
-	<button
-		data-provider='Tribe__Tickets__RSVP'
-		data-ticket-id='{{ID}}'
-		title='Duplicate Ticket ID: {{ID}}'
-		class='ticket_duplicate'>
-	<span class='ticket_duplicate_text'>Test RSVP ticket for {{ID}}</span>
-	</button>
-
-<button
-	attr-provider='Tribe__Tickets__RSVP'
-	attr-ticket-id='{{ID}}'
-	title='Delete Ticket ID: {{ID}}'
-	class='ticket_delete'>
-	<span class='ticket_delete_text'>Test RSVP ticket for {{ID}}</span>
-</button>
+				
+				Test TC ticket for {{ID}}
+				<div  class="tribe-tickets__tickets-editor-ticket-available-dates dashicons-before dashicons-clock" >
+	January 2, 2020 - March 1, 2050</div>			</div>
+		</div>
 	</td>
+
+	<td class="ticket_price" data-label="Price:">
+	&#x24;1.00</td>
+
+	<td class="ticket_capacity">
+		<span class='tribe-mobile-only'>Capacity:</span>
+		23	</td>
+
+	<td class="ticket_available">
+		<span class='tribe-mobile-only'>Available:</span>
+				23	</td>
+
+	<td class="ticket_edit">
+			</td>
 </tr>
 		</tbody>
 	</table>
@@ -123,75 +135,14 @@ New ticket</button><button
 									</div>
 
 		<div class="tribe-ticket-control-wrap__settings">
-							<span id="ticket_form_total_capacity">
-	Total Event Capacity:	<span id="ticket_form_total_capacity_value" title="The total number of possible attendees for this event">
-		<a href="#" id="capacity_form_toggle">100</a>	</span>
-</span>
-			
+										
 			<button id="settings_form_toggle" class="button-secondary tribe-button-icon tribe-button-icon-settings">
     Settings</button>
 		</div>
 	</div>
-		<p class="tec_ticket-panel__recurring-unsupported-warning" style="display: none">Single tickets and RSVPs are not yet supported on recurring events. <a href="https://evnt.is/1b7a" target="_blank" rel="noopener noreferrer"> Read about our plans for future features </a><p><p class="tec_ticket-panel__recurring-unsupported-warning" style="display: none">Single tickets and RSVPs are not yet supported on recurring events. <a href="https://evnt.is/1b7a" target="_blank" rel="noopener noreferrer"> Read about our plans for future features </a><p>
+		<p class="tec_ticket-panel__recurring-unsupported-warning" style="display: none">Single tickets and RSVPs are not yet supported on recurring events. <a href="https://evnt.is/1b7a" target="_blank" rel="noopener noreferrer"> Read about our plans for future features </a><p>
 </div>
-<div id="tribe_panel_settings" class="ticket_panel panel_settings" aria-hidden="true" >
-	<h4>Ticket Settings	</h4>
-
-	<section class="settings_main">
-		
-	<fieldset class="screen-reader-text">
-									<input
-					type="radio"
-					class="tribe-ticket-editor-field-default_provider settings_field"
-					name="tribe-tickets[settings][default_provider]"
-					id="provider_TEC_Tickets_Commerce_Module_radio"
-					value="TEC\Tickets\Commerce\Module"
-					checked
-				>
-						</fieldset>
-	</section>
-
-	<section id="tribe-tickets-image">
-	<div class="tribe-tickets-image-upload">
-		<div class="input_block">
-				<span class="ticket_form_label tribe-strong-label">Ticket header image:				</span>
-			<p class="description">
-				Select an image from your Media Library to display on emailed ticket. For best results, use a .jpg, .png, or .gif at least 1160px wide.			</p>
-		</div>
-		<input
-			type="button"
-			class="button"
-			name="tribe-tickets[settings][header_image]"
-			id="tribe_ticket_header_image"
-			value="Select an Image"
-		/>
-
-		<span id="tribe_tickets_image_preview_filename" class="">
-				<span class="dashicons dashicons-format-image"></span>
-				<span class="filename"></span>
-			</span>
-	</div>
-	<div class="tribe-tickets-image-preview">
-		<a class="tribe_preview" id="tribe_ticket_header_preview">
-					</a>
-		<p class="description">
-			<a href="#" id="tribe_ticket_header_remove">Remove</a>
-		</p>
-
-		<input
-			type="hidden"
-			id="tribe_ticket_header_image_id"
-			class="settings_field"
-			name="tribe-tickets[settings][header_image_id]"
-			value=""
-		/>
-	</div>
-</section>
-
-	<input type="button" id="tribe_settings_form_save" name="tribe_settings_form_save" value="Save settings" class="button-primary" />
-	<input type="button" id="tribe_settings_form_cancel" name="tribe_settings_form_cancel" value="Cancel" class="button-secondary" />
-</div>
-
+	
 <div id="tribe_panel_edit" class="ticket_panel panel_edit tribe-validation" aria-hidden="true"
 	 data-default-provider="TEC\Tickets\Commerce\Module"
      data-current-provider="TEC\Tickets\Commerce\Module"
@@ -551,4 +502,65 @@ New ticket</button><button
 			</div>
 		</div>
 	</div>
+</div>
+
+	
+<div id="tribe_panel_settings" class="ticket_panel panel_settings" aria-hidden="true" >
+	<h4>Ticket Settings	</h4>
+
+	<section class="settings_main">
+		
+	<fieldset class="screen-reader-text">
+									<input
+					type="radio"
+					class="tribe-ticket-editor-field-default_provider settings_field"
+					name="tribe-tickets[settings][default_provider]"
+					id="provider_TEC_Tickets_Commerce_Module_radio"
+					value="TEC\Tickets\Commerce\Module"
+					checked
+				>
+						</fieldset>
+	</section>
+
+	<section id="tribe-tickets-image">
+	<div class="tribe-tickets-image-upload">
+		<div class="input_block">
+				<span class="ticket_form_label tribe-strong-label">Ticket header image:				</span>
+			<p class="description">
+				Select an image from your Media Library to display on emailed ticket. For best results, use a .jpg, .png, or .gif at least 1160px wide.			</p>
+		</div>
+		<input
+			type="button"
+			class="button"
+			name="tribe-tickets[settings][header_image]"
+			id="tribe_ticket_header_image"
+			value="Select an Image"
+		/>
+
+		<span id="tribe_tickets_image_preview_filename" class="">
+				<span class="dashicons dashicons-format-image"></span>
+				<span class="filename"></span>
+			</span>
+	</div>
+	<div class="tribe-tickets-image-preview">
+		<a class="tribe_preview" id="tribe_ticket_header_preview">
+					</a>
+		<p class="description">
+			<a href="#" id="tribe_ticket_header_remove">Remove</a>
+		</p>
+
+		<input
+			type="hidden"
+			id="tribe_ticket_header_image_id"
+			class="settings_field"
+			name="tribe-tickets[settings][header_image_id]"
+			value=""
+		/>
+	</div>
+</section>
+
+	<input type="button" id="tribe_settings_form_save" name="tribe_settings_form_save" value="Save settings" class="button-primary" />
+	<input type="button" id="tribe_settings_form_cancel" name="tribe_settings_form_cancel" value="Cancel" class="button-secondary" />
+</div>
+
 </div>
