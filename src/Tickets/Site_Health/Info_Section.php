@@ -91,10 +91,21 @@ class Info_Section extends Info_Section_Abstract {
 	public function add_fields(): void {
 		$subsections = [
 			tribe( Plugin_Data_Subsection::class )->get_subsection(),
-			tribe( The_Events_Calendar_Subsection::class )->get_subsection(),
 			tribe( Tickets_Commerce_Subsection::class )->get_subsection(),
-			tribe( Event_Tickets_Plus_Subsection::class )->get_subsection(),
 		];
+
+		/**
+		 * Filters the subsections array to allow modifications for the Event Tickets Info Section.
+		 *
+		 * This filter allows external modification of the `$subsections` array. It can be used to add,
+		 * remove, or modify the subsections before they are merged into the `$fields` array.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $subsections The array of subsections. Each subsection is an array of fields.
+		 * @return array The modified array of subsections.
+		 */
+		$subsections = apply_filters( 'tec_tickets_site_health_subsections', $subsections );
 
 		$fields = array_merge(
 			...$subsections
