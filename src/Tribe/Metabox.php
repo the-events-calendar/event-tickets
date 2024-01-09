@@ -74,7 +74,7 @@ class Tribe__Tickets__Metabox {
 	 *
 	 * @since  4.6.2
 	 *
-	 * @param  int   $post_id  Which post we are dealing with
+	 * @param  int|WP_Post   $post_id  Which post we are dealing with by ID or post object.
 	 *
 	 * @return string|bool
 	 */
@@ -84,6 +84,18 @@ class Tribe__Tickets__Metabox {
 		if ( empty( $modules ) ) {
 			return false;
 		}
+
+		/**
+		 * This filter allows retrieval of an event ID to be filtered before being accessed elsewhere.
+		 *
+		 * @since TBD
+		 *
+		 * @param int $post_id The event ID to be filtered.
+		 */
+		$post_id = apply_filters(
+			'tec_tickets_filter_event_id',
+			( $post_id instanceof WP_Post ? $post_id->ID : (int) $post_id )
+		);
 
 		$post = get_post( $post_id );
 

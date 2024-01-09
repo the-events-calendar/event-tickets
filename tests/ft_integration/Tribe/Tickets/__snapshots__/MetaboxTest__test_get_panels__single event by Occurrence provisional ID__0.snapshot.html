@@ -4,30 +4,157 @@
 	aria-hidden="false"
 	data-save-prompt="You have unsaved changes to your tickets. Discard those changes?"
 >
-	<div class="tribe_sectionheader ticket_list_container tribe_no_capacity">
+	<div class="tribe_sectionheader ticket_list_container">
 		<div class="ticket_table_intro">
-			<button id="settings_form_toggle" class="button-secondary tribe-button-icon tribe-button-icon-settings">
-    Settings</button>
+			<button
+	id="ticket_form_toggle"
+	class="button-secondary ticket_form_toggle tribe-button-icon tribe-button-icon-plus"
+	aria-label="Add a new ticket"
+""
+>
+New ticket</button><button
+	id="rsvp_form_toggle"
+	class="button-secondary ticket_form_toggle tribe-button-icon tribe-button-icon-plus"
+	aria-label="Add a new RSVP"
+>
+	New RSVP</button>
 
+							<div class="tec_ticket-panel__helper_link__wrap">
+					<p>
+					<a href="https://evnt.is/manage-tickets" target="_blank" rel="noopener noreferrer ">Learn more about ticket management</a>					</p>
+				</div>
 					</div>
 
 		<div class="ticket_table_intro__warnings">
 					</div>
 
+		
+<div class="ticket_list_wrapper">
+	<table class="tribe_ticket_list_table tribe-tickets-editor-table eventtable ticket_list eventForm widefat fixed">
+		<thead>
+			<tr class="table-header">
+				<th class="ticket_name column-primary">
+					
+<img
+	class="tribe-tickets-svgicon tec-tickets-icon tec-tickets-icon__ticket-type"
+	src="http://wordpress.test/wp-content/plugins/event-tickets/src/resources/icons/ticket-default-icon.svg"
+	alt="Ticket"
+/>
+					Tickets				</th>
+				
+<th class="ticket_price">Price</th>
+				<th class="ticket_capacity">Capacity</th>
+				<th class="ticket_available">Available</th>
+				<th class="ticket_edit"></th>
+			</tr>
+		</thead>
+				<tbody class="tribe-tickets-editor-table-tickets-body">
+		<tr class="TEC\Tickets\Commerce\Module is-expanded"
+	data-ticket-order-id="order_{{ID}}"
+	data-ticket-type-id="{{ID}}"
+	data-ticket-type="default">
+	<td class="column-primary ticket_name TEC\Tickets\Commerce\Module" data-label="Ticket Type:">
+		<input
+			type="hidden"
+			class="tribe-ticket-field-order"
+			name="tribe-tickets[list][{{ID}}][order]"
+			value="-1"
+					>
+		<div class="tribe-tickets__tickets-editor-ticket-name">
+			<div class="tribe-tickets__tickets-editor-ticket-name-sortable">
+				<span class="dashicons dashicons-screenoptions tribe-handle"></span>
 			</div>
+			<div class="tribe-tickets__tickets-editor-ticket-name-title">
+
+				
+				Test TC ticket for {{ID}}
+				<div  class="tribe-tickets__tickets-editor-ticket-available-dates dashicons-before dashicons-clock" >
+	January 2, 2020 - March 1, 2050</div>			</div>
+		</div>
+	</td>
+
+	<td class="ticket_price" data-label="Price:">
+	&#x24;1.00</td>
+
+	<td class="ticket_capacity">
+		<span class='tribe-mobile-only'>Capacity:</span>
+		89	</td>
+
+	<td class="ticket_available">
+		<span class='tribe-mobile-only'>Available:</span>
+				89	</td>
+
+	<td class="ticket_edit">
+			</td>
+</tr>
+<tr class="TEC\Tickets\Commerce\Module is-expanded"
+	data-ticket-order-id="order_{{ID}}"
+	data-ticket-type-id="{{ID}}"
+	data-ticket-type="default">
+	<td class="column-primary ticket_name TEC\Tickets\Commerce\Module" data-label="Ticket Type:">
+		<input
+			type="hidden"
+			class="tribe-ticket-field-order"
+			name="tribe-tickets[list][{{ID}}][order]"
+			value="-1"
+					>
+		<div class="tribe-tickets__tickets-editor-ticket-name">
+			<div class="tribe-tickets__tickets-editor-ticket-name-sortable">
+				<span class="dashicons dashicons-screenoptions tribe-handle"></span>
+			</div>
+			<div class="tribe-tickets__tickets-editor-ticket-name-title">
+
+				
+				Test TC ticket for {{ID}}
+				<div  class="tribe-tickets__tickets-editor-ticket-available-dates dashicons-before dashicons-clock" >
+	January 2, 2020 - March 1, 2050</div>			</div>
+		</div>
+	</td>
+
+	<td class="ticket_price" data-label="Price:">
+	&#x24;1.00</td>
+
+	<td class="ticket_capacity">
+		<span class='tribe-mobile-only'>Capacity:</span>
+		23	</td>
+
+	<td class="ticket_available">
+		<span class='tribe-mobile-only'>Available:</span>
+				23	</td>
+
+	<td class="ticket_edit">
+			</td>
+</tr>
+		</tbody>
+	</table>
+
+</div>
+	</div>
 	<div class="tribe-ticket-control-wrap">
 		<div class="tribe-ticket-control-wrap__ctas">
+							<a
+					href="http://wordpress.test/wp-admin/edit.php?post_type=tribe_events&#038;page=tickets-attendees&#038;event_id={{ID}}"
+				>
+					View Attendees				</a>
+
+				
+	<a
+		href="http://wordpress.test/wp-admin/edit.php?post_type=tribe_events&#038;page=tickets-commerce-orders&#038;event_id={{ID}}"
+	>
+		View Orders	</a>
 					</div>
 
 		<div class="tribe-ticket-control-wrap__settings">
+							<span id="ticket_form_total_capacity">
+	Total Event Capacity:	<span id="ticket_form_total_capacity_value" title="The total number of possible attendees for this event">
+		<a href="#" id="capacity_form_toggle">112</a>	</span>
+</span>
 			
-					</div>
+			<button id="settings_form_toggle" class="button-secondary tribe-button-icon tribe-button-icon-settings">
+    Settings</button>
+		</div>
 	</div>
-		<div class="tec_ticket-panel__helper_text__wrap">
-		<p>
-		Create and manage single tickets and RSVPs for this post. <a href="https://evnt.is/manage-tickets" target="_blank" rel="noopener noreferrer ">Learn more about ticket management</a>.		</p>
-	</div>
-		<p class="tec_ticket-panel__recurring-unsupported-warning" style="display: none">Single tickets and RSVPs are not yet supported on recurring events. <a href="https://evnt.is/1b7a" target="_blank" rel="noopener noreferrer"> Read about our plans for future features </a><p>
+		<p class="tec_ticket-panel__recurring-unsupported-warning" style="display: none">Single tickets and RSVPs are not yet supported on recurring events. <a href="https://evnt.is/1b7a" target="_blank" rel="noopener noreferrer"> Read about our plans for future features </a><p><p class="tec_ticket-panel__recurring-unsupported-warning" style="display: none">Single tickets and RSVPs are not yet supported on recurring events. <a href="https://evnt.is/1b7a" target="_blank" rel="noopener noreferrer"> Read about our plans for future features </a><p>
 </div>
 <div id="tribe_panel_settings" class="ticket_panel panel_settings" aria-hidden="true" >
 	<h4>Ticket Settings	</h4>
@@ -212,13 +339,9 @@
 	</div>
 
 	<span class="tribe_soft_note ticket_form_right tribe-active">
-		A single ticket is specific to this post.	</span>
+		A single ticket is specific to this event.	</span>
 </div>
-<div class="tec_tickets_editor__header__ticket-type-upsell-notice">
-	<img class="tec_tickets_editor__header__ticket-type-upsell-icon" src="http://wordpress.test/wp-content/plugins/event-tickets/common/src/resources/images/icons/circle-bolt.svg" alt="upsell-icon">
-	<span>
-		For more ticket types, <a href="https://evnt.is/tt-ecp" target="_blank" rel="noopener noreferrer">upgrade</a> to Events Calendar Pro.	</span>
-</div><div class="input_block">
+<div class="input_block">
 	<label class="ticket_form_label ticket_form_left" for="ticket_start_date">
 		Start sale:	</label>
 	<div class="ticket_form_right">
@@ -276,7 +399,7 @@
 			aria-label="Ticket end date"
 		/>
 		<span class="helper-text hide-if-js">HH:MM</span>
-		<span class="dashicons dashicons-editor-help" title="If you do not set an end sale date, tickets will be available forever."></span>
+		<span class="dashicons dashicons-editor-help" title="If you do not set an end sale date, tickets will be available until the event begins."></span>
 	</div>
 </div>
 

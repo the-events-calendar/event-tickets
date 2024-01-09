@@ -17,6 +17,9 @@ $total_capacity = (int) tribe_get_event_capacity( $post_id );
 
 $container_class = 'tribe_sectionheader ticket_list_container';
 $container_class .= ( empty( $total_capacity ) ) ? ' tribe_no_capacity' : '';
+
+/** @var Tribe__Tickets__Admin__Views $admin_views */
+$admin_views = tribe( 'tickets.admin.views' );
 ?>
 <div
 	id="tribe_panel_base"
@@ -39,13 +42,11 @@ $container_class .= ( empty( $total_capacity ) ) ? ' tribe_no_capacity' : '';
 			 * @param array<Ticket_Object> $tickets The tickets for the event, any type.
 			 */
 			do_action( 'tribe_events_tickets_new_ticket_buttons', $post_id, $tickets );
+            
+            if ( empty( $tickets ) ) {
+                $admin_views->template( [ 'editor', 'panel', 'settings-button' ], [ 'post_id' => $post_id, 'tickets' => $tickets ] );
+            }
 			?>
-
-			<?php if ( empty( $tickets ) ) : ?>
-				<button id="settings_form_toggle" class="button-secondary tribe-button-icon tribe-button-icon-settings">
-					<?php esc_html_e( 'Settings', 'event-tickets' ); ?>
-				</button>
-			<?php endif; ?>
 
 			<?php if ( ! empty( $tickets ) ) : ?>
 				<div class="tec_ticket-panel__helper_link__wrap">
@@ -81,9 +82,6 @@ $container_class .= ( empty( $total_capacity ) ) ? ' tribe_no_capacity' : '';
 		</div>
 
 		<?php if ( ! empty( $tickets ) ) {
-			/** @var Tribe__Tickets__Admin__Views $admin_views */
-			$admin_views = tribe( 'tickets.admin.views' );
-
 			// Split tickets by type to render a list for each type of ticket, implicitly set the order of display.
 			$ticket_types = [ 'rsvp' => [], 'default' => [] ];
 
@@ -204,11 +202,11 @@ $container_class .= ( empty( $total_capacity ) ) ? ' tribe_no_capacity' : '';
 				?>
 			<?php endif; ?>
 
-			<?php if ( ! empty( $tickets ) ) : ?>
-				<button id="settings_form_toggle" class="button-secondary tribe-button-icon tribe-button-icon-settings">
-					<?php esc_html_e( 'Settings', 'event-tickets' ); ?>
-				</button>
-			<?php endif; ?>
+			<?php
+            if ( ! empty( $tickets ) ) {
+                $admin_views->template( [ 'editor', 'panel', 'settings-button' ], [ 'post_id' => $post_id, 'tickets' => $tickets ] );
+            }
+            ?>
 		</div>
 	</div>
 	<?php if ( empty( $tickets ) ): ?>

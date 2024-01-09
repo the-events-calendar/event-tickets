@@ -51,7 +51,7 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 		$this->container->singleton( 'tickets.editor.configuration', Configuration::class, [ 'hook' ] );
 
 		$ticketable = in_array(
-			(string) get_post_type(),
+			get_post_type() ?: tribe_get_request_var( 'post_type', 'post' ),
 			(array) tribe_get_option( 'ticket-enabled-post-types', [] ),
 			true
 		);
@@ -73,11 +73,6 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 		/** @var \Tribe__Editor $editor */
 		$editor = tribe( 'editor' );
 
-		// Only register for blocks if we are using them.
-		if ( ! $editor->should_load_blocks() ) {
-			return;
-		}
-
 		$this->container->singleton(
 			'tickets.editor.compatibility.tickets',
 			'Tribe__Tickets__Editor__Compatibility__Tickets',
@@ -97,6 +92,11 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 		 * @todo remove once RSVP and tickets blocks are completed
 		 */
 		$this->load_compatibility_tickets();
+
+		// Only register for blocks if we are using them.
+		if ( ! $editor->should_load_blocks() ) {
+			return;
+		}
 
 		// Initialize the correct Singleton.
 		tribe( 'tickets.editor.assets' );
