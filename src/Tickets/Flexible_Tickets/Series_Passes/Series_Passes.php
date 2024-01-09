@@ -257,8 +257,8 @@ class Series_Passes extends Controller
          * will always be part of a Series.
          */
 	    add_filter( 'tec_tickets_allow_tickets_on_recurring_events', [ $this, 'allow_tickets_on_recurring_events' ] );
-	    
-	    add_filter( 'tec_events_virtual_user_has_ticket', [ $this, 'filter_events_virtual_show_to_content' ], 10, 3 );
+		
+		add_filter( 'tec_events_virtual_user_has_ticket', [ $this, 'filter_events_virtual_show_to_content' ], 10, 3 );
     }
 
     /**
@@ -341,8 +341,8 @@ class Series_Passes extends Controller
         remove_filter('tec_tickets_my_tickets_link_ticket_count_by_type', [$this, 'filter_my_tickets_link_data'], 10, 3);
 	    remove_filter( 'tec_tickets_allow_tickets_on_recurring_events', [ $this, 'allow_tickets_on_recurring_events' ] );
 	    remove_action( 'generate_rewrite_rules', [ $this, 'include_rewrite_rules_for_series_my_tickets_page' ] );
-	    
-	    remove_filter( 'tec_events_virtual_user_has_ticket', [ $this, 'filter_events_virtual_show_to_content' ], 10, 3 );
+		
+		remove_filter( 'tec_events_virtual_user_has_ticket', [ $this, 'filter_events_virtual_show_to_content' ], 10, 3 );
     }
 
     /**
@@ -1158,7 +1158,7 @@ class Series_Passes extends Controller
 	 *
 	 * @param boolean $has_ticket Whether the current user has a ticket for the event.
 	 * @param WP_Post $event      The post object or ID of the viewed event.
-	 * @param int $user_id        ID of the current user.
+	 * @param int     $user_id    ID of the current user.
 	 *
 	 * @return bool Whether the current user can view the content.
 	 */
@@ -1170,7 +1170,7 @@ class Series_Passes extends Controller
 		
 		$series = tec_series()->where( 'event_post_id', $event->ID )->first_id();
 		
-		if ( $series === null ) {
+		if ( null === $series ) {
 			return $has_ticket;
 		}
 		
@@ -1191,9 +1191,12 @@ class Series_Passes extends Controller
 		$attendees = Tickets::get_event_attendees( $event->ID, $args );
 		
 		// Filter out series pass attendees.
-		$ticketed_attendees = array_filter( $attendees, function ( $attendee ) {
-			return $attendee['ticket_type'] !== self::TICKET_TYPE;
-		} );
+		$ticketed_attendees = array_filter(
+			$attendees,
+			function ( $attendee ) {
+				return $attendee['ticket_type'] !== self::TICKET_TYPE;
+			}
+		);
 		
 		// If there are no default ticketed attendees, then the content should not be shown.
 		if ( empty( $ticketed_attendees ) ) {
