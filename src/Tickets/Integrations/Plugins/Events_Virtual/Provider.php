@@ -1,11 +1,23 @@
 <?php
-
+/**
+ * Handles The Events Virtual integration.
+ *
+ * @since TBD
+ *
+ * @pacakge TEC\Tickets\Integrations\Plugins\Events_Virtual
+ */
 namespace TEC\Tickets\Integrations\Plugins\Events_Virtual;
 
-use TEC\Tickets\Integrations\Plugins\Events_Virtual\Flexible_Tickets;
 use TEC\Common\Integrations\Traits\Plugin_Integration;
 use TEC\Tickets\Integrations\Integration_Abstract;
 
+/**
+ * Class Provider.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Integrations\Plugins\Events_Virtual
+ */
 class Provider extends Integration_Abstract {
 	use Plugin_Integration;
 	
