@@ -202,6 +202,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Tweak - Declared dynamic properties in Tribe__Tickets__Main, Tribe__Tickets__Tickets_Handler, Tribe__Tickets__REST__V1__Messages to prevent warnings in php 8.2 [ET-1950]
 * Fix - Resolve deprecation notices regarding `ArrayAccess::offsetGet()` [ET-1949]
 * Tweak - Update default footer text of Tickets Emails to include link to website. [ET-1971]
+* Fix - Update usage of `method_exists()` to comply with PHP 8.1 standards. [ET-1759]
 
 = [5.7.1] 2023-12-13 =
 
