@@ -1194,7 +1194,7 @@ class Series_Passes extends Controller
 		$ticketed_attendees = array_filter(
 			$attendees,
 			function ( $attendee ) {
-				return $attendee['ticket_type'] !== self::TICKET_TYPE;
+				return self::TICKET_TYPE !== $attendee['ticket_type'];
 			}
 		);
 		
