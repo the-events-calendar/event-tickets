@@ -41,7 +41,7 @@ $et_link     = sprintf(
 	esc_html__( 'Event Tickets', 'event-tickets' )
 );
 $credit_html = sprintf(
-	// Translators: %1$s - HTML link to orgin website; %2$s - HTML link to `Event Tickets` website.
+	// Translators: %1$s - HTML link to origin website; %2$s - HTML link to `Event Tickets` website.
 	__( '%1$s tickets are powered by %2$s', 'event-tickets' ),
 	$site_link,
 	$et_link
