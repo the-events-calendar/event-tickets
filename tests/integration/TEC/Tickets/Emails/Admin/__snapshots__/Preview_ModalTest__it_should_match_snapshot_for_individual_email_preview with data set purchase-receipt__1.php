@@ -505,7 +505,7 @@
 		<table role="presentation" class="tec-tickets__email-table-main-footer-table">
 						<tr>
 	<td class="tec-tickets__email-table-main-footer-credit-container" align="right">
-		Powered by <a href="https://evnt.is/et-in-app-email-credit" class="tec-tickets__email-table-main-footer-credit-link">Event Tickets</a>	</td>
+		<a href="http://wordpress.test" class="tec-tickets__email-table-main-footer-credit-link">Event Tickets Tests</a> tickets are powered by <a href="https://evnt.is/et-in-app-email-credit" class="tec-tickets__email-table-main-footer-credit-link">Event Tickets</a>	</td>
 </tr>
 		</table>
 	</td>
