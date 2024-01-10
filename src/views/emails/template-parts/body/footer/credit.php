@@ -32,7 +32,7 @@ if ( ! tribe_is_truthy( $footer_credit ) ) {
 
 $site_link   = sprintf(
 	'<a href="%1$s" class="tec-tickets__email-table-main-footer-credit-link">%2$s</a>',
-	esc_url( home_url() ),
+	esc_url( site_url() ),
 	get_bloginfo( 'name' )
 );
 $et_link     = sprintf(
