@@ -29,6 +29,8 @@ class Provider extends Service_Provider {
 		$this->container->singleton( static::class, $this );
 
 		$this->container->register( Plugins\Yoast_Duplicate_Post\Duplicate_Post::class);
+		$this->container->register( Plugins\Events_Virtual\Provider::class);
+		
 
 		$this->container->register( Themes\Divi\Provider::class);
 	}
