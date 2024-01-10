@@ -563,7 +563,7 @@ class Tribe__Tickets__Attendees {
 		);
 		$export_columns['attendee_id']  = esc_html(
 			sprintf(
-			/* translators: %s: The type of ID. */
+				/* Translators: %s: The type of ID. */
 				_x(
 					'%s ID',
 					'attendee export',
