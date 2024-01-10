@@ -6,6 +6,7 @@
  *
  * @pacakge TEC\Tickets\Integrations\Plugins\Events_Virtual
  */
+
 namespace TEC\Tickets\Integrations\Plugins\Events_Virtual;
 
 use TEC\Common\Contracts\Provider\Controller;
