@@ -159,8 +159,8 @@ class Series_Passes extends Controller
      */
     protected function do_register(): void
     {
-        $this->container->singleton(Series_Passes\Repository::class, Series_Passes\Repository::class);
-        $this->container->singleton(Series_Passes\Metadata::class, Series_Passes\Metadata::class);
+        $this->container->singleton(Repository::class, Repository::class);
+        $this->container->singleton(Metadata::class, Metadata::class);
 
         add_filter('the_content', [$this, 'reorder_series_content'], 0);
         add_filter('the_content', [$this, 'skip_rendering_series_content_for_my_tickets_page'], 1);

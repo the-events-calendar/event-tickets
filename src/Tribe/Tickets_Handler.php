@@ -638,11 +638,15 @@ class Tribe__Tickets__Tickets_Handler {
 			if ( 0 !== $stock ) {
 				update_post_meta( $ticket, '_stock_status', 'instock' );
 			}
+
+			clean_post_cache( $ticket );
 		}
 
 		// Setup the Stock level.
 		$new_object_stock = $event_capacity - array_sum( $completes );
 		$object_stock->set_stock_level( $new_object_stock );
+
+		clean_post_cache( (int) $object_id );
 
 		return true;
 	}
