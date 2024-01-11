@@ -103,6 +103,7 @@ class Info_Section extends Info_Section_Abstract {
 		 * @since TBD
 		 *
 		 * @param array $subsections The array of subsections. Each subsection is an array of fields.
+		 *
 		 * @return array The modified array of subsections.
 		 */
 		$subsections = apply_filters( 'tec_tickets_site_health_subsections', $subsections );
