@@ -34,12 +34,14 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	public function test_tc_shared_capacity_purchase() {
-		$event_id = tribe_events()->set_args( [
-			'title'      => 'Test Event',
-			'status'     => 'publish',
-			'start_date' => '2020-01-01 12:00:00',
-			'duration'   => 2 * HOUR_IN_SECONDS,
-		] )->create()->ID;
+		$event_id = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2020-01-01 12:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			] 
+		)->create()->ID;
 		// Enable the global stock on the Event.
 		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_ENABLED, 1 );
 		// Set the Event shared capacity to 50.
@@ -47,18 +49,26 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 		// Set the Event global stock level to 50.
 		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_LEVEL, 50 );
 
-		$ticket_a_id = $this->create_tc_ticket( $event_id, 10, [
-			'tribe-ticket' => [
-				'mode'     => Global_Stock::CAPPED_STOCK_MODE,
-				'capacity' => 30,
-			],
-		] );
-		$ticket_b_id = $this->create_tc_ticket( $event_id, 20, [
-			'tribe-ticket' => [
-				'mode'     => Global_Stock::GLOBAL_STOCK_MODE,
-				'capacity' => 50,
-			],
-		] );
+		$ticket_a_id = $this->create_tc_ticket(
+			$event_id,
+			10,
+			[
+				'tribe-ticket' => [
+					'mode'     => Global_Stock::CAPPED_STOCK_MODE,
+					'capacity' => 30,
+				],
+			] 
+		);
+		$ticket_b_id = $this->create_tc_ticket(
+			$event_id,
+			20,
+			[
+				'tribe-ticket' => [
+					'mode'     => Global_Stock::GLOBAL_STOCK_MODE,
+					'capacity' => 50,
+				],
+			] 
+		);
 
 		// Get the ticket objects.
 		$ticket_a = tribe( Module::class )->get_ticket( $event_id, $ticket_a_id );
@@ -85,10 +95,12 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertEquals( 50, $global_stock->get_stock_level(), 'Global stock should be 50' );
 
 		// Create an Order for 5 on each Ticket.
-		$order = $this->create_order( [
-			$ticket_a_id => 5,
-			$ticket_b_id => 5,
-		] );
+		$order = $this->create_order(
+			[
+				$ticket_a_id => 5,
+				$ticket_b_id => 5,
+			] 
+		);
 
 		// Refresh the ticket objects.
 		$ticket_a = tribe( Module::class )->get_ticket( $event_id, $ticket_a_id );
@@ -108,12 +120,14 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	public function test_tc_total_shared_capacity_decreased_after_purchase() {
-		$event_id = tribe_events()->set_args( [
-			'title'      => 'Test Event',
-			'status'     => 'publish',
-			'start_date' => '2020-01-01 12:00:00',
-			'duration'   => 2 * HOUR_IN_SECONDS,
-		] )->create()->ID;
+		$event_id = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2020-01-01 12:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			] 
+		)->create()->ID;
 		// Enable the global stock on the Event.
 		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_ENABLED, 1 );
 		// Set the Event shared capacity to 20.
@@ -121,12 +135,16 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 		// Set the Event global stock level to 20.
 		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_LEVEL, 20 );
 
-		$ticket_id = $this->create_tc_ticket( $event_id, 20, [
-			'tribe-ticket' => [
-				'mode'     => Global_Stock::GLOBAL_STOCK_MODE,
-				'capacity' => 20,
-			],
-		] );
+		$ticket_id = $this->create_tc_ticket(
+			$event_id,
+			20,
+			[
+				'tribe-ticket' => [
+					'mode'     => Global_Stock::GLOBAL_STOCK_MODE,
+					'capacity' => 20,
+				],
+			] 
+		);
 
 		// Get the ticket object.
 		$ticket = tribe( Module::class )->get_ticket( $event_id, $ticket_id );
@@ -166,12 +184,14 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	public function test_tc_total_shared_capacity_increased_after_purchase() {
-		$event_id = tribe_events()->set_args( [
-			'title'      => 'Test Event',
-			'status'     => 'publish',
-			'start_date' => '2020-01-01 12:00:00',
-			'duration'   => 2 * HOUR_IN_SECONDS,
-		] )->create()->ID;
+		$event_id = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2020-01-01 12:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			] 
+		)->create()->ID;
 		// Enable the global stock on the Event.
 		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_ENABLED, 1 );
 		// Set the Event shared capacity to 20.
@@ -179,13 +199,17 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 		// Set the Event global stock level to 20.
 		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_LEVEL, 20 );
 
-		$ticket_id = $this->create_tc_ticket( $event_id, 20, [
-			'tribe-ticket' => [
-				'mode'           => Global_Stock::GLOBAL_STOCK_MODE,
-				'event_capacity' => 20,
-				'capacity'       => 20,
-			],
-		] );
+		$ticket_id = $this->create_tc_ticket(
+			$event_id,
+			20,
+			[
+				'tribe-ticket' => [
+					'mode'           => Global_Stock::GLOBAL_STOCK_MODE,
+					'event_capacity' => 20,
+					'capacity'       => 20,
+				],
+			] 
+		);
 
 		// Get the ticket objects.
 		$ticket = tribe( Module::class )->get_ticket( $event_id, $ticket_id );
@@ -222,12 +246,14 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	public function test_tc_total_shared_capacity_increase_should_not_impact_capped_capacity() {
-		$event_id = tribe_events()->set_args( [
-			'title'      => 'Test Event',
-			'status'     => 'publish',
-			'start_date' => '2020-01-01 12:00:00',
-			'duration'   => 2 * HOUR_IN_SECONDS,
-		] )->create()->ID;
+		$event_id = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2020-01-01 12:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			] 
+		)->create()->ID;
 		// Enable the global stock on the Event.
 		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_ENABLED, 1 );
 		// Set the Event shared capacity to 30.
@@ -235,20 +261,28 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 		// Set the Event global stock level to 30.
 		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_LEVEL, 30 );
 
-		$ticket_a_id = $this->create_tc_ticket( $event_id, 20, [
-			'tribe-ticket' => [
-				'mode'           => Global_Stock::CAPPED_STOCK_MODE,
-				'event_capacity' => 30,
-				'capacity'       => 20,
-			],
-		] );
-		$ticket_b_id = $this->create_tc_ticket( $event_id, 20, [
-			'tribe-ticket' => [
-				'mode'           => Global_Stock::GLOBAL_STOCK_MODE,
-				'event_capacity' => 30,
-				'capacity'       => 30,
-			],
-		] );
+		$ticket_a_id = $this->create_tc_ticket(
+			$event_id,
+			20,
+			[
+				'tribe-ticket' => [
+					'mode'           => Global_Stock::CAPPED_STOCK_MODE,
+					'event_capacity' => 30,
+					'capacity'       => 20,
+				],
+			] 
+		);
+		$ticket_b_id = $this->create_tc_ticket(
+			$event_id,
+			20,
+			[
+				'tribe-ticket' => [
+					'mode'           => Global_Stock::GLOBAL_STOCK_MODE,
+					'event_capacity' => 30,
+					'capacity'       => 30,
+				],
+			] 
+		);
 
 		// Get the ticket objects.
 		$ticket_a = tribe( Module::class )->get_ticket( $event_id, $ticket_a_id );
@@ -259,10 +293,12 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertInstanceOf( Ticket_Object::class, $ticket_b );
 
 		// Create order.
-		$order = $this->create_order( [
-			$ticket_a_id => 5,
-			$ticket_b_id => 5,
-		] );
+		$order = $this->create_order(
+			[
+				$ticket_a_id => 5,
+				$ticket_b_id => 5,
+			] 
+		);
 
 		// Refresh the ticket objects.
 		$ticket_a = tribe( Module::class )->get_ticket( $event_id, $ticket_a_id );
@@ -315,12 +351,14 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	public function test_tc_total_shared_capacity_decrease_should_decrease_capped_capacity() {
-		$event_id = tribe_events()->set_args( [
-			'title'      => 'Test Event',
-			'status'     => 'publish',
-			'start_date' => '2020-01-01 12:00:00',
-			'duration'   => 2 * HOUR_IN_SECONDS,
-		] )->create()->ID;
+		$event_id = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2020-01-01 12:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			] 
+		)->create()->ID;
 		// Enable the global stock on the Event.
 		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_ENABLED, 1 );
 		// Set the Event shared capacity to 30.
@@ -328,18 +366,26 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 		// Set the Event global stock level to 30.
 		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_LEVEL, 30 );
 
-		$ticket_a_id = $this->create_tc_ticket( $event_id, 20, [
-			'tribe-ticket' => [
-				'mode'     => Global_Stock::CAPPED_STOCK_MODE,
-				'capacity' => 20,
-			],
-		] );
-		$ticket_b_id = $this->create_tc_ticket( $event_id, 20, [
-			'tribe-ticket' => [
-				'mode'     => Global_Stock::GLOBAL_STOCK_MODE,
-				'capacity' => 30,
-			],
-		] );
+		$ticket_a_id = $this->create_tc_ticket(
+			$event_id,
+			20,
+			[
+				'tribe-ticket' => [
+					'mode'     => Global_Stock::CAPPED_STOCK_MODE,
+					'capacity' => 20,
+				],
+			] 
+		);
+		$ticket_b_id = $this->create_tc_ticket(
+			$event_id,
+			20,
+			[
+				'tribe-ticket' => [
+					'mode'     => Global_Stock::GLOBAL_STOCK_MODE,
+					'capacity' => 30,
+				],
+			] 
+		);
 
 		// Get the ticket objects.
 		$ticket_a = tribe( Module::class )->get_ticket( $event_id, $ticket_a_id );
@@ -350,10 +396,12 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertInstanceOf( Ticket_Object::class, $ticket_b );
 
 		// Create order for Global stock ticket.
-		$order = $this->create_order( [
-			$ticket_a_id => 5,
-			$ticket_b_id => 5,
-		] );
+		$order = $this->create_order(
+			[
+				$ticket_a_id => 5,
+				$ticket_b_id => 5,
+			] 
+		);
 
 		$new_global_capacity = 15;
 
