@@ -113,6 +113,7 @@ class Payment_Intent_Handler {
 		$stripe_receipt_emails = tribe_get_option( Settings::$option_stripe_receipt_emails );
 		$payment_intent        = Payment_Intent::get( $payment_intent_id );
 		$body['metadata']      = $this->get_updated_metadata( $order, $payment_intent );
+		$body['description']   = $body['metadata']['purchaser_name'];
 
 		if ( $stripe_receipt_emails ) {
 			if ( is_user_logged_in() ) {
