@@ -50,6 +50,9 @@ $user_has_tickets           = $view->has_ticket_attendees( $event_id, $user_id )
 $user_has_rsvp              = $rsvp->get_attendees_count_going_for_user( $event_id, $user_id );
 $tribe_my_tickets_have_meta = false;
 
+// Check to see if we are hiding the opt-out form.
+$hide_attendee_list_optout = apply_filters( 'tribe_tickets_plus_hide_attendees_list_optout', false, $event_id );
+
 /**
  * This filter allows the admin to control the re-send email option when an attendee's email is updated.
  *
@@ -158,6 +161,7 @@ $is_event_page = class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::P
 					$view->has_ticket_attendees( $event_id, get_current_user_id() )
 					&& $tribe_my_tickets_have_meta
 				)
+				|| ! $hide_attendee_list_optout
 			) : ?>
 				<div class="tribe-submit-tickets-form">
 					<button
