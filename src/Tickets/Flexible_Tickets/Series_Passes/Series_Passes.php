@@ -233,9 +233,7 @@ class Series_Passes extends Controller
         add_filter('tec_tickets_query_ticketed_status_subquery', [$this, 'filter_ticketed_status_query'], 10, 3);
         add_filter('tec_tickets_query_ticketed_count_query', [$this, 'filter_ticketed_count_query'], 10, 2);
         add_filter('tec_tickets_query_unticketed_count_query', [$this, 'filter_unticketed_count_query'], 10, 2);
-
-        add_filter('tec_tickets_panel_list_helper_text', [$this, 'filter_tickets_panel_list_helper_text'], 10, 2);
-
+		
         add_filter('tribe_tickets_attendees_report_js_config', [
             $this,
             'filter_tickets_attendees_report_js_config'
@@ -319,10 +317,7 @@ class Series_Passes extends Controller
         remove_filter('tec_tickets_query_ticketed_status_subquery', [$this, 'filter_ticketed_status_query']);
         remove_filter('tec_tickets_query_ticketed_count_query', [$this, 'filter_ticketed_count_query']);
         remove_filter('tec_tickets_query_unticketed_count_query', [$this, 'filter_unticketed_count_query']);
-        remove_filter('tec_tickets_panel_list_helper_text', [
-            $this,
-            'filter_tickets_panel_list_helper_text'
-        ], 10, 2);
+		
         remove_filter('tribe_tickets_attendees_report_js_config', [
             $this,
             'filter_tickets_attendees_report_js_config'
@@ -988,26 +983,7 @@ class Series_Passes extends Controller
 
         return $this->queries->filter_unticketed_count_query();
     }
-
-    /**
-     * Filter the meta box helper text for Series post type.
-     *
-     * @since TBD
-     *
-     * @param string  $text The helper text with link.
-     * @param WP_Post $post The Post object.
-     *
-     * @return string The helper text with link
-     */
-    public function filter_tickets_panel_list_helper_text(string $text, WP_Post $post): string
-    {
-        if (Series_Post_Type::POSTTYPE != $post->post_type) {
-            return $text;
-        }
-
-        return $this->metabox->get_tickets_panel_list_helper_text($text, $post);
-    }
-
+	
     /**
      * Filters the JavaScript configuration for the Attendees report to include the confirmation strings for
      * Series Passes.
