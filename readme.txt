@@ -203,6 +203,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Resolve deprecation notices regarding `ArrayAccess::offsetGet()` [ET-1949]
 * Fix - Resolved an issue where Order Status was not populated when exporting the Attendee List using Tickets Commerce. [ET-1883]
 * Tweak - Update default footer text of Tickets Emails to include link to website. [ET-1971]
+* Fix - Update usage of `method_exists()` to comply with PHP 8.1 standards. [ET-1759]
 
 = [5.7.1] 2023-12-13 =
 
