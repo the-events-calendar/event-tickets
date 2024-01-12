@@ -225,8 +225,6 @@ class Tribe__Tickets__Metabox {
 			'list'     => $admin_views->template( 'editor/panel/list', [
 				'post_id'     => $post->ID,
 				'tickets'     => $tickets,
-				'helper_text' => $this->get_list_panel_helper_text( $post ),
-				'helper_link' => $this->get_helper_link(),
 			], false ),
 			'settings' => $admin_views->template( 'editor/panel/settings',
 				array_merge(
