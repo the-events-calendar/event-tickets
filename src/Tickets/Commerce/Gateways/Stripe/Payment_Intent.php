@@ -193,9 +193,9 @@ class Payment_Intent {
 	 * @return array|\WP_Error|null
 	 */
 	public static function update( $payment_intent_id, $data ) {
-		$query_args            = [];
-		$data[ 'description' ] = $data[ 'metadata' ][ 'purchaser_name' ];
-		$args                  = [
+		$query_args          = [];
+		$data['description'] = $data['metadata']['purchaser_name'];
+		$args                = [
 			'body' => $data,
 		];
 
