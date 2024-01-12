@@ -50,15 +50,7 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 		$this->container->singleton( 'tickets.editor.blocks.attendees', Attendees_Block::class, [ 'load' ] );
 		$this->container->singleton( 'tickets.editor.configuration', Configuration::class, [ 'hook' ] );
 
-		$ticketable = in_array(
-			get_post_type() ?: tribe_get_request_var( 'post_type', 'post' ),
-			(array) tribe_get_option( 'ticket-enabled-post-types', [] ),
-			true
-		);
-
-		if ( $ticketable ) {
-			$this->register_for_blocks();
-		}
+		$this->register_for_blocks();
 
 		// Handle general non-block-specific instances.
 		tribe( 'tickets.editor.warnings' );
@@ -110,6 +102,14 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 	 * @since 5.3.0
 	 */
 	public function register_blocks() {
+		$post      = get_post() ?: get_post( tribe_get_request_var( 'post' ) );
+		$post_type = get_post_type( $post ) ?: tribe_get_request_var( 'post_type' );
+
+		if ( ! in_array( $post_type, (array) tribe_get_option( 'ticket-enabled-post-types', [] ), true ) ) {
+			// Register the Blocks only on ticket-enabled post types.
+			return;
+		}
+
 		// Register blocks.
 		add_action( 'tribe_editor_register_blocks', [ tribe( 'tickets.editor.blocks.rsvp' ), 'register' ] );
 		add_action( 'tribe_editor_register_blocks', [ tribe( 'tickets.editor.blocks.tickets' ), 'register' ] );
@@ -234,5 +234,11 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 		remove_action( 'block_categories_all', tribe_callback( 'tickets.editor', 'block_categories' ) );
 		remove_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'render_form_toggle_buttons' ] );
 		remove_action( 'tec_tickets_list_row_edit', [ $this, 'render_ticket_edit_controls' ] );
+	}
+
+	private function is_ticketable_post_type():bool {
+		$post_type = get_post_type();
+
+		return in_array( $post_type, (array) tribe_get_option( 'ticket-enabled-post-types', [] ), true );
 	}
 }
