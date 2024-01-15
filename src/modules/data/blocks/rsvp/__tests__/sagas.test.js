@@ -1201,7 +1201,7 @@ describe( 'RSVP block sagas', () => {
 	} );
 
 	describe( 'setNonEventPostTypeEndDate', () => {
-		it( 'shoud exit on non-events', () => {
+		it( 'should exit on non-events', () => {
 			const gen = sagas.setNonEventPostTypeEndDate();
 
 			expect( gen.next().value ).toEqual(

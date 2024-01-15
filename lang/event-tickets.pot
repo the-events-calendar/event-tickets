@@ -2149,7 +2149,7 @@ msgid "Something went wrong!"
 msgstr ""
 
 #: src/Tickets/Commerce/Gateways/Contracts/Abstract_Gateway.php:195
-msgid "Unexpected response recieved."
+msgid "Unexpected response received."
 msgstr ""
 
 #: src/Tickets/Commerce/Gateways/Contracts/Abstract_Gateway.php:291
@@ -6571,7 +6571,7 @@ msgstr ""
 
 #. Translators: %1$s: Opening `<span>` tag. %2$s: The currency name. %3$s: Closing `</span>` tag. %4$s: Opening `<a>` tag for Stripe link. %5$s: Closing `</a>` tag.
 #: src/Tickets/Commerce/Gateways/Stripe/Settings.php:206
-msgid "%1$sPayment methods available for %2$s%3$s.<br /><br /> The payment methods listed here are dependent on the currency selected for Tickets Commerce and the currency each payment method support. You can review the payment methods and their availablity for each currency on %4$sStripe's documentation%5$s.<br /><br />"
+msgid "%1$sPayment methods available for %2$s%3$s.<br /><br /> The payment methods listed here are dependent on the currency selected for Tickets Commerce and the currency each payment method support. You can review the payment methods and their availability for each currency on %4$sStripe's documentation%5$s.<br /><br />"
 msgstr ""
 
 #. Translators: %1$s: The Event Tickets Plus link.

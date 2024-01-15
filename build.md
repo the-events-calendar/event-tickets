@@ -4,7 +4,7 @@ This is a guide to building and compiling assets locally. The process is automat
 
 ## Set up
 
-After cloning the ET repository on your local machine, change directory to the plugin root folder and ensure that you have the latest `tribe-common` by running `git submodule upate --init --recursive`. It is also a good idea to do tis when you change branches - particularly when changing release branch root.
+After cloning the ET repository on your local machine, change directory to the plugin root folder and ensure that you have the latest `tribe-common` by running `git submodule update --init --recursive`. It is also a good idea to do tis when you change branches - particularly when changing release branch root.
 
 ### Composer
 

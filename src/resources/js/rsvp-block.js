@@ -26,7 +26,7 @@ var tribe_tickets_rsvp_block = {
 			: '.tribe-block__rsvp__status-button--going';
 		var $siblingEl = $button.closest( '.tribe-block__rsvp__status' ).find( sibling );
 
-		// Add active classs to the current button
+		// Add active class to the current button
 		$button.addClass( 'tribe-active' );
 		$button.removeClass( 'tribe-inactive' );
 		$button.attr( 'disabled', 'disabled' );

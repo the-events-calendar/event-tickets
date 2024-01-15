@@ -540,7 +540,7 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 	 * Sets a meta key value on the Order.
 	 *
 	 * This is a database-light operation: meta is not written to the
-	 * database but only in the object array cache; use `udpate` method
+	 * database but only in the object array cache; use `update` method
 	 * to persist the Order meta.
 	 *
 	 * @since 4.7
@@ -807,7 +807,7 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 	}
 
 	/**
-	 * Returns the post IDs related ot this Order.
+	 * Returns the post IDs related to this Order.
 	 *
 	 * @since 4.7
 	 *

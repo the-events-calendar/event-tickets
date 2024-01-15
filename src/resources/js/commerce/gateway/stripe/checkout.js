@@ -80,7 +80,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	/**
 	 * Handle displaying errors to the end user in the cardErrors field
 	 *
-	 * @param array errors an array of arrays. Each base array is keyed with the error code and cotains a list of error
+	 * @param array errors an array of arrays. Each base array is keyed with the error code and contains a list of error
 	 *     messages.
 	 */
 	obj.handleErrorDisplay = ( errors ) => {

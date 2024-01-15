@@ -113,7 +113,7 @@ class Settings {
 	}
 
 	/**
-	 * Defines wether the current page is the Event Tickets Settings page.
+	 * Defines whether the current page is the Event Tickets Settings page.
 	 *
 	 * @since 5.4.0
 	 *

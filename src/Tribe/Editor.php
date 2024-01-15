@@ -28,7 +28,7 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 		add_filter( 'tribe_tickets_register_ticket_post_type_args', array( $this, 'add_rest_support' ) );
 
 		// Update Post content to use correct child blocks for tickets
-		add_filter( 'tribe_blocks_editor_update_classic_content', array( $this, 'update_tickets_block_with_childs' ), 10, 3 );
+		add_filter( 'tribe_blocks_editor_update_classic_content', array( $this, 'update_tickets_block_with_children' ), 10, 3 );
 
 		// Add RSVP and tickets blocks
 		add_action( 'admin_init', array( $this, 'add_tickets_block_in_editor' ) );
@@ -153,7 +153,7 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 	 *
 	 * @return bool
 	 */
-	public function update_tickets_block_with_childs( $content, $post, $blocks ) {
+	public function update_tickets_block_with_children( $content, $post, $blocks ) {
 		$search = '<!-- wp:tribe/tickets  /-->';
 
 		// Do we have a tickets blocks already setup? (we should)
@@ -368,7 +368,7 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 		$editor_utils->remove_inner_blocks( $post_id, $block_name, "<!-- $block_name  /-->" );
 
 		$content      = get_post_field( 'post_content', $post_id );
-		$post_content = $this->update_tickets_block_with_childs( $content, $post, array() );
+		$post_content = $this->update_tickets_block_with_children( $content, $post, array() );
 
 		return wp_update_post( array(
 			'ID'           => $post->ID,

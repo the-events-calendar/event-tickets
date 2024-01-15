@@ -27,7 +27,7 @@ class Tribe__Tickets__Assets {
 			$tickets_deps[] = 'tec-variables-full';
 		}
 
-		// Check wether we use v1 or v2. We need to update this when we deprecate tickets v1.
+		// Check whether we use v1 or v2. We need to update this when we deprecate tickets v1.
 		$tickets_stylesheet = tribe_tickets_new_views_is_enabled() ? 'tickets.css' : 'tickets-v1.css';
 
 		tribe_assets(

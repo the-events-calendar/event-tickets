@@ -107,7 +107,7 @@ export const getRSVPAvailable = createSelector(
 		const going = parseInt( goingCount, 10 ) || 0;
 		/**
 		 * Prevent to have negative values when subtracting the going amount from total amount, so it takes the max value
-		 * of the substraction operation or zero if the operation is lower than zero it will return zero insted.
+		 * of the subtraction operation or zero if the operation is lower than zero it will return zero instead.
 		 */
 		return Math.max( total - going, 0 );
 	},

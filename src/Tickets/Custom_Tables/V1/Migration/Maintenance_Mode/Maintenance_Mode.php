@@ -24,7 +24,7 @@ class Maintenance_Mode {
 	 *
 	 * @since 5.5.0
 	 *
-	 * @return void The method does not return any value and will echo a mesage to the page.
+	 * @return void The method does not return any value and will echo a message to the page.
 	 */
 	public function include_migration_in_progress_tickets_and_rsvp_message() {
 		// Include once, so we don't write two messages.

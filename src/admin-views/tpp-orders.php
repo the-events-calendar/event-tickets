@@ -118,7 +118,7 @@ if ( $total_sold ) {
 							continue;
 						}
 
-						echo $order_overview->get_ticket_sale_infomation( $ticket_sold, $post_id );
+						echo $order_overview->get_ticket_sale_information( $ticket_sold, $post_id );
 					}
 					?>
 				</div>

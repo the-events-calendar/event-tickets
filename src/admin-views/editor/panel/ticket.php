@@ -348,7 +348,7 @@ $msg_rsvp_form_save = sprintf(
 							data-validation-error="<?php echo esc_attr( wp_json_encode( $start_date_errors ) ); ?>"
 						/>
 						<span class="helper-text hide-if-js"><?php esc_html_e( 'YYYY-MM-DD', 'event-tickets' ); ?></span>
-						<span class="datetime_seperator"> <?php esc_html_e( 'at', 'event-tickets' ); ?> </span>
+						<span class="datetime_separator"> <?php esc_html_e( 'at', 'event-tickets' ); ?> </span>
 						<input
 							autocomplete="off"
 							type="text"
@@ -378,7 +378,7 @@ $msg_rsvp_form_save = sprintf(
 							value="<?php echo esc_attr( $ticket ? $end_date : null ); ?>"
 						/>
 						<span class="helper-text hide-if-js"><?php esc_html_e( 'YYYY-MM-DD', 'event-tickets' ); ?></span>
-						<span class="datetime_seperator"> <?php esc_html_e( 'at', 'event-tickets' ); ?> </span>
+						<span class="datetime_separator"> <?php esc_html_e( 'at', 'event-tickets' ); ?> </span>
 						<input
 							autocomplete="off"
 							type="text"

@@ -1311,7 +1311,7 @@
 * Fix - Active tab logic for Attendees in Tribe Commerce, thanks Luc [107897]
 * Fix - Fixed default currency symbol inconsistency. Thanks Uwe and Zé for pointing this out! [104093]
 * Tweak - Tribe Commerce Orders Sales by Ticket section to remove duplicate data [110034]
-* Tweak - Attendees section to clarify infomation [110038]
+* Tweak - Attendees section to clarify information [110038]
 
 = [4.7.6] 2018-08-01 =
 
@@ -1447,7 +1447,7 @@
 
 = [4.6.1] 2017-11-21 =
 
-* Fix - RSVP and Tickets migration from pre-4.6 updates capacity corretly for all cases now (props to Uwe Matern) [93231]
+* Fix - RSVP and Tickets migration from pre-4.6 updates capacity correctly for all cases now (props to Uwe Matern) [93231]
 * Fix - Ensure Attendees column for events displays the correct percentages [92287]
 * Fix - Tickets Editor now has more support for Accessibility [80651]
 * Tweak - Prevent unnecessary AJAX requests when using tickets editor [88642]
@@ -1548,7 +1548,7 @@
 = [4.5] 2017-06-22 =
 
 * Feature - Show remaining ticket count, buy now or rsvp now buttons in list views of The Events Calendar [71092 & 71094]
-* Feature - An API to get ticket, attendee, event, and order infomation from a post id for RSVP, EDD, and WooCommerce Tickets [74363]
+* Feature - An API to get ticket, attendee, event, and order information from a post id for RSVP, EDD, and WooCommerce Tickets [74363]
 * Fix - Resolved issue where the Meta Chunker attempted to inappropriately chunk meta for post post_types [80857]
 * Fix - Resolve Thunderbird for Windows rendering of Tickets email
 * Tweak - Added filters: `tribe_tickets_buy_button`
@@ -1589,7 +1589,7 @@
 
 = [4.4.4] 2017-03-08 =
 
-* Fix - Fixed a bug that casued an inconsistency with the check-in/undo check-in button (thanks to @joe for the report in the forums) [68414]
+* Fix - Fixed a bug that caused an inconsistency with the check-in/undo check-in button (thanks to @joe for the report in the forums) [68414]
 * Fix - Fixed a bug that displayed an error message even for successful check-ins via QR code [68416]
 
 = [4.4.3] 2017-02-22 =
@@ -1602,7 +1602,7 @@
 
 * Tweak - Print styles for the attendees report are now more efficient (props @ajuliano) [72772]
 * Fix - Email template file: link event title to event single page, add state/province and postal code to venue information, link venue address to Google Map link if the event's Show Google Maps Link option is checked [72475]
-* Fix - Resolved an issue where attendees would always attempt to be fetched and set in tranients - even when an un-expired transient held an empty attendee list. (props to nichestudio on our forums) [70485]
+* Fix - Resolved an issue where attendees would always attempt to be fetched and set in transients - even when an un-expired transient held an empty attendee list. (props to nichestudio on our forums) [70485]
 
 = [4.4.1] 2017-01-26 =
 

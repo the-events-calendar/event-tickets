@@ -1146,7 +1146,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Indicates if the module/ticket provider supports a concept of global stock.
 		 *
 		 * For backward compatibility reasons this method has not been declared abstract but
-		 * implementaions are still expected to override it.
+		 * implementations are still expected to override it.
 		 *
 		 * @return bool
 		 */
@@ -3285,7 +3285,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				 *
 				 * @param  bool	$display_date
 				 */
-				$display_date = apply_filters( 'tribe_tickets_unvailable_message_date', $display_date = true );
+				$display_date = apply_filters( 'tribe_tickets_unavailable_message_date', $display_date = true );
 
 				/**
 				 * Allows inclusion of ticket start sale time in unavailability message
@@ -3294,7 +3294,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				 *
 				 * @param  bool	$display_time
 				 */
-				$display_time = apply_filters( 'tribe_tickets_unvailable_message_time', $display_time = false );
+				$display_time = apply_filters( 'tribe_tickets_unavailable_message_time', $display_time = false );
 
 				// build message
 				if ( $display_date ) {
@@ -3335,7 +3335,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 * @param string Unavailability message
 			 * @param array Collection of tickets
 			 */
-			$message = apply_filters( 'event_tickets_unvailable_message', $message, $tickets );
+			$message = apply_filters( 'event_tickets_unavailable_message', $message, $tickets );
 
 			return $message;
 		}
@@ -4491,7 +4491,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 		/**
 		 * Localized messages for errors, etc in javascript. Added in assets() above.
-		 * Set up this way to amke it easier to add messages as needed.
+		 * Set up this way to make it easier to add messages as needed.
 		 *
 		 * @since 4.11.0
 		 *

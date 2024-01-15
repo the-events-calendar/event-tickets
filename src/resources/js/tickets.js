@@ -281,11 +281,11 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	obj.startWatchingMoveLinkIn = function() {
 		$tickets_container.find( '.tribe-ticket-move-link' ).one( 'click', function() {
 			// give ThickBox some time to load, in ms
-			window.setTimeout( obj.listentToThickboxEvents, 250 );
+			window.setTimeout( obj.listenToThickboxEvents, 250 );
 		} );
 	};
 
-	obj.listentToThickboxEvents = function() {
+	obj.listenToThickboxEvents = function() {
 		/**
 		 * ThickBox id from its source code.
 		 *
@@ -309,7 +309,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		$edit_panel = $( panels.ticket );
 		$settings_panel = $( panels.settings );
 
-		// Rplace the old ones
+		// Replace the old ones
 		$tribe_tickets.find( obj.panels.list ).replaceWith( $base_panel );
 		$tribe_tickets.find( obj.panels.ticket ).replaceWith( $edit_panel );
 		$tribe_tickets.find( obj.panels.settings ).replaceWith( $settings_panel );
@@ -317,7 +317,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		// Makes sure the Panels are Ready for interaction
 		obj.setupPanels();
 
-		// At the end always swap panels (deafults to base/list)
+		// At the end always swap panels (defaults to base/list)
 		obj.swapPanel( swapTo );
 
 		// Trigger dependency.

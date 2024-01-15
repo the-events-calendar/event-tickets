@@ -223,7 +223,7 @@ class Settings {
 			]
 		);
 
-		// Force this asset to load whn we add this to the menu.
+		// Force this asset to load when we add this to the menu.
 		tribe_asset_enqueue( 'tec-tickets-commerce-gateway-paypal-global-admin-styles' );
 
 		return true;

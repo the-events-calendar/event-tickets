@@ -1,7 +1,7 @@
 <?php
 /**
  * Block: RSVP
- * Messages Sucess
+ * Messages Success
  *
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/blocks/rsvp/messages/success.php

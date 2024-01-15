@@ -271,7 +271,7 @@ class Tribe__Tickets__Editor__Blocks__Tickets
 
 	/**
 	 * Localized messages for errors, etc in javascript. Added in assets() above.
-	 * Set up this way to amke it easier to add messages as needed.
+	 * Set up this way to make it easier to add messages as needed.
 	 *
 	 * @since 4.11.0
 	 *

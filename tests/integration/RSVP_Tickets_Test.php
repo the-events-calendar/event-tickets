@@ -4,7 +4,7 @@ use Tribe__Tickets__RSVP as RSVP;
 
 class RSVP_Tickets_Test extends \Codeception\TestCase\WPTestCase {
 	/**
-	 * When a ticket has a stock value, make sure the object returns expected value druing the life of
+	 * When a ticket has a stock value, make sure the object returns expected value during the life of
 	 * the in-stock values
 	 */
 	public function test_ticket_with_stock() {
@@ -61,7 +61,7 @@ class RSVP_Tickets_Test extends \Codeception\TestCase\WPTestCase {
 	}
 
 	/**
-	 * When a ticket does not have a stock value, make sure the object returns expected value druing the life of
+	 * When a ticket does not have a stock value, make sure the object returns expected value during the life of
 	 * the in-stock values
 	 */
 	public function test_ticket_without_stock() {

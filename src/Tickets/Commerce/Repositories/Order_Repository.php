@@ -561,7 +561,7 @@ class Order_Repository extends Tribe__Repository {
 				default:
 					$after = $after || 1 === $loop;
 					if ( empty( $this->query_args['orderby'] ) ) {
-						// In some versions of WP, [ $order_by, $order ] doesn't work as expected. Using explict value setting instead.
+						// In some versions of WP, [ $order_by, $order ] doesn't work as expected. Using explicit value setting instead.
 						$this->query_args['orderby'] = $order_by;
 						$this->query_args['order']   = $order;
 					} else {
@@ -698,7 +698,7 @@ class Order_Repository extends Tribe__Repository {
 	}
 
 	/**
-	 * Sets up the query filters to order items by the gatway name.
+	 * Sets up the query filters to order items by the gateway name.
 	 *
 	 * @since 5.5.0
 	 *

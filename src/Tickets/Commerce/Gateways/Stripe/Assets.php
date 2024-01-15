@@ -96,7 +96,7 @@ class Assets extends \TEC\Common\Contracts\Service_Provider {
 									],
 									'.Label'         => [
 										'fontSize'     => '14px',
-										'marginBotton' => '4px',
+										'marginBottom' => '4px',
 									]
 								]
 							],

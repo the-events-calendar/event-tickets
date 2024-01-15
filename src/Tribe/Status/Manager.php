@@ -326,7 +326,7 @@ class Tribe__Tickets__Status__Manager {
 	 *
 	 * @since 4.10.5
 	 *
-	 * @since 5.3.2 add support fot Tickets Commerce completed statuses directly, as we have changed the way statuses are handled for Tickets Commerce.
+	 * @since 5.3.2 add support for Tickets Commerce completed statuses directly, as we have changed the way statuses are handled for Tickets Commerce.
 	 *
 	 * @param string|object $provider_name an object or string of a commerce main class name
 	 *

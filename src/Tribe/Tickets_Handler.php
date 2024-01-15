@@ -297,7 +297,7 @@ class Tribe__Tickets__Tickets_Handler {
 			return false;
 		}
 
-		// Bail if the CPT doens't accept tickets
+		// Bail if the CPT doesn't accept tickets
 		if ( ! tribe_tickets_post_type_enabled( $post->post_type ) ) {
 			return false;
 		}

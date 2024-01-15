@@ -330,7 +330,7 @@
 				data-validation-error="{&quot;is-required&quot;:&quot;Start sale date cannot be empty.&quot;,&quot;is-less-or-equal-to&quot;:&quot;Start sale date cannot be greater than End Sale date&quot;}"
 			/>
 			<span class="helper-text hide-if-js">YYYY-MM-DD</span>
-			<span class="datetime_seperator"> at </span>
+			<span class="datetime_separator"> at </span>
 			<input
 				autocomplete="off"
 				type="text"
@@ -359,7 +359,7 @@
 				value="3/1/2050"
 			/>
 			<span class="helper-text hide-if-js">YYYY-MM-DD</span>
-			<span class="datetime_seperator"> at </span>
+			<span class="datetime_separator"> at </span>
 			<input
 				autocomplete="off"
 				type="text"

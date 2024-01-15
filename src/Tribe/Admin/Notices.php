@@ -48,7 +48,7 @@ class Tribe__Tickets__Admin__Notices {
 	 */
 	public function maybe_display_rsvp_new_views_options_notice() {
 		// Bail if previously dismissed this notice.
-		if ( Tribe__Admin__Notices::instance()->has_user_dimissed( __FUNCTION__ ) ) {
+		if ( Tribe__Admin__Notices::instance()->has_user_dismissed( __FUNCTION__ ) ) {
 			return;
 		}
 
@@ -135,7 +135,7 @@ class Tribe__Tickets__Admin__Notices {
 		$notice_slug = sprintf( '%s-%d', $slug_prefix, $post_id );
 
 		// Bail if this notice was previously dismissed for this TEC event.
-		if ( Tribe__Admin__Notices::instance()->has_user_dimissed( $notice_slug ) ) {
+		if ( Tribe__Admin__Notices::instance()->has_user_dismissed( $notice_slug ) ) {
 			return;
 		}
 
