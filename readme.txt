@@ -204,7 +204,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Resolved an issue where Order Status was not populated when exporting the Attendee List using Tickets Commerce. [ET-1883]
 * Tweak - Update default footer text of Tickets Emails to include link to website. [ET-1971]
 * Fix - Update usage of `method_exists()` to comply with PHP 8.1 standards. [ET-1759]
-* Tweak - Customer name appears now as description of a stripe payment. Added `tec_tickets_commerce_stripe_update_payment_description` filter. [ET-1607]
+* Tweak - Customer name appears now as description of a Stripe payment. Added `tec_tickets_commerce_stripe_update_payment_description` filter. [ET-1607]
 
 = [5.7.1] 2023-12-13 =
 
