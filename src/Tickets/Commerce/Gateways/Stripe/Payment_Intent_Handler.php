@@ -100,6 +100,7 @@ class Payment_Intent_Handler {
 	 * Updates an existing payment intent to add any necessary data before confirming the purchase.
 	 *
 	 * @since 5.3.0
+	 * @since TBD   Added customer's name / event name to the payment intent description
 	 *
 	 * @param array    $data  The purchase data received from the front-end.
 	 * @param \WP_Post $order The order object.
@@ -119,13 +120,22 @@ class Payment_Intent_Handler {
 				$user                  = wp_get_current_user();
 				$body['receipt_email'] = $user->get( 'user_email' );
 				$customer_name         = $user->get( 'first_name' ) ? $user->get( 'first_name' ) . ' ' . $user->get( 'last_name' ) : $user->get( 'display_name' );
-				$body['description']   = $customer_name;
+				$body['description']   = sprintf( '%1$s / %2$s', $customer_name, $body['metadata']['event_name'] );
 			}
 
 			if ( ! empty( $data['purchaser']['email'] ) ) {
 				$body['receipt_email'] = $data['purchaser']['email'];
-				$body['description']   = $data['purchaser']['name'];
+				$body['description']   = sprintf( '%1 / %2', $data['purchaser']['name'], $body['metadata']['event_name'] );
 			}
+
+			/**
+			 * Filters the payment intent description
+			 *
+			 * @since TBD
+			 *
+			 * @param string $body['description'] Default payment intent description
+			 */
+			$body['description'] = apply_filters( 'tec_tickets_commerce_stripe_update_payment_description', $body['description'] );
 		}
 
 		return Payment_Intent::update( $payment_intent_id, $body );
