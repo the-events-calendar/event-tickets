@@ -118,7 +118,7 @@ class Payment_Intent_Handler {
 			if ( is_user_logged_in() ) {
 				$user                  = wp_get_current_user();
 				$body['receipt_email'] = $user->get( 'user_email' );
-				$customer_name         = $user->get( 'first_name' ) ? $user->get( 'first_name' )  . ' ' . $user->get( 'last_name' ) : $user->get( 'display_name' );
+				$customer_name         = $user->get( 'first_name' ) ? $user->get( 'first_name' ) . ' ' . $user->get( 'last_name' ) : $user->get( 'display_name' );
 				$body['description']   = $customer_name;
 			}
 
