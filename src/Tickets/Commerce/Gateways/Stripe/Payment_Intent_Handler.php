@@ -113,16 +113,18 @@ class Payment_Intent_Handler {
 		$stripe_receipt_emails = tribe_get_option( Settings::$option_stripe_receipt_emails );
 		$payment_intent        = Payment_Intent::get( $payment_intent_id );
 		$body['metadata']      = $this->get_updated_metadata( $order, $payment_intent );
-		$body['description']   = $body['metadata']['purchaser_name'];
 
 		if ( $stripe_receipt_emails ) {
 			if ( is_user_logged_in() ) {
 				$user                  = wp_get_current_user();
 				$body['receipt_email'] = $user->get( 'user_email' );
+				$customer_name         = $user->get( 'first_name' ) ? $user->get( 'first_name' )  . ' ' . $user->get( 'last_name' ) : $user->get( 'display_name' );
+				$body['description']   = $customer_name;
 			}
 
 			if ( ! empty( $data['purchaser']['email'] ) ) {
 				$body['receipt_email'] = $data['purchaser']['email'];
+				$body['description']   = $data['purchaser']['name'];
 			}
 		}
 
