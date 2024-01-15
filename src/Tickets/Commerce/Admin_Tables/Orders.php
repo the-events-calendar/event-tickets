@@ -639,6 +639,7 @@ class Orders extends WP_List_Table {
 		// Generate and output the CSV file.
 		$this->generate_csv_file( $formatted_data, $filename );
 	}
+
 	/**
 	 * Formats the orders data for CSV export.
 	 *
