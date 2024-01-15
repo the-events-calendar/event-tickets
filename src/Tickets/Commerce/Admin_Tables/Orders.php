@@ -746,7 +746,7 @@ class Orders extends WP_List_Table {
 			fputcsv(
 				$output,
 				$row
-			);
+			); // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_fputcsv
 		}
 
 		// Close the output stream.
@@ -757,13 +757,13 @@ class Orders extends WP_List_Table {
 	}
 
 	/**
-	 * Generate the export URL for exporting attendees.
+	 * Generate the export URL for exporting orders.
 	 *
 	 * @since TBD
 	 *
 	 * @return string Relative URL for the export.
 	 */
-	public function get_export_url() {
+	public function get_export_url(): string {
 		return add_query_arg(
 			[
 				'orders_csv'       => true,
