@@ -58,6 +58,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 			'currency_code'     => [ $this, 'filter_by_currency_code' ],
 			'is_active'         => [ $this, 'filter_by_active' ],
 			'type'              => [ $this, 'filter_by_type' ],
+			'type__not_in'      => [ $this, 'filter_by_type_not_in' ],
 			'global_stock_mode' => [ $this, 'filter_by_global_stock_mode' ]
 		] );
 	}
@@ -610,16 +611,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 		return parent::create();
 	}
 
-	/**
-	 * Filters the ticket to be returned by the value of the `_type` meta key.
-	 *
-	 * @since TBD
-	 *
-	 * @param string|string[] $type The ticket type or types to filter by.
-	 *
-	 * @return void The query is modified in place.
-	 */
-	public function filter_by_type( $type ) {
+	private function filter_by_type_operator( string $operator, $type ): void {
 		$hash  = substr( md5( microtime() ), - 5 );
 		$types = (array) $type;
 		global $wpdb;
@@ -633,7 +625,20 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 		$this->filter_query->join( "LEFT JOIN {$wpdb->postmeta} AS {$alias}
 			 ON {$wpdb->posts}.ID = {$alias}.post_id
 			 AND {$alias}.meta_key = '_type'" );
-		$this->filter_query->where( "COALESCE({$alias}.meta_value, 'default') IN (" . $types_set . ")" );
+		$this->filter_query->where( "COALESCE({$alias}.meta_value, 'default') {$operator} (" . $types_set . ")" );
+	}
+
+	/**
+	 * Filters the ticket to be returned by the value of the `_type` meta key.
+	 *
+	 * @since TBD
+	 *
+	 * @param string|string[] $type The ticket type or types to filter by.
+	 *
+	 * @return void The query is modified in place.
+	 */
+	public function filter_by_type( $type ): void {
+		$this->filter_by_type_operator( 'IN', $type );
 	}
 
 	/**
@@ -772,5 +777,18 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 			$capacity_meta_key = Tickets_Handler::instance()->key_capacity;
 			$this->where( 'meta_gte', $capacity_meta_key, 0 );
 		}
+	}
+
+	/**
+	 * Filters the ticket to be excluded by the value of the `_type` meta key.
+	 *
+	 * @since TBD
+	 *
+	 * @param string|string[] $type The ticket type or types to exclude from the results.
+	 *
+	 * @return void The query is modified in place.
+	 */
+	public function filter_by_type_not_in( $type ): void {
+		$this->filter_by_type_operator( 'NOT IN', $type );
 	}
 }
