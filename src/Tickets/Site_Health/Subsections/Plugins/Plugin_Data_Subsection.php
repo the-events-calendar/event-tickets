@@ -571,18 +571,7 @@ class Plugin_Data_Subsection extends Abstract_Info_Subsection {
 	 * @return float|null Parsed price as a float, or null if parsing fails.
 	 */
 	private function parse_price( string $price ): ?float {
-		preg_match(
-			'/\d+([,.]\d+)?/',
-			$price,
-			$matches
-		);
-		return isset( $matches[0] ) ? floatval(
-			str_replace(
-				',',
-				'.',
-				$matches[0]
-			)
-		) : null;
+		return Value::create( $price )->get_float();
 	}
 
 	/**
