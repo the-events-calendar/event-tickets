@@ -12,6 +12,7 @@ namespace TEC\Tickets\Site_Health\Subsections\Plugins;
 use TEC\Tickets\Site_Health\Abstract_Info_Subsection;
 use Tribe__Tickets__Query;
 use Tribe__Utils__Array as Arr;
+use TEC\Tickets\Commerce\Utils\Value;
 
 /**
  * Class Plugin_Data_Subsection
@@ -348,8 +349,10 @@ class Plugin_Data_Subsection extends Abstract_Info_Subsection {
 				'Y-m-d'
 			);
 		} else {
-			// @ Todo redscar need to possibly add translation.
-			$last_attendee_creation_date = "No Attendee's found";
+			$last_attendee_creation_date = __(
+				"No Attendee's found",
+				'event-tickets'
+			);
 		}
 
 		return $last_attendee_creation_date;
@@ -412,24 +415,10 @@ class Plugin_Data_Subsection extends Abstract_Info_Subsection {
 		);
 
 		return [
-			'formatted_max_price'     => number_format(
-				$max_price,
-				2,
-				'.',
-				','
-			),
-			'formatted_min_price'     => number_format(
-				$min_price,
-				2,
-				'.',
-				','
-			),
-			'formatted_average_price' => number_format(
-				$average_price,
-				2,
-				'.',
-				','
-			),
+
+			'formatted_max_price'     => Value::create( $max_price )->get_currency(),
+			'formatted_min_price'     => Value::create( $min_price )->get_currency(),
+			'formatted_average_price' => Value::create( $average_price )->get_currency(),
 		];
 	}
 
