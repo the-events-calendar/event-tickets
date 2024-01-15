@@ -616,7 +616,7 @@ class Orders extends WP_List_Table {
 		/**
 		 * Filters the arguments for the order report export.
 		 *
-		 * @since 5.6.3
+		 * @since TBD
 		 *
 		 * @param array $arguments The arguments for order retrieval.
 		 */
