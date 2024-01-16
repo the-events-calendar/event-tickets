@@ -378,7 +378,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @since  5.5.0 refactored to use the tickets ORM.
 		 * @since  4.6
 		 * @since 5.5.2 Set default query args.
-		 * @since TBD Added the `$context` parameter.
+		 * @since 5.8.0 Added the `$context` parameter.
 		 *
 		 * @param int|WP_Post $post_id Build the args to query only
 		 *                             for tickets related to this post ID.
@@ -418,7 +418,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @since  4.6
 		 * @since  5.5.0 refactored to use the tickets ORM.
-		 * @since TBD Added the `$context` parameter.
+		 * @since 5.8.0 Added the `$context` parameter.
 		 *
 		 * @param int|WP_Post $post Only get tickets assigned to this post ID.
 		 *
@@ -442,7 +442,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 					/**
 					 * Filters the post ID to use when fetching tickets for an Occurrence.
 					 *
-					 * @since TBD
+					 * @since 5.8.0
 					 *
 					 * @param int $post_id The post ID to use when fetching tickets for an Occurrence; this might
 					 *                     be a real post ID, or a provisional one.
@@ -770,7 +770,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Returns all the tickets for an event, of the active ticket providers.
 		 *
 		 * @since 4.12.0 Changed from protected abstract to public with duplicated child classes' logic consolidated here.
-		 * @since TBD Added the `$context` parameter.
+		 * @since 5.8.0 Added the `$context` parameter.
 		 *
 		 * @param int $post_id ID of parent "event" post.
 		 * @param string|null $context The context of the request.
@@ -1755,7 +1755,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Returns all tickets for an event (all providers are queried for this information).
 		 *
-		 * @since TBD Added the `$context` parameter.
+		 * @since 5.8.0 Added the `$context` parameter.
 		 *
 		 * @param int $post_id ID of parent "event" post
 		 * @param string|null $context The context of the request.
@@ -3988,7 +3988,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/**
 			 * Fired once a ticket has been created and added to a post.
 			 *
-			 * @since TBD Add the `$update` parameter.
+			 * @since 5.8.0 Add the `$update` parameter.
 			 *
 			 * @param int                           $post_id  The ticket parent post ID.
 			 * @param Tribe__Tickets__Ticket_Object $ticket   The ticket that was just added.
@@ -4002,7 +4002,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				/**
 				 * Fired once a ticket has been updated.
 				 *
-				 * @since TBD
+				 * @since 5.8.0
 				 *
 				 * @param int                           $post_id  The ticket parent post ID.
 				 * @param Tribe__Tickets__Ticket_Object $ticket   The ticket that was just added.
@@ -4014,7 +4014,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				/**
 				 * Fired once a ticket has been created.
 				 *
-				 * @since TBD
+				 * @since 5.8.0
 				 *
 				 * @param int                           $post_id  The ticket parent post ID.
 				 * @param Tribe__Tickets__Ticket_Object $ticket   The ticket that was just added.
@@ -4667,7 +4667,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Removes this module from the list of active modules.
 		 *
-		 * @since TBD
+		 * @since 5.8.0
 		 *
 		 * @return void This module is removed from the list of active modules, if it was active.
 		 */
