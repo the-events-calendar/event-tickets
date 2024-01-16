@@ -20,9 +20,9 @@
  * @since 4.12.1 Account for empty post type object, such as if post type got disabled. Fix typo in sprintf placeholders.
  * @since 5.0.2 Fix template path in documentation block.
  * @since 5.3.2 Added use of $hide_view_my_tickets_link variable to hide link as an option.
- * @since TBD Simplified the template's logic and updated link label.
+ * @since 5.8.0 Simplified the template's logic and updated link label.
  *
- * @version TBD
+ * @version 5.8.0
  *
  * @var Tribe__Tickets__Editor__Template $this
  */
