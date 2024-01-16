@@ -2,7 +2,7 @@
 /**
  * ${CARET}
  *
- * @since TBD
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Custom_Tables;
  */
@@ -14,7 +14,7 @@ use TEC\Common\StellarWP\Schema\Tables\Contracts\Table;
 /**
  * Class Posts_And_Ticket_Groups.
  *
- * @since TBD
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Custom_Tables;
  */
