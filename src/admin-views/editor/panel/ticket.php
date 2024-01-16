@@ -2,9 +2,9 @@
 /**
  * Ticket editor panel template for classic editor.
  *
- * @since TBD Input fields moved to separate templates.
+ * @since 5.8.0 Input fields moved to separate templates.
  *
- * @version TBD
+ * @version 5.8.0
  *
  * @var Tribe__Tickets__Ticket_Object|null $ticket                           The ticket object.
  * @var Tribe__Tickets__Tickets            $provider                         The provider instance.
@@ -152,7 +152,7 @@ $ticket_type = $ticket_type ?? 'default';
 				/**
 				 * Allows for the insertion of additional elements into the start of the main ticket form.
 				 *
-				 * @since TBD
+				 * @since 5.8.0
 				 *
 				 * @param int      $post_id     The post ID of the post the ticket is attached to.
 				 * @param string   $ticket_type The type of ticket the form is being rendered for.
@@ -165,7 +165,7 @@ $ticket_type = $ticket_type ?? 'default';
 				 * Allows for the insertion of additional elements into the start of the main ticket form for a specific
 				 * ticket type.
 				 *
-				 * @since TBD
+				 * @since 5.8.0
 				 *
 				 * @param int      $post_id     The post ID of the post the ticket is attached to.
 				 * @param int|null $ticket_id   The post ID of the ticket that is being edited, `null` if the ticket is
