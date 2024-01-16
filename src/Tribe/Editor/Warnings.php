@@ -33,14 +33,14 @@ class Warnings {
 	 * @since 5.6.4 Remove dependency on `#tribe-recurrence-active`.
 	 * @since 5.6.2 Added 'recurring_event_warning' as an $additionalClasses.
 	 * @since 5.0.4
-	 * @since TBD Deprecated.
+	 * @since 5.8.0 Deprecated.
 	 *
-	 * @deprecated TBD
+	 * @deprecated 5.8.0
 	 *
 	 * @param int $post_id Post ID.
 	 */
 	public function show_recurring_event_warning_message( $post_id ) {
-		_deprecated_function( __METHOD__, 'TBD', __CLASS__ . '::render_hidden_recurring_warning_for_ticket_meta_box' );
+		_deprecated_function( __METHOD__, '5.8.0', __CLASS__ . '::render_hidden_recurring_warning_for_ticket_meta_box' );
 	}
 
 	/**
@@ -89,7 +89,7 @@ class Warnings {
 	 * Get the Recurring Event warning message.
 	 *
 	 * @since 5.0.4
-	 * @since TBD Removed `class` attribute, dynamize ticket and rsvp labels.
+	 * @since 5.8.0 Removed `class` attribute, dynamize ticket and rsvp labels.
 	 *
 	 * @return string The Recurring Event warning message.
 	 */
@@ -142,7 +142,7 @@ class Warnings {
 	/**
 	 * Render hidden recurring warning message for new post/event creation page.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 */
 	public function render_hidden_recurring_warning_for_ticket_meta_box(): void {
 		$html  = '<p class="tec_ticket-panel__recurring-unsupported-warning" style="display: none">';
