@@ -2,7 +2,7 @@
 /**
  * The ticket header for the default Ticket Type.
  *
- * @since TBD
+ * @since 5.8.0
  *
  * @var string $description The help text displayed under the icon about the default ticket type.
  */
