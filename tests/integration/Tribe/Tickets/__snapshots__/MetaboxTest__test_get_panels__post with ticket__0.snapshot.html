@@ -6,10 +6,29 @@
 >
 	<div class="tribe_sectionheader ticket_list_container">
 		<div class="ticket_table_intro">
-					</div>
+			<button
+	id="ticket_form_toggle"
+	class="button-secondary ticket_form_toggle tribe-button-icon tribe-button-icon-plus"
+	aria-label="Add a new ticket"
+""
+>
+New ticket</button><button
+	id="rsvp_form_toggle"
+	class="button-secondary ticket_form_toggle tribe-button-icon tribe-button-icon-plus"
+	aria-label="Add a new RSVP"
+>
+	New RSVP</button>
+		</div>
 
 		<div class="ticket_table_intro__warnings">
-					</div>
+			<div class="ticket-editor-notice info info--background table-stick--before tec_ticket-panel__recurring-unsupported-warning" style="display: none">
+	<span class="dashicons dashicons-lightbulb"></span>
+	<div class="ticket-editor-notice_warning--messages">
+			<p class="ticket-editor-notice_warning--message et-warning">
+		Standard tickets are not yet supported on recurring events. <a href="https://evnt.is/1b7a" target="_blank" rel="noreferrer noopener">See our future planned features.</a>		</p>
+		</div>
+</div>
+		</div>
 
 		
 <div class="ticket_list_wrapper">
@@ -68,7 +87,30 @@
 				100	</td>
 
 	<td class="ticket_edit">
-			</td>
+		<button
+	data-provider='TEC\Tickets\Commerce\Module'
+	data-ticket-id='{{ ticket_id }}'
+	title='Edit Ticket ID: {{ ticket_id }}'
+	class='ticket_edit_button'>
+	<span class='ticket_edit_text'>Test TC ticket for {{ post_id }}</span>
+</button>
+
+	<button
+		data-provider='TEC\Tickets\Commerce\Module'
+		data-ticket-id='{{ ticket_id }}'
+		title='Duplicate Ticket ID: {{ ticket_id }}'
+		class='ticket_duplicate'>
+	<span class='ticket_duplicate_text'>Test TC ticket for {{ post_id }}</span>
+	</button>
+
+<button
+	attr-provider='TEC\Tickets\Commerce\Module'
+	attr-ticket-id='{{ ticket_id }}'
+	title='Delete Ticket ID: {{ ticket_id }}'
+	class='ticket_delete'>
+	<span class='ticket_delete_text'>Test TC ticket for {{ post_id }}</span>
+</button>
+	</td>
 </tr>
 		</tbody>
 	</table>
@@ -99,7 +141,7 @@
     Settings</button>
 		</div>
 	</div>
-	<p class="tec_ticket-panel__recurring-unsupported-warning" style="display: none">Single tickets and RSVPs are not yet supported on recurring events. <a href="https://evnt.is/1b7a" target="_blank" rel="noopener noreferrer"> Read about our plans for future features </a><p>
+	
 </div>
 <div id="tribe_panel_settings" class="ticket_panel panel_settings" aria-hidden="true" >
 	<h4>Ticket Settings	</h4>
