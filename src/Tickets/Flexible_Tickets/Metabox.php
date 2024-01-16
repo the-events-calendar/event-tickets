@@ -181,4 +181,93 @@ class Metabox {
 	public function get_default_ticket_type_header_description( int $event_id, int $series_id ): string {
 		return $this->labels->get_default_ticket_type_event_in_series_description( $series_id, $event_id );
 	}
+	
+	/**
+	 * Includes the warning message for recurring events in context of series.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $context The context of the ticket form.
+	 *
+	 * @return array<string,mixed> The context array.
+	 */
+	public function get_recurring_warning_message( array $context ): array {
+		if ( ! isset( $context['post_id'] ) ) {
+			return $context;
+		}
+		
+		$series  = tec_series()->where( 'event_post_id', (int) $context['post_id'] )->first();
+		$message = $series ? $this->get_warning_message_for_saved_event( $series ) : $this->get_warning_message_for_unsaved_event();
+		
+		$context['messages'] = array_merge( [ 'recurring-warning-message' => $message ], $context['messages'] );
+		return $context;
+	}
+	
+	/**
+	 * Returns the warning message for saved recurring events.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post $series The post object of the Series Pass.
+	 *
+	 * @return string The warning message for saved recurring events.
+	 */
+	public function get_warning_message_for_saved_event( WP_Post $series ): string {
+		$learn_more_text = sprintf(
+			// Translators: %s is the pluralized name of the series pass.
+			__( 'Learn more about %s', 'event-tickets' ),
+			tec_tickets_get_series_pass_plural_uppercase()
+		);
+		
+		$learn_more_link = sprintf(
+			// Translators: %1$s is a link to the documentation, %2$s is the label for the link.
+			'<a href="%1$s" target="_blank" rel="noreferrer noopener">%2$s</a>',
+			esc_url( 'https://evnt.is/1a' ),
+			esc_html( $learn_more_text )
+		);
+		
+		$series_link = sprintf(
+			// Translators: %2$s is the title of the series.
+			'<a href="%1$s" target="_blank" rel="noreferrer noopener">%2$s</a>',
+			esc_url( get_edit_post_link( $series ) ),
+			esc_html( get_the_title( $series ) )
+		);
+		
+		return sprintf(
+			// Translators: %1$s is the pluralized name of the series pass, %2$s is a link to the series, %3$s is a link to the documentation.
+			__( 'This recurring event is part of a Series. Create and manage %1$s for this event from the %2$s Series admin. %3$s', 'event-tickets' ),
+			tec_tickets_get_series_pass_plural_uppercase( 'ticket editor message' ),
+			$series_link,
+			$learn_more_link,
+		);
+	}
+	
+	/**
+	 * Returns the warning message for unsaved recurring events.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The warning message for unsaved recurring events.
+	 */
+	public function get_warning_message_for_unsaved_event(): string {
+		$learn_more_text = sprintf(
+			// Translators: %s is the pluralized name of the series pass.
+			__( 'Learn more about %s', 'event-tickets' ),
+			tec_tickets_get_series_pass_plural_uppercase()
+		);
+		
+		$learn_more_link = sprintf(
+			// Translators: %1$s is a link to the documentation, %2$s is the label for the link.
+			'<a href="%1$s" target="_blank" rel="noreferrer noopener">%2$s</a>',
+			esc_url( 'https://evnt.is/1a' ),
+			esc_html( $learn_more_text )
+		);
+		
+		return sprintf(
+			// Translators: %1$s is the pluralized name of the series pass, %2$s is a link to the documentation.
+			__( 'Once you save this event, you can add %1$s to its parent Series. %2$s.', 'event-tickets' ),
+			tec_tickets_get_series_pass_plural_uppercase( 'ticket editor message' ),
+			$learn_more_link,
+		);
+	}
 }
