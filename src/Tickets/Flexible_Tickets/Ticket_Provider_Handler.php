@@ -2,7 +2,7 @@
 /**
  * Maintains the relation between a Series ticket provider and the ticket provider of the Events part of the Series.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets;
  */
@@ -14,7 +14,7 @@ use TEC\Events_Pro\Custom_Tables\V1\Models\Series_Relationship;
 /**
  * Class Ticket_Provider_Handler.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets;
  */
@@ -23,7 +23,7 @@ class Ticket_Provider_Handler {
 	/**
 	 * Deletes the ticket provider of the Events part of a Series following the deletion of the Series ticket provider.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param int $series_id The ID of the Series.
 	 *
@@ -43,7 +43,7 @@ class Ticket_Provider_Handler {
 	/**
 	 * Updates the ticket provider of the Events part of a Series following the update of the Series ticket provider.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param int         $series_id The ID of the Series.
 	 * @param string|null $value     The new ticket provider of the Events part of the Series; if `null` then the
