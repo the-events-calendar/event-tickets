@@ -2,7 +2,7 @@
 /**
  * Handles the Series Passes integration at different levels.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes;
  */
@@ -28,7 +28,7 @@ use WP_Rewrite;
 /**
  * Class Repository.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes;
  */
@@ -37,14 +37,14 @@ class Series_Passes extends Controller {
 	/**
 	 * The ticket type handled by this class.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 */
 	public const TICKET_TYPE = 'series_pass';
 
 	/**
 	 * A reference to the labels' handler.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @var Labels
 	 */
@@ -53,7 +53,7 @@ class Series_Passes extends Controller {
 	/**
 	 * A reference to the Series Passes' meta handler.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @var Meta
 	 */
@@ -62,7 +62,7 @@ class Series_Passes extends Controller {
 	/**
 	 * A reference to the Series Passes' metabox handler.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @var Metabox
 	 */
@@ -71,7 +71,7 @@ class Series_Passes extends Controller {
 	/**
 	 * A reference to the Series Passes' ticket provider handler.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @var Ticket_Provider_Handler
 	 */
@@ -80,7 +80,7 @@ class Series_Passes extends Controller {
 	/**
 	 * A reference to the Series Passes' queries handler.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @var Queries
 	 */
@@ -88,7 +88,7 @@ class Series_Passes extends Controller {
 	/**
 	 * A reference to the Series Passes' edit and editor handler.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @var Edit
 	 */
@@ -97,7 +97,7 @@ class Series_Passes extends Controller {
 	/**
 	 * A reference to the Series Passes' frontend handler.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @var Frontend
 	 */
@@ -106,7 +106,7 @@ class Series_Passes extends Controller {
 	/**
 	 * Series_Passes constructor.
 	 *
-	 * since TBD
+	 * since 5.8.0
 	 *
 	 * @param Container               $container               The dependency injection container.
 	 * @param Labels                  $labels                  The labels' handler.
@@ -139,7 +139,7 @@ class Series_Passes extends Controller {
 	/**
 	 * The entire provider should not be active if Series are not ticketable.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return bool
 	 */
@@ -152,7 +152,7 @@ class Series_Passes extends Controller {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return void
 	 */
@@ -289,7 +289,7 @@ class Series_Passes extends Controller {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return void
 	 */
@@ -397,7 +397,7 @@ class Series_Passes extends Controller {
 	/**
 	 * Adds the toggle to the new ticket form.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param int $post_id The post ID.
 	 *
@@ -419,7 +419,7 @@ class Series_Passes extends Controller {
 	 * This method uses `the_content` filter priority 0 to run once before the Series or Ticket
 	 * logic run
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param string $content The post content.
 	 *
@@ -439,7 +439,7 @@ class Series_Passes extends Controller {
 	/**
 	 * Skip rendering the Series content when on the My Tickets page.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param string $content The post content.
 	 *
@@ -452,7 +452,7 @@ class Series_Passes extends Controller {
 	/**
 	 * Adds Series Passes' admin strings to the list of admin strings.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param array<string> $data      The panel data to filter.
 	 * @param int           $post_id   The post ID the panel is being displayed for.
@@ -473,7 +473,7 @@ class Series_Passes extends Controller {
 	 *
 	 * Since providers can be set per-Series, all are pre-emptively activated.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return void Reports are enabled for the Series Passes.
 	 */
@@ -508,7 +508,7 @@ class Series_Passes extends Controller {
 	 *
 	 * The method wraps the Meta low-level operation to unregister and re-register the provider as required.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param int $ticket_id The ticket ID.
 	 *
@@ -529,7 +529,7 @@ class Series_Passes extends Controller {
 	/**
 	 * Updates the Series Passes meta when its meta is updated.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param int|null $meta_id    The meta ID, unused.
 	 * @param int      $ticket_id  The ticket ID.
@@ -549,7 +549,7 @@ class Series_Passes extends Controller {
 	/**
 	 * Updates a Series Pass post or custom fields when it's saved.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param int $ticket_id The ticket post ID.
 	 *
@@ -571,7 +571,7 @@ class Series_Passes extends Controller {
 	/**
 	 * Updates a Series Pass meta when created or edited.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param int           $post_id The ID of the post the Ticket is being saved for.
 	 * @param Ticket_Object $ticket  The Ticket being saved.
@@ -589,7 +589,7 @@ class Series_Passes extends Controller {
 	/**
 	 * Updates the Series Passes when a Series relationships with Events are updated.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param int $series_id The Series post ID.
 	 *
@@ -606,7 +606,7 @@ class Series_Passes extends Controller {
 	/**
 	 * Updates the Series Passes when an Event relationship with Series are updated.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param int             $event_id   The Event post ID.
 	 * @param array<int>|null $series_ids The Series post IDs, if known.
@@ -627,7 +627,7 @@ class Series_Passes extends Controller {
 	/**
 	 * Starts filtering the ticket labels during panel rendering.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param int|WP_Post|null $post        The post the panel is being rendered for.
 	 * @param int|null         $ticket_id   The ticket ID the panel is being rendered for, if any.
@@ -649,7 +649,7 @@ class Series_Passes extends Controller {
 	 *
 	 * The notice will render if the Event has no other tickets, and the Event is related to a Series.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param int                  $post_id The post ID.
 	 * @param array<Ticket_Object> $tickets The tickets for the post.
@@ -674,7 +674,7 @@ class Series_Passes extends Controller {
 	 *
 	 * The notice will render if the Event has other tickets, and the Event is related to a Series.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param int    $post_id
 	 * @param array  $tickets
@@ -694,7 +694,7 @@ class Series_Passes extends Controller {
 	 * Adds the Series post ID to the list of IDs that should be searched for tickets when, in the context
 	 * of a repository query, searching for an Event's tickets.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param array<int>|int $post_id The Event post ID, or a list of IDs.
 	 *
@@ -732,7 +732,7 @@ class Series_Passes extends Controller {
 	/**
 	 * Updates the ticket provider when a Series ticket provider is updated.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param array<int> $meta_ids   Unused, the meta IDs that were updated.
 	 * @param int        $object_id  The post ID.
@@ -748,7 +748,7 @@ class Series_Passes extends Controller {
 	/**
 	 * Deleted the ticket provider when a Series ticket provider is deleted.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param array<int> $meta_ids   Unused, the meta IDs that were deleted.
 	 * @param int        $object_id  The post ID.
@@ -764,7 +764,7 @@ class Series_Passes extends Controller {
 	/**
 	 * Updates the ticket provider when a Series ticket provider is updated or deleted.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param int    $object_id  The post ID.
 	 * @param string $meta_key   The meta key.
@@ -793,7 +793,7 @@ class Series_Passes extends Controller {
 	 * Renders a link to the Series edit screen in place of the edit controls for Series Passes
 	 * when displaying the Series Pass in the context of a Series' Event.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param Ticket_Object $ticket  The ticket object.
 	 * @param int|null      $post_id The post ID the ticket is being rendered for, if any.
@@ -817,7 +817,7 @@ class Series_Passes extends Controller {
 	/**
 	 * Adds the Series Pass ticket type to the list of ticket types to display a table for.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param array<string,array<Ticket_Object>> $ticket_types A map from ticket type to list of tickets
 	 *                                                         for that type.
@@ -836,7 +836,7 @@ class Series_Passes extends Controller {
 	 * Updates the data displayed in the Series Pass list table to use the Series Pass plural name
 	 * for the title.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param array<string,mixed> $table_data The table data.
 	 *
@@ -851,7 +851,7 @@ class Series_Passes extends Controller {
 	/**
 	 * Renders the Series Pass type header in the context of the Ticket add and edit form.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param string      $file        The file being rendered.
 	 * @param array       $name        The name of the file being rendered.
@@ -874,7 +874,7 @@ class Series_Passes extends Controller {
 	/**
 	 * Filters the default Ticket type description in the context of Events part of a Series.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param string $description The default Ticket type description.
 	 * @param int    $post_id     The post ID the description is being rendered for.
@@ -899,7 +899,7 @@ class Series_Passes extends Controller {
 	 * Filters the post IDs used to fetch an Event attendees to include the Series the Event belongs to and,
 	 * thus, include Series Passes into the results.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param int|array<int> $post_id The post ID or IDs.
 	 *
@@ -926,7 +926,7 @@ class Series_Passes extends Controller {
 	/**
 	 * Filters the costs of an Event to include the costs of Series Passes if the Event is part of a Series.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param mixed|null  $meta_value The meta value.
 	 * @param int         $post_id    The Event post ID.
@@ -962,7 +962,7 @@ class Series_Passes extends Controller {
 	 * Filters the query to fetch post types by their ticketed status to include Events that are ticketed "by proxy"
 	 * by being associated with a Series that has one or more Series Passes.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param string|null   $query       The SQL query to filter.
 	 * @param bool          $has_tickets Whether to filter by ticketed or unticketed status.
@@ -983,7 +983,7 @@ class Series_Passes extends Controller {
 	 * Filters the query used to get the number of ticketed posts of a certain type to include Events that are ticketed
 	 * "by proxy" by being associated with a Series that has one or more Series Passes.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param string|null $query     The SQL query to filter.
 	 * @param string      $post_type The post type the unticketed count is being calculated for.
@@ -1002,7 +1002,7 @@ class Series_Passes extends Controller {
 	 * Filters the query used to get the number of unticketed posts of a certain type to include Events that are
 	 * ticketed "by proxy" by being associated with a Series that has one or more Series Passes.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param string|null $query     The SQL query to filter.
 	 * @param string      $post_type The post type the unticketed count is being calculated for.
@@ -1020,7 +1020,7 @@ class Series_Passes extends Controller {
 	/**
 	 * Filter the meta box helper text for Series post type.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param string  $text The helper text with link.
 	 * @param WP_Post $post The Post object.
@@ -1039,7 +1039,7 @@ class Series_Passes extends Controller {
 	 * Filters the JavaScript configuration for the Attendees report to include the confirmation strings for
 	 * Series Passes.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param array<string,mixed> $config_data The JavaScript configuration.
 	 *
@@ -1052,7 +1052,7 @@ class Series_Passes extends Controller {
 	/**
 	 * Renders the Series Pass header for Ticket form in the frontend.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param string   $file     The file to render.
 	 * @param array    $name     The name of the file to render.
@@ -1076,7 +1076,7 @@ class Series_Passes extends Controller {
 	/**
 	 * Filters the editor data localized by Flexible Tickets.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param array<string,mixed> $editor_data The editor data.
 	 *
@@ -1090,7 +1090,7 @@ class Series_Passes extends Controller {
 	 * Filters the editor configuration data to add the information required to correctly represent
 	 * Series Passes in the editor.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param array<string,mixed> $data The editor configuration data.
 	 *
@@ -1104,7 +1104,7 @@ class Series_Passes extends Controller {
 	/**
 	 * Prevent Series Passes from being edited outside the context of Series.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param bool $is_ticket_editable Whether the ticket is editable in the context of the post.
 	 * @param int  $ticket_id          The ticket ID.
@@ -1119,7 +1119,7 @@ class Series_Passes extends Controller {
 	/**
 	 * Filters the data for the "My Tickets" link.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param array<string, mixed> $data     The data for the "My Tickets" link.
 	 * @param int                  $event_id The event ID.
@@ -1137,7 +1137,7 @@ class Series_Passes extends Controller {
 	 * This method will return `true` to allow tickets on recurring events by default and by controlling the
 	 * relevant parts of the UI using Javascript.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param bool $allow
 	 *
@@ -1150,7 +1150,7 @@ class Series_Passes extends Controller {
 	/**
 	 * Generate rewrite rules for the series my tickets page.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param WP_Rewrite $wp_rewrite Current WP_Rewrite instance (passed by reference).
 	 *
