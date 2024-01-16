@@ -64,7 +64,7 @@ const mapStateToProps = (state, ownProps) => {
 	/**
 	 * Filters the properties mapped from the state for the Ticket Type component.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @type {Object} mappedProps The properties mapped from the state for the Ticket Type component.
 	 * @type {Object} context.state The current state.
