@@ -6,7 +6,7 @@
  *
  * Setting `define( '', false )` in the site wp-config.php file will disable the feature.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Recurring_Tickets;
  */
@@ -20,7 +20,7 @@ use TEC\Tickets\Flexible_Tickets\Templates\Admin_Views;
 /**
  * Class Provider.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets;
  */
@@ -28,7 +28,7 @@ class Provider extends ServiceProvider {
 	/**
 	 * The action that will be dispatched when the provider is registered.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @var string
 	 */
@@ -38,7 +38,7 @@ class Provider extends ServiceProvider {
 	 * The name of the constant that will be used to disable the feature.
 	 * Setting it to a truthy value will disable the feature.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @var string
 	 */
@@ -47,7 +47,7 @@ class Provider extends ServiceProvider {
 	/**
 	 * Whether the provider did register or not.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @var bool
 	 */
@@ -56,7 +56,7 @@ class Provider extends ServiceProvider {
 	/**
 	 * Registers the bindings, service providers and controllers part of the feature.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return void The bindings, service providers and controllers are registered in the container.
 	 */
@@ -86,7 +86,7 @@ class Provider extends ServiceProvider {
 		/**
 		 * Fires when the TEC Flexible Tickets feature is activated.
 		 *
-		 * @since TBD
+		 * @since 5.8.0
 		 */
 		do_action( 'tec_flexible_tickets_activated' );
 
@@ -115,7 +115,7 @@ class Provider extends ServiceProvider {
 	/**
 	 * Unregisters the bindings, service providers and controllers part of the feature.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return void
 	 */
@@ -142,7 +142,7 @@ class Provider extends ServiceProvider {
 	 * The method will check if the feature has been disabled via a constant, an environment variable,
 	 * an option or a filter.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return bool Whether the feature is enabled or not.
 	 */
@@ -167,7 +167,7 @@ class Provider extends ServiceProvider {
 		 * Note: this filter will only apply if the disable constant or env var
 		 * are not set or are set to falsy values.
 		 *
-		 * @since TBD
+		 * @since 5.8.0
 		 *
 		 * @param bool $activate Defaults to `true`.
 		 *
