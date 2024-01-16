@@ -119,23 +119,13 @@ class Payment_Intent_Handler {
 			if ( is_user_logged_in() ) {
 				$user                  = wp_get_current_user();
 				$body['receipt_email'] = $user->get( 'user_email' );
-				$customer_name         = $user->get( 'first_name' ) ? $user->get( 'first_name' ) . ' ' . $user->get( 'last_name' ) : $user->get( 'display_name' );
-				$body['description']   = sprintf( '%1$s / %2$s', $customer_name, $body['metadata']['event_name'] );
 			}
 
 			if ( ! empty( $data['purchaser']['email'] ) ) {
 				$body['receipt_email'] = $data['purchaser']['email'];
-				$body['description']   = sprintf( '%1 / %2', $data['purchaser']['name'], $body['metadata']['event_name'] );
 			}
 
-			/**
-			 * Filters the payment intent description
-			 *
-			 * @since TBD
-			 *
-			 * @param string $body['description'] Default payment intent description
-			 */
-			$body['description'] = apply_filters( 'tec_tickets_commerce_stripe_update_payment_description', $body['description'] );
+			$body['description'] = $this->get_payment_intent_description( $order, $data, $body, $payment_intent );
 		}
 
 		return Payment_Intent::update( $payment_intent_id, $body );
@@ -253,7 +243,7 @@ class Payment_Intent_Handler {
 		$metadata['purchaser_email'] = $order->purchaser_email;
 		$metadata['event_name']      = get_post( current( $events_in_order ) )->post_title;
 		$metadata['event_url']       = get_post_permalink( current( $events_in_order ) );
-		$metadata['ticket_names']    = implode( ' ,', $ticket_names );
+		$metadata['ticket_names']    = implode( ', ', $ticket_names );
 
 		/**
 		 * Filter the updated metadata for a completed order's payment intent.
@@ -264,5 +254,48 @@ class Payment_Intent_Handler {
 		 * @param array $payment_intent The Payment intent.
 		 */
 		return apply_filters( 'tec_tickets_commerce_stripe_update_payment_intent_metadata', $metadata, $order, $payment_intent );
+	}
+
+	/**
+	 * Get the description for the payment intent.
+	 *
+	 * @since TBD
+	 *
+	 * @param \WP_Post $order The Order data.
+	 * @param array    $data The purchase data received from the front-end.
+	 * @param array    $body The body used to update the payment intent.
+	 * @param array    $payment_intent The Payment intent.
+	 *
+	 * @return array
+	 */
+	protected function get_payment_intent_description( \WP_Post $order, $data, $body, array $payment_intent ) {
+		$purchaser_name = $order->purchaser_name;
+
+		if ( is_user_logged_in() ) {
+			$user           = wp_get_current_user();
+			$purchaser_name = $user->get( 'first_name' ) ? $user->get( 'first_name' ) . ' ' . $user->get( 'last_name' ) : $user->get( 'display_name' );
+		}
+
+		$tickets_in_order           = implode( ', ', array_unique( array_filter( wp_list_pluck( $order->items, 'ticket_id' ) ) ) );
+		$events_in_order            = array_unique( array_filter( wp_list_pluck( $order->items, 'event_id' ) ) );
+		$post_id                    = current( $events_in_order );
+		$post                       = get_post( $post_id );
+		$post_labels                = get_post_type_labels( get_post_type_object( $post->post_type ) );
+		$payment_intent_description = sprintf( '[%1$s: %2$s] [Ticket: %3$s] [Order: %4$s] %5$s - %6$s - %7$s', $post_labels->singular_name, $post_id, $tickets_in_order, $order->ID, $body['metadata']['event_name'], $body['metadata']['ticket_names'], $purchaser_name );
+
+		/**
+		 * Filters the payment intent description
+		 *
+		 * @since TBD
+		 *
+		 * @param string   $payment_intent_description Default payment intent description.
+		 * @param \WP_Post $order The Order data.
+		 * @param array    $data The purchase data received from the front-end.
+		 * @param array    $body The body used to update the payment intent.
+		 * @param array    $payment_intent The Payment intent.
+		 */
+		$payment_intent_description = apply_filters( 'tec_tickets_commerce_stripe_update_payment_description', $payment_intent_description, $order, $data, $body, $payment_intent );
+
+		return $payment_intent_description;
 	}
 }
