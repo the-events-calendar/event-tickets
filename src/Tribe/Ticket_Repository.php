@@ -128,8 +128,8 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 */
 	public function ticket_to_event_keys() {
 		return [
-			'rsvp'           => '_tribe_rsvp_for_event',
-			'tribe-commerce' => '_tribe_tpp_for_event',
+			'rsvp'                         => '_tribe_rsvp_for_event',
+			'tribe-commerce'               => '_tribe_tpp_for_event',
 			TEC\Tickets\Commerce::PROVIDER => TEC\Tickets\Commerce\Ticket::$event_relation_meta_key,
 		];
 	}
@@ -350,9 +350,9 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 *
 	 * @param string|int $date
 	 *
+	 * @return array
 	 * @throws Exception
 	 *
-	 * @return array
 	 */
 	public function filter_by_available_from( $date ) {
 		// the input is a UTC date or timestamp
@@ -385,9 +385,9 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 *
 	 * @param string|int $date
 	 *
+	 * @return array
 	 * @throws Exception
 	 *
-	 * @return array
 	 */
 	public function filter_by_available_until( $date ) {
 		// the input is a UTC date or timestamp
@@ -418,9 +418,9 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 *
 	 * @since 5.2.0
 	 *
+	 * @return array
 	 * @throws Exception
 	 *
-	 * @return array
 	 */
 	public function filter_by_active() {
 		// the input is a UTC date or timestamp
@@ -803,3 +803,4 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	public function filter_by_type_not_in( $type ): void {
 		$this->filter_by_type_operator( 'NOT IN', $type );
 	}
+}
