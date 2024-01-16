@@ -6,6 +6,7 @@
  *
  * @var array $messages The warning message.
  */
+
 ?>
 <div class="ticket-editor-notice info info--background table-stick--before tec_ticket-panel__recurring-unsupported-warning" style="display: none">
 	<span class="dashicons dashicons-lightbulb"></span>
