@@ -1348,7 +1348,7 @@ class Tribe__Tickets__Tickets_View {
 	/**
 	 * Generate the required data for the "My Tickets" link.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param int $event_id The event ID.
 	 * @param int $user_id The user ID.
@@ -1380,7 +1380,7 @@ class Tribe__Tickets__Tickets_View {
 		/**
 		 * Filters the data for the "My Tickets" link.
 		 *
-		 * @since TBD
+		 * @since 5.8.0
 		 *
 		 * @param array<string, array> $data The data for the "My Tickets" link.
 		 * @param int   $event_id The event ID.
