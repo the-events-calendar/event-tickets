@@ -2,7 +2,7 @@
 /**
  * Handles the integration for emails.
  *
- * @since TBD
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
  */
@@ -17,7 +17,7 @@ use WP_Post;
 /**
  * Class Emails controller.
  *
- * @since TBD
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
  */
@@ -26,7 +26,7 @@ class Emails extends Controller {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return void
 	 */
@@ -39,7 +39,7 @@ class Emails extends Controller {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return void
 	 */
@@ -52,7 +52,7 @@ class Emails extends Controller {
 	/**
 	 * Renders the series events permalink for the legacy ticket email.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param int $post_id The series post ID.
 	 *
@@ -69,7 +69,7 @@ class Emails extends Controller {
 	/**
 	 * Renders the series events permalink for the ticket email.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param int $post_id The series post ID.
 	 *
@@ -92,7 +92,7 @@ class Emails extends Controller {
 	/**
 	 * Renders the series date range for the ticket email.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param int $series_id The series ID.
 	 *
@@ -121,7 +121,7 @@ class Emails extends Controller {
 	/**
 	 * Include the Series list link in the ticket emails.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param string $file       Template file.
 	 * @param string $name       Template name.
@@ -145,7 +145,7 @@ class Emails extends Controller {
 	/**
 	 * Include the Series date range in the ticket emails.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param string $file       Template file.
 	 * @param string $name       Template name.
@@ -169,7 +169,7 @@ class Emails extends Controller {
 	/**
 	 * Include the series link for legacy ticket emails.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param array $ticket Ticket information.
 	 * @param WP_Post $event Event post object.
