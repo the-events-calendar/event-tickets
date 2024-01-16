@@ -2,7 +2,7 @@
 /**
  * The ticket type header for Series.
  *
- * @since TBD
+ * @since 5.8.0
  */
 
 ?>
