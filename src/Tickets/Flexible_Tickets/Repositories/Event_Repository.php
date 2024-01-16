@@ -8,7 +8,7 @@
  * This decorator will overwrite the schema entries added by the Event Tickets or Event Tickets Plus
  * decorators, so that the Tickets and Attendees queries include Series posts.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Repositories;
  */
@@ -27,7 +27,7 @@ use Tribe__Tickets_Plus__Event_Repository as Tickets_Plus_Event_Repository;
 /**
  * Class Event_Repository.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Repositories;
  */
@@ -38,7 +38,7 @@ class Event_Repository extends Repository_Decorator {
 	/**
 	 * The meta keys that are used to store the Ticket to Event relationships.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @var string[]
 	 */
@@ -50,7 +50,7 @@ class Event_Repository extends Repository_Decorator {
 	 * The decorator is constructed decorating either an Event Tickets or Event Tickets Plus Event Repository
 	 * depending on which is available.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 */
 	public function __construct() {
 		$this->decorated = $this->build_decorated_repository();
@@ -74,7 +74,7 @@ class Event_Repository extends Repository_Decorator {
 	/**
 	 * Builds the decorated repository.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return Repository_Interface The decorated repository instance.
 	 */
@@ -107,7 +107,7 @@ class Event_Repository extends Repository_Decorator {
 	 * This method is originally provided by the Post_Tickets trait; it's overridden here to
 	 * include Series posts in the relationship lookups.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param string $alias The alias of the `postmeta` table to join.
 	 *
@@ -121,7 +121,7 @@ class Event_Repository extends Repository_Decorator {
 	/**
 	 * Builds the SQL clause to compare meta values to the ones relating attendees to posts.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param string $alias The alias to use for the post meta table.
 	 *
@@ -134,7 +134,7 @@ class Event_Repository extends Repository_Decorator {
 	/**
 	 * Return the meta keys that are used to store the Attendee to Event relationships.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return string[] The meta keys that are used to store the Ticket to Event relationships.
 	 */
@@ -145,7 +145,7 @@ class Event_Repository extends Repository_Decorator {
 	/**
 	 * Returns the Attendee post types.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return string[] The Attendee post types.
 	 */
@@ -156,7 +156,7 @@ class Event_Repository extends Repository_Decorator {
 	/**
 	 * Returns the meta key relating an Attendee to a User.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return string The meta key relating an Attendee to a User.
 	 */
