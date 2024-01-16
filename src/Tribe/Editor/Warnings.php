@@ -6,6 +6,7 @@
 namespace Tribe\Tickets\Editor;
 
 use Tribe__Events__Main as TEC;
+use Tribe__Tickets__Admin__Views;
 use WP_Post;
 use TEC\Events\Custom_Tables\V1\Migration\State as Migration_State;
 
@@ -90,17 +91,26 @@ class Warnings {
 	 *
 	 * @since 5.0.4
 	 * @since TBD Removed `class` attribute, dynamize ticket and rsvp labels.
-	 *
-	 * @return string The Recurring Event warning message.
 	 */
-	public function get_recurring_event_warning_message() {
-		return sprintf(
-			// Translators: %1$s: dynamic "tickets" text, %2$s: dynamic "RSVP" text, %3$s opening tag <a> of link,  %4$s closing tag </a> of link
-			__( 'Single %1$s and %2$s are not yet supported on recurring events. %3$s Read about our plans for future features %4$s', 'event-tickets' ),
-			tribe_get_ticket_label_plural_lowercase(),
-			tribe_get_rsvp_label_plural(),
-			'<a href="https://evnt.is/1b7a" target="_blank" rel="noopener noreferrer">',
-			'</a>'
+	public function get_recurring_event_warning_message(): void {
+		/** @var Tribe__Tickets__Admin__Views $admin_views */
+		$admin_views = tribe( Tribe__Tickets__Admin__Views::class );
+	
+		$help_text_link = sprintf(
+			'<a href="%1$s" target="_blank" rel="noreferrer noopener">%2$s</a>',
+			esc_url( 'https://evnt.is/1b7a' ),
+			esc_html( __( 'See our future planned features.', 'event-tickets' ) )
+		);
+		
+		$admin_views->template(
+			'editor/recurring-warning',
+			[
+				'message' => sprintf(
+				/* translators: %1$s: link to help article. */
+					__( 'Standard tickets are not yet supported on recurring events. %1$s', 'event-tickets' ),
+					$help_text_link
+				),
+			],
 		);
 	}
 
@@ -145,10 +155,6 @@ class Warnings {
 	 * @since TBD
 	 */
 	public function render_hidden_recurring_warning_for_ticket_meta_box(): void {
-		$html  = '<p class="tec_ticket-panel__recurring-unsupported-warning" style="display: none">';
-		$html .= $this->get_recurring_event_warning_message();
-		$html .= '<p>';
-
-		echo $html;
+		$this->get_recurring_event_warning_message();
 	}
 }
