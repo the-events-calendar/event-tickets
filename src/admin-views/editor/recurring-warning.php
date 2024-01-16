@@ -8,7 +8,7 @@
  */
 
 ?>
-<div class="ticket-editor-notice info info--background table-stick--before tec_ticket-panel__recurring-unsupported-warning" style="display: none">
+<div class="ticket-editor-notice info info--background tec_ticket-panel__recurring-unsupported-warning" style="display: none">
 	<span class="dashicons dashicons-lightbulb"></span>
 	<div class="ticket-editor-notice_warning--messages">
 	<?php foreach ( $messages as $key => $message ) : ?>
