@@ -254,6 +254,8 @@ class Series_Passes extends Controller
          * will always be part of a Series.
          */
 	    add_filter( 'tec_tickets_allow_tickets_on_recurring_events', [ $this, 'allow_tickets_on_recurring_events' ] );
+		
+		add_filter( 'tribe_template_context:tickets/admin-views/editor/recurring-warning', [ $this, 'filter_recurring_warning_message' ], 10, 4 );
     }
 
     /**
@@ -333,6 +335,8 @@ class Series_Passes extends Controller
         remove_filter('tec_tickets_my_tickets_link_ticket_count_by_type', [$this, 'filter_my_tickets_link_data'], 10, 3);
 	    remove_filter( 'tec_tickets_allow_tickets_on_recurring_events', [ $this, 'allow_tickets_on_recurring_events' ] );
 	    remove_action( 'generate_rewrite_rules', [ $this, 'include_rewrite_rules_for_series_my_tickets_page' ] );
+	    
+	    remove_filter( 'tribe_template_context:tickets/admin-views/editor/recurring-warning', [ $this, 'filter_recurring_warning_message' ], 10, 4 );
     }
 
     /**
@@ -1120,5 +1124,24 @@ class Series_Passes extends Controller
 		];
 
 		$wp_rewrite->rules = $rules + $wp_rewrite->rules;
+	}
+	
+	/**
+	 * Include series pass message in the ticket editor.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $context   Local Context array of data.
+	 * @param string              $file      Complete path to include the PHP File.
+	 * @param array<string,mixed> $name      Template name.
+	 * @param Template            $template  Current instance of the Tribe__Template.
+	 *
+	 * @return array<string,mixed> The updated context.
+	 */
+	public function filter_recurring_warning_message( array $context, string $file, array $name, $template ): array {
+		if ( ! isset( $context['messages'] ) ) {
+			return $context;
+		}
+		return $this->metabox->get_recurring_warning_message( $context );
 	}
 }
