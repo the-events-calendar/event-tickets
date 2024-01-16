@@ -22,7 +22,7 @@ let blocks = [
  *
  * the
  *
- * @since TBD
+ * @since 5.8.0
  *
  * @param {Object[]} blocks The blocks that will be registered.
  */
@@ -33,7 +33,7 @@ blocks.forEach ( ( block ) => registerBlockType ( `tribe/${ block.id }`, block )
 /**
  * Fires an action after Event Tickets blocks are registered.
  *
- * @since TBD
+ * @since 5.8.0
  *
  * @param {Object[]} blocks The blocks that were registered.
  */
