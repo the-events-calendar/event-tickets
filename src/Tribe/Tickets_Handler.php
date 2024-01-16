@@ -593,7 +593,7 @@ class Tribe__Tickets__Tickets_Handler {
 			/**
 			 * Filters whether a ticket should be edited in the context of a post.
 			 *
-			 * @since TBD
+			 * @since 5.8.0
 			 *
 			 * @param bool $editable  Whether the ticket is editable in the context of this post or not.
 			 * @param int  $ticket_id The Ticket ID.
