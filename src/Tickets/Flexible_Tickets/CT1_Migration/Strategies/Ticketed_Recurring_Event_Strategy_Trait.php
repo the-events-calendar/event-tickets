@@ -2,7 +2,7 @@
 /**
  * Provides common methods for the migration strategies dealing with Ticketed Recurring Events (excluding RSVP).
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes\CT1_Migration\Strategies;
  */
@@ -22,7 +22,7 @@ use Tribe__Tickets__Tickets as Tickets;
 /**
  * Trait Ticketed_Recurring_Event_Strategy_Trait.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes\CT1_Migration\Strategies;
  */
@@ -32,7 +32,7 @@ trait Ticketed_Recurring_Event_Strategy_Trait {
 	/**
 	 * Ticketed Single and Multi recurrence rule constructor.
 	 *
-	 * since TBD
+	 * since 5.8.0
 	 *
 	 * @param int  $post_id The post ID of the Event to migrate.
 	 * @param bool $dry_run Whether the migration should actually commit information or not.
@@ -57,7 +57,7 @@ trait Ticketed_Recurring_Event_Strategy_Trait {
 	 *
 	 * The property is used to ensure the cache is cleared for these posts after a dry run.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @var array<int>
 	 */
@@ -66,7 +66,7 @@ trait Ticketed_Recurring_Event_Strategy_Trait {
 	/**
 	 * Returns a list of meta keys relating a Ticket or an Attende to the Event.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param int $post_id The Ticket or Attendee ID.
 	 *
@@ -92,7 +92,7 @@ trait Ticketed_Recurring_Event_Strategy_Trait {
 	 * the option being already set. This method is idem-potent and each migration instance running it will have
 	 * the same effect.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 */
 	protected function ensure_series_ticketable(): void {
 		$ticketable_post_types   = Tickets_Main::instance()->post_types();
@@ -104,7 +104,7 @@ trait Ticketed_Recurring_Event_Strategy_Trait {
 	/**
 	 * Returns the IDs of the Attendees for a given Ticket.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param int $ticket_id The Ticket ID.
 	 *
@@ -122,7 +122,7 @@ trait Ticketed_Recurring_Event_Strategy_Trait {
 	 * The "move" of Tickets and Attendees is performed by updating the meta keys that relate them to the Event,
 	 * a low-level operation that does not trigger any hooks.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param int $series_id The ID of the Series to move the Tickets to.
 	 *
@@ -172,7 +172,7 @@ trait Ticketed_Recurring_Event_Strategy_Trait {
 	 * Sets the default ticket provider for the given Series by either using the one set for the Event or the default
 	 * one.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param int $series_id The ID of the Series.
 	 */
@@ -190,7 +190,7 @@ trait Ticketed_Recurring_Event_Strategy_Trait {
 	 *
 	 * This method is non-destructive by design: the Event meta will not be removed.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param int $series_id The ID of the Series.
 	 */
@@ -216,7 +216,7 @@ trait Ticketed_Recurring_Event_Strategy_Trait {
 	/**
 	 * Applies the strategy to the given Event and updates the Event_Report.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param Event_Report $event_report The Event_Report to update.
 	 *
@@ -275,7 +275,7 @@ trait Ticketed_Recurring_Event_Strategy_Trait {
 	 * altered cannot be rolled back; the next best thing is to clean the cache of the posts that
 	 * have been touched by the migration.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param int $post_id The migrated Event post ID.
 	 *
