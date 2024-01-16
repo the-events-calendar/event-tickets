@@ -2,7 +2,7 @@
 /**
  * Handles the integration between Flexible Tickets and the The Events Calendar Custom Tables v1 migration.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
  */
@@ -23,7 +23,7 @@ use TEC\Tickets\Flexible_Tickets\CT1_Migration\Strategies\Ticketed_Single_Rule_E
 /**
  * Class CT1_Migration.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
  */
@@ -33,7 +33,7 @@ class CT1_Migration extends Controller {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return void
 	 */
@@ -49,7 +49,7 @@ class CT1_Migration extends Controller {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return void
 	 */
@@ -65,7 +65,7 @@ class CT1_Migration extends Controller {
 	/**
 	 * Counts the number of recurrence rules (RRULE in iCalendar format) of an Event.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param int $post_id The ID of the Event.
 	 *
@@ -81,7 +81,7 @@ class CT1_Migration extends Controller {
 	/**
 	 * Alters the migration strategy for an Event if ticketed.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param Strategy_Interface|null $strategy The current strategy.
 	 * @param int                     $post_id  The ID of the Event.
@@ -116,7 +116,7 @@ class CT1_Migration extends Controller {
 	/**
 	 * Filters the CT1 Migration strings dictionary map to add strings for this plugin.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param array<string,string> $map A map of strings from slugs to their localized versions.
 	 *
@@ -200,7 +200,7 @@ class CT1_Migration extends Controller {
 	/**
 	 * Filters the CT1 Migration report headers to add headers for this plugin.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param array<int,array{key: string , label: string}> $report_headers
 	 * @param String_Dictionary                             $text A reference to the String Dictionary used to
