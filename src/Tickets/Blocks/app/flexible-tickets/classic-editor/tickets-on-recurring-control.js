@@ -34,7 +34,7 @@ let prevState = Object.assign({}, state);
 /**
  * Update the state and call the callback if the state has changed.
  *
- * @since TBD
+ * @since 5.8.0
  *
  * @param {Object} newState The updates to the state.
  */
@@ -58,7 +58,7 @@ function updateState(newState) {
  *
  * The method will take care of hiding the recurrence controls and showing the recurrence not supported message.
  *
- * @since TBD
+ * @since 5.8.0
  */
 function hideRecurrenceControls() {
 	document.querySelectorAll(recurrenceRowSelector).forEach((el) => {
@@ -79,7 +79,7 @@ function hideRecurrenceControls() {
  * The method will take care of showing the recurrence controls and hiding the recurrence not supported message.
  * If the Events has not recurrence rules, the method will show just the button to add recurrence rules.
  *
- * @since TBD
+ * @since 5.8.0
  */
 function showRecurrenceControls() {
 	if (state.hasRecurrenceRules) {
@@ -110,7 +110,7 @@ function showRecurrenceControls() {
  *
  * The method will take care of showing the ticket controls and hiding the ticket warning.
  *
- * @since TBD
+ * @since 5.8.0
  */
 function showTicketControls() {
 	document.querySelectorAll(ticketWarningSelector).forEach((el) => {
@@ -126,7 +126,7 @@ function showTicketControls() {
  *
  * The method will take care of hiding the ticket controls and showing the ticket warning.
  *
- * @since TBD
+ * @since 5.8.0
  */
 function hideTicketControls() {
 	document.querySelectorAll(ticketWarningSelector).forEach((el) => {
@@ -140,7 +140,7 @@ function hideTicketControls() {
 /**
  * Handle the controls visibility based on the state.
  *
- * @since TBD
+ * @since 5.8.0
  *
  * @param {Object} newState The new state to hide/show controls based on.
  */
