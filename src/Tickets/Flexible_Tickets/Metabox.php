@@ -121,6 +121,10 @@ class Metabox {
 		if ( ! count( $series_ids ) ) {
 			return;
 		}
+		
+		if ( tribe_is_recurring_event( $post_id ) ) {
+			return;
+		}
 
 		$series = reset( $series_ids );
 
