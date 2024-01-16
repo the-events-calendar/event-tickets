@@ -2,7 +2,7 @@
 /**
  * A pseudo-repository to run CRUD operations on Series Passes.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Repositories;
  */
@@ -15,7 +15,7 @@ use WP_Post;
 /**
  * Class Repository.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Repositories;
  */
@@ -24,7 +24,7 @@ class Repository {
 	/**
 	 * Given the ID of a Series Pass, returns the last Occurrence of the Series
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param int $ticket_id The ID of the ticket.
 	 *
