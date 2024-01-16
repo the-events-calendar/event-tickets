@@ -17,7 +17,7 @@ class Tribe__Tickets__Service_Providers__ORM extends \TEC\Common\Contracts\Servi
 	/**
 	 * The action to fire when this provider is registered in the container.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @var string
 	 */

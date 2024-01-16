@@ -2,7 +2,7 @@
 /**
  * Handles the modifications to the Tickets metabox required to support Series Passes.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets;
  */
@@ -20,7 +20,7 @@ use Tribe__Date_Utils as Dates;
 /**
  * Class Metabox.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets;
  */
@@ -29,7 +29,7 @@ class Metabox {
 	/**
 	 * A reference to the Admin Views handler for Flexible Tickets.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @var Admin_Views
 	 */
@@ -38,7 +38,7 @@ class Metabox {
 	/**
 	 * A reference to the labels' handler.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @var Labels
 	 */
@@ -47,7 +47,7 @@ class Metabox {
 	/**
 	 * Metabox constructor.
 	 *
-	 * since TBD
+	 * since 5.8.0
 	 *
 	 * @param Admin_Views $admin_views A reference to the Admin Views handler for Flexible Tickets.
 	 */
@@ -59,7 +59,7 @@ class Metabox {
 	/**
 	 * Renders the button to toggle the Series Pass form.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param int $post_id The post ID context of the metabox.
 	 *
@@ -81,7 +81,7 @@ class Metabox {
 	/**
 	 * Updates the panels data to add the end date help text and the end date and time values.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param array<string,mixed> $data      The panels data.
 	 * @param int                 $ticket_id The post ID of the Series Pass.
@@ -109,7 +109,7 @@ class Metabox {
 	 * Prints a notice letting the user know that the event is part of a Series
 	 * and Series Passes should be edited from the Series edit screen.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param int $post_id The post ID context of the metabox.
 	 *
@@ -134,7 +134,7 @@ class Metabox {
 	 * Prints the link to the Series edit screen in the context of the Ticket list,
 	 * replacing the default Ticket edit actions.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param int $ticket_post_id The post ID of the Series Pass.
 	 *
@@ -149,7 +149,7 @@ class Metabox {
 	/**
 	 * Prints the Series Pass icon in the context of the Ticket list.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return void
 	 */
@@ -160,7 +160,7 @@ class Metabox {
 	/**
 	 * Renders the Series Pass type header in the context of the Ticket add and edit form.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return void
 	 */
@@ -171,7 +171,7 @@ class Metabox {
 	/**
 	 * Returns the help text for the default ticket type in the ticket form.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param int $event_id  The post ID context of the metabox.
 	 * @param int $series_id The post ID of the Series Pass.
@@ -185,7 +185,7 @@ class Metabox {
 	/**
 	 * Includes the warning message for recurring events in context of series.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param array<string,mixed> $context The context of the ticket form.
 	 *

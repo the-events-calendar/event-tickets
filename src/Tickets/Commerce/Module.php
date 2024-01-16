@@ -818,7 +818,7 @@ class Module extends \Tribe__Tickets__Tickets {
 	/**
 	 * Update the email sent counter for attendee by increasing it +1.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param int $attendee_id The attendee ID.
 	 */

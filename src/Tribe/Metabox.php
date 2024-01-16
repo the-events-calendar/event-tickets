@@ -88,7 +88,7 @@ class Tribe__Tickets__Metabox {
 		/**
 		 * This filter allows retrieval of an event ID to be filtered before being accessed elsewhere.
 		 *
-		 * @since TBD
+		 * @since 5.8.0
 		 *
 		 * @param int $post_id The event ID to be filtered.
 		 */
@@ -210,7 +210,7 @@ class Tribe__Tickets__Metabox {
 		/**
 		 * Fire action before the panels are rendered.
 		 *
-		 * @since TBD
+		 * @since 5.8.0
 		 *
 		 * @param int|WP_Post $post        The post object or ID context of the panel rendering.
 		 * @param int|null    $ticket_id   The ID of the ticket being rendered, `null` if a new ticket.
@@ -242,7 +242,7 @@ class Tribe__Tickets__Metabox {
 		/**
 		 * Fire action after the panels are rendered.
 		 *
-		 * @since TBD
+		 * @since 5.8.0
 		 *
 		 * @param int|WP_Post $post        The post object or ID context of the panel rendering.
 		 * @param int|null    $ticket_id   The ID of the ticket being rendered, `null` if a new ticket.
@@ -355,7 +355,7 @@ class Tribe__Tickets__Metabox {
 				 * Fire action when a ticket has been added
 				 *
 				 * @since 4.6.2
-				 * @since TBD Added $ticket_id and $data parameterss.
+				 * @since 5.8.0 Added $ticket_id and $data parameters.
 				 *
 				 * @param int $post_id ID of parent "event" post
 				 * @param int $ticket_id ID of ticket post

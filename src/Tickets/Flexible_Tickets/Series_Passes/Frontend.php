@@ -9,7 +9,7 @@ use Tribe__Tickets__Tickets_View;
 /**
  * Class Frontend handler.
  *
- * @since TBD
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
  */
@@ -17,7 +17,7 @@ class Frontend {
 	/**
 	 * Filters the data for the "My Tickets" link.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param array<string, mixed> $data The data for the "My Tickets" link.
 	 * @param int $event_id              The event ID.
@@ -79,7 +79,7 @@ class Frontend {
 	/**
 	 * Skip rendering the Series content when on the My Tickets page.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param string $content The post content.
 	 *

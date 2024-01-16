@@ -55,7 +55,7 @@ class Provider extends \TEC\Common\Contracts\Service_Provider {
 	/**
 	 * Render the default ticket type header.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param string        $file         The file being rendered.
 	 * @param array<string> $name         The components of the name of the template being filtered..
@@ -90,7 +90,7 @@ class Provider extends \TEC\Common\Contracts\Service_Provider {
 		 *
 		 * Note the description will be passed through `wp_kses` with support for anchor tags.
 		 *
-		 * @since TBD
+		 * @since 5.8.0
 		 *
 		 * @param string $description The default description.
 		 * @param int    $post_id     The ID of the post the ticket is being added to, or rendered for.

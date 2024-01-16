@@ -220,7 +220,7 @@ class Upsell {
 	/**
 	 * Filters the default Ticket type description in the context of Events part of a Series.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param string   $file     Complete path to include the PHP File.
 	 * @param string[] $name     Template name.

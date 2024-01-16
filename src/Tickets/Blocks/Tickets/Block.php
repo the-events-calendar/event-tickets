@@ -2,7 +2,7 @@
 /**
  * Provides the information required to register the Tickets block server-side.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Blocks\Tickets;
  */
@@ -22,7 +22,7 @@ use Tribe__Tickets__Tickets_View as Tickets_View;
 /**
  * Class Block.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Blocks\Tickets;
  */
@@ -30,7 +30,7 @@ class Block extends Abstract_Block {
 	/**
 	 * Hooks the block on the required actions.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 */
 	public function hook() {
 		add_action( 'wp_ajax_ticket_availability_check', [ $this, 'ticket_availability' ] );
@@ -126,7 +126,7 @@ class Block extends Abstract_Block {
 	/**
 	 * Overrides the parent method to register the editor scripts.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return void
 	 */
@@ -330,7 +330,7 @@ class Block extends Abstract_Block {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 */
 	public function get_registration_block_type() {
 		return __DIR__ . '/block.json';
@@ -339,7 +339,7 @@ class Block extends Abstract_Block {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 */
 	public function get_registration_args( array $args ): array {
 		$args['title']       = _x( 'Tickets', 'Block title', 'event-tickets' );
@@ -351,7 +351,7 @@ class Block extends Abstract_Block {
 	/**
 	 * Registers the editor scripts.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return void
 	 */

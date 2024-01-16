@@ -33,14 +33,14 @@ $admin_views = tribe( 'tickets.admin.views' );
 			 * listing.
 			 *
 			 * @since 4.6
-			 * @since TBD All metabox buttons to toggle ticket forms are now loaded from this action; moved to
+			 * @since 5.8.0 All metabox buttons to toggle ticket forms are now loaded from this action; moved to
 			 *        list intro from after list. Pass `$tickets` to the action.
 			 *
 			 * @param int                  $post_id The ID Of the post the ticket lists are being displayed for.
 			 * @param array<Ticket_Object> $tickets The tickets for the event, any type.
 			 */
 			do_action( 'tribe_events_tickets_new_ticket_buttons', $post_id, $tickets );
-            
+
             if ( empty( $tickets ) ) {
                 $admin_views->template( [ 'editor', 'panel', 'settings-button' ], [ 'post_id' => $post_id, 'tickets' => $tickets ] );
             }
@@ -53,7 +53,7 @@ $admin_views = tribe( 'tickets.admin.views' );
 			 * Allows for the insertion of warnings before the settings button.
 			 *
 			 * @since 4.6
-			 * @since TBD Moved to list intro from after list. Pass `$tickets` parameters to the action.
+			 * @since 5.8.0 Moved to list intro from after list. Pass `$tickets` parameters to the action.
 			 *
 			 * @param int                  $post_id The ID Of the post the ticket lists are being displayed for.
 			 * @param array<Ticket_Object> $tickets The tickets for the event, any type.
@@ -82,7 +82,7 @@ $admin_views = tribe( 'tickets.admin.views' );
 			/**
 			 * Allows filtering the ticket types that will display in the tickets metabox and their order.
 			 *
-			 * @since TBD
+			 * @since 5.8.0
 			 *
 			 * @param array<string,array<Ticket_Object>> $ticket_types The ticket types and their tickets.
 			 */
@@ -106,7 +106,7 @@ $admin_views = tribe( 'tickets.admin.views' );
 				 *
 				 * Emptying the 'tickets' key will prevent the table from being rendered.
 				 *
-				 * @since TBD
+				 * @since 5.8.0
 				 *
 				 * @param array<string,mixed> $table_data  The list table data.
 				 * @param string              $ticket_type The ticket type.
@@ -118,7 +118,7 @@ $admin_views = tribe( 'tickets.admin.views' );
 				 *
 				 * Emptying the 'tickets' key will prevent the table from being rendered.
 				 *
-				 * @since TBD
+				 * @since 5.8.0
 				 *
 				 * @param array<string,mixed> $table_data The list table data.
 				 */
@@ -129,7 +129,7 @@ $admin_views = tribe( 'tickets.admin.views' );
 				 *
 				 * The action will fire whether there are tickets of the type or not.
 				 *
-				 * @since TBD
+				 * @since 5.8.0
 				 *
 				 * @param int                  $post_id     The ID of the post the ticket lists are being displayed for.
 				 * @param array<Ticket_Object> $tickets     The tickets of the specific type.

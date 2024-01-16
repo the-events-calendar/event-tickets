@@ -2,7 +2,7 @@
 /**
  * The data transfer object for the Post and Ticket Group relationship model.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Data_Transfer_Objects;
  */
@@ -16,7 +16,7 @@ use TEC\Tickets\Flexible_Tickets\Models\Post_And_Ticket_Group;
 /**
  * Class Post_And_Ticket_Group_DTO.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Data_Transfer_Objects;
  */
@@ -24,7 +24,7 @@ class Post_And_Ticket_Group_DTO extends DataTransferObject {
 	/**
 	 * The relationship ID.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @var int
 	 */
@@ -33,7 +33,7 @@ class Post_And_Ticket_Group_DTO extends DataTransferObject {
 	/**
 	 * The Post, or Provisional Post, ID part of the relationship.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @var int
 	 */
@@ -42,7 +42,7 @@ class Post_And_Ticket_Group_DTO extends DataTransferObject {
 	/**
 	 * The Ticket Group ID part of the relationship.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @var int
 	 */
@@ -51,7 +51,7 @@ class Post_And_Ticket_Group_DTO extends DataTransferObject {
 	/**
 	 * The type of the relationship.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @var string
 	 */
@@ -60,7 +60,7 @@ class Post_And_Ticket_Group_DTO extends DataTransferObject {
 	/**
 	 * Builds a new DTO from an object.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param object $object The object to build the DTO from.
 	 *
@@ -80,7 +80,7 @@ class Post_And_Ticket_Group_DTO extends DataTransferObject {
 	/**
 	 * Builds a model instance from the DTO.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return Post_And_Ticket_Group The model instance.
 	 */

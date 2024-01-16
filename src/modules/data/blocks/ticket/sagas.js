@@ -147,7 +147,7 @@ export function* updateUneditableTickets(  ) {
 	/**
 	 * Fires after the uneditable tickets have been updated from the backend.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param {Object[]} uneditableTickets The uneditable tickets just fetched from the backend.
 	 */

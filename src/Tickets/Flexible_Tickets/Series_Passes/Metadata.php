@@ -2,7 +2,7 @@
 /**
  * Handles CRUD operations on Series Passes metadata.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Repository;
  */
@@ -14,7 +14,7 @@ use Tribe__Cache_Listener as Cache_Listener;
 /**
  * Class Metadata.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Repository;
  */
@@ -22,7 +22,7 @@ class Metadata {
 	/**
 	 * A reference to the Repository repository.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @var Repository
 	 */
@@ -31,7 +31,7 @@ class Metadata {
 	/**
 	 * Metadata constructor.
 	 *
-	 * since TBD
+	 * since 5.8.0
 	 *
 	 * @param Repository $repository A reference to the Repository repository.
 	 */
@@ -46,7 +46,7 @@ class Metadata {
 	 * until an Event is created or updated. Series Passes depend on Series that depend on Events:
 	 * it makes sense to pre-emptively invalidate the dynamic metadata when an Event is created or updated.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param int    $ticket_id The ID of the ticket.
 	 * @param string $meta_key  The meta key to fetch.
@@ -87,7 +87,7 @@ class Metadata {
 	/**
 	 * Returns the ticket end time for a Series Pass.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param int $ticket_id The ID of the ticket.
 	 *
@@ -100,7 +100,7 @@ class Metadata {
 	/**
 	 * Returns a Series Pass ticket end date metadata value.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param int $ticket_id The ID of the ticket.
 	 *

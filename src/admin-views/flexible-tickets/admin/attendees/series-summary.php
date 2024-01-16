@@ -2,9 +2,9 @@
 /**
  * Series summary for attendee page.
  *
- * @since TBD
+ * @since 5.8.0
  *
- * @version TBD
+ * @version 5.8.0
  *
  * @var string $title The title with link for series.
  * @var string $edit_link The edit link for series.

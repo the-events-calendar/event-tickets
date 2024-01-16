@@ -58,6 +58,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 			'currency_code'     => [ $this, 'filter_by_currency_code' ],
 			'is_active'         => [ $this, 'filter_by_active' ],
 			'type'              => [ $this, 'filter_by_type' ],
+			'type__not_in'      => [ $this, 'filter_by_type_not_in' ],
 			'global_stock_mode' => [ $this, 'filter_by_global_stock_mode' ]
 		] );
 	}
@@ -83,7 +84,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 * Filters tickets by a specific event.
 	 *
 	 * @since 4.8
-	 * @since TBD Apply the `tec_tickets_repository_filter_by_event_id` filter.
+	 * @since 5.8.0 Apply the `tec_tickets_repository_filter_by_event_id` filter.
 	 *
 	 * @param int|array $event_id The post ID or array of post IDs to filter by.
 	 */
@@ -101,7 +102,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 		 *
 		 * By default, only the ticketed post ID is used. This filter allows fetching tickets from related posts.
 		 *
-		 * @since TBD
+		 * @since 5.8.0
 		 *
 		 * @param int|array          $event_id The event ID or array of event IDs to filter by.
 		 * @param Tickets_Repository $this     The current repository object.
@@ -127,8 +128,8 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 */
 	public function ticket_to_event_keys() {
 		return [
-			'rsvp'           => '_tribe_rsvp_for_event',
-			'tribe-commerce' => '_tribe_tpp_for_event',
+			'rsvp'                         => '_tribe_rsvp_for_event',
+			'tribe-commerce'               => '_tribe_tpp_for_event',
 			TEC\Tickets\Commerce::PROVIDER => TEC\Tickets\Commerce\Ticket::$event_relation_meta_key,
 		];
 	}
@@ -349,9 +350,9 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 *
 	 * @param string|int $date
 	 *
+	 * @return array
 	 * @throws Exception
 	 *
-	 * @return array
 	 */
 	public function filter_by_available_from( $date ) {
 		// the input is a UTC date or timestamp
@@ -384,9 +385,9 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 *
 	 * @param string|int $date
 	 *
+	 * @return array
 	 * @throws Exception
 	 *
-	 * @return array
 	 */
 	public function filter_by_available_until( $date ) {
 		// the input is a UTC date or timestamp
@@ -417,9 +418,9 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 *
 	 * @since 5.2.0
 	 *
+	 * @return array
 	 * @throws Exception
 	 *
-	 * @return array
 	 */
 	public function filter_by_active() {
 		// the input is a UTC date or timestamp
@@ -611,15 +612,18 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	}
 
 	/**
-	 * Filters the ticket to be returned by the value of the `_type` meta key.
+	 * Internal method to filter Tickets by keeping only those either of a certain type, or not
+	 * of a certain type.
 	 *
 	 * @since TBD
 	 *
-	 * @param string|string[] $type The ticket type or types to filter by.
+	 * @param string          $operator Either `IN` or `NOT IN` to keep, respectively, Tickets of a specific type,
+	 *                                  or Tickets that have not a specific type.
+	 * @param string|string[] $type     The type of Tickets to keep or exclude.
 	 *
-	 * @return void The query is modified in place.
+	 * @return void WHERE and JOIN clauses are added to the query being built.
 	 */
-	public function filter_by_type( $type ) {
+	private function filter_by_type_operator( string $operator, $type ): void {
 		$hash  = substr( md5( microtime() ), - 5 );
 		$types = (array) $type;
 		global $wpdb;
@@ -633,13 +637,26 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 		$this->filter_query->join( "LEFT JOIN {$wpdb->postmeta} AS {$alias}
 			 ON {$wpdb->posts}.ID = {$alias}.post_id
 			 AND {$alias}.meta_key = '_type'" );
-		$this->filter_query->where( "COALESCE({$alias}.meta_value, 'default') IN (" . $types_set . ")" );
+		$this->filter_query->where( "COALESCE({$alias}.meta_value, 'default') {$operator} (" . $types_set . ")" );
+	}
+
+	/**
+	 * Filters the ticket to be returned by the value of the `_type` meta key.
+	 *
+	 * @since TBD
+	 *
+	 * @param string|string[] $type The ticket type or types to filter by.
+	 *
+	 * @return void The query is modified in place.
+	 */
+	public function filter_by_type( $type ): void {
+		$this->filter_by_type_operator( 'IN', $type );
 	}
 
 	/**
 	 * Captures the SQL that would be used to get the Ticket IDs without runing the query.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return string|null The SQL query or `null` if the query cannot be run.
 	 */
@@ -663,7 +680,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 *
 	 * The independent capacity does not include the capacity of Tickets with Unlimited capacity.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return int The independent capacity of the Tickets queried by the repository.
 	 */
@@ -708,7 +725,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 *
 	 * The shared capacity does not include the capacity of Tickets with Unlimited capacity.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return int The shared capacity of the Tickets queried by the repository.
 	 */
@@ -752,7 +769,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	/**
 	 * Filters tickets by their global stock mode.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param array<string>|string $modes             The global stock mode or modes to filter by, use the
 	 *                                                `Global_Stock::` constants.
@@ -772,5 +789,18 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 			$capacity_meta_key = Tickets_Handler::instance()->key_capacity;
 			$this->where( 'meta_gte', $capacity_meta_key, 0 );
 		}
+	}
+
+	/**
+	 * Filters the ticket to be excluded by the value of the `_type` meta key.
+	 *
+	 * @since TBD
+	 *
+	 * @param string|string[] $type The ticket type or types to exclude from the results.
+	 *
+	 * @return void The query is modified in place.
+	 */
+	public function filter_by_type_not_in( $type ): void {
+		$this->filter_by_type_operator( 'NOT IN', $type );
 	}
 }

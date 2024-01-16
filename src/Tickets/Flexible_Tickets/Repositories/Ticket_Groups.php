@@ -2,7 +2,7 @@
 /**
  * Ticket Groups repository.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Repositories;
  */
@@ -23,7 +23,7 @@ use TEC\Tickets\Flexible_Tickets\Models\Ticket_Group;
 /**
  * Class Ticket_Groups.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Repositories;
  */
@@ -80,7 +80,7 @@ class Ticket_Groups extends Repository implements Insertable, Updatable, Deletab
 	/**
 	 * Finds a Ticket Group by its ID.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param int $id The ID of the Ticket Group to find.
 	 *

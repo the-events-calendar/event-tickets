@@ -280,7 +280,7 @@ trait Post_Attendees {
 	/**
 	 * Builds the SQL clause to compare meta values to the ones relating attendees to posts.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param string $alias The alias to use for the post meta table.
 	 *

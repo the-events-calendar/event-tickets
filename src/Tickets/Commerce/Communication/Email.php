@@ -76,7 +76,7 @@ class Email {
 	/**
 	 * Update email sent counter for the attendee.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param int $attendee_id Attendee ID.
 	 */

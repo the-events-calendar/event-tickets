@@ -55,7 +55,7 @@ const mapStateToProps = (state) => {
 	/**
 	 * Filters the properties mapped from the state for the CapacityTable component.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param {Object} mappedProps   The mapped props.
 	 * @param {Object} context.state The state of the block.

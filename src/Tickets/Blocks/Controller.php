@@ -2,7 +2,7 @@
 /**
  * Handles the registration of all the Blocks managed by the plugin.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Blocks;
  */
@@ -27,7 +27,7 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
 /**
  * Class Controller.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Blocks;
  */
@@ -50,15 +50,7 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 		$this->container->singleton( 'tickets.editor.blocks.attendees', Attendees_Block::class, [ 'load' ] );
 		$this->container->singleton( 'tickets.editor.configuration', Configuration::class, [ 'hook' ] );
 
-		$ticketable = in_array(
-			get_post_type() ?: tribe_get_request_var( 'post_type', 'post' ),
-			(array) tribe_get_option( 'ticket-enabled-post-types', [] ),
-			true
-		);
-
-		if ( $ticketable ) {
-			$this->register_for_blocks();
-		}
+		$this->register_for_blocks();
 
 		// Handle general non-block-specific instances.
 		tribe( 'tickets.editor.warnings' );
@@ -110,6 +102,14 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 	 * @since 5.3.0
 	 */
 	public function register_blocks() {
+		$post      = get_post() ?: get_post( tribe_get_request_var( 'post' ) );
+		$post_type = get_post_type( $post ) ?: tribe_get_request_var( 'post_type' );
+
+		if ( ! in_array( $post_type, (array) tribe_get_option( 'ticket-enabled-post-types', [] ), true ) ) {
+			// Register the Blocks only on ticket-enabled post types.
+			return;
+		}
+
 		// Register blocks.
 		add_action( 'tribe_editor_register_blocks', [ tribe( 'tickets.editor.blocks.rsvp' ), 'register' ] );
 		add_action( 'tribe_editor_register_blocks', [ tribe( 'tickets.editor.blocks.tickets' ), 'register' ] );
@@ -152,7 +152,7 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 	/**
 	 * Render the New Ticket and New RSVP buttons in the metabox, as appropriate.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param int $post_id The post id.
 	 */
@@ -165,7 +165,7 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 		/**
 		 * Filters the default ticket forms enabled for a given post type.
 		 *
-		 * @since TBD
+		 * @since 5.8.0
 		 *
 		 * @param array<string,bool> $enabled The default enabled forms, a map from ticket types to their enabled status.
 		 * @param int                $post_id The ID of the post being edited.
@@ -196,7 +196,7 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 	/**
 	 * Render the ticket edit controls for the ticket list table.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param Ticket_Object $ticket  The ticket object.
 	 * @param int|null      $post_id The ID of the post context of the print.
@@ -221,7 +221,7 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return void
 	 */
@@ -234,5 +234,11 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 		remove_action( 'block_categories_all', tribe_callback( 'tickets.editor', 'block_categories' ) );
 		remove_action( 'tribe_events_tickets_new_ticket_buttons', [ $this, 'render_form_toggle_buttons' ] );
 		remove_action( 'tec_tickets_list_row_edit', [ $this, 'render_ticket_edit_controls' ] );
+	}
+
+	private function is_ticketable_post_type():bool {
+		$post_type = get_post_type();
+
+		return in_array( $post_type, (array) tribe_get_option( 'ticket-enabled-post-types', [] ), true );
 	}
 }

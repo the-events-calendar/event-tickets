@@ -2,14 +2,14 @@
 /**
  * Template tags defined by the Flexible Tickets feature.
  *
- * @since TBD
+ * @since 5.8.0
  */
 
 if ( ! function_exists( 'tec_tickets_get_series_pass_singular_lowercase' ) ) {
 	/**
 	 * Returns the filtered, lowercase singular version of the Series Pass label.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.
 	 *
@@ -19,7 +19,7 @@ if ( ! function_exists( 'tec_tickets_get_series_pass_singular_lowercase' ) ) {
 		/**
 		 * Allows customization of the lowercase singular version of the Series Pass label.
 		 *
-		 * @since TBD
+		 * @since 5.8.0
 		 *
 		 * @param string $label   The lowercase singular version of the Series Pass label, defaults to "series pass".
 		 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.
@@ -36,7 +36,7 @@ if ( ! function_exists( 'tec_tickets_get_series_pass_singular_uppercase' ) ) {
 	/**
 	 * Returns the filtered, uppercase singular version of the Series Pass label.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.
 	 *
@@ -46,7 +46,7 @@ if ( ! function_exists( 'tec_tickets_get_series_pass_singular_uppercase' ) ) {
 		/**
 		 * Allows customization of the uppercase singular version of the Series Pass label.
 		 *
-		 * @since TBD
+		 * @since 5.8.0
 		 *
 		 * @param string $label   The uppercase singular version of the Series Pass label, defaults to "Series Pass".
 		 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.
@@ -63,7 +63,7 @@ if ( ! function_exists( 'tec_tickets_get_series_pass_plural_lowercase' ) ) {
 	/**
 	 * Returns the filtered, lowercase plural version of the Series Pass label.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.
 	 *
@@ -73,7 +73,7 @@ if ( ! function_exists( 'tec_tickets_get_series_pass_plural_lowercase' ) ) {
 		/**
 		 * Allows customization of the lowercase plural version of the Series Pass label.
 		 *
-		 * @since TBD
+		 * @since 5.8.0
 		 *
 		 * @param string $label   The lowercase plural version of the Series Pass label, defaults to "series passes".
 		 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.
@@ -90,7 +90,7 @@ if ( ! function_exists( 'tec_tickets_get_series_pass_plural_uppercase' ) ) {
 	/**
 	 * Returns the filtered, uppercase plural version of the Series Pass label.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.
 	 *
@@ -100,7 +100,7 @@ if ( ! function_exists( 'tec_tickets_get_series_pass_plural_uppercase' ) ) {
 		/**
 		 * Allows customization of the uppercase plural version of the Series Pass label.
 		 *
-		 * @since TBD
+		 * @since 5.8.0
 		 *
 		 * @param string $label   The uppercase plural version of the Series Pass label, defaults to "Series Passes".
 		 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.

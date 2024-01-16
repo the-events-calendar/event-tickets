@@ -21,8 +21,7 @@ jobs:
           - restv1
           - views_integration
           - commerce_integration
-          - wpunit --group="capacity"
-          - wpunit --skip-group="capacity"
+          - wpunit
     runs-on: ubuntu-latest
     steps:
       # ------------------------------------------------------------------------------

@@ -12,7 +12,7 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 	/**
 	 * A reference to the Admin Views class.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @var Admin_Views
 	 */
@@ -158,7 +158,7 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 	/**
 	 * Tribe__Tickets__Editor__Meta constructor.
 	 *
-	 * since TBD
+	 * since 5.8.0
 	 *
 	 * @param Tribe__Tickets__Admin__Views $admin_views A reference to the Admin Views class.
 	 */
@@ -462,7 +462,7 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 	/**
 	 * Renders the New Ticket form in the metabox, as appropriate.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param int $post_id The ID of the post the form is being rendered for.
 	 */
@@ -482,7 +482,7 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 	/**
 	 * Renders the New RSVP form in the metabox, as appropriate.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param int $post_id The ID of the post the form is being rendered for.
 	 */
@@ -493,7 +493,7 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 	/**
 	 * Sanitize the tickets list.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param string $tickets_list The tickets list to sanitize.
 	 *

@@ -137,7 +137,7 @@ export const isTicketEditableFromPost = ( ticketId, ticketType, post ) => {
 	/**
 	 * Filters whether a ticket can be edited from a post.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param {boolean} isEditable Whether or not the ticket can be edited from the post.
 	 * @param {Object} context The context of the filter.

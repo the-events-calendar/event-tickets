@@ -3,7 +3,7 @@
  * Filters the labels used by the Tickets plugin in  the admin and frontend of the site to suite the Series Passes
  * wording.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets;
  */
@@ -13,7 +13,7 @@ namespace TEC\Tickets\Flexible_Tickets\Series_Passes;
 /**
  * Class Labels.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets;
  */
@@ -34,7 +34,7 @@ class Labels {
 	/**
 	 * Either hook or unhook the ticket labels filters.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param bool $filter Whether to hook or unhook the ticket labels filters.
 	 *
@@ -54,7 +54,7 @@ class Labels {
 	/**
 	 * Filters a ticket label, if the context requires it.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param string $type    The type of label to filter.
 	 * @param string $label   The label to filter.
@@ -88,7 +88,7 @@ class Labels {
 	/**
 	 * Filters the plural uppercase version of the ticket label, from "Tickets" to "Series Passes".
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param string $label   The plural uppercase version of the ticket label.
 	 * @param string $context The context in which the label is filtered.
@@ -102,7 +102,7 @@ class Labels {
 	/**
 	 * Filters the singular lowercase version of the ticket label, from "ticket" to "series pass".
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param string $label   The singular lowercase version of the ticket label.
 	 * @param string $context The context in which the label is filtered.
@@ -116,7 +116,7 @@ class Labels {
 	/**
 	 * Filters the singular uppercase version of the ticket label, from "Ticket" to "Series Pass".
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param string $label   The singular uppercase version of the ticket label.
 	 * @param string $context The context in which the label is filtered.
@@ -130,7 +130,7 @@ class Labels {
 	/**
 	 * Filters the plural uppercase version of the ticket label, from "Tickets" to "Series Passes".
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param string $label   The plural uppercase version of the ticket label.
 	 * @param string $context The context in which the label is filtered.
@@ -144,7 +144,7 @@ class Labels {
 	/**
 	 * Returns the help text for the default ticket type in the ticket form when the Event is part of a Series.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param int $series_id The post ID of the Series.
 	 * @param int $event_id  The post ID of the Event.
@@ -170,7 +170,7 @@ class Labels {
 	 * Returns the template for the help text for the default ticket type in the ticket form when the Event is part
 	 * of a Series.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return string The template for the help text for the default ticket type in the ticket form when the Event
 	 *                is part of a Series.

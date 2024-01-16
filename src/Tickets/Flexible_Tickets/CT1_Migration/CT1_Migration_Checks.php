@@ -3,7 +3,7 @@
  * Provides methods for classes that have to run checks in the context of the integration of Flexible
  * Tickets with the Custom Tables v1 migration.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes\CT1_Migration;
  */
@@ -15,7 +15,7 @@ use Tribe__Tickets__RSVP as RSVP;
 /**
  * Class CT1_Migration_Checks.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes\CT1_Migration;
  */
@@ -24,7 +24,7 @@ trait CT1_Migration_Checks {
 	/**
 	 * Checks whether an Event has at least one RSVP ticket assigned.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param int $post_id The ID of the Event.
 	 *
@@ -37,7 +37,7 @@ trait CT1_Migration_Checks {
 	/**
 	 * Returns the post IDs of the tickets attached to the Event, excluding RSVP tickets.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param int $post_id The ID of the Event.
 	 *
@@ -63,7 +63,7 @@ trait CT1_Migration_Checks {
 	 * The method will temporarily remove the RSVP module from the list of available modules, to avoid
 	 * the RSVP tickets being considered as regular tickets.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param int $post_id The ID of the Event.
 	 *

@@ -44,7 +44,7 @@ const mapStateToProps = (state, ownProps) => {
 	/**
 	 * Filters the properties mapped from the state for the Controls component.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param {Object}  mappedProps         The mapped props.
 	 * @param {Object}  context.state       The state of the block.

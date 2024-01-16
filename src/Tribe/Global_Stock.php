@@ -59,7 +59,7 @@ class Tribe__Tickets__Global_Stock {
 	 * Flag used to indicate that a ticket will use the global stock,
 	 * but that the stock is unlimited.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @var string
 	 */

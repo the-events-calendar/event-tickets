@@ -2,7 +2,7 @@
 /**
  * Handles the modifications to the edit flow and data required by Series Passes.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
  */
@@ -14,7 +14,7 @@ use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 /**
  * Class Edit.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
  */
@@ -22,7 +22,7 @@ class Edit {
 	/**
 	 * A reference to the labels' handler.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @var Labels
 	 */
@@ -31,7 +31,7 @@ class Edit {
 	/**
 	 * Edit constructor.
 	 *
-	 * since TBD
+	 * since 5.8.0
 	 *
 	 * @param Labels $labels The labels' handler.
 	 */
@@ -43,7 +43,7 @@ class Edit {
 	 * Filters the editor configuration data to add the information required to correctly represent
 	 * Series Passes in the editor.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param array<string,mixed> $data The editor configuration data.
 	 *
@@ -64,7 +64,7 @@ class Edit {
 	/**
 	 * Prevent Series Passes from being edited outside the context of Series.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param bool $is_ticket_editable Whether the ticket is editable in the context of the post.
 	 * @param int  $ticket_id          The ticket ID.
@@ -86,7 +86,7 @@ class Edit {
 	/**
 	 * Filters the editor data localized by Flexible Tickets.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param array<string,mixed> $editor_data The editor data.
 	 *
@@ -103,7 +103,7 @@ class Edit {
 	 * Filters the JavaScript configuration for the Attendees report to include the confirmation strings for
 	 * Series Passes.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param array<string,mixed> $config_data The JavaScript configuration.
 	 *

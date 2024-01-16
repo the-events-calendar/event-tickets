@@ -2,7 +2,7 @@
 /**
  * Handles the integration between Flexible Tickets and the editors.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
  */
@@ -21,7 +21,7 @@ use Tribe__Tickets__Tickets as Tickets;
 /**
  * Class Editor.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
  */
@@ -29,7 +29,7 @@ class Editor extends Controller {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return void
 	 */
@@ -56,7 +56,7 @@ class Editor extends Controller {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return void
 	 */
@@ -83,7 +83,7 @@ class Editor extends Controller {
 	 * Updates the data localize for each Series option in the dropdown shown in the Events'
 	 * edit page to include the ticket provider.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param array<int,array<string,mixed>> $series_data The data for each Series option in the dropdown.
 	 *
@@ -100,7 +100,7 @@ class Editor extends Controller {
 	/**
 	 * Enqueues the scripts for the editor in Classic and Block Editor context.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return void The scripts are enqueued.
 	 */
@@ -216,7 +216,7 @@ class Editor extends Controller {
 		 * Filters the data that will be localized by Flexible Tickets under the `TECFtEditorData` object
 		 * for both the Classic and Block Editor.
 		 *
-		 * @since TBD
+		 * @since 5.8.0
 		 *
 		 * @param array<string,mixed> $editor_data The data that will be localized.
 		 */
@@ -269,7 +269,7 @@ class Editor extends Controller {
 	/**
 	 * Returns the Series related to an Event.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param int|null $post_id The ID of the Event.
 	 *
@@ -292,7 +292,7 @@ class Editor extends Controller {
 	/**
 	 * Filters the data used to render the ticket panels to control settings related to the ticket provider.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param array<string,mixed> $data    The data used to render the ticket panels.
 	 * @param int                 $post_id The post ID context of the metabox.
@@ -333,7 +333,7 @@ class Editor extends Controller {
 	 * Filters the data used to render the Tickets Block Editor control to alter its state for Events that
 	 * are part of a Series.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param array<string,mixed> $data The data used to render the Tickets Block Editor control.
 	 *
@@ -365,7 +365,7 @@ class Editor extends Controller {
 	 *
 	 * The count does not include RSVP.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return bool Whether there are multiple ticket providers active.
 	 */
@@ -381,7 +381,7 @@ class Editor extends Controller {
 	 * Filters the list of events eligible to be attached to a Series to remove the ones that do not have the same
 	 * ticket provider as the Series.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param int[] $events         The list of events eligible to be attached to a Series.
 	 * @param int   $series_post_id The ID of the Series.
@@ -412,7 +412,7 @@ class Editor extends Controller {
 	 * Prints a notice under the Series to Events relationship metabox when there are multiple ticket providers
 	 * to let the user know that Events that do not have the same ticket provider as the Series will not be listed.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return void The notice is printed.
 	 */
@@ -435,7 +435,7 @@ class Editor extends Controller {
 	/**
 	 * Returns the Series link text.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return string The Series link text.
 	 */

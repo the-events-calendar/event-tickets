@@ -2,7 +2,7 @@
 /**
  * Hydrates the template context of the ticket panel.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Admin\Panels_Data;
  */
@@ -16,7 +16,7 @@ use Tribe__Tickets__Tickets as Tickets;
 /**
  * Class Ticket_Panel_Data.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Admin\Panels_Data;
  */
@@ -24,7 +24,7 @@ class Ticket_Panel_Data {
 	/**
 	 * The ID of the post the Ticket is being edited on.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @var int
 	 */
@@ -33,7 +33,7 @@ class Ticket_Panel_Data {
 	/**
 	 * The post ID of the Ticket being edited, or `null` if a new Ticket is being created.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @var int|null
 	 */
@@ -47,7 +47,7 @@ class Ticket_Panel_Data {
 	/**
 	 * Dumps the data to array format.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return array<string,mixed> The data in array format.
 	 */
@@ -225,7 +225,7 @@ class Ticket_Panel_Data {
 		/**
 		 * Filters the data for the ticket panel.
 		 *
-		 * @since TBD
+		 * @since 5.8.0
 		 *
 		 * @param array $data      The data for the ticket panel.
 		 * @param int   $post_id   The ID of the post being edited.

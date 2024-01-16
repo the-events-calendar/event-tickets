@@ -17,7 +17,7 @@ const ftStore = wp.data.select('tec-tickets/flexible-tickets');
 /**
  * Prevents Series Passes from being saved by the Block Editor when editing Events.
  *
- * @since TBD
+ * @since 5.8.0
  *
  * @param {boolean} saveTicketFromPost Whether or not to save the Ticket from the Post.
  * @param {Object}  context            The context of the filter.
@@ -53,7 +53,7 @@ addFilter(
 /**
  * Filters the ticket type description when creating a ticket of the `default` type for an Event part of a Series.
  *
- * @since TBD
+ * @since 5.8.0
  *
  * @param {Object} mappedProps                 The properties mapped from the state for the Ticket Type component.
  * @param {string} mappedProps.typeDescription The ticket type description.
@@ -93,7 +93,7 @@ addFilter(
 /**
  * Forces the Tickets block to show on Recurring Events if they are part of a Series.
  *
- * @since TBD
+ * @since 5.8.0
  *
  * @param {Object}  mappedProps                      The properties mapped from the state for the Tickets component.
  * @param {boolean} mappedProps.noTicketsOnRecurring Whether or not to show the Tickets block on Recurring Events.
@@ -163,7 +163,7 @@ function getShowWarning(mappedProps, isSelected) {
  * Modifies the properties mapped from the state for the TicketsContainer component to conform
  * to the Flexible Tickets feature.
  *
- * @since TBD
+ * @since 5.8.0
  *
  * @param {Object}  mappedProps                    The properties mapped from the state for the TicketsContainer component.
  * @param {boolean} mappedProps.showInactiveBlock  Whether or not to show the inactive block.
@@ -211,7 +211,7 @@ addFilter(
  * Modifies the properties mapped from the state for the TicketsDashboardAction component to conform
  * to the Flexible Tickets feature.
  *
- * @since TBD
+ * @since 5.8.0
  *
  * @param {Object}  mappedProps                         The properties mapped from the state for the
  *                                                      TicketsDashboardAction component.
@@ -262,7 +262,7 @@ addFilter(
  * Modifies the properties mapped from the state for the Availability component to conform
  * to the Flexible Tickets feature.
  *
- * @since TBD
+ * @since 5.8.0
  *
  * @param {Object} mappedProps           The properties mapped from the state for the Availability component.
  * @param {number} mappedProps.total     The total capacity.
@@ -409,7 +409,7 @@ addFilter(
  * Filters the mapped properties to display a specific message when dealing with an unsaved Recurring Event.
  * An unsaved Recurring Event is one that is Recurring but not yet part of a Series.
  *
- * @since TBD
+ * @since 5.8.0
  *
  * @param {Object}  mappedProps The component properties as mapped from the current state.
  * @param {Object } state       The state of the main Event Tickets store.

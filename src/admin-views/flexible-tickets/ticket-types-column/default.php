@@ -2,9 +2,9 @@
 /**
  * Ticket type template.
  *
- * @since TBD
+ * @since 5.8.0
  *
- * @version TBD
+ * @version 5.8.0
  *
  * @var array $tickets Array of default tickets.
  */

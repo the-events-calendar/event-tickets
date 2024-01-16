@@ -6,9 +6,9 @@
  *
  * @since 5.6.7
  *
- * @since TBD Display the ticket type label for each ticket group.
+ * @since 5.8.0 Display the ticket type label for each ticket group.
  *
- * @version TBD
+ * @version 5.8.0
  *
  * @var array   $attendees The attendees for the current order.
  * @var int     $order_id  The ID of the order.
