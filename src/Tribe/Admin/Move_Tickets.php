@@ -350,7 +350,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 		/**
 		 * Filters the query arguments used to find posts that can serve as ticket hosts.
 		 *
-		 * @since TBD
+		 * @since 5.8.0
 		 *
 		 * @param array<string,mixed> $query_args The query arguments that will be used to find posts that can serve
 		 *                                        as ticket hosts.
