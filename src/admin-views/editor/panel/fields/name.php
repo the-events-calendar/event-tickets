@@ -2,9 +2,9 @@
 /**
  * The template for the ticket name field.
  *
- * @since TBD
+ * @since 5.8.0
  *
- * @version TBD
+ * @version 5.8.0
  *
  * @var string $ticket_name                      The ticket name.
  * @var string $rsvp_required_type_error_message The RSVP required type error message.
