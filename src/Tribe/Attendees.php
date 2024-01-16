@@ -94,7 +94,7 @@ class Tribe__Tickets__Attendees {
 		/**
 		 * Filters the label used in the Attendees page for the event post type.
 		 *
-		 * @since TBD
+		 * @since 5.8.0
 		 *
 		 * @param string $label    The label used in the Attendees page for the event post type.
 		 * @param int    $event_id The ID of the post the Attendees page is for.
@@ -1080,7 +1080,7 @@ class Tribe__Tickets__Attendees {
 	/**
 	 * Returns the context used to render the Attendees page.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param int $post_id The ID of the post to render the Attendees page for.
 	 *
