@@ -102,12 +102,14 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 	 * @since 5.3.0
 	 */
 	public function register_blocks() {
-		$post      = get_post() ?: get_post( tribe_get_request_var( 'post' ) );
-		$post_type = get_post_type( $post ) ?: tribe_get_request_var( 'post_type' );
-
-		if ( ! in_array( $post_type, (array) tribe_get_option( 'ticket-enabled-post-types', [] ), true ) ) {
-			// Register the Blocks only on ticket-enabled post types.
-			return;
+		if ( is_admin() ) {
+			// In admin context, do not register the blocks if the post type is not ticketable.
+			$post      = get_post() ?: get_post( tribe_get_request_var( 'post' ) );
+			$post_type = get_post_type( $post ) ?: tribe_get_request_var( 'post_type' );
+			if ( ! in_array( $post_type, (array) tribe_get_option( 'ticket-enabled-post-types', [] ), true ) ) {
+				// Register the Blocks only on ticket-enabled post types.
+				return;
+			}
 		}
 
 		// Register blocks.
