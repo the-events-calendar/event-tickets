@@ -81,7 +81,7 @@ class Order_Summary {
 	/**
 	 * Get the post ID.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return int The post ID.
 	 */
@@ -314,7 +314,7 @@ class Order_Summary {
 	/**
 	 * Get if the ticket sales data should be included into event sales data.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param Ticket_Object $ticket The ticket object.
 	 * @param array<string,int> $quantity_by_status The quantity by status.
@@ -325,7 +325,7 @@ class Order_Summary {
 		/**
 		 * Filters if the ticket sales data should be included into event sales data.
 		 *
-		 * @since TBD
+		 * @since 5.8.0
 		 *
 		 * @param bool $should_include Whether to include the sales data into event sales data.
 		 * @param Ticket_Object $ticket The ticket object.
