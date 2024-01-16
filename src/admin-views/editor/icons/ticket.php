@@ -2,7 +2,7 @@
 /**
  * Template for the default Ticket icon.
  *
- * @version TBD
+ * @version 5.8.0
  */
 ?>
 
