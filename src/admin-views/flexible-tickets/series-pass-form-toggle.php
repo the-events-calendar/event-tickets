@@ -2,7 +2,7 @@
 /**
  * The button to toggle the Series Pass form.
  *
- * @since TBD
+ * @since 5.8.0
  *
  * @var bool $disabled Whether Series Passes can be added to this post or not.
  */
