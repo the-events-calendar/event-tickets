@@ -197,7 +197,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.8.0] 2024-01-16 =
 
-
+Language - 62 new strings added, 212 updated, 9 fuzzied, and 15 obsoleted
 
 = [5.7.1] 2023-12-13 =
 
