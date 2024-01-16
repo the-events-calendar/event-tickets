@@ -96,7 +96,7 @@ class Provider extends Controller {
 		 * Filters whether tickets are allowed on recurring events or not.
 		 * By default, tickets are not allowed on Recurring Events.
 		 *
-		 * @since  TBD
+		 * @since  5.8.0
 		 *
 		 * @params bool $allow_tickets_on_recurring Whether tickets are allowed on recurring events or not.
 		 */

@@ -2,9 +2,9 @@
 /**
  * The start and end dates field for the ticket editor.
  *
- * @since TBD
+ * @since 5.8.0
  *
- * @version TBD
+ * @version 5.8.0
  *
  * @var string $ticket_start_date The start date of the ticket.
  * @var string $ticket_end_date The end date of the ticket.

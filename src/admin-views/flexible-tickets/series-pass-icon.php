@@ -2,7 +2,7 @@
 /**
  * Template for the Series Pass ticket icon.
  *
- * @version TBD
+ * @version 5.8.0
  */
 ?>
 

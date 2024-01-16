@@ -2,7 +2,7 @@
 /**
  * A pseudo-enum class for the Ticket post types.
  *
- * @since TBD
+ * @since 5.8.0
  */
 
 namespace TEC\Tickets\Flexible_Tickets\Enums;
@@ -10,14 +10,14 @@ namespace TEC\Tickets\Flexible_Tickets\Enums;
 /**
  * Class Ticket_Post_Types.
  *
- * @since TBD
+ * @since 5.8.0
  */
 class Ticket_Post_Types {
 	/**
 	 * The post type for PayPal Tickets.
 	 * The post type is registered by ET.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @var string
 	 */
@@ -27,7 +27,7 @@ class Ticket_Post_Types {
 	 * The post type for Commerce Tickets.
 	 * The post type is registered by ET.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @var string
 	 */
@@ -37,7 +37,7 @@ class Ticket_Post_Types {
 	 * The post type for WooCommerce Tickets.
 	 * The post type is registered by WooCommerce.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @var string
 	 */
@@ -47,7 +47,7 @@ class Ticket_Post_Types {
 	 * The post type for Easy Digital Downloads Tickets.
 	 * The post type is registered by EDD.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @var string
 	 */
@@ -56,7 +56,7 @@ class Ticket_Post_Types {
 	/**
 	 * Returns the list of all the Ticket post types.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return array<string>
 	 */

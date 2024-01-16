@@ -2,7 +2,7 @@
 /**
  * Controls the basic, common, features of the Flexible Tickets project.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets;
  */
@@ -16,7 +16,7 @@ use TEC\Events_Pro\Custom_Tables\V1\Series\Provider as Series_Provider;
 /**
  * Class Base.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets;
  */
@@ -25,7 +25,7 @@ class Base extends Controller {
 	/**
 	 * Registers the controller services and implementations.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 */
 	protected function do_register(): void {
 		$this->container->singleton( Repositories\Ticket_Groups::class, Repositories\Ticket_Groups::class );
@@ -60,7 +60,7 @@ class Base extends Controller {
 	/**
 	 * Unregisters the controller services and implementations.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 */
 	public function unregister(): void {
 		// Restore the filter that would prevent Series from appearing among the ticket-able post types.
@@ -79,7 +79,7 @@ class Base extends Controller {
 	/**
 	 * If the Flexible Tickets feature has never been activated, then make Series ticketable by default.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return void On first activation, Series are made ticketable by default.
 	 */

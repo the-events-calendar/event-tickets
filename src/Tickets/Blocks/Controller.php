@@ -2,7 +2,7 @@
 /**
  * Handles the registration of all the Blocks managed by the plugin.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Blocks;
  */
@@ -27,7 +27,7 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
 /**
  * Class Controller.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Blocks;
  */
@@ -152,7 +152,7 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 	/**
 	 * Render the New Ticket and New RSVP buttons in the metabox, as appropriate.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param int $post_id The post id.
 	 */
@@ -165,7 +165,7 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 		/**
 		 * Filters the default ticket forms enabled for a given post type.
 		 *
-		 * @since TBD
+		 * @since 5.8.0
 		 *
 		 * @param array<string,bool> $enabled The default enabled forms, a map from ticket types to their enabled status.
 		 * @param int                $post_id The ID of the post being edited.
@@ -196,7 +196,7 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 	/**
 	 * Render the ticket edit controls for the ticket list table.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param Ticket_Object $ticket  The ticket object.
 	 * @param int|null      $post_id The ID of the post context of the print.
@@ -221,7 +221,7 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return void
 	 */

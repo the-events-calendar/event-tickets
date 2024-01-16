@@ -2,7 +2,7 @@
 /**
  * Handles the queries required by Series Passes to integrate with Events Tickets.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
  */
@@ -17,7 +17,7 @@ use Tribe__Events__Main as TEC;
 /**
  * Class Queries.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
  */
@@ -25,7 +25,7 @@ class Queries {
 	/**
 	 * A reference to the Tickets Query handler.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @var Tickets_Query
 	 */
@@ -41,7 +41,7 @@ class Queries {
 	 *
 	 * See the `tec_tickets_query_ticketed_status_subquery` filter in the Events Tickets plugin.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return string The sub-query to be used to restrict the list of Events to those that are ticketed, or not
 	 *                ticketed when the logic of the query is reversed.
@@ -78,7 +78,7 @@ class Queries {
 	 * Provides the query that should be used to get the number of ticketed Events taking Events ticketed by
 	 * proxy into account (i.e. Events that are ticketed because they are part of a Series that has Series Passes).
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return string The query to use to get the number of ticketed Events.
 	 */

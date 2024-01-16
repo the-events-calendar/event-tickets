@@ -2,7 +2,7 @@
 /**
  * The ticket group model.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Models;
  */
@@ -19,7 +19,7 @@ use TEC\Tickets\Flexible_Tickets\Repositories\Ticket_Groups;
 /**
  * Class Ticket_Group.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Models;
  *
@@ -41,7 +41,7 @@ class Ticket_Group extends Model implements ModelCrud, ModelFromQueryBuilderObje
 	/**
 	 * Finds a model by its ID.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param int $id The model ID.
 	 *
@@ -54,7 +54,7 @@ class Ticket_Group extends Model implements ModelCrud, ModelFromQueryBuilderObje
 	/**
 	 * Creates a new model and saves it to the database.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param array<string,mixed> $attributes The model attributes.
 	 *
@@ -70,7 +70,7 @@ class Ticket_Group extends Model implements ModelCrud, ModelFromQueryBuilderObje
 	/**
 	 * Saves the model to the database.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return Ticket_Group The model instance.
 	 */
@@ -87,7 +87,7 @@ class Ticket_Group extends Model implements ModelCrud, ModelFromQueryBuilderObje
 	/**
 	 * Deletes the model from the database.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return bool Whether the model was deleted.
 	 */
@@ -98,7 +98,7 @@ class Ticket_Group extends Model implements ModelCrud, ModelFromQueryBuilderObje
 	/**
 	 * Returns the query builder for the model.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return ModelQueryBuilder The query builder instance.
 	 */
@@ -109,7 +109,7 @@ class Ticket_Group extends Model implements ModelCrud, ModelFromQueryBuilderObje
 	/**
 	 * Builds a new model from a query builder object.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param object $object The object to build the model from.
 	 *

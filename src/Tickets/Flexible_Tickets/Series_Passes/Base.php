@@ -2,7 +2,7 @@
 /**
  * A Controller to register basic functionalities common to all the ticket types handled by the feature.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
  */
@@ -28,7 +28,7 @@ use WP_Post;
 /**
  * Class Base.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
  */
@@ -36,7 +36,7 @@ class Base extends Controller {
 	/**
 	 * ${CARET}
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @var Admin_Views
 	 */
@@ -45,7 +45,7 @@ class Base extends Controller {
 	/**
 	 * A reference to the Reports handler.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @var Reports
 	 */
@@ -54,7 +54,7 @@ class Base extends Controller {
 	/**
 	 * Base constructor.
 	 *
-	 * since TBD
+	 * since 5.8.0
 	 *
 	 * @param Container   $container   A reference to the Container.
 	 * @param Admin_Views $admin_views A reference to the Admin Views handler for Flexible Tickets.
@@ -73,7 +73,7 @@ class Base extends Controller {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return void
 	 */
@@ -170,7 +170,7 @@ class Base extends Controller {
 			$this,
 			'show_series_link_after_ticket_type_title'
 		], 10, 3 );
-        
+
         add_filter(
             'tribe_template_pre_html:tickets/admin-views/editor/panel/settings-button',
             [
@@ -185,7 +185,7 @@ class Base extends Controller {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return void
 	 */
@@ -296,7 +296,7 @@ class Base extends Controller {
 			$this,
 			'show_series_link_after_ticket_type_title'
 		], 10, 3 );
-        
+
         remove_filter(
             'tribe_template_pre_html:tickets/admin-views/editor/panel/settings-button',
             [
@@ -311,7 +311,7 @@ class Base extends Controller {
 	/**
 	 * Disables default ticket types for Series.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param array<string,bool> $enabled The default enabled forms, a map from ticket types to their enabled status.
 	 *
@@ -328,7 +328,7 @@ class Base extends Controller {
 	/**
 	 * Provides an alternate Tickets form on the front-end when looking at an Event part of a Series.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param string|null         $html          The HTML code as provided by the template, initially `null`.
 	 * @param string              $file          The file path to the template file, unused.
@@ -368,7 +368,7 @@ class Base extends Controller {
 	/**
 	 * Disables Tickets and RSVPs on recurring events.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param array<string,bool> $enabled The default enabled forms, a map from ticket types to their enabled status.
 	 * @param int                $post_id The ID of the Event being checked.
@@ -387,7 +387,7 @@ class Base extends Controller {
 	/**
 	 * Filters the label for the Series post type in the Attendees meta box top header.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param string $label   The label for the Attendees meta box top header.
 	 * @param int    $post_id The ID of the post Attendees are being displayed for.
@@ -406,7 +406,7 @@ class Base extends Controller {
 	/**
 	 * Filters the columns displayed in the Series editor events List.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param array<string,string> $columns The list of columns to filter.
 	 *
@@ -428,7 +428,7 @@ class Base extends Controller {
 	/**
 	 * Renders the content of the "Attached Ticket Types" column in the Series editor events List.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param Occurrence $occurrence
 	 *
@@ -477,7 +477,7 @@ class Base extends Controller {
 	 * Updates the query arguments used to fetch the available Events when moving Tickets to remove the argument that
 	 * would prevent, in CT1 context, Events in Series from being included.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param array<string,mixed> $query_args The query arguments used to fetch the available Events.
 	 *
@@ -497,7 +497,7 @@ class Base extends Controller {
 	 * The repository provided is one that will decorate either the Event Tickets or Event Tickets Plus repository
 	 * depending on which is available.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param array<string,string> $map A map from repository aliases to repository classes.
 	 *
@@ -513,7 +513,7 @@ class Base extends Controller {
 	 * Filters the context used to render the Attendees Report to add the data needed to support the additional ticket
 	 * types.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param array<string,mixed> $context The context used to render the Attendees Report.
 	 *
@@ -526,7 +526,7 @@ class Base extends Controller {
 	/**
 	 * Renders the series details on attendee report page for an event attached to a series.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param int $post_id The ID of the post being displayed.
 	 *
@@ -539,7 +539,7 @@ class Base extends Controller {
 	/**
 	 * Renders the series details on order report page for an event attached to a series.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param int $post_id The ID of the post being displayed.
 	 *
@@ -552,7 +552,7 @@ class Base extends Controller {
 	/**
 	 * Filters the label for the Series post type for the report pages.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param string $type The type of ticket.
 	 *
@@ -565,7 +565,7 @@ class Base extends Controller {
 	/**
 	 * Filters the order report to remove the series passes from the event sales data.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param bool              $include            Whether to include the event sales data.
 	 * @param Ticket_Object     $ticket             The ticket object.
@@ -581,7 +581,7 @@ class Base extends Controller {
 	/**
 	 * Filters the HTML for the ticket editor to hide the header image option from the ticket settings.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param null|string         $html     The initial HTML.
 	 * @param string              $file     Complete path to include the PHP File.
@@ -602,7 +602,7 @@ class Base extends Controller {
 	/**
 	 * Filters the start date for a series to use the start date of the first event in the series.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param string  $start_date   The start date.
 	 * @param WP_Post $series       The series post object.
@@ -631,7 +631,7 @@ class Base extends Controller {
 	/**
 	 * Filters the end date for a series to use the start date of the last event in the series.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param string  $end_date     The end date.
 	 * @param WP_Post $series       The series post object.
@@ -660,7 +660,7 @@ class Base extends Controller {
 	/**
 	 * Filters the template arguments used to render the checkout page.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param array<string,mixed> $args The template arguments.
 	 *
@@ -689,7 +689,7 @@ class Base extends Controller {
 	/**
 	 * Filters HTML to hide the footer for regular event cart section when series pass is added in the cart.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param string               $html     The initial HTML or null.
 	 * @param string               $file     Complete path to include the PHP File.
@@ -718,7 +718,7 @@ class Base extends Controller {
 	/**
 	 * Filters the data returned by the AJAX request to fetch the selected Series data.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param array   $data        The data to be returned.
 	 * @param WP_Post $series_post The Series post object.
@@ -734,7 +734,7 @@ class Base extends Controller {
 	/**
 	 * Skips rendering the series title on the My Tickets page.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return void
 	 */
@@ -755,7 +755,7 @@ class Base extends Controller {
 	/**
 	 * Shows the series link after ticket type title.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param string        $file     Complete path to include the PHP File.
 	 * @param array<string> $name     Template name.
@@ -786,11 +786,11 @@ class Base extends Controller {
 
 		echo '<span class="tec-tickets__my-tickets-list__series-link">' . $series_link . '</span>';
 	}
-	
+
 	/**
 	 * Hides the settings button from showing up for the classic editor metabox.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param null|string         $html     The initial HTML.
 	 * @param string              $file     Complete path to include the PHP File.
@@ -804,7 +804,7 @@ class Base extends Controller {
 		if ( ! isset( $context['post_id'] ) || get_post_type( $context['post_id'] ) !== Series_Post_Type::POSTTYPE ) {
 			return $html;
 		}
-		
+
 		return false;
 	}
 }

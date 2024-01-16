@@ -41,7 +41,7 @@ $ticket_type = $ticket_type ?? 'default';
 					/**
 					 * Allows for the insertion of icons into the ticket table header for a specific ticket type.
 					 *
-					 * @since TBD
+					 * @since 5.8.0
 					 */
 					do_action( "tec_tickets_editor_list_table_title_icon_{$ticket_type}" );
 					?>

@@ -2,7 +2,7 @@
 /**
  * Handles the templating for the Flexible Tickets, frontend side.
  *
- * @since TBD
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Templates;
  */
@@ -15,7 +15,7 @@ use Tribe__Tickets__Main as ET;
 /**
  * Class Frontend_Views.
  *
- * @since TBD
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Templates;
  */
@@ -25,7 +25,7 @@ class Frontend_Views extends Base_Template {
 	 *
 	 * Sets the correct paths for templates for event status.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 */
 	public function __construct() {
 		$this->set_template_origin( ET::class );

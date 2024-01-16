@@ -340,7 +340,7 @@ trait Post_Tickets {
 	 * The clause is built with ORs to allow for multiple meta keys to be used and for the
 	 * meta key index to kick in.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param string   $alias     The alias to use for the post meta table.
 	 * @param string[] $allow     A list of providers to include in the comparison. If this argument is `null`,
@@ -373,7 +373,7 @@ trait Post_Tickets {
 	/**
 	 * Builds the SQL clause to compare meta values to the ones relating tickets to posts.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param string $alias      The alias to use for the post meta table.
 	 *

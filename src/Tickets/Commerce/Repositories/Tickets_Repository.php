@@ -87,7 +87,7 @@ class Tickets_Repository extends Tribe__Repository {
 	 * Filters tickets by a specific event.
 	 *
 	 * @since 5.2.2
-	 * @since TBD Apply the `tec_tickets_repository_filter_by_event_id` filter.
+	 * @since 5.8.0 Apply the `tec_tickets_repository_filter_by_event_id` filter.
 	 *
 	 * @param int|array $event_id The post ID or array of post IDs to filter by.
 	 */
@@ -97,7 +97,7 @@ class Tickets_Repository extends Tribe__Repository {
 		 *
 		 * By default, only the ticketed post ID is used. This filter allows fetching tickets from related posts.
 		 *
-		 * @since TBD
+		 * @since 5.8.0
 		 *
 		 * @param int|array          $event_id The event ID or array of event IDs to filter by.
 		 * @param Tickets_Repository $this     The current repository object.

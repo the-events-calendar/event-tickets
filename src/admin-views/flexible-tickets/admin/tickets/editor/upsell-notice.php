@@ -2,7 +2,7 @@
 /**
  * Ticket type upsell notice on new Ticket editor.
  *
- * @version TBD
+ * @version 5.8.0
  */
 $upgrade_link = sprintf(
 	// translators: %1$s: URL for upgrade link, %2$s: Label for upgrade link.

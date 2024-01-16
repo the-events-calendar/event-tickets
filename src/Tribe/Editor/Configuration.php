@@ -123,7 +123,7 @@ class Tribe__Tickets__Editor__Configuration implements Tribe__Editor__Configurat
 		/**
 		 * Filters the localized data for the editor configuration.
 		 *
-		 * @since TBD
+		 * @since 5.8.0
 		 *
 		 * @param array<string,mixed> $localized The localized data for the editor configuration.
 		 */

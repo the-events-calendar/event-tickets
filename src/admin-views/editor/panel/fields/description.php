@@ -2,9 +2,9 @@
 /**
  * The description field for the ticket editor.
  *
- * @since TBD
+ * @since 5.8.0
  *
- * @version TBD
+ * @version 5.8.0
  *
  * @var string $ticket_description The ticket description.
  * @var array<string, mixed> $ticket The ticket.

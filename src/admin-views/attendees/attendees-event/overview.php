@@ -3,7 +3,7 @@
  * Event Attendees Summary Ticket Overview template.
  *
  * @since  5.6.5
- * @since TBD Refactored logic out of the template into the `Tribe__Tickets__Attendees::render` method.
+ * @since 5.8.0 Refactored logic out of the template into the `Tribe__Tickets__Attendees::render` method.
  *
  * @var \Tribe__Template                              $this              Current template object.
  * @var int                                           $event_id          The event/post/page id.

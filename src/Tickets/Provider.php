@@ -22,7 +22,7 @@ class Provider extends Service_Provider {
 	/**
 	 * The action that will fire once this provider has registered.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @var string
 	 */

@@ -2,7 +2,7 @@
 /**
  * A pseudo-enum class to store the meta keys that relate Tickets to Posts.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Enums;
  */
@@ -12,7 +12,7 @@ namespace TEC\Tickets\Flexible_Tickets\Enums;
 /**
  * Class Ticket_To_Post_Relationship_Keys.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Enums;
  */
@@ -20,7 +20,7 @@ class Ticket_To_Post_Relationship_Keys {
 	/**
 	 * The meta key relating PayPal Tickets to Posts.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @var string
 	 */
@@ -29,7 +29,7 @@ class Ticket_To_Post_Relationship_Keys {
 	/**
 	 * The meta key relating Commerce Tickets to Posts.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @var string
 	 */
@@ -38,7 +38,7 @@ class Ticket_To_Post_Relationship_Keys {
 	/**
 	 * The meta key relating WooCommerce Tickets to Posts.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @var string
 	 */
@@ -47,7 +47,7 @@ class Ticket_To_Post_Relationship_Keys {
 	/**
 	 * The meta key relating Easy Digital Downloads Tickets to Posts.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @var string
 	 */
@@ -56,7 +56,7 @@ class Ticket_To_Post_Relationship_Keys {
 	/**
 	 * Returns the list of all the meta keys that relate Tickets to Posts.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return array<string>
 	 */

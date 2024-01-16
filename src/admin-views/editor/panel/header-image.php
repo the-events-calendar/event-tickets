@@ -2,9 +2,9 @@
 /**
  * The template for the ticket header image upload.
  *
- * @since TBD
+ * @since 5.8.0
  *
- * @version TBD
+ * @version 5.8.0
  *
  * @var int $post_id The Post ID.
  */

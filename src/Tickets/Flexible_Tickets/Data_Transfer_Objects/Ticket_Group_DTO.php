@@ -2,7 +2,7 @@
 /**
  * The data transfer object for the Ticket Group model.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Data_Transfer_Objects;
  */
@@ -15,7 +15,7 @@ use TEC\Tickets\Flexible_Tickets\Models\Ticket_Group;
 /**
  * Class Ticket_Group_DTO.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Data_Transfer_Objects;
  */
@@ -23,7 +23,7 @@ class Ticket_Group_DTO extends DataTransferObject {
 	/**
 	 * The Ticket Group ID.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @var int
 	 */
@@ -32,7 +32,7 @@ class Ticket_Group_DTO extends DataTransferObject {
 	/**
 	 * The Ticket Group slug.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @var string
 	 */
@@ -41,7 +41,7 @@ class Ticket_Group_DTO extends DataTransferObject {
 	/**
 	 * The Ticket Group data in JSON format.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @var string
 	 */
@@ -50,7 +50,7 @@ class Ticket_Group_DTO extends DataTransferObject {
 	/**
 	 * Builds a new DTO from an object.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param object $object The object to build the DTO from.
 	 *
@@ -69,7 +69,7 @@ class Ticket_Group_DTO extends DataTransferObject {
 	/**
 	 * Builds a model instance from the DTO.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return Ticket_Group The model instance.
 	 */

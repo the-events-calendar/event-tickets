@@ -1634,7 +1634,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	/**
 	 * Sets up the query filters to fetch Attendees by post they are attached to.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param int|array<int> $post_id Either a single post ID or an array of post IDs.
 	 *
@@ -1646,7 +1646,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		/**
 		 * Filter the post IDs to be used when fetching Attendees by the related post.
 		 *
-		 * @since TBD
+		 * @since 5.8.0
 		 *
 		 * @param array<int> $post_ids The post IDs to be used when fetching Attendees by the related post.
 		 */
@@ -1658,7 +1658,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	/**
 	 * Sets up the query filters to fetch Attendees not related to a post.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param int|array<int> $post_id Either a single post ID or an array of post IDs.
 	 *
@@ -1670,7 +1670,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		/**
 		 * Filter the post IDs to be used when fetching Attendees not related to a post.
 		 *
-		 * @since TBD
+		 * @since 5.8.0
 		 *
 		 * @param array<int> $post_ids The post IDs to be used when fetching Attendees by the related post.
 		 *

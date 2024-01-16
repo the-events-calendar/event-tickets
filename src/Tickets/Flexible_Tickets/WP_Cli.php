@@ -2,7 +2,7 @@
 /**
  * Handles the feature implementation with WP CLI.
  *
- * @since TBD
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets;
  */
@@ -14,7 +14,7 @@ use TEC\Common\Contracts\Provider\Controller;
 /**
  * Class WP_Cli.
  *
- * @since TBD
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets;
  */
@@ -23,7 +23,7 @@ class WP_Cli extends Controller {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return void
 	 */
@@ -35,7 +35,7 @@ class WP_Cli extends Controller {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return void
 	 */
@@ -46,7 +46,7 @@ class WP_Cli extends Controller {
 	/**
 	 * Make sure this controller will activate only if WP CLI is active.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return bool Whether the controller should be active or not.
 	 */
@@ -61,7 +61,7 @@ class WP_Cli extends Controller {
 	 * those tables would not be truncated by the `wp site empty` command otherwise. Foreign key
 	 * checks will be re-enabled after the command is run, in the `truncate_custom_tables` method.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param array $args The arguments passed to the WP CLI command.
 	 *
@@ -80,7 +80,7 @@ class WP_Cli extends Controller {
 	/**
 	 * Truncates the custom tables.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return int The number of truncated tables deleted.
 	 */

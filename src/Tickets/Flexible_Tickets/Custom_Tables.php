@@ -2,7 +2,7 @@
 /**
  * The custom tables controller.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Recurring_Tickets;
  */
@@ -24,7 +24,7 @@ use TEC\Common\StellarWP\Models\Config as Model_Config;
 /**
  * Class Custom_Tables.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets;
  */
@@ -33,7 +33,7 @@ class Custom_Tables extends Controller {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return void
 	 */
@@ -49,7 +49,7 @@ class Custom_Tables extends Controller {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return void
 	 */
@@ -60,7 +60,7 @@ class Custom_Tables extends Controller {
 	/**
 	 * Registers the custom tables and makes them available in the container as singletons.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return void
 	 */
@@ -72,7 +72,7 @@ class Custom_Tables extends Controller {
 	/**
 	 * Drops the custom tables.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return int The number of tables dropped.
 	 */
@@ -95,7 +95,7 @@ class Custom_Tables extends Controller {
 	/**
 	 * Truncates the custom tables.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return int The number of tables truncated.
 	 */

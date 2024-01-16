@@ -2,7 +2,7 @@
 /**
  * Handles the CRUD operations of Series Passes meta.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
  */
@@ -15,7 +15,7 @@ use WP_Post;
 /**
  * Class Meta.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
  */
@@ -24,7 +24,7 @@ class Meta {
 	/**
 	 * A reference to the Series Passes repository.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @var Repository
 	 */
@@ -33,7 +33,7 @@ class Meta {
 	/**
 	 * Meta constructor.
 	 *
-	 * since TBD
+	 * since 5.8.0
 	 *
 	 * @param Repository $repository A reference to the Series Passes repository.
 	 */
@@ -44,7 +44,7 @@ class Meta {
 	/**
 	 * Updates a Series Pass end meta, end date or time, based on the dynamic flag.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param int    $ticket_id The post ID of the Series Pass.
 	 * @param string $meta_key The meta key to update.
@@ -73,7 +73,7 @@ class Meta {
 	/**
 	 * Updates a Series Pass end meta, date or time, depending on the meta key.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param int    $ticket_id The post ID of the Series Pass.
 	 * @param string $meta_key The meta key to update.

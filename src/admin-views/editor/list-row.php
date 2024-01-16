@@ -122,7 +122,7 @@ if (
 		/**
 		 * Allows custom content to be added to the edit section of a ticket list row.
 		 *
-		 * @since TBD
+		 * @since 5.8.0
 		 *
 		 * @param Tribe__Tickets__Ticket_Object $ticket  The ticket object.
 		 * @param int                           $post_id The ID of the post context of the print.

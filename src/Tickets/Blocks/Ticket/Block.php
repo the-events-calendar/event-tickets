@@ -2,7 +2,7 @@
 /**
  * Provides the information required to register the Ticket (singular) block server-side.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Blocks\Tickets;
  */
@@ -15,7 +15,7 @@ use Tribe__Tickets__Main as Tickets_Main;
 /**
  * Class Block.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Blocks\Ticket;
  */
@@ -48,7 +48,7 @@ class Block extends Abstract_Block {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 */
 	public function get_registration_block_type() {
 		return __DIR__ . '/block.json';
@@ -57,7 +57,7 @@ class Block extends Abstract_Block {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 */
 	public function get_registration_args( array $args ): array {
 		$args['title']       = _x( 'Event Ticket', 'Block title', 'event-tickets' );
@@ -69,7 +69,7 @@ class Block extends Abstract_Block {
 	/**
 	 * Overrides the parent method to register the editor scripts.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return void
 	 */
@@ -81,7 +81,7 @@ class Block extends Abstract_Block {
 	/**
 	 * Registers the editor scripts.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return void
 	 */

@@ -2,7 +2,7 @@
 /**
  * Handles the reports integrations for the Series Passes.
  *
- * @since TBD
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets;
  */
@@ -18,7 +18,7 @@ use Tribe__Tickets__Tickets as Tickets;
 /**
  * Class Reports.
  *
- * @since TBD
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets;
  */
@@ -27,7 +27,7 @@ class Reports {
 	/**
 	 * A reference to the admin views.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @var Admin_Views
 	 */
@@ -40,7 +40,7 @@ class Reports {
 	/**
 	 * Renders the series details on attendee report page for an event attached to a series.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param int $post_id The ID of the post being displayed.
 	 *
@@ -67,9 +67,9 @@ class Reports {
 			sprintf( '<a href="%s" target="_blank">%s</a>', esc_url( $edit_url ), __( 'Edit Series', 'event-tickets' ) ),
 			sprintf( '<a href="%s" target="_blank">%s</a>', esc_url( get_permalink( $series_id ) ), __( 'View Series', 'event-tickets' ) ),
 		];
-		
+
 		$series_passes = Tickets::get_event_tickets( $series_id );
-		
+
 		if ( ! empty( $series_passes ) ) {
 			$action_links[] = sprintf( '<a href="%s" target="_blank">%s</a>', esc_url( $attendee_report_link ), __( 'Series Attendees', 'event-tickets' ) );
 		}
@@ -81,14 +81,14 @@ class Reports {
 				'title'        => $title,
 				'edit_link'    => $edit_link,
 				'action_links' => $action_links,
-			] 
+			]
 		);
 	}
 
 	/**
 	 * Renders the series details on order report page for an event attached to a series.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param int $post_id The ID of the post being displayed.
 	 *
@@ -121,9 +121,9 @@ class Reports {
 			sprintf( '<a href="%s" target="_blank">%s</a>', esc_url( $edit_url ), __( 'Edit Series', 'event-tickets' ) ),
 			sprintf( '<a href="%s" target="_blank">%s</a>', esc_url( get_permalink( $series_id ) ), __( 'View Series', 'event-tickets' ) ),
 		];
-		
+
 		$series_passes = Tickets::get_event_tickets( $series_id );
-		
+
 		if ( ! empty( $series_passes ) ) {
 			$action_links[] = sprintf( '<a href="%s" target="_blank">%s</a>', esc_url( $order_report_link ), __( 'Series Orders', 'event-tickets' ) );
 		}
@@ -135,14 +135,14 @@ class Reports {
 				'title'        => $title,
 				'edit_link'    => $edit_link,
 				'action_links' => $action_links,
-			] 
+			]
 		);
 	}
 
 	/**
 	 * Filters the label for the Series post type for the report pages.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param string $type The type of ticket.
 	 *
@@ -159,7 +159,7 @@ class Reports {
 	/**
 	 * Filters the order report to remove the series passes from the event sales data.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param bool              $include Whether to include the event sales data.
 	 * @param Ticket_Object     $ticket  The ticket object.
@@ -186,7 +186,7 @@ class Reports {
 	 * Filters the context used to render the Attendees Report to add the data needed to support the additional ticket
 	 * types.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param array<string,mixed> $context The context used to render the Attendees Report.
 	 *

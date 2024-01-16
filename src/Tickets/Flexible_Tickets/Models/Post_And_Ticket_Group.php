@@ -2,7 +2,7 @@
 /**
  * The Post and Ticket Group relationship model.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Models;
  */
@@ -19,7 +19,7 @@ use TEC\Tickets\Flexible_Tickets\Repositories\Posts_And_Ticket_Groups;
 /**
  * Class Post_And_Ticket_Group.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Models;
  *
@@ -46,7 +46,7 @@ class Post_And_Ticket_Group extends Model implements ModelCrud, ModelFromQueryBu
 	/**
 	 * Creates a new model instance and saves it to the database.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param array<string,mixed> $attributes The model attributes.
 	 *
@@ -62,7 +62,7 @@ class Post_And_Ticket_Group extends Model implements ModelCrud, ModelFromQueryBu
 	/**
 	 * Saves the model to the database.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return static
 	 */
@@ -79,7 +79,7 @@ class Post_And_Ticket_Group extends Model implements ModelCrud, ModelFromQueryBu
 	/**
 	 * Deletes the model from the database.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return bool Whether the model was deleted.
 	 */
@@ -90,7 +90,7 @@ class Post_And_Ticket_Group extends Model implements ModelCrud, ModelFromQueryBu
 	/**
 	 * Returns the query builder for the model.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return ModelQueryBuilder The query builder instance.
 	 */
@@ -101,7 +101,7 @@ class Post_And_Ticket_Group extends Model implements ModelCrud, ModelFromQueryBu
 	/**
 	 * Builds a new model from a query builder object.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param object $object The query builder object.
 	 *
