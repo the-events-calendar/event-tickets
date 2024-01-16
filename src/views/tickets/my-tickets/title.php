@@ -6,9 +6,9 @@
  *
  * @since 5.6.7
  *
- * @since TBD Added the ticket type parameter.
+ * @since 5.8.0 Added the ticket type parameter.
  *
- * @version TBD
+ * @version 5.8.0
  *
  * @var string  $title       The title.
  * @var string  $ticket_type The ticket type.
