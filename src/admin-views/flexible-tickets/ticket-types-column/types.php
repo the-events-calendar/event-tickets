@@ -2,9 +2,9 @@
 /**
  * The template for the ticket types column in the events list table.
  *
- * @since TBD
+ * @since 5.8.0
  *
- * @version TBD
+ * @version 5.8.0
  *
  * @var array $tickets_by_types Array of tickets by types.
  * @var Tribe__Tickets__Admin__Views $admin_views The admin views instance for flexible tickets.
