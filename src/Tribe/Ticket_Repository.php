@@ -83,7 +83,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 * Filters tickets by a specific event.
 	 *
 	 * @since 4.8
-	 * @since TBD Apply the `tec_tickets_repository_filter_by_event_id` filter.
+	 * @since 5.8.0 Apply the `tec_tickets_repository_filter_by_event_id` filter.
 	 *
 	 * @param int|array $event_id The post ID or array of post IDs to filter by.
 	 */
@@ -101,7 +101,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 		 *
 		 * By default, only the ticketed post ID is used. This filter allows fetching tickets from related posts.
 		 *
-		 * @since TBD
+		 * @since 5.8.0
 		 *
 		 * @param int|array          $event_id The event ID or array of event IDs to filter by.
 		 * @param Tickets_Repository $this     The current repository object.
@@ -613,7 +613,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	/**
 	 * Filters the ticket to be returned by the value of the `_type` meta key.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param string|string[] $type The ticket type or types to filter by.
 	 *
@@ -639,7 +639,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	/**
 	 * Captures the SQL that would be used to get the Ticket IDs without runing the query.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return string|null The SQL query or `null` if the query cannot be run.
 	 */
@@ -663,7 +663,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 *
 	 * The independent capacity does not include the capacity of Tickets with Unlimited capacity.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return int The independent capacity of the Tickets queried by the repository.
 	 */
@@ -708,7 +708,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 *
 	 * The shared capacity does not include the capacity of Tickets with Unlimited capacity.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return int The shared capacity of the Tickets queried by the repository.
 	 */
@@ -752,7 +752,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	/**
 	 * Filters tickets by their global stock mode.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param array<string>|string $modes             The global stock mode or modes to filter by, use the
 	 *                                                `Global_Stock::` constants.
