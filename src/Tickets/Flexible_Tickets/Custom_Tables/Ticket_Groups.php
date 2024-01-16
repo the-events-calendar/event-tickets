@@ -2,7 +2,7 @@
 /**
  * Models the `ticket_groups` custom table.
  *
- * @since TBD
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Custom_Tables;
  */
@@ -14,7 +14,7 @@ use TEC\Common\StellarWP\Schema\Tables\Contracts\Table;
 /**
  * Class Ticket_Groups.
  *
- * @since TBD
+ * @since 5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Custom_Tables;
  */
