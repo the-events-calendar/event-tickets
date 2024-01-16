@@ -2,7 +2,7 @@
 /**
  * Handles the migration of Recurring Events, with one or more recurrence rules, that have RSVP tickets applied.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes\CT1_Migration\Strategies;
  */
@@ -20,7 +20,7 @@ use Tribe__Events__Main as TEC;
 /**
  * Class RSVP_Ticketed_Recurring_Event_Strategy.
  *
- * @since   TBD
+ * @since   5.8.0
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes\CT1_Migration\Strategies;
  */
@@ -30,7 +30,7 @@ class RSVP_Ticketed_Recurring_Event_Strategy implements Strategy_Interface {
 	/**
 	 * The ID of the Event being migrated.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @var int
 	 */
@@ -39,7 +39,7 @@ class RSVP_Ticketed_Recurring_Event_Strategy implements Strategy_Interface {
 	/**
 	 * Whether the migration is being run in dry-run mode.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @var bool
 	 */
@@ -48,7 +48,7 @@ class RSVP_Ticketed_Recurring_Event_Strategy implements Strategy_Interface {
 	/**
 	 * Returns this strategy's slug.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @return string The slug of the strategy.
 	 */
@@ -59,7 +59,7 @@ class RSVP_Ticketed_Recurring_Event_Strategy implements Strategy_Interface {
 	/**
 	 * RSVP_Ticketed_Recurring_Event_Strategy constructor.
 	 *
-	 * since TBD
+	 * since 5.8.0
 	 *
 	 * @param int $post_id The ID of the Event.
 	 *
@@ -89,7 +89,7 @@ class RSVP_Ticketed_Recurring_Event_Strategy implements Strategy_Interface {
 	/**
 	 * Applies the strategy to the Event, blocking its migration and offering the user a way to resolve the issue.
 	 *
-	 * @since TBD
+	 * @since 5.8.0
 	 *
 	 * @param Event_Report $event_report A reference to the report.
 	 *
