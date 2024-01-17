@@ -336,7 +336,7 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertEquals( 40, tribe_tickets_get_capacity( $ticket_b_id ), 'Global Ticket Capacity should be increased to 40' );
 		$this->assertEquals( 40 - 10, $ticket_b->stock(), 'Global Ticket Stock should be 30' );
 		$this->assertEquals( 40 - 10, $ticket_b->available(), 'Global Ticket available should be 30' );
-		$this->assertEquals( 40 - 5, $ticket_b->inventory(), 'Global Ticket inventory should be 30' );
+		$this->assertEquals( 40 - 10, $ticket_b->inventory(), 'Global Ticket inventory should be 30' );
 
 		$event_ticket_counts    = \Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
 		$expected_ticket_counts = [
