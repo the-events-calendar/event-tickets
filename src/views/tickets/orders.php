@@ -50,7 +50,13 @@ $user_has_tickets           = $view->has_ticket_attendees( $event_id, $user_id )
 $user_has_rsvp              = $rsvp->get_attendees_count_going_for_user( $event_id, $user_id );
 $tribe_my_tickets_have_meta = false;
 
-// Check to see if we are hiding the opt-out form.
+/**
+ * Use this filter to hide the Attendees List Optout
+ *
+ * @since 4.9
+ *
+ * @param bool
+ */
 $hide_attendee_list_optout = apply_filters( 'tribe_tickets_plus_hide_attendees_list_optout', false, $event_id );
 
 /**
