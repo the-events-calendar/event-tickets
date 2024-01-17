@@ -246,8 +246,8 @@ class AttendeesTest extends \Codeception\TestCase\WPTestCase {
 							],
 						'type_labels'       =>
 							[
-								'default' => 'Single Tickets',
-								'rsvp'    => 'RSVP',
+								'default' => 'Standard Tickets',
+								'rsvp'    => 'RSVPs',
 							],
 					]
 				];
