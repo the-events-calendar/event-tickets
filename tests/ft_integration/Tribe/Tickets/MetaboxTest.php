@@ -559,4 +559,46 @@ class MetaboxTest extends WPTestCase {
 
 		$this->assertMatchesHtmlSnapshot( $html );
 	}
+
+	public function panels_with_no_provider_data_provider(): \Generator {
+		yield 'post' => [
+			static function () {
+				return static::factory()->post->create( [ 'post_type' => 'post' ] );
+			}
+		];
+
+		yield 'event' => [
+			static function () {
+				return tribe_events()->set_args( [
+					'title'      => 'Test Event',
+					'status'     => 'publish',
+					'start_date' => '2022-10-01 10:00:00',
+					'duration'   => 2 * HOUR_IN_SECONDS,
+				] )->create()->ID;
+			}
+		];
+	}
+
+	/**
+	 * @dataProvider panels_with_no_provider_data_provider
+	 */
+	public function test_get_panels_without_providers( Closure $fixture ): void {
+		// Equivalent to deactivating Commerce.
+		add_filter( 'tribe_tickets_get_modules', '__return_empty_array' );
+		// Mock the current date to consolidate the snapshots.
+		$post_id = $fixture();
+		// Simulate a request to get this post.
+		$_GET['post'] = $post_id;
+		// Make sure the Blocks Controller is registered with a ticketable post type.
+		tribe( \TEC\Tickets\Blocks\Controller::class )->do_register();
+		$this->set_fn_return( 'wp_create_nonce', '33333333' );
+
+		$metabox = tribe( Metabox::class );
+		// Rend for a new ticket.
+		$panels = $metabox->get_panels( $post_id );
+		$html   = implode( '', $panels );
+		$html   = $this->placehold_post_ids( $html, [ $post_id ] );
+
+		$this->assertMatchesHtmlSnapshot( $html );
+	}
 }
