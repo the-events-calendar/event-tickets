@@ -40,7 +40,7 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 				'status'     => 'publish',
 				'start_date' => '2020-01-01 12:00:00',
 				'duration'   => 2 * HOUR_IN_SECONDS,
-			] 
+			]
 		)->create()->ID;
 		// Enable the global stock on the Event.
 		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_ENABLED, 1 );
@@ -57,7 +57,7 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 					'mode'     => Global_Stock::CAPPED_STOCK_MODE,
 					'capacity' => 30,
 				],
-			] 
+			]
 		);
 		$ticket_b_id = $this->create_tc_ticket(
 			$event_id,
@@ -67,7 +67,7 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 					'mode'     => Global_Stock::GLOBAL_STOCK_MODE,
 					'capacity' => 50,
 				],
-			] 
+			]
 		);
 
 		// Get the ticket objects.
@@ -99,7 +99,7 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 			[
 				$ticket_a_id => 5,
 				$ticket_b_id => 5,
-			] 
+			]
 		);
 
 		// Refresh the ticket objects.
@@ -114,7 +114,7 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertEquals( 50, $ticket_b->capacity() );
 		$this->assertEquals( 50 - 10, $ticket_b->stock() );
 		$this->assertEquals( 50 - 10, $ticket_b->available() );
-		$this->assertEquals( 50 - 5, $ticket_b->inventory() );
+		$this->assertEquals( 50 - 10, $ticket_b->inventory() );
 
 		$this->assertEquals( 50 - 10, $global_stock->get_stock_level(), 'Global stock should be 50-10 = 40' );
 	}
@@ -126,7 +126,7 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 				'status'     => 'publish',
 				'start_date' => '2020-01-01 12:00:00',
 				'duration'   => 2 * HOUR_IN_SECONDS,
-			] 
+			]
 		)->create()->ID;
 		// Enable the global stock on the Event.
 		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_ENABLED, 1 );
@@ -143,7 +143,7 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 					'mode'     => Global_Stock::GLOBAL_STOCK_MODE,
 					'capacity' => 20,
 				],
-			] 
+			]
 		);
 
 		// Get the ticket object.
@@ -190,7 +190,7 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 				'status'     => 'publish',
 				'start_date' => '2020-01-01 12:00:00',
 				'duration'   => 2 * HOUR_IN_SECONDS,
-			] 
+			]
 		)->create()->ID;
 		// Enable the global stock on the Event.
 		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_ENABLED, 1 );
@@ -208,7 +208,7 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 					'event_capacity' => 20,
 					'capacity'       => 20,
 				],
-			] 
+			]
 		);
 
 		// Get the ticket objects.
@@ -252,7 +252,7 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 				'status'     => 'publish',
 				'start_date' => '2020-01-01 12:00:00',
 				'duration'   => 2 * HOUR_IN_SECONDS,
-			] 
+			]
 		)->create()->ID;
 		// Enable the global stock on the Event.
 		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_ENABLED, 1 );
@@ -270,7 +270,7 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 					'event_capacity' => 30,
 					'capacity'       => 20,
 				],
-			] 
+			]
 		);
 		$ticket_b_id = $this->create_tc_ticket(
 			$event_id,
@@ -281,7 +281,7 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 					'event_capacity' => 30,
 					'capacity'       => 30,
 				],
-			] 
+			]
 		);
 
 		// Get the ticket objects.
@@ -297,7 +297,7 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 			[
 				$ticket_a_id => 5,
 				$ticket_b_id => 5,
-			] 
+			]
 		);
 
 		// Refresh the ticket objects.
@@ -312,7 +312,7 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertEquals( 30, $ticket_b->capacity() );
 		$this->assertEquals( 30 - 10, $ticket_b->stock() );
 		$this->assertEquals( 30 - 10, $ticket_b->available() );
-		$this->assertEquals( 30 - 5, $ticket_b->inventory() );
+		$this->assertEquals( 30 - 10, $ticket_b->inventory() );
 
 		$new_global_capacity = 40;
 		// Update the Event's capacity manually.
@@ -336,7 +336,7 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertEquals( 40, tribe_tickets_get_capacity( $ticket_b_id ), 'Global Ticket Capacity should be increased to 40' );
 		$this->assertEquals( 40 - 10, $ticket_b->stock(), 'Global Ticket Stock should be 30' );
 		$this->assertEquals( 40 - 10, $ticket_b->available(), 'Global Ticket available should be 30' );
-		$this->assertEquals( 40 - 5, $ticket_b->inventory(), 'Global Ticket inventory should be 30' );
+		$this->assertEquals( 40 - 10, $ticket_b->inventory(), 'Global Ticket inventory should be 30' );
 
 		$event_ticket_counts    = \Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
 		$expected_ticket_counts = [
@@ -357,7 +357,7 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 				'status'     => 'publish',
 				'start_date' => '2020-01-01 12:00:00',
 				'duration'   => 2 * HOUR_IN_SECONDS,
-			] 
+			]
 		)->create()->ID;
 		// Enable the global stock on the Event.
 		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_ENABLED, 1 );
@@ -374,7 +374,7 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 					'mode'     => Global_Stock::CAPPED_STOCK_MODE,
 					'capacity' => 20,
 				],
-			] 
+			]
 		);
 		$ticket_b_id = $this->create_tc_ticket(
 			$event_id,
@@ -384,7 +384,7 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 					'mode'     => Global_Stock::GLOBAL_STOCK_MODE,
 					'capacity' => 30,
 				],
-			] 
+			]
 		);
 
 		// Get the ticket objects.
@@ -400,7 +400,7 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 			[
 				$ticket_a_id => 5,
 				$ticket_b_id => 5,
-			] 
+			]
 		);
 
 		$new_global_capacity = 15;
@@ -422,13 +422,13 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertEquals( 15, tribe_tickets_get_capacity( $ticket_a_id ), 'Capped Ticket Capacity should be decreased to 15' );
 		$this->assertEquals( 15 - 10, $ticket_a->stock(), 'Capped Ticket Stock should be decreased to 5' );
 		$this->assertEquals( 15 - 10, $ticket_a->available(), 'Capped Ticket available should be decreased to 5' );
-		$this->assertEquals( 15 - 5, $ticket_a->inventory(), 'Capped Ticket inventory should be decreased to 5' );
+		$this->assertEquals( 15 - 10, $ticket_a->inventory(), 'Capped Ticket inventory should be decreased to 5' );
 
 		$this->assertEquals( 15, $ticket_b->capacity(), 'Global Ticket Capacity should be decreased to 15' );
 		$this->assertEquals( 15, tribe_tickets_get_capacity( $ticket_b_id ), 'Global Ticket Capacity should be decreased to 15' );
 		$this->assertEquals( 15 - 10, $ticket_b->stock(), 'Global Ticket Stock should be 5' );
 		$this->assertEquals( 15 - 10, $ticket_b->available(), 'Global Ticket available should be 5' );
-		$this->assertEquals( 15 - 5, $ticket_b->inventory(), 'Global Ticket inventory should be 5' );
+		$this->assertEquals( 15 - 10, $ticket_b->inventory(), 'Global Ticket inventory should be 5' );
 
 		$event_ticket_counts    = \Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
 		$expected_ticket_counts = [
