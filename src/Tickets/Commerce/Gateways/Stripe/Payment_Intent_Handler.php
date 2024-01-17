@@ -281,7 +281,18 @@ class Payment_Intent_Handler {
 		$post_id                    = current( $events_in_order );
 		$post                       = get_post( $post_id );
 		$post_labels                = get_post_type_labels( get_post_type_object( $post->post_type ) );
-		$payment_intent_description = sprintf( '[%1$s: %2$s] [Ticket: %3$s] [Order: %4$s] %5$s - %6$s - %7$s', $post_labels->singular_name, $post_id, $tickets_in_order, $order->ID, $body['metadata']['event_name'], $body['metadata']['ticket_names'], $purchaser_name );
+		$payment_intent_description = sprintf(
+			'[%1$s: %2$s] [%3$s: %4$s] [%5$s: %6$s] %7$s - %8$s - %9$s',
+			$post_labels->singular_name,
+			$post_id,
+			tribe_get_ticket_label_singular( 'stripe_payment_intent_description' ),
+			$tickets_in_order,
+			__( 'Order', 'event-tickets' ),
+			$order->ID,
+			$body['metadata']['event_name'],
+			$body['metadata']['ticket_names'],
+			$purchaser_name
+		);
 
 		/**
 		 * Filters the payment intent description
