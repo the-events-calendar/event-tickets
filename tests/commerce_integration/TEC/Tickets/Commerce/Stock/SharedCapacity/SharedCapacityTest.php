@@ -40,7 +40,7 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 				'status'     => 'publish',
 				'start_date' => '2020-01-01 12:00:00',
 				'duration'   => 2 * HOUR_IN_SECONDS,
-			] 
+			]
 		)->create()->ID;
 		// Enable the global stock on the Event.
 		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_ENABLED, 1 );
@@ -57,7 +57,7 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 					'mode'     => Global_Stock::CAPPED_STOCK_MODE,
 					'capacity' => 30,
 				],
-			] 
+			]
 		);
 		$ticket_b_id = $this->create_tc_ticket(
 			$event_id,
@@ -67,7 +67,7 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 					'mode'     => Global_Stock::GLOBAL_STOCK_MODE,
 					'capacity' => 50,
 				],
-			] 
+			]
 		);
 
 		// Get the ticket objects.
@@ -99,7 +99,7 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 			[
 				$ticket_a_id => 5,
 				$ticket_b_id => 5,
-			] 
+			]
 		);
 
 		// Refresh the ticket objects.
@@ -126,7 +126,7 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 				'status'     => 'publish',
 				'start_date' => '2020-01-01 12:00:00',
 				'duration'   => 2 * HOUR_IN_SECONDS,
-			] 
+			]
 		)->create()->ID;
 		// Enable the global stock on the Event.
 		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_ENABLED, 1 );
@@ -143,7 +143,7 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 					'mode'     => Global_Stock::GLOBAL_STOCK_MODE,
 					'capacity' => 20,
 				],
-			] 
+			]
 		);
 
 		// Get the ticket object.
@@ -190,7 +190,7 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 				'status'     => 'publish',
 				'start_date' => '2020-01-01 12:00:00',
 				'duration'   => 2 * HOUR_IN_SECONDS,
-			] 
+			]
 		)->create()->ID;
 		// Enable the global stock on the Event.
 		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_ENABLED, 1 );
@@ -208,7 +208,7 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 					'event_capacity' => 20,
 					'capacity'       => 20,
 				],
-			] 
+			]
 		);
 
 		// Get the ticket objects.
@@ -252,7 +252,7 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 				'status'     => 'publish',
 				'start_date' => '2020-01-01 12:00:00',
 				'duration'   => 2 * HOUR_IN_SECONDS,
-			] 
+			]
 		)->create()->ID;
 		// Enable the global stock on the Event.
 		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_ENABLED, 1 );
@@ -270,7 +270,7 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 					'event_capacity' => 30,
 					'capacity'       => 20,
 				],
-			] 
+			]
 		);
 		$ticket_b_id = $this->create_tc_ticket(
 			$event_id,
@@ -281,7 +281,7 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 					'event_capacity' => 30,
 					'capacity'       => 30,
 				],
-			] 
+			]
 		);
 
 		// Get the ticket objects.
@@ -297,7 +297,7 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 			[
 				$ticket_a_id => 5,
 				$ticket_b_id => 5,
-			] 
+			]
 		);
 
 		// Refresh the ticket objects.
@@ -357,7 +357,7 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 				'status'     => 'publish',
 				'start_date' => '2020-01-01 12:00:00',
 				'duration'   => 2 * HOUR_IN_SECONDS,
-			] 
+			]
 		)->create()->ID;
 		// Enable the global stock on the Event.
 		update_post_meta( $event_id, Global_Stock::GLOBAL_STOCK_ENABLED, 1 );
@@ -374,7 +374,7 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 					'mode'     => Global_Stock::CAPPED_STOCK_MODE,
 					'capacity' => 20,
 				],
-			] 
+			]
 		);
 		$ticket_b_id = $this->create_tc_ticket(
 			$event_id,
@@ -384,7 +384,7 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 					'mode'     => Global_Stock::GLOBAL_STOCK_MODE,
 					'capacity' => 30,
 				],
-			] 
+			]
 		);
 
 		// Get the ticket objects.
@@ -400,7 +400,7 @@ class SharedCapacityTest extends \Codeception\TestCase\WPTestCase {
 			[
 				$ticket_a_id => 5,
 				$ticket_b_id => 5,
-			] 
+			]
 		);
 
 		$new_global_capacity = 15;
