@@ -50,7 +50,7 @@ class AttendeesTest extends \Codeception\TestCase\WPTestCase {
 						'type_labels'       =>
 							[
 								'default' => 'Standard Tickets',
-								'rsvp'    => 'RSVP',
+								'rsvp'    => 'RSVPs',
 							],
 					]
 				];
@@ -110,7 +110,7 @@ class AttendeesTest extends \Codeception\TestCase\WPTestCase {
 						'type_labels'       =>
 							[
 								'default' => 'Standard Tickets',
-								'rsvp'    => 'RSVP',
+								'rsvp'    => 'RSVPs',
 							],
 					]
 				];
