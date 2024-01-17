@@ -5,7 +5,7 @@
  *
  * Override this template in your own theme by creating a file at:
  *
- * [your-theme]/tribe-events/tickets/view-link.php
+ * [your-theme]/tribe/tickets/view-link.php
  *
  * If you are using Event Tickets Plus and V2 templates (new form experience) then create a file at:
  *

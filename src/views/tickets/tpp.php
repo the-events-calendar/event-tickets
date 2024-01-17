@@ -3,7 +3,7 @@
  * This template renders the Tribe Commerce ticket form
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe-events/tickets/tpp.php
+ * [your-theme]/tribe/tickets/tpp.php
  *
  * @deprecated 4.11.0
  *

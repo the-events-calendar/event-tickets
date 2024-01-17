@@ -6,7 +6,7 @@
  * that they would *not* be attending. You may override this
  * template in your own theme by creating a file at:
  *
- *     [your-theme]/tribe-events/tickets/email-non-attendance.php
+ *     [your-theme]/tribe/tickets/email-non-attendance.php
  *
  * @var int   $event_id
  * @var int   $order_id

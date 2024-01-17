@@ -2,7 +2,7 @@
 /**
  * My Tickets: Ticket Information
  *
- * Override this template in your own theme by creating a file at [your-theme]/tribe-events/tickets/tickets/my-tickets/ticket-information.php
+ * Override this template in your own theme by creating a file at [your-theme]/tribe/tickets/tickets/my-tickets/ticket-information.php
  *
  * @since 5.6.7
  *

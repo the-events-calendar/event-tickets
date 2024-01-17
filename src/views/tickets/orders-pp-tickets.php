@@ -2,7 +2,7 @@
 /**
  * List of PayPal tickets orders
  *
- * Override this template in your own theme by creating a file at [your-theme]/tribe-events/tickets/orders-pp-tickets.php
+ * Override this template in your own theme by creating a file at [your-theme]/tribe/tickets/orders-pp-tickets.php
  *
  * @since 4.7
  * @since 4.10.9 Uses new functions to get singular and plural texts.

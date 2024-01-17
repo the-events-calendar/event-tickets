@@ -2,7 +2,7 @@
 /**
  * My Tickets: Attendee Label
  *
- * Override this template in your own theme by creating a file at [your-theme]/tribe-events/tickets/tickets/my-tickets/attendee-label.php
+ * Override this template in your own theme by creating a file at [your-theme]/tribe/tickets/tickets/my-tickets/attendee-label.php
  *
  * @since 5.6.7
  *
