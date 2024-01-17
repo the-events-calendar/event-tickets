@@ -682,7 +682,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				foreach ( $event_attendees as $attendee ) {
 					$attendee_ticket_stock = new Tribe__Tickets__Global_Stock( $attendee['event_id'] );
 					// bypass any potential weirdness (RSVPs or such)
-					if ( empty( $attendee['product_id'] ) || (int)$attendee['product_id'] !== $event_id ) {
+					if ( empty( $attendee['product_id'] ) ) {
 						continue;
 					}
 
