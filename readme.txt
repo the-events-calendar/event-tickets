@@ -194,6 +194,8 @@ We've got a [LoopedIn](https://evnt.is/ideas) page where we're actively watching
 Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on using, tweaking, and troubleshooting our plugins.
 
 == Changelog ==
+= [TDB] =
+* Tweak - Small correction on DocBlocks for template file paths. [GTRIA-1170]
 
 = [5.8.0] 2024-01-22 =
 
