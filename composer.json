@@ -10,8 +10,8 @@
   "homepage": "http://tri.be/shop/wordpress-events-calendar/",
   "license": "GPL-2.0",
   "require-dev": {
-    "bordoni/phpass": "^0.3.5",
     "automattic/vipwpcs": "^3.0",
+    "bordoni/phpass": "^0.3.5",
     "codeception/module-asserts": "^1.0",
     "codeception/module-cli": "^1.0",
     "codeception/module-db": "^1.0",
@@ -22,14 +22,14 @@
     "codeception/util-universalframework": "^1.0",
     "dealerdirect/phpcodesniffer-composer-installer": "^0.7.2",
     "fzaninotto/faker": "^1.8",
+    "lucatume/codeception-snapshot-assertions": "^0.3.0",
     "lucatume/wp-browser": "^3.1.4",
     "lucatume/wp-snaphot-assertions": "^1.1.0",
     "phpunit/phpunit": "^6.5.14",
     "spatie/phpunit-snapshot-assertions": "^1.4.2",
     "stellarwp/coding-standards": "dev-main",
     "the-events-calendar/tec-testing-facilities": "dev-master",
-    "wp-coding-standards/wpcs": "^3.0",
-    "lucatume/codeception-snapshot-assertions": "^0.3.0"
+    "wp-coding-standards/wpcs": "^3.0"
   },
   "repositories": [
     {
