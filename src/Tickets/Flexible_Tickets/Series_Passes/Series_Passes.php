@@ -1230,6 +1230,7 @@ class Series_Passes extends Controller {
 		if ( ! isset( $context['messages'] ) ) {
 			return $context;
 		}
+
 		return $this->metabox->get_recurring_warning_message( $context );
 	}
 }
