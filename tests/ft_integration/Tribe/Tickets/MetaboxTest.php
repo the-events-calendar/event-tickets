@@ -404,7 +404,7 @@ class MetaboxTest extends WPTestCase {
 					]
 				)->create()->ID;
 				$occurrences_provisional_ids = occurrence::where( 'post_id', '=', $post_id )
-				                                         ->map( fn( occurrence $o ) => $o->provisional_id );
+					->map( fn( occurrence $o ) => $o->provisional_id );
 
 				return [ $post_id, $series_id, ...$occurrences_provisional_ids ];
 			},
@@ -445,7 +445,7 @@ class MetaboxTest extends WPTestCase {
 				)->create()->ID;
 
 				$occurrences_provisional_ids = Occurrence::where( 'post_id', '=', $post_id )
-				                                         ->map( fn( Occurrence $o ) => $o->provisional_id );
+					->map( fn( Occurrence $o ) => $o->provisional_id );
 
 				return [ $post_id, $pass_1, $pass_2, $series_id, ...$occurrences_provisional_ids ];
 			},
@@ -494,24 +494,34 @@ class MetaboxTest extends WPTestCase {
 
 		yield 'single event by Occurrence provisional ID' => [
 			function (): array {
-				$single_event = tribe_events()->set_args( [
-					'title'      => 'Single Event',
-					'status'     => 'publish',
-					'start_date' => '2021-01-01 10:00:00',
-					'end_date'   => '2021-01-01 12:00:00',
-				] )->create()->ID;
-				$ticket_1     = $this->create_tc_ticket( $single_event, 1, [
-					'tribe-ticket' => [
-						'mode'     => Global_Stock::OWN_STOCK_MODE,
-						'capacity' => 89,
-					],
-				] );
-				$ticket_2     = $this->create_tc_ticket( $single_event, 1, [
-					'tribe-ticket' => [
-						'mode'     => Global_Stock::OWN_STOCK_MODE,
-						'capacity' => 23,
-					],
-				] );
+				$single_event = tribe_events()->set_args(
+					[
+						'title'      => 'Single Event',
+						'status'     => 'publish',
+						'start_date' => '2021-01-01 10:00:00',
+						'end_date'   => '2021-01-01 12:00:00',
+					]
+				)->create()->ID;
+				$ticket_1     = $this->create_tc_ticket(
+					$single_event,
+					1,
+					[
+						'tribe-ticket' => [
+							'mode'     => Global_Stock::OWN_STOCK_MODE,
+							'capacity' => 89,
+						],
+					]
+				);
+				$ticket_2     = $this->create_tc_ticket(
+					$single_event,
+					1,
+					[
+						'tribe-ticket' => [
+							'mode'     => Global_Stock::OWN_STOCK_MODE,
+							'capacity' => 23,
+						],
+					]
+				);
 
 				$occurrence = Occurrence::where( 'post_id', $single_event )->first();
 
@@ -520,7 +530,7 @@ class MetaboxTest extends WPTestCase {
 				}
 
 				return [ $occurrence->provisional_id, $single_event, $ticket_1, $ticket_2 ];
-			}
+			},
 		];
 	}
 
@@ -564,18 +574,20 @@ class MetaboxTest extends WPTestCase {
 		yield 'post' => [
 			static function () {
 				return static::factory()->post->create( [ 'post_type' => 'post' ] );
-			}
+			},
 		];
 
 		yield 'event' => [
 			static function () {
-				return tribe_events()->set_args( [
-					'title'      => 'Test Event',
-					'status'     => 'publish',
-					'start_date' => '2022-10-01 10:00:00',
-					'duration'   => 2 * HOUR_IN_SECONDS,
-				] )->create()->ID;
-			}
+				return tribe_events()->set_args(
+					[
+						'title'      => 'Test Event',
+						'status'     => 'publish',
+						'start_date' => '2022-10-01 10:00:00',
+						'duration'   => 2 * HOUR_IN_SECONDS,
+					]
+				)->create()->ID;
+			},
 		];
 	}
 
