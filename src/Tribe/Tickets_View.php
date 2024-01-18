@@ -323,7 +323,8 @@ class Tribe__Tickets__Tickets_View {
 	 * @return bool
 	 */
 	public function is_edit_page() {
-		return get_query_var( 'tribe-edit-orders', false ) || get_query_var( 'eventDisplay', false );
+		return get_query_var( 'tribe-edit-orders', false )
+		       || 'tickets' === get_query_var( 'eventDisplay', false );
 	}
 
 	/**
