@@ -9,8 +9,8 @@
 			<button
 	id="ticket_form_toggle"
 	class="button-secondary ticket_form_toggle tribe-button-icon tribe-button-icon-plus"
-	aria-label="Add a new ticket"
-""
+	aria-label="No commerce providers available"
+" disabled='disabled' disabled='disabled'"
 >
 New ticket</button><button
 	id="rsvp_form_toggle"
@@ -23,20 +23,26 @@ New ticket</button><button
 		</div>
 
 		<div class="ticket_table_intro__warnings">
-			<div class="ticket-editor-notice info info--background tec_ticket-panel__recurring-unsupported-warning" style="display: none">
+					<div  class="ticket-editor-notice info provider-warning" 								>
+			<span class="message">There is no payment gateway configured. To create tickets, you'll need to enable and configure an ecommerce solution. <a href="https://evnt.is/1ao5" target="_blank" rel="noopener noreferrer">Learn More</a></span>
+		</div>
+		<div class="ticket-editor-notice info info--background tec_ticket-panel__recurring-unsupported-warning" style="display: none">
 	<span class="dashicons dashicons-lightbulb"></span>
 	<div class="ticket-editor-notice_warning--messages">
 			<p class="ticket-editor-notice_warning--message recurring-warning-message">
-		This recurring event is part of a Series. Create and manage Series Passes for this event from the <a href="http://wordpress.test/wp-admin/post.php?post={{ID}}&#038;action=edit" target="_blank" rel="noreferrer noopener">Test series</a> Series admin. <a href="https://evnt.is/1a" target="_blank" rel="noreferrer noopener">Learn more about Series Passes</a>		</p>
+		Once you save this event, you can add Series Passes to its parent Series. <a href="https://evnt.is/1a" target="_blank" rel="noreferrer noopener">Learn more about Series Passes</a>.		</p>
 			<p class="ticket-editor-notice_warning--message et-warning">
 		Standard tickets are not yet supported on recurring events. <a href="https://evnt.is/1b7a" target="_blank" rel="noreferrer noopener">See our future planned features.</a>		</p>
 		</div>
 </div>
-<div class="ticket-editor-notice info info--background tec_ticket-panel__recurring-unsupported-warning" style="display: none">
+		<div  class="ticket-editor-notice info provider-warning" 								>
+			<span class="message">There is no payment gateway configured. To create tickets, you'll need to enable and configure an ecommerce solution. <a href="https://evnt.is/1ao5" target="_blank" rel="noopener noreferrer">Learn More</a></span>
+		</div>
+		<div class="ticket-editor-notice info info--background tec_ticket-panel__recurring-unsupported-warning" style="display: none">
 	<span class="dashicons dashicons-lightbulb"></span>
 	<div class="ticket-editor-notice_warning--messages">
 			<p class="ticket-editor-notice_warning--message recurring-warning-message">
-		This recurring event is part of a Series. Create and manage Series Passes for this event from the <a href="http://wordpress.test/wp-admin/post.php?post={{ID}}&#038;action=edit" target="_blank" rel="noreferrer noopener">Test series</a> Series admin. <a href="https://evnt.is/1a" target="_blank" rel="noreferrer noopener">Learn more about Series Passes</a>		</p>
+		Once you save this event, you can add Series Passes to its parent Series. <a href="https://evnt.is/1a" target="_blank" rel="noreferrer noopener">Learn more about Series Passes</a>.		</p>
 			<p class="ticket-editor-notice_warning--message et-warning">
 		Standard tickets are not yet supported on recurring events. <a href="https://evnt.is/1b7a" target="_blank" rel="noreferrer noopener">See our future planned features.</a>		</p>
 		</div>
@@ -60,15 +66,7 @@ New ticket</button><button
 	<section class="settings_main">
 		
 	<fieldset class="screen-reader-text">
-									<input
-					type="radio"
-					class="tribe-ticket-editor-field-default_provider settings_field"
-					name="tribe-tickets[settings][default_provider]"
-					id="provider_TEC_Tickets_Commerce_Module_radio"
-					value="TEC\Tickets\Commerce\Module"
-					checked
-				>
-						</fieldset>
+								</fieldset>
 	</section>
 
 	<section id="tribe-tickets-image">
@@ -113,8 +111,8 @@ New ticket</button><button
 </div>
 
 <div id="tribe_panel_edit" class="ticket_panel panel_edit tribe-validation" aria-hidden="true"
-	 data-default-provider="TEC\Tickets\Commerce\Module"
-     data-current-provider="TEC\Tickets\Commerce\Module"
+	 data-default-provider="Tribe__Tickets__Commerce__PayPal__Main"
+     data-current-provider="Tribe__Tickets__Commerce__PayPal__Main"
 >
 	
 	<div id="ticket_form" class="ticket_form tribe_sectionheader tribe-validation">
@@ -237,7 +235,7 @@ New ticket</button><button
 	</div>
 
 	<span class="tribe_soft_note ticket_form_right tribe-active">
-		A single ticket is specific to this event. You can add a Series Pass from the <a href="http://wordpress.test/wp-admin/post.php?post={{ID}}&amp;action=edit#tribetickets" target="_blank">Test series</a> Series page.	</span>
+		A single ticket is specific to this post.	</span>
 </div>
 <div class="input_block">
 	<label class="ticket_form_label ticket_form_left" for="ticket_start_date">
@@ -297,32 +295,12 @@ New ticket</button><button
 			aria-label="Ticket end date"
 		/>
 		<span class="helper-text hide-if-js">HH:MM</span>
-		<span class="dashicons dashicons-editor-help" title="If you do not set an end sale date, tickets will be available until the event begins."></span>
+		<span class="dashicons dashicons-editor-help" title="If you do not set an end sale date, tickets will be available forever."></span>
 	</div>
 </div>
 
 				<fieldset id="tribe_ticket_provider_wrapper" class="input_block" aria-hidden="true">
 					<legend class="ticket_form_label">Sell using:</legend>
-											<input
-								type="radio"
-								name="ticket_provider"
-								id="Tribe__Tickets__RSVP_radio"
-								value="Tribe__Tickets__RSVP"
-								class="ticket_field ticket_provider"
-								tabindex="-1"
-														>
-						<span>
-							RSVPs						</span>
-											<input
-								type="radio"
-								name="ticket_provider"
-								id="TEC\Tickets\Commerce\Module_radio"
-								value="TEC\Tickets\Commerce\Module"
-								class="ticket_field ticket_provider"
-								tabindex="-1"
-								 checked='checked'						>
-						<span>
-							Tickets Commerce						</span>
 									</fieldset>
 				<div
 	class="price tribe-dependent"
@@ -338,8 +316,10 @@ New ticket</button><button
 			class="ticket_field ticket_form_right"
 			size="7"
 			value=""
-						data-validation-error="Ticket price must be greater than zero." data-required data-validation-is-greater-than="0"		/>
-			</div>
+						data-validation-error="Ticket price must be greater than zero."		/>
+					<p class="description ticket_form_right">
+				Leave blank for free Ticket			</p>
+				</div>
 
 	</div><div
 	class="input_block ticket_advanced_Tribe__Tickets__RSVP tribe-dependent"
@@ -380,26 +360,6 @@ New ticket</button><button
 			/>
 	<span class="tribe_soft_note ticket_form_right">Enable &quot;Can&#039;t Go&quot; responses</span>
 </div>
-
-<div
-	class="input_block ticket_advanced_TEC_Tickets_Commerce_Module tribe-dependent"
-	data-depends="#Tribe__Tickets__RSVP_radio"
-	data-condition-is-not-checked
->
-	<label
-		for="TEC_Tickets_Commerce_Module_capacity"
-		class="ticket_form_label ticket_form_left"
-	>
-		Capacity:	</label>
-	<input
-		type='text' id='TEC_Tickets_Commerce_Module_capacity'
-		name='tribe-ticket[capacity]'
-		class="ticket_field tribe-tpp-field-capacity ticket_form_right"
-		size='7'
-		value=''
-	/>
-	<span class="tribe_soft_note ticket_form_right">Leave blank for unlimited</span>
-</div>
 			</section>
 			<div class="accordion">
 				<div class="tribe-dependent" data-depends="#Tribe__Tickets__RSVP_radio" data-condition-is-not-checked>
@@ -408,25 +368,7 @@ New ticket</button><button
 	<section id="ticket_form_advanced" class="advanced accordion-content" data-datepicker_format="1">
 		<h4 class="accordion-label screen_reader_text">Advanced Settings</h4>
 		<div id="advanced_fields">
-			<div id="Tribe__Tickets__Commerce__PayPal__Main_advanced" class="tribe-dependent" data-depends="#Tribe__Tickets__Commerce__PayPal__Main_radio" data-condition-is-checked></div><div id="TECTicketsCommerceEditorMetabox_advanced" class="tribe-dependent" data-depends="#provider_TEC_Tickets_Commerce_Module_radio" data-condition-is-checked>
-<div
-	class="ticket_advanced_TECTicketsCommerceModule input_block tribe-dependent"
-	data-depends="#provider_TEC_Tickets_Commerce_Module_radio"
-	data-condition-is-checked
->
-	<label for="ticket_tpp_sku" class="ticket_form_label ticket_form_left">SKU:</label>
-	<input
-		type="text"
-		id="ticket_sku"
-		name="ticket_sku"
-		class="ticket_field sku_input ticket_form_right"
-		size="14"
-		value=""
-	>
-	<p class="description ticket_form_right">
-		A unique identifying code for each ticket you&#039;re selling	</p>
-</div>
-</div>		</div>
+			<div id="Tribe__Tickets__Commerce__PayPal__Main_advanced" class="tribe-dependent" data-depends="#Tribe__Tickets__Commerce__PayPal__Main_radio" data-condition-is-checked></div><div id="TECTicketsCommerceEditorMetabox_advanced" class="tribe-dependent" data-depends="#provider_TEC_Tickets_Commerce_Module_radio" data-condition-is-checked></div>		</div>
 	</section><!-- #ticket_form_advanced -->
 </div>
 			</div>
