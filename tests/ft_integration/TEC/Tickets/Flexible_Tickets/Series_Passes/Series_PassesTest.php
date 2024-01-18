@@ -999,7 +999,7 @@ class Series_PassesTest extends Controller_Test_Case {
 		$this->assertEqualSets(
 			[],
 			tribe_tickets()->set_request_context( 'manual-attendees' )
-			               ->where( 'event', $event_in_series, 'metabox_capacity' )->get_ids()
+				->where( 'event', $event_in_series, 'metabox_capacity' )->get_ids()
 		);
 	}
 
@@ -1175,7 +1175,7 @@ class Series_PassesTest extends Controller_Test_Case {
 
 
 					$series_id = Series_Relationship::where( 'event_post_id', '=', $event_id )
-					                                ->first()->series_post_id;
+						->first()->series_post_id;
 
 					$this->create_tc_series_pass( $series_id );
 
@@ -1206,7 +1206,7 @@ class Series_PassesTest extends Controller_Test_Case {
 
 
 					$series_id = Series_Relationship::where( 'event_post_id', '=', $event_id )
-					                                ->first()->series_post_id;
+						->first()->series_post_id;
 
 					$this->create_tc_series_pass( $series_id );
 
@@ -1449,5 +1449,104 @@ class Series_PassesTest extends Controller_Test_Case {
 				true
 			)
 		);
+	}
+
+	/**
+	 * It should filter Attendees Table columns correctly
+	 *
+	 * @test
+	 */
+	public function should_filter_attendees_table_columns_correctly(): void {
+		// Become administrator.
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		// Create a Series.
+		$series = static::factory()->post->create( [
+			'post_type' => Series_Post_Type::POSTTYPE,
+		] );
+		// Create an Event part of the Series.
+		$series_event_id = tribe_events()->set_args( [
+			'title'      => 'Series Event',
+			'status'     => 'publish',
+			'start_date' => '2021-01-01 10:00:00',
+			'duration'   => 3 * HOUR_IN_SECONDS,
+			'series'     => $series,
+		] )->create()->ID;
+		// Create an Event NOT part of the Series.
+		$event_id = tribe_events()->set_args( [
+			'title'      => 'Event',
+			'status'     => 'publish',
+			'start_date' => '2021-01-01 10:00:00',
+			'duration'   => 3 * HOUR_IN_SECONDS,
+		] )->create()->ID;
+
+		$this->make_controller()->register();
+
+		// Simulate a request to look at the Event not in the Series.
+		$_GET['event_id'] = $event_id;
+		$attendee_table   = new \Tribe__Tickets__Attendees_Table();
+		$this->assertArrayHasKey( 'check_in', $attendee_table->get_table_columns() );
+
+		// Simulate a request to look at the Event in the Series.
+		$_GET['event_id'] = $series_event_id;
+		$attendee_table   = new \Tribe__Tickets__Attendees_Table();
+		$this->assertArrayHasKey( 'check_in', $attendee_table->get_table_columns() );
+
+		// Simulate a request to look at the Event in the Series.
+		$_GET['event_id'] = $series;
+		$attendee_table   = new \Tribe__Tickets__Attendees_Table();
+		$this->assertArrayNotHasKey( 'check_in', $attendee_table->get_table_columns() );
+	}
+
+	/**
+	 * It should not allow Series Pass Attendees to be checked in
+	 *
+	 * @test
+	 */
+	public function should_not_allow_series_pass_attendees_to_be_checked_in(): void {
+		// Become administrator.
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		// Create a Series.
+		$series = static::factory()->post->create( [
+			'post_type' => Series_Post_Type::POSTTYPE,
+		] );
+		// Create a Series Pass and an Attendee for the Series.
+		$series_pass_id     = $this->create_tc_series_pass( $series )->ID;
+		$series_attendee_id = $this->create_attendee_for_ticket( $series_pass_id, $series );
+		// Create an Event part of the Series.
+		$series_event_id = tribe_events()->set_args( [
+			'title'      => 'Series Event',
+			'status'     => 'publish',
+			'start_date' => '2021-01-01 10:00:00',
+			'duration'   => 3 * HOUR_IN_SECONDS,
+			'series'     => $series,
+		] )->create()->ID;
+		// Create a Single Ticket and an Attendee for the Event part of the Series.
+		$series_event_ticket_id   = $this->create_tc_ticket( $series_event_id );
+		$series_event_attendee_id = $this->create_attendee_for_ticket( $series_event_ticket_id, $series_event_id );
+		// Create an Event NOT part of the Series.
+		$event_id = tribe_events()->set_args( [
+			'title'      => 'Event',
+			'status'     => 'publish',
+			'start_date' => '2021-01-01 10:00:00',
+			'duration'   => 3 * HOUR_IN_SECONDS,
+		] )->create()->ID;
+		// Create a Single Ticket and an Attendee for the Event.
+		$event_ticket_id   = $this->create_tc_ticket( $event_id );
+		$event_attendee_id = $this->create_attendee_for_ticket( $event_ticket_id, $event_id );
+		// Verify that, to start with, all Attendees are not checked in.
+		$commerce    = Module::get_instance();
+		$checkin_key = $commerce->checkin_key;
+		$this->assertEmpty( get_post_meta( $event_attendee_id, $checkin_key, true ) );
+		$this->assertEmpty( get_post_meta( $series_event_attendee_id, $checkin_key, true ) );
+		$this->assertEmpty( get_post_meta( $series_attendee_id, $checkin_key, true ) );
+
+		$this->make_controller()->register();
+
+		$this->assertTrue( $commerce->checkin( $event_attendee_id ) );
+		$this->assertTrue( $commerce->checkin( $series_event_attendee_id ) );
+		$this->assertFalse( $commerce->checkin( $series_attendee_id ) );
+		$this->assertEquals( 1, get_post_meta( $event_attendee_id, $checkin_key, true ) );
+		$this->assertEquals( 1, get_post_meta( $series_event_attendee_id, $checkin_key, true ) );
+		$this->assertEmpty( get_post_meta( $series_attendee_id, $checkin_key, true ) );
 	}
 }

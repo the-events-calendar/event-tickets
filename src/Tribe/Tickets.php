@@ -1026,15 +1026,30 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
-		 * Mark an attendee as checked in.
+		 * Mark an Attendee as checked in.
 		 *
-		 * @abstract
+		 * @since 3.1.2
+		 * @since TBD Add the `tec_tickets_attendee_checkin` filter to override the checkin process.
 		 *
-		 * @param int $attendee_id
-		 * @param $qr true if from QR checkin process
-		 * @return mixed
+		 * @param int  $attendee_id The ID of the attendee that's being checked in.
+		 * @param bool $qr Whether the check-in comes from a QR code scan or not.
+		 *
+		 * @return bool Whether the Attendee was checked in or not.
 		 */
 		public function checkin( $attendee_id ) {
+			/**
+			 * Allows filtering the Attendee check-in action before the default logic does it.
+			 * Returning a non-null value from this filter will prevent the default logic from running.
+			 *
+			 * @since TBD
+			 *
+			 * @param int $attendee_id The post ID of the Attendee being checked-in.
+			 */
+			$checkin = apply_filters( 'tec_tickets_attendee_checkin', null, (int) $attendee_id );
+			if ( $checkin !== null ) {
+				return (bool) $checkin;
+			}
+
 			update_post_meta( $attendee_id, $this->checkin_key, 1 );
 
 			$args = func_get_args();
