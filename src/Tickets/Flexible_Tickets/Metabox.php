@@ -45,15 +45,16 @@ class Metabox {
 	private Labels $labels;
 
 	/**
-	 * Metabox constructor.
+	 * The Metabox constructor.
 	 *
-	 * since 5.8.0
+	 * @since 5.8.0
 	 *
 	 * @param Admin_Views $admin_views A reference to the Admin Views handler for Flexible Tickets.
+	 * @param Labels      $labels      A reference to the labels' handler.
 	 */
-	public function __construct( Admin_Views $admin_views, Labels  $labels) {
+	public function __construct( Admin_Views $admin_views, Labels $labels ) {
 		$this->admin_views = $admin_views;
-		$this->labels = $labels;
+		$this->labels      = $labels;
 	}
 
 	/**
@@ -68,14 +69,17 @@ class Metabox {
 	public function render_form_toggle( int $post_id ) {
 		$post = get_post( $post_id );
 
-		if ( ! ( $post instanceof WP_Post && $post->post_type === Series_Post_Type::POSTTYPE ) ) {
+		if ( ! ( $post instanceof WP_Post && Series_Post_Type::POSTTYPE === $post->post_type ) ) {
 			return;
 		}
 
 		$ticket_providing_modules = array_diff_key( Tickets::modules(), [ RSVP::class => true ] );
-		$this->admin_views->template( 'series-pass-form-toggle', [
-			'disabled' => count( $ticket_providing_modules ) === 0,
-		] );
+		$this->admin_views->template(
+			'series-pass-form-toggle',
+			[
+				'disabled' => count( $ticket_providing_modules ) === 0,
+			] 
+		);
 	}
 
 	/**
@@ -128,10 +132,13 @@ class Metabox {
 
 		$series = reset( $series_ids );
 
-		$this->admin_views->template( 'series-pass-event-notice', [
-			'series_edit_link' => get_edit_post_link( $series ),
-			'series_title'     => get_the_title( $series ),
-		] );
+		$this->admin_views->template(
+			'series-pass-event-notice',
+			[
+				'series_edit_link' => get_edit_post_link( $series ),
+				'series_title'     => get_the_title( $series ),
+			] 
+		);
 	}
 
 	/**
@@ -145,9 +152,12 @@ class Metabox {
 	 * @return void
 	 */
 	public function render_link_to_series( int $ticket_post_id ): void {
-		$this->admin_views->template( 'series-pass-edit-link', [
-			'series_edit_link' => get_edit_post_link( $ticket_post_id ),
-		] );
+		$this->admin_views->template(
+			'series-pass-edit-link',
+			[
+				'series_edit_link' => get_edit_post_link( $ticket_post_id ),
+			] 
+		);
 	}
 
 	/**
@@ -238,9 +248,10 @@ class Metabox {
 		);
 		
 		return sprintf(
-			// Translators: %1$s is the pluralized name of the series pass, %2$s is a link to the series, %3$s is a link to the documentation.
-			__( 'This recurring event is part of a Series. Create and manage %1$s for this event from the %2$s Series admin. %3$s', 'event-tickets' ),
+			// Translators: %1$s is the pluralized name of the series pass, %2$s is the singular name of the event, %3$s is a link to the series edit screen, %4$s is a link to the documentation.
+			__( 'This recurring %2$s is part of a Series. Create and manage %1$s for this %2$s from the %3$s Series admin. %4$s', 'event-tickets' ),
 			tec_tickets_get_series_pass_plural_uppercase( 'ticket editor message' ),
+			tribe_get_event_label_singular_lowercase(),
 			$series_link,
 			$learn_more_link,
 		);
@@ -268,8 +279,9 @@ class Metabox {
 		);
 		
 		return sprintf(
-			// Translators: %1$s is the pluralized name of the series pass, %2$s is a link to the documentation.
-			__( 'Once you save this event, you can add %1$s to its parent Series. %2$s.', 'event-tickets' ),
+			// Translators: %1$s is the singular name of the event, %2$s is the pluralized name of the series pass, %3$s is a link to the documentation.
+			__( 'Once you save this %1$s, you can add %2$s to its parent Series. %3$s.', 'event-tickets' ),
+			tribe_get_event_label_singular_lowercase(),
 			tec_tickets_get_series_pass_plural_uppercase( 'ticket editor message' ),
 			$learn_more_link,
 		);

@@ -13,7 +13,17 @@
 	<div class="ticket-editor-notice_warning--messages">
 	<?php foreach ( $messages as $key => $message ) : ?>
 		<p class="ticket-editor-notice_warning--message <?php echo esc_attr( $key ); ?>">
-		<?php echo wp_kses_post( $message ); ?>
+		<?php 
+		echo wp_kses(
+			$message,
+			[
+				'a' => [
+					'href'   => [],
+					'target' => [],
+				],
+			] 
+		); 
+		?>
 		</p>
 	<?php endforeach; ?>
 	</div>
