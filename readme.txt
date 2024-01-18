@@ -207,6 +207,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Update usage of `method_exists()` to comply with PHP 8.1 standards. [ET-1759]
 * Fix - Update button will now show when the opt-out checkbox shows on the My Tickets page. [ET-1980]
 * Tweak - Customer name appears now as description of a Stripe payment. Added `tec_tickets_commerce_stripe_update_payment_description` filter. [ET-1607]
+* Fix - Ensure correct attendee information is included in the attendee emails. [ET-1988]
 
 = [5.7.1] 2023-12-13 =
 
