@@ -1549,4 +1549,112 @@ class Series_PassesTest extends Controller_Test_Case {
 		$this->assertEquals( 1, get_post_meta( $series_event_attendee_id, $checkin_key, true ) );
 		$this->assertEmpty( get_post_meta( $series_attendee_id, $checkin_key, true ) );
 	}
+
+	/**
+	 * It should handle Series Pass Attendee checkin correctly
+	 *
+	 * @test
+	 */
+	public function should_handle_series_pass_attendee_checkin_correctly(): void {
+		// Become administrator.
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		// Create a Series.
+		$series = static::factory()->post->create( [
+			'post_type' => Series_Post_Type::POSTTYPE,
+		] );
+		// Create a Series Pass and an Attendee for the Series.
+		$series_pass_id     = $this->create_tc_series_pass( $series )->ID;
+		$series_attendee_id = $this->create_attendee_for_ticket( $series_pass_id, $series );
+		// Create a past Event part of the Series.
+		$past_series_event_id = tribe_events()->set_args( [
+			'title'      => 'Series Event',
+			'status'     => 'publish',
+			'start_date' => '-1 week',
+			'duration'   => 3 * HOUR_IN_SECONDS,
+			'series'     => $series,
+		] )->create()->ID;
+		// Create a Single Ticket and an Attendee for the past Event part of the Series.
+		$past_series_event_ticket_id   = $this->create_tc_ticket( $past_series_event_id );
+		$past_series_event_attendee_id = $this->create_attendee_for_ticket( $past_series_event_ticket_id, $past_series_event_id );
+		// Create a current Event part of the Series.
+		$current_series_event_id = tribe_events()->set_args( [
+			'title'      => 'Series Event',
+			'status'     => 'publish',
+			'start_date' => '-1 hour',
+			'duration'   => 3 * HOUR_IN_SECONDS,
+			'series'     => $series,
+		] )->create()->ID;
+		// Create a Single Ticket and an Attendee for the current Event part of the Series.
+		$current_series_event_ticket_id   = $this->create_tc_ticket( $current_series_event_id );
+		$current_series_event_attendee_id = $this->create_attendee_for_ticket( $current_series_event_ticket_id, $current_series_event_id );
+		// Create a near feature Event part of the Series.
+		$near_future_series_event_id = tribe_events()->set_args( [
+			'title'      => 'Series Event',
+			'status'     => 'publish',
+			'start_date' => '+3 hours',
+			'duration'   => 3 * HOUR_IN_SECONDS,
+			'series'     => $series,
+		] )->create()->ID;
+		// Create a Single Ticket and an Attendee for the near feature Event part of the Series.
+		$near_feature_series_event_ticket_id   = $this->create_tc_ticket( $near_future_series_event_id );
+		$near_future_series_event_attendee_id = $this->create_attendee_for_ticket( $near_feature_series_event_ticket_id, $near_future_series_event_id );
+		// Create a far feature Event part of the Series.
+		$far_future_series_event_id = tribe_events()->set_args( [
+			'title'      => 'Series Event',
+			'status'     => 'publish',
+			'start_date' => '+3 days',
+			'duration'   => 3 * HOUR_IN_SECONDS,
+			'series'     => $series,
+		] )->create()->ID;
+		// Create a Single Ticket and an Attendee for the far feature Event part of the Series.
+		$far_future_seriees_event_attendee_id = $this->create_tc_ticket( $far_future_series_event_id );
+		$far_future_series_event_attendee_id  = $this->create_attendee_for_ticket( $far_future_seriees_event_attendee_id, $far_future_series_event_id );
+		// Create an Event NOT part of the Series.
+		$event_id = tribe_events()->set_args( [
+			'title'      => 'Event',
+			'status'     => 'publish',
+			'start_date' => '2021-01-01 10:00:00',
+			'duration'   => 3 * HOUR_IN_SECONDS,
+		] )->create()->ID;
+		// Create a Single Ticket and an Attendee for the Event.
+		$event_ticket_id   = $this->create_tc_ticket( $event_id );
+		$event_attendee_id = $this->create_attendee_for_ticket( $event_ticket_id, $event_id );
+		$commerce          = Module::get_instance();
+		$checkin_key       = $commerce->checkin_key;
+
+		// Verify that, to start with, all Attendees are not checked in.
+		$this->assertEmpty( get_post_meta( $series_attendee_id, $checkin_key, true ) );
+		$this->assertEmpty( get_post_meta( $past_series_event_attendee_id, $checkin_key, true ) );
+		$this->assertEmpty( get_post_meta( $current_series_event_attendee_id, $checkin_key, true ) );
+		$this->assertEmpty( get_post_meta( $near_future_series_event_attendee_id, $checkin_key, true ) );
+		$this->assertEmpty( get_post_meta( $far_future_series_event_attendee_id, $checkin_key, true ) );
+		$this->assertEmpty( get_post_meta( $event_attendee_id, $checkin_key, true ) );
+
+		$this->make_controller()->register();
+
+		// Checkin of Attendees for default Tickets.
+		$this->assertTrue( $commerce->checkin( $event_attendee_id ),
+			'Checkin of an Attendee for a default Event Ticket should happen without issues.'
+		);
+		$this->assertEquals( 1, get_post_meta( $event_attendee_id, $checkin_key, true ) );
+		$this->assertTrue( $commerce->checkin( $past_series_event_attendee_id ),
+			'Checkin of an Attendee for a default Event Ticket should happen without issues.' );
+		$this->assertEquals( 1, get_post_meta( $past_series_event_attendee_id, $checkin_key, true ) );
+
+		$this->assertTrue( $commerce->checkin( $current_series_event_attendee_id ),
+			'Checkin of an Attendee for a default Event Ticket should happen without issues.' );
+		$this->assertEquals( 1, get_post_meta( $current_series_event_attendee_id, $checkin_key, true ) );
+
+		$this->assertTrue( $commerce->checkin( $near_future_series_event_attendee_id ),
+			'Checkin of an Attendee for a default Event Ticket should happen without issues.' );
+		$this->assertEquals( 1, get_post_meta( $near_future_series_event_attendee_id, $checkin_key, true ) );
+
+		$this->assertTrue( $commerce->checkin( $far_future_series_event_attendee_id ),
+			'Checkin of an Attendee for a default Event Ticket should happen without issues.' );
+		$this->assertEquals( 1, get_post_meta( $far_future_series_event_attendee_id, $checkin_key, true ) );
+
+		// Check-in of Series Pass Attendee from the past Event.
+		$this->assertTrue( $commerce->checkin( $series_attendee_id ),
+			'Checkin of an Attendee for a default Event Ticket should happen without issues.' );
+	}
 }

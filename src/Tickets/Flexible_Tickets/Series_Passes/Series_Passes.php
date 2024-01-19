@@ -297,7 +297,7 @@ class Series_Passes extends Controller {
 		add_filter( 'tec_tickets_allow_tickets_on_recurring_events', [ $this, 'allow_tickets_on_recurring_events' ] );
 
 		add_filter( 'tribe_tickets_attendee_table_columns', [ $this, 'filter_attendees_table_columns' ], 10, 2 );
-		add_filter( 'tec_tickets_attendee_checkin', [ $this, 'prevent_series_pass_attendee_checkin' ], 10, 2 );
+		add_filter( 'tec_tickets_attendee_checkin', [ $this, 'handle_series_pass_attendee_checkin' ], 10, 2 );
 
 		add_filter( 'tribe_template_context:tickets/admin-views/editor/recurring-warning', [ $this, 'filter_recurring_warning_message' ], 10, 4 );
 	}
@@ -1210,8 +1210,8 @@ class Series_Passes extends Controller {
 	 *
 	 * @return bool|null Null to let the default checkin logic run, boolean value to prevent it.
 	 */
-	public function prevent_series_pass_attendee_checkin( $checkin, int $attendee_id ): ?bool {
-		return $this->attendees->prevent_series_pass_attendee_checkin( $checkin, $attendee_id );
+	public function handle_series_pass_attendee_checkin( $checkin, int $attendee_id ): ?bool {
+		return $this->attendees->handle_series_pass_attendee_checkin( $checkin, $attendee_id );
 	}
 
 	/**
