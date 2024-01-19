@@ -83,7 +83,7 @@ class Provider extends Controller {
 	 * @param string $admin_body_classes A space-separated list of classes.
 	 *
 	 * @return string A space-separated list of classes, updated to include the
-	 *                `tec-no-tickets-on-recurring` class.
+	 *                `tec-no-tickets-on-recurring` and `tec-no-rsvp-on-recurring` classes.
 	 */
 	public function prevent_tickets_on_recurring_events( ?string $admin_body_classes ): string {
 		$state = $this->container->make( State::class );
@@ -91,6 +91,8 @@ class Provider extends Controller {
 		if ( ! $state->is_migrated() ) {
 			return $admin_body_classes;
 		}
+
+		$classes = [];
 
 		/**
 		 * Filters whether tickets are allowed on recurring events or not.
@@ -102,15 +104,25 @@ class Provider extends Controller {
 		 */
 		$allow_tickets_on_recurring = apply_filters( 'tec_tickets_allow_tickets_on_recurring_events', false );
 
-		if ( $allow_tickets_on_recurring ) {
-			return $admin_body_classes;
+		if ( ! $allow_tickets_on_recurring ) {
+			$classes[] = 'tec-no-tickets-on-recurring';
 		}
 
-		$classes = array_unique(
-			array_merge(
-				Arr::list_to_array( $admin_body_classes ), [ 'tec-no-tickets-on-recurring' ]
-			)
-		);
+		/**
+		 * Filters whether RSVPs are allowed on recurring events or not.
+		 * By default, RSVPs are not allowed on Recurring Events.
+		 *
+		 * @since  5.8.0
+		 *
+		 * @params bool $allow_rsvps_on_recurring Whether RSVPs are allowed on recurring events or not.
+		 */
+		$allow_rsvp_on_recurring = apply_filters( 'tec_tickets_allow_rsvp_on_recurring_events', false );
+
+		if ( ! $allow_rsvp_on_recurring ) {
+			$classes[] = 'tec-no-rsvp-on-recurring';
+		}
+
+		$classes = array_unique( array_merge( Arr::list_to_array( $admin_body_classes ), $classes ) );
 
 		return implode( ' ', $classes );
 	}

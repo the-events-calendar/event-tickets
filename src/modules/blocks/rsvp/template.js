@@ -33,7 +33,7 @@ const RSVP = ( {
 	isModalShowing,
 	isSelected,
 	isSettingsOpen,
-	noTicketsOnRecurring,
+	noRsvpsOnRecurring,
 	rsvpId,
 	setAddEditClosed,
 } ) => {
@@ -115,7 +115,7 @@ const RSVP = ( {
 		);
 	};
 
-	if ( hasRecurrenceRules && noTicketsOnRecurring ) {
+	if ( hasRecurrenceRules && noRsvpsOnRecurring ) {
 		return renderBlockNotSupported();
 	}
 
@@ -133,7 +133,7 @@ RSVP.propTypes = {
 	isModalShowing: PropTypes.bool.isRequired,
 	isSelected: PropTypes.bool.isRequired,
 	isSettingsOpen: PropTypes.bool.isRequired,
-	noTicketsOnRecurring: PropTypes.bool.isRequired,
+	noRsvpsOnRecurring: PropTypes.bool.isRequired,
 	rsvpId: PropTypes.number.isRequired,
 	setAddEditClosed: PropTypes.func.isRequired,
 };
