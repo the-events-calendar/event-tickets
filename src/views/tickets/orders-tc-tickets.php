@@ -29,10 +29,13 @@ $title              = sprintf(
 	tribe_get_ticket_label_plural( 'orders_tickets_heading' )
 );
 
-$this->template( 'tickets/my-tickets', [
-	'title'    => $title,
-	'post_id'  => $post_id,
-	'orders'   => $orders,
-	'post'     => $post,
+$this->template(
+	'tickets/my-tickets',
+	[
+		'title'   => $title,
+		'post_id' => $post_id,
+		'orders'  => $orders,
+		'post'    => $post,
 	]
 );
+
