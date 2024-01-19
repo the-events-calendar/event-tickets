@@ -34,4 +34,5 @@ $this->template( 'tickets/my-tickets', [
 	'post_id'  => $post_id,
 	'orders'   => $orders,
 	'post'     => $post,
-] );
+	]
+);
