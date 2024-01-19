@@ -30,9 +30,8 @@ $title              = sprintf(
 );
 
 $this->template( 'tickets/my-tickets', [
-	'title'   => $title,
-	'post_id' => $post_id,
-	'orders'  => $orders,
-	'post'    => $post,
-]
-);
+	'title'    => $title,
+	'post_id'  => $post_id,
+	'orders'   => $orders,
+	'post'     => $post,
+] );
