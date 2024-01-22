@@ -1133,7 +1133,7 @@ class Tribe__Tickets__Attendees {
 			$ticket_totals['available'] += array_sum( $available_contributors );
 		}
 
-		$context = [
+		return [
 			'attendees'         => $this,
 			'event_id'          => $post_id,
 			'tickets_by_type'   => $tickets_by_type,
@@ -1143,15 +1143,9 @@ class Tribe__Tickets__Attendees {
 				'rsvp'    => 'tec-tickets__admin-attendees-overview-ticket-type-icon--rsvp',
 			],
 			'type_labels'       => [
-				'default' => sprintf(
-				// Translators: %s is the uppercase plural Tickets label.
-					_x( 'Single %s', 'Ticket overview', 'event-tickets' ),
-					tribe_get_ticket_label_plural( 'Ticket overview' )
-				),
-				'rsvp'    => __( 'RSVP', 'event-tickets' ),
-			]
+				'default' => tec_tickets_get_default_ticket_type_label_plural( 'attendee overview' ),
+				'rsvp'    => tribe_get_rsvp_label_plural( 'attendee overview' ),
+			],
 		];
-
-		return $context;
 	}
 }

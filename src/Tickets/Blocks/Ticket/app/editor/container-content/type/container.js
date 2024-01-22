@@ -25,14 +25,14 @@ const mapStateToProps = (state, ownProps) => {
 		.toLowerCase();
 	const ticketDetails = selectors.getTicketDetails(state, ownProps);
 	const typeName = _x(
-		'Single Ticket',
+		'Standard Ticket',
 		'Default ticket type label.',
 		'event-tickets'
 	);
 	const typeDescription = sprintf(
 		// translators: %s is the post type name in human readable form.
 		_x(
-			'A single ticket is specific to this %s.',
+			'A standard ticket is specific to this %s.',
 			'Default ticket type description.',
 			'event-tickets'
 		),
