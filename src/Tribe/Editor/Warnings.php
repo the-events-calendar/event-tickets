@@ -152,12 +152,12 @@ class Warnings {
 		$has_dependency = empty( $depends_on ) ? '' : 'tribe-dependent';
 		$condition_attr = empty( $condition ) ? '' : 'data-condition-is-' . $condition;
 
-		$classes = [
+		$base_classes = [
 			'ticket-editor-notice',
 			$type,
 			$has_dependency,
 		];
-		$classes = array_merge( $classes, $classes );
+		$classes      = array_merge( $base_classes, $classes );
 
 		?>
 		<div <?php tribe_classes( $classes ); ?>
