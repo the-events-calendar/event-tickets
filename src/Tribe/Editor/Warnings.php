@@ -77,7 +77,7 @@ class Warnings {
 		$message = sprintf(
 			/* Translators: %1$s: link to help article. */
 			__( 'There is no payment gateway configured. To create %1$s, you\'ll need to enable and configure an ecommerce solution. %2$s', 'event-tickets' ),
-			tribe_get_ticket_label_singular( 'commerce provider missing warning' ),
+			tribe_get_ticket_label_plural_lowercase( 'commerce provider missing warning' ),
 			$link
 		);
 		
