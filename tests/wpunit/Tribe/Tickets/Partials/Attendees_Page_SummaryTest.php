@@ -7,6 +7,7 @@ use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 use Tribe__Tickets__Attendees;
 use Tribe__Tickets__Attendees_Table;
+use Tribe__Tickets__Tickets as Tickets;
 
 class Attendees_Page_Header extends WPTestCase {
 	use MatchesSnapshots;
@@ -47,10 +48,7 @@ class Attendees_Page_Header extends WPTestCase {
 
 		// Get HTML from template.
 		$template = tribe( 'tickets.admin.views' );
-		$args    = [
-			'attendees' => $attendees,
-			'event_id'  => $post_id,
-		];
+		$args = $attendees->get_render_context( $post_id );
 		$html = $template->template( $this->partial_path, $args, false );
 
 		// Replace post IDs in the snapshot to stabilize it.

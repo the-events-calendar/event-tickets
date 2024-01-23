@@ -5,7 +5,7 @@ namespace Tribe\Tickets;
 use Tribe\Events\Test\Factories\Event;
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
-use function StellarWP\Slic\array_merge_multi;
+use Tribe__Tickets__Data_API as Data_API;
 
 class Event_RepositoryTest extends \Codeception\TestCase\WPTestCase {
 	use RSVP_Ticket_Maker;
@@ -22,8 +22,18 @@ class Event_RepositoryTest extends \Codeception\TestCase\WPTestCase {
 		// before
 		parent::setUp();
 
-		// your set up methods here
 		$this->factory()->event = new Event();
+
+		// Ensure the PayPal module is active.
+		add_filter( 'tribe_tickets_commerce_paypal_is_active', '__return_true' );
+		add_filter( 'tribe_tickets_get_modules', function ( $modules ) {
+			$modules['Tribe__Tickets__Commerce__PayPal__Main'] = tribe( 'tickets.commerce.paypal' )->plugin_name;
+
+			return $modules;
+		} );
+
+		// Reset Data_API object, so it sees PayPal.
+		tribe_singleton( 'tickets.data_api', new Data_API );
 	}
 
 	public function _before() {
@@ -268,14 +278,6 @@ class Event_RepositoryTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function should_allow_filtering_by_events_that_have_rsvp_and_or_tickets() {
 		$this->create_test_events();
-
-		// Enable Tribe Commerce.
-		add_filter( 'tribe_tickets_commerce_paypal_is_active', '__return_true' );
-		add_filter( 'tribe_tickets_get_modules', function ( $modules ) {
-			$modules['Tribe__Tickets__Commerce__PayPal__Main'] = tribe( $this->get_paypal_ticket_provider() )->plugin_name;
-
-			return $modules;
-		} );
 
 		$actual = tribe_events()->where( 'has_rsvp_or_tickets', true )->get_ids();
 		// Retrieve all events with either tickets or rsvp

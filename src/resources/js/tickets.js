@@ -1,5 +1,5 @@
 /* global tribe_event_tickets_plus, tribe, jQuery, _, tribe_l10n_datatables,
- tribe_ticket_datepicker_format, TribeTickets, tribe_timepickers  */
+ tribe_ticket_datepicker_format, TribeTickets, tribe_timepickers */
 
 // For compatibility purposes we add this
 if ( 'undefined' === typeof tribe.tickets ) {
@@ -21,12 +21,26 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	var $document = $( document );
 	var $tribe_tickets = $( document.getElementById( 'tribetickets' ) );
 	const recurrence_row_selectors = '.recurrence-row';
+	const recurrence_add_row_selector = '.recurrence-row.tribe-datetime-block:not(.tribe-recurrence-exclusion-row)';
 	const recurrence_not_supported_row_selector = '.recurrence-row.tribe-recurrence-not-supported';
 	const recurrence_rule_panel_selector = '.tribe-event-recurrence-rule';
 	const ticket_button_selectors = '#rsvp_form_toggle, #ticket_form_toggle, #settings_form_toggle';
 	const tickets_panel_table_selector = '.tribe-tickets-editor-table-tickets-body';
-	const tickets_panel_form_selector = '#tribe_panel_edit';
 	const noTicketsOnRecurring = document.body.classList.contains( 'tec-no-tickets-on-recurring' );
+	const tickets_panel_helper_text_selector = '.tec_ticket-panel__helper_text__wrap';
+	const tickets_panel_hidden_recurrence_warning = '.tec_ticket-panel__recurring-unsupported-warning';
+	/*
+	 * Null or 'default' are the default ticket; 'rsvp' is the RSVP ticket.
+	 * The backend might use the value, sent over with AJAX panel requests, to modify panels
+	 * and handle save operations. This value will persist across AJAX requests.
+	 */
+	let ticketType = null; //
+
+	/*
+	 * The current default Ticket provider module.
+	 * This value will persist across AJAX requests.
+	 */
+	let defaultTicketProviderModule = null;
 
 	// Bail if we don't have what we need
 	if ( 0 === $tribe_tickets.length ) {
@@ -137,7 +151,9 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			provider_id = $checkedProvider.val() + '_radio';
 		}
 
-		$( document.getElementById( provider_id ) ).prop( 'checked', true ).trigger( 'change' );
+		const ticketProviderInput = $( document.getElementById( provider_id ) );
+		defaultTicketProviderModule = ticketProviderInput.val();
+		ticketProviderInput.prop( 'checked', true ).trigger( 'change' );
 	}
 
 	/**
@@ -214,6 +230,9 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	 * @return void
 	 */
 	obj.swapPanel = function( panel ) {
+		// Reset the default provider again, if we're running this code after an update.
+		set_default_provider_radio( ticketType === 'rsvp' );
+
 		var $panel;
 
 		if ( panel instanceof jQuery ) {
@@ -250,9 +269,19 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		$eventTickets.trigger( 'after_panel_swap.tickets', { panel: $panel } );
 	};
 
-	obj.fetchPanels = function( data, swapTo ) {
-		if ( 'undefined' === typeof data ) {
-			data = [];
+	/**
+	 *
+	 * @param {string|null} data The data to send to the server in URL-encoded format, or `null` if no data needs to be sent.
+	 * @param {string|null} swapTo The panel to swap to after the request is done.
+	 * @param {string|null} ticketType The ticket type to fetch the panels for.
+	 */
+	obj.fetchPanels = function( data, swapTo, ticketType ) {
+		ticketType = ticketType || 'default';
+
+		if ('undefined' === typeof data || data === null) {
+			data = {'ticket_type': ticketType};
+		} else {
+			data += '&ticket_type=' + ticketType;
 		}
 
 		var params = {
@@ -317,7 +346,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		// Makes sure the Panels are Ready for interaction
 		obj.setupPanels();
 
-		// At the end always swap panels (deafults to base/list)
+		// At the end always swap panels (defaults to base/list)
 		obj.swapPanel( swapTo );
 
 		// Trigger dependency.
@@ -336,6 +365,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		var $ticket_start_time = $( document.getElementById( 'ticket_start_time' ) );
 		var $ticket_end_time = $( document.getElementById( 'ticket_end_time' ) );
 		var startofweek = 0;
+		const ticketNameLabel = document.getElementById('ticket_name_label');
 
 		/**
 		 * There might be cases when Tickets is used in isolation where TEC is not
@@ -546,6 +576,18 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		return false;
 	} );
 
+	/* Capacity link button action */
+	$document.on( 'click', '#capacity_form_toggle', function( event ) {
+		// Prevent Form Submit on button click
+		event.preventDefault();
+
+		// Fetches as fresh set of panels
+		obj.fetchPanels( null, 'settings' );
+
+		// Make it safe that it wont submit
+		return false;
+	} );
+
 	/**
 	 * Cancel buttons, which refresh and swap to list
 	 */
@@ -584,12 +626,17 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		// Where we clicked
 		var $button = $( this );
 
-		set_default_provider_radio( 'rsvp_form_toggle' === $button.attr( 'id' ) );
+		// Set the current ticket type reading the data from the button, if possible.
+		const isRSVP = 'rsvp_form_toggle' === $button.attr( 'id' );
+		ticketType = isRSVP ? 'rsvp' : $button.data( 'ticket-type' );
+
+		set_default_provider_radio( isRSVP );
 
 		// Triggers Dependency
 		$edit_panel.find( '.tribe-dependency' ).trigger( 'verify.dependency' );
 
-		obj.swapPanel( 'ticket' );
+		// Refresh the panels to get the ones corresponding to the ticket type.
+		obj.fetchPanels(null,'ticket', ticketType);
 
 		// Make it safe that it wont submit
 		return false;
@@ -602,6 +649,9 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 		// Where we clicked
 		var $button = $( this );
+
+		// Set the current ticket type reading the data from the button, if possible.
+		ticketType = $button.closest( '[data-ticket-type]' ).data( 'ticket-type' );
 
 		// Prep the Params for the Request
 		var params = {
@@ -621,7 +671,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				}
 
 				obj.refreshPanels( response.data, 'ticket' );
-				obj.startWatchingMoveLinkIn( '#event_tickets' )
+				obj.startWatchingMoveLinkIn( '#event_tickets' );
 
 				$tribe_tickets.trigger( 'edit-ticket.tribe', event );
 			},
@@ -658,13 +708,18 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		var ticketID = $edit_panel.find( '#ticket_id' ).val();
 		var $editParent = $base_panel.find( `[data-ticket-type-id="${ticketID}"]` );
 		var orders = $editParent.find( '.tribe-ticket-field-order' ).val();
+		let ticketData = $edit_panel.find( 'input,textarea,select' ).serialize().replace( /\'/g, '%27' ).replace( /\:/g, '%3A' );
+		if (!ticketData.includes('ticket_provider')) {
+			ticketData += '&ticket_provider=' + encodeURIComponent(defaultTicketProviderModule);
+		}
 		var params = {
 			action: 'tribe-ticket-add',
-			data: $edit_panel.find( 'input,textarea,select' ).serialize().replace( /\'/g, '%27' ).replace( /\:/g, '%3A' ),
+			data: ticketData,
 			post_id: $post_id.val(),
 			nonce: TribeTickets.add_ticket_nonce,
 			menu_order: orders,
-			is_admin: $( 'body' ).hasClass( 'wp-admin' )
+			is_admin: $( 'body' ).hasClass( 'wp-admin' ),
+			ticket_type: ticketType
 		};
 
 		// ticket_menu_order is missing from the serialized string, lets add it
@@ -850,10 +905,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		 */
 		$document.on( 'tribe-recurrence-active', function( event ) {
 			$( ticket_button_selectors ).hide();
-			$( ticket_button_selectors ).
-					parent().
-					find( '.ticket-editor-notice.recurring_event_warning' ).
-					show();
+			$( tickets_panel_helper_text_selector ).hide();
+			$( tickets_panel_hidden_recurrence_warning ).show();
 		} );
 
 		/**
@@ -861,10 +914,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		 */
 		$document.on( 'tribe-recurrence-inactive', function( event ) {
 			$( ticket_button_selectors ).show();
-			$( ticket_button_selectors ).
-					parent().
-					find( '.ticket-editor-notice.recurring_event_warning' ).
-					hide();
+			$( tickets_panel_helper_text_selector ).show();
+			$( tickets_panel_hidden_recurrence_warning ).hide();
 		} );
 
 		/**
@@ -881,7 +932,12 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		 * Enable creating recurrence rules if tickets are removed.
 		 */
 		$document.on( 'tribe-tickets-inactive', function( event ) {
-			$( recurrence_row_selectors ).show();
+			const hasRecurrenceRules = $( recurrence_rule_panel_selector ).find( '.tribe-recurrence-rule' ).length > 0;
+			if (hasRecurrenceRules) {
+				$(recurrence_row_selectors).show()
+			} else {
+				$(recurrence_add_row_selector).show();
+			}
 			$( recurrence_not_supported_row_selector ).hide();
 		} );
 	} else {

@@ -24,7 +24,7 @@
 		<?php echo esc_html__( 'Attendee', 'event-tickets' ); ?>
 	</td>
 	<td class="tec-tickets__email-table-content-order-attendees-table-header-cell tec-tickets__email-table-content-align-center" align="center">
-		<?php echo esc_html__( 'Type', 'event-tickets' ); ?>
+		<?php echo esc_html__( 'Name', 'event-tickets' ); ?>
 	</td>
 	<td class="tec-tickets__email-table-content-order-attendees-table-header-cell tec-tickets__email-table-content-align-right" align="right">
 		<?php echo esc_html__( 'Ticket ID', 'event-tickets' ); ?>

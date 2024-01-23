@@ -1,5 +1,7 @@
 <?php
 
+use Tribe__Tickets__Global_Stock as Global_Stock;
+
 
 class Tribe__Tickets__REST__V1__Post_Repository
 	extends Tribe__REST__Post_Repository
@@ -149,6 +151,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		$data['post_id']  = $ticket->get_event_id();
 		$data['provider'] = $this->get_provider_slug( $ticket->provider_class );
 		$data['id'] = (int) $data['ID'];
+		$data['type'] = $ticket->type();
 
 		try {
 			$this->add_ticket_global_id_data( $data );
@@ -592,9 +595,10 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		];
 
 		if ( tribe( 'tickets.rest-v1.main' )->request_has_manage_access() ) {
-			$details['max']     = (int) $ticket->capacity();
-			$details['sold']    = (int) $ticket->qty_sold();
-			$details['pending'] = (int) $ticket->qty_pending();
+			$details['max']               = (int) $ticket->capacity();
+			$details['sold']              = (int) $ticket->qty_sold();
+			$details['pending']           = (int) $ticket->qty_pending();
+			$details['global_stock_mode'] = (string) $ticket->global_stock_mode();
 		}
 
 		return $details;
@@ -637,10 +641,13 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		}
 
 		$details = array(
-			'currency_symbol'   => html_entity_decode( $currency->get_provider_symbol( $provider, $ticket_id ) ),
-			'currency_position' => $currency->get_provider_symbol_position( $provider, $ticket_id ),
-			'values'            => array( $price ),
-			'suffix'            => $ticket->price_suffix,
+			'currency_symbol'    => html_entity_decode( $currency->get_provider_symbol( $provider, $ticket_id ) ),
+			'currency_position'  => $currency->get_provider_symbol_position( $provider, $ticket_id ),
+			'values'             => array( $price ),
+			'suffix'             => $ticket->price_suffix,
+			'currency_decimal_separator'  => $currency->get_currency_decimal_point( $provider ),
+			'currency_decimal_numbers'    => $currency->get_currency_number_of_decimals(),
+			'currency_thousand_separator' => $currency->get_currency_thousands_sep( $provider ),
 		);
 
 		return $details;

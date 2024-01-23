@@ -53,6 +53,10 @@ export default ( state = DEFAULT_STATE, action ) => {
 		case types.SET_TICKET_END_TIME_INPUT:
 		case types.SET_TICKET_CAPACITY_TYPE:
 		case types.SET_TICKET_CAPACITY:
+		case types.SET_TICKET_TYPE:
+		case types.SET_TICKET_TYPE_DESCRIPTION:
+		case types.SET_TICKET_TYPE_ICON_URL:
+		case types.SET_TICKET_TYPE_NAME:
 			return {
 				...state,
 				details: details( state.details, action ),

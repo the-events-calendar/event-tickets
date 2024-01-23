@@ -1,6 +1,7 @@
 <?php
 
-use TEC\Tickets\Custom_Tables\V1\Provider as ET_CT1_Provider;
+use TEC\Tickets\Commerce\Custom_Tables\V1\Provider as ET_CT1_Provider;
+use TEC\Tickets\Admin\Upsell as Ticket_Upsell;
 
 /**
  * Class Tribe__Tickets__Service_Provider
@@ -48,6 +49,9 @@ class Tribe__Tickets__Service_Provider extends \TEC\Common\Contracts\Service_Pro
 		$this->container->singleton( 'tickets.editor', 'Tribe__Tickets__Editor', [ 'hook' ] );
 
 		$this->container->singleton( 'tickets.admin.notices', 'Tribe__Tickets__Admin__Notices', [ 'hook' ] );
+
+		// Upsell
+		$this->container->singleton( Ticket_Upsell::class, Ticket_Upsell::class, [ 'hooks' ] );
 
 		// Attendees Table
 		$this->container->singleton( 'tickets.admin.attendees_table', 'Tribe__Tickets__Attendees_Table' );

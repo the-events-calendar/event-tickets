@@ -2,14 +2,20 @@
 
 namespace Tribe\Tickets;
 
+use Closure;
+use Codeception\TestCase\WPTestCase;
+use Generator;
+use ReflectionObject;
+use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 use Tribe__Tickets__Attendees as Attendees;
+use Tribe__Tickets__Attendees_Table;
 
-class Attendees_Test extends \Codeception\TestCase\WPTestCase {
-
+class Attendees_Test extends WPTestCase {
 	use RSVP_Ticket_Maker;
 	use Attendee_Maker;
+	use SnapshotAssertions;
 
 	/**
 	 * {@inheritdoc}
@@ -68,10 +74,10 @@ class Attendees_Test extends \Codeception\TestCase\WPTestCase {
 		$sut = $this->make_instance();
 
 		// Setup attendees table.
-		$sut->attendees_table = new \Tribe__Tickets__Attendees_Table();
+		$sut->attendees_table = new Tribe__Tickets__Attendees_Table();
 
 		// Reflection hack to call private method generate_filtered_list().
-		$reflector = new \ReflectionObject( $sut );
+		$reflector = new ReflectionObject( $sut );
 
 		$method = $reflector->getMethod( 'generate_filtered_list' );
 		$method->setAccessible( true );
@@ -181,4 +187,61 @@ class Attendees_Test extends \Codeception\TestCase\WPTestCase {
 		];
 	}
 
+	public function event_details_top_fixture_provider(): Generator {
+		yield 'not an existing post' => [
+			function () {
+				return [ PHP_INT_MAX, false ];
+			}
+		];
+
+		yield 'post' => [
+			function () {
+				$post_id = static::factory()->post->create();
+
+				return [ $post_id, true ];
+			}
+		];
+
+		yield 'event' => [
+			function () {
+				$post_id = tribe_events()->set_args( [
+					'title'      => 'Test Event',
+					'status'     => 'publish',
+					'start_date' => '2020-01-01 09:00:00',
+					'end_date'   => '2020-01-01 11:30:00',
+				] )->create()->ID;
+
+				return [ $post_id, true ];
+			}
+		];
+
+		yield 'legit id, unregistered post type' => [
+			function () {
+				$post_id = static::factory()->post->create( [ 'post_type' => 'not_registered_post_type' ] );
+
+				return [ $post_id, false ];
+			}
+		];
+	}
+
+	/**
+	 * @dataProvider event_details_top_fixture_provider
+	 */
+	public function test_event_details_top( Closure $fixture ): void {
+		[ $post_id, $expect_output ] = $fixture();
+
+		ob_start();
+		$attendees = new Attendees();
+		$attendees->event_details_top( $post_id );
+		$html = ob_get_contents();
+		// Replace post IDs with a placeholder to avoid snapshot mismatches.
+		$html = str_replace( $post_id, '{{POST_ID}}', $html );
+		ob_end_clean();
+
+		if ( $expect_output ) {
+			$this->assertMatchesHtmlSnapshot( $html );
+		} else {
+			$this->assertEquals( '', $html );
+		}
+	}
 }

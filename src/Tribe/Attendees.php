@@ -1,6 +1,8 @@
 <?php
 
 use Tribe__Utils__Array as Arr;
+use Tribe__Tickets__Ticket_Object as Ticket;
+use Tribe__Tickets__Global_Stock as Global_Stock;
 
 /**
  * Handles most actions related to an Attendees or Multiple ones
@@ -32,7 +34,8 @@ class Tribe__Tickets__Attendees {
 	 * @return void
 	 */
 	public function hook() {
-		add_action( 'admin_menu', [ $this, 'register_page' ] );
+		// Register before the default priority of 10 to avoid submenu hook issues.
+		add_action( 'admin_menu', [ $this, 'register_page' ], 5 );
 
 		add_action( 'tribe_report_page_after_text_label', [ $this, 'include_export_button_title' ], 25, 2 );
 		add_action( 'tribe_tabbed_view_heading_after_text_label', [ $this, 'include_export_button_title' ], 25, 2 );
@@ -82,10 +85,27 @@ class Tribe__Tickets__Attendees {
 	public function event_details_top( $event_id ) {
 		$pto = get_post_type_object( get_post_type( $event_id ) );
 
+		if ( $pto === null ) {
+			return;
+		}
+
+		$label = strtolower( $pto->labels->singular_name );
+
+		/**
+		 * Filters the label used in the Attendees page for the event post type.
+		 *
+		 * @since 5.8.0
+		 *
+		 * @param string $label    The label used in the Attendees page for the event post type.
+		 * @param int    $event_id The ID of the post the Attendees page is for.
+		 * @param WP_Post_Type|null The post type object.
+		 */
+		$label = apply_filters( 'tec_tickets_attendees_event_details_top_label', $label, $event_id, $pto );
+
 		echo '
 			<li class="post-type">
 				<strong>' . esc_html__( 'Post type', 'event-tickets' ) . ': </strong>
-				' . esc_html( strtolower( $pto->labels->singular_name ) ) . '
+				' . esc_html( $label ) . '
 			</li>
 		';
 	}
@@ -104,16 +124,16 @@ class Tribe__Tickets__Attendees {
 		 *
 		 * @since 4.6.2
 		 *
-		 * @param string $link The default "edit post" URL.
-		 * @param int $event_id The Post ID of the event.
+		 * @param string $link     The default "edit post" URL.
+		 * @param int    $event_id The Post ID of the event.
 		 */
 		$edit_post_link = apply_filters( 'tribe_tickets_event_action_links_edit_url', get_edit_post_link( $event_id ), $event_id );
 
-		$post     = get_post( $event_id );
-		$pto      = get_post_type_object( $post->post_type );
+		$post = get_post( $event_id );
+		$pto = get_post_type_object( $post->post_type );
 		$singular = $pto->labels->singular_name;
-		$edit     = esc_html( sprintf( _x( 'Edit %s', 'attendee event actions', 'event-tickets' ), $singular ) );
-		$view     = esc_html( sprintf( _x( 'View %s', 'attendee event actions', 'event-tickets' ), $singular ) );
+		$edit = esc_html( sprintf( _x( 'Edit %s', 'attendee event actions', 'event-tickets' ), $singular ) );
+		$view = esc_html( sprintf( _x( 'View %s', 'attendee event actions', 'event-tickets' ), $singular ) );
 
 		$action_links = [
 			'<a href="' . esc_url( $edit_post_link ) . '" title="' . esc_attr_x( 'Edit', 'attendee event actions', 'event-tickets' ) . '">' . $edit . '</a>',
@@ -124,7 +144,7 @@ class Tribe__Tickets__Attendees {
 		 * Provides an opportunity to add and remove action links from the attendee screen summary box.
 		 *
 		 * @param array $action_links
-		 * @param int $event_id
+		 * @param int   $event_id
 		 */
 		$action_links = (array) apply_filters( 'tribe_tickets_attendees_event_action_links', $action_links, $event_id );
 
@@ -152,7 +172,7 @@ class Tribe__Tickets__Attendees {
 
 		$total_checked_in = $this->get_checkedin_total();
 		$check_in_percent = $this->get_checkedin_percentage( $post_id );
-		$total_attendees  = Tribe__Tickets__Tickets::get_event_attendees_count( $post_id );
+		$total_attendees = Tribe__Tickets__Tickets::get_event_attendees_count( $post_id );
 
 		/** @var Tribe__Tickets__Admin__Views $admin_views */
 		$admin_views = tribe( 'tickets.admin.views' );
@@ -186,11 +206,11 @@ class Tribe__Tickets__Attendees {
 	 */
 	public function get_checkedin_percentage( $post_id ): string {
 		$total_checked_in = $this->get_checkedin_total();
-		$total            = Tribe__Tickets__Tickets::get_event_attendees_count( $post_id );
+		$total = Tribe__Tickets__Tickets::get_event_attendees_count( $post_id );
 
 		// Remove the "Not Going" RSVPs.
 		$not_going = tribe( 'tickets.rsvp' )->get_attendees_count_not_going( $post_id );
-		$total    -= $not_going;
+		$total -= $not_going;
 
 		if ( $total_checked_in === 0 || $total <= 0 ) {
 			return '0%';
@@ -280,7 +300,7 @@ class Tribe__Tickets__Attendees {
 	 * @since 4.6.2
 	 */
 	public function register_page() {
-		$cap      = 'edit_posts';
+		$cap = 'edit_posts';
 		$event_id = absint( ! empty( $_GET['event_id'] ) && is_numeric( $_GET['event_id'] ) ? $_GET['event_id'] : 0 );
 
 		if ( ! current_user_can( 'edit_posts' ) && $event_id ) {
@@ -346,9 +366,10 @@ class Tribe__Tickets__Attendees {
 	 *
 	 * @since 4.6.2
 	 *
-	 * @todo this needs to use tribe_assets()
-	 *
 	 * @param $hook
+	 *
+	 * @todo  this needs to use tribe_assets()
+	 *
 	 */
 	public function enqueue_assets( $hook ) {
 		/**
@@ -378,7 +399,7 @@ class Tribe__Tickets__Attendees {
 		}
 
 		$dismissed = explode( ',', (string) get_user_meta( get_current_user_id(), 'dismissed_wp_pointers', true ) );
-		$pointer   = [];
+		$pointer = [];
 
 		if ( version_compare( get_bloginfo( 'version' ), '3.3', '>' ) && ! in_array( 'attendees_filters', $dismissed ) ) {
 			$pointer = [
@@ -405,7 +426,7 @@ class Tribe__Tickets__Attendees {
 	 * @since 4.6.2
 	 */
 	public function screen_setup() {
-		$page   = tribe_get_request_var( 'page', false );
+		$page = tribe_get_request_var( 'page', false );
 		$action = tribe_get_request_var( 'action', false );
 
 		// When on the admin and not on the correct page bail.
@@ -466,7 +487,7 @@ class Tribe__Tickets__Attendees {
 	 */
 	public function filter_admin_title( $admin_title, $unused_title ) {
 		if ( ! empty( $_GET['event_id'] ) ) {
-			$event       = get_post( $_GET['event_id'] );
+			$event = get_post( $_GET['event_id'] );
 			$admin_title = sprintf( __( '%s - Attendee list', 'event-tickets' ), $event->post_title );
 		}
 
@@ -490,11 +511,11 @@ class Tribe__Tickets__Attendees {
 		$post_id = tribe_get_request_var( 'post_id', 0 );
 		$post_id = tribe_get_request_var( 'event_id', $post_id );
 
-		$context = [
-			'attendees' => $this,
-			'event_id'  => $post_id,
-		];
+		$context = $this->get_render_context( (int) $post_id );
 
+		/*
+		 * See template filters to update the template or its context data.
+		 */
 		tribe( 'tickets.admin.views' )->template( 'attendees', $context );
 	}
 
@@ -547,7 +568,7 @@ class Tribe__Tickets__Attendees {
 			]
 		);
 
-		$hidden         = array_flip( $hidden );
+		$hidden = array_flip( $hidden );
 		$export_columns = array_diff_key( $columns, $hidden );
 
 		// Add additional expected columns.
@@ -631,8 +652,8 @@ class Tribe__Tickets__Attendees {
 				// Special handling for new human readable id.
 				if ( 'attendee_id' === $column_id ) {
 					if ( isset( $single_item[ $column_id ] ) ) {
-						$ticket_unique_id  = get_post_meta( $single_item[ $column_id ], '_unique_id', true );
-						$ticket_unique_id  = $ticket_unique_id === '' ? $single_item[ $column_id ] : $ticket_unique_id;
+						$ticket_unique_id = get_post_meta( $single_item[ $column_id ], '_unique_id', true );
+						$ticket_unique_id = $ticket_unique_id === '' ? $single_item[ $column_id ] : $ticket_unique_id;
 						$row[ $column_id ] = esc_html( $ticket_unique_id );
 					}
 				}
@@ -640,7 +661,7 @@ class Tribe__Tickets__Attendees {
 				// Handle custom columns that might have names containing HTML tags.
 				$row[ $column_id ] = wp_strip_all_tags( $row[ $column_id ] );
 				// Decode HTML Entities.
-				$row[ $column_id ] = html_entity_decode( $row[ $column_id ] , ENT_QUOTES | ENT_XML1, 'UTF-8' );
+				$row[ $column_id ] = html_entity_decode( $row[ $column_id ], ENT_QUOTES | ENT_XML1, 'UTF-8' );
 				// Remove line breaks (e.g. from multi-line text field) for valid CSV format. Double quotes necessary here.
 				$row[ $column_id ] = str_replace( [ "\r", "\n" ], ' ', $row[ $column_id ] );
 			}
@@ -744,7 +765,7 @@ class Tribe__Tickets__Attendees {
 		$items = apply_filters( 'tribe_events_tickets_attendees_csv_items', $items, $event_id );
 
 		if ( ! empty( $items ) ) {
-			$charset  = get_option( 'blog_charset' );
+			$charset = get_option( 'blog_charset' );
 			$filename = sanitize_file_name( $event->post_title . '-' . __( 'attendees', 'event-tickets' ) );
 
 			// Output headers so that the file is downloaded rather than displayed.
@@ -787,7 +808,7 @@ class Tribe__Tickets__Attendees {
 			return $error;
 		}
 
-		$cap      = 'edit_posts';
+		$cap = 'edit_posts';
 		$event_id = absint( ! empty( $_GET['event_id'] ) && is_numeric( $_GET['event_id'] ) ? $_GET['event_id'] : 0 );
 
 		if ( ! current_user_can( 'edit_posts' ) && $event_id ) {
@@ -891,13 +912,14 @@ class Tribe__Tickets__Attendees {
 	 * For example, if tickets are created for the banana post type, the generic capability
 	 * "edit_posts" will be mapped to "edit_bananas" or whatever is appropriate.
 	 *
-	 * @since 4.6.2
+	 * @since    4.6.2
 	 *
+	 * @param string $generic_cap
+	 * @param int    $event_id
+	 *
+	 * @return boolean
 	 * @internal for internal plugin use only (in spite of having public visibility)
 	 *
-	 * @param  string $generic_cap
-	 * @param  int    $event_id
-	 * @return boolean
 	 */
 	public function user_can( $generic_cap, $event_id ) {
 		$type = get_post_type( $event_id );
@@ -941,7 +963,7 @@ class Tribe__Tickets__Attendees {
 		 * @since 4.6.3
 		 *
 		 * @param array $default_caps The caps a user must have to be allowed to manage attendees.
-		 * @param int $user_id The ID of the user whose capabilities are being checked.
+		 * @param int   $user_id      The ID of the user whose capabilities are being checked.
 		 */
 		$required_caps = apply_filters(
 			'tribe_tickets_caps_can_manage_attendees',
@@ -964,8 +986,8 @@ class Tribe__Tickets__Attendees {
 		 * @since 4.10.1
 		 *
 		 * @param bool $user_can return value, user can or can't
-		 * @param int $user_id id of the user we're checking
-		 * @param int $event_id id of the event we're checking (matter for checks on event authorship)
+		 * @param int  $user_id  id of the user we're checking
+		 * @param int  $event_id id of the event we're checking (matter for checks on event authorship)
 		 */
 		$user_can = apply_filters( 'tribe_tickets_user_can_manage_attendees', $user_can, $user_id, $event_id );
 
@@ -1047,7 +1069,7 @@ class Tribe__Tickets__Attendees {
 	 *
 	 * @since 5.1.7
 	 *
-	 * @param int                       $event_id The Post ID of the event.
+	 * @param int                       $event_id  The Post ID of the event.
 	 * @param Tribe__Tickets__Attendees $attendees The attendees object.
 	 *
 	 * @return string Relative URL for the export.
@@ -1064,7 +1086,7 @@ class Tribe__Tickets__Attendees {
 			! is_int( $event_id )
 			&& ! empty( tribe_get_request_var( 'event_id' ) )
 		) {
-			$event_id  = tribe_get_request_var( 'event_id' );
+			$event_id = tribe_get_request_var( 'event_id' );
 			$attendees = tribe( 'tickets.attendees' );
 			$attendees->attendees_table->prepare_items();
 		}
@@ -1086,6 +1108,84 @@ class Tribe__Tickets__Attendees {
 			'<a target="_blank" href="%s" class="export action page-title-action" rel="noopener noreferrer">%s</a>',
 			esc_url( $export_url = $this->get_export_url() ),
 			esc_html__( 'Export', 'event-tickets' )
-		) ;
+		);
+	}
+
+	/**
+	 * Returns the context used to render the Attendees page.
+	 *
+	 * @since 5.8.0
+	 *
+	 * @param int $post_id The ID of the post to render the Attendees page for.
+	 *
+	 * @return array<string,mixed> The context used to render the Attendees page.
+	 */
+	public function get_render_context( int $post_id ): array {
+		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
+		$tickets_by_type = [ 'rsvp' => [], 'default' => [] ];
+		$ticket_totals = [
+			'sold'      => 0,
+			'available' => 0,
+		];
+
+		$available_contributors = [];
+
+		// Split Tickets by their type.
+		/** @var Ticket[] $tickets */
+		foreach ( $tickets as $ticket ) {
+			$ticket_type = $ticket->type();
+			if ( ! isset( $tickets_by_type[ $ticket_type ] ) ) {
+				$tickets_by_type[ $ticket_type ] = [];
+			}
+			$tickets_by_type[ $ticket_type ][] = $ticket;
+			$ticket_totals['sold']            += $ticket->qty_sold();
+
+			if ( $ticket_totals['available'] === - 1 ) {
+				// Unlimited capacity trumps any other capacity; if already unlimited, it will stay unlimited.
+				continue;
+			}
+
+			if ( - 1 === $ticket->available() ) {
+				// Unlimited capacity trumps any other capacity: set to unlimited.
+				$ticket_totals['available'] = - 1;
+				continue;
+			}
+
+			if ( $ticket->global_stock_mode() === Global_Stock::OWN_STOCK_MODE ) {
+				// Own stock: add to the available count.
+				$ticket_totals['available'] += $ticket->available();
+				continue;
+			}
+
+			if ( ! isset( $available_contributors[ (int) $ticket->get_event_id() ] ) ) {
+				// Shared or capped capacity: add to the available contributors only if we haven't already counted it.
+				$available_contributors[ (int) $ticket->get_event_id() ] = $ticket->available();
+			}
+		}
+
+		if ( $ticket_totals['available'] !== - 1 && count( $available_contributors ) ) {
+			$ticket_totals['available'] += array_sum( $available_contributors );
+		}
+
+		$context = [
+			'attendees'         => $this,
+			'event_id'          => $post_id,
+			'tickets_by_type'   => $tickets_by_type,
+			'ticket_totals'     => $ticket_totals,
+			'type_icon_classes' => [
+				'default' => 'tec-tickets__admin-attendees-overview-ticket-type-icon--ticket',
+				'rsvp'    => 'tec-tickets__admin-attendees-overview-ticket-type-icon--rsvp',
+			],
+			'type_labels'       => [
+				'default' => sprintf(
+				// Translators: %s is the uppercase plural Tickets label.
+					_x( 'Single %s', 'Ticket overview', 'event-tickets' ),
+					tribe_get_ticket_label_plural( 'Ticket overview' )
+				),
+				'rsvp'    => __( 'RSVP', 'event-tickets' ),
+			]
+		];
+
+		return $context;
 	}
 }

@@ -75,8 +75,8 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		] );
 
 		// Add initial simple schema.
-		$this->add_simple_meta_schema_entry( 'event', $this->attendee_to_event_keys(), 'meta_in' );
-		$this->add_simple_meta_schema_entry( 'event__not_in', $this->attendee_to_event_keys(), 'meta_not_in' );
+		$this->add_schema_entry( 'event', [ $this, 'filter_by_event' ] );
+		$this->add_schema_entry( 'event__not_in', [ $this, 'filter_by_event_not_in' ] );
 		$this->add_simple_meta_schema_entry( 'ticket', $this->attendee_to_ticket_keys(), 'meta_in' );
 		$this->add_simple_meta_schema_entry( 'ticket__not_in', $this->attendee_to_ticket_keys(), 'meta_not_in' );
 		$this->add_simple_meta_schema_entry( 'order', $this->attendee_to_order_keys(), 'meta_in' );
@@ -1622,5 +1622,54 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		return $order === null
 			? Arr::get_in_any( [ $this->query_args, $this->default_args ], 'order', 'ASC' )
 			: $order;
+	}
+
+	/**
+	 * Sets up the query filters to fetch Attendees by post they are attached to.
+	 *
+	 * @since 5.8.0
+	 *
+	 * @param int|array<int> $post_id Either a single post ID or an array of post IDs.
+	 *
+	 * @return void Query filters are set up to fetch Attendees by post they are attached to.
+	 */
+	public function filter_by_event( $post_id ): void {
+		$post_ids = (array) $post_id;
+
+		/**
+		 * Filter the post IDs to be used when fetching Attendees by the related post.
+		 *
+		 * @since 5.8.0
+		 *
+		 * @param array<int> $post_ids The post IDs to be used when fetching Attendees by the related post.
+		 */
+		$post_ids = apply_filters( 'tec_tickets_attendees_filter_by_event', $post_ids, $this );
+
+		$this->by( 'meta_in', $this->attendee_to_event_keys(), $post_ids );
+	}
+
+	/**
+	 * Sets up the query filters to fetch Attendees not related to a post.
+	 *
+	 * @since 5.8.0
+	 *
+	 * @param int|array<int> $post_id Either a single post ID or an array of post IDs.
+	 *
+	 * @return void Query filters are set up to fetch Attendees not related to a post.
+	 */
+	public function filter_by_event_not_in( $post_id ): void {
+		$post_ids = (array) $post_id;
+
+		/**
+		 * Filter the post IDs to be used when fetching Attendees not related to a post.
+		 *
+		 * @since 5.8.0
+		 *
+		 * @param array<int> $post_ids The post IDs to be used when fetching Attendees by the related post.
+		 *
+		 */
+		$post_ids = apply_filters( 'tec_tickets_attendees_filter_by_event_not_in', $post_ids, $this );
+
+		$this->by( 'meta_not_in', $this->attendee_to_event_keys(), $post_ids );
 	}
 }

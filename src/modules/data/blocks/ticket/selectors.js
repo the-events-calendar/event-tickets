@@ -18,7 +18,7 @@ const {
 	SHARED,
 	TICKET_TYPES,
 } = constants;
-const { tickets: ticketsConfig } = globals;
+const { tickets: ticketsConfig, post: postConfig } = globals;
 
 export const getState = ( state ) => state;
 export const getBlock = ( state ) => state.tickets.blocks.ticket;
@@ -173,6 +173,20 @@ export const getTicketsIdsInBlocks = createSelector(
 		}
 		return accumulator;
 	}, [] ),
+);
+
+export const getUneditableTickets = createSelector (
+	[ getBlock ],
+	function ( block ) {
+		return block.uneditableTickets || [];
+	},
+);
+
+export const getUneditableTicketsAreLoading = createSelector (
+	[ getBlock ],
+	function ( block ) {
+		return block.uneditableTicketsLoading || false;
+	},
 );
 
 //
@@ -652,6 +666,7 @@ export const getIndependentTicketsAvailable = createSelector(
 );
 
 export const getSharedTicketsSold = createSelector( getSharedTickets, _getTotalSold );
+
 export const getSharedTicketsAvailable = createSelector(
 	[ getTicketsSharedCapacityInt, getSharedTicketsSold ],
 	( sharedCapacity, sharedSold ) => Math.max( sharedCapacity - sharedSold, 0 ),
@@ -707,3 +722,13 @@ export const canCreateTickets = createSelector(
 	[ hasTicketProviders, hasValidTicketProvider ],
 	( providers, validDefaultProvider ) => providers && validDefaultProvider,
 );
+
+export const getCurrentPostTypeLabel = (key = 'singular_name') => {
+	const post = postConfig();
+	return post?.labels?.[key] || 'Post';
+}
+
+export const currentPostIsEvent = () => {
+	const post = postConfig();
+	return post?.type === 'tribe_events';
+}

@@ -19,8 +19,8 @@ class Move_TicketsTest extends \Codeception\TestCase\WPTestCase {
 
 				$ignore_id = array_shift( $post_ids );
 
-				$_POST['check']     = '1234567890';
-				$_POST['ignore']    = [ $ignore_id ];
+				$_POST['check'] = '1234567890';
+				$_POST['ignore'] = [ $ignore_id ];
 				$_POST['post_type'] = 'post';
 
 				return array_combine(
@@ -37,9 +37,9 @@ class Move_TicketsTest extends \Codeception\TestCase\WPTestCase {
 
 				$ignore_id = array_shift( $post_ids_1 );
 
-				$_POST['check']        = '1234567890';
-				$_POST['ignore']       = [ $ignore_id ];
-				$_POST['post_type']    = 'post';
+				$_POST['check'] = '1234567890';
+				$_POST['ignore'] = [ $ignore_id ];
+				$_POST['post_type'] = 'post';
 				$_POST['search_terms'] = 'Bob';
 
 				return array_combine(
@@ -62,8 +62,8 @@ class Move_TicketsTest extends \Codeception\TestCase\WPTestCase {
 
 				$ignore_id = array_shift( $event_ids );
 
-				$_POST['check']     = '1234567890';
-				$_POST['ignore']    = [ $ignore_id ];
+				$_POST['check'] = '1234567890';
+				$_POST['ignore'] = [ $ignore_id ];
 				$_POST['post_type'] = TEC::POSTTYPE;
 
 				return array_combine(
@@ -96,9 +96,9 @@ class Move_TicketsTest extends \Codeception\TestCase\WPTestCase {
 
 				$ignore_id = array_shift( $event_ids_1 );
 
-				$_POST['check']        = '1234567890';
-				$_POST['ignore']       = [ $ignore_id ];
-				$_POST['post_type']    = TEC::POSTTYPE;
+				$_POST['check'] = '1234567890';
+				$_POST['ignore'] = [ $ignore_id ];
+				$_POST['post_type'] = TEC::POSTTYPE;
 				$_POST['search_terms'] = 'Bob';
 
 				return array_combine(
@@ -113,14 +113,14 @@ class Move_TicketsTest extends \Codeception\TestCase\WPTestCase {
 		// ECP + CT1 is active.
 		yield 'recurring events' => [
 			function (): array {
-				$daily_event    = tribe_events()->set_args( [
+				$daily_event = tribe_events()->set_args( [
 					'title'      => 'Daily Event',
 					'status'     => 'publish',
 					'start_date' => '2220-01-01 00:00:00',
 					'duration'   => 2 * HOUR_IN_SECONDS,
 					'recurrence' => 'RRULE:FREQ=DAILY;COUNT=3',
 				] )->create()->ID;
-				$weekly_event   = tribe_events()->set_args( [
+				$weekly_event = tribe_events()->set_args( [
 					'title'      => 'Weekly Event',
 					'status'     => 'publish',
 					'start_date' => '2220-01-01 00:00:00',
@@ -142,8 +142,8 @@ class Move_TicketsTest extends \Codeception\TestCase\WPTestCase {
 
 				$ignore_id = $daily_event;
 
-				$_POST['check']     = '1234567890';
-				$_POST['ignore']    = [ $ignore_id ];
+				$_POST['check'] = '1234567890';
+				$_POST['ignore'] = [ $ignore_id ];
 				$_POST['post_type'] = TEC::POSTTYPE;
 
 				$weekly_occurrence_2 = Occurrence::where( 'post_id', '=', $weekly_event )
@@ -152,12 +152,19 @@ class Move_TicketsTest extends \Codeception\TestCase\WPTestCase {
 				$weekly_occurrence_3 = Occurrence::where( 'post_id', '=', $weekly_event )
 				                                 ->where( 'start_date', '=', '2220-01-15 00:00:00' )
 				                                 ->first()->provisional_id;
+				$expected_set = [
+					$single_event_1,
+					$single_event_2,
+					$weekly_event,
+					$weekly_occurrence_2,
+					$weekly_occurrence_3
+				];
 
 				return array_combine(
-					[ $single_event_1, $single_event_2 ],
+					$expected_set,
 					array_map( static function ( int $id ) {
 						return get_post_field( 'post_title', $id ) . ' (' . tribe_get_start_date( $id ) . ')';
-					}, [ $single_event_1, $single_event_2 ] )
+					}, $expected_set )
 				);
 			}
 		];
@@ -167,7 +174,7 @@ class Move_TicketsTest extends \Codeception\TestCase\WPTestCase {
 	 * @dataProvider get_post_choices_provider
 	 */
 	public function test_get_post_choices( Closure $fixture ): void {
-		$expected       = $fixture();
+		$expected = $fixture();
 		$_POST['check'] = 'not-relevant';
 		$this->set_fn_return( 'wp_verify_nonce', true );
 		$post_choices = null;

@@ -460,7 +460,7 @@
 	<td class="tec-tickets__email-table-content-order-attendees-table-header-cell tec-tickets__email-table-content-align-left" align="left">
 		Attendee	</td>
 	<td class="tec-tickets__email-table-content-order-attendees-table-header-cell tec-tickets__email-table-content-align-center" align="center">
-		Type	</td>
+		Name	</td>
 	<td class="tec-tickets__email-table-content-order-attendees-table-header-cell tec-tickets__email-table-content-align-right" align="right">
 		Ticket ID	</td>
 </tr>

@@ -70,6 +70,7 @@ const ActionDashboard = ( {
 		<section
 			className={ classNames(
 				'tribe-editor__action-dashboard',
+				{ 'tribe-editor__action-dashboard__no-top-bottom-paddings': ( ! actionsList && ! groupRight ) },
 				className,
 			) }
 		>

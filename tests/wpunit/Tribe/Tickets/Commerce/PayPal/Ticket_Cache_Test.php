@@ -11,6 +11,7 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use Tribe__Tickets__Data_API as Data_API;
 use Tribe__Tickets__Commerce__PayPal__Stati as Stati;
 use Tribe__Tickets__Commerce__PayPal__Order as Order;
+use Tribe__Events__Main as TEC;
 
 class Ticket_Cache_Test extends WPTestCase {
 	use Ticket_Maker;
@@ -33,6 +34,17 @@ class Ticket_Cache_Test extends WPTestCase {
 
 		// Reset Data_API object so it sees Tribe Commerce.
 		tribe_singleton( 'tickets.data_api', new Data_API );
+	}
+
+	/**
+	 * @before
+	 */
+	public function ensure_ticketable_post_types(): void {
+		$ticketable   = tribe_get_option( 'ticket-enabled-post-types', [] );
+		$ticketable[] = 'post';
+		$ticketable[] = 'page';
+		$ticketable[] = TEC::POSTTYPE;
+		tribe_update_option( 'ticket-enabled-post-types', array_values( array_unique( $ticketable ) ) );
 	}
 
 	/**
