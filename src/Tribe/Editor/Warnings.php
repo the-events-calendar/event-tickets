@@ -54,7 +54,7 @@ class Warnings {
 			return;
 		}
 
-		$this->render_notice( $this->get_commerce_provider_missing_warning_message(), 'info', '', '', [ 'provider-warning' ] );
+		$this->render_notice( $this->get_commerce_provider_missing_warning_message(), 'info info--background', '', '', [ 'provider-warning' ], 'lightbulb' );
 	}
 
 	/**
@@ -74,12 +74,31 @@ class Warnings {
 			esc_html_x( 'Learn More', 'Helper link in Ticket Editor', 'event-tickets' )
 		);
 
-		return wp_kses_post(
-			sprintf(
-				/* translators: %1$s: link to help article. */
-				__( 'There is no payment gateway configured. To create tickets, you\'ll need to enable and configure an ecommerce solution. %1$s', 'event-tickets' ),
-				$link
-			)
+		$message = sprintf(
+			/* Translators: %1$s: link to help article. */
+			__( 'There is no payment gateway configured. To create %1$s, you\'ll need to enable and configure an ecommerce solution. %2$s', 'event-tickets' ),
+			tribe_get_ticket_label_singular( 'commerce provider missing warning' ),
+			$link
+		);
+		
+		/**
+		 * Filter the Commerce Provider missing warning message.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $message The Commerce Provider missing message.
+		 */
+		$message = apply_filters( 'tec_tickets_commerce_provider_missing_warning_message', $message );
+		
+		return wp_kses(
+			$message,
+			[
+				'a' => [
+					'href'   => [],
+					'target' => [],
+					'rel'    => [],
+				],
+			]
 		);
 	}
 
@@ -121,23 +140,24 @@ class Warnings {
 	 *
 	 * @since 5.6.2 added the `$additionalClasses` attribute to allow customizing the notice.
 	 * @since 5.0.4
+	 * @since TBD Added `$dashicon` attribute to allow adding a dashicon to the notice.
 	 *
 	 * @param string $message           The message to show.
 	 * @param string $type              Type of message. Default is 'info'.
 	 * @param string $depends_on        Dependency selector. Default is empty.
 	 * @param string $condition         Dependency condition like 'checked' | 'not-checked' | 'numeric'. Default is empty.
-	 * @param array  $additionalClasses Additional CSS classes to add to the notice block. Default is an empty array.
+	 * @param array  $classes           Additional CSS classes to add to the notice block. Default is an empty array.
 	 */
-	public function render_notice( $message, $type = 'info', $depends_on = '', $condition = '', $additionalClasses = [] ) {
+	public function render_notice( $message, $type = 'info', $depends_on = '', $condition = '', $classes = [], $dashicon = '' ) {
 		$has_dependency = empty( $depends_on ) ? '' : 'tribe-dependent';
 		$condition_attr = empty( $condition ) ? '' : 'data-condition-is-' . $condition;
 
 		$classes = [
 			'ticket-editor-notice',
 			$type,
-			$has_dependency
+			$has_dependency,
 		];
-		$classes = array_merge( $classes, $additionalClasses );
+		$classes = array_merge( $classes, $classes );
 
 		?>
 		<div <?php tribe_classes( $classes ); ?>
@@ -146,6 +166,11 @@ class Warnings {
 			<?php } ?>
 			<?php echo esc_attr( $condition_attr ); ?>
 		>
+			<?php
+			if ( ! empty( $dashicon ) ) {
+				echo '<span class="dashicons dashicons-' . esc_attr( $dashicon ) . '"></span>';
+			}
+			?>
 			<span class="message"><?php echo wp_kses_post( $message ); ?></span>
 		</div>
 		<?php
