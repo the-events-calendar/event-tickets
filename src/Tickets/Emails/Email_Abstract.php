@@ -289,8 +289,8 @@ abstract class Email_Abstract {
 	 */
 	public function set_placeholders( array $placeholders = [] ): array {
 		$this->placeholders = array_merge(
-			$placeholders,
-			$this->get_placeholders()
+			$this->get_placeholders(),
+			$placeholders
 		);
 
 		return $this->placeholders;

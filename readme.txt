@@ -198,9 +198,18 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [TBD] TBD =
 
 * Tweak - Updated sharedCapacity prop type to number within the tickets block to avoid warning logs. [ET-1058]
+* Tweak - Added Print button to Ticket Commerce Orders. [ET-1873]
 * Fix - Ticket is removed now when using the delete option from the block editor. [ET-1879]
 * Tweak - Declared dynamic properties in Tribe__Tickets__Main, Tribe__Tickets__Tickets_Handler, Tribe__Tickets__REST__V1__Messages to prevent warnings in php 8.2 [ET-1950]
 * Fix - Resolve deprecation notices regarding `ArrayAccess::offsetGet()` [ET-1949]
+* Tweak - Added additional information to the Site Health Section. [ET-1925]
+* Fix - Resolved an issue where Order Status was not populated when exporting the Attendee List using Tickets Commerce. [ET-1883]
+* Tweak - Update default footer text of Tickets Emails to include link to website. [ET-1971]
+* Fix - Update usage of `method_exists()` to comply with PHP 8.1 standards. [ET-1759]
+* Tweak - Added Export option to Ticket Commerce Order page. [ET-1872]
+* Fix - Update button will now show when the opt-out checkbox shows on the My Tickets page. [ET-1980]
+* Tweak - Customer name appears now as description of a Stripe payment. Added `tec_tickets_commerce_stripe_update_payment_description` filter. [ET-1607]
+* Fix - Ensure correct attendee information is included in the attendee emails. [ET-1988]
 
 = [5.7.1] 2023-12-13 =
 

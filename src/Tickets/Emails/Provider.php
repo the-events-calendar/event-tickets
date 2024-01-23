@@ -33,6 +33,14 @@ class Provider extends Service_Provider {
 		// Dispatcher is not a singleton!
 		$this->container->bind( Dispatcher::class, Dispatcher::class );
 
+		// Emails are not singletons!
+		$this->container->bind( Email\Completed_Order::class, Email\Completed_Order::class );
+		$this->container->bind( Email\Purchase_Receipt::class, Email\Purchase_Receipt::class );
+		$this->container->bind( Email\RSVP_Not_Going::class, Email\RSVP_Not_Going::class );
+		$this->container->bind( Email\RSVP::class, Email\RSVP::class );
+		$this->container->bind( Email\Completed_Order::class, Email\Completed_Order::class );
+		$this->container->bind( Email\Ticket::class, Email\Ticket::class );
+
 		$this->container->singleton( Legacy_Hijack::class );
 
 		$this->container->singleton( Admin\Emails_Tab::class );
