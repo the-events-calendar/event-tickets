@@ -141,7 +141,7 @@ class Metabox {
 		$helper_link = sprintf(
 			// Translators: %1$s is a link to the documentation, %2$s is the label for the link.
 			'<a href="%1$s" target="_blank" rel="noreferrer noopener">%2$s</a>',
-			esc_url( 'https://evnt.is/1a' ),
+			esc_url( 'https://evnt.is/-series-passes' ),
 			esc_html( $helpler_link_text )
 		);
 		
