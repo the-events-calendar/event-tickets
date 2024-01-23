@@ -1148,7 +1148,16 @@ if ( ! function_exists( 'tribe_get_event_capacity' ) ) {
 
 		$value = (int) $rsvp_cap + (int) $tickets_cap;
 
-		return (int) $value;
+		/**
+		 * Filters the event capacity.
+		 *
+		 * @since 5.8.0
+		 *
+		 * @param int $value The event capacity.
+		 * @param int $post_id The event ID.
+		 * @param bool|Tribe__Tickets__Tickets $provider The ticket provider.
+		 */
+		return apply_filters( 'tec_tickets_get_event_capacity', (int) $value, $post_id, $provider );
 	}
 }
 
@@ -1852,4 +1861,112 @@ function tribe_tickets_get_provider_query_slug() {
  */
 function tec_tickets_tec_events_is_active() : bool {
 	return function_exists( 'tribe_events' );
+}
+
+if ( ! function_exists( 'tec_tickets_get_default_ticket_type_label' ) ) {
+	/**
+	 * Returns the filtered default Ticket Type label.
+	 *
+	 * @since 5.8.0
+	 *
+	 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.
+	 *
+	 * @return string The Ticket type label.
+	 */
+	function tec_tickets_get_default_ticket_type_label( string $context = '' ): string {
+		/**
+		 * Allows customization of the default ticket type label.
+		 *
+		 * @since 5.8.0
+		 *
+		 * @param string $label   The default ticket type label, defaults to "Single Ticket".
+		 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.
+		 */
+		return apply_filters(
+			'tec_tickets_get_default_ticket_type_label',
+			_x( 'Single Ticket', 'default ticket type label', 'event-tickets' ),
+			$context
+		);
+	}
+}
+
+if ( ! function_exists( 'tec_tickets_get_default_ticket_type_label_lowercase' ) ) {
+	/**
+	 * Returns the filtered default Ticket Type label in lowercase.
+	 *
+	 * @since 5.8.0
+	 *
+	 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.
+	 *
+	 * @return string The lowercase version of default ticket type label.
+	 */
+	function tec_tickets_get_default_ticket_type_label_lowercase( string $context = '' ): string {
+		/**
+		 * Allows customization of the default ticket type label lowercase.
+		 *
+		 * @since 5.8.0
+		 *
+		 * @param string $label   The default ticket type label, defaults to "single ticket".
+		 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.
+		 */
+		return apply_filters(
+			'tec_tickets_get_default_ticket_type_label_lowercase',
+			_x( 'single ticket', 'default ticket type label in lowercase', 'event-tickets' ),
+			$context
+		);
+	}
+}
+
+if ( ! function_exists( 'tec_tickets_get_default_ticket_type_label_plural' ) ) {
+	/**
+	 * Returns the filtered default Ticket Type label in plural.
+	 *
+	 * @since 5.8.0
+	 *
+	 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.
+	 *
+	 * @return string The plural version of default ticket type label.
+	 */
+	function tec_tickets_get_default_ticket_type_label_plural( string $context = '' ): string {
+		/**
+		 * Allows customization of the default ticket type label plural.
+		 *
+		 * @since 5.8.0
+		 *
+		 * @param string $label   The default ticket type label, defaults to "Single Tickets".
+		 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.
+		 */
+		return apply_filters(
+			'tec_tickets_get_default_ticket_type_label_plural',
+			_x( 'Single Tickets', 'default ticket type label in plural', 'event-tickets' ),
+			$context
+		);
+	}
+}
+
+if ( ! function_exists( 'tec_tickets_get_default_ticket_type_label_plural_lowercase' ) ) {
+	/**
+	 * Returns the filtered default Ticket Type label in plural and lowercase.
+	 *
+	 * @since 5.8.0
+	 *
+	 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.
+	 *
+	 * @return string The plural and lowercase version of default ticket type label.
+	 */
+	function tec_tickets_get_default_ticket_type_label_plural_lowercase( string $context = '' ): string {
+		/**
+		 * Allows customization of the default ticket type label plural and lowercase.
+		 *
+		 * @since 5.8.0
+		 *
+		 * @param string $label   The default ticket type label, defaults to "single tickets".
+		 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.
+		 */
+		return apply_filters(
+			'tec_tickets_get_default_ticket_type_label_plural_lowercase',
+			_x( 'single tickets', 'default ticket type label in plural and lowercase', 'event-tickets' ),
+			$context
+		);
+	}
 }

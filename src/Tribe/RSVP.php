@@ -1704,9 +1704,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * {@inheritDoc}
 	 *
 	 * @since 4.7
+	 * @since 5.8.0 Added the $context parameter.
 	 */
-	public function get_tickets( $post_id ) {
-		$ticket_ids = $this->get_tickets_ids( $post_id );
+	public function get_tickets( $post_id, string $context = null ) {
+		$ticket_ids = $this->get_tickets_ids( $post_id, $context );
 		if ( ! $ticket_ids ) {
 			return [];
 		}
@@ -1860,8 +1861,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
 	 * Gets an individual ticket
 	 *
-	 * @param $event_id The event post ID.
-	 * @param $ticket_id The ticket ID.
+	 * @param int $event_id The event post ID.
+	 * @param int $ticket_id The ticket ID.
 	 *
 	 * @return null|Tribe__Tickets__Ticket_Object
 	 */

@@ -138,7 +138,7 @@ class Queue {
 
 		// if no items are processed or not processed clear the task.
 		if ( empty( $processed['processed'] ) && empty( $processed['not_processed'] ) ) {
-			tribe_update_option( $this->batch_offset_key, 'complete' );
+			update_option( $this->batch_offset_key, 'complete', false );
 
 			$this->clear_scheduled_task();
 
@@ -216,7 +216,7 @@ class Queue {
 	 * @return string|int Current offset number.
 	 */
 	public function get_current_offset() {
-		$current_offset = tribe_get_option( $this->batch_offset_key );
+		$current_offset = get_option( $this->batch_offset_key );
 
 		// Set up default current offset.
 		if ( false === $current_offset || '' === $current_offset ) {
@@ -244,7 +244,7 @@ class Queue {
 		$current_offset  = (int) $current_offset;
 		$current_offset += $not_processed;
 
-		tribe_update_option( $this->batch_offset_key, $current_offset );
+		update_option( $this->batch_offset_key, $current_offset, false );
 	}
 
 	/**

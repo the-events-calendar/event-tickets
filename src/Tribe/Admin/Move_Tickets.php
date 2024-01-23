@@ -344,12 +344,20 @@ class Tribe__Tickets__Admin__Move_Tickets {
 			'order'               => 'ASC',
 			's'                   => $params['search_terms'],
 			'post__not_in'        => $ignore_ids,
-			// 'post__not_recurring' => true, // Commented out while the ECP support is not in place.
+			'post__not_recurring' => true, // Supported only in CT1.
 		];
 
-		add_filter( 'posts_where', [ $this, 'exclude_recurring_events' ], 10, 2 );
+		/**
+		 * Filters the query arguments used to find posts that can serve as ticket hosts.
+		 *
+		 * @since 5.8.0
+		 *
+		 * @param array<string,mixed> $query_args The query arguments that will be used to find posts that can serve
+		 *                                        as ticket hosts.
+		 * @param array<string,mixed> $request    The request parameters that were used to generate the query arguments.
+		 */
+		$query_args = apply_filters( 'tec_tickets_find_ticket_type_host_posts_query_args', $query_args, $request );
 		$query = new \WP_Query( $query_args );
-		remove_filter( 'posts_where', [ $this, 'exclude_recurring_events' ] );
 
 		return $this->format_post_list( $query );
 	}
@@ -846,52 +854,5 @@ class Tribe__Tickets__Admin__Move_Tickets {
 
 			Tribe__Post_History::load( $issued_ticket_id )->add_entry( $history_message, $history_data );
 		}
-	}
-
-	/**
-	 * Excludes Recurring Events from the query taking Custom Tables V1 into account.
-	 *
-	 * This method is a hack to work around the lack of support for the `post__not_recurring` argument in CT1.
-	 * Once the `post__not_recurring` argument is supported in CT1, this method should be removed.
-	 *
-	 * @since 5.6.7
-	 *
-	 * @param string   $where The WHERE clause of the query.
-	 * @param WP_Query $query The WP_Query instance.
-	 *
-	 * @return string The WHERE clause of the query.
-	 */
-	public function exclude_recurring_events( string $where, WP_Query $query ): string {
-		if ( ! ( class_exists( ECP::class, false ) && tribe()->getVar( 'ct1_fully_activated' ) ) ) {
-			// Either ECP is not active, or CT1 is not fully activated.
-			return $where;
-		}
-
-		global $wpdb;
-
-		if ( $query instanceof Custom_Tables_Query ) {
-			// The query will join on the Occurrences table by default: leverage the `has_recurrence` column.
-			$occurrences = Occurrences::table_name( true );
-			$where       .= " AND ($occurrences.has_recurrence IS NULL OR $occurrences.has_recurrence = 0)";
-		} else {
-			/*
-			 * The query will likely not join on the Occurrences table and might be a query to fetch `all` post
-			 * types, not just Events. In this case, we use a sub-query to exclude from the results:
-			 * - Events that have a non-empty '_EventRecurrence' meta value.
-			 * - Events that have a non-empty 'post_parent' value.
-			 * The sub-query is pretty fast building on the indexed `wp_posts.ID`, `wp_posts.post_type`,
-			 * `wp_posts.post_parent` and `wp_postmeta.meta_key` columns; the last comparison happens on
-			 * `wp_postmeta.meta_value`, not indexed, but on the smallest possible set of rows.
-			 */
-			$where .= $wpdb->prepare( " AND $wpdb->posts.ID NOT IN (
-				SELECT DISTINCT(p.ID) FROM $wpdb->posts p
-				LEFT JOIN $wpdb->postmeta pm ON p.ID = pm.post_id AND pm.meta_key = '_EventRecurrence'
-				WHERE p.post_type = %s
-				AND ((p.post_parent IS NOT NULL AND p.post_parent != 0)
-				OR (pm.meta_value IS NOT NULL AND pm.meta_value != ''))
-			)", TEC::POSTTYPE );
-		}
-
-		return $where;
 	}
 }

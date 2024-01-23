@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a5946df5183560c2955c4b24d124ea6a",
+    "content-hash": "af0f8af7856431fb1db699019128e7b5",
     "packages": [],
     "packages-dev": [
         {
@@ -2851,20 +2851,20 @@
         },
         {
             "name": "lucatume/codeception-snapshot-assertions",
-            "version": "0.3.0",
+            "version": "0.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lucatume/codeception-snapshot-assertions.git",
-                "reference": "8de42335abf18e59cc8e84d27182559a2dbdd12e"
+                "reference": "dd231b17a4a7f74e33a27749edab64688e3ecc2b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lucatume/codeception-snapshot-assertions/zipball/8de42335abf18e59cc8e84d27182559a2dbdd12e",
-                "reference": "8de42335abf18e59cc8e84d27182559a2dbdd12e",
+                "url": "https://api.github.com/repos/lucatume/codeception-snapshot-assertions/zipball/dd231b17a4a7f74e33a27749edab64688e3ecc2b",
+                "reference": "dd231b17a4a7f74e33a27749edab64688e3ecc2b",
                 "shasum": ""
             },
             "require": {
-                "codeception/codeception": "^2.5 || ^3.0 || ^4.0",
+                "codeception/codeception": "^4.0",
                 "ext-dom": "*",
                 "gajus/dindent": "^2.0"
             },
@@ -2890,9 +2890,9 @@
             "description": "Snapshot assertions sugar for Codeception.",
             "support": {
                 "issues": "https://github.com/lucatume/codeception-snapshot-assertions/issues",
-                "source": "https://github.com/lucatume/codeception-snapshot-assertions/tree/0.3.0"
+                "source": "https://github.com/lucatume/codeception-snapshot-assertions/tree/0.4.0"
             },
-            "time": "2023-09-08T10:12:49+00:00"
+            "time": "2023-10-14T14:42:12+00:00"
         },
         {
             "name": "lucatume/wp-browser",
@@ -3370,16 +3370,16 @@
         },
         {
             "name": "nesbot/carbon",
-            "version": "2.72.1",
+            "version": "2.72.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/briannesbitt/Carbon.git",
-                "reference": "2b3b3db0a2d0556a177392ff1a3bf5608fa09f78"
+                "reference": "3e7edc41b58d65509baeb0d4a14c8fa41d627130"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/2b3b3db0a2d0556a177392ff1a3bf5608fa09f78",
-                "reference": "2b3b3db0a2d0556a177392ff1a3bf5608fa09f78",
+                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/3e7edc41b58d65509baeb0d4a14c8fa41d627130",
+                "reference": "3e7edc41b58d65509baeb0d4a14c8fa41d627130",
                 "shasum": ""
             },
             "require": {
@@ -3473,7 +3473,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-12-08T23:47:49+00:00"
+            "time": "2024-01-19T00:21:53+00:00"
         },
         {
             "name": "nilportugues/sql-query-formatter",
@@ -6179,12 +6179,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/stellarwp/coding-standards.git",
-                "reference": "9343d731daa61202e8990ca7ffd5a22082f119c2"
+                "reference": "7d7c3b9dbaf09ca55aa56e856cb0820ffad89602"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stellarwp/coding-standards/zipball/9343d731daa61202e8990ca7ffd5a22082f119c2",
-                "reference": "9343d731daa61202e8990ca7ffd5a22082f119c2",
+                "url": "https://api.github.com/repos/stellarwp/coding-standards/zipball/7d7c3b9dbaf09ca55aa56e856cb0820ffad89602",
+                "reference": "7d7c3b9dbaf09ca55aa56e856cb0820ffad89602",
                 "shasum": ""
             },
             "require": {
@@ -6226,7 +6226,7 @@
             "support": {
                 "source": "https://github.com/stellarwp/coding-standards/tree/main"
             },
-            "time": "2024-01-17T23:01:28+00:00"
+            "time": "2024-01-22T15:36:13+00:00"
         },
         {
             "name": "symfony/browser-kit",
@@ -7876,7 +7876,7 @@
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/the-events-calendar/tec-testing-facilities",
+                "url": "https://github.com/the-events-calendar/tec-testing-facilities.git",
                 "reference": "6c66235042c4389079a0c98ff8e70ad0ac227eb0"
             },
             "dist": {
@@ -7901,42 +7901,14 @@
             "default-branch": true,
             "type": "library",
             "autoload": {
-                "psr-4": {
-                    "Tribe\\Test\\": "src"
-                },
                 "files": [
                     "src/functions.php"
-                ]
+                ],
+                "psr-4": {
+                    "Tribe\\Test\\": "src"
+                }
             },
-            "scripts": {
-                "code-sniff": [
-                    "vendor/bin/phpcs --standard=./cs-ruleset.xml -s src"
-                ],
-                "code-fix": [
-                    "vendor/bin/phpcbf --standard=./cs-ruleset.xml src tests"
-                ],
-                "wp-install": [
-                    "bash bin/wp-install.sh"
-                ],
-                "wp-empty": [
-                    "bash bin/wp-empty.sh"
-                ],
-                "wp-db-dump": [
-                    "bash bin/wp-db-dump.sh"
-                ],
-                "wp-server-start": [
-                    "bash bin/wp-server-start.sh"
-                ],
-                "wp-server-stop": [
-                    "bash bin/wp-server-stop.sh"
-                ],
-                "php-logs": [
-                    "bash bin/php-logs.sh"
-                ],
-                "test": [
-                    "vendor/bin/codecept run unit && vendor/bin/codecept run wpunit"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "GPL-3.0+"
             ],
@@ -7947,6 +7919,10 @@
                 }
             ],
             "description": "Testing facilities, helpers and examples.",
+            "support": {
+                "issues": "https://github.com/the-events-calendar/tec-testing-facilities/issues",
+                "source": "https://github.com/the-events-calendar/tec-testing-facilities/tree/master"
+            },
             "time": "2022-05-20T15:21:07+00:00"
         },
         {
@@ -9007,16 +8983,16 @@
         },
         {
             "name": "wp-cli/extension-command",
-            "version": "v2.1.16",
+            "version": "v2.1.17",
             "source": {
                 "type": "git",
                 "url": "https://github.com/wp-cli/extension-command.git",
-                "reference": "71183254b1e403bc0f9b4a97fab48e284cfe1367"
+                "reference": "955bd947d95ef91da501179c7e561d229ab3cc19"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wp-cli/extension-command/zipball/71183254b1e403bc0f9b4a97fab48e284cfe1367",
-                "reference": "71183254b1e403bc0f9b4a97fab48e284cfe1367",
+                "url": "https://api.github.com/repos/wp-cli/extension-command/zipball/955bd947d95ef91da501179c7e561d229ab3cc19",
+                "reference": "955bd947d95ef91da501179c7e561d229ab3cc19",
                 "shasum": ""
             },
             "require": {
@@ -9099,9 +9075,9 @@
             "homepage": "https://github.com/wp-cli/extension-command",
             "support": {
                 "issues": "https://github.com/wp-cli/extension-command/issues",
-                "source": "https://github.com/wp-cli/extension-command/tree/v2.1.16"
+                "source": "https://github.com/wp-cli/extension-command/tree/v2.1.17"
             },
-            "time": "2023-11-10T12:24:35+00:00"
+            "time": "2024-01-11T11:03:21+00:00"
         },
         {
             "name": "wp-cli/i18n-command",

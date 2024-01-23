@@ -1,0 +1,8 @@
+{
+    "confirmation": {
+        "series_pass": {
+            "singular": "Please confirm you would like to delete this attendee from the Series and all events.",
+            "plural": "Please confirm you would like to delete these attendees.\nRecords for Series Pass attendees will be deleted from the Series and all events."
+        }
+    }
+}

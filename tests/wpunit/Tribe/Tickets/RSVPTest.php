@@ -1093,4 +1093,36 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 			'order_id'     => RSVP::generate_order_id(),
 		], $overrides );
 	}
+
+	/**
+	 * It should set context correctly when getting tickets
+	 *
+	 * @test
+	 */
+	public function should_set_context_correctly_when_getting_tickets(): void {
+		$post_id = tribe_events()->set_args( [
+			'title'      => 'Test Event',
+			'status'     => 'publish',
+			'start_date' => '2020-01-01 00:00:00',
+			'duration'   => 2 * HOUR_IN_SECONDS,
+		] )->create()->ID;
+
+		$rsvp = RSVP::get_instance();
+
+		$request_context = '';
+		add_filter( 'tribe_repository_tickets_query_args', function ( $query_args, $query, $repository ) use ( &$request_context ) {
+			$request_context = $repository->get_request_context();
+
+			return $query_args;
+		}, 10, 3 );
+
+		$rsvp->get_tickets( $post_id );
+
+		$this->assertNull( $request_context );
+
+		// Run another query, this time setting the context.
+		$rsvp->get_tickets( $post_id, 'some-context' );
+
+		$this->assertEquals( 'some-context', $request_context );
+	}
 }

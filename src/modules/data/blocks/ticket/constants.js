@@ -31,6 +31,7 @@ export const TICKET_ORDERS_PAGE_SLUG = {
 
 export const UNLIMITED = 'unlimited';
 export const SHARED = 'shared';
+export const GLOBAL = 'global'; // The name used by the backend to indicate shared capacity.
 export const INDEPENDENT = 'independent';
 export const CAPPED = 'capped';
 export const OWN = 'own';

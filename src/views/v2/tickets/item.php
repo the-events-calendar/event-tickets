@@ -106,8 +106,8 @@ $has_shared_cap = isset( $has_shared_cap ) ? $has_shared_cap : $this->get( 'has_
 
 $attributes = [
 	'data-ticket-id'      => (string) $ticket->ID,
-	'data-available'      => $this->get( 'data_available' ),
-	'data-has-shared-cap' => $this->get( 'data_has_shared_cap' ),
+	'data-available'      => (string)$this->get( 'data_available' ),
+	'data-has-shared-cap' => (string)$this->get( 'data_has_shared_cap' ),
 	'data-ticket-price'   => (string) $ticket->price,
 ];
 

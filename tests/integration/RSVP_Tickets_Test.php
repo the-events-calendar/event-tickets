@@ -4,6 +4,15 @@ use Tribe__Tickets__RSVP as RSVP;
 
 class RSVP_Tickets_Test extends \Codeception\TestCase\WPTestCase {
 	/**
+	 * @before
+	 */
+	public function ensure_ticketable_post_types(): void {
+		$ticketable   = tribe_get_option( 'ticket-enabled-post-types', [] );
+		$ticketable[] = 'post';
+		tribe_update_option( 'ticket-enabled-post-types', array_values( array_unique( $ticketable ) ) );
+	}
+
+	/**
 	 * When a ticket has a stock value, make sure the object returns expected value druing the life of
 	 * the in-stock values
 	 */

@@ -109,6 +109,19 @@ class Ticket_Cache_Controller extends Controller {
 			return;
 		}
 
+		// Delete caches associated with the Ticket Object not stored in WordPress post cache.
+		$class = \Tribe__Tickets__Ticket_Object::class;
+		foreach (
+			[
+				$class . '::is_in_stock-' . $post_id,
+				$class . '::inventory-' . $post_id,
+				$class . '::available-' . $post_id,
+				$class . '::capacity-' . $post_id,
+			] as $cache_key
+		) {
+			tribe_cache()->delete( $cache_key, \Tribe__Cache_Listener::TRIGGER_SAVE_POST );
+		}
+
 		// Checking the post type would require more time (due to filtering) than trying to delete a non-existing key.
 		wp_cache_delete( (int) $post_id, 'tec_tickets' );
 	}

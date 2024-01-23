@@ -10,7 +10,7 @@ namespace TEC\Tickets\Commerce;
 
 use TEC\Common\Contracts\Service_Provider;
 use TEC\Tickets\Commerce\Gateways;
-use \Tribe__Tickets__Main as Tickets_Plugin;
+use Tribe__Tickets__Main as Tickets_Plugin;
 
 
 /**
@@ -78,6 +78,11 @@ class Provider extends Service_Provider {
 
 		// Register and add hooks for admin notices.
 		$this->container->register( Admin\Notices::class );
+
+		$this->container->register_on_action(
+			'tec_events_pro_custom_tables_v1_fully_activated',
+			Custom_Tables\V1\Provider::class
+		);
 
 		// Cache invalidation.
 		add_filter( 'tec_cache_listener_save_post_types', [ $this, 'filter_cache_listener_save_post_types' ] );

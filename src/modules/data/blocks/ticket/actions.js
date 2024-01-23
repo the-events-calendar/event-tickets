@@ -2,6 +2,7 @@
  * Internal dependencies
  */
 import { types } from '@moderntribe/tickets/data/blocks/ticket';
+import { put } from "redux-saga/effects";
 
 //
 // ─── TICKETS ACTIONS ────────────────────────────────────────────────────────────
@@ -64,6 +65,14 @@ export const setTicketsTempSharedCapacity = ( tempSharedCapacity ) => ( {
 	payload: {
 		tempSharedCapacity,
 	},
+} );
+
+//
+// ─── TICKETS SAGA ACTIONS ────────────────────────────────────────────────────────────
+//
+
+export const updateUneditableTickets = () => ( {
+	type: types.UPDATE_UNEDITABLE_TICKETS,
 } );
 
 //
@@ -225,6 +234,14 @@ export const setTicketCapacity = ( clientId, capacity ) => ( {
 	payload: {
 		clientId,
 		capacity,
+	},
+} );
+
+export const setTicketType = ( clientId, type ) => ( {
+	type: types.SET_TICKET_TYPE,
+	payload: {
+		clientId,
+		type,
 	},
 } );
 
@@ -500,6 +517,18 @@ export const setTicketIsSelected = ( clientId, isSelected ) => ( {
 		clientId,
 		isSelected,
 	},
+} );
+
+export const setUneditableTickets = ( uneditableTickets ) => ( {
+	type: types.SET_UNEDITABLE_TICKETS,
+	payload: {
+		uneditableTickets,
+	}
+} );
+
+export const setUneditableTicketsLoading = ( loading ) => ( {
+	type: types.SET_UNEDITABLE_TICKETS_LOADING,
+	loading
 } );
 
 //

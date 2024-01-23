@@ -15,16 +15,7 @@ class Tribe__Tickets__Admin__Notices {
 	 * @since 4.7
 	 */
 	public function hook() {
-		add_action( 'admin_init', [ $this, 'maybe_display_notices' ] );
-	}
-
-	/**
-	 * Maybe display admin notices.
-	 *
-	 * @since 4.12.3
-	 */
-	public function maybe_display_notices() {
-		// Bail on the unexpected
+		// Bail if some missing component does not exist.
 		if (
 			! function_exists( 'tribe_installed_before' )
 			|| ! class_exists( 'Tribe__Admin__Notices' )
@@ -32,13 +23,11 @@ class Tribe__Tickets__Admin__Notices {
 			return;
 		}
 
-		include_once ABSPATH . 'wp-admin/includes/plugin.php';
-
-		$this->maybe_display_rsvp_new_views_options_notice();
-		$this->maybe_display_classic_editor_ecp_recurring_tickets_notice();
-		$this->maybe_display_plus_commerce_notice();
-		$this->maybe_display_unsupported_currency_notice();
-		$this->maybe_display_paystack_notice();
+		add_action( 'admin_init', [ $this, 'maybe_display_rsvp_new_views_options_notice' ] );
+		add_action( 'admin_init', [ $this, 'maybe_display_classic_editor_ecp_recurring_tickets_notice' ] );
+		add_action( 'admin_init', [ $this, 'maybe_display_plus_commerce_notice' ] );
+		add_action( 'admin_init', [ $this, 'maybe_display_unsupported_currency_notice' ] );
+		add_action( 'admin_init', [ $this, 'maybe_display_paystack_notice' ] );
 	}
 
 	/**
@@ -97,7 +86,7 @@ class Tribe__Tickets__Admin__Notices {
 
 		// Build notice text.
 		$text = sprintf(
-			// translators: %1$s: RSVP singular text, %2$s: Link to settings page.
+		// translators: %1$s: RSVP singular text, %2$s: Link to settings page.
 			__( 'With this new version, we\'ve introduced newly redesigned %1$s frontend views. If you have customized the %1$s section, this update will likely impact your customizations.
 
 			To upgrade to the new frontend views, please enable them in the %2$s.', 'event-tickets' ),
@@ -152,7 +141,7 @@ class Tribe__Tickets__Admin__Notices {
 		}
 
 		$heading = sprintf(
-			// Translators: %1$s: dynamic "Tickets" text, %2$s: dynamic "Event" text.
+		// Translators: %1$s: dynamic "Tickets" text, %2$s: dynamic "Event" text.
 			_x(
 				'%1$s for Recurring %2$s',
 				'heading for classic editor notice if Events Calendar Pro event has tickets',
@@ -163,7 +152,7 @@ class Tribe__Tickets__Admin__Notices {
 		);
 
 		$text = sprintf(
-			// Translators: %1$s: dynamic "event" text, %2$s: dynamic "ticket" text, %3$s: dynamic "tickets" text, %4$s: dynamic "RSVP" text, %5$s: dynamic "Ticket" text.
+		// Translators: %1$s: dynamic "event" text, %2$s: dynamic "ticket" text, %3$s: dynamic "tickets" text, %4$s: dynamic "RSVP" text, %5$s: dynamic "Ticket" text.
 			_x(
 				'Heads up! You saved a recurring %1$s with a %2$s. Please note that we do not currently support recurring %3$s. Only the first instance of this recurring series will have your %4$s or %5$s displayed.',
 				'text for classic editor notice if Events Calendar Pro event has tickets',
@@ -229,7 +218,7 @@ class Tribe__Tickets__Admin__Notices {
 			}
 
 			$message = sprintf(
-				// translators: %1$s: The ticket commerce provider (WooCommerce, etc); %2$s: The Event Tickets Plus plugin name and link.
+			// translators: %1$s: The ticket commerce provider (WooCommerce, etc); %2$s: The Event Tickets Plus plugin name and link.
 				esc_html__( 'Event Tickets does not support ticket sales via third party ecommerce plugins. If you want to sell tickets with %1$s, please purchase a license for %2$s.', 'event-tickets' ),
 				esc_html( $provider ),
 				$plus
@@ -292,7 +281,7 @@ class Tribe__Tickets__Admin__Notices {
 		}
 
 		// Bail if we aren't in the correct timezone.
-		$timezone = get_option( 'timezone_string' );
+		$timezone           = get_option( 'timezone_string' );
 		$paystack_timezones = [
 			'Africa/Lagos',
 			'Africa/Accra',
@@ -316,7 +305,7 @@ class Tribe__Tickets__Admin__Notices {
 
 		$text = _x(
 			sprintf(
-				// Translators: %s: dynamic "Learn more" link.
+			// Translators: %s: dynamic "Learn more" link.
 				'Install and activate the Paystack for The Events Calendar plugin to start selling tickets with Paystack using our free commerce solution, Tickets Commerce. %s',
 				$learn_more_link
 			),

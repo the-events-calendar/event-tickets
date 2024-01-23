@@ -57,19 +57,20 @@ foreach ( $tickets_on_sale as $key => $ticket ) {
 
 	$has_shared_cap = $handler->has_shared_capacity( $ticket );
 
+	$ticket_max_purchase = $handler->get_ticket_max_purchase( $ticket->ID );
 	$this->template(
 		'v2/tickets/item',
 		[
 			'ticket'              => $ticket,
 			'key'                 => $key,
-			'data_available'      => 0 === $handler->get_ticket_max_purchase( $ticket->ID ) ? 'false' : 'true',
+			'data_available'      => 0 === $ticket_max_purchase ? 'false' : 'true',
 			'has_shared_cap'      => $has_shared_cap,
 			'data_has_shared_cap' => $has_shared_cap ? 'true' : 'false',
 			'currency_symbol'     => $currency->get_currency_symbol( $ticket->ID, true ),
 			'show_unlimited'      => (bool) $show_unlimited,
 			'available_count'     => $available_count,
 			'is_unlimited'        => - 1 === $available_count,
-			'max_at_a_time'       => $handler->get_ticket_max_purchase( $ticket->ID ),
+			'max_at_a_time'       => $ticket_max_purchase,
 		]
 	);
 }

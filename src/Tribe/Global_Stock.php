@@ -56,6 +56,16 @@ class Tribe__Tickets__Global_Stock {
 	const OWN_STOCK_MODE = 'own';
 
 	/**
+	 * Flag used to indicate that a ticket will use the global stock,
+	 * but that the stock is unlimited.
+	 *
+	 * @since 5.8.0
+	 *
+	 * @var string
+	 */
+	const UNLIMITED_STOCK_MODE = 'unlimited';
+
+	/**
 	 * Post meta key used to store the ticket global stock mode.
 	 *
 	 * @since 4.6

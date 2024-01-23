@@ -37,6 +37,9 @@ src/resources/**/app
 src/resources/css
 src/resources/js/**/*.min.js
 
+# Build files
+build
+
 # build files for js minification
 compiler.jar
 *.ps1
@@ -46,3 +49,7 @@ compiler.jar
 
 # get from translate.wordpress.org as needed
 lang/*.po
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

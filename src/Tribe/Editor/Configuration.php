@@ -94,14 +94,42 @@ class Tribe__Tickets__Editor__Configuration implements Tribe__Editor__Configurat
 	 *
 	 * @since 4.9
 	 *
-	 * @return array
+	 * @return array<string,mixed> The data to be localized for the Tickets Block Editor components.
 	 */
 	public function localize() {
-		return [
-			'providers'        => $this->get_providers(),
-			'default_provider' => Tribe__Tickets__Tickets::get_default_module(),
-			'default_currency' => tribe_get_option( 'defaultCurrencySymbol', '$' ),
+		$localized =  [
+			'providers'                 => $this->get_providers(),
+			'default_provider'          => Tribe__Tickets__Tickets::get_default_module(),
+			'default_currency'          => tribe_get_option( 'defaultCurrencySymbol', '$' ),
+			'multiple_providers_notice' => _x(
+					'It looks like you have multiple ecommerce plugins active. ' .
+					'We recommend running only one at a time. However, if you need to run multiple, please select which ' .
+					'one to use to sell tickets for this event. ',
+					'The notice displayed when multiple ecommerce plugins are active in Block Editor context.',
+					'event-tickets'
+				) . '<em> ' . _x(
+					'Note: adjusting this setting will only impact new tickets. Existing tickets will not change. We highly recommend that all tickets for one event use the same ecommerce plugin.',
+					'The note displayed when multiple ecommerce plugins are active in Block Editor context.',
+					'event-tickets'
+				) . '</em>',
+			'choice_disabled'           => false,
+			'ticketTypes' => [
+				'default' => [
+					'title' => tribe_get_ticket_label_plural('editor-configuration'),
+				]
+			]
 		];
+
+		/**
+		 * Filters the localized data for the editor configuration.
+		 *
+		 * @since 5.8.0
+		 *
+		 * @param array<string,mixed> $localized The localized data for the editor configuration.
+		 */
+		$localized = apply_filters( 'tec_tickets_editor_configuration_localized_data', $localized );
+
+		return $localized;
 	}
 
 	/**

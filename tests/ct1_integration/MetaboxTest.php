@@ -3,7 +3,6 @@
 namespace Tribe\Tickets;
 
 use Codeception\TestCase\WPTestCase;
-use TEC\Events\Custom_Tables\V1\Models\Event;
 use TEC\Events\Custom_Tables\V1\Models\Occurrence;
 use Tribe\Events\Test\Traits\CT1\CT1_Fixtures;
 use Tribe__Tickets__Metabox;
@@ -18,22 +17,6 @@ class MetaboxTest extends WPTestCase {
 		parent::_setUp();
 		$user = static::factory()->user->create(['role' => 'administrator']);
 		wp_set_current_user( $user );
-	}
-
-	/**
-	 * This method _should_ be provided by the base CT1 test utility, but it's currently bugged.
-	 *
-	 * @todo Remove this when the base CT1 test utility is fixed.
-	 */
-	private function given_a_migrated_single_event( $args = [] ) {
-		$post = $this->given_a_non_migrated_single_event( $args );
-		Event::upsert( [ 'post_id' ], Event::data_from_post( $post->ID ) );
-		$event = Event::find( $post->ID, 'post_id' );
-		$this->assertInstanceOf( Event::class, $event );
-		$event->occurrences()->save_occurrences();
-		$this->assertEquals( 1, Occurrence::where( 'post_id', '=', $post->ID )->count() );
-
-		return $post;
 	}
 
 	public function given_an_event_with_ticket_request( $ticket_request, $nonce_action ) {
