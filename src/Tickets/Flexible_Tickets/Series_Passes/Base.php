@@ -603,25 +603,29 @@ class Base extends Controller {
 	 * Filters the start date for a series to use the start date of the first event in the series.
 	 *
 	 * @since 5.8.0
-	 * @since TBD Changed the strict type of the $display_time and $date_format parameter to mixed.
+	 * @since TBD Removed strict type casting from signature.
 	 *
 	 * @param string  $start_date   The start date.
 	 * @param WP_Post $series       The series post object.
-	 * @param mixed   $display_time Whether to display the time.
-	 * @param mixed   $date_format  The date format.
+	 * @param bool    $display_time Whether to display the time.
+	 * @param string  $date_format  The date format.
 	 *
 	 * @return string The updated start date.
 	 */
-	public function filter_start_date_for_series( string $start_date, WP_Post $series, $display_time, $date_format ): string {
+	public function filter_start_date_for_series( $start_date, $series, $display_time, $date_format ) {
 		if ( get_post_type( $series ) !== Series_Post_Type::POSTTYPE ) {
 			return $start_date;
 		}
 		
+		if ( ! is_string( $start_date ) || ! is_bool( $display_time ) || ! is_string( $date_format ) ) {
+			return $start_date;
+		}
+		
 		$first_event = tribe_events()->where( 'series', $series->ID )
-									->order_by( 'event_date', 'ASC' )
-									->per_page( - 1 )
-									->first();
-
+		                             ->order_by( 'event_date', 'ASC' )
+		                             ->per_page( - 1 )
+		                             ->first();
+		
 		if ( empty( $first_event ) ) {
 			return '';
 		}
@@ -633,25 +637,29 @@ class Base extends Controller {
 	 * Filters the end date for a series to use the start date of the last event in the series.
 	 *
 	 * @since 5.8.0
-	 * @since TBD Changed the strict type of the $display_time and $date_format parameter to mixed.
+	 * @since TBD Removed strict type casting from signature.
 	 *
 	 * @param string  $end_date     The end date.
 	 * @param WP_Post $series       The series post object.
-	 * @param mixed   $display_time Whether to display the time.
-	 * @param mixed   $date_format  The date format.
+	 * @param bool    $display_time Whether to display the time.
+	 * @param string  $date_format  The date format.
 	 *
 	 * @return string The updated end date.
 	 */
-	public function filter_end_date_for_series( string $end_date, WP_Post $series, $display_time, $date_format ): string {
+	public function filter_end_date_for_series( $end_date, $series, $display_time, $date_format ) {
 		if ( get_post_type( $series ) !== Series_Post_Type::POSTTYPE ) {
 			return $end_date;
 		}
-
+		
+		if ( ! is_string( $end_date ) || ! is_bool( $display_time ) || ! is_string( $date_format ) ) {
+			return $end_date;
+		}
+		
 		$last_event = tribe_events()->where( 'series', $series->ID )
-									->order_by( 'event_date', 'ASC' )
-									->per_page( - 1 )
-									->last();
-
+		                            ->order_by( 'event_date', 'ASC' )
+		                            ->per_page( - 1 )
+		                            ->last();
+		
 		if ( empty( $last_event ) ) {
 			return '';
 		}
