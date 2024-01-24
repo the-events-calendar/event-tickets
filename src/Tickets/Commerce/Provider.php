@@ -28,7 +28,7 @@ class Provider extends Service_Provider {
 	 */
 	public function register() {
 		// Specifically prevents anything else from loading.
-		if ( ! tec_tickets_commerce_is_enabled() ) {
+		if ( ! \tec_tickets_commerce_is_enabled() ) {
 			return;
 		}
 
