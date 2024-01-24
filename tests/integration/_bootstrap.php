@@ -14,6 +14,7 @@ remove_action( 'tribe_tickets_promoter_trigger', [ tribe( Dispatcher::class ), '
 
 // Ensure Ticket Commerce is enabled.
 if ( ! function_exists( 'tec_tickets_commerce_is_enabled' ) || ! tec_tickets_commerce_is_enabled() ) {
+	require_once trailingslashit( EVENT_TICKETS_DIR ) . 'src/template-tags/commerce.php';
 	add_filter( 'tec_tickets_commerce_is_enabled', '__return_true', 100 );
 	tribe()->register( Commerce_Provider::class );
 }
