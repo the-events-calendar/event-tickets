@@ -228,7 +228,7 @@ class Plugin_Data_Subsection extends Abstract_Info_Subsection {
 	 *
 	 * @return string List of previous versions.
 	 */
-	private function get_previous_versions(): string {
+	private function get_previous_versions() {
 		return Arr::to_list(
 			array_filter(
 				(array) tribe_get_option(
@@ -404,7 +404,7 @@ class Plugin_Data_Subsection extends Abstract_Info_Subsection {
 	 * @return array Associative array with formatted average, max, and min ticket prices.
 	 */
 	private function get_formatted_prices(): array {
-		$ticket_prices = tribe( 'tickets.event-repository' )->per_page( -1 )->where( 'has_tickets' )->pluck( 'cost' );
+		$ticket_prices = tribe( 'tickets.ticket-repository' )->per_page( -1 )->where( 'has_tickets' )->pluck( 'cost' );
 
 		$total_and_count = $this->calculate_total_and_count( $ticket_prices );
 		$max_price       = $this->calculate_max_price( $ticket_prices );
