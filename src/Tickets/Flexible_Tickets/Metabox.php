@@ -131,12 +131,32 @@ class Metabox {
 		}
 
 		$series = reset( $series_ids );
+		
+		$helpler_link_text = sprintf(
+			// Translators: %s is the label for the link.
+			esc_html__( 'Learn more about %s', 'event-tickets' ),
+			tec_tickets_get_series_pass_plural_uppercase()
+		);
+		
+		$helper_link = sprintf(
+			// Translators: %1$s is a link to the documentation, %2$s is the label for the link.
+			'<a href="%1$s" target="_blank" rel="noreferrer noopener">%2$s</a>',
+			esc_url( 'https://evnt.is/-series-passes' ),
+			esc_html( $helpler_link_text )
+		);
+		
+		$series_edit_link = sprintf(
+			// Translators: %1$s is a link to the series edit screen, %2$s is the title of the series.
+			'<a href="%1$s" target="_blank" rel="noreferrer noopener">%2$s</a>',
+			esc_url( get_edit_post_link( $series ) ),
+			esc_html( get_the_title( $series ) )
+		);
 
 		$this->admin_views->template(
 			'series-pass-event-notice',
 			[
-				'series_edit_link' => get_edit_post_link( $series ),
-				'series_title'     => get_the_title( $series ),
+				'series_edit_link' => $series_edit_link,
+				'helper_link'      => $helper_link,
 			] 
 		);
 	}
@@ -284,6 +304,31 @@ class Metabox {
 			tribe_get_event_label_singular_lowercase(),
 			tec_tickets_get_series_pass_plural_uppercase( 'ticket editor message' ),
 			$learn_more_link,
+		);
+	}
+	
+	/**
+	 * Returns the warning message when there is no commerce provider configured.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The warning message when there is no commerce provider configured.
+	 */
+	public function get_no_commerce_provider_warning_message(): string {
+		$kb_url = 'https://evnt.is/1ao5';
+		
+		/* translators: %1$s: URL for help link, %2$s: Label for help link. */
+		$link = sprintf(
+			'<a href="%1$s" target="_blank" rel="noopener noreferrer">%2$s</a>',
+			esc_url( $kb_url ),
+			esc_html_x( 'Learn More', 'Helper link in Ticket Editor', 'event-tickets' )
+		);
+		
+		return sprintf(
+		/* Translators: %1$s: link to help article. */
+			__( 'There is no payment gateway configured. To create %1$s, you\'ll need to enable and configure an ecommerce solution. %2$s', 'event-tickets' ),
+			tec_tickets_get_series_pass_plural_uppercase( 'ticket editor message' ),
+			$link
 		);
 	}
 }

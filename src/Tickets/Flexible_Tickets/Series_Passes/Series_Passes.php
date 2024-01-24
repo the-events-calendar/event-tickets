@@ -300,6 +300,7 @@ class Series_Passes extends Controller {
 		add_filter( 'tec_tickets_attendee_checkin', [ $this, 'handle_series_pass_attendee_checkin' ], 10, 2 );
 
 		add_filter( 'tribe_template_context:tickets/admin-views/editor/recurring-warning', [ $this, 'filter_recurring_warning_message' ], 10, 4 );
+		add_filter( 'tec_tickets_commerce_provider_missing_warning_message', [ $this, 'filter_no_commerce_provider_warning_message' ] );
 	}
 
 	/**
@@ -410,6 +411,7 @@ class Series_Passes extends Controller {
 		remove_action( 'generate_rewrite_rules', [ $this, 'include_rewrite_rules_for_series_my_tickets_page' ] );
 
 		remove_filter( 'tribe_template_context:tickets/admin-views/editor/recurring-warning', [ $this, 'filter_recurring_warning_message' ], 10, 4 );
+		remove_filter( 'tec_tickets_commerce_provider_missing_warning_message', [ $this, 'filter_no_commerce_provider_warning_message' ] );
 	}
 
 	/**
@@ -1232,5 +1234,22 @@ class Series_Passes extends Controller {
 		}
 
 		return $this->metabox->get_recurring_warning_message( $context );
+	}
+	
+	/**
+	 * Filter the message to display when no commerce provider is active.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $message The message to filter.
+	 *
+	 * @return string The filtered message.
+	 */
+	public function filter_no_commerce_provider_warning_message( string $message ): string {
+		if ( get_post_type() !== Series_Post_Type::POSTTYPE ) {
+			return $message;
+		}
+		
+		return $this->metabox->get_no_commerce_provider_warning_message();
 	}
 }
