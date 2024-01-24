@@ -218,10 +218,9 @@ jobs:
         if: steps.skip.outputs.value != 1
         run: |
           ${SLIC_BIN} up wordpress
-          ${SLIC_BIN} site-cli core version
-      #    ${SLIC_BIN} wp core version
-      #    ${SLIC_BIN} wp core update --force --version=6.4.1
-      #    ${SLIC_BIN} wp core version
+          ${SLIC_BIN} wp core version
+          ${SLIC_BIN} wp core update --force --version=6.4.1
+          ${SLIC_BIN} wp core version
       # ------------------------------------------------------------------------------
       # Install and activate TwentyTwenty
       # ------------------------------------------------------------------------------
