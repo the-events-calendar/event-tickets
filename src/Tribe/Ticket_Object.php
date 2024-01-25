@@ -669,8 +669,11 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 
 			// Do the math!
 			$inventory[] = $capacity - $attendees_count;
+			$event_id    = $this->get_event_id();
 
-			$event_id = $this->get_event()->ID;
+			if ( empty( $event_id ) ) {
+				return $inventory;
+			}
 
 			// Calculate and verify the Event Inventory
 			if (
