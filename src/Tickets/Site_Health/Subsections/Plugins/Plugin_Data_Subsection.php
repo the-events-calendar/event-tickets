@@ -229,15 +229,22 @@ class Plugin_Data_Subsection extends Abstract_Info_Subsection {
 	 * @return string List of previous versions.
 	 */
 	private function get_previous_versions(): string {
+		$previous_versions = array_filter(
+			(array) tribe_get_option(
+				'previous_event_tickets_versions',
+				[]
+			)
+		);
+
+		if ( empty( $previous_versions ) ) {
+			return '';
+		}
+
 		return Arr::to_list(
-			array_filter(
-				(array) tribe_get_option(
-					'previous_event_tickets_versions',
-					[]
-				)
-			),
+			$previous_versions,
 			', '
 		);
+
 	}
 
 	/**
