@@ -63,7 +63,7 @@ class Tribe__Tickets__Tickets_View {
 	public function prevent_page_redirect( $query ) {
 		$is_correct_page = isset( $query->query_vars['tribe-edit-orders'] ) && $query->query_vars['tribe-edit-orders'];
 
-		if ( ! $is_correct_page ) {
+		if ( ! $is_correct_page || ! $this->is_edit_page() ) {
 			return;
 		}
 
@@ -113,6 +113,8 @@ class Tribe__Tickets__Tickets_View {
 	/**
 	 * Gets the List of Rewrite rules we are using here.
 	 *
+	 * @since TBD Added filter to allow users to add additional rewrite rules for the My Tickets page.
+	 *
 	 * @return array
 	 */
 	public function rewrite_rules_array() {
@@ -121,8 +123,13 @@ class Tribe__Tickets__Tickets_View {
 		$rules = [
 			sanitize_title_with_dashes( $bases['tickets'][0] ) . '/([0-9]{1,})/?' => 'index.php?p=$matches[1]&tribe-edit-orders=1',
 		];
-
-		return $rules;
+		
+		/**
+		 * Filter the rewrite rules for the My Tickets page.
+		 *
+		 * @param array $rules The rewrite rules for the My Tickets page.
+		 */
+		return apply_filters( 'tec_tickets_my_tickets_page_rewrite_rules', $rules );
 	}
 
 	/**
