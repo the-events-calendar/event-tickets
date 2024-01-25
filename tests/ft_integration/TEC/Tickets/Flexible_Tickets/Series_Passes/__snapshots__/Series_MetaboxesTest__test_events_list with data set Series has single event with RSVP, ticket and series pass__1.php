@@ -20,15 +20,16 @@
 		<div class=\'tablenav-pages one-page\'><span class="displaying-num">1 item</span>
 <span class=\'pagination-links\'><span class="tablenav-pages-navspan button disabled" aria-hidden="true">&laquo;</span>
 <span class="tablenav-pages-navspan button disabled" aria-hidden="true">&lsaquo;</span>
-<span class="paging-input"><label for="current-page-selector" class="screen-reader-text">Current Page</label><input class=\'current-page\' id=\'current-page-selector\' type=\'text\' name=\'paged\' value=\'1\' size=\'1\' aria-describedby=\'table-paging\' /><span class=\'tablenav-paging-text\'> of <span class=\'total-pages\'>1</span></span></span>
+<span class="paging-input"><label for="current-page-selector" class="screen-reader-text">Current Page</label><input class=\'current-page\' id=\'current-page-selector\' type=\'text\'
+					name=\'paged\' value=\'1\' size=\'1\' aria-describedby=\'table-paging\' /><span class=\'tablenav-paging-text\'> of <span class=\'total-pages\'>1</span></span></span>
 <span class="tablenav-pages-navspan button disabled" aria-hidden="true">&rsaquo;</span>
 <span class="tablenav-pages-navspan button disabled" aria-hidden="true">&raquo;</span></span></div>
 			<br class="clear"/>
 		</div>
 		<table class="wp-list-table widefat fixed striped table-view-list series">
-	<thead>
+			<thead>
 	<tr>
-		<th scope="col" id=\'title\' class=\'manage-column column-title column-primary\'>Title</th><th scope="col" id=\'ticket_types\' class=\'manage-column column-ticket_types\'>Attached Tickets</th><th scope="col" id=\'actions\' class=\'manage-column column-actions\'>Actions</th>	</tr>
+		<th scope="col" id=\'title\' class=\'manage-column column-title column-primary\'  >Title</th><th scope="col" id=\'ticket_types\' class=\'manage-column column-ticket_types\'  >Attached Tickets</th><th scope="col" id=\'actions\' class=\'manage-column column-actions\'  >Actions</th>	</tr>
 	</thead>
 
 	<tbody id="the-list"
@@ -55,7 +56,7 @@
 
 	<tfoot>
 	<tr>
-		<th scope="col"  class=\'manage-column column-title column-primary\'>Title</th><th scope="col"  class=\'manage-column column-ticket_types\'>Attached Tickets</th><th scope="col"  class=\'manage-column column-actions\'>Actions</th>	</tr>
+		<th scope="col"  class=\'manage-column column-title column-primary\'  >Title</th><th scope="col"  class=\'manage-column column-ticket_types\'  >Attached Tickets</th><th scope="col"  class=\'manage-column column-actions\'  >Actions</th>	</tr>
 	</tfoot>
 
 </table>
