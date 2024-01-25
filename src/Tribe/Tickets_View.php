@@ -224,9 +224,8 @@ class Tribe__Tickets__Tickets_View {
 
 		// After editing the values, we update the transient.
 		Tribe__Post_Transient::instance()->delete( $post_id, Tribe__Tickets__Tickets::ATTENDEES_CACHE );
-
-		// If it's not events CPT
-		$url = $this->get_tickets_page_url( $post_id, ! $is_correct_page );
+  
+		$url = $this->get_tickets_page_url( $post_id );
 		$url = add_query_arg( 'tribe_updated', 1, $url );
 		wp_safe_redirect( esc_url_raw( $url ) );
 		exit;
@@ -1365,7 +1364,6 @@ class Tribe__Tickets__Tickets_View {
 	public function get_my_tickets_link_data( int $event_id, int $user_id ): array {
 		$event              = get_post( $event_id );
 		$post_type          = get_post_type_object( $event->post_type );
-		$is_event_page      = class_exists( 'Tribe__Events__Main' ) && ( Tribe__Events__Main::POSTTYPE === $event->post_type || 'tribe_event_series' === $event->post_type );
 		$post_type_singular = $post_type ? $post_type->labels->singular_name : _x( 'Post', 'fallback post type singular name', 'event-tickets' );
 		$counters           = [];
 		$rsvp_count         = $this->count_rsvp_attendees( $event_id, $user_id );
@@ -1429,7 +1427,7 @@ class Tribe__Tickets__Tickets_View {
 			'total_count' => $total_count,
 			'message'     => $message,
 			'link_label'  => $link_label,
-			'link'        => $this->get_tickets_page_url( $event_id, $is_event_page ),
+			'link'        => $this->get_tickets_page_url( $event_id ),
 		];
 	}
 }
