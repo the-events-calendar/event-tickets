@@ -165,6 +165,8 @@ class Tribe__Tickets__Tickets_View {
 
 	/**
 	 * Update the RSVP and Tickets values for each Attendee.
+	 *
+	 * @since TBD Removed optional param from get_tickets_page_url call.
 	 */
 	public function update_tickets() {
 		$is_correct_page = $this->is_edit_page();
@@ -1355,6 +1357,7 @@ class Tribe__Tickets__Tickets_View {
 	 * Generate the required data for the "My Tickets" link.
 	 *
 	 * @since 5.8.0
+	 * @since TBD Removed the optional parameter from `get_tickets_page_url` call.
 	 *
 	 * @param int $event_id The event ID.
 	 * @param int $user_id The user ID.
