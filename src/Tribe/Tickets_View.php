@@ -248,7 +248,7 @@ class Tribe__Tickets__Tickets_View {
 		
 		if ( is_null( $is_event_page ) ) {
 			$post_type     = get_post_type( $event_id );
-			$is_event_page = 'tribe_events' === $post_type || 'tribe_events_series' === $post_type;
+			$is_event_page = 'tribe_events' === $post_type || 'tribe_event_series' === $post_type;
 		}
 		
 		// Is on the Event post type.
