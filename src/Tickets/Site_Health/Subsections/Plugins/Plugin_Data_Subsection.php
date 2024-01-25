@@ -236,13 +236,15 @@ class Plugin_Data_Subsection extends Abstract_Info_Subsection {
 			)
 		);
 
-		$versions_list = Arr::to_list(
+		if ( empty( $previous_versions ) ) {
+			return '';
+		}
+
+		return Arr::to_list(
 			$previous_versions,
 			', '
 		);
 
-		// Return $versions_list if it is a string; otherwise, return an empty string.
-		return is_string( $versions_list ) ? $versions_list : '';
 	}
 
 	/**

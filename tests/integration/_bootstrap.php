@@ -12,7 +12,6 @@ DB::query( "ALTER TABLE $wpdb->posts AUTO_INCREMENT = 5096" );
 // Disconnect Promoter to avoid license-related notices.
 remove_action( 'tribe_tickets_promoter_trigger', [ tribe( Dispatcher::class ), 'trigger' ] );
 
-require_once trailingslashit( EVENT_TICKETS_DIR ) . 'src/template-tags/commerce.php';
 // Ensure Ticket Commerce is enabled.
 if ( ! tec_tickets_commerce_is_enabled() ) {
 	add_filter( 'tec_tickets_commerce_is_enabled', '__return_true', 100 );
