@@ -93,14 +93,14 @@ class Tribe__Tickets__Tickets_View {
 	 */
 	public function maybe_regenerate_rewrite_rules() {
 		// if they don't have any rewrite rules, do nothing
-		// Don't try to run stuff for non-logged users (too time consuming)
+		// Don't try to run stuff for non-logged users (too time consuming).
 		if ( ! is_array( $GLOBALS['wp_rewrite']->rules ) || ! is_user_logged_in() ) {
 			return;
 		}
 
 		$rules = $this->rewrite_rules_array();
 
-		$diff = array_diff( $rules, $GLOBALS['wp_rewrite']->rules );
+		$diff     = array_diff( $rules, $GLOBALS['wp_rewrite']->rules );
 		$key_diff = array_diff_assoc( $rules, $GLOBALS['wp_rewrite']->rules );
 
 		if ( empty( $diff ) && empty( $key_diff ) ) {
@@ -115,7 +115,7 @@ class Tribe__Tickets__Tickets_View {
 	 *
 	 * @since TBD Added filter to allow users to add additional rewrite rules for the My Tickets page.
 	 *
-	 * @return array
+	 * @return array<string>
 	 */
 	public function rewrite_rules_array() {
 		$bases = $this->add_rewrite_base_slug();
@@ -127,7 +127,7 @@ class Tribe__Tickets__Tickets_View {
 		/**
 		 * Filter the rewrite rules for the My Tickets page.
 		 *
-		 * @param array $rules The rewrite rules for the My Tickets page.
+		 * @param array<string> $rules The rewrite rules for the My Tickets page.
 		 */
 		return apply_filters( 'tec_tickets_my_tickets_page_rewrite_rules', $rules );
 	}

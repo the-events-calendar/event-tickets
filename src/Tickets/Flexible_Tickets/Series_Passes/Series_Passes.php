@@ -1160,9 +1160,9 @@ class Series_Passes extends Controller {
 	 *
 	 * @since TBD Filter my tickets rewrite rules to include the series page.
 	 *
-	 * @param array $rules Rewrite rules array.
+	 * @param array<string> $rules Rewrite rules array.
 	 *
-	 * @return array The updated rewrite rules array.
+	 * @return array<string> The updated rewrite rules array.
 	 */
 	public function include_rewrite_rules_for_series_my_tickets_page( array $rules ): array {
 		$post_type = get_post_type_object( Series_Post_Type::POSTTYPE );
