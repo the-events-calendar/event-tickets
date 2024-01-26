@@ -244,21 +244,18 @@ class Tribe__Tickets__Tickets_View {
 	 * Helper function to generate the Link to the tickets page of an event.
 	 *
 	 * @since 4.7.1
-	 * @since TBD Updated method signature to make $is_event_page parameter optional.
+	 * @since TBD Removed the $is_event_page param.
 	 *
-	 * @param int  $event_id      The Event ID we're checking.
-	 * @param bool $is_event_page Optional. Whether the link is for an event post type or not.
+	 * @param int $event_id event_id The Event ID we're checking.
 	 *
 	 * @return string      The URL to the tickets page.
 	 */
-	public function get_tickets_page_url( int $event_id, bool $is_event_page = null ): string {
+	public function get_tickets_page_url( int $event_id ): string {
 		$has_plain_permalink = '' === get_option( 'permalink_structure' );
 		$event_url           = get_permalink( $event_id );
 		
-		if ( is_null( $is_event_page ) ) {
-			$post_type     = get_post_type( $event_id );
-			$is_event_page = 'tribe_events' === $post_type || 'tribe_event_series' === $post_type;
-		}
+		$post_type     = get_post_type( $event_id );
+		$is_event_page = 'tribe_events' === $post_type || 'tribe_event_series' === $post_type;
 		
 		// Is on the Event post type.
 		if ( $is_event_page ) {
