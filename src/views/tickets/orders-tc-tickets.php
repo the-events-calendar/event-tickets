@@ -39,4 +39,3 @@ $this->template(
 		'post'    => $post,
 	]
 );
-
