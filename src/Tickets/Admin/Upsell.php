@@ -227,6 +227,11 @@ class Upsell {
 	 * @param Template $template Current instance of the Tribe__Template.
 	 */
 	public function render_ticket_type_upsell_notice( string $file, array $name, Template $template ): void {
+		// If not within the admin area, then bail.
+		if ( ! is_admin() ) {
+			return;
+		}
+
 		$admin_views = tribe( 'tickets.admin.views' );
 		$admin_views->template( 'flexible-tickets/admin/tickets/editor/upsell-notice' );
 	}
