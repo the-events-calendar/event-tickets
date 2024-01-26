@@ -47,8 +47,9 @@
  * @since   4.10.9 Use function for text.
  * @since   5.0.3 Update comments for single ticket array.
  * @since   5.1.7 Changed the word `Purchaser` to `Attendee` in the ticket details.
+ * @since   TBD Corrected template override filepath
  *
- * @version 5.1.7
+ * @version TBD
  *
  * @var array $tickets An array of tickets in the format documented above.
  */

@@ -12,7 +12,10 @@
  * @var int   $order_id
  * @var array $attendees
  *
- * @version 4.7.4
+ * @since 4.7.4
+ * @since TBD Corrected template override filepath
+ *
+ * @version TBD
  */
 
 $event_date = null;

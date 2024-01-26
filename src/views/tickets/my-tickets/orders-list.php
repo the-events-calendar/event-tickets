@@ -5,12 +5,14 @@
  * Override this template in your own theme by creating a file at [your-theme]/tribe/tickets/tickets/my-tickets/orders-list.php
  *
  * @since 5.6.7
+ * @since TBD Corrected template override filepath
  *
- * @version 5.6.7
+ * @version TBD
  *
  * @var  array  $orders  The orders for the current user.
  * @var  int    $post_id The ID of the post the tickets are for.
  */
+
 ?>
 <ul class="tribe-orders-list">
 	<input type="hidden" name="event_id" value="<?php echo absint( $post_id ); ?>">

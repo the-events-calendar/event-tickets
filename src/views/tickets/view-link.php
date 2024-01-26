@@ -21,9 +21,10 @@
  * @since   5.0.2 Fix template path in documentation block.
  * @since   5.1.3 Use /tribe-events/ for the template path in documentation block.
  * @since   5.3.2 Added use of $hide_view_my_tickets_link variable to hide link as an option.
- * @since 5.8.0 Re-use the same template from the blocks.
+ * @since   5.8.0 Re-use the same template from the blocks.
+ * @since   TBD Corrected template override filepath
  *
- * @version 5.8.0
+ * @version TBD
  *
  * @var Tribe__Tickets__Tickets_View $this
  */

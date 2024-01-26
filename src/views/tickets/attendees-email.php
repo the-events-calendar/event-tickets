@@ -5,7 +5,11 @@
  *
  * Override this template in your own theme by creating a file at [your-theme]/tribe/tickets/attendees-email.php
  *
+ * @since TBD Corrected template override filepath
+ *
+ * @version TBD
  */
+
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">

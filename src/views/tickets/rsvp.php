@@ -12,8 +12,9 @@
  * @since   4.11.1 Corrected amount of available/remaining tickets when threshold is empty.
  * @since   4.11.5 Display total available separately from setting max allowed to purchase at once.
  * @since   5.1.5 Add label to the quantity input to improve accessibility.
+ * @since   TBD Corrected template override filepath
  *
- * @version 5.1.5
+ * @version TBD
  *
  * @var Tribe__Tickets__RSVP $this
  * @var bool                 $must_login

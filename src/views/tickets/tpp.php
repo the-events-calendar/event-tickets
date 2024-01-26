@@ -19,8 +19,9 @@
  * @since      4.11.3 Changed button ID to match the format of the non-tpp buttons. (`tribe-tickets` instead of `buy-tickets`)
  * @since      4.11.5 Display total available separately from setting max allowed to purchase at once and avoid the
  *                    potential of `$readable_amount` being a undefined variable.
+ * @since      TBD Corrected template override filepath
  *
- * @version    4.11.3
+ * @version    TBD
  *
  * @var bool $must_login
  * @var bool $display_login_link

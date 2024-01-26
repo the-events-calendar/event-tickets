@@ -6,11 +6,12 @@
  *
  * @since 5.6.7
  *
- * @version 5.6.7
+ * @since TBD Corrected template override filepath
+ *
+ * @version TBD
  *
  * @var Tribe__Tickets__Tickets $provider The ticket provider.
  * @var array                   $attendee The attendee data.
- *
  */
 
 ?>
