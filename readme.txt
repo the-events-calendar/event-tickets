@@ -195,7 +195,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 = [TDB] =
-* Tweak - Small correction on DocBlocks for template file paths. [GTRIA-1170]
+* Tweak - Changed incorrect file paths in DocBlocks for template overrides for all files in src/views/tickets. [GTRIA-1170]
 
 = [5.8.0] 2024-01-22 =
 
