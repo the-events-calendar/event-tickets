@@ -254,6 +254,10 @@ class Tribe__Tickets__Tickets_View {
 		$has_plain_permalink = '' === get_option( 'permalink_structure' );
 		$event_url           = get_permalink( $event_id );
 		
+		if ( empty( $event_url ) ) {
+			return '';
+		}
+		
 		$post_type     = get_post_type( $event_id );
 		$is_event_page = 'tribe_events' === $post_type || 'tribe_event_series' === $post_type;
 		
