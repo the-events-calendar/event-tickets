@@ -40,6 +40,17 @@ class Tickets_ViewTest extends WPTestCase {
 	private function make_instance() {
 		return new Tickets_View();
 	}
+	
+	/**
+	 * Placeholder for post ids.
+	 */
+	public function placehold_post_ids( string $snapshot, array $ids ): string {
+		return str_replace(
+			array_values( $ids ),
+			array_map( static fn( string $name ) => "{{ $name }}", array_keys( $ids ) ),
+			$snapshot
+		);
+	}
 
 	/**
 	 * @test
@@ -291,6 +302,7 @@ class Tickets_ViewTest extends WPTestCase {
 		
 		$sut = $this->make_instance();
 		$url = $sut->get_tickets_page_url( $post_id );
+		$url = $this->placehold_post_ids( $url, [ 'post_id' => $post_id ] );
 		
 		if ( $has_output ) {
 			$this->assertMatchesHtmlSnapshot( $url );
@@ -312,6 +324,7 @@ class Tickets_ViewTest extends WPTestCase {
 		update_option( 'permalink_structure', '' );
 		$sut = $this->make_instance();
 		$url = $sut->get_tickets_page_url( $post_id );
+		$url = $this->placehold_post_ids( $url, [ 'post_id' => $post_id ] );
 		
 		if ( $has_output ) {
 			$this->assertMatchesHtmlSnapshot( $url );
