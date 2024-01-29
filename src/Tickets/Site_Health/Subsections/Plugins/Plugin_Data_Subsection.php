@@ -11,6 +11,7 @@ namespace TEC\Tickets\Site_Health\Subsections\Plugins;
 
 use TEC\Tickets\Site_Health\Abstract_Info_Subsection;
 use Tribe__Tickets__Query;
+use Tribe__Tickets__Tickets;
 use Tribe__Utils__Array as Arr;
 use TEC\Tickets\Commerce\Utils\Value;
 
@@ -411,7 +412,19 @@ class Plugin_Data_Subsection extends Abstract_Info_Subsection {
 	 * @return array Associative array with formatted average, max, and min ticket prices.
 	 */
 	private function get_formatted_prices(): array {
-		$ticket_prices = tribe( 'tickets.event-repository' )->per_page( -1 )->where( 'has_tickets' )->pluck( 'cost' );
+		$ticket_ids = tribe( 'tickets.event-repository' )->per_page( -1 )->where( 'has_tickets' )->pluck( 'ID' );
+
+		$ticket_prices = [];
+
+		foreach ( $ticket_ids as $id ) {
+			$tickets = Tribe__Tickets__Tickets::get_all_event_tickets( $id );
+
+			foreach ( $tickets as $ticket ) {
+				if ( isset( $ticket->price ) ) {
+					$ticket_prices[] = $ticket->price;
+				}
+			}
+		}
 
 		$total_and_count = $this->calculate_total_and_count( $ticket_prices );
 		$max_price       = $this->calculate_max_price( $ticket_prices );

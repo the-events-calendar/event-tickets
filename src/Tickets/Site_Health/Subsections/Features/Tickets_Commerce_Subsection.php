@@ -14,6 +14,7 @@ use TEC\Tickets\Commerce\Gateways\Stripe\Gateway as Stripe_Gateway;
 use TEC\Tickets\Commerce\Repositories\Tickets_Repository;
 use TEC\Tickets\Commerce\Settings;
 use TEC\Tickets\Commerce\Utils\Currency;
+use TEC\Tickets\Commerce\Utils\Value;
 use TEC\Tickets\Site_Health\Abstract_Info_Subsection;
 
 /**
@@ -134,41 +135,20 @@ class Tickets_Commerce_Subsection extends Abstract_Info_Subsection {
 			if ( 'Free' === $price || '' === $price || null === $price ) {
 				// Skip free or empty prices for average calculation.
 				continue;
-			} else {
-				// Match the number with international currency format.
-				preg_match(
-					'/\d+([,.]\d+)?/',
-					$price,
-					$matches
-				);
-				if ( isset( $matches[0] ) ) {
-					// Convert to a standard number format (replace comma with period).
-					$number = floatval(
-						str_replace(
-							',',
-							'.',
-							$matches[0]
-						)
-					);
-					$total += $number;
-
-					++$count;
-				}
 			}
+
+			$number = Value::create( $price )->get_float();
+			$total += $number;
+			++$count;
+
+
 		}
 
 		// Calculate the average price, avoid division by zero.
 		$tickets_commerce_average_price = $count > 0 ? $total / $count : 0;
 
-		// Format the average price with two decimal points.
-		$tickets_commerce_formatted_average_price = number_format(
-			$tickets_commerce_average_price,
-			2,
-			'.',
-			','
-		);
 
-		return $tickets_commerce_formatted_average_price;
+		return Value::create( $tickets_commerce_average_price )->get_currency();
 	}
 
 	/**
