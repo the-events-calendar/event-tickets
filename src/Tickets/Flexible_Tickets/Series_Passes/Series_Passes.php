@@ -277,7 +277,7 @@ class Series_Passes extends Controller {
 		);
 		add_filter( 'tec_tickets_is_ticket_editable_from_post', [ $this, 'is_ticket_editable_from_post' ], 10, 3 );
 		add_filter( 'tec_tickets_my_tickets_link_ticket_count_by_type', [ $this, 'filter_my_tickets_link_data' ], 10, 3 );
-		add_action( 'generate_rewrite_rules', [ $this, 'include_rewrite_rules_for_series_my_tickets_page' ] );
+		add_filter( 'tec_tickets_my_tickets_page_rewrite_rules', [ $this, 'include_rewrite_rules_for_series_my_tickets_page' ] );
 
 		/**
 		 * The FT feature will only be available if the CT1 feature is active: this implies Recurring Events
@@ -394,7 +394,7 @@ class Series_Passes extends Controller {
 		remove_filter( 'tec_tickets_is_ticket_editable_from_post', [ $this, 'is_ticket_editable_from_post' ] );
 		remove_filter( 'tec_tickets_my_tickets_link_ticket_count_by_type', [ $this, 'filter_my_tickets_link_data' ], 10, 3 );
 		remove_filter( 'tec_tickets_allow_tickets_on_recurring_events', [ $this, 'allow_tickets_on_recurring_events' ] );
-		remove_action( 'generate_rewrite_rules', [ $this, 'include_rewrite_rules_for_series_my_tickets_page' ] );
+		remove_filter( 'tec_tickets_my_tickets_page_rewrite_rules', [ $this, 'include_rewrite_rules_for_series_my_tickets_page' ] );
 		
 		remove_filter( 'tribe_template_context:tickets/admin-views/editor/recurring-warning', [ $this, 'filter_recurring_warning_message' ], 10, 4 );
 		remove_filter( 'tec_tickets_commerce_provider_missing_warning_message', [ $this, 'filter_no_commerce_provider_warning_message' ] );
@@ -1158,19 +1158,21 @@ class Series_Passes extends Controller {
 	 *
 	 * @since 5.8.0
 	 *
-	 * @param WP_Rewrite $wp_rewrite Current WP_Rewrite instance (passed by reference).
+	 * @since TBD Filter my tickets rewrite rules to include the series page.
 	 *
-	 * @return void
+	 * @param array<string> $rules Rewrite rules array.
+	 *
+	 * @return array<string> The updated rewrite rules array.
 	 */
-	public function include_rewrite_rules_for_series_my_tickets_page( WP_Rewrite $wp_rewrite ): void {
+	public function include_rewrite_rules_for_series_my_tickets_page( array $rules ): array {
 		$post_type = get_post_type_object( Series_Post_Type::POSTTYPE );
 		$slug      = $post_type->rewrite['slug'];
 
-		$rules = [
+		$series_rules = [
 			'(?:' . $slug . ')/([^/]+)/(?:tickets)/?$' => 'index.php?' . $post_type->name . '=$matches[1]&post_type=' . $post_type->name . '&eventDisplay=tickets',
 		];
 
-		$wp_rewrite->rules = $rules + $wp_rewrite->rules;
+		return array_merge( $rules, $series_rules );
 	}
 	
 	/**
