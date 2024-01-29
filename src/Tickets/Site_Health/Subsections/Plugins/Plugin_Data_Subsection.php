@@ -412,7 +412,7 @@ class Plugin_Data_Subsection extends Abstract_Info_Subsection {
 	 * @return array Associative array with formatted average, max, and min ticket prices.
 	 */
 	private function get_formatted_prices(): array {
-		$ticket_ids = tribe( 'tickets.event-repository' )->per_page( -1 )->where( 'has_tickets' )->pluck('ID');
+		$ticket_ids = tribe( 'tickets.event-repository' )->per_page( -1 )->where( 'has_tickets' )->pluck( 'ID' );
 
 		$ticket_prices = [];
 
