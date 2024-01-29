@@ -165,6 +165,15 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	private $is_frontend_tickets_form_done = false;
 
 	/**
+	 * Meta key that relates Attendees and Events.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public $attendee_event_key = self::ATTENDEE_EVENT_KEY;
+
+	/**
 	 * Instance of this class for use as singleton
 	 */
 	private static $instance;
@@ -2241,11 +2250,12 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * OR write around it in a future major release
 	 *
 	 * @param int  $attendee_id The Attendee ID.
-	 * @param bool $qr          True if from QR checkin process (NOTE: this is a param-less parameter for backward compatibility).
+	 * @param bool|null $qr          True if from QR checkin process.
+	 * @param int|null  $event_id    The ID of the ticket-able post the Attendee is being checked into.
 	 *
 	 * @return bool
 	 */
-	public function checkin( $attendee_id ) {
+	public function checkin( $attendee_id, $qr = null, $event_id = null ) {
 		$qr = null;
 
 		$args = func_get_args();
@@ -2253,7 +2263,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			update_post_meta( $attendee_id, '_tribe_qr_status', 1 );
 		}
 
-		$event_id = get_post_meta( $attendee_id, self::ATTENDEE_EVENT_KEY, true );
+		$event_id = $event_id ?: get_post_meta( $attendee_id, self::ATTENDEE_EVENT_KEY, true );
 
 		if ( ! $qr && ! tribe( 'tickets.attendees' )->user_can_manage_attendees( 0, $event_id ) ) {
 			return false;

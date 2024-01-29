@@ -1,5 +1,7 @@
 <?php
 
+use Tribe__Tickets__Tickets as Tickets;
+
 class Tribe__Tickets__REST__V1__Endpoints__QR
 extends Tribe__Tickets__REST__V1__Endpoints__Base
 implements Tribe__REST__Endpoints__READ_Endpoint_Interface, Tribe__Documentation__Swagger__Provider_Interface {
@@ -245,16 +247,16 @@ implements Tribe__REST__Endpoints__READ_Endpoint_Interface, Tribe__Documentation
 		}
 
 		$event_id      = (int) $qr_arr['event_id'];
-		$ticket_id     = (int) $qr_arr['ticket_id'];
+		$attendee_id     = (int) $qr_arr['ticket_id'];
 		$security_code = (string) $qr_arr['security_code'];
 
 		/** @var Tribe__Tickets__Data_API $data_api */
 		$data_api = tribe( 'tickets.data_api' );
 
-		$service_provider = $data_api->get_ticket_provider( $ticket_id );
+		$ticket_provider = $data_api->get_ticket_provider( $attendee_id );
 		if (
-			empty( $service_provider->security_code )
-			|| get_post_meta( $ticket_id, $service_provider->security_code, true ) !== $security_code
+			empty( $ticket_provider->security_code )
+			|| get_post_meta( $attendee_id, $ticket_provider->security_code, true ) !== $security_code
 		) {
 			$response = new WP_REST_Response(
 				[
@@ -268,7 +270,7 @@ implements Tribe__REST__Endpoints__READ_Endpoint_Interface, Tribe__Documentation
 		}
 
 		// Add check for attendee data.
-		$attendee = $service_provider->get_attendees_by_id( $ticket_id );
+		$attendee = $ticket_provider->get_attendees_by_id( $attendee_id );
 		$attendee = reset( $attendee );
 		if ( ! is_array( $attendee ) ) {
 			$response = new WP_REST_Response(
@@ -283,13 +285,12 @@ implements Tribe__REST__Endpoints__READ_Endpoint_Interface, Tribe__Documentation
 		}
 
 		// Get the attendee data to populate the response.
-		$attendee_id   = (int) $attendee['attendee_id'];
 		$attendee_data = tribe( 'tickets.rest-v1.attendee-repository' )->format_item( $attendee_id );
 
 		/** @var Tribe__Tickets__Status__Manager $status */
 		$status = tribe( 'tickets.status' );
 
-		$complete_statuses = (array) $status->get_completed_status_by_provider_name( $service_provider );
+		$complete_statuses = (array) $status->get_completed_status_by_provider_name( $ticket_provider );
 
 		if ( ! in_array( $attendee['order_status'], $complete_statuses, true ) ) {
 			$response = new WP_REST_Response(
@@ -312,7 +313,7 @@ implements Tribe__REST__Endpoints__READ_Endpoint_Interface, Tribe__Documentation
 		}
 
 		// Check if the attendee is checked in.
-		$checked_status = get_post_meta( $ticket_id, '_tribe_qr_status', true );
+		$checked_status = get_post_meta( $attendee_id, '_tribe_qr_status', true );
 		if ( $checked_status ) {
 			$response = new WP_REST_Response(
 				[
@@ -346,7 +347,8 @@ implements Tribe__REST__Endpoints__READ_Endpoint_Interface, Tribe__Documentation
 			}
 		}
 
-		$checked = $this->_check_in( $ticket_id, $service_provider );
+		$checked = $this->_check_in( $attendee_id, $event_id, $ticket_provider );
+
 		if ( ! $checked ) {
 			$msg_arr = [
 				'msg'             => esc_html(
@@ -357,13 +359,33 @@ implements Tribe__REST__Endpoints__READ_Endpoint_Interface, Tribe__Documentation
 					)
 				),
 				'error'           => 'attendee_failed_check_in',
-				'tribe_qr_status' => get_post_meta( $ticket_id, '_tribe_qr_status', 1 ),
+				'tribe_qr_status' => get_post_meta( $attendee_id, '_tribe_qr_status', 1 ),
 				'attendee'        => $attendee_data,
 			];
 			$result  = array_merge( $msg_arr, $qr_arr );
 
 			$response = new WP_REST_Response( $result );
 			$response->set_status( 403 );
+
+			/**
+			 * Filters the REST Response returned on failure to check in an Attendee via QR code.
+			 *
+			 * @since TBD
+			 *
+			 * @param WP_REST_Response $response        The failure response, as prepared following the default logic.
+			 * @param int              $attendee_id     The post ID of the Attendee to check in.
+			 * @param int              $event_id        The ID of the ticket-able post the Attendee is trying to check-in
+			 *                                          to. While the name would suggest so, this can be the ID of any post
+			 *                                          type, not just Events.
+			 * @param Tickets          $ticket_provider The commerce module used by the Attendee.
+			 */
+			$response = apply_filters(
+				'tec_tickets_qr_checkin_failure_rest_response',
+				$response,
+				$attendee_id,
+				$event_id,
+				$ticket_provider
+			);
 
 			return $response;
 		}
@@ -573,18 +595,18 @@ implements Tribe__REST__Endpoints__READ_Endpoint_Interface, Tribe__Documentation
 	 * @since 5.7.0
 	 *
 	 * @param int $attendee_id The attendee ID.
-	 * @param
+	 * @param int $event_id The ID of the ticketable post the Attendee is being checked into.
+	 * @param Tickets $ticket_provider The Attendee ticket provider
 	 *
 	 * @return boolean
 	 */
-	private function _check_in( $attendee_id, $service_provider ) {
-
-		if ( empty( $service_provider ) ) {
+	private function _check_in( $attendee_id, $event_id ,$ticket_provider ) {
+		if ( empty( $ticket_provider ) ) {
 			return false;
 		}
 
 		// Set parameter to true for the QR app - it is false for the original url so that the message displays.
-		$success = $service_provider->checkin( $attendee_id, true );
+		$success = $ticket_provider->checkin( $attendee_id, true, $event_id );
 		if ( $success ) {
 			return $success;
 		}

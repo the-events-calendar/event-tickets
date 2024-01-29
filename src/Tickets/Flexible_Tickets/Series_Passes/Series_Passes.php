@@ -13,7 +13,6 @@ use TEC\Common\Contracts\Provider\Controller;
 use TEC\Common\lucatume\DI52\Container;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 use TEC\Events_Pro\Custom_Tables\V1\Templates\Series_Filters;
-use TEC\Tickets\Commerce\Attendee;
 use TEC\Tickets\Flexible_Tickets\Enums;
 use TEC\Tickets\Flexible_Tickets\Metabox;
 use TEC\Tickets\Flexible_Tickets\Ticket_Provider_Handler;
@@ -171,6 +170,8 @@ class Series_Passes extends Controller {
 		$this->container->singleton( Repository::class, Repository::class );
 		$this->container->singleton( Metadata::class, Metadata::class );
 
+		$this->container->register( Attendees::class );
+
 		add_filter( 'the_content', [ $this, 'reorder_series_content' ], 0 );
 		add_filter( 'the_content', [ $this, 'skip_rendering_series_content_for_my_tickets_page' ], 1 );
 
@@ -296,9 +297,6 @@ class Series_Passes extends Controller {
 		 */
 		add_filter( 'tec_tickets_allow_tickets_on_recurring_events', [ $this, 'allow_tickets_on_recurring_events' ] );
 
-		add_filter( 'tribe_tickets_attendee_table_columns', [ $this, 'filter_attendees_table_columns' ], 10, 2 );
-		add_filter( 'tec_tickets_attendee_checkin', [ $this, 'handle_series_pass_attendee_checkin' ], 10, 2 );
-
 		add_filter( 'tribe_template_context:tickets/admin-views/editor/recurring-warning', [ $this, 'filter_recurring_warning_message' ], 10, 4 );
 		add_filter( 'tec_tickets_commerce_provider_missing_warning_message', [ $this, 'filter_no_commerce_provider_warning_message' ] );
 	}
@@ -412,6 +410,8 @@ class Series_Passes extends Controller {
 
 		remove_filter( 'tribe_template_context:tickets/admin-views/editor/recurring-warning', [ $this, 'filter_recurring_warning_message' ], 10, 4 );
 		remove_filter( 'tec_tickets_commerce_provider_missing_warning_message', [ $this, 'filter_no_commerce_provider_warning_message' ] );
+
+		$this->container->get( Attendees::class )->unregister();
 	}
 
 	/**
@@ -1185,35 +1185,6 @@ class Series_Passes extends Controller {
 		];
 
 		$wp_rewrite->rules = $rules + $wp_rewrite->rules;
-	}
-
-	/**
-	 * Filter the Attendees table columns to remove the "Check-in" column when looking at Series Passes.
-	 *
-	 * @since TBD
-	 *
-	 * @param array<string,string> $columns  The columns to display in the Attendees table.
-	 * @param int                  $event_id The ID of the event being displayed.
-	 *
-	 * @return array<string,string> The modified columns to display.
-	 */
-	public function filter_attendees_table_columns( array $columns, int $event_id ): array {
-		return $this->attendees->filter_attendees_table_columns( $columns, $event_id );
-	}
-
-	/**
-	 * Filters the Attendee checkin to prevent Series Pass Attendees from being checked in.
-	 *
-	 * @since TBD
-	 *
-	 * @param mixed $checkin     Null by default, if not null, it will prevent the default checkin logic
-	 *                           from firing.
-	 * @param int   $attendee_id The post ID of the Attendee being checked in.
-	 *
-	 * @return bool|null Null to let the default checkin logic run, boolean value to prevent it.
-	 */
-	public function handle_series_pass_attendee_checkin( $checkin, int $attendee_id ): ?bool {
-		return $this->attendees->handle_series_pass_attendee_checkin( $checkin, $attendee_id );
 	}
 
 	/**
