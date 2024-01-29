@@ -572,13 +572,47 @@ class Tribe__Tickets__Attendees {
 		$export_columns = array_diff_key( $columns, $hidden );
 
 		// Add additional expected columns.
-		$export_columns['order_id'] = esc_html_x( 'Order ID', 'attendee export', 'event-tickets' );
-		$export_columns['order_status_label'] = esc_html_x( 'Order Status', 'attendee export', 'event-tickets' );
-		$export_columns['attendee_id'] = esc_html( sprintf( _x( '%s ID', 'attendee export', 'event-tickets' ), tribe_get_ticket_label_singular( 'attendee_export_ticket_id' ) ) );
-		$export_columns['holder_name'] = esc_html_x( 'Ticket Holder Name', 'attendee export', 'event-tickets' );
-		$export_columns['holder_email'] = esc_html_x( 'Ticket Holder Email Address', 'attendee export', 'event-tickets' );
-		$export_columns['purchaser_name'] = esc_html_x( 'Purchaser Name', 'attendee export', 'event-tickets' );
-		$export_columns['purchaser_email'] = esc_html_x( 'Purchaser Email Address', 'attendee export', 'event-tickets' );
+		$export_columns['order_id']     = esc_html_x(
+			'Order ID',
+			'attendee export',
+			'event-tickets'
+		);
+		$export_columns['order_status'] = esc_html_x(
+			'Order Status',
+			'attendee export',
+			'event-tickets'
+		);
+		$export_columns['attendee_id']  = esc_html(
+			sprintf(
+				/* Translators: %s: The type of ID. */
+				_x(
+					'%s ID',
+					'attendee export',
+					'event-tickets'
+				),
+				tribe_get_ticket_label_singular( 'attendee_export_ticket_id' )
+			)
+		);
+		$export_columns['holder_name']     = esc_html_x(
+			'Ticket Holder Name',
+			'attendee export',
+			'event-tickets'
+		);
+		$export_columns['holder_email']    = esc_html_x(
+			'Ticket Holder Email Address',
+			'attendee export',
+			'event-tickets'
+		);
+		$export_columns['purchaser_name']  = esc_html_x(
+			'Purchaser Name',
+			'attendee export',
+			'event-tickets'
+		);
+		$export_columns['purchaser_email'] = esc_html_x(
+			'Purchaser Email Address',
+			'attendee export',
+			'event-tickets'
+		);
 
 		/**
 		 * Used to modify what columns should be shown on the CSV export
@@ -1104,7 +1138,7 @@ class Tribe__Tickets__Attendees {
 				$tickets_by_type[ $ticket_type ] = [];
 			}
 			$tickets_by_type[ $ticket_type ][] = $ticket;
-			$ticket_totals['sold'] += $ticket->qty_sold();
+			$ticket_totals['sold']            += $ticket->qty_sold();
 
 			if ( $ticket_totals['available'] === - 1 ) {
 				// Unlimited capacity trumps any other capacity; if already unlimited, it will stay unlimited.

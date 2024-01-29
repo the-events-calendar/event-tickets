@@ -203,6 +203,11 @@ class OrderReportTest extends WPTestCase {
 
 		$_GET['event_id'] = $post_id;
 		$_GET['search']   = '';
+		$_GET['orderby']  = 'order_id';
+		$_GET['order']    = 'desc';
+
+		// Clear cache to make sure proper orders appear.
+		wp_cache_flush();
 
 		$order_report = tribe( Order_Report::class );
 		$order_report->attendees_page_screen_setup();
