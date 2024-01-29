@@ -197,6 +197,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.8.1] TBD =
 
+* Fix - Removed type casting from filter method of series pass to avoid fatal errors. [ET-2014]
 * Fix - Ensure correct attendee information is included in the attendee emails. [ET-1988]
 * Fix - Resolve deprecation notices regarding `ArrayAccess::offsetGet()` [ET-1949]
 * Fix - Resolved an issue where Order Status was not populated when exporting the Attendee List using Tickets Commerce. [ET-1883]
