@@ -58,10 +58,13 @@ class Base extends Controller {
 		remove_action( 'init', [ $series_provider, 'remove_series_from_ticketable_post_types' ] );
 
 		// Remove the filter that would prevent Series from being ticket-able in CT1.
-		remove_filter( 'tribe_tickets_settings_post_types', [
-			$series_provider,
-			'filter_remove_series_post_type'
-		] );
+		remove_filter(
+			'tribe_tickets_settings_post_types',
+			[
+				$series_provider,
+				'filter_remove_series_post_type',
+			] 
+		);
 
 		$this->handle_first_activation();
 
@@ -70,10 +73,15 @@ class Base extends Controller {
 		 * process based on Action Scheduler.
 		 */
 		$provisional_ids_base_option_name = tribe( ID_Generator::class )->option_name();
-		add_action( "update_option_{$provisional_ids_base_option_name}", [
-			$this,
-			'dispatch_attendee_event_value_update'
-		], 10, 2 );
+		add_action(
+			"update_option_{$provisional_ids_base_option_name}",
+			[
+				$this,
+				'dispatch_attendee_event_value_update',
+			],
+			10,
+			2 
+		);
 
 		/*
 		 * Subscribe to the action that will fired by Action Scheduler to update the Attendees following a provisional
@@ -100,16 +108,22 @@ class Base extends Controller {
 		}
 
 		// Restore the filter that would prevent Series from being ticket-able in CT1.
-		add_filter( 'tribe_tickets_settings_post_types', [
-			$series_provider,
-			'filter_remove_series_post_type'
-		] );
+		add_filter(
+			'tribe_tickets_settings_post_types',
+			[
+				$series_provider,
+				'filter_remove_series_post_type',
+			] 
+		);
 
 		$provisional_ids_base_option_name = tribe( ID_Generator::class )->option_name();
-		remove_action( "update_option_{$provisional_ids_base_option_name}", [
-			$this,
-			'dispatch_attendee_event_value_update'
-		] );
+		remove_action(
+			"update_option_{$provisional_ids_base_option_name}",
+			[
+				$this,
+				'dispatch_attendee_event_value_update',
+			] 
+		);
 		remove_action( self::AS_ATTENDEE_EVENT_VALUE_UPDATE_ACTION, [ $this, 'update_attendee_event_value' ] );
 	}
 
@@ -128,7 +142,7 @@ class Base extends Controller {
 		}
 
 		tribe_update_option( 'flexible_tickets_activated', true );
-		$ticketable = (array) tribe_get_option( 'ticket-enabled-post-types', [] );
+		$ticketable   = (array) tribe_get_option( 'ticket-enabled-post-types', [] );
 		$ticketable[] = Series::POSTTYPE;
 		tribe_update_option(
 			'ticket-enabled-post-types',
@@ -159,10 +173,14 @@ class Base extends Controller {
 			return;
 		}
 
-		as_enqueue_async_action( self::AS_ATTENDEE_EVENT_VALUE_UPDATE_ACTION, [
-			0,
-			$old_value,
-		], 'tec_tickets_flexible_tickets' );
+		as_enqueue_async_action(
+			self::AS_ATTENDEE_EVENT_VALUE_UPDATE_ACTION,
+			[
+				0,
+				$old_value,
+			],
+			'tec_tickets_flexible_tickets' 
+		);
 	}
 
 	/**
@@ -177,18 +195,19 @@ class Base extends Controller {
 	 */
 	private function count_attendees_to_update( $old_value, $new_value ): int {
 		$attendee_to_event_keys = tribe_attendees()->attendee_to_event_keys();
-		$attendee_post_types = tribe_attendees()->attendee_types();
+		$attendee_post_types    = tribe_attendees()->attendee_types();
 
 		if ( empty( $attendee_post_types ) || empty( $attendee_to_event_keys ) ) {
 			return 0;
 		}
 
-		$meta_keys = "'" . implode( "','", $attendee_to_event_keys ) . "'";
+		$meta_keys  = "'" . implode( "','", $attendee_to_event_keys ) . "'";
 		$post_types = "'" . implode( "','", $attendee_post_types ) . "'";
 
 		global $wpdb;
 		$count = $wpdb->get_var(
-			$wpdb->prepare( "SELECT COUNT( pm.post_id ) FROM {$wpdb->postmeta} pm
+			$wpdb->prepare(
+				"SELECT COUNT( pm.post_id ) FROM {$wpdb->postmeta} pm
 			JOIN {$wpdb->posts} p
 				ON p.ID = pm.post_id
 				AND pm.meta_key IN ({$meta_keys})
@@ -216,15 +235,15 @@ class Base extends Controller {
 	 */
 	public function update_attendee_event_value( int $offset = 0, int $old_value = 0 ): void {
 		$attendee_to_event_keys = tribe_attendees()->attendee_to_event_keys();
-		$attendee_post_types = tribe_attendees()->attendee_types();
+		$attendee_post_types    = tribe_attendees()->attendee_types();
 
 		if ( empty( $attendee_post_types ) || empty( $attendee_to_event_keys ) ) {
 			return;
 		}
 
-		$meta_keys = "'" . implode( "','", $attendee_to_event_keys ) . "'";
+		$meta_keys  = "'" . implode( "','", $attendee_to_event_keys ) . "'";
 		$post_types = "'" . implode( "','", $attendee_post_types ) . "'";
-		$new_value = tribe( ID_Generator::class )->current();
+		$new_value  = tribe( ID_Generator::class )->current();
 
 		/**
 		 * Filters the batch size used to update the Attendee > Event meta value.
@@ -243,7 +262,8 @@ class Base extends Controller {
 		 * following one.
 		 */
 		$attendee_ids = $wpdb->get_col(
-			$wpdb->prepare( "
+			$wpdb->prepare(
+				"
 				SELECT attendees.ID from {$wpdb->posts} attendees
 				JOIN {$wpdb->postmeta} old_value
 					 ON old_value.post_id = attendees.ID
@@ -296,8 +316,9 @@ class Base extends Controller {
 					'source'     => __METHOD__,
 					'error'      => $wpdb->last_error,
 					'offset'     => $offset,
-					'batch_size' => $batch_size
-				] );
+					'batch_size' => $batch_size,
+				] 
+			);
 		}
 
 		if ( $this->count_attendees_to_update( $old_value, $new_value ) === 0 ) {
@@ -306,9 +327,13 @@ class Base extends Controller {
 		}
 
 		// Enqueue a new async action to process the next batch.
-		as_enqueue_async_action( self::AS_ATTENDEE_EVENT_VALUE_UPDATE_ACTION, [
-			$offset + $batch_size,
-			$old_value,
-		], 'tec_tickets_flexible_tickets' );
+		as_enqueue_async_action(
+			self::AS_ATTENDEE_EVENT_VALUE_UPDATE_ACTION,
+			[
+				$offset + $batch_size,
+				$old_value,
+			],
+			'tec_tickets_flexible_tickets' 
+		);
 	}
 }

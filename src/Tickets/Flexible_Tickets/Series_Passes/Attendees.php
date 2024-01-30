@@ -131,10 +131,15 @@ class Attendees extends Controller {
 	protected function do_register(): void {
 		add_filter( 'tec_tickets_attendee_checkin', [ $this, 'handle_series_pass_attendee_checkin' ], 10, 4 );
 		add_filter( 'tribe_tickets_attendee_table_columns', [ $this, 'filter_attendees_table_columns' ], 10, 2 );
-		add_filter( 'tec_tickets_qr_checkin_failure_rest_response', [
-			$this,
-			'build_attendee_failure_response'
-		], 10, 2 );
+		add_filter(
+			'tec_tickets_qr_checkin_failure_rest_response',
+			[
+				$this,
+				'build_attendee_failure_response',
+			],
+			10,
+			2 
+		);
 		$this->subscribe_to_attendee_updates();
 		add_filter( 'tec_tickets_attendees_filter_by_event', [ $this, 'include_series_to_fetch_attendees' ], 10, 2 );
 		add_filter(
@@ -142,7 +147,9 @@ class Attendees extends Controller {
 			[
 				$this,
 				'include_series_to_fetch_attendees',
-			], 10, 2
+			],
+			10,
+			2
 		);
 		add_filter(
 			'tribe_tickets_attendees_report_js_config',
@@ -163,10 +170,14 @@ class Attendees extends Controller {
 	public function unregister(): void {
 		remove_filter( 'tec_tickets_attendee_checkin', [ $this, 'handle_series_pass_attendee_checkin' ], 10, 3 );
 		remove_filter( 'tribe_tickets_attendee_table_columns', [ $this, 'filter_attendees_table_columns' ], 10, 2 );
-		remove_filter( 'tec_tickets_qr_checkin_failure_rest_response', [
-			$this,
-			'build_attendee_failure_response'
-		], 10 );
+		remove_filter(
+			'tec_tickets_qr_checkin_failure_rest_response',
+			[
+				$this,
+				'build_attendee_failure_response',
+			],
+			10 
+		);
 		$this->unsubscribe_from_attendee_updates();
 		remove_filter( 'tec_tickets_attendees_filter_by_event', [ $this, 'include_series_to_fetch_attendees' ] );
 		remove_filter( 'tec_tickets_attendees_filter_by_event_not_in', [ $this, 'include_series_to_fetch_attendees' ] );
@@ -225,7 +236,7 @@ class Attendees extends Controller {
 		}
 
 		$attendee_checkin_key = $ticket_provider->checkin_key;
-		$attendee_event_key = $ticket_provider->attendee_event_key;
+		$attendee_event_key   = $ticket_provider->attendee_event_key;
 
 		if ( empty( $attendee_checkin_key ) || empty( $attendee_event_key ) ) {
 			// We tried to handle the check in, but it failed.
@@ -303,11 +314,16 @@ class Attendees extends Controller {
 		$ticket_provider = tribe_tickets_get_ticket_provider( $attendee_id );
 
 		if ( ! $ticket_provider instanceof Tickets ) {
-			do_action( 'tribe_log', 'error', 'Series Pass Attendee clone failed', [
-				'source'               => __METHOD__,
-				'original_attendee_id' => $attendee_id,
-				'reason'               => 'Could not get the Attendee Ticket Provider',
-			] );
+			do_action(
+				'tribe_log',
+				'error',
+				'Series Pass Attendee clone failed',
+				[
+					'source'               => __METHOD__,
+					'original_attendee_id' => $attendee_id,
+					'reason'               => 'Could not get the Attendee Ticket Provider',
+				] 
+			);
 
 			return false;
 		}
@@ -317,12 +333,17 @@ class Attendees extends Controller {
 		} else {
 			$occurrence = Occurrence::find( $event_id, 'post_id' );
 			if ( ! $occurrence instanceof Occurrence ) {
-				do_action( 'tribe_log', 'error', 'Series Pass Attendee clone failed', [
-					'source'               => __METHOD__,
-					'original_attendee_id' => $attendee_id,
-					'event_id'             => $event_id,
-					'reason'               => 'Could not get provisional ID for the Event id',
-				] );
+				do_action(
+					'tribe_log',
+					'error',
+					'Series Pass Attendee clone failed',
+					[
+						'source'               => __METHOD__,
+						'original_attendee_id' => $attendee_id,
+						'event_id'             => $event_id,
+						'reason'               => 'Could not get provisional ID for the Event id',
+					] 
+				);
 
 				return false;
 			}
@@ -355,11 +376,16 @@ class Attendees extends Controller {
 		$clone_id = wp_insert_post( $clone_postarr );
 
 		if ( empty( $clone_id ) || $clone_id instanceof WP_Error ) {
-			do_action( 'tribe_log', 'error', 'Series Pass Attendee clone failed', [
-				'source'               => __METHOD__,
-				'original_attendee_id' => $attendee_id,
-				'reason'               => $clone_id instanceof WP_Error ? $clone_id->get_error_message() : 'n/a',
-			] );
+			do_action(
+				'tribe_log',
+				'error',
+				'Series Pass Attendee clone failed',
+				[
+					'source'               => __METHOD__,
+					'original_attendee_id' => $attendee_id,
+					'reason'               => $clone_id instanceof WP_Error ? $clone_id->get_error_message() : 'n/a',
+				] 
+			);
 
 			return false;
 		}
@@ -388,12 +414,17 @@ class Attendees extends Controller {
 		$updated = $wpdb->update( $wpdb->posts, [ 'post_type' => $original_post->post_type ], [ 'ID' => $clone_id ], [ '%s' ], [ '%d' ] );
 
 		if ( $updated === false ) {
-			do_action( 'tribe_log', 'error', 'Series Pass Attendee post type setting failed', [
-				'source'               => __METHOD__,
-				'original_attendee_id' => $attendee_id,
-				'clone_id'             => $clone_id,
-				'reason'               => $wpdb->last_error,
-			] );
+			do_action(
+				'tribe_log',
+				'error',
+				'Series Pass Attendee post type setting failed',
+				[
+					'source'               => __METHOD__,
+					'original_attendee_id' => $attendee_id,
+					'clone_id'             => $clone_id,
+					'reason'               => $wpdb->last_error,
+				] 
+			);
 
 			return false;
 		}
@@ -434,17 +465,20 @@ class Attendees extends Controller {
 			return $response;
 		}
 
-		$post_repository = tribe( 'tec.rest-v1.repository' );
+		$post_repository     = tribe( 'tec.rest-v1.repository' );
 		$prepared_candidates = array_map(
 			static fn( int $candidate ) => $post_repository->get_event_data( $candidate, 'single' ),
 			$this->checkin_failures[ $attendee_id ]['candidates']
 		);
 
-		$response = new WP_REST_Response( [
-			'msg'         => _x( 'Multiple Event options, pick one and specify the context_id parameter.', 'event-tickets' ),
-			'attendee_id' => $attendee_id,
-			'candidates'  => $prepared_candidates
-		], 300 );
+		$response = new WP_REST_Response(
+			[
+				'msg'         => _x( 'Multiple Event options, pick one and specify the context_id parameter.', 'event-tickets' ),
+				'attendee_id' => $attendee_id,
+				'candidates'  => $prepared_candidates,
+			],
+			300 
+		);
 
 		return $response;
 	}
@@ -465,11 +499,14 @@ class Attendees extends Controller {
 		[ $start, $end ] = $this->get_checkin_candidate_timestamps( $series_id, $attendee_id, $qr );
 
 		// Fetch the candidate Occurrences, this will be an array of provisional IDs.
-		$candidates = iterator_to_array( tribe_events()
+		$candidates = iterator_to_array(
+			tribe_events()
 			->where( 'series', $series_id )
 			->where( 'ends_after', $start )
 			->where( 'starts_before', $end )
-			->get_ids( true ), false );
+			->get_ids( true ),
+			false 
+		);
 
 		return $candidates;
 	}
@@ -490,9 +527,12 @@ class Attendees extends Controller {
 		[ $start, $end ] = $this->get_checkin_candidate_timestamps( $event_id, $attendee_id, $qr );
 
 		// Fetch the candidate Occurrences, this will be an array of provisional IDs.
-		$candidates = iterator_to_array( Occurrence::where( 'post_id', $event_id )
+		$candidates = iterator_to_array(
+			Occurrence::where( 'post_id', $event_id )
 			->where( 'end_date', '>', Dates::immutable( $start ) )
-			->where( 'start_date', '<=', Dates::immutable( $end ) )->all(), false );
+			->where( 'start_date', '<=', Dates::immutable( $end ) )->all(),
+			false 
+		);
 
 		return array_map(
 			static fn( Occurrence $o ) => $o->provisional_id,
@@ -545,7 +585,6 @@ class Attendees extends Controller {
 		 *                         is not set.
 		 * @param int $post_id     The post ID of the Series, or Event, to get the checkin times for.
 		 * @param int $attendee_id The post ID of the Series Pass Attendee to check in.
-		 *
 		 */
 		$time_buffer = (int) apply_filters(
 			'tec_tickets_flexible_tickets_series_checkin_time_buffer',
@@ -555,7 +594,7 @@ class Attendees extends Controller {
 		);
 
 		// Let's set up the time window to pull current and upcoming Events from.
-		$now = wp_date( 'U' );
+		$now           = wp_date( 'U' );
 		$starts_before = $now + $time_buffer;
 
 		return [ $now, $starts_before ];
@@ -698,9 +737,9 @@ class Attendees extends Controller {
 		$occurrence_id = tribe( ID_Generator::class )->unprovide_id( $provisional_id );
 
 		return Occurrence::where( 'occurrence_id', '=', $occurrence_id )
-			       ->where( 'start_date', '<=', Dates::immutable( $end ) )
-			       ->where( 'end_date', '>', Dates::immutable( $start ) )
-			       ->count() > 0;
+				   ->where( 'start_date', '<=', Dates::immutable( $end ) )
+				   ->where( 'end_date', '>', Dates::immutable( $start ) )
+				   ->count() > 0;
 	}
 
 	/**
@@ -760,7 +799,7 @@ class Attendees extends Controller {
 
 		// Clone or original?
 		$original_post_id = get_post_meta( $post_id, self::CLONE_META_KEY, true );
-		$update_targets = $this->get_update_targets( $post_id );
+		$update_targets   = $this->get_update_targets( $post_id );
 
 		$updates = (array) $post;
 		unset( $updates['ID'] );
@@ -776,11 +815,16 @@ class Attendees extends Controller {
 			$postarr = array_merge( [ 'ID' => $update_target ], $updates );
 			$updated = wp_update_post( $postarr );
 			if ( ! $updated ) {
-				do_action( 'tribe_log', 'error', 'Update of original or cloned Attendee failed.', [
-					'source'      => __METHOD__,
-					'attendee_id' => $update_target,
-					'reason'      => $updated instanceof WP_Error ? $updated->get_error_message() : 'n/a',
-				] );
+				do_action(
+					'tribe_log',
+					'error',
+					'Update of original or cloned Attendee failed.',
+					[
+						'source'      => __METHOD__,
+						'attendee_id' => $update_target,
+						'reason'      => $updated instanceof WP_Error ? $updated->get_error_message() : 'n/a',
+					] 
+				);
 			}
 		}
 		$this->subscribe_to_attendee_updates();
@@ -816,7 +860,7 @@ class Attendees extends Controller {
 				return false;
 			}
 
-			$checkin_key = $ticket_provider->checkin_key;
+			$checkin_key                                = $ticket_provider->checkin_key;
 			$this->post_type_checkin_keys[ $post_type ] = $checkin_key;
 		}
 
@@ -853,11 +897,16 @@ class Attendees extends Controller {
 		$this->unsubscribe_from_attendee_updates();
 		foreach ( $update_targets as $update_target ) {
 			if ( ! ( add_post_meta( $update_target, $meta_key, $meta_value ) ) ) {
-				do_action( 'tribe_log', 'error', 'Adding meta to original or cloned Attendee failed.', [
-					'source'      => __METHOD__,
-					'attendee_id' => $update_target,
-					'meta_key'    => $meta_key
-				] );
+				do_action(
+					'tribe_log',
+					'error',
+					'Adding meta to original or cloned Attendee failed.',
+					[
+						'source'      => __METHOD__,
+						'attendee_id' => $update_target,
+						'meta_key'    => $meta_key,
+					] 
+				);
 			}
 		}
 		$this->subscribe_to_attendee_updates();
@@ -962,10 +1011,15 @@ class Attendees extends Controller {
 		$this->unsubscribe_from_attendee_updates();
 		foreach ( $update_targets as $update_target ) {
 			if ( ! ( wp_delete_post( $update_target, true ) ) ) {
-				do_action( 'tribe_log', 'error', 'Series Pass clone Attendee deletion failed', [
-					'source'               => __METHOD__,
-					'original_attendee_id' => $update_target,
-				] );
+				do_action(
+					'tribe_log',
+					'error',
+					'Series Pass clone Attendee deletion failed',
+					[
+						'source'               => __METHOD__,
+						'original_attendee_id' => $update_target,
+					] 
+				);
 			}
 		}
 		$this->subscribe_to_attendee_updates();
@@ -986,7 +1040,7 @@ class Attendees extends Controller {
 		if ( ! $repository instanceof Tribe__Repository__Interface ) {
 			return $post_id;
 		}
-		$post_ids = (array) $post_id;
+		$post_ids  = (array) $post_id;
 		$event_ids = array_filter( $post_ids, static fn( int $id ) => get_post_type( $id ) === TEC::POSTTYPE );
 
 		if ( ! count( $event_ids ) ) {
@@ -994,15 +1048,15 @@ class Attendees extends Controller {
 		}
 
 		$ids_generator = tec_series()->where( 'event_post_id', $event_ids )->get_ids( true );
-		$series_ids = iterator_to_array( $ids_generator, false );
+		$series_ids    = iterator_to_array( $ids_generator, false );
 
 		if ( ! count( $series_ids ) ) {
 			return $post_id;
 		}
 
 		// Determine whether the original request is to filter by Provisional IDs only or not.
-		$provisional_posts = tribe( Provisional_Post::class );
-		$provisional_ids = array_filter( $post_ids, [ $provisional_posts, 'is_provisional_post_id' ] );
+		$provisional_posts   = tribe( Provisional_Post::class );
+		$provisional_ids     = array_filter( $post_ids, [ $provisional_posts, 'is_provisional_post_id' ] );
 		$all_provisional_ids = count( $provisional_ids ) === count( $post_ids );
 
 		// Add the Series to the posts to fetch Attendees for.
@@ -1024,7 +1078,7 @@ class Attendees extends Controller {
 					self::CLONE_META_KEY
 				)
 			);
-			$repository->where_clause( "(minus_attendees.post_id IS NULL)" );
+			$repository->where_clause( '(minus_attendees.post_id IS NULL)' );
 		}
 
 		/*
