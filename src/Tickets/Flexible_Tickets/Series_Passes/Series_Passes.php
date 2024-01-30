@@ -102,14 +102,6 @@ class Series_Passes extends Controller {
 	 * @var Frontend
 	 */
 	private Frontend $frontend;
-	/**
-	 * A reference to the Attendee handler.
-	 *
-	 * @since TBD
-	 *
-	 * @var Attendees
-	 */
-	private Attendees $attendees;
 
 	/**
 	 * Series_Passes constructor.
@@ -132,8 +124,7 @@ class Series_Passes extends Controller {
 		Ticket_Provider_Handler $ticket_provider_handler,
 		Queries $queries,
 		Edit $edit,
-		Frontend $frontend,
-		Attendees $attendees
+		Frontend $frontend
 	) {
 		parent::__construct( $container );
 		$this->labels                  = $labels;
@@ -143,7 +134,6 @@ class Series_Passes extends Controller {
 		$this->queries                 = $queries;
 		$this->edit                    = $edit;
 		$this->frontend                = $frontend;
-		$this->attendees = $attendees;
 	}
 
 	/**
@@ -254,14 +244,6 @@ class Series_Passes extends Controller {
 			2
 		);
 
-		add_filter( 'tec_tickets_attendees_filter_by_event', [ $this, 'include_series_to_fetch_attendees' ] );
-		add_filter(
-			'tec_tickets_attendees_filter_by_event_not_in',
-			[
-				$this,
-				'include_series_to_fetch_attendees',
-			]
-		);
 		add_filter( 'tribe_get_event_meta', [ $this, 'add_pass_costs_to_event_cost' ], 10, 4 );
 
 		add_filter( 'tec_tickets_query_ticketed_status_subquery', [ $this, 'filter_ticketed_status_query' ], 10, 3 );
@@ -269,14 +251,6 @@ class Series_Passes extends Controller {
 		add_filter( 'tec_tickets_query_unticketed_count_query', [ $this, 'filter_unticketed_count_query' ], 10, 2 );
 
 		add_filter( 'tec_tickets_panel_list_helper_text', [ $this, 'filter_tickets_panel_list_helper_text' ], 10, 2 );
-
-		add_filter(
-			'tribe_tickets_attendees_report_js_config',
-			[
-				$this,
-				'filter_tickets_attendees_report_js_config',
-			]
-		);
 
 		add_filter( 'tribe_template_after_include:tickets/v2/tickets/title', [ $this, 'render_series_passes_header_in_frontend_ticket_form' ], 10, 3 );
 		add_filter( 'tec_tickets_flexible_tickets_editor_data', [ $this, 'filter_editor_data' ] );
@@ -370,8 +344,6 @@ class Series_Passes extends Controller {
 				'filter_ticket_type_default_header_description',
 			]
 		);
-		remove_filter( 'tec_tickets_attendees_filter_by_event', [ $this, 'include_series_to_fetch_attendees' ] );
-		remove_filter( 'tec_tickets_attendees_filter_by_event_not_in', [ $this, 'include_series_to_fetch_attendees' ] );
 		remove_filter( 'tribe_get_event_meta', [ $this, 'add_pass_costs_to_event_cost' ] );
 
 		remove_filter( 'tec_tickets_query_ticketed_status_subquery', [ $this, 'filter_ticketed_status_query' ] );
@@ -385,13 +357,6 @@ class Series_Passes extends Controller {
 			],
 			10,
 			2
-		);
-		remove_filter(
-			'tribe_tickets_attendees_report_js_config',
-			[
-				$this,
-				'filter_tickets_attendees_report_js_config',
-			]
 		);
 
 		remove_filter( 'tribe_template_after_include:tickets/v2/tickets/title', [ $this, 'render_series_passes_header_in_frontend_ticket_form' ], 10, 3 );
@@ -913,35 +878,6 @@ class Series_Passes extends Controller {
 
 		return $this->metabox->get_default_ticket_type_header_description( $post_id, $series );
 	}
-
-	/**
-	 * Filters the post IDs used to fetch an Event attendees to include the Series the Event belongs to and,
-	 * thus, include Series Passes into the results.
-	 *
-	 * @since 5.8.0
-	 *
-	 * @param int|array<int> $post_id The post ID or IDs.
-	 *
-	 * @return int|array<int> The updated post ID or IDs.
-	 */
-	public function include_series_to_fetch_attendees( $post_id ): array {
-		$post_ids  = (array) $post_id;
-		$event_ids = array_filter( $post_ids, fn( int $id) => get_post_type( $id ) === TEC::POSTTYPE );
-
-		if ( ! count( $event_ids ) ) {
-			return $post_id;
-		}
-
-		$ids_generator = tec_series()->where( 'event_post_id', $event_ids )->get_ids( true );
-		$series_ids    = iterator_to_array( $ids_generator, false );
-
-		if ( ! count( $series_ids ) ) {
-			return $post_id;
-		}
-
-		return array_values( array_unique( array_merge( $post_ids, $series_ids ) ) );
-	}
-
 	/**
 	 * Filters the costs of an Event to include the costs of Series Passes if the Event is part of a Series.
 	 *
@@ -1052,20 +988,6 @@ class Series_Passes extends Controller {
 		}
 
 		return $this->metabox->get_tickets_panel_list_helper_text( $text, $post );
-	}
-
-	/**
-	 * Filters the JavaScript configuration for the Attendees report to include the confirmation strings for
-	 * Series Passes.
-	 *
-	 * @since 5.8.0
-	 *
-	 * @param array<string,mixed> $config_data The JavaScript configuration.
-	 *
-	 * @return array<string,mixed> The updated JavaScript configuration.
-	 */
-	public function filter_tickets_attendees_report_js_config( array $config_data ): array {
-		return $this->edit->filter_tickets_attendees_report_js_config( $config_data );
 	}
 
 	/**
@@ -1223,5 +1145,39 @@ class Series_Passes extends Controller {
 		}
 
 		return $this->metabox->get_no_commerce_provider_warning_message();
+	}
+
+	/**
+	 * Filters the post IDs used to fetch an Event attendees to include the Series the Event belongs to and,
+	 * thus, include Series Passes into the results.
+	 *
+	 * @since 5.8.0
+	 * @since TBD Method moved to the Attendees controller.
+	 *
+	 * @param int|array<int> $post_id The post ID or IDs.
+	 *
+	 * @return int|array<int> The updated post ID or IDs.
+	 *
+	 * @deprecated TBD Use the Attendees::include_series_to_fetch_attendees method instead.
+	 */
+	public function include_series_to_fetch_attendees( $post_id ): array {
+		return tribe( Attendees::class )->include_series_to_fetch_attendees( $post_id );
+	}
+
+	/**
+	 * Filters the JavaScript configuration for the Attendees report to include the confirmation strings for
+	 * Series Passes.
+	 *
+	 * @since 5.8.0
+	 * @since TBD Method moved to the Attendees controller.
+	 *
+	 * @param array<string,mixed> $config_data The JavaScript configuration.
+	 *
+	 * @return array<string,mixed> The updated JavaScript configuration.
+	 *
+	 * @deprecated TBD Use the Attendees::filter_tickets_attendees_report_js_config method instead.
+	 */
+	public function filter_tickets_attendees_report_js_config( array $config_data ): array {
+		return tribe( Attendees::class )->filter_tickets_attendees_report_js_config( $config_data );
 	}
 }

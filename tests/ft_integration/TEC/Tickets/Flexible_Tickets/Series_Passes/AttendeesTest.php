@@ -4,6 +4,7 @@ namespace TEC\Tickets\Flexible_Tickets\Series_Passes;
 
 use ActionScheduler_Action;
 use ActionScheduler_DBStore;
+use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Events\Custom_Tables\V1\Migration\Provider;
 use TEC\Events\Custom_Tables\V1\Models\Occurrence;
@@ -23,6 +24,7 @@ class AttendeesTest extends Controller_Test_Case {
 	use Series_Pass_Factory;
 	use Attendee_Maker;
 	use Order_Maker;
+	use SnapshotAssertions;
 
 	protected string $controller_class = Attendees::class;
 	private $rest_server_backup;
@@ -1304,6 +1306,106 @@ class AttendeesTest extends Controller_Test_Case {
 			);
 		}
 	}
+
+	/**
+	 * It should add Series ID to Event IDs when fetching Attendees of Event in Series
+	 *
+	 * @test
+	 */
+	public function should_add_series_id_to_event_i_ds_when_fetching_attendees_of_event_in_series(): void {
+		$series              = static::factory()->post->create( [
+			'post_type' => Series_Post_Type::POSTTYPE,
+		] );
+		$event_in_series     = tribe_events()->set_args( [
+			'title'      => 'Event in Series',
+			'status'     => 'publish',
+			'start_date' => '2020-02-11 17:30:00',
+			'end_date'   => '2020-02-11 18:00:00',
+			'series'     => $series,
+		] )->create()->ID;
+		$event_not_in_series = tribe_events()->set_args( [
+			'title'      => 'Event not in Series',
+			'status'     => 'publish',
+			'start_date' => '2020-02-11 17:30:00',
+			'end_date'   => '2020-02-11 18:00:00',
+		] )->create()->ID;
+		$series_pass         = $this->create_tc_series_pass( $series, 66 )->ID;
+		$ticket_1            = $this->create_tc_ticket( $event_in_series, 23 );
+		$ticket_2            = $this->create_tc_ticket( $event_not_in_series, 89 );
+		[ $attendee_1, $attendee_2 ] = $this->create_many_attendees_for_ticket( 2, $ticket_1, $event_in_series );
+		[ $attendee_3, $attendee_4 ] = $this->create_many_attendees_for_ticket( 2, $ticket_2, $event_not_in_series );
+		[
+			$pass_attendee_1,
+			$pass_attendee_2
+		] = $this->create_many_attendees_for_ticket( 2, $series_pass, $series );
+
+		$this->assertEqualSets(
+			[ $attendee_1, $attendee_2 ],
+			tribe_attendees()->where( 'event', $event_in_series )->get_ids()
+		);
+		$this->assertEqualSets(
+			[ $attendee_3, $attendee_4 ],
+			tribe_attendees()->where( 'event', $event_not_in_series )->get_ids()
+		);
+		$this->assertEqualSets(
+			[ $pass_attendee_1, $pass_attendee_2 ],
+			tribe_attendees()->where( 'event', $series )->get_ids()
+		);
+		$this->assertEqualSets(
+			[ $attendee_3, $attendee_4, $pass_attendee_1, $pass_attendee_2 ],
+			tribe_attendees()->where( 'event__not_in', $event_in_series )->get_ids()
+		);
+		$this->assertEqualSets(
+			[ $attendee_1, $attendee_2, $pass_attendee_1, $pass_attendee_2 ],
+			tribe_attendees()->where( 'event__not_in', $event_not_in_series )->get_ids()
+		);
+		$this->assertEqualSets(
+			[ $attendee_1, $attendee_2, $attendee_3, $attendee_4 ],
+			tribe_attendees()->where( 'event__not_in', $series )->get_ids()
+		);
+
+		// Build and register the controller.
+		$controller = $this->make_controller()->register();
+
+		$this->assertEqualSets(
+			[ $attendee_1, $attendee_2, $pass_attendee_1, $pass_attendee_2 ],
+			tribe_attendees()->where( 'event', $event_in_series )->get_ids()
+		);
+		$this->assertEqualSets(
+			[ $attendee_3, $attendee_4 ],
+			tribe_attendees()->where( 'event', $event_not_in_series )->get_ids()
+		);
+		$this->assertEqualSets(
+			[ $pass_attendee_1, $pass_attendee_2 ],
+			tribe_attendees()->where( 'event', $series )->get_ids()
+		);
+		$this->assertEqualSets(
+			[ $attendee_3, $attendee_4 ],
+			tribe_attendees()->where( 'event__not_in', $event_in_series )->get_ids()
+		);
+		$this->assertEqualSets(
+			[ $attendee_1, $attendee_2, $pass_attendee_1, $pass_attendee_2 ],
+			tribe_attendees()->where( 'event__not_in', $event_not_in_series )->get_ids()
+		);
+		$this->assertEqualSets(
+			[ $attendee_1, $attendee_2, $attendee_3, $attendee_4 ],
+			tribe_attendees()->where( 'event__not_in', $series )->get_ids()
+		);
+	}
+
+	/**
+	 * It should correctly filter the JS Attendee report configuration
+	 *
+	 * @test
+	 */
+	public function should_correctly_filter_the_js_attendee_report_configuration(): void {
+		$this->make_controller()->register();
+
+		$filtered = apply_filters( 'tribe_tickets_attendees_report_js_config', [] );
+
+		$this->assertMatchesJsonSnapshot( json_encode( $filtered, JSON_PRETTY_PRINT ) );
+	}
+
 
 	// @todo queries!
 }

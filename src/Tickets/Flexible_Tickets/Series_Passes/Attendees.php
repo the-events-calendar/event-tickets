@@ -13,6 +13,7 @@ use AppendIterator;
 use ArrayIterator;
 use Iterator;
 use TEC\Common\Contracts\Provider\Controller;
+use TEC\Common\lucatume\DI52\Container;
 use TEC\Events\Custom_Tables\V1\Models\Occurrence;
 use TEC\Events_Pro\Custom_Tables\V1\Events\Provisional\ID_Generator;
 use TEC\Events_Pro\Custom_Tables\V1\Models\Provisional_Post;
@@ -23,6 +24,7 @@ use Tribe__Tickets__Tickets as Tickets;
 use WP_Error;
 use WP_Post;
 use WP_REST_Response;
+use Tribe__Events__Main as TEC;
 
 /**
  * Class Attendees.
@@ -61,6 +63,28 @@ class Attendees extends Controller {
 	private array $post_type_checkin_keys = [];
 
 	/**
+	 * A reference to the Series Passes' edit and editor handler.
+	 *
+	 * @since TBD
+	 *
+	 * @var Edit
+	 */
+	private Edit $edit;
+
+	/**
+	 * Attendees constructor.
+	 *
+	 * since TBD
+	 *
+	 * @param Container $container The dependency injection container.
+	 * @param Edit      $edit      The Series Passes' edit and editor handler.
+	 */
+	public function __construct( Container $container, Edit $edit ) {
+		parent::__construct( $container );
+		$this->edit = $edit;
+	}
+
+	/**
 	 * Subscribes the controller from all Attendee post and meta updates.
 	 *
 	 * @since TBD
@@ -75,6 +99,7 @@ class Attendees extends Controller {
 		add_action( 'updated_post_meta', [ $this, 'sync_attendee_meta_on_meta_update' ], 500, 4 );
 		add_action( 'deleted_post_meta', [ $this, 'sync_attendee_meta_on_meta_delete' ], 500, 4 );
 		add_action( 'after_delete_post', [ $this, 'delete_clones_on_delete' ], 500, 2 );
+
 	}
 
 	/**
@@ -87,6 +112,7 @@ class Attendees extends Controller {
 		foreach ( tribe_attendees()->attendee_types() as $attendee_post_type ) {
 			remove_action( "edit_post_{$attendee_post_type}", [ $this, 'sync_attendee_on_edit' ], 500 );
 		}
+
 		remove_action( 'added_post_meta', [ $this, 'sync_attendee_meta_on_meta_add' ], 500 );
 		remove_action( 'updated_post_meta', [ $this, 'sync_attendee_meta_on_meta_update' ], 500 );
 		remove_action( 'deleted_post_meta', [ $this, 'sync_attendee_meta_on_meta_delete' ], 500 );
@@ -109,6 +135,21 @@ class Attendees extends Controller {
 			'build_attendee_failure_response'
 		], 10, 2 );
 		$this->subscribe_to_attendee_updates();
+		add_filter( 'tec_tickets_attendees_filter_by_event', [ $this, 'include_series_to_fetch_attendees' ] );
+		add_filter(
+			'tec_tickets_attendees_filter_by_event_not_in',
+			[
+				$this,
+				'include_series_to_fetch_attendees',
+			]
+		);
+		add_filter(
+			'tribe_tickets_attendees_report_js_config',
+			[
+				$this,
+				'filter_tickets_attendees_report_js_config',
+			]
+		);
 	}
 
 	/**
@@ -126,6 +167,15 @@ class Attendees extends Controller {
 			'build_attendee_failure_response'
 		], 10 );
 		$this->unsubscribe_from_attendee_updates();
+		remove_filter( 'tec_tickets_attendees_filter_by_event', [ $this, 'include_series_to_fetch_attendees' ] );
+		remove_filter( 'tec_tickets_attendees_filter_by_event_not_in', [ $this, 'include_series_to_fetch_attendees' ] );
+		remove_filter(
+			'tribe_tickets_attendees_report_js_config',
+			[
+				$this,
+				'filter_tickets_attendees_report_js_config',
+			]
+		);
 	}
 
 	/**
@@ -918,5 +968,47 @@ class Attendees extends Controller {
 			}
 		}
 		$this->subscribe_to_attendee_updates();
+	}
+
+	/**
+	 * Filters the post IDs used to fetch an Event attendees to include the Series the Event belongs to and,
+	 * thus, include Series Passes into the results.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|array<int> $post_id The post ID or IDs.
+	 *
+	 * @return int|array<int> The updated post ID or IDs.
+	 */
+	public function include_series_to_fetch_attendees( $post_id ): array {
+		$post_ids = (array) $post_id;
+		$event_ids = array_filter( $post_ids, static fn( int $id ) => get_post_type( $id ) === TEC::POSTTYPE );
+
+		if ( ! count( $event_ids ) ) {
+			return $post_id;
+		}
+
+		$ids_generator = tec_series()->where( 'event_post_id', $event_ids )->get_ids( true );
+		$series_ids = iterator_to_array( $ids_generator, false );
+
+		if ( ! count( $series_ids ) ) {
+			return $post_id;
+		}
+
+		return array_values( array_unique( array_merge( $post_ids, $series_ids ) ) );
+	}
+
+	/**
+	 * Filters the JavaScript configuration for the Attendees report to include the confirmation strings for
+	 * Series Passes.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $config_data The JavaScript configuration.
+	 *
+	 * @return array<string,mixed> The updated JavaScript configuration.
+	 */
+	public function filter_tickets_attendees_report_js_config( array $config_data ): array {
+		return $this->edit->filter_tickets_attendees_report_js_config( $config_data );
 	}
 }
