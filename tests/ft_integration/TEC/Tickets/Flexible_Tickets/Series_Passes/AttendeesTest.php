@@ -933,9 +933,6 @@ class AttendeesTest extends Controller_Test_Case {
 		}
 	}
 
-
-	// @todo test for clone <> original updates
-
 	/**
 	 * It should update cloned Attendee when original updated
 	 *
@@ -1313,10 +1310,10 @@ class AttendeesTest extends Controller_Test_Case {
 	 * @test
 	 */
 	public function should_add_series_id_to_event_i_ds_when_fetching_attendees_of_event_in_series(): void {
-		$series              = static::factory()->post->create( [
+		$series = static::factory()->post->create( [
 			'post_type' => Series_Post_Type::POSTTYPE,
 		] );
-		$event_in_series     = tribe_events()->set_args( [
+		$event_in_series = tribe_events()->set_args( [
 			'title'      => 'Event in Series',
 			'status'     => 'publish',
 			'start_date' => '2020-02-11 17:30:00',
@@ -1329,9 +1326,9 @@ class AttendeesTest extends Controller_Test_Case {
 			'start_date' => '2020-02-11 17:30:00',
 			'end_date'   => '2020-02-11 18:00:00',
 		] )->create()->ID;
-		$series_pass         = $this->create_tc_series_pass( $series, 66 )->ID;
-		$ticket_1            = $this->create_tc_ticket( $event_in_series, 23 );
-		$ticket_2            = $this->create_tc_ticket( $event_not_in_series, 89 );
+		$series_pass = $this->create_tc_series_pass( $series, 66 )->ID;
+		$ticket_1 = $this->create_tc_ticket( $event_in_series, 23 );
+		$ticket_2 = $this->create_tc_ticket( $event_not_in_series, 89 );
 		[ $attendee_1, $attendee_2 ] = $this->create_many_attendees_for_ticket( 2, $ticket_1, $event_in_series );
 		[ $attendee_3, $attendee_4 ] = $this->create_many_attendees_for_ticket( 2, $ticket_2, $event_not_in_series );
 		[
@@ -1407,5 +1404,125 @@ class AttendeesTest extends Controller_Test_Case {
 	}
 
 
-	// @todo queries!
+	/**
+	 * It should query for attendees correctly when there are cloned Attendees
+	 *
+	 * @test
+	 */
+	public function should_query_for_attendees_correctly_when_there_are_cloned_attendees(): void {
+		// Become administrator.
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		// Update the provisional ID base a first time to set the option initial value.
+		$id_generator = tribe( ID_Generator::class );
+		$id_generator->update();
+		// Create a Series.
+		$series_id = static::factory()->post->create( [
+			'post_type' => Series_Post_Type::POSTTYPE,
+		] );
+		// Create a Series Pass and an Attendee for the Series.
+		$series_pass_id = $this->create_tc_series_pass( $series_id )->ID;
+		$this->create_order( [ $series_pass_id => 1 ] );
+		$series_pass_attendee_id = tribe_attendees()->where( 'event_id', $series_id )->first_id();
+		// Create a Recurring Event part of the Series happening 10 times.
+		$recurring_event = tribe_events()->set_args( [
+			'title'      => 'Recurring Event in Series',
+			'status'     => 'publish',
+			'start_date' => '+3 hours',
+			'duration'   => 3 * HOUR_IN_SECONDS,
+			'recurrence' => 'RRULE:FREQ=DAILY;COUNT=10',
+			'series'     => $series_id,
+		] )->create()->ID;
+		$provisional_ids = Occurrence::where( 'post_id', '=', $recurring_event )
+			->map( fn( Occurrence $o ) => $o->provisional_id );
+		$this->assertCount( 10, $provisional_ids );
+		// Create a Single Event part of the Series.
+		$single_event = tribe_events()->set_args( [
+			'title'      => 'Single Event in Series',
+			'status'     => 'publish',
+			'start_date' => '+3 hours',
+			'duration'   => 3 * HOUR_IN_SECONDS,
+			'series'     => $series_id,
+		] )->create()->ID;
+		// Create a control Single Event not part of the Series.
+		$control_event = tribe_events()->set_args( [
+			'title'      => 'Control Event',
+			'status'     => 'publish',
+			'start_date' => '+3 hours',
+			'duration'   => 3 * HOUR_IN_SECONDS,
+		] )->create()->ID;
+		// Create 2 Attendees for the control event not part of the Series.
+		$control_ticket_id = $this->create_tc_ticket( $control_event );
+		$this->create_order( [ $control_ticket_id => 2 ] );
+		$controls_attendees = tribe_attendees()->where( 'event', $control_event )
+			->get_ids();
+		$this->assertCount( 2, $controls_attendees );
+
+		$controller = $this->make_controller();
+		$controller->register();
+
+		$this->assertEquals(
+			[ $series_pass_attendee_id ],
+			tribe_attendees()->where( 'event', $series_id )->get_ids(),
+			'The original Attendee should be the only Series Attendee.'
+		);
+		$this->assertEquals(
+			[ $series_pass_attendee_id ],
+			tribe_attendees()->where( 'event', $recurring_event )->get_ids(),
+			'The original Attendee should be the only Recurring Event Attendee.'
+		);
+		foreach ( $provisional_ids as $provisional_id ) {
+			$this->assertEquals(
+				[ $series_pass_attendee_id ],
+				tribe_attendees()->where( 'event', $provisional_id )->get_ids(),
+				'The original Attendee should be the only Recurring Event Occurrence Attendee.'
+			);
+		}
+		$this->assertEquals(
+			[ $series_pass_attendee_id ],
+			tribe_attendees()->where( 'event', $single_event )->get_ids(),
+			'The original Attendee should be the only Single Event Attendee.'
+		);
+		$this->assertEqualSets(
+			$controls_attendees,
+			tribe_attendees()->where( 'event', $control_event )->get_ids(),
+			'The control Event Attendees should not be affected.'
+		);
+
+		// Clone the Attendees to each Occurrence part of the Recurring Event part of the Series.
+		$controller = $this->make_controller();
+		$clones = [];
+		foreach ( $provisional_ids as $provisional_id ) {
+			$clones[ $provisional_id ] = $controller->clone_attendee_to_event( $series_pass_attendee_id, $provisional_id );
+		}
+
+		// Check the results after the Attendee cloning to the Recurring Event Ocurrences.
+		$this->assertEquals(
+			[ $series_pass_attendee_id ],
+			tribe_attendees()->where( 'event', $series_id )->get_ids(),
+			'The original Attendee should be the only Series Attendee.'
+		);
+		$this->assertEquals(
+			[ $series_pass_attendee_id ],
+			tribe_attendees()->where( 'event', $recurring_event )->get_ids(),
+			'The original Attendee should be the only Recurring Event Attendee.'
+		);
+		foreach ( $provisional_ids as $provisional_id ) {
+			$occurrence_attendee_id = $clones[ $provisional_id ];
+			$this->assertEquals(
+				[ $occurrence_attendee_id ],
+				tribe_attendees()->where( 'event', $provisional_id )->get_ids(),
+				'The cloned Attendee should be the only Recurring Event Occurrence Attendee.'
+			);
+		}
+		$this->assertEquals(
+			[ $series_pass_attendee_id ],
+			tribe_attendees()->where( 'event', $single_event )->get_ids(),
+			'The original Attendee should be the only Single Event Attendee.'
+		);
+		$this->assertEqualSets(
+			$controls_attendees,
+			tribe_attendees()->where( 'event', $control_event )->get_ids(),
+			'The control Event Attendees should not be affected.'
+		);
+	}
 }

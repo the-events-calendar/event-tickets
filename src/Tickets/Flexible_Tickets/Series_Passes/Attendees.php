@@ -20,6 +20,7 @@ use TEC\Events_Pro\Custom_Tables\V1\Models\Provisional_Post;
 use TEC\Events_Pro\Custom_Tables\V1\Models\Series_Relationship;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 use Tribe__Date_Utils as Dates;
+use Tribe__Repository__Interface;
 use Tribe__Tickets__Tickets as Tickets;
 use WP_Error;
 use WP_Post;
@@ -135,13 +136,13 @@ class Attendees extends Controller {
 			'build_attendee_failure_response'
 		], 10, 2 );
 		$this->subscribe_to_attendee_updates();
-		add_filter( 'tec_tickets_attendees_filter_by_event', [ $this, 'include_series_to_fetch_attendees' ] );
+		add_filter( 'tec_tickets_attendees_filter_by_event', [ $this, 'include_series_to_fetch_attendees' ], 10, 2 );
 		add_filter(
 			'tec_tickets_attendees_filter_by_event_not_in',
 			[
 				$this,
 				'include_series_to_fetch_attendees',
-			]
+			], 10, 2
 		);
 		add_filter(
 			'tribe_tickets_attendees_report_js_config',
@@ -976,11 +977,15 @@ class Attendees extends Controller {
 	 *
 	 * @since TBD
 	 *
-	 * @param int|array<int> $post_id The post ID or IDs.
+	 * @param int|array<int>                    $post_id    The post ID or IDs.
+	 * @param Tribe__Repository__Interface|null $repository The repository instance.
 	 *
 	 * @return int|array<int> The updated post ID or IDs.
 	 */
-	public function include_series_to_fetch_attendees( $post_id ): array {
+	public function include_series_to_fetch_attendees( $post_id, $repository = null ): array {
+		if ( ! $repository instanceof Tribe__Repository__Interface ) {
+			return $post_id;
+		}
 		$post_ids = (array) $post_id;
 		$event_ids = array_filter( $post_ids, static fn( int $id ) => get_post_type( $id ) === TEC::POSTTYPE );
 
@@ -995,7 +1000,42 @@ class Attendees extends Controller {
 			return $post_id;
 		}
 
-		return array_values( array_unique( array_merge( $post_ids, $series_ids ) ) );
+		// Determine whether the original request is to filter by Provisional IDs only or not.
+		$provisional_posts = tribe( Provisional_Post::class );
+		$provisional_ids = array_filter( $post_ids, [ $provisional_posts, 'is_provisional_post_id' ] );
+		$all_provisional_ids = count( $provisional_ids ) === count( $post_ids );
+
+		// Add the Series to the posts to fetch Attendees for.
+		$post_ids = array_values( array_unique( array_merge( $post_ids, $series_ids ) ) );
+
+		if ( $all_provisional_ids ) {
+			/*
+			 * If filtering by Provisional IDs only, then add a query to exclude original Attendees that have been
+			 * cloned to the Occurrence from the results. This is using a LEFT JOIN to simulate a MINUS operation
+			 * that is not available int MySQL. It leverages the meta key relating a cloned Attendee to the original
+			 * Attendee to exclude the original Attendee from the results if there is clone of it.
+			 */
+			global $wpdb;
+			$repository->join_clause(
+				$wpdb->prepare(
+					"LEFT JOIN {$wpdb->postmeta} minus_attendees
+			ON minus_attendees.meta_key = %s
+			AND {$wpdb->posts}.ID = minus_attendees.meta_value",
+					self::CLONE_META_KEY
+				)
+			);
+			$repository->where_clause( "(minus_attendees.post_id IS NULL)" );
+		}
+
+		/*
+		 * Else?
+		 * If the request is not all about Provisional IDs, then default to fetching Attendees from Series and
+		 * Events/Occurrences. Such a query is not clear in its intent, we'll be conservative and return more
+		 * Attendees. Even using a UNION of Attendees by Event ID, the result would still contain the same
+		 * set of Attendees.
+		 */
+
+		return $post_ids;
 	}
 
 	/**
