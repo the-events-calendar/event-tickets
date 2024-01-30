@@ -2256,10 +2256,9 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @return bool
 	 */
 	public function checkin( $attendee_id, $qr = null, $event_id = null ) {
-		$qr = null;
+		$qr = (bool) $qr;
 
-		$args = func_get_args();
-		if ( isset( $args[1] ) && $qr = (bool) $args[1] ) {
+		if ( $qr ) {
 			update_post_meta( $attendee_id, '_tribe_qr_status', 1 );
 		}
 
