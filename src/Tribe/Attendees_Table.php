@@ -307,10 +307,23 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	public function get_order_id_url( array $item ) {
 		// Backwards compatibility.
 		if ( empty( $item['order_id_url'] ) ) {
+			// @todo fix this piece
 			$item['order_id_url'] = get_edit_post_link( $item['order_id'], true );
 		}
 
-		return $item['order_id_url'];
+		/**
+		 * Filter the order ID URL.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $order_id_url The URL of the order ID.
+		 * @param array  $item The item array.
+		 */
+		return apply_filters(
+			'tec_attendees_table_order_id_url',
+			$item['order_id_url'],
+			$item
+		);
 	}
 
 	/**
