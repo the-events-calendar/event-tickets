@@ -210,6 +210,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Tweak - Customer name appears now as description of a Stripe payment. Added `tec_tickets_commerce_stripe_update_payment_description` filter. [ET-1607]
 * Tweak - Declared dynamic properties in Tribe__Tickets__Main, Tribe__Tickets__Tickets_Handler, Tribe__Tickets__REST__V1__Messages to prevent warnings in php 8.2 [ET-1950]
 * Tweak - Update default footer text of Tickets Emails to include link to website. [ET-1971]
+* Tweak - Added new filter `tec__tickets_attendees_table_order_id_url` to allow for overwriting the Attendees Order URL. [ET-1914]
 
 = [5.8.0] 2024-01-22 =
 
