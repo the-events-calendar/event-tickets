@@ -319,7 +319,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		 * @param array  $item The item array.
 		 */
 		return apply_filters(
-			'tec__tickets_attendees_table_order_id_url',
+			'tec_tickets_attendees_table_order_id_url',
 			$item['order_id_url'],
 			$item
 		);
