@@ -261,6 +261,23 @@ class Attendees extends Controller {
 			return false;
 		}
 
+		if ( tribe( Provisional_Post::class )->is_provisional_post_id( $event_id ) ) {
+			$provisional_id = $event_id;
+		} else {
+			$occurrence = Occurrence::find( $event_id, 'post_id' );
+			if ( ! $occurrence instanceof Occurrence ) {
+				do_action( 'tribe_log', 'error', 'Series Pass Attendee clone failed', [
+					'source'               => __METHOD__,
+					'original_attendee_id' => $attendee_id,
+					'event_id'             => $event_id,
+					'reason'               => 'Could not get provisional ID for the Event id',
+				] );
+
+				return false;
+			}
+			$provisional_id = $occurrence->provisional_id;
+		}
+
 		$attendee_event_key = $ticket_provider->attendee_event_key;
 
 		$original_post = get_post( $attendee_id );
@@ -307,7 +324,7 @@ class Attendees extends Controller {
 		}
 
 		// Relate the clone with the Event.
-		update_post_meta( $clone_id, $attendee_event_key, $event_id );
+		update_post_meta( $clone_id, $attendee_event_key, $provisional_id );
 
 		// Mark the cloned Attendee as a clone of the original one.
 		update_post_meta( $clone_id, self::CLONE_META_KEY, $attendee_id );

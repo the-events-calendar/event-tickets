@@ -2,10 +2,15 @@
 
 namespace TEC\Tickets\Flexible_Tickets\Series_Passes;
 
+use ActionScheduler_Action;
+use ActionScheduler_DBStore;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
+use TEC\Events\Custom_Tables\V1\Migration\Provider;
 use TEC\Events\Custom_Tables\V1\Models\Occurrence;
+use TEC\Events_Pro\Custom_Tables\V1\Events\Provisional\ID_Generator;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Flexible_Tickets\Base as Base_Controller;
 use TEC\Tickets\Flexible_Tickets\Test\Traits\Series_Pass_Factory;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
@@ -39,6 +44,17 @@ class AttendeesTest extends Controller_Test_Case {
 	public function restore_rest_server(): void {
 		global $wp_rest_server;
 		$wp_rest_server = $this->rest_server_backup;
+	}
+
+	/**
+	 * @before
+	 */
+	public function ensure_action_scheduler_initialized(): void {
+		if ( function_exists( 'as_enqueue_async_action' ) ) {
+			return;
+		}
+
+		tribe( Provider::class )->load_action_scheduler_late();
 	}
 
 	/**
@@ -943,7 +959,7 @@ class AttendeesTest extends Controller_Test_Case {
 			'series'     => $series_id,
 		] )->create()->ID;
 		$controller = $this->make_controller();
-		// Clone the Attendee to the Event, it will also check the cloned Attendee in.
+		// Clone the Attendee to the Event Occurrence.
 		$clone_1 = $controller->clone_attendee_to_event( $original, $event_1 );
 		// Create a second Event part of the Series.
 		$event_2 = tribe_events()->set_args( [
@@ -954,7 +970,7 @@ class AttendeesTest extends Controller_Test_Case {
 			'series'     => $series_id,
 		] )->create()->ID;
 		$controller = $this->make_controller();
-		// Clone the Attendee to the Event, it will also check the cloned Attendee in.
+		// Clone the Attendee to the Event Occurrence.
 		$clone_2 = $controller->clone_attendee_to_event( $original, $event_2 );
 		$commerce = Module::get_instance();
 		$checkin_key = $commerce->checkin_key;
@@ -1057,7 +1073,7 @@ class AttendeesTest extends Controller_Test_Case {
 			'series'     => $series_id,
 		] )->create()->ID;
 		$controller = $this->make_controller();
-		// Clone the Attendee to the Event, it will also check the cloned Attendee in.
+		// Clone the Attendee to the Event.
 		$clone_1 = $controller->clone_attendee_to_event( $original, $event_1 );
 		// Create a second Event part of the Series.
 		$event_2 = tribe_events()->set_args( [
@@ -1068,7 +1084,7 @@ class AttendeesTest extends Controller_Test_Case {
 			'series'     => $series_id,
 		] )->create()->ID;
 		$controller = $this->make_controller();
-		// Clone the Attendee to the Event, it will also check the cloned Attendee in.
+		// Clone the Attendee to the Event.
 		$clone_2 = $controller->clone_attendee_to_event( $original, $event_2 );
 		$commerce = Module::get_instance();
 		$checkin_key = $commerce->checkin_key;
@@ -1157,7 +1173,137 @@ class AttendeesTest extends Controller_Test_Case {
 		$this->assertNull( get_post( $clone_2 ) );
 	}
 
-	// @todo test that provisional ID upping will trigger update of the Series Pass Attendee <> Event meta value
+	/**
+	 * It should update linked meta values of Series Pass cloned Attendees when Provisional ID base updated
+	 *
+	 * @test
+	 */
+	public function should_update_linked_meta_values_of_series_pass_cloned_attendees_when_provisional_id_base_updated(): void {
+		// Become administrator.
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		// Update the provisional ID base a first time to set the option initial value.
+		$id_generator = tribe( ID_Generator::class );
+		$id_generator->update();
+		// Create a Series.
+		$series_id = static::factory()->post->create( [
+			'post_type' => Series_Post_Type::POSTTYPE,
+		] );
+		// Create a Series Pass and an Attendee for the Series.
+		$series_pass_id = $this->create_tc_series_pass( $series_id )->ID;
+		$this->create_order( [ $series_pass_id => 1 ] );
+		$original = tribe_attendees()->where( 'event_id', $series_id )->first_id();
+		// Create a REcurring Event part of the Series happening 10 times.
+		$event_1 = tribe_events()->set_args( [
+			'title'      => 'Test Event #1',
+			'status'     => 'publish',
+			'start_date' => '+3 hours',
+			'duration'   => 3 * HOUR_IN_SECONDS,
+			'recurrence' => 'RRULE:FREQ=DAILY;COUNT=10',
+			'series'     => $series_id,
+		] )->create()->ID;
+		$controller = $this->make_controller();
+		// Clone the Attendee to each Event Occurrence.
+		$provisional_ids = Occurrence::where( 'post_id', '=', $event_1 )
+			->map( fn( Occurrence $o ) => $o->provisional_id );
+		$clones = [];
+		foreach ( $provisional_ids as $provisional_id ) {
+			$clones[ $provisional_id ] = $controller->clone_attendee_to_event( $original, $provisional_id );
+		}
+		$commerce = Module::get_instance();
+		$attendee_event_key = $commerce->attendee_event_key;
+
+		// To start, the cloned Attendees should be related to the Occurrence provisional IDs of the Events.
+		foreach ( $provisional_ids as $provisional_id ) {
+			$this->assertEquals(
+				$provisional_id,
+				get_post_meta( $clones[ $provisional_id ], $attendee_event_key, true )
+			);
+		}
+
+		$old_base = $id_generator->current();
+		// Filter the update batch size to set it to 3.
+		add_filter( 'tec_tickets_flexible_tickets_attendee_event_value_update_batch_size', static fn() => 3 );
+		// Update the Provisional Post base, this could happen if the real post IDs got too close to the provisional IDs.
+		// This will enqueue an Action Scheduler action to update the Attendees.
+		$new_base_diff = 30000000;
+		$new_base = $old_base + $new_base_diff;
+		add_filter( 'tec_events_pro_custom_tables_v1_provisional_post_base_initial', static fn() => $new_base_diff );
+		$id_generator->update();
+		$this->assertEquals( $new_base, $id_generator->current() );
+
+		// There should be a first action to process Attendees.
+		$this->assertTrue( as_has_scheduled_action( Base_Controller::AS_ATTENDEE_EVENT_VALUE_UPDATE_ACTION ) );
+		$actions = as_get_scheduled_actions( [
+			'hook' => Base_Controller::AS_ATTENDEE_EVENT_VALUE_UPDATE_ACTION,
+		] );
+		$this->assertCount( 1, $actions );
+		/** @var ActionScheduler_Action $action */
+		$action = reset( $actions );
+		$action_id = ( array_keys( $actions ) )[0];
+
+		// Execute the Action Scheduler action a first time like Action Scheduler would.
+		$action->execute();
+		// Delete the executed action like Action Scheduler would do.
+		ActionScheduler_DBStore::instance()->delete_action( $action_id );
+
+		// There should be a second action to process Attendees.
+		$this->assertTrue( as_has_scheduled_action( Base_Controller::AS_ATTENDEE_EVENT_VALUE_UPDATE_ACTION ) );
+		$actions = as_get_scheduled_actions( [
+			'hook' => Base_Controller::AS_ATTENDEE_EVENT_VALUE_UPDATE_ACTION,
+		] );
+		$this->assertCount( 1, $actions );
+		/** @var ActionScheduler_Action $action */
+		$action = reset( $actions );
+		$action_id = ( array_keys( $actions ) )[0];
+
+		// Execute the Action Scheduler action a second time like Action Scheduler would.
+		$action->execute();
+		// Delete the executed action like Action Scheduler would do.
+		ActionScheduler_DBStore::instance()->delete_action( $action_id );
+
+		// There should be a third action to process Attendees.
+		$this->assertTrue( as_has_scheduled_action( Base_Controller::AS_ATTENDEE_EVENT_VALUE_UPDATE_ACTION ) );
+		$actions = as_get_scheduled_actions( [
+			'hook' => Base_Controller::AS_ATTENDEE_EVENT_VALUE_UPDATE_ACTION,
+		] );
+		$this->assertCount( 1, $actions );
+		/** @var ActionScheduler_Action $action */
+		$action = reset( $actions );
+		$action_id = ( array_keys( $actions ) )[0];
+
+		// Execute the Action Scheduler action a third time like Action Scheduler would.
+		$action->execute();
+		// Delete the executed action like Action Scheduler would do.
+		ActionScheduler_DBStore::instance()->delete_action( $action_id );
+
+		// There should be a fourth and last action to process Attendees.
+		$this->assertTrue( as_has_scheduled_action( Base_Controller::AS_ATTENDEE_EVENT_VALUE_UPDATE_ACTION ) );
+		$actions = as_get_scheduled_actions( [
+			'hook' => Base_Controller::AS_ATTENDEE_EVENT_VALUE_UPDATE_ACTION
+		] );
+		$this->assertCount( 1, $actions );
+		/** @var ActionScheduler_Action $action */
+		$action = reset( $actions );
+		$action_id = ( array_keys( $actions ) )[0];
+
+		// Execute the Action Scheduler action a fourth time like Action Scheduler would.
+		$action->execute();
+		// Delete the executed action like Action Scheduler would do.
+		ActionScheduler_DBStore::instance()->delete_action( $action_id );
+
+		// There should be a fourth and last action to process Attendees.
+		$this->assertFalse( as_has_scheduled_action( Base_Controller::AS_ATTENDEE_EVENT_VALUE_UPDATE_ACTION ) );
+
+		$diff = $new_base - $old_base;
+		foreach ( $provisional_ids as $old_provisional_id ) {
+			$new_provisional_id = $old_provisional_id + $diff;
+			$attendee_id = $clones[ $old_provisional_id ];
+			$this->assertEquals(
+				$new_provisional_id,
+				get_post_meta( $attendee_id, $attendee_event_key, true )
+			);
+		}
+	}
 
 	// @todo queries!
 }
