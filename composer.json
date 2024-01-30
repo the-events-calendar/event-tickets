@@ -11,7 +11,6 @@
   "license": "GPL-2.0",
   "require-dev": {
     "bordoni/phpass": "^0.3.5",
-    "automattic/vipwpcs": "^2.0",
     "codeception/module-asserts": "^1.0",
     "codeception/module-cli": "^1.0",
     "codeception/module-db": "^1.0",
@@ -26,9 +25,8 @@
     "lucatume/wp-snaphot-assertions": "^1.1.0",
     "phpunit/phpunit": "^6.5.14",
     "spatie/phpunit-snapshot-assertions": "^1.4.2",
-    "the-events-calendar/coding-standards": "dev-master",
+    "stellarwp/coding-standards": "dev-main",
     "the-events-calendar/tec-testing-facilities": "dev-master",
-    "wp-coding-standards/wpcs": "^2.1",
     "lucatume/codeception-snapshot-assertions": "^0.4.0"
   },
   "repositories": [
@@ -50,7 +48,7 @@
   "config": {
     "preferred-install": "dist",
     "platform": {
-      "php": "7.0"
+      "php": "7.4"
     },
     "allow-plugins": {
       "kylekatarnls/update-helper": true,
