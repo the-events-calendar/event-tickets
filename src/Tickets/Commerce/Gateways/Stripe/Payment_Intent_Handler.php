@@ -100,7 +100,7 @@ class Payment_Intent_Handler {
 	 * Updates an existing payment intent to add any necessary data before confirming the purchase.
 	 *
 	 * @since 5.3.0
-	 * @since TBD   Added customer's name / event name to the payment intent description
+	 * @since 5.8.1   Added customer's name / event name to the payment intent description
 	 *
 	 * @param array    $data  The purchase data received from the front-end.
 	 * @param \WP_Post $order The order object.
@@ -259,7 +259,7 @@ class Payment_Intent_Handler {
 	/**
 	 * Get the description for the payment intent.
 	 *
-	 * @since TBD
+	 * @since 5.8.1
 	 *
 	 * @param \WP_Post $order The Order data.
 	 * @param array    $data The purchase data received from the front-end.
@@ -297,7 +297,7 @@ class Payment_Intent_Handler {
 		/**
 		 * Filters the payment intent description
 		 *
-		 * @since TBD
+		 * @since 5.8.1
 		 *
 		 * @param string   $payment_intent_description Default payment intent description.
 		 * @param \WP_Post $order The Order data.

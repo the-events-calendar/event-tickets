@@ -509,7 +509,7 @@ class Orders extends WP_List_Table {
 	/**
 	 * Displays extra controls.
 	 *
-	 * @since TBD
+	 * @since 5.8.1
 	 *
 	 * @param string $which The location of the actions: 'left' or 'right'.
 	 */
@@ -563,7 +563,7 @@ class Orders extends WP_List_Table {
 	 * This method checks if the necessary GET parameters are set to trigger the CSV generation.
 	 * If conditions are met, it generates a CSV file with order data and outputs it for download.
 	 *
-	 * @since TBD
+	 * @since 5.8.1
 	 *
 	 * @return void
 	 */
@@ -578,7 +578,7 @@ class Orders extends WP_List_Table {
 		/**
 		 * Filters the event ID before using it to fetch orders.
 		 *
-		 * @since TBD
+		 * @since 5.8.1
 		 *
 		 * @param int $event_id The event ID.
 		 */
@@ -616,7 +616,7 @@ class Orders extends WP_List_Table {
 		/**
 		 * Filters the arguments for the order report export.
 		 *
-		 * @since TBD
+		 * @since 5.8.1
 		 *
 		 * @param array $arguments The arguments for order retrieval.
 		 */
@@ -643,7 +643,7 @@ class Orders extends WP_List_Table {
 	/**
 	 * Formats the orders data for CSV export.
 	 *
-	 * @since TBD
+	 * @since 5.8.1
 	 *
 	 * @param array $items The orders data.
 	 *
@@ -692,7 +692,7 @@ class Orders extends WP_List_Table {
 	/**
 	 * Sanitizes and formats a value for CSV output.
 	 *
-	 * @since TBD
+	 * @since 5.8.1
 	 *
 	 * @param string $value The value to be formatted.
 	 *
@@ -720,7 +720,7 @@ class Orders extends WP_List_Table {
 	/**
 	 * Outputs the formatted data as a CSV file for download.
 	 *
-	 * @since TBD
+	 * @since 5.8.1
 	 *
 	 * @param array  $formatted_data The formatted data for CSV export.
 	 * @param string $filename The name of the file for download.
@@ -760,7 +760,7 @@ class Orders extends WP_List_Table {
 	/**
 	 * Generate the export URL for exporting orders.
 	 *
-	 * @since TBD
+	 * @since 5.8.1
 	 *
 	 * @return string Relative URL for the export.
 	 */

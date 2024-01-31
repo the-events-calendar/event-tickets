@@ -603,7 +603,7 @@ class Base extends Controller {
 	 * Filters the start date for a series to use the start date of the first event in the series.
 	 *
 	 * @since 5.8.0
-	 * @since TBD Removed strict type casting from signature.
+	 * @since 5.8.1 Removed strict type casting from signature.
 	 *
 	 * @param string  $start_date   The start date.
 	 * @param WP_Post $series       The series post object.
@@ -616,16 +616,16 @@ class Base extends Controller {
 		if ( get_post_type( $series ) !== Series_Post_Type::POSTTYPE ) {
 			return $start_date;
 		}
-		
+
 		if ( ! is_string( $start_date ) || ! is_bool( $display_time ) || ! is_string( $date_format ) ) {
 			return $start_date;
 		}
-		
+
 		$first_event = tribe_events()->where( 'series', $series->ID )
 		                             ->order_by( 'event_date', 'ASC' )
 		                             ->per_page( - 1 )
 		                             ->first();
-		
+
 		if ( empty( $first_event ) ) {
 			return '';
 		}
@@ -637,7 +637,7 @@ class Base extends Controller {
 	 * Filters the end date for a series to use the start date of the last event in the series.
 	 *
 	 * @since 5.8.0
-	 * @since TBD Removed strict type casting from signature.
+	 * @since 5.8.1 Removed strict type casting from signature.
 	 *
 	 * @param string  $end_date     The end date.
 	 * @param WP_Post $series       The series post object.
@@ -650,16 +650,16 @@ class Base extends Controller {
 		if ( get_post_type( $series ) !== Series_Post_Type::POSTTYPE ) {
 			return $end_date;
 		}
-		
+
 		if ( ! is_string( $end_date ) || ! is_bool( $display_time ) || ! is_string( $date_format ) ) {
 			return $end_date;
 		}
-		
+
 		$last_event = tribe_events()->where( 'series', $series->ID )
 		                            ->order_by( 'event_date', 'ASC' )
 		                            ->per_page( - 1 )
 		                            ->last();
-		
+
 		if ( empty( $last_event ) ) {
 			return '';
 		}

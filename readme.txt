@@ -195,7 +195,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.8.1] TBD =
+= [5.8.1] 2024-02-07 =
 
 * Fix - Removed type casting from filter method of series pass to avoid fatal errors. [ET-2014]
 * Fix - Ensure correct attendee information is included in the attendee emails. [ET-1988]
@@ -204,12 +204,14 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Ticket is removed now when using the delete option from the block editor. [ET-1879]
 * Fix - Update button will now show when the opt-out checkbox shows on the My Tickets page. [ET-1980]
 * Fix - Update usage of `method_exists()` to comply with PHP 8.1 standards. [ET-1759]
-* Tweak - Added additional information to the Site Health Section. [ET-1925]
-* Tweak - Added Export option to Ticket Commerce Order page. [ET-1872]
+* Tweak - Added additional information to the Site Health Section and added `tec_tickets_site_health_subsections` filter. [ET-1925]
+* Tweak - Added Export option to Ticket Commerce Order page and `tec_tc_order_report_export_args` filter. [ET-1872]
 * Tweak - Added Print button to Ticket Commerce Orders. [ET-1873]
 * Tweak - Customer name appears now as description of a Stripe payment. Added `tec_tickets_commerce_stripe_update_payment_description` filter. [ET-1607]
 * Tweak - Declared dynamic properties in Tribe__Tickets__Main, Tribe__Tickets__Tickets_Handler, Tribe__Tickets__REST__V1__Messages to prevent warnings in php 8.2 [ET-1950]
 * Tweak - Update default footer text of Tickets Emails to include link to website. [ET-1971]
+* Tweak - Added filters: `tec_tc_order_report_export_args`, `tec_tickets_commerce_stripe_update_payment_description`, `tec_tickets_site_health_subsections`
+* Tweak - Changed views: `blocks/tickets/footer`, `emails/template-parts/body/footer/credit`, `registration-js/content`, `registration/button-cart`, `tickets/orders`, `v2/tickets/footer/return-to-cart`
 * Language - 31 new strings added, 77 updated, 0 fuzzied, and 4 obsoleted
 
 = [5.8.0] 2024-01-22 =
