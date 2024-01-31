@@ -11,8 +11,9 @@ namespace TEC\Tickets\Site_Health;
 
 use TEC\Common\Site_Health\Info_Section_Abstract;
 use TEC\Common\Site_Health\Factory;
-use Tribe__Events__Main;
 use Tribe__Utils__Array as Arr;
+
+use function cli\err;
 
 /**
  * Class Site_Health
@@ -83,6 +84,7 @@ class Info_Section extends Info_Section_Abstract {
 	 * @return array The debug information to be added to the core information page.
 	 */
 	public function add_fields() {
+
 		$this->add_field(
 			Factory::generate_generic_field(
 				'ticket_enabled_post_types',
@@ -118,25 +120,5 @@ class Info_Section extends Info_Section_Abstract {
 				40
 			)
 		);
-
-		if ( class_exists( 'Tribe__Events__Main' ) ) {
-			$this->add_field(
-				Factory::generate_generic_field(
-					'ticketed_events',
-					esc_html__( 'Total ticketed events', 'event-tickets' ),
-					tribe( 'tickets.event-repository' )->per_page( -1 )->where( 'has_tickets' )->count(),
-					50
-				)
-			);
-
-			$this->add_field(
-				Factory::generate_generic_field(
-					'rsvp_events',
-					esc_html__( 'Total events with RSVPs', 'event-tickets' ),
-					tribe( 'tickets.event-repository' )->per_page( -1 )->where( 'has_rsvp' )->count(),
-					60
-				)
-			);
-		}
 	}
 }
