@@ -11,9 +11,7 @@ namespace TEC\Tickets\Site_Health;
 
 use TEC\Common\Contracts\Service_Provider;
 use TEC\Tickets\Site_Health\Subsections\Features\Tickets_Commerce_Subsection;
-use TEC\Tickets\Site_Health\Subsections\Plugins\Event_Tickets_Plus_Subsection;
 use TEC\Tickets\Site_Health\Subsections\Plugins\Plugin_Data_Subsection;
-use TEC\Tickets\Site_Health\Subsections\Plugins\The_Events_Calendar_Subsection;
 
 /**
   * Class Provider
