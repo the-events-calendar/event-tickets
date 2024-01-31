@@ -13,8 +13,6 @@ use TEC\Common\Site_Health\Info_Section_Abstract;
 use TEC\Common\Site_Health\Factory;
 use Tribe__Utils__Array as Arr;
 
-use function cli\err;
-
 /**
  * Class Site_Health
  *
