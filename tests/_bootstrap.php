@@ -2,7 +2,6 @@
 /**
  * @file Global bootstrap for all codeception tests
  */
-
 use Codeception\Util\Autoload;
 
 Autoload::addNamespace( 'Tribe__Events__WP_UnitTestCase', __DIR__ . '/_support' );
@@ -34,7 +33,7 @@ if( ! defined( 'TRIBE_TESTS_HOME_URL' ) ) {
  * `vendor/bin/codecept run` command will throw an error.
  * We handle that intention here.
  */
-if ( in_array( '--debug', $_SERVER['argv'], true ) ) {
+if ( isset( $_SERVER['argv'] ) && in_array( '--debug', $_SERVER['argv'], true ) ) {
 	$_SERVER['argv'][] = '--update-snapshots';
 }
 

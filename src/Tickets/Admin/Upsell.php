@@ -4,11 +4,12 @@ namespace TEC\Tickets\Admin;
 
 use TEC\Tickets\Commerce\Settings;
 use \Tribe\Admin\Upsell_Notice;
+use Tribe__Template as Template;
 
 /**
  * Class Upsell
  *
- * @since   5.3.4
+ * @since 5.3.4
  *
  * @package TEC\Tickets\Admin
  */
@@ -23,6 +24,13 @@ class Upsell {
 		add_action( 'tribe_events_tickets_pre_edit', [ $this, 'maybe_show_capacity_arf' ] );
 		add_action( 'tec_tickets_attendees_event_summary_table_extra', [ $this, 'show_on_attendees_page' ] );
 		add_filter( 'tribe_tickets_commerce_settings', [ $this, 'maybe_show_paystack_promo' ] );
+
+		// Display ticket type upsell notice.
+		add_action( 'tribe_template_after_include:tickets/admin-views/editor/ticket-type-default-header', [
+			$this,
+			'render_ticket_type_upsell_notice'
+		], 20, 3 );
+
 		add_filter( 'tec_tickets_emails_settings_template_list', [ $this, 'show_on_emails_settings_page' ] );
 	}
 
@@ -207,6 +215,20 @@ class Upsell {
 		$settings_before = array_slice( $settings, 0, $general_setting_index );
 		$settings_after  = array_slice( $settings, $general_setting_index );
 		return array_merge( $settings_before, $new_setting, $settings_after);
+    }
+
+	/**
+	 * Filters the default Ticket type description in the context of Events part of a Series.
+	 *
+	 * @since 5.8.0
+	 *
+	 * @param string   $file     Complete path to include the PHP File.
+	 * @param string[] $name     Template name.
+	 * @param Template $template Current instance of the Tribe__Template.
+	 */
+	public function render_ticket_type_upsell_notice( string $file, array $name, Template $template ): void {
+		$admin_views = tribe( 'tickets.admin.views' );
+		$admin_views->template( 'flexible-tickets/admin/tickets/editor/upsell-notice' );
 	}
 
 	/**

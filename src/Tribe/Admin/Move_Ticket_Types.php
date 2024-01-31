@@ -25,7 +25,7 @@ class Tribe__Tickets__Admin__Move_Ticket_Types extends Tribe__Tickets__Admin__Mo
 		}
 
 		return array_merge( $vars, array(
-			'title'    => esc_html( sprintf( __( 'Move %s Types', 'event-tickets' ), tribe_get_ticket_label_singular( 'move_ticket_type_title' ) ) ),
+			'title'    => esc_html( sprintf( __( 'Move %s', 'event-tickets' ), tribe_get_ticket_label_singular( 'move_ticket_type_title' ) ) ),
 			'mode'     => 'ticket_type_only',
 		) );
 	}

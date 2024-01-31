@@ -1,4 +1,7 @@
 <?php
+
+use TEC\Tickets\Admin\Panel_Data;
+use TEC\Tickets\Admin\Panels_Data\Ticket_Panel_Data;
 use TEC\Tickets\Event;
 
 /**
@@ -71,7 +74,7 @@ class Tribe__Tickets__Metabox {
 	 *
 	 * @since  4.6.2
 	 *
-	 * @param  int   $post_id  Which post we are dealing with
+	 * @param  int|WP_Post   $post_id  Which post we are dealing with by ID or post object.
 	 *
 	 * @return string|bool
 	 */
@@ -81,6 +84,18 @@ class Tribe__Tickets__Metabox {
 		if ( empty( $modules ) ) {
 			return false;
 		}
+
+		/**
+		 * This filter allows retrieval of an event ID to be filtered before being accessed elsewhere.
+		 *
+		 * @since 5.8.0
+		 *
+		 * @param int $post_id The event ID to be filtered.
+		 */
+		$post_id = apply_filters(
+			'tec_tickets_filter_event_id',
+			( $post_id instanceof WP_Post ? $post_id->ID : (int) $post_id )
+		);
 
 		$post = get_post( $post_id );
 
@@ -96,8 +111,15 @@ class Tribe__Tickets__Metabox {
 
 		/** @var Tribe__Tickets__Admin__Views $admin_views */
 		$admin_views = tribe( 'tickets.admin.views' );
+		$helper_text = $this->get_list_panel_helper_text( $post );
+		$helper_link = $this->get_helper_link();
 
-		return $admin_views->template( [ 'editor', 'metabox' ], get_defined_vars() );
+		$context = get_defined_vars();
+
+		// Add the data required by each panel to render correctly.
+		$context = array_merge( $context, ( new Ticket_Panel_Data( $post->ID ) )->to_array() );
+
+		return $admin_views->template( [ 'editor', 'metabox' ], $context );
 	}
 
 	/**
@@ -120,6 +142,7 @@ class Tribe__Tickets__Metabox {
 
 		$post = get_post( $post_id );
 		$data = wp_parse_args( tribe_get_request_var( array( 'data' ), array() ), array() );
+		$ticket_type = $data['ticket_type'] ?? 'default';
 		$notice = tribe_get_request_var( 'tribe-notice', false );
 
 		$data = Tribe__Utils__Array::get( $data, array( 'tribe-tickets' ), null );
@@ -133,7 +156,7 @@ class Tribe__Tickets__Metabox {
 			$tickets_handler->save_form_settings( $post->ID, isset( $data['settings'] ) ? $data['settings'] : null );
 		}
 
-		$return = $this->get_panels( $post );
+		$return = $this->get_panels( $post, null, $ticket_type );
 		$return['notice'] = $this->notice( $notice );
 
 		/**
@@ -154,12 +177,14 @@ class Tribe__Tickets__Metabox {
 	 *
 	 * @since  4.6.2
 	 *
-	 * @param int|WP_Post $post
-	 * @param int         $ticket_id
+	 * @param int|WP_Post $post        The post object or ID the tickets are for.
+	 * @param int|null    $ticket_id   The ID of the ticket to render the panels for, or `null` if rendering for a new
+	 *                                 ticket.
+	 * @param string|null $ticket_type The ticket type to render the panels for.
 	 *
-	 * @return array
+	 * @return array<string,string> A map from panel name to panel HTML content.
 	 */
-	public function get_panels( $post, $ticket_id = null ) {
+	public function get_panels( $post, $ticket_id = null, string $ticket_type = null ) {
 		if ( ! $post instanceof WP_Post ) {
 			$post = get_post( $post );
 		}
@@ -168,6 +193,12 @@ class Tribe__Tickets__Metabox {
 		if ( ! $post instanceof WP_Post ) {
 			return [];
 		}
+
+		// Try to work out the ticket type if it's not provided.
+		if ( empty( $ticket_type ) && $ticket_id ) {
+			$ticket_type = get_post_meta( $ticket_id, '_type', true );
+		}
+		$ticket_type = $ticket_type ?: 'default';
 
 		// Overwrites for a few templates that use get_the_ID() and get_post()
 		$GLOBALS['post'] = $post;
@@ -178,11 +209,50 @@ class Tribe__Tickets__Metabox {
 		/** @var Tribe__Tickets__Admin__Views $admin_views */
 		$admin_views = tribe( 'tickets.admin.views' );
 
+		/**
+		 * Fire action before the panels are rendered.
+		 *
+		 * @since 5.8.0
+		 *
+		 * @param int|WP_Post $post        The post object or ID context of the panel rendering.
+		 * @param int|null    $ticket_id   The ID of the ticket being rendered, `null` if a new ticket.
+		 * @param string      $ticket_type The ticket type being rendered, `default` if not specified.
+		 */
+		do_action( 'tec_tickets_panels_before', $post, $ticket_id, $ticket_type );
+
+		$common_panel_data = ( new Ticket_Panel_Data( $post->ID, $ticket_id ) )->to_array();
 		$panels = [
-			'list'     => $admin_views->template( 'editor/panel/list', [ 'post_id' => $post->ID, 'tickets' => $tickets ], false ),
-			'settings' => $admin_views->template( 'editor/panel/settings', [ 'post_id' => $post->ID ], false ),
-			'ticket'   => $admin_views->template( 'editor/panel/ticket', [ 'post_id' => $post->ID, 'ticket_id' => $ticket_id ], false ),
+			'list'     => $admin_views->template( 'editor/panel/list', [
+				'post_id'     => $post->ID,
+				'tickets'     => $tickets,
+				'helper_text' => $this->get_list_panel_helper_text( $post ),
+				'helper_link' => $this->get_helper_link(),
+			], false ),
+			'settings' => $admin_views->template( 'editor/panel/settings',
+				array_merge(
+					$common_panel_data,
+					[ 'post_id' => $post->ID ]
+				),
+				false ),
+			'ticket'   => $admin_views->template(
+				'editor/panel/ticket',
+				array_merge(
+					$common_panel_data,
+					[ 'ticket_type' => $ticket_type ]
+				),
+				false )
 		];
+
+		/**
+		 * Fire action after the panels are rendered.
+		 *
+		 * @since 5.8.0
+		 *
+		 * @param int|WP_Post $post        The post object or ID context of the panel rendering.
+		 * @param int|null    $ticket_id   The ID of the ticket being rendered, `null` if a new ticket.
+		 * @param string      $ticket_type The ticket type being rendered, `default` if not specified.
+		 */
+		do_action( 'tec_tickets_panels_after', $post, $ticket_id, $ticket_type );
 
 		return $panels;
 	}
@@ -204,15 +274,15 @@ class Tribe__Tickets__Metabox {
 		$post_id      = Event::filter_event_id( $post_id );
 
 		if ( ! $post_id ) {
-			$output = esc_html__( 'Invalid parent Post', 'event-tickets' );
+			$failed_ticket_output = esc_html__( 'Invalid parent Post', 'event-tickets' );
 			if ( $return_value ) {
 				return new WP_Error(
 					'bad_request',
-					$output,
+					$failed_ticket_output,
 					[ 'status' => 400 ]
 				);
 			}
-			wp_send_json_error( $output );
+			wp_send_json_error( $failed_ticket_output );
 		}
 
 		/**
@@ -221,8 +291,17 @@ class Tribe__Tickets__Metabox {
 		 */
 		$data = wp_parse_args( tribe_get_request_var( array( 'data' ), array() ), array() );
 
+		/**
+		 * The ticket type might not be defined, read it from the ticket, if possible.
+		 */
+		$ticket_type = tribe_get_request_var( 'ticket_type', null );
+		if ( ! $ticket_type && isset( $data['ticket_id'] ) ) {
+			$ticket_type = get_post_meta( $data['ticket_id'], '_type', true );
+		}
+		$ticket_type = sanitize_text_field( $ticket_type ?: 'default' );
+
 		if ( ! $this->has_permission( $post_id, $_POST, 'add_ticket_nonce' ) ) {
-			$output = esc_html(
+			$failed_ticket_output = esc_html(
 				/* Translators:  %1$s - singular ticket term. */
 				sprintf( __( 'Failed to add the %1$s. Refresh the page to try again.', 'event-tickets' ),
 					tribe_get_ticket_label_singular( 'ajax_ticket_add_error' ) )
@@ -230,23 +309,23 @@ class Tribe__Tickets__Metabox {
 			if ( $return_value ) {
 				return new WP_Error(
 					'bad_request',
-					$output,
+					$failed_ticket_output,
 					[ 'status' => 400 ]
 				);
 			}
-			wp_send_json_error( $output );
+			wp_send_json_error( $failed_ticket_output );
 		}
 
 		if ( ! isset( $data['ticket_provider'] ) || ! $this->module_is_valid( $data['ticket_provider'] ) ) {
-			$output = esc_html__( 'Commerce Provider invalid', 'event-tickets' );
+			$failed_ticket_output = esc_html__( 'Commerce Provider invalid', 'event-tickets' );
 			if ( $return_value ) {
 				return new WP_Error(
 					'bad_request',
-					$output,
+					$failed_ticket_output,
 					[ 'status' => 400 ]
 				);
 			}
-			wp_send_json_error( $output );
+			wp_send_json_error( $failed_ticket_output );
 		}
 
 		// Get the Provider
@@ -260,31 +339,46 @@ class Tribe__Tickets__Metabox {
 			);
 		}
 
+		// If we have a ticket type, set it.
+		$data['ticket_type'] = $ticket_type;
+
 		// Do the actual adding
 		$ticket_id = $module->ticket_add( $post_id, $data );
 
+		$failed_ticket_output = esc_html(
+		/* Translators: %1$s - Singular ticket term. */
+			sprintf( __( 'Failed to add the %1$s', 'event-tickets' ),
+				tribe_get_ticket_label_singular( 'ajax_ticket_add_error' ) )
+		);
+
 		// Successful?
 		if ( $ticket_id ) {
-			/**
-			 * Fire action when a ticket has been added
-			 *
-			 * @param int $post_id ID of parent "event" post
-			 */
-			do_action( 'tribe_tickets_ticket_added', $post_id );
+
+			try {
+				/**
+				 * Fire action when a ticket has been added
+				 *
+				 * @since 4.6.2
+				 * @since 5.8.0 Added $ticket_id and $data parameterss.
+				 *
+				 * @param int $post_id ID of parent "event" post
+				 * @param int $ticket_id ID of ticket post
+				 * @param array $data <string,mixed> Array of ticket data
+				 */
+				do_action( 'tribe_tickets_ticket_added', $post_id, $ticket_id, $data );
+			} catch ( Exception $e ) {
+				// Something went wrong while executing the actions, let's log the error.
+				wp_send_json_error( $failed_ticket_output );
+			}
 		} else {
-			$output = esc_html(
-				/* Translators: %1$s - Singular ticket term. */
-				sprintf( __( 'Failed to add the %1$s', 'event-tickets' ),
-					tribe_get_ticket_label_singular( 'ajax_ticket_add_error' ) )
-			);
 			if ( $return_value ) {
 				return new WP_Error(
 					'bad_request',
-					$output,
+					$failed_ticket_output,
 					[ 'status' => 400 ]
 				);
 			}
-			wp_send_json_error( $output );
+			wp_send_json_error( $failed_ticket_output );
 		}
 
 		$return           = $this->get_panels( $post_id );
@@ -832,6 +926,51 @@ class Tribe__Tickets__Metabox {
 		) );
 	}
 
+	/**
+	 * Get the list panel helper text.
+	 *
+	 * @since 5.8.0
+	 *
+	 * @param WP_Post $post The post object.
+	 *
+	 * @return string The helper text with link.
+	 */
+	protected function get_list_panel_helper_text( WP_Post $post ): string {
+		$object_labels = get_post_type_object( $post->post_type );
+		$text          = sprintf(
+			// Translators: %1$s: dynamic "tickets" label text, %2$s: dynamic "RSVPs" label, %3$s: dynamic post type label plural, %4$s the learn more link.
+			esc_html__( 'Create and manage single %1$s and %2$s for this %3$s. %4$s.', 'event-tickets' ),
+			tribe_get_ticket_label_plural_lowercase(),
+			tribe_get_rsvp_label_plural(),
+			strtolower( $object_labels->labels->singular_name ),
+			$this->get_helper_link()
+		);
+
+		/**
+		 * Filters the helper text shown at the bottom of Ticket panel meta box.
+		 *
+		 * @since 5.8.0
+		 *
+		 * @param string $text The helper text with link.
+		 * @param WP_Post $post The Post object.
+		 */
+		return apply_filters( 'tec_tickets_panel_list_helper_text', $text, $post );
+	}
+
+	/**
+	 * Get the helper link.
+	 *
+	 * @since 5.8.0
+	 *
+	 * @return string The helper link.
+	 */
+	protected function get_helper_link() {
+		return sprintf(
+			'<a href="%1$s" target="_blank" rel="noopener noreferrer ">%2$s</a>',
+			esc_url( 'https://evnt.is/manage-tickets' ),
+			esc_html__( 'Learn more about ticket management', 'event-tickets' )
+		);
+	}
 
 	/************************
 	 *                      *
@@ -895,6 +1034,5 @@ class Tribe__Tickets__Metabox {
 	public static function add_admin_scripts( $unused_hook ) {
 		_deprecated_function( __METHOD__, '4.6', 'Tribe__Tickets__Assets::admin_enqueue_scripts' );
 	}
-
 	// @codingStandardsIgnoreEnd
 }

@@ -75,11 +75,13 @@ trait Post_Attendees {
 		$attendee_types = array_map( [ $wpdb, '_real_escape' ], $attendee_types );
 		$attendee_types = "'" . implode( "', '", $attendee_types ) . "'";
 
+		$meta_value_compare = $this->attendee_to_post_meta_value_compare( $alias_event );
+
 		if ( $has_attendees ) {
 			// Join to the meta that relates attendees to events.
 			$repo->filter_query->join( "
 					LEFT JOIN `{$wpdb->postmeta}` AS `{$alias_event}`
-						ON `{$alias_event}`.`meta_value` = `{$wpdb->posts}`.`ID`
+						ON ({$meta_value_compare})
 				", $alias_event );
 
 			// Join to the meta that relates meta to attendees.
@@ -105,7 +107,7 @@ trait Post_Attendees {
 					LEFT JOIN `{$wpdb->posts}` AS `{$alias_attendee}`
 						ON `{$alias_attendee}`.`ID` = `{$alias_event}`.`post_id`
 					WHERE
-						`{$alias_event}`.`meta_value` = `{$wpdb->posts}`.`ID`
+					 ({$meta_value_compare})
 						AND `{$alias_event}`.`meta_key` IN ( {$event_meta_keys} )
 						AND `{$alias_attendee}`.`post_type` IN ( {$attendee_types} )
 					LIMIT 1
@@ -146,6 +148,8 @@ trait Post_Attendees {
 		$attendee_types = array_map( [ $wpdb, '_real_escape' ], $attendee_types );
 		$attendee_types = "'" . implode( "', '", $attendee_types ) . "'";
 
+		$meta_value_compare = $this->attendee_to_post_meta_value_compare( $alias_event );
+
 		$repo->where_clause( "
 				NOT EXISTS (
 					SELECT 1
@@ -154,7 +158,7 @@ trait Post_Attendees {
 					LEFT JOIN `{$wpdb->posts}` AS `{$alias_attendee}`
 						ON `{$alias_attendee}`.`ID` = `{$alias_event}`.`post_id`
 					WHERE
-						`{$alias_event}`.`meta_value` = `{$wpdb->posts}`.`ID`
+					 ({$meta_value_compare})
 						AND `{$alias_event}`.`meta_key` IN ( {$event_meta_keys} )
 						AND `{$alias_attendee}`.`post_type` IN ( {$attendee_types} )
 						AND `{$alias_attendee}`.`ID` IN ( {$attendee_ids} )
@@ -195,10 +199,12 @@ trait Post_Attendees {
 		$user_meta_key = method_exists( $this, 'attendee_to_user_key' ) ? $this->attendee_to_user_key() : 'null';
 		$user_meta_key = $wpdb->_real_escape( $user_meta_key );
 
+		$meta_value_compare = $this->attendee_to_post_meta_value_compare( $alias_event );
+
 		// Join to the meta that relates attendees to events.
 		$repo->filter_query->join( "
 				LEFT JOIN `{$wpdb->postmeta}` AS `{$alias_event}`
-					ON `{$alias_event}`.`meta_value` = `{$wpdb->posts}`.`ID`
+					ON ({$meta_value_compare})
 			", $alias_event );
 
 		// Join to the meta that relates users to attendees.
@@ -246,13 +252,15 @@ trait Post_Attendees {
 		$user_meta_key = method_exists( $this, 'attendee_to_user_key' ) ? $this->attendee_to_user_key() : 'null';
 		$user_meta_key = $wpdb->_real_escape( $user_meta_key );
 
+		$meta_value_compare = $this->attendee_to_post_meta_value_compare( $alias_event );
+
 		$repo->where_clause( "
 				NOT EXISTS (
 					SELECT 1
 					FROM
 						`{$wpdb->postmeta}` AS `{$alias_event}`
 					WHERE
-						`{$alias_event}`.`meta_value` = `{$wpdb->posts}`.`ID`
+					 ({$meta_value_compare})
 						AND `{$alias_event}`.`meta_key` IN ( {$event_meta_keys} )
 						AND	NOT EXISTS (
 							SELECT 1
@@ -267,5 +275,20 @@ trait Post_Attendees {
 					LIMIT 1
 				)
 			" );
+	}
+
+	/**
+	 * Builds the SQL clause to compare meta values to the ones relating attendees to posts.
+	 *
+	 * @since 5.8.0
+	 *
+	 * @param string $alias The alias to use for the post meta table.
+	 *
+	 * @return string The SQL clause to compare meta values to the ones relating tickets to posts.
+	 */
+	protected function attendee_to_post_meta_value_compare( string $alias ): string {
+		global $wpdb;
+
+		return "`{$alias}`.`meta_value` = `{$wpdb->posts}`.`ID`";
 	}
 }

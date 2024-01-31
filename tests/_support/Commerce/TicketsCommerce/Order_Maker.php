@@ -37,7 +37,6 @@ trait Order_Maker {
 		];
 
 		$order_status = $overrides['order_status'] ?? Completed::SLUG;
-
 		$purchaser = wp_parse_args( $overrides, $default_purchaser );
 		$orders    = tribe( Order::class );
 		$order     = $orders->create_from_cart( tribe( Gateway::class ), $purchaser );

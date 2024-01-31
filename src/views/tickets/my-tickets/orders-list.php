@@ -35,9 +35,6 @@
 					'order_id'  => $order_id,
 				] );
 
-				// @todo Need to determine title based on ticket type. Right now, it's being passed into the main template.
-				$this->template( 'tickets/my-tickets/title' );
-
 				$this->template( 'tickets/my-tickets/tickets-list', [
 					'order'     => $order,
 					'attendees' => $attendees,

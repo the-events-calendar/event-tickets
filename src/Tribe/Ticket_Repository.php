@@ -1,5 +1,11 @@
 <?php
+
+use TEC\Common\StellarWP\DB\DB;
+use TEC\Tickets\Commerce\Repositories\Tickets_Repository;
 use TEC\Tickets\Event;
+use Tribe__Tickets__Global_Stock as Global_Stock;
+use Tribe__Tickets__Tickets_Handler as Tickets_Handler;
+
 /**
  * Class Tribe__Tickets__Ticket_Repository
  *
@@ -39,8 +45,8 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 			'attendees_min'     => [ $this, 'filter_by_attendees_min' ],
 			'attendees_max'     => [ $this, 'filter_by_attendees_max' ],
 			'attendees_between' => [ $this, 'filter_by_attendees_between' ],
-			'checkedin_min'     => [ $this, 'filter_by_checkedin_min' ],
 			'checkedin_max'     => [ $this, 'filter_by_checkedin_max' ],
+			'checkedin_min'     => [ $this, 'filter_by_checkedin_min' ],
 			'checkedin_between' => [ $this, 'filter_by_checkedin_between' ],
 			'capacity_min'      => [ $this, 'filter_by_capacity_min' ],
 			'capacity_max'      => [ $this, 'filter_by_capacity_max' ],
@@ -51,6 +57,8 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 			'has_attendee_meta' => [ $this, 'filter_by_attendee_meta_existence' ],
 			'currency_code'     => [ $this, 'filter_by_currency_code' ],
 			'is_active'         => [ $this, 'filter_by_active' ],
+			'type'              => [ $this, 'filter_by_type' ],
+			'global_stock_mode' => [ $this, 'filter_by_global_stock_mode' ]
 		] );
 	}
 
@@ -75,8 +83,9 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 * Filters tickets by a specific event.
 	 *
 	 * @since 4.8
+	 * @since 5.8.0 Apply the `tec_tickets_repository_filter_by_event_id` filter.
 	 *
-	 * @param int|array $event_id
+	 * @param int|array $event_id The post ID or array of post IDs to filter by.
 	 */
 	public function filter_by_event( $event_id ) {
 		if ( is_array( $event_id ) ) {
@@ -85,6 +94,23 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 			}
 		} else {
 			$event_id = Event::filter_event_id( $event_id );
+		}
+
+		/**
+		 * Filters the post ID used to filter tickets.
+		 *
+		 * By default, only the ticketed post ID is used. This filter allows fetching tickets from related posts.
+		 *
+		 * @since 5.8.0
+		 *
+		 * @param int|array          $event_id The event ID or array of event IDs to filter by.
+		 * @param Tickets_Repository $this     The current repository object.
+		 */
+		$event_id = apply_filters( 'tec_tickets_repository_filter_by_event_id', $event_id, $this );
+
+		if ( empty( $event_id ) ) {
+			// Early exit if no event ID is provided.
+			return;
 		}
 
 		$this->by( 'meta_in', $this->ticket_to_event_keys(), $event_id );
@@ -582,5 +608,169 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 		}
 
 		return parent::create();
+	}
+
+	/**
+	 * Filters the ticket to be returned by the value of the `_type` meta key.
+	 *
+	 * @since 5.8.0
+	 *
+	 * @param string|string[] $type The ticket type or types to filter by.
+	 *
+	 * @return void The query is modified in place.
+	 */
+	public function filter_by_type( $type ) {
+		$hash  = substr( md5( microtime() ), - 5 );
+		$types = (array) $type;
+		global $wpdb;
+		$types_set = $wpdb->prepare(
+			implode( ",", array_fill( 0, count( $types ), '%s' ) ),
+			...$types
+		);
+
+		// Include tickets that have their `_type` meta set to `default` or that have no `_type` meta.
+		$alias = 'ticket_type_filter_' . $hash;
+		$this->filter_query->join( "LEFT JOIN {$wpdb->postmeta} AS {$alias}
+			 ON {$wpdb->posts}.ID = {$alias}.post_id
+			 AND {$alias}.meta_key = '_type'" );
+		$this->filter_query->where( "COALESCE({$alias}.meta_value, 'default') IN (" . $types_set . ")" );
+	}
+
+	/**
+	 * Captures the SQL that would be used to get the Ticket IDs without runing the query.
+	 *
+	 * @since 5.8.0
+	 *
+	 * @return string|null The SQL query or `null` if the query cannot be run.
+	 */
+	private function get_ids_request(): ?string {
+		$posts_request = null;
+		$squeezer      = static function ( $pre, \WP_Query $query ) use ( &$posts_request ) {
+			$posts_request = $query->request;
+
+			// Avoid the query from actually running by returning a non null value.
+			return [];
+		};
+		add_filter( 'posts_pre_query', $squeezer, PHP_INT_MAX, 2 );
+		$this->set_found_rows( false )->per_page( - 1 )->get_ids();
+		remove_filter( 'posts_pre_query', $squeezer, PHP_INT_MAX );
+
+		return $posts_request;
+	}
+
+	/**
+	 * Get the independent capacity of the Tickets queried by the repository.
+	 *
+	 * The independent capacity does not include the capacity of Tickets with Unlimited capacity.
+	 *
+	 * @since 5.8.0
+	 *
+	 * @return int The independent capacity of the Tickets queried by the repository.
+	 */
+	public function get_independent_capacity(): int {
+		$posts_request = $this->get_ids_request();
+
+		if ( empty( $posts_request ) ) {
+			return 0;
+		}
+
+		/*
+		 * Run the query using the sub-query, this will not pull out potentially unbound data (the Tickets) from
+		 * the database but only the sum of their capacity (an aggregate function).
+		 * The whole query, and likely most, if not all, the sub-query, will hit indexes.
+		 */
+		global $wpdb;
+		/**
+		 * @var Tickets_Handler $tickets_handler
+		 */
+		$tickets_handler   = tribe( 'tickets.handler' );
+		$capacity_meta_key = $tickets_handler->key_capacity;
+		$mode_meta_key     = Global_Stock::TICKET_STOCK_MODE;
+		$query             = $wpdb->prepare(
+			"SELECT SUM(capacity.meta_value) FROM {$wpdb->postmeta} capacity
+				INNER JOIN {$wpdb->postmeta} stock_mode ON capacity.post_id = stock_mode.post_id
+					 AND stock_mode.meta_key = %s
+				WHERE capacity.meta_key = %s
+				AND capacity.post_id IN ($posts_request)
+				AND stock_mode.meta_value = %s
+				AND capacity.meta_value >= 0
+				",
+			$mode_meta_key,
+			$capacity_meta_key,
+			Global_Stock::OWN_STOCK_MODE
+		);
+
+		return (int) DB::get_var( $query );
+	}
+
+	/**
+	 * Get the shared capacity of the Tickets queried by the repository.
+	 *
+	 * The shared capacity does not include the capacity of Tickets with Unlimited capacity.
+	 *
+	 * @since 5.8.0
+	 *
+	 * @return int The shared capacity of the Tickets queried by the repository.
+	 */
+	public function get_shared_capacity(): int {
+		$posts_request = $this->get_ids_request();
+
+		if ( empty( $posts_request ) ) {
+			return 0;
+		}
+
+		/*
+		 * Run the query using the sub-query, this will not pull out potentially unbound data (the Tickets) from
+		 * the database but only the max of their capacity (an aggregate function).
+		 * The whole query, and likely most, if not all, the sub-query, will hit indexes.
+		 */
+		global $wpdb;
+		/**
+		 * @var Tickets_Handler $tickets_handler
+		 */
+		$tickets_handler   = tribe( 'tickets.handler' );
+		$capacity_meta_key = $tickets_handler->key_capacity;
+		$mode_meta_key     = Global_Stock::TICKET_STOCK_MODE;
+		$query             = $wpdb->prepare(
+			"SELECT MAX(CAST(capacity.meta_value AS UNSIGNED)) FROM {$wpdb->postmeta} capacity
+				INNER JOIN {$wpdb->postmeta} stock_mode ON capacity.post_id = stock_mode.post_id
+					 AND stock_mode.meta_key = %s
+				WHERE capacity.meta_key = %s
+				AND capacity.post_id IN ($posts_request)
+				AND stock_mode.meta_value in (%s, %s)
+				AND capacity.meta_value >= 0
+				",
+			$mode_meta_key,
+			$capacity_meta_key,
+			Global_Stock::GLOBAL_STOCK_MODE,
+			Global_Stock::CAPPED_STOCK_MODE
+		);
+
+		return (int) DB::get_var( $query );
+	}
+
+	/**
+	 * Filters tickets by their global stock mode.
+	 *
+	 * @since 5.8.0
+	 *
+	 * @param array<string>|string $modes             The global stock mode or modes to filter by, use the
+	 *                                                `Global_Stock::` constants.
+	 * @param bool                 $exclude_unlimited Whether to exclude tickets with Unlimited capacity or not,
+	 *                                                defaults to `false`.
+	 */
+	public function filter_by_global_stock_mode( $modes, bool $exclude_unlimited = false ): void {
+		if ( (array) $modes === [ Global_Stock::UNLIMITED_STOCK_MODE ] ) {
+			$this->where( 'meta_equals', Tickets_Handler::instance()->key_capacity, '-1' );
+
+			return;
+		}
+
+		$this->where( 'meta_in', Global_Stock::TICKET_STOCK_MODE, (array) $modes );
+
+		if ( $exclude_unlimited ) {
+			$capacity_meta_key = Tickets_Handler::instance()->key_capacity;
+			$this->where( 'meta_gte', $capacity_meta_key, 0 );
+		}
 	}
 }

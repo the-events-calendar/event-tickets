@@ -8,5 +8,6 @@
   "src/**/*",
   "vendor/autoload.php",
   "vendor/composer/*",
-  "vendor/phpqrcode/**/*"
+  "vendor/phpqrcode/**/*",
+  "build/**/*"
 ]

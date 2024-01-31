@@ -355,10 +355,11 @@ class BaseTicketEditorCest extends BaseRestCest {
 			'capacity_details'              => [
 				'available_percentage' => 100,
 				// @todo Zero may not be what it should return if unlimited.
-				'max'                  => - 1 === $capacity ? 0 : $capacity,
-				'available'            => $capacity,
-				'sold'                 => 0,
-				'pending'              => 0,
+				'max'               => - 1 === $capacity ? 0 : $capacity,
+				'available'         => $capacity,
+				'sold'              => 0,
+				'pending'           => 0,
+				'global_stock_mode' => $variation['ticket']['mode'] ?? 'own',
 			],
 			'is_available'                  => true,
 			'cost'                          => '$' . $price . '.00',
@@ -368,7 +369,10 @@ class BaseTicketEditorCest extends BaseRestCest {
 				'values'            => [
 					(string) $price,
 				],
-				'suffix'            => null,
+				'suffix'            => '',
+				'currency_decimal_separator'  => '.',
+				'currency_decimal_numbers'    => 2,
+				'currency_thousand_separator' => ',',
 			],
 			'requires_attendee_information' => false,
 			'attendee_information_fields'   => [],
@@ -380,8 +384,9 @@ class BaseTicketEditorCest extends BaseRestCest {
 				'checked_in_percentage'   => 100,
 				'unchecked_in_percentage' => 0,
 			],
-			'price_suffix'                  => null,
+			'price_suffix'                  => '',
 			'iac'                           => 'none',
+			'type'                          => 'default',
 		];
 
 		$is_plus_test = $this->is_plus;
@@ -481,6 +486,7 @@ class BaseTicketEditorCest extends BaseRestCest {
 				'available'            => $capacity,
 				'sold'                 => 0,
 				'pending'              => 0,
+				'global_stock_mode'    => $variation['ticket']['mode'] ?? 'own',
 			],
 			'is_available'                  => true,
 			'cost'                          => '$' . $price . '.00',
@@ -490,7 +496,10 @@ class BaseTicketEditorCest extends BaseRestCest {
 				'values'            => [
 					(string) $price,
 				],
-				'suffix'            => null,
+				'suffix'            => '',
+				'currency_decimal_separator'  => '.',
+				'currency_decimal_numbers'    => 2,
+				'currency_thousand_separator' => ',',
 			],
 			'requires_attendee_information' => false,
 			'attendee_information_fields'   => [],
@@ -512,8 +521,9 @@ class BaseTicketEditorCest extends BaseRestCest {
 				'sold'    => 0,
 				'pending' => 0,
 			],
-			'price_suffix'                  => null,
+			'price_suffix'                  => '',
 			'iac'                           => 'none',
+			'type'                          => 'default',
 		];
 
 		$is_plus_test = $this->is_plus;
@@ -657,6 +667,7 @@ class BaseTicketEditorCest extends BaseRestCest {
 				'available'            => $capacity,
 				'sold'                 => 0,
 				'pending'              => 0,
+				'global_stock_mode' => $variation['to']['ticket']['mode'] ?? 'own',
 			],
 			'is_available'                  => true,
 			'cost'                          => '$' . $price . '.00',
@@ -667,6 +678,9 @@ class BaseTicketEditorCest extends BaseRestCest {
 					(string) $price,
 				],
 				'suffix'            => null,
+				'currency_decimal_separator'  => '.',
+				'currency_decimal_numbers'    => 2,
+				'currency_thousand_separator' => ',',
 			],
 			'requires_attendee_information' => false,
 			'attendee_information_fields'   => [],
@@ -679,8 +693,9 @@ class BaseTicketEditorCest extends BaseRestCest {
 				'unchecked_in_percentage' => 0,
 			],
 			'rest_url'                      => $ticket_update_rest_url,
-			'price_suffix'                  => null,
+			'price_suffix'                  => '',
 			'iac'                           => 'none',
+			'type'                          => 'default',
 		];
 
 		$is_plus_test = $this->is_plus;

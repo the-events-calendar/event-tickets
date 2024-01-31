@@ -8,7 +8,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '5.7.1';
+	const VERSION = '5.8.0';
 
 	/**
 	 * Used to store the version history.
@@ -43,7 +43,7 @@ class Tribe__Tickets__Main {
 	*
 	* @since 4.10
 	*/
-	protected $min_tec_version = '6.2.6.1-dev';
+	protected $min_tec_version = '6.3.0-dev';
 
 	/**
 	 * Name of the provider
@@ -424,7 +424,7 @@ class Tribe__Tickets__Main {
 		tribe_register_provider( 'Tribe__Tickets__Editor__REST__V1__Service_Provider' );
 
 		// Blocks editor
-		tribe_register_provider( 'Tribe__Tickets__Editor__Provider' );
+		tribe_register_provider( TEC\Tickets\Blocks\Controller::class );
 
 		// Privacy
 		tribe_singleton( 'tickets.privacy', 'Tribe__Tickets__Privacy', [ 'hook' ] );

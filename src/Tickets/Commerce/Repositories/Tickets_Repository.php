@@ -3,13 +3,10 @@
 namespace TEC\Tickets\Commerce\Repositories;
 
 use TEC\Tickets\Commerce;
-use TEC\Tickets\Commerce\Module;
-use \Tribe__Repository;
 use TEC\Tickets\Commerce\Ticket;
-use Tribe__Repository__Usage_Error as Usage_Error;
-
-use Tribe__Utils__Array as Arr;
-use Tribe__Date_Utils as Dates;
+use Tribe__Repository;
+use Tribe__Repository__Interface;
+use WP_Post;
 
 /**
  * Class Tickets Repository.
@@ -35,7 +32,7 @@ class Tickets_Repository extends Tribe__Repository {
 	 *
 	 * @var string
 	 */
-	protected $key_name = \TEC\Tickets\Commerce::ABBR;
+	protected $key_name = Commerce::ABBR;
 
 	/**
 	 * {@inheritdoc}
@@ -77,9 +74,9 @@ class Tickets_Repository extends Tribe__Repository {
 		 *
 		 * @since 5.1.9
 		 *
-		 * @param mixed|\WP_Post                $formatted The formatted event result, usually a post object.
-		 * @param int                           $id        The formatted post ID.
-		 * @param \Tribe__Repository__Interface $this      The current repository object.
+		 * @param mixed|WP_Post                $formatted The formatted event result, usually a post object.
+		 * @param int                          $id        The formatted post ID.
+		 * @param Tribe__Repository__Interface $this      The current repository object.
 		 */
 		$formatted = apply_filters( 'tec_tickets_commerce_repository_ticket_format', $formatted, $id, $this );
 
@@ -87,52 +84,31 @@ class Tickets_Repository extends Tribe__Repository {
 	}
 
 	/**
-	 * {@inheritdoc}
-	 */
-	public function filter_postarr_for_create( array $postarr ) {
-		if ( isset( $postarr['meta_input'] ) ) {
-			$postarr = $this->filter_meta_input( $postarr );
-		}
-
-		return parent::filter_postarr_for_create( $postarr );
-	}
-
-	/**
-	 * {@inheritdoc}
-	 */
-	public function filter_postarr_for_update( array $postarr, $post_id ) {
-		if ( isset( $postarr['meta_input'] ) ) {
-			$postarr = $this->filter_meta_input( $postarr, $post_id );
-		}
-
-		return parent::filter_postarr_for_update( $postarr, $post_id );
-	}
-
-	/**
-	 * Filters and updates the order meta to make sure it makes sense.
-	 *
-	 * @since 5.1.9
-	 *
-	 * @param array $postarr The update post array, passed entirely for context purposes.
-	 * @param int   $post_id The ID of the event that's being updated.
-	 *
-	 * @return array The filtered postarr array.
-	 */
-	protected function filter_meta_input( array $postarr, $post_id = null ) {
-//		if ( ! empty( $postarr['meta_input']['purchaser'] ) ) {
-//			$postarr = $this->filter_purchaser_input( $postarr, $post_id );
-//		}
-
-		return $postarr;
-	}
-	/**
 	 * Filters tickets by a specific event.
 	 *
 	 * @since 5.2.2
+	 * @since 5.8.0 Apply the `tec_tickets_repository_filter_by_event_id` filter.
 	 *
-	 * @param int|array $event_id
+	 * @param int|array $event_id The post ID or array of post IDs to filter by.
 	 */
 	public function filter_by_event( $event_id ) {
+		/**
+		 * Filters the post ID used to filter Commerce tickets.
+		 *
+		 * By default, only the ticketed post ID is used. This filter allows fetching tickets from related posts.
+		 *
+		 * @since 5.8.0
+		 *
+		 * @param int|array          $event_id The event ID or array of event IDs to filter by.
+		 * @param Tickets_Repository $this     The current repository object.
+		 */
+		$event_id = apply_filters( 'tec_tickets_repository_filter_by_event_id', $event_id, $this );
+
+		if ( empty( $event_id ) ) {
+			// Early exit if no event ID is provided.
+			return;
+		}
+
 		$this->by( 'meta_in', Ticket::$event_relation_meta_key, $event_id );
 	}
 }

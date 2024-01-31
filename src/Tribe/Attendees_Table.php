@@ -575,7 +575,8 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			$status = $item['order_status'];
 		}
 
-		echo '<tr class="' . esc_attr( $checked . $status ) . '">';
+		$ticket_type = $item['ticket_type'] ?: 'default';
+		echo '<tr class="' . esc_attr( $checked . $status ) . '" data-ticket-type="' . esc_attr( $ticket_type ) . '">';
 		$this->single_row_columns( $item );
 		echo '</tr>';
 

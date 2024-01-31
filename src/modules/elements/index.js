@@ -11,3 +11,4 @@ export { default as NumericLabel } from './numeric-label';
 export { default as InactiveBlock } from './inactive-block';
 export { default as SettingsDashboard } from './settings-dashboard';
 export { default as WarningButton } from './warning-button';
+export { default as Notice } from './notice';

@@ -26,7 +26,7 @@ import {
 import { withStore } from '@moderntribe/common/hoc';
 import withSaveData from '@moderntribe/tickets/blocks/hoc/with-save-data';
 import { moment as momentUtil, time } from '@moderntribe/common/utils';
-import { hasRecurrenceRules, noTicketsOnRecurring } from '@moderntribe/common/utils/recurrence';
+import { hasRecurrenceRules, noRsvpsOnRecurring } from '@moderntribe/common/utils/recurrence';
 
 const getIsInactive = ( state ) => {
 	const startDateMoment = selectors.getRSVPStartDateMoment( state );
@@ -79,7 +79,7 @@ const mapStateToProps = ( state ) => {
 		isModalShowing: isModalShowing( state ) && getModalTicketId( state ) === rsvpId,
 		isSettingsOpen: selectors.getRSVPSettingsOpen( state ),
 		hasRecurrenceRules: hasRecurrenceRules( state ),
-		noTicketsOnRecurring: noTicketsOnRecurring(),
+		noRsvpsOnRecurring: noRsvpsOnRecurring(),
 		rsvpId,
 	};
 };

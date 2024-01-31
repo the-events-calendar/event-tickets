@@ -323,7 +323,8 @@ class Tribe__Tickets__Tickets_View {
 	 * @return bool
 	 */
 	public function is_edit_page() {
-		return false !== get_query_var( 'tribe-edit-orders', false );
+		return get_query_var( 'tribe-edit-orders', false )
+		       || 'tickets' === get_query_var( 'eventDisplay', false );
 	}
 
 	/**
@@ -1343,5 +1344,86 @@ class Tribe__Tickets__Tickets_View {
 		tribe_asset_enqueue( 'tribe-tickets-gutenberg-block-rsvp-style' );
 
 		return $before_content . $template->template( 'blocks/rsvp', $args, $echo );
+	}
+
+	/**
+	 * Generate the required data for the "My Tickets" link.
+	 *
+	 * @since 5.8.0
+	 *
+	 * @param int $event_id The event ID.
+	 * @param int $user_id The user ID.
+	 *
+	 * @return array<string, mixed> The data for the "My Tickets" link.
+	 */
+	public function get_my_tickets_link_data( int $event_id, int $user_id ): array {
+		$event              = get_post( $event_id );
+		$post_type          = get_post_type_object( $event->post_type );
+		$is_event_page      = class_exists( 'Tribe__Events__Main' ) && ( Tribe__Events__Main::POSTTYPE === $event->post_type || 'tribe_event_series' === $event->post_type );
+		$post_type_singular = $post_type ? $post_type->labels->singular_name : _x( 'Post', 'fallback post type singular name', 'event-tickets' );
+		$counters           = [];
+		$rsvp_count         = $this->count_rsvp_attendees( $event_id, $user_id );
+		$ticket_count       = $this->count_ticket_attendees( $event_id, $user_id );
+
+		$count_by_type = [
+			'rsvp'   => [
+				'count'    => $rsvp_count,
+				'singular' => tribe_get_rsvp_label_singular( 'my-tickets-view-link' ),
+				'plural'   => tribe_get_rsvp_label_plural( 'my-tickets-view-link' ),
+			],
+			'ticket' => [
+				'count'    => $ticket_count,
+				'singular' => tribe_get_ticket_label_singular( 'my-tickets-view-link' ),
+				'plural'   => tribe_get_ticket_label_plural( 'my-tickets-view-link' ),
+			],
+		];
+
+		/**
+		 * Filters the data for the "My Tickets" link.
+		 *
+		 * @since 5.8.0
+		 *
+		 * @param array<string, array> $data The data for the "My Tickets" link.
+		 * @param int   $event_id The event ID.
+		 * @param int   $user_id  The user ID.
+		 */
+		$count_by_type = apply_filters( 'tec_tickets_my_tickets_link_ticket_count_by_type', $count_by_type, $event_id, $user_id );
+
+		$total_count = 0;
+		$type_count  = 0;
+		$type_label  = '';
+
+		foreach ( $count_by_type as $type => $item ) {
+			if ( empty( $item['count'] ) ) {
+				continue;
+			}
+
+			// Translators: 1: number of tickets, 2: ticket type label singular, 3: ticket type label plural.
+			$counters[] = sprintf(
+				_n( '%1$d %2$s', '%1$d %3$s', $item['count'], 'event-tickets' ),
+				$item['count'],
+				$item['singular'],
+				$item['plural']
+			);
+
+			$type_label   = $item['count'] > 1 ? $item['plural'] : $item['singular'];
+			$total_count += $item['count'];
+
+			$type_count ++;
+		}
+
+		// Translators: 1: singular or plural label for ticket type on My Tickets page link label.
+		$type_label = sprintf( __( 'View %s', 'event-tickets' ), $type_label );
+		$link_label = $type_count > 1 ? __( 'View all', 'event-tickets' ) : $type_label;
+
+		// Translators: 1: number of RSVPs and/or Tickets with accompanying ticket type text, 2: post type label
+		$message = esc_html( sprintf( __( 'You have %1$s for this %2$s.', 'event-tickets' ), implode( _x( ' and ', 'separator if there are more multiple type of tickets.', 'event-tickets' ), $counters ), $post_type_singular ) );
+
+		return [
+			'total_count' => $total_count,
+			'message'     => $message,
+			'link_label'  => $link_label,
+			'link'        => $this->get_tickets_page_url( $event_id, $is_event_page ),
+		];
 	}
 }

@@ -1,7 +1,7 @@
 <?php
 
+use TEC\Events\Custom_Tables\V1\Models\Occurrence;
 use Tribe__Utils__Array as Arr;
-use TEC\Tickets\Commerce\Attendee;
 
 if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 	/**
@@ -378,14 +378,17 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @since  5.5.0 refactored to use the tickets ORM.
 		 * @since  4.6
 		 * @since 5.5.2 Set default query args.
+		 * @since 5.8.0 Added the `$context` parameter.
 		 *
 		 * @param int|WP_Post $post_id Build the args to query only
 		 *                             for tickets related to this post ID.
+		 * @param string|null $context The context of the query.
 		 *
 		 * @return Tribe__Repository__Interface
 		 */
-		public function set_tickets_query_args( $post_id = null ) {
+		public function set_tickets_query_args( $post_id = null, string $context = null ) {
 			$repository = tribe_tickets( $this->orm_provider );
+			$repository->set_request_context( $context );
 			$repository->by( 'event', $post_id );
 			$repository->by( 'status', 'publish' );
 			$repository->by( 'posts_per_page', -1 );
@@ -413,14 +416,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Retrieve the ID numbers of all tickets assigned to an event.
 		 *
-		 * @since  5.5.0 refactored to use the tickets ORM.
 		 * @since  4.6
+		 * @since  5.5.0 refactored to use the tickets ORM.
+		 * @since 5.8.0 Added the `$context` parameter.
 		 *
 		 * @param int|WP_Post $post Only get tickets assigned to this post ID.
 		 *
 		 * @return array|false
 		 */
-		public function get_tickets_ids( $post = 0 ) {
+		public function get_tickets_ids( $post = 0, string $context = null ) {
 			$post_id = 0;
 			if ( is_numeric( $post ) ) {
 				$post_id = (int) $post;
@@ -434,12 +438,20 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 					return false;
 				}
 
-				if ( class_exists( '\TEC\Events\Custom_Tables\V1\Models\Occurrence', false ) ) {
-					$post_id = \TEC\Events\Custom_Tables\V1\Models\Occurrence::normalize_id( $post->ID );
+				if ( class_exists( Occurrence::class, false ) ) {
+					/**
+					 * Filters the post ID to use when fetching tickets for an Occurrence.
+					 *
+					 * @since 5.8.0
+					 *
+					 * @param int $post_id The post ID to use when fetching tickets for an Occurrence; this might
+					 *                     be a real post ID, or a provisional one.
+					 */
+					$post_id = apply_filters( 'tec_tickets_normalize_occurrence_id', Occurrence::normalize_id( $post->ID ) );
 				}
 			}
 
-			return $this->set_tickets_query_args( $post_id )->get_ids();
+			return $this->set_tickets_query_args( $post_id, $context )->get_ids();
 		}
 
 		/**
@@ -645,7 +657,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return false;
 			}
 
-			if ( in_array( get_post_type( $event_id ), Tribe__Tickets__Main::instance()->post_types() ) ) {
+			$post_types = Tribe__Tickets__Main::instance()->post_types();
+			if ( in_array( get_post_type( $event_id ), $post_types ) ) {
 				return get_post( $event_id );
 			}
 
@@ -757,12 +770,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Returns all the tickets for an event, of the active ticket providers.
 		 *
 		 * @since 4.12.0 Changed from protected abstract to public with duplicated child classes' logic consolidated here.
+		 * @since 5.8.0 Added the `$context` parameter.
 		 *
 		 * @param int $post_id ID of parent "event" post.
+		 * @param string|null $context The context of the request.
 		 *
 		 * @return Tribe__Tickets__Ticket_Object[] List of ticket objects.
 		 */
-		public function get_tickets( $post_id ) {
+		public function get_tickets( $post_id, string $context = null ) {
 
 			/** @var Tribe__Cache $cache */
 			$cache = tribe( 'cache' );
@@ -786,7 +801,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return [];
 			}
 
-			$ticket_ids = $this->get_tickets_ids( $post_id );
+			$ticket_ids = $this->get_tickets_ids( $post_id, $context );
 
 			if ( ! $ticket_ids ) {
 				return [];
@@ -1585,6 +1600,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				// Set the `ticket_exists` flag on attendees if the ticket they are associated with does not exist.
 				$attendee_data['ticket_exists'] = ! empty( $attendee_data['product_id'] ) && get_post( $attendee_data['product_id'] );
 
+				// Set the ticket type from the ticket oject, if possible.
+				$attendee_data['ticket_type'] = 'default';
+				if ( isset( $attendee_data['event_id'], $attendee_data['product_id'] )
+				     && $ticket = $provider->get_ticket( $attendee_data['event_id'], $attendee_data['product_id'] ) ) {
+					$attendee_data['ticket_type'] = $ticket->type();
+				}
+
 				$attendees_from_modules[] = $attendee_data;
 			}
 
@@ -1733,10 +1755,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Returns all tickets for an event (all providers are queried for this information).
 		 *
+		 * @since 5.8.0 Added the `$context` parameter.
+		 *
 		 * @param int $post_id ID of parent "event" post
+		 * @param string|null $context The context of the request.
+		 *
 		 * @return array
 		 */
-		public static function get_all_event_tickets( $post_id ) {
+		public static function get_all_event_tickets( $post_id, string $context = null ) {
 
 			/** @var Tribe__Cache $cache */
 			$cache = tribe( 'cache' );
@@ -1751,7 +1777,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			foreach ( $modules as $class => $module ) {
 				$obj              = call_user_func( [ $class, 'get_instance' ] );
-				$provider_tickets = $obj->get_tickets( $post_id );
+				$provider_tickets = $obj->get_tickets( $post_id, $context );
 				if ( is_array( $provider_tickets ) && ! empty( $provider_tickets ) ) {
 					$tickets[] = $provider_tickets;
 				}
@@ -2058,14 +2084,29 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				}
 			}
 
-			$global_stock = new Tribe__Tickets__Global_Stock( $post_id );
-			$global_stock = $global_stock->is_enabled() ? $global_stock->get_stock_level() : 0;
+			/*
+			 * The Tickets that should be displayed on a post might not all be directly attached to this post.
+			 * We'll use the Ticket information to get the ID of the post the Ticket is attached to and
+			 * then get the Global Stock for that post.
+			 */
+			$ticket_post_ids = array_reduce( $tickets, static function ( array $post_ids, Tribe__Tickets__Ticket_Object $ticket ) {
+				$ticket_event_id = (int) $ticket->get_event_id();
+				if ( ! in_array( $ticket_event_id, $post_ids, true ) ) {
+					$post_ids[] = $ticket_event_id;
+				}
 
-			$types['tickets']['available'] += $global_stock;
+				return $post_ids;
+			}, [] );
 
-			// If there's at least one ticket with shared capacity
-			if ( ! self::tickets_own_stock( $post_id ) ) {
-				$types['tickets']['stock'] += $global_stock;
+			foreach ( $ticket_post_ids as $ticket_post_id ) {
+				$global_stock                  = new Tribe__Tickets__Global_Stock( $ticket_post_id );
+				$global_stock                  = $global_stock->is_enabled() ? $global_stock->get_stock_level() : 0;
+				$types['tickets']['available'] += $global_stock;
+
+				// If there's at least one ticket with shared capacity add the global stock to the stock total.
+				if ( ! self::tickets_own_stock( $ticket_post_id ) ) {
+					$types['tickets']['stock'] += $global_stock;
+				}
 			}
 
 			/**
@@ -3889,6 +3930,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		public function ticket_add( $post_id, $data ) {
 			$ticket                   = new Tribe__Tickets__Ticket_Object();
 			$ticket->ID               = isset( $data['ticket_id'] ) ? absint( $data['ticket_id'] ) : null;
+			$update                   = ! empty( $ticket->ID );
 			$ticket->name             = isset( $data['ticket_name'] ) ? esc_html( $data['ticket_name'] ) : null;
 			$ticket->description      = isset( $data['ticket_description'] ) ? wp_kses_post( $data['ticket_description'] ) : '';
 			$ticket->price            = ! empty( $data['ticket_price'] ) ? filter_var( trim( $data['ticket_price'] ), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION | FILTER_FLAG_ALLOW_THOUSAND ) : 0;
@@ -3935,15 +3977,52 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			// Pass the control to the child object.
 			$save_ticket = $this->save_ticket( $post_id, $ticket, $data );
 
+			// Set the ticket type before the module saves the ticket.
+			$ticket_type = 'default';
+			if ( $update ) {
+				$ticket_type = get_post_meta( $ticket->ID, '_type', true ) ?: 'default';
+			}
+			$new_ticket_type = ! empty( $data['ticket_type'] ) ? $data['ticket_type'] : $ticket_type;
+			update_post_meta( $ticket->ID, '_type', $new_ticket_type );
+
 			/**
 			 * Fired once a ticket has been created and added to a post.
+			 *
+			 * @since 5.8.0 Add the `$update` parameter.
 			 *
 			 * @param int                           $post_id  The ticket parent post ID.
 			 * @param Tribe__Tickets__Ticket_Object $ticket   The ticket that was just added.
 			 * @param array                         $raw_data The ticket data that was used to save.
 			 * @param string                        $class    The Commerce engine class name.
+			 * @param bool                          $update   Whether the ticket is being updated or created.
 			 */
-			do_action( 'tribe_tickets_ticket_add', $post_id, $ticket, $data, __CLASS__ );
+			do_action( 'tribe_tickets_ticket_add', $post_id, $ticket, $data, __CLASS__, $update );
+
+			if ( $update ) {
+				/**
+				 * Fired once a ticket has been updated.
+				 *
+				 * @since 5.8.0
+				 *
+				 * @param int                           $post_id  The ticket parent post ID.
+				 * @param Tribe__Tickets__Ticket_Object $ticket   The ticket that was just added.
+				 * @param array                         $raw_data The ticket data that was used to save.
+				 * @param string                        $class    The Commerce engine class name.
+				 */
+				do_action( 'tec_tickets_ticket_update', $post_id, $ticket, $data, __CLASS__ );
+			} else {
+				/**
+				 * Fired once a ticket has been created.
+				 *
+				 * @since 5.8.0
+				 *
+				 * @param int                           $post_id  The ticket parent post ID.
+				 * @param Tribe__Tickets__Ticket_Object $ticket   The ticket that was just added.
+				 * @param array                         $raw_data The ticket data that was used to save.
+				 * @param string                        $class    The Commerce engine class name.
+				 */
+				do_action( 'tec_tickets_ticket_add', $post_id, $ticket, $data, __CLASS__ );
+			}
 
 			$tickets_handler->toggle_manual_update_flag( false );
 
@@ -4583,6 +4662,17 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		final protected function ajax_ok( $data ) {
 			_deprecated_function( __METHOD__, '4.6.2', 'wp_send_json_success()' );
 			wp_send_json_success( $data );
+		}
+
+		/**
+		 * Removes this module from the list of active modules.
+		 *
+		 * @since 5.8.0
+		 *
+		 * @return void This module is removed from the list of active modules, if it was active.
+		 */
+		public function deactivate(): void {
+			unset( self::$active_modules[ get_class( $this ) ] );
 		}
 
 		// @codingStandardsIgnoreEnd

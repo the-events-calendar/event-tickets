@@ -17,11 +17,16 @@
 				
 			</div>
 
-			<div class="welcome-panel-column welcome-panel-middle">
+			
+<div class="welcome-panel-column welcome-panel-middle">
 	<h3 class="tec-tickets__admin-attendees-overview-title">
 		Ticket Overview	</h3>
-				<div class="tec-tickets__admin-attendees-overview-ticket-type">
-			<div class="tec-tickets__admin-attendees-overview-ticket-type-icon tec-tickets__admin-attendees-overview-ticket-type-icon--rsvp"></div>
+
+	
+			
+		<div class="tec-tickets__admin-attendees-overview-ticket-type">
+			<div
+				class="tec-tickets__admin-attendees-overview-ticket-type-icon tec-tickets__admin-attendees-overview-ticket-type-icon--rsvp"></div>
 			<div class="tec-tickets__admin-attendees-overview-ticket-type-label">
 				RSVP			</div>
 			<div class="tec-tickets__admin-attendees-overview-ticket-type-border"></div>
@@ -38,7 +43,7 @@
 						0 issued (90 available)					</div>
 				</li>
 					</ul>
-		<div class="tec-tickets__admin-attendees-overview-ticket-totals">
+				<div class="tec-tickets__admin-attendees-overview-ticket-totals">
 		<div class="tec-tickets__admin-attendees-overview-ticket-totals-title">
 			Total		</div>
 		<div class="tec-tickets__admin-attendees-overview-ticket-totals-stat">
@@ -48,6 +53,7 @@
 				(90 available)			</span>
 		</div>
 	</div>
+
 	</div>			<div class="welcome-panel-column welcome-panel-last alternate">
 	<h3>Attendance Overview</h3>
 		<div class="tec-tickets__admin-attendees-attendance-type-list">

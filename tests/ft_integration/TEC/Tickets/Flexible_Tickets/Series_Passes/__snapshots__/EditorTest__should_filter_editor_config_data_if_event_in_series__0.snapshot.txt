@@ -1,0 +1,1 @@
+The ecommerce provider is defined in the ticket settings for the Series %s.

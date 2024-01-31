@@ -4,7 +4,7 @@ Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, raf
 Tags: tickets, registration, event registration, RSVP, ticket sales, attendee management
 Requires at least: 6.2
 Tested up to: 6.4.2
-Stable tag: 5.7.1
+Stable tag: 5.8.0
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -194,6 +194,19 @@ We've got a [LoopedIn](https://evnt.is/ideas) page where we're actively watching
 Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on using, tweaking, and troubleshooting our plugins.
 
 == Changelog ==
+
+= [5.8.0] 2024-01-22 =
+
+* Version - Event Tickets 5.8.0 is only compatible with The Events Calendar 6.3.0 and higher.
+* Version - Event Tickets 5.8.0 is only compatible with Event Tickets Plus 5.9.0 and higher.
+* Feature - New ticket type field for all Ticket Post Types.
+* Feature - New type of Ticket: Series Passes to start enabling Recurring Event Ticketing.
+* Enhancement - Improved the Design and UX of the Attendees and Orders page.
+* Tweak - Added filters: `tec_tickets_ticket_panel_data`, `tec_tickets_ticket_type_default_header_description`, `tec_tickets_enabled_ticket_forms_{$post_type}`, `tec_tickets_allow_tickets_on_recurring_events`, `tec_tickets_commerce_order_report_summary_should_include_event_sales_data`, `tec_tickets_repository_filter_by_event_id`, `tec_recurring_tickets_enabled`, `tec_tickets_flexible_tickets_editor_data`, `tec_tickets_find_ticket_type_host_posts_query_args`, `tec_tickets_attendees_filter_by_event`, `tec_tickets_attendees_filter_by_event_not_in`, `tec_tickets_attendees_event_details_top_label`, `tec_tickets_editor_configuration_localized_data`, `tec_tickets_panel_list_helper_text`, `tec_tickets_normalize_occurrence_id`, `tec_tickets_is_ticket_editable_from_post`, `tec_tickets_my_tickets_link_ticket_count_by_type`, `tec_tickets_editor_list_ticket_types`, `tec_tickets_editor_list_table_data`, `tec_tickets_editor_list_table_data_{$ticket_type}`, `tribe_tickets_block_show_unlimited_availability`, `tec_tickets_get_event_capacity`
+* Tweak - Removed filters: `tec_tickets_hide_view_link`
+* Tweak - Added actions: `tec_flexible_tickets_activated`, `tec_tickets_panels_before`, `tec_tickets_panels_after`, `tec_tickets_ticket_update`, `tec_tickets_ticket_add`, `tec_tickets_list_row_edit`, `tec_tickets_editor_list_table_title_icon_{$ticket_type}`, `tec_tickets_editor_list_table_before`, `tec_tickets_ticket_form_main_start`, `tec_tickets_ticket_form_main_start_{$ticket_type}`
+* Tweak - Changed views: `blocks/attendees/view-link`, `emails/template-parts/body/order/attendees-table/header-row`, `tickets/email`, `tickets/my-tickets`, `tickets/my-tickets/orders-list`, `tickets/my-tickets/tickets-list`, `tickets/my-tickets/title`, `tickets/orders`, `tickets/view-link`, `v2/tickets/item`, `v2/tickets/items`, `v2/tickets/series-pass/header`
+* Language - 62 new strings added, 212 updated, 9 fuzzied, and 15 obsoleted
 
 = [5.7.1] 2023-12-13 =
 
