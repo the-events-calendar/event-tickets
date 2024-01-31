@@ -135,33 +135,6 @@ class Plugin_Data_Subsection extends Abstract_Info_Subsection {
 				'priority' => 130,
 			],
 			[
-				'id'       => 'average_ticket_price',
-				'title'    => esc_html__(
-					'Average Ticket Price',
-					'event-tickets'
-				),
-				'value'    => $this->get_formatted_prices()['formatted_average_price'],
-				'priority' => 150,
-			],
-			[
-				'id'       => 'maximum_ticket_price',
-				'title'    => esc_html__(
-					'Maximum Ticket Price',
-					'event-tickets'
-				),
-				'value'    => $this->get_formatted_prices()['formatted_max_price'],
-				'priority' => 160,
-			],
-			[
-				'id'       => 'minimum_ticket_price',
-				'title'    => esc_html__(
-					'Minimum Ticket Price',
-					'event-tickets'
-				),
-				'value'    => $this->get_formatted_prices()['formatted_min_price'],
-				'priority' => 170,
-			],
-			[
 				'id'       => 'post_types_with_tickets',
 				'title'    => esc_html__(
 					'Post Types with Tickets',
@@ -412,6 +385,7 @@ class Plugin_Data_Subsection extends Abstract_Info_Subsection {
 	 * @return array Associative array with formatted average, max, and min ticket prices.
 	 */
 	private function get_formatted_prices(): array {
+		// @todo redscar - This causes a fatal when TEC is disabled. Need to figure out the proper repository to use. [ET-2017]
 		$ticket_ids = tribe( 'tickets.event-repository' )->per_page( -1 )->where( 'has_tickets' )->pluck( 'ID' );
 
 		$ticket_prices = [];
