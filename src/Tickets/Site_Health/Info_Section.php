@@ -12,9 +12,7 @@ namespace TEC\Tickets\Site_Health;
 use TEC\Common\Site_Health\Factory;
 use TEC\Common\Site_Health\Info_Section_Abstract;
 use TEC\Tickets\Site_Health\Subsections\Features\Tickets_Commerce_Subsection;
-use TEC\Tickets\Site_Health\Subsections\Plugins\Event_Tickets_Plus_Subsection;
 use TEC\Tickets\Site_Health\Subsections\Plugins\Plugin_Data_Subsection;
-use TEC\Tickets\Site_Health\Subsections\Plugins\The_Events_Calendar_Subsection;
 
 /**
  * Class Site_Health

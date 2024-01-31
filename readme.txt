@@ -212,6 +212,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Tweak - Update default footer text of Tickets Emails to include link to website. [ET-1971]
 * Tweak - Added filters: `tec_tc_order_report_export_args`, `tec_tickets_commerce_stripe_update_payment_description`, `tec_tickets_site_health_subsections`
 * Tweak - Changed views: `blocks/tickets/footer`, `emails/template-parts/body/footer/credit`, `registration-js/content`, `registration/button-cart`, `tickets/orders`, `v2/tickets/footer/return-to-cart`
+* Language - 31 new strings added, 77 updated, 0 fuzzied, and 4 obsoleted
 
 = [5.8.0] 2024-01-22 =
 
