@@ -2,7 +2,7 @@
 /**
  * Class that handles interfacing with core Site Health.
  *
- * @since   TBD
+ * @since   5.8.1
  *
  * @package TEC\Tickets\Site_Health
  */
@@ -18,7 +18,7 @@ use TEC\Tickets\Commerce\Utils\Value;
 /**
  * Class Plugin_Data_Subsection
  *
- * @since   TBD
+ * @since   5.8.1
  * @package TEC\Tickets\Site_Health
  */
 class Plugin_Data_Subsection extends Abstract_Info_Subsection {

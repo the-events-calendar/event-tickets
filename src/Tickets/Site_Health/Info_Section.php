@@ -100,7 +100,7 @@ class Info_Section extends Info_Section_Abstract {
 		 * This filter allows external modification of the `$subsections` array. It can be used to add,
 		 * remove, or modify the subsections before they are merged into the `$fields` array.
 		 *
-		 * @since TBD
+		 * @since 5.8.1
 		 *
 		 * @param array $subsections The array of subsections. Each subsection is an array of fields.
 		 *
