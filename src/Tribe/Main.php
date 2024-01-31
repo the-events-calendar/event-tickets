@@ -8,7 +8,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '5.8.0';
+	const VERSION = '5.8.1';
 
 	/**
 	 * Used to store the version history.
@@ -70,6 +70,11 @@ class Tribe__Tickets__Main {
 	public $plugin_url;
 
 	/**
+	 * @var string
+	 */
+	public $plugin_slug;
+
+	/**
 	 * @var Tribe__Tickets__Legacy_Provider_Support
 	 */
 	public $legacy_provider_support;
@@ -98,6 +103,11 @@ class Tribe__Tickets__Main {
 	 * @var Tribe__Admin__Activation_Page
 	 */
 	protected $activation_page;
+
+	/**
+	 * @var Tribe__Tickets__Plugin_Register
+	 */
+	protected $registered;
 
 	/**
 	 * @var bool Prevent autoload initialization

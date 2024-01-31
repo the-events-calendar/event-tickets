@@ -30,14 +30,20 @@ if ( ! tribe_is_truthy( $footer_credit ) ) {
 	return;
 }
 
+$site_link   = sprintf(
+	'<a href="%1$s" class="tec-tickets__email-table-main-footer-credit-link">%2$s</a>',
+	esc_url( site_url() ),
+	get_bloginfo( 'name' )
+);
 $et_link     = sprintf(
 	'<a href="%1$s" class="tec-tickets__email-table-main-footer-credit-link">%2$s</a>',
 	'https://evnt.is/et-in-app-email-credit',
 	esc_html__( 'Event Tickets', 'event-tickets' )
 );
 $credit_html = sprintf(
-	// Translators: %s - HTML link to `Event Tickets` website.
-	__( 'Powered by %1$s', 'event-tickets' ),
+	// Translators: %1$s - HTML link to origin website; %2$s - HTML link to `Event Tickets` website.
+	__( '%1$s tickets are powered by %2$s', 'event-tickets' ),
+	$site_link,
 	$et_link
 );
 

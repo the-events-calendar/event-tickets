@@ -22,7 +22,7 @@ Makefile
 codeception.yml
 tests/*.suite.yml
 phpunit.xml
-.env.*
+
 *.local
 *.test
 *.testing
