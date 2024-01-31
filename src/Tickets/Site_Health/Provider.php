@@ -40,8 +40,6 @@ class Provider extends Service_Provider {
 	 */
 	public function register() {
 		// Plugin subsection.
-		$this->container->singleton( Event_Tickets_Plus_Subsection::class );
-		$this->container->singleton( The_Events_Calendar_Subsection::class );
 		$this->container->singleton( Plugin_Data_Subsection::class );
 
 		// Feature subsection.
