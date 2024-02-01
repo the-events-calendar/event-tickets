@@ -1540,10 +1540,10 @@ class AttendeesTest extends Controller_Test_Case {
 	 */
 	public function should_correctly_check_in_attendees_manually_through_the_metabox_ajax_action(): void {
 		// Record the send JSON payloads, avoid die.
-		$recorded_did_checkin = null;
+		$response_data = null;
 		$this->set_fn_return( 'wp_send_json_success',
-			static function ( $did_checkin ) use ( &$recorded_did_checkin ) {
-				$recorded_did_checkin = $did_checkin;
+			static function ( $did_checkin ) use ( &$response_data ) {
+				$response_data = $did_checkin;
 
 				return null;
 			}, true );
@@ -1596,22 +1596,24 @@ class AttendeesTest extends Controller_Test_Case {
 		$controller->register();
 		$metabox = tribe( Metabox::class );
 
-		$recorded_did_checkin = $clone_id = null;
+		$response_data = $clone_id = null;
+		$controller->reset_reload_trigger();
 		$metabox->ajax_attendee_checkin();
 
-		$this->assertFalse( $recorded_did_checkin );
+		$this->assertEquals( [ 'did_checkin' => false ], $response_data );
 		$this->assertNull( $clone_id );
 
 		/*
 		 * Send the same request again, this time including the Series ID as context of the check-in.
-		 * This is not possible from the UI, but it shoul be covered nonetheless.
+		 * This is not possible from the UI, but it should be covered nonetheless.
 		 */
 		$_POST['event_ID'] = $series_id;
 
-		$recorded_did_checkin = $clone_id = null;
+		$response_data = $clone_id = null;
+		$controller->reset_reload_trigger();
 		$metabox->ajax_attendee_checkin();
 
-		$this->assertFalse( $recorded_did_checkin );
+		$this->assertEquals( [ 'did_checkin' => false ], $response_data );
 		$this->assertNull( $clone_id );
 
 		/*
@@ -1620,10 +1622,11 @@ class AttendeesTest extends Controller_Test_Case {
 		 */
 		$_POST['event_ID'] = $control_event;
 
-		$recorded_did_checkin = $clone_id = null;
+		$response_data = $clone_id = null;
+		$controller->reset_reload_trigger();
 		$metabox->ajax_attendee_checkin();
 
-		$this->assertFalse( $recorded_did_checkin );
+		$this->assertEquals( [ 'did_checkin' => false ], $response_data );
 		$this->assertNull( $clone_id );
 
 		/*
@@ -1632,10 +1635,11 @@ class AttendeesTest extends Controller_Test_Case {
 		 */
 		$_POST['event_ID'] = $single_event;
 
-		$recorded_did_checkin = $clone_id = null;
+		$response_data = $clone_id = null;
+		$controller->reset_reload_trigger();
 		$metabox->ajax_attendee_checkin();
 
-		$this->assertTrue( $recorded_did_checkin );
+		$this->assertEquals( [ 'did_checkin' => true, 'reload' => true ], $response_data );
 		$this->assertTrue( $controller->attendee_is_a_clone_of( $clone_id, $series_attendee_id ) );
 
 		/*
@@ -1644,10 +1648,11 @@ class AttendeesTest extends Controller_Test_Case {
 		 */
 		$_POST['event_ID'] = $recurring_event;
 
-		$recorded_did_checkin = $clone_id = null;
+		$response_data = $clone_id = null;
+		$controller->reset_reload_trigger();
 		$metabox->ajax_attendee_checkin();
 
-		$this->assertFalse( $recorded_did_checkin );
+		$this->assertEquals( [ 'did_checkin' => false ], $response_data );
 		$this->assertNull( $clone_id );
 
 		/*
@@ -1656,10 +1661,11 @@ class AttendeesTest extends Controller_Test_Case {
 		foreach ( $provisional_ids as $provisional_id ) {
 			$_POST['event_ID'] = $provisional_id;
 
-			$recorded_did_checkin = $clone_id = null;
+			$response_data = $clone_id = null;
+			$controller->reset_reload_trigger();
 			$metabox->ajax_attendee_checkin();
 
-			$this->assertTrue( $recorded_did_checkin );
+			$this->assertEquals( [ 'did_checkin' => true, 'reload' => true ], $response_data );
 			$this->assertTrue( $controller->attendee_is_a_clone_of( $clone_id, $series_attendee_id ) );
 		}
 	}
@@ -1736,5 +1742,72 @@ class AttendeesTest extends Controller_Test_Case {
 				$this->assertEquals( $expected, Event::filter_event_id( $input, $controlled_context ) );
 			}
 		}
+	}
+
+	/**
+	 * It should not clone Attendees again when checking in clones
+	 *
+	 * @test
+	 */
+	public function should_not_clone_attendees_again_when_checking_in_clones(): void {
+		// Become administrator.
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		// Create a Series.
+		$series_id = static::factory()->post->create( [
+			'post_type' => Series_Post_Type::POSTTYPE,
+		] );
+		// Create a Series Pass and an Attendee for the Series.
+		$series_pass_id = $this->create_tc_series_pass( $series_id )->ID;
+		$series_attendee_id = $this->create_attendee_for_ticket( $series_pass_id, $series_id );
+		// Create a Single Event part of the Series.
+		$single_event = tribe_events()->set_args( [
+			'title'      => 'Series Single Event',
+			'status'     => 'publish',
+			'start_date' => '+2 hours',
+			'duration'   => 3 * HOUR_IN_SECONDS,
+			'series'     => $series_id,
+		] )->create()->ID;
+		// Subscribe to the Attendee clone action to capture the cloned Attendee ID.
+		$clone_id = null;
+		add_action( 'tec_tickets_flexible_tickets_series_pass_attendee_cloned', function ( $cloned_attendee_id ) use ( &$clone_id ) {
+			$clone_id = $cloned_attendee_id;
+		} );
+		$commerce = Module::get_instance();
+
+		$controller = $this->make_controller();
+		$controller->register();
+
+		// Start by checking-in the Attendee from the context of the Event to create a clone.
+		$this->assertTrue( $commerce->checkin( $series_attendee_id, false, $single_event ) );
+		$this->assertTrue( $controller->attendee_is_a_clone_of( $clone_id, $series_attendee_id ) );
+
+		$event_attendee_id = $clone_id;
+
+		// Checking in the Series Pass Attendee again from the context of the same Event should not generate new clones.
+		// Start by checking-in the Attendee from the context of the Event to create a clone.
+		$clone_id = null;
+		$this->assertTrue( $commerce->checkin( $series_attendee_id, false, $single_event ) );
+		$this->assertNull( $clone_id );
+
+		// Checking in the clone from the context of the Event should not trigger the creation of new clones.
+		$clone_id = null;
+		$this->assertTrue( $commerce->checkin( $event_attendee_id, false, $single_event ) );
+		$this->assertNull( $clone_id );
+
+		// Checking out the clone from the context of the Event should not generate new clones.
+		$clone_id = null;
+		$this->assertTrue( $commerce->uncheckin( $series_attendee_id ) );
+		$this->assertNull( $clone_id );
+
+		// Checking in the Series Pass Attendee again from the context of the same Event should not generate new clones.
+		// Start by checking-in the Attendee from the context of the Event to create a clone.
+		$clone_id = null;
+		$this->assertTrue( $commerce->checkin( $series_attendee_id, false, $single_event ) );
+		$this->assertNull( $clone_id );
+
+		// Checking in  again the clone from the context of the Event should not trigger the creation of new clones.
+		$clone_id = null;
+		$this->assertTrue( $commerce->checkin( $event_attendee_id, false, $single_event ) );
+		$this->assertNull( $clone_id );
 	}
 }

@@ -71,6 +71,14 @@ class Attendees extends Controller {
 	 * @var Edit
 	 */
 	private Edit $edit;
+	/**
+	 * A list of Attendees cloned in this request.
+	 *
+	 * @since TBD
+	 *
+	 * @var int[]
+	 */
+	private array $reload_triggers = [];
 
 	/**
 	 * Attendees constructor.
@@ -159,6 +167,10 @@ class Attendees extends Controller {
 				'filter_tickets_attendees_report_js_config',
 			]
 		);
+		add_filter( 'tec_tickets_attendee_manual_checkin_success_data', [
+			$this,
+			'trigger_attendees_list_reload'
+		], 10, 2 );
 	}
 
 	/**
@@ -189,6 +201,10 @@ class Attendees extends Controller {
 				'filter_tickets_attendees_report_js_config',
 			]
 		);
+		remove_filter( 'tec_tickets_attendee_manual_checkin_success_data', [
+			$this,
+			'trigger_attendees_list_reload'
+		], 10, 2 );
 	}
 
 	/**
@@ -237,6 +253,11 @@ class Attendees extends Controller {
 	public function handle_series_pass_attendee_checkin( $checkin, int $attendee_id, int $event_id = null, bool $qr = false ) {
 		if ( tribe_attendees()->where( 'id', $attendee_id )->where( 'ticket_type', Series_Passes::TICKET_TYPE )->count() === 0 ) {
 			// Not an Attendee for a Series Pass, let the default logic run its course.
+			return $checkin;
+		}
+
+		if ( get_post_meta( $attendee_id, self::CLONE_META_KEY, true ) ) {
+			// This Attendee is a clone, its check-in logic should be handled by the provider.
 			return $checkin;
 		}
 
@@ -395,6 +416,12 @@ class Attendees extends Controller {
 
 			return false;
 		}
+
+		/*
+		 * This Attendee was cloned during this request. This information will be used to reload the Attendees list.
+		 * See the `trigger_attendees_list_reload` method of this class.
+		 */
+		$this->reload_triggers[ $attendee_id ] = true;
 
 		/*
 		 * Insert the meta this way, not using `meta_input` to avoid the conflation of multiple entries for the same
@@ -1160,5 +1187,35 @@ class Attendees extends Controller {
 		}
 
 		return $event_id;
+	}
+
+	/**
+	 * Raises the reload flag in the AJAX response to trigger a reload of the Attendees list.
+	 *
+	 * @since TBD
+	 *
+	 * @param array{did_checkin: bool} $data        The AJAX response data.
+	 * @param int                      $attendee_id The original Attendee ID.
+	 *
+	 * @return array{did_checkin: bool, reload?: bool} The AJAX response data, with the reload flag set if the
+	 *                                                 Attendee should trigger a reload of the Attendees list.
+	 */
+	public function trigger_attendees_list_reload( array $data, int $attendee_id ): array {
+		if ( isset( $this->reload_triggers[ $attendee_id ] ) ) {
+			$data['reload'] = true;
+		}
+
+		return $data;
+	}
+
+	/**
+	 * Resets the list of Attendees that should trigger a reload of the Attendees list.
+	 *
+	 * @since TBD
+	 *
+	 * @return void The list of Attendees that should trigger a reload of the Attendees list is reset.
+	 */
+	public function reset_reload_trigger(): void {
+		$this->reload_triggers = [];
 	}
 }
