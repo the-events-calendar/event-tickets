@@ -11,20 +11,24 @@ use TEC\Events\Custom_Tables\V1\Models\Occurrence;
 use TEC\Events_Pro\Custom_Tables\V1\Events\Provisional\ID_Generator;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Event;
 use TEC\Tickets\Flexible_Tickets\Base as Base_Controller;
 use TEC\Tickets\Flexible_Tickets\Test\Traits\Series_Pass_Factory;
+use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe__Tickets__Attendees_Table;
 use WP_Post;
 use WP_REST_Request;
 use WP_REST_Server;
+use Tribe__Tickets__Metabox as Metabox;
 
 class AttendeesTest extends Controller_Test_Case {
 	use Series_Pass_Factory;
 	use Attendee_Maker;
 	use Order_Maker;
 	use SnapshotAssertions;
+	use With_Uopz;
 
 	protected string $controller_class = Attendees::class;
 	private $rest_server_backup;
@@ -103,6 +107,8 @@ class AttendeesTest extends Controller_Test_Case {
 		$_GET['event_id'] = $series;
 		$attendee_table = new Tribe__Tickets__Attendees_Table();
 		$this->assertArrayNotHasKey( 'check_in', $attendee_table->get_table_columns() );
+
+		// @todo test for single and recurring events, real and provisional IDs
 	}
 
 	/**
@@ -343,19 +349,19 @@ class AttendeesTest extends Controller_Test_Case {
 			[
 				'past_series_event_id'                => [
 					$past_series_event_id,
-					$past_series_event_provisional_id
+					$past_series_event_id
 				],
 				'current_series_event_provisional_id' => [
 					$current_series_event_provisional_id,
-					$current_series_event_provisional_id
+					$current_series_event_id
 				],
 				'near_future_series_event_id'         => [
 					$near_future_series_event_id,
-					$near_future_series_provisional_id
+					$near_future_series_event_id
 				],
 				'far_future_series_provisional_id'    => [
 					$far_future_series_provisional_id,
-					$far_future_series_provisional_id
+					$far_future_series_event_id
 				],
 			] as $set => [$event_id, $attendee_target_id]
 		) {
@@ -408,8 +414,9 @@ class AttendeesTest extends Controller_Test_Case {
 		) {
 			$attendee_target_id = $event_id;
 			$cloned_attendee_id = null;
+			$condition = $commerce->checkin( $series_attendee_id, false, $event_id );
 			$this->assertTrue(
-				$commerce->checkin( $series_attendee_id, false, $event_id ),
+				$condition,
 				"The check in of the Series Pass Attendee from an Event part of the Series should be successful. | {$set}"
 			);
 			$this->assertNotNull(
@@ -1524,5 +1531,210 @@ class AttendeesTest extends Controller_Test_Case {
 			tribe_attendees()->where( 'event', $control_event )->get_ids(),
 			'The control Event Attendees should not be affected.'
 		);
+	}
+
+	/**
+	 * It should correctly check-in Attendees manually, through the metabox AJAX action
+	 *
+	 * @test
+	 */
+	public function should_correctly_check_in_attendees_manually_through_the_metabox_ajax_action(): void {
+		// Record the send JSON payloads, avoid die.
+		$recorded_did_checkin = null;
+		$this->set_fn_return( 'wp_send_json_success',
+			static function ( $did_checkin ) use ( &$recorded_did_checkin ) {
+				$recorded_did_checkin = $did_checkin;
+
+				return null;
+			}, true );
+		// Subscribe to the Attendee clone action to capture the cloned Attendee ID.
+		$clone_id = null;
+		add_action( 'tec_tickets_flexible_tickets_series_pass_attendee_cloned', function ( $cloned_attendee_id ) use ( &$clone_id ) {
+			$clone_id = $cloned_attendee_id;
+		} );
+		// Become administrator to manually check-in Attendees.
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		// Create a Series.
+		$series_id = static::factory()->post->create( [
+			'post_type' => Series_Post_Type::POSTTYPE,
+		] );
+		// Create a Series Pass and an Attendee for the Series.
+		$series_pass_id = $this->create_tc_series_pass( $series_id )->ID;
+		$series_attendee_id = $this->create_attendee_for_ticket( $series_pass_id, $series_id );
+		// Create a Single Event part of the Series.
+		$single_event = tribe_events()->set_args( [
+			'title'      => 'Series Single Event',
+			'status'     => 'publish',
+			'start_date' => '+2 hours',
+			'duration'   => 3 * HOUR_IN_SECONDS,
+			'series'     => $series_id,
+		] )->create()->ID;
+		// Create a Recurring Event part of the Series.
+		$recurring_event = tribe_events()->set_args( [
+			'title'      => 'Series Single Event',
+			'status'     => 'publish',
+			'start_date' => '+2 hours',
+			'duration'   => 3 * HOUR_IN_SECONDS,
+			'series'     => $series_id,
+			'recurrence' => 'RRULE:FREQ=DAILY;COUNT=3',
+		] )->create()->ID;
+		$provisional_ids = Occurrence::where( 'post_id', '=', $recurring_event )
+			->map( fn( Occurrence $o ) => $o->provisional_id );
+		// Create an Event not part of the Series.
+		$control_event = tribe_events()->set_args( [
+			'title'      => 'Control Event',
+			'status'     => 'publish',
+			'start_date' => '+2 hours',
+			'duration'   => 3 * HOUR_IN_SECONDS,
+		] )->create()->ID;
+		// Set up the context to manually check in an Attendee providing the Attendee ID, but not the Event ID.
+		$_POST['nonce'] = wp_create_nonce( 'checkin' );
+		$_POST['provider'] = Module::class;
+		$_POST['attendee_id'] = $series_attendee_id;
+
+		$controller = $this->make_controller();
+		$controller->register();
+		$metabox = tribe( Metabox::class );
+
+		$recorded_did_checkin = $clone_id = null;
+		$metabox->ajax_attendee_checkin();
+
+		$this->assertFalse( $recorded_did_checkin );
+		$this->assertNull( $clone_id );
+
+		/*
+		 * Send the same request again, this time including the Series ID as context of the check-in.
+		 * This is not possible from the UI, but it shoul be covered nonetheless.
+		 */
+		$_POST['event_ID'] = $series_id;
+
+		$recorded_did_checkin = $clone_id = null;
+		$metabox->ajax_attendee_checkin();
+
+		$this->assertFalse( $recorded_did_checkin );
+		$this->assertNull( $clone_id );
+
+		/*
+		 * Send the request again, this time checking in the Attendee from the context of an Event not part of the
+		 * Series; again: not possible from the UI, but better safe than sorry.
+		 */
+		$_POST['event_ID'] = $control_event;
+
+		$recorded_did_checkin = $clone_id = null;
+		$metabox->ajax_attendee_checkin();
+
+		$this->assertFalse( $recorded_did_checkin );
+		$this->assertNull( $clone_id );
+
+		/*
+		 * Send the request again, this time checking in the Attendee from the context of the Single Event part of the
+		 * Series.
+		 */
+		$_POST['event_ID'] = $single_event;
+
+		$recorded_did_checkin = $clone_id = null;
+		$metabox->ajax_attendee_checkin();
+
+		$this->assertTrue( $recorded_did_checkin );
+		$this->assertTrue( $controller->attendee_is_a_clone_of( $clone_id, $series_attendee_id ) );
+
+		/*
+		 * Send the request again, this time checking in the Attendee from the context of the Recurring Event post ID.
+		 * This should not be possible from the UI, but better safe than sorry.
+		 */
+		$_POST['event_ID'] = $recurring_event;
+
+		$recorded_did_checkin = $clone_id = null;
+		$metabox->ajax_attendee_checkin();
+
+		$this->assertFalse( $recorded_did_checkin );
+		$this->assertNull( $clone_id );
+
+		/*
+		 * Send the request again, this time from each one of the Recurring Event part of the Series provisional IDs.
+		 */
+		foreach ( $provisional_ids as $provisional_id ) {
+			$_POST['event_ID'] = $provisional_id;
+
+			$recorded_did_checkin = $clone_id = null;
+			$metabox->ajax_attendee_checkin();
+
+			$this->assertTrue( $recorded_did_checkin );
+			$this->assertTrue( $controller->attendee_is_a_clone_of( $clone_id, $series_attendee_id ) );
+		}
+	}
+
+	/**
+	 * It should correctly filter the Event ID depending on the context
+	 *
+	 * @test
+	 */
+	public function should_correctly_filter_the_event_id_depending_on_the_context(): void {
+		// Become administrator.
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		// Create a Series.
+		$series_id = static::factory()->post->create( [
+			'post_type' => Series_Post_Type::POSTTYPE,
+		] );
+		// Create a Single Event part of the Series.
+		$single_event = tribe_events()->set_args( [
+			'title'      => 'Series Single Event',
+			'status'     => 'publish',
+			'start_date' => '+2 hours',
+			'duration'   => 3 * HOUR_IN_SECONDS,
+			'series'     => $series_id,
+		] )->create()->ID;
+		// Create a Recurring Event part of the Series.
+		$recurring_event = tribe_events()->set_args( [
+			'title'      => 'Series Single Event',
+			'status'     => 'publish',
+			'start_date' => '+2 hours',
+			'duration'   => 3 * HOUR_IN_SECONDS,
+			'series'     => $series_id,
+			'recurrence' => 'RRULE:FREQ=DAILY;COUNT=3',
+		] )->create()->ID;
+		$provisional_ids = Occurrence::where( 'post_id', '=', $recurring_event )
+			->map( fn( Occurrence $o ) => $o->provisional_id );
+		// Create an Event not part of the Series.
+		$control_event = tribe_events()->set_args( [
+			'title'      => 'Control Event',
+			'status'     => 'publish',
+			'start_date' => '+2 hours',
+			'duration'   => 3 * HOUR_IN_SECONDS,
+		] )->create()->ID;
+
+		$controller = $this->make_controller();
+		$controller->register();
+
+		// Default context, no changes.
+		foreach (
+			[
+				$series_id          => $series_id,
+				$single_event       => $single_event,
+				$recurring_event    => $recurring_event,
+				$control_event      => $control_event,
+				$provisional_ids[0] => $recurring_event,
+				$provisional_ids[1] => $recurring_event,
+				$provisional_ids[2] => $recurring_event,
+			] as $input => $expected
+		) {
+			$this->assertEquals( $expected, Event::filter_event_id( $input ) );
+		}
+
+		foreach ( $controller->get_controlled_event_filter_contexts() as $controlled_context ) {
+			foreach (
+				[
+					$series_id          => $series_id,
+					$single_event       => $single_event,
+					$recurring_event    => $recurring_event,
+					$control_event      => $control_event,
+					$provisional_ids[0] => $provisional_ids[0],
+					$provisional_ids[1] => $provisional_ids[1],
+					$provisional_ids[2] => $provisional_ids[2],
+				] as $input => $expected
+			) {
+				$this->assertEquals( $expected, Event::filter_event_id( $input, $controlled_context ) );
+			}
+		}
 	}
 }

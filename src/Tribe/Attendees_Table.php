@@ -73,7 +73,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		// Fetch the event Object
 		if ( ! empty( $_GET['event_id'] ) ) {
 			$event_id    = filter_var( $_GET['event_id'], FILTER_VALIDATE_INT );
-			$event_id    = Event::filter_event_id( $event_id );
+			$event_id    = Event::filter_event_id( $event_id, 'attendees-table' );
 			$this->event = get_post( $event_id );
 		}
 
@@ -952,7 +952,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			'return_total_found' => true,
 		];
 
-		$event_id = Event::filter_event_id( filter_var( tribe_get_request_var( 'event_id' ), FILTER_VALIDATE_INT ) );
+		$event_id = Event::filter_event_id( filter_var( tribe_get_request_var( 'event_id' ), FILTER_VALIDATE_INT ), 'attendees-table' );
 		$search   = sanitize_text_field( tribe_get_request_var( $this->search_box_input_name ) );
 
 		if ( ! empty( $search ) ) {

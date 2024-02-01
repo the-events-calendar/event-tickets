@@ -85,17 +85,8 @@ class Tribe__Tickets__Metabox {
 			return false;
 		}
 
-		/**
-		 * This filter allows retrieval of an event ID to be filtered before being accessed elsewhere.
-		 *
-		 * @since 5.8.0
-		 *
-		 * @param int $post_id The event ID to be filtered.
-		 */
-		$post_id = apply_filters(
-			'tec_tickets_filter_event_id',
-			( $post_id instanceof WP_Post ? $post_id->ID : (int) $post_id )
-		);
+		$original_id = $post_id instanceof WP_Post ? $post_id->ID : (int) $post_id;
+		$post_id = Event::filter_event_id( $original_id, 'tickets-metabox-render' );
 
 		$post = get_post( $post_id );
 
@@ -722,7 +713,7 @@ class Tribe__Tickets__Metabox {
 		}
 
 		// Pass the control to the child object
-		$did_checkin = $provider->checkin( $attendee_id );
+		$did_checkin = $provider->checkin( $attendee_id, false, $event_id );
 
 		$provider->clear_attendees_cache( $event_id );
 
