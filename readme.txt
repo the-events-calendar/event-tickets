@@ -200,6 +200,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Removed type casting from filter method of series pass to avoid fatal errors. [ET-2014]
 * Fix - Ensure correct attendee information is included in the attendee emails. [ET-1988]
 * Fix - Resolve deprecation notices regarding `ArrayAccess::offsetGet()` [ET-1949]
+* Fix - Resolve edge case usages for Shortcode with Attendees Listing.
 * Fix - Resolved an issue where Order Status was not populated when exporting the Attendee List using Tickets Commerce. [ET-1883]
 * Fix - Ticket is removed now when using the delete option from the block editor. [ET-1879]
 * Fix - Update button will now show when the opt-out checkbox shows on the My Tickets page. [ET-1980]
