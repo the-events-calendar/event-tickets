@@ -1151,14 +1151,14 @@ class Attendees extends Controller {
 	 *             original ID is a provisional ID.
 	 */
 	public function preserve_provisional_id( $event_id, $context = 'default', $original_id = null ) {
-		if ( ! (
-			is_int( $event_id )
-			&& in_array( $context, $this->get_controlled_event_filter_contexts(), true )
-			&& tribe( Provisional_Post::class )->is_provisional_post_id( $original_id ) )
-		) {
+		if ( ! is_int( $event_id ) || ! in_array( $context, $this->get_controlled_event_filter_contexts(), true ) ) {
 			return $event_id;
 		}
 
-		return (int) $original_id;
+		if ( tribe_is_recurring_event( Occurrence::normalize_id( $original_id ) ) ) {
+			return $original_id;
+		}
+
+		return $event_id;
 	}
 }
