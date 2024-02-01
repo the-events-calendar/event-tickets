@@ -57,7 +57,7 @@ class Tribe__Tickets__Shortcodes__User_Event_Confirmation_List {
 			$current_user_id = get_current_user_id();
 
 			if (
-				$this->params['user'] === $current_user_id
+				$this->params['user'] !== $current_user_id
 				&& ! $attendees->user_can_manage_attendees( $current_user_id )
 			) {
 				return '';
