@@ -71,6 +71,7 @@ class Attendees extends Controller {
 	 * @var Edit
 	 */
 	private Edit $edit;
+
 	/**
 	 * A list of Attendees cloned in this request.
 	 *
