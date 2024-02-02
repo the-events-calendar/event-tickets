@@ -195,6 +195,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Tweak - Changed incorrect file paths in DocBlocks for template overrides for all files in `src/views/tickets`. [ET-2004]
+
 = [5.8.0] 2024-01-22 =
 
 * Version - Event Tickets 5.8.0 is only compatible with The Events Calendar 6.3.0 and higher.
