@@ -194,7 +194,9 @@ We've got a [LoopedIn](https://evnt.is/ideas) page where we're actively watching
 Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on using, tweaking, and troubleshooting our plugins.
 
 == Changelog ==
-= [TDB] =
+
+= [TBD] TBD =
+
 * Tweak - Changed incorrect file paths in DocBlocks for template overrides for all files in src/views/tickets. [GTRIA-1170]
 
 = [5.8.0] 2024-01-22 =
