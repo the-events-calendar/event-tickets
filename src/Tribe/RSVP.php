@@ -756,18 +756,30 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 *
 	 * Expects to fire during 'tribe_tickets_attendees_page_inside', ie
 	 * before the attendee screen is rendered.
+	 *
+	 * @since 4.2.4
+	 * @since TBD Add the `$event_id` parameter
 	 */
-	public function setup_attendance_totals() {
-		$this->attendance_totals()->integrate_with_attendee_screen();
+	public function setup_attendance_totals( $event_id = null ) {
+		$this->attendance_totals( $event_id )->integrate_with_attendee_screen();
 	}
 
 	/**
-	 * @return Tribe__Tickets__RSVP__Attendance_Totals
+	 * Returns the RSVP attendance totals object.
+	 *
+	 * @since 4.2.4
+	 * @since TBD Add the `$event_id` paramter.
+	 *
+	 * @param int|null $event_id The event ID to set for the attendance totals.
+	 *
+	 * @return Tribe__Tickets__RSVP__Attendance_Totals The RSVP attendance totals object.
 	 */
-	public function attendance_totals() {
+	public function attendance_totals( $event_id = null ) {
 		if ( empty( $this->attendance_totals ) ) {
 			$this->attendance_totals = new Tribe__Tickets__RSVP__Attendance_Totals;
 		}
+
+		$this->attendance_totals->set_event_id( $event_id );
 
 		return $this->attendance_totals;
 	}

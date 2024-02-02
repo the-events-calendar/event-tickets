@@ -2,7 +2,7 @@
 /**
  * Handles Attendees in the context of Series Passes.
  *
- * @since   TBD
+ * @since TBD
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes;
  */
@@ -30,7 +30,7 @@ use Tribe__Events__Main as TEC;
 /**
  * Class Attendees.
  *
- * @since   TBD
+ * @since TBD
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes;
  */
@@ -83,7 +83,7 @@ class Attendees extends Controller {
 	/**
 	 * Attendees constructor.
 	 *
-	 * since TBD
+	 * @since TBD
 	 *
 	 * @param Container $container The dependency injection container.
 	 * @param Edit      $edit      The Series Passes' edit and editor handler.
@@ -277,7 +277,7 @@ class Attendees extends Controller {
 			return false;
 		}
 
-		// We do not know the Attendee to Event meta key, but we can work it out from the original Attende.
+		// We do not know the Attendee to Event meta key, but we can work it out from the original Attendee.
 		$series_id = (int) get_post_meta( $attendee_id, $attendee_event_key, true );
 
 		if ( ! $series_id ) {
