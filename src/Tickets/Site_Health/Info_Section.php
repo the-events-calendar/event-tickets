@@ -20,7 +20,6 @@ use Tribe__Utils__Array as Arr;
  * Class Site_Health
  *
  * @since   5.6.0.1
-
  * @package TEC\Tickets\Site_Health
  */
 class Info_Section extends Info_Section_Abstract {
@@ -103,7 +102,7 @@ class Info_Section extends Info_Section_Abstract {
 			Factory::generate_generic_field(
 				'ticketed_posts',
 				esc_html__( 'Total ticketed posts', 'event-tickets' ),
-				tribe( 'tickets.post-repository' )->per_page( -1 )->where( 'has_tickets' )->count(),
+				tribe( 'tickets.post-repository' )->per_page( - 1 )->where( 'has_tickets' )->count(),
 				30
 			)
 		);
@@ -112,7 +111,7 @@ class Info_Section extends Info_Section_Abstract {
 			Factory::generate_generic_field(
 				'rsvp_posts',
 				esc_html__( 'Total posts with RSVPs', 'event-tickets' ),
-				tribe( 'tickets.post-repository' )->per_page( -1 )->where( 'has_rsvp' )->count(),
+				tribe( 'tickets.post-repository' )->per_page( - 1 )->where( 'has_rsvp' )->count(),
 				40
 			)
 		);
@@ -122,7 +121,7 @@ class Info_Section extends Info_Section_Abstract {
 				Factory::generate_generic_field(
 					'ticketed_events',
 					esc_html__( 'Total ticketed events', 'event-tickets' ),
-					tribe( 'tickets.event-repository' )->per_page( -1 )->where( 'has_tickets' )->count(),
+					tribe( 'tickets.event-repository' )->per_page( - 1 )->where( 'has_tickets' )->count(),
 					50
 				)
 			);
@@ -131,7 +130,7 @@ class Info_Section extends Info_Section_Abstract {
 				Factory::generate_generic_field(
 					'rsvp_events',
 					esc_html__( 'Total events with RSVPs', 'event-tickets' ),
-					tribe( 'tickets.event-repository' )->per_page( -1 )->where( 'has_rsvp' )->count(),
+					tribe( 'tickets.event-repository' )->per_page( - 1 )->where( 'has_rsvp' )->count(),
 					60
 				)
 			);

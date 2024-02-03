@@ -28,17 +28,17 @@ class Settings extends Fieldset_Abstract {
 	protected function get_fields(): array {
 		return [
 			[
-				'id' => 'ticket_enabled_post_types',
+				'id'    => 'ticket_enabled_post_types',
 				'label' => esc_html__( 'Ticket-enabled post types', 'event-tickets' ),
 				'value' => [ $this, 'get_post_types_enabled' ],
 			],
 			[
-				'id' => 'tickets_login_required_for_tickets',
+				'id'    => 'tickets_login_required_for_tickets',
 				'label' => esc_html__( 'Login required for Tickets', 'event-tickets' ),
 				'value' => [ $this, 'get_is_login_required_for_tickets' ],
 			],
 			[
-				'id' => 'tickets_login_required_for_rsvp',
+				'id'    => 'tickets_login_required_for_rsvp',
 				'label' => esc_html__( 'Login required for RSVP', 'event-tickets' ),
 				'value' => [ $this, 'get_is_login_required_for_rsvp' ],
 			],
@@ -55,6 +55,7 @@ class Settings extends Fieldset_Abstract {
 	public function get_post_types_enabled(): string {
 		$value = (array) tribe_get_option( 'ticket-enabled-post-types', [] );
 		$value = array_filter( $value );
+
 		return Arr::to_list( $value, ', ' );
 	}
 
@@ -68,6 +69,7 @@ class Settings extends Fieldset_Abstract {
 	public function get_is_login_required_for_tickets(): string {
 		$value = (array) tribe_get_option( 'ticket-authentication-requirements', [] );
 		$value = array_filter( $value );
+
 		return in_array( 'event-tickets_all', $value, true ) ? static::YES : static::NO;
 	}
 
@@ -81,6 +83,7 @@ class Settings extends Fieldset_Abstract {
 	public function get_is_login_required_for_rsvp(): string {
 		$value = (array) tribe_get_option( 'ticket-authentication-requirements', [] );
 		$value = array_filter( $value );
+
 		return in_array( 'event-tickets_rsvp', $value, true ) ? static::YES : static::NO;
 	}
 }

@@ -27,27 +27,27 @@ class Commerce extends Fieldset_Abstract {
 	protected function get_fields(): array {
 		return [
 			[
-				'id' => 'tickets_commerce_enabled',
+				'id'    => 'tickets_commerce_enabled',
 				'label' => esc_html__( 'Tickets Commerce Enabled', 'event-tickets' ),
 				'value' => [ $this, 'is_tickets_commerce_enabled' ],
 			],
 			[
-				'id' => 'tickets_commerce_sandbox_mode',
+				'id'    => 'tickets_commerce_sandbox_mode',
 				'label' => esc_html__( 'Tickets Commerce Sandbox Mode', 'event-tickets' ),
 				'value' => [ $this, 'is_tickets_commerce_sandbox_mode' ],
 			],
 			[
-				'id' => 'tribe_commerce_is_available',
+				'id'    => 'tribe_commerce_is_available',
 				'label' => esc_html__( 'Tribe Commerce Available', 'event-tickets' ),
 				'value' => [ $this, 'is_tribe_commerce_available' ],
 			],
 			[
-				'id' => 'tickets_commerce_gateway_stripe_active',
+				'id'    => 'tickets_commerce_gateway_stripe_active',
 				'label' => esc_html__( 'Tickets Commerce gateway Stripe active', 'event-tickets' ),
 				'value' => [ $this, 'is_tc_stripe_active' ],
 			],
 			[
-				'id' => 'tickets_commerce_gateway_paypal_active',
+				'id'    => 'tickets_commerce_gateway_paypal_active',
 				'label' => esc_html__( 'Tickets Commerce gateway PayPal active', 'event-tickets' ),
 				'value' => [ $this, 'is_tc_paypal_active' ],
 			],
@@ -96,6 +96,7 @@ class Commerce extends Fieldset_Abstract {
 	 */
 	public function is_tc_stripe_active(): string {
 		$gateway = tribe( Manager::class )->get_gateway_by_key( Stripe_Gateway::get_key() );
+
 		return tec_tickets_commerce_is_enabled() && $gateway::is_active() && $gateway::is_enabled() ? static::YES : static::NO;
 	}
 
