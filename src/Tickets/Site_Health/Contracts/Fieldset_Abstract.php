@@ -77,28 +77,34 @@ abstract class Fieldset_Abstract implements Fieldset_Interface {
 	 * @inheritdoc
 	 */
 	public function to_array(): array {
-		$fields = array_map( function( $field ) {
-			if ( $field instanceof Info_Field_Abstract ) {
-				return $field;
+		$fields = array_map(
+			function ( $field ) {
+				if ( $field instanceof Info_Field_Abstract ) {
+					return $field;
+				}
+
+				if ( ! is_array( $field ) ) {
+					return null;
+				}
+
+				if ( is_callable( $field['value'] ) ) {
+					$field['value'] = call_user_func_array( $field['value'], [] );
+				}
+
+				if ( ! isset( $field['priority'] ) ) {
+					$field['priority'] = $this->get_priority();
+				}
+
+				return Generic_Info_Field::from_array( $field );
+			},
+			$this->get_fields()
+		);
+
+		return array_filter(
+			$fields,
+			static function ( $field ) {
+				return $field instanceof Info_Field_Abstract;
 			}
-
-			if ( ! is_array( $field ) ) {
-				return null;
-			}
-
-			if ( is_callable( $field['value'] ) ) {
-				$field['value'] = call_user_func_array( $field['value'], [] );
-			}
-
-			if ( ! isset( $field['priority'] ) ) {
-				$field['priority'] = $this->get_priority();
-			}
-
-			return Generic_Info_Field::from_array( $field );
-		}, $this->get_fields() );
-
-		return array_filter( $fields, static function( $field ) {
-			return $field instanceof Info_Field_Abstract;
-		} );
+		);
 	}
 }

@@ -5,9 +5,6 @@ namespace TEC\Tickets\Site_Health\Fieldset;
 use TEC\Tickets\Site_Health\Contracts\Fieldset_Abstract;
 use Tribe__Utils__Array as Arr;
 
-use TEC\Common\Site_Health\Factory;
-use TEC\Common\Site_Health\Info_Field_Abstract;
-
 /**
  * Class Settings
  *
