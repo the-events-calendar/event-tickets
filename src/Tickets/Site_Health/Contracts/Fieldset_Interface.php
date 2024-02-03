@@ -18,7 +18,6 @@ use TEC\Common\Site_Health\Info_Section_Abstract;
  * @package TEC\Tickets\Site_Health\Contracts
  */
 interface Fieldset_Interface {
-
 	/**
 	 * Register the fields to the section.
 	 *
@@ -37,5 +36,4 @@ interface Fieldset_Interface {
 	 * @return array
 	 */
 	public function to_array(): array;
-
 }
