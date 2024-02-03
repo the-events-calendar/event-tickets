@@ -25,7 +25,7 @@ use Tribe__Utils__Array as Arr;
  */
 class Info_Section extends Info_Section_Abstract {
 	/**
-	 * Slug for the section.2
+	 * Slug for the section.
 	 *
 	 * @since 5.6.0.1
 	 *
