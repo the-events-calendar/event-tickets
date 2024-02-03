@@ -14,10 +14,24 @@ use TEC\Common\Site_Health\Info_Section_Abstract;
  * @package TEC\Tickets\Site_Health\Contracts
  */
 abstract class Fieldset_Abstract implements Fieldset_Interface {
+
+	/**
+	 * The value for yes, intentionally not translated.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
 	protected const YES = 'yes';
 
+	/**
+	 * The value for no, intentionally not translated.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
 	protected const NO = 'no';
-
 
 	/**
 	 * Stores the base priority for the fields in this set.
