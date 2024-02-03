@@ -11,6 +11,8 @@ namespace TEC\Tickets\Site_Health;
 
 use TEC\Common\Site_Health\Info_Section_Abstract;
 use TEC\Common\Site_Health\Factory;
+use TEC\Tickets\Site_Health\Fieldset\Commerce;
+use TEC\Tickets\Site_Health\Fieldset\Settings;
 use Tribe__Events__Main;
 use Tribe__Utils__Array as Arr;
 
@@ -23,7 +25,7 @@ use Tribe__Utils__Array as Arr;
  */
 class Info_Section extends Info_Section_Abstract {
 	/**
-	 * Slug for the section.
+	 * Slug for the section.2
 	 *
 	 * @since 5.6.0.1
 	 *
@@ -67,6 +69,12 @@ class Info_Section extends Info_Section_Abstract {
 	 */
 	protected string $description;
 
+
+	/**
+	 * Constructor for the Site Health section.
+	 *
+	 * @since 5.6.0.1
+	 */
 	public function __construct() {
 		$this->label       = esc_html__( 'Event Tickets', 'event-tickets' );
 		$this->description = esc_html__( 'This section contains information on the Events Tickets Plugin.', 'event-tickets' );
@@ -74,23 +82,13 @@ class Info_Section extends Info_Section_Abstract {
 	}
 
 	/**
-	 * Adds our default section to the Site Health Info tab.
+	 * Include the fields to this section.
 	 *
 	 * @since 5.6.0.1
-	 *
-	 * @param array $info The debug information to be added to the core information page.
-	 *
-	 * @return array The debug information to be added to the core information page.
 	 */
-	public function add_fields() {
-		$this->add_field(
-			Factory::generate_generic_field(
-				'ticket_enabled_post_types',
-				esc_html__( 'Ticket-enabled post types', 'event-tickets' ),
-				Arr::to_list( array_filter( (array) tribe_get_option( 'ticket-enabled-post-types', [] ) ), ', ' ),
-				10
-			)
-		);
+	protected function add_fields(): void {
+		tribe( Settings::class )->register_fields_to( $this );
+		tribe( Commerce::class )->register_fields_to( $this );
 
 		$this->add_field(
 			Factory::generate_generic_field(
