@@ -1,5 +1,11 @@
 <?php
-
+/**
+ * Abstract Contract for the Fieldset that handles setting up a group of fields for the Site Health page.
+ *
+ * @since   TBD
+ *
+ * @package TEC\Tickets\Site_Health\Contracts
+ */
 namespace TEC\Tickets\Site_Health\Contracts;
 
 use TEC\Common\Site_Health\Fields\Generic_Info_Field;
@@ -7,7 +13,7 @@ use TEC\Common\Site_Health\Info_Field_Abstract;
 use TEC\Common\Site_Health\Info_Section_Abstract;
 
 /**
- * Class Fieldset_Abstract
+ * Abstract Class Fieldset_Abstract
  *
  * @since   TBD
  *

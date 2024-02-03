@@ -1,5 +1,11 @@
 <?php
-
+/**
+ * Fieldset for Settings related fields in the Site Health page.
+ *
+ * @since   TBD
+ *
+ * @package TEC\Tickets\Site_Health\Fieldset
+ */
 namespace TEC\Tickets\Site_Health\Fieldset;
 
 use TEC\Tickets\Site_Health\Contracts\Fieldset_Abstract;
