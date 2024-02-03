@@ -6,6 +6,7 @@
  *
  * @package TEC\Tickets\Site_Health\Contracts
  */
+
 namespace TEC\Tickets\Site_Health\Contracts;
 
 use TEC\Common\Site_Health\Fields\Generic_Info_Field;

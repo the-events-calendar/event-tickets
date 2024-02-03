@@ -6,6 +6,7 @@
  *
  * @package TEC\Tickets\Site_Health\Contracts
  */
+
 namespace TEC\Tickets\Site_Health\Contracts;
 
 use TEC\Common\Site_Health\Info_Section_Abstract;
@@ -23,7 +24,7 @@ interface Fieldset_Interface {
 	 *
 	 * @since TBD
 	 *
-	 * @param Info_Section_Abstract $section
+	 * @param Info_Section_Abstract $section Which section this will be registered to.
 	 *
 	 */
 	public function register_fields_to( Info_Section_Abstract $section ): void;

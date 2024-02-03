@@ -6,6 +6,7 @@
  *
  * @package TEC\Tickets\Site_Health\Fieldset
  */
+
 namespace TEC\Tickets\Site_Health\Fieldset;
 
 use TEC\Tickets\Commerce\Gateways\Manager;
