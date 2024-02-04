@@ -22,12 +22,12 @@ use Tribe__Utils__Array as Arr;
 class Settings extends Fieldset_Abstract {
 
 	/**
-	 * @inheritdoc
+	 * {@inheritDoc}
 	 */
 	protected float $priority = 10.0;
 
 	/**
-	 * @inheritdoc
+	 * {@inheritDoc}
 	 */
 	protected function get_fields(): array {
 		return [

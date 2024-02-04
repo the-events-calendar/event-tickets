@@ -61,7 +61,7 @@ abstract class Fieldset_Abstract implements Fieldset_Interface {
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritDoc}
 	 */
 	public function register_fields_to( Info_Section_Abstract $section ): void {
 		$fields = $this->to_array();
@@ -81,7 +81,7 @@ abstract class Fieldset_Abstract implements Fieldset_Interface {
 	abstract protected function get_fields(): array;
 
 	/**
-	 * @inheritdoc
+	 * {@inheritDoc}
 	 */
 	public function to_array(): array {
 		$fields = array_map(

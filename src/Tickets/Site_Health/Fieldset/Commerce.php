@@ -24,12 +24,12 @@ use TEC\Tickets\Site_Health\Contracts\Fieldset_Abstract;
 class Commerce extends Fieldset_Abstract {
 
 	/**
-	 * @inheritdoc
+	 * {@inheritDoc}
 	 */
 	protected float $priority = 20.0;
 
 	/**
-	 * @inheritdoc
+	 * {@inheritDoc}
 	 */
 	protected function get_fields(): array {
 		return [
