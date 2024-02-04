@@ -30,11 +30,26 @@ class Commerce_Test extends WPTestCase {
 	}
 
 	/**
+	 * @before
+	 */
+	public function unset_tc_env_var(): void {
+		putenv( 'TEC_TICKETS_COMMERCE' );
+	}
+
+	/**
+	 * @after
+	 */
+	public function reset_tc_env_var(): void {
+		putenv( 'TEC_TICKETS_COMMERCE=0' );
+	}
+
+	/**
 	 * @test
 	 * @covers \TEC\Tickets\Site_Health\Fieldset\Commerce::is_tickets_commerce_enabled
 	 */
 	public function should_return_yes_if_tickets_commerce_is_enabled(): void {
 		$fieldset = new Commerce();
+		putenv( 'TEC_TICKETS_COMMERCE' );
 
 		add_filter( 'tec_tickets_commerce_is_enabled', '__return_true' );
 		$this->assertEquals( 'yes', $fieldset->is_tickets_commerce_enabled() );
