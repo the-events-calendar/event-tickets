@@ -32,7 +32,6 @@ class Settings_Test extends WPTestCase {
 		tribe_remove_option( 'ticket-enabled-post-types' );
 	}
 
-
 	/**
 	 * @test
 	 * @covers \TEC\Tickets\Site_Health\Fieldset\Settings::get_post_types_enabled

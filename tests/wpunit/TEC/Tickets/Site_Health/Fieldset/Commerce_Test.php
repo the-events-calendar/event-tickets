@@ -5,10 +5,8 @@ namespace TEC\Tickets\Site_Health\Fieldset;
 use Codeception\TestCase\WPTestCase;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Gateway;
-use TEC\Tickets\Commerce\Gateways\Manager;
 use TEC\Tickets\Settings as Tickets_Settings;
 use TEC\Tickets\Commerce\Gateways\PayPal\Gateway as PayPal_Gateway;
-use TEC\Tickets\Commerce\Gateways\Stripe\Gateway as Stripe_Gateway;
 use TEC\Tickets\Commerce\Settings as Commerce_Settings;
 use Tribe\Tests\Traits\With_Uopz;
 
@@ -167,7 +165,6 @@ class Commerce_Test extends WPTestCase {
 		remove_filter( 'tec_tickets_commerce_is_enabled', '__return_false' );
 	}
 
-
 	/**
 	 * @test
 	 * @covers \TEC\Tickets\Site_Health\Fieldset\Commerce::is_tc_paypal_active
@@ -201,5 +198,4 @@ class Commerce_Test extends WPTestCase {
 
 		remove_filter( 'tec_tickets_commerce_is_enabled', '__return_false' );
 	}
-
 }
