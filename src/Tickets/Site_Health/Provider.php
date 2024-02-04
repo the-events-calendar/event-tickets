@@ -10,8 +10,10 @@
 namespace TEC\Tickets\Site_Health;
 
 use TEC\Common\Contracts\Service_Provider;
+use TEC\Tickets\Site_Health\Fieldset\Commerce;
+use TEC\Tickets\Site_Health\Fieldset\Settings;
 
- /**
+/**
   * Class Provider
   *
   * @since   5.6.0.1
@@ -20,30 +22,39 @@ use TEC\Common\Contracts\Service_Provider;
   */
 class Provider extends Service_Provider {
 
-	/**
-	 * Internal placeholder to pass around the section slug.
-	 *
-	 * @since 5.6.0.1
-	 *
-	 * @var string
-	 */
-	protected $slug;
-
 	public function register() {
-		$this->slug = Info_Section::get_slug();
-		$this->add_actions();
+		$this->container->bind( Settings::class );
+		$this->container->bind( Commerce::class );
+
 		$this->add_filters();
 	}
 
-	public function add_actions() {
-
-	}
-
-	public function add_filters() {
+	/**
+	 * Include the filter
+	 *
+	 * @since 5.6.0
+	 */
+	public function add_filters(): void {
 		add_filter( 'tec_debug_info_sections', [ $this, 'filter_include_sections' ] );
 	}
 
-	public function filter_include_sections( $sections ) {
+	/**
+	 * Filter the sections to include the Tickets section.
+	 *
+	 * @since TBD
+	 *
+	 * @throws \TEC\Common\lucatume\DI52\ContainerException
+	 *
+	 * @param array $sections
+	 *
+	 * @return array
+	 */
+	public function filter_include_sections( $sections ): array {
+		// Reset to ensure array.
+		if ( ! is_array( $sections ) ) {
+			$sections = [];
+		}
+
 		$sections[ Info_Section::get_slug() ] = $this->container->make( Info_Section::class );
 
 		return $sections;

@@ -195,6 +195,8 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+* Tweak - Include Telemetry data points to help us understand how the plugin is being used so we can remove deprecated code and add features later.
+
 = [5.8.0] 2024-01-22 =
 
 * Version - Event Tickets 5.8.0 is only compatible with The Events Calendar 6.3.0 and higher.
