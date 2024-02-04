@@ -2,7 +2,7 @@
 
 namespace TEC\Tickets\Site_Health\Fieldset;
 
-use \Codeception\TestCase\WPTestCase;
+use Codeception\TestCase\WPTestCase;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Gateway;
 use TEC\Tickets\Commerce\Gateways\Manager;
@@ -139,7 +139,7 @@ class Commerce_Test extends WPTestCase {
 	 */
 	public function should_return_yes_if_tickets_commerce_stripe_is_active(): void {
 		$fieldset = new Commerce();
-		$gateway = Abstract_Gateway::class;
+		$gateway  = Abstract_Gateway::class;
 
 		add_filter( 'tec_tickets_commerce_is_enabled', '__return_true' );
 		$this->set_class_fn_return( $gateway, 'is_active', true );
@@ -156,7 +156,7 @@ class Commerce_Test extends WPTestCase {
 	 */
 	public function should_return_no_if_tickets_commerce_stripe_is_not_active(): void {
 		$fieldset = new Commerce();
-		$gateway = Abstract_Gateway::class;
+		$gateway  = Abstract_Gateway::class;
 
 		add_filter( 'tec_tickets_commerce_is_enabled', '__return_false' );
 		$this->set_class_fn_return( $gateway, 'is_active', false );
@@ -174,7 +174,7 @@ class Commerce_Test extends WPTestCase {
 	 */
 	public function should_return_yes_if_tickets_commerce_paypal_is_active(): void {
 		$fieldset = new Commerce();
-		$gateway = Abstract_Gateway::class;
+		$gateway  = Abstract_Gateway::class;
 
 		add_filter( 'tec_tickets_commerce_is_enabled', '__return_true' );
 		$this->set_class_fn_return( $gateway, 'is_active', true );
@@ -191,7 +191,7 @@ class Commerce_Test extends WPTestCase {
 	 */
 	public function should_return_no_if_tickets_commerce_paypal_is_not_active(): void {
 		$fieldset = new Commerce();
-		$gateway = Abstract_Gateway::class;
+		$gateway  = Abstract_Gateway::class;
 
 		add_filter( 'tec_tickets_commerce_is_enabled', '__return_false' );
 		$this->set_class_fn_return( $gateway, 'is_active', false );
