@@ -16,7 +16,7 @@ use Tribe__Utils__Array as Arr;
  * @since   5.1.6
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
-class Gateway extends Abstractw_Gateway {
+class Gateway extends Abstract_Gateway {
 	/**
 	 * @inheritDoc
 	 */

@@ -4,6 +4,7 @@ namespace TEC\Tickets\Site_Health\Fieldset;
 
 use \Codeception\TestCase\WPTestCase;
 
+use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Gateway;
 use TEC\Tickets\Commerce\Gateways\Manager;
 use TEC\Tickets\Settings as Tickets_Settings;
 use TEC\Tickets\Commerce\Gateways\PayPal\Gateway as PayPal_Gateway;
@@ -138,7 +139,7 @@ class Commerce_Test extends WPTestCase {
 	 */
 	public function should_return_yes_if_tickets_commerce_stripe_is_active(): void {
 		$fieldset = new Commerce();
-		$gateway = tribe( Manager::class )->get_gateway_by_key( Stripe_Gateway::get_key() );
+		$gateway = Abstract_Gateway::class;
 
 		add_filter( 'tec_tickets_commerce_is_enabled', '__return_true' );
 		$this->set_class_fn_return( $gateway, 'is_active', true );
@@ -155,7 +156,7 @@ class Commerce_Test extends WPTestCase {
 	 */
 	public function should_return_no_if_tickets_commerce_stripe_is_not_active(): void {
 		$fieldset = new Commerce();
-		$gateway = tribe( Manager::class )->get_gateway_by_key( Stripe_Gateway::get_key() );
+		$gateway = Abstract_Gateway::class;
 
 		add_filter( 'tec_tickets_commerce_is_enabled', '__return_false' );
 		$this->set_class_fn_return( $gateway, 'is_active', false );
@@ -173,11 +174,11 @@ class Commerce_Test extends WPTestCase {
 	 */
 	public function should_return_yes_if_tickets_commerce_paypal_is_active(): void {
 		$fieldset = new Commerce();
-		$gateway = tribe( Manager::class )->get_gateway_by_key( Paypal_Gateway::get_key() );
+		$gateway = Abstract_Gateway::class;
 
 		add_filter( 'tec_tickets_commerce_is_enabled', '__return_true' );
 		$this->set_class_fn_return( $gateway, 'is_active', true );
-		$this->set_class_fn_return( $gateway, 'is_enabled', true );
+		$this->set_class_fn_return( PayPal_Gateway::class, 'is_enabled', true );
 
 		$this->assertEquals( 'yes', $fieldset->is_tc_paypal_active() );
 
@@ -190,11 +191,11 @@ class Commerce_Test extends WPTestCase {
 	 */
 	public function should_return_no_if_tickets_commerce_paypal_is_not_active(): void {
 		$fieldset = new Commerce();
-		$gateway = tribe( Manager::class )->get_gateway_by_key( Paypal_Gateway::get_key() );
+		$gateway = Abstract_Gateway::class;
 
 		add_filter( 'tec_tickets_commerce_is_enabled', '__return_false' );
 		$this->set_class_fn_return( $gateway, 'is_active', false );
-		$this->set_class_fn_return( $gateway, 'is_enabled', false );
+		$this->set_class_fn_return( PayPal_Gateway::class, 'is_enabled', false );
 
 		$this->assertEquals( 'no', $fieldset->is_tc_paypal_active() );
 

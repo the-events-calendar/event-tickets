@@ -102,9 +102,7 @@ class Commerce extends Fieldset_Abstract {
 	 * @return string
 	 */
 	public function is_tc_stripe_active(): string {
-		$gateway = tribe( Manager::class )->get_gateway_by_key( Stripe_Gateway::get_key() );
-
-		return tec_tickets_commerce_is_enabled() && $gateway::is_active() && $gateway::is_enabled() ? static::YES : static::NO;
+		return tec_tickets_commerce_is_enabled() && Stripe_Gateway::is_active() && Stripe_Gateway::is_enabled() ? static::YES : static::NO;
 	}
 
 	/**
@@ -115,8 +113,6 @@ class Commerce extends Fieldset_Abstract {
 	 * @return string
 	 */
 	public function is_tc_paypal_active(): string {
-		$gateway = tribe( Manager::class )->get_gateway_by_key( PayPal_Gateway::get_key() );
-
-		return tec_tickets_commerce_is_enabled() && $gateway::is_active() && $gateway::is_enabled() ? static::YES : static::NO;
+		return tec_tickets_commerce_is_enabled() && PayPal_Gateway::is_active() && PayPal_Gateway::is_enabled() ? static::YES : static::NO;
 	}
 }
