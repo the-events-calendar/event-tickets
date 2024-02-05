@@ -551,20 +551,30 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * before the attendee screen is rendered.
 	 *
 	 * @since 4.7
+	 * @since TBD Added the `$event_id` parameter.
+	 *
+	 * @param int|null $event_id The event ID to get the attendance totals for.
 	 */
-	public function setup_attendance_totals() {
-		$this->attendance_totals()->integrate_with_attendee_screen();
+	public function setup_attendance_totals( $event_id = null ) {
+		$this->attendance_totals( $event_id )->integrate_with_attendee_screen();
 	}
 
 	/**
-	 * @since 4.7
+	 * Get the attendance totals instance.
 	 *
-	 * @return Tribe__Tickets__Commerce__PayPal__Attendance_Totals
+	 * @since 4.7
+	 * @since TBD Added the `$event_id` parameter.
+	 *
+	 * @param int|null $event_id The event ID to get the attendance totals for.
+	 *
+	 * @return Tribe__Tickets__Commerce__PayPal__Attendance_Totals The attendance totals instance.
 	 */
-	public function attendance_totals() {
+	public function attendance_totals( $event_id = null ) {
 		if ( empty( $this->attendance_totals ) ) {
 			$this->attendance_totals = new Tribe__Tickets__Commerce__PayPal__Attendance_Totals;
 		}
+
+		$this->attendance_totals->set_event_id( $event_id );
 
 		return $this->attendance_totals;
 	}

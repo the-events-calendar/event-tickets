@@ -1,5 +1,6 @@
 <?php
 
+use TEC\Tickets\Event;
 use Tribe__Utils__Array as Arr;
 use Tribe__Tickets__Ticket_Object as Ticket;
 use Tribe__Tickets__Global_Stock as Global_Stock;
@@ -230,14 +231,7 @@ class Tribe__Tickets__Attendees {
 	 * @return string
 	 */
 	public function get_report_link( $post ) {
-		/**
-		 * This filter allows retrieval of an event ID to be filtered before being accessed elsewhere.
-		 *
-		 * @since 5.6.4
-		 *
-		 * @param int|null The event ID to be filtered.
-		 */
-		$post_id = apply_filters( 'tec_tickets_filter_event_id', $post->ID );
+		$post_id = Event::filter_event_id( $post->ID, 'attendees-report-link' );
 
 		$args = [
 			'post_type' => $post->post_type,
@@ -692,14 +686,7 @@ class Tribe__Tickets__Attendees {
 
 		$event_id = absint( $_GET['event_id'] );
 
-		/**
-		 * This filter allows retrieval of an event ID to be filtered before being accessed elsewhere.
-		 *
-		 * @since 5.6.3
-		 *
-		 * @param int|null The event ID to be filtered.
-		 */
-		$event_id = apply_filters( 'tec_tickets_filter_event_id', $event_id );
+		$event_id = Event::filter_event_id( $event_id, 'attendee-csv-report' );
 
 		// Verify event ID is a valid integer and the nonce is accepted.
 		if ( empty( $event_id ) || ! wp_verify_nonce( $_GET['attendees_csv_nonce'], 'attendees_csv_nonce' ) ) {

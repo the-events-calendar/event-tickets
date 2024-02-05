@@ -337,6 +337,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		public $orm_provider = 'default';
 
 		/**
+		 * Meta key that stores if an attendee has checked in to a ticketed post.
+		 *
+		 * @since TBD
+		 *
+		 * @var string
+		 */
+		public $checkin_key = '';
+
+		/**
 		 * Returns link to the report interface for sales for an event or
 		 * null if the provider doesn't have reporting capabilities.
 		 *
@@ -1026,21 +1035,37 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
-		 * Mark an attendee as checked in.
+		 * Mark an Attendee as checked in.
 		 *
-		 * @abstract
+		 * @since 3.1.2
+		 * @since TBD Add the `tec_tickets_attendee_checkin` filter to override the checkin process. Update the method
+		 *        signature to include the `$qr` and `$eveent_id` parameters.
 		 *
-		 * @param int $attendee_id
-		 * @param $qr true if from QR checkin process
-		 * @return mixed
+		 * @param int       $attendee_id The ID of the attendee that's being checked in.
+		 * @param bool|null $qr          Whether the check-in comes from a QR code scan or not.
+		 * @param int|null  $event_id    The ID of the ticket-able post the Attendee is being checked into.
+		 *
+		 * @return bool Whether the Attendee was checked in or not.
 		 */
-		public function checkin( $attendee_id ) {
+		public function checkin( $attendee_id, $qr = null, $event_id = null ) {
+			/**
+			 * Allows filtering the Attendee check-in action before the default logic does it.
+			 * Returning a non-null value from this filter will prevent the default logic from running.
+			 *
+			 * @since TBD
+			 *
+			 * @param int      $attendee_id The post ID of the Attendee being checked-in.
+			 * @param int|null $event_id    The ID of the ticket-able post the Attendee is being checked into.
+			 * @param bool     $qr          Whether the check-in comes from a QR code scan or not.
+			 */
+			$checkin = apply_filters( 'tec_tickets_attendee_checkin', null, (int) $attendee_id, (int) $event_id, (bool) $qr );
+			if ( $checkin !== null ) {
+				return (bool) $checkin;
+			}
+
 			update_post_meta( $attendee_id, $this->checkin_key, 1 );
 
-			$args = func_get_args();
-			$qr   = null;
-
-			if ( isset( $args[1] ) && $qr = (bool) $args[1] ) {
+			if ( isset( $qr ) && $qr = (bool) $qr ) {
 				update_post_meta( $attendee_id, '_tribe_qr_status', 1 );
 			}
 
@@ -1050,11 +1075,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 * Fires a checkin action
 			 *
 			 * @since 4.7
+			 * @since TBD Add the `$event_id` argument to the filter data.
 			 *
-			 * @param int       $attendee_id
-			 * @param bool|null $qr
+			 * @param int       $attendee_id he post ID of the attendee that's being checked-in.
+			 * @param bool|null $qr          Whether the check-in is from a QR code.
+			 * @param int|null  $event_id    The ID of the ticket-able post the Attendee is being checked into.
 			 */
-			do_action( 'event_tickets_checkin', $attendee_id, $qr );
+			do_action( 'event_tickets_checkin', $attendee_id, $qr, $event_id );
 
 			return true;
 		}

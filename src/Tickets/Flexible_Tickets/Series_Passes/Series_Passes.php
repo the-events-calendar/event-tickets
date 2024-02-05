@@ -160,6 +160,8 @@ class Series_Passes extends Controller {
 		$this->container->singleton( Repository::class, Repository::class );
 		$this->container->singleton( Metadata::class, Metadata::class );
 
+		$this->container->register( Attendees::class );
+
 		add_filter( 'the_content', [ $this, 'reorder_series_content' ], 0 );
 		add_filter( 'the_content', [ $this, 'skip_rendering_series_content_for_my_tickets_page' ], 1 );
 
@@ -242,14 +244,6 @@ class Series_Passes extends Controller {
 			2
 		);
 
-		add_filter( 'tec_tickets_attendees_filter_by_event', [ $this, 'include_series_to_fetch_attendees' ] );
-		add_filter(
-			'tec_tickets_attendees_filter_by_event_not_in',
-			[
-				$this,
-				'include_series_to_fetch_attendees',
-			]
-		);
 		add_filter( 'tribe_get_event_meta', [ $this, 'add_pass_costs_to_event_cost' ], 10, 4 );
 
 		add_filter( 'tec_tickets_query_ticketed_status_subquery', [ $this, 'filter_ticketed_status_query' ], 10, 3 );
@@ -257,14 +251,6 @@ class Series_Passes extends Controller {
 		add_filter( 'tec_tickets_query_unticketed_count_query', [ $this, 'filter_unticketed_count_query' ], 10, 2 );
 
 		add_filter( 'tec_tickets_panel_list_helper_text', [ $this, 'filter_tickets_panel_list_helper_text' ], 10, 2 );
-
-		add_filter(
-			'tribe_tickets_attendees_report_js_config',
-			[
-				$this,
-				'filter_tickets_attendees_report_js_config',
-			]
-		);
 
 		add_filter( 'tribe_template_after_include:tickets/v2/tickets/title', [ $this, 'render_series_passes_header_in_frontend_ticket_form' ], 10, 3 );
 		add_filter( 'tec_tickets_flexible_tickets_editor_data', [ $this, 'filter_editor_data' ] );
@@ -284,7 +270,7 @@ class Series_Passes extends Controller {
 		 * will always be part of a Series.
 		 */
 		add_filter( 'tec_tickets_allow_tickets_on_recurring_events', [ $this, 'allow_tickets_on_recurring_events' ] );
-		
+
 		add_filter( 'tribe_template_context:tickets/admin-views/editor/recurring-warning', [ $this, 'filter_recurring_warning_message' ], 10, 4 );
 		add_filter( 'tec_tickets_commerce_provider_missing_warning_message', [ $this, 'filter_no_commerce_provider_warning_message' ] );
 	}
@@ -358,8 +344,6 @@ class Series_Passes extends Controller {
 				'filter_ticket_type_default_header_description',
 			]
 		);
-		remove_filter( 'tec_tickets_attendees_filter_by_event', [ $this, 'include_series_to_fetch_attendees' ] );
-		remove_filter( 'tec_tickets_attendees_filter_by_event_not_in', [ $this, 'include_series_to_fetch_attendees' ] );
 		remove_filter( 'tribe_get_event_meta', [ $this, 'add_pass_costs_to_event_cost' ] );
 
 		remove_filter( 'tec_tickets_query_ticketed_status_subquery', [ $this, 'filter_ticketed_status_query' ] );
@@ -373,13 +357,6 @@ class Series_Passes extends Controller {
 			],
 			10,
 			2
-		);
-		remove_filter(
-			'tribe_tickets_attendees_report_js_config',
-			[
-				$this,
-				'filter_tickets_attendees_report_js_config',
-			]
 		);
 
 		remove_filter( 'tribe_template_after_include:tickets/v2/tickets/title', [ $this, 'render_series_passes_header_in_frontend_ticket_form' ], 10, 3 );
@@ -395,9 +372,10 @@ class Series_Passes extends Controller {
 		remove_filter( 'tec_tickets_my_tickets_link_ticket_count_by_type', [ $this, 'filter_my_tickets_link_data' ], 10, 3 );
 		remove_filter( 'tec_tickets_allow_tickets_on_recurring_events', [ $this, 'allow_tickets_on_recurring_events' ] );
 		remove_filter( 'tec_tickets_my_tickets_page_rewrite_rules', [ $this, 'include_rewrite_rules_for_series_my_tickets_page' ] );
-		
 		remove_filter( 'tribe_template_context:tickets/admin-views/editor/recurring-warning', [ $this, 'filter_recurring_warning_message' ], 10, 4 );
 		remove_filter( 'tec_tickets_commerce_provider_missing_warning_message', [ $this, 'filter_no_commerce_provider_warning_message' ] );
+
+		$this->container->get( Attendees::class )->unregister();
 	}
 
 	/**
@@ -900,35 +878,6 @@ class Series_Passes extends Controller {
 
 		return $this->metabox->get_default_ticket_type_header_description( $post_id, $series );
 	}
-
-	/**
-	 * Filters the post IDs used to fetch an Event attendees to include the Series the Event belongs to and,
-	 * thus, include Series Passes into the results.
-	 *
-	 * @since 5.8.0
-	 *
-	 * @param int|array<int> $post_id The post ID or IDs.
-	 *
-	 * @return int|array<int> The updated post ID or IDs.
-	 */
-	public function include_series_to_fetch_attendees( $post_id ): array {
-		$post_ids  = (array) $post_id;
-		$event_ids = array_filter( $post_ids, fn( int $id) => get_post_type( $id ) === TEC::POSTTYPE );
-
-		if ( ! count( $event_ids ) ) {
-			return $post_id;
-		}
-
-		$ids_generator = tec_series()->where( 'event_post_id', $event_ids )->get_ids( true );
-		$series_ids    = iterator_to_array( $ids_generator, false );
-
-		if ( ! count( $series_ids ) ) {
-			return $post_id;
-		}
-
-		return array_values( array_unique( array_merge( $post_ids, $series_ids ) ) );
-	}
-
 	/**
 	 * Filters the costs of an Event to include the costs of Series Passes if the Event is part of a Series.
 	 *
@@ -1039,20 +988,6 @@ class Series_Passes extends Controller {
 		}
 
 		return $this->metabox->get_tickets_panel_list_helper_text( $text, $post );
-	}
-
-	/**
-	 * Filters the JavaScript configuration for the Attendees report to include the confirmation strings for
-	 * Series Passes.
-	 *
-	 * @since 5.8.0
-	 *
-	 * @param array<string,mixed> $config_data The JavaScript configuration.
-	 *
-	 * @return array<string,mixed> The updated JavaScript configuration.
-	 */
-	public function filter_tickets_attendees_report_js_config( array $config_data ): array {
-		return $this->edit->filter_tickets_attendees_report_js_config( $config_data );
 	}
 
 	/**
@@ -1174,7 +1109,7 @@ class Series_Passes extends Controller {
 
 		return array_merge( $rules, $series_rules );
 	}
-	
+
 	/**
 	 * Include series pass message in the ticket editor.
 	 *
@@ -1191,9 +1126,10 @@ class Series_Passes extends Controller {
 		if ( ! isset( $context['messages'] ) ) {
 			return $context;
 		}
+
 		return $this->metabox->get_recurring_warning_message( $context );
 	}
-	
+
 	/**
 	 * Filter the message to display when no commerce provider is active.
 	 *
@@ -1207,7 +1143,41 @@ class Series_Passes extends Controller {
 		if ( get_post_type() !== Series_Post_Type::POSTTYPE ) {
 			return $message;
 		}
-		
+
 		return $this->metabox->get_no_commerce_provider_warning_message();
+	}
+
+	/**
+	 * Filters the post IDs used to fetch an Event attendees to include the Series the Event belongs to and,
+	 * thus, include Series Passes into the results.
+	 *
+	 * @since 5.8.0
+	 * @since TBD Method moved to the Attendees controller.
+	 *
+	 * @param int|array<int> $post_id The post ID or IDs.
+	 *
+	 * @return int|array<int> The updated post ID or IDs.
+	 *
+	 * @deprecated TBD Use the Attendees::include_series_to_fetch_attendees method instead.
+	 */
+	public function include_series_to_fetch_attendees( $post_id ): array {
+		return tribe( Attendees::class )->include_series_to_fetch_attendees( $post_id );
+	}
+
+	/**
+	 * Filters the JavaScript configuration for the Attendees report to include the confirmation strings for
+	 * Series Passes.
+	 *
+	 * @since 5.8.0
+	 * @since TBD Method moved to the Attendees controller.
+	 *
+	 * @param array<string,mixed> $config_data The JavaScript configuration.
+	 *
+	 * @return array<string,mixed> The updated JavaScript configuration.
+	 *
+	 * @deprecated TBD Use the Attendees::filter_tickets_attendees_report_js_config method instead.
+	 */
+	public function filter_tickets_attendees_report_js_config( array $config_data ): array {
+		return tribe( Attendees::class )->filter_tickets_attendees_report_js_config( $config_data );
 	}
 }
