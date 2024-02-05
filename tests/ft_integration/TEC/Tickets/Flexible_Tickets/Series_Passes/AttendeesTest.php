@@ -680,6 +680,67 @@ class AttendeesTest extends Controller_Test_Case {
 	}
 
 	/**
+	 * It should correctly handle check-in request with Series ID context
+	 *
+	 * @test
+	 */
+	public function should_correctly_handle_check_in_request_with_series_id_context(): void {
+		// Ensure check-in is not restricted.
+		tribe_update_option( 'tickets-plus-qr-check-in-events-happening-now', false );
+		// Become administrator.
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		// Create a Series.
+		$series_id = static::factory()->post->create( [
+			'post_type' => Series_Post_Type::POSTTYPE,
+		] );
+		// Create a Series Pass and an Attendee for the Series.
+		$series_pass_id = $this->create_tc_series_pass( $series_id )->ID;
+		$this->create_order( [ $series_pass_id => 1 ] );
+		$series_attendee_id = tribe_attendees()->where( 'event_id', $series_id )->first_id();
+		// Create 2 Single Events part of the Series, both happening in the next 3 hours.
+		$event_1 = tribe_events()->set_args([
+			'title'	 => 'Event #1',
+			'status' => 'publish',
+			'start_date' => '+1 hour',
+			'duration' => 3 * HOUR_IN_SECONDS,
+			'series' => $series_id,
+		])->create()->ID;
+		$event_2 = tribe_events()->set_args([
+			'title'	 => 'Event #2',
+			'status' => 'publish',
+			'start_date' => '+2 hour',
+			'duration' => 3 * HOUR_IN_SECONDS,
+			'series' => $series_id,
+		])->create()->ID;
+		$commerce = Module::get_instance();
+		$api_key = 'secrett-api-key';
+		tribe_update_option( 'tickets-plus-qr-options-api-key', $api_key );
+
+		$controller = $this->make_controller();
+		$controller->register();
+
+		// Become an app user trying to scan Attendees in.
+		wp_set_current_user( 0 );
+
+		// Set the time buffer to 6 hours.
+		$time_buffer = 6 * HOUR_IN_SECONDS;
+		add_filter( 'tec_tickets_flexible_tickets_series_checkin_time_buffer', static function () use ( &$time_buffer ) {
+			return $time_buffer;
+		} );
+
+		// Checking in a Series Pass Attendee providing the Series ID as context should require choosing an Event.
+		$request = new WP_REST_Request( 'GET', '/tribe/tickets/v1/qr' );
+		$request->set_param( 'api_key', $api_key );
+		$request->set_param( 'ticket_id', (string) $series_attendee_id );
+		$request->set_param( 'security_code', get_post_meta( $series_attendee_id, $commerce->security_code, true ) );
+		$request->set_param( 'event_id', $series_id );
+
+		$response = rest_get_server()->dispatch( $request );
+
+		$this->assertEquals( 300, $response->status );
+	}
+
+	/**
 	 * It should correctly handle REST check-in requests when check-in is restricted
 	 *
 	 * @test

@@ -286,24 +286,26 @@ class Attendees extends Controller {
 			return $checkin;
 		}
 
-		if ( $event_id ) {
-			$is_in_series = Series_Relationship::where( 'series_post_id', $series_id )
-				->where( 'event_post_id', Occurrence::normalize_id( $event_id ) )
-				->count();
 
-			if ( ! $is_in_series ) {
-				// The provided Event ID does point to an Event part of the Series: fail the checkin.
-				return false;
-			}
+		if ( $event_id && $series_id !== $event_id ) {
+			 $is_in_series = Series_Relationship::where( 'series_post_id', $series_id )
+				  ->where( 'event_post_id', Occurrence::normalize_id( $event_id ) )
+				  ->count();
 
-			$event_id_candidate = $this->get_event_candidate_from_event( $event_id, $attendee_id, $series_id, $qr );
-			$event_post_id = Occurrence::normalize_id( $event_id_candidate );
+			 if ( ! $is_in_series ) {
+				  // The provided Event ID does point to an Event part of the Series: fail the checkin.
+				  return false;
+			 }
 
-			if ( $event_id_candidate && ! tribe_is_recurring_event( $event_post_id ) ) {
-				// Single Event Attendees are related to the Event ID, not to their only Occurrence Provisional ID.
-				$event_id_candidate = $event_post_id;
-			}
+			 $event_id_candidate = $this->get_event_candidate_from_event( $event_id, $attendee_id, $series_id, $qr );
+			 $event_post_id = Occurrence::normalize_id( $event_id_candidate );
+
+			 if ( $event_id_candidate && ! tribe_is_recurring_event( $event_post_id ) ) {
+				  // Single Event Attendees are related to the Event ID, not to their only Occurrence Provisional ID.
+				  $event_id_candidate = $event_post_id;
+			 }
 		} else {
+			// Either no Event ID was specified, or the check-in is happening from the context of a Series.
 			$event_id_candidate = $this->get_event_candidate_from_series( $attendee_id, $series_id, $qr );
 		}
 
