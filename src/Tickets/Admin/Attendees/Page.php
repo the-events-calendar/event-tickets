@@ -99,7 +99,7 @@ class Page {
 				'path'     => static::$slug,
 				'parent'   => static::$parent_slug,
 				'title'    => esc_html__( 'Attendees', 'event-tickets' ),
-				'position' => 2.5,
+				'position' => 1.5,
 				'callback' => [
 					$this,
 					'render_tec_tickets_attendees_page',
