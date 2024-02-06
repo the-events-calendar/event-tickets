@@ -14,28 +14,36 @@
 
 	<div id="main">
 
-		<?php if ( 'ticket_type_only' !== $mode && empty( $attendees ) ): ?>
+		<?php if ( 'ticket_type_only' !== $mode && empty( $attendees ) ) : ?>
 			<div class="error">
 				<p> <?php esc_html_e( 'No attendees specified! Please try again.', 'event-tickets' ); ?> </p>
 			</div>
 		<?php endif; ?>
 
-		<?php if ( 'ticket_type_only' !== $mode && $multiple_providers ): ?>
+		<?php if ( 'ticket_type_only' !== $mode && $multiple_providers ) : ?>
 			<div class="error">
 				<p> <?php esc_html_e( 'You have specified a range of attendees that are managed by different providers. It is not currently possible to move these together.', 'event-tickets' ); ?> </p>
 			</div>
 		<?php endif; ?>
 
 		<div id="move-where" class="stage">
-			<p> <?php printf( _n(
-					'You have selected %1$s attendee for %2$s. You can move it to a different ticket within the same event, or to a different event.',
-					'You have selected %1$s attendees for %2$s. You can move them to a different ticket within the same event, or to a different event.',
-					count( $attendees ),
-					'event-tickets'
+			<p> 
+			<?php 
+			printf(
+				esc_html(
+					// Translators: %1$s is the number of attendees, %2$s is the event name.
+					_n(
+						'You have selected %1$s attendee for %2$s. You can move it to a different ticket within the same event, or to a different event.',
+						'You have selected %1$s attendees for %2$s. You can move them to a different ticket within the same event, or to a different event.',
+						count( $attendees ),
+						'event-tickets'
+					) 
 				),
-				'<strong>' . count( $attendees ) . '</strong>',
-				'<strong>'. esc_html( $event_name ) . '</strong>'
-			); ?> </p>
+				'<strong>' . esc_html( count( $attendees ) ) . '</strong>',
+				'<strong>' . esc_html( $event_name ) . '</strong>'
+			); 
+			?>
+			</p>
 
 			<p>
 				<label for="move-where-this">
@@ -77,7 +85,7 @@
 
 		<div id="processing" style="aligncenter">
 			<p>
-				<?php echo esc_html_x( 'Please be patient while your request is processed&hellip;', 'move tickets dialog', 'event-tickets' ) ?>
+				<?php echo esc_html_x( 'Please be patient while your request is processed&hellip;', 'move tickets dialog', 'event-tickets' ); ?>
 				<img src="<?php echo esc_url( admin_url( 'images/spinner.gif' ) ); ?>" />
 			</p>
 		</div>
