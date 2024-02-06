@@ -732,7 +732,7 @@ class Attendees extends Controller {
 			return false;
 		}
 
-		$candidate = reset( $candidates );
+		$candidate     = reset( $candidates );
 		$normalized_id = Occurrence::normalize_id( $candidate );
 
 		if ( ! tribe_is_recurring_event( $normalized_id ) ) {
