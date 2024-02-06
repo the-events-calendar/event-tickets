@@ -118,7 +118,7 @@ class Tribe__Tickets__Admin__Move_Ticket_Types extends Tribe__Tickets__Admin__Mo
 
 		wp_send_json_success( array(
 			'message' => sprintf(
-				'<p>' . esc_html__( '%1$s type %2$s for %3$s was successfully moved to %4$s. All previously sold %5$s of this type have been transferred to %4$s. Please adjust capacity and stock manually as needed. %2$s %6$s holders have received an email notifying them of the change. You may now close this window!', 'event-tickets' ) . '</p>',
+				'<p>' . esc_html__( '%1$s type %2$s for %3$s was successfully moved to %4$s. All previously sold %5$s have been transferred to %4$s. Please adjust capacity and stock manually as needed. %2$s %6$s holders have received an email notifying them of the change. You may now close this window!', 'event-tickets' ) . '</p>',
 				esc_html( tribe_get_ticket_label_singular( 'move_ticket_type_success' ) ),
 				'<a href="' . esc_url( get_admin_url( null, '/post.php?post=' . $ticket_type_id . '&action=edit' ) ) . '" target="_blank">' . esc_html( get_the_title( $ticket_type_id ) ) . '</a>',
 				'<a href="' . esc_url( get_admin_url( null, '/post.php?post=' . $src_post_id . '&action=edit' ) ) . '" target="_blank">' . esc_html( get_the_title( $src_post_id ) ) . '</a>',
