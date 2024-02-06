@@ -50,7 +50,7 @@ class Page {
 	 *
 	 * @return boolean
 	 */
-	public function is_tec_tickets_attendees(): bool {
+	public function is_on_page(): bool {
 		$admin_pages = tribe( 'admin.pages' );
 		$admin_page  = $admin_pages->get_current_page();
 
@@ -128,4 +128,62 @@ class Page {
 
 		$admin_views->template( 'attendees', $context );
 	}
+
+	/**
+	 * Filters the columns for the Attendees table.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $columns The columns for the Attendees table.
+	 *
+	 * @return array The filtered columns for the Attendees table.
+	 */
+	public function filter_attendee_table_columns( $columns ) {
+		if ( ! $this->is_on_page() ) {
+			return $columns;
+		}
+
+		return \Tribe__Main::array_insert_after_key(
+			'ticket',
+			$columns,
+			[ 'attendee_event' => esc_html_x( 'Associated Post', 'attendee table actions column header', 'event-tickets' ) ]
+		);
+	}
+
+	/**
+	 * Render the `Associated post` column value.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $value  Row item value.
+	 * @param array  $item   Row item data.
+	 * @param string $column Column name.
+	 *
+	 * @return string Link with edit icon for edit column.
+	 */
+	public function render_column_attendee_event( $value, $item, $column ) {
+		if ( 'attendee_event' != $column ) {
+			return $value;
+		}
+
+		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees() ) {
+			return '';
+		}
+
+		// Check if current user has permission to edit.
+		if ( ! is_user_logged_in()  ) {
+			return '';
+		}
+
+		$event_id           = $item['event_id'];
+		$provider           = ! empty( $item['provider'] ) ? $item['provider'] : null;
+		$is_provider_active = false;
+
+		$tickets_attendees  = tribe( 'tickets.attendees' );
+		$post               = get_post( $event_id );
+		$post_attendees_url = $tickets_attendees->get_report_link( $post );
+
+		echo sprintf( '<a href="%s" class="">%s</a>', $post_attendees_url, $post->post_title );
+	}
+
 }

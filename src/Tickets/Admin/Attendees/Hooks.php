@@ -48,6 +48,9 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	 * @since TBD
 	 */
 	protected function add_filters() {
+		add_filter( 'tribe_tickets_attendee_table_columns', tribe_callback( Page::class, 'filter_attendee_table_columns' ) );
+		add_filter( 'tribe_events_tickets_attendees_table_column', tribe_callback( Page::class, 'render_column_attendee_event' ), 10, 3 );
+
 	}
 
 }
