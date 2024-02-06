@@ -118,7 +118,13 @@ class Tribe__Tickets__Admin__Move_Ticket_Types extends Tribe__Tickets__Admin__Mo
 		if ( ! $this->move_ticket_type( $ticket_type_id, $destination_id ) ) {
 			wp_send_json_error(
 				[
-					'message' => esc_html( sprintf( __( '%s type could not be moved: unexpected failure during reassignment.', 'event-tickets' ), tribe_get_ticket_label_singular( 'move_ticket_type_error' ) ) ),
+					'message' => esc_html(
+						sprintf(
+							// Translators: %s is the ticket label.
+							__( '%s type could not be moved: unexpected failure during reassignment.', 'event-tickets' ),
+							tribe_get_ticket_label_singular( 'move_ticket_type_error' )
+						)
+					),
 				] 
 			);
 		}
