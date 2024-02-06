@@ -18,10 +18,10 @@ use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe__Tickets__Attendees_Table;
+use Tribe__Tickets__Metabox as Metabox;
 use WP_Post;
 use WP_REST_Request;
 use WP_REST_Server;
-use Tribe__Tickets__Metabox as Metabox;
 
 class AttendeesTest extends Controller_Test_Case {
 	use Series_Pass_Factory;
@@ -75,7 +75,7 @@ class AttendeesTest extends Controller_Test_Case {
 		$series = static::factory()->post->create(
 			[
 				'post_type' => Series_Post_Type::POSTTYPE,
-			] 
+			]
 		);
 		// Create an Event part of the Series.
 		$series_event_id = tribe_events()->set_args(
@@ -85,7 +85,7 @@ class AttendeesTest extends Controller_Test_Case {
 				'start_date' => '2021-01-01 10:00:00',
 				'duration'   => 3 * HOUR_IN_SECONDS,
 				'series'     => $series,
-			] 
+			]
 		)->create()->ID;
 		// Create an Event NOT part of the Series.
 		$event_id = tribe_events()->set_args(
@@ -94,24 +94,24 @@ class AttendeesTest extends Controller_Test_Case {
 				'status'     => 'publish',
 				'start_date' => '2021-01-01 10:00:00',
 				'duration'   => 3 * HOUR_IN_SECONDS,
-			] 
+			]
 		)->create()->ID;
 
 		$this->make_controller()->register();
 
 		// Simulate a request to look at the Event not in the Series.
 		$_GET['event_id'] = $event_id;
-		$attendee_table   = new Tribe__Tickets__Attendees_Table();
+		$attendee_table = new Tribe__Tickets__Attendees_Table();
 		$this->assertArrayHasKey( 'check_in', $attendee_table->get_table_columns() );
 
 		// Simulate a request to look at the Event in the Series.
 		$_GET['event_id'] = $series_event_id;
-		$attendee_table   = new Tribe__Tickets__Attendees_Table();
+		$attendee_table = new Tribe__Tickets__Attendees_Table();
 		$this->assertArrayHasKey( 'check_in', $attendee_table->get_table_columns() );
 
 		// Simulate a request to look at the Event in the Series.
 		$_GET['event_id'] = $series;
-		$attendee_table   = new Tribe__Tickets__Attendees_Table();
+		$attendee_table = new Tribe__Tickets__Attendees_Table();
 		$this->assertArrayNotHasKey( 'check_in', $attendee_table->get_table_columns() );
 
 		// @todo test for single and recurring events, real and provisional IDs
@@ -129,22 +129,22 @@ class AttendeesTest extends Controller_Test_Case {
 		$series_id = static::factory()->post->create(
 			[
 				'post_type' => Series_Post_Type::POSTTYPE,
-			] 
+			]
 		);
 		// Create a Series Pass and an Attendee for the Series.
-		$series_pass_id     = $this->create_tc_series_pass( $series_id )->ID;
+		$series_pass_id = $this->create_tc_series_pass( $series_id )->ID;
 		$series_attendee_id = $this->create_attendee_for_ticket( $series_pass_id, $series_id );
 		// Create an Event not part of the Series.
-		$event_id             = tribe_events()->set_args(
+		$event_id = tribe_events()->set_args(
 			[
 				'title'      => 'Series Event',
 				'status'     => 'publish',
 				'start_date' => '+2 hours',
 				'duration'   => 3 * HOUR_IN_SECONDS,
-			] 
+			]
 		)->create()->ID;
 		$event_provisional_id = Occurrence::find( $event_id, 'post_id' )->provisional_id;
-		$commerce             = Module::get_instance();
+		$commerce = Module::get_instance();
 
 		$controller = $this->make_controller();
 		$controller->register();
@@ -165,13 +165,13 @@ class AttendeesTest extends Controller_Test_Case {
 		$series_id = static::factory()->post->create(
 			[
 				'post_type' => Series_Post_Type::POSTTYPE,
-			] 
+			]
 		);
 		// Create a Series Pass and an Attendee for the Series.
-		$series_pass_id     = $this->create_tc_series_pass( $series_id )->ID;
+		$series_pass_id = $this->create_tc_series_pass( $series_id )->ID;
 		$series_attendee_id = $this->create_attendee_for_ticket( $series_pass_id, $series_id );
 		// Create a post
-		$post_id  = static::factory()->post->create();
+		$post_id = static::factory()->post->create();
 		$commerce = Module::get_instance();
 
 		$controller = $this->make_controller();
@@ -192,10 +192,10 @@ class AttendeesTest extends Controller_Test_Case {
 		$series_id = static::factory()->post->create(
 			[
 				'post_type' => Series_Post_Type::POSTTYPE,
-			] 
+			]
 		);
 		// Create a Series Pass and an Attendee for the Series.
-		$series_pass_id     = $this->create_tc_series_pass( $series_id )->ID;
+		$series_pass_id = $this->create_tc_series_pass( $series_id )->ID;
 		$series_attendee_id = $this->create_attendee_for_ticket( $series_pass_id, $series_id );
 		// Create a past Event part of the Series.
 		$past_series_event_id = tribe_events()->set_args(
@@ -205,11 +205,11 @@ class AttendeesTest extends Controller_Test_Case {
 				'start_date' => '-1 week',
 				'duration'   => 3 * HOUR_IN_SECONDS,
 				'series'     => $series_id,
-			] 
+			]
 		)->create()->ID;
 		// Create a Single Ticket and an Attendee for the past Event part of the Series.
-		$past_series_event_ticket_id      = $this->create_tc_ticket( $past_series_event_id );
-		$past_series_event_attendee_id    = $this->create_attendee_for_ticket( $past_series_event_ticket_id, $past_series_event_id );
+		$past_series_event_ticket_id = $this->create_tc_ticket( $past_series_event_id );
+		$past_series_event_attendee_id = $this->create_attendee_for_ticket( $past_series_event_ticket_id, $past_series_event_id );
 		$past_series_event_provisional_id = Occurrence::find( $past_series_event_id, 'post_id' )->provisional_id;
 		// Create a current Event part of the Series.
 		$current_series_event_id = tribe_events()->set_args(
@@ -219,11 +219,11 @@ class AttendeesTest extends Controller_Test_Case {
 				'start_date' => '-1 hour',
 				'duration'   => 3 * HOUR_IN_SECONDS,
 				'series'     => $series_id,
-			] 
+			]
 		)->create()->ID;
 		// Create a Single Ticket and an Attendee for the current Event part of the Series.
-		$current_series_event_ticket_id      = $this->create_tc_ticket( $current_series_event_id );
-		$current_series_event_attendee_id    = $this->create_attendee_for_ticket( $current_series_event_ticket_id, $current_series_event_id );
+		$current_series_event_ticket_id = $this->create_tc_ticket( $current_series_event_id );
+		$current_series_event_attendee_id = $this->create_attendee_for_ticket( $current_series_event_ticket_id, $current_series_event_id );
 		$current_series_event_provisional_id = Occurrence::find( $current_series_event_id, 'post_id' )->provisional_id;
 		// Create a near feature Event part of the Series.
 		$near_future_series_event_id = tribe_events()->set_args(
@@ -233,12 +233,12 @@ class AttendeesTest extends Controller_Test_Case {
 				'start_date' => '+3 hours',
 				'duration'   => 3 * HOUR_IN_SECONDS,
 				'series'     => $series_id,
-			] 
+			]
 		)->create()->ID;
 		// Create a Single Ticket and an Attendee for the near feature Event part of the Series.
-		$near_feature_series_event_ticket_id  = $this->create_tc_ticket( $near_future_series_event_id );
+		$near_feature_series_event_ticket_id = $this->create_tc_ticket( $near_future_series_event_id );
 		$near_future_series_event_attendee_id = $this->create_attendee_for_ticket( $near_feature_series_event_ticket_id, $near_future_series_event_id );
-		$near_future_series_provisional_id    = Occurrence::find( $near_future_series_event_id, 'post_id' )->provisional_id;
+		$near_future_series_provisional_id = Occurrence::find( $near_future_series_event_id, 'post_id' )->provisional_id;
 		// Create a far feature Event part of the Series.
 		$far_future_series_event_id = tribe_events()->set_args(
 			[
@@ -247,12 +247,12 @@ class AttendeesTest extends Controller_Test_Case {
 				'start_date' => '+3 days',
 				'duration'   => 3 * HOUR_IN_SECONDS,
 				'series'     => $series_id,
-			] 
+			]
 		)->create()->ID;
 		// Create a Single Ticket and an Attendee for the far feature Event part of the Series.
 		$far_future_seriees_event_attendee_id = $this->create_tc_ticket( $far_future_series_event_id );
-		$far_future_series_event_attendee_id  = $this->create_attendee_for_ticket( $far_future_seriees_event_attendee_id, $far_future_series_event_id );
-		$far_future_series_provisional_id     = Occurrence::find( $far_future_series_event_id, 'post_id' )->provisional_id;
+		$far_future_series_event_attendee_id = $this->create_attendee_for_ticket( $far_future_seriees_event_attendee_id, $far_future_series_event_id );
+		$far_future_series_provisional_id = Occurrence::find( $far_future_series_event_id, 'post_id' )->provisional_id;
 		// Create a Recurring Event part of the Series.
 		$near_future_recurring_event_id = tribe_events()->set_args(
 			[
@@ -262,7 +262,7 @@ class AttendeesTest extends Controller_Test_Case {
 				'duration'   => HOUR_IN_SECONDS,
 				'recurrence' => 'RRULE:FREQ=DAILY;COUNT=3',
 				'series'     => $series_id,
-			] 
+			]
 		)->create()->ID;
 		// Fetch the provisional IDs for the 3 Occurrences part of the Recurring Event.
 		$near_future_recurring_event_provisional_ids = Occurrence::where( 'post_id', $near_future_recurring_event_id )
@@ -275,7 +275,7 @@ class AttendeesTest extends Controller_Test_Case {
 			'The first Occurrence provisional ID should map to the Recurring Event post ID.'
 		);
 		// Create a second Recurring Event part of the Series. This one will have only one Occurrence in the time window.
-		$one_occurrence_recurring_event_id              = tribe_events()->set_args(
+		$one_occurrence_recurring_event_id = tribe_events()->set_args(
 			[
 				'title'      => 'Series Event',
 				'status'     => 'publish',
@@ -283,7 +283,7 @@ class AttendeesTest extends Controller_Test_Case {
 				'duration'   => HOUR_IN_SECONDS,
 				'recurrence' => 'RRULE:FREQ=WEEKLY;COUNT=3',
 				'series'     => $series_id,
-			] 
+			]
 		)->create()->ID;
 		$one_occurrence_recurring_event_provisional_ids = Occurrence::where( 'post_id', $one_occurrence_recurring_event_id )
 			->order_by( 'start_date', 'ASC' )
@@ -295,14 +295,14 @@ class AttendeesTest extends Controller_Test_Case {
 				'status'     => 'publish',
 				'start_date' => '2021-01-01 10:00:00',
 				'duration'   => 3 * HOUR_IN_SECONDS,
-			] 
+			]
 		)->create()->ID;
 		// Create a Single Ticket and an Attendee for the Event.
-		$event_ticket_id             = $this->create_tc_ticket( $event_id );
-		$event_attendee_id           = $this->create_attendee_for_ticket( $event_ticket_id, $event_id );
-		$commerce                    = Module::get_instance();
-		$checkin_key                 = $commerce->checkin_key;
-		$attendee_to_event_meta_key  = Module::ATTENDEE_EVENT_KEY;
+		$event_ticket_id = $this->create_tc_ticket( $event_id );
+		$event_attendee_id = $this->create_attendee_for_ticket( $event_ticket_id, $event_id );
+		$commerce = Module::get_instance();
+		$checkin_key = $commerce->checkin_key;
+		$attendee_to_event_meta_key = Module::ATTENDEE_EVENT_KEY;
 		$attendee_to_ticket_meta_key = Module::ATTENDEE_PRODUCT_KEY;
 		// Set the checkin candidates time window to 36 hours.
 		$time_buffer = 36 * HOUR_IN_SECONDS;
@@ -327,25 +327,25 @@ class AttendeesTest extends Controller_Test_Case {
 		$this->assertEquals( 1, get_post_meta( $event_attendee_id, $checkin_key, true ) );
 		$this->assertTrue(
 			$commerce->checkin( $past_series_event_attendee_id ),
-			'Checkin of an Attendee for a default Event Ticket should happen without issues.' 
+			'Checkin of an Attendee for a default Event Ticket should happen without issues.'
 		);
 		$this->assertEquals( 1, get_post_meta( $past_series_event_attendee_id, $checkin_key, true ) );
 
 		$this->assertTrue(
 			$commerce->checkin( $current_series_event_attendee_id ),
-			'Checkin of an Attendee for a default Event Ticket should happen without issues.' 
+			'Checkin of an Attendee for a default Event Ticket should happen without issues.'
 		);
 		$this->assertEquals( 1, get_post_meta( $current_series_event_attendee_id, $checkin_key, true ) );
 
 		$this->assertTrue(
 			$commerce->checkin( $near_future_series_event_attendee_id ),
-			'Checkin of an Attendee for a default Event Ticket should happen without issues.' 
+			'Checkin of an Attendee for a default Event Ticket should happen without issues.'
 		);
 		$this->assertEquals( 1, get_post_meta( $near_future_series_event_attendee_id, $checkin_key, true ) );
 
 		$this->assertTrue(
 			$commerce->checkin( $far_future_series_event_attendee_id ),
-			'Checkin of an Attendee for a default Event Ticket should happen without issues.' 
+			'Checkin of an Attendee for a default Event Ticket should happen without issues.'
 		);
 		$this->assertEquals( 1, get_post_meta( $far_future_series_event_attendee_id, $checkin_key, true ) );
 
@@ -354,7 +354,7 @@ class AttendeesTest extends Controller_Test_Case {
 			'tec_tickets_flexible_tickets_series_pass_attendee_cloned',
 			function ( $clone_id ) use ( &$cloned_attendee_id ) {
 				$cloned_attendee_id = $clone_id;
-			} 
+			}
 		);
 
 		// Checking in a Series Pass Attendee without providing an Event ID should fail.
@@ -464,7 +464,7 @@ class AttendeesTest extends Controller_Test_Case {
 		) {
 			$attendee_target_id = $event_id;
 			$cloned_attendee_id = null;
-			$condition          = $commerce->checkin( $series_attendee_id, false, $event_id );
+			$condition = $commerce->checkin( $series_attendee_id, false, $event_id );
 			$this->assertTrue(
 				$condition,
 				"The check in of the Series Pass Attendee from an Event part of the Series should be successful. | {$set}"
@@ -571,7 +571,7 @@ class AttendeesTest extends Controller_Test_Case {
 		$series_id = static::factory()->post->create(
 			[
 				'post_type' => Series_Post_Type::POSTTYPE,
-			] 
+			]
 		);
 		// Create a Series Pass and an Attendee for the Series.
 		$series_pass_id = $this->create_tc_series_pass( $series_id )->ID;
@@ -585,7 +585,7 @@ class AttendeesTest extends Controller_Test_Case {
 				'start_date' => '+1 hour',
 				'duration'   => 3 * HOUR_IN_SECONDS,
 				'series'     => $series_id,
-			] 
+			]
 		)->create()->ID;
 		$event_2 = tribe_events()->set_args(
 			[
@@ -594,7 +594,7 @@ class AttendeesTest extends Controller_Test_Case {
 				'start_date' => '+2 hours',
 				'duration'   => 3 * HOUR_IN_SECONDS,
 				'series'     => $series_id,
-			] 
+			]
 		)->create()->ID;
 		$event_3 = tribe_events()->set_args(
 			[
@@ -603,10 +603,10 @@ class AttendeesTest extends Controller_Test_Case {
 				'start_date' => '+3 hours',
 				'duration'   => 3 * HOUR_IN_SECONDS,
 				'series'     => $series_id,
-			] 
+			]
 		)->create()->ID;
 		// Create a Recurring Event part of the series.
-		$recurring_event_id              = tribe_events()->set_args(
+		$recurring_event_id = tribe_events()->set_args(
 			[
 				'title'      => 'Recurring Event',
 				'status'     => 'publish',
@@ -614,7 +614,7 @@ class AttendeesTest extends Controller_Test_Case {
 				'duration'   => HOUR_IN_SECONDS,
 				'recurrence' => 'RRULE:FREQ=DAILY;COUNT=3',
 				'series'     => $series_id,
-			] 
+			]
 		)->create()->ID;
 		$recurring_event_provisional_ids = Occurrence::where( 'post_id', '=', $recurring_event_id )
 			->map( fn( Occurrence $o ) => $o->provisional_id );
@@ -623,7 +623,7 @@ class AttendeesTest extends Controller_Test_Case {
 			do_action( 'rest_api_init' );
 		}
 		$commerce = Module::get_instance();
-		$api_key  = 'secrett-api-key';
+		$api_key = 'secrett-api-key';
 		tribe_update_option( 'tickets-plus-qr-options-api-key', $api_key );
 
 		$controller = $this->make_controller();
@@ -638,7 +638,7 @@ class AttendeesTest extends Controller_Test_Case {
 			'tec_tickets_flexible_tickets_series_checkin_time_buffer',
 			static function () use ( &$time_buffer ) {
 				return $time_buffer;
-			} 
+			}
 		);
 
 		// Try and scan in a Series pass Attendee from the context of a post.
@@ -682,7 +682,7 @@ class AttendeesTest extends Controller_Test_Case {
 			array_map(
 				static fn( array $candidate ) => $candidate['id'],
 				$response->data['candidates']
-			) 
+			)
 		);
 
 		// Set the time buffer to 1.5 hours.
@@ -773,14 +773,14 @@ class AttendeesTest extends Controller_Test_Case {
 		$series_id = static::factory()->post->create(
 			[
 				'post_type' => Series_Post_Type::POSTTYPE,
-			] 
+			]
 		);
 		// Create a Series Pass and an Attendee for the Series.
 		$series_pass_id = $this->create_tc_series_pass( $series_id )->ID;
 		$this->create_order( [ $series_pass_id => 1 ] );
 		$series_attendee_id = tribe_attendees()->where( 'event_id', $series_id )->first_id();
 		// Create 2 Single Events part of the Series, both happening in the next 3 hours.
-		$event_1  = tribe_events()->set_args(
+		$event_1 = tribe_events()->set_args(
 			[
 				'title'      => 'Event #1',
 				'status'     => 'publish',
@@ -789,7 +789,7 @@ class AttendeesTest extends Controller_Test_Case {
 				'series'     => $series_id,
 			]
 		)->create()->ID;
-		$event_2  = tribe_events()->set_args(
+		$event_2 = tribe_events()->set_args(
 			[
 				'title'      => 'Event #2',
 				'status'     => 'publish',
@@ -799,7 +799,7 @@ class AttendeesTest extends Controller_Test_Case {
 			]
 		)->create()->ID;
 		$commerce = Module::get_instance();
-		$api_key  = 'secrett-api-key';
+		$api_key = 'secrett-api-key';
 		tribe_update_option( 'tickets-plus-qr-options-api-key', $api_key );
 
 		$controller = $this->make_controller();
@@ -814,7 +814,7 @@ class AttendeesTest extends Controller_Test_Case {
 			'tec_tickets_flexible_tickets_series_checkin_time_buffer',
 			static function () use ( &$time_buffer ) {
 				return $time_buffer;
-			} 
+			}
 		);
 
 		// Checking in a Series Pass Attendee providing the Series ID as context should require choosing an Event.
@@ -846,7 +846,7 @@ class AttendeesTest extends Controller_Test_Case {
 		$series_id = static::factory()->post->create(
 			[
 				'post_type' => Series_Post_Type::POSTTYPE,
-			] 
+			]
 		);
 		// Create a Series Pass and an Attendee for the Series.
 		$series_pass_id = $this->create_tc_series_pass( $series_id )->ID;
@@ -860,7 +860,7 @@ class AttendeesTest extends Controller_Test_Case {
 				'start_date' => '+1 hour',
 				'duration'   => 3 * HOUR_IN_SECONDS,
 				'series'     => $series_id,
-			] 
+			]
 		)->create()->ID;
 		$event_2 = tribe_events()->set_args(
 			[
@@ -869,7 +869,7 @@ class AttendeesTest extends Controller_Test_Case {
 				'start_date' => '+12 hours',
 				'duration'   => 3 * HOUR_IN_SECONDS,
 				'series'     => $series_id,
-			] 
+			]
 		)->create()->ID;
 		$event_3 = tribe_events()->set_args(
 			[
@@ -878,10 +878,10 @@ class AttendeesTest extends Controller_Test_Case {
 				'start_date' => '+36 hours',
 				'duration'   => 3 * HOUR_IN_SECONDS,
 				'series'     => $series_id,
-			] 
+			]
 		)->create()->ID;
 		// Create a Recurring Event part of the series.
-		$recurring_event_id              = tribe_events()->set_args(
+		$recurring_event_id = tribe_events()->set_args(
 			[
 				'title'      => 'Recurring Event',
 				'status'     => 'publish',
@@ -889,7 +889,7 @@ class AttendeesTest extends Controller_Test_Case {
 				'duration'   => HOUR_IN_SECONDS,
 				'recurrence' => 'RRULE:FREQ=DAILY;COUNT=3',
 				'series'     => $series_id,
-			] 
+			]
 		)->create()->ID;
 		$recurring_event_provisional_ids = Occurrence::where( 'post_id', '=', $recurring_event_id )
 			->map( fn( Occurrence $o ) => $o->provisional_id );
@@ -898,7 +898,7 @@ class AttendeesTest extends Controller_Test_Case {
 			do_action( 'rest_api_init' );
 		}
 		$commerce = Module::get_instance();
-		$api_key  = 'secrett-api-key';
+		$api_key = 'secrett-api-key';
 		tribe_update_option( 'tickets-plus-qr-options-api-key', $api_key );
 
 		$controller = $this->make_controller();
@@ -960,7 +960,7 @@ class AttendeesTest extends Controller_Test_Case {
 		$series_id = static::factory()->post->create(
 			[
 				'post_type' => Series_Post_Type::POSTTYPE,
-			] 
+			]
 		);
 		// Create a Series Pass and an Attendee for the Series.
 		$series_pass_id = $this->create_tc_series_pass( $series_id )->ID;
@@ -974,7 +974,7 @@ class AttendeesTest extends Controller_Test_Case {
 				'start_date' => '+1 hour',
 				'duration'   => 3 * HOUR_IN_SECONDS,
 				'series'     => $series_id,
-			] 
+			]
 		)->create()->ID;
 		$event_2 = tribe_events()->set_args(
 			[
@@ -983,7 +983,7 @@ class AttendeesTest extends Controller_Test_Case {
 				'start_date' => '+2 hours',
 				'duration'   => 3 * HOUR_IN_SECONDS,
 				'series'     => $series_id,
-			] 
+			]
 		)->create()->ID;
 		$event_3 = tribe_events()->set_args(
 			[
@@ -992,10 +992,10 @@ class AttendeesTest extends Controller_Test_Case {
 				'start_date' => '+3 hours',
 				'duration'   => 3 * HOUR_IN_SECONDS,
 				'series'     => $series_id,
-			] 
+			]
 		)->create()->ID;
 		// Create a Recurring Event part of the series.
-		$recurring_event_id              = tribe_events()->set_args(
+		$recurring_event_id = tribe_events()->set_args(
 			[
 				'title'      => 'Recurring Event',
 				'status'     => 'publish',
@@ -1003,11 +1003,11 @@ class AttendeesTest extends Controller_Test_Case {
 				'duration'   => HOUR_IN_SECONDS,
 				'recurrence' => 'RRULE:FREQ=DAILY;COUNT=3',
 				'series'     => $series_id,
-			] 
+			]
 		)->create()->ID;
 		$recurring_event_provisional_ids = Occurrence::where( 'post_id', '=', $recurring_event_id )
 			->map( fn( Occurrence $o ) => $o->provisional_id );
-		$commerce                        = Module::get_instance();
+		$commerce = Module::get_instance();
 
 		$controller = $this->make_controller();
 		$controller->register();
@@ -1024,7 +1024,7 @@ class AttendeesTest extends Controller_Test_Case {
 		) {
 			$this->assertTrue(
 				$commerce->checkin( $series_attendee_id, false, $event_id ),
-				"Manual checkin of a Series Pass Attendee should succeed even when the restricted check-in time is 0. | {$set}" 
+				"Manual checkin of a Series Pass Attendee should succeed even when the restricted check-in time is 0. | {$set}"
 			);
 		}
 	}
@@ -1046,7 +1046,7 @@ class AttendeesTest extends Controller_Test_Case {
 		$series_id = static::factory()->post->create(
 			[
 				'post_type' => Series_Post_Type::POSTTYPE,
-			] 
+			]
 		);
 		// Create a Series Pass and an Attendee for the Series.
 		$series_pass_id = $this->create_tc_series_pass( $series_id )->ID;
@@ -1060,7 +1060,7 @@ class AttendeesTest extends Controller_Test_Case {
 				'start_date' => '+1 hour',
 				'duration'   => 3 * HOUR_IN_SECONDS,
 				'series'     => $series_id,
-			] 
+			]
 		)->create()->ID;
 		$event_2 = tribe_events()->set_args(
 			[
@@ -1069,7 +1069,7 @@ class AttendeesTest extends Controller_Test_Case {
 				'start_date' => '+2 hours',
 				'duration'   => 3 * HOUR_IN_SECONDS,
 				'series'     => $series_id,
-			] 
+			]
 		)->create()->ID;
 		$event_3 = tribe_events()->set_args(
 			[
@@ -1078,10 +1078,10 @@ class AttendeesTest extends Controller_Test_Case {
 				'start_date' => '+3 hours',
 				'duration'   => 3 * HOUR_IN_SECONDS,
 				'series'     => $series_id,
-			] 
+			]
 		)->create()->ID;
 		// Create a Recurring Event part of the series.
-		$recurring_event_id              = tribe_events()->set_args(
+		$recurring_event_id = tribe_events()->set_args(
 			[
 				'title'      => 'Recurring Event',
 				'status'     => 'publish',
@@ -1089,18 +1089,18 @@ class AttendeesTest extends Controller_Test_Case {
 				'duration'   => HOUR_IN_SECONDS,
 				'recurrence' => 'RRULE:FREQ=DAILY;COUNT=3',
 				'series'     => $series_id,
-			] 
+			]
 		)->create()->ID;
 		$recurring_event_provisional_ids = Occurrence::where( 'post_id', '=', $recurring_event_id )
 			->map( fn( Occurrence $o ) => $o->provisional_id );
-		$commerce                        = Module::get_instance();
+		$commerce = Module::get_instance();
 
 		$controller = $this->make_controller();
 		$controller->register();
 
 		$this->assertFalse(
 			$commerce->checkin( $series_attendee_id ),
-			'Checkin of a Series Pass Attendee should fail when the restricted check-in time is 0.' 
+			'Checkin of a Series Pass Attendee should fail when the restricted check-in time is 0.'
 		);
 		foreach (
 			[
@@ -1122,7 +1122,7 @@ class AttendeesTest extends Controller_Test_Case {
 			$this->assertEquals(
 				400,
 				$response->status,
-				"Checkin of a Series Pass Attendee should fail when the restricted check-in time is 0. | {$set}" 
+				"Checkin of a Series Pass Attendee should fail when the restricted check-in time is 0. | {$set}"
 			);
 		}
 	}
@@ -1139,39 +1139,39 @@ class AttendeesTest extends Controller_Test_Case {
 		$series_id = static::factory()->post->create(
 			[
 				'post_type' => Series_Post_Type::POSTTYPE,
-			] 
+			]
 		);
 		// Create a Series Pass and an Attendee for the Series.
 		$series_pass_id = $this->create_tc_series_pass( $series_id )->ID;
 		$this->create_order( [ $series_pass_id => 1 ] );
 		$original = tribe_attendees()->where( 'event_id', $series_id )->first_id();
 		// Create an Event part of the Series.
-		$event_1    = tribe_events()->set_args(
+		$event_1 = tribe_events()->set_args(
 			[
 				'title'      => 'Test Event #1',
 				'status'     => 'publish',
 				'start_date' => '+3 hours',
 				'duration'   => 3 * HOUR_IN_SECONDS,
 				'series'     => $series_id,
-			] 
+			]
 		)->create()->ID;
 		$controller = $this->make_controller();
 		// Clone the Attendee to the Event Occurrence.
 		$clone_1 = $controller->clone_attendee_to_event( $original, $event_1 );
 		// Create a second Event part of the Series.
-		$event_2    = tribe_events()->set_args(
+		$event_2 = tribe_events()->set_args(
 			[
 				'title'      => 'Test Event #2',
 				'status'     => 'publish',
 				'start_date' => '+27 hours',
 				'duration'   => 3 * HOUR_IN_SECONDS,
 				'series'     => $series_id,
-			] 
+			]
 		)->create()->ID;
 		$controller = $this->make_controller();
 		// Clone the Attendee to the Event Occurrence.
-		$clone_2     = $controller->clone_attendee_to_event( $original, $event_2 );
-		$commerce    = Module::get_instance();
+		$clone_2 = $controller->clone_attendee_to_event( $original, $event_2 );
+		$commerce = Module::get_instance();
 		$checkin_key = $commerce->checkin_key;
 
 		$controller->register();
@@ -1179,17 +1179,17 @@ class AttendeesTest extends Controller_Test_Case {
 		$this->assertEquals(
 			'',
 			get_post_meta( $original, $checkin_key, true ),
-			'The original Attendee should not be checked in at the start' 
+			'The original Attendee should not be checked in at the start'
 		);
 		$this->assertEquals(
 			'',
 			get_post_meta( $clone_1, $checkin_key, true ),
-			'The cloned Attendee should not be checked in at the start' 
+			'The cloned Attendee should not be checked in at the start'
 		);
 		$this->assertEquals(
 			'',
 			get_post_meta( $clone_2, $checkin_key, true ),
-			'The cloned Attendee should not be checked in at the start' 
+			'The cloned Attendee should not be checked in at the start'
 		);
 
 		// Update the original: 1st and 2nd clone should be updated.
@@ -1205,23 +1205,23 @@ class AttendeesTest extends Controller_Test_Case {
 				[
 					'ID'        => $original,
 					$post_field => $updated_post_field_value,
-				] 
+				]
 			);
 
 			$this->assertEquals(
 				$updated_post_field_value,
 				get_post_field( $post_field, $original ),
-				'The original Attendee post field should have been updated following an original Attendee post field update.' 
+				'The original Attendee post field should have been updated following an original Attendee post field update.'
 			);
 			$this->assertEquals(
 				$updated_post_field_value,
 				get_post_field( $post_field, $clone_1 ),
-				'The 1st cloned Attendee post field should have been updated following an original Attendee post field update.' 
+				'The 1st cloned Attendee post field should have been updated following an original Attendee post field update.'
 			);
 			$this->assertEquals(
 				$updated_post_field_value,
 				get_post_field( $post_field, $clone_2 ),
-				'The 2nd cloned Attendee post field should have been updated following an original Attendee post field update.' 
+				'The 2nd cloned Attendee post field should have been updated following an original Attendee post field update.'
 			);
 		}
 
@@ -1282,39 +1282,39 @@ class AttendeesTest extends Controller_Test_Case {
 		$series_id = static::factory()->post->create(
 			[
 				'post_type' => Series_Post_Type::POSTTYPE,
-			] 
+			]
 		);
 		// Create a Series Pass and an Attendee for the Series.
 		$series_pass_id = $this->create_tc_series_pass( $series_id )->ID;
 		$this->create_order( [ $series_pass_id => 1 ] );
 		$original = tribe_attendees()->where( 'event_id', $series_id )->first_id();
 		// Create an Event part of the Series.
-		$event_1    = tribe_events()->set_args(
+		$event_1 = tribe_events()->set_args(
 			[
 				'title'      => 'Test Event #1',
 				'status'     => 'publish',
 				'start_date' => '+3 hours',
 				'duration'   => 3 * HOUR_IN_SECONDS,
 				'series'     => $series_id,
-			] 
+			]
 		)->create()->ID;
 		$controller = $this->make_controller();
 		// Clone the Attendee to the Event.
 		$clone_1 = $controller->clone_attendee_to_event( $original, $event_1 );
 		// Create a second Event part of the Series.
-		$event_2    = tribe_events()->set_args(
+		$event_2 = tribe_events()->set_args(
 			[
 				'title'      => 'Test Event #2',
 				'status'     => 'publish',
 				'start_date' => '+27 hours',
 				'duration'   => 3 * HOUR_IN_SECONDS,
 				'series'     => $series_id,
-			] 
+			]
 		)->create()->ID;
 		$controller = $this->make_controller();
 		// Clone the Attendee to the Event.
-		$clone_2     = $controller->clone_attendee_to_event( $original, $event_2 );
-		$commerce    = Module::get_instance();
+		$clone_2 = $controller->clone_attendee_to_event( $original, $event_2 );
+		$commerce = Module::get_instance();
 		$checkin_key = $commerce->checkin_key;
 
 		$controller->register();
@@ -1322,17 +1322,17 @@ class AttendeesTest extends Controller_Test_Case {
 		$this->assertEquals(
 			'',
 			get_post_meta( $original, $checkin_key, true ),
-			'The original Attendee should not be checked in at the start' 
+			'The original Attendee should not be checked in at the start'
 		);
 		$this->assertEquals(
 			'',
 			get_post_meta( $clone_1, $checkin_key, true ),
-			'The cloned Attendee should not be checked in at the start' 
+			'The cloned Attendee should not be checked in at the start'
 		);
 		$this->assertEquals(
 			'',
 			get_post_meta( $clone_2, $checkin_key, true ),
-			'The cloned Attendee should not be checked in at the start' 
+			'The cloned Attendee should not be checked in at the start'
 		);
 
 		// Update the 1st clone: original and 2nd clone should be updated.
@@ -1347,23 +1347,23 @@ class AttendeesTest extends Controller_Test_Case {
 				[
 					'ID'        => $clone_1,
 					$post_field => $updated_post_field_value,
-				] 
+				]
 			);
 
 			$this->assertEquals(
 				$updated_post_field_value,
 				get_post_field( $post_field, $original ),
-				'The original Attendee post field should have been updated following an original Attendee post field update.' 
+				'The original Attendee post field should have been updated following an original Attendee post field update.'
 			);
 			$this->assertEquals(
 				$updated_post_field_value,
 				get_post_field( $post_field, $clone_1 ),
-				'The 1st cloned Attendee post field should have been updated following an original Attendee post field update.' 
+				'The 1st cloned Attendee post field should have been updated following an original Attendee post field update.'
 			);
 			$this->assertEquals(
 				$updated_post_field_value,
 				get_post_field( $post_field, $clone_2 ),
-				'The 2nd cloned Attendee post field should have been updated following an original Attendee post field update.' 
+				'The 2nd cloned Attendee post field should have been updated following an original Attendee post field update.'
 			);
 		}
 
@@ -1379,23 +1379,23 @@ class AttendeesTest extends Controller_Test_Case {
 				[
 					'ID'        => $clone_2,
 					$post_field => $updated_post_field_value,
-				] 
+				]
 			);
 
 			$this->assertEquals(
 				$updated_post_field_value,
 				get_post_field( $post_field, $original ),
-				'The original Attendee post field should have been updated following the 2nd Attendee clone post field update.' 
+				'The original Attendee post field should have been updated following the 2nd Attendee clone post field update.'
 			);
 			$this->assertEquals(
 				$updated_post_field_value,
 				get_post_field( $post_field, $clone_1 ),
-				'The 1st cloned Attendee post field should have been updated following the 2nd Attendee clone post field update.' 
+				'The 1st cloned Attendee post field should have been updated following the 2nd Attendee clone post field update.'
 			);
 			$this->assertEquals(
 				$updated_post_field_value,
 				get_post_field( $post_field, $clone_2 ),
-				'The 2nd cloned Attendee post field should have been updated following the 2nd Attendee clone post field update.' 
+				'The 2nd cloned Attendee post field should have been updated following the 2nd Attendee clone post field update.'
 			);
 		}
 
@@ -1453,14 +1453,14 @@ class AttendeesTest extends Controller_Test_Case {
 		$series_id = static::factory()->post->create(
 			[
 				'post_type' => Series_Post_Type::POSTTYPE,
-			] 
+			]
 		);
 		// Create a Series Pass and an Attendee for the Series.
 		$series_pass_id = $this->create_tc_series_pass( $series_id )->ID;
 		$this->create_order( [ $series_pass_id => 1 ] );
 		$original = tribe_attendees()->where( 'event_id', $series_id )->first_id();
 		// Create a REcurring Event part of the Series happening 10 times.
-		$event_1    = tribe_events()->set_args(
+		$event_1 = tribe_events()->set_args(
 			[
 				'title'      => 'Test Event #1',
 				'status'     => 'publish',
@@ -1468,17 +1468,17 @@ class AttendeesTest extends Controller_Test_Case {
 				'duration'   => 3 * HOUR_IN_SECONDS,
 				'recurrence' => 'RRULE:FREQ=DAILY;COUNT=10',
 				'series'     => $series_id,
-			] 
+			]
 		)->create()->ID;
 		$controller = $this->make_controller();
 		// Clone the Attendee to each Event Occurrence.
 		$provisional_ids = Occurrence::where( 'post_id', '=', $event_1 )
 			->map( fn( Occurrence $o ) => $o->provisional_id );
-		$clones          = [];
+		$clones = [];
 		foreach ( $provisional_ids as $provisional_id ) {
 			$clones[ $provisional_id ] = $controller->clone_attendee_to_event( $original, $provisional_id );
 		}
-		$commerce           = Module::get_instance();
+		$commerce = Module::get_instance();
 		$attendee_event_key = $commerce->attendee_event_key;
 
 		// To start, the cloned Attendees should be related to the Occurrence provisional IDs of the Events.
@@ -1495,7 +1495,7 @@ class AttendeesTest extends Controller_Test_Case {
 		// Update the Provisional Post base, this could happen if the real post IDs got too close to the provisional IDs.
 		// This will enqueue an Action Scheduler action to update the Attendees.
 		$new_base_diff = 30000000;
-		$new_base      = $old_base + $new_base_diff;
+		$new_base = $old_base + $new_base_diff;
 		add_filter( 'tec_events_pro_custom_tables_v1_provisional_post_base_initial', static fn() => $new_base_diff );
 		$id_generator->update();
 		$this->assertEquals( $new_base, $id_generator->current() );
@@ -1505,11 +1505,11 @@ class AttendeesTest extends Controller_Test_Case {
 		$actions = as_get_scheduled_actions(
 			[
 				'hook' => Base_Controller::AS_ATTENDEE_EVENT_VALUE_UPDATE_ACTION,
-			] 
+			]
 		);
 		$this->assertCount( 1, $actions );
 		/** @var ActionScheduler_Action $action */
-		$action    = reset( $actions );
+		$action = reset( $actions );
 		$action_id = ( array_keys( $actions ) )[0];
 
 		// Execute the Action Scheduler action a first time like Action Scheduler would.
@@ -1522,11 +1522,11 @@ class AttendeesTest extends Controller_Test_Case {
 		$actions = as_get_scheduled_actions(
 			[
 				'hook' => Base_Controller::AS_ATTENDEE_EVENT_VALUE_UPDATE_ACTION,
-			] 
+			]
 		);
 		$this->assertCount( 1, $actions );
 		/** @var ActionScheduler_Action $action */
-		$action    = reset( $actions );
+		$action = reset( $actions );
 		$action_id = ( array_keys( $actions ) )[0];
 
 		// Execute the Action Scheduler action a second time like Action Scheduler would.
@@ -1539,11 +1539,11 @@ class AttendeesTest extends Controller_Test_Case {
 		$actions = as_get_scheduled_actions(
 			[
 				'hook' => Base_Controller::AS_ATTENDEE_EVENT_VALUE_UPDATE_ACTION,
-			] 
+			]
 		);
 		$this->assertCount( 1, $actions );
 		/** @var ActionScheduler_Action $action */
-		$action    = reset( $actions );
+		$action = reset( $actions );
 		$action_id = ( array_keys( $actions ) )[0];
 
 		// Execute the Action Scheduler action a third time like Action Scheduler would.
@@ -1556,11 +1556,11 @@ class AttendeesTest extends Controller_Test_Case {
 		$actions = as_get_scheduled_actions(
 			[
 				'hook' => Base_Controller::AS_ATTENDEE_EVENT_VALUE_UPDATE_ACTION,
-			] 
+			]
 		);
 		$this->assertCount( 1, $actions );
 		/** @var ActionScheduler_Action $action */
-		$action    = reset( $actions );
+		$action = reset( $actions );
 		$action_id = ( array_keys( $actions ) )[0];
 
 		// Execute the Action Scheduler action a fourth time like Action Scheduler would.
@@ -1574,7 +1574,7 @@ class AttendeesTest extends Controller_Test_Case {
 		$diff = $new_base - $old_base;
 		foreach ( $provisional_ids as $old_provisional_id ) {
 			$new_provisional_id = $old_provisional_id + $diff;
-			$attendee_id        = $clones[ $old_provisional_id ];
+			$attendee_id = $clones[ $old_provisional_id ];
 			$this->assertEquals(
 				$new_provisional_id,
 				get_post_meta( $attendee_id, $attendee_event_key, true )
@@ -1588,37 +1588,37 @@ class AttendeesTest extends Controller_Test_Case {
 	 * @test
 	 */
 	public function should_add_series_id_to_event_i_ds_when_fetching_attendees_of_event_in_series(): void {
-		$series                      = static::factory()->post->create(
+		$series = static::factory()->post->create(
 			[
 				'post_type' => Series_Post_Type::POSTTYPE,
-			] 
+			]
 		);
-		$event_in_series             = tribe_events()->set_args(
+		$event_in_series = tribe_events()->set_args(
 			[
 				'title'      => 'Event in Series',
 				'status'     => 'publish',
 				'start_date' => '2020-02-11 17:30:00',
 				'end_date'   => '2020-02-11 18:00:00',
 				'series'     => $series,
-			] 
+			]
 		)->create()->ID;
-		$event_not_in_series         = tribe_events()->set_args(
+		$event_not_in_series = tribe_events()->set_args(
 			[
 				'title'      => 'Event not in Series',
 				'status'     => 'publish',
 				'start_date' => '2020-02-11 17:30:00',
 				'end_date'   => '2020-02-11 18:00:00',
-			] 
+			]
 		)->create()->ID;
-		$series_pass                 = $this->create_tc_series_pass( $series, 66 )->ID;
-		$ticket_1                    = $this->create_tc_ticket( $event_in_series, 23 );
-		$ticket_2                    = $this->create_tc_ticket( $event_not_in_series, 89 );
+		$series_pass = $this->create_tc_series_pass( $series, 66 )->ID;
+		$ticket_1 = $this->create_tc_ticket( $event_in_series, 23 );
+		$ticket_2 = $this->create_tc_ticket( $event_not_in_series, 89 );
 		[ $attendee_1, $attendee_2 ] = $this->create_many_attendees_for_ticket( 2, $ticket_1, $event_in_series );
 		[ $attendee_3, $attendee_4 ] = $this->create_many_attendees_for_ticket( 2, $ticket_2, $event_not_in_series );
 		[
 			$pass_attendee_1,
 			$pass_attendee_2,
-		]                            = $this->create_many_attendees_for_ticket( 2, $series_pass, $series );
+		] = $this->create_many_attendees_for_ticket( 2, $series_pass, $series );
 
 		$this->assertEqualSets(
 			[ $attendee_1, $attendee_2 ],
@@ -1703,7 +1703,7 @@ class AttendeesTest extends Controller_Test_Case {
 		$series_id = static::factory()->post->create(
 			[
 				'post_type' => Series_Post_Type::POSTTYPE,
-			] 
+			]
 		);
 		// Create a Series Pass and an Attendee for the Series.
 		$series_pass_id = $this->create_tc_series_pass( $series_id )->ID;
@@ -1718,7 +1718,7 @@ class AttendeesTest extends Controller_Test_Case {
 				'duration'   => 3 * HOUR_IN_SECONDS,
 				'recurrence' => 'RRULE:FREQ=DAILY;COUNT=10',
 				'series'     => $series_id,
-			] 
+			]
 		)->create()->ID;
 		$provisional_ids = Occurrence::where( 'post_id', '=', $recurring_event )
 			->map( fn( Occurrence $o ) => $o->provisional_id );
@@ -1731,7 +1731,7 @@ class AttendeesTest extends Controller_Test_Case {
 				'start_date' => '+3 hours',
 				'duration'   => 3 * HOUR_IN_SECONDS,
 				'series'     => $series_id,
-			] 
+			]
 		)->create()->ID;
 		// Create a control Single Event not part of the Series.
 		$control_event = tribe_events()->set_args(
@@ -1740,7 +1740,7 @@ class AttendeesTest extends Controller_Test_Case {
 				'status'     => 'publish',
 				'start_date' => '+3 hours',
 				'duration'   => 3 * HOUR_IN_SECONDS,
-			] 
+			]
 		)->create()->ID;
 		// Create 2 Attendees for the control event not part of the Series.
 		$control_ticket_id = $this->create_tc_ticket( $control_event );
@@ -1782,7 +1782,7 @@ class AttendeesTest extends Controller_Test_Case {
 
 		// Clone the Attendees to each Occurrence part of the Recurring Event part of the Series.
 		$controller = $this->make_controller();
-		$clones     = [];
+		$clones = [];
 		foreach ( $provisional_ids as $provisional_id ) {
 			$clones[ $provisional_id ] = $controller->clone_attendee_to_event( $series_pass_attendee_id, $provisional_id );
 		}
@@ -1833,7 +1833,7 @@ class AttendeesTest extends Controller_Test_Case {
 
 				return null;
 			},
-			true 
+			true
 		);
 		// Subscribe to the Attendee clone action to capture the cloned Attendee ID.
 		$clone_id = null;
@@ -1841,7 +1841,7 @@ class AttendeesTest extends Controller_Test_Case {
 			'tec_tickets_flexible_tickets_series_pass_attendee_cloned',
 			function ( $cloned_attendee_id ) use ( &$clone_id ) {
 				$clone_id = $cloned_attendee_id;
-			} 
+			}
 		);
 		// Become administrator to manually check-in Attendees.
 		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
@@ -1849,10 +1849,10 @@ class AttendeesTest extends Controller_Test_Case {
 		$series_id = static::factory()->post->create(
 			[
 				'post_type' => Series_Post_Type::POSTTYPE,
-			] 
+			]
 		);
 		// Create a Series Pass and an Attendee for the Series.
-		$series_pass_id     = $this->create_tc_series_pass( $series_id )->ID;
+		$series_pass_id = $this->create_tc_series_pass( $series_id )->ID;
 		$series_attendee_id = $this->create_attendee_for_ticket( $series_pass_id, $series_id );
 		// Create a Single Event part of the Series.
 		$single_event = tribe_events()->set_args(
@@ -1862,7 +1862,7 @@ class AttendeesTest extends Controller_Test_Case {
 				'start_date' => '+2 hours',
 				'duration'   => 3 * HOUR_IN_SECONDS,
 				'series'     => $series_id,
-			] 
+			]
 		)->create()->ID;
 		// Create a Recurring Event part of the Series.
 		$recurring_event = tribe_events()->set_args(
@@ -1873,7 +1873,7 @@ class AttendeesTest extends Controller_Test_Case {
 				'duration'   => 3 * HOUR_IN_SECONDS,
 				'series'     => $series_id,
 				'recurrence' => 'RRULE:FREQ=DAILY;COUNT=3',
-			] 
+			]
 		)->create()->ID;
 		$provisional_ids = Occurrence::where( 'post_id', '=', $recurring_event )
 			->map( fn( Occurrence $o ) => $o->provisional_id );
@@ -1884,11 +1884,11 @@ class AttendeesTest extends Controller_Test_Case {
 				'status'     => 'publish',
 				'start_date' => '+2 hours',
 				'duration'   => 3 * HOUR_IN_SECONDS,
-			] 
+			]
 		)->create()->ID;
 		// Set up the context to manually check in an Attendee providing the Attendee ID, but not the Event ID.
-		$_POST['nonce']       = wp_create_nonce( 'checkin' );
-		$_POST['provider']    = Module::class;
+		$_POST['nonce'] = wp_create_nonce( 'checkin' );
+		$_POST['provider'] = Module::class;
 		$_POST['attendee_id'] = $series_attendee_id;
 
 		$controller = $this->make_controller();
@@ -1943,7 +1943,7 @@ class AttendeesTest extends Controller_Test_Case {
 				'did_checkin' => true,
 				'reload'      => true,
 			],
-			$response_data 
+			$response_data
 		);
 		$this->assertTrue( $controller->attendee_is_a_clone_of( $clone_id, $series_attendee_id ) );
 
@@ -1975,7 +1975,7 @@ class AttendeesTest extends Controller_Test_Case {
 					'did_checkin' => true,
 					'reload'      => true,
 				],
-				$response_data 
+				$response_data
 			);
 			$this->assertTrue( $controller->attendee_is_a_clone_of( $clone_id, $series_attendee_id ) );
 		}
@@ -1993,7 +1993,7 @@ class AttendeesTest extends Controller_Test_Case {
 		$series_id = static::factory()->post->create(
 			[
 				'post_type' => Series_Post_Type::POSTTYPE,
-			] 
+			]
 		);
 		// Create a Single Event part of the Series.
 		$single_event = tribe_events()->set_args(
@@ -2003,7 +2003,7 @@ class AttendeesTest extends Controller_Test_Case {
 				'start_date' => '+2 hours',
 				'duration'   => 3 * HOUR_IN_SECONDS,
 				'series'     => $series_id,
-			] 
+			]
 		)->create()->ID;
 		// Create a Recurring Event part of the Series.
 		$recurring_event = tribe_events()->set_args(
@@ -2014,7 +2014,7 @@ class AttendeesTest extends Controller_Test_Case {
 				'duration'   => 3 * HOUR_IN_SECONDS,
 				'series'     => $series_id,
 				'recurrence' => 'RRULE:FREQ=DAILY;COUNT=3',
-			] 
+			]
 		)->create()->ID;
 		$provisional_ids = Occurrence::where( 'post_id', '=', $recurring_event )
 			->map( fn( Occurrence $o ) => $o->provisional_id );
@@ -2025,7 +2025,7 @@ class AttendeesTest extends Controller_Test_Case {
 				'status'     => 'publish',
 				'start_date' => '+2 hours',
 				'duration'   => 3 * HOUR_IN_SECONDS,
-			] 
+			]
 		)->create()->ID;
 
 		$controller = $this->make_controller();
@@ -2075,10 +2075,10 @@ class AttendeesTest extends Controller_Test_Case {
 		$series_id = static::factory()->post->create(
 			[
 				'post_type' => Series_Post_Type::POSTTYPE,
-			] 
+			]
 		);
 		// Create a Series Pass and an Attendee for the Series.
-		$series_pass_id     = $this->create_tc_series_pass( $series_id )->ID;
+		$series_pass_id = $this->create_tc_series_pass( $series_id )->ID;
 		$series_attendee_id = $this->create_attendee_for_ticket( $series_pass_id, $series_id );
 		// Create a Single Event part of the Series.
 		$single_event = tribe_events()->set_args(
@@ -2088,7 +2088,7 @@ class AttendeesTest extends Controller_Test_Case {
 				'start_date' => '+2 hours',
 				'duration'   => 3 * HOUR_IN_SECONDS,
 				'series'     => $series_id,
-			] 
+			]
 		)->create()->ID;
 		// Subscribe to the Attendee clone action to capture the cloned Attendee ID.
 		$clone_id = null;
@@ -2096,7 +2096,7 @@ class AttendeesTest extends Controller_Test_Case {
 			'tec_tickets_flexible_tickets_series_pass_attendee_cloned',
 			function ( $cloned_attendee_id ) use ( &$clone_id ) {
 				$clone_id = $cloned_attendee_id;
-			} 
+			}
 		);
 		$commerce = Module::get_instance();
 
@@ -2135,5 +2135,51 @@ class AttendeesTest extends Controller_Test_Case {
 		$clone_id = null;
 		$this->assertTrue( $commerce->checkin( $event_attendee_id, false, $single_event ) );
 		$this->assertNull( $clone_id );
+	}
+
+	/**
+	 * It should reference real post ID of Single Event from cloned Attendee
+	 *
+	 * @test
+	 */
+	public function should_reference_real_post_id_of_single_event_from_cloned_attendee(): void {
+		// Become administrator.
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		// Create a Series.
+		$series_id = static::factory()->post->create(
+			[
+				'post_type' => Series_Post_Type::POSTTYPE,
+			]
+		);
+		// Create a Series Pass and an Attendee for the Series.
+		$series_pass_id = $this->create_tc_series_pass( $series_id )->ID;
+		$series_attendee_id = $this->create_attendee_for_ticket( $series_pass_id, $series_id );
+		// Create a Single Event part of the Series.
+		$single_event = tribe_events()->set_args(
+			[
+				'title'      => 'Series Single Event',
+				'status'     => 'publish',
+				'start_date' => '+2 hours',
+				'duration'   => 3 * HOUR_IN_SECONDS,
+				'series'     => $series_id,
+			]
+		)->create()->ID;
+		// Subscribe to the Attendee clone action to capture the cloned Attendee ID.
+		$clone_id = null;
+		add_action(
+			'tec_tickets_flexible_tickets_series_pass_attendee_cloned',
+			function ( $cloned_attendee_id ) use ( &$clone_id ) {
+				$clone_id = $cloned_attendee_id;
+			}
+		);
+		$commerce = Module::get_instance();
+
+		$controller = $this->make_controller();
+		$controller->register();
+
+		// Start by checking-in the Attendee from the context of the Event to create a clone.
+		$this->assertTrue( $commerce->checkin( $series_attendee_id, false, $series_id ) );
+		$this->assertTrue( $controller->attendee_is_a_clone_of( $clone_id, $series_attendee_id ) );
+		$this->assertEquals($single_event,get_post_meta($clone_id,$commerce->attendee_event_key,true));
 	}
 }

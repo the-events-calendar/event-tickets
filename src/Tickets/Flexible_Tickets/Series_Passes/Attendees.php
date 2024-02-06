@@ -175,7 +175,7 @@ class Attendees extends Controller {
 				'trigger_attendees_list_reload',
 			],
 			10,
-			2 
+			2
 		);
 	}
 
@@ -214,7 +214,7 @@ class Attendees extends Controller {
 				'trigger_attendees_list_reload',
 			],
 			10,
-			2 
+			2
 		);
 	}
 
@@ -732,7 +732,15 @@ class Attendees extends Controller {
 			return false;
 		}
 
-		return (int) reset( $candidates );
+		$candidate = reset( $candidates );
+		$normalized_id = Occurrence::normalize_id( $candidate );
+
+		if ( ! tribe_is_recurring_event( $normalized_id ) ) {
+			// Single Events should be referenced by real post ID, not provisional ID, from the cloned Attendee.
+			return $normalized_id;
+		}
+
+		return (int) $candidate;
 	}
 
 	/**
