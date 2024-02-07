@@ -303,6 +303,7 @@ class Orders extends Report_Abstract {
 	public function attendees_page_screen_setup() {
 		$orders_table = tribe( Commerce\Admin_Tables\Orders::class );
 		$orders_table->prepare_items();
+		$orders_table->maybe_generate_csv();
 
 		wp_enqueue_script( 'jquery-ui-dialog' );
 

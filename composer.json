@@ -10,6 +10,7 @@
   "homepage": "http://tri.be/shop/wordpress-events-calendar/",
   "license": "GPL-2.0",
   "require-dev": {
+    "automattic/vipwpcs": "^3.0",
     "bordoni/phpass": "^0.3.5",
     "codeception/module-asserts": "^1.0",
     "codeception/module-cli": "^1.0",
@@ -29,20 +30,6 @@
     "the-events-calendar/tec-testing-facilities": "dev-master",
     "lucatume/codeception-snapshot-assertions": "^0.4.0"
   },
-  "repositories": [
-    {
-      "name": "the-events-calendar/tec-testing-facilities",
-      "type": "github",
-      "url": "https://github.com/the-events-calendar/tec-testing-facilities",
-      "no-api": true
-    },
-    {
-      "name": "the-events-calendar/coding-standards",
-      "type": "github",
-      "url": "https://github.com/the-events-calendar/coding-standards",
-      "no-api": true
-    }
-  ],
   "minimum-stability": "stable",
   "prefer-stable": true,
   "config": {
