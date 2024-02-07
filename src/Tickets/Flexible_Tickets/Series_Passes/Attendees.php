@@ -168,10 +168,15 @@ class Attendees extends Controller {
 				'filter_tickets_attendees_report_js_config',
 			]
 		);
-		add_filter( 'tec_tickets_attendee_manual_checkin_success_data', [
-			$this,
-			'trigger_attendees_list_reload'
-		], 10, 2 );
+		add_filter(
+			'tec_tickets_attendee_manual_checkin_success_data',
+			[
+				$this,
+				'trigger_attendees_list_reload',
+			],
+			10,
+			2
+		);
 	}
 
 	/**
@@ -202,10 +207,15 @@ class Attendees extends Controller {
 				'filter_tickets_attendees_report_js_config',
 			]
 		);
-		remove_filter( 'tec_tickets_attendee_manual_checkin_success_data', [
-			$this,
-			'trigger_attendees_list_reload'
-		], 10, 2 );
+		remove_filter(
+			'tec_tickets_attendee_manual_checkin_success_data',
+			[
+				$this,
+				'trigger_attendees_list_reload',
+			],
+			10,
+			2
+		);
 	}
 
 	/**
@@ -271,7 +281,7 @@ class Attendees extends Controller {
 		}
 
 		$attendee_checkin_key = $ticket_provider->checkin_key;
-		$attendee_event_key = $ticket_provider->attendee_event_key;
+		$attendee_event_key   = $ticket_provider->attendee_event_key;
 
 		if ( empty( $attendee_checkin_key ) || empty( $attendee_event_key ) ) {
 			// We tried to handle the check in, but it failed.
@@ -286,10 +296,11 @@ class Attendees extends Controller {
 			return $checkin;
 		}
 
-		if ( $event_id ) {
+
+		if ( $event_id && $series_id !== $event_id ) {
 			$is_in_series = Series_Relationship::where( 'series_post_id', $series_id )
-				->where( 'event_post_id', Occurrence::normalize_id( $event_id ) )
-				->count();
+					->where( 'event_post_id', Occurrence::normalize_id( $event_id ) )
+					->count();
 
 			if ( ! $is_in_series ) {
 				// The provided Event ID does point to an Event part of the Series: fail the checkin.
@@ -297,13 +308,14 @@ class Attendees extends Controller {
 			}
 
 			$event_id_candidate = $this->get_event_candidate_from_event( $event_id, $attendee_id, $series_id, $qr );
-			$event_post_id = Occurrence::normalize_id( $event_id_candidate );
+			$event_post_id      = Occurrence::normalize_id( $event_id_candidate );
 
 			if ( $event_id_candidate && ! tribe_is_recurring_event( $event_post_id ) ) {
 				// Single Event Attendees are related to the Event ID, not to their only Occurrence Provisional ID.
 				$event_id_candidate = $event_post_id;
 			}
 		} else {
+			// Either no Event ID was specified, or the check-in is happening from the context of a Series.
 			$event_id_candidate = $this->get_event_candidate_from_series( $attendee_id, $series_id, $qr );
 		}
 
@@ -499,7 +511,7 @@ class Attendees extends Controller {
 			return $response;
 		}
 
-		$post_repository = tribe( 'tec.rest-v1.repository' );
+		$post_repository     = tribe( 'tec.rest-v1.repository' );
 		$prepared_candidates = array_map(
 			static fn( int $candidate ) => $post_repository->get_event_data( $candidate, 'single' ),
 			$this->checkin_failures[ $attendee_id ]['candidates']
@@ -533,7 +545,7 @@ class Attendees extends Controller {
 		[ $start, $end ] = $this->get_checkin_candidate_timestamps( $series_id, $attendee_id, $qr );
 
 		// Fetch the candidate Occurrences, this will be an array of provisional IDs.
-		$candidates = iterator_to_array(
+		return iterator_to_array(
 			tribe_events()
 				->where( 'series', $series_id )
 				->where( 'ends_after', $start )
@@ -541,8 +553,6 @@ class Attendees extends Controller {
 				->get_ids( true ),
 			false
 		);
-
-		return $candidates;
 	}
 
 	/**
@@ -628,7 +638,7 @@ class Attendees extends Controller {
 		);
 
 		// Let's set up the time window to pull current and upcoming Events from.
-		$now = wp_date( 'U' );
+		$now           = wp_date( 'U' );
 		$starts_before = $now + $time_buffer;
 
 		return [ $now, $starts_before ];
@@ -722,7 +732,15 @@ class Attendees extends Controller {
 			return false;
 		}
 
-		return (int) reset( $candidates );
+		$candidate     = reset( $candidates );
+		$normalized_id = Occurrence::normalize_id( $candidate );
+
+		if ( ! tribe_is_recurring_event( $normalized_id ) ) {
+			// Single Events should be referenced by real post ID, not provisional ID, from the cloned Attendee.
+			return $normalized_id;
+		}
+
+		return (int) $candidate;
 	}
 
 	/**
@@ -771,9 +789,9 @@ class Attendees extends Controller {
 		$occurrence_id = tribe( ID_Generator::class )->unprovide_id( $provisional_id );
 
 		return Occurrence::where( 'occurrence_id', '=', $occurrence_id )
-			       ->where( 'start_date', '<=', Dates::immutable( $end ) )
-			       ->where( 'end_date', '>', Dates::immutable( $start ) )
-			       ->count() > 0;
+					->where( 'start_date', '<=', Dates::immutable( $end ) )
+					->where( 'end_date', '>', Dates::immutable( $start ) )
+					->count() > 0;
 	}
 
 	/**
@@ -833,7 +851,7 @@ class Attendees extends Controller {
 
 		// Clone or original?
 		$original_post_id = get_post_meta( $post_id, self::CLONE_META_KEY, true );
-		$update_targets = $this->get_update_targets( $post_id );
+		$update_targets   = $this->get_update_targets( $post_id );
 
 		$updates = (array) $post;
 		unset( $updates['ID'] );
@@ -894,7 +912,7 @@ class Attendees extends Controller {
 				return false;
 			}
 
-			$checkin_key = $ticket_provider->checkin_key;
+			$checkin_key                                = $ticket_provider->checkin_key;
 			$this->post_type_checkin_keys[ $post_type ] = $checkin_key;
 		}
 
@@ -1075,7 +1093,7 @@ class Attendees extends Controller {
 			return $post_id;
 		}
 
-		$post_ids = (array) $post_id;
+		$post_ids  = (array) $post_id;
 		$event_ids = array_filter( $post_ids, static fn( int $id ) => get_post_type( $id ) === TEC::POSTTYPE );
 
 		if ( ! count( $event_ids ) ) {
@@ -1083,19 +1101,19 @@ class Attendees extends Controller {
 		}
 
 		$ids_generator = tec_series()->where( 'event_post_id', $event_ids )->get_ids( true );
-		$series_ids = iterator_to_array( $ids_generator, false );
+		$series_ids    = iterator_to_array( $ids_generator, false );
 
 		if ( ! count( $series_ids ) ) {
 			return $post_id;
 		}
 
 		global $wpdb;
-		$attendee_to_event_keys = tribe_attendees()->attendee_to_event_keys();
+		$attendee_to_event_keys          = tribe_attendees()->attendee_to_event_keys();
 		$prepared_attendee_to_event_keys = $wpdb->prepare(
 			implode( ', ', array_fill( 0, count( $attendee_to_event_keys ), '%s' ) ),
-			...array_values($attendee_to_event_keys)
+			...array_values( $attendee_to_event_keys )
 		);
-		$event_ids_set = $wpdb->prepare(
+		$event_ids_set                   = $wpdb->prepare(
 			implode( ', ', array_fill( 0, count( $post_ids ), '%d' ) ),
 			...$post_ids
 		);
