@@ -710,13 +710,19 @@ export function* updateTicket( action ) {
 }
 
 export function* deleteTicket( action ) {
-	const { clientId } = action.payload;
+	const { clientId, askForDeletion = true } = action.payload;
 	const props = { clientId };
 
-	const shouldDelete = yield call(
-		[ window, 'confirm' ],
-		__( 'Are you sure you want to delete this ticket? It cannot be undone.', 'event-tickets' ),
-	);
+	let shouldDelete = false;
+
+	if ( askForDeletion ) {
+		shouldDelete = yield call(
+			[ window, 'confirm' ],
+			__( 'Are you sure you want to delete this ticket? It cannot be undone.', 'event-tickets' ),
+		);
+	} else {
+		shouldDelete = true;
+	}
 
 	if ( shouldDelete ) {
 		const ticketId = yield select( selectors.getTicketId, props );

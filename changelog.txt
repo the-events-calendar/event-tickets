@@ -1,5 +1,48 @@
 == Changelog ==
 
+= [5.8.1] 2024-02-07 =
+
+* Fix - Removed type casting from filter method of series pass to avoid fatal errors. [ET-2014]
+* Fix - Ensure correct attendee information is included in the attendee emails. [ET-1988]
+* Fix - Resolve deprecation notices regarding `ArrayAccess::offsetGet()` [ET-1949]
+* Fix - Resolved an issue where Order Status was not populated when exporting the Attendee List using Tickets Commerce. [ET-1883]
+* Fix - Ticket is removed now when using the delete option from the block editor. [ET-1879]
+* Fix - Update button will now show when the opt-out checkbox shows on the My Tickets page. [ET-1980]
+* Fix - Update usage of `method_exists()` to comply with PHP 8.1 standards. [ET-1759]
+* Tweak - Added additional information to the Site Health Section and added `tec_tickets_site_health_subsections` filter. [ET-1925]
+* Tweak - Added Export option to Ticket Commerce Order page and `tec_tc_order_report_export_args` filter. [ET-1872]
+* Tweak - Added Print button to Ticket Commerce Orders. [ET-1873]
+* Tweak - Customer name appears now as description of a Stripe payment. Added `tec_tickets_commerce_stripe_update_payment_description` filter. [ET-1607]
+* Tweak - Declared dynamic properties in Tribe__Tickets__Main, Tribe__Tickets__Tickets_Handler, Tribe__Tickets__REST__V1__Messages to prevent warnings in php 8.2 [ET-1950]
+* Tweak - Update default footer text of Tickets Emails to include link to website. [ET-1971]
+* Tweak - Added filters: `tec_tc_order_report_export_args`, `tec_tickets_commerce_stripe_update_payment_description`, `tec_tickets_site_health_subsections`
+* Tweak - Changed views: `blocks/tickets/footer`, `emails/template-parts/body/footer/credit`, `registration-js/content`, `registration/button-cart`, `tickets/orders`, `v2/tickets/footer/return-to-cart`
+
+= [5.8.0] 2024-01-22 =
+
+* Version - Event Tickets 5.8.0 is only compatible with The Events Calendar 6.3.0 and higher.
+* Version - Event Tickets 5.8.0 is only compatible with Event Tickets Plus 5.9.0 and higher.
+* Feature - New ticket type field for all Ticket Post Types.
+* Feature - New type of Ticket: Series Passes to start enabling Recurring Event Ticketing.
+* Enhancement - Improved the Design and UX of the Attendees and Orders page.
+* Tweak - Added filters: `tec_tickets_ticket_panel_data`, `tec_tickets_ticket_type_default_header_description`, `tec_tickets_enabled_ticket_forms_{$post_type}`, `tec_tickets_allow_tickets_on_recurring_events`, `tec_tickets_commerce_order_report_summary_should_include_event_sales_data`, `tec_tickets_repository_filter_by_event_id`, `tec_recurring_tickets_enabled`, `tec_tickets_flexible_tickets_editor_data`, `tec_tickets_find_ticket_type_host_posts_query_args`, `tec_tickets_attendees_filter_by_event`, `tec_tickets_attendees_filter_by_event_not_in`, `tec_tickets_attendees_event_details_top_label`, `tec_tickets_editor_configuration_localized_data`, `tec_tickets_panel_list_helper_text`, `tec_tickets_normalize_occurrence_id`, `tec_tickets_is_ticket_editable_from_post`, `tec_tickets_my_tickets_link_ticket_count_by_type`, `tec_tickets_editor_list_ticket_types`, `tec_tickets_editor_list_table_data`, `tec_tickets_editor_list_table_data_{$ticket_type}`, `tribe_tickets_block_show_unlimited_availability`, `tec_tickets_get_event_capacity`
+* Tweak - Removed filters: `tec_tickets_hide_view_link`
+* Tweak - Added actions: `tec_flexible_tickets_activated`, `tec_tickets_panels_before`, `tec_tickets_panels_after`, `tec_tickets_ticket_update`, `tec_tickets_ticket_add`, `tec_tickets_list_row_edit`, `tec_tickets_editor_list_table_title_icon_{$ticket_type}`, `tec_tickets_editor_list_table_before`, `tec_tickets_ticket_form_main_start`, `tec_tickets_ticket_form_main_start_{$ticket_type}`
+* Tweak - Changed views: `blocks/attendees/view-link`, `emails/template-parts/body/order/attendees-table/header-row`, `tickets/email`, `tickets/my-tickets`, `tickets/my-tickets/orders-list`, `tickets/my-tickets/tickets-list`, `tickets/my-tickets/title`, `tickets/orders`, `tickets/view-link`, `v2/tickets/item`, `v2/tickets/items`, `v2/tickets/series-pass/header`
+* Language - 62 new strings added, 212 updated, 9 fuzzied, and 15 obsoleted
+
+= [5.7.1] 2023-12-13 =
+
+* Tweak - Prevented Single Attendee endpoint from throwing a notice on PHP 8+. [ET-1935]
+* Tweak - Attendees listed on the `Your Tickets` section will now match the order they were entered in. [ET-1924]
+* Tweak - Notify users of Wallet Plus availability on attendees page. [ET-1938]
+* Tweak - Notify users of Wallet Plus availability on Tickets Emails settings page. [ET-1937]
+* Tweak - Add attendee name to attendees list after purchase or registration. [ET-1939]
+* Tweak - Added filter `tec_tickets_commerce_gateway_stripe_webhook_valid_key_polling_attempts` to allow the modification of how many attempts Tickets Commerce will poll for Stripe webhooks for validation.
+* Fix - Tickets Commerce Stripe webhooks properly handles internally validating the Secret Signing key. [ET-1511]
+* Fix - Tickets Commerce Stripe Charge and Payment Intent webhooks no longer create duplicated success emails for a single ticket purchase. [ET-1792]
+* Language - 3 new strings added, 42 updated, 0 fuzzied, and 0 obsoleted
+
 = [5.7.0] 2023-11-16 =
 
 * Version - Event Tickets 5.7.0 is only compatible with The Events Calendar 6.2.7 and higher.
