@@ -350,7 +350,7 @@ class Orders extends WP_List_Table {
 
 		switch ( $status->get_slug() ) {
 			default:
-				$output .= '<div class="order-status order-status-' . esc_attr( $status->get_slug() ) . '">';
+				$output .= ' <div class="order-status order-status-' . esc_attr( $status->get_slug() ) . '">';
 				$output .= esc_html( ucwords( $status->get_name() ) );
 				$output .= '</div>';
 				break;
@@ -504,5 +504,272 @@ class Orders extends WP_List_Table {
 		$search_box = str_replace( '<input type="submit"', $custom_search . '<input type="submit"', $search_box );
 
 		echo $search_box;
+	}
+
+	/**
+	 * Displays extra controls.
+	 *
+	 * @since 5.8.1
+	 *
+	 * @param string $which The location of the actions: 'left' or 'right'.
+	 */
+	public function extra_tablenav( $which ) {
+		$allowed_tags = [
+			'input' => [
+				'type'  => true,
+				'name'  => true,
+				'class' => true,
+				'value' => true,
+			],
+			'a'     => [
+				'class'  => true,
+				'href'   => true,
+				'rel'    => true,
+				'target' => true,
+			],
+		];
+
+		$nav = [
+			'left'  => [
+				'print'  => sprintf(
+					'<input type="button" name="print" class="print button action" value="%s">',
+					esc_attr__(
+						'Print',
+						'event-tickets'
+					)
+				),
+				'export' => sprintf(
+					'<a target="_blank" href="%s" class="export action button" rel="noopener noreferrer">%s</a>',
+					esc_url( $this->get_export_url() ),
+					esc_html__(
+						'Export',
+						'event-tickets'
+					)
+				),
+			],
+			'right' => [],
+		];
+
+		$nav = apply_filters( 'tribe_events_tickets_orders_table_nav', $nav, $which );
+		?>
+		<div class="alignleft actions attendees-actions"><?php echo wp_kses( implode( $nav['left'] ), $allowed_tags ); ?></div>
+		<div class="alignright attendees-filter"><?php echo wp_kses( implode( $nav['right'] ), $allowed_tags ); ?></div>
+		<?php
+	}
+
+	/**
+	 * Maybe generate a CSV file for orders.
+	 *
+	 * This method checks if the necessary GET parameters are set to trigger the CSV generation.
+	 * If conditions are met, it generates a CSV file with order data and outputs it for download.
+	 *
+	 * @since 5.8.1
+	 *
+	 * @return void
+	 */
+	public function maybe_generate_csv(): void {
+		// Early bail: Check if the necessary GET parameters are not set.
+		if ( empty( $_GET['orders_csv'] ) || empty( $_GET['orders_csv_nonce'] ) || empty( $_GET['post_id'] ) ) {
+			return;
+		}
+
+		$event_id = absint( $_GET['post_id'] );
+
+		/**
+		 * Filters the event ID before using it to fetch orders.
+		 *
+		 * @since 5.8.1
+		 *
+		 * @param int $event_id The event ID.
+		 */
+		$event_id = apply_filters( 'tec_tickets_filter_event_id', $event_id );
+
+		// Early bail: Verify the event ID and the nonce.
+		if ( empty( $event_id ) || ! wp_verify_nonce( $_GET['orders_csv_nonce'], 'orders_csv_nonce' ) ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			return;
+		}
+
+		$post_id     = tribe_get_request_var(
+			'event_id',
+			tribe_get_request_var(
+				'post_id',
+				0
+			)
+		);
+		$product_ids = explode(
+			',',
+			tribe_get_request_var(
+				'product_ids',
+				''
+			)
+		);
+
+		// Initialize arguments for fetching orders.
+		$arguments = [
+			'status'  => 'any',
+			'events'  => $post_id,
+			'tickets' => ! empty( $product_ids ) ? $product_ids : null,
+			'orderby' => tribe_get_request_var( 'orderby', '' ),
+			'order'   => tribe_get_request_var( 'order', '' ),
+		];
+
+		/**
+		 * Filters the arguments for the order report export.
+		 *
+		 * @since 5.8.1
+		 *
+		 * @param array $arguments The arguments for order retrieval.
+		 */
+		$arguments = apply_filters( 'tec_tc_order_report_export_args', $arguments );
+
+		// Fetch orders using the repository.
+		$orders_repository = tec_tc_orders()->by_args( $arguments );
+		$items             = $orders_repository->all();
+
+		// Format the orders data for CSV.
+		$formatted_data = $this->format_for_csv( $items );
+
+		// Get the event post for filename.
+		$event    = get_post( $post_id );
+		$filename = sanitize_title( $event->post_title ) . '-' . __(
+			'orders',
+			'event-tickets'
+		) . '.csv';
+
+		// Generate and output the CSV file.
+		$this->generate_csv_file( $formatted_data, $filename );
+	}
+
+	/**
+	 * Formats the orders data for CSV export.
+	 *
+	 * @since 5.8.1
+	 *
+	 * @param array $items The orders data.
+	 *
+	 * @return array The formatted data ready for CSV export.
+	 */
+	public function format_for_csv( array $items ): array {
+		$csv_data = [];
+
+		// Use the values of get_columns() as CSV headers.
+		$csv_headers = array_values( $this->get_columns() );
+		$csv_data[]  = $csv_headers;
+
+		// Iterate over each item and format the data.
+		foreach ( $items as $item ) {
+			$csv_row = [];
+			foreach ( array_keys( $this->get_columns() ) as $header ) {
+				$method_name = 'column_' . $header;
+				if ( method_exists(
+					$this,
+					$method_name
+				) ) {
+					// Dynamically call the method for the column.
+					$value = call_user_func(
+						[
+							$this,
+							$method_name,
+						],
+						$item
+					);
+				} else {
+					// Accessing the item properties directly using column_default.
+					$value = $this->column_default(
+						$item,
+						$header
+					);
+				}
+
+				$csv_row[] = $this->sanitize_and_format_csv_value( $value );
+			}
+			$csv_data[] = $csv_row;
+		}
+
+		return $csv_data;
+	}
+
+	/**
+	 * Sanitizes and formats a value for CSV output.
+	 *
+	 * @since 5.8.1
+	 *
+	 * @param string $value The value to be formatted.
+	 *
+	 * @return string The sanitized and formatted value.
+	 */
+	private function sanitize_and_format_csv_value( string $value ): string {
+		$value = wp_strip_all_tags( $value );
+		$value = html_entity_decode(
+			$value,
+			ENT_QUOTES | ENT_XML1,
+			'UTF-8'
+		);
+		$value = str_replace(
+			[
+				"\r",
+				"\n",
+			],
+			' ',
+			$value
+		);
+
+		return $value;
+	}
+
+	/**
+	 * Outputs the formatted data as a CSV file for download.
+	 *
+	 * @since 5.8.1
+	 *
+	 * @param array  $formatted_data The formatted data for CSV export.
+	 * @param string $filename The name of the file for download.
+	 *
+	 * @return void
+	 */
+	public function generate_csv_file(
+		array $formatted_data,
+		string $filename = 'export.csv'
+	) {
+		$charset = get_option( 'blog_charset' );
+		// Set headers to force download on the browser.
+		header( "Content-Type: text/csv; charset=$charset" );
+		header( 'Content-Disposition: attachment; filename="' . sanitize_file_name( $filename ) . '"' );
+
+		// Open the PHP output stream to write the CSV content.
+		$output = fopen(
+			'php://output',
+			'w'
+		);
+
+		// Iterate over each row and write to the PHP output stream.
+		foreach ( $formatted_data as $row ) {
+			fputcsv(
+				$output,
+				$row
+			); // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_fputcsv
+		}
+
+		// Close the output stream.
+		fclose( $output );
+
+		// Exit to prevent any additional output.
+		exit;
+	}
+
+	/**
+	 * Generate the export URL for exporting orders.
+	 *
+	 * @since 5.8.1
+	 *
+	 * @return string Relative URL for the export.
+	 */
+	public function get_export_url(): string {
+		return add_query_arg(
+			[
+				'orders_csv'       => true,
+				'orders_csv_nonce' => wp_create_nonce( 'orders_csv_nonce' ),
+			]
+		);
 	}
 }
