@@ -243,8 +243,12 @@ trait Post_Tickets {
 			$meta_value_compare_clause = $this->ticket_to_post_meta_value_compare( "{$prefix}_ticket_event" );
 
 			// Join to the meta that relates tickets to events but exclude RSVP tickets.
-			$repo->join_clause( "JOIN {$wpdb->postmeta} {$prefix}_ticket_event
-				 ON ({$meta_key_compare_clause}) AND ({$meta_value_compare_clause})" );
+			$join_clause = "JOIN {$wpdb->postmeta} {$prefix}_ticket_event ON ";
+			if ( $meta_key_compare_clause ) {
+				$join_clause .= "({$meta_key_compare_clause}) AND";
+			}
+			$join_clause .= "({$meta_value_compare_clause})";
+			$repo->join_clause( $join_clause );
 
 			return;
 		}
@@ -351,6 +355,7 @@ trait Post_Tickets {
 	 * @return string The SQL clause to compare meta keys to the ones relating tickets to posts.
 	 */
 	protected function ticket_to_post_meta_key_compare( string $alias, array $allow = null, array $exclude = null ): string {
+		$meta_keys = [];
 		foreach ( Tickets::modules() as $provider => $name ) {
 			if ( $allow !== null && ! in_array( $provider, $allow, true ) ) {
 				continue;
@@ -361,6 +366,10 @@ trait Post_Tickets {
 			}
 
 			$meta_keys[] = tribe( $provider )->get_event_key();
+		}
+
+		if ( empty( $meta_keys ) ) {
+			return '';
 		}
 
 		$unprepared = implode( " OR ", array_fill( 0, count( $meta_keys ), "$alias.meta_key = %s" ) );
