@@ -522,6 +522,19 @@ class MetaboxTest extends WPTestCase {
 						],
 					]
 				);
+				// Sort the tickets "manually".
+				wp_update_post(
+					[
+						'ID'         => $ticket_1,
+						'menu_order' => 1,
+					]
+				);
+				wp_update_post(
+					[
+						'ID'         => $ticket_2,
+						'menu_order' => 0,
+					]
+				);
 
 				$occurrence = Occurrence::where( 'post_id', $single_event )->first();
 
