@@ -1305,6 +1305,12 @@ class Attendees extends Controller {
 			return $actions;
 		}
 
-		return array_diff_key( $actions, [ 'check_in' => false, 'uncheck_in' => false ] );
+		return array_diff_key(
+			$actions,
+			[
+				'check_in'   => false,
+				'uncheck_in' => false,
+			] 
+		);
 	}
 }
