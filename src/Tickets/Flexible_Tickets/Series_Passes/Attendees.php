@@ -177,6 +177,7 @@ class Attendees extends Controller {
 			10,
 			2
 		);
+		add_filter( 'event_tickets_attendees_table_row_actions', [ $this, 'filter_attendees_row_actions' ] );
 	}
 
 	/**
@@ -216,6 +217,7 @@ class Attendees extends Controller {
 			10,
 			2
 		);
+		remove_filter( 'event_tickets_attendees_table_row_actions', [ $this, 'filter_attendees_row_actions' ] );
 	}
 
 	/**
@@ -1236,5 +1238,31 @@ class Attendees extends Controller {
 	 */
 	public function reset_reload_trigger(): void {
 		$this->reload_triggers = [];
+	}
+	
+	/**
+	 * Filter the attendee row actions to remove checkin option for Series Attendees page.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<int,string> $row_actions Array of row action links.
+	 *
+	 * @return array
+	 */
+	public function filter_attendees_row_actions( array $row_actions ): array {
+		$is_series_attendee_page = Series_Post_Type::POSTTYPE === tribe_get_request_var( 'post_type' );
+		
+		if ( ! $is_series_attendee_page ) {
+			return $row_actions;
+		}
+		
+		foreach ( $row_actions as $key => $action ) {
+			if ( str_contains( $action, 'checkin' ) ) {
+				unset( $row_actions[ $key ] );
+				break;
+			}
+		}
+		
+		return $row_actions;
 	}
 }
