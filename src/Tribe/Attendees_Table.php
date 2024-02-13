@@ -693,6 +693,13 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			$actions['uncheck_in']      = esc_attr__( 'Undo Check in', 'event-tickets' );
 		}
 
+		/**
+		 * Filters the bulk actions available on the Attendees table.
+		 *
+		 * @since 3.11
+		 *
+		 * @param array<string,string> $actions The array of bulk actions available on the Attendees table.
+		 */
 		return (array) apply_filters( 'tribe_events_tickets_attendees_table_bulk_actions', $actions );
 	}
 
