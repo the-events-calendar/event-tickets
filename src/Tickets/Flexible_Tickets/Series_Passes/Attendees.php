@@ -177,6 +177,8 @@ class Attendees extends Controller {
 			10,
 			2
 		);
+		add_filter( 'event_tickets_attendees_table_row_actions', [ $this, 'filter_attendees_row_actions' ], 10, 2 );
+		add_filter( 'tribe_events_tickets_attendees_table_bulk_actions', [ $this, 'filter_attendees_bulk_actions' ] );
 	}
 
 	/**
@@ -216,6 +218,8 @@ class Attendees extends Controller {
 			10,
 			2
 		);
+		remove_filter( 'event_tickets_attendees_table_row_actions', [ $this, 'filter_attendees_row_actions' ] );
+		remove_filter( 'tribe_events_tickets_attendees_table_bulk_actions', [ $this, 'filter_attendees_bulk_actions' ] );
 	}
 
 	/**
@@ -262,7 +266,7 @@ class Attendees extends Controller {
 	 * @return bool|null Null to let the default checkin logic run, boolean value to prevent it.
 	 */
 	public function handle_series_pass_attendee_checkin( $checkin, int $attendee_id, int $event_id = null, bool $qr = false ) {
-		if ( tribe_attendees()->where( 'id', $attendee_id )->where( 'ticket_type', Series_Passes::TICKET_TYPE )->count() === 0 ) {
+		if ( ! $this->is_series_pass_attendee( $attendee_id ) ) {
 			// Not an Attendee for a Series Pass, let the default logic run its course.
 			return $checkin;
 		}
@@ -1163,13 +1167,16 @@ class Attendees extends Controller {
 	 *
 	 * @since TBD
 	 *
-	 * @param int $clone_id   The post ID of the Attendee to check.
-	 * @param int $original_id The post ID of the Attendee to check against.
+	 * @param int      $clone_id   The post ID of the Attendee to check.
+	 * @param int|null $original_id The post ID of the Attendee to check against. If `null`, the
+	 *                              method will only check whether the Attendee is a clone or not.
 	 *
 	 * @return bool Whether the Attendee is a clone of the other Attendee.
 	 */
-	public function attendee_is_a_clone_of( int $clone_id, int $original_id ): bool {
-		return (int) get_post_meta( $clone_id, self::CLONE_META_KEY, true ) === $original_id;
+	public function attendee_is_clone_of( int $clone_id, int $original_id = null ): bool {
+		return $original_id ?
+			(int) get_post_meta( $clone_id, self::CLONE_META_KEY, true ) === $original_id
+			: (int) get_post_meta( $clone_id, self::CLONE_META_KEY, true ) !== 0;
 	}
 
 	/**
@@ -1236,5 +1243,74 @@ class Attendees extends Controller {
 	 */
 	public function reset_reload_trigger(): void {
 		$this->reload_triggers = [];
+	}
+
+	/**
+	 * Filter the attendee row actions to remove checkin option for Series Pass Attendees that
+	 * have not been cloned to the Event.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<int,string>   $row_actions Array of row action links.
+	 * @param array<string,mixed> $item        The array representation of the item.
+	 *
+	 * @return string[] The set of actions for the row.
+	 */
+	public function filter_attendees_row_actions( array $row_actions, array $item ): array {
+		$is_series_attendee_page = tribe_get_request_var( 'post_type' ) === Series_Post_Type::POSTTYPE;
+
+		if ( ! $is_series_attendee_page ) {
+			return $row_actions;
+		}
+
+		return array_values(
+			array_filter(
+				$row_actions,
+				static function ( string $action ) {
+					return ! (
+						str_contains( $action, 'tickets_checkin' )
+						|| str_contains( $action, 'tickets_uncheckin' )
+					);
+				}
+			)
+		);
+	}
+
+	/**
+	 * Returns whether the Attendee is a Series Pass Attendee.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $attendee_id The post ID of the Attendee to check.
+	 *
+	 * @return bool Whether the Attendee is a Series Pass Attendee.
+	 */
+	private function is_series_pass_attendee( int $attendee_id ): bool {
+		return tribe_attendees()->where( 'id', $attendee_id )->where( 'ticket_type', Series_Passes::TICKET_TYPE )->count() === 1;
+	}
+
+	/**
+	 * Filters the bulk actions available for the Attendees list to remove checkin option for Series Pass Attendees
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,string> $actions The array of bulk actions available on the Attendees table.
+	 *
+	 * @return array<string,string> The updated array of bulk actions available on the Attendees table.
+	 */
+	public function filter_attendees_bulk_actions( array $actions ): array {
+		$is_series_attendee_page = tribe_get_request_var( 'post_type' ) === Series_Post_Type::POSTTYPE;
+
+		if ( ! $is_series_attendee_page ) {
+			return $actions;
+		}
+
+		return array_diff_key(
+			$actions,
+			[
+				'check_in'   => false,
+				'uncheck_in' => false,
+			] 
+		);
 	}
 }
