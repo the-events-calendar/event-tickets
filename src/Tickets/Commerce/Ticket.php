@@ -859,10 +859,20 @@ class Ticket {
 	 * @return int The new sales amount.
 	 */
 	public function increase_ticket_sales_by( $ticket_id, $quantity = 1, $shared_capacity = false, $global_stock = null ) {
-		// Adjust sales.
-		$sales = (int) get_post_meta( $ticket_id,  static::$sales_meta_key, true ) + $quantity;
 
-		update_post_meta( $ticket_id,  static::$sales_meta_key, $sales );
+		$original_total_sales = (int) get_post_meta(
+			$ticket_id,
+			static::$sales_meta_key,
+			true
+		);
+
+		$updated_total_sales = $quantity + $original_total_sales;
+
+		update_post_meta(
+			$ticket_id,
+			static::$sales_meta_key,
+			$updated_total_sales
+		);
 
 		if (  'own' !== $shared_capacity && $global_stock instanceof \Tribe__Tickets__Global_Stock ) {
 			$this->update_global_stock( $global_stock, $quantity );
