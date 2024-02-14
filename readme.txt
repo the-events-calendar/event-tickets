@@ -4,7 +4,7 @@ Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, raf
 Tags: tickets, registration, event registration, RSVP, ticket sales, attendee management
 Requires at least: 6.2
 Tested up to: 6.4.3
-Stable tag: 5.8.1
+Stable tag: 5.8.2
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -194,6 +194,10 @@ We've got a [LoopedIn](https://evnt.is/ideas) page where we're actively watching
 Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on using, tweaking, and troubleshooting our plugins.
 
 == Changelog ==
+
+= [5.8.2] TBD =
+
+
 
 = [5.8.1] 2024-02-06 =
 
