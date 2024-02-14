@@ -36,15 +36,16 @@ class Completed extends Status_Abstract {
 		'complete',
 		'backfill_purchaser',
 		'attendee_dispatch',
+		'end_duplicated_pending_orders',
 		'stock_reduced',
 		'send_email',
 		'send_email_completed_order',
 		'send_email_purchase_receipt',
-		'end_duplicated_pending_orders',
 		'count_attendee',
 		'count_completed',
 		'count_sales',
 		'increase_sales',
+
 	];
 
 	/**

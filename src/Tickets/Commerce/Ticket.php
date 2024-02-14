@@ -878,7 +878,7 @@ class Ticket {
 			$this->update_global_stock( $global_stock, $quantity );
 		}
 
-		return $sales;
+		return $updated_total_sales;
 	}
 
 	/**
