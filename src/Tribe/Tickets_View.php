@@ -63,7 +63,7 @@ class Tribe__Tickets__Tickets_View {
 	public function prevent_page_redirect( $query ) {
 		$is_correct_page = isset( $query->query_vars['tribe-edit-orders'] ) && $query->query_vars['tribe-edit-orders'];
 
-		if ( ! $is_correct_page ) {
+		if ( ! $is_correct_page || ! $this->is_edit_page() ) {
 			return;
 		}
 
@@ -93,14 +93,14 @@ class Tribe__Tickets__Tickets_View {
 	 */
 	public function maybe_regenerate_rewrite_rules() {
 		// if they don't have any rewrite rules, do nothing
-		// Don't try to run stuff for non-logged users (too time consuming)
+		// Don't try to run stuff for non-logged users (too time consuming).
 		if ( ! is_array( $GLOBALS['wp_rewrite']->rules ) || ! is_user_logged_in() ) {
 			return;
 		}
 
 		$rules = $this->rewrite_rules_array();
 
-		$diff = array_diff( $rules, $GLOBALS['wp_rewrite']->rules );
+		$diff     = array_diff( $rules, $GLOBALS['wp_rewrite']->rules );
 		$key_diff = array_diff_assoc( $rules, $GLOBALS['wp_rewrite']->rules );
 
 		if ( empty( $diff ) && empty( $key_diff ) ) {
@@ -113,7 +113,9 @@ class Tribe__Tickets__Tickets_View {
 	/**
 	 * Gets the List of Rewrite rules we are using here.
 	 *
-	 * @return array
+	 * @since TBD Added filter to allow users to add additional rewrite rules for the My Tickets page.
+	 *
+	 * @return array<string>
 	 */
 	public function rewrite_rules_array() {
 		$bases = $this->add_rewrite_base_slug();
@@ -121,8 +123,13 @@ class Tribe__Tickets__Tickets_View {
 		$rules = [
 			sanitize_title_with_dashes( $bases['tickets'][0] ) . '/([0-9]{1,})/?' => 'index.php?p=$matches[1]&tribe-edit-orders=1',
 		];
-
-		return $rules;
+		
+		/**
+		 * Filter the rewrite rules for the My Tickets page.
+		 *
+		 * @param array<string> $rules The rewrite rules for the My Tickets page.
+		 */
+		return apply_filters( 'tec_tickets_my_tickets_page_rewrite_rules', $rules );
 	}
 
 	/**
@@ -165,6 +172,8 @@ class Tribe__Tickets__Tickets_View {
 
 	/**
 	 * Update the RSVP and Tickets values for each Attendee.
+	 *
+	 * @since TBD Removed optional param from get_tickets_page_url call.
 	 */
 	public function update_tickets() {
 		$is_correct_page = $this->is_edit_page();
@@ -224,9 +233,8 @@ class Tribe__Tickets__Tickets_View {
 
 		// After editing the values, we update the transient.
 		Tribe__Post_Transient::instance()->delete( $post_id, Tribe__Tickets__Tickets::ATTENDEES_CACHE );
-
-		// If it's not events CPT
-		$url = $this->get_tickets_page_url( $post_id, ! $is_correct_page );
+  
+		$url = $this->get_tickets_page_url( $post_id );
 		$url = add_query_arg( 'tribe_updated', 1, $url );
 		wp_safe_redirect( esc_url_raw( $url ) );
 		exit;
@@ -236,17 +244,24 @@ class Tribe__Tickets__Tickets_View {
 	 * Helper function to generate the Link to the tickets page of an event.
 	 *
 	 * @since 4.7.1
+	 * @since TBD Removed the $is_event_page param.
 	 *
-	 * @param $event_id
-	 * @param $is_event_page
+	 * @param int $event_id event_id The Event ID we're checking.
 	 *
-	 * @return string|void
+	 * @return string      The URL to the tickets page.
 	 */
-	public function get_tickets_page_url( $event_id, $is_event_page ) {
+	public function get_tickets_page_url( int $event_id ): string {
 		$has_plain_permalink = '' === get_option( 'permalink_structure' );
-		$event_url = get_permalink( $event_id );
-
-		// Is on the Event post type
+		$event_url           = get_permalink( $event_id );
+		
+		if ( empty( $event_url ) ) {
+			return '';
+		}
+		
+		$post_type     = get_post_type( $event_id );
+		$is_event_page = 'tribe_events' === $post_type || 'tribe_event_series' === $post_type;
+		
+		// Is on the Event post type.
 		if ( $is_event_page ) {
 			$link = $has_plain_permalink
 				? add_query_arg( 'eventDisplay', 'tickets', untrailingslashit( $event_url ) )
@@ -1139,8 +1154,13 @@ class Tribe__Tickets__Tickets_View {
 			 * Allow for the addition of content (namely the "Who's Attending?" list) above the ticket form.
 			 *
 			 * @since 5.5.0
+			 * @since TBD Added the `$post_id` and `$post` parameters.
+			 *
+			 * @param int     $post_id The ID of the post the tickets block is being rendered for.
+			 * @param WP_Post $post    The post object the tickets block is being rendered for.
+			 *
 			 */
-			do_action( 'tribe_tickets_before_front_end_ticket_form' );
+			do_action( 'tribe_tickets_before_front_end_ticket_form', $post_id, $post );
 
 			$before_content = (string) ob_get_clean();
 			if ( $echo ) {
@@ -1297,8 +1317,12 @@ class Tribe__Tickets__Tickets_View {
 		 * Allow for the addition of content (namely the "Who's Attending?" list) above the ticket form.
 		 *
 		 * @since 4.5.5
+		 * @since TBD Added the `$post_id` and `$post` parameters.
+		 *
+		 * @param int     $post_id The ID of the post the RSVP block is being rendered for.
+		 * @param WP_Post $post    The post object the RSVP block is being rendered for.
 		 */
-		do_action( 'tribe_tickets_before_front_end_ticket_form' );
+		do_action( 'tribe_tickets_before_front_end_ticket_form', $post_id, $post );
 
 		/**
 		 * A flag we can set via filter, e.g. at the end of this method, to ensure this template only shows once.
@@ -1350,6 +1374,7 @@ class Tribe__Tickets__Tickets_View {
 	 * Generate the required data for the "My Tickets" link.
 	 *
 	 * @since 5.8.0
+	 * @since TBD Removed the optional parameter from `get_tickets_page_url` call.
 	 *
 	 * @param int $event_id The event ID.
 	 * @param int $user_id The user ID.
@@ -1359,7 +1384,6 @@ class Tribe__Tickets__Tickets_View {
 	public function get_my_tickets_link_data( int $event_id, int $user_id ): array {
 		$event              = get_post( $event_id );
 		$post_type          = get_post_type_object( $event->post_type );
-		$is_event_page      = class_exists( 'Tribe__Events__Main' ) && ( Tribe__Events__Main::POSTTYPE === $event->post_type || 'tribe_event_series' === $event->post_type );
 		$post_type_singular = $post_type ? $post_type->labels->singular_name : _x( 'Post', 'fallback post type singular name', 'event-tickets' );
 		$counters           = [];
 		$rsvp_count         = $this->count_rsvp_attendees( $event_id, $user_id );
@@ -1423,7 +1447,7 @@ class Tribe__Tickets__Tickets_View {
 			'total_count' => $total_count,
 			'message'     => $message,
 			'link_label'  => $link_label,
-			'link'        => $this->get_tickets_page_url( $event_id, $is_event_page ),
+			'link'        => $this->get_tickets_page_url( $event_id ),
 		];
 	}
 }

@@ -45,15 +45,16 @@ class Metabox {
 	private Labels $labels;
 
 	/**
-	 * Metabox constructor.
+	 * The Metabox constructor.
 	 *
-	 * since 5.8.0
+	 * @since 5.8.0
 	 *
 	 * @param Admin_Views $admin_views A reference to the Admin Views handler for Flexible Tickets.
+	 * @param Labels      $labels      A reference to the labels' handler.
 	 */
-	public function __construct( Admin_Views $admin_views, Labels  $labels) {
+	public function __construct( Admin_Views $admin_views, Labels $labels ) {
 		$this->admin_views = $admin_views;
-		$this->labels = $labels;
+		$this->labels      = $labels;
 	}
 
 	/**
@@ -68,14 +69,17 @@ class Metabox {
 	public function render_form_toggle( int $post_id ) {
 		$post = get_post( $post_id );
 
-		if ( ! ( $post instanceof WP_Post && $post->post_type === Series_Post_Type::POSTTYPE ) ) {
+		if ( ! ( $post instanceof WP_Post && Series_Post_Type::POSTTYPE === $post->post_type ) ) {
 			return;
 		}
 
 		$ticket_providing_modules = array_diff_key( Tickets::modules(), [ RSVP::class => true ] );
-		$this->admin_views->template( 'series-pass-form-toggle', [
-			'disabled' => count( $ticket_providing_modules ) === 0,
-		] );
+		$this->admin_views->template(
+			'series-pass-form-toggle',
+			[
+				'disabled' => count( $ticket_providing_modules ) === 0,
+			] 
+		);
 	}
 
 	/**
@@ -121,13 +125,40 @@ class Metabox {
 		if ( ! count( $series_ids ) ) {
 			return;
 		}
+		
+		if ( tribe_is_recurring_event( $post_id ) ) {
+			return;
+		}
 
 		$series = reset( $series_ids );
+		
+		$helpler_link_text = sprintf(
+			// Translators: %s is the label for the link.
+			esc_html__( 'Learn more about %s', 'event-tickets' ),
+			tec_tickets_get_series_pass_plural_uppercase()
+		);
+		
+		$helper_link = sprintf(
+			// Translators: %1$s is a link to the documentation, %2$s is the label for the link.
+			'<a href="%1$s" target="_blank" rel="noreferrer noopener">%2$s</a>',
+			esc_url( 'https://evnt.is/-series-passes' ),
+			esc_html( $helpler_link_text )
+		);
+		
+		$series_edit_link = sprintf(
+			// Translators: %1$s is a link to the series edit screen, %2$s is the title of the series.
+			'<a href="%1$s" target="_blank" rel="noreferrer noopener">%2$s</a>',
+			esc_url( get_edit_post_link( $series ) ),
+			esc_html( get_the_title( $series ) )
+		);
 
-		$this->admin_views->template( 'series-pass-event-notice', [
-			'series_edit_link' => get_edit_post_link( $series ),
-			'series_title'     => get_the_title( $series ),
-		] );
+		$this->admin_views->template(
+			'series-pass-event-notice',
+			[
+				'series_edit_link' => $series_edit_link,
+				'helper_link'      => $helper_link,
+			] 
+		);
 	}
 
 	/**
@@ -141,9 +172,12 @@ class Metabox {
 	 * @return void
 	 */
 	public function render_link_to_series( int $ticket_post_id ): void {
-		$this->admin_views->template( 'series-pass-edit-link', [
-			'series_edit_link' => get_edit_post_link( $ticket_post_id ),
-		] );
+		$this->admin_views->template(
+			'series-pass-edit-link',
+			[
+				'series_edit_link' => get_edit_post_link( $ticket_post_id ),
+			] 
+		);
 	}
 
 	/**
@@ -181,29 +215,120 @@ class Metabox {
 	public function get_default_ticket_type_header_description( int $event_id, int $series_id ): string {
 		return $this->labels->get_default_ticket_type_event_in_series_description( $series_id, $event_id );
 	}
-
+	
 	/**
-	 * Get the helper text for series post type ticket panel.
+	 * Includes the warning message for recurring events in context of series.
 	 *
 	 * @since 5.8.0
 	 *
-	 * @param string $text The helper text with link.
-	 * @param WP_Post $post The Post object.
+	 * @param array<string,mixed> $context The context of the ticket form.
 	 *
-	 * @return string The helper text with link.
+	 * @return array<string,mixed> The context array.
 	 */
-	public function get_tickets_panel_list_helper_text( string $text, WP_Post $post ): string {
-		$helper_link = sprintf(
-			'<a href="%1$s" target="_blank" rel="noopener noreferrer ">%2$s</a>',
-			esc_url( 'https://evnt.is/manage-tickets' ),
-			esc_html__( 'Learn more about ticket management', 'event-tickets' )
+	public function get_recurring_warning_message( array $context ): array {
+		if ( ! isset( $context['post_id'] ) ) {
+			return $context;
+		}
+		
+		$series  = tec_series()->where( 'event_post_id', (int) $context['post_id'] )->first();
+		$message = $series ? $this->get_warning_message_for_saved_event( $series ) : $this->get_warning_message_for_unsaved_event();
+		
+		$context['messages'] = array_merge( [ 'recurring-warning-message' => $message ], $context['messages'] );
+		return $context;
+	}
+	
+	/**
+	 * Returns the warning message for saved recurring events.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post $series The post object of the Series Pass.
+	 *
+	 * @return string The warning message for saved recurring events.
+	 */
+	public function get_warning_message_for_saved_event( WP_Post $series ): string {
+		$learn_more_text = sprintf(
+			// Translators: %s is the pluralized name of the series pass.
+			__( 'Learn more about %s', 'event-tickets' ),
+			tec_tickets_get_series_pass_plural_uppercase()
 		);
-
+		
+		$learn_more_link = sprintf(
+			// Translators: %1$s is a link to the documentation, %2$s is the label for the link.
+			'<a href="%1$s" target="_blank" rel="noreferrer noopener">%2$s</a>',
+			esc_url( 'https://evnt.is/-series-passes' ),
+			esc_html( $learn_more_text )
+		);
+		
+		$series_link = sprintf(
+			// Translators: %2$s is the title of the series.
+			'<a href="%1$s" target="_blank" rel="noreferrer noopener">%2$s</a>',
+			esc_url( get_edit_post_link( $series ) ),
+			esc_html( get_the_title( $series ) )
+		);
+		
 		return sprintf(
-		// Translators: %1$s: dynamic "series pass" label text, %2$s: dynamic learn more link.
-			esc_html__( 'Create and manage %1$s for this Series. %2$s', 'event-tickets' ),
-			tec_tickets_get_series_pass_plural_uppercase(),
-			$helper_link,
+			// Translators: %1$s is the pluralized name of the series pass, %2$s is the singular name of the event, %3$s is a link to the series edit screen, %4$s is a link to the documentation.
+			__( 'This recurring %2$s is part of a Series. Create and manage %1$s for this %2$s from the %3$s Series admin. %4$s', 'event-tickets' ),
+			tec_tickets_get_series_pass_plural_uppercase( 'ticket editor message' ),
+			tribe_get_event_label_singular_lowercase(),
+			$series_link,
+			$learn_more_link,
+		);
+	}
+	
+	/**
+	 * Returns the warning message for unsaved recurring events.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The warning message for unsaved recurring events.
+	 */
+	public function get_warning_message_for_unsaved_event(): string {
+		$learn_more_text = sprintf(
+			// Translators: %s is the pluralized name of the series pass.
+			__( 'Learn more about %s', 'event-tickets' ),
+			tec_tickets_get_series_pass_plural_uppercase()
+		);
+		
+		$learn_more_link = sprintf(
+			// Translators: %1$s is a link to the documentation, %2$s is the label for the link.
+			'<a href="%1$s" target="_blank" rel="noreferrer noopener">%2$s</a>',
+			esc_url( 'https://evnt.is/-series-passes' ),
+			esc_html( $learn_more_text )
+		);
+		
+		return sprintf(
+			// Translators: %1$s is the singular name of the event, %2$s is the pluralized name of the series pass, %3$s is a link to the documentation.
+			__( 'Once you save this %1$s, you can add %2$s to its parent Series. %3$s.', 'event-tickets' ),
+			tribe_get_event_label_singular_lowercase(),
+			tec_tickets_get_series_pass_plural_uppercase( 'ticket editor message' ),
+			$learn_more_link,
+		);
+	}
+	
+	/**
+	 * Returns the warning message when there is no commerce provider configured.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The warning message when there is no commerce provider configured.
+	 */
+	public function get_no_commerce_provider_warning_message(): string {
+		$kb_url = 'https://evnt.is/1ao5';
+		
+		/* translators: %1$s: URL for help link, %2$s: Label for help link. */
+		$link = sprintf(
+			'<a href="%1$s" target="_blank" rel="noopener noreferrer">%2$s</a>',
+			esc_url( $kb_url ),
+			esc_html_x( 'Learn More', 'Helper link in Ticket Editor', 'event-tickets' )
+		);
+		
+		return sprintf(
+		/* Translators: %1$s: link to help article. */
+			__( 'There is no payment gateway configured. To create %1$s, you\'ll need to enable and configure an ecommerce solution. %2$s', 'event-tickets' ),
+			tec_tickets_get_series_pass_plural_uppercase( 'ticket editor message' ),
+			$link
 		);
 	}
 }

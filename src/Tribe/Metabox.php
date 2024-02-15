@@ -85,17 +85,8 @@ class Tribe__Tickets__Metabox {
 			return false;
 		}
 
-		/**
-		 * This filter allows retrieval of an event ID to be filtered before being accessed elsewhere.
-		 *
-		 * @since 5.8.0
-		 *
-		 * @param int $post_id The event ID to be filtered.
-		 */
-		$post_id = apply_filters(
-			'tec_tickets_filter_event_id',
-			( $post_id instanceof WP_Post ? $post_id->ID : (int) $post_id )
-		);
+		$original_id = $post_id instanceof WP_Post ? $post_id->ID : (int) $post_id;
+		$post_id = Event::filter_event_id( $original_id, 'tickets-metabox-render' );
 
 		$post = get_post( $post_id );
 
@@ -111,8 +102,6 @@ class Tribe__Tickets__Metabox {
 
 		/** @var Tribe__Tickets__Admin__Views $admin_views */
 		$admin_views = tribe( 'tickets.admin.views' );
-		$helper_text = $this->get_list_panel_helper_text( $post );
-		$helper_link = $this->get_helper_link();
 
 		$context = get_defined_vars();
 
@@ -225,8 +214,6 @@ class Tribe__Tickets__Metabox {
 			'list'     => $admin_views->template( 'editor/panel/list', [
 				'post_id'     => $post->ID,
 				'tickets'     => $tickets,
-				'helper_text' => $this->get_list_panel_helper_text( $post ),
-				'helper_link' => $this->get_helper_link(),
 			], false ),
 			'settings' => $admin_views->template( 'editor/panel/settings',
 				array_merge(
@@ -359,7 +346,7 @@ class Tribe__Tickets__Metabox {
 				 * Fire action when a ticket has been added
 				 *
 				 * @since 4.6.2
-				 * @since 5.8.0 Added $ticket_id and $data parameterss.
+				 * @since 5.8.0 Added $ticket_id and $data parameters.
 				 *
 				 * @param int $post_id ID of parent "event" post
 				 * @param int $ticket_id ID of ticket post
@@ -726,11 +713,22 @@ class Tribe__Tickets__Metabox {
 		}
 
 		// Pass the control to the child object
-		$did_checkin = $provider->checkin( $attendee_id );
+		$did_checkin = $provider->checkin( $attendee_id, false, $event_id );
 
 		$provider->clear_attendees_cache( $event_id );
 
-		wp_send_json_success( $did_checkin );
+		$data = [ 'did_checkin' => $did_checkin ];
+		/**
+		 * Filters the status code to return when an attendee is checked in.
+		 *
+		 * @since TBD
+		 *
+		 * @param int $status      The HTTP status code to return. Default is 200.
+		 * @param int $attendee_id The ID of the attendee that was checked in.
+		 */
+		$data = apply_filters( 'tec_tickets_attendee_manual_checkin_success_data', $data, $attendee_id );
+
+		wp_send_json_success( $data );
 	}
 
 	/**
@@ -924,52 +922,6 @@ class Tribe__Tickets__Metabox {
 			'decimal' => $decimal,
 			'decimal_error' => __( 'Please enter in without thousand separators and currency symbols.', 'event-tickets' ),
 		) );
-	}
-
-	/**
-	 * Get the list panel helper text.
-	 *
-	 * @since 5.8.0
-	 *
-	 * @param WP_Post $post The post object.
-	 *
-	 * @return string The helper text with link.
-	 */
-	protected function get_list_panel_helper_text( WP_Post $post ): string {
-		$object_labels = get_post_type_object( $post->post_type );
-		$text          = sprintf(
-			// Translators: %1$s: dynamic "tickets" label text, %2$s: dynamic "RSVPs" label, %3$s: dynamic post type label plural, %4$s the learn more link.
-			esc_html__( 'Create and manage single %1$s and %2$s for this %3$s. %4$s.', 'event-tickets' ),
-			tribe_get_ticket_label_plural_lowercase(),
-			tribe_get_rsvp_label_plural(),
-			strtolower( $object_labels->labels->singular_name ),
-			$this->get_helper_link()
-		);
-
-		/**
-		 * Filters the helper text shown at the bottom of Ticket panel meta box.
-		 *
-		 * @since 5.8.0
-		 *
-		 * @param string $text The helper text with link.
-		 * @param WP_Post $post The Post object.
-		 */
-		return apply_filters( 'tec_tickets_panel_list_helper_text', $text, $post );
-	}
-
-	/**
-	 * Get the helper link.
-	 *
-	 * @since 5.8.0
-	 *
-	 * @return string The helper link.
-	 */
-	protected function get_helper_link() {
-		return sprintf(
-			'<a href="%1$s" target="_blank" rel="noopener noreferrer ">%2$s</a>',
-			esc_url( 'https://evnt.is/manage-tickets' ),
-			esc_html__( 'Learn more about ticket management', 'event-tickets' )
-		);
 	}
 
 	/************************

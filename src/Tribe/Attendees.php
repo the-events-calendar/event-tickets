@@ -1,5 +1,6 @@
 <?php
 
+use TEC\Tickets\Event;
 use Tribe__Utils__Array as Arr;
 use Tribe__Tickets__Ticket_Object as Ticket;
 use Tribe__Tickets__Global_Stock as Global_Stock;
@@ -230,14 +231,7 @@ class Tribe__Tickets__Attendees {
 	 * @return string
 	 */
 	public function get_report_link( $post ) {
-		/**
-		 * This filter allows retrieval of an event ID to be filtered before being accessed elsewhere.
-		 *
-		 * @since 5.6.4
-		 *
-		 * @param int|null The event ID to be filtered.
-		 */
-		$post_id = apply_filters( 'tec_tickets_filter_event_id', $post->ID );
+		$post_id = Event::filter_event_id( $post->ID, 'attendees-report-link' );
 
 		$args = [
 			'post_type' => $post->post_type,
@@ -726,14 +720,7 @@ class Tribe__Tickets__Attendees {
 
 		$event_id = absint( $_GET['event_id'] );
 
-		/**
-		 * This filter allows retrieval of an event ID to be filtered before being accessed elsewhere.
-		 *
-		 * @since 5.6.3
-		 *
-		 * @param int|null The event ID to be filtered.
-		 */
-		$event_id = apply_filters( 'tec_tickets_filter_event_id', $event_id );
+		$event_id = Event::filter_event_id( $event_id, 'attendee-csv-report' );
 
 		// Verify event ID is a valid integer and the nonce is accepted.
 		if ( empty( $event_id ) || ! wp_verify_nonce( $_GET['attendees_csv_nonce'], 'attendees_csv_nonce' ) ) {
@@ -1167,7 +1154,7 @@ class Tribe__Tickets__Attendees {
 			$ticket_totals['available'] += array_sum( $available_contributors );
 		}
 
-		$context = [
+		return [
 			'attendees'         => $this,
 			'event_id'          => $post_id,
 			'tickets_by_type'   => $tickets_by_type,
@@ -1177,15 +1164,9 @@ class Tribe__Tickets__Attendees {
 				'rsvp'    => 'tec-tickets__admin-attendees-overview-ticket-type-icon--rsvp',
 			],
 			'type_labels'       => [
-				'default' => sprintf(
-				// Translators: %s is the uppercase plural Tickets label.
-					_x( 'Single %s', 'Ticket overview', 'event-tickets' ),
-					tribe_get_ticket_label_plural( 'Ticket overview' )
-				),
-				'rsvp'    => __( 'RSVP', 'event-tickets' ),
-			]
+				'default' => tec_tickets_get_default_ticket_type_label_plural( 'attendee overview' ),
+				'rsvp'    => tribe_get_rsvp_label_plural( 'attendee overview' ),
+			],
 		];
-
-		return $context;
 	}
 }

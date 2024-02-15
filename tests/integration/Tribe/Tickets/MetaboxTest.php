@@ -11,12 +11,23 @@ use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe__Tickets__Metabox as Metabox;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 use TEC\Tickets\Commerce\Module as Commerce;
+use Tribe__Events__Main as TEC;
 
 class MetaboxTest extends WPTestCase {
 	use SnapshotAssertions;
 	use Ticket_Maker;
 	use RSVP_Ticket_Maker;
 	use With_Uopz;
+
+	/**
+	 * @before
+	 */
+	public function ensure_ticketable_post_types(): void {
+		$ticketable   = tribe_get_option( 'ticket-enabled-post-types', [] );
+		$ticketable[] = 'post';
+		$ticketable[] = TEC::POSTTYPE;
+		tribe_update_option( 'ticket-enabled-post-types', array_values( array_unique( $ticketable ) ) );
+	}
 
 	/**
 	 * Low-level registration of the Commerce provider. There is no need for a full-blown registration
@@ -136,6 +147,46 @@ class MetaboxTest extends WPTestCase {
 		$html    = $this->placehold_post_ids( $html, [
 			'post_id'   => $post_id,
 			'ticket_id' => $ticket_id,
+		] );
+		// Depending on the Common versions, the assets might be loaded from ET or TEC; this should not break the tests.
+		$html = str_replace( 'the-events-calendar/common', 'event-tickets/common', $html );
+
+		$this->assertMatchesHtmlSnapshot( $html );
+	}
+
+	public function panels_with_no_provider_data_provider(): \Generator {
+		yield 'post' => [
+			static function () {
+				return static::factory()->post->create( [ 'post_type' => 'post' ] );
+			}
+		];
+
+		yield 'event' => [
+			static function () {
+				return tribe_events()->set_args( [
+					'title'      => 'Test Event',
+					'status'     => 'publish',
+					'start_date' => '2022-10-01 10:00:00',
+					'duration'   => 2 * HOUR_IN_SECONDS,
+				] )->create()->ID;
+			}
+		];
+	}
+
+	/**
+	 * @dataProvider panels_with_no_provider_data_provider
+	 */
+	public function test_get_panels_with_no_providers( Closure $fixture ): void {
+		// Equivalent to deactivating Commerce.
+		add_filter( 'tribe_tickets_get_modules', '__return_empty_array' );
+		$post_id = $fixture();
+		$this->set_fn_return( 'wp_create_nonce', '33333333' );
+
+		$metabox = tribe( Metabox::class );
+		$panels  = $metabox->get_panels( $post_id );
+		$html    = implode( '', $panels );
+		$html    = $this->placehold_post_ids( $html, [
+			'post_id' => $post_id,
 		] );
 		// Depending on the Common versions, the assets might be loaded from ET or TEC; this should not break the tests.
 		$html = str_replace( 'the-events-calendar/common', 'event-tickets/common', $html );

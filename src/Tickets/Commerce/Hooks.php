@@ -338,9 +338,14 @@ class Hooks extends Service_Provider {
 	 * Sets up the Attendance Totals Class report with the Attendee Screen
 	 *
 	 * @since 5.1.9
+	 * @since TBD Add the `$event_id` parameter.
+	 *
+	 * @parma int|null $event_id The ID of the post to calculate attendance totals for.
 	 */
-	public function setup_attendance_totals() {
-		$this->container->make( Reports\Attendance_Totals::class )->integrate_with_attendee_screen();
+	public function setup_attendance_totals( $event_id = null ) {
+		$attendance_totals = $this->container->make( Reports\Attendance_Totals::class );
+		$attendance_totals->set_event_id( $event_id );
+		$attendance_totals->integrate_with_attendee_screen();
 	}
 
 	/**

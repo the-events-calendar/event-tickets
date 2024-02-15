@@ -10,6 +10,7 @@ namespace TEC\Tickets\Commerce\Reports;
 use TEC\Tickets\Commerce;
 use TEC\Tickets\Commerce\Admin_Tables;
 use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Event;
 
 /**
  * Class Reports for Attendees
@@ -363,14 +364,7 @@ class Attendees extends Report_Abstract {
 
 		$event_id = absint( $_GET['event_id'] );
 
-		/**
-		 * This filter allows retrieval of an event ID to be filtered before being accessed elsewhere.
-		 *
-		 * @since 5.6.3
-		 *
-		 * @param int|null The event ID to be filtered.
-		 */
-		$event_id = apply_filters( 'tec_tickets_filter_event_id', $event_id );
+		$event_id = Event::filter_event_id( $event_id, 'attendee-csv-report' );
 
 		// Verify event ID is a valid integer and the nonce is accepted.
 		if ( empty( $event_id ) || ! wp_verify_nonce( $_GET['attendees_csv_nonce'], 'attendees_csv_nonce' ) ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized

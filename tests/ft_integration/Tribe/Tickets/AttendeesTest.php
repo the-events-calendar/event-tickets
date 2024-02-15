@@ -15,6 +15,7 @@ use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
 use Tribe__Tickets__Attendees as Attendees;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 use TEC\Tickets\Flexible_Tickets\Test\Traits\Series_Pass_Factory;
+use Tribe__Tickets__Tickets as Tickets;
 
 class AttendeesTest extends WPTestCase {
 	use SnapshotAssertions;
@@ -201,6 +202,7 @@ class AttendeesTest extends WPTestCase {
 		$_GET['event_id'] = $post_id;
 		$_GET['search'] = '';
 
+		tribe_cache()->reset();
 		ob_start();
 		/*
 		Columns headers are cached in the `get_column_headers` function

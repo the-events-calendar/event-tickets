@@ -77,11 +77,11 @@ class Provider extends \TEC\Common\Contracts\Service_Provider {
 		$description = sprintf(
 			// Translators: %1$s is the ticket type label_lowercase, %2$s is the post type label.
 			_x(
-				'A single %1$s is specific to this %2$s.',
+				'A %1$s is specific to this %2$s.',
 				'The help text for the default ticket type in the ticket form.',
 				'event-tickets'
 			),
-			tribe_get_ticket_label_singular_lowercase( 'admin_ticket_type_help_text' ),
+			tec_tickets_get_default_ticket_type_label_lowercase( 'admin_ticket_type_help_text' ),
 			$post_type
 		);
 
