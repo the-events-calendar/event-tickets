@@ -53,11 +53,27 @@ const Controls = ({
 }) =>
 	hasMultipleProviders && (
 		<InspectorControls key="inspector">
-			<PanelBody title={__('Tickets Settings', 'event-tickets')}>
+			<PanelBody
+				// eslint-disable-next-line no-undef
+				title={sprintf(
+					/* Translators: %s - Ticket plural label. */
+					__('%s Settings', 'event-tickets'),
+					tribe_editor_config.tickets.ticketLabels.ticket.plural // eslint-disable-line camelcase, no-undef
+				)}
+			>
 				<PanelRow>
 					<fieldset className="tribe-editor__tickets-controls-provider">
 						<legend>
-							{__('Sell tickets using', 'event-tickets')}
+							{
+								// eslint-disable-next-line no-undef
+								sprintf(
+									/* Translators: %s - Ticket plural label. */
+									__('Sell %s using', 'event-tickets'),
+									// eslint-disable-next-line camelcase, no-undef
+									tribe_editor_config.tickets.ticketLabels
+										.ticket.plural_lowercase
+								)
+							}
 						</legend>
 						{message}
 						{providers.map((provider, key) => (

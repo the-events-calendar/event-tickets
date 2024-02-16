@@ -20,9 +20,14 @@ const getCurrentPostStatus = () => {
 
 const mapStateToProps = (state, ownProps) => {
 	let mappedProps = {
-		content: __(
-			'Single tickets are not yet supported on recurring events. ',
-			'event-tickets'
+		// eslint-disable-next-line no-undef
+		content: sprintf(
+			/* Translators: %s - the plural, lowercase label for a ticket. */
+			__(
+				'Single %s are not yet supported on recurring events. ',
+				'event-tickets'
+			),
+			tribe_editor_config.tickets.ticketLabels.ticket.plural_lowercase // eslint-disable-line camelcase, no-undef
 		),
 		ctaLink: (
 			<a

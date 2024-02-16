@@ -17,14 +17,26 @@ import { __ } from '@wordpress/i18n';
 
 const mapStateToProps = (state, ownProps) => {
 	const isRecurring = hasRecurrenceRules(state);
-	const message = __(
-		'It looks like you have multiple ecommerce plugins active. We recommend running only one at a time. However, if you need to run multiple, please select which one to use to sell tickets for this event. ', // eslint-disable-line max-len
-		'event-tickets'
+	// eslint-disable-next-line no-undef
+	const message = sprintf(
+		/* Translators: %s - the plural, lowercase label for a ticket. */
+		__(
+			'It looks like you have multiple ecommerce plugins active. We recommend running only one at a time. However, if you need to run multiple, please select which one to use to sell %s for this event. ', // eslint-disable-line max-len
+			'event-tickets'
+		),
+		tribe_editor_config.tickets.ticketLabels.ticket.plural_lowercase // eslint-disable-line camelcase, no-undef
 	);
 
-	const note = __(
-		'Note: adjusting this setting will only impact new tickets. Existing tickets will not change. We highly recommend that all tickets for one event use the same ecommerce plugin.', // eslint-disable-line max-len
-		'event-tickets'
+	// eslint-disable-next-line no-undef
+	const note = sprintf(
+		/* Translators: %1$s - the plural, lowercase label for a ticket; %2$s - the plural, lowercase label for a ticket; %3$s - the plural, lowercase label for a ticket. */
+		__(
+			'Note: adjusting this setting will only impact new %1$s. Existing %2$s will not change. We highly recommend that all %3$s for one event use the same ecommerce plugin.', // eslint-disable-line max-len
+			'event-tickets'
+		),
+		tribe_editor_config.tickets.ticketLabels.ticket.plural_lowercase, // eslint-disable-line camelcase, no-undef
+		tribe_editor_config.tickets.ticketLabels.ticket.plural_lowercase, // eslint-disable-line camelcase, no-undef
+		tribe_editor_config.tickets.ticketLabels.ticket.plural_lowercase // eslint-disable-line camelcase, no-undef
 	);
 	const messageElement = (
 		<p>

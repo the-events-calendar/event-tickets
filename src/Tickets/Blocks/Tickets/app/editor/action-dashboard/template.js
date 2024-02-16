@@ -22,7 +22,12 @@ import NotSupportedMessage from '../not-supported-message/container';
 import { ActionDashboard } from '@moderntribe/tickets/elements';
 import './style.pcss';
 
-const confirmLabel = __('Add a Ticket', 'event-tickets');
+// eslint-disable-next-line no-undef
+const confirmLabel = sprintf(
+	/* Translators: %s - the singular label for a ticket. */
+	__('Add a %s', 'event-tickets'),
+	tribe_editor_config.tickets.ticketLabels.ticket.singular // eslint-disable-line camelcase, no-undef
+);
 
 class TicketsDashboardAction extends PureComponent {
 	static propTypes = {

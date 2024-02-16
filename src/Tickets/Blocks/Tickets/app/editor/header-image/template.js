@@ -21,14 +21,26 @@ const HeaderImage = ( {
 	onRemove,
 	onSelect,
 } ) => {
-	const description = ! image?.src && __(
-		/* eslint-disable-next-line max-len */
-		'Select an image from your Media Library to display on emailed tickets and RSVPs. For best results, use a .jpg, .png, or .gif at least 1160px wide.',
-		'event-tickets',
-	);
+	const description =
+		!image?.src &&
+		// eslint-disable-next-line no-undef
+		sprintf(
+			/* Translators: %s - Ticket plural label. */
+			__(
+				/* eslint-disable-next-line max-len */
+				'Select an image from your Media Library to display on emailed %s and RSVPs. For best results, use a .jpg, .png, or .gif at least 1160px wide.',
+				'event-tickets'
+			),
+			tribe_editor_config.tickets.ticketLabels.ticket.plural_lowercase // eslint-disable-line camelcase, no-undef
+		);
 
 	const imageUploadProps = {
-		title: __( 'Ticket Header Image', 'event-tickets' ),
+		// eslint-disable-next-line no-undef
+		title: sprintf(
+			/* Translators: %s - Ticket singular label. */
+			__('%s Header Image', 'event-tickets'),
+			tribe_editor_config.tickets.ticketLabels.ticket.singular // eslint-disable-line camelcase, no-undef
+		),
 		description,
 		className: 'tribe-editor__rsvp__image-upload',
 		buttonDisabled: isSettingsLoading,

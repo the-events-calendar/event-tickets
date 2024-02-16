@@ -92,7 +92,7 @@ class Tickets extends PureComponent {
 			<>
 				<Card
 					className="tribe-editor__card tribe-editor__not-supported-message"
-					header={__('Tickets', 'event-tickets')}
+					header={tribe_editor_config.tickets.ticketLabels.ticket.plural}
 				>
 					<div className="tribe-editor__title__help-messages">
 						{showWarning && <Warning />}

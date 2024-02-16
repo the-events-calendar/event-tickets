@@ -29,8 +29,28 @@ const Availability = ( { available, total } ) => {
 				'tribe-tooltip',
 			) }
 			count={ available }
-			singular={ __( '%d ticket available', 'event-tickets' ) }
-			plural={ __( '%d tickets available', 'event-tickets' ) }
+			singular={
+				'%d ' +
+				// eslint-disable-next-line no-undef
+				sprintf(
+					/* Translators: %s - ticket singular label, lowercase */
+					__('%s available', 'event-tickets'),
+					// eslint-disable-next-line no-undef, camelcase
+					tribe_editor_config.tickets.ticketLabels.ticket
+						.singular_lowercase
+				)
+			}
+			plural={
+				'%d ' +
+				// eslint-disable-next-line no-undef
+				sprintf(
+					/* Translators: %s - ticket plural label, lowercase */
+					__('%s available', 'event-tickets'),
+					// eslint-disable-next-line no-undef, camelcase
+					tribe_editor_config.tickets.ticketLabels.ticket
+						.plural_lowercase
+				)
+			}
 		/>
 	);
 
@@ -41,8 +61,28 @@ const Availability = ( { available, total } ) => {
 				'tribe-editor__tickets__availability-label--total',
 			) }
 			count={ total }
-			singular={ __( '%d total ticket', 'event-tickets' ) }
-			plural={ __( '%d total tickets', 'event-tickets' ) }
+			singular={
+				'%d ' +
+				// eslint-disable-next-line no-undef
+				sprintf(
+					/* Translators: %s - ticket singular label, lowercase */
+					__('total %s', 'event-tickets'),
+					// eslint-disable-next-line no-undef, camelcase
+					tribe_editor_config.tickets.ticketLabels.ticket
+						.singular_lowercase
+				)
+			}
+			plural={
+				'%d ' +
+				// eslint-disable-next-line no-undef
+				sprintf(
+					/* Translators: %s - ticket plural label, lowercase */
+					__('total %s', 'event-tickets'),
+					// eslint-disable-next-line no-undef, camelcase
+					tribe_editor_config.tickets.ticketLabels.ticket
+						.plural_lowercase
+				)
+			}
 		/>
 	);
 
@@ -50,19 +90,24 @@ const Availability = ( { available, total } ) => {
 		<div className="tribe-editor__tickets__availability">
 			<>
 				{ Available }
-				{ available
-					? (
-						<IconWithTooltip
-							propertyName={ __(
-								/* eslint-disable-next-line max-len */
-								'Ticket availability is based on the lowest number of inventory, stock, and capacity.',
-								'event-tickets',
-							) }
-							icon={ <span className="dashicons dashicons-info-outline" /> }
-						/>
-					)
-					: null
-				}
+				{available ? (
+					<IconWithTooltip
+						// eslint-disable-next-line no-undef
+						propertyName={sprintf(
+							/* Translators: %s - the singular label for a ticket. */
+							__(
+								'%s availability is based on the lowest number of inventory, stock, and capacity.',
+								'event-tickets'
+							),
+							// eslint-disable-next-line camelcase, no-undef
+							tribe_editor_config.tickets.ticketLabels.ticket
+								.singular
+						)}
+						icon={
+							<span className="dashicons dashicons-info-outline" />
+						}
+					/>
+				) : null}
 			</>
 			{ Total }
 		</div>

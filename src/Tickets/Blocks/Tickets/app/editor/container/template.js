@@ -60,7 +60,7 @@ const TicketsContainer = ({
 			<div className={innerBlocksClassName}>
 				<Card
 					className={cardClassName}
-					header={__('Tickets', 'event-tickets')}
+					header={tribe_editor_config.tickets.ticketLabels.ticket.plural}
 				>
 					{canCreateTickets && (
 						<InnerBlocks allowedBlocks={['tribe/tickets-item']} />
