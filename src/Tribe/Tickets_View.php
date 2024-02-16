@@ -1154,8 +1154,13 @@ class Tribe__Tickets__Tickets_View {
 			 * Allow for the addition of content (namely the "Who's Attending?" list) above the ticket form.
 			 *
 			 * @since 5.5.0
+			 * @since TBD Added the `$post_id` and `$post` parameters.
+			 *
+			 * @param int     $post_id The ID of the post the tickets block is being rendered for.
+			 * @param WP_Post $post    The post object the tickets block is being rendered for.
+			 *
 			 */
-			do_action( 'tribe_tickets_before_front_end_ticket_form' );
+			do_action( 'tribe_tickets_before_front_end_ticket_form', $post_id, $post );
 
 			$before_content = (string) ob_get_clean();
 			if ( $echo ) {
@@ -1312,8 +1317,12 @@ class Tribe__Tickets__Tickets_View {
 		 * Allow for the addition of content (namely the "Who's Attending?" list) above the ticket form.
 		 *
 		 * @since 4.5.5
+		 * @since TBD Added the `$post_id` and `$post` parameters.
+		 *
+		 * @param int     $post_id The ID of the post the RSVP block is being rendered for.
+		 * @param WP_Post $post    The post object the RSVP block is being rendered for.
 		 */
-		do_action( 'tribe_tickets_before_front_end_ticket_form' );
+		do_action( 'tribe_tickets_before_front_end_ticket_form', $post_id, $post );
 
 		/**
 		 * A flag we can set via filter, e.g. at the end of this method, to ensure this template only shows once.
