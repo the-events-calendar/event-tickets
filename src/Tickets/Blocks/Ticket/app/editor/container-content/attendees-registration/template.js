@@ -32,7 +32,15 @@ const AttendeesRegistration = ( {
 
 	return (
 		<ARElement
-			helperText={ __( 'Save your ticket to enable attendee information fields', 'event-tickets' ) }
+			// eslint-disable-next-line no-undef
+			helperText={sprintf(
+				/* Translators: %s - the singular, lowercase label for a ticket. */
+				__(
+					'Save your %s to enable attendee information fields',
+					'event-tickets'
+				),
+				tribe_editor_config.tickets.ticketLabels.ticket.singular_lowercase // eslint-disable-line camelcase, no-undef, prettier/prettier
+			)}
 			iframeURL={ attendeeRegistrationURL }
 			isDisabled={ isDisabled }
 			isModalOpen={ isModalOpen }

@@ -33,9 +33,19 @@ const EcommerceOptions = ( {
 		let label = '';
 
 		if ( ticketProvider === EDD ) {
-			label = __( 'Edit Ticket in Easy Digital Downloads', 'event-tickets' );
+			// eslint-disable-next-line no-undef
+			label = sprintf(
+				/* Translators: %s - the singular label for a ticket. */
+				__('Edit %s in Easy Digital Downloads', 'event-tickets'),
+				tribe_editor_config.tickets.ticketLabels.ticket.singular // eslint-disable-line camelcase, no-undef
+			);
 		} else if ( ticketProvider === WOO ) {
-			label = __( 'Edit Ticket in WooCommerce', 'event-tickets' );
+			// eslint-disable-next-line no-undef
+			label = sprintf(
+				/* Translators: %s - the singular label for a ticket. */
+				__('Edit %s in WooCommerce', 'event-tickets'),
+				tribe_editor_config.tickets.ticketLabels.ticket.singular // eslint-disable-line camelcase, no-undef
+			);
 		}
 
 		return label;

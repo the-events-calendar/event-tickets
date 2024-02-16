@@ -20,10 +20,24 @@ const MoveDelete = ( {
 	return (
 		<div className="tribe-editor__ticket__content-row--move-delete">
 			<Button type="button" onClick={ removeTicket } disabled={ isDisabled }>
-				{ __( 'Remove Ticket', 'event-tickets' ) }
+				{
+					// eslint-disable-next-line no-undef
+					sprintf(
+						/* Translators: %s - the singular label for a ticket. */
+						__('Remove %s', 'event-tickets'),
+						tribe_editor_config.tickets.ticketLabels.ticket.singular // eslint-disable-line camelcase, no-undef
+					)
+				}
 			</Button>
 			<Button type="button" onClick={ moveTicket } disabled={ isDisabled }>
-				{ __( 'Move Ticket', 'event-tickets' ) }
+				{
+					// eslint-disable-next-line no-undef
+					sprintf(
+						/* Translators: %s - the singular label for a ticket. */
+						__('Move %s', 'event-tickets'),
+						tribe_editor_config.tickets.ticketLabels.ticket.singular // eslint-disable-line camelcase, no-undef
+					)
+				}
 			</Button>
 		</div>
 	);

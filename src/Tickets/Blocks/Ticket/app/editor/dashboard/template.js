@@ -16,11 +16,21 @@ import { ActionDashboard } from '@moderntribe/tickets/elements';
 import MoveDelete from './move-delete/container';
 import './style.pcss';
 
-const confirmLabel = ( hasBeenCreated ) => (
-	hasBeenCreated
-		? __( 'Update Ticket', 'event-tickets' )
-		: __( 'Create Ticket', 'event-tickets' )
-);
+const confirmLabel = (hasBeenCreated) => {
+	return hasBeenCreated
+		? // eslint-disable-next-line no-undef
+		  sprintf(
+				/* Translators: %s - the singular label for a ticket. */
+				__('Update %s', 'event-tickets'),
+				tribe_editor_config.tickets.ticketLabels.ticket.singular // eslint-disable-line camelcase, no-undef
+		  )
+		: // eslint-disable-next-line no-undef
+		  sprintf(
+				/* Translators: %s - the singular label for a ticket. */
+				__('Create %s', 'event-tickets'),
+				tribe_editor_config.tickets.ticketLabels.ticket.singular // eslint-disable-line camelcase, no-undef
+		  );
+};
 
 const cancelLabel = __( 'Cancel', 'event-tickets' );
 

@@ -149,8 +149,18 @@ class Capacity extends PureComponent {
 			}
 
 			extraProps.label = tempCapacityType === TICKET_TYPES[ SHARED ]
-				? __( 'Limit sales of this ticket to:', 'event-tickets' )
-				: __( 'Number of tickets available', 'event-tickets' );
+					? // eslint-disable-next-line no-undef
+					  sprintf(
+							/* Translators: %s - the singular, lowercase label for a ticket. */
+							__('Limit sales of this %s to:', 'event-tickets'),
+						tribe_editor_config.tickets.ticketLabels.ticket.singular_lowercase // eslint-disable-line camelcase, no-undef, prettier/prettier
+					  )
+					: // eslint-disable-next-line no-undef
+					  sprintf(
+							/* Translators: %s - the plural, lowercase label for a ticket. */
+							__('Number of %s available', 'event-tickets'),
+							tribe_editor_config.tickets.ticketLabels.ticket.plural_lowercase // eslint-disable-line camelcase, no-undef, prettier/prettier
+					  );
 
 			inputs.push(
 				<LabeledNumberInput
@@ -234,11 +244,21 @@ class Capacity extends PureComponent {
 					className="tribe-editor__ticket__capacity-label-with-tooltip"
 					forId={ hasTicketsPlus ? this.ids.select : this.ids.capacity }
 					isLabel={ true }
-					label={ __( 'Ticket Capacity', 'event-tickets' ) }
-					tooltipText={ __(
-						'Ticket capacity will only be used by attendees buying this ticket type',
-						'event-tickets',
-					) }
+					// eslint-disable-next-line no-undef
+					label={sprintf(
+						/* Translators: %s - the singular label for a ticket. */
+						__('%s Capacity', 'event-tickets'),
+						tribe_editor_config.tickets.ticketLabels.ticket.singular // eslint-disable-line camelcase, no-undef
+					)}
+					tooltipText={sprintf(
+						/* Translators: %1$s - the singular label for a ticket; %2$s - the singular, lowercase label for a ticket. */
+						__(
+							'%1$s capacity will only be used by attendees buying this %2$s type',
+							'event-tickets'
+						),
+						tribe_editor_config.tickets.ticketLabels.ticket.singular, // eslint-disable-line camelcase, no-undef, prettier/prettier
+						tribe_editor_config.tickets.ticketLabels.ticket.singular_lowercase // eslint-disable-line camelcase, no-undef, prettier/prettier
+					)}
 					tooltipLabel={
 						<Dashicon
 							className="tribe-editor__ticket__tooltip-label"

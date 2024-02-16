@@ -46,7 +46,12 @@ class Title extends PureComponent {
 					className="tribe-editor__ticket__title-label"
 					forId={ this.id }
 					isLabel={ true }
-					label={ __( 'Ticket name', 'event-tickets' ) }
+					// eslint-disable-next-line no-undef
+					label={sprintf(
+						/* Translators: %s - the singular label for a ticket. */
+						__('%s name', 'event-tickets'),
+						tribe_editor_config.tickets.ticketLabels.ticket.singular // eslint-disable-line camelcase, no-undef
+					)}
 				/>
 
 				<Input
