@@ -156,10 +156,24 @@ class Attendees extends Report_Abstract {
 			// Use iFrame Header -- WP Method.
 			iframe_header();
 
-			// Check if we need to send an Email!
-			$status = false;
-			if ( isset( $_POST['tribe-send-email'] ) && $_POST['tribe-send-email'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-				$status = tribe( \Tribe__Tickets__Attendees::class )->send_mail_list();
+			$event_id = tribe_get_request_var( 'event_id' );
+			$event_id = ! is_numeric( $event_id ) ? null : absint( $event_id );
+			$nonce = tribe_get_request_var( '_wpnonce' );
+			$email_address = tribe_get_request_var( 'email_to_address' );
+			$user_id = tribe_get_request_var( 'email_to_user' );
+			$should_send_email = (bool) tribe_get_request_var( 'tribe-send-email', false );
+			$type = $email_address ? 'email' : 'user';
+			$send_to = $type === 'email' ? $email_address : $user_id;
+
+			$status = tribe( \Tribe__Tickets__Attendees::class )->has_attendees_list_access(
+				$event_id,
+				$type,
+				$nonce,
+				$send_to
+			);
+
+			if ( $should_send_email ) {
+				$status = tribe( \Tribe__Tickets__Attendees::class )->send_mail_list( $event_id, $email_address, $send_to, $status );
 			}
 
 			tribe( 'tickets.admin.views' )->template( 'attendees/attendees-email', [ 'status' => $status ] );

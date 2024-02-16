@@ -434,12 +434,25 @@ class Tribe__Tickets__Attendees {
 			// Use iFrame Header -- WP Method.
 			iframe_header();
 
-			// Check if we need to send an Email!
-			$status = false;
-			if ( isset( $_POST['tribe-send-email'] ) && $_POST['tribe-send-email'] ) {
-				$status = $this->send_mail_list();
-			}
+			$event_id = tribe_get_request_var( 'event_id' );
+			$event_id = ! is_numeric( $event_id ) ? null : absint( $event_id );
+			$nonce = tribe_get_request_var( '_wpnonce' );
+			$email_address = tribe_get_request_var( 'email_to_address' );
+			$user_id = tribe_get_request_var( 'email_to_user' );
+			$should_send_email = (bool) tribe_get_request_var( 'tribe-send-email', false );
+			$type = $email_address ? 'email' : 'user';
+			$send_to = $type === 'email' ? $email_address : $user_id;
 
+			$status = $this->has_attendees_list_access(
+				$event_id,
+				$type,
+				$nonce,
+				$send_to
+			);
+
+			if ( $should_send_email ) {
+				$status = $this->send_mail_list( $event_id, $email_address, $send_to, $status );
+			}
 			tribe( 'tickets.admin.views' )->template( 'attendees/attendees-email', [ 'status' => $status ] );
 
 			// Use iFrame Footer -- WP Method.
@@ -781,24 +794,18 @@ class Tribe__Tickets__Attendees {
 		}
 	}
 
-	/**
-	 * Handles the "send to email" action for the attendees list.
-	 *
-	 * @since 4.6.2
-	 */
-	public function send_mail_list() {
+	public function has_attendees_list_access( $event_id = null, $nonce = null, $type = 'user', $send_to = null ) {
 		$error = new WP_Error();
 
-		if ( empty( $_GET['event_id'] ) ) {
+		if ( ! $event_id ) {
 			$error->add( 'no-event-id', esc_html__( 'Invalid Event ID', 'event-tickets' ), [ 'type' => 'general' ] );
 
 			return $error;
 		}
 
 		$cap = 'edit_posts';
-		$event_id = absint( ! empty( $_GET['event_id'] ) && is_numeric( $_GET['event_id'] ) ? $_GET['event_id'] : 0 );
 
-		if ( ! current_user_can( 'edit_posts' ) && $event_id ) {
+		if ( ! current_user_can( 'edit_posts' ) ) {
 			$event = get_post( $event_id );
 
 			if ( $event instanceof WP_Post && get_current_user_id() === (int) $event->post_author ) {
@@ -806,48 +813,63 @@ class Tribe__Tickets__Attendees {
 			}
 		}
 
-		if ( empty( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'], 'email-attendees-list' ) || ! $this->user_can( $cap, $_GET['event_id'] ) ) {
+		if (
+			empty( $nonce )
+			|| ! wp_verify_nonce( $nonce, 'email-attendees-list' )
+			|| ! $this->user_can( $cap, $event_id )
+		) {
 			$error->add( 'nonce-fail', esc_html__( 'Cheatin Huh?', 'event-tickets' ), [ 'type' => 'general' ] );
 
 			return $error;
 		}
 
-		if ( empty( $_POST['email_to_address'] ) && ( empty( $_POST['email_to_user'] ) || 0 >= (int) $_POST['email_to_user'] ) ) {
-			$error->add( 'empty-fields', esc_html__( 'Empty user and email', 'event-tickets' ), [ 'type' => 'general' ] );
+		if ( empty( $send_to ) ) {
+			$error->add( 'empty-fields', esc_html__( 'Empty user and/or email', 'event-tickets' ), [ 'type' => 'general' ] );
 
 			return $error;
 		}
 
-		if ( ! empty( $_POST['email_to_address'] ) ) {
-			$type = 'email';
-		} else {
-			$type = 'user';
-		}
-
-		if ( 'email' === $type && ! is_email( $_POST['email_to_address'] ) ) {
+		if ( 'email' === $type && ! is_email( $send_to ) ) {
 			$error->add( 'invalid-email', esc_html__( 'Invalid Email', 'event-tickets' ), [ 'type' => $type ] );
 
 			return $error;
 		}
 
-		if ( 'user' === $type && ! is_numeric( $_POST['email_to_user'] ) ) {
+		if ( 'user' === $type && ! is_numeric( $send_to ) ) {
 			$error->add( 'invalid-user', esc_html__( 'Invalid User ID', 'event-tickets' ), [ 'type' => $type ] );
 
 			return $error;
 		}
 
-		/**
-		 * Now we know we have valid data
-		 */
+		return true;
+	}
 
-		if ( 'email' === $type ) {
-			// We already check this variable so, no harm here.
-			$email = $_POST['email_to_address'];
-		} else {
-			$user = get_user_by( 'id', $_POST['email_to_user'] );
+	/**
+	 * Handles the "send to email" action for the attendees list.
+	 *
+	 * @since 4.6.2
+	 * @since TBD Included params $event_id, $type, $send_to and $error to allow for testing.
+	 *
+	 * @param ?int|?string $event_id The event ID.
+	 * @param ?string      $type     The type of recipient.
+	 *                               Accepts 'user' or 'email'.
+	 * @param ?string|?int $send_to  The recipient's ID or email.
+	 *                               If $type is 'user', this should be the user ID.
+	 * @paramm ?WP_Error   $error    The error object.
+	 *         				         If null, a new WP_Error object will be created.
+	 *
+	 * @return string|WP_Error
+	 */
+	public function send_mail_list( $event_id = null, ?string $type = 'user', $send_to = null, $error = null ) {
+		if ( null === $error ) {
+			$error = new WP_Error();
+		}
+
+		if ( 'user' === $type ) {
+			$user = get_user_by( 'id', $send_to );
 
 			if ( ! is_object( $user ) ) {
-				$error->add( 'invalid-user', esc_html__( 'Invalid User ID', 'event-tickets' ), [ 'type' => $type ] );
+				$error->add( 'invalid-user', esc_html__( 'Invalid User ID', 'event-tickets' ), [ 'type' => $type, 'user' => $send_to ] );
 
 				return $error;
 			}
@@ -856,9 +878,9 @@ class Tribe__Tickets__Attendees {
 		}
 
 		$this->attendees_table = new Tribe__Tickets__Attendees_Table();
-		$items = $this->generate_filtered_list( $_GET['event_id'] );
+		$items = $this->generate_filtered_list( $event_id );
 
-		$event = get_post( $_GET['event_id'] );
+		$event = get_post( $event_id );
 
 		ob_start();
 		$attendee_tpl = Tribe__Tickets__Templates::get_template_hierarchy( 'tickets/attendees-email.php', [ 'disable_view_check' => true ] );
