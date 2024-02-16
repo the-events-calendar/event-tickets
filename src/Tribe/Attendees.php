@@ -130,11 +130,11 @@ class Tribe__Tickets__Attendees {
 		 */
 		$edit_post_link = apply_filters( 'tribe_tickets_event_action_links_edit_url', get_edit_post_link( $event_id ), $event_id );
 
-		$post = get_post( $event_id );
-		$pto = get_post_type_object( $post->post_type );
+		$post     = get_post( $event_id );
+		$pto      = get_post_type_object( $post->post_type );
 		$singular = $pto->labels->singular_name;
-		$edit = esc_html( sprintf( _x( 'Edit %s', 'attendee event actions', 'event-tickets' ), $singular ) );
-		$view = esc_html( sprintf( _x( 'View %s', 'attendee event actions', 'event-tickets' ), $singular ) );
+		$edit     = esc_html( sprintf( _x( 'Edit %s', 'attendee event actions', 'event-tickets' ), $singular ) );
+		$view     = esc_html( sprintf( _x( 'View %s', 'attendee event actions', 'event-tickets' ), $singular ) );
 
 		$action_links = [
 			'<a href="' . esc_url( $edit_post_link ) . '" title="' . esc_attr_x( 'Edit', 'attendee event actions', 'event-tickets' ) . '">' . $edit . '</a>',
@@ -173,11 +173,11 @@ class Tribe__Tickets__Attendees {
 
 		$total_checked_in = $this->get_checkedin_total();
 		$check_in_percent = $this->get_checkedin_percentage( $post_id );
-		$total_attendees = Tribe__Tickets__Tickets::get_event_attendees_count( $post_id );
+		$total_attendees  = Tribe__Tickets__Tickets::get_event_attendees_count( $post_id );
 
 		/** @var Tribe__Tickets__Admin__Views $admin_views */
 		$admin_views = tribe( 'tickets.admin.views' );
-		$args = [
+		$args        = [
 			'total_attendees'    => absint( $total_attendees ),
 			'total_checked_in'   => absint( $total_checked_in ),
 			'percent_checked_in' => $check_in_percent,
@@ -207,11 +207,11 @@ class Tribe__Tickets__Attendees {
 	 */
 	public function get_checkedin_percentage( $post_id ): string {
 		$total_checked_in = $this->get_checkedin_total();
-		$total = Tribe__Tickets__Tickets::get_event_attendees_count( $post_id );
+		$total            = Tribe__Tickets__Tickets::get_event_attendees_count( $post_id );
 
 		// Remove the "Not Going" RSVPs.
 		$not_going = tribe( 'tickets.rsvp' )->get_attendees_count_not_going( $post_id );
-		$total -= $not_going;
+		$total     -= $not_going;
 
 		if ( $total_checked_in === 0 || $total <= 0 ) {
 			return '0%';
@@ -294,7 +294,7 @@ class Tribe__Tickets__Attendees {
 	 * @since 4.6.2
 	 */
 	public function register_page() {
-		$cap = 'edit_posts';
+		$cap      = 'edit_posts';
 		$event_id = absint( ! empty( $_GET['event_id'] ) && is_numeric( $_GET['event_id'] ) ? $_GET['event_id'] : 0 );
 
 		if ( ! current_user_can( 'edit_posts' ) && $event_id ) {
@@ -339,8 +339,8 @@ class Tribe__Tickets__Attendees {
 			return;
 		}
 
-		$options = (array) tribe_get_option( 'ticket-enabled-post-types', [] );
-		$venue_has_tickets = class_exists( 'Tribe__Events__Venue' ) && in_array( Tribe__Events__Venue::POSTTYPE, $options, true );
+		$options               = (array) tribe_get_option( 'ticket-enabled-post-types', [] );
+		$venue_has_tickets     = class_exists( 'Tribe__Events__Venue' ) && in_array( Tribe__Events__Venue::POSTTYPE, $options, true );
 		$organizer_has_tickets = class_exists( 'Tribe__Events__Organizer' ) && in_array( Tribe__Events__Organizer::POSTTYPE, $options, true );
 
 		global $_registered_pages;
@@ -350,7 +350,7 @@ class Tribe__Tickets__Attendees {
 		}
 
 		if ( $venue_has_tickets || $organizer_has_tickets ) {
-			$dynamic_page = str_replace( 'admin_page', Tribe__Events__Main::POSTTYPE . '_page', $page_id );
+			$dynamic_page                       = str_replace( 'admin_page', Tribe__Events__Main::POSTTYPE . '_page', $page_id );
 			$_registered_pages[ $dynamic_page ] = true;
 		}
 	}
@@ -358,11 +358,11 @@ class Tribe__Tickets__Attendees {
 	/**
 	 * Enqueues the JS and CSS for the attendees page in the admin
 	 *
+	 * @todo  this needs to use tribe_assets()
+	 *
 	 * @since 4.6.2
 	 *
 	 * @param $hook
-	 *
-	 * @todo  this needs to use tribe_assets()
 	 *
 	 */
 	public function enqueue_assets( $hook ) {
@@ -393,7 +393,7 @@ class Tribe__Tickets__Attendees {
 		}
 
 		$dismissed = explode( ',', (string) get_user_meta( get_current_user_id(), 'dismissed_wp_pointers', true ) );
-		$pointer = [];
+		$pointer   = [];
 
 		if ( version_compare( get_bloginfo( 'version' ), '3.3', '>' ) && ! in_array( 'attendees_filters', $dismissed ) ) {
 			$pointer = [
@@ -420,7 +420,7 @@ class Tribe__Tickets__Attendees {
 	 * @since 4.6.2
 	 */
 	public function screen_setup() {
-		$page = tribe_get_request_var( 'page', false );
+		$page   = tribe_get_request_var( 'page', false );
 		$action = tribe_get_request_var( 'action', false );
 
 		// When on the admin and not on the correct page bail.
@@ -434,14 +434,14 @@ class Tribe__Tickets__Attendees {
 			// Use iFrame Header -- WP Method.
 			iframe_header();
 
-			$event_id = tribe_get_request_var( 'event_id' );
-			$event_id = ! is_numeric( $event_id ) ? null : absint( $event_id );
-			$nonce = tribe_get_request_var( '_wpnonce' );
-			$email_address = tribe_get_request_var( 'email_to_address' );
-			$user_id = tribe_get_request_var( 'email_to_user' );
+			$event_id          = tribe_get_request_var( 'event_id' );
+			$event_id          = ! is_numeric( $event_id ) ? null : absint( $event_id );
+			$nonce             = tribe_get_request_var( '_wpnonce' );
+			$email_address     = tribe_get_request_var( 'email_to_address' );
+			$user_id           = tribe_get_request_var( 'email_to_user' );
 			$should_send_email = (bool) tribe_get_request_var( 'tribe-send-email', false );
-			$type = $email_address ? 'email' : 'user';
-			$send_to = $type === 'email' ? $email_address : $user_id;
+			$type              = $email_address ? 'email' : 'user';
+			$send_to           = $type === 'email' ? $email_address : $user_id;
 
 			$status = $this->has_attendees_list_access(
 				$event_id,
@@ -494,7 +494,7 @@ class Tribe__Tickets__Attendees {
 	 */
 	public function filter_admin_title( $admin_title, $unused_title ) {
 		if ( ! empty( $_GET['event_id'] ) ) {
-			$event = get_post( $_GET['event_id'] );
+			$event       = get_post( $_GET['event_id'] );
 			$admin_title = sprintf( __( '%s - Attendee list', 'event-tickets' ), $event->post_title );
 		}
 
@@ -575,23 +575,23 @@ class Tribe__Tickets__Attendees {
 			]
 		);
 
-		$hidden = array_flip( $hidden );
+		$hidden         = array_flip( $hidden );
 		$export_columns = array_diff_key( $columns, $hidden );
 
 		// Add additional expected columns.
-		$export_columns['order_id']     = esc_html_x(
+		$export_columns['order_id']        = esc_html_x(
 			'Order ID',
 			'attendee export',
 			'event-tickets'
 		);
-		$export_columns['order_status'] = esc_html_x(
+		$export_columns['order_status']    = esc_html_x(
 			'Order Status',
 			'attendee export',
 			'event-tickets'
 		);
-		$export_columns['attendee_id']  = esc_html(
+		$export_columns['attendee_id']     = esc_html(
 			sprintf(
-				/* Translators: %s: The type of ID. */
+			/* Translators: %s: The type of ID. */
 				_x(
 					'%s ID',
 					'attendee export',
@@ -659,8 +659,8 @@ class Tribe__Tickets__Attendees {
 				// Special handling for new human readable id.
 				if ( 'attendee_id' === $column_id ) {
 					if ( isset( $single_item[ $column_id ] ) ) {
-						$ticket_unique_id = get_post_meta( $single_item[ $column_id ], '_unique_id', true );
-						$ticket_unique_id = $ticket_unique_id === '' ? $single_item[ $column_id ] : $ticket_unique_id;
+						$ticket_unique_id  = get_post_meta( $single_item[ $column_id ], '_unique_id', true );
+						$ticket_unique_id  = $ticket_unique_id === '' ? $single_item[ $column_id ] : $ticket_unique_id;
 						$row[ $column_id ] = esc_html( $ticket_unique_id );
 					}
 				}
@@ -765,7 +765,7 @@ class Tribe__Tickets__Attendees {
 		$items = apply_filters( 'tribe_events_tickets_attendees_csv_items', $items, $event_id );
 
 		if ( ! empty( $items ) ) {
-			$charset = get_option( 'blog_charset' );
+			$charset  = get_option( 'blog_charset' );
 			$filename = sanitize_file_name( $event->post_title . '-' . __( 'attendees', 'event-tickets' ) );
 
 			// Output headers so that the file is downloaded rather than displayed.
@@ -809,7 +809,7 @@ class Tribe__Tickets__Attendees {
 	 *
 	 * @return true|WP_Error
 	 */
-	public function has_attendees_list_access( $event_id = null, $nonce = null, $type = 'user', $send_to = null ) {
+	public function has_attendees_list_access( $event_id = null, ?string $nonce = null, ?string $type = 'user', $send_to = null ) {
 		$error = new WP_Error();
 
 		if ( ! $event_id ) {
@@ -862,16 +862,16 @@ class Tribe__Tickets__Attendees {
 	/**
 	 * Handles the "send to email" action for the attendees list.
 	 *
-	 * @since 4.6.2
-	 * @since TBD Included params $event_id, $type, $send_to and $error to allow for testing.
+	 * @since  4.6.2
+	 * @since  TBD Included params $event_id, $type, $send_to and $error to allow for testing.
 	 *
-	 * @param ?int|?string $event_id The event ID.
-	 * @param ?string      $type     The type of recipient.
-	 *                               Accepts 'user' or 'email'.
-	 * @param ?string|?int $send_to  The recipient's ID or email.
-	 *                               If $type is 'user', this should be the user ID.
+	 * @param ?int|?string $event_id   The event ID.
+	 * @param ?string      $type       The type of recipient.
+	 *                                 Accepts 'user' or 'email'.
+	 * @param ?string|?int $send_to    The recipient's ID or email.
+	 *                                 If $type is 'user', this should be the user ID.
 	 * @paramm ?WP_Error   $error    The error object.
-	 *         				         If null, a new WP_Error object will be created.
+	 *                                 If null, a new WP_Error object will be created.
 	 *
 	 * @return string|WP_Error
 	 */
@@ -897,7 +897,7 @@ class Tribe__Tickets__Attendees {
 		}
 
 		$this->attendees_table = new Tribe__Tickets__Attendees_Table();
-		$items = $this->generate_filtered_list( $event_id );
+		$items                 = $this->generate_filtered_list( $event_id );
 
 		$event = get_post( $event_id );
 
@@ -977,7 +977,7 @@ class Tribe__Tickets__Attendees {
 	 * @return boolean
 	 */
 	public function user_can_manage_attendees( $user_id = 0, $event_id = '' ) {
-		$user_id = 0 === $user_id ? get_current_user_id() : $user_id;
+		$user_id  = 0 === $user_id ? get_current_user_id() : $user_id;
 		$user_can = true;
 
 		// Bail quickly here as we don't have a user to check.
@@ -1114,7 +1114,7 @@ class Tribe__Tickets__Attendees {
 			! is_int( $event_id )
 			&& ! empty( tribe_get_request_var( 'event_id' ) )
 		) {
-			$event_id = tribe_get_request_var( 'event_id' );
+			$event_id  = tribe_get_request_var( 'event_id' );
 			$attendees = tribe( 'tickets.attendees' );
 			$attendees->attendees_table->prepare_items();
 		}
@@ -1149,9 +1149,9 @@ class Tribe__Tickets__Attendees {
 	 * @return array<string,mixed> The context used to render the Attendees page.
 	 */
 	public function get_render_context( int $post_id ): array {
-		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
+		$tickets         = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
 		$tickets_by_type = [ 'rsvp' => [], 'default' => [] ];
-		$ticket_totals = [
+		$ticket_totals   = [
 			'sold'      => 0,
 			'available' => 0,
 		];
@@ -1166,7 +1166,7 @@ class Tribe__Tickets__Attendees {
 				$tickets_by_type[ $ticket_type ] = [];
 			}
 			$tickets_by_type[ $ticket_type ][] = $ticket;
-			$ticket_totals['sold']            += $ticket->qty_sold();
+			$ticket_totals['sold']             += $ticket->qty_sold();
 
 			if ( $ticket_totals['available'] === - 1 ) {
 				// Unlimited capacity trumps any other capacity; if already unlimited, it will stay unlimited.
