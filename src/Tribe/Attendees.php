@@ -794,6 +794,21 @@ class Tribe__Tickets__Attendees {
 		}
 	}
 
+	/**
+	 * Checks if the current user has the capability to perform a certain action on a given event and it's attendees list.
+	 *
+	 * @since TBD
+	 *
+	 * @param ?int|?string $event_id The event ID.
+	 * @param ?string      $nonce    The nonce.
+	 * @param ?string      $type     The type of recipient.
+	 *                               Accepts 'user' or 'email'.
+	 * @param ?string|?int $send_to  The recipient's ID or email.
+	 *                               If $type is 'user', this should be the user ID.
+	 *
+	 *
+	 * @return true|WP_Error
+	 */
 	public function has_attendees_list_access( $event_id = null, $nonce = null, $type = 'user', $send_to = null ) {
 		$error = new WP_Error();
 
@@ -863,6 +878,10 @@ class Tribe__Tickets__Attendees {
 	public function send_mail_list( $event_id = null, ?string $type = 'user', $send_to = null, $error = null ) {
 		if ( null === $error ) {
 			$error = new WP_Error();
+		}
+
+		if ( $error->has_errors() ) {
+			return $error;
 		}
 
 		if ( 'user' === $type ) {
