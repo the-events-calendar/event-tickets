@@ -118,14 +118,14 @@ class Tribe__Tickets__Editor__Configuration implements Tribe__Editor__Configurat
 					'title' => tribe_get_ticket_label_plural('editor-configuration'),
 				]
 			],
-			'ticketLabels' => [
+			'ticketLabels'              => [
 				'ticket' => [
 					'singular'           => tribe_get_ticket_label_singular( 'editor-configuration' ),
 					'plural'             => tribe_get_ticket_label_plural( 'editor-configuration' ),
 					'singular_lowercase' => tribe_get_ticket_label_singular_lowercase( 'editor-configuration' ),
 					'plural_lowercase'   => tribe_get_ticket_label_plural_lowercase( 'editor-configuration' ),
 				],
-				'rsvp' => [
+				'rsvp'   => [
 					'singular'           => tribe_get_rsvp_label_singular( 'editor-configuration' ),
 					'plural'             => tribe_get_rsvp_label_plural( 'editor-configuration' ),
 					'singular_lowercase' => tribe_get_rsvp_label_singular_lowercase( 'editor-configuration' ),
