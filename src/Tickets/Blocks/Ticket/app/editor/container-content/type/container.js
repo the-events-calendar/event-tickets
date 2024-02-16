@@ -24,10 +24,10 @@ const mapStateToProps = (state, ownProps) => {
 		.getCurrentPostTypeLabel('singular_name')
 		.toLowerCase();
 	const ticketDetails = selectors.getTicketDetails(state, ownProps);
-	const typeName = _x(
-		'Single Ticket',
-		'Default ticket type label.',
-		'event-tickets'
+	const typeName = sprintf(
+		/* Translators: %s - the singular label for a ticket. */
+		_x('Single %s', 'Default ticket type label.', 'event-tickets'),
+		tribe_editor_config.tickets.ticketLabels.ticket.singular // eslint-disable-line camelcase, no-undef
 	);
 	const typeDescription = sprintf(
 		// translators: %s is the post type name in human readable form.
@@ -46,10 +46,14 @@ const mapStateToProps = (state, ownProps) => {
 	// Show an ECP related upsell message if on an Event and the user doesn't have ECP activated.
 	const upsellMessage =
 		!hasEventsPro && currentPostIsEvent
-			? _x(
-					'For more ticket types, <a href="https://evnt.is/tt-ecp" target="_blank" rel="noopener noreferrer">upgrade</a> to Events Calendar Pro',
-					'Default ticket type upsell description.',
-					'event-tickets'
+			? sprintf(
+					/* Translators: %s - the singular label for a ticket. */
+					_x(
+						'For more %s types, <a href="https://evnt.is/tt-ecp" target="_blank" rel="noopener noreferrer">upgrade</a> to Events Calendar Pro',
+						'Default ticket type upsell description.',
+						'event-tickets'
+					),
+					tribe_editor_config.tickets.ticketLabels.ticket.singular_lowercase // eslint-disable-line camelcase, no-undef, prettier/prettier
 			  )
 			: null;
 	const typeIcon = <TicketIcon />;

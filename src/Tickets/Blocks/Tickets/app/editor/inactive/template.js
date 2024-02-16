@@ -17,12 +17,13 @@ import { Card } from '@moderntribe/tickets/elements';
 const getCreateSingleTicketMessage = (postTypeLabel) => (
 	<div className="tickets-row-line">
 		{sprintf(
-			// Translators: %s is the post type name in human readable form.
+			// Translators: %1$s the plural, lowercase label for a ticket; %2$s is the post type name in human readable form.
 			_x(
-				'Create single tickets for this %s. ',
+				'Create single %1$s for this %2$s. ',
 				'The message displayed when there are no tickets.',
 				'event-tickets'
 			),
+			tribe_editor_config.tickets.ticketLabels.ticket.plural_lowercase, // eslint-disable-line camelcase, no-undef, prettier/prettier
 			postTypeLabel ? postTypeLabel : ''
 		)}
 		<a

@@ -36,10 +36,15 @@ const Type = ({ typeName, typeDescription, upsellMessage, typeIcon }) => {
 				className="tribe-editor__ticket__type-label"
 				forId=""
 				isLabel={true}
-				label={_x(
-					'Ticket type',
-					'Block Editor Ticket type label',
-					'event-tickets'
+				// eslint-disable-next-line no-undef
+				label={sprintf(
+					/* Translators: %s - the singular label for a ticket. */
+					_x(
+						'%s type',
+						'Block Editor Ticket type label',
+						'event-tickets'
+					),
+					tribe_editor_config.tickets.ticketLabels.ticket.singular // eslint-disable-line camelcase, no-undef
 				)}
 				tooltipText={typeDescription}
 				tooltipLabel={
