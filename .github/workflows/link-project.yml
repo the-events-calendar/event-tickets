@@ -1,0 +1,8 @@
+name: 'Link to Release Project'
+on: [pull_request]
+jobs:
+  link-project:
+    name: 'Link to Project'
+    uses: the-events-calendar/gh-action-project-link@main
+    with:
+      github-token: ${{ secrets.GH_BOT_TOKEN }}
