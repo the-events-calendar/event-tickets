@@ -8,3 +8,7 @@ jobs:
       - uses: the-events-calendar/gh-action-project-link@main
         with:
           github-token: ${{ secrets.GHA_BOT_TOKEN_MANAGER }}
+          template-project-url: https://github.com/orgs/the-events-calendar/projects/29
+          project-owner: 'tec-bot'
+          base-branch-pattern: 'release/*'
+          name-prefix-remove: 'release/'
