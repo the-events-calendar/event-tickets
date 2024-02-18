@@ -2,7 +2,7 @@ name: 'Link to Release Project'
 on: [pull_request]
 jobs:
   link-project:
-    name: 'Link to Project'
+    name: 'Link to Release Project'
     runs-on: ubuntu-latest
     steps:
       - uses: the-events-calendar/gh-action-project-link@main
