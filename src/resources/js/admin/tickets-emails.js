@@ -160,35 +160,28 @@ tribe.tickets.emails = {};
 		context.currentEmail = currentEmail;
 
 		if ( currentEmail ) {
-			const currentEmailOptionPrefix = currentEmail.replace( /_/g, '-' );
+			// Dynamically fetch the fields from the inputs to allow new fields to be automatically picked up.
+			const currentEmailOptionPrefix = currentEmail.replace(/_/g, '-')
 
-			const heading = $document
-				.find( 'input[name=' + currentEmailOptionPrefix + '-heading]' ).val();
+			Array.from($document.find('input[name^=' + currentEmailOptionPrefix + ']'))
+				.reduce((context, el) => {
+					const name = el.name.replace(`${currentEmailOptionPrefix}-`, '')
+						// From `tec_tickets_emails_current_section-some-field' to `someField`.
+						.replace(/-([a-z])/g, (g) => g[1].toUpperCase()).replace(/\[]$/, '')
+					const value = el.type === 'checkbox' ? el.checked : el.value
+					context[name] = value
+					return context
+				}, context)
 
-			context.heading = heading;
+			const useTicketEmail = $document
+				.find('input[name=tec-tickets-emails-rsvp-use-ticket-email]').is(':checked')
 
-			const qrCodes = $document
-				.find( 'input[name=' + currentEmailOptionPrefix + '-include-qr-codes]' ).is( ':checked' );
+			context.useTicketEmail = useTicketEmail
 
-			context.qrCodes = qrCodes;
-
-			const eventLinks = $document
-				.find( 'input[name=' + currentEmailOptionPrefix + '-add-event-links]' ).is( ':checked' );
-
-			context.eventLinks = eventLinks;
-
-			const arFields = $document
-				.find( 'input[name=' + currentEmailOptionPrefix + '-include-ar-fields]' ).is( ':checked' );
-
-			context.arFields = arFields;
-
-			const usingTicketEmail = $document
-				.find( 'input[name=tec-tickets-emails-rsvp-use-ticket-email]' ).is( ':checked' );
-
-			context.useTicketEmail = usingTicketEmail;
-
-			// fetch additional content from the editor.
-			context.addContent = tinyMCE !== undefined ? tinyMCE.get( currentEmailOptionPrefix + '-additional-content' ).getContent() : ''; // eslint-disable-line max-len
+			// Fetch additional content from the editor.
+			context.addContent = tinyMCE !== undefined ?
+				tinyMCE.get( currentEmailOptionPrefix + '-additional-content' ).getContent()
+				: '';
 		} else {
 			const ticketBgColor = $document
 				.find( 'input[name=' + obj.selectors.formTicketBgColorName + ']' ).val();

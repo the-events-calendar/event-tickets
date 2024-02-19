@@ -241,20 +241,18 @@ class Preview_Modal {
 				$preview_context['additional_content'] = wp_unslash( wp_kses_post( $additional_content ) );
 			}
 
-			$add_qr_codes = Arr::get( $vars, 'qrCodes', '' );
+			$add_qr_codes = Arr::get( $vars, 'includeQrCodes', '' );
 
 			if ( ! empty( $add_qr_codes ) ) {
 				$preview_context['add_qr_codes'] = tribe_is_truthy( $add_qr_codes );
 			}
 
-			$preview_context['add_event_links']    = tribe_is_truthy( Arr::get( $vars, 'eventLinks', '' ) );
-			$preview_context['add_ar_fields']      = tribe_is_truthy( Arr::get( $vars, 'arFields', '' ) );
+			$preview_context['add_event_links']    = tribe_is_truthy( Arr::get( $vars, 'addEventLinks', '' ) );
+			$preview_context['add_ar_fields']      = tribe_is_truthy( Arr::get( $vars, 'includeArFields', '' ) );
 		}
 
 		$current_email = Arr::get( $vars, 'currentEmail', '' );
-
-		// Show Ticket email by default.
-		$email_class = tribe( Ticket::class );
+		$email_class = null;
 
 		// Select email class to preview, if not using ticket email.
 		if ( ! $rsvp_using_ticket_email && ! empty( $current_email ) ) {
@@ -262,6 +260,11 @@ class Preview_Modal {
 			if ( ! empty( $email ) ) {
 				$email_class = tribe( get_class( $email ) );
 			}
+		}
+
+		if ( $email_class === null ) {
+			// Show Ticket email by default.
+			$email_class = tribe( Ticket::class );
 		}
 
 		$email_class->set_placeholders( Preview_Data::get_placeholders() );
@@ -280,6 +283,7 @@ class Preview_Modal {
 		remove_filter( 'tribe_is_event', '__return_true' );
 
 		$html .= $tickets_template->template( 'v2/components/loader/loader', [], false );
+
 		return $html;
 	}
 }
