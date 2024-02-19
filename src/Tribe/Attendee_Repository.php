@@ -1733,7 +1733,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	/**
 	 * Filters the Attendees by keeping only the ones for Tickets of a specific type.
 	 *
-	 * @since TBD
+	 * @since 5.8.2
 	 *
 	 * @param string|string[] $ticket_type The type of Ticket to keep Attendees for.
 	 *
@@ -1746,7 +1746,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	/**
 	 * Filters the Attendees by keeping only the ones for Tickets that are not of a specific type.
 	 *
-	 * @since TBD
+	 * @since 5.8.2
 	 *
 	 * @param string|string[] $ticket_type The type of Ticket to exclude Attendees for.
 	 *
