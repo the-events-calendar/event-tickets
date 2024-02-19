@@ -245,8 +245,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$handler = $gateway->build_handler();
 
 		return
-			( tribe_is_truthy( tribe_get_option( 'ticket-paypal-enable', false ) ) && 'complete' === $handler->get_config_status() )
-			|| ! tec_tickets_commerce_is_enabled();
+			tribe_is_truthy( tribe_get_option( 'ticket-paypal-enable', false ) )
+			&& 'complete' === $handler->get_config_status();
 	}
 
 	/**
