@@ -797,7 +797,7 @@ class Tribe__Tickets__Attendees {
 	/**
 	 * Checks if the current user has the capability to perform a certain action on a given event and it's attendees list.
 	 *
-	 * @since TBD
+	 * @since 5.8.2
 	 *
 	 * @param ?int|?string $event_id The event ID.
 	 * @param ?string      $nonce    The nonce.
@@ -863,7 +863,7 @@ class Tribe__Tickets__Attendees {
 	 * Handles the "send to email" action for the attendees list.
 	 *
 	 * @since  4.6.2
-	 * @since  TBD Included params $event_id, $type, $send_to and $error to allow for testing.
+	 * @since  5.8.2 Included params $event_id, $type, $send_to and $error to allow for testing.
 	 *
 	 * @param ?int|?string $event_id   The event ID.
 	 * @param ?string      $type       The type of recipient.
