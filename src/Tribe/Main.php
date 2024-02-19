@@ -915,7 +915,7 @@ class Tribe__Tickets__Main {
 	 * before the attendee screen is rendered.
 	 *
 	 * @since 4.2.4
-	 * @since TBD Add the `$event_id` parameter.
+	 * @since 5.8.2 Add the `$event_id` parameter.
 	 *
 	 * @param int|bool $event_id The post ID to set up attendance totals for.
 	 */
@@ -927,7 +927,7 @@ class Tribe__Tickets__Main {
 	 * Returns the attendance totals object.
 	 *
 	 * @since 4.2.4
-	 * @since TBD Added the `$event_id` parameter.
+	 * @since 5.8.2 Added the `$event_id` parameter.
 	 *
 	 * @param int|null $event_id The post ID to set up attendance totals for.
 	 *
