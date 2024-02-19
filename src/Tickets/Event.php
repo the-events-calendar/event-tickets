@@ -40,7 +40,7 @@ class Event {
 	 * Will filter event ID input to a filtered and relevant ID.
 	 *
 	 * @since 5.5.6
-	 * @since TBD Add the `$context` parameter.
+	 * @since 5.8.2 Add the `$context` parameter.
 	 *
 	 * @param numeric $event_id The event ID to be normalized.
 	 * @param string $context The context in which the event ID is being filtered.
@@ -54,7 +54,7 @@ class Event {
 		 * This filter allows retrieval of an event ID to be filtered before being accessed elsewhere.
 		 *
 		 * @since 5.5.6
-		 * @since TBD Add the `$context` parameter and the `$original_id` parameter.
+		 * @since 5.8.2 Add the `$context` parameter and the `$original_id` parameter.
 		 *
 		 * @param int|null $event_id   The event ID to be filtered.
 		 * @param string   $context    The context in which the event ID is being filtered.
