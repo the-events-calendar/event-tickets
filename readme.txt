@@ -199,6 +199,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 * Feature - Support per Event attendance for Series Pass Attendees for manual and app-based check-ins. [ET-1936]
 * Fix - Available number when moving Series Pass Attendees. [ET-2009]
+* Language -
 
 = [5.8.1] 2024-02-06 =
 
