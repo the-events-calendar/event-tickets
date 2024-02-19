@@ -80,16 +80,16 @@ class Warnings {
 			tribe_get_ticket_label_plural_lowercase( 'commerce provider missing warning' ),
 			$link
 		);
-		
+
 		/**
 		 * Filter the Commerce Provider missing warning message.
 		 *
-		 * @since TBD
+		 * @since 5.8.2
 		 *
 		 * @param string $message The Commerce Provider missing message.
 		 */
 		$message = apply_filters( 'tec_tickets_commerce_provider_missing_warning_message', $message );
-		
+
 		return wp_kses(
 			$message,
 			[
@@ -113,19 +113,19 @@ class Warnings {
 	public function get_recurring_event_warning_message( int $post_id ): void {
 		/** @var Tribe__Tickets__Admin__Views $admin_views */
 		$admin_views = tribe( Tribe__Tickets__Admin__Views::class );
-	
+
 		$help_text_link = sprintf(
 			'<a href="%1$s" target="_blank" rel="noreferrer noopener">%2$s</a>',
 			esc_url( 'https://evnt.is/1b7a' ),
 			esc_html( __( 'See our future planned features.', 'event-tickets' ) )
 		);
-		
+
 		$et_message = sprintf(
 		/* translators: %1$s: link to help article. */
 			__( 'Standard tickets are not yet supported on recurring events. %1$s', 'event-tickets' ),
 			$help_text_link
 		);
-		
+
 		$admin_views->template(
 			'editor/recurring-warning',
 			[
@@ -140,7 +140,7 @@ class Warnings {
 	 *
 	 * @since 5.6.2 added the `$additionalClasses` attribute to allow customizing the notice.
 	 * @since 5.0.4
-	 * @since TBD Added `$dashicon` attribute to allow adding a dashicon to the notice.
+	 * @since 5.8.2 Added `$dashicon` attribute to allow adding a dashicon to the notice.
 	 *
 	 * @param string $message           The message to show.
 	 * @param string $type              Type of message. Default is 'info'.
