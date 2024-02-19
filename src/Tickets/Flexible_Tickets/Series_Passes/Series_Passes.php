@@ -1093,7 +1093,7 @@ class Series_Passes extends Controller {
 	 *
 	 * @since 5.8.0
 	 *
-	 * @since TBD Filter my tickets rewrite rules to include the series page.
+	 * @since 5.8.2 Filter my tickets rewrite rules to include the series page.
 	 *
 	 * @param array<string> $rules Rewrite rules array.
 	 *
@@ -1113,7 +1113,7 @@ class Series_Passes extends Controller {
 	/**
 	 * Include series pass message in the ticket editor.
 	 *
-	 * @since TBD
+	 * @since 5.8.2
 	 *
 	 * @param array<string,mixed> $context   Local Context array of data.
 	 * @param string              $file      Complete path to include the PHP File.
@@ -1133,7 +1133,7 @@ class Series_Passes extends Controller {
 	/**
 	 * Filter the message to display when no commerce provider is active.
 	 *
-	 * @since TBD
+	 * @since 5.8.2
 	 *
 	 * @param string $message The message to filter.
 	 *
@@ -1152,13 +1152,13 @@ class Series_Passes extends Controller {
 	 * thus, include Series Passes into the results.
 	 *
 	 * @since 5.8.0
-	 * @since TBD Method moved to the Attendees controller.
+	 * @since 5.8.2 Method moved to the Attendees controller.
 	 *
 	 * @param int|array<int> $post_id The post ID or IDs.
 	 *
 	 * @return int|array<int> The updated post ID or IDs.
 	 *
-	 * @deprecated TBD Use the Attendees::include_series_to_fetch_attendees method instead.
+	 * @deprecated 5.8.2 Use the Attendees::include_series_to_fetch_attendees method instead.
 	 */
 	public function include_series_to_fetch_attendees( $post_id ): array {
 		return tribe( Attendees::class )->include_series_to_fetch_attendees( $post_id );
@@ -1169,13 +1169,13 @@ class Series_Passes extends Controller {
 	 * Series Passes.
 	 *
 	 * @since 5.8.0
-	 * @since TBD Method moved to the Attendees controller.
+	 * @since 5.8.2 Method moved to the Attendees controller.
 	 *
 	 * @param array<string,mixed> $config_data The JavaScript configuration.
 	 *
 	 * @return array<string,mixed> The updated JavaScript configuration.
 	 *
-	 * @deprecated TBD Use the Attendees::filter_tickets_attendees_report_js_config method instead.
+	 * @deprecated 5.8.2 Use the Attendees::filter_tickets_attendees_report_js_config method instead.
 	 */
 	public function filter_tickets_attendees_report_js_config( array $config_data ): array {
 		return tribe( Attendees::class )->filter_tickets_attendees_report_js_config( $config_data );

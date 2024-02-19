@@ -167,7 +167,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
 	 * Meta key that relates Attendees and Events.
 	 *
-	 * @since TBD
+	 * @since 5.8.2
 	 *
 	 * @var string
 	 */
@@ -758,7 +758,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * before the attendee screen is rendered.
 	 *
 	 * @since 4.2.4
-	 * @since TBD Add the `$event_id` parameter
+	 * @since 5.8.2 Add the `$event_id` parameter
 	 */
 	public function setup_attendance_totals( $event_id = null ) {
 		$this->attendance_totals( $event_id )->integrate_with_attendee_screen();
@@ -768,7 +768,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * Returns the RSVP attendance totals object.
 	 *
 	 * @since 4.2.4
-	 * @since TBD Add the `$event_id` paramter.
+	 * @since 5.8.2 Add the `$event_id` paramter.
 	 *
 	 * @param int|null $event_id The event ID to set for the attendance totals.
 	 *

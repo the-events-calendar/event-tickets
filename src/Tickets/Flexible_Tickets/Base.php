@@ -25,7 +25,7 @@ class Base extends Controller {
 	/**
 	 * The action fired to trigger the update of the Attendee > Event meta value for a batch of Attendees.
 	 *
-	 * @since TBD
+	 * @since 5.8.2
 	 *
 	 * @var string
 	 */
@@ -63,7 +63,7 @@ class Base extends Controller {
 			[
 				$series_provider,
 				'filter_remove_series_post_type',
-			] 
+			]
 		);
 
 		$this->handle_first_activation();
@@ -80,7 +80,7 @@ class Base extends Controller {
 				'dispatch_attendee_event_value_update',
 			],
 			10,
-			2 
+			2
 		);
 
 		/*
@@ -113,7 +113,7 @@ class Base extends Controller {
 			[
 				$series_provider,
 				'filter_remove_series_post_type',
-			] 
+			]
 		);
 
 		$provisional_ids_base_option_name = tribe( ID_Generator::class )->option_name();
@@ -122,7 +122,7 @@ class Base extends Controller {
 			[
 				$this,
 				'dispatch_attendee_event_value_update',
-			] 
+			]
 		);
 		remove_action( self::AS_ATTENDEE_EVENT_VALUE_UPDATE_ACTION, [ $this, 'update_attendee_event_value' ] );
 	}
@@ -154,7 +154,7 @@ class Base extends Controller {
 	 * Starts the flow of updates that will re-align the Attendee to Occurrence Provisional IDs
 	 * relationships stored in the Attendee to Event meta keys.
 	 *
-	 * @since TBD
+	 * @since 5.8.2
 	 *
 	 * @param int $old_value The previous provisional IDs base value.
 	 * @param int $new_value The new provisional IDs base value.
@@ -179,14 +179,14 @@ class Base extends Controller {
 				0,
 				$old_value,
 			],
-			'tec_tickets_flexible_tickets' 
+			'tec_tickets_flexible_tickets'
 		);
 	}
 
 	/**
 	 * Returns the number of Attendees that need to be updated to the new provisional IDs base value.
 	 *
-	 * @since TBD
+	 * @since 5.8.2
 	 *
 	 * @param int $old_value The previous provisional IDs base value.
 	 * @param int $new_value The new provisional IDs base value.
@@ -225,7 +225,7 @@ class Base extends Controller {
 	/**
 	 * Updates the value of the meta key relating Attendees to Occurrence Provisional IDs using a direct query.
 	 *
-	 * @since TBD
+	 * @since 5.8.2
 	 *
 	 * @param int $offset    The offset to update Attendeess from, i.e. the number of already updated Attendees.
 	 * @param int $old_value The previous provisional IDs base value, passed as it will not be in the database
@@ -248,7 +248,7 @@ class Base extends Controller {
 		/**
 		 * Filters the batch size used to update the Attendee > Event meta value.
 		 *
-		 * @since TBD
+		 * @since 5.8.2
 		 *
 		 * @param int $batch_size The batch size used to update the Attendee > Event meta value.
 		 */
@@ -317,7 +317,7 @@ class Base extends Controller {
 					'error'      => $wpdb->last_error,
 					'offset'     => $offset,
 					'batch_size' => $batch_size,
-				] 
+				]
 			);
 		}
 
@@ -333,7 +333,7 @@ class Base extends Controller {
 				$offset + $batch_size,
 				$old_value,
 			],
-			'tec_tickets_flexible_tickets' 
+			'tec_tickets_flexible_tickets'
 		);
 	}
 }

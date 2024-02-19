@@ -370,7 +370,7 @@ implements Tribe__REST__Endpoints__READ_Endpoint_Interface, Tribe__Documentation
 			/**
 			 * Filters the REST Response returned on failure to check in an Attendee via QR code.
 			 *
-			 * @since TBD
+			 * @since 5.8.2
 			 *
 			 * @param WP_REST_Response $response        The failure response, as prepared following the default logic.
 			 * @param int              $attendee_id     The post ID of the Attendee to check in.

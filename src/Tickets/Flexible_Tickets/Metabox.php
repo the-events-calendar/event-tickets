@@ -78,7 +78,7 @@ class Metabox {
 			'series-pass-form-toggle',
 			[
 				'disabled' => count( $ticket_providing_modules ) === 0,
-			] 
+			]
 		);
 	}
 
@@ -125,26 +125,26 @@ class Metabox {
 		if ( ! count( $series_ids ) ) {
 			return;
 		}
-		
+
 		if ( tribe_is_recurring_event( $post_id ) ) {
 			return;
 		}
 
 		$series = reset( $series_ids );
-		
+
 		$helpler_link_text = sprintf(
 			// Translators: %s is the label for the link.
 			esc_html__( 'Learn more about %s', 'event-tickets' ),
 			tec_tickets_get_series_pass_plural_uppercase()
 		);
-		
+
 		$helper_link = sprintf(
 			// Translators: %1$s is a link to the documentation, %2$s is the label for the link.
 			'<a href="%1$s" target="_blank" rel="noreferrer noopener">%2$s</a>',
 			esc_url( 'https://evnt.is/-series-passes' ),
 			esc_html( $helpler_link_text )
 		);
-		
+
 		$series_edit_link = sprintf(
 			// Translators: %1$s is a link to the series edit screen, %2$s is the title of the series.
 			'<a href="%1$s" target="_blank" rel="noreferrer noopener">%2$s</a>',
@@ -157,7 +157,7 @@ class Metabox {
 			[
 				'series_edit_link' => $series_edit_link,
 				'helper_link'      => $helper_link,
-			] 
+			]
 		);
 	}
 
@@ -176,7 +176,7 @@ class Metabox {
 			'series-pass-edit-link',
 			[
 				'series_edit_link' => get_edit_post_link( $ticket_post_id ),
-			] 
+			]
 		);
 	}
 
@@ -215,7 +215,7 @@ class Metabox {
 	public function get_default_ticket_type_header_description( int $event_id, int $series_id ): string {
 		return $this->labels->get_default_ticket_type_event_in_series_description( $series_id, $event_id );
 	}
-	
+
 	/**
 	 * Includes the warning message for recurring events in context of series.
 	 *
@@ -229,18 +229,18 @@ class Metabox {
 		if ( ! isset( $context['post_id'] ) ) {
 			return $context;
 		}
-		
+
 		$series  = tec_series()->where( 'event_post_id', (int) $context['post_id'] )->first();
 		$message = $series ? $this->get_warning_message_for_saved_event( $series ) : $this->get_warning_message_for_unsaved_event();
-		
+
 		$context['messages'] = array_merge( [ 'recurring-warning-message' => $message ], $context['messages'] );
 		return $context;
 	}
-	
+
 	/**
 	 * Returns the warning message for saved recurring events.
 	 *
-	 * @since TBD
+	 * @since 5.8.2
 	 *
 	 * @param WP_Post $series The post object of the Series Pass.
 	 *
@@ -252,21 +252,21 @@ class Metabox {
 			__( 'Learn more about %s', 'event-tickets' ),
 			tec_tickets_get_series_pass_plural_uppercase()
 		);
-		
+
 		$learn_more_link = sprintf(
 			// Translators: %1$s is a link to the documentation, %2$s is the label for the link.
 			'<a href="%1$s" target="_blank" rel="noreferrer noopener">%2$s</a>',
 			esc_url( 'https://evnt.is/-series-passes' ),
 			esc_html( $learn_more_text )
 		);
-		
+
 		$series_link = sprintf(
 			// Translators: %2$s is the title of the series.
 			'<a href="%1$s" target="_blank" rel="noreferrer noopener">%2$s</a>',
 			esc_url( get_edit_post_link( $series ) ),
 			esc_html( get_the_title( $series ) )
 		);
-		
+
 		return sprintf(
 			// Translators: %1$s is the pluralized name of the series pass, %2$s is the singular name of the event, %3$s is a link to the series edit screen, %4$s is a link to the documentation.
 			__( 'This recurring %2$s is part of a Series. Create and manage %1$s for this %2$s from the %3$s Series admin. %4$s', 'event-tickets' ),
@@ -276,11 +276,11 @@ class Metabox {
 			$learn_more_link,
 		);
 	}
-	
+
 	/**
 	 * Returns the warning message for unsaved recurring events.
 	 *
-	 * @since TBD
+	 * @since 5.8.2
 	 *
 	 * @return string The warning message for unsaved recurring events.
 	 */
@@ -290,14 +290,14 @@ class Metabox {
 			__( 'Learn more about %s', 'event-tickets' ),
 			tec_tickets_get_series_pass_plural_uppercase()
 		);
-		
+
 		$learn_more_link = sprintf(
 			// Translators: %1$s is a link to the documentation, %2$s is the label for the link.
 			'<a href="%1$s" target="_blank" rel="noreferrer noopener">%2$s</a>',
 			esc_url( 'https://evnt.is/-series-passes' ),
 			esc_html( $learn_more_text )
 		);
-		
+
 		return sprintf(
 			// Translators: %1$s is the singular name of the event, %2$s is the pluralized name of the series pass, %3$s is a link to the documentation.
 			__( 'Once you save this %1$s, you can add %2$s to its parent Series. %3$s.', 'event-tickets' ),
@@ -306,24 +306,24 @@ class Metabox {
 			$learn_more_link,
 		);
 	}
-	
+
 	/**
 	 * Returns the warning message when there is no commerce provider configured.
 	 *
-	 * @since TBD
+	 * @since 5.8.2
 	 *
 	 * @return string The warning message when there is no commerce provider configured.
 	 */
 	public function get_no_commerce_provider_warning_message(): string {
 		$kb_url = 'https://evnt.is/1ao5';
-		
+
 		/* translators: %1$s: URL for help link, %2$s: Label for help link. */
 		$link = sprintf(
 			'<a href="%1$s" target="_blank" rel="noopener noreferrer">%2$s</a>',
 			esc_url( $kb_url ),
 			esc_html_x( 'Learn More', 'Helper link in Ticket Editor', 'event-tickets' )
 		);
-		
+
 		return sprintf(
 		/* Translators: %1$s: link to help article. */
 			__( 'There is no payment gateway configured. To create %1$s, you\'ll need to enable and configure an ecommerce solution. %2$s', 'event-tickets' ),

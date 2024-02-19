@@ -142,7 +142,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		 * Controls the columns rendered within the attendee screen.
 		 *
 		 * @since 4.3.2
-		 * @since TBD Added the `$event_id` parameter to the filter context.
+		 * @since 5.8.2 Added the `$event_id` parameter to the filter context.
 		 *
 		 * @param array<string,string> $columns An array of column headers.
 		 * @param int $event_id The ID of the post the table is being rendered for.
