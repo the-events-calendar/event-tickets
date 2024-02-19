@@ -195,6 +195,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Fix - Stock will be calculated correctly when an order fails and then succeeds while using Tickets Commerce.
+
 = [5.8.1] 2024-02-06 =
 
 * Fix - Removed type casting from filter method of series pass to avoid fatal errors. [ET-2014]
