@@ -113,7 +113,7 @@ class Tribe__Tickets__Tickets_View {
 	/**
 	 * Gets the List of Rewrite rules we are using here.
 	 *
-	 * @since TBD Added filter to allow users to add additional rewrite rules for the My Tickets page.
+	 * @since 5.8.2 Added filter to allow users to add additional rewrite rules for the My Tickets page.
 	 *
 	 * @return array<string>
 	 */
@@ -123,7 +123,7 @@ class Tribe__Tickets__Tickets_View {
 		$rules = [
 			sanitize_title_with_dashes( $bases['tickets'][0] ) . '/([0-9]{1,})/?' => 'index.php?p=$matches[1]&tribe-edit-orders=1',
 		];
-		
+
 		/**
 		 * Filter the rewrite rules for the My Tickets page.
 		 *
@@ -173,7 +173,7 @@ class Tribe__Tickets__Tickets_View {
 	/**
 	 * Update the RSVP and Tickets values for each Attendee.
 	 *
-	 * @since TBD Removed optional param from get_tickets_page_url call.
+	 * @since 5.8.2 Removed optional param from get_tickets_page_url call.
 	 */
 	public function update_tickets() {
 		$is_correct_page = $this->is_edit_page();
@@ -233,7 +233,7 @@ class Tribe__Tickets__Tickets_View {
 
 		// After editing the values, we update the transient.
 		Tribe__Post_Transient::instance()->delete( $post_id, Tribe__Tickets__Tickets::ATTENDEES_CACHE );
-  
+
 		$url = $this->get_tickets_page_url( $post_id );
 		$url = add_query_arg( 'tribe_updated', 1, $url );
 		wp_safe_redirect( esc_url_raw( $url ) );
@@ -244,7 +244,7 @@ class Tribe__Tickets__Tickets_View {
 	 * Helper function to generate the Link to the tickets page of an event.
 	 *
 	 * @since 4.7.1
-	 * @since TBD Removed the $is_event_page param.
+	 * @since 5.8.2 Removed the $is_event_page param.
 	 *
 	 * @param int $event_id event_id The Event ID we're checking.
 	 *
@@ -253,14 +253,14 @@ class Tribe__Tickets__Tickets_View {
 	public function get_tickets_page_url( int $event_id ): string {
 		$has_plain_permalink = '' === get_option( 'permalink_structure' );
 		$event_url           = get_permalink( $event_id );
-		
+
 		if ( empty( $event_url ) ) {
 			return '';
 		}
-		
+
 		$post_type     = get_post_type( $event_id );
 		$is_event_page = 'tribe_events' === $post_type || 'tribe_event_series' === $post_type;
-		
+
 		// Is on the Event post type.
 		if ( $is_event_page ) {
 			$link = $has_plain_permalink
@@ -1154,7 +1154,7 @@ class Tribe__Tickets__Tickets_View {
 			 * Allow for the addition of content (namely the "Who's Attending?" list) above the ticket form.
 			 *
 			 * @since 5.5.0
-			 * @since TBD Added the `$post_id` and `$post` parameters.
+			 * @since 5.8.2 Added the `$post_id` and `$post` parameters.
 			 *
 			 * @param int     $post_id The ID of the post the tickets block is being rendered for.
 			 * @param WP_Post $post    The post object the tickets block is being rendered for.
@@ -1317,7 +1317,7 @@ class Tribe__Tickets__Tickets_View {
 		 * Allow for the addition of content (namely the "Who's Attending?" list) above the ticket form.
 		 *
 		 * @since 4.5.5
-		 * @since TBD Added the `$post_id` and `$post` parameters.
+		 * @since 5.8.2 Added the `$post_id` and `$post` parameters.
 		 *
 		 * @param int     $post_id The ID of the post the RSVP block is being rendered for.
 		 * @param WP_Post $post    The post object the RSVP block is being rendered for.
@@ -1374,7 +1374,7 @@ class Tribe__Tickets__Tickets_View {
 	 * Generate the required data for the "My Tickets" link.
 	 *
 	 * @since 5.8.0
-	 * @since TBD Removed the optional parameter from `get_tickets_page_url` call.
+	 * @since 5.8.2 Removed the optional parameter from `get_tickets_page_url` call.
 	 *
 	 * @param int $event_id The event ID.
 	 * @param int $user_id The user ID.
