@@ -669,7 +669,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 
 			// Do the math!
 			$inventory[] = $capacity - $attendees_count;
-
+			
 			// Calculate and verify the Event Inventory
 			if (
 				Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $this->global_stock_mode()
@@ -681,7 +681,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 
 				foreach ( $event_attendees as $attendee ) {
 					$attendee_ticket_stock = new Tribe__Tickets__Global_Stock( $attendee['event_id'] );
-					// bypass any potential weirdness (RSVPs or such)
+					// Bypass any potential weirdness (RSVPs or such).
 					if ( empty( $attendee['product_id'] ) || (int) $attendee['event_id'] !== (int) $event_id ) {
 						continue;
 					}

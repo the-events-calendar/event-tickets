@@ -141,6 +141,10 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 
 						$( '#total_checkedin' ).text( total_checked_in );
 						$( '#percent_checkedin' ).text( percent_checked_in );
+
+						if ( response?.data?.reload ) {
+							window.location.reload()
+						}
 					}
 
 					obj.prop( 'disabled', false );

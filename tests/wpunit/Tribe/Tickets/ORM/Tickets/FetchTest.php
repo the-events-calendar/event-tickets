@@ -71,7 +71,7 @@ class FetchTest extends \Codeception\TestCase\WPTestCase {
 
 		$post_id = $this->factory->post->create();
 
-		$rsvp_ticket_ids = $this->create_many_rsvp_tickets( 5, $post_id );
+		$rsvp_ticket_ids   = $this->create_many_rsvp_tickets( 5, $post_id );
 		$paypal_ticket_ids = $this->create_many_paypal_tickets_basic( 5, $post_id );
 
 		$ticket_ids = $tickets->get_ids();
@@ -147,11 +147,23 @@ class FetchTest extends \Codeception\TestCase\WPTestCase {
 		],
 			tribe_tickets()->where( 'event', $post_id )->where( 'type', 'default' )->get_ids()
 		);
+		$this->assertEqualSets( [
+			$default_ticket_1,
+			$default_ticket_2,
+			$no_type_ticket_1,
+			$no_type_ticket_2,
+		],
+			tribe_tickets()->where( 'event', $post_id )->where( 'type__not_in', [ 'pass', 'member' ] )->get_ids()
+		);
 
 		// Fetch only passes.
 		$this->assertEqualSets(
 			[ $pass_ticket_1, $pass_ticket_2 ],
 			tribe_tickets()->where( 'event', $post_id )->where( 'type', 'pass' )->get_ids()
+		);
+		$this->assertEqualSets(
+			[ $pass_ticket_1, $pass_ticket_2 ],
+			tribe_tickets()->where( 'event', $post_id )->where( 'type__not_in', [ 'default', 'member' ] )->get_ids()
 		);
 
 		// Fetch passes and member tickets.
@@ -161,6 +173,10 @@ class FetchTest extends \Codeception\TestCase\WPTestCase {
 				'pass',
 				'member'
 			] )->get_ids()
+		);
+		$this->assertEqualSets(
+			[ $pass_ticket_1, $pass_ticket_2, $member_type_ticket_1, $member_type_ticket_2 ],
+			tribe_tickets()->where( 'event', $post_id )->where( 'type__not_in', 'default' )->get_ids()
 		);
 
 		// Fetch member and default type.
@@ -177,6 +193,17 @@ class FetchTest extends \Codeception\TestCase\WPTestCase {
 				'default',
 				'member'
 			] )->get_ids()
+		);
+		$this->assertEqualSets(
+			[
+				$default_ticket_1,
+				$default_ticket_2,
+				$no_type_ticket_1,
+				$no_type_ticket_2,
+				$member_type_ticket_1,
+				$member_type_ticket_2
+			],
+			tribe_tickets()->where( 'event', $post_id )->where( 'type__not_in', 'pass' )->get_ids()
 		);
 	}
 }
