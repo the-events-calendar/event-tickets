@@ -507,7 +507,7 @@ class Plugin_Data_Subsection extends Abstract_Info_Subsection {
 	/**
 	 * Determines if RSVP views version 2 is enabled.
 	 *
-	 * @return string 'TBD' indicating the status is to be determined.
+	 * @return string '5.8.2' indicating the status is to be determined.
 	 */
 	private function are_rsvp_views_v2_enabled(): string {
 		return $this->get_boolean_string( tribe_tickets_rsvp_new_views_is_enabled() );

@@ -8,7 +8,7 @@ abstract class Tribe__Tickets__Abstract_Attendance_Totals {
 	/**
 	 * The post ID of the event for which totals have been last calculated.
 	 *
-	 * @since TBD
+	 * @since 5.8.2
 	 *
 	 * @var int
 	 */
@@ -18,7 +18,7 @@ abstract class Tribe__Tickets__Abstract_Attendance_Totals {
 	 * Sets up totals for the specified event.
 	 *
 	 * @since 4.2.4
-	 * @since TBD Move totals calculation to `set_event_id` method.
+	 * @since 5.8.2 Move totals calculation to `set_event_id` method.
 	 *
 	 * @param int $event_id The event ID to et up the totals for.
 	 */
@@ -31,7 +31,7 @@ abstract class Tribe__Tickets__Abstract_Attendance_Totals {
 	 * to the value of the 'event_id' URL param, if set.
 	 *
 	 * @since 4.2.4
-	 * @since TBD Re-calculate totals when setting a new Event ID.
+	 * @since 5.8.2 Re-calculate totals when setting a new Event ID.
 	 *
 	 * @param int $event_id The event ID to set.
 	 *
@@ -65,7 +65,7 @@ abstract class Tribe__Tickets__Abstract_Attendance_Totals {
 	 * Makes the totals available within the attendee summary screen.
 	 *
 	 * @since 4.2.4
-	 * @since TBD
+	 * @since 5.8.2
 	 */
 	public function integrate_with_attendee_screen() {
 		add_action( 'tribe_tickets_attendees_totals', array( $this, 'print_totals' ), $this->relative_priority );

@@ -338,7 +338,7 @@ class Hooks extends Service_Provider {
 	 * Sets up the Attendance Totals Class report with the Attendee Screen
 	 *
 	 * @since 5.1.9
-	 * @since TBD Add the `$event_id` parameter.
+	 * @since 5.8.2 Add the `$event_id` parameter.
 	 *
 	 * @parma int|null $event_id The ID of the post to calculate attendance totals for.
 	 */

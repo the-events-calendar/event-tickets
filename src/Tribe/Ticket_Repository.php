@@ -615,7 +615,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 * Internal method to filter Tickets by keeping only those either of a certain type, or not
 	 * of a certain type.
 	 *
-	 * @since TBD
+	 * @since 5.8.2
 	 *
 	 * @param string          $operator Either `IN` or `NOT IN` to keep, respectively, Tickets of a specific type,
 	 *                                  or Tickets that have not a specific type.
@@ -643,7 +643,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	/**
 	 * Filters the ticket to be returned by the value of the `_type` meta key.
 	 *
-	 * @since TBD
+	 * @since 5.8.2
 	 *
 	 * @param string|string[] $type The ticket type or types to filter by.
 	 *
@@ -794,7 +794,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	/**
 	 * Filters the ticket to be excluded by the value of the `_type` meta key.
 	 *
-	 * @since TBD
+	 * @since 5.8.2
 	 *
 	 * @param string|string[] $type The ticket type or types to exclude from the results.
 	 *

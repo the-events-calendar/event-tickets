@@ -551,7 +551,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * before the attendee screen is rendered.
 	 *
 	 * @since 4.7
-	 * @since TBD Added the `$event_id` parameter.
+	 * @since 5.8.2 Added the `$event_id` parameter.
 	 *
 	 * @param int|null $event_id The event ID to get the attendance totals for.
 	 */
@@ -563,7 +563,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * Get the attendance totals instance.
 	 *
 	 * @since 4.7
-	 * @since TBD Added the `$event_id` parameter.
+	 * @since 5.8.2 Added the `$event_id` parameter.
 	 *
 	 * @param int|null $event_id The event ID to get the attendance totals for.
 	 *

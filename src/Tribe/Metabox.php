@@ -721,7 +721,7 @@ class Tribe__Tickets__Metabox {
 		/**
 		 * Filters the status code to return when an attendee is checked in.
 		 *
-		 * @since TBD
+		 * @since 5.8.2
 		 *
 		 * @param int $status      The HTTP status code to return. Default is 200.
 		 * @param int $attendee_id The ID of the attendee that was checked in.
