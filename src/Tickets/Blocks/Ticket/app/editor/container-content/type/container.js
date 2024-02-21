@@ -26,13 +26,13 @@ const mapStateToProps = (state, ownProps) => {
 	const ticketDetails = selectors.getTicketDetails(state, ownProps);
 	const typeName = sprintf(
 		/* Translators: %s - the singular label for a ticket. */
-		_x('Single %s', 'Default ticket type label.', 'event-tickets'),
+		_x('Standard %s', 'Default ticket type label.', 'event-tickets'),
 		tribe_editor_config.tickets.ticketLabels.ticket.singular // eslint-disable-line camelcase, no-undef
 	);
 	const typeDescription = sprintf(
 		// translators: %s is the post type name in human readable form.
 		_x(
-			'A single ticket is specific to this %s.',
+			'A standard ticket is specific to this %s.',
 			'Default ticket type description.',
 			'event-tickets'
 		),

@@ -24,7 +24,7 @@ const mapStateToProps = (state, ownProps) => {
 		content: sprintf(
 			/* Translators: %s - the plural, lowercase label for a ticket. */
 			__(
-				'Single %s are not yet supported on recurring events. ',
+				'Standard %s are not yet supported on recurring events. ',
 				'event-tickets'
 			),
 			tribe_editor_config.tickets.ticketLabels.ticket.plural_lowercase // eslint-disable-line camelcase, no-undef

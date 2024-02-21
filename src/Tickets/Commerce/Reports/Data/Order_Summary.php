@@ -276,7 +276,7 @@ class Order_Summary {
 	 */
 	public function get_label_for_type( string $type ): string {
 		if ( 'default' === $type ) {
-			$type = __( 'Single Ticket', 'event-tickets' );
+			$type = tec_tickets_get_default_ticket_type_label_plural( 'order report summary' );
 		}
 
 		/**
