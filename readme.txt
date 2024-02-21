@@ -199,6 +199,12 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 * Fix - Stock will be calculated correctly when an order fails and then succeeds while using Tickets Commerce.
 
+= [5.8.2] 2024-02-19 =
+
+* Feature - Support per Event attendance for Series Pass Attendees for manual and app-based check-ins. [ET-1936]
+* Fix - Available number when moving Series Pass Attendees. [ET-2009]
+* Language - 5 new strings added, 167 updated, 14 fuzzied, and 9 obsoleted
+
 = [5.8.1] 2024-02-06 =
 
 * Fix - Removed type casting from filter method of series pass to avoid fatal errors. [ET-2014]

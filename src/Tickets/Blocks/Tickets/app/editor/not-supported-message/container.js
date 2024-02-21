@@ -21,7 +21,7 @@ const getCurrentPostStatus = () => {
 const mapStateToProps = (state, ownProps) => {
 	let mappedProps = {
 		content: __(
-			'Single tickets are not yet supported on recurring events. ',
+			'Standard tickets are not yet supported on recurring events. ',
 			'event-tickets'
 		),
 		ctaLink: (
