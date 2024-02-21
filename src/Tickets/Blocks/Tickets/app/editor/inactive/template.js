@@ -19,7 +19,7 @@ const getCreateSingleTicketMessage = (postTypeLabel) => (
 		{sprintf(
 			// Translators: %s is the post type name in human readable form.
 			_x(
-				'Create single tickets for this %s. ',
+				'Create standard tickets for this %s. ',
 				'The message displayed when there are no tickets.',
 				'event-tickets'
 			),

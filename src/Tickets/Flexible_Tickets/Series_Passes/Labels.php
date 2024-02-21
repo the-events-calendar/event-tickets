@@ -179,11 +179,11 @@ class Labels {
 		return sprintf(
 			// Translators: %1$s is the ticket type label, %2$s is the Event type label, %3$s is the Series Pass type label, %4$s is the Series edit link.
 			_x(
-				'A single %1$s is specific to this %2$s. You can add a %3$s from the %%s Series page.',
+				'A %1$s is specific to this %2$s. You can add a %3$s from the %%s Series page.',
 				'The help text for the default ticket type in the ticket form.',
 				'event-tickets'
 			),
-			tribe_get_ticket_label_singular_lowercase( 'ticket_type_default_header_description' ),
+			tec_tickets_get_default_ticket_type_label_lowercase( 'ticket_type_default_header_description' ),
 			tribe_get_event_label_singular_lowercase(),
 			tec_tickets_get_series_pass_singular_uppercase( 'ticket_type_default_header_description' ),
 		);

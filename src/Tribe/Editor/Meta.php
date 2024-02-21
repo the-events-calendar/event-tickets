@@ -467,7 +467,7 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 	 * @param int $post_id The ID of the post the form is being rendered for.
 	 */
 	public function render_ticket_form_toggle( int $post_id ): void {
-		$ticket_providing_modules = array_diff_key( tribe__tickets__tickets::modules(), [ 'tribe__tickets__rsvp' => true ] );
+		$ticket_providing_modules = array_diff_key( Tribe__Tickets__Tickets::modules(), [ 'Tribe__Tickets__RSVP' => true ] );
 		$add_new_ticket_label     = count( $ticket_providing_modules ) > 0
 			? esc_attr__( 'Add a new ticket', 'event-tickets' )
 			: esc_attr__( 'No commerce providers available', 'event-tickets' );

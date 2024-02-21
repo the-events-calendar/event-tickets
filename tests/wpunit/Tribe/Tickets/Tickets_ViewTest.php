@@ -1,10 +1,15 @@
 <?php
 namespace Tribe\Tickets;
 
+use Closure;
+use Generator;
+use Codeception\TestCase\WPTestCase;
+use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use Tribe__Tickets__Tickets_View as Tickets_View;
 
-class Tickets_ViewTest extends \Codeception\TestCase\WPTestCase {
+class Tickets_ViewTest extends WPTestCase {
 
+	use SnapshotAssertions;
 	public function setUp() {
 		// before
 		parent::setUp();
@@ -34,6 +39,17 @@ class Tickets_ViewTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	private function make_instance() {
 		return new Tickets_View();
+	}
+	
+	/**
+	 * Placeholder for post ids.
+	 */
+	public function placehold_post_ids( string $snapshot, array $ids ): string {
+		return str_replace(
+			array_values( $ids ),
+			array_map( static fn( string $name ) => "{{ $name }}", array_keys( $ids ) ),
+			$snapshot
+		);
 	}
 
 	/**
@@ -226,5 +242,97 @@ class Tickets_ViewTest extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertArrayHasKey( 'no', $options );
 		$this->assertEquals( 0, $options['no']['decrease_stock_by'] );
+	}
+	
+	public function provide_get_tickets_page_url_data(): Generator {
+		yield 'with invalid post id' => [
+			function (): array {
+				return [
+					PHP_INT_MAX,
+					false,
+				];
+			},
+		];
+		
+		yield 'with valid post id' => [
+			function (): array {
+				$post_id = wp_insert_post(
+					[
+						'post_type'   => 'post',
+						'post_title'  => 'Test Post',
+						'post_status' => 'publish',
+					]
+				);
+				
+				return [
+					$post_id,
+					true,
+				];
+			},
+		];
+		
+		yield 'with valid event id' => [
+			function (): array {
+				$event_id = tribe_events()->set_args(
+					[
+						'title'      => 'Test Event',
+						'status'     => 'publish',
+						'start_date' => '2020-01-01 09:00:00',
+						'end_date'   => '2020-01-01 11:30:00',
+					]
+				)->create()->ID;
+				
+				return [
+					$event_id,
+					true,
+				];
+			},
+		];
+	}
+	
+	/**
+	 * @dataProvider provide_get_tickets_page_url_data
+	 *
+	 * @test
+	 *
+	 * it should return the valid tickets page url.
+	 */
+	public function should_get_tickets_page_url( Closure $fixture ): void {
+		[ $post_id, $has_output ] = $fixture();
+		
+		$sut = $this->make_instance();
+		$url = $sut->get_tickets_page_url( $post_id );
+		$url = $this->placehold_post_ids( $url, [ 'post_id' => $post_id ] );
+		
+		if ( $has_output ) {
+			$this->assertMatchesHtmlSnapshot( $url );
+		} else {
+			$this->assertEmpty( $url );
+		}
+	}
+	
+	/**
+	 * @dataProvider provide_get_tickets_page_url_data
+	 *
+	 * @test
+	 *
+	 * it should return the valid tickets page url.
+	 */
+	public function should_get_tickets_page_url_for_plain_permalink( Closure $fixture ): void {
+		[ $post_id, $has_output ] = $fixture();
+		
+		update_option( 'permalink_structure', '' );
+		$sut = $this->make_instance();
+		$url = $sut->get_tickets_page_url( $post_id );
+		$url = $this->placehold_post_ids( $url, [ 'post_id' => $post_id ] );
+		
+		if ( $has_output ) {
+			$this->assertMatchesHtmlSnapshot( $url );
+		} else {
+			$this->assertEmpty( $url );
+		}
+		
+		// reset to default.
+		update_option( 'permalink_structure', false );
 	}
 }

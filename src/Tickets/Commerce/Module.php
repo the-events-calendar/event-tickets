@@ -32,6 +32,8 @@ class Module extends \Tribe__Tickets__Tickets {
 
 		$this->event_key = Attendee::$event_relation_meta_key;
 
+		$this->attendee_event_key = Attendee::$event_relation_meta_key;
+
 		$this->checkin_key = Attendee::$checked_in_meta_key;
 
 		$this->order_key = Attendee::$order_relation_meta_key;
