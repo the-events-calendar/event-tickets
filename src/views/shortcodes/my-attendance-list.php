@@ -9,6 +9,7 @@
  * @since   4.8.2
  * @since   4.12.3 Removed target="_blank" from links, added direct link to each post's "My Tickets" view,
  *          rename $event_id variable.
+ * @since 5.8.2 Removed optional param $is_event_page from the `get_tickets_page_url` call.
  *
  * @version 4.12.3
  *
@@ -21,8 +22,7 @@ $view = Tribe__Tickets__Tickets_View::instance();
 <ul class="tribe-tickets my-attendance-list">
 	<?php
 	foreach ( $event_ids as $event_id ) :
-		$is_event               = function_exists( 'tribe_is_event' ) ? tribe_is_event( $event_id ) : false;
-		$direct_link_my_tickets = $view->get_tickets_page_url( $event_id, $is_event );
+		$direct_link_my_tickets = $view->get_tickets_page_url( $event_id );
 		?>
 		<?php $start_date = tribe_get_start_date( $event_id ); ?>
 		<li class="event-<?php echo esc_attr( $event_id ); ?>">
