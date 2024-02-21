@@ -197,7 +197,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [TBD] TBD =
 
-
+* Fix - Stock will be calculated correctly when an order fails and then succeeds while using Tickets Commerce.
 
 = [5.8.2] 2024-02-19 =
 
