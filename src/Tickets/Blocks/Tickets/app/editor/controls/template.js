@@ -70,9 +70,7 @@ const Controls = ({
 								sprintf(
 									/* Translators: %s - Ticket plural label. */
 									__('Sell %s using', 'event-tickets'),
-									// eslint-disable-next-line camelcase, no-undef
-									tribe_editor_config.tickets.ticketLabels
-										.ticket.plural_lowercase
+									TICKET_LABELS.ticket.pluralLowercase
 								)
 							}
 						</legend>
