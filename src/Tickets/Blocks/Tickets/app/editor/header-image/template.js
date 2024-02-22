@@ -32,7 +32,7 @@ const HeaderImage = ( {
 				'Select an image from your Media Library to display on emailed %s and RSVPs. For best results, use a .jpg, .png, or .gif at least 1160px wide.',
 				'event-tickets'
 			),
-			TICKET_LABELS.ticket.pluralLowercase // eslint-disable-line camelcase, no-undef
+			TICKET_LABELS.ticket.pluralLowercase
 		);
 
 	const imageUploadProps = {
@@ -40,7 +40,7 @@ const HeaderImage = ( {
 		title: sprintf(
 			/* Translators: %s - Ticket singular label. */
 			__('%s Header Image', 'event-tickets'),
-			TICKET_LABELS.ticket.singular // eslint-disable-line camelcase, no-undef
+			TICKET_LABELS.ticket.singular
 		),
 		description,
 		className: 'tribe-editor__rsvp__image-upload',
