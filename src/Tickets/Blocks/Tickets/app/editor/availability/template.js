@@ -15,6 +15,7 @@ import { __ } from '@wordpress/i18n';
  */
 import { IconWithTooltip, NumericLabel } from '@moderntribe/tickets/elements';
 import './style.pcss';
+import { TICKET_LABELS } from '../constants';
 
 /**
  * @todo: consider changing to _n for better translation compatibility
@@ -35,9 +36,7 @@ const Availability = ( { available, total } ) => {
 				sprintf(
 					/* Translators: %s - ticket singular label, lowercase */
 					__('%s available', 'event-tickets'),
-					// eslint-disable-next-line no-undef, camelcase
-					tribe_editor_config.tickets.ticketLabels.ticket
-						.singular_lowercase
+					TICKET_LABELS.ticket.singularLowercase
 				)
 			}
 			plural={
@@ -46,9 +45,7 @@ const Availability = ( { available, total } ) => {
 				sprintf(
 					/* Translators: %s - ticket plural label, lowercase */
 					__('%s available', 'event-tickets'),
-					// eslint-disable-next-line no-undef, camelcase
-					tribe_editor_config.tickets.ticketLabels.ticket
-						.plural_lowercase
+					TICKET_LABELS.ticket.pluralLowercase
 				)
 			}
 		/>
@@ -67,9 +64,7 @@ const Availability = ( { available, total } ) => {
 				sprintf(
 					/* Translators: %s - ticket singular label, lowercase */
 					__('total %s', 'event-tickets'),
-					// eslint-disable-next-line no-undef, camelcase
-					tribe_editor_config.tickets.ticketLabels.ticket
-						.singular_lowercase
+					TICKET_LABELS.ticket.singularLowercase
 				)
 			}
 			plural={
@@ -78,9 +73,7 @@ const Availability = ( { available, total } ) => {
 				sprintf(
 					/* Translators: %s - ticket plural label, lowercase */
 					__('total %s', 'event-tickets'),
-					// eslint-disable-next-line no-undef, camelcase
-					tribe_editor_config.tickets.ticketLabels.ticket
-						.plural_lowercase
+					TICKET_LABELS.ticket.pluralLowercase
 				)
 			}
 		/>
@@ -99,9 +92,7 @@ const Availability = ( { available, total } ) => {
 								'%s availability is based on the lowest number of inventory, stock, and capacity.',
 								'event-tickets'
 							),
-							// eslint-disable-next-line camelcase, no-undef
-							tribe_editor_config.tickets.ticketLabels.ticket
-								.singular
+							TICKET_LABELS.ticket.singular
 						)}
 						icon={
 							<span className="dashicons dashicons-info-outline" />

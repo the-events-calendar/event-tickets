@@ -12,6 +12,7 @@ import { withStore } from '@moderntribe/common/hoc';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 import { select } from '@wordpress/data';
+import { TICKET_LABELS } from '../constants';
 
 const getCurrentPostStatus = () => {
 	const { status = 'auto-draft' } = select('core/editor').getCurrentPost();
@@ -27,7 +28,7 @@ const mapStateToProps = (state, ownProps) => {
 				'Standard %s are not yet supported on recurring events. ',
 				'event-tickets'
 			),
-			tribe_editor_config.tickets.ticketLabels.ticket.plural_lowercase // eslint-disable-line camelcase, no-undef
+			TICKET_LABELS.ticket.pluralLowercase
 		),
 		ctaLink: (
 			<a

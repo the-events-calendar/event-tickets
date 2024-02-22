@@ -14,6 +14,7 @@ import { __ } from '@wordpress/i18n';
  */
 import { ImageUpload } from '@moderntribe/common/elements';
 import './style.pcss';
+import { TICKET_LABELS } from '../constants';
 
 const HeaderImage = ( {
 	image,
@@ -31,7 +32,7 @@ const HeaderImage = ( {
 				'Select an image from your Media Library to display on emailed %s and RSVPs. For best results, use a .jpg, .png, or .gif at least 1160px wide.',
 				'event-tickets'
 			),
-			tribe_editor_config.tickets.ticketLabels.ticket.plural_lowercase // eslint-disable-line camelcase, no-undef
+			TICKET_LABELS.ticket.pluralLowercase // eslint-disable-line camelcase, no-undef
 		);
 
 	const imageUploadProps = {
@@ -39,7 +40,7 @@ const HeaderImage = ( {
 		title: sprintf(
 			/* Translators: %s - Ticket singular label. */
 			__('%s Header Image', 'event-tickets'),
-			tribe_editor_config.tickets.ticketLabels.ticket.singular // eslint-disable-line camelcase, no-undef
+			TICKET_LABELS.ticket.singular // eslint-disable-line camelcase, no-undef
 		),
 		description,
 		className: 'tribe-editor__rsvp__image-upload',

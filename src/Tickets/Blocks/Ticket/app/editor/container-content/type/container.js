@@ -18,6 +18,7 @@ import { selectors } from '@moderntribe/tickets/data/blocks/ticket';
 import { plugins } from '@moderntribe/common/data';
 import { applyFilters } from '@wordpress/hooks';
 import { Ticket as TicketIcon } from '@moderntribe/tickets/icons';
+import { TICKET_LABELS } from '../../constants';
 
 const mapStateToProps = (state, ownProps) => {
 	const postTypeLabel = selectors
@@ -27,7 +28,7 @@ const mapStateToProps = (state, ownProps) => {
 	const typeName = sprintf(
 		/* Translators: %s - the singular label for a ticket. */
 		_x('Standard %s', 'Default ticket type label.', 'event-tickets'),
-		tribe_editor_config.tickets.ticketLabels.ticket.singular // eslint-disable-line camelcase, no-undef
+		TICKET_LABELS.ticket.singular
 	);
 	const typeDescription = sprintf(
 		// translators: %s is the post type name in human readable form.
@@ -53,7 +54,7 @@ const mapStateToProps = (state, ownProps) => {
 						'Default ticket type upsell description.',
 						'event-tickets'
 					),
-					tribe_editor_config.tickets.ticketLabels.ticket.singular_lowercase // eslint-disable-line camelcase, no-undef, prettier/prettier
+					TICKET_LABELS.ticket.singularLowercase
 			  )
 			: null;
 	const typeIcon = <TicketIcon />;

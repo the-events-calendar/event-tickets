@@ -13,6 +13,7 @@ import { __, _x, sprintf } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { Card } from '@moderntribe/tickets/elements';
+import { TICKET_LABELS } from '../constants';
 
 const getCreateSingleTicketMessage = (postTypeLabel) => (
 	<div className="tickets-row-line">
@@ -23,7 +24,7 @@ const getCreateSingleTicketMessage = (postTypeLabel) => (
 				'The message displayed when there are no tickets.',
 				'event-tickets'
 			),
-			tribe_editor_config.tickets.ticketLabels.ticket.plural_lowercase, // eslint-disable-line camelcase, no-undef, prettier/prettier
+			TICKET_LABELS.ticket.pluralLowercase,
 			postTypeLabel ? postTypeLabel : ''
 		)}
 		<a
@@ -35,9 +36,7 @@ const getCreateSingleTicketMessage = (postTypeLabel) => (
 			{sprintf(
 				/* Translators: %s - the singular, lowercase label for a ticket. */
 				__('Learn more about %s management', 'event-tickets'),
-				// eslint-disable-next-line camelcase, no-undef
-				tribe_editor_config.tickets.ticketLabels.ticket
-					.singular_lowercase
+				TICKET_LABELS.ticket.singularLowercase
 			)}
 		</a>
 	</div>
@@ -63,9 +62,7 @@ const getInactiveTicketsMessage = ({
 							"There is no ecommerce available. To create %s, you'll need to enable an ecommerce solution.",
 							'event-tickets'
 						),
-						// eslint-disable-next-line camelcase, no-undef
-						tribe_editor_config.tickets.ticketLabels.ticket
-							.plural_lowercase
+						TICKET_LABELS.ticket.pluralLowercase
 					)}
 				</div>
 			</div>
@@ -98,8 +95,8 @@ const getInactiveTicketsMessage = ({
 							'There are no active %1$s. Adjust sale duration to make %2$s available',
 							'event-tickets'
 						),
-						tribe_editor_config.tickets.ticketLabels.ticket.plural_lowercase, // eslint-disable-line camelcase, no-undef, prettier/prettier
-						tribe_editor_config.tickets.ticketLabels.ticket.plural_lowercase // eslint-disable-line camelcase, no-undef, prettier/prettier
+						TICKET_LABELS.ticket.pluralLowercase,
+						TICKET_LABELS.ticket.pluralLowercase
 					)}
 				</div>
 			</div>
@@ -112,7 +109,7 @@ const getInactiveTicketsMessage = ({
 				{sprintf(
 					/* Translators: %s - the plural label for a ticket. */
 					__('%s are not yet available', 'event-tickets'),
-					tribe_editor_config.tickets.ticketLabels.ticket.plural // eslint-disable-line camelcase, no-undef
+					TICKET_LABELS.ticket.plural
 				)}
 			</div>
 		</div>
@@ -132,7 +129,7 @@ const Inactive = ({
 	return (
 		<Card
 			className="tribe-editor__card-no-bottom-border"
-			header={tribe_editor_config.tickets.ticketLabels.ticket.plural}
+			header={TICKET_LABELS.ticket.plural}
 		>
 			<div className="tickets-description">
 				{getInactiveTicketsMessage({

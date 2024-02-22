@@ -20,6 +20,7 @@ import TicketsContainer from './container/container';
 import TicketControls from './controls/container';
 import Uneditable from './uneditable/container';
 import './style.pcss';
+import { TICKET_LABELS } from './constants';
 
 class Tickets extends PureComponent {
 	static propTypes = {
@@ -92,7 +93,7 @@ class Tickets extends PureComponent {
 			<>
 				<Card
 					className="tribe-editor__card tribe-editor__not-supported-message"
-					header={tribe_editor_config.tickets.ticketLabels.ticket.plural}
+					header={TICKET_LABELS.ticket.plural}
 				>
 					<div className="tribe-editor__title__help-messages">
 						{showWarning && <Warning />}

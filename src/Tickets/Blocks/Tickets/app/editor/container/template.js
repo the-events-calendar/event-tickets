@@ -19,6 +19,7 @@ import Inactive from '../inactive/container';
 import { Card } from '@moderntribe/tickets/elements';
 import './style.pcss';
 import Uneditable from '../uneditable/container';
+import { TICKET_LABELS } from '../constants';
 
 const TicketsOverlay = () => <div className="tribe-editor__tickets__overlay" />;
 
@@ -60,7 +61,7 @@ const TicketsContainer = ({
 			<div className={innerBlocksClassName}>
 				<Card
 					className={cardClassName}
-					header={tribe_editor_config.tickets.ticketLabels.ticket.plural}
+					header={TICKET_LABELS.ticket.plural}
 				>
 					{canCreateTickets && (
 						<InnerBlocks allowedBlocks={['tribe/tickets-item']} />

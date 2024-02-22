@@ -17,6 +17,7 @@ import uniqid from 'uniqid';
  */
 import { Input } from '@moderntribe/common/elements';
 import { LabelWithTooltip } from '@moderntribe/tickets/elements';
+import { TICKET_LABELS } from '../../../constants';
 
 class SKU extends PureComponent {
 	static propTypes = {
@@ -47,7 +48,7 @@ class SKU extends PureComponent {
 					label={sprintf(
 						/* Translators: %s - the singular label for a ticket. */
 						__('%s SKU', 'event-tickets'),
-						tribe_editor_config.tickets.ticketLabels.ticket.singular // eslint-disable-line camelcase, no-undef
+						TICKET_LABELS.ticket.singular
 					)}
 					// eslint-disable-next-line no-undef
 					tooltipText={sprintf(
@@ -56,9 +57,7 @@ class SKU extends PureComponent {
 							"A unique identifying code for each %s type you're selling",
 							'event-tickets'
 						),
-						// eslint-disable-next-line camelcase, no-undef
-						tribe_editor_config.tickets.ticketLabels.ticket
-							.singular_lowercase
+						TICKET_LABELS.ticket.singularLowercase
 					)}
 					tooltipLabel={
 						<Dashicon

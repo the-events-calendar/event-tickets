@@ -14,6 +14,7 @@ import { __ } from '@wordpress/i18n';
  */
 import { AttendeesRegistration as ARElement } from '@moderntribe/tickets/elements';
 import './style.pcss';
+import { TICKET_LABELS } from '../../constants';
 
 const linkTextAdd = __( '+ Add', 'event-tickets' );
 const linkTextEdit = __( 'Edit', 'event-tickets' );
@@ -39,7 +40,7 @@ const AttendeesRegistration = ( {
 					'Save your %s to enable attendee information fields',
 					'event-tickets'
 				),
-				tribe_editor_config.tickets.ticketLabels.ticket.singular_lowercase // eslint-disable-line camelcase, no-undef, prettier/prettier
+				TICKET_LABELS.ticket.singularLowercase
 			)}
 			iframeURL={ attendeeRegistrationURL }
 			isDisabled={ isDisabled }

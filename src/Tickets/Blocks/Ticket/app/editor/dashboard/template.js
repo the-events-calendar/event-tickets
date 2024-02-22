@@ -15,6 +15,7 @@ import { __ } from '@wordpress/i18n';
 import { ActionDashboard } from '@moderntribe/tickets/elements';
 import MoveDelete from './move-delete/container';
 import './style.pcss';
+import { TICKET_LABELS } from '../constants';
 
 const confirmLabel = (hasBeenCreated) => {
 	return hasBeenCreated
@@ -22,13 +23,13 @@ const confirmLabel = (hasBeenCreated) => {
 		  sprintf(
 				/* Translators: %s - the singular label for a ticket. */
 				__('Update %s', 'event-tickets'),
-				tribe_editor_config.tickets.ticketLabels.ticket.singular // eslint-disable-line camelcase, no-undef
+				TICKET_LABELS.ticket.singular
 		  )
 		: // eslint-disable-next-line no-undef
 		  sprintf(
 				/* Translators: %s - the singular label for a ticket. */
 				__('Create %s', 'event-tickets'),
-				tribe_editor_config.tickets.ticketLabels.ticket.singular // eslint-disable-line camelcase, no-undef
+				TICKET_LABELS.ticket.singular
 		  );
 };
 

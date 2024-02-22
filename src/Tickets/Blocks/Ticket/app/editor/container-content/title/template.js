@@ -16,6 +16,7 @@ import uniqid from 'uniqid';
  */
 import { Input, LabeledItem } from '@moderntribe/common/elements';
 import './styles.pcss';
+import { TICKET_LABELS } from '../../constants';
 
 class Title extends PureComponent {
 	static propTypes = {
@@ -50,7 +51,7 @@ class Title extends PureComponent {
 					label={sprintf(
 						/* Translators: %s - the singular label for a ticket. */
 						__('%s name', 'event-tickets'),
-						tribe_editor_config.tickets.ticketLabels.ticket.singular // eslint-disable-line camelcase, no-undef
+						TICKET_LABELS.ticket.singular
 					)}
 				/>
 

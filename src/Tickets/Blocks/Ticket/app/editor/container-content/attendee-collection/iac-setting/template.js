@@ -11,6 +11,7 @@ import classNames from 'classnames';
 import { __ } from '@wordpress/i18n';
 import { RadioControl } from '@wordpress/components';
 import uniqid from 'uniqid';
+import { TICKET_LABELS } from '../../../constants';
 
 /**
  * Internal dependencies
@@ -46,8 +47,8 @@ class IACSetting extends PureComponent {
 								'Select the default way to sell %1$s. Enabling Individual Attendee Collection will allow purchasers to enter a name and email for each %2$s.', // eslint-disable-line max-len
 								'event-tickets'
 							),
-							tribe_editor_config.tickets.ticketLabels.ticket.plural_lowercase, // eslint-disable-line camelcase, no-undef, prettier/prettier
-							tribe_editor_config.tickets.ticketLabels.ticket.singular_lowercase // eslint-disable-line camelcase, no-undef, prettier/prettier
+							TICKET_LABELS.ticket.pluralLowercase,
+							TICKET_LABELS.ticket.singularLowercase
 						)
 					}
 				</div>

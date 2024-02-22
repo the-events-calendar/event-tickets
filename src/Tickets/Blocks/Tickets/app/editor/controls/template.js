@@ -15,6 +15,7 @@ import { InspectorControls } from '@wordpress/editor';
  * Internal dependencies
  */
 import './style.pcss';
+import { TICKET_LABELS } from '../constants';
 
 const RadioInput = ({ provider, onProviderChange, ...additionalProps }) => (
 	<div className="tribe-editor__tickets-control-container">
@@ -58,7 +59,7 @@ const Controls = ({
 				title={sprintf(
 					/* Translators: %s - Ticket plural label. */
 					__('%s Settings', 'event-tickets'),
-					tribe_editor_config.tickets.ticketLabels.ticket.plural // eslint-disable-line camelcase, no-undef
+					TICKET_LABELS.ticket.plural
 				)}
 			>
 				<PanelRow>

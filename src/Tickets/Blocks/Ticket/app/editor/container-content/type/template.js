@@ -17,6 +17,7 @@ import { ECP as ECPIcon } from '@moderntribe/tickets/icons';
 import './styles.pcss';
 import { LabelWithTooltip } from '@moderntribe/tickets/elements';
 import { Dashicon } from '@wordpress/components';
+import { TICKET_LABELS } from '../../constants';
 
 const Type = ({ typeName, typeDescription, upsellMessage, typeIcon }) => {
 	// This is sanitized in the PHP section, furthermore this description will not go to the backend.
@@ -44,7 +45,7 @@ const Type = ({ typeName, typeDescription, upsellMessage, typeIcon }) => {
 						'Block Editor Ticket type label',
 						'event-tickets'
 					),
-					tribe_editor_config.tickets.ticketLabels.ticket.singular // eslint-disable-line camelcase, no-undef
+					TICKET_LABELS.ticket.singular
 				)}
 				tooltipText={typeDescription}
 				tooltipLabel={

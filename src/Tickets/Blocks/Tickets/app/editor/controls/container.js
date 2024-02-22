@@ -14,6 +14,7 @@ import { selectors, actions } from '@moderntribe/tickets/data/blocks/ticket';
 import { applyFilters } from '@wordpress/hooks';
 import { hasRecurrenceRules } from '@moderntribe/common/utils/recurrence';
 import { __ } from '@wordpress/i18n';
+import { TICKET_LABELS } from '../constants';
 
 const mapStateToProps = (state, ownProps) => {
 	const isRecurring = hasRecurrenceRules(state);
@@ -24,7 +25,7 @@ const mapStateToProps = (state, ownProps) => {
 			'It looks like you have multiple ecommerce plugins active. We recommend running only one at a time. However, if you need to run multiple, please select which one to use to sell %s for this event. ', // eslint-disable-line max-len
 			'event-tickets'
 		),
-		tribe_editor_config.tickets.ticketLabels.ticket.plural_lowercase // eslint-disable-line camelcase, no-undef
+		TICKET_LABELS.ticket.pluralLowercase
 	);
 
 	// eslint-disable-next-line no-undef
@@ -34,9 +35,9 @@ const mapStateToProps = (state, ownProps) => {
 			'Note: adjusting this setting will only impact new %1$s. Existing %2$s will not change. We highly recommend that all %3$s for one event use the same ecommerce plugin.', // eslint-disable-line max-len
 			'event-tickets'
 		),
-		tribe_editor_config.tickets.ticketLabels.ticket.plural_lowercase, // eslint-disable-line camelcase, no-undef
-		tribe_editor_config.tickets.ticketLabels.ticket.plural_lowercase, // eslint-disable-line camelcase, no-undef
-		tribe_editor_config.tickets.ticketLabels.ticket.plural_lowercase // eslint-disable-line camelcase, no-undef
+		TICKET_LABELS.ticket.pluralLowercase,
+		TICKET_LABELS.ticket.pluralLowercase,
+		TICKET_LABELS.ticket.pluralLowercase
 	);
 	const messageElement = (
 		<p>

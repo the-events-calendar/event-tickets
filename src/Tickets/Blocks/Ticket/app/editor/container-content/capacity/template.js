@@ -21,6 +21,7 @@ import { LabeledItem, NumberInput, Select } from '@moderntribe/common/elements';
 import { LabelWithTooltip } from '@moderntribe/tickets/elements';
 import { ReactSelectOption } from '@moderntribe/common/data/plugins/proptypes';
 import './style.pcss';
+import { TICKET_LABELS } from '../../constants';
 
 const {
 	INDEPENDENT,
@@ -153,13 +154,13 @@ class Capacity extends PureComponent {
 					  sprintf(
 							/* Translators: %s - the singular, lowercase label for a ticket. */
 							__('Limit sales of this %s to:', 'event-tickets'),
-						tribe_editor_config.tickets.ticketLabels.ticket.singular_lowercase // eslint-disable-line camelcase, no-undef, prettier/prettier
+							TICKET_LABELS.ticket.singularLowercase
 					  )
 					: // eslint-disable-next-line no-undef
 					  sprintf(
 							/* Translators: %s - the plural, lowercase label for a ticket. */
 							__('Number of %s available', 'event-tickets'),
-							tribe_editor_config.tickets.ticketLabels.ticket.plural_lowercase // eslint-disable-line camelcase, no-undef, prettier/prettier
+							TICKET_LABELS.ticket.pluralLowercase
 					  );
 
 			inputs.push(
@@ -248,7 +249,7 @@ class Capacity extends PureComponent {
 					label={sprintf(
 						/* Translators: %s - the singular label for a ticket. */
 						__('%s Capacity', 'event-tickets'),
-						tribe_editor_config.tickets.ticketLabels.ticket.singular // eslint-disable-line camelcase, no-undef
+						TICKET_LABELS.ticket.singular
 					)}
 					tooltipText={sprintf(
 						/* Translators: %1$s - the singular label for a ticket; %2$s - the singular, lowercase label for a ticket. */
@@ -256,8 +257,8 @@ class Capacity extends PureComponent {
 							'%1$s capacity will only be used by attendees buying this %2$s type',
 							'event-tickets'
 						),
-						tribe_editor_config.tickets.ticketLabels.ticket.singular, // eslint-disable-line camelcase, no-undef, prettier/prettier
-						tribe_editor_config.tickets.ticketLabels.ticket.singular_lowercase // eslint-disable-line camelcase, no-undef, prettier/prettier
+						TICKET_LABELS.ticket.singular,
+						TICKET_LABELS.ticket.singularLowercase
 					)}
 					tooltipLabel={
 						<Dashicon

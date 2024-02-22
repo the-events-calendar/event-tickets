@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import { __ } from '@wordpress/i18n';
 import { Button } from '@moderntribe/common/elements';
 import './style.pcss';
+import { TICKET_LABELS } from '../../constants';
 
 const MoveDelete = ( {
 	ticketIsSelected,
@@ -25,7 +26,7 @@ const MoveDelete = ( {
 					sprintf(
 						/* Translators: %s - the singular label for a ticket. */
 						__('Remove %s', 'event-tickets'),
-						tribe_editor_config.tickets.ticketLabels.ticket.singular // eslint-disable-line camelcase, no-undef
+						TICKET_LABELS.ticket.singular
 					)
 				}
 			</Button>
@@ -35,7 +36,7 @@ const MoveDelete = ( {
 					sprintf(
 						/* Translators: %s - the singular label for a ticket. */
 						__('Move %s', 'event-tickets'),
-						tribe_editor_config.tickets.ticketLabels.ticket.singular // eslint-disable-line camelcase, no-undef
+						TICKET_LABELS.ticket.singular
 					)
 				}
 			</Button>
