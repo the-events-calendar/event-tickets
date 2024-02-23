@@ -11,6 +11,8 @@ namespace TEC\Tickets\Flexible_Tickets\Series_Passes;
 
 use AppendIterator;
 use ArrayIterator;
+use DateTimeImmutable;
+use Faker\Provider\DateTime;
 use Iterator;
 use TEC\Common\Contracts\Provider\Controller;
 use TEC\Common\lucatume\DI52\Container;
@@ -26,6 +28,7 @@ use WP_Error;
 use WP_Post;
 use WP_REST_Response;
 use Tribe__Events__Main as TEC;
+use Tribe__Timezones as Timezones;
 
 /**
  * Class Attendees.
@@ -546,7 +549,7 @@ class Attendees extends Controller {
 	 *               check-in timeframe.
 	 */
 	public function fetch_checkin_candidates_for_series( int $attendee_id, int $series_id, bool $qr ): array {
-		[ $start, $end ] = $this->get_checkin_candidate_timestamps( $series_id, $attendee_id, $qr );
+		[ $start, $end ] = $this->get_checkin_candidate_times( $series_id, $attendee_id, $qr );
 
 		// Fetch the candidate Occurrences, this will be an array of provisional IDs.
 		return iterator_to_array(
@@ -572,13 +575,13 @@ class Attendees extends Controller {
 	 *               check-in timeframe.
 	 */
 	public function fetch_checkin_candidates_for_event( int $attendee_id, int $event_id, bool $qr ): array {
-		[ $start, $end ] = $this->get_checkin_candidate_timestamps( $event_id, $attendee_id, $qr );
+		[ $start, $end ] = $this->get_checkin_candidate_times( $event_id, $attendee_id, $qr );
 
 		// Fetch the candidate Occurrences, this will be an array of provisional IDs.
 		$candidates = iterator_to_array(
 			Occurrence::where( 'post_id', $event_id )
-				->where( 'end_date', '>', Dates::immutable( $start ) )
-				->where( 'start_date', '<=', Dates::immutable( $end ) )->all(),
+				->where( 'end_date', '>', $start )
+				->where( 'start_date', '<=', $end )->all(),
 			false
 		);
 
@@ -598,15 +601,15 @@ class Attendees extends Controller {
 	 * @param int  $attendee_id The post ID of the Attendee to check in.
 	 * @param bool $qr          Whether the checkin is being done via QR code or not.
 	 *
-	 * @return array{0: int, 1: int} The checkin window start and end timestamps.
+	 * @return array{0: string, 1: string} The checkin window start and end in the format `Y-m-d H:i:s`.
 	 */
-	private function get_checkin_candidate_timestamps( int $post_id, int $attendee_id, bool $qr ): array {
+	private function get_checkin_candidate_times( int $post_id, int $attendee_id, bool $qr ): array {
 		if ( ! $qr ) {
 			/*
 			 *  We are not checking in via QR code: the checkin should never be restricted.
 			 * Use `1` as start of the interval to pass empty checks.
 			 */
-			return [ 1, strtotime( '2100-12-31 00:00:00' ) ];
+			return [ '1970-06-06 00:00:00',  '2100-12-31 00:00:00'  ];
 		}
 
 		/*
@@ -642,8 +645,12 @@ class Attendees extends Controller {
 		);
 
 		// Let's set up the time window to pull current and upcoming Events from.
-		$now           = wp_date( 'U' );
-		$starts_before = $now + $time_buffer;
+		$now_timestamp           = wp_date( 'U' );
+		$end_timestamp = $now_timestamp + $time_buffer;
+
+		$timezone = Timezones::build_timezone_object();
+		$now = Dates::immutable( $now_timestamp )->setTimezone( $timezone )->format( Dates::DBDATETIMEFORMAT );
+		$starts_before = Dates::immutable( $end_timestamp )->setTimezone( $timezone )->format( Dates::DBDATETIMEFORMAT );
 
 		return [ $now, $starts_before ];
 	}
@@ -788,14 +795,14 @@ class Attendees extends Controller {
 	 * @return bool Whether the Occurrence is a candidate for the checkin of the Attendee.
 	 */
 	private function is_occurrence_a_candidate( int $attendee_id, int $provisional_id, bool $qr ): bool {
-		[ $start, $end ] = $this->get_checkin_candidate_timestamps( $provisional_id, $attendee_id, $qr );
+		[ $start, $end ] = $this->get_checkin_candidate_times( $provisional_id, $attendee_id, $qr );
 
 		$occurrence_id = tribe( ID_Generator::class )->unprovide_id( $provisional_id );
 
 		return Occurrence::where( 'occurrence_id', '=', $occurrence_id )
-					->where( 'start_date', '<=', Dates::immutable( $end ) )
-					->where( 'end_date', '>', Dates::immutable( $start ) )
-					->count() > 0;
+			       ->where( 'start_date', '<=', $end )
+			       ->where( 'end_date', '>', $start )
+			       ->count() > 0;
 	}
 
 	/**

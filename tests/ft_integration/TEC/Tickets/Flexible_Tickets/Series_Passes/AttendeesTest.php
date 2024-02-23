@@ -113,8 +113,6 @@ class AttendeesTest extends Controller_Test_Case {
 		$_GET['event_id'] = $series;
 		$attendee_table = new Tribe__Tickets__Attendees_Table();
 		$this->assertArrayNotHasKey( 'check_in', $attendee_table->get_table_columns() );
-
-		// @todo test for single and recurring events, real and provisional IDs
 	}
 
 	/**
@@ -2327,5 +2325,103 @@ class AttendeesTest extends Controller_Test_Case {
 			'check_in',
 			'uncheck_in'
 		], array_keys( $attendee_table->get_bulk_actions() ) );
+	}
+
+	/**
+	 * It should correctly check-in of running events in diff. timezones by readl post ID
+	 *
+	 * @test
+	 */
+	public function should_correctly_check_in_of_running_events_in_diff_timezones_by_real_post_id(): void {
+		// Set the site timezone to America/Sao_Paulo
+		update_option( 'timezone_string', 'America/Sao_Paulo' );
+		// Become administrator.
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		// Create a Series.
+		$series_id = static::factory()->post->create(
+			[
+				'post_type' => Series_Post_Type::POSTTYPE,
+			]
+		);
+		// Create one Series Pass Attendee.
+		$series_pass_id = $this->create_tc_series_pass( $series_id )->ID;
+		$this->create_order( [ $series_pass_id => 1 ] );
+		$series_pass_attendee = tribe_attendees()->where( 'event', $series_id )->first_id();
+		// Create a Single Event part of the Series that started one hour ago and will end in one hour.
+		$event_1 = tribe_events()->set_args(
+			[
+				'title'      => 'Series Single Event',
+				'status'     => 'publish',
+				'start_date' => '-1 hour',
+				'end_date'   => '+1 hour',
+				'series'     => $series_id,
+			]
+		)->create()->ID;
+		// Create a Single Event part of the Series that starts in 1 hour.
+		$event_2 = tribe_events()->set_args(
+			[
+				'title'      => 'Series Single Event',
+				'status'     => 'publish',
+				'start_date' => '+1 hour',
+				'end_date'   => '+3 hours',
+				'series'     => $series_id,
+			]
+		)->create()->ID;
+		$commerce = Module::get_instance();
+
+		$controller = $this->make_controller();
+		$controller->register();
+
+		$this->assertTrue( $commerce->checkin( $series_pass_attendee, true, $event_1 ) );
+		$this->assertTrue( $commerce->checkin( $series_pass_attendee, true, $event_2 ) );
+	}
+
+	/**
+	 * It should correctly check-in of running events in diff. timezones by provisional ID
+	 *
+	 * @test
+	 */
+	public function should_correctly_check_in_of_running_events_in_diff_timezones_by_provisional_id(): void {
+		// Set the site timezone to America/Sao_Paulo
+		update_option( 'timezone_string', 'America/Sao_Paulo' );
+		// Become administrator.
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		// Create a Series.
+		$series_id = static::factory()->post->create(
+			[
+				'post_type' => Series_Post_Type::POSTTYPE,
+			]
+		);
+		// Create one Series Pass Attendee.
+		$series_pass_id = $this->create_tc_series_pass( $series_id )->ID;
+		$this->create_order( [ $series_pass_id => 1 ] );
+		$series_pass_attendee = tribe_attendees()->where( 'event', $series_id )->first_id();
+		// Create a Single Event part of the Series that started one hour ago and will end in one hour.
+		$event_1 = tribe_events()->set_args(
+			[
+				'title'      => 'Series Single Event',
+				'status'     => 'publish',
+				'start_date' => '-1 hour',
+				'end_date'   => '+1 hour',
+				'series'     => $series_id,
+			]
+		)->create()->ID;
+		// Create a Single Event part of the Series that starts in 1 hour.
+		$event_2 = tribe_events()->set_args(
+			[
+				'title'      => 'Series Single Event',
+				'status'     => 'publish',
+				'start_date' => '+1 hour',
+				'end_date'   => '+3 hours',
+				'series'     => $series_id,
+			]
+		)->create()->ID;
+		$commerce = Module::get_instance();
+
+		$controller = $this->make_controller();
+		$controller->register();
+
+		$this->assertTrue( $commerce->checkin( $series_pass_attendee, true, Occurrence::find($event_1,'post_id')->provisional_id ) );
+		$this->assertTrue( $commerce->checkin( $series_pass_attendee, true, Occurrence::find($event_2,'post_id')->provisional_id ) );
 	}
 }
