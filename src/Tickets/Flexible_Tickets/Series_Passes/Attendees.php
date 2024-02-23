@@ -11,8 +11,6 @@ namespace TEC\Tickets\Flexible_Tickets\Series_Passes;
 
 use AppendIterator;
 use ArrayIterator;
-use DateTimeImmutable;
-use Faker\Provider\DateTime;
 use Iterator;
 use TEC\Common\Contracts\Provider\Controller;
 use TEC\Common\lucatume\DI52\Container;
@@ -609,7 +607,7 @@ class Attendees extends Controller {
 			 *  We are not checking in via QR code: the checkin should never be restricted.
 			 * Use `1` as start of the interval to pass empty checks.
 			 */
-			return [ '1970-06-06 00:00:00',  '2100-12-31 00:00:00'  ];
+			return [ '1970-06-06 00:00:00', '2100-12-31 00:00:00' ];
 		}
 
 		/*
@@ -645,11 +643,11 @@ class Attendees extends Controller {
 		);
 
 		// Let's set up the time window to pull current and upcoming Events from.
-		$now_timestamp           = wp_date( 'U' );
+		$now_timestamp = wp_date( 'U' );
 		$end_timestamp = $now_timestamp + $time_buffer;
 
-		$timezone = Timezones::build_timezone_object();
-		$now = Dates::immutable( $now_timestamp )->setTimezone( $timezone )->format( Dates::DBDATETIMEFORMAT );
+		$timezone      = Timezones::build_timezone_object();
+		$now           = Dates::immutable( $now_timestamp )->setTimezone( $timezone )->format( Dates::DBDATETIMEFORMAT );
 		$starts_before = Dates::immutable( $end_timestamp )->setTimezone( $timezone )->format( Dates::DBDATETIMEFORMAT );
 
 		return [ $now, $starts_before ];
@@ -800,9 +798,9 @@ class Attendees extends Controller {
 		$occurrence_id = tribe( ID_Generator::class )->unprovide_id( $provisional_id );
 
 		return Occurrence::where( 'occurrence_id', '=', $occurrence_id )
-			       ->where( 'start_date', '<=', $end )
-			       ->where( 'end_date', '>', $start )
-			       ->count() > 0;
+					->where( 'start_date', '<=', $end )
+					->where( 'end_date', '>', $start )
+					->count() > 0;
 	}
 
 	/**
