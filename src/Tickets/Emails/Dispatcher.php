@@ -544,6 +544,7 @@ class Dispatcher {
 	 * Send an email.
 	 *
 	 * @since 5.6.0
+	 * @since TBD Decodes the subject before sending the email.
 	 *
 	 * @return bool Whether the email was sent successfully.
 	 */
