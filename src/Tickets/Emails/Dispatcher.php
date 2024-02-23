@@ -554,7 +554,7 @@ class Dispatcher {
 		}
 
 		// Handle any encoded characters in the subject.
-		$subject = html_entity_decode( $this->get_subject() );
+		$subject = wp_specialchars_decode( $this->get_subject() );
 
 		$sent = (bool) wp_mail(
 			$this->get_to(),
