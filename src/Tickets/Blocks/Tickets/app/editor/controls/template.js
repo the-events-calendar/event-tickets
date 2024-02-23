@@ -14,8 +14,8 @@ import { InspectorControls } from '@wordpress/editor';
 /**
  * Internal dependencies
  */
+import { TICKET_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
 import './style.pcss';
-import { TICKET_LABELS } from '../constants';
 
 const RadioInput = ({ provider, onProviderChange, ...additionalProps }) => (
 	<div className="tribe-editor__tickets-control-container">

@@ -11,11 +11,11 @@ import classNames from 'classnames';
 import { __ } from '@wordpress/i18n';
 import { RadioControl } from '@wordpress/components';
 import uniqid from 'uniqid';
-import { TICKET_LABELS } from '../../../constants';
 
 /**
  * Internal dependencies
  */
+import { TICKET_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
 
 class IACSetting extends PureComponent {
 	static propTypes = {

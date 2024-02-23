@@ -18,7 +18,7 @@ import { selectors } from '@moderntribe/tickets/data/blocks/ticket';
 import { plugins } from '@moderntribe/common/data';
 import { applyFilters } from '@wordpress/hooks';
 import { Ticket as TicketIcon } from '@moderntribe/tickets/icons';
-import { TICKET_LABELS } from '../../constants';
+import { TICKET_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
 
 const mapStateToProps = (state, ownProps) => {
 	const postTypeLabel = selectors

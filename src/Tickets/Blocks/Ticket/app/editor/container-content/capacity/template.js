@@ -21,13 +21,8 @@ import { LabeledItem, NumberInput, Select } from '@moderntribe/common/elements';
 import { LabelWithTooltip } from '@moderntribe/tickets/elements';
 import { ReactSelectOption } from '@moderntribe/common/data/plugins/proptypes';
 import './style.pcss';
-import { TICKET_LABELS } from '../../constants';
 
-const {
-	INDEPENDENT,
-	SHARED,
-	TICKET_TYPES,
-} = constants;
+const { INDEPENDENT, SHARED, TICKET_TYPES, TICKET_LABELS } = constants;
 const { CAPACITY_TYPE_OPTIONS } = options;
 
 // Custom input for this type of form

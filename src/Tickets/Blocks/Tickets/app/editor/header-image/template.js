@@ -13,8 +13,8 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { ImageUpload } from '@moderntribe/common/elements';
+import { TICKET_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
 import './style.pcss';
-import { TICKET_LABELS } from '../constants';
 
 const HeaderImage = ( {
 	image,

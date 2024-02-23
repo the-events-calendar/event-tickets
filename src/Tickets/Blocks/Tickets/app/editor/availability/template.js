@@ -14,8 +14,8 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { IconWithTooltip, NumericLabel } from '@moderntribe/tickets/elements';
+import { TICKET_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
 import './style.pcss';
-import { TICKET_LABELS } from '../constants';
 
 /**
  * @todo: consider changing to _n for better translation compatibility

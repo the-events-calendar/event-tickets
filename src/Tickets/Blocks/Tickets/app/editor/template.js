@@ -6,21 +6,16 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 /**
- * WordPress dependencies
- */
-import { __ } from '@wordpress/i18n';
-
-/**
  * Internal dependencies
  */
 import { Card } from '@moderntribe/tickets/elements';
+import { TICKET_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
 import NotSupportedMessage from './not-supported-message/container';
 import TicketsDashboard from './dashboard/container';
 import TicketsContainer from './container/container';
 import TicketControls from './controls/container';
 import Uneditable from './uneditable/container';
 import './style.pcss';
-import { TICKET_LABELS } from './constants';
 
 class Tickets extends PureComponent {
 	static propTypes = {

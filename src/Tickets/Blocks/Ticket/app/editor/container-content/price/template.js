@@ -15,10 +15,9 @@ import uniqid from 'uniqid';
 /**
  * Internal dependencies
  */
-import { PREFIX, SUFFIX } from '@moderntribe/tickets/data/blocks/ticket/constants';
+import { PREFIX, SUFFIX, TICKET_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
 import { LabeledItem } from '@moderntribe/common/elements';
 import './style.pcss';
-import { TICKET_LABELS } from '../../constants';
 
 class Price extends PureComponent {
 	static propTypes = {

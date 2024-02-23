@@ -17,7 +17,7 @@ import { ECP as ECPIcon } from '@moderntribe/tickets/icons';
 import './styles.pcss';
 import { LabelWithTooltip } from '@moderntribe/tickets/elements';
 import { Dashicon } from '@wordpress/components';
-import { TICKET_LABELS } from '../../constants';
+import { TICKET_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
 
 const Type = ({ typeName, typeDescription, upsellMessage, typeIcon }) => {
 	// This is sanitized in the PHP section, furthermore this description will not go to the backend.

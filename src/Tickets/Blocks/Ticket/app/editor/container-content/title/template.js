@@ -15,8 +15,8 @@ import uniqid from 'uniqid';
  * Internal dependencies
  */
 import { Input, LabeledItem } from '@moderntribe/common/elements';
+import { TICKET_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
 import './styles.pcss';
-import { TICKET_LABELS } from '../../constants';
 
 class Title extends PureComponent {
 	static propTypes = {

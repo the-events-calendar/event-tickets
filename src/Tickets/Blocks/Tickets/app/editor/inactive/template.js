@@ -13,7 +13,7 @@ import { __, _x, sprintf } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { Card } from '@moderntribe/tickets/elements';
-import { TICKET_LABELS } from '../constants';
+import { TICKET_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
 
 const getCreateSingleTicketMessage = (postTypeLabel) => (
 	<div className="tickets-row-line">

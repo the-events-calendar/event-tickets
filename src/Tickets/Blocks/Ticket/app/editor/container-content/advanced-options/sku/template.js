@@ -17,7 +17,7 @@ import uniqid from 'uniqid';
  */
 import { Input } from '@moderntribe/common/elements';
 import { LabelWithTooltip } from '@moderntribe/tickets/elements';
-import { TICKET_LABELS } from '../../../constants';
+import { TICKET_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
 
 class SKU extends PureComponent {
 	static propTypes = {

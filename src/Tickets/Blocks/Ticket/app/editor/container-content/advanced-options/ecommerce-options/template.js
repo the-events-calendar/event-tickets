@@ -16,9 +16,8 @@ import { __ } from '@wordpress/i18n';
 import { LabeledItem, Link } from '@moderntribe/common/elements';
 import { constants } from '@moderntribe/tickets/data/blocks/ticket';
 import './style.pcss';
-import { TICKET_LABELS } from '../../../constants';
 
-const { EDD, WOO, PROVIDER_TYPES } = constants;
+const { EDD, WOO, PROVIDER_TYPES, TICKET_LABELS } = constants;
 const EDIT_TICKET = 'edit-ticket';
 const REPORT = 'report';
 const LINK_TYPES = [ EDIT_TICKET, REPORT ];

@@ -10,11 +10,16 @@ import { compose } from 'redux';
 import Template from './template';
 import { withStore } from '@moderntribe/common/hoc';
 import withSaveData from '@moderntribe/tickets/blocks/hoc/with-save-data';
-import { selectors, actions } from '@moderntribe/tickets/data/blocks/ticket';
+import {
+	selectors,
+	actions,
+	constants,
+} from '@moderntribe/tickets/data/blocks/ticket';
 import { applyFilters } from '@wordpress/hooks';
 import { hasRecurrenceRules } from '@moderntribe/common/utils/recurrence';
 import { __ } from '@wordpress/i18n';
-import { TICKET_LABELS } from '../constants';
+
+const { TICKET_LABELS } = constants;
 
 const mapStateToProps = (state, ownProps) => {
 	const isRecurring = hasRecurrenceRules(state);

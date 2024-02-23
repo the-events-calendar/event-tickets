@@ -13,8 +13,8 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { AttendeesRegistration as ARElement } from '@moderntribe/tickets/elements';
+import { TICKET_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
 import './style.pcss';
-import { TICKET_LABELS } from '../../constants';
 
 const linkTextAdd = __( '+ Add', 'event-tickets' );
 const linkTextEdit = __( 'Edit', 'event-tickets' );

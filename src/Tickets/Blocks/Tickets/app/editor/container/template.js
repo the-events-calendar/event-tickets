@@ -9,7 +9,6 @@ import classNames from 'classnames';
  * Wordpress dependencies
  */
 const { InnerBlocks } = wp.blockEditor;
-import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -17,9 +16,9 @@ import { __ } from '@wordpress/i18n';
 import Availability from '../availability/container';
 import Inactive from '../inactive/container';
 import { Card } from '@moderntribe/tickets/elements';
+import { TICKET_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
 import './style.pcss';
 import Uneditable from '../uneditable/container';
-import { TICKET_LABELS } from '../constants';
 
 const TicketsOverlay = () => <div className="tribe-editor__tickets__overlay" />;
 

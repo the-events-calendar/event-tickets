@@ -20,8 +20,8 @@ import {
 } from '../action-buttons';
 import NotSupportedMessage from '../not-supported-message/container';
 import { ActionDashboard } from '@moderntribe/tickets/elements';
+import { TICKET_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
 import './style.pcss';
-import { TICKET_LABELS } from '../constants';
 
 // eslint-disable-next-line no-undef
 const confirmLabel = sprintf(
