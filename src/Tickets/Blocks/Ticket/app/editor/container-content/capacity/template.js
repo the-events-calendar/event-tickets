@@ -22,11 +22,7 @@ import { LabelWithTooltip } from '@moderntribe/tickets/elements';
 import { ReactSelectOption } from '@moderntribe/common/data/plugins/proptypes';
 import './style.pcss';
 
-const {
-	INDEPENDENT,
-	SHARED,
-	TICKET_TYPES,
-} = constants;
+const { INDEPENDENT, SHARED, TICKET_TYPES, TICKET_LABELS } = constants;
 const { CAPACITY_TYPE_OPTIONS } = options;
 
 // Custom input for this type of form
@@ -149,8 +145,18 @@ class Capacity extends PureComponent {
 			}
 
 			extraProps.label = tempCapacityType === TICKET_TYPES[ SHARED ]
-				? __( 'Limit sales of this ticket to:', 'event-tickets' )
-				: __( 'Number of tickets available', 'event-tickets' );
+					? // eslint-disable-next-line no-undef
+					  sprintf(
+							/* Translators: %s - the singular, lowercase label for a ticket. */
+							__('Limit sales of this %s to:', 'event-tickets'),
+							TICKET_LABELS.ticket.singularLowercase
+					  )
+					: // eslint-disable-next-line no-undef
+					  sprintf(
+							/* Translators: %s - the plural, lowercase label for a ticket. */
+							__('Number of %s available', 'event-tickets'),
+							TICKET_LABELS.ticket.pluralLowercase
+					  );
 
 			inputs.push(
 				<LabeledNumberInput
@@ -234,11 +240,21 @@ class Capacity extends PureComponent {
 					className="tribe-editor__ticket__capacity-label-with-tooltip"
 					forId={ hasTicketsPlus ? this.ids.select : this.ids.capacity }
 					isLabel={ true }
-					label={ __( 'Ticket Capacity', 'event-tickets' ) }
-					tooltipText={ __(
-						'Ticket capacity will only be used by attendees buying this ticket type',
-						'event-tickets',
-					) }
+					// eslint-disable-next-line no-undef
+					label={sprintf(
+						/* Translators: %s - the singular label for a ticket. */
+						__('%s Capacity', 'event-tickets'),
+						TICKET_LABELS.ticket.singular
+					)}
+					tooltipText={sprintf(
+						/* Translators: %1$s - the singular label for a ticket; %2$s - the singular, lowercase label for a ticket. */
+						__(
+							'%1$s capacity will only be used by attendees buying this %2$s type',
+							'event-tickets'
+						),
+						TICKET_LABELS.ticket.singular,
+						TICKET_LABELS.ticket.singularLowercase
+					)}
 					tooltipLabel={
 						<Dashicon
 							className="tribe-editor__ticket__tooltip-label"

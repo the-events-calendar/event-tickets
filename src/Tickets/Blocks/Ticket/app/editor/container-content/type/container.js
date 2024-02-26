@@ -18,16 +18,17 @@ import { selectors } from '@moderntribe/tickets/data/blocks/ticket';
 import { plugins } from '@moderntribe/common/data';
 import { applyFilters } from '@wordpress/hooks';
 import { Ticket as TicketIcon } from '@moderntribe/tickets/icons';
+import { TICKET_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
 
 const mapStateToProps = (state, ownProps) => {
 	const postTypeLabel = selectors
 		.getCurrentPostTypeLabel('singular_name')
 		.toLowerCase();
 	const ticketDetails = selectors.getTicketDetails(state, ownProps);
-	const typeName = _x(
-		'Standard Ticket',
-		'Default ticket type label.',
-		'event-tickets'
+	const typeName = sprintf(
+		/* Translators: %s - the singular label for a ticket. */
+		_x('Standard %s', 'Default ticket type label.', 'event-tickets'),
+		TICKET_LABELS.ticket.singular
 	);
 	const typeDescription = sprintf(
 		// translators: %s is the post type name in human readable form.
@@ -46,10 +47,14 @@ const mapStateToProps = (state, ownProps) => {
 	// Show an ECP related upsell message if on an Event and the user doesn't have ECP activated.
 	const upsellMessage =
 		!hasEventsPro && currentPostIsEvent
-			? _x(
-					'For more ticket types, <a href="https://evnt.is/tt-ecp" target="_blank" rel="noopener noreferrer">upgrade</a> to Events Calendar Pro',
-					'Default ticket type upsell description.',
-					'event-tickets'
+			? sprintf(
+					/* Translators: %s - the singular label for a ticket. */
+					_x(
+						'For more %s types, <a href="https://evnt.is/tt-ecp" target="_blank" rel="noopener noreferrer">upgrade</a> to Events Calendar Pro',
+						'Default ticket type upsell description.',
+						'event-tickets'
+					),
+					TICKET_LABELS.ticket.singularLowercase
 			  )
 			: null;
 	const typeIcon = <TicketIcon />;

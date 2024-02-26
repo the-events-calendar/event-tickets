@@ -13,16 +13,18 @@ import { __, _x, sprintf } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { Card } from '@moderntribe/tickets/elements';
+import { TICKET_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
 
 const getCreateSingleTicketMessage = (postTypeLabel) => (
 	<div className="tickets-row-line">
 		{sprintf(
-			// Translators: %s is the post type name in human readable form.
+			// Translators: %1$s the plural, lowercase label for a ticket; %2$s is the post type name in human readable form.
 			_x(
-				'Create standard tickets for this %s. ',
+				'Create standard %1$s for this %2$s. ',
 				'The message displayed when there are no tickets.',
 				'event-tickets'
 			),
+			TICKET_LABELS.ticket.pluralLowercase,
 			postTypeLabel ? postTypeLabel : ''
 		)}
 		<a
@@ -31,7 +33,11 @@ const getCreateSingleTicketMessage = (postTypeLabel) => (
 			target="_blank"
 			rel="noopener noreferrer"
 		>
-			{__('Learn more about ticket management', 'event-tickets')}
+			{sprintf(
+				/* Translators: %s - the singular, lowercase label for a ticket. */
+				__('Learn more about %s management', 'event-tickets'),
+				TICKET_LABELS.ticket.singularLowercase
+			)}
 		</a>
 	</div>
 );
@@ -50,9 +56,13 @@ const getInactiveTicketsMessage = ({
 		return (
 			<div className="tribe-editor__title__help-messages">
 				<div className="tickets-row-line">
-					{__(
-						"There is no ecommerce available. To create tickets, you'll need to enable an ecommerce solution.",
-						'event-tickets'
+					{sprintf(
+						/* Translators: %s - the plural label for a ticket. */
+						__(
+							"There is no ecommerce available. To create %s, you'll need to enable an ecommerce solution.",
+							'event-tickets'
+						),
+						TICKET_LABELS.ticket.pluralLowercase
 					)}
 				</div>
 			</div>
@@ -79,9 +89,14 @@ const getInactiveTicketsMessage = ({
 		return (
 			<div className="tribe-editor__title__help-messages">
 				<div className="tickets-row-line">
-					{__(
-						'There are no active tickets. Adjust sale duration to make tickets available',
-						'event-tickets'
+					{sprintf(
+						/* Translators: %1$s - the plural label for a ticket; %2$s - the plural label for a ticket. */
+						__(
+							'There are no active %1$s. Adjust sale duration to make %2$s available',
+							'event-tickets'
+						),
+						TICKET_LABELS.ticket.pluralLowercase,
+						TICKET_LABELS.ticket.pluralLowercase
 					)}
 				</div>
 			</div>
@@ -91,7 +106,11 @@ const getInactiveTicketsMessage = ({
 	return (
 		<div className="tribe-editor__title__help-messages">
 			<div className="tickets-row-line">
-				{__('Tickets are not yet available', 'event-tickets')}
+				{sprintf(
+					/* Translators: %s - the plural label for a ticket. */
+					__('%s are not yet available', 'event-tickets'),
+					TICKET_LABELS.ticket.plural
+				)}
 			</div>
 		</div>
 	);
@@ -110,7 +129,7 @@ const Inactive = ({
 	return (
 		<Card
 			className="tribe-editor__card-no-bottom-border"
-			header={__('Tickets', 'event-tickets')}
+			header={TICKET_LABELS.ticket.plural}
 		>
 			<div className="tickets-description">
 				{getInactiveTicketsMessage({
