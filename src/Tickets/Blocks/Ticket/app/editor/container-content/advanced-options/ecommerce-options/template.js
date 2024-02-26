@@ -17,7 +17,7 @@ import { LabeledItem, Link } from '@moderntribe/common/elements';
 import { constants } from '@moderntribe/tickets/data/blocks/ticket';
 import './style.pcss';
 
-const { EDD, WOO, PROVIDER_TYPES } = constants;
+const { EDD, WOO, PROVIDER_TYPES, TICKET_LABELS } = constants;
 const EDIT_TICKET = 'edit-ticket';
 const REPORT = 'report';
 const LINK_TYPES = [ EDIT_TICKET, REPORT ];
@@ -33,9 +33,19 @@ const EcommerceOptions = ( {
 		let label = '';
 
 		if ( ticketProvider === EDD ) {
-			label = __( 'Edit Ticket in Easy Digital Downloads', 'event-tickets' );
+			// eslint-disable-next-line no-undef
+			label = sprintf(
+				/* Translators: %s - the singular label for a ticket. */
+				__('Edit %s in Easy Digital Downloads', 'event-tickets'),
+				TICKET_LABELS.ticket.singular // eslint-disable-line camelcase, no-undef
+			);
 		} else if ( ticketProvider === WOO ) {
-			label = __( 'Edit Ticket in WooCommerce', 'event-tickets' );
+			// eslint-disable-next-line no-undef
+			label = sprintf(
+				/* Translators: %s - the singular label for a ticket. */
+				__('Edit %s in WooCommerce', 'event-tickets'),
+				TICKET_LABELS.ticket.singular // eslint-disable-line camelcase, no-undef
+			);
 		}
 
 		return label;

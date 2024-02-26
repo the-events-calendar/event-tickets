@@ -6,14 +6,10 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 /**
- * WordPress dependencies
- */
-import { __ } from '@wordpress/i18n';
-
-/**
  * Internal dependencies
  */
 import { Card } from '@moderntribe/tickets/elements';
+import { TICKET_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
 import NotSupportedMessage from './not-supported-message/container';
 import TicketsDashboard from './dashboard/container';
 import TicketsContainer from './container/container';
@@ -92,7 +88,7 @@ class Tickets extends PureComponent {
 			<>
 				<Card
 					className="tribe-editor__card tribe-editor__not-supported-message"
-					header={__('Tickets', 'event-tickets')}
+					header={TICKET_LABELS.ticket.plural}
 				>
 					<div className="tribe-editor__title__help-messages">
 						{showWarning && <Warning />}

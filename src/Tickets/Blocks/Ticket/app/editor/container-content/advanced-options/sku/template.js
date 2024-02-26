@@ -17,6 +17,7 @@ import uniqid from 'uniqid';
  */
 import { Input } from '@moderntribe/common/elements';
 import { LabelWithTooltip } from '@moderntribe/tickets/elements';
+import { TICKET_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
 
 class SKU extends PureComponent {
 	static propTypes = {
@@ -43,11 +44,21 @@ class SKU extends PureComponent {
 					className="tribe-editor__ticket__sku-label-with-tooltip"
 					forId={ this.id }
 					isLabel={ true }
-					label={ __( 'Ticket SKU', 'event-tickets' ) }
-					tooltipText={ __(
-						'A unique identifying code for each ticket type you\'re selling',
-						'event-tickets',
-					) }
+					// eslint-disable-next-line no-undef
+					label={sprintf(
+						/* Translators: %s - the singular label for a ticket. */
+						__('%s SKU', 'event-tickets'),
+						TICKET_LABELS.ticket.singular
+					)}
+					// eslint-disable-next-line no-undef
+					tooltipText={sprintf(
+						/* Translators: %s - the singular, lowercase label for a ticket. */
+						__(
+							"A unique identifying code for each %s type you're selling",
+							'event-tickets'
+						),
+						TICKET_LABELS.ticket.singularLowercase
+					)}
 					tooltipLabel={
 						<Dashicon
 							className="tribe-editor__ticket__tooltip-label"
