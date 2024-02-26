@@ -170,7 +170,8 @@ class Attendees extends Controller {
 			10,
 			2
 		);
-		add_filter( 'tec_tickets_attendee_manual_uncheckin_success_data',
+		add_filter(
+			'tec_tickets_attendee_manual_uncheckin_success_data',
 			[ $this, 'trigger_attendees_list_reload' ],
 			10,
 			2
@@ -208,7 +209,8 @@ class Attendees extends Controller {
 			'tec_tickets_attendee_manual_checkin_success_data',
 			[ $this, 'trigger_attendees_list_reload' ]
 		);
-		remove_filter( 'tec_tickets_attendee_manual_uncheckin_success_data',
+		remove_filter(
+			'tec_tickets_attendee_manual_uncheckin_success_data',
 			[ $this, 'trigger_attendees_list_reload' ]
 		);
 		remove_filter( 'event_tickets_attendees_table_row_actions', [ $this, 'filter_attendees_row_actions' ] );
@@ -1416,12 +1418,12 @@ class Attendees extends Controller {
 		foreach ( tribe_events()->where( 'series', $series_id )->get_ids( true ) as $event_id ) {
 			$normalized_id = Occurrence::normalize_id( $event_id );
 			// Reference Single Events by their real post ID, Occurrences by their provisional ID.
-			$event_id = tribe_is_recurring_event($normalized_id) ? $event_id : $normalized_id;
+			$event_id = tribe_is_recurring_event( $normalized_id ) ? $event_id : $normalized_id;
 
 			$clone_exists = tribe_attendees()
-				                ->where( 'meta_equals', self::CLONE_META_KEY, $attendee_id )
-				                ->where( 'event', $event_id )
-				                ->count() > 0;
+								->where( 'meta_equals', self::CLONE_META_KEY, $attendee_id )
+								->where( 'event', $event_id )
+								->count() > 0;
 
 			if ( $clone_exists ) {
 				// Existing clones should be unaffected by the uncheckin of the original Series Pass Attendee.

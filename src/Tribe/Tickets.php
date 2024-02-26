@@ -1148,7 +1148,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 */
 			$uncheckin = apply_filters( 'tec_tickets_attendee_uncheckin', null, $attendee_id, $context_id );
 
-			if ( $uncheckin !== null ) {
+			if ( null !== $uncheckin ) {
 				return (bool) $uncheckin;
 			}
 
