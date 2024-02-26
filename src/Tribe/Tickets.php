@@ -1134,6 +1134,24 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return mixed
 		 */
 		public function uncheckin( $attendee_id ) {
+			$context_id = tribe_get_request_var( 'event_ID', null );
+
+			/**
+			 * Allows filtering the Attendee uncheck-in action before the default logic does it.
+			 * Returning a non-null value from this filter will prevent the default logic from running.
+			 *
+			 * @since TBD
+			 *
+			 * @param bool|null $uncheckin   Whether the Attendee uncheckin action was handled by the filter or not.
+			 * @param int       $attendee_id The post ID of the Attendee being unchecked-in.
+			 * @param int|null  $context_id  The post ID context of the Attendee uncheckin request.
+			 */
+			$uncheckin = apply_filters( 'tec_tickets_attendee_uncheckin', null, $attendee_id, $context_id );
+
+			if ( $uncheckin !== null ) {
+				return (bool) $uncheckin;
+			}
+
 			delete_post_meta( $attendee_id, $this->checkin_key );
 			delete_post_meta( $attendee_id, $this->checkin_key . '_details' );
 			delete_post_meta( $attendee_id, '_tribe_qr_status' );
