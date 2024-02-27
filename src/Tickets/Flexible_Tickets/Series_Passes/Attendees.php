@@ -517,7 +517,7 @@ class Attendees extends Controller {
 			return $response;
 		}
 
-		if ( $this->checkin_failures[ $attendee_id ] === self::ALREADY_CHECKED_IN ) {
+		if ( self::ALREADY_CHECKED_IN === $this->checkin_failures[ $attendee_id ] ) {
 			/*
 			 * Build a response similar to the one the QR endpoint would produce to indicate the Attendee is already
 			 * checked in.
@@ -534,7 +534,7 @@ class Attendees extends Controller {
 			);
 		}
 
-		$post_repository = tribe( 'tec.rest-v1.repository' );
+		$post_repository     = tribe( 'tec.rest-v1.repository' );
 		$prepared_candidates = array_map(
 			static fn( int $candidate ) => $post_repository->get_event_data( $candidate, 'single' ),
 			$this->checkin_failures[ $attendee_id ]['candidates']
@@ -792,8 +792,8 @@ class Attendees extends Controller {
 		if ( $qr && $checked_in ) {
 			// The Attendee has already been checked in, let's not check-in again.
 			$this->checkin_failures[ $attendee_id ] = self::ALREADY_CHECKED_IN;
-			$original_attendee_id = get_post_meta( $attendee_id, self::CLONE_META_KEY, true );
-			$this->checkin_failures[ $original_attendee_id ] = self::ALREADY_CHECKED_IN;
+			$original_id                            = get_post_meta( $attendee_id, self::CLONE_META_KEY, true );
+			$this->checkin_failures[ $original_id ] = self::ALREADY_CHECKED_IN;
 
 			// The correct REST response will be built by the `build_attendee_failure_response` method.
 			return false;
