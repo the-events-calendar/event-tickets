@@ -1329,6 +1329,7 @@ class Attendees extends Controller {
 		foreach ( $attendee_ids as $attendee_id ) {
 			if ( ! $this->is_series_pass_attendee( $attendee_id ) ) {
 				$move_ids[] = $attendee_id;
+				continue;
 			}
 
 			if ( $this->attendee_is_clone_of( $attendee_id ) ) {
