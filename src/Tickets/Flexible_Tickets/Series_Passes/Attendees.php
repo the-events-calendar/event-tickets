@@ -46,6 +46,13 @@ class Attendees extends Controller {
 	public const CLONE_META_KEY = '_tec_attendee_clone_of';
 
 	/**
+	 * The keyword used to indicate an Attendee is already checked in.
+	 *
+	 * @since TBD
+	 */
+	private const ALREADY_CHECKED_IN = 'already-checked-in';
+
+	/**
 	 * A map of Attendees whose check in failed, a map from Attendee post ID to the data required
 	 * from the user to complete the check in process.
 	 *
@@ -510,13 +517,30 @@ class Attendees extends Controller {
 			return $response;
 		}
 
-		$post_repository     = tribe( 'tec.rest-v1.repository' );
+		if ( $this->checkin_failures[ $attendee_id ] === self::ALREADY_CHECKED_IN ) {
+			/*
+			 * Build a response similar to the one the QR endpoint would produce to indicate the Attendee is already
+			 * checked in.
+			 */
+			$attendee_data = tribe( 'tickets.rest-v1.attendee-repository' )->format_item( $attendee_id );
+
+			return new WP_REST_Response(
+				[
+					'msg'      => __( 'Already checked in!', 'event-tickets' ),
+					'error'    => 'attendee_already_checked_in',
+					'attendee' => $attendee_data,
+				],
+				403
+			);
+		}
+
+		$post_repository = tribe( 'tec.rest-v1.repository' );
 		$prepared_candidates = array_map(
 			static fn( int $candidate ) => $post_repository->get_event_data( $candidate, 'single' ),
 			$this->checkin_failures[ $attendee_id ]['candidates']
 		);
 
-		$response = new WP_REST_Response(
+		return new WP_REST_Response(
 			[
 				'msg'         => _x( 'Multiple Event options, pick one and specify the context_id parameter.', 'event-tickets' ),
 				'attendee_id' => $attendee_id,
@@ -524,8 +548,6 @@ class Attendees extends Controller {
 			],
 			300
 		);
-
-		return $response;
 	}
 
 	/**
@@ -763,6 +785,17 @@ class Attendees extends Controller {
 
 		if ( ! $ticket_provider instanceof Tickets ) {
 			// We tried to handle the check in, but it failed.
+			return false;
+		}
+
+		$checked_in = get_post_meta( $attendee_id, '_tribe_qr_status', true );
+		if ( $qr && $checked_in ) {
+			// The Attendee has already been checked in, let's not check-in again.
+			$this->checkin_failures[ $attendee_id ] = self::ALREADY_CHECKED_IN;
+			$original_attendee_id = get_post_meta( $attendee_id, self::CLONE_META_KEY, true );
+			$this->checkin_failures[ $original_attendee_id ] = self::ALREADY_CHECKED_IN;
+
+			// The correct REST response will be built by the `build_attendee_failure_response` method.
 			return false;
 		}
 

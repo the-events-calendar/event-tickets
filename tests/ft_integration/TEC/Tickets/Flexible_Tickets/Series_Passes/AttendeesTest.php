@@ -2952,4 +2952,98 @@ class AttendeesTest extends Controller_Test_Case {
 			'The cloned Attendee for the Recurring Event third Occurrence should still be checked in.'
 		);
 	}
+
+	/**
+	 * It should not allow cloned attendee for only candidate Event to check-in more than once
+	 *
+	 * @test
+	 */
+	public function should_not_allow_cloned_attendee_for_only_candidate_event_to_check_in_more_than_once(): void {
+		// Become administrator.
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		// Create a Series.
+		$series_id = static::factory()->post->create(
+			[
+				'post_type' => Series_Post_Type::POSTTYPE,
+			]
+		);
+		// Create one Series Pass Attendee.
+		$series_pass_id = $this->create_tc_series_pass( $series_id )->ID;
+		$this->create_order( [ $series_pass_id => 1 ] );
+		$series_pass_attendee = tribe_attendees()->where( 'event', $series_id )->first_id();
+		// Create a Single Event part of the Series that started one hour ago and will end in one hour.
+		$event_id = tribe_events()->set_args(
+			[
+				'title'      => 'Series Single Event',
+				'status'     => 'publish',
+				'start_date' => '-1 hour',
+				'end_date'   => '+1 hour',
+				'series'     => $series_id,
+			]
+		)->create()->ID;
+		// Subscribe to the Attendee clone action to capture the cloned Attendees IDs.
+		$clone_id = null;
+		add_action(
+			'tec_tickets_flexible_tickets_series_pass_attendee_cloned',
+			static function ( $cloned_attendee_id ) use ( &$clone_id ) {
+				$clone_id = $cloned_attendee_id;
+			}
+		);
+		$commerce = Module::get_instance();
+		$api_key = 'secrett-api-key';
+		tribe_update_option( 'tickets-plus-qr-options-api-key', $api_key );
+
+		$controller = $this->make_controller();
+		$controller->register();
+
+		// Become an app user trying to scan Attendees in.
+		wp_set_current_user( 0 );
+
+		// Check-in the Series Pass Attendee a first time: the Attendee will be cloned to the Event.
+		$request = new WP_REST_Request( 'GET', '/tribe/tickets/v1/qr' );
+		$request->set_param( 'api_key', $api_key );
+		$request->set_param( 'ticket_id', (string) $series_pass_attendee );
+		$request->set_param( 'security_code', get_post_meta( $series_pass_attendee, $commerce->security_code, true ) );
+		$request->set_param( 'event_id', $event_id );
+
+		$response = rest_get_server()->dispatch( $request );
+
+		$this->assertEquals( 201, $response->get_status() );
+		$this->assertNotNull(
+			$clone_id,
+			'The cloned Attendee ID should have been captured.'
+		);
+		$this->assertNotSame(
+			$clone_id,
+			$series_pass_attendee,
+			'The cloned Attendee should not be the same as the Series Pass Attendee.'
+		);
+		$this->assertEquals(
+			1,
+			get_post_meta( $clone_id, '_tribe_qr_status', true ),
+			'The cloned Attendee should have been checked in with QR code.'
+		);
+
+		// Attempt another check-in using the Series Pass Attendee: it should fail.
+		$request = new WP_REST_Request( 'GET', '/tribe/tickets/v1/qr' );
+		$request->set_param( 'api_key', $api_key );
+		$request->set_param( 'ticket_id', (string) $series_pass_attendee );
+		$request->set_param( 'security_code', get_post_meta( $series_pass_attendee, $commerce->security_code, true ) );
+		$request->set_param( 'event_id', $event_id );
+
+		$response = rest_get_server()->dispatch( $request );
+
+		$this->assertEquals( 403, $response->get_status() );
+
+		// Attempt another check-in using the Cloned Attendee: it should fail.
+		$request = new WP_REST_Request( 'GET', '/tribe/tickets/v1/qr' );
+		$request->set_param( 'api_key', $api_key );
+		$request->set_param( 'ticket_id', (string) $clone_id );
+		$request->set_param( 'security_code', get_post_meta( $clone_id, $commerce->security_code, true ) );
+		$request->set_param( 'event_id', $event_id );
+
+		$response = rest_get_server()->dispatch( $request );
+
+		$this->assertEquals( 403, $response->get_status() );
+	}
 }
