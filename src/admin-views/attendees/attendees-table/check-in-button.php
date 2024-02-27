@@ -10,24 +10,24 @@
  * @var bool $disable_checkin Whether check-in is disabled.
  */
 
-$data_event_id  = $attendee_table->event ? 'data-event-id="' . esc_attr( $attendee_table->event->ID ) . '"' : '';
 $disabled_class = $disable_checkin ? 'button-disabled' : '';
 ?>
 
 <button
 	data-attendee-id="<?php echo esc_attr( $item['attendee_id'] ); ?>"
 	data-provider="<?php echo esc_attr( $provider ); ?>"
+	data-event-id="<?php echo $attendee_table->event ? esc_attr( $attendee_table->event->ID ) : ''; ?>"
 	class="components-button is-primary tickets_checkin tec-tickets__admin-table-attendees-check-in-button <?php echo esc_attr( $disabled_class ); ?>"
-	<?php echo $data_event_id; ?>
 	<?php disabled( $disable_checkin ); ?> >
-		<?php esc_html_e( 'Check In', 'event-tickets' ) ?>
+		<?php esc_html_e( 'Check In', 'event-tickets' ); ?>
 </button>
 
 <span class="delete">
 	<button
 		data-attendee-id="<?php echo esc_attr( $item['attendee_id'] ); ?>"
 		data-provider="<?php echo esc_attr( $provider ); ?>"
+		data-event-id="<?php echo $attendee_table->event ? esc_attr( $attendee_table->event->ID ) : ''; ?>"
 		class="components-button is-secondary tickets_uncheckin tec-tickets__admin-table-attendees-undo-check-in-button">
-			<?php esc_html_e( 'Undo Check In', 'event-tickets' ) ?>
+			<?php esc_html_e( 'Undo Check In', 'event-tickets' ); ?>
 	</button>
 </span>

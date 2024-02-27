@@ -26,6 +26,7 @@ use WP_Error;
 use WP_Post;
 use WP_REST_Response;
 use Tribe__Events__Main as TEC;
+use Tribe__Timezones as Timezones;
 
 /**
  * Class Attendees.
@@ -110,6 +111,8 @@ class Attendees extends Controller {
 		add_action( 'deleted_post_meta', [ $this, 'sync_attendee_meta_on_meta_delete' ], 500, 4 );
 		add_action( 'after_delete_post', [ $this, 'delete_clones_on_delete' ], 500, 2 );
 		add_filter( 'tec_tickets_filter_event_id', [ $this, 'preserve_provisional_id' ], 500, 3 );
+		add_filter( 'tec_tickets_move_attendees_ids', [ $this, 'handle_series_pass_attendee_move' ] );
+		add_filter( 'tec_tickets_attendee_uncheckin', [ $this, 'handle_series_pass_attendee_uncheckin' ], 10, 3 );
 	}
 
 	/**
@@ -128,6 +131,8 @@ class Attendees extends Controller {
 		remove_action( 'deleted_post_meta', [ $this, 'sync_attendee_meta_on_meta_delete' ], 500 );
 		remove_action( 'after_delete_post', [ $this, 'delete_clones_on_delete' ], 500 );
 		remove_filter( 'tec_tickets_filter_event_id', [ $this, 'preserve_provisional_id' ], 500 );
+		remove_filter( 'tec_tickets_move_attendees_ids', [ $this, 'handle_series_pass_attendee_move' ] );
+		remove_filter( 'tec_tickets_attendee_uncheckin', [ $this, 'handle_series_pass_attendee_uncheckin' ] );
 	}
 
 	/**
@@ -143,10 +148,7 @@ class Attendees extends Controller {
 		add_filter( 'tribe_tickets_attendee_table_columns', [ $this, 'filter_attendees_table_columns' ], 10, 2 );
 		add_filter(
 			'tec_tickets_qr_checkin_failure_rest_response',
-			[
-				$this,
-				'build_attendee_failure_response',
-			],
+			[ $this, 'build_attendee_failure_response' ],
 			10,
 			2
 		);
@@ -154,26 +156,23 @@ class Attendees extends Controller {
 		add_filter( 'tec_tickets_attendees_filter_by_event', [ $this, 'include_series_to_fetch_attendees' ], 10, 2 );
 		add_filter(
 			'tec_tickets_attendees_filter_by_event_not_in',
-			[
-				$this,
-				'include_series_to_fetch_attendees',
-			],
+			[ $this, 'include_series_to_fetch_attendees' ],
 			10,
 			2
 		);
 		add_filter(
 			'tribe_tickets_attendees_report_js_config',
-			[
-				$this,
-				'filter_tickets_attendees_report_js_config',
-			]
+			[ $this, 'filter_tickets_attendees_report_js_config' ]
 		);
 		add_filter(
 			'tec_tickets_attendee_manual_checkin_success_data',
-			[
-				$this,
-				'trigger_attendees_list_reload',
-			],
+			[ $this, 'trigger_attendees_list_reload' ],
+			10,
+			2
+		);
+		add_filter(
+			'tec_tickets_attendee_manual_uncheckin_success_data',
+			[ $this, 'trigger_attendees_list_reload' ],
 			10,
 			2
 		);
@@ -204,19 +203,15 @@ class Attendees extends Controller {
 		remove_filter( 'tec_tickets_attendees_filter_by_event_not_in', [ $this, 'include_series_to_fetch_attendees' ] );
 		remove_filter(
 			'tribe_tickets_attendees_report_js_config',
-			[
-				$this,
-				'filter_tickets_attendees_report_js_config',
-			]
+			[ $this, 'filter_tickets_attendees_report_js_config' ]
 		);
 		remove_filter(
 			'tec_tickets_attendee_manual_checkin_success_data',
-			[
-				$this,
-				'trigger_attendees_list_reload',
-			],
-			10,
-			2
+			[ $this, 'trigger_attendees_list_reload' ]
+		);
+		remove_filter(
+			'tec_tickets_attendee_manual_uncheckin_success_data',
+			[ $this, 'trigger_attendees_list_reload' ]
 		);
 		remove_filter( 'event_tickets_attendees_table_row_actions', [ $this, 'filter_attendees_row_actions' ] );
 		remove_filter( 'tribe_events_tickets_attendees_table_bulk_actions', [ $this, 'filter_attendees_bulk_actions' ] );
@@ -546,7 +541,7 @@ class Attendees extends Controller {
 	 *               check-in timeframe.
 	 */
 	public function fetch_checkin_candidates_for_series( int $attendee_id, int $series_id, bool $qr ): array {
-		[ $start, $end ] = $this->get_checkin_candidate_timestamps( $series_id, $attendee_id, $qr );
+		[ $start, $end ] = $this->get_checkin_candidate_times( $series_id, $attendee_id, $qr );
 
 		// Fetch the candidate Occurrences, this will be an array of provisional IDs.
 		return iterator_to_array(
@@ -572,13 +567,13 @@ class Attendees extends Controller {
 	 *               check-in timeframe.
 	 */
 	public function fetch_checkin_candidates_for_event( int $attendee_id, int $event_id, bool $qr ): array {
-		[ $start, $end ] = $this->get_checkin_candidate_timestamps( $event_id, $attendee_id, $qr );
+		[ $start, $end ] = $this->get_checkin_candidate_times( $event_id, $attendee_id, $qr );
 
 		// Fetch the candidate Occurrences, this will be an array of provisional IDs.
 		$candidates = iterator_to_array(
 			Occurrence::where( 'post_id', $event_id )
-				->where( 'end_date', '>', Dates::immutable( $start ) )
-				->where( 'start_date', '<=', Dates::immutable( $end ) )->all(),
+				->where( 'end_date', '>', $start )
+				->where( 'start_date', '<=', $end )->all(),
 			false
 		);
 
@@ -598,15 +593,15 @@ class Attendees extends Controller {
 	 * @param int  $attendee_id The post ID of the Attendee to check in.
 	 * @param bool $qr          Whether the checkin is being done via QR code or not.
 	 *
-	 * @return array{0: int, 1: int} The checkin window start and end timestamps.
+	 * @return array{0: string, 1: string} The checkin window start and end in the format `Y-m-d H:i:s`.
 	 */
-	private function get_checkin_candidate_timestamps( int $post_id, int $attendee_id, bool $qr ): array {
+	private function get_checkin_candidate_times( int $post_id, int $attendee_id, bool $qr ): array {
 		if ( ! $qr ) {
 			/*
 			 *  We are not checking in via QR code: the checkin should never be restricted.
 			 * Use `1` as start of the interval to pass empty checks.
 			 */
-			return [ 1, strtotime( '2100-12-31 00:00:00' ) ];
+			return [ '1970-06-06 00:00:00', '2100-12-31 00:00:00' ];
 		}
 
 		/*
@@ -642,8 +637,12 @@ class Attendees extends Controller {
 		);
 
 		// Let's set up the time window to pull current and upcoming Events from.
-		$now           = wp_date( 'U' );
-		$starts_before = $now + $time_buffer;
+		$now_timestamp = wp_date( 'U' );
+		$end_timestamp = $now_timestamp + $time_buffer;
+
+		$timezone      = Timezones::build_timezone_object();
+		$now           = Dates::immutable( $now_timestamp )->setTimezone( $timezone )->format( Dates::DBDATETIMEFORMAT );
+		$starts_before = Dates::immutable( $end_timestamp )->setTimezone( $timezone )->format( Dates::DBDATETIMEFORMAT );
 
 		return [ $now, $starts_before ];
 	}
@@ -788,13 +787,13 @@ class Attendees extends Controller {
 	 * @return bool Whether the Occurrence is a candidate for the checkin of the Attendee.
 	 */
 	private function is_occurrence_a_candidate( int $attendee_id, int $provisional_id, bool $qr ): bool {
-		[ $start, $end ] = $this->get_checkin_candidate_timestamps( $provisional_id, $attendee_id, $qr );
+		[ $start, $end ] = $this->get_checkin_candidate_times( $provisional_id, $attendee_id, $qr );
 
 		$occurrence_id = tribe( ID_Generator::class )->unprovide_id( $provisional_id );
 
 		return Occurrence::where( 'occurrence_id', '=', $occurrence_id )
-					->where( 'start_date', '<=', Dates::immutable( $end ) )
-					->where( 'end_date', '>', Dates::immutable( $start ) )
+					->where( 'start_date', '<=', $end )
+					->where( 'end_date', '>', $start )
 					->count() > 0;
 	}
 
@@ -1312,5 +1311,154 @@ class Attendees extends Controller {
 				'uncheck_in' => false,
 			]
 		);
+	}
+
+	/**
+	 * Filters the list of Attendees to move to always move only the Series Pass Attendee and delete the clones
+	 * before the move happens.
+	 *
+	 * @since TBD
+	 *
+	 * @param int[] $attendee_ids The original list of Attendee IDs to move.
+	 *
+	 * @return int[] The modified list of Attendee IDs to move. Only the Series Pass Attendee is moved and the
+	 *               clones are deleted.
+	 */
+	public function handle_series_pass_attendee_move( array $attendee_ids ): array {
+		$move_ids = [];
+		foreach ( $attendee_ids as $attendee_id ) {
+			if ( ! $this->is_series_pass_attendee( $attendee_id ) ) {
+				$move_ids[] = $attendee_id;
+				continue;
+			}
+
+			if ( $this->attendee_is_clone_of( $attendee_id ) ) {
+				// Fetch the original Series Pass Attendee from the clone.
+				$series_pass_attendee = get_post_meta( $attendee_id, self::CLONE_META_KEY, true );
+			} else {
+				$series_pass_attendee = $attendee_id;
+			}
+
+			// The only Attendee to move is the original Series Pass Attendee.
+			$move_ids[] = $series_pass_attendee;
+
+			// Delete the clones.
+			$clones = tribe_attendees()
+				->where( 'meta_equals', self::CLONE_META_KEY, $series_pass_attendee )
+				->get_ids( true );
+			foreach ( $clones as $clone_id ) {
+				if ( ! ( wp_delete_post( $clone_id, true ) ) ) {
+					do_action(
+						'tribe_log',
+						'error',
+						'Series Pass Attendee clone deletion on move failed',
+						[
+							'source'               => __METHOD__,
+							'original_attendee_id' => $attendee_id,
+							'clone_attendee_id'    => $clone_id,
+							'reason'               => 'Could not delete the clone Series Pass Attendee',
+						]
+					);
+				}
+			}
+		}
+
+		return array_values( array_unique( array_filter( $move_ids ) ) );
+	}
+
+	/**
+	 * Handles the uncheckin of a Series Pass Attendee.
+	 *
+	 * This method will clone the
+	 *
+	 * @since TBD
+	 *
+	 * @param null|bool $uncheckin Whether the default logic should apply or the uncheckin action was handled.
+	 * @param int       $attendee_id The post ID of the Attendee to uncheckin.
+	 * @param int|null  $context_id The post ID context of the request to uncheckin the Attendee, if provided.
+	 *
+	 * @return null|bool Either `null` to indicate the default logic should apply, or a boolean to indicate
+	 *                   the uncheckin action was handled.
+	 */
+	public function handle_series_pass_attendee_uncheckin( $uncheckin, int $attendee_id, $context_id = null ) {
+		if ( ! $this->is_series_pass_attendee( $attendee_id ) ) {
+			return $uncheckin;
+		}
+
+		if ( $this->attendee_is_clone_of( $attendee_id ) ) {
+			return $uncheckin;
+		}
+
+		// The operation is to un-check-in the original Series Pass Attendee.
+
+		// Fetch the Series post ID from the Attendee without requiring knowledge of the Attendee's provider.
+		$attendee_to_event_keys = tribe_attendees()->attendee_to_event_keys();
+
+		foreach ( $attendee_to_event_keys as $attendee_to_event_key ) {
+			$series_id = get_post_meta( $attendee_id, $attendee_to_event_key, true );
+			if ( $series_id ) {
+				break;
+			}
+		}
+
+		if ( ! $series_id ) {
+			// This request does not make sense and could not be handled.
+			return false;
+		}
+
+		/** @var Tickets $ticket_provider */
+		$ticket_provider = tribe_tickets_get_ticket_provider( $attendee_id );
+
+		if ( ! $ticket_provider instanceof Tickets ) {
+			// This request does not make sense and could not be handled.
+			return false;
+		}
+
+		$this->unsubscribe_from_attendee_updates();
+
+		foreach ( tribe_events()->where( 'series', $series_id )->get_ids( true ) as $event_id ) {
+			$normalized_id = Occurrence::normalize_id( $event_id );
+			// Reference Single Events by their real post ID, Occurrences by their provisional ID.
+			$event_id = tribe_is_recurring_event( $normalized_id ) ? $event_id : $normalized_id;
+
+			$clone_exists = tribe_attendees()
+								->where( 'meta_equals', self::CLONE_META_KEY, $attendee_id )
+								->where( 'event', $event_id )
+								->count() > 0;
+
+			if ( $clone_exists ) {
+				// Existing clones should be unaffected by the uncheckin of the original Series Pass Attendee.
+				continue;
+			}
+
+			$clone_id = $this->clone_attendee_to_event( $attendee_id, $event_id );
+
+			if ( ! $clone_id ) {
+				do_action(
+					'tribe_log',
+					'error',
+					'Series Pass Attendee clone on uncheckin failed',
+					[
+						'source'               => __METHOD__,
+						'original_attendee_id' => $attendee_id,
+						'event_id'             => $event_id,
+					]
+				);
+			}
+
+			if ( (int) $event_id === (int) $context_id ) {
+				$ticket_provider->uncheckin( $clone_id );
+			}
+		}
+
+		/*
+		 * This Attendee was cloned during this request. This information will be used to reload the Attendees list.
+		 * See the `trigger_attendees_list_reload` method of this class.
+		 */
+		$this->reload_triggers[] = $attendee_id;
+
+		$this->subscribe_to_attendee_updates();
+
+		return true;
 	}
 }

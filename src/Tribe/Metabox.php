@@ -718,13 +718,14 @@ class Tribe__Tickets__Metabox {
 		$provider->clear_attendees_cache( $event_id );
 
 		$data = [ 'did_checkin' => $did_checkin ];
+
 		/**
-		 * Filters the status code to return when an attendee is checked in.
+		 * Filters the data to return when an attendee is checked in.
 		 *
 		 * @since 5.8.2
 		 *
-		 * @param int $status      The HTTP status code to return. Default is 200.
-		 * @param int $attendee_id The ID of the attendee that was checked in.
+		 * @param array{did_checkin: bool} $data        The data to return.
+		 * @param int                      $attendee_id The ID of the attendee that was checked in.
 		 */
 		$data = apply_filters( 'tec_tickets_attendee_manual_checkin_success_data', $data, $attendee_id );
 
@@ -766,7 +767,19 @@ class Tribe__Tickets__Metabox {
 
 		$provider->clear_attendees_cache( $event_id );
 
-		wp_send_json_success( $did_uncheckin );
+		$data = [ 'did_uncheckin' => $did_uncheckin ];
+
+		/**
+		 * Filters the data to return when an attendee is unchecked in.
+		 *
+		 * @since TBD
+		 *
+		 * @param array{did_uncheckin: bool} $data        The data to return.
+		 * @param int                        $attendee_id The ID of the attendee that was checked in.
+		 */
+		$data = apply_filters( 'tec_tickets_attendee_manual_uncheckin_success_data', $data, $attendee_id );
+
+		wp_send_json_success( $data );
 	}
 
 	/**
