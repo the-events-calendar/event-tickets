@@ -223,35 +223,36 @@ trait Post_Tickets {
 	 * cost custom field.
 	 *
 	 * @since 4.12.1
+	 * @since TBD Refactored to catch instances when `$meta_key_compare_clause` is empty.
 	 *
 	 * @param bool $has_tickets Indicates if the event should have ticket types attached to it or not.
 	 */
-	public function filter_by_has_tickets($has_tickets = true) {
+	public function filter_by_has_tickets( $has_tickets = true ) {
 		global $wpdb;
 		$prefix = $has_tickets ? 'has_tickets' : 'has_no_tickets';
 
-		$meta_key_compare_clause = $this->ticket_to_post_meta_key_compare("{$prefix}_ticket_event", null, $has_tickets ? [RSVP::class] : null);
-		$meta_value_compare_clause = $this->ticket_to_post_meta_value_compare("{$prefix}_ticket_event");
+		$meta_key_compare_clause   = $this->ticket_to_post_meta_key_compare( "{$prefix}_ticket_event", null, $has_tickets ? [ RSVP::class ] : null );
+		$meta_value_compare_clause = $this->ticket_to_post_meta_value_compare( "{$prefix}_ticket_event" );
 
 		// Start with the JOIN type based on the ticket presence.
-		$join_clause = ($has_tickets ? "JOIN" : "LEFT JOIN") . " {$wpdb->postmeta} {$prefix}_ticket_event ON ";
+		$join_clause = ( $has_tickets ? "JOIN" : "LEFT JOIN" ) . " {$wpdb->postmeta} {$prefix}_ticket_event ON ";
 
 		// Add conditions if they are not empty, with an AND if both are present.
-		if (!empty($meta_key_compare_clause)) {
+		if ( ! empty( $meta_key_compare_clause ) ) {
 			$join_clause .= "($meta_key_compare_clause)";
 		}
-		if (!empty($meta_key_compare_clause) && !empty($meta_value_compare_clause)) {
+		if ( ! empty( $meta_key_compare_clause ) && ! empty( $meta_value_compare_clause ) ) {
 			$join_clause .= ' AND ';
 		}
-		if (!empty($meta_value_compare_clause)) {
+		if ( ! empty( $meta_value_compare_clause ) ) {
 			$join_clause .= "($meta_value_compare_clause)";
 		}
 
-		$this->join_clause($join_clause);
+		$this->join_clause( $join_clause );
 
 		// Additional logic for when tickets are not expected.
-		if (!$has_tickets) {
-			$this->where_clause("{$prefix}_ticket_event.meta_key = '_tribe_rsvp_for_event' OR {$prefix}_ticket_event.meta_id IS NULL");
+		if ( ! $has_tickets ) {
+			$this->where_clause( "{$prefix}_ticket_event.meta_key = '_tribe_rsvp_for_event' OR {$prefix}_ticket_event.meta_id IS NULL" );
 		}
 	}
 
