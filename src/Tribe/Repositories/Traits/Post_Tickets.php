@@ -235,7 +235,7 @@ trait Post_Tickets {
 		$meta_value_compare_clause = $this->ticket_to_post_meta_value_compare( "{$prefix}_ticket_event" );
 
 		// Start with the JOIN type based on the ticket presence.
-		$join_clause = ( $has_tickets ? "JOIN" : "LEFT JOIN" ) . " {$wpdb->postmeta} {$prefix}_ticket_event ON ";
+		$join_clause = ( $has_tickets ? 'JOIN' : 'LEFT JOIN' ) . " {$wpdb->postmeta} {$prefix}_ticket_event ON ";
 
 		// Add conditions if they are not empty, with an AND if both are present.
 		if ( ! empty( $meta_key_compare_clause ) ) {
