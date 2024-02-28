@@ -11,6 +11,8 @@
 
 namespace TEC\Tickets\Site_Health;
 
+use Tribe__Tickets__Tickets as Tickets;
+
 /**
  * Abstract class for creating subsections in the Site Health information section.
  *
@@ -79,5 +81,24 @@ abstract class Abstract_Info_Subsection {
 			'False',
 			'event-tickets'
 		);
+	}
+
+	/**
+	 * Checks if ticketing providers other than RSVP enabled.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Returns false if the only active ticketing provider is 'Tribe__Tickets__RSVP', indicating a minimal setup. Returns true if additional ticketing providers are active, suggesting a fully enabled ticketing environment.
+	 */
+	protected function are_ticketed_providers_enabled(): bool {
+		$rsvp_module    = 'Tribe__Tickets__RSVP';
+		$active_modules = Tickets::modules();
+
+		// Check if only one provider is returned and if that is Tribe__Tickets__RSVP.
+		if ( count( $active_modules ) === 1 && array_key_exists( $rsvp_module, $active_modules ) ) {
+			return false;
+		}
+
+		return true;
 	}
 }

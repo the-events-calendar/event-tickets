@@ -224,9 +224,14 @@ class Plugin_Data_Subsection extends Abstract_Info_Subsection {
 	/**
 	 * Counts the total number of posts with tickets.
 	 *
+	 * @since TBD Added additional check to confirm providers are enabled.
+	 *
 	 * @return int Count of ticketed posts.
 	 */
 	private function get_ticketed_post_count(): int {
+		if ( ! $this->are_ticketed_providers_enabled() ) {
+			return 0;
+		}
 		return tribe( 'tickets.post-repository' )->per_page( -1 )->where( 'has_tickets' )->count();
 	}
 

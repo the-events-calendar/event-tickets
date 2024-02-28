@@ -202,6 +202,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Stock will be calculated correctly when an order fails and then succeeds while using Tickets Commerce.
 * Fix - Decode any HTML entities that appear int he subject line of outgoing emails. [ET-2007]
 * Fix - Fixed multiple issues related to series pass check-ins. [ET-1936]
+* Fix - Site Health will no longer fatal when providers are not setup. [ET-2047]
 * Tweak - Use dynamic ticket labels within the block editor's Tickets Block. [ET-690]
 
 = [5.8.2] 2024-02-19 =
