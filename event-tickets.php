@@ -11,6 +11,7 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: event-tickets
 Domain Path: /lang/
 */
+
 /*
  Copyright 2010-2022 by The Events Calendar and the contributors
 
