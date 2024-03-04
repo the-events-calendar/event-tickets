@@ -554,7 +554,7 @@
 </style>
 <div class="tec-tickets__email-body">
 
-		
+
 		<table role="presentation" class="tec-tickets__email-table-main">
 
 			<tr>
@@ -624,7 +624,8 @@
 </tr>
 <tr>
 	<td class="tec-tickets__email-table-content-post-description-container">
-		Experience the magic of creativity in nature. Save the date and indulge your senses at &quot;Arts in the Park&quot;!  Join us for an enchanting day of vibrant musics and captivating... 	</td>
+		<p>Experience the magic of creativity in nature. Save the date and indulge your senses at &quot;Arts in the Park&quot;!  Join us for an enchanting day of vibrant musics and captivating... </p>
+	</td>
 </tr>
 <tr>
 	<td class="tec-tickets__email-table-content-event-venue-title-container">
