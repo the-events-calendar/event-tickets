@@ -699,31 +699,6 @@
 		</table>
 	</td>
 </tr>
-<tr>
-	<td class="tec-tickets__email-table-content-event-links-container">
-		<table role="presentation" class="tec-tickets__email-table-content-event-links-table">
-			<tr>
-				<td class="tec-tickets__email-table-content-event-links-table-data" align="center">
-					<a
-	target="_blank"
-	rel="noopener noreferrer"
-	href="#"
-	class="tec-tickets__email-table-content-event-links-ical-link"
->
-	Add event to iCal</a>
-
-<a
-	target="_blank"
-	rel="noopener noreferrer"
-	href="#"
-	class="tec-tickets__email-table-content-event-links-gcal-link"
->
-	Add event to Google Calendar</a>
-				</td>
-			</tr>
-		</table>
-	</td>
-</tr>
 					</table>
 				</td>
 			</tr>
