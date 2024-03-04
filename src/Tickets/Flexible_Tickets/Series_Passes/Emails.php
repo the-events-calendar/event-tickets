@@ -12,6 +12,9 @@ namespace TEC\Tickets\Flexible_Tickets\Series_Passes;
 use TEC\Common\Contracts\Provider\Controller;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 use TEC\Tickets\Emails\Email_Abstract;
+use TEC\Tickets_Plus\Emails\Email\Ticket as Tickets_Plus_Ticket_Email;
+use TEC\Tickets_Plus\Emails\Hooks as Tickets_Plus_Email_Hooks;
+use TEC\Tickets_Wallet_Plus\Emails\Controller as Wallet_Plus_Email_Controller;
 use Tribe__Template as Template;
 use WP_Post;
 
@@ -33,6 +36,20 @@ class Emails extends Controller {
 	 */
 	protected function do_register(): void {
 		add_filter( 'tec_tickets_emails_registered_emails', [ $this, 'add_series_to_registered_email_types' ] );
+
+		$tickets_plus_email_controller_action = 'tec_container_registered_provider_' . Tickets_Plus_Email_Hooks::class;
+		if ( did_action( $tickets_plus_email_controller_action ) ) {
+			$this->hook_tickets_plus_filters();
+		} else {
+			add_action( $tickets_plus_email_controller_action, [ $this, 'hook_tickets_plus_filters' ] );
+		}
+
+		$wallet_plus_email_controller_action = 'tec_container_registered_provider_' . Wallet_Plus_Email_Controller::class;
+		if ( did_action( $wallet_plus_email_controller_action ) ) {
+			$this->hook_wallet_plus_filters();
+		} else {
+			add_action( $wallet_plus_email_controller_action, [ $this, 'hook_wallet_plus_filters' ] );
+		}
 	}
 
 	/**
@@ -44,6 +61,20 @@ class Emails extends Controller {
 	 */
 	public function unregister(): void {
 		remove_filter( 'tec_tickets_emails_registered_emails', [ $this, 'add_series_to_registered_email_types' ] );
+
+		$tickets_plus_email_controller_action = 'tec_container_registered_provider_' . Tickets_Plus_Email_Hooks::class;
+		if ( did_action( $tickets_plus_email_controller_action ) ) {
+			$this->unhook_tickets_plus_filters();
+		} else {
+			remove_action( $tickets_plus_email_controller_action, [ $this, 'hook_tickets_plus_filters' ] );
+		}
+
+		$wallet_plus_email_controller_action = 'tec_container_registered_provider_' . Wallet_Plus_Email_Controller::class;
+		if ( did_action( $wallet_plus_email_controller_action ) ) {
+			$this->unhook_wallet_plus_filters();
+		} else {
+			remove_action( $wallet_plus_email_controller_action, [ $this, 'hook_wallet_plus_filters' ] );
+		}
 	}
 
 	/**
@@ -100,7 +131,7 @@ class Emails extends Controller {
 			<td class="tec-tickets__email-table-content__series-list">
 				<p>
 					<a href="<?php echo esc_url( get_permalink( $post_id ) ); ?>" target="_blank"
-					   rel="noopener noreferrer">
+						rel="noopener noreferrer">
 						<?php echo esc_html( __( 'See all the events in this series.', 'event-tickets' ) ); ?>
 					</a>
 				</p>
@@ -195,5 +226,85 @@ class Emails extends Controller {
 			<?php echo esc_html( __( 'See all the events in this series.', 'event-tickets' ) ); ?>
 		</a>
 		<?php
+	}
+
+	/**
+	 * Hooks the Email filters provided by Event Tickets Plus.
+	 *
+	 * Note that this method will only fire if the ET+ plugin has registered.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function hook_tickets_plus_filters(): void {
+		$ticket_plus_email = $this->container->get( Tickets_Plus_Ticket_Email::class );
+		add_filter(
+			'tec_tickets_emails_series-pass_settings',
+			[
+				$ticket_plus_email,
+				'filter_tec_tickets_emails_ticket_settings',
+			]
+		);
+	}
+
+	/**
+	 * Unhooks the Email filters provided by Event Tickets Plus.
+	 *
+	 * Note that this method will only fire if the ET+ plugin has registered.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	private function unhook_tickets_plus_filters(): void {
+		$ticket_plus_email = $this->container->get( Tickets_Plus_Ticket_Email::class );
+		remove_filter(
+			'tec_tickets_emails_series-pass_settings',
+			[
+				$ticket_plus_email,
+				'filter_tec_tickets_emails_ticket_settings',
+			]
+		);
+	}
+
+	/**
+	 * Hooks the Email filters provided by Wallet Plus.
+	 *
+	 * Note that this method will only fire if the Wallet Plus plugin has registered.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function hook_wallet_plus_filters(): void {
+		$wallet_plus_controller = $this->container->get( Wallet_Plus_Email_Controller::class );
+		add_filter(
+			'tec_tickets_emails_series-pass_settings',
+			[
+				$wallet_plus_controller,
+				'add_ticket_email_settings',
+			]
+		);
+	}
+
+	/**
+	 * Unhooks the Email filters provided by Wallet Plus.
+	 *
+	 * Note that this method will only fire if the Wallet Plus plugin has registered.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	private function unhook_wallet_plus_filters(): void {
+		$wallet_plus_controller = $this->container->get( Wallet_Plus_Email_Controller::class );
+		remove_filter(
+			'tec_tickets_emails_series-pass_settings',
+			[
+				$wallet_plus_controller,
+				'add_ticket_email_settings',
+			]
+		);
 	}
 }
