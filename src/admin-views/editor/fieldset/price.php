@@ -98,6 +98,36 @@ if ( ! empty( $ticket ) ) {
 		 */
 		do_action( 'tribe_tickets_price_input_description', $ticket_id, $post_id );
 		?>
+
+		<div class="ticket_sale_price_wrapper ticket_form_right">
+			<!--Checkbox to toggle sale price field-->
+			<input
+				type="checkbox"
+				name="ticket_add_sale_price"
+				id="ticket_add_sale_price"
+				<?php checked( $ticket && $ticket->on_sale ); ?>
+			>
+			<label
+				for="ticket_add_sale_price"
+				class="ticket_form_label"
+			>
+				<?php esc_html_e( 'Add Sale Price:', 'event-tickets' ); ?>
+			</label>
+			<div class="ticket_sale_price tribe-dependent"
+				data-depends="#ticket_add_sale_price"
+				data-condition-is-checked
+			>
+				<label for="ticket_sale_price" class="ticket_form_label"><?php esc_html_e( 'Sale Price:', 'event-tickets' ); ?></label>
+				<input
+					type="text"
+					id="ticket_sale_price"
+					name="ticket_sale_price"
+					class="ticket_field"
+					size="7"
+					value="<?php echo esc_attr( $sale_price ); ?>"
+				/>
+			</div>
+		</div>
 	</div>
 
 	<?php if ( $ticket && ( $ticket->on_sale || $ticket_has_wc_member_discount ) ) : ?>
