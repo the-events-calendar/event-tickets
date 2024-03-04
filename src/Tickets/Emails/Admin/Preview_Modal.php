@@ -227,7 +227,7 @@ class Preview_Modal {
 		$rsvp_using_ticket_email               = tribe_is_truthy( Arr::get( $vars, 'useTicketEmail', '' ) );
 		$preview_context['using_ticket_email'] = $rsvp_using_ticket_email;
 
-		// only apply JS preview context if we're not using the ticket email.
+		// Only apply JS preview context if we're not using the ticket email.
 		if ( ! $rsvp_using_ticket_email ) {
 			$heading = Arr::get( $vars, 'heading', '' );
 
@@ -268,19 +268,29 @@ class Preview_Modal {
 		}
 
 		$email_class->set_placeholders( Preview_Data::get_placeholders() );
+		$email_preview_context = $email_class->get_preview_context( $preview_context );
 
-		// @todo @bordoni this is extremely temporary, we will move to use data internally and directly.
-		foreach ( $email_class->get_preview_context( $preview_context ) as $key => $template_var_value ) {
+		foreach ( $email_preview_context as $key => $template_var_value ) {
 			$email_class->set( $key, $template_var_value );
 		}
 
-		$email_class->set( 'post_id', Preview_Data::get_post()->ID );
+		if ( ! isset( $email_preview_context['post_id'] ) ) {
+			$email_class->set( 'post_id', Preview_Data::get_post()->ID );
+		}
 
-		add_filter( 'tribe_is_event', '__return_true' );
+		$preview_for_event = isset( $email_preview_context['post'] )
+		                     && is_object( $email_preview_context['post'] )
+		                     && ( $email_preview_context['post']->post_type ?? 'tribe_events' ) === 'tribe_events';
+
+		if ( $preview_for_event ) {
+			add_filter( 'tribe_is_event', '__return_true' );
+		}
 
 		$html  = $email_class->get_content();
 
-		remove_filter( 'tribe_is_event', '__return_true' );
+		if ( $preview_for_event ) {
+			remove_filter( 'tribe_is_event', '__return_true' );
+		}
 
 		$html .= $tickets_template->template( 'v2/components/loader/loader', [], false );
 

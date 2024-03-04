@@ -3,7 +3,7 @@
  * Event Tickets Emails: Series Pass Email Template.
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/emails/series-pass.php
+ * [your-theme]/tribe/tickets/emails/flexible-tickets/emails/series-pass.php
  *
  * See more documentation about our views templating system.
  *

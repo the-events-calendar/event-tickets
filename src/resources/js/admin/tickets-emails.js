@@ -160,23 +160,26 @@ tribe.tickets.emails = {};
 		context.currentEmail = currentEmail;
 
 		if ( currentEmail ) {
-			// Dynamically fetch the fields from the inputs to allow new fields to be automatically picked up.
+			const fieldReducer = (context, el, fieldPrefix) => {
+				const name = el.name.replace(`${fieldPrefix}-`, '')
+					// From `tec_tickets_emails_current_section-some-field' to `someField`.
+					.replace(/-([a-z])/g, (g) => g[1].toUpperCase()).replace(/\[]$/, '')
+				context[name] = el.type === 'checkbox' ? el.checked : el.value
+				return context
+			};
+
+			// This flag will be set by the RSVP type of email.
+			context.useTicketEmail = false;
+
+			// Include the generic ticket context.
+			const ticketOptionPrefix = 'tec-tickets-emails-ticket'
+			Array.from($document.find('input[name^=' + ticketOptionPrefix + ']'))
+				.reduce((context, el) => fieldReducer(context, el, ticketOptionPrefix), context);
+
+			// Dynamically fetch the specific email type fields from the inputs. Override the context.
 			const currentEmailOptionPrefix = currentEmail.replace(/_/g, '-')
-
 			Array.from($document.find('input[name^=' + currentEmailOptionPrefix + ']'))
-				.reduce((context, el) => {
-					const name = el.name.replace(`${currentEmailOptionPrefix}-`, '')
-						// From `tec_tickets_emails_current_section-some-field' to `someField`.
-						.replace(/-([a-z])/g, (g) => g[1].toUpperCase()).replace(/\[]$/, '')
-					const value = el.type === 'checkbox' ? el.checked : el.value
-					context[name] = value
-					return context
-				}, context)
-
-			const useTicketEmail = $document
-				.find('input[name=tec-tickets-emails-rsvp-use-ticket-email]').is(':checked')
-
-			context.useTicketEmail = useTicketEmail
+				.reduce((context, el) => fieldReducer(context, el, currentEmailOptionPrefix), context);
 
 			// Fetch additional content from the editor.
 			context.addContent = tinyMCE !== undefined ?

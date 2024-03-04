@@ -15,6 +15,8 @@ use TEC\Tickets\Emails\Email_Abstract;
 use TEC\Tickets_Plus\Emails\Email\Ticket as Tickets_Plus_Ticket_Email;
 use TEC\Tickets_Plus\Emails\Hooks as Tickets_Plus_Email_Hooks;
 use TEC\Tickets_Wallet_Plus\Emails\Controller as Wallet_Plus_Email_Controller;
+use TEC\Tickets\Flexible_Tickets\Series_Passes\Emails\Mock_Event_Post;
+use TEC\Tickets\Flexible_Tickets\Series_Passes\Emails\Series_Pass;
 use Tribe__Template as Template;
 use WP_Post;
 
@@ -26,7 +28,6 @@ use WP_Post;
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Series_Passes;
  */
 class Emails extends Controller {
-
 	/**
 	 * {@inheritDoc}
 	 *
@@ -37,6 +38,7 @@ class Emails extends Controller {
 	protected function do_register(): void {
 		add_filter( 'tec_tickets_emails_registered_emails', [ $this, 'add_series_to_registered_email_types' ] );
 
+		// Hook Event Tickets Plus template components.
 		$tickets_plus_email_controller_action = 'tec_container_registered_provider_' . Tickets_Plus_Email_Hooks::class;
 		if ( did_action( $tickets_plus_email_controller_action ) ) {
 			$this->hook_tickets_plus_filters();
@@ -44,12 +46,31 @@ class Emails extends Controller {
 			add_action( $tickets_plus_email_controller_action, [ $this, 'hook_tickets_plus_filters' ] );
 		}
 
+		// Hook Wallet Plus template components.
 		$wallet_plus_email_controller_action = 'tec_container_registered_provider_' . Wallet_Plus_Email_Controller::class;
 		if ( did_action( $wallet_plus_email_controller_action ) ) {
 			$this->hook_wallet_plus_filters();
 		} else {
 			add_action( $wallet_plus_email_controller_action, [ $this, 'hook_wallet_plus_filters' ] );
 		}
+
+		add_filter( 'tec_tickets_emails_series-pass_preview_args', [ $this, 'filter_email_preview_args' ], 100 );
+		add_action(
+			'tribe_template_before_include:tickets/emails/template-parts/body/post-title',
+			[ $this, 'include_series_dates_for_series_pass_email' ],
+			10,
+			3
+		);
+		add_action( 'tribe_template_before_include:tickets/emails/template-parts/body/tickets', [
+			$this,
+			'include_series_thumbnail'
+		], 15, 3 );
+		add_action(
+			'tribe_template_before_include:tickets/emails/template-parts/body/post-description',
+			[ $this, 'include_series_upcoming_events_list' ],
+			10,
+			3
+		);
 	}
 
 	/**
@@ -75,6 +96,22 @@ class Emails extends Controller {
 		} else {
 			remove_action( $wallet_plus_email_controller_action, [ $this, 'hook_wallet_plus_filters' ] );
 		}
+
+		remove_filter( 'tec_tickets_emails_series-pass_preview_args', [ $this, 'filter_email_preview_args' ], 100 );
+		remove_action(
+			'tribe_template_before_include:tickets/emails/template-parts/body/post-title',
+			[ $this, 'include_series_dates_for_series_pass_email' ]
+		);
+		remove_action( 'tribe_template_before_include:tickets/emails/template-parts/body/tickets', [
+			$this,
+			'include_series_thumbnail'
+		], 15, 3 );
+		remove_action(
+			'tribe_template_before_include:tickets/emails/template-parts/body/post-description',
+			[ $this, 'include_series_upcoming_events_list' ],
+			10,
+			3
+		);
 	}
 
 	/**
@@ -92,52 +129,44 @@ class Emails extends Controller {
 		return $email_types;
 	}
 
-	/**
-	 * Include the Series list link in the ticket emails.
-	 *
-	 * @since 5.8.0
-	 *
-	 * @param string   $file     Template file.
-	 * @param string   $name     Template name.
-	 * @param Template $template Event Tickets template object.
-	 *
-	 * @return void
-	 */
-	public function include_series_link_for_series_pass_email( $file, $name, $template ): void {
-		if ( ! $template instanceof Template ) {
-			return;
-		}
+	public function pre_fill_upcoming_events(): array {
+		// Impose a num to show of 5.
+		add_filter(
+			'tec_tickets_flexible_tickets_series_pass_email_upcoming_events_list_count',
+			static fn() => 5,
+			1000
+		);
 
-		$context = $template->get_values();
-		if ( ! isset( $context['post_id'] ) || get_post_type( $context['post_id'] ) !== Series_Post_Type::POSTTYPE ) {
-			return;
-		}
+		$events = Mock_Event_Post::get_preview_events();
 
-		$this->render_series_events_permalink_for_ticket_emails( $context['post_id'] );
+		return [ $events, 6 ];
 	}
 
 	/**
-	 * Renders the series events permalink for the ticket email.
+	 * Filters the preview arguments for the email templates.
 	 *
-	 * @since 5.8.0
+	 * @since TBD
 	 *
-	 * @param int $post_id The series post ID.
+	 * @param array<string,mixed> $preview_args The existing preview arguments.
 	 *
-	 * @return void
+	 * @return array<string,mixed> The modified preview arguments.
 	 */
-	public function render_series_events_permalink_for_ticket_emails( int $post_id ): void {
-		?>
-		<tr>
-			<td class="tec-tickets__email-table-content__series-list">
-				<p>
-					<a href="<?php echo esc_url( get_permalink( $post_id ) ); ?>" target="_blank"
-						rel="noopener noreferrer">
-						<?php echo esc_html( __( 'See all the events in this series.', 'event-tickets' ) ); ?>
-					</a>
-				</p>
-			</td>
-		</tr>
-		<?php
+	public function filter_email_preview_args( array $preview_args ): array {
+		if (
+			isset( $preview_args['post'] )
+			&& is_object( $preview_args['post'] )
+			&& ( $preview_args['post']->post_type ?? null ) === Series_Post_Type::POSTTYPE
+		) {
+			$preview_args = array_diff_key( $preview_args, [ 'event' => false ] );
+		}
+
+
+		add_filter( 'tec_tickets_flexible_tickets_series_pass_email_upcoming_events', [
+			$this,
+			'pre_fill_upcoming_events'
+		]);
+
+		return $preview_args;
 	}
 
 	/**
@@ -145,11 +174,9 @@ class Emails extends Controller {
 	 *
 	 * @since 5.8.0
 	 *
-	 * @param string   $file     Template file.
-	 * @param string   $name     Template name.
+	 * @param string   $file     Template file, unused
+	 * @param string[] $name     Template name components, unused.
 	 * @param Template $template Event Tickets template object.
-	 *
-	 * @return void
 	 */
 	public function include_series_dates_for_series_pass_email( $file, $name, $template ): void {
 		if ( ! $template instanceof Template ) {
@@ -157,75 +184,61 @@ class Emails extends Controller {
 		}
 
 		$context = $template->get_values();
-		if ( ! isset( $context['post_id'] ) || get_post_type( $context['post_id'] ) !== Series_Post_Type::POSTTYPE ) {
+
+		if ( ! (
+			isset( $context['post'] )
+			&& is_object( $context['post'] )
+			&& ( $context['post']->post_type ?? null ) === Series_Post_Type::POSTTYPE
+		) ) {
 			return;
 		}
 
-		$this->render_series_events_date_range( $context['post_id'] );
+		$post_id = $context['post']->ID;
+
+		$dates = array_values( array_filter( [
+			tribe_get_start_date( $post_id ),
+
+			tribe_get_end_date( $post_id ),
+		] ) );
+
+		$template->template( 'template-parts/body/series-pass-dates', [ 'dates' => $dates ], true );
 	}
 
 	/**
-	 * Renders the series date range for the ticket email.
+	 * Includes the Series Pass template image, if set.
 	 *
-	 * @since 5.8.0
+	 * @since TBD
 	 *
-	 * @param int $series_id The series ID.
+	 * @param string   $file     Template file, unused
+	 * @param string[] $name     Template name components, unused.
+	 * @param Template $template Event Tickets template object.
 	 *
-	 * @return void
+	 * @return void The series thumbnail is included, if set.
 	 */
-	public function render_series_events_date_range( int $series_id ) {
-		$dates = [
-			tribe_get_start_date( $series_id ),
-			tribe_get_end_date( $series_id ),
-		];
-
-		$dates = array_filter( $dates );
-
-		if ( empty( $dates ) ) {
-			return;
-		}
-		?>
-		<tr>
-			<td class="tec-tickets__email-table-content__series-date">
-				<?php echo esc_html( implode( ' - ', $dates ) ); ?>
-			</td>
-		</tr>
-		<?php
-	}
-
-	/**
-	 * Include the series link for legacy ticket emails.
-	 *
-	 * @since 5.8.0
-	 *
-	 * @param array   $ticket Ticket information.
-	 * @param WP_Post $event  Event post object.
-	 *
-	 * @return void
-	 */
-	public function include_series_link_for_series_pass_for_legacy_email( array $ticket, WP_Post $event ): void {
-		if ( get_post_type( $event ) !== Series_Post_Type::POSTTYPE ) {
+	public function include_series_thumbnail( $file, $name, $template ): void {
+		if ( ! $template instanceof Template ) {
 			return;
 		}
 
-		$this->render_series_events_permalink_for_legacy_ticket_email( $event->ID );
+		$template->template( 'template-parts/body/thumbnail', $template->get_local_values(), true );
 	}
 
-	/**
-	 * Renders the series events permalink for the legacy ticket email.
-	 *
-	 * @since 5.8.0
-	 *
-	 * @param int $post_id The series post ID.
-	 *
-	 * @return void
-	 */
-	public function render_series_events_permalink_for_legacy_ticket_email( int $post_id ): void {
-		?>
-		<a href="<?php echo esc_url( get_post_permalink( $post_id ) ); ?>" target="_blank" rel="noopener noreferrer">
-			<?php echo esc_html( __( 'See all the events in this series.', 'event-tickets' ) ); ?>
-		</a>
-		<?php
+	public function include_series_upcoming_events_list($file, $name, $template): void {
+		if ( ! $template instanceof Template ) {
+			return;
+		}
+
+		$context = $template->get_local_values();
+
+		if ( ! ( $context['email'] ?? null ) instanceof Series_Pass ) {
+			return;
+		}
+
+		if ( ! isset( $context['post_id'] ) ) {
+			return;
+		}
+
+		 (new Upcoming_Series_Events_List($context['post_id']))->render();
 	}
 
 	/**
@@ -306,5 +319,92 @@ class Emails extends Controller {
 				'add_ticket_email_settings',
 			]
 		);
+	}
+
+	//////////////////////////////////////////////////////////////////////
+	//// PREVIOUS CODE @todo remove it or keep what might still be useful
+	//////////////////////////////////////////////////////////////////////
+
+	/**
+	 * Include the Series list link in the ticket emails.
+	 *
+	 * @since 5.8.0
+	 *
+	 * @param string   $file     Template file.
+	 * @param string   $name     Template name.
+	 * @param Template $template Event Tickets template object.
+	 *
+	 * @return void
+	 */
+	public function include_series_link_for_series_pass_email( $file, $name, $template ): void {
+		if ( ! $template instanceof Template ) {
+			return;
+		}
+
+		$context = $template->get_values();
+		if ( ! isset( $context['post_id'] ) || get_post_type( $context['post_id'] ) !== Series_Post_Type::POSTTYPE ) {
+			return;
+		}
+
+		$this->render_series_events_permalink_for_ticket_emails( $context['post_id'] );
+	}
+
+	/**
+	 * Renders the series events permalink for the ticket email.
+	 *
+	 * @since 5.8.0
+	 *
+	 * @param int $post_id The series post ID.
+	 *
+	 * @return void
+	 */
+	public function render_series_events_permalink_for_ticket_emails( int $post_id ): void {
+		?>
+		<tr>
+			<td class="tec-tickets__email-table-content__series-list">
+				<p>
+					<a href="<?php echo esc_url( get_permalink( $post_id ) ); ?>" target="_blank"
+						rel="noopener noreferrer">
+						<?php echo esc_html( __( 'See all the events in this series.', 'event-tickets' ) ); ?>
+					</a>
+				</p>
+			</td>
+		</tr>
+		<?php
+	}
+
+	/**
+	 * Include the series link for legacy ticket emails.
+	 *
+	 * @since 5.8.0
+	 *
+	 * @param array   $ticket Ticket information.
+	 * @param WP_Post $event  Event post object.
+	 *
+	 * @return void
+	 */
+	public function include_series_link_for_series_pass_for_legacy_email( array $ticket, WP_Post $event ): void {
+		if ( get_post_type( $event ) !== Series_Post_Type::POSTTYPE ) {
+			return;
+		}
+
+		$this->render_series_events_permalink_for_legacy_ticket_email( $event->ID );
+	}
+
+	/**
+	 * Renders the series events permalink for the legacy ticket email.
+	 *
+	 * @since 5.8.0
+	 *
+	 * @param int $post_id The series post ID.
+	 *
+	 * @return void
+	 */
+	public function render_series_events_permalink_for_legacy_ticket_email( int $post_id ): void {
+		?>
+		<a href="<?php echo esc_url( get_post_permalink( $post_id ) ); ?>" target="_blank" rel="noopener noreferrer">
+			<?php echo esc_html( __( 'See all the events in this series.', 'event-tickets' ) ); ?>
+		</a>
+		<?php
 	}
 }
