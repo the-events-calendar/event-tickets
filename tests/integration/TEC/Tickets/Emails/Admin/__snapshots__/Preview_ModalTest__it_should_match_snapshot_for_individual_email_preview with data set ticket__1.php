@@ -554,7 +554,7 @@
 </style>
 <div class="tec-tickets__email-body">
 
-
+		
 		<table role="presentation" class="tec-tickets__email-table-main">
 
 			<tr>
