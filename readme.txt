@@ -197,7 +197,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [TBD] TBD =
 
-* Fix - In the block editor, ticket will no longer be deleted when you open the ticket settings. [ET-2018]
+* Fix - In the block editor, ticket will no longer be deleted when you open the ticket block settings. [ET-2018]
 
 = [TBD] TBD =
 
