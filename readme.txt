@@ -198,6 +198,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [TBD] TBD =
 
 * Fix - Allow blank sender name and email to be stored within Tickets Emails settings. [ET-2008]
+* Fix - Corrected an issue where `attendees_table->prepare_items()` was being called multiple times. [ET-2005]
 
 = [TBD] TBD =
 

@@ -943,6 +943,10 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * Prepares the list of items for displaying.
 	 */
 	public function prepare_items() {
+		if ( ! empty( $this->items ) ) {
+			return;
+		}
+
 		$this->process_actions();
 
 		$current_page = $this->get_pagenum();
