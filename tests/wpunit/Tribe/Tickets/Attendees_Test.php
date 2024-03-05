@@ -266,7 +266,7 @@ class Attendees_Test extends WPTestCase {
 		}
 	}
 
-	public function accessCheckDataProvider() {
+	public function access_check_dat_provider() {
 		yield 'invalid event id' => [
 			function () {
 				return [ null, 'invalid_nonce', 'user', '1', new WP_Error( 'no-event-id', 'Invalid Event ID' ) ];
