@@ -250,7 +250,7 @@ class Attendees_Test extends WPTestCase {
 
 	/**
 	 * @test
-	 * @dataProvider access_check_dat_provider
+	 * @dataProvider access_check_data_provider
 	 */
 	public function should_have_attendees_list_access( Closure $fixture ) {
 		list( $event_id, $nonce, $type, $send_to, $expected ) = $fixture();
@@ -266,7 +266,7 @@ class Attendees_Test extends WPTestCase {
 		}
 	}
 
-	public function access_check_dat_provider() {
+	public function access_check_data_provider() {
 		yield 'invalid event id' => [
 			function () {
 				return [ null, 'invalid_nonce', 'user', '1', new WP_Error( 'no-event-id', 'Invalid Event ID' ) ];
