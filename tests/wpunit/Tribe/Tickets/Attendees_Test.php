@@ -250,7 +250,7 @@ class Attendees_Test extends WPTestCase {
 
 	/**
 	 * @test
-	 * @dataProvider accessCheckDataProvider
+	 * @dataProvider access_check_dat_provider
 	 */
 	public function should_have_attendees_list_access( Closure $fixture ) {
 		list( $event_id, $nonce, $type, $send_to, $expected ) = $fixture();
