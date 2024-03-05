@@ -49,7 +49,7 @@ if ( tribe_is_not_min_php_version() ) {
 	tribe_not_php_version_textdomain( 'event-tickets', EVENT_TICKETS_MAIN_PLUGIN_FILE );
 
 	/**
-	 * Include the plugin name into the correct place
+	 * Include the plugin name into the correct place.
 	 *
 	 * @since  4.10
 	 *
