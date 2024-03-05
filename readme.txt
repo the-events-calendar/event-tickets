@@ -197,6 +197,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [TBD] TBD =
 
+* Fix - Events Calendar Pro promo shouldn't show when it's already installed or when not editing an event. [ET-2018]
+
+= [TBD] TBD =
+
 * Fix - Fixed updating stock data when Tickets Commerce attendees are moved. [ET-2009]
 * Fix - Fixed showing duplicate order overview data from TribeCommerce when ETP is disabled. [ET-2011]
 * Fix - Stock will be calculated correctly when an order fails and then succeeds while using Tickets Commerce.
