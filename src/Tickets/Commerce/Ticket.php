@@ -8,6 +8,7 @@ use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Status\Status_Interface;
 use TEC\Tickets\Commerce\Utils\Value;
 use Tribe__Tickets__Global_Stock as Event_Stock;
+use Tribe__Utils__Array as Arr;
 
 /**
  * Class Ticket.
@@ -722,7 +723,9 @@ class Ticket {
 			// Update Ticket capacity
 			update_post_meta( $ticket->ID, $tickets_handler->key_capacity, $data['capacity'] );
 		}
-
+		
+		$this->process_sale_price_data( $ticket, $raw_data );
+		
 		/**
 		 * Generic action fired after saving a ticket (by type)
 		 *
@@ -1066,4 +1069,30 @@ class Ticket {
 		
 		return update_post_meta( $ticket_id, static::$stock_meta_key, $stock );
 	}
+	
+	/**
+	 * Process the sale price data.
+	 *
+	 * @since TBD
+	 *
+	 * @param \Tribe__Tickets__Ticket_Object $ticket   The ticket post object.
+	 * @param array<string,mixed>            $raw_data The raw data from the request.
+	 *
+	 * @return void
+	 */
+	public function process_sale_price_data( \Tribe__Tickets__Ticket_Object $ticket, array $raw_data ): void {
+		$sale_price_enabled = tribe_is_truthy( Arr::get( $raw_data, 'ticket_add_sale_price', false ) );
+		update_post_meta( $ticket->ID, static::$sale_price_checked_key, $sale_price_enabled );
+		
+		if ( ! $sale_price_enabled ) {
+			return;
+		}
+		
+		$sale_price = Arr::get( $raw_data, 'ticket_sale_price', false );
+		
+		if ( $sale_price ) {
+			update_post_meta( $ticket->ID, static::$sale_price_key, Value::create( $sale_price ) );
+		}
+	}
+	
 }
