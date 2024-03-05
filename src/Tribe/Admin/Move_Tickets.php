@@ -118,7 +118,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 			'unexpected_failure'       => '<p>' . __( 'Woops! We could not complete the requested operation due to an unforeseen problem.', 'event-tickets' ) . '</p>',
 			'update_post_list_failure' => __( 'Unable to update the post list. Please refresh the page and try again.', 'event-tickets' ),
 			'no_posts_found'           => __( 'No results found - you may need to widen your search criteria.', 'event-tickets' ),
-			'no_ticket_types_found'    => __( 'No ticket types were found for this post.', 'event-tickets' ),
+			'no_ticket_types_found'    => __( 'No tickets were found for this post.', 'event-tickets' ),
 			'loading_msg'              => __( 'Loading, please wait&hellip;', 'event-tickets' ),
 			'src_post_id'              => absint( tribe_get_request_var( 'event_id', tribe_get_request_var( 'post', 0 ) ) ),
 			'ticket_ids'               => array_keys( $this->attendees ),

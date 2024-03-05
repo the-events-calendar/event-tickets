@@ -14,7 +14,7 @@ if ( $provider_obj instanceof Tribe__Tickets__RSVP ) {
 }
 
 $price = null;
-if ( method_exists( $provider_obj, 'get_price_value' ) ) {
+if ( ! empty( $provider_obj ) && method_exists( $provider_obj, 'get_price_value' ) ) {
 	$price = $provider_obj->get_price_value( $ticket->ID );
 }
 

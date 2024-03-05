@@ -47,7 +47,7 @@
 </div><div class="tec-tickets__series_attached_ticket-type">
 	<div class="tec-tickets__series_attached_ticket-type__icon tec-tickets__series_attached_ticket-type__icon--ticket"></div>
 	<div class="tickets__series_attached_ticket-type__title">
-		Single Ticket	</div>
+		Standard Ticket	</div>
 </div><div class="tec-tickets__series_attached_ticket-type">
 	<div class="tec-tickets__series_attached_ticket-type__icon tec-tickets__series_attached_ticket-type__icon--series-pass"></div>
 	<div class="tickets__series_attached_ticket-type__title">

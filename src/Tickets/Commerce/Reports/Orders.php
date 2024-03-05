@@ -4,6 +4,7 @@ namespace TEC\Tickets\Commerce\Reports;
 
 use TEC\Tickets\Commerce;
 use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Event;
 use WP_Post;
 
 use Tribe__Tickets__Main as Plugin;
@@ -87,14 +88,7 @@ class Orders extends Report_Abstract {
 
 		$post = get_post( $event_id );
 
-		/**
-		 * This filter allows retrieval of an event ID to be filtered before being accessed elsewhere.
-		 *
-		 * @since 5.6.4
-		 *
-		 * @param int|null The event ID to be filtered.
-		 */
-		$event_id = apply_filters( 'tec_tickets_filter_event_id', $event_id);
+		$event_id = Event::filter_event_id( $event_id, 'tc-orders-report-link' );
 
 		$query = [
 			'post_type' => $post->post_type,
@@ -303,6 +297,7 @@ class Orders extends Report_Abstract {
 	public function attendees_page_screen_setup() {
 		$orders_table = tribe( Commerce\Admin_Tables\Orders::class );
 		$orders_table->prepare_items();
+		$orders_table->maybe_generate_csv();
 
 		wp_enqueue_script( 'jquery-ui-dialog' );
 

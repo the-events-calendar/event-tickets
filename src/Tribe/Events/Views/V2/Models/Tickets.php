@@ -239,6 +239,7 @@ class Tickets implements \ArrayAccess, \Serializable {
 	/**
 	 * {@inheritDoc}
 	 */
+	#[\ReturnTypeWillChange]
 	public function offsetGet( $offset ) {
 		$this->data = $this->fetch_data();
 

@@ -404,7 +404,7 @@ class MetaboxTest extends WPTestCase {
 					]
 				)->create()->ID;
 				$occurrences_provisional_ids = occurrence::where( 'post_id', '=', $post_id )
-				                                         ->map( fn( occurrence $o ) => $o->provisional_id );
+					->map( fn( occurrence $o ) => $o->provisional_id );
 
 				return [ $post_id, $series_id, ...$occurrences_provisional_ids ];
 			},
@@ -445,7 +445,7 @@ class MetaboxTest extends WPTestCase {
 				)->create()->ID;
 
 				$occurrences_provisional_ids = Occurrence::where( 'post_id', '=', $post_id )
-				                                         ->map( fn( Occurrence $o ) => $o->provisional_id );
+					->map( fn( Occurrence $o ) => $o->provisional_id );
 
 				return [ $post_id, $pass_1, $pass_2, $series_id, ...$occurrences_provisional_ids ];
 			},
@@ -494,24 +494,47 @@ class MetaboxTest extends WPTestCase {
 
 		yield 'single event by Occurrence provisional ID' => [
 			function (): array {
-				$single_event = tribe_events()->set_args( [
-					'title'      => 'Single Event',
-					'status'     => 'publish',
-					'start_date' => '2021-01-01 10:00:00',
-					'end_date'   => '2021-01-01 12:00:00',
-				] )->create()->ID;
-				$ticket_1     = $this->create_tc_ticket( $single_event, 1, [
-					'tribe-ticket' => [
-						'mode'     => Global_Stock::OWN_STOCK_MODE,
-						'capacity' => 89,
-					],
-				] );
-				$ticket_2     = $this->create_tc_ticket( $single_event, 1, [
-					'tribe-ticket' => [
-						'mode'     => Global_Stock::OWN_STOCK_MODE,
-						'capacity' => 23,
-					],
-				] );
+				$single_event = tribe_events()->set_args(
+					[
+						'title'      => 'Single Event',
+						'status'     => 'publish',
+						'start_date' => '2021-01-01 10:00:00',
+						'end_date'   => '2021-01-01 12:00:00',
+					]
+				)->create()->ID;
+				$ticket_1     = $this->create_tc_ticket(
+					$single_event,
+					1,
+					[
+						'tribe-ticket' => [
+							'mode'     => Global_Stock::OWN_STOCK_MODE,
+							'capacity' => 89,
+						],
+					]
+				);
+				$ticket_2     = $this->create_tc_ticket(
+					$single_event,
+					1,
+					[
+						'tribe-ticket' => [
+							'mode'     => Global_Stock::OWN_STOCK_MODE,
+							'capacity' => 23,
+						],
+					]
+				);
+				// Sort the tickets "manually".
+				wp_update_post(
+					[
+						'ID'         => $ticket_1,
+						'menu_order' => 1,
+					]
+				);
+				wp_update_post(
+					[
+						'ID'         => $ticket_2,
+						'menu_order' => 0,
+					]
+				);
 
 				$occurrence = Occurrence::where( 'post_id', $single_event )->first();
 
@@ -520,7 +543,7 @@ class MetaboxTest extends WPTestCase {
 				}
 
 				return [ $occurrence->provisional_id, $single_event, $ticket_1, $ticket_2 ];
-			}
+			},
 		];
 	}
 
@@ -556,6 +579,50 @@ class MetaboxTest extends WPTestCase {
 		$panels = $metabox->get_panels( $post_id );
 		$html   = implode( '', $panels );
 		$html   = $this->placehold_post_ids( $html, $post_ids );
+
+		$this->assertMatchesHtmlSnapshot( $html );
+	}
+
+	public function panels_with_no_provider_data_provider(): \Generator {
+		yield 'post' => [
+			static function () {
+				return static::factory()->post->create( [ 'post_type' => 'post' ] );
+			},
+		];
+
+		yield 'event' => [
+			static function () {
+				return tribe_events()->set_args(
+					[
+						'title'      => 'Test Event',
+						'status'     => 'publish',
+						'start_date' => '2022-10-01 10:00:00',
+						'duration'   => 2 * HOUR_IN_SECONDS,
+					]
+				)->create()->ID;
+			},
+		];
+	}
+
+	/**
+	 * @dataProvider panels_with_no_provider_data_provider
+	 */
+	public function test_get_panels_without_providers( Closure $fixture ): void {
+		// Equivalent to deactivating Commerce.
+		add_filter( 'tribe_tickets_get_modules', '__return_empty_array' );
+		// Mock the current date to consolidate the snapshots.
+		$post_id = $fixture();
+		// Simulate a request to get this post.
+		$_GET['post'] = $post_id;
+		// Make sure the Blocks Controller is registered with a ticketable post type.
+		tribe( \TEC\Tickets\Blocks\Controller::class )->do_register();
+		$this->set_fn_return( 'wp_create_nonce', '33333333' );
+
+		$metabox = tribe( Metabox::class );
+		// Rend for a new ticket.
+		$panels = $metabox->get_panels( $post_id );
+		$html   = implode( '', $panels );
+		$html   = $this->placehold_post_ids( $html, [ $post_id ] );
 
 		$this->assertMatchesHtmlSnapshot( $html );
 	}
