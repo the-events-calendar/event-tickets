@@ -197,6 +197,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [TBD] TBD =
 
+* Tweak - Added additional fields to the Event Tickets Site Health section. [ET-2017]
+
+= [TBD] TBD =
+
 * Fix - Fixed updating stock data when Tickets Commerce attendees are moved. [ET-2009]
 * Fix - Fixed showing duplicate order overview data from TribeCommerce when ETP is disabled. [ET-2011]
 * Fix - Stock will be calculated correctly when an order fails and then succeeds while using Tickets Commerce.
