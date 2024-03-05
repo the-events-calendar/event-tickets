@@ -197,6 +197,8 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [TBD] TBD =
 
+* Fix - Front-end tickets block button padding is now consistent on hover and when disabled. [ET-2035]
+* Fix - Allow blank sender name and email to be stored within Tickets Emails settings. [ET-2008]
 * Tweak - Added additional fields to the Event Tickets Site Health section. [ET-2017]
 
 = [TBD] TBD =

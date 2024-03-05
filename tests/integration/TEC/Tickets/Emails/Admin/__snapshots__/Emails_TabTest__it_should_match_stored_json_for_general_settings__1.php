@@ -30,7 +30,8 @@
         "default": "Event Tickets Tests",
         "placeholder": "Event Tickets Tests",
         "validation_callback": "is_string",
-        "validation_type": "textarea"
+        "validation_type": "textarea",
+        "can_be_empty": true
     },
     "tec-tickets-emails-sender-email": {
         "type": "text",
@@ -39,7 +40,8 @@
         "default": "admin@wordpress.test",
         "placeholder": "admin@wordpress.test",
         "validation_callback": "is_string",
-        "validation_type": "email"
+        "validation_type": "email",
+        "can_be_empty": true
     },
     "3": {
         "type": "html",
