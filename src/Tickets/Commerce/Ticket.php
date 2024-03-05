@@ -141,6 +141,42 @@ class Ticket {
 	 * @var \Tribe__Template
 	 */
 	protected $template;
+	
+	/**
+	 * The meta key that holds if the sale price option is enabled or not in the product editor.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $sale_price_checked_key = '_sale_price_checked';
+	
+	/**
+	 * The meta key that holds the ticket sale price.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $sale_price_key = '_sale_price';
+	
+	/**
+	 * The meta key that holds the ticket sale price start date.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $sale_price_start_date_key = '_sale_price_start_date';
+	
+	/**
+	 * The meta key that holds the ticket sale price end date.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $sale_price_end_date_key = '_sale_price_end_date';
 
 	/**
 	 * Gets the template instance used to setup the rendering html.
