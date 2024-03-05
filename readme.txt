@@ -198,6 +198,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [TBD] TBD =
 
 * Fix - Show post excerpt line breaks within ticket emails. [ET-2006]
+* Fix - Allow blank sender name and email to be stored within Tickets Emails settings. [ET-2008]
 
 = [TBD] TBD =
 
