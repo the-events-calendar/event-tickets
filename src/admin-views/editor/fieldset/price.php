@@ -88,41 +88,13 @@ if ( ! empty( $ticket ) ) {
 		 * Allow to add messages under the price field.
 		 *
 		 * @since 4.10.7
+		 * @since TBD Added the $context parameter.
 		 *
 		 * @param int $ticket_id Ticket ID.
 		 * @param int $post_id   Post ID.
+		 * @param array $context Context.
 		 */
-		do_action( 'tribe_tickets_price_input_description', $ticket_id, $post_id );
+		do_action( 'tribe_tickets_price_input_description', $ticket_id, $post_id, $this->get_values() );
 		?>
-
-		<div class="ticket_sale_price_wrapper ticket_form_right">
-			<!--Checkbox to toggle sale price field-->
-			<input
-				type="checkbox"
-				name="ticket_add_sale_price"
-				id="ticket_add_sale_price"
-				<?php checked( $ticket && $ticket->on_sale ); ?>
-			>
-			<label
-				for="ticket_add_sale_price"
-				class="ticket_form_label"
-			>
-				<?php esc_html_e( 'Add Sale Price:', 'event-tickets' ); ?>
-			</label>
-			<div class="ticket_sale_price tribe-dependent"
-				data-depends="#ticket_add_sale_price"
-				data-condition-is-checked
-			>
-				<label for="ticket_sale_price" class="ticket_form_label"><?php esc_html_e( 'Sale Price:', 'event-tickets' ); ?></label>
-				<input
-					type="text"
-					id="ticket_sale_price"
-					name="ticket_sale_price"
-					class="ticket_field"
-					size="7"
-					value="<?php echo esc_attr( $sale_price ); ?>"
-				/>
-			</div>
-		</div>
 	</div>
 </div>
