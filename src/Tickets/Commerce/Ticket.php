@@ -1085,6 +1085,7 @@ class Ticket {
 		update_post_meta( $ticket->ID, static::$sale_price_checked_key, $sale_price_enabled );
 		
 		if ( ! $sale_price_enabled ) {
+			$this->remove_sale_price_data( $ticket );
 			return;
 		}
 		
@@ -1095,4 +1096,24 @@ class Ticket {
 		}
 	}
 	
+	/**
+	 * Remove the sale price data.
+	 *
+	 * @since TBD
+	 *
+	 * @param \Tribe__Tickets__Ticket_Object $ticket The ticket post object.
+	 *
+	 * @return void
+	 */
+	public function remove_sale_price_data( \Tribe__Tickets__Ticket_Object $ticket ): void {
+		$keys = [
+			static::$sale_price_key,
+			static::$sale_price_start_date_key,
+			static::$sale_price_end_date_key,
+		];
+		
+		foreach ( $keys as $key ) {
+			delete_post_meta( $ticket->ID, $key );
+		}
+	}
 }
