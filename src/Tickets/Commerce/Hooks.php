@@ -88,6 +88,8 @@ class Hooks extends Service_Provider {
 		add_action( 'tribe_template_before_include:tickets/v2/commerce/checkout', [ $this, 'include_assets_checkout_shortcode' ] );
 
 		add_action( 'tribe_tickets_ticket_moved', [ $this, 'handle_moved_ticket_updates' ], 10, 6 );
+		
+		add_action( 'tribe_tickets_price_input_description', [ $this, 'render_sale_price_fields' ], 10, 3 );
 	}
 
 	/**
@@ -750,5 +752,20 @@ class Hooks extends Service_Provider {
 	 */
 	public function handle_moved_ticket_updates( $attendee_id, $src_ticket_type_id, $tgt_ticket_type_id, $src_event_id, $tgt_event_id, $instigator_id ) {
 		$this->container->make( Ticket::class )->handle_moved_ticket_updates( $attendee_id, $src_ticket_type_id, $tgt_ticket_type_id, $src_event_id, $tgt_event_id, $instigator_id );
+	}
+	
+	/**
+	 * Renders the sale price fields.
+	 *
+	 * @since TBD
+	 *
+	 * @param int   $ticket_id The ticket ID.
+	 * @param int   $post_id   The post ID.
+	 * @param array $context   The context.
+	 *
+	 * @return void
+	 */
+	public function render_sale_price_fields( $ticket_id, $post_id, $context ): void {
+		$this->container->make( Editor\Metabox::class )->render_sale_price_fields( $ticket_id, $post_id, $context );
 	}
 }

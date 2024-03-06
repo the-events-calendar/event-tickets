@@ -4,6 +4,7 @@ namespace TEC\Tickets\Commerce\Editor;
 
 use TEC\Tickets\Commerce\Module;
 use Tribe__Tickets__Main as Tickets_Plugin;
+use TEC\Tickets\Commerce\Ticket;
 
 
 /**
@@ -152,5 +153,31 @@ class Metabox {
 		if ( file_exists( $file ) ) {
 			include $file;
 		}
+	}
+	
+	/**
+	 * Renders the sale price fields for TicketsCommerce.
+	 *
+	 * @since TBD
+	 *
+	 * @param int                 $ticket_id The ticket ID.
+	 * @param int                 $post_id The post ID.
+	 * @param array<string,mixed> $context The context array.
+	 */
+	public function render_sale_price_fields( $ticket_id, $post_id, $context ): void {
+		$provider = $context['provider'] ?? false;
+		
+		if ( ! $provider || Module::class !== $provider->class_name ) {
+			return;
+		}
+		
+		$args = [
+			'post_id'          => $post_id,
+			'ticket'           => $context['ticket'] ?? null,
+			'sale_checkbox_on' => get_post_meta( $ticket_id, Ticket::$sale_price_checked_key, true ),
+			'sale_price'       => '11.00',
+		];
+		
+		tribe( 'tickets.admin.views' )->template( 'commerce/metabox/sale-price', $args );
 	}
 }
