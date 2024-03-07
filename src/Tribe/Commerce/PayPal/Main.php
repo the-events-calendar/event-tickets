@@ -200,6 +200,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		if ( ! $this->is_active() ) {
 			unset( parent::$active_modules['Tribe__Tickets__Commerce__PayPal__Main'] );
+			return;
 		}
 
 		/** @var Tribe__Tickets__Commerce__PayPal__Tickets_View tickets_view */

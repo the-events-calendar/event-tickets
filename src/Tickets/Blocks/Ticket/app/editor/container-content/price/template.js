@@ -15,7 +15,7 @@ import uniqid from 'uniqid';
 /**
  * Internal dependencies
  */
-import { PREFIX, SUFFIX } from '@moderntribe/tickets/data/blocks/ticket/constants';
+import { PREFIX, SUFFIX, TICKET_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
 import { LabeledItem } from '@moderntribe/common/elements';
 import './style.pcss';
 
@@ -71,7 +71,12 @@ class Price extends PureComponent {
 					className="tribe-editor__ticket__price-label"
 					forId={ this.id }
 					isLabel={ true }
-					label={ __( 'Ticket price', 'event-tickets' ) }
+					// eslint-disable-next-line no-undef
+					label={sprintf(
+						/* Translators: %s - the singular label for a ticket. */
+						__('%s price', 'event-tickets'),
+						TICKET_LABELS.ticket.singular
+					)}
 				/>
 
 				<NumericFormat

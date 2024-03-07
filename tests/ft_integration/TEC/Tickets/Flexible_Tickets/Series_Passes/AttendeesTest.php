@@ -22,6 +22,7 @@ use Tribe__Tickets__Metabox as Metabox;
 use WP_Post;
 use WP_REST_Request;
 use WP_REST_Server;
+use Tribe__Tickets__Admin__Move_Tickets as Move_Attendees; // Legacy names ...
 
 class AttendeesTest extends Controller_Test_Case {
 	use Series_Pass_Factory;
@@ -113,8 +114,6 @@ class AttendeesTest extends Controller_Test_Case {
 		$_GET['event_id'] = $series;
 		$attendee_table = new Tribe__Tickets__Attendees_Table();
 		$this->assertArrayNotHasKey( 'check_in', $attendee_table->get_table_columns() );
-
-		// @todo test for single and recurring events, real and provisional IDs
 	}
 
 	/**
@@ -2327,5 +2326,724 @@ class AttendeesTest extends Controller_Test_Case {
 			'check_in',
 			'uncheck_in'
 		], array_keys( $attendee_table->get_bulk_actions() ) );
+	}
+
+	/**
+	 * It should correctly check-in of running events in diff. timezones by readl post ID
+	 *
+	 * @test
+	 */
+	public function should_correctly_check_in_of_running_events_in_diff_timezones_by_real_post_id(): void {
+		// Set the site timezone to America/Sao_Paulo
+		update_option( 'timezone_string', 'America/Sao_Paulo' );
+		// Become administrator.
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		// Create a Series.
+		$series_id = static::factory()->post->create(
+			[
+				'post_type' => Series_Post_Type::POSTTYPE,
+			]
+		);
+		// Create one Series Pass Attendee.
+		$series_pass_id = $this->create_tc_series_pass( $series_id )->ID;
+		$this->create_order( [ $series_pass_id => 1 ] );
+		$series_pass_attendee = tribe_attendees()->where( 'event', $series_id )->first_id();
+		// Create a Single Event part of the Series that started one hour ago and will end in one hour.
+		$event_1 = tribe_events()->set_args(
+			[
+				'title'      => 'Series Single Event',
+				'status'     => 'publish',
+				'start_date' => '-1 hour',
+				'end_date'   => '+1 hour',
+				'series'     => $series_id,
+			]
+		)->create()->ID;
+		// Create a Single Event part of the Series that starts in 1 hour.
+		$event_2 = tribe_events()->set_args(
+			[
+				'title'      => 'Series Single Event',
+				'status'     => 'publish',
+				'start_date' => '+1 hour',
+				'end_date'   => '+3 hours',
+				'series'     => $series_id,
+			]
+		)->create()->ID;
+		$commerce = Module::get_instance();
+
+		$controller = $this->make_controller();
+		$controller->register();
+
+		$this->assertTrue( $commerce->checkin( $series_pass_attendee, true, $event_1 ) );
+		$this->assertTrue( $commerce->checkin( $series_pass_attendee, true, $event_2 ) );
+	}
+
+	/**
+	 * It should correctly check-in of running events in diff. timezones by provisional ID
+	 *
+	 * @test
+	 */
+	public function should_correctly_check_in_of_running_events_in_diff_timezones_by_provisional_id(): void {
+		// Set the site timezone to America/Sao_Paulo
+		update_option( 'timezone_string', 'America/Sao_Paulo' );
+		// Become administrator.
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		// Create a Series.
+		$series_id = static::factory()->post->create(
+			[
+				'post_type' => Series_Post_Type::POSTTYPE,
+			]
+		);
+		// Create one Series Pass Attendee.
+		$series_pass_id = $this->create_tc_series_pass( $series_id )->ID;
+		$this->create_order( [ $series_pass_id => 1 ] );
+		$series_pass_attendee = tribe_attendees()->where( 'event', $series_id )->first_id();
+		// Create a Single Event part of the Series that started one hour ago and will end in one hour.
+		$event_1 = tribe_events()->set_args(
+			[
+				'title'      => 'Series Single Event',
+				'status'     => 'publish',
+				'start_date' => '-1 hour',
+				'end_date'   => '+1 hour',
+				'series'     => $series_id,
+			]
+		)->create()->ID;
+		// Create a Single Event part of the Series that starts in 1 hour.
+		$event_2 = tribe_events()->set_args(
+			[
+				'title'      => 'Series Single Event',
+				'status'     => 'publish',
+				'start_date' => '+1 hour',
+				'end_date'   => '+3 hours',
+				'series'     => $series_id,
+			]
+		)->create()->ID;
+		$commerce = Module::get_instance();
+
+		$controller = $this->make_controller();
+		$controller->register();
+
+		$this->assertTrue( $commerce->checkin( $series_pass_attendee, true, Occurrence::find($event_1,'post_id')->provisional_id ) );
+		$this->assertTrue( $commerce->checkin( $series_pass_attendee, true, Occurrence::find($event_2,'post_id')->provisional_id ) );
+	}
+
+	/**
+	 * It should move only Series Pass Attendee when moving series pass Attendee
+	 *
+	 * The UI will not allow users to move the Series Pass Attendee, not a clone, directly.
+	 * But the programmatic API should allow and support it.
+	 *
+	 * @test
+	 */
+	public function should_move_only_series_pass_attendee_when_moving_series_pass_attendee(): void {
+		// Become administrator.
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		// Create a Series.
+		$series_id = static::factory()->post->create(
+			[
+				'post_type' => Series_Post_Type::POSTTYPE,
+			]
+		);
+		// Create one Series Pass Attendee.
+		$series_pass_id = $this->create_tc_series_pass( $series_id )->ID;
+		$this->create_order( [ $series_pass_id => 1 ] );
+		$series_pass_attendee = tribe_attendees()->where( 'event', $series_id )->first_id();
+		$commerce = Module::get_instance();
+		// Create a Single Event part of the Series that started one hour ago and will end in one hour.
+		$event_1 = tribe_events()->set_args(
+			[
+				'title'      => 'Series Single Event',
+				'status'     => 'publish',
+				'start_date' => '-1 hour',
+				'end_date'   => '+1 hour',
+				'series'     => $series_id,
+			]
+		)->create()->ID;
+		// Create a Single Event part of the Series that starts in 1 hour.
+		$event_2 = tribe_events()->set_args(
+			[
+				'title'      => 'Series Single Event',
+				'status'     => 'publish',
+				'start_date' => '+1 hour',
+				'end_date'   => '+3 hours',
+				'series'     => $series_id,
+			]
+		)->create()->ID;
+		// Subscribe to the Attendee clone action to capture the cloned Attendee ID.
+		$clone_id = null;
+		add_action(
+			'tec_tickets_flexible_tickets_series_pass_attendee_cloned',
+			static function ( $cloned_attendee_id ) use ( &$clone_id ) {
+				$clone_id = $cloned_attendee_id;
+			}
+		);
+
+		$controller = $this->make_controller();
+		$controller->register();
+
+		// Check-in the Series Pass Attendee into the Event, thus cloning it to the Event 1.
+		$this->assertTrue($commerce->checkin($series_pass_attendee,false, $event_1));
+		$this->assertNotNull($clone_id);
+		$this->assertNotEquals($series_pass_attendee, $clone_id);
+		$event_1_clone_attendee = $clone_id;
+
+		// Check-in the Series Pass Attendee into the Event, thus cloning it to the Event 2.
+		$this->assertTrue($commerce->checkin($series_pass_attendee,false, $event_2));
+		$this->assertNotNull($clone_id);
+		$this->assertNotEquals($series_pass_attendee, $clone_id);
+		$event_2_clone_attendee = $clone_id;
+
+		// Create an Event that is not part of the Series with its own Single Ticket.
+		$single_event = tribe_events()->set_args(
+			[
+				'title'      => 'Single Event',
+				'status'     => 'publish',
+				'start_date' => '+1 hour',
+				'end_date'   => '+3 hours'
+			]
+		)->create()->ID;
+		$single_ticket = $this->create_tc_ticket($single_event,1);
+
+		// Sanity check.
+		$this->assertEquals( [ $series_pass_attendee ], tribe_attendees()->where( 'event', $series_id )->get_ids() );
+		$this->assertEquals( [ $event_1_clone_attendee ], tribe_attendees()->where( 'event', $event_1 )->get_ids() );
+		$this->assertEquals( [ $event_2_clone_attendee ], tribe_attendees()->where( 'event', $event_2 )->get_ids() );
+		$this->assertEquals( [], tribe_attendees()->where( 'event', $single_event )->get_ids() );
+
+		// Move the Series Pass Attendee to the Single Event.
+		$mover = tribe( Move_Attendees::class );
+		$moved = $mover->move_tickets( [ $series_pass_attendee ], $single_ticket, $series_id, $single_event );
+
+		$this->assertEquals( 1, $moved );
+		$this->assertEquals( [], tribe_attendees()->where( 'event', $series_id )->get_ids(),
+			'The Series Pass Attendee should have been removed from the Series.'
+		);
+		$this->assertEquals( [], tribe_attendees()->where( 'event', $event_1 )->get_ids(),
+			'The cloned Attendee should have been removed from the Event 1.'
+		);
+		$this->assertEquals( [], tribe_attendees()->where( 'event', $event_2 )->get_ids(),
+			'The cloned Attendee should have been removed from the Event 2.'
+		);
+		$this->assertEquals('publish', get_post_status($series_pass_attendee),
+			'The status of the Series Pass Attendee should not have been changed.'
+		);
+		$this->assertNull( get_post( $event_1_clone_attendee ),
+			'The cloned Attendee for Event 1 should have been deleted.'
+		);
+		$this->assertNull( get_post( $event_2_clone_attendee ),
+			'The cloned Attendee for Event 2 should have been deleted.'
+		);
+		$this->assertEquals( [ $series_pass_attendee ], tribe_attendees()->where( 'event', $single_event )->get_ids(),
+			'Only the Series Pass Attendee should have been moved to the Single Event.'
+		);
+	}
+
+	/**
+	 * It should move only Series Pass Attendee when moving cloned Attendee
+	 *
+	 * This handles the request coming from the Attendees list screen of the Event to move the
+	 * cloned Attendee to another Ticket on another post.
+	 *
+	 * @test
+	 */
+	public function should_move_only_series_pass_attendee_when_moving_cloned_attendee(): void {
+		// Become administrator.
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		// Create a Series.
+		$series_id = static::factory()->post->create(
+			[
+				'post_type' => Series_Post_Type::POSTTYPE,
+			]
+		);
+		// Create one Series Pass Attendee.
+		$series_pass_id = $this->create_tc_series_pass( $series_id )->ID;
+		$this->create_order( [ $series_pass_id => 1 ] );
+		$series_pass_attendee = tribe_attendees()->where( 'event', $series_id )->first_id();
+		$commerce = Module::get_instance();
+		// Create a Single Event part of the Series that started one hour ago and will end in one hour.
+		$event_1 = tribe_events()->set_args(
+			[
+				'title'      => 'Series Single Event',
+				'status'     => 'publish',
+				'start_date' => '-1 hour',
+				'end_date'   => '+1 hour',
+				'series'     => $series_id,
+			]
+		)->create()->ID;
+		// Create a Single Event part of the Series that starts in 1 hour.
+		$event_2 = tribe_events()->set_args(
+			[
+				'title'      => 'Series Single Event',
+				'status'     => 'publish',
+				'start_date' => '+1 hour',
+				'end_date'   => '+3 hours',
+				'series'     => $series_id,
+			]
+		)->create()->ID;
+		// Subscribe to the Attendee clone action to capture the cloned Attendee ID.
+		$clone_id = null;
+		add_action(
+			'tec_tickets_flexible_tickets_series_pass_attendee_cloned',
+			static function ( $cloned_attendee_id ) use ( &$clone_id ) {
+				$clone_id = $cloned_attendee_id;
+			}
+		);
+
+		$controller = $this->make_controller();
+		$controller->register();
+
+		// Check-in the Series Pass Attendee into the Event, thus cloning it to the Event 1.
+		$this->assertTrue($commerce->checkin($series_pass_attendee,false, $event_1));
+		$this->assertNotNull($clone_id);
+		$this->assertNotEquals($series_pass_attendee, $clone_id);
+		$event_1_clone_attendee = $clone_id;
+
+		// Check-in the Series Pass Attendee into the Event, thus cloning it to the Event 2.
+		$this->assertTrue($commerce->checkin($series_pass_attendee,false, $event_2));
+		$this->assertNotNull($clone_id);
+		$this->assertNotEquals($series_pass_attendee, $clone_id);
+		$event_2_clone_attendee = $clone_id;
+
+		// Create an Event that is not part of the Series with its own Single Ticket.
+		$single_event = tribe_events()->set_args(
+			[
+				'title'      => 'Single Event',
+				'status'     => 'publish',
+				'start_date' => '+1 hour',
+				'end_date'   => '+3 hours'
+			]
+		)->create()->ID;
+		$single_ticket = $this->create_tc_ticket($single_event,1);
+
+		// Sanity check.
+		$this->assertEquals( [ $series_pass_attendee ], tribe_attendees()->where( 'event', $series_id )->get_ids() );
+		$this->assertEquals( [ $event_1_clone_attendee ], tribe_attendees()->where( 'event', $event_1 )->get_ids() );
+		$this->assertEquals( [ $event_2_clone_attendee ], tribe_attendees()->where( 'event', $event_2 )->get_ids() );
+		$this->assertEquals( [], tribe_attendees()->where( 'event', $single_event )->get_ids() );
+
+		// Move Event 2 cloned Attendee to the Single Event.
+		// This simulates the user request coming from Event 2 Attendees list screen.
+		$mover = tribe( Move_Attendees::class );
+		$moved = $mover->move_tickets( [ $event_2_clone_attendee ], $single_ticket, $event_2, $single_event );
+
+		$this->assertEquals( 1, $moved );
+		$this->assertEquals( [], tribe_attendees()->where( 'event', $series_id )->get_ids(),
+			'The Series Pass Attendee should have been removed from the Series.'
+		);
+		$this->assertEquals( [], tribe_attendees()->where( 'event', $event_1 )->get_ids(),
+			'The cloned Attendee should have been removed from the Event 1.'
+		);
+		$this->assertEquals( [], tribe_attendees()->where( 'event', $event_2 )->get_ids(),
+			'The cloned Attendee should have been removed from the Event 2.'
+		);
+		$this->assertEquals('publish', get_post_status($series_pass_attendee),
+			'The status of the Series Pass Attendee should not have been changed.'
+		);
+		$this->assertNull( get_post( $event_1_clone_attendee ),
+			'The cloned Attendee for Event 1 should have been deleted.'
+		);
+		$this->assertNull( get_post( $event_2_clone_attendee ),
+			'The cloned Attendee for Event 2 should have been deleted.'
+		);
+		$this->assertEquals( [ $series_pass_attendee ], tribe_attendees()->where( 'event', $single_event )->get_ids(),
+			'Only the Series Pass Attendee should have been moved to the Single Event.'
+		);
+	}
+
+	/**
+	 * It should handle uncheckin of Series Pass Attendee correctly from single Event part of Series
+	 *
+	 * @test
+	 */
+	public function should_handle_uncheckin_of_series_pass_attendee_correctly_from_single_event_part_of_series(): void {
+		// Become administrator.
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		// Create a Series.
+		$series_id = static::factory()->post->create(
+			[
+				'post_type' => Series_Post_Type::POSTTYPE,
+			]
+		);
+		// Create one Series Pass Attendee.
+		$series_pass_id = $this->create_tc_series_pass( $series_id )->ID;
+		$this->create_order( [ $series_pass_id => 1 ] );
+		$series_pass_attendee = tribe_attendees()->where( 'event', $series_id )->first_id();
+		$commerce = Module::get_instance();
+		// Create a Single Event part of the Series that started one hour ago and will end in one hour.
+		$event_1 = tribe_events()->set_args(
+			[
+				'title'      => 'Series Single Event',
+				'status'     => 'publish',
+				'start_date' => '-1 hour',
+				'end_date'   => '+1 hour',
+				'series'     => $series_id,
+			]
+		)->create()->ID;
+		$event_1_provisional_id = Occurrence::find( $event_1, 'post_id' )->provisional_id;
+		// Create a Single Event part of the Series that starts in 1 hour.
+		$event_2 = tribe_events()->set_args(
+			[
+				'title'      => 'Series Single Event',
+				'status'     => 'publish',
+				'start_date' => '+1 hour',
+				'end_date'   => '+3 hours',
+				'series'     => $series_id,
+			]
+		)->create()->ID;
+		$event_2_provisional_id = Occurrence::find( $event_2, 'post_id' )->provisional_id;
+		// Create a Recurring Event part of the Series.
+		$event_3 = tribe_events()->set_args(
+			[
+				'title'      => 'Series Single Event',
+				'status'     => 'publish',
+				'start_date' => '+1 hour',
+				'end_date'   => '+3 hours',
+				'recurrence' => 'RRULE:FREQ=DAILY;COUNT=3',
+				'series'     => $series_id,
+			]
+		)->create()->ID;
+		$event_3_occurrences = Occurrence::where( 'post_id', '=', $event_3 )->get();
+		// Subscribe to the Attendee clone action to capture the cloned Attendees IDs.
+		$clone_ids = null;
+		add_action(
+			'tec_tickets_flexible_tickets_series_pass_attendee_cloned',
+			static function ( $cloned_attendee_id ) use ( &$clone_ids ) {
+				$clone_ids[]= $cloned_attendee_id;
+			}
+		);
+		// Check-in the Series Pass Attendee. This is not possible using the UI, but could be done in the first release.
+		$this->assertTrue( $commerce->checkin( $series_pass_attendee, false, $series_id ) );
+		$this->assertEquals( 1, get_post_meta( $series_pass_attendee, $commerce->checkin_key, true ),
+			'The Series Pass Attendee should be checked in.'
+		);
+
+		$controller = $this->make_controller();
+		$controller->register();
+
+		// Sanity check.
+		$this->assertEquals(
+			[ $series_pass_attendee ],
+			tribe_attendees()->where( 'event', $series_id )->where( 'checkedin', true )->get_ids()
+		);
+		$this->assertEquals(
+			[ $series_pass_attendee ],
+			tribe_attendees()->where( 'event', $event_1 )->where( 'checkedin', true )->get_ids()
+		);
+		$this->assertEquals(
+			[ $series_pass_attendee ],
+			tribe_attendees()->where( 'event', $event_1_provisional_id )->where( 'checkedin', true )->get_ids()
+		);
+		$this->assertEquals(
+			[ $series_pass_attendee ],
+			tribe_attendees()->where( 'event', $event_2 )->where( 'checkedin', true )->get_ids()
+		);
+		$this->assertEquals(
+			[ $series_pass_attendee ],
+			tribe_attendees()->where( 'event', $event_2_provisional_id )->where( 'checkedin', true )->get_ids()
+		);
+		$this->assertEquals(
+			[ $series_pass_attendee ],
+			tribe_attendees()->where( 'event', $event_3 )->where( 'checkedin', true )->get_ids()
+		);
+		foreach ( $event_3_occurrences as $occurrence ) {
+			$this->assertEquals(
+				[ $series_pass_attendee ],
+				tribe_attendees()->where( 'event', $occurrence->provisional_id )->where( 'checkedin', true )->get_ids()
+			);
+		}
+
+		// Uncheck-in the Series Pass Attendee directly from the context of Event 2. Set the context ID.
+		// This simulates what the AJAX or the QR code scan from teh ET+ app would do.
+		$_GET['event_ID'] = $event_2;
+		$this->assertTrue( $commerce->uncheckin( $series_pass_attendee ) );
+
+		$this->assertEquals( [ $series_pass_attendee ], tribe_attendees()->where( 'event', $series_id )->get_ids(),
+			'The Series Pass Attendee should not have moved.'
+		);
+		$this->assertEquals( 1, get_post_meta( $series_pass_attendee, $commerce->checkin_key, true ),
+			'The Series Pass Attendee should not have been un-checked in.'
+		);
+		$this->assertCount( 5, $clone_ids,
+			'Five cloned Attendees should have been created: 2 for the Single Events, 3 for the Recurring Event Occurrences.'
+		);
+		$event_1_clone_attendee = tribe_attendees()->where( 'event', $event_1 )->first_id();
+		$this->assertContains( $event_1_clone_attendee, $clone_ids,
+			'One of the cloned Attendees should be related to the Event 1.'
+		);
+		$this->assertEquals( 1, get_post_meta( $event_1_clone_attendee, $commerce->checkin_key, true ),
+			'The cloned Attendee for Event 1 should still be checked in.'
+		);
+		$event_2_clone_attendee = tribe_attendees()->where( 'event', $event_2 )->first_id();
+		$this->assertContains( $event_2_clone_attendee, $clone_ids,
+			'One of the cloned Attendees should be related to the Event 2.'
+		);
+		$this->assertEmpty( get_post_meta( $event_2_clone_attendee, $commerce->checkin_key, true ),
+			'The cloned Attendee for Event 2 should be no more checked-in.'
+		);
+		$this->assertEquals(
+			[ $series_pass_attendee ],
+			tribe_attendees()->where( 'event', $event_3 )->where( 'checkedin', true )->get_ids(),
+			'The only Attendee related to the Recurring Event real post ID should be the Series Pass Attendee.'
+		);
+		foreach ( $event_3_occurrences as $k => $occurrence ) {
+			$occurrence_clone_attendee_id = tribe_attendees()->where( 'event', $occurrence->provisional_id )->first_id();
+			$this->assertContains( $occurrence_clone_attendee_id, $clone_ids,
+				"One of the cloned Attendees should be related to the {$k} Recurring Event Occurrence."
+			);
+			$this->assertEquals( 1, get_post_meta( $occurrence_clone_attendee_id, $commerce->checkin_key, true ),
+				"{$k} Recurring Event Occurrence cloned Attendee should still be checked in."
+			);
+		}
+	}
+
+	/**
+	 * It should handle uncheckin of Series Pass Attendee correctly from Recurring Event Occurrence part of Series
+	 *
+	 * @test
+	 */
+	public function should_handle_uncheckin_of_series_pass_attendee_correctly_from_recurring_event_occurrence_part_of_series(): void {
+		// Become administrator.
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		// Create a Series.
+		$series_id = static::factory()->post->create(
+			[
+				'post_type' => Series_Post_Type::POSTTYPE,
+			]
+		);
+		// Create one Series Pass Attendee.
+		$series_pass_id = $this->create_tc_series_pass( $series_id )->ID;
+		$this->create_order( [ $series_pass_id => 1 ] );
+		$series_pass_attendee = tribe_attendees()->where( 'event', $series_id )->first_id();
+		$commerce = Module::get_instance();
+		// Create a Single Event part of the Series that started one hour ago and will end in one hour.
+		$event_1 = tribe_events()->set_args(
+			[
+				'title'      => 'Series Single Event',
+				'status'     => 'publish',
+				'start_date' => '-1 hour',
+				'end_date'   => '+1 hour',
+				'series'     => $series_id,
+			]
+		)->create()->ID;
+		$event_1_provisional_id = Occurrence::find( $event_1, 'post_id' )->provisional_id;
+		// Create a Single Event part of the Series that starts in 1 hour.
+		$event_2 = tribe_events()->set_args(
+			[
+				'title'      => 'Series Single Event',
+				'status'     => 'publish',
+				'start_date' => '+1 hour',
+				'end_date'   => '+3 hours',
+				'series'     => $series_id,
+			]
+		)->create()->ID;
+		$event_2_provisional_id = Occurrence::find( $event_2, 'post_id' )->provisional_id;
+		// Create a Recurring Event part of the Series.
+		$event_3 = tribe_events()->set_args(
+			[
+				'title'      => 'Series Single Event',
+				'status'     => 'publish',
+				'start_date' => '+1 hour',
+				'end_date'   => '+3 hours',
+				'recurrence' => 'RRULE:FREQ=DAILY;COUNT=3',
+				'series'     => $series_id,
+			]
+		)->create()->ID;
+		$event_3_occurrences = Occurrence::where( 'post_id', '=', $event_3 )->get();
+		// Subscribe to the Attendee clone action to capture the cloned Attendees IDs.
+		$clone_ids = null;
+		add_action(
+			'tec_tickets_flexible_tickets_series_pass_attendee_cloned',
+			static function ( $cloned_attendee_id ) use ( &$clone_ids ) {
+				$clone_ids[]= $cloned_attendee_id;
+			}
+		);
+		// Check-in the Series Pass Attendee. This is not possible using the UI, but could be done in the first release.
+		$this->assertTrue( $commerce->checkin( $series_pass_attendee, false, $series_id ) );
+		$this->assertEquals( 1, get_post_meta( $series_pass_attendee, $commerce->checkin_key, true ),
+			'The Series Pass Attendee should be checked in.'
+		);
+
+		$controller = $this->make_controller();
+		$controller->register();
+
+		// Sanity check.
+		$this->assertEquals(
+			[ $series_pass_attendee ],
+			tribe_attendees()->where( 'event', $series_id )->where( 'checkedin', true )->get_ids()
+		);
+		$this->assertEquals(
+			[ $series_pass_attendee ],
+			tribe_attendees()->where( 'event', $event_1 )->where( 'checkedin', true )->get_ids()
+		);
+		$this->assertEquals(
+			[ $series_pass_attendee ],
+			tribe_attendees()->where( 'event', $event_1_provisional_id )->where( 'checkedin', true )->get_ids()
+		);
+		$this->assertEquals(
+			[ $series_pass_attendee ],
+			tribe_attendees()->where( 'event', $event_2 )->where( 'checkedin', true )->get_ids()
+		);
+		$this->assertEquals(
+			[ $series_pass_attendee ],
+			tribe_attendees()->where( 'event', $event_2_provisional_id )->where( 'checkedin', true )->get_ids()
+		);
+		$this->assertEquals(
+			[ $series_pass_attendee ],
+			tribe_attendees()->where( 'event', $event_3 )->where( 'checkedin', true )->get_ids()
+		);
+		foreach ( $event_3_occurrences as $occurrence ) {
+			$this->assertEquals(
+				[ $series_pass_attendee ],
+				tribe_attendees()->where( 'event', $occurrence->provisional_id )->where( 'checkedin', true )->get_ids()
+			);
+		}
+
+		// Uncheck-in the Series Pass Attendee directly from the context of the Recurring Event 2nd Occurrence.
+		// This simulates what the AJAX or the QR code scan from teh ET+ app would do.
+		$_GET['event_ID'] = $event_3_occurrences[1]->provisional_id;
+		$this->assertTrue( $commerce->uncheckin( $series_pass_attendee ) );
+
+		$this->assertEquals( [ $series_pass_attendee ], tribe_attendees()->where( 'event', $series_id )->get_ids(),
+			'The Series Pass Attendee should not have moved.'
+		);
+		$this->assertEquals( 1, get_post_meta( $series_pass_attendee, $commerce->checkin_key, true ),
+			'The Series Pass Attendee should not have been un-checked in.'
+		);
+		$this->assertCount( 5, $clone_ids,
+			'Five cloned Attendees should have been created: 2 for the Single Events, 3 for the Recurring Event Occurrences.'
+		);
+		$event_1_clone_attendee = tribe_attendees()->where( 'event', $event_1 )->first_id();
+		$this->assertContains( $event_1_clone_attendee, $clone_ids,
+			'One of the cloned Attendees should be related to the Event 1.'
+		);
+		$this->assertEquals( 1, get_post_meta( $event_1_clone_attendee, $commerce->checkin_key, true ),
+			'The cloned Attendee for Event 1 should still be checked in.'
+		);
+		$event_2_clone_attendee = tribe_attendees()->where( 'event', $event_2 )->first_id();
+		$this->assertContains( $event_2_clone_attendee, $clone_ids,
+			'One of the cloned Attendees should be related to the Event 2.'
+		);
+		$this->assertEquals(1, get_post_meta( $event_2_clone_attendee, $commerce->checkin_key, true ),
+			'The cloned Attendee for Event 2 should still be checked in.'
+		);
+		$this->assertEquals(
+			[ $series_pass_attendee ],
+			tribe_attendees()->where( 'event', $event_3 )->where( 'checkedin', true )->get_ids(),
+			'The only Attendee related to the Recurring Event real post ID should be the Series Pass Attendee.'
+		);
+		$occurrence_1_clone_id = tribe_attendees()->where( 'event', $event_3_occurrences[0]->provisional_id )->first_id();
+		$this->assertContains( $occurrence_1_clone_id, $clone_ids,
+			'One of the cloned Attendees should be related to Recurring Event first Occurrence.'
+		);
+		$this->assertEquals(1, get_post_meta( $occurrence_1_clone_id, $commerce->checkin_key, true ),
+			'The cloned Attendee for the Recurring Event first Occurrence should still be checked in.'
+		);
+		$occurrence_2_clone_id = tribe_attendees()->where( 'event', $event_3_occurrences[1]->provisional_id )->first_id();
+		$this->assertContains( $occurrence_2_clone_id, $clone_ids,
+			'One of the cloned Attendees should be related to Recurring Event second Occurrence.'
+		);
+		$this->assertEmpty(get_post_meta( $occurrence_2_clone_id, $commerce->checkin_key, true ),
+			'The cloned Attendee for the Recurring Event second Occurrence should be no more checked-in.'
+		);
+		$occurrence_3_clone_id = tribe_attendees()->where( 'event', $event_3_occurrences[2]->provisional_id )->first_id();
+		$this->assertContains( $occurrence_3_clone_id, $clone_ids,
+			'One of the cloned Attendees should be related to Recurring Event third Occurrence.'
+		);
+		$this->assertEquals(1, get_post_meta( $occurrence_3_clone_id, $commerce->checkin_key, true ),
+			'The cloned Attendee for the Recurring Event third Occurrence should still be checked in.'
+		);
+	}
+
+	/**
+	 * It should not allow cloned attendee for only candidate Event to check-in more than once
+	 *
+	 * @test
+	 */
+	public function should_not_allow_cloned_attendee_for_only_candidate_event_to_check_in_more_than_once(): void {
+		// Become administrator.
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		// Create a Series.
+		$series_id = static::factory()->post->create(
+			[
+				'post_type' => Series_Post_Type::POSTTYPE,
+			]
+		);
+		// Create one Series Pass Attendee.
+		$series_pass_id = $this->create_tc_series_pass( $series_id )->ID;
+		$this->create_order( [ $series_pass_id => 1 ] );
+		$series_pass_attendee = tribe_attendees()->where( 'event', $series_id )->first_id();
+		// Create a Single Event part of the Series that started one hour ago and will end in one hour.
+		$event_id = tribe_events()->set_args(
+			[
+				'title'      => 'Series Single Event',
+				'status'     => 'publish',
+				'start_date' => '-1 hour',
+				'end_date'   => '+1 hour',
+				'series'     => $series_id,
+			]
+		)->create()->ID;
+		// Subscribe to the Attendee clone action to capture the cloned Attendees IDs.
+		$clone_id = null;
+		add_action(
+			'tec_tickets_flexible_tickets_series_pass_attendee_cloned',
+			static function ( $cloned_attendee_id ) use ( &$clone_id ) {
+				$clone_id = $cloned_attendee_id;
+			}
+		);
+		$commerce = Module::get_instance();
+		$api_key = 'secrett-api-key';
+		tribe_update_option( 'tickets-plus-qr-options-api-key', $api_key );
+
+		$controller = $this->make_controller();
+		$controller->register();
+
+		// Become an app user trying to scan Attendees in.
+		wp_set_current_user( 0 );
+
+		// Check-in the Series Pass Attendee a first time: the Attendee will be cloned to the Event.
+		$request = new WP_REST_Request( 'GET', '/tribe/tickets/v1/qr' );
+		$request->set_param( 'api_key', $api_key );
+		$request->set_param( 'ticket_id', (string) $series_pass_attendee );
+		$request->set_param( 'security_code', get_post_meta( $series_pass_attendee, $commerce->security_code, true ) );
+		$request->set_param( 'event_id', $event_id );
+
+		$response = rest_get_server()->dispatch( $request );
+
+		$this->assertEquals( 201, $response->get_status() );
+		$this->assertNotNull(
+			$clone_id,
+			'The cloned Attendee ID should have been captured.'
+		);
+		$this->assertNotSame(
+			$clone_id,
+			$series_pass_attendee,
+			'The cloned Attendee should not be the same as the Series Pass Attendee.'
+		);
+		$this->assertEquals(
+			1,
+			get_post_meta( $clone_id, '_tribe_qr_status', true ),
+			'The cloned Attendee should have been checked in with QR code.'
+		);
+
+		// Attempt another check-in using the Series Pass Attendee: it should fail.
+		$request = new WP_REST_Request( 'GET', '/tribe/tickets/v1/qr' );
+		$request->set_param( 'api_key', $api_key );
+		$request->set_param( 'ticket_id', (string) $series_pass_attendee );
+		$request->set_param( 'security_code', get_post_meta( $series_pass_attendee, $commerce->security_code, true ) );
+		$request->set_param( 'event_id', $event_id );
+
+		$response = rest_get_server()->dispatch( $request );
+
+		$this->assertEquals( 403, $response->get_status() );
+
+		// Attempt another check-in using the Cloned Attendee: it should fail.
+		$request = new WP_REST_Request( 'GET', '/tribe/tickets/v1/qr' );
+		$request->set_param( 'api_key', $api_key );
+		$request->set_param( 'ticket_id', (string) $clone_id );
+		$request->set_param( 'security_code', get_post_meta( $clone_id, $commerce->security_code, true ) );
+		$request->set_param( 'event_id', $event_id );
+
+		$response = rest_get_server()->dispatch( $request );
+
+		$this->assertEquals( 403, $response->get_status() );
 	}
 }

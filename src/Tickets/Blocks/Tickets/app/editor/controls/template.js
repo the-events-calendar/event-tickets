@@ -14,6 +14,7 @@ import { InspectorControls } from '@wordpress/editor';
 /**
  * Internal dependencies
  */
+import { TICKET_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
 import './style.pcss';
 
 const RadioInput = ({ provider, onProviderChange, ...additionalProps }) => (
@@ -53,11 +54,25 @@ const Controls = ({
 }) =>
 	hasMultipleProviders && (
 		<InspectorControls key="inspector">
-			<PanelBody title={__('Tickets Settings', 'event-tickets')}>
+			<PanelBody
+				// eslint-disable-next-line no-undef
+				title={sprintf(
+					/* Translators: %s - Ticket plural label. */
+					__('%s Settings', 'event-tickets'),
+					TICKET_LABELS.ticket.plural
+				)}
+			>
 				<PanelRow>
 					<fieldset className="tribe-editor__tickets-controls-provider">
 						<legend>
-							{__('Sell tickets using', 'event-tickets')}
+							{
+								// eslint-disable-next-line no-undef
+								sprintf(
+									/* Translators: %s - Ticket plural label. */
+									__('Sell %s using', 'event-tickets'),
+									TICKET_LABELS.ticket.pluralLowercase
+								)
+							}
 						</legend>
 						{message}
 						{providers.map((provider, key) => (
