@@ -5,6 +5,7 @@ namespace TEC\Tickets\Commerce\Editor;
 use TEC\Tickets\Commerce\Module;
 use Tribe__Tickets__Main as Tickets_Plugin;
 use TEC\Tickets\Commerce\Ticket;
+use Tribe__Date_Utils as Dates;
 
 
 /**
@@ -171,11 +172,30 @@ class Metabox {
 			return;
 		}
 		
+		$sale_start_date   = get_post_meta( $ticket_id, Ticket::$sale_price_start_date_key, true );
+		$sale_end_date     = get_post_meta( $ticket_id, Ticket::$sale_price_end_date_key, true );
+		$datepicker_format = Dates::datepicker_formats( Dates::get_datepicker_format_index() );
+		
+		if ( ! empty( $sale_start_date ) ) {
+			$sale_start_date = Dates::date_only( $sale_start_date, false, $datepicker_format );
+		}
+		if ( ! empty( $sale_end_date ) ) {
+			$sale_end_date = Dates::date_only( $sale_end_date, false, $datepicker_format );
+		}
+		
 		$args = [
-			'post_id'          => $post_id,
-			'ticket'           => $context['ticket'] ?? null,
-			'sale_checkbox_on' => get_post_meta( $ticket_id, Ticket::$sale_price_checked_key, true ),
-			'sale_price'       => '11.00',
+			'post_id'           => $post_id,
+			'ticket'            => $context['ticket'] ?? null,
+			'sale_checkbox_on'  => get_post_meta( $ticket_id, Ticket::$sale_price_checked_key, true ),
+			'sale_price'        => '11.00',
+			'sale_start_date'   => $sale_start_date,
+			'sale_end_date'     => $sale_end_date,
+			'start_date_errors' => [
+				'is-less-or-equal-to' => __( 'Sale from date cannot be greater than sale to date', 'event-tickets' ),
+			],
+			'end_date_errors'   => [
+				'is-greater-or-equal-to' => __( 'Sale to date cannot be less than sale from date', 'event-tickets' ),
+			],
 		];
 		
 		tribe( 'tickets.admin.views' )->template( 'commerce/metabox/sale-price', $args );
