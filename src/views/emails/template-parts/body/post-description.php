@@ -12,22 +12,31 @@
  * @version TBD
  *
  * @since 5.6.0
- * @since TBD Add the post description header.
+ * @since TBD Add the post description header, add the `$show_post_description` flag and the `$post_description` variable.
  *
  * @var WP_Post     $post                    The post object with properties.
  * @var string|null $post_description_header The post description header.
+ * @var bool        $show_post_description   Whether to show the post description or not.
+ * @var string|null $post_description        The email specific post description. This will override the post excerpt,
+ *                                           if set.
  *
  * @see get_post() For the format of the event object.
  */
 
-if ( empty( $post ) ) {
-	return;
-}
-if ( empty( $post->post_excerpt ) ) {
+if (
+	empty( $post )
+	|| ( isset( $show_post_description ) && ! $show_post_description )
+) {
 	return;
 }
 
+$description = $post_description ?? $post->post_excerpt;
+
+if ( empty( $description ) ) {
+	return;
+}
 ?>
+
 <tr>
 	<td class="tec-tickets__email-table-content-post-description-container">
 		<?php if ( ! empty( $post_description_header ) ) : ?>
@@ -35,6 +44,6 @@ if ( empty( $post->post_excerpt ) ) {
 				<?php echo esc_html( $post_description_header ); ?>
 			</header>
 		<?php endif; ?>
-		<?php echo esc_html( $post->post_excerpt ); ?>
+	<?php echo esc_html( $description ); ?>
 	</td>
 </tr>

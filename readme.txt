@@ -199,6 +199,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 * Fix - Stock will be calculated correctly when an order fails and then succeeds while using Tickets Commerce.
 * Fix - Decode any HTML entities that appear int he subject line of outgoing emails. [ET-2007]
+* Feature - Add the Series Pass email template. [ET-1854]
 
 = [5.8.2] 2024-02-19 =
 

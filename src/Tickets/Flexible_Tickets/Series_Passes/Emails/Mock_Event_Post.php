@@ -13,6 +13,7 @@ use DateTimeImmutable;
 use DateTimeZone;
 use Tribe__Date_Utils as Dates;
 use Tribe__Events__Main as TEC;
+use Tribe__Timezones as Timezones;
 use WP_Post;
 
 /**
@@ -118,10 +119,11 @@ class Mock_Event_Post {
 	private function get_post_data( int $mock_post_id ): array {
 		$utc       = new DateTimeZone( 'UTC' );
 		$post_meta = [
-			'_EventStartDate'    => $this->start->format( Dates::DBDATETIMEFORMAT ),
-			'_EventEndDate'      => $this->end->format( Dates::DBDATETIMEFORMAT ),
-			'_EventStartDateUTC' => $this->start->setTimezone( $utc )->format( Dates::DBDATETIMEFORMAT ),
-			'_EventEndDateUTC'   => $this->end->setTimezone( $utc )->format( Dates::DBDATETIMEFORMAT ),
+			'_EventStartDate'    => [ $this->start->format( Dates::DBDATETIMEFORMAT ) ],
+			'_EventEndDate'      => [ $this->end->format( Dates::DBDATETIMEFORMAT ) ],
+			'_EventStartDateUTC' => [ $this->start->setTimezone( $utc )->format( Dates::DBDATETIMEFORMAT ) ],
+			'_EventEndDateUTC'   => [ $this->end->setTimezone( $utc )->format( Dates::DBDATETIMEFORMAT ) ],
+			'_EventTimezone'     => [ Timezones::build_timezone_object()->getName() ],
 		];
 
 		$post_data = [

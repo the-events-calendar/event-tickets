@@ -9,7 +9,6 @@
 
 namespace TEC\Tickets\Flexible_Tickets\Series_Passes\Emails;
 
-use TEC\Common\StellarWP\DB\DB;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series;
 use WP_Post;
 
@@ -80,32 +79,30 @@ class Mock_Series_Post {
 	 */
 	private function get_post_data( int $mock_post_id ): array {
 		$post_data = [
-			'ID'              => $mock_post_id,
-			'post_author'     => get_current_user_id(),
-			'post_date'       => '2023-04-17 17:06:56',
-			'post_date_gmt'   => '2023-04-17 17:06:56',
-			'post_title'      => _x(
+			'ID'             => $mock_post_id,
+			'post_author'    => get_current_user_id(),
+			'post_date'      => '2023-04-17 17:06:56',
+			'post_date_gmt'  => '2023-04-17 17:06:56',
+			'post_title'     => _x(
 				'Sidewalk Fall Film Festival',
 				'Email preview series pass title',
 				'event-tickets'
 			),
-			'post_excerpt'    => _x(
-				'All films are shown at the Sidewalk Film Center - 1821 2nd Ave. N., Birmingham, AL 35203. ' .
-				'Seating is first come first serve, so arrive on time.' .
-				' All proceeds from this film series benefit Sidewalk Film Festival. Thank you for your support!   ',
+			'post_excerpt'   => _x(
+				'Let the SideWalk Fall Film Festival be your ticket to the best films of past seasons.',
 				'Email preview series pass excerpt',
 				'event-tickets'
 			),
-			'post_status'     => 'publish',
-			'post_permalink'  => '#',
-			'post_name'       => "preview-series-{$mock_post_id}",
-			'post_type'       => Series::POSTTYPE,
-			'filter'          => 'raw',
+			'post_status'    => 'publish',
+			'post_permalink' => '#',
+			'post_name'      => "preview-series-{$mock_post_id}",
+			'post_type'      => Series::POSTTYPE,
+			'filter'         => 'raw',
 		];
 
 		add_filter( 'tribe_get_start_date', [ $this, 'filter_start_date' ], 100, 4 );
 		add_filter( 'tribe_get_end_date', [ $this, 'filter_end_date' ], 100, 4 );
 
-		return [$post_data,[]];
+		return [ $post_data, [] ];
 	}
 }

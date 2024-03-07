@@ -14,8 +14,10 @@ use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Utils\Value;
 use TEC\Tickets\Emails\Admin\Preview_Data;
+use TEC\Tickets\Emails\Dispatcher;
 use TEC\Tickets\Emails\Email\Purchase_Confirmation_Email_Interface;
 use TEC\Tickets\Emails\Email_Abstract;
+use TEC\Tickets\Emails\JSON_LD\Reservation_Schema;
 
 /**
  * Class Series_Pass.
@@ -52,6 +54,26 @@ class Series_Pass extends Email_Abstract implements Purchase_Confirmation_Email_
 	 */
 	public $template = 'series-pass';
 
+	/**
+	 * The class handling the fetching of Upcoming Series Events.
+	 *
+	 * @since TBD
+	 *
+	 * @var Upcoming_Events
+	 */
+	private Upcoming_Events $upcoming_events;
+
+	public function __construct( Upcoming_Events $upcoming_events ) {
+		$this->upcoming_events = $upcoming_events;
+	}
+
+	/**
+	 * Return the email recipient type string.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The email recipient type string.
+	 */
 	public function get_to(): string {
 		return esc_html__( 'Attendee(s)', 'event-tickets' );
 	}
@@ -154,16 +176,18 @@ class Series_Pass extends Email_Abstract implements Purchase_Confirmation_Email_
 				],
 			],
 			$this->get_option_key( 'include-series-excerpt' ) => [
-				'type'    => 'checkbox_bool',
-				'label'   => esc_html_x( 'Series excerpt', 'Series pass email settings', 'event-tickets' ),
-				'default' => true,
-				'tooltip' => esc_html_x( 'Include the series\' excerpt content in Series email', 'Series pass email settings', 'event-tickets' ),
+				'type'            => 'checkbox_bool',
+				'label'           => esc_html_x( 'Series excerpt', 'Series pass email settings', 'event-tickets' ),
+				'default'         => true,
+				'tooltip'         => esc_html_x( 'Include the series\' excerpt content in Series email', 'Series pass email settings', 'event-tickets' ),
+				'validation_type' => 'boolean',
 			],
 			$this->get_option_key( 'show-events-in-email' )   => [
-				'type'    => 'checkbox_bool',
-				'label'   => esc_html_x( 'Events in Series', 'Series pass email settings', 'event-tickets' ),
-				'default' => true,
-				'tooltip' => esc_html_x( 'Show the next five upcoming Series events in email', 'Series pass email settings', 'event-tickets' ),
+				'type'            => 'checkbox_bool',
+				'label'           => esc_html_x( 'Events in Series', 'Series pass email settings', 'event-tickets' ),
+				'default'         => true,
+				'tooltip'         => esc_html_x( 'Show the next five upcoming Series events in email', 'Series pass email settings', 'event-tickets' ),
+				'validation_type' => 'boolean',
 			]
 		];
 	}
@@ -207,8 +231,6 @@ class Series_Pass extends Email_Abstract implements Purchase_Confirmation_Email_
 			tec_tickets_get_series_pass_singular_uppercase( 'series-pass-email-subject' ),
 			'{series_name}'
 		);
-
-		// @todo what about default subject set in Tickets Commerce?
 	}
 
 	/**
@@ -288,7 +310,7 @@ class Series_Pass extends Email_Abstract implements Purchase_Confirmation_Email_
 			'src/resources/images/series-pass-example-header-image.png',
 			EVENT_TICKETS_MAIN_PLUGIN_FILE
 		);
-		$thumbnail_url = plugins_url(
+		$thumbnail_url    = plugins_url(
 			'src/resources/images/series-pass-example-series-thumbnail.png',
 			EVENT_TICKETS_MAIN_PLUGIN_FILE
 		);
@@ -305,11 +327,34 @@ class Series_Pass extends Email_Abstract implements Purchase_Confirmation_Email_
 			'header_image_url'       => $header_image_url,
 			'thumbnail'              => [
 				'url'   => $thumbnail_url,
-				'alt'   => esc_attr_x( 'Jaws film poster', 'Series pass email thumbnail alternate text', 'event-tickets' ),
-				'title' => esc_attr_x( 'Jaws', 'Series pass email thumbnail title', 'event-tickets' ),
+				'alt'   => esc_attr_x( 'Jaws film poster', 'Series pass email preview thumbnail alternate text', 'event-tickets' ),
+				'title' => esc_attr_x( 'Jaws', 'Series pass email preview thumbnail title', 'event-tickets' ),
 			],
 			'email'                  => $this,
+			'additional_content'     => _x(
+				'All films are shown at the Sidewalk Film Center - 1821 2nd Ave. N., Birmingham, AL 35203. ' .
+				'Seating is first come first serve, so arrive on time.' .
+				' All proceeds from this film series benefit Sidewalk Film Festival. Thank you for your support!   ',
+				'Series Pass Email preview additional content',
+				'event-tickets'
+			),
+			'show_post_description'  => tribe_is_truthy( tribe_get_request_var( 'includeSeriesExcerpt', true ) ),
+			'show_events_in_email'   => tribe_is_truthy( tribe_get_request_var( 'showEventsInEmail', true ) ),
 		];
+	}
+
+	/**
+	 * Returns whether the boolean email option is enabled.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $option  The option name.
+	 * @param bool   $default The default value.
+	 *
+	 * @return bool Whether the boolean email option is enabled.
+	 */
+	private function has_option_value( string $option, bool $default ): bool {
+		return tribe_is_truthy( tribe_get_option( $this->get_option_key( $option ), $default ) );
 	}
 
 	/**
@@ -320,9 +365,89 @@ class Series_Pass extends Email_Abstract implements Purchase_Confirmation_Email_
 	 * @return array<string,mixed> The template context array.
 	 */
 	public function get_default_template_context(): array {
-		// @todo complete this
+		$series_id            = $this->get( 'post_id' );
+		$first_upcoming_event = $this->upcoming_events->fetch( $series_id )[0][0] ?? null;
+
+		/*
+		 * Whether upcoming Events should be shown in the email or not, the JSON-LD should be built for the first
+		 * upcoming Event.
+		 */
+		$json_ld = Reservation_Schema::build_from_email_and_event( $this, $first_upcoming_event );
+
+		/*
+		 * Whether upcoming Events should be shown in the email or not, the thumbnail should be pulled from the
+		 * first upcoming Event.
+		 */
+		if ( $first_upcoming_event && $thumbnail_id = get_post_thumbnail_id( $first_upcoming_event ) ) {
+			$thumbnail = [
+				'url'   => $thumbnail_id ? get_the_post_thumbnail_url( $first_upcoming_event ) : null,
+				'alt'   => $thumbnail_id ? get_post_meta( $thumbnail_id, '_wp_attachment_image_alt', true ) : null,
+				'title' => $thumbnail_id ? get_post_field( 'post_content', $thumbnail_id ) : null,
+			];
+		} else {
+			$thumbnail = [];
+		}
+
 		return [
-			'post_description_header' => _x('Additional Information', 'Series pass email post description header', 'event-tickets'),
+			'email'                     => $this,
+			'title'                     => $this->get_title(),
+			'heading'                   => $this->get_heading(),
+			'post_id'                   => $series_id,
+			'post'                      => get_post( $this->get( 'post_id' ) ),
+			'thumbnail'                 => $thumbnail,
+			'tickets'                   => $this->get( 'tickets' ),
+			'additional_content_header' => _x( 'Additional Information', 'Series pass email additional content header', 'event-tickets' ),
+			'additional_content'        => $this->get_additional_content(),
+			'show_post_description'     => $this->has_option_value( 'include-series-excerpt', true ),
+			'show_events_in_email'      => $this->has_option_value( 'show-events-in-email', true ),
+			'json_ld'                   => $json_ld,
+			'post_description'          => get_the_excerpt( $series_id ),
 		];
+	}
+
+	/**
+	 * Send the Series Pass email.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether the email was sent or not.
+	 */
+	public function send() {
+		$recipient = $this->get_recipient();
+
+		// Bail if there is no email address to send to.
+		if ( empty( $recipient ) ) {
+			return false;
+		}
+
+		if ( ! $this->is_enabled() ) {
+			return false;
+		}
+
+		$tickets = $this->get( 'tickets' );
+		$post_id = $this->get( 'post_id' );
+
+		// Bail if there's no tickets or post ID.
+		if ( empty( $tickets ) || empty( $post_id ) ) {
+			return false;
+		}
+
+		$placeholders = [
+			'{attendee_name}'  => $tickets[0]['holder_name'],
+			'{attendee_email}' => $tickets[0]['holder_email'],
+			'{series_name}'    => get_the_title( $post_id ),
+		];
+
+		if ( ! empty( $tickets[0]['purchaser_name'] ) ) {
+			$placeholders['{purchaser_name}'] = $tickets[0]['purchaser_name'];
+		}
+
+		if ( ! empty( $tickets[0]['purchaser_email'] ) ) {
+			$placeholders['{purchaser_email}'] = $tickets[0]['purchaser_email'];
+		}
+
+		$this->set_placeholders( $placeholders );
+
+		return Dispatcher::from_email( $this )->send();
 	}
 }
