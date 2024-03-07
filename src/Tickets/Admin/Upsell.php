@@ -238,6 +238,11 @@ class Upsell {
 			return;
 		}
 
+		// If Events Calendar Pro is activated, then bail.
+		if ( did_action( 'tribe_events_pro_init_apm_filters' ) ) {
+			return;
+		}
+
 		$admin_views = tribe( 'tickets.admin.views' );
 		$admin_views->template( 'flexible-tickets/admin/tickets/editor/upsell-notice' );
 	}
