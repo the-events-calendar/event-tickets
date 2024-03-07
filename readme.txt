@@ -1,7 +1,7 @@
 === Event Tickets and Registration ===
 
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, GeoffBel, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra
-Tags: tickets, registration, event registration, RSVP, ticket sales, attendee management
+Tags: tickets, event registration, RSVP, ticket sales, attendee management
 Requires at least: 6.2
 Tested up to: 6.4.3
 Stable tag: 5.8.3
@@ -98,6 +98,7 @@ Our Premium Plugins and Services:
 ✏️ [Filter Bar](https://evnt.is/fa)
 🗓️ [Eventbrite Tickets](https://evnt.is/2e)
 📡 [Virtual Events](https://evnt.is/1aky)
+🔄 [Event Automator](https://evnt.is/1bdk)
 
 == Help ==
 
