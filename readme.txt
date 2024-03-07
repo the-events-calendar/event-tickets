@@ -196,7 +196,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [TBD] TBD =
+= [5.8.3] 2024-03-11 =
 
 * Fix - Fixed updating stock data when Tickets Commerce attendees are moved. [ET-2009]
 * Fix - Fixed showing duplicate order overview data from TribeCommerce when ETP is disabled. [ET-2011]
