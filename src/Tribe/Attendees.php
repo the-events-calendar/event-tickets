@@ -269,6 +269,10 @@ class Tribe__Tickets__Attendees {
 			return $actions;
 		}
 
+		if ( ! $this->can_access_page( $post->ID ) ) {
+			return $actions;
+		}
+
 		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post->ID );
 
 		// Only proceed if there are tickets.
@@ -296,6 +300,10 @@ class Tribe__Tickets__Attendees {
 	public function register_page() {
 		$cap      = 'edit_posts';
 		$event_id = absint( ! empty( $_GET['event_id'] ) && is_numeric( $_GET['event_id'] ) ? $_GET['event_id'] : 0 );
+
+		if ( ! $this->can_access_page( $event_id ) ) {
+			return;
+		}
 
 		if ( ! current_user_can( 'edit_posts' ) && $event_id ) {
 			$event = get_post( $event_id );
@@ -1209,5 +1217,33 @@ class Tribe__Tickets__Attendees {
 				'rsvp'    => tribe_get_rsvp_label_plural( 'attendee overview' ),
 			],
 		];
+	}
+
+	/**
+	 * Checks if the current user can access a page based on post ownership and capabilities.
+	 *
+	 * This method determines access by checking if the current user is the author of the post
+	 * or if they have the capability to edit others' posts within the same post type. If neither
+	 * condition is met, access is denied.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id The ID of the post to check access against.
+	 *
+	 * @return bool True if the user can access the page, false otherwise.
+	 */
+	public function can_access_page( $post_id ) {
+		// @todo redscar - Add filter for capabilities and/or return.
+		$post = get_post( $post_id );
+		// Ensure $post is valid to prevent errors in cases where $post_id might be invalid.
+		if ( ! $post ) {
+			return false;
+		}
+
+		$post_type_object      = get_post_type_object( $post->post_type );
+		$can_edit_others_posts = current_user_can( $post_type_object->cap->edit_others_posts );
+
+		// Return true if the user can edit others' posts of this type or if they're the author, false otherwise.
+		return $can_edit_others_posts || get_current_user_id() == $post->post_author;
 	}
 }
