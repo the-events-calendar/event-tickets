@@ -203,6 +203,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Front-end tickets block button padding is now consistent on hover and when disabled. [ET-2035]
 * Fix - Allow blank sender name and email to be stored within Tickets Emails settings. [ET-2008]
 * Fix - Corrected an issue where `attendees_table->prepare_items()` was being called multiple times. [ET-2005]
+* Fix - Tickets block will be properly registered when creating a new post or page. [ET-2045]
 
 = [TBD] TBD =
 
