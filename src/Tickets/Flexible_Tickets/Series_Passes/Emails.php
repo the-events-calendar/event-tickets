@@ -16,7 +16,6 @@ use TEC\Tickets\Emails\Email\Ticket;
 use TEC\Tickets\Emails\Email_Abstract;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Emails\Mock_Event_Post;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Emails\Series_Pass;
-use TEC\Tickets\Flexible_Tickets\Series_Passes\Emails\Upcoming_Events;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Emails\Upcoming_Series_Events_List;
 use TEC\Tickets_Plus\Emails\Email\Ticket as Tickets_Plus_Ticket_Email;
 use TEC\Tickets_Plus\Emails\Hooks as Tickets_Plus_Email_Hooks;
@@ -45,7 +44,7 @@ class Emails extends Controller {
 	/**
 	 * Emails constructor.
 	 *
-	 * since TBD
+	 * @since TBD
 	 *
 	 * @param Container                   $container            The DI container.
 	 * @param Upcoming_Series_Events_List $upcoming_events_list The Upcoming Series Events List instance.
@@ -88,10 +87,15 @@ class Emails extends Controller {
 			10,
 			3
 		);
-		add_action( 'tribe_template_before_include:tickets/emails/template-parts/body/tickets', [
-			$this,
-			'include_series_thumbnail'
-		], 15, 3 );
+		add_action(
+			'tribe_template_before_include:tickets/emails/template-parts/body/tickets',
+			[
+				$this,
+				'include_series_thumbnail',
+			],
+			15,
+			3
+		);
 		add_action(
 			'tribe_template_before_include:tickets/emails/template-parts/body/post-description',
 			[ $this, 'include_series_upcoming_events_list' ],
@@ -103,7 +107,7 @@ class Emails extends Controller {
 			'tribe_template_after_include:tickets/emails/template-parts/header/head/styles',
 			[
 				$this,
-				'include_email_styles'
+				'include_email_styles',
 			],
 			10,
 			3
@@ -141,10 +145,15 @@ class Emails extends Controller {
 			'tribe_template_before_include:tickets/emails/template-parts/body/post-title',
 			[ $this, 'include_series_dates_for_series_pass_email' ]
 		);
-		remove_action( 'tribe_template_before_include:tickets/emails/template-parts/body/tickets', [
-			$this,
-			'include_series_thumbnail'
-		], 15, 3 );
+		remove_action(
+			'tribe_template_before_include:tickets/emails/template-parts/body/tickets',
+			[
+				$this,
+				'include_series_thumbnail',
+			],
+			15,
+			3
+		);
 		remove_action(
 			'tribe_template_before_include:tickets/emails/template-parts/body/post-description',
 			[ $this, 'include_series_upcoming_events_list' ],
@@ -156,7 +165,7 @@ class Emails extends Controller {
 			'tribe_template_after_include:tickets/emails/template-parts/header/head/styles',
 			[
 				$this,
-				'include_email_styles'
+				'include_email_styles',
 			],
 			10
 		);
@@ -233,10 +242,13 @@ class Emails extends Controller {
 			$preview_args = array_diff_key( $preview_args, [ 'event' => false ] );
 		}
 
-		add_filter( 'tec_tickets_flexible_tickets_series_pass_email_upcoming_events', [
-			$this,
-			'pre_fill_upcoming_events'
-		] );
+		add_filter(
+			'tec_tickets_flexible_tickets_series_pass_email_upcoming_events',
+			[
+				$this,
+				'pre_fill_upcoming_events',
+			]
+		);
 
 		return $preview_args;
 	}
@@ -246,7 +258,7 @@ class Emails extends Controller {
 	 *
 	 * @since 5.8.0
 	 *
-	 * @param string   $file     Template file, unused
+	 * @param string   $file     Template file, unused.
 	 * @param string[] $name     Template name components, unused.
 	 * @param Template $template Event Tickets template object.
 	 */
@@ -267,11 +279,15 @@ class Emails extends Controller {
 
 		$post_id = $context['post']->ID;
 
-		$dates = array_values( array_filter( [
-			tribe_get_start_date( $post_id ),
+		$dates = array_values(
+			array_filter(
+				[
+					tribe_get_start_date( $post_id ),
 
-			tribe_get_end_date( $post_id ),
-		] ) );
+					tribe_get_end_date( $post_id ),
+				]
+			)
+		);
 
 		$template->template( 'template-parts/body/series-pass-dates', [ 'dates' => $dates ], true );
 	}
@@ -281,7 +297,7 @@ class Emails extends Controller {
 	 *
 	 * @since TBD
 	 *
-	 * @param string   $file     Template file, unused
+	 * @param string   $file     Template file, unused.
 	 * @param string[] $name     Template name components, unused.
 	 * @param Template $template Event Tickets template object.
 	 *
@@ -300,7 +316,7 @@ class Emails extends Controller {
 	 *
 	 * @since TBD
 	 *
-	 * @param string   $file     Template file, unused
+	 * @param string   $file     Template file, unused.
 	 * @param string[] $name     Template name components, unused.
 	 * @param Template $template Event Tickets template object.
 	 *
@@ -325,7 +341,7 @@ class Emails extends Controller {
 	 *
 	 * @since TBD
 	 *
-	 * @param string   $file     Template file, unused
+	 * @param string   $file     Template file, unused.
 	 * @param string[] $name     Template name components, unused.
 	 * @param Template $template Event Tickets template object.
 	 *
@@ -366,7 +382,7 @@ class Emails extends Controller {
 		$ticket_plus_email = $this->container->get( Tickets_Plus_Ticket_Email::class );
 		add_filter(
 			'tec_tickets_emails_series-pass_settings',
-			[ $ticket_plus_email, 'filter_tec_tickets_emails_ticket_settings', ]
+			[ $ticket_plus_email, 'filter_tec_tickets_emails_ticket_settings' ]
 		);
 	}
 
@@ -410,7 +426,7 @@ class Emails extends Controller {
 		);
 		$attach_to_email = tribe( Attach_To_Emails::class );
 		add_filter(
-			"tec_tickets_emails_dispatcher_series-pass_attachments",
+			'tec_tickets_emails_dispatcher_series-pass_attachments',
 			[ $attach_to_email, 'add_ticket_email_attachments' ],
 			10,
 			2
@@ -437,7 +453,7 @@ class Emails extends Controller {
 		);
 		$attach_to_email = tribe( Attach_To_Emails::class );
 		remove_filter(
-			"tec_tickets_emails_dispatcher_series-pass_attachments",
+			'tec_tickets_emails_dispatcher_series-pass_attachments',
 			[ $attach_to_email, 'add_ticket_email_attachments' ]
 		);
 	}

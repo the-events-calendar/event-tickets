@@ -1,20 +1,25 @@
 <?php
+/**
+ * Handles the Email preview modal.
+ *
+ * @since 5.5.7
+ *
+ * @package TEC\Tickets\Emails
+ */
 
 namespace TEC\Tickets\Emails\Admin;
 
 use TEC\Tickets\Emails\Email_Handler;
 use Tribe__Utils__Array as Arr;
-use TEC\Tickets\Emails\Assets as Assets;
-use TEC\Tickets\Emails\Admin\Emails_Tab as Emails_Tab;
+use TEC\Tickets\Emails\Assets;
+use TEC\Tickets\Emails\Admin\Emails_Tab;
 use TEC\Tickets\Emails\Email\Ticket;
-use TEC\Tickets\Emails\Email_Template as Email_Template;
 
 /**
  * Class Preview_Modal
  *
  * @since 5.5.7
  * @package TEC\Tickets\Emails
- *
  */
 class Preview_Modal {
 
@@ -62,7 +67,7 @@ class Preview_Modal {
 
 		tribe_asset_enqueue_group( 'tribe-tickets-admin' );
 
-		// Render the modal contents.
+		// phpcs:ignore
 		echo $this->get_modal_content();
 	}
 
@@ -105,7 +110,7 @@ class Preview_Modal {
 
 		$args = $this->get_modal_args();
 
-		$modal = '<div class="tribe-common event-tickets">';
+		$modal  = '<div class="tribe-common event-tickets">';
 		$modal .= '<span id="' . esc_attr( static::$modal_target ) . '"></span>';
 		$modal .= tribe( 'dialog.view' )->render_modal( $content, $args, static::$modal_id, false );
 		$modal .= '</div>';
@@ -160,9 +165,7 @@ class Preview_Modal {
 	public static function get_modal_button( $args = [] ): string {
 		$args        = self::get_modal_button_args( $args );
 		$dialog_view = tribe( 'dialog.view' );
-		$button      = $dialog_view->template( 'button', $args, false );
-
-		return $button;
+		return $dialog_view->template( 'button', $args, false );
 	}
 
 	/**
@@ -247,12 +250,12 @@ class Preview_Modal {
 				$preview_context['add_qr_codes'] = tribe_is_truthy( $add_qr_codes );
 			}
 
-			$preview_context['add_event_links']    = tribe_is_truthy( Arr::get( $vars, 'addEventLinks', '' ) );
-			$preview_context['add_ar_fields']      = tribe_is_truthy( Arr::get( $vars, 'includeArFields', '' ) );
+			$preview_context['add_event_links'] = tribe_is_truthy( Arr::get( $vars, 'addEventLinks', '' ) );
+			$preview_context['add_ar_fields']   = tribe_is_truthy( Arr::get( $vars, 'includeArFields', '' ) );
 		}
 
 		$current_email = Arr::get( $vars, 'currentEmail', '' );
-		$email_class = null;
+		$email_class   = null;
 
 		// Select email class to preview, if not using ticket email.
 		if ( ! $rsvp_using_ticket_email && ! empty( $current_email ) ) {
@@ -262,7 +265,7 @@ class Preview_Modal {
 			}
 		}
 
-		if ( $email_class === null ) {
+		if ( null === $email_class ) {
 			// Show Ticket email by default.
 			$email_class = tribe( Ticket::class );
 		}
@@ -279,21 +282,19 @@ class Preview_Modal {
 		}
 
 		$preview_for_event = isset( $email_preview_context['post'] )
-		                     && is_object( $email_preview_context['post'] )
-		                     && ( $email_preview_context['post']->post_type ?? 'tribe_events' ) === 'tribe_events';
+							&& is_object( $email_preview_context['post'] )
+							&& ( $email_preview_context['post']->post_type ?? 'tribe_events' ) === 'tribe_events';
 
 		if ( $preview_for_event ) {
 			add_filter( 'tribe_is_event', '__return_true' );
 		}
 
-		$html  = $email_class->get_content();
+		$html = $email_class->get_content();
 
 		if ( $preview_for_event ) {
 			remove_filter( 'tribe_is_event', '__return_true' );
 		}
 
-		$html .= $tickets_template->template( 'v2/components/loader/loader', [], false );
-
-		return $html;
+		return $html . $tickets_template->template( 'v2/components/loader/loader', [], false );
 	}
 }
