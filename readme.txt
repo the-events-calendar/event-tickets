@@ -202,6 +202,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Show post excerpt line breaks within ticket emails. [ET-2006]
 * Fix - Front-end tickets block button padding is now consistent on hover and when disabled. [ET-2035]
 * Fix - Allow blank sender name and email to be stored within Tickets Emails settings. [ET-2008]
+* Fix - Corrected an issue where `attendees_table->prepare_items()` was being called multiple times. [ET-2005]
 * Tweak - Added additional fields to the Event Tickets Site Health section. [ET-2017]
 
 = [TBD] TBD =
