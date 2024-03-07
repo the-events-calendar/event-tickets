@@ -201,7 +201,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Fixed updating stock data when Tickets Commerce attendees are moved. [ET-2009]
 * Fix - Fixed showing duplicate order overview data from TribeCommerce when ETP is disabled. [ET-2011]
 * Fix - Stock will be calculated correctly when an order fails and then succeeds while using Tickets Commerce. [ET-1833]
-* Fix - Decode any HTML entities that appear int he subject line of outgoing emails. [ET-2007]
+* Fix - Decode any HTML entities that appear in the subject line of outgoing emails. [ET-2007]
 * Fix - Fixed multiple issues related to series pass check-ins. [ET-1936]
 * Fix - Site Health will no longer fatal when providers are not setup. [ET-2047]
 * Tweak - Use dynamic ticket labels within the block editor's Tickets Block. [ET-690]
