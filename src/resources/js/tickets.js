@@ -366,6 +366,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		var $ticket_end_time = $( document.getElementById( 'ticket_end_time' ) );
 		var startofweek = 0;
 		const ticketNameLabel = document.getElementById('ticket_name_label');
+        var $ticket_sale_start_date = $( document.getElementById( 'ticket_sale_start_date' ) );
+        var $ticket_sale_end_date = $( document.getElementById( 'ticket_sale_end_date' ) );
 
 		/**
 		 * There might be cases when Tickets is used in isolation where TEC is not
@@ -467,6 +469,22 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			.datepicker( 'option', 'defaultDate', $( document.getElementById( 'EventEndDate' ) ).val() )
 			.on( 'keyup', function( e ) {
 				if ( e.keyCode === 8 || e.keyCode === 46 ) {
+					$.datepicker._clearDate( this );
+				}
+			} );
+
+		$ticket_sale_start_date
+			.datepicker( datepickerOpts )
+			.on( 'keyup', function (e) {
+				if (e.keyCode === 8 || e.keyCode === 46) {
+					$.datepicker._clearDate( this );
+				}
+			} );
+
+		$ticket_sale_end_date
+			.datepicker( datepickerOpts )
+			.on( 'keyup', function (e) {
+				if (e.keyCode === 8 || e.keyCode === 46) {
 					$.datepicker._clearDate( this );
 				}
 			} );
