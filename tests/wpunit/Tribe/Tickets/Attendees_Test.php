@@ -255,7 +255,6 @@ class Attendees_Test extends WPTestCase {
 		$roles    = $wp_roles->get_names();
 
 		foreach ( $roles as $role => $name ) {
-			// Using yield to provide data for each iteration
 			yield $role => [ $role ];
 		}
 	}
@@ -272,7 +271,7 @@ class Attendees_Test extends WPTestCase {
 	public function test_attendees_page_role_access( $role ) {
 		// Create an event post with an administrator's ID
 		$admin_id = $this->factory->user->create( [ 'role' => 'administrator' ] );
-		wp_set_current_user( $admin_id ); // Temporarily switch to administrator to create the post
+		wp_set_current_user( $admin_id );
 
 		$post_id = tribe_events()->set_args(
 			[
@@ -283,7 +282,7 @@ class Attendees_Test extends WPTestCase {
 			]
 		)->create()->ID;
 
-		// Switch to the test role user
+		// Switch to the test role user.
 		$user_id = $this->factory->user->create( [ 'role' => $role ] );
 		wp_set_current_user( $user_id );
 
@@ -305,7 +304,7 @@ class Attendees_Test extends WPTestCase {
 	public function test_attendees_page_role_access_with_filter( $role ) {
 		// Create an event post with an administrator's ID
 		$admin_id = $this->factory->user->create( [ 'role' => 'administrator' ] );
-		wp_set_current_user( $admin_id ); // Temporarily switch to administrator to create the post
+		wp_set_current_user( $admin_id );
 
 		$post_id = tribe_events()->set_args(
 			[
