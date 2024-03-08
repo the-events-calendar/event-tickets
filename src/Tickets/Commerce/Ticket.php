@@ -1090,13 +1090,39 @@ class Ticket {
 			return;
 		}
 		
-		$sale_price = Arr::get( $raw_data, 'ticket_sale_price', false );
+		$sale_price    = Arr::get( $raw_data, 'ticket_sale_price', false );
+		$regular_price = Arr::get( $raw_data, 'ticket_price', false );
 		
-		if ( $sale_price ) {
+		if ( $sale_price && $sale_price < $regular_price ) {
 			update_post_meta( $ticket->ID, static::$sale_price_key, Value::create( $sale_price ) );
 		}
+		
+		$this->process_sale_price_dates( $ticket, $raw_data );
 	}
 	
+	/**
+	 * Process the sale price dates.
+	 *
+	 * @since TBD
+	 *
+	 * @param \Tribe__Tickets__Ticket_Object $ticket   The ticket post object.
+	 * @param array<string,mixed>            $raw_data The raw data from the request.
+	 *
+	 * @return void
+	 */
+	public function process_sale_price_dates( \Tribe__Tickets__Ticket_Object $ticket, array $raw_data ): void {
+		if ( ! empty( $raw_data['ticket_sale_start_date'] ) ) {
+			$start_date = Tribe__Date_Utils::maybe_format_from_datepicker( $raw_data['ticket_sale_start_date'] );
+			$start_date = date( Tribe__Date_Utils::DBDATEFORMAT, strtotime( $start_date ) );
+			update_post_meta( $ticket->ID, static::$sale_price_start_date_key, $start_date );
+		}
+		
+		if ( ! empty( $raw_data['ticket_sale_end_date'] ) ) {
+			$end_date = Tribe__Date_Utils::maybe_format_from_datepicker( $raw_data['ticket_sale_end_date'] );
+			$end_date = date( Tribe__Date_Utils::DBDATEFORMAT, strtotime( $end_date ) );
+			update_post_meta( $ticket->ID, static::$sale_price_end_date_key, $end_date );
+		}
+	}
 	/**
 	 * Remove the sale price data.
 	 *
