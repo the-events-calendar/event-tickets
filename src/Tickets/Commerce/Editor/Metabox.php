@@ -183,18 +183,25 @@ class Metabox {
 			$sale_end_date = Dates::date_only( $sale_end_date, false, $datepicker_format );
 		}
 		
+		$sale_price = get_post_meta( $ticket_id, Ticket::$sale_price_key, true );
+		$sale_price = $sale_price ? $sale_price->get_string() : '';
+		
 		$args = [
 			'post_id'           => $post_id,
 			'ticket'            => $context['ticket'] ?? null,
 			'sale_checkbox_on'  => get_post_meta( $ticket_id, Ticket::$sale_price_checked_key, true ),
-			'sale_price'        => '11.00',
+			'sale_price'        => $sale_price,
+			'sale_price_errors' => [
+				'is-greater-than' => __( 'Sale price must be greater than 0', 'event-tickets' ),
+				'is-less-than'    => __( 'Sale price must be less than the regular price', 'event-tickets' ),
+			],
 			'sale_start_date'   => $sale_start_date,
 			'sale_end_date'     => $sale_end_date,
 			'start_date_errors' => [
-				'is-less-or-equal-to' => __( 'Sale from date cannot be greater than sale to date', 'event-tickets' ),
+				'is-less-or-equal-to' => __( 'Sale from date cannot be greater than Sale to date', 'event-tickets' ),
 			],
 			'end_date_errors'   => [
-				'is-greater-or-equal-to' => __( 'Sale to date cannot be less than sale from date', 'event-tickets' ),
+				'is-greater-or-equal-to' => __( 'Sale to date cannot be less than Sale from date', 'event-tickets' ),
 			],
 		];
 		
