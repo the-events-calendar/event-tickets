@@ -244,4 +244,101 @@ class Attendees_Test extends WPTestCase {
 			$this->assertEquals( '', $html );
 		}
 	}
+
+	/**
+	 * Data provider for testing access permissions across different user roles.
+	 *
+	 * @return Generator
+	 */
+	public function role_access_provider() {
+		$wp_roles = wp_roles();
+		$roles    = $wp_roles->get_names();
+
+		foreach ( $roles as $role => $name ) {
+			// Using yield to provide data for each iteration
+			yield $role => [ $role ];
+		}
+	}
+
+	/**
+	 * Test access permissions for various user roles.
+	 *
+	 * @test
+	 *
+	 * @dataProvider role_access_provider
+	 *
+	 * @param string $role The user role to test.
+	 */
+	public function test_attendees_page_role_access( $role ) {
+		// Create an event post with an administrator's ID
+		$admin_id = $this->factory->user->create( [ 'role' => 'administrator' ] );
+		wp_set_current_user( $admin_id ); // Temporarily switch to administrator to create the post
+
+		$post_id = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2020-01-01 09:00:00',
+				'end_date'   => '2020-01-01 11:30:00',
+			]
+		)->create()->ID;
+
+		// Switch to the test role user
+		$user_id = $this->factory->user->create( [ 'role' => $role ] );
+		wp_set_current_user( $user_id );
+
+		$attendees       = new Attendees();
+		$can_access_page = $attendees->can_access_page( $post_id );
+
+		// Expected behavior: Only roles with `edit_others_posts` should have access by default.
+		$expected_access = current_user_can( 'edit_others_posts' );
+		$this->assertSame( $expected_access, $can_access_page, sprintf( 'Role %s access did not match expected.', $role ) );
+	}
+
+	/**
+	 * Test that the filter correctly modifies access permissions.
+	 *
+	 * @dataProvider role_access_provider
+	 *
+	 * @param string $role The user role to test.
+	 */
+	public function test_attendees_page_role_access_with_filter( $role ) {
+		// Create an event post with an administrator's ID
+		$admin_id = $this->factory->user->create( [ 'role' => 'administrator' ] );
+		wp_set_current_user( $admin_id ); // Temporarily switch to administrator to create the post
+
+		$post_id = tribe_events()->set_args(
+			[
+				'title'      => 'Test Event',
+				'status'     => 'publish',
+				'start_date' => '2020-01-01 09:00:00',
+				'end_date'   => '2020-01-01 11:30:00',
+			]
+		)->create()->ID;
+
+		// Switch to the test role user
+		$user_id = $this->factory->user->create( [ 'role' => $role ] );
+		wp_set_current_user( $user_id );
+
+		// Temporarily modify the access logic for testing the filter.
+		add_filter(
+			'tec_tickets_attendees_page_role_access',
+			function () use ( $role ) {
+				// For this test, invert access for all roles except administrator.
+				return 'administrator' !== $role;
+			},
+			10,
+			3
+		);
+
+		$attendees       = new Attendees();
+		$can_access_page = $attendees->can_access_page( $post_id );
+
+		// Remove the filter after testing.
+		remove_filter( 'tec_tickets_attendees_page_role_access', 10 );
+
+		// Assert that the filter modified access as expected.
+		$expected_access = ( 'administrator' !== $role ); // Inverting access for the sake of the test.
+		$this->assertSame( $expected_access, $can_access_page, sprintf( 'Filter did not modify access for role %s as expected.', $role ) );
+	}
 }

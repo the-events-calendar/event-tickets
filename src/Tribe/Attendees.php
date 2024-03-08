@@ -1223,8 +1223,8 @@ class Tribe__Tickets__Attendees {
 	 * Checks if the current user can access a page based on post ownership and capabilities.
 	 *
 	 * This method determines access by checking if the current user is the author of the post
-	 * or if they have the capability to edit others' posts within the same post type. If neither
-	 * condition is met, access is denied.
+	 * or if they have the capability to edit others' posts (edit_others_posts) within the same post type.
+	 * If neither condition is met, access is denied.
 	 *
 	 * @since TBD
 	 *
@@ -1233,7 +1233,6 @@ class Tribe__Tickets__Attendees {
 	 * @return bool True if the user can access the page, false otherwise.
 	 */
 	public function can_access_page( int $post_id ): bool {
-		// @todo redscar - Add filter for capabilities and/or return.
 		$post = get_post( $post_id );
 		// Ensure $post is valid to prevent errors in cases where $post_id might be invalid.
 		if ( ! $post ) {
