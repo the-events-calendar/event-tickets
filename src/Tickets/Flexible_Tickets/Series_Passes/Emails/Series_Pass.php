@@ -18,6 +18,7 @@ use TEC\Tickets\Emails\Dispatcher;
 use TEC\Tickets\Emails\Email\Purchase_Confirmation_Email_Interface;
 use TEC\Tickets\Emails\Email_Abstract;
 use TEC\Tickets\Emails\JSON_LD\Reservation_Schema;
+use TEC\Events\Integrations\Plugins\Event_Tickets\Emails\Hooks as TEC_Email_Hooks;
 
 /**
  * Class Series_Pass.
@@ -340,6 +341,7 @@ class Series_Pass extends Email_Abstract implements Purchase_Confirmation_Email_
 			),
 			'show_post_description'  => tribe_is_truthy( tribe_get_request_var( 'includeSeriesExcerpt', true ) ),
 			'show_events_in_email'   => tribe_is_truthy( tribe_get_request_var( 'showEventsInEmail', true ) ),
+			'event' => null
 		];
 	}
 
@@ -402,6 +404,8 @@ class Series_Pass extends Email_Abstract implements Purchase_Confirmation_Email_
 			'show_events_in_email'      => $this->has_option_value( 'show-events-in-email', true ),
 			'json_ld'                   => $json_ld,
 			'post_description'          => get_the_excerpt( $series_id ),
+			// Set the 'event' explicitly to null to avoid TEC filters from applying.
+			'event'                     => null,
 		];
 	}
 
