@@ -213,6 +213,11 @@ class Orders extends Report_Abstract {
 		if ( ! in_array( $post->post_type, Plugin::instance()->post_types(), true ) ) {
 			return $actions;
 		}
+
+		if ( ! $this->can_access_page( $post_id ) ) {
+			return $actions;
+		}
+
 		$commerce = tribe( Module::class );
 
 		if ( ! $commerce->post_has_tickets( $post ) ) {
@@ -243,6 +248,10 @@ class Orders extends Report_Abstract {
 		$candidate_post_id = tribe_get_request_var( 'event_id', $candidate_post_id );
 
 		if ( ( $post_id = absint( $candidate_post_id ) ) != $candidate_post_id ) {
+			return;
+		}
+
+		if ( ! $this->can_access_page( $post_id ) ) {
 			return;
 		}
 
