@@ -22,7 +22,7 @@ use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe__Settings;
 
-class EmailsTest extends Controller_Test_Case {
+class Emails_Test extends Controller_Test_Case {
 	use SnapshotAssertions;
 	use With_Uopz;
 	use Series_Pass_Factory;
