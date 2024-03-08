@@ -1232,7 +1232,7 @@ class Tribe__Tickets__Attendees {
 	 *
 	 * @return bool True if the user can access the page, false otherwise.
 	 */
-	public function can_access_page( $post_id ) {
+	public function can_access_page( int $post_id ): bool {
 		// @todo redscar - Add filter for capabilities and/or return.
 		$post = get_post( $post_id );
 		// Ensure $post is valid to prevent errors in cases where $post_id might be invalid.
@@ -1244,6 +1244,17 @@ class Tribe__Tickets__Attendees {
 		$can_edit_others_posts = current_user_can( $post_type_object->cap->edit_others_posts );
 
 		// Return true if the user can edit others' posts of this type or if they're the author, false otherwise.
-		return $can_edit_others_posts || get_current_user_id() == $post->post_author;
+		$has_access = $can_edit_others_posts || get_current_user_id() == $post->post_author;
+
+		/**
+		 * Filters whether a user can access the attendees page for a given post.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool $has_access True if the user has access, false otherwise.
+		 * @param int $post_id The ID of the post being checked.
+		 * @param WP_Post $post The post object.
+		 */
+		return apply_filters( 'tec_tickets_attendees_page_role_access', $has_access, $post_id, $post );
 	}
 }
