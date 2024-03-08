@@ -77,26 +77,12 @@ tribe.tickets.emails = {};
 	};
 
 	/**
-	 * Binds events for the modal content container.
-	 *
-	 * @since 5.6.0
-	 * @param  {Event}  event    event object for 'afterAjaxSuccess.tribeTicketsAdmin' event.
-	 * @param  {jqXHR}  jqXHR    Request object.
-	 * @param  {Object} settings Settings that this request was made with.
-	 */
-	obj.bindModalEvents = ( event, jqXHR, settings ) => {
-		const $container = event.data.container;
-		const data = event.data.requestData;
-	};
-
-	/**
 	 * Unbinds events for the modal content container.
 	 *
 	 * @since 5.5.7
 	 * @param {jQuery} $container jQuery object of the container.
 	 */
 	obj.unbindModalEvents = function( $container ) {
-		$container.off( 'afterAjaxSuccess.tribeTicketsAdmin', obj.bindModalEvents );
 		$container.off();
 	};
 
@@ -135,13 +121,6 @@ tribe.tickets.emails = {};
 		};
 
 		tribe.tickets.admin.manager.request( data, $modalContent );
-
-		// Bind the modal events after AJAX success.
-		$modalContent.on(
-			'afterAjaxSuccess.tribeTicketsAdmin',
-			{ container: $modalContent, requestData: data },
-			obj.bindModalEvents,
-		);
 	};
 
 	/**
