@@ -772,7 +772,7 @@ class Tribe__Tickets__Metabox {
 		/**
 		 * Filters the data to return when an attendee is unchecked in.
 		 *
-		 * @since TBD
+		 * @since 5.8.3
 		 *
 		 * @param array{did_uncheckin: bool} $data        The data to return.
 		 * @param int                        $attendee_id The ID of the attendee that was checked in.
