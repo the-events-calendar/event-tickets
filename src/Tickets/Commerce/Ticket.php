@@ -7,6 +7,7 @@ use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Status\Status_Interface;
 use TEC\Tickets\Commerce\Utils\Value;
+use Tribe__Date_Utils;
 use Tribe__Tickets__Global_Stock as Event_Stock;
 use Tribe__Utils__Array as Arr;
 
@@ -1116,4 +1117,46 @@ class Ticket {
 			delete_post_meta( $ticket->ID, $key );
 		}
 	}
+	
+	/**
+	 * Check if a ticket is on sale.
+	 *
+	 * @since TBD
+	 *
+	 * @param \Tribe__Tickets__Ticket_Object $ticket The ticket object.
+	 *
+	 * @return bool Whether the ticket is on sale.
+	 */
+	public function is_on_sale( \Tribe__Tickets__Ticket_Object $ticket ): bool {
+		$sale_checked = get_post_meta( $ticket->ID, static::$sale_price_checked_key, true );
+		
+		if ( ! $sale_checked ) {
+			return false;
+		}
+		
+		$sale_price = get_post_meta( $ticket->ID, static::$sale_price_key, true );
+		
+		if ( empty( $sale_price ) ) {
+			return false;
+		}
+		
+		$start_date = get_post_meta( $ticket->ID, static::$sale_price_start_date_key, true );
+		$end_date   = get_post_meta( $ticket->ID, static::$sale_price_end_date_key, true );
+		
+		if ( empty( $start_date ) && empty( $end_date ) ) {
+			return true;
+		}
+		
+		$start = $ticket->get_date( $start_date );
+		$end   = $ticket->get_date( $end_date );
+		$now   = $ticket->get_date( 'now' );
+		
+		// If the sale has no end date and the start date is in the past, the sale is on.
+		if ( $start <= $now && empty( $end ) ) {
+			return true;
+		}
+		
+		return $now >= $start && $now <= $end;
+	}
+	
 }
