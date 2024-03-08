@@ -10,7 +10,7 @@ import { includes } from 'lodash';
 import { dispatch as wpDispatch, select as wpSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 import { createBlock } from '@wordpress/blocks';
-import { doAction } from "@wordpress/hooks";
+import { doAction } from '@wordpress/hooks';
 
 /**
  * Internal dependencies
@@ -20,14 +20,14 @@ import * as types from './types';
 import * as actions from './actions';
 import * as selectors from './selectors';
 import { DEFAULT_STATE } from './reducer';
-import { DEFAULT_STATE as TICKET_HEADER_IMAGE_DEFAULT_STATE, } from './reducers/header-image';
-import { DEFAULT_STATE as TICKET_DEFAULT_STATE, } from './reducers/tickets/ticket';
+import { DEFAULT_STATE as TICKET_HEADER_IMAGE_DEFAULT_STATE } from './reducers/header-image';
+import { DEFAULT_STATE as TICKET_DEFAULT_STATE } from './reducers/tickets/ticket';
 import * as rsvpActions from '@moderntribe/tickets/data/blocks/rsvp/actions';
 import {
 	DEFAULT_STATE as RSVP_HEADER_IMAGE_DEFAULT_STATE,
 } from '@moderntribe/tickets/data/blocks/rsvp/reducers/header-image';
 import * as utils from '@moderntribe/tickets/data/utils';
-import { api, globals, moment as momentUtil, time as timeUtil, } from '@moderntribe/common/utils';
+import { api, globals, moment as momentUtil, time as timeUtil } from '@moderntribe/common/utils';
 import { plugins } from '@moderntribe/common/data';
 import { MOVE_TICKET_SUCCESS } from '@moderntribe/tickets/data/shared/move/types';
 import * as moveSelectors from '@moderntribe/tickets/data/shared/move/selectors';
@@ -38,7 +38,7 @@ import {
 	hasPostTypeChannel,
 	isTribeEventPostType,
 } from '@moderntribe/tickets/data/shared/sagas';
-import { isTicketEditableFromPost } from "@moderntribe/tickets/data/blocks/ticket/utils";
+import { isTicketEditableFromPost } from '@moderntribe/tickets/data/blocks/ticket/utils';
 
 const {
 	UNLIMITED,
@@ -83,64 +83,64 @@ export function formatTicketFromRestToAttributeFormat( ticket ) {
 	const available = ticket?.capacity_details?.available || 0;
 	const capacityType = ticket?.capacity_details?.global_stock_mode || constants.UNLIMITED;
 	const sold = ticket?.capacity_details?.sold || 0;
-	const isShared = capacityType === constants.SHARED
-		|| capacityType === constants.CAPPED
-		|| capacityType === constants.GLOBAL;
+	const isShared = capacityType === constants.SHARED ||
+		capacityType === constants.CAPPED ||
+		capacityType === constants.GLOBAL;
 
 	return {
-		"id": ticket.id,
-		"type": ticket.type,
-		"title": ticket.title,
-		"description": ticket.description,
-		"capacityType": capacityType,
-		"price": ticket?.cost || '0.00',
-		"capacity": capacity,
-		"available": available,
-		"sharedCapacity": capacity,
-		"sold": sold,
-		"shareSold": sold,
-		"isShared": isShared,
-		"currencyDecimalPoint": ticket?.cost_details?.currency_decimal_separator || '.',
-		"currencyNumberOfDecimals": ticket?.cost_details?.currency_decimal_numbers || 2,
-		"currencyPosition": ticket?.cost_details?.currency_position || 'prefix',
-		"currencySymbol": ticket?.cost_details.currency_symbol || '$',
-		"currencyThousandsSep": ticket?.cost_details?.currency_thousand_separator || ','
+		id: ticket.id,
+		type: ticket.type,
+		title: ticket.title,
+		description: ticket.description,
+		capacityType: capacityType,
+		price: ticket?.cost || '0.00',
+		capacity: capacity,
+		available: available,
+		sharedCapacity: capacity,
+		sold: sold,
+		shareSold: sold,
+		isShared: isShared,
+		currencyDecimalPoint: ticket?.cost_details?.currency_decimal_separator || '.',
+		currencyNumberOfDecimals: ticket?.cost_details?.currency_decimal_numbers || 2,
+		currencyPosition: ticket?.cost_details?.currency_position || 'prefix',
+		currencySymbol: ticket?.cost_details.currency_symbol || '$',
+		currencyThousandsSep: ticket?.cost_details?.currency_thousand_separator || ',',
 	};
 }
 
-export function* updateUneditableTickets(  ) {
-	yield (put (actions.setUneditableTicketsLoading(true)));
+export function* updateUneditableTickets() {
+	yield ( put( actions.setUneditableTicketsLoading( true ) ) );
 
-	const post = yield call ( () => wpSelect ( 'core/editor' ).getCurrentPost() );
+	const post = yield call( () => wpSelect( 'core/editor' ).getCurrentPost() );
 
-	if (!post?.id) {
+	if ( ! post?.id ) {
 		return;
 	}
 
 	// Get **all** the tickets, not just the uneditable ones. Filtering will take care of removing the editable ones.
-	const { response, data = { tickets: [] } } = yield call ( wpREST, {
+	const { response, data = { tickets: [] } } = yield call( wpREST, {
 		namespace: 'tribe/tickets/v1',
 		path: `tickets/?include_post=${ post.id }&per_page=30`,
 		initParams: {
-			method: 'GET'
+			method: 'GET',
 		},
 	} );
 
-	if ( response?.status !== 200 || !Array.isArray ( data?.tickets ) ) {
+	if ( response?.status !== 200 || ! Array.isArray( data?.tickets ) ) {
 		// Something went wrong, bail out.
 		return null;
 	}
 
 	const restFormatUneditableTickets = data.tickets
 		// Remove the editable tickets.
-		.filter ( ( ticket ) => !isTicketEditableFromPost ( ticket.id, ticket.type, post ) );
+		.filter( ( ticket ) => ! isTicketEditableFromPost( ticket.id, ticket.type, post ) );
 
-	let uneditableTickets = [];
+	const uneditableTickets = [];
 
 	if ( restFormatUneditableTickets.length >= 1 ) {
 		for ( const ticket of restFormatUneditableTickets ) {
-			const formattedUneditableTicket = yield formatTicketFromRestToAttributeFormat ( ticket );
-			uneditableTickets.push ( formattedUneditableTicket );
+			const formattedUneditableTicket = yield formatTicketFromRestToAttributeFormat( ticket );
+			uneditableTickets.push( formattedUneditableTicket );
 		}
 	}
 
@@ -148,13 +148,12 @@ export function* updateUneditableTickets(  ) {
 	 * Fires after the uneditable tickets have been updated from the backend.
 	 *
 	 * @since 5.8.0
-	 *
 	 * @param {Object[]} uneditableTickets The uneditable tickets just fetched from the backend.
 	 */
 	doAction( 'tec.tickets.blocks.uneditableTicketsUpdated', uneditableTickets );
 
-	yield put ( actions.setUneditableTickets ( uneditableTickets ) );
-	yield (put (actions.setUneditableTicketsLoading(false)));
+	yield put( actions.setUneditableTickets( uneditableTickets ) );
+	yield put( actions.setUneditableTicketsLoading( false ) );
 }
 
 export function* setTicketsInitialState( action ) {
@@ -165,10 +164,10 @@ export function* setTicketsInitialState( action ) {
 	const header = parseInt( get( 'header', TICKET_HEADER_IMAGE_DEFAULT_STATE.id ), 10 );
 	const sharedCapacity = get( 'sharedCapacity' );
 	// Shape: [ {id: int, type: string}, ... ].
-	const allTickets = JSON.parse(get( 'tickets', '[]' ));
+	const allTickets = JSON.parse( get( 'tickets', '[]' ) );
 
-	const {editableTickets, uneditableTickets} = allTickets.reduce( ( acc, ticket ) => {
-		if ( isTicketEditableFromPost ( ticket.id, ticket.type, currentPost ) ) {
+	const { editableTickets, uneditableTickets } = allTickets.reduce( ( acc, ticket ) => {
+		if ( isTicketEditableFromPost( ticket.id, ticket.type, currentPost ) ) {
 			acc.editableTickets.push( ticket );
 		} else {
 			acc.uneditableTickets.push( ticket );
@@ -178,14 +177,14 @@ export function* setTicketsInitialState( action ) {
 
 	// Get only the IDs of the tickets that are not in the block list already.
 	const ticketsInBlock = yield select( selectors.getTicketsIdsInBlocks );
-	const ticketsDiff = editableTickets.filter ( ( item ) => !includes ( ticketsInBlock, item.id ) );
+	const ticketsDiff = editableTickets.filter( ( item ) => ! includes( ticketsInBlock, item.id ) );
 
 	if ( ticketsDiff.length >= 1 ) {
-		yield call ( createMissingTicketBlocks, ticketsDiff.map ( ( ticket ) => ticket.id ) );
+		yield call( createMissingTicketBlocks, ticketsDiff.map( ( ticket ) => ticket.id ) );
 	}
 
 	if ( uneditableTickets.length >= 1 ) {
-		yield put ( actions.setUneditableTickets ( uneditableTickets ) );
+		yield put( actions.setUneditableTickets( uneditableTickets ) );
 	}
 
 	// Meta value is '0' however fields use empty string as default
@@ -1355,7 +1354,7 @@ export function* handler( action ) {
 			break;
 
 		case types.UPDATE_UNEDITABLE_TICKETS:
-			yield call ( updateUneditableTickets );
+			yield call( updateUneditableTickets );
 
 		default:
 			break;
