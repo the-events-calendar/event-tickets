@@ -18,7 +18,6 @@ use TEC\Tickets\Emails\Dispatcher;
 use TEC\Tickets\Emails\Email\Purchase_Confirmation_Email_Interface;
 use TEC\Tickets\Emails\Email_Abstract;
 use TEC\Tickets\Emails\JSON_LD\Reservation_Schema;
-use TEC\Events\Integrations\Plugins\Event_Tickets\Emails\Hooks as TEC_Email_Hooks;
 
 /**
  * Class Series_Pass.
@@ -64,6 +63,13 @@ class Series_Pass extends Email_Abstract implements Purchase_Confirmation_Email_
 	 */
 	private Upcoming_Events $upcoming_events;
 
+	/**
+	 * Series_Pass constructor.
+	 *
+	 * @since TBD
+	 *
+	 * @param Upcoming_Events $upcoming_events The class handling the fetching of Upcoming Series Events.
+	 */
 	public function __construct( Upcoming_Events $upcoming_events ) {
 		$this->upcoming_events = $upcoming_events;
 	}
@@ -94,9 +100,8 @@ class Series_Pass extends Email_Abstract implements Purchase_Confirmation_Email_
 
 		$email_description = sprintf(
 		// Translators: %1$s is the series pass singular uppercase, %2$s is the knowledge base link.
-			esc_html_x( '%1$s purchasers will receive an email including their pass and additional info ' .
-			            'upon completion of purchase. Customize the content of this specific email using the tools ' .
-			            'below. You can also use email placeholders and customize email templates. %2$s.',
+			esc_html_x(
+				'%1$s purchasers will receive an email including their pass and additional info upon completion of purchase. Customize the content of this specific email using the tools below. You can also use email placeholders and customize email templates. %2$s.',
 				'about Ticket Email',
 				'event-tickets'
 			),
@@ -112,22 +117,22 @@ class Series_Pass extends Email_Abstract implements Purchase_Confirmation_Email_
 			[
 				'type' => 'html',
 				'html' => '<h2>' . esc_html(
-						sprintf(
+					sprintf(
 						// Translators: %s is the series pass singular uppercase.
-							_x(
-								'%s Email',
-								'',
-								'event-tickets'
-							),
-							tec_tickets_get_series_pass_singular_uppercase( 'series-pass-email-tab-title' )
-						)
-					) . '</h2>',
+						_x(
+							'%s Email',
+							'',
+							'event-tickets'
+						),
+						tec_tickets_get_series_pass_singular_uppercase( 'series-pass-email-tab-title' )
+					)
+				) . '</h2>',
 			],
 			[
 				'type' => 'html',
 				'html' => '<p>' . $email_description . '</p>',
 			],
-			$this->get_option_key( 'enabled' )                => [
+			$this->get_option_key( 'enabled' )            => [
 				'type'            => 'toggle',
 				'label'           => sprintf(
 				// Translators: %s - Title of email.
@@ -137,7 +142,7 @@ class Series_Pass extends Email_Abstract implements Purchase_Confirmation_Email_
 				'default'         => true,
 				'validation_type' => 'boolean',
 			],
-			$this->get_option_key( 'subject' )                => [
+			$this->get_option_key( 'subject' )            => [
 				'type'                => 'text',
 				'label'               => esc_html__( 'Subject', 'event-tickets' ),
 				'default'             => $this->get_default_subject(),
@@ -145,7 +150,7 @@ class Series_Pass extends Email_Abstract implements Purchase_Confirmation_Email_
 				'size'                => 'large',
 				'validation_callback' => 'is_string',
 			],
-			$this->get_option_key( 'heading' )                => [
+			$this->get_option_key( 'heading' )            => [
 				'type'                => 'text',
 				'label'               => esc_html__( 'Heading', 'event-tickets' ),
 				'default'             => $this->get_default_heading(),
@@ -153,7 +158,7 @@ class Series_Pass extends Email_Abstract implements Purchase_Confirmation_Email_
 				'size'                => 'large',
 				'validation_callback' => 'is_string',
 			],
-			$this->get_option_key( 'additional-content' )     => [
+			$this->get_option_key( 'additional-content' ) => [
 				'type'            => 'wysiwyg',
 				'label'           => esc_html__( 'Additional content', 'event-tickets' ),
 				'default'         => '',
@@ -183,17 +188,17 @@ class Series_Pass extends Email_Abstract implements Purchase_Confirmation_Email_
 				'tooltip'         => esc_html_x( 'Include the series\' excerpt content in Series email', 'Series pass email settings', 'event-tickets' ),
 				'validation_type' => 'boolean',
 			],
-			$this->get_option_key( 'show-events-in-email' )   => [
+			$this->get_option_key( 'show-events-in-email' ) => [
 				'type'            => 'checkbox_bool',
 				'label'           => esc_html_x( 'Events in Series', 'Series pass email settings', 'event-tickets' ),
 				'default'         => true,
 				'tooltip'         => esc_html_x( 'Show the next five upcoming Series events in email', 'Series pass email settings', 'event-tickets' ),
 				'validation_type' => 'boolean',
-			]
+			],
 		];
 	}
 
-	/*
+	/**
 	 * Get email title.
 	 *
 	 * @since 5.5.9
@@ -202,8 +207,8 @@ class Series_Pass extends Email_Abstract implements Purchase_Confirmation_Email_
 	 */
 	public function get_title(): string {
 		return esc_html(
-		// Translators: %s is the series pass singular uppercase.
 			sprintf(
+				// Translators: %s is the series pass singular uppercase.
 				_x(
 					'%s Email',
 					'Series Pass email title',
@@ -254,58 +259,60 @@ class Series_Pass extends Email_Abstract implements Purchase_Confirmation_Email_
 	 *
 	 * @since TBD
 	 *
-	 * @param $args
+	 * @param array<string,mixed> $args The preview context args.
 	 *
 	 * @return array<string,mixed> The default preview context.
 	 */
 	public function get_default_preview_context( $args = [] ): array {
 		$total_value = Value::create( '100' );
 
-		$order = new \WP_Post( (object) [
-			'ID'               => - 23,
-			'gateway_order_id' => 'test_cd7d068a5ef24c02',
-			'items'            => [
-				[
-					'ticket_title' => __( 'Adult all access', 'event-tickets' ),
-					'ticket_id'    => - 24,
-					'quantity'     => 2,
-					'extra'        => [
-						'optout' => true,
-						'iac'    => 'none',
+		$order = new \WP_Post(
+			(object) [
+				'ID'               => - 23,
+				'gateway_order_id' => 'test_cd7d068a5ef24c02',
+				'items'            => [
+					[
+						'ticket_title' => __( 'Adult all access', 'event-tickets' ),
+						'ticket_id'    => - 24,
+						'quantity'     => 2,
+						'extra'        => [
+							'optout' => true,
+							'iac'    => 'none',
+						],
+						'price'        => 50.0,
+						'sub_total'    => 50.0,
+						'event_id'     => - 96,
 					],
-					'price'        => 50.0,
-					'sub_total'    => 50.0,
-					'event_id'     => - 96,
-				]
-			],
-			'total'            => $total_value,
-			'total_value'      => $total_value,
-			'purchaser'        => [
-				'first_name' => __( 'John', 'event-tickets' ),
-				'name'       => __( 'John Doe', 'event-tickets' ),
-				'email'      => 'john@doe.com',
-			],
-			'purchaser_name'   => __( 'John Doe', 'event-tickets' ),
-			'purchaser_email'  => 'john@doe.com',
-			'gateway'          => Gateway::get_key(),
-			'status'           => __( 'Completed', 'event-tickets' ),
-			'status_slug'      => 'completed',
-			'tickets'          => Preview_Data::get_tickets(),
-			'post_author'      => 1,
-			'post_date'        => '2023-04-17 17:06:56',
-			'post_date_gmt'    => '2023-04-17 22:06:56',
-			'purchase_time'    => '2023-04-17 17:06:56',
-			'purchase_date'    => '2023-04-17 17:06:56',
-			'post_title'       => __( 'Preview Order', 'event-tickets' ),
-			'post_status'      => 'tec-tc-completed',
-			'post_name'        => 'preview-order-test_cd7d068a5ef24c02',
-			'post_type'        => Order::POSTTYPE,
-			'filter'           => 'raw',
-			'provider'         => Module::class,
-			'gateway_payload'  => [
-				'tec-tc-completed' => [],
-			],
-		] );
+				],
+				'total'            => $total_value,
+				'total_value'      => $total_value,
+				'purchaser'        => [
+					'first_name' => __( 'John', 'event-tickets' ),
+					'name'       => __( 'John Doe', 'event-tickets' ),
+					'email'      => 'john@doe.com',
+				],
+				'purchaser_name'   => __( 'John Doe', 'event-tickets' ),
+				'purchaser_email'  => 'john@doe.com',
+				'gateway'          => Gateway::get_key(),
+				'status'           => __( 'Completed', 'event-tickets' ),
+				'status_slug'      => 'completed',
+				'tickets'          => Preview_Data::get_tickets(),
+				'post_author'      => 1,
+				'post_date'        => '2023-04-17 17:06:56',
+				'post_date_gmt'    => '2023-04-17 22:06:56',
+				'purchase_time'    => '2023-04-17 17:06:56',
+				'purchase_date'    => '2023-04-17 17:06:56',
+				'post_title'       => __( 'Preview Order', 'event-tickets' ),
+				'post_status'      => 'tec-tc-completed',
+				'post_name'        => 'preview-order-test_cd7d068a5ef24c02',
+				'post_type'        => Order::POSTTYPE,
+				'filter'           => 'raw',
+				'provider'         => Module::class,
+				'gateway_payload'  => [
+					'tec-tc-completed' => [],
+				],
+			]
+		);
 
 		$header_image_url = plugins_url(
 			'src/resources/images/series-pass-example-header-image.png',
@@ -333,15 +340,13 @@ class Series_Pass extends Email_Abstract implements Purchase_Confirmation_Email_
 			],
 			'email'                  => $this,
 			'additional_content'     => _x(
-				'All films are shown at the Sidewalk Film Center - 1821 2nd Ave. N., Birmingham, AL 35203. ' .
-				'Seating is first come first serve, so arrive on time.' .
-				' All proceeds from this film series benefit Sidewalk Film Festival. Thank you for your support!   ',
+				'All films are shown at the Sidewalk Film Center - 1821 2nd Ave. N., Birmingham, AL 35203. Seating is first come first serve, so arrive on time. All proceeds from this film series benefit Sidewalk Film Festival. Thank you for your support!',
 				'Series Pass Email preview additional content',
 				'event-tickets'
 			),
 			'show_post_description'  => tribe_is_truthy( tribe_get_request_var( 'includeSeriesExcerpt', true ) ),
 			'show_events_in_email'   => tribe_is_truthy( tribe_get_request_var( 'showEventsInEmail', true ) ),
-			'event' => null
+			'event'                  => null,
 		];
 	}
 
@@ -351,12 +356,11 @@ class Series_Pass extends Email_Abstract implements Purchase_Confirmation_Email_
 	 * @since TBD
 	 *
 	 * @param string $option  The option name.
-	 * @param bool   $default The default value.
 	 *
 	 * @return bool Whether the boolean email option is enabled.
 	 */
-	private function has_option_value( string $option, bool $default ): bool {
-		return tribe_is_truthy( tribe_get_option( $this->get_option_key( $option ), $default ) );
+	private function has_option_value( string $option ): bool {
+		return tribe_is_truthy( tribe_get_option( $this->get_option_key( $option ), true ) );
 	}
 
 	/**
@@ -380,7 +384,8 @@ class Series_Pass extends Email_Abstract implements Purchase_Confirmation_Email_
 		 * Whether upcoming Events should be shown in the email or not, the thumbnail should be pulled from the
 		 * first upcoming Event.
 		 */
-		if ( $first_upcoming_event && $thumbnail_id = get_post_thumbnail_id( $first_upcoming_event ) ) {
+		$thumbnail_id = $first_upcoming_event ? get_post_thumbnail_id( $first_upcoming_event ) : null;
+		if ( $first_upcoming_event && $thumbnail_id ) {
 			$thumbnail = [
 				'url'   => $thumbnail_id ? get_the_post_thumbnail_url( $first_upcoming_event ) : null,
 				'alt'   => $thumbnail_id ? get_post_meta( $thumbnail_id, '_wp_attachment_image_alt', true ) : null,
@@ -400,8 +405,8 @@ class Series_Pass extends Email_Abstract implements Purchase_Confirmation_Email_
 			'tickets'                   => $this->get( 'tickets' ),
 			'additional_content_header' => _x( 'Additional Information', 'Series pass email additional content header', 'event-tickets' ),
 			'additional_content'        => $this->get_additional_content(),
-			'show_post_description'     => $this->has_option_value( 'include-series-excerpt', true ),
-			'show_events_in_email'      => $this->has_option_value( 'show-events-in-email', true ),
+			'show_post_description'     => $this->has_option_value( 'include-series-excerpt' ),
+			'show_events_in_email'      => $this->has_option_value( 'show-events-in-email' ),
 			'json_ld'                   => $json_ld,
 			'post_description'          => get_the_excerpt( $series_id ),
 			// Set the 'event' explicitly to null to avoid TEC filters from applying.
