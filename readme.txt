@@ -206,6 +206,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Site Health will no longer fatal when providers are not setup. [ET-2047]
 * Tweak - Use dynamic ticket labels within the block editor's Tickets Block. [ET-690]
 * Tweak - Added filters: `tec_tickets_move_attendees_ids`, `tec_tickets_attendee_manual_uncheckin_success_data`, `tec_tickets_attendee_uncheckin`
+* Security - Added filterable role access to the attendee page (`tec_tickets_attendees_page_role_access`). [SVUL-1]
 * Language - 1 new strings added, 56 updated, 2 fuzzied, and 0 obsoleted
 
 = [5.8.2] 2024-02-19 =
