@@ -44,9 +44,13 @@ $disabled = apply_filters( 'tribe_tickets_price_disabled', false, $ticket_id );
 $disabled = (bool) filter_var( $disabled, FILTER_VALIDATE_BOOLEAN );
 $ticket   = empty( $provider ) ? $ticket : $provider->get_ticket( $post_id, $ticket_id );
 
+// If the ticket has a WC Memberships discount for the currently-logged-in user.
+$ticket_has_wc_member_discount = tribe_tickets_ticket_in_wc_membership_for_user( $ticket_id );
+
 if ( ! empty( $ticket ) ) {
 	if (
 		$ticket->on_sale
+		|| $ticket_has_wc_member_discount
 	) {
 		$price      = $ticket->regular_price;
 		$sale_price = $ticket->price;
@@ -97,4 +101,30 @@ if ( ! empty( $ticket ) ) {
 		do_action( 'tribe_tickets_price_input_description', $ticket_id, $post_id, $this->get_values() );
 		?>
 	</div>
+
+	<?php if ( $ticket && ( $ticket->on_sale || $ticket_has_wc_member_discount ) ) : ?>
+
+	<?php
+		$sale_price_label = esc_html__( 'Sale Price:', 'event-tickets' );
+		$sale_price_desc  = esc_html__( 'Current sale price. This can be managed via the product editor.', 'event-tickets' );
+
+		if ( $ticket_has_wc_member_discount ) {
+			$sale_price_label = esc_html__( 'Sale/Member Price:', 'event-tickets' );
+			$sale_price_desc  = esc_html__( 'Current sale or member price. This can be managed via the product editor.', 'event-tickets' );
+		}
+		?>
+		<div class="input_block">
+			<label for="ticket_sale_price" class="ticket_form_label ticket_form_left"><?php echo esc_html( $sale_price_label ); ?></label>
+			<input
+				type="text"
+				id="ticket_sale_price"
+				name='ticket_sale_price'
+				class="ticket_field ticket_form_right"
+				size="7"
+				value="<?php echo esc_attr( $sale_price ); ?>"
+				readonly
+			/>
+			<p class="description ticket_form_right"><?php echo esc_html( $sale_price_desc ); ?></p>
+		</div>
+	<?php endif; ?>
 </div>
