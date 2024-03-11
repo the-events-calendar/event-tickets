@@ -135,9 +135,15 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 			return '&mdash;';
 		}
 
-		$percentage     = $this->get_percentage_string( $post_id, null, $total, $not_going );
-		$content        = sprintf( '<div>%s</div>%s', $total - $not_going, $percentage );
-		$attendees_link = tribe( 'tickets.attendees' )->get_report_link( $post );
+		$percentage = $this->get_percentage_string( $post_id, null, $total, $not_going );
+		$content    = sprintf( '<div>%s</div>%s', $total - $not_going, $percentage );
+		$attendees  = tribe( 'tickets.attendees' );
+
+		if ( ! $attendees->can_access_page( $post_id ) ) {
+			return $content;
+		}
+
+		$attendees_link = $attendees->get_report_link( $post );
 
 		return sprintf( '<a href="%s" target="_blank" class="tribe-tickets-column-attendees-link">%s</a>', $attendees_link, $content );
 	}
