@@ -360,7 +360,9 @@ class Ticket {
 		$return->name             = $product->post_title;
 		$return->menu_order       = $product->menu_order;
 		$return->post_type        = $product->post_type;
-		$return->price            = get_post_meta( $ticket_id, '_price', true );
+		$return->on_sale          = $this->is_on_sale( $return );
+		$return->price            = $this->get_price( $return );
+		$return->regular_price    = $this->get_regular_price( $return->ID );
 		$return->value            = Value::create( $return->price );
 		$return->provider_class   = Module::class;
 		$return->admin_link       = '';
@@ -969,8 +971,10 @@ class Ticket {
 		if ( ! $ticket instanceof Models\Ticket_Model ) {
 			return;
 		}
-
-		return $ticket->get_value();
+		
+		$ticket_object = $this->get_ticket( $product );
+		
+		return $ticket_object->on_sale ? $ticket->get_sale_price_value() : $ticket->get_price_value();
 	}
 
 	/**
