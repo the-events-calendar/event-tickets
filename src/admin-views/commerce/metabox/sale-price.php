@@ -18,7 +18,7 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
 
 ?>
 <div class="ticket_sale_price_wrapper ticket_form_right">
-	<!--Checkbox to toggle sale price field-->
+	<!--Checkbox to toggle sale price fields-->
 	<div>
 		<input
 			type="checkbox"
@@ -30,14 +30,14 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
 			for="ticket_add_sale_price"
 			class="ticket_form_label"
 		>
-			<?php esc_html_e( 'Add Sale Price:', 'event-tickets' ); ?>
+			<?php esc_html_e( 'Add Sale Price', 'event-tickets' ); ?>
 		</label>
 	</div>
 	<div class="ticket_sale_price tribe-dependent"
 		data-depends="#ticket_add_sale_price"
 		data-condition-is-checked
 	>
-		<div>
+		<div class="ticket_sale_price-field">
 			<label for="ticket_sale_price" class="ticket_form_label">
 				<?php esc_html_e( 'Sale Price:', 'event-tickets' ); ?>
 			</label>
@@ -53,7 +53,7 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
 				data-validation-error="<?php echo esc_attr( wp_json_encode( $sale_price_errors ) ); ?>"
 			/>
 		</div>
-		<div>
+		<div class="ticket_sale_price-field">
 			<label class="ticket_form_label" for="ticket_start_date">
 				<?php esc_html_e( 'On sale from:', 'event-tickets' ); ?>
 			</label>
