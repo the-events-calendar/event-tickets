@@ -366,8 +366,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		var $ticket_end_time = $( document.getElementById( 'ticket_end_time' ) );
 		var startofweek = 0;
 		const ticketNameLabel = document.getElementById('ticket_name_label');
-        var $ticket_sale_start_date = $( document.getElementById( 'ticket_sale_start_date' ) );
-        var $ticket_sale_end_date = $( document.getElementById( 'ticket_sale_end_date' ) );
+		var $ticket_sale_start_date = $( document.getElementById( 'ticket_sale_start_date' ) );
+		var $ticket_sale_end_date = $( document.getElementById( 'ticket_sale_end_date' ) );
 
 		/**
 		 * There might be cases when Tickets is used in isolation where TEC is not
@@ -838,7 +838,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		$globalField.val( 'capped' );
 	} );
 
-	$document.on( 'keyup', '#ticket_price', function( e ) {
+	$document.on( 'keyup', '#ticket_price, #ticket_sale_price', function( e ) {
 		e.preventDefault();
 
 		var decimal_point = price_format.decimal;
