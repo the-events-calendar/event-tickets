@@ -1185,4 +1185,46 @@ class Ticket {
 		return $now >= $start && $now <= $end;
 	}
 	
+	/**
+	 * Get the price of a ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param \Tribe__Tickets__Ticket_Object $ticket The ticket object.
+	 *
+	 * @return string The price of the ticket.
+	 */
+	public function get_price( \Tribe__Tickets__Ticket_Object $ticket ): string {
+		if ( $ticket->on_sale ) {
+			return $this->get_sale_price( $ticket->ID );
+		}
+		return $this->get_regular_price( $ticket->ID );
+	}
+	
+	/**
+	 * Get the sale price of a ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_id The ticket post ID.
+	 *
+	 * @return string The sale price of the ticket.
+	 */
+	public function get_sale_price( int $ticket_id ): string {
+		$sale_price = get_post_meta( $ticket_id, static::$sale_price_key, true );
+		return $sale_price ? $sale_price->get_string() : '';
+	}
+	
+	/**
+	 * Get the regular price of a ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_id The ticket post ID.
+	 *
+	 * @return string The regular price of the ticket.
+	 */
+	public function get_regular_price( int $ticket_id ): string {
+		return get_post_meta( $ticket_id, '_price', true );
+	}
 }
