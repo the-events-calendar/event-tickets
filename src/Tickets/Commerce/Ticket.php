@@ -982,16 +982,26 @@ class Ticket {
 	 * Returns the ticket price html template
 	 *
 	 * @since 5.1.9
+	 * @since TBD Updated sale price template arguments.
 	 *
-	 * @param int|object    $product
-	 * @param array|boolean $attendee
+	 * @param int|object    $product The ticket post ID or object.
+	 * @param array|boolean $attendee The attendee data.
 	 *
 	 * @return string
 	 */
 	public function get_price_html( $product, $attendee = false ) {
-		$value = $this->get_price_value( $product );
-
-		return $this->get_template()->template( 'price', [ 'price' => $value ], false );
+		$value  = $this->get_price_value( $product );
+		$ticket = $this->get_ticket( $product );
+		
+		return $this->get_template()->template(
+			'price',
+			[
+				'on_sale'       => $ticket->on_sale,
+				'price'         => $value,
+				'regular_price' => Value::create( $this->get_regular_price( $product ) ),
+			],
+			false
+		);
 	}
 
 	/**
