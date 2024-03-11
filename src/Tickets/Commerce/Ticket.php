@@ -7,9 +7,10 @@ use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Status\Status_Interface;
 use TEC\Tickets\Commerce\Utils\Value;
-use Tribe__Date_Utils;
 use Tribe__Tickets__Global_Stock as Event_Stock;
 use Tribe__Utils__Array as Arr;
+use Tribe__Date_Utils as Date_Utils;
+use Tribe__Tickets__Ticket_Object as Ticket_Object;
 
 /**
  * Class Ticket.
@@ -327,7 +328,7 @@ class Ticket {
 	 *
 	 * @param int|\WP_Post $ticket_id
 	 *
-	 * @return null|\Tribe__Tickets__Ticket_Object
+	 * @return null|Ticket_Object
 	 */
 	public function get_ticket( $ticket_id ) {
 		$ticket_id = $ticket_id instanceof \WP_Post ? $ticket_id->ID : $ticket_id;
@@ -338,7 +339,7 @@ class Ticket {
 
 		$cached = wp_cache_get( (int) $ticket_id, 'tec_tickets' );
 		if ( $cached && is_array( $cached ) ) {
-			return new \Tribe__Tickets__Ticket_Object( $cached );
+			return new Ticket_Object( $cached );
 		}
 
 		$product = get_post( $ticket_id );
@@ -353,7 +354,7 @@ class Ticket {
 
 		$event_id = get_post_meta( $ticket_id, static::$event_relation_meta_key, true );
 
-		$return = new \Tribe__Tickets__Ticket_Object();
+		$return = new Ticket_Object();
 
 		$return->description      = $product->post_excerpt;
 		$return->ID               = $ticket_id;
@@ -417,7 +418,7 @@ class Ticket {
 		 */
 		$ticket = apply_filters( 'tec_tickets_commerce_get_ticket_legacy', $return, $event_id, $ticket_id );
 
-		if ( $ticket instanceof \Tribe__Tickets__Ticket_Object ) {
+		if ( $ticket instanceof Ticket_Object ) {
 			wp_cache_set( (int) $ticket->ID, $ticket->to_array(), 'tec_tickets' );
 		}
 
@@ -735,7 +736,7 @@ class Ticket {
 		 * @since 5.2.0
 		 *
 		 * @param int                            $post_id  Post ID of post the ticket is tied to
-		 * @param \Tribe__Tickets__Ticket_Object $ticket   Ticket that was just saved
+		 * @param Ticket_Object $ticket   Ticket that was just saved
 		 * @param array                          $raw_data Ticket data
 		 * @param string                         $class    Commerce engine class
 		 */
@@ -746,10 +747,10 @@ class Ticket {
 		 *
 		 * @since 5.2.0
 		 *
-		 * @param int                            $post_id  Post ID of post the ticket is tied to
-		 * @param \Tribe__Tickets__Ticket_Object $ticket   Ticket that was just saved
-		 * @param array                          $raw_data Ticket data
-		 * @param string                         $class    Commerce engine class
+		 * @param int           $post_id  Post ID of post the ticket is tied to
+		 * @param Ticket_Object $ticket   Ticket that was just saved
+		 * @param array         $raw_data Ticket data
+		 * @param string        $class    Commerce engine class
 		 */
 		do_action( 'tec_tickets_commerce_after_save_ticket', $post_id, $ticket, $raw_data, static::class );
 
@@ -760,10 +761,10 @@ class Ticket {
 		 *
 		 * @since 5.2.0
 		 *
-		 * @param int                            $post_id  Post ID of post the ticket is tied to
-		 * @param \Tribe__Tickets__Ticket_Object $ticket   Ticket that was just saved
-		 * @param array                          $raw_data Ticket data
-		 * @param string                         $class    Commerce engine class
+		 * @param int           $post_id  Post ID of post the ticket is tied to
+		 * @param Ticket_Object $ticket   Ticket that was just saved
+		 * @param array         $raw_data Ticket data
+		 * @param string        $class    Commerce engine class
 		 */
 		do_action( "event_tickets_after_{$save_type}_ticket", $post_id, $ticket, $raw_data, static::class );
 
@@ -774,10 +775,10 @@ class Ticket {
 		 *
 		 * @since 5.2.0
 		 *
-		 * @param int                            $post_id  Post ID of post the ticket is tied to
-		 * @param \Tribe__Tickets__Ticket_Object $ticket   Ticket that was just saved
-		 * @param array                          $raw_data Ticket data
-		 * @param string                         $class    Commerce engine class
+		 * @param int           $post_id  Post ID of post the ticket is tied to
+		 * @param Ticket_Object $ticket Ticket that was just saved
+		 * @param array         $raw_data Ticket data
+		 * @param string        $class    Commerce engine class
 		 */
 		do_action( 'event_tickets_after_save_ticket', $post_id, $ticket, $raw_data, static::class );
 
@@ -1080,12 +1081,12 @@ class Ticket {
 	 *
 	 * @since TBD
 	 *
-	 * @param \Tribe__Tickets__Ticket_Object $ticket   The ticket post object.
-	 * @param array<string,mixed>            $raw_data The raw data from the request.
+	 * @param Ticket_Object       $ticket   The ticket post object.
+	 * @param array<string,mixed> $raw_data The raw data from the request.
 	 *
 	 * @return void
 	 */
-	public function process_sale_price_data( \Tribe__Tickets__Ticket_Object $ticket, array $raw_data ): void {
+	public function process_sale_price_data( Ticket_Object $ticket, array $raw_data ): void {
 		$sale_price_enabled = tribe_is_truthy( Arr::get( $raw_data, 'ticket_add_sale_price', false ) );
 		update_post_meta( $ticket->ID, static::$sale_price_checked_key, $sale_price_enabled );
 		
@@ -1109,21 +1110,21 @@ class Ticket {
 	 *
 	 * @since TBD
 	 *
-	 * @param \Tribe__Tickets__Ticket_Object $ticket   The ticket post object.
-	 * @param array<string,mixed>            $raw_data The raw data from the request.
+	 * @param Ticket_Object       $ticket   The ticket post object.
+	 * @param array<string,mixed> $raw_data The raw data from the request.
 	 *
 	 * @return void
 	 */
-	public function process_sale_price_dates( \Tribe__Tickets__Ticket_Object $ticket, array $raw_data ): void {
+	public function process_sale_price_dates( Ticket_Object $ticket, array $raw_data ): void {
 		if ( ! empty( $raw_data['ticket_sale_start_date'] ) ) {
-			$start_date = Tribe__Date_Utils::maybe_format_from_datepicker( $raw_data['ticket_sale_start_date'] );
-			$start_date = date( Tribe__Date_Utils::DBDATEFORMAT, strtotime( $start_date ) );
+			$start_date = Date_Utils::maybe_format_from_datepicker( $raw_data['ticket_sale_start_date'] );
+			$start_date = gmdate( Date_Utils::DBDATEFORMAT, strtotime( $start_date ) );
 			update_post_meta( $ticket->ID, static::$sale_price_start_date_key, $start_date );
 		}
 		
 		if ( ! empty( $raw_data['ticket_sale_end_date'] ) ) {
-			$end_date = Tribe__Date_Utils::maybe_format_from_datepicker( $raw_data['ticket_sale_end_date'] );
-			$end_date = date( Tribe__Date_Utils::DBDATEFORMAT, strtotime( $end_date ) );
+			$end_date = Date_Utils::maybe_format_from_datepicker( $raw_data['ticket_sale_end_date'] );
+			$end_date = gmdate( Date_Utils::DBDATEFORMAT, strtotime( $end_date ) );
 			update_post_meta( $ticket->ID, static::$sale_price_end_date_key, $end_date );
 		}
 	}
@@ -1132,11 +1133,11 @@ class Ticket {
 	 *
 	 * @since TBD
 	 *
-	 * @param \Tribe__Tickets__Ticket_Object $ticket The ticket post object.
+	 * @param Ticket_Object $ticket The ticket post object.
 	 *
 	 * @return void
 	 */
-	public function remove_sale_price_data( \Tribe__Tickets__Ticket_Object $ticket ): void {
+	public function remove_sale_price_data( Ticket_Object $ticket ): void {
 		$keys = [
 			static::$sale_price_key,
 			static::$sale_price_start_date_key,
@@ -1153,11 +1154,11 @@ class Ticket {
 	 *
 	 * @since TBD
 	 *
-	 * @param \Tribe__Tickets__Ticket_Object $ticket The ticket object.
+	 * @param Ticket_Object $ticket The ticket object.
 	 *
 	 * @return bool Whether the ticket is on sale.
 	 */
-	public function is_on_sale( \Tribe__Tickets__Ticket_Object $ticket ): bool {
+	public function is_on_sale( Ticket_Object $ticket ): bool {
 		$sale_checked = get_post_meta( $ticket->ID, static::$sale_price_checked_key, true );
 		
 		if ( ! $sale_checked ) {
@@ -1177,6 +1178,7 @@ class Ticket {
 			return true;
 		}
 		
+		// Using the ticket's date helper to ensure the timezone for events are handled correctly.
 		$start = $ticket->get_date( $start_date );
 		$end   = $ticket->get_date( $end_date );
 		$now   = $ticket->get_date( 'now' );
@@ -1194,11 +1196,11 @@ class Ticket {
 	 *
 	 * @since TBD
 	 *
-	 * @param \Tribe__Tickets__Ticket_Object $ticket The ticket object.
+	 * @param Ticket_Object $ticket The ticket object.
 	 *
 	 * @return string The price of the ticket.
 	 */
-	public function get_price( \Tribe__Tickets__Ticket_Object $ticket ): string {
+	public function get_price( Ticket_Object $ticket ): string {
 		if ( $ticket->on_sale ) {
 			return $this->get_sale_price( $ticket->ID );
 		}

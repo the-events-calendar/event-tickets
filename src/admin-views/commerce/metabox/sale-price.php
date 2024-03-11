@@ -1,6 +1,6 @@
 <?php
 /**
- * Renders the sale price fields for TicketsCommerce.
+ * Renders the sale price fields for Tickets Commerce.
  *
  * @since TBD
  *
