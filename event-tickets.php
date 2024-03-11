@@ -43,7 +43,7 @@ require_once dirname( EVENT_TICKETS_MAIN_PLUGIN_FILE ) . '/src/functions/php-min
 require_once dirname( EVENT_TICKETS_MAIN_PLUGIN_FILE ) . '/vendor/autoload.php';
 
 /**
- * Verifies if we need to warn the user about min PHP version and bail to avoid fatals
+ * Verifies if we need to warn the user about min PHP version and bail to avoid fatals.
  */
 if ( tribe_is_not_min_php_version() ) {
 	tribe_not_php_version_textdomain( 'event-tickets', EVENT_TICKETS_MAIN_PLUGIN_FILE );
