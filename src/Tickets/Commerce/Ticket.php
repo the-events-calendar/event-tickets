@@ -1216,7 +1216,7 @@ class Ticket {
 	 */
 	public function get_sale_price( int $ticket_id ): string {
 		$sale_price = get_post_meta( $ticket_id, static::$sale_price_key, true );
-		return $sale_price ? $sale_price->get_string() : '';
+		return $sale_price instanceof Value ? $sale_price->get_string() : '';
 	}
 	
 	/**
