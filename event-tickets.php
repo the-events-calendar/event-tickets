@@ -3,7 +3,7 @@
 Plugin Name: Event Tickets
 Plugin URI:  https://evnt.is/1acb
 Description: Event Tickets allows you to sell basic tickets and collect RSVPs from any post, page, or event.
-Version: 5.8.2
+Version: 5.8.4
 Author: The Events Calendar
 Author URI: https://evnt.is/1aor
 License: GPLv2 or later
@@ -36,7 +36,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 define( 'EVENT_TICKETS_DIR', dirname( __FILE__ ) );
 define( 'EVENT_TICKETS_MAIN_PLUGIN_FILE', __FILE__ );
 
-// Load the required php min version functions
+// Load the required php min version functions.
 require_once dirname( EVENT_TICKETS_MAIN_PLUGIN_FILE ) . '/src/functions/php-min-version.php';
 
 // Load the Composer autoload file.
@@ -49,7 +49,7 @@ if ( tribe_is_not_min_php_version() ) {
 	tribe_not_php_version_textdomain( 'event-tickets', EVENT_TICKETS_MAIN_PLUGIN_FILE );
 
 	/**
-	 * Include the plugin name into the correct place
+	 * Include the plugin name into the correct place.
 	 *
 	 * @since  4.10
 	 *

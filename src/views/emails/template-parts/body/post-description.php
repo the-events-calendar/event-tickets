@@ -28,6 +28,6 @@ if ( empty( $post->post_excerpt ) ) {
 ?>
 <tr>
 	<td class="tec-tickets__email-table-content-post-description-container">
-		<?php echo esc_html( $post->post_excerpt ); ?>
+		<?php echo wp_kses( wpautop( $post->post_excerpt ), 'post' ); ?>
 	</td>
 </tr>

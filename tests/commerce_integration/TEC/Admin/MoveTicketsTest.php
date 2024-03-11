@@ -332,9 +332,9 @@ class MoveTicketsTest extends \Codeception\TestCase\WPTestCase {
 			'Inventory for ticket 1 should be greater than original value.' 
 		);
 		$this->assertEquals(
-			25,
+			25 + 1,
 			$ticket_event_1_ticket_1->stock(),
-			'Stock should be the same.' 
+			'Stock should same as inventory.'
 		);
 
 		$this->assertEquals(
@@ -343,12 +343,10 @@ class MoveTicketsTest extends \Codeception\TestCase\WPTestCase {
 			'Inventory for ticket 2 should be less than original value.' 
 		);
 		$this->assertEquals(
-			30,
+			30 - 1,
 			$ticket_event_1_ticket_2->stock(),
-			'Stock should be the same.' 
+			'Stock should be same as inventory.'
 		);
-
-
 	}
 
 	/**
@@ -423,11 +421,9 @@ class MoveTicketsTest extends \Codeception\TestCase\WPTestCase {
 			'Inventory for ticket 2 should be less than original value.' 
 		);
 		$this->assertEquals(
-			30,
+			30 - 1,
 			$ticket_event_1_ticket_2->stock(),
 			'Stock for ticket 2 should be less than original value.' 
 		);
-
 	}
-
 }

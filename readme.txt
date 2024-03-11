@@ -4,7 +4,7 @@ Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, raf
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
 Requires at least: 6.2
 Tested up to: 6.4.3
-Stable tag: 5.8.2
+Stable tag: 5.8.4
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -195,6 +195,27 @@ We've got a [LoopedIn](https://evnt.is/ideas) page where we're actively watching
 Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on using, tweaking, and troubleshooting our plugins.
 
 == Changelog ==
+
+= [TBD] TBD =
+
+* Fix - Events Calendar Pro promo shouldn't show when it's already installed or when not editing an event. [ET-2018]
+* Fix - Addressed a problem preventing the export of event attendees by email. [ETP-904]
+* Fix - In the block editor, ticket will no longer be deleted when you open the ticket block settings. [ET-2046]
+* Fix - Show post excerpt line breaks within ticket emails. [ET-2006]
+* Fix - Front-end tickets block button padding is now consistent on hover and when disabled. [ET-2035]
+* Fix - Allow blank sender name and email to be stored within Tickets Emails settings. [ET-2008]
+* Fix - Corrected an issue where `attendees_table->prepare_items()` was being called multiple times. [ET-2005]
+* Tweak - Added additional fields to the Event Tickets Site Health section. [ET-2017]
+
+= [TBD] TBD =
+
+* Fix - Fixed updating stock data when Tickets Commerce attendees are moved. [ET-2009]
+* Fix - Fixed showing duplicate order overview data from TribeCommerce when ETP is disabled. [ET-2011]
+* Fix - Stock will be calculated correctly when an order fails and then succeeds while using Tickets Commerce.
+* Fix - Decode any HTML entities that appear int he subject line of outgoing emails. [ET-2007]
+* Fix - Fixed multiple issues related to series pass check-ins. [ET-1936]
+* Fix - Site Health will no longer fatal when providers are not setup. [ET-2047]
+* Tweak - Use dynamic ticket labels within the block editor's Tickets Block. [ET-690]
 
 = [5.8.2] 2024-02-19 =
 
