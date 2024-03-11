@@ -21,6 +21,10 @@
  */
 	
 use TEC\Tickets\Commerce\Utils\Value;
+
+if ( empty( $on_sale ) ) {
+	$on_sale = false;
+}
 ?>
 
 <span class="tec-tickets-price amount">
