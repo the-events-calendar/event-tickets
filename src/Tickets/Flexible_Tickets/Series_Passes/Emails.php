@@ -14,6 +14,7 @@ use TEC\Common\lucatume\DI52\Container;
 use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series_Post_Type;
 use TEC\Tickets\Emails\Email\Ticket;
 use TEC\Tickets\Emails\Email_Abstract;
+use TEC\Tickets\Emails\Email_Template;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Emails\Mock_Event_Post;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Emails\Series_Pass;
 use TEC\Tickets\Flexible_Tickets\Series_Passes\Emails\Upcoming_Series_Events_List;
@@ -114,6 +115,12 @@ class Emails extends Controller {
 		);
 
 		add_filter( 'tec_tickets_email_class', [ $this, 'use_series_pass_email' ], 10, 3 );
+		add_action(
+			'tribe_template_before_include:tickets-wallet-plus/pdf/pass/body/post-title',
+			[ $this, 'include_series_dates_for_series_pass_email' ],
+			10,
+			3
+		);
 	}
 
 	/**
@@ -170,6 +177,10 @@ class Emails extends Controller {
 			10
 		);
 		remove_filter( 'tec_tickets_email_class', [ $this, 'use_series_pass_email' ], 10, 3 );
+		remove_action(
+			'tribe_template_before_include:tickets-wallet-plus/pdf/pass/body/post-title',
+			[ $this, 'include_series_dates_for_series_pass_email' ]
+		);
 	}
 
 	/**
@@ -260,7 +271,8 @@ class Emails extends Controller {
 	 *
 	 * @param string   $file     Template file, unused.
 	 * @param string[] $name     Template name components, unused.
-	 * @param Template $template Event Tickets template object.
+	 * @param Template $template The template handler currently rendering. Note this might not be the Tickets Email one,
+	 *                           it might be the Wallet Plus one or the template used by other integrations.
 	 */
 	public function include_series_dates_for_series_pass_email( $file, $name, $template ): void {
 		if ( ! $template instanceof Template ) {
@@ -289,7 +301,10 @@ class Emails extends Controller {
 			)
 		);
 
-		$template->template( 'template-parts/body/series-pass-dates', [ 'dates' => $dates ], true );
+		// Get hold of the Tickets Email template handler.
+		$email_template = $this->container->get( Email_Template::class )->get_template();
+		$email_template->set_values( $template->get_values() );
+		$email_template->template( 'template-parts/body/series-pass-dates', [ 'dates' => $dates ], true );
 	}
 
 	/**
