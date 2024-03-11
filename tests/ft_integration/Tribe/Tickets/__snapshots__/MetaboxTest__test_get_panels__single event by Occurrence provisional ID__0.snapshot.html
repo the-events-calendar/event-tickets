@@ -455,7 +455,7 @@ New ticket</button><button
 			value=""
 						data-validation-error="Ticket price must be greater than zero." data-required data-validation-is-greater-than="0"		/>
 		<div class="ticket_sale_price_wrapper ticket_form_right">
-	<!--Checkbox to toggle sale price field-->
+	<!--Checkbox to toggle sale price fields-->
 	<div>
 		<input
 			type="checkbox"
@@ -466,13 +466,13 @@ New ticket</button><button
 			for="ticket_add_sale_price"
 			class="ticket_form_label"
 		>
-			Add Sale Price:		</label>
+			Add Sale Price		</label>
 	</div>
 	<div class="ticket_sale_price tribe-dependent"
 		data-depends="#ticket_add_sale_price"
 		data-condition-is-checked
 	>
-		<div>
+		<div class="ticket_sale_price-field">
 			<label for="ticket_sale_price" class="ticket_form_label">
 				Sale Price:			</label>
 			<input
@@ -487,7 +487,7 @@ New ticket</button><button
 				data-validation-error="{&quot;is-greater-than&quot;:&quot;Sale price must be greater than 0&quot;,&quot;is-less-than&quot;:&quot;Sale price must be less than the regular price&quot;}"
 			/>
 		</div>
-		<div>
+		<div class="ticket_sale_price-field">
 			<label class="ticket_form_label" for="ticket_start_date">
 				On sale from:			</label>
 			<input
