@@ -325,6 +325,13 @@ class Orders extends WP_List_Table {
 	public function column_purchased( $item ) {
 		$output = '';
 
+		if (
+			! $item instanceof WP_Post
+			|| ! isset( $item->items )
+		) {
+			return $output;
+		}
+
 		foreach ( $item->items as $cart_item ) {
 			$ticket   = \Tribe__Tickets__Tickets::load_ticket_object( $cart_item['ticket_id'] );
 			$name     = esc_html( $ticket->name );

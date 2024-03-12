@@ -181,6 +181,12 @@ class Page {
 
 		$tickets_attendees  = tribe( 'tickets.attendees' );
 		$post               = get_post( $event_id );
+
+		// Check if post exists, in case it was deleted.
+		if ( empty( $post ) ) {
+			return '';
+		}
+
 		$post_attendees_url = $tickets_attendees->get_report_link( $post );
 
 		echo sprintf( '<a href="%s" class="">%s</a>', $post_attendees_url, $post->post_title );
