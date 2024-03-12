@@ -105,13 +105,11 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 	public function register_blocks() {
 		if ( is_admin() ) {
 			// In admin context, do not register the blocks if the post type is not ticketable.
-			$post_id = tribe_get_request_var( 'post' );
+			$post_id           = tribe_get_request_var( 'post' );
 			$post_type_default = 'post';
 
-			// Use a single call to tribe_get_request_var('post') and store the result to avoid multiple calls.
 			$post_type = $post_id ? get_post_type( get_post( $post_id ) ) : tribe_get_request_var( 'post_type', $post_type_default );
 
-			// Simplify the check for ticket-enabled post types by directly using the result.
 			if ( ! in_array( $post_type, (array) tribe_get_option( 'ticket-enabled-post-types', [] ), true ) ) {
 				// Exit if the post type is not ticketable.
 				return;
