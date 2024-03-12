@@ -12,7 +12,6 @@
  * @since 5.2.3
  * @since TBD Add support to display the regular price when the ticket is on sale.
  *
- * @version 5.2.3
  * @version TBD
  *
  * @var Value $price The Value instance of the ticket price.
@@ -25,29 +24,35 @@ use TEC\Tickets\Commerce\Utils\Value;
 if ( empty( $on_sale ) ) {
 	$on_sale = false;
 }
+
+if ( isset( $price ) && ! $price instanceof Value ) {
+	return;
+}
+
+if ( isset( $regular_price ) && ! $regular_price instanceof Value ) {
+	return;
+}
 ?>
 
 <span class="tec-tickets-price amount">
 	<?php
-	if ( ! $on_sale ) {
-		echo esc_html( $price->get_currency() );
-	}
-	?>
-	
-	<?php if ( $on_sale ) : ?>
-	<ins>
-		<span class="tec-tickets-price__sale-price amount">
-			<bdi>
-				<?php echo esc_html( $price->get_currency() ); ?>
-			</bdi>
-		</span>
-	</ins>
-	<del aria-hidden="true">
-		<span class="tec-tickets-price__regular-price amount">
-			<bdi>
-				<?php echo esc_html( $regular_price->get_currency() ); ?>
-			</bdi>
-		</span>
-	</del>
-	<?php endif; ?>
+		$this->template(
+			'ticket/regular-price',
+			[
+				'price'   => $price,
+				'on_sale' => $on_sale,
+			] 
+		);
+		
+		if ( $on_sale ) {
+			$this->template(
+				'ticket/sale-price',
+				[
+					'price'         => $price,
+					'regular_price' => $regular_price,
+					'on_sale'       => $on_sale,
+				]
+			);
+		}
+		?>
 </span>
