@@ -1138,6 +1138,7 @@ class Ticket {
 			update_post_meta( $ticket->ID, static::$sale_price_end_date_key, $end_date );
 		}
 	}
+	
 	/**
 	 * Remove the sale price data.
 	 *
