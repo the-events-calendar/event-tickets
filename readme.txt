@@ -1,7 +1,7 @@
 === Event Tickets and Registration ===
 
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, GeoffBel, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra
-Tags: tickets, registration, event registration, RSVP, ticket sales, attendee management
+Tags: tickets, event registration, RSVP, ticket sales, attendee management
 Requires at least: 6.2
 Tested up to: 6.4.3
 Stable tag: 5.8.4
@@ -98,6 +98,7 @@ Our Premium Plugins and Services:
 ✏️ [Filter Bar](https://evnt.is/fa)
 🗓️ [Eventbrite Tickets](https://evnt.is/2e)
 📡 [Virtual Events](https://evnt.is/1aky)
+🔄 [Event Automator](https://evnt.is/1bdk)
 
 == Help ==
 
@@ -205,6 +206,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Allow blank sender name and email to be stored within Tickets Emails settings. [ET-2008]
 * Fix - Corrected an issue where `attendees_table->prepare_items()` was being called multiple times. [ET-2005]
 * Fix - Tickets block will be properly registered when creating a new post or page. [ET-2045]
+* Tweak - Added additional fields to the Event Tickets Site Health section. [ET-2017]
 
 = [TBD] TBD =
 
