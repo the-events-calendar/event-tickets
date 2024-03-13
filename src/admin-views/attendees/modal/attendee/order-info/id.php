@@ -19,7 +19,7 @@ if ( empty( $attendee['order_id'] ) ) {
 }
 
 $order_url = ! empty( $attendee['order_id_url'] ) ? $attendee['order_id_url'] : '';
-$order_id = ! empty( $order_url ) ? '<a href="' . esc_url( $order_url ) . '" target="_blank">#' . esc_html( $attendee['order_id'] ) . '</a>' : '#' . esc_html( $attendee['order_id'] );
+$order_id  = ! empty( $order_url ) ? '<a href="' . esc_url( $order_url ) . '" target="_blank">#' . esc_html( $attendee['order_id'] ) . '</a>' : '#' . esc_html( $attendee['order_id'] );
 ?>
 <div class="tribe-common-g-col tec-tickets__admin-attendees-modal-attendee-info-col">
 	<div class="tribe-common-b2--bold"><?php esc_html_e( 'Order ID', 'event-tickets' ); ?></div>

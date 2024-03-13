@@ -26,6 +26,6 @@ echo '<span class="tec-tickets__admin-attendees-modal-checkin-info-icon dashicon
 printf(
 	/* translators: %1$s: check-in date. %2$s: source of check-in. */
 	esc_html__( 'Checked in on %1$s via %2$s', 'event-tickets' ),
-	$checkin_date,
-	$checkin_source
+	esc_html( $checkin_date ),
+	esc_html( $checkin_source )
 );

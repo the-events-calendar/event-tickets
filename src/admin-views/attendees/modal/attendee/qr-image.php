@@ -23,7 +23,7 @@ $qr_image = tribe( Connector::class )->get_image_url_from_ticket_data( $attendee
 ?>
 <div class="tec-tickets__admin-attendees-modal-qr-image">
 	<img
-		src="<?php echo esc_attr( $qr_image ); ?>"
+		src="<?php echo esc_url( $qr_image ); ?>"
 		alt="<?php esc_attr_e( 'QR Code for attendee', 'event-tickets' ); ?>"
 	/>
 </div>

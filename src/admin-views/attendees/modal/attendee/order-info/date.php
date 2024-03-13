@@ -19,7 +19,7 @@ if ( empty( $attendee['order_id'] ) ) {
 }
 
 $date_format   = tribe_get_date_format( true );
-$purchase_time = get_post_time( Tribe__Date_Utils::DBDATETIMEFORMAT, false, $attendee['order_id' ] );
+$purchase_time = get_post_time( Tribe__Date_Utils::DBDATETIMEFORMAT, false, $attendee['order_id'] );
 
 if ( empty( $purchase_time ) ) {
 	return;

@@ -14,7 +14,7 @@
  * @var bool           $qr_enabled     True if QR codes are enabled for the site.
  */
 
- switch ( $attendee['order_status'] ) {
+switch ( $attendee['order_status'] ) {
 	case 'cancelled':
 	case 'failed':
 	case tribe( \TEC\Tickets\Commerce\Status\Not_Completed::class )->get_name():
@@ -38,5 +38,7 @@
 ?>
 <div class="tribe-common-g-col tec-tickets__admin-attendees-modal-attendee-info-col">
 	<div class="tribe-common-b2--bold"><?php esc_html_e( 'Order status', 'event-tickets' ); ?></div>
-	<div class="tec-tickets__admin-attendees-modal-attendee-info-value"><?php echo $icon . esc_html( ucwords( $attendee['order_status'] ) ); ?></div>
+	<div class="tec-tickets__admin-attendees-modal-attendee-info-value">
+		<?php echo $icon . esc_html( ucwords( $attendee['order_status'] ) ); // phpcs:ignore ?>
+	</div>
 </div>
