@@ -44,6 +44,6 @@ if ( empty( $description ) ) {
 				<?php echo esc_html( $post_description_header ); ?>
 			</header>
 		<?php endif; ?>
-	<?php echo esc_html( $description ); ?>
+		<?php echo wp_kses( wpautop( $description ), 'post' ); ?>
 	</td>
 </tr>

@@ -453,14 +453,18 @@ class Tribe__Tickets__Attendees {
 
 			$status = $this->has_attendees_list_access(
 				$event_id,
-				$type,
 				$nonce,
+				$type,
 				$send_to
 			);
 
-			if ( $should_send_email ) {
+			if ( ! $should_send_email ) {
 				$status = $this->send_mail_list( $event_id, $email_address, $send_to, $status );
+			} else {
+				// If status is true return a friendly message.
+				$status = esc_html__( 'Email sent successfully!', 'event-tickets' );
 			}
+
 			tribe( 'tickets.admin.views' )->template( 'attendees/attendees-email', [ 'status' => $status ] );
 
 			// Use iFrame Footer -- WP Method.

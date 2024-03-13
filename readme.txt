@@ -4,7 +4,7 @@ Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, raf
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
 Requires at least: 6.2
 Tested up to: 6.4.3
-Stable tag: 5.8.3
+Stable tag: 5.8.4
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -198,6 +198,15 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [TBD] TBD =
 
+* Fix - Events Calendar Pro promo shouldn't show when it's already installed or when not editing an event. [ET-2018]
+* Fix - Addressed a problem preventing the export of event attendees by email. [ETP-904]
+* Fix - In the block editor, ticket will no longer be deleted when you open the ticket block settings. [ET-2046]
+* Fix - Show post excerpt line breaks within ticket emails. [ET-2006]
+* Fix - Front-end tickets block button padding is now consistent on hover and when disabled. [ET-2035]
+* Fix - Allow blank sender name and email to be stored within Tickets Emails settings. [ET-2008]
+* Fix - Corrected an issue where `attendees_table->prepare_items()` was being called multiple times. [ET-2005]
+* Fix - Tickets block will be properly registered when creating a new post or page. [ET-2045]
+* Tweak - Added additional fields to the Event Tickets Site Health section. [ET-2017]
 * Feature - Add the Series Pass email template. [ET-1854]
 
 = [5.8.3] 2024-03-12 =
