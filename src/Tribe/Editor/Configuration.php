@@ -117,6 +117,14 @@ class Tribe__Tickets__Editor__Configuration implements Tribe__Editor__Configurat
 				'default' => [
 					'title' => tribe_get_ticket_label_plural('editor-configuration'),
 				]
+			],
+			'ticketLabels'              => [
+				'ticket' => [
+					'singular'          => tribe_get_ticket_label_singular( 'editor-configuration' ),
+					'plural'            => tribe_get_ticket_label_plural( 'editor-configuration' ),
+					'singularLowercase' => tribe_get_ticket_label_singular_lowercase( 'editor-configuration' ),
+					'pluralLowercase'   => tribe_get_ticket_label_plural_lowercase( 'editor-configuration' ),
+				],
 			]
 		];
 

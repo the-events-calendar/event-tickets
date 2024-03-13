@@ -13,20 +13,31 @@ use TEC\Tickets\Flexible_Tickets\Custom_Tables\Ticket_Groups;
 class Custom_TablesTest extends Controller_Test_Case {
 	protected string $controller_class = Custom_Tables::class;
 
-	public function custom_tables_provider(): array {
-		return [
-			'posts_and_ticket_groups' => [ 'posts_and_ticket_groups' => Posts_And_Ticket_Groups::class ],
-			'ticket_groups'           => [ 'ticket_groups' => Ticket_Groups::class ],
-		];
+	/**
+	 * It should register the posts_and_ticket_groups table correctly
+	 *
+	 * @test
+	 */
+	public function should_register_the_posts_and_tickets_group_table_correctly( ): void {
+		$table_class = Posts_And_Ticket_Groups::class;
+		$controller = $this->make_controller();
+		$controller->register();
+
+		do_action( 'tribe_plugins_loaded' );
+
+		$this->assertTrue( $this->test_services->isBound( $table_class ) );
+		$table = $this->test_services->get( $table_class );
+		$this->assertInstanceOf( $table_class, $table );
+		$this->assertTrue( $table->exists() );
 	}
 
 	/**
-	 * It should register the capacities table correctly
+	 * It should register the ticket groups tables correctly
 	 *
 	 * @test
-	 * @dataProvider custom_tables_provider
 	 */
-	public function should_register_the_capacities_table_correctly( string $table_class ): void {
+	public function should_register_the_ticket_groups_tables_correctly(): void {
+		$table_class = Ticket_Groups::class;
 		$controller = $this->make_controller();
 		$controller->register();
 

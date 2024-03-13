@@ -859,16 +859,26 @@ class Ticket {
 	 * @return int The new sales amount.
 	 */
 	public function increase_ticket_sales_by( $ticket_id, $quantity = 1, $shared_capacity = false, $global_stock = null ) {
-		// Adjust sales.
-		$sales = (int) get_post_meta( $ticket_id,  static::$sales_meta_key, true ) + $quantity;
 
-		update_post_meta( $ticket_id,  static::$sales_meta_key, $sales );
+		$original_total_sales = (int) get_post_meta(
+			$ticket_id,
+			static::$sales_meta_key,
+			true
+		);
+
+		$updated_total_sales = $quantity + $original_total_sales;
+
+		update_post_meta(
+			$ticket_id,
+			static::$sales_meta_key,
+			$updated_total_sales
+		);
 
 		if (  'own' !== $shared_capacity && $global_stock instanceof \Tribe__Tickets__Global_Stock ) {
 			$this->update_global_stock( $global_stock, $quantity );
 		}
 
-		return $sales;
+		return $updated_total_sales;
 	}
 
 	/**
@@ -979,8 +989,12 @@ class Ticket {
 
 		$attendee_data = $attendee->save();
 
-		// Sync our capacity as well now.
-		/** @var Tribe__Tickets__Tickets_Handler $handler */
+		// Update the ticket stock data.
+		$this->increase_ticket_stock_by( $src_ticket_type_id, 1 );
+		$this->decrease_ticket_stock_by( $tgt_ticket_type_id, 1 );
+
+		// Sync shared capacity.
+		/** @var \Tribe__Tickets__Tickets_Handler $handler */
 		$handler = tribe( 'tickets.handler' );
 		$handler->sync_shared_capacity( $src_event_id, tribe_tickets_get_capacity( $src_event_id ) );
 	}
@@ -998,5 +1012,22 @@ class Ticket {
 	public function increase_ticket_stock_by( $ticket_id, $quantity = 1 ) {
 		$stock = (int) get_post_meta( $ticket_id,  static::$stock_meta_key, true ) + $quantity;
 		return update_post_meta( $ticket_id,  static::$stock_meta_key, $stock );
+	}
+
+	/**
+	 * Decrease the ticket stock.
+	 *
+	 * @since 5.8.3
+	 *
+	 * @param int $ticket_id int The ticket post ID.
+	 * @param int $quantity  int The quantity to decrease the ticket stock by.
+	 *
+	 * @return bool|int
+	 */
+	public function decrease_ticket_stock_by( int $ticket_id, int $quantity = 1 ) {
+		$stock = (int) get_post_meta( $ticket_id, static::$stock_meta_key, true ) - $quantity;
+		$stock = max( 0, $stock );
+
+		return update_post_meta( $ticket_id, static::$stock_meta_key, $stock );
 	}
 }

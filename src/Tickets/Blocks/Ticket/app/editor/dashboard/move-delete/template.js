@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import { __ } from '@wordpress/i18n';
 import { Button } from '@moderntribe/common/elements';
 import './style.pcss';
+import { TICKET_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
 
 const MoveDelete = ( {
 	ticketIsSelected,
@@ -20,10 +21,24 @@ const MoveDelete = ( {
 	return (
 		<div className="tribe-editor__ticket__content-row--move-delete">
 			<Button type="button" onClick={ removeTicket } disabled={ isDisabled }>
-				{ __( 'Remove Ticket', 'event-tickets' ) }
+				{
+					// eslint-disable-next-line no-undef
+					sprintf(
+						/* Translators: %s - the singular label for a ticket. */
+						__('Remove %s', 'event-tickets'),
+						TICKET_LABELS.ticket.singular
+					)
+				}
 			</Button>
 			<Button type="button" onClick={ moveTicket } disabled={ isDisabled }>
-				{ __( 'Move Ticket', 'event-tickets' ) }
+				{
+					// eslint-disable-next-line no-undef
+					sprintf(
+						/* Translators: %s - the singular label for a ticket. */
+						__('Move %s', 'event-tickets'),
+						TICKET_LABELS.ticket.singular
+					)
+				}
 			</Button>
 		</div>
 	);

@@ -12,6 +12,7 @@ import { withStore } from '@moderntribe/common/hoc';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 import { select } from '@wordpress/data';
+import { TICKET_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
 
 const getCurrentPostStatus = () => {
 	const { status = 'auto-draft' } = select('core/editor').getCurrentPost();
@@ -20,9 +21,14 @@ const getCurrentPostStatus = () => {
 
 const mapStateToProps = (state, ownProps) => {
 	let mappedProps = {
-		content: __(
-			'Standard tickets are not yet supported on recurring events. ',
-			'event-tickets'
+		// eslint-disable-next-line no-undef
+		content: sprintf(
+			/* Translators: %s - the plural, lowercase label for a ticket. */
+			__(
+				'Standard %s are not yet supported on recurring events. ',
+				'event-tickets'
+			),
+			TICKET_LABELS.ticket.pluralLowercase
 		),
 		ctaLink: (
 			<a

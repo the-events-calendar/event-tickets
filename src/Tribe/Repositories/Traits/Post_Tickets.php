@@ -223,40 +223,39 @@ trait Post_Tickets {
 	 * cost custom field.
 	 *
 	 * @since 4.12.1
+	 * @since 5.8.3 Refactored to catch instances when `$meta_key_compare_clause` is empty.
 	 *
 	 * @param bool $has_tickets Indicates if the event should have ticket types attached to it or not.
 	 */
 	public function filter_by_has_tickets( $has_tickets = true ) {
-		$repo = $this;
-
-		// If the repo is decorated, use that.
-		if ( ! empty( $repo ) ) {
-			$repo = $this->decorated;
-		}
-
 		global $wpdb;
+		$prefix = $has_tickets ? 'has_tickets' : 'has_no_tickets';
 
-		if ( (bool) $has_tickets ) {
-			$prefix = 'has_tickets';
+		$meta_key_compare_clause   = $this->ticket_to_post_meta_key_compare( "{$prefix}_ticket_event", null, $has_tickets ? [ RSVP::class ] : null );
+		$meta_value_compare_clause = $this->ticket_to_post_meta_value_compare( "{$prefix}_ticket_event" );
 
-			$meta_key_compare_clause   = $this->ticket_to_post_meta_key_compare( "{$prefix}_ticket_event", null, [ RSVP::class ] );
-			$meta_value_compare_clause = $this->ticket_to_post_meta_value_compare( "{$prefix}_ticket_event" );
+		// Start with the JOIN type based on the ticket presence.
+		$join_clause = ( $has_tickets ? 'JOIN' : 'LEFT JOIN' ) . " {$wpdb->postmeta} {$prefix}_ticket_event ON ";
 
-			// Join to the meta that relates tickets to events but exclude RSVP tickets.
-			$repo->join_clause( "JOIN {$wpdb->postmeta} {$prefix}_ticket_event
-				 ON ({$meta_key_compare_clause}) AND ({$meta_value_compare_clause})" );
-
-			return;
+		// Add conditions if they are not empty, with an AND if both are present.
+		if ( ! empty( $meta_key_compare_clause ) ) {
+			$join_clause .= "($meta_key_compare_clause)";
+		}
+		if ( ! empty( $meta_key_compare_clause ) && ! empty( $meta_value_compare_clause ) ) {
+			$join_clause .= ' AND ';
+		}
+		if ( ! empty( $meta_value_compare_clause ) ) {
+			$join_clause .= "($meta_value_compare_clause)";
 		}
 
-		$prefix                    = 'has_no_tickets';
-		$meta_key_compare_clause = $this->ticket_to_post_meta_key_compare( "{$prefix}_ticket_event" );
-		$meta_value_compare_clause = $this->ticket_to_post_meta_value_compare( "{$prefix}_ticket_event" );
-		// Keep events that have no tickets assigned or are assigned RSVP tickets.
-		$repo->join_clause( "LEFT JOIN {$wpdb->postmeta} {$prefix}_ticket_event
-					ON ({$meta_key_compare_clause}) AND ({$meta_value_compare_clause})" );
-		$repo->where_clause( "{$prefix}_ticket_event.meta_key = '_tribe_rsvp_for_event' OR {$prefix}_ticket_event.meta_id IS NULL" );
+		$this->join_clause( $join_clause );
+
+		// Additional logic for when tickets are not expected.
+		if ( ! $has_tickets ) {
+			$this->where_clause( "{$prefix}_ticket_event.meta_key = '_tribe_rsvp_for_event' OR {$prefix}_ticket_event.meta_id IS NULL" );
+		}
 	}
+
 
 	/**
 	 * Filters events to include only those that match the provided RSVP state.
@@ -341,6 +340,7 @@ trait Post_Tickets {
 	 * meta key index to kick in.
 	 *
 	 * @since 5.8.0
+	 * @since 5.8.3 Set $meta_keys to an empty array.
 	 *
 	 * @param string   $alias     The alias to use for the post meta table.
 	 * @param string[] $allow     A list of providers to include in the comparison. If this argument is `null`,
@@ -351,6 +351,7 @@ trait Post_Tickets {
 	 * @return string The SQL clause to compare meta keys to the ones relating tickets to posts.
 	 */
 	protected function ticket_to_post_meta_key_compare( string $alias, array $allow = null, array $exclude = null ): string {
+		$meta_keys = [];
 		foreach ( Tickets::modules() as $provider => $name ) {
 			if ( $allow !== null && ! in_array( $provider, $allow, true ) ) {
 				continue;

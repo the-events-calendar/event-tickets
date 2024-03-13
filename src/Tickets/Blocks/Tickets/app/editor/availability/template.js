@@ -14,6 +14,7 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { IconWithTooltip, NumericLabel } from '@moderntribe/tickets/elements';
+import { TICKET_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
 import './style.pcss';
 
 /**
@@ -29,8 +30,24 @@ const Availability = ( { available, total } ) => {
 				'tribe-tooltip',
 			) }
 			count={ available }
-			singular={ __( '%d ticket available', 'event-tickets' ) }
-			plural={ __( '%d tickets available', 'event-tickets' ) }
+			singular={
+				'%d ' +
+				// eslint-disable-next-line no-undef
+				sprintf(
+					/* Translators: %s - ticket singular label, lowercase */
+					__('%s available', 'event-tickets'),
+					TICKET_LABELS.ticket.singularLowercase
+				)
+			}
+			plural={
+				'%d ' +
+				// eslint-disable-next-line no-undef
+				sprintf(
+					/* Translators: %s - ticket plural label, lowercase */
+					__('%s available', 'event-tickets'),
+					TICKET_LABELS.ticket.pluralLowercase
+				)
+			}
 		/>
 	);
 
@@ -41,8 +58,24 @@ const Availability = ( { available, total } ) => {
 				'tribe-editor__tickets__availability-label--total',
 			) }
 			count={ total }
-			singular={ __( '%d total ticket', 'event-tickets' ) }
-			plural={ __( '%d total tickets', 'event-tickets' ) }
+			singular={
+				'%d ' +
+				// eslint-disable-next-line no-undef
+				sprintf(
+					/* Translators: %s - ticket singular label, lowercase */
+					__('total %s', 'event-tickets'),
+					TICKET_LABELS.ticket.singularLowercase
+				)
+			}
+			plural={
+				'%d ' +
+				// eslint-disable-next-line no-undef
+				sprintf(
+					/* Translators: %s - ticket plural label, lowercase */
+					__('total %s', 'event-tickets'),
+					TICKET_LABELS.ticket.pluralLowercase
+				)
+			}
 		/>
 	);
 
@@ -50,19 +83,22 @@ const Availability = ( { available, total } ) => {
 		<div className="tribe-editor__tickets__availability">
 			<>
 				{ Available }
-				{ available
-					? (
-						<IconWithTooltip
-							propertyName={ __(
-								/* eslint-disable-next-line max-len */
-								'Ticket availability is based on the lowest number of inventory, stock, and capacity.',
-								'event-tickets',
-							) }
-							icon={ <span className="dashicons dashicons-info-outline" /> }
-						/>
-					)
-					: null
-				}
+				{available ? (
+					<IconWithTooltip
+						// eslint-disable-next-line no-undef
+						propertyName={sprintf(
+							/* Translators: %s - the singular label for a ticket. */
+							__(
+								'%s availability is based on the lowest number of inventory, stock, and capacity.',
+								'event-tickets'
+							),
+							TICKET_LABELS.ticket.singular
+						)}
+						icon={
+							<span className="dashicons dashicons-info-outline" />
+						}
+					/>
+				) : null}
 			</>
 			{ Total }
 		</div>

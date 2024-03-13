@@ -4,7 +4,7 @@ Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, raf
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
 Requires at least: 6.2
 Tested up to: 6.4.3
-Stable tag: 5.8.2
+Stable tag: 5.8.3
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -196,6 +196,20 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [5.8.3] 2024-03-12 =
+
+* Fix - Fixed updating stock data when Tickets Commerce attendees are moved. [ET-2009]
+* Fix - Fixed showing duplicate order overview data from TribeCommerce when ETP is disabled. [ET-2011]
+* Fix - Stock will be calculated correctly when an order fails and then succeeds while using Tickets Commerce. [ET-1833]
+* Fix - Decode any HTML entities that appear in the subject line of outgoing emails. [ET-2007]
+* Fix - Fixed multiple issues related to series pass check-ins. [ET-1936]
+* Fix - Site Health will no longer fatal when providers are not setup. [ET-2047]
+* Tweak - Use dynamic ticket labels within the block editor's Tickets Block. [ET-690]
+* Tweak - Added filters: `tec_tickets_move_attendees_ids`, `tec_tickets_attendee_manual_uncheckin_success_data`, `tec_tickets_attendee_uncheckin`
+* Security - Added filterable role access to the attendee page (`tec_tickets_attendees_page_role_access`). [SVUL-1]
+* Security - Added filterable role access to the orders page (`tec_tickets_report_{$page_slug}_page_role_access`). [SVUL-1]
+* Language - 1 new strings added, 56 updated, 2 fuzzied, and 0 obsoleted
+
 = [5.8.2] 2024-02-19 =
 
 * Feature - Support per Event attendance for Series Pass Attendees for manual and app-based check-ins. [ET-1936]
@@ -221,73 +235,5 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Tweak - Added filters: `tec_tc_order_report_export_args`, `tec_tickets_commerce_stripe_update_payment_description`, `tec_tickets_site_health_subsections`
 * Tweak - Changed views: `blocks/tickets/footer`, `emails/template-parts/body/footer/credit`, `registration-js/content`, `registration/button-cart`, `tickets/orders`, `v2/tickets/footer/return-to-cart`
 * Language - 31 new strings added, 77 updated, 0 fuzzied, and 4 obsoleted
-
-= [5.8.0] 2024-01-22 =
-
-* Version - Event Tickets 5.8.0 is only compatible with The Events Calendar 6.3.0 and higher.
-* Version - Event Tickets 5.8.0 is only compatible with Event Tickets Plus 5.9.0 and higher.
-* Feature - New ticket type field for all Ticket Post Types.
-* Feature - New type of Ticket: Series Passes to start enabling Recurring Event Ticketing.
-* Enhancement - Improved the Design and UX of the Attendees and Orders page.
-* Tweak - Added filters: `tec_tickets_ticket_panel_data`, `tec_tickets_ticket_type_default_header_description`, `tec_tickets_enabled_ticket_forms_{$post_type}`, `tec_tickets_allow_tickets_on_recurring_events`, `tec_tickets_commerce_order_report_summary_should_include_event_sales_data`, `tec_tickets_repository_filter_by_event_id`, `tec_recurring_tickets_enabled`, `tec_tickets_flexible_tickets_editor_data`, `tec_tickets_find_ticket_type_host_posts_query_args`, `tec_tickets_attendees_filter_by_event`, `tec_tickets_attendees_filter_by_event_not_in`, `tec_tickets_attendees_event_details_top_label`, `tec_tickets_editor_configuration_localized_data`, `tec_tickets_panel_list_helper_text`, `tec_tickets_normalize_occurrence_id`, `tec_tickets_is_ticket_editable_from_post`, `tec_tickets_my_tickets_link_ticket_count_by_type`, `tec_tickets_editor_list_ticket_types`, `tec_tickets_editor_list_table_data`, `tec_tickets_editor_list_table_data_{$ticket_type}`, `tribe_tickets_block_show_unlimited_availability`, `tec_tickets_get_event_capacity`
-* Tweak - Removed filters: `tec_tickets_hide_view_link`
-* Tweak - Added actions: `tec_flexible_tickets_activated`, `tec_tickets_panels_before`, `tec_tickets_panels_after`, `tec_tickets_ticket_update`, `tec_tickets_ticket_add`, `tec_tickets_list_row_edit`, `tec_tickets_editor_list_table_title_icon_{$ticket_type}`, `tec_tickets_editor_list_table_before`, `tec_tickets_ticket_form_main_start`, `tec_tickets_ticket_form_main_start_{$ticket_type}`
-* Tweak - Changed views: `blocks/attendees/view-link`, `emails/template-parts/body/order/attendees-table/header-row`, `tickets/email`, `tickets/my-tickets`, `tickets/my-tickets/orders-list`, `tickets/my-tickets/tickets-list`, `tickets/my-tickets/title`, `tickets/orders`, `tickets/view-link`, `v2/tickets/item`, `v2/tickets/items`, `v2/tickets/series-pass/header`
-* Language - 62 new strings added, 212 updated, 9 fuzzied, and 15 obsoleted
-
-= [5.7.1] 2023-12-13 =
-
-* Tweak - Prevented Single Attendee endpoint from throwing a notice on PHP 8+. [ET-1935]
-* Tweak - Attendees listed on the `Your Tickets` section will now match the order they were entered in. [ET-1924]
-* Tweak - Notify users of Wallet Plus availability on attendees page. [ET-1938]
-* Tweak - Notify users of Wallet Plus availability on Tickets Emails settings page. [ET-1937]
-* Tweak - Add attendee name to attendees list after purchase or registration. [ET-1939]
-* Tweak - Added filter `tec_tickets_commerce_gateway_stripe_webhook_valid_key_polling_attempts` to allow the modification of how many attempts Tickets Commerce will poll for Stripe webhooks for validation.
-* Fix - Tickets Commerce Stripe webhooks properly handles internally validating the Secret Signing key. [ET-1511]
-* Fix - Tickets Commerce Stripe Charge and Payment Intent webhooks no longer create duplicated success emails for a single ticket purchase. [ET-1792]
-* Language - 3 new strings added, 42 updated, 0 fuzzied, and 0 obsoleted
-
-= [5.7.0] 2023-11-16 =
-
-* Version - Event Tickets 5.7.0 is only compatible with The Events Calendar 6.2.7 and higher.
-* Version - Event Tickets 5.7.0 is only compatible with Event Tickets Plus 5.8.0 and higher.
-* Feature - Include all the features to have Wallet Plus compatibility into Event Tickets.
-* Tweak - Add tickets to the Tickets Commerce success page. [ETWP-30]
-* Tweak - Add tickets to the RSVP block confirmation state. [ETWP-62]
-* Language - 30 new strings added, 30 updated, 0 fuzzied, and 0 obsoleted
-
-= [5.6.8.1] 2023-11-09 =
-
-* Version - Event Tickets 5.6.8.1 is only compatible with The Events Calendar 6.2.6.1 and higher
-* Fix - Update a common library to prevent possible fatals. [TEC-4978]
-* Language - 0 new strings added, 9 updated, 0 fuzzied, and 0 obsoleted
-
-= [5.6.8] 2023-11-08 =
-
-* Tweak - Added tabs for navigating between Attendees and Orders in the Tickets Commerce admin. [ET-1867]
-* Tweak - Added action `tec_tickets_commerce_reports_tabbed_view_before_register_tab` and `tec_tickets_commerce_reports_tabbed_view_after_register_tab` allow adding third-party tabs. [ET-1867]
-* Tweak - Added filter `tec_tickets_commerce_reports_tabbed_page_title` and `tec_tickets_commerce_reports_tabbed_view_tab_map` allow granular control over how Tickets Commerce tabs behave. [ET-1867]
-
-= [5.6.7] 2023-11-01 =
-
-* Feature - Tickets Commerce orders report page design update. [ET-1810]
-* Tweak - Re-styled Empty RSVP Block in Block Editor to match frontend design. Styles will be the same in block editor and in the user interface [ET-1818]
-* Tweak - Re-styled Inactive RSVP Block in Block Editor to match frontend design. Styles will be the same in block editor and in the user interface [ET-1823]
-* Tweak - Re-styled Active RSVP Block in Block Editor to match frontend design. Styles will be the same in block editor and in the user interface [ET-1825]
-* Tweak - Re-styled Create and Edit RSVP Tickets in Block Editor.  [ET-1836]
-* Tweak - Re-styled Inactive Tickets Block in Block Editor. Empty state now has a new design [ET-1817]
-* Tweak - Re-styled Inactive Tickets Block with tickets. Inactive state with tickets has a new design [ET-1822]
-* Tweak - Re-styled Active Tickets Block with tickets. Add information icons and tooltips.  [ET-1824]
-* Tweak - Re-styled Create and Edit Tickets in Block Editor.  [ET-1835]
-* Tweak - Re-styled Tickets Settings in Block Editor.  [ET-1834]
-* Tweak - Using react-number-format to display price.  [ET-1885]
-* Tweak - Declared dynamic properties for Attendees page to avoid deprecation warnings.
-* Fix - Orders title in admin page.  [ET-1868]
-* Fix - Typo on My Tickets when using Ticket Commerce only. [ET-1909]
-* Language - 3 new strings added, 60 updated, 0 fuzzied, and 1 obsoleted
-
-= [5.6.6.1] 2023-10-12 =
-
-* Fix - Correct a problem that can cause a fatal when plugins are deactivated in a certain order. [TEC-4951]
 
 [See changelog for all versions](https://evnt.is/1b5k)
