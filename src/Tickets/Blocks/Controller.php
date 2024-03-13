@@ -108,7 +108,7 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 			$post_id           = tribe_get_request_var( 'post' );
 			$post_type_default = 'post';
 
-			$post_type = $post_id ? get_post_type( get_post( $post_id ) ) : tribe_get_request_var( 'post_type', $post_type_default );
+			$post_type = $post_id ? get_post_type( $post_id ) : tribe_get_request_var( 'post_type', $post_type_default );
 
 			if ( ! in_array( $post_type, (array) tribe_get_option( 'ticket-enabled-post-types', [] ), true ) ) {
 				// Exit if the post type is not ticketable.
