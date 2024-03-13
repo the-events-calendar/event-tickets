@@ -223,7 +223,7 @@ trait Post_Tickets {
 	 * cost custom field.
 	 *
 	 * @since 4.12.1
-	 * @since TBD Refactored to catch instances when `$meta_key_compare_clause` is empty.
+	 * @since 5.8.3 Refactored to catch instances when `$meta_key_compare_clause` is empty.
 	 *
 	 * @param bool $has_tickets Indicates if the event should have ticket types attached to it or not.
 	 */
@@ -340,7 +340,7 @@ trait Post_Tickets {
 	 * meta key index to kick in.
 	 *
 	 * @since 5.8.0
-	 * @since TBD Set $meta_keys to an empty array.
+	 * @since 5.8.3 Set $meta_keys to an empty array.
 	 *
 	 * @param string   $alias     The alias to use for the post meta table.
 	 * @param string[] $allow     A list of providers to include in the comparison. If this argument is `null`,
