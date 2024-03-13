@@ -458,7 +458,14 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		}
 
 		if ( is_admin() ) {
-			$default_actions[] = '<span class="inline move-ticket tec-tickets__admin-table-action-button--attendee-move"> <a href="#">' . esc_html_x( 'Move', 'row action', 'event-tickets' ) . '</a> </span>';
+			$default_actions[] = sprintf(
+				'<span
+					class="inline move-ticket tec-tickets__admin-table-action-button--attendee-move"
+					data-attendee-id="%1$d" data-event-id="%2$d"
+				> <a href="#">' . esc_html_x( 'Move', 'row action', 'event-tickets' ) . '</a> </span>',
+				esc_attr( $item['attendee_id'] ),
+				esc_attr( $event_id ),
+			);
 		}
 
 		$attendee = esc_attr( $item['attendee_id'] . '|' . $provider );
