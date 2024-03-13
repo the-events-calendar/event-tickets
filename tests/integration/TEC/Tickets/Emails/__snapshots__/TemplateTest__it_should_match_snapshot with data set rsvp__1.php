@@ -634,12 +634,8 @@
 
 <tr>
 	<td class="tec-tickets__email-table-content-post-description-container">
-<<<<<<< HEAD
-			Experience the magic of creativity in nature. Save the date and indulge your senses at &quot;Arts in the Park&quot;!  Join us for an enchanting day of vibrant musics and captivating... 	</td>
-=======
-		<p>Experience the magic of creativity in nature. Save the date and indulge your senses at "Arts in the Park"!  Join us for an enchanting day of vibrant musics and captivating... </p>
+				<p>Experience the magic of creativity in nature. Save the date and indulge your senses at "Arts in the Park"!  Join us for an enchanting day of vibrant musics and captivating... </p>
 	</td>
->>>>>>> origin/release/G24.cocker-spaniel
 </tr>
 <tr>
 	<td class="tec-tickets__email-table-content-event-venue-title-container">
