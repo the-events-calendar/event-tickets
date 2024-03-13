@@ -94,11 +94,11 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			'striped',
 			'attendees',
 			'tribe-attendees',
-			'tec-tickets__admin-table-attendees',
 		];
 
 		if ( is_admin() ) {
 			$classes[] = 'fixed';
+			$classes[] = 'tec-tickets__admin-table-attendees';
 		}
 
 		/**
