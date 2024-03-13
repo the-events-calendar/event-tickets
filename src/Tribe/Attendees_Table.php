@@ -265,14 +265,26 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		$icon    = '';
 		$warning = false;
 
-		// Check if the order_warning flag has been set (to indicate the order has been cancelled, refunded etc).
-		if ( isset( $item['order_warning'] ) && $item['order_warning'] ) {
-			$warning = true;
-		}
-
-		// If the warning flag is set, add the appropriate icon.
-		if ( $warning ) {
-			$icon = sprintf( "<span class='warning'><img src='%s'/></span> ", esc_url( Tribe__Tickets__Main::instance()->plugin_url . 'src/resources/images/warning.png' ) );
+		switch ( $item['order_status'] ) {
+			case 'cancelled':
+			case 'failed':
+			case tribe( \TEC\Tickets\Commerce\Status\Not_Completed::class )->get_name():
+			case tribe( \TEC\Tickets\Commerce\Status\Denied::class )->get_name():
+				$icon = '<span class="dashicons dashicons-warning"></span>';
+				break;
+			case 'on-hold':
+				$icon = '<span class="dashicons dashicons-flag"></span>';
+				break;
+			case 'refunded':
+			case tribe( \TEC\Tickets\Commerce\Status\Refunded::class )->get_name():
+				$icon = '<span class="dashicons dashicons-undo"></span>';
+				break;
+			case tribe( \TEC\Tickets\Commerce\Status\Pending::class )->get_name():
+				$icon = '<span class="dashicons dashicons-clock"></span>';
+				break;
+			default:
+				$icon = '';
+				break;
 		}
 
 		if ( empty( $item['order_status'] ) ) {
