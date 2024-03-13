@@ -1140,7 +1140,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 * Allows filtering the Attendee uncheck-in action before the default logic does it.
 			 * Returning a non-null value from this filter will prevent the default logic from running.
 			 *
-			 * @since TBD
+			 * @since 5.8.3
 			 *
 			 * @param bool|null $uncheckin   Whether the Attendee uncheckin action was handled by the filter or not.
 			 * @param int       $attendee_id The post ID of the Attendee being unchecked-in.
