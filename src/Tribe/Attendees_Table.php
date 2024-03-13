@@ -231,16 +231,83 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			$email = $item['purchaser_email'];
 		}
 
+		$attendee_id = trim( $this->get_attendee_id( $item ) );
+
+		if (
+			! empty( $attendee_id )
+			&& ! empty( $item['attendee_id'] )
+		) {
+			// Purposefully not forcing strict check here.
+			// phpcs:ignore
+			if ( $attendee_id != $item['attendee_id'] ) {
+				$attendee_id = sprintf( '#%d - %s', $item['attendee_id'], $attendee_id );
+			} else {
+				$attendee_id = sprintf( '#%s', $attendee_id );
+			}
+		}
+
+		$attendee_id = esc_html( $attendee_id );
+
+		$attendee_link = $name;
+
+		// If we're in the admin, we display details in the modal.
+		if ( is_admin() ) {
+			$link = add_query_arg(
+				[
+					'action' => 'tec_tickets_attendee_details',
+				],
+				admin_url( 'admin-ajax.php' )
+			);
+
+			$attendee_link = ' <a
+				href="' . $link . '&TB_iframe=1&width=500&height=400"
+				class="row-title thickbox"
+				name="' . $name . '"
+				data-attendee-id="' . $attendee_id . '"
+				data-provider="' . $item['provider' ]. '"
+				data-provider-slug="' . $item['provider_slug' ]. '"
+				data-event-id="' . $item['event_id' ]. '"
+			>' . $name . '</a>';
+
+			$button_args  = [
+				'button_text'       => $name,
+				'button_attributes' => [
+					'data-attendee-id'    => (string) $item['attendee_id'],
+					'data-event-id'       => $item['event_id' ],
+					'data-ticket-id'      => $item['product_id'],
+					'data-provider'       => $item['provider' ],
+					'data-provider-slug'  => $item['provider_slug' ],
+					'data-modal-title'    => $name,
+					'data-attendee-name'  => $name,
+					'data-attendee-email' => $email,
+				],
+				'button_classes'    => [
+					'button-link',
+					'row-title',
+				],
+			];
+
+			$attendee_link = tribe( \TEC\Tickets\Admin\Attendees\Modal::class )->get_modal_button( $button_args );
+		}
+
+		$has_attendee_meta = ! empty( $item['attendee_meta'] );
+
 		$output = sprintf(
 			'
-				<div class="purchaser_name tec-tickets__admin-table-attendees-purchaser-name">%1$s</div>
+				<div class="purchaser_name tec-tickets__admin-table-attendees-purchaser-name">
+					<span class="row-title">%1$s</span>
+				</div>
 				<div class="purchaser_email tec-tickets__admin-table-attendees-purchaser-email">
-					<a class="tec-tickets__admin-table-attendees-purchaser-email-link" href="mailto:%2$s">%2$s</a>
+					%2$s &mdash;
+					<a class="tec-tickets__admin-table-attendees-purchaser-email-link" href="mailto:%3$s">%3$s</a>
 				</div>
 			',
-			esc_html( $name ),
+			$attendee_link,
+			$attendee_id,
 			esc_html( $email )
 		);
+
+		$output .= $this->get_row_actions( $item );
 
 		/**
 		 * Provides an opportunity to modify the Primary Info column content in
