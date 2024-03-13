@@ -445,7 +445,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			|| tribe( \TEC\Tickets\Commerce\Status\Refunded::class )->get_name() === $item['order_status']
 			|| tribe( \TEC\Tickets\Commerce\Status\Pending::class )->get_name() === $item['order_status'];
 
-		if ( is_object( $this->event ) && isset( $event_id ) && ! $not_going ) {
+		if ( isset( $event_id ) && ! $not_going ) {
 			$default_actions[] = sprintf(
 				'<span class="inline">
 					<a href="#" class="tickets_checkin" data-attendee-id="%1$d" data-event-id="%2$d" data-provider="%3$s">' . esc_html_x( 'Check In', 'row action', 'event-tickets' ) . '</a>
