@@ -19,7 +19,6 @@ use \tad_DI52_ServiceProvider;
  * @package TEC\Tickets\Emails
  */
 class Assets extends tad_DI52_ServiceProvider {
-
 	/**
 	 * Key for this group of assets.
 	 *

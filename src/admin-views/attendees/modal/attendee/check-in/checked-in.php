@@ -13,11 +13,8 @@
  * @var int            $ticket_id      The ID of the associated ticket.
  * @var bool           $qr_enabled     True if QR codes are enabled for the site.
  */
-if ( empty( $attendee['product_id'] ) ) {
-	return;
-}
 
-if ( empty( $details ) ) {
+if ( empty( $attendee['product_id'] ) || empty( $details ) ) {
 	return;
 }
 

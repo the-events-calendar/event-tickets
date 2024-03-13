@@ -13,6 +13,7 @@
  * @var int            $ticket_id      The ID of the associated ticket.
  * @var bool           $qr_enabled     True if QR codes are enabled for the site.
  */
+
 $unique_id = tribe( 'tickets.admin.attendees_table' )->get_attendee_id( $attendee );
 // Purposefully not forcing strict check here.
 // phpcs:ignore
