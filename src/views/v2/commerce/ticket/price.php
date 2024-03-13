@@ -18,11 +18,15 @@
  * @var Value $regular_price The Value instance of the ticket regular price.
  * @var bool  $on_sale Whether the ticket is on sale.
  */
-	
+
 use TEC\Tickets\Commerce\Utils\Value;
 
 if ( empty( $on_sale ) ) {
-	$on_sale = false;
+	$on_sale = ! empty( $item ) && ! empty( $item['obj']->on_sale );
+}
+
+if ( ! isset( $regular_price ) && isset( $item['regular_price']) ) {
+	$regular_price = $item['regular_price'];
 }
 
 if ( isset( $price ) && ! $price instanceof Value ) {
@@ -41,9 +45,9 @@ if ( isset( $regular_price ) && ! $regular_price instanceof Value ) {
 			[
 				'price'   => $price,
 				'on_sale' => $on_sale,
-			] 
+			]
 		);
-		
+
 		if ( $on_sale ) {
 			$this->template(
 				'ticket/sale-price',
