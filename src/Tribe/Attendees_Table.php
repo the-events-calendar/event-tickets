@@ -425,6 +425,10 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		$attendees = tribe( 'tickets.attendees' );
 		$event_id  = $this->get_post_id();
 
+		if ( empty( $event_id ) || ! empty( $item['event_id'] ) ) {
+			$event_id = $item['event_id'];
+		}
+
 		if ( ! $attendees->user_can_manage_attendees( 0, $event_id ) ) {
 			return $row_actions;
 		}
