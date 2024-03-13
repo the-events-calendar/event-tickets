@@ -26,5 +26,5 @@ function tec_tickets_attendees_page_is_enabled(): bool {
 	 *
 	 * @param boolean $enabled Determining if the "Attendees" page is enabled.
 	 */
-	return apply_filters( 'tec_tickets_attendees_page_is_enabled', false );
+	return apply_filters( 'tec_tickets_attendees_page_is_enabled', true );
 }

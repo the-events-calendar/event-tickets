@@ -171,14 +171,13 @@ class Page {
 		}
 
 		// Check if current user has permission to edit.
-		if ( ! is_user_logged_in()  ) {
+		if ( ! is_user_logged_in() ) {
 			return '';
 		}
 
 		$event_id           = $item['event_id'];
 		$provider           = ! empty( $item['provider'] ) ? $item['provider'] : null;
 		$is_provider_active = false;
-
 		$tickets_attendees  = tribe( 'tickets.attendees' );
 		$post               = get_post( $event_id );
 
@@ -189,7 +188,6 @@ class Page {
 
 		$post_attendees_url = $tickets_attendees->get_report_link( $post );
 
-		echo sprintf( '<a href="%s" class="">%s</a>', $post_attendees_url, $post->post_title );
+		printf( '<a href="%s">%s</a>', esc_url( $post_attendees_url ), esc_html( $post->post_title ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
-
 }

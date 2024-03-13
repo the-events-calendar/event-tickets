@@ -62,7 +62,7 @@ class Modal {
 		tribe_asset_enqueue_group( 'tribe-tickets-admin' );
 
 		// Render the modal contents.
-		echo $this->get_modal_content();
+		echo $this->get_modal_content(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 
 	/**
@@ -171,9 +171,8 @@ class Modal {
 	public static function get_modal_button( $args = [] ): string {
 		$args        = self::get_modal_button_args( $args );
 		$dialog_view = tribe( 'dialog.view' );
-		$button      = $dialog_view->template( 'button', $args, false );
 
-		return $button;
+		return $dialog_view->template( 'button', $args, false );
 	}
 
 	/**
@@ -220,7 +219,7 @@ class Modal {
 			'attendee_email' => $attendee_email,
 			'post_id'        => $post_id,
 			'ticket_id'      => $ticket_id,
-			'qr_enabled'     => tribe( \TEC\Tickets\QR\Settings::class )->is_enabled( 'attendees-modal' )
+			'qr_enabled'     => tribe( \TEC\Tickets\QR\Settings::class )->is_enabled( 'attendees-modal' ),
 		];
 
 		$html = $admin_template->template( 'attendees/modal/attendee', $context, false );

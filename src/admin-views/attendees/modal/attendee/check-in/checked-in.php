@@ -20,12 +20,12 @@ if ( empty( $attendee['product_id'] ) || empty( $details ) ) {
 
 $date_format    = tribe_get_date_format( true );
 $checkin_date   = Tribe__Date_Utils::build_date_object( $details['date'] )->format_i18n( $date_format );
-$checkin_source = $details['source'] === 'site' ? __( 'Web', 'event-tickets' ) : __( 'Mobile app', 'event-tickets' );
+$checkin_source = 'site' === $details['source'] ? __( 'Web', 'event-tickets' ) : __( 'Mobile app', 'event-tickets' );
 
 echo '<span class="tec-tickets__admin-attendees-modal-checkin-info-icon dashicons dashicons-yes-alt"></span> ';
-echo sprintf(
-	/* translators: %s: check-in date. %s: source of check-in. */
-	esc_html__( 'Checked in on %s via %s', 'event-tickets' ),
+printf(
+	/* translators: %1$s: check-in date. %2$s: source of check-in. */
+	esc_html__( 'Checked in on %1$s via %2$s', 'event-tickets' ),
 	$checkin_date,
 	$checkin_source
 );

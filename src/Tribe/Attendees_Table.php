@@ -263,22 +263,22 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 				href="' . $link . '&TB_iframe=1&width=500&height=400"
 				class="row-title thickbox"
 				name="' . $name . '"
-				data-attendee-id="' . $attendee_id . '"
-				data-provider="' . $item['provider' ]. '"
-				data-provider-slug="' . $item['provider_slug' ]. '"
-				data-event-id="' . $item['event_id' ]. '"
+				data-attendee-id="' . esc_attr( $attendee_id ) . '"
+				data-provider="' . esc_attr( $item['provider' ] ) . '"
+				data-provider-slug="' . esc_attr( $item['provider_slug' ] ) . '"
+				data-event-id="' . esc_attr( $item['event_id' ] ) . '"
 			>' . $name . '</a>';
 
-			$button_args  = [
+			$button_args = [
 				'button_text'       => $name,
 				'button_attributes' => [
-					'data-attendee-id'    => (string) $item['attendee_id'],
-					'data-event-id'       => $item['event_id' ],
-					'data-ticket-id'      => $item['product_id'],
-					'data-provider'       => $item['provider' ],
-					'data-provider-slug'  => $item['provider_slug' ],
-					'data-modal-title'    => $name,
-					'data-attendee-name'  => $name,
+					'data-attendee-id' => (string) $item['attendee_id'],
+					'data-event-id' => $item['event_id' ],
+					'data-ticket-id' => $item['product_id'],
+					'data-provider' => $item['provider' ],
+					'data-provider-slug' => $item['provider_slug' ],
+					'data-modal-title' => $name,
+					'data-attendee-name' => $name,
 					'data-attendee-email' => $email,
 				],
 				'button_classes'    => [
@@ -363,8 +363,9 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		$order_id_url = $this->get_order_id_url( $item );
 
 		if ( ! empty( $order_id_url ) && ! empty( $item['order_id'] ) ) {
+			// Translators: %d is the order ID.
 			$label_title = sprintf( __( 'View or edit order #%d', 'event-tickets' ), $item['order_id'] );
-			$label = '<a href="' . esc_url( $order_id_url ) . '" title="' . esc_attr( $label_title ) . '">' . esc_html( $label ) . '</a>';
+			$label       = '<a href="' . esc_url( $order_id_url ) . '" title="' . esc_attr( $label_title ) . '">' . esc_html( $label ) . '</a>';
 		}
 
 		$label = $icon . $label;
