@@ -30,6 +30,7 @@ class Provider extends \tad_DI52_ServiceProvider {
 		}
 
 		$this->register_hooks();
+		$this->register_assets();
 
 		// Register the SP on the container.
 		$this->container->singleton( static::class, $this );
@@ -46,5 +47,17 @@ class Provider extends \tad_DI52_ServiceProvider {
 
 		// Allow Hooks to be removed, by having the them registered to the container.
 		$this->container->singleton( Hooks::class, $hooks );
+	}
+
+	/**
+	 * Registers the assets for the Tickets Attendees area.
+	 *
+	 * @since TBD
+	 */
+	protected function register_assets() {
+		$assets = new Assets( $this->container );
+		$assets->register();
+
+		$this->container->singleton( Assets::class, $assets );
 	}
 }
