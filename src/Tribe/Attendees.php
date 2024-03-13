@@ -231,6 +231,10 @@ class Tribe__Tickets__Attendees {
 	 * @return string
 	 */
 	public function get_report_link( $post ) {
+		if ( ! $post instanceof WP_Post ) {
+			return '';
+		}
+
 		$post_id = Event::filter_event_id( $post->ID, 'attendees-report-link' );
 
 		$args = [
