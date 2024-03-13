@@ -557,9 +557,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			&& is_array( $check_in_stati )
 			&& ! in_array( $item['order_status'], $check_in_stati )
 		) {
-			$button_template = '<a href="%s" class="button-secondary tickets-checkin">%s</a>';
-
-			return sprintf( $button_template, $item['order_id_link_src'], __( 'View order', 'event-tickets' ) );
+			return '';
 		}
 
 		$context = [
