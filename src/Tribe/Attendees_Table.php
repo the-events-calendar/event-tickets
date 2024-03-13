@@ -124,12 +124,19 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 
 		$columns = [
 			'cb'           => '<input type="checkbox" />',
+			'primary_info' => esc_html_x( 'Attendee Information', 'attendee table', 'event-tickets' ),
 			'ticket'       => esc_html( tribe_get_ticket_label_singular( 'attendee_table_column' ) ),
-			'primary_info' => esc_html_x( 'Primary Information', 'attendee table', 'event-tickets' ),
-			'security'     => esc_html_x( 'Security Code', 'attendee table', 'event-tickets' ),
 			'status'       => esc_html_x( 'Status', 'attendee table', 'event-tickets' ),
-			'check_in'     => esc_html_x( 'Check in', 'attendee table', 'event-tickets' ),
 		];
+
+		// Only include the security code column if we're not in the admin, for Community Tickets.
+		if ( ! is_admin() ) {
+			$columns = \Tribe__Main::array_insert_after_key(
+				'ticket',
+				$columns,
+				[ 'security' => esc_html_x( 'Security Code', 'attendee table', 'event-tickets' ) ]
+			);
+		}
 
 		/** @var Tribe__Tickets__Attendees $attendees */
 		$attendees = tribe( 'tickets.attendees' );
