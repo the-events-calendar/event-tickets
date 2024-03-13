@@ -3,7 +3,6 @@
 namespace TEC\Tickets\Commerce;
 
 use TEC\Tickets\Commerce;
-use TEC\Tickets\Commerce\Models\Ticket_Model;
 use \Tribe__Utils__Array as Arr;
 
 /**
