@@ -4,6 +4,7 @@ use TEC\Tickets\Event;
 use Tribe__Utils__Array as Arr;
 use Tribe__Tickets__Ticket_Object as Ticket;
 use Tribe__Tickets__Global_Stock as Global_Stock;
+use TEC\Tickets\Admin\Attendees\Page as Attendees_Page;
 
 /**
  * Handles most actions related to an Attendees or Multiple ones
@@ -1243,6 +1244,12 @@ class Tribe__Tickets__Attendees {
 	 * @return bool True if the user can access the page, false otherwise.
 	 */
 	public function can_access_page( int $post_id ): bool {
+		$is_on_general_page = tribe( Attendees_Page::class )->is_on_page();
+
+		if ( $is_on_general_page ) {
+			return tribe( Attendees_Page::class )->can_access_page();
+		}
+
 		$post = get_post( $post_id );
 		// Ensure $post is valid to prevent errors in cases where $post_id might be invalid.
 		if ( ! $post ) {

@@ -9,7 +9,6 @@
  *
  * @return bool Whether "Attendees" page is enabled or not.
  */
-
 function tec_tickets_attendees_page_is_enabled(): bool {
 	if ( defined( 'TEC_TICKETS_ATTENDEES_PAGE' ) ) {
 		return (bool) TEC_TICKETS_ATTENDEES_PAGE;

@@ -166,12 +166,7 @@ class Page {
 			return $value;
 		}
 
-		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees() ) {
-			return '';
-		}
-
-		// Check if current user has permission to edit.
-		if ( ! is_user_logged_in() ) {
+		if ( ! $this->can_access_page() ) {
 			return '';
 		}
 
@@ -189,5 +184,17 @@ class Page {
 		$post_attendees_url = $tickets_attendees->get_report_link( $post );
 
 		printf( '<a href="%s">%s</a>', esc_url( $post_attendees_url ), esc_html( $post->post_title ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	}
+
+	/**
+	 * Return if the page can be accessed.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool True if the page can be accessed.
+	 */
+	public function can_access_page() {
+		return is_user_logged_in()
+			&& tribe( 'tickets.attendees' )->user_can_manage_attendees();
 	}
 }

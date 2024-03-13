@@ -43,7 +43,11 @@ class Modal {
 	 * @return boolean Whether we should render the modal.
 	 */
 	public function should_render(): bool {
-		return tribe( Page::class )->is_on_page() || tribe_get_request_var( 'page' ) === 'tickets-attendees';
+		return tribe( 'tickets.attendees' )->user_can_manage_attendees()
+			&& (
+				tribe( Page::class )->is_on_page()
+				|| tribe_get_request_var( 'page' ) === 'tickets-attendees'
+			);
 	}
 
 	/**
