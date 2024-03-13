@@ -364,9 +364,6 @@ class Cart {
 				$item['event_id']  = $item['obj']->get_event_id();
 				$item['sub_total'] = $sub_total_value->sub_total( $item['quantity'] );
 
-				$ticket                = Ticket_Model::from_post( $item['ticket_id'] );
-				$item['regular_price'] = $ticket->get_price_value();
-
 				return $item;
 			}, $items );
 		}

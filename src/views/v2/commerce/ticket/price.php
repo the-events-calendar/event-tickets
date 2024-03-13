@@ -25,8 +25,8 @@ if ( empty( $on_sale ) ) {
 	$on_sale = ! empty( $item ) && ! empty( $item['obj']->on_sale );
 }
 
-if ( ! isset( $regular_price ) && isset( $item['regular_price'] ) ) {
-	$regular_price = $item['regular_price'];
+if ( ! isset( $regular_price ) && isset( $item['obj']->regular_price ) ) {
+	$regular_price = Value::create( $item['obj']->regular_price );
 }
 
 if ( isset( $price ) && ! $price instanceof Value ) {
