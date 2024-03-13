@@ -1,5 +1,9 @@
 <?php
 /**
+ * Attendees functions.
+ */
+
+/**
  * Checks whether out new Tickets Attendees page should load.
  *
  * In order the function will check the `TEC_TICKETS_ATTENDEES_PAGE` constant,

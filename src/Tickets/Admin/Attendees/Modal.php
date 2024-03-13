@@ -66,7 +66,8 @@ class Modal {
 		tribe_asset_enqueue_group( 'tribe-tickets-admin' );
 
 		// Render the modal contents.
-		echo $this->get_modal_content(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo $this->get_modal_content();
 	}
 
 	/**
