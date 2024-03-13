@@ -355,36 +355,12 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	public function column_ticket( array $item ) {
 		ob_start();
 
-		$attendee_id = trim( $this->get_attendee_id( $item ) );
-
-		if (
-			! empty( $attendee_id )
-			&& ! empty( $item['attendee_id'] )
-		) {
-			// Purposefully not forcing strict check here.
-			// phpcs:ignore
-			if ( $attendee_id != $item['attendee_id'] ) {
-				$attendee_id .= sprintf( ' [#%d]', $item['attendee_id'] );
-			} else {
-				$attendee_id = sprintf( '[#%s]', $attendee_id );
-			}
-		}
-
-		$attendee_id = esc_html( $attendee_id );
-
-		if ( ! empty( $attendee_id ) ) {
-			$attendee_id .= ' &ndash; ';
-		}
-
 		?>
-		<div class="event-tickets-ticket-name">
-			<?php echo $attendee_id; ?>
+		<div class="tec-tickets__admin-table-attendees-ticket-name event-tickets-ticket-name">
 			<?php echo esc_html( $item['ticket'] ); ?>
 		</div>
 
 		<?php
-		echo $this->get_row_actions( $item );
-
 		/**
 		 * Hook to allow for the insertion of additional content in the ticket table cell
 		 *
