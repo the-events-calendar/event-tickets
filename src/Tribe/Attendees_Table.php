@@ -296,16 +296,22 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		$order_id_url = $this->get_order_id_url( $item );
 
 		if ( ! empty( $order_id_url ) && ! empty( $item['order_id'] ) ) {
-			$label = '<a href="' . esc_url( $order_id_url ) . '">#' . esc_html( $item['order_id'] ) . ' &ndash; ' . $label . '</a>';
+			$label_title = sprintf( __( 'View or edit order #%d', 'event-tickets' ), $item['order_id'] );
+			$label = '<a href="' . esc_url( $order_id_url ) . '" title="' . esc_attr( $label_title ) . '">' . esc_html( $label ) . '</a>';
 		}
+
+		$label = $icon . $label;
 
 		$classes = [
 			'tec-tickets__admin-table-attendees-order-status',
 			'tec-tickets__admin-table-attendees-order-status--' . sanitize_title_with_dashes( $item['order_status'] ),
 		];
 
-		$label = sprintf( '<div class="%1$s"><span>%2$s</span></div>', implode( ' ', $classes ), $label );
-
+		$label = sprintf(
+			'<div class="tec-tickets__admin-table-attendees-order-status-wrapper"><span class="%1$s">%2$s</span></div>',
+			implode( ' ', $classes ),
+			$label
+		);
 
 		/**
 		 * Provides an opportunity to modify the order status text within
@@ -314,7 +320,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		 * @param string $order_status_html
 		 * @param array  $item
 		 */
-		return apply_filters( 'tribe_tickets_attendees_table_order_status', $icon . $label, $item );
+		return apply_filters( 'tribe_tickets_attendees_table_order_status', $label, $item );
 	}
 
 	/**
