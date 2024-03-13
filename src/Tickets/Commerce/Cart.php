@@ -366,7 +366,6 @@ class Cart {
 
 				$ticket                = Ticket_Model::from_post( $item['ticket_id'] );
 				$item['regular_price'] = $ticket->get_price_value();
-				$item['sale_price']    = $ticket->get_sale_price_value();
 
 				return $item;
 			}, $items );
