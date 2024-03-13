@@ -567,9 +567,10 @@ class Settings {
 	/**
 	 * Is a valid license of Event Tickets Plus available?
 	 *
+	 * @since TBD Added caching.
 	 * @since 5.3.0
 	 *
-	 * @param bool $revalidate whether to submit a new validation API request
+	 * @param bool $revalidate whether to submit a new validation API request.
 	 *
 	 * @return bool
 	 */
@@ -580,9 +581,26 @@ class Settings {
 
 		$pue = tribe( \Tribe__Tickets_Plus__PUE::class );
 
-		/**
-		 * @todo we need to make sure we actually validate the PUE key.
-		 */
-		return $pue->get_pue()->is_valid_key_format();
+		// Attempt to use the immediate result of is_current_license_valid if revalidate is false.
+		if ( ! $revalidate && $pue->is_current_license_valid() ) {
+			return true;
+		}
+
+		// Now check if the license key format is valid.
+		if ( ! $pue->get_pue()->is_valid_key_format() ) {
+			return false;
+		}
+
+		$cache_key = __METHOD__;
+		$cached    = get_transient( $cache_key );
+
+		if ( ! empty( $cached ) ) {
+			return $cached;
+		}
+		// Forcing a revalidate of is_current_license_valid can be expensive. Cache it for 1 hour.
+		$is_license_valid = $pue->is_current_license_valid( $revalidate );
+		set_transient( $cache_key, $is_license_valid, HOUR_IN_SECONDS );
+
+		return $is_license_valid;
 	}
 }

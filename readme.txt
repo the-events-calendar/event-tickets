@@ -207,6 +207,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Corrected an issue where `attendees_table->prepare_items()` was being called multiple times. [ET-2005]
 * Fix - Tickets block will be properly registered when creating a new post or page. [ET-2045]
 * Tweak - Added additional fields to the Event Tickets Site Health section. [ET-2017]
+* Tweak - Adjusted the logic for calculating fees when using Stripe. [ET-2015]
 
 = [5.8.3] 2024-03-12 =
 
