@@ -3,19 +3,14 @@
 namespace TEC\Tickets\Commerce\Shortcodes;
 
 use Spatie\Snapshots\MatchesSnapshots;
-use TEC\Tickets\Commerce\Cart;
-use TEC\Tickets\Commerce\Cart\Unmanaged_Cart;
 use TEC\Tickets\Commerce\Checkout;
 use TEC\Tickets\Commerce\Gateways\Manual\Gateway;
-use TEC\Tickets\Commerce\Models\Ticket_Model;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\Commerce\Utils\Value;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe__Template;
 use Tribe__Tickets__Main;
-use Tribe__Tickets__Tickets;
-use Tribe\Tests\Traits\With_Uopz;
 
 use function Codeception\Extension\codecept_log;
 
@@ -23,7 +18,6 @@ class Checkout_ShortcodeTest extends \Codeception\TestCase\WPTestCase {
 
 	use MatchesSnapshots;
 	use Ticket_Maker;
-	use With_Uopz;
 
 	public function setUp() {
 		parent::setUp();
