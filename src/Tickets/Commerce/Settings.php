@@ -594,12 +594,18 @@ class Settings {
 		$cache_key = __METHOD__;
 		$cached    = get_transient( $cache_key );
 
-		if ( ! empty( $cached ) ) {
-			return $cached;
+		// Decode the JSON string. If $cached is false (transient not set), json_decode returns null.
+		$cached_value = false !== $cached ? json_decode( $cached, true ) : null;
+
+		// Check explicitly for null to determine if the transient was not set.
+		if ( null !== $cached_value ) {
+			return $cached_value;
 		}
-		// Forcing a revalidate of is_current_license_valid can be expensive. Cache it for 1 hour.
+
 		$is_license_valid = $pue->is_current_license_valid( $revalidate );
-		set_transient( $cache_key, $is_license_valid, HOUR_IN_SECONDS );
+
+		// Forcing a revalidate of is_current_license_valid can be expensive. Cache it for 1 hour.
+		set_transient( $cache_key, wp_json_encode( $is_license_valid ), HOUR_IN_SECONDS );
 
 		return $is_license_valid;
 	}
