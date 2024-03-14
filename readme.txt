@@ -206,6 +206,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Allow blank sender name and email to be stored within Tickets Emails settings. [ET-2008]
 * Fix - Corrected an issue where `attendees_table->prepare_items()` was being called multiple times. [ET-2005]
 * Fix - Tickets block will be properly registered when creating a new post or page. [ET-2045]
+* Fix - Corrected an issue where the Post Tickets ORM method `filter_by_has_tickets` would prepare an empty statement. [ET-2017]
 * Tweak - Added additional fields to the Event Tickets Site Health section. [ET-2017]
 
 = [5.8.3] 2024-03-12 =
