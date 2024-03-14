@@ -19,7 +19,7 @@
 	<header class="tribe-tickets__commerce-checkout-cart-header">
 	<h4 class="tribe-common-h4 tribe-common-h--alt tribe-tickets__commerce-checkout-cart-header-title">
 		<a href="http://wordpress.test/?p=5096">
-			Post title 18		</a>
+			Post with Ticket		</a>
 	</h4>
 </header>
 
