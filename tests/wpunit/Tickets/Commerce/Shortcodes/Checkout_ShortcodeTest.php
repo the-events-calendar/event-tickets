@@ -21,16 +21,6 @@ class Checkout_ShortcodeTest extends \Codeception\TestCase\WPTestCase {
 	use Ticket_Maker;
 	use With_Uopz;
 
-	/**
-	 * @var int
-	 */
-	private $post_id;
-
-	/**
-	 * @var int
-	 */
-	private $ticket_id;
-
 	public function setUp() {
 		parent::setUp();
 
@@ -43,14 +33,6 @@ class Checkout_ShortcodeTest extends \Codeception\TestCase\WPTestCase {
 		} );
 
 		$this->set_fn_return( 'wp_create_nonce', 'a1b2c3d4e5f6' );
-	}
-
-	public function tearDown() {
-		wp_delete_post( $this->post_id, true );
-		wp_delete_post( $this->ticket_id, true );
-		unset( $this->ticket_id, $this->post_id );
-
-		parent::tearDown();
 	}
 
 	/**
@@ -89,6 +71,8 @@ class Checkout_ShortcodeTest extends \Codeception\TestCase\WPTestCase {
 		$template->set_template_context_extract( true );
 		$template->set_template_folder_lookup( true );
 		$html = $template->template( 'checkout', $args, false );
+		wp_delete_post( $items[0]['ticket_id'], true );
+		wp_delete_post( $items[0]['event_id'], true );
 
 		$this->assertMatchesSnapshot( $html );
 	}
@@ -98,22 +82,21 @@ class Checkout_ShortcodeTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function cart_data() {
 		global $post;
-		$post = $this->factory->post->create_and_get();
-		$ticket_id = $this->create_tc_ticket( $post->ID, 10 );
-		$this->post_id = $post->ID;
-		$this->ticket_id = $ticket_id;
 
 		yield 'ticket on sale' => [
 			function(): array {
-				update_post_meta( $this->ticket_id, Ticket::$sale_price_checked_key, '1');
-				update_post_meta( $this->ticket_id, Ticket::$sale_price_key, '5');
-				$ticket = tribe( Module::class )->get_ticket( $this->post_id, $this->ticket_id );
+				global $post;
+				$post = $this->factory->post->create_and_get();
+				$ticket_id = $this->create_tc_ticket( $post->ID, 10 );
+				update_post_meta( $ticket_id, Ticket::$sale_price_checked_key, '1');
+				update_post_meta( $ticket_id, Ticket::$sale_price_key, '5');
+				$ticket = tribe( Module::class )->get_ticket( $post->ID, $ticket_id );
 				$sub_total_value = Value::create();
 				$sub_total_value->set_value($ticket->price );
 				$items = [
 					[
-						'ticket_id'     => $this->ticket_id,
-						'event_id'      => $this->post_id,
+						'ticket_id'     => $ticket_id,
+						'event_id'      => $post->ID,
 						'quantity'      => 2,
 						'obj'           => $ticket,
 						'sub_total'     => $sub_total_value->sub_total( 2 ),
@@ -128,15 +111,16 @@ class Checkout_ShortcodeTest extends \Codeception\TestCase\WPTestCase {
 
 		yield 'ticket not on sale' => [
 			function(): array {
-				codecept_debug( [ $this->post_id, $this->ticket_id ] );
-				$ticket = tribe( Module::class )->get_ticket( $this->post_id, $this->ticket_id );
-				codecept_debug($ticket);
+				global $post;
+				$post = $this->factory->post->create_and_get();
+				$ticket_id = $this->create_tc_ticket( $post->ID, 10 );
+				$ticket = tribe( Module::class )->get_ticket( $post->ID, $ticket_id );
 				$sub_total_value = Value::create();
-				$sub_total_value->set_value( $ticket->price );
+				$sub_total_value->set_value($ticket->price );
 				$items = [
 					[
-						'ticket_id'     => $this->ticket_id,
-						'event_id'      => $this->post_id,
+						'ticket_id'     => $ticket_id,
+						'event_id'      => $post->ID,
 						'quantity'      => 2,
 						'obj'           => $ticket,
 						'sub_total'     => $sub_total_value->sub_total( 2 ),
