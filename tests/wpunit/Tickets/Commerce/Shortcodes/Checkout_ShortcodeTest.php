@@ -8,6 +8,7 @@ use TEC\Tickets\Commerce\Gateways\Manual\Gateway;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\Commerce\Utils\Value;
+use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe__Template;
 use Tribe__Tickets__Main;
@@ -18,6 +19,17 @@ class Checkout_ShortcodeTest extends \Codeception\TestCase\WPTestCase {
 
 	use MatchesSnapshots;
 	use Ticket_Maker;
+	use With_Uopz;
+
+	/**
+	 * @var int
+	 */
+	private $post_id;
+
+	/**
+	 * @var int
+	 */
+	private $ticket_id;
 
 	public function setUp() {
 		parent::setUp();
@@ -30,6 +42,15 @@ class Checkout_ShortcodeTest extends \Codeception\TestCase\WPTestCase {
 			return $modules;
 		} );
 
+		$this->set_fn_return( 'wp_create_nonce', 'a1b2c3d4e5f6' );
+	}
+
+	public function tearDown() {
+		wp_delete_post( $this->post_id, true );
+		wp_delete_post( $this->ticket_id, true );
+		unset( $this->ticket_id, $this->post_id );
+
+		parent::tearDown();
 	}
 
 	/**
@@ -79,47 +100,51 @@ class Checkout_ShortcodeTest extends \Codeception\TestCase\WPTestCase {
 		global $post;
 		$post = $this->factory->post->create_and_get();
 		$ticket_id = $this->create_tc_ticket( $post->ID, 10 );
+		$this->post_id = $post->ID;
+		$this->ticket_id = $ticket_id;
 
 		yield 'ticket on sale' => [
-			function() use ( $post, $ticket_id ): array {
-				update_post_meta( $ticket_id, Ticket::$sale_price_checked_key, '1');
-				update_post_meta( $ticket_id, Ticket::$sale_price_key, '5');
-				$ticket = tribe( Module::class )->get_ticket( $post->ID, $ticket_id );
+			function(): array {
+				update_post_meta( $this->ticket_id, Ticket::$sale_price_checked_key, '1');
+				update_post_meta( $this->ticket_id, Ticket::$sale_price_key, '5');
+				$ticket = tribe( Module::class )->get_ticket( $this->post_id, $this->ticket_id );
 				$sub_total_value = Value::create();
 				$sub_total_value->set_value($ticket->price );
 				$items = [
 					[
-						'ticket_id' => $ticket_id,
-						'event_id' => $post->ID,
-						'quantity' => 2,
-						'obj' => $ticket,
-						'sub_total' => $sub_total_value->sub_total( 2 ),
+						'ticket_id'     => $this->ticket_id,
+						'event_id'      => $this->post_id,
+						'quantity'      => 2,
+						'obj'           => $ticket,
+						'sub_total'     => $sub_total_value->sub_total( 2 ),
 						'regular_price' => Value::create()->set_value( 10 ),
 					]
 				];
 				return [
-					array_filter( $items )
+					$items
 				];
 			}
 		];
 
 		yield 'ticket not on sale' => [
-			function() use ( $post, $ticket_id ): array {
-				$ticket = tribe( Module::class )->get_ticket( $post->ID, $ticket_id );
+			function(): array {
+				codecept_debug( [ $this->post_id, $this->ticket_id ] );
+				$ticket = tribe( Module::class )->get_ticket( $this->post_id, $this->ticket_id );
+				codecept_debug($ticket);
 				$sub_total_value = Value::create();
-				$sub_total_value->set_value($ticket->price );
+				$sub_total_value->set_value( $ticket->price );
 				$items = [
 					[
-						'ticket_id' => $ticket_id,
-						'event_id' => $post->ID,
-						'quantity' => 2,
-						'obj' => $ticket,
-						'sub_total' => $sub_total_value->sub_total( 2 ),
-						'regular_price' => Value::create( 10 ),
+						'ticket_id'     => $this->ticket_id,
+						'event_id'      => $this->post_id,
+						'quantity'      => 2,
+						'obj'           => $ticket,
+						'sub_total'     => $sub_total_value->sub_total( 2 ),
+						'regular_price' => Value::create()->set_value( 10 ),
 					]
 				];
 				return [
-					array_filter( $items )
+					$items
 				];
 			}
 		];
