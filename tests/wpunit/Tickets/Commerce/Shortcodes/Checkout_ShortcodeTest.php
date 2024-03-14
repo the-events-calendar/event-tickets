@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Commerce\Shortcodes;
 
 use Spatie\Snapshots\MatchesSnapshots;
+use tad\WP\Snapshots\WPHtmlOutputDriver;
 use TEC\Tickets\Commerce\Checkout;
 use TEC\Tickets\Commerce\Gateways\Manual\Gateway;
 use TEC\Tickets\Commerce\Module;
@@ -40,7 +41,7 @@ class Checkout_ShortcodeTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 */
 	public function test_matches_snapshots( \Closure $ticket_data_provider ) {
-		[ $items ] = $ticket_data_provider();
+		[ $items, $post, $ticket ] = $ticket_data_provider();
 
 		$sections    = array_unique( array_filter( wp_list_pluck( $items, 'event_id' ) ) );
 		$sub_totals  = Value::build_list( array_filter( wp_list_pluck( $items, 'sub_total' ) ) );
@@ -74,7 +75,15 @@ class Checkout_ShortcodeTest extends \Codeception\TestCase\WPTestCase {
 		wp_delete_post( $items[0]['ticket_id'], true );
 		wp_delete_post( $items[0]['event_id'], true );
 
-		$this->assertMatchesSnapshot( $html );
+		$driver = new WPHtmlOutputDriver( home_url(), TRIBE_TESTS_HOME_URL );
+		$driver->setTolerableDifferences( [
+			$items[0]['ticket_id'],
+			$items[0]['event_id'],
+			$post->post_title,
+			$ticket->name,
+		] );
+
+		$this->assertMatchesSnapshot( $html, $driver );
 	}
 
 	/**
@@ -104,7 +113,9 @@ class Checkout_ShortcodeTest extends \Codeception\TestCase\WPTestCase {
 					]
 				];
 				return [
-					$items
+					$items,
+					$post,
+					$ticket,
 				];
 			}
 		];
@@ -128,7 +139,9 @@ class Checkout_ShortcodeTest extends \Codeception\TestCase\WPTestCase {
 					]
 				];
 				return [
-					$items
+					$items,
+					$post,
+					$ticket,
 				];
 			}
 		];
