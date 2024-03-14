@@ -56,7 +56,7 @@ $has_suffix = ! empty( $ticket->price_suffix );
 ?>
 <div <?php tribe_classes( $classes ); ?>>
 	<?php if ( ! empty( $ticket->on_sale ) ) : ?>
-		<span class="tribe-common-b2 tribe-tickets__tickets-original-price">
+		<span class="tribe-common-b3 tribe-tickets__tickets-original-price">
 			<?php echo $currency->get_formatted_currency_with_symbol( $ticket->regular_price, $post_id, $provider->class_name ); ?>
 		</span>
 	<?php endif; ?>

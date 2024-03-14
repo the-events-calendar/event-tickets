@@ -61,11 +61,14 @@ $event_title_classes = [
 ];
 
 ?>
-<div <?php tribe_classes( $title_classes ); ?> >
-	<?php if ( $is_mini ) : ?>
-		<div <?php tribe_classes( $event_title_classes ); ?> >
-			<?php echo get_the_title( $post_id ); ?>
-		</div>
-	<?php endif; ?>
-	<?php echo esc_html( $ticket->name ); ?>
+<div class="tribe-tickets__tickets-item-content-title-container">
+	<?php $this->template( 'v2/tickets/item/content/sale-label' ); ?>
+	<div <?php tribe_classes( $title_classes ); ?> >
+		<?php if ( $is_mini ) : ?>
+			<div <?php tribe_classes( $event_title_classes ); ?> >
+				<?php echo get_the_title( $post_id ); ?>
+			</div>
+		<?php endif; ?>
+		<?php echo esc_html( $ticket->name ); ?>
+	</div>
 </div>
