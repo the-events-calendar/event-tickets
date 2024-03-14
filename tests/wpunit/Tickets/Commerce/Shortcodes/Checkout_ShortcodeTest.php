@@ -95,7 +95,9 @@ class Checkout_ShortcodeTest extends \Codeception\TestCase\WPTestCase {
 		yield 'ticket on sale' => [
 			function(): array {
 				global $post;
-				$post = $this->factory->post->create_and_get();
+				$post = $this->factory->post->create_and_get( [
+					'post_title' => 'Post with Ticket',
+				] );
 				$ticket_id = $this->create_tc_ticket( $post->ID, 10 );
 				update_post_meta( $ticket_id, Ticket::$sale_price_checked_key, '1');
 				update_post_meta( $ticket_id, Ticket::$sale_price_key, '5');
@@ -123,7 +125,9 @@ class Checkout_ShortcodeTest extends \Codeception\TestCase\WPTestCase {
 		yield 'ticket not on sale' => [
 			function(): array {
 				global $post;
-				$post = $this->factory->post->create_and_get();
+				$post = $this->factory->post->create_and_get( [
+					'post_title' => 'Post with Ticket',
+				] );
 				$ticket_id = $this->create_tc_ticket( $post->ID, 10 );
 				$ticket = tribe( Module::class )->get_ticket( $post->ID, $ticket_id );
 				$sub_total_value = Value::create();
