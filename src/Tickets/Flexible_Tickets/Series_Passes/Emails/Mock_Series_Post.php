@@ -28,13 +28,12 @@ class Mock_Series_Post {
 	 * @since TBD
 	 *
 	 * @param string|null $start_date   The start date.
-	 * @param WP_Post     $post
+	 * @param WP_Post     $post         The post the start date is being filtered for.
 	 * @param bool        $display_time Whether to display the time.
 	 * @param string      $date_format  The date format.
 	 *
 	 * @return string  The filtered start date, if filtering for the mock post.
 	 * @internal
-	 *
 	 */
 	public function filter_start_date( $start_date, $post, $display_time, $date_format ) {
 		if ( $post->ID !== $this->mock_post_id ) {
@@ -51,13 +50,12 @@ class Mock_Series_Post {
 	 * @since TBD
 	 *
 	 * @param string|null $end_date     The end date.
-	 * @param WP_Post     $post
+	 * @param WP_Post     $post         The post the end date is being filtered for.
 	 * @param bool        $display_time Whether to display the time.
 	 * @param string      $date_format  The date format.
 	 *
 	 * @return string  The filtered end date, if filtering for the mock post.
 	 * @internal
-	 *
 	 */
 	public function filter_end_date( $end_date, $post, $display_time, $date_format ) {
 		if ( $post->ID !== $this->mock_post_id ) {

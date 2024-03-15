@@ -3,7 +3,6 @@
 namespace TEC\Tickets\Emails\JSON_LD;
 
 use TEC\Tickets\Emails\Email_Abstract;
-use Tribe\Events\Event_Status\JSON_LD;
 use WP_Post;
 
 /**
@@ -60,7 +59,7 @@ class Event_Schema extends JSON_LD_Abstract {
 	 * @since TBD
 	 *
 	 * @param Email_Abstract $email The email instance.
-	 * @param int|int        $event The event post ID.
+	 * @param int|null       $event The event post ID.
 	 *
 	 * @return JSON_LD_Abstract The schema instance.
 	 */

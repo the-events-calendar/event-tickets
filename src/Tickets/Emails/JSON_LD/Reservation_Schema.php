@@ -3,7 +3,6 @@
 namespace TEC\Tickets\Emails\JSON_LD;
 
 use TEC\Tickets\Emails\Email_Abstract;
-use WP_Post;
 
 /**
  * Class Reservation_Schema.
@@ -60,7 +59,7 @@ class Reservation_Schema extends JSON_LD_Abstract {
 	}
 
 	/**
-	 * Build the schema object from an email and events.
+	 * Build the schema object from an email and specified event.
 	 *
 	 * @since TBD
 	 *

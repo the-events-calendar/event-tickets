@@ -95,7 +95,7 @@ class Mock_Event_Post {
 	/**
 	 * Mock_Event_Post constructor.
 	 *
-	 * since TBD
+	 * @since TBD
 	 *
 	 * @param string $start The Event start date in a `strtotime`-compatible format.
 	 * @param string $end   The Event end date in a `strtotime`-compatible format.

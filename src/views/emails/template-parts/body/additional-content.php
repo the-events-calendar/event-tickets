@@ -9,7 +9,7 @@
  *
  * @link https://evnt.is/tickets-emails-tpl Help article for Tickets Emails template files.
  *
- * @version TBd
+ * @version TBD
  *
  * @since 5.5.11
  * @since TBD Add the additional content header.

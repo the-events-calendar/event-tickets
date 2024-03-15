@@ -10,7 +10,6 @@
 namespace TEC\Tickets\Flexible_Tickets\Series_Passes\Emails;
 
 use WP_Post;
-use Tribe__Utils__Array as Arr;
 
 /**
  * Class Upcoming_Events.

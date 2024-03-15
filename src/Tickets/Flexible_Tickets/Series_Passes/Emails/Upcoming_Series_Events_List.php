@@ -51,7 +51,7 @@ class Upcoming_Series_Events_List {
 	 *
 	 * @since TBD
 	 *
-	 * @param Template $template The template instance.
+	 * @param Upcoming_Events $upcoming_events The Upcoming Events instance.
 	 */
 	public function __construct( Upcoming_Events $upcoming_events ) {
 		$this->upcoming_events = $upcoming_events;
@@ -101,6 +101,7 @@ class Upcoming_Series_Events_List {
 		$this->template->template(
 			'template-parts/body/series-events-list',
 			[
+				// translators: %s: The lowercase events label, e.g. 'events'.
 				'title'            => sprintf(
 					_x( 'Upcoming %s in this Series', 'Series Pass Email upcoming events list title', 'event-tickets' ),
 					tribe_get_event_label_plural()
@@ -110,9 +111,9 @@ class Upcoming_Series_Events_List {
 				'series_link'      => $series_link,
 				'series_link_text' =>
 					sprintf(
-						// translators: %d: The number of events in the series. %s: The label for the event type.
+						// translators: %1$d: The number of events in the series. %2$s: The label for the event type.
 						_x(
-							'View all %d %s in this series',
+							'View all %1$d %2$s in this series',
 							'Series Pass Email upcoming events list link text',
 							'event-tickets'
 						),

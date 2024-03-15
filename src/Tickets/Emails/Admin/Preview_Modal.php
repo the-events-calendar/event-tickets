@@ -12,7 +12,6 @@ namespace TEC\Tickets\Emails\Admin;
 use TEC\Tickets\Emails\Email_Handler;
 use Tribe__Utils__Array as Arr;
 use TEC\Tickets\Emails\Assets;
-use TEC\Tickets\Emails\Admin\Emails_Tab;
 use TEC\Tickets\Emails\Email\Ticket;
 
 /**
