@@ -1,4 +1,4 @@
-<?php return '<style type="text/css">
+<style type="text/css">
 	body {
 		color: #3C434A;
 		margin: 0;
@@ -58,7 +58,7 @@
 	td.tec-tickets__email-table-main-header {
 		background: #ffffff;
 		padding: 5px 5px 0px 5px;
-		text-align: left;
+		text-align: center;
 	}
 
 	table.tec-tickets__email-table-content {
@@ -382,7 +382,63 @@
 		}
 	}
 </style>
-<div class="tec-tickets__email-body">
+
+<style type="text/css">
+	td.tec-tickets__email-table-content-upcoming-events-list__title-container {
+		padding-top: 30px;
+	}
+
+	tr.tec-tickets__email-table-content-upcoming-events-list__cards-container {
+		display: block;
+		border: 1px solid #D5D5D5;
+		padding: 27px;
+	}
+
+	.tec-tickets__email-table-content-upcoming-event-card {
+		display: block;
+		width: 100%;
+	}
+
+	.tec-tickets__email-table-content-upcoming-event-card:not(:last-of-type) {
+		margin-bottom: 18px;
+	}
+
+	td.tec-tickets__email-table-content-upcoming-event-card__month {
+		font-size: 11px;
+		color: #727272;
+		text-align: center;
+	}
+
+	td.tec-tickets__email-table-content-upcoming-event-card__time {
+		font-size: 12px;
+		color: #141827;
+		padding: 0 0 0 14px;
+	}
+
+	td.tec-tickets__email-table-content-upcoming-event-card__day {
+		font-size: 24px;
+		color: #141827;
+		font-weight: bold;
+		text-align: center;
+	}
+
+	td.tec-tickets__email-table-content-upcoming-event-card__title {
+		font-size: 18px;
+		color: #141827;
+		font-weight: bold;
+		padding: 0 0 0 14px;
+	}
+
+	.tec-tickets__email-table-content-upcoming-event-card__link {
+		display: block;
+		padding: 18px 0 0 0 !important;
+	}
+
+	.tec-tickets__email-table-content-upcoming-event-card__link a {
+		color: #141827;
+		text-decoration: underline !important;
+	}
+</style><div class="tec-tickets__email-body">
 
 		
 		<table role="presentation" class="tec-tickets__email-table-main">
@@ -390,9 +446,13 @@
 			<tr>
 	<td
 		class="tec-tickets__email-table-main-header"
-		align="left"
+		align="center"
 	>
-			</td>
+		<img
+	style="max-height:100px;max-width:100%;margin:0px;display:inline-block"
+	src="http://wordpress.test/wp-content/plugins/event-tickets/src/resources/images/series-pass-example-header-image.png"
+/>
+	</td>
 </tr>
 
 			<tr>
@@ -401,104 +461,163 @@
 <tr>
 	<td>
 		<h1 class="tec-tickets__email-table-content-title">
-			Completed order: #-99		</h1>
+			Here&#039;s your series pass, John Doe!		</h1>
+	</td>
+</tr>
+
+<tr>
+	<td class="tec-tickets__email-table-content__series-date">
+		September 22 - November 25	</td>
+</tr>
+<tr>
+	<td class="tec-tickets__email-table-content-post-title-container">
+		<h3 class="tec-tickets__email-table-content-post-title">
+			<a href="http://wordpress.test/?tribe_event_series=preview-series-1000" target="_blank" rel="noopener noreferrer">
+				Sidewalk Fall Film Festival			</a>
+		</h3>
+	</td>
+</tr>
+
+<tr>
+	<td style="padding:0" class="tec-tickets__email-table-content-event-image-container">
+		<img
+			class="tec-tickets__email-table-content-event-image"
+			style="display:block"
+			src="http://wordpress.test/wp-content/plugins/event-tickets/src/resources/images/series-pass-example-series-thumbnail.png"
+							alt="Jaws film poster"
+										title="Jaws"
+					/>
 	</td>
 </tr>
 <tr>
-	<td>
-		<table>
-			<tr>
-				<td class="tec-tickets__email-table-content-order-purchaser-details-top tec-tickets__email-table-content-align-left" align="left">
-	Order #-99</td>
-				<td class="tec-tickets__email-table-content-order-purchaser-details-top tec-tickets__email-table-content-align-right" align="right">
-	John Doe</td>
-			</tr>
-			<tr>
-				<td class="tec-tickets__email-table-content-order-purchaser-details-bottom tec-tickets__email-table-content-align-left" align="left">
-	April 17, 2023</td>
-				<td class="tec-tickets__email-table-content-order-purchaser-details-bottom tec-tickets__email-table-content-align-right" align="right">
-	john@doe.com</td>
-			</tr>
-		</table>
-	</td>
-</tr>
-<tr>
-	<td>
-		<table style="border-collapse:collapse;margin-top:10px">
-			<tr class="tec-tickets__email-table-content-order-ticket-totals-header-row">
-	<th style="width: 80%" class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-left" align="left">
-		Ticket	</th>
-	<th class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-center" align="center">
-		Qty	</th>
-	<th class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-right" align="right">
-		Price	</th>
-</tr>
-							<tr class="tec-tickets__email-table-content-order-ticket-totals-ticket-row">
-	<td class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-left" align="left">
-	General Admission</td>
-	<td class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-center" align="center">
-	2</td>
-	<td class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-right" align="right">
-	&#x24;50.00</td>
-</tr>
+	<td style="padding:0;">
+		<table class="tec-tickets__email-table-content-tickets" role="presentation">
+								<tr>
+				<td class="tec-tickets__email-table-content-ticket">
+					<table class="tec-tickets__email-table-content-ticket-table">
+						<tr>
+							<td class="tec-tickets__email-table-content-ticket-holder-name-container">
+	<h2 class="tec-tickets__email-table-content-ticket-holder-name">
+		John Doe	</h2>
+								<div class="tec-tickets__email-table-content-ticket-type-name">
+		General Admission	</div>
+</td>
+						</tr>
+						<tr>
+							<td class="tec-tickets__email-table-content-ticket-security-code-container">
+	<div class="tec-tickets__email-table-content-ticket-security-code">
+		abcdefg12345	</div>
+</td>
+						</tr>
 					</table>
-	</td>
-</tr>
-<tr>
-	<td class="tec-tickets__email-table-content-order-total-container" align="right">
-		<table class="tec-tickets__email-table-content-order-total-table">
-			<tr>
-				<td class="tec-tickets__email-table-content-order-total-left-cell">
-					Order Total				</td>
-				<td class="tec-tickets__email-table-content-order-total-right-cell">
-					&#x24;100.00				</td>
+									</td>
 			</tr>
-		</table>
+				</table>
 	</td>
-</tr><tr>
-	<td class="tec-tickets__email-table-content-order-gateway-data-container" align="right">
-		Gateway Order #<a href="" target="_blank" rel="noopener noreferrer">test_cd7d068a5ef24c02</a>	</td>
-</tr><tr>
-	<td class="tec-tickets__email-table-content-order-payment-info-container" align="right">
-		Payment completed with Manually Generated	</td>
 </tr>
 <tr>
-	<td class="tec-tickets__email-table-content-order-attendees-table-container">
-		<table class="tec-tickets__email-table-content-order-attendees-table">
-			<tr class="tec-tickets__email-table-content-order-attendees-table-header-row">
-	<td class="tec-tickets__email-table-content-order-attendees-table-header-cell tec-tickets__email-table-content-align-left" align="left">
-		Attendee	</td>
-	<td class="tec-tickets__email-table-content-order-attendees-table-header-cell tec-tickets__email-table-content-align-center" align="center">
-		Name	</td>
-	<td class="tec-tickets__email-table-content-order-attendees-table-header-cell tec-tickets__email-table-content-align-right" align="right">
-		Ticket ID	</td>
-</tr>
-							<tr class="tec-tickets__email-table-content-order-attendee-info-row">
-	<td class="tec-tickets__email-table-content-order-attendee-info tec-tickets__email-table-content-align-left" align="left">
-		<div>
-	John Doe</div>
-		<div>
-	john@doe.com</div>
-			</td>
-	<td class="tec-tickets__email-table-content-order-attendee-info tec-tickets__email-table-content-align-center" align="center">
-	General Admission</td>
-	<td class="tec-tickets__email-table-content-order-attendee-info tec-tickets__email-table-content-align-right" align="right">
-	abcde12345</td>
-</tr>
-							<tr class="tec-tickets__email-table-content-order-attendee-info-row">
-	<td class="tec-tickets__email-table-content-order-attendee-info tec-tickets__email-table-content-align-left" align="left">
-		<div>
-	Jane Doe</div>
-		<div>
-	jane@doe.com</div>
-			</td>
-	<td class="tec-tickets__email-table-content-order-attendee-info tec-tickets__email-table-content-align-center" align="center">
-	General Admission</td>
-	<td class="tec-tickets__email-table-content-order-attendee-info tec-tickets__email-table-content-align-right" align="right">
-	12345abcde</td>
-</tr>
-					</table>
+	<td class="tec-tickets__email-table-content-upcoming-events-list__title-container">
+		<header
+			class="tec-tickets__email-table-content__section-header tec-tickets__email-table-content__section-header--upcoming-events-list">
+			Upcoming Events in this Series		</header>
 	</td>
+</tr>
+
+<tr class="tec-tickets__email-table-content-upcoming-events-list__cards-container">
+	<td>
+					<table class="tec-tickets__email-table-content-upcoming-event-card">
+				<tr class="tec-tickets__email-table-content-upcoming-event-card__line-1">
+					<td class="tec-tickets__email-table-content-upcoming-event-card__month">
+						OCT					</td>
+					<td class="tec-tickets__email-table-content-upcoming-event-card__time">
+						7:00 pm						-
+						9:00 pm					</td>
+				</tr>
+				<tr class="tec-tickets__email-table-content-upcoming-event-card__line-2">
+					<td class="tec-tickets__email-table-content-upcoming-event-card__day">
+						20					</td>
+					<td class="tec-tickets__email-table-content-upcoming-event-card__title">
+						Jaws					</td>
+				</tr>
+			</table>
+					<table class="tec-tickets__email-table-content-upcoming-event-card">
+				<tr class="tec-tickets__email-table-content-upcoming-event-card__line-1">
+					<td class="tec-tickets__email-table-content-upcoming-event-card__month">
+						OCT					</td>
+					<td class="tec-tickets__email-table-content-upcoming-event-card__time">
+						7:00 pm						-
+						9:00 pm					</td>
+				</tr>
+				<tr class="tec-tickets__email-table-content-upcoming-event-card__line-2">
+					<td class="tec-tickets__email-table-content-upcoming-event-card__day">
+						22					</td>
+					<td class="tec-tickets__email-table-content-upcoming-event-card__title">
+						Rashomon					</td>
+				</tr>
+			</table>
+					<table class="tec-tickets__email-table-content-upcoming-event-card">
+				<tr class="tec-tickets__email-table-content-upcoming-event-card__line-1">
+					<td class="tec-tickets__email-table-content-upcoming-event-card__month">
+						OCT					</td>
+					<td class="tec-tickets__email-table-content-upcoming-event-card__time">
+						2:00 pm						-
+						4:00 pm					</td>
+				</tr>
+				<tr class="tec-tickets__email-table-content-upcoming-event-card__line-2">
+					<td class="tec-tickets__email-table-content-upcoming-event-card__day">
+						28					</td>
+					<td class="tec-tickets__email-table-content-upcoming-event-card__title">
+						Rear Window					</td>
+				</tr>
+			</table>
+					<table class="tec-tickets__email-table-content-upcoming-event-card">
+				<tr class="tec-tickets__email-table-content-upcoming-event-card__line-1">
+					<td class="tec-tickets__email-table-content-upcoming-event-card__month">
+						OCT					</td>
+					<td class="tec-tickets__email-table-content-upcoming-event-card__time">
+						7:00 pm						-
+						9:00 pm					</td>
+				</tr>
+				<tr class="tec-tickets__email-table-content-upcoming-event-card__line-2">
+					<td class="tec-tickets__email-table-content-upcoming-event-card__day">
+						30					</td>
+					<td class="tec-tickets__email-table-content-upcoming-event-card__title">
+						Indiana Jones and the Last Crusade					</td>
+				</tr>
+			</table>
+					<table class="tec-tickets__email-table-content-upcoming-event-card">
+				<tr class="tec-tickets__email-table-content-upcoming-event-card__line-1">
+					<td class="tec-tickets__email-table-content-upcoming-event-card__month">
+						NOV					</td>
+					<td class="tec-tickets__email-table-content-upcoming-event-card__time">
+						7:00 pm						-
+						9:00 pm					</td>
+				</tr>
+				<tr class="tec-tickets__email-table-content-upcoming-event-card__line-2">
+					<td class="tec-tickets__email-table-content-upcoming-event-card__day">
+						02					</td>
+					<td class="tec-tickets__email-table-content-upcoming-event-card__title">
+						Mulholland Drive					</td>
+				</tr>
+			</table>
+		
+					<div class="tec-tickets__email-table-content-upcoming-event-card__link">
+				<a href="http://wordpress.test/?tribe_event_series=preview-series-1000" target="_blank" rel="noopener noreferrer">
+					View all 6 Events in this series				</a>
+			</div>
+			</td>
+</tr>
+
+<tr>
+	<td class="tec-tickets__email-table-content-post-description-container">
+				<p>Let the SideWalk Fall Film Festival be your ticket to the best films of past seasons.</p>
+	</td>
+</tr>
+<tr>
+	<td class="tec-tickets__email-table-content-additional-content-container">
+					<header class="tec-tickets__email-table-content__section-header tec-tickets__email-table-content__section-header--additional-content">
+				Additional Information			</header>
+				All films are shown at the Sidewalk Film Center - 1821 2nd Ave. N., Birmingham, AL 35203. Seating is first come first serve, so arrive on time. All proceeds from this film series benefit Sidewalk Film Festival. Thank you for your support!	</td>
 </tr>
 					</table>
 				</td>
@@ -520,4 +639,3 @@
 	<svg  class="tribe-common-c-svgicon tribe-common-c-svgicon--dot tribe-common-c-loader__dot tribe-common-c-loader__dot--second"  viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg"><circle cx="7.5" cy="7.5" r="7.5"/></svg>
 	<svg  class="tribe-common-c-svgicon tribe-common-c-svgicon--dot tribe-common-c-loader__dot tribe-common-c-loader__dot--third"  viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg"><circle cx="7.5" cy="7.5" r="7.5"/></svg>
 </div>
-';
