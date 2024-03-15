@@ -426,6 +426,7 @@ class Emails_Test extends Controller_Test_Case {
 		$message = $series_pass_mail['message'];
 
 		$search  = [
+			$series_pass_attendee_security,
 			$public_event_1->ID,
 			$public_event_1->dates->start->format( 'c' ),
 			$public_event_1->dates->end->format( 'c' ),
@@ -441,9 +442,9 @@ class Emails_Test extends Controller_Test_Case {
 			get_post_field( 'post_name', $series_id ),
 			$series_pass_id,
 			$series_pass_attendee_id,
-			$series_pass_attendee_security,
 		];
 		$replace = [
+			'SERIES_PASS_ATTENDEE_SECURITY',
 			'PUBLIC_EVENT_1_ID',
 			'PUBLIC_EVENT_1_START_DATE',
 			'PUBLIC_EVENT_1_END_DATE',
@@ -459,7 +460,6 @@ class Emails_Test extends Controller_Test_Case {
 			'SERIES_NAME',
 			'SERIES_PASS_ID',
 			'SERIES_PASS_ATTENDEE_ID',
-			'SERIES_PASS_ATTENDEE_SECURITY',
 		];
 
 		if ( $include_images ) {
