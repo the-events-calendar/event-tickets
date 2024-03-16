@@ -366,6 +366,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		var $ticket_end_time = $( document.getElementById( 'ticket_end_time' ) );
 		var startofweek = 0;
 		const ticketNameLabel = document.getElementById('ticket_name_label');
+		var $ticket_sale_start_date = $( document.getElementById( 'ticket_sale_start_date' ) );
+		var $ticket_sale_end_date = $( document.getElementById( 'ticket_sale_end_date' ) );
 
 		/**
 		 * There might be cases when Tickets is used in isolation where TEC is not
@@ -440,10 +442,19 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			onSelect: function( dateText, inst ) {
 				var the_date = $.datepicker.parseDate( dateFormat, dateText );
 
-				if ( inst.id === 'ticket_start_date' ) {
-					$ticket_end_date.datepicker( 'option', 'minDate', the_date );
-				} else {
-					$ticket_start_date.datepicker( 'option', 'maxDate', the_date );
+				switch ( inst.id ) {
+					case 'ticket_start_date':
+						$ticket_end_date.datepicker( 'option', 'minDate', the_date );
+						break;
+					case 'ticket_end_date':
+						$ticket_start_date.datepicker( 'option', 'maxDate', the_date );
+						break;
+					case 'ticket_sale_start_date':
+						$ticket_sale_end_date.datepicker( 'option', 'minDate', the_date );
+						break;
+					case 'ticket_sale_end_date':
+						$ticket_sale_start_date.datepicker( 'option', 'maxDate', the_date );
+						break;
 				}
 			}
 		};
@@ -467,6 +478,22 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			.datepicker( 'option', 'defaultDate', $( document.getElementById( 'EventEndDate' ) ).val() )
 			.on( 'keyup', function( e ) {
 				if ( e.keyCode === 8 || e.keyCode === 46 ) {
+					$.datepicker._clearDate( this );
+				}
+			} );
+
+		$ticket_sale_start_date
+			.datepicker( datepickerOpts )
+			.on( 'keyup', function (e) {
+				if (e.keyCode === 8 || e.keyCode === 46) {
+					$.datepicker._clearDate( this );
+				}
+			} );
+
+		$ticket_sale_end_date
+			.datepicker( datepickerOpts )
+			.on( 'keyup', function (e) {
+				if (e.keyCode === 8 || e.keyCode === 46) {
 					$.datepicker._clearDate( this );
 				}
 			} );
@@ -820,7 +847,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		$globalField.val( 'capped' );
 	} );
 
-	$document.on( 'keyup', '#ticket_price', function( e ) {
+	$document.on( 'keyup', '#ticket_price, #ticket_sale_price', function( e ) {
 		e.preventDefault();
 
 		var decimal_point = price_format.decimal;
