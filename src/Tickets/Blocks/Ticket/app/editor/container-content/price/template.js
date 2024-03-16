@@ -16,7 +16,7 @@ import uniqid from 'uniqid';
  * Internal dependencies
  */
 import { PREFIX, SUFFIX, TICKET_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
-import { LabeledItem } from '@moderntribe/common/elements';
+import {Checkbox, LabeledItem} from '@moderntribe/common/elements';
 import './style.pcss';
 
 class Price extends PureComponent {
@@ -30,6 +30,8 @@ class Price extends PureComponent {
 		minDefaultPrice: PropTypes.string,
 		onTempPriceChange: PropTypes.func.isRequired,
 		tempPrice: PropTypes.string,
+		toggleSalePrice: PropTypes.func.isRequired,
+		salePriceChecked: PropTypes.bool,
 	};
 
 	constructor( props ) {
@@ -48,6 +50,8 @@ class Price extends PureComponent {
 			minDefaultPrice,
 			onTempPriceChange,
 			tempPrice,
+			toggleSalePrice,
+			salePriceChecked,
 		} = this.props;
 
 		const numericFormatProps = {
@@ -60,6 +64,11 @@ class Price extends PureComponent {
 				onTempPriceChange( e );
 			}
 		};
+
+		const handleSalePriceCheck = ( e ) => {
+			console.warn('handleSalePriceCheck', e );
+			toggleSalePrice( ! salePriceChecked );
+		}
 
 		return (
 			<div className={ classNames(
@@ -92,6 +101,35 @@ class Price extends PureComponent {
 					thousandSeparator={ currencyThousandsSep }
 					value={ tempPrice }
 				/>
+
+				<div className={"tribe-editor__ticket__sale-price-wrapper"}>
+					<Checkbox
+						className="tribe-editor__ticket__sale-price-checkbox"
+						id="tribe-editor__ticket__sale-price-checkbox"
+						// eslint-disable-next-line no-undef
+						label="Add Sale Price"
+						// eslint-disable-next-line no-undef
+						aria-label="Add Sale Price"
+						checked={ salePriceChecked }
+						onChange={ handleSalePriceCheck }
+						value={ salePriceChecked }
+					/>
+					{ salePriceChecked && (
+						<NumericFormat
+							allowNegative={ false }
+							className="tribe-editor__input tribe-editor__ticket__price-input"
+							decimalScale={ currencyNumberOfDecimals }
+							decimalSeparator={ currencyDecimalPoint }
+							disabled={ isDisabled }
+							displayType="input"
+							fixedDecimalScale={ true }
+							{ ...numericFormatProps }
+							onValueChange={ handleChange }
+							thousandSeparator={ currencyThousandsSep }
+							value={ tempPrice }
+						/>
+					) }
+				</div>
 			</div>
 		);
 	}
