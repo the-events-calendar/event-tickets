@@ -20,12 +20,20 @@ const mapStateToProps = ( state, ownProps ) => ( {
 	isDisabled: selectors.isTicketDisabled( state, ownProps ),
 	minDefaultPrice: selectors.isZeroPriceValid( state, ownProps ) ? 0 : 1,
 	tempPrice: selectors.getTicketTempPrice( state, ownProps ),
+	salePriceChecked: selectors.getSalePriceChecked( state, ownProps ),
 } );
 
 const mapDispatchToProps = ( dispatch, ownProps ) => ( {
 	onTempPriceChange: ( e ) => {
 		const { clientId } = ownProps;
 		dispatch( actions.setTicketTempPrice( clientId, e.value ) );
+		dispatch( actions.setTicketHasChanges( clientId, true ) );
+	},
+
+	toggleSalePrice: ( checked ) => {
+		const { clientId } = ownProps;
+		console.warn('toggleSalePrice', checked );
+		dispatch( actions.setSalePriceChecked( clientId, checked ) );
 		dispatch( actions.setTicketHasChanges( clientId, true ) );
 	},
 } );
