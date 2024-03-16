@@ -109,6 +109,7 @@ export default ( state = DEFAULT_STATE, action ) => {
 		case types.REGISTER_TICKET_BLOCK:
 		case types.REMOVE_TICKET_BLOCK:
 		case types.REMOVE_TICKET_BLOCKS:
+		case types.SET_TICKET_SALE_PRICE_CHECK:
 			return {
 				...state,
 				tickets: tickets( state.tickets, action ),
@@ -132,6 +133,7 @@ export default ( state = DEFAULT_STATE, action ) => {
 				uneditableTicketsLoading: false,
 			};
 		default:
+			console.warn( state, action, 'default');
 			return state;
 	}
 };

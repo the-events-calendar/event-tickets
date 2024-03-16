@@ -732,3 +732,8 @@ export const currentPostIsEvent = () => {
 	const post = postConfig();
 	return post?.type === 'tribe_events';
 }
+
+export const getSalePriceChecked = () => createSelector(
+	[ getTicketTempDetails ],
+	( tempDetails ) => tempDetails.salePriceChecked,
+);

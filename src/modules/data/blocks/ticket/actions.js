@@ -273,6 +273,14 @@ export const setTicketTempPrice = ( clientId, price ) => ( {
 	},
 } );
 
+export const setSalePriceChecked = (clientId, checked ) => ( {
+	type: types.SET_TICKET_SALE_PRICE_CHECK,
+	payload: {
+		clientId,
+		checked,
+	}
+} );
+
 export const setTicketTempSku = ( clientId, sku ) => ( {
 	type: types.SET_TICKET_TEMP_SKU,
 	payload: {
