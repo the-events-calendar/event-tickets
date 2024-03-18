@@ -48,7 +48,7 @@ export const DEFAULT_STATE = {
 	endTimeInput: momentUtil.toTime( endMoment ),
 	capacityType: constants.TICKET_TYPES[ constants.UNLIMITED ],
 	capacity: '',
-	salePriceChecked: true,
+	salePriceChecked: false,
 };
 
 export default ( state = DEFAULT_STATE, action ) => {

@@ -31,7 +31,6 @@ export const DEFAULT_STATE = {
 	hasChanges: false,
 	hasDurationError: false,
 	isSelected: false,
-	salePriceChecked: true,
 };
 
 export default ( state = DEFAULT_STATE, action ) => {
@@ -79,6 +78,7 @@ export default ( state = DEFAULT_STATE, action ) => {
 		case types.SET_TICKET_TEMP_END_TIME_INPUT:
 		case types.SET_TICKET_TEMP_CAPACITY_TYPE:
 		case types.SET_TICKET_TEMP_CAPACITY:
+		case types.SET_TICKET_SALE_PRICE_CHECK:
 			return {
 				...state,
 				tempDetails: tempDetails( state.tempDetails, action ),
@@ -147,12 +147,6 @@ export default ( state = DEFAULT_STATE, action ) => {
 			return {
 				...state,
 				isSelected: action.payload.isSelected,
-			};
-		case types.SET_TICKET_SALE_PRICE_CHECK:
-			console.warn( 'log from default state', state, action );
-			return {
-				...state,
-				salePriceChecked: action.payload.checked,
 			};
 		default:
 			return state;

@@ -32,9 +32,7 @@ const mapDispatchToProps = ( dispatch, ownProps ) => ( {
 
 	toggleSalePrice: ( e ) => {
 		const { clientId } = ownProps;
-		const checked = ! e.target.value;
-		console.warn(checked);
-		dispatch( actions.setSalePriceChecked( clientId, checked ) );
+		dispatch( actions.setSalePriceChecked( clientId, e.target.checked ) );
 		dispatch( actions.setTicketHasChanges( clientId, true ) );
 	},
 } );
