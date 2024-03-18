@@ -259,6 +259,7 @@ export function* setTicketInitialState( action ) {
 		put( actions.setTicketTempStartTime( clientId, startTime ) ),
 		put( actions.setTicketTempStartTimeInput( clientId, startTimeInput ) ),
 		put( actions.setTicketHasBeenCreated( clientId, hasBeenCreated ) ),
+		put( actions.setSalePriceChecked( clientId, TICKET_DEFAULT_STATE.salePriceChecked ) ),
 	] );
 
 	const isEvent = yield call( isTribeEventPostType );
@@ -418,6 +419,7 @@ export function* fetchTicket( action ) {
 				supports_attendee_information,
 				attendee_information_fields,
 				type,
+				salePriceChecked,
 			} = ticket;
 			/* eslint-enable camelcase */
 
@@ -467,6 +469,7 @@ export function* fetchTicket( action ) {
 				capacityType: capacity_type,
 				capacity,
 				type,
+				salePriceChecked,
 			};
 
 			yield all( [
@@ -654,6 +657,7 @@ export function* updateTicket( action ) {
 				endTimeInput,
 				capacityType,
 				capacity,
+				salePriceChecked,
 			] = yield all( [
 				select( selectors.getTicketTempTitle, props ),
 				select( selectors.getTicketTempDescription, props ),
@@ -672,6 +676,7 @@ export function* updateTicket( action ) {
 				select( selectors.getTicketTempEndTimeInput, props ),
 				select( selectors.getTicketTempCapacityType, props ),
 				select( selectors.getTicketTempCapacity, props ),
+				select( selectors.getSalePriceChecked, props ),
 			] );
 
 			yield all( [
@@ -693,6 +698,7 @@ export function* updateTicket( action ) {
 					endTimeInput,
 					capacityType,
 					capacity,
+					salePriceChecked,
 				} ) ),
 				put( actions.setTicketSold( clientId, capacity_details.sold ) ),
 				put( actions.setTicketAvailable( clientId, available ) ),
@@ -920,6 +926,7 @@ export function* setTicketDetails( action ) {
 		capacityType,
 		capacity,
 		type,
+		salePriceChecked,
 	} = details;
 
 	yield all( [
@@ -942,6 +949,7 @@ export function* setTicketDetails( action ) {
 		put( actions.setTicketCapacityType( clientId, capacityType ) ),
 		put( actions.setTicketCapacity( clientId, capacity ) ),
 		put( actions.setTicketType( clientId, type ) ),
+		put( actions.setSalePriceChecked( clientId, salePriceChecked ) ),
 	] );
 }
 
@@ -965,6 +973,7 @@ export function* setTicketTempDetails( action ) {
 		endTimeInput,
 		capacityType,
 		capacity,
+		salePriceChecked,
 	} = tempDetails;
 
 	yield all( [
@@ -985,6 +994,7 @@ export function* setTicketTempDetails( action ) {
 		put( actions.setTicketTempEndTimeInput( clientId, endTimeInput ) ),
 		put( actions.setTicketTempCapacityType( clientId, capacityType ) ),
 		put( actions.setTicketTempCapacity( clientId, capacity ) ),
+		put( actions.setSalePriceChecked( clientId, salePriceChecked ) ),
 	] );
 }
 

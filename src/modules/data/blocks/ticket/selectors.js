@@ -475,7 +475,9 @@ export const getTicketAttendeeInfoFields = createSelector(
 
 export const getTicketTempDetails = createSelector(
 	[ getTicket ],
-	( ticket ) => ticket.tempDetails || {},
+	( ticket ) =>  {
+		console.log(ticket);
+		return ticket.tempDetails || {}; },
 );
 
 export const getTicketTempTitle = createSelector(
@@ -491,6 +493,11 @@ export const getTicketTempDescription = createSelector(
 export const getTicketTempPrice = createSelector(
 	[ getTicketTempDetails ],
 	( tempDetails ) => tempDetails.price,
+);
+
+export const getSalePriceChecked = createSelector(
+	[ getTicketTempDetails ],
+	( tempDetails ) => tempDetails.salePriceChecked,
 );
 
 export const getTicketTempSku = createSelector(
@@ -732,8 +739,3 @@ export const currentPostIsEvent = () => {
 	const post = postConfig();
 	return post?.type === 'tribe_events';
 }
-
-export const getSalePriceChecked = () => createSelector(
-	[ getTicketTempDetails ],
-	( tempDetails ) => tempDetails.salePriceChecked,
-);
