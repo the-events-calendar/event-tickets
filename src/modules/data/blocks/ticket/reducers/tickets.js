@@ -65,6 +65,8 @@ export const byClientId = ( state = {}, action ) => {
 		case types.SET_TICKET_TYPE_ICON_URL:
 		case types.SET_TICKET_TYPE_NAME:
 		case types.REGISTER_TICKET_BLOCK:
+		case types.SET_TICKET_SALE_PRICE_CHECK:
+			console.warn( 'log from ticket reducer', state );
 			return {
 				...state,
 				[ action.payload.clientId ]: ticket( state[ action.payload.clientId ], action ),

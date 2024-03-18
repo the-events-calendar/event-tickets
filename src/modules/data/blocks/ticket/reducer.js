@@ -110,6 +110,7 @@ export default ( state = DEFAULT_STATE, action ) => {
 		case types.REMOVE_TICKET_BLOCK:
 		case types.REMOVE_TICKET_BLOCKS:
 		case types.SET_TICKET_SALE_PRICE_CHECK:
+			console.warn( 'log from main reducer', state.tickets );
 			return {
 				...state,
 				tickets: tickets( state.tickets, action ),
