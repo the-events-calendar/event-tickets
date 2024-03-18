@@ -48,6 +48,11 @@
 
 $no_description = ! $ticket->show_description() || empty( $ticket->description ) || $is_mini;
 
+$container_classes = [
+	'tribe-tickets__tickets-item-content-title-container',
+	'tribe-tickets--no-description' => $no_description,
+];
+
 $title_classes = [
 	'tribe-common-h7',
 	'tribe-common-h6--min-medium',
@@ -61,7 +66,7 @@ $event_title_classes = [
 ];
 
 ?>
-<div class="tribe-tickets__tickets-item-content-title-container">
+<div <?php tribe_classes( $container_classes ); ?> >
 	<?php $this->template( 'v2/tickets/item/content/sale-label' ); ?>
 	<div <?php tribe_classes( $title_classes ); ?> >
 		<?php if ( $is_mini ) : ?>
