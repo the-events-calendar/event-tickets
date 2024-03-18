@@ -65,11 +65,6 @@ class Price extends PureComponent {
 			}
 		};
 
-		const handleSalePriceCheck = ( e ) => {
-			console.warn('handleSalePriceCheck', e );
-			toggleSalePrice( ! salePriceChecked );
-		}
-
 		return (
 			<div className={ classNames(
 				'tribe-editor__ticket__price',
@@ -111,7 +106,7 @@ class Price extends PureComponent {
 						// eslint-disable-next-line no-undef
 						aria-label="Add Sale Price"
 						checked={ salePriceChecked }
-						onChange={ handleSalePriceCheck }
+						onChange={ toggleSalePrice }
 						value={ salePriceChecked }
 					/>
 					{ salePriceChecked && (
