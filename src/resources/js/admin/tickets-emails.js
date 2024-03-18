@@ -84,9 +84,8 @@ tribe.tickets.emails = {};
 	 * @param  {jqXHR}  jqXHR    Request object.
 	 * @param  {Object} settings Settings that this request was made with.
 	 */
-	obj.bindModalEvents = ( event, jqXHR, settings ) => {
-		const $container = event.data.container;
-		const data = event.data.requestData;
+	obj.bindModalEvents = ( event, jqXHR, settings ) => { // eslint-disable-line no-unused-vars
+
 	};
 
 	/**
@@ -160,30 +159,31 @@ tribe.tickets.emails = {};
 		context.currentEmail = currentEmail;
 
 		if ( currentEmail ) {
-			const fieldReducer = (context, el, fieldPrefix) => {
-				const name = el.name.replace(`${fieldPrefix}-`, '')
+			const fieldReducer = ( ctx, el, fieldPrefix ) => {
+				// eslint-disable-next-line template-curly-spacing
+				const name = el.name.replace( `${fieldPrefix}-`, '' )
 					// From `tec_tickets_emails_current_section-some-field' to `someField`.
-					.replace(/-([a-z])/g, (g) => g[1].toUpperCase()).replace(/\[]$/, '')
-				context[name] = el.type === 'checkbox' ? el.checked : el.value
-				return context
+					.replace( /-([a-z])/g, (g) => g[1].toUpperCase() ).replace( /\[]$/, '' ); // eslint-disable-line space-in-parens, computed-property-spacing, max-len
+				ctx[ name ] = el.type === 'checkbox' ? el.checked : el.value;
+				return ctx;
 			};
 
 			// This flag will be set by the RSVP type of email.
 			context.useTicketEmail = false;
 
 			// Include the generic ticket context.
-			const ticketOptionPrefix = 'tec-tickets-emails-ticket'
-			Array.from($document.find('input[name^=' + ticketOptionPrefix + ']'))
-				.reduce((context, el) => fieldReducer(context, el, ticketOptionPrefix), context);
+			const ticketOptionPrefix = 'tec-tickets-emails-ticket';
+			Array.from( $document.find( 'input[name^=' + ticketOptionPrefix + ']' ) )
+				.reduce( ( ctx, el ) => fieldReducer( ctx, el, ticketOptionPrefix ), context );
 
 			// Dynamically fetch the specific email type fields from the inputs. Override the context.
-			const currentEmailOptionPrefix = currentEmail.replace(/_/g, '-')
-			Array.from($document.find('input[name^=' + currentEmailOptionPrefix + ']'))
-				.reduce((context, el) => fieldReducer(context, el, currentEmailOptionPrefix), context);
+			const currentEmailOptionPrefix = currentEmail.replace( /_/g, '-' );
+			Array.from( $document.find( 'input[name^=' + currentEmailOptionPrefix + ']' ) )
+				.reduce( ( ctx, el ) => fieldReducer( ctx, el, currentEmailOptionPrefix ), context ); // eslint-disable-line max-len
 
 			// Fetch additional content from the editor.
-			context.addContent = tinyMCE !== undefined ?
-				tinyMCE.get( currentEmailOptionPrefix + '-additional-content' ).getContent()
+			context.addContent = tinyMCE !== undefined
+				? tinyMCE.get( currentEmailOptionPrefix + '-additional-content' ).getContent()
 				: '';
 		} else {
 			const ticketBgColor = $document

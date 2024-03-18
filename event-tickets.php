@@ -53,7 +53,7 @@ if ( tribe_is_not_min_php_version() ) {
 	 *
 	 * @since  4.10
 	 *
-	 * @param  array $names current list of names
+	 * @param  array $names current list of names.
 	 *
 	 * @return array
 	 */
@@ -67,6 +67,7 @@ if ( tribe_is_not_min_php_version() ) {
 	if ( ! has_filter( 'admin_notices', 'tribe_not_php_version_notice' ) ) {
 		add_action( 'admin_notices', 'tribe_not_php_version_notice' );
 	}
+
 	return false;
 }
 
