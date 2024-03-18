@@ -525,6 +525,15 @@
 		padding-top: 30px;
 	}
 
+	.tec-tickets__email-table-content__section-header {
+		color: #141827;
+		font-size: 18px;
+		font-style: normal;
+		font-weight: 700;
+		margin: 0;
+		padding: 20px 0 10px 0 !important;
+	}
+
 	@media screen and ( max-width: 500px ) {
 		h1.tec-tickets__email-table-content-title {
 			font-size: 21px;
@@ -622,9 +631,10 @@
 				</table>
 	</td>
 </tr>
+
 <tr>
 	<td class="tec-tickets__email-table-content-post-description-container">
-		<p>Experience the magic of creativity in nature. Save the date and indulge your senses at "Arts in the Park"!  Join us for an enchanting day of vibrant musics and captivating... </p>
+				<p>Experience the magic of creativity in nature. Save the date and indulge your senses at "Arts in the Park"!  Join us for an enchanting day of vibrant musics and captivating... </p>
 	</td>
 </tr>
 <tr>

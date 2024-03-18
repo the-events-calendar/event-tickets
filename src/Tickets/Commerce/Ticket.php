@@ -992,7 +992,7 @@ class Ticket {
 		// Update the ticket stock data.
 		$this->increase_ticket_stock_by( $src_ticket_type_id, 1 );
 		$this->decrease_ticket_stock_by( $tgt_ticket_type_id, 1 );
-		
+
 		// Sync shared capacity.
 		/** @var \Tribe__Tickets__Tickets_Handler $handler */
 		$handler = tribe( 'tickets.handler' );
@@ -1013,11 +1013,11 @@ class Ticket {
 		$stock = (int) get_post_meta( $ticket_id,  static::$stock_meta_key, true ) + $quantity;
 		return update_post_meta( $ticket_id,  static::$stock_meta_key, $stock );
 	}
-	
+
 	/**
 	 * Decrease the ticket stock.
 	 *
-	 * @since TBD
+	 * @since 5.8.3
 	 *
 	 * @param int $ticket_id int The ticket post ID.
 	 * @param int $quantity  int The quantity to decrease the ticket stock by.
@@ -1027,7 +1027,7 @@ class Ticket {
 	public function decrease_ticket_stock_by( int $ticket_id, int $quantity = 1 ) {
 		$stock = (int) get_post_meta( $ticket_id, static::$stock_meta_key, true ) - $quantity;
 		$stock = max( 0, $stock );
-		
+
 		return update_post_meta( $ticket_id, static::$stock_meta_key, $stock );
 	}
 }

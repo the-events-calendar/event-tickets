@@ -139,35 +139,31 @@ tribe.tickets.emails = {};
 		context.currentEmail = currentEmail;
 
 		if ( currentEmail ) {
-			const currentEmailOptionPrefix = currentEmail.replace( /_/g, '-' );
+			const fieldReducer = (context, el, fieldPrefix) => {
+				const name = el.name.replace(`${fieldPrefix}-`, '')
+					// From `tec_tickets_emails_current_section-some-field' to `someField`.
+					.replace(/-([a-z])/g, (g) => g[1].toUpperCase()).replace(/\[]$/, '')
+				context[name] = el.type === 'checkbox' ? el.checked : el.value
+				return context
+			};
 
-			const heading = $document
-				.find( 'input[name=' + currentEmailOptionPrefix + '-heading]' ).val();
+			// This flag will be set by the RSVP type of email.
+			context.useTicketEmail = false;
 
-			context.heading = heading;
+			// Include the generic ticket context.
+			const ticketOptionPrefix = 'tec-tickets-emails-ticket'
+			Array.from($document.find('input[name^=' + ticketOptionPrefix + ']'))
+				.reduce((context, el) => fieldReducer(context, el, ticketOptionPrefix), context);
 
-			const qrCodes = $document
-				.find( 'input[name=' + currentEmailOptionPrefix + '-include-qr-codes]' ).is( ':checked' );
+			// Dynamically fetch the specific email type fields from the inputs. Override the context.
+			const currentEmailOptionPrefix = currentEmail.replace(/_/g, '-')
+			Array.from($document.find('input[name^=' + currentEmailOptionPrefix + ']'))
+				.reduce((context, el) => fieldReducer(context, el, currentEmailOptionPrefix), context);
 
-			context.qrCodes = qrCodes;
-
-			const eventLinks = $document
-				.find( 'input[name=' + currentEmailOptionPrefix + '-add-event-links]' ).is( ':checked' );
-
-			context.eventLinks = eventLinks;
-
-			const arFields = $document
-				.find( 'input[name=' + currentEmailOptionPrefix + '-include-ar-fields]' ).is( ':checked' );
-
-			context.arFields = arFields;
-
-			const usingTicketEmail = $document
-				.find( 'input[name=tec-tickets-emails-rsvp-use-ticket-email]' ).is( ':checked' );
-
-			context.useTicketEmail = usingTicketEmail;
-
-			// fetch additional content from the editor.
-			context.addContent = tinyMCE !== undefined ? tinyMCE.get( currentEmailOptionPrefix + '-additional-content' ).getContent() : ''; // eslint-disable-line max-len
+			// Fetch additional content from the editor.
+			context.addContent = tinyMCE !== undefined ?
+				tinyMCE.get( currentEmailOptionPrefix + '-additional-content' ).getContent()
+				: '';
 		} else {
 			const ticketBgColor = $document
 				.find( 'input[name=' + obj.selectors.formTicketBgColorName + ']' ).val();
