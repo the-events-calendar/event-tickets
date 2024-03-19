@@ -1244,4 +1244,22 @@ class Ticket {
 	public function get_regular_price( int $ticket_id ): string {
 		return get_post_meta( $ticket_id, '_price', true );
 	}
+	
+	/**
+	 * Get the sale price details for a ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_id The ticket post ID.
+	 *
+	 * @return array<string,string> The sale price details.
+	 */
+	public function get_sale_price_details( int $ticket_id ): array {
+		return [
+			'enabled'    => get_post_meta( $ticket_id, static::$sale_price_checked_key, true ),
+			'sale_price' => $this->get_sale_price( $ticket_id ),
+			'start_date' => get_post_meta( $ticket_id, static::$sale_price_start_date_key, true ),
+			'end_date'   => get_post_meta( $ticket_id, static::$sale_price_end_date_key, true ),
+		];
+	}
 }

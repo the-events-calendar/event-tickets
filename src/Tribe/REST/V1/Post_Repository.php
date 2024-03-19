@@ -1,6 +1,7 @@
 <?php
 
 use Tribe__Tickets__Global_Stock as Global_Stock;
+use TEC\Tickets\Commerce\Ticket;
 
 
 class Tribe__Tickets__REST__V1__Post_Repository
@@ -453,6 +454,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		$data['is_available']            = $data['capacity_details']['available_percentage'] > 0;
 		$data['cost']                    = $this->get_ticket_cost( $ticket_id );
 		$data['cost_details']            = $this->get_ticket_cost( $ticket_id, true );
+		$data['sale_price_data']         = $this->get_ticket_sale_price_data( $ticket_id );
 
 		/**
 		 * Since Attendee Information is a functionality provided by Event Tickets Plus
@@ -785,6 +787,25 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		}
 
 		return $query->all();
+	}
+	
+	/**
+	 * Returns the sale price data for a ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_id The ticket ID.
+	 *
+	 * @return array<string,string> The sale price data.
+	 */
+	public function get_ticket_sale_price_data( int $ticket_id ): array {
+		$provider = tribe_tickets_get_ticket_provider( $ticket_id );
+		
+		if ( ! $provider instanceof \TEC\Tickets\Commerce\Module ) {
+			return [];
+		}
+		
+		return tribe( Ticket::class )->get_sale_price_details( $ticket_id );
 	}
 
 	/**
