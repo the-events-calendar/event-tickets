@@ -27,9 +27,10 @@ class Checkout_ShortcodeTest extends \Codeception\TestCase\WPTestCase {
 	use Ticket_Maker;
 	use With_Uopz;
 
-	public function setUp() {
-		parent::setUp();
-
+	/**
+	 * @before
+	 */
+	public function set_filters_and_singletons() {
 		// Ensure the Tickets Commerce module is active.
 		add_filter( 'tec_tickets_commerce_is_enabled', '__return_true' );
 		add_filter( 'tribe_tickets_get_modules', static function ( $modules ) {
