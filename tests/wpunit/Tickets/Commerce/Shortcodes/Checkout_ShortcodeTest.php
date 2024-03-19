@@ -2,17 +2,22 @@
 
 namespace TEC\Tickets\Commerce\Shortcodes;
 
+use Illuminate\Support\Arr;
 use Spatie\Snapshots\MatchesSnapshots;
 use tad\WP\Snapshots\WPHtmlOutputDriver;
+use TEC\Tickets\Commerce\Cart;
+use TEC\Tickets\Commerce\Cart\Unmanaged_Cart;
 use TEC\Tickets\Commerce\Checkout;
 use TEC\Tickets\Commerce\Gateways\Manual\Gateway;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\Commerce\Utils\Value;
+use Tribe\Shortcode\Manager;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe__Template;
 use Tribe__Tickets__Main;
+use Tribe__Tickets__Ticket_Object;
 
 use function Codeception\Extension\codecept_log;
 
@@ -22,132 +27,101 @@ class Checkout_ShortcodeTest extends \Codeception\TestCase\WPTestCase {
 	use Ticket_Maker;
 	use With_Uopz;
 
-	public function setUp() {
-		parent::setUp();
-
+	/**
+	 * @before
+	 */
+	public function set_filters_and_singletons() {
 		// Ensure the Tickets Commerce module is active.
 		add_filter( 'tec_tickets_commerce_is_enabled', '__return_true' );
 		add_filter( 'tribe_tickets_get_modules', static function ( $modules ) {
-			$modules[ Module::class ] = tribe( Module::class )->plugin_name;
+			$modules[ Module::class ] = tribe( Module::class );
 
 			return $modules;
 		} );
 
-		$this->set_fn_return( 'wp_create_nonce', 'a1b2c3d4e5f6' );
+		// Make sure at least one TC gateway is active.
+		add_filter( 'tec_tickets_commerce_gateways', static function ( $gateways ) {
+			$gateways['manual'] = new Gateway();
+
+			return $gateways;
+		} );
+
+		// Add shortcode to filter.
+		add_filter( 'tribe_shortcodes', function( $shortcodes ) {
+			$shortcodes['tec_tickets_checkout'] = Checkout_Shortcode::class;
+			return $shortcodes;
+		} );
+
+		$this->set_fn_return( 'wp_create_nonce', 'jhd73jd873' );
+
+		tribe_singleton( Cart::class, new Cart() );
+		tribe_singleton( Unmanaged_Cart::class, new Unmanaged_Cart() );
 	}
 
-	/**
-	 * @dataProvider cart_data
-	 * @test
-	 */
-	public function test_matches_snapshots( \Closure $ticket_data_provider ) {
-		[ $items, $post, $ticket ] = $ticket_data_provider();
-
-		$sections    = array_unique( array_filter( wp_list_pluck( $items, 'event_id' ) ) );
-		$sub_totals  = Value::build_list( array_filter( wp_list_pluck( $items, 'sub_total' ) ) );
-		$total_value = Value::create();
-
-		$gateways = [
-			'manual' => new Gateway(),
-		];
-
-		$args = [
-			'provider_id'        => Module::class,
-			'provider'           => tribe( Module::class ),
-			'items'              => $items,
-			'sections'           => $sections,
-			'total_value'        => $total_value->total( $sub_totals ),
-			'must_login'         => ! is_user_logged_in() && tribe( Module::class )->login_required(),
-			'login_url'          => tribe( Checkout::class )->get_login_url(),
-			'registration_url'   => tribe( Checkout::class )->get_registration_url(),
-			'is_tec_active'      => defined( 'TRIBE_EVENTS_FILE' ) && class_exists( 'Tribe__Events__Main' ),
-			'gateways'           => $gateways,
-			'gateways_active'    => 1,
-			'gateways_connected' => 1,
-		];
-
-		$template = new Tribe__Template();
-		$template->set_template_origin( Tribe__Tickets__Main::instance() );
-		$template->set_template_folder( 'src/views/v2/commerce' );
-		$template->set_template_context_extract( true );
-		$template->set_template_folder_lookup( true );
-		$html = $template->template( 'checkout', $args, false );
-		wp_delete_post( $items[0]['ticket_id'], true );
-		wp_delete_post( $items[0]['event_id'], true );
-
-		$driver = new WPHtmlOutputDriver( home_url(), TRIBE_TESTS_HOME_URL );
-		$driver->setTolerableDifferences( [
-			$items[0]['ticket_id'],
-			$items[0]['event_id'],
-			$post->post_title,
-			$ticket->name,
-		] );
-
-		$this->assertMatchesSnapshot( $html, $driver );
-	}
-
-	/**
-	 * @dataProvider test_matches_snapshots
-	 */
-	public function cart_data() {
+	public function ticket_data( $tickets ) {
 		global $post;
+		$post = $this->factory->post->create_and_get( [
+			'post_title' => 'Page with Ticket',
+			'post_type'  => 'page',
+		] );
+		$ticket_id1 = $this->create_tc_ticket( $post->ID, 10 );
+		$ticket_id2 = $this->create_tc_ticket( $post->ID, 20 );
+		update_post_meta( $ticket_id2, Ticket::$sale_price_checked_key, '1');
+		update_post_meta( $ticket_id2, Ticket::$sale_price_key, '10');
 
 		yield 'ticket on sale' => [
-			function(): array {
-				global $post;
-				$post = $this->factory->post->create_and_get( [
-					'post_title' => 'Post with Ticket',
-				] );
-				$ticket_id = $this->create_tc_ticket( $post->ID, 10 );
-				update_post_meta( $ticket_id, Ticket::$sale_price_checked_key, '1');
-				update_post_meta( $ticket_id, Ticket::$sale_price_key, '5');
-				$ticket = tribe( Module::class )->get_ticket( $post->ID, $ticket_id );
-				$sub_total_value = Value::create();
-				$sub_total_value->set_value($ticket->price );
-				$items = [
-					[
-						'ticket_id'     => $ticket_id,
-						'event_id'      => $post->ID,
-						'quantity'      => 2,
-						'obj'           => $ticket,
-						'sub_total'     => $sub_total_value->sub_total( 2 ),
-						'regular_price' => Value::create()->set_value( 10 ),
-					]
-				];
+			function() use ( $ticket_id2, $post ): array {
 				return [
-					$items,
-					$post,
-					$ticket,
+					[ $ticket_id2 ],
+					$post->ID,
 				];
 			}
 		];
 
 		yield 'ticket not on sale' => [
-			function(): array {
-				global $post;
-				$post = $this->factory->post->create_and_get( [
-					'post_title' => 'Post with Ticket',
-				] );
-				$ticket_id = $this->create_tc_ticket( $post->ID, 10 );
-				$ticket = tribe( Module::class )->get_ticket( $post->ID, $ticket_id );
-				$sub_total_value = Value::create();
-				$sub_total_value->set_value($ticket->price );
-				$items = [
-					[
-						'ticket_id'     => $ticket_id,
-						'event_id'      => $post->ID,
-						'quantity'      => 2,
-						'obj'           => $ticket,
-						'sub_total'     => $sub_total_value->sub_total( 2 ),
-						'regular_price' => Value::create()->set_value( 10 ),
-					]
-				];
+			function() use ( $ticket_id1, $post ): array {
 				return [
-					$items,
-					$post,
-					$ticket,
+					[ $ticket_id1 ],
+					$post->ID,
 				];
 			}
 		];
+
+		yield 'ticket on sale and ticket not on sale' => [
+			function() use ( $ticket_id1, $ticket_id2, $post ): array {
+				return [
+					[ $ticket_id1, $ticket_id2 ],
+					$post->ID,
+				];
+			}
+		];
+	}
+
+	/**
+	 * @dataProvider ticket_data
+	 * @test
+	 */
+	public function it_should_match_html( \Closure $ticket_data ) {
+		[ $ticket_ids, $post_id ] = $ticket_data();
+
+		$diff = [
+			$post_id
+		];
+
+		tribe( Cart::class )->clear_cart();
+		foreach ( $ticket_ids as $tid ) {
+			tribe( Cart::class )->add_ticket( $tid, 1 );
+			$diff[] = $tid;
+		}
+
+		$shortcode_manager = new Manager();
+		$shortcode_manager->add_shortcodes();
+
+		$html = do_shortcode( '[tec_tickets_checkout]' );
+
+		$driver = new WPHtmlOutputDriver( home_url(), TRIBE_TESTS_HOME_URL );
+		$driver->setTolerableDifferences( $diff );
+
+		$this->assertMatchesSnapshot( $html, $driver );
 	}
 }

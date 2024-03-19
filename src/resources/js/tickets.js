@@ -442,10 +442,19 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			onSelect: function( dateText, inst ) {
 				var the_date = $.datepicker.parseDate( dateFormat, dateText );
 
-				if ( inst.id === 'ticket_start_date' ) {
-					$ticket_end_date.datepicker( 'option', 'minDate', the_date );
-				} else {
-					$ticket_start_date.datepicker( 'option', 'maxDate', the_date );
+				switch ( inst.id ) {
+					case 'ticket_start_date':
+						$ticket_end_date.datepicker( 'option', 'minDate', the_date );
+						break;
+					case 'ticket_end_date':
+						$ticket_start_date.datepicker( 'option', 'maxDate', the_date );
+						break;
+					case 'ticket_sale_start_date':
+						$ticket_sale_end_date.datepicker( 'option', 'minDate', the_date );
+						break;
+					case 'ticket_sale_end_date':
+						$ticket_sale_start_date.datepicker( 'option', 'maxDate', the_date );
+						break;
 				}
 			}
 		};
