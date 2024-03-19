@@ -17,16 +17,15 @@ const mapStateToProps = ( state, ownProps ) => ( {
 	currencyPosition: selectors.getTicketCurrencyPosition( state, ownProps ),
 	currencySymbol: selectors.getTicketCurrencySymbol( state, ownProps ),
 	currencyThousandsSep: selectors.getTicketCurrencyThousandsSep( state, ownProps ),
-	isDisabled: selectors.isTicketDisabled( state, ownProps ),
 	minDefaultPrice: selectors.isZeroPriceValid( state, ownProps ) ? 0 : 1,
 	tempPrice: selectors.getTicketTempPrice( state, ownProps ),
 	salePriceChecked: selectors.getSalePriceChecked( state, ownProps ),
 } );
 
 const mapDispatchToProps = ( dispatch, ownProps ) => ( {
-	onTempPriceChange: ( e ) => {
+	toggleSalePrice: ( e ) => {
 		const { clientId } = ownProps;
-		dispatch( actions.setTicketTempPrice( clientId, e.value ) );
+		dispatch( actions.setSalePriceChecked( clientId, e.target.checked ) );
 		dispatch( actions.setTicketHasChanges( clientId, true ) );
 	},
 } );

@@ -18,24 +18,23 @@ import uniqid from 'uniqid';
 import { PREFIX, SUFFIX, TICKET_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
 import {Checkbox, LabeledItem} from '@moderntribe/common/elements';
 import './style.pcss';
-import SalePrice from "../sale-price/container";
 
-class Price extends PureComponent {
+class SalePrice extends PureComponent {
 	static propTypes = {
 		currencyDecimalPoint: PropTypes.string,
 		currencyNumberOfDecimals: PropTypes.number,
 		currencyPosition: PropTypes.string,
 		currencySymbol: PropTypes.string,
 		currencyThousandsSep: PropTypes.string,
-		isDisabled: PropTypes.bool,
 		minDefaultPrice: PropTypes.string,
-		onTempPriceChange: PropTypes.func.isRequired,
 		tempPrice: PropTypes.string,
+		toggleSalePrice: PropTypes.func,
+		salePriceChecked: PropTypes.bool,
 	};
 
 	constructor( props ) {
 		super( props );
-		this.id = uniqid( 'ticket-price' );
+		this.id = uniqid( 'ticket-sale-price' );
 	}
 
 	render() {
@@ -45,10 +44,10 @@ class Price extends PureComponent {
 			currencyPosition,
 			currencySymbol,
 			currencyThousandsSep,
-			isDisabled,
 			minDefaultPrice,
-			onTempPriceChange,
 			tempPrice,
+			toggleSalePrice,
+			salePriceChecked,
 		} = this.props;
 
 		const numericFormatProps = {
@@ -56,47 +55,45 @@ class Price extends PureComponent {
 			...( currencyPosition === SUFFIX && { suffix: currencySymbol } ),
 		};
 
+		const salePrice = '';
+
 		const handleChange = ( e ) => {
-			if ( ! isNaN( e.value ) && e.value >= minDefaultPrice ) {
-				onTempPriceChange( e );
+			if ( ! isNaN( e.value ) && e.value >= minDefaultPrice && e.value < tempPrice ) {
+				// Todo: dispatch action to update sale price.
+				console.log(e.value);
 			}
 		};
 
 		return (
-			<div className={ classNames(
-				'tribe-editor__ticket__price',
-				'tribe-editor__ticket__content-row',
-				'tribe-editor__ticket__content-row--price',
-			) }>
-				<LabeledItem
-					className="tribe-editor__ticket__price-label"
-					forId={ this.id }
-					isLabel={ true }
+			<div className={"tribe-editor__ticket__sale-price-wrapper"}>
+				<Checkbox
+					className="tribe-editor__ticket__sale-price-checkbox"
+					id="tribe-editor__ticket__sale-price-checkbox"
 					// eslint-disable-next-line no-undef
-					label={sprintf(
-						/* Translators: %s - the singular label for a ticket. */
-						__('%s price', 'event-tickets'),
-						TICKET_LABELS.ticket.singular
-					)}
+					label="Add Sale Price"
+					// eslint-disable-next-line no-undef
+					aria-label="Add Sale Price"
+					checked={salePriceChecked}
+					onChange={toggleSalePrice}
+					value={salePriceChecked}
 				/>
-
-				<NumericFormat
-					allowNegative={ false }
-					className="tribe-editor__input tribe-editor__ticket__price-input"
-					decimalScale={ currencyNumberOfDecimals }
-					decimalSeparator={ currencyDecimalPoint }
-					disabled={ isDisabled }
-					displayType="input"
-					fixedDecimalScale={ true }
-					{ ...numericFormatProps }
-					onValueChange={ handleChange }
-					thousandSeparator={ currencyThousandsSep }
-					value={ tempPrice }
-				/>
-				<SalePrice />
+				{salePriceChecked && (
+					<NumericFormat
+						allowNegative={false}
+						className="tribe-editor__input tribe-editor__ticket__price-input"
+						decimalScale={currencyNumberOfDecimals}
+						decimalSeparator={currencyDecimalPoint}
+						displayType="input"
+						fixedDecimalScale={true}
+						{...numericFormatProps}
+						onValueChange={handleChange}
+						thousandSeparator={currencyThousandsSep}
+						value={salePrice}
+					/>
+				)}
 			</div>
 		);
 	}
 }
 
-export default Price;
+export default SalePrice;
