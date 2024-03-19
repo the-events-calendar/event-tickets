@@ -259,7 +259,6 @@ export function* setTicketInitialState( action ) {
 		put( actions.setTicketTempStartTime( clientId, startTime ) ),
 		put( actions.setTicketTempStartTimeInput( clientId, startTimeInput ) ),
 		put( actions.setTicketHasBeenCreated( clientId, hasBeenCreated ) ),
-		put( actions.setSalePriceChecked( clientId, TICKET_DEFAULT_STATE.salePriceChecked ) ),
 	] );
 
 	const isEvent = yield call( isTribeEventPostType );
