@@ -139,7 +139,7 @@ namespace TEC\Tickets\phpqrcode;
                 if($col >= $this->rsblocks[0]->dataLength) {
                     $row += $this->b1;
                 }
-				$ret = $this->rsblocks[$row]->data[(int)$col];
+				$ret = $this->rsblocks[(int)$row]->data[(int)$col];
             } else if($this->count < $this->dataLength + $this->eccLength) {
                 $row = ($this->count - $this->dataLength) % $this->blocks;
                 $col = ($this->count - $this->dataLength) / $this->blocks;
