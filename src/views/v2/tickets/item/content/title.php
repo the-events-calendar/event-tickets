@@ -4,15 +4,16 @@
  * Content Title
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/tickets/content/title.php
+ * [your-theme]/tribe/tickets/v2/tickets/item/content/title.php
  *
  * See more documentation about our views templating system.
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
  * @since   5.0.3
+ * @since   TBD   Added `sale-label` template to title element.
  *
- * @version 5.0.3
+ * @version TBD
  *
  * @var Tribe__Tickets__Editor__Template   $this                        [Global] Template object.
  * @var int                                $post_id                     [Global] The current Post ID to which tickets are attached.
@@ -66,11 +67,11 @@ $event_title_classes = [
 ];
 
 ?>
-<div <?php tribe_classes( $container_classes ); ?> >
+<div <?php tribe_classes( $container_classes ); ?>>
 	<?php $this->template( 'v2/tickets/item/content/sale-label' ); ?>
-	<div <?php tribe_classes( $title_classes ); ?> >
+	<div <?php tribe_classes( $title_classes ); ?>>
 		<?php if ( $is_mini ) : ?>
-			<div <?php tribe_classes( $event_title_classes ); ?> >
+			<div <?php tribe_classes( $event_title_classes ); ?>>
 				<?php echo esc_html( get_the_title( $post_id ) ); ?>
 			</div>
 		<?php endif; ?>

@@ -3,15 +3,15 @@
  * Tickets Commerce: Checkout Cart Item label
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/commerce/checkout/cart/item/details/label.php
+ * [your-theme]/tribe/tickets/v2/tickets/item/content/sale-label.php
  *
  * See more documentation about our views templating system.
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   5.1.9
+ * @since   TBD
  *
- * @version 5.1.9
+ * @version TBD
  *
  * @var \Tribe__Template $this                  [Global] Template object.
  * @var Module           $provider              [Global] The tickets provider instance.
