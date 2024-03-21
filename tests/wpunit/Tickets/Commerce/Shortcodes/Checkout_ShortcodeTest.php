@@ -28,6 +28,21 @@ class Checkout_ShortcodeTest extends \Codeception\TestCase\WPTestCase {
 	use With_Uopz;
 
 	/**
+	 * @var WP_Post
+	 */
+	public $page_id;
+
+	/**
+	 * @var int
+	 */
+	public $ticket_id1;
+
+	/**
+	 * @var int
+	 */
+	public $ticket_id2;
+
+	/**
 	 * @before
 	 */
 	public function set_filters_and_singletons() {
@@ -58,61 +73,35 @@ class Checkout_ShortcodeTest extends \Codeception\TestCase\WPTestCase {
 		tribe_singleton( Unmanaged_Cart::class, new Unmanaged_Cart() );
 	}
 
-	public function ticket_data( $tickets ) {
-		global $post;
-		$post = $this->factory->post->create_and_get( [
-			'post_title' => 'Page with Ticket',
+	/**
+	 * @before
+	 */
+	public function create_event_and_tickets() {
+		$this->page_id = $this->factory->post->create( [
+			'post_title' => 'Page with Tickets',
 			'post_type'  => 'page',
 		] );
-		$ticket_id1 = $this->create_tc_ticket( $post->ID, 10 );
-		$ticket_id2 = $this->create_tc_ticket( $post->ID, 20 );
-		update_post_meta( $ticket_id2, Ticket::$sale_price_checked_key, '1');
-		update_post_meta( $ticket_id2, Ticket::$sale_price_key, '10');
-
-		yield 'ticket on sale' => [
-			function() use ( $ticket_id2, $post ): array {
-				return [
-					[ $ticket_id2 ],
-					$post->ID,
-				];
-			}
-		];
-
-		yield 'ticket not on sale' => [
-			function() use ( $ticket_id1, $post ): array {
-				return [
-					[ $ticket_id1 ],
-					$post->ID,
-				];
-			}
-		];
-
-		yield 'ticket on sale and ticket not on sale' => [
-			function() use ( $ticket_id1, $ticket_id2, $post ): array {
-				return [
-					[ $ticket_id1, $ticket_id2 ],
-					$post->ID,
-				];
-			}
-		];
+		$this->ticket_id1 = $this->create_tc_ticket( $this->page_id, 10 );
+		$this->ticket_id2 = $this->create_tc_ticket( $this->page_id, 20 );
+		update_post_meta( $this->ticket_id2, Ticket::$sale_price_checked_key, '1');
+		update_post_meta( $this->ticket_id2, Ticket::$sale_price_key, '10');
 	}
 
 	/**
-	 * @dataProvider ticket_data
+	 * @after
+	 */
+	public function remove_event_and_tickets() {
+		wp_delete_post( $this->page_id, true );
+		wp_delete_post( $this->ticket_id1, true );
+		wp_delete_post( $this->ticket_id2, true );
+	}
+
+	/**
 	 * @test
 	 */
-	public function it_should_match_html( \Closure $ticket_data ) {
-		[ $ticket_ids, $post_id ] = $ticket_data();
-
-		$diff = [
-			$post_id
-		];
-
+	public function ticket_on_sale_should_match_html() {
 		tribe( Cart::class )->clear_cart();
-		foreach ( $ticket_ids as $tid ) {
-			tribe( Cart::class )->add_ticket( $tid, 1 );
-			$diff[] = $tid;
-		}
+		tribe( Cart::class )->add_ticket( $this->ticket_id2, 1 );
 
 		$shortcode_manager = new Manager();
 		$shortcode_manager->add_shortcodes();
@@ -120,7 +109,31 @@ class Checkout_ShortcodeTest extends \Codeception\TestCase\WPTestCase {
 		$html = do_shortcode( '[tec_tickets_checkout]' );
 
 		$driver = new WPHtmlOutputDriver( home_url(), TRIBE_TESTS_HOME_URL );
-		$driver->setTolerableDifferences( $diff );
+		$driver->setTolerableDifferences( [
+			$this->page_id,
+			$this->ticket_id2,
+		] );
+
+		$this->assertMatchesSnapshot( $html, $driver );
+	}
+
+	/**
+	 * @test
+	 */
+	public function ticket_not_on_sale_should_match_html() {
+		tribe( Cart::class )->clear_cart();
+		tribe( Cart::class )->add_ticket( $this->ticket_id1, 1 );
+
+		$shortcode_manager = new Manager();
+		$shortcode_manager->add_shortcodes();
+
+		$html = do_shortcode( '[tec_tickets_checkout]' );
+
+		$driver = new WPHtmlOutputDriver( home_url(), TRIBE_TESTS_HOME_URL );
+		$driver->setTolerableDifferences( [
+			$this->page_id,
+			$this->ticket_id1,
+		] );
 
 		$this->assertMatchesSnapshot( $html, $driver );
 	}

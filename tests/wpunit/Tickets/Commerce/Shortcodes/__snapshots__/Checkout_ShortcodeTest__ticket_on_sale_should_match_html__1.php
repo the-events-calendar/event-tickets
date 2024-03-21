@@ -19,61 +19,11 @@
 	<header class="tribe-tickets__commerce-checkout-cart-header">
 	<h4 class="tribe-common-h4 tribe-common-h--alt tribe-tickets__commerce-checkout-cart-header-title">
 		<a href="http://wordpress.test/?page_id=5096">
-			Page with Ticket		</a>
+			Page with Tickets		</a>
 	</h4>
 </header>
 
 	<div class="tribe-tickets__commerce-checkout-cart-items">
-					<article
-	 class="tribe-tickets__commerce-checkout-cart-item post-5097 tec_tc_ticket type-tec_tc_ticket status-publish hentry tribe-common-b1" 	 data-ticket-id="5097" data-ticket-quantity="1" data-ticket-price="10.00" >
-
-	<div class="tribe-tickets__commerce-checkout-cart-item-details">
-
-	<div class="tribe-common-h6 tribe-tickets__commerce-checkout-cart-item-details-title">
-	Test TC ticket for 5096</div>
-
-	<div class="tribe-tickets__commerce-checkout-cart-item-details-toggle">
-	<button
-		type="button"
-		class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__commerce-checkout-cart-item-details-button--more"
-		aria-controls="tribe-tickets__commerce-checkout-cart-item-details-description--5097"
-	>
-		<span class="screen-reader-text tribe-common-a11y-visual-hide">
-			Open the ticket description in checkout.		</span>
-		<span class="tribe-tickets__commerce-checkout-cart-item-details-button-text">
-			More info		</span>
-	</button>
-	<button
-		type="button"
-		class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__commerce-checkout-cart-item-details-button--less"
-		aria-controls="tribe-tickets__commerce-checkout-cart-item-details-description--5097"
-	>
-		<span class="screen-reader-text tribe-common-a11y-visual-hide">
-			Close the ticket description in checkout.		</span>
-		<span class="tribe-tickets__commerce-checkout-cart-item-details-button-text">
-			Less info		</span>
-	</button>
-</div>
-
-	<div id="tribe-tickets__commerce-checkout-cart-item-details-description--5097"  class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__commerce-checkout-cart-item-details-description tribe-common-a11y-hidden" >
-	Test TC ticket description for 5096
-	</div>
-
-</div>
-
-	<div class="tribe-tickets__commerce-checkout-cart-item-price">
-	
-<span class="tec-tickets-price amount">
-	&#x24;10.00</span>
-</div>
-
-	<div class="tribe-tickets__commerce-checkout-cart-item-quantity">
-	1</div>
-
-	<div class="tribe-tickets__commerce-checkout-cart-item-subtotal">
-	&#x24;10.00</div>
-
-</article>
 					<article
 	 class="tribe-tickets__commerce-checkout-cart-item post-5098 tec_tc_ticket type-tec_tc_ticket status-publish hentry tribe-common-b1" 	 data-ticket-id="5098" data-ticket-quantity="1" data-ticket-price="10.00" >
 
@@ -140,20 +90,20 @@
 	<footer  class="tribe-tickets__commerce-checkout-cart-footer tribe-common-b1" >
 
 	<div class="tribe-tickets__commerce-checkout-cart-footer-quantity">
-	<span class="tribe-tickets__commerce-checkout-cart-footer-quantity-label">Quantity: </span><span class="tribe-tickets__commerce-checkout-cart-footer-quantity-number">2</span></div>
+	<span class="tribe-tickets__commerce-checkout-cart-footer-quantity-label">Quantity: </span><span class="tribe-tickets__commerce-checkout-cart-footer-quantity-number">1</span></div>
 
 	<div class="tribe-tickets__commerce-checkout-cart-footer-total">
-	<span class="tribe-tickets__commerce-checkout-cart-footer-total-label">Total: </span><span class="tribe-tickets__commerce-checkout-cart-footer-total-wrap">&#x24;10.00</span></div>
+	<span class="tribe-tickets__commerce-checkout-cart-footer-total-label">Total: </span><span class="tribe-tickets__commerce-checkout-cart-footer-total-wrap">&#x24;0.00</span></div>
 
 </footer>
 
 </div>
-				<div  class="tribe-tickets-loader__dots tribe-common-c-loader tribe-common-a11y-hidden tribe-common-c-loader__dot tribe-common-c-loader__dot--third" >
+				<div  class="tribe-tickets-loader__dots tribe-common-c-loader tribe-common-a11y-hidden" >
 	<svg  class="tribe-common-c-svgicon tribe-common-c-svgicon--dot tribe-common-c-loader__dot tribe-common-c-loader__dot--first"  viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg"><circle cx="7.5" cy="7.5" r="7.5"/></svg>
 	<svg  class="tribe-common-c-svgicon tribe-common-c-svgicon--dot tribe-common-c-loader__dot tribe-common-c-loader__dot--second"  viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg"><circle cx="7.5" cy="7.5" r="7.5"/></svg>
 	<svg  class="tribe-common-c-svgicon tribe-common-c-svgicon--dot tribe-common-c-loader__dot tribe-common-c-loader__dot--third"  viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg"><circle cx="7.5" cy="7.5" r="7.5"/></svg>
 </div>
-		<div id="tribe-tickets__commerce-checkout-footer-notice-error--no-gateway"  class="tribe-tickets__notice tribe-tickets__notice--error tribe-tickets__commerce-checkout-notice" >
+		<div id=""  class="tribe-tickets__notice tribe-tickets__notice--error tribe-tickets__commerce-checkout-notice" >
 			<h3 class="tribe-common-h7 tribe-tickets-notice__title">Checkout Error!</h3>
 	
 	<div  class="tribe-common-b2 tribe-tickets-notice__content tribe-tickets__commerce-checkout-notice-content" >
