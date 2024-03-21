@@ -1034,6 +1034,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			'page'               => $current_page,
 			'per_page'           => $per_page,
 			'return_total_found' => true,
+			'order'              => 'DESC',
 		];
 
 		$event_id = Event::filter_event_id( filter_var( tribe_get_request_var( 'event_id' ), FILTER_VALIDATE_INT ), 'attendees-table' );
@@ -1110,6 +1111,18 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		if ( tribe_get_request_var( 'order' ) ) {
 			$args['order']   = tribe_get_request_var( 'order' );
 		}
+
+		/**
+		 * Filters the arguments used to query the attendees for the Attendees Table.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $args The arguments used to query the attendees for the Attendees Table.
+		 * @param int   $event_id The event ID for the Attendees Table.
+		 *
+		 * @return array
+		 */
+		$args = apply_filters( 'tec_tickets_attendees_table_query_args', $args, $event_id );
 
 		$item_data = Tribe__Tickets__Tickets::get_attendees_by_args( $args, $event_id );
 
