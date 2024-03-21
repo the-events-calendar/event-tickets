@@ -289,6 +289,17 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 		if ( null !== $ticket_id ) {
 			$ticket_data['ticket_id'] = $ticket_id;
 		}
+		
+		if ( $is_paypal_ticket && isset( $body['ticket']['sale_price'] ) ) {
+			$sale_price_data                      = $body['ticket']['sale_price'];
+			$ticket_data['ticket_add_sale_price'] = Tribe__Utils__Array::get( $sale_price_data, 'checked', false );
+			
+			if ( tribe_is_truthy( $ticket_data['ticket_add_sale_price'] ) ) {
+				$ticket_data['ticket_sale_price']      = Tribe__Utils__Array::get( $sale_price_data, 'price', '' );
+				$ticket_data['ticket_sale_start_date'] = Tribe__Utils__Array::get( $sale_price_data, 'start_date', '' );
+				$ticket_data['ticket_sale_end_date']   = Tribe__Utils__Array::get( $sale_price_data, 'end_date', '' );
+			}
+		}
 
 		// Get the Ticket Object
 		$ticket = $provider->ticket_add( $post_id, $ticket_data );

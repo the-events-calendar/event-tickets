@@ -367,6 +367,13 @@ export function* setBodyDetails( clientId ) {
 		body.append( 'ticket[event_capacity]', yield select( selectors.getTicketsTempSharedCapacity ) );
 	}
 
+	const showSalePrice = yield select( selectors.showSalePrice, props );
+
+	if ( showSalePrice ) {
+		body.append( 'ticket[sale_price][checked]', yield select( selectors.getSalePriceChecked, props ) );
+		body.append( 'ticket[sale_price][price]', yield select( selectors.getSalePrice, props ) );
+	}
+
 	return body;
 }
 
