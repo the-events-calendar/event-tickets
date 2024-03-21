@@ -16,7 +16,7 @@ import uniqid from 'uniqid';
  * Internal dependencies
  */
 import { PREFIX, SUFFIX, TICKET_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
-import {Checkbox, LabeledItem} from '@moderntribe/common/elements';
+import { LabeledItem} from '@moderntribe/common/elements';
 import './style.pcss';
 import SalePrice from "../sale-price/container";
 
@@ -31,6 +31,8 @@ class Price extends PureComponent {
 		minDefaultPrice: PropTypes.string,
 		onTempPriceChange: PropTypes.func.isRequired,
 		tempPrice: PropTypes.string,
+		showSalePrice: PropTypes.bool,
+		clientId: PropTypes.string,
 	};
 
 	constructor( props ) {
@@ -49,6 +51,8 @@ class Price extends PureComponent {
 			minDefaultPrice,
 			onTempPriceChange,
 			tempPrice,
+			showSalePrice,
+			clientId,
 		} = this.props;
 
 		const numericFormatProps = {
@@ -93,7 +97,7 @@ class Price extends PureComponent {
 					thousandSeparator={ currencyThousandsSep }
 					value={ tempPrice }
 				/>
-				<SalePrice />
+				{ showSalePrice && <SalePrice clientId={clientId} /> }
 			</div>
 		);
 	}

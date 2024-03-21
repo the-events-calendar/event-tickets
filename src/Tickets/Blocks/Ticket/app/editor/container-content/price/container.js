@@ -20,7 +20,8 @@ const mapStateToProps = ( state, ownProps ) => ( {
 	isDisabled: selectors.isTicketDisabled( state, ownProps ),
 	minDefaultPrice: selectors.isZeroPriceValid( state, ownProps ) ? 0 : 1,
 	tempPrice: selectors.getTicketTempPrice( state, ownProps ),
-	salePriceChecked: selectors.getSalePriceChecked( state, ownProps ),
+	showSalePrice: selectors.showSalePrice( state, ownProps ),
+	clientId: ownProps.clientId,
 } );
 
 const mapDispatchToProps = ( dispatch, ownProps ) => ( {
