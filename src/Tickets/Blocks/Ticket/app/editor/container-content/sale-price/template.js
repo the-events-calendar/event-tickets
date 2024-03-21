@@ -30,6 +30,8 @@ class SalePrice extends PureComponent {
 		tempPrice: PropTypes.string,
 		toggleSalePrice: PropTypes.func,
 		salePriceChecked: PropTypes.bool,
+		salePrice: PropTypes.string,
+		updateSalePrice: PropTypes.func,
 	};
 
 	constructor( props ) {
@@ -48,6 +50,8 @@ class SalePrice extends PureComponent {
 			tempPrice,
 			toggleSalePrice,
 			salePriceChecked,
+			salePrice,
+			updateSalePrice,
 		} = this.props;
 
 		const numericFormatProps = {
@@ -55,12 +59,9 @@ class SalePrice extends PureComponent {
 			...( currencyPosition === SUFFIX && { suffix: currencySymbol } ),
 		};
 
-		const salePrice = '';
-
 		const handleChange = ( e ) => {
-			if ( ! isNaN( e.value ) && e.value >= minDefaultPrice && e.value < tempPrice ) {
-				// Todo: dispatch action to update sale price.
-				console.log(e.value);
+			if ( ! isNaN( e.value ) && e.value >= minDefaultPrice ) {
+				updateSalePrice( e );
 			}
 		};
 

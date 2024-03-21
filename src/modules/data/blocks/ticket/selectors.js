@@ -500,6 +500,11 @@ export const getSalePriceChecked = createSelector(
 	( tempDetails ) => tempDetails.salePriceChecked,
 );
 
+export const getSalePrice = createSelector(
+	[ getTicketTempDetails ],
+	( tempDetails ) => tempDetails.salePrice,
+);
+
 export const getTicketTempSku = createSelector(
 	[ getTicketTempDetails ],
 	( tempDetails ) => tempDetails.sku,

@@ -20,6 +20,7 @@ const mapStateToProps = ( state, ownProps ) => ( {
 	minDefaultPrice: selectors.isZeroPriceValid( state, ownProps ) ? 0 : 1,
 	tempPrice: selectors.getTicketTempPrice( state, ownProps ),
 	salePriceChecked: selectors.getSalePriceChecked( state, ownProps ),
+	salePrice: selectors.getSalePrice( state, ownProps ),
 } );
 
 const mapDispatchToProps = ( dispatch, ownProps ) => ( {
@@ -28,6 +29,12 @@ const mapDispatchToProps = ( dispatch, ownProps ) => ( {
 		dispatch( actions.setSalePriceChecked( clientId, e.target.checked ) );
 		dispatch( actions.setTicketHasChanges( clientId, true ) );
 	},
+
+	updateSalePrice: ( e ) => {
+		const { clientId } = ownProps;
+		dispatch( actions.setSalePrice( clientId, e.value ) );
+		dispatch( actions.setTicketHasChanges( clientId, true ) );
+	}
 } );
 
 export default compose(

@@ -79,6 +79,7 @@ export default ( state = DEFAULT_STATE, action ) => {
 		case types.SET_TICKET_TEMP_CAPACITY_TYPE:
 		case types.SET_TICKET_TEMP_CAPACITY:
 		case types.SET_TICKET_SALE_PRICE_CHECK:
+		case types.SET_TICKET_SALE_PRICE:
 			return {
 				...state,
 				tempDetails: tempDetails( state.tempDetails, action ),

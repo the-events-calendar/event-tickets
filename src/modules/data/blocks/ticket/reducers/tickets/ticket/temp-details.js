@@ -49,6 +49,7 @@ export const DEFAULT_STATE = {
 	capacityType: constants.TICKET_TYPES[ constants.UNLIMITED ],
 	capacity: '',
 	salePriceChecked: false,
+	salePrice: '',
 };
 
 export default ( state = DEFAULT_STATE, action ) => {
@@ -143,6 +144,11 @@ export default ( state = DEFAULT_STATE, action ) => {
 			return {
 				...state,
 				salePriceChecked: action.payload.checked,
+			};
+		case types.SET_TICKET_SALE_PRICE:
+			return {
+				...state,
+				salePrice: action.payload.salePrice,
 			};
 		default:
 			return state;
