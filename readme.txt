@@ -196,7 +196,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.8.4] 2024-03-25 =
+= [5.8.4] 2024-03-26 =
 
 * Fix - Events Calendar Pro promo shouldn't show when it's already installed or when not editing an event. [ET-2018]
 * Fix - Addressed a problem preventing the export of event attendees by email. [ETP-904]
