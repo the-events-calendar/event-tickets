@@ -2,7 +2,7 @@
 /**
  * The interface implemented by purchase confirmation Emails.
  *
- * @since   TBD
+ * @since   5.8.4
  *
  * @package TEC\Tickets\Emails\Email;
  */
@@ -12,7 +12,7 @@ namespace TEC\Tickets\Emails\Email;
 /**
  * Interface Purchase_Confirmation_Email_Interface.
  *
- * @since   TBD
+ * @since   5.8.4
  *
  * @package TEC\Tickets\Emails\Email;
  */

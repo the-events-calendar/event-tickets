@@ -9,9 +9,9 @@
  *
  * @link https://evnt.is/tickets-emails-tpl Help article for Tickets Emails template files.
  *
- * @version TBD
+ * @version 5.8.4
  *
- * @since TBD
+ * @since 5.8.4
  *
  * @var Tribe__Template                                      $this              Current template object.
  * @var \TEC\Tickets\Emails\Email_Abstract                   $email             The email object.

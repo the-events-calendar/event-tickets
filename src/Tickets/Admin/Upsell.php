@@ -221,7 +221,7 @@ class Upsell {
 	 * Filters the default Ticket type description in the context of Events part of a Series.
 	 *
 	 * @since 5.8.0
-	 * @since TBD   Add logic to bail in scenarios when upsell should not show.
+	 * @since 5.8.4   Add logic to bail in scenarios when upsell should not show.
 	 *
 	 * @param string   $file     Complete path to include the PHP File.
 	 * @param string[] $name     Template name.

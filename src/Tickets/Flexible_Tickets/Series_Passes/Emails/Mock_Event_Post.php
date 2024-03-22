@@ -2,7 +2,7 @@
 /**
  * Creates an Event mock for the purpose of the Series Pass Email preview.
  *
- * @since   TBD
+ * @since   5.8.4
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes;
  */
@@ -19,7 +19,7 @@ use WP_Post;
 /**
  * Class Mock_Event_Post.
  *
- * @since   TBD
+ * @since   5.8.4
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes;
  */
@@ -29,7 +29,7 @@ class Mock_Event_Post {
 	/**
 	 * The mock Event start date.
 	 *
-	 * @since TBD
+	 * @since 5.8.4
 	 *
 	 * @var DateTimeImmutable
 	 */
@@ -38,7 +38,7 @@ class Mock_Event_Post {
 	/**
 	 * The mock Event end date.
 	 *
-	 * @since TBD
+	 * @since 5.8.4
 	 *
 	 * @var DateTimeImmutable
 	 */
@@ -47,7 +47,7 @@ class Mock_Event_Post {
 	/**
 	 * The mock Event title.
 	 *
-	 * @since TBD
+	 * @since 5.8.4
 	 *
 	 * @var string
 	 */
@@ -56,7 +56,7 @@ class Mock_Event_Post {
 	/**
 	 * Returns the mock Event post data and meta.
 	 *
-	 * @since TBD
+	 * @since 5.8.4
 	 *
 	 * @return WP_Post[] The mock Events posts used in the Series Pass Email preview.
 	 */
@@ -95,7 +95,7 @@ class Mock_Event_Post {
 	/**
 	 * Mock_Event_Post constructor.
 	 *
-	 * @since TBD
+	 * @since 5.8.4
 	 *
 	 * @param string $start The Event start date in a `strtotime`-compatible format.
 	 * @param string $end   The Event end date in a `strtotime`-compatible format.
@@ -110,7 +110,7 @@ class Mock_Event_Post {
 	/**
 	 * Builds the Series mock post data.
 	 *
-	 * @since TBD
+	 * @since 5.8.4
 	 *
 	 * @param int $mock_post_id The mock post ID.
 	 *

@@ -943,7 +943,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	/**
 	 * Prepares the list of items for displaying.
 	 *
-	 * @since TBD Adding caching to eliminate method running multiple times.
+	 * @since 5.8.4 Adding caching to eliminate method running multiple times.
 	 */
 	public function prepare_items() {
 		$this->process_actions();

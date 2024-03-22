@@ -56,7 +56,7 @@ class Event_Schema extends JSON_LD_Abstract {
 	/**
 	 * Build the schema object from an email and an event.
 	 *
-	 * @since TBD
+	 * @since 5.8.4
 	 *
 	 * @param Email_Abstract $email The email instance.
 	 * @param int|null       $event The event post ID.

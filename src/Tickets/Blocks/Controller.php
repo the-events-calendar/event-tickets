@@ -100,7 +100,7 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 	 * Register the blocks after plugins are fully loaded.
 	 *
 	 * @since 5.3.0
-	 * @since TBD Correctly get post type when creating a new post or page.
+	 * @since 5.8.4 Correctly get post type when creating a new post or page.
 	 */
 	public function register_blocks() {
 		if ( is_admin() ) {
