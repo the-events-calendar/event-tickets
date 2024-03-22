@@ -9,10 +9,10 @@
  *
  * @link    https://evnt.is/tickets-emails-tpl Help article for Tickets Emails template files.
  *
- * @version TBD
+ * @version 5.8.4
  *
  * @since 5.6.0
- * @since TBD Add the post description header, add the `$show_post_description` flag and the `$post_description` variable.
+ * @since 5.8.4 Add the post description header, add the `$show_post_description` flag and the `$post_description` variable.
  *
  * @var WP_Post     $post                    The post object with properties.
  * @var string|null $post_description_header The post description header.

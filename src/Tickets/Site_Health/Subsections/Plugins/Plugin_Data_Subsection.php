@@ -409,7 +409,7 @@ class Plugin_Data_Subsection extends Abstract_Info_Subsection {
 	/**
 	 * Computes and formats ticket prices, including average, max, and min prices.
 	 *
-	 * @since TBD refactored logic to use `tickets.ticket-repository`.
+	 * @since 5.8.4 refactored logic to use `tickets.ticket-repository`.
 	 *
 	 * @return array Associative array with formatted average, max, and min ticket prices.
 	 */

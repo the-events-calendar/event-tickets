@@ -61,7 +61,7 @@ class Reservation_Schema extends JSON_LD_Abstract {
 	/**
 	 * Build the schema object from an email and specified event.
 	 *
-	 * @since TBD
+	 * @since 5.8.4
 	 *
 	 * @param Email_Abstract $email    The email instance.
 	 * @param int|null       $event_id The Event post ID.
