@@ -370,8 +370,8 @@ export function* setBodyDetails( clientId ) {
 	const showSalePrice = yield select( selectors.showSalePrice, props );
 
 	if ( showSalePrice ) {
-		body.append( 'ticket[sale_price][checked]', yield select( selectors.getSalePriceChecked, props ) );
-		body.append( 'ticket[sale_price][price]', yield select( selectors.getSalePrice, props ) );
+		body.append( 'ticket[sale_price][checked]', yield select( selectors.getTempSalePriceChecked, props ) );
+		body.append( 'ticket[sale_price][price]', yield select( selectors.getTempSalePrice, props ) );
 	}
 
 	return body;

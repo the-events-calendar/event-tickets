@@ -476,7 +476,6 @@ export const getTicketAttendeeInfoFields = createSelector(
 export const getTicketTempDetails = createSelector(
 	[ getTicket ],
 	( ticket ) =>  {
-		console.log(ticket);
 		return ticket.tempDetails || {}; },
 );
 
@@ -495,14 +494,24 @@ export const getTicketTempPrice = createSelector(
 	( tempDetails ) => tempDetails.price,
 );
 
-export const getSalePriceChecked = createSelector(
+export const getTempSalePriceChecked = createSelector(
 	[ getTicketTempDetails ],
 	( tempDetails ) => tempDetails.salePriceChecked,
 );
 
-export const getSalePrice = createSelector(
+export const getTempSalePrice = createSelector(
 	[ getTicketTempDetails ],
 	( tempDetails ) => tempDetails.salePrice,
+);
+
+export const getSalePriceChecked = createSelector(
+	[ getTicketDetails ],
+	( details ) => details.salePriceChecked,
+);
+
+export const getSalePrice = createSelector(
+	[ getTicketDetails ],
+	( details ) => details.salePrice,
 );
 
 export const getTicketTempSku = createSelector(

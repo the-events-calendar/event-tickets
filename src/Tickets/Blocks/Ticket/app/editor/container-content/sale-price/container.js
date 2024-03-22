@@ -19,8 +19,8 @@ const mapStateToProps = ( state, ownProps ) => ( {
 	currencyThousandsSep: selectors.getTicketCurrencyThousandsSep( state, ownProps ),
 	minDefaultPrice: selectors.isZeroPriceValid( state, ownProps ) ? 0 : 1,
 	tempPrice: selectors.getTicketTempPrice( state, ownProps ),
-	salePriceChecked: selectors.getSalePriceChecked( state, ownProps ),
-	salePrice: selectors.getSalePrice( state, ownProps ),
+	salePriceChecked: selectors.getTempSalePriceChecked( state, ownProps ),
+	salePrice: selectors.getTempSalePrice( state, ownProps ),
 } );
 
 const mapDispatchToProps = ( dispatch, ownProps ) => ( {
