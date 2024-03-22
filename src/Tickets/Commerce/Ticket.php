@@ -1108,14 +1108,12 @@ class Ticket {
 		$sale_price    = Arr::get( $raw_data, 'ticket_sale_price', false );
 		$regular_price = Arr::get( $raw_data, 'ticket_price', false );
 		
-		if ( empty( $sale_price ) ) {
+		if ( empty( $sale_price ) || $sale_price >= $regular_price ) {
 			$this->remove_sale_price_data( $ticket );
 			return;
 		}
 		
-		if ( $sale_price && $sale_price < $regular_price ) {
-			update_post_meta( $ticket->ID, static::$sale_price_key, Value::create( $sale_price ) );
-		}
+		update_post_meta( $ticket->ID, static::$sale_price_key, Value::create( $sale_price ) );
 		
 		$this->process_sale_price_dates( $ticket, $raw_data );
 	}
