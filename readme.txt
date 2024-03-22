@@ -210,6 +210,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Tweak - Added additional fields to the Event Tickets Site Health section. [ET-2017]
 * Feature - Add the Series Pass email template. [ET-1854]
 * Tweak - Adjusted the logic for calculating fees when using Stripe. [ET-2015]
+* Language - 22 new strings added, 91 updated, 0 fuzzied, and 0 obsoleted
 
 = [5.8.3] 2024-03-12 =
 
