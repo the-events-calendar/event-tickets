@@ -536,6 +536,10 @@ export function* createNewTicket( action ) {
 				? 0
 				: ticket.capacity_details.available;
 
+			const { sale_price_data } = ticket;
+			const salePriceChecked = sale_price_data?.enabled || false;
+			const salePrice = sale_price_data?.sale_price || '';
+
 			const [
 				title,
 				description,
@@ -593,7 +597,11 @@ export function* createNewTicket( action ) {
 					endTimeInput,
 					capacityType,
 					capacity,
+					salePriceChecked,
+					salePrice,
 				} ) ),
+				put( actions.setTempSalePriceChecked( clientId, salePriceChecked ) ),
+				put( actions.setTempSalePriceChecked( clientId, salePriceChecked ) ),
 				put( actions.setTicketId( clientId, ticket.id ) ),
 				put( actions.setTicketHasBeenCreated( clientId, true ) ),
 				put( actions.setTicketAvailable( clientId, available ) ),
