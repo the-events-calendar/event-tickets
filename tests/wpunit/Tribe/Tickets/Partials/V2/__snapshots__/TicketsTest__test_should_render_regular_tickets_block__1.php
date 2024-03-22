@@ -8,7 +8,7 @@
 		data-provider="Tribe__Tickets__Commerce__PayPal__Main"
 		autocomplete="off"
 		data-provider-id="tribe-commerce"
-		data-post-id="5096"
+		data-post-id="tribe"
 		novalidate
 	>
 
@@ -34,17 +34,18 @@
 </div>
 
 		<div
-	id="tribe-block-tickets-item-5097"
-	 class="tribe-tickets__tickets-item post-5097 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	 data-ticket-id="5097" data-available="false" data-has-shared-cap="false" data-ticket-price="99" >
+	id="tribe-block-tickets-item-common"
+	 class="tribe-tickets__tickets-item post-common tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	 data-ticket-id="common" data-available="false" data-has-shared-cap="false" data-ticket-price="99" >
 
-	<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__tickets-item-content-title"  >
-		Test ticket for 5096</div>
-
+	<div  class="tribe-tickets__tickets-item-content-title-container"  >
+		<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__tickets-item-content-title"  >
+				Test ticket for tribe	</div>
+</div>
 
 <div
-	id="tribe__details__content--5097"
+	id="tribe__details__content--common"
 	 class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__tickets-item-details-content" >
-	Test ticket description for 5096</div>
+	Test ticket description for tribe</div>
 <div  class="tribe-tickets__tickets-item-extra" >
 
 	<div  class="tribe-common-b2 tribe-common-b1--min-medium tribe-tickets__tickets-item-extra-price" >
@@ -81,17 +82,18 @@
 	
 </div>
 <div
-	id="tribe-block-tickets-item-5098"
-	 class="tribe-tickets__tickets-item post-5098 tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	 data-ticket-id="5098" data-available="false" data-has-shared-cap="false" data-ticket-price="99" >
+	id="tribe-block-tickets-item-tickets"
+	 class="tribe-tickets__tickets-item post-tickets tribe_tpp_tickets type-tribe_tpp_tickets status-publish hentry" 	 data-ticket-id="tickets" data-available="false" data-has-shared-cap="false" data-ticket-price="99" >
 
-	<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__tickets-item-content-title"  >
-		Test ticket for 5096</div>
-
+	<div  class="tribe-tickets__tickets-item-content-title-container"  >
+		<div  class="tribe-common-h7 tribe-common-h6--min-medium tribe-tickets__tickets-item-content-title"  >
+				Test ticket for tribe	</div>
+</div>
 
 <div
-	id="tribe__details__content--5098"
+	id="tribe__details__content--tickets"
 	 class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__tickets-item-details-content" >
-	Test ticket description for 5096</div>
+	Test ticket description for tribe</div>
 <div  class="tribe-tickets__tickets-item-extra" >
 
 	<div  class="tribe-common-b2 tribe-common-b1--min-medium tribe-tickets__tickets-item-extra-price" >
