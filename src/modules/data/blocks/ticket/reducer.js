@@ -88,6 +88,8 @@ export default ( state = DEFAULT_STATE, action ) => {
 		case types.SET_TICKET_TEMP_END_TIME_INPUT:
 		case types.SET_TICKET_TEMP_CAPACITY_TYPE:
 		case types.SET_TICKET_TEMP_CAPACITY:
+		case types.SET_TICKET_TEMP_SALE_PRICE_CHECK:
+		case types.SET_TICKET_TEMP_SALE_PRICE:
 		case types.SET_TICKET_SOLD:
 		case types.SET_TICKET_AVAILABLE:
 		case types.SET_TICKET_ID:
