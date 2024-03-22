@@ -212,6 +212,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Tweak - Adjusted the logic for calculating fees when using Stripe. [ET-2015]
 * Tweak - Added filters: `tec_tickets_email_class`
 * Tweak - Changed views: `emails/series-pass`, `emails/template-parts/body/additional-content`, `emails/template-parts/body/post-description`, `emails/template-parts/body/series-events-list`, `emails/template-parts/body/series-pass-dates`, `emails/template-parts/body/thumbnail`, `emails/template-parts/header/head/series-pass-styles`, `emails/template-parts/header/head/styles`
+* Language - 22 new strings added, 91 updated, 0 fuzzied, and 0 obsoleted
 
 = [5.8.3] 2024-03-12 =
 
