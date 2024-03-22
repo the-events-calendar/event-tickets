@@ -26,13 +26,13 @@ const mapStateToProps = ( state, ownProps ) => ( {
 const mapDispatchToProps = ( dispatch, ownProps ) => ( {
 	toggleSalePrice: ( e ) => {
 		const { clientId } = ownProps;
-		dispatch( actions.setSalePriceChecked( clientId, e.target.checked ) );
+		dispatch( actions.setTempSalePriceChecked( clientId, e.target.checked ) );
 		dispatch( actions.setTicketHasChanges( clientId, true ) );
 	},
 
 	updateSalePrice: ( e ) => {
 		const { clientId } = ownProps;
-		dispatch( actions.setSalePrice( clientId, e.value ) );
+		dispatch( actions.setTempSalePrice( clientId, e.value ) );
 		dispatch( actions.setTicketHasChanges( clientId, true ) );
 	}
 } );

@@ -139,13 +139,13 @@ export default ( state = DEFAULT_STATE, action ) => {
 				...state,
 				capacity: action.payload.capacity,
 			};
-		case types.SET_TICKET_SALE_PRICE_CHECK:
+		case types.SET_TICKET_TEMP_SALE_PRICE_CHECK:
 			console.log('SET_TICKET_SALE_PRICE_CHECK-temp-details.js', action.payload );
 			return {
 				...state,
 				salePriceChecked: action.payload.checked,
 			};
-		case types.SET_TICKET_SALE_PRICE:
+		case types.SET_TICKET_TEMP_SALE_PRICE:
 			return {
 				...state,
 				salePrice: action.payload.salePrice,
