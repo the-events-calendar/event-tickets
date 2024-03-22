@@ -568,7 +568,7 @@ class Settings {
 	 * Is a valid license of Event Tickets Plus available?
 	 *
 	 * @since 5.3.0
-	 * @since TBD Added caching.
+	 * @since 5.8.4 Added caching.
 	 *
 	 * @param bool $revalidate whether to submit a new validation API request.
 	 *

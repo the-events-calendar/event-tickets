@@ -2,7 +2,7 @@
 /**
  * Series Pass Email template.
  *
- * @since   TBD
+ * @since   5.8.4
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Emails;
  */
@@ -22,7 +22,7 @@ use TEC\Tickets\Emails\JSON_LD\Reservation_Schema;
 /**
  * Class Series_Pass.
  *
- * @since   TBD
+ * @since   5.8.4
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Emails;
  */
@@ -30,7 +30,7 @@ class Series_Pass extends Email_Abstract implements Purchase_Confirmation_Email_
 	/**
 	 * Email ID.
 	 *
-	 * @since TBD
+	 * @since 5.8.4
 	 *
 	 * @var string
 	 */
@@ -39,7 +39,7 @@ class Series_Pass extends Email_Abstract implements Purchase_Confirmation_Email_
 	/**
 	 * Email slug.
 	 *
-	 * @since TBD
+	 * @since 5.8.4
 	 *
 	 * @var string
 	 */
@@ -48,7 +48,7 @@ class Series_Pass extends Email_Abstract implements Purchase_Confirmation_Email_
 	/**
 	 * Email template.
 	 *
-	 * @since TBD
+	 * @since 5.8.4
 	 *
 	 * @var string
 	 */
@@ -57,7 +57,7 @@ class Series_Pass extends Email_Abstract implements Purchase_Confirmation_Email_
 	/**
 	 * The class handling the fetching of Upcoming Series Events.
 	 *
-	 * @since TBD
+	 * @since 5.8.4
 	 *
 	 * @var Upcoming_Events
 	 */
@@ -66,7 +66,7 @@ class Series_Pass extends Email_Abstract implements Purchase_Confirmation_Email_
 	/**
 	 * Series_Pass constructor.
 	 *
-	 * @since TBD
+	 * @since 5.8.4
 	 *
 	 * @param Upcoming_Events $upcoming_events The class handling the fetching of Upcoming Series Events.
 	 */
@@ -77,7 +77,7 @@ class Series_Pass extends Email_Abstract implements Purchase_Confirmation_Email_
 	/**
 	 * Return the email recipient type string.
 	 *
-	 * @since TBD
+	 * @since 5.8.4
 	 *
 	 * @return string The email recipient type string.
 	 */
@@ -88,7 +88,7 @@ class Series_Pass extends Email_Abstract implements Purchase_Confirmation_Email_
 	/**
 	 * Returns the settings fields for the email.
 	 *
-	 * @since TBD
+	 * @since 5.8.4
 	 *
 	 * @return array<string,mixed> The settings fields for the email.
 	 */
@@ -222,7 +222,7 @@ class Series_Pass extends Email_Abstract implements Purchase_Confirmation_Email_
 	/**
 	 * Get default subject.
 	 *
-	 * @since TBD
+	 * @since 5.8.4
 	 *
 	 * @return string The default subject.
 	 */
@@ -242,7 +242,7 @@ class Series_Pass extends Email_Abstract implements Purchase_Confirmation_Email_
 	/**
 	 * Get default heading.
 	 *
-	 * @since TBD
+	 * @since 5.8.4
 	 *
 	 * @return string The default heading.
 	 */
@@ -257,7 +257,7 @@ class Series_Pass extends Email_Abstract implements Purchase_Confirmation_Email_
 	/**
 	 * Returns the default preview context.
 	 *
-	 * @since TBD
+	 * @since 5.8.4
 	 *
 	 * @param array<string,mixed> $args The preview context args.
 	 *
@@ -353,7 +353,7 @@ class Series_Pass extends Email_Abstract implements Purchase_Confirmation_Email_
 	/**
 	 * Returns whether the boolean email option is enabled.
 	 *
-	 * @since TBD
+	 * @since 5.8.4
 	 *
 	 * @param string $option  The option name.
 	 *
@@ -366,7 +366,7 @@ class Series_Pass extends Email_Abstract implements Purchase_Confirmation_Email_
 	/**
 	 * Returns the template context array and creates sample data if preview.
 	 *
-	 * @since TBD
+	 * @since 5.8.4
 	 *
 	 * @return array<string,mixed> The template context array.
 	 */
@@ -417,7 +417,7 @@ class Series_Pass extends Email_Abstract implements Purchase_Confirmation_Email_
 	/**
 	 * Send the Series Pass email.
 	 *
-	 * @since TBD
+	 * @since 5.8.4
 	 *
 	 * @return bool Whether the email was sent or not.
 	 */

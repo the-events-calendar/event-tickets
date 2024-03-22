@@ -89,7 +89,7 @@ class Legacy_Hijack {
 		/**
 		 * Filters the email class to use for sending tickets.
 		 *
-		 * @since TBD
+		 * @since 5.8.4
 		 *
 		 * @param Email_Abstract $email_class The email class instance to use for sending tickets.
 		 * @param string         $provider    The provider slug ('rsvp', 'tpp', 'tc',  'woo', 'edd', etc.)

@@ -9,10 +9,10 @@
  *
  * @link https://evnt.is/tickets-emails-tpl Help article for Tickets Emails template files.
  *
- * @version TBD
+ * @version 5.8.4
  *
  * @since 5.5.11
- * @since TBD Add the additional content header.
+ * @since 5.8.4 Add the additional content header.
  *
  * @var \Tribe__Template $this                      Current template object.
  * @var \WP_Post         $order                     The order object.

@@ -2,7 +2,7 @@
 /**
  * Simulates a Series Post for the purpose of the email preview.
  *
- * @since   TBD
+ * @since   5.8.4
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Emails;
  */
@@ -15,7 +15,7 @@ use WP_Post;
 /**
  * Class Mock_Series_Post.
  *
- * @since   TBD
+ * @since   5.8.4
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Emails;
  */
@@ -25,7 +25,7 @@ class Mock_Series_Post {
 	/**
 	 * Filters the start date for the mock series post.
 	 *
-	 * @since TBD
+	 * @since 5.8.4
 	 *
 	 * @param string|null $start_date   The start date.
 	 * @param WP_Post     $post         The post the start date is being filtered for.
@@ -47,7 +47,7 @@ class Mock_Series_Post {
 	/**
 	 * Filters the end date for the mock series post.
 	 *
-	 * @since TBD
+	 * @since 5.8.4
 	 *
 	 * @param string|null $end_date     The end date.
 	 * @param WP_Post     $post         The post the end date is being filtered for.
@@ -69,7 +69,7 @@ class Mock_Series_Post {
 	/**
 	 * Builds the Series mock post data.
 	 *
-	 * @since TBD
+	 * @since 5.8.4
 	 *
 	 * @param int $mock_post_id The mock post ID.
 	 *
