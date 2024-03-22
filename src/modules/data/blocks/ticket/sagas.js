@@ -425,7 +425,7 @@ export function* fetchTicket( action ) {
 				supports_attendee_information,
 				attendee_information_fields,
 				type,
-				salePriceChecked,
+				sale_price_data,
 			} = ticket;
 			/* eslint-enable camelcase */
 
@@ -455,6 +455,9 @@ export function* fetchTicket( action ) {
 				endTimeInput = yield call( momentUtil.toTime, endMoment );
 			}
 
+			const salePriceChecked = sale_price_data?.enabled || false;
+			const salePrice = sale_price_data?.sale_price || '';
+
 			const details = {
 				attendeeInfoFields: attendee_information_fields,
 				title,
@@ -476,6 +479,7 @@ export function* fetchTicket( action ) {
 				capacity,
 				type,
 				salePriceChecked,
+				salePrice,
 			};
 
 			yield all( [
