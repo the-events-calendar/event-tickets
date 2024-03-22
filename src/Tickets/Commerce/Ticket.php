@@ -1108,6 +1108,11 @@ class Ticket {
 		$sale_price    = Arr::get( $raw_data, 'ticket_sale_price', false );
 		$regular_price = Arr::get( $raw_data, 'ticket_price', false );
 		
+		if ( empty( $sale_price ) ) {
+			$this->remove_sale_price_data( $ticket );
+			return;
+		}
+		
 		if ( $sale_price && $sale_price < $regular_price ) {
 			update_post_meta( $ticket->ID, static::$sale_price_key, Value::create( $sale_price ) );
 		}
@@ -1150,6 +1155,7 @@ class Ticket {
 	 */
 	public function remove_sale_price_data( Ticket_Object $ticket ): void {
 		$keys = [
+			static::$sale_price_checked_key,
 			static::$sale_price_key,
 			static::$sale_price_start_date_key,
 			static::$sale_price_end_date_key,
