@@ -2,6 +2,7 @@
 
 namespace Tribe\Tickets\Partials\V2\Tickets\Item\Content;
 
+use TEC\Tickets\Commerce\Ticket;
 use Tribe\Tickets\Test\Partials\V2TestCase;
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
 
@@ -179,6 +180,44 @@ class TitleTest extends V2TestCase {
 		$template = tribe( 'tickets.editor.template' );
 
 		$args = $this->get_default_args();
+		$html = $template->template( $this->partial_path, $args, false );
+
+		$driver = $this->get_html_output_driver();
+
+		$driver->setTolerableDifferences( [
+				$args['post_id'],
+				$args['ticket']->name,
+			]
+		);
+
+		$driver->setTolerableDifferencesPrefixes( [
+			'Test ticket for ',
+		] );
+
+		$html = str_replace(
+			[
+				$args['post_id'],
+				$args['ticket']->ID,
+			],
+			[
+				'[EVENT_ID]',
+				'[TICKET_ID]',
+			],
+			$html
+		);
+
+		$this->assertMatchesSnapshot( $html, $driver );
+	}
+
+	/**
+	 * @test
+	 */
+	public function test_should_render_sale_label() {
+		$template = tribe( 'tickets.editor.template' );
+
+		$args = $this->get_default_args();
+		$args['ticket']->on_sale = true;
+
 		$html = $template->template( $this->partial_path, $args, false );
 
 		$driver = $this->get_html_output_driver();
