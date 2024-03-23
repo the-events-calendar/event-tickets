@@ -601,7 +601,7 @@ export function* createNewTicket( action ) {
 					salePrice,
 				} ) ),
 				put( actions.setTempSalePriceChecked( clientId, salePriceChecked ) ),
-				put( actions.setTempSalePriceChecked( clientId, salePriceChecked ) ),
+				put( actions.setTempSalePrice( clientId, salePrice ) ),
 				put( actions.setTicketId( clientId, ticket.id ) ),
 				put( actions.setTicketHasBeenCreated( clientId, true ) ),
 				put( actions.setTicketAvailable( clientId, available ) ),
