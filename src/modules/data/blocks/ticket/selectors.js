@@ -654,6 +654,37 @@ export const isTicketValid = createSelector(
 	},
 );
 
+export const getTicketSaleTempStartDate = createSelector(
+	[ getTicketTempDetails ],
+	( tempDetails ) => tempDetails.saleStartDate,
+);
+
+export const getTicketTempSaleStartDateInput = createSelector(
+	[ getTicketTempDetails ],
+	( tempDetails ) => tempDetails.saleStartDateInput,
+);
+
+export const getTicketTempSaleStartDateMoment = createSelector(
+	[ getTicketTempDetails ],
+	( tempDetails ) => tempDetails.saleStartDateMoment,
+);
+
+
+export const getTicketSaleTempEndDate = createSelector(
+	[ getTicketTempDetails ],
+	( tempDetails ) => tempDetails.saleEndDate,
+);
+
+export const getTicketTempSaleEndDateInput = createSelector(
+	[ getTicketTempDetails ],
+	( tempDetails ) => tempDetails.saleEndDateInput,
+);
+
+export const getTicketTempSaleEndDateMoment = createSelector(
+	[ getTicketTempDetails ],
+	( tempDetails ) => tempDetails.saleEndDateMoment,
+);
+
 //
 // ─── AMOUNT REDUCERS ────────────────────────────────────────────────────────────
 //
