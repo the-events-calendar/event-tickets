@@ -69,7 +69,7 @@ class SalePrice extends PureComponent {
 			<div className={"tribe-editor__ticket__sale-price-wrapper"}>
 				<Checkbox
 					className="tribe-editor__ticket__sale-price-checkbox"
-					id="tribe-editor__ticket__sale-price-checkbox"
+					id={ this.id }
 					// eslint-disable-next-line no-undef
 					label="Add Sale Price"
 					// eslint-disable-next-line no-undef
