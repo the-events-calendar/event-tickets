@@ -504,6 +504,11 @@ export const getTempSalePrice = createSelector(
 	( tempDetails ) => tempDetails.salePrice,
 );
 
+export const isTicketSalePriceValid = createSelector(
+	[ getTempSalePrice, getTicketTempPrice ],
+	( salePrice, price ) => salePrice === '' || ( salePrice > 0 && salePrice < price ),
+);
+
 export const getSalePriceChecked = createSelector(
 	[ getTicketDetails ],
 	( details ) => details.salePriceChecked,

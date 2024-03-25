@@ -41,6 +41,7 @@ class SalePrice extends PureComponent {
 		toDateInput: PropTypes.string,
 		onFromDateChange: PropTypes.func,
 		onToDateChange: PropTypes.func,
+		validSalePrice: PropTypes.bool,
 	};
 
 	constructor( props ) {
@@ -69,6 +70,7 @@ class SalePrice extends PureComponent {
 			toDateInput,
 			onFromDateChange,
 			onToDateChange,
+			validSalePrice,
 		} = this.props;
 
 		const numericFormatProps = {
@@ -81,6 +83,11 @@ class SalePrice extends PureComponent {
 				updateSalePrice( e );
 			}
 		};
+
+		const salPriceClasses = classNames(
+			'tribe-editor__input tribe-editor__ticket__sale-price-input',
+			{ 'tribe-editor__ticket__sale-price--error': !validSalePrice }
+		);
 
 		const FromDateProps = {
 			value: fromDateInput,
@@ -144,7 +151,7 @@ class SalePrice extends PureComponent {
 							/>
 							<NumericFormat
 								allowNegative={false}
-								className="tribe-editor__input tribe-editor__ticket__sale-price-input"
+								className={salPriceClasses}
 								decimalScale={currencyNumberOfDecimals}
 								decimalSeparator={currencyDecimalPoint}
 								displayType="input"
@@ -156,6 +163,11 @@ class SalePrice extends PureComponent {
 								disabled={isDisabled}
 							/>
 						</div>
+						{ ! validSalePrice && (
+							<div className={'tribe-editor__ticket__sale-price__error-message'}>
+								{ TICKET_LABELS.sale_price.invalid_price }
+							</div>
+						) }
 						<div className={"tribe-editor__ticket__sale-price--dates"}>
 							<LabeledItem
 								className="tribe-editor__ticket__sale-price__dates--label"
