@@ -43,6 +43,8 @@ const onCancelClick = ( state, dispatch, ownProps ) => () => {
 			endTimeInput: selectors.getTicketEndTimeInput( state, ownProps ),
 			capacityType: selectors.getTicketCapacityType( state, ownProps ),
 			capacity: selectors.getTicketCapacity( state, ownProps ),
+			salePriceChecked: selectors.getSalePriceChecked( state, ownProps ),
+			salePrice: selectors.getSalePrice( state, ownProps ),
 		} ) );
 		dispatch( actions.setTicketsTempSharedCapacity(
 			selectors.getTicketsSharedCapacity( state ),
