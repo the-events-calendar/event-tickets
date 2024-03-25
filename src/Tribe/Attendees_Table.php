@@ -1,6 +1,7 @@
 <?php
 
 use TEC\Tickets\Event;
+use TEC\Tickets\Admin\Attendees\Page as Attendees_Page;
 
 if ( ! class_exists( 'WP_List_Table' ) ) {
 	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
@@ -735,8 +736,10 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			'right' => [],
 		];
 
-		// Only show the email button if the user is an admin, or we've enabled it via the filter.
-		if ( current_user_can( 'edit_posts' ) || $allow_fe ) {
+		// Only show the email button if the user is an admin, or we've enabled it via the filter, and we're not in the General attendees page
+		if ( ( current_user_can( 'edit_posts' ) || $allow_fe )
+			&& ! tribe( Attendees_Page::class )->is_on_page()
+		) {
 			$nav['left']['email'] = sprintf( '<a class="email button action thickbox" href="%1$s">%2$s</a>', esc_url( $email_link ), esc_html__( 'Email', 'event-tickets' ) );
 		}
 
