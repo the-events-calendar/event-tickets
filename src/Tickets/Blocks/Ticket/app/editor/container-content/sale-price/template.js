@@ -39,6 +39,8 @@ class SalePrice extends PureComponent {
 		toDate: PropTypes.instanceOf(Date),
 		fromDateInput: PropTypes.string,
 		toDateInput: PropTypes.string,
+		onFromDateChange: PropTypes.func,
+		onToDateChange: PropTypes.func,
 	};
 
 	constructor( props ) {
@@ -65,6 +67,8 @@ class SalePrice extends PureComponent {
 			toDate,
 			fromDateInput,
 			toDateInput,
+			onFromDateChange,
+			onToDateChange,
 		} = this.props;
 
 		const numericFormatProps = {
@@ -78,15 +82,12 @@ class SalePrice extends PureComponent {
 			}
 		};
 
-		const onDateChange = ( e ) => {
-
-		}
-
 		const FromDateProps = {
 			value: fromDateInput,
 			format: dateFormat,
 			formatDate: formatDate,
 			parseDate: parseDate,
+			placeholder: dateFormat,
 			dayPickerProps: {
 				selectedDays: [ fromDate, { from: fromDate, to: toDate } ],
 				disabledDays: { after: toDate },
@@ -96,7 +97,7 @@ class SalePrice extends PureComponent {
 				},
 				toMonth: toDate,
 			},
-			onDayChange: onDateChange,
+			onDayChange: onFromDateChange,
 			inputProps: {
 				disabled: isDisabled,
 			},
@@ -107,6 +108,7 @@ class SalePrice extends PureComponent {
 			format: dateFormat,
 			formatDate: formatDate,
 			parseDate: parseDate,
+			placeholder: dateFormat,
 			dayPickerProps: {
 				selectedDays: [ fromDate, { from: fromDate, to: toDate } ],
 				disabledDays: { before: fromDate },
@@ -117,7 +119,7 @@ class SalePrice extends PureComponent {
 				month: fromDate,
 				fromMonth: fromDate,
 			},
-			onDayChange: onDateChange,
+			onDayChange: onToDateChange,
 			inputProps: {
 				disabled: isDisabled,
 			},

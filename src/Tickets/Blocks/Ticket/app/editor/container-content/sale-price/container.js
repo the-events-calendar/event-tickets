@@ -12,6 +12,16 @@ import { withStore } from '@moderntribe/common/hoc';
 import { selectors, actions } from '@moderntribe/tickets/data/blocks/ticket';
 import {globals, moment as momentUtil} from "@moderntribe/common/utils";
 
+const onFromDateChange = ( dispatch, ownProps ) => ( date, modifiers, dayPickerInput ) => {
+	console.log( 'onFromDateChange', date, modifiers, dayPickerInput );
+	dispatch( actions.processTicketSaleStartDate( ownProps.clientId, date, dayPickerInput ) );
+};
+
+const onToDateChange = ( dispatch, ownProps ) => ( date, modifiers, dayPickerInput ) => {
+	console.log( 'onToDateChange', date, modifiers, dayPickerInput );
+	dispatch( actions.processTicketSaleEndDate( ownProps.clientId, date, dayPickerInput ) );
+};
+
 const mapStateToProps = ( state, ownProps ) => {
 	const datePickerFormat = globals.tecDateSettings().datepickerFormat
 		? momentUtil.toFormat( globals.tecDateSettings().datepickerFormat )
@@ -52,7 +62,10 @@ const mapDispatchToProps = ( dispatch, ownProps ) => ( {
 		const { clientId } = ownProps;
 		dispatch( actions.setTempSalePrice( clientId, e.value ) );
 		dispatch( actions.setTicketHasChanges( clientId, true ) );
-	}
+	},
+
+	onFromDateChange: onFromDateChange( dispatch, ownProps ),
+	onToDateChange: onToDateChange( dispatch, ownProps ),
 } );
 
 export default compose(
