@@ -654,7 +654,7 @@ export const isTicketValid = createSelector(
 	},
 );
 
-export const getTicketSaleTempStartDate = createSelector(
+export const getTicketTempSaleStartDate = createSelector(
 	[ getTicketTempDetails ],
 	( tempDetails ) => tempDetails.saleStartDate,
 );

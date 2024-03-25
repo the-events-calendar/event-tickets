@@ -53,7 +53,7 @@ export const DEFAULT_STATE = {
 	type: 'default',
 	salePriceChecked: false,
 	salePrice: '',
-	saleStartDate: momentUtil.toDatabaseDate( currentMoment ),
+	saleStartDate: '',
 	saleStartDateInput: '',
 	saleStartDateMoment: '',
 	saleEndDate: '',
@@ -165,10 +165,10 @@ export default ( state = DEFAULT_STATE, action ) => {
 				salePriceChecked: action.payload.checked,
 			};
 		case types.SET_TICKET_SALE_PRICE:
-			console.log('SET_TICKET_SALE_PRICE_CHECK-details.js',state, action.payload);
+			console.log('SET_TICKET_SALE_PRICE-details.js',state, action.payload);
 			return {
 				...state,
-				salePriceChecked: action.payload.salePrice,
+				salePrice: action.payload.salePrice,
 			};
 		case types.SET_TICKET_SALE_START_DATE:
 			return {
