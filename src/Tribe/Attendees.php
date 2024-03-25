@@ -591,6 +591,7 @@ class Tribe__Tickets__Attendees {
 				'provider',
 				'purchaser',
 				'status',
+				'attendee_actions',
 			]
 		);
 
