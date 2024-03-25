@@ -39,7 +39,6 @@ import {
 	isTribeEventPostType,
 } from '@moderntribe/tickets/data/shared/sagas';
 import { isTicketEditableFromPost } from "@moderntribe/tickets/data/blocks/ticket/utils";
-import {processTicketSaleEndDate, processTicketSaleStartDate} from "./actions";
 
 const {
 	UNLIMITED,
@@ -373,6 +372,8 @@ export function* setBodyDetails( clientId ) {
 	if ( showSalePrice ) {
 		body.append( 'ticket[sale_price][checked]', yield select( selectors.getTempSalePriceChecked, props ) );
 		body.append( 'ticket[sale_price][price]', yield select( selectors.getTempSalePrice, props ) );
+		body.append( 'ticket[sale_price][start_date]', yield select( selectors.getTicketTempSaleStartDate, props ) );
+		body.append( 'ticket[sale_price][end_date]', yield select( selectors.getTicketTempSaleEndDate, props ) );
 	}
 
 	return body;
@@ -459,6 +460,18 @@ export function* fetchTicket( action ) {
 			const salePriceChecked = sale_price_data?.enabled || false;
 			const salePrice = sale_price_data?.sale_price || '';
 
+			const saleStartDate = sale_price_data?.start_date || '';
+			const saleStartDateInput = yield datePickerFormat
+				? call( momentUtil.toDate, saleStartDate, datePickerFormat )
+				: call( momentUtil.toDate, saleStartDate );
+			const saleStartDateMoment = yield call( momentUtil.toMoment, saleStartDate );
+
+			const saleEndDate = sale_price_data?.end_date || '';
+			const saleEndDateInput = yield datePickerFormat
+				? call( momentUtil.toDate, saleEndDate, datePickerFormat )
+				: call( momentUtil.toDate, saleEndDate );
+			const saleEndDateMoment = yield call( momentUtil.toMoment, saleEndDate );
+
 			const details = {
 				attendeeInfoFields: attendee_information_fields,
 				title,
@@ -481,6 +494,12 @@ export function* fetchTicket( action ) {
 				type,
 				salePriceChecked,
 				salePrice,
+				saleStartDate,
+				saleStartDateInput,
+				saleStartDateMoment,
+				saleEndDate,
+				saleEndDateInput,
+				saleEndDateMoment,
 			};
 
 			yield all( [
@@ -541,6 +560,7 @@ export function* createNewTicket( action ) {
 			const salePriceChecked = sale_price_data?.enabled || false;
 			const salePrice = sale_price_data?.sale_price || '';
 
+			console.log( sale_price_data );
 			const [
 				title,
 				description,
@@ -559,6 +579,12 @@ export function* createNewTicket( action ) {
 				endTimeInput,
 				capacityType,
 				capacity,
+				saleStartDate,
+				saleStartDateInput,
+				saleStartDateMoment,
+				saleEndDate,
+				saleEndDateInput,
+				saleEndDateMoment,
 			] = yield all( [
 				select( selectors.getTicketTempTitle, props ),
 				select( selectors.getTicketTempDescription, props ),
@@ -577,6 +603,12 @@ export function* createNewTicket( action ) {
 				select( selectors.getTicketTempEndTimeInput, props ),
 				select( selectors.getTicketTempCapacityType, props ),
 				select( selectors.getTicketTempCapacity, props ),
+				select( selectors.getTicketTempSaleStartDate, props ),
+				select( selectors.getTicketTempSaleStartDateInput, props ),
+				select( selectors.getTicketTempSaleStartDateMoment, props ),
+				select( selectors.getTicketTempSaleEndDate, props ),
+				select( selectors.getTicketTempSaleEndDateInput, props ),
+				select( selectors.getTicketTempSaleEndDateMoment, props ),
 			] );
 
 			yield all( [
@@ -600,6 +632,12 @@ export function* createNewTicket( action ) {
 					capacity,
 					salePriceChecked,
 					salePrice,
+					saleStartDate,
+					saleStartDateInput,
+					saleStartDateMoment,
+					saleEndDate,
+					saleEndDateInput,
+					saleEndDateMoment,
 				} ) ),
 				put( actions.setTempSalePriceChecked( clientId, salePriceChecked ) ),
 				put( actions.setTempSalePrice( clientId, salePrice ) ),

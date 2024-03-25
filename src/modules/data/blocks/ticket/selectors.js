@@ -670,7 +670,7 @@ export const getTicketTempSaleStartDateMoment = createSelector(
 );
 
 
-export const getTicketSaleTempEndDate = createSelector(
+export const getTicketTempSaleEndDate = createSelector(
 	[ getTicketTempDetails ],
 	( tempDetails ) => tempDetails.saleEndDate,
 );
