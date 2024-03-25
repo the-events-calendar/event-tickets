@@ -45,6 +45,12 @@ const onCancelClick = ( state, dispatch, ownProps ) => () => {
 			capacity: selectors.getTicketCapacity( state, ownProps ),
 			salePriceChecked: selectors.getSalePriceChecked( state, ownProps ),
 			salePrice: selectors.getSalePrice( state, ownProps ),
+			saleStartDate: selectors.getTicketSaleStartDate( state, ownProps ),
+			saleStartDateInput: selectors.getTicketSaleStartDateInput( state, ownProps ),
+			saleStartDateMoment: selectors.getTicketSaleStartDateMoment( state, ownProps ),
+			saleEndDate: selectors.getTicketSaleEndDate( state, ownProps ),
+			saleEndDateInput: selectors.getTicketSaleEndDateInput( state, ownProps ),
+			saleEndDateMoment: selectors.getTicketSaleEndDateMoment( state, ownProps ),
 		} ) );
 		dispatch( actions.setTicketsTempSharedCapacity(
 			selectors.getTicketsSharedCapacity( state ),

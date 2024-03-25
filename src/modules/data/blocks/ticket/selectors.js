@@ -514,6 +514,37 @@ export const getSalePrice = createSelector(
 	( details ) => details.salePrice,
 );
 
+export const getTicketSaleStartDate= createSelector(
+	[ getTicketDetails ],
+	( details ) => details.saleStartDate,
+);
+
+export const getTicketSaleStartDateInput = createSelector(
+	[ getTicketDetails ],
+	( details ) => details.saleStartDateInput,
+);
+
+export const getTicketSaleStartDateMoment = createSelector(
+	[ getTicketDetails ],
+	( details ) => details.saleStartDateMoment,
+);
+
+export const getTicketSaleEndDate = createSelector(
+	[ getTicketDetails ],
+	( details ) => details.saleEndDate,
+);
+
+export const getTicketSaleEndDateInput = createSelector(
+	[ getTicketDetails ],
+	( details ) => details.saleEndDateInput,
+);
+
+export const getTicketSaleEndDateMoment = createSelector(
+	[ getTicketDetails ],
+	( details ) => details.saleEndDateMoment,
+);
+
+
 export const getTicketTempSku = createSelector(
 	[ getTicketTempDetails ],
 	( tempDetails ) => tempDetails.sku,
