@@ -22,6 +22,8 @@ const mapStateToProps = ( state, ownProps ) => ( {
 	isUnlimited: selectors.isUnlimitedTicket( state, ownProps ),
 	price: selectors.getTicketPrice( state, ownProps ) || '0',
 	tempPrice: selectors.getTicketTempPrice( state, ownProps ),
+	showSalePrice: selectors.showSalePrice( state, ownProps ),
+	salePrice: selectors.getSalePrice( state, ownProps ) || '',
 } );
 
 const mapDispatchToProps = ( dispatch, ownProps ) => ( {

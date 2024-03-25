@@ -25,6 +25,8 @@ const TicketContainerHeaderPriceLabel = ( {
 	currencySymbol,
 	isUnlimited,
 	price,
+	showSalePrice,
+	salePrice,
 } ) => {
 	const getAvailableLabel = () => (
 		isUnlimited
@@ -44,9 +46,13 @@ const TicketContainerHeaderPriceLabel = ( {
 		...( currencyPosition === SUFFIX && { suffix: currencySymbol } ),
 	};
 
+	const hasValidSalePrice = showSalePrice && salePrice !== '';
+	const priceClass = hasValidSalePrice ? 'tribe-editor__ticket__container-header-price__price--on-sale' : 'tribe-editor__ticket__container-header-price__price';
+
 	return (
 		<Fragment>
 			<NumericFormat
+				className={ priceClass }
 				allowNegative={ false }
 				decimalScale={ currencyNumberOfDecimals }
 				decimalSeparator={ currencyDecimalPoint }
@@ -56,6 +62,19 @@ const TicketContainerHeaderPriceLabel = ( {
 				thousandSeparator={ currencyThousandsSep }
 				value={ price }
 			/>
+			{ hasValidSalePrice && (
+				<NumericFormat
+					className={ 'tribe-editor__ticket__container-header-price__sale-price' }
+					allowNegative={ false }
+					decimalScale={ currencyNumberOfDecimals }
+					decimalSeparator={ currencyDecimalPoint }
+					displayType="text"
+					fixedDecimalScale={ true }
+					{ ...numericFormatProps }
+					thousandSeparator={ currencyThousandsSep }
+					value={ salePrice }
+				/>
+			) }
 			<div className="tribe-editor__ticket__container-header-label">
 				{ getAvailableLabel() }
 			</div>
@@ -72,6 +91,8 @@ TicketContainerHeaderPriceLabel.propTypes = {
 	currencyThousandsSep: PropTypes.string,
 	isUnlimited: PropTypes.bool,
 	price: PropTypes.string,
+	showSalePrice: PropTypes.bool,
+	salePrice: PropTypes.string,
 };
 
 const TicketContainerHeaderPrice = ( {
@@ -83,6 +104,8 @@ const TicketContainerHeaderPrice = ( {
 	currencyThousandsSep,
 	isUnlimited,
 	price,
+	showSalePrice,
+	salePrice,
 } ) => (
 	<div className="tribe-editor__ticket__container-header-price">
 		<TicketContainerHeaderPriceLabel
@@ -94,6 +117,8 @@ const TicketContainerHeaderPrice = ( {
 			currencyThousandsSep={ currencyThousandsSep }
 			isUnlimited={ isUnlimited }
 			price={ price }
+			showSalePrice={ showSalePrice }
+			salePrice={ salePrice }
 		/>
 	</div>
 );
@@ -111,6 +136,8 @@ TicketContainerHeaderPrice.propTypes = {
 	onTempPriceChange: PropTypes.func,
 	price: PropTypes.string,
 	tempPrice: PropTypes.string,
+	showSalePrice: PropTypes.bool,
+	salePrice: PropTypes.string,
 };
 
 export default TicketContainerHeaderPrice;
