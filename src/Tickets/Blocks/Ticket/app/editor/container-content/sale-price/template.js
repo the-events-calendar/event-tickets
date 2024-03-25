@@ -138,22 +138,35 @@ class SalePrice extends PureComponent {
 				/>
 				{salePriceChecked && (
 					<div className={"tribe-editor__ticket__sale-price--fields"}>
-						<NumericFormat
-							allowNegative={false}
-							className="tribe-editor__input tribe-editor__ticket__price-input"
-							decimalScale={currencyNumberOfDecimals}
-							decimalSeparator={currencyDecimalPoint}
-							displayType="input"
-							fixedDecimalScale={true}
-							{...numericFormatProps}
-							onValueChange={handleChange}
-							thousandSeparator={currencyThousandsSep}
-							value={salePrice}
-						/>
+						<div className={"tribe-editor__ticket__sale-price__input-wrapper"}>
+							<LabeledItem
+								className="tribe-editor__ticket__sale-price--label"
+								label={__("Sale Price", "event-tickets")}
+							/>
+							<NumericFormat
+								allowNegative={false}
+								className="tribe-editor__input tribe-editor__ticket__sale-price-input"
+								decimalScale={currencyNumberOfDecimals}
+								decimalSeparator={currencyDecimalPoint}
+								displayType="input"
+								fixedDecimalScale={true}
+								{...numericFormatProps}
+								onValueChange={handleChange}
+								thousandSeparator={currencyThousandsSep}
+								value={salePrice}
+							/>
+						</div>
 						<div className={"tribe-editor__ticket__sale-price--dates"}>
+							<LabeledItem
+								className="tribe-editor__ticket__sale-price__dates--label"
+								label={__("On sale from", "event-tickets")}
+							/>
 							<div className={"tribe-editor__ticket__sale-price--start-date"}>
 								<DayPickerInput { ...FromDateProps }/>
 							</div>
+							<span>
+								{__("to", "event-tickets")}
+							</span>
 							<div className={"tribe-editor__ticket__sale-price--end-date"}>
 								<DayPickerInput { ...ToDateProps }/>
 							</div>

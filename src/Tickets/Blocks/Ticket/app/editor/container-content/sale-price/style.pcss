@@ -1,9 +1,37 @@
 .tribe-editor__ticket__sale-price-wrapper {
-	margin-top: 20px;
-	margin-left: 140px;
-	width: 100%;
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-	gap: 10px;
+	margin: 10px 0 10px 140px;
+
+	.tribe-editor__ticket__sale-price__input-wrapper, .tribe-editor__ticket__sale-price--dates {
+		display: flex;
+		margin: 10px 0;
+	}
+
+	.tribe-editor__ticket__sale-price-input {
+		width: 120px;
+	}
+	.tribe-editor__ticket__sale-price--dates {
+		span {
+			padding: 5px 10px;
+		}
+	}
+
+	.tribe-editor__ticket__sale-price--fields {
+		.tribe-editor__labeled-item {
+			width: 100px;
+			padding-top: 5px;
+		}
+		.tribe-editor__ticket__sale-price__dates--label {
+			span {
+				display: contents;
+			}
+		}
+		.tribe-editor__labeled-item__label {
+			font-size: 15px;
+			font-weight: 400;
+		}
+
+		.tribe-editor__ticket__sale-price--start-date, .tribe-editor__ticket__sale-price--end-date {
+			max-width: 120px;
+		}
+	}
 }
