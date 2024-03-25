@@ -113,7 +113,19 @@ export default ( state = DEFAULT_STATE, action ) => {
 		case types.REMOVE_TICKET_BLOCKS:
 		case types.SET_TICKET_SALE_PRICE_CHECK:
 		case types.SET_TICKET_SALE_PRICE:
-			console.warn( 'log from main reducer', state.tickets );
+		case types.SET_TICKET_SALE_START_DATE:
+		case types.SET_TICKET_SALE_START_DATE_INPUT:
+		case types.SET_TICKET_SALE_START_DATE_MOMENT:
+		case types.SET_TICKET_SALE_END_DATE:
+		case types.SET_TICKET_SALE_END_DATE_INPUT:
+		case types.SET_TICKET_SALE_END_DATE_MOMENT:
+		case types.SET_TICKET_TEMP_SALE_START_DATE:
+		case types.SET_TICKET_TEMP_SALE_START_DATE_INPUT:
+		case types.SET_TICKET_TEMP_SALE_START_DATE_MOMENT:
+		case types.SET_TICKET_TEMP_SALE_END_DATE:
+		case types.SET_TICKET_TEMP_SALE_END_DATE_INPUT:
+		case types.SET_TICKET_TEMP_SALE_END_DATE_MOMENT:
+			console.warn( 'log from reducer.js', action.type );
 			return {
 				...state,
 				tickets: tickets( state.tickets, action ),
@@ -137,7 +149,7 @@ export default ( state = DEFAULT_STATE, action ) => {
 				uneditableTicketsLoading: false,
 			};
 		default:
-			console.warn( state, action, 'default');
+			console.warn( action.type );
 			return state;
 	}
 };

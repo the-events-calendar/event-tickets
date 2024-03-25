@@ -157,36 +157,38 @@ export default ( state = DEFAULT_STATE, action ) => {
 				salePrice: action.payload.salePrice,
 			};
 		case types.SET_TICKET_TEMP_SALE_START_DATE:
+			console.log('SET_TICKET_TEMP_SALE_START_DATE-temp-details.js', action.payload );
 			return {
 				...state,
-				startDate: action.payload.saleStartDate,
+				saleStartDate: action.payload.startDate,
 			};
 		case types.SET_TICKET_TEMP_SALE_START_DATE_INPUT:
 			return {
 				...state,
-				startDateInput: action.payload.saleEndDateInput,
+				saleStartDateInput: action.payload.startDateInput,
 			};
 		case types.SET_TICKET_TEMP_SALE_START_DATE_MOMENT:
 			return {
 				...state,
-				startDateMoment: action.payload.saleEndDateMoment,
+				saleStartDateMoment: action.payload.startDateMoment,
 			};
 		case types.SET_TICKET_TEMP_SALE_END_DATE:
 			return {
 				...state,
-				endDate: action.payload.saleEndDate,
+				saleEndDate: action.payload.endDate,
 			};
 		case types.SET_TICKET_TEMP_SALE_END_DATE_INPUT:
 			return {
 				...state,
-				endDateInput: action.payload.saleEndDateInput,
+				saleEndDateInput: action.payload.endDateInput,
 			};
 		case types.SET_TICKET_TEMP_SALE_END_DATE_MOMENT:
 			return {
 				...state,
-				endDateMoment: action.payload.saleEndDateMoment,
+				saleEndDateMoment: action.payload.endDateMoment,
 			};
 		default:
+			console.warn( 'default from temp-details', action.type );
 			return state;
 	}
 };

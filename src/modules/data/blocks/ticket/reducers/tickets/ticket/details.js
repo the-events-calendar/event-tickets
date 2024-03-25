@@ -173,34 +173,35 @@ export default ( state = DEFAULT_STATE, action ) => {
 		case types.SET_TICKET_SALE_START_DATE:
 			return {
 				...state,
-				saleStartDate: action.payload.saleStartDate,
+				saleStartDate: action.payload.startDate,
 			};
 		case types.SET_TICKET_SALE_START_DATE_INPUT:
 			return {
 				...state,
-				saleStartDateInput: action.payload.saleStartDateInput,
+				saleStartDateInput: action.payload.startDateInput,
 			};
 		case types.SET_TICKET_SALE_START_DATE_MOMENT:
 			return {
 				...state,
-				saleStartDateMoment: action.payload.saleStartDateMoment,
+				saleStartDateMoment: action.payload.startDateMoment,
 			};
 		case types.SET_TICKET_SALE_END_DATE:
 			return {
 				...state,
-				saleEndDate: action.payload.saleEndDate,
+				saleEndDate: action.payload.endDate,
 			};
 		case types.SET_TICKET_SALE_END_DATE_INPUT:
 			return {
 				...state,
-				saleEndDateInput: action.payload.saleEndDateInput,
+				saleEndDateInput: action.payload.endDateInput,
 			};
 		case types.SET_TICKET_SALE_END_DATE_MOMENT:
 			return {
 				...state,
-				saleEndDateMoment: action.payload.saleEndDateMoment,
+				saleEndDateMoment: action.payload.endDateMoment,
 			};
 		default:
+			console.warn( 'default from details', action.type );
 			return state;
 	}
 };

@@ -59,6 +59,12 @@ export default ( state = DEFAULT_STATE, action ) => {
 		case types.SET_TICKET_TYPE_NAME:
 		case types.SET_TICKET_SALE_PRICE_CHECK:
 		case types.SET_TICKET_SALE_PRICE:
+		case types.SET_TICKET_SALE_START_DATE:
+		case types.SET_TICKET_SALE_START_DATE_INPUT:
+		case types.SET_TICKET_SALE_START_DATE_MOMENT:
+		case types.SET_TICKET_SALE_END_DATE:
+		case types.SET_TICKET_SALE_END_DATE_INPUT:
+		case types.SET_TICKET_SALE_END_DATE_MOMENT:
 			return {
 				...state,
 				details: details( state.details, action ),
@@ -82,6 +88,12 @@ export default ( state = DEFAULT_STATE, action ) => {
 		case types.SET_TICKET_TEMP_CAPACITY:
 		case types.SET_TICKET_TEMP_SALE_PRICE_CHECK:
 		case types.SET_TICKET_TEMP_SALE_PRICE:
+		case types.SET_TICKET_TEMP_SALE_START_DATE:
+		case types.SET_TICKET_TEMP_SALE_START_DATE_INPUT:
+		case types.SET_TICKET_TEMP_SALE_START_DATE_MOMENT:
+		case types.SET_TICKET_TEMP_SALE_END_DATE:
+		case types.SET_TICKET_TEMP_SALE_END_DATE_INPUT:
+		case types.SET_TICKET_TEMP_SALE_END_DATE_MOMENT:
 			return {
 				...state,
 				tempDetails: tempDetails( state.tempDetails, action ),
@@ -152,6 +164,7 @@ export default ( state = DEFAULT_STATE, action ) => {
 				isSelected: action.payload.isSelected,
 			};
 		default:
+			console.warn( 'default from ticket reducers tickets ticket', action.type );
 			return state;
 	}
 };
