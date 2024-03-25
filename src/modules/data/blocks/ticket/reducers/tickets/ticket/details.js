@@ -54,11 +54,11 @@ export const DEFAULT_STATE = {
 	salePriceChecked: false,
 	salePrice: '',
 	saleStartDate: momentUtil.toDatabaseDate( currentMoment ),
-	saleStartDateInput: startDateInput,
-	saleStartDateMoment: currentMoment,
-	saleEndDate: momentUtil.toDatabaseDate( endMoment ),
-	saleEndDateInput: endDateInput,
-	saleEndDateMoment: endMoment,
+	saleStartDateInput: '',
+	saleStartDateMoment: '',
+	saleEndDate: '',
+	saleEndDateInput: '',
+	saleEndDateMoment: '',
 };
 
 export default ( state = DEFAULT_STATE, action ) => {
