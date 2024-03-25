@@ -39,6 +39,7 @@ import {
 	isTribeEventPostType,
 } from '@moderntribe/tickets/data/shared/sagas';
 import { isTicketEditableFromPost } from "@moderntribe/tickets/data/blocks/ticket/utils";
+import {processTicketSaleEndDate, processTicketSaleStartDate} from "./actions";
 
 const {
 	UNLIMITED,
@@ -1266,6 +1267,28 @@ export function* handleTicketEndDate( action ) {
 	yield put( actions.setTicketTempEndDateMoment( clientId, endDateMoment ) );
 }
 
+export function* handleTicketSaleStartDate( action ) {
+	const { clientId, date, dayPickerInput } = action.payload;
+	const startDateMoment = yield date ? call( momentUtil.toMoment, date ) : undefined;
+	const startDate = yield date ? call( momentUtil.toDatabaseDate, startDateMoment ) : '';
+
+	console.warn( 'handleTicketSaleStartDate', startDateMoment, startDate );
+
+	yield put( actions.setTicketTempSaleStartDate( clientId, startDate ) );
+	yield put( actions.setTicketTempSaleStartDateInput( clientId, dayPickerInput.state.value ) );
+	yield put( actions.setTicketTempSaleStartDateMoment( clientId, startDateMoment ) );
+}
+
+export function* handleTicketSaleEndDate( action ) {
+	const { clientId, date, dayPickerInput } = action.payload;
+	const endDateMoment = yield date ? call( momentUtil.toMoment, date ) : undefined;
+	const endDate = yield date ? call( momentUtil.toDatabaseDate, endDateMoment ) : '';
+	yield put( actions.setTicketTempSaleEndDate( clientId, endDate ) );
+	yield put( actions.setTicketTempSaleEndDateInput( clientId, dayPickerInput.state.value ) );
+	yield put( actions.setTicketTempSaleEndDateMoment( clientId, endDateMoment ) );
+}
+
+
 export function* handleTicketStartTime( action ) {
 	const { clientId, seconds } = action.payload;
 	const startTime = yield call( timeUtil.fromSeconds, seconds, timeUtil.TIME_FORMAT_HH_MM );
@@ -1372,6 +1395,18 @@ export function* handler( action ) {
 			yield put( actions.setTicketHasChanges( action.payload.clientId, true ) );
 			break;
 
+		case types.HANDLE_TICKET_SALE_START_DATE:
+			console.log( 'HANDLE_TICKET_SALE_START_DATE', action.type );
+			yield call( handleTicketSaleStartDate, action );
+			yield put( actions.setTicketHasChanges( action.payload.clientId, true ) );
+			break;
+
+		case types.HANDLE_TICKET_SALE_END_DATE:
+			console.log( 'HANDLE_TICKET_SALE_END_DATE', action );
+			yield call( handleTicketSaleEndDate, action );
+			yield put( actions.setTicketHasChanges( action.payload.clientId, true ) );
+			break;
+
 		case types.HANDLE_TICKET_START_TIME:
 			yield call( handleTicketStartTime, action );
 			yield call( handleTicketStartTimeInput, action );
@@ -1416,6 +1451,8 @@ export default function* watchers() {
 		types.HANDLE_TICKET_END_DATE,
 		types.HANDLE_TICKET_START_TIME,
 		types.HANDLE_TICKET_END_TIME,
+		types.HANDLE_TICKET_SALE_START_DATE,
+		types.HANDLE_TICKET_SALE_END_DATE,
 		MOVE_TICKET_SUCCESS,
 		types.UPDATE_UNEDITABLE_TICKETS,
 	], handler );
