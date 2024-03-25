@@ -196,6 +196,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Fix - The Attendee registration page will no longer generate warnings when viewing it. [ET-906]
+
 = [5.8.4] 2024-03-25 =
 
 * Fix - Events Calendar Pro promo shouldn't show when it's already installed or when not editing an event. [ET-2018]
