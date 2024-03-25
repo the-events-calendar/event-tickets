@@ -629,11 +629,7 @@ export const isZeroPriceValid = createSelector(
 
 export const showSalePrice = createSelector(
 	[ getTicketsProvider ],
-	( provider ) => {
-		console.warn(provider);
-		console.log([ constants.TICKETS_COMMERCE_MODULE_CLASS ]);
-		return [ constants.TICKETS_COMMERCE_MODULE_CLASS ].includes( provider );
-	},
+	( provider ) => provider === constants.TICKETS_COMMERCE_MODULE_CLASS,
 );
 
 export const isTicketValid = createSelector(

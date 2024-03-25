@@ -85,8 +85,6 @@ class SalePrice extends PureComponent {
 		const FromDateProps = {
 			value: fromDateInput,
 			format: dateFormat,
-			formatDate: formatDate,
-			parseDate: parseDate,
 			placeholder: dateFormat,
 			dayPickerProps: {
 				selectedDays: [ fromDate, { from: fromDate, to: toDate } ],
@@ -106,8 +104,6 @@ class SalePrice extends PureComponent {
 		const ToDateProps = {
 			value: toDateInput,
 			format: dateFormat,
-			formatDate: formatDate,
-			parseDate: parseDate,
 			placeholder: dateFormat,
 			dayPickerProps: {
 				selectedDays: [ fromDate, { from: fromDate, to: toDate } ],
@@ -137,6 +133,7 @@ class SalePrice extends PureComponent {
 					checked={salePriceChecked}
 					onChange={toggleSalePrice}
 					value={salePriceChecked}
+					disabled={isDisabled}
 				/>
 				{salePriceChecked && (
 					<div className={"tribe-editor__ticket__sale-price--fields"}>
@@ -156,6 +153,7 @@ class SalePrice extends PureComponent {
 								onValueChange={handleChange}
 								thousandSeparator={currencyThousandsSep}
 								value={salePrice}
+								disabled={isDisabled}
 							/>
 						</div>
 						<div className={"tribe-editor__ticket__sale-price--dates"}>

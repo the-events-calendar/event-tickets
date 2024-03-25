@@ -460,17 +460,24 @@ export function* fetchTicket( action ) {
 			const salePriceChecked = sale_price_data?.enabled || false;
 			const salePrice = sale_price_data?.sale_price || '';
 
-			const saleStartDate = sale_price_data?.start_date || '';
+			const sale_start_date = sale_price_data?.start_date || '';
+			const saleStartDateMoment = yield call( momentUtil.toMoment, sale_start_date );
+			const saleStartDate = yield call( momentUtil.toDatabaseDate, saleStartDateMoment );
 			const saleStartDateInput = yield datePickerFormat
-				? call( momentUtil.toDate, saleStartDate, datePickerFormat )
-				: call( momentUtil.toDate, saleStartDate );
-			const saleStartDateMoment = yield call( momentUtil.toMoment, saleStartDate );
+				? call( momentUtil.toDate, saleStartDateMoment, datePickerFormat )
+				: call( momentUtil.toDate, saleStartDateMoment );
 
-			const saleEndDate = sale_price_data?.end_date || '';
+			const sale_end_date = sale_price_data?.end_date || '';
+			const saleEndDateMoment = yield call( momentUtil.toMoment, sale_end_date );
+			const saleEndDate = yield call( momentUtil.toDatabaseDate, saleEndDateMoment );
 			const saleEndDateInput = yield datePickerFormat
-				? call( momentUtil.toDate, saleEndDate, datePickerFormat )
-				: call( momentUtil.toDate, saleEndDate );
-			const saleEndDateMoment = yield call( momentUtil.toMoment, saleEndDate );
+				? call( momentUtil.toDate, saleEndDateMoment, datePickerFormat )
+				: call( momentUtil.toDate, saleEndDateMoment );
+
+
+			console.log( sale_price_data );
+			console.log( saleStartDate, saleEndDate );
+			console.log( saleStartDateInput, saleEndDateInput );
 
 			const details = {
 				attendeeInfoFields: attendee_information_fields,
@@ -989,6 +996,12 @@ export function* setTicketDetails( action ) {
 		type,
 		salePriceChecked,
 		salePrice,
+		saleStartDate,
+		saleStartDateInput,
+		saleStartDateMoment,
+		saleEndDate,
+		saleEndDateInput,
+		saleEndDateMoment,
 	} = details;
 
 	yield all( [
@@ -1013,6 +1026,12 @@ export function* setTicketDetails( action ) {
 		put( actions.setTicketType( clientId, type ) ),
 		put( actions.setSalePriceChecked( clientId, salePriceChecked ) ),
 		put( actions.setSalePrice( clientId, salePrice ) ),
+		put( actions.setTicketSaleStartDate( clientId, saleStartDate ) ),
+		put( actions.setTicketSaleStartDateInput( clientId, saleStartDateInput ) ),
+		put( actions.setTicketSaleStartDateMoment( clientId, saleStartDateMoment ) ),
+		put( actions.setTicketSaleEndDate( clientId, saleEndDate ) ),
+		put( actions.setTicketSaleEndDateInput( clientId, saleEndDateInput ) ),
+		put( actions.setTicketSaleEndDateMoment( clientId, saleEndDateMoment ) ),
 	] );
 }
 
@@ -1038,6 +1057,12 @@ export function* setTicketTempDetails( action ) {
 		capacity,
 		salePriceChecked,
 		salePrice,
+		saleStartDate,
+		saleStartDateInput,
+		saleStartDateMoment,
+		saleEndDate,
+		saleEndDateInput,
+		saleEndDateMoment,
 	} = tempDetails;
 
 	yield all( [
@@ -1060,6 +1085,12 @@ export function* setTicketTempDetails( action ) {
 		put( actions.setTicketTempCapacity( clientId, capacity ) ),
 		put( actions.setTempSalePriceChecked( clientId, salePriceChecked ) ),
 		put( actions.setTempSalePrice( clientId, salePrice ) ),
+		put( actions.setTicketTempSaleStartDate( clientId, saleStartDate ) ),
+		put( actions.setTicketTempSaleStartDateInput( clientId, saleStartDateInput ) ),
+		put( actions.setTicketTempSaleStartDateMoment( clientId, saleStartDateMoment ) ),
+		put( actions.setTicketTempSaleEndDate( clientId, saleEndDate ) ),
+		put( actions.setTicketTempSaleEndDateInput( clientId, saleEndDateInput ) ),
+		put( actions.setTicketTempSaleEndDateMoment( clientId, saleEndDateMoment ) ),
 	] );
 }
 
