@@ -1129,15 +1129,15 @@ class Ticket {
 	 * @return void
 	 */
 	public function process_sale_price_dates( Ticket_Object $ticket, array $raw_data ): void {
-		if ( ! empty( $raw_data['ticket_sale_start_date'] ) ) {
+		if ( ! isset( $raw_data['ticket_sale_start_date'] ) ) {
 			$start_date = Date_Utils::maybe_format_from_datepicker( $raw_data['ticket_sale_start_date'] );
-			$start_date = gmdate( Date_Utils::DBDATEFORMAT, strtotime( $start_date ) );
+			$start_date = empty( $start_date ) ? '' : gmdate( Date_Utils::DBDATEFORMAT, strtotime( $start_date ) );
 			update_post_meta( $ticket->ID, static::$sale_price_start_date_key, $start_date );
 		}
 		
-		if ( ! empty( $raw_data['ticket_sale_end_date'] ) ) {
+		if ( ! isset( $raw_data['ticket_sale_end_date'] ) ) {
 			$end_date = Date_Utils::maybe_format_from_datepicker( $raw_data['ticket_sale_end_date'] );
-			$end_date = gmdate( Date_Utils::DBDATEFORMAT, strtotime( $end_date ) );
+			$end_date = empty( $end_date ) ? '' : gmdate( Date_Utils::DBDATEFORMAT, strtotime( $end_date ) );
 			update_post_meta( $ticket->ID, static::$sale_price_end_date_key, $end_date );
 		}
 	}
