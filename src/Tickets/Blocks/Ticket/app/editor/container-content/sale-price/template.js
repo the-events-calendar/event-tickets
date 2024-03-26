@@ -15,7 +15,7 @@ import uniqid from 'uniqid';
 /**
  * Internal dependencies
  */
-import { PREFIX, SUFFIX, TICKET_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
+import { PREFIX, SUFFIX, SALE_PRICE_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
 import {Checkbox, DayPickerInput, LabeledItem} from '@moderntribe/common/elements';
 import './style.pcss';
 import {formatDate, parseDate} from "react-day-picker/moment";
@@ -138,9 +138,9 @@ class SalePrice extends PureComponent {
 					className="tribe-editor__ticket__sale-price-checkbox"
 					id={ this.id }
 					// eslint-disable-next-line no-undef
-					label="Add Sale Price"
+					label={ SALE_PRICE_LABELS.add_sale_price }
 					// eslint-disable-next-line no-undef
-					aria-label="Add Sale Price"
+					aria-label={ SALE_PRICE_LABELS.add_sale_price }
 					checked={salePriceChecked}
 					onChange={toggleSalePrice}
 					value={salePriceChecked}
@@ -151,7 +151,7 @@ class SalePrice extends PureComponent {
 						<div className={"tribe-editor__ticket__sale-price__input-wrapper"}>
 							<LabeledItem
 								className="tribe-editor__ticket__sale-price--label"
-								label={__("Sale Price", "event-tickets")}
+								label={ SALE_PRICE_LABELS.sale_price_label }
 							/>
 							<NumericFormat
 								allowNegative={false}
@@ -169,19 +169,19 @@ class SalePrice extends PureComponent {
 						</div>
 						{ ! validSalePrice && (
 							<div className={'tribe-editor__ticket__sale-price__error-message'}>
-								{ TICKET_LABELS.sale_price.invalid_price }
+								{ SALE_PRICE_LABELS.invalid_price }
 							</div>
 						) }
 						<div className={"tribe-editor__ticket__sale-price--dates"}>
 							<LabeledItem
 								className="tribe-editor__ticket__sale-price__dates--label"
-								label={__("On sale from", "event-tickets")}
+								label={ SALE_PRICE_LABELS.on_sale_from }
 							/>
 							<div className={"tribe-editor__ticket__sale-price--start-date"}>
 								<DayPickerInput { ...FromDateProps }/>
 							</div>
 							<span>
-								{__("to", "event-tickets")}
+								{ SALE_PRICE_LABELS.to }
 							</span>
 							<div className={"tribe-editor__ticket__sale-price--end-date"}>
 								<DayPickerInput { ...ToDateProps }/>

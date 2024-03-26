@@ -50,3 +50,5 @@ export const SUFFIX = 'postfix';
 export const PRICE_POSITIONS = [ PREFIX, SUFFIX ];
 
 export const TICKET_LABELS = tribe_editor_config?.tickets?.ticketLabels;
+
+export const SALE_PRICE_LABELS = tribe_editor_config?.tickets?.salePrice;
