@@ -92,6 +92,8 @@ class SalePrice extends PureComponent {
 		const FromDateProps = {
 			value: fromDateInput,
 			format: dateFormat,
+			formatDate: formatDate,
+			parseDate: parseDate,
 			placeholder: dateFormat,
 			dayPickerProps: {
 				selectedDays: [ fromDate, { from: fromDate, to: toDate } ],
@@ -111,6 +113,8 @@ class SalePrice extends PureComponent {
 		const ToDateProps = {
 			value: toDateInput,
 			format: dateFormat,
+			formatDate: formatDate,
+			parseDate: parseDate,
 			placeholder: dateFormat,
 			dayPickerProps: {
 				selectedDays: [ fromDate, { from: fromDate, to: toDate } ],
