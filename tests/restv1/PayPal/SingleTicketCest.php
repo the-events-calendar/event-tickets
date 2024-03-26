@@ -326,6 +326,7 @@ class SingleTicketCest extends BaseRestCest {
 			'price_suffix'                  => null,
 			'iac'                           => 'none',
 			'type'                          => 'default',
+			'sale_price_data'               => [],
 		];
 
 		$I->assertEquals( $expectedJson, $response );
