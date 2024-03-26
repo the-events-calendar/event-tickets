@@ -156,7 +156,6 @@ export default ( state = DEFAULT_STATE, action ) => {
 				salePrice: action.payload.salePrice,
 			};
 		case types.SET_TICKET_TEMP_SALE_START_DATE:
-			console.log('SET_TICKET_TEMP_SALE_START_DATE-temp-details.js', action.payload );
 			return {
 				...state,
 				saleStartDate: action.payload.startDate,

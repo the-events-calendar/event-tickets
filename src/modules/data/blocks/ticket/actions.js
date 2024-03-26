@@ -272,7 +272,7 @@ export const setTicketTempPrice = ( clientId, price ) => ( {
 	},
 } );
 
-export const setSalePriceChecked = (clientId, checked ) => ( {
+export const setSalePriceChecked = ( clientId, checked ) => ( {
 	type: types.SET_TICKET_SALE_PRICE_CHECK,
 	payload: {
 		clientId,
@@ -280,7 +280,7 @@ export const setSalePriceChecked = (clientId, checked ) => ( {
 	}
 } );
 
-export const setSalePrice= (clientId, salePrice ) => ( {
+export const setSalePrice= ( clientId, salePrice ) => ( {
 	type: types.SET_TICKET_SALE_PRICE,
 	payload: {
 		clientId,
@@ -336,7 +336,7 @@ export const setTicketSaleEndDateMoment = ( clientId, endDateMoment ) => ( {
 	}
 } );
 
-export const setTempSalePriceChecked = (clientId, checked ) => ( {
+export const setTempSalePriceChecked = ( clientId, checked ) => ( {
 	type: types.SET_TICKET_TEMP_SALE_PRICE_CHECK,
 	payload: {
 		clientId,
@@ -344,7 +344,7 @@ export const setTempSalePriceChecked = (clientId, checked ) => ( {
 	}
 } );
 
-export const setTempSalePrice= (clientId, salePrice ) => ( {
+export const setTempSalePrice= ( clientId, salePrice ) => ( {
 	type: types.SET_TICKET_TEMP_SALE_PRICE,
 	payload: {
 		clientId,
@@ -696,7 +696,7 @@ export const handleTicketEndDate = ( clientId, date, dayPickerInput ) => ( {
 	},
 } );
 
-export const processTicketSaleStartDate = (clientId, date, dayPickerInput ) => ( {
+export const processTicketSaleStartDate = ( clientId, date, dayPickerInput ) => ( {
 	type: types.HANDLE_TICKET_SALE_START_DATE,
 	payload: {
 		clientId,
@@ -705,7 +705,7 @@ export const processTicketSaleStartDate = (clientId, date, dayPickerInput ) => (
 	},
 } );
 
-export const processTicketSaleEndDate = (clientId, date, dayPickerInput ) => ( {
+export const processTicketSaleEndDate = ( clientId, date, dayPickerInput ) => ( {
 	type: types.HANDLE_TICKET_SALE_END_DATE,
 	payload: {
 		clientId,

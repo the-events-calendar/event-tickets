@@ -10,7 +10,7 @@ import { compose } from 'redux';
 import Template from './template';
 import { withStore } from '@moderntribe/common/hoc';
 import { selectors, actions } from '@moderntribe/tickets/data/blocks/ticket';
-import {globals, moment as momentUtil} from "@moderntribe/common/utils";
+import { globals, moment as momentUtil } from "@moderntribe/common/utils";
 
 const onFromDateChange = ( dispatch, ownProps ) => ( date, modifiers, dayPickerInput ) => {
 	if ( dayPickerInput.input.value === '' ) {

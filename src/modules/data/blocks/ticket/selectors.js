@@ -475,8 +475,7 @@ export const getTicketAttendeeInfoFields = createSelector(
 
 export const getTicketTempDetails = createSelector(
 	[ getTicket ],
-	( ticket ) =>  {
-		return ticket.tempDetails || {}; },
+	( ticket ) => ticket.tempDetails || {},
 );
 
 export const getTicketTempTitle = createSelector(
@@ -518,8 +517,6 @@ export const isTicketSalePriceValid = createSelector(
 		const salePriceVal = getNumericPrice( salePrice, decimal_point, decimal_places, thousand_sep );
 		const priceVal = getNumericPrice( price, decimal_point, decimal_places, thousand_sep );
 
-		console.log( salePriceVal, priceVal );
-		console.log( salePriceVal < priceVal );
 		return salePriceVal < priceVal;
 	},
 );

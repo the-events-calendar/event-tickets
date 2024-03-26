@@ -147,7 +147,6 @@ export default ( state = DEFAULT_STATE, action ) => {
 				uneditableTicketsLoading: false,
 			};
 		default:
-			console.warn( action.type );
 			return state;
 	}
 };
