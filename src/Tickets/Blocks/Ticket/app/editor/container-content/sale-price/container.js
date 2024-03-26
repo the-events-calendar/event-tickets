@@ -13,12 +13,26 @@ import { selectors, actions } from '@moderntribe/tickets/data/blocks/ticket';
 import {globals, moment as momentUtil} from "@moderntribe/common/utils";
 
 const onFromDateChange = ( dispatch, ownProps ) => ( date, modifiers, dayPickerInput ) => {
-	console.log( 'onFromDateChange', date, modifiers, dayPickerInput );
+	if ( dayPickerInput.input.value === '' ) {
+		dispatch( actions.setTicketTempSaleStartDate( ownProps.clientId, '' ) );
+		dispatch( actions.setTicketTempSaleStartDateMoment( ownProps.clientId, '' ) );
+		dispatch( actions.setTicketTempSaleStartDateInput( ownProps.clientId, '' ) );
+		dispatch( actions.setTicketHasChanges( clientId, true ) );
+		return;
+	}
+
 	dispatch( actions.processTicketSaleStartDate( ownProps.clientId, date, dayPickerInput ) );
 };
 
 const onToDateChange = ( dispatch, ownProps ) => ( date, modifiers, dayPickerInput ) => {
-	console.log( 'onToDateChange', date, modifiers, dayPickerInput );
+	if ( dayPickerInput.input.value === '' ) {
+		dispatch( actions.setTicketTempSaleEndDate( ownProps.clientId, '' ) );
+		dispatch( actions.setTicketTempSaleEndDateMoment( ownProps.clientId, '' ) );
+		dispatch( actions.setTicketTempSaleEndDateInput( ownProps.clientId, '' ) );
+		dispatch( actions.setTicketHasChanges( clientId, true ) );
+		return;
+	}
+
 	dispatch( actions.processTicketSaleEndDate( ownProps.clientId, date, dayPickerInput ) );
 };
 
