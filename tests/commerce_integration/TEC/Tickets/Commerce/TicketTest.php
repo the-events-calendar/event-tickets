@@ -285,10 +285,10 @@ class TicketTest extends WPTestCase {
 				return [
 					$post_id,
 					$ticket_id,
-					true,
 					false,
-					'2010-03-01',
-					'2040-03-01',
+					false,
+					false,
+					false,
 				];
 			},
 		];
