@@ -81,7 +81,6 @@ export const byClientId = ( state = {}, action ) => {
 		case types.SET_TICKET_TEMP_SALE_END_DATE:
 		case types.SET_TICKET_TEMP_SALE_END_DATE_INPUT:
 		case types.SET_TICKET_TEMP_SALE_END_DATE_MOMENT:
-			console.warn( 'log from ticket reducer', action.type );
 			return {
 				...state,
 				[ action.payload.clientId ]: ticket( state[ action.payload.clientId ], action ),
@@ -91,7 +90,6 @@ export const byClientId = ( state = {}, action ) => {
 		case types.REMOVE_TICKET_BLOCKS:
 			return {};
 		default:
-			console.warn( 'default from ticket reducer', action.type );
 			return state;
 	}
 };

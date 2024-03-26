@@ -159,13 +159,11 @@ export default ( state = DEFAULT_STATE, action ) => {
 				type: action.payload.type,
 			};
 		case types.SET_TICKET_SALE_PRICE_CHECK:
-			console.log('SET_TICKET_SALE_PRICE_CHECK-details.js',state, action.payload);
 			return {
 				...state,
 				salePriceChecked: action.payload.checked,
 			};
 		case types.SET_TICKET_SALE_PRICE:
-			console.log('SET_TICKET_SALE_PRICE-details.js',state, action.payload);
 			return {
 				...state,
 				salePrice: action.payload.salePrice,
@@ -201,7 +199,6 @@ export default ( state = DEFAULT_STATE, action ) => {
 				saleEndDateMoment: action.payload.endDateMoment,
 			};
 		default:
-			console.warn( 'default from details', action.type );
 			return state;
 	}
 };

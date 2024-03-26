@@ -562,7 +562,6 @@ export function* createNewTicket( action ) {
 			const salePriceChecked = sale_price_data?.enabled || false;
 			const salePrice = sale_price_data?.sale_price || '';
 
-			console.log( sale_price_data );
 			const [
 				title,
 				description,
@@ -1363,8 +1362,6 @@ export function* handleTicketSaleStartDate( action ) {
 	const startDateMoment = yield date ? call( momentUtil.toMoment, date ) : undefined;
 	const startDate = yield date ? call( momentUtil.toDatabaseDate, startDateMoment ) : '';
 
-	console.warn( 'handleTicketSaleStartDate', startDateMoment, startDate );
-
 	yield put( actions.setTicketTempSaleStartDate( clientId, startDate ) );
 	yield put( actions.setTicketTempSaleStartDateInput( clientId, dayPickerInput.state.value ) );
 	yield put( actions.setTicketTempSaleStartDateMoment( clientId, startDateMoment ) );
@@ -1487,13 +1484,11 @@ export function* handler( action ) {
 			break;
 
 		case types.HANDLE_TICKET_SALE_START_DATE:
-			console.log( 'HANDLE_TICKET_SALE_START_DATE', action.type );
 			yield call( handleTicketSaleStartDate, action );
 			yield put( actions.setTicketHasChanges( action.payload.clientId, true ) );
 			break;
 
 		case types.HANDLE_TICKET_SALE_END_DATE:
-			console.log( 'HANDLE_TICKET_SALE_END_DATE', action );
 			yield call( handleTicketSaleEndDate, action );
 			yield put( actions.setTicketHasChanges( action.payload.clientId, true ) );
 			break;

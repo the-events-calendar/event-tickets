@@ -164,7 +164,6 @@ export default ( state = DEFAULT_STATE, action ) => {
 				isSelected: action.payload.isSelected,
 			};
 		default:
-			console.warn( 'default from ticket reducers tickets ticket', action.type );
 			return state;
 	}
 };
