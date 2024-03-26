@@ -52,8 +52,13 @@ class EditorTest extends Controller_Test_Case {
 		$html = ob_get_clean();
 
 		// Stabilize the snapshot.
-		$html = str_replace( [ $event_post_id ], [ 'EVENT_ID' ], $html );
-		$html = str_replace( $tc_series, 'SERIES_ID', $html );
+		$html = str_replace( [
+			$event_post_id,
+			$tc_series
+		], [
+			'EVENT_ID',
+			'SERIES_ID'
+		], $html );
 
 		$this->assertMatchesHtmlSnapshot( $html );
 	}
