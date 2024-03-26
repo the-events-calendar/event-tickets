@@ -507,11 +507,13 @@ export const getTempSalePrice = createSelector(
 export const isTicketSalePriceValid = createSelector(
 	[ getTempSalePrice, getTicketTempPrice, getTicketCurrencyDecimalPoint, getTicketCurrencyNumberOfDecimals, getTicketCurrencyThousandsSep ],
 	( salePrice, price, decimal_point, decimal_places, thousand_sep ) => {
-		if ( salePrice === '' ) {
+		if ( salePrice === '' || price === '' ) {
 			return true;
 		}
 
-		console.log(salePrice, price, decimal_point, decimal_places, thousand_sep );
+		if ( ! decimal_point || ! decimal_places || ! thousand_sep ) {
+			return true;
+		}
 
 		const salePriceVal = getNumericPrice( salePrice, decimal_point, decimal_places, thousand_sep );
 		const priceVal = getNumericPrice( price, decimal_point, decimal_places, thousand_sep );
