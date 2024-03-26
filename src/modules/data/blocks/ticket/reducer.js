@@ -125,7 +125,7 @@ export default ( state = DEFAULT_STATE, action ) => {
 		case types.SET_TICKET_TEMP_SALE_END_DATE:
 		case types.SET_TICKET_TEMP_SALE_END_DATE_INPUT:
 		case types.SET_TICKET_TEMP_SALE_END_DATE_MOMENT:
-			console.warn( 'log from reducer.js', action.type );
+			console.log( 'log from reducer.js', action.type );
 			return {
 				...state,
 				tickets: tickets( state.tickets, action ),

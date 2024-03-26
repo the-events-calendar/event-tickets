@@ -505,8 +505,21 @@ export const getTempSalePrice = createSelector(
 );
 
 export const isTicketSalePriceValid = createSelector(
-	[ getTempSalePrice, getTicketTempPrice ],
-	( salePrice, price ) => salePrice === '' || ( salePrice > 0 && salePrice < price ),
+	[ getTempSalePrice, getTicketTempPrice, getTicketCurrencyDecimalPoint, getTicketCurrencyNumberOfDecimals, getTicketCurrencyThousandsSep ],
+	( salePrice, price, decimal_point, decimal_places, thousand_sep ) => {
+		if ( salePrice === '' ) {
+			return true;
+		}
+
+		console.log(salePrice, price, decimal_point, decimal_places, thousand_sep );
+
+		const salePriceVal = getNumericPrice( salePrice, decimal_point, decimal_places, thousand_sep );
+		const priceVal = getNumericPrice( price, decimal_point, decimal_places, thousand_sep );
+
+		console.log( salePriceVal, priceVal );
+		console.log( salePriceVal < priceVal );
+		return salePriceVal < priceVal;
+	},
 );
 
 export const getSalePriceChecked = createSelector(
@@ -824,4 +837,18 @@ export const getCurrentPostTypeLabel = (key = 'singular_name') => {
 export const currentPostIsEvent = () => {
 	const post = postConfig();
 	return post?.type === 'tribe_events';
+}
+
+export const getNumericPrice = ( price, decimalPoint, decimalPlaces, thousandSep ) => {
+	// Remove thousand separators.
+	let newValue = price.replace( new RegExp( '\\' + thousandSep, 'g' ), '' );
+
+	// Replace decimal separator with period.
+	newValue = newValue.replace( decimalPoint, '.' );
+
+	// Round to specified number of decimal places.
+	newValue = parseFloat( newValue ).toFixed( decimalPlaces );
+	newValue = parseInt( newValue.replace('.', '') );
+
+	return newValue;
 }
