@@ -126,4 +126,44 @@ abstract class Report_Abstract {
 		return (array) apply_filters( "tec_tickets_commerce_reports_{$page_slug}_template_vars", $template_vars, $this );
 	}
 
+	/**
+	 * Checks if the current user can access a page based on post ownership and capabilities.
+	 *
+	 * This method determines access by checking if the current user is the author of the post
+	 * or if they have the capability to edit others' posts (edit_others_posts) within the same post type.
+	 * If neither condition is met, access is denied.
+	 *
+	 * @since 5.8.4
+	 *
+	 * @param int $post_id The ID of the post to check access against.
+	 *
+	 * @return bool True if the user can access the page, false otherwise.
+	 */
+	public function can_access_page( int $post_id ): bool {
+		$post = get_post( $post_id );
+		// Ensure $post is valid to prevent errors in cases where $post_id might be invalid.
+		if ( ! $post ) {
+			return false;
+		}
+
+		$post_type_object      = get_post_type_object( $post->post_type );
+		$can_edit_others_posts = current_user_can( $post_type_object->cap->edit_others_posts );
+
+		// Return true if the user can edit others' posts of this type or if they're the author, false otherwise.
+		$has_access = $can_edit_others_posts || get_current_user_id() == $post->post_author;
+
+		$page_slug = static::get_page_slug();
+
+		/**
+		 * Filters whether a user can access the attendees page for a given post.
+		 *
+		 * @since 5.8.4
+		 *
+		 * @param bool    $has_access True if the user has access, false otherwise.
+		 * @param int     $post_id The ID of the post being checked.
+		 * @param WP_Post $post The post object.
+		 */
+		return apply_filters( "tec_tickets_report_{$page_slug}_page_role_access", $has_access, $post_id, $post );
+	}
+
 }

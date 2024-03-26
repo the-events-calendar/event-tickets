@@ -48,7 +48,7 @@ class Attendees extends Controller {
 	/**
 	 * The keyword used to indicate an Attendee is already checked in.
 	 *
-	 * @since TBD
+	 * @since 5.8.3
 	 */
 	private const ALREADY_CHECKED_IN = 'already-checked-in';
 
@@ -1350,7 +1350,7 @@ class Attendees extends Controller {
 	 * Filters the list of Attendees to move to always move only the Series Pass Attendee and delete the clones
 	 * before the move happens.
 	 *
-	 * @since TBD
+	 * @since 5.8.3
 	 *
 	 * @param int[] $attendee_ids The original list of Attendee IDs to move.
 	 *
@@ -1404,7 +1404,7 @@ class Attendees extends Controller {
 	 *
 	 * This method will clone the
 	 *
-	 * @since TBD
+	 * @since 5.8.3
 	 *
 	 * @param null|bool $uncheckin Whether the default logic should apply or the uncheckin action was handled.
 	 * @param int       $attendee_id The post ID of the Attendee to uncheckin.

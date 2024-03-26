@@ -3,7 +3,7 @@
 Plugin Name: Event Tickets
 Plugin URI:  https://evnt.is/1acb
 Description: Event Tickets allows you to sell basic tickets and collect RSVPs from any post, page, or event.
-Version: 5.8.3
+Version: 5.8.4
 Author: The Events Calendar
 Author URI: https://evnt.is/1aor
 License: GPLv2 or later
@@ -11,6 +11,7 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: event-tickets
 Domain Path: /lang/
 */
+
 /*
  Copyright 2010-2022 by The Events Calendar and the contributors
 
@@ -36,24 +37,24 @@ if ( ! defined( 'ABSPATH' ) ) {
 define( 'EVENT_TICKETS_DIR', dirname( __FILE__ ) );
 define( 'EVENT_TICKETS_MAIN_PLUGIN_FILE', __FILE__ );
 
-// Load the required php min version functions
+// Load the required php min version functions.
 require_once dirname( EVENT_TICKETS_MAIN_PLUGIN_FILE ) . '/src/functions/php-min-version.php';
 
 // Load the Composer autoload file.
 require_once dirname( EVENT_TICKETS_MAIN_PLUGIN_FILE ) . '/vendor/autoload.php';
 
 /**
- * Verifies if we need to warn the user about min PHP version and bail to avoid fatals
+ * Verifies if we need to warn the user about min PHP version and bail to avoid fatals.
  */
 if ( tribe_is_not_min_php_version() ) {
 	tribe_not_php_version_textdomain( 'event-tickets', EVENT_TICKETS_MAIN_PLUGIN_FILE );
 
 	/**
-	 * Include the plugin name into the correct place
+	 * Include the plugin name into the correct place.
 	 *
 	 * @since  4.10
 	 *
-	 * @param  array $names current list of names
+	 * @param  array $names current list of names.
 	 *
 	 * @return array
 	 */
@@ -67,6 +68,7 @@ if ( tribe_is_not_min_php_version() ) {
 	if ( ! has_filter( 'admin_notices', 'tribe_not_php_version_notice' ) ) {
 		add_action( 'admin_notices', 'tribe_not_php_version_notice' );
 	}
+
 	return false;
 }
 

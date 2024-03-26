@@ -11,7 +11,7 @@ import {
 	getDefaultTicketProvider,
 	getTicketProviders,
 } from '@moderntribe/tickets/data/blocks/ticket/selectors';
-import { applyFilters } from "@wordpress/hooks";
+import { applyFilters } from '@wordpress/hooks';
 
 /**
  * Get currency symbol by provider
@@ -131,19 +131,22 @@ export const getDefaultCurrencyPosition = () => {
  *
  * @param {number} ticketId The ticket ID.
  * @param {string} ticketType The ticket types, e.g. `default`, `series_pass`, etc.
- * @param {object} post The post object.
+ * @param {Object} post The post object.
  */
 export const isTicketEditableFromPost = ( ticketId, ticketType, post ) => {
 	/**
 	 * Filters whether a ticket can be edited from a post.
 	 *
 	 * @since 5.8.0
-	 *
 	 * @param {boolean} isEditable Whether or not the ticket can be edited from the post.
 	 * @param {Object} context The context of the filter.
 	 * @param {number} context.ticketId The ticket ID.
 	 * @param {string} context.ticketType The ticket types, e.g. `default`, `series_pass`, etc.
-	 * @param {object} context.post The post object.
+	 * @param {Object} context.post The post object.
 	 */
-	return applyFilters ( 'tec.tickets.blocks.editTicketFromPost', true, { ticketId, ticketType, post } );
-}
+	return applyFilters(
+		'tec.tickets.blocks.editTicketFromPost',
+		true,
+		{ ticketId, ticketType, post },
+	);
+};
