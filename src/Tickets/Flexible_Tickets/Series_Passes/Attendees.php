@@ -1289,9 +1289,7 @@ class Attendees extends Controller {
 	 * @return string[] The set of actions for the row.
 	 */
 	public function filter_attendees_row_actions( array $row_actions, array $item ): array {
-		$is_series_attendee_page = tribe_get_request_var( 'post_type' ) === Series_Post_Type::POSTTYPE;
-
-		if ( ! $is_series_attendee_page ) {
+		if ( $item['ticket_type'] !== Series_Passes::TICKET_TYPE ) {
 			return $row_actions;
 		}
 
