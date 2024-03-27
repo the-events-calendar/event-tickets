@@ -638,7 +638,17 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		/** @var Tribe__Tickets__Admin__Views $admin_views */
 		$admin_views = tribe( 'tickets.admin.views' );
 
-		$admin_views->template( 'attendees/attendees-table/check-in-button', $context );
+		$html = $admin_views->template( 'attendees/attendees-table/check-in-button', $context, false );
+
+		/**
+		 * Provides an opportunity to modify the check-in column content.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $html The HTML for the check-in column.
+		 * @param array  $item The current item.
+		 */
+		return apply_filters( 'tec_tickets_attendees_table_column_check_in', $html, $item );
 	}
 
 	/**
