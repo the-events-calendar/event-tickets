@@ -82,7 +82,7 @@ export default ( state = DEFAULT_STATE, action ) => {
 			return {
 				...state,
 				on_sale: action.payload.on_sale,
-			}
+			};
 		case types.SET_TICKET_SKU:
 			return {
 				...state,

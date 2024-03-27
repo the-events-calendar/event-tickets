@@ -369,10 +369,22 @@ export function* setBodyDetails( clientId ) {
 	const showSalePrice = yield select( selectors.showSalePrice, props );
 
 	if ( showSalePrice ) {
-		body.append( 'ticket[sale_price][checked]', yield select( selectors.getTempSalePriceChecked, props ) );
-		body.append( 'ticket[sale_price][price]', yield select( selectors.getTempSalePrice, props ) );
-		body.append( 'ticket[sale_price][start_date]', yield select( selectors.getTicketTempSaleStartDate, props ) );
-		body.append( 'ticket[sale_price][end_date]', yield select( selectors.getTicketTempSaleEndDate, props ) );
+		body.append(
+			'ticket[sale_price][checked]',
+			yield select( selectors.getTempSalePriceChecked, props )
+		);
+		body.append(
+			'ticket[sale_price][price]',
+			yield select( selectors.getTempSalePrice, props )
+		);
+		body.append(
+			'ticket[sale_price][start_date]',
+			yield select( selectors.getTicketTempSaleStartDate, props )
+		);
+		body.append(
+			'ticket[sale_price][end_date]',
+			yield select( selectors.getTicketTempSaleEndDate, props )
+		);
 	}
 
 	return body;
@@ -460,14 +472,14 @@ export function* fetchTicket( action ) {
 			const salePriceChecked = sale_price_data?.enabled || false;
 			const salePrice = sale_price_data?.sale_price || '';
 
-			const sale_start_date = sale_price_data?.start_date || '';
+			const sale_start_date = sale_price_data?.start_date || ''; // eslint-disable-line camelcase
 			const saleStartDateMoment = yield call( momentUtil.toMoment, sale_start_date );
 			const saleStartDate = yield call( momentUtil.toDatabaseDate, saleStartDateMoment );
 			const saleStartDateInput = yield datePickerFormat
 				? call( momentUtil.toDate, saleStartDateMoment, datePickerFormat )
 				: call( momentUtil.toDate, saleStartDateMoment );
 
-			const sale_end_date = sale_price_data?.end_date || '';
+			const sale_end_date = sale_price_data?.end_date || ''; // eslint-disable-line camelcase
 			const saleEndDateMoment = yield call( momentUtil.toMoment, sale_end_date );
 			const saleEndDate = yield call( momentUtil.toDatabaseDate, saleEndDateMoment );
 			const saleEndDateInput = yield datePickerFormat
@@ -559,7 +571,7 @@ export function* createNewTicket( action ) {
 				? 0
 				: ticket.capacity_details.available;
 
-			const { sale_price_data } = ticket;
+			const { sale_price_data } = ticket; // eslint-disable-line camelcase
 			const salePriceChecked = sale_price_data?.enabled || false;
 			const salePrice = sale_price_data?.sale_price || '';
 
@@ -695,21 +707,21 @@ export function* updateTicket( action ) {
 		} );
 
 		if ( response.ok ) {
-			const { capacity_details, sale_price_data, on_sale } = ticket; // eslint-disable-line camelcase
+			const { capacity_details, sale_price_data, on_sale } = ticket; // eslint-disable-line camelcase, max-len
 			const available = capacity_details.available === -1 ? 0 : capacity_details.available;
 
 			const salePriceChecked = sale_price_data?.enabled || false;
 			const salePrice = sale_price_data?.sale_price || '';
 
 			const datePickerFormat = tecDateSettings().datepickerFormat;
-			const sale_start_date = sale_price_data?.start_date || '';
+			const sale_start_date = sale_price_data?.start_date || ''; // eslint-disable-line camelcase
 			const saleStartDateMoment = yield call( momentUtil.toMoment, sale_start_date );
 			const saleStartDate = yield call( momentUtil.toDatabaseDate, saleStartDateMoment );
 			const saleStartDateInput = yield datePickerFormat
 				? call( momentUtil.toDate, saleStartDateMoment, datePickerFormat )
 				: call( momentUtil.toDate, saleStartDateMoment );
 
-			const sale_end_date = sale_price_data?.end_date || '';
+			const sale_end_date = sale_price_data?.end_date || ''; // eslint-disable-line camelcase
 			const saleEndDateMoment = yield call( momentUtil.toMoment, sale_end_date );
 			const saleEndDate = yield call( momentUtil.toDatabaseDate, saleEndDateMoment );
 			const saleEndDateInput = yield datePickerFormat
@@ -1002,7 +1014,7 @@ export function* setTicketDetails( action ) {
 		title,
 		description,
 		price,
-		on_sale,
+		on_sale, // eslint-disable-line camelcase
 		sku,
 		iac,
 		startDate,
@@ -1379,8 +1391,6 @@ export function* handleTicketSaleEndDate( action ) {
 	yield put( actions.setTicketTempSaleEndDateInput( clientId, dayPickerInput.state.value ) );
 	yield put( actions.setTicketTempSaleEndDateMoment( clientId, endDateMoment ) );
 }
-
-
 export function* handleTicketStartTime( action ) {
 	const { clientId, seconds } = action.payload;
 	const startTime = yield call( timeUtil.fromSeconds, seconds, timeUtil.TIME_FORMAT_HH_MM );

@@ -416,7 +416,7 @@ export const getSalePrice = createSelector(
 	( details ) => details.salePrice,
 );
 
-export const getTicketSaleStartDate= createSelector(
+export const getTicketSaleStartDate = createSelector(
 	[ getTicketDetails ],
 	( details ) => details.saleStartDate,
 );
@@ -652,8 +652,6 @@ export const getTicketTempSaleStartDateMoment = createSelector(
 	[ getTicketTempDetails ],
 	( tempDetails ) => tempDetails.saleStartDateMoment,
 );
-
-
 export const getTicketTempSaleEndDate = createSelector(
 	[ getTicketTempDetails ],
 	( tempDetails ) => tempDetails.saleEndDate,
@@ -675,18 +673,24 @@ export const showSalePrice = createSelector(
 );
 
 export const isTicketSalePriceValid = createSelector(
-	[ getTempSalePrice, getTicketTempPrice, getTicketCurrencyDecimalPoint, getTicketCurrencyNumberOfDecimals, getTicketCurrencyThousandsSep ],
+	[
+		getTempSalePrice,
+		getTicketTempPrice,
+		getTicketCurrencyDecimalPoint,
+		getTicketCurrencyNumberOfDecimals,
+		getTicketCurrencyThousandsSep
+	],
 	( salePrice, price, decimal_point, decimal_places, thousand_sep ) => {
 		if ( salePrice === '' || price === '' ) {
 			return true;
 		}
 
-		if ( ! decimal_point || ! decimal_places || ! thousand_sep ) {
+		if ( ! decimal_point || ! decimal_places || ! thousand_sep ) { // eslint-disable-line camelcase, max-len
 			return true;
 		}
 
-		const salePriceVal = getNumericPrice( salePrice, decimal_point, decimal_places, thousand_sep );
-		const priceVal = getNumericPrice( price, decimal_point, decimal_places, thousand_sep );
+		const salePriceVal = getNumericPrice( salePrice, decimal_point, decimal_places, thousand_sep ); // eslint-disable-line no-use-before-define, max-len
+		const priceVal = getNumericPrice( price, decimal_point, decimal_places, thousand_sep ); // eslint-disable-line no-use-before-define, max-len
 
 		return salePriceVal < priceVal;
 	},
@@ -851,7 +855,7 @@ export const getNumericPrice = ( price, decimalPoint, decimalPlaces, thousandSep
 
 	// Round to specified number of decimal places.
 	newValue = parseFloat( newValue ).toFixed( decimalPlaces );
-	newValue = parseInt( newValue.replace('.', '') );
+	newValue = parseInt( newValue.replace( '.', '' ) );
 
 	return newValue;
 };
