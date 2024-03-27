@@ -13,27 +13,31 @@ import { selectors, actions } from '@moderntribe/tickets/data/blocks/ticket';
 import { globals, moment as momentUtil } from "@moderntribe/common/utils";
 
 const onFromDateChange = ( dispatch, ownProps ) => ( date, modifiers, dayPickerInput ) => {
+	const { clientId } = ownProps;
+
 	if ( dayPickerInput.input.value === '' ) {
-		dispatch( actions.setTicketTempSaleStartDate( ownProps.clientId, '' ) );
-		dispatch( actions.setTicketTempSaleStartDateMoment( ownProps.clientId, '' ) );
-		dispatch( actions.setTicketTempSaleStartDateInput( ownProps.clientId, '' ) );
+		dispatch( actions.setTicketTempSaleStartDate( clientId, '' ) );
+		dispatch( actions.setTicketTempSaleStartDateMoment( clientId, '' ) );
+		dispatch( actions.setTicketTempSaleStartDateInput( clientId, '' ) );
 		dispatch( actions.setTicketHasChanges( clientId, true ) );
 		return;
 	}
 
-	dispatch( actions.processTicketSaleStartDate( ownProps.clientId, date, dayPickerInput ) );
+	dispatch( actions.processTicketSaleStartDate( clientId, date, dayPickerInput ) );
 };
 
 const onToDateChange = ( dispatch, ownProps ) => ( date, modifiers, dayPickerInput ) => {
+	const { clientId } = ownProps;
+
 	if ( dayPickerInput.input.value === '' ) {
-		dispatch( actions.setTicketTempSaleEndDate( ownProps.clientId, '' ) );
-		dispatch( actions.setTicketTempSaleEndDateMoment( ownProps.clientId, '' ) );
-		dispatch( actions.setTicketTempSaleEndDateInput( ownProps.clientId, '' ) );
+		dispatch( actions.setTicketTempSaleEndDate( clientId, '' ) );
+		dispatch( actions.setTicketTempSaleEndDateMoment( clientId, '' ) );
+		dispatch( actions.setTicketTempSaleEndDateInput( clientId, '' ) );
 		dispatch( actions.setTicketHasChanges( clientId, true ) );
 		return;
 	}
 
-	dispatch( actions.processTicketSaleEndDate( ownProps.clientId, date, dayPickerInput ) );
+	dispatch( actions.processTicketSaleEndDate( clientId, date, dayPickerInput ) );
 };
 
 const mapStateToProps = ( state, ownProps ) => {
