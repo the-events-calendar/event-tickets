@@ -12,7 +12,8 @@ namespace TEC\Tickets\Emails\Admin;
 use TEC\Tickets\Emails\Email_Abstract;
 use TEC\Tickets\Emails\Email_Handler;
 use Tribe\Tickets\Admin\Settings as Plugin_Settings;
-use \Tribe__Template;
+use Tribe__Settings_Tab;
+use Tribe__Template;
 use Tribe__Tickets__Main;
 
 /**
@@ -38,7 +39,7 @@ class Emails_Tab {
 	 *
 	 * @since 5.5.9
 	 *
-	 * @var null|\Tribe__Template
+	 * @var null|Tribe__Template
 	 */
 	protected $template;
 
@@ -55,12 +56,15 @@ class Emails_Tab {
 	 * Create the Tickets Commerce Emails Settings Tab.
 	 *
 	 * @since  5.5.6
+	 * @since  5.8.4 Return the registered tab.
 	 *
 	 * @param string $admin_page Page ID of current admin page.
+	 *
+	 * @return Tribe__Settings_Tab|null The registered tab, or `null` if the tab is not for the current page.
 	 */
-	public function register_tab( $admin_page ) {
+	public function register_tab( $admin_page ): ?Tribe__Settings_Tab {
 		if ( ! empty( $admin_page ) && Plugin_Settings::$settings_page_id !== $admin_page ) {
-			return;
+			return null;
 		}
 
 		$tab_settings = [
@@ -71,7 +75,7 @@ class Emails_Tab {
 
 		$tab_settings = apply_filters( 'tec_tickets_commerce_emails_tab_settings', $tab_settings );
 
-		new \Tribe__Settings_Tab( static::$slug, esc_html__( 'Emails', 'event-tickets' ), $tab_settings );
+		return new Tribe__Settings_Tab( static::$slug, esc_html__( 'Emails', 'event-tickets' ), $tab_settings );
 	}
 
 	/**
@@ -164,7 +168,7 @@ class Emails_Tab {
 			esc_html__( 'Knowledgebase', 'event-tickets' )
 		);
 
-		if ( tribe_installed_before( \Tribe__Tickets__Main::class, '5.6.0' ) ) {
+		if ( tribe_installed_before( Tribe__Tickets__Main::class, '5.6.0' ) ) {
 			$description_text = sprintf(
 				// Translators: %s Link to knowledgebase article.
 				esc_html__( 'Customize your customer communications when tickets are purchased, RSVPs are submitted, and for Tickets Commerce order notifications. Enabling Tickets Emails will overwrite any manual customization that has been done to our previous email templates. Learn more about Event Tickets and Tickets Commerce communications in our %s.', 'event-tickets' ),

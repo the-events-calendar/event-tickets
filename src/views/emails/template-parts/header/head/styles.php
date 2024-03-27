@@ -378,6 +378,15 @@
 		padding-top: 30px;
 	}
 
+	.tec-tickets__email-table-content__section-header {
+		color: #141827;
+		font-size: 18px;
+		font-style: normal;
+		font-weight: 700;
+		margin: 0;
+		padding: 20px 0 10px 0 !important;
+	}
+
 	@media screen and ( max-width: 500px ) {
 		h1.tec-tickets__email-table-content-title {
 			font-size: 21px;

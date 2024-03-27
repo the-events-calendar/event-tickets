@@ -59,6 +59,25 @@ class Reservation_Schema extends JSON_LD_Abstract {
 	}
 
 	/**
+	 * Build the schema object from an email and specified event.
+	 *
+	 * @since 5.8.4
+	 *
+	 * @param Email_Abstract $email    The email instance.
+	 * @param int|null       $event_id The Event post ID.
+	 *
+	 * @return JSON_LD_Abstract The schema instance.
+	 */
+	public static function build_from_email_and_event( Email_Abstract $email, ?int $event_id = null ): JSON_LD_Abstract {
+		$tickets            = $email->get( 'tickets' );
+		$schema             = tribe( Reservation_Schema::class );
+		$schema->tickets    = $tickets;
+		$schema->event_data = $event_id ? Event_Schema::build_from_email_and_post( $email, $event_id )->get_data() : [];
+
+		return $schema->filter_schema_by_email( $email );
+	}
+
+	/**
 	 * @inheritDoc
 	 */
 	public function build_data(): array {

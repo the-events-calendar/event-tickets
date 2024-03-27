@@ -2,7 +2,6 @@
  * Internal dependencies
  */
 import { types } from '@moderntribe/tickets/data/blocks/ticket';
-import { put } from "redux-saga/effects";
 
 //
 // ─── TICKETS ACTIONS ────────────────────────────────────────────────────────────
@@ -523,12 +522,12 @@ export const setUneditableTickets = ( uneditableTickets ) => ( {
 	type: types.SET_UNEDITABLE_TICKETS,
 	payload: {
 		uneditableTickets,
-	}
+	},
 } );
 
 export const setUneditableTicketsLoading = ( loading ) => ( {
 	type: types.SET_UNEDITABLE_TICKETS_LOADING,
-	loading
+	loading,
 } );
 
 //

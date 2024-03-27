@@ -175,16 +175,16 @@ export const getTicketsIdsInBlocks = createSelector(
 	}, [] ),
 );
 
-export const getUneditableTickets = createSelector (
+export const getUneditableTickets = createSelector(
 	[ getBlock ],
-	function ( block ) {
+	function( block ) {
 		return block.uneditableTickets || [];
 	},
 );
 
-export const getUneditableTicketsAreLoading = createSelector (
+export const getUneditableTicketsAreLoading = createSelector(
 	[ getBlock ],
-	function ( block ) {
+	function( block ) {
 		return block.uneditableTicketsLoading || false;
 	},
 );
@@ -723,12 +723,12 @@ export const canCreateTickets = createSelector(
 	( providers, validDefaultProvider ) => providers && validDefaultProvider,
 );
 
-export const getCurrentPostTypeLabel = (key = 'singular_name') => {
+export const getCurrentPostTypeLabel = ( key = 'singular_name' ) => {
 	const post = postConfig();
-	return post?.labels?.[key] || 'Post';
-}
+	return post?.labels?.[ key ] || 'Post';
+};
 
 export const currentPostIsEvent = () => {
 	const post = postConfig();
 	return post?.type === 'tribe_events';
-}
+};

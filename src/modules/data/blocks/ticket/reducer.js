@@ -4,7 +4,6 @@
 import tickets from './reducers/tickets';
 import headerImage, { DEFAULT_STATE as HEADER_IMAGE_DEFAULT_STATE } from './reducers/header-image';
 import * as types from './types';
-import { PREFIX_TICKETS_STORE } from "@moderntribe/tickets/data/utils";
 
 export const DEFAULT_STATE = {
 	headerImage: HEADER_IMAGE_DEFAULT_STATE,
@@ -117,10 +116,10 @@ export default ( state = DEFAULT_STATE, action ) => {
 			return {
 				...state,
 				uneditableTickets: action.payload.uneditableTickets,
-				uneditableTicketsLoading: false
+				uneditableTicketsLoading: false,
 			};
 		case types.SET_UNEDITABLE_TICKETS_LOADING:
-			if (action.loading) {
+			if ( action.loading ) {
 				return {
 					...state,
 					uneditableTickets: [],

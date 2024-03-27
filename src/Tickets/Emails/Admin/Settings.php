@@ -176,6 +176,7 @@ class Settings {
 				'placeholder'         => $this->get_default_sender_name(),
 				'validation_callback' => 'is_string',
 				'validation_type'     => 'textarea',
+				'can_be_empty'        => true,
 			],
 			static::$option_sender_email => [
 				'type'                => 'text',
@@ -185,6 +186,7 @@ class Settings {
 				'placeholder'         => $this->get_default_sender_email(),
 				'validation_callback' => 'is_string',
 				'validation_type'     => 'email',
+				'can_be_empty'        => true,
 			],
 		];
 

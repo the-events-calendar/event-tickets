@@ -133,7 +133,7 @@ abstract class Report_Abstract {
 	 * or if they have the capability to edit others' posts (edit_others_posts) within the same post type.
 	 * If neither condition is met, access is denied.
 	 *
-	 * @since TBD
+	 * @since 5.8.4
 	 *
 	 * @param int $post_id The ID of the post to check access against.
 	 *
@@ -157,7 +157,7 @@ abstract class Report_Abstract {
 		/**
 		 * Filters whether a user can access the attendees page for a given post.
 		 *
-		 * @since TBD
+		 * @since 5.8.4
 		 *
 		 * @param bool    $has_access True if the user has access, false otherwise.
 		 * @param int     $post_id The ID of the post being checked.

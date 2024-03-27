@@ -137,13 +137,6 @@ class Base extends Controller {
 			'filter_out_series_type_tickets_from_order_report'
 		], 10, 4 );
 
-		// Remove the upsell notice for ticket types.
-		$ticket_upsell_notices = tribe( Ticket_Upsell::class );
-		remove_action( 'tribe_template_after_include:tickets/admin-views/editor/ticket-type-default-header', [
-			$ticket_upsell_notices,
-			'render_ticket_type_upsell_notice'
-		], 20, 3 );
-
 		add_filter( 'tribe_template_pre_html:tickets/admin-views/editor/panel/header-image', [
 			$this,
 			'hide_header_image_option_from_ticket_settings'
@@ -254,20 +247,6 @@ class Base extends Controller {
 			$this,
 			'filter_out_series_type_tickets_from_order_report'
 		], 10, 4 );
-
-		// Restore the upsell notice for ticket types.
-		$ticket_upsell_notices = tribe( Ticket_Upsell::class );
-		if ( ! has_action(
-			'tribe_template_after_include:tickets/admin-views/editor/ticket-type-default-header', [
-				$ticket_upsell_notices,
-				'render_ticket_type_upsell_notice'
-			]
-		) ) {
-			add_action( 'tribe_template_after_include:tickets/admin-views/editor/ticket-type-default-header', [
-				$ticket_upsell_notices,
-				'render_ticket_type_upsell_notice'
-			], 20, 3 );
-		}
 
 		remove_filter( 'tribe_template_pre_html:tickets/admin-views/editor/panel/header-image', [
 			$this,

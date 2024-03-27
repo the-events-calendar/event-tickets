@@ -633,6 +633,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			'page'      => 'tickets-attendees',
 			'action'    => 'email',
 			'event_id'  => $event_id,
+			'_wpnonce'  => wp_create_nonce( 'email-attendees-list' ),
 			'TB_iframe' => true,
 			'width'     => 410,
 			'height'    => 300,
@@ -941,6 +942,8 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 
 	/**
 	 * Prepares the list of items for displaying.
+	 *
+	 * @since 5.8.4 Adding caching to eliminate method running multiple times.
 	 */
 	public function prepare_items() {
 		$this->process_actions();
@@ -961,6 +964,16 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 
 		$event_id = Event::filter_event_id( filter_var( tribe_get_request_var( 'event_id' ), FILTER_VALIDATE_INT ), 'attendees-table' );
 		$search   = sanitize_text_field( tribe_get_request_var( $this->search_box_input_name ) );
+
+		/** @var Tribe__Cache $cache */
+		$cache     = tribe( 'cache' );
+		$cache_key = __METHOD__ . '-' . md5( wp_json_encode( $args ) . $event_id );
+		$cached    = $cache->get( $cache_key );
+
+		if ( $cached ) {
+			$this->items = $cached;
+			return $cached;
+		}
 
 		if ( ! empty( $search ) ) {
 			$search_keys = array_keys( $this->get_search_options() );
@@ -1041,6 +1054,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		}
 
 		$this->items = $items;
+		$cache->set( $cache_key, $items, 60 );
 
 		$this->set_pagination_args( $pagination_args );
 	}
