@@ -124,6 +124,14 @@ export const setTicketPrice = ( clientId, price ) => ( {
 	},
 } );
 
+export const setTicketOnSale = ( clientId, on_sale ) => ( {
+	type: types.SET_TICKET_ON_SALE,
+	payload: {
+		clientId,
+		on_sale,
+	},
+} );
+
 export const setTicketSku = ( clientId, sku ) => ( {
 	type: types.SET_TICKET_SKU,
 	payload: {

@@ -427,6 +427,7 @@ export function* fetchTicket( action ) {
 				attendee_information_fields,
 				type,
 				sale_price_data,
+				on_sale,
 			} = ticket;
 			/* eslint-enable camelcase */
 
@@ -478,6 +479,7 @@ export function* fetchTicket( action ) {
 				title,
 				description,
 				price: cost_details.values[ 0 ],
+				on_sale,
 				sku,
 				iac,
 				startDate,
@@ -693,7 +695,7 @@ export function* updateTicket( action ) {
 		} );
 
 		if ( response.ok ) {
-			const { capacity_details, sale_price_data } = ticket; // eslint-disable-line camelcase
+			const { capacity_details, sale_price_data, on_sale } = ticket; // eslint-disable-line camelcase
 			const available = capacity_details.available === -1 ? 0 : capacity_details.available;
 
 			const salePriceChecked = sale_price_data?.enabled || false;
@@ -757,6 +759,7 @@ export function* updateTicket( action ) {
 					title,
 					description,
 					price,
+					on_sale,
 					sku,
 					iac,
 					startDate,
@@ -999,6 +1002,7 @@ export function* setTicketDetails( action ) {
 		title,
 		description,
 		price,
+		on_sale,
 		sku,
 		iac,
 		startDate,
@@ -1029,6 +1033,7 @@ export function* setTicketDetails( action ) {
 		put( actions.setTicketTitle( clientId, title ) ),
 		put( actions.setTicketDescription( clientId, description ) ),
 		put( actions.setTicketPrice( clientId, price ) ),
+		put( actions.setTicketOnSale( clientId, on_sale ) ),
 		put( actions.setTicketSku( clientId, sku ) ),
 		put( actions.setTicketIACSetting( clientId, iac ) ),
 		put( actions.setTicketStartDate( clientId, startDate ) ),

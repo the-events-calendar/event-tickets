@@ -35,6 +35,7 @@ export const DEFAULT_STATE = {
 	title: '',
 	description: '',
 	price: '',
+	on_sale: false,
 	sku: '',
 	iac: iac,
 	startDate: momentUtil.toDatabaseDate( currentMoment ),
@@ -77,6 +78,11 @@ export default ( state = DEFAULT_STATE, action ) => {
 				...state,
 				price: action.payload.price,
 			};
+		case types.SET_TICKET_ON_SALE:
+			return {
+				...state,
+				on_sale: action.payload.on_sale,
+			}
 		case types.SET_TICKET_SKU:
 			return {
 				...state,

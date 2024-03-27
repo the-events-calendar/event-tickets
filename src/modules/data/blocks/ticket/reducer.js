@@ -56,6 +56,7 @@ export default ( state = DEFAULT_STATE, action ) => {
 		case types.SET_TICKET_TITLE:
 		case types.SET_TICKET_DESCRIPTION:
 		case types.SET_TICKET_PRICE:
+		case types.SET_TICKET_ON_SALE:
 		case types.SET_TICKET_SKU:
 		case types.SET_TICKET_IAC_SETTING:
 		case types.SET_TICKET_START_DATE:

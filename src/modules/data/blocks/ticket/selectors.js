@@ -316,6 +316,11 @@ export const getTicketPrice = createSelector(
 	( details ) => details.price,
 );
 
+export const getTicketOnSale = createSelector(
+	[ getTicketDetails ],
+	( details ) => details.on_sale,
+);
+
 export const getTicketSku = createSelector(
 	[ getTicketDetails ],
 	( details ) => details.sku,
