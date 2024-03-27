@@ -70,6 +70,14 @@ export default ( state = DEFAULT_STATE, action ) => {
 		case types.SET_TICKET_END_TIME_INPUT:
 		case types.SET_TICKET_CAPACITY_TYPE:
 		case types.SET_TICKET_CAPACITY:
+		case types.SET_TICKET_SALE_PRICE_CHECK:
+		case types.SET_TICKET_SALE_PRICE:
+		case types.SET_TICKET_SALE_START_DATE:
+		case types.SET_TICKET_SALE_START_DATE_INPUT:
+		case types.SET_TICKET_SALE_START_DATE_MOMENT:
+		case types.SET_TICKET_SALE_END_DATE:
+		case types.SET_TICKET_SALE_END_DATE_INPUT:
+		case types.SET_TICKET_SALE_END_DATE_MOMENT:
 		case types.SET_TICKET_TEMP_TITLE:
 		case types.SET_TICKET_TEMP_DESCRIPTION:
 		case types.SET_TICKET_TEMP_PRICE:
@@ -89,6 +97,12 @@ export default ( state = DEFAULT_STATE, action ) => {
 		case types.SET_TICKET_TEMP_CAPACITY:
 		case types.SET_TICKET_TEMP_SALE_PRICE_CHECK:
 		case types.SET_TICKET_TEMP_SALE_PRICE:
+		case types.SET_TICKET_TEMP_SALE_START_DATE:
+		case types.SET_TICKET_TEMP_SALE_START_DATE_INPUT:
+		case types.SET_TICKET_TEMP_SALE_START_DATE_MOMENT:
+		case types.SET_TICKET_TEMP_SALE_END_DATE:
+		case types.SET_TICKET_TEMP_SALE_END_DATE_INPUT:
+		case types.SET_TICKET_TEMP_SALE_END_DATE_MOMENT:
 		case types.SET_TICKET_SOLD:
 		case types.SET_TICKET_AVAILABLE:
 		case types.SET_TICKET_ID:
@@ -110,20 +124,6 @@ export default ( state = DEFAULT_STATE, action ) => {
 		case types.REGISTER_TICKET_BLOCK:
 		case types.REMOVE_TICKET_BLOCK:
 		case types.REMOVE_TICKET_BLOCKS:
-		case types.SET_TICKET_SALE_PRICE_CHECK:
-		case types.SET_TICKET_SALE_PRICE:
-		case types.SET_TICKET_SALE_START_DATE:
-		case types.SET_TICKET_SALE_START_DATE_INPUT:
-		case types.SET_TICKET_SALE_START_DATE_MOMENT:
-		case types.SET_TICKET_SALE_END_DATE:
-		case types.SET_TICKET_SALE_END_DATE_INPUT:
-		case types.SET_TICKET_SALE_END_DATE_MOMENT:
-		case types.SET_TICKET_TEMP_SALE_START_DATE:
-		case types.SET_TICKET_TEMP_SALE_START_DATE_INPUT:
-		case types.SET_TICKET_TEMP_SALE_START_DATE_MOMENT:
-		case types.SET_TICKET_TEMP_SALE_END_DATE:
-		case types.SET_TICKET_TEMP_SALE_END_DATE_INPUT:
-		case types.SET_TICKET_TEMP_SALE_END_DATE_MOMENT:
 			return {
 				...state,
 				tickets: tickets( state.tickets, action ),
