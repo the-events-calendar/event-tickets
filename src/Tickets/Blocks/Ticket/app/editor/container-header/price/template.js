@@ -54,7 +54,6 @@ const TicketContainerHeaderPriceLabel = ( {
 
 	/**
 	 * The price class to be used.
-	 * @type {string}
 	 */
 	const priceClass = hasValidSalePrice ? 'tribe-editor__ticket__container-header-price__price--on-sale' : 'tribe-editor__ticket__container-header-price__price';
 
