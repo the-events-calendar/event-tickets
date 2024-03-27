@@ -49,7 +49,6 @@ export const SUFFIX = 'postfix';
 
 export const PRICE_POSITIONS = [ PREFIX, SUFFIX ];
 
-
 // eslint-disable-next-line no-undef
 export const TICKET_LABELS = window?.tribe_editor_config?.tickets?.ticketLabels;
 export const SALE_PRICE_LABELS = window?.tribe_editor_config?.tickets?.salePrice;

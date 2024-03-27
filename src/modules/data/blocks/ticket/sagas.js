@@ -371,19 +371,19 @@ export function* setBodyDetails( clientId ) {
 	if ( showSalePrice ) {
 		body.append(
 			'ticket[sale_price][checked]',
-			yield select( selectors.getTempSalePriceChecked, props )
+			yield select( selectors.getTempSalePriceChecked, props ),
 		);
 		body.append(
 			'ticket[sale_price][price]',
-			yield select( selectors.getTempSalePrice, props )
+			yield select( selectors.getTempSalePrice, props ),
 		);
 		body.append(
 			'ticket[sale_price][start_date]',
-			yield select( selectors.getTicketTempSaleStartDate, props )
+			yield select( selectors.getTicketTempSaleStartDate, props ),
 		);
 		body.append(
 			'ticket[sale_price][end_date]',
-			yield select( selectors.getTicketTempSaleEndDate, props )
+			yield select( selectors.getTicketTempSaleEndDate, props ),
 		);
 	}
 

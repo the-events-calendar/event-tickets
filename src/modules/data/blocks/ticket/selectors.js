@@ -678,19 +678,21 @@ export const isTicketSalePriceValid = createSelector(
 		getTicketTempPrice,
 		getTicketCurrencyDecimalPoint,
 		getTicketCurrencyNumberOfDecimals,
-		getTicketCurrencyThousandsSep
+		getTicketCurrencyThousandsSep,
 	],
-	( salePrice, price, decimal_point, decimal_places, thousand_sep ) => {
+	( salePrice, price, decimalPoint, decimalPlaces, thousandSep ) => {
 		if ( salePrice === '' || price === '' ) {
 			return true;
 		}
 
-		if ( ! decimal_point || ! decimal_places || ! thousand_sep ) { // eslint-disable-line camelcase, max-len
+		if ( ! decimalPoint || ! decimalPlaces || ! thousandSep ) {
 			return true;
 		}
 
-		const salePriceVal = getNumericPrice( salePrice, decimal_point, decimal_places, thousand_sep ); // eslint-disable-line no-use-before-define, max-len
-		const priceVal = getNumericPrice( price, decimal_point, decimal_places, thousand_sep ); // eslint-disable-line no-use-before-define, max-len
+		// eslint-disable-next-line no-use-before-define
+		const salePriceVal = getNumericPrice( salePrice, decimalPoint, decimalPlaces, thousandSep );
+		// eslint-disable-next-line no-use-before-define
+		const priceVal = getNumericPrice( price, decimalPoint, decimalPlaces, thousandSep );
 
 		return salePriceVal < priceVal;
 	},
