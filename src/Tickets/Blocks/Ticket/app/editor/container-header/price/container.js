@@ -24,6 +24,7 @@ const mapStateToProps = ( state, ownProps ) => ( {
 	tempPrice: selectors.getTicketTempPrice( state, ownProps ),
 	showSalePrice: selectors.showSalePrice( state, ownProps ),
 	salePrice: selectors.getSalePrice( state, ownProps ) || '',
+	onSale: selectors.getTicketOnSale( state, ownProps ),
 } );
 
 const mapDispatchToProps = ( dispatch, ownProps ) => ( {

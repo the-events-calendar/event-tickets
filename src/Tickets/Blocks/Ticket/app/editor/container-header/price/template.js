@@ -27,6 +27,7 @@ const TicketContainerHeaderPriceLabel = ( {
 	price,
 	showSalePrice,
 	salePrice,
+	onSale,
 } ) => {
 	const getAvailableLabel = () => (
 		isUnlimited
@@ -46,7 +47,7 @@ const TicketContainerHeaderPriceLabel = ( {
 		...( currencyPosition === SUFFIX && { suffix: currencySymbol } ),
 	};
 
-	const hasValidSalePrice = showSalePrice && salePrice !== '';
+	const hasValidSalePrice = onSale && showSalePrice && salePrice !== '';
 	const priceClass = hasValidSalePrice ? 'tribe-editor__ticket__container-header-price__price--on-sale' : 'tribe-editor__ticket__container-header-price__price';
 
 	return (
@@ -93,6 +94,7 @@ TicketContainerHeaderPriceLabel.propTypes = {
 	price: PropTypes.string,
 	showSalePrice: PropTypes.bool,
 	salePrice: PropTypes.string,
+	onSale: PropTypes.bool,
 };
 
 const TicketContainerHeaderPrice = ( {
@@ -106,6 +108,7 @@ const TicketContainerHeaderPrice = ( {
 	price,
 	showSalePrice,
 	salePrice,
+	onSale,
 } ) => (
 	<div className="tribe-editor__ticket__container-header-price">
 		<TicketContainerHeaderPriceLabel
@@ -119,6 +122,7 @@ const TicketContainerHeaderPrice = ( {
 			price={ price }
 			showSalePrice={ showSalePrice }
 			salePrice={ salePrice }
+			onSale={ onSale }
 		/>
 	</div>
 );
@@ -138,6 +142,7 @@ TicketContainerHeaderPrice.propTypes = {
 	tempPrice: PropTypes.string,
 	showSalePrice: PropTypes.bool,
 	salePrice: PropTypes.string,
+	onSale: PropTypes.bool,
 };
 
 export default TicketContainerHeaderPrice;
