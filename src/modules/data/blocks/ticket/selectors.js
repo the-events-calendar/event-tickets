@@ -401,6 +401,46 @@ export const getTicketCapacityInt = createSelector(
 	( capacity ) => parseInt( capacity, 10 ) || 0,
 );
 
+export const getSalePriceChecked = createSelector(
+	[ getTicketDetails ],
+	( details ) => details.salePriceChecked,
+);
+
+export const getSalePrice = createSelector(
+	[ getTicketDetails ],
+	( details ) => details.salePrice,
+);
+
+export const getTicketSaleStartDate= createSelector(
+	[ getTicketDetails ],
+	( details ) => details.saleStartDate,
+);
+
+export const getTicketSaleStartDateInput = createSelector(
+	[ getTicketDetails ],
+	( details ) => details.saleStartDateInput,
+);
+
+export const getTicketSaleStartDateMoment = createSelector(
+	[ getTicketDetails ],
+	( details ) => details.saleStartDateMoment,
+);
+
+export const getTicketSaleEndDate = createSelector(
+	[ getTicketDetails ],
+	( details ) => details.saleEndDate,
+);
+
+export const getTicketSaleEndDateInput = createSelector(
+	[ getTicketDetails ],
+	( details ) => details.saleEndDateInput,
+);
+
+export const getTicketSaleEndDateMoment = createSelector(
+	[ getTicketDetails ],
+	( details ) => details.saleEndDateMoment,
+);
+
 export const isUnlimitedTicket = createSelector(
 	[ getTicketDetails ],
 	( details ) => details.capacityType === TICKET_TYPES[ UNLIMITED ],
@@ -493,75 +533,6 @@ export const getTicketTempPrice = createSelector(
 	( tempDetails ) => tempDetails.price,
 );
 
-export const getTempSalePriceChecked = createSelector(
-	[ getTicketTempDetails ],
-	( tempDetails ) => tempDetails.salePriceChecked,
-);
-
-export const getTempSalePrice = createSelector(
-	[ getTicketTempDetails ],
-	( tempDetails ) => tempDetails.salePrice,
-);
-
-export const isTicketSalePriceValid = createSelector(
-	[ getTempSalePrice, getTicketTempPrice, getTicketCurrencyDecimalPoint, getTicketCurrencyNumberOfDecimals, getTicketCurrencyThousandsSep ],
-	( salePrice, price, decimal_point, decimal_places, thousand_sep ) => {
-		if ( salePrice === '' || price === '' ) {
-			return true;
-		}
-
-		if ( ! decimal_point || ! decimal_places || ! thousand_sep ) {
-			return true;
-		}
-
-		const salePriceVal = getNumericPrice( salePrice, decimal_point, decimal_places, thousand_sep );
-		const priceVal = getNumericPrice( price, decimal_point, decimal_places, thousand_sep );
-
-		return salePriceVal < priceVal;
-	},
-);
-
-export const getSalePriceChecked = createSelector(
-	[ getTicketDetails ],
-	( details ) => details.salePriceChecked,
-);
-
-export const getSalePrice = createSelector(
-	[ getTicketDetails ],
-	( details ) => details.salePrice,
-);
-
-export const getTicketSaleStartDate= createSelector(
-	[ getTicketDetails ],
-	( details ) => details.saleStartDate,
-);
-
-export const getTicketSaleStartDateInput = createSelector(
-	[ getTicketDetails ],
-	( details ) => details.saleStartDateInput,
-);
-
-export const getTicketSaleStartDateMoment = createSelector(
-	[ getTicketDetails ],
-	( details ) => details.saleStartDateMoment,
-);
-
-export const getTicketSaleEndDate = createSelector(
-	[ getTicketDetails ],
-	( details ) => details.saleEndDate,
-);
-
-export const getTicketSaleEndDateInput = createSelector(
-	[ getTicketDetails ],
-	( details ) => details.saleEndDateInput,
-);
-
-export const getTicketSaleEndDateMoment = createSelector(
-	[ getTicketDetails ],
-	( details ) => details.saleEndDateMoment,
-);
-
-
 export const getTicketTempSku = createSelector(
 	[ getTicketTempDetails ],
 	( tempDetails ) => tempDetails.sku,
@@ -652,50 +623,14 @@ export const getTicketTempCapacityTypeOption = createSelector(
 	( capacityType ) => find( CAPACITY_TYPE_OPTIONS, { value: capacityType } ) || {},
 );
 
-export const isTempTitleValid = createSelector(
-	[ getTicketTempTitle ],
-	( title ) => trim( title ) !== '',
+export const getTempSalePriceChecked = createSelector(
+	[ getTicketTempDetails ],
+	( tempDetails ) => tempDetails.salePriceChecked,
 );
 
-export const isTempCapacityValid = createSelector(
-	[ getTicketTempCapacity ],
-	( capacity ) => trim( capacity ) !== '' && ! isNaN( capacity ) && capacity > 0,
-);
-
-export const isTempSharedCapacityValid = createSelector(
-	[ getTicketsTempSharedCapacity ],
-	( capacity ) => trim( capacity ) !== '' && ! isNaN( capacity ) && capacity > 0,
-);
-
-export const isZeroPriceValid = createSelector(
-	[ getTicketTempPrice, getTicketsProvider ],
-	( price, provider ) => {
-		return 0 < parseInt( price, 10 ) ||
-			! [ constants.TC_CLASS, constants.TICKETS_COMMERCE_MODULE_CLASS ].includes( provider );
-	},
-);
-
-export const showSalePrice = createSelector(
-	[ getTicketsProvider ],
-	( provider ) => provider === constants.TICKETS_COMMERCE_MODULE_CLASS,
-);
-
-export const isTicketValid = createSelector(
-	[
-		getTicketTempCapacityType,
-		isTempTitleValid,
-		isTempCapacityValid,
-		isTempSharedCapacityValid,
-		isZeroPriceValid,
-	],
-	( capacityType, titleValid, capacityValid, sharedCapacityValid, zeroPriceValid ) => {
-		if ( capacityType === TICKET_TYPES[ UNLIMITED ] ) {
-			return titleValid && zeroPriceValid;
-		} else if (	capacityType === TICKET_TYPES[ SHARED ] ) {
-			return titleValid && sharedCapacityValid && zeroPriceValid;
-		}
-		return titleValid && capacityValid && zeroPriceValid;
-	},
+export const getTempSalePrice = createSelector(
+	[ getTicketTempDetails ],
+	( tempDetails ) => tempDetails.salePrice,
 );
 
 export const getTicketTempSaleStartDate = createSelector(
@@ -727,6 +662,70 @@ export const getTicketTempSaleEndDateInput = createSelector(
 export const getTicketTempSaleEndDateMoment = createSelector(
 	[ getTicketTempDetails ],
 	( tempDetails ) => tempDetails.saleEndDateMoment,
+);
+
+export const showSalePrice = createSelector(
+	[ getTicketsProvider ],
+	( provider ) => provider === constants.TICKETS_COMMERCE_MODULE_CLASS,
+);
+
+export const isTicketSalePriceValid = createSelector(
+	[ getTempSalePrice, getTicketTempPrice, getTicketCurrencyDecimalPoint, getTicketCurrencyNumberOfDecimals, getTicketCurrencyThousandsSep ],
+	( salePrice, price, decimal_point, decimal_places, thousand_sep ) => {
+		if ( salePrice === '' || price === '' ) {
+			return true;
+		}
+
+		if ( ! decimal_point || ! decimal_places || ! thousand_sep ) {
+			return true;
+		}
+
+		const salePriceVal = getNumericPrice( salePrice, decimal_point, decimal_places, thousand_sep );
+		const priceVal = getNumericPrice( price, decimal_point, decimal_places, thousand_sep );
+
+		return salePriceVal < priceVal;
+	},
+);
+
+export const isTempTitleValid = createSelector(
+	[ getTicketTempTitle ],
+	( title ) => trim( title ) !== '',
+);
+
+export const isTempCapacityValid = createSelector(
+	[ getTicketTempCapacity ],
+	( capacity ) => trim( capacity ) !== '' && ! isNaN( capacity ) && capacity > 0,
+);
+
+export const isTempSharedCapacityValid = createSelector(
+	[ getTicketsTempSharedCapacity ],
+	( capacity ) => trim( capacity ) !== '' && ! isNaN( capacity ) && capacity > 0,
+);
+
+export const isZeroPriceValid = createSelector(
+	[ getTicketTempPrice, getTicketsProvider ],
+	( price, provider ) => {
+		return 0 < parseInt( price, 10 ) ||
+			! [ constants.TC_CLASS, constants.TICKETS_COMMERCE_MODULE_CLASS ].includes( provider );
+	},
+);
+
+export const isTicketValid = createSelector(
+	[
+		getTicketTempCapacityType,
+		isTempTitleValid,
+		isTempCapacityValid,
+		isTempSharedCapacityValid,
+		isZeroPriceValid,
+	],
+	( capacityType, titleValid, capacityValid, sharedCapacityValid, zeroPriceValid ) => {
+		if ( capacityType === TICKET_TYPES[ UNLIMITED ] ) {
+			return titleValid && zeroPriceValid;
+		} else if (	capacityType === TICKET_TYPES[ SHARED ] ) {
+			return titleValid && sharedCapacityValid && zeroPriceValid;
+		}
+		return titleValid && capacityValid && zeroPriceValid;
+	},
 );
 
 //
