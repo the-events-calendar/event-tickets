@@ -324,6 +324,7 @@ class SingleTicketCest extends BaseRestCest {
 			],
 			'supports_attendee_information' => false, //no ET+ installed
 			'price_suffix'                  => null,
+			'on_sale'                       => null,
 			'iac'                           => 'none',
 			'type'                          => 'default',
 			'sale_price_data'               => [],
