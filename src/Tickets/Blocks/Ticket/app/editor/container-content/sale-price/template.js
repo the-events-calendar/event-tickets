@@ -9,16 +9,15 @@ import { NumericFormat } from 'react-number-format';
 /**
  * Wordpress dependencies
  */
-import { __ } from '@wordpress/i18n';
 import uniqid from 'uniqid';
 
 /**
  * Internal dependencies
  */
 import { PREFIX, SUFFIX, SALE_PRICE_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
-import {Checkbox, DayPickerInput, LabeledItem} from '@moderntribe/common/elements';
+import { Checkbox, DayPickerInput, LabeledItem } from '@moderntribe/common/elements';
 import './style.pcss';
-import {formatDate, parseDate} from "react-day-picker/moment";
+import { formatDate, parseDate } from "react-day-picker/moment";
 
 class SalePrice extends PureComponent {
 	static propTypes = {
@@ -146,7 +145,7 @@ class SalePrice extends PureComponent {
 					value={salePriceChecked}
 					disabled={isDisabled}
 				/>
-				{salePriceChecked && (
+				{ salePriceChecked && (
 					<div className={"tribe-editor__ticket__sale-price--fields"}>
 						<div className={"tribe-editor__ticket__sale-price__input-wrapper"}>
 							<LabeledItem

@@ -1,7 +1,7 @@
 <?php
-
 use Tribe__Tickets__Global_Stock as Global_Stock;
 use TEC\Tickets\Commerce\Ticket;
+use TEC\Tickets\Commerce\Module;
 
 
 class Tribe__Tickets__REST__V1__Post_Repository
@@ -266,13 +266,13 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		if ( is_object( $provider_class ) ) {
 			$provider_class = get_class( $provider_class );
 		}
-
+		
 		$map = [
 			'Tribe__Tickets__RSVP'                             => 'rsvp',
 			'Tribe__Tickets__Commerce__PayPal__Main'           => 'tribe-commerce',
 			'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' => 'woo',
 			'Tribe__Tickets_Plus__Commerce__EDD__Main'         => 'edd',
-			\TEC\Tickets\Commerce\Module::class                => \TEC\Tickets\Commerce::ABBR,
+			Module::class                                      => \TEC\Tickets\Commerce::ABBR,
 		];
 
 		/**
@@ -636,7 +636,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 			$price = 0; // free
 		}
 		
-		if ( \TEC\Tickets\Commerce\Module::class === $provider ) {
+		if ( Module::class === $provider ) {
 			$price = tribe( Ticket::class )->get_regular_price( $ticket_id );
 		}
 
@@ -805,7 +805,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	public function get_ticket_sale_price_data( int $ticket_id ): array {
 		$provider = tribe_tickets_get_ticket_provider( $ticket_id );
 		
-		if ( ! $provider instanceof \TEC\Tickets\Commerce\Module ) {
+		if ( ! $provider instanceof Module ) {
 			return [];
 		}
 		
