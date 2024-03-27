@@ -18,6 +18,7 @@ import uniqid from 'uniqid';
 import { PREFIX, SUFFIX, TICKET_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
 import { LabeledItem } from '@moderntribe/common/elements';
 import './style.pcss';
+import SalePrice from "../sale-price/container";
 
 class Price extends PureComponent {
 	static propTypes = {
@@ -30,6 +31,8 @@ class Price extends PureComponent {
 		minDefaultPrice: PropTypes.string,
 		onTempPriceChange: PropTypes.func.isRequired,
 		tempPrice: PropTypes.string,
+		showSalePrice: PropTypes.bool,
+		clientId: PropTypes.string,
 	};
 
 	constructor( props ) {
@@ -48,6 +51,8 @@ class Price extends PureComponent {
 			minDefaultPrice,
 			onTempPriceChange,
 			tempPrice,
+			showSalePrice,
+			clientId,
 		} = this.props;
 
 		const numericFormatProps = {
@@ -67,31 +72,34 @@ class Price extends PureComponent {
 				'tribe-editor__ticket__content-row',
 				'tribe-editor__ticket__content-row--price',
 			) }>
-				<LabeledItem
-					className="tribe-editor__ticket__price-label"
-					forId={ this.id }
-					isLabel={ true }
-					// eslint-disable-next-line no-undef
-					label={sprintf(
-						/* Translators: %s - the singular label for a ticket. */
-						__('%s price', 'event-tickets'),
-						TICKET_LABELS.ticket.singular
-					)}
-				/>
+				<div className={"tribe-editor__ticket__price-wrapper"}>
+					<LabeledItem
+						className="tribe-editor__ticket__price-label"
+						forId={ this.id }
+						isLabel={ true }
+						// eslint-disable-next-line no-undef
+						label={sprintf(
+							/* Translators: %s - the singular label for a ticket. */
+							__('%s price', 'event-tickets'),
+							TICKET_LABELS.ticket.singular
+						)}
+					/>
 
-				<NumericFormat
-					allowNegative={ false }
-					className="tribe-editor__input tribe-editor__ticket__price-input"
-					decimalScale={ currencyNumberOfDecimals }
-					decimalSeparator={ currencyDecimalPoint }
-					disabled={ isDisabled }
-					displayType="input"
-					fixedDecimalScale={ true }
-					{ ...numericFormatProps }
-					onValueChange={ handleChange }
-					thousandSeparator={ currencyThousandsSep }
-					value={ tempPrice }
-				/>
+					<NumericFormat
+						allowNegative={ false }
+						className="tribe-editor__input tribe-editor__ticket__price-input"
+						decimalScale={ currencyNumberOfDecimals }
+						decimalSeparator={ currencyDecimalPoint }
+						disabled={ isDisabled }
+						displayType="input"
+						fixedDecimalScale={ true }
+						{ ...numericFormatProps }
+						onValueChange={ handleChange }
+						thousandSeparator={ currencyThousandsSep }
+						value={ tempPrice }
+					/>
+				</div>
+				{ showSalePrice && <SalePrice clientId={clientId} /> }
 			</div>
 		);
 	}

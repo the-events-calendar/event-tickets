@@ -1108,9 +1108,12 @@ class Ticket {
 		$sale_price    = Arr::get( $raw_data, 'ticket_sale_price', false );
 		$regular_price = Arr::get( $raw_data, 'ticket_price', false );
 		
-		if ( $sale_price && $sale_price < $regular_price ) {
-			update_post_meta( $ticket->ID, static::$sale_price_key, Value::create( $sale_price ) );
+		if ( empty( $sale_price ) || $sale_price >= $regular_price ) {
+			$this->remove_sale_price_data( $ticket );
+			return;
 		}
+		
+		update_post_meta( $ticket->ID, static::$sale_price_key, Value::create( $sale_price ) );
 		
 		$this->process_sale_price_dates( $ticket, $raw_data );
 	}
@@ -1126,15 +1129,15 @@ class Ticket {
 	 * @return void
 	 */
 	public function process_sale_price_dates( Ticket_Object $ticket, array $raw_data ): void {
-		if ( ! empty( $raw_data['ticket_sale_start_date'] ) ) {
+		if ( isset( $raw_data['ticket_sale_start_date'] ) ) {
 			$start_date = Date_Utils::maybe_format_from_datepicker( $raw_data['ticket_sale_start_date'] );
-			$start_date = gmdate( Date_Utils::DBDATEFORMAT, strtotime( $start_date ) );
+			$start_date = empty( $start_date ) ? '' : gmdate( Date_Utils::DBDATEFORMAT, strtotime( $start_date ) );
 			update_post_meta( $ticket->ID, static::$sale_price_start_date_key, $start_date );
 		}
 		
-		if ( ! empty( $raw_data['ticket_sale_end_date'] ) ) {
+		if ( isset( $raw_data['ticket_sale_end_date'] ) ) {
 			$end_date = Date_Utils::maybe_format_from_datepicker( $raw_data['ticket_sale_end_date'] );
-			$end_date = gmdate( Date_Utils::DBDATEFORMAT, strtotime( $end_date ) );
+			$end_date = empty( $end_date ) ? '' : gmdate( Date_Utils::DBDATEFORMAT, strtotime( $end_date ) );
 			update_post_meta( $ticket->ID, static::$sale_price_end_date_key, $end_date );
 		}
 	}
@@ -1150,6 +1153,7 @@ class Ticket {
 	 */
 	public function remove_sale_price_data( Ticket_Object $ticket ): void {
 		$keys = [
+			static::$sale_price_checked_key,
 			static::$sale_price_key,
 			static::$sale_price_start_date_key,
 			static::$sale_price_end_date_key,
@@ -1243,5 +1247,23 @@ class Ticket {
 	 */
 	public function get_regular_price( int $ticket_id ): string {
 		return get_post_meta( $ticket_id, '_price', true );
+	}
+	
+	/**
+	 * Get the sale price details for a ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_id The ticket post ID.
+	 *
+	 * @return array<string,string> The sale price details.
+	 */
+	public function get_sale_price_details( int $ticket_id ): array {
+		return [
+			'enabled'    => get_post_meta( $ticket_id, static::$sale_price_checked_key, true ),
+			'sale_price' => $this->get_sale_price( $ticket_id ),
+			'start_date' => get_post_meta( $ticket_id, static::$sale_price_start_date_key, true ),
+			'end_date'   => get_post_meta( $ticket_id, static::$sale_price_end_date_key, true ),
+		];
 	}
 }

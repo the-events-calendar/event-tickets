@@ -15,6 +15,7 @@ export const byClientId = ( state = {}, action ) => {
 		case types.SET_TICKET_TITLE:
 		case types.SET_TICKET_DESCRIPTION:
 		case types.SET_TICKET_PRICE:
+		case types.SET_TICKET_ON_SALE:
 		case types.SET_TICKET_SKU:
 		case types.SET_TICKET_IAC_SETTING:
 		case types.SET_TICKET_START_DATE:
@@ -65,6 +66,22 @@ export const byClientId = ( state = {}, action ) => {
 		case types.SET_TICKET_TYPE_ICON_URL:
 		case types.SET_TICKET_TYPE_NAME:
 		case types.REGISTER_TICKET_BLOCK:
+		case types.SET_TICKET_SALE_PRICE_CHECK:
+		case types.SET_TICKET_TEMP_SALE_PRICE_CHECK:
+		case types.SET_TICKET_SALE_PRICE:
+		case types.SET_TICKET_TEMP_SALE_PRICE:
+		case types.SET_TICKET_SALE_START_DATE:
+		case types.SET_TICKET_SALE_START_DATE_INPUT:
+		case types.SET_TICKET_SALE_START_DATE_MOMENT:
+		case types.SET_TICKET_SALE_END_DATE:
+		case types.SET_TICKET_SALE_END_DATE_INPUT:
+		case types.SET_TICKET_SALE_END_DATE_MOMENT:
+		case types.SET_TICKET_TEMP_SALE_START_DATE:
+		case types.SET_TICKET_TEMP_SALE_START_DATE_INPUT:
+		case types.SET_TICKET_TEMP_SALE_START_DATE_MOMENT:
+		case types.SET_TICKET_TEMP_SALE_END_DATE:
+		case types.SET_TICKET_TEMP_SALE_END_DATE_INPUT:
+		case types.SET_TICKET_TEMP_SALE_END_DATE_MOMENT:
 			return {
 				...state,
 				[ action.payload.clientId ]: ticket( state[ action.payload.clientId ], action ),

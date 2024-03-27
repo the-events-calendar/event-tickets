@@ -316,6 +316,11 @@ export const getTicketPrice = createSelector(
 	( details ) => details.price,
 );
 
+export const getTicketOnSale = createSelector(
+	[ getTicketDetails ],
+	( details ) => details.on_sale,
+);
+
 export const getTicketSku = createSelector(
 	[ getTicketDetails ],
 	( details ) => details.sku,
@@ -399,6 +404,46 @@ export const getTicketCapacity = createSelector(
 export const getTicketCapacityInt = createSelector(
 	[ getTicketCapacity ],
 	( capacity ) => parseInt( capacity, 10 ) || 0,
+);
+
+export const getSalePriceChecked = createSelector(
+	[ getTicketDetails ],
+	( details ) => details.salePriceChecked,
+);
+
+export const getSalePrice = createSelector(
+	[ getTicketDetails ],
+	( details ) => details.salePrice,
+);
+
+export const getTicketSaleStartDate = createSelector(
+	[ getTicketDetails ],
+	( details ) => details.saleStartDate,
+);
+
+export const getTicketSaleStartDateInput = createSelector(
+	[ getTicketDetails ],
+	( details ) => details.saleStartDateInput,
+);
+
+export const getTicketSaleStartDateMoment = createSelector(
+	[ getTicketDetails ],
+	( details ) => details.saleStartDateMoment,
+);
+
+export const getTicketSaleEndDate = createSelector(
+	[ getTicketDetails ],
+	( details ) => details.saleEndDate,
+);
+
+export const getTicketSaleEndDateInput = createSelector(
+	[ getTicketDetails ],
+	( details ) => details.saleEndDateInput,
+);
+
+export const getTicketSaleEndDateMoment = createSelector(
+	[ getTicketDetails ],
+	( details ) => details.saleEndDateMoment,
 );
 
 export const isUnlimitedTicket = createSelector(
@@ -583,6 +628,76 @@ export const getTicketTempCapacityTypeOption = createSelector(
 	( capacityType ) => find( CAPACITY_TYPE_OPTIONS, { value: capacityType } ) || {},
 );
 
+export const getTempSalePriceChecked = createSelector(
+	[ getTicketTempDetails ],
+	( tempDetails ) => tempDetails.salePriceChecked,
+);
+
+export const getTempSalePrice = createSelector(
+	[ getTicketTempDetails ],
+	( tempDetails ) => tempDetails.salePrice,
+);
+
+export const getTicketTempSaleStartDate = createSelector(
+	[ getTicketTempDetails ],
+	( tempDetails ) => tempDetails.saleStartDate,
+);
+
+export const getTicketTempSaleStartDateInput = createSelector(
+	[ getTicketTempDetails ],
+	( tempDetails ) => tempDetails.saleStartDateInput,
+);
+
+export const getTicketTempSaleStartDateMoment = createSelector(
+	[ getTicketTempDetails ],
+	( tempDetails ) => tempDetails.saleStartDateMoment,
+);
+export const getTicketTempSaleEndDate = createSelector(
+	[ getTicketTempDetails ],
+	( tempDetails ) => tempDetails.saleEndDate,
+);
+
+export const getTicketTempSaleEndDateInput = createSelector(
+	[ getTicketTempDetails ],
+	( tempDetails ) => tempDetails.saleEndDateInput,
+);
+
+export const getTicketTempSaleEndDateMoment = createSelector(
+	[ getTicketTempDetails ],
+	( tempDetails ) => tempDetails.saleEndDateMoment,
+);
+
+export const showSalePrice = createSelector(
+	[ getTicketsProvider ],
+	( provider ) => provider === constants.TICKETS_COMMERCE_MODULE_CLASS,
+);
+
+export const isTicketSalePriceValid = createSelector(
+	[
+		getTempSalePrice,
+		getTicketTempPrice,
+		getTicketCurrencyDecimalPoint,
+		getTicketCurrencyNumberOfDecimals,
+		getTicketCurrencyThousandsSep,
+	],
+	( salePrice, price, decimalPoint, decimalPlaces, thousandSep ) => {
+		if ( salePrice === '' || price === '' ) {
+			return true;
+		}
+
+		if ( ! decimalPoint || ! decimalPlaces || ! thousandSep ) {
+			return true;
+		}
+
+		// eslint-disable-next-line no-use-before-define
+		const salePriceVal = getNumericPrice( salePrice, decimalPoint, decimalPlaces, thousandSep );
+		// eslint-disable-next-line no-use-before-define
+		const priceVal = getNumericPrice( price, decimalPoint, decimalPlaces, thousandSep );
+
+		return salePriceVal < priceVal;
+	},
+);
+
 export const isTempTitleValid = createSelector(
 	[ getTicketTempTitle ],
 	( title ) => trim( title ) !== '',
@@ -731,4 +846,18 @@ export const getCurrentPostTypeLabel = ( key = 'singular_name' ) => {
 export const currentPostIsEvent = () => {
 	const post = postConfig();
 	return post?.type === 'tribe_events';
+};
+
+export const getNumericPrice = ( price, decimalPoint, decimalPlaces, thousandSep ) => {
+	// Remove thousand separators.
+	let newValue = price.replace( new RegExp( '\\' + thousandSep, 'g' ), '' );
+
+	// Replace decimal separator with period.
+	newValue = newValue.replace( decimalPoint, '.' );
+
+	// Round to specified number of decimal places.
+	newValue = parseFloat( newValue ).toFixed( decimalPlaces );
+	newValue = parseInt( newValue.replace( '.', '' ) );
+
+	return newValue;
 };

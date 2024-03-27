@@ -130,6 +130,8 @@ class Hooks extends Service_Provider {
 		add_filter( 'tec_tickets_commerce_payments_tab_settings', [ $this, 'filter_payments_tab_settings' ] );
 
 		add_filter( 'wp_redirect', [ $this, 'filter_redirect_url' ] );
+		
+		add_filter( 'tec_tickets_editor_configuration_localized_data', [ $this, 'filter_block_editor_localized_data' ] );
 	}
 
 	/**
@@ -767,5 +769,27 @@ class Hooks extends Service_Provider {
 	 */
 	public function render_sale_price_fields( $ticket_id, $post_id, $context ): void {
 		$this->container->make( Editor\Metabox::class )->render_sale_price_fields( $ticket_id, $post_id, $context );
+	}
+	
+	/**
+	 * Filters the block editor localized data.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $localized The localized data.
+	 *
+	 * @return array<string,mixed> The filtered localized data.
+	 */
+	public function filter_block_editor_localized_data( $localized ) {
+		
+		$localized['salePrice'] = [
+			'add_sale_price'   => __( 'Add sale price', 'event-tickets' ),
+			'sale_price_label' => __( 'Sale Price', 'event-tickets' ),
+			'on_sale_from'     => __( 'On sale from', 'event-tickets' ),
+			'to'               => __( 'to', 'event-tickets' ),
+			'invalid_price'    => __( 'Sale price must be lower than the regular ticket price.', 'event-tickets' ),
+		];
+		
+		return $localized;
 	}
 }
