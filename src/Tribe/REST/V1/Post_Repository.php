@@ -902,7 +902,6 @@ class Tribe__Tickets__REST__V1__Post_Repository
 			'show_description',
 			'price',
 			'regular_price',
-			'on_sale',
 			'admin_link',
 			'report_link',
 			'frontend_link',
