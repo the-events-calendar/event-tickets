@@ -12,6 +12,16 @@ import { withStore } from '@moderntribe/common/hoc';
 import { selectors, actions } from '@moderntribe/tickets/data/blocks/ticket';
 import { globals, moment as momentUtil } from "@moderntribe/common/utils";
 
+/**
+ * Handles the change event of the from date input.
+ *
+ * @since TBD
+ *
+ * @param {Function} dispatch The dispatch function.
+ * @param {Object} ownProps The component's own props.
+ *
+ * @returns {Function} The change event handler.
+ */
 const onFromDateChange = ( dispatch, ownProps ) => ( date, modifiers, dayPickerInput ) => {
 	const { clientId } = ownProps;
 
@@ -26,6 +36,16 @@ const onFromDateChange = ( dispatch, ownProps ) => ( date, modifiers, dayPickerI
 	dispatch( actions.processTicketSaleStartDate( clientId, date, dayPickerInput ) );
 };
 
+/**
+ * Handles the change event of the date picker input.
+ *
+ * @since TBD
+ *
+ * @param dispatch The dispatch function.
+ * @param ownProps The component's own props.
+ *
+ * @returns {Function} The change event handler.
+ */
 const onToDateChange = ( dispatch, ownProps ) => ( date, modifiers, dayPickerInput ) => {
 	const { clientId } = ownProps;
 
@@ -40,6 +60,16 @@ const onToDateChange = ( dispatch, ownProps ) => ( date, modifiers, dayPickerInp
 	dispatch( actions.processTicketSaleEndDate( clientId, date, dayPickerInput ) );
 };
 
+/**
+ * Maps the state to the component's props.
+ *
+ * @since TBD
+ *
+ * @param state The state.
+ * @param ownProps The component's own props.
+ *
+ * @returns {Object} The component's props.
+ */
 const mapStateToProps = ( state, ownProps ) => {
 	const datePickerFormat = globals.tecDateSettings().datepickerFormat
 		? momentUtil.toFormat( globals.tecDateSettings().datepickerFormat )
@@ -69,6 +99,16 @@ const mapStateToProps = ( state, ownProps ) => {
 	}
 };
 
+/**
+ * Maps dispatch functions to the component's props.
+ *
+ * @since TBD
+ *
+ * @param {Function} dispatch The dispatch function.
+ * @param {Object} ownProps The component's own props.
+ *
+ * @returns {Object} The component's props.
+ */
 const mapDispatchToProps = ( dispatch, ownProps ) => ( {
 	toggleSalePrice: ( e ) => {
 		const { clientId } = ownProps;
@@ -86,6 +126,9 @@ const mapDispatchToProps = ( dispatch, ownProps ) => ( {
 	onToDateChange: onToDateChange( dispatch, ownProps ),
 } );
 
+/**
+ * Connects the component to the store and exports it.
+ */
 export default compose(
 	withStore(),
 	connect(

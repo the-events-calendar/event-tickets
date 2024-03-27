@@ -47,7 +47,15 @@ const TicketContainerHeaderPriceLabel = ( {
 		...( currencyPosition === SUFFIX && { suffix: currencySymbol } ),
 	};
 
+	/**
+	 * Check if the ticket is on sale and the sale price is valid to be displayed.
+	 */
 	const hasValidSalePrice = onSale && showSalePrice && salePrice !== '';
+
+	/**
+	 * The price class to be used.
+	 * @type {string}
+	 */
 	const priceClass = hasValidSalePrice ? 'tribe-editor__ticket__container-header-price__price--on-sale' : 'tribe-editor__ticket__container-header-price__price';
 
 	return (

@@ -19,6 +19,11 @@ import { Checkbox, DayPickerInput, LabeledItem } from '@moderntribe/common/eleme
 import './style.pcss';
 import { formatDate, parseDate } from "react-day-picker/moment";
 
+/**
+ * SalePrice component.
+ *
+ * @since TBD
+ */
 class SalePrice extends PureComponent {
 	static propTypes = {
 		isDisabled: PropTypes.bool,
@@ -72,22 +77,35 @@ class SalePrice extends PureComponent {
 			validSalePrice,
 		} = this.props;
 
+		/**
+		 * Props to pass to the NumericFormat component
+		 */
 		const numericFormatProps = {
 			...( currencyPosition === PREFIX && { prefix: currencySymbol } ),
 			...( currencyPosition === SUFFIX && { suffix: currencySymbol } ),
 		};
 
+		/**
+		 * Handles the change of the sale price.
+		 * @param e The event.
+		 */
 		const handleChange = ( e ) => {
 			if ( ! isNaN( e.value ) && e.value >= minDefaultPrice ) {
 				updateSalePrice( e );
 			}
 		};
 
+		/**
+		 * The sale price classes.
+		 */
 		const salPriceClasses = classNames(
 			'tribe-editor__input tribe-editor__ticket__sale-price-input',
 			{ 'tribe-editor__ticket__sale-price--error': !validSalePrice }
 		);
 
+		/**
+		 * Props for the FromDate input.
+		 */
 		const FromDateProps = {
 			value: fromDateInput,
 			format: dateFormat,
@@ -109,6 +127,9 @@ class SalePrice extends PureComponent {
 			},
 		};
 
+		/**
+		 * Props for the ToDate input.
+		 */
 		const ToDateProps = {
 			value: toDateInput,
 			format: dateFormat,
