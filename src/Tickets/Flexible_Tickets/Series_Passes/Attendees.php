@@ -1291,7 +1291,7 @@ class Attendees extends Controller {
 	 * @return string[] The set of actions for the row.
 	 */
 	public function filter_attendees_row_actions( array $row_actions, array $item ): array {
-		if ( $item['ticket_type'] !== Series_Passes::TICKET_TYPE ) {
+		if ( Series_Passes::TICKET_TYPE !== $item['ticket_type'] ) {
 			return $row_actions;
 		}
 
@@ -1319,7 +1319,7 @@ class Attendees extends Controller {
 	 * @return string The updated HTML content of the column.
 	 */
 	public function filter_attendees_table_column_check_in( string $html, array $item ) {
-		if ( $item['ticket_type'] !== Series_Passes::TICKET_TYPE ) {
+		if ( Series_Passes::TICKET_TYPE !== $item['ticket_type'] ) {
 			return $html;
 		}
 
