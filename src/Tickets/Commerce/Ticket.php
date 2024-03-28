@@ -1196,7 +1196,7 @@ class Ticket {
 		// Using the ticket's date helper to ensure the timezone for events are handled correctly.
 		$start = $ticket->get_date( $start_date );
 		$end   = $ticket->get_date( $end_date );
-		$now   = $ticket->get_date( 'now' );
+		$now   = $ticket->get_date( 'today' );
 		
 		// If the sale has no end date and the start date is in the past, the sale is on.
 		if ( $start <= $now && empty( $end ) ) {

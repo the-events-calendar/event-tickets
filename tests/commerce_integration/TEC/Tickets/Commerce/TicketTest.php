@@ -175,6 +175,25 @@ class TicketTest extends WPTestCase {
 				];
 			},
 		];
+		
+		yield 'sale start date and end date is today => true' => [
+			function (): array {
+				$post_id   = static::factory()->post->create();
+				$ticket_id = $this->create_tc_ticket( $post_id, 20 );
+				$today     = gmdate( 'Y-m-d' );
+				
+				update_post_meta( $ticket_id, Ticket::$sale_price_checked_key, true );
+				update_post_meta( $ticket_id, Ticket::$sale_price_key, 10 );
+				update_post_meta( $ticket_id, Ticket::$sale_price_start_date_key, $today );
+				update_post_meta( $ticket_id, Ticket::$sale_price_end_date_key, $today );
+				
+				return [
+					$post_id,
+					$ticket_id,
+					true,
+				];
+			},
+		];
 	}
 	
 	/**
