@@ -2213,7 +2213,7 @@ class AttendeesTest extends Controller_Test_Case {
 
 		$this->make_controller()->register();
 
-		$column_ticket = $attendee_table->column_primary_info( $attendee_item );
+		$column_primary_info = $attendee_table->column_primary_info( $attendee_item );
 		$this->assertMatchesHtmlSnapshot(
 			str_replace( [
 					$series_attendee_id,
@@ -2225,13 +2225,13 @@ class AttendeesTest extends Controller_Test_Case {
 					'{{series_pass_id}}',
 					'{{series_id}}'
 				],
-				$column_ticket )
+				$column_primary_info )
 		);
 		$this->assertEqualSets( [ 'delete_attendee' ], array_keys( $attendee_table->get_bulk_actions() ) );
 	}
 
 	/**
-	 * It should remove checkin row action from Series Passes Attendeees not yet cloned to Event
+	 * It should remove checkin row action from Series Passes Attendees not yet cloned to Event
 	 *
 	 * @test
 	 */
@@ -2304,7 +2304,7 @@ class AttendeesTest extends Controller_Test_Case {
 			'{{series_id}}',
 			'{{event_id}}'
 		],
-			$attendee_table->column_ticket( $cloned_attendee_item )
+			$attendee_table->column_primary_info( $cloned_attendee_item )
 		);
 		$series_pass_attendee_html = str_replace( [
 			$series_pass_attendee_item['ID'],
@@ -2317,7 +2317,7 @@ class AttendeesTest extends Controller_Test_Case {
 			'{{series_id}}',
 			'{{event_id}}'
 		],
-			$attendee_table->column_ticket( $series_pass_attendee_item )
+			$attendee_table->column_primary_info( $series_pass_attendee_item )
 		);
 
 		$this->assertMatchesHtmlSnapshot( $cloned_attendee_html . "\n\n" . $series_pass_attendee_html );
