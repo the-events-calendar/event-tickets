@@ -49,6 +49,7 @@ class Provider extends Service_Provider {
 
 		require_once Tickets_Plugin::instance()->plugin_path . 'src/functions/commerce/provider.php';
 		require_once Tickets_Plugin::instance()->plugin_path . 'src/functions/emails/provider.php';
+		require_once Tickets_Plugin::instance()->plugin_path . 'src/functions/attendees/provider.php';
 
 		$this->register_hooks();
 		$this->register_assets();

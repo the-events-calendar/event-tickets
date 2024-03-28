@@ -92,10 +92,10 @@ class Attendees_Test extends WPTestCase {
 		$items = $sut->sanitize_csv_rows( $items );
 
 		// Get the 'Ticket Holder Name' column from the arrays.
-		$ticket_holder = wp_list_pluck( $items, 6 );
+		$ticket_holder = wp_list_pluck( $items, 5 );
 
 		// Get the 'Purchaser Name' column from the arrays.
-		$purchaser_name = wp_list_pluck( $items, 8 );
+		$purchaser_name = wp_list_pluck( $items, 7 );
 
 		$this->assertEquals(
 			[

@@ -357,7 +357,7 @@ class Tribe__Tickets__Assets {
 			$tickets_main,
 			'tribe-tickets-admin-attendees',
 			'tickets-admin-attendees.css',
-			[ 'tec-variables-full', 'wp-components' ],
+			[ 'tec-variables-full', 'tribe-common-skeleton-style', 'wp-components' ],
 			null,
 			[
 				'groups' => [

@@ -54,7 +54,11 @@ class Glance_Items {
 		$text = _n( '%s Attendee', '%s Attendees', $total, 'event-tickets' );
 		$text = sprintf( $text, number_format_i18n( $total ) );
 
-		$items[] = sprintf( '<span class="tec-tickets-attendees-count">%1$s</span>', $text ) . "\n";
+		if ( ! tec_tickets_attendees_page_is_enabled() || ! tribe( 'tickets.attendees' )->user_can_manage_attendees() ) {
+			$items[] = sprintf( '<span class="tec-tickets-attendees-count">%1$s</span>', $text ) . "\n";
+		} else {
+			$items[] = sprintf( '<a class="tec-tickets-attendees-count" href="%1$s">%2$s</a>', esc_url( tribe( Attendees\Page::class )->get_url() ), $text ) . "\n";
+		}
 
 		return $items;
 	}
