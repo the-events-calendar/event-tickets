@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Emails\JSON_LD;
 
 use TEC\Tickets\Emails\Email_Abstract;
+use WP_Post;
 
 /**
  * Class Event_Schema.
@@ -27,9 +28,9 @@ class Event_Schema extends JSON_LD_Abstract {
 	 *
 	 * @since 5.6.0
 	 *
-	 * @var \WP_Post
+	 * @var WP_Post
 	 */
-	protected \WP_Post $event;
+	protected WP_Post $event;
 
 	/**
 	 * Build the schema object from an email.
@@ -48,6 +49,23 @@ class Event_Schema extends JSON_LD_Abstract {
 
 		$schema        = tribe( Event_Schema::class );
 		$schema->event = get_post( $email->get( 'post_id' ) );
+
+		return $schema->filter_schema_by_email( $email );
+	}
+
+	/**
+	 * Build the schema object from an email and an event.
+	 *
+	 * @since 5.8.4
+	 *
+	 * @param Email_Abstract $email The email instance.
+	 * @param int|null       $event The event post ID.
+	 *
+	 * @return JSON_LD_Abstract The schema instance.
+	 */
+	public static function build_from_email_and_post( Email_Abstract $email, ?int $event = null ): JSON_LD_Abstract {
+		$schema        = tribe( Event_Schema::class );
+		$schema->event = tribe_get_event( $event );
 
 		return $schema->filter_schema_by_email( $email );
 	}

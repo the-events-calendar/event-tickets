@@ -4,7 +4,7 @@ Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, raf
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
 Requires at least: 6.2
 Tested up to: 6.4.3
-Stable tag: 5.8.3
+Stable tag: 5.8.4
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -195,6 +195,24 @@ We've got a [LoopedIn](https://evnt.is/ideas) page where we're actively watching
 Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on using, tweaking, and troubleshooting our plugins.
 
 == Changelog ==
+
+= [5.8.4] 2024-03-25 =
+
+* Fix - Events Calendar Pro promo shouldn't show when it's already installed or when not editing an event. [ET-2018]
+* Fix - Addressed a problem preventing the export of event attendees by email. [ETP-904]
+* Fix - In the block editor, ticket will no longer be deleted when you open the ticket block settings. [ET-2046]
+* Fix - Show post excerpt line breaks within ticket emails. [ET-2006]
+* Fix - Front-end tickets block button padding is now consistent on hover and when disabled. [ET-2035]
+* Fix - Allow blank sender name and email to be stored within Tickets Emails settings. [ET-2008]
+* Fix - Corrected an issue where `attendees_table->prepare_items()` was being called multiple times. [ET-2005]
+* Fix - Tickets block will be properly registered when creating a new post or page. [ET-2045]
+* Fix - Corrected an issue where the Post Tickets ORM method `filter_by_has_tickets` would prepare an empty statement. [ET-2017]
+* Tweak - Added additional fields to the Event Tickets Site Health section. [ET-2017]
+* Feature - Add the Series Pass email template. [ET-1854]
+* Tweak - Adjusted the logic for calculating fees when using Stripe. [ET-2015]
+* Tweak - Added filters: `tec_tickets_email_class`
+* Tweak - Changed views: `emails/series-pass`, `emails/template-parts/body/additional-content`, `emails/template-parts/body/post-description`, `emails/template-parts/body/series-events-list`, `emails/template-parts/body/series-pass-dates`, `emails/template-parts/body/thumbnail`, `emails/template-parts/header/head/series-pass-styles`, `emails/template-parts/header/head/styles`
+* Language - 22 new strings added, 91 updated, 0 fuzzied, and 0 obsoleted
 
 = [5.8.3] 2024-03-12 =
 

@@ -35,10 +35,6 @@ const TicketsContainer = ({
 	uneditableTickets,
 	uneditableTicketsAreLoading,
 }) => {
-	if (isSettingsOpen) {
-		return null;
-	}
-
 	const innerBlocksClassName = classNames({
 		'tribe-editor__tickets__inner-blocks': true,
 		'tribe-editor__tickets__inner-blocks--show': !showInactiveBlock,
