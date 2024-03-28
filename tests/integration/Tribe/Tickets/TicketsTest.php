@@ -171,7 +171,6 @@ class TicketsTest extends \Codeception\TestCase\WPTestCase {
 
 		$count = Tickets::get_ticket_counts( $post_id );
 
-		codecept_debug( var_export( $count, true ) );
 		$this->assertEquals( [
 			'rsvp'    =>
 				[

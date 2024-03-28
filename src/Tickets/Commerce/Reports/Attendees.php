@@ -167,8 +167,8 @@ class Attendees extends Report_Abstract {
 
 			$status = tribe( \Tribe__Tickets__Attendees::class )->has_attendees_list_access(
 				$event_id,
-				$type,
 				$nonce,
+				$type,
 				$send_to
 			);
 

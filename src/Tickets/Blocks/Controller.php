@@ -100,14 +100,18 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 	 * Register the blocks after plugins are fully loaded.
 	 *
 	 * @since 5.3.0
+	 * @since 5.8.4 Correctly get post type when creating a new post or page.
 	 */
 	public function register_blocks() {
 		if ( is_admin() ) {
 			// In admin context, do not register the blocks if the post type is not ticketable.
-			$post      = get_post() ?: get_post( tribe_get_request_var( 'post' ) );
-			$post_type = get_post_type( $post ) ?: tribe_get_request_var( 'post_type' );
+			$post_id           = tribe_get_request_var( 'post' );
+			$post_type_default = 'post';
+
+			$post_type = $post_id ? get_post_type( $post_id ) : tribe_get_request_var( 'post_type', $post_type_default );
+
 			if ( ! in_array( $post_type, (array) tribe_get_option( 'ticket-enabled-post-types', [] ), true ) ) {
-				// Register the Blocks only on ticket-enabled post types.
+				// Exit if the post type is not ticketable.
 				return;
 			}
 		}
