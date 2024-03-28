@@ -2213,7 +2213,7 @@ class AttendeesTest extends Controller_Test_Case {
 
 		$this->make_controller()->register();
 
-		$column_ticket = $attendee_table->column_ticket( $attendee_item );
+		$column_ticket = $attendee_table->column_primary_info( $attendee_item );
 		$this->assertMatchesHtmlSnapshot(
 			str_replace( [
 					$series_attendee_id,
