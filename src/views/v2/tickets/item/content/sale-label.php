@@ -31,6 +31,8 @@ if ( empty( $ticket->on_sale ) ) {
 }
 
 ?>
-<div class="tribe-tickets__tickets-item-content-sale-label">
-	<?php echo esc_html__( 'On Sale', 'event-tickets' ); ?>
+<div class="tribe-tickets__tickets-item-content-sale-label-container">
+	<span class="tribe-tickets__tickets-item-content-sale-label">
+		<?php echo esc_html__( 'On Sale', 'event-tickets' ); ?>
+	</span>
 </div>
