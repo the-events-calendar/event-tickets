@@ -1,4 +1,12 @@
 <?php
+/**
+ * Order Summary Class to generate data for Order report page header sections.
+ *
+ * @since 5.6.7
+ *
+ * @package TEC\Tickets\Commerce\Reports\Data
+ */
+
 namespace TEC\Tickets\Commerce\Reports\Data;
 
 use TEC\Tickets\Commerce\Status\Completed;
@@ -132,6 +140,7 @@ class Order_Summary {
 	 */
 	protected function add_available_data( array $quantities, Ticket_Object $ticket ): array {
 		$ticket_available = $ticket->available();
+		
 		$quantities[ $ticket->availability_slug() ] = -1 === $ticket_available ? __( 'Unlimited', 'event-tickets' ) : $ticket_available;
 		return $quantities;
 	}
@@ -358,7 +367,7 @@ class Order_Summary {
 	 *
 	 * @since 5.8.0
 	 *
-	 * @param Ticket_Object $ticket The ticket object.
+	 * @param Ticket_Object     $ticket The ticket object.
 	 * @param array<string,int> $quantity_by_status The quantity by status.
 	 *
 	 * @return bool Whether to include the sales data into event sales data.
@@ -374,7 +383,8 @@ class Order_Summary {
 		 * @param array<string,int> $quantity_by_status The quantity by status.
 		 * @param Order_Summary $this The order summary object.
 		 */
-		return apply_filters( 'tec_tickets_commerce_order_report_summary_should_include_event_sales_data',
+		return apply_filters(
+			'tec_tickets_commerce_order_report_summary_should_include_event_sales_data',
 			true,
 			$ticket,
 			$quantity_by_status,
