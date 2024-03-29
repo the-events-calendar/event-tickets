@@ -267,6 +267,78 @@ class OrderReportTest extends WPTestCase {
 				return [ $event_id, [ $event_id, $ticket_id_a, $ticket_id_b, $order_a->ID, $order_b->ID, $order_c->ID, $order_d->ID, $order_e->ID ] ];
 			},
 		];
+		
+		yield 'event with sale price enabled tickets and orders' => [
+			function (): array {
+				$event_id = tribe_events()->set_args(
+					[
+						'title'      => 'Event with sale price enabled tickets and orders',
+						'status'     => 'publish',
+						'start_date' => '2023-01-01 00:00:00',
+						'duration'   => 2 * HOUR_IN_SECONDS,
+					]
+				)->create()->ID;
+				
+				$ticket_id_a = $this->create_tc_ticket(
+					$event_id,
+					20,
+					[
+						'ticket_add_sale_price'  => 'on',
+						'ticket_sale_price'      => 10,
+						'ticket_sale_start_date' => '2010-03-01',
+						'ticket_sale_end_date'   => '2040-03-01',
+					] 
+				);
+				
+				$ticket_id_b = $this->create_tc_ticket( $event_id, 30 );
+				
+				$order_a = $this->create_order( [ $ticket_id_a => 3 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
+				$order_b = $this->create_order(
+					[ $ticket_id_a => 2 ],
+					[
+						'purchaser_email' => 'purchaser@test.com',
+						'order_status'    => Pending::SLUG,
+					]
+				);
+				$order_c = $this->create_order(
+					[
+						$ticket_id_a => 2,
+						$ticket_id_b => 3,
+					],
+					[ 'purchaser_email' => 'purchaser@test.com' ]
+				);
+				
+				// Manually set the `post_date` of each order in sequence to ensure the order is consistent in the snapshot.
+				global $wpdb;
+				foreach (
+					[
+						$order_a->ID => '2022-01-01 00:00:00',
+						$order_b->ID => '2022-01-02 00:00:00',
+						$order_c->ID => '2022-01-03 00:00:00',
+					] as $order_id => $post_date
+				) {
+					$wpdb->query(
+						$wpdb->prepare(
+							"UPDATE {$wpdb->posts} SET post_date = %s WHERE ID = %d",
+							$post_date,
+							$order_id
+						)
+					);
+				}
+			
+				return [
+					$event_id,
+					[
+						$event_id,
+						$ticket_id_a,
+						$ticket_id_b,
+						$order_a->ID,
+						$order_b->ID,
+						$order_c->ID,
+					],
+				];
+			},
+		];
 	}
 
 	/**
