@@ -38,6 +38,10 @@
 
 	.tribe-tickets__tickets-item-extra-available {
 		color: var(--tec-color-text-secondary);
+
+		@media (--viewport-medium) {
+			margin: var(--tec-spacer-0) 0;
+		}
 	}
 
 	.tribe-tickets__tickets-item-extra-price {
@@ -59,9 +63,17 @@
 			font-size: var(--tec-font-size-1);
 			font-weight: var(--tec-font-weight-regular);
 			text-decoration: line-through;
+
+			@media (--viewport-medium) {
+				flex-direction: column;
+				gap: 0;
+				max-height: 19px;
+				padding: 6px 0 0;
+			}
 		}
 
 		@media (--viewport-medium) {
+			align-items: stretch;
 			flex-direction: column;
 			gap: 0;
 		}
