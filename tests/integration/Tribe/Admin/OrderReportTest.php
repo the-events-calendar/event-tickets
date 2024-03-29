@@ -6,7 +6,6 @@ use Closure;
 use Generator;
 use Codeception\TestCase\WPTestCase;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
-use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Pending;
 use Tribe\Tests\Traits\With_Uopz;
 use TEC\Tickets\Commerce\Reports\Orders as Order_Report;
@@ -38,45 +37,57 @@ class OrderReportTest extends WPTestCase {
 	public function tc_order_report_data_provider(): Generator {
 		yield 'event with no orders' => [
 			function (): array {
-				$event_id  = tribe_events()->set_args( [
-					'title'      => 'Event with no orders',
-					'status'     => 'publish',
-					'start_date' => '2020-01-01 00:00:00',
-					'duration'   => 2 * HOUR_IN_SECONDS,
-				] )->create()->ID;
+				$event_id  = tribe_events()->set_args(
+					[
+						'title'      => 'Event with no orders',
+						'status'     => 'publish',
+						'start_date' => '2020-01-01 00:00:00',
+						'duration'   => 2 * HOUR_IN_SECONDS,
+					] 
+				)->create()->ID;
 				$ticket_id = $this->create_tc_ticket( $event_id );
 
 				return [ $event_id, [ $event_id, $ticket_id ] ];
-			}
+			},
 		];
 
 		yield 'event with one order' => [
 			function (): array {
-				$event_id  = tribe_events()->set_args( [
-					'title'      => 'Event with one order',
-					'status'     => 'publish',
-					'start_date' => '2020-01-01 00:00:00',
-					'duration'   => 2 * HOUR_IN_SECONDS,
-				] )->create()->ID;
+				$event_id  = tribe_events()->set_args(
+					[
+						'title'      => 'Event with one order',
+						'status'     => 'publish',
+						'start_date' => '2020-01-01 00:00:00',
+						'duration'   => 2 * HOUR_IN_SECONDS,
+					] 
+				)->create()->ID;
 				$ticket_id = $this->create_tc_ticket( $event_id );
 				$order     = $this->create_order( [ $ticket_id => 1 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
 
 				return [ $event_id, [ $event_id, $ticket_id, $order->ID ] ];
-			}
+			},
 		];
 
 		yield 'event with 1 pending and 1 completed order' => [
 			function (): array {
-				$event_id  = tribe_events()->set_args( [
-					'title'      => 'Event with 1 pending and 1 completed order',
-					'status'     => 'publish',
-					'start_date' => '2020-01-01 00:00:00',
-					'duration'   => 2 * HOUR_IN_SECONDS,
-				] )->create()->ID;
+				$event_id  = tribe_events()->set_args(
+					[
+						'title'      => 'Event with 1 pending and 1 completed order',
+						'status'     => 'publish',
+						'start_date' => '2020-01-01 00:00:00',
+						'duration'   => 2 * HOUR_IN_SECONDS,
+					] 
+				)->create()->ID;
 				$ticket_id = $this->create_tc_ticket( $event_id, 10 );
 
 				$order_a = $this->create_order( [ $ticket_id => 2 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
-				$order_b = $this->create_order( [ $ticket_id => 3 ], [ 'purchaser_email' => 'purchaser@test.com', 'order_status' => Pending::SLUG ] );
+				$order_b = $this->create_order(
+					[ $ticket_id => 3 ],
+					[
+						'purchaser_email' => 'purchaser@test.com',
+						'order_status'    => Pending::SLUG,
+					] 
+				);
 
 				// Manually set the `post_date` of each order in sequence to ensure the order is consistent in the snapshot.
 				global $wpdb;
@@ -86,36 +97,62 @@ class OrderReportTest extends WPTestCase {
 						$order_b->ID => '2022-01-02 00:00:00',
 					] as $order_id => $post_date
 				) {
-					$wpdb->query( $wpdb->prepare(
-						"UPDATE {$wpdb->posts} SET post_date = %s WHERE ID = %d",
-						$post_date,
-						$order_id
-					) );
+					$wpdb->query(
+						$wpdb->prepare(
+							"UPDATE {$wpdb->posts} SET post_date = %s WHERE ID = %d",
+							$post_date,
+							$order_id
+						) 
+					);
 				}
 
 				return [ $event_id, [ $event_id, $ticket_id, $order_a->ID, $order_b->ID ] ];
-			}
+			},
 		];
 
 		yield 'event with multiple tickets and orders' => [
 			function (): array {
-				$event_id  = tribe_events()->set_args( [
-					'title'      => 'Event multiple tickets and orders',
-					'status'     => 'publish',
-					'start_date' => '2020-01-01 00:00:00',
-					'duration'   => 2 * HOUR_IN_SECONDS,
-				] )->create()->ID;
+				$event_id    = tribe_events()->set_args(
+					[
+						'title'      => 'Event multiple tickets and orders',
+						'status'     => 'publish',
+						'start_date' => '2020-01-01 00:00:00',
+						'duration'   => 2 * HOUR_IN_SECONDS,
+					] 
+				)->create()->ID;
 				$ticket_id_a = $this->create_tc_ticket( $event_id, 10 );
 				$ticket_id_b = $this->create_tc_ticket( $event_id, 20.50 );
 
 				// Force ticket sorting order for display.
-				wp_update_post( [ 'ID' => $ticket_id_a, 'menu_order' => 0 ] );
-				wp_update_post( [ 'ID' => $ticket_id_b, 'menu_order' => 1 ] );
+				wp_update_post(
+					[
+						'ID'         => $ticket_id_a,
+						'menu_order' => 0,
+					] 
+				);
+				wp_update_post(
+					[
+						'ID'         => $ticket_id_b,
+						'menu_order' => 1,
+					] 
+				);
 
 				$order_a = $this->create_order( [ $ticket_id_a => 2 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
-				$order_b = $this->create_order( [ $ticket_id_a => 3 ], [ 'purchaser_email' => 'purchaser@test.com', 'order_status' => Pending::SLUG ] );
+				$order_b = $this->create_order(
+					[ $ticket_id_a => 3 ],
+					[
+						'purchaser_email' => 'purchaser@test.com',
+						'order_status'    => Pending::SLUG,
+					] 
+				);
 				$order_c = $this->create_order( [ $ticket_id_b => 1 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
-				$order_d = $this->create_order( [ $ticket_id_b => 4 ], [ 'purchaser_email' => 'purchaser@test.com', 'order_status' => Pending::SLUG ] );
+				$order_d = $this->create_order(
+					[ $ticket_id_b => 4 ],
+					[
+						'purchaser_email' => 'purchaser@test.com',
+						'order_status'    => Pending::SLUG,
+					] 
+				);
 
 				// Manually set the `post_date` of each order in sequence to ensure the order is consistent in the snapshot.
 				global $wpdb;
@@ -127,44 +164,85 @@ class OrderReportTest extends WPTestCase {
 						$order_d->ID => '2022-01-04 00:00:00',
 					] as $order_id => $post_date
 				) {
-					$wpdb->query( $wpdb->prepare(
-						"UPDATE {$wpdb->posts} SET post_date = %s WHERE ID = %d",
-						$post_date,
-						$order_id
-					) );
+					$wpdb->query(
+						$wpdb->prepare(
+							"UPDATE {$wpdb->posts} SET post_date = %s WHERE ID = %d",
+							$post_date,
+							$order_id
+						) 
+					);
 				}
 
 				return [ $event_id, [ $event_id, $ticket_id_a, $ticket_id_b, $order_a->ID, $order_b->ID, $order_c->ID, $order_d->ID ] ];
-			}
+			},
 		];
 
 		yield 'event with multiple tickets in same order' => [
 			function (): array {
-				$event_id  = tribe_events()->set_args( [
-					'title'      => 'Event with multiple tickets in same order',
-					'status'     => 'publish',
-					'start_date' => '2020-01-01 00:00:00',
-					'duration'   => 2 * HOUR_IN_SECONDS,
-				] )->create()->ID;
+				$event_id    = tribe_events()->set_args(
+					[
+						'title'      => 'Event with multiple tickets in same order',
+						'status'     => 'publish',
+						'start_date' => '2020-01-01 00:00:00',
+						'duration'   => 2 * HOUR_IN_SECONDS,
+					] 
+				)->create()->ID;
 				$ticket_id_a = $this->create_tc_ticket( $event_id, 10 );
 				$ticket_id_b = $this->create_tc_ticket( $event_id, 20.50 );
-				$ticket_id_c = $this->create_tc_ticket( $event_id, 0, [
-					'tribe-ticket' => [
-						'mode'     => Global_Stock::OWN_STOCK_MODE,
-						'capacity' => -1,
-					],
-				] );
+				$ticket_id_c = $this->create_tc_ticket(
+					$event_id,
+					0,
+					[
+						'tribe-ticket' => [
+							'mode'     => Global_Stock::OWN_STOCK_MODE,
+							'capacity' => -1,
+						],
+					] 
+				);
 
 				// Force ticket sorting order for display.
-				wp_update_post( [ 'ID' => $ticket_id_a, 'menu_order' => 0 ] );
-				wp_update_post( [ 'ID' => $ticket_id_b, 'menu_order' => 1 ] );
-				wp_update_post( [ 'ID' => $ticket_id_c, 'menu_order' => 2 ] );
+				wp_update_post(
+					[
+						'ID'         => $ticket_id_a,
+						'menu_order' => 0,
+					] 
+				);
+				wp_update_post(
+					[
+						'ID'         => $ticket_id_b,
+						'menu_order' => 1,
+					] 
+				);
+				wp_update_post(
+					[
+						'ID'         => $ticket_id_c,
+						'menu_order' => 2,
+					] 
+				);
 
 				$order_a = $this->create_order( [ $ticket_id_a => 1 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
-				$order_b = $this->create_order( [ $ticket_id_a => 1 ], [ 'purchaser_email' => 'purchaser@test.com', 'order_status' => Pending::SLUG ] );
+				$order_b = $this->create_order(
+					[ $ticket_id_a => 1 ],
+					[
+						'purchaser_email' => 'purchaser@test.com',
+						'order_status'    => Pending::SLUG,
+					] 
+				);
 				$order_c = $this->create_order( [ $ticket_id_b => 1 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
-				$order_d = $this->create_order( [ $ticket_id_b => 1 ], [ 'purchaser_email' => 'purchaser@test.com', 'order_status' => Pending::SLUG ] );
-				$order_e = $this->create_order( [ $ticket_id_a => 1, $ticket_id_b => 1 ], [ 'purchaser_email' => 'purchaser@test.com' ] );
+				$order_d = $this->create_order(
+					[ $ticket_id_b => 1 ],
+					[
+						'purchaser_email' => 'purchaser@test.com',
+						'order_status'    => Pending::SLUG,
+					] 
+				);
+				$order_e = $this->create_order(
+					[
+						$ticket_id_a => 1,
+						$ticket_id_b => 1,
+					],
+					[ 'purchaser_email' => 'purchaser@test.com' ] 
+				);
 
 				// Manually set the `post_date` of each order in sequence to ensure the order is consistent in the snapshot.
 				global $wpdb;
@@ -177,15 +255,17 @@ class OrderReportTest extends WPTestCase {
 						$order_e->ID => '2022-01-05 00:00:00',
 					] as $order_id => $post_date
 				) {
-					$wpdb->query( $wpdb->prepare(
-						"UPDATE {$wpdb->posts} SET post_date = %s WHERE ID = %d",
-						$post_date,
-						$order_id
-					) );
+					$wpdb->query(
+						$wpdb->prepare(
+							"UPDATE {$wpdb->posts} SET post_date = %s WHERE ID = %d",
+							$post_date,
+							$order_id
+						) 
+					);
 				}
 
 				return [ $event_id, [ $event_id, $ticket_id_a, $ticket_id_b, $order_a->ID, $order_b->ID, $order_c->ID, $order_d->ID, $order_e->ID ] ];
-			}
+			},
 		];
 	}
 
