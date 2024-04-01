@@ -384,9 +384,11 @@ class BaseTicketEditorCest extends BaseRestCest {
 				'checked_in_percentage'   => 100,
 				'unchecked_in_percentage' => 0,
 			],
-			'price_suffix'                  => '',
+			'price_suffix'                  => null,
+			'on_sale'                       => null,
 			'iac'                           => 'none',
 			'type'                          => 'default',
+			'sale_price_data'               => [],
 		];
 
 		$is_plus_test = $this->is_plus;
@@ -521,9 +523,11 @@ class BaseTicketEditorCest extends BaseRestCest {
 				'sold'    => 0,
 				'pending' => 0,
 			],
-			'price_suffix'                  => '',
+			'price_suffix'                  => null,
+			'on_sale'                       => null,
 			'iac'                           => 'none',
 			'type'                          => 'default',
+			'sale_price_data'               => [],
 		];
 
 		$is_plus_test = $this->is_plus;
@@ -693,9 +697,11 @@ class BaseTicketEditorCest extends BaseRestCest {
 				'unchecked_in_percentage' => 0,
 			],
 			'rest_url'                      => $ticket_update_rest_url,
-			'price_suffix'                  => '',
+			'price_suffix'                  => null,
+			'on_sale'                       => null,
 			'iac'                           => 'none',
 			'type'                          => 'default',
+			'sale_price_data'               => [],
 		];
 
 		$is_plus_test = $this->is_plus;

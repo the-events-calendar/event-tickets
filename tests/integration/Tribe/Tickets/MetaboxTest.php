@@ -124,6 +124,50 @@ class MetaboxTest extends WPTestCase {
 				return [ $post_id, $ticket_id ];
 			},
 		];
+		
+		yield 'post with ticket and sale price' => [
+			function (): array {
+				$post_id   = $this->factory()->post->create();
+				$ticket_id = $this->create_tc_ticket(
+					$post_id,
+					20,
+					[
+						'ticket_add_sale_price'  => 'on',
+						'ticket_sale_price'      => 10,
+						'ticket_sale_start_date' => '2010-03-01',
+						'ticket_sale_end_date'   => '2040-03-01',
+					]
+				);
+
+				return [ $post_id, $ticket_id ];
+			},
+		];
+		
+		yield 'event with ticket and sale price' => [
+			function (): array {
+				$post_id = tribe_events()->set_args(
+					[
+						'title'      => 'Test Event with sale price',
+						'status'     => 'publish',
+						'start_date' => '2022-10-01 10:00:00',
+						'duration'   => 2 * HOUR_IN_SECONDS,
+					]
+				)->create()->ID;
+				
+				$ticket_id = $this->create_tc_ticket(
+					$post_id,
+					20,
+					[
+						'ticket_add_sale_price'  => 'on',
+						'ticket_sale_price'      => 10,
+						'ticket_sale_start_date' => '2010-03-01',
+						'ticket_sale_end_date'   => '2040-03-01',
+					]
+				);
+				
+				return [ $post_id, $ticket_id ];
+			},
+		];
 	}
 
 	public function placehold_post_ids( string $snapshot, array $ids ): string {
