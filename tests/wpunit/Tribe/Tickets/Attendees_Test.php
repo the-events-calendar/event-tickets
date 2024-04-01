@@ -11,11 +11,14 @@ use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 use Tribe__Tickets__Attendees as Attendees;
 use Tribe__Tickets__Attendees_Table;
+use WP_Error;
+use Tribe\Tests\Traits\With_Uopz;
 
 class Attendees_Test extends WPTestCase {
 	use RSVP_Ticket_Maker;
 	use Attendee_Maker;
 	use SnapshotAssertions;
+	use With_Uopz;
 
 	/**
 	 * {@inheritdoc}
@@ -243,6 +246,102 @@ class Attendees_Test extends WPTestCase {
 		} else {
 			$this->assertEquals( '', $html );
 		}
+	}
+
+	/**
+	 * @test
+	 * @dataProvider access_check_data_provider
+	 */
+	public function should_have_attendees_list_access( Closure $fixture ) {
+		list( $event_id, $nonce, $type, $send_to, $expected ) = $fixture();
+
+		$attendees = new Attendees();
+		$result    = $attendees->has_attendees_list_access( $event_id, $nonce, $type, $send_to );
+
+		if ( $expected instanceof WP_Error ) {
+			$this->assertInstanceOf( WP_Error::class, $result );
+			$this->assertEquals( $expected->get_error_code(), $result->get_error_code() );
+		} else {
+			$this->assertEquals( $expected, $result );
+		}
+	}
+
+	public function access_check_data_provider() {
+		yield 'invalid event id' => [
+			function () {
+				return [ null, 'invalid_nonce', 'user', '1', new WP_Error( 'no-event-id', 'Invalid Event ID' ) ];
+			},
+		];
+
+		yield 'valid access' => [
+			function () {
+				$admin_user_id = $this->factory()->user->create( [ 'role' => 'administrator' ] );
+				wp_set_current_user( $admin_user_id );
+				$this->set_fn_return( 'wp_verify_nonce', true );
+				$event_id = tribe_events()->set_args(
+					[
+						'title'      => 'Test Event',
+						'status'     => 'publish',
+						'start_date' => '2020-01-01 09:00:00',
+						'end_date'   => '2020-01-01 11:30:00',
+					]
+				)->create()->ID;
+				return [ $event_id, '1234567890', 'user', $admin_user_id, true ];
+			},
+		];
+
+		yield 'invalid nonce' => [
+			function () {
+				$this->set_fn_return( 'wp_verify_nonce', false );
+				return [ 123, 'invalid_nonce', 'user', '1', new WP_Error( 'nonce-fail', 'Cheatin Huh?' ) ];
+			},
+		];
+
+		yield 'invalid email format' => [
+			function () {
+				$admin_user_id = $this->factory()->user->create( [ 'role' => 'administrator' ] );
+				wp_set_current_user( $admin_user_id );
+				$this->set_fn_return( 'wp_verify_nonce', true );
+				$event_id = tribe_events()->set_args(
+					[
+						'title'      => 'Test Event',
+						'status'     => 'publish',
+						'start_date' => '2020-01-01 09:00:00',
+						'end_date'   => '2020-01-01 11:30:00',
+					]
+				)->create()->ID;
+				return [
+					$event_id,
+					'valid_nonce',
+					'email',
+					'not_an_email',
+					new WP_Error( 'invalid-email', 'Invalid Email' ),
+				];
+			},
+		];
+
+		yield 'invalid user ID format' => [
+			function () {
+				$admin_user_id = $this->factory()->user->create( [ 'role' => 'administrator' ] );
+				wp_set_current_user( $admin_user_id );
+				$this->set_fn_return( 'wp_verify_nonce', true );
+				$event_id = tribe_events()->set_args(
+					[
+						'title'      => 'Test Event',
+						'status'     => 'publish',
+						'start_date' => '2020-01-01 09:00:00',
+						'end_date'   => '2020-01-01 11:30:00',
+					]
+				)->create()->ID;
+				return [
+					$event_id,
+					'valid_nonce',
+					'user',
+					'not_a_number',
+					new WP_Error( 'invalid-user', 'Invalid User ID' ),
+				];
+			},
+		];
 	}
 
 	/**
