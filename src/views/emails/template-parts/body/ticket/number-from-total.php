@@ -35,7 +35,7 @@ if ( empty( $tickets ) || count( $tickets ) === 1 ) {
 	<?php
 		echo sprintf(
 			// Translators: %1$s: Tickets label, in singular. %2$s: Current ticket number over total. %3$s: Number of total Tickets.
-			esc_html__( '%1$s %2$s of %3$s', 'event_tickets' ),
+			esc_html__( '%1$s %2$s of %3$s', 'event-tickets' ),
 			tribe_get_ticket_label_singular( 'tec_tickets_email_ticket_total' ),
 			$i,
 			count( $tickets )
