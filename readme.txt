@@ -196,6 +196,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Fix - Correct the text domain for a couple of text strings so they could be translated appropriately. [ET-2020]
+
 = [5.8.4] 2024-03-25 =
 
 * Fix - Events Calendar Pro promo shouldn't show when it's already installed or when not editing an event. [ET-2018]
