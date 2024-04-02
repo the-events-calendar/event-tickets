@@ -149,12 +149,43 @@
 		max-width: 85px;
 	}
 
+	.tribe-tickets__commerce-checkout-cart-item-price {
+		.tec-tickets-price {
+			display: flex;
+			gap: var(--tec-spacer-1);
+
+			.tec-tickets-price__regular-price {
+				color: var(--tec-color-text-secondary);
+				font-size: var(--tec-font-size-2);
+				font-weight: var(--tec-font-weight-normal);
+				text-decoration: line-through;
+			}
+
+			.tec-tickets-price__sale-price {
+				color: var(--tec-color-text-primary);
+				font-size: var(--tec-font-size-3);
+				font-weight: var(--tec-font-weight-bold);
+			}
+
+			& > ins {
+				order: 2;
+				text-decoration: none;
+			}
+
+			& > del {
+				order: 1;
+				text-decoration: none;
+			}
+		}
+	}
+
 	.tribe-tickets__commerce-checkout-cart-item-quantity {
 		flex: 0 0 60px;
 		font-weight: bold;
 	}
 
 	.tribe-tickets__commerce-checkout-cart-item-subtotal {
+		font-weight: var(--tec-font-weight-bold);
 		text-align: right;
 	}
 
