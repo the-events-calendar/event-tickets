@@ -87,7 +87,10 @@ New ticket</button><button
 	</td>
 
 	<td class="ticket_price" data-label="Price:">
-	&#x24;1.00</td>
+	
+<span class="tec-tickets-price amount">
+	&#x24;1.00</span>
+</td>
 
 	<td class="ticket_capacity">
 		<span class='tribe-mobile-only'>Capacity:</span>
@@ -125,7 +128,10 @@ New ticket</button><button
 	</td>
 
 	<td class="ticket_price" data-label="Price:">
-	&#x24;1.00</td>
+	
+<span class="tec-tickets-price amount">
+	&#x24;1.00</span>
+</td>
 
 	<td class="ticket_capacity">
 		<span class='tribe-mobile-only'>Capacity:</span>
@@ -454,7 +460,71 @@ New ticket</button><button
 			size="7"
 			value=""
 						data-validation-error="Ticket price must be greater than zero." data-required data-validation-is-greater-than="0"		/>
-			</div>
+		<div class="ticket_sale_price_wrapper ticket_form_right">
+	<!--Checkbox to toggle sale price fields-->
+	<div>
+		<input
+			type="checkbox"
+			name="ticket_add_sale_price"
+			id="ticket_add_sale_price"
+					>
+		<label
+			for="ticket_add_sale_price"
+			class="ticket_form_label"
+		>
+			Add Sale Price		</label>
+	</div>
+	<div class="ticket_sale_price tribe-dependent"
+		data-depends="#ticket_add_sale_price"
+		data-condition-is-checked
+	>
+		<div class="ticket_sale_price-field">
+			<label for="ticket_sale_price" class="ticket_form_label">
+				Sale Price:			</label>
+			<input
+				type="text"
+				id="ticket_sale_price"
+				name="ticket_sale_price"
+				class="ticket_field"
+				size="7"
+				value=""
+				data-validation-is-greater-than="0"
+				data-validation-is-less-than="#ticket_price"
+				data-validation-error="{&quot;is-greater-than&quot;:&quot;Sale price must be greater than 0&quot;,&quot;is-less-than&quot;:&quot;Sale price must be less than the regular price&quot;}"
+			/>
+		</div>
+		<div class="ticket_sale_price-field">
+			<label class="ticket_form_label" for="ticket_start_date">
+				On sale from:			</label>
+			<input
+				autocomplete="off"
+				type="text"
+				class="tribe-datepicker tribe-field-ticket_sale_start_date ticket_field"
+				name="ticket_sale_start_date"
+				id="ticket_sale_start_date"
+				size="10"
+				value=""
+				data-validation-type="datepicker"
+				data-validation-is-less-or-equal-to="#ticket_sale_end_date"
+				data-validation-error="{&quot;is-less-or-equal-to&quot;:&quot;Sale from date cannot be greater than Sale to date&quot;}"
+			/>
+			<span> to </span>
+			<input
+				autocomplete="off"
+				type="text"
+				class="tribe-datepicker tribe-field-ticket_sale_end_date ticket_field"
+				name="ticket_sale_end_date"
+				id="ticket_sale_end_date"
+				size="10"
+				value=""
+				data-validation-type="datepicker"
+				data-validation-is-greater-or-equal-to="#ticket_sale_start_date"
+				data-validation-error="{&quot;is-greater-or-equal-to&quot;:&quot;Sale to date cannot be less than Sale from date&quot;}"
+			/>
+		</div>
+	</div>
+</div>
+	</div>
 
 	</div><div
 	class="input_block ticket_advanced_Tribe__Tickets__RSVP tribe-dependent"

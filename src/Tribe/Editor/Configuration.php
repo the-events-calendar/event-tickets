@@ -125,7 +125,7 @@ class Tribe__Tickets__Editor__Configuration implements Tribe__Editor__Configurat
 					'singularLowercase' => tribe_get_ticket_label_singular_lowercase( 'editor-configuration' ),
 					'pluralLowercase'   => tribe_get_ticket_label_plural_lowercase( 'editor-configuration' ),
 				],
-			]
+			],
 		];
 
 		/**

@@ -199,6 +199,8 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [TBD] TBD =
 
 * Fix - The Attendee registration page will no longer generate warnings when viewing it. [ET-906]
+* Fix - When an event ticket is removed, it will no longer generate a 404 for the event. [TEC-5041]
+* Fix - Correct the text domain for a couple of text strings so they could be translated appropriately. [ET-2020]
 
 = [5.8.4] 2024-03-25 =
 
