@@ -54,7 +54,7 @@ if ( tribe_is_not_min_php_version() ) {
 	 *
 	 * @since  4.10
 	 *
-	 * @param  array $names current list of names.
+	 * @param  array $names Current list of names.
 	 *
 	 * @return array
 	 */

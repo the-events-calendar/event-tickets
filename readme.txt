@@ -196,6 +196,11 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [5.9.0] 2024-04-02 =
+
+* Feature - Sale Price for Tickets Commerce: Set a sale price for individual tickets for a certain duration of time within Tickets Commerce.
+* Feature - Sale Price Design: Display the set sale price so that it is clear that a ticket or purchased ticket is on sale.
+
 = [5.8.4] 2024-03-25 =
 
 * Fix - Events Calendar Pro promo shouldn't show when it's already installed or when not editing an event. [ET-2018]
