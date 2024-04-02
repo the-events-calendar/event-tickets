@@ -133,20 +133,22 @@ namespace TEC\Tickets\phpqrcode;
         {
             $ret;
 
-            if($this->count < $this->dataLength) {
-                $row = $this->count % $this->blocks;
-                $col = $this->count / $this->blocks;
-                if($col >= $this->rsblocks[0]->dataLength) {
-                    $row += $this->b1;
-                }
-				$ret = $this->rsblocks[(int)$row]->data[(int)$col];
-            } else if($this->count < $this->dataLength + $this->eccLength) {
-                $row = ($this->count - $this->dataLength) % $this->blocks;
-                $col = ($this->count - $this->dataLength) / $this->blocks;
-                $ret = $this->rsblocks[$row]->ecc[$col];
-            } else {
-                return 0;
-            }
+			if ( $this->count < $this->dataLength ) {
+				$row = $this->count % $this->blocks;
+				$col = $this->count / $this->blocks;
+				if ( $col >= $this->rsblocks[0]->dataLength ) {
+					$row += $this->b1;
+				}
+				$ret = $this->rsblocks[ (int) $row ]->data[ (int) $col ];
+			} else {
+				if ( $this->count < $this->dataLength + $this->eccLength ) {
+					$row = ( $this->count - $this->dataLength ) % $this->blocks;
+					$col = ( $this->count - $this->dataLength ) / $this->blocks;
+					$ret = $this->rsblocks[ $row ]->ecc[ $col ];
+				} else {
+					return 0;
+				}
+			}
             $this->count++;
 
             return $ret;

@@ -200,6 +200,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 * Fix - When an event ticket is removed, it will no longer generate a 404 for the event. [TEC-5041]
 * Fix - Correct the text domain for a couple of text strings so they could be translated appropriately. [ET-2020]
+* Fix - QR codes will properly generate when on PHP 8.1 and above. [ET-2062]
 
 = [5.8.4] 2024-03-25 =
 
