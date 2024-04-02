@@ -200,6 +200,9 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 * Feature - Sale Price for Tickets Commerce: Set a sale price for individual tickets for a certain duration of time within Tickets Commerce.
 * Feature - Sale Price Design: Display the set sale price so that it is clear that a ticket or purchased ticket is on sale.
+* Tweak - Removed filters: `tec_tickets_commerce_order_report_summary_should_include_event_sales_data`
+* Tweak - Changed views: `v2/commerce/ticket/price`, `v2/commerce/ticket/regular-price`, `v2/commerce/ticket/sale-price`, `v2/tickets/item/content/sale-label`, `v2/tickets/item/content/title`, `v2/tickets/item/extra/price`
+* Language - 12 new strings added, 16 updated, 0 fuzzied, and 0 obsoleted
 
 = [5.8.4] 2024-03-25 =
 
