@@ -28,6 +28,8 @@ class Tribe__Tickets__Main {
 	 * Min Version of WordPress.
 	 *
 	 * @since 4.10
+	 *
+	 * @var string
 	 */
 	protected $min_wordpress = '4.9';
 
