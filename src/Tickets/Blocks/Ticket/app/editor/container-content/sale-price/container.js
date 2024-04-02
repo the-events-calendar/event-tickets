@@ -15,7 +15,7 @@ import { globals, moment as momentUtil } from "@moderntribe/common/utils";
 /**
  * Handles the change event of the from date input.
  *
- * @since TBD
+ * @since 5.9.0
  *
  * @param {Function} dispatch The dispatch function.
  * @param {Object} ownProps The component's own props.
@@ -39,7 +39,7 @@ const onFromDateChange = ( dispatch, ownProps ) => ( date, modifiers, dayPickerI
 /**
  * Handles the change event of the date picker input.
  *
- * @since TBD
+ * @since 5.9.0
  *
  * @param dispatch The dispatch function.
  * @param ownProps The component's own props.
@@ -63,7 +63,7 @@ const onToDateChange = ( dispatch, ownProps ) => ( date, modifiers, dayPickerInp
 /**
  * Maps the state to the component's props.
  *
- * @since TBD
+ * @since 5.9.0
  *
  * @param state The state.
  * @param ownProps The component's own props.
@@ -105,7 +105,7 @@ const mapStateToProps = ( state, ownProps ) => {
 /**
  * Maps dispatch functions to the component's props.
  *
- * @since TBD
+ * @since 5.9.0
  *
  * @param {Function} dispatch The dispatch function.
  * @param {Object} ownProps The component's own props.

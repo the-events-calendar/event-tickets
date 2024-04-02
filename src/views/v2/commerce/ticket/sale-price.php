@@ -9,7 +9,7 @@
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since TBD
+ * @since 5.9.0
  *
  * @var Value $price The Value instance of the ticket price.
  * @var Value $regular_price The Value instance of the ticket regular price.
