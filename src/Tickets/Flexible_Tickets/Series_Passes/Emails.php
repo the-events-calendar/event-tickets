@@ -36,7 +36,7 @@ class Emails extends Controller {
 	/**
 	 * A reference to the Upcoming Series Events List instance.
 	 *
-	 * @since TBD
+	 * @since 5.8.4
 	 *
 	 * @var Upcoming_Series_Events_List
 	 */
@@ -45,7 +45,7 @@ class Emails extends Controller {
 	/**
 	 * Emails constructor.
 	 *
-	 * @since TBD
+	 * @since 5.8.4
 	 *
 	 * @param Container                   $container            The DI container.
 	 * @param Upcoming_Series_Events_List $upcoming_events_list The Upcoming Series Events List instance.
@@ -186,7 +186,7 @@ class Emails extends Controller {
 	/**
 	 * Add the Series Pass to the registered email types.
 	 *
-	 * @since TBD
+	 * @since 5.8.4
 	 *
 	 * @param array<Email_Abstract> $email_types The email types.
 	 *
@@ -215,7 +215,7 @@ class Emails extends Controller {
 	/**
 	 * Filter the upcoming Events in preview context.
 	 *
-	 * @since TBD
+	 * @since 5.8.4
 	 *
 	 * @return array{0: WP_Post[], 1: int} The list of mock Events to use in the email preview, and the
 	 *                                     hard-coded found value that will trigger the link to the Series
@@ -238,7 +238,7 @@ class Emails extends Controller {
 	/**
 	 * Filters the preview arguments for the email templates.
 	 *
-	 * @since TBD
+	 * @since 5.8.4
 	 *
 	 * @param array<string,mixed> $preview_args The existing preview arguments.
 	 *
@@ -310,7 +310,7 @@ class Emails extends Controller {
 	/**
 	 * Includes the Series Pass template image, if set.
 	 *
-	 * @since TBD
+	 * @since 5.8.4
 	 *
 	 * @param string   $file     Template file, unused.
 	 * @param string[] $name     Template name components, unused.
@@ -329,7 +329,7 @@ class Emails extends Controller {
 	/**
 	 * Includes the Series Pass email styles.
 	 *
-	 * @since TBD
+	 * @since 5.8.4
 	 *
 	 * @param string   $file     Template file, unused.
 	 * @param string[] $name     Template name components, unused.
@@ -354,7 +354,7 @@ class Emails extends Controller {
 	/**
 	 * Include, in the Series Pass email, the upcoming Events list fragment.
 	 *
-	 * @since TBD
+	 * @since 5.8.4
 	 *
 	 * @param string   $file     Template file, unused.
 	 * @param string[] $name     Template name components, unused.
@@ -389,7 +389,7 @@ class Emails extends Controller {
 	 *
 	 * Note that this method will only fire if the ET+ plugin has registered.
 	 *
-	 * @since TBD
+	 * @since 5.8.4
 	 *
 	 * @return void
 	 */
@@ -406,7 +406,7 @@ class Emails extends Controller {
 	 *
 	 * Note that this method will only fire if the ET+ plugin has registered.
 	 *
-	 * @since TBD
+	 * @since 5.8.4
 	 *
 	 * @return void
 	 */
@@ -426,7 +426,7 @@ class Emails extends Controller {
 	 *
 	 * Note that this method will only fire if the Wallet Plus plugin has registered.
 	 *
-	 * @since TBD
+	 * @since 5.8.4
 	 *
 	 * @return void
 	 */
@@ -453,7 +453,7 @@ class Emails extends Controller {
 	 *
 	 * Note that this method will only fire if the Wallet Plus plugin has registered.
 	 *
-	 * @since TBD
+	 * @since 5.8.4
 	 *
 	 * @return void
 	 */
@@ -477,7 +477,7 @@ class Emails extends Controller {
 	 * Filters the email class used to email Attendees their Tickets to use the Series Pass email when sending emails
 	 * for Series Passes.
 	 *
-	 * @since TBD
+	 * @since 5.8.4
 	 *
 	 * @param Email_Abstract|null $email    The email class to use.
 	 * @param string|null         $provider The Ticket provider, unused.
@@ -496,7 +496,7 @@ class Emails extends Controller {
 	/**
 	 * Get the Upcoming Series Events List instance.
 	 *
-	 * @since TBD
+	 * @since 5.8.4
 	 *
 	 * @return Upcoming_Series_Events_List The Upcoming Series Events List instance.
 	 */

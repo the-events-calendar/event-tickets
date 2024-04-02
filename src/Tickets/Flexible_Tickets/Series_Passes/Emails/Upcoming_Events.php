@@ -2,7 +2,7 @@
 /**
  * Handles all of the event querying in the context of Series Pass Emails.
  *
- * @since   TBD
+ * @since   5.8.4
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Emails;
  */
@@ -14,7 +14,7 @@ use WP_Post;
 /**
  * Class Upcoming_Events.
  *
- * @since   TBD
+ * @since   5.8.4
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Emails;
  */
@@ -22,7 +22,7 @@ class Upcoming_Events {
 	/**
 	 * Fetches up to limit number of upcoming Events part of the Series the Email is being sent for.
 	 *
-	 * @since TBD
+	 * @since 5.8.4
 	 *
 	 * @param int $series_id The Series ID.
 	 *
@@ -33,7 +33,7 @@ class Upcoming_Events {
 		 * Filters the number of upcoming Events to show in the Series Pass Email Upcoming Events section.
 		 * Returning an empty value, e.g. `0` or `false`, will never print the Upcoming Events section in the Email.
 		 *
-		 * @since TBD
+		 * @since 5.8.4
 		 *
 		 * @param int $num_events_to_show The number of upcoming Events to show in the Series Pass Email Upcoming Events section.
 		 * @param int $series_id          The series the upcoming Events list is being printed for.
@@ -54,7 +54,7 @@ class Upcoming_Events {
 		 *
 		 * The value returned by this filter is not memoized.
 		 *
-		 * @since TBD
+		 * @since 5.8.4
 		 *
 		 * @param array{0: array<int>, 1: int}|null $fetched   The fetched Event IDs, the number of total Events found.
 		 * @param int                               $series_id The series the upcoming Events list is being printed for.

@@ -2,7 +2,7 @@
 /**
  * Methods common to mock post generators.
  *
- * @since   TBD
+ * @since   5.8.4
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Emails;
  */
@@ -15,7 +15,7 @@ use WP_Post;
 /**
  * Trait Mock_Preview_Post.
  *
- * @since   TBD
+ * @since   5.8.4
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes\Emails;
  */
@@ -23,7 +23,7 @@ trait Mock_Preview_Post {
 	/**
 	 * The mock post ID.
 	 *
-	 * @since TBD
+	 * @since 5.8.4
 	 *
 	 * @var int|null
 	 */
@@ -32,7 +32,7 @@ trait Mock_Preview_Post {
 	/**
 	 * The post mock meta fields in the array of arrays format returned by a `get_post_meta($id)` call.
 	 *
-	 * @since TBD
+	 * @since 5.8.4
 	 * @var array<string,array<mixed>>
 	 */
 	private array $mock_meta = [];
@@ -40,7 +40,7 @@ trait Mock_Preview_Post {
 	/**
 	 * The mock post object
 	 *
-	 * @since TBD
+	 * @since 5.8.4
 	 *
 	 * @var WP_Post|null
 	 */
@@ -49,7 +49,7 @@ trait Mock_Preview_Post {
 	/**
 	 * Cleans the post cache when the mock post is garbage-collected.
 	 *
-	 * @since TBD
+	 * @since 5.8.4
 	 */
 	public function __destruct() {
 		$this->clean_post_cache();
@@ -58,7 +58,7 @@ trait Mock_Preview_Post {
 	/**
 	 * Builds and returns the mock post object.
 	 *
-	 * @since TBD
+	 * @since 5.8.4
 	 *
 	 * @return WP_Post The mock post object.
 	 */
@@ -70,7 +70,7 @@ trait Mock_Preview_Post {
 	/**
 	 * Finds an unused post ID to use for the Series mock post.
 	 *
-	 * @since TBD
+	 * @since 5.8.4
 	 *
 	 * @return int The available post ID.
 	 */
@@ -96,7 +96,7 @@ trait Mock_Preview_Post {
 	/**
 	 * Cleans the post cache for the mock post.
 	 *
-	 * @since TBD
+	 * @since 5.8.4
 	 *
 	 * @return void The mock post cache is removed.
 	 */
@@ -118,7 +118,7 @@ trait Mock_Preview_Post {
 	/**
 	 * Builds the mock post and adds it to the cache.
 	 *
-	 * @since TBD
+	 * @since 5.8.4
 	 *
 	 * @return WP_Post The mock post object.
 	 */

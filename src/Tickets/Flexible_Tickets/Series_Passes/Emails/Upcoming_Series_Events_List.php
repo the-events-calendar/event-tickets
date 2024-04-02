@@ -2,7 +2,7 @@
 /**
  * Displays a list of the Series Upcoming Events.
  *
- * @since   TBD
+ * @since   5.8.4
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes;
  */
@@ -14,7 +14,7 @@ use Tribe__Template as Template;
 /**
  * Class Upcoming_Series_Events_List.
  *
- * @since   TBD
+ * @since   5.8.4
  *
  * @package TEC\Tickets\Flexible_Tickets\Series_Passes;
  */
@@ -22,7 +22,7 @@ class Upcoming_Series_Events_List {
 	/**
 	 * The template instance.
 	 *
-	 * @since TBD
+	 * @since 5.8.4
 	 *
 	 * @var Template|null
 	 */
@@ -31,7 +31,7 @@ class Upcoming_Series_Events_List {
 	/**
 	 * The event IDs.
 	 *
-	 * @since TBD
+	 * @since 5.8.4
 	 *
 	 * @var int[]
 	 */
@@ -40,7 +40,7 @@ class Upcoming_Series_Events_List {
 	/**
 	 * A reference to the Upcoming Events instance.
 	 *
-	 * @since TBD
+	 * @since 5.8.4
 	 *
 	 * @var Upcoming_Events
 	 */
@@ -49,7 +49,7 @@ class Upcoming_Series_Events_List {
 	/**
 	 * Upcoming_Series_Events_List constructor.
 	 *
-	 * @since TBD
+	 * @since 5.8.4
 	 *
 	 * @param Upcoming_Events $upcoming_events The Upcoming Events instance.
 	 */
@@ -60,7 +60,7 @@ class Upcoming_Series_Events_List {
 	/**
 	 * Sets the template instance.
 	 *
-	 * @since TBD
+	 * @since 5.8.4
 	 *
 	 * @param Template $template The template instance.
 	 *
@@ -75,7 +75,7 @@ class Upcoming_Series_Events_List {
 	/**
 	 * Renders the list of upcoming Events part of the Series the Email is being sent for.
 	 *
-	 * @since TBD
+	 * @since 5.8.4
 	 *
 	 * @param int $series_id The Series ID.
 	 *
@@ -127,7 +127,7 @@ class Upcoming_Series_Events_List {
 	/**
 	 * Retrieves the event IDs last used in the render method.
 	 *
-	 * @since TBD
+	 * @since 5.8.4
 	 *
 	 * @return int[] The event IDs last used in the render method.
 	 */

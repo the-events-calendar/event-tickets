@@ -4,7 +4,7 @@ Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, raf
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
 Requires at least: 6.2
 Tested up to: 6.4.3
-Stable tag: 5.8.4
+Stable tag: 5.9.1
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -198,6 +198,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [TBD] TBD =
 
+* Fix - Correct the text domain for a couple of text strings so they could be translated appropriately. [ET-2020]
+
+= [5.8.4] 2024-03-25 =
+
 * Fix - Events Calendar Pro promo shouldn't show when it's already installed or when not editing an event. [ET-2018]
 * Fix - Addressed a problem preventing the export of event attendees by email. [ETP-904]
 * Fix - In the block editor, ticket will no longer be deleted when you open the ticket block settings. [ET-2046]
@@ -210,6 +214,9 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Tweak - Added additional fields to the Event Tickets Site Health section. [ET-2017]
 * Feature - Add the Series Pass email template. [ET-1854]
 * Tweak - Adjusted the logic for calculating fees when using Stripe. [ET-2015]
+* Tweak - Added filters: `tec_tickets_email_class`
+* Tweak - Changed views: `emails/series-pass`, `emails/template-parts/body/additional-content`, `emails/template-parts/body/post-description`, `emails/template-parts/body/series-events-list`, `emails/template-parts/body/series-pass-dates`, `emails/template-parts/body/thumbnail`, `emails/template-parts/header/head/series-pass-styles`, `emails/template-parts/header/head/styles`
+* Language - 22 new strings added, 91 updated, 0 fuzzied, and 0 obsoleted
 
 = [5.8.3] 2024-03-12 =
 
