@@ -25,10 +25,10 @@ class Tribe__Tickets__Main {
 	public $latest_version_slug = 'latest_event_tickets_version';
 
 	/**
-	* Min Version of WordPress.
-	*
-	* @since 4.10
-	*/
+	 * Min Version of WordPress.
+	 *
+	 * @since 4.10
+	 */
 	protected $min_wordpress = '4.9';
 
 	/**
