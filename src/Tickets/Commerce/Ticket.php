@@ -144,38 +144,38 @@ class Ticket {
 	 * @var \Tribe__Template
 	 */
 	protected $template;
-	
+
 	/**
 	 * The meta key that holds if the sale price option is enabled or not in the product editor.
 	 *
-	 * @since TBD
+	 * @since 5.9.0
 	 *
 	 * @var string
 	 */
 	public static $sale_price_checked_key = '_sale_price_checked';
-	
+
 	/**
 	 * The meta key that holds the ticket sale price.
 	 *
-	 * @since TBD
+	 * @since 5.9.0
 	 *
 	 * @var string
 	 */
 	public static $sale_price_key = '_sale_price';
-	
+
 	/**
 	 * The meta key that holds the ticket sale price start date.
 	 *
-	 * @since TBD
+	 * @since 5.9.0
 	 *
 	 * @var string
 	 */
 	public static $sale_price_start_date_key = '_sale_price_start_date';
-	
+
 	/**
 	 * The meta key that holds the ticket sale price end date.
 	 *
-	 * @since TBD
+	 * @since 5.9.0
 	 *
 	 * @var string
 	 */
@@ -727,9 +727,9 @@ class Ticket {
 			// Update Ticket capacity
 			update_post_meta( $ticket->ID, $tickets_handler->key_capacity, $data['capacity'] );
 		}
-		
+
 		$this->process_sale_price_data( $ticket, $raw_data );
-		
+
 		/**
 		 * Generic action fired after saving a ticket (by type)
 		 *
@@ -972,9 +972,9 @@ class Ticket {
 		if ( ! $ticket instanceof Models\Ticket_Model ) {
 			return;
 		}
-		
+
 		$ticket_object = $this->get_ticket( $product );
-		
+
 		return $ticket_object->on_sale ? $ticket->get_sale_price_value() : $ticket->get_price_value();
 	}
 
@@ -982,7 +982,7 @@ class Ticket {
 	 * Returns the ticket price html template
 	 *
 	 * @since 5.1.9
-	 * @since TBD Updated sale price template arguments.
+	 * @since 5.9.0 Updated sale price template arguments.
 	 *
 	 * @param int|object    $product The ticket post ID or object.
 	 * @param array|boolean $attendee The attendee data.
@@ -992,7 +992,7 @@ class Ticket {
 	public function get_price_html( $product, $attendee = false ) {
 		$value  = $this->get_price_value( $product );
 		$ticket = $this->get_ticket( $product );
-		
+
 		return $this->get_template()->template(
 			'price',
 			[
@@ -1085,11 +1085,11 @@ class Ticket {
 
 		return update_post_meta( $ticket_id, static::$stock_meta_key, $stock );
 	}
-	
+
 	/**
 	 * Process the sale price data.
 	 *
-	 * @since TBD
+	 * @since 5.9.0
 	 *
 	 * @param Ticket_Object       $ticket   The ticket post object.
 	 * @param array<string,mixed> $raw_data The raw data from the request.
@@ -1099,29 +1099,29 @@ class Ticket {
 	public function process_sale_price_data( Ticket_Object $ticket, array $raw_data ): void {
 		$sale_price_enabled = tribe_is_truthy( Arr::get( $raw_data, 'ticket_add_sale_price', false ) );
 		update_post_meta( $ticket->ID, static::$sale_price_checked_key, $sale_price_enabled );
-		
+
 		if ( ! $sale_price_enabled ) {
 			$this->remove_sale_price_data( $ticket );
 			return;
 		}
-		
+
 		$sale_price    = Arr::get( $raw_data, 'ticket_sale_price', false );
 		$regular_price = Arr::get( $raw_data, 'ticket_price', false );
-		
+
 		if ( empty( $sale_price ) || $sale_price >= $regular_price ) {
 			$this->remove_sale_price_data( $ticket );
 			return;
 		}
-		
+
 		update_post_meta( $ticket->ID, static::$sale_price_key, Value::create( $sale_price ) );
-		
+
 		$this->process_sale_price_dates( $ticket, $raw_data );
 	}
-	
+
 	/**
 	 * Process the sale price dates.
 	 *
-	 * @since TBD
+	 * @since 5.9.0
 	 *
 	 * @param Ticket_Object       $ticket   The ticket post object.
 	 * @param array<string,mixed> $raw_data The raw data from the request.
@@ -1134,18 +1134,18 @@ class Ticket {
 			$start_date = empty( $start_date ) ? '' : gmdate( Date_Utils::DBDATEFORMAT, strtotime( $start_date ) );
 			update_post_meta( $ticket->ID, static::$sale_price_start_date_key, $start_date );
 		}
-		
+
 		if ( isset( $raw_data['ticket_sale_end_date'] ) ) {
 			$end_date = Date_Utils::maybe_format_from_datepicker( $raw_data['ticket_sale_end_date'] );
 			$end_date = empty( $end_date ) ? '' : gmdate( Date_Utils::DBDATEFORMAT, strtotime( $end_date ) );
 			update_post_meta( $ticket->ID, static::$sale_price_end_date_key, $end_date );
 		}
 	}
-	
+
 	/**
 	 * Remove the sale price data.
 	 *
-	 * @since TBD
+	 * @since 5.9.0
 	 *
 	 * @param Ticket_Object $ticket The ticket post object.
 	 *
@@ -1158,16 +1158,16 @@ class Ticket {
 			static::$sale_price_start_date_key,
 			static::$sale_price_end_date_key,
 		];
-		
+
 		foreach ( $keys as $key ) {
 			delete_post_meta( $ticket->ID, $key );
 		}
 	}
-	
+
 	/**
 	 * Check if a ticket is on sale.
 	 *
-	 * @since TBD
+	 * @since 5.9.0
 	 *
 	 * @param Ticket_Object $ticket The ticket object.
 	 *
@@ -1175,41 +1175,41 @@ class Ticket {
 	 */
 	public function is_on_sale( Ticket_Object $ticket ): bool {
 		$sale_checked = get_post_meta( $ticket->ID, static::$sale_price_checked_key, true );
-		
+
 		if ( ! $sale_checked ) {
 			return false;
 		}
-		
+
 		$sale_price = get_post_meta( $ticket->ID, static::$sale_price_key, true );
-		
+
 		if ( empty( $sale_price ) ) {
 			return false;
 		}
-		
+
 		$start_date = get_post_meta( $ticket->ID, static::$sale_price_start_date_key, true );
 		$end_date   = get_post_meta( $ticket->ID, static::$sale_price_end_date_key, true );
-		
+
 		if ( empty( $start_date ) && empty( $end_date ) ) {
 			return true;
 		}
-		
+
 		// Using the ticket's date helper to ensure the timezone for events are handled correctly.
 		$start = $ticket->get_date( $start_date );
 		$end   = $ticket->get_date( $end_date );
 		$now   = $ticket->get_date( 'today' );
-		
+
 		// If the sale has no end date and the start date is in the past, the sale is on.
 		if ( $start <= $now && empty( $end ) ) {
 			return true;
 		}
-		
+
 		return $now >= $start && $now <= $end;
 	}
-	
+
 	/**
 	 * Get the price of a ticket.
 	 *
-	 * @since TBD
+	 * @since 5.9.0
 	 *
 	 * @param Ticket_Object $ticket The ticket object.
 	 *
@@ -1221,11 +1221,11 @@ class Ticket {
 		}
 		return $this->get_regular_price( $ticket->ID );
 	}
-	
+
 	/**
 	 * Get the sale price of a ticket.
 	 *
-	 * @since TBD
+	 * @since 5.9.0
 	 *
 	 * @param int $ticket_id The ticket post ID.
 	 *
@@ -1235,11 +1235,11 @@ class Ticket {
 		$sale_price = get_post_meta( $ticket_id, static::$sale_price_key, true );
 		return $sale_price instanceof Value ? $sale_price->get_string() : '';
 	}
-	
+
 	/**
 	 * Get the regular price of a ticket.
 	 *
-	 * @since TBD
+	 * @since 5.9.0
 	 *
 	 * @param int $ticket_id The ticket post ID.
 	 *
@@ -1248,11 +1248,11 @@ class Ticket {
 	public function get_regular_price( int $ticket_id ): string {
 		return get_post_meta( $ticket_id, '_price', true );
 	}
-	
+
 	/**
 	 * Get the sale price details for a ticket.
 	 *
-	 * @since TBD
+	 * @since 5.9.0
 	 *
 	 * @param int $ticket_id The ticket post ID.
 	 *

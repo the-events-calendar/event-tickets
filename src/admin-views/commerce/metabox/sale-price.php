@@ -2,7 +2,7 @@
 /**
  * Renders the sale price fields for Tickets Commerce.
  *
- * @since TBD
+ * @since 5.9.0
  *
  * @var Ticket_Object $ticket The ticket object.
  * @var string        $sale_price The sale price.
