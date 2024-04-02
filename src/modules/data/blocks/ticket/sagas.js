@@ -216,7 +216,7 @@ export function* resetTicketsBlock() {
 
 	if ( ! hasCreatedTickets ) {
 		const currentMeta = yield call(
-			[ wpSelect( 'core/editor' ), 'getCurrentPostAttribute' ],
+			[ wpSelect( 'core/editor' ), 'getEditedPostAttribute' ],
 			'meta',
 		);
 		const newMeta = {
