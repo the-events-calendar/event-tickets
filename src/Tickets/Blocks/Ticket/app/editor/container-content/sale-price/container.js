@@ -79,6 +79,9 @@ const mapStateToProps = ( state, ownProps ) => {
 	const endDateMoment = selectors.getTicketTempSaleEndDateMoment( state, ownProps );
 	const fromDate = startDateMoment && startDateMoment.toDate();
 	const toDate = endDateMoment && endDateMoment.toDate();
+	const fromDateInput = typeof startDateMoment === 'object' && startDateMoment.isValid() ? selectors.getTicketTempSaleStartDateInput( state, ownProps ) : '';
+	const toDateInput = typeof endDateMoment === 'object' && endDateMoment.isValid() ? selectors.getTicketTempSaleEndDateInput( state, ownProps ) : '';
+
 	return {
 		isDisabled: selectors.isTicketDisabled( state, ownProps ),
 		currencyDecimalPoint: selectors.getTicketCurrencyDecimalPoint( state, ownProps ),
@@ -93,8 +96,8 @@ const mapStateToProps = ( state, ownProps ) => {
 		dateFormat: datePickerFormat,
 		fromDate: fromDate,
 		toDate: toDate,
-		fromDateInput: selectors.getTicketTempSaleStartDateInput( state, ownProps ),
-		toDateInput: selectors.getTicketTempSaleEndDateInput( state, ownProps ),
+		fromDateInput: fromDateInput,
+		toDateInput: toDateInput,
 		validSalePrice: selectors.isTicketSalePriceValid( state, ownProps ),
 	}
 };
