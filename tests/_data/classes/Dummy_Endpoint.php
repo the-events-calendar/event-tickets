@@ -16,7 +16,7 @@ class Dummy_Endpoint {
 	/**
 	 * Tribe__Tickets__REST__V1__Endpoints__Base constructor.
 	 *
-	 * @since TBD
+	 * @since 5.9.0
 	 *
 	 * @param \Tribe__Tickets__REST__V1__Messages $messages
 	 */
@@ -27,7 +27,7 @@ class Dummy_Endpoint {
 	/**
 	 * Get Dummy Data
 	 *
-	 * @since TBD
+	 * @since 5.9.0
 	 *
 	 * @param WP_REST_Request $request
 	 *
@@ -43,7 +43,7 @@ class Dummy_Endpoint {
 	/**
 	 * Get WP Error
 	 *
-	 * @since TBD
+	 * @since 5.9.0
 	 *
 	 * @param WP_REST_Request $request
 	 *
@@ -58,7 +58,7 @@ class Dummy_Endpoint {
 	/**
 	 * Get Data for Testing
 	 *
-	 * @since TBD
+	 * @since 5.9.0
 	 *
 	 * @return array
 	 */
@@ -75,7 +75,7 @@ class Dummy_Endpoint {
 	/**
 	 * Converts an array of arguments suitable for the WP REST API to the Swagger format.
 	 *
-	 * @since TBD
+	 * @since 5.9.0
 	 *
 	 * @param array $args
 	 * @param array $defaults
@@ -141,7 +141,7 @@ class Dummy_Endpoint {
 	/**
 	 * Converts REST format type argument to the correspondant Swagger.io definition.
 	 *
-	 * @since TBD
+	 * @since 5.9.0
 	 *
 	 * @param string $type
 	 *

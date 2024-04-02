@@ -8,7 +8,7 @@ use TEC\Tickets\Emails\Email_Abstract;
 /**
  * Class Dummy_Email
  *
- * @since   TBD
+ * @since   5.9.0
  *
  * @package TEC\Tickets\Emails\Email
  */

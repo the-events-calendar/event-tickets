@@ -7,7 +7,7 @@ use TEC\Tickets\Tests\Emails\Email\Dummy_Email;
 /**
  * Class DispatcherTest
  *
- * @since   TBD
+ * @since   5.9.0
  *
  * @package TEC\Tickets\Emails
  */

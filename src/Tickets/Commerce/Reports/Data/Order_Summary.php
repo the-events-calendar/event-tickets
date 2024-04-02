@@ -140,7 +140,7 @@ class Order_Summary {
 	 */
 	protected function add_available_data( array $quantities, Ticket_Object $ticket ): array {
 		$ticket_available = $ticket->available();
-		
+
 		$quantities[ $ticket->availability_slug() ] = -1 === $ticket_available ? __( 'Unlimited', 'event-tickets' ) : $ticket_available;
 		return $quantities;
 	}
@@ -166,34 +166,34 @@ class Order_Summary {
 
 			$this->tickets_by_type[ $ticket->type ][] = $ticket_data;
 		}
-		
+
 		$this->build_order_sales_data();
 	}
-	
+
 	/**
 	 * Build the order sales data.
 	 *
-	 * @since TBD
+	 * @since 5.9.0
 	 */
 	protected function build_order_sales_data() {
 		$args = [
 			'events' => $this->get_post_id(),
 			'status' => 'any',
 		];
-		
+
 		$orders = tec_tc_orders()->by_args( $args )->all();
-		
+
 		foreach ( $orders as $order ) {
 			foreach ( $order->items as $ticket_id => $item ) {
 				$this->process_order_sales_data( $order->status_slug, $ticket_id, $item );
 			}
 		}
 	}
-	
+
 	/**
 	 * Process the order sales data.
 	 *
-	 * @since TBD
+	 * @since 5.9.0
 	 *
 	 * @param string            $status_slug The status slug.
 	 * @param int               $ticket_id   The ticket ID.
@@ -201,14 +201,14 @@ class Order_Summary {
 	 */
 	protected function process_order_sales_data( string $status_slug, int $ticket_id, $item ): void {
 		$tickets = $this->get_tickets();
-		
+
 		if ( ! $this->should_include_event_sales_data( $tickets[ $ticket_id ], $item ) ) {
 			return;
 		}
-		
+
 		if ( ! isset( $this->event_sales_by_status[ $status_slug ] ) ) {
 			$status = tribe( Status_Handler::class )->get_by_slug( $status_slug );
-			
+
 			// This is the first time we've seen this status, so initialize it.
 			$this->event_sales_by_status[ $status_slug ] = [
 				'label'              => $status->get_name(),
@@ -217,19 +217,19 @@ class Order_Summary {
 				'total_sales_price'  => $this->format_price( 0 ),
 			];
 		}
-		
+
 		$sales_amount = $item['sub_total'];
 		$quantity     = $item['quantity'];
-		
+
 		$this->event_sales_by_status[ $status_slug ]['qty_sold']           += $quantity;
 		$this->event_sales_by_status[ $status_slug ]['total_sales_amount'] += $sales_amount;
 		$this->event_sales_by_status[ $status_slug ]['total_sales_price']   = $this->format_price( $this->event_sales_by_status[ $status_slug ]['total_sales_amount'] );
-		
+
 		// process the total ordered data.
 		$this->total_ordered['qty']    += $quantity;
 		$this->total_ordered['amount'] += $sales_amount;
 		$this->total_ordered['price']   = $this->format_price( $this->total_ordered['amount'] );
-		
+
 		// Only completed orders should be counted in the total sales.
 		if ( Completed::SLUG === $status_slug ) {
 			$this->total_sales['qty']    += $quantity;
@@ -242,7 +242,7 @@ class Order_Summary {
 	 * Process the event sales data.
 	 *
 	 * @since 5.6.7
-	 * @since TBD Replaced with process_order_sales_data.
+	 * @since 5.9.0 Replaced with process_order_sales_data.
 	 *
 	 * @param array<string,int> $quantity_by_status The quantity by status.
 	 * @param Ticket_Object     $ticket The ticket object.
@@ -275,10 +275,10 @@ class Order_Summary {
 		if ( ! empty( $this->tickets ) ) {
 			return $this->tickets;
 		}
-		
+
 		$provider = Tribe__Tickets__Tickets::get_event_ticket_provider_object( $this->post_id );
 		$tickets  = $provider->get_tickets( $this->post_id );
-		
+
 		foreach ( $tickets as $ticket ) {
 			$this->tickets[ $ticket->ID ] = $ticket;
 		}

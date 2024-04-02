@@ -66,7 +66,7 @@ class Success_Shortcode_Test extends WPTestCase {
 	/**
 	 * Helper method to create an order for a post.
 	 *
-	 * @since TBD
+	 * @since 5.9.0
 	 *
 	 * @param string $gateway_order_id
 	 *

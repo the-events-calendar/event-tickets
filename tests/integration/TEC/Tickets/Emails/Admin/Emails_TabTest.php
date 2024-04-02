@@ -15,7 +15,7 @@ use Tribe\Tests\Traits\With_Uopz;
 /**
  * Class Emails_TabTest
  *
- * @since   TBD
+ * @since   5.9.0
  *
  * @package TEC\Tickets\Emails\Admin
  */

@@ -25,7 +25,7 @@ class FT_Smoketester extends \Codeception\Actor {
 	/**
 	 * Asserts that the debug data contains the specified log.
 	 *
-	 * @since TBD
+	 * @since 5.9.0
 	 *
 	 * @param string $level   The log level to look for, e.g. 'debug', 'warning', 'error'.
 	 * @param string $message The log message to look for.
@@ -49,7 +49,7 @@ class FT_Smoketester extends \Codeception\Actor {
 	/**
 	 * Reads the debug data from the page and returns it.
 	 *
-	 * @since TBD
+	 * @since 5.9.0
 	 *
 	 * @param string $key The key to look for in the debug data.
 	 *
@@ -66,7 +66,7 @@ class FT_Smoketester extends \Codeception\Actor {
 	/**
 	 * Updates the option to allow, or forbid, Series to have tickets.
 	 *
-	 * @since TBD
+	 * @since 5.9.0
 	 *
 	 * @param bool $series_are_ticketable Whether Series should be ticketable or not.
 	 *
@@ -86,7 +86,7 @@ class FT_Smoketester extends \Codeception\Actor {
 	/**
 	 * Inserts a post of type `tribe_event_series` in the database.
 	 *
-	 * @since TBD
+	 * @since 5.9.0
 	 *
 	 * @param array<string,mixed> $overrides The post overrides.
 	 *
@@ -102,7 +102,7 @@ class FT_Smoketester extends \Codeception\Actor {
 	/**
 	 * Asserts that a key is present in the debug data and that its value matches the expected one.
 	 *
-	 * @since TBD
+	 * @since 5.9.0
 	 *
 	 * @param string $key   The key to look for in the debug data.
 	 * @param mixed  $value The expected value.

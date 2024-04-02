@@ -15,7 +15,7 @@ use Codeception\TestCase\WPTestCase;
 /**
  * Class Preview_ModalTest
  *
- * @since   TBD
+ * @since   5.9.0
  *
  * @package TEC\Tickets\Emails\Admin
  */
