@@ -52,13 +52,13 @@ class Plugin_Action_Links {
 	 *
 	 * @since TBD
 	 *
-	 * @param array  $plugin_meta
+	 * @param array  $plugin_meta The array with the links on the plugin meta.
 	 * @param string $plugin_file Path to the plugin file.
 	 *
 	 * @return array $plugin_meta An array of the plugin's metadata.
 	 */
 	public function add_links_to_plugin_meta( $plugin_meta, $plugin_file ) {
-		if ( $plugin_file !== trailingslashit( \Tribe__Tickets__Main::instance()->plugin_dir ) . 'event-tickets.php' ) {
+		if ( trailingslashit( \Tribe__Tickets__Main::instance()->plugin_dir ) . 'event-tickets.php' !== $plugin_file ) {
 			return $plugin_meta;
 		}
 
