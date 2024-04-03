@@ -200,6 +200,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 * Fix - When an event ticket is removed, it will no longer generate a 404 for the event. [TEC-5041]
 * Fix - Correct the text domain for a couple of text strings so they could be translated appropriately. [ET-2020]
+* Fix - Changed incorrect file paths in DocBlocks for template overrides for all files in `src/views/tickets`. [ET-2004]
 
 = [5.8.4] 2024-03-25 =
 
