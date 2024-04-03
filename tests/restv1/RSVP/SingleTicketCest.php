@@ -305,8 +305,10 @@ class SingleTicketCest extends BaseRestCest {
 			],
 			'supports_attendee_information' => false, // we are on RSVP, no ET+ installed'
 			'price_suffix'                  => null,
+			'on_sale'                       => null,
 			'iac'                           => 'none',
 			'type'                          => 'default',
+			'sale_price_data'               => [],
 		);
 
 		$I->assertEquals( $expectedJson, $response );

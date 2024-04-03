@@ -92,17 +92,19 @@ if ( ! empty( $ticket ) ) {
 		 * Allow to add messages under the price field.
 		 *
 		 * @since 4.10.7
+		 * @since 5.9.0 Added the $context parameter.
 		 *
 		 * @param int $ticket_id Ticket ID.
 		 * @param int $post_id   Post ID.
+		 * @param array $context Context.
 		 */
-		do_action( 'tribe_tickets_price_input_description', $ticket_id, $post_id );
+		do_action( 'tribe_tickets_price_input_description', $ticket_id, $post_id, $this->get_values() );
 		?>
 	</div>
 
-	<?php if ( $ticket && ( $ticket->on_sale || $ticket_has_wc_member_discount ) ) : ?>
+	<?php if ( $ticket && ( $ticket->on_sale || $ticket_has_wc_member_discount ) && ! $is_paypal_ticket ) : ?>
 
-	<?php
+		<?php
 		$sale_price_label = esc_html__( 'Sale Price:', 'event-tickets' );
 		$sale_price_desc  = esc_html__( 'Current sale price. This can be managed via the product editor.', 'event-tickets' );
 

@@ -2,20 +2,20 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Event Tickets 5.8.4\n"
+"Project-Id-Version: Event Tickets 5.9.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/event-tickets\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-03-22T07:30:55-07:00\n"
-"PO-Revision-Date: 2024-03-22 14:30\n"
+"POT-Creation-Date: 2024-04-02T12:33:38-07:00\n"
+"PO-Revision-Date: 2024-04-02 19:33\n"
 "X-Generator: WP-CLI 2.7.1\n"
 "X-Domain: event-tickets\n"
 
 #. Plugin Name of the plugin
-#: event-tickets.php:61
+#: event-tickets.php:62
 #: src/admin-views/admin-welcome-message.php:73
 #: src/Tickets/Site_Health/Info_Section.php:73
 #: src/Tribe/Admin/Notices.php:85
@@ -373,6 +373,26 @@ msgstr ""
 msgid "Leave blank for unlimited"
 msgstr ""
 
+#: src/admin-views/commerce/metabox/sale-price.php:33
+msgid "Add Sale Price"
+msgstr ""
+
+#: src/admin-views/commerce/metabox/sale-price.php:42
+#: src/admin-views/editor/fieldset/price.php:108
+#: src/admin-views/legacy-ticket-fields.php:24
+#: src/admin-views/price-fields.php:12
+msgid "Sale Price:"
+msgstr ""
+
+#: src/admin-views/commerce/metabox/sale-price.php:58
+msgid "On sale from:"
+msgstr ""
+
+#: src/admin-views/commerce/metabox/sale-price.php:72
+#: src/Tickets/Commerce/Hooks.php:789
+msgid "to"
+msgstr ""
+
 #: src/admin-views/commerce/metabox/sku.php:24
 #: src/admin-views/tpp-metabox-sku.php:20
 msgid "SKU:"
@@ -427,14 +447,14 @@ msgstr ""
 msgid "View Orders"
 msgstr ""
 
-#: src/admin-views/editor/column-body-price.php:23
+#: src/admin-views/editor/column-body-price.php:22
 #: src/admin-views/editor/fieldset/price.php:71
 #: src/admin-views/legacy-ticket-fields.php:15
 #: src/admin-views/price-fields.php:3
 msgid "Price:"
 msgstr ""
 
-#: src/admin-views/editor/column-body-price.php:37
+#: src/admin-views/editor/column-body-price.php:43
 #: src/Tribe/RSVP.php:1718
 msgid "Free"
 msgstr ""
@@ -487,21 +507,15 @@ msgctxt "price description"
 msgid "Leave blank for free %s"
 msgstr ""
 
-#: src/admin-views/editor/fieldset/price.php:106
-#: src/admin-views/legacy-ticket-fields.php:24
-#: src/admin-views/price-fields.php:12
-msgid "Sale Price:"
-msgstr ""
-
-#: src/admin-views/editor/fieldset/price.php:107
+#: src/admin-views/editor/fieldset/price.php:109
 msgid "Current sale price. This can be managed via the product editor."
 msgstr ""
 
-#: src/admin-views/editor/fieldset/price.php:110
+#: src/admin-views/editor/fieldset/price.php:112
 msgid "Sale/Member Price:"
 msgstr ""
 
-#: src/admin-views/editor/fieldset/price.php:111
+#: src/admin-views/editor/fieldset/price.php:113
 msgid "Current sale or member price. This can be managed via the product editor."
 msgstr ""
 
@@ -2264,6 +2278,22 @@ msgstr ""
 
 #: src/Tickets/Commerce/Checkout.php:185
 msgid "Tickets Commerce Checkout Page"
+msgstr ""
+
+#: src/Tickets/Commerce/Editor/Metabox.php:195
+msgid "Sale price must be greater than 0"
+msgstr ""
+
+#: src/Tickets/Commerce/Editor/Metabox.php:196
+msgid "Sale price must be less than the regular price"
+msgstr ""
+
+#: src/Tickets/Commerce/Editor/Metabox.php:201
+msgid "Sale from date cannot be greater than Sale to date"
+msgstr ""
+
+#: src/Tickets/Commerce/Editor/Metabox.php:204
+msgid "Sale to date cannot be less than Sale from date"
 msgstr ""
 
 #: src/Tickets/Commerce/Gateways/Contracts/Abstract_Gateway.php:194
@@ -6902,6 +6932,22 @@ msgstr ""
 msgid "Payment Intent %s does not require an update or is a duplicate of a past event."
 msgstr ""
 
+#: src/Tickets/Commerce/Hooks.php:786
+msgid "Add sale price"
+msgstr ""
+
+#: src/Tickets/Commerce/Hooks.php:787
+msgid "Sale Price"
+msgstr ""
+
+#: src/Tickets/Commerce/Hooks.php:788
+msgid "On sale from"
+msgstr ""
+
+#: src/Tickets/Commerce/Hooks.php:790
+msgid "Sale price must be lower than the regular ticket price."
+msgstr ""
+
 #: src/Tickets/Commerce/Legacy_Compat.php:89
 msgid "Tribe Commerce ( Legacy PayPal, not recommended )"
 msgstr ""
@@ -7034,7 +7080,7 @@ msgctxt "attendee export"
 msgid "Purchaser Email Address"
 msgstr ""
 
-#: src/Tickets/Commerce/Reports/Data/Order_Summary.php:135
+#: src/Tickets/Commerce/Reports/Data/Order_Summary.php:144
 #: src/Tribe/Tickets_Handler.php:109
 #: src/views/blocks/tickets/extra-available-unlimited.php:19
 #: src/views/v2/tickets/item/extra/available/unlimited.php:56
@@ -7255,17 +7301,17 @@ msgstr ""
 msgid "Tickets Commerce Success Page"
 msgstr ""
 
-#: src/Tickets/Commerce/Ticket.php:172
+#: src/Tickets/Commerce/Ticket.php:211
 #: src/Tribe/Admin/Settings.php:197
 #: src/Tribe/Commerce/PayPal/Main.php:463
 msgid "Tickets"
 msgstr ""
 
-#: src/Tickets/Commerce/Ticket.php:174
+#: src/Tickets/Commerce/Ticket.php:213
 msgid "Tickets Commerce Tickets"
 msgstr ""
 
-#: src/Tickets/Commerce/Ticket.php:175
+#: src/Tickets/Commerce/Ticket.php:214
 msgid "Tickets Commerce Ticket"
 msgstr ""
 
@@ -8467,7 +8513,7 @@ msgstr ""
 
 #: src/Tickets/Integrations/Plugins/Yoast_Duplicate_Post/Duplicate_Post.php:75
 #: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:66
-#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:253
+#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:254
 #: src/Tribe/Metabox.php:324
 #: src/Tribe/Metabox.php:449
 #: src/Tribe/Metabox.php:538
@@ -9364,15 +9410,15 @@ msgid "The ticket post ID"
 msgstr ""
 
 #: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:56
-#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:234
+#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:235
 msgid "Invalid nonce"
 msgstr ""
 
-#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:267
+#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:268
 msgid "Invalid price"
 msgstr ""
 
-#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:299
+#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:311
 msgid "%s was not able to be updated"
 msgstr ""
 
@@ -10375,7 +10421,7 @@ msgstr ""
 msgid "There was a problem while fetching the requested attendee post"
 msgstr ""
 
-#: src/Tribe/REST/V1/Post_Repository.php:171
+#: src/Tribe/REST/V1/Post_Repository.php:176
 msgid "An error happened while building the response: "
 msgstr ""
 
@@ -11541,6 +11587,10 @@ msgstr ""
 #: src/views/v2/rsvp/messages/success/not-going.php:35
 msgctxt "blocks rsvp messages success"
 msgid "Your %1$s response has been received."
+msgstr ""
+
+#: src/views/v2/tickets/item/content/sale-label.php:36
+msgid "On Sale"
 msgstr ""
 
 #. Translators: 1: opening span. 2: the number of remaining tickets to buy. 3: Closing span.

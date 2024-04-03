@@ -1,6 +1,6 @@
 <?php
-
-use Tribe__Tickets__Global_Stock as Global_Stock;
+use TEC\Tickets\Commerce\Ticket;
+use TEC\Tickets\Commerce\Module;
 
 
 class Tribe__Tickets__REST__V1__Post_Repository
@@ -56,10 +56,15 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 */
 	protected $permission = 'public';
 
+	/**
+	 * Tribe__Tickets__REST__V1__Post_Repository constructor.
+	 *
+	 * @param Tribe__REST__Messages_Interface|null $messages The messages instance.
+	 */
 	public function __construct( Tribe__REST__Messages_Interface $messages = null ) {
-		$this->types_get_map = array(
-			Tribe__Tickets__RSVP::ATTENDEE_OBJECT => array( $this, 'get_attendee_data' ),
-		);
+		$this->types_get_map = [
+			Tribe__Tickets__RSVP::ATTENDEE_OBJECT => [ $this, 'get_attendee_data' ],
+		];
 
 		$this->messages = $messages ? $messages : tribe( 'tickets.rest-v1.messages' );
 	}
@@ -78,7 +83,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		$post = get_post( $id );
 
 		if ( empty( $post ) ) {
-			return array();
+			return [];
 		}
 
 		if ( ! isset( $this->types_get_map[ $post->post_type ] ) ) {
@@ -97,8 +102,8 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		$attendee_post = get_post( $attendee_id );
 
 		if ( ! $attendee_post instanceof WP_Post ) {
-			// the attendee post does not exist, user error
-			return new WP_Error( 'attendee-not-found', $this->messages->get_message( 'attendee-not-found' ), array( 'status' => 404 ) );
+			// the attendee post does not exist, user error.
+			return new WP_Error( 'attendee-not-found', $this->messages->get_message( 'attendee-not-found' ), [ 'status' => 404 ] );
 		}
 
 		$attendee_id = $attendee_post->ID;
@@ -110,7 +115,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		$provider = $data_api->get_ticket_provider( $attendee_id );
 
 		if ( empty( $provider ) ) {
-			// the attendee post does exist but it does not make sense on the server, server error
+			// the attendee post does exist but it does not make sense on the server, server error.
 			return new WP_Error( 'attendee-not-found', $this->messages->get_message( 'attendee-not-found' ), [ 'status' => 500 ] );
 		}
 
@@ -118,11 +123,11 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		$attendee = $provider->get_all_attendees_by_attendee_id( $attendee_id );
 
 		if ( empty( $attendee ) ) {
-			// the attendee post does exist but it does not make sense on the server, server error
+			// the attendee post does exist but it does not make sense on the server, server error.
 			return new WP_Error( 'attendee-not-found', $this->messages->get_message( 'attendee-not-found' ), [ 'status' => 500 ] );
 		}
 
-		// See note above, this is an array with one element in it
+		// See note above, this is an array with one element in it.
 		$attendee = $attendee[0];
 
 		return $this->build_attendee_data( $attendee );
@@ -133,7 +138,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 */
 	public function get_ticket_data( $ticket_id, $context = 'default' ) {
 		if ( is_array( $ticket_id ) && ! empty( $ticket_id['id'] ) ) {
-			// ticket data in array format
+			// ticket data in array format.
 			$ticket_id = $ticket_id['id'];
 		}
 
@@ -145,13 +150,13 @@ class Tribe__Tickets__REST__V1__Post_Repository
 			return $ticket;
 		}
 
-		// make sure the data is a nested array
+		// make sure the data is a nested array.
 		$data = json_decode( json_encode( $ticket ), true );
 
 		$data['post_id']  = $ticket->get_event_id();
 		$data['provider'] = $this->get_provider_slug( $ticket->provider_class );
-		$data['id'] = (int) $data['ID'];
-		$data['type'] = $ticket->type();
+		$data['id']       = (int) $data['ID'];
+		$data['type']     = $ticket->type();
 
 		try {
 			$this->add_ticket_global_id_data( $data );
@@ -169,7 +174,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 			return new WP_Error(
 				'error',
 				__( 'An error happened while building the response: ', 'event-tickets' ) . $e->getMessage(),
-				array( 'status' => $e->getMessage() )
+				[ 'status' => $e->getMessage() ]
 			);
 		}
 
@@ -193,7 +198,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 *
 	 * @since 4.8
 	 *
-	 * @param int|WP_Post $ticket_id
+	 * @param int|WP_Post $ticket_id The ticket ID or post object.
 	 *
 	 * @return Tribe__Tickets__Ticket_Object|bool|WP_Error The ticket object, `false`, or WP_Error.
 	 */
@@ -267,11 +272,11 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		}
 
 		$map = [
-			'Tribe__Tickets__RSVP'                             => 'rsvp',
-			'Tribe__Tickets__Commerce__PayPal__Main'           => 'tribe-commerce',
+			'Tribe__Tickets__RSVP'                     => 'rsvp',
+			'Tribe__Tickets__Commerce__PayPal__Main'   => 'tribe-commerce',
 			'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' => 'woo',
-			'Tribe__Tickets_Plus__Commerce__EDD__Main'         => 'edd',
-			\TEC\Tickets\Commerce\Module::class                => \TEC\Tickets\Commerce::ABBR,
+			'Tribe__Tickets_Plus__Commerce__EDD__Main' => 'edd',
+			Module::class                              => \TEC\Tickets\Commerce::ABBR,
 		];
 
 		/**
@@ -284,7 +289,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		 */
 		$map = apply_filters( 'tribe_tickets_rest_provider_slug_map', $map, $provider_class );
 
-		$values = array_values( $map );
+		$values  = array_values( $map );
 		$default = $values[0];
 
 		return Tribe__Utils__Array::get( $map, $provider_class, $default );
@@ -295,7 +300,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 *
 	 * @since 4.8
 	 *
-	 * @param array $data
+	 * @param array $data The ticket data.
 	 *
 	 * @throws Tribe__REST__Exceptions__Exception If the global ID generation fails.
 	 */
@@ -324,8 +329,8 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 *
 	 * @since 4.8
 	 *
-	 * @param int    $ticket_id
-	 * @param string $provider_class
+	 * @param int    $ticket_id The ticket ID.
+	 * @param string $provider_class The provider class.
 	 *
 	 * @return bool|string
 	 */
@@ -370,8 +375,8 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 *
 	 * @since 4.8
 	 *
-	 * @param int    $ticket_id
-	 * @param string $global_id
+	 * @param int    $ticket_id The ticket ID.
+	 * @param string $global_id The global ID.
 	 *
 	 * @return array|bool
 	 */
@@ -387,8 +392,8 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		$existing = get_post_meta( $ticket_id, $this->global_id_lineage_key, true );
 
 		$new = ! empty( $existing )
-			? array_unique( array_merge( (array) $existing, array( $global_id ) ) )
-			: array( $global_id );
+			? array_unique( array_merge( (array) $existing, [ $global_id ] ) )
+			: [ $global_id ];
 
 		if ( $new !== $existing ) {
 			update_post_meta( $ticket_id, $this->global_id_lineage_key, $new );
@@ -402,7 +407,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 *
 	 * @since 4.8
 	 *
-	 * @param array $data
+	 * @param array $data The ticket data.
 	 *
 	 * @throws Tribe__REST__Exceptions__Exception If the post fetch or parsing fails.
 	 */
@@ -430,7 +435,6 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		$data['modified_utc'] = $ticket_post->post_modified_gmt;
 		$data['title']        = $ticket->name;
 		$data['description']  = $ticket->description;
-
 	}
 
 	/**
@@ -438,7 +442,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 *
 	 * @since 4.8
 	 *
-	 * @param array $data
+	 * @param array $data The ticket data.
 	 */
 	protected function add_ticket_meta_data( &$data ) {
 		$ticket_id = $data['id'];
@@ -453,6 +457,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		$data['is_available']            = $data['capacity_details']['available_percentage'] > 0;
 		$data['cost']                    = $this->get_ticket_cost( $ticket_id );
 		$data['cost_details']            = $this->get_ticket_cost( $ticket_id, true );
+		$data['sale_price_data']         = $this->get_ticket_sale_price_data( $ticket_id );
 
 		/**
 		 * Since Attendee Information is a functionality provided by Event Tickets Plus
@@ -467,7 +472,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 *
 	 * @since 4.8
 	 *
-	 * @param int $ticket_id
+	 * @param int $ticket_id The ticket ID.
 	 *
 	 * @return bool|array
 	 */
@@ -503,7 +508,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 *
 	 * @since 4.8
 	 *
-	 * @param int  $ticket_id
+	 * @param int  $ticket_id The ticket ID.
 	 * @param bool $get_details Whether to get the date in string format (`false`) or the full details (`true`).
 	 *
 	 * @return string|array
@@ -512,9 +517,9 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		/** @var Tribe__Tickets__Tickets_Handler $handler */
 		$handler = tribe( 'tickets.handler' );
 
-		$start_info = [
+		$start_info   = [
 			get_post_meta( $ticket_id, $handler->key_start_date, true ),
-			get_post_meta( $ticket_id, $handler->key_start_time, true )
+			get_post_meta( $ticket_id, $handler->key_start_time, true ),
 		];
 		$start_string = implode( ' ', array_filter( $start_info ) );
 
@@ -528,7 +533,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 *
 	 * @since 4.8
 	 *
-	 * @param int  $ticket_id
+	 * @param int  $ticket_id The ticket ID.
 	 * @param bool $get_details Whether to get the date in string format (`false`) or the full details (`true`).
 	 *
 	 * @return string|array
@@ -537,7 +542,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		/** @var Tribe__Tickets__Tickets_Handler $handler */
 		$handler = tribe( 'tickets.handler' );
 
-		$end_info = [
+		$end_info   = [
 			get_post_meta( $ticket_id, $handler->key_end_date, true ),
 			get_post_meta( $ticket_id, $handler->key_end_time, true ),
 		];
@@ -553,8 +558,8 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 *
 	 * @since 4.8
 	 *
-	 * @param int  $ticket_id
-	 * @param bool $get_details
+	 * @param int  $ticket_id The ticket ID.
+	 * @param bool $get_details Whether to get capacity details or not. Defaults to `false`. If set to `true` returns an array.
 	 *
 	 * @return array|bool|int The ticket capacity, the details if `$get_details` is set to `true`
 	 *                        or `false` on failure.
@@ -609,13 +614,12 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 *
 	 * @since 4.8
 	 *
-	 * @param int  $ticket_id
+	 * @param int  $ticket_id The ticket ID.
 	 * @param bool $get_details Whether to get just the ticket cost (`false`) or
 	 *                          the details too ('true').
 	 *
 	 * @return string|array|false The ticket formatted cost if `$get_details` is `false`, the
 	 *                            ticket cost details otherwise; `false` on failure.
-	 *
 	 */
 	public function get_ticket_cost( $ticket_id, $get_details = false ) {
 		$ticket = $this->get_ticket_object( $ticket_id );
@@ -627,11 +631,15 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		/** @var Tribe__Tickets__Commerce__Currency $currency */
 		$currency = tribe( 'tickets.commerce.currency' );
 
-		$price = $ticket->price;
+		$price    = $ticket->price;
 		$provider = $ticket->provider_class;
 
 		if ( ! is_numeric( $price ) ) {
-			$price = 0; // free
+			$price = 0; // free.
+		}
+
+		if ( Module::class === $provider ) {
+			$price = tribe( Ticket::class )->get_regular_price( $ticket_id );
 		}
 
 		$formatted_price = html_entity_decode( $currency->format_currency( $price, $ticket_id ) );
@@ -640,17 +648,15 @@ class Tribe__Tickets__REST__V1__Post_Repository
 			return $formatted_price;
 		}
 
-		$details = array(
-			'currency_symbol'    => html_entity_decode( $currency->get_provider_symbol( $provider, $ticket_id ) ),
-			'currency_position'  => $currency->get_provider_symbol_position( $provider, $ticket_id ),
-			'values'             => array( $price ),
-			'suffix'             => $ticket->price_suffix,
+		return [
+			'currency_symbol'             => html_entity_decode( $currency->get_provider_symbol( $provider, $ticket_id ) ),
+			'currency_position'           => $currency->get_provider_symbol_position( $provider, $ticket_id ),
+			'values'                      => [ $price ],
+			'suffix'                      => $ticket->price_suffix,
 			'currency_decimal_separator'  => $currency->get_currency_decimal_point( $provider ),
 			'currency_decimal_numbers'    => $currency->get_currency_number_of_decimals(),
 			'currency_thousand_separator' => $currency->get_currency_thousands_sep( $provider ),
-		);
-
-		return $details;
+		];
 	}
 
 	/**
@@ -658,7 +664,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 *
 	 * @since 4.8
 	 *
-	 * @param array $data
+	 * @param array $data The ticket data.
 	 */
 	protected function add_ticket_attendees_data( array &$data ) {
 		// Set as empty so it prevents errors with previous usage (no shortcode/block check).
@@ -713,35 +719,35 @@ class Tribe__Tickets__REST__V1__Post_Repository
 			&& $has_manage_access
 			&& false !== $data['attendees']
 		) {
-			$is_rsvp = $ticket_object->provider_class === 'Tribe__Tickets__RSVP';
+			$is_rsvp = 'Tribe__Tickets__RSVP' === $ticket_object->provider_class;
 
-			$going     = 0;
-			$not_going = 0;
-			$checked_in = 0;
+			$going        = 0;
+			$not_going    = 0;
+			$checked_in   = 0;
 			$unchecked_in = 0;
 
 			foreach ( $data['attendees'] as $attendee ) {
 				if ( $is_rsvp ) {
 					if ( true === $attendee['rsvp_going'] ) {
-						$going ++;
+						++$going;
 					} else {
-						$not_going ++;
+						++$not_going;
 					}
 				}
 
 				if ( ! empty( $attendee['checked_in'] ) ) {
-					$checked_in ++;
+					++$checked_in;
 				} else {
-					$unchecked_in ++;
+					++$unchecked_in;
 				}
 			}
 
 
 			if ( $is_rsvp ) {
-				$data['rsvp'] = array(
+				$data['rsvp'] = [
 					'rsvp_going'     => $going,
 					'rsvp_not_going' => $not_going,
-				);
+				];
 			}
 
 			$attendees_count       = count( $data['attendees'] );
@@ -749,19 +755,19 @@ class Tribe__Tickets__REST__V1__Post_Repository
 				? ceil( 100 * $checked_in / $attendees_count )
 				: 100;
 
-			$data['checkin']       = array(
-				'checked_in'             => $checked_in,
-				'unchecked_in'           => $unchecked_in,
-				'checked_in_percentage'  => $checked_in_percentage,
+			$data['checkin'] = [
+				'checked_in'              => $checked_in,
+				'unchecked_in'            => $unchecked_in,
+				'checked_in_percentage'   => $checked_in_percentage,
 				'unchecked_in_percentage' => 100 - $checked_in_percentage,
-			);
+			];
 		}
 	}
 
 	/**
 	 * Returns a ticket attendees list.
 	 *
-	 * @param int $ticket_id
+	 * @param int $ticket_id The ticket ID.
 	 *
 	 * @return array|bool An array of ticket attendees or `false` on failure.
 	 */
@@ -780,11 +786,30 @@ class Tribe__Tickets__REST__V1__Post_Repository
 			->where( 'ticket', $ticket_id );
 
 		if ( ! $has_manage_access && 'Tribe__Tickets__RSVP' === $ticket_object->provider_class ) {
-			// if we are dealing with an RSVP ticket then the attendee must be going to show
+			// if we are dealing with an RSVP ticket then the attendee must be going to show.
 			$query->where( 'meta_equals', Tribe__Tickets__RSVP::ATTENDEE_RSVP_KEY, 'yes' );
 		}
 
 		return $query->all();
+	}
+
+	/**
+	 * Returns the sale price data for a ticket.
+	 *
+	 * @since 5.9.0
+	 *
+	 * @param int $ticket_id The ticket ID.
+	 *
+	 * @return array<string,string> The sale price data.
+	 */
+	public function get_ticket_sale_price_data( int $ticket_id ): array {
+		$provider = tribe_tickets_get_ticket_provider( $ticket_id );
+
+		if ( ! $provider instanceof Module ) {
+			return [];
+		}
+
+		return tribe( Ticket::class )->get_sale_price_details( $ticket_id );
 	}
 
 	/**
@@ -794,7 +819,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 *
 	 * @since 4.8
 	 *
-	 * @param int $attendee_id
+	 * @param int $attendee_id The attendee ID.
 	 *
 	 * @return string
 	 */
@@ -809,10 +834,12 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		$generator->origin( home_url() );
 		$generator->type( 'attendee' );
 
-		$global_id = $generator->generate( array(
-			'type' => 'attendee',
-			'id'   => $attendee_id,
-		) );
+		$global_id = $generator->generate(
+			[
+				'type' => 'attendee',
+				'id'   => $attendee_id,
+			]
+		);
 
 		update_post_meta( $attendee_id, $this->global_id_key, $global_id );
 
@@ -826,8 +853,8 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 *
 	 * @since 4.8
 	 *
-	 * @param int    $attendee_id
-	 * @param string $global_id
+	 * @param int    $attendee_id The attendee ID.
+	 * @param string $global_id The global ID.
 	 *
 	 * @return array|bool The attendee Global ID lineage or `false` on failure.
 	 */
@@ -839,8 +866,8 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		$existing = get_post_meta( $attendee_id, $this->global_id_lineage_key, true );
 
 		$new = ! empty( $existing )
-			? array_unique( array_merge( (array) $existing, array( $global_id ) ) )
-			: array( $global_id );
+			? array_unique( array_merge( (array) $existing, [ $global_id ] ) )
+			: [ $global_id ];
 
 		if ( $new !== $existing ) {
 			update_post_meta( $attendee_id, $this->global_id_lineage_key, $new );
@@ -854,7 +881,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 *
 	 * @since 4.8
 	 *
-	 * @param array $data
+	 * @param array<string,mixed> $data The ticket data.
 	 */
 	protected function add_ticket_rest_data( &$data ) {
 		/** @var Tribe__Tickets__REST__V1__Main $main */
@@ -868,16 +895,15 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 *
 	 * @since 4.8
 	 *
-	 * @param array $data
+	 * @param array<string> $data The ticket data.
 	 */
 	protected function clean_ticket_data( array &$data ) {
-		$unset_map = array(
+		$unset_map = [
 			'ID',
 			'name',
 			'show_description',
 			'price',
 			'regular_price',
-			'on_sale',
 			'admin_link',
 			'report_link',
 			'frontend_link',
@@ -889,7 +915,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 			'end_time',
 			'purchase_limit',
 			'sku',
-		);
+		];
 
 		$data = array_diff_key( $data, array_combine( $unset_map, $unset_map ) );
 	}
@@ -899,7 +925,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 *
 	 * @since 4.8
 	 *
-	 * @param array $attendee The attendee information.
+	 * @param array  $attendee The attendee information.
 	 * @param string $context The context in which the data will be shown; this
 	 *                        is about format, not permissions.
 	 *
@@ -963,7 +989,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 			'modified'          => $attendee_post->post_modified,
 			'modified_utc'      => $attendee_post->post_modified_gmt,
 			'rest_url'          => $main->get_url( '/attendees/' . $attendee_id ),
-			'ticket' => [
+			'ticket'            => [
 				'id'              => $ticket->ID,
 				'title'           => $ticket->name,
 				'description'     => $ticket->description,
@@ -999,8 +1025,8 @@ class Tribe__Tickets__REST__V1__Post_Repository
 
 					// Show Attendee flags.
 					// @todo Make these live in future IAC work.
-					'is_subscribed' => false,
-					'is_purchaser'  => true,
+					'is_subscribed'   => false,
+					'is_purchaser'    => true,
 				]
 			);
 
@@ -1014,18 +1040,18 @@ class Tribe__Tickets__REST__V1__Post_Repository
 
 				if ( ! empty( $order_data ) ) {
 					/** @var Tribe__Tickets__Commerce__Currency $currency */
-					$currency                 = tribe( 'tickets.commerce.currency' );
-					$ticket_object            = $this->get_ticket_object( $attendee['product_id'] );
+					$currency      = tribe( 'tickets.commerce.currency' );
+					$ticket_object = $this->get_ticket_object( $attendee['product_id'] );
 
 					if ( ! is_wp_error( $ticket_object ) ) {
 						$purchase_time            = Tribe__Utils__Array::get( $order_data, 'purchase_time', get_post_time( Tribe__Date_Utils::DBDATETIMEFORMAT, false, $attendee_id ) );
-						$attendee_data['payment'] = array(
+						$attendee_data['payment'] = [
 							'provider'     => Tribe__Utils__Array::get( $order_data, 'provider_slug', $this->get_provider_slug( $provider ) ),
 							'price'        => ! empty( $ticket_object->price ) ? $ticket_object->price : '',
 							'currency'     => html_entity_decode( $currency->get_currency_symbol( $attendee['product_id'] ) ),
 							'date'         => $purchase_time,
 							'date_details' => $this->get_date_details( $purchase_time ),
-						);
+						];
 					}
 				}
 			}
@@ -1131,7 +1157,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		$meta = array_map( 'reset', get_post_custom( $attendee_id ) );
 		$data = [
 			'id'         => $attendee_id,
-			'checked_in' => isset( $meta[ $service_provider->checkin_key ] ) ? $meta[ $service_provider->checkin_key ] : '',
+			'checked_in' => $meta[ $service_provider->checkin_key ] ?? '',
 		];
 
 		/**

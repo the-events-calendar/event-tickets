@@ -202,10 +202,11 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 	/**
 	 * Add ticket callback executed to update / add a new ticket.
 	 *
-	 * @since  4.9
-	 * @since  4.10.9 Use customizable ticket name functions.
-	 * @since  4.12.3 Update detecting ticket provider to account for possibly inactive provider.
-	 * @since  5.6.5    Validates if price is grather than 0 when provider is PayPal or Tickets Commerce
+	 * @since 4.9
+	 * @since 4.10.9 Use customizable ticket name functions.
+	 * @since 4.12.3 Update detecting ticket provider to account for possibly inactive provider.
+	 * @since 5.6.5  Validates if price is greater than 0 when provider is PayPal or Tickets Commerce
+	 * @since 5.9.0    Added support for sale price for Tickets Commerce.
 	 *
 	 * @param  WP_REST_Request $request
 	 * @param  $nonce_action
@@ -288,6 +289,17 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 
 		if ( null !== $ticket_id ) {
 			$ticket_data['ticket_id'] = $ticket_id;
+		}
+
+		if ( $is_paypal_ticket && isset( $body['ticket']['sale_price'] ) ) {
+			$sale_price_data                      = $body['ticket']['sale_price'];
+			$ticket_data['ticket_add_sale_price'] = Tribe__Utils__Array::get( $sale_price_data, 'checked', false );
+
+			if ( tribe_is_truthy( $ticket_data['ticket_add_sale_price'] ) ) {
+				$ticket_data['ticket_sale_price']      = Tribe__Utils__Array::get( $sale_price_data, 'price', '' );
+				$ticket_data['ticket_sale_start_date'] = Tribe__Utils__Array::get( $sale_price_data, 'start_date', '' );
+				$ticket_data['ticket_sale_end_date']   = Tribe__Utils__Array::get( $sale_price_data, 'end_date', '' );
+			}
 		}
 
 		// Get the Ticket Object
