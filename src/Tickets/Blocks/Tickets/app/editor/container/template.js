@@ -9,7 +9,6 @@ import classNames from 'classnames';
  * Wordpress dependencies
  */
 const { InnerBlocks } = wp.blockEditor;
-import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -17,6 +16,7 @@ import { __ } from '@wordpress/i18n';
 import Availability from '../availability/container';
 import Inactive from '../inactive/container';
 import { Card } from '@moderntribe/tickets/elements';
+import { TICKET_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
 import './style.pcss';
 import Uneditable from '../uneditable/container';
 
@@ -35,10 +35,6 @@ const TicketsContainer = ({
 	uneditableTickets,
 	uneditableTicketsAreLoading,
 }) => {
-	if (isSettingsOpen) {
-		return null;
-	}
-
 	const innerBlocksClassName = classNames({
 		'tribe-editor__tickets__inner-blocks': true,
 		'tribe-editor__tickets__inner-blocks--show': !showInactiveBlock,
@@ -60,7 +56,7 @@ const TicketsContainer = ({
 			<div className={innerBlocksClassName}>
 				<Card
 					className={cardClassName}
-					header={__('Tickets', 'event-tickets')}
+					header={TICKET_LABELS.ticket.plural}
 				>
 					{canCreateTickets && (
 						<InnerBlocks allowedBlocks={['tribe/tickets-item']} />

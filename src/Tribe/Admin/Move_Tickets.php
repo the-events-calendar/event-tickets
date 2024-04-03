@@ -118,7 +118,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 			'unexpected_failure'       => '<p>' . __( 'Woops! We could not complete the requested operation due to an unforeseen problem.', 'event-tickets' ) . '</p>',
 			'update_post_list_failure' => __( 'Unable to update the post list. Please refresh the page and try again.', 'event-tickets' ),
 			'no_posts_found'           => __( 'No results found - you may need to widen your search criteria.', 'event-tickets' ),
-			'no_ticket_types_found'    => __( 'No ticket types were found for this post.', 'event-tickets' ),
+			'no_ticket_types_found'    => __( 'No tickets were found for this post.', 'event-tickets' ),
 			'loading_msg'              => __( 'Loading, please wait&hellip;', 'event-tickets' ),
 			'src_post_id'              => absint( tribe_get_request_var( 'event_id', tribe_get_request_var( 'post', 0 ) ) ),
 			'ticket_ids'               => array_keys( $this->attendees ),
@@ -533,6 +533,24 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	 */
 	public function move_tickets( array $ticket_ids, $tgt_ticket_type_id, $src_event_id, $tgt_event_id ) {
 		$ticket_ids       = array_map( 'intval', $ticket_ids );
+
+		/**
+		 * Filters the set of Attendee IDs that will be moved following a user request to move Attendees.
+		 *
+		 * A note about misnomers coming from legacy code: 1 .this method moves Attendees, not Tickets, from a Ticket
+		 * on a ticket-able post to another Ticket on another ticketable post 2. the term Event is used to refer to any
+		 * ticket-able post, not just Events.
+		 *
+		 * @since  5.8.3
+		 *
+		 * @parram int[] $ticket_ids The set of Attendee IDs that will be moved.
+		 *
+		 * @param int $tgt_ticket_type_id The ID of the Ticket the Attendees will be moved to.
+		 * @param int $src_event_id       The ID of the ticket-able Post the Attendees are currently associated with.
+		 * @param int $tgt_event_id       The ID of the ticket-able Post the Attendees will be moved to.
+		 */
+		$ticket_ids = apply_filters( 'tec_tickets_move_attendees_ids', $ticket_ids, $tgt_ticket_type_id, $src_event_id, $tgt_event_id );
+
 		$instigator_id    = get_current_user_id();
 		$ticket_type      = Tribe__Tickets__Tickets::load_ticket_object( $tgt_ticket_type_id );
 		$successful_moves = 0;

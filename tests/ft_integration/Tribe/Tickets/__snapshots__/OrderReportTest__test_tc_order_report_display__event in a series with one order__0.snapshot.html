@@ -35,7 +35,7 @@
 									<div class="tec-tickets__admin-orders-report-overview-ticket-type">
 						<div class="tec-tickets__admin-orders-report-overview-ticket-type-icon tec-tickets__admin-orders-report-overview-ticket-type-icon--default"></div>
 						<div class="tec-tickets__admin-orders-report-overview-ticket-type-label">
-							Single Ticket						</div>
+							Standard Tickets						</div>
 						<div class="tec-tickets__admin-orders-report-overview--border"></div>
 				</div>
 				<ul class="tec-tickets__admin-orders-report-overview-ticket-type-list">
@@ -111,7 +111,9 @@
 
 				<div class="alignleft actions bulkactions">
 					</div>
-			<div class='tablenav-pages one-page'><span class="displaying-num">1 item</span>
+					<div class="alignleft actions attendees-actions"><input type="button" name="print" class="print button action" value="Print"><a target="_blank" href="?orders_csv=1&#038;orders_csv_nonce=1234567890" class="export action button" rel="noopener noreferrer">Export</a></div>
+		<div class="alignright attendees-filter"></div>
+		<div class='tablenav-pages one-page'><span class="displaying-num">1 item</span>
 <span class='pagination-links'><span class="tablenav-pages-navspan button disabled" aria-hidden="true">&laquo;</span>
 <span class="tablenav-pages-navspan button disabled" aria-hidden="true">&lsaquo;</span>
 <span class="paging-input"><label for="current-page-selector" class="screen-reader-text">Current Page</label><input class='current-page' id='current-page-selector' type='text'
@@ -128,7 +130,7 @@
 
 	<tbody id="the-list"
 		 data-wp-lists='list:order'		>
-		<tr class="tec-tc-completed"><td class='order column-order has-row-actions column-primary' data-colname="Order">{{ID}}<div class="order-status order-status-completed">Completed</div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class='purchaser column-purchaser' data-colname="Purchaser">Test Purchaser</td><td class='email column-email' data-colname="Email">purchaser@test.com</td><td class='purchased column-purchased' data-colname="Purchased"><div class='tribe-line-item'>1 - Test TC ticket for {{ID}}</div></td><td class='date column-date' data-colname="Date">{{order_date}}</td><td class='gateway column-gateway' data-colname="Gateway">PayPal</td><td class='gateway_order_id column-gateway_order_id' data-colname="Gateway ID"><a href="" target="_blank" rel="noopener noreferrer"></a></td><td class='status column-status' data-colname="Status">Completed</td><td class='total column-total' data-colname="Total">&#x24;1.00</td></tr>	</tbody>
+		<tr class="tec-tc-completed"><td class='order column-order has-row-actions column-primary' data-colname="Order">{{ID}} <div class="order-status order-status-completed">Completed</div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class='purchaser column-purchaser' data-colname="Purchaser">Test Purchaser</td><td class='email column-email' data-colname="Email">purchaser@test.com</td><td class='purchased column-purchased' data-colname="Purchased"><div class='tribe-line-item'>1 - Test TC ticket for {{ID}}</div></td><td class='date column-date' data-colname="Date">{{order_date}}</td><td class='gateway column-gateway' data-colname="Gateway">PayPal</td><td class='gateway_order_id column-gateway_order_id' data-colname="Gateway ID"><a href="" target="_blank" rel="noopener noreferrer"></a></td><td class='status column-status' data-colname="Status">Completed</td><td class='total column-total' data-colname="Total">&#x24;1.00</td></tr>	</tbody>
 
 	<tfoot>
 	<tr>
@@ -140,7 +142,9 @@
 
 				<div class="alignleft actions bulkactions">
 					</div>
-			<div class='tablenav-pages one-page'><span class="displaying-num">1 item</span>
+					<div class="alignleft actions attendees-actions"><input type="button" name="print" class="print button action" value="Print"><a target="_blank" href="?orders_csv=1&#038;orders_csv_nonce=1234567890" class="export action button" rel="noopener noreferrer">Export</a></div>
+		<div class="alignright attendees-filter"></div>
+		<div class='tablenav-pages one-page'><span class="displaying-num">1 item</span>
 <span class='pagination-links'><span class="tablenav-pages-navspan button disabled" aria-hidden="true">&laquo;</span>
 <span class="tablenav-pages-navspan button disabled" aria-hidden="true">&lsaquo;</span>
 <span class="screen-reader-text">Current Page</span><span id="table-paging" class="paging-input"><span class="tablenav-paging-text">1 of <span class='total-pages'>1</span></span></span>

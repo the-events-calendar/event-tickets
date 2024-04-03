@@ -544,6 +544,7 @@ class Dispatcher {
 	 * Send an email.
 	 *
 	 * @since 5.6.0
+	 * @since 5.8.3 Decodes the subject before sending the email.
 	 *
 	 * @return bool Whether the email was sent successfully.
 	 */
@@ -552,9 +553,12 @@ class Dispatcher {
 			return false;
 		}
 
+		// Handle any encoded characters in the subject.
+		$subject = wp_specialchars_decode( $this->get_subject() );
+
 		$sent = (bool) wp_mail(
 			$this->get_to(),
-			$this->get_subject(),
+			$subject,
 			$this->get_content(),
 			$this->get_headers_formatted(),
 			$this->get_attachments()

@@ -1,0 +1,15 @@
+		<div class="event-tickets-ticket-name">
+			[#{{cloned_attendee_id}}] &ndash; 			Test TC ticket for {{series_id}}		</div>
+
+		<div class="row-actions"><span class="inline">
+					<a href="#" class="tickets_checkin" data-attendee-id="{{cloned_attendee_id}}" data-event-id="{{event_id}}" data-provider="TEC\Tickets\Commerce\Module">Check In</a>
+					<a href="#" class="tickets_uncheckin" data-attendee-id="{{cloned_attendee_id}}" data-event-id="{{event_id}}" data-provider="TEC\Tickets\Commerce\Module">Undo Check In</a>
+				</span> | <span class="trash"><a href="?action=delete_attendee&#038;nonce=1234567890&#038;attendee={{cloned_attendee_id}}|TECTicketsCommerceModule">Delete</a></span></div>
+
+		<div class="event-tickets-ticket-name">
+			[#{{series_pass_attendee_id}}] &ndash; 			Test TC ticket for {{series_id}}		</div>
+
+		<div class="row-actions"><span class="inline">
+					<a href="#" class="tickets_checkin" data-attendee-id="{{series_pass_attendee_id}}" data-event-id="{{event_id}}" data-provider="TEC\Tickets\Commerce\Module">Check In</a>
+					<a href="#" class="tickets_uncheckin" data-attendee-id="{{series_pass_attendee_id}}" data-event-id="{{event_id}}" data-provider="TEC\Tickets\Commerce\Module">Undo Check In</a>
+				</span> | <span class="trash"><a href="?action=delete_attendee&#038;nonce=1234567890&#038;attendee={{series_pass_attendee_id}}|TECTicketsCommerceModule">Delete</a></span></div>

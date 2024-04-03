@@ -15,6 +15,7 @@ import uniqid from 'uniqid';
 /**
  * Internal dependencies
  */
+import { TICKET_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
 
 class IACSetting extends PureComponent {
 	static propTypes = {
@@ -38,10 +39,18 @@ class IACSetting extends PureComponent {
 		return (
 			<div>
 				<div className="tribe-editor__ticket__content-row--iac-setting-description">
-					{ __(
-						'Select the default way to sell tickets. Enabling Individual Attendee Collection will allow purchasers to enter a name and email for each ticket.', // eslint-disable-line max-len
-						'event-tickets',
-					) }
+					{
+						// eslint-disable-next-line no-undef
+						sprintf(
+							/* Translators: %1$s - the plural, lowercase label for a ticket;  %2$s - the singular, lowercase label for a ticket. */
+							__(
+								'Select the default way to sell %1$s. Enabling Individual Attendee Collection will allow purchasers to enter a name and email for each %2$s.', // eslint-disable-line max-len
+								'event-tickets'
+							),
+							TICKET_LABELS.ticket.pluralLowercase,
+							TICKET_LABELS.ticket.singularLowercase
+						)
+					}
 				</div>
 				<div className={ classNames(
 					'tribe-editor__ticket__iac-setting',

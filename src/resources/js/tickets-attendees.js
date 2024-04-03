@@ -141,6 +141,10 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 
 						$( '#total_checkedin' ).text( total_checked_in );
 						$( '#percent_checkedin' ).text( percent_checked_in );
+
+						if ( response?.data?.reload ) {
+							window.location.reload()
+						}
 					}
 
 					obj.prop( 'disabled', false );
@@ -165,7 +169,7 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 				nonce   : Attendees.uncheckin_nonce
 			};
 
-			// add event_ID information if available
+			// Add event_ID information if available.
 			if ( obj.attr( 'data-event-id' ) ) {
 				params.event_ID = obj.attr( 'data-event-id' );
 			}
@@ -177,6 +181,10 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 					if ( response.success ) {
 						obj.closest( 'tr' ).removeClass( 'tickets_checked' );
 						$( '#total_checkedin' ).text( parseInt( $( '#total_checkedin' ).text() ) - 1 );
+
+						if ( response?.data?.reload ) {
+							window.location.reload()
+						}
 					}
 
 					obj.prop( 'disabled', false );

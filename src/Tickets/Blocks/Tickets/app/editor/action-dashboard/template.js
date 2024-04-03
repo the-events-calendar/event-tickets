@@ -20,9 +20,15 @@ import {
 } from '../action-buttons';
 import NotSupportedMessage from '../not-supported-message/container';
 import { ActionDashboard } from '@moderntribe/tickets/elements';
+import { TICKET_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
 import './style.pcss';
 
-const confirmLabel = __('Add a Ticket', 'event-tickets');
+// eslint-disable-next-line no-undef
+const confirmLabel = sprintf(
+	/* Translators: %s - the singular label for a ticket. */
+	__('Add a %s', 'event-tickets'),
+	TICKET_LABELS.ticket.singular
+);
 
 class TicketsDashboardAction extends PureComponent {
 	static propTypes = {

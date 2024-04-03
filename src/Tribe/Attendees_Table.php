@@ -73,7 +73,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		// Fetch the event Object
 		if ( ! empty( $_GET['event_id'] ) ) {
 			$event_id    = filter_var( $_GET['event_id'], FILTER_VALIDATE_INT );
-			$event_id    = Event::filter_event_id( $event_id );
+			$event_id    = Event::filter_event_id( $event_id, 'attendees-table' );
 			$this->event = get_post( $event_id );
 		}
 
@@ -141,9 +141,13 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		/**
 		 * Controls the columns rendered within the attendee screen.
 		 *
-		 * @param array $columns
+		 * @since 4.3.2
+		 * @since 5.8.2 Added the `$event_id` parameter to the filter context.
+		 *
+		 * @param array<string,string> $columns An array of column headers.
+		 * @param int $event_id The ID of the post the table is being rendered for.
 		 */
-		return apply_filters( 'tribe_tickets_attendee_table_columns', $columns );
+		return apply_filters( 'tribe_tickets_attendee_table_columns', $columns, $event_id );
 	}
 
 	/**
@@ -629,6 +633,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			'page'      => 'tickets-attendees',
 			'action'    => 'email',
 			'event_id'  => $event_id,
+			'_wpnonce'  => wp_create_nonce( 'email-attendees-list' ),
 			'TB_iframe' => true,
 			'width'     => 410,
 			'height'    => 300,
@@ -689,6 +694,13 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			$actions['uncheck_in']      = esc_attr__( 'Undo Check in', 'event-tickets' );
 		}
 
+		/**
+		 * Filters the bulk actions available on the Attendees table.
+		 *
+		 * @since 3.11
+		 *
+		 * @param array<string,string> $actions The array of bulk actions available on the Attendees table.
+		 */
 		return (array) apply_filters( 'tribe_events_tickets_attendees_table_bulk_actions', $actions );
 	}
 
@@ -930,6 +942,8 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 
 	/**
 	 * Prepares the list of items for displaying.
+	 *
+	 * @since 5.8.4 Adding caching to eliminate method running multiple times.
 	 */
 	public function prepare_items() {
 		$this->process_actions();
@@ -948,8 +962,18 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			'return_total_found' => true,
 		];
 
-		$event_id = Event::filter_event_id( filter_var( tribe_get_request_var( 'event_id' ), FILTER_VALIDATE_INT ) );
+		$event_id = Event::filter_event_id( filter_var( tribe_get_request_var( 'event_id' ), FILTER_VALIDATE_INT ), 'attendees-table' );
 		$search   = sanitize_text_field( tribe_get_request_var( $this->search_box_input_name ) );
+
+		/** @var Tribe__Cache $cache */
+		$cache     = tribe( 'cache' );
+		$cache_key = __METHOD__ . '-' . md5( wp_json_encode( $args ) . $event_id );
+		$cached    = $cache->get( $cache_key );
+
+		if ( $cached ) {
+			$this->items = $cached;
+			return $cached;
+		}
 
 		if ( ! empty( $search ) ) {
 			$search_keys = array_keys( $this->get_search_options() );
@@ -1030,6 +1054,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		}
 
 		$this->items = $items;
+		$cache->set( $cache_key, $items, 60 );
 
 		$this->set_pagination_args( $pagination_args );
 	}

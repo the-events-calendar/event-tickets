@@ -18,14 +18,24 @@
 		<img
 			class="tribe-tickets-svgicon tec-tickets-icon tec-tickets-icon__ticket-type"
 			src="<?php echo esc_url( tribe_resource_url( 'icons/ticket-default-icon.svg', false, null, \Tribe__Tickets__Main::instance() ) ); ?>"
-			alt="<?php echo esc_html( tribe_get_ticket_label_singular( 'admin_ticket_type_alt_text' ) ); ?>"
+			alt="<?php echo esc_attr( tribe_get_ticket_label_singular( 'admin_ticket_type_alt_text' ) ); ?>"
 		/>
 		<span class="ticket-type__text ticket-type__text--default">
-		Single <?php echo esc_html( tribe_get_ticket_label_singular( 'admin_ticket_type_name' ) ); ?>
+			<?php echo esc_html( tec_tickets_get_default_ticket_type_label( 'admin_ticket_type_name' ) ); ?>
 		</span>
 	</div>
 
 	<span class="tribe_soft_note ticket_form_right tribe-active">
-		<?php echo wp_kses( $description, [ 'a' => [ 'href' => true, 'target' => true ] ] ); ?>
+		<?php 
+		echo wp_kses(
+			$description,
+			[
+				'a' => [
+					'href'   => true,
+					'target' => true,
+				],
+			] 
+		); 
+		?>
 	</span>
 </div>

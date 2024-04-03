@@ -289,8 +289,8 @@ abstract class Email_Abstract {
 	 */
 	public function set_placeholders( array $placeholders = [] ): array {
 		$this->placeholders = array_merge(
-			$placeholders,
-			$this->get_placeholders()
+			$this->get_placeholders(),
+			$placeholders
 		);
 
 		return $this->placeholders;
@@ -537,8 +537,6 @@ abstract class Email_Abstract {
 		$option_key = $this->get_option_key( 'heading' );
 		$heading    = tribe_get_option( $option_key, $this->get_default_heading() );
 		$heading    = stripslashes( $heading );
-
-		// @todo: Probably we want more data parsed, or maybe move the filters somewhere else as we're always gonna
 
 		/**
 		 * Allow filtering the email heading globally.

@@ -192,7 +192,7 @@ abstract class Abstract_Gateway implements Gateway_Interface {
 		$body    = (array) json_decode( wp_remote_retrieve_body( $response ) );
 
 		$error         = isset( $body['error'] ) ? $body['error'] : __( 'Something went wrong!', 'event-tickets' );
-		$error_message = isset( $body['error_description'] ) ? $body['error_description'] : __( 'Unexpected response recieved.', 'event-tickets' );
+		$error_message = $body['error_description'] ?? __( 'Unexpected response received.', 'event-tickets' );
 
 		$notices->trigger_admin(
 			$slug,

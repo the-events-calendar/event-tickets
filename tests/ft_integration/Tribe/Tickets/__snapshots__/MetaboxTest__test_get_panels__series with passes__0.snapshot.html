@@ -14,15 +14,28 @@
 				data-ticket-type="series_pass"
 >
 	New Series Pass</button>
-
-							<div class="tec_ticket-panel__helper_link__wrap">
-					<p>
-					<a href="https://evnt.is/manage-tickets" target="_blank" rel="noopener noreferrer ">Learn more about ticket management</a>					</p>
-				</div>
-					</div>
+		</div>
 
 		<div class="ticket_table_intro__warnings">
-					</div>
+			<div class="ticket-editor-notice info info--background tec_ticket-panel__recurring-unsupported-warning" style="display: none">
+	<span class="dashicons dashicons-lightbulb"></span>
+	<div class="ticket-editor-notice_warning--messages">
+			<p class="ticket-editor-notice_warning--message recurring-warning-message">
+		Once you save this event, you can add Series Passes to its parent Series. <a href="https://evnt.is/-series-passes" target="_blank" rel="noreferrer noopener">Learn more about Series Passes</a>.		</p>
+			<p class="ticket-editor-notice_warning--message et-warning">
+		Standard tickets are not yet supported on recurring events. <a href="https://evnt.is/1b7a" target="_blank" rel="noreferrer noopener">See our future planned features.</a>		</p>
+		</div>
+</div>
+<div class="ticket-editor-notice info info--background tec_ticket-panel__recurring-unsupported-warning" style="display: none">
+	<span class="dashicons dashicons-lightbulb"></span>
+	<div class="ticket-editor-notice_warning--messages">
+			<p class="ticket-editor-notice_warning--message recurring-warning-message">
+		Once you save this event, you can add Series Passes to its parent Series. <a href="https://evnt.is/-series-passes" target="_blank" rel="noreferrer noopener">Learn more about Series Passes</a>.		</p>
+			<p class="ticket-editor-notice_warning--message et-warning">
+		Standard tickets are not yet supported on recurring events. <a href="https://evnt.is/1b7a" target="_blank" rel="noreferrer noopener">See our future planned features.</a>		</p>
+		</div>
+</div>
+		</div>
 
 		
 <div class="ticket_list_wrapper">
@@ -70,7 +83,10 @@
 	</td>
 
 	<td class="ticket_price" data-label="Price:">
-	&#x24;89.00</td>
+	
+<span class="tec-tickets-price amount">
+	&#x24;89.00</span>
+</td>
 
 	<td class="ticket_capacity">
 		<span class='tribe-mobile-only'>Capacity:</span>
@@ -131,7 +147,10 @@
 	</td>
 
 	<td class="ticket_price" data-label="Price:">
-	&#x24;23.00</td>
+	
+<span class="tec-tickets-price amount">
+	&#x24;23.00</span>
+</td>
 
 	<td class="ticket_capacity">
 		<span class='tribe-mobile-only'>Capacity:</span>
@@ -194,7 +213,7 @@
 			
 					</div>
 	</div>
-		<p class="tec_ticket-panel__recurring-unsupported-warning" style="display: none">Single tickets and RSVPs are not yet supported on recurring events. <a href="https://evnt.is/1b7a" target="_blank" rel="noopener noreferrer"> Read about our plans for future features </a><p><p class="tec_ticket-panel__recurring-unsupported-warning" style="display: none">Single tickets and RSVPs are not yet supported on recurring events. <a href="https://evnt.is/1b7a" target="_blank" rel="noopener noreferrer"> Read about our plans for future features </a><p>
+	
 </div>
 <div id="tribe_panel_settings" class="ticket_panel panel_settings" aria-hidden="true" >
 	<h4>Ticket Settings	</h4>
@@ -339,11 +358,11 @@
 			alt="Ticket"
 		/>
 		<span class="ticket-type__text ticket-type__text--default">
-		Single Ticket		</span>
+			Standard Ticket		</span>
 	</div>
 
 	<span class="tribe_soft_note ticket_form_right tribe-active">
-		A single ticket is specific to this series.	</span>
+		A standard ticket is specific to this series.	</span>
 </div>
 <div class="input_block">
 	<label class="ticket_form_label ticket_form_left" for="ticket_start_date">
@@ -445,7 +464,71 @@
 			size="7"
 			value=""
 						data-validation-error="Ticket price must be greater than zero." data-required data-validation-is-greater-than="0"		/>
-			</div>
+		<div class="ticket_sale_price_wrapper ticket_form_right">
+	<!--Checkbox to toggle sale price fields-->
+	<div>
+		<input
+			type="checkbox"
+			name="ticket_add_sale_price"
+			id="ticket_add_sale_price"
+					>
+		<label
+			for="ticket_add_sale_price"
+			class="ticket_form_label"
+		>
+			Add Sale Price		</label>
+	</div>
+	<div class="ticket_sale_price tribe-dependent"
+		data-depends="#ticket_add_sale_price"
+		data-condition-is-checked
+	>
+		<div class="ticket_sale_price-field">
+			<label for="ticket_sale_price" class="ticket_form_label">
+				Sale Price:			</label>
+			<input
+				type="text"
+				id="ticket_sale_price"
+				name="ticket_sale_price"
+				class="ticket_field"
+				size="7"
+				value=""
+				data-validation-is-greater-than="0"
+				data-validation-is-less-than="#ticket_price"
+				data-validation-error="{&quot;is-greater-than&quot;:&quot;Sale price must be greater than 0&quot;,&quot;is-less-than&quot;:&quot;Sale price must be less than the regular price&quot;}"
+			/>
+		</div>
+		<div class="ticket_sale_price-field">
+			<label class="ticket_form_label" for="ticket_start_date">
+				On sale from:			</label>
+			<input
+				autocomplete="off"
+				type="text"
+				class="tribe-datepicker tribe-field-ticket_sale_start_date ticket_field"
+				name="ticket_sale_start_date"
+				id="ticket_sale_start_date"
+				size="10"
+				value=""
+				data-validation-type="datepicker"
+				data-validation-is-less-or-equal-to="#ticket_sale_end_date"
+				data-validation-error="{&quot;is-less-or-equal-to&quot;:&quot;Sale from date cannot be greater than Sale to date&quot;}"
+			/>
+			<span> to </span>
+			<input
+				autocomplete="off"
+				type="text"
+				class="tribe-datepicker tribe-field-ticket_sale_end_date ticket_field"
+				name="ticket_sale_end_date"
+				id="ticket_sale_end_date"
+				size="10"
+				value=""
+				data-validation-type="datepicker"
+				data-validation-is-greater-or-equal-to="#ticket_sale_start_date"
+				data-validation-error="{&quot;is-greater-or-equal-to&quot;:&quot;Sale to date cannot be less than Sale from date&quot;}"
+			/>
+		</div>
+	</div>
+</div>
+	</div>
 
 	</div><div
 	class="input_block ticket_advanced_Tribe__Tickets__RSVP tribe-dependent"
@@ -514,7 +597,7 @@
 	<section id="ticket_form_advanced" class="advanced accordion-content" data-datepicker_format="1">
 		<h4 class="accordion-label screen_reader_text">Advanced Settings</h4>
 		<div id="advanced_fields">
-			<div id="Tribe__Tickets__Commerce__PayPal__Main_advanced" class="tribe-dependent" data-depends="#Tribe__Tickets__Commerce__PayPal__Main_radio" data-condition-is-checked></div><div id="TECTicketsCommerceEditorMetabox_advanced" class="tribe-dependent" data-depends="#provider_TEC_Tickets_Commerce_Module_radio" data-condition-is-checked>
+			<div id="TECTicketsCommerceEditorMetabox_advanced" class="tribe-dependent" data-depends="#provider_TEC_Tickets_Commerce_Module_radio" data-condition-is-checked>
 <div
 	class="ticket_advanced_TECTicketsCommerceModule input_block tribe-dependent"
 	data-depends="#provider_TEC_Tickets_Commerce_Module_radio"

@@ -221,12 +221,28 @@ class Upsell {
 	 * Filters the default Ticket type description in the context of Events part of a Series.
 	 *
 	 * @since 5.8.0
+	 * @since 5.8.4   Add logic to bail in scenarios when upsell should not show.
 	 *
 	 * @param string   $file     Complete path to include the PHP File.
 	 * @param string[] $name     Template name.
 	 * @param Template $template Current instance of the Tribe__Template.
 	 */
 	public function render_ticket_type_upsell_notice( string $file, array $name, Template $template ): void {
+		// Check if post type is an event.
+		if ( ! function_exists( 'tribe_is_event' ) || ! tribe_is_event() ) {
+			return;
+		}
+
+		// If not within the admin area, then bail.
+		if ( ! is_admin() ) {
+			return;
+		}
+
+		// If Events Calendar Pro is activated, then bail.
+		if ( did_action( 'tribe_events_pro_init_apm_filters' ) ) {
+			return;
+		}
+
 		$admin_views = tribe( 'tickets.admin.views' );
 		$admin_views->template( 'flexible-tickets/admin/tickets/editor/upsell-notice' );
 	}

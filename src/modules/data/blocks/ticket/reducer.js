@@ -4,7 +4,6 @@
 import tickets from './reducers/tickets';
 import headerImage, { DEFAULT_STATE as HEADER_IMAGE_DEFAULT_STATE } from './reducers/header-image';
 import * as types from './types';
-import { PREFIX_TICKETS_STORE } from "@moderntribe/tickets/data/utils";
 
 export const DEFAULT_STATE = {
 	headerImage: HEADER_IMAGE_DEFAULT_STATE,
@@ -57,6 +56,7 @@ export default ( state = DEFAULT_STATE, action ) => {
 		case types.SET_TICKET_TITLE:
 		case types.SET_TICKET_DESCRIPTION:
 		case types.SET_TICKET_PRICE:
+		case types.SET_TICKET_ON_SALE:
 		case types.SET_TICKET_SKU:
 		case types.SET_TICKET_IAC_SETTING:
 		case types.SET_TICKET_START_DATE:
@@ -71,6 +71,14 @@ export default ( state = DEFAULT_STATE, action ) => {
 		case types.SET_TICKET_END_TIME_INPUT:
 		case types.SET_TICKET_CAPACITY_TYPE:
 		case types.SET_TICKET_CAPACITY:
+		case types.SET_TICKET_SALE_PRICE_CHECK:
+		case types.SET_TICKET_SALE_PRICE:
+		case types.SET_TICKET_SALE_START_DATE:
+		case types.SET_TICKET_SALE_START_DATE_INPUT:
+		case types.SET_TICKET_SALE_START_DATE_MOMENT:
+		case types.SET_TICKET_SALE_END_DATE:
+		case types.SET_TICKET_SALE_END_DATE_INPUT:
+		case types.SET_TICKET_SALE_END_DATE_MOMENT:
 		case types.SET_TICKET_TEMP_TITLE:
 		case types.SET_TICKET_TEMP_DESCRIPTION:
 		case types.SET_TICKET_TEMP_PRICE:
@@ -88,6 +96,14 @@ export default ( state = DEFAULT_STATE, action ) => {
 		case types.SET_TICKET_TEMP_END_TIME_INPUT:
 		case types.SET_TICKET_TEMP_CAPACITY_TYPE:
 		case types.SET_TICKET_TEMP_CAPACITY:
+		case types.SET_TICKET_TEMP_SALE_PRICE_CHECK:
+		case types.SET_TICKET_TEMP_SALE_PRICE:
+		case types.SET_TICKET_TEMP_SALE_START_DATE:
+		case types.SET_TICKET_TEMP_SALE_START_DATE_INPUT:
+		case types.SET_TICKET_TEMP_SALE_START_DATE_MOMENT:
+		case types.SET_TICKET_TEMP_SALE_END_DATE:
+		case types.SET_TICKET_TEMP_SALE_END_DATE_INPUT:
+		case types.SET_TICKET_TEMP_SALE_END_DATE_MOMENT:
 		case types.SET_TICKET_SOLD:
 		case types.SET_TICKET_AVAILABLE:
 		case types.SET_TICKET_ID:
@@ -117,10 +133,10 @@ export default ( state = DEFAULT_STATE, action ) => {
 			return {
 				...state,
 				uneditableTickets: action.payload.uneditableTickets,
-				uneditableTicketsLoading: false
+				uneditableTicketsLoading: false,
 			};
 		case types.SET_UNEDITABLE_TICKETS_LOADING:
-			if (action.loading) {
+			if ( action.loading ) {
 				return {
 					...state,
 					uneditableTickets: [],

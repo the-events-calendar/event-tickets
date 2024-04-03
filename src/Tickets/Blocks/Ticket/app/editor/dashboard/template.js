@@ -13,14 +13,25 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { ActionDashboard } from '@moderntribe/tickets/elements';
+import { TICKET_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
 import MoveDelete from './move-delete/container';
 import './style.pcss';
 
-const confirmLabel = ( hasBeenCreated ) => (
-	hasBeenCreated
-		? __( 'Update Ticket', 'event-tickets' )
-		: __( 'Create Ticket', 'event-tickets' )
-);
+const confirmLabel = (hasBeenCreated) => {
+	return hasBeenCreated
+		? // eslint-disable-next-line no-undef
+		  sprintf(
+				/* Translators: %s - the singular label for a ticket. */
+				__('Update %s', 'event-tickets'),
+				TICKET_LABELS.ticket.singular
+		  )
+		: // eslint-disable-next-line no-undef
+		  sprintf(
+				/* Translators: %s - the singular label for a ticket. */
+				__('Create %s', 'event-tickets'),
+				TICKET_LABELS.ticket.singular
+		  );
+};
 
 const cancelLabel = __( 'Cancel', 'event-tickets' );
 

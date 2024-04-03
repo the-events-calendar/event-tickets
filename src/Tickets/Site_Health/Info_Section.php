@@ -9,16 +9,15 @@
 
 namespace TEC\Tickets\Site_Health;
 
-use TEC\Common\Site_Health\Info_Section_Abstract;
 use TEC\Common\Site_Health\Factory;
-use Tribe__Events__Main;
-use Tribe__Utils__Array as Arr;
+use TEC\Common\Site_Health\Info_Section_Abstract;
+use TEC\Tickets\Site_Health\Subsections\Features\Tickets_Commerce_Subsection;
+use TEC\Tickets\Site_Health\Subsections\Plugins\Plugin_Data_Subsection;
 
 /**
  * Class Site_Health
  *
  * @since   5.6.0.1
-
  * @package TEC\Tickets\Site_Health
  */
 class Info_Section extends Info_Section_Abstract {
@@ -67,9 +66,18 @@ class Info_Section extends Info_Section_Abstract {
 	 */
 	protected string $description;
 
+	/**
+	 * Constructor
+	 */
 	public function __construct() {
-		$this->label       = esc_html__( 'Event Tickets', 'event-tickets' );
-		$this->description = esc_html__( 'This section contains information on the Events Tickets Plugin.', 'event-tickets' );
+		$this->label       = esc_html__(
+			'Event Tickets',
+			'event-tickets'
+		);
+		$this->description = esc_html__(
+			'This section contains information on the Events Tickets Plugin.',
+			'event-tickets'
+		);
 		$this->add_fields();
 	}
 
@@ -77,64 +85,39 @@ class Info_Section extends Info_Section_Abstract {
 	 * Adds our default section to the Site Health Info tab.
 	 *
 	 * @since 5.6.0.1
-	 *
-	 * @param array $info The debug information to be added to the core information page.
-	 *
-	 * @return array The debug information to be added to the core information page.
 	 */
-	public function add_fields() {
-		$this->add_field(
-			Factory::generate_generic_field(
-				'ticket_enabled_post_types',
-				esc_html__( 'Ticket-enabled post types', 'event-tickets' ),
-				Arr::to_list( array_filter( (array) tribe_get_option( 'ticket-enabled-post-types', [] ) ), ', ' ),
-				10
-			)
+	public function add_fields(): void {
+		$subsections = [
+			tribe( Plugin_Data_Subsection::class )->get_subsection(),
+			tribe( Tickets_Commerce_Subsection::class )->get_subsection(),
+		];
+
+		/**
+		 * Filters the subsections array to allow modifications for the Event Tickets Info Section.
+		 *
+		 * This filter allows external modification of the `$subsections` array. It can be used to add,
+		 * remove, or modify the subsections before they are merged into the `$fields` array.
+		 *
+		 * @since 5.8.1
+		 *
+		 * @param array $subsections The array of subsections. Each subsection is an array of fields.
+		 *
+		 * @return array The modified array of subsections.
+		 */
+		$subsections = apply_filters( 'tec_tickets_site_health_subsections', $subsections );
+
+		$fields = array_merge(
+			...$subsections
 		);
 
-		$this->add_field(
-			Factory::generate_generic_field(
-				'previous_versions',
-				esc_html__( 'Previous ET versions', 'event-tickets' ),
-				Arr::to_list( array_filter( (array) tribe_get_option( 'previous_event_tickets_versions', [] ) ), ', ' ),
-				20
-			)
-		);
-
-		$this->add_field(
-			Factory::generate_generic_field(
-				'ticketed_posts',
-				esc_html__( 'Total ticketed posts', 'event-tickets' ),
-				tribe( 'tickets.post-repository' )->per_page( -1 )->where( 'has_tickets' )->count(),
-				30
-			)
-		);
-
-		$this->add_field(
-			Factory::generate_generic_field(
-				'rsvp_posts',
-				esc_html__( 'Total posts with RSVPs', 'event-tickets' ),
-				tribe( 'tickets.post-repository' )->per_page( -1 )->where( 'has_rsvp' )->count(),
-				40
-			)
-		);
-
-		if ( class_exists( 'Tribe__Events__Main' ) ) {
+		// Add each field to the section.
+		foreach ( $fields as $field ) {
 			$this->add_field(
 				Factory::generate_generic_field(
-					'ticketed_events',
-					esc_html__( 'Total ticketed events', 'event-tickets' ),
-					tribe( 'tickets.event-repository' )->per_page( -1 )->where( 'has_tickets' )->count(),
-					50
-				)
-			);
-
-			$this->add_field(
-				Factory::generate_generic_field(
-					'rsvp_events',
-					esc_html__( 'Total events with RSVPs', 'event-tickets' ),
-					tribe( 'tickets.event-repository' )->per_page( -1 )->where( 'has_rsvp' )->count(),
-					60
+					$field['id'],
+					$field['title'],
+					$field['value'],
+					$field['priority']
 				)
 			);
 		}
