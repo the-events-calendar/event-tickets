@@ -94,6 +94,7 @@ $classes = [
 	'tribe-tickets__tickets-item--disabled'        => ! empty( $must_login ),
 	'tribe-tickets__tickets-item--price-suffix'    => $has_suffix,
 	'tribe-tickets__tickets-item--shared-capacity' => $this->get( 'data_has_shared_cap' ),
+	'tribe-tickets__tickets-item--on-sale'         => $ticket->on_sale,
 	get_post_class( '', $ticket->ID ),
 ];
 

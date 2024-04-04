@@ -3,6 +3,7 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
 /**
  * Internal dependencies
@@ -46,9 +47,12 @@ TicketContainerIcon.propTypes = {
 	isPast: PropTypes.bool,
 };
 
-const TicketContainer = ( { clientId, isDisabled, isFuture, isPast, isSelected } ) => (
+const TicketContainer = ( { clientId, isDisabled, isFuture, isPast, isSelected, isOnSale } ) => (
 	<ContainerPanel
-		className="tribe-editor__ticket__container"
+		className={ classNames(
+			'tribe-editor__ticket__container',
+			{ 'tribe-editor__ticket-on-sale': isOnSale },
+		) }
 		layout={ LAYOUT.ticket }
 		icon={
 			<TicketContainerIcon
@@ -57,7 +61,7 @@ const TicketContainer = ( { clientId, isDisabled, isFuture, isPast, isSelected }
 				isPast={ isPast }
 			/>
 		}
-		header={ <TicketContainerHeader clientId={ clientId } isSelected={ isSelected } /> }
+		header={ <TicketContainerHeader clientId={ clientId } isSelected={ isSelected } isOnSale={ isOnSale }/> }
 		content={ <TicketContainerContent clientId={ clientId } /> }
 	/>
 );
@@ -68,6 +72,7 @@ TicketContainer.propTypes = {
 	isFuture: PropTypes.bool,
 	isPast: PropTypes.bool,
 	isSelected: PropTypes.bool,
+	isOnSale: PropTypes.bool,
 };
 
 export default TicketContainer;
