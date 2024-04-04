@@ -196,7 +196,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.9.0] 2024-04-02 =
+= [5.9.0] 2024-04-04 =
 
 * Feature - Sale Price for Tickets Commerce: Set a sale price for individual tickets for a certain duration of time within Tickets Commerce.
 * Feature - Sale Price Design: Display the set sale price so that it is clear that a ticket or purchased ticket is on sale.
