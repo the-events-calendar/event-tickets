@@ -12,6 +12,7 @@ import TicketContainerHeaderTitle from './title/container';
 import TicketContainerHeaderDescription from './description/container';
 import TicketContainerHeaderPrice from './price/container';
 import TicketContainerHeaderQuantity from './quantity/container';
+import { SALE_PRICE_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
 import './style.pcss';
 
 const TicketContainerHeader = ( {
@@ -27,7 +28,7 @@ const TicketContainerHeader = ( {
 		return (
 			<div className="tribe-editor__ticket__container-header__sale-label-container">
 				<span className="tribe-editor__ticket__container-header__sale-label">
-					{ __( 'On Sale', 'event-tickets' ) }
+					{ SALE_PRICE_LABELS.on_sale }
 				</span>
 			</div>
 		);
