@@ -61,7 +61,7 @@ const TicketContainer = ( { clientId, isDisabled, isFuture, isPast, isSelected, 
 				isPast={ isPast }
 			/>
 		}
-		header={ <TicketContainerHeader clientId={ clientId } isSelected={ isSelected } /> }
+		header={ <TicketContainerHeader clientId={ clientId } isSelected={ isSelected } isOnSale={ isOnSale }/> }
 		content={ <TicketContainerContent clientId={ clientId } /> }
 	/>
 );
