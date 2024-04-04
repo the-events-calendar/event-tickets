@@ -4,11 +4,14 @@
  *
  * Override this template in your own theme by creating a file at:
  *
- * [your-theme]/tribe-events/tickets/tpp-return-to-cart.php
+ * [your-theme]/tribe/tickets/tpp-return-to-cart.php
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @version 5.1.3
+ * @since 5.1.3
+ * @since TBD Corrected template override filepath
+ *
+ * @version TBD
  */
 
 $link = tribe( 'tickets.commerce.paypal.links' )->return_to_cart();
