@@ -788,6 +788,7 @@ class Hooks extends Service_Provider {
 			'on_sale_from'     => __( 'On sale from', 'event-tickets' ),
 			'to'               => __( 'to', 'event-tickets' ),
 			'invalid_price'    => __( 'Sale price must be lower than the regular ticket price.', 'event-tickets' ),
+			'on_sale'          => __( 'On Sale', 'event-tickets' ),
 		];
 
 		return $localized;
