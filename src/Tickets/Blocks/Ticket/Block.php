@@ -32,7 +32,7 @@ class Block extends Abstract_Block {
 	}
 
 	/**
-	 * Since we are dealing with a Dynamic type of Block we need a PHP method to render it
+	 * Since we are dealing with a Dynamic type of Block we need a PHP method to render it.
 	 *
 	 * @since 4.9.2
 	 *
