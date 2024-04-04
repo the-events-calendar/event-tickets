@@ -3,6 +3,7 @@
  */
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -22,13 +23,12 @@ const TicketContainerHeader = ( {
 		return null;
 	}
 
-	function OnSaleBug( onSale ) {
-		if ( ! onSale ) {
-			return null;
-		}
+	function OnSaleLabel() {
 		return (
 			<div className="tribe-editor__ticket__container-header__sale-label-container">
-				<span className="tribe-editor__ticket__container-header__sale-label">On Sale</span>
+				<span className="tribe-editor__ticket__container-header__sale-label">
+					{ __( 'On Sale', 'event-tickets' ) }
+				</span>
 			</div>
 		);
 	}
@@ -36,7 +36,7 @@ const TicketContainerHeader = ( {
 	return (
 		<Fragment>
 			<div className="tribe-editor__ticket__container-header-details">
-				{ OnSaleBug( isOnSale ) }
+				{ isOnSale && <OnSaleLabel /> }
 				<TicketContainerHeaderTitle clientId={ clientId } isSelected={ isSelected } />
 				<TicketContainerHeaderDescription clientId={ clientId } isSelected={ isSelected } />
 			</div>
