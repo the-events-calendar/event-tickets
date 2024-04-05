@@ -201,7 +201,9 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - The Attendee registration page will no longer generate warnings when viewing it. [ET-906]
 * Fix - When an event ticket is removed, it will no longer generate a 404 for the event. [TEC-5041]
 * Fix - Remove unwanted slashes from the Tickets Emails subject line. [ET-2061]
+* Fix - `Get Tickets` button padding will be consistent in `active` and `focus` states. [ET-2068]
 * Fix - Correct the text domain for a couple of text strings so they could be translated appropriately. [ET-2020]
+* Fix - QR codes will properly generate when on PHP 8.1 and above. [ET-2062]
 * Fix - Changed incorrect file paths in DocBlocks for template overrides for all files in `src/views/tickets`. [ET-2004]
 * Fix - Added additional logic to handle when the Gateway ID link is null on the Orders Page for Stripe. [ET-2067]
 
