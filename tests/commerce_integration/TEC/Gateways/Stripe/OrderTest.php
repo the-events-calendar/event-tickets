@@ -17,23 +17,6 @@ class OrderTest extends \Codeception\TestCase\WPTestCase {
 	use Order_Maker;
 	use With_Uopz;
 
-	public $order_id;
-	public $ticket_id;
-	public $attendee_id;
-	public $post_id;
-
-	/**
-	 * @after
-	 */
-	public function remove_event_and_tickets() {
-		codecept_debug( 'Deleting orders, tickets, and attendee' );
-		wp_delete_post( $this->order_id, true );
-		wp_delete_post( $this->ticket_id, true );
-		wp_delete_post( $this->attendee_id, true );
-		wp_delete_post( $this->post_id, true );
-	}
-
-
 	/**
 	 * Data provider for testing different scenarios of get_gateway_dashboard_url_by_order.
 	 *
@@ -41,8 +24,16 @@ class OrderTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function gateway_payload_provider() {
 		$fake_gateway_order_id = '2MJ687450D400282F';
-		$base_order_object     = $this->create_order_with_ticket_and_attendee( $fake_gateway_order_id );
-		$this->order_id        = $base_order_object->ID;
+		$post_id               = wp_insert_post(
+			[
+				'post_title'   => 'TEC-TC-T-5',
+				'post_content' => '',
+				'post_status'  => 'tec-tc-created',
+				'post_author'  => 0,
+				'post_type'    => 'tec_tc_order',
+			]
+		);
+		$base_order_object     = get_post( $post_id );
 		$status                = tribe( Status_Handler::class )->get_by_wp_slug( $base_order_object->post_status );
 		$status_slug           = $status::SLUG;
 
@@ -125,38 +116,4 @@ class OrderTest extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertEquals( $expected_url, $stripe_order_url, 'The returned Stripe dashboard URL does not match the expected value for the provided dataset.' );
 	}
-
-	/**
-	 * Helper method to create an order for a post.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $gateway_order_id
-	 *
-	 * @return \WP_Post
-	 */
-	public function create_order_with_ticket_and_attendee( $gateway_order_id ) {
-		// Create a post and a ticket for it.
-		$this->post_id   = $this->factory()->post->create();
-		$this->ticket_id = $this->create_tc_ticket(
-			$this->post_id,
-			10,
-			[
-				'ticket_name'        => 'Test TC ticket',
-				'ticket_description' => 'Test TC ticket description',
-			]
-		);
-
-
-		// Create an order for one ticket.
-		$order = $this->create_order(
-			[ $this->ticket_id => 1 ],
-			[ 'purchaser_email' => 'purchaser_email@test.com' ],
-		);
-
-		$this->order_id = $order->ID;
-
-		return $order;
-	}
-
 }
