@@ -107,7 +107,10 @@ describe( 'Ticket Block sagas', () => {
 					types.HANDLE_TICKET_END_DATE,
 					types.HANDLE_TICKET_START_TIME,
 					types.HANDLE_TICKET_END_TIME,
+					types.HANDLE_TICKET_SALE_START_DATE,
+					types.HANDLE_TICKET_SALE_END_DATE,
 					MOVE_TICKET_SUCCESS,
+					types.UPDATE_UNEDITABLE_TICKETS,
 				], sagas.handler ),
 			);
 			expect( gen.next().value ).toEqual(
@@ -324,7 +327,7 @@ describe( 'Ticket Block sagas', () => {
 			const tickets = [ 'tribe' ];
 			const gen = sagas.createMissingTicketBlocks( tickets );
 			expect( gen.next().value ).toEqual(
-				call( wpDispatch, 'core/editor' ),
+				call( wpDispatch, 'core/block-editor' ),
 			);
 			expect( gen.next( wpDispatchCoreEditor ).value ).toEqual(
 				call( wpSelect, 'core/editor' ),
@@ -952,6 +955,9 @@ describe( 'Ticket Block sagas', () => {
 			expect( clone1.next().value ).toEqual(
 				select( selectors.getTicketsTempSharedCapacity ),
 			);
+			expect( clone1.next().value ).toEqual(
+				select( selectors.getTicketsTempSharedCapacityInt ),
+			);
 			expect( clone1.next().done ).toEqual( true );
 
 			const clone2 = gen.clone();
@@ -1254,6 +1260,14 @@ describe( 'Ticket Block sagas', () => {
 			const endTimeInput = '19:48:42';
 			const capacityType = 'own';
 			const capacity = 100;
+			const salePriceChecked = true;
+			const salePrice = 5;
+			const saleStartDate = '2018-11-09 19:48:42';
+			const saleStartDateInput = '2018-11-09 19:48:42';
+			const saleStartDateMoment = '2018-11-09 19:48:42';
+			const saleEndDate = '2018-11-09 19:48:42';
+			const saleEndDateInput = '2018-11-09 19:48:42';
+			const saleEndDateMoment = '2018-11-09 19:48:42';
 
 			const CLIENT_ID = 'modern-tribe';
 			const props = { clientId: CLIENT_ID };
@@ -1331,6 +1345,12 @@ describe( 'Ticket Block sagas', () => {
 					select( selectors.getTicketTempEndTimeInput, props ),
 					select( selectors.getTicketTempCapacityType, props ),
 					select( selectors.getTicketTempCapacity, props ),
+					select( selectors.getTicketTempSaleStartDate, props ),
+					select( selectors.getTicketTempSaleStartDateInput, props ),
+					select( selectors.getTicketTempSaleStartDateMoment, props ),
+					select( selectors.getTicketTempSaleEndDate, props ),
+					select( selectors.getTicketTempSaleEndDateInput, props ),
+					select( selectors.getTicketTempSaleEndDateMoment, props ),
 				] ),
 			);
 
@@ -1352,6 +1372,14 @@ describe( 'Ticket Block sagas', () => {
 				endTimeInput,
 				capacityType,
 				capacity,
+				saleStartDate,
+				saleStartDateInput,
+				saleStartDateMoment,
+				saleEndDate,
+				saleEndDateInput,
+				saleEndDateMoment,
+				salePrice,
+				salePriceChecked,
 			] ).value ).toEqual(
 				all( [
 					put( actions.setTicketDetails( CLIENT_ID, {
@@ -1372,6 +1400,14 @@ describe( 'Ticket Block sagas', () => {
 						endTimeInput,
 						capacityType,
 						capacity,
+						saleStartDate,
+						saleStartDateInput,
+						saleStartDateMoment,
+						saleEndDate,
+						saleEndDateInput,
+						saleEndDateMoment,
+						salePrice,
+						salePriceChecked,
 					} ) ),
 					put( actions.setTicketId( CLIENT_ID, apiResponse1.data.id ) ),
 					put( actions.setTicketHasBeenCreated( CLIENT_ID, true ) ),
@@ -1516,6 +1552,14 @@ describe( 'Ticket Block sagas', () => {
 			const endTimeInput = '19:48:42';
 			const capacityType = 'own';
 			const capacity = 100;
+			const salePriceChecked = true;
+			const salePrice = 5;
+			const saleStartDate = '2018-11-09 19:48:42';
+			const saleStartDateInput = '2018-11-09 19:48:42';
+			const saleStartDateMoment = '2018-11-09 19:48:42';
+			const saleEndDate = '2018-11-09 19:48:42';
+			const saleEndDateInput = '2018-11-09 19:48:42';
+			const saleEndDateMoment = '2018-11-09 19:48:42';
 
 			const TICKET_ID = 13;
 			const CLIENT_ID = 'modern-tribe';
@@ -1603,6 +1647,12 @@ describe( 'Ticket Block sagas', () => {
 					select( selectors.getTicketTempEndTimeInput, props ),
 					select( selectors.getTicketTempCapacityType, props ),
 					select( selectors.getTicketTempCapacity, props ),
+					select( selectors.getTicketTempSaleStartDate, props ),
+					select( selectors.getTicketTempSaleStartDateInput, props ),
+					select( selectors.getTicketTempSaleStartDateMoment, props ),
+					select( selectors.getTicketTempSaleEndDate, props ),
+					select( selectors.getTicketTempSaleEndDateInput, props ),
+					select( selectors.getTicketTempSaleEndDateMoment, props ),
 				] ),
 			);
 			expect( clone2.next( [
@@ -1623,6 +1673,14 @@ describe( 'Ticket Block sagas', () => {
 				endTimeInput,
 				capacityType,
 				capacity,
+				salePriceChecked,
+				salePrice,
+				saleStartDate,
+				saleStartDateInput,
+				saleStartDateMoment,
+				saleEndDate,
+				saleEndDateInput,
+				saleEndDateMoment,
 			] ).value ).toEqual(
 				all( [
 					put( actions.setTicketDetails( CLIENT_ID, {
@@ -1643,6 +1701,14 @@ describe( 'Ticket Block sagas', () => {
 						endTimeInput,
 						capacityType,
 						capacity,
+						salePriceChecked,
+						salePrice,
+						saleStartDate,
+						saleStartDateInput,
+						saleStartDateMoment,
+						saleEndDate,
+						saleEndDateInput,
+						saleEndDateMoment,
 					} ) ),
 					put( actions.setTicketSold(
 						CLIENT_ID,
@@ -2031,6 +2097,16 @@ describe( 'Ticket Block sagas', () => {
 			const capacityType = 'own';
 			const capacity = 100;
 			const attendeeInfoFields = [];
+			const type = 'default';
+			const salePriceChecked = true;
+			const salePrice = 5;
+			const saleStartDate = '2018-11-09 19:48:42';
+			const saleStartDateInput = '2018-11-09 19:48:42';
+			const saleStartDateMoment = '2018-11-09 19:48:42';
+			const saleEndDate = '2018-11-09 19:48:42';
+			const saleEndDateInput = '2018-11-09 19:48:42';
+			const saleEndDateMoment = '2018-11-09 19:48:42';
+			const on_sale = true; // eslint-disable-line camelcase
 
 			const CLIENT_ID = 'modern-tribe';
 			const action = {
@@ -2040,6 +2116,7 @@ describe( 'Ticket Block sagas', () => {
 						title,
 						description,
 						price,
+						on_sale, // eslint-disable-line camelcase
 						sku,
 						iac,
 						startDate,
@@ -2054,6 +2131,15 @@ describe( 'Ticket Block sagas', () => {
 						endTimeInput,
 						capacityType,
 						capacity,
+						type,
+						salePriceChecked,
+						salePrice,
+						saleStartDate,
+						saleStartDateInput,
+						saleStartDateMoment,
+						saleEndDate,
+						saleEndDateInput,
+						saleEndDateMoment,
 						attendeeInfoFields,
 					},
 				},
@@ -2066,6 +2152,7 @@ describe( 'Ticket Block sagas', () => {
 					put( actions.setTicketTitle( CLIENT_ID, title ) ),
 					put( actions.setTicketDescription( CLIENT_ID, description ) ),
 					put( actions.setTicketPrice( CLIENT_ID, price ) ),
+					put( actions.setTicketOnSale( CLIENT_ID, on_sale ) ),
 					put( actions.setTicketSku( CLIENT_ID, sku ) ),
 					put( actions.setTicketIACSetting( CLIENT_ID, iac ) ),
 					put( actions.setTicketStartDate( CLIENT_ID, startDate ) ),
@@ -2080,6 +2167,15 @@ describe( 'Ticket Block sagas', () => {
 					put( actions.setTicketEndTimeInput( CLIENT_ID, endTimeInput ) ),
 					put( actions.setTicketCapacityType( CLIENT_ID, capacityType ) ),
 					put( actions.setTicketCapacity( CLIENT_ID, capacity ) ),
+					put( actions.setTicketType( CLIENT_ID, type ) ),
+					put( actions.setSalePriceChecked( CLIENT_ID, salePriceChecked ) ),
+					put( actions.setSalePrice( CLIENT_ID, salePrice ) ),
+					put( actions.setTicketSaleStartDate( CLIENT_ID, saleStartDate ) ),
+					put( actions.setTicketSaleStartDateInput( CLIENT_ID, saleStartDateInput ) ),
+					put( actions.setTicketSaleStartDateMoment( CLIENT_ID, saleStartDateMoment ) ),
+					put( actions.setTicketSaleEndDate( CLIENT_ID, saleEndDate ) ),
+					put( actions.setTicketSaleEndDateInput( CLIENT_ID, saleEndDateInput ) ),
+					put( actions.setTicketSaleEndDateMoment( CLIENT_ID, saleEndDateMoment ) ),
 				] ),
 			);
 			expect( gen.next().done ).toEqual( true );
@@ -2105,6 +2201,14 @@ describe( 'Ticket Block sagas', () => {
 			const endTimeInput = '19:48:42';
 			const capacityType = 'own';
 			const capacity = 100;
+			const salePriceChecked = true;
+			const salePrice = 5;
+			const saleStartDate = '2018-11-09 19:48:42';
+			const saleStartDateInput = '2018-11-09 19:48:42';
+			const saleStartDateMoment = '2018-11-09 19:48:42';
+			const saleEndDate = '2018-11-09 19:48:42';
+			const saleEndDateInput = '2018-11-09 19:48:42';
+			const saleEndDateMoment = '2018-11-09 19:48:42';
 
 			const CLIENT_ID = 'modern-tribe';
 			const action = {
@@ -2128,6 +2232,14 @@ describe( 'Ticket Block sagas', () => {
 						endTimeInput,
 						capacityType,
 						capacity,
+						salePriceChecked,
+						salePrice,
+						saleStartDate,
+						saleStartDateInput,
+						saleStartDateMoment,
+						saleEndDate,
+						saleEndDateInput,
+						saleEndDateMoment,
 					},
 				},
 			};
@@ -2152,6 +2264,14 @@ describe( 'Ticket Block sagas', () => {
 					put( actions.setTicketTempEndTimeInput( CLIENT_ID, endTimeInput ) ),
 					put( actions.setTicketTempCapacityType( CLIENT_ID, capacityType ) ),
 					put( actions.setTicketTempCapacity( CLIENT_ID, capacity ) ),
+					put( actions.setTempSalePriceChecked( CLIENT_ID, salePriceChecked ) ),
+					put( actions.setTempSalePrice( CLIENT_ID, salePrice ) ),
+					put( actions.setTicketTempSaleStartDate( CLIENT_ID, saleStartDate ) ),
+					put( actions.setTicketTempSaleStartDateInput( CLIENT_ID, saleStartDateInput ) ),
+					put( actions.setTicketTempSaleStartDateMoment( CLIENT_ID, saleStartDateMoment ) ),
+					put( actions.setTicketTempSaleEndDate( CLIENT_ID, saleEndDate ) ),
+					put( actions.setTicketTempSaleEndDateInput( CLIENT_ID, saleEndDateInput ) ),
+					put( actions.setTicketTempSaleEndDateMoment( CLIENT_ID, saleEndDateMoment ) ),
 				] ),
 			);
 			expect( gen.next().done ).toEqual( true );
