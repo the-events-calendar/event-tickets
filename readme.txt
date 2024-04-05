@@ -3,7 +3,7 @@
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, GeoffBel, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
 Requires at least: 6.2
-Tested up to: 6.4.3
+Tested up to: 6.5
 Stable tag: 5.9.0
 Requires PHP: 7.4
 License: GPLv2 or later
@@ -196,7 +196,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.9.0] 2024-04-02 =
+= [5.9.0] 2024-04-04 =
 
 * Feature - Sale Price for Tickets Commerce: Set a sale price for individual tickets for a certain duration of time within Tickets Commerce.
 * Feature - Sale Price Design: Display the set sale price so that it is clear that a ticket or purchased ticket is on sale.

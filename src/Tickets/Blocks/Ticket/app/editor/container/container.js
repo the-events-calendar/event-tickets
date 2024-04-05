@@ -15,6 +15,7 @@ const mapStateToProps = ( state, ownProps ) => ( {
 	isDisabled: selectors.isTicketDisabled( state, ownProps ),
 	isFuture: selectors.isTicketFuture( state, ownProps ),
 	isPast: selectors.isTicketPast( state, ownProps ),
+	isOnSale: selectors.getTicketOnSale( state, ownProps ),
 } );
 
 export default compose(
