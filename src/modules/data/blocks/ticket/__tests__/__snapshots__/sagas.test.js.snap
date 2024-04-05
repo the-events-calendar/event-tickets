@@ -1,5 +1,18 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Ticket Block sagas createMissingTicketBlocks should create missing ticket blocks 1`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [
+      [Function],
+    ],
+    "context": Array [],
+    "fn": [Function],
+  },
+}
+`;
+
 exports[`Ticket Block sagas deleteTicket should delete ticket 1`] = `
 Object {
   "@@redux-saga/IO": true,
