@@ -203,6 +203,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Remove unwanted slashes from the Tickets Emails subject line. [ET-2061]
 * Fix - `Get Tickets` button padding will be consistent in `active` and `focus` states. [ET-2068]
 * Fix - Correct the text domain for a couple of text strings so they could be translated appropriately. [ET-2020]
+* Fix - QR codes will properly generate when on PHP 8.1 and above. [ET-2062]
 * Fix - Changed incorrect file paths in DocBlocks for template overrides for all files in `src/views/tickets`. [ET-2004]
 
 = [5.8.4] 2024-03-25 =

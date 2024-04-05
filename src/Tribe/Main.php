@@ -6,7 +6,7 @@ use Tribe\Tickets\Admin\Settings;
 class Tribe__Tickets__Main {
 
 	/**
-	 * Current version of this plugin
+	 * Current version of this plugin.
 	 */
 	const VERSION = '5.9.0';
 
