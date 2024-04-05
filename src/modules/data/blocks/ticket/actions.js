@@ -4,7 +4,7 @@
 import { types } from '@moderntribe/tickets/data/blocks/ticket';
 
 //
-// ─── TICKETS ACTIONS ────────────────────────────────────────────────────────────
+// ─── TICKETS ACTIONS ───────────────────────────────────────────────────────────
 //
 
 export const setTicketsInitialState = ( props ) => ( {
