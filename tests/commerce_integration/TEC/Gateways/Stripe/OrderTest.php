@@ -17,14 +17,32 @@ class OrderTest extends \Codeception\TestCase\WPTestCase {
 	use Order_Maker;
 	use With_Uopz;
 
+	public $order_id;
+	public $ticket_id;
+	public $attendee_id;
+	public $post_id;
+
+	/**
+	 * @after
+	 */
+	public function remove_event_and_tickets() {
+		codecept_debug( 'Deleting orders, tickets, and attendee' );
+		wp_delete_post( $this->order_id, true );
+		wp_delete_post( $this->ticket_id, true );
+		wp_delete_post( $this->attendee_id, true );
+		wp_delete_post( $this->post_id, true );
+	}
+
+
 	/**
 	 * Data provider for testing different scenarios of get_gateway_dashboard_url_by_order.
 	 *
 	 * @return array
 	 */
-	public function gatewayPayloadProvider() {
+	public function gateway_payload_provider() {
 		$fake_gateway_order_id = '2MJ687450D400282F';
 		$base_order_object     = $this->create_order_with_ticket_and_attendee( $fake_gateway_order_id );
+		$this->order_id        = $base_order_object->ID;
 		$status                = tribe( Status_Handler::class )->get_by_wp_slug( $base_order_object->post_status );
 		$status_slug           = $status::SLUG;
 
@@ -99,7 +117,7 @@ class OrderTest extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * @test
-	 * @dataProvider gatewayPayloadProvider
+	 * @dataProvider gateway_payload_provider
 	 */
 	public function it_should_get_order_url( $order, $expected_url ) {
 		$order_object     = $order;
@@ -119,9 +137,9 @@ class OrderTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function create_order_with_ticket_and_attendee( $gateway_order_id ) {
 		// Create a post and a ticket for it.
-		$post_id                    = $this->factory()->post->create();
-		$tickets_commerce_ticket_id = $this->create_tc_ticket(
-			$post_id,
+		$this->post_id   = $this->factory()->post->create();
+		$this->ticket_id = $this->create_tc_ticket(
+			$this->post_id,
 			10,
 			[
 				'ticket_name'        => 'Test TC ticket',
@@ -129,30 +147,14 @@ class OrderTest extends \Codeception\TestCase\WPTestCase {
 			]
 		);
 
+
 		// Create an order for one ticket.
 		$order = $this->create_order(
-			[ $tickets_commerce_ticket_id => 1 ],
+			[ $this->ticket_id => 1 ],
 			[ 'purchaser_email' => 'purchaser_email@test.com' ],
 		);
 
-		// Update order info for normalization.
-		update_post_meta( $order->ID, Commerce_Order::$gateway_order_id_meta_key, $gateway_order_id );
-		$fake_date = '1974-11-20 21:57:56';
-		wp_update_post(
-			[
-				'ID'                => $order->ID,
-				'post_date'         => $fake_date,
-				'post_date_gmt'     => $fake_date,
-				'post_modified'     => $fake_date,
-				'post_modified_gmt' => $fake_date,
-			]
-		);
-
-		$attendee_id = $this->create_attendee_for_ticket(
-			$tickets_commerce_ticket_id,
-			$post_id,
-			[ 'order_id' => $order->ID ]
-		);
+		$this->order_id = $order->ID;
 
 		return $order;
 	}
