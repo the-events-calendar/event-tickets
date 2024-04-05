@@ -14,6 +14,8 @@ class Tribe__Tickets__Main {
 	 * Used to store the version history.
 	 *
 	 * @since 4.11.0
+	 *
+	 * @var string
 	 */
 	public $version_history_slug = 'previous_event_tickets_versions';
 
