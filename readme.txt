@@ -203,6 +203,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Remove unwanted slashes from the Tickets Emails subject line. [ET-2061]
 * Fix - Correct the text domain for a couple of text strings so they could be translated appropriately. [ET-2020]
 * Fix - Changed incorrect file paths in DocBlocks for template overrides for all files in `src/views/tickets`. [ET-2004]
+* Fix - Added additional logic to handle when the Gateway ID link is null on the Orders Page for Stripe. [ET-2067]
 
 = [5.8.4] 2024-03-25 =
 
