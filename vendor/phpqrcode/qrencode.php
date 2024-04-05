@@ -129,9 +129,8 @@ namespace TEC\Tickets\phpqrcode;
         }
 
         //----------------------------------------------------------------------
-        public function getCode()
-        {
-            $ret;
+		public function getCode() {
+			$ret;
 
 			if ( $this->count < $this->dataLength ) {
 				$row = (int) $this->count % $this->blocks;
@@ -139,20 +138,20 @@ namespace TEC\Tickets\phpqrcode;
 				if ( $col >= $this->rsblocks[0]->dataLength ) {
 					$row += (int) $this->b1;
 				}
-				$ret = $this->rsblocks[ (int) $row ]->data[ (int) $col ];
+				$ret = $this->rsblocks[ $row ]->data[ $col ];
 			} else {
 				if ( $this->count < $this->dataLength + $this->eccLength ) {
 					$row = (int) ( $this->count - $this->dataLength ) % $this->blocks;
 					$col = (int) ( $this->count - $this->dataLength ) / $this->blocks;
-					$ret = $this->rsblocks[ (int) $row ]->ecc[ (int) $col ];
+					$ret = $this->rsblocks[ $row ]->ecc[ $col ];
 				} else {
 					return 0;
 				}
 			}
-            $this->count++;
+			$this->count++;
 
-            return $ret;
-        }
+			return $ret;
+		}
     }
 
     //##########################################################################
