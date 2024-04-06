@@ -31,6 +31,7 @@ import { wpREST } from '@moderntribe/common/utils/api';
 import {
 	moment as momentUtil,
 	time as timeUtil,
+	globals
 } from '@moderntribe/common/utils';
 import { plugins } from '@moderntribe/common/data';
 import {
@@ -40,6 +41,10 @@ import {
 	hasPostTypeChannel,
 	createDates,
 } from '@moderntribe/tickets/data/shared/sagas';
+
+const {
+	tecDateSettings,
+} = globals;
 
 const {
 	INDEPENDENT,
@@ -956,7 +961,7 @@ describe( 'Ticket Block sagas', () => {
 				select( selectors.getTicketsTempSharedCapacity ),
 			);
 			expect( clone1.next().value ).toEqual(
-				select( selectors.getTicketsTempSharedCapacityInt ),
+				select( selectors.showSalePrice ),
 			);
 			expect( clone1.next().done ).toEqual( true );
 
@@ -1260,8 +1265,8 @@ describe( 'Ticket Block sagas', () => {
 			const endTimeInput = '19:48:42';
 			const capacityType = 'own';
 			const capacity = 100;
-			const salePriceChecked = true;
-			const salePrice = 5;
+			const salePriceChecked = false;
+			const salePrice = '';
 			const saleStartDate = '2018-11-09 19:48:42';
 			const saleStartDateInput = '2018-11-09 19:48:42';
 			const saleStartDateMoment = '2018-11-09 19:48:42';
@@ -1554,12 +1559,19 @@ describe( 'Ticket Block sagas', () => {
 			const capacity = 100;
 			const salePriceChecked = true;
 			const salePrice = 5;
-			const saleStartDate = '2018-11-09 19:48:42';
-			const saleStartDateInput = '2018-11-09 19:48:42';
-			const saleStartDateMoment = '2018-11-09 19:48:42';
-			const saleEndDate = '2018-11-09 19:48:42';
-			const saleEndDateInput = '2018-11-09 19:48:42';
-			const saleEndDateMoment = '2018-11-09 19:48:42';
+			const datePickerFormat = tecDateSettings().datepickerFormat;
+			const saleStartDateString = '';
+			const saleStartDate = call( momentUtil.toDatabaseDate, saleStartDateString );
+			const saleStartDateMoment = call( momentUtil.toMoment, saleStartDateString );
+			const saleStartDateInput = datePickerFormat
+				? call( momentUtil.toDate, saleStartDateMoment, datePickerFormat )
+				: call( momentUtil.toDate, saleStartDateMoment );
+			const saleEndDateString = '';
+			const saleEndDate = call( momentUtil.toDatabaseDate, saleEndDateString );
+			const saleEndDateMoment = call( momentUtil.toMoment, saleEndDateString );
+			const saleEndDateInput = datePickerFormat
+			? call( momentUtil.toDate, saleEndDateMoment, datePickerFormat )
+			: call( momentUtil.toDate, saleEndDateMoment );
 
 			const TICKET_ID = 13;
 			const CLIENT_ID = 'modern-tribe';
