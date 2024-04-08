@@ -198,6 +198,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [TBD] TBD =
 
+* Fix - Fixed an issue with Ticket repository that was causing all tickets to be fetched for 0 as event ID. [ET-2023]
 * Fix - The Attendee registration page will no longer generate warnings when viewing it. [ET-906]
 * Fix - When an event ticket is removed, it will no longer generate a 404 for the event. [TEC-5041]
 * Fix - Remove unwanted slashes from the Tickets Emails subject line. [ET-2061]
