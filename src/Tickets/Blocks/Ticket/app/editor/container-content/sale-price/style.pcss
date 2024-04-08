@@ -11,6 +11,7 @@
 	}
 	.tribe-editor__ticket__sale-price--dates {
 		span {
+			font-size: var(--tec-font-size-3);
 			padding: 5px 10px;
 		}
 	}
@@ -28,11 +29,30 @@
 		.tribe-editor__labeled-item__label {
 			font-size: 15px;
 			font-weight: 400;
+			line-height: var(--tec-line-height-0);
 		}
 
 		.tribe-editor__ticket__sale-price--start-date, .tribe-editor__ticket__sale-price--end-date {
 			max-width: 120px;
+			.tribe-editor__day-picker-input.DayPickerInput input {
+				border-radius: var(--tec-spacer-0);
+			}
 		}
+	}
+
+	.tribe-editor__ticket__sale-price-checkbox {
+		font-size: var(--tec-font-size-2);
+		line-height: var(--tec-line-height-2);
+	}
+
+	.tribe-editor__checkbox__input {
+		margin-top: 0;
+	}
+
+	.tribe-editor__ticket__sale-price--label:after {
+		color: var(--tec-color-icon-error);
+		content: "*";
+		margin-left: var(--tec-spacer-0);
 	}
 }
 

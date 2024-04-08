@@ -155,11 +155,11 @@ class Metabox {
 			include $file;
 		}
 	}
-	
+
 	/**
 	 * Renders the sale price fields for TicketsCommerce.
 	 *
-	 * @since TBD
+	 * @since 5.9.0
 	 *
 	 * @param int                 $ticket_id The ticket ID.
 	 * @param int                 $post_id The post ID.
@@ -167,25 +167,25 @@ class Metabox {
 	 */
 	public function render_sale_price_fields( $ticket_id, $post_id, $context ): void {
 		$provider = $context['provider'] ?? false;
-		
+
 		if ( ! $provider || Module::class !== $provider->class_name ) {
 			return;
 		}
-		
+
 		$sale_start_date   = get_post_meta( $ticket_id, Ticket::$sale_price_start_date_key, true );
 		$sale_end_date     = get_post_meta( $ticket_id, Ticket::$sale_price_end_date_key, true );
 		$datepicker_format = Dates::datepicker_formats( Dates::get_datepicker_format_index() );
-		
+
 		if ( ! empty( $sale_start_date ) ) {
 			$sale_start_date = Dates::date_only( $sale_start_date, false, $datepicker_format );
 		}
 		if ( ! empty( $sale_end_date ) ) {
 			$sale_end_date = Dates::date_only( $sale_end_date, false, $datepicker_format );
 		}
-		
+
 		$sale_price = get_post_meta( $ticket_id, Ticket::$sale_price_key, true );
 		$sale_price = $sale_price ? $sale_price->get_string() : '';
-		
+
 		$args = [
 			'post_id'           => $post_id,
 			'ticket'            => $context['ticket'] ?? null,
@@ -204,7 +204,7 @@ class Metabox {
 				'is-greater-or-equal-to' => __( 'Sale to date cannot be less than Sale from date', 'event-tickets' ),
 			],
 		];
-		
+
 		tribe( 'tickets.admin.views' )->template( 'commerce/metabox/sale-price', $args );
 	}
 }

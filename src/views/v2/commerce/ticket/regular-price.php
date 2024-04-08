@@ -9,9 +9,9 @@
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since TBD
+ * @since 5.9.0
  *
- * @version TBD
+ * @version 5.9.0
  *
  * @var Value $price The Value instance of the ticket price.
  * @var bool  $on_sale Whether the ticket is on sale.
