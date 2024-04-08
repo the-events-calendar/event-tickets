@@ -4,9 +4,12 @@ namespace Tribe\Tickets;
 
 
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker;
+use Tribe__Tickets__Tickets;
+use \Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker as TicketsCommerce_Ticket_Maker;
 
 class Ticket_RepositoryTest extends \Codeception\TestCase\WPTestCase {
 	use Ticket_Maker;
+	use TicketsCommerce_Ticket_Maker;
 
 	/**
 	 * It should allow filtering the event ID when filtering tickets by event
@@ -97,6 +100,25 @@ class Ticket_RepositoryTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 */
 	public function should_return_empty_if_event_id_is_0(): void {
+		
+		$post_3_id   = static::factory()->post->create();
+		$post_4_id   = static::factory()->post->create();
+		$ticket_3_id = $this->create_tc_ticket( $post_3_id );
+		$ticket_4_id = $this->create_tc_ticket( $post_4_id );
+		
+		// Test for TicketsCommerce tickets.
+		$this->assertEmpty( tec_tc_tickets()->where( 'event', 0 )->get_ids() );
+		$this->assertEquals( 0, tec_tc_tickets()->where( 'event', 0 )->count() );
+		
+		// Test with an array of event IDs for TicketsCommeerce tickets.
+		$this->assertEmpty( tec_tc_tickets()->where( 'event', [ 0 ] )->get_ids() );
+		$this->assertEquals( 0, tec_tc_tickets()->where( 'event', [ 0 ] )->count() );
+		
+		$this->assertNotEmpty( tec_tc_tickets()->where( 'event', [ $post_3_id ] )->get_ids() );
+		$this->assertNotEmpty( tec_tc_tickets()->where( 'event', [ $post_4_id ] )->get_ids() );
+		$this->assertEquals( 1, tec_tc_tickets()->where( 'event', [ $post_3_id ] )->count() );
+		$this->assertEquals( 1, tec_tc_tickets()->where( 'event', [ $post_4_id ] )->count() );
+		
 		$this->assertEmpty( tribe_tickets()->where( 'event', 0 )->get_ids() );
 		$this->assertEquals( 0, tribe_tickets()->where( 'event', 0 )->count() );
 		
