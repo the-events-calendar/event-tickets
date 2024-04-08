@@ -114,6 +114,10 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 			return;
 		}
 		
+		if ( is_numeric( $event_id ) ) {
+			$event_id = [ $event_id ];
+		}
+		
 		$this->by( 'meta_in', $this->ticket_to_event_keys(), $event_id );
 	}
 
