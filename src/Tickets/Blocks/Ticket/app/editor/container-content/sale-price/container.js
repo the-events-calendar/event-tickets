@@ -15,7 +15,7 @@ import { globals, moment as momentUtil } from "@moderntribe/common/utils";
 /**
  * Handles the change event of the from date input.
  *
- * @since TBD
+ * @since 5.9.0
  *
  * @param {Function} dispatch The dispatch function.
  * @param {Object} ownProps The component's own props.
@@ -39,7 +39,7 @@ const onFromDateChange = ( dispatch, ownProps ) => ( date, modifiers, dayPickerI
 /**
  * Handles the change event of the date picker input.
  *
- * @since TBD
+ * @since 5.9.0
  *
  * @param dispatch The dispatch function.
  * @param ownProps The component's own props.
@@ -63,7 +63,7 @@ const onToDateChange = ( dispatch, ownProps ) => ( date, modifiers, dayPickerInp
 /**
  * Maps the state to the component's props.
  *
- * @since TBD
+ * @since 5.9.0
  *
  * @param state The state.
  * @param ownProps The component's own props.
@@ -79,6 +79,9 @@ const mapStateToProps = ( state, ownProps ) => {
 	const endDateMoment = selectors.getTicketTempSaleEndDateMoment( state, ownProps );
 	const fromDate = startDateMoment && startDateMoment.toDate();
 	const toDate = endDateMoment && endDateMoment.toDate();
+	const fromDateInput = typeof startDateMoment === 'object' && startDateMoment.isValid() ? selectors.getTicketTempSaleStartDateInput( state, ownProps ) : '';
+	const toDateInput = typeof endDateMoment === 'object' && endDateMoment.isValid() ? selectors.getTicketTempSaleEndDateInput( state, ownProps ) : '';
+
 	return {
 		isDisabled: selectors.isTicketDisabled( state, ownProps ),
 		currencyDecimalPoint: selectors.getTicketCurrencyDecimalPoint( state, ownProps ),
@@ -93,8 +96,8 @@ const mapStateToProps = ( state, ownProps ) => {
 		dateFormat: datePickerFormat,
 		fromDate: fromDate,
 		toDate: toDate,
-		fromDateInput: selectors.getTicketTempSaleStartDateInput( state, ownProps ),
-		toDateInput: selectors.getTicketTempSaleEndDateInput( state, ownProps ),
+		fromDateInput: fromDateInput,
+		toDateInput: toDateInput,
 		validSalePrice: selectors.isTicketSalePriceValid( state, ownProps ),
 	}
 };
@@ -102,7 +105,7 @@ const mapStateToProps = ( state, ownProps ) => {
 /**
  * Maps dispatch functions to the component's props.
  *
- * @since TBD
+ * @since 5.9.0
  *
  * @param {Function} dispatch The dispatch function.
  * @param {Object} ownProps The component's own props.

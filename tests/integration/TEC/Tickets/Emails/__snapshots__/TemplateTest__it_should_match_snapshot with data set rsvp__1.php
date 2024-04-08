@@ -684,28 +684,7 @@
 	</tr>
 </table>
 
-					<table role="presentation" class="tec-tickets__email-table-content-event-venue-website-table">
-	<tr>
-		<td class="tec-tickets__email-table-content-event-venue-website-icon-container" valign="top" align="center">
-			<img
-				width="24"
-				height="23"
-				class="tec-tickets__email-table-content-event-venue-website-icon-image"
-				src="http://wordpress.test/wp-content/plugins/the-events-calendar/src/resources/images/icons/bitmap/link.png"
-			/>
-		</td>
-		<td class="tec-tickets__email-table-content-event-venue-website-container">
-			<a
-				href="http://wordpress.test"
-				target="_blank"
-				rel="noopener noreferrer"
-				style="overflow-wrap: anywhere;"
-			>
-				http://wordpress.test			</a>
-		</td>
-	</tr>
-</table>
-				</td>
+									</td>
 			</tr>
 		</table>
 	</td>
