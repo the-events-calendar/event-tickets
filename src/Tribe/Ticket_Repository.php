@@ -108,12 +108,16 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 		 * @param Tickets_Repository $this     The current repository object.
 		 */
 		$event_id = apply_filters( 'tec_tickets_repository_filter_by_event_id', $event_id, $this );
-
-		if ( empty( $event_id ) ) {
-			// Early exit if no event ID is provided.
+		
+		if ( is_array( $event_id ) && empty( $event_id ) ) {
+			// Bail early if the array is empty.
 			return;
 		}
-
+		
+		if ( is_numeric( $event_id ) ) {
+			$event_id = [ $event_id ];
+		}
+		
 		$this->by( 'meta_in', $this->ticket_to_event_keys(), $event_id );
 	}
 
