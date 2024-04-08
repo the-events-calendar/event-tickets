@@ -1300,12 +1300,14 @@ class Series_PassesTest extends Controller_Test_Case {
 	 * @test
 	 */
 	public function should_allow_tickets_on_recurring_events(): void {
+		$this->set_fn_return( 'is_admin', true );
 		$this->assertFalse( apply_filters( 'tec_tickets_allow_tickets_on_recurring_events', false ) );
 
 		$controller = $this->make_controller();
 		$controller->register();
 
 		$this->assertTrue( apply_filters( 'tec_tickets_allow_tickets_on_recurring_events', true ) );
+		$this->unset_uopz_returns();
 	}
 
 	/**
