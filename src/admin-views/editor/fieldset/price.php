@@ -92,7 +92,7 @@ if ( ! empty( $ticket ) ) {
 		 * Allow to add messages under the price field.
 		 *
 		 * @since 4.10.7
-		 * @since TBD Added the $context parameter.
+		 * @since 5.9.0 Added the $context parameter.
 		 *
 		 * @param int $ticket_id Ticket ID.
 		 * @param int $post_id   Post ID.
@@ -103,7 +103,7 @@ if ( ! empty( $ticket ) ) {
 	</div>
 
 	<?php if ( $ticket && ( $ticket->on_sale || $ticket_has_wc_member_discount ) && ! $is_paypal_ticket ) : ?>
-		
+
 		<?php
 		$sale_price_label = esc_html__( 'Sale Price:', 'event-tickets' );
 		$sale_price_desc  = esc_html__( 'Current sale price. This can be managed via the product editor.', 'event-tickets' );

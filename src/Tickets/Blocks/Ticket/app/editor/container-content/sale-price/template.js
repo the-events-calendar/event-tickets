@@ -22,7 +22,7 @@ import { formatDate, parseDate } from "react-day-picker/moment";
 /**
  * SalePrice component.
  *
- * @since TBD
+ * @since 5.9.0
  */
 class SalePrice extends PureComponent {
 	static propTypes = {

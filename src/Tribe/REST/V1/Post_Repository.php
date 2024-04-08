@@ -270,7 +270,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		if ( is_object( $provider_class ) ) {
 			$provider_class = get_class( $provider_class );
 		}
-		
+
 		$map = [
 			'Tribe__Tickets__RSVP'                     => 'rsvp',
 			'Tribe__Tickets__Commerce__PayPal__Main'   => 'tribe-commerce',
@@ -637,7 +637,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		if ( ! is_numeric( $price ) ) {
 			$price = 0; // free.
 		}
-		
+
 		if ( Module::class === $provider ) {
 			$price = tribe( Ticket::class )->get_regular_price( $ticket_id );
 		}
@@ -792,11 +792,11 @@ class Tribe__Tickets__REST__V1__Post_Repository
 
 		return $query->all();
 	}
-	
+
 	/**
 	 * Returns the sale price data for a ticket.
 	 *
-	 * @since TBD
+	 * @since 5.9.0
 	 *
 	 * @param int $ticket_id The ticket ID.
 	 *
@@ -804,11 +804,11 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 */
 	public function get_ticket_sale_price_data( int $ticket_id ): array {
 		$provider = tribe_tickets_get_ticket_provider( $ticket_id );
-		
+
 		if ( ! $provider instanceof Module ) {
 			return [];
 		}
-		
+
 		return tribe( Ticket::class )->get_sale_price_details( $ticket_id );
 	}
 
@@ -838,7 +838,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 			[
 				'type' => 'attendee',
 				'id'   => $attendee_id,
-			] 
+			]
 		);
 
 		update_post_meta( $attendee_id, $this->global_id_key, $global_id );

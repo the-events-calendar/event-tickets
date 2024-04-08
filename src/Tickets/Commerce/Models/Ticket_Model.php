@@ -65,21 +65,21 @@ class Ticket_Model extends Base {
 	 * Returns the Value object representing this Ticket price.
 	 *
 	 * @since 5.2.3
-	 * @deprecated TBD Use get_price_value | get_sale_price_value instead.
+	 * @deprecated 5.9.0 Use get_price_value | get_sale_price_value instead.
 	 *
 	 * @return Value
 	 */
 	public function get_value() {
-		_deprecated_function( __METHOD__, 'TBD', 'get_price_value' );
+		_deprecated_function( __METHOD__, '5.9.0', 'get_price_value' );
 		$props = $this->get_properties( 'raw' );
 
 		return Value::create( $props['price'] );
 	}
-	
+
 	/**
 	 * Returns the Value object representing this Ticket price.
 	 *
-	 * @since TBD
+	 * @since 5.9.0
 	 *
 	 * @return Value
 	 */
@@ -87,11 +87,11 @@ class Ticket_Model extends Base {
 		$props = $this->get_properties( 'raw' );
 		return Value::create( $props['price'] );
 	}
-	
+
 	/**
 	 * Returns the Value object representing this Ticket sale price.
 	 *
-	 * @since TBD
+	 * @since 5.9.0
 	 *
 	 * @return Value
 	 */
