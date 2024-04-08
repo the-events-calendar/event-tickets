@@ -3,7 +3,7 @@
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, GeoffBel, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
 Requires at least: 6.2
-Tested up to: 6.4.3
+Tested up to: 6.5
 Stable tag: 5.9.1
 Requires PHP: 7.4
 License: GPLv2 or later
@@ -206,6 +206,14 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - QR codes will properly generate when on PHP 8.1 and above. [ET-2062]
 * Fix - Changed incorrect file paths in DocBlocks for template overrides for all files in `src/views/tickets`. [ET-2004]
 * Fix - Added additional logic to handle when the Gateway ID link is null on the Orders Page for Stripe. [ET-2067]
+
+= [5.9.0] 2024-04-04 =
+
+* Feature - Sale Price for Tickets Commerce: Set a sale price for individual tickets for a certain duration of time within Tickets Commerce.
+* Feature - Sale Price Design: Display the set sale price so that it is clear that a ticket or purchased ticket is on sale.
+* Tweak - Removed filters: `tec_tickets_commerce_order_report_summary_should_include_event_sales_data`
+* Tweak - Changed views: `v2/commerce/ticket/price`, `v2/commerce/ticket/regular-price`, `v2/commerce/ticket/sale-price`, `v2/tickets/item/content/sale-label`, `v2/tickets/item/content/title`, `v2/tickets/item/extra/price`
+* Language - 12 new strings added, 16 updated, 0 fuzzied, and 0 obsoleted
 
 = [5.8.4] 2024-03-25 =
 

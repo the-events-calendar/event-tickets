@@ -11,9 +11,9 @@
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
  * @since   5.0.3
- * @since   TBD   Added `sale-label` template to title element.
+ * @since   5.9.0   Added `sale-label` template to title element.
  *
- * @version TBD
+ * @version 5.9.0
  *
  * @var Tribe__Tickets__Editor__Template   $this                        [Global] Template object.
  * @var int                                $post_id                     [Global] The current Post ID to which tickets are attached.

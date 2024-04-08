@@ -10,9 +10,9 @@
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
  * @since 5.2.3
- * @since TBD Add support to display the regular price when the ticket is on sale.
+ * @since 5.9.0 Add support to display the regular price when the ticket is on sale.
  *
- * @version TBD
+ * @version 5.9.0
  *
  * @var Value $price The Value instance of the ticket price.
  * @var Value $regular_price The Value instance of the ticket regular price.
