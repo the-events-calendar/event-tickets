@@ -208,6 +208,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - QR codes will properly generate when on PHP 8.1 and above. [ET-2062]
 * Fix - Changed incorrect file paths in DocBlocks for template overrides for all files in `src/views/tickets`. [ET-2004]
 * Fix - Added additional logic to handle when the Gateway ID link is null on the Orders Page for Stripe. [ET-2067]
+* Feature - Add new Attendees page. [ET-1707]
 
 = [5.9.0] 2024-04-04 =
 
