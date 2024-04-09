@@ -6,14 +6,16 @@ use Tribe\Tickets\Admin\Settings;
 class Tribe__Tickets__Main {
 
 	/**
-	 * Current version of this plugin
+	 * Current version of this plugin.
 	 */
-	const VERSION = '5.9.0';
+	const VERSION = '5.9.1';
 
 	/**
 	 * Used to store the version history.
 	 *
 	 * @since 4.11.0
+	 *
+	 * @var string
 	 */
 	public $version_history_slug = 'previous_event_tickets_versions';
 

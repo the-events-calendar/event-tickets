@@ -4,7 +4,7 @@ Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, raf
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
 Requires at least: 6.2
 Tested up to: 6.5
-Stable tag: 5.9.0
+Stable tag: 5.9.1
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -195,6 +195,19 @@ We've got a [LoopedIn](https://evnt.is/ideas) page where we're actively watching
 Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on using, tweaking, and troubleshooting our plugins.
 
 == Changelog ==
+
+= [TBD] TBD =
+
+* Fix - Fixed an issue with Ticket repository that was causing all tickets to be fetched for 0 as event ID. [ET-2023]
+* Fix - Display recurring events are not supported warning while adding tickets on Community Events. [ECP-1671]
+* Fix - The Attendee registration page will no longer generate warnings when viewing it. [ET-906]
+* Fix - When an event ticket is removed, it will no longer generate a 404 for the event. [TEC-5041]
+* Fix - Remove unwanted slashes from the Tickets Emails subject line. [ET-2061]
+* Fix - `Get Tickets` button padding will be consistent in `active` and `focus` states. [ET-2068]
+* Fix - Correct the text domain for a couple of text strings so they could be translated appropriately. [ET-2020]
+* Fix - QR codes will properly generate when on PHP 8.1 and above. [ET-2062]
+* Fix - Changed incorrect file paths in DocBlocks for template overrides for all files in `src/views/tickets`. [ET-2004]
+* Fix - Added additional logic to handle when the Gateway ID link is null on the Orders Page for Stripe. [ET-2067]
 
 = [5.9.0] 2024-04-04 =
 

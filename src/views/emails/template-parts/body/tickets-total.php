@@ -34,7 +34,7 @@ if ( empty( $tickets ) || count( $tickets ) === 1 ) {
 		<?php
 		echo sprintf(
 			// Translators: %1$s: Number of total Tickets. %2$s: Tickets label, in plural.
-			esc_html__( '%1$s %2$s Total', 'event_tickets' ),
+			esc_html__( '%1$s %2$s Total', 'event-tickets' ),
 			count( $tickets ),
 			tribe_get_ticket_label_plural( 'tec_tickets_email_ticket_total' )
 		);

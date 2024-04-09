@@ -285,4 +285,18 @@ class Ticket_RepositoryTest extends \Codeception\TestCase\WPTestCase {
 				->where( 'global_stock_mode', Global_Stock::UNLIMITED_STOCK_MODE )->count()
 		);
 	}
+	
+	/**
+	 * It should return empty if event ID is 0.
+	 *
+	 * @test
+	 */
+	public function should_return_empty_if_event_id_is_0(): void {
+		$this->assertEmpty( tribe_tickets()->where( 'event', 0 )->get_ids() );
+		$this->assertEquals( 0, tribe_tickets()->where( 'event', 0 )->count() );
+		
+		// Test with an array of event IDs.
+		$this->assertEmpty( tribe_tickets()->where( 'event', [ 0 ] )->get_ids() );
+		$this->assertEquals( 0, tribe_tickets()->where( 'event', [ 0 ] )->count() );
+	}
 }

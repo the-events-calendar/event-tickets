@@ -383,6 +383,7 @@ class Orders extends WP_List_Table {
 	 * Handler for gateway order id.
 	 *
 	 * @since 5.2.0
+	 * @since TBD Handle when the $order_url is empty.
 	 *
 	 * @param WP_Post $item
 	 *
@@ -394,9 +395,15 @@ class Orders extends WP_List_Table {
 			return $item->gateway_order_id;
 		}
 
+		$order_url = $gateway->get_order_controller()->get_gateway_dashboard_url_by_order( $item );
+
+		if ( empty( $order_url ) ) {
+			return $item->gateway_order_id;
+		}
+
 		return sprintf(
 			'<a href="%s" target="_blank" rel="noopener noreferrer">%s</a>',
-			$gateway->get_order_controller()->get_gateway_dashboard_url_by_order( $item ),
+			$order_url,
 			$item->gateway_order_id
 		);
 	}
