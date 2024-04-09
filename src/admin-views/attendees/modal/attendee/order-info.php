@@ -19,8 +19,6 @@ if ( ! empty( $attendee['provider_slug'] ) && 'rsvp' === $attendee['provider_slu
 	return;
 }
 
-$date_format = tribe_get_date_format( true );
-
 ?>
 <div class="tec-tickets__admin-attendees-modal-section tec-tickets__admin-attendees-modal-section--order-info">
 
