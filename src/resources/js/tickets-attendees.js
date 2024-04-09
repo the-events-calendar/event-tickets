@@ -280,7 +280,6 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 			if ( eventId ) {
 				params += '&event_id=' + eventId;
 			} else if ( ! Attendees.move_url.includes( 'event_id' ) ) {
-				// alert( 'Comes from bulk in the general attendees page, cannot proceed' );
 				// @todo: Add a notice to the user that the move action is not available from the general attendees page.
 				return;
 			}

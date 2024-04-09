@@ -18,6 +18,6 @@
 <div class="tribe-common-g-col tec-tickets__admin-attendees-modal-attendee-info-col">
 	<div class="tribe-common-b2--bold"><?php esc_html_e( 'Email', 'event-tickets' ); ?></div>
 	<div class="tec-tickets__admin-attendees-modal-attendee-info-value">
-		<a href="mailto:<?php echo esc_html( $attendee_email ); ?>"><?php echo esc_html( strtolower( $attendee_email ) ); ?></a>
+		<a href="mailto:<?php echo esc_attr( $attendee_email ); ?>"><?php echo esc_html( strtolower( $attendee_email ) ); ?></a>
 	</div>
 </div>

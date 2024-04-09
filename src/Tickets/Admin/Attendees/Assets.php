@@ -4,7 +4,7 @@
  *
  * @since TBD
  *
- * @package TEC\Tickets\Emails
+ * @package TEC\Tickets\Admin
  */
 
 namespace TEC\Tickets\Admin\Attendees;
@@ -14,7 +14,7 @@ namespace TEC\Tickets\Admin\Attendees;
  *
  * @since TBD
  *
- * @package TEC\Tickets\Emails
+ * @package TEC\Tickets\Admin
  */
 class Assets extends \tad_DI52_ServiceProvider {
 	/**
