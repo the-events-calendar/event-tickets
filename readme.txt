@@ -198,6 +198,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [TBD] TBD =
 
+* Fix - Avoid fatal on order report page if no valid tickets are available for that event.
 * Fix - Fixed an issue with Ticket repository that was causing all tickets to be fetched for 0 as event ID. [ET-2023]
 * Fix - Display recurring events are not supported warning while adding tickets on Community Events. [ECP-1671]
 * Fix - The Attendee registration page will no longer generate warnings when viewing it. [ET-906]
