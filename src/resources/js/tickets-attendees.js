@@ -83,7 +83,7 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 			}
 
 			// If no attendee was selected, bail out.
-			if ( ! $( this ).serialize().includes( '&attendee' ) )  {
+			if ( ! $( this ).serialize().includes( '&attendee' ) ) {
 				return;
 			}
 
@@ -200,10 +200,11 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 		 * Handle "move" requests for individual rows.
 		 */
 		$( 'table.wp-list-table' ).on( 'click', '.row-actions .move-ticket', function( event ) {
-			var ticket_id = $( this ).parents( 'tr' ).find( 'input[name="attendee[]"]' ).val().match( /^[0-9]+/ );
+			const ticketId = $( this ).data( 'attendee-id' );
+			const eventId = $( this ).data( 'event-id' );
 
-			if ( ticket_id ) {
-				create_move_ticket_modal( ticket_id );
+			if ( ticketId ) {
+				create_move_ticket_modal( ticketId, eventId );
 			}
 
 			event.stopPropagation();
@@ -259,9 +260,10 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 		 * Triggers the creation of the move tickets dialog, passing the
 		 * provided ticket IDs across in the process.
 		 *
-		 * @param ticket_ids
+		 * @param ticket_ids - A single ticket ID or an array of ticket IDs.
+		 * @param eventId - The event ID to add to the modal URL.
 		 */
-		function create_move_ticket_modal( ticket_ids ) {
+		function create_move_ticket_modal( ticket_ids, eventId = null ) {
 			if ( ! $.isArray( ticket_ids ) ) {
 				ticket_ids = [ ticket_ids ];
 			}
@@ -272,8 +274,15 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 			var target_height = parseInt( $( window ).height() * 0.9, 10 );
 			target_height = target_height > 800 ? 800 : target_height;
 
-			var params = '&ticket_ids=' + ticket_ids.join( '|' )
+			let params = '&ticket_ids=' + ticket_ids.join( '|' )
 				+ '&width=' + target_width + '&height=' + target_height;
+
+			if ( eventId ) {
+				params += '&event_id=' + eventId;
+			} else if ( ! Attendees.move_url.includes( 'event_id' ) ) {
+				// @todo: Add a notice to the user that the move action is not available from the general attendees page.
+				return;
+			}
 
 			/* We need to add our list of ticket IDs and other params *before* the "TB_*"
 			 * param otherwise they will be discarded by Thickbox.
@@ -282,8 +291,8 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 			 * style, again due to Thickbox oddities which would otherwise discard all but
 			 * the first value.
 			 */
-			var request_url = Attendees.move_url.replace( '&TB_', params + '&TB_' )
-			tb_show( null, request_url, false );
+			const requestUrl = Attendees.move_url.replace( '&TB_', params + '&TB_' )
+			tb_show( null, requestUrl, false );
 		}
 
 		/**
