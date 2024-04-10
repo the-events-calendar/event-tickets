@@ -202,7 +202,7 @@ class Order_Summary {
 	protected function process_order_sales_data( string $status_slug, int $ticket_id, $item ): void {
 		$tickets = $this->get_tickets();
 
-		if ( ! $this->should_include_event_sales_data( $tickets[ $ticket_id ], $item ) ) {
+		if ( ! isset( $tickets[ $ticket_id ] ) || ! $this->should_include_event_sales_data( $tickets[ $ticket_id ], $item ) ) {
 			return;
 		}
 
