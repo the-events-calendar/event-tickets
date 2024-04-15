@@ -545,7 +545,7 @@ class Dispatcher {
 	 *
 	 * @since 5.6.0
 	 * @since 5.8.3 Decodes the subject before sending the email.
-	 * @since TBD Removes slashes from the subject before sending the email.
+	 * @since 5.9.1 Removes slashes from the subject before sending the email.
 	 *
 	 * @return bool Whether the email was sent successfully.
 	 */

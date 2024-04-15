@@ -13,9 +13,9 @@
  * @var array $attendees
  *
  * @since 4.7.4
- * @since TBD Corrected template override filepath
+ * @since 5.9.1 Corrected template override filepath
  *
- * @version TBD
+ * @version 5.9.1
  */
 
 $event_date = null;

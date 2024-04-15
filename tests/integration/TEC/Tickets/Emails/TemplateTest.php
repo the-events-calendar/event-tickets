@@ -14,7 +14,7 @@ use TEC\Tickets\Emails\Email\Ticket;
 /**
  * Class TemplateTest
  *
- * @since   TBD
+ * @since   5.9.1
  *
  * @package TEC\Tickets\Emails\Admin
  */
