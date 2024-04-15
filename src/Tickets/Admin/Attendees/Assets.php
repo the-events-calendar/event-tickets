@@ -2,7 +2,7 @@
 /**
  * Handles registering and setup for assets on Tickets Attendees.
  *
- * @since TBD
+ * @since 5.9.1
  *
  * @package TEC\Tickets\Admin
  */
@@ -12,7 +12,7 @@ namespace TEC\Tickets\Admin\Attendees;
 /**
  * Class Assets.
  *
- * @since TBD
+ * @since 5.9.1
  *
  * @package TEC\Tickets\Admin
  */
@@ -20,7 +20,7 @@ class Assets extends \tad_DI52_ServiceProvider {
 	/**
 	 * Key for this group of assets.
 	 *
-	 * @since TBD
+	 * @since 5.9.1
 	 *
 	 * @var string
 	 */
@@ -29,7 +29,7 @@ class Assets extends \tad_DI52_ServiceProvider {
 	/**
 	 * Binds and sets up implementations.
 	 *
-	 * @since TBD
+	 * @since 5.9.1
 	 */
 	public function register() {
 		/** @var Tribe__Tickets__Main $tickets_main */

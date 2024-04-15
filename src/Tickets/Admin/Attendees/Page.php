@@ -2,7 +2,7 @@
 /**
  * Handles hooking all the actions and filters used by the admin area.
  *
- * @since   TBD
+ * @since   5.9.1
  *
  * @package TEC\Tickets\Admin
  */
@@ -12,7 +12,7 @@ namespace TEC\Tickets\Admin\Attendees;
 /**
  * Class Page.
  *
- * @since   TBD
+ * @since   5.9.1
  *
  * @package TEC\Tickets\Admin
  */
@@ -46,7 +46,7 @@ class Page {
 	/**
 	 * Defines wether the current page is the Event Tickets Attendees page.
 	 *
-	 * @since TBD
+	 * @since 5.9.1
 	 *
 	 * @return boolean
 	 */
@@ -78,7 +78,7 @@ class Page {
 		/**
 		 * Filters the URL to the Event Tickets attendees page.
 		 *
-		 * @since TBD
+		 * @since 5.9.1
 		 *
 		 * @param string $url The URL to the Event Tickets attendees page.
 		 */
@@ -88,7 +88,7 @@ class Page {
 	/**
 	 * Adds the Event Tickets Attendees page.
 	 *
-	 * @since TBD
+	 * @since 5.9.1
 	 */
 	public function add_tec_tickets_attendees_page() {
 		$admin_pages = tribe( 'admin.pages' );

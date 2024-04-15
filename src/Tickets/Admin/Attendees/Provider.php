@@ -2,7 +2,7 @@
 /**
  * The main service provider for the Tickets Admin Attendees page.
  *
- * @since   TBD
+ * @since   5.9.1
  * @package TEC\Tickets\Admin
  */
 
@@ -11,7 +11,7 @@ namespace TEC\Tickets\Admin\Attendees;
 /**
  * Service provider for the Tickets Admin Attendees
  *
- * @since   TBD
+ * @since   5.9.1
  * @package TEC\Tickets\Admin
  */
 class Provider extends \tad_DI52_ServiceProvider {
@@ -19,7 +19,7 @@ class Provider extends \tad_DI52_ServiceProvider {
 	/**
 	 * Register the provider singletons.
 	 *
-	 * @since TBD
+	 * @since 5.9.1
 	 */
 	public function register() {
 		if (
@@ -39,7 +39,7 @@ class Provider extends \tad_DI52_ServiceProvider {
 	/**
 	 * Registers the provider handling all the 1st level filters and actions for the Tickets Admin area.
 	 *
-	 * @since TBD
+	 * @since 5.9.1
 	 */
 	protected function register_hooks() {
 		$hooks = new Hooks( $this->container );

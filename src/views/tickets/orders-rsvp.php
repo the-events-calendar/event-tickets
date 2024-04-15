@@ -7,9 +7,9 @@
  * @since   4.2
  * @since   4.10.9 Uses new functions to get singular and plural texts.
  * @since   4.12.1 Account for empty post type object, such as if post type got disabled.
- * @since   TBD Corrected template override filepath
+ * @since   5.9.1 Corrected template override filepath
  *
- * @version TBD
+ * @version 5.9.1
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

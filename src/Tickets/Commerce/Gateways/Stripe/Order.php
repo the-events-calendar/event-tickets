@@ -17,7 +17,7 @@ class Order extends Abstract_Order {
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD Added logic to handle when $payload and $capture_payload are not the expected data.
+	 * @since 5.9.1 Added logic to handle when $payload and $capture_payload are not the expected data.
 	 */
 	public function get_gateway_dashboard_url_by_order( \WP_Post $order ): string {
 		$status  = tribe( Status_Handler::class )->get_by_wp_slug( $order->post_status );

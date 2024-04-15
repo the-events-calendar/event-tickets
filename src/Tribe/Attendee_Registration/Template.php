@@ -47,7 +47,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 * Setup the context
 	 *
 	 * @since 4.9
-	 * @since TBD changed page parameters and added page to the cache.
+	 * @since 5.9.1 changed page parameters and added page to the cache.
 	 *
 	 * @param WP_Post[] $posts Post data objects.
 	 *

@@ -8,7 +8,7 @@
  * To remove an action:
  * remove_action( 'some_action', [ tribe( TEC\Tickets\Admin\Attendees\Hooks::class ), 'some_method' ] );
  *
- * @since   TBD
+ * @since   5.9.1
  *
  * @package TEC\Tickets\Admin
  */

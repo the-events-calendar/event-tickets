@@ -50,7 +50,7 @@ class Plugin_Action_Links {
 	/**
 	 * Add links to plugin meta.
 	 *
-	 * @since TBD
+	 * @since 5.9.1
 	 *
 	 * @param array  $plugin_meta The array with the links on the plugin meta.
 	 * @param string $plugin_file Path to the plugin file.

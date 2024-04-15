@@ -6,7 +6,7 @@
  *
  * @since 5.6.7
  * @since 5.8.0 Added the ticket type parameter.
- * @since TBD Corrected template override filepath
+ * @since 5.9.1 Corrected template override filepath
  *
  * @version 5.8.0
  *

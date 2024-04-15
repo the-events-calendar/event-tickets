@@ -15,9 +15,9 @@
  * @since   4.12.1 Account for empty post type object, such as if post type got disabled.
  * @since   4.12.3 Account for inactive ticket providers.
  * @since   5.0.3 Add filter to control the re-sending emails option on email alteration.
- * @since   TBD Corrected template override filepath
+ * @since   5.9.1 Corrected template override filepath
  *
- * @version TBD
+ * @version 5.9.1
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

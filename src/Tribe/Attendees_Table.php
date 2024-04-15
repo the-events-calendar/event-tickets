@@ -643,7 +643,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		/**
 		 * Provides an opportunity to modify the check-in column content.
 		 *
-		 * @since TBD
+		 * @since 5.9.1
 		 *
 		 * @param string $html The HTML for the check-in column.
 		 * @param array  $item The current item.
@@ -1141,7 +1141,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		/**
 		 * Filters the arguments used to query the attendees for the Attendees Table.
 		 *
-		 * @since TBD
+		 * @since 5.9.1
 		 *
 		 * @param array $args The arguments used to query the attendees for the Attendees Table.
 		 * @param int   $event_id The event ID for the Attendees Table.
