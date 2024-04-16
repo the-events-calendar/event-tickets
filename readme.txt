@@ -196,6 +196,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Tweak - When using Events Calendar Pro, the duplicate event function will now duplicate tickets as well. [ET-2073]
+
 = [5.9.1] 2024-04-17 =
 
 * Fix - Avoid error on order report page if no valid tickets are available for that event.
