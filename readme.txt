@@ -196,6 +196,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Fix - Corrected an issue where PayPal orders had an extra slash on the order table page. [ET-2076]
+
 = [5.9.1] 2024-04-17 =
 
 * Fix - Avoid error on order report page if no valid tickets are available for that event.
