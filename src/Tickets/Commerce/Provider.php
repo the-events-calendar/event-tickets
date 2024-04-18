@@ -75,6 +75,7 @@ class Provider extends Service_Provider {
 		$this->container->register( Gateways\Stripe\Provider::class );
 		$this->container->register( Gateways\PayPal\Provider::class );
 		$this->container->register( Gateways\Manual\Provider::class );
+		$this->container->register( Gateways\Free\Provider::class );
 
 		// Register and add hooks for admin notices.
 		$this->container->register( Admin\Notices::class );
