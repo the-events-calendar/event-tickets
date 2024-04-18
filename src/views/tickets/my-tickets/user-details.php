@@ -5,9 +5,9 @@
  * Override this template in your own theme by creating a file at [your-theme]/tribe/tickets/tickets/my-tickets/user-details.php
  *
  * @since 5.6.7
- * @since TBD Corrected template override filepath
+ * @since 5.9.1 Corrected template override filepath
  *
- * @version TBD
+ * @version 5.9.1
  *
  * @var int    $order_id  The ID of the order.
  * @var array  $order     The order data.

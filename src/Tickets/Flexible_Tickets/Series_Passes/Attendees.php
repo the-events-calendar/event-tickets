@@ -1311,7 +1311,7 @@ class Attendees extends Controller {
 	/**
 	 * Filters the attendee table check-in column.
 	 *
-	 * @since TBD
+	 * @since 5.9.1
 	 *
 	 * @param string              $html The HTML content of the column.
 	 * @param array<string,mixed> $item The array representation of the item.

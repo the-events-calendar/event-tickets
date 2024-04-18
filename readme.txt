@@ -196,7 +196,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [TBD] TBD =
+= [5.9.1] 2024-04-18 =
 
 * Fix - Avoid error on order report page if no valid tickets are available for that event.
 * Fix - Fixed an issue with Ticket repository that was causing all tickets to be fetched for 0 as event ID. [ET-2023]
@@ -210,6 +210,9 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Changed incorrect file paths in DocBlocks for template overrides for all files in `src/views/tickets`. [ET-2004]
 * Fix - Added additional logic to handle when the Gateway ID link is null on the Orders Page for Stripe. [ET-2067]
 * Feature - Add new Attendees page. [ET-1707]
+* Tweak - Added filters: `tec_tickets_attendees_page_url`, `tec_tickets_attendees_table_column_check_in`, `tec_tickets_attendees_table_query_args`, `tec_tickets_attendees_page_is_enabled`
+* Tweak - Changed views: `emails/template-parts/body/ticket/number-from-total`, `emails/template-parts/body/tickets-total`, `tickets/attendees-email`, `tickets/email-non-attendance`, `tickets/email-ticket-type-moved`, `tickets/email-tickets-moved`, `tickets/email`, `tickets/my-tickets`, `tickets/my-tickets/attendee-label`, `tickets/my-tickets/orders-list`, `tickets/my-tickets/ticket-information`, `tickets/my-tickets/tickets-list`, `tickets/my-tickets/title`, `tickets/my-tickets/user-details`, `tickets/orders-pp-tickets`, `tickets/orders-rsvp`, `tickets/orders-tc-tickets`, `tickets/orders`, `tickets/rsvp`, `tickets/tpp-return-to-cart`, `tickets/tpp-success`, `tickets/tpp`, `tickets/view-link`
+* Language -18 new strings added, 163 updated, 1 fuzzied, and 2 obsoleted
 
 = [5.9.0] 2024-04-04 =
 

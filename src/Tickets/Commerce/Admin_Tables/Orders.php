@@ -383,7 +383,7 @@ class Orders extends WP_List_Table {
 	 * Handler for gateway order id.
 	 *
 	 * @since 5.2.0
-	 * @since TBD Handle when the $order_url is empty.
+	 * @since 5.9.1 Handle when the $order_url is empty.
 	 *
 	 * @param WP_Post $item
 	 *

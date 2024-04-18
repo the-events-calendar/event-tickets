@@ -9,9 +9,9 @@
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
  * @since 5.1.3
- * @since TBD Corrected template override filepath
+ * @since 5.9.1 Corrected template override filepath
  *
- * @version TBD
+ * @version 5.9.1
  */
 
 $link = tribe( 'tickets.commerce.paypal.links' )->return_to_cart();

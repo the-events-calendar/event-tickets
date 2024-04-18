@@ -2,7 +2,7 @@
 /**
  * Handles hooking all the actions and filters used by the admin area.
  *
- * @since   TBD
+ * @since   5.9.1
  *
  * @package TEC\Tickets\Admin
  */
@@ -12,7 +12,7 @@ namespace TEC\Tickets\Admin\Attendees;
 /**
  * Class Modal.
  *
- * @since   TBD
+ * @since   5.9.1
  *
  * @package TEC\Tickets\Admin
  */
@@ -20,7 +20,7 @@ class Modal {
 	/**
 	 * Modal ID.
 	 *
-	 * @since TBD
+	 * @since 5.9.1
 	 *
 	 * @var string
 	 */
@@ -29,7 +29,7 @@ class Modal {
 	/**
 	 * Modal target.
 	 *
-	 * @since TBD
+	 * @since 5.9.1
 	 *
 	 * @var string
 	 */
@@ -38,22 +38,18 @@ class Modal {
 	/**
 	 * Check if we should render the modal.
 	 *
-	 * @since TBD
+	 * @since 5.9.1
 	 *
 	 * @return boolean Whether we should render the modal.
 	 */
 	public function should_render(): bool {
-		return tribe( 'tickets.attendees' )->user_can_manage_attendees()
-			&& (
-				tribe( Page::class )->is_on_page()
-				|| tribe_get_request_var( 'page' ) === 'tickets-attendees'
-			);
+		return tribe( Page::class )->is_on_page() || tribe_get_request_var( 'page' ) === 'tickets-attendees';
 	}
 
 	/**
 	 * Render the `Attendees` preview modal.
 	 *
-	 * @since TBD
+	 * @since 5.9.1
 	 */
 	public function render_modal() {
 		if ( ! $this->should_render() ) {

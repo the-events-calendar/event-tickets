@@ -6,9 +6,9 @@
  *
  * @since 4.7
  * @since 4.10.9 Uses new functions to get singular and plural texts.
- * @since TBD Corrected template override filepath
+ * @since 5.9.1 Corrected template override filepath
  *
- * @version TBD
+ * @version 5.9.1
  *
  * @var bool    $is_just_visiting Whether the current user might just have stumbled on the page or not.
  * @var bool    $order_is_valid Whether the current order is a valid one or not.
