@@ -61,6 +61,15 @@ class Cart {
 	 * @var string
 	 */
 	public static $cart_hash_cookie_name = 'tec-tickets-commerce-cart';
+	
+	/**
+	 * Cart total
+	 *
+	 * @since TBD
+	 *
+	 * @var null|float
+	 */
+	private $cart_total = null;
 
 	/**
 	 * Gets the current instance of cart handling that we are using.
@@ -659,5 +668,29 @@ class Cart {
 		// Before we start we clear the existing cart.
 		return $this->get_repository()->process( $data );
 	}
-
+	
+	/**
+	 * Get the total of the cart.
+	 *
+	 * @since TBD
+	 *
+	 * @return null|float
+	 */
+	public function get_cart_total() {
+		if ( null !== $this->cart_total ) {
+			return $this->cart_total;
+		}
+		
+		$items = $this->get_items_in_cart( true );
+		
+		if ( empty( $items ) ) {
+			return null;
+		}
+		
+		foreach ( $items as $item ) {
+			$this->cart_total += $item['sub_total']->get_string();
+		}
+		
+		return $this->cart_total;
+	}
 }
