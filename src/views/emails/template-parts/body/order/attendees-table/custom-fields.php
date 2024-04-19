@@ -19,11 +19,11 @@
  */
 
 // @todo @codingmusician: This needs to come from ET+
-if ( empty( $attendee['custom_fields'] ) ) {
+if ( empty( $attendee['attendee_meta'] ) ) {
 	return;
 }
 
 ?>
-<?php foreach ( $attendee['custom_fields'] as $custom_field ) : ?>
-	<div><?php echo esc_html( $custom_field['label'] ); ?> - <?php echo esc_html( $custom_field['value'] ); ?></div>
+<?php foreach ( $attendee['attendee_meta'] as $label => $value ) : ?>
+    <div><?php echo esc_html( $label ); ?> - <?php echo esc_html( $value ); ?></div>
 <?php endforeach; ?>
