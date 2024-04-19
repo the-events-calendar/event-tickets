@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Gateway;
+use TEC\Tickets\Commerce\Gateways\Contracts\Traits\Paid_Gateway;
 use TEC\Tickets\Commerce\Gateways\Stripe\REST\Return_Endpoint;
 use TEC\Tickets\Commerce\Payments_Tab;
 use TEC\Tickets\Commerce\Settings as TC_Settings;
@@ -19,6 +20,7 @@ use Tribe__Utils__Array as Arr;
  * @package TEC\Tickets\Commerce\Gateways\Stripe
  */
 class Gateway extends Abstract_Gateway {
+	use Paid_Gateway;
 
 	/**
 	 * @inheritDoc
