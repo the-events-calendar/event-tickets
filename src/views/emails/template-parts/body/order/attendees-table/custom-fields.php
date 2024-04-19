@@ -3,7 +3,7 @@
  * Event Tickets Emails: Order Attendee Info
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/emails/template-parts/body/order/attendee-info.php
+ * [your-theme]/tribe/tickets/emails/template-parts/body/order/attendees-table/custom-fields.php
  *
  * See more documentation about our views templating system.
  *
@@ -19,11 +19,11 @@
  */
 
 // @todo @codingmusician: This needs to come from ET+
-if ( empty( $attendee['custom_fields'] ) ) {
+if ( empty( $attendee['attendee_meta'] ) ) {
 	return;
 }
 
 ?>
-<?php foreach ( $attendee['custom_fields'] as $custom_field ) : ?>
-	<div><?php echo esc_html( $custom_field['label'] ); ?> - <?php echo esc_html( $custom_field['value'] ); ?></div>
+<?php foreach ( $attendee['attendee_meta'] as $label => $value ) : ?>
+    <div><?php echo esc_html( $label ); ?> - <?php echo esc_html( $value ); ?></div>
 <?php endforeach; ?>

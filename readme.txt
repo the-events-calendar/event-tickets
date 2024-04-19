@@ -196,6 +196,11 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Fix - Adds attendee meta data to Tickets Commerce Completed Order emails. [GTRIA-1260]
+* Fix - Corrects override template URL for custom-fields.php template file. [GTRIA-1260]
+
 = [5.9.0] 2024-04-04 =
 
 * Feature - Sale Price for Tickets Commerce: Set a sale price for individual tickets for a certain duration of time within Tickets Commerce.
