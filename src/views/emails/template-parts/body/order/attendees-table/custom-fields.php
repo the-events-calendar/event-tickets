@@ -3,7 +3,7 @@
  * Event Tickets Emails: Order Attendee Info
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/emails/template-parts/body/order/attendee-info.php
+ * [your-theme]/tribe/tickets/emails/template-parts/body/order/attendees-table/custom-fields.php
  *
  * See more documentation about our views templating system.
  *
