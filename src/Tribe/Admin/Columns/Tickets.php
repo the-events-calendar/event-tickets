@@ -145,7 +145,7 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 
 		$attendees_link = $attendees->get_report_link( $post );
 
-		return sprintf( '<a href="%s" target="_blank" class="tribe-tickets-column-attendees-link">%s</a>', $attendees_link, $content );
+		return sprintf( '<a href="%s" class="tribe-tickets-column-attendees-link">%s</a>', $attendees_link, $content );
 	}
 
 	/**

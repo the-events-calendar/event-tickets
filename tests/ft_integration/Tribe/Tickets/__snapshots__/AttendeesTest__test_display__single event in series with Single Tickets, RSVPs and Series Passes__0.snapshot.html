@@ -273,208 +273,241 @@
 <span class="tablenav-pages-navspan button disabled" aria-hidden="true">&raquo;</span></span></div>
 		<br class="clear" />
 	</div>
-		<table class="wp-list-table widefat striped attendees tribe-attendees tec-tickets__admin-table-attendees">
+		<table class="wp-list-table widefat striped attendees tribe-attendees">
 			<thead>
 	<tr>
 		<td  id='cb' class='manage-column column-cb check-column'  ><input id="cb-select-all-9" type="checkbox" />
-			<label for="cb-select-all-9"><span class="screen-reader-text">Select All</span></label></td><th scope="col" id='ticket' class='manage-column column-ticket column-primary sortable desc'  ><a href="http://wordpress.test?orderby=id&#038;order=asc"><span>Ticket</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort ascending.</span></a></th><th scope="col" id='primary_info' class='manage-column column-primary_info'  >Primary Information</th><th scope="col" id='security' class='manage-column column-security sortable desc'  ><a href="http://wordpress.test?orderby=security_code&#038;order=asc"><span>Security Code</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort ascending.</span></a></th><th scope="col" id='status' class='manage-column column-status'  >Status</th>	</tr>
+			<label for="cb-select-all-9"><span class="screen-reader-text">Select All</span></label></td><th scope="col" id='primary_info' class='manage-column column-primary_info column-primary'  >Attendee Information</th><th scope="col" id='ticket' class='manage-column column-ticket sortable desc'  ><a href="http://wordpress.test?orderby=id&#038;order=asc"><span>Ticket</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort ascending.</span></a></th><th scope="col" id='security' class='manage-column column-security sortable desc'  ><a href="http://wordpress.test?orderby=security_code&#038;order=asc"><span>Security Code</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort ascending.</span></a></th><th scope="col" id='status' class='manage-column column-status'  >Status</th>	</tr>
 	</thead>
 
 	<tbody id="the-list"
 		 data-wp-lists='list:attendee'		>
-		<tr class="Completed" data-ticket-type="default"><th scope="row" class="check-column"><input type="checkbox" name="attendee[]" value="TICKET_ID|TEC\Tickets\Commerce\Module" /></th><td class='ticket column-ticket has-row-actions column-primary' data-colname="Ticket">		<div class="event-tickets-ticket-name">
-			[#TICKET_ID] &ndash; 			TICKET_NAME		</div>
-
-		<div class="row-actions"><span class="inline">
-					<a href="#" class="tickets_checkin" data-attendee-id="TICKET_ID" data-event-id="POST_ID" data-provider="TEC\Tickets\Commerce\Module">Check In</a>
-					<a href="#" class="tickets_uncheckin" data-attendee-id="TICKET_ID" data-event-id="POST_ID" data-provider="TEC\Tickets\Commerce\Module">Undo Check In</a>
-				</span> | <span class="trash"><a href="?action=delete_attendee&#038;nonce=1234567890&#038;attendee=TICKET_ID|TECTicketsCommerceModule">Delete</a></span></div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class='primary_info column-primary_info' data-colname="Primary Information">
-				<div class="purchaser_name tec-tickets__admin-table-attendees-purchaser-name">HOLDER_NAME</div>
+		<tr class="Completed" data-ticket-type="series_pass"><th scope="row" class="check-column"><input type="checkbox" name="attendee[]" value="TICKET_ID|TEC\Tickets\Commerce\Module" /></th><td class='primary_info column-primary_info has-row-actions column-primary' data-colname="Attendee Information">
+				<div class="purchaser_name tec-tickets__admin-table-attendees-purchaser-name">
+					<span class="row-title">HOLDER_NAME</span>
+				</div>
 				<div class="purchaser_email tec-tickets__admin-table-attendees-purchaser-email">
+					#TICKET_ID &mdash;
 					<a class="tec-tickets__admin-table-attendees-purchaser-email-link" href="mailto:PURCHASER_EMAIL">PURCHASER_EMAIL</a>
 				</div>
-			</td><td class='security column-security' data-colname="Security Code">SECURITY_CODE</td><td class='status column-status' data-colname="Status"><div class="tec-tickets__admin-table-attendees-order-status tec-tickets__admin-table-attendees-order-status--completed"><span>Completed</span></div></td></tr><tr class="Completed" data-ticket-type="default"><th scope="row" class="check-column"><input type="checkbox" name="attendee[]" value="TICKET_ID|TEC\Tickets\Commerce\Module" /></th><td class='ticket column-ticket has-row-actions column-primary' data-colname="Ticket">		<div class="event-tickets-ticket-name">
-			[#TICKET_ID] &ndash; 			TICKET_NAME		</div>
+			<div class="row-actions"><span class="trash"><a href="?action=delete_attendee&#038;nonce=1234567890&#038;attendee=TICKET_ID|TECTicketsCommerceModule">Delete</a></span></div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class='ticket column-ticket' data-colname="Ticket">		<div class="tec-tickets__admin-table-attendees-ticket-name event-tickets-ticket-name">
+			TICKET_NAME		</div>
 
-		<div class="row-actions"><span class="inline">
-					<a href="#" class="tickets_checkin" data-attendee-id="TICKET_ID" data-event-id="POST_ID" data-provider="TEC\Tickets\Commerce\Module">Check In</a>
-					<a href="#" class="tickets_uncheckin" data-attendee-id="TICKET_ID" data-event-id="POST_ID" data-provider="TEC\Tickets\Commerce\Module">Undo Check In</a>
-				</span> | <span class="trash"><a href="?action=delete_attendee&#038;nonce=1234567890&#038;attendee=TICKET_ID|TECTicketsCommerceModule">Delete</a></span></div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class='primary_info column-primary_info' data-colname="Primary Information">
-				<div class="purchaser_name tec-tickets__admin-table-attendees-purchaser-name">HOLDER_NAME</div>
+		</td><td class='security column-security' data-colname="Security Code">SECURITY_CODE</td><td class='status column-status' data-colname="Status"><div class="tec-tickets__admin-table-attendees-order-status-wrapper"><span class="tec-tickets__admin-table-attendees-order-status tec-tickets__admin-table-attendees-order-status--completed">Completed</span></div></td></tr><tr class="Completed" data-ticket-type="series_pass"><th scope="row" class="check-column"><input type="checkbox" name="attendee[]" value="TICKET_ID|TEC\Tickets\Commerce\Module" /></th><td class='primary_info column-primary_info has-row-actions column-primary' data-colname="Attendee Information">
+				<div class="purchaser_name tec-tickets__admin-table-attendees-purchaser-name">
+					<span class="row-title">HOLDER_NAME</span>
+				</div>
 				<div class="purchaser_email tec-tickets__admin-table-attendees-purchaser-email">
+					#TICKET_ID &mdash;
 					<a class="tec-tickets__admin-table-attendees-purchaser-email-link" href="mailto:PURCHASER_EMAIL">PURCHASER_EMAIL</a>
 				</div>
-			</td><td class='security column-security' data-colname="Security Code">SECURITY_CODE</td><td class='status column-status' data-colname="Status"><div class="tec-tickets__admin-table-attendees-order-status tec-tickets__admin-table-attendees-order-status--completed"><span>Completed</span></div></td></tr><tr class="Completed" data-ticket-type="default"><th scope="row" class="check-column"><input type="checkbox" name="attendee[]" value="TICKET_ID|TEC\Tickets\Commerce\Module" /></th><td class='ticket column-ticket has-row-actions column-primary' data-colname="Ticket">		<div class="event-tickets-ticket-name">
-			[#TICKET_ID] &ndash; 			TICKET_NAME		</div>
+			<div class="row-actions"><span class="trash"><a href="?action=delete_attendee&#038;nonce=1234567890&#038;attendee=TICKET_ID|TECTicketsCommerceModule">Delete</a></span></div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class='ticket column-ticket' data-colname="Ticket">		<div class="tec-tickets__admin-table-attendees-ticket-name event-tickets-ticket-name">
+			TICKET_NAME		</div>
 
-		<div class="row-actions"><span class="inline">
-					<a href="#" class="tickets_checkin" data-attendee-id="TICKET_ID" data-event-id="POST_ID" data-provider="TEC\Tickets\Commerce\Module">Check In</a>
-					<a href="#" class="tickets_uncheckin" data-attendee-id="TICKET_ID" data-event-id="POST_ID" data-provider="TEC\Tickets\Commerce\Module">Undo Check In</a>
-				</span> | <span class="trash"><a href="?action=delete_attendee&#038;nonce=1234567890&#038;attendee=TICKET_ID|TECTicketsCommerceModule">Delete</a></span></div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class='primary_info column-primary_info' data-colname="Primary Information">
-				<div class="purchaser_name tec-tickets__admin-table-attendees-purchaser-name">HOLDER_NAME</div>
+		</td><td class='security column-security' data-colname="Security Code">SECURITY_CODE</td><td class='status column-status' data-colname="Status"><div class="tec-tickets__admin-table-attendees-order-status-wrapper"><span class="tec-tickets__admin-table-attendees-order-status tec-tickets__admin-table-attendees-order-status--completed">Completed</span></div></td></tr><tr class="Completed" data-ticket-type="series_pass"><th scope="row" class="check-column"><input type="checkbox" name="attendee[]" value="TICKET_ID|TEC\Tickets\Commerce\Module" /></th><td class='primary_info column-primary_info has-row-actions column-primary' data-colname="Attendee Information">
+				<div class="purchaser_name tec-tickets__admin-table-attendees-purchaser-name">
+					<span class="row-title">HOLDER_NAME</span>
+				</div>
 				<div class="purchaser_email tec-tickets__admin-table-attendees-purchaser-email">
+					#TICKET_ID &mdash;
 					<a class="tec-tickets__admin-table-attendees-purchaser-email-link" href="mailto:PURCHASER_EMAIL">PURCHASER_EMAIL</a>
 				</div>
-			</td><td class='security column-security' data-colname="Security Code">SECURITY_CODE</td><td class='status column-status' data-colname="Status"><div class="tec-tickets__admin-table-attendees-order-status tec-tickets__admin-table-attendees-order-status--completed"><span>Completed</span></div></td></tr><tr class="Completed" data-ticket-type="default"><th scope="row" class="check-column"><input type="checkbox" name="attendee[]" value="TICKET_ID|TEC\Tickets\Commerce\Module" /></th><td class='ticket column-ticket has-row-actions column-primary' data-colname="Ticket">		<div class="event-tickets-ticket-name">
-			[#TICKET_ID] &ndash; 			TICKET_NAME		</div>
+			<div class="row-actions"><span class="trash"><a href="?action=delete_attendee&#038;nonce=1234567890&#038;attendee=TICKET_ID|TECTicketsCommerceModule">Delete</a></span></div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class='ticket column-ticket' data-colname="Ticket">		<div class="tec-tickets__admin-table-attendees-ticket-name event-tickets-ticket-name">
+			TICKET_NAME		</div>
 
-		<div class="row-actions"><span class="inline">
-					<a href="#" class="tickets_checkin" data-attendee-id="TICKET_ID" data-event-id="POST_ID" data-provider="TEC\Tickets\Commerce\Module">Check In</a>
-					<a href="#" class="tickets_uncheckin" data-attendee-id="TICKET_ID" data-event-id="POST_ID" data-provider="TEC\Tickets\Commerce\Module">Undo Check In</a>
-				</span> | <span class="trash"><a href="?action=delete_attendee&#038;nonce=1234567890&#038;attendee=TICKET_ID|TECTicketsCommerceModule">Delete</a></span></div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class='primary_info column-primary_info' data-colname="Primary Information">
-				<div class="purchaser_name tec-tickets__admin-table-attendees-purchaser-name">HOLDER_NAME</div>
+		</td><td class='security column-security' data-colname="Security Code">SECURITY_CODE</td><td class='status column-status' data-colname="Status"><div class="tec-tickets__admin-table-attendees-order-status-wrapper"><span class="tec-tickets__admin-table-attendees-order-status tec-tickets__admin-table-attendees-order-status--completed">Completed</span></div></td></tr><tr class="Completed" data-ticket-type="series_pass"><th scope="row" class="check-column"><input type="checkbox" name="attendee[]" value="TICKET_ID|TEC\Tickets\Commerce\Module" /></th><td class='primary_info column-primary_info has-row-actions column-primary' data-colname="Attendee Information">
+				<div class="purchaser_name tec-tickets__admin-table-attendees-purchaser-name">
+					<span class="row-title">HOLDER_NAME</span>
+				</div>
 				<div class="purchaser_email tec-tickets__admin-table-attendees-purchaser-email">
+					#TICKET_ID &mdash;
 					<a class="tec-tickets__admin-table-attendees-purchaser-email-link" href="mailto:PURCHASER_EMAIL">PURCHASER_EMAIL</a>
 				</div>
-			</td><td class='security column-security' data-colname="Security Code">SECURITY_CODE</td><td class='status column-status' data-colname="Status"><div class="tec-tickets__admin-table-attendees-order-status tec-tickets__admin-table-attendees-order-status--completed"><span>Completed</span></div></td></tr><tr class="Completed" data-ticket-type="default"><th scope="row" class="check-column"><input type="checkbox" name="attendee[]" value="TICKET_ID|TEC\Tickets\Commerce\Module" /></th><td class='ticket column-ticket has-row-actions column-primary' data-colname="Ticket">		<div class="event-tickets-ticket-name">
-			[#TICKET_ID] &ndash; 			TICKET_NAME		</div>
+			<div class="row-actions"><span class="trash"><a href="?action=delete_attendee&#038;nonce=1234567890&#038;attendee=TICKET_ID|TECTicketsCommerceModule">Delete</a></span></div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class='ticket column-ticket' data-colname="Ticket">		<div class="tec-tickets__admin-table-attendees-ticket-name event-tickets-ticket-name">
+			TICKET_NAME		</div>
 
-		<div class="row-actions"><span class="inline">
-					<a href="#" class="tickets_checkin" data-attendee-id="TICKET_ID" data-event-id="POST_ID" data-provider="TEC\Tickets\Commerce\Module">Check In</a>
-					<a href="#" class="tickets_uncheckin" data-attendee-id="TICKET_ID" data-event-id="POST_ID" data-provider="TEC\Tickets\Commerce\Module">Undo Check In</a>
-				</span> | <span class="trash"><a href="?action=delete_attendee&#038;nonce=1234567890&#038;attendee=TICKET_ID|TECTicketsCommerceModule">Delete</a></span></div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class='primary_info column-primary_info' data-colname="Primary Information">
-				<div class="purchaser_name tec-tickets__admin-table-attendees-purchaser-name">HOLDER_NAME</div>
+		</td><td class='security column-security' data-colname="Security Code">SECURITY_CODE</td><td class='status column-status' data-colname="Status"><div class="tec-tickets__admin-table-attendees-order-status-wrapper"><span class="tec-tickets__admin-table-attendees-order-status tec-tickets__admin-table-attendees-order-status--completed">Completed</span></div></td></tr><tr class="Completed" data-ticket-type="series_pass"><th scope="row" class="check-column"><input type="checkbox" name="attendee[]" value="TICKET_ID|TEC\Tickets\Commerce\Module" /></th><td class='primary_info column-primary_info has-row-actions column-primary' data-colname="Attendee Information">
+				<div class="purchaser_name tec-tickets__admin-table-attendees-purchaser-name">
+					<span class="row-title">HOLDER_NAME</span>
+				</div>
 				<div class="purchaser_email tec-tickets__admin-table-attendees-purchaser-email">
+					#TICKET_ID &mdash;
 					<a class="tec-tickets__admin-table-attendees-purchaser-email-link" href="mailto:PURCHASER_EMAIL">PURCHASER_EMAIL</a>
 				</div>
-			</td><td class='security column-security' data-colname="Security Code">SECURITY_CODE</td><td class='status column-status' data-colname="Status"><div class="tec-tickets__admin-table-attendees-order-status tec-tickets__admin-table-attendees-order-status--completed"><span>Completed</span></div></td></tr><tr class="yes" data-ticket-type="default"><th scope="row" class="check-column"><input type="checkbox" name="attendee[]" value="TICKET_ID|Tribe__Tickets__RSVP" /></th><td class='ticket column-ticket has-row-actions column-primary' data-colname="Ticket">		<div class="event-tickets-ticket-name">
-			[#TICKET_ID] &ndash; 			TICKET_NAME		</div>
+			<div class="row-actions"><span class="trash"><a href="?action=delete_attendee&#038;nonce=1234567890&#038;attendee=TICKET_ID|TECTicketsCommerceModule">Delete</a></span></div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class='ticket column-ticket' data-colname="Ticket">		<div class="tec-tickets__admin-table-attendees-ticket-name event-tickets-ticket-name">
+			TICKET_NAME		</div>
 
-		<div class="row-actions"><span class="inline">
+		</td><td class='security column-security' data-colname="Security Code">SECURITY_CODE</td><td class='status column-status' data-colname="Status"><div class="tec-tickets__admin-table-attendees-order-status-wrapper"><span class="tec-tickets__admin-table-attendees-order-status tec-tickets__admin-table-attendees-order-status--completed">Completed</span></div></td></tr><tr class="Completed" data-ticket-type="series_pass"><th scope="row" class="check-column"><input type="checkbox" name="attendee[]" value="TICKET_ID|TEC\Tickets\Commerce\Module" /></th><td class='primary_info column-primary_info has-row-actions column-primary' data-colname="Attendee Information">
+				<div class="purchaser_name tec-tickets__admin-table-attendees-purchaser-name">
+					<span class="row-title">HOLDER_NAME</span>
+				</div>
+				<div class="purchaser_email tec-tickets__admin-table-attendees-purchaser-email">
+					#TICKET_ID &mdash;
+					<a class="tec-tickets__admin-table-attendees-purchaser-email-link" href="mailto:PURCHASER_EMAIL">PURCHASER_EMAIL</a>
+				</div>
+			<div class="row-actions"><span class="trash"><a href="?action=delete_attendee&#038;nonce=1234567890&#038;attendee=TICKET_ID|TECTicketsCommerceModule">Delete</a></span></div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class='ticket column-ticket' data-colname="Ticket">		<div class="tec-tickets__admin-table-attendees-ticket-name event-tickets-ticket-name">
+			TICKET_NAME		</div>
+
+		</td><td class='security column-security' data-colname="Security Code">SECURITY_CODE</td><td class='status column-status' data-colname="Status"><div class="tec-tickets__admin-table-attendees-order-status-wrapper"><span class="tec-tickets__admin-table-attendees-order-status tec-tickets__admin-table-attendees-order-status--completed">Completed</span></div></td></tr><tr class="yes" data-ticket-type="default"><th scope="row" class="check-column"><input type="checkbox" name="attendee[]" value="TICKET_ID|Tribe__Tickets__RSVP" /></th><td class='primary_info column-primary_info has-row-actions column-primary' data-colname="Attendee Information">
+				<div class="purchaser_name tec-tickets__admin-table-attendees-purchaser-name">
+					<span class="row-title">HOLDER_NAME</span>
+				</div>
+				<div class="purchaser_email tec-tickets__admin-table-attendees-purchaser-email">
+					#TICKET_ID &mdash;
+					<a class="tec-tickets__admin-table-attendees-purchaser-email-link" href="mailto:PURCHASER_EMAIL">PURCHASER_EMAIL</a>
+				</div>
+			<div class="row-actions"><span class="inline">
 					<a href="#" class="tickets_checkin" data-attendee-id="TICKET_ID" data-event-id="POST_ID" data-provider="Tribe__Tickets__RSVP">Check In</a>
 					<a href="#" class="tickets_uncheckin" data-attendee-id="TICKET_ID" data-event-id="POST_ID" data-provider="Tribe__Tickets__RSVP">Undo Check In</a>
-				</span> | <span class="trash"><a href="?action=delete_attendee&#038;nonce=1234567890&#038;attendee=TICKET_ID|Tribe__Tickets__RSVP">Delete</a></span></div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class='primary_info column-primary_info' data-colname="Primary Information">
-				<div class="purchaser_name tec-tickets__admin-table-attendees-purchaser-name">HOLDER_NAME</div>
+				</span> | <span class="trash"><a href="?action=delete_attendee&#038;nonce=1234567890&#038;attendee=TICKET_ID|Tribe__Tickets__RSVP">Delete</a></span></div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class='ticket column-ticket' data-colname="Ticket">		<div class="tec-tickets__admin-table-attendees-ticket-name event-tickets-ticket-name">
+			TICKET_NAME		</div>
+
+		</td><td class='security column-security' data-colname="Security Code">SECURITY_CODE</td><td class='status column-status' data-colname="Status"><div class="tec-tickets__admin-table-attendees-order-status-wrapper"><span class="tec-tickets__admin-table-attendees-order-status tec-tickets__admin-table-attendees-order-status--yes">Going</span></div></td></tr><tr class="yes" data-ticket-type="default"><th scope="row" class="check-column"><input type="checkbox" name="attendee[]" value="TICKET_ID|Tribe__Tickets__RSVP" /></th><td class='primary_info column-primary_info has-row-actions column-primary' data-colname="Attendee Information">
+				<div class="purchaser_name tec-tickets__admin-table-attendees-purchaser-name">
+					<span class="row-title">HOLDER_NAME</span>
+				</div>
 				<div class="purchaser_email tec-tickets__admin-table-attendees-purchaser-email">
+					#TICKET_ID &mdash;
 					<a class="tec-tickets__admin-table-attendees-purchaser-email-link" href="mailto:PURCHASER_EMAIL">PURCHASER_EMAIL</a>
 				</div>
-			</td><td class='security column-security' data-colname="Security Code">SECURITY_CODE</td><td class='status column-status' data-colname="Status"><div class="tec-tickets__admin-table-attendees-order-status tec-tickets__admin-table-attendees-order-status--yes"><span>Going</span></div></td></tr><tr class="yes" data-ticket-type="default"><th scope="row" class="check-column"><input type="checkbox" name="attendee[]" value="TICKET_ID|Tribe__Tickets__RSVP" /></th><td class='ticket column-ticket has-row-actions column-primary' data-colname="Ticket">		<div class="event-tickets-ticket-name">
-			[#TICKET_ID] &ndash; 			TICKET_NAME		</div>
-
-		<div class="row-actions"><span class="inline">
+			<div class="row-actions"><span class="inline">
 					<a href="#" class="tickets_checkin" data-attendee-id="TICKET_ID" data-event-id="POST_ID" data-provider="Tribe__Tickets__RSVP">Check In</a>
 					<a href="#" class="tickets_uncheckin" data-attendee-id="TICKET_ID" data-event-id="POST_ID" data-provider="Tribe__Tickets__RSVP">Undo Check In</a>
-				</span> | <span class="trash"><a href="?action=delete_attendee&#038;nonce=1234567890&#038;attendee=TICKET_ID|Tribe__Tickets__RSVP">Delete</a></span></div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class='primary_info column-primary_info' data-colname="Primary Information">
-				<div class="purchaser_name tec-tickets__admin-table-attendees-purchaser-name">HOLDER_NAME</div>
+				</span> | <span class="trash"><a href="?action=delete_attendee&#038;nonce=1234567890&#038;attendee=TICKET_ID|Tribe__Tickets__RSVP">Delete</a></span></div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class='ticket column-ticket' data-colname="Ticket">		<div class="tec-tickets__admin-table-attendees-ticket-name event-tickets-ticket-name">
+			TICKET_NAME		</div>
+
+		</td><td class='security column-security' data-colname="Security Code">SECURITY_CODE</td><td class='status column-status' data-colname="Status"><div class="tec-tickets__admin-table-attendees-order-status-wrapper"><span class="tec-tickets__admin-table-attendees-order-status tec-tickets__admin-table-attendees-order-status--yes">Going</span></div></td></tr><tr class="yes" data-ticket-type="default"><th scope="row" class="check-column"><input type="checkbox" name="attendee[]" value="TICKET_ID|Tribe__Tickets__RSVP" /></th><td class='primary_info column-primary_info has-row-actions column-primary' data-colname="Attendee Information">
+				<div class="purchaser_name tec-tickets__admin-table-attendees-purchaser-name">
+					<span class="row-title">HOLDER_NAME</span>
+				</div>
 				<div class="purchaser_email tec-tickets__admin-table-attendees-purchaser-email">
+					#TICKET_ID &mdash;
 					<a class="tec-tickets__admin-table-attendees-purchaser-email-link" href="mailto:PURCHASER_EMAIL">PURCHASER_EMAIL</a>
 				</div>
-			</td><td class='security column-security' data-colname="Security Code">SECURITY_CODE</td><td class='status column-status' data-colname="Status"><div class="tec-tickets__admin-table-attendees-order-status tec-tickets__admin-table-attendees-order-status--yes"><span>Going</span></div></td></tr><tr class="yes" data-ticket-type="default"><th scope="row" class="check-column"><input type="checkbox" name="attendee[]" value="TICKET_ID|Tribe__Tickets__RSVP" /></th><td class='ticket column-ticket has-row-actions column-primary' data-colname="Ticket">		<div class="event-tickets-ticket-name">
-			[#TICKET_ID] &ndash; 			TICKET_NAME		</div>
-
-		<div class="row-actions"><span class="inline">
+			<div class="row-actions"><span class="inline">
 					<a href="#" class="tickets_checkin" data-attendee-id="TICKET_ID" data-event-id="POST_ID" data-provider="Tribe__Tickets__RSVP">Check In</a>
 					<a href="#" class="tickets_uncheckin" data-attendee-id="TICKET_ID" data-event-id="POST_ID" data-provider="Tribe__Tickets__RSVP">Undo Check In</a>
-				</span> | <span class="trash"><a href="?action=delete_attendee&#038;nonce=1234567890&#038;attendee=TICKET_ID|Tribe__Tickets__RSVP">Delete</a></span></div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class='primary_info column-primary_info' data-colname="Primary Information">
-				<div class="purchaser_name tec-tickets__admin-table-attendees-purchaser-name">HOLDER_NAME</div>
+				</span> | <span class="trash"><a href="?action=delete_attendee&#038;nonce=1234567890&#038;attendee=TICKET_ID|Tribe__Tickets__RSVP">Delete</a></span></div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class='ticket column-ticket' data-colname="Ticket">		<div class="tec-tickets__admin-table-attendees-ticket-name event-tickets-ticket-name">
+			TICKET_NAME		</div>
+
+		</td><td class='security column-security' data-colname="Security Code">SECURITY_CODE</td><td class='status column-status' data-colname="Status"><div class="tec-tickets__admin-table-attendees-order-status-wrapper"><span class="tec-tickets__admin-table-attendees-order-status tec-tickets__admin-table-attendees-order-status--yes">Going</span></div></td></tr><tr class="yes" data-ticket-type="default"><th scope="row" class="check-column"><input type="checkbox" name="attendee[]" value="TICKET_ID|Tribe__Tickets__RSVP" /></th><td class='primary_info column-primary_info has-row-actions column-primary' data-colname="Attendee Information">
+				<div class="purchaser_name tec-tickets__admin-table-attendees-purchaser-name">
+					<span class="row-title">HOLDER_NAME</span>
+				</div>
 				<div class="purchaser_email tec-tickets__admin-table-attendees-purchaser-email">
+					#TICKET_ID &mdash;
 					<a class="tec-tickets__admin-table-attendees-purchaser-email-link" href="mailto:PURCHASER_EMAIL">PURCHASER_EMAIL</a>
 				</div>
-			</td><td class='security column-security' data-colname="Security Code">SECURITY_CODE</td><td class='status column-status' data-colname="Status"><div class="tec-tickets__admin-table-attendees-order-status tec-tickets__admin-table-attendees-order-status--yes"><span>Going</span></div></td></tr><tr class="yes" data-ticket-type="default"><th scope="row" class="check-column"><input type="checkbox" name="attendee[]" value="TICKET_ID|Tribe__Tickets__RSVP" /></th><td class='ticket column-ticket has-row-actions column-primary' data-colname="Ticket">		<div class="event-tickets-ticket-name">
-			[#TICKET_ID] &ndash; 			TICKET_NAME		</div>
-
-		<div class="row-actions"><span class="inline">
+			<div class="row-actions"><span class="inline">
 					<a href="#" class="tickets_checkin" data-attendee-id="TICKET_ID" data-event-id="POST_ID" data-provider="Tribe__Tickets__RSVP">Check In</a>
 					<a href="#" class="tickets_uncheckin" data-attendee-id="TICKET_ID" data-event-id="POST_ID" data-provider="Tribe__Tickets__RSVP">Undo Check In</a>
-				</span> | <span class="trash"><a href="?action=delete_attendee&#038;nonce=1234567890&#038;attendee=TICKET_ID|Tribe__Tickets__RSVP">Delete</a></span></div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class='primary_info column-primary_info' data-colname="Primary Information">
-				<div class="purchaser_name tec-tickets__admin-table-attendees-purchaser-name">HOLDER_NAME</div>
+				</span> | <span class="trash"><a href="?action=delete_attendee&#038;nonce=1234567890&#038;attendee=TICKET_ID|Tribe__Tickets__RSVP">Delete</a></span></div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class='ticket column-ticket' data-colname="Ticket">		<div class="tec-tickets__admin-table-attendees-ticket-name event-tickets-ticket-name">
+			TICKET_NAME		</div>
+
+		</td><td class='security column-security' data-colname="Security Code">SECURITY_CODE</td><td class='status column-status' data-colname="Status"><div class="tec-tickets__admin-table-attendees-order-status-wrapper"><span class="tec-tickets__admin-table-attendees-order-status tec-tickets__admin-table-attendees-order-status--yes">Going</span></div></td></tr><tr class="yes" data-ticket-type="default"><th scope="row" class="check-column"><input type="checkbox" name="attendee[]" value="TICKET_ID|Tribe__Tickets__RSVP" /></th><td class='primary_info column-primary_info has-row-actions column-primary' data-colname="Attendee Information">
+				<div class="purchaser_name tec-tickets__admin-table-attendees-purchaser-name">
+					<span class="row-title">HOLDER_NAME</span>
+				</div>
 				<div class="purchaser_email tec-tickets__admin-table-attendees-purchaser-email">
+					#TICKET_ID &mdash;
 					<a class="tec-tickets__admin-table-attendees-purchaser-email-link" href="mailto:PURCHASER_EMAIL">PURCHASER_EMAIL</a>
 				</div>
-			</td><td class='security column-security' data-colname="Security Code">SECURITY_CODE</td><td class='status column-status' data-colname="Status"><div class="tec-tickets__admin-table-attendees-order-status tec-tickets__admin-table-attendees-order-status--yes"><span>Going</span></div></td></tr><tr class="yes" data-ticket-type="default"><th scope="row" class="check-column"><input type="checkbox" name="attendee[]" value="TICKET_ID|Tribe__Tickets__RSVP" /></th><td class='ticket column-ticket has-row-actions column-primary' data-colname="Ticket">		<div class="event-tickets-ticket-name">
-			[#TICKET_ID] &ndash; 			TICKET_NAME		</div>
-
-		<div class="row-actions"><span class="inline">
+			<div class="row-actions"><span class="inline">
 					<a href="#" class="tickets_checkin" data-attendee-id="TICKET_ID" data-event-id="POST_ID" data-provider="Tribe__Tickets__RSVP">Check In</a>
 					<a href="#" class="tickets_uncheckin" data-attendee-id="TICKET_ID" data-event-id="POST_ID" data-provider="Tribe__Tickets__RSVP">Undo Check In</a>
-				</span> | <span class="trash"><a href="?action=delete_attendee&#038;nonce=1234567890&#038;attendee=TICKET_ID|Tribe__Tickets__RSVP">Delete</a></span></div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class='primary_info column-primary_info' data-colname="Primary Information">
-				<div class="purchaser_name tec-tickets__admin-table-attendees-purchaser-name">HOLDER_NAME</div>
+				</span> | <span class="trash"><a href="?action=delete_attendee&#038;nonce=1234567890&#038;attendee=TICKET_ID|Tribe__Tickets__RSVP">Delete</a></span></div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class='ticket column-ticket' data-colname="Ticket">		<div class="tec-tickets__admin-table-attendees-ticket-name event-tickets-ticket-name">
+			TICKET_NAME		</div>
+
+		</td><td class='security column-security' data-colname="Security Code">SECURITY_CODE</td><td class='status column-status' data-colname="Status"><div class="tec-tickets__admin-table-attendees-order-status-wrapper"><span class="tec-tickets__admin-table-attendees-order-status tec-tickets__admin-table-attendees-order-status--yes">Going</span></div></td></tr><tr class="yes" data-ticket-type="default"><th scope="row" class="check-column"><input type="checkbox" name="attendee[]" value="TICKET_ID|Tribe__Tickets__RSVP" /></th><td class='primary_info column-primary_info has-row-actions column-primary' data-colname="Attendee Information">
+				<div class="purchaser_name tec-tickets__admin-table-attendees-purchaser-name">
+					<span class="row-title">HOLDER_NAME</span>
+				</div>
 				<div class="purchaser_email tec-tickets__admin-table-attendees-purchaser-email">
+					#TICKET_ID &mdash;
 					<a class="tec-tickets__admin-table-attendees-purchaser-email-link" href="mailto:PURCHASER_EMAIL">PURCHASER_EMAIL</a>
 				</div>
-			</td><td class='security column-security' data-colname="Security Code">SECURITY_CODE</td><td class='status column-status' data-colname="Status"><div class="tec-tickets__admin-table-attendees-order-status tec-tickets__admin-table-attendees-order-status--yes"><span>Going</span></div></td></tr><tr class="yes" data-ticket-type="default"><th scope="row" class="check-column"><input type="checkbox" name="attendee[]" value="TICKET_ID|Tribe__Tickets__RSVP" /></th><td class='ticket column-ticket has-row-actions column-primary' data-colname="Ticket">		<div class="event-tickets-ticket-name">
-			[#TICKET_ID] &ndash; 			TICKET_NAME		</div>
-
-		<div class="row-actions"><span class="inline">
+			<div class="row-actions"><span class="inline">
 					<a href="#" class="tickets_checkin" data-attendee-id="TICKET_ID" data-event-id="POST_ID" data-provider="Tribe__Tickets__RSVP">Check In</a>
 					<a href="#" class="tickets_uncheckin" data-attendee-id="TICKET_ID" data-event-id="POST_ID" data-provider="Tribe__Tickets__RSVP">Undo Check In</a>
-				</span> | <span class="trash"><a href="?action=delete_attendee&#038;nonce=1234567890&#038;attendee=TICKET_ID|Tribe__Tickets__RSVP">Delete</a></span></div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class='primary_info column-primary_info' data-colname="Primary Information">
-				<div class="purchaser_name tec-tickets__admin-table-attendees-purchaser-name">HOLDER_NAME</div>
+				</span> | <span class="trash"><a href="?action=delete_attendee&#038;nonce=1234567890&#038;attendee=TICKET_ID|Tribe__Tickets__RSVP">Delete</a></span></div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class='ticket column-ticket' data-colname="Ticket">		<div class="tec-tickets__admin-table-attendees-ticket-name event-tickets-ticket-name">
+			TICKET_NAME		</div>
+
+		</td><td class='security column-security' data-colname="Security Code">SECURITY_CODE</td><td class='status column-status' data-colname="Status"><div class="tec-tickets__admin-table-attendees-order-status-wrapper"><span class="tec-tickets__admin-table-attendees-order-status tec-tickets__admin-table-attendees-order-status--yes">Going</span></div></td></tr><tr class="Completed" data-ticket-type="default"><th scope="row" class="check-column"><input type="checkbox" name="attendee[]" value="TICKET_ID|TEC\Tickets\Commerce\Module" /></th><td class='primary_info column-primary_info has-row-actions column-primary' data-colname="Attendee Information">
+				<div class="purchaser_name tec-tickets__admin-table-attendees-purchaser-name">
+					<span class="row-title">HOLDER_NAME</span>
+				</div>
 				<div class="purchaser_email tec-tickets__admin-table-attendees-purchaser-email">
+					#TICKET_ID &mdash;
 					<a class="tec-tickets__admin-table-attendees-purchaser-email-link" href="mailto:PURCHASER_EMAIL">PURCHASER_EMAIL</a>
 				</div>
-			</td><td class='security column-security' data-colname="Security Code">SECURITY_CODE</td><td class='status column-status' data-colname="Status"><div class="tec-tickets__admin-table-attendees-order-status tec-tickets__admin-table-attendees-order-status--yes"><span>Going</span></div></td></tr><tr class="Completed" data-ticket-type="series_pass"><th scope="row" class="check-column"><input type="checkbox" name="attendee[]" value="TICKET_ID|TEC\Tickets\Commerce\Module" /></th><td class='ticket column-ticket has-row-actions column-primary' data-colname="Ticket">		<div class="event-tickets-ticket-name">
-			[#TICKET_ID] &ndash; 			TICKET_NAME		</div>
-
-		<div class="row-actions"><span class="inline">
+			<div class="row-actions"><span class="inline">
 					<a href="#" class="tickets_checkin" data-attendee-id="TICKET_ID" data-event-id="POST_ID" data-provider="TEC\Tickets\Commerce\Module">Check In</a>
 					<a href="#" class="tickets_uncheckin" data-attendee-id="TICKET_ID" data-event-id="POST_ID" data-provider="TEC\Tickets\Commerce\Module">Undo Check In</a>
-				</span> | <span class="trash"><a href="?action=delete_attendee&#038;nonce=1234567890&#038;attendee=TICKET_ID|TECTicketsCommerceModule">Delete</a></span></div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class='primary_info column-primary_info' data-colname="Primary Information">
-				<div class="purchaser_name tec-tickets__admin-table-attendees-purchaser-name">HOLDER_NAME</div>
+				</span> | <span class="trash"><a href="?action=delete_attendee&#038;nonce=1234567890&#038;attendee=TICKET_ID|TECTicketsCommerceModule">Delete</a></span></div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class='ticket column-ticket' data-colname="Ticket">		<div class="tec-tickets__admin-table-attendees-ticket-name event-tickets-ticket-name">
+			TICKET_NAME		</div>
+
+		</td><td class='security column-security' data-colname="Security Code">SECURITY_CODE</td><td class='status column-status' data-colname="Status"><div class="tec-tickets__admin-table-attendees-order-status-wrapper"><span class="tec-tickets__admin-table-attendees-order-status tec-tickets__admin-table-attendees-order-status--completed">Completed</span></div></td></tr><tr class="Completed" data-ticket-type="default"><th scope="row" class="check-column"><input type="checkbox" name="attendee[]" value="TICKET_ID|TEC\Tickets\Commerce\Module" /></th><td class='primary_info column-primary_info has-row-actions column-primary' data-colname="Attendee Information">
+				<div class="purchaser_name tec-tickets__admin-table-attendees-purchaser-name">
+					<span class="row-title">HOLDER_NAME</span>
+				</div>
 				<div class="purchaser_email tec-tickets__admin-table-attendees-purchaser-email">
+					#TICKET_ID &mdash;
 					<a class="tec-tickets__admin-table-attendees-purchaser-email-link" href="mailto:PURCHASER_EMAIL">PURCHASER_EMAIL</a>
 				</div>
-			</td><td class='security column-security' data-colname="Security Code">SECURITY_CODE</td><td class='status column-status' data-colname="Status"><div class="tec-tickets__admin-table-attendees-order-status tec-tickets__admin-table-attendees-order-status--completed"><span>Completed</span></div></td></tr><tr class="Completed" data-ticket-type="series_pass"><th scope="row" class="check-column"><input type="checkbox" name="attendee[]" value="TICKET_ID|TEC\Tickets\Commerce\Module" /></th><td class='ticket column-ticket has-row-actions column-primary' data-colname="Ticket">		<div class="event-tickets-ticket-name">
-			[#TICKET_ID] &ndash; 			TICKET_NAME		</div>
-
-		<div class="row-actions"><span class="inline">
+			<div class="row-actions"><span class="inline">
 					<a href="#" class="tickets_checkin" data-attendee-id="TICKET_ID" data-event-id="POST_ID" data-provider="TEC\Tickets\Commerce\Module">Check In</a>
 					<a href="#" class="tickets_uncheckin" data-attendee-id="TICKET_ID" data-event-id="POST_ID" data-provider="TEC\Tickets\Commerce\Module">Undo Check In</a>
-				</span> | <span class="trash"><a href="?action=delete_attendee&#038;nonce=1234567890&#038;attendee=TICKET_ID|TECTicketsCommerceModule">Delete</a></span></div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class='primary_info column-primary_info' data-colname="Primary Information">
-				<div class="purchaser_name tec-tickets__admin-table-attendees-purchaser-name">HOLDER_NAME</div>
+				</span> | <span class="trash"><a href="?action=delete_attendee&#038;nonce=1234567890&#038;attendee=TICKET_ID|TECTicketsCommerceModule">Delete</a></span></div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class='ticket column-ticket' data-colname="Ticket">		<div class="tec-tickets__admin-table-attendees-ticket-name event-tickets-ticket-name">
+			TICKET_NAME		</div>
+
+		</td><td class='security column-security' data-colname="Security Code">SECURITY_CODE</td><td class='status column-status' data-colname="Status"><div class="tec-tickets__admin-table-attendees-order-status-wrapper"><span class="tec-tickets__admin-table-attendees-order-status tec-tickets__admin-table-attendees-order-status--completed">Completed</span></div></td></tr><tr class="Completed" data-ticket-type="default"><th scope="row" class="check-column"><input type="checkbox" name="attendee[]" value="TICKET_ID|TEC\Tickets\Commerce\Module" /></th><td class='primary_info column-primary_info has-row-actions column-primary' data-colname="Attendee Information">
+				<div class="purchaser_name tec-tickets__admin-table-attendees-purchaser-name">
+					<span class="row-title">HOLDER_NAME</span>
+				</div>
 				<div class="purchaser_email tec-tickets__admin-table-attendees-purchaser-email">
+					#TICKET_ID &mdash;
 					<a class="tec-tickets__admin-table-attendees-purchaser-email-link" href="mailto:PURCHASER_EMAIL">PURCHASER_EMAIL</a>
 				</div>
-			</td><td class='security column-security' data-colname="Security Code">SECURITY_CODE</td><td class='status column-status' data-colname="Status"><div class="tec-tickets__admin-table-attendees-order-status tec-tickets__admin-table-attendees-order-status--completed"><span>Completed</span></div></td></tr><tr class="Completed" data-ticket-type="series_pass"><th scope="row" class="check-column"><input type="checkbox" name="attendee[]" value="TICKET_ID|TEC\Tickets\Commerce\Module" /></th><td class='ticket column-ticket has-row-actions column-primary' data-colname="Ticket">		<div class="event-tickets-ticket-name">
-			[#TICKET_ID] &ndash; 			TICKET_NAME		</div>
-
-		<div class="row-actions"><span class="inline">
+			<div class="row-actions"><span class="inline">
 					<a href="#" class="tickets_checkin" data-attendee-id="TICKET_ID" data-event-id="POST_ID" data-provider="TEC\Tickets\Commerce\Module">Check In</a>
 					<a href="#" class="tickets_uncheckin" data-attendee-id="TICKET_ID" data-event-id="POST_ID" data-provider="TEC\Tickets\Commerce\Module">Undo Check In</a>
-				</span> | <span class="trash"><a href="?action=delete_attendee&#038;nonce=1234567890&#038;attendee=TICKET_ID|TECTicketsCommerceModule">Delete</a></span></div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class='primary_info column-primary_info' data-colname="Primary Information">
-				<div class="purchaser_name tec-tickets__admin-table-attendees-purchaser-name">HOLDER_NAME</div>
+				</span> | <span class="trash"><a href="?action=delete_attendee&#038;nonce=1234567890&#038;attendee=TICKET_ID|TECTicketsCommerceModule">Delete</a></span></div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class='ticket column-ticket' data-colname="Ticket">		<div class="tec-tickets__admin-table-attendees-ticket-name event-tickets-ticket-name">
+			TICKET_NAME		</div>
+
+		</td><td class='security column-security' data-colname="Security Code">SECURITY_CODE</td><td class='status column-status' data-colname="Status"><div class="tec-tickets__admin-table-attendees-order-status-wrapper"><span class="tec-tickets__admin-table-attendees-order-status tec-tickets__admin-table-attendees-order-status--completed">Completed</span></div></td></tr><tr class="Completed" data-ticket-type="default"><th scope="row" class="check-column"><input type="checkbox" name="attendee[]" value="TICKET_ID|TEC\Tickets\Commerce\Module" /></th><td class='primary_info column-primary_info has-row-actions column-primary' data-colname="Attendee Information">
+				<div class="purchaser_name tec-tickets__admin-table-attendees-purchaser-name">
+					<span class="row-title">HOLDER_NAME</span>
+				</div>
 				<div class="purchaser_email tec-tickets__admin-table-attendees-purchaser-email">
+					#TICKET_ID &mdash;
 					<a class="tec-tickets__admin-table-attendees-purchaser-email-link" href="mailto:PURCHASER_EMAIL">PURCHASER_EMAIL</a>
 				</div>
-			</td><td class='security column-security' data-colname="Security Code">SECURITY_CODE</td><td class='status column-status' data-colname="Status"><div class="tec-tickets__admin-table-attendees-order-status tec-tickets__admin-table-attendees-order-status--completed"><span>Completed</span></div></td></tr><tr class="Completed" data-ticket-type="series_pass"><th scope="row" class="check-column"><input type="checkbox" name="attendee[]" value="TICKET_ID|TEC\Tickets\Commerce\Module" /></th><td class='ticket column-ticket has-row-actions column-primary' data-colname="Ticket">		<div class="event-tickets-ticket-name">
-			[#TICKET_ID] &ndash; 			TICKET_NAME		</div>
-
-		<div class="row-actions"><span class="inline">
+			<div class="row-actions"><span class="inline">
 					<a href="#" class="tickets_checkin" data-attendee-id="TICKET_ID" data-event-id="POST_ID" data-provider="TEC\Tickets\Commerce\Module">Check In</a>
 					<a href="#" class="tickets_uncheckin" data-attendee-id="TICKET_ID" data-event-id="POST_ID" data-provider="TEC\Tickets\Commerce\Module">Undo Check In</a>
-				</span> | <span class="trash"><a href="?action=delete_attendee&#038;nonce=1234567890&#038;attendee=TICKET_ID|TECTicketsCommerceModule">Delete</a></span></div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class='primary_info column-primary_info' data-colname="Primary Information">
-				<div class="purchaser_name tec-tickets__admin-table-attendees-purchaser-name">HOLDER_NAME</div>
+				</span> | <span class="trash"><a href="?action=delete_attendee&#038;nonce=1234567890&#038;attendee=TICKET_ID|TECTicketsCommerceModule">Delete</a></span></div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class='ticket column-ticket' data-colname="Ticket">		<div class="tec-tickets__admin-table-attendees-ticket-name event-tickets-ticket-name">
+			TICKET_NAME		</div>
+
+		</td><td class='security column-security' data-colname="Security Code">SECURITY_CODE</td><td class='status column-status' data-colname="Status"><div class="tec-tickets__admin-table-attendees-order-status-wrapper"><span class="tec-tickets__admin-table-attendees-order-status tec-tickets__admin-table-attendees-order-status--completed">Completed</span></div></td></tr><tr class="Completed" data-ticket-type="default"><th scope="row" class="check-column"><input type="checkbox" name="attendee[]" value="TICKET_ID|TEC\Tickets\Commerce\Module" /></th><td class='primary_info column-primary_info has-row-actions column-primary' data-colname="Attendee Information">
+				<div class="purchaser_name tec-tickets__admin-table-attendees-purchaser-name">
+					<span class="row-title">HOLDER_NAME</span>
+				</div>
 				<div class="purchaser_email tec-tickets__admin-table-attendees-purchaser-email">
+					#TICKET_ID &mdash;
 					<a class="tec-tickets__admin-table-attendees-purchaser-email-link" href="mailto:PURCHASER_EMAIL">PURCHASER_EMAIL</a>
 				</div>
-			</td><td class='security column-security' data-colname="Security Code">SECURITY_CODE</td><td class='status column-status' data-colname="Status"><div class="tec-tickets__admin-table-attendees-order-status tec-tickets__admin-table-attendees-order-status--completed"><span>Completed</span></div></td></tr><tr class="Completed" data-ticket-type="series_pass"><th scope="row" class="check-column"><input type="checkbox" name="attendee[]" value="TICKET_ID|TEC\Tickets\Commerce\Module" /></th><td class='ticket column-ticket has-row-actions column-primary' data-colname="Ticket">		<div class="event-tickets-ticket-name">
-			[#TICKET_ID] &ndash; 			TICKET_NAME		</div>
-
-		<div class="row-actions"><span class="inline">
+			<div class="row-actions"><span class="inline">
 					<a href="#" class="tickets_checkin" data-attendee-id="TICKET_ID" data-event-id="POST_ID" data-provider="TEC\Tickets\Commerce\Module">Check In</a>
 					<a href="#" class="tickets_uncheckin" data-attendee-id="TICKET_ID" data-event-id="POST_ID" data-provider="TEC\Tickets\Commerce\Module">Undo Check In</a>
-				</span> | <span class="trash"><a href="?action=delete_attendee&#038;nonce=1234567890&#038;attendee=TICKET_ID|TECTicketsCommerceModule">Delete</a></span></div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class='primary_info column-primary_info' data-colname="Primary Information">
-				<div class="purchaser_name tec-tickets__admin-table-attendees-purchaser-name">HOLDER_NAME</div>
-				<div class="purchaser_email tec-tickets__admin-table-attendees-purchaser-email">
-					<a class="tec-tickets__admin-table-attendees-purchaser-email-link" href="mailto:PURCHASER_EMAIL">PURCHASER_EMAIL</a>
-				</div>
-			</td><td class='security column-security' data-colname="Security Code">SECURITY_CODE</td><td class='status column-status' data-colname="Status"><div class="tec-tickets__admin-table-attendees-order-status tec-tickets__admin-table-attendees-order-status--completed"><span>Completed</span></div></td></tr><tr class="Completed" data-ticket-type="series_pass"><th scope="row" class="check-column"><input type="checkbox" name="attendee[]" value="TICKET_ID|TEC\Tickets\Commerce\Module" /></th><td class='ticket column-ticket has-row-actions column-primary' data-colname="Ticket">		<div class="event-tickets-ticket-name">
-			[#TICKET_ID] &ndash; 			TICKET_NAME		</div>
+				</span> | <span class="trash"><a href="?action=delete_attendee&#038;nonce=1234567890&#038;attendee=TICKET_ID|TECTicketsCommerceModule">Delete</a></span></div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class='ticket column-ticket' data-colname="Ticket">		<div class="tec-tickets__admin-table-attendees-ticket-name event-tickets-ticket-name">
+			TICKET_NAME		</div>
 
-		<div class="row-actions"><span class="inline">
-					<a href="#" class="tickets_checkin" data-attendee-id="TICKET_ID" data-event-id="POST_ID" data-provider="TEC\Tickets\Commerce\Module">Check In</a>
-					<a href="#" class="tickets_uncheckin" data-attendee-id="TICKET_ID" data-event-id="POST_ID" data-provider="TEC\Tickets\Commerce\Module">Undo Check In</a>
-				</span> | <span class="trash"><a href="?action=delete_attendee&#038;nonce=1234567890&#038;attendee=TICKET_ID|TECTicketsCommerceModule">Delete</a></span></div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class='primary_info column-primary_info' data-colname="Primary Information">
-				<div class="purchaser_name tec-tickets__admin-table-attendees-purchaser-name">HOLDER_NAME</div>
-				<div class="purchaser_email tec-tickets__admin-table-attendees-purchaser-email">
-					<a class="tec-tickets__admin-table-attendees-purchaser-email-link" href="mailto:PURCHASER_EMAIL">PURCHASER_EMAIL</a>
-				</div>
-			</td><td class='security column-security' data-colname="Security Code">SECURITY_CODE</td><td class='status column-status' data-colname="Status"><div class="tec-tickets__admin-table-attendees-order-status tec-tickets__admin-table-attendees-order-status--completed"><span>Completed</span></div></td></tr>	</tbody>
+		</td><td class='security column-security' data-colname="Security Code">SECURITY_CODE</td><td class='status column-status' data-colname="Status"><div class="tec-tickets__admin-table-attendees-order-status-wrapper"><span class="tec-tickets__admin-table-attendees-order-status tec-tickets__admin-table-attendees-order-status--completed">Completed</span></div></td></tr>	</tbody>
 
 	<tfoot>
 	<tr>
 		<td   class='manage-column column-cb check-column'  ><input id="cb-select-all-10" type="checkbox" />
-			<label for="cb-select-all-10"><span class="screen-reader-text">Select All</span></label></td><th scope="col"  class='manage-column column-ticket column-primary sortable desc'  ><a href="http://wordpress.test?orderby=id&#038;order=asc"><span>Ticket</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort ascending.</span></a></th><th scope="col"  class='manage-column column-primary_info'  >Primary Information</th><th scope="col"  class='manage-column column-security sortable desc'  ><a href="http://wordpress.test?orderby=security_code&#038;order=asc"><span>Security Code</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort ascending.</span></a></th><th scope="col"  class='manage-column column-status'  >Status</th>	</tr>
+			<label for="cb-select-all-10"><span class="screen-reader-text">Select All</span></label></td><th scope="col"  class='manage-column column-primary_info column-primary'  >Attendee Information</th><th scope="col"  class='manage-column column-ticket sortable desc'  ><a href="http://wordpress.test?orderby=id&#038;order=asc"><span>Ticket</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort ascending.</span></a></th><th scope="col"  class='manage-column column-security sortable desc'  ><a href="http://wordpress.test?orderby=security_code&#038;order=asc"><span>Security Code</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort ascending.</span></a></th><th scope="col"  class='manage-column column-status'  >Status</th>	</tr>
 	</tfoot>
 
 </table>

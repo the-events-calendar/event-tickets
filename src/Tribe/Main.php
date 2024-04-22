@@ -6,14 +6,16 @@ use Tribe\Tickets\Admin\Settings;
 class Tribe__Tickets__Main {
 
 	/**
-	 * Current version of this plugin
+	 * Current version of this plugin.
 	 */
-	const VERSION = '5.9.0';
+	const VERSION = '5.9.1';
 
 	/**
 	 * Used to store the version history.
 	 *
 	 * @since 4.11.0
+	 *
+	 * @var string
 	 */
 	public $version_history_slug = 'previous_event_tickets_versions';
 
@@ -34,17 +36,21 @@ class Tribe__Tickets__Main {
 	protected $min_wordpress = '4.9';
 
 	/**
-	* Min Version of PHP
-	*
-	* @since 4.10
-	*/
+	 * Min Version of PHP.
+	 *
+	 * @since 4.10
+	 *
+	 * @var string
+	 */
 	protected $min_php = '5.6';
 
 	/**
-	* Min Version of The Events Calendar
-	*
-	* @since 4.10
-	*/
+	 * Min Version of The Events Calendar.
+	 *
+	 * @since 4.10
+	 *
+	 * @var string
+	 */
 	protected $min_tec_version = '6.3.0-dev';
 
 	/**

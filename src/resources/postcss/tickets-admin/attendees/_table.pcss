@@ -10,11 +10,15 @@
 	}
 
 	td {
-		padding: 10px;
+		padding: 12px 10px;
 	}
 
-	.column-ticket {
-		min-width: 30%;
+	.tec-tickets__admin-table-attendees.widefat tbody th.check-column {
+		padding-top: 14px;
+	}
+
+	.column-primary_info {
+		min-width: 33%;
 	}
 
 	.fixed .column-security,
@@ -23,15 +27,77 @@
 		width: 10%;
 	}
 
+	.fixed .column-ticket {
+		width: 18%;
+	}
+
+	.fixed .column-attendee_event {
+		width: 15%;
+	}
+
 	.tec-tickets__admin-table-attendees-check-in-button,
 	.tec-tickets__admin-table-attendees-undo-check-in-button {
 		height: initial;
 		justify-content: center;
 	}
 
+	.tec-tickets__admin-table-attendees-purchaser-email {
+		color: #757575;
+	}
+
 	.tec-tickets__admin-table-attendees-purchaser-email-link {
 		border-bottom: 1px solid #e0e0e0;
-		color: #50575e;
+		color: #757575;
+		text-transform: lowercase;
+	}
+
+	.tec-tickets__admin-table-attendees {
+		.tec-tickets__admin-table-attendees-order-status {
+			background: #e5e5e5;
+			border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+			border-radius: 4px;
+			color: #777;
+			cursor: inherit !important;
+			display: inline-flex;
+			max-width: 100%;
+			overflow: hidden;
+			padding: 2px 8px;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+
+			a {
+				color: #777;
+				text-decoration: none;
+			}
+
+			.dashicons {
+				font-size: 16px;
+				line-height: inherit;
+				margin-right: 2px;
+			}
+		}
+
+		.tec-tickets__admin-table-attendees-order-status--completed {
+			background: #c8d7e1;
+			color: #505e68;
+
+			a {
+				color: #505e68;
+			}
+		}
+
+		.tec-tickets__admin-table-attendees-order-status--on-hold,
+		.tec-tickets__admin-table-attendees-order-status--cancelled,
+		.tec-tickets__admin-table-attendees-order-status--failed,
+		.tec-tickets__admin-table-attendees-order-status--refunded,
+		.tec-tickets__admin-table-attendees-order-status--not-completed {
+			background: #f8dda7;
+			color: #94660c;
+
+			a {
+				color: #94660c;
+			}
+		}
 	}
 
 	.tec-tickets__admin-attendees-attendance-container {

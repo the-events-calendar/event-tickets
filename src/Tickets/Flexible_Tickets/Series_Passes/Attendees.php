@@ -185,6 +185,7 @@ class Attendees extends Controller {
 		);
 		add_filter( 'event_tickets_attendees_table_row_actions', [ $this, 'filter_attendees_row_actions' ], 10, 2 );
 		add_filter( 'tribe_events_tickets_attendees_table_bulk_actions', [ $this, 'filter_attendees_bulk_actions' ] );
+		add_filter( 'tec_tickets_attendees_table_column_check_in', [ $this, 'filter_attendees_table_column_check_in' ], 10, 2 );
 	}
 
 	/**
@@ -222,6 +223,7 @@ class Attendees extends Controller {
 		);
 		remove_filter( 'event_tickets_attendees_table_row_actions', [ $this, 'filter_attendees_row_actions' ] );
 		remove_filter( 'tribe_events_tickets_attendees_table_bulk_actions', [ $this, 'filter_attendees_bulk_actions' ] );
+		remove_filter( 'tec_tickets_attendees_table_column_check_in', [ $this, 'filter_attendees_table_column_check_in' ] );
 	}
 
 	/**
@@ -1289,9 +1291,7 @@ class Attendees extends Controller {
 	 * @return string[] The set of actions for the row.
 	 */
 	public function filter_attendees_row_actions( array $row_actions, array $item ): array {
-		$is_series_attendee_page = tribe_get_request_var( 'post_type' ) === Series_Post_Type::POSTTYPE;
-
-		if ( ! $is_series_attendee_page ) {
+		if ( Series_Passes::TICKET_TYPE !== $item['ticket_type'] ) {
 			return $row_actions;
 		}
 
@@ -1306,6 +1306,24 @@ class Attendees extends Controller {
 				}
 			)
 		);
+	}
+
+	/**
+	 * Filters the attendee table check-in column.
+	 *
+	 * @since 5.9.1
+	 *
+	 * @param string              $html The HTML content of the column.
+	 * @param array<string,mixed> $item The array representation of the item.
+	 *
+	 * @return string The updated HTML content of the column.
+	 */
+	public function filter_attendees_table_column_check_in( string $html, array $item ) {
+		if ( Series_Passes::TICKET_TYPE !== $item['ticket_type'] ) {
+			return $html;
+		}
+
+		return '';
 	}
 
 	/**

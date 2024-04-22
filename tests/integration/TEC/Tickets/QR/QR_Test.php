@@ -7,7 +7,7 @@ use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 /**
  * Class QR_Test.
  *
- * @since   TBD
+ * @since   5.9.1
  *
  * @package TEC\Tickets\QR
  */

@@ -2208,30 +2208,38 @@ class AttendeesTest extends Controller_Test_Case {
 		$attendee_table = new Tribe__Tickets__Attendees_Table();
 		$attendee_table->prepare_items();
 		$attendee_item = $attendee_table->items[0];
+		$attendee_email = '';
+		if ( ! empty( $attendee_item['holder_email'] ) ) {
+			$attendee_email = $attendee_item['holder_email'];
+		} elseif ( ! empty( $attendee_item['purchaser_email'] ) ) {
+			$attendee_email = $attendee_item['purchaser_email'];
+		}
 
 		$this->assertEquals( $series_attendee_id, $attendee_item['ID'] );
 
 		$this->make_controller()->register();
 
-		$column_ticket = $attendee_table->column_ticket( $attendee_item );
+		$column_primary_info = $attendee_table->column_primary_info( $attendee_item );
 		$this->assertMatchesHtmlSnapshot(
 			str_replace( [
 					$series_attendee_id,
 					$series_pass_id,
 					$series_id,
+					$attendee_email,
 				]
 				, [
 					'{{attendee_id}}',
 					'{{series_pass_id}}',
-					'{{series_id}}'
+					'{{series_id}}',
+					'{{attendee_email}}',
 				],
-				$column_ticket )
+				$column_primary_info )
 		);
 		$this->assertEqualSets( [ 'delete_attendee' ], array_keys( $attendee_table->get_bulk_actions() ) );
 	}
 
 	/**
-	 * It should remove checkin row action from Series Passes Attendeees not yet cloned to Event
+	 * It should remove checkin row action from Series Passes Attendees not yet cloned to Event
 	 *
 	 * @test
 	 */
@@ -2283,8 +2291,16 @@ class AttendeesTest extends Controller_Test_Case {
 		$_GET['post_type'] = get_post_type( $single_event );
 		$attendee_table = new Tribe__Tickets__Attendees_Table();
 		$attendee_table->prepare_items();
+		$attendee_item = $attendee_table->items[0];
 		$prepared_items_ids = array_map( fn( array $item ) => $item['ID'], $attendee_table->items );
 		$this->assertEqualSets( [ $clone_id, $series_attendee_2 ], $prepared_items_ids );
+
+		$attendee_email = '';
+		if ( ! empty( $attendee_item['holder_email'] ) ) {
+			$attendee_email = $attendee_item['holder_email'];
+		} elseif ( ! empty( $attendee_item['purchaser_email'] ) ) {
+			$attendee_email = $attendee_item['purchaser_email'];
+		}
 
 		// Attendees order in the table is not reliable, work them out.
 		$cloned_attendee_item = $attendee_table->items[0]['ID'] === $clone_id ? $attendee_table->items[0]
@@ -2298,26 +2314,30 @@ class AttendeesTest extends Controller_Test_Case {
 			$series_pass_id,
 			$series_id,
 			$single_event,
+			$attendee_email,
 		], [
 			'{{cloned_attendee_id}}',
 			'{{series_pass_id}}',
 			'{{series_id}}',
-			'{{event_id}}'
+			'{{event_id}}',
+			'{{attendee_email}}',
 		],
-			$attendee_table->column_ticket( $cloned_attendee_item )
+			$attendee_table->column_primary_info( $cloned_attendee_item )
 		);
 		$series_pass_attendee_html = str_replace( [
 			$series_pass_attendee_item['ID'],
 			$series_pass_id,
 			$series_id,
 			$single_event,
+			$attendee_email,
 		], [
 			'{{series_pass_attendee_id}}',
 			'{{series_pass_id}}',
 			'{{series_id}}',
-			'{{event_id}}'
+			'{{event_id}}',
+			'{{attendee_email}}',
 		],
-			$attendee_table->column_ticket( $series_pass_attendee_item )
+			$attendee_table->column_primary_info( $series_pass_attendee_item )
 		);
 
 		$this->assertMatchesHtmlSnapshot( $cloned_attendee_html . "\n\n" . $series_pass_attendee_html );

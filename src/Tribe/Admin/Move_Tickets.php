@@ -4,6 +4,7 @@ use TEC\Events\Custom_Tables\V1\Tables\Occurrences;
 use TEC\Events\Custom_Tables\V1\WP_Query\Custom_Tables_Query;
 use Tribe__Events__Pro__Main as ECP;
 use Tribe__Events__Main as TEC;
+use TEC\Tickets\Admin\Attendees\Page as Attendees_Page;
 
 /**
  * Handles moving attendees from a post to another.
@@ -22,19 +23,19 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	 *
 	 * @var array
 	 */
-	protected $attendees = array();
+	protected $attendees = [];
 
 	public function setup() {
 		$this->ticket_history();
 
-		add_action( 'admin_init', array( $this, 'dialog' ) );
-		add_filter( 'tribe_events_tickets_attendees_table_bulk_actions', array( $this, 'bulk_actions' ) );
-		add_action( 'wp_ajax_move_tickets', array( $this, 'move_tickets_request' ) );
-		add_action( 'tribe_tickets_ticket_type_moved', array( $this, 'move_all_tickets_for_type' ), 10, 4 );
-		add_action( 'wp_ajax_move_tickets_get_post_types', array( $this, 'get_post_types' ) );
-		add_action( 'wp_ajax_move_tickets_get_post_choices', array( $this, 'get_post_choices' ) );
-		add_action( 'wp_ajax_move_tickets_get_ticket_types', array( $this, 'get_ticket_types' ) );
-		add_action( 'tribe_tickets_all_tickets_moved', array( $this, 'notify_attendees' ), 10, 4 );
+		add_action( 'admin_init', [ $this, 'dialog' ] );
+		add_filter( 'tribe_events_tickets_attendees_table_bulk_actions', [ $this, 'bulk_actions' ] );
+		add_action( 'wp_ajax_move_tickets', [ $this, 'move_tickets_request' ] );
+		add_action( 'tribe_tickets_ticket_type_moved', [ $this, 'move_all_tickets_for_type' ], 10, 4 );
+		add_action( 'wp_ajax_move_tickets_get_post_types', [ $this, 'get_post_types' ] );
+		add_action( 'wp_ajax_move_tickets_get_post_choices', [ $this, 'get_post_choices' ] );
+		add_action( 'wp_ajax_move_tickets_get_ticket_types', [ $this, 'get_ticket_types' ] );
+		add_action( 'tribe_tickets_all_tickets_moved', [ $this, 'notify_attendees' ], 10, 4 );
 	}
 
 	/**
@@ -62,7 +63,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 
 		$event_id = absint( tribe_get_request_var( 'event_id', tribe_get_request_var( 'post', 0 ) ) );
 
-		// Bail when we dont have the event
+		// Bail when we don't have the event.
 		if ( 0 === $event_id ) {
 			return;
 		}
@@ -238,7 +239,11 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	 * @return array
 	 */
 	public function bulk_actions( array $actions ) {
-		if ( tribe( 'tickets.attendees' )->user_can_manage_attendees() && is_admin() ) {
+		if (
+			tribe( 'tickets.attendees' )->user_can_manage_attendees()
+			&& is_admin()
+			&& ! tribe( Attendees_Page::class )->is_on_page()
+		) {
 			$actions['move'] = _x( 'Move', 'attendee screen bulk actions', 'event-tickets' );
 		}
 

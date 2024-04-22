@@ -2,13 +2,13 @@
 /**
  * My Tickets: Tickets List
  *
- * Override this template in your own theme by creating a file at [your-theme]/tribe-events/tickets/tickets/my-tickets/tickets-list.php
+ * Override this template in your own theme by creating a file at [your-theme]/tribe/tickets/tickets/my-tickets/tickets-list.php
  *
  * @since 5.6.7
- *
  * @since 5.8.0 Display the ticket type label for each ticket group.
+ * @since 5.9.1 Corrected template override filepath
  *
- * @version 5.8.0
+ * @version 5.9.1
  *
  * @var array   $attendees The attendees for the current order.
  * @var int     $order_id  The ID of the order.

@@ -109,9 +109,13 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 		$sut->prepare_items();
 		$attendee_ids = wp_list_pluck( $sut->items, 'attendee_id' );
 
-		$expected_attendee_ids = array_slice( array_merge( $paypal_attendee_ids, $rsvp_attendee_ids ), 0, $sut->get_pagination_arg( 'per_page' ) );
+		$expected_attendee_array = array_merge( $paypal_attendee_ids, $rsvp_attendee_ids );
+		// Sort descending by ID, to match the order.
+		rsort( $expected_attendee_array );
 
-		$this->assertEqualSets( $expected_attendee_ids, $attendee_ids );
+		$expected_attendee_ids = array_slice( $expected_attendee_array, 0, $sut->get_pagination_arg( 'per_page' ) );
+
+		$this->assertEquals( $expected_attendee_ids, $attendee_ids );
 		$this->assertEquals( count( array_merge( $paypal_attendee_ids, $rsvp_attendee_ids ) ), $sut->get_pagination_arg( 'total_items' ) );
 
 		$_GET['event_id'] = $post_id2;
@@ -119,9 +123,13 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 		$sut->prepare_items();
 		$attendee_ids2 = wp_list_pluck( $sut->items, 'attendee_id' );
 
-		$expected_attendee_ids2 = array_slice( array_merge( $paypal_attendee_ids2, $rsvp_attendee_ids2 ), 0, $sut->get_pagination_arg( 'per_page' ) );
+		$expected_attendee_array2 = array_merge( $paypal_attendee_ids2, $rsvp_attendee_ids2 );
+		// Sort descending by ID, to match the order.
+		rsort( $expected_attendee_array2 );
 
-		$this->assertEqualSets( $expected_attendee_ids2, $attendee_ids2 );
+		$expected_attendee_ids2 = array_slice( $expected_attendee_array2, 0, $sut->get_pagination_arg( 'per_page' ) );
+
+		$this->assertEquals( $expected_attendee_ids2, $attendee_ids2 );
 		$this->assertEquals( count( array_merge( $paypal_attendee_ids2, $rsvp_attendee_ids2 ) ), $sut->get_pagination_arg( 'total_items' ) );
 	}
 
