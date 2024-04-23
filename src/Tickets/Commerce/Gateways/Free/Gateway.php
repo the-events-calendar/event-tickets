@@ -72,8 +72,10 @@ class Gateway extends Abstract_Gateway {
 		$gateway_key   = static::get_key();
 		$template_path = "gateway/{$gateway_key}/container";
 		
-		echo '<Button id="tec-tc-gateway-free-checkout-button">Confirm Purchase</Button>';
+		$template_vars = [
+			'must_login' => ! is_user_logged_in() && tribe( Module::class )->login_required(),
+		];
 		
-		return '';
+		return $template->template( $template_path, $template_vars );
 	}
 }
