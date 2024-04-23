@@ -191,6 +191,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		} elseif ( ! empty( $item['attendee_meta'][ $column ] ) ) {
 			$value = $item['attendee_meta'][ $column ];
 		}
+		$value = $this->fix_column_data( $value, $item, $column );
 
 		return apply_filters( 'tribe_events_tickets_attendees_table_column', $value, $item, $column );
 	}
@@ -1308,5 +1309,52 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		}
 
 		return $provider . '_status';
+	}
+
+	/**
+	 * Fix column value based on meta data.
+	 *
+	 * This method retrieves meta data for the attendee and checks if the column represents a checkbox field.
+	 * If so, it returns the label value for checked checkboxes. If not, it returns the original value.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed  $value The value of the column.
+	 * @param array  $item The item being processed.
+	 * @param string $column The column identifier.
+	 *
+	 * @return mixed The fixed column value.
+	 */
+	public function fix_column_data( $value, $item, $column ) {
+		$meta_data      = get_post_meta( $item['attendee_id'], Tribe__Tickets_Plus__Meta::META_KEY, true );
+		$original_value = $value;
+
+		// Allow plugins to remove support for checkbox field values being displayed or override the text shown.
+		$checkbox_label = apply_filters( 'tribe_events_tickets_plus_attendees_list_checkbox_label', __( 'Checked', 'event-tickets-plus' ) );
+
+		if ( false === $checkbox_label ) {
+			return $original_value;
+		}
+
+		// Validate if Checkbox type.
+		$checkbox_parts = explode( '_', $column );
+
+		if ( 2 !== count( $checkbox_parts ) ) {
+			return $original_value;
+		}
+
+		// Check if the column exists in the meta data.
+		if ( isset( $meta_data[ $column ] ) || isset( $meta_data[ $checkbox_parts[0] . '_' . md5( $checkbox_parts[1] ) ] ) ) {
+			return $checkbox_label;
+		}
+
+		// Check for non-hashed data.
+		foreach ( $meta_data as $key => $value ) {
+			if ( strpos( $key, $checkbox_parts[0] . '_' ) === 0 && md5( substr( $key, strlen( $checkbox_parts[0] ) + 1 ) ) === $checkbox_parts[1] && ! empty( $value ) ) {
+				return $value;
+			}
+		}
+
+		return $original_value;
 	}
 }

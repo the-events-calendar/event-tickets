@@ -196,6 +196,11 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Fix - Corrected an issue where saving Attendee data was saving it in the incorrect format. [ETP-910]
+* Fix - When exporting attendees with incorrect Attendee data, the correct data will display. [ETP-910]
+
 = [5.9.1] 2024-04-18 =
 
 * Fix - Avoid error on order report page if no valid tickets are available for that event.
