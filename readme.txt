@@ -4,7 +4,7 @@ Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, raf
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
 Requires at least: 6.2
 Tested up to: 6.5.2
-Stable tag: 5.9.1
+Stable tag: 5.9.2
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -200,7 +200,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 * Tweak - When using Events Calendar Pro, the duplicate event function will now duplicate tickets as well. [ET-2073]
 
-= [5.9.1] 2024-04-17 =
+= [5.9.1] 2024-04-18 =
 
 * Fix - Avoid error on order report page if no valid tickets are available for that event.
 * Fix - Fixed an issue with Ticket repository that was causing all tickets to be fetched for 0 as event ID. [ET-2023]
