@@ -196,6 +196,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Fix - Updated sale label font to be uniform with other Event Tickets elements. [ET-2074]
+
 = [5.9.1] 2024-04-18 =
 
 * Fix - Avoid error on order report page if no valid tickets are available for that event.
