@@ -1,9 +1,18 @@
 <?php
+/**
+ * Tickets Commerce: Free Gateway.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Free
+ */
+
 namespace TEC\Tickets\Commerce\Gateways\Free;
 
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Gateway;
 use TEC\Tickets\Commerce\Module;
+use Tribe__Template as Template;
 
 /**
  * Class Free Gateway.
@@ -66,9 +75,13 @@ class Gateway extends Abstract_Gateway {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * Render the checkout template.
+	 *
+	 * @since TBD
+	 *
+	 * @param Template $template The template object.
 	 */
-	public function render_checkout_template( \Tribe__Template $template ): string {
+	public function render_checkout_template( Template $template ): string {
 		$gateway_key   = static::get_key();
 		$template_path = "gateway/{$gateway_key}/container";
 		

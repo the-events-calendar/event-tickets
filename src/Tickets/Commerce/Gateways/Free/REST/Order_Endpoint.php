@@ -1,4 +1,11 @@
 <?php
+/**
+ * Tickets Commerce: Free Gateway Order Endpoint.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Free
+ */
 
 namespace TEC\Tickets\Commerce\Gateways\Free\REST;
 
@@ -83,11 +90,15 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 			'gateway_order_id' => $order->ID,
 		];
 		
-		$updated = tribe( Order::class )->modify_status(
+		$created = tribe( Order::class )->modify_status(
 			$order->ID,
 			Pending::SLUG,
 			$meta
 		);
+		
+		if ( is_wp_error( $created ) ) {
+			return $created;
+		}
 		
 		$updated = tribe( Order::class )->modify_status(
 			$order->ID,

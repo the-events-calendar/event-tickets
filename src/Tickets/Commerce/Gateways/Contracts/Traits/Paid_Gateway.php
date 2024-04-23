@@ -1,4 +1,11 @@
 <?php
+/**
+ * Tickets Commerce: Paid Gateway Trait.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Contracts\Traits
+ */
 
 namespace TEC\Tickets\Commerce\Gateways\Contracts\Traits;
 

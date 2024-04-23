@@ -1,4 +1,11 @@
 <?php
+/**
+ * Tickets Commerce: Free Gateway Provider.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Commerce\Gateways\Free
+ */
 
 namespace TEC\Tickets\Commerce\Gateways\Free;
 
