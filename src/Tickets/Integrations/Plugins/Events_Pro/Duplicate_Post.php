@@ -1,4 +1,7 @@
 <?php
+/**
+ * Used for hooking into ECP to extend the functionality of duplicating events.
+ */
 
 namespace TEC\Tickets\Integrations\Plugins\Events_Pro;
 
