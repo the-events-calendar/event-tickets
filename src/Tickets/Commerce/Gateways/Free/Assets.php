@@ -62,23 +62,23 @@ class Assets extends Service_Provider {
 			]
 		);
 		
-//		tribe_asset(
-//			$plugin,
-//			'tribe-tickets-commerce-free-style',
-//			'tickets-commerce/gateway/free.css',
-//			[
-//				'tribe-common-skeleton-style',
-//				'tribe-common-full-style',
-//			],
-//			null,
-//			[
-//				'groups' => [
-//					'tribe-tickets-commerce',
-//					'tribe-tickets-commerce-checkout',
-//				],
-//				'print'  => true,
-//			]
-//		);
+		tribe_asset(
+			$plugin,
+			'tribe-tickets-commerce-free-style',
+			'tickets-commerce/gateway/free.css',
+			[
+				'tribe-common-skeleton-style',
+				'tribe-common-full-style',
+			],
+			null,
+			[
+				'groups' => [
+					'tribe-tickets-commerce',
+					'tribe-tickets-commerce-checkout',
+				],
+				'print'  => true,
+			]
+		);
 	}
 	
 	/**
