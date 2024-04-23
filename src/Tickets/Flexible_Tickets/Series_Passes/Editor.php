@@ -106,7 +106,10 @@ class Editor extends Controller {
 	 */
 	public function enqueue_admin_scripts(): void {
 		// Register the correct scripts depending on the context.
-		if ( ! tribe_context()->is_editing_post( TEC::POSTTYPE ) ) {
+		if (
+			! tribe_context()->is_editing_post( TEC::POSTTYPE )
+			|| tribe_get_request_var( 'page' ) === 'tickets-attendees'
+		) {
 			return;
 		}
 

@@ -8,7 +8,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin.
 	 */
-	const VERSION = '5.9.1';
+	const VERSION = '5.9.2';
 
 	/**
 	 * Used to store the version history.
@@ -45,10 +45,12 @@ class Tribe__Tickets__Main {
 	protected $min_php = '5.6';
 
 	/**
-	* Min Version of The Events Calendar
-	*
-	* @since 4.10
-	*/
+	 * Min Version of The Events Calendar.
+	 *
+	 * @since 4.10
+	 *
+	 * @var string
+	 */
 	protected $min_tec_version = '6.3.0-dev';
 
 	/**
