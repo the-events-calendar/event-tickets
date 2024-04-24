@@ -296,6 +296,7 @@ class Cart {
 	public function clear_cart() {
 		$this->set_cart_hash_cookie( null );
 		$this->get_repository()->clear();
+		$this->cart_total = null;
 
 		unset( $_COOKIE[ static::$cart_hash_cookie_name ] );
 
