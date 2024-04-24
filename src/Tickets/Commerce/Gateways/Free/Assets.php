@@ -82,11 +82,11 @@ class Assets extends Service_Provider {
 	}
 	
 	/**
-	 * Define if the assets for `PayPal` should be enqueued or not.
+	 * Define if the assets should be enqueued or not.
 	 *
 	 * @since TBD
 	 *
-	 * @return bool If the `PayPal` assets should be enqueued or not.
+	 * @return bool If the assets should be enqueued or not.
 	 */
 	public function should_enqueue_assets() {
 		return tribe( Checkout::class )->is_current_page() && tribe( Gateway::class )->is_enabled() && tribe( Gateway::class )->is_active();
