@@ -18,7 +18,7 @@ use TEC\Tickets\Commerce\Gateways\Free\REST\Order_Endpoint;
  *
  * @since TBD
  *
- * @package TEC\Tickets\Commerce\Gateways\PayPal
+ * @package TEC\Tickets\Commerce\Gateways\Free
  */
 class Assets extends Service_Provider {
 	
@@ -27,7 +27,7 @@ class Assets extends Service_Provider {
 	 *
 	 * @since TBD
 	 */
-	public function register() {
+	public function register(): void {
 		$plugin = \Tribe__Tickets__Main::instance();
 		
 		tribe_asset(
@@ -88,7 +88,7 @@ class Assets extends Service_Provider {
 	 *
 	 * @return bool If the assets should be enqueued or not.
 	 */
-	public function should_enqueue_assets() {
+	public function should_enqueue_assets(): bool {
 		return tribe( Checkout::class )->is_current_page() && tribe( Gateway::class )->is_enabled() && tribe( Gateway::class )->is_active();
 	}
 }
