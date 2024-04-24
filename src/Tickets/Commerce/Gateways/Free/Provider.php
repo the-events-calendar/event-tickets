@@ -15,6 +15,7 @@ use TEC\Common\Contracts\Service_Provider;
  * Service provider for the Tickets Commerce: Free Gateway.
  *
  * @since TBD
+ *
  * @package TEC\Tickets\Commerce\Gateways\Manual
  */
 class Provider extends Service_Provider {

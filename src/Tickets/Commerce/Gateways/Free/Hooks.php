@@ -2,14 +2,6 @@
 /**
  * Handles hooking all the actions and filters used by the module.
  *
- * To remove a filter:
- * remove_filter( 'some_filter', [ tribe( TEC\Tickets\Commerce\Gateways\Manual\Hooks::class ), 'some_filtering_method' ] );
- * remove_filter( 'some_filter', [ tribe( 'tickets.commerce.gateways.manual.hooks' ), 'some_filtering_method' ] );
- *
- * To remove an action:
- * remove_action( 'some_action', [ tribe( TEC\Tickets\Commerce\Gateways\Manual\Hooks::class ), 'some_method' ] );
- * remove_action( 'some_action', [ tribe( 'tickets.commerce.gateways.manual.hooks' ), 'some_method' ] );
- *
  * @since TBD
  *
  * @package TEC\Tickets\Commerce\Gateways\Free
