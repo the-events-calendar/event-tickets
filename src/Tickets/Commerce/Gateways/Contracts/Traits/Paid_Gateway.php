@@ -16,6 +16,10 @@ trait Paid_Gateway {
 	 * @inheritDoc
 	 */
 	public static function should_show() {
+		if ( is_admin() ) {
+			return true;
+		}
+		
 		$cart_total = tribe( Cart::class )->get_cart_total();
 		return $cart_total > 0;
 	}
