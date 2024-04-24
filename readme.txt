@@ -4,7 +4,7 @@ Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, raf
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
 Requires at least: 6.2
 Tested up to: 6.5.2
-Stable tag: 5.9.1
+Stable tag: 5.9.2
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -198,6 +198,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [TBD] TBD =
 
+* Fix - Updated sale label font to be uniform with other Event Tickets elements. [ET-2074]
 * Fix - Corrected an issue where saving Attendee data was saving it in the incorrect format. [ETP-910]
 * Fix - When exporting attendees with incorrect Attendee data, the correct data will display. [ETP-910]
 
