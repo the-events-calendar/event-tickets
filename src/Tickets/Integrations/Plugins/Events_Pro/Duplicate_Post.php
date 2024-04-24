@@ -58,7 +58,7 @@ class Duplicate_Post extends Integration_Abstract {
 	/**
 	 * Duplicate tickets to a new post.
 	 *
-	 * @since 5.6.3
+	 * @since TBD
 	 *
 	 * @param \WP_Post $new_post New post object.
 	 * @param \WP_Post $post Original post object.
