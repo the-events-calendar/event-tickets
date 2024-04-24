@@ -32,9 +32,13 @@ class Gateway extends Abstract_Gateway {
 	protected static $key = 'free';
 	
 	/**
-	 * @inheritDoc
+	 * The Gateway label, we are hiding it for this gateway.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The Gateway label.
 	 */
-	public static function get_label() {
+	public static function get_label(): string {
 		return '';
 	}
 	
@@ -48,21 +52,21 @@ class Gateway extends Abstract_Gateway {
 	/**
 	 * @inheritDoc
 	 */
-	public static function is_connected() {
+	public static function is_connected(): bool {
 		return true;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public static function is_active() {
+	public static function is_active(): bool {
 		return tribe( Module::class )->is_checkout_page() && static::should_show();
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public static function should_show() {
+	public static function should_show(): bool {
 		$cart_total = tribe( Cart::class )->get_cart_total();
 		return 0 == $cart_total;
 	}
