@@ -68,20 +68,20 @@ class Duplicate_Post extends Integration_Abstract {
 	public function duplicate_tickets_to_new_post( \WP_Post $new_post, \WP_Post $post ) {
 		$new_post_id = $new_post->ID;
 		$tickets     = Tribe__Tickets__Tickets::get_all_event_tickets( $post->ID );
+
 		// If we have no tickets, return.
 		if ( empty( $tickets ) ) {
 			return;
 		}
 
+		$provider = tribe( $tickets[0]->provider_class );
+
+		// Check to see if we have a provider.
+		if ( empty( $provider ) || ! $provider instanceof Tribe__Tickets__Tickets ) {
+			return;
+		}
+
 		foreach ( $tickets as $ticket ) {
-
-			$provider = tribe( $ticket->provider_class );
-
-			// Check to see if we have a provider.
-			if ( empty( $provider ) || ! $provider instanceof Tribe__Tickets__Tickets ) {
-				return;
-			}
-
 			$provider->clone_ticket_to_new_post( $post->ID, $new_post_id, $ticket->ID );
 		}
 	}
