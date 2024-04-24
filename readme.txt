@@ -198,6 +198,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [TBD] TBD =
 
+* Fix - Corrected an issue where PayPal orders had an extra slash on the order table page. [ET-2076]
 * Fix - Updated sale label font to be uniform with other Event Tickets elements. [ET-2074]
 
 = [5.9.1] 2024-04-18 =
