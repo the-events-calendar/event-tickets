@@ -4,7 +4,7 @@ Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, raf
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
 Requires at least: 6.2
 Tested up to: 6.5.2
-Stable tag: 5.9.1
+Stable tag: 5.9.1.1
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -195,6 +195,13 @@ We've got a [LoopedIn](https://evnt.is/ideas) page where we're actively watching
 Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on using, tweaking, and troubleshooting our plugins.
 
 == Changelog ==
+
+= [5.9.1.1] 2024-04-25 =
+
+* Fix - Corrected the Attendees page when languages other than English are used. [GTRIA-1268]
+* Tweak - Added filters: `tec_tickets_attendees_page_url`, `tec_tickets_attendees_table_column_check_in`, `tec_tickets_attendees_table_query_args`, `tec_tickets_attendees_page_is_enabled`
+* Tweak - Changed views: `emails/template-parts/body/ticket/number-from-total`, `emails/template-parts/body/tickets-total`, `tickets/attendees-email`, `tickets/email-non-attendance`, `tickets/email-ticket-type-moved`, `tickets/email-tickets-moved`, `tickets/email`, `tickets/my-tickets`, `tickets/my-tickets/attendee-label`, `tickets/my-tickets/orders-list`, `tickets/my-tickets/ticket-information`, `tickets/my-tickets/tickets-list`, `tickets/my-tickets/title`, `tickets/my-tickets/user-details`, `tickets/orders-pp-tickets`, `tickets/orders-rsvp`, `tickets/orders-tc-tickets`, `tickets/orders`, `tickets/rsvp`, `tickets/tpp-return-to-cart`, `tickets/tpp-success`, `tickets/tpp`, `tickets/view-link`
+* Language - 0 new strings added, 38 updated, 0 fuzzied, and 0 obsoleted
 
 = [5.9.1] 2024-04-18 =
 
