@@ -8,6 +8,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin.
 	 */
+
 	const VERSION = '5.9.2';
 
 	/**
@@ -23,6 +24,8 @@ class Tribe__Tickets__Main {
 	 * Used to store the latest version.
 	 *
 	 * @since 4.11.0
+	 *
+	 * @var string
 	 */
 	public $latest_version_slug = 'latest_event_tickets_version';
 
