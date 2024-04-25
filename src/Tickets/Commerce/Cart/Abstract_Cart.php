@@ -88,7 +88,7 @@ abstract class Abstract_Cart implements Cart_Interface {
 		}
 		
 		foreach ( $items as $item ) {
-			$this->cart_total += $item['sub_total']->get_string();
+			$this->cart_total += $item['sub_total']->get_decimal();
 		}
 		
 		return $this->cart_total;
