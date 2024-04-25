@@ -196,6 +196,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [5.9.1.1] TBD =
+
+* Fix - Corrected the Attendees page when languages other than English are used. [GTRIA-1268]
+
 = [5.9.1] 2024-04-18 =
 
 * Fix - Avoid error on order report page if no valid tickets are available for that event.
