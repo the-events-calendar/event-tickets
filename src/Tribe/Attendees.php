@@ -301,6 +301,7 @@ class Tribe__Tickets__Attendees {
 	 * Registers the Attendees admin page
 	 *
 	 * @since 4.6.2
+	 * @since 5.9.1.1 Moved from `load-` action to calling the `screen_setup` method directly.
 	 */
 	public function register_page() {
 		$cap      = 'edit_posts';
