@@ -16,7 +16,7 @@ use TEC\Common\Contracts\Service_Provider;
  *
  * @since TBD
  *
- * @package TEC\Tickets\Commerce\Gateways\Manual
+ * @package TEC\Tickets\Commerce\Gateways\Free
  */
 class Provider extends Service_Provider {
 	

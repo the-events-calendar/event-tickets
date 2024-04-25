@@ -120,7 +120,7 @@ tribe.tickets.commerce.gateway.free.checkout = {};
 	};
 
 	/**
-	 * Hides the notice for the checkout container for Stripe.
+	 * Hides the notice for the checkout container.
 	 *
 	 * @since TBD
 	 *
@@ -137,7 +137,7 @@ tribe.tickets.commerce.gateway.free.checkout = {};
 	};
 
 	/**
-	 * Shows the notice for the checkout container for Stripe.
+	 * Shows the notice for the checkout container.
 	 *
 	 * @since TBD
 	 *

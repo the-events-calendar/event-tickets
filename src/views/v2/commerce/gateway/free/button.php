@@ -24,7 +24,7 @@ if ( ! empty( $must_login ) ) {
 	<span id="button-text">
 		<?php
 			printf(
-			// Translators: %1$s: Plural `Tickets` label.
+				// Translators: %1$s: Plural `Tickets` label.
 				esc_html__( 'Get %1$s', 'event-tickets' ),
 				tribe_get_ticket_label_plural( 'tickets_commerce_checkout_title' ) // phpcs:ignore
 			);
