@@ -4,7 +4,7 @@ Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, raf
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
 Requires at least: 6.2
 Tested up to: 6.5.2
-Stable tag: 5.9.1.1
+Stable tag: 5.9.2
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -195,6 +195,12 @@ We've got a [LoopedIn](https://evnt.is/ideas) page where we're actively watching
 Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on using, tweaking, and troubleshooting our plugins.
 
 == Changelog ==
+
+= [TBD] TBD =
+
+* Tweak - When using Events Calendar Pro, the duplicate event function will now duplicate tickets as well. [ET-2073]
+* Fix - Corrected an issue where PayPal orders had an extra slash on the order table page. [ET-2076]
+* Fix - Updated sale label font to be uniform with other Event Tickets elements. [ET-2074]
 
 = [5.9.1.1] 2024-04-25 =
 
