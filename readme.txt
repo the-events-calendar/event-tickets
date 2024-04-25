@@ -202,6 +202,13 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Corrected an issue where PayPal orders had an extra slash on the order table page. [ET-2076]
 * Fix - Updated sale label font to be uniform with other Event Tickets elements. [ET-2074]
 
+= [5.9.1.1] 2024-04-25 =
+
+* Fix - Corrected the Attendees page when languages other than English are used. [GTRIA-1268]
+* Tweak - Added filters: `tec_tickets_attendees_page_url`, `tec_tickets_attendees_table_column_check_in`, `tec_tickets_attendees_table_query_args`, `tec_tickets_attendees_page_is_enabled`
+* Tweak - Changed views: `emails/template-parts/body/ticket/number-from-total`, `emails/template-parts/body/tickets-total`, `tickets/attendees-email`, `tickets/email-non-attendance`, `tickets/email-ticket-type-moved`, `tickets/email-tickets-moved`, `tickets/email`, `tickets/my-tickets`, `tickets/my-tickets/attendee-label`, `tickets/my-tickets/orders-list`, `tickets/my-tickets/ticket-information`, `tickets/my-tickets/tickets-list`, `tickets/my-tickets/title`, `tickets/my-tickets/user-details`, `tickets/orders-pp-tickets`, `tickets/orders-rsvp`, `tickets/orders-tc-tickets`, `tickets/orders`, `tickets/rsvp`, `tickets/tpp-return-to-cart`, `tickets/tpp-success`, `tickets/tpp`, `tickets/view-link`
+* Language - 0 new strings added, 38 updated, 0 fuzzied, and 0 obsoleted
+
 = [5.9.1] 2024-04-18 =
 
 * Fix - Avoid error on order report page if no valid tickets are available for that event.
