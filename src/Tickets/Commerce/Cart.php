@@ -634,6 +634,13 @@ class Cart {
 		return $this->get_repository()->process( $data );
 	}
 	
+	/**
+	 * Get the total of the cart.
+	 *
+	 * @since TBD
+	 *
+	 * @return null|float
+	 */
 	public function get_cart_total() {
 		return $this->get_repository()->get_cart_total();
 	}
