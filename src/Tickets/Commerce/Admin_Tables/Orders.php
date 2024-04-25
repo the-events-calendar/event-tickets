@@ -694,8 +694,8 @@ class Orders extends WP_List_Table {
 						$header
 					);
 				}
-
-				$csv_row[] = $this->sanitize_and_format_csv_value( $value );
+				
+				$csv_row[] = empty( $value ) ? $value : $this->sanitize_and_format_csv_value( $value );
 			}
 			$csv_data[] = $csv_row;
 		}
