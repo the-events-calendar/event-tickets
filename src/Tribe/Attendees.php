@@ -301,7 +301,6 @@ class Tribe__Tickets__Attendees {
 	 * Registers the Attendees admin page
 	 *
 	 * @since 4.6.2
-	 * @since 5.9.1.1 Moved from `load-` action to calling the `screen_setup` method directly.
 	 */
 	public function register_page() {
 		$cap      = 'edit_posts';
@@ -339,8 +338,8 @@ class Tribe__Tickets__Attendees {
 
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_assets' ] );
 		add_action( 'admin_enqueue_scripts', [ $this, 'load_pointers' ] );
-
-		$this->screen_setup();
+		add_action( "load-{$this->page_id}", [ $this, 'screen_setup' ] );
+		add_action( "load-{$attendees_page_hook_suffix}", [ $this, 'screen_setup' ] );
 	}
 
 	/**
