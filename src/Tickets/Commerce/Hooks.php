@@ -814,7 +814,7 @@ class Hooks extends Service_Provider {
 			$data['tickets']['commerce'] = [];
 		}
 
-		$data['tickets']['commerce']['isFreeTicketAllowed'] = tribe( Settings::class )->is_free_ticket_allowed();
+		$data['tickets']['commerce']['isFreeTicketAllowed'] = Settings::is_free_ticket_allowed();
 
 		return $data;
 	}
