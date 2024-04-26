@@ -28,6 +28,11 @@ if ( empty( $order->gateway_order_id )  ) {
 	return;
 }
 
+// No need to show gateway ID if it's the same as the order ID.
+if ( is_numeric( $order->gateway_order_id ) && intval( $order->ID ) === intval( $order->gateway_order_id ) ) {
+	return;
+}
+
 $gateway = tribe( Manager::class )->get_gateway_by_key( $order->gateway );
 $link_or_id = $order->gateway_order_id;
 if ( $gateway ) {
