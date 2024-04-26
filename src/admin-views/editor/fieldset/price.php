@@ -25,9 +25,11 @@ $is_paypal_ticket = $provider instanceof Tribe__Tickets__Commerce__PayPal__Main 
 
 // Determine whether or not free tickets are allowed.
 $is_free_ticket_allowed = true;
+
 if ( $provider instanceof Tribe__Tickets__Commerce__PayPal__Main ) {
 	$is_free_ticket_allowed = false;
 }
+
 if ( $provider instanceof \TEC\Tickets\Commerce\Module ) {
 	$is_free_ticket_allowed = \TEC\Tickets\Commerce\Settings::is_free_ticket_allowed();
 }
