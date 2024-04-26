@@ -24,7 +24,7 @@
  * @var \WP_Post                           $order              The order object.
  */
 
-if ( empty( $order ) || ! is_numeric( $order->total ) ) {
+if ( empty( $order ) || empty( $order->total_value ) ) {
 	return;
 }
 
