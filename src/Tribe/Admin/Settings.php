@@ -186,6 +186,7 @@ class Settings {
 	 * Adds the Event Tickets menu and pages.
 	 *
 	 * @since 5.4.0
+	 * @since 5.9.1.1 Removed translation from the Title.
 	 */
 	public function add_admin_pages() {
 		$admin_pages = tribe( 'admin.pages' );
@@ -194,7 +195,7 @@ class Settings {
 			[
 				'id'       => static::$parent_slug,
 				'path'     => static::$parent_slug,
-				'title'    => esc_html__( 'Tickets', 'event-tickets' ),
+				'title'    => 'Tickets',
 				'icon'     => $this->get_menu_icon(),
 				'position' => 7,
 				'callback' => [
