@@ -28,6 +28,6 @@ if ( ! empty( $must_login ) ) {
 				esc_html__( 'Get %1$s', 'event-tickets' ),
 				tribe_get_ticket_label_plural( 'tickets_commerce_checkout_title' ) // phpcs:ignore
 			);
-		?>
+			?>
 	</span>
 </button>
