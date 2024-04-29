@@ -52,3 +52,6 @@ export const PRICE_POSITIONS = [ PREFIX, SUFFIX ];
 // eslint-disable-next-line no-undef
 export const TICKET_LABELS = window?.tribe_editor_config?.tickets?.ticketLabels;
 export const SALE_PRICE_LABELS = window?.tribe_editor_config?.tickets?.salePrice;
+
+// eslint-disable-next-line max-len
+export const IS_FREE_TC_TICKET_ALLOWED = window?.tribe_editor_config?.tickets?.commerce?.isFreeTicketAllowed;
