@@ -203,6 +203,7 @@ class Metabox {
 			'end_date_errors'   => [
 				'is-greater-or-equal-to' => __( 'Sale to date cannot be less than Sale from date', 'event-tickets' ),
 			],
+			'is_free_ticket_allowed' => tec_tickets_commerce_is_free_ticket_allowed(),
 		];
 
 		tribe( 'tickets.admin.views' )->template( 'commerce/metabox/sale-price', $args );

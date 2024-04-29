@@ -4,13 +4,7 @@ if ( ! isset( $post_id ) ) {
 	$post_id = get_the_ID();
 }
 
-$validation_attrs = [
-	'data-validation-error="' . esc_attr( sprintf(
-		// Translators: %s: singular version of the Ticket label.
-		_x( '%s price must be greater than zero.', 'ticket price validation error', 'event-tickets' ),
-		tribe_get_ticket_label_singular( 'ticket_price_validation_error' )
-	) ) . '"'
-];
+$validation_attrs = [];
 
 $ticket            = null;
 $is_paypal_ticket  = false;
@@ -31,7 +25,7 @@ if ( $provider instanceof Tribe__Tickets__Commerce__PayPal__Main ) {
 }
 
 if ( $provider instanceof \TEC\Tickets\Commerce\Module ) {
-	$is_free_ticket_allowed = \TEC\Tickets\Commerce\Settings::is_free_ticket_allowed();
+	$is_free_ticket_allowed = tec_tickets_commerce_is_free_ticket_allowed();
 }
 
 $description_string = sprintf( _x( 'Leave blank for free %s', 'price description', 'event-tickets' ), tribe_get_ticket_label_singular( 'price_description' ) );
@@ -39,6 +33,13 @@ $description_string = esc_html( apply_filters( 'tribe_tickets_price_description'
 $price_description  = ! $is_free_ticket_allowed ? '' : $description_string;
 
 if ( ! $is_free_ticket_allowed ) {
+	$validation_attrs[] = 'data-validation-error="' . esc_attr(
+		sprintf(
+			// Translators: %s: singular version of the Ticket label.
+			_x( '%s price must be greater than zero.', 'ticket price validation error', 'event-tickets' ),
+			tribe_get_ticket_label_singular( 'ticket_price_validation_error' )
+		)
+	) . '"';
 	$validation_attrs[] = 'data-required';
 	$validation_attrs[] = 'data-validation-is-greater-than="0"';
 }
