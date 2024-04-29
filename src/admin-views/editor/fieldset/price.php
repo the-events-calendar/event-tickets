@@ -31,7 +31,7 @@ if ( $provider instanceof Tribe__Tickets__Commerce__PayPal__Main ) {
 }
 
 if ( $provider instanceof \TEC\Tickets\Commerce\Module ) {
-	$is_free_ticket_allowed = \TEC\Tickets\Commerce\Settings::is_free_ticket_allowed();
+	$is_free_ticket_allowed = tec_tickets_commerce_is_free_ticket_allowed();
 }
 
 $description_string = sprintf( _x( 'Leave blank for free %s', 'price description', 'event-tickets' ), tribe_get_ticket_label_singular( 'price_description' ) );
