@@ -33,11 +33,13 @@ $description_string = esc_html( apply_filters( 'tribe_tickets_price_description'
 $price_description  = ! $is_free_ticket_allowed ? '' : $description_string;
 
 if ( ! $is_free_ticket_allowed ) {
-	$validation_attrs[] = 'data-validation-error="' . esc_attr( sprintf(
-		// Translators: %s: singular version of the Ticket label.
-		_x( '%s price must be greater than zero.', 'ticket price validation error', 'event-tickets' ),
-		tribe_get_ticket_label_singular( 'ticket_price_validation_error' )
-	) ) . '"';
+	$validation_attrs[] = 'data-validation-error="' . esc_attr(
+		sprintf(
+			// Translators: %s: singular version of the Ticket label.
+			_x( '%s price must be greater than zero.', 'ticket price validation error', 'event-tickets' ),
+			tribe_get_ticket_label_singular( 'ticket_price_validation_error' )
+		)
+	) . '"';
 	$validation_attrs[] = 'data-required';
 	$validation_attrs[] = 'data-validation-is-greater-than="0"';
 }
