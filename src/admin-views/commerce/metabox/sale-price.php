@@ -18,7 +18,7 @@
 
 $sale_price_validation_attrs = [
 	'data-validation-is-less-than="#ticket_price"',
-	'data-validation-error="' . esc_attr( wp_json_encode( $sale_price_errors ) ) . '"'
+	'data-validation-error="' . esc_attr( wp_json_encode( $sale_price_errors ) ) . '"',
 ];
 
 // Do not allow free ticket in sale price if not allowed.
@@ -58,7 +58,7 @@ if ( ! $is_free_ticket_allowed ) {
 				class="ticket_field"
 				size="7"
 				value="<?php echo esc_attr( $sale_price ); ?>"
-				<?php echo implode( ' ', $sale_price_validation_attrs ); ?>
+				<?php echo implode( ' ', $sale_price_validation_attrs ); // phpcs:ignore ?>
 			/>
 		</div>
 		<div class="ticket_sale_price-field">
