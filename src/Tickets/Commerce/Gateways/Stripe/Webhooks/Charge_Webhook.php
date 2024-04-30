@@ -5,6 +5,7 @@ namespace TEC\Tickets\Commerce\Gateways\Stripe\Webhooks;
 use TEC\Tickets\Commerce\Gateways\Stripe\Status;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Status\Status_Interface;
+use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Commerce\Gateways\Contracts\Webhook_Event_Interface;
 use TEC\Tickets\Commerce\Gateways\Stripe\Payment_Intent;
 use Tribe__Utils__Array as Arr;
@@ -44,6 +45,7 @@ class Charge_Webhook implements Webhook_Event_Interface {
 			$payment_intent
 			&& isset( $payment_intent['status'] )
 			&& Status::SUCCEEDED === $payment_intent['status']
+			&& Tribe( Pending::class )->get_wp_slug() !== $order->post_status
 		) {
 				$response->set_status( 200 );
 				$response->set_data(
