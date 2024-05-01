@@ -97,6 +97,7 @@ class Provider extends Service_Provider {
 		// Blocks.
 		$this->container->register( Blocks\Controller::class );
 
+
 		$this->has_registered = true;
 
 		return true;
