@@ -80,7 +80,7 @@ class Duplicate_Post extends Integration_Abstract {
 			$provider = tribe( $ticket->provider_class );
 
 			if ( empty( $provider ) || ! $provider instanceof Tribe__Tickets__Tickets ) {
-				return;
+				continue;
 			}
 
 			$provider->clone_ticket_to_new_post( $post->ID, $new_post_id, $ticket->ID );
