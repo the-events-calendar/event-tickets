@@ -198,6 +198,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [TBD] TBD =
 
+* Feature - Added support for adding Free tickets using Tickets Commerce. [ET-1218]
 * Tweak - When using Events Calendar Pro, the duplicate event function will now duplicate tickets as well. [ET-2073]
 * Fix - Corrected an issue where PayPal orders had an extra slash on the order table page. [ET-2076]
 * Fix - Updated sale label font to be uniform with other Event Tickets elements. [ET-2074]

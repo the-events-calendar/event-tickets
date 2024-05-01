@@ -7,13 +7,14 @@
  *
  * See more documentation about our views templating system.
  *
- * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
+ * @link https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   5.1.10
+ * @since 5.1.10
  *
  * @since 5.2.0 Added Payment method label.
+ * @since TBD Check if payment method is empty before rendering.
  *
- * @version 5.1.10
+ * @version TBD
  *
  * @var \Tribe__Template $this                  [Global] Template object.
  * @var Module           $provider              [Global] The tickets provider instance.
@@ -23,8 +24,10 @@
  * @var bool             $is_tec_active         [Global] Whether `The Events Calendar` is active or not.
  * @var string           $payment_method        [Global] The payment method label.
  */
+	
+use TEC\Tickets\Commerce\Module;
 
-if ( empty( $order->gateway ) ) {
+if ( empty( $payment_method ) ) {
 	return;
 }
 
