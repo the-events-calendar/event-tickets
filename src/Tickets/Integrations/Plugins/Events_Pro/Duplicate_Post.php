@@ -74,14 +74,15 @@ class Duplicate_Post extends Integration_Abstract {
 			return;
 		}
 
-		$provider = tribe( $tickets[0]->provider_class );
-
-		// Check to see if we have a provider.
-		if ( empty( $provider ) || ! $provider instanceof Tribe__Tickets__Tickets ) {
-			return;
-		}
-
+		// You technically can have multiple providers if you have RSVP + a ticket provider.
 		foreach ( $tickets as $ticket ) {
+
+			$provider = tribe( $ticket->provider_class );
+
+			if ( empty( $provider ) || ! $provider instanceof Tribe__Tickets__Tickets ) {
+				continue;
+			}
+
 			$provider->clone_ticket_to_new_post( $post->ID, $new_post_id, $ticket->ID );
 		}
 	}
