@@ -646,12 +646,12 @@ class Tribe__Tickets__Attendees {
 		);
 
 		/**
-		 * Used to modify what columns should be shown on the CSV export
-		 * The column name should be the Array Index and the Header is the array Value
+		 * Used to modify what columns should be shown on the CSV export.
+		 * The column name should be the Array Index and the Header is the array Value.
 		 *
-		 * @param array Columns, associative array
-		 * @param array Items to be exported
-		 * @param int   Event ID
+		 * @param array $export_columns Columns, associative array
+		 * @param array $items          Items to be exported
+		 * @param int   $event_id       Event ID
 		 */
 		$export_columns = apply_filters( 'tribe_events_tickets_attendees_csv_export_columns', $export_columns, $items, $event_id );
 
