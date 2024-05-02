@@ -26,7 +26,7 @@ $sale_price_label = $price->get_currency();
 
 // If the price is zero, we should display it as free.
 if ( $price->get_decimal() == 0 ) {
-	$sale_price_label = esc_html__( 'Free', 'event-tickets' );
+	$sale_price_label = _x( 'Free', 'No cost', 'event-tickets' );
 }
 
 ?>

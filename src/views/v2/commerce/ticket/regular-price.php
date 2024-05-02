@@ -27,7 +27,7 @@ $regular_price_label = $price->get_currency();
 
 // If the price is zero, we should display it as free.
 if ( $price->get_decimal() == 0 ) {
-	$regular_price_label = esc_html__( 'Free', 'event-tickets' );
+	$regular_price_label = _x( 'Free', 'No cost', 'event-tickets' );
 }
 
 echo esc_html( $regular_price_label );
