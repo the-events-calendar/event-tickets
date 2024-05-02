@@ -96,6 +96,7 @@ class Value extends Abstract_Currency {
 		 * @since TBD
 		 *
 		 * @param string $currency_display The currency display.
+		 * @param Value  $value            The value object.
 		 */
 		return apply_filters( 'tec_tickets_commerce_value_get_currency_display', $currency_display, $this );
 	}
