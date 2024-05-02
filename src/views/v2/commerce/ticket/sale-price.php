@@ -22,18 +22,11 @@ if ( empty( $on_sale ) ) {
 	return;
 }
 
-$sale_price_label = $price->get_currency();
-
-// If the price is zero, we should display it as free.
-if ( $price->get_decimal() == 0 ) {
-	$sale_price_label = _x( 'Free', 'No cost', 'event-tickets' );
-}
-
 ?>
 <ins>
 	<span class="tec-tickets-price__sale-price amount">
 		<bdi>
-			<?php echo esc_html( $sale_price_label ); ?>
+			<?php echo esc_html( $price->get_currency_display() ); ?>
 		</bdi>
 	</span>
 </ins>

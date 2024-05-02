@@ -75,4 +75,19 @@ class Value extends Abstract_Currency {
 		);
 
 	}
+
+	/**
+	 * Get the display currency.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The display text for this value.
+	 */
+	public function get_currency_display() {
+		if ( $this->get_decimal() == 0 ) {
+			return _x( 'Free', 'No cost', 'event-tickets' );
+		}
+
+		return $this->get_currency();
+	}
 }
