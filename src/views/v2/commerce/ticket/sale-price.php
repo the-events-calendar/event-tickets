@@ -21,11 +21,12 @@ use TEC\Tickets\Commerce\Utils\Value;
 if ( empty( $on_sale ) ) {
 	return;
 }
+
 ?>
 <ins>
 	<span class="tec-tickets-price__sale-price amount">
 		<bdi>
-			<?php echo esc_html( $price->get_currency() ); ?>
+			<?php echo esc_html( $price->get_currency_display() ); ?>
 		</bdi>
 	</span>
 </ins>
