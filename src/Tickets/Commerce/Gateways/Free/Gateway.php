@@ -67,6 +67,10 @@ class Gateway extends Abstract_Gateway {
 	 * @inheritDoc
 	 */
 	public static function should_show(): bool {
+		if ( is_admin() ) {
+			return false;
+		}
+		
 		$cart_total = tribe( Cart::class )->get_cart_total();
 		return 0 == $cart_total;
 	}
