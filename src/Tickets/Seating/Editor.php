@@ -34,7 +34,7 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 	 */
 	public function unregister(): void {
 		$assets = Assets::instance();
-		$assets->remove( 'tec-events-assigned-seating-block-editor' );
+		$assets->remove( 'tec-tickets-seating-block-editor' );
 	}
 
 	/**
@@ -111,7 +111,7 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 	 */
 	private function register_block_editor_assets(): void {
 		Asset::add(
-			'tec-events-assigned-seating-block-editor',
+			'tec-tickets-seating-block-editor',
 			$this->built_asset_url( 'block-editor.js' ),
 			Tickets::VERSION
 		)
@@ -119,23 +119,24 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 			     'wp-hooks',
 			     'react',
 			     'react-dom',
-			     'tec-events-assigned-seating-utils',
-			     'tec-events-assigned-seating-vendor'
+			     'tec-tickets-seating-utils',
+			     'tribe-common-gutenberg-vendor'  // @todo revise this dependency
 		     )
 		     ->enqueue_on( 'enqueue_block_editor_assets' )
-		     ->add_localize_script( 'tec.eventsAssignedSeating', [ $this, 'get_editor_data' ] )
-		     ->add_localize_script( 'tec.eventsAssignedSeating.blockEditor', [ $this, 'get_store_data' ] )
-		     ->add_to_group( 'tec-events-assigned-seating-editor' )
-		     ->add_to_group( 'tec-events-assigned-seating' )
+		     ->add_localize_script( 'tec.seating', [ $this, 'get_editor_data' ] )
+		     ->add_localize_script( 'tec.seating.blockEditor', [ $this, 'get_store_data' ] )
+		     ->add_to_group( 'tec-tickets-seating-editor' )
+		     ->add_to_group( 'tec-tickets-seating' )
 		     ->register();
+
 		Asset::add(
-			'tec-events-assigned-seating-block-editor-style',
+			'tec-tickets-seating-block-editor-style',
 			$this->built_asset_url( 'block-editor.css' ),
 			Tickets::VERSION
 		)
 		     ->enqueue_on( 'enqueue_block_editor_assets' )
-		     ->add_to_group( 'tec-events-assigned-seating-editor' )
-		     ->add_to_group( 'tec-events-assigned-seating' )
+		     ->add_to_group( 'tec-tickets-seating-editor' )
+		     ->add_to_group( 'tec-tickets-seating' )
 		     ->register();
 	}
 }

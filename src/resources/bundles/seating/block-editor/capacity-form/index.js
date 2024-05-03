@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import {LabeledItem, Select} from '@moderntribe/common/elements';
 import './style.pcss';
 
-const {getLink, getLocalizedString} = tec.eventsAssignedSeating.utils;
+const {getLink, getLocalizedString} = tec.seating.utils;
 
 const getString = (key) => getLocalizedString(key, 'capacity-form');
 

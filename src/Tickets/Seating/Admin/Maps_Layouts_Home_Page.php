@@ -99,7 +99,7 @@ class Maps_Layouts_Home_Page {
 		 * @param Tab                    $current The current tab.
 		 * @param Tab[]                  $tabs    The set of tabs to render.
 		 */
-		do_action( "tec_events_assigned_seating_tab_{$tab}", $this, $current, $tabs );
+		do_action( "tec_tickets_seating_tab_{$tab}", $this, $current, $tabs );
 
 		$this->template->template( 'maps-layouts-home', [
 			'tabs'    => $tabs,

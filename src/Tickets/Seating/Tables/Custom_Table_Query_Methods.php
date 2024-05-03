@@ -10,7 +10,7 @@
 namespace TEC\Tickets\Seating\Tables;
 
 use Generator;
-use TEC\Tickets\Seating\StellarWP\DB\DB;
+use TEC\Common\StellarWP\DB\DB;
 
 /**
  * Trait Custom_Table_Query_Methods.
@@ -40,7 +40,7 @@ trait Custom_Table_Query_Methods {
 			$sql_calc_found_rows = $fetched === 0 ? 'SQL_CALC_FOUND_ROWS' : '';
 
 			$batch = DB::get_results(
-				Db::prepare(
+				DB::prepare(
 					"SELECT ${sql_calc_found_rows} * FROM %i LIMIT %d, %d",
 					static::table_name( true ),
 					$offset,
@@ -96,7 +96,7 @@ trait Custom_Table_Query_Methods {
 		) );
 
 		return DB::query(
-			Db::prepare(
+			DB::prepare(
 				"INSERT INTO %i ({$prepared_columns}) VALUES {$prepared_values}",
 				static::table_name( true ),
 			)

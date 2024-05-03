@@ -11,12 +11,8 @@ function filterRenderCapacityForm(renderDefaultForm) {
 	return () => (<CapacityForm renderDefaultForm={renderDefaultForm}/>);
 }
 
-function doRenderCapacityForm(doRenderDefaultForm, props, renderDefaultForm) {
-	ret;
-}
-
 addFilter(
 	'tec.tickets.blocks.Ticket.Capacity.renderForm',
-	'tec.events-assigned-seating',
-	filterRenderCapacityForm,
+	'tec.tickets.seating',
+	filterRenderCapacityForm
 );

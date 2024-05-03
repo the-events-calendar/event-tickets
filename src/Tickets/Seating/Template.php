@@ -9,6 +9,9 @@
 
 namespace TEC\Tickets\Seating;
 
+use Tribe__Template as Base_Template;
+use Tribe__Tickets__Main as Tickets;
+
 /**
  * Class Template
  *
@@ -16,16 +19,15 @@ namespace TEC\Tickets\Seating;
  *
  * @package TEC\Tickets_Wallet_Plus
  */
-class Template extends \Tribe__Template {
-
+class Template extends Base_Template {
 	/**
 	 * Template constructor.
 	 *
 	 * @since 1.0.0
 	 */
 	public function __construct() {
-		$this->set_template_origin( tribe( Controller::class ) );
-		$this->set_template_folder( 'src/views' );
+		$this->set_template_origin( tribe( Tickets::instance() ) );
+		$this->set_template_folder( 'src/views/seating' );
 
 		// Setup to look for theme files.
 		$this->set_template_folder_lookup( true );

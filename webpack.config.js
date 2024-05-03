@@ -84,6 +84,89 @@ const targets = [
 				'build/FlexibleTickets/classic-editor.css',
 		},
 	},
+	{
+		name: 'seating-utils',
+		entry: './src/resources/js/seating/utils.js',
+		outputScript: './build/Seating/utils.min.js',
+		outputStyle: `build/Seating/utils.${postfix}`,
+		moveFromTo: {
+			'src/resources/js/app/seating-utils.js': 'build/Seating/utils.js',
+			'src/resources/css/app/seating-utils.css':
+				'build/Seating/utils.css',
+		},
+	},
+	{
+		name: 'seating-admin-bundle',
+		entry: './src/resources/bundles/seating/admin/index.js',
+		outputScript: './build/Seating/admin/bundle.min.js',
+		outputStyle: `build/Seating/admin/bundle.${postfix}`,
+		moveFromTo: {
+			'src/resources/js/app/seating-admin-bundle.js':
+				'build/Seating/admin/bundle.js',
+			'src/resources/css/app/seating-admin-bundle.css':
+				'build/Seating/admin/bundle.css',
+		},
+	},
+	{
+		name: 'seating-maps-bundle',
+		entry: './src/resources/bundles/seating/admin/maps/index.js',
+		outputScript: './build/Seating/admin/maps.min.js',
+		outputStyle: `build/Seating/admin/maps.${postfix}`,
+		moveFromTo: {
+			'src/resources/js/app/seating-maps-bundle.js':
+				'build/Seating/admin/maps.js',
+			'src/resources/css/app/seating-maps-bundle.css':
+				'build/Seating/admin/maps.css',
+		},
+	},
+	{
+		name: 'seating-layouts-bundle',
+		entry: './src/resources/bundles/seating/admin/layouts/index.js',
+		outputScript: './build/Seating/admin/layouts.min.js',
+		outputStyle: `build/Seating/admin/layouts.${postfix}`,
+		moveFromTo: {
+			'src/resources/js/app/seating-layouts-bundle.js':
+				'build/Seating/admin/layouts.js',
+			'src/resources/css/app/seating-layouts-bundle.css':
+				'build/Seating/admin/layouts.css',
+		},
+	},
+	{
+		name: 'seating-map-edit-bundle',
+		entry: './src/resources/bundles/seating/admin/map-edit/index.js',
+		outputScript: './build/Seating/admin/map-edit.min.js',
+		outputStyle: `build/Seating/admin/map-edit.${postfix}`,
+		moveFromTo: {
+			'src/resources/js/app/seating-map-edit-bundle.js':
+				'build/Seating/admin/map-edit.js',
+			'src/resources/css/app/seating-map-edit-bundle.css':
+				'build/Seating/admin/map-edit.css',
+		},
+	},
+	{
+		name: 'seating-layout-edit-bundle',
+		entry: './src/resources/bundles/seating/admin/layout-edit/index.js',
+		outputScript: './build/Seating/admin/layout-edit.min.js',
+		outputStyle: `build/Seating/admin/layout-edit.${postfix}`,
+		moveFromTo: {
+			'src/resources/js/app/seating-layout-edit-bundle.js':
+				'build/Seating/admin/layout-edit.js',
+			'src/resources/css/app/seating-layout-edit-bundle.css':
+				'build/Seating/admin/layout-edit.css',
+		},
+	},
+	{
+		name: 'seating-block-editor-bundle',
+		entry: './src/resources/bundles/seating/block-editor/index.js',
+		outputScript: './build/Seating/block-editor.min.js',
+		outputStyle: `build/Seating/block-editor.${postfix}`,
+		moveFromTo: {
+			'src/resources/js/app/seating-block-editor-bundle.js':
+				'build/Seating/block-editor.js',
+			'src/resources/css/app/seating-block-editor-bundle.css':
+				'build/Seating/block-editor.css',
+		},
+	},
 ];
 
 // A function cannot be spread directly, we need this temporary variable.

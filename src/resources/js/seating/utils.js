@@ -8,7 +8,7 @@
  * @returns {string} The link URL, or an empty string if it does not exist.
  */
 function getLink(link) {
-	return window?.tec?.eventsAssignedSeating?.links?.[link] || '';
+	return window?.tec?.seating?.links?.[link] || '';
 }
 
 /**
@@ -21,16 +21,16 @@ function getLink(link) {
  */
 function getLocalizedString(slug, group) {
 	if (group) {
-		return window?.tec?.eventsAssignedSeating?.localizedStrings?.[group]?.[slug] || '';
+		return window?.tec?.seating?.localizedStrings?.[group]?.[slug] || '';
 	} else {
-		return window?.tec?.eventsAssignedSeating?.localizedStrings?.[slug] || '';
+		return window?.tec?.seating?.localizedStrings?.[slug] || '';
 	}
 }
 
 window.tec = window.tec || {};
-window.tec.eventsAssignedSeating = window.tec.eventsAssignedSeating || {};
-window.tec.eventsAssignedSeating.utils = {
-	...(window.tec.eventsAssignedSeating.utils || {}),
+window.tec.seating = window.tec.seating || {};
+window.tec.seating.utils = {
+	...(window.tec.seating.utils || {}),
 	getLink,
 	getLocalizedString,
 };

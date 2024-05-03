@@ -1,4 +1,4 @@
-import './../../js/errors.js';
-import './../../js/notices.js';
-import './../../js/service.js';
-import './../../js/iframe.js';
+import './../../../js/seating/errors.js';
+import './../../../js/seating/notices.js';
+import './../../../js/seating/service.js';
+import './../../../js/seating/iframe.js';

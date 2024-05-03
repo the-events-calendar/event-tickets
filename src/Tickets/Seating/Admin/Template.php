@@ -10,6 +10,7 @@
 namespace TEC\Tickets\Seating\Admin;
 
 use TEC\Tickets\Seating\Controller;
+use Tribe__Tickets__Main as Tickets;
 
 /**
  * Class Template.
@@ -25,8 +26,8 @@ class Template extends \Tribe__Template {
 	 * @since TBD
 	 */
 	public function __construct() {
-		$this->set_template_origin( tribe( Controller::class ) );
-		$this->set_template_folder( 'src/admin-views' );
+		$this->set_template_origin( tribe( Tickets::instance() ) );
+		$this->set_template_folder( 'src/admin-views/seating' );
 		$this->set_template_folder_lookup( false );
 		$this->set_template_context_extract( true );
 	}

@@ -61,15 +61,15 @@ class Admin extends Controller_Contract {
 	 * @return void
 	 */
 	public function unregister(): void {
-		$assets =Assets::instance();
-	    $assets->remove( 'tec-events-assigned-seating-admin-maps' );
-		$assets->remove( 'tec-events-assigned-seating-admin-maps-style' );
-		$assets->remove( 'tec-events-assigned-seating-admin-layouts' );
-		$assets->remove( 'tec-events-assigned-seating-admin-layouts-style' );
-		$assets->remove( 'tec-events-assigned-seating-admin-map-edit' );
-		$assets->remove( 'tec-events-assigned-seating-admin-map-edit-style' );
-		$assets->remove( 'tec-events-assigned-seating-admin-layout-edit' );
-		$assets->remove( 'tec-events-assigned-seating-admin-layout-edit-style' );
+		$assets = Assets::instance();
+		$assets->remove( 'tec-tickets-seating-admin-maps' );
+		$assets->remove( 'tec-tickets-seating-admin-maps-style' );
+		$assets->remove( 'tec-tickets-seating-admin-layouts' );
+		$assets->remove( 'tec-tickets-seating-admin-layouts-style' );
+		$assets->remove( 'tec-tickets-seating-admin-map-edit' );
+		$assets->remove( 'tec-tickets-seating-admin-map-edit-style' );
+		$assets->remove( 'tec-tickets-seating-admin-layout-edit' );
+		$assets->remove( 'tec-tickets-seating-admin-layout-edit-style' );
 
 		remove_action( 'admin_menu', [ $this, 'add_submenu_page' ] );
 		remove_action( 'admin_menu', [ $this, 'add_embed_submenu_page' ] );
@@ -96,8 +96,8 @@ class Admin extends Controller_Contract {
 	public function add_submenu_page(): void {
 		add_submenu_page(
 			'tec-tickets',
-			__( 'Seat Layouts', 'events-assigned-seating' ),
-			__( 'Seat Layouts', 'events-assigned-seating' ),
+			__( 'Seat Layouts', 'event-tickets' ),
+			__( 'Seat Layouts', 'event-tickets' ),
 			'manage_options',
 			self::get_menu_slug(),
 			$this->container->callback( Admin\Maps_Layouts_Home_Page::class, 'render' )
@@ -112,7 +112,7 @@ class Admin extends Controller_Contract {
 	 * @return string The slug of the submenu page.
 	 */
 	public static function get_menu_slug(): string {
-		return 'tec-events-assigned-seating';
+		return 'tec-tickets-seating';
 	}
 
 	/**
@@ -121,8 +121,8 @@ class Admin extends Controller_Contract {
 	public function add_embed_submenu_page(): void {
 		add_submenu_page(
 			'tec-tickets',
-			__( '__TEST__ Embed', 'events-assigned-seating' ),
-			__( '__TEST__ Embed', 'events-assigned-seating' ),
+			__( '__TEST__ Embed', 'event-tickets' ),
+			__( '__TEST__ Embed', 'event-tickets' ),
 			'manage_options',
 			Embed_Test::get_menu_slug(),
 			$this->container->callback( Admin\Embed_Test::class, 'render' )
@@ -166,7 +166,7 @@ class Admin extends Controller_Contract {
 	 */
 	private function register_utils(): void {
 		Asset::add(
-			'tec-events-assigned-seating-utils',
+			'tec-tickets-seating-utils',
 			$this->built_asset_url( 'utils.js' ),
 			Tickets::VERSION
 		)
@@ -183,7 +183,7 @@ class Admin extends Controller_Contract {
 	 * @return void The admin bundle script and styles are registered.
 	 */
 	private function register_admin_bundle(): void {
-		$data = [
+		$data = fn() => [
 			'service'          => [
 				'baseUrl' => $this->service->get_frontend_url(),
 			],
@@ -193,13 +193,17 @@ class Admin extends Controller_Contract {
 		];
 
 		Asset::add(
-			'tec-events-assigned-seating-admin-bundle',
+			'tec-tickets-seating-admin-bundle',
 			$this->built_asset_url( 'admin/bundle.js' ),
 			Tickets::VERSION
 		)
-		     ->set_dependencies( 'wp-i18n', 'tec-tickets-seating-vendor', 'tec-tickets-seating-utils' )
+		     ->set_dependencies(
+			     'wp-i18n',
+			     'tribe-common-gutenberg-vendor',  // @todo revise this dependency
+			     'tec-tickets-seating-utils'
+		     )
 		     ->add_to_group( 'tec-tickets-seating' )
-		     ->add_localize_script( 'tec.eventsAssignedSeating', $data )
+		     ->add_localize_script( 'tec.seating', $data )
 		     ->register();
 	}
 
@@ -211,19 +215,19 @@ class Admin extends Controller_Contract {
 	 * @return void The assets are registered.
 	 */
 	private function register_maps_assets(): void {
-		$action = 'tec_events_assigned_seating_tab_' . Maps::get_id();
+		$action = 'tec_tickets_seating_tab_' . Maps::get_id();
 		Asset::add(
-			'tec-events-assigned-seating-admin-maps',
+			'tec-tickets-seating-admin-maps',
 			$this->built_asset_url( 'admin/maps.js' ),
 			Tickets::VERSION
 		)
-		     ->add_dependency( 'tec-events-assigned-seating-admin-bundle' )
-		     ->add_to_group( 'tec-events-assigned-seating-admin' )
-		     ->add_to_group( 'tec-events-assigned-seating' )
+		     ->add_dependency( 'tec-tickets-seating-admin-bundle' )
+		     ->add_to_group( 'tec-tickets-seating-admin' )
+		     ->add_to_group( 'tec-tickets-seating' )
 		     ->enqueue_on( $action )
 		     ->register();
 
-		Asset::add( 'tec-events-assigned-seating-admin-maps-style', 'admin/maps.css', Tickets::VERSION )
+		Asset::add( 'tec-tickets-seating-admin-maps-style', 'admin/maps.css', Tickets::VERSION )
 		     ->add_to_group( 'tec-tickets-seating-admin' )
 		     ->add_to_group( 'tec-tickets-seating' )
 		     ->enqueue_on( $action )
@@ -238,29 +242,29 @@ class Admin extends Controller_Contract {
 	 * @return void The assets are registered.
 	 */
 	private function reqister_layouts_assets(): void {
-		$action = 'tec_events_assigned_seating_tab_' . Layouts::get_id();
+		$action = 'tec_tickets_seating_tab_' . Layouts::get_id();
 		Asset::add(
-			'tec-events-assigned-seating-admin-layouts',
+			'tec-tickets-seating-admin-layouts',
 			$this->built_asset_url( 'admin/layouts.js' ),
 			Tickets::VERSION
 		)
 		     ->set_dependencies(
-			     'tec-events-assigned-seating-admin-bundle',
+			     'tec-tickets-admin-bundle',
 			     'tribe-dialog-js'
 		     )
-		     ->add_to_group( 'tec-events-assigned-seating-admin' )
-		     ->add_to_group( 'tec-events-assigned-seating' )
+		     ->add_to_group( 'tec-tickets-seating-admin' )
+		     ->add_to_group( 'tec-tickets-seating' )
 		     ->enqueue_on( $action )
 		     ->register();
 
 		Asset::add(
-			'tec-events-assigned-seating-admin-layouts-style',
+			'tec-tickets-seating-admin-layouts-style',
 			$this->built_asset_url( 'admin/layouts.css' ),
 			Tickets::VERSION
 		)
 		     ->set_dependencies( 'tribe-dialog' )
-		     ->add_to_group( 'tec-events-assigned-seating-admin' )
-		     ->add_to_group( 'tec-events-assigned-seating' )
+		     ->add_to_group( 'tec-tickets-seating-admin' )
+		     ->add_to_group( 'tec-tickets-seating' )
 		     ->enqueue_on( $action )
 		     ->register();
 	}
@@ -273,27 +277,27 @@ class Admin extends Controller_Contract {
 	 * @return void The assets are registered.
 	 */
 	private function register_map_edit_assets(): void {
-		$action = 'tec_events_assigned_seating_tab_' . Map_Edit::get_id();
+		$action = 'tec_tickets_seating_tab_' . Map_Edit::get_id();
 		Asset::add(
-			'tec-events-assigned-seating-admin-map-edit',
+			'tec-tickets-seating-admin-map-edit',
 			$this->built_asset_url( 'admin/map-edit.js' ),
 			Tickets::VERSION
 		)
-		     ->add_dependency( 'tec-events-assigned-seating-admin-bundle' )
+		     ->add_dependency( 'tec-tickets-seating-admin-bundle' )
 		     ->enqueue_on( $action )
-		     ->add_to_group( 'tec-events-assigned-seating-admin' )
-		     ->add_to_group( 'tec-events-assigned-seating' )
+		     ->add_to_group( 'tec-tickets-seating-admin' )
+		     ->add_to_group( 'tec-tickets-seating' )
 		     ->register();
 
 		Asset::add(
-			'tec-events-assigned-seating-admin-map-edit-style',
+			'tec-tickets-seating-admin-map-edit-style',
 			$this->built_asset_url( 'admin/map-edit.css' ),
 			Tickets::VERSION
 		)
-		     ->add_to_group( 'tec-events-assigned-seating-admin' )
-		     ->add_to_group( 'tec-events-assigned-seating' )
+		     ->add_to_group( 'tec-tickets-seating-admin' )
+		     ->add_to_group( 'tec-tickets-seating' )
 		     ->enqueue_on( $action )
-		     ->add_to_group( 'tec-events-assigned-seating-admin' )
+		     ->add_to_group( 'tec-tickets-seating-admin' )
 		     ->register();
 	}
 
@@ -305,27 +309,27 @@ class Admin extends Controller_Contract {
 	 * @return void The assets are registered.
 	 */
 	private function reqister_layout_edit_assets(): void {
-		$action = 'tec_events_assigned_seating_tab_' . Layout_Edit::get_id();
+		$action = 'tec_tickets_seating_tab_' . Layout_Edit::get_id();
 		Asset::add(
-			'tec-events-assigned-seating-admin-layout-edit',
+			'tec-tickets-seating-admin-layout-edit',
 			$this->built_asset_url( 'admin/layout-edit.js' ),
 			Tickets::VERSION
 		)
-		     ->add_dependency( 'tec-events-assigned-seating-admin-bundle' )
+		     ->add_dependency( 'tec-tickets-seating-admin-bundle' )
 		     ->enqueue_on( $action )
-		     ->add_to_group( 'tec-events-assigned-seating-admin' )
-		     ->add_to_group( 'tec-events-assigned-seating' )
+		     ->add_to_group( 'tec-tickets-seating-admin' )
+		     ->add_to_group( 'tec-tickets-seating' )
 		     ->register();
 
 		Asset::add(
-			'tec-events-assigned-seating-admin-layout-edit-style',
+			'tec-tickets-seating-admin-layout-edit-style',
 			$this->built_asset_url( 'admin/layout-edit.css' ),
 			Tickets::VERSION
 		)
-		     ->add_to_group( 'tec-events-assigned-seating-admin' )
-		     ->add_to_group( 'tec-events-assigned-seating' )
+		     ->add_to_group( 'tec-tickets-seating-admin' )
+		     ->add_to_group( 'tec-tickets-seating' )
 		     ->enqueue_on( $action )
-		     ->add_to_group( 'tec-events-assigned-seating-admin' )
+		     ->add_to_group( 'tec-tickets-seating-admin' )
 		     ->register();
 	}
 }

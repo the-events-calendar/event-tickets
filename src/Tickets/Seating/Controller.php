@@ -94,8 +94,6 @@ class Controller extends Controller_Contract {
 		$this->container->singleton( Service\Service::class, fn() => $this->build_service_facade() );
 		$this->container->singleton( Meta::class );
 
-		$this->register_common_assets();
-
 		$this->container->register( Tables::class );
 
 		if ( is_admin() ) {
@@ -104,23 +102,6 @@ class Controller extends Controller_Contract {
 		} else {
 			$this->container->register( Frontend::class );
 		}
-	}
-
-	/**
-	 * Registers some common assets that will be used in Admin, Frontend and Blocks context.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	private function register_common_assets(): void {
-		Asset::add(
-			'tec-events-assigned-seating-vendor',
-			$this->built_asset_url( 'vendor.js' ),
-			Tickets::VERSION
-		)
-		     ->add_to_group( 'tec-events-assigned-seating' )
-		     ->register();
 	}
 
 	/**

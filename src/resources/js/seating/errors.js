@@ -1,5 +1,5 @@
 const {_x} = wp.i18n;
-const {getLocalizedString} = tec.eventsAssignedSeating.utils;
+const {getLocalizedString} = tec.seating.utils;
 
 const BAD_SERVICE_RESPONSE = 'BAD_SERVICE_RESPONSE';
 const MISSING_REQUEST_PARAMETERS = 'MISSING_REQUEST_PARAMETERS';
@@ -44,9 +44,9 @@ function getErrorMessage(errorCode) {
 }
 
 window.tec = window.tec || {};
-window.tec.eventsAssignedSeating = window.tec.eventsAssignedSeating || {};
-window.tec.eventsAssignedSeating.errors = {
-	...(window.tec.eventsAssignedSeating.errors || {}),
+window.tec.seating = window.tec.seating || {};
+window.tec.seating.errors = {
+	...(window.tec.seating.errors || {}),
 	BAD_SERVICE_RESPONSE,
 	MISSING_REQUEST_PARAMETERS,
 	MISSING_EPHEMERAL_TOKEN,
