@@ -9,7 +9,7 @@
 
 namespace TEC\Tickets\Seating\Tables;
 
-use TEC\Tickets\Seating\StellarWP\Schema\Tables\Contracts\Table;
+use TEC\Common\StellarWP\Schema\Tables\Contracts\Table;
 
 /**
  * Class Layouts.

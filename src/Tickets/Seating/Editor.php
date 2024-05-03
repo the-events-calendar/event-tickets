@@ -9,10 +9,11 @@
 
 namespace TEC\Tickets\Seating;
 
+use TEC\Common\StellarWP\Assets\Assets;
+use TEC\Common\StellarWP\Assets\Asset;
 use TEC\Tickets\Seating\Admin\Tabs\Layouts;
 use TEC\Tickets\Seating\Service\Service;
-use TEC\Tickets\Seating\StellarWP\Assets\Asset;
-use TEC\Tickets\Seating\StellarWP\Assets\Assets;
+use Tribe__Tickets__Main as Tickets;
 
 /**
  * Class Editor.
@@ -22,6 +23,7 @@ use TEC\Tickets\Seating\StellarWP\Assets\Assets;
  * @package TEC\Controller;
  */
 class Editor extends \TEC\Common\Contracts\Provider\Controller {
+	use Built_Assets;
 
 	/**
 	 * Unregisters the Controller by unsubscribing from WordPress hooks.
@@ -110,8 +112,8 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 	private function register_block_editor_assets(): void {
 		Asset::add(
 			'tec-events-assigned-seating-block-editor',
-			'block-editor.js',
-			Plugin_Register::VERSION
+			$this->built_asset_url( 'block-editor.js' ),
+			Tickets::VERSION
 		)
 		     ->set_dependencies(
 			     'wp-hooks',
@@ -128,8 +130,8 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 		     ->register();
 		Asset::add(
 			'tec-events-assigned-seating-block-editor-style',
-			'block-editor.css',
-			Plugin_Register::VERSION
+			$this->built_asset_url( 'block-editor.css' ),
+			Tickets::VERSION
 		)
 		     ->enqueue_on( 'enqueue_block_editor_assets' )
 		     ->add_to_group( 'tec-events-assigned-seating-editor' )

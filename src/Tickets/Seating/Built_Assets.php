@@ -1,6 +1,6 @@
 <?php
 /**
- * Provides methods to register built assets, from the `/build` directory of the plugin.
+ * Provides methods to register built assets for the Seating feature.
  *
  * @since TBD
  *
@@ -9,7 +9,6 @@
 
 namespace TEC\Tickets\Seating;
 
-use Tribe__Assets as Assets;
 use Tribe__Tickets__Main as Tickets;
 
 /**
@@ -21,33 +20,15 @@ use Tribe__Tickets__Main as Tickets;
  */
 trait Built_Assets {
 	/**
-	 * Registers a built asset for the Seating feature.
+	 * Returns the built asset URL for the Seating feature.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $handle The handle of the asset.
 	 * @param string $path The file path from the `/build/seating` directory of the plugin.
-	 * @param string[] $dependencies An array of dependencies.
-	 * @param string|null $action The action to enqueue the asset on.
-	 * @param array<string,array|callable> $localize A map of the data to localize.
 	 */
-	protected function register_built_asset(
-		string $handle,
-		string $path,
-		array $dependencies = [],
-		string $action = null,
-		array $localize = []
-	): void {
-		$plugin    = Tickets::instance();
-		$build_url = $plugin->plugin_url . 'build';
+	protected function built_asset_url( string $path ): string {
+		$plugin = Tickets::instance();
 
-		Assets::register(
-			Tickets::instance(),
-			$handle,
-			$build_url . '/seating/' . $path,
-			$dependencies,
-			$action,
-			[ 'groups' => 'tec-tickets-seating', 'localize' => $localize ]
-		);
+		return $plugin->plugin_url . 'build/seating/' . ltrim( $path, '/' );
 	}
 }

@@ -10,7 +10,7 @@
 namespace TEC\Tickets\Seating;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
-use TEC\Tickets\Seating\StellarWP\Schema\Register;
+use TEC\Common\StellarWP\Schema\Register;
 
 /**
  * Class Tables.

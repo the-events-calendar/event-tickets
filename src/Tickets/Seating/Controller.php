@@ -12,6 +12,8 @@ namespace TEC\Tickets\Seating;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\lucatume\DI52\Container;
+use TEC\Common\StellarWP\Assets\Asset;
+use Tribe__Tickets__Main as Tickets;
 
 /**
  * Class Controller
@@ -21,6 +23,8 @@ use TEC\Common\lucatume\DI52\Container;
  * @package TEC/Controller
  */
 class Controller extends Controller_Contract {
+	use Built_Assets;
+
 	/**
 	 * The slug used to identify the plugin in theme overrides, assets and the like.
 	 *
@@ -45,13 +49,14 @@ class Controller extends Controller_Contract {
 	public static string $registration_action = 'tec_events_assigned_seating_registered';
 
 	/**
-	 * The plugin path, used by the Template to determine where to look for templates.
+	 * The name of the constant that will be used to disable the feature.
+	 * Setting it to a truthy value will disable the feature.
 	 *
 	 * @since TBD
 	 *
 	 * @var string
 	 */
-	public string $plugin_path;
+	public const DISABLED = 'TEC_SEATING_DISABLED';
 
 	/**
 	 * The theme namespace that will be used to determine where to look for templates.
@@ -63,18 +68,6 @@ class Controller extends Controller_Contract {
 	 * @var string
 	 */
 	public string $template_namespace = self::SLUG;
-
-	/**
-	 * Controller constructor.
-	 *
-	 * since TBD
-	 *
-	 * @param Container $container A reference to the container object.
-	 */
-	public function __construct( Container $container ) {
-		parent::__construct( $container );
-		$this->plugin_path = EVENTS_ASSIGNED_SEATING_DIR;
-	}
 
 	/**
 	 * Unregisters the Controller by unsubscribing from WordPress hooks.
@@ -123,8 +116,8 @@ class Controller extends Controller_Contract {
 	private function register_common_assets(): void {
 		Asset::add(
 			'tec-events-assigned-seating-vendor',
-			'vendor.js',
-			Plugin_Register::VERSION
+			$this->built_asset_url( 'vendor.js' ),
+			Tickets::VERSION
 		)
 		     ->add_to_group( 'tec-events-assigned-seating' )
 		     ->register();
@@ -138,8 +131,8 @@ class Controller extends Controller_Contract {
 	 * @return Service\Service An instance of the Service facade class.
 	 */
 	private function build_service_facade(): Service\Service {
-		$backend_base_url = defined( 'TEC_EVENTS_ASSIGNED_SEATING_SERVICE_BASE_URL' )
-			? TEC_EVENTS_ASSIGNED_SEATING_SERVICE_BASE_URL
+		$backend_base_url = defined( 'TEC_TICKETS_SEATING_SERVICE_BASE_URL' )
+			? TEC_TICKETS_SEATING_SERVICE_BASE_URL
 			: 'https://evnt.is';
 
 		/**
@@ -153,8 +146,8 @@ class Controller extends Controller_Contract {
 
 		$backend_base_url = rtrim( $backend_base_url, '/' );
 
-		$frontend_base_url = defined( 'TEC_EVENTS_ASSIGNED_SEATING_SERVICE_BASE_URL' )
-			? TEC_EVENTS_ASSIGNED_SEATING_SERVICE_BASE_URL
+		$frontend_base_url = defined( 'TEC_TICKETS_SEATING_SERVICE_BASE_URL' )
+			? TEC_TICKETS_SEATING_SERVICE_BASE_URL
 			: 'https://evnt.is';
 
 		/**
@@ -186,5 +179,41 @@ class Controller extends Controller_Contract {
 		}
 
 		return $this->container->get( Service\Service::class );
+	}
+
+	/**
+	 * Determines if the feature is enabled or not.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether the feature is enabled or not.
+	 */
+	public function is_active(): bool {
+		if ( defined( self::DISABLED ) && constant( self::DISABLED ) ) {
+			// The constant to disable the feature is defined and it's truthy.
+			return false;
+		}
+
+		if ( getenv( self::DISABLED ) ) {
+			// The environment variable to disable the feature is truthy.
+			return false;
+		}
+
+		// Finally read an option value to determine if the feature should be active or not.
+		$active = (bool) get_option( 'tec_tickets_seating_active', true );
+
+		/**
+		 * Allows filtering whether the whole Seating feature
+		 * should be activated or not.
+		 *
+		 * Note: this filter will only apply if the disable constant or env var
+		 * are not set or are set to falsy values.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool $activate Defaults to `true`.
+		 *
+		 */
+		return (bool) apply_filters( 'tec_tickets_seating_active', $active );
 	}
 }
