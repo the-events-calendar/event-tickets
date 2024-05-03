@@ -17,9 +17,6 @@ class Tribe__Tickets__Editor__Assets {
 			$plugin,
 			'tribe-tickets-gutenberg-vendor',
 			'app/vendor.js',
-			/**
-			 * @todo revise this dependencies
-			 */
 			[
 				'react',
 				'react-dom',
