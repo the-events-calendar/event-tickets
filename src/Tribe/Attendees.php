@@ -647,7 +647,9 @@ class Tribe__Tickets__Attendees {
 
 		/**
 		 * Used to modify what columns should be shown on the CSV export.
-		 * The column name should be the Array Index and the Header is the array Value.
+		 * The column name should be the Array Index, and the Header should be the array Value.
+		 *
+		 * @since TBD
 		 *
 		 * @param array $export_columns Columns, associative array
 		 * @param array $items          Items to be exported
