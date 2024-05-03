@@ -631,56 +631,6 @@ class SingleTicketCest extends BaseRestCest {
 			'post_id'          => $post_id,
 			'name'             => 'Test ticket name test 213',
 			'description'      => 'Test description text',
-			'price'            => '',
-			'start_date'       => '2023-08-24',
-			'start_time'       => '08:00:00',
-			'end_date'         => '2023-12-31',
-			'end_time'         => '20:00:00',
-			'sku'              => 'TKT-555',
-			'menu_order'       => 1,
-			'add_ticket_nonce' => wp_create_nonce( 'add_ticket_nonce' ),
-			'provider'         => 'Tribe__Tickets__Commerce__PayPal__Main',
-			'ticket' => [
-				'mode' => 'capped',
-				'capacity' => 100,
-				'event_capacity' => 100
-			]
-		];
-
-		$I->sendPOST( $ticket_create_rest_url, $create_args );
-
-		$I->seeResponseCodeIs( 400 );
-		$I->seeResponseIsJson();
-
-		$create_args = [
-			'post_id'          => $post_id,
-			'name'             => 'Test ticket name test 213',
-			'description'      => 'Test description text',
-			'price'            => ' ',
-			'start_date'       => '2023-08-24',
-			'start_time'       => '08:00:00',
-			'end_date'         => '2023-12-31',
-			'end_time'         => '20:00:00',
-			'sku'              => 'TKT-444',
-			'menu_order'       => 1,
-			'add_ticket_nonce' => wp_create_nonce( 'add_ticket_nonce' ),
-			'provider'         => 'Tribe__Tickets__Commerce__PayPal__Main',
-			'ticket' => [
-				'mode' => 'capped',
-				'capacity' => 100,
-				'event_capacity' => 100
-			]
-		];
-
-		$I->sendPOST( $ticket_create_rest_url, $create_args );
-
-		$I->seeResponseCodeIs( 400 );
-		$I->seeResponseIsJson();
-
-		$create_args = [
-			'post_id'          => $post_id,
-			'name'             => 'Test ticket name test 213',
-			'description'      => 'Test description text',
 			'price'            => "0,0",
 			'start_date'       => '2023-08-24',
 			'start_time'       => '08:00:00',
@@ -795,6 +745,56 @@ class SingleTicketCest extends BaseRestCest {
 			'name'             => 'Test ticket name test 213',
 			'description'      => 'Test description text',
 			'price'            => "0.00",
+			'start_date'       => '2023-08-24',
+			'start_time'       => '08:00:00',
+			'end_date'         => '2023-12-31',
+			'end_time'         => '20:00:00',
+			'sku'              => 'TKT-444',
+			'menu_order'       => 1,
+			'add_ticket_nonce' => wp_create_nonce( 'add_ticket_nonce' ),
+			'provider'         => 'Tribe__Tickets__Commerce__PayPal__Main',
+			'ticket' => [
+				'mode' => 'capped',
+				'capacity' => 100,
+				'event_capacity' => 100
+			]
+		];
+
+		$I->sendPOST( $ticket_create_rest_url, $create_args );
+
+		$I->seeResponseCodeIs( 202 );
+		$I->seeResponseIsJson();
+
+		$create_args = [
+			'post_id'          => $post_id,
+			'name'             => 'Test ticket name test 213',
+			'description'      => 'Test description text',
+			'price'            => '',
+			'start_date'       => '2023-08-24',
+			'start_time'       => '08:00:00',
+			'end_date'         => '2023-12-31',
+			'end_time'         => '20:00:00',
+			'sku'              => 'TKT-555',
+			'menu_order'       => 1,
+			'add_ticket_nonce' => wp_create_nonce( 'add_ticket_nonce' ),
+			'provider'         => 'Tribe__Tickets__Commerce__PayPal__Main',
+			'ticket' => [
+				'mode' => 'capped',
+				'capacity' => 100,
+				'event_capacity' => 100
+			]
+		];
+
+		$I->sendPOST( $ticket_create_rest_url, $create_args );
+
+		$I->seeResponseCodeIs( 202 );
+		$I->seeResponseIsJson();
+
+		$create_args = [
+			'post_id'          => $post_id,
+			'name'             => 'Test ticket name test 213',
+			'description'      => 'Test description text',
+			'price'            => ' ',
 			'start_date'       => '2023-08-24',
 			'start_time'       => '08:00:00',
 			'end_date'         => '2023-12-31',
