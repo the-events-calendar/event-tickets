@@ -16,7 +16,7 @@ use TEC\Events_Assigned_Seating\Admin\Tabs\Tab;
 <div class="wrap">
 	<h1>
 		<?php
-		echo esc_html_x( 'Seat Layouts', 'Seat Layouts home page title', 'events-assigned-seating' ); ?>
+		echo esc_html_x( 'Seat Layouts', 'Seat Layouts home page title', 'event-tickets' ); ?>
 	</h1>
 
 	<?php

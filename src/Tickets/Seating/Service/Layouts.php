@@ -100,7 +100,7 @@ class Layouts {
 			return [];
 		}
 
-		$layouts = wp_cache_get( 'option_format_layouts', 'tec-events-assigned-seating' );
+		$layouts = wp_cache_get( 'option_format_layouts', 'tec-tickets-seating' );
 
 		if ( ! ( $layouts && is_array( $layouts ) ) ) {
 			$layouts = [];
@@ -115,7 +115,7 @@ class Layouts {
 			wp_cache_set(
 				'option_format_layouts',
 				$layouts,
-				'tec-events-assigned-seating',
+				'tec-tickets-seating',
 				self::update_transient_expiration()
 			);
 		}
@@ -139,7 +139,7 @@ class Layouts {
 		                  ->update_from_service( fn() => Layouts_Table::truncate() )
 		                  ->store_fetched_data( [ $this, 'insert_rows_from_service' ] );
 
-		wp_cache_delete( 'option_format_layouts', 'tec-events-assigned-seating' );
+		wp_cache_delete( 'option_format_layouts', 'tec-tickets-seating' );
 
 		return $updted;
 	}
@@ -152,7 +152,7 @@ class Layouts {
 	 * @return string
 	 */
 	public static function update_transient_name(): string {
-		return 'tec_events_assigned_seating_layouts_last_update';
+		return 'tec_tickets_seating_layouts_last_update';
 	}
 
 	/**

@@ -14,12 +14,12 @@
 		class="tec-tickets__tab-heading">
 		<?php echo esc_html_x( 'Controller Maps',
 			'Controller maps tab title',
-			'events-assigned-seating' ); ?>
+			'event-tickets' ); ?>
 	</h2>
 	<a class="button button-secondary tec-tickets__tab-heading__button"
 	   type="button"
 	   href="<?php echo esc_url( $add_new_url ); ?>">
-		<?php echo esc_html_x( 'Add New', 'Add new seating configuration button', 'events-assigned-seating' ); ?>
+		<?php echo esc_html_x( 'Add New', 'Add new seating configuration button', 'event-tickets' ); ?>
 	</a>
 	<div class="tec-tickets__tab-heading__description">
 		<p>
@@ -27,9 +27,9 @@
 				sprintf(
 				/* translators: %1$s: Documentation link */
 					__( 'Build different seat layouts on top of your configurations to create different sections and pricing tiers for use with tickets. %1$s',
-						'events-assigned-seating' ),
+						'event-tickets' ),
 					'<a href="https://evnt.is" target="_blank">'
-					. __( 'Learn more', 'events-assigned-seating' )
+					. __( 'Learn more', 'event-tickets' )
 					. '</a>' ),
 				[ 'a' => [ 'href' => [], 'target' => [], 'title' => [] ] ] ); ?>
 		</p>
@@ -37,7 +37,7 @@
 </div>
 <div class="tec-tickets__tab-content__wrapper">
 	<?php if ( empty( $cards ) ) : ?>
-		<p><?php esc_html_e( 'No seating maps to show.', 'events-assigned-seating' ); ?></p>
+		<p><?php esc_html_e( 'No seating maps to show.', 'event-tickets' ); ?></p>
 	<?php else : foreach ( $cards as $card ) {
 		$this->template->template( 'components/layout-card', $card );
 	} ?>

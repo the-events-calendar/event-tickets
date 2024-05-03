@@ -27,7 +27,7 @@ class Layouts extends Tab {
 	 * @return string The title of this tab.
 	 */
 	public function get_title(): string {
-		return _x( 'Seat Layouts', 'Tab title', 'events-assigned-seating' );
+		return _x( 'Seat Layouts', 'Tab title', 'event-tickets' );
 	}
 
 	/**

@@ -1,5 +1,5 @@
 import './style.pcss';
 
-const {iFrameInit} = tec.eventsAssignedSeating.iframe;
+const {iFrameInit} = tec.seating.iframe;
 
 iFrameInit();

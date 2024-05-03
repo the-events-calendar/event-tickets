@@ -10,7 +10,7 @@ const SITE_NOT_FOUND = 'SITE_NOT_FOUND';
 const EPHEMERAL_TOKEN_STORE_ERROR = 'EPHEMERAL_TOKEN_STORE_ERROR';
 const SITE_NOT_AUTHORIZED = 'SITE_NOT_AUTHORIZED';
 
-const unknownError = _x('Unknown error', 'Error message', 'events-assigned-seating');
+const unknownError = _x('Unknown error', 'Error message', 'event-tickets');
 
 /**
  * A map from error codes to error messages.

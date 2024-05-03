@@ -61,7 +61,7 @@ class Ephemeral_Token {
 		 *
 		 * @param string $site_url The site URL, defaulting to the home URL.
 		 */
-		$site_url = apply_filters( 'tec_events_assigned_seating_ephemeral_token_site_url', home_url() );
+		$site_url = apply_filters( 'tec_tickets_seating_ephemeral_token_site_url', home_url() );
 
 		$response = wp_remote_post( add_query_arg( [
 			'site'       => urlencode_deep( $site_url ),
@@ -90,7 +90,7 @@ class Ephemeral_Token {
 				'ephemeral_token_request_failed',
 				sprintf(
 					// translators: 1: HTTP status code
-					__( 'Ephemeral token request failed (%d).', 'events-assigned-seating' ),
+					__( 'Ephemeral token request failed (%d).', 'event-tickets' ),
 					$code
 				),
 				[ 'code' => $code ]
@@ -109,7 +109,7 @@ class Ephemeral_Token {
 
 			return new \WP_Error(
 				'ephemeral_token_response_empty',
-				__( 'Ephemeral token response from service is empty.', 'events-assigned-seating' )
+				__( 'Ephemeral token response from service is empty.', 'event-tickets' )
 			);
 		}
 
@@ -127,7 +127,7 @@ class Ephemeral_Token {
 
 			return new \WP_Error(
 				'ephemeral_token_response_invalid',
-				__( 'Ephemeral token response from service is invalid.', 'events-assigned-seating' ),
+				__( 'Ephemeral token response from service is invalid.', 'event-tickets' ),
 				[ 'body' => $body ]
 			);
 		}

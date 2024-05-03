@@ -6,7 +6,7 @@
  * @returns {Element|null} The notice element, or null if it does not exist.j
  */
 function getNoticeElement() {
-	return document.getElementById('tec-events-assigned-seating-notice');
+	return document.getElementById('tec-tickets-seating-notice');
 }
 
 /**
@@ -100,9 +100,9 @@ function notifyUserOfWarning(message) {
 }
 
 window.tec = window.tec || {};
-window.tec.eventsAssignedSeating = window.tec.eventsAssignedSeating || {};
-window.tec.eventsAssignedSeating.notices = {
-	...(window.tec.eventsAssignedSeating.notices || {}),
+window.tec.seating = window.tec.seating || {};
+window.tec.seating.notices = {
+	...(window.tec.seating.notices || {}),
 	notifyUserOfWarning,
 	notifyUserOfError,
 };

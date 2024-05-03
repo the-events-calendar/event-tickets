@@ -11,6 +11,7 @@ namespace TEC\Tickets\Seating\Admin;
 
 use TEC\Tickets\Seating\Admin\Tabs\Map_Edit;
 use TEC\Tickets\Seating\Service\Service;
+use WP_Error;
 
 /**
  * Class Embed_Test.
@@ -51,7 +52,7 @@ class Embed_Test {
 	}
 
 	public static function get_menu_slug(): string {
-		return 'tec-events-assigned-seating-embed-test';
+		return 'tec-tickets-seating-embed-test';
 	}
 
 	public function render(): void {
@@ -74,11 +75,12 @@ class Embed_Test {
 		$context = [
 			'token'      => $token,
 			'route'      => $route,
+			'error'      => $ephemeral_token instanceof WP_Error ? $ephemeral_token->get_error_message() : '',
 			'iframe_url' => $iframe_url,
 		];
 
 		// Piggyback on the Map_Edit tab scripts and styles.
-		do_action( 'tec_events_assigned_seating_tab_' . Map_Edit::get_id() );
+		do_action( 'tec_tickets_seating_tab_' . Map_Edit::get_id() );
 
 		$this->template->template( 'embed-test', $context );
 	}

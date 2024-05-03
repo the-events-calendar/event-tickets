@@ -11,9 +11,6 @@
 namespace TEC\Tickets\Seating;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
-use TEC\Common\lucatume\DI52\Container;
-use TEC\Common\StellarWP\Assets\Asset;
-use Tribe__Tickets__Main as Tickets;
 
 /**
  * Class Controller
@@ -26,27 +23,13 @@ class Controller extends Controller_Contract {
 	use Built_Assets;
 
 	/**
-	 * The slug used to identify the plugin in theme overrides, assets and the like.
-	 *
-	 * @since TBD
-	 */
-	public const SLUG = 'events-assigned-seating';
-
-	/**
-	 * The version of this plugin.
-	 *
-	 * @since TBD
-	 */
-	public const VERSION = '1.0.0';
-
-	/**
 	 * The action that will be fired when this Controller registers.
 	 *
 	 * @since TBD
 	 *
 	 * @var string
 	 */
-	public static string $registration_action = 'tec_events_assigned_seating_registered';
+	public static string $registration_action = 'tec_tickets_seating_registered';
 
 	/**
 	 * The name of the constant that will be used to disable the feature.
@@ -57,17 +40,6 @@ class Controller extends Controller_Contract {
 	 * @var string
 	 */
 	public const DISABLED = 'TEC_SEATING_DISABLED';
-
-	/**
-	 * The theme namespace that will be used to determine where to look for templates.
-	 * Themes will be able to override template files using `tribe/events-assigned-seating`
-	 * directory.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	public string $template_namespace = self::SLUG;
 
 	/**
 	 * Unregisters the Controller by unsubscribing from WordPress hooks.
@@ -123,7 +95,7 @@ class Controller extends Controller_Contract {
 		 *
 		 * @param string $backend_base_url The base URL of the service.
 		 */
-		$backend_base_url = apply_filters( 'tec_events_assigned_seating_service_base_url', $backend_base_url );
+		$backend_base_url = apply_filters( 'tec_tickets_seating_service_base_url', $backend_base_url );
 
 		$backend_base_url = rtrim( $backend_base_url, '/' );
 
@@ -138,7 +110,7 @@ class Controller extends Controller_Contract {
 		 *
 		 * @param string $frontend_base_url The base URL of the service.
 		 */
-		$frontend_base_url = apply_filters( 'tec_events_assigned_seating_service_frontend_url', $frontend_base_url );
+		$frontend_base_url = apply_filters( 'tec_tickets_seating_service_frontend_url', $frontend_base_url );
 
 		$frontend_base_url = rtrim( $frontend_base_url, '/' );
 

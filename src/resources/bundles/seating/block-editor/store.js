@@ -1,6 +1,6 @@
 import {createReduxStore, register} from '@wordpress/data';
 
-const storeName = 'tec-events-assigned-seating';
+const storeName = 'tec-tickets-seating';
 
 const DEFAULT_STATE = {...window.tec.seating.blockEditor};
 

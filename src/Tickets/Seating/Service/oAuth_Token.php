@@ -36,6 +36,6 @@ trait oAuth_Token {
 	 * @return string
 	 */
 	public static function get_oauth_token_option_name(): string {
-		return 'events_assigned_seating_access_token';
+		return 'events_tickets_seating_access_token';
 	}
 }

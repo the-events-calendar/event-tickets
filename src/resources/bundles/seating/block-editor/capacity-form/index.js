@@ -16,11 +16,11 @@ const EventLayoutSelect = ({layouts, seatTypes}) => {
 			<LabeledItem
 				className="tribe-editor__labeled-select-input tribe-editor__labeled-select-input--nested"
 				label={getString('event-layouts-select-label')}
-				for="tec-events-assigned-seating-layouts-select" A
+				for="tec-tickets-seating-layouts-select" A
 				isLabel={true}
 			>
 				<Select
-					id="tec-events-assigned-seating-layouts-select"
+					id="tec-tickets-seating-layouts-select"
 					placeholder={getString('event-layouts-select-placeholder')}
 					options={layouts}
 					onChange={(value)=>setLayout(value)}
@@ -31,11 +31,11 @@ const EventLayoutSelect = ({layouts, seatTypes}) => {
 			<LabeledItem
 				className="tribe-editor__labeled-select-input tribe-editor__labeled-select-input--nested"
 				label={getString('seat-types-select-label')}
-				for="tec-events-assigned-seating-seat-types-select" A
+				for="tec-tickets-seating-seat-types-select" A
 				isLabel={true}
 			>
 				<Select
-					id="tec-events-assigned-seating-layouts-select"
+					id="tec-tickets-seating-layouts-select"
 					placeholder={getString('seat-types-select-placeholder')}
 					options={seatTypes}
 					onChange={(value) => console.log(value)}
@@ -82,7 +82,7 @@ export default function CapacityForm({renderDefaultForm}) {
 	return (
 		<Fragment>
 			<ToggleControl
-				className="tec-events-assigned-seating__capacity-form__toggle"
+				className="tec-tickets-seating__capacity-form__toggle"
 				label={getString('use-assigned-seating-toggle-label')}
 				checked={isUsingAssignedSeating}
 				onChange={onChange}

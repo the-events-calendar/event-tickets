@@ -102,7 +102,7 @@ class Seat_Types {
 			return [];
 		}
 
-		$seat_types = wp_cache_get( 'option_format_seat_types', 'tec-events-assigned-seating' );
+		$seat_types = wp_cache_get( 'option_format_seat_types', 'tec-tickets-seating' );
 
 		if ( ! ( $seat_types && is_array( $seat_types ) ) ) {
 			$seat_types = [];
@@ -117,7 +117,7 @@ class Seat_Types {
 			wp_cache_set(
 				'option_format_seat_types',
 				$seat_types,
-				'tec-events-assigned-seating',
+				'tec-tickets-seating',
 				self::update_transient_expiration()
 			);
 		}
@@ -141,7 +141,7 @@ class Seat_Types {
 		               ->update_from_service( fn() => Seat_Types_Table::truncate() )
 		               ->store_fetched_data( [ $this, 'insert_rows_from_service' ] );
 
-		wp_cache_delete( 'option_format_seat_types', 'tec-events-assigned-seating' );
+		wp_cache_delete( 'option_format_seat_types', 'tec-tickets-seating' );
 
 		return $updated;
 	}
@@ -154,7 +154,7 @@ class Seat_Types {
 	 * @return string
 	 */
 	public static function update_transient_name(): string {
-		return 'tec_events_assigned_seating_layouts_last_update';
+		return 'tec_tickets_seating_layouts_last_update';
 	}
 
 	/**

@@ -41,12 +41,12 @@ class Localization {
 		}
 
 		$strings = [
-			'use-assigned-seating-toggle-label' => _x( 'Use assigned seating', 'Capacity form label', 'events-assigned-seating' ),
-			'event-layouts-select-label'        => _x( 'Event layout:', 'Capacity form label', 'events-assigned-seating' ),
-			'event-layouts-select-placeholder' => _x( 'Choose event layout', 'Capacity form label', 'events-assigned-seating' ),
-			'view-layouts-link-label'           => _x( 'View layouts', 'Capacity form label', 'events-assigned-seating' ),
-			'seat-types-select-label' => _x( 'Seat types:', 'Capacity form label', 'events-assigned-seating' ),
-			'seat-types-select-placeholder' => _x( 'Choose seat type', 'Capacity form label', 'events-assigned-seating' ),
+			'use-assigned-seating-toggle-label' => _x( 'Use assigned seating', 'Capacity form label', 'event-tickets' ),
+			'event-layouts-select-label'        => _x( 'Event layout:', 'Capacity form label', 'event-tickets' ),
+			'event-layouts-select-placeholder' => _x( 'Choose event layout', 'Capacity form label', 'event-tickets' ),
+			'view-layouts-link-label'           => _x( 'View layouts', 'Capacity form label', 'event-tickets' ),
+			'seat-types-select-label' => _x( 'Seat types:', 'Capacity form label', 'event-tickets' ),
+			'seat-types-select-placeholder' => _x( 'Choose seat type', 'Capacity form label', 'event-tickets' ),
 		];
 
 		$this->built_strings['capacity-form'] = $strings;
@@ -70,21 +70,21 @@ class Localization {
 
 		$strings = [
 			'bad-service-response'          => _x( 'Bad service response', 'Error message',
-				'events-assigned-seating' ),
+				'event-tickets' ),
 			'missing-request-parameters'    => _x( 'Missing request parameters', 'Error message',
-				'events-assigned-seating' ),
+				'event-tickets' ),
 			'invalid-site-parameter'        => _x( 'Invalid site parameter', 'Error message',
-				'events-assigned-seating' ),
+				'event-tickets' ),
 			'invalid-expire-time-parameter' => _x( 'Invalid expire time parameter',
-				'Error message', 'events-assigned-seating' ),
+				'Error message', 'event-tickets' ),
 			'missing-ephemeral-token'       => _x( 'Ephemeral token not found in response',
-				'Error message', 'events-assigned-seating' ),
+				'Error message', 'event-tickets' ),
 			'site-not-found'                => _x( 'Site not found', 'Error message',
-				'events-assigned-seating' ),
+				'event-tickets' ),
 			'ephemeral-token-store-error'   => _x( 'Ephemeral token store error',
-				'Error message', 'events-assigned-seating' ),
+				'Error message', 'event-tickets' ),
 			'site-not-authorized'           => _x( 'Site not authorized', 'Error message',
-				'events-assigned-seating' ),
+				'event-tickets' ),
 		];
 
 		$this->built_strings['service-errors'] = $strings;

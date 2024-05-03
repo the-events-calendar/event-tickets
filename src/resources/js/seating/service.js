@@ -1,5 +1,5 @@
 // Get the service base URL without the trailing slash.
-const baseUrl = tec.eventsAssignedSeating.service.baseUrl.replace(/\/$/, '');
+const baseUrl = tec.seating.service.baseUrl.replace(/\/$/, '');
 
 const ACTION_APP_POSTMESSAGE_READY = 'app_postmessage_ready';
 const ACTION_HOST_POSTMESSAGE_READY = 'host_postmessage_ready';
@@ -186,9 +186,9 @@ async function establishReadiness(iframe) {
 }
 
 window.tec = window.tec || {};
-window.tec.eventsAssignedSeating = window.tec.eventsAssignedSeating || {};
-window.tec.eventsAssignedSeating.service = {
-	...(window.tec.eventsAssignedSeating.service || {}),
+window.tec.seating = window.tec.seating || {};
+window.tec.seating.service = {
+	...(window.tec.seating.service || {}),
 	sendMessage,
 	listenForServiceMessages,
 	establishReadiness,

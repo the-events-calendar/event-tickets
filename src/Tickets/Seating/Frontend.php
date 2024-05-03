@@ -29,7 +29,7 @@ class Frontend extends Controller_Contract {
 	 *
 	 * @var string
 	 */
-	public static string $registration_action = 'tec_events_assigned_seating_frontend_registered';
+	public static string $registration_action = 'tec_tickets_seating_frontend_registered';
 
 	/**
 	 * A reference to the template object.

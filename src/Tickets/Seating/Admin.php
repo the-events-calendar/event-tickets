@@ -71,8 +71,8 @@ class Admin extends Controller_Contract {
 		$assets->remove( 'tec-tickets-seating-admin-layout-edit' );
 		$assets->remove( 'tec-tickets-seating-admin-layout-edit-style' );
 
-		remove_action( 'admin_menu', [ $this, 'add_submenu_page' ] );
-		remove_action( 'admin_menu', [ $this, 'add_embed_submenu_page' ] );
+		remove_action( 'admin_menu', [ $this, 'add_submenu_page' ], 1000 );
+		remove_action( 'admin_menu', [ $this, 'add_embed_submenu_page' ], 1000 );
 	}
 
 	/**
@@ -151,10 +151,10 @@ class Admin extends Controller_Contract {
 		$this->register_map_edit_assets();
 		$this->reqister_layout_edit_assets();
 
-		add_action( 'admin_menu', [ $this, 'add_submenu_page' ] );
+		add_action( 'admin_menu', [ $this, 'add_submenu_page' ], 1000 );
 
 		// TESTING STUFF
-		add_action( 'admin_menu', [ $this, 'add_embed_submenu_page' ] );
+		add_action( 'admin_menu', [ $this, 'add_embed_submenu_page' ], 1000 );
 	}
 
 	/**
@@ -199,7 +199,7 @@ class Admin extends Controller_Contract {
 		)
 		     ->set_dependencies(
 			     'wp-i18n',
-			     'tribe-common-gutenberg-vendor',  // @todo revise this dependency
+			     'tribe-tickets-gutenberg-vendor',  // @todo revise this dependency
 			     'tec-tickets-seating-utils'
 		     )
 		     ->add_to_group( 'tec-tickets-seating' )
