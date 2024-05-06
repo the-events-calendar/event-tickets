@@ -18,7 +18,7 @@ namespace TEC\Tickets\Admin\Attendees;
 /**
  * Class Hooks.
  *
- * @since   TBD
+ * @since   5.10.0
  *
  * @package TEC\Tickets\Admin
  */
@@ -26,7 +26,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Binds and sets up implementations.
 	 *
-	 * @since TBD
+	 * @since 5.10.0
 	 */
 	public function register() {
 		$this->add_actions();
@@ -36,7 +36,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Adds the actions for the Admin Attendees page.
 	 *
-	 * @since TBD
+	 * @since 5.10.0
 	 */
 	protected function add_actions() {
 		add_action( 'admin_menu', tribe_callback( Page::class, 'add_tec_tickets_attendees_page' ), 15 );
@@ -47,7 +47,7 @@ class Hooks extends \tad_DI52_ServiceProvider {
 	/**
 	 * Adds the filters for the Admin Attendees page.
 	 *
-	 * @since TBD
+	 * @since 5.10.0
 	 */
 	protected function add_filters() {
 		add_filter( 'tribe_tickets_attendee_table_columns', tribe_callback( Page::class, 'filter_attendee_table_columns' ) );

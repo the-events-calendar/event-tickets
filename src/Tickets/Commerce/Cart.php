@@ -61,7 +61,7 @@ class Cart {
 	 * @var string
 	 */
 	public static $cart_hash_cookie_name = 'tec-tickets-commerce-cart';
-	
+
 	/**
 	 * Gets the current instance of cart handling that we are using.
 	 * Most of the pieces should be handled in the Repository for the cart, only piece fully handled by the
@@ -633,11 +633,11 @@ class Cart {
 		// Before we start we clear the existing cart.
 		return $this->get_repository()->process( $data );
 	}
-	
+
 	/**
 	 * Get the total of the cart.
 	 *
-	 * @since TBD
+	 * @since 5.10.0
 	 *
 	 * @return null|float
 	 */

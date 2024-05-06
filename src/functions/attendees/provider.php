@@ -9,7 +9,7 @@
  * In order the function will check the `TEC_TICKETS_ATTENDEES_PAGE` constant,
  * the `TEC_TICKETS_ATTENDEES_PAGE` environment variable,
  *
- * @since TBD
+ * @since 5.10.0
  *
  * @return bool Whether "Attendees" page is enabled or not.
  */
@@ -26,7 +26,7 @@ function tec_tickets_attendees_page_is_enabled(): bool {
 	/**
 	 * Allows filtering of the Attendees page provider.
 	 *
-	 * @since TBD
+	 * @since 5.10.0
 	 *
 	 * @param boolean $enabled Determining if the "Attendees" page is enabled.
 	 */

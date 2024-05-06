@@ -111,7 +111,7 @@ class Page {
 	/**
 	 * Render the `Attendees` page.
 	 *
-	 * @since TBD.
+	 * @since 5.10.0.
 	 *
 	 * @return void
 	 */
@@ -132,7 +132,7 @@ class Page {
 	/**
 	 * Filters the columns for the Attendees table.
 	 *
-	 * @since TBD
+	 * @since 5.10.0
 	 *
 	 * @param array $columns The columns for the Attendees table.
 	 *
@@ -153,7 +153,7 @@ class Page {
 	/**
 	 * Render the `Associated post` column value.
 	 *
-	 * @since TBD
+	 * @since 5.10.0
 	 *
 	 * @param string $value  Row item value.
 	 * @param array  $item   Row item data.
@@ -189,7 +189,7 @@ class Page {
 	/**
 	 * Return if the page can be accessed.
 	 *
-	 * @since TBD
+	 * @since 5.10.0
 	 *
 	 * @return bool True if the page can be accessed.
 	 */

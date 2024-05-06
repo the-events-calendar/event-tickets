@@ -2,7 +2,7 @@
 /**
  * Handles registering and setup for assets for Free gateway.
  *
- * @since TBD
+ * @since 5.10.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Free
  */
@@ -16,20 +16,20 @@ use TEC\Tickets\Commerce\Gateways\Free\REST\Order_Endpoint;
 /**
  * Class Assets.
  *
- * @since TBD
+ * @since 5.10.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Free
  */
 class Assets extends Service_Provider {
-	
+
 	/**
 	 * Binds and sets up implementations.
 	 *
-	 * @since TBD
+	 * @since 5.10.0
 	 */
 	public function register(): void {
 		$plugin = \Tribe__Tickets__Main::instance();
-		
+
 		tribe_asset(
 			$plugin,
 			'tec-tickets-commerce-gateway-free-checkout',
@@ -61,7 +61,7 @@ class Assets extends Service_Provider {
 				],
 			]
 		);
-		
+
 		tribe_asset(
 			$plugin,
 			'tribe-tickets-commerce-free-style',
@@ -80,11 +80,11 @@ class Assets extends Service_Provider {
 			]
 		);
 	}
-	
+
 	/**
 	 * Define if the assets should be enqueued or not.
 	 *
-	 * @since TBD
+	 * @since 5.10.0
 	 *
 	 * @return bool If the assets should be enqueued or not.
 	 */

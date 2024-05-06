@@ -12,7 +12,7 @@
  * @version 5.5.11
  *
  * @since 5.5.11
- * @since TBD Allow for zero value total.
+ * @since 5.10.0 Allow for zero value total.
  *
  * @var Tribe__Template                    $this               Current template object.
  * @var \TEC\Tickets\Emails\Email_Abstract $email              The email object.
