@@ -172,6 +172,13 @@ class Admin extends Controller_Contract {
 		)
 		     ->add_to_group( 'tec-tickets-seating' )
 		     ->register();
+		Asset::add(
+			'tec-tickets-seating-ajax',
+			$this->built_asset_url( 'ajax.js' ),
+			Tickets::VERSION
+		)
+		     ->add_to_group( 'tec-tickets-seating' )
+		     ->register();
 	}
 
 	/**

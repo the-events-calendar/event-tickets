@@ -149,7 +149,7 @@ class Layouts {
 	 *
 	 * @since TBD
 	 *
-	 * @return string
+	 * @return string The transient name used to store the last update time.
 	 */
 	public static function update_transient_name(): string {
 		return 'tec_tickets_seating_layouts_last_update';
@@ -160,7 +160,7 @@ class Layouts {
 	 *
 	 * @since TBD
 	 *
-	 * @return int
+	 * @return int The expiration time in seconds.
 	 */
 	public static function update_transient_expiration() {
 		return 12 * HOUR_IN_SECONDS;

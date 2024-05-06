@@ -1,14 +1,27 @@
-import {createReduxStore, register} from '@wordpress/data';
+import { createReduxStore, register } from '@wordpress/data';
 
 const storeName = 'tec-tickets-seating';
 
-const DEFAULT_STATE = {...window.tec.seating.blockEditor};
+const DEFAULT_STATE = { ...window.tec.seating.blockEditor };
 
 const actions = {
 	setUsingAssignedSeating(isUsingAssignedSeating) {
 		return {
 			type: 'SET_USING_ASSIGNED_SEATING',
 			isUsingAssignedSeating,
+		};
+	},
+	setLayout(layoutId) {
+		return {
+			type: 'SET_LAYOUT',
+			layoutId,
+		};
+	},
+	setSeatType(ticketBlockClientId, seatTypeId) {
+		return {
+			type: 'SET_SEAT_TYPE',
+			ticketBlockClientId,
+			seatTypeId,
 		};
 	},
 };
@@ -20,6 +33,19 @@ const store = createReduxStore(storeName, {
 				return {
 					...state,
 					isUsingAssignedSeating: action.isUsingAssignedSeating,
+				};
+			case 'SET_LAYOUT':
+				return {
+					...state,
+					currentLayoutId: action.layoutId,
+				};
+			case 'SET_SEAT_TYPE':
+				return {
+					...state,
+					seatTypesByTicketId: {
+						...state.seatTypesByTicketId,
+						[action.ticketBlockClientId]: action.seatTypeId,
+					},
 				};
 		}
 
@@ -34,16 +60,23 @@ const store = createReduxStore(storeName, {
 			return state.layouts;
 		},
 		getLayoutsInOptionFormat(state) {
-			return state.layouts.map(layout => ({
+			return state.layouts.map((layout) => ({
 				label: layout.name,
 				value: layout.id,
 			}));
 		},
-		getSeatTypesInOptionFormat(state)  {
-			return state.seatTypes.map(seatType => ({
+		getSeatTypesInOptionFormat(state, layoutId) {
+			// @todo fetch this from the backend
+			return state.seatTypes.map((seatType) => ({
 				label: `${seatType.name} (${seatType.seats})`,
 				value: seatType.id,
 			}));
+		},
+		getCurrentLayoutId(state) {
+			return state?.currentLayoutId || null;
+		},
+		getCurrentSeatTypeId(state, ticketBlockClientId) {
+			return state?.seatTypes?.[ticketBlockClientId] || null;
 		},
 	},
 	controls: {},
@@ -52,4 +85,4 @@ const store = createReduxStore(storeName, {
 
 register(store);
 
-export {store, storeName};
+export { store, storeName };
