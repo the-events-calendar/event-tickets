@@ -256,8 +256,13 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 			);
 		}
 
+		// If price field is left blank, we create a free ticket.
+		if ( isset( $body['price'] ) && '' === trim( $body['price'] ) ) {
+			$body['price'] = '0';
+		}
+
 		$is_paypal_ticket = $provider instanceof Tribe__Tickets__Commerce__PayPal__Main || $provider instanceof \TEC\Tickets\Commerce\Module;
-		$is_invalid_price = ( empty( $body['price']  ) || ! is_numeric( $body['price'] ) || (float) $body['price'] <= 0 );
+		$is_invalid_price = ! is_numeric( $body['price'] ) || (float) $body['price'] < 0;
 
 		if (
 			$is_paypal_ticket

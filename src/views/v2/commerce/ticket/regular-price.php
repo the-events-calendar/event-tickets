@@ -23,4 +23,4 @@ if ( $on_sale ) {
 	return;
 }
 
-echo esc_html( $price->get_currency() );
+echo esc_html( $price->get_currency_display() );
