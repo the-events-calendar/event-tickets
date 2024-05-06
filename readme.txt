@@ -196,6 +196,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Fix - Send attendees by email functionality. [GTRIA-1256]
+
 = [5.9.1.1] 2024-04-25 =
 
 * Fix - Corrected the Attendees page when languages other than English are used. [GTRIA-1268]
