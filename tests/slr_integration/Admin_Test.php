@@ -1,19 +1,19 @@
 <?php
 
-namespace TEC\Events_Assigned_Seating\Admin;
+namespace TEC\Tickets\Seating\Admin;
 
-use lucatume\WPBrowser\Traits\UopzFunctions;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
-use TEC\Events_Assigned_Seating\Admin;
-use TEC\Events_Assigned_Seating\Admin\Tabs\Layout_Edit;
-use TEC\Events_Assigned_Seating\Admin\Tabs\Layouts;
-use TEC\Events_Assigned_Seating\Admin\Tabs\Map_Edit;
-use TEC\Events_Assigned_Seating\Admin\Tabs\Maps;
-use TEC\Events_Assigned_Seating\Service\Service;
+use TEC\Tickets\Seating\Admin;
+use TEC\Tickets\Seating\Admin\Tabs\Layout_Edit;
+use TEC\Tickets\Seating\Admin\Tabs\Layouts;
+use TEC\Tickets\Seating\Admin\Tabs\Map_Edit;
+use TEC\Tickets\Seating\Admin\Tabs\Maps;
+use TEC\Tickets\Seating\Service\Service;
+use Tribe\Tests\Traits\With_Uopz;
 
 class Admin_Test extends Controller_Test_Case {
-	use UopzFunctions;
+	use With_Uopz;
 	use SnapshotAssertions;
 
 	protected string $controller_class = Admin::class;
@@ -22,7 +22,7 @@ class Admin_Test extends Controller_Test_Case {
 	 * @before
 	 */
 	public function mock_admin_context(): void {
-		$this->setFunctionReturn( 'is_admin', true );
+		$this->set_fn_return( 'is_admin', true );
 		wp_set_current_user( self::factory()->user->create( [ 'role' => 'administrator' ] ) );
 	}
 
@@ -75,7 +75,7 @@ class Admin_Test extends Controller_Test_Case {
 		do_action( 'admin_menu' );
 		// Render the page.
 		ob_start();
-		do_action( 'tickets_page_tec-events-assigned-seating' );
+		do_action( 'tickets_page_tec-tickets-seating' );
 		$this->assertMatchesHtmlSnapshot( ob_get_clean() );
 	}
 }

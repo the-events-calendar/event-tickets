@@ -1,6 +1,6 @@
 <?php
 
-namespace TEC\Events_Assigned_Seating\Tests\Integration;
+namespace TEC\Tickets\Seating\Tests\Integration;
 
 trait Service_Mocking {
 

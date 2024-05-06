@@ -1,6 +1,6 @@
 <?php
 
-namespace TEC\Events_Assigned_Seating;
+namespace TEC\Tickets\Seating;
 
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 

@@ -1,10 +1,10 @@
 <?php
 
-namespace TEC\Events_Assigned_Seating\Admin;
+namespace TEC\Tickets\Seating\Admin;
 
-use lucatume\WPBrowser\TestCase\WPTestCase;
+use Codeception\TestCase\WPTestCase;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
-use TEC\Events_Assigned_Seating\Admin\Tabs\Layouts;
+use TEC\Tickets\Seating\Admin\Tabs\Layouts;
 
 class Maps_Layout_Homepage_Test extends WPTestCase {
 	use SnapshotAssertions;

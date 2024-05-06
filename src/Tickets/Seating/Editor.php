@@ -82,12 +82,12 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 
 		$service = $this->container->get( Service::class );
 
-		$seat_types_in_option_format = $service->get_seat_types_in_option_format();
+		$layouts_in_option_format = $service->get_layouts_in_option_format();
 
 		return [
 			'isUsingAssignedSeating' => $is_using_assigned_seating,
-			'layouts'                => $service->get_layouts_in_option_format(),
-			'seatTypes'              => $seat_types_in_option_format,
+			'layouts'                => $layouts_in_option_format,
+			'seatTypes'              => $service->get_seat_types_in_option_format(),
 		];
 	}
 

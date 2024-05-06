@@ -3,7 +3,7 @@
  * Plugin Name: Events Assigned Controller Test
  */
 
-use TEC\Events_Assigned_Seating\Service\Service;
+use TEC\Tickets\Seating\Service\Service;
 
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
 	// Run `wp slr:seed:test` to seed the test data.
