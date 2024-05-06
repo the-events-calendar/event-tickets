@@ -613,7 +613,7 @@ class Settings {
 	/**
 	 * Determine if free ticket is allowed in Tickets Commerce.
 	 *
-	 * @since TBD
+	 * @since 5.10.0
 	 *
 	 * @return bool
 	 */
@@ -621,7 +621,7 @@ class Settings {
 		/**
 		 * Filter to allow free tickets in Tickets Commerce.
 		 *
-		 * @since TBD
+		 * @since 5.10.0
 		 *
 		 * @param bool $is_free_ticket_allowed Whether free tickets are allowed in Tickets Commerce.
 		 */

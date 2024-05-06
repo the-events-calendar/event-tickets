@@ -131,7 +131,7 @@ function tec_tc_get_ticket( $ticket = null, $output = OBJECT, $filter = 'raw', $
 /**
  * Checks if the free ticket is allowed.
  *
- * @since TBD
+ * @since 5.10.0
  *
  * @return bool
  */

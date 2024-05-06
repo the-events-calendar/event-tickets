@@ -79,7 +79,7 @@ class Value extends Abstract_Currency {
 	/**
 	 * Get the display currency.
 	 *
-	 * @since TBD
+	 * @since 5.10.0
 	 *
 	 * @return string The display text for this value.
 	 */
@@ -93,7 +93,7 @@ class Value extends Abstract_Currency {
 		/**
 		 * Filter the currency display.
 		 *
-		 * @since TBD
+		 * @since 5.10.0
 		 *
 		 * @param string $currency_display The currency display.
 		 * @param Value  $value            The value object.

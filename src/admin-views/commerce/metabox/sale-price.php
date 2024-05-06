@@ -3,7 +3,7 @@
  * Renders the sale price fields for Tickets Commerce.
  *
  * @since 5.9.0
- * @since TBD Added the $is_free_ticket_allowed parameter and updated validation for the Sale Price input field.
+ * @since 5.10.0 Added the $is_free_ticket_allowed parameter and updated validation for the Sale Price input field.
  *
  * @var Ticket_Object $ticket The ticket object.
  * @var string        $sale_price The sale price.

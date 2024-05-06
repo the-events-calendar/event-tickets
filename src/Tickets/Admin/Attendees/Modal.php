@@ -69,7 +69,7 @@ class Modal {
 	/**
 	 * Get the default modal args.
 	 *
-	 * @since TBD
+	 * @since 5.10.0
 	 *
 	 * @param array $args Override default args by sending them in the `$args`.
 	 *
@@ -97,7 +97,7 @@ class Modal {
 	/**
 	 * Get the default modal contents.
 	 *
-	 * @since TBD
+	 * @since 5.10.0
 	 *
 	 * @param array $args Override default args by sending them in the `$args`.
 	 *
@@ -128,7 +128,7 @@ class Modal {
 	/**
 	 * Get the default modal button args.
 	 *
-	 * @since TBD
+	 * @since 5.10.0
 	 *
 	 * @param array $args Override default args by sending them in the `$args`.
 	 *
@@ -163,7 +163,7 @@ class Modal {
 	/**
 	 * Get the default modal button.
 	 *
-	 * @since TBD
+	 * @since 5.10.0
 	 *
 	 * @param array $args Override default args by sending them in the `$args`.
 	 *
@@ -180,7 +180,7 @@ class Modal {
 	 * Get the `Attendee Details` modal content,
 	 * depending on the request.
 	 *
-	 * @since TBD
+	 * @since 5.10.0
 	 *
 	 * @param string|\WP_Error $render_response The render response HTML content or WP_Error with list of errors.
 	 * @param array            $vars            The request variables.

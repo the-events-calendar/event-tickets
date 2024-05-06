@@ -17,7 +17,7 @@ class Order extends Abstract_Order {
 	/**
 	 * @inheritDoc
 	 *
-	 * @since TBD Fixed extra trailing slash.
+	 * @since 5.10.0 Fixed extra trailing slash.
 	 */
 	public function get_gateway_dashboard_url_by_order( \WP_Post $order ): string {
 		$status  = tribe( Status_Handler::class )->get_by_wp_slug( $order->post_status );

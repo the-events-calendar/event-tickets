@@ -15,7 +15,7 @@ use Tribe__Tickets__Tickets;
  * Extends the cloning capability introduced by Events Pro to also handle the duplication of tickets
  * to new posts.
  *
- * @since TBD
+ * @since 5.10.0
  *
  * @package TEC\Events\Integrations\Plugins\Events_Pro
  */
@@ -58,7 +58,7 @@ class Duplicate_Post extends Integration_Abstract {
 	/**
 	 * Duplicate tickets to a new post.
 	 *
-	 * @since TBD
+	 * @since 5.10.0
 	 *
 	 * @param \WP_Post $new_post New post object.
 	 * @param \WP_Post $post Original post object.
