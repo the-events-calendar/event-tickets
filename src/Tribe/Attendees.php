@@ -462,18 +462,19 @@ class Tribe__Tickets__Attendees {
 			$type              = $email_address ? 'email' : 'user';
 			$send_to           = $type === 'email' ? $email_address : $user_id;
 
-			$status = $this->has_attendees_list_access(
-				$event_id,
-				$nonce,
-				$type,
-				$send_to
-			);
+			$status = '';
 
-			if ( ! $should_send_email ) {
-				$status = $this->send_mail_list( $event_id, $email_address, $send_to, $status );
-			} else {
-				// If status is true return a friendly message.
-				$status = esc_html__( 'Email sent successfully!', 'event-tickets' );
+			if ( $should_send_email ) {
+
+				$status = $this->has_attendees_list_access(
+					$event_id,
+					$nonce,
+					$type,
+					$send_to
+				);
+
+				$status = $this->send_mail_list( $event_id, $type, $send_to, $status );
+
 			}
 
 			tribe( 'tickets.admin.views' )->template( 'attendees/attendees-email', [ 'status' => $status ] );
@@ -912,12 +913,17 @@ class Tribe__Tickets__Attendees {
 			$user = get_user_by( 'id', $send_to );
 
 			if ( ! is_object( $user ) ) {
-				$error->add( 'invalid-user', esc_html__( 'Invalid User ID', 'event-tickets' ), [ 'type' => $type, 'user' => $send_to ] );
+				$error->add( 'invalid-user', esc_html__( 'Invalid User ID', 'event-tickets' ), [
+					'type' => $type,
+					'user' => $send_to
+				] );
 
 				return $error;
 			}
 
 			$email = $user->data->user_email;
+		} else {
+			$email = $send_to;
 		}
 
 		$this->attendees_table = new Tribe__Tickets__Attendees_Table();
