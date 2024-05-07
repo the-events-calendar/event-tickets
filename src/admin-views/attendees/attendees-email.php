@@ -43,7 +43,7 @@ $referer    = ! empty( $_SERVER['HTTP_REFERER'] ) ? "action='" . esc_url( $_SERV
 	</div>
 		<div id="plugin-information-footer">
 		<?php
-		if ( false !== $status ) {
+		if ( ! empty( $status ) ) {
 			echo '<div class="tribe-attendees-email-message ' . ( is_wp_error( $status ) ? 'error ' : 'updated ' ) . 'notice is-dismissible">';
 			if ( is_wp_error( $status ) ) {
 				echo '<ul>';
