@@ -92,6 +92,13 @@ class Frontend extends Controller_Contract {
 	 * @return string|null The template HTML, or `null` to let the default template process it.
 	 */
 	public function print_tickets_block( $html, $file, $name, $template, $context ): ?string {
+		$data    = $template->get_values();
+		$post_id = $data['post_id'];
+		
+		if ( ! tec_tickets_is_assigned_seating_enabled( $post_id ) ) {
+			return $html;
+		}
+		
 		return $this->template->template( 'tickets-block', [], false );
 	}
 }
