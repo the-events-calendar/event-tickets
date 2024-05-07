@@ -1,4 +1,4 @@
-import {addFilter} from '@wordpress/hooks';
+import { addFilter } from '@wordpress/hooks';
 import CapacityForm from './capacity-form';
 
 const shouldRenderAssignedSeatingForm = true;
@@ -8,7 +8,7 @@ function filterRenderCapacityForm(renderDefaultForm) {
 		return renderDefaultForm;
 	}
 
-	return () => (<CapacityForm renderDefaultForm={renderDefaultForm}/>);
+	return () => <CapacityForm renderDefaultForm={renderDefaultForm} />;
 }
 
 addFilter(

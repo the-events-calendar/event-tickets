@@ -2,19 +2,20 @@
 /**
  * The service component used to fetch the Seat Types from the service.
  *
- * @since TBD
+ * @since   TBD
  *
  * @package TEC\Controller\Service;
  */
 
 namespace TEC\Tickets\Seating\Service;
 
+use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Seating\Tables\Seat_Types as Seat_Types_Table;
 
 /**
  * Class Seat_Types.
  *
- * @since TBD
+ * @since   TBD
  *
  * @package TEC\Controller\Service;
  */
@@ -86,8 +87,6 @@ class Seat_Types {
 		}
 
 		return Seat_Types_Table::insert_many( $valid );
-
-
 	}
 
 	/**
@@ -95,31 +94,25 @@ class Seat_Types {
 	 *
 	 * @since TBD
 	 *
+	 * @param string[] $layout_ids The layout IDs to get the seat types for.
+	 *
 	 * @return array<string, array{id: string, name: string, seats: int}> The seat types in option format.
 	 */
-	public function get_in_option_format(): array {
+	public function get_in_option_format( array $layout_ids ): array {
 		if ( ! $this->update() ) {
 			return [];
 		}
 
-		$seat_types = wp_cache_get( 'option_format_seat_types', 'tec-tickets-seating' );
-
-		if ( ! ( $seat_types && is_array( $seat_types ) ) ) {
-			$seat_types = [];
-			foreach ( Seat_Types_Table::fetch_all() as $row ) {
-				$seat_types[] = [
-					'id'    => $row->id,
-					'name'  => $row->name,
-					'seats' => $row->seats,
-				];
-			}
-
-			wp_cache_set(
-				'option_format_seat_types',
-				$seat_types,
-				'tec-tickets-seating',
-				self::update_transient_expiration()
-			);
+		$seat_types              = [];
+		$layout_ids_placeholders = implode( ',', array_fill( 0, count( $layout_ids ), '%s' ) );
+		$layout_ids_interval     = DB::prepare( $layout_ids_placeholders, ...$layout_ids );
+		/** @var object{id: string, name: string, seats: int} $row */
+		foreach ( Seat_Types_Table::fetch_all_where( "WHERE layout IN ({$layout_ids_interval})" ) as $row ) {
+			$seat_types[] = [
+				'id'    => $row->id,
+				'name'  => $row->name,
+				'seats' => $row->seats,
+			];
 		}
 
 		return $seat_types;
@@ -135,13 +128,15 @@ class Seat_Types {
 	 * @return bool Whether the seat types are up-to-date or not.
 	 */
 	public function update( bool $force = false ): bool {
-		$updater = new Updater( $this->service_fetch_url, self::update_transient_name(), self::update_transient_expiration() );
+		$updater = new Updater(
+			$this->service_fetch_url,
+			self::update_transient_name(),
+			self::update_transient_expiration()
+		);
 
-		$updated= $updater->check_last_update( $force )
-		               ->update_from_service( fn() => Seat_Types_Table::truncate() )
-		               ->store_fetched_data( [ $this, 'insert_rows_from_service' ] );
-
-		wp_cache_delete( 'option_format_seat_types', 'tec-tickets-seating' );
+		$updated = $updater->check_last_update( $force )
+		                   ->update_from_service( fn() => Seat_Types_Table::truncate() )
+		                   ->store_fetched_data( [ $this, 'insert_rows_from_service' ] );
 
 		return $updated;
 	}
@@ -151,10 +146,10 @@ class Seat_Types {
 	 *
 	 * @since TBD
 	 *
-	 * @return string
+	 * @return string The transient name used to store the last update time.
 	 */
 	public static function update_transient_name(): string {
-		return 'tec_tickets_seating_layouts_last_update';
+		return 'tec_tickets_seating_seat_types_last_update';
 	}
 
 	/**

@@ -68,12 +68,14 @@ class Layouts {
 					return $valid;
 				}
 
-				$valid[] = [
+				$created_date_in_ms = $service_row['createdDate'];
+				$created_date = date( 'Y-m-d H:i:s', $created_date_in_ms / 1000 );
+				$valid[]      = [
 					'id'           => $service_row['id'],
 					'name'         => $service_row['name'],
 					'seats'        => $service_row['seats'],
 					'map'          => $service_row['mapId'],
-					'created_date' => $service_row['createdDate'],
+					'created_date' => $created_date,
 				];
 
 				return $valid;
@@ -136,10 +138,11 @@ class Layouts {
 		$updater = new Updater( $this->service_fetch_url, self::update_transient_name(), self::update_transient_expiration() );
 
 		$updted = $updater->check_last_update( $force )
-		                  ->update_from_service( fn() => Layouts_Table::truncate() )
+		                  ->update_from_service( function () {
+			                  wp_cache_delete( 'option_format_layouts', 'tec-tickets-seating' );
+			                  Layouts_Table::truncate();
+		                  } )
 		                  ->store_fetched_data( [ $this, 'insert_rows_from_service' ] );
-
-		wp_cache_delete( 'option_format_layouts', 'tec-tickets-seating' );
 
 		return $updted;
 	}
@@ -149,7 +152,7 @@ class Layouts {
 	 *
 	 * @since TBD
 	 *
-	 * @return string
+	 * @return string The transient name used to store the last update time.
 	 */
 	public static function update_transient_name(): string {
 		return 'tec_tickets_seating_layouts_last_update';
@@ -160,7 +163,7 @@ class Layouts {
 	 *
 	 * @since TBD
 	 *
-	 * @return int
+	 * @return int The expiration time in seconds.
 	 */
 	public static function update_transient_expiration() {
 		return 12 * HOUR_IN_SECONDS;

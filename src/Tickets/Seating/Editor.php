@@ -2,23 +2,22 @@
 /**
  * The main Editor controller, for both Classic and Blocks.
  *
- * @since TBD
+ * @since   TBD
  *
  * @package TEC\Controller;
  */
 
 namespace TEC\Tickets\Seating;
 
-use TEC\Common\StellarWP\Assets\Assets;
 use TEC\Common\StellarWP\Assets\Asset;
-use TEC\Tickets\Seating\Admin\Tabs\Layouts;
+use TEC\Common\StellarWP\Assets\Assets;
 use TEC\Tickets\Seating\Service\Service;
 use Tribe__Tickets__Main as Tickets;
 
 /**
  * Class Editor.
  *
- * @since TBD
+ * @since   TBD
  *
  * @package TEC\Controller;
  */
@@ -38,27 +37,6 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 	}
 
 	/**
-	 * Returns the data common to both the Block Editor and the Classic Editor.
-	 *
-	 * @since TBD
-	 *
-	 * @return array{
-	 *     links: array<string,string>,
-	 *     localizedStrings: array{capacity-form: array<string,string>},
-	 * }
-	 */
-	public function get_editor_data(): array {
-		return [
-			'links'            => [
-				'layouts' => $this->container->get( Layouts::class )->get_url(),
-			],
-			'localizedStrings' => [
-				'capacity-form' => $this->container->get( Localization::class )->get_capacity_form_strings(),
-			],
-		];
-	}
-
-	/**
 	 * Returns the store data used to hydrate the store in Block Editor context.
 	 *
 	 * @since TBD
@@ -73,21 +51,25 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 		if ( tribe_context()->is_new_post() ) {
 			// New posts will always use assigned seating.
 			$is_using_assigned_seating = true;
+			$layout_id                 = null;
 		} else {
 			// If not defined, assume it's using assigned seating.
-			$post_id                   = tribe_context()->get( 'post_id' );
+			$post_id                   = get_the_ID();
 			$is_using_assigned_seating = ! metadata_exists( 'post', $post_id, Meta::META_KEY_ENABLED )
-			                             || tribe_is_truthy( get_post_meta( get_the_ID(), Meta::META_KEY_ENABLED, true ) );
+			                             || tribe_is_truthy(
+				                             get_post_meta( get_the_ID(), Meta::META_KEY_ENABLED, true )
+			                             );
+			$layout_id                 = get_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, true );
+
 		}
 
 		$service = $this->container->get( Service::class );
 
-		$layouts_in_option_format = $service->get_layouts_in_option_format();
-
 		return [
 			'isUsingAssignedSeating' => $is_using_assigned_seating,
-			'layouts'                => $layouts_in_option_format,
-			'seatTypes'              => $service->get_seat_types_in_option_format(),
+			'layouts'                => $service->get_layouts_in_option_format(),
+			'seatTypes'              => [],
+			'currentLayoutId'        => $layout_id,
 		];
 	}
 
@@ -120,10 +102,10 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 			     'react',
 			     'react-dom',
 			     'tec-tickets-seating-utils',
-			     'tribe-common-gutenberg-vendor'  // @todo revise this dependency
+			     'tec-tickets-seating-ajax',
+			     'tribe-common-gutenberg-vendor'
 		     )
 		     ->enqueue_on( 'enqueue_block_editor_assets' )
-		     ->add_localize_script( 'tec.seating', [ $this, 'get_editor_data' ] )
 		     ->add_localize_script( 'tec.seating.blockEditor', [ $this, 'get_store_data' ] )
 		     ->add_to_group( 'tec-tickets-seating-editor' )
 		     ->add_to_group( 'tec-tickets-seating' )

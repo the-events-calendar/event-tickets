@@ -55,9 +55,9 @@ class Admin_Test extends Controller_Test_Case {
 	public function should_add_the_sub_menu_page( string $tab = null ): void {
 		$this->test_services->singleton( Service::class, function () {
 			return $this->make( Service::class, [
-				'frontend_base_url'    => 'https://service.test.local',
+				'frontend_base_url'   => 'https://service.test.local',
 				'get_ephemeral_token' => 'test-ephemeral-token'
-			], $this );
+			],                  $this );
 		} );
 
 		if ( $tab === null ) {
@@ -77,5 +77,17 @@ class Admin_Test extends Controller_Test_Case {
 		ob_start();
 		do_action( 'tickets_page_tec-tickets-seating' );
 		$this->assertMatchesHtmlSnapshot( ob_get_clean() );
+	}
+
+	public function test_get_ajax_data(): void {
+		$this->set_fn_return( 'wp_create_nonce', '8298ff6616' );
+		$controller = $this->make_controller();
+		$this->assertMatchesJsonSnapshot( wp_json_encode( $controller->get_ajax_data(), JSON_SNAPSHOT_OPTIONS ) );
+	}
+
+	public function test_get_utils_data(): void {
+		$this->set_fn_return( 'wp_create_nonce', '8298ff6616' );
+		$controller = $this->make_controller();
+		$this->assertMatchesJsonSnapshot( wp_json_encode( $controller->get_utils_data(), JSON_SNAPSHOT_OPTIONS ) );
 	}
 }

@@ -96,6 +96,17 @@ const targets = [
 		},
 	},
 	{
+		name: 'seating-ajax',
+		entry: './src/resources/js/seating/ajax.js',
+		outputScript: './build/Seating/ajax.min.js',
+		outputStyle: `build/Seating/ajax.${postfix}`,
+		moveFromTo: {
+			'src/resources/js/app/seating-ajax.js': 'build/Seating/ajax.js',
+			'src/resources/css/app/seating-ajax.css':
+				'build/Seating/ajax.css',
+		},
+	},
+	{
 		name: 'seating-admin-bundle',
 		entry: './src/resources/bundles/seating/admin/index.js',
 		outputScript: './build/Seating/admin/bundle.min.js',
