@@ -11,8 +11,6 @@ namespace TEC\Tickets\Seating;
 
 use TEC\Common\StellarWP\Assets\Asset;
 use TEC\Common\StellarWP\Assets\Assets;
-use TEC\Tickets\Seating\Admin\Ajax;
-use TEC\Tickets\Seating\Admin\Tabs\Layouts;
 use TEC\Tickets\Seating\Service\Service;
 use Tribe__Tickets__Main as Tickets;
 
@@ -39,30 +37,6 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 	}
 
 	/**
-	 * Returns the data common to both the Block Editor and the Classic Editor.
-	 *
-	 * @since TBD
-	 *
-	 * @return array{
-	 *     links: array<string,string>,
-	 *     localizedStrings: array{capacity-form: array<string,string>},
-	 * }
-	 */
-	public function get_editor_data(): array {
-		return [
-			'links'            => [
-				'layouts' => $this->container->get( Layouts::class )->get_url(),
-			],
-			'localizedStrings' => [
-				'capacity-form' => $this->container->get( Localization::class )->get_capacity_form_strings(),
-			],
-			'ajax'             => [
-				'urls' => $this->container->get( Ajax::class )->get_urls()
-			],
-		];
-	}
-
-	/**
 	 * Returns the store data used to hydrate the store in Block Editor context.
 	 *
 	 * @since TBD
@@ -80,7 +54,7 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 			$layout_id                 = null;
 		} else {
 			// If not defined, assume it's using assigned seating.
-			$post_id                   = tribe_context()->get( 'post_id' );
+			$post_id                   = get_the_ID();
 			$is_using_assigned_seating = ! metadata_exists( 'post', $post_id, Meta::META_KEY_ENABLED )
 			                             || tribe_is_truthy(
 				                             get_post_meta( get_the_ID(), Meta::META_KEY_ENABLED, true )
@@ -91,14 +65,11 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 
 		$service = $this->container->get( Service::class );
 
-		$seat_types_map = []; // @todo
-
 		return [
 			'isUsingAssignedSeating' => $is_using_assigned_seating,
 			'layouts'                => $service->get_layouts_in_option_format(),
 			'seatTypes'              => [],
 			'currentLayoutId'        => $layout_id,
-			'seatTypesByTicketId'    => $seat_types_map,
 		];
 	}
 
@@ -135,7 +106,6 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 			     'tribe-common-gutenberg-vendor'
 		     )
 		     ->enqueue_on( 'enqueue_block_editor_assets' )
-		     ->add_localize_script( 'tec.seating', [ $this, 'get_editor_data' ] )
 		     ->add_localize_script( 'tec.seating.blockEditor', [ $this, 'get_store_data' ] )
 		     ->add_to_group( 'tec-tickets-seating-editor' )
 		     ->add_to_group( 'tec-tickets-seating' )

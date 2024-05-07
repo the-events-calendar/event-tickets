@@ -5,20 +5,19 @@ import { store, storeName } from '../store';
 import PropTypes from 'prop-types';
 import { LabeledItem, Select } from '@moderntribe/common/elements';
 import './style.pcss';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 const { getLink, getLocalizedString } = tec.seating.utils;
-const { fetchSeatTypesByLayoutId } = tec.seating.ajax;
 
 const getString = (key) => getLocalizedString(key, 'capacity-form');
 
 const EventLayoutSelect = ({
 	layouts,
+	onLayoutChange,
+	currentLayout,
 	seatTypes,
-	setLayout,
-	layout,
-	setSeatType,
-	seatType,
+	onSeatTypeChange,
+	currentSeatType,
 }) => {
 	return (
 		<Fragment>
@@ -33,12 +32,12 @@ const EventLayoutSelect = ({
 					id="tec-tickets-seating-layouts-select"
 					placeholder={getString('event-layouts-select-placeholder')}
 					options={layouts}
-					onChange={(value) => setLayout(value)}
-					value={layout}
+					onChange={onLayoutChange}
+					value={currentLayout}
 				/>
 			</LabeledItem>
 
-			{layout && (
+			{currentLayout && (
 				<LabeledItem
 					className="tribe-editor__labeled-select-input tribe-editor__labeled-select-input--nested"
 					label={getString('seat-types-select-label')}
@@ -50,8 +49,8 @@ const EventLayoutSelect = ({
 						id="tec-tickets-seating-layouts-select"
 						placeholder={getString('seat-types-select-placeholder')}
 						options={seatTypes}
-						onChange={(value) => setSeatType(value)}
-						value={seatType}
+						onChange={onSeatTypeChange}
+						value={currentSeatType}
 					/>
 				</LabeledItem>
 			)}
@@ -75,17 +74,22 @@ EventLayoutSelect.propTypes = {
 			value: PropTypes.string.isRequired,
 		})
 	).isRequired,
+	onLayoutChange: PropTypes.func.isRequired,
+	currentLayout: PropTypes.shape({
+		label: PropTypes.string.isRequired,
+		value: PropTypes.string.isRequired,
+	}),
 	seatTypes: PropTypes.arrayOf(
 		PropTypes.shape({
 			label: PropTypes.string.isRequired,
 			value: PropTypes.string.isRequired,
 		})
 	).isRequired,
-	setLayout: PropTypes.func.isRequired, // eslint-disable-line react/no-unused-prop-types
-	layout: PropTypes.string.isRequired,
-	ticketBlockClientId: PropTypes.number.isRequired,
-	setSeatType: PropTypes.func.isRequired,
-	seatType: PropTypes.string.isRequired,
+	onSeatTypeChange: PropTypes.func.isRequired,
+	currentSeatType: PropTypes.shape({
+		label: PropTypes.string.isRequired,
+		value: PropTypes.string.isRequired,
+	}),
 };
 
 const MemoizedEventLayoutSelect = React.memo(EventLayoutSelect);
@@ -94,8 +98,7 @@ export default function CapacityForm({
 	renderDefaultForm,
 	ticketBlockClientId,
 }) {
-	const { setUsingAssignedSeating, setLayout, setSeatType } =
-		useDispatch(store);
+	const { setUsingAssignedSeating, setLayout } = useDispatch(store);
 	const isUsingAssignedSeating = useSelect((select) => {
 		return select(storeName).isUsingAssignedSeating();
 	}, []);
@@ -105,25 +108,27 @@ export default function CapacityForm({
 	const layout = useSelect((select) => {
 		return select(storeName).getCurrentLayoutId();
 	}, []);
-	const seatType = useSelect(
-		(select) => {
-			return select(storeName).getCurrentSeatTypeId(ticketBlockClientId);
-		},
-		[ticketBlockClientId]
-	);
 	const onToggleChange = useCallback(() => {
 		setUsingAssignedSeating(!isUsingAssignedSeating);
 	}, [isUsingAssignedSeating, setUsingAssignedSeating]);
+	const seatTypes = useSelect(
+		(select) => {
+			return select(storeName).getSeatTypesForLayout(layout);
+		},
+		[layout]
+	);
+	const [seatType, setSeatType] = useState(null);
 
-	const [seatTypes, setSeatTypes] = useState([]);
-
-	useEffect(() => {
-		fetchSeatTypesByLayoutId(layout)
-			.then((fetchedSeatTypes) => setSeatTypes(fetchedSeatTypes))
-			.catch((error) => {
-				console.error(error);
-			});
-	}, [layout]);
+	const currentLayout =
+		layouts && layout
+			? layouts.find((layoutOption) => layoutOption.value === layout)
+			: null;
+	const currentSeatType =
+		seatTypes && seatType
+			? seatTypes.find(
+					(seatTypeOption) => seatTypeOption.value === seatType
+			  )
+			: null;
 
 	return (
 		<Fragment>
@@ -135,15 +140,12 @@ export default function CapacityForm({
 			/>
 			{isUsingAssignedSeating ? (
 				<MemoizedEventLayoutSelect
-					ticketBlockClientId={ticketBlockClientId}
 					layouts={layouts}
+					onLayoutChange={(choice) => setLayout(choice.value)}
+					currentLayout={currentLayout}
 					seatTypes={seatTypes}
-					setLayout={setLayout}
-					layout={layout}
-					setSeatType={(value) =>
-						setSeatType(ticketBlockClientId, value)
-					}
-					seatType={seatType}
+					onSeatTypeChange={(choice) => setSeatType(choice.value)}
+					currentSeatType={currentSeatType}
 				/>
 			) : (
 				renderDefaultForm()

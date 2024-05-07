@@ -85,19 +85,6 @@ class Service {
 	}
 
 	/**
-	 * Returns a service URL built from the base frontend URL and the given path.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $path The path to append to the base URL.
-	 *
-	 * @return string  The URL built from the base frontend URL and the given path.
-	 */
-	public function get_frontend_url( string $path = '' ): string {
-		return rtrim( $this->frontend_base_url . '/' . ltrim( $path, '/' ), '/' );
-	}
-
-	/**
 	 * Fetches an ephemeral token from the service.
 	 *
 	 * @since TBD
@@ -123,32 +110,6 @@ class Service {
 	}
 
 	/**
-	 * Updates the layouts from the service by updating the caches and custom tables.
-	 *
-	 * @since TBD
-	 *
-	 * @param bool $force If true, the layouts will be updated even if they are up-to-date.
-	 *
-	 * @return bool Whether the layouts were updated or not.
-	 */
-	public function update_layouts( bool $force = false ): bool {
-		return $this->layouts->update( $force );
-	}
-
-	/**
-	 * Returns a service URL built from the base URL and the given path.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $path The path to append to the base URL.
-	 *
-	 * @return string The URL built from the base URL and the given path.
-	 */
-	public function get_backend_url( string $path = '' ): string {
-		return rtrim( $this->backend_base_url . '/' . ltrim( $path, '/' ), '/' );
-	}
-
-	/**
 	 * Checks if the connection to the service is working from the backend.
 	 *
 	 * @since TBD
@@ -163,6 +124,19 @@ class Service {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Returns a service URL built from the base URL and the given path.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $path The path to append to the base URL.
+	 *
+	 * @return string The URL built from the base URL and the given path.
+	 */
+	public function get_backend_url( string $path = '' ): string {
+		return rtrim( $this->backend_base_url . '/' . ltrim( $path, '/' ), '/' );
 	}
 
 	/**
@@ -196,9 +170,25 @@ class Service {
 	 * @return string The URL to load the service route to create a new map and associated layout.
 	 */
 	public function get_map_create_url( string $token ): string {
-		return add_query_arg( [
-			'token' => urlencode( $token ),
-		], $this->get_frontend_url( '/embed/create-map-layout/' ) );
+		return add_query_arg(
+			[
+				'token' => urlencode( $token ),
+			],
+			$this->get_frontend_url( '/embed/create-map-layout/' )
+		);
+	}
+
+	/**
+	 * Returns a service URL built from the base frontend URL and the given path.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $path The path to append to the base URL.
+	 *
+	 * @return string  The URL built from the base frontend URL and the given path.
+	 */
+	public function get_frontend_url( string $path = '' ): string {
+		return rtrim( $this->frontend_base_url . '/' . ltrim( $path, '/' ), '/' );
 	}
 
 	/**
@@ -211,10 +201,13 @@ class Service {
 	 * @return string The URL to load the Maps create and edit page.
 	 */
 	public function get_map_edit_url( string $token, string $map_id ): string {
-		return add_query_arg( [
-			'token' => urlencode( $token ),
-			'mapId' => urlencode( $map_id ),
-		], $this->get_frontend_url( '/embed/seating-map/' ) );
+		return add_query_arg(
+			[
+				'token' => urlencode( $token ),
+				'mapId' => urlencode( $map_id ),
+			],
+			$this->get_frontend_url( '/embed/seating-map/' )
+		);
 	}
 
 	/**
@@ -227,9 +220,12 @@ class Service {
 	 * @return string The URL to load the service route to create a new seat layout.
 	 */
 	public function get_layout_create_url( string $token ): string {
-		return add_query_arg( [
-			'token' => urlencode( $token ),
-		], $this->get_frontend_url( '/embed/seat-layout/' ) );
+		return add_query_arg(
+			[
+				'token' => urlencode( $token ),
+			],
+			$this->get_frontend_url( '/embed/seat-layout/' )
+		);
 	}
 
 	/**
@@ -237,39 +233,18 @@ class Service {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $token The ephemeral token used to secure the iframe communication with the service.
+	 * @param string $token     The ephemeral token used to secure the iframe communication with the service.
 	 * @param string $layout_id The ID of the layout to edit.
 	 *
 	 * @return string The URL to load the service route to edit a seat layout.
 	 */
 	public function get_layout_edit_url( string $token, string $layout_id ): string {
-		return add_query_arg( [
-			'token'    => urlencode( $token ),
-			'layoutId' => urlencode( $layout_id ),
-		], $this->get_frontend_url( '/embed/seat-layout/' ) );
-	}
-
-	/**
-	 * Returns the seat types in option format.
-	 *
-	 * @since TBD
-	 *
-	 * @return array<string, array{id: string, name: string, seats: int}> The seat types in option format.
-	 */
-	public function get_seat_types_in_option_format():array {
-		return $this->seat_types->get_in_option_format();
-	}
-
-	/**
-	 * Updates the seat types from the service by updating the caches and custom tables.
-	 *
-	 * @since TBD
-	 *
-	 * @param bool $force If true, the seat types will be updated even if they are up-to-date.
-	 *
-	 * @return bool Whether the seat types were updated or not.
-	 */
-	public function update_seat_types( bool $force = false ): bool {
-		return $this->seat_types->update( $force );
+		return add_query_arg(
+			[
+				'token'    => urlencode( $token ),
+				'layoutId' => urlencode( $layout_id ),
+			],
+			$this->get_frontend_url( '/embed/seat-layout/' )
+		);
 	}
 }

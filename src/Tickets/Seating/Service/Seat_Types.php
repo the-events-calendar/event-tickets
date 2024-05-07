@@ -9,6 +9,7 @@
 
 namespace TEC\Tickets\Seating\Service;
 
+use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Seating\Tables\Seat_Types as Seat_Types_Table;
 
 /**
@@ -93,16 +94,20 @@ class Seat_Types {
 	 *
 	 * @since TBD
 	 *
+	 * @param string[] $layout_ids The layout IDs to get the seat types for.
+	 *
 	 * @return array<string, array{id: string, name: string, seats: int}> The seat types in option format.
 	 */
-	public function get_in_option_format( string $layout_id ): array {
+	public function get_in_option_format( array $layout_ids ): array {
 		if ( ! $this->update() ) {
 			return [];
 		}
 
-		$seat_types = [];
-		// WWID - fetch by Layout ID.
-		foreach ( Seat_Types_Table::fetch_all() as $row ) {
+		$seat_types              = [];
+		$layout_ids_placeholders = implode( ',', array_fill( 0, count( $layout_ids ), '%s' ) );
+		$layout_ids_interval     = DB::prepare( $layout_ids_placeholders, ...$layout_ids );
+		/** @var object{id: string, name: string, seats: int} $row */
+		foreach ( Seat_Types_Table::fetch_all_where( "WHERE layout IN ({$layout_ids_interval})" ) as $row ) {
 			$seat_types[] = [
 				'id'    => $row->id,
 				'name'  => $row->name,

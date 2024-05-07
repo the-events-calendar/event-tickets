@@ -16,25 +16,27 @@ const {seatTypesByLayoutId} = window.tec.seating.ajax.urls;
  */
 async function fetchSeatTypesByLayoutId(layoutId) {
 	const response = await fetch(
-		`${seatTypesByLayoutId}&layoutId=${layoutId}`,
+		`${seatTypesByLayoutId}&layout=${layoutId}`,
 		{
 			method: 'GET',
 			headers: {
 				'Accept': 'application/json',
 			},
-		}
+		},
 	);
 
-	if ( response.status !== 200 ) {
+	if (response.status !== 200) {
 		throw new Error(
-			`Failed to fetch seat types for layout ID ${layoutId}. Status: ${response.status}`
+			`Failed to fetch seat types for layout ID ${layoutId}. Status: ${response.status}`,
 		);
 	}
 
-	return await response.json();
+	const json = await response.json();
+
+	return json?.data || [];
 }
 
 window.tec.seating.ajax = {
-	...(window.tec.seating.ajax || {}),
+	...window.tec.seating.ajax,
 	fetchSeatTypesByLayoutId,
 };

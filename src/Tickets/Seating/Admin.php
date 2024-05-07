@@ -13,6 +13,7 @@ use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\lucatume\DI52\Container;
 use TEC\Common\StellarWP\Assets\Asset;
 use TEC\Common\StellarWP\Assets\Assets;
+use TEC\Tickets\Seating\Admin\Ajax;
 use TEC\Tickets\Seating\Admin\Embed_Test;
 use TEC\Tickets\Seating\Admin\Tabs\Layout_Edit;
 use TEC\Tickets\Seating\Admin\Tabs\Layouts;
@@ -46,7 +47,7 @@ class Admin extends Controller_Contract {
 	 * since TBD
 	 *
 	 * @param Container $container A reference to the container object.
-	 * @param Service $service A reference to the service object.
+	 * @param Service   $service   A reference to the service object.
 	 */
 	public function __construct( Container $container, Service $service ) {
 		parent::__construct( $container );
@@ -70,6 +71,8 @@ class Admin extends Controller_Contract {
 		$assets->remove( 'tec-tickets-seating-admin-map-edit-style' );
 		$assets->remove( 'tec-tickets-seating-admin-layout-edit' );
 		$assets->remove( 'tec-tickets-seating-admin-layout-edit-style' );
+
+		$this->container->get( Admin\Ajax::class )->unregister();
 
 		remove_action( 'admin_menu', [ $this, 'add_submenu_page' ], 1000 );
 		remove_action( 'admin_menu', [ $this, 'add_embed_submenu_page' ], 1000 );
@@ -130,6 +133,21 @@ class Admin extends Controller_Contract {
 	}
 
 	/**
+	 * Returns the Ajax data for the Seating feature.
+	 *
+	 * @since TBD
+	 *
+	 * @return array{
+	 *     urls: array<string, string>
+	 * } The Ajax data for the Seating feature.
+	 */
+	public function get_ajax_data(): array {
+		return [
+			'urls' => $this->container->get( Ajax::class )->get_urls(),
+		];
+	}
+
+	/**
 	 * Register the admin area bindings and hooks on the required hooks.
 	 *
 	 * @since TBD
@@ -143,6 +161,8 @@ class Admin extends Controller_Contract {
 		$this->container->singleton( Admin\Tabs\Map_Edit::class );
 		$this->container->singleton( Admin\Tabs\Layouts::class );
 		$this->container->singleton( Admin\Tabs\Layout_Edit::class );
+
+		$this->container->register( Admin\Ajax::class );
 
 		$this->register_utils();
 		$this->register_admin_bundle();
@@ -170,15 +190,39 @@ class Admin extends Controller_Contract {
 			$this->built_asset_url( 'utils.js' ),
 			Tickets::VERSION
 		)
-		     ->add_to_group( 'tec-tickets-seating' )
-		     ->register();
+			->add_localize_script( 'tec.seating.utils', [ $this, 'get_utils_data' ] )
+			->add_to_group( 'tec-tickets-seating' )
+			->register();
+
 		Asset::add(
 			'tec-tickets-seating-ajax',
 			$this->built_asset_url( 'ajax.js' ),
 			Tickets::VERSION
 		)
+		     ->add_localize_script( 'tec.seating.ajax', [ $this, 'get_ajax_data' ] )
 		     ->add_to_group( 'tec-tickets-seating' )
 		     ->register();
+	}
+
+	/**
+	 * Returns the utils data for the Seating feature.
+	 *
+	 * @since TBD
+	 *
+	 * @return array{
+	 *     links: array<string, string>,
+	 *     localizedStrings: array<string, string>,
+	 * } The utils data for the Seating feature.
+	 */
+	public function get_utils_data(): array {
+		return [
+			'links'            => [
+				'layouts' => $this->container->get( Layouts::class )->get_url(),
+			],
+			'localizedStrings' => [
+				'capacity-form' => $this->container->get( Localization::class )->get_capacity_form_strings(),
+			],
+		];
 	}
 
 	/**
