@@ -196,6 +196,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [5.9.2] TBD =
+
+* Fix - Update to remove moment.js library due to security concerns. [TEC-5011]
+
 = [5.9.1.1] 2024-04-25 =
 
 * Fix - Corrected the Attendees page when languages other than English are used. [GTRIA-1268]
