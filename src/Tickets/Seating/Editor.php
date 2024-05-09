@@ -55,7 +55,10 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 		} else {
 			// If not defined, assume it's using assigned seating.
 			$post_id                   = get_the_ID();
-			$is_using_assigned_seating = tec_tickets_seating_enabled( $post_id );
+			$is_using_assigned_seating = ! metadata_exists( 'post', $post_id, Meta::META_KEY_ENABLED )
+										|| tribe_is_truthy(
+											get_post_meta( get_the_ID(), Meta::META_KEY_ENABLED, true )
+										);
 			$layout_id                 = get_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, true );
 
 		}
