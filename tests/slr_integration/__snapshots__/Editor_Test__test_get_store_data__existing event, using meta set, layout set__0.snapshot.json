@@ -18,5 +18,6 @@
         }
     ],
     "seatTypes": [],
-    "currentLayoutId": "layout-1"
+    "currentLayoutId": "layout-1",
+    "seatTypesByPostId": []
 }

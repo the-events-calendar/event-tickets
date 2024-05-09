@@ -24,7 +24,7 @@ class Meta {
 	 *
 	 * @var string
 	 */
-	public const META_KEY_ENABLED = 'tec_slr_enabled';
+	public const META_KEY_ENABLED = '_tec_slr_enabled';
 
 	/**
 	 * The meta key used to store the layout ID of a post.
@@ -33,5 +33,14 @@ class Meta {
 	 *
 	 * @var string
 	 */
-	public const META_KEY_LAYOUT_ID = 'tec_slr_layout_id';
+	public const META_KEY_LAYOUT_ID = '_tec_slr_layout_id';
+
+	/**
+	 * The meta key used to store the seat type of a Ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const META_KEY_SEAT_TYPE = '_tec_slr_seat_type';
 }

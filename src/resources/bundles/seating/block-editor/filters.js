@@ -3,12 +3,17 @@ import CapacityForm from './capacity-form';
 
 const shouldRenderAssignedSeatingForm = true;
 
-function filterRenderCapacityForm(renderDefaultForm) {
+function filterRenderCapacityForm(renderDefaultForm, { clientId }) {
 	if (!shouldRenderAssignedSeatingForm) {
 		return renderDefaultForm;
 	}
 
-	return () => <CapacityForm renderDefaultForm={renderDefaultForm} />;
+	return () => (
+		<CapacityForm
+			renderDefaultForm={renderDefaultForm}
+			clientId={clientId}
+		/>
+	);
 }
 
 addFilter(

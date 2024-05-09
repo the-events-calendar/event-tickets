@@ -18,6 +18,10 @@
         }
     ],
     "seatTypes": [],
-    "currentLayoutId": "",
-    "seatTypesByPostId": []
+    "currentLayoutId": "layout-1",
+    "seatTypesByPostId": {
+        "8": "uuid-normal",
+        "9": "uuid-forward-block",
+        "10": "uuid-vip"
+    }
 }

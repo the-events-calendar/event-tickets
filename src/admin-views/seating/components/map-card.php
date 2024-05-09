@@ -1,6 +1,6 @@
 <?php
 /**
- * The template used to render a Controller Map card in the Controller Maps page.
+ * The template used to render a Seating Map card in the Controller Maps page.
  *
  * @since TBD
  *

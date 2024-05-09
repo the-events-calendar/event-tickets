@@ -8,7 +8,7 @@
             "event-layouts-select-label": "Event layout:",
             "event-layouts-select-placeholder": "Choose event layout",
             "view-layouts-link-label": "View layouts",
-            "seat-types-select-label": "Seat types:",
+            "seat-types-select-label": "Seat type:",
             "seat-types-select-placeholder": "Choose seat type"
         }
     }

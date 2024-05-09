@@ -72,9 +72,13 @@ class Controller extends Controller_Contract {
 
 		if ( is_admin() ) {
 			$this->container->register( Admin::class );
-			$this->container->register( Editor::class );
 		} else {
 			$this->container->register( Frontend::class );
+		}
+
+		// Register the Editor to handle admin presentations or REST Requests from the Block Editor.
+		if ( wp_is_json_request() || is_admin() ) {
+			$this->container->register( Editor::class );
 		}
 	}
 
