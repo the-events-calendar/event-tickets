@@ -75,6 +75,19 @@ class Frontend extends Controller_Contract {
 			$this->built_asset_url( 'frontend/form.css' ),
 			Tickets::VERSION
 		)
+			->set_dependencies( 'tribe-dialog' )
+			->enqueue_on( 'wp_enqueue_scripts' )
+			->add_to_group( 'tec-tickets-seating-frontend' )
+			->add_to_group( 'tec-tickets-seating' )
+			->register();
+		
+		// Register the front-end JS.
+		Asset::add(
+			'tec-tickets-seating-frontend-js',
+			$this->built_asset_url( 'frontend/form.js' ),
+			Tickets::VERSION
+		)
+			->set_dependencies( 'tribe-dialog-js' )
 			->enqueue_on( 'wp_enqueue_scripts' )
 			->add_to_group( 'tec-tickets-seating-frontend' )
 			->add_to_group( 'tec-tickets-seating' )
