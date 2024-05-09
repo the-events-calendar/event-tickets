@@ -75,4 +75,29 @@ class Value extends Abstract_Currency {
 		);
 
 	}
+
+	/**
+	 * Get the display currency.
+	 *
+	 * @since 5.10.0
+	 *
+	 * @return string The display text for this value.
+	 */
+	public function get_currency_display() {
+		$currency_display = $this->get_currency();
+
+		if ( $this->get_decimal() == 0 ) {
+			$currency_display = _x( 'Free', 'No cost', 'event-tickets' );
+		}
+
+		/**
+		 * Filter the currency display.
+		 *
+		 * @since 5.10.0
+		 *
+		 * @param string $currency_display The currency display.
+		 * @param Value  $value            The value object.
+		 */
+		return apply_filters( 'tec_tickets_commerce_value_get_currency_display', $currency_display, $this );
+	}
 }

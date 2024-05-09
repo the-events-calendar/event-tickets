@@ -28,8 +28,10 @@ class Provider extends Service_Provider {
 	public function register() {
 		$this->container->singleton( static::class, $this );
 
-		$this->container->register( Plugins\Yoast_Duplicate_Post\Duplicate_Post::class);
+		$this->container->register( Plugins\Yoast_Duplicate_Post\Duplicate_Post::class );
 
-		$this->container->register( Themes\Divi\Provider::class);
+		$this->container->register_on_action( 'tec_events_pro_custom_tables_v1_before_duplicate_event', Plugins\Events_Pro\Duplicate_Post::class );
+
+		$this->container->register( Themes\Divi\Provider::class );
 	}
 }

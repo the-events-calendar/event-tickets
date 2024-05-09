@@ -341,33 +341,7 @@ class Cart {
 	 * @return array List of items.
 	 */
 	public function get_items_in_cart( $full_item_params = false ) {
-		$cart  = $this->get_repository();
-		$items = $cart->get_items();
-
-		// When Items is empty in any capacity return an empty array.
-		if ( empty( $items ) ) {
-			return [];
-		}
-
-		if ( $full_item_params ) {
-			$items = array_map( static function ( $item ) {
-				$item['obj']       = \Tribe__Tickets__Tickets::load_ticket_object( $item['ticket_id'] );
-				// If it's an invalid ticket we just remove it.
-				if ( ! $item['obj'] instanceof \Tribe__Tickets__Ticket_Object ) {
-					return null;
-				}
-
-				$sub_total_value = Commerce\Utils\Value::create();
-				$sub_total_value->set_value( $item['obj']->price );
-
-				$item['event_id']  = $item['obj']->get_event_id();
-				$item['sub_total'] = $sub_total_value->sub_total( $item['quantity'] );
-
-				return $item;
-			}, $items );
-		}
-
-		return array_filter( $items );
+		return $this->get_repository()->get_items_in_cart( $full_item_params );
 	}
 
 	/**
@@ -660,4 +634,14 @@ class Cart {
 		return $this->get_repository()->process( $data );
 	}
 
+	/**
+	 * Get the total of the cart.
+	 *
+	 * @since 5.10.0
+	 *
+	 * @return null|float
+	 */
+	public function get_cart_total() {
+		return $this->get_repository()->get_cart_total();
+	}
 }

@@ -4,8 +4,11 @@ namespace Tribe\Tickets\Commerce;
 
 use TEC\Tickets\Commerce;
 use TEC\Tickets\Commerce\Cart;
+use TEC\Tickets\Commerce\Cart\Unmanaged_Cart;
+use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 
 class CartTest extends \Codeception\TestCase\WPTestCase {
+	use Ticket_Maker;
 
 	private static $cart_hash;
 
@@ -81,7 +84,7 @@ class CartTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertNull( $cart_hash, $assertion_msg );
 
 		// Make sure there is a transient set before generating a new hash.
-		set_transient( Cart::get_transient_name( static::$cart_hash ), ['items'] );
+		set_transient( Cart::get_transient_name( static::$cart_hash ), [ 'items' ] );
 
 		$cart_hash = $cart->get_cart_hash( true );
 
@@ -125,5 +128,50 @@ class CartTest extends \Codeception\TestCase\WPTestCase {
 
 		$assertion_msg = 'Cart::REDIRECT_MODE should always be one of the available modes.';
 		$this->assertContains( Cart::REDIRECT_MODE, $cart->get_available_modes(), $assertion_msg );
+	}
+	
+	/**
+	 * @test
+	 *
+	 * @covers \TEC\Tickets\Commerce\Cart::get_cart_total
+	 */
+	public function test_cart_total_is_null_when_empty() {
+		$cart = new Cart();
+
+		$assertion_msg = 'Cart->get_total() should return null when the cart is empty.';
+		$this->assertEquals( null, $cart->get_cart_total(), $assertion_msg );
+	}
+	
+	/**
+	 * @test
+	 *
+	 * @covers \TEC\Tickets\Commerce\Cart::get_cart_total
+	 */
+	public function test_cart_total_is_valid() {
+		$post_id  = $this->factory->post->create(
+			[
+				'post_title' => 'Post with Tickets',
+				'post_type'  => 'page',
+			] 
+		);
+		$ticket_a = $this->create_tc_ticket( $post_id, 10.10 );
+		$ticket_b = $this->create_tc_ticket( $post_id, 20.30 );
+		
+		tribe_singleton( Unmanaged_Cart::class, new Unmanaged_Cart() );
+		$cart = tribe( Cart::class );
+		
+		$cart->add_ticket( $ticket_a, 3 );
+		$cart->add_ticket( $ticket_b, 1 );
+		
+		$assertion_msg = 'Cart->get_total() should return the sum of all items in the cart.';
+		$this->assertEquals( 50.6, $cart->get_cart_total(), $assertion_msg );
+		
+		$cart->clear_cart();
+		
+		$free_ticket = $this->create_tc_ticket( $post_id, 0 );
+		$cart->add_ticket( $free_ticket, 5 );
+		
+		$assertion_msg = 'Cart->get_total() should return 0 when the cart contains only free tickets.';
+		$this->assertEquals( 0, $cart->get_cart_total(), $assertion_msg );
 	}
 }

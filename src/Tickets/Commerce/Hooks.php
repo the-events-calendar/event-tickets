@@ -132,6 +132,8 @@ class Hooks extends Service_Provider {
 		add_filter( 'wp_redirect', [ $this, 'filter_redirect_url' ] );
 
 		add_filter( 'tec_tickets_editor_configuration_localized_data', [ $this, 'filter_block_editor_localized_data' ] );
+
+		add_action( 'tribe_editor_config', [ $this, 'filter_tickets_editor_config' ] );
 	}
 
 	/**
@@ -792,5 +794,28 @@ class Hooks extends Service_Provider {
 		];
 
 		return $localized;
+	}
+
+	/**
+	 * Filters the data used to render the Tickets Block Editor control.
+	 *
+	 * @since 5.10.0
+	 *
+	 * @param array<string,mixed> $data The data used to render the Tickets Block Editor control.
+	 *
+	 * @return array<string,mixed> The data used to render the Tickets Block Editor control.
+	 */
+	public function filter_tickets_editor_config( $data ) {
+		if ( ! isset( $data['tickets'] ) ) {
+			$data['tickets'] = [];
+		}
+
+		if ( ! isset( $data['tickets']['commerce'] ) ) {
+			$data['tickets']['commerce'] = [];
+		}
+
+		$data['tickets']['commerce']['isFreeTicketAllowed'] = tec_tickets_commerce_is_free_ticket_allowed();
+
+		return $data;
 	}
 }

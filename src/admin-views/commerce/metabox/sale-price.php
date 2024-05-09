@@ -3,6 +3,7 @@
  * Renders the sale price fields for Tickets Commerce.
  *
  * @since 5.9.0
+ * @since 5.10.0 Added the $is_free_ticket_allowed parameter and updated validation for the Sale Price input field.
  *
  * @var Ticket_Object $ticket The ticket object.
  * @var string        $sale_price The sale price.
@@ -12,9 +13,18 @@
  * @var array         $start_date_errors The start date errors.
  * @var array         $end_date_errors The end date errors.
  * @var array         $sale_price_errors The sale price errors.
+ * @var bool          $is_free_ticket_allowed Whether free tickets are allowed.
  */
 
-use Tribe__Tickets__Ticket_Object as Ticket_Object;
+$sale_price_validation_attrs = [
+	'data-validation-is-less-than="#ticket_price"',
+	'data-validation-error="' . esc_attr( wp_json_encode( $sale_price_errors ) ) . '"',
+];
+
+// Do not allow free ticket in sale price if not allowed.
+if ( ! $is_free_ticket_allowed ) {
+	$sale_price_validation_attrs[] = 'data-validation-is-greater-than="0"';
+}
 
 ?>
 <div class="ticket_sale_price_wrapper ticket_form_right">
@@ -48,9 +58,7 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
 				class="ticket_field"
 				size="7"
 				value="<?php echo esc_attr( $sale_price ); ?>"
-				data-validation-is-greater-than="0"
-				data-validation-is-less-than="#ticket_price"
-				data-validation-error="<?php echo esc_attr( wp_json_encode( $sale_price_errors ) ); ?>"
+				<?php echo implode( ' ', $sale_price_validation_attrs ); // phpcs:ignore ?>
 			/>
 		</div>
 		<div class="ticket_sale_price-field">
