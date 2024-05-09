@@ -62,7 +62,11 @@ if ( ! function_exists( 'tribe_get_ticket_label_plural_lowercase' ) ) {
 		 * @param string $label   The lowercase plural version of the Ticket label, defaults to "tickets".
 		 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.
 		 */
-		return apply_filters( 'tribe_get_ticket_label_plural_lowercase', _x( 'tickets', 'lowercase plural label for Tickets', 'event-tickets' ), $context );
+		return apply_filters(
+			'tribe_get_ticket_label_plural_lowercase',
+			_x( 'tickets', 'lowercase plural label for Tickets', 'event-tickets' ),
+			$context
+		);
 	}
 }
 
@@ -87,6 +91,10 @@ if ( ! function_exists( 'tribe_get_rsvp_label_plural' ) ) {
 		 * @param string $label   The plural version of the RSVP label, defaults to "RSVPs".
 		 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.
 		 */
-		return apply_filters( 'tribe_get_rsvp_label_plural', _x( 'RSVPs', 'plural label for RSVPs', 'event-tickets' ), $context );
+		return apply_filters(
+			'tribe_get_rsvp_label_plural',
+			_x( 'RSVPs', 'plural label for RSVPs', 'event-tickets' ),
+			$context
+		);
 	}
 }
