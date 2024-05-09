@@ -8,12 +8,34 @@
  */
 
 if ( ! function_exists( 'tribe_tickets_new_views_is_enabled' ) ) {
+	/**
+	 * Determine whether the new Tickets views are enabled.
+	 *
+	 * In order: the function will check the constant, the environment variable, the settings UI option, and then
+	 * allow filtering.
+	 *
+	 * @since 5.0.3
+	 * @since TBD Copied to the soft-disable functions.
+	 *
+	 * @return bool Whether the tickets block views is enabled.
+	 */
 	function tribe_tickets_new_views_is_enabled() {
 		return false;
 	}
 }
 
 if ( ! function_exists( 'tribe_tickets_rsvp_new_views_is_enabled' ) ) {
+	/**
+	 * Determine whether new RSVP views are enabled.
+	 *
+	 * In order the function will check the `TRIBE_TICKETS_RSVP_NEW_VIEWS` constant,
+	 * the `TRIBE_TICKETS_RSVP_NEW_VIEWS` environment variable and, finally, the `tickets_rsvp_use_new_views` option.
+	 *
+	 * @since 4.12.3
+	 * @since TBD Copied to the soft-disable functions.
+	 *
+	 * @return bool Whether new RSVP views are enabled.
+	 */
 	function tribe_tickets_rsvp_new_views_is_enabled() {
 		return false;
 	}
@@ -44,7 +66,7 @@ if ( ! function_exists( 'tribe_get_ticket_label_plural_lowercase' ) ) {
 	}
 }
 
-if ( ! function_exists( 'tribe_get_rsvp_label_plural' ) ) {\
+if ( ! function_exists( 'tribe_get_rsvp_label_plural' ) ) {
 	/**
 	 * Get the plural version of the RSVP label. May also be used as a verb.
 	 *
