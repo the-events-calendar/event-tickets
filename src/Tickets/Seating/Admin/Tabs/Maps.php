@@ -27,7 +27,7 @@ class Maps extends Tab {
 	 * @return string The title of this tab.
 	 */
 	public function get_title(): string {
-		return _x( 'Controller Maps', 'Tab title', 'event-tickets' );
+		return _x( 'Seating Maps', 'Tab title', 'event-tickets' );
 	}
 
 	/**
