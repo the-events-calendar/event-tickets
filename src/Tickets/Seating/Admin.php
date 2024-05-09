@@ -278,11 +278,14 @@ class Admin extends Controller_Contract {
 		     ->enqueue_on( $action )
 		     ->register();
 
-		Asset::add( 'tec-tickets-seating-admin-maps-style', 'admin/maps.css', Tickets::VERSION )
-		     ->add_to_group( 'tec-tickets-seating-admin' )
-		     ->add_to_group( 'tec-tickets-seating' )
-		     ->enqueue_on( $action )
-		     ->register();
+		Asset::add(
+			'tec-tickets-seating-admin-maps-style',
+			$this->built_asset_url( 'admin/maps.css' ),
+			Tickets::VERSION )
+			->add_to_group( 'tec-tickets-seating-admin' )
+			->add_to_group( 'tec-tickets-seating' )
+			->enqueue_on( $action )
+			->register();
 	}
 
 	/**
