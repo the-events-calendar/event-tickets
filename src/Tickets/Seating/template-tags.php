@@ -18,7 +18,6 @@ if ( ! function_exists( 'tec_tickets_seating_enabled' ) ) {
 	 * @return bool Whether the event is using assigned seating.
 	 */
 	function tec_tickets_seating_enabled( int $post_id ): bool {
-		// @toDo: remove the inversion once the meta key is updated from editor.
-		return ! tribe_is_truthy( get_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, true ) );
+		return tribe_is_truthy( get_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, true ) );
 	}
 }
