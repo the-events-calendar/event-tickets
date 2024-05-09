@@ -13,6 +13,8 @@ namespace TEC\Tickets\Seating;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\lucatume\DI52\Container;
 use Tribe__Template as Base_Template;
+use TEC\Common\StellarWP\Assets\Asset;
+use Tribe__Tickets__Main as Tickets;
 
 /**
  * Class Controller.
@@ -22,6 +24,8 @@ use Tribe__Template as Base_Template;
  * @package TEC\Controller;
  */
 class Frontend extends Controller_Contract {
+	use Built_Assets;
+	
 	/**
 	 * The action that will be fired when this Controller registers.
 	 *
@@ -43,7 +47,7 @@ class Frontend extends Controller_Contract {
 	/**
 	 * Controller constructor.
 	 *
-	 * since TBD
+	 * @since TBD
 	 *
 	 * @param Container $container A reference to the container object.
 	 * @param Template  $template  A reference to the template object.
@@ -64,6 +68,17 @@ class Frontend extends Controller_Contract {
 		add_filter( 'tribe_template_pre_html:tickets/v2/tickets', [ $this, 'print_tickets_block' ], 10, 5 );
 
 		// @todo regsiter front-end Assets here.
+		
+		// Register the front-end CSS.
+		Asset::add(
+			'tec-tickets-seating-frontend-css',
+			$this->built_asset_url( 'frontend/form.css' ),
+			Tickets::VERSION
+		)
+			->enqueue_on( 'wp_enqueue_scripts' )
+			->add_to_group( 'tec-tickets-seating-frontend' )
+			->add_to_group( 'tec-tickets-seating' )
+			->register();
 	}
 
 	/**
