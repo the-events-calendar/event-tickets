@@ -3,7 +3,7 @@
  * The main front-end controller. This controller will directly, or by delegation, subscribe to
  * front-end related hooks.
  *
- * @since   TBD
+ * @since TBD
  *
  * @package TEC\Controller;
  */
@@ -82,11 +82,10 @@ class Frontend extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 *
-	 * @param string              $html     The initial HTML
-	 * @param string              $file     Complete path to include the PHP File
-	 * @param array               $name     Template name
-	 * @param Base_Template       $template Current instance of the Tribe__Template
+	 * @param string              $html     The initial HTML.
+	 * @param string              $file     Complete path to include the PHP File.
+	 * @param array               $name     Template name.
+	 * @param Base_Template       $template Current instance of the Tribe__Template.
 	 * @param array<string,mixed> $context  The context data passed to the template.
 	 *
 	 * @return string|null The template HTML, or `null` to let the default template process it.
@@ -99,6 +98,17 @@ class Frontend extends Controller_Contract {
 			return $html;
 		}
 		
-		return $this->template->template( 'tickets-block', [], false );
+		// Prepare the data to be passed to the template.
+		$cost_range = '$12.00 - $25.00';
+		$inventory  = 100;
+		
+		return $this->template->template(
+			'tickets-block',
+			[
+				'cost_range' => $cost_range,
+				'inventory'  => $inventory,
+			],
+			false
+		);
 	}
 }
