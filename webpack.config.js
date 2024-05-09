@@ -102,8 +102,7 @@ const targets = [
 		outputStyle: `build/Seating/ajax.${postfix}`,
 		moveFromTo: {
 			'src/resources/js/app/seating-ajax.js': 'build/Seating/ajax.js',
-			'src/resources/css/app/seating-ajax.css':
-				'build/Seating/ajax.css',
+			'src/resources/css/app/seating-ajax.css': 'build/Seating/ajax.css',
 		},
 	},
 	{
@@ -190,8 +189,14 @@ const targetEntries = reduce(
 	{}
 );
 
-// Configure multiple entry points.
 const config = merge(common, {
+	// Add some externals missing from products-taskmaster.
+	externals: [
+		{
+			'@wordpress/core-data': 'wp.coreData',
+		},
+	],
+	// Configure multiple entry points.
 	entry: targetEntries,
 });
 

@@ -81,6 +81,44 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 	}
 
 	/**
+	 * Registers the meta for the Tickets and the ticketable post types.
+	 *
+	 * @since TBD
+	 */
+	public function register_meta(): void {
+		foreach ( tribe_tickets()->ticket_types() as $ticket_type ) {
+			foreach (
+				[
+					Meta::META_KEY_ENABLED,
+					Meta::META_KEY_LAYOUT_ID,
+				] as $meta_key
+			) {
+				register_post_meta( $ticket_type, $meta_key, [
+					'show_in_rest'  => true,
+					'single'        => true,
+					'type'          => 'string',
+					'auth_callback' => function () {
+						return current_user_can( 'edit_posts' );
+					},
+				] );
+			}
+		}
+
+		foreach ( (array) tribe_get_option( 'ticket-enabled-post-types', [] ) as $ticketable_type ) {
+			foreach ( [ Meta::META_KEY_ENABLED, Meta::META_KEY_LAYOUT_ID ] as $meta_key ) {
+				register_post_meta( $ticketable_type, $meta_key, [
+					'show_in_rest'  => true,
+					'single'        => true,
+					'type'          => 'string',
+					'auth_callback' => function () {
+						return current_user_can( 'edit_posts' );
+					},
+				] );
+			}
+		}
+	}
+
+	/**
 	 * Registers the controller by subscribing to WordPress hooks and binding implementations.
 	 *
 	 * @since TBD
@@ -133,43 +171,5 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 			->add_to_group( 'tec-tickets-seating-editor' )
 			->add_to_group( 'tec-tickets-seating' )
 			->register();
-	}
-
-	/**
-	 * Registers the meta for the Tickets and the ticketable post types.
-	 *
-	 * @since TBD
-	 */
-	public function register_meta(): void {
-		foreach ( tribe_tickets()->ticket_types() as $ticket_type ) {
-			foreach (
-				[
-					Meta::META_KEY_ENABLED,
-					Meta::META_KEY_LAYOUT_ID,
-					Meta::META_KEY_SEAT_TYPE,
-				] as $meta_key
-			) {
-				register_post_meta( $ticket_type, $meta_key, [
-					'show_in_rest' => false,
-					'single'       => true,
-					'type'         => 'string',
-				] );
-			}
-		}
-
-		foreach ( (array) tribe_get_option( 'ticket-enabled-post-types', [] ) as $ticketable_type ) {
-			foreach (
-				[
-					Meta::META_KEY_ENABLED,
-					Meta::META_KEY_LAYOUT_ID
-				] as $meta_key
-			) {
-				register_post_meta( $ticket_type, $meta_key, [
-					'show_in_rest' => false,
-					'single'       => true,
-					'type'         => 'string',
-				] );
-			}
-		}
 	}
 }
