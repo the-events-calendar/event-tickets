@@ -286,7 +286,12 @@ class Tribe__Tickets__Main {
 		];
 	}
 
-	public function should_autoload() {
+	/**
+	 * Handles the soft-disabling of the plugin if requirements are not met.
+	 *
+	 * @since TBD
+	 */
+	public function should_autoload(): void {
 		$invalid = $this->maybe_bail_if_invalid_wp_or_php();
 		$invalid = $this->maybe_bail_if_old_tec_is_present() || $invalid;
 
