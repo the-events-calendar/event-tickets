@@ -6,6 +6,7 @@
  */
 
 use TEC\Tickets\Commerce\Models\Ticket_Model;
+use TEC\Tickets\Commerce\Settings;
 
 /**
  * Fetches and returns a decorated post object representing an ticket.
@@ -125,4 +126,15 @@ function tec_tc_get_ticket( $ticket = null, $output = OBJECT, $filter = 'raw', $
 	}
 
 	return $post;
+}
+
+/**
+ * Checks if the free ticket is allowed.
+ *
+ * @since 5.10.0
+ *
+ * @return bool
+ */
+function tec_tickets_commerce_is_free_ticket_allowed() {
+	return Settings::is_free_ticket_allowed();
 }

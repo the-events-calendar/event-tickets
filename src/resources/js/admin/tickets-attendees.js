@@ -1,7 +1,7 @@
 /**
  * Makes sure we have all the required levels on the Tribe Object
  *
- * @since TBD
+ * @since 5.10.0
  * @type   {Object}
  */
 tribe.tickets = tribe.tickets || {};
@@ -11,7 +11,7 @@ tribe.dialogs.events = tribe.dialogs.events || {};
 /**
  * Configures ET Attendees Object in the Global Tribe variable
  *
- * @since TBD
+ * @since 5.10.0
  * @type   {Object}
  */
 tribe.tickets.attendees = {};
@@ -19,7 +19,7 @@ tribe.tickets.attendees = {};
 /**
  * Initializes in a Strict env the code that manages the plugin Attendees library.
  *
- * @since TBD
+ * @since 5.10.0
  * @param  {Object} $   jQuery
  * @param  {Object} obj tribe.tickets.attendees
  * @return {void}
@@ -30,7 +30,7 @@ tribe.tickets.attendees = {};
 	/*
 	 * Manual Attendees Selectors.
 	 *
-	 * @since TBD
+	 * @since 5.10.0
 	 */
 	obj.selectors = {
 		modalWrapper: '.tribe-modal__wrapper--attendee-details',
@@ -42,7 +42,7 @@ tribe.tickets.attendees = {};
 	/**
 	 * Handler for when the modal is being "closed".
 	 *
-	 * @since TBD
+	 * @since 5.10.0
 	 * @param {Object} event The close event.
 	 * @param {Object} dialogEl The dialog element.
 	 * @return {void}
@@ -57,7 +57,7 @@ tribe.tickets.attendees = {};
 	/**
 	 * Bind handler for when the modal is being "closed".
 	 *
-	 * @since TBD
+	 * @since 5.10.0
 	 * @return {void}
 	 */
 	obj.bindModalClose = function() {
@@ -70,7 +70,7 @@ tribe.tickets.attendees = {};
 	/**
 	 * Unbinds events for the modal content container.
 	 *
-	 * @since TBD
+	 * @since 5.10.0
 	 * @param {jQuery} $container jQuery object of the container.
 	 */
 	obj.unbindModalEvents = function( $container ) {
@@ -81,7 +81,7 @@ tribe.tickets.attendees = {};
 	/**
 	 * Handler for when the modal is opened.
 	 *
-	 * @since TBD
+	 * @since 5.10.0
 	 * @param {Object} event The show event.
 	 * @param {Object} dialogEl The dialog element.
 	 * @param {Object} trigger The event.
@@ -130,7 +130,7 @@ tribe.tickets.attendees = {};
 	/**
 	 * Get context to send on the request.
 	 *
-	 * @since TBD
+	 * @since 5.10.0
 	 * @return {Object}
 	 */
 	obj.getContext = function() {
@@ -142,7 +142,7 @@ tribe.tickets.attendees = {};
 	/**
 	 * Bind handler for when the modal is being "opened".
 	 *
-	 * @since TBD
+	 * @since 5.10.0
 	 * @return {void}
 	 */
 	obj.bindModalOpen = function() {
@@ -155,7 +155,7 @@ tribe.tickets.attendees = {};
 	/**
 	 * Handles the initialization of the scripts when Document is ready.
 	 *
-	 * @since TBD
+	 * @since 5.10.0
 	 * @return {void}
 	 */
 	obj.ready = function() {

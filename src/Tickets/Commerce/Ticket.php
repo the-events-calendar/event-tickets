@@ -1108,7 +1108,7 @@ class Ticket {
 		$sale_price    = Arr::get( $raw_data, 'ticket_sale_price', false );
 		$regular_price = Arr::get( $raw_data, 'ticket_price', false );
 
-		if ( empty( $sale_price ) || $sale_price >= $regular_price ) {
+		if ( $sale_price >= $regular_price ) {
 			$this->remove_sale_price_data( $ticket );
 			return;
 		}

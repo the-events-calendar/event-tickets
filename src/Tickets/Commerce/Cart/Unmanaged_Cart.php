@@ -12,7 +12,7 @@ use TEC\Tickets\Commerce;
  *
  * @since 5.1.9
  */
-class Unmanaged_Cart implements Cart_Interface {
+class Unmanaged_Cart extends Abstract_Cart {
 
 	/**
 	 * @var string The Cart hash for this cart.
@@ -128,6 +128,7 @@ class Unmanaged_Cart implements Cart_Interface {
 
 		// clear cart items data.
 		$this->items = [];
+		$this->cart_total = null;
 	}
 
 	/**
@@ -178,7 +179,7 @@ class Unmanaged_Cart implements Cart_Interface {
 		if ( 0 < $new_quantity ) {
 			$item['ticket_id'] = $item_id;
 			$item['quantity']  = $new_quantity;
-			$item['extra'] = $extra_data;
+			$item['extra']     = $extra_data;
 
 			$this->items[ $item_id ] = $item;
 		} else {

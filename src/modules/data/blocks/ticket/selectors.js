@@ -17,6 +17,7 @@ const {
 	INDEPENDENT,
 	SHARED,
 	TICKET_TYPES,
+	IS_FREE_TC_TICKET_ALLOWED,
 } = constants;
 const { tickets: ticketsConfig, post: postConfig } = globals;
 
@@ -716,8 +717,16 @@ export const isTempSharedCapacityValid = createSelector(
 export const isZeroPriceValid = createSelector(
 	[ getTicketTempPrice, getTicketsProvider ],
 	( price, provider ) => {
-		return 0 < parseInt( price, 10 ) ||
-			! [ constants.TC_CLASS, constants.TICKETS_COMMERCE_MODULE_CLASS ].includes( provider );
+		if ( 0 < parseInt( price, 10 ) ) {
+			return true;
+		}
+		if ( constants.TC_CLASS === provider ) {
+			return false;
+		}
+		if ( constants.TICKETS_COMMERCE_MODULE_CLASS === provider ) {
+			return IS_FREE_TC_TICKET_ALLOWED;
+		}
+		return true;
 	},
 );
 

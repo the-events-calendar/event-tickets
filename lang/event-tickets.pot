@@ -2,15 +2,15 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Event Tickets 5.9.1.1\n"
+"Project-Id-Version: Event Tickets 5.9.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/event-tickets\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-04-25T08:44:10-07:00\n"
-"PO-Revision-Date: 2024-04-25 15:44\n"
+"POT-Creation-Date: 2024-05-06T11:23:29-07:00\n"
+"PO-Revision-Date: 2024-05-06 18:23\n"
 "X-Generator: WP-CLI 2.7.1\n"
 "X-Domain: event-tickets\n"
 
@@ -19,7 +19,7 @@ msgstr ""
 #: src/admin-views/admin-welcome-message.php:73
 #: src/Tickets/Site_Health/Info_Section.php:73
 #: src/Tribe/Admin/Notices.php:85
-#: src/Tribe/Main.php:764
+#: src/Tribe/Main.php:767
 #: src/Tribe/Privacy.php:59
 #: src/views/emails/template-parts/body/footer/credit.php:41
 msgid "Event Tickets"
@@ -67,7 +67,7 @@ msgstr ""
 #: src/admin-views/tribe-commerce-settings.php:4
 #: src/Tickets/Commerce/Payments_Tab.php:300
 #: src/Tribe/Admin/Notices.php:207
-#: src/Tribe/Main.php:739
+#: src/Tribe/Main.php:742
 msgid "Event Tickets Plus"
 msgstr ""
 
@@ -461,23 +461,23 @@ msgstr ""
 msgid "Leave blank for unlimited"
 msgstr ""
 
-#: src/admin-views/commerce/metabox/sale-price.php:33
+#: src/admin-views/commerce/metabox/sale-price.php:43
 msgid "Add Sale Price"
 msgstr ""
 
-#: src/admin-views/commerce/metabox/sale-price.php:42
-#: src/admin-views/editor/fieldset/price.php:108
+#: src/admin-views/commerce/metabox/sale-price.php:52
+#: src/admin-views/editor/fieldset/price.php:120
 #: src/admin-views/legacy-ticket-fields.php:24
 #: src/admin-views/price-fields.php:12
 msgid "Sale Price:"
 msgstr ""
 
-#: src/admin-views/commerce/metabox/sale-price.php:58
+#: src/admin-views/commerce/metabox/sale-price.php:66
 msgid "On sale from:"
 msgstr ""
 
-#: src/admin-views/commerce/metabox/sale-price.php:72
-#: src/Tickets/Commerce/Hooks.php:789
+#: src/admin-views/commerce/metabox/sale-price.php:80
+#: src/Tickets/Commerce/Hooks.php:791
 msgid "to"
 msgstr ""
 
@@ -536,7 +536,7 @@ msgid "View Orders"
 msgstr ""
 
 #: src/admin-views/editor/column-body-price.php:22
-#: src/admin-views/editor/fieldset/price.php:71
+#: src/admin-views/editor/fieldset/price.php:83
 #: src/admin-views/legacy-ticket-fields.php:15
 #: src/admin-views/price-fields.php:3
 msgid "Price:"
@@ -584,26 +584,26 @@ msgstr ""
 msgid "Ti"
 msgstr ""
 
-#. Translators: %s: singular version of the Ticket label.
-#: src/admin-views/editor/fieldset/price.php:10
-msgctxt "ticket price validation error"
-msgid "%s price must be greater than zero."
-msgstr ""
-
-#: src/admin-views/editor/fieldset/price.php:26
+#: src/admin-views/editor/fieldset/price.php:31
 msgctxt "price description"
 msgid "Leave blank for free %s"
 msgstr ""
 
-#: src/admin-views/editor/fieldset/price.php:109
+#. Translators: %s: singular version of the Ticket label.
+#: src/admin-views/editor/fieldset/price.php:39
+msgctxt "ticket price validation error"
+msgid "%s price must be greater than zero."
+msgstr ""
+
+#: src/admin-views/editor/fieldset/price.php:121
 msgid "Current sale price. This can be managed via the product editor."
 msgstr ""
 
-#: src/admin-views/editor/fieldset/price.php:112
+#: src/admin-views/editor/fieldset/price.php:124
 msgid "Sale/Member Price:"
 msgstr ""
 
-#: src/admin-views/editor/fieldset/price.php:113
+#: src/admin-views/editor/fieldset/price.php:125
 msgid "Current sale or member price. This can be managed via the product editor."
 msgstr ""
 
@@ -2468,65 +2468,65 @@ msgstr ""
 msgid "Unexpected PayPal response when updating webhook"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:73
+#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:76
 msgid "PayPal"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:83
+#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:86
 msgid "PayPal is now connected."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:88
+#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:91
 msgid "Failed to disconnect PayPal account."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:93
+#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:96
 msgid "Disconnected PayPal account."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:98
+#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:101
 msgid "Failed to refresh PayPal access token."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:103
+#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:106
 msgid "PayPal access token was refreshed successfully."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:108
+#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:111
 msgid "Failed to refresh PayPal user info."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:113
+#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:116
 msgid "PayPal user info was refreshed successfully."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:118
+#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:121
 msgid "Failed to refresh PayPal webhooks."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:123
+#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:126
 msgid "PayPal webhooks refreshed successfully."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:128
+#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:131
 msgid "A valid SSL certificate is required to set up your PayPal account and accept payments"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:147
+#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:150
 msgid "Enable payments through PayPal, Venmo, and credit card."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:218
-#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:195
+#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:221
+#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:197
 msgid "here"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:220
+#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:223
 msgid "PayPal doesn't support your selected currency"
 msgstr ""
 
 #. Translators: %1$s: Currency Name. %2$s: Link to gateway provider's currency documentation.
-#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:223
+#: src/Tickets/Commerce/Gateways/PayPal/Gateway.php:226
 msgid "Unfortunately PayPal doesn't support payments in %1$s. Please try using a different gateway or adjusting your Tickets Commerce currency setting. You can see a list of supported currencies %2$s."
 msgstr ""
 
@@ -6724,41 +6724,41 @@ msgstr ""
 msgid "Change %1$s in PayPal from webhook: %2$s"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:75
+#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:77
 msgid "Stripe"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:85
+#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:87
 msgid "Stripe wasn't able to complete your connection request. Try again."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:90
+#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:92
 msgid "Stripe signup was successful but the authentication tokens could not be retrieved. Try refreshing the tokens."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:95
+#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:97
 msgid "Disconnecting from Stripe failed. Please try again."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:105
+#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:107
 msgid "Due to Regulatory Issues between Stripe and the country listed in your Stripe account, the free version of Event Tickets cannot accept connections from accounts in your country. Please use a Stripe account from a different country or purchase Event Tickets Plus to continue."
 msgstr ""
 
 #. Translators: %1$s is the opening <a> tag for the Payments Tab page link. %2$s is the closing <a> tag.
-#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:112
+#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:114
 msgid "Your stripe account was disconnected from the Stripe dashboard. If you believe this is an error, you can re-connect in the %1$sPayments Tab of the Settings Page%2$s."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:134
+#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:136
 msgid "Enable credit card payments, Afterpay, AliPay, Giropay, Klarna and more."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:197
+#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:199
 msgid "Stripe doesn't support your selected currency"
 msgstr ""
 
 #. Translators: %1$s: Currency Name. %2$s: Link to gateway provider's currency documentation.
-#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:200
+#: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:202
 msgid "Unfortunately, Stripe doesn't support payments in %1$s. Please try using a different gateway or adjusting your Tickets Commerce currency setting. You can see a list of supported currencies %2$s."
 msgstr ""
 
@@ -7019,23 +7019,23 @@ msgstr ""
 msgid "Payment Intent %s does not require an update or is a duplicate of a past event."
 msgstr ""
 
-#: src/Tickets/Commerce/Hooks.php:786
+#: src/Tickets/Commerce/Hooks.php:788
 msgid "Add sale price"
 msgstr ""
 
-#: src/Tickets/Commerce/Hooks.php:787
+#: src/Tickets/Commerce/Hooks.php:789
 msgid "Sale Price"
 msgstr ""
 
-#: src/Tickets/Commerce/Hooks.php:788
+#: src/Tickets/Commerce/Hooks.php:790
 msgid "On sale from"
 msgstr ""
 
-#: src/Tickets/Commerce/Hooks.php:790
+#: src/Tickets/Commerce/Hooks.php:792
 msgid "Sale price must be lower than the regular ticket price."
 msgstr ""
 
-#: src/Tickets/Commerce/Hooks.php:791
+#: src/Tickets/Commerce/Hooks.php:793
 #: src/views/v2/tickets/item/content/sale-label.php:36
 msgid "On Sale"
 msgstr ""
@@ -7987,6 +7987,11 @@ msgstr ""
 msgid "From the 1st of January 2023, the euro became the official currency for Croatia. We have removed the Croatian Kuna from our currency settings and updated your settings to start selling with Euro."
 msgstr ""
 
+#: src/Tickets/Commerce/Utils/Value.php:90
+msgctxt "No cost"
+msgid "Free"
+msgstr ""
+
 #: src/Tickets/Custom_Tables/V1/admin-views/migration/maintenance-mode/ticket-updates.php:6
 msgid "Your changes will not be saved."
 msgstr ""
@@ -8838,7 +8843,7 @@ msgid "Includes ticketed attendees with orders marked Completed."
 msgstr ""
 
 #: src/Tribe/Admin/Home/Service_Provider.php:80
-#: src/Tribe/Main.php:899
+#: src/Tribe/Main.php:902
 msgid "Welcome to Event Tickets!"
 msgstr ""
 
@@ -9505,11 +9510,11 @@ msgstr ""
 msgid "Invalid nonce"
 msgstr ""
 
-#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:268
+#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:273
 msgid "Invalid price"
 msgstr ""
 
-#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:311
+#: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:316
 msgid "%s was not able to be updated"
 msgstr ""
 
@@ -9558,83 +9563,83 @@ msgctxt "list view buy now ticket button"
 msgid "Get %s"
 msgstr ""
 
-#: src/Tribe/Main.php:163
+#: src/Tribe/Main.php:166
 msgctxt "provider_plugin_name"
 msgid "Tickets"
 msgstr ""
 
 #. Translators: %1$s is the min required version of The Events Calendar. %2$s Is the update link opening `<a>`. %3$s Is the update link closing `</a>`.
-#: src/Tribe/Main.php:502
+#: src/Tribe/Main.php:505
 msgid "When The Events Calendar and Event Tickets are both activated, The Events Calendar must be running version %1$s or greater. Please %2$supdate now.%3$s"
 msgstr ""
 
-#: src/Tribe/Main.php:565
+#: src/Tribe/Main.php:568
 msgid "Sorry, Event Tickets requires WordPress %s or higher. Please upgrade your WordPress install."
 msgstr ""
 
-#: src/Tribe/Main.php:569
+#: src/Tribe/Main.php:572
 msgid "Sorry, Event Tickets requires PHP %s or higher. Talk to your Web host about moving you to a newer version of PHP."
 msgstr ""
 
-#: src/Tribe/Main.php:694
+#: src/Tribe/Main.php:697
 msgid "Support for Event Tickets"
 msgstr ""
 
-#: src/Tribe/Main.php:696
+#: src/Tribe/Main.php:699
 msgid "Settings overview"
 msgstr ""
 
-#: src/Tribe/Main.php:697
+#: src/Tribe/Main.php:700
 msgid "Features overview"
 msgstr ""
 
-#: src/Tribe/Main.php:698
+#: src/Tribe/Main.php:701
 msgid "Troubleshooting common problems"
 msgstr ""
 
-#: src/Tribe/Main.php:699
+#: src/Tribe/Main.php:702
 msgid "Customizing Event Tickets"
 msgstr ""
 
-#: src/Tribe/Main.php:716
+#: src/Tribe/Main.php:719
 msgid "New User Primer"
 msgstr ""
 
-#: src/Tribe/Main.php:718
+#: src/Tribe/Main.php:721
 msgctxt "help feature box section"
 msgid "We are committed to helping you sell %1$s for your event. Check out our handy %2$s to get started."
 msgstr ""
 
-#: src/Tribe/Main.php:735
+#: src/Tribe/Main.php:738
 msgid "open-source forum on WordPress.org"
 msgstr ""
 
-#: src/Tribe/Main.php:736
+#: src/Tribe/Main.php:739
 msgid "If you have tried the above steps and are still having trouble, you can post a new thread to our %s. Our support staff monitors these forums once a week and would be happy to assist you there."
 msgstr ""
 
-#: src/Tribe/Main.php:738
+#: src/Tribe/Main.php:741
 msgid "premium support on our website"
 msgstr ""
 
-#: src/Tribe/Main.php:740
+#: src/Tribe/Main.php:743
 msgid "Looking for more immediate support? We offer %1$s with the purchase of any of our premium plugins (like %2$s). Pick up a license and you can post there directly and expect a response within 24-48 hours during weekdays."
 msgstr ""
 
-#: src/Tribe/Main.php:742
-#: src/Tribe/Main.php:747
+#: src/Tribe/Main.php:745
+#: src/Tribe/Main.php:750
 msgid "post a thread"
 msgstr ""
 
-#: src/Tribe/Main.php:743
+#: src/Tribe/Main.php:746
 msgid "Already have Event Tickets Plus? You can %s in our premium support forums. Our support team monitors the forums and will respond to your thread within 24-48 hours (during the week)."
 msgstr ""
 
-#: src/Tribe/Main.php:748
+#: src/Tribe/Main.php:751
 msgid "If you have a valid license for one of our paid plugins, you can %s in our premium support forums. Our support team monitors the forums and will respond to your thread within 24-48 hours (during the week)."
 msgstr ""
 
-#: src/Tribe/Main.php:1075
+#: src/Tribe/Main.php:1078
 msgid "Buy"
 msgstr ""
 
@@ -9767,7 +9772,7 @@ msgid "Order Number"
 msgstr ""
 
 #: src/Tribe/Privacy.php:549
-#: src/views/emails/template-parts/body/order/order-total.php:36
+#: src/views/emails/template-parts/body/order/order-total.php:37
 #: src/views/tickets/tpp-success.php:137
 msgid "Order Total"
 msgstr ""
@@ -10998,17 +11003,17 @@ msgid "The following attempted purchase has failed because:"
 msgstr ""
 
 #. Translators: %s - The order gateway ID.
-#: src/views/emails/template-parts/body/order/order-gateway-data.php:44
+#: src/views/emails/template-parts/body/order/order-gateway-data.php:50
 msgid "Gateway Order #%s"
 msgstr ""
 
 #. Translators: %s - Payment provider's name.
-#: src/views/emails/template-parts/body/order/payment-info.php:36
+#: src/views/emails/template-parts/body/order/payment-info.php:41
 msgid "Payment unsuccessful with %s"
 msgstr ""
 
 #. Translators: %s - Payment provider's name.
-#: src/views/emails/template-parts/body/order/payment-info.php:40
+#: src/views/emails/template-parts/body/order/payment-info.php:45
 msgid "Payment completed with %s"
 msgstr ""
 
@@ -11431,6 +11436,11 @@ msgstr ""
 msgid "Person purchasing tickets:"
 msgstr ""
 
+#. Translators: %1$s: Plural `Tickets` label.
+#: src/views/v2/commerce/gateway/free/button.php:28
+msgid "Get %1$s"
+msgstr ""
+
 #: src/views/v2/commerce/gateway/paypal/advanced-payments/fields/card-name.php:35
 #: src/views/v2/commerce/gateway/paypal/advanced-payments/fields/card-name.php:43
 msgid "Name on Card"
@@ -11485,7 +11495,7 @@ msgstr ""
 msgid "Order number:"
 msgstr ""
 
-#: src/views/v2/commerce/order/details/payment-method.php:34
+#: src/views/v2/commerce/order/details/payment-method.php:37
 msgid "Payment method:"
 msgstr ""
 
