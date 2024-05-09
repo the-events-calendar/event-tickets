@@ -66,28 +66,26 @@ class Frontend extends Controller_Contract {
 	 */
 	protected function do_register(): void {
 		add_filter( 'tribe_template_pre_html:tickets/v2/tickets', [ $this, 'print_tickets_block' ], 10, 5 );
-
-		// @todo regsiter front-end Assets here.
 		
-		// Register the front-end CSS.
+		// Register the front-end JS.
 		Asset::add(
-			'tec-tickets-seating-frontend-css',
-			$this->built_asset_url( 'frontend/form.css' ),
+			'tec-tickets-seating-frontend',
+			$this->built_asset_url( 'frontend/form.js' ),
 			Tickets::VERSION
 		)
-			->set_dependencies( 'tribe-dialog' )
+			->set_dependencies( 'tribe-dialog-js' )
 			->enqueue_on( 'wp_enqueue_scripts' )
 			->add_to_group( 'tec-tickets-seating-frontend' )
 			->add_to_group( 'tec-tickets-seating' )
 			->register();
 		
-		// Register the front-end JS.
+		// Register the front-end CSS.
 		Asset::add(
-			'tec-tickets-seating-frontend-js',
-			$this->built_asset_url( 'frontend/form.js' ),
+			'tec-tickets-seating-frontend-style',
+			$this->built_asset_url( 'frontend/form.css' ),
 			Tickets::VERSION
 		)
-			->set_dependencies( 'tribe-dialog-js' )
+			->set_dependencies( 'tribe-dialog' )
 			->enqueue_on( 'wp_enqueue_scripts' )
 			->add_to_group( 'tec-tickets-seating-frontend' )
 			->add_to_group( 'tec-tickets-seating' )
