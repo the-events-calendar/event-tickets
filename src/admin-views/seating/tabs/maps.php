@@ -12,7 +12,7 @@
 
 <div class="tec-tickets__tab-heading__wrapper"><h2
 		class="tec-tickets__tab-heading">
-		<?php echo esc_html_x( 'Controller Maps',
+		<?php echo esc_html_x( 'Seating Maps',
 			'Controller maps tab title',
 			'event-tickets' ); ?>
 	</h2>

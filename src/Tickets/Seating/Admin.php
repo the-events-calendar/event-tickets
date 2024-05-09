@@ -259,7 +259,7 @@ class Admin extends Controller_Contract {
 	}
 
 	/**
-	 * Registers the assets used by the Controller Maps tab.
+	 * Registers the assets used by the Seating Maps tab.
 	 *
 	 * @since TBD
 	 *
