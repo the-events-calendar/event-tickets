@@ -35,6 +35,7 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 		$assets = Assets::instance();
 		$assets->remove( 'tec-tickets-seating-block-editor' );
 		remove_action( 'init', [ $this, 'register_meta' ], 1000 );
+		remove_action( 'tribe_tickets_ticket_added', [ $this, 'save_ticket_seat_type' ] );
 	}
 
 	/**
@@ -124,6 +125,7 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 	protected function do_register(): void {
 		$this->register_block_editor_assets();
 		add_action( 'init', [ $this, 'register_meta' ], 1000 );
+		add_action( 'tribe_tickets_ticket_added', [ $this, 'save_ticket_seat_type' ], 10, 3 );
 	}
 
 	/**
@@ -167,5 +169,38 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 			->add_to_group( 'tec-tickets-seating-editor' )
 			->add_to_group( 'tec-tickets-seating' )
 			->register();
+	}
+
+	/**
+	 * Saves the seating details of a ticket from the POST or PUT request data sent to the REST API.
+	 *
+	 * @since TBD
+	 *
+	 * @param int                 $post_id   The ID of the post the ticket is attached to.
+	 * @param int                 $ticket_id The ID of the ticket.
+	 * @param array<string,mixed> $body      The body of the request.
+	 *
+	 * @return void The seating details are saved.
+	 */
+	public function save_ticket_seat_type( $post_id, $ticket_id, $body ) {
+		if ( ! isset(
+			$body['tribe-ticket'],
+			$body['tribe-ticket']['seating'],
+			$body['tribe-ticket']['seating']['enabled'],
+			$body['tribe-ticket']['seating']['seatType'] )
+		) {
+			return;
+		}
+
+		$enabled   = (bool) $body['tribe-ticket']['seating']['enabled'];
+		$seat_type = (string) $body['tribe-ticket']['seating']['seatType'];
+
+		update_post_meta( $ticket_id, Meta::META_KEY_ENABLED, $enabled ? '1' : '0' );
+
+		if ( $seat_type ) {
+			update_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, $seat_type );
+		} else {
+			delete_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE );
+		}
 	}
 }

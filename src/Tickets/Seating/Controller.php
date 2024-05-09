@@ -74,10 +74,8 @@ class Controller extends Controller_Contract {
 			$this->container->register( Frontend::class );
 		}
 
-		// Register the Editor to handle admin presentations or REST Requests from the Block Editor.
-		if ( wp_is_json_request() || is_admin() ) {
-			$this->container->register( Editor::class );
-		}
+		// The Editor will have to handle initial state requests, AJAX requests and REST requests from the Block Editor.
+		$this->container->register( Editor::class );
 	}
 
 	/**

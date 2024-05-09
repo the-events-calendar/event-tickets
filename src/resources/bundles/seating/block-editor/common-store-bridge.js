@@ -27,9 +27,8 @@ export function getTicketIdFromCommonStore(clientId) {
 }
 
 export function setCappedTicketCapacityInCommonStore(clientId, capacity) {
-	const ticketId = selectFromCommonStore(getTicketId, {clientId});
-	dispatchToCommonStore(setTicketCapacity(ticketId, capacity));
-	dispatchToCommonStore(setTicketTempCapacity(ticketId, capacity));
-	dispatchToCommonStore(setTicketCapacityType(ticketId, SHARED));
-	dispatchToCommonStore(setTicketTempCapacityType(ticketId, SHARED));
+	dispatchToCommonStore(setTicketCapacity(clientId, capacity));
+	dispatchToCommonStore(setTicketTempCapacity(clientId, capacity));
+	dispatchToCommonStore(setTicketCapacityType(clientId, SHARED));
+	dispatchToCommonStore(setTicketTempCapacityType(clientId, SHARED));
 }
