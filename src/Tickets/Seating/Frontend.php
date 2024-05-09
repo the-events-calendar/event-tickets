@@ -122,7 +122,7 @@ class Frontend extends Controller_Contract {
 		$data    = $template->get_values();
 		$post_id = $data['post_id'];
 		
-		if ( ! tec_tickets_is_assigned_seating_enabled( $post_id ) ) {
+		if ( ! tec_tickets_seating_enabled( $post_id ) ) {
 			return $html;
 		}
 		
