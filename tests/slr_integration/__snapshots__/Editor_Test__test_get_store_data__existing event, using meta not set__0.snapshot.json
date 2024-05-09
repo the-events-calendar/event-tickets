@@ -1,5 +1,5 @@
 {
-    "isUsingAssignedSeating": true,
+    "isUsingAssignedSeating": false,
     "layouts": [
         {
             "id": "layout-1",
