@@ -55,12 +55,13 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 			$is_using_assigned_seating = true;
 			$layout_id                 = null;
 			$seat_types_by_post_id     = [];
+			$is_layout_locked =  false;
 		} else {
 			$post_id                   = get_the_ID();
 			$is_using_assigned_seating = tribe_is_truthy( get_post_meta( $post_id, Meta::META_KEY_ENABLED, true ) );
 			$layout_id                 = get_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, true );
-
-			$seat_types_by_post_id = [];
+			$is_layout_locked          = ! empty( $layout_id );
+			$seat_types_by_post_id     = [];
 			foreach ( tribe_tickets()->where( 'event', $post_id )->get_ids( true ) as $ticket_id ) {
 				$seat_types_by_post_id[ $ticket_id ] = get_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, true );
 			}
@@ -68,12 +69,14 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 
 		$service = $this->container->get( Service::class );
 
+
 		return [
 			'isUsingAssignedSeating' => $is_using_assigned_seating,
 			'layouts'                => $service->get_layouts_in_option_format(),
 			'seatTypes'              => [],
 			'currentLayoutId'        => $layout_id,
-			'seatTypesByPostId'      => $seat_types_by_post_id
+			'seatTypesByPostId'      => $seat_types_by_post_id,
+			'isLayoutLocked'         => $is_layout_locked,
 		];
 	}
 

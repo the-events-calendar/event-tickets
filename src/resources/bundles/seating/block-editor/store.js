@@ -46,6 +46,12 @@ const actions = {
 			layoutId,
 		};
 	},
+	setIsLayoutLocked(isLayoutLocked){
+		return {
+			type: 'LOCK_LAYOUT',
+			isLayoutLocked,
+		};
+	},
 };
 
 const store = createReduxStore(storeName, {
@@ -90,6 +96,11 @@ const store = createReduxStore(storeName, {
 						...state.seatTypesByPostId,
 						[ticketPostId]: action.seatTypeId,
 					},
+				};
+			case 'LOCK_LAYOUT':
+				return {
+					...state,
+					isLayoutLocked: action.isLayoutLocked,
 				};
 		}
 
@@ -148,6 +159,9 @@ const store = createReduxStore(storeName, {
 				state?.seatTypesByClientId?.[clientId] ||
 				null
 			);
+		},
+		isLayoutLocked(state) {
+			return state?.isLayoutLocked || false;
 		},
 	},
 	controls: {

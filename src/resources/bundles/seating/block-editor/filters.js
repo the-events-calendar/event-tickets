@@ -1,7 +1,7 @@
 import { addFilter } from '@wordpress/hooks';
 import CapacityForm from './capacity-form';
 import { storeName } from './store';
-import { select } from '@wordpress/data';
+import { select, dispatch } from '@wordpress/data';
 
 const shouldRenderAssignedSeatingForm = true;
 
@@ -46,6 +46,9 @@ function filterSetBodyDetails(body, clientId) {
 	const seatType = select(storeName).getTicketSeatType(clientId);
 	body.append('ticket[seating][enabled]', seatType ? '1' : '0');
 	body.append('ticket[seating][seatType]', seatType);
+
+	// On first save of a ticket, lock the Layout.
+	dispatch(storeName).setIsLayoutLocked(true);
 
 	return body;
 }

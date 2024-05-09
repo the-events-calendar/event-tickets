@@ -63,6 +63,10 @@ export default function CapacityForm({ renderDefaultForm, clientId }) {
 		[layout]
 	);
 
+	const isLayoutLocked = useSelect((select) => {
+		return select(storeName).isLayoutLocked();
+	}, []);
+
 	const postType = useSelect(
 		(select) => select('core/editor').getCurrentPostType(),
 		[]
@@ -73,8 +77,11 @@ export default function CapacityForm({ renderDefaultForm, clientId }) {
 	);
 
 	const onToggleChange = useCallback(() => {
+		if (isLayoutLocked) {
+			return;
+		}
 		setUsingAssignedSeating(!isUsingAssignedSeating);
-	}, [isUsingAssignedSeating, setUsingAssignedSeating]);
+	}, [isLayoutLocked, isUsingAssignedSeating, setUsingAssignedSeating]);
 
 	const [meta, setMeta] = useEntityProp('postType', postType, 'meta', postId);
 	const updateEventMeta = useCallback(
@@ -115,9 +122,11 @@ export default function CapacityForm({ renderDefaultForm, clientId }) {
 				label={getString('use-assigned-seating-toggle-label')}
 				checked={isUsingAssignedSeating}
 				onChange={onToggleChange}
+				disabled={isLayoutLocked}
 			/>
 			{isUsingAssignedSeating ? (
 				<MemoizedEventLayoutSelect
+					layoutLocked={isLayoutLocked}
 					layouts={layouts}
 					onLayoutChange={onLayoutChange}
 					currentLayout={getCurrentLayoutOption(layout, layouts)}

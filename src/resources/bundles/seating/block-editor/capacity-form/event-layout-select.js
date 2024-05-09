@@ -6,6 +6,7 @@ const { getLink, getLocalizedString } = tec.seating.utils;
 const getString = (key) => getLocalizedString(key, 'capacity-form');
 
 const EventLayoutSelect = ({
+	layoutLocked,
 	layouts,
 	onLayoutChange,
 	currentLayout,
@@ -19,7 +20,6 @@ const EventLayoutSelect = ({
 				className="tribe-editor__labeled-select-input tribe-editor__labeled-select-input--nested"
 				label={getString('event-layouts-select-label')}
 				for="tec-tickets-seating-layouts-select"
-				A
 				isLabel={true}
 			>
 				<Select
@@ -28,6 +28,7 @@ const EventLayoutSelect = ({
 					options={layouts}
 					onChange={onLayoutChange}
 					value={currentLayout}
+					isDisabled={layoutLocked}
 				/>
 			</LabeledItem>
 
@@ -62,6 +63,7 @@ const EventLayoutSelect = ({
 };
 
 EventLayoutSelect.propTypes = {
+	layoutLocked: PropTypes.bool,
 	layouts: PropTypes.arrayOf(
 		PropTypes.shape({
 			label: PropTypes.string.isRequired,
