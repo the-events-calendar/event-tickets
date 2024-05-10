@@ -14,7 +14,7 @@ jobs:
       fail-fast: false
       matrix:
         suite:
-          - slr_e2e
+          - seating
     runs-on: ubuntu-latest
     steps:
       # ------------------------------------------------------------------------------
@@ -33,7 +33,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: stellarwp/slic
-          ref: main
+          ref: playwright-support
           path: slic
           fetch-depth: 1
       # ------------------------------------------------------------------------------
@@ -180,22 +180,27 @@ jobs:
       - name: Install and activate TwentyTwenty
         run:  ${SLIC_BIN} wp theme install twentytwenty --activate
       # ------------------------------------------------------------------------------
-      # Install Playwright dependencies
+      # Install Playwright dependencies (chromium)
       # ------------------------------------------------------------------------------
       - name: Install Playwright dependencies
-        run: ${SLIC_BIN} playwright install
+        run: ${SLIC_BIN} playwright install chromium
+        env:
+          CI: 'true'
       # ------------------------------------------------------------------------------
       # Run Playwright tests
       # ------------------------------------------------------------------------------
       - name: Run suite tests
         run: |
-          ${SLIC_BIN} playwright test tests/${{ matrix.suite }}
+          ${SLIC_BIN} playwright test tests/end-to-end/${{ matrix.suite }}
+        env:
+          CI: 'true'
       # ------------------------------------------------------------------------------
       # Upload artifacts (On failure) -- @todo find the location of the artifacts in Playwright
       # ------------------------------------------------------------------------------
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v2
+      - name: Upload artifacts on failure
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v4
         with:
-          name: output ${{ matrix.suite }}
-          path: tests/_output/
+          name: playwright-${{ matrix.suite }}-report
+          path: tests/_output/playwright/
           retention-days: 7
