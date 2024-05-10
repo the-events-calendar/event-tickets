@@ -177,6 +177,18 @@ const targets = [
 				'build/Seating/block-editor.css',
 		},
 	},
+	{
+		name: 'seating-frontend-bundle',
+		entry: './src/resources/bundles/seating/frontend/index.js',
+		outputScript: './build/Seating/frontend/form.min.js',
+		outputStyle: `build/Seating/frontend/form.${postfix}`,
+		moveFromTo: {
+			'src/resources/js/app/seating-frontend-bundle.js':
+				'build/Seating/frontend/form.js',
+			'src/resources/css/app/seating-frontend-bundle.css':
+				'build/Seating/frontend/form.css',
+		},
+	},
 ];
 
 // A function cannot be spread directly, we need this temporary variable.
