@@ -13,7 +13,9 @@ export default defineConfig({
 	testDir: './tests/end-to-end',
 	outputDir: './tests/_output/playwright',
 	preserveOutput: 'failures-only',
-	/* Run tests in files in parallel */
+	snapshotPathTemplate: '{testDir}/{testFileDir}/__screenshots__/{testName}-{arg}{ext}',
+	updateSnapshots: 'missing',
+	/* Run tests in files in parallel? No, we want to run them in order since they are insisting on the same database. */
 	fullyParallel: false,
 	/* Fail the build on CI if you accidentally left test.only in the source code. */
 	forbidOnly: !!process.env.CI,
@@ -31,19 +33,11 @@ export default defineConfig({
 		/* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
 		trace: 'on-first-retry',
 	},
-
-	/* Configure projects for major browsers */
+	/* Configure projects for major browsers, using only chromium */
 	projects: [
 		{
 			name: 'chromium',
 			use: { ...devices['Desktop Chrome'] },
 		},
 	],
-
-	/* Run your local dev server before starting the tests */
-	// webServer: {
-	//   command: 'npm run start',
-	//   url: 'http://127.0.0.1:3000',
-	//   reuseExistingServer: !process.env.CI,
-	// },
 });
