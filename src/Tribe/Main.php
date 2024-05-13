@@ -44,7 +44,7 @@ class Tribe__Tickets__Main {
 	 *
 	 * @var string
 	 */
-	protected $min_php = '5.6';
+	protected $min_php = '7.4.0';
 
 	/**
 	 * Min Version of The Events Calendar.
