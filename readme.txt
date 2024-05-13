@@ -196,9 +196,12 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.9.2] TBD =
+= [5.9.2] 2024-05-13 =
 
+* Version - Event Tickets 5.9.2 is only compatible with The Events Calendar 6.4.1 and higher
 * Fix - Update to remove moment.js library due to security concerns. [TEC-5011]
+* Tweak - Added filters: `tec_tickets_commerce_is_free_ticket_allowed`, `tec_tickets_commerce_value_get_currency_display`
+* Tweak - Changed views: `emails/template-parts/body/order/order-gateway-data`, `emails/template-parts/body/order/order-total`, `emails/template-parts/body/order/payment-info`, `v2/commerce/gateway/free/button`, `v2/commerce/gateway/free/container`, `v2/commerce/order/details/payment-method`, `v2/commerce/ticket/regular-price`, `v2/commerce/ticket/sale-price`
 
 = [5.10.0] 2024-05-08 =
 

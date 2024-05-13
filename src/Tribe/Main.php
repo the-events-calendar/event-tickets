@@ -289,7 +289,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Handles the soft-disabling of the plugin if requirements are not met.
 	 *
-	 * @since TBD
+	 * @since 5.9.3
 	 */
 	public function should_autoload(): void {
 		$invalid = $this->maybe_bail_if_invalid_wp_or_php();
@@ -312,7 +312,7 @@ class Tribe__Tickets__Main {
 	 * Prevents bootstrapping and autoloading if the version of TEC that is running is too old
 	 *
 	 * @since 4.10.6.2
-	 * @since TBD added boolean "invalid" return value. True if the check fails, false if it passes.
+	 * @since 5.9.3 added boolean "invalid" return value. True if the check fails, false if it passes.
 	 */
 	public function maybe_bail_if_old_tec_is_present(): bool {
 		// early check for an older version of The Events Calendar to prevent fatal error
@@ -341,7 +341,7 @@ class Tribe__Tickets__Main {
 	 * Prevents bootstrapping and autoloading if the version of WP or PHP are too old
 	 *
 	 * @since 4.10.6.2
-	 * @since TBD added boolean "invalid" return value. True if the check fails, false if it passes.
+	 * @since 5.9.3 added boolean "invalid" return value. True if the check fails, false if it passes.
 	 */
 	public function maybe_bail_if_invalid_wp_or_php(): bool {
 		if ( self::supported_version( 'wordpress' ) && self::supported_version( 'php' ) ) {

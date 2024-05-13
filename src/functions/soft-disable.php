@@ -15,7 +15,7 @@ if ( ! function_exists( 'tribe_tickets_new_views_is_enabled' ) ) {
 	 * allow filtering.
 	 *
 	 * @since 5.0.3
-	 * @since TBD Copied to the soft-disable functions.
+	 * @since 5.9.3 Copied to the soft-disable functions.
 	 *
 	 * @return bool Whether the tickets block views is enabled.
 	 */
@@ -32,7 +32,7 @@ if ( ! function_exists( 'tribe_tickets_rsvp_new_views_is_enabled' ) ) {
 	 * the `TRIBE_TICKETS_RSVP_NEW_VIEWS` environment variable and, finally, the `tickets_rsvp_use_new_views` option.
 	 *
 	 * @since 4.12.3
-	 * @since TBD Copied to the soft-disable functions.
+	 * @since 5.9.3 Copied to the soft-disable functions.
 	 *
 	 * @return bool Whether new RSVP views are enabled.
 	 */
@@ -46,7 +46,7 @@ if ( ! function_exists( 'tribe_get_ticket_label_plural_lowercase' ) ) {
 	 * Get the lowercase plural version of the Ticket label. May also be used as a verb.
 	 *
 	 * @since 4.10.9
-	 * @since TBD Copied to the soft-disable functions.
+	 * @since 5.9.3 Copied to the soft-disable functions.
 	 *
 	 * @param string $context Allows passing additional context to this function's filter, e.g. 'verb' or 'template.php'.
 	 *
@@ -57,7 +57,7 @@ if ( ! function_exists( 'tribe_get_ticket_label_plural_lowercase' ) ) {
 		 * Allows customization of the lowercase plural version of the Ticket label.
 		 *
 		 * @since 4.10.9
-		 * @since TBD Copied to the soft-disable functions.
+		 * @since 5.9.3 Copied to the soft-disable functions.
 		 *
 		 * @param string $label   The lowercase plural version of the Ticket label, defaults to "tickets".
 		 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.
@@ -75,7 +75,7 @@ if ( ! function_exists( 'tribe_get_rsvp_label_plural' ) ) {
 	 * Get the plural version of the RSVP label. May also be used as a verb.
 	 *
 	 * @since 4.10.9
-	 * @since TBD Copied to the soft-disable functions.
+	 * @since 5.9.3 Copied to the soft-disable functions.
 	 *
 	 * @param string $context Allows passing additional context to this function's filter, e.g. 'verb' or 'template.php'.
 	 *
@@ -86,7 +86,7 @@ if ( ! function_exists( 'tribe_get_rsvp_label_plural' ) ) {
 		 * Allows customization of the plural version of the RSVP label.
 		 *
 		 * @since 4.10.9
-		 * @since TBD Copied to the soft-disable functions.
+		 * @since 5.9.3 Copied to the soft-disable functions.
 		 *
 		 * @param string $label   The plural version of the RSVP label, defaults to "RSVPs".
 		 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.
