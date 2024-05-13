@@ -19,5 +19,6 @@
     ],
     "seatTypes": [],
     "currentLayoutId": "layout-1",
-    "seatTypesByPostId": []
+    "seatTypesByPostId": [],
+    "isLayoutLocked": true
 }

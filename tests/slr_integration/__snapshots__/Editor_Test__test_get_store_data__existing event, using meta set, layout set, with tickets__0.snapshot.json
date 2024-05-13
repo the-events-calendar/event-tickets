@@ -20,8 +20,9 @@
     "seatTypes": [],
     "currentLayoutId": "layout-1",
     "seatTypesByPostId": {
-        "15": "uuid-normal",
-        "16": "uuid-forward-block",
-        "17": "uuid-vip"
-    }
+        "5107": "uuid-normal",
+        "5108": "uuid-forward-block",
+        "5109": "uuid-vip"
+    },
+    "isLayoutLocked": true
 }
