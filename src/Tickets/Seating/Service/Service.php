@@ -9,6 +9,7 @@
 
 namespace TEC\Tickets\Seating\Service;
 
+use TEC\Tickets\Seating\Meta;
 use WP_Error;
 
 /**
@@ -246,5 +247,51 @@ class Service {
 			],
 			$this->get_frontend_url( '/embed/seat-layout/' )
 		);
+	}
+
+	/**
+	 * Returns the URL to load the service route to purchase tickets with assigned seating.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $token   The ephemeral token used to secure the iframe communication with the service.
+	 * @param string $post_id The post ID of the post to purchase tickets for.
+	 * @param int    $timeout The timeout in seconds.
+	 *
+	 * @return string
+	 */
+	public function get_seat_selection_url( string $token, int $post_id, int $timeout = 15 * 60 ): string {
+		$post_uuid = $this->get_post_uuid( $post_id );
+
+		return add_query_arg(
+			[
+				'token'   => urlencode( $token ),
+				'eventId' => urlencode( $post_uuid ),
+				'timeout' => $timeout,
+			],
+			$this->get_frontend_url( '/embed/purchasing/' )
+		);
+	}
+
+	/**
+	 * Returns the UUID of the post.
+	 *
+	 * If the post UUID is not set, it will be generated and set.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $event_id The post ID of the post.
+	 *
+	 * @return string The UUID of the post.
+	 */
+	public function get_post_uuid( int $event_id ): string {
+		$post_uuid = get_post_meta( $event_id, Meta::META_KEY_UUID, true );
+
+		if ( empty( $post_uuid ) ) {
+			$post_uuid = wp_generate_uuid4();
+			update_post_meta( $event_id, Meta::META_KEY_UUID, $post_uuid );
+		}
+
+		return $post_uuid;
 	}
 }
