@@ -43,4 +43,13 @@ class Meta {
 	 * @var string
 	 */
 	public const META_KEY_SEAT_TYPE = '_tec_slr_seat_type';
+
+	/**
+	 * The meta key used to store the UUID of a post.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	const META_KEY_UUID = '_tec_slr_uuid';
 }

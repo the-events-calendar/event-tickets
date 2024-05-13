@@ -5,14 +5,14 @@
  * Override this template in your own theme by creating a file at
  * [your-theme]/tribe/tickets-seating/tickets-block.php
  *
- * @since TBD
+ * @since   TBD
  *
  * @version TBD
  *
- * @var $cost_range string The cost range of the tickets.
- * @var $inventory  string The inventory of the tickets.
+ * @var string $cost_range    The cost range of the tickets.
+ * @var string $inventory     The inventory of the tickets.
+ * @var string $modal_content The content of seat selection modal.
  */
-
 ?>
 
 <div class="tribe-common event-tickets tribe-tickets__tickets-wrapper">
@@ -27,17 +27,7 @@
 			</span>
 		</div>
 		<div class="tec-tickets-seating__tickets-block__action">
-		<?php
-			/** @var Tribe\Dialog\View $dialog_view */
-			$dialog_view = tribe( 'dialog.view' );
-			$content     = '<p>test</p>';
-			$args        = [
-				'button_text'    => esc_html_x( 'Find Seats', 'Find seats button text', 'event-tickets' ),
-				'button_classes' => [ 'tribe-common-c-btn', 'tribe-common-c-btn--small' ],
-				'append_target'  => '.tec-tickets-seating__tickets-block__information',
-			];
-			$dialog_view->render_modal( $content, $args, 'tec-tickets-seating__tickets-block__action--submit' );
-			?>
+			<?php echo $modal_content; ?>
 		</div>
 	</div>
 </div>
