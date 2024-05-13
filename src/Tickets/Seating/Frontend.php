@@ -83,7 +83,7 @@ class Frontend extends Controller_Contract {
 		// Register the front-end JS.
 		Asset::add(
 			'tec-tickets-seating-frontend',
-			$this->built_asset_url( 'frontend/form.js' ),
+			$this->built_asset_url( 'frontend/tickets-block.js' ),
 			ET::VERSION
 		)
 			->set_dependencies( 'tribe-dialog-js' )
@@ -95,7 +95,7 @@ class Frontend extends Controller_Contract {
 		// Register the front-end CSS.
 		Asset::add(
 			'tec-tickets-seating-frontend-style',
-			$this->built_asset_url( 'frontend/form.css' ),
+			$this->built_asset_url( 'frontend/tickets-block.css' ),
 			ET::VERSION
 		)
 			->set_dependencies( 'tribe-dialog' )

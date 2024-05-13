@@ -178,15 +178,15 @@ const targets = [
 		},
 	},
 	{
-		name: 'seating-frontend-bundle',
-		entry: './src/resources/bundles/seating/frontend/index.js',
-		outputScript: './build/Seating/frontend/form.min.js',
-		outputStyle: `build/Seating/frontend/form.${postfix}`,
+		name: 'seating-frontend-tickets-block-bundle',
+		entry: './src/resources/bundles/seating/frontend/tickets-block/index.js',
+		outputScript: './build/Seating/frontend/tickets-block.min.js',
+		outputStyle: `build/Seating/frontend/tickets-block.${postfix}`,
 		moveFromTo: {
-			'src/resources/js/app/seating-frontend-bundle.js':
-				'build/Seating/frontend/form.js',
-			'src/resources/css/app/seating-frontend-bundle.css':
-				'build/Seating/frontend/form.css',
+			'src/resources/js/app/seating-frontend-tickets-block-bundle.js':
+				'build/Seating/frontend/tickets-block.js',
+			'src/resources/css/app/seating-frontend-tickets-block-bundle.css':
+				'build/Seating/frontend/tickets-block.css',
 		},
 	},
 ];
@@ -206,6 +206,7 @@ const config = merge(common, {
 	externals: [
 		{
 			'@wordpress/core-data': 'wp.coreData',
+			'@tec/tickets/seating/iframe': 'tec.seating.iframe',
 		},
 	],
 	// Configure multiple entry points.
