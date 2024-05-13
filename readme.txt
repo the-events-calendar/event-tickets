@@ -2,7 +2,7 @@
 
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, GeoffBel, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
-Requires at least: 6.2
+Requires at least: 6.3
 Tested up to: 6.5.3
 Stable tag: 5.9.3
 Requires PHP: 7.4
@@ -196,15 +196,13 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.9.2] 2024-05-13 =
+= [5.9.3] 2024-05-13 =
 
-* Version - Event Tickets 5.9.2 is only compatible with The Events Calendar 6.4.1 and higher
+* Version - Event Tickets 5.9.3 is only compatible with The Events Calendar 6.4.1 and higher
 * Fix - Update to remove moment.js library due to security concerns. [TEC-5011]
-* Tweak - Added filters: `tec_tickets_commerce_is_free_ticket_allowed`, `tec_tickets_commerce_value_get_currency_display`
-* Tweak - Changed views: `emails/template-parts/body/order/order-gateway-data`, `emails/template-parts/body/order/order-total`, `emails/template-parts/body/order/payment-info`, `v2/commerce/gateway/free/button`, `v2/commerce/gateway/free/container`, `v2/commerce/order/details/payment-method`, `v2/commerce/ticket/regular-price`, `v2/commerce/ticket/sale-price`
 * Language - 0 new strings added, 35 updated, 0 fuzzied, and 0 obsoleted
 
-= [5.10.0] 2024-05-08 =
+= [5.9.2] 2024-05-08 =
 
 * Feature - Added support for adding Free tickets using Tickets Commerce. [ET-1218]
 * Tweak - When using Events Calendar Pro, the duplicate event function will now duplicate tickets as well. [ET-2073]
