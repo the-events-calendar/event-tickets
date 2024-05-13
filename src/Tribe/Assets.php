@@ -16,10 +16,7 @@ class Tribe__Tickets__Assets {
 		/** @var Tribe__Tickets__Main $tickets_main */
 		$tickets_main = tribe( 'tickets.main' );
 
-		$tickets_deps = [
-			'dashicons',
-			'event-tickets-reset-css',
-		];
+		$tickets_deps = [ 'dashicons' ];
 
 		if ( $this->should_enqueue_common_full() ) {
 			$tickets_deps[] = 'tribe-common-full-style';
@@ -33,7 +30,6 @@ class Tribe__Tickets__Assets {
 		tribe_assets(
 			$tickets_main,
 			[
-				[ 'event-tickets-reset-css', 'reset.css' ],
 				[ 'event-tickets-tickets-css', $tickets_stylesheet, $tickets_deps ],
 				[ 'event-tickets-tickets-rsvp-css', 'rsvp-v1.css', [ 'tec-variables-full' ] ],
 				[ 'event-tickets-tickets-rsvp-js', 'rsvp.js', [ 'jquery' ] ],
