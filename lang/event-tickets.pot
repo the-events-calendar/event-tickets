@@ -2,15 +2,15 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Event Tickets 5.9.2\n"
+"Project-Id-Version: Event Tickets 5.9.3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/event-tickets\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-05-06T11:23:29-07:00\n"
-"PO-Revision-Date: 2024-05-06 18:23\n"
+"POT-Creation-Date: 2024-05-13T10:01:43-07:00\n"
+"PO-Revision-Date: 2024-05-13 17:01\n"
 "X-Generator: WP-CLI 2.7.1\n"
 "X-Domain: event-tickets\n"
 
@@ -19,7 +19,7 @@ msgstr ""
 #: src/admin-views/admin-welcome-message.php:73
 #: src/Tickets/Site_Health/Info_Section.php:73
 #: src/Tribe/Admin/Notices.php:85
-#: src/Tribe/Main.php:767
+#: src/Tribe/Main.php:783
 #: src/Tribe/Privacy.php:59
 #: src/views/emails/template-parts/body/footer/credit.php:41
 msgid "Event Tickets"
@@ -67,7 +67,7 @@ msgstr ""
 #: src/admin-views/tribe-commerce-settings.php:4
 #: src/Tickets/Commerce/Payments_Tab.php:300
 #: src/Tribe/Admin/Notices.php:207
-#: src/Tribe/Main.php:742
+#: src/Tribe/Main.php:758
 msgid "Event Tickets Plus"
 msgstr ""
 
@@ -388,7 +388,7 @@ msgstr ""
 #: src/admin-views/tribe-commerce-settings.php:93
 #: src/admin-views/tribe-commerce-settings.php:105
 #: src/Tickets/Commerce/Reports/Attendees.php:540
-#: src/Tribe/Attendees.php:680
+#: src/Tribe/Attendees.php:682
 msgid "Yes"
 msgstr ""
 
@@ -492,7 +492,7 @@ msgstr ""
 
 #: src/admin-views/commerce/reports/attendees.php:27
 #: src/Tickets/Commerce/Admin_Tables/Orders.php:558
-#: src/Tribe/Attendees.php:1162
+#: src/Tribe/Attendees.php:1164
 #: src/Tribe/Attendees_Table.php:745
 msgid "Export"
 msgstr ""
@@ -1797,6 +1797,18 @@ msgstr ""
 msgid "Contact your Host or your system administrator and ask to upgrade to the latest version of PHP."
 msgstr ""
 
+#: src/functions/soft-disable.php:67
+#: src/template-tags/tickets.php:1533
+msgctxt "lowercase plural label for Tickets"
+msgid "tickets"
+msgstr ""
+
+#: src/functions/soft-disable.php:96
+#: src/template-tags/tickets.php:1413
+msgctxt "plural label for RSVPs"
+msgid "RSVPs"
+msgstr ""
+
 #: src/template-tags/tickets.php:226
 msgctxt "list view stock sold out"
 msgid "Sold out"
@@ -1860,11 +1872,6 @@ msgctxt "lowercase singular label for RSVP"
 msgid "rsvp"
 msgstr ""
 
-#: src/template-tags/tickets.php:1413
-msgctxt "plural label for RSVPs"
-msgid "RSVPs"
-msgstr ""
-
 #: src/template-tags/tickets.php:1437
 msgctxt "lowercase plural label for RSVPs"
 msgid "rsvps"
@@ -1883,11 +1890,6 @@ msgstr ""
 #: src/template-tags/tickets.php:1509
 msgctxt "plural label for Tickets"
 msgid "Tickets"
-msgstr ""
-
-#: src/template-tags/tickets.php:1533
-msgctxt "lowercase plural label for Tickets"
-msgid "tickets"
 msgstr ""
 
 #: src/template-tags/tickets.php:1676
@@ -7125,7 +7127,7 @@ msgid "%1$s - Attendee list"
 msgstr ""
 
 #: src/Tickets/Commerce/Reports/Attendees.php:416
-#: src/Tribe/Attendees.php:793
+#: src/Tribe/Attendees.php:795
 msgid "attendees"
 msgstr ""
 
@@ -8843,7 +8845,7 @@ msgid "Includes ticketed attendees with orders marked Completed."
 msgstr ""
 
 #: src/Tribe/Admin/Home/Service_Provider.php:80
-#: src/Tribe/Main.php:902
+#: src/Tribe/Main.php:918
 msgid "Welcome to Event Tickets!"
 msgstr ""
 
@@ -9182,7 +9184,7 @@ msgid "View"
 msgstr ""
 
 #: src/Tribe/Attendees.php:476
-#: src/Tribe/Attendees.php:943
+#: src/Tribe/Attendees.php:945
 msgid "Email sent successfully!"
 msgstr ""
 
@@ -9190,32 +9192,32 @@ msgstr ""
 msgid "%s - Attendee list"
 msgstr ""
 
-#: src/Tribe/Attendees.php:840
+#: src/Tribe/Attendees.php:842
 msgid "Invalid Event ID"
 msgstr ""
 
-#: src/Tribe/Attendees.php:860
+#: src/Tribe/Attendees.php:862
 msgid "Cheatin Huh?"
 msgstr ""
 
-#: src/Tribe/Attendees.php:866
+#: src/Tribe/Attendees.php:868
 msgid "Empty user and/or email"
 msgstr ""
 
-#: src/Tribe/Attendees.php:872
+#: src/Tribe/Attendees.php:874
 msgid "Invalid Email"
 msgstr ""
 
-#: src/Tribe/Attendees.php:878
-#: src/Tribe/Attendees.php:915
+#: src/Tribe/Attendees.php:880
+#: src/Tribe/Attendees.php:917
 msgid "Invalid User ID"
 msgstr ""
 
-#: src/Tribe/Attendees.php:935
+#: src/Tribe/Attendees.php:937
 msgid "Attendee List for: %s"
 msgstr ""
 
-#: src/Tribe/Attendees.php:936
+#: src/Tribe/Attendees.php:938
 msgid "Error when sending the email"
 msgstr ""
 
@@ -9563,83 +9565,83 @@ msgctxt "list view buy now ticket button"
 msgid "Get %s"
 msgstr ""
 
-#: src/Tribe/Main.php:166
+#: src/Tribe/Main.php:165
 msgctxt "provider_plugin_name"
 msgid "Tickets"
 msgstr ""
 
 #. Translators: %1$s is the min required version of The Events Calendar. %2$s Is the update link opening `<a>`. %3$s Is the update link closing `</a>`.
-#: src/Tribe/Main.php:505
+#: src/Tribe/Main.php:521
 msgid "When The Events Calendar and Event Tickets are both activated, The Events Calendar must be running version %1$s or greater. Please %2$supdate now.%3$s"
 msgstr ""
 
-#: src/Tribe/Main.php:568
+#: src/Tribe/Main.php:584
 msgid "Sorry, Event Tickets requires WordPress %s or higher. Please upgrade your WordPress install."
 msgstr ""
 
-#: src/Tribe/Main.php:572
+#: src/Tribe/Main.php:588
 msgid "Sorry, Event Tickets requires PHP %s or higher. Talk to your Web host about moving you to a newer version of PHP."
 msgstr ""
 
-#: src/Tribe/Main.php:697
+#: src/Tribe/Main.php:713
 msgid "Support for Event Tickets"
 msgstr ""
 
-#: src/Tribe/Main.php:699
+#: src/Tribe/Main.php:715
 msgid "Settings overview"
 msgstr ""
 
-#: src/Tribe/Main.php:700
+#: src/Tribe/Main.php:716
 msgid "Features overview"
 msgstr ""
 
-#: src/Tribe/Main.php:701
+#: src/Tribe/Main.php:717
 msgid "Troubleshooting common problems"
 msgstr ""
 
-#: src/Tribe/Main.php:702
+#: src/Tribe/Main.php:718
 msgid "Customizing Event Tickets"
 msgstr ""
 
-#: src/Tribe/Main.php:719
+#: src/Tribe/Main.php:735
 msgid "New User Primer"
 msgstr ""
 
-#: src/Tribe/Main.php:721
+#: src/Tribe/Main.php:737
 msgctxt "help feature box section"
 msgid "We are committed to helping you sell %1$s for your event. Check out our handy %2$s to get started."
 msgstr ""
 
-#: src/Tribe/Main.php:738
+#: src/Tribe/Main.php:754
 msgid "open-source forum on WordPress.org"
 msgstr ""
 
-#: src/Tribe/Main.php:739
+#: src/Tribe/Main.php:755
 msgid "If you have tried the above steps and are still having trouble, you can post a new thread to our %s. Our support staff monitors these forums once a week and would be happy to assist you there."
 msgstr ""
 
-#: src/Tribe/Main.php:741
+#: src/Tribe/Main.php:757
 msgid "premium support on our website"
 msgstr ""
 
-#: src/Tribe/Main.php:743
+#: src/Tribe/Main.php:759
 msgid "Looking for more immediate support? We offer %1$s with the purchase of any of our premium plugins (like %2$s). Pick up a license and you can post there directly and expect a response within 24-48 hours during weekdays."
 msgstr ""
 
-#: src/Tribe/Main.php:745
-#: src/Tribe/Main.php:750
+#: src/Tribe/Main.php:761
+#: src/Tribe/Main.php:766
 msgid "post a thread"
 msgstr ""
 
-#: src/Tribe/Main.php:746
+#: src/Tribe/Main.php:762
 msgid "Already have Event Tickets Plus? You can %s in our premium support forums. Our support team monitors the forums and will respond to your thread within 24-48 hours (during the week)."
 msgstr ""
 
-#: src/Tribe/Main.php:751
+#: src/Tribe/Main.php:767
 msgid "If you have a valid license for one of our paid plugins, you can %s in our premium support forums. Our support team monitors the forums and will respond to your thread within 24-48 hours (during the week)."
 msgstr ""
 
-#: src/Tribe/Main.php:1078
+#: src/Tribe/Main.php:1094
 msgid "Buy"
 msgstr ""
 
