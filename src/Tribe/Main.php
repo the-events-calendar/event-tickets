@@ -53,28 +53,32 @@ class Tribe__Tickets__Main {
 	 *
 	 * @var string
 	 */
-	protected $min_tec_version = '6.4.1-dev';
+	protected $min_tec_version = '6.5.0-dev';
 
 	/**
 	 * Name of the provider.
+	 *
 	 * @var string
 	 */
 	public $plugin_name;
 
 	/**
-	 * Directory of the plugin
+	 * Directory of the plugin.
+	 *
 	 * @var string
 	 */
 	public $plugin_dir;
 
 	/**
-	 * Path of the plugin
+	 * Path of the plugin.
+	 *
 	 * @var string
 	 */
 	public $plugin_path;
 
 	/**
-	 * URL of the plugin
+	 * URL of the plugin.
+	 *
 	 * @var string
 	 */
 	public $plugin_url;
@@ -237,7 +241,7 @@ class Tribe__Tickets__Main {
 
 		$common_version = file_get_contents( $this->plugin_path . 'common/src/Tribe/Main.php' );
 
-		// if there isn't a tribe-common version, bail
+		// if there isn't a tribe-common version, bail.
 		if ( ! preg_match( $this->common_version_regex, $common_version, $matches ) ) {
 			add_action( 'admin_head', [ $this, 'missing_common_libs' ] );
 
