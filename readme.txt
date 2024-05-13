@@ -196,7 +196,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.10.0] 2024-05-13 =
+= [5.10.0] 2024-05-14 =
 
 * Version - Event Tickets 5.10.0 is only compatible with The Events Calendar 6.5.0 and higher
 * Fix - Update to remove moment.js library due to security concerns. [TEC-5011]
