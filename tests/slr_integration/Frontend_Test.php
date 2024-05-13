@@ -59,35 +59,107 @@ class Frontend_Test extends Controller_Test_Case {
 		$this->assertMatchesHtmlSnapshot( $html );
 	}
 
+	public function seating_enabled_fixtures(): \Generator {
+		yield 'one ticket' => [
+			function () {
+				$post_id = static::factory()->post->create(
+					[
+						'post_type' => 'page',
+					]
+				);
+				update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'some-layout-uuid' );
+				/**
+				 * @var Tickets_Handler $tickets_handler
+				 */
+				$tickets_handler   = tribe( 'tickets.handler' );
+				$capacity_meta_key = $tickets_handler->key_capacity;
+				update_post_meta( $post_id, $capacity_meta_key, 100 );
+				$ticket = $this->create_tc_ticket( $post_id, 20 );
+
+				update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'yes' );
+
+				return [ $post_id, $ticket ];
+			}
+		];
+
+		yield 'two tickets' => [
+			function () {
+				$post_id = static::factory()->post->create(
+					[
+						'post_type' => 'page',
+					]
+				);
+				update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'some-layout-uuid' );
+				/**
+				 * @var Tickets_Handler $tickets_handler
+				 */
+				$tickets_handler   = tribe( 'tickets.handler' );
+				$capacity_meta_key = $tickets_handler->key_capacity;
+				update_post_meta( $post_id, $capacity_meta_key, 100 );
+				$ticket_1 = $this->create_tc_ticket( $post_id, 20 );
+				$ticket_2 = $this->create_tc_ticket( $post_id, 50 );
+				// Sort the tickets "manually".
+				foreach ( [ $ticket_1, $ticket_2 ] as $k => $ticket ) {
+					wp_update_post(
+						[
+							'ID'         => $ticket,
+							'menu_order' => $k,
+						]
+					);
+				}
+
+				update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'yes' );
+
+				return [ $post_id, $ticket_1, $ticket_2 ];
+			}
+		];
+
+
+		yield 'five tickets' => [
+			function () {
+				$post_id = static::factory()->post->create(
+					[
+						'post_type' => 'page',
+					]
+				);
+				update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'some-layout-uuid' );
+				/**
+				 * @var Tickets_Handler $tickets_handler
+				 */
+				$tickets_handler   = tribe( 'tickets.handler' );
+				$capacity_meta_key = $tickets_handler->key_capacity;
+				update_post_meta( $post_id, $capacity_meta_key, 100 );
+				$ticket_1 = $this->create_tc_ticket( $post_id, 20 );
+				$ticket_2 = $this->create_tc_ticket( $post_id, 50 );
+				$ticket_3 = $this->create_tc_ticket( $post_id, 10 );
+				$ticket_4 = $this->create_tc_ticket( $post_id, 30 );
+				$ticket_5 = $this->create_tc_ticket( $post_id, 10 );
+				// Sort the tickets "manually".
+				foreach ( [ $ticket_1, $ticket_2, $ticket_3, $ticket_4, $ticket_5 ] as $k => $ticket ) {
+					wp_update_post(
+						[
+							'ID'         => $ticket,
+							'menu_order' => $k,
+						]
+					);
+				}
+
+				update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'yes' );
+
+				return [ $post_id, $ticket_1, $ticket_2, $ticket_3, $ticket_4, $ticket_5 ];
+			}
+		];
+	}
+
 	/**
 	 * it should_replace_ticket_block_when_seating_is_enabled
 	 *
 	 * @test
+	 * @dataProvider seating_enabled_fixtures
 	 */
-	public function should_replace_ticket_block_when_seating_is_enabled() {
-		$post_id = static::factory()->post->create(
-			[
-				'post_type' => 'page',
-			]
-		);
-		update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'some-layout-uuid' );
-		$ticket_1 = $this->create_tc_ticket( $post_id, 20 );
-		$ticket_2 = $this->create_tc_ticket( $post_id, 50 );
-		// Sort the tickets "manually".
-		wp_update_post(
-			[
-				'ID'         => $ticket_1,
-				'menu_order' => 1,
-			]
-		);
-		wp_update_post(
-			[
-				'ID'         => $ticket_2,
-				'menu_order' => 2,
-			]
-		);
-
-		update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'yes' );
+	public function should_replace_ticket_block_when_seating_is_enabled( \Closure $fixture ) {
+		$ids     = $fixture();
+		$post_id = array_shift( $ids );
 
 		$this->make_controller()->register();
 
@@ -95,8 +167,13 @@ class Frontend_Test extends Controller_Test_Case {
 
 		// Replace the ticket IDs with placeholders.
 		$html = str_replace(
-			[ $post_id, $ticket_1, $ticket_2 ],
-			[ '{{post_id}}', '{{ticket_1}}', '{{ticket_2}}' ],
+			[ $post_id, ...$ids ],
+			[
+				'{{post_id}}',
+				...array_map( function ( $id ) {
+					return '{{ticket_' . $id . '}}';
+				}, range( 1, count( $ids ) ) )
+			],
 			$html
 		);
 

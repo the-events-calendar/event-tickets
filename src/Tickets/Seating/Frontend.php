@@ -3,7 +3,7 @@
  * The main front-end controller. This controller will directly, or by delegation, subscribe to
  * front-end related hooks.
  *
- * @since TBD
+ * @since   TBD
  *
  * @package TEC\Controller;
  */
@@ -12,9 +12,11 @@ namespace TEC\Tickets\Seating;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\lucatume\DI52\Container;
-use Tribe__Template as Base_Template;
 use TEC\Common\StellarWP\Assets\Asset;
-use Tribe__Tickets__Main as Tickets;
+use Tribe__Template as Base_Template;
+use Tribe__Tickets__Main as ET;
+use Tribe__Tickets__Tickets as Tickets;
+use Tribe__Tickets__Tickets_Handler as Tickets_Handler;
 
 /**
  * Class Controller.
@@ -25,7 +27,7 @@ use Tribe__Tickets__Main as Tickets;
  */
 class Frontend extends Controller_Contract {
 	use Built_Assets;
-	
+
 	/**
 	 * The action that will be fired when this Controller registers.
 	 *
@@ -58,41 +60,6 @@ class Frontend extends Controller_Contract {
 	}
 
 	/**
-	 * Registers the controller by subscribing to front-end hooks and binding implementations.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	protected function do_register(): void {
-		add_filter( 'tribe_template_pre_html:tickets/v2/tickets', [ $this, 'print_tickets_block' ], 10, 5 );
-		
-		// Register the front-end JS.
-		Asset::add(
-			'tec-tickets-seating-frontend',
-			$this->built_asset_url( 'frontend/form.js' ),
-			Tickets::VERSION
-		)
-			->set_dependencies( 'tribe-dialog-js' )
-			->enqueue_on( 'wp_enqueue_scripts' )
-			->add_to_group( 'tec-tickets-seating-frontend' )
-			->add_to_group( 'tec-tickets-seating' )
-			->register();
-		
-		// Register the front-end CSS.
-		Asset::add(
-			'tec-tickets-seating-frontend-style',
-			$this->built_asset_url( 'frontend/form.css' ),
-			Tickets::VERSION
-		)
-			->set_dependencies( 'tribe-dialog' )
-			->enqueue_on( 'wp_enqueue_scripts' )
-			->add_to_group( 'tec-tickets-seating-frontend' )
-			->add_to_group( 'tec-tickets-seating' )
-			->register();
-	}
-
-	/**
 	 * Unregisters the Controller by unsubscribing from WordPress hooks.
 	 *
 	 * @since TBD
@@ -101,6 +68,41 @@ class Frontend extends Controller_Contract {
 	 */
 	public function unregister(): void {
 		remove_filter( 'tribe_template_pre_html:tickets/v2/tickets', [ $this, 'print_tickets_block' ] );
+	}
+
+	/**
+	 * Registers the controller by subscribing to front-end hooks and binding implementations.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	protected function do_register(): void {
+		add_filter( 'tribe_template_pre_html:tickets/v2/tickets', [ $this, 'print_tickets_block' ], 10, 5 );
+
+		// Register the front-end JS.
+		Asset::add(
+			'tec-tickets-seating-frontend',
+			$this->built_asset_url( 'frontend/form.js' ),
+			ET::VERSION
+		)
+			->set_dependencies( 'tribe-dialog-js' )
+			->enqueue_on( 'wp_enqueue_scripts' )
+			->add_to_group( 'tec-tickets-seating-frontend' )
+			->add_to_group( 'tec-tickets-seating' )
+			->register();
+
+		// Register the front-end CSS.
+		Asset::add(
+			'tec-tickets-seating-frontend-style',
+			$this->built_asset_url( 'frontend/form.css' ),
+			ET::VERSION
+		)
+			->set_dependencies( 'tribe-dialog' )
+			->enqueue_on( 'wp_enqueue_scripts' )
+			->add_to_group( 'tec-tickets-seating-frontend' )
+			->add_to_group( 'tec-tickets-seating' )
+			->register();
 	}
 
 	/**
@@ -119,15 +121,37 @@ class Frontend extends Controller_Contract {
 	public function print_tickets_block( $html, $file, $name, $template, $context ): ?string {
 		$data    = $template->get_values();
 		$post_id = $data['post_id'];
-		
+
 		if ( ! tec_tickets_seating_enabled( $post_id ) ) {
 			return $html;
 		}
-		
-		// Prepare the data to be passed to the template.
-		$cost_range = '$12.00 - $25.00';
-		$inventory  = 100;
-		
+
+		$prices   = [];
+		$provider = Tickets::get_event_ticket_provider_object( $post_id );
+		foreach ( tribe_tickets()->where( 'event', $post_id )->get_ids( true ) as $ticket_id ) {
+			$ticket = $provider->get_ticket( $post_id, $ticket_id );
+			if ( ! $ticket ) {
+				continue;
+			}
+			$prices[] = $ticket->price;
+		}
+
+		if ( ! count( $prices ) ) {
+			// Why are we here at all?
+			return $html;
+		}
+
+		$cost_range = tribe_format_currency( min( $prices ), $post_id )
+		              . ' - '
+		              . tribe_format_currency( max( $prices ), $post_id );
+
+		/**
+		 * @var Tickets_Handler $tickets_handler
+		 */
+		$tickets_handler   = tribe( 'tickets.handler' );
+		$capacity_meta_key = $tickets_handler->key_capacity;
+		$inventory         = get_post_meta( $post_id, $capacity_meta_key, true );
+
 		return $this->template->template(
 			'tickets-block',
 			[
@@ -137,4 +161,5 @@ class Frontend extends Controller_Contract {
 			false
 		);
 	}
+
 }
