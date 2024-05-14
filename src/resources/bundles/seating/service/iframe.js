@@ -49,5 +49,5 @@ window.tec = window.tec || {};
 window.tec.seating = window.tec.seating || {};
 window.tec.seating.iframe = {
 	...(window.tec.seating.iframe || {}),
-	iFrameInit,
+	iFrameInit
 };

@@ -7,7 +7,7 @@
  *
  * @returns {string} The link URL, or an empty string if it does not exist.
  */
-function getLink(link) {
+export function getLink(link) {
 	return window?.tec?.seating?.utils?.links?.[link] || '';
 }
 
@@ -19,7 +19,7 @@ function getLink(link) {
  *
  * @returns {string} The localized string, or an empty string if it does not exist.
  */
-function getLocalizedString(slug, group) {
+export function getLocalizedString(slug, group) {
 	if (group) {
 		return window?.tec?.seating?.utils?.localizedStrings?.[group]?.[slug] || '';
 	} else {
@@ -32,5 +32,6 @@ window.tec.seating = window.tec.seating || {};
 window.tec.seating.utils = {
 	...(window.tec.seating.utils || {}),
 	getLink,
-	getLocalizedString,
+	getLocalizedString
 };
+

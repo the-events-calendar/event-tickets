@@ -31,6 +31,15 @@ class Frontend extends Controller_Contract {
 	use Built_Assets;
 
 	/**
+	 * The ID of the modal used to display the seat selection modal.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const MODAL_ID = 'tec-tickets-seating-seat-selection-modal';
+
+	/**
 	 * The action that will be fired when this Controller registers.
 	 *
 	 * @since TBD
@@ -92,6 +101,11 @@ class Frontend extends Controller_Contract {
 	protected function do_register(): void {
 		add_filter( 'tribe_template_pre_html:tickets/v2/tickets', [ $this, 'print_tickets_block' ], 10, 5 );
 
+		$data = fn() => [
+			'objectName' => 'dialog_obj_' . self::MODAL_ID,
+			'modalId' => self::MODAL_ID,
+		];
+
 		// Register the front-end JS.
 		Asset::add(
 			'tec-tickets-seating-frontend',
@@ -102,6 +116,7 @@ class Frontend extends Controller_Contract {
 				'tribe-dialog-js',
 				'tec-tickets-seating-service-bundle'
 			)
+			->add_localize_script('tec.seating.frontend.ticketsBlock',$data)
 			->enqueue_on( 'wp_enqueue_scripts' )
 			->add_to_group( 'tec-tickets-seating-frontend' )
 			->add_to_group( 'tec-tickets-seating' )
@@ -216,11 +231,6 @@ class Frontend extends Controller_Contract {
 			'append_target'  => '.tec-tickets-seating__tickets-block__information',
 		];
 
-		return $dialog_view->render_modal(
-			$content,
-			$args,
-			'tec-tickets-seating__tickets-block__action--submit',
-			false
-		);
+		return $dialog_view->render_modal( $content, $args, self::MODAL_ID, false );
 	}
 }
