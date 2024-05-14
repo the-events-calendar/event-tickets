@@ -10,6 +10,7 @@
 namespace TEC\Tickets\Seating\Admin\Tabs;
 
 use TEC\Tickets\Seating\Admin;
+use TEC\Tickets\Seating\Service\Maps as Maps_Service;
 
 /**
  * Class Maps.
@@ -50,11 +51,13 @@ class Maps extends Tab {
 	 */
 	public function render(): void {
 		$context = [
-			'cards'       => [],
-			'add_new_url' => add_query_arg( [
-				'page' => Admin::get_menu_slug(),
-				'tab'  => Map_Edit::get_id()
-			] ),
+			'cards'       => Maps_Service::fetch_all(),
+			'add_new_url' => add_query_arg(
+				[
+					'page' => Admin::get_menu_slug(),
+					'tab'  => Map_Edit::get_id(),
+				] 
+			),
 		];
 
 		$this->template->template( 'tabs/maps', $context );

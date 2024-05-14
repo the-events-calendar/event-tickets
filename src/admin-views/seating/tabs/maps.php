@@ -4,35 +4,10 @@
  *
  * @since TBD
  *
- * @var Map_Card[] $cards The set of cards to display.
+ * @var array $cards The set of cards to display.
  * @var string $add_new_url The URL to add a new Controller Configuration.
  */
-$cards = [
-	[
-		'id'        => 1,
-		'name'      => 'Main Floor',
-		'capacity'  => 100,
-		'thumbnail' => 'https://placehold.co/400',
-	],
-	[
-		'id'        => 2,
-		'name'      => 'Balcony',
-		'capacity'  => 50,
-		'thumbnail' => 'https://placehold.co/400',
-	],
-	[
-		'id'        => 3,
-		'name'      => 'VIP',
-		'capacity'  => 25,
-		'thumbnail' => 'https://placehold.co/400',
-	],
-	[
-		'id'        => 4,
-		'name'      => 'Backstage',
-		'capacity'  => 10,
-		'thumbnail' => 'https://placehold.co/400',
-	],
-];
+
 ?>
 
 <div class="tec-tickets__tab-heading__wrapper"><h2
