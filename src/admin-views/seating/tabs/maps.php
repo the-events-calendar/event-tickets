@@ -4,10 +4,11 @@
  *
  * @since TBD
  *
- * @var array $cards The set of cards to display.
+ * @var Map_Card[] $cards The set of cards to display.
  * @var string $add_new_url The URL to add a new Controller Configuration.
  */
 
+use TEC\Tickets\Seating\Admin\Tabs\Map_Card;
 ?>
 
 <div class="tec-tickets__tab-heading__wrapper"><h2
@@ -61,7 +62,7 @@
 		<?php
 		foreach ( $cards as $card ) {
 			$this->template( 'components/layout-card', [ 'card' => $card ] );
-		} 
+		}
 		?>
 		</div>
 	<?php endif; ?>

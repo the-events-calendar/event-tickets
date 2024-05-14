@@ -10,7 +10,7 @@
 namespace TEC\Tickets\Seating\Admin\Tabs;
 
 use TEC\Tickets\Seating\Admin;
-use TEC\Tickets\Seating\Service\Maps as Maps_Service;
+use TEC\Tickets\Seating\Service\Service;
 
 /**
  * Class Maps.
@@ -50,8 +50,9 @@ class Maps extends Tab {
 	 * @return void The rendered HTML of this tab is passed to the output buffer.
 	 */
 	public function render(): void {
+		$service = tribe( Service::class );
 		$context = [
-			'cards'       => Maps_Service::fetch_all(),
+			'cards'       => $service->get_map_cards(),
 			'add_new_url' => add_query_arg(
 				[
 					'page' => Admin::get_menu_slug(),
