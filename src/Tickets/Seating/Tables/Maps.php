@@ -83,8 +83,8 @@ class Maps extends Table {
 			CREATE TABLE `{$table_name}` (
 				`id` varchar(36) NOT NULL,
 				`name` varchar(255) NOT NULL,
-				`created_date` datetime NOT NULL,
 				`seats` int(11) NOT NULL DEFAULT '0',
+				`screenshotUrl` varchar(255) NOT NULL,
 				PRIMARY KEY (`id`)
 			) {$charset_collate};
 		";
