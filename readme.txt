@@ -15,7 +15,7 @@ Event Tickets allows your visitors to RSVP and buy tickets to events on your sit
 
 Sell tickets and collect RSVPs with the free [Event Tickets](https://evnt.is/1ao8) plugin, from the team behind the number one calendar in WordPress.
 
-This plugin makes it easy to sell tickets, collect registrations, and manage attendees for your in-person or virtual events. Plus, it comes with features backed by our world-class team of developers and designers. Easily integrate Event Tickets with your Stripe account or PayPal business account.
+This plugin makes it easy to sell all different types of tickets with our free Tickets Commerce solution. Create free tickets, collect registrations and generate revenue, and manage attendees for your in-person or virtual events. Plus, it comes with features backed by our world-class team of developers and designers. Easily integrate Event Tickets with your Stripe account or PayPal business account.
 
 Connect to Stripe and take advantage of one of the world’s most popular payment gateways. Our Stripe integration lets you accept credit card payments on your website, along with additional payment methods including AfterPay, ClearPay, AliPay, Giropay, and Klarna.
 
@@ -45,6 +45,7 @@ Whether your vision is big or small, you're in good company. Thousands of small 
 
 ✔️ Attendees can purchase tickets to events
 ✔️ Attendees can RSVP to events
+✔️ Free tickets with Tickets Commerce.
 ✔️ Sell tickets with PayPal, [Paystack](https://evnt.is/et-tc-paystack-wp-org), and/or Stripe using our free commerce solution, Tickets Commerce.
 ✔️ Add RSVPs and tickets to posts, pages, or custom post types
 ✔️ Collect ticket fees by connecting your PayPal business or Stripe account
