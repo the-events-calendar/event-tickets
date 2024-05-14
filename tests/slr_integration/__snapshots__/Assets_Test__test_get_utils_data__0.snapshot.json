@@ -1,0 +1,15 @@
+{
+    "links": {
+        "layouts": "http://wordpress.test/wp-admin/admin.php?page=tec-tickets-seating&tab=layouts"
+    },
+    "localizedStrings": {
+        "capacity-form": {
+            "use-assigned-seating-toggle-label": "Use assigned seating",
+            "event-layouts-select-label": "Event layout:",
+            "event-layouts-select-placeholder": "Choose event layout",
+            "view-layouts-link-label": "View layouts",
+            "seat-types-select-label": "Seat type:",
+            "seat-types-select-placeholder": "Choose seat type"
+        }
+    }
+}

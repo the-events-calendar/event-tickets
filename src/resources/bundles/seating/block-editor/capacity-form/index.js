@@ -11,8 +11,7 @@ import {
 } from '../common-store-bridge';
 import { META_KEY_ENABLED, META_KEY_LAYOUT_ID } from '../constants';
 import EventLayoutSelect from './event-layout-select';
-
-const { getLocalizedString } = tec.seating.utils;
+import { getLocalizedString } from '@tec/tickets/seating/utils';
 
 const getString = (key) => getLocalizedString(key, 'capacity-form');
 

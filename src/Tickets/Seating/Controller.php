@@ -62,22 +62,26 @@ class Controller extends Controller_Contract {
 	 */
 	protected function do_register(): void {
 		require_once __DIR__ . '/template-tags.php';
-		
+
 		$this->container->singleton( Template::class );
 		$this->container->singleton( Localization::class );
 		$this->container->singleton( Service\Service::class, fn() => $this->build_service_facade() );
 		$this->container->singleton( Meta::class );
 
 		$this->container->register( Tables::class );
+		$this->container->register( Assets::class );
+
+		/*
+		 * The Editor will have to handle initial state requests, AJAX requests and REST requests from the Block Editor.
+		 * For this reason, it's always registered.
+		 */
+		$this->container->register( Editor::class );
 
 		if ( is_admin() ) {
 			$this->container->register( Admin::class );
 		} else {
 			$this->container->register( Frontend::class );
 		}
-
-		// The Editor will have to handle initial state requests, AJAX requests and REST requests from the Block Editor.
-		$this->container->register( Editor::class );
 	}
 
 	/**

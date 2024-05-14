@@ -1,8 +1,8 @@
 import { LabeledItem, Select } from '@moderntribe/common/elements';
 import PropTypes from 'prop-types';
 import { Fragment } from 'react';
+import { getLink, getLocalizedString } from '@tec/tickets/seating/utils';
 
-const { getLink, getLocalizedString } = tec.seating.utils;
 const getString = (key) => getLocalizedString(key, 'capacity-form');
 
 const EventLayoutSelect = ({

@@ -106,15 +106,15 @@ const targets = [
 		},
 	},
 	{
-		name: 'seating-admin-bundle',
-		entry: './src/resources/bundles/seating/admin/index.js',
-		outputScript: './build/Seating/admin/bundle.min.js',
-		outputStyle: `build/Seating/admin/bundle.${postfix}`,
+		name: 'seating-service-bundle',
+		entry: './src/resources/bundles/seating/service/index.js',
+		outputScript: './build/Seating/service.min.js',
+		outputStyle: `build/Seating/service.${postfix}`,
 		moveFromTo: {
-			'src/resources/js/app/seating-admin-bundle.js':
-				'build/Seating/admin/bundle.js',
-			'src/resources/css/app/seating-admin-bundle.css':
-				'build/Seating/admin/bundle.css',
+			'src/resources/js/app/seating-service-bundle.js':
+				'build/Seating/service.js',
+			'src/resources/css/app/seating-service-bundle.css':
+				'build/Seating/service.css',
 		},
 	},
 	{
@@ -207,6 +207,11 @@ const config = merge(common, {
 		{
 			'@wordpress/core-data': 'wp.coreData',
 			'@tec/tickets/seating/iframe': 'tec.seating.iframe',
+			'@tec/tickets/seating/errors': 'tec.seating.errors',
+			'@tec/tickets/seating/notices': 'tec.seating.notices',
+			'@tec/tickets/seating/service': 'tec.seating.service',
+			'@tec/tickets/seating/utils': 'tec.seating.utils',
+			'@tec/tickets/seating/ajax': 'tec.seating.ajax',
 		},
 	],
 	// Configure multiple entry points.
