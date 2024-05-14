@@ -53,18 +53,13 @@ use TEC\Tickets\Seating\Admin\Tabs\Map_Card;
 	</div>
 </div>
 <div class="tec-tickets__tab-content__wrapper">
-	<?php if ( empty( $cards ) ) : ?>
-		<p><?php esc_html_e( 'No seating maps to show.', 'event-tickets' ); ?></p>
-		<?php 
-	else :
-		?>
-		<div class="tec-tickets__tab-content__cards">
-		<?php
-		foreach ( $cards as $card ) {
-			$this->template( 'components/layout-card', [ 'card' => $card ] );
-		}
-		?>
-		</div>
-	<?php endif; ?>
+	<?php 
+	$this->template(
+		'components/maps/list',
+		[
+			'cards'       => $cards,
+			'add_new_url' => $add_new_url,
+		]
+	); 
+	?>
 </div>
-
