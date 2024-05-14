@@ -49,6 +49,7 @@ class Tribe__Tickets__Integrations__Manager {
 	 */
 	public function load_integrations() {
 		tribe_singleton( 'tickets.integrations.freemius', Tribe__Tickets__Integrations__Freemius::class, [ 'setup' ] );
+		tribe_singleton( 'tickets.integrations.wpml', Tribe__Tickets__Integrations__WPML::class );
 		$this->hook();
 	}
 
@@ -63,6 +64,19 @@ class Tribe__Tickets__Integrations__Manager {
 	}
 
 	/**
+	 * Loads our WPML integration.
+	 *
+	 * @since TBD
+	 */
+	public function load_wpml() {
+		if ( ! apply_filters( 'wpml_setting', false, 'setup_complete' ) ) {
+			return false;
+		}
+
+		tribe( 'tickets.integrations.wpml' )->hook();
+	}
+
+	/**
 	 * Hooks for the integrations manager.
 	 *
 	 * @depreacated 5.6.0
@@ -70,5 +84,6 @@ class Tribe__Tickets__Integrations__Manager {
 	 */
 	public function hook() {
 		add_action( 'init', [ $this, 'load_freemius' ], 15 );
+		add_action( 'init', [ $this, 'load_wpml' ], 15 );
 	}
 }
