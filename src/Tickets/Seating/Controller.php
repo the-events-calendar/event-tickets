@@ -127,16 +127,17 @@ class Controller extends Controller_Contract {
 				Service\Service::class,
 				Service\Ephemeral_Token::class,
 				Service\Layouts::class,
-				Service\Seat_Types ::class
+				Service\Seat_Types::class,
+				Service\Maps::class,
 			] as $class
 		) {
 			$this->container->singleton( $class );
 			$this->container->when( $class )
-			                ->needs( '$backend_base_url' )
-			                ->give( $backend_base_url );
+							->needs( '$backend_base_url' )
+							->give( $backend_base_url );
 			$this->container->when( $class )
-			                ->needs( '$frontend_base_url' )
-			                ->give( $frontend_base_url );
+							->needs( '$frontend_base_url' )
+							->give( $frontend_base_url );
 		}
 
 		return $this->container->get( Service\Service::class );
@@ -173,7 +174,6 @@ class Controller extends Controller_Contract {
 		 * @since TBD
 		 *
 		 * @param bool $activate Defaults to `true`.
-		 *
 		 */
 		return (bool) apply_filters( 'tec_tickets_seating_active', $active );
 	}
