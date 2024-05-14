@@ -31,7 +31,7 @@ class Layouts {
 	/**
 	 * Layouts constructor.
 	 *
-	 * since TBD
+	 * @since TBD
 	 *
 	 * @param string $backend_base_url The base URL of the service from the site backend.
 	 */
@@ -50,7 +50,7 @@ class Layouts {
 	 *     seats?: int,
 	 *     mapId?: string,
 	 *     createdDate?: string,
-	 * }> $service_rows
+	 * }> $service_rows The rows to insert.
 	 *
 	 * @return bool|int The number of rows affected, or `false` on failure.
 	 */
@@ -69,8 +69,9 @@ class Layouts {
 				}
 
 				$created_date_in_ms = $service_row['createdDate'];
-				$created_date = date( 'Y-m-d H:i:s', $created_date_in_ms / 1000 );
-				$valid[]      = [
+				$created_date       = gmdate( 'Y-m-d H:i:s', $created_date_in_ms / 1000 );
+				
+				$valid[] = [
 					'id'           => $service_row['id'],
 					'name'         => $service_row['name'],
 					'seats'        => $service_row['seats'],
@@ -118,7 +119,7 @@ class Layouts {
 				'option_format_layouts',
 				$layouts,
 				'tec-tickets-seating',
-				self::update_transient_expiration()
+				self::update_transient_expiration() // phpcs:ignore
 			);
 		}
 
@@ -137,14 +138,14 @@ class Layouts {
 	public function update( bool $force = false ) {
 		$updater = new Updater( $this->service_fetch_url, self::update_transient_name(), self::update_transient_expiration() );
 
-		$updted = $updater->check_last_update( $force )
-		                  ->update_from_service( function () {
-			                  wp_cache_delete( 'option_format_layouts', 'tec-tickets-seating' );
-			                  Layouts_Table::truncate();
-		                  } )
-		                  ->store_fetched_data( [ $this, 'insert_rows_from_service' ] );
-
-		return $updted;
+		return $updater->check_last_update( $force )
+							->update_from_service(
+								function () {
+									wp_cache_delete( 'option_format_layouts', 'tec-tickets-seating' );
+									Layouts_Table::truncate();
+								} 
+							)
+							->store_fetched_data( [ $this, 'insert_rows_from_service' ] );
 	}
 
 	/**
