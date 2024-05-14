@@ -24,7 +24,7 @@ class Map_Card {
 	 *
 	 * @var string
 	 */
-	protected $id;
+	protected string $id;
 
 	/**
 	 * The map name.
@@ -33,7 +33,7 @@ class Map_Card {
 	 *
 	 * @var string
 	 */
-	protected $name;
+	protected string $name;
 
 	/**
 	 * The number of seats in the map.
@@ -42,7 +42,7 @@ class Map_Card {
 	 *
 	 * @var int
 	 */
-	protected $seats;
+	protected int $seats;
 	
 	/**
 	 * The URL to the map's screen shot.
@@ -51,7 +51,7 @@ class Map_Card {
 	 *
 	 * @var string
 	 */
-	protected $screen_shot_url;
+	protected string $screen_shot_url;
 
 	/**
 	 * Map_Card constructor.
