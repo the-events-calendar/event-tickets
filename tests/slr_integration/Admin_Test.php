@@ -84,10 +84,4 @@ class Admin_Test extends Controller_Test_Case {
 		$controller = $this->make_controller();
 		$this->assertMatchesJsonSnapshot( wp_json_encode( $controller->get_ajax_data(), JSON_SNAPSHOT_OPTIONS ) );
 	}
-
-	public function test_get_utils_data(): void {
-		$this->set_fn_return( 'wp_create_nonce', '8298ff6616' );
-		$controller = $this->make_controller();
-		$this->assertMatchesJsonSnapshot( wp_json_encode( $controller->get_utils_data(), JSON_SNAPSHOT_OPTIONS ) );
-	}
 }

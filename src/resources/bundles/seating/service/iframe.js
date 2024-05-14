@@ -1,9 +1,7 @@
-const {_x} = wp.i18n;
-const {notifyUserOfError} = tec.seating.notices;
-const {
-	establishReadiness,
-	onEveryAction,
-} = tec.seating.service;
+import { notifyUserOfError } from './notices';
+import { establishReadiness, onEveryAction } from './service-api';
+
+const { _x } = wp.i18n;
 
 function catchMessage() {
 	console.log('[Maps] Message received from service', event);
@@ -14,8 +12,7 @@ async function init(iframe) {
 		return;
 	}
 
-	const container = iframe.closest(
-		'.tec-tickets-seating__iframe-container');
+	const container = iframe.closest('.tec-tickets-seating__iframe-container');
 
 	if (!container) {
 		return;
@@ -24,8 +21,11 @@ async function init(iframe) {
 	const token = container.dataset.token;
 
 	if (!token) {
-		const defaultMessage = _x('Ephemeral token not found in iframe element.',
-			'Error message', 'event-tickets');
+		const defaultMessage = _x(
+			'Ephemeral token not found in iframe element.',
+			'Error message',
+			'event-tickets'
+		);
 		const error = container.dataset.error || defaultMessage;
 		notifyUserOfError(error);
 		return;
@@ -35,11 +35,12 @@ async function init(iframe) {
 	onEveryAction(iframe, catchMessage);
 }
 
-function iFrameInit() {
+export function iFrameInit() {
 	const iframes = document.querySelectorAll(
-		'.tec-tickets-seating__iframe-container iframe');
+		'.tec-tickets-seating__iframe-container iframe'
+	);
 
-	iframes.forEach(iframe => {
+	iframes.forEach((iframe) => {
 		init(iframe);
 	});
 }

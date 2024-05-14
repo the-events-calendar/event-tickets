@@ -164,98 +164,16 @@ class Admin extends Controller_Contract {
 
 		$this->container->register( Admin\Ajax::class );
 
-		$this->register_utils();
-		$this->register_admin_bundle();
 		$this->register_maps_assets();
 		$this->reqister_layouts_assets();
 		$this->register_map_edit_assets();
 		$this->reqister_layout_edit_assets();
+		$this->register_ajax_assets();
 
 		add_action( 'admin_menu', [ $this, 'add_submenu_page' ], 1000 );
 
 		// TESTING STUFF
 		add_action( 'admin_menu', [ $this, 'add_embed_submenu_page' ], 1000 );
-	}
-
-	/**
-	 * Registers the utils asset.
-	 *
-	 * @since TBD
-	 *
-	 * @return void The utils asset is registered.
-	 */
-	private function register_utils(): void {
-		Asset::add(
-			'tec-tickets-seating-utils',
-			$this->built_asset_url( 'utils.js' ),
-			Tickets::VERSION
-		)
-			->add_localize_script( 'tec.seating.utils', [ $this, 'get_utils_data' ] )
-			->add_to_group( 'tec-tickets-seating' )
-			->register();
-
-		Asset::add(
-			'tec-tickets-seating-ajax',
-			$this->built_asset_url( 'ajax.js' ),
-			Tickets::VERSION
-		)
-		     ->add_localize_script( 'tec.seating.ajax', [ $this, 'get_ajax_data' ] )
-		     ->add_to_group( 'tec-tickets-seating' )
-		     ->register();
-	}
-
-	/**
-	 * Returns the utils data for the Seating feature.
-	 *
-	 * @since TBD
-	 *
-	 * @return array{
-	 *     links: array<string, string>,
-	 *     localizedStrings: array<string, string>,
-	 * } The utils data for the Seating feature.
-	 */
-	public function get_utils_data(): array {
-		return [
-			'links'            => [
-				'layouts' => $this->container->get( Layouts::class )->get_url(),
-			],
-			'localizedStrings' => [
-				'capacity-form' => $this->container->get( Localization::class )->get_capacity_form_strings(),
-			],
-		];
-	}
-
-	/**
-	 * Registers the main admin bundle, the common scripts and styles unsed by all admin bundles.
-	 *
-	 *
-	 * @since TBD
-	 *
-	 * @return void The admin bundle script and styles are registered.
-	 */
-	private function register_admin_bundle(): void {
-		$data = fn() => [
-			'service'          => [
-				'baseUrl' => $this->service->get_frontend_url(),
-			],
-			'localizedStrings' => [
-				'service-errors' => $this->container->get( Localization::class )->get_service_error_strings(),
-			]
-		];
-
-		Asset::add(
-			'tec-tickets-seating-admin-bundle',
-			$this->built_asset_url( 'admin/bundle.js' ),
-			Tickets::VERSION
-		)
-		     ->set_dependencies(
-			     'wp-i18n',
-			     'tribe-tickets-gutenberg-vendor',  // @todo revise this dependency
-			     'tec-tickets-seating-utils'
-		     )
-		     ->add_to_group( 'tec-tickets-seating' )
-		     ->add_localize_script( 'tec.seating', $data )
-		     ->register();
 	}
 
 	/**
@@ -272,7 +190,6 @@ class Admin extends Controller_Contract {
 			$this->built_asset_url( 'admin/maps.js' ),
 			Tickets::VERSION
 		)
-		     ->add_dependency( 'tec-tickets-seating-admin-bundle' )
 		     ->add_to_group( 'tec-tickets-seating-admin' )
 		     ->add_to_group( 'tec-tickets-seating' )
 		     ->enqueue_on( $action )
@@ -302,10 +219,7 @@ class Admin extends Controller_Contract {
 			$this->built_asset_url( 'admin/layouts.js' ),
 			Tickets::VERSION
 		)
-		     ->set_dependencies(
-			     'tec-tickets-admin-bundle',
-			     'tribe-dialog-js'
-		     )
+		     ->set_dependencies( 'tribe-dialog-js' )
 		     ->add_to_group( 'tec-tickets-seating-admin' )
 		     ->add_to_group( 'tec-tickets-seating' )
 		     ->enqueue_on( $action )
@@ -337,7 +251,7 @@ class Admin extends Controller_Contract {
 			$this->built_asset_url( 'admin/map-edit.js' ),
 			Tickets::VERSION
 		)
-		     ->add_dependency( 'tec-tickets-seating-admin-bundle' )
+		     ->add_dependency( 'tec-tickets-seating-service-bundle' )
 		     ->enqueue_on( $action )
 		     ->add_to_group( 'tec-tickets-seating-admin' )
 		     ->add_to_group( 'tec-tickets-seating' )
@@ -369,7 +283,7 @@ class Admin extends Controller_Contract {
 			$this->built_asset_url( 'admin/layout-edit.js' ),
 			Tickets::VERSION
 		)
-		     ->add_dependency( 'tec-tickets-seating-admin-bundle' )
+		     ->add_dependency( 'tec-tickets-seating-service-bundle' )
 		     ->enqueue_on( $action )
 		     ->add_to_group( 'tec-tickets-seating-admin' )
 		     ->add_to_group( 'tec-tickets-seating' )
@@ -385,5 +299,21 @@ class Admin extends Controller_Contract {
 		     ->enqueue_on( $action )
 		     ->add_to_group( 'tec-tickets-seating-admin' )
 		     ->register();
+	}
+
+	/**
+	 * Registers the assets used by the AJAX component.
+	 *
+	 * @since TBD
+	 */
+	private function register_ajax_assets(): void {
+		Asset::add(
+			'tec-tickets-seating-ajax',
+			$this->built_asset_url( 'ajax.js' ),
+			Tickets::VERSION
+		)
+			->add_localize_script( 'tec.seating.ajax', [ $this, 'get_ajax_data' ] )
+			->add_to_group( 'tec-tickets-seating' )
+			->register();
 	}
 }

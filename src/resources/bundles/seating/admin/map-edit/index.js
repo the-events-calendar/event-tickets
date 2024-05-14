@@ -1,5 +1,4 @@
 import './style.pcss';
-
-const {iFrameInit} = tec.seating.iframe;
+import { iFrameInit } from '@tec/tickets/seating/iframe';
 
 iFrameInit();

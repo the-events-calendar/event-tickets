@@ -15,19 +15,16 @@
  */
 ?>
 
-<div class="tec-tickets__tab-content__wrapper">
-	<div id="tec-tickets-seating-notice" class="notice" style="display: none;"></div>
-	<div
-		class="tec-tickets-seating__iframe-container"
-		data-token="<?php echo esc_attr( $token ); ?>"
-		data-error="<?php echo esc_attr( $error ); ?>"
+<div
+	class="tec-tickets-seating__iframe-container"
+	data-token="<?php echo esc_attr( $token ); ?>"
+	data-error="<?php echo esc_attr( $error ); ?>"
+>
+	<iframe
+		data-src="<?php echo esc_url( $iframe_url ); ?>"
+		id="tec-tickets-seating-iframe-tickets-block"
+		class="tec-tickets-seating__iframe tec-tickets-seating__iframe--tickets-block"
+		title="<?php esc_html_e( 'Seat selection', 'event-tickets' ); ?>"
 	>
-		<iframe
-			data-src="<?php echo esc_url( $iframe_url ); ?>"
-			id="tec-tickets-seating-iframe-tickets-block"
-			class="tec-tickets-seating__iframe tec-tickets-seating__iframe--tickets-block"
-			title="<?php esc_html_e( 'Seat selection', 'event-tickets' ); ?>"
-		>
-		</iframe>
-	</div>
+	</iframe>
 </div>

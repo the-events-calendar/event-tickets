@@ -5,7 +5,8 @@ const ACTION_APP_POSTMESSAGE_READY = 'app_postmessage_ready';
 const ACTION_HOST_POSTMESSAGE_READY = 'host_postmessage_ready';
 
 const state = {
-	ready: false, establishingReadiness: false,
+	ready: false,
+	establishingReadiness: false,
 	actionsMap: {},
 	token: null,
 };
@@ -16,12 +17,12 @@ const state = {
  * @since TBD
  *
  * @param {HTMLIFrameElement} iframe The iframe to post the message to.
- * @param {string} action The message action.
- * @param {*} data The message data.
+ * @param {string}            action The message action.
+ * @param {*}                 data   The message data.
  *
  * @return {void}
  */
-function sendMessage(iframe, action, data) {
+export function sendMessage(iframe, action, data) {
 	const token = iframe.closest('[data-token]').dataset.token;
 
 	if (!token) {
@@ -29,9 +30,14 @@ function sendMessage(iframe, action, data) {
 		return;
 	}
 
-	iframe.contentWindow.postMessage({
-		action, token, data: data || {},
-	}, baseUrl);
+	iframe.contentWindow.postMessage(
+		{
+			action,
+			token,
+			data: data || {},
+		},
+		baseUrl
+	);
 }
 
 /**
@@ -46,11 +52,13 @@ function sendMessage(iframe, action, data) {
  *
  * @param {MessageEvent} event The message event received from the service.
  */
-function catchMessage(event) {
-	if (!(
-		event.origin === baseUrl
-		&& event.data.token
-		&& event.data.token === state.token)
+export function catchMessage(event) {
+	if (
+		!(
+			event.origin === baseUrl &&
+			event.data.token &&
+			event.data.token === state.token
+		)
 	) {
 		return;
 	}
@@ -78,7 +86,7 @@ function catchMessage(event) {
  *
  * @return {void}
  */
-function listenForServiceMessages(iframe) {
+export function listenForServiceMessages(iframe) {
 	const tokenProvider = iframe.closest('[data-token]');
 
 	if (!tokenProvider) {
@@ -103,15 +111,15 @@ function listenForServiceMessages(iframe) {
  *
  * @since TBD
  *
- * @param {string|string[]} action The action, or actions, to set the callback for.
- * @param {function} callback The callback to set.
+ * @param {string|string[]} action   The action, or actions, to set the callback for.
+ * @param {Function}        callback The callback to set.
  *
  * @return {void}
  */
-function onAction(action, callback) {
+export function onAction(action, callback) {
 	const actions = Array.isArray(action) ? action : [action];
-	actions.forEach((action) => {
-		state.actionsMap[action] = callback;
+	actions.forEach((actionEntry) => {
+		state.actionsMap[actionEntry] = callback;
 	});
 }
 
@@ -120,12 +128,12 @@ function onAction(action, callback) {
  *
  * @since TBD
  *
- * @param {function} callback The callback to set for all actions.
+ * @param {Function} callback The callback to set for all actions.
  *
  * @return {void}
  */
-function onEveryAction(callback) {
-	state.actionsMap = {'default': callback};
+export function onEveryAction(callback) {
+	state.actionsMap = { default: callback };
 }
 
 /**
@@ -153,7 +161,7 @@ function defaultMessageHandler(event) {
  *
  * @return {Promise<void>} A promise that will be resolved when the connection is established.
  */
-async function establishReadiness(iframe) {
+export async function establishReadiness(iframe) {
 	listenForServiceMessages(iframe);
 
 	// Replace the iframe src with the real source.

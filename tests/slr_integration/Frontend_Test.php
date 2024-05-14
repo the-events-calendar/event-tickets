@@ -8,6 +8,7 @@ use TEC\Tickets\Commerce\Tickets_View;
 use TEC\Tickets\Flexible_Tickets\Test\Traits\Series_Pass_Factory;
 use TEC\Tickets\Seating\Frontend;
 use TEC\Tickets\Seating\Meta;
+use TEC\Tickets\Seating\Service\Service;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 
 class Frontend_Test extends Controller_Test_Case {
@@ -158,6 +159,13 @@ class Frontend_Test extends Controller_Test_Case {
 	 * @dataProvider seating_enabled_fixtures
 	 */
 	public function should_replace_ticket_block_when_seating_is_enabled( \Closure $fixture ) {
+		$this->test_services->singleton( Service::class, function () {
+			return $this->make( Service::class, [
+				'frontend_base_url'   => 'https://service.test.local',
+				'get_ephemeral_token' => 'test-ephemeral-token',
+				'get_post_uuid' => 'test-post-uuid',
+			] );
+		} );
 		$ids     = $fixture();
 		$post_id = array_shift( $ids );
 

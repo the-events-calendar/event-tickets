@@ -98,7 +98,10 @@ class Frontend extends Controller_Contract {
 			$this->built_asset_url( 'frontend/tickets-block.js' ),
 			ET::VERSION
 		)
-			->set_dependencies( 'tribe-dialog-js' )
+			->set_dependencies(
+				'tribe-dialog-js',
+				'tec-tickets-seating-service-bundle'
+			)
 			->enqueue_on( 'wp_enqueue_scripts' )
 			->add_to_group( 'tec-tickets-seating-frontend' )
 			->add_to_group( 'tec-tickets-seating' )

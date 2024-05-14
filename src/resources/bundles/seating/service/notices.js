@@ -76,7 +76,7 @@ function setNoticeMessage(notice, message) {
  *
  * @param {string} message The message to display.
  */
-function notifyUserOfError(message) {
+export function notifyUserOfError(message) {
 	const notice = getNoticeElement();
 	hideNotice(notice);
 	setNoticeClass(notice, 'notice-error');
@@ -91,7 +91,7 @@ function notifyUserOfError(message) {
  *
  * @param {string} message The message to display.
  */
-function notifyUserOfWarning(message) {
+export function notifyUserOfWarning(message) {
 	const notice = getNoticeElement();
 	hideNotice(notice);
 	setNoticeClass(notice, 'notice-warning');
