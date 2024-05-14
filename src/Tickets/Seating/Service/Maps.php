@@ -31,7 +31,7 @@ class Maps {
 	private string $service_fetch_url;
 	
 	/**
-	 * Layouts constructor.
+	 * Maps constructor.
 	 *
 	 * @since TBD
 	 *
@@ -59,7 +59,12 @@ class Maps {
 		if ( ! ( $map_cards && is_array( $map_cards ) ) ) {
 			$map_cards = [];
 			foreach ( Maps_Table::fetch_all() as $row ) {
-				$map_cards[] = new Map_Card( $row['id'], $row['name'], $row['seats'], $row['screenshotUrl'] );
+				$map_cards[] = new Map_Card(
+					$row->id,
+					$row->name,
+					$row->seats,
+					$row->screenshotUrl
+				);
 			}
 			
 			wp_cache_set(
@@ -120,13 +125,13 @@ class Maps {
 	}
 	
 	/**
-	 * Updates the layouts from the service by updating the caches and custom tables.
+	 * Updates the Maps from the service by updating the caches and custom tables.
 	 *
 	 * @since TBD
 	 *
-	 * @param bool $force If true, the layouts will be updated even if they are up-to-date.
+	 * @param bool $force If true, the Maps will be updated even if they are up-to-date.
 	 *
-	 * @return bool Whether the layouts are up-to-date or not.
+	 * @return bool Whether the Maps are up-to-date or not.
 	 */
 	public function update( bool $force = false ) {
 		$updater = new Updater( $this->service_fetch_url, self::update_transient_name(), self::update_transient_expiration() );
