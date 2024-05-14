@@ -3,7 +3,7 @@
  *
  * @since TBD
  *
- * @returns {Element|null} The notice element, or null if it does not exist.j
+ * @return {Element|null} The notice element, or null if it does not exist.j
  */
 function getNoticeElement() {
 	return document.getElementById('tec-tickets-seating-notice');
@@ -44,8 +44,8 @@ function showNotice(notice) {
  *
  * @since TBD
  *
- * @param {Element|null} notice The notice element to manipulate.
- * @param {string} className The class to set; all other classes will be removed.
+ * @param {Element|null} notice    The notice element to manipulate.
+ * @param {string}       className The class to set; all other classes will be removed.
  */
 function setNoticeClass(notice, className) {
 	if (!notice) {
@@ -63,9 +63,13 @@ function setNoticeClass(notice, className) {
  *
  * @since TBD
  *
- * @param {string} message The message to display.
+ * @param {Element|null} notice  The notice element to manipulate.
+ * @param {string}       message The message to display.
  */
 function setNoticeMessage(notice, message) {
+	if (!notice) {
+		return;
+	}
 	notice.innerHTML = '<p>' + message + '</p>';
 }
 
