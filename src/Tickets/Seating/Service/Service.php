@@ -9,6 +9,7 @@
 
 namespace TEC\Tickets\Seating\Service;
 
+use TEC\Tickets\Seating\Admin\Tabs\Map_Card;
 use TEC\Tickets\Seating\Meta;
 use WP_Error;
 
@@ -65,24 +66,46 @@ class Service {
 	 * @var Seat_Types
 	 */
 	private Seat_Types $seat_types;
+	
+	/**
+	 * A reference to the Maps handler.
+	 *
+	 * @since TBD
+	 *
+	 * @var Maps
+	 */
+	private Maps $maps;
 
 	/**
 	 * Service constructor.
 	 *
-	 * since TBD
+	 * @since TBD
 	 */
 	public function __construct(
 		string $backend_base_url,
 		string $frontend_base_url,
 		Ephemeral_Token $ephemeral_token,
 		Layouts $layouts,
-		Seat_Types $seat_types
+		Seat_Types $seat_types,
+		Maps $maps
 	) {
 		$this->backend_base_url  = $backend_base_url;
 		$this->frontend_base_url = $frontend_base_url;
 		$this->epehemeral_token  = $ephemeral_token;
 		$this->layouts           = $layouts;
 		$this->seat_types        = $seat_types;
+		$this->maps              = $maps;
+	}
+	
+	/**
+	 * Fetches all the Maps from the database.
+	 *
+	 * @since TBD
+	 *
+	 * @return Map_Card[] Array of map card objects.
+	 */
+	public function get_map_cards() {
+		return $this->maps->get_cards();
 	}
 
 	/**
