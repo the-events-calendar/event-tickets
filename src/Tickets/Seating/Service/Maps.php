@@ -48,12 +48,12 @@ class Maps {
 	 *
 	 * @return Map_Card[] Array of map card objects.
 	 */
-	public function get_cards() {
+	public function get_in_card_format() {
 		if ( ! $this->update() ) {
 			return [];
 		}
 		
-		$cache_key = 'map_card_objects';
+		$cache_key = 'option_map_card_objects';
 		$map_cards = wp_cache_get( $cache_key, 'tec-tickets-seating' );
 		
 		if ( ! ( $map_cards && is_array( $map_cards ) ) ) {
@@ -134,7 +134,7 @@ class Maps {
 		return $updater->check_last_update( $force )
 						->update_from_service(
 							function () {
-								wp_cache_delete( 'tec-tickets-seating' );
+								wp_cache_delete( 'option_map_card_objects', 'tec-tickets-seating' );
 								Maps_Table::truncate();
 							}
 						)

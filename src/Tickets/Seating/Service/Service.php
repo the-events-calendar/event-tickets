@@ -105,7 +105,7 @@ class Service {
 	 * @return Map_Card[] Array of map card objects.
 	 */
 	public function get_map_cards() {
-		return $this->maps->get_cards();
+		return $this->maps->get_in_card_format();
 	}
 
 	/**
