@@ -2,9 +2,9 @@
 
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, GeoffBel, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
-Requires at least: 6.2
-Tested up to: 6.5.2
-Stable tag: 5.9.2
+Requires at least: 6.3
+Tested up to: 6.5.3
+Stable tag: 5.10.0
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -197,7 +197,13 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.10.0] 2024-05-08 =
+= [5.10.0] 2024-05-14 =
+
+* Version - Event Tickets 5.10.0 is only compatible with The Events Calendar 6.5.0 and higher
+* Fix - Update to remove moment.js library due to security concerns. [TEC-5011]
+* Language - 0 new strings added, 35 updated, 0 fuzzied, and 0 obsoleted
+
+= [5.9.2] 2024-05-08 =
 
 * Feature - Added support for adding Free tickets using Tickets Commerce. [ET-1218]
 * Tweak - When using Events Calendar Pro, the duplicate event function will now duplicate tickets as well. [ET-2073]
