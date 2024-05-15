@@ -64,7 +64,7 @@ class Ephemeral_Token {
 		 */
 		$token = apply_filters( 'tec_tickets_seating_ephemeral_token', null );
 
-		if ( $token !== null ) {
+		if ( null !== $token ) {
 			return $token;
 		}
 
@@ -77,15 +77,19 @@ class Ephemeral_Token {
 		 */
 		$site_url = apply_filters( 'tec_tickets_seating_ephemeral_token_site_url', home_url() );
 
-		$response = wp_remote_post( add_query_arg( [
-			'site'       => urlencode_deep( $site_url ),
-			'expires_in' => $expiration * 1000, // In milliseconds.
-		], $this->get_ephemeral_token_url() ),
+		$response = wp_remote_post(
+			add_query_arg(
+				[
+					'site'       => urlencode_deep( $site_url ),
+					'expires_in' => $expiration * 1000, // In milliseconds.
+				],
+				$this->get_ephemeral_token_url() 
+			),
 			[
 				'headers' => [
 					'Accept'        => 'application/json',
 					'Authorization' => sprintf( 'Bearer %s', $this->get_oauth_token() ),
-				]
+				],
 			]
 		);
 
@@ -103,7 +107,7 @@ class Ephemeral_Token {
 			return new \WP_Error(
 				'ephemeral_token_request_failed',
 				sprintf(
-					// translators: 1: HTTP status code
+					// translators: 1: HTTP status code.
 					__( 'Ephemeral token request failed (%d).', 'event-tickets' ),
 					$code
 				),
@@ -117,7 +121,7 @@ class Ephemeral_Token {
 			$this->log_error(
 				'Ephemeral token response from service is empty.',
 				[
-					'source' => __METHOD__
+					'source' => __METHOD__,
 				]
 			);
 
@@ -135,7 +139,7 @@ class Ephemeral_Token {
 				'Malformed ephemeral token response body from service.',
 				[
 					'source' => __METHOD__,
-					'body'   => substr( $body, 0, 100 )
+					'body'   => substr( $body, 0, 100 ),
 				]
 			);
 
