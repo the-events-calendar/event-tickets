@@ -11,16 +11,26 @@ namespace TEC\Tickets\Seating\Admin\Tabs;
 
 use TEC\Tickets\Seating\Admin;
 use TEC\Tickets\Seating\Admin\Template;
+use TEC\Tickets\Seating\Service\Maps as Maps_Service;
 
 /**
  * Class Maps.
  *
- * @since   TBD
+ * @since TBD
  *
  * @package TEC\Controller\Admin\Tabs;
  */
 class Maps extends Tab {
-	public function __construct( Template $template, \TEC\Tickets\Seating\Service\Maps $maps) {
+	
+	/**
+	 * The Maps service.
+	 *
+	 * @since TBD
+	 *
+	 * @param Template     $template The template object.
+	 * @param Maps_Service $maps The Maps service.
+	 */
+	public function __construct( Template $template, Maps_Service $maps ) {
 		parent::__construct( $template );
 		$this->maps = $maps;
 	}
