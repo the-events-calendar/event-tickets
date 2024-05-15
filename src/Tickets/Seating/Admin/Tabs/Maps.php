@@ -10,7 +10,7 @@
 namespace TEC\Tickets\Seating\Admin\Tabs;
 
 use TEC\Tickets\Seating\Admin;
-use TEC\Tickets\Seating\Service\Service;
+use TEC\Tickets\Seating\Admin\Template;
 
 /**
  * Class Maps.
@@ -20,6 +20,10 @@ use TEC\Tickets\Seating\Service\Service;
  * @package TEC\Controller\Admin\Tabs;
  */
 class Maps extends Tab {
+	public function __construct( Template $template, \TEC\Tickets\Seating\Service\Maps $maps) {
+		parent::__construct( $template );
+		$this->maps = $maps;
+	}
 	/**
 	 * Returns the title of this tab. The one that will be displayed on the top of the page.
 	 *
@@ -50,14 +54,13 @@ class Maps extends Tab {
 	 * @return void The rendered HTML of this tab is passed to the output buffer.
 	 */
 	public function render(): void {
-		$service = tribe( Service::class );
 		$context = [
-			'cards'       => $service->get_map_cards(),
+			'cards'       => $this->maps->get_in_card_format(),
 			'add_new_url' => add_query_arg(
 				[
 					'page' => Admin::get_menu_slug(),
 					'tab'  => Map_Edit::get_id(),
-				] 
+				]
 			),
 		];
 

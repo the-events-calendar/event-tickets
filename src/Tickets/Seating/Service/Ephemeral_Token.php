@@ -55,6 +55,20 @@ class Ephemeral_Token {
 	 */
 	public function get_ephemeral_token( int $expiration = 900 ) {
 		/**
+		 * Filters the ephemeral token to be used by the service before the default logic fetches one from the service.
+		 *
+		 * @since TBD
+		 *
+		 * @param string|null $ephemeral_token The ephemeral token to be used by the service. If not `null`, the default
+		 *                                     logic will not be used.
+		 */
+		$token = apply_filters( 'tec_tickets_seating_ephemeral_token', null );
+
+		if ( $token !== null ) {
+			return $token;
+		}
+
+		/**
 		 * Filters the site URL used to obtain an ephemeral token from the service.
 		 *
 		 * @since TBD
