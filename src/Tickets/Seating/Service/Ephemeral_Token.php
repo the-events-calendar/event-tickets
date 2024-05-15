@@ -28,16 +28,16 @@ class Ephemeral_Token {
 	 *
 	 * @since TBD
 	 *
-	 * @var
+	 * @var string
 	 */
 	private string $ephemeral_token_url;
 
 	/**
 	 * Ephemeral_Token constructor.
 	 *
-	 * since TBD
+	 * @since TBD
 	 *
-	 * @param string $backend_base_url
+	 * @param string $backend_base_url The base URL of the service.
 	 */
 	public function __construct( string $backend_base_url ) {
 		$this->ephemeral_token_url = rtrim( $backend_base_url, '/' ) . '/api/v1/ephemeral-token';
@@ -160,7 +160,7 @@ class Ephemeral_Token {
 	 *
 	 * @return string The URL to the ephemeral token endpoint.
 	 */
-	public function get_ephemeral_token_url() {
+	public function get_ephemeral_token_url(): string {
 		return $this->ephemeral_token_url;
 	}
 }
