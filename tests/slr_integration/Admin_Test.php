@@ -9,8 +9,6 @@ use TEC\Tickets\Seating\Admin\Tabs\Layout_Edit;
 use TEC\Tickets\Seating\Admin\Tabs\Layouts;
 use TEC\Tickets\Seating\Admin\Tabs\Map_Edit;
 use TEC\Tickets\Seating\Admin\Tabs\Maps;
-use TEC\Tickets\Seating\Service\Ephemeral_Token;
-use TEC\Tickets\Seating\Service\Service;
 use Tribe\Tests\Traits\With_Uopz;
 
 class Admin_Test extends Controller_Test_Case {
