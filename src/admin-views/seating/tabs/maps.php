@@ -33,7 +33,7 @@ use TEC\Tickets\Seating\Admin\Tabs\Map_Card;
 				sprintf(
 				/* translators: %1$s: Documentation link */
 					__(
-						'Build different seat layouts on top of your configurations to create different sections and pricing tiers for use with tickets. %1$s',
+						'Create a seating map that represents your room or venue.  Configurations are used to create layouts that allow purchasers choose specific seats and ticketing tiers. %1$s',
 						'event-tickets' 
 					),
 					'<a href="https://evnt.is" target="_blank">'
