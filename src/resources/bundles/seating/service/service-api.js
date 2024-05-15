@@ -1,8 +1,8 @@
 // Get the service base URL without the trailing slash.
 const baseUrl = tec.seating.service.baseUrl.replace(/\/$/, '');
 
-const ACTION_APP_POSTMESSAGE_READY = 'app_postmessage_ready';
-const ACTION_HOST_POSTMESSAGE_READY = 'host_postmessage_ready';
+const POSTMESSAGE_APP_READY = 'app_postmessage_ready';
+const POSTMESSAGE_HOST_READY = 'host_postmessage_ready';
 
 const state = {
 	ready: false,
@@ -124,7 +124,7 @@ export function onAction(action, callback) {
 }
 
 /**
- * Sets the callback for alla actions to the callback.
+ * Sets the callback for all actions to the callback.
  *
  * @since TBD
  *
@@ -152,8 +152,8 @@ function defaultMessageHandler(event) {
 /**
  * Starts the process of establishing the connection with the service through the iframe.
  *
- * The connection is initiated by the Service by sendind a `host_postmessage_ready` message through the iframe.
- * The Site will reply with a `app_postmessage_ready` message to confirm the connection is established.
+ * The connection is initiated by the Service by sending a `app_postmessage_ready` message through the iframe.
+ * The Site will reply with a `host_postmessage_ready` message to confirm the connection is established.
  *
  * @since TBD
  *
@@ -162,35 +162,40 @@ function defaultMessageHandler(event) {
  * @return {Promise<void>} A promise that will be resolved when the connection is established.
  */
 export async function establishReadiness(iframe) {
+	// Start listening for messages from the service **before** setting the iframe source.
 	listenForServiceMessages(iframe);
+
+	const promise = new Promise((resolve) => {
+		const acknowledge = () => {
+			// Acknowledge the readiness, do not wait for a reply.
+			sendMessage(iframe, POSTMESSAGE_HOST_READY);
+
+			state.ready = true;
+			state.establishingReadiness = false;
+
+			// From now on, all actions should be handled with the default message handler.
+			onEveryAction(defaultMessageHandler);
+
+			// Readiness is established, clear the timeout.
+			clearTimeout(timeoutId);
+
+			console.debug('Readiness established.');
+
+			resolve();
+		};
+
+		// When the mesage `app_postmessage_ready` is received, acknowledge the readiness, resolve the promise.
+		onAction(POSTMESSAGE_APP_READY, acknowledge);
+	});
+
+	const timeoutId = setTimeout(() => {
+		promise.reject(new Error('Connection to service timed out'));
+	}, 10000);
 
 	// Replace the iframe src with the real source.
 	iframe.src = iframe.dataset.src;
 
-	return new Promise((resolve, reject) => {
-		const acknowledge = () => {
-			// Set a 10s timer to reject the promise if the connection is not established.
-			const timeoutId = setTimeout(() => {
-				reject(new Error('Connection to service timed out'));
-			}, 10000);
-
-			sendMessage(iframe, ACTION_APP_POSTMESSAGE_READY);
-
-			// We're ready.
-			state.ready = true;
-			state.establishingReadiness = false;
-
-			// All actions should be handled with the default message handler.
-			onEveryAction(defaultMessageHandler);
-
-			// Clear the timeout.
-			clearTimeout(timeoutId);
-
-			console.debug('Readiness established.');
-			resolve();
-		};
-		onAction(ACTION_HOST_POSTMESSAGE_READY, acknowledge);
-	});
+	return promise;
 }
 
 window.tec = window.tec || {};
@@ -201,8 +206,8 @@ window.tec.seating.service = {
 	listenForServiceMessages,
 	establishReadiness,
 	actions: {
-		APP_POSTMESSAGE_READY: ACTION_APP_POSTMESSAGE_READY,
-		HOST_POSTMESSAGE_READY: ACTION_HOST_POSTMESSAGE_READY,
+		APP_POSTMESSAGE_READY: POSTMESSAGE_APP_READY,
+		HOST_POSTMESSAGE_READY: POSTMESSAGE_HOST_READY,
 	},
 	onAction,
 	onEveryAction,
