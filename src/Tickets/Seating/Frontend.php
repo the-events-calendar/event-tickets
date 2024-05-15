@@ -229,6 +229,7 @@ class Frontend extends Controller_Contract {
 			'button_text'    => esc_html_x( 'Find Seats', 'Find seats button text', 'event-tickets' ),
 			'button_classes' => [ 'tribe-common-c-btn', 'tribe-common-c-btn--small' ],
 			'append_target'  => '.tec-tickets-seating__tickets-block__information',
+			'content_wrapper_classes' =>  'tribe-dialog__wrapper tec-tickets-seating__seat-selection-modal'
 		];
 
 		return $dialog_view->render_modal( $content, $args, self::MODAL_ID, false );
