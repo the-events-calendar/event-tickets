@@ -4,10 +4,10 @@ namespace TEC\Tickets\Seating\Admin;
 
 use Codeception\TestCase\WPTestCase;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
-use TEC\Tickets\Seating\Admin\Tabs\Map_Card;
 use TEC\Tickets\Seating\Admin\Tabs\Maps as Maps_Tab;
-use TEC\Tickets\Seating\Service\Maps as Maps_Service;
+use TEC\Tickets\Seating\Tables\Maps;
 use Tribe\Tests\Traits\With_Uopz;
+use TEC\Tickets\Seating\Service\Maps as Maps_Service;
 
 class Maps_Layout_Homepage_Test extends WPTestCase {
 	use SnapshotAssertions;
@@ -36,22 +36,35 @@ class Maps_Layout_Homepage_Test extends WPTestCase {
 
 		$this->assertMatchesHtmlSnapshot( $html );
 	}
-	
+
 	public function test_maps_tab_card_listing() {
-		$this->set_class_fn_return(
-			Maps_Service::class,
-			'get_in_card_format',
+		Maps_Service::insert_rows_from_service( [
 			[
-				new Map_Card( '1', 'Map 1', '10', 'https://example.com/map-1-thumbnail' ),
-				new Map_Card( '2', 'Map 2', '20', 'https://example.com/map-2-thumbnail' ),
-				new Map_Card( '3', 'Map 3', '100', 'https://example.com/map-3-thumbnail' ),
-			] 
-		);
-		
+				'id'            => '1',
+				'name'          => 'Map 1',
+				'seats'         => 10,
+				'screenshotUrl' => 'https://example.com/map-1-thumbnail'
+			],
+			[
+				'id'            => '2',
+				'name'          => 'Map 2',
+				'seats'         => 20,
+				'screenshotUrl' => 'https://example.com/map-2-thumbnail'
+			],
+			[
+				'id'            => '3',
+				'name'          => 'Map 3',
+				'seats'         => 100,
+				'screenshotUrl' => 'https://example.com/map-3-thumbnail'
+			],
+		] );
+		// We've just updated the Maps, no need to run the update against the service.
+		set_transient( Maps_Service::update_transient_name(), time() - 1 );
+
 		ob_start();
 		tribe( Maps_Tab::class )->render();
 		$html = ob_get_clean();
-		
+
 		$this->assertMatchesHtmlSnapshot( $html );
 	}
 }
