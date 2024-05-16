@@ -28,16 +28,16 @@ class Ephemeral_Token {
 	 *
 	 * @since TBD
 	 *
-	 * @var
+	 * @var string
 	 */
 	private string $ephemeral_token_url;
 
 	/**
 	 * Ephemeral_Token constructor.
 	 *
-	 * since TBD
+	 * @since TBD
 	 *
-	 * @param string $backend_base_url
+	 * @param string $backend_base_url The base URL of the service.
 	 */
 	public function __construct( string $backend_base_url ) {
 		$this->ephemeral_token_url = rtrim( $backend_base_url, '/' ) . '/api/v1/ephemeral-token';
@@ -55,6 +55,20 @@ class Ephemeral_Token {
 	 */
 	public function get_ephemeral_token( int $expiration = 900 ) {
 		/**
+		 * Filters the ephemeral token to be used by the service before the default logic fetches one from the service.
+		 *
+		 * @since TBD
+		 *
+		 * @param string|null $ephemeral_token The ephemeral token to be used by the service. If not `null`, the default
+		 *                                     logic will not be used.
+		 */
+		$token = apply_filters( 'tec_tickets_seating_ephemeral_token', null );
+
+		if ( null !== $token ) {
+			return $token;
+		}
+
+		/**
 		 * Filters the site URL used to obtain an ephemeral token from the service.
 		 *
 		 * @since TBD
@@ -63,15 +77,19 @@ class Ephemeral_Token {
 		 */
 		$site_url = apply_filters( 'tec_tickets_seating_ephemeral_token_site_url', home_url() );
 
-		$response = wp_remote_post( add_query_arg( [
-			'site'       => urlencode_deep( $site_url ),
-			'expires_in' => $expiration * 1000, // In milliseconds.
-		], $this->get_ephemeral_token_url() ),
+		$response = wp_remote_post(
+			add_query_arg(
+				[
+					'site'       => urlencode_deep( $site_url ),
+					'expires_in' => $expiration * 1000, // In milliseconds.
+				],
+				$this->get_ephemeral_token_url() 
+			),
 			[
 				'headers' => [
 					'Accept'        => 'application/json',
 					'Authorization' => sprintf( 'Bearer %s', $this->get_oauth_token() ),
-				]
+				],
 			]
 		);
 
@@ -89,7 +107,7 @@ class Ephemeral_Token {
 			return new \WP_Error(
 				'ephemeral_token_request_failed',
 				sprintf(
-					// translators: 1: HTTP status code
+					// translators: 1: HTTP status code.
 					__( 'Ephemeral token request failed (%d).', 'event-tickets' ),
 					$code
 				),
@@ -103,7 +121,7 @@ class Ephemeral_Token {
 			$this->log_error(
 				'Ephemeral token response from service is empty.',
 				[
-					'source' => __METHOD__
+					'source' => __METHOD__,
 				]
 			);
 
@@ -121,7 +139,7 @@ class Ephemeral_Token {
 				'Malformed ephemeral token response body from service.',
 				[
 					'source' => __METHOD__,
-					'body'   => substr( $body, 0, 100 )
+					'body'   => substr( $body, 0, 100 ),
 				]
 			);
 
@@ -142,7 +160,7 @@ class Ephemeral_Token {
 	 *
 	 * @return string The URL to the ephemeral token endpoint.
 	 */
-	public function get_ephemeral_token_url() {
+	public function get_ephemeral_token_url(): string {
 		return $this->ephemeral_token_url;
 	}
 }

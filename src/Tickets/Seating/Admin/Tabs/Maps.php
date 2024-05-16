@@ -10,15 +10,30 @@
 namespace TEC\Tickets\Seating\Admin\Tabs;
 
 use TEC\Tickets\Seating\Admin;
+use TEC\Tickets\Seating\Admin\Template;
+use TEC\Tickets\Seating\Service\Maps as Maps_Service;
 
 /**
  * Class Maps.
  *
- * @since   TBD
+ * @since TBD
  *
  * @package TEC\Controller\Admin\Tabs;
  */
 class Maps extends Tab {
+	
+	/**
+	 * The Maps service.
+	 *
+	 * @since TBD
+	 *
+	 * @param Template     $template The template object.
+	 * @param Maps_Service $maps The Maps service.
+	 */
+	public function __construct( Template $template, Maps_Service $maps ) {
+		parent::__construct( $template );
+		$this->maps = $maps;
+	}
 	/**
 	 * Returns the title of this tab. The one that will be displayed on the top of the page.
 	 *
@@ -50,11 +65,13 @@ class Maps extends Tab {
 	 */
 	public function render(): void {
 		$context = [
-			'cards'       => [],
-			'add_new_url' => add_query_arg( [
-				'page' => Admin::get_menu_slug(),
-				'tab'  => Map_Edit::get_id()
-			] ),
+			'cards'       => $this->maps->get_in_card_format(),
+			'add_new_url' => add_query_arg(
+				[
+					'page' => Admin::get_menu_slug(),
+					'tab'  => Map_Edit::get_id(),
+				]
+			),
 		];
 
 		$this->template->template( 'tabs/maps', $context );

@@ -39,6 +39,7 @@ class Tables extends Controller_Contract {
 	 * @return void The tables are registered.
 	 */
 	protected function do_register(): void {
+		Register::table( Tables\Maps::class );
 		Register::table( Tables\Layouts::class );
 		Register::table( Tables\Seat_Types::class );
 	}

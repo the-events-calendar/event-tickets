@@ -1,1 +1,61 @@
 @import "./../../../../postcss/seating/_tabs.pcss";
+
+.tec-tickets__tab-content__empty {
+	align-items: center;
+	display: flex;
+	justify-content: center;
+	min-height: 400px;
+}
+
+.tec-tickets__tab-content__cards {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 30px;
+	justify-content: flex-start;
+
+	.tec-tickets__tab__cards__item {
+		background: #ffffff;
+		height: 320px;
+		padding: 10px;
+		width: 260px;
+	}
+
+	.tec-tickets__tab__cards__item-thumbnail {
+		height: 220px;
+		img {
+			height: 100%;
+			width: 100%;
+			object-fit: cover;
+			vertical-align: bottom;
+		}
+	}
+
+	.tec-tickets__tab__cards__item-content {
+		color: #3C434A;
+		margin: 15px 0;
+	}
+
+	.tec-tickets__tab__cards__item-title {
+		font-size: 16px;
+		font-weight: 700;
+		line-height: 24px;
+	}
+
+	.tec-tickets__tab__cards__item-capacity {
+		font-size: 13px;
+		font-weight: 400;
+		line-height: 18px;
+	}
+
+	.tec-tickets__tab__cards__item-actions {
+		align-items: center;
+		display: flex;
+		gap: 10px;
+		justify-content: flex-start;
+		margin: 10px 0;
+
+		.delete-map {
+			color: #D63638;
+		}
+	}
+}

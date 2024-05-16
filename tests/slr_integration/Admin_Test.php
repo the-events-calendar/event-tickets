@@ -9,7 +9,6 @@ use TEC\Tickets\Seating\Admin\Tabs\Layout_Edit;
 use TEC\Tickets\Seating\Admin\Tabs\Layouts;
 use TEC\Tickets\Seating\Admin\Tabs\Map_Edit;
 use TEC\Tickets\Seating\Admin\Tabs\Maps;
-use TEC\Tickets\Seating\Service\Service;
 use Tribe\Tests\Traits\With_Uopz;
 
 class Admin_Test extends Controller_Test_Case {
@@ -53,12 +52,7 @@ class Admin_Test extends Controller_Test_Case {
 	 * @dataProvider tabs_data_provider
 	 */
 	public function should_add_the_sub_menu_page( string $tab = null ): void {
-		$this->test_services->singleton( Service::class, function () {
-			return $this->make( Service::class, [
-				'frontend_base_url'   => 'https://service.test.local',
-				'get_ephemeral_token' => 'test-ephemeral-token'
-			],                  $this );
-		} );
+		add_filter( 'tec_tickets_seating_ephemeral_token', static fn() => 'test-ephemeral-token' );
 
 		if ( $tab === null ) {
 			// Simulate a request to the Seat Configurations and Layouts home page without specifying a tab.
@@ -69,6 +63,8 @@ class Admin_Test extends Controller_Test_Case {
 		}
 
 		$controller = $this->make_controller();
+
+
 		$controller->register();
 
 		// Register the Admin controller sub-menu page.
