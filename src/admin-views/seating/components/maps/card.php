@@ -14,7 +14,7 @@ use TEC\Tickets\Seating\Admin\Tabs\Map_Card;
 ?>
 <div class="tec-tickets__tab__cards__item">
 	<div class="tec-tickets__tab__cards__item-thumbnail">
-		<img src="<?php echo esc_url( $card->get_screen_shot_url() ); ?>"
+		<img src="<?php echo esc_url( $card->get_screenshot_url() ); ?>"
 			alt="<?php echo esc_attr( $card->get_name() ); ?>">
 	</div>
 	<div class="tec-tickets__tab__cards__item-content">
@@ -23,7 +23,7 @@ use TEC\Tickets\Seating\Admin\Tabs\Map_Card;
 			<?php
 				echo esc_html(
 					sprintf(
-					/* translators: %s: the capacity of the layout */
+					/* translators: %s: the capacity of the map */
 						_x( '%s seats', 'map seats count', 'event-tickets' ),
 						number_format_i18n( $card->get_seats() )
 					)
