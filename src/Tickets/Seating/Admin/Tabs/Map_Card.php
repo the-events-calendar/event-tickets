@@ -51,7 +51,7 @@ class Map_Card {
 	 *
 	 * @var string
 	 */
-	protected string $screen_shot_url;
+	protected string $screenshot_url;
 
 	/**
 	 * Map_Card constructor.
@@ -64,10 +64,10 @@ class Map_Card {
 	 * @param string $screen_shot_url The URL to the map's screen shot.
 	 */
 	public function __construct( string $id, string $name, int $seats, string $screen_shot_url ) {
-		$this->id              = $id;
-		$this->name            = $name;
-		$this->seats           = $seats;
-		$this->screen_shot_url = $screen_shot_url;
+		$this->id             = $id;
+		$this->name           = $name;
+		$this->seats          = $seats;
+		$this->screenshot_url = $screen_shot_url;
 	}
 
 	/**
@@ -110,7 +110,7 @@ class Map_Card {
 	 *
 	 * @return string The URL to the map's screen shot.
 	 */
-	public function get_screen_shot_url(): string {
-		return $this->screen_shot_url;
+	public function get_screenshot_url(): string {
+		return $this->screenshot_url;
 	}
 }

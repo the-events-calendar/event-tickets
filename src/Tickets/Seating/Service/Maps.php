@@ -63,7 +63,7 @@ class Maps {
 					$row->id,
 					$row->name,
 					$row->seats,
-					$row->screenshotUrl
+					$row->screenshot_url
 				);
 			}
 			
@@ -106,10 +106,10 @@ class Maps {
 				}
 				
 				$valid[] = [
-					'id'            => $service_row['id'],
-					'name'          => $service_row['name'],
-					'seats'         => $service_row['seats'],
-					'screenshotUrl' => $service_row['screenshotUrl'],
+					'id'             => $service_row['id'],
+					'name'           => $service_row['name'],
+					'seats'          => $service_row['seats'],
+					'screenshot_url' => $service_row['screenshotUrl'],
 				];
 				
 				return $valid;

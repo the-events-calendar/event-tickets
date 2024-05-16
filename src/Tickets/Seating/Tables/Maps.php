@@ -84,7 +84,7 @@ class Maps extends Table {
 				`id` varchar(36) NOT NULL,
 				`name` varchar(255) NOT NULL,
 				`seats` int(11) NOT NULL DEFAULT '0',
-				`screenshotUrl` varchar(255) NOT NULL,
+				`screenshot_url` varchar(255) NOT NULL,
 				PRIMARY KEY (`id`)
 			) {$charset_collate};
 		";
