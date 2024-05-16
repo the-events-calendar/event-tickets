@@ -17,7 +17,7 @@ use TEC\Tickets\Seating\Admin;
  * @since   TBD
  *
  * @package TEC\Controller\Admin\Tabs;
- */
+// */
 class Maps extends Tab {
 	/**
 	 * Returns the title of this tab. The one that will be displayed on the top of the page.
