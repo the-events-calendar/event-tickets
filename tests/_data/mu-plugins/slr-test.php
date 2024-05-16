@@ -3,6 +3,8 @@
  * Plugin Name: Events Assigned Controller Test
  */
 
+use TEC\Tickets\Seating\Service\Layouts;
+use TEC\Tickets\Seating\Service\Maps;
 use TEC\Tickets\Seating\Service\Service;
 
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
@@ -45,6 +47,26 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 			\WP_CLI::success( 'The access token is valid.' );
 		}
 	);
+	\WP_CLI::add_command(
+		'slr:clean-transients',
+		function () {
+			\WP_CLI::line( 'Cleaning transients ...' );
+			delete_transient( Maps::update_transient_name() );
+			delete_transient( Layouts::update_transient_name() );
+			\WP_CLI::success( 'Transients cleaned.' );
+		}
+	);
+	\WP_CLI::add_command(
+		'slr:regen-tables',
+		function () {
+			\WP_CLI::line( 'Regenerating tables ...' );
+			tribe(\TEC\Tickets\Seating\Tables\Maps::class)->drop();
+			tribe(\TEC\Tickets\Seating\Tables\Maps::class)->update();
+			tribe(\TEC\Tickets\Seating\Tables\Layouts::class)->drop();
+			tribe(\TEC\Tickets\Seating\Tables\Layouts::class)->update();
+			\WP_CLI::success( 'Tables regenerated.' );
+		}
+	);
 }
 
 /**
@@ -58,7 +80,7 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
  */
 function slr_test_filter_service_base_url() {
 //	return 'http://localhost:3000'; // The site runs on localhost.
-	 return 'http://host.docker.internal:3000'; // The site runs in a Docker container, e.g. on Lando.
+	return 'http://host.docker.internal:3000'; // The site runs in a Docker container, e.g. on Lando.
 }
 
 add_filter( 'tec_tickets_seating_service_base_url', 'slr_test_filter_service_base_url' );
