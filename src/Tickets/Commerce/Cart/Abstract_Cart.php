@@ -2,7 +2,7 @@
 /**
  * Abstract Cart
  *
- * @since TBD
+ * @since 5.10.0
  *
  * @package TEC\Tickets\Commerce\Cart
  */
@@ -16,22 +16,22 @@ use Tribe__Tickets__Ticket_Object as Ticket_Object;
 /**
  * Class Abstract_Cart
  *
- * @since TBD
+ * @since 5.10.0
  */
 abstract class Abstract_Cart implements Cart_Interface {
 	/**
 	 * Cart total
 	 *
-	 * @since TBD
+	 * @since 5.10.0
 	 *
 	 * @var null|float
 	 */
 	public $cart_total = null;
-	
+
 	/**
 	 * Get the tickets currently in the cart for a given provider.
 	 *
-	 * @since TBD
+	 * @since 5.10.0
 	 *
 	 * @param bool $full_item_params Determines all the item params, including event_id, sub_total, and obj.
 	 *
@@ -39,12 +39,12 @@ abstract class Abstract_Cart implements Cart_Interface {
 	 */
 	public function get_items_in_cart( $full_item_params = false ): array {
 		$items = $this->get_items();
-		
+
 		// When Items is empty in any capacity return an empty array.
 		if ( empty( $items ) ) {
 			return [];
 		}
-		
+
 		if ( $full_item_params ) {
 			$items = array_map(
 				static function ( $item ) {
@@ -53,26 +53,26 @@ abstract class Abstract_Cart implements Cart_Interface {
 					if ( ! $item['obj'] instanceof Ticket_Object ) {
 						return null;
 					}
-				
+
 					$sub_total_value = Value::create();
 					$sub_total_value->set_value( $item['obj']->price );
-				
+
 					$item['event_id']  = $item['obj']->get_event_id();
 					$item['sub_total'] = $sub_total_value->sub_total( $item['quantity'] );
-				
+
 					return $item;
 				},
-				$items 
+				$items
 			);
 		}
-		
+
 		return array_filter( $items );
 	}
-	
+
 	/**
 	 * Get the total of the cart.
 	 *
-	 * @since TBD
+	 * @since 5.10.0
 	 *
 	 * @return null|float
 	 */
@@ -80,17 +80,17 @@ abstract class Abstract_Cart implements Cart_Interface {
 		if ( null !== $this->cart_total ) {
 			return $this->cart_total;
 		}
-		
+
 		$items = $this->get_items_in_cart( true );
-		
+
 		if ( empty( $items ) ) {
 			return null;
 		}
-		
+
 		foreach ( $items as $item ) {
 			$this->cart_total += $item['sub_total']->get_decimal();
 		}
-		
+
 		return $this->cart_total;
 	}
 }

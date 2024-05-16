@@ -2,8 +2,8 @@
 
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, GeoffBel, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
-Requires at least: 6.2
-Tested up to: 6.5.2
+Requires at least: 6.3
+Tested up to: 6.5.3
 Stable tag: 5.11.0-dev
 Requires PHP: 7.4
 License: GPLv2 or later
@@ -15,7 +15,7 @@ Event Tickets allows your visitors to RSVP and buy tickets to events on your sit
 
 Sell tickets and collect RSVPs with the free [Event Tickets](https://evnt.is/1ao8) plugin, from the team behind the number one calendar in WordPress.
 
-This plugin makes it easy to sell tickets, collect registrations, and manage attendees for your in-person or virtual events. Plus, it comes with features backed by our world-class team of developers and designers. Easily integrate Event Tickets with your Stripe account or PayPal business account.
+This plugin makes it easy to sell all different types of tickets with our free Tickets Commerce solution. Create free tickets, collect registrations and generate revenue, and manage attendees for your in-person or virtual events. Plus, it comes with features backed by our world-class team of developers and designers. Easily integrate Event Tickets with your Stripe account or PayPal business account.
 
 Connect to Stripe and take advantage of one of the world’s most popular payment gateways. Our Stripe integration lets you accept credit card payments on your website, along with additional payment methods including AfterPay, ClearPay, AliPay, Giropay, and Klarna.
 
@@ -45,6 +45,7 @@ Whether your vision is big or small, you're in good company. Thousands of small 
 
 ✔️ Attendees can purchase tickets to events
 ✔️ Attendees can RSVP to events
+✔️ Free tickets with Tickets Commerce.
 ✔️ Sell tickets with PayPal, [Paystack](https://evnt.is/et-tc-paystack-wp-org), and/or Stripe using our free commerce solution, Tickets Commerce.
 ✔️ Add RSVPs and tickets to posts, pages, or custom post types
 ✔️ Collect ticket fees by connecting your PayPal business or Stripe account
@@ -196,13 +197,22 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [TBD] TBD =
+= [5.10.0] 2024-05-14 =
+
+* Version - Event Tickets 5.10.0 is only compatible with The Events Calendar 6.5.0 and higher
+* Fix - Update to remove moment.js library due to security concerns. [TEC-5011]
+* Language - 0 new strings added, 35 updated, 0 fuzzied, and 0 obsoleted
+
+= [5.9.2] 2024-05-08 =
 
 * Feature - Added support for adding Free tickets using Tickets Commerce. [ET-1218]
 * Tweak - When using Events Calendar Pro, the duplicate event function will now duplicate tickets as well. [ET-2073]
 * Fix - Corrected an issue where PayPal orders had an extra slash on the order table page. [ET-2076]
 * Fix - Updated sale label font to be uniform with other Event Tickets elements. [ET-2074]
 * Fix - Fixed showing error on Order report export data for Tickets Commerce.
+* Tweak - Added filters: `tec_tickets_attendees_page_url`, `tec_tickets_commerce_is_free_ticket_allowed`, `tec_tickets_commerce_value_get_currency_display`, `tec_tickets_attendees_table_column_check_in`, `tec_tickets_attendees_table_query_args`, `tec_tickets_attendees_page_is_enabled`
+* Tweak - Changed views: `emails/template-parts/body/order/order-gateway-data`, `emails/template-parts/body/order/order-total`, `emails/template-parts/body/order/payment-info`, `emails/template-parts/body/ticket/number-from-total`, `emails/template-parts/body/tickets-total`, `tickets/attendees-email`, `tickets/email-non-attendance`, `tickets/email-ticket-type-moved`, `tickets/email-tickets-moved`, `tickets/email`, `tickets/my-tickets`, `tickets/my-tickets/attendee-label`, `tickets/my-tickets/orders-list`, `tickets/my-tickets/ticket-information`, `tickets/my-tickets/tickets-list`, `tickets/my-tickets/title`, `tickets/my-tickets/user-details`, `tickets/orders-pp-tickets`, `tickets/orders-rsvp`, `tickets/orders-tc-tickets`, `tickets/orders`, `tickets/rsvp`, `tickets/tpp-return-to-cart`, `tickets/tpp-success`, `tickets/tpp`, `tickets/view-link`, `v2/commerce/gateway/free/button`, `v2/commerce/gateway/free/container`, `v2/commerce/order/details/payment-method`, `v2/commerce/ticket/regular-price`, `v2/commerce/ticket/sale-price`
+* Language - 2 new strings added, 68 updated, 0 fuzzied, and 0 obsoleted
 
 = [5.9.1.1] 2024-04-25 =
 

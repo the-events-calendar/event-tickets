@@ -2,7 +2,7 @@
 /**
  * Tickets Commerce: Free Gateway Order Endpoint.
  *
- * @since TBD
+ * @since 5.10.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Free
  */
@@ -27,7 +27,7 @@ use WP_REST_Server;
 /**
  * Class Order Endpoint.
  *
- * @since TBD
+ * @since 5.10.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Free\REST
  */
@@ -36,7 +36,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * The REST API endpoint path.
 	 *
-	 * @since TBD
+	 * @since 5.10.0
 	 *
 	 * @var string
 	 */
@@ -45,7 +45,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Register the actual endpoint on WP Rest API.
 	 *
-	 * @since TBD
+	 * @since 5.10.0
 	 */
 	public function register() {
 		$namespace     = tribe( 'tickets.rest-v1.main' )->get_events_route_namespace();
@@ -67,7 +67,7 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Handles the request that creates an order with Tickets Commerce and the Free gateway.
 	 *
-	 * @since TBD
+	 * @since 5.10.0
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -89,17 +89,17 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		$meta  = [
 			'gateway_order_id' => $order->ID,
 		];
-		
+
 		$created = tribe( Order::class )->modify_status(
 			$order->ID,
 			Pending::SLUG,
 			$meta
 		);
-		
+
 		if ( is_wp_error( $created ) ) {
 			return $created;
 		}
-		
+
 		$updated = tribe( Order::class )->modify_status(
 			$order->ID,
 			Completed::SLUG,
@@ -108,9 +108,9 @@ class Order_Endpoint extends Abstract_REST_Endpoint {
 		if ( is_wp_error( $updated ) ) {
 			return $updated;
 		}
-		
+
 		tribe( Cart::class )->clear_cart();
-		
+
 		$response['success']      = true;
 		$response['id']           = $order->ID;
 		$response['redirect_url'] = add_query_arg( [ 'tc-order-id' => $order->ID ], tribe( Success::class )->get_url() );

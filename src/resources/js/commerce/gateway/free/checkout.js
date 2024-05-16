@@ -3,7 +3,7 @@
 /**
  * Path to this script in the global tribe Object.
  *
- * @since TBD
+ * @since 5.10.0
  *
  * @type   {Object}
  */
@@ -12,7 +12,7 @@ tribe.tickets.commerce.gateway.free = tribe.tickets.commerce.gateway.free || {};
 /**
  * This script Object for public usage of the methods.
  *
- * @since TBD
+ * @since 5.10.0
  *
  * @type   {Object}
  */
@@ -24,7 +24,7 @@ tribe.tickets.commerce.gateway.free.checkout = {};
 	/**
 	 * Pull the variables from the PHP backend.
 	 *
-	 * @since TBD
+	 * @since 5.10.0
 	 *
 	 * @type {Object}
 	 */
@@ -33,7 +33,7 @@ tribe.tickets.commerce.gateway.free.checkout = {};
 	/**
 	 * Checkout Selectors.
 	 *
-	 * @since TBD
+	 * @since 5.10.0
 	 *
 	 * @type {Object}
 	 */
@@ -45,7 +45,7 @@ tribe.tickets.commerce.gateway.free.checkout = {};
 	/**
 	 * Loader container.
 	 *
-	 * @since TBD
+	 * @since 5.10.0
 	 *
 	 * @type {Object|null}
 	 */
@@ -54,7 +54,7 @@ tribe.tickets.commerce.gateway.free.checkout = {};
 	/**
 	 * Preventing errors to be thrown when using Ky
 	 *
-	 * @since TBD
+	 * @since 5.10.0
 	 *
 	 * @param {Object} error
 	 *
@@ -69,7 +69,7 @@ tribe.tickets.commerce.gateway.free.checkout = {};
 	/**
 	 * Preventing errors to be thrown when using Ky
 	 *
-	 * @since TBD
+	 * @since 5.10.0
 	 *
 	 * @param {Object} error
 	 *
@@ -84,7 +84,7 @@ tribe.tickets.commerce.gateway.free.checkout = {};
 	/**
 	 * Get the request arguments to setup the calls.
 	 *
-	 * @since TBD
+	 * @since 5.10.0
 	 *
 	 * @param data
 	 * @param headers
@@ -122,7 +122,7 @@ tribe.tickets.commerce.gateway.free.checkout = {};
 	/**
 	 * Hides the notice for the checkout container.
 	 *
-	 * @since TBD
+	 * @since 5.10.0
 	 *
 	 * @param {jQuery} $container Parent container of notice element.
 	 */
@@ -139,7 +139,7 @@ tribe.tickets.commerce.gateway.free.checkout = {};
 	/**
 	 * Shows the notice for the checkout container.
 	 *
-	 * @since TBD
+	 * @since 5.10.0
 	 *
 	 * @param {jQuery} $container Parent container of notice element.
 	 * @param {string} title Notice Title.
@@ -167,7 +167,7 @@ tribe.tickets.commerce.gateway.free.checkout = {};
 	/**
 	 * Starts the process to submit a payment.
 	 *
-	 * @since TBD
+	 * @since 5.10.0
 	 *
 	 * @param {Event} event The Click event from the payment.
 	 */
@@ -196,7 +196,7 @@ tribe.tickets.commerce.gateway.free.checkout = {};
 	/**
 	 * Create an order and start the payment process.
 	 *
-	 * @since TBD
+	 * @since 5.10.0
 	 *
 	 * @return {Promise<*>}
 	 */
@@ -220,7 +220,7 @@ tribe.tickets.commerce.gateway.free.checkout = {};
 	/**
 	 * Get purchaser form data.
 	 *
-	 * @since TBD
+	 * @since 5.10.0
 	 *
 	 * @return {Object}
 	 */
@@ -229,7 +229,7 @@ tribe.tickets.commerce.gateway.free.checkout = {};
 	/**
 	 * Bind script loader to trigger script dependent methods.
 	 *
-	 * @since TBD
+	 * @since 5.10.0
 	 */
 	obj.bindEvents = () => {
 		$( obj.selectors.submitButton ).on( 'click', obj.handlePayment );
@@ -238,7 +238,7 @@ tribe.tickets.commerce.gateway.free.checkout = {};
 	/**
 	 * When the page is ready.
 	 *
-	 * @since TBD
+	 * @since 5.10.0
 	 */
 	obj.ready = () => {
 		obj.bindEvents();

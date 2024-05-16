@@ -2,7 +2,7 @@
 /**
  * Tickets Commerce: Free Gateway.
  *
- * @since TBD
+ * @since 5.10.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Free
  */
@@ -17,7 +17,7 @@ use Tribe__Template as Template;
 /**
  * Class Free Gateway.
  *
- * @since TBD
+ * @since 5.10.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Free
  */
@@ -25,23 +25,23 @@ class Gateway extends Abstract_Gateway {
 	/**
 	 * The Gateway key.
 	 *
-	 * @since TBD
+	 * @since 5.10.0
 	 *
 	 * @var string $key The Gateway key.
 	 */
 	protected static $key = 'free';
-	
+
 	/**
 	 * The Gateway label, we are hiding it for this gateway.
 	 *
-	 * @since TBD
+	 * @since 5.10.0
 	 *
 	 * @return string The Gateway label.
 	 */
 	public static function get_label(): string {
 		return '';
 	}
-	
+
 	/**
 	 * @inheritDoc
 	 */
@@ -70,33 +70,33 @@ class Gateway extends Abstract_Gateway {
 		if ( is_admin() ) {
 			return false;
 		}
-		
+
 		$cart_total = tribe( Cart::class )->get_cart_total();
 		return 0 == $cart_total;
 	}
-	
+
 	/**
 	 * @inheritDoc
 	 */
 	public function get_admin_notices() {
 		return [];
 	}
-	
+
 	/**
 	 * Render the checkout template.
 	 *
-	 * @since TBD
+	 * @since 5.10.0
 	 *
 	 * @param Template $template The template object.
 	 */
 	public function render_checkout_template( Template $template ): string {
 		$gateway_key   = static::get_key();
 		$template_path = "gateway/{$gateway_key}/container";
-		
+
 		$template_vars = [
 			'must_login' => ! is_user_logged_in() && tribe( Module::class )->login_required(),
 		];
-		
+
 		return $template->template( $template_path, $template_vars );
 	}
 }

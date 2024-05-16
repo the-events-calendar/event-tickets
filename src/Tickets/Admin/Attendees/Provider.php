@@ -52,7 +52,7 @@ class Provider extends \tad_DI52_ServiceProvider {
 	/**
 	 * Registers the assets for the Tickets Attendees area.
 	 *
-	 * @since TBD
+	 * @since 5.10.0
 	 */
 	protected function register_assets() {
 		$assets = new Assets( $this->container );

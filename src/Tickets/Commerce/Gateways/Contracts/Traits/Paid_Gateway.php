@@ -2,7 +2,7 @@
 /**
  * Tickets Commerce: Paid Gateway Trait.
  *
- * @since TBD
+ * @since 5.10.0
  *
  * @package TEC\Tickets\Commerce\Gateways\Contracts\Traits
  */
@@ -19,7 +19,7 @@ trait Paid_Gateway {
 		if ( is_admin() ) {
 			return true;
 		}
-		
+
 		$cart_total = tribe( Cart::class )->get_cart_total();
 		return $cart_total > 0;
 	}

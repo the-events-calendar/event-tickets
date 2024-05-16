@@ -799,7 +799,7 @@ class Hooks extends Service_Provider {
 	/**
 	 * Filters the data used to render the Tickets Block Editor control.
 	 *
-	 * @since TBD
+	 * @since 5.10.0
 	 *
 	 * @param array<string,mixed> $data The data used to render the Tickets Block Editor control.
 	 *

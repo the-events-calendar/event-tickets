@@ -12,7 +12,7 @@
  * @version 5.6.0
  *
  * @since 5.6.0
- * @since TBD Don't show if gateway order number is same as regular order number.
+ * @since 5.10.0 Don't show if gateway order number is same as regular order number.
  *
  * @var Tribe__Template                    $this               Current template object.
  * @var \TEC\Tickets\Emails\Email_Abstract $email              The email object.
