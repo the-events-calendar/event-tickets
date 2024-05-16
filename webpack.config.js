@@ -62,7 +62,7 @@ const targets = [
 	},
 	{
 		name: 'flexible-tickets-block-editor',
-		entry: './src/Tickets/Blocks/app/flexible-tickets/block-editor/index.js',
+		entry: './src/Tickets/Flexible_Tickets/app/block-editor/index.js',
 		outputScript: './build/FlexibleTickets/block-editor.min.js',
 		outputStyle: `build/FlexibleTickets/block-editor.${postfix}`,
 		moveFromTo: {
@@ -74,7 +74,7 @@ const targets = [
 	},
 	{
 		name: 'flexible-tickets-classic-editor',
-		entry: './src/Tickets/Blocks/app/flexible-tickets/classic-editor/index.js',
+		entry: './src/Tickets/Flexible_Tickets/app/classic-editor/index.js',
 		outputScript: './build/FlexibleTickets/classic-editor.min.js',
 		outputStyle: `build/FlexibleTickets/classic-editor.${postfix}`,
 		moveFromTo: {
@@ -86,7 +86,7 @@ const targets = [
 	},
 	{
 		name: 'seating-utils',
-		entry: './src/resources/js/seating/utils.js',
+		entry: './src/Tickets/Seating/app/utils/index.js',
 		outputScript: './build/Seating/utils.min.js',
 		outputStyle: `build/Seating/utils.${postfix}`,
 		moveFromTo: {
@@ -97,7 +97,7 @@ const targets = [
 	},
 	{
 		name: 'seating-ajax',
-		entry: './src/resources/js/seating/ajax.js',
+		entry: './src/Tickets/Seating/app/ajax/index.js',
 		outputScript: './build/Seating/ajax.min.js',
 		outputStyle: `build/Seating/ajax.${postfix}`,
 		moveFromTo: {
@@ -107,7 +107,7 @@ const targets = [
 	},
 	{
 		name: 'seating-service-bundle',
-		entry: './src/resources/bundles/seating/service/index.js',
+		entry: './src/Tickets/Seating/app/service/index.js',
 		outputScript: './build/Seating/service.min.js',
 		outputStyle: `build/Seating/service.${postfix}`,
 		moveFromTo: {
@@ -119,7 +119,7 @@ const targets = [
 	},
 	{
 		name: 'seating-maps-bundle',
-		entry: './src/resources/bundles/seating/admin/maps/index.js',
+		entry: './src/Tickets/Seating/app/admin/maps/index.js',
 		outputScript: './build/Seating/admin/maps.min.js',
 		outputStyle: `build/Seating/admin/maps.${postfix}`,
 		moveFromTo: {
@@ -131,7 +131,7 @@ const targets = [
 	},
 	{
 		name: 'seating-layouts-bundle',
-		entry: './src/resources/bundles/seating/admin/layouts/index.js',
+		entry: './src/Tickets/Seating/app/admin/layouts/index.js',
 		outputScript: './build/Seating/admin/layouts.min.js',
 		outputStyle: `build/Seating/admin/layouts.${postfix}`,
 		moveFromTo: {
@@ -143,7 +143,7 @@ const targets = [
 	},
 	{
 		name: 'seating-map-edit-bundle',
-		entry: './src/resources/bundles/seating/admin/map-edit/index.js',
+		entry: './src/Tickets/Seating/app/admin/map-edit/index.js',
 		outputScript: './build/Seating/admin/map-edit.min.js',
 		outputStyle: `build/Seating/admin/map-edit.${postfix}`,
 		moveFromTo: {
@@ -155,7 +155,7 @@ const targets = [
 	},
 	{
 		name: 'seating-layout-edit-bundle',
-		entry: './src/resources/bundles/seating/admin/layout-edit/index.js',
+		entry: './src/Tickets/Seating/app/admin/layout-edit/index.js',
 		outputScript: './build/Seating/admin/layout-edit.min.js',
 		outputStyle: `build/Seating/admin/layout-edit.${postfix}`,
 		moveFromTo: {
@@ -167,7 +167,7 @@ const targets = [
 	},
 	{
 		name: 'seating-block-editor-bundle',
-		entry: './src/resources/bundles/seating/block-editor/index.js',
+		entry: './src/Tickets/Seating/app/block-editor/index.js',
 		outputScript: './build/Seating/block-editor.min.js',
 		outputStyle: `build/Seating/block-editor.${postfix}`,
 		moveFromTo: {
@@ -179,7 +179,7 @@ const targets = [
 	},
 	{
 		name: 'seating-frontend-tickets-block-bundle',
-		entry: './src/resources/bundles/seating/frontend/tickets-block/index.js',
+		entry: './src/Tickets/Seating/app/frontend/tickets-block/index.js',
 		outputScript: './build/Seating/frontend/tickets-block.min.js',
 		outputStyle: `build/Seating/frontend/tickets-block.${postfix}`,
 		moveFromTo: {

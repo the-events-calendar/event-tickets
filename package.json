@@ -67,7 +67,7 @@
     "build:common": "cd common && npm run build",
     "prebuild": "node node_modules/@the-events-calendar/product-taskmaster/scripts/syncBrowserslistConfig.js",
     "build": "export NODE_OPTIONS=--openssl-legacy-provider && npm run build:webpack && npm run build:gulp",
-    "build:inspect": "export NODE_OPTIONS=--openssl-legacy-provider && npm run build:webpack:inspect && npm run build:gulp",
+    "build:inspect": "export NODE_OPTIONS=--openssl-legacy-provider && export COMPILE_SOURCE_MAPS=1 && npm run build:webpack && npm run build:gulp",
     "dev": "export COMPILE_SOURCE_MAPS=1 && export NODE_OPTIONS=--openssl-legacy-provider && cross-env NODE_ENV=development webpack -d --watch",
     "gettext-strings": "export NODE_OPTIONS=--openssl-legacy-provider && cross-env BABEL_ENV=gettext webpack",
     "preanalyze": "export NODE_OPTIONS=--openssl-legacy-provider && cross-env NODE_ENV=production webpack -p --profile --json > stats.json",
