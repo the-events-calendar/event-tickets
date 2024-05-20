@@ -2,6 +2,8 @@
 
 namespace TEC\Tickets\Seating\Frontend;
 
+use Closure;
+use Generator;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Commerce\Tickets_View;
@@ -60,7 +62,7 @@ class Frontend_Test extends Controller_Test_Case {
 		$this->assertMatchesHtmlSnapshot( $html );
 	}
 
-	public function seating_enabled_fixtures(): \Generator {
+	public function seating_enabled_fixtures(): Generator {
 		yield 'one ticket' => [
 			function () {
 				$post_id = static::factory()->post->create(
@@ -158,12 +160,12 @@ class Frontend_Test extends Controller_Test_Case {
 	 * @test
 	 * @dataProvider seating_enabled_fixtures
 	 */
-	public function should_replace_ticket_block_when_seating_is_enabled( \Closure $fixture ) {
+	public function should_replace_ticket_block_when_seating_is_enabled( Closure $fixture ) {
 		$this->test_services->singleton( Service::class, function () {
 			return $this->make( Service::class, [
 				'frontend_base_url'   => 'https://service.test.local',
 				'get_ephemeral_token' => 'test-ephemeral-token',
-				'get_post_uuid' => 'test-post-uuid',
+				'get_post_uuid'       => 'test-post-uuid',
 			] );
 		} );
 		$ids     = $fixture();
@@ -187,4 +189,36 @@ class Frontend_Test extends Controller_Test_Case {
 
 		$this->assertMatchesHtmlSnapshot( $html );
 	}
+
+	/**
+	 * @dataProvider seating_enabled_fixtures
+	 */
+	public function test_get_ticket_block_data( Closure $fixture ) {
+		$ids     = $fixture();
+		$post_id = array_shift( $ids );
+		foreach ( $ids as $k => $id ) {
+			$l = $k % 3;
+			update_post_meta( $id, Meta::META_KEY_SEAT_TYPE, "uuid-seat-type-{$l}" );
+		}
+
+		$controller = $this->make_controller();
+		$controller->register();
+		$data = $controller->get_ticket_block_data( $post_id );
+
+		$json = wp_json_encode( $data, JSON_SNAPSHOT_OPTIONS );
+		// Replace the ticket IDs with placeholders.
+		$json = str_replace(
+			[ $post_id, ...$ids ],
+			[
+				'{{post_id}}',
+				...array_map( function ( $id ) {
+					return '{{ticket_' . $id . '}}';
+				}, range( 1, count( $ids ) ) )
+			],
+			$json
+		);
+
+		$this->assertMatchesJsonSnapshot( $json );
+	}
+
 }

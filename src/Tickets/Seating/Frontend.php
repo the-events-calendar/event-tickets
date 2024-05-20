@@ -101,11 +101,6 @@ class Frontend extends Controller_Contract {
 	protected function do_register(): void {
 		add_filter( 'tribe_template_pre_html:tickets/v2/tickets', [ $this, 'print_tickets_block' ], 10, 5 );
 
-		$data = fn() => [
-			'objectName' => 'dialog_obj_' . self::MODAL_ID,
-			'modalId' => self::MODAL_ID,
-		];
-
 		// Register the front-end JS.
 		Asset::add(
 			'tec-tickets-seating-frontend',
@@ -116,7 +111,8 @@ class Frontend extends Controller_Contract {
 				'tribe-dialog-js',
 				'tec-tickets-seating-service-bundle'
 			)
-			->add_localize_script('tec.seating.frontend.ticketsBlock',$data)
+			->add_localize_script( 'tec.seating.frontend.ticketsBlock',
+				fn() => $this->get_ticket_block_data( get_the_ID() ) )
 			->enqueue_on( 'wp_enqueue_scripts' )
 			->add_to_group( 'tec-tickets-seating-frontend' )
 			->add_to_group( 'tec-tickets-seating' )
@@ -233,5 +229,93 @@ class Frontend extends Controller_Contract {
 		];
 
 		return $dialog_view->render_modal( $content, $args, self::MODAL_ID, false );
+	}
+
+	/**
+	 * Returns the data to be localized on the ticket block frontend.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id The post ID.
+	 *
+	 * @return array{
+	 *     objectName: string,
+	 *     modalId: string,
+	 *     seatTypeMap: array<array{
+	 *         id: string,
+	 *         tickets: array<array{
+	 *             ticketId: string,
+	 *             name: string,
+	 *             price: string,
+	 *             description: string
+	 *         }>
+	 *     }>
+	 * } The data to be localized on the ticket block frontend.
+	 */
+	public function get_ticket_block_data( $post_id ): array {
+		return [
+			'objectName'  => 'dialog_obj_' . self::MODAL_ID,
+			'modalId'     => self::MODAL_ID,
+			'seatTypeMap' => $this->build_seat_type_map( $post_id ),
+		];
+	}
+
+	/**
+	 * Builds the Seat Type map localized for the seat selection modal.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|null $post_id The current post ID.
+	 *
+	 * @return array{
+	 *     id: string,
+	 *     tickets: array<array{
+	 *         ticketId: string,
+	 *         name: string,
+	 *         price: string,
+	 *         description: string
+	 *     }>
+	 * } The Seat Type map.
+	 */
+	private function build_seat_type_map( ?int $post_id = null ): array {
+		if ( ! $post_id ) {
+			return [];
+		}
+
+		$seat_type_map = [];
+		$provider      = null;
+
+		foreach ( tribe_tickets()->where( 'event', $post_id )->get_ids( true ) as $ticket_id ) {
+			// The provider will be the same for all tickets in the loop, just init once.
+			/** @var \Tribe__Tickets__Tickets $provider */
+			$provider = $provider ?? tribe_tickets_get_ticket_provider( $ticket_id );
+			$ticket   = $provider->get_ticket( $post_id, $ticket_id );
+
+			if ( ! $ticket instanceof \Tribe__Tickets__Ticket_Object ) {
+				continue;
+			}
+
+			$seat_type = get_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, true );
+
+			if ( ! $seat_type ) {
+				continue;
+			}
+
+			if ( ! isset( $seat_type_map[ $seat_type ] ) ) {
+				$seat_type_map[ $seat_type ] = [
+					'id'      => $seat_type,
+					'tickets' => [],
+				];
+			}
+
+			$seat_type_map[ $seat_type ]['tickets'][] = [
+				'ticketId'    => $ticket_id,
+				'name'        => $ticket->name,
+				'price'       => $ticket->get_provider()->get_price_html( $ticket_id ),
+				'description' => $ticket->description
+			];
+		}
+
+		return $seat_type_map;
 	}
 }

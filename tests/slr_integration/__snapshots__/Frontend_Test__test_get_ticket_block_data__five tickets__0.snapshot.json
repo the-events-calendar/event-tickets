@@ -1,0 +1,51 @@
+{
+    "objectName": "dialog_obj_tec-tickets-seating-seat-selection-modal",
+    "modalId": "tec-tickets-seating-seat-selection-modal",
+    "seatTypeMap": {
+        "uuid-seat-type-0": {
+            "id": "uuid-seat-type-0",
+            "tickets": [
+                {
+                    "ticketId": {{ticket_1}},
+                    "name": "Test TC ticket for {{post_id}}",
+                    "price": "\n<span class=\"tec-tickets-price amount\">\n\t&#x24;20.00</span>\n",
+                    "description": "Test TC ticket description for {{post_id}}"
+                },
+                {
+                    "ticketId": {{ticket_4}},
+                    "name": "Test TC ticket for {{post_id}}",
+                    "price": "\n<span class=\"tec-tickets-price amount\">\n\t&#x24;30.00</span>\n",
+                    "description": "Test TC ticket description for {{post_id}}"
+                }
+            ]
+        },
+        "uuid-seat-type-1": {
+            "id": "uuid-seat-type-1",
+            "tickets": [
+                {
+                    "ticketId": {{ticket_2}},
+                    "name": "Test TC ticket for {{post_id}}",
+                    "price": "\n<span class=\"tec-tickets-price amount\">\n\t&#x24;50.00</span>\n",
+                    "description": "Test TC ticket description for {{post_id}}"
+                },
+                {
+                    "ticketId": {{ticket_5}},
+                    "name": "Test TC ticket for {{post_id}}",
+                    "price": "\n<span class=\"tec-tickets-price amount\">\n\t&#x24;10.00</span>\n",
+                    "description": "Test TC ticket description for {{post_id}}"
+                }
+            ]
+        },
+        "uuid-seat-type-2": {
+            "id": "uuid-seat-type-2",
+            "tickets": [
+                {
+                    "ticketId": {{ticket_3}},
+                    "name": "Test TC ticket for {{post_id}}",
+                    "price": "\n<span class=\"tec-tickets-price amount\">\n\t&#x24;10.00</span>\n",
+                    "description": "Test TC ticket description for {{post_id}}"
+                }
+            ]
+        }
+    }
+}
