@@ -1,15 +1,19 @@
 // Get the service base URL without the trailing slash.
 const baseUrl = tec.seating.service.baseUrl.replace(/\/$/, '');
-
-const POSTMESSAGE_APP_READY = 'app_postmessage_ready';
-const POSTMESSAGE_HOST_READY = 'host_postmessage_ready';
-
-const state = {
+tec.seating.service.state =  tec.seating.service.state || {
 	ready: false,
 	establishingReadiness: false,
-	actionsMap: {},
+	actionsMap: {
+		default: defaultMessageHandler,
+	},
 	token: null,
 };
+const state = tec.seating.service.state;
+
+export const INBOUND_APP_READY = 'app_postmessage_ready';
+export const INBOUND_APP_READY_FOR_DATA = 'app_postmessage_ready_for_data';
+export const OUTBOUND_HOST_READY = 'host_postmessage_ready';
+export const OUTBOUND_SEAT_TYPE_TICKETS = 'host_postmessage_seat_type_tickets';
 
 /**
  * Posts a message to the service iframe.
@@ -22,7 +26,7 @@ const state = {
  *
  * @return {void}
  */
-export function sendMessage(iframe, action, data) {
+export function sendPostMessage(iframe, action, data) {
 	const token = iframe.closest('[data-token]').dataset.token;
 
 	if (!token) {
@@ -86,7 +90,7 @@ export function catchMessage(event) {
  *
  * @return {void}
  */
-export function listenForServiceMessages(iframe) {
+export function startListeningForServiceMessages(iframe) {
 	const tokenProvider = iframe.closest('[data-token]');
 
 	if (!tokenProvider) {
@@ -116,24 +120,8 @@ export function listenForServiceMessages(iframe) {
  *
  * @return {void}
  */
-export function onAction(action, callback) {
-	const actions = Array.isArray(action) ? action : [action];
-	actions.forEach((actionEntry) => {
-		state.actionsMap[actionEntry] = callback;
-	});
-}
-
-/**
- * Sets the callback for all actions to the callback.
- *
- * @since TBD
- *
- * @param {Function} callback The callback to set for all actions.
- *
- * @return {void}
- */
-export function onEveryAction(callback) {
-	state.actionsMap = { default: callback };
+export function registerAction(action, callback) {
+	state.actionsMap[action] = callback;
 }
 
 /**
@@ -162,19 +150,19 @@ function defaultMessageHandler(event) {
  * @return {Promise<void>} A promise that will be resolved when the connection is established.
  */
 export async function establishReadiness(iframe) {
-	// Start listening for messages from the service **before** setting the iframe source.
-	listenForServiceMessages(iframe);
+	// Before setting the iframe source, start listening for messages from the service.
+	startListeningForServiceMessages(iframe);
 
+	// Build a promise that will resolve when the Service sends the ready message.
 	const promise = new Promise((resolve) => {
 		const acknowledge = () => {
-			// Acknowledge the readiness, do not wait for a reply.
-			sendMessage(iframe, POSTMESSAGE_HOST_READY);
+			removeAction(INBOUND_APP_READY);
 
 			state.ready = true;
 			state.establishingReadiness = false;
 
-			// From now on, all actions should be handled with the default message handler.
-			onEveryAction(defaultMessageHandler);
+			// Acknowledge the readiness, do not wait for a reply.
+			sendPostMessage(iframe, OUTBOUND_HOST_READY);
 
 			// Readiness is established, clear the timeout.
 			clearTimeout(timeoutId);
@@ -184,31 +172,48 @@ export async function establishReadiness(iframe) {
 			resolve();
 		};
 
-		// When the mesage `app_postmessage_ready` is received, acknowledge the readiness, resolve the promise.
-		onAction(POSTMESSAGE_APP_READY, acknowledge);
+		// When the ready message from the service is received, acknowledge the readiness, resolve the promise.
+		registerAction(INBOUND_APP_READY, acknowledge);
 	});
 
+	// Seat a 10s timeout to reject the promise if the connection is not established.
 	const timeoutId = setTimeout(() => {
 		promise.reject(new Error('Connection to service timed out'));
 	}, 10000);
 
-	// Replace the iframe src with the real source.
+	// Finally start loading the service in the iframe and wait for its ready message.
 	iframe.src = iframe.dataset.src;
 
 	return promise;
+}
+
+/**
+ * Removes the listener for a specific action.
+ *
+ * @since TBD
+ *
+ * @param {string} action The action to remove the listener for.
+ */
+export function removeAction(action) {
+	delete state.actionsMap[action];
+}
+
+export function getRegisteredActions() {
+	return state.actionsMap;
 }
 
 window.tec = window.tec || {};
 window.tec.seating = window.tec.seating || {};
 window.tec.seating.service = {
 	...(window.tec.seating.service || {}),
-	sendMessage,
-	listenForServiceMessages,
+	INBOUND_APP_READY,
+	INBOUND_APP_READY_FOR_DATA,
+	OUTBOUND_HOST_READY,
+	OUTBOUND_SEAT_TYPE_TICKETS,
+	sendPostMessage,
+	startListeningForServiceMessages,
 	establishReadiness,
-	actions: {
-		APP_POSTMESSAGE_READY: POSTMESSAGE_APP_READY,
-		HOST_POSTMESSAGE_READY: POSTMESSAGE_HOST_READY,
-	},
-	onAction,
-	onEveryAction,
+	registerAction,
+	removeAction,
+	getRegisteredActions,
 };

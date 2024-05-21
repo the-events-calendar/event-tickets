@@ -1,53 +1,38 @@
 import './style.pcss';
-import { iFrameInit } from '@tec/tickets/seating/iframe';
+import { getIframeElement, initServiceIframe } from '@tec/tickets/seating/iframe';
+import {
+	sendPostMessage,
+	removeAction,
+	OUTBOUND_SEAT_TYPE_TICKETS,
+	INBOUND_APP_READY_FOR_DATA,
+} from '@tec/tickets/seating/service';
+import { registerAction, getRegisteredActions } from '../../service/service-api';
 
-const { objectName } = window.tec.seating.frontend.ticketsBlock;
+const { objectName, seatTypeMap } =
+	window?.tec?.seating?.frontend?.ticketsBlock;
 
-// {
-// 	"24lk2h34kjh234": {
-// 	"id": "24lk2h34kjh234",
-// 		"tickets": [
-// 		{
-// 			"ticketId": "23",
-// 			"name": "Standard Seats",
-// 			"price": "$22.00",
-// 			"description": "Seating for the main floor and mezzanine"
-// 		},
-// 		{
-// 			"ticketId": "25",
-// 			"name": "Children's Admission",
-// 			"price": "$12.00",
-// 			"description": "12 and under, standard seats only"
-// 		}
-// 	]
-// },
-// 	"kasjdfweurwur": {
-// 	"id": "kasjdfweurwur",
-// 		"tickets": [
-// 		{
-// 			"ticketId": "89",
-// 			"name": "VIP Seats",
-// 			"price": "$100.00",
-// 			"description": "Front Row Seats"
-// 		}
-// 	]
-// }
-// }
+function registerActions(iframe) {
+	// When the service is ready for data, send the seat type map to the iframe.
+	registerAction(INBOUND_APP_READY_FOR_DATA, () => {
+		removeAction(INBOUND_APP_READY_FOR_DATA);
+		sendPostMessage(iframe, OUTBOUND_SEAT_TYPE_TICKETS, seatTypeMap);
+	});
 
-function sendSeatTypeTickets(){
-	const seatTypeMap = window.tec.seating.frontend.ticketsBlock.seatTypeMap;
+	console.log('actions', getRegisteredActions());
 }
 
 async function bootstrapIframe() {
-	const initialized = await iFrameInit();
-	const iframe = initialized?.[0] || null;
+	const iframe = getIframeElement();
 
 	if (!iframe) {
-		console.error('Iframe initialization failed.');
+		console.error('Iframe element not found.');
 		return false;
 	}
 
-	sendSeatTypeTickets();
+	// Register the actions before initializing the iframe to avoid race conditions.
+	registerActions(iframe);
+
+	await initServiceIframe(iframe);
 }
 
 function initModal(modalElement) {

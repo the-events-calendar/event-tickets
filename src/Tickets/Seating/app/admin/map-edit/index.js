@@ -1,4 +1,4 @@
 import './style.pcss';
-import { iFrameInit } from '@tec/tickets/seating/iframe';
+import { initServiceIframe, getIframeElement } from '@tec/tickets/seating/iframe';
 
-iFrameInit();
+initServiceIframe(getIframeElement());
