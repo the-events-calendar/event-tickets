@@ -63,7 +63,8 @@ class Layouts {
 					$service_row['name'],
 					$service_row['seats'],
 					$service_row['mapId'],
-					$service_row['createdDate']
+					$service_row['createdDate'],
+					$service_row['screenshotUrl']
 				) ) {
 					return $valid;
 				}
@@ -72,11 +73,12 @@ class Layouts {
 				$created_date       = gmdate( 'Y-m-d H:i:s', $created_date_in_ms / 1000 );
 				
 				$valid[] = [
-					'id'           => $service_row['id'],
-					'name'         => $service_row['name'],
-					'seats'        => $service_row['seats'],
-					'map'          => $service_row['mapId'],
-					'created_date' => $created_date,
+					'id'             => $service_row['id'],
+					'name'           => $service_row['name'],
+					'seats'          => $service_row['seats'],
+					'map'            => $service_row['mapId'],
+					'screenshot_url' => $service_row['screenshotUrl'],
+					'created_date'   => $created_date,
 				];
 
 				return $valid;

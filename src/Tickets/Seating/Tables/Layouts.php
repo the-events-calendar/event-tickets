@@ -87,6 +87,7 @@ class Layouts extends Table {
 				`created_date` datetime NOT NULL,
 				`map` varchar(36) NOT NULL,
 				`seats` int(11) NOT NULL DEFAULT '0',
+				`screenshot_url` varchar(255) NOT NULL,
 				PRIMARY KEY (`id`)
 			) {$charset_collate};
 		";
