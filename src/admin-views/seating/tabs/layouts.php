@@ -8,6 +8,7 @@
  * @var string $add_new_url The URL to add a new Controller Configuration.
  */
 
+use TEC\Tickets\Seating\Admin\Tabs\Layout_Card;
 ?>
 
 <div class="tec-tickets__tab-heading__wrapper"><h2
@@ -43,7 +44,7 @@
 				sprintf(
 				/* translators: %1$s: Documentation link */
 					__(
-						'Create a seating configuration that represents your room or venue. Configurations are used to create layouts that allow purchasers choose specific seats and ticketing tiers. %1$s',
+						'Seat layouts on top of your maps allow you to create different seating types. You can create a seat layout from one of the existing seating maps. %1$s',
 						'event-tickets' 
 					),
 					'<a href="https://evnt.is" target="_blank">'
@@ -63,13 +64,10 @@
 	</div>
 </div>
 <div class="tec-tickets__tab-content__wrapper">
-	<?php if ( empty( $cards ) ) : ?>
-		<p><?php esc_html_e( 'No seat layouts to show.', 'event-tickets' ); ?></p>
-		<?php 
-	else :
-		foreach ( $cards as $card ) {
-			$this->template->template( 'components/map-card', $card );
-		} 
+	<?php
+		$this->template(
+			'components/layouts/list',
+			[ 'cards' => $cards ]
+		);
 		?>
-	<?php endif; ?>
 </div>
