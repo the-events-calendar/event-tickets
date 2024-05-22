@@ -1,21 +1,39 @@
 import './style.pcss';
-import { getIframeElement, initServiceIframe } from '@tec/tickets/seating/iframe';
+import {
+	getIframeElement,
+	initServiceIframe,
+} from '@tec/tickets/seating/iframe';
 import {
 	sendPostMessage,
 	removeAction,
 	OUTBOUND_SEAT_TYPE_TICKETS,
 	INBOUND_APP_READY_FOR_DATA,
+	INBOUND_SEAT_SELECTED,
+	INBOUND_SEAT_DESELECTED,
 } from '@tec/tickets/seating/service';
-import { registerAction, getRegisteredActions } from '../../service/service-api';
+import {
+	registerAction,
+	getRegisteredActions,
+} from '../../service/service-api';
 
 const { objectName, seatTypeMap } =
 	window?.tec?.seating?.frontend?.ticketsBlock;
+
+function addTicketToSelection({ id, label }) {}
+
+function removeTicketFromSelection({ id }) {}
 
 function registerActions(iframe) {
 	// When the service is ready for data, send the seat type map to the iframe.
 	registerAction(INBOUND_APP_READY_FOR_DATA, () => {
 		removeAction(INBOUND_APP_READY_FOR_DATA);
 		sendPostMessage(iframe, OUTBOUND_SEAT_TYPE_TICKETS, seatTypeMap);
+	});
+	registerAction(INBOUND_SEAT_SELECTED, (seatTypeSelection) => {
+		addTicketToSelection(seatTypeSelection);
+	});
+	registerAction(INBOUND_SEAT_DESELECTED, (seatTypeSelection) => {
+		removeTicketFromSelection(seatTypeSelection);
 	});
 
 	console.log('actions', getRegisteredActions());

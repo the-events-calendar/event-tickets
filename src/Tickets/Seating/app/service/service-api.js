@@ -14,6 +14,8 @@ export const INBOUND_APP_READY = 'app_postmessage_ready';
 export const INBOUND_APP_READY_FOR_DATA = 'app_postmessage_ready_for_data';
 export const OUTBOUND_HOST_READY = 'host_postmessage_ready';
 export const OUTBOUND_SEAT_TYPE_TICKETS = 'host_postmessage_seat_type_tickets';
+export const INBOUND_SEAT_SELECTED = 'app_postmessage_seat_selected';
+export const INBOUND_SEAT_DESELECTED = 'app_postmessage_seat_deselected';
 
 /**
  * Posts a message to the service iframe.
@@ -210,6 +212,8 @@ window.tec.seating.service = {
 	INBOUND_APP_READY_FOR_DATA,
 	OUTBOUND_HOST_READY,
 	OUTBOUND_SEAT_TYPE_TICKETS,
+	INBOUND_SEAT_SELECTED,
+	INBOUND_SEAT_DESELECTED,
 	sendPostMessage,
 	startListeningForServiceMessages,
 	establishReadiness,

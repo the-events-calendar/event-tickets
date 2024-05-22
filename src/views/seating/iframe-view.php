@@ -28,3 +28,56 @@
 	>
 	</iframe>
 </div>
+
+<aside class="tec-tickets-seating__modal-sidebar">
+	<div class="tec-tickets-seating__sidebar-content">
+		<h4 class="tribe-common-h4 tec-tickets-seating__title">
+			Tickets
+		</h4>
+
+		<div class="tec-tickets-seating__timer">
+			<div class="dashicons dashicons-clock"></div>
+			<div class="tec-tickets-seating__message">
+			<span>
+				<span class="tec-tickets-seating__message-text">Seat selections reserved for </span>
+				<span class="tec-tickets-seating__message-time">9:55</span>
+			</span>
+			</div>
+		</div>
+
+		<div class="tec-tickets-seating__ticket-rows">
+
+			<div class="tec-tickets-seating__ticket-row">
+				<div class="tec-tickets-seating__seat-color"> </div>
+
+				<div class="tec-tickets-seating__label">
+					<div class="tec-tickets-seating__ticket-name">VIP seat</div>
+					<div class="tec-tickets-seating__seat-label">C7</div>
+				</div>
+
+				<div class="tec-tickets-seating__ticket-price">$40.00</div>
+			</div>
+
+		</div>
+	</div>
+
+	<div class="tec-tickets-seating__sidebar-footer">
+		<div class="tec-tickets-seating__total">
+			<div class="tec-tickets-seating__total-text">
+				1 Ticket
+			</div>
+			<div class="tec-tickets-seating__total-price">
+				$40.00
+			</div>
+		</div>
+
+		<div class="tec-tickets-seating__sidebar-controls">
+			<button class="tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--cancel">
+				Cancel
+			</button>
+			<button class="tribe-common-c-btn tribe-common-c-btn--small tec-tickets-seating__sidebar-control">
+				Check Out
+			</button>
+		</div>
+	</div>
+</aside>
