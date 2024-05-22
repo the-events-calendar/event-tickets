@@ -10,6 +10,7 @@
 namespace TEC\Tickets\Seating\Service;
 
 use TEC\Tickets\Seating\Tables\Layouts as Layouts_Table;
+use TEC\Tickets\Seating\Admin\Tabs\Layout_Card;
 
 /**
  * Class Layouts.
@@ -127,7 +128,45 @@ class Layouts {
 
 		return $layouts;
 	}
-
+	
+	/**
+	 * Fetches all the Layouts from the database.
+	 *
+	 * @since TBD
+	 *
+	 * @return Layout_Card[] Array of layout card objects.
+	 */
+	public function get_in_card_format() {
+		if ( ! $this->update() ) {
+			return [];
+		}
+		
+		$cache_key    = 'option_layout_card_objects';
+		$layout_cards = wp_cache_get( $cache_key, 'tec-tickets-seating' );
+		
+		if ( ! ( $layout_cards && is_array( $layout_cards ) ) ) {
+			$layout_cards = [];
+			foreach ( Layouts_Table::fetch_all() as $row ) {
+				$layout_cards[] = new Layout_Card(
+					$row->id,
+					$row->name,
+					$row->map,
+					$row->seats,
+					$row->screenshot_url
+				);
+			}
+			
+			wp_cache_set(
+				$cache_key,
+				$layout_cards,
+				'tec-tickets-seating',
+				self::update_transient_expiration() // phpcs:ignore
+			);
+		}
+		
+		return $layout_cards;
+	}
+	
 	/**
 	 * Updates the layouts from the service by updating the caches and custom tables.
 	 *
@@ -144,6 +183,7 @@ class Layouts {
 							->update_from_service(
 								function () {
 									wp_cache_delete( 'option_format_layouts', 'tec-tickets-seating' );
+									wp_cache_delete( 'option_layout_card_objects', 'tec-tickets-seating' );
 									Layouts_Table::truncate();
 								} 
 							)
