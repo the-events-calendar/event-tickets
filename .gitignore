@@ -44,6 +44,9 @@ build
 compiler.jar
 *.ps1
 
+# Local packaging files
+.pup-*
+
 # add this yourself to add githoooks - see .huskyrc.sample
 .huskyrc
 
