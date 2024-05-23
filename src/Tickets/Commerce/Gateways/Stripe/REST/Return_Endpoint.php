@@ -9,6 +9,7 @@ use TEC\Tickets\Commerce\Gateways\Stripe\Settings;
 use TEC\Tickets\Commerce\Gateways\Stripe\Signup;
 use TEC\Tickets\Commerce\Payments_Tab;
 use Tribe\Tickets\Admin\Settings as Plugin_Settings;
+use TEC\Tickets\Commerce\Gateways\Stripe\Webhooks;
 
 use WP_REST_Server;
 use WP_REST_Request;
@@ -121,8 +122,15 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 	 * @param object $payload data returned from WhoDat.
 	 */
 	public function handle_connection_established( $payload ) {
+		$payload = (array) $payload;
+		$webhook = false;
 
-		tribe( Merchant::class )->save_signup_data( (array) $payload );
+		if ( isset( $payload['webhook'] ) ) {
+			$webhook = (array) $payload['webhook'];
+			unset( $payload['webhook'] );
+		}
+
+		tribe( Merchant::class )->save_signup_data( $payload );
 		tribe( Settings::class )->setup_account_defaults();
 
 		$validate = tribe( Merchant::class )->validate_account_is_permitted();
@@ -144,6 +152,10 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 				'tc-status'  => 'stripe-signup-complete',
 			]
 		);
+
+		if ( ! empty( $webhook['id'] ) ) {
+			tribe( Webhooks::class )->add_webhook( $webhook );
+		}
 
 		wp_safe_redirect( $url );
 		exit();
