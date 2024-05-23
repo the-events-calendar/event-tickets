@@ -298,6 +298,7 @@ class Webhooks extends Abstract_Webhooks {
 
 				// Unset a random one but not the one we just added.
 				unset( $known_webhooks[ $key ] );
+				break;
 			}
 		}
 
