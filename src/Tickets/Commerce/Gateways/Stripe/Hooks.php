@@ -36,6 +36,8 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 
 		add_action( 'wp_ajax_tec_tickets_commerce_gateway_stripe_test_webhooks', [ $this, 'action_handle_testing_webhooks_field' ] );
 		add_action( 'wp_ajax_tec_tickets_commerce_gateway_stripe_verify_webhooks', [ $this, 'action_handle_verify_webhooks' ] );
+
+		add_action( 'wp_ajax_' . tribe( Webhooks::class )::$nonce_key_set_up, [ $this, 'action_handle_set_up_webhook' ] );
 	}
 
 	/**
@@ -105,6 +107,35 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	 */
 	public function action_handle_verify_webhooks() : void {
 		$this->container->make( Webhooks::class )->handle_verification();
+	}
+
+	/**
+	 * Handles the setting up of the webhook on the settings page.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function action_handle_set_up_webhook(): void {
+		$nonce  = tribe_get_request_var( 'tc_nonce' );
+		$status = esc_html__( 'Something went wrong with your Webhook Creation. Please try again later.', 'event-tickets' );
+
+		$webhooks = $this->container->make( Webhooks::class );
+
+		if ( ! wp_verify_nonce( $nonce, $webhooks::$nonce_key_set_up ) ) {
+			wp_send_json_error( [ 'status' => $status ] );
+			exit;
+		}
+
+		$result = $webhooks->handle_webhook_setup();
+
+		if ( ! $result ) {
+			wp_send_json_error( [ 'status' => $status ] );
+			exit;
+		}
+
+		wp_send_json_success( [ 'status' => esc_html__( 'Webhook successfully set up! The page will reload now.', 'event-tickets' ) ] );
+		exit;
 	}
 
 	/**
