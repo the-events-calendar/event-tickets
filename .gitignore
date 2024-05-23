@@ -53,3 +53,5 @@ lang/*.po
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+.vscode
