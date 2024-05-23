@@ -9,9 +9,11 @@
  *
  * @version TBD
  *
- * @var string $iframe_url The URL to the service iframe.
- * @var string $token      The ephemeral token used to secure the iframe communication with the service.
- * @var string $error      The error message returned by the service.
+ * @var string $iframe_url          The URL to the service iframe.
+ * @var string $token               The ephemeral token used to secure the iframe communication with the service.
+ * @var string $error               The error message returned by the service.
+ * @var string $initial_total_text  The initial text of the total; should be "0 Tickets".
+ * @var string $initial_total_price The initial price of the tickets; already HTML-escaped.
  */
 ?>
 
@@ -46,28 +48,16 @@
 		</div>
 
 		<div class="tec-tickets-seating__ticket-rows">
-
-			<div class="tec-tickets-seating__ticket-row">
-				<div class="tec-tickets-seating__seat-color"> </div>
-
-				<div class="tec-tickets-seating__label">
-					<div class="tec-tickets-seating__ticket-name">VIP seat</div>
-					<div class="tec-tickets-seating__seat-label">C7</div>
-				</div>
-
-				<div class="tec-tickets-seating__ticket-price">$40.00</div>
-			</div>
-
 		</div>
 	</div>
 
 	<div class="tec-tickets-seating__sidebar-footer">
 		<div class="tec-tickets-seating__total">
 			<div class="tec-tickets-seating__total-text">
-				1 Ticket
+				<?php echo esc_html( $initial_total_text ); ?>
 			</div>
 			<div class="tec-tickets-seating__total-price">
-				$40.00
+				<?php echo esc_html( $initial_total_price ); ?>
 			</div>
 		</div>
 

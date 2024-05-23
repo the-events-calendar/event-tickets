@@ -8,10 +8,21 @@
                 {
                     "ticketId": {{ticket_1}},
                     "name": "Test TC ticket for {{post_id}}",
-                    "price": "\n<span class=\"tec-tickets-price amount\">\n\t&#x24;20.00</span>\n",
+                    "price": "20",
                     "description": "Test TC ticket description for {{post_id}}"
                 }
             ]
         }
+    },
+    "currency": {
+        "symbol": "$",
+        "position": "prefix",
+        "decimalSeparator": ".",
+        "decimalNumbers": 2,
+        "thousandSeparator": ","
+    },
+    "labels": {
+        "oneTicket": "1 Ticket",
+        "multipleTickets": "{count} Tickets"
     }
 }

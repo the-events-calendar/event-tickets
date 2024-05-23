@@ -30,6 +30,70 @@
 	>
 	</iframe>
 </div>
+
+<template id="tec-tickets-seating__ticket-row-template">
+	<div class="tec-tickets-seating__ticket-row" data-id="{id}" data-price="{price}">
+		<div class="tec-tickets-seating__seat-color" style="background: {color}"> </div>
+
+		<div class="tec-tickets-seating__label">
+			<div class="tec-tickets-seating__ticket-name">{ticketName}</div>
+			<div class="tec-tickets-seating__seat-label">{seatLabel}</div>
+		</div>
+
+		<div class="tec-tickets-seating__ticket-price">{formattedPrice}</div>
+	</div>
+</template>
+
+<aside class="tec-tickets-seating__modal-sidebar">
+	<div class="tec-tickets-seating__sidebar-content">
+		<h4 class="tribe-common-h4 tec-tickets-seating__title">
+			Tickets
+		</h4>
+
+		<div class="tec-tickets-seating__timer">
+			<div class="dashicons dashicons-clock"></div>
+			<div class="tec-tickets-seating__message">
+			<span>
+				<span class="tec-tickets-seating__message-text">Seat selections reserved for </span>
+				<span class="tec-tickets-seating__message-time">9:55</span>
+			</span>
+			</div>
+		</div>
+
+		<div class="tec-tickets-seating__ticket-rows">
+
+			<div class="tec-tickets-seating__ticket-row">
+				<div class="tec-tickets-seating__seat-color"> </div>
+
+				<div class="tec-tickets-seating__label">
+					<div class="tec-tickets-seating__ticket-name">VIP seat</div>
+					<div class="tec-tickets-seating__seat-label">C7</div>
+				</div>
+
+				<div class="tec-tickets-seating__ticket-price">$40.00</div>
+			</div>
+
+		</div>
+	</div>
+
+	<div class="tec-tickets-seating__sidebar-footer">
+		<div class="tec-tickets-seating__total">
+			<div class="tec-tickets-seating__total-text">
+				0 Tickets			</div>
+			<div class="tec-tickets-seating__total-price">
+				&#x24;0.00			</div>
+		</div>
+
+		<div class="tec-tickets-seating__sidebar-controls">
+			<button class="tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--cancel">
+				Cancel
+			</button>
+			<button class="tribe-common-c-btn tribe-common-c-btn--small tec-tickets-seating__sidebar-control">
+				Check Out
+			</button>
+		</div>
+	</div>
+</aside>
 	</div>
 </script>
 
@@ -38,7 +102,7 @@
 			tribe.dialogs = tribe.dialogs || [];
 			tribe.dialogs.dialogs = tribe.dialogs.dialogs || [];
 
-			tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__tickets-block__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__seat-selection-modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"1","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
+			tribe.dialogs.dialogs.push( {"appendTarget":".tec-tickets-seating__tickets-block__information","bodyLock":"1","closeButtonAriaLabel":"Close this modal window","closeButtonClasses":"tribe-dialog__close-button tribe-modal__close-button","closeEvent":"tribe_dialog_close_modal","contentClasses":"tribe-dialog__wrapper tec-tickets-seating__modal","effect":"fade","effectEasing":"ease-in-out","effectSpeed":"300","id":"tec-tickets-seating-seat-selection-modal","overlayClasses":"tribe-dialog__overlay tribe-modal__overlay","overlayClickCloses":"1","showEvent":"tribe_dialog_show_modal","template":"modal","wrapperClasses":"tribe-dialog","trigger":"[data-js='trigger-dialog-tec-tickets-seating-seat-selection-modal' ]"} );
 
 					</script>
 				</div>
