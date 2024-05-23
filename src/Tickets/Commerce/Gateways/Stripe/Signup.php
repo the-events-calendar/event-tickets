@@ -44,10 +44,15 @@ class Signup extends Abstract_Signup {
 		return tribe( WhoDat::class )->get_api_url(
 			'connect',
 			[
-				'token'      => $this->get_client_id(),
-				'return_url' => tribe( WhoDat::class )->get_api_url( 'connected' ),
-			] );
-
+				// @todo these have been working fine for 2 years without rawurlencode.
+				// Seems like a bad idea to leave them like this. Marking for discussion with reviewers.
+				'token'          => $this->get_client_id(),
+				'return_url'     => tribe( WhoDat::class )->get_api_url( 'connected' ),
+				'version'        => rawurlencode( \Tribe__Tickets__Main::VERSION ),
+				// array_keys to expose only webhook ids. in values we have the webhoo signing secrets we don't want exposed.
+				'known_webhooks' => array_map( 'rawurlencode', array_keys( tribe_get_option( tribe( Webhooks::class )::$option_known_webhooks, [] ) ) ),
+			]
+		);
 	}
 
 	/**
