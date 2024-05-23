@@ -46,6 +46,7 @@ tribe.tickets.admin.commerceSettings = {};
 		disconnectionSettingContainer: '#give-paypal-commerce-account-manager-field-wrap .disconnection-setting', // eslint-disable-line max-len
 		disconnectPayPalAccountButton: '#js-give-paypal-disconnect-paypal-account',
 		troubleNotice: '#give-paypal-onboarding-trouble-notice',
+		webHookSetUpLink: '#tec-tickets__admin-settings-webhook-set-up',
 	};
 
 	obj.observePayPalModal = function() {
@@ -249,6 +250,53 @@ tribe.tickets.admin.commerceSettings = {};
 		if ( obj.disconnectButton[ 0 ] ) {
 			obj.disconnectButton.on( 'click', obj.handleDisconnectClick );
 		}
+
+		$document.on( 'click', obj.selectors.webHookSetUpLink, function( evt ) {
+			evt.preventDefault();
+			const target = $( evt.target );
+
+			const removeIfExists = $document.find( '#tec-tickets-webhook-creation-update' );
+
+			if ( removeIfExists.length ) {
+				removeIfExists.remove();
+			}
+
+			$(
+				`<p id="tec-tickets-webhook-creation-update" class="tooltip description">
+				<span class="dashicons dashicons-update"></span>
+				<span>${ target.attr( 'data-loading-text' ) }</span>
+				</p>`
+			).insertAfter( target.closest( 'p' ) );
+
+			fetch( target.attr( 'href' ) ).then( function( res ) {
+				return res.json();
+			} ).then( function( res ) {
+				if ( true !== res.success ) {
+					$( '#tec-tickets-webhook-creation-update' )
+					.find( 'span:not(.dashicons)' )
+					.text( res.data.status );
+
+					$( '#tec-tickets-webhook-creation-update' )
+					.find( 'span.dashicons' )
+					.removeClass( 'dashicons-update' )
+					.addClass( 'dashicons-no' );
+					return;
+				}
+
+				$( '#tec-tickets-webhook-creation-update' )
+				.find( 'span:not(.dashicons)' )
+				.text( res.data.status );
+
+				$( '#tec-tickets-webhook-creation-update' )
+				.find( 'span.dashicons' )
+				.removeClass( 'dashicons-update' )
+				.addClass( 'dashicons-yes' );
+
+				setTimeout( function () {
+					window.location.reload();
+				}, 700 );
+			} );
+		} );
 
 		obj.maybeShowModalAfterConnection();
 	};
