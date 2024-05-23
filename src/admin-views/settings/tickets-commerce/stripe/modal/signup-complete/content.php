@@ -36,7 +36,7 @@
 		<?php
 		printf(
 			// Translators: %1$s: opening `a` tag to the knowledge base article. %2$s: closing `a` tag.
-			esc_html__( 'In order for ticket sales to be marked as complete for some payment methods on your Stripe gateway for your Event Tickets site, you must configure the webhook at Stripe. %1$sLearn how to set up webhooks here%2$s.', 'event-tickets' ),
+			esc_html__( 'Your webhook is now automatically configured! A webhook is required for ticket sales to be marked as complete for some payment methods on your Stripe gateway for your Event Tickets site. If you would like to read more on how we set up the webhook or if you are facing issues with it there are resource %1$shere%2$s.', 'event-tickets' ),
 			'<a href="https://evnt.is/1b3p" target="_blank" rel="noopener noreferrer" class="tribe-common-anchor-alt">',
 			'</a>'
 		);
