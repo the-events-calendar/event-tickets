@@ -265,7 +265,7 @@ tribe.tickets.admin.commerceSettings = {};
 				`<p id="tec-tickets-webhook-creation-update" class="tooltip description">
 				<span class="dashicons dashicons-update"></span>
 				<span>${ target.attr( 'data-loading-text' ) }</span>
-				</p>`
+				</p>`,
 			).insertAfter( target.closest( 'p' ) );
 
 			fetch( target.attr( 'href' ) ).then( function( res ) {
@@ -273,26 +273,26 @@ tribe.tickets.admin.commerceSettings = {};
 			} ).then( function( res ) {
 				if ( true !== res.success ) {
 					$( '#tec-tickets-webhook-creation-update' )
-					.find( 'span:not(.dashicons)' )
-					.text( res.data.status );
+						.find( 'span:not(.dashicons)' )
+						.text( res.data.status );
 
 					$( '#tec-tickets-webhook-creation-update' )
-					.find( 'span.dashicons' )
-					.removeClass( 'dashicons-update' )
-					.addClass( 'dashicons-no' );
+						.find( 'span.dashicons' )
+						.removeClass( 'dashicons-update' )
+						.addClass( 'dashicons-no' );
 					return;
 				}
 
 				$( '#tec-tickets-webhook-creation-update' )
-				.find( 'span:not(.dashicons)' )
-				.text( res.data.status );
+					.find( 'span:not(.dashicons)' )
+					.text( res.data.status );
 
 				$( '#tec-tickets-webhook-creation-update' )
-				.find( 'span.dashicons' )
-				.removeClass( 'dashicons-update' )
-				.addClass( 'dashicons-yes' );
+					.find( 'span.dashicons' )
+					.removeClass( 'dashicons-update' )
+					.addClass( 'dashicons-yes' );
 
-				setTimeout( function () {
+				setTimeout( function() {
 					window.location.reload();
 				}, 700 );
 			} );
