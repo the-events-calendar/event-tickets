@@ -235,6 +235,8 @@ class Tribe__Tickets__Main {
 		if ( is_admin() ) {
 			tribe_remove_option( 'tec_tickets_activation_time' );
 		}
+
+		tribe( TEC\Tickets\Commerce\Gateways\Stripe\Webhooks::class )->disable_webhook();
 	}
 
 	/**
