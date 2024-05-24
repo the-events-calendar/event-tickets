@@ -85,7 +85,7 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 			}
 
 			if ( ! empty( $response->stripe_disconnected ) && $response->stripe_disconnected ) {
-				$this->handle_connection_terminated();
+				$this->handle_connection_terminated( [], $response );
 			}
 
 			$this->handle_connection_established( $response );
@@ -184,7 +184,7 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @since 5.3.0
 	 */
-	public function handle_connection_terminated( $reason = [] ) {
+	public function handle_connection_terminated( $reason = [], $payload = null ) {
 		tribe( Merchant::class )->delete_signup_data();
 		Gateway::disable();
 
@@ -193,6 +193,12 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 			'tc-section'          => Gateway::get_key(),
 			'stripe_disconnected' => 1,
 		];
+
+		if ( isset( $payload->webhook, $payload->webhook->id ) ) {
+			// Invalidate webhook related options.
+			tribe_update_option( tribe( Webhooks::class )::$option_webhooks_signing_key, '' );
+			tribe_update_option( tribe( Webhooks::class )::$option_is_valid_webhooks, false );
+		}
 
 		$url_args = array_merge( $query_args, $reason );
 

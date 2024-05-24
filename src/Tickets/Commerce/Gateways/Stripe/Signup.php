@@ -49,7 +49,7 @@ class Signup extends Abstract_Signup {
 				'token'          => $this->get_client_id(),
 				'return_url'     => tribe( WhoDat::class )->get_api_url( 'connected' ),
 				'version'        => rawurlencode( \Tribe__Tickets__Main::VERSION ),
-				// array_keys to expose only webhook ids. in values we have the webhoo signing secrets we don't want exposed.
+				// array_keys to expose only webhook ids. in values we have the webhook signing secrets we don't want exposed.
 				'known_webhooks' => array_map( 'rawurlencode', array_keys( tribe_get_option( tribe( Webhooks::class )::$option_known_webhooks, [] ) ) ),
 			]
 		);
@@ -64,11 +64,26 @@ class Signup extends Abstract_Signup {
 	 */
 	public function generate_disconnect_url() {
 
+		$webhooks = tribe( Webhooks::class );
+
+		$known_webhooks = tribe_get_option( $webhooks::$option_known_webhooks, [] );
+
+		$current_signing_key = tribe_get_option( $webhooks::$option_webhooks_signing_key );
+
+		$known_webhooks = array_filter(
+			$known_webhooks,
+			function ( $signing_key ) use ( $current_signing_key ) {
+				return $signing_key === $current_signing_key;
+			}
+		);
+
 		return tribe( WhoDat::class )->get_api_url(
 			'disconnect',
 			[
 				'stripe_user_id' => tribe( Merchant::class )->get_client_id(),
 				'return_url'     => rest_url( $this->signup_return_path ),
+				'version'        => rawurlencode( \Tribe__Tickets__Main::VERSION ),
+				'known_webhooks' => array_map( 'rawurlencode', array_keys( $known_webhooks ) ),
 			]
 		);
 	}
