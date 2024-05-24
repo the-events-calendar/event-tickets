@@ -276,6 +276,7 @@ class Webhooks extends Abstract_Webhooks {
 			]
 		);
 
+		// phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.wp_remote_get_wp_remote_get
 		$response = wp_remote_get( $webhook_set_up_endpoint );
 
 		$body = json_decode( wp_remote_retrieve_body( $response ), true );
@@ -289,6 +290,76 @@ class Webhooks extends Abstract_Webhooks {
 		return true;
 	}
 
+	/**
+	 * Disables the current webhook.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function disable_webhook() {
+		if ( ! $this->get_gateway()->is_active() ) {
+			// Bail if stripe is not active.
+			return false;
+		}
+
+		if ( ! $this->has_valid_signing_secret() ) {
+			// If we don't have a webhook set up and validated we won't disable any.
+			return false;
+		}
+
+		// Pinpoint the current webhook in use.
+		$known_webhooks = tribe_get_option( self::$option_known_webhooks, [] );
+
+		$current_signing_key = tribe_get_option( static::$option_webhooks_signing_key );
+
+		$known_webhooks = array_filter(
+			$known_webhooks,
+			function ( $signing_key ) use ( $current_signing_key ) {
+				return $signing_key === $current_signing_key;
+			}
+		);
+
+		// Current being used, not known. We bail.
+		if ( empty( $known_webhooks ) ) {
+			return false;
+		}
+
+		$webhook_disable_endpoint = tribe( WhoDat::class )->get_api_url(
+			'webhook/disable',
+			[
+				'stripe_user_id' => rawurlencode( tribe( Merchant::class )->get_client_id() ),
+				'home_url'       => rawurlencode( tribe( Return_Endpoint::class )->get_route_url() ),
+				'version'        => rawurlencode( \Tribe__Tickets__Main::VERSION ),
+				'known_webhooks' => array_map( 'rawurlencode', array_keys( $known_webhooks ) ),
+			]
+		);
+
+		// phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.wp_remote_get_wp_remote_get
+		$response = wp_remote_get( $webhook_disable_endpoint );
+
+		$body = json_decode( wp_remote_retrieve_body( $response ), true );
+
+		if ( empty( $body['webhook']['id'] ) ) {
+			return false;
+		}
+
+		// Invalidate webhook related options.
+		tribe_update_option( self::$option_webhooks_signing_key, '' );
+		tribe_update_option( self::$option_is_valid_webhooks, false );
+
+		return true;
+	}
+
+	/**
+	 * Adds a webhook to the known webhooks and updates the current signing secrets
+	 * and marks it as validated.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $webhook The webhook being added.
+	 * @return void
+	 */
 	public function add_webhook( $webhook ) {
 		$known_webhooks = tribe_get_option( self::$option_known_webhooks, [] );
 
