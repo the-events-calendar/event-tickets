@@ -33,7 +33,10 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 		add_action( 'wp', [ $this, 'maybe_create_stripe_payment_intent' ] );
 
 		add_action( 'admin_init', [ $this, 'handle_stripe_errors' ] );
-		add_action( 'admin_init', [ $this, 'setup_stripe_webhook' ] );
+		// Set up during feature release.
+		add_action( 'admin_init', [ $this, 'setup_stripe_webhook_on_release' ] );
+		// Set up during plugin activation.
+		add_action( 'admin_init', [ $this, 'setup_stripe_webhook_on_activation' ] );
 
 		add_action( 'wp_ajax_tec_tickets_commerce_gateway_stripe_test_webhooks', [ $this, 'action_handle_testing_webhooks_field' ] );
 		add_action( 'wp_ajax_tec_tickets_commerce_gateway_stripe_verify_webhooks', [ $this, 'action_handle_verify_webhooks' ] );
@@ -63,7 +66,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	 *
 	 * @return void
 	 */
-	public function setup_stripe_webhook() {
+	public function setup_stripe_webhook_on_activation() {
 		/**
 		 * Filters whether to enable the Stripe Webhook.
 		 *
@@ -84,6 +87,25 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 		if ( ! $need_to_enable_stripe_webhook ) {
 			return;
 		}
+
+		tribe( Webhooks::class )->handle_webhook_setup();
+	}
+
+	/**
+	 * Set up Stripe Webhook based on the plugin version.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function setup_stripe_webhook_on_release() {
+		$stripe_webhook_version = get_option( 'tec_tickets_commerce_stripe_webhook_version', false );
+
+		if ( $stripe_webhook_version ) {
+			return;
+		}
+
+		update_option( 'tec_tickets_commerce_stripe_webhook_version', \Tribe__Tickets__Main::VERSION, true );
 
 		tribe( Webhooks::class )->handle_webhook_setup();
 	}
