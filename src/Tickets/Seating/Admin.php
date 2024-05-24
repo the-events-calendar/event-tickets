@@ -312,7 +312,7 @@ class Admin extends Controller_Contract {
 			$this->built_asset_url( 'ajax.js' ),
 			Tickets::VERSION
 		)
-			->add_localize_script( 'tec.seating.ajax', [ $this, 'get_ajax_data' ] )
+			->add_localize_script( 'tec.tickets.seating.ajax', [ $this, 'get_ajax_data' ] )
 			->add_to_group( 'tec-tickets-seating' )
 			->register();
 	}

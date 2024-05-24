@@ -109,9 +109,10 @@ class Frontend extends Controller_Contract {
 		)
 			->set_dependencies(
 				'tribe-dialog-js',
-				'tec-tickets-seating-service-bundle'
+				'tec-tickets-seating-service-bundle',
+				'tec-tickets-seating-currency',
 			)
-			->add_localize_script( 'tec.seating.frontend.ticketsBlock',
+			->add_localize_script( 'tec.tickets.seating.frontend.ticketsBlock',
 				fn() => $this->get_ticket_block_data( get_the_ID() ) )
 			->enqueue_on( 'wp_enqueue_scripts' )
 			->add_to_group( 'tec-tickets-seating-frontend' )
@@ -259,21 +260,10 @@ class Frontend extends Controller_Contract {
 	 * } The data to be localized on the ticket block frontend.
 	 */
 	public function get_ticket_block_data( $post_id ): array {
-		$provider = Tickets::get_event_ticket_provider_object( $post_id );
-		/** @var \Tribe__Tickets__Commerce__Currency $currency */
-		$currency = tribe( 'tickets.commerce.currency' );
-
 		return [
 			'objectName'  => 'dialog_obj_' . self::MODAL_ID,
 			'modalId'     => self::MODAL_ID,
 			'seatTypeMap' => $this->build_seat_type_map( $post_id ),
-			'currency'    => [
-				'symbol'            => html_entity_decode( $currency->get_provider_symbol( $provider, $post_id ) ),
-				'position'          => $currency->get_provider_symbol_position( $provider, $post_id  ),
-				'decimalSeparator'  => $currency->get_currency_decimal_point( $provider ),
-				'decimalNumbers'    => $currency->get_currency_number_of_decimals(),
-				'thousandSeparator' => $currency->get_currency_thousands_sep( $provider ),
-			],
 			'labels'      => [
 				'oneTicket'       => esc_html( _x( "1 Ticket", 'Seat selection modal total string', 'event-tickets' ) ),
 				'multipleTickets' => esc_html(
@@ -340,8 +330,5 @@ class Frontend extends Controller_Contract {
 		}
 
 		return $seat_type_map;
-	}
-
-	private function get_price_format_template(int $post_id): string {
 	}
 }

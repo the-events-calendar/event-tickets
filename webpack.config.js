@@ -106,6 +106,18 @@ const targets = [
 		},
 	},
 	{
+		name: 'seating-currency',
+		entry: './src/Tickets/Seating/app/currency/index.js',
+		outputScript: './build/Seating/currency.min.js',
+		outputStyle: `build/Seating/currency.${postfix}`,
+		moveFromTo: {
+			'src/resources/js/app/seating-currency.js':
+				'build/Seating/currency.js',
+			'src/resources/css/app/seating-currency.css':
+				'build/Seating/currency.css',
+		},
+	},
+	{
 		name: 'seating-service-bundle',
 		entry: './src/Tickets/Seating/app/service/index.js',
 		outputScript: './build/Seating/service.min.js',
@@ -206,12 +218,13 @@ const config = merge(common, {
 	externals: [
 		{
 			'@wordpress/core-data': 'wp.coreData',
-			'@tec/tickets/seating/iframe': 'tec.seating.iframe',
-			'@tec/tickets/seating/errors': 'tec.seating.errors',
-			'@tec/tickets/seating/notices': 'tec.seating.notices',
-			'@tec/tickets/seating/service': 'tec.seating.service',
-			'@tec/tickets/seating/utils': 'tec.seating.utils',
-			'@tec/tickets/seating/ajax': 'tec.seating.ajax',
+			'@tec/tickets/seating/iframe': 'tec.tickets.seating.iframe',
+			'@tec/tickets/seating/errors': 'tec.tickets.seating.errors',
+			'@tec/tickets/seating/notices': 'tec.tickets.seating.notices',
+			'@tec/tickets/seating/service': 'tec.tickets.seating.service',
+			'@tec/tickets/seating/utils': 'tec.tickets.seating.utils',
+			'@tec/tickets/seating/ajax': 'tec.tickets.seating.ajax',
+			'@tec/tickets/seating/currency': 'tec.tickets.seating.currency',
 		},
 	],
 	// Configure multiple entry points.

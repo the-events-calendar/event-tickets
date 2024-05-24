@@ -1,5 +1,3 @@
-// @todo this file might not require building and the whole webpack show, review after project.
-
 /**
  * Returns a link pulled from the scoped window object.
  *
@@ -8,7 +6,7 @@
  * @return {string} The link URL, or an empty string if it does not exist.
  */
 export function getLink(link) {
-	return window?.tec?.seating?.utils?.links?.[link] || '';
+	return window?.tec?.tickets?.seating?.utils?.links?.[link] || '';
 }
 
 /**
@@ -22,10 +20,10 @@ export function getLink(link) {
 export function getLocalizedString(slug, group) {
 	if (group) {
 		return (
-			window?.tec?.seating?.utils?.localizedStrings?.[group]?.[slug] || ''
+			window?.tec?.tickets?.seating?.utils?.localizedStrings?.[group]?.[slug] || ''
 		);
 	}
-	return window?.tec?.seating?.utils?.localizedStrings?.[slug] || '';
+	return window?.tec?.tickets?.seating?.utils?.localizedStrings?.[slug] || '';
 }
 
 /**
@@ -73,9 +71,9 @@ export function createHtmlComponentFromTemplateElement(templateId, props) {
 }
 
 window.tec = window.tec || {};
-window.tec.seating = window.tec.seating || {};
-window.tec.seating.utils = {
-	...(window.tec.seating.utils || {}),
+window.tec.tickets.seating = window.tec.tickets.seating || {};
+window.tec.tickets.seating.utils = {
+	...(window.tec.tickets.seating.utils || {}),
 	getLink,
 	getLocalizedString,
 	createHtmlComponentFromTemplateString,

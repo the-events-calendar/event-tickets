@@ -1,13 +1,13 @@
 import { createReduxStore, register } from '@wordpress/data';
 import { getTicketIdFromCommonStore } from './common-store-bridge';
 
-const { fetchSeatTypesByLayoutId } = tec.seating.ajax;
+const { fetchSeatTypesByLayoutId } = tec.tickets.seating.ajax;
 
 const storeName = 'tec-tickets-seating';
 
 // Initialize from the localized object.
 const DEFAULT_STATE = {
-	...window.tec.seating.blockEditor,
+	...window.tec.tickets.seating.blockEditor,
 	seatTypesByLayoutId: {},
 	seatTypesByClientId: {},
 	ticketPostIdByClientId: {},

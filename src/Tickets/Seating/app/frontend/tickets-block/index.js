@@ -5,56 +5,50 @@ import {
 } from '@tec/tickets/seating/iframe';
 import {
 	INBOUND_APP_READY_FOR_DATA,
-	INBOUND_SEAT_DESELECTED,
-	INBOUND_SEAT_SELECTED,
+	INBOUND_SEATS_SELECTED,
 	OUTBOUND_SEAT_TYPE_TICKETS,
 	removeAction,
 	sendPostMessage,
 } from '@tec/tickets/seating/service';
 import { registerAction } from '../../service/service-api';
 import { TicketRow } from './ticket-row';
+import { formatWithCurrency } from '@tec/tickets/seating/currency';
 
-const { objectName, seatTypeMap, currency, labels } =
-	window?.tec?.seating?.frontend?.ticketsBlock;
+const { objectName, seatTypeMap, labels } =
+	window?.tec?.tickets?.seating?.frontend?.ticketsBlock;
 
 let totalPriceElement = null;
 let totalTicketsElement = null;
+
 const tickets = Object.values(seatTypeMap).reduce((map, seatType) => {
-	seatType.tickets.map((ticket) => {
+	seatType.tickets.forEach((ticket) => {
 		map[ticket.ticketId] = ticket;
 	});
 	return map;
 }, {});
 
-function formatWithCurrency(value) {
-	const [units, decimals] = value.toString().split('.');
-	const formattedDecimals = decimals
-		? '.' +
-		  Number('.' + decimals)
-				.toPrecision(currency.decimalNumbers)
-				.toString()
-				.slice(2)
-		: '';
-	const valueString =
-		units
-			.toString()
-			// Replace the '.' with the decimal separator.
-			.replace(/\./g, currency.decimalSeparator)
-			// Add the thousand separator.
-			.replace(/\B(?=(\d{3})+(?!\d))/g, currency.thousandSeparator) +
-		formattedDecimals;
-
-	return currency.position === 'prefix'
-		? `${currency.symbol}${valueString}`
-		: `${valueString}${currency.symbol}`;
-}
-
+/**
+ * Formats the text representing the total number of tickets selected.
+ *
+ * @sicne TBD
+ *
+ * @param {number} value The value to format.
+ *
+ * @return {string} The formatted value.
+ */
 function formatTicketNumber(value) {
 	return value === 1
 		? labels.oneTicket
 		: labels.multipleTickets.replace('{count}', value);
 }
 
+/**
+ * Updates the total prices and number of tickets in the block.
+ *
+ * @since TBD
+ *
+ * @return {void} The total prices and number of tickets are updated.
+ */
 function updateTotals() {
 	const rows = Array.from(
 		document.querySelectorAll('.tec-tickets-seating__ticket-row')
@@ -69,11 +63,11 @@ function updateTotals() {
 }
 
 /**
- * @typedef {Object} TicketRowAddActionProps
- * @property {string} id        The seat type ID.
- * @property {string} ticketId  The ticket ID.
- * @property {string} color     The seat type color.
- * @property {string} seatLabel The seat type label.
+ * @typedef {Object} TicketSelectionProps
+ * @property {string} seatTypeId The seat type ID.
+ * @property {string} ticketId   The ticket ID.
+ * @property {string} seatColor  The seat type color.
+ * @property {string} seatLabel  The seat type label.
  */
 
 /**
@@ -81,7 +75,7 @@ function updateTotals() {
  *
  * @since TBD
  *
- * @param {TicketRowAddActionProps} props The props for the Ticket Row component.
+ * @param {TicketSelectionProps} props The props for the Ticket Row component.
  *
  * @return {void} The ticket row is added to the DOM.
  */
@@ -97,11 +91,10 @@ function addTicketToSelection(props) {
 		seatTypeId: props.seatTypeId,
 		ticketId: props.ticketId,
 		price: ticketPrice,
-		color: props.color,
+		color: props.seatColor,
 		ticketName,
 		seatLabel: props.seatLabel,
-		formattedPrice: formatWithCurrency(ticketPrice),
-	};
+		formattedPrice: formatWithCurrency(ticketPrice), };
 
 	document
 		.querySelector('.tec-tickets-seating__ticket-rows')
@@ -110,28 +103,41 @@ function addTicketToSelection(props) {
 }
 
 /**
- * @typedef {Object} TicketRowRemoveActionProps
- * @property {string} seatTypeId The seat type ID.
- * @property {string} ticketId   The ticket ID.
+ * Updates the tickets selection.
+ *
+ * @since TBd
+ *
+ * @param {TicketSelectionProps[]} items
  */
+function updateTicketsSelection(items) {
+	document.querySelector('.tec-tickets-seating__ticket-rows').innerHTML = '';
+
+	items.forEach((item) => {
+		addTicketToSelection(item);
+	});
+}
 
 /**
- * Remove a ticket from the selection.
+ * Validates a selection item received from the service is valid.
  *
  * @since TBD
  *
- * @param {string} seatTypeId The seat type ID.
- * @param {string} ticketId   The ticket ID.
+ * @param {Object} item The item to validate.
+ *
+ * @return {boolean} True if the item is valid, false otherwise.
  */
-function removeTicketFromSelection(seatTypeId, ticketId) {
-	document
-		.querySelector(
-			`.tec-tickets-seating__ticket-row[data-seat-type-id="${seatTypeId}"][data-ticket-id="${ticketId}"]`
-		)
-		?.remove();
-	updateTotals();
+function validateSelectionItemFromService(item) {
+	return item.seatTypeId && item.ticketId && item.seatColor && item.seatLabel;
 }
 
+/**
+ * Registers the handlers for the msssages received from the service.
+ *
+ * @since TBD
+ *
+ *
+ * @param {HTMLElement} iframe The service iframe element to listen to.
+ */
 function registerActions(iframe) {
 	// When the service is ready for data, send the seat type map to the iframe.
 	registerAction(INBOUND_APP_READY_FOR_DATA, () => {
@@ -140,15 +146,20 @@ function registerActions(iframe) {
 	});
 
 	// When a seat is selected, add it to the selection.
-	registerAction(INBOUND_SEAT_SELECTED, (seatTypeSelection) => {
-		addTicketToSelection(seatTypeSelection);
-	});
-	// When a seat is deselected, remove it from the selection.
-	registerAction(INBOUND_SEAT_DESELECTED, ({ seatTypeId, ticketId }) => {
-		removeTicketFromSelection(seatTypeId, ticketId);
+	registerAction(INBOUND_SEATS_SELECTED, (items) => {
+		updateTicketsSelection(
+			items.filter((item) => validateSelectionItemFromService(item))
+		);
 	});
 }
 
+/**
+ * Bootstraps the service iframe starting the communication with the service.
+ *
+ * @since TBd
+ *
+ * @return {Promise<boolean>} A promise that resolves to true if the iframe is ready to communicate with the service.
+ */
 async function bootstrapIframe() {
 	const iframe = getIframeElement();
 
@@ -171,10 +182,6 @@ async function bootstrapIframe() {
 	);
 }
 
-function initModal(modalElement) {
-	modalElement.on('show', bootstrapIframe);
-}
-
 /**
  * Waits for the modal element to be present in the DOM.
  *
@@ -193,13 +200,13 @@ async function waitForModalElement() {
 	});
 }
 
-////////// TESTING //////////
-
 waitForModalElement().then((modalElement) => {
-	initModal(modalElement);
+	modalElement.on('show', bootstrapIframe);
 });
 
-window.tec.seating.frontend.ticketsBlock.addStdAdultTicket = () => {
+////////// TESTING //////////
+
+window.tec.tickets.seating.frontend.ticketsBlock.addStdAdultTicket = () => {
 	addTicketToSelection({
 		seatTypeId: 'uuid-normal',
 		ticketId: 176,
@@ -208,7 +215,7 @@ window.tec.seating.frontend.ticketsBlock.addStdAdultTicket = () => {
 	});
 };
 
-window.tec.seating.frontend.ticketsBlock.addStdChildTicket = () => {
+window.tec.tickets.seating.frontend.ticketsBlock.addStdChildTicket = () => {
 	addTicketToSelection({
 		seatTypeId: 'uuid-normal',
 		ticketId: 177,
@@ -217,16 +224,16 @@ window.tec.seating.frontend.ticketsBlock.addStdChildTicket = () => {
 	});
 };
 
-window.tec.seating.frontend.ticketsBlock.addVipTicket = () => {
+window.tec.tickets.seating.frontend.ticketsBlock.addVipTicket = () => {
 	addTicketToSelection({
 		seatTypeId: 'uuid-vip',
 		ticketId: 178,
-		color: 'blueviolet',
+		seatColor: 'blueviolet',
 		seatLabel: 'A3',
 	});
 };
 
-window.tec.seating.frontend.ticketsBlock.removeLastTicket = () => {
+window.tec.tickets.seating.frontend.ticketsBlock.removeLastTicket = () => {
 	const lastTicket = Array.from(
 		document.querySelectorAll('.tec-tickets-seating__ticket-row')
 	).pop();

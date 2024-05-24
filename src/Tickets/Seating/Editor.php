@@ -153,8 +153,8 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 				'tribe-common-gutenberg-vendor'
 			)
 			->enqueue_on( 'enqueue_block_editor_assets' )
-			->add_localize_script( 'tec.seating.blockEditor', [ $this, 'get_store_data' ] )
-			->add_localize_script( 'tec.seating.meta', fn() => [
+			->add_localize_script( 'tec.tickets.seating.blockEditor', [ $this, 'get_store_data' ] )
+			->add_localize_script( 'tec.tickets.seating.meta', fn() => [
 				'META_KEY_ENABLED'   => Meta::META_KEY_ENABLED,
 				'META_KEY_LAYOUT_ID' => Meta::META_KEY_LAYOUT_ID,
 				'META_KEY_SEAT_TYPE' => Meta::META_KEY_SEAT_TYPE,
