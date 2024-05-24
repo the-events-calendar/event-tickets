@@ -64,7 +64,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	 *
 	 * @since TBD
 	 *
-	 * @return void
+	 * @return bool
 	 */
 	public function setup_stripe_webhook_on_activation() {
 		/**
@@ -96,7 +96,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	 *
 	 * @since TBD
 	 *
-	 * @return void
+	 * @return bool
 	 */
 	public function setup_stripe_webhook_on_release() {
 		$stripe_webhook_version = get_option( 'tec_tickets_commerce_stripe_webhook_version', false );
