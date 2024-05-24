@@ -290,9 +290,9 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 		$webhooks = tribe( Webhooks::class );
 
 		if ( empty( self::$webhook_buffer ) ) {
-			tribe_update_option( $webhooks::$option_known_webhooks, [] );
+			tribe_update_option( $webhooks::OPTION_KNOWN_WEBHOOKS, [] );
 
-			$this->assertEmpty( tribe_get_option( $webhooks::$option_known_webhooks, [] ) );
+			$this->assertEmpty( tribe_get_option( $webhooks::OPTION_KNOWN_WEBHOOKS, [] ) );
 		}
 
 		self::$webhook_buffer[ $webhook['id'] ] = $webhook['secret'];
@@ -305,9 +305,9 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertEquals( md5( $webhook['secret'] ), tribe_get_option( $webhooks::$option_is_valid_webhooks, false ) );
 
 		if ( count( self::$webhook_buffer ) < 4 ) {
-			$this->assertEquals( self::$webhook_buffer, tribe_get_option( $webhooks::$option_known_webhooks, [] ) );
+			$this->assertEquals( self::$webhook_buffer, tribe_get_option( $webhooks::OPTION_KNOWN_WEBHOOKS, [] ) );
 		} else {
-			$known_webhooks = tribe_get_option( $webhooks::$option_known_webhooks, [] );
+			$known_webhooks = tribe_get_option( $webhooks::OPTION_KNOWN_WEBHOOKS, [] );
 			$this->assertTrue( 3 === count( $known_webhooks ) );
 
 			$this->assertTrue( ! empty( $known_webhooks[ $webhook['id'] ] ) && $known_webhooks[ $webhook['id'] ] === $webhook['secret'] );
