@@ -219,4 +219,42 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 
 		unset( $_POST['tc_nonce'] );
 	}
+
+	/**
+	 * @test
+	 *
+	 * @covers TEC\Tickets\Commerce\Gateways\Stripe\Webhooks::handle_webhook_setup
+	 */
+	public function it_should_handle_webhook_set_up() {
+		$webhooks = tribe( Webhooks::class );
+
+		$this->assertTrue( $webhooks->get_gateway()->is_active() );
+
+		$this->set_fn_return( 'wp_remote_get', static function ( $send_data ) {
+			return [
+				'body' => wp_json_encode(
+					[
+						'webhook' => false,
+					]
+				),
+			];
+		}, true );
+
+		$this->assertFalse( $webhooks->handle_webhook_setup() );
+
+		$this->set_fn_return( 'wp_remote_get', static function ( $send_data ) {
+			return [
+				'body' => wp_json_encode(
+					[
+						'webhook' => [
+							'id' => 'wh_1',
+							'secret' => 'wh_secret',
+						],
+					]
+				),
+			];
+		}, true );
+
+		$this->assertTrue( $webhooks->handle_webhook_setup() );
+	}
 }
