@@ -259,6 +259,11 @@ class Webhooks extends Abstract_Webhooks {
 			return false;
 		}
 
+		if ( $this->has_valid_signing_secret() ) {
+			// Already set up and validated.
+			return true;
+		}
+
 		$webhook_set_up_endpoint = tribe( WhoDat::class )->get_api_url(
 			'webhook/enable',
 			[
