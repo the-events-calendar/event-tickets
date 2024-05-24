@@ -94,6 +94,51 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 
 		// Then it should fail.
 		$this->assertFalse( $hooks->setup_stripe_webhook_on_release() );
+	}
 
+	/**
+	 * @test
+	 *
+	 * @covers TEC\Tickets\Commerce\Gateways\Stripe\Hooks::setup_stripe_webhook_on_activation
+	 */
+	public function it_should_set_up_webhook_on_activation() {
+		$webhooks = tribe( Webhooks::class );
+
+		$hooks = tribe( Hooks::class );
+
+		$this->assertFalse( get_transient( 'tec_tickets_commerce_setup_stripe_webhook' ) );
+
+		$this->assertTrue( $webhooks->get_gateway()->is_active() );
+
+		set_transient( 'tec_tickets_commerce_setup_stripe_webhook', true );
+
+		$this->set_fn_return( 'wp_remote_get', static function ( $send_data ) {
+			return [
+				'body' => wp_json_encode(
+					[
+						'webhook' => false,
+					]
+				),
+			];
+		}, true );
+
+		$this->assertFalse( $hooks->setup_stripe_webhook_on_activation() );
+
+		set_transient( 'tec_tickets_commerce_setup_stripe_webhook', true );
+
+		$this->set_fn_return( 'wp_remote_get', static function ( $send_data ) {
+			return [
+				'body' => wp_json_encode(
+					[
+						'webhook' => [ 'id' => 'wh_1'],
+					]
+				),
+			];
+		}, true );
+
+		$this->assertTrue( $hooks->setup_stripe_webhook_on_activation() );
+
+		// Then it should fail.
+		$this->assertFalse( $hooks->setup_stripe_webhook_on_activation() );
 	}
 }
