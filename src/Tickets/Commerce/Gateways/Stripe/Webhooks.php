@@ -62,7 +62,7 @@ class Webhooks extends Abstract_Webhooks {
 	 *
 	 * @var string
 	 */
-	public static $option_known_webhooks = 'tickets-commerce-stripe-known-webhooks';
+	public const OPTION_KNOWN_WEBHOOKS = 'tickets-commerce-stripe-known-webhooks';
 
 	/**
 	 * Nonce key for webhook on-demand set up.
@@ -272,7 +272,7 @@ class Webhooks extends Abstract_Webhooks {
 				'home_url'       => rawurlencode( tribe( Return_Endpoint::class )->get_route_url() ),
 				'version'        => rawurlencode( \Tribe__Tickets__Main::VERSION ),
 				// array_keys to expose only webhook ids. in values we have the webhoo signing secrets we don't want exposed.
-				'known_webhooks' => array_map( 'rawurlencode', array_keys( tribe_get_option( static::$option_known_webhooks, [] ) ) ),
+				'known_webhooks' => array_map( 'rawurlencode', array_keys( tribe_get_option( self::OPTION_KNOWN_WEBHOOKS, [] ) ) ),
 			]
 		);
 
@@ -309,7 +309,7 @@ class Webhooks extends Abstract_Webhooks {
 		}
 
 		// Pinpoint the current webhook in use.
-		$known_webhooks = tribe_get_option( self::$option_known_webhooks, [] );
+		$known_webhooks = tribe_get_option( self::OPTION_KNOWN_WEBHOOKS, [] );
 
 		$current_signing_key = tribe_get_option( static::$option_webhooks_signing_key );
 
@@ -361,7 +361,7 @@ class Webhooks extends Abstract_Webhooks {
 	 * @return void
 	 */
 	public function add_webhook( $webhook ) {
-		$known_webhooks = tribe_get_option( self::$option_known_webhooks, [] );
+		$known_webhooks = tribe_get_option( self::OPTION_KNOWN_WEBHOOKS, [] );
 
 		$signing_key = $webhook['secret'] ?? false;
 		$signing_key = $signing_key ? $signing_key : ( $known_webhooks[ $webhook['id'] ] ?? false );
@@ -383,7 +383,7 @@ class Webhooks extends Abstract_Webhooks {
 			}
 		}
 
-		tribe_update_option( self::$option_known_webhooks, $known_webhooks );
+		tribe_update_option( self::OPTION_KNOWN_WEBHOOKS, $known_webhooks );
 
 		// Since we create the webhook automatically, we overcome the checks and set the key as valid.
 		tribe_update_option( self::$option_webhooks_signing_key, $signing_key );
