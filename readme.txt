@@ -198,7 +198,8 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 == Changelog ==
 
 = [5.11.0] 2024-06-11 =
-
+* Feature - Added support for automatic Stripe Webhook Management for TicketsCommerce [ET-2104]
+* Tweak - Added filters: `tec_tickets_commerce_need_to_enable_stripe_webhook`
 
 
 = [5.10.0] 2024-05-14 =
