@@ -41,7 +41,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 		add_action( 'wp_ajax_tec_tickets_commerce_gateway_stripe_test_webhooks', [ $this, 'action_handle_testing_webhooks_field' ] );
 		add_action( 'wp_ajax_tec_tickets_commerce_gateway_stripe_verify_webhooks', [ $this, 'action_handle_verify_webhooks' ] );
 
-		add_action( 'wp_ajax_' . tribe( Webhooks::class )::$nonce_key_set_up, [ $this, 'action_handle_set_up_webhook' ] );
+		add_action( 'wp_ajax_' . tribe( Webhooks::class )::NONCE_KEY_SETUP, [ $this, 'action_handle_set_up_webhook' ] );
 	}
 
 	/**
@@ -177,7 +177,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 
 		$webhooks = $this->container->make( Webhooks::class );
 
-		if ( ! wp_verify_nonce( $nonce, $webhooks::$nonce_key_set_up ) || ! current_user_can( \Tribe\Admin\Pages::get_capability() ) ) {
+		if ( ! wp_verify_nonce( $nonce, $webhooks::NONCE_KEY_SETUP ) || ! current_user_can( \Tribe\Admin\Pages::get_capability() ) ) {
 			wp_send_json_error( [ 'status' => $status ] );
 			return;
 		}

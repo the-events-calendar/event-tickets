@@ -71,7 +71,7 @@ class Webhooks extends Abstract_Webhooks {
 	 *
 	 * @var string
 	 */
-	public static $nonce_key_set_up = 'tec_tickets_commerce_gateway_stripe_set_up_webhooks';
+	public const NONCE_KEY_SETUP = 'tec_tickets_commerce_gateway_stripe_set_up_webhooks';
 
 	/**
 	 * @inheritDoc
@@ -526,8 +526,8 @@ class Webhooks extends Abstract_Webhooks {
 				<?php
 				$url = add_query_arg(
 					[
-						'action'   => self::$nonce_key_set_up,
-						'tc_nonce' => wp_create_nonce( static::$nonce_key_set_up ),
+						'action'   => self::NONCE_KEY_SETUP,
+						'tc_nonce' => wp_create_nonce( self::NONCE_KEY_SETUP ),
 					],
 					admin_url( '/admin-ajax.php' )
 				);
