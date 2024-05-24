@@ -77,7 +77,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 		$need_to_enable_stripe_webhook = apply_filters( 'tec_tickets_commerce_need_to_enable_stripe_webhook', get_transient( 'tec_tickets_commerce_setup_stripe_webhook' ) );
 
 		if ( false === $need_to_enable_stripe_webhook ) {
-			return;
+			return false;
 		}
 
 		// Always delete the transient.
@@ -85,10 +85,10 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 
 		// Bail in non truthy values as well.
 		if ( ! $need_to_enable_stripe_webhook ) {
-			return;
+			return false;
 		}
 
-		tribe( Webhooks::class )->handle_webhook_setup();
+		return tribe( Webhooks::class )->handle_webhook_setup();
 	}
 
 	/**
@@ -102,12 +102,12 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 		$stripe_webhook_version = get_option( 'tec_tickets_commerce_stripe_webhook_version', false );
 
 		if ( $stripe_webhook_version ) {
-			return;
+			return false;
 		}
 
 		update_option( 'tec_tickets_commerce_stripe_webhook_version', \Tribe__Tickets__Main::VERSION, true );
 
-		tribe( Webhooks::class )->handle_webhook_setup();
+		return tribe( Webhooks::class )->handle_webhook_setup();
 	}
 
 	/**
@@ -177,20 +177,19 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 
 		$webhooks = $this->container->make( Webhooks::class );
 
-		if ( ! wp_verify_nonce( $nonce, $webhooks::$nonce_key_set_up ) ) {
+		if ( ! wp_verify_nonce( $nonce, $webhooks::$nonce_key_set_up ) || ! current_user_can( \Tribe\Admin\Pages::get_capability() ) ) {
 			wp_send_json_error( [ 'status' => $status ] );
-			exit;
+			return;
 		}
 
 		$result = $webhooks->handle_webhook_setup();
 
 		if ( ! $result ) {
 			wp_send_json_error( [ 'status' => $status ] );
-			exit;
+			return;
 		}
 
 		wp_send_json_success( [ 'status' => esc_html__( 'Webhook successfully set up! The page will reload now.', 'event-tickets' ) ] );
-		exit;
 	}
 
 	/**
