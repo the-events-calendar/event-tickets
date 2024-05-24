@@ -274,7 +274,7 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertFalse( $webhooks->has_valid_signing_secret() );
 
-		$webhooks->add_webhook( $webhook, $webhook );
+		$webhooks->add_webhook( $webhook );
 
 		$this->assertTrue( $webhooks->has_valid_signing_secret() );
 	}
@@ -299,7 +299,7 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertTrue( $webhooks->get_gateway()->is_active() );
 
-		$webhooks->add_webhook( $webhook, $webhook );
+		$webhooks->add_webhook( $webhook );
 
 		$this->assertEquals( $webhook['secret'], tribe_get_option( $webhooks::$option_webhooks_signing_key, [] ) );
 		$this->assertEquals( md5( $webhook['secret'] ), tribe_get_option( $webhooks::$option_is_valid_webhooks, false ) );
@@ -312,6 +312,52 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 
 			$this->assertTrue( ! empty( $known_webhooks[ $webhook['id'] ] ) && $known_webhooks[ $webhook['id'] ] === $webhook['secret'] );
 		}
+	}
+
+	/**
+	 * @test
+	 *
+	 * @covers TEC\Tickets\Commerce\Gateways\Stripe\Webhooks::disable_webhook
+	 */
+	public function it_should_disable_webhook() {
+		$webhook = [
+			'id' => 'wh_1',
+			'secret' => 'wh_secret'
+		];
+
+		$webhooks = tribe( Webhooks::class );
+
+		$this->assertTrue( $webhooks->get_gateway()->is_active() );
+
+		$webhooks->add_webhook( $webhook );
+
+		$this->assertTrue( $webhooks->has_valid_signing_secret() );
+
+		$this->set_fn_return( 'wp_remote_get', static function ( $send_data ) {
+			return [
+				'body' => wp_json_encode(
+					[
+						'webhook' => false,
+					]
+				),
+			];
+		}, true );
+
+		$this->assertFalse( $webhooks->disable_webhook() );
+		$this->assertTrue( $webhooks->has_valid_signing_secret() );
+
+		$this->set_fn_return( 'wp_remote_get', static function ( $send_data ) {
+			return [
+				'body' => wp_json_encode(
+					[
+						'webhook' => [ 'id' => 'wh_1'],
+					]
+				),
+			];
+		}, true );
+
+		$this->assertTrue( $webhooks->disable_webhook() );
+		$this->assertFalse( $webhooks->has_valid_signing_secret() );
 	}
 
 	/**
