@@ -33,6 +33,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 		add_action( 'wp', [ $this, 'maybe_create_stripe_payment_intent' ] );
 
 		add_action( 'admin_init', [ $this, 'handle_stripe_errors' ] );
+		add_action( 'admin_init', [ $this, 'setup_stripe_webhook' ] );
 
 		add_action( 'wp_ajax_tec_tickets_commerce_gateway_stripe_test_webhooks', [ $this, 'action_handle_testing_webhooks_field' ] );
 		add_action( 'wp_ajax_tec_tickets_commerce_gateway_stripe_verify_webhooks', [ $this, 'action_handle_verify_webhooks' ] );
@@ -53,6 +54,38 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 		add_filter( 'tribe_settings_save_field_value', [ $this, 'validate_payment_methods' ], 10, 2 );
 		add_filter( 'tribe_settings_validate_field_value', [ $this, 'provide_defaults_for_hidden_fields'], 10, 3 );
 		add_filter( 'tec_tickets_commerce_admin_notices', [ $this, 'filter_admin_notices' ] );
+	}
+
+	/**
+	 * Set up Stripe Webhook based on transient value.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function setup_stripe_webhook() {
+		/**
+		 * Filters whether to enable the Stripe Webhook.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool $need_to_enable_stripe_webhook Whether to enable the Stripe Webhook.
+		 */
+		$need_to_enable_stripe_webhook = apply_filters( 'tec_tickets_commerce_need_to_enable_stripe_webhook', get_transient( 'tec_tickets_commerce_setup_stripe_webhook' ) );
+
+		if ( false === $need_to_enable_stripe_webhook ) {
+			return;
+		}
+
+		// Always delete the transient.
+		delete_transient( 'tec_tickets_commerce_setup_stripe_webhook' );
+
+		// Bail in non truthy values as well.
+		if ( ! $need_to_enable_stripe_webhook ) {
+			return;
+		}
+
+		tribe( Webhooks::class )->handle_webhook_setup();
 	}
 
 	/**

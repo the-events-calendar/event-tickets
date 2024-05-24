@@ -208,6 +208,9 @@ class Tribe__Tickets__Main {
 				[ $this, 'set_activation_time' ]
 			);
 		}
+
+		// Will be used to set up Stripe webwook on admin_init.
+		set_transient( 'tec_tickets_commerce_setup_stripe_webhook', true );
 	}
 
 	/**
