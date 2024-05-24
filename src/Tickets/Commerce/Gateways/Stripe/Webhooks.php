@@ -254,6 +254,11 @@ class Webhooks extends Abstract_Webhooks {
 	 * @return bool
 	 */
 	public function handle_webhook_setup() {
+		if ( ! $this->get_gateway()->is_active() ) {
+			// Bail if stripe is not active.
+			return false;
+		}
+
 		$webhook_set_up_endpoint = tribe( WhoDat::class )->get_api_url(
 			'webhook/enable',
 			[
