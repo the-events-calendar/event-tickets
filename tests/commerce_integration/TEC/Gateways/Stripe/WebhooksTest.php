@@ -257,4 +257,98 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertTrue( $webhooks->handle_webhook_setup() );
 	}
+
+	/**
+	 * @test
+	 *
+	 * @dataProvider webhook_provider
+	 *
+	 * @covers TEC\Tickets\Commerce\Gateways\Stripe\Webhooks::has_valid_signing_secret
+	 */
+	public function it_should_has_valid_signing_secret( array $webhook ) {
+		$webhooks = tribe( Webhooks::class );
+
+		$this->assertTrue( $webhooks->get_gateway()->is_active() );
+
+		tribe_update_option( $webhooks::$option_is_valid_webhooks, false );
+
+		$this->assertFalse( $webhooks->has_valid_signing_secret() );
+
+		$webhooks->add_webhook( $webhook, $webhook );
+
+		$this->assertTrue( $webhooks->has_valid_signing_secret() );
+	}
+
+	/**
+	 * @test
+	 *
+	 * @dataProvider webhook_provider
+	 *
+	 * @covers TEC\Tickets\Commerce\Gateways\Stripe\Webhooks::add_webhook
+	 */
+	public function it_should_add_webhook( array $webhook ) {
+		$webhooks = tribe( Webhooks::class );
+
+		if ( empty( self::$webhook_buffer ) ) {
+			tribe_update_option( $webhooks::$option_known_webhooks, [] );
+
+			$this->assertEmpty( tribe_get_option( $webhooks::$option_known_webhooks, [] ) );
+		}
+
+		self::$webhook_buffer[ $webhook['id'] ] = $webhook['secret'];
+
+		$this->assertTrue( $webhooks->get_gateway()->is_active() );
+
+		$webhooks->add_webhook( $webhook, $webhook );
+
+		$this->assertEquals( $webhook['secret'], tribe_get_option( $webhooks::$option_webhooks_signing_key, [] ) );
+		$this->assertEquals( md5( $webhook['secret'] ), tribe_get_option( $webhooks::$option_is_valid_webhooks, false ) );
+
+		if ( count( self::$webhook_buffer ) < 4 ) {
+			$this->assertEquals( self::$webhook_buffer, tribe_get_option( $webhooks::$option_known_webhooks, [] ) );
+		} else {
+			$known_webhooks = tribe_get_option( $webhooks::$option_known_webhooks, [] );
+			$this->assertTrue( 3 === count( $known_webhooks ) );
+
+			$this->assertTrue( ! empty( $known_webhooks[ $webhook['id'] ] ) && $known_webhooks[ $webhook['id'] ] === $webhook['secret'] );
+		}
+	}
+
+	/**
+	 * Data provider for testing different scenarios of get_gateway_dashboard_url_by_order.
+	 *
+	 * @return array
+	 */
+	public function webhook_provider() {
+		$webhooks = [
+			[
+				'id' => 'wh_1',
+				'secret' => 'wh_secret_1',
+			],
+			[
+				'id' => 'wh_2',
+				'secret' => 'wh_secret_2',
+			],
+			[
+				'id' => 'wh_3',
+				'secret' => 'wh_secret_3',
+			],
+			[
+				'id' => 'wh_4',
+				'secret' => 'wh_secret_4',
+			],
+			[
+				'id' => 'wh_5',
+				'secret' => 'wh_secret_5',
+			],
+			[
+				'id' => 'wh_6',
+				'secret' => 'wh_secret_6',
+			],
+		];
+
+		foreach ( $webhooks as $webhook ) {
+			yield [ $webhook ];
+		}
+	}
 }
