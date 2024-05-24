@@ -524,7 +524,13 @@ class Webhooks extends Abstract_Webhooks {
 		<?php if ( ! $this->has_valid_signing_secret() ) : ?>
 			<p class="tec-tickets__admin-settings-tickets-commerce-gateway-group-description-stripe-webhooks contained">
 				<?php
-				$url = add_query_arg( [ 'action' => self::$nonce_key_set_up, 'tc_nonce' => wp_create_nonce( static::$nonce_key_set_up ) ], admin_url( '/admin-ajax.php' ) );
+				$url = add_query_arg(
+					[
+						'action'   => self::$nonce_key_set_up,
+						'tc_nonce' => wp_create_nonce( static::$nonce_key_set_up ),
+					],
+					admin_url( '/admin-ajax.php' )
+				);
 				printf(
 					// Translators: %1$s A link to the automatic webhook setup endpoint. %2$s closing `</a>` link.
 					esc_html__( 'We can set up your Webhook automatically! Save your unsaved changes and then just click %1$shere%2$s!', 'event-tickets' ),
