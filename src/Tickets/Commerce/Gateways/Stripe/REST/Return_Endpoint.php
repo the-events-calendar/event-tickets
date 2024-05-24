@@ -182,7 +182,11 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Handle account disconnections.
 	 *
-	 * @since 5.3.0
+	 * @since TBD
+	 *
+	 * @param array     $reason Reason of disconnect.
+	 * @param ?stdClass $payload Data returned from WhoDat.
+	 * @return void
 	 */
 	public function handle_connection_terminated( $reason = [], $payload = null ) {
 		tribe( Merchant::class )->delete_signup_data();
