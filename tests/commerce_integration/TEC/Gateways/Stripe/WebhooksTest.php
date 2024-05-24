@@ -141,4 +141,82 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 		// Then it should fail.
 		$this->assertFalse( $hooks->setup_stripe_webhook_on_activation() );
 	}
+
+	/**
+	 * @test
+	 *
+	 * @covers TEC\Tickets\Commerce\Gateways\Stripe\Hooks::action_handle_set_up_webhook
+	 */
+	public function it_should_handle_action_webhook_set_up() {
+		$webhooks = tribe( Webhooks::class );
+
+		$hooks = tribe( Hooks::class );
+
+		$this->assertTrue( $webhooks->get_gateway()->is_active() );
+
+		$json_error = [
+			'success' => false,
+			'data'    => [],
+		];
+
+		$response = null;
+
+		$this->set_fn_return( 'wp_send_json_error', static function ( $send_data ) use ( &$response ) {
+			$data['success'] = false;
+			$data['data'] = $send_data;
+			unset( $data['data']['status'] );
+			$response = wp_json_encode( $data );
+			return null;
+		}, true );
+
+		$hooks->action_handle_set_up_webhook();
+
+		// No nonce!
+		$this->assertEquals( wp_json_encode( $json_error ), $response );
+
+		$_POST['tc_nonce'] = wp_create_nonce( $webhooks::$nonce_key_set_up );
+
+		$response = null;
+
+		$hooks->action_handle_set_up_webhook();
+
+		// // No capability!
+		$this->assertEquals( wp_json_encode( $json_error ), $response );
+
+		set_current_user( 1 );
+
+		// refresh nonce.
+		$_POST['tc_nonce'] = wp_create_nonce( $webhooks::$nonce_key_set_up );
+
+		$this->set_fn_return( 'wp_remote_get', static function ( $send_data ) {
+			return [
+				'body' => wp_json_encode(
+					[
+						'webhook' => [ 'id' => 'wh_1'],
+					]
+				),
+			];
+		}, true );
+
+		$json_error['success'] = true;
+
+		$response = null;
+
+		$this->set_fn_return( 'wp_send_json_success', static function ( $send_data ) use ( &$response ) {
+			$data['success'] = true;
+			$data['data'] = $send_data;
+			unset( $data['data']['status'] );
+			$response = wp_json_encode( $data );
+			return null;
+		}, true );
+
+		$hooks->action_handle_set_up_webhook();
+
+		// Success.
+		$this->assertEquals( wp_json_encode( $json_error ), $response );
+
+		set_current_user( 0 );
+
+		unset( $_POST['tc_nonce'] );
+	}
 }
