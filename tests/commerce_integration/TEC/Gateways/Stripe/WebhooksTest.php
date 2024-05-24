@@ -174,7 +174,7 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 		// No nonce!
 		$this->assertEquals( wp_json_encode( $json_error ), $response );
 
-		$_POST['tc_nonce'] = wp_create_nonce( $webhooks::$nonce_key_set_up );
+		$_POST['tc_nonce'] = wp_create_nonce( $webhooks::NONCE_KEY_SETUP );
 
 		$response = null;
 
@@ -186,7 +186,7 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 		set_current_user( 1 );
 
 		// refresh nonce.
-		$_POST['tc_nonce'] = wp_create_nonce( $webhooks::$nonce_key_set_up );
+		$_POST['tc_nonce'] = wp_create_nonce( $webhooks::NONCE_KEY_SETUP );
 
 		$this->set_fn_return( 'wp_remote_get', static function ( $send_data ) {
 			return [
