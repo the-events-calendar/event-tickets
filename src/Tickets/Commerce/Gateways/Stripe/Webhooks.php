@@ -553,7 +553,7 @@ class Webhooks extends Abstract_Webhooks {
 	 * @return bool
 	 */
 	public function has_valid_signing_secret() {
-		$has_singing_key      = tribe_get_option( static::$option_webhooks_signing_key );
+		$has_signing_key      = tribe_get_option( static::$option_webhooks_signing_key );
 		$is_valid_signing_key = tribe_get_option( static::$option_is_valid_webhooks, false );
 
 		return $has_singing_key && md5( $has_singing_key ) === $is_valid_signing_key;
