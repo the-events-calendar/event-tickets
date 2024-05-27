@@ -361,7 +361,7 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	/**
-	 * Data provider for testing different scenarios of get_gateway_dashboard_url_by_order.
+	 * Data provider for testing scenarios with stored webhooks.
 	 *
 	 * @return array
 	 */
