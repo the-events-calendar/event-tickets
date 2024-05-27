@@ -201,8 +201,8 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 
 		if ( isset( $payload->webhook, $payload->webhook->id ) ) {
 			// Invalidate webhook related options.
-			tribe_update_option( tribe( Webhooks::class )::$option_webhooks_signing_key, '' );
-			tribe_update_option( tribe( Webhooks::class )::$option_is_valid_webhooks, false );
+			tribe_remove_option( tribe( Webhooks::class )::$option_webhooks_signing_key );
+			tribe_remove_option( tribe( Webhooks::class )::$option_is_valid_webhooks );
 		}
 
 		$url_args = array_merge( $query_args, $reason );

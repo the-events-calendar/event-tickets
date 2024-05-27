@@ -345,8 +345,8 @@ class Webhooks extends Abstract_Webhooks {
 		}
 
 		// Invalidate webhook related options.
-		tribe_update_option( self::$option_webhooks_signing_key, '' );
-		tribe_update_option( self::$option_is_valid_webhooks, false );
+		tribe_remove_option( self::$option_webhooks_signing_key );
+		tribe_remove_option( self::$option_is_valid_webhooks );
 
 		return true;
 	}
