@@ -368,6 +368,7 @@ class Webhooks extends Abstract_Webhooks {
 		$signing_key = $signing_key ? $signing_key : ( $known_webhooks[ $webhook['id'] ] ?? false );
 
 		$known_webhooks[ $webhook['id'] ] = $signing_key;
+
 		// Keeping multiple and unlimited known_webhooks is not a good idea.
 		// If abused it could grow too big into the DB and also cause the whodat URLs to become longer than 2048 chars which is the limit.
 		// In any case, each installation should have only one webhook.
