@@ -83,7 +83,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 		// Always delete the transient.
 		delete_transient( 'tec_tickets_commerce_setup_stripe_webhook' );
 
-		// Bail in non truthy values as well.
+		// Bail on non-truthy values as well.
 		if ( ! tribe_is_truthy( $need_to_enable_stripe_webhook ) ) {
 			return false;
 		}
