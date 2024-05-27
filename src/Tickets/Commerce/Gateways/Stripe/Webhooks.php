@@ -74,6 +74,15 @@ class Webhooks extends Abstract_Webhooks {
 	public const NONCE_KEY_SETUP = 'tec_tickets_commerce_gateway_stripe_set_up_webhooks';
 
 	/**
+	 * Rate limit key for the webhooks.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const RATE_LIMIT_KEY = 'tec_tickets_commerce_rate_limits';
+
+	/**
 	 * @inheritDoc
 	 */
 	public function get_gateway(): Abstract_Gateway {
@@ -259,6 +268,11 @@ class Webhooks extends Abstract_Webhooks {
 			return false;
 		}
 
+		if ( $this->is_rate_limited( __METHOD__ ) ) {
+			// Bail if rate limited.
+			return false;
+		}
+
 		if ( $this->has_valid_signing_secret() ) {
 			// Already set up and validated.
 			return true;
@@ -300,6 +314,11 @@ class Webhooks extends Abstract_Webhooks {
 	public function disable_webhook() {
 		if ( ! $this->get_gateway()->is_active() ) {
 			// Bail if stripe is not active.
+			return false;
+		}
+
+		if ( $this->is_rate_limited( __METHOD__ ) ) {
+			// Bail if rate limited.
 			return false;
 		}
 
@@ -500,6 +519,48 @@ class Webhooks extends Abstract_Webhooks {
 				'html' => '<div class="clear"></div></div>',
 			],
 		];
+	}
+
+	/**
+	 * Check if the current method is rate limited.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $method The method being checked.
+	 *
+	 * @return bool
+	 */
+	protected function is_rate_limited( string $method ): bool {
+		$rate_limit = tribe_get_option( self::RATE_LIMIT_KEY, [] );
+
+		// If non existent, create it.
+		if ( ! isset( $rate_limit[ $method ] ) ) {
+			$rate_limit[ $method ] = [
+				'time'  => time(),
+				'count' => 1,
+			];
+
+			tribe_update_option( self::RATE_LIMIT_KEY, $rate_limit );
+			return false;
+		}
+
+		// If old enough, reset the count.
+		if ( $rate_limit[ $method ]['time'] < time() - ( MINUTE_IN_SECONDS / 4 ) ) {
+			$rate_limit[ $method ]['time'] = time();
+
+			tribe_update_option( self::RATE_LIMIT_KEY, $rate_limit );
+			return false;
+		}
+
+		if ( $rate_limit[ $method ]['count'] < 5 ) {
+			$rate_limit[ $method ]['count'] += 1;
+
+			tribe_update_option( self::RATE_LIMIT_KEY, $rate_limit );
+			return false;
+		}
+
+		// Otherwise user should wait.
+		return true;
 	}
 
 	/**

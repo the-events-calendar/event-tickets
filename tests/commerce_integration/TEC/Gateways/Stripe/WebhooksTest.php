@@ -38,6 +38,8 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 
 		// We forcefully set is_admin to true.
 		$current_screen = \WP_Screen::get( 'post' );
+
+		$this->clear_rate_limiter();
 	}
 
 	public function _tearDown()
@@ -50,6 +52,8 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 
 		// We restore the current screen.
 		$current_screen = self::$current_screen_overwrite;
+
+		$this->clear_rate_limiter();
 	}
 
 	/**
@@ -361,6 +365,58 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	/**
+	 * Test the Rate limiter. It should allow 5 unique request per 15 seconds.
+	 *
+	 * @test
+	 */
+	public function is_should_rate_limit() {
+		$webhooks = tribe( Webhooks::class );
+
+		$this->assertTrue( $webhooks->get_gateway()->is_active() );
+
+		$this->set_fn_return( 'wp_remote_get', static function ( $send_data ) {
+			return [
+				'body' => wp_json_encode(
+					[
+						'webhook' => [ 'id' => 'wh_1', 'secret' => 'secret_1' ],
+					]
+				),
+			];
+		}, true );
+
+		// 1st call.
+		$this->assertTrue( $webhooks->handle_webhook_setup() );
+		$this->assertTrue( $webhooks->disable_webhook() );
+
+		// 2nd call.
+		$this->assertTrue( $webhooks->handle_webhook_setup() );
+		$this->assertTrue( $webhooks->disable_webhook() );
+
+		// 3rd call.
+		$this->assertTrue( $webhooks->handle_webhook_setup() );
+		$this->assertTrue( $webhooks->disable_webhook() );
+
+		// 4th call.
+		$this->assertTrue( $webhooks->handle_webhook_setup() );
+		$this->assertTrue( $webhooks->disable_webhook() );
+
+		// 5th call.
+		$this->assertTrue( $webhooks->handle_webhook_setup() );
+		$this->assertTrue( $webhooks->disable_webhook() );
+
+		// 6th call. Should fail!
+		$this->assertFalse( $webhooks->handle_webhook_setup() );
+		$this->assertFalse( $webhooks->disable_webhook() );
+
+		// Sleep just enough to reset the counter.
+		usleep( 15500000 ); // 15.5 seconds.
+
+		// 7th call.
+		$this->assertTrue( $webhooks->handle_webhook_setup() );
+		$this->assertTrue( $webhooks->disable_webhook() );
+	}
+
+	/**
 	 * Data provider for testing scenarios with stored webhooks.
 	 *
 	 * @return array
@@ -396,5 +452,10 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 		foreach ( $webhooks as $webhook ) {
 			yield [ $webhook ];
 		}
+	}
+
+	protected function clear_rate_limiter() {
+		// Clear Rate Limits before each test.
+		tribe_update_option( tribe( Webhooks::class )::RATE_LIMIT_KEY, [] );
 	}
 }
