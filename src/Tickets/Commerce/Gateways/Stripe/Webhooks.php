@@ -532,17 +532,11 @@ class Webhooks extends Abstract_Webhooks {
 					],
 					admin_url( '/admin-ajax.php' )
 				);
-
-				$save_link = sprintf(
-					'<a id="tec-tickets__admin-settings-webhook-set-up" data-loading-text="%s" rel="noopener noreferrer" href="%s">%s</a>',
-					esc_attr__( 'Setting up your webhook!', 'event-tickets' ),
-					esc_url( $url ),
-					esc_html_x( 'here', 'Describing where the link is located', 'event-tickets' )
-				);
 				printf(
-					// Translators: %s A link to the automatic webhook setup endpoint.
-					esc_html__( 'We can set up your Webhook automatically! Save your unsaved changes and then just click %s!', 'event-tickets' ),
-					$save_link // phpcs:ignore StellarWP.XSS.EscapeOutput.OutputNotEscaped, WordPress.Security.EscapeOutput.OutputNotEscaped
+					// Translators: %1$s A link to the automatic webhook setup endpoint. %2$s closing `</a>` link.
+					esc_html__( 'We can set up your Webhook automatically! Save your unsaved changes and then just click %1$shere%2$s!', 'event-tickets' ),
+					'<a id="tec-tickets__admin-settings-webhook-set-up" data-loading-text="' . esc_attr__( 'Setting up your webhook!', 'event-tickets' ) . '" rel="noopener noreferrer" href="' . esc_url( $url ) . '">',
+					'</a>'
 				);
 				?>
 			</p>
