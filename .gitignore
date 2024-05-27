@@ -58,3 +58,4 @@ lang/*.po
 /playwright/.cache/
 
 .vscode
+*.code-workspace
