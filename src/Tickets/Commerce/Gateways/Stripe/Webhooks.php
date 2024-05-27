@@ -564,9 +564,13 @@ class Webhooks extends Abstract_Webhooks {
 	 * @return bool
 	 */
 	public function has_valid_signing_secret() {
-		$has_signing_key      = tribe_get_option( static::$option_webhooks_signing_key );
+		$has_signing_key = tribe_get_option( static::$option_webhooks_signing_key );
+		if ( empty( $has_signing_key ) ) {
+			return false;
+		}
+
 		$is_valid_signing_key = tribe_get_option( static::$option_is_valid_webhooks, false );
 
-		return $has_signing_key && md5( $has_signing_key ) === $is_valid_signing_key;
+		return md5( $has_signing_key ) === $is_valid_signing_key;
 	}
 }
