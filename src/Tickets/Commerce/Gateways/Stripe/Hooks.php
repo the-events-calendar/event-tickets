@@ -193,7 +193,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	}
 
 	/**
-	 * Handle stripe errors into the admin UI.
+	 * Handle Stripe errors into the admin UI.
 	 *
 	 * @since 5.3.0
 	 * @since 5.6.3   Added check for ajax call, and additional logic to only run logic on checkout page and when Stripe is connected.

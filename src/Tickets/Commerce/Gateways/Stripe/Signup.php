@@ -33,7 +33,7 @@ class Signup extends Abstract_Signup {
 	public $template_folder = 'src/admin-views/settings/tickets-commerce/stripe';
 
 	/**
-	 * Generates a stripe connection URL from WhoDat.
+	 * Generates a Stripe connection URL from WhoDat.
 	 *
 	 * @since 5.3.0
 	 *
@@ -56,7 +56,7 @@ class Signup extends Abstract_Signup {
 	}
 
 	/**
-	 * Generates a stripe disconnection URL from WhoDat
+	 * Generates a Stripe disconnection URL from WhoDat
 	 *
 	 * @since 5.3.0
 	 *
@@ -100,7 +100,7 @@ class Signup extends Abstract_Signup {
 	}
 
 	/**
-	 * Get a unique tracking ID to identify this client on stripe.
+	 * Get a unique tracking ID to identify this client on Stripe.
 	 *
 	 * @since 5.3.0
 	 *

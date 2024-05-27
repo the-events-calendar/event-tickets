@@ -23,7 +23,7 @@
 		<strong><?php esc_html_e( 'Payment methods', 'event-tickets' ); ?></strong> &mdash;
 		<?php
 		printf(
-			// Translators: %1$s: opening `a` tag to stripe's dashboard. %2$s: closing `a` tag.
+			// Translators: %1$s: opening `a` tag to Stripe's dashboard. %2$s: closing `a` tag.
 			esc_html__( 'You will have to confirm that the payments methods you have selected to sell tickets are enabled on the %1$sStripe payment methods section%2$s.', 'event-tickets' ),
 			'<a href="https://dashboard.stripe.com/settings/payment_methods" target="_blank" rel="noopener noreferrer" class="tribe-common-anchor-alt">',
 			'</a>'
