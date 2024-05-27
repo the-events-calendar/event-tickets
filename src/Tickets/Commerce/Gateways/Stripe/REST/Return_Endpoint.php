@@ -186,6 +186,7 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 	 *
 	 * @param array     $reason Reason of disconnect.
 	 * @param ?stdClass $payload Data returned from WhoDat.
+	 *
 	 * @return void
 	 */
 	public function handle_connection_terminated( $reason = [], $payload = null ) {
