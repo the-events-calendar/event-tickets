@@ -94,7 +94,8 @@ function addTicketToSelection(props) {
 		color: props.seatColor,
 		ticketName,
 		seatLabel: props.seatLabel,
-		formattedPrice: formatWithCurrency(ticketPrice), };
+		formattedPrice: formatWithCurrency(ticketPrice),
+	};
 
 	document
 		.querySelector('.tec-tickets-seating__ticket-rows')
@@ -183,6 +184,32 @@ async function bootstrapIframe() {
 }
 
 /**
+ * Closes the modal element using its reference on the window object.
+ *
+ * @since TBD
+ *
+ * @return {void} The modal is closed.
+ */
+function closeModal() {
+	window?.[objectName]?._hide();
+}
+
+/**
+ * Adds event listeners to the modal element once it's loaded.
+ *
+ * @since TBD
+ *
+ * @return {void} Adds event listeners to the modal element once it's loaded.
+ */
+function addModalEventListeners() {
+	document
+		.querySelector(
+			'.tec-tickets-seating__modal .tec-tickets-seating__sidebar-control--cancel'
+		)
+		.addEventListener('click', closeModal);
+}
+
+/**
  * Waits for the modal element to be present in the DOM.
  *
  * @return {Promise<Element>} A promise that resolves to the modal element.
@@ -201,43 +228,8 @@ async function waitForModalElement() {
 }
 
 waitForModalElement().then((modalElement) => {
-	modalElement.on('show', bootstrapIframe);
+	modalElement.on('show', () => {
+		bootstrapIframe();
+		addModalEventListeners();
+	});
 });
-
-////////// TESTING //////////
-
-window.tec.tickets.seating.frontend.ticketsBlock.addStdAdultTicket = () => {
-	addTicketToSelection({
-		seatTypeId: 'uuid-normal',
-		ticketId: 176,
-		color: 'darkgreen',
-		seatLabel: 'C7',
-	});
-};
-
-window.tec.tickets.seating.frontend.ticketsBlock.addStdChildTicket = () => {
-	addTicketToSelection({
-		seatTypeId: 'uuid-normal',
-		ticketId: 177,
-		color: 'lightseagreen',
-		seatLabel: 'G9',
-	});
-};
-
-window.tec.tickets.seating.frontend.ticketsBlock.addVipTicket = () => {
-	addTicketToSelection({
-		seatTypeId: 'uuid-vip',
-		ticketId: 178,
-		seatColor: 'blueviolet',
-		seatLabel: 'A3',
-	});
-};
-
-window.tec.tickets.seating.frontend.ticketsBlock.removeLastTicket = () => {
-	const lastTicket = Array.from(
-		document.querySelectorAll('.tec-tickets-seating__ticket-row')
-	).pop();
-	const seatTypeId = lastTicket.dataset?.seatTypeId;
-	const ticketId = lastTicket.dataset?.ticketId;
-	removeTicketFromSelection(seatTypeId, ticketId);
-};
