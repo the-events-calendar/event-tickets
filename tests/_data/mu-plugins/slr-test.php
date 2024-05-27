@@ -5,6 +5,7 @@
 
 use TEC\Tickets\Seating\Service\Layouts;
 use TEC\Tickets\Seating\Service\Maps;
+use TEC\Tickets\Seating\Service\Seat_Types;
 use TEC\Tickets\Seating\Service\Service;
 
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
@@ -53,6 +54,7 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 			\WP_CLI::line( 'Cleaning transients ...' );
 			delete_transient( Maps::update_transient_name() );
 			delete_transient( Layouts::update_transient_name() );
+			delete_transient( Seat_Types::update_transient_name() );
 			\WP_CLI::success( 'Transients cleaned.' );
 		}
 	);
