@@ -511,18 +511,14 @@ class Webhooks extends Abstract_Webhooks {
 	 */
 	protected function get_description_webhook_html(): string {
 		ob_start();
-		$kb_link = sprintf(
-			'<a target="_blank" rel="noopener noreferrer" href="%s">%s</a>',
-			esc_url( 'https://evnt.is/1b3p' ),
-			esc_html__( 'Learn more', 'event-tickets' )
-		);
 		?>
 		<p class="tec-tickets__admin-settings-tickets-commerce-gateway-group-description-stripe-webhooks contained">
 			<?php
 			printf(
-				// Translators: %s A link to the KB article.
-				esc_html__( 'Setting up webhooks will enable you to receive notifications on charge statuses and keep order information up to date for asynchronous payments. %s', 'event-tickets' ),
-				$kb_link // phpcs:ignore StellarWP.XSS.EscapeOutput.OutputNotEscaped, WordPress.Security.EscapeOutput.OutputNotEscaped
+				// Translators: %1$s A link to the KB article. %2$s closing `</a>` link.
+				esc_html__( 'Setting up webhooks will enable you to receive notifications on charge statuses and keep order information up to date for asynchronous payments. %1$sLearn more%2$s', 'event-tickets' ),
+				'<a target="_blank" rel="noopener noreferrer" href="https://evnt.is/1b3p">',
+				'</a>'
 			);
 			?>
 		</p>
