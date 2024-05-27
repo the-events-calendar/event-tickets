@@ -358,6 +358,7 @@ class Webhooks extends Abstract_Webhooks {
 	 * @since TBD
 	 *
 	 * @param array $webhook The webhook being added.
+	 *
 	 * @return void
 	 */
 	public function add_webhook( $webhook ) {
