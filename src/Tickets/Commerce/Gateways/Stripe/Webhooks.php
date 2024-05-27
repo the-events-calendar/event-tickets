@@ -470,7 +470,7 @@ class Webhooks extends Abstract_Webhooks {
 				'type' => 'html',
 				'html' => $this->get_description_webhook_html(),
 			],
-			static::$option_webhooks_value                                => [
+			static::$option_webhooks_value       => [
 				'type'       => 'text',
 				'label'      => esc_html__( 'Webhooks URL', 'event-tickets' ),
 				'tooltip'    => '',
@@ -481,7 +481,7 @@ class Webhooks extends Abstract_Webhooks {
 					'class'    => 'tribe-field-tickets-commerce-stripe-webhooks-copy-value',
 				],
 			],
-			static::$option_webhooks_signing_key                          => [
+			static::$option_webhooks_signing_key => [
 				'type'                => 'text',
 				'label'               => esc_html__( 'Signing Secret', 'event-tickets' ),
 				'tooltip'             => $signing_key_tooltip,
@@ -496,7 +496,7 @@ class Webhooks extends Abstract_Webhooks {
 					'data-ajax-action-verify' => 'tec_tickets_commerce_gateway_stripe_verify_webhooks',
 				],
 			],
-			'tickets-commerce-gateway-settings-group-end-webhook'         => [
+			'tickets-commerce-gateway-settings-group-end-webhook' => [
 				'type' => 'html',
 				'html' => '<div class="clear"></div></div>',
 			],
@@ -523,7 +523,7 @@ class Webhooks extends Abstract_Webhooks {
 			printf(
 				// Translators: %s A link to the KB article.
 				esc_html__( 'Setting up webhooks will enable you to receive notifications on charge statuses and keep order information up to date for asynchronous payments. %s', 'event-tickets' ),
-				$kb_link
+				$kb_link // phpcs:ignore StellarWP.XSS.EscapeOutput.OutputNotEscaped, WordPress.Security.EscapeOutput.OutputNotEscaped
 			);
 			?>
 		</p>
@@ -537,6 +537,7 @@ class Webhooks extends Abstract_Webhooks {
 					],
 					admin_url( '/admin-ajax.php' )
 				);
+
 				$save_link = sprintf(
 					'<a id="tec-tickets__admin-settings-webhook-set-up" data-loading-text="%s" rel="noopener noreferrer" href="%s">%s</a>',
 					esc_attr__( 'Setting up your webhook!', 'event-tickets' ),
@@ -546,7 +547,7 @@ class Webhooks extends Abstract_Webhooks {
 				printf(
 					// Translators: %s A link to the automatic webhook setup endpoint.
 					esc_html__( 'We can set up your Webhook automatically! Save your unsaved changes and then just click %s!', 'event-tickets' ),
-					$save_link
+					$save_link // phpcs:ignore StellarWP.XSS.EscapeOutput.OutputNotEscaped, WordPress.Security.EscapeOutput.OutputNotEscaped
 				);
 				?>
 			</p>
