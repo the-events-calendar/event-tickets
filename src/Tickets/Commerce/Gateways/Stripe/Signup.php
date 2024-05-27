@@ -66,16 +66,7 @@ class Signup extends Abstract_Signup {
 
 		$webhooks = tribe( Webhooks::class );
 
-		$known_webhooks = tribe_get_option( $webhooks::OPTION_KNOWN_WEBHOOKS, [] );
-
-		$current_signing_key = tribe_get_option( $webhooks::$option_webhooks_signing_key );
-
-		$known_webhooks = array_filter(
-			$known_webhooks,
-			function ( $signing_key ) use ( $current_signing_key ) {
-				return $signing_key === $current_signing_key;
-			}
-		);
+		$known_webhooks = $webhooks->get_current_webhook_id();
 
 		return tribe( WhoDat::class )->get_api_url(
 			'disconnect',
@@ -83,7 +74,7 @@ class Signup extends Abstract_Signup {
 				'stripe_user_id' => tribe( Merchant::class )->get_client_id(),
 				'return_url'     => rest_url( $this->signup_return_path ),
 				'version'        => rawurlencode( \Tribe__Tickets__Main::VERSION ),
-				'known_webhooks' => array_map( 'rawurlencode', array_keys( $known_webhooks ) ),
+				'known_webhooks' => array_map( 'rawurlencode', $known_webhooks ),
 			]
 		);
 	}

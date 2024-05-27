@@ -309,16 +309,7 @@ class Webhooks extends Abstract_Webhooks {
 		}
 
 		// Pinpoint the current webhook in use.
-		$known_webhooks = tribe_get_option( self::OPTION_KNOWN_WEBHOOKS, [] );
-
-		$current_signing_key = tribe_get_option( static::$option_webhooks_signing_key );
-
-		$known_webhooks = array_filter(
-			$known_webhooks,
-			function ( $signing_key ) use ( $current_signing_key ) {
-				return $signing_key === $current_signing_key;
-			}
-		);
+		$known_webhooks = $this->get_current_webhook_id();
 
 		// Current being used, not known. We bail.
 		if ( empty( $known_webhooks ) ) {
@@ -331,7 +322,7 @@ class Webhooks extends Abstract_Webhooks {
 				'stripe_user_id' => rawurlencode( tribe( Merchant::class )->get_client_id() ),
 				'home_url'       => rawurlencode( tribe( Return_Endpoint::class )->get_route_url() ),
 				'version'        => rawurlencode( \Tribe__Tickets__Main::VERSION ),
-				'known_webhooks' => array_map( 'rawurlencode', array_keys( $known_webhooks ) ),
+				'known_webhooks' => array_map( 'rawurlencode', $known_webhooks ),
 			]
 		);
 
@@ -349,6 +340,31 @@ class Webhooks extends Abstract_Webhooks {
 		tribe_remove_option( self::$option_is_valid_webhooks );
 
 		return true;
+	}
+
+	/**
+	 * Get the current webhook ID.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function get_current_webhook_id() {
+		$current_signing_key = tribe_get_option( static::$option_webhooks_signing_key );
+
+		if ( empty( $current_signing_key ) ) {
+			return [];
+		}
+
+		$known_webhooks = tribe_get_option( self::OPTION_KNOWN_WEBHOOKS, [] );
+
+		if ( empty( $known_webhooks ) ) {
+			return [];
+		}
+
+		$known_webhooks = array_flip( $known_webhooks );
+
+		return $known_webhooks[ $current_signing_key ] ? [ $known_webhooks[ $current_signing_key ] ] : [];
 	}
 
 	/**

@@ -361,6 +361,35 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	/**
+	 * @test
+	 *
+	 * @dataProvider webhook_provider
+	 *
+	 * @covers TEC\Tickets\Commerce\Gateways\Stripe\Webhooks::get_current_webhook_id
+	 */
+	public function it_should_return_current_webhook_id( array $webhook ) {
+		$webhooks = tribe( Webhooks::class );
+
+		static $previous_webhook_id = null;
+
+		$this->assertTrue( $webhooks->get_gateway()->is_active() );
+
+		if ( ! $previous_webhook_id ) {
+			tribe_update_option( $webhooks::OPTION_KNOWN_WEBHOOKS, [] );
+			$this->assertEmpty( $webhooks->get_current_webhook_id() );
+		} else {
+			$this->assertEquals( [ $previous_webhook_id ], $webhooks->get_current_webhook_id() );
+		}
+
+		$previous_webhook_id = $webhook['id'];
+
+
+		$webhooks->add_webhook( $webhook );
+
+		$this->assertEquals( [ $webhook['id'] ], $webhooks->get_current_webhook_id() );
+	}
+
+	/**
 	 * Data provider for testing scenarios with stored webhooks.
 	 *
 	 * @return array
