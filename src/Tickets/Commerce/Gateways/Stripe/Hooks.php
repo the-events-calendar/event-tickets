@@ -173,7 +173,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	 */
 	public function action_handle_set_up_webhook(): void {
 		$nonce  = tribe_get_request_var( 'tc_nonce' );
-		$status = esc_html__( 'Something went wrong with your Webhook Creation. Please try again later.', 'event-tickets' );
+		$status = esc_html__( 'Something went wrong with your Webhook Creation. Please reload the page and try again later.', 'event-tickets' );
 
 		$webhooks = $this->container->make( Webhooks::class );
 
