@@ -374,14 +374,13 @@ class Webhooks extends Abstract_Webhooks {
 		// In any case, each installation should have only one webhook.
 		// Let's keep a maximum of 3 known webhooks.
 		if ( count( $known_webhooks ) > 3 ) {
-			foreach ( array_keys( $known_webhooks ) as $key ) {
-				if ( $key === $webhook['id'] ) {
-					continue;
-				}
+			$known_webhooks = array_slice( $known_webhooks, count( $known_webhooks ) - 3, 3, true );
 
-				// Unset a random one but not the one we just added.
-				unset( $known_webhooks[ $key ] );
-				break;
+			// Should never happen since array_slice keeps the latest 3 entries, but just in case.
+			if ( ! isset( $known_webhooks[ $webhook['id'] ] ) ) {
+				// If we are adding a new one, we need to remove one.
+				array_shift( $known_webhooks );
+				$known_webhooks[ $webhook['id'] ] = $signing_key;
 			}
 		}
 
