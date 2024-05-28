@@ -20,13 +20,13 @@ if ( $has_plus ) {
 	$mobile_graphic  = 'images/header/welcome-mobile-etplus.jpg';
 }
 
-$tc_description = esc_html( 'Tickets Commerce provides flexible online payments right out of the box.', 'event-tickets' );
+$tc_description = esc_html__( 'Tickets Commerce provides flexible online payments right out of the box.', 'event-tickets' );
 $tc_link = tribe( Payments_Tab::class )->get_url();
 
 if ( $has_tec ) {
 	$tc_description = sprintf(
-		'%s %s',
-		esc_html( 'Want to monetize your events?', 'event-tickets' ),
+		'%1$s %2$s',
+		esc_html__( 'Want to monetize your events?', 'event-tickets' ),
 		$tc_description
 	);
 }
