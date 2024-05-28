@@ -64,7 +64,7 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertFalse( get_option( 'tec_tickets_commerce_stripe_webhook_version', false ) );
 
-		$this->assertTrue( $webhooks->get_gateway()->is_active() );
+		$this->assertTrue( $webhooks->get_merchant()->is_active() );
 
 		$this->set_fn_return( 'wp_remote_get', static function ( $send_data ) {
 			return [
@@ -108,7 +108,7 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertFalse( get_transient( 'tec_tickets_commerce_setup_stripe_webhook' ) );
 
-		$this->assertTrue( $webhooks->get_gateway()->is_active() );
+		$this->assertTrue( $webhooks->get_merchant()->is_active() );
 
 		set_transient( 'tec_tickets_commerce_setup_stripe_webhook', true );
 
@@ -152,7 +152,7 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 
 		$hooks = tribe( Hooks::class );
 
-		$this->assertTrue( $webhooks->get_gateway()->is_active() );
+		$this->assertTrue( $webhooks->get_merchant()->is_active() );
 
 		$json_error = [
 			'success' => false,
@@ -228,7 +228,7 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 	public function it_should_handle_webhook_set_up() {
 		$webhooks = tribe( Webhooks::class );
 
-		$this->assertTrue( $webhooks->get_gateway()->is_active() );
+		$this->assertTrue( $webhooks->get_merchant()->is_active() );
 
 		$this->set_fn_return( 'wp_remote_get', static function ( $send_data ) {
 			return [
@@ -268,7 +268,7 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 	public function it_should_has_valid_signing_secret( array $webhook ) {
 		$webhooks = tribe( Webhooks::class );
 
-		$this->assertTrue( $webhooks->get_gateway()->is_active() );
+		$this->assertTrue( $webhooks->get_merchant()->is_active() );
 
 		tribe_update_option( $webhooks::$option_is_valid_webhooks, false );
 
@@ -297,7 +297,7 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 
 		self::$webhook_buffer[ $webhook['id'] ] = $webhook['secret'];
 
-		$this->assertTrue( $webhooks->get_gateway()->is_active() );
+		$this->assertTrue( $webhooks->get_merchant()->is_active() );
 
 		$webhooks->add_webhook( $webhook );
 
@@ -327,7 +327,7 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 
 		$webhooks = tribe( Webhooks::class );
 
-		$this->assertTrue( $webhooks->get_gateway()->is_active() );
+		$this->assertTrue( $webhooks->get_merchant()->is_active() );
 
 		$webhooks->add_webhook( $webhook );
 
@@ -372,7 +372,7 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 
 		static $previous_webhook_id = null;
 
-		$this->assertTrue( $webhooks->get_gateway()->is_active() );
+		$this->assertTrue( $webhooks->get_merchant()->is_active() );
 
 		if ( ! $previous_webhook_id ) {
 			tribe_update_option( $webhooks::OPTION_KNOWN_WEBHOOKS, [] );
