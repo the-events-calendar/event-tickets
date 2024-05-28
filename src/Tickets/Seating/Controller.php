@@ -39,7 +39,7 @@ class Controller extends Controller_Contract {
 	 *
 	 * @var string
 	 */
-	public const DISABLED = 'TEC_SEATING_DISABLED';
+	public const DISABLED = 'TEC_TICKETS_SEATING_DISABLED';
 
 	/**
 	 * Unregisters the Controller by unsubscribing from WordPress hooks.

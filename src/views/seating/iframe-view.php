@@ -9,9 +9,11 @@
  *
  * @version TBD
  *
- * @var string $iframe_url The URL to the service iframe.
- * @var string $token      The ephemeral token used to secure the iframe communication with the service.
- * @var string $error      The error message returned by the service.
+ * @var string $iframe_url          The URL to the service iframe.
+ * @var string $token               The ephemeral token used to secure the iframe communication with the service.
+ * @var string $error               The error message returned by the service.
+ * @var string $initial_total_text  The initial text of the total; should be "0 Tickets".
+ * @var string $initial_total_price The initial price of the tickets; already HTML-escaped.
  */
 ?>
 
@@ -28,3 +30,44 @@
 	>
 	</iframe>
 </div>
+
+<aside class="tec-tickets-seating__modal-sidebar">
+	<div class="tec-tickets-seating__sidebar-content">
+		<h4 class="tribe-common-h4 tec-tickets-seating__title">
+			Tickets
+		</h4>
+
+		<div class="tec-tickets-seating__timer">
+			<div class="dashicons dashicons-clock"></div>
+			<div class="tec-tickets-seating__message">
+			<span>
+				<span class="tec-tickets-seating__message-text">Seat selections reserved for </span>
+				<span class="tec-tickets-seating__message-time">9:55</span>
+			</span>
+			</div>
+		</div>
+
+		<div class="tec-tickets-seating__ticket-rows">
+		</div>
+	</div>
+
+	<div class="tec-tickets-seating__sidebar-footer">
+		<div class="tec-tickets-seating__total">
+			<div class="tec-tickets-seating__total-text">
+				<?php echo esc_html( $initial_total_text ); ?>
+			</div>
+			<div class="tec-tickets-seating__total-price">
+				<?php echo esc_html( $initial_total_price ); ?>
+			</div>
+		</div>
+
+		<div class="tec-tickets-seating__sidebar-controls">
+			<button class="tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--cancel">
+				Cancel
+			</button>
+			<button class="tribe-common-c-btn tribe-common-c-btn--small tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--confirm">
+				Check Out
+			</button>
+		</div>
+	</div>
+</aside>

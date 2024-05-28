@@ -5,6 +5,7 @@
 
 use TEC\Tickets\Seating\Service\Layouts;
 use TEC\Tickets\Seating\Service\Maps;
+use TEC\Tickets\Seating\Service\Seat_Types;
 use TEC\Tickets\Seating\Service\Service;
 
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
@@ -53,6 +54,7 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 			\WP_CLI::line( 'Cleaning transients ...' );
 			delete_transient( Maps::update_transient_name() );
 			delete_transient( Layouts::update_transient_name() );
+			delete_transient( Seat_Types::update_transient_name() );
 			\WP_CLI::success( 'Transients cleaned.' );
 		}
 	);
@@ -64,6 +66,8 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 			tribe(\TEC\Tickets\Seating\Tables\Maps::class)->update();
 			tribe(\TEC\Tickets\Seating\Tables\Layouts::class)->drop();
 			tribe(\TEC\Tickets\Seating\Tables\Layouts::class)->update();
+			tribe(\TEC\Tickets\Seating\Tables\Seat_Types::class)->drop();
+			tribe(\TEC\Tickets\Seating\Tables\Seat_Types::class)->update();
 			\WP_CLI::success( 'Tables regenerated.' );
 		}
 	);

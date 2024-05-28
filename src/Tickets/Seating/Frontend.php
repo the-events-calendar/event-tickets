@@ -109,9 +109,11 @@ class Frontend extends Controller_Contract {
 		)
 			->set_dependencies(
 				'tribe-dialog-js',
-				'tec-tickets-seating-service-bundle'
+				'tec-tickets-seating-service-bundle',
+				'tec-tickets-seating-currency',
+				'wp-hooks'
 			)
-			->add_localize_script( 'tec.seating.frontend.ticketsBlock',
+			->add_localize_script( 'tec.tickets.seating.frontend.ticketsBlock',
 				fn() => $this->get_ticket_block_data( get_the_ID() ) )
 			->enqueue_on( 'wp_enqueue_scripts' )
 			->add_to_group( 'tec-tickets-seating-frontend' )
@@ -216,16 +218,22 @@ class Frontend extends Controller_Contract {
 		$iframe_url      = $this->service->get_seat_selection_url( $token, $post_id, $timeout );
 		/** @var \Tribe\Dialog\View $dialog_view */
 		$dialog_view = tribe( 'dialog.view' );
+		$provider = Tickets::get_event_ticket_provider_object( $post_id );
+		/** @var \Tribe__Tickets__Commerce__Currency $currency */
+		$currency = tribe('tickets.commerce.currency');
 		$content     = $this->template->template( 'iframe-view', [
 			'iframe_url' => $iframe_url,
 			'token'      => $token,
 			'error'      => $ephemeral_token instanceof WP_Error ? $ephemeral_token->get_error_message() : '',
+			'initial_total_text' => _x('0 Tickets', 'Seat selection modal initial total string', 'event-tickets'),
+			'initial_total_price' => $currency->get_formatted_currency_with_symbol(0,$post_id,$provider,false),
 		], false );
+
 		$args        = [
 			'button_text'    => esc_html_x( 'Find Seats', 'Find seats button text', 'event-tickets' ),
 			'button_classes' => [ 'tribe-common-c-btn', 'tribe-common-c-btn--small' ],
 			'append_target'  => '.tec-tickets-seating__tickets-block__information',
-			'content_wrapper_classes' =>  'tribe-dialog__wrapper tec-tickets-seating__seat-selection-modal'
+			'content_wrapper_classes' =>  'tribe-dialog__wrapper tec-tickets-seating__modal',
 		];
 
 		return $dialog_view->render_modal( $content, $args, self::MODAL_ID, false );
@@ -254,9 +262,17 @@ class Frontend extends Controller_Contract {
 	 */
 	public function get_ticket_block_data( $post_id ): array {
 		return [
-			'objectName'  => 'dialog_obj_' . self::MODAL_ID,
-			'modalId'     => self::MODAL_ID,
-			'seatTypeMap' => $this->build_seat_type_map( $post_id ),
+			'objectName'    => 'dialog_obj_' . self::MODAL_ID,
+			'modalId'       => self::MODAL_ID,
+			'seatTypeMap'   => $this->build_seat_type_map( $post_id ),
+			'labels'        => [
+				'oneTicket'       => esc_html( _x( "1 Ticket", 'Seat selection modal total string', 'event-tickets' ) ),
+				'multipleTickets' => esc_html(
+					_x( '{count} Tickets', 'Seat selection modal total string', 'event-tickets' )
+				),
+			],
+			'providerClass' => esc_html( Tickets::get_event_ticket_provider( $post_id ) ),
+			'postId'        => $post_id,
 		];
 	}
 
@@ -311,7 +327,7 @@ class Frontend extends Controller_Contract {
 			$seat_type_map[ $seat_type ]['tickets'][] = [
 				'ticketId'    => $ticket_id,
 				'name'        => $ticket->name,
-				'price'       => $ticket->get_provider()->get_price_html( $ticket_id ),
+				'price'       => $ticket->price,
 				'description' => $ticket->description
 			];
 		}

@@ -1,9 +1,9 @@
 window.tec = window.tec || {};
-window.tec.seating = window.tec.seating || {};
-window.tec.seating.ajax = window.tec.seating.ajax || {};
-window.tec.seating.ajax.urls = window.tec.seating.ajax.urls || {};
+window.tec.tickets.seating = window.tec.tickets.seating || {};
+window.tec.tickets.seating.ajax = window.tec.tickets.seating.ajax || {};
+window.tec.tickets.seating.ajax.urls = window.tec.tickets.seating.ajax.urls || {};
 
-const {seatTypesByLayoutId} = window.tec.seating.ajax.urls;
+const {seatTypesByLayoutId} = window.tec.tickets.seating.ajax.urls;
 
 /**
  * Fetches seat types for a given layout ID.
@@ -36,7 +36,7 @@ async function fetchSeatTypesByLayoutId(layoutId) {
 	return json?.data || [];
 }
 
-window.tec.seating.ajax = {
-	...window.tec.seating.ajax,
+window.tec.tickets.seating.ajax = {
+	...window.tec.tickets.seating.ajax,
 	fetchSeatTypesByLayoutId,
 };

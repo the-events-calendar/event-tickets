@@ -115,9 +115,9 @@ export default function CapacityForm({ renderDefaultForm, clientId }) {
 	);
 
 	return (
-		<Fragment>
+		<div className="tec-tickets-seating__capacity-form">
 			<ToggleControl
-				className="tec-tickets-seating__capacity-form__toggle"
+				className="tec-tickets-seating__capacity-toggle"
 				label={getString('use-assigned-seating-toggle-label')}
 				checked={isUsingAssignedSeating}
 				onChange={onToggleChange}
@@ -139,7 +139,7 @@ export default function CapacityForm({ renderDefaultForm, clientId }) {
 			) : (
 				renderDefaultForm()
 			)}
-		</Fragment>
+		</div>
 	);
 }
 

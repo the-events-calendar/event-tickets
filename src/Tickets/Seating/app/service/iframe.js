@@ -65,9 +65,9 @@ export async function initServiceIframe(iframe) {
 }
 
 window.tec = window.tec || {};
-window.tec.seating = window.tec.seating || {};
-window.tec.seating.iframe = {
-	...(window.tec.seating.iframe || {}),
+window.tec.tickets.seating = window.tec.tickets.seating || {};
+window.tec.tickets.seating.iframe = {
+	...(window.tec.tickets.seating.iframe || {}),
 	getIframeElement,
 	initServiceIframe,
 };
