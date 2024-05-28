@@ -254,7 +254,7 @@ class Webhooks extends Abstract_Webhooks {
 	 * @return bool
 	 */
 	public function handle_webhook_setup() {
-		if ( ! $this->get_gateway()->is_active() ) {
+		if ( ! $this->get_merchant()->is_active() ) {
 			// Bail if Stripe is not active.
 			return false;
 		}
@@ -298,7 +298,7 @@ class Webhooks extends Abstract_Webhooks {
 	 * @return bool
 	 */
 	public function disable_webhook() {
-		if ( ! $this->get_gateway()->is_active() ) {
+		if ( ! $this->get_merchant()->is_active() ) {
 			// Bail if Stripe is not active.
 			return false;
 		}
