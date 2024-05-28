@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "noImplicitAny": true, // Throw an error if an expression does not have a type annotation.
+    "alwaysStrict": true, // Parse in strict mode and emit "use strict" for each source file.
+    "strictNullChecks": true,  // When type checking, take into account null and undefined.
+    "exactOptionalPropertyTypes": true, // When using an optional property, its value must be allowed.
+    "module": "es6", // When emitting modules, output ES6 modules.
+    "target": "es6", // When targeting ES6, use the ES6 JavaScript dialect.
+    "jsx": "react", // Specify JSX code generation, use React.
+    "allowJs": true, // Allow JavaScript files to be compiled.
+    "checkJs": false, // Do not report errors in .js files.
+  },
+  "include": [
+    "./src/**/*.ts",
+    "./src/**/*.tsx"
+  ]
+}
