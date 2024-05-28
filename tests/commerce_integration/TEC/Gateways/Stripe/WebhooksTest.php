@@ -12,8 +12,6 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 
 	use With_Uopz;
 
-	protected static $current_screen_overwrite;
-
 	protected static $webhook_buffer = [];
 
 	public function _setUp(): void {
@@ -31,13 +29,6 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 				],
 			]
 		);
-
-		global $current_screen;
-
-		self::$current_screen_overwrite = $current_screen;
-
-		// We forcefully set is_admin to true.
-		$current_screen = \WP_Screen::get( 'post' );
 	}
 
 	public function _tearDown()
@@ -45,11 +36,6 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 		parent::_tearDown();
 		$merchant = tribe( Merchant::class );
 		$merchant->save_signup_data( [] );
-
-		global $current_screen;
-
-		// We restore the current screen.
-		$current_screen = self::$current_screen_overwrite;
 	}
 
 	/**
