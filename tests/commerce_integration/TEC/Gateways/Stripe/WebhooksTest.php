@@ -80,6 +80,35 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 
 		// Then it should fail.
 		$this->assertFalse( $hooks->setup_stripe_webhook_on_release() );
+
+		// Reset the option being checked!
+		update_option( 'tec_tickets_commerce_stripe_webhook_version', false );
+
+		// Enable the env variable.
+		$this->enable_const_signing_secret();
+
+		$this->set_fn_return( 'wp_remote_get', static function ( $send_data ) {
+			return [
+				'body' => wp_json_encode(
+					[
+						'webhook' => false,
+					]
+				),
+			];
+		}, true );
+
+		// It should return true even though the remote get is set to return a failed response.
+		// The reason is that it should never reach the remote get call because of the env variable.
+		$this->assertTrue( $hooks->setup_stripe_webhook_on_release() );
+
+		// Disable the env variable.
+		$this->disable_const_signing_secret();
+
+		// Reset the option being checked!
+		update_option( 'tec_tickets_commerce_stripe_webhook_version', false );
+
+		// Now it should fail without the env variable and the remote get returning a false result.
+		$this->assertFalse( $hooks->setup_stripe_webhook_on_release() );
 	}
 
 	/**
@@ -125,6 +154,36 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertTrue( $hooks->setup_stripe_webhook_on_activation() );
 
 		// Then it should fail.
+		$this->assertFalse( $hooks->setup_stripe_webhook_on_activation() );
+
+		// Reset the transient being checked!
+		set_transient( 'tec_tickets_commerce_setup_stripe_webhook', true );
+
+		// Enable the env variable.
+		$this->enable_const_signing_secret();
+
+		// Make the remote get fail.
+		$this->set_fn_return( 'wp_remote_get', static function ( $send_data ) {
+			return [
+				'body' => wp_json_encode(
+					[
+						'webhook' => false,
+					]
+				),
+			];
+		}, true );
+
+		// It should return true even though the remote get is set to return a failed response.
+		// The reason is that it should never reach the remote get call because of the env variable.
+		$this->assertTrue( $hooks->setup_stripe_webhook_on_activation() );
+
+		// Disable the env variable.
+		$this->disable_const_signing_secret();
+
+		// Reset the transient being checked!
+		set_transient( 'tec_tickets_commerce_setup_stripe_webhook', true );
+
+		// Now it should fail without the env variable and the remote get returning a false result.
 		$this->assertFalse( $hooks->setup_stripe_webhook_on_activation() );
 	}
 
@@ -201,6 +260,33 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 		// Success.
 		$this->assertEquals( wp_json_encode( $json_error ), $response );
 
+		$this->set_fn_return( 'wp_remote_get', static function ( $send_data ) {
+			return [
+				'body' => wp_json_encode(
+					[
+						'webhook' => false,
+					]
+				),
+			];
+		}, true );
+
+		// Invalidate previously stored webhook.
+		tribe_update_option( $webhooks::$option_is_valid_webhooks, false );
+
+		$this->enable_const_signing_secret();
+
+		$hooks->action_handle_set_up_webhook();
+
+		$this->assertEquals( wp_json_encode( $json_error ), $response );
+
+		$this->disable_const_signing_secret();
+
+		$json_error['success'] = false;
+
+		$hooks->action_handle_set_up_webhook();
+
+		$this->assertEquals( wp_json_encode( $json_error ), $response );
+
 		set_current_user( 0 );
 
 		unset( $_POST['tc_nonce'] );
@@ -225,6 +311,12 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 				),
 			];
 		}, true );
+
+		$this->enable_const_signing_secret();
+
+		$this->assertTrue( $webhooks->handle_webhook_setup() );
+
+		$this->disable_const_signing_secret();
 
 		$this->assertFalse( $webhooks->handle_webhook_setup() );
 
@@ -257,6 +349,12 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertTrue( $webhooks->get_merchant()->is_active() );
 
 		tribe_update_option( $webhooks::$option_is_valid_webhooks, false );
+
+		$this->enable_const_signing_secret();
+
+		$this->assertTrue( $webhooks->has_valid_signing_secret() );
+
+		$this->disable_const_signing_secret();
 
 		$this->assertFalse( $webhooks->has_valid_signing_secret() );
 
@@ -342,6 +440,13 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 			];
 		}, true );
 
+		$this->enable_const_signing_secret();
+
+		// Even though all is good, when the env variable is there, it should fail to disable webhook.
+		$this->assertFalse( $webhooks->disable_webhook() );
+
+		$this->disable_const_signing_secret();
+
 		$this->assertTrue( $webhooks->disable_webhook() );
 		$this->assertFalse( $webhooks->has_valid_signing_secret() );
 	}
@@ -411,5 +516,13 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 		foreach ( $webhooks as $webhook ) {
 			yield [ $webhook ];
 		}
+	}
+
+	protected function enable_const_signing_secret() {
+		putenv( 'TEC_TC_STRIPE_SIGNING_SECRET=wh_secret_1' );
+	}
+
+	protected function disable_const_signing_secret() {
+		putenv( 'TEC_TC_STRIPE_SIGNING_SECRET=' );
 	}
 }
