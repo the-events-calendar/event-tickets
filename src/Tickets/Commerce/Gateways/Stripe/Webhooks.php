@@ -303,7 +303,7 @@ class Webhooks extends Abstract_Webhooks {
 			return false;
 		}
 
-		if ( ! $this->has_valid_signing_secret() ) {
+		if ( ! $this->has_valid_signing_secret( 'disable' ) ) {
 			// If we don't have a webhook set up and validated we won't disable any.
 			return false;
 		}
@@ -567,9 +567,21 @@ class Webhooks extends Abstract_Webhooks {
 	 *
 	 * @since TBD
 	 *
+	 * @param string $context The context in which we are checking the signing secret.
+	 *
 	 * @return bool
 	 */
-	public function has_valid_signing_secret() {
+	public function has_valid_signing_secret( $context = 'enable' ) {
+		// If we have a constant defined, we should bail webhook creation.
+		if ( defined( 'TEC_TC_STRIPE_SIGNING_SECRET' ) && TEC_TC_STRIPE_SIGNING_SECRET ) {
+			// When the context is enable, it should return true to bail on attempt create/update webhook.
+			// Because if valid signing secret, we dont need to create/update one.
+
+			// When the context is disable, it should return false to bail on attempt to disable webhook.
+			// Because if we don't have valid signing secret, we don't need to disable one.
+			return 'enable' === $context;
+		}
+
 		$has_signing_key = tribe_get_option( static::$option_webhooks_signing_key );
 		if ( empty( $has_signing_key ) ) {
 			return false;
