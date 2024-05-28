@@ -106,14 +106,17 @@ class Signup extends Abstract_Signup {
 	 *
 	 * @since 5.3.0
 	 *
-	 * @param array $data
+	 * @deprecated TBD
+	 *
+	 * @param array $data Data returned from Stripe.
 	 *
 	 * @return bool
 	 */
 	public function is_success( $data ) {
+		_deprecated_function( __METHOD__, 'TBD' );
 
 		return ! empty( $data->stripe_user_id )
-			   && ! empty( $data->live->access_token )
-			   && ! empty( $data->sandbox->access_token );
+			&& ! empty( $data->live->access_token )
+			&& ! empty( $data->sandbox->access_token );
 	}
 }
