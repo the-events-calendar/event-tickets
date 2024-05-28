@@ -65,7 +65,7 @@
 			<button class="tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--cancel">
 				Cancel
 			</button>
-			<button class="tribe-common-c-btn tribe-common-c-btn--small tec-tickets-seating__sidebar-control">
+			<button class="tribe-common-c-btn tribe-common-c-btn--small tec-tickets-seating__sidebar-control tec-tickets-seating__sidebar-control--confirm">
 				Check Out
 			</button>
 		</div>

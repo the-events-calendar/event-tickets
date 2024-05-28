@@ -111,6 +111,7 @@ class Frontend extends Controller_Contract {
 				'tribe-dialog-js',
 				'tec-tickets-seating-service-bundle',
 				'tec-tickets-seating-currency',
+				'wp-hooks'
 			)
 			->add_localize_script( 'tec.tickets.seating.frontend.ticketsBlock',
 				fn() => $this->get_ticket_block_data( get_the_ID() ) )
@@ -261,15 +262,17 @@ class Frontend extends Controller_Contract {
 	 */
 	public function get_ticket_block_data( $post_id ): array {
 		return [
-			'objectName'  => 'dialog_obj_' . self::MODAL_ID,
-			'modalId'     => self::MODAL_ID,
-			'seatTypeMap' => $this->build_seat_type_map( $post_id ),
-			'labels'      => [
+			'objectName'    => 'dialog_obj_' . self::MODAL_ID,
+			'modalId'       => self::MODAL_ID,
+			'seatTypeMap'   => $this->build_seat_type_map( $post_id ),
+			'labels'        => [
 				'oneTicket'       => esc_html( _x( "1 Ticket", 'Seat selection modal total string', 'event-tickets' ) ),
 				'multipleTickets' => esc_html(
 					_x( '{count} Tickets', 'Seat selection modal total string', 'event-tickets' )
 				),
-			]
+			],
+			'providerClass' => esc_html( Tickets::get_event_ticket_provider( $post_id ) ),
+			'postId'        => $post_id,
 		];
 	}
 

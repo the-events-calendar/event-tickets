@@ -13,8 +13,9 @@ import {
 import { registerAction } from '../../service/service-api';
 import { TicketRow } from './ticket-row';
 import { formatWithCurrency } from '@tec/tickets/seating/currency';
+import { getCheckoutHandlerForProvider } from './checkout-handlers';
 
-const { objectName, seatTypeMap, labels } =
+const { objectName, seatTypeMap, labels, providerClass, postId } =
 	window?.tec?.tickets?.seating?.frontend?.ticketsBlock;
 
 let totalPriceElement = null;
@@ -195,6 +196,88 @@ function closeModal() {
 }
 
 /**
+ * @typedef {Object} SelectedTicket
+ * @property {string} ticket_id The ticket ID.
+ * @property {number} quantity  The quantity of the ticket.
+ * @property {string} optout    Whether the ticket is opted out or not.
+ */
+
+/**
+ * Reads and compiles a list of the selected tickets from the DOM
+ *
+ * @since TBD
+ *
+ * @return {SelectedTicket[]} A list of the selected tickets.
+ */
+function readTicketsFromSelection() {
+	const ticketsFromSelection = Array.from(
+		document.querySelectorAll(
+			'.tec-tickets-seating__ticket-rows .tec-tickets-seating__ticket-row'
+		)
+	).reduce((acc, row) => {
+		const ticketId = row.dataset.ticketId;
+
+		if (!acc?.[ticketId]) {
+			acc[ticketId] = {
+				ticket_id: ticketId,
+				quantity: 0,
+				optout: '1', // @todo: actually pull this from the Attendee data collection.
+			};
+		}
+
+		acc[ticketId].quantity++;
+
+		return acc;
+	}, {});
+
+	return Object.values(ticketsFromSelection);
+}
+
+/**
+ * Proceeds to the checkout phase according to the provider.
+ *
+ * @since TBD
+ *
+ * @return {Promise<void>} A promise that resolves to void. Note that, most likely, the checkout will redirect to the
+ *                          provider's checkout page.
+ */
+async function proceedToCheckout() {
+	const checkoutHandler = getCheckoutHandlerForProvider(providerClass);
+
+	if (!checkoutHandler) {
+		console.error(
+			`No checkout handler found for provider ${providerClass}`
+		);
+		return;
+	}
+
+	const data = new FormData();
+	data.append('provider', providerClass);
+
+	// @todo: these values should not be hard-coded, they should come from the Attendee data colletion.
+	data.append('attendee[optout]', '1');
+	data.append('tickets_tickets_ar', '1');
+
+	const selectedTickets = readTicketsFromSelection();
+
+	data.append('tribe_tickets_saving_attendees', '1');
+	data.append(
+		'tribe_tickets_ar_data',
+		JSON.stringify({
+			tribe_tickets_tickets: selectedTickets,
+			tribe_tickets_meta: [], // @todo: actually pull this from the Attendee data collection.
+			tribe_tickets_post_id: postId,
+		})
+	);
+
+	const ok = await checkoutHandler(data);
+
+	if (!ok) {
+		console.error('Failed to proceed to checkout.');
+	}
+}
+
+/**
  * Adds event listeners to the modal element once it's loaded.
  *
  * @since TBD
@@ -207,6 +290,11 @@ function addModalEventListeners() {
 			'.tec-tickets-seating__modal .tec-tickets-seating__sidebar-control--cancel'
 		)
 		.addEventListener('click', closeModal);
+	document
+		.querySelector(
+			'.tec-tickets-seating__modal .tec-tickets-seating__sidebar-control--confirm'
+		)
+		.addEventListener('click', proceedToCheckout);
 }
 
 /**
