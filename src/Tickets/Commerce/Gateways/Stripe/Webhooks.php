@@ -572,8 +572,12 @@ class Webhooks extends Abstract_Webhooks {
 	 * @return bool
 	 */
 	public function has_valid_signing_secret( $context = 'enable' ) {
+		$signing_key_const_defined = ( defined( 'TEC_TC_STRIPE_SIGNING_SECRET' ) && TEC_TC_STRIPE_SIGNING_SECRET )
+							|| ( ! empty( $_ENV['TEC_TC_STRIPE_SIGNING_SECRET'] ) && $_ENV['TEC_TC_STRIPE_SIGNING_SECRET'] ) //phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+							|| getenv( 'TEC_TC_STRIPE_SIGNING_SECRET' );
+
 		// If we have a constant defined, we should bail webhook creation.
-		if ( defined( 'TEC_TC_STRIPE_SIGNING_SECRET' ) && TEC_TC_STRIPE_SIGNING_SECRET ) {
+		if ( $signing_key_const_defined ) {
 			// When the context is enable, it should return true to bail on attempt create/update webhook.
 			// Because if valid signing secret, we dont need to create/update one.
 
