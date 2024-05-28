@@ -20,14 +20,14 @@ if ( $has_plus ) {
 	$mobile_graphic  = 'images/header/welcome-mobile-etplus.jpg';
 }
 
-$tc_description = esc_html( 'Tickets Commerce provides flexible online payments right out of the box.', 'event-tickets' );
+$tc_description = esc_html__( 'Tickets Commerce provides flexible online payments right out of the box.', 'event-tickets' );
 $tc_link = tribe( Payments_Tab::class )->get_url();
 
 if ( $has_tec ) {
-	$tc_description = sprintf( 
-		'%s %s', 
-		esc_html( 'Want to monetize your events?', 'event-tickets' ), 
-		$tc_description 
+	$tc_description = sprintf(
+		'%1$s %2$s',
+		esc_html__( 'Want to monetize your events?', 'event-tickets' ),
+		$tc_description
 	);
 }
 
@@ -161,17 +161,6 @@ if ( $has_tec ) {
 			<div class="tribe-events-admin-card__title"><?php esc_html_e( 'Tickets Commerce', 'event-tickets' ); ?></div>
 			<div class="tribe-events-admin-card__description"><?php echo $tc_description; ?></div>
 			<a class="tribe-events-admin-card__link" href="<?php echo $tc_link; ?>"><?php esc_html_e( 'Get started', 'event-tickets' ); ?></a>
-		</div>
-
-		<div class="tribe-events-admin-card tribe-events-admin-card--1up">
-			<img
-				class="tribe-events-admin-card__image"
-				src="<?php echo esc_url( tribe_resource_url( 'images/welcome/virtual-events.jpg', false, null, $main ) ); ?>"
-				alt="<?php esc_attr_e( 'Illustration of a phone screen with a person\'s face', 'event-tickets' ); ?>"
-			/>
-			<div class="tribe-events-admin-card__title"><?php esc_html_e( 'Virtual Event Resources', 'event-tickets' ); ?></div>
-			<div class="tribe-events-admin-card__description"><?php esc_html_e( 'Tips and tools to help with planning online events, webinars, and more on WordPress and beyond.', 'event-tickets' ); ?></div>
-			<a class="tribe-events-admin-card__link" href="https://evnt.is/1ani" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Get started with online events', 'event-tickets' ); ?></a>
 		</div>
 
 		<?php if ( $has_plus && $has_tec ) : // ET+ with TEC. ?>
