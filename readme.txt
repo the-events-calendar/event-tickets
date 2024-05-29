@@ -199,7 +199,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.11.0] 2024-06-11 =
 
-
+* Feature - Adapt to using the refactored tribe_asset. Remove some unused asset calls. [TCMN-172]
 
 = [5.10.0] 2024-05-14 =
 
