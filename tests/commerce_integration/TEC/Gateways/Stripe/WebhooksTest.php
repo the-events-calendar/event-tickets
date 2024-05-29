@@ -519,10 +519,10 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	protected function enable_const_signing_secret() {
-		putenv( 'TEC_TC_STRIPE_SIGNING_SECRET=wh_secret_1' );
+		$this->set_class_fn_return( Webhooks::class, 'is_signing_secret_const_defined', true );
 	}
 
 	protected function disable_const_signing_secret() {
-		putenv( 'TEC_TC_STRIPE_SIGNING_SECRET=' );
+		$this->set_class_fn_return( Webhooks::class, 'is_signing_secret_const_defined', false );
 	}
 }
