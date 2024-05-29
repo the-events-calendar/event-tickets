@@ -31,10 +31,10 @@ use TEC\Tickets\Seating\Admin\Tabs\Layout_Card;
 				?>
 		</div>
 		<div class="tec-tickets__tab__cards__item-actions">
-			<a class="button button-secondary edit-Layout" href="#">
+			<a class="button button-secondary edit-layout" href="#">
 				<?php esc_html_e( 'Edit', 'event-tickets' ); ?>
 			</a>
-			<a class="delete-Layout" href="#">
+			<a class="delete-layout" href="#">
 				<?php esc_html_e( 'Delete', 'event-tickets' ); ?>
 			</a>
 		</div>
