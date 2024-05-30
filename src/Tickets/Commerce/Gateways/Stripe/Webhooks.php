@@ -272,7 +272,7 @@ class Webhooks extends Abstract_Webhooks {
 				'home_url'       => rawurlencode( tribe( Return_Endpoint::class )->get_route_url() ),
 				'version'        => rawurlencode( tribe( 'tickets.main' )::VERSION ),
 				// array_keys to expose only webhook ids. in values we have the webhoo signing secrets we don't want exposed.
-				'known_webhooks' => array_map( 'rawurlencode', array_keys( tribe_get_option( self::OPTION_KNOWN_WEBHOOKS, [] ) ) ),
+				'known_webhooks' => array_map( 'rawurlencode', array_keys( $this->get_known_webhooks() ) ),
 			]
 		);
 
@@ -356,7 +356,7 @@ class Webhooks extends Abstract_Webhooks {
 			return [];
 		}
 
-		$known_webhooks = tribe_get_option( self::OPTION_KNOWN_WEBHOOKS, [] );
+		$known_webhooks = $this->get_known_webhooks();
 
 		if ( empty( $known_webhooks ) ) {
 			return [];
@@ -365,6 +365,23 @@ class Webhooks extends Abstract_Webhooks {
 		$known_webhooks = array_flip( $known_webhooks );
 
 		return $known_webhooks[ $current_signing_key ] ? [ $known_webhooks[ $current_signing_key ] ] : [];
+	}
+
+	/**
+	 * Get the known webhooks.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function get_known_webhooks() {
+		$known_webhooks = tribe_get_option( self::OPTION_KNOWN_WEBHOOKS, [] );
+
+		if ( ! is_array( $known_webhooks ) ) {
+			return [];
+		}
+
+		return $known_webhooks;
 	}
 
 	/**
@@ -378,7 +395,7 @@ class Webhooks extends Abstract_Webhooks {
 	 * @return void
 	 */
 	public function add_webhook( $webhook ) {
-		$known_webhooks = tribe_get_option( self::OPTION_KNOWN_WEBHOOKS, [] );
+		$known_webhooks = $this->get_known_webhooks();
 
 		$signing_key = $webhook['secret'] ?? false;
 		$signing_key = $signing_key ? $signing_key : ( $known_webhooks[ $webhook['id'] ] ?? false );

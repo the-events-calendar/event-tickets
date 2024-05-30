@@ -49,7 +49,7 @@ class Signup extends Abstract_Signup {
 				'return_url'     => tribe( WhoDat::class )->get_api_url( 'connected' ),
 				'version'        => rawurlencode( tribe( 'tickets.main' )::VERSION ),
 				// array_keys to expose only webhook ids. in values we have the webhook signing secrets we don't want exposed.
-				'known_webhooks' => array_map( 'rawurlencode', array_keys( tribe_get_option( tribe( Webhooks::class )::OPTION_KNOWN_WEBHOOKS, [] ) ) ),
+				'known_webhooks' => array_map( 'rawurlencode', array_keys( tribe( Webhooks::class )->get_known_webhooks() ) ),
 			]
 		);
 	}
