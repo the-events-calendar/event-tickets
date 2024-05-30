@@ -41,6 +41,47 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * @test
 	 *
+	 * @covers TEC\Tickets\Commerce\Gateways\Stripe\Webhooks::get_known_webhooks
+	 */
+	public function it_should_always_return_an_array() {
+		$webhooks = tribe( Webhooks::class );
+
+		tribe_update_option( $webhooks::OPTION_KNOWN_WEBHOOKS, [] );
+
+		$this->assertIsArray( $webhooks->get_known_webhooks() );
+		$this->assertEmpty( $webhooks->get_known_webhooks() );
+
+		tribe_update_option( $webhooks::OPTION_KNOWN_WEBHOOKS, 'STRING' );
+
+		$this->assertIsArray( $webhooks->get_known_webhooks() );
+		$this->assertEmpty( $webhooks->get_known_webhooks() );
+
+		tribe_update_option( $webhooks::OPTION_KNOWN_WEBHOOKS, true );
+
+		$this->assertIsArray( $webhooks->get_known_webhooks() );
+		$this->assertEmpty( $webhooks->get_known_webhooks() );
+
+		tribe_update_option( $webhooks::OPTION_KNOWN_WEBHOOKS, 1 );
+
+		$this->assertIsArray( $webhooks->get_known_webhooks() );
+		$this->assertEmpty( $webhooks->get_known_webhooks() );
+
+		$updated = [ 'test' ];
+		tribe_update_option( $webhooks::OPTION_KNOWN_WEBHOOKS, $updated );
+
+		$this->assertIsArray( $webhooks->get_known_webhooks() );
+		$this->assertEquals( $updated, $webhooks->get_known_webhooks() );
+
+		// Reset. SHould go back to empty.
+		tribe_update_option( $webhooks::OPTION_KNOWN_WEBHOOKS, [] );
+
+		$this->assertIsArray( $webhooks->get_known_webhooks() );
+		$this->assertEmpty( $webhooks->get_known_webhooks() );
+	}
+
+	/**
+	 * @test
+	 *
 	 * @covers TEC\Tickets\Commerce\Gateways\Stripe\Hooks::setup_stripe_webhook_on_release
 	 */
 	public function it_should_set_up_webhook_on_release() {
