@@ -374,7 +374,7 @@ class Webhooks extends Abstract_Webhooks {
 	 *
 	 * @return array
 	 */
-	public function get_known_webhooks() {
+	public function get_known_webhooks(): array {
 		$known_webhooks = tribe_get_option( self::OPTION_KNOWN_WEBHOOKS, [] );
 
 		if ( ! is_array( $known_webhooks ) ) {
