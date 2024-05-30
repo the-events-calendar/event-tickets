@@ -297,7 +297,7 @@ class Webhooks extends Abstract_Webhooks {
 	 *
 	 * @return bool
 	 */
-	public function disable_webhook() {
+	public function disable_webhook(): bool {
 		if ( ! $this->get_merchant()->is_active() ) {
 			// Bail if Stripe is not active.
 			return false;
