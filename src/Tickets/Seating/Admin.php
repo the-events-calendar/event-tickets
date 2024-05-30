@@ -2,7 +2,7 @@
 /**
  * The main Admin area controller.
  *
- * @since   TBD
+ * @since TBD
  *
  * @package TEC\Controller;
  */
@@ -25,7 +25,7 @@ use Tribe__Tickets__Main as Tickets;
 /**
  * Class Admin.
  *
- * @since   TBD
+ * @since TBD
  *
  * @package TEC\Controller\Admin;
  */
@@ -44,7 +44,7 @@ class Admin extends Controller_Contract {
 	/**
 	 * Admin constructor.
 	 *
-	 * since TBD
+	 * @since TBD
 	 *
 	 * @param Container $container A reference to the container object.
 	 * @param Service   $service   A reference to the service object.
@@ -190,15 +190,16 @@ class Admin extends Controller_Contract {
 			$this->built_asset_url( 'admin/maps.js' ),
 			Tickets::VERSION
 		)
-		     ->add_to_group( 'tec-tickets-seating-admin' )
-		     ->add_to_group( 'tec-tickets-seating' )
-		     ->enqueue_on( $action )
-		     ->register();
+			->add_to_group( 'tec-tickets-seating-admin' )
+			->add_to_group( 'tec-tickets-seating' )
+			->enqueue_on( $action )
+			->register();
 
 		Asset::add(
 			'tec-tickets-seating-admin-maps-style',
 			$this->built_asset_url( 'admin/maps.css' ),
-			Tickets::VERSION )
+			Tickets::VERSION 
+		)
 			->add_to_group( 'tec-tickets-seating-admin' )
 			->add_to_group( 'tec-tickets-seating' )
 			->enqueue_on( $action )
@@ -219,22 +220,22 @@ class Admin extends Controller_Contract {
 			$this->built_asset_url( 'admin/layouts.js' ),
 			Tickets::VERSION
 		)
-		     ->set_dependencies( 'tribe-dialog-js' )
-		     ->add_to_group( 'tec-tickets-seating-admin' )
-		     ->add_to_group( 'tec-tickets-seating' )
-		     ->enqueue_on( $action )
-		     ->register();
+			->set_dependencies( 'tribe-dialog-js' )
+			->add_to_group( 'tec-tickets-seating-admin' )
+			->add_to_group( 'tec-tickets-seating' )
+			->enqueue_on( $action )
+			->register();
 
 		Asset::add(
 			'tec-tickets-seating-admin-layouts-style',
 			$this->built_asset_url( 'admin/layouts.css' ),
 			Tickets::VERSION
 		)
-		     ->set_dependencies( 'tribe-dialog' )
-		     ->add_to_group( 'tec-tickets-seating-admin' )
-		     ->add_to_group( 'tec-tickets-seating' )
-		     ->enqueue_on( $action )
-		     ->register();
+			->set_dependencies( 'tribe-dialog' )
+			->add_to_group( 'tec-tickets-seating-admin' )
+			->add_to_group( 'tec-tickets-seating' )
+			->enqueue_on( $action )
+			->register();
 	}
 
 	/**
@@ -251,22 +252,22 @@ class Admin extends Controller_Contract {
 			$this->built_asset_url( 'admin/map-edit.js' ),
 			Tickets::VERSION
 		)
-		     ->add_dependency( 'tec-tickets-seating-service-bundle' )
-		     ->enqueue_on( $action )
-		     ->add_to_group( 'tec-tickets-seating-admin' )
-		     ->add_to_group( 'tec-tickets-seating' )
-		     ->register();
+			->add_dependency( 'tec-tickets-seating-service-bundle' )
+			->enqueue_on( $action )
+			->add_to_group( 'tec-tickets-seating-admin' )
+			->add_to_group( 'tec-tickets-seating' )
+			->register();
 
 		Asset::add(
 			'tec-tickets-seating-admin-map-edit-style',
 			$this->built_asset_url( 'admin/map-edit.css' ),
 			Tickets::VERSION
 		)
-		     ->add_to_group( 'tec-tickets-seating-admin' )
-		     ->add_to_group( 'tec-tickets-seating' )
-		     ->enqueue_on( $action )
-		     ->add_to_group( 'tec-tickets-seating-admin' )
-		     ->register();
+			->add_to_group( 'tec-tickets-seating-admin' )
+			->add_to_group( 'tec-tickets-seating' )
+			->enqueue_on( $action )
+			->add_to_group( 'tec-tickets-seating-admin' )
+			->register();
 	}
 
 	/**
@@ -283,22 +284,22 @@ class Admin extends Controller_Contract {
 			$this->built_asset_url( 'admin/layout-edit.js' ),
 			Tickets::VERSION
 		)
-		     ->add_dependency( 'tec-tickets-seating-service-bundle' )
-		     ->enqueue_on( $action )
-		     ->add_to_group( 'tec-tickets-seating-admin' )
-		     ->add_to_group( 'tec-tickets-seating' )
-		     ->register();
+			->add_dependency( 'tec-tickets-seating-service-bundle' )
+			->enqueue_on( $action )
+			->add_to_group( 'tec-tickets-seating-admin' )
+			->add_to_group( 'tec-tickets-seating' )
+			->register();
 
 		Asset::add(
 			'tec-tickets-seating-admin-layout-edit-style',
 			$this->built_asset_url( 'admin/layout-edit.css' ),
 			Tickets::VERSION
 		)
-		     ->add_to_group( 'tec-tickets-seating-admin' )
-		     ->add_to_group( 'tec-tickets-seating' )
-		     ->enqueue_on( $action )
-		     ->add_to_group( 'tec-tickets-seating-admin' )
-		     ->register();
+			->add_to_group( 'tec-tickets-seating-admin' )
+			->add_to_group( 'tec-tickets-seating' )
+			->enqueue_on( $action )
+			->add_to_group( 'tec-tickets-seating-admin' )
+			->register();
 	}
 
 	/**
