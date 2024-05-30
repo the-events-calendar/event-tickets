@@ -39,26 +39,28 @@ class Maps_Layout_Homepage_Test extends WPTestCase {
 	}
 
 	public function test_maps_tab_card_listing() {
-		Maps_Service::insert_rows_from_service( [
+		Maps_Service::insert_rows_from_service(
 			[
-				'id'            => '1',
-				'name'          => 'Map 1',
-				'seats'         => 10,
-				'screenshotUrl' => 'https://example.com/map-1-thumbnail'
-			],
-			[
-				'id'            => '2',
-				'name'          => 'Map 2',
-				'seats'         => 20,
-				'screenshotUrl' => 'https://example.com/map-2-thumbnail'
-			],
-			[
-				'id'            => '3',
-				'name'          => 'Map 3',
-				'seats'         => 100,
-				'screenshotUrl' => 'https://example.com/map-3-thumbnail'
-			],
-		] );
+				[
+					'id'            => '1',
+					'name'          => 'Map 1',
+					'seats'         => 10,
+					'screenshotUrl' => 'https://example.com/map-1-thumbnail',
+				],
+				[
+					'id'            => '2',
+					'name'          => 'Map 2',
+					'seats'         => 20,
+					'screenshotUrl' => 'https://example.com/map-2-thumbnail',
+				],
+				[
+					'id'            => '3',
+					'name'          => 'Map 3',
+					'seats'         => 100,
+					'screenshotUrl' => 'https://example.com/map-3-thumbnail',
+				],
+			] 
+		);
 		// We've just updated the Maps, no need to run the update against the service.
 		set_transient( Maps_Service::update_transient_name(), time() - 1 );
 
@@ -66,6 +68,14 @@ class Maps_Layout_Homepage_Test extends WPTestCase {
 		tribe( Maps_Tab::class )->render();
 		$html = ob_get_clean();
 
+		$this->assertMatchesHtmlSnapshot( $html );
+	}
+	
+	public function test_empty_layouts_tab() {
+		ob_start();
+		tribe( Layouts_Tab::class )->render();
+		$html = ob_get_clean();
+		
 		$this->assertMatchesHtmlSnapshot( $html );
 	}
 	
