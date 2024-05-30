@@ -40,7 +40,6 @@ class Signup extends Abstract_Signup {
 	 * @return string
 	 */
 	public function generate_signup_url() {
-
 		return tribe( WhoDat::class )->get_api_url(
 			'connect',
 			[
@@ -48,7 +47,7 @@ class Signup extends Abstract_Signup {
 				// Seems like a bad idea to leave them like this. Marking for discussion with reviewers.
 				'token'          => $this->get_client_id(),
 				'return_url'     => tribe( WhoDat::class )->get_api_url( 'connected' ),
-				'version'        => rawurlencode( \Tribe__Tickets__Main::VERSION ),
+				'version'        => rawurlencode( tribe( 'tickets.main' )::VERSION ),
 				// array_keys to expose only webhook ids. in values we have the webhook signing secrets we don't want exposed.
 				'known_webhooks' => array_map( 'rawurlencode', array_keys( tribe_get_option( tribe( Webhooks::class )::OPTION_KNOWN_WEBHOOKS, [] ) ) ),
 			]
@@ -63,7 +62,6 @@ class Signup extends Abstract_Signup {
 	 * @return string
 	 */
 	public function generate_disconnect_url() {
-
 		$webhooks = tribe( Webhooks::class );
 
 		$known_webhooks = $webhooks->get_current_webhook_id();
@@ -73,7 +71,7 @@ class Signup extends Abstract_Signup {
 			[
 				'stripe_user_id' => tribe( Merchant::class )->get_client_id(),
 				'return_url'     => rest_url( $this->signup_return_path ),
-				'version'        => rawurlencode( \Tribe__Tickets__Main::VERSION ),
+				'version'        => rawurlencode( tribe( 'tickets.main' )::VERSION ),
 				'known_webhooks' => array_map( 'rawurlencode', $known_webhooks ),
 			]
 		);
