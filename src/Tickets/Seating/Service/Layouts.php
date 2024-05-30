@@ -141,8 +141,8 @@ class Layouts {
 			return [];
 		}
 		
-		$cache_key    = 'option_layout_card_objects';
-		$layout_cards = wp_cache_get( $cache_key, 'tec-tickets-seating' );
+		$mem_key      = 'option_layout_card_objects';
+		$layout_cards = tribe_get_var( $mem_key );
 		
 		if ( ! ( $layout_cards && is_array( $layout_cards ) ) ) {
 			$layout_cards = [];
@@ -156,12 +156,7 @@ class Layouts {
 				);
 			}
 			
-			wp_cache_set(
-				$cache_key,
-				$layout_cards,
-				'tec-tickets-seating',
-				self::update_transient_expiration() // phpcs:ignore
-			);
+			tribe_set_var( $mem_key, $layout_cards );
 		}
 		
 		return $layout_cards;
@@ -183,7 +178,6 @@ class Layouts {
 							->update_from_service(
 								function () {
 									wp_cache_delete( 'option_format_layouts', 'tec-tickets-seating' );
-									wp_cache_delete( 'option_layout_card_objects', 'tec-tickets-seating' );
 									Layouts_Table::truncate();
 								} 
 							)
