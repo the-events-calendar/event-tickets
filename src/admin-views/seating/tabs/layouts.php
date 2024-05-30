@@ -11,8 +11,8 @@
 use TEC\Tickets\Seating\Admin\Tabs\Layout_Card;
 ?>
 
-<div class="tec-tickets__tab-heading__wrapper"><h2
-		class="tec-tickets__tab-heading">
+<div class="tec-tickets__seating-tab-heading-wrapper"><h2
+		class="tec-tickets__seating-tab-heading">
 		<?php 
 		echo esc_html_x(
 			'Seat Layouts',
@@ -22,7 +22,7 @@ use TEC\Tickets\Seating\Admin\Tabs\Layout_Card;
 		?>
 	</h2>
 
-	<div class="tec-tickets-seating-modal-wrapper tribe-common tec-tickets__tab-heading__button">
+	<div class="tec-tickets-seating-modal-wrapper tribe-common tec-tickets__seating-tab-heading__button">
 		<div class="tec-tickets-seating-layouts-modal__anchor"></div>
 		<?php
 		/** @var Tribe\Dialog\View $dialog_view */
@@ -37,7 +37,7 @@ use TEC\Tickets\Seating\Admin\Tabs\Layout_Card;
 		?>
 	</div>
 
-	<div class="tec-tickets__tab-heading__description">
+	<div class="tec-tickets__seating-tab-heading__description">
 		<p>
 			<?php 
 			echo wp_kses(
@@ -63,7 +63,7 @@ use TEC\Tickets\Seating\Admin\Tabs\Layout_Card;
 		</p>
 	</div>
 </div>
-<div class="tec-tickets__tab-content__wrapper">
+<div class="tec-tickets__seating-tab-wrapper">
 	<?php
 		$this->template(
 			'components/layouts/list',

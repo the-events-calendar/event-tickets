@@ -16,7 +16,7 @@ if ( empty( $cards ) ) {
 	return;
 }
 ?>
-<div class="tec-tickets__tab-content__cards">
+<div class="tec-tickets__seating-tab__cards">
 <?php
 foreach ( $cards as $card ) {
 	$this->template( 'components/layouts/card', [ 'card' => $card ] );

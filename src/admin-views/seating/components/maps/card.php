@@ -12,14 +12,14 @@
 use TEC\Tickets\Seating\Admin\Tabs\Map_Card;
 
 ?>
-<div class="tec-tickets__tab__cards__item">
-	<div class="tec-tickets__tab__cards__item-thumbnail">
+<div class="tec-tickets__seating-tab__card">
+	<div class="tec-tickets__seating-tab__card-thumbnail">
 		<img src="<?php echo esc_url( $card->get_screenshot_url() ); ?>"
 			alt="<?php echo esc_attr( $card->get_name() ); ?>">
 	</div>
-	<div class="tec-tickets__tab__cards__item-content">
-		<div class="tec-tickets__tab__cards__item-title"><?php echo esc_html( $card->get_name() ); ?></div>
-		<div class="tec-tickets__tab__cards__item-capacity">
+	<div class="tec-tickets__seating-tab__card-content">
+		<div class="tec-tickets__seating-tab__card-title"><?php echo esc_html( $card->get_name() ); ?></div>
+		<div class="tec-tickets__seating-tab__card-capacity">
 			<?php
 				echo esc_html(
 					sprintf(
@@ -30,7 +30,7 @@ use TEC\Tickets\Seating\Admin\Tabs\Map_Card;
 				);
 				?>
 		</div>
-		<div class="tec-tickets__tab__cards__item-actions">
+		<div class="tec-tickets__seating-tab__card-actions">
 			<a class="button button-secondary add-map" href="#">
 				<?php esc_html_e( 'Create Layout', 'event-tickets' ); ?>
 			</a>

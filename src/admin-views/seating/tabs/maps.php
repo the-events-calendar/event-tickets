@@ -11,8 +11,8 @@
 use TEC\Tickets\Seating\Admin\Tabs\Map_Card;
 ?>
 
-<div class="tec-tickets__tab-heading__wrapper"><h2
-		class="tec-tickets__tab-heading">
+<div class="tec-tickets__seating-tab-heading-wrapper"><h2
+		class="tec-tickets__seating-tab-heading">
 		<?php 
 		echo esc_html_x(
 			'Seating Maps',
@@ -21,12 +21,12 @@ use TEC\Tickets\Seating\Admin\Tabs\Map_Card;
 		); 
 		?>
 	</h2>
-	<a class="button button-secondary tec-tickets__tab-heading__button"
+	<a class="button button-secondary tec-tickets__seating-tab-heading__button"
 		type="button"
 		href="<?php echo esc_url( $add_new_url ); ?>">
 		<?php echo esc_html_x( 'Add New', 'Add new seating configuration button', 'event-tickets' ); ?>
 	</a>
-	<div class="tec-tickets__tab-heading__description">
+	<div class="tec-tickets__seating-tab-heading__description">
 		<p>
 			<?php 
 			echo wp_kses(
@@ -52,7 +52,7 @@ use TEC\Tickets\Seating\Admin\Tabs\Map_Card;
 		</p>
 	</div>
 </div>
-<div class="tec-tickets__tab-content__wrapper">
+<div class="tec-tickets__seating-tab-wrapper">
 	<?php 
 	$this->template(
 		'components/maps/list',
