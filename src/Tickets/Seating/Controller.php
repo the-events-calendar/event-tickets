@@ -81,6 +81,7 @@ class Controller extends Controller_Contract {
 			$this->container->register( Admin::class );
 		} else {
 			$this->container->register( Frontend::class );
+			$this->container->register( Orders\Controller::class );
 		}
 	}
 
