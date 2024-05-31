@@ -46,34 +46,34 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 	public function it_should_always_return_an_array() {
 		$webhooks = tribe( Webhooks::class );
 
-		tribe_update_option( $webhooks::OPTION_KNOWN_WEBHOOKS, [] );
+		tribe_update_option( Webhooks::OPTION_KNOWN_WEBHOOKS, [] );
 
 		$this->assertIsArray( $webhooks->get_known_webhooks() );
 		$this->assertEmpty( $webhooks->get_known_webhooks() );
 
-		tribe_update_option( $webhooks::OPTION_KNOWN_WEBHOOKS, 'STRING' );
+		tribe_update_option( Webhooks::OPTION_KNOWN_WEBHOOKS, 'STRING' );
 
 		$this->assertIsArray( $webhooks->get_known_webhooks() );
 		$this->assertEmpty( $webhooks->get_known_webhooks() );
 
-		tribe_update_option( $webhooks::OPTION_KNOWN_WEBHOOKS, true );
+		tribe_update_option( Webhooks::OPTION_KNOWN_WEBHOOKS, true );
 
 		$this->assertIsArray( $webhooks->get_known_webhooks() );
 		$this->assertEmpty( $webhooks->get_known_webhooks() );
 
-		tribe_update_option( $webhooks::OPTION_KNOWN_WEBHOOKS, 1 );
+		tribe_update_option( Webhooks::OPTION_KNOWN_WEBHOOKS, 1 );
 
 		$this->assertIsArray( $webhooks->get_known_webhooks() );
 		$this->assertEmpty( $webhooks->get_known_webhooks() );
 
 		$updated = [ 'test' ];
-		tribe_update_option( $webhooks::OPTION_KNOWN_WEBHOOKS, $updated );
+		tribe_update_option( Webhooks::OPTION_KNOWN_WEBHOOKS, $updated );
 
 		$this->assertIsArray( $webhooks->get_known_webhooks() );
 		$this->assertEquals( $updated, $webhooks->get_known_webhooks() );
 
 		// Reset. SHould go back to empty.
-		tribe_update_option( $webhooks::OPTION_KNOWN_WEBHOOKS, [] );
+		tribe_update_option( Webhooks::OPTION_KNOWN_WEBHOOKS, [] );
 
 		$this->assertIsArray( $webhooks->get_known_webhooks() );
 		$this->assertEmpty( $webhooks->get_known_webhooks() );
@@ -260,7 +260,7 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 		// No nonce!
 		$this->assertEquals( wp_json_encode( $json_error ), $response );
 
-		$_POST['tc_nonce'] = wp_create_nonce( $webhooks::NONCE_KEY_SETUP );
+		$_POST['tc_nonce'] = wp_create_nonce( Webhooks::NONCE_KEY_SETUP );
 
 		$response = null;
 
@@ -272,7 +272,7 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 		set_current_user( 1 );
 
 		// refresh nonce.
-		$_POST['tc_nonce'] = wp_create_nonce( $webhooks::NONCE_KEY_SETUP );
+		$_POST['tc_nonce'] = wp_create_nonce( Webhooks::NONCE_KEY_SETUP );
 
 		$this->set_fn_return( 'wp_remote_get', static function ( $send_data ) {
 			return [
@@ -415,7 +415,7 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 		$webhooks = tribe( Webhooks::class );
 
 		if ( empty( self::$webhook_buffer ) ) {
-			tribe_update_option( $webhooks::OPTION_KNOWN_WEBHOOKS, [] );
+			tribe_update_option( Webhooks::OPTION_KNOWN_WEBHOOKS, [] );
 
 			$this->assertEmpty( $webhooks->get_known_webhooks() );
 		}
@@ -507,7 +507,7 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertTrue( $webhooks->get_merchant()->is_active() );
 
 		if ( ! $previous_webhook_id ) {
-			tribe_update_option( $webhooks::OPTION_KNOWN_WEBHOOKS, [] );
+			tribe_update_option( Webhooks::OPTION_KNOWN_WEBHOOKS, [] );
 			$this->assertEmpty( $webhooks->get_current_webhook_id() );
 		} else {
 			$this->assertEquals( [ $previous_webhook_id ], $webhooks->get_current_webhook_id() );
