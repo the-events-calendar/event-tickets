@@ -26,6 +26,7 @@ export function TicketRow(props) {
 			data-seat-type-id="{seatTypeId}"
 			data-ticket-id="{ticketId}"
 			data-price="{price}"
+			data-seat-label="{seatLabel}"
 			>
 			<div class="tec-tickets-seating__seat-color" style="background: {color}"></div>
 
