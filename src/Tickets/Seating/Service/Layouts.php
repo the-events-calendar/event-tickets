@@ -142,7 +142,8 @@ class Layouts {
 		}
 		
 		$mem_key      = 'option_layout_card_objects';
-		$layout_cards = tribe_get_var( $mem_key );
+		$cache        = tribe_cache();
+		$layout_cards = $cache[ $mem_key ];
 		
 		if ( ! ( $layout_cards && is_array( $layout_cards ) ) ) {
 			$layout_cards = [];
@@ -156,7 +157,7 @@ class Layouts {
 				);
 			}
 			
-			tribe_set_var( $mem_key, $layout_cards );
+			$cache[ $mem_key ] = $layout_cards;
 		}
 		
 		return $layout_cards;
