@@ -101,13 +101,13 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	 * @return bool
 	 */
 	public function setup_stripe_webhook_on_release() {
-		$stripe_webhook_version = get_option( 'tec_tickets_commerce_stripe_webhook_version', false );
+		$stripe_webhook_version = tribe_get_option( 'tec_tickets_commerce_stripe_webhook_version', false );
 
 		if ( $stripe_webhook_version ) {
 			return false;
 		}
 
-		update_option( 'tec_tickets_commerce_stripe_webhook_version', Tickets_Plugin::VERSION, true );
+		tribe_update_option( 'tec_tickets_commerce_stripe_webhook_version', Tickets_Plugin::VERSION );
 
 		return tribe( Webhooks::class )->handle_webhook_setup();
 	}

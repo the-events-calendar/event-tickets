@@ -89,7 +89,7 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 
 		$hooks = tribe( Hooks::class );
 
-		$this->assertFalse( get_option( 'tec_tickets_commerce_stripe_webhook_version', false ) );
+		$this->assertFalse( tribe_get_option( 'tec_tickets_commerce_stripe_webhook_version', false ) );
 
 		$this->assertTrue( $webhooks->get_merchant()->is_active() );
 
@@ -115,7 +115,7 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 			];
 		}, true );
 
-		update_option( 'tec_tickets_commerce_stripe_webhook_version', false );
+		tribe_update_option( 'tec_tickets_commerce_stripe_webhook_version', false );
 
 		$this->assertTrue( $hooks->setup_stripe_webhook_on_release() );
 
@@ -123,7 +123,7 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertFalse( $hooks->setup_stripe_webhook_on_release() );
 
 		// Reset the option being checked!
-		update_option( 'tec_tickets_commerce_stripe_webhook_version', false );
+		tribe_update_option( 'tec_tickets_commerce_stripe_webhook_version', false );
 
 		// Enable the env variable.
 		$this->enable_const_signing_secret();
@@ -146,7 +146,7 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 		$this->disable_const_signing_secret();
 
 		// Reset the option being checked!
-		update_option( 'tec_tickets_commerce_stripe_webhook_version', false );
+		tribe_update_option( 'tec_tickets_commerce_stripe_webhook_version', false );
 
 		// Now it should fail without the env variable and the remote get returning a false result.
 		$this->assertFalse( $hooks->setup_stripe_webhook_on_release() );
