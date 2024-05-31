@@ -23,7 +23,7 @@ use TEC\Tickets\Seating\Service\Maps as Maps_Service;
 class Maps extends Tab {
 	
 	/**
-	 * The Maps service.
+	 * The Maps Tab.
 	 *
 	 * @since TBD
 	 *

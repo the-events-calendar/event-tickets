@@ -15,7 +15,7 @@ $add_new_link = sprintf(
 	esc_html_x( 'Add a map', 'Add new seating map link', 'event-tickets' )
 );
 ?>
-<div class="tec-tickets__tab-content__empty">
+<div class="tec-tickets__seating-tab--empty">
 	<p>
 	<?php 
 	echo wp_kses(
