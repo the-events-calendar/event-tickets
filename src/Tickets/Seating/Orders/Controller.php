@@ -89,5 +89,12 @@ class Controller extends Controller_Contract {
 		}
 		
 		update_post_meta( $attendee->ID, Meta::META_KEY_ATTENDEE_SEAT_LABEL, $seats[ $i ] );
+		
+		$seat_type = get_post_meta( $ticket->ID, Meta::META_KEY_SEAT_TYPE, true );
+		update_post_meta( $attendee->ID, Meta::META_KEY_SEAT_TYPE, $seat_type );
+		
+		$event_id  = get_post_meta( $ticket->ID, Attendee::$event_relation_meta_key, true );
+		$layout_id = get_post_meta( $event_id, Meta::META_KEY_LAYOUT_ID, true );
+		update_post_meta( $attendee->ID, Meta::META_KEY_LAYOUT_ID, $layout_id );
 	}
 }
