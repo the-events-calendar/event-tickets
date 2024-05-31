@@ -33,10 +33,11 @@ $webhooks = tribe( Webhooks::class );
 			admin_url( '/admin-ajax.php' )
 		);
 		printf(
-			// Translators: %1$s A link to the automatic webhook setup endpoint. %2$s closing `</a>` link.
-			esc_html__( 'We can set up your Webhook automatically! Save your unsaved changes and then just click %1$shere%2$s!', 'event-tickets' ),
-			'<a id="tec-tickets__admin-settings-webhook-set-up" data-loading-text="' . esc_attr__( 'Setting up your webhook!', 'event-tickets' ) . '" rel="noopener noreferrer" href="' . esc_url( $url ) . '">',
-			'</a>'
+			// Translators: %1$s A link to Stripe's API Webhook Documentation, %2$s closing `</a>` link, %3$s A link to the automatic webhook setup endpoint..
+			esc_html__( 'We can set up your %1$sWebhook automatically%2$s! Save your unsaved changes and then just click %3$shere%2$s!', 'event-tickets' ),
+			'<a target="_blank" rel="noopener noreferrer" href="https://docs.stripe.com/api/webhook_endpoints">',
+			'</a>',
+			'<a id="tec-tickets__admin-settings-webhook-set-up" data-loading-text="' . esc_attr__( 'Setting up your webhook!', 'event-tickets' ) . '" rel="noopener noreferrer" href="' . esc_url( $url ) . '">'
 		);
 		?>
 	</p>
