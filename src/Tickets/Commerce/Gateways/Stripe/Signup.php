@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Signup;
+use Tribe__Tickets__Main as Tickets_Plugin;
 
 /**
  * Class Signup.
@@ -47,7 +48,7 @@ class Signup extends Abstract_Signup {
 				// Seems like a bad idea to leave them like this. Marking for discussion with reviewers.
 				'token'          => $this->get_client_id(),
 				'return_url'     => tribe( WhoDat::class )->get_api_url( 'connected' ),
-				'version'        => rawurlencode( tribe( 'tickets.main' )::VERSION ),
+				'version'        => rawurlencode( Tickets_Plugin::VERSION ),
 				// array_keys to expose only webhook ids. in values we have the webhook signing secrets we don't want exposed.
 				'known_webhooks' => array_map( 'rawurlencode', array_keys( tribe( Webhooks::class )->get_known_webhooks() ) ),
 			]
@@ -71,7 +72,7 @@ class Signup extends Abstract_Signup {
 			[
 				'stripe_user_id' => tribe( Merchant::class )->get_client_id(),
 				'return_url'     => rest_url( $this->signup_return_path ),
-				'version'        => rawurlencode( tribe( 'tickets.main' )::VERSION ),
+				'version'        => rawurlencode( Tickets_Plugin::VERSION ),
 				'known_webhooks' => array_map( 'rawurlencode', $known_webhooks ),
 			]
 		);

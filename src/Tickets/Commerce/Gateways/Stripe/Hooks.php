@@ -6,6 +6,7 @@ use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Notice_Handler;
 use Tribe\Tickets\Admin\Settings as Admin_Settings;
 use Tribe\Admin\Pages;
+use Tribe__Tickets__Main as Tickets_Plugin;
 
 /**
  * Class Hooks
@@ -106,7 +107,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 			return false;
 		}
 
-		update_option( 'tec_tickets_commerce_stripe_webhook_version', tribe( 'tickets.main' )::VERSION, true );
+		update_option( 'tec_tickets_commerce_stripe_webhook_version', Tickets_Plugin::VERSION, true );
 
 		return tribe( Webhooks::class )->handle_webhook_setup();
 	}

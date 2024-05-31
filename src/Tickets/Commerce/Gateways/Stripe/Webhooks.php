@@ -9,6 +9,7 @@ use TEC\Tickets\Commerce\Gateways\Stripe\REST\Webhook_Endpoint;
 use TEC\Tickets\Commerce\Gateways\Stripe\REST\Return_Endpoint;
 
 use Tribe__Settings_Manager as Settings_Manager;
+use Tribe__Tickets__Main as Tickets_Plugin;
 
 /**
  * Class Webhooks
@@ -270,7 +271,7 @@ class Webhooks extends Abstract_Webhooks {
 				'stripe_user_id' => rawurlencode( tribe( Merchant::class )->get_client_id() ),
 				// We sent this so that WhoDat can check our domain visibility and build the webhook URL.
 				'home_url'       => rawurlencode( tribe( Return_Endpoint::class )->get_route_url() ),
-				'version'        => rawurlencode( tribe( 'tickets.main' )::VERSION ),
+				'version'        => rawurlencode( Tickets_Plugin::VERSION ),
 				// array_keys to expose only webhook ids. in values we have the webhoo signing secrets we don't want exposed.
 				'known_webhooks' => array_map( 'rawurlencode', array_keys( $this->get_known_webhooks() ) ),
 			]
@@ -321,7 +322,7 @@ class Webhooks extends Abstract_Webhooks {
 			[
 				'stripe_user_id' => rawurlencode( tribe( Merchant::class )->get_client_id() ),
 				'home_url'       => rawurlencode( tribe( Return_Endpoint::class )->get_route_url() ),
-				'version'        => rawurlencode( tribe( 'tickets.main' )::VERSION ),
+				'version'        => rawurlencode( Tickets_Plugin::VERSION ),
 				'known_webhooks' => array_map( 'rawurlencode', $known_webhooks ),
 			]
 		);
