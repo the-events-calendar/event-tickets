@@ -349,7 +349,7 @@ class Webhooks extends Abstract_Webhooks {
 	 *
 	 * @return array
 	 */
-	public function get_current_webhook_id() {
+	public function get_current_webhook_id(): array {
 		$current_signing_key = tribe_get_option( static::$option_webhooks_signing_key );
 
 		if ( empty( $current_signing_key ) ) {
