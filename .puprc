@@ -13,7 +13,7 @@
 		"npm ci",
 		"npm run build"
 	],
-	"workflow": {
+	"workflows": {
 		"build-common": [
 			"echo 'building common (no-dev) in: '$(pwd)",
 			"cd common && pup build"
