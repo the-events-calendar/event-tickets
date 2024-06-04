@@ -256,6 +256,14 @@ class Webhooks extends Abstract_Webhooks {
 	 * @return bool
 	 */
 	public function handle_webhook_setup() {
+		if ( ! tec_tickets_commerce_is_enabled() ) {
+			return false;
+		}
+
+		if ( tec_tickets_commerce_is_sandbox_mode() ) {
+			return false;
+		}
+
 		if ( ! $this->get_merchant()->is_active() ) {
 			// Bail if Stripe is not active.
 			return false;
@@ -273,6 +281,7 @@ class Webhooks extends Abstract_Webhooks {
 				// We sent this so that WhoDat can check our domain visibility and build the webhook URL.
 				'home_url'       => rawurlencode( tribe( Return_Endpoint::class )->get_route_url() ),
 				'version'        => rawurlencode( Tickets_Plugin::VERSION ),
+				'mode'           => rawurlencode( tec_tickets_commerce_is_sandbox_mode() ? 'sandbox' : 'live' ),
 				// array_keys to expose only webhook ids. in values we have the webhoo signing secrets we don't want exposed.
 				'known_webhooks' => array_map( 'rawurlencode', array_keys( $this->get_known_webhooks() ) ),
 			]
@@ -300,6 +309,14 @@ class Webhooks extends Abstract_Webhooks {
 	 * @return bool
 	 */
 	public function disable_webhook(): bool {
+		if ( ! tec_tickets_commerce_is_enabled() ) {
+			return false;
+		}
+
+		if ( tec_tickets_commerce_is_sandbox_mode() ) {
+			return false;
+		}
+
 		if ( ! $this->get_merchant()->is_active() ) {
 			// Bail if Stripe is not active.
 			return false;
@@ -324,6 +341,7 @@ class Webhooks extends Abstract_Webhooks {
 				'stripe_user_id' => rawurlencode( tribe( Merchant::class )->get_client_id() ),
 				'home_url'       => rawurlencode( tribe( Return_Endpoint::class )->get_route_url() ),
 				'version'        => rawurlencode( Tickets_Plugin::VERSION ),
+				'mode'           => rawurlencode( tec_tickets_commerce_is_sandbox_mode() ? 'sandbox' : 'live' ),
 				'known_webhooks' => array_map( 'rawurlencode', $known_webhooks ),
 			]
 		);
