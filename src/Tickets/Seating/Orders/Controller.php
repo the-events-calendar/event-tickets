@@ -148,3 +148,4 @@ class Controller extends Controller_Contract {
 		return $this->attendee->render_seat_column( $value, $item, $column );
 	}
 }
+

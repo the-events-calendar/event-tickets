@@ -74,3 +74,4 @@ class Cart {
 		update_post_meta( $attendee->ID, Meta::META_KEY_LAYOUT_ID, $layout_id );
 	}
 }
+
