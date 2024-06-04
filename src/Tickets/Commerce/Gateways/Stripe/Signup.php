@@ -49,6 +49,7 @@ class Signup extends Abstract_Signup {
 				'token'          => $this->get_client_id(),
 				'return_url'     => tribe( WhoDat::class )->get_api_url( 'connected' ),
 				'version'        => rawurlencode( Tickets_Plugin::VERSION ),
+				'mode'           => rawurlencode( tec_tickets_commerce_is_sandbox_mode() ? 'sandbox' : 'live' ),
 				// array_keys to expose only webhook ids. in values we have the webhook signing secrets we don't want exposed.
 				'known_webhooks' => array_map( 'rawurlencode', array_keys( tribe( Webhooks::class )->get_known_webhooks() ) ),
 			]
@@ -73,6 +74,7 @@ class Signup extends Abstract_Signup {
 				'stripe_user_id' => tribe( Merchant::class )->get_client_id(),
 				'return_url'     => rest_url( $this->signup_return_path ),
 				'version'        => rawurlencode( Tickets_Plugin::VERSION ),
+				'mode'           => rawurlencode( tec_tickets_commerce_is_sandbox_mode() ? 'sandbox' : 'live' ),
 				'known_webhooks' => array_map( 'rawurlencode', $known_webhooks ),
 			]
 		);
