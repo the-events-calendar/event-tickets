@@ -70,7 +70,10 @@ class Controller extends Controller_Contract {
 
 		$this->container->register( Tables::class );
 		$this->container->register( Assets::class );
-
+		
+		// Manage Order and Attendee data.
+		$this->container->register( Orders\Controller::class );
+		
 		/*
 		 * The Editor will have to handle initial state requests, AJAX requests and REST requests from the Block Editor.
 		 * For this reason, it's always registered.
@@ -81,7 +84,6 @@ class Controller extends Controller_Contract {
 			$this->container->register( Admin::class );
 		} else {
 			$this->container->register( Frontend::class );
-			$this->container->register( Orders\Controller::class );
 		}
 	}
 
