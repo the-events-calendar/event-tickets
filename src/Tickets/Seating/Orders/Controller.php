@@ -10,11 +10,10 @@
 namespace TEC\Tickets\Seating\Orders;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
-use TEC\Tickets\Commerce\Attendee;
+use TEC\Common\lucatume\DI52\Container;
 use TEC\Tickets\Commerce\Status\Status_Interface;
-use TEC\Tickets\Seating\Meta;
-use Tribe__Utils__Array as Arr;
-use Tribe__Main as Common;
+use WP_Post;
+use Tribe__Tickets__Tickets;
 
 /**
  * Class Controller
@@ -24,6 +23,39 @@ use Tribe__Main as Common;
  * @package TEC/Tickets/Seating/Orders
  */
 class Controller extends Controller_Contract {
+	
+	/**
+	 * A reference to Attendee data handler
+	 *
+	 * @since TBD
+	 *
+	 * @var Attendee
+	 */
+	private Attendee $attendee;
+	
+	/**
+	 * A reference to Cart data handler
+	 *
+	 * @since TBD
+	 *
+	 * @var Cart
+	 */
+	private Cart $cart;
+	
+	/**
+	 * Controller constructor.
+	 *
+	 * @since TBD
+	 *
+	 * @param Container $container The DI container.
+	 * @param Attendee  $attendee   The Attendee data handler.
+	 * @param Cart      $cart       The Cart data handler.
+	 */
+	public function __construct( Container $container, Attendee $attendee, Cart $cart ) {
+		parent::__construct( $container );
+		$this->attendee = $attendee;
+		$this->cart     = $cart;
+	}
 	
 	/**
 	 * The action that will be fired when this Controller registers.
@@ -67,45 +99,24 @@ class Controller extends Controller_Contract {
 	 * @return array The prepared data.
 	 */
 	public function handle_seat_selection( array $data ): array {
-		foreach ( $data['tickets'] as $key => $ticket_data ) {
-			if ( ! isset( $ticket_data['seat_labels'] ) ) {
-				continue;
-			}
-			
-			$ticket_data['extra']['seats'] = $ticket_data['seat_labels'];
-			
-			$data['tickets'][ $key ] = $ticket_data;
-		}
-		
-		return $data;
+		return $this->cart->handle_seat_selection( $data );
 	}
 	
 	/**
 	 * Saves the seat data for the attendee.
 	 *
-	 * @param Attendee                 $attendee               The generated attendee.
-	 * @param \Tribe__Tickets__Tickets $ticket The ticket the attendee is generated for.
-	 * @param \WP_Post                 $order              The order the attendee is generated for.
-	 * @param Status_Interface         $new_status      New post status.
-	 * @param Status_Interface|null    $old_status Old post status.
-	 * @param array                    $item Which cart item this was generated for.
-	 * @param int                      $i      Which Attendee index we are generating.
+	 * @param WP_Post                 $attendee               The generated attendee.
+	 * @param Tribe__Tickets__Tickets $ticket The ticket the attendee is generated for.
+	 * @param WP_Post                 $order              The order the attendee is generated for.
+	 * @param Status_Interface        $new_status      New post status.
+	 * @param Status_Interface|null   $old_status Old post status.
+	 * @param array                   $item Which cart item this was generated for.
+	 * @param int                     $i      Which Attendee index we are generating.
+	 *
+	 * @return void
 	 */
-	public function save_seat_data_for_attendee( $attendee, $ticket, $order, $new_status, $old_status, $item, $i ) {
-		$seats = Arr::get( $item, [ 'extra', 'seats' ], false );
-		
-		if ( empty( $seats ) || ! isset( $seats[ $i ] ) ) {
-			return;
-		}
-		
-		update_post_meta( $attendee->ID, Meta::META_KEY_ATTENDEE_SEAT_LABEL, $seats[ $i ] );
-		
-		$seat_type = get_post_meta( $ticket->ID, Meta::META_KEY_SEAT_TYPE, true );
-		update_post_meta( $attendee->ID, Meta::META_KEY_SEAT_TYPE, $seat_type );
-		
-		$event_id  = get_post_meta( $ticket->ID, Attendee::$event_relation_meta_key, true );
-		$layout_id = get_post_meta( $event_id, Meta::META_KEY_LAYOUT_ID, true );
-		update_post_meta( $attendee->ID, Meta::META_KEY_LAYOUT_ID, $layout_id );
+	public function save_seat_data_for_attendee( $attendee, $ticket, $order, $new_status, $old_status, $item, $i ): void {
+		$this->cart->save_seat_data_for_attendee( $attendee, $ticket, $order, $new_status, $old_status, $item, $i );
 	}
 	
 	/**
@@ -119,17 +130,7 @@ class Controller extends Controller_Contract {
 	 * @return array The filtered columns for the Attendees table.
 	 */
 	public function add_attendee_seat_column( array $columns, int $event_id ): array {
-		$event_layout_id = get_post_meta( $event_id, Meta::META_KEY_LAYOUT_ID, true );
-		
-		if ( empty( $event_layout_id ) ) {
-			return $columns;
-		}
-		
-		return Common::array_insert_after_key(
-			'ticket',
-			$columns,
-			[ 'seat' => esc_html_x( 'Seat', 'attendee table seat column header', 'event-tickets' ) ]
-		);
+		return $this->attendee->add_attendee_seat_column( $columns, $event_id );
 	}
 	
 	/**
@@ -144,16 +145,6 @@ class Controller extends Controller_Contract {
 	 * @return string The rendered column.
 	 */
 	public function render_seat_column( $value, $item, $column ) {
-		if ( 'seat' !== $column ) {
-			return $value;
-		}
-		
-		$seat_label = get_post_meta( $item['ID'], Meta::META_KEY_ATTENDEE_SEAT_LABEL, true );
-		
-		if ( empty( $seat_label ) ) {
-			return '';
-		}
-		
-		return $seat_label;
+		return $this->attendee->render_seat_column( $value, $item, $column );
 	}
 }
