@@ -44,6 +44,7 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 	 * @covers TEC\Tickets\Commerce\Gateways\Stripe\Webhooks::get_known_webhooks
 	 */
 	public function it_should_always_return_an_array() {
+		$this->assertFalse( tec_tickets_commerce_is_sandbox_mode() );
 		$webhooks = tribe( Webhooks::class );
 
 		tribe_update_option( Webhooks::OPTION_KNOWN_WEBHOOKS, [] );
@@ -374,6 +375,13 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 			];
 		}, true );
 
+		$this->set_tickets_commerce_on_staging();
+
+		// All is good but tickets commerce is in staging mode. It should fail early.
+		$this->assertFalse( $webhooks->handle_webhook_setup() );
+
+		$this->set_tickets_commerce_on_production();
+
 		$this->assertTrue( $webhooks->handle_webhook_setup() );
 	}
 
@@ -488,6 +496,13 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 
 		$this->disable_const_signing_secret();
 
+		$this->set_tickets_commerce_on_staging();
+
+		// All is good but tickets commerce is in staging mode. It should fail early.
+		$this->assertFalse( $webhooks->disable_webhook() );
+
+		$this->set_tickets_commerce_on_production();
+
 		$this->assertTrue( $webhooks->disable_webhook() );
 		$this->assertFalse( $webhooks->has_valid_signing_secret() );
 	}
@@ -559,10 +574,30 @@ class WebhooksTest extends \Codeception\TestCase\WPTestCase {
 		}
 	}
 
+	/**
+	 * Set Tickets Commerce to be in sandbox mode.
+	 */
+	protected function set_tickets_commerce_on_staging() {
+		add_filter( 'tec_tickets_commerce_is_sandbox_mode', '__return_true' );
+	}
+
+	/**
+	 * Set Tickets Commerce to be in production mode.
+	 */
+	protected function set_tickets_commerce_on_production() {
+		add_filter( 'tec_tickets_commerce_is_sandbox_mode', '__return_false' );
+	}
+
+	/**
+	 * Enable the constant for the signing secret.
+	 */
 	protected function enable_const_signing_secret() {
 		$this->set_class_fn_return( Webhooks::class, 'is_signing_secret_const_defined', true );
 	}
 
+	/**
+	 * Disable the constant for the signing secret.
+	 */
 	protected function disable_const_signing_secret() {
 		$this->set_class_fn_return( Webhooks::class, 'is_signing_secret_const_defined', false );
 	}
