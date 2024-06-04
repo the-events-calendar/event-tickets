@@ -124,10 +124,10 @@ class Controller extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string,mixed> $columns The columns for the Attendees table.
-	 * @param int                 $event_id The event ID.
+	 * @param array<string,string> $columns The columns for the Attendees table.
+	 * @param int                  $event_id The event ID.
 	 *
-	 * @return array The filtered columns for the Attendees table.
+	 * @return array<string,string> The filtered columns for the Attendees table.
 	 */
 	public function add_attendee_seat_column( array $columns, int $event_id ): array {
 		return $this->attendee->add_attendee_seat_column( $columns, $event_id );
@@ -148,4 +148,3 @@ class Controller extends Controller_Contract {
 		return $this->attendee->render_seat_column( $value, $item, $column );
 	}
 }
-

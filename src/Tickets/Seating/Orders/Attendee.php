@@ -26,10 +26,10 @@ class Attendee {
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string,mixed> $columns The columns for the Attendees table.
-	 * @param int                 $event_id The event ID.
+	 * @param array<string,string> $columns The columns for the Attendees table.
+	 * @param int                  $event_id The event ID.
 	 *
-	 * @return array The filtered columns for the Attendees table.
+	 * @return array<string,string> The filtered columns for the Attendees table.
 	 */
 	public function add_attendee_seat_column( array $columns, int $event_id ): array {
 		$event_layout_id = get_post_meta( $event_id, Meta::META_KEY_LAYOUT_ID, true );
@@ -54,7 +54,7 @@ class Attendee {
 	 * @param array<string,mixed> $item   Row item data.
 	 * @param string              $column Column name.
 	 *
-	 * @return string The rendered column.
+	 * @return string The rendered value.
 	 */
 	public function render_seat_column( $value, $item, $column ) {
 		if ( 'seat' !== $column ) {
