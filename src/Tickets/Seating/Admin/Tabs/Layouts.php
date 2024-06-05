@@ -10,6 +10,8 @@
 namespace TEC\Tickets\Seating\Admin\Tabs;
 
 use TEC\Tickets\Seating\Admin;
+use TEC\Tickets\Seating\Admin\Template;
+use TEC\Tickets\Seating\Service\Layouts as Layouts_Service;
 
 /**
  * Class Layouts.
@@ -19,6 +21,19 @@ use TEC\Tickets\Seating\Admin;
  * @package TEC\Controller\Admin\Tabs;
  */
 class Layouts extends Tab {
+	/**
+	 * The Layouts Tab.
+	 *
+	 * @since TBD
+	 *
+	 * @param Template        $template The template object.
+	 * @param Layouts_Service $layouts The Maps service.
+	 */
+	public function __construct( Template $template, Layouts_Service $layouts ) {
+		parent::__construct( $template );
+		$this->layouts = $layouts;
+	}
+	
 	/**
 	 * Returns the title of this tab. The one that will be displayed on the top of the page.
 	 *
@@ -50,11 +65,13 @@ class Layouts extends Tab {
 	 */
 	public function render(): void {
 		$context = [
-			'cards'       => [],
-			'add_new_url' => add_query_arg( [
-				'page' => Admin::get_menu_slug(),
-				'tab'  => Layout_Edit::get_id()
-			] ),
+			'cards'       => $this->layouts->get_in_card_format(),
+			'add_new_url' => add_query_arg(
+				[
+					'page' => Admin::get_menu_slug(),
+					'tab'  => Layout_Edit::get_id(),
+				] 
+			),
 		];
 
 		$this->template->template( 'tabs/layouts', $context );
