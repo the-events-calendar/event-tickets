@@ -14,6 +14,7 @@ use TEC\Tickets\Commerce\Status\Status_Interface;
 use TEC\Tickets\Seating\Meta;
 use Tribe__Tickets__Tickets;
 use WP_Post;
+use Tribe__Utils__Array as Arr;
 
 /**
  * Class Cart
@@ -74,4 +75,3 @@ class Cart {
 		update_post_meta( $attendee->ID, Meta::META_KEY_LAYOUT_ID, $layout_id );
 	}
 }
-
