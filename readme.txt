@@ -203,6 +203,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Feature - Added support for automatic Stripe Webhook Management for TicketsCommerce [ET-2104]
 * Tweak - Added filters: `tec_tickets_commerce_need_to_enable_stripe_webhook`
 * Deprecated - The `is_success()` method has been deprecated in `TEC\Tickets\Commerce\Gateways\Stripe\Signup` without a replacement.
+* Language: 6 new strings added, 46 updated, 4 fuzzied, and 1 obsoleted
 
 = [5.10.0] 2024-05-14 =
 
