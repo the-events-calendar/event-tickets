@@ -64,7 +64,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	/**
 	 * Set up Stripe Webhook based on transient value.
 	 *
-	 * @since TBD
+	 * @since 5.11.0
 	 *
 	 * @return bool
 	 */
@@ -72,7 +72,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 		/**
 		 * Filters whether to enable the Stripe Webhook.
 		 *
-		 * @since TBD
+		 * @since 5.11.0
 		 *
 		 * @param bool $need_to_enable_stripe_webhook Whether to enable the Stripe Webhook.
 		 */
@@ -96,7 +96,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	/**
 	 * Set up Stripe Webhook based on the plugin version.
 	 *
-	 * @since TBD
+	 * @since 5.11.0
 	 *
 	 * @return bool
 	 */
@@ -169,7 +169,7 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	/**
 	 * Handles the setting up of the webhook on the settings page.
 	 *
-	 * @since TBD
+	 * @since 5.11.0
 	 *
 	 * @return void
 	 */
