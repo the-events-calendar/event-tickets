@@ -2,15 +2,15 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Event Tickets 5.9.3\n"
+"Project-Id-Version: Event Tickets 5.11.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/event-tickets\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-05-13T10:01:43-07:00\n"
-"PO-Revision-Date: 2024-05-13 17:01\n"
+"POT-Creation-Date: 2024-06-07T11:59:54-07:00\n"
+"PO-Revision-Date: 2024-06-07 18:59\n"
 "X-Generator: WP-CLI 2.7.1\n"
 "X-Domain: event-tickets\n"
 
@@ -19,7 +19,7 @@ msgstr ""
 #: src/admin-views/admin-welcome-message.php:73
 #: src/Tickets/Site_Health/Info_Section.php:73
 #: src/Tribe/Admin/Notices.php:85
-#: src/Tribe/Main.php:783
+#: src/Tribe/Main.php:792
 #: src/Tribe/Privacy.php:59
 #: src/views/emails/template-parts/body/footer/credit.php:41
 msgid "Event Tickets"
@@ -67,7 +67,7 @@ msgstr ""
 #: src/admin-views/tribe-commerce-settings.php:4
 #: src/Tickets/Commerce/Payments_Tab.php:300
 #: src/Tribe/Admin/Notices.php:207
-#: src/Tribe/Main.php:758
+#: src/Tribe/Main.php:767
 msgid "Event Tickets Plus"
 msgstr ""
 
@@ -1334,9 +1334,9 @@ msgstr ""
 msgid "Your Stripe account is set to %1$s, but your Tickets Commerce site is set to %2$s. Using different currencies for Tickets Commerce and Stripe may not be supported by all payment methods available in %2$s, and may result in exchange rates and conversions from %2$s to %1$s being handled by Stripe."
 msgstr ""
 
-#. Translators: %1$s The opening `<a>` tag with the stripe link, %2$s The closing `</a>` tag.
+#. Translators: %1$s The opening `<a>` tag with the Stripe link, %2$s The closing `</a>` tag.
 #: src/admin-views/settings/tickets-commerce/stripe/connect/active/stripe-currency.php:38
-msgid "Please be sure to enable all the payment methods you want to use for this currency on your %1$sstripe dashboard%2$s."
+msgid "Please be sure to enable all the payment methods you want to use for this currency on your %1$sStripe dashboard%2$s."
 msgstr ""
 
 #: src/admin-views/settings/tickets-commerce/stripe/connect/active/stripe-currency.php:51
@@ -1404,19 +1404,19 @@ msgstr ""
 msgid "Payment methods"
 msgstr ""
 
-#. Translators: %1$s: opening `a` tag to stripe's dashboard. %2$s: closing `a` tag.
+#. Translators: %1$s: opening `a` tag to Stripe's dashboard. %2$s: closing `a` tag.
 #: src/admin-views/settings/tickets-commerce/stripe/modal/signup-complete/content.php:27
 msgid "You will have to confirm that the payments methods you have selected to sell tickets are enabled on the %1$sStripe payment methods section%2$s."
 msgstr ""
 
 #: src/admin-views/settings/tickets-commerce/stripe/modal/signup-complete/content.php:35
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:304
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:519
 msgid "Webhooks"
 msgstr ""
 
 #. Translators: %1$s: opening `a` tag to the knowledge base article. %2$s: closing `a` tag.
 #: src/admin-views/settings/tickets-commerce/stripe/modal/signup-complete/content.php:39
-msgid "In order for ticket sales to be marked as complete for some payment methods on your Stripe gateway for your Event Tickets site, you must configure the webhook at Stripe. %1$sLearn how to set up webhooks here%2$s."
+msgid "Your webhook is now automatically configured! A webhook is required for ticket sales to be marked as complete for some payment methods on your Stripe gateway for your Event Tickets site. If you would like to read more on how we set up the webhook or if you are facing issues with it there are resources %1$shere%2$s."
 msgstr ""
 
 #: src/admin-views/settings/tickets-commerce/stripe/modal/signup-complete/content.php:47
@@ -1434,6 +1434,25 @@ msgstr ""
 
 #: src/admin-views/settings/tickets-commerce/stripe/signup-link.php:23
 msgid "Get Connected with <i>Stripe</i>"
+msgstr ""
+
+#. Translators: %1$s A link to the KB article. %2$s closing `</a>` link.
+#: src/admin-views/settings/tickets-commerce/stripe/webhook-description.php:19
+msgid "Setting up webhooks will enable you to receive notifications on charge statuses and keep order information up to date for asynchronous payments. %1$sLearn more%2$s"
+msgstr ""
+
+#. Translators: %1$s A link to Stripe's API Webhook Documentation, %2$s closing `</a>` link, %3$s Opening <strong> tag, %4$s Closing </strong< tag.
+#: src/admin-views/settings/tickets-commerce/stripe/webhook-description.php:31
+msgid "We can set up your %1$sWebhook automatically%2$s %3$sonly on Production mode%4$s! Please switch your Tickets Commerce to Production if you would like us to set up your webhook."
+msgstr ""
+
+#. Translators: %1$s A link to Stripe's API Webhook Documentation, %2$s closing `</a>` link, %3$s A link to the automatic webhook setup endpoint..
+#: src/admin-views/settings/tickets-commerce/stripe/webhook-description.php:47
+msgid "We can set up your %1$sWebhook automatically%2$s! Save your unsaved changes and then just click %3$shere%2$s!"
+msgstr ""
+
+#: src/admin-views/settings/tickets-commerce/stripe/webhook-description.php:50
+msgid "Setting up your webhook!"
 msgstr ""
 
 #: src/admin-views/tec-tickets-options-network.php:15
@@ -6748,7 +6767,7 @@ msgstr ""
 
 #. Translators: %1$s is the opening <a> tag for the Payments Tab page link. %2$s is the closing <a> tag.
 #: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:114
-msgid "Your stripe account was disconnected from the Stripe dashboard. If you believe this is an error, you can re-connect in the %1$sPayments Tab of the Settings Page%2$s."
+msgid "Your Stripe account was disconnected from the Stripe dashboard. If you believe this is an error, you can re-connect in the %1$sPayments Tab of the Settings Page%2$s."
 msgstr ""
 
 #: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:136
@@ -6762,6 +6781,14 @@ msgstr ""
 #. Translators: %1$s: Currency Name. %2$s: Link to gateway provider's currency documentation.
 #: src/Tickets/Commerce/Gateways/Stripe/Gateway.php:202
 msgid "Unfortunately, Stripe doesn't support payments in %1$s. Please try using a different gateway or adjusting your Tickets Commerce currency setting. You can see a list of supported currencies %2$s."
+msgstr ""
+
+#: src/Tickets/Commerce/Gateways/Stripe/Hooks.php:178
+msgid "Something went wrong with your Webhook Creation. Please reload the page and try again later."
+msgstr ""
+
+#: src/Tickets/Commerce/Gateways/Stripe/Hooks.php:194
+msgid "Webhook successfully set up! The page will reload now."
 msgstr ""
 
 #. Translators: %s is the html-formatted response from Stripe servers containing the error messages.
@@ -6803,7 +6830,7 @@ msgstr ""
 
 #. Translators: %1$s The tickets commerce currency. %2$s: The currency from the Stripe account.
 #: src/Tickets/Commerce/Gateways/Stripe/Settings.php:178
-msgid "Tickets Commerce is configured to use %1$s as its currency but the default currency for the connected stripe account is %2$s. Using different currencies for Tickets Commerce and Stripe may not be supported by all payment methods available in %1$s, and may result in exchange rates and conversions from %1$s to %2$s being handled by Stripe. If you believe this is an error, you can modify the Tickets Commerce currency in the main Payments tab."
+msgid "Tickets Commerce is configured to use %1$s as its currency but the default currency for the connected Stripe account is %2$s. Using different currencies for Tickets Commerce and Stripe may not be supported by all payment methods available in %1$s, and may result in exchange rates and conversions from %1$s to %2$s being handled by Stripe. If you believe this is an error, you can modify the Tickets Commerce currency in the main Payments tab."
 msgstr ""
 
 #. Translators: %1$s: Opening `<a>` tag for KB article link. %2$s: Closing `<a>` tag.
@@ -6844,7 +6871,7 @@ msgid "Enable Stripe Receipt Emails"
 msgstr ""
 
 #: src/Tickets/Commerce/Gateways/Stripe/Settings.php:267
-msgid "If this option is selected, ticket buyers will get stripe receipts, as well as Event Tickets confirmation emails."
+msgid "If this option is selected, ticket buyers will get Stripe receipts, as well as Event Tickets confirmation emails."
 msgstr ""
 
 #: src/Tickets/Commerce/Gateways/Stripe/Settings.php:273
@@ -6906,53 +6933,48 @@ msgstr ""
 msgid "Klarna"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:129
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:292
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:150
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:507
 msgid "Webhooks not validated yet."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:146
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:167
 msgid "Signing Secret cannot be empty."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:158
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:171
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:218
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:250
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:294
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:179
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:192
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:239
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:467
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:509
 msgid "Webhooks were properly validated for sales."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:192
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:213
 msgid "Could not connect to Stripe for validation. Please check your connection configuration."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:215
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:236
 msgid "We have not received any Stripe events yet. Please wait a few seconds and refresh the page."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:221
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:242
 msgid "This key has not been used in the latest events received. If you are setting up a new key, this status will be properly updated as soon as a new event is received."
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:239
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:456
 msgid "The signing key appears to be invalid. Please check your webhook configuration in the Stripe Dashboard."
 msgstr ""
 
-#. Translators: %1$s A link to the KB article. %2$s closing `</a>` link.
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:312
-msgid "Setting up webhooks will enable you to receive notifications on charge statuses and keep order information up to date for asynchronous payments. %1$sLearn more%2$s"
-msgstr ""
-
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:321
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:527
 msgid "Webhooks URL"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:332
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:538
 msgid "Signing Secret"
 msgstr ""
 
-#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:340
+#: src/Tickets/Commerce/Gateways/Stripe/Webhooks.php:546
 msgid "Validating signing key with Stripe, please wait. This can take up to one minute."
 msgstr ""
 
@@ -8845,7 +8867,7 @@ msgid "Includes ticketed attendees with orders marked Completed."
 msgstr ""
 
 #: src/Tribe/Admin/Home/Service_Provider.php:80
-#: src/Tribe/Main.php:918
+#: src/Tribe/Main.php:927
 msgid "Welcome to Event Tickets!"
 msgstr ""
 
@@ -9108,49 +9130,49 @@ msgstr ""
 msgid "Unticketed"
 msgstr ""
 
-#: src/Tribe/Assets.php:213
+#: src/Tribe/Assets.php:208
 #: src/views/tickets/tpp-success.php:98
 msgid "%s header image"
 msgstr ""
 
-#: src/Tribe/Assets.php:214
+#: src/Tribe/Assets.php:209
 msgid "Set as %s header"
 msgstr ""
 
-#: src/Tribe/Assets.php:271
+#: src/Tribe/Assets.php:258
 msgid "Are you sure you want to delete this ticket? This cannot be undone."
 msgstr ""
 
-#: src/Tribe/Assets.php:277
+#: src/Tribe/Assets.php:264
 msgid "It looks like you have modified your shared capacity setting but have not saved or updated the post."
 msgstr ""
 
-#: src/Tribe/Assets.php:297
+#: src/Tribe/Assets.php:284
 #: src/Tribe/Metabox.php:936
 msgid "Please enter in without thousand separators and currency symbols."
 msgstr ""
 
-#: src/Tribe/Assets.php:404
+#: src/Tribe/Assets.php:391
 msgid "You need to select a user or type a valid email address"
 msgstr ""
 
-#: src/Tribe/Assets.php:405
+#: src/Tribe/Assets.php:392
 msgid "Sending..."
 msgstr ""
 
-#: src/Tribe/Assets.php:409
+#: src/Tribe/Assets.php:396
 msgid "You must first select one or more tickets before you can move them!"
 msgstr ""
 
-#: src/Tribe/Assets.php:411
+#: src/Tribe/Assets.php:398
 msgid "Please confirm that you would like to delete this attendee."
 msgstr ""
 
-#: src/Tribe/Assets.php:412
+#: src/Tribe/Assets.php:399
 msgid "Please confirm that you would like to delete these attendees."
 msgstr ""
 
-#: src/Tribe/Assets.php:602
+#: src/Tribe/Assets.php:589
 msgid "There is unsaved attendee information. Are you sure you want to continue?"
 msgstr ""
 
@@ -9565,83 +9587,83 @@ msgctxt "list view buy now ticket button"
 msgid "Get %s"
 msgstr ""
 
-#: src/Tribe/Main.php:165
+#: src/Tribe/Main.php:169
 msgctxt "provider_plugin_name"
 msgid "Tickets"
 msgstr ""
 
 #. Translators: %1$s is the min required version of The Events Calendar. %2$s Is the update link opening `<a>`. %3$s Is the update link closing `</a>`.
-#: src/Tribe/Main.php:521
+#: src/Tribe/Main.php:530
 msgid "When The Events Calendar and Event Tickets are both activated, The Events Calendar must be running version %1$s or greater. Please %2$supdate now.%3$s"
 msgstr ""
 
-#: src/Tribe/Main.php:584
+#: src/Tribe/Main.php:593
 msgid "Sorry, Event Tickets requires WordPress %s or higher. Please upgrade your WordPress install."
 msgstr ""
 
-#: src/Tribe/Main.php:588
+#: src/Tribe/Main.php:597
 msgid "Sorry, Event Tickets requires PHP %s or higher. Talk to your Web host about moving you to a newer version of PHP."
 msgstr ""
 
-#: src/Tribe/Main.php:713
+#: src/Tribe/Main.php:722
 msgid "Support for Event Tickets"
 msgstr ""
 
-#: src/Tribe/Main.php:715
+#: src/Tribe/Main.php:724
 msgid "Settings overview"
 msgstr ""
 
-#: src/Tribe/Main.php:716
+#: src/Tribe/Main.php:725
 msgid "Features overview"
 msgstr ""
 
-#: src/Tribe/Main.php:717
+#: src/Tribe/Main.php:726
 msgid "Troubleshooting common problems"
 msgstr ""
 
-#: src/Tribe/Main.php:718
+#: src/Tribe/Main.php:727
 msgid "Customizing Event Tickets"
 msgstr ""
 
-#: src/Tribe/Main.php:735
+#: src/Tribe/Main.php:744
 msgid "New User Primer"
 msgstr ""
 
-#: src/Tribe/Main.php:737
+#: src/Tribe/Main.php:746
 msgctxt "help feature box section"
 msgid "We are committed to helping you sell %1$s for your event. Check out our handy %2$s to get started."
 msgstr ""
 
-#: src/Tribe/Main.php:754
+#: src/Tribe/Main.php:763
 msgid "open-source forum on WordPress.org"
 msgstr ""
 
-#: src/Tribe/Main.php:755
+#: src/Tribe/Main.php:764
 msgid "If you have tried the above steps and are still having trouble, you can post a new thread to our %s. Our support staff monitors these forums once a week and would be happy to assist you there."
 msgstr ""
 
-#: src/Tribe/Main.php:757
+#: src/Tribe/Main.php:766
 msgid "premium support on our website"
 msgstr ""
 
-#: src/Tribe/Main.php:759
+#: src/Tribe/Main.php:768
 msgid "Looking for more immediate support? We offer %1$s with the purchase of any of our premium plugins (like %2$s). Pick up a license and you can post there directly and expect a response within 24-48 hours during weekdays."
 msgstr ""
 
-#: src/Tribe/Main.php:761
-#: src/Tribe/Main.php:766
+#: src/Tribe/Main.php:770
+#: src/Tribe/Main.php:775
 msgid "post a thread"
 msgstr ""
 
-#: src/Tribe/Main.php:762
+#: src/Tribe/Main.php:771
 msgid "Already have Event Tickets Plus? You can %s in our premium support forums. Our support team monitors the forums and will respond to your thread within 24-48 hours (during the week)."
 msgstr ""
 
-#: src/Tribe/Main.php:767
+#: src/Tribe/Main.php:776
 msgid "If you have a valid license for one of our paid plugins, you can %s in our premium support forums. Our support team monitors the forums and will respond to your thread within 24-48 hours (during the week)."
 msgstr ""
 
-#: src/Tribe/Main.php:1094
+#: src/Tribe/Main.php:1103
 msgid "Buy"
 msgstr ""
 
