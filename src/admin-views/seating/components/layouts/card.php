@@ -1,15 +1,15 @@
 <?php
 /**
- * Template to render a Map card.
+ * Template to render a Layout card.
  *
  * @since TBD
  *
  * @version TBD
  *
- * @var Map_Card $card The Map card to render.
+ * @var Layout_Card $card The Layout card to render.
  */
 
-use TEC\Tickets\Seating\Admin\Tabs\Map_Card;
+use TEC\Tickets\Seating\Admin\Tabs\Layout_Card;
 
 ?>
 <div class="tec-tickets__seating-tab__card">
@@ -23,21 +23,18 @@ use TEC\Tickets\Seating\Admin\Tabs\Map_Card;
 			<?php
 				echo esc_html(
 					sprintf(
-					/* translators: %s: the capacity of the map */
-						_x( '%s seats', 'map seats count', 'event-tickets' ),
+					/* translators: %s: the capacity of the Layout */
+						_x( '%s seats', 'Layout seats count', 'event-tickets' ),
 						number_format_i18n( $card->get_seats() )
 					)
 				);
 				?>
 		</div>
 		<div class="tec-tickets__seating-tab__card-actions">
-			<a class="button button-secondary add-map" href="#">
-				<?php esc_html_e( 'Create Layout', 'event-tickets' ); ?>
-			</a>
-			<a class="button button-secondary edit-map" href="#">
+			<a class="button button-secondary edit-layout" href="#">
 				<?php esc_html_e( 'Edit', 'event-tickets' ); ?>
 			</a>
-			<a class="delete-map" href="#">
+			<a class="delete-layout" href="#">
 				<?php esc_html_e( 'Delete', 'event-tickets' ); ?>
 			</a>
 		</div>

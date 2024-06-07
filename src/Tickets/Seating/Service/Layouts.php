@@ -10,6 +10,7 @@
 namespace TEC\Tickets\Seating\Service;
 
 use TEC\Tickets\Seating\Tables\Layouts as Layouts_Table;
+use TEC\Tickets\Seating\Admin\Tabs\Layout_Card;
 
 /**
  * Class Layouts.
@@ -63,7 +64,8 @@ class Layouts {
 					$service_row['name'],
 					$service_row['seats'],
 					$service_row['mapId'],
-					$service_row['createdDate']
+					$service_row['createdDate'],
+					$service_row['screenshotUrl']
 				) ) {
 					return $valid;
 				}
@@ -72,11 +74,12 @@ class Layouts {
 				$created_date       = gmdate( 'Y-m-d H:i:s', $created_date_in_ms / 1000 );
 				
 				$valid[] = [
-					'id'           => $service_row['id'],
-					'name'         => $service_row['name'],
-					'seats'        => $service_row['seats'],
-					'map'          => $service_row['mapId'],
-					'created_date' => $created_date,
+					'id'             => $service_row['id'],
+					'name'           => $service_row['name'],
+					'seats'          => $service_row['seats'],
+					'map'            => $service_row['mapId'],
+					'screenshot_url' => $service_row['screenshotUrl'],
+					'created_date'   => $created_date,
 				];
 
 				return $valid;
@@ -125,7 +128,41 @@ class Layouts {
 
 		return $layouts;
 	}
-
+	
+	/**
+	 * Fetches all the Layouts from the database.
+	 *
+	 * @since TBD
+	 *
+	 * @return Layout_Card[] Array of layout card objects.
+	 */
+	public function get_in_card_format() {
+		if ( ! $this->update() ) {
+			return [];
+		}
+		
+		$mem_key      = 'option_layout_card_objects';
+		$cache        = tribe_cache();
+		$layout_cards = $cache[ $mem_key ];
+		
+		if ( ! ( $layout_cards && is_array( $layout_cards ) ) ) {
+			$layout_cards = [];
+			foreach ( Layouts_Table::fetch_all() as $row ) {
+				$layout_cards[] = new Layout_Card(
+					$row->id,
+					$row->name,
+					$row->map,
+					$row->seats,
+					$row->screenshot_url
+				);
+			}
+			
+			$cache[ $mem_key ] = $layout_cards;
+		}
+		
+		return $layout_cards;
+	}
+	
 	/**
 	 * Updates the layouts from the service by updating the caches and custom tables.
 	 *
