@@ -60,7 +60,7 @@ class Webhooks extends Abstract_Webhooks {
 	/**
 	 * Option name for the option to store the known webhooks.
 	 *
-	 * @since TBD
+	 * @since 5.11.0
 	 *
 	 * @var string
 	 */
@@ -69,7 +69,7 @@ class Webhooks extends Abstract_Webhooks {
 	/**
 	 * Nonce key for webhook on-demand set up.
 	 *
-	 * @since TBD
+	 * @since 5.11.0
 	 *
 	 * @var string
 	 */
@@ -251,7 +251,7 @@ class Webhooks extends Abstract_Webhooks {
 	/**
 	 * Handles the setup of the webhook.
 	 *
-	 * @since TBD
+	 * @since 5.11.0
 	 *
 	 * @return bool
 	 */
@@ -304,7 +304,7 @@ class Webhooks extends Abstract_Webhooks {
 	/**
 	 * Disables the current webhook.
 	 *
-	 * @since TBD
+	 * @since 5.11.0
 	 *
 	 * @return bool
 	 */
@@ -365,7 +365,7 @@ class Webhooks extends Abstract_Webhooks {
 	/**
 	 * Get the current webhook ID.
 	 *
-	 * @since TBD
+	 * @since 5.11.0
 	 *
 	 * @return array
 	 */
@@ -390,7 +390,7 @@ class Webhooks extends Abstract_Webhooks {
 	/**
 	 * Get the known webhooks.
 	 *
-	 * @since TBD
+	 * @since 5.11.0
 	 *
 	 * @return array
 	 */
@@ -408,7 +408,7 @@ class Webhooks extends Abstract_Webhooks {
 	 * Adds a webhook to the known webhooks and updates the current signing secrets
 	 * and marks it as validated.
 	 *
-	 * @since TBD
+	 * @since 5.11.0
 	 *
 	 * @param array $webhook The webhook being added.
 	 *
@@ -558,7 +558,7 @@ class Webhooks extends Abstract_Webhooks {
 	/**
 	 * Get the description for the webhooks.
 	 *
-	 * @since TBD
+	 * @since 5.11.0
 	 *
 	 * @return string
 	 */
@@ -570,7 +570,7 @@ class Webhooks extends Abstract_Webhooks {
 	/**
 	 * Whether we have a valid signing secret.
 	 *
-	 * @since TBD
+	 * @since 5.11.0
 	 *
 	 * @param string $context The context in which we are checking the signing secret.
 	 *
@@ -600,7 +600,7 @@ class Webhooks extends Abstract_Webhooks {
 	/**
 	 * Whether the signing secret constant is defined.
 	 *
-	 * @since TBD
+	 * @since 5.11.0
 	 *
 	 * @return bool
 	 */

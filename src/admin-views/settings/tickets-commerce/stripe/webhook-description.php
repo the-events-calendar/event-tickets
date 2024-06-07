@@ -2,7 +2,7 @@
 /**
  * Template to display the Webhook's Setting Description.
  *
- * @since TBD
+ * @since 5.11.0
  *
  * @var Tribe__Tickets__Admin__Views $this     Template object.
  */

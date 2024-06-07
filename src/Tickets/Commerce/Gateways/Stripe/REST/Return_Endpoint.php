@@ -182,7 +182,7 @@ class Return_Endpoint extends Abstract_REST_Endpoint {
 	/**
 	 * Handle account disconnections.
 	 *
-	 * @since TBD
+	 * @since 5.11.0
 	 *
 	 * @param array     $reason Reason of disconnect.
 	 * @param ?stdClass $payload Data returned from WhoDat.
