@@ -201,6 +201,18 @@ const targets = [
 				'build/Seating/frontend/tickets-block.css',
 		},
 	},
+	{
+		name: 'typescript-test-bundle',
+		entry: './src/Tickets/Seating/app/typescript-test/index.ts',
+		outputScript: './build/Seating/typescript-test.min.js',
+		outputStyle: `build/Seating/typescript-test.${postfix}`,
+		moveFromTo: {
+			'src/resources/js/app/typescript-test-bundle.js':
+				'build/Seating/typescript-test.js',
+			'src/resources/css/app/typescript-test-bundle.css':
+				'build/Seating/typescript-test.css',
+		},
+	},
 ];
 
 // A function cannot be spread directly, we need this temporary variable.
@@ -227,8 +239,23 @@ const config = merge(common, {
 			'@tec/tickets/seating/currency': 'tec.tickets.seating.currency',
 		},
 	],
+
 	// Configure multiple entry points.
 	entry: targetEntries,
+
+	// Typescript support.
+	module: {
+		rules: [
+			{
+				test: /\.tsx?$/,
+				loader: 'ts-loader',
+				exclude: /node_modules/,
+			},
+		],
+	},
+	resolve: {
+		extensions: ['.ts', '.tsx', '.js', '.jsx'],
+	},
 });
 
 // WebPack 4 does support multiple entry and output points, but the plugins used by the build do not.
