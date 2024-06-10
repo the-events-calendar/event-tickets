@@ -1,3 +1,8 @@
+import {
+	getIframeElement,
+	initServiceIframe,
+} from '@tec/tickets/seating/iframe';
+
 type SelectedTicket = {
 	ticket_id: number;
 	quantity: number;

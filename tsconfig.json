@@ -11,7 +11,10 @@
     "checkJs": false, // Do not report errors in .js files.
   },
   "include": [
-    "./src/**/*.ts",
-    "./src/**/*.tsx"
-  ]
+    "src/**/*",
+  ],
+  "moduleResolution": "bundler",
+  "paths": {
+    "@tec/tickets/seating/iframe*": ["./src/Tickets/Seating/app/service/iframe.js"],
+  }
 }
