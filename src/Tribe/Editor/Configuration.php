@@ -126,6 +126,14 @@ class Tribe__Tickets__Editor__Configuration implements Tribe__Editor__Configurat
 					'pluralLowercase'   => tribe_get_ticket_label_plural_lowercase( 'editor-configuration' ),
 				],
 			],
+			'salePrice'                 => [
+				'add_sale_price'   => esc_html__( 'Add Sale Price', 'event-tickets' ),
+				'sale_price_label' => esc_html__( 'Sale Price:', 'event-tickets' ),
+				'invalid_price'    => esc_html__( 'Invalid price', 'event-tickets' ),
+				'on_sale_from'     => esc_html__( 'On sale from:', 'event-tickets' ),
+				'to'               => esc_html__( 'to', 'event-tickets' ),
+				'on_sale'          => esc_html__( 'On Sale', 'event-tickets' ),
+			],
 		];
 
 		/**
