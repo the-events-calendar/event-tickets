@@ -296,7 +296,7 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 			$ticket_data['ticket_id'] = $ticket_id;
 		}
 
-		if ( $is_paypal_ticket && isset( $body['ticket']['sale_price'] ) ) {
+		if ( isset( $body['ticket']['sale_price'] ) ) {
 			$sale_price_data                      = $body['ticket']['sale_price'];
 			$ticket_data['ticket_add_sale_price'] = Tribe__Utils__Array::get( $sale_price_data, 'checked', false );
 
