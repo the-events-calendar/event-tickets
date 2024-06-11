@@ -190,7 +190,7 @@ class Order extends Abstract_Order {
 		$post_type_args = [
 			'label'           => __( 'Orders', 'event-tickets' ),
 			'public'          => false,
-			'show_ui'         => false,
+			'show_ui'         => true,
 			'show_in_menu'    => false,
 			'query_var'       => false,
 			'rewrite'         => false,
