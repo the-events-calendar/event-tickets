@@ -613,15 +613,17 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 * Returns a ticket cost or details.
 	 *
 	 * @since 4.8
+	 * @since TBD
 	 *
 	 * @param int  $ticket_id The ticket ID.
 	 * @param bool $get_details Whether to get just the ticket cost (`false`) or
 	 *                          the details too ('true').
+	 * @param bool $force_regular Whether to force the regular price or not.
 	 *
 	 * @return string|array|false The ticket formatted cost if `$get_details` is `false`, the
 	 *                            ticket cost details otherwise; `false` on failure.
 	 */
-	public function get_ticket_cost( $ticket_id, $get_details = false ) {
+	public function get_ticket_cost( $ticket_id, $get_details = false, $force_regular = true ) {
 		$ticket = $this->get_ticket_object( $ticket_id );
 
 		if ( $ticket instanceof WP_Error ) {
@@ -631,7 +633,18 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		/** @var Tribe__Tickets__Commerce__Currency $currency */
 		$currency = tribe( 'tickets.commerce.currency' );
 
-		$price    = $ticket->price;
+		/**
+		 * Filters the ticket price before it is formatted.
+		 *
+		 * @since TBD
+		 *
+		 * @param float  $price The ticket price.
+		 * @param int    $ticket_id The ticket ID.
+		 * @param string $provider_class The ticket provider class.
+		 * @param bool   $force_regular Whether to force the regular price or not.
+		 */
+		$price = apply_filters( 'tribe_tickets_rest_api_ticket_price', $ticket->price, $ticket_id, $ticket->provider_class, $force_regular );
+
 		$provider = $ticket->provider_class;
 
 		if ( ! is_numeric( $price ) ) {
@@ -639,7 +652,11 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		}
 
 		if ( Module::class === $provider ) {
-			$price = tribe( Ticket::class )->get_regular_price( $ticket_id );
+			if ( ! $force_regular && $ticket->on_sale ) {
+				$price = tribe( Ticket::class )->get_sale_price( $ticket_id );
+			} else {
+				$price = tribe( Ticket::class )->get_regular_price( $ticket_id );
+			}
 		}
 
 		$formatted_price = html_entity_decode( $currency->format_currency( $price, $ticket_id ) );
@@ -797,6 +814,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 * Returns the sale price data for a ticket.
 	 *
 	 * @since 5.9.0
+	 * @since TBD
 	 *
 	 * @param int $ticket_id The ticket ID.
 	 *
@@ -804,6 +822,10 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 */
 	public function get_ticket_sale_price_data( int $ticket_id ): array {
 		$provider = tribe_tickets_get_ticket_provider( $ticket_id );
+
+		if ( method_exists( $provider, 'get_sale_price_details' ) ) {
+			return $provider->get_sale_price_details( $ticket_id );
+		}
 
 		if ( ! $provider instanceof Module ) {
 			return [];

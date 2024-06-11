@@ -5,6 +5,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { NumericFormat } from 'react-number-format';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Wordpress dependencies
@@ -46,6 +47,7 @@ class SalePrice extends PureComponent {
 		onFromDateChange: PropTypes.func,
 		onToDateChange: PropTypes.func,
 		validSalePrice: PropTypes.bool,
+		provider: PropTypes.string,
 	};
 
 	constructor( props ) {
@@ -75,6 +77,7 @@ class SalePrice extends PureComponent {
 			onFromDateChange,
 			onToDateChange,
 			validSalePrice,
+			provider,
 		} = this.props;
 
 		/**
@@ -103,6 +106,9 @@ class SalePrice extends PureComponent {
 			{ 'tribe-editor__ticket__sale-price--error': !validSalePrice }
 		);
 
+		// Check if the provider is WooCommerce.
+		const isWoo = provider === 'woo';
+
 		/**
 		 * Props for the FromDate input.
 		 */
@@ -123,7 +129,7 @@ class SalePrice extends PureComponent {
 			},
 			onDayChange: onFromDateChange,
 			inputProps: {
-				disabled: isDisabled,
+				disabled: isWoo || isDisabled,
 			},
 		};
 
@@ -148,7 +154,7 @@ class SalePrice extends PureComponent {
 			},
 			onDayChange: onToDateChange,
 			inputProps: {
-				disabled: isDisabled,
+				disabled: isWoo || isDisabled,
 			},
 		};
 
@@ -185,6 +191,7 @@ class SalePrice extends PureComponent {
 								thousandSeparator={currencyThousandsSep}
 								value={salePrice}
 								disabled={isDisabled}
+								readOnly={isWoo}
 							/>
 						</div>
 						{ ! validSalePrice && (
@@ -192,21 +199,30 @@ class SalePrice extends PureComponent {
 								{ SALE_PRICE_LABELS.invalid_price }
 							</div>
 						) }
-						<div className={"tribe-editor__ticket__sale-price--dates"}>
-							<LabeledItem
-								className="tribe-editor__ticket__sale-price__dates--label"
-								label={ SALE_PRICE_LABELS.on_sale_from }
-							/>
-							<div className={"tribe-editor__ticket__sale-price--start-date"}>
-								<DayPickerInput { ...FromDateProps }/>
+						{ isWoo && (
+							<div className={'tribe-editor__ticket__sale-price__error-message'}>
+								<p>
+									{ __( 'The sale price can be managed via the product editor.', 'event-tickets' ) }
+								</p>
 							</div>
-							<span>
-								{ SALE_PRICE_LABELS.to }
-							</span>
-							<div className={"tribe-editor__ticket__sale-price--end-date"}>
-								<DayPickerInput { ...ToDateProps }/>
+						) }
+						{ ! isWoo && (
+							<div className={"tribe-editor__ticket__sale-price--dates"}>
+								<LabeledItem
+									className="tribe-editor__ticket__sale-price__dates--label"
+									label={ SALE_PRICE_LABELS.on_sale_from }
+								/>
+								<div className={"tribe-editor__ticket__sale-price--start-date"}>
+									<DayPickerInput { ...FromDateProps }/>
+								</div>
+								<span>
+									{ SALE_PRICE_LABELS.to }
+								</span>
+								<div className={"tribe-editor__ticket__sale-price--end-date"}>
+									<DayPickerInput { ...ToDateProps }/>
+								</div>
 							</div>
-						</div>
+						) }
 					</div>
 				)}
 			</div>
