@@ -214,7 +214,7 @@ const targetEntries = reduce(
 );
 
 const config = merge(common, {
-	// Add some externals missing from products-taskmaster.
+	// Add externals missing from products-taskmaster.
 	externals: [
 		{
 			'@wordpress/core-data': 'wp.coreData',
