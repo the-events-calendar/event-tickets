@@ -21,6 +21,9 @@ const { objectName, seatTypeMap, labels, providerClass, postId } =
 let totalPriceElement = null;
 let totalTicketsElement = null;
 
+const confirmSelector =
+	'.tec-tickets-seating__modal .tec-tickets-seating__sidebar-control--confirm';
+
 const tickets = Object.values(seatTypeMap).reduce((map, seatType) => {
 	seatType.tickets.forEach((ticket) => {
 		map[ticket.ticketId] = ticket;
@@ -31,7 +34,7 @@ const tickets = Object.values(seatTypeMap).reduce((map, seatType) => {
 /**
  * Formats the text representing the total number of tickets selected.
  *
- * @sicne TBD
+ * @since TBD
  *
  * @param {number} value The value to format.
  *
@@ -41,6 +44,36 @@ function formatTicketNumber(value) {
 	return value === 1
 		? labels.oneTicket
 		: labels.multipleTickets.replace('{count}', value);
+}
+
+/**
+ * Disable the Checkout confirmation button(s).
+ *
+ * @since TBD
+ *
+ * @return {void}
+ */
+function enableCheckout() {
+	Array.from(document.querySelectorAll(confirmSelector)).forEach(
+		(confirm) => {
+			confirm.disabled = false;
+		}
+	);
+}
+
+/**
+ * Enables the Checkout confirmation button(s).
+ *
+ * @since TBD
+ *
+ * @return {void}
+ */
+function disableCheckout() {
+	Array.from(document.querySelectorAll(confirmSelector)).forEach(
+		(confirm) => {
+			confirm.disabled = true;
+		}
+	);
 }
 
 /**
@@ -54,6 +87,12 @@ function updateTotals() {
 	const rows = Array.from(
 		document.querySelectorAll('.tec-tickets-seating__ticket-row')
 	);
+
+	if (rows.length) {
+		enableCheckout();
+	} else {
+		disableCheckout();
+	}
 
 	totalPriceElement.innerText = formatWithCurrency(
 		rows.reduce(function (acc, row) {
@@ -101,7 +140,6 @@ function addTicketToSelection(props) {
 	document
 		.querySelector('.tec-tickets-seating__ticket-rows')
 		.appendChild(TicketRow(ticketRowProps));
-	updateTotals();
 }
 
 /**
@@ -117,6 +155,8 @@ function updateTicketsSelection(items) {
 	items.forEach((item) => {
 		addTicketToSelection(item);
 	});
+
+	updateTotals();
 }
 
 /**
@@ -254,7 +294,6 @@ async function proceedToCheckout() {
 	const data = new FormData();
 	data.append('provider', providerClass);
 
-	// @todo: these values should not be hard-coded, they should come from the Attendee data colletion.
 	data.append('attendee[optout]', '1');
 	data.append('tickets_tickets_ar', '1');
 
@@ -265,7 +304,7 @@ async function proceedToCheckout() {
 		'tribe_tickets_ar_data',
 		JSON.stringify({
 			tribe_tickets_tickets: selectedTickets,
-			tribe_tickets_meta: [], // @todo: actually pull this from the Attendee data collection.
+			tribe_tickets_meta: [],
 			tribe_tickets_post_id: postId,
 		})
 	);
@@ -291,9 +330,7 @@ function addModalEventListeners() {
 		)
 		.addEventListener('click', closeModal);
 	document
-		.querySelector(
-			'.tec-tickets-seating__modal .tec-tickets-seating__sidebar-control--confirm'
-		)
+		.querySelector(confirmSelector)
 		.addEventListener('click', proceedToCheckout);
 }
 
@@ -317,6 +354,7 @@ async function waitForModalElement() {
 
 waitForModalElement().then((modalElement) => {
 	modalElement.on('show', () => {
+		disableCheckout();
 		bootstrapIframe();
 		addModalEventListeners();
 	});
