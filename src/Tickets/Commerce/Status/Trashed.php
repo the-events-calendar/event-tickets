@@ -1,4 +1,11 @@
 <?php
+/**
+ * Status: Trashed
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Commerce\Status
+ */
 
 namespace TEC\Tickets\Commerce\Status;
 
@@ -30,11 +37,15 @@ class Trashed extends Status_Abstract {
 
 	/**
 	 * {@inheritdoc}
+	 *
+	 * @var string[]
 	 */
 	protected $flags = [];
 
 	/**
 	 * {@inheritdoc}
+	 *
+	 * @var array
 	 */
 	protected $wp_arguments = [
 		'public'                    => false,

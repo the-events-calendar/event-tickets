@@ -166,10 +166,12 @@ class Hooks extends Service_Provider {
 			$meta_query = [];
 		}
 
-		if ( ! empty( $_GET['tec_tc_gateway'] ) ) {
+		$gateway = sanitize_text_field( $_GET['tec_tc_gateway'] ?? '' ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+
+		if ( $gateway ) {
 			$meta_query[] = [
 				'key'     => Order::$gateway_meta_key,
-				'value'   => sanitize_text_field( $_GET['tec_tc_gateway'] ),
+				'value'   => $gateway,
 				'compare' => '=',
 			];
 		}
