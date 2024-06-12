@@ -20,6 +20,7 @@ namespace TEC\Tickets\Commerce;
 use \TEC\Common\Contracts\Service_Provider;
 use TEC\Tickets\Commerce as Base_Commerce;
 use TEC\Tickets\Commerce\Admin\Orders_Page;
+use TEC\Tickets\Commerce\Admin_Tables\V2\Orders as Admin_Tables_V2_Orders;
 use TEC\Tickets\Commerce\Reports\Orders;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Status_Interface;
@@ -92,6 +93,8 @@ class Hooks extends Service_Provider {
 
 		add_action( 'tribe_tickets_price_input_description', [ $this, 'render_sale_price_fields' ], 10, 3 );
 
+		add_action( 'pre_get_posts', [ $this, 'pre_filter_admin_order_table' ] );
+
 		add_action( 'admin_menu', tribe_callback( Orders_Page::class, 'add_orders_page' ), 15 );
 	}
 
@@ -137,6 +140,69 @@ class Hooks extends Service_Provider {
 		add_filter( 'tec_tickets_editor_configuration_localized_data', [ $this, 'filter_block_editor_localized_data' ] );
 
 		add_action( 'tribe_editor_config', [ $this, 'filter_tickets_editor_config' ] );
+
+		add_filter( 'wp_list_table_class_name', [ $this, 'filter_wp_list_table_class_name' ], 10, 2 );
+	}
+
+	/**
+	 * Filters the admin order table to apply filters.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Query $query The WP_Query instance.
+	 * @return void
+	 */
+	public function pre_filter_admin_order_table( $query ) {
+		if ( ! $query->is_main_query() || ! $query->is_admin || Order::POSTTYPE !== $query->get( 'post_type' ) ) {
+			return;
+		}
+
+		$screen = get_current_screen();
+
+		if ( empty( $screen->id ) || 'edit-' . Order::POSTTYPE !== $screen->id ) {
+			return;
+		}
+
+		$meta_query = $query->get( 'meta_query' );
+
+		if ( empty( $meta_query ) || ! is_array( $meta_query ) ) {
+			$meta_query = [];
+		}
+
+		$gateway = sanitize_text_field( $_GET['tec_tc_gateway'] ?? '' ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+
+		if ( $gateway ) {
+			$meta_query[] = [
+				'key'     => Order::$gateway_meta_key,
+				'value'   => $gateway,
+				'compare' => '=',
+			];
+		}
+
+		if ( count( $meta_query ) > 1 && empty( $meta_query['relation'] ) ) {
+			$meta_query['relation'] = 'AND';
+		}
+
+		$query->set( 'meta_query', $meta_query );
+	}
+
+	/**
+	 * Filters the WP List Table class name to use the new Orders table.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $class_name The class name.
+	 * @param array  $args The arguments.
+	 * @return string
+	 */
+	public function filter_wp_list_table_class_name( $class_name, $args ) {
+		$screen = get_current_screen();
+
+		if ( empty( $screen->id ) || 'edit-' . Order::POSTTYPE !== $screen->id ) {
+			return $class_name;
+		}
+
+		return Admin_Tables_V2_Orders::class;
 	}
 
 	/**

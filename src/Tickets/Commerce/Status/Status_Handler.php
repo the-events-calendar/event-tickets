@@ -122,13 +122,18 @@ class Status_Handler extends \TEC\Common\Contracts\Service_Provider {
 	 * @return Status_Interface
 	 */
 	public function get_by_wp_slug( $slug ) {
+		if ( 'trash' === $slug ) {
+			return tribe( Trashed::class );
+		}
+
 		foreach ( $this->get_all() as $status ) {
 			if ( $status->get_wp_slug() === $slug ) {
 				return $status;
 			}
 		}
 
-		return null;
+		// Avoid fatals.
+		return tribe( Unsupported::class );
 	}
 
 	/**
