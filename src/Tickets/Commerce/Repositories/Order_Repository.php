@@ -94,6 +94,22 @@ class Order_Repository extends Tribe__Repository {
 		$this->add_simple_meta_schema_entry( 'hash', Order::$hash_meta_key, 'meta_equals' );
 	}
 
+	public function get_distinct_values_of_key( string $key ) {
+		global $wpdb;
+
+		if ( isset( $this->simple_meta_schema[ $key ]['meta_key'] ) ) {
+			$results = $wpdb->get_results(
+				$wpdb->prepare(
+					"SELECT DISTINCT pm.meta_value FROM {$wpdb->postmeta} pm JOIN {$wpdb->posts} p ON p.ID=pm.post_id WHERE p.post_type=%s AND pm.meta_key = %s",
+					Order::POSTTYPE,
+					$this->simple_meta_schema[ $key ]['meta_key']
+				)
+			);
+
+			return wp_list_pluck( $results, 'meta_value' );
+		}
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */

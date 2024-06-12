@@ -159,114 +159,6 @@ class Orders extends WP_Posts_List_Table {
 	}
 
 	/**
-	 * Prepares the list of items for displaying.
-	 *
-	 * @since 5.2.0
-	 */
-	public function prepare_items() {
-		global $avail_post_stati;
-
-		$avail_post_stati = wp_edit_posts_query();
-
-		$this->set_hierarchical_display( false );
-
-		$post_id = tribe_get_request_var( 'post_id', 0 );
-		$post_id = tribe_get_request_var( 'event_id', $post_id );
-
-		$this->post_id = $post_id;
-		$product_ids   = tribe_get_request_var( 'product_ids' );
-		$product_ids   = ! empty( $product_ids ) ? explode( ',', $product_ids ) : null;
-
-		$search    = tribe_get_request_var( $this->search_box_input_name );
-		$page      = absint( tribe_get_request_var( 'paged', 0 ) );
-		$orderby   = tribe_get_request_var( 'orderby' );
-		$order     = tribe_get_request_var( 'order' );
-		$post_type = $this->screen->post_type;
-
-		$per_page  = $this->get_items_per_page( 'edit_' . $post_type . '_per_page' );
-
-		/** This filter is documented in wp-admin/includes/post.php */
-		$per_page = apply_filters( 'edit_posts_per_page', $per_page, $post_type );
-
-		$arguments = [
-			'status'         => 'any',
-			'paged'          => $page,
-			'posts_per_page' => $per_page,
-		];
-
-		if ( ! empty( $search ) ) {
-			$search_keys = array_keys( $this->get_search_options() );
-
-			// Default selection.
-			$search_key  = 'purchaser_full_name';
-			$search_type = sanitize_text_field( tribe_get_request_var( $this->search_type_slug ) );
-
-			if (
-				$search_type
-				&& in_array( $search_type, $search_keys, true )
-			) {
-				$search_key = $search_type;
-			}
-
-			$search_like_keys = [
-				'purchaser_full_name',
-				'purchaser_email',
-			];
-
-			/**
-			 * Filters the item keys that support LIKE matching to filter orders while searching them.
-			 *
-			 * @since 5.5.6
-			 *
-			 * @param array  $search_like_keys The keys that support LIKE matching.
-			 * @param array  $search_keys      The keys that can be used to search orders.
-			 * @param string $search           The current search string.
-			 */
-			$search_like_keys = apply_filters( 'tec_tc_order_search_like_keys', $search_like_keys, $search_keys, $search );
-
-			// Update search key if it supports LIKE matching.
-			if ( in_array( $search_key, $search_like_keys, true ) ) {
-				$search_key .= '__like';
-			}
-
-			$arguments[ $search_key ] = $search;
-		}
-
-		if ( ! empty( $post_id ) ) {
-			$arguments['events'] = $post_id;
-		}
-		if ( ! empty( $product_ids ) ) {
-			$arguments['tickets'] = $product_ids;
-		}
-
-		if ( ! empty( $orderby ) ) {
-			$arguments['orderby'] = $orderby;
-		}
-
-		if ( ! empty( $order ) ) {
-			$arguments['order'] = $order;
-		}
-
-		/**
-		 * Filters the arguments used to fetch the orders for the order report.
-		 *
-		 * @since 5.5.6
-		 *
-		 * @param array $arguments The arguments used to fetch the orders.
-		 */
-		$arguments = apply_filters( 'tec_tc_order_report_args', $arguments );
-
-		$orders_repository = tec_tc_orders()->by_args( $arguments );
-
-		$total_items = $orders_repository->found();
-
-		$this->set_pagination_args( [
-			'total_items' => $total_items,
-			'per_page'    => $per_page,
-		] );
-	}
-
-	/**
 	 * @global array $locked_post_status This seems to be deprecated.
 	 * @global array $avail_post_stati
 	 * @return array
@@ -558,7 +450,7 @@ class Orders extends WP_Posts_List_Table {
 			'gateway'          => 'gateway',
 			'gateway_order_id' => 'gateway_id',
 			'status'           => 'status',
-			'total'            => 'total_value'
+			'total'            => 'total_value',
 		];
 	}
 
@@ -647,7 +539,7 @@ class Orders extends WP_Posts_List_Table {
 			ob_start();
 
 			$this->months_dropdown( $this->screen->post_type );
-			// $this->gateways_dropdown( $this->screen->post_type );
+			$this->gateways_dropdown( $this->screen->post_type );
 
 			/**
 			 * Fires before the Filter button on the Posts and Pages list tables.
@@ -725,26 +617,10 @@ class Orders extends WP_Posts_List_Table {
 		 * @param object[]|false $months   'Months' drop-down results. Default false.
 		 * @param string         $post_type The post type.
 		 */
-		$months = apply_filters( 'tec_tc_orders_pre_gateways_dropdown_query', false, $post_type );
+		$gateways = apply_filters( 'tec_tc_orders_pre_gateways_dropdown_query', false, $post_type );
 
-		if ( ! is_array( $months ) ) {
-			$extra_checks = "AND post_status != 'auto-draft'";
-			if ( ! isset( $_GET['post_status'] ) || 'trash' !== $_GET['post_status'] ) {
-				$extra_checks .= " AND post_status != 'trash'";
-			} elseif ( isset( $_GET['post_status'] ) ) {
-				$extra_checks = $wpdb->prepare( ' AND post_status = %s', $_GET['post_status'] );
-			}
-
-			$months = $wpdb->get_results(
-				$wpdb->prepare(
-					"SELECT DISTINCT YEAR( post_date ) AS year, MONTH( post_date ) AS month
-					FROM $wpdb->posts
-					WHERE post_type = %s
-					$extra_checks
-					ORDER BY post_date DESC",
-					$post_type
-				)
-			);
+		if ( ! is_array( $gateways ) ) {
+			$gateways = tec_tc_orders()->get_distinct_values_of_key( 'gateway' );
 		}
 
 		/**
@@ -755,34 +631,31 @@ class Orders extends WP_Posts_List_Table {
 		 * @param object[] $months    Array of the months drop-down query results.
 		 * @param string   $post_type The post type.
 		 */
-		$months = apply_filters( 'tec_tc_orders_gateways_dropdown_results', $months, $post_type );
+		$gateways = apply_filters( 'tec_tc_orders_gateways_dropdown_results', $gateways, $post_type );
 
-		$month_count = count( $months );
+		$gateways_count = count( $gateways );
 
-		if ( ! $month_count || ( 1 == $month_count && 0 == $months[0]->month ) ) {
+		if ( ! $gateways_count || 1 == $gateways_count ) {
 			return;
 		}
 
-		$m = isset( $_GET['tec_tc_gateway'] ) ? $_GET['tec_tc_gateway'] : '';
-		?>
-		<label for="filter-by-date" class="screen-reader-text"><?php esc_html_e( 'Filter By Gateway', '' ); ?></label>
-		<select name="m" id="filter-by-gateway">
-			<option<?php selected( $m, '' ); ?> value="0"><?php esc_html_e( 'All Gateways', '' ); ?></option>
-		<?php
-		foreach ( $months as $arc_row ) {
-			if ( 0 == $arc_row->year ) {
-				continue;
-			}
+		$g = isset( $_GET['tec_tc_gateway'] ) ? $_GET['tec_tc_gateway'] : '';
 
-			$month = zeroise( $arc_row->month, 2 );
-			$year  = $arc_row->year;
+		if ( ! in_array( $g, $gateways, true ) ) {
+			$g = '';
+		}
+		?>
+		<label for="tec-tc-filter-by-gateway" class="screen-reader-text"><?php esc_html_e( 'Filter By Gateway', 'event-tickets' ); ?></label>
+		<select name="tec_tc_gateway" id="tec-tc-filter-by-gateway">
+			<option<?php selected( $g, '' ); ?> value=""><?php esc_html_e( 'All Gateways', 'event-tickets' ); ?></option>
+		<?php
+		foreach ( $gateways as $gateway ) {
 
 			printf(
 				"<option %s value='%s'>%s</option>\n",
-				selected( $m, $year . $month, false ),
-				esc_attr( $arc_row->year . $month ),
-				/* translators: 1: Month name, 2: 4-digit year. */
-				sprintf( __( '%1$s %2$d' ), $wp_locale->get_month( $month ), $year )
+				selected( $g, $gateway, false ),
+				esc_attr( $gateway ),
+				esc_html( ucfirst( $gateway ) )
 			);
 		}
 		?>

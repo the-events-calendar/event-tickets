@@ -91,6 +91,8 @@ class Hooks extends Service_Provider {
 		add_action( 'tribe_tickets_ticket_moved', [ $this, 'handle_moved_ticket_updates' ], 10, 6 );
 
 		add_action( 'tribe_tickets_price_input_description', [ $this, 'render_sale_price_fields' ], 10, 3 );
+
+		add_action( 'pre_get_posts', [ $this, 'pre_filter_admin_order_table'] );
 	}
 
 	/**
@@ -137,6 +139,46 @@ class Hooks extends Service_Provider {
 		add_action( 'tribe_editor_config', [ $this, 'filter_tickets_editor_config' ] );
 
 		add_filter( 'wp_list_table_class_name', [ $this, 'filter_wp_list_table_class_name' ], 10, 2 );
+	}
+
+	/**
+	 * Filters the admin order table to apply filters.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Query $query The WP_Query instance.
+	 * @return void
+	 */
+	public function pre_filter_admin_order_table( $query ) {
+		$screen = get_current_screen();
+
+		if ( empty( $screen->id ) || 'edit-' . Order::POSTTYPE !== $screen->id ) {
+			return;
+		}
+
+		if ( ! $query->is_main_query() || ! $query->is_admin || Order::POSTTYPE !== $query->get( 'post_type' ) ) {
+			return;
+		}
+
+		$meta_query = $query->get( 'meta_query' );
+
+		if ( empty( $meta_query ) || ! is_array( $meta_query ) ) {
+			$meta_query = [];
+		}
+
+		if ( ! empty( $_GET['tec_tc_gateway'] ) ) {
+			$meta_query[] = [
+				'key'     => Order::$gateway_meta_key,
+				'value'   => sanitize_text_field( $_GET['tec_tc_gateway'] ),
+				'compare' => '=',
+			];
+		}
+
+		if ( count( $meta_query ) > 1 && empty( $meta_query['relation'] ) ) {
+			$meta_query['relation'] = 'AND';
+		}
+
+		$query->set( 'meta_query', $meta_query );
 	}
 
 	/**
