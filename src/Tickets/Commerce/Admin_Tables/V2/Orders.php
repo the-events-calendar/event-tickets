@@ -12,6 +12,7 @@ namespace TEC\Tickets\Commerce\Admin_Tables\V2;
 use TEC\Tickets\Commerce\Gateways\Manager;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Gateways\Free\Gateway as Free_Gateway;
+use TEC\Tickets\Commerce\Order;
 use WP_Post;
 use WP_Posts_List_Table;
 
@@ -158,7 +159,7 @@ class Orders extends WP_Posts_List_Table {
 
 		$classes .= $item->post_status;
 
-		echo '<tr id="tec_tc_order-' . (int) $item->ID . '" class="' . esc_attr( $classes ) . '">';
+		echo '<tr id="' . esc_attr( Order::POSTTYPE ) . '-' . (int) $item->ID . '" class="' . esc_attr( $classes ) . '">';
 		$this->single_row_columns( tec_tc_get_order( $item ) );
 		echo '</tr>';
 	}

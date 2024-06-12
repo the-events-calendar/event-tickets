@@ -198,7 +198,7 @@ class Hooks extends Service_Provider {
 	public function filter_wp_list_table_class_name( $class_name, $args ) {
 		$screen = get_current_screen();
 
-		if ( empty( $screen->id ) || 'edit-tec_tc_order' !== $screen->id ) {
+		if ( empty( $screen->id ) || 'edit-' . Order::POSTTYPE !== $screen->id ) {
 			return $class_name;
 		}
 
