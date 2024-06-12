@@ -19,10 +19,6 @@ use Tribe\Admin\Pages;
  *
  * @package TEC\Tickets\Commerce\Admin
  */
-
-/**
- * Manages the admin settings UI in relation to ticket configuration.
- */
 class Orders_Page {
 
 	/**
