@@ -21,7 +21,7 @@ use Tribe__Tickets__Main as Tickets_Main;
  */
 class Block extends Abstract_Block {
 	/**
-	 * Which is the name/slug of this block
+	 * Which is the name/slug of this block.
 	 *
 	 * @since 4.9.2
 	 *
