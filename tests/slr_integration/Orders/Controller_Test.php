@@ -9,7 +9,6 @@ use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Gateways\PayPal\Gateway;
 use TEC\Tickets\Commerce\Order;
-use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Pending;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
@@ -63,29 +62,32 @@ class Controller_Test extends Controller_Test_Case {
 	}
 	
 	public function attendee_data_provider(): Generator {
-//		yield 'single event with Single Ticket attendees' => [
-//			function (): array {
-//				$event_id = tribe_events()->set_args(
-//					[
-//						'title'      => 'Event with single attendee',
-//						'status'     => 'publish',
-//						'start_date' => '2020-01-01 00:00:00',
-//						'duration'   => 2 * HOUR_IN_SECONDS,
-//					]
-//				)->create()->ID;
-//
-//				update_post_meta( $event_id, Meta::META_KEY_ENABLED, true );
-//				update_post_meta( $event_id, Meta::META_KEY_LAYOUT_ID, 1 );
-//
-//				$ticket_id = $this->create_tc_ticket( $event_id );
-//				$this->create_order( [ $ticket_id => 3 ] );
-//
-//				return [ $event_id, [ $event_id, $ticket_id ] ];
-//			},
-//		];
-		
-		yield 'single event with Single seated ticket attendee' => [
+		yield 'single event with 3 regular Ticket attendees' => [
 			function (): array {
+				$event_id = tribe_events()->set_args(
+					[
+						'title'      => 'Event with single attendee',
+						'status'     => 'publish',
+						'start_date' => '2020-01-01 00:00:00',
+						'duration'   => 2 * HOUR_IN_SECONDS,
+					]
+				)->create()->ID;
+
+				update_post_meta( $event_id, Meta::META_KEY_ENABLED, true );
+				update_post_meta( $event_id, Meta::META_KEY_LAYOUT_ID, 1 );
+
+				$ticket_id = $this->create_tc_ticket( $event_id );
+				$order     = $this->create_order( [ $ticket_id => 3 ] );
+				
+				return [ $event_id, [ $event_id, $ticket_id ] ];
+			},
+		];
+		
+		yield 'single event with 2 seated ticket attendee' => [
+			function (): array {
+				$cart = new Cart();
+				$this->set_class_fn_return( Cart::class, 'get_mode', 'test' );
+				$this->set_class_property( $cart, 'available_modes', [ 'redirect', 'test' ] );
 				$event_id = tribe_events()->set_args(
 					[
 						'title'      => 'Event with single seated attendee',
@@ -98,10 +100,8 @@ class Controller_Test extends Controller_Test_Case {
 				update_post_meta( $event_id, Meta::META_KEY_ENABLED, true );
 				update_post_meta( $event_id, Meta::META_KEY_LAYOUT_ID, 1 );
 				
-				$ticket_id = $this->create_tc_ticket( $event_id );
+				$ticket_id = $this->create_tc_ticket( $event_id, 10 );
 				
-				$cart = new Cart();
-
 				$tribe_tickets_ar_data = json_encode(
 					[
 						'tribe_tickets_tickets' => [
@@ -116,7 +116,7 @@ class Controller_Test extends Controller_Test_Case {
 						'tribe_tickets_post_id' => $event_id,
 					]
 				);
-
+				
 				$data = [
 					'provider'                       => 'TEC\\Tickets\\Commerce\\Module',
 					'attendee'                       => [
@@ -126,11 +126,12 @@ class Controller_Test extends Controller_Test_Case {
 					'tribe_tickets_saving_attendees' => 1,
 					'tribe_tickets_ar_data'          => $tribe_tickets_ar_data,
 					'_wpnonce'                       => '1234567890',
+					'tec-tc-cart'                    => 'test',
 				];
-
+				
 				// Merge new data with existing $_POST data
 				$_POST = array_merge( $_POST, $data );
-				
+
 				$cart->parse_request();
 				// create POST data from the following comment
 				
@@ -142,15 +143,12 @@ class Controller_Test extends Controller_Test_Case {
 					'purchaser_email'      => 'test-' . uniqid() . '@test.com',
 				];
 				
-				$order_status = Completed::SLUG;
-				$orders       = tribe( Order::class );
-				$order        = $orders->create_from_cart( tribe( Gateway::class ), $purchaser );
+				$orders = tribe( Order::class );
+				$order  = $orders->create_from_cart( tribe( Gateway::class ), $purchaser );
 				
 				$orders->modify_status( $order->ID, Pending::SLUG );
-				$orders->modify_status( $order->ID, $order_status );
 				
 				clean_post_cache( $order->ID );
-				
 				$cart->clear_cart();
 				
 				return [ $event_id, [ $event_id, $ticket_id ] ];
@@ -159,106 +157,18 @@ class Controller_Test extends Controller_Test_Case {
 	}
 	
 	/**
-	 * Test the attendee list seat column.
+	 * Test the attendee list seat column data.
 	 *
-	 *
+	 * @dataProvider attendee_data_provider
 	 *
 	 * @return void
 	 */
-	public function test_attendee_list_seat_column(): void {
+	public function test_attendee_list_seat_column( Closure $fixture ): void {
 		$this->make_controller()->register();
 		
-		$cart = new Cart();
-		$this->set_class_fn_return( Cart::class, 'get_mode', 'test' );
-		$this->set_class_property( $cart, 'available_modes', [ 'redirect', 'test' ] );
-		$event_id = tribe_events()->set_args(
-			[
-				'title'      => 'Event with single seated attendee',
-				'status'     => 'publish',
-				'start_date' => '2020-01-01 00:00:00',
-				'duration'   => 2 * HOUR_IN_SECONDS,
-			]
-		)->create()->ID;
-		
-		update_post_meta( $event_id, Meta::META_KEY_ENABLED, true );
-		update_post_meta( $event_id, Meta::META_KEY_LAYOUT_ID, 1 );
-		
-		$ticket_id = $this->create_tc_ticket( $event_id );
-		
-		$tribe_tickets_ar_data = json_encode(
-			[
-				'tribe_tickets_tickets' => [
-					[
-						'ticket_id'   => $ticket_id,
-						'quantity'    => 2,
-						'optout'      => '1',
-						'seat_labels' => [ 'B-3', 'B-4' ],
-					],
-				],
-				'tribe_tickets_meta'    => [],
-				'tribe_tickets_post_id' => $event_id,
-			]
-		);
-		
-		$data = [
-			'provider'                       => 'TEC\\Tickets\\Commerce\\Module',
-			'attendee'                       => [
-				'optout' => 1,
-			],
-			'tickets_tickets_ar'             => 1,
-			'tribe_tickets_saving_attendees' => 1,
-			'tribe_tickets_ar_data'          => $tribe_tickets_ar_data,
-			'_wpnonce'                       => '1234567890',
-			'tec-tc-cart'                    => 'test',
-		];
-		
-		// Merge new data with existing $_POST data
-		$_POST = array_merge( $_POST, $data );
-		
-//		$cart = new Cart();
-		$cart->parse_request();
-		// create POST data from the following comment
-		
-		$purchaser = [
-			'purchaser_user_id'    => 0,
-			'purchaser_full_name'  => 'Test Purchaser',
-			'purchaser_first_name' => 'Test',
-			'purchaser_last_name'  => 'Purchaser',
-			'purchaser_email'      => 'test-' . uniqid() . '@test.com',
-		];
-		
-		$order_status = Completed::SLUG;
-		$orders       = tribe( Order::class );
-		$order        = $orders->create_from_cart( tribe( Gateway::class ), $purchaser );
-		
-		$orders->modify_status( $order->ID, Pending::SLUG );
-		$orders->modify_status( $order->ID, $order_status );
-		
-		clean_post_cache( $order->ID );
-		
-		$cart->clear_cart();
-		
-		$post_id = $event_id;
-		$post_ids = [ $ticket_id ];
-		
-		// The global hook suffix is used to set the table static cache, randomize it to avoid collisions with other tests.
-		$GLOBALS['hook_suffix'] = uniqid( 'tribe_events_page_tickets-attendees', true );
-		// Ensure we're using a user that can check-in Attendees and manage the posts.
 		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
-		// Filter the insertion of the Attendees post to import an order by `post_title` and stabilize the snapshot.
-		add_filter(
-			'wp_insert_post_data',
-			function ( $data ) {
-				static $k = 1;
-				if ( str_ends_with( $data['post_type'], '_attendee' ) || str_ends_with( $data['post_type'], '_attendees' ) ) {
-					$data['post_title'] = 'Test Attendee ' . str_pad( $k++, 3, '0', STR_PAD_LEFT );
-				}
-			
-				return $data;
-			},
-			PHP_INT_MAX 
-		);
-//		[ $post_id, $post_ids ] = $fixture();
+		
+		[ $post_id, $post_ids ] = $fixture();
 		$this->set_fn_return( 'wp_create_nonce', '1234567890' );
 		
 		$_GET['event_id'] = $post_id;
@@ -266,11 +176,7 @@ class Controller_Test extends Controller_Test_Case {
 		
 		tribe_cache()->reset();
 		ob_start();
-		/*
-		Columns headers are cached in the `get_column_headers` function
-		by screen id. To avoid the cache, we need to set the screen id
-		to something different from the default one.
-		*/
+		
 		$attendees = tribe( Attendees::class );
 		$attendees->screen_setup();
 		$attendees->render();
