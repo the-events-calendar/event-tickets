@@ -92,7 +92,7 @@ class Hooks extends Service_Provider {
 
 		add_action( 'tribe_tickets_price_input_description', [ $this, 'render_sale_price_fields' ], 10, 3 );
 
-		add_action( 'pre_get_posts', [ $this, 'pre_filter_admin_order_table'] );
+		add_action( 'pre_get_posts', [ $this, 'pre_filter_admin_order_table' ] );
 	}
 
 	/**

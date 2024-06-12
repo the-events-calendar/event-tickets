@@ -1,33 +1,37 @@
 <?php
+/**
+ * Orders Table V2
+ *
+ * @since TBD
+ *
+ * @package Tribe\Tickets\Commerce\Admin_Tables\V2
+ */
 
 namespace TEC\Tickets\Commerce\Admin_Tables\V2;
 
 use TEC\Tickets\Commerce\Gateways\Manager;
-use TEC\Tickets\Commerce\Status\Completed;
-use TEC\Tickets\Commerce\Status\Refunded;
 use TEC\Tickets\Commerce\Status\Status_Handler;
-use Tribe__Utils__Array as Arr;
 use TEC\Tickets\Commerce\Gateways\Free\Gateway as Free_Gateway;
-use WP_List_Table;
 use WP_Post;
 use WP_Posts_List_Table;
 
 if ( ! class_exists( 'WP_List_Table' ) ) {
-	require_once( ABSPATH . 'wp-admin/includes/screen.php' );
-	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
-	require_once( ABSPATH . 'wp-admin/includes/class-wp-posts-list-table.php' );
+	require_once ABSPATH . 'wp-admin/includes/screen.php';
+	require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php';
+	require_once ABSPATH . 'wp-admin/includes/class-wp-posts-list-table.php';
 }
 
 /**
  * Class Admin Tables for Orders.
  *
- * @since 5.2.0
- *
+ * @since TBD
  */
 class Orders extends WP_Posts_List_Table {
 
 	/**
 	 * The current post ID
+	 *
+	 * @since TBD
 	 *
 	 * @var int
 	 */
@@ -36,12 +40,16 @@ class Orders extends WP_Posts_List_Table {
 	/**
 	 * The name (what gets submitted to the server) of our search box input.
 	 *
+	 * @since TBD
+	 *
 	 * @var string $search_box_input_name
 	 */
 	private $search_box_input_name = 'search';
 
 	/**
 	 * The name of the search type slug.
+	 *
+	 * @since TBD
 	 *
 	 * @var string $search_box_input_name
 	 */
@@ -50,7 +58,7 @@ class Orders extends WP_Posts_List_Table {
 	/**
 	 * Orders Table constructor.
 	 *
-	 * @since 5.2.0
+	 * @since TBD
 	 */
 	public function __construct() {
 		$args = [
@@ -71,6 +79,7 @@ class Orders extends WP_Posts_List_Table {
 	 *
 	 * @param string[] $actions        An array of action links.
 	 * @param bool     $always_visible Whether the actions should be always visible.
+	 *
 	 * @return string The HTML for the row actions.
 	 */
 	protected function row_actions( $actions, $always_visible = false ) {
@@ -81,7 +90,7 @@ class Orders extends WP_Posts_List_Table {
 	 * Overrides the list of CSS classes for the WP_List_Table table tag.
 	 * This function is not hookable in core, so it needs to be overridden!
 	 *
-	 * @since 5.2.0
+	 * @since TBD
 	 *
 	 * @return array List of CSS classes for the table tag.
 	 */
@@ -95,7 +104,7 @@ class Orders extends WP_Posts_List_Table {
 		/**
 		 * Filters the default classes added to the Tickets Commerce order report `WP_List_Table`.
 		 *
-		 * @since 5.2.0
+		 * @since TBD
 		 *
 		 * @param array $classes The array of classes to be applied.
 		 */
@@ -105,7 +114,7 @@ class Orders extends WP_Posts_List_Table {
 	/**
 	 * Returns the  list of columns.
 	 *
-	 * @since 5.2.0
+	 * @since TBD
 	 *
 	 * @return array An associative array in the format [ <slug> => <title> ]
 	 */
@@ -124,9 +133,12 @@ class Orders extends WP_Posts_List_Table {
 	/**
 	 * Generates content for a single row of the table
 	 *
-	 * @since 5.2.0
+	 * @since TBD
 	 *
-	 * @param WP_Post $item The current item
+	 * @param WP_Post $item The current item.
+	 * @param int     $level The current level Not used for non hierarchical CPTs.
+	 *
+	 * @return void
 	 */
 	public function single_row( $item, $level = 0 ) {
 		$classes = 'iedit author-' . ( get_current_user_id() === (int) $item->post_author ? 'self' : 'other' );
@@ -152,6 +164,10 @@ class Orders extends WP_Posts_List_Table {
 	}
 
 	/**
+	 * Get the list of bulk actions available.
+	 *
+	 * @since TBD
+	 *
 	 * @return array
 	 */
 	protected function get_bulk_actions() {
@@ -169,17 +185,17 @@ class Orders extends WP_Posts_List_Table {
 		$post_type = $this->screen->post_type;
 
 		if ( ! empty( $locked_post_status ) ) {
-			return array();
+			return [];
 		}
 
-		$status_links = array();
+		$status_links = [];
 		$num_posts    = wp_count_posts( $post_type, 'readable' );
 		$total_posts  = array_sum( (array) $num_posts );
 		$class        = '';
-		$all_args     = array( 'post_type' => $post_type );
+		$all_args     = [ 'post_type' => $post_type ];
 
 		// Subtract post types that are not included in the admin all list.
-		foreach ( get_post_stati( array( 'show_in_admin_all_list' => false ) ) as $state ) {
+		foreach ( get_post_stati( [ 'show_in_admin_all_list' => false ] ) as $state ) {
 			$total_posts -= $num_posts->$state;
 		}
 
@@ -194,13 +210,13 @@ class Orders extends WP_Posts_List_Table {
 			number_format_i18n( $total_posts )
 		);
 
-		$status_links['all'] = array(
+		$status_links['all'] = [
 			'url'     => esc_url( add_query_arg( $all_args, 'edit.php' ) ),
 			'label'   => $all_inner_html,
-			'current' => empty( $class ) && ( $this->is_base_request() || isset( $_REQUEST['all_posts'] ) ),
-		);
+			'current' => empty( $class ) && ( $this->is_base_request() || isset( $_REQUEST['all_posts'] ) ), // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		];
 
-		foreach ( get_post_stati( array( 'show_in_admin_status_list' => true ), 'objects' ) as $status ) {
+		foreach ( get_post_stati( [ 'show_in_admin_status_list' => true ], 'objects' ) as $status ) {
 			$class = '';
 
 			$status_name = $status->name;
@@ -209,25 +225,25 @@ class Orders extends WP_Posts_List_Table {
 				continue;
 			}
 
-			if ( isset( $_REQUEST['post_status'] ) && $status_name === $_REQUEST['post_status'] ) {
+			if ( isset( $_REQUEST['post_status'] ) && $status_name === $_REQUEST['post_status'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 				$class = 'current';
 			}
 
-			$status_args = array(
+			$status_args = [
 				'post_status' => $status_name,
 				'post_type'   => $post_type,
-			);
+			];
 
 			$status_label = sprintf(
 				translate_nooped_plural( $status->label_count, $num_posts->$status_name ),
 				number_format_i18n( $num_posts->$status_name )
 			);
 
-			$status_links[ $status_name ] = array(
+			$status_links[ $status_name ] = [
 				'url'     => esc_url( add_query_arg( $status_args, 'edit.php' ) ),
 				'label'   => $status_label,
-				'current' => isset( $_REQUEST['post_status'] ) && $status_name === $_REQUEST['post_status'],
-			);
+				'current' => isset( $_REQUEST['post_status'] ) && $status_name === $_REQUEST['post_status'], // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			];
 		}
 
 		$trash = $status_links['trash'] ?? null;
@@ -245,7 +261,7 @@ class Orders extends WP_Posts_List_Table {
 	 * @since 5.2.0
 	 */
 	public function no_items() {
-		_e( 'No matching orders found.', 'event-tickets' );
+		esc_html_e( 'No matching orders found.', 'event-tickets' );
 	}
 
 	/**
@@ -253,8 +269,8 @@ class Orders extends WP_Posts_List_Table {
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param WP_Post $item
-	 * @param         $column
+	 * @param WP_Post $item  The current item.
+	 * @param string  $column The current column.
 	 *
 	 * @return string
 	 */
@@ -267,7 +283,7 @@ class Orders extends WP_Posts_List_Table {
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param WP_Post $item
+	 * @param WP_Post $item The current item.
 	 *
 	 * @return string
 	 */
@@ -282,7 +298,7 @@ class Orders extends WP_Posts_List_Table {
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param WP_Post $item
+	 * @param WP_Post $item The current item.
 	 *
 	 * @return string
 	 */
@@ -323,7 +339,7 @@ class Orders extends WP_Posts_List_Table {
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param WP_Post $item
+	 * @param WP_Post $item The current item.
 	 *
 	 * @return string
 	 */
@@ -338,7 +354,7 @@ class Orders extends WP_Posts_List_Table {
 			$ticket   = \Tribe__Tickets__Tickets::load_ticket_object( $cart_item['ticket_id'] );
 			$name     = esc_html( $ticket->name );
 			$quantity = esc_html( (int) $cart_item['quantity'] );
-			$output   .= "<div class='tribe-line-item'>{$quantity} - {$name}</div>";
+			$output  .= "<div class='tribe-line-item'>{$quantity} - {$name}</div>";
 		}
 
 		return $output;
@@ -349,7 +365,7 @@ class Orders extends WP_Posts_List_Table {
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param WP_Post $item
+	 * @param WP_Post $item The current item.
 	 *
 	 * @return string
 	 */
@@ -362,7 +378,7 @@ class Orders extends WP_Posts_List_Table {
 			return $item->ID;
 		}
 
-		return sprintf( esc_html__( '#%1$s %2$s (%3$s)', 'event-tickets' ), $item->ID, $item->purchaser['full_name'], $item->purchaser['email'] );
+		return sprintf( '#%1$s %2$s (%3$s)', $item->ID, $item->purchaser['full_name'], $item->purchaser['email'] );
 	}
 
 	/**
@@ -370,7 +386,7 @@ class Orders extends WP_Posts_List_Table {
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param WP_Post $item
+	 * @param WP_Post $item The current item.
 	 *
 	 * @return string
 	 */
@@ -384,7 +400,7 @@ class Orders extends WP_Posts_List_Table {
 	 * @since 5.2.0
 	 * @since 5.9.1 Handle when the $order_url is empty.
 	 *
-	 * @param WP_Post $item
+	 * @param WP_Post $item The current item.
 	 *
 	 * @return string
 	 */
@@ -417,7 +433,7 @@ class Orders extends WP_Posts_List_Table {
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param WP_Post $item
+	 * @param WP_Post $item The current item.
 	 *
 	 * @return string
 	 */
@@ -481,55 +497,13 @@ class Orders extends WP_Posts_List_Table {
 	}
 
 	/**
-	 * @inheritDoc
-	 */
-	public function search_box( $text, $input_id ) {
-		return parent::search_box( $text, $input_id );
-		// Workaround to show the search box even when no items are found.
-		$old_items   = $this->items;
-		$this->items = [
-			'Temporary',
-		];
-
-		// Get normal search box HTML to override.
-		ob_start();
-		parent::search_box( $text, $input_id );
-		$search_box = ob_get_clean();
-
-		// Assign the custom search name.
-		$search_box = str_replace( 'name="s"', 'name="' . esc_attr( $this->search_box_input_name ) . '"', $search_box );
-		// And get its value upon reloading the page to display its search results so user knows what they searched for.
-		$search_box = str_replace( 'value=""', 'value="' . esc_attr( tribe_get_request_var( $this->search_box_input_name ) ) . '"', $search_box );
-
-		$this->items = $old_items;
-
-		// Default selection.
-		$selected = 'purchaser_full_name';
-
-		$search_type = sanitize_text_field( tribe_get_request_var( $this->search_type_slug ) );
-		$options     = $this->get_search_options();
-
-		if (
-			$search_type
-			&& array_key_exists( $search_type, $options )
-		) {
-			$selected = $search_type;
-		}
-
-		$template_vars = [
-			'options'  => $options,
-			'selected' => $selected,
-		];
-
-		$custom_search = tribe( \TEC\Tickets\Commerce\Reports\Orders::class )->get_template()->template( 'orders/search-options', $template_vars, false );
-		// Add our search type dropdown before the search box input
-		$search_box = str_replace( '<input type="submit"', $custom_search . '<input type="submit"', $search_box );
-
-		echo $search_box;
-	}
-
-	/**
-	 * @param string $which
+	 * Get the extra table navigation placed above or below or both the table.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $which The location of the extra table nav markup: 'top' or 'bottom'.
+	 *
+	 * @return void
 	 */
 	protected function extra_tablenav( $which ) {
 		?>
@@ -561,12 +535,12 @@ class Orders extends WP_Posts_List_Table {
 			$output = ob_get_clean();
 
 			if ( ! empty( $output ) ) {
-				echo $output;
-				submit_button( __( 'Filter' ), '', 'filter_action', false, array( 'id' => 'post-query-submit' ) );
+				echo $output; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped, StellarWP.XSS.EscapeOutput.OutputNotEscaped
+				submit_button( __( 'Filter' ), '', 'filter_action', false, [ 'id' => 'post-query-submit' ] );
 			}
 		}
 
-		if ( ! empty( $_GET['post_status'] ) && 'trash' === $_GET['post_status'] && $this->has_items()
+		if ( ! empty( $_GET['post_status'] ) && 'trash' === $_GET['post_status'] && $this->has_items() // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			&& current_user_can( get_post_type_object( $this->screen->post_type )->cap->edit_others_posts )
 		) {
 			submit_button( __( 'Empty Trash' ), 'apply', 'delete_all', false );
@@ -639,7 +613,7 @@ class Orders extends WP_Posts_List_Table {
 			return;
 		}
 
-		$g = isset( $_GET['tec_tc_gateway'] ) ? $_GET['tec_tc_gateway'] : '';
+		$g = $_GET['tec_tc_gateway'] ?? ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 
 		if ( ! in_array( $g, $gateways, true ) ) {
 			$g = '';
