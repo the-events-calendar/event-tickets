@@ -51,7 +51,7 @@ class Orders extends WP_Posts_List_Table {
 	 *
 	 * @since TBD
 	 *
-	 * @var string $search_box_input_name
+	 * @var string $search_type_slug
 	 */
 	private $search_type_slug = 'tec_tc_order_search_type';
 
@@ -175,8 +175,13 @@ class Orders extends WP_Posts_List_Table {
 	}
 
 	/**
+	 * Get the views available on the table.
+	 *
+	 * @since TBD
+	 *
 	 * @global array $locked_post_status This seems to be deprecated.
 	 * @global array $avail_post_stati
+	 *
 	 * @return array
 	 */
 	protected function get_views() {
@@ -258,7 +263,9 @@ class Orders extends WP_Posts_List_Table {
 	/**
 	 * Message to be displayed when there are no items
 	 *
-	 * @since 5.2.0
+	 * @since TBD
+	 *
+	 * @return void
 	 */
 	public function no_items() {
 		esc_html_e( 'No matching orders found.', 'event-tickets' );
@@ -267,7 +274,7 @@ class Orders extends WP_Posts_List_Table {
 	/**
 	 * Handler for the columns that don't have a specific column_{name} handler function.
 	 *
-	 * @since 5.2.0
+	 * @since TBD
 	 *
 	 * @param WP_Post $item  The current item.
 	 * @param string  $column The current column.
@@ -281,7 +288,7 @@ class Orders extends WP_Posts_List_Table {
 	/**
 	 * Returns the order status.
 	 *
-	 * @since 5.2.0
+	 * @since TBD
 	 *
 	 * @param WP_Post $item The current item.
 	 *
@@ -296,7 +303,7 @@ class Orders extends WP_Posts_List_Table {
 	/**
 	 * Handler for the date column
 	 *
-	 * @since 5.2.0
+	 * @since TBD
 	 *
 	 * @param WP_Post $item The current item.
 	 *
@@ -337,7 +344,7 @@ class Orders extends WP_Posts_List_Table {
 	/**
 	 * Handler for the items column
 	 *
-	 * @since 5.2.0
+	 * @since TBD
 	 *
 	 * @param WP_Post $item The current item.
 	 *
@@ -363,7 +370,7 @@ class Orders extends WP_Posts_List_Table {
 	/**
 	 * Handler for the order column
 	 *
-	 * @since 5.2.0
+	 * @since TBD
 	 *
 	 * @param WP_Post $item The current item.
 	 *
@@ -384,7 +391,7 @@ class Orders extends WP_Posts_List_Table {
 	/**
 	 * Handler for the total column
 	 *
-	 * @since 5.2.0
+	 * @since TBD
 	 *
 	 * @param WP_Post $item The current item.
 	 *
@@ -397,8 +404,7 @@ class Orders extends WP_Posts_List_Table {
 	/**
 	 * Handler for gateway order id.
 	 *
-	 * @since 5.2.0
-	 * @since 5.9.1 Handle when the $order_url is empty.
+	 * @since TBD
 	 *
 	 * @param WP_Post $item The current item.
 	 *
@@ -431,7 +437,7 @@ class Orders extends WP_Posts_List_Table {
 	/**
 	 * Handler for gateway column
 	 *
-	 * @since 5.2.0
+	 * @since TBD
 	 *
 	 * @param WP_Post $item The current item.
 	 *
@@ -453,7 +459,7 @@ class Orders extends WP_Posts_List_Table {
 	/**
 	 * List of sortable columns.
 	 *
-	 * @since 5.5.0
+	 * @since TBD
 	 *
 	 * @return array
 	 */
@@ -475,7 +481,7 @@ class Orders extends WP_Posts_List_Table {
 	 *
 	 * @see \TEC\Tickets\Commerce\Repositories\Order_Repository for a List of valid ORM args.
 	 *
-	 * @since 5.5.6
+	 * @since TBD
 	 *
 	 * @return array
 	 */
@@ -489,7 +495,7 @@ class Orders extends WP_Posts_List_Table {
 		/**
 		 * Filters the search types to be shown in the search box for filtering orders.
 		 *
-		 * @since 5.5.6
+		 * @since TBD
 		 *
 		 * @param array $options List of ORM search types and their labels.
 		 */
@@ -521,9 +527,9 @@ class Orders extends WP_Posts_List_Table {
 			 * The Filter button allows sorting by date and/or category on the
 			 * Posts list table, and sorting by date on the Pages list table.
 			 *
-			 * @since 2.1.0
-			 * @since 4.4.0 The `$post_type` parameter was added.
-			 * @since 4.6.0 The `$which` parameter was added.
+			 * !!This is a wp core action!!
+			 *
+			 * @since TBD
 			 *
 			 * @param string $post_type The post type slug.
 			 * @param string $which     The location of the extra table nav markup:
@@ -552,7 +558,9 @@ class Orders extends WP_Posts_List_Table {
 		 * Fires immediately following the closing "actions" div in the tablenav for the posts
 		 * list table.
 		 *
-		 * @since 4.4.0
+		 * !!This is a wp core action!!
+		 *
+		 * @since TBD
 		 *
 		 * @param string $which The location of the extra table nav markup: 'top' or 'bottom'.
 		 */
@@ -562,19 +570,17 @@ class Orders extends WP_Posts_List_Table {
 	/**
 	 * Displays a dropdown for filtering items in the list table by month.
 	 *
-	 * @since 3.1.0
-	 *
-	 * @global wpdb      $wpdb      WordPress database abstraction object.
+	 * @since TBD
 	 *
 	 * @param string $post_type The post type.
+	 *
+	 * @return void
 	 */
 	protected function gateways_dropdown( $post_type ) {
-		global $wpdb;
-
 		/**
 		 * Filters whether to remove the 'Months' drop-down from the post list table.
 		 *
-		 * @since 4.2.0
+		 * @since TBD
 		 *
 		 * @param bool   $disable   Whether to disable the drop-down. Default false.
 		 * @param string $post_type The post type.
@@ -586,7 +592,7 @@ class Orders extends WP_Posts_List_Table {
 		/**
 		 * Filters whether to short-circuit performing the months dropdown query.
 		 *
-		 * @since 5.7.0
+		 * @since TBD
 		 *
 		 * @param object[]|false $months   'Months' drop-down results. Default false.
 		 * @param string         $post_type The post type.
@@ -598,11 +604,11 @@ class Orders extends WP_Posts_List_Table {
 		}
 
 		/**
-		 * Filters the 'Months' drop-down results.
+		 * Filters the 'Gateways' drop-down results.
 		 *
-		 * @since 3.7.0
+		 * @since TBD
 		 *
-		 * @param object[] $months    Array of the months drop-down query results.
+		 * @param array    $gateways  Array of gateways.
 		 * @param string   $post_type The post type.
 		 */
 		$gateways = apply_filters( 'tec_tc_orders_gateways_dropdown_results', $gateways, $post_type );
