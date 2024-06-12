@@ -100,17 +100,46 @@ class Order_Repository extends Tribe__Repository {
 	 * @since TBD
 	 *
 	 * @param string $key The key to retrieve the distinct values from.
+	 * @param array  $excluded_statuses The statuses to exclude from the query.
 	 *
-	 * @return void
+	 * @return array
 	 */
-	public function get_distinct_values_of_key( string $key ) {
+	public function get_distinct_values_of_key( string $key, array $excluded_statuses = [ 'trash' ] ) {
+		if ( ! $this->schema_has_modifier_for( $key ) ) {
+			return [];
+		}
+
+		if ( ! empty( $excluded_statuses ) ) {
+			$excluded_statuses = array_map(
+				function ( $status ) {
+					return "'" . sanitize_text_field( $status ) . "'";
+				},
+				$excluded_statuses
+			);
+
+			$excluded_statuses = implode( ',', $excluded_statuses );
+		} else {
+			$excluded_statuses = 0;
+		}
+
 		global $wpdb;
+
+		if ( $this->has_default_modifier( $key ) ) {
+			$results = $wpdb->get_col(
+				$wpdb->prepare(
+					"SELECT DISTINCT {$this->normalize_key( $key )} FROM {$wpdb->posts} WHERE post_type=%s AND post_status NOT IN ({$excluded_statuses})",
+					Order::POSTTYPE,
+				)
+			);
+
+			return wp_list_pluck( $results, $this->normalize_key( $key ) );
+		}
 
 		if ( isset( $this->simple_meta_schema[ $key ]['meta_key'] ) ) {
 			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 			$results = $wpdb->get_results(
 				$wpdb->prepare(
-					"SELECT DISTINCT pm.meta_value FROM {$wpdb->postmeta} pm JOIN {$wpdb->posts} p ON p.ID=pm.post_id WHERE p.post_type=%s AND pm.meta_key = %s",
+					"SELECT DISTINCT pm.meta_value FROM {$wpdb->postmeta} pm JOIN {$wpdb->posts} p ON p.ID=pm.post_id WHERE p.post_type=%s AND pm.meta_key = %s AND p.post_status NOT IN ({$excluded_statuses})",
 					Order::POSTTYPE,
 					$this->simple_meta_schema[ $key ]['meta_key']
 				)
@@ -118,6 +147,8 @@ class Order_Repository extends Tribe__Repository {
 
 			return wp_list_pluck( $results, 'meta_value' );
 		}
+
+		return [];
 	}
 
 	/**
