@@ -10,6 +10,7 @@
 namespace TEC\Tickets\Commerce\Admin;
 
 use TEC\Tickets\Commerce\Order;
+use Tribe\Admin\Pages;
 
 /**
  * Class Orders_Page.
@@ -32,13 +33,6 @@ class Orders_Page {
 	public static $parent_slug = 'tec-tickets';
 
 	/**
-	 * Event Tickets Commerce Orders page slug.
-	 *
-	 * @var string
-	 */
-	public static $slug = 'tec-tickets-commerce-orders';
-
-	/**
 	 * Adds the Event Tickets Commerce Orders page.
 	 *
 	 * @since TBD
@@ -48,7 +42,7 @@ class Orders_Page {
 			static::$parent_slug,
 			esc_html__( 'Orders', 'event-tickets' ),
 			esc_html__( 'Orders', 'event-tickets' ),
-			'manage_options',
+			Pages::get_capability(),
 			'edit.php?post_type=' . Order::POSTTYPE,
 			'',
 			1.7
