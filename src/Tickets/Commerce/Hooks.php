@@ -153,13 +153,13 @@ class Hooks extends Service_Provider {
 	 * @return void
 	 */
 	public function pre_filter_admin_order_table( $query ) {
-		$screen = get_current_screen();
-
-		if ( empty( $screen->id ) || 'edit-' . Order::POSTTYPE !== $screen->id ) {
+		if ( ! $query->is_main_query() || ! $query->is_admin || Order::POSTTYPE !== $query->get( 'post_type' ) ) {
 			return;
 		}
 
-		if ( ! $query->is_main_query() || ! $query->is_admin || Order::POSTTYPE !== $query->get( 'post_type' ) ) {
+		$screen = get_current_screen();
+
+		if ( empty( $screen->id ) || 'edit-' . Order::POSTTYPE !== $screen->id ) {
 			return;
 		}
 
