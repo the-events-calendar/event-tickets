@@ -125,21 +125,24 @@ class Order_Repository extends Tribe__Repository {
 		global $wpdb;
 
 		if ( $this->has_default_modifier( $key ) ) {
-			$results = $wpdb->get_col(
+			$normalized_key = $this->normalize_key( $key );
+
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+			$results = $wpdb->get_results(
 				$wpdb->prepare(
-					"SELECT DISTINCT {$this->normalize_key( $key )} FROM {$wpdb->posts} WHERE post_type=%s AND post_status NOT IN ({$excluded_statuses})",
+					"SELECT DISTINCT {$normalized_key} FROM {$wpdb->posts} WHERE post_type=%s AND post_status NOT IN ({$excluded_statuses})", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 					Order::POSTTYPE,
 				)
 			);
 
-			return wp_list_pluck( $results, $this->normalize_key( $key ) );
+			return wp_list_pluck( $results, $normalized_key );
 		}
 
 		if ( isset( $this->simple_meta_schema[ $key ]['meta_key'] ) ) {
 			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 			$results = $wpdb->get_results(
 				$wpdb->prepare(
-					"SELECT DISTINCT pm.meta_value FROM {$wpdb->postmeta} pm JOIN {$wpdb->posts} p ON p.ID=pm.post_id WHERE p.post_type=%s AND pm.meta_key = %s AND p.post_status NOT IN ({$excluded_statuses})",
+					"SELECT DISTINCT pm.meta_value FROM {$wpdb->postmeta} pm JOIN {$wpdb->posts} p ON p.ID=pm.post_id WHERE p.post_type=%s AND pm.meta_key = %s AND p.post_status NOT IN ({$excluded_statuses})", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 					Order::POSTTYPE,
 					$this->simple_meta_schema[ $key ]['meta_key']
 				)
