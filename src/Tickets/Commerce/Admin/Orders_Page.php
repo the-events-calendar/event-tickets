@@ -44,16 +44,14 @@ class Orders_Page {
 	 * @since TBD
 	 */
 	public function add_orders_page() {
-		$admin_pages = tribe( 'admin.pages' );
-
-		$admin_pages->register_page(
-			[
-				'id'       => static::$slug,
-				'path'     => 'edit.php?post_type=' . Order::POSTTYPE,
-				'parent'   => static::$parent_slug,
-				'title'    => esc_html__( 'Orders', 'event-tickets' ),
-				'position' => 1.7,
-			]
+		add_submenu_page(
+			static::$parent_slug,
+			esc_html__( 'Orders', 'event-tickets' ),
+			esc_html__( 'Orders', 'event-tickets' ),
+			'manage_options',
+			'edit.php?post_type=' . Order::POSTTYPE,
+			'',
+			1.7
 		);
 	}
 }
