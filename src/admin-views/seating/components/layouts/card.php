@@ -8,7 +8,7 @@
  *
  * @var Layout_Card $card The Layout card to render.
  */
-
+	
 use TEC\Tickets\Seating\Admin\Tabs\Layout_Card;
 
 ?>
@@ -31,7 +31,7 @@ use TEC\Tickets\Seating\Admin\Tabs\Layout_Card;
 				?>
 		</div>
 		<div class="tec-tickets__seating-tab__card-actions">
-			<a class="button button-secondary edit-layout" href="#">
+			<a class="button button-secondary edit-layout" href="<?php echo esc_url( $card->get_edit_url() ); ?>">
 				<?php esc_html_e( 'Edit', 'event-tickets' ); ?>
 			</a>
 			<a class="delete-layout" href="#">
