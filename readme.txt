@@ -200,6 +200,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [5.11.0.2] 2024-06-14 =
 
 * Fix - Windows Server compatibility issues with updated Assets handling. [TECTRIA-83]
+* Language - 0 new strings added, 22 updated, 0 fuzzied, and 0 obsoleted
 
 = [5.11.0.1] 2024-06-13 =
 
