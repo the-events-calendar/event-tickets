@@ -150,14 +150,7 @@ class Orders extends WP_Posts_List_Table {
 			$classes .= ' wp-locked';
 		}
 
-		if ( $item->post_parent ) {
-			$count    = count( get_post_ancestors( $item->ID ) );
-			$classes .= ' level-' . $count;
-		} else {
-			$classes .= ' level-0';
-		}
-
-		$classes .= $item->post_status;
+		$classes .= ' ' . $item->post_status;
 
 		echo '<tr id="' . esc_attr( Order::POSTTYPE ) . '-' . (int) $item->ID . '" class="' . esc_attr( $classes ) . '">';
 		$this->single_row_columns( tec_tc_get_order( $item ) );
@@ -298,7 +291,15 @@ class Orders extends WP_Posts_List_Table {
 	public function column_status( $item ) {
 		$status = tribe( Status_Handler::class )->get_by_wp_slug( $item->post_status );
 
-		return esc_html( $status->get_name() );
+		ob_start();
+		?>
+		<mark class="tribe-tickets-commerce-order-status status-<?php echo esc_attr( $status->get_slug() ); ?>">
+			<span>
+				<?php echo esc_html( $status->get_name() ); ?>
+			</span>
+		</mark>
+		<?php
+		return ob_get_clean();
 	}
 
 	/**
