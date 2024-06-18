@@ -4,7 +4,7 @@ Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, raf
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
 Requires at least: 6.3
 Tested up to: 6.5.3
-Stable tag: 5.11.0.2
+Stable tag: 5.11.1
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -197,6 +197,9 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+
+= [5.11.1] TBD =
+
 = [5.11.0.2] 2024-06-14 =
 
 * Fix - Windows Server compatibility issues with updated Assets handling. [TECTRIA-83]
@@ -205,7 +208,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [5.11.0.1] 2024-06-13 =
 
 * Fix - Issue on which some assets (css,js) would not be located in WP installs which could have some WP constant modified (WP_CONTENT_DIR, WP_PLUGIN_DIR)[TECTRIA-83]
-* Language - 0 new strings added, 0 updated, 1 fuzzied, and 0 obsoleted
+* Language - 0 new strings added, 0 updated, 1 fuzzied, and 0 obsoleted.
 
 = [5.11.0] 2024-06-11 =
 
