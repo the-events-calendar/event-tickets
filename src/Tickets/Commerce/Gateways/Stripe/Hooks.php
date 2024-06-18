@@ -5,6 +5,8 @@ namespace TEC\Tickets\Commerce\Gateways\Stripe;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Notice_Handler;
 use Tribe\Tickets\Admin\Settings as Admin_Settings;
+use Tribe\Admin\Pages;
+use Tribe__Tickets__Main as Tickets_Plugin;
 
 /**
  * Class Hooks
@@ -33,9 +35,15 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 		add_action( 'wp', [ $this, 'maybe_create_stripe_payment_intent' ] );
 
 		add_action( 'admin_init', [ $this, 'handle_stripe_errors' ] );
+		// Set up during feature release.
+		add_action( 'admin_init', [ $this, 'setup_stripe_webhook_on_release' ] );
+		// Set up during plugin activation.
+		add_action( 'admin_init', [ $this, 'setup_stripe_webhook_on_activation' ] );
 
 		add_action( 'wp_ajax_tec_tickets_commerce_gateway_stripe_test_webhooks', [ $this, 'action_handle_testing_webhooks_field' ] );
 		add_action( 'wp_ajax_tec_tickets_commerce_gateway_stripe_verify_webhooks', [ $this, 'action_handle_verify_webhooks' ] );
+
+		add_action( 'wp_ajax_' . Webhooks::NONCE_KEY_SETUP, [ $this, 'action_handle_set_up_webhook' ] );
 	}
 
 	/**
@@ -51,6 +59,57 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 		add_filter( 'tribe_settings_save_field_value', [ $this, 'validate_payment_methods' ], 10, 2 );
 		add_filter( 'tribe_settings_validate_field_value', [ $this, 'provide_defaults_for_hidden_fields'], 10, 3 );
 		add_filter( 'tec_tickets_commerce_admin_notices', [ $this, 'filter_admin_notices' ] );
+	}
+
+	/**
+	 * Set up Stripe Webhook based on transient value.
+	 *
+	 * @since 5.11.0
+	 *
+	 * @return bool
+	 */
+	public function setup_stripe_webhook_on_activation() {
+		/**
+		 * Filters whether to enable the Stripe Webhook.
+		 *
+		 * @since 5.11.0
+		 *
+		 * @param bool $need_to_enable_stripe_webhook Whether to enable the Stripe Webhook.
+		 */
+		$need_to_enable_stripe_webhook = apply_filters( 'tec_tickets_commerce_need_to_enable_stripe_webhook', get_transient( 'tec_tickets_commerce_setup_stripe_webhook' ) );
+
+		if ( false === $need_to_enable_stripe_webhook ) {
+			return false;
+		}
+
+		// Always delete the transient.
+		delete_transient( 'tec_tickets_commerce_setup_stripe_webhook' );
+
+		// Bail on non-truthy values as well.
+		if ( ! tribe_is_truthy( $need_to_enable_stripe_webhook ) ) {
+			return false;
+		}
+
+		return tribe( Webhooks::class )->handle_webhook_setup();
+	}
+
+	/**
+	 * Set up Stripe Webhook based on the plugin version.
+	 *
+	 * @since 5.11.0
+	 *
+	 * @return bool
+	 */
+	public function setup_stripe_webhook_on_release() {
+		$stripe_webhook_version = tribe_get_option( 'tec_tickets_commerce_stripe_webhook_version', false );
+
+		if ( $stripe_webhook_version ) {
+			return false;
+		}
+
+		tribe_update_option( 'tec_tickets_commerce_stripe_webhook_version', Tickets_Plugin::VERSION );
+
+		return tribe( Webhooks::class )->handle_webhook_setup();
 	}
 
 	/**
@@ -108,7 +167,35 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	}
 
 	/**
-	 * Handle stripe errors into the admin UI.
+	 * Handles the setting up of the webhook on the settings page.
+	 *
+	 * @since 5.11.0
+	 *
+	 * @return void
+	 */
+	public function action_handle_set_up_webhook(): void {
+		$nonce  = tribe_get_request_var( 'tc_nonce' );
+		$status = esc_html__( 'Something went wrong with your Webhook Creation. Please reload the page and try again later.', 'event-tickets' );
+
+		$webhooks = $this->container->make( Webhooks::class );
+
+		if ( ! wp_verify_nonce( $nonce, Webhooks::NONCE_KEY_SETUP ) || ! current_user_can( Pages::get_capability() ) ) {
+			wp_send_json_error( [ 'status' => $status ] );
+			return;
+		}
+
+		$result = $webhooks->handle_webhook_setup();
+
+		if ( ! $result ) {
+			wp_send_json_error( [ 'status' => $status ] );
+			return;
+		}
+
+		wp_send_json_success( [ 'status' => esc_html__( 'Webhook successfully set up! The page will reload now.', 'event-tickets' ) ] );
+	}
+
+	/**
+	 * Handle Stripe errors into the admin UI.
 	 *
 	 * @since 5.3.0
 	 * @since 5.6.3   Added check for ajax call, and additional logic to only run logic on checkout page and when Stripe is connected.
