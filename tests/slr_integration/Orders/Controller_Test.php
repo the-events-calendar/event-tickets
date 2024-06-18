@@ -9,6 +9,7 @@ use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Gateways\PayPal\Gateway;
 use TEC\Tickets\Commerce\Order;
+use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Pending;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
@@ -62,27 +63,6 @@ class Controller_Test extends Controller_Test_Case {
 	}
 	
 	public function attendee_data_provider(): Generator {
-		yield 'single event with 3 regular Ticket attendees' => [
-			function (): array {
-				$event_id = tribe_events()->set_args(
-					[
-						'title'      => 'Event with single attendee',
-						'status'     => 'publish',
-						'start_date' => '2020-01-01 00:00:00',
-						'duration'   => 2 * HOUR_IN_SECONDS,
-					]
-				)->create()->ID;
-
-				update_post_meta( $event_id, Meta::META_KEY_ENABLED, true );
-				update_post_meta( $event_id, Meta::META_KEY_LAYOUT_ID, 1 );
-
-				$ticket_id = $this->create_tc_ticket( $event_id );
-				$order     = $this->create_order( [ $ticket_id => 3 ] );
-				
-				return [ $event_id, [ $event_id, $ticket_id ] ];
-			},
-		];
-		
 		yield 'single event with 2 seated ticket attendee' => [
 			function (): array {
 				$cart = new Cart();
@@ -102,7 +82,7 @@ class Controller_Test extends Controller_Test_Case {
 				
 				$ticket_id = $this->create_tc_ticket( $event_id, 10 );
 				
-				$tribe_tickets_ar_data = json_encode(
+				$tribe_tickets_ar_data = wp_json_encode(
 					[
 						'tribe_tickets_tickets' => [
 							[
@@ -133,7 +113,6 @@ class Controller_Test extends Controller_Test_Case {
 				$_POST = array_merge( $_POST, $data );
 
 				$cart->parse_request();
-				// create POST data from the following comment
 				
 				$purchaser = [
 					'purchaser_user_id'    => 0,
@@ -154,6 +133,26 @@ class Controller_Test extends Controller_Test_Case {
 				return [ $event_id, [ $event_id, $ticket_id ] ];
 			},
 		];
+		yield 'single event with 3 regular Ticket attendees' => [
+			function (): array {
+				$event_id = tribe_events()->set_args(
+					[
+						'title'      => 'Event with single attendee',
+						'status'     => 'publish',
+						'start_date' => '2020-01-01 00:00:00',
+						'duration'   => 2 * HOUR_IN_SECONDS,
+					]
+				)->create()->ID;
+				
+				update_post_meta( $event_id, Meta::META_KEY_ENABLED, true );
+				update_post_meta( $event_id, Meta::META_KEY_LAYOUT_ID, 1 );
+				
+				$ticket_id = $this->create_tc_ticket( $event_id );
+				$order     = $this->create_order( [ $ticket_id => 3 ] );
+				
+				return [ $event_id, [ $event_id, $ticket_id ] ];
+			},
+		];
 	}
 	
 	/**
@@ -164,15 +163,16 @@ class Controller_Test extends Controller_Test_Case {
 	 * @return void
 	 */
 	public function test_attendee_list_seat_column( Closure $fixture ): void {
+		$_GET['search'] = '';
+		$_GET['page']   = 'tickets-attendees';
+		
 		$this->make_controller()->register();
-		
 		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
-		
-		[ $post_id, $post_ids ] = $fixture();
 		$this->set_fn_return( 'wp_create_nonce', '1234567890' );
 		
+		[ $post_id, $post_ids ] = $fixture();
+		
 		$_GET['event_id'] = $post_id;
-		$_GET['search']   = '';
 		
 		tribe_cache()->reset();
 		ob_start();
