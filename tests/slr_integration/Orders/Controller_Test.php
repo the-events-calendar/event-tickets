@@ -63,7 +63,7 @@ class Controller_Test extends Controller_Test_Case {
 	}
 	
 	public function attendee_data_provider(): Generator {
-		yield 'single event with 2 seated ticket attendee' => [
+		yield 'single event with 3 seated ticket attendee' => [
 			function (): array {
 				$cart = new Cart();
 				$this->set_class_fn_return( Cart::class, 'get_mode', 'test' );
@@ -87,9 +87,9 @@ class Controller_Test extends Controller_Test_Case {
 						'tribe_tickets_tickets' => [
 							[
 								'ticket_id'   => $ticket_id,
-								'quantity'    => 2,
+								'quantity'    => 3,
 								'optout'      => '1',
-								'seat_labels' => [ 'B-3', 'B-4' ],
+								'seat_labels' => [ 'B-4', 'D-1', 'C-3' ],
 							],
 						],
 						'tribe_tickets_meta'    => [],
@@ -190,6 +190,49 @@ class Controller_Test extends Controller_Test_Case {
 			function ( $a, $b ) {
 				return strlen( $b ) <=> strlen( $a );
 			} 
+		);
+		$html = str_replace( array_keys( $replace ), (array) $replace, $html );
+		
+		$this->assertMatchesHtmlSnapshot( $html );
+	}
+	
+	/**
+	 * Test the attendee list seat column data.
+	 *
+	 * @dataProvider attendee_data_provider
+	 *
+	 * @return void
+	 */
+	public function test_attendee_list_seat_column_desc_order( Closure $fixture ): void {
+		$_GET['search'] = '';
+		$_GET['page']   = 'tickets-attendees';
+		$_GET['orderby'] = 'seat';
+		$_GET['order']   = 'desc';
+		
+		$this->make_controller()->register();
+		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		$this->set_fn_return( 'wp_create_nonce', '1234567890' );
+		
+		[ $post_id, $post_ids ] = $fixture();
+		
+		$_GET['event_id'] = $post_id;
+		
+		tribe_cache()->reset();
+		ob_start();
+		
+		$attendees = tribe( Attendees::class );
+		$attendees->screen_setup();
+		$attendees->render();
+		$html = ob_get_clean();
+		
+		// Stabilize snapshots.
+		$attendee_data = $this->get_attendee_data( $attendees->attendees_table->items );
+		$replace       = array_combine( $post_ids, array_fill( 0, count( $post_ids ), 'POST_ID' ) ) + $attendee_data;
+		uksort(
+			$replace,
+			function ( $a, $b ) {
+				return strlen( $b ) <=> strlen( $a );
+			}
 		);
 		$html = str_replace( array_keys( $replace ), (array) $replace, $html );
 		
