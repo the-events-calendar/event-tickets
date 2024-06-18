@@ -200,7 +200,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [5.11.0.4] 2024-06-18 =
 
 * Fix - Follow Symlinks in order to locate assets [TECTRIA-91]
-* Language - 0 new strings added, 22 updated, 0 fuzzied, and 0 obsoleted
+* Language - 0 new strings added, 0 updated, 0 fuzzied, and 0 obsoleted
 
 = [5.11.0.3] 2024-06-14 =
 
