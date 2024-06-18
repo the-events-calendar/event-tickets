@@ -10,6 +10,7 @@
 namespace TEC\Tickets\Seating\Admin\Tabs;
 
 use TEC\Tickets\Seating\Admin;
+use TEC\Tickets\Seating\Service\Layouts as Layouts_Service;
 
 /**
  * The Layout_Card Class.
@@ -154,5 +155,16 @@ class Layout_Card {
 			],
 			admin_url( 'admin.php' )
 		);
+	}
+	
+	/**
+	 * Returns the number of associated posts.
+	 *
+	 * @since TBD
+	 *
+	 * @return int The number of associated posts.
+	 */
+	public function get_associated_events_count(): int {
+		return Layouts_Service::get_associated_events_by_id( $this->get_id() );
 	}
 }
