@@ -11,6 +11,7 @@ namespace TEC\Tickets\Seating\Orders;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\lucatume\DI52\Container;
+use TEC\Tickets\Admin\Attendees\Page as Attendee_Page;
 use TEC\Tickets\Commerce\Status\Status_Interface;
 use WP_Post;
 use Tribe__Tickets__Tickets;
@@ -23,7 +24,6 @@ use Tribe__Tickets__Tickets;
  * @package TEC/Tickets/Seating/Orders
  */
 class Controller extends Controller_Contract {
-	
 	/**
 	 * A reference to Attendee data handler
 	 *
@@ -65,13 +65,14 @@ class Controller extends Controller_Contract {
 	 * @return void
 	 */
 	protected function do_register(): void {
-		// Todo: This is only handling seating info for TicketsCommerce for now, in future we have to include other actions for other providers.
 		add_filter( 'tec_tickets_commerce_cart_prepare_data', [ $this, 'handle_seat_selection' ] );
 		add_action( 'tec_tickets_commerce_flag_action_generated_attendee', [ $this, 'save_seat_data_for_attendee' ], 10, 7 );
 		
 		// Add attendee seat data column to the attendee list.
-		add_filter( 'tribe_tickets_attendee_table_columns', [ $this, 'add_attendee_seat_column' ], 10, 2 );
-		add_filter( 'tribe_events_tickets_attendees_table_column', [ $this, 'render_seat_column' ], 10, 3 );
+		if ( tribe_get_request_var( 'page' ) === 'tickets-attendees' || tribe( Attendee_Page::class )->is_on_page() ) {
+			add_filter( 'tribe_tickets_attendee_table_columns', [ $this, 'add_attendee_seat_column' ], 10, 2 );
+			add_filter( 'tribe_events_tickets_attendees_table_column', [ $this, 'render_seat_column' ], 10, 3 );
+		}
 	}
 	
 	/**

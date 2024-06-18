@@ -11,7 +11,6 @@ namespace TEC\Tickets\Seating\Orders;
 
 use TEC\Tickets\Seating\Meta;
 use Tribe__Main as Common;
-use TEC\Tickets\Admin\Attendees\Page as Attendees_Page;
 
 /**
  * Class Attendee
@@ -34,7 +33,7 @@ class Attendee {
 	public function add_attendee_seat_column( array $columns, int $event_id ): array {
 		$event_layout_id = get_post_meta( $event_id, Meta::META_KEY_LAYOUT_ID, true );
 		
-		if ( empty( $event_layout_id ) && ! tribe( Attendees_Page::class )->is_on_page() ) {
+		if ( empty( $event_layout_id ) ) {
 			return $columns;
 		}
 		
