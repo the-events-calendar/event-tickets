@@ -44,6 +44,9 @@ build
 compiler.jar
 *.ps1
 
+# Local packaging files
+.pup-*
+
 # add this yourself to add githoooks - see .huskyrc.sample
 .huskyrc
 
@@ -53,7 +56,6 @@ lang/*.po
 /playwright-report/
 /blob-report/
 /playwright/.cache/
-/test-results/
-/playwright-report/
-/blob-report/
-/playwright/.cache/
+
+.vscode
+*.code-workspace

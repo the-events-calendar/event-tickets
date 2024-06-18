@@ -219,11 +219,6 @@ class Tribe__Tickets__Assets {
 
 		$ticket_js_deps = [ 'jquery-ui-datepicker', 'tribe-bumpdown', 'tribe-attrchange', 'underscore', 'tribe-validation', 'event-tickets-admin-accordion-js', 'tribe-timepicker' ];
 
-		// While TEC is active, make sure we are loading TEC admin JS as dependency.
-		if ( class_exists( 'Tribe__Events__Main' ) ) {
-			$ticket_js_deps[] = 'tribe-events-admin';
-		}
-
 		$assets = [
 			[ 'event-tickets-admin-css', 'tickets-admin.css', [ 'tribe-validation-style', 'tribe-jquery-timepicker-css', 'tribe-common-admin' ] ],
 			[ 'event-tickets-admin-tables-css', 'tickets-tables.css', [ 'tec-variables-full', 'event-tickets-admin-css' ] ],

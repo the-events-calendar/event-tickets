@@ -29,6 +29,6 @@ trait Built_Assets {
 	protected function built_asset_url( string $path ): string {
 		$plugin = Tickets::instance();
 
-		return $plugin->plugin_url . 'build/seating/' . ltrim( $path, '/' );
+		return $plugin->plugin_url . 'build/Seating/' . ltrim( $path, '/' );
 	}
 }
