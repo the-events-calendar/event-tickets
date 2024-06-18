@@ -11,6 +11,9 @@ namespace TEC\Tickets\Seating\Orders;
 
 use TEC\Tickets\Seating\Meta;
 use Tribe__Main as Common;
+use WP_Query;
+use Tribe__Tickets__Attendee_Repository as Attendee_Repository;
+use Tribe__Utils__Array as Arr;
 
 /**
  * Class Attendee
@@ -80,5 +83,50 @@ class Attendee {
 		$columns['seat'] = 'seat';
 		
 		return $columns;
+	}
+	
+	/**
+	 * Handle seat column sorting.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $query_args An array of the query arguments the query will be initialized with.
+	 * @param WP_Query            $query The query object, the query arguments have not been parsed yet.
+	 * @param Attendee_Repository $repository This repository instance.
+	 *
+	 * @return array<string,mixed> The query args.
+	 */
+	public function handle_sorting_seat_column( $query_args, $query, $repository ): array {
+		$order_by = Arr::get( $query_args, 'orderby' );
+		
+		if ( 'seat' !== $order_by ) {
+			return $query_args;
+		}
+		
+		$order = Arr::get( $query_args, 'order', 'asc' );
+		
+		global $wpdb;
+		
+		$meta_alias     = 'seat_label';
+		$meta_key       = Meta::META_KEY_ATTENDEE_SEAT_LABEL;
+		$postmeta_table = "orderby_{$meta_alias}_meta";
+		$filter_id      = 'order_by_seat_label';
+		
+		$repository->filter_query->join(
+			"
+			LEFT JOIN {$wpdb->postmeta} AS {$postmeta_table}
+				ON (
+					{$postmeta_table}.post_id = {$wpdb->posts}.ID
+					AND {$postmeta_table}.meta_key = '{$meta_key}'
+				)
+			",
+			$filter_id,
+			true
+		);
+		
+		$repository->filter_query->orderby( [ $meta_alias => $order ], $filter_id, true, false );
+		$repository->filter_query->fields( "{$postmeta_table}.meta_value AS {$meta_alias}", $filter_id, true );
+		
+		return $query_args;
 	}
 }
