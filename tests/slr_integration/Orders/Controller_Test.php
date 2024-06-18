@@ -204,8 +204,8 @@ class Controller_Test extends Controller_Test_Case {
 	 * @return void
 	 */
 	public function test_attendee_list_seat_column_desc_order( Closure $fixture ): void {
-		$_GET['search'] = '';
-		$_GET['page']   = 'tickets-attendees';
+		$_GET['search']  = '';
+		$_GET['page']    = 'tickets-attendees';
 		$_GET['orderby'] = 'seat';
 		$_GET['order']   = 'desc';
 		
