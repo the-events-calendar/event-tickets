@@ -65,11 +65,14 @@ class Attendee {
 		
 		$seat_label = get_post_meta( $item['ID'], Meta::META_KEY_ATTENDEE_SEAT_LABEL, true );
 		
-		if ( empty( $seat_label ) ) {
-			return '';
+		if ( ! empty( $seat_label ) ) {
+			return $seat_label;
 		}
 		
-		return $seat_label;
+		$ticket_id   = Arr::get( $item, 'product_id' );
+		$slr_enabled = get_post_meta( $ticket_id, Meta::META_KEY_ENABLED, true );
+		
+		return $slr_enabled ? __( 'Unassigned', 'event-tickets' ) : '';
 	}
 	
 	/**
