@@ -197,9 +197,18 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+
 = [5.11.1] TBD =
 
+= [5.11.0.2] 2024-06-14 =
 
+* Fix - Windows Server compatibility issues with updated Assets handling. [TECTRIA-83]
+* Language - 0 new strings added, 22 updated, 0 fuzzied, and 0 obsoleted
+
+= [5.11.0.1] 2024-06-13 =
+
+* Fix - Issue on which some assets (css,js) would not be located in WP installs which could have some WP constant modified (WP_CONTENT_DIR, WP_PLUGIN_DIR)[TECTRIA-83]
+* Language - 0 new strings added, 0 updated, 1 fuzzied, and 0 obsoleted.
 
 = [5.11.0] 2024-06-11 =
 

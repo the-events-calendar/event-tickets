@@ -1,8 +1,15 @@
 <?php
+/**
+ * Main plugin class.
+ */
+
 use Tribe\Tickets\Events\Service_Provider as Events_Service_Provider;
 use Tribe\Tickets\Promoter\Service_Provider as Promoter_Service_Provider;
 use Tribe\Tickets\Admin\Settings;
 
+/**
+ * Class Tribe__Tickets__Main
+ */
 class Tribe__Tickets__Main {
 
 	/**
