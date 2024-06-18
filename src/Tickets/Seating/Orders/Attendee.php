@@ -68,4 +68,17 @@ class Attendee {
 		
 		return $seat_label;
 	}
+	
+	/**
+	 * Include seats in sortable columns list.
+	 *
+	 * @param array<string,string> $columns The list of columns.
+	 *
+	 * @return array<string,string> The filtered columns.
+	 */
+	public function filter_sortable_columns( array $columns ): array {
+		$columns['seat'] = 'seat';
+		
+		return $columns;
+	}
 }

@@ -72,6 +72,7 @@ class Controller extends Controller_Contract {
 		if ( tribe_get_request_var( 'page' ) === 'tickets-attendees' || tribe( Attendee_Page::class )->is_on_page() ) {
 			add_filter( 'tribe_tickets_attendee_table_columns', [ $this, 'add_attendee_seat_column' ], 10, 2 );
 			add_filter( 'tribe_events_tickets_attendees_table_column', [ $this, 'render_seat_column' ], 10, 3 );
+			add_filter( 'tec_tickets_attendees_table_sortable_columns', [ $this, 'include_seat_column_as_sortable' ] );
 		}
 	}
 	
@@ -89,6 +90,7 @@ class Controller extends Controller_Contract {
 		// Remove attendee seat data column from the attendee list.
 		remove_filter( 'tribe_tickets_attendee_table_columns', [ $this, 'add_attendee_seat_column' ] );
 		remove_filter( 'tribe_events_tickets_attendees_table_column', [ $this, 'render_seat_column' ] );
+		remove_filter( 'tec_tickets_attendees_table_sortable_columns', [ $this, 'include_seat_column_as_sortable' ] );
 	}
 	
 	/**
@@ -148,5 +150,18 @@ class Controller extends Controller_Contract {
 	 */
 	public function render_seat_column( $value, $item, $column ) {
 		return $this->attendee->render_seat_column( $value, $item, $column );
+	}
+	
+	/**
+	 * Include seats into sortable columns list.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,string> $columns The column names.
+	 *
+	 * @return array<string,string> The filtered columns.
+	 */
+	public function include_seat_column_as_sortable( array $columns ): array {
+		return $this->attendee->filter_sortable_columns( $columns );
 	}
 }
