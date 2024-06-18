@@ -9,12 +9,15 @@
 
 namespace TEC\Tickets\Seating\Orders;
 
+use Illuminate\Support\Str;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\lucatume\DI52\Container;
 use TEC\Tickets\Admin\Attendees\Page as Attendee_Page;
 use TEC\Tickets\Commerce\Status\Status_Interface;
 use WP_Post;
 use Tribe__Tickets__Tickets;
+use WP_Query;
+use Tribe__Tickets__Attendee_Repository as Attendee_Repository;
 
 /**
  * Class Controller
@@ -73,6 +76,7 @@ class Controller extends Controller_Contract {
 			add_filter( 'tribe_tickets_attendee_table_columns', [ $this, 'add_attendee_seat_column' ], 10, 2 );
 			add_filter( 'tribe_events_tickets_attendees_table_column', [ $this, 'render_seat_column' ], 10, 3 );
 			add_filter( 'tec_tickets_attendees_table_sortable_columns', [ $this, 'include_seat_column_as_sortable' ] );
+			add_filter( 'tribe_repository_attendees_query_args', [ $this, 'handle_sorting_seat_column' ], 10, 3 );
 		}
 	}
 	
@@ -91,6 +95,7 @@ class Controller extends Controller_Contract {
 		remove_filter( 'tribe_tickets_attendee_table_columns', [ $this, 'add_attendee_seat_column' ] );
 		remove_filter( 'tribe_events_tickets_attendees_table_column', [ $this, 'render_seat_column' ] );
 		remove_filter( 'tec_tickets_attendees_table_sortable_columns', [ $this, 'include_seat_column_as_sortable' ] );
+		remove_filter( 'tribe_repository_attendees_query_args', [ $this, 'handle_sorting_seat_column' ] );
 	}
 	
 	/**
@@ -163,5 +168,20 @@ class Controller extends Controller_Contract {
 	 */
 	public function include_seat_column_as_sortable( array $columns ): array {
 		return $this->attendee->filter_sortable_columns( $columns );
+	}
+	
+	/**
+	 * Handle seat column sorting.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $query_args An array of the query arguments the query will be initialized with.
+	 * @param WP_Query            $query The query object, the query arguments have not been parsed yet.
+	 * @param Attendee_Repository $repository This repository instance.
+	 *
+	 * @return array<string,mixed> The query args.
+	 */
+	public function handle_sorting_seat_column( $query_args, $query, $repository ): array {
+		return $this->attendee->handle_sorting_seat_column( $query_args, $query, $repository );
 	}
 }
