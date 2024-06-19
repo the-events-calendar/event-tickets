@@ -21,7 +21,7 @@ use TEC\Tickets\Seating\Admin\Tabs\Layout_Card;
 		<div class="tec-tickets__seating-tab__card-title"><?php echo esc_html( $card->get_name() ); ?></div>
 		<div class="tec-tickets__seating-tab__card-info">
 			<?php
-			$count = $card->get_associated_events_count();
+			$count = $card->get_associated_posts_count();
 			
 			if ( 0 === $count ) {
 				echo esc_html__( 'No associated events', 'event-tickets' );

@@ -164,7 +164,7 @@ class Layout_Card {
 	 *
 	 * @return int The number of associated posts.
 	 */
-	public function get_associated_events_count(): int {
-		return Layouts_Service::get_associated_events_by_id( $this->get_id() );
+	public function get_associated_posts_count(): int {
+		return Layouts_Service::get_associated_posts_by_id( $this->get_id() );
 	}
 }

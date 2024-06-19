@@ -216,9 +216,9 @@ class Layouts {
 	 *
 	 * @param string $layout_id The ID of the layout.
 	 *
-	 * @return int The number of events associated with the layout.
+	 * @return int The number of posts associated with the layout.
 	 */
-	public static function get_associated_events_by_id( string $layout_id ): int {
+	public static function get_associated_posts_by_id( string $layout_id ): int {
 		try {
 			$count = DB::table( 'posts', 'posts' )
 						->leftJoin( 'postmeta', 'posts.id', 'layout_meta.post_id', 'layout_meta' )
