@@ -220,6 +220,16 @@ class Orders extends WP_Posts_List_Table {
 
 			$status_name = $status->name;
 
+			$all_grouped_statuses = tribe( Status_Handler::class )->get_group_of_statuses_by_slug( '', $status_name );
+
+			$total_posts_in_status = 0;
+
+			foreach ( $all_grouped_statuses as $grouped_status ) {
+				$total_posts_in_status += $num_posts->$grouped_status;
+			}
+
+			$num_posts->$status_name = $total_posts_in_status;
+
 			if ( ! in_array( $status_name, $avail_post_stati, true ) || empty( $num_posts->$status_name ) ) {
 				continue;
 			}

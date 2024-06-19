@@ -25,6 +25,7 @@ use TEC\Tickets\Commerce\Reports\Orders;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Status_Interface;
 use TEC\Tickets\Commerce\Payments_Tab;
+use TEC\Tickets\Commerce\Status\Status_Handler;
 use WP_Admin_Bar;
 
 /**
@@ -162,6 +163,10 @@ class Hooks extends Service_Provider {
 		if ( empty( $screen->id ) || 'edit-' . Order::POSTTYPE !== $screen->id ) {
 			return;
 		}
+
+		$current_status = $query->get( 'post_status' );
+
+		$query->set( 'post_status', tribe( Status_Handler::class )->get_group_of_statuses_by_slug( '', $current_status ) );
 
 		$meta_query = $query->get( 'meta_query' );
 
