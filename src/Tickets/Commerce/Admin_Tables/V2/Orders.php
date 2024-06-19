@@ -13,6 +13,7 @@ use TEC\Tickets\Commerce\Gateways\Manager;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Gateways\Free\Gateway as Free_Gateway;
 use TEC\Tickets\Commerce\Order;
+use Tribe__Field;
 use WP_Post;
 use WP_Posts_List_Table;
 
@@ -220,6 +221,16 @@ class Orders extends WP_Posts_List_Table {
 
 			$status_name = $status->name;
 
+			$all_grouped_statuses = tribe( Status_Handler::class )->get_group_of_statuses_by_slug( '', $status_name );
+
+			$total_posts_in_status = 0;
+
+			foreach ( $all_grouped_statuses as $grouped_status ) {
+				$total_posts_in_status += $num_posts->$grouped_status;
+			}
+
+			$num_posts->$status_name = $total_posts_in_status;
+
 			if ( ! in_array( $status_name, $avail_post_stati, true ) || empty( $num_posts->$status_name ) ) {
 				continue;
 			}
@@ -289,7 +300,7 @@ class Orders extends WP_Posts_List_Table {
 	 * @return string
 	 */
 	public function column_status( $item ) {
-		$status = tribe( Status_Handler::class )->get_by_wp_slug( $item->post_status );
+		$status = tribe( Status_Handler::class )->get_by_wp_slug( $item->post_status, false );
 
 		ob_start();
 		?>
@@ -626,22 +637,30 @@ class Orders extends WP_Posts_List_Table {
 		if ( ! in_array( $g, $gateways, true ) ) {
 			$g = '';
 		}
-		?>
-		<label for="tec-tc-filter-by-gateway" class="screen-reader-text"><?php esc_html_e( 'Filter By Gateway', 'event-tickets' ); ?></label>
-		<select name="tec_tc_gateway" id="tec-tc-filter-by-gateway">
-			<option<?php selected( $g, '' ); ?> value=""><?php esc_html_e( 'All Gateways', 'event-tickets' ); ?></option>
-		<?php
-		foreach ( $gateways as $gateway ) {
 
-			printf(
-				"<option %s value='%s'>%s</option>\n",
-				selected( $g, $gateway, false ),
-				esc_attr( $gateway ),
-				esc_html( ucfirst( $gateway ) )
-			);
+		$gateways_formatted = [
+			'' => esc_html__( 'All Gateways', 'event-tickets' ),
+		];
+		foreach ( $gateways as $gateway ) {
+			$gateways_formatted[ $gateway ] = ucfirst( $gateway );
 		}
+
+		$field = [
+			'type'    => 'dropdown',
+			'options' => $gateways_formatted,
+		];
+
+		add_filter( 'tribe_field_start', '__return_empty_string' );
+		add_filter( 'tribe_field_end', '__return_empty_string' );
+		add_filter( 'tribe_field_div_start', '__return_empty_string' );
+		add_filter( 'tribe_field_div_end', '__return_empty_string' );
 		?>
-		</select>
+		<label for="tec_tc_gateway-select" class="screen-reader-text"><?php esc_html_e( 'Filter By Gateway', 'event-tickets' ); ?></label>
 		<?php
+		new Tribe__Field( 'tec_tc_gateway', $field, $g );
+		remove_filter( 'tribe_field_start', '__return_empty_string', 10 );
+		remove_filter( 'tribe_field_end', '__return_empty_string', 10 );
+		remove_filter( 'tribe_field_div_start', '__return_empty_string', 10 );
+		remove_filter( 'tribe_field_div_end', '__return_empty_string', 10 );
 	}
 }
