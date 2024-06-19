@@ -260,12 +260,14 @@ function readTicketsFromSelection() {
 		if (!acc?.[ticketId]) {
 			acc[ticketId] = {
 				ticket_id: ticketId,
-				quantity: 0,
+				quantity: 1,
 				optout: '1', // @todo: actually pull this from the Attendee data collection.
+				seat_labels: [ row.dataset.seatLabel ]
 			};
+		} else {
+			acc[ticketId].quantity++;
+			acc[ticketId].seat_labels = [ ...acc[ticketId].seat_labels, row.dataset.seatLabel ];
 		}
-
-		acc[ticketId].quantity++;
 
 		return acc;
 	}, {});
