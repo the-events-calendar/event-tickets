@@ -117,7 +117,7 @@ class Status_Handler extends \TEC\Common\Contracts\Service_Provider {
 		$group = [ $status->get_wp_slug() ];
 
 		foreach ( self::STATUS_MAP as $original => $mapped_to ) {
-			if ( $mapped_to !== $status::class ) {
+			if ( get_class( $status ) !== $mapped_to ) {
 				continue;
 			}
 
