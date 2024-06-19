@@ -43,5 +43,35 @@ class Orders_Page {
 			'',
 			1.7
 		);
+
+		tribe_asset(
+			tribe( 'tickets.main' ),
+			'event-tickets-commerce-admin-orders',
+			'tickets-commerce/admin/orders/table.css',
+			[],
+			[ 'admin_enqueue_scripts' ],
+			[ 'conditionals' => [ $this, 'is_admin_orders_page' ] ]
+		);
+	}
+
+	/**
+	 * Checks if the current screen is the orders page.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function is_admin_orders_page() {
+		if ( ! is_admin() ) {
+			return false;
+		}
+
+		$screen = get_current_screen();
+
+		if ( empty( $screen->id ) || 'edit-' . Order::POSTTYPE !== $screen->id ) {
+			return false;
+		}
+
+		return true;
 	}
 }

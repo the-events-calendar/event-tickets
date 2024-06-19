@@ -1,0 +1,38 @@
+/**
+ * Event Tickets - Admin Orders Page
+ *
+ * @since TBD
+ */
+.tribe-tickets-commerce-order-status {
+	background: #e5e5e5;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+	border-radius: 4px;
+	color: #777;
+	cursor: inherit !important;
+	display: inline-flex;
+	line-height: 2.5em;
+	margin: -0.25em 0;
+	max-width: 100%;
+	white-space: nowrap;
+
+	> span {
+		margin: 0 1em;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	&.status-completed {
+		background: #c8d7e1;
+		color: #2e4453;
+	}
+
+	&.status-denied {
+		background: #eba3a3;
+		color: #761919;
+	}
+
+	&.status-trash {
+		background: #eba3a3;
+		color: #761919;
+	}
+}

@@ -5,7 +5,6 @@ namespace TEC\Tickets\Commerce\Status;
 /**
  * Class Refunded.
  *
- *
  * @since   5.1.9
  *
  * @package TEC\Tickets\Commerce\Status
@@ -33,10 +32,10 @@ class Reversed extends Status_Abstract {
 	 * {@inheritdoc}
 	 */
 	protected $wp_arguments = [
-		'public'                    => true,
-		'exclude_from_search'       => false,
+		'public'                    => false,
+		'exclude_from_search'       => true,
 		'show_in_admin_all_list'    => true,
-		'show_in_admin_status_list' => true,
+		'show_in_admin_status_list' => false,
 	];
 
 	/**
