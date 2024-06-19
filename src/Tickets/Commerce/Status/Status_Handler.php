@@ -167,8 +167,8 @@ class Status_Handler extends \TEC\Common\Contracts\Service_Provider {
 
 		foreach ( $this->get_all() as $status ) {
 			if ( $status->get_slug() === $slug ) {
-				if ( ! $ignore_map && isset( self::STATUS_MAP[ $status::class ] ) ) {
-					return tribe( self::STATUS_MAP[ $status::class ] );
+				if ( ! $ignore_map && isset( self::STATUS_MAP[ get_class( $status ) ] ) ) {
+					return tribe( self::STATUS_MAP[ get_class( $status ) ] );
 				}
 
 				return $status;
@@ -196,8 +196,8 @@ class Status_Handler extends \TEC\Common\Contracts\Service_Provider {
 
 		foreach ( $this->get_all() as $status ) {
 			if ( $status->get_wp_slug() === $slug ) {
-				if ( ! $ignore_map && isset( self::STATUS_MAP[ $status::class ] ) ) {
-					return tribe( self::STATUS_MAP[ $status::class ] );
+				if ( ! $ignore_map && isset( self::STATUS_MAP[ get_class( $status ) ] ) ) {
+					return tribe( self::STATUS_MAP[ get_class( $status ) ] );
 				}
 
 				return $status;
