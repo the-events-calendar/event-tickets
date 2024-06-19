@@ -5,6 +5,7 @@ namespace TEC\Tickets\Seating\Admin;
 use Codeception\TestCase\WPTestCase;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Tickets\Seating\Admin\Tabs\Maps as Maps_Tab;
+use TEC\Tickets\Seating\Meta;
 use Tribe\Tests\Traits\With_Uopz;
 use TEC\Tickets\Seating\Service\Maps as Maps_Service;
 use TEC\Tickets\Seating\Service\Layouts as Layouts_Service;
@@ -155,6 +156,18 @@ class Maps_Layout_Homepage_Test extends WPTestCase {
 		// We've just updated the Layouts, no need to run the update against the service.
 		set_transient( Layouts_Service::update_transient_name(), time() - 1 );
 
+		[ $post_a, $post_b, $post_c ] = $this->factory()->post->create_many( 3 );
+		
+		// Layout 2 is associated with 1 event.
+		update_post_meta( $post_a, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $post_a, Meta::META_KEY_LAYOUT_ID, '2' );
+		
+		// Layout 3 is associated with 2 events.
+		update_post_meta( $post_b, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $post_b, Meta::META_KEY_LAYOUT_ID, '3' );
+		update_post_meta( $post_c, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $post_c, Meta::META_KEY_LAYOUT_ID, '3' );
+		
 		ob_start();
 		tribe( Layouts_Tab::class )->render();
 		$html = ob_get_clean();
