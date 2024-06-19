@@ -153,7 +153,7 @@ class Status_Handler extends \TEC\Common\Contracts\Service_Provider {
 	 * Fetches the first status registered with a given slug.
 	 *
 	 * @since 5.1.9
-	 * @since TBD
+	 * @since TBD Added `$ignore_map` parameter.
 	 *
 	 * @param string $slug Which status we are looking for.
 	 * @param bool   $ignore_map Whether to ignore the map or not.
