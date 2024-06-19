@@ -104,9 +104,9 @@ class Status_Handler extends \TEC\Common\Contracts\Service_Provider {
 	 */
 	public function get_group_of_statuses_by_slug( string $slug = '', string $wp_slug = '' ) {
 		if ( $slug ) {
-			$status = $this->get_by_slug( $slug, true );
+			$status = $this->get_by_slug( $slug );
 		} elseif ( $wp_slug ) {
-			$status = $this->get_by_wp_slug( $wp_slug, true );
+			$status = $this->get_by_wp_slug( $wp_slug );
 		} else {
 			return [ tribe( Unsupported::class )->get_wp_slug() ];
 		}

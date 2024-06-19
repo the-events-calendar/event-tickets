@@ -646,26 +646,8 @@ class Orders extends WP_Posts_List_Table {
 		}
 
 		$field = [
-			'type'                => 'dropdown',
-			'fieldset_attributes' => [],
-			'attributes'          => [],
-			'class'               => null,
-			'label'               => null,
-			'label_attributes'    => null,
-			'placeholder'         => null,
-			'tooltip'             => null,
-			'size'                => 'medium',
-			'html'                => null,
-			'error'               => false,
-			'options'             => $gateways_formatted,
-			'conditional'         => true,
-			'display_callback'    => null,
-			'if_empty'            => null,
-			'can_be_empty'        => false,
-			'clear_after'         => true,
-			'tooltip_first'       => false,
-			'allow_clear'         => false,
-			'settings'            => [],
+			'type'    => 'dropdown',
+			'options' => $gateways_formatted,
 		];
 
 		add_filter( 'tribe_field_start', '__return_empty_string' );

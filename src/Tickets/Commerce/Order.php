@@ -275,18 +275,6 @@ class Order extends Abstract_Order {
 			return false;
 		}
 
-		$order = tec_tc_get_order( $order_id, OBJECT, 'raw', true );
-
-		if ( ! $order instanceof \WP_Post ) {
-			return false;
-		}
-
-		$current_status = tribe( Status\Status_Handler::class )->get_by_wp_slug( $order->post_status );
-
-		if ( $current_status->get_wp_slug() === $status->get_wp_slug() ) {
-			return true;
-		}
-
 		$can_apply = $status->can_apply_to( $order_id, $status );
 		if ( ! $can_apply ) {
 			return $can_apply;
