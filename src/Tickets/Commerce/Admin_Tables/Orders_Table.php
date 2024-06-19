@@ -28,7 +28,7 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
  *
  * @since TBD
  */
-class Orders extends WP_Posts_List_Table {
+class Orders_Table extends WP_Posts_List_Table {
 
 	/**
 	 * The current post ID
