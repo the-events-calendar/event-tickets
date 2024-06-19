@@ -13,6 +13,7 @@ use TEC\Tickets\Commerce\Gateways\Manager;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Gateways\Free\Gateway as Free_Gateway;
 use TEC\Tickets\Commerce\Order;
+use Tribe__Field;
 use WP_Post;
 use WP_Posts_List_Table;
 
@@ -636,22 +637,48 @@ class Orders extends WP_Posts_List_Table {
 		if ( ! in_array( $g, $gateways, true ) ) {
 			$g = '';
 		}
-		?>
-		<label for="tec-tc-filter-by-gateway" class="screen-reader-text"><?php esc_html_e( 'Filter By Gateway', 'event-tickets' ); ?></label>
-		<select name="tec_tc_gateway" id="tec-tc-filter-by-gateway">
-			<option<?php selected( $g, '' ); ?> value=""><?php esc_html_e( 'All Gateways', 'event-tickets' ); ?></option>
-		<?php
-		foreach ( $gateways as $gateway ) {
 
-			printf(
-				"<option %s value='%s'>%s</option>\n",
-				selected( $g, $gateway, false ),
-				esc_attr( $gateway ),
-				esc_html( ucfirst( $gateway ) )
-			);
+		$gateways_formatted = [
+			'' => esc_html__( 'All Gateways', 'event-tickets' ),
+		];
+		foreach ( $gateways as $gateway ) {
+			$gateways_formatted[ $gateway ] = ucfirst( $gateway );
 		}
+
+		$field = [
+			'type'                => 'dropdown',
+			'fieldset_attributes' => [],
+			'attributes'          => [],
+			'class'               => null,
+			'label'               => null,
+			'label_attributes'    => null,
+			'placeholder'         => null,
+			'tooltip'             => null,
+			'size'                => 'medium',
+			'html'                => null,
+			'error'               => false,
+			'options'             => $gateways_formatted,
+			'conditional'         => true,
+			'display_callback'    => null,
+			'if_empty'            => null,
+			'can_be_empty'        => false,
+			'clear_after'         => true,
+			'tooltip_first'       => false,
+			'allow_clear'         => false,
+			'settings'            => [],
+		];
+
+		add_filter( 'tribe_field_start', '__return_empty_string' );
+		add_filter( 'tribe_field_end', '__return_empty_string' );
+		add_filter( 'tribe_field_div_start', '__return_empty_string' );
+		add_filter( 'tribe_field_div_end', '__return_empty_string' );
 		?>
-		</select>
+		<label for="tec_tc_gateway-select" class="screen-reader-text"><?php esc_html_e( 'Filter By Gateway', 'event-tickets' ); ?></label>
 		<?php
+		new Tribe__Field( 'tec_tc_gateway', $field, $g );
+		remove_filter( 'tribe_field_start', '__return_empty_string', 10 );
+		remove_filter( 'tribe_field_end', '__return_empty_string', 10 );
+		remove_filter( 'tribe_field_div_start', '__return_empty_string', 10 );
+		remove_filter( 'tribe_field_div_end', '__return_empty_string', 10 );
 	}
 }
