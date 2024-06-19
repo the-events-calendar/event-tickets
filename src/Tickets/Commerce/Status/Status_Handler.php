@@ -99,6 +99,7 @@ class Status_Handler extends \TEC\Common\Contracts\Service_Provider {
 	 *
 	 * @param string $slug Which status we are looking for.
 	 * @param string $wp_slug Which status we are looking for.
+	 *
 	 * @return array A group of wp slugs.
 	 */
 	public function get_group_of_statuses_by_slug( string $slug = '', string $wp_slug = '' ) {
