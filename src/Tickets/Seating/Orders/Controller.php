@@ -9,7 +9,6 @@
 
 namespace TEC\Tickets\Seating\Orders;
 
-use Illuminate\Support\Str;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\lucatume\DI52\Container;
 use TEC\Tickets\Admin\Attendees\Page as Attendee_Page;
