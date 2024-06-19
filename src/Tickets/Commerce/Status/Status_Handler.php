@@ -160,7 +160,7 @@ class Status_Handler extends \TEC\Common\Contracts\Service_Provider {
 	 *
 	 * @return Status_Interface|null
 	 */
-	public function get_by_slug( $slug, $ignore_map = false ) {
+	public function get_by_slug( $slug, $ignore_map = true ) {
 		if ( 'trash' === $slug ) {
 			return tribe( Trashed::class );
 		}
@@ -189,7 +189,7 @@ class Status_Handler extends \TEC\Common\Contracts\Service_Provider {
 	 *
 	 * @return Status_Interface
 	 */
-	public function get_by_wp_slug( $slug, $ignore_map = false ) {
+	public function get_by_wp_slug( $slug, $ignore_map = true ) {
 		if ( 'trash' === $slug ) {
 			return tribe( Trashed::class );
 		}

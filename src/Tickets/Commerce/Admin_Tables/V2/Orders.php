@@ -300,7 +300,7 @@ class Orders extends WP_Posts_List_Table {
 	 * @return string
 	 */
 	public function column_status( $item ) {
-		$status = tribe( Status_Handler::class )->get_by_wp_slug( $item->post_status );
+		$status = tribe( Status_Handler::class )->get_by_wp_slug( $item->post_status, false );
 
 		ob_start();
 		?>
