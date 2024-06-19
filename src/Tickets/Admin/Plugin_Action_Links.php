@@ -26,6 +26,9 @@ class Plugin_Action_Links {
 				'add_links_to_plugin_actions',
 			]
 		);
+
+		// Add 5-star review link.
+		add_filter( 'plugin_row_meta', [ $this, 'add_links_to_plugin_meta' ], 10, 2 );
 	}
 
 	/**
@@ -42,5 +45,31 @@ class Plugin_Action_Links {
 		$actions['tec-tickets-getting-started'] = '<a href="https://evnt.is/1aot" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Getting started', 'event-tickets' ) . '</a>';
 
 		return $actions;
+	}
+
+	/**
+	 * Add links to plugin meta.
+	 *
+	 * @since 5.9.1
+	 *
+	 * @param array  $plugin_meta The array with the links on the plugin meta.
+	 * @param string $plugin_file Path to the plugin file.
+	 *
+	 * @return array $plugin_meta An array of the plugin's metadata.
+	 */
+	public function add_links_to_plugin_meta( $plugin_meta, $plugin_file ) {
+		if ( trailingslashit( \Tribe__Tickets__Main::instance()->plugin_dir ) . 'event-tickets.php' !== $plugin_file ) {
+			return $plugin_meta;
+		}
+
+		$plugin_meta[] = '<a href="https://evnt.is/et-docs-plugin-list-meta" target="_blank" rel="noopener noreferrer">'
+			. esc_html__( 'Docs', 'event-tickets' )
+			. '</a>';
+
+		$plugin_meta[] = '<a href="https://wordpress.org/support/plugin/event-tickets/reviews/?filter=5" target="_blank" rel="noopener noreferrer">'
+			. esc_html__( 'Leave a review', 'event-tickets' )
+			. '</a>';
+
+		return $plugin_meta;
 	}
 }

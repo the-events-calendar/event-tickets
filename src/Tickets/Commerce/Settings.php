@@ -568,8 +568,9 @@ class Settings {
 	 * Is a valid license of Event Tickets Plus available?
 	 *
 	 * @since 5.3.0
+	 * @since 5.8.4 Added caching.
 	 *
-	 * @param bool $revalidate whether to submit a new validation API request
+	 * @param bool $revalidate whether to submit a new validation API request.
 	 *
 	 * @return bool
 	 */
@@ -580,9 +581,50 @@ class Settings {
 
 		$pue = tribe( \Tribe__Tickets_Plus__PUE::class );
 
+		// Attempt to use the immediate result of is_current_license_valid if revalidate is false.
+		if ( ! $revalidate && $pue->is_current_license_valid() ) {
+			return true;
+		}
+
+		// Now check if the license key format is valid.
+		if ( ! $pue->get_pue()->is_valid_key_format() ) {
+			return false;
+		}
+
+		$cache_key = __METHOD__;
+		$cached    = get_transient( $cache_key );
+
+		// Decode the JSON string. If $cached is false (transient not set), json_decode returns null.
+		$cached_value = false !== $cached ? json_decode( $cached, true ) : null;
+
+		// Check explicitly for null to determine if the transient was not set.
+		if ( null !== $cached_value ) {
+			return $cached_value;
+		}
+
+		$is_license_valid = $pue->is_current_license_valid( $revalidate );
+
+		// Forcing a revalidate of is_current_license_valid can be expensive. Cache it for 1 hour.
+		set_transient( $cache_key, wp_json_encode( $is_license_valid ), HOUR_IN_SECONDS );
+
+		return $is_license_valid;
+	}
+
+	/**
+	 * Determine if free ticket is allowed in Tickets Commerce.
+	 *
+	 * @since 5.10.0
+	 *
+	 * @return bool
+	 */
+	public static function is_free_ticket_allowed() {
 		/**
-		 * @todo we need to make sure we actually validate the PUE key.
+		 * Filter to allow free tickets in Tickets Commerce.
+		 *
+		 * @since 5.10.0
+		 *
+		 * @param bool $is_free_ticket_allowed Whether free tickets are allowed in Tickets Commerce.
 		 */
-		return $pue->get_pue()->is_valid_key_format();
+		return apply_filters( 'tec_tickets_commerce_is_free_ticket_allowed', true );
 	}
 }

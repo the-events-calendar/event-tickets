@@ -545,6 +545,7 @@ class Dispatcher {
 	 *
 	 * @since 5.6.0
 	 * @since 5.8.3 Decodes the subject before sending the email.
+	 * @since 5.9.1 Removes slashes from the subject before sending the email.
 	 *
 	 * @return bool Whether the email was sent successfully.
 	 */
@@ -553,8 +554,8 @@ class Dispatcher {
 			return false;
 		}
 
-		// Handle any encoded characters in the subject.
-		$subject = wp_specialchars_decode( $this->get_subject() );
+		// Handle any encoded characters or slashes in the subject.
+		$subject = wp_unslash( wp_specialchars_decode( $this->get_subject() ) );
 
 		$sent = (bool) wp_mail(
 			$this->get_to(),

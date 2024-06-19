@@ -4,6 +4,7 @@ use TEC\Tickets\Event;
 use Tribe__Utils__Array as Arr;
 use Tribe__Tickets__Ticket_Object as Ticket;
 use Tribe__Tickets__Global_Stock as Global_Stock;
+use TEC\Tickets\Admin\Attendees\Page as Attendees_Page;
 
 /**
  * Handles most actions related to an Attendees or Multiple ones
@@ -231,6 +232,10 @@ class Tribe__Tickets__Attendees {
 	 * @return string
 	 */
 	public function get_report_link( $post ) {
+		if ( ! $post instanceof WP_Post ) {
+			return '';
+		}
+
 		$post_id = Event::filter_event_id( $post->ID, 'attendees-report-link' );
 
 		$args = [
@@ -322,6 +327,8 @@ class Tribe__Tickets__Attendees {
 			[ $this, 'render' ]
 		);
 
+		$attendees_page_hook_suffix = \TEC\Tickets\Admin\Attendees\Page::$hook_suffix;
+
 		/**
 		 * @since 4.7.1
 		 *
@@ -332,6 +339,7 @@ class Tribe__Tickets__Attendees {
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_assets' ] );
 		add_action( 'admin_enqueue_scripts', [ $this, 'load_pointers' ] );
 		add_action( "load-{$this->page_id}", [ $this, 'screen_setup' ] );
+		add_action( "load-{$attendees_page_hook_suffix}", [ $this, 'screen_setup' ] );
 	}
 
 	/**
@@ -432,7 +440,10 @@ class Tribe__Tickets__Attendees {
 		$action = tribe_get_request_var( 'action', false );
 
 		// When on the admin and not on the correct page bail.
-		if ( is_admin() && $this->slug() !== $page ) {
+		if (
+			is_admin()
+			&& ( $this->slug() !== $page && \TEC\Tickets\Admin\Attendees\Page::$slug !== $page )
+		) {
 			return;
 		}
 
@@ -453,14 +464,18 @@ class Tribe__Tickets__Attendees {
 
 			$status = $this->has_attendees_list_access(
 				$event_id,
-				$type,
 				$nonce,
+				$type,
 				$send_to
 			);
 
-			if ( $should_send_email ) {
+			if ( ! $should_send_email ) {
 				$status = $this->send_mail_list( $event_id, $email_address, $send_to, $status );
+			} else {
+				// If status is true return a friendly message.
+				$status = esc_html__( 'Email sent successfully!', 'event-tickets' );
 			}
+
 			tribe( 'tickets.admin.views' )->template( 'attendees/attendees-email', [ 'status' => $status ] );
 
 			// Use iFrame Footer -- WP Method.
@@ -580,6 +595,7 @@ class Tribe__Tickets__Attendees {
 				'provider',
 				'purchaser',
 				'status',
+				'attendee_actions',
 			]
 		);
 
@@ -630,12 +646,14 @@ class Tribe__Tickets__Attendees {
 		);
 
 		/**
-		 * Used to modify what columns should be shown on the CSV export
-		 * The column name should be the Array Index and the Header is the array Value
+		 * Used to modify what columns should be shown on the CSV export.
+		 * The column name should be the Array Index, and the Header should be the array Value.
 		 *
-		 * @param array Columns, associative array
-		 * @param array Items to be exported
-		 * @param int   Event ID
+		 * @since 5.9.3
+		 *
+		 * @param array $export_columns Columns, associative array
+		 * @param array $items          Items to be exported
+		 * @param int   $event_id       Event ID
 		 */
 		$export_columns = apply_filters( 'tribe_events_tickets_attendees_csv_export_columns', $export_columns, $items, $event_id );
 
@@ -1226,13 +1244,19 @@ class Tribe__Tickets__Attendees {
 	 * or if they have the capability to edit others' posts (edit_others_posts) within the same post type.
 	 * If neither condition is met, access is denied.
 	 *
-	 * @since TBD
+	 * @since 5.8.4
 	 *
 	 * @param int $post_id The ID of the post to check access against.
 	 *
 	 * @return bool True if the user can access the page, false otherwise.
 	 */
 	public function can_access_page( int $post_id ): bool {
+		$is_on_general_page = tribe( Attendees_Page::class )->is_on_page();
+
+		if ( $is_on_general_page ) {
+			return tribe( Attendees_Page::class )->can_access_page();
+		}
+
 		$post = get_post( $post_id );
 		// Ensure $post is valid to prevent errors in cases where $post_id might be invalid.
 		if ( ! $post ) {
@@ -1248,7 +1272,7 @@ class Tribe__Tickets__Attendees {
 		/**
 		 * Filters whether a user can access the attendees page for a given post.
 		 *
-		 * @since TBD
+		 * @since 5.8.4
 		 *
 		 * @param bool $has_access True if the user has access, false otherwise.
 		 * @param int $post_id The ID of the post being checked.

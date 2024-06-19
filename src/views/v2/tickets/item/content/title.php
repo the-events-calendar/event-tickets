@@ -4,15 +4,16 @@
  * Content Title
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/v2/tickets/content/title.php
+ * [your-theme]/tribe/tickets/v2/tickets/item/content/title.php
  *
  * See more documentation about our views templating system.
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
  * @since   5.0.3
+ * @since   5.9.0   Added `sale-label` template to title element.
  *
- * @version 5.0.3
+ * @version 5.9.0
  *
  * @var Tribe__Tickets__Editor__Template   $this                        [Global] Template object.
  * @var int                                $post_id                     [Global] The current Post ID to which tickets are attached.
@@ -48,6 +49,11 @@
 
 $no_description = ! $ticket->show_description() || empty( $ticket->description ) || $is_mini;
 
+$container_classes = [
+	'tribe-tickets__tickets-item-content-title-container',
+	'tribe-tickets--no-description' => $no_description,
+];
+
 $title_classes = [
 	'tribe-common-h7',
 	'tribe-common-h6--min-medium',
@@ -61,11 +67,14 @@ $event_title_classes = [
 ];
 
 ?>
-<div <?php tribe_classes( $title_classes ); ?> >
-	<?php if ( $is_mini ) : ?>
-		<div <?php tribe_classes( $event_title_classes ); ?> >
-			<?php echo get_the_title( $post_id ); ?>
-		</div>
-	<?php endif; ?>
-	<?php echo esc_html( $ticket->name ); ?>
+<div <?php tribe_classes( $container_classes ); ?>>
+	<?php $this->template( 'v2/tickets/item/content/sale-label' ); ?>
+	<div <?php tribe_classes( $title_classes ); ?>>
+		<?php if ( $is_mini ) : ?>
+			<div <?php tribe_classes( $event_title_classes ); ?>>
+				<?php echo esc_html( get_the_title( $post_id ) ); ?>
+			</div>
+		<?php endif; ?>
+		<?php echo esc_html( $ticket->name ); ?>
+	</div>
 </div>

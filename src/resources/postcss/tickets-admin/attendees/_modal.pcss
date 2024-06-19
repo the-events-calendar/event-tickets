@@ -1,0 +1,66 @@
+/**
+ * Event Tickets Admin Attendees - Modal
+ *
+ * @since 5.10.0
+ */
+
+.event-tickets {
+	.tribe-dialog__title.tribe-modal__title--attendee-details {
+		margin-bottom: var(--tec-spacer-3);
+	}
+
+	.tec-tickets__admin-attendees-modal-wrapper {
+		display: flex;
+		flex-wrap: wrap;
+	}
+
+	.tec-tickets__admin-attendees-modal-content {
+		@media (--viewport-medium) {
+			width: calc(var(--tec-grid-width-1-of-8) * 6);
+		}
+	}
+
+	.tec-tickets__admin-attendees-modal-sidebar {
+		@media (--viewport-medium) {
+			border-left: 1px dashed var(--tec-color-border-secondary);
+			width: calc(var(--tec-grid-width-1-of-8) * 2);
+		}
+	}
+
+	.tec-tickets__admin-attendees-modal-section {
+		margin-top: var(--tec-spacer-3);
+	}
+
+	.tec-tickets__admin-attendees-modal-qr-image img {
+		border: 1px solid var(--tec-color-border-secondary);
+		border-radius: var(--tec-border-radius-default);
+
+		@media (--viewport-medium) {
+			height: auto;
+			width: 100%;
+		}
+	}
+
+	.tec-tickets__admin-attendees-modal-attendee-info-row {
+		margin-top: var(--tec-spacer-2);
+	}
+
+	.tec-tickets__admin-attendees-modal-attendee-info-col {
+		margin-top: var(--tec-spacer-2);
+
+		@media (--viewport-medium) {
+			margin-top: 0;
+			width: calc(var(--tec-grid-width-1-of-8) * 4);
+		}
+	}
+
+	.tec-tickets__admin-attendees-modal-checkin-info,
+	.tec-tickets__admin-attendees-modal-attendee-info-value {
+		color: var(--tec-color-text-secondary);
+	}
+
+	.tec-tickets__admin-attendees-modal-checkin-info-icon {
+		color: #50b078;
+		line-height: 22px;
+	}
+}

@@ -2,7 +2,7 @@
 /**
  * Edit Event Tickets.
  *
- * Override this template in your own theme by creating a file at [your-theme]/tribe-events/tickets/orders.php
+ * Override this template in your own theme by creating a file at [your-theme]/tribe/tickets/orders.php
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
@@ -15,8 +15,9 @@
  * @since   4.12.1 Account for empty post type object, such as if post type got disabled.
  * @since   4.12.3 Account for inactive ticket providers.
  * @since   5.0.3 Add filter to control the re-sending emails option on email alteration.
+ * @since   5.9.1 Corrected template override filepath
  *
- * @version 5.0.3
+ * @version 5.9.1
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

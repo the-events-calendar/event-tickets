@@ -15,6 +15,8 @@
 		-ms-grid-row: 2;
 		grid-row: 2;
 		grid-template-columns: min-content max-content auto;
+		padding: 0;
+		text-align: left;
 
 		@media (--viewport-medium) {
 			align-self: start;
@@ -24,7 +26,8 @@
 			grid-row-end: 3;
 			-ms-grid-row-start: 1;
 			grid-row-start: 1;
-			padding: 0 var(--tec-spacer-2);
+			padding-right: var(--tec-spacer-5);
+			text-align: right;
 		}
 
 		&.tribe-tickets__tickets-item-extra--price-suffix {
@@ -35,21 +38,43 @@
 
 	.tribe-tickets__tickets-item-extra-available {
 		color: var(--tec-color-text-secondary);
+
+		@media (--viewport-medium) {
+			margin: var(--tec-spacer-0) 0;
+		}
 	}
 
 	.tribe-tickets__tickets-item-extra-price {
+		align-items: end;
+		display: flex;
+		flex-direction: row;
+		gap: var(--tec-spacer-1);
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
 
-		.tribe-formatted-currency-wrap {
+		.tribe-tickets__tickets-sale-price {
+			font-size: var(--tec-font-size-3);
 			font-weight: var(--tec-font-weight-bold);
 		}
 
 		.tribe-tickets__tickets-original-price {
 			color: var(--tec-color-text-secondary);
+			font-size: var(--tec-font-size-1);
 			font-weight: var(--tec-font-weight-regular);
 			text-decoration: line-through;
+
+			@media (--viewport-medium) {
+				flex-direction: column;
+				gap: 0;
+				padding: 6px 0 0;
+			}
+		}
+
+		@media (--viewport-medium) {
+			align-items: stretch;
+			flex-direction: column;
+			gap: 0;
 		}
 	}
 

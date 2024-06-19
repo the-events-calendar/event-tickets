@@ -1079,13 +1079,15 @@ class Series_Passes extends Controller {
 	 * relevant parts of the UI using Javascript.
 	 *
 	 * @since 5.8.0
+	 * @since 5.9.1 The method is now only allowing tickets on recurring events for admin view only.
 	 *
-	 * @param bool $allow
+	 * @param bool $allow Whether to allow tickets on recurring events.
 	 *
-	 * @return bool
+	 * @return bool Whether to allow tickets on recurring events.
 	 */
 	public function allow_tickets_on_recurring_events( bool $allow ): bool {
-		return true;
+		// Allow tickets on recurring events for admin view only and not on FE.
+		return is_admin();
 	}
 
 	/**

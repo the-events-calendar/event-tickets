@@ -2,7 +2,7 @@
 /**
  * Provides methods to create Series Pass tickets in the context of tests.
  *
- * @since   TBD
+ * @since   5.9.1
  *
  * @package TEC\Tickets\Flexible_Tickets\Test\Traits;
  */
@@ -17,7 +17,7 @@ use Tribe__Tickets__Ticket_Object as Ticket;
 /**
  * Class Series_Pass_Factory.
  *
- * @since   TBD
+ * @since   5.9.1
  *
  * @package TEC\Tickets\Flexible_Tickets\Test\Traits;
  */

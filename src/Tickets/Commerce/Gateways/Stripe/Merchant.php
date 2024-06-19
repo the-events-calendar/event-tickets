@@ -120,7 +120,7 @@ class Merchant extends Abstract_Merchant {
 	}
 
 	/**
-	 * Returns the stripe client secret stored for server-side transactions.
+	 * Returns the Stripe client secret stored for server-side transactions.
 	 *
 	 * @since 5.3.0
 	 *
@@ -154,7 +154,7 @@ class Merchant extends Abstract_Merchant {
 	}
 
 	/**
-	 * Returns the stripe client id stored for server-side transactions.
+	 * Returns the Stripe client id stored for server-side transactions.
 	 *
 	 * @since 5.3.0
 	 *
@@ -324,7 +324,7 @@ class Merchant extends Abstract_Merchant {
 	}
 
 	/**
-	 * Determine if a stripe account is listed in an unauthorized country.
+	 * Determine if a Stripe account is listed in an unauthorized country.
 	 *
 	 * @since 5.3.0
 	 *

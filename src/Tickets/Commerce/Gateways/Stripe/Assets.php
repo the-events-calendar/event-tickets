@@ -161,7 +161,7 @@ class Assets extends \TEC\Common\Contracts\Service_Provider {
 	}
 
 	/**
-	 * Determines if we are currently on the stripe section of the settings.
+	 * Determines if we are currently on the Stripe section of the settings.
 	 *
 	 * @since 5.3.0
 	 *

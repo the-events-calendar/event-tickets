@@ -31,6 +31,9 @@ class Provider extends \TEC\Common\Contracts\Service_Provider {
 		$this->container->singleton( static::class, $this );
 		$this->container->singleton( 'tickets.admin.provider', $this );
 
+		// Register the Attendees provider.
+		$this->container->register( Attendees\Provider::class );
+
 		// Register singleton classes.
 		$this->container->singleton( Plugin_Action_Links::class );
 		$this->container->singleton( Glance_Items::class );
@@ -47,7 +50,7 @@ class Provider extends \TEC\Common\Contracts\Service_Provider {
 		$hooks = new Hooks( $this->container );
 		$hooks->register();
 
-		// Allow Hooks to be removed, by having them registered to the container
+		// Allow Hooks to be removed, by having them registered to the container.
 		$this->container->singleton( Hooks::class, $hooks );
 		$this->container->singleton( 'tickets.admin.hooks', $hooks );
 	}

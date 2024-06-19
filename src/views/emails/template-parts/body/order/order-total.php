@@ -12,6 +12,7 @@
  * @version 5.5.11
  *
  * @since 5.5.11
+ * @since 5.10.0 Allow for zero value total.
  *
  * @var Tribe__Template                    $this               Current template object.
  * @var \TEC\Tickets\Emails\Email_Abstract $email              The email object.
@@ -23,7 +24,7 @@
  * @var \WP_Post                           $order              The order object.
  */
 
-if ( empty( $order ) || empty( $order->total ) ) {
+if ( empty( $order ) || empty( $order->total_value ) ) {
 	return;
 }
 

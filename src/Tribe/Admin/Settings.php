@@ -186,6 +186,7 @@ class Settings {
 	 * Adds the Event Tickets menu and pages.
 	 *
 	 * @since 5.4.0
+	 * @since 5.9.1.1 Removed translation from the Title.
 	 */
 	public function add_admin_pages() {
 		$admin_pages = tribe( 'admin.pages' );
@@ -194,7 +195,7 @@ class Settings {
 			[
 				'id'       => static::$parent_slug,
 				'path'     => static::$parent_slug,
-				'title'    => esc_html__( 'Tickets', 'event-tickets' ),
+				'title'    => 'Tickets',
 				'icon'     => $this->get_menu_icon(),
 				'position' => 7,
 				'callback' => [
@@ -206,10 +207,11 @@ class Settings {
 
 		$admin_pages->register_page(
 			[
-				'id'     => static::$parent_slug,
-				'path'   => static::$parent_slug,
-				'parent' => static::$parent_slug,
-				'title'  => esc_html__( 'Home', 'event-tickets' ),
+				'id'       => static::$parent_slug,
+				'path'     => static::$parent_slug,
+				'parent'   => static::$parent_slug,
+				'position' => 1,
+				'title'    => esc_html__( 'Home', 'event-tickets' ),
 			]
 		);
 
@@ -219,6 +221,7 @@ class Settings {
 				'parent'   => static::$parent_slug,
 				'title'    => esc_html__( 'Settings', 'event-tickets' ),
 				'path'     => static::$settings_page_id,
+				'position' => 2,
 				'callback' => [
 					tribe( 'settings' ),
 					'generatePage',
@@ -232,6 +235,7 @@ class Settings {
 				'parent'   => static::$parent_slug,
 				'title'    => esc_html__( 'Help', 'event-tickets' ),
 				'path'     => static::$help_page_id,
+				'position' => 3,
 				'callback' => [
 					tribe( 'settings.manager' ),
 					'do_help_tab',
@@ -263,6 +267,7 @@ class Settings {
 				'title'      => esc_html__( 'Troubleshooting', 'event-tickets' ),
 				'path'       => static::$troubleshooting_page_id,
 				'capability' => $troubleshooting->get_required_capability(),
+				'position'   => 4,
 				'callback'   => [
 					$troubleshooting,
 					'do_menu_page',

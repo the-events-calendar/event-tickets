@@ -2,9 +2,9 @@
 
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, GeoffBel, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
-Requires at least: 6.2
-Tested up to: 6.4.3
-Stable tag: 5.8.3
+Requires at least: 6.3
+Tested up to: 6.5.3
+Stable tag: 5.11.0.4
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -15,7 +15,7 @@ Event Tickets allows your visitors to RSVP and buy tickets to events on your sit
 
 Sell tickets and collect RSVPs with the free [Event Tickets](https://evnt.is/1ao8) plugin, from the team behind the number one calendar in WordPress.
 
-This plugin makes it easy to sell tickets, collect registrations, and manage attendees for your in-person or virtual events. Plus, it comes with features backed by our world-class team of developers and designers. Easily integrate Event Tickets with your Stripe account or PayPal business account.
+This plugin makes it easy to sell all different types of tickets with our free Tickets Commerce solution. Create free tickets, collect registrations and generate revenue, and manage attendees for your in-person or virtual events. Plus, it comes with features backed by our world-class team of developers and designers. Easily integrate Event Tickets with your Stripe account or PayPal business account.
 
 Connect to Stripe and take advantage of one of the world’s most popular payment gateways. Our Stripe integration lets you accept credit card payments on your website, along with additional payment methods including AfterPay, ClearPay, AliPay, Giropay, and Klarna.
 
@@ -45,6 +45,7 @@ Whether your vision is big or small, you're in good company. Thousands of small 
 
 ✔️ Attendees can purchase tickets to events
 ✔️ Attendees can RSVP to events
+✔️ Free tickets with Tickets Commerce.
 ✔️ Sell tickets with PayPal, [Paystack](https://evnt.is/et-tc-paystack-wp-org), and/or Stripe using our free commerce solution, Tickets Commerce.
 ✔️ Add RSVPs and tickets to posts, pages, or custom post types
 ✔️ Collect ticket fees by connecting your PayPal business or Stripe account
@@ -195,6 +196,102 @@ We've got a [LoopedIn](https://evnt.is/ideas) page where we're actively watching
 Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on using, tweaking, and troubleshooting our plugins.
 
 == Changelog ==
+
+= [5.11.0.4] 2024-06-18 =
+
+* Fix - In installations where the plugins or wp-content directories were symbolic linked, assets would fail to be located.[TECTRIA-91]
+* Language - 0 new strings added, 0 updated, 0 fuzzied, and 0 obsoleted
+
+= [5.11.0.3] 2024-06-14 =
+
+* Fix - Issue where scripts would not be enqueued as modules. [TECTRIA-86]
+* Language - 0 new strings added, 22 updated, 0 fuzzied, and 0 obsoleted
+
+= [5.11.0.2] 2024-06-14 =
+
+* Fix - Windows Server compatibility issues with updated Assets handling. [TECTRIA-83]
+* Language - 0 new strings added, 22 updated, 0 fuzzied, and 0 obsoleted
+
+= [5.11.0.1] 2024-06-13 =
+
+* Fix - Issue on which some assets (css,js) would not be located in WP installs which could have some WP constant modified (WP_CONTENT_DIR, WP_PLUGIN_DIR)[TECTRIA-83]
+* Language - 0 new strings added, 0 updated, 1 fuzzied, and 0 obsoleted
+
+= [5.11.0] 2024-06-11 =
+
+* Feature - Adapt to using the refactored tribe_asset. Remove some unused asset calls. [TCMN-172]
+* Feature - Added support for automatic Stripe Webhook Management for TicketsCommerce [ET-2104]
+* Tweak - Added filters: `tec_tickets_commerce_need_to_enable_stripe_webhook`
+* Deprecated - The `is_success()` method has been deprecated in `TEC\Tickets\Commerce\Gateways\Stripe\Signup` without a replacement.
+* Language: 6 new strings added, 46 updated, 4 fuzzied, and 1 obsoleted
+
+= [5.10.0] 2024-05-14 =
+
+* Version - Event Tickets 5.10.0 is only compatible with The Events Calendar 6.5.0 and higher
+* Fix - Update to remove moment.js library due to security concerns. [TEC-5011]
+* Language - 0 new strings added, 35 updated, 0 fuzzied, and 0 obsoleted
+
+= [5.9.2] 2024-05-08 =
+
+* Feature - Added support for adding Free tickets using Tickets Commerce. [ET-1218]
+* Tweak - When using Events Calendar Pro, the duplicate event function will now duplicate tickets as well. [ET-2073]
+* Fix - Corrected an issue where PayPal orders had an extra slash on the order table page. [ET-2076]
+* Fix - Updated sale label font to be uniform with other Event Tickets elements. [ET-2074]
+* Fix - Fixed showing error on Order report export data for Tickets Commerce.
+* Tweak - Added filters: `tec_tickets_attendees_page_url`, `tec_tickets_commerce_is_free_ticket_allowed`, `tec_tickets_commerce_value_get_currency_display`, `tec_tickets_attendees_table_column_check_in`, `tec_tickets_attendees_table_query_args`, `tec_tickets_attendees_page_is_enabled`
+* Tweak - Changed views: `emails/template-parts/body/order/order-gateway-data`, `emails/template-parts/body/order/order-total`, `emails/template-parts/body/order/payment-info`, `emails/template-parts/body/ticket/number-from-total`, `emails/template-parts/body/tickets-total`, `tickets/attendees-email`, `tickets/email-non-attendance`, `tickets/email-ticket-type-moved`, `tickets/email-tickets-moved`, `tickets/email`, `tickets/my-tickets`, `tickets/my-tickets/attendee-label`, `tickets/my-tickets/orders-list`, `tickets/my-tickets/ticket-information`, `tickets/my-tickets/tickets-list`, `tickets/my-tickets/title`, `tickets/my-tickets/user-details`, `tickets/orders-pp-tickets`, `tickets/orders-rsvp`, `tickets/orders-tc-tickets`, `tickets/orders`, `tickets/rsvp`, `tickets/tpp-return-to-cart`, `tickets/tpp-success`, `tickets/tpp`, `tickets/view-link`, `v2/commerce/gateway/free/button`, `v2/commerce/gateway/free/container`, `v2/commerce/order/details/payment-method`, `v2/commerce/ticket/regular-price`, `v2/commerce/ticket/sale-price`
+* Language - 2 new strings added, 68 updated, 0 fuzzied, and 0 obsoleted
+
+= [5.9.1.1] 2024-04-25 =
+
+* Fix - Corrected the Attendees page when languages other than English are used. [GTRIA-1268]
+* Tweak - Added filters: `tec_tickets_attendees_page_url`, `tec_tickets_attendees_table_column_check_in`, `tec_tickets_attendees_table_query_args`, `tec_tickets_attendees_page_is_enabled`
+* Tweak - Changed views: `emails/template-parts/body/ticket/number-from-total`, `emails/template-parts/body/tickets-total`, `tickets/attendees-email`, `tickets/email-non-attendance`, `tickets/email-ticket-type-moved`, `tickets/email-tickets-moved`, `tickets/email`, `tickets/my-tickets`, `tickets/my-tickets/attendee-label`, `tickets/my-tickets/orders-list`, `tickets/my-tickets/ticket-information`, `tickets/my-tickets/tickets-list`, `tickets/my-tickets/title`, `tickets/my-tickets/user-details`, `tickets/orders-pp-tickets`, `tickets/orders-rsvp`, `tickets/orders-tc-tickets`, `tickets/orders`, `tickets/rsvp`, `tickets/tpp-return-to-cart`, `tickets/tpp-success`, `tickets/tpp`, `tickets/view-link`
+* Language - 0 new strings added, 38 updated, 0 fuzzied, and 0 obsoleted
+
+= [5.9.1] 2024-04-18 =
+
+* Fix - Avoid error on order report page if no valid tickets are available for that event.
+* Fix - Fixed an issue with Ticket repository that was causing all tickets to be fetched for 0 as event ID. [ET-2023]
+* Fix - Display recurring events are not supported warning while adding tickets on Community Events. [ECP-1671]
+* Fix - The Attendee registration page will no longer generate warnings when viewing it. [ET-906]
+* Fix - When an event ticket is removed, it will no longer generate a 404 for the event. [TEC-5041]
+* Fix - Remove unwanted slashes from the Tickets Emails subject line. [ET-2061]
+* Fix - `Get Tickets` button padding will be consistent in `active` and `focus` states. [ET-2068]
+* Fix - Correct the text domain for a couple of text strings so they could be translated appropriately. [ET-2020]
+* Fix - QR codes will properly generate when on PHP 8.1 and above. [ET-2062]
+* Fix - Changed incorrect file paths in DocBlocks for template overrides for all files in `src/views/tickets`. [ET-2004]
+* Fix - Added additional logic to handle when the Gateway ID link is null on the Orders Page for Stripe. [ET-2067]
+* Feature - Add new Attendees page. [ET-1707]
+* Tweak - Added filters: `tec_tickets_attendees_page_url`, `tec_tickets_attendees_table_column_check_in`, `tec_tickets_attendees_table_query_args`, `tec_tickets_attendees_page_is_enabled`
+* Tweak - Changed views: `emails/template-parts/body/ticket/number-from-total`, `emails/template-parts/body/tickets-total`, `tickets/attendees-email`, `tickets/email-non-attendance`, `tickets/email-ticket-type-moved`, `tickets/email-tickets-moved`, `tickets/email`, `tickets/my-tickets`, `tickets/my-tickets/attendee-label`, `tickets/my-tickets/orders-list`, `tickets/my-tickets/ticket-information`, `tickets/my-tickets/tickets-list`, `tickets/my-tickets/title`, `tickets/my-tickets/user-details`, `tickets/orders-pp-tickets`, `tickets/orders-rsvp`, `tickets/orders-tc-tickets`, `tickets/orders`, `tickets/rsvp`, `tickets/tpp-return-to-cart`, `tickets/tpp-success`, `tickets/tpp`, `tickets/view-link`
+* Language -18 new strings added, 163 updated, 1 fuzzied, and 2 obsoleted
+
+= [5.9.0] 2024-04-04 =
+
+* Feature - Sale Price for Tickets Commerce: Set a sale price for individual tickets for a certain duration of time within Tickets Commerce.
+* Feature - Sale Price Design: Display the set sale price so that it is clear that a ticket or purchased ticket is on sale.
+* Tweak - Removed filters: `tec_tickets_commerce_order_report_summary_should_include_event_sales_data`
+* Tweak - Changed views: `v2/commerce/ticket/price`, `v2/commerce/ticket/regular-price`, `v2/commerce/ticket/sale-price`, `v2/tickets/item/content/sale-label`, `v2/tickets/item/content/title`, `v2/tickets/item/extra/price`
+* Language - 12 new strings added, 16 updated, 0 fuzzied, and 0 obsoleted
+
+= [5.8.4] 2024-03-25 =
+
+* Fix - Events Calendar Pro promo shouldn't show when it's already installed or when not editing an event. [ET-2018]
+* Fix - Addressed a problem preventing the export of event attendees by email. [ETP-904]
+* Fix - In the block editor, ticket will no longer be deleted when you open the ticket block settings. [ET-2046]
+* Fix - Show post excerpt line breaks within ticket emails. [ET-2006]
+* Fix - Front-end tickets block button padding is now consistent on hover and when disabled. [ET-2035]
+* Fix - Allow blank sender name and email to be stored within Tickets Emails settings. [ET-2008]
+* Fix - Corrected an issue where `attendees_table->prepare_items()` was being called multiple times. [ET-2005]
+* Fix - Tickets block will be properly registered when creating a new post or page. [ET-2045]
+* Fix - Corrected an issue where the Post Tickets ORM method `filter_by_has_tickets` would prepare an empty statement. [ET-2017]
+* Tweak - Added additional fields to the Event Tickets Site Health section. [ET-2017]
+* Feature - Add the Series Pass email template. [ET-1854]
+* Tweak - Adjusted the logic for calculating fees when using Stripe. [ET-2015]
+* Tweak - Added filters: `tec_tickets_email_class`
+* Tweak - Changed views: `emails/series-pass`, `emails/template-parts/body/additional-content`, `emails/template-parts/body/post-description`, `emails/template-parts/body/series-events-list`, `emails/template-parts/body/series-pass-dates`, `emails/template-parts/body/thumbnail`, `emails/template-parts/header/head/series-pass-styles`, `emails/template-parts/header/head/styles`
+* Language - 22 new strings added, 91 updated, 0 fuzzied, and 0 obsoleted
 
 = [5.8.3] 2024-03-12 =
 

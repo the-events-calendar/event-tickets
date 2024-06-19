@@ -5,7 +5,7 @@
  *
  * Override this template in your own theme by creating a file at:
  *
- *     [your-theme]/tribe-events/tickets/email-ticket-type-moved.php
+ *     [your-theme]/tribe/tickets/email-ticket-type-moved.php
  *
  * @var int    $original_event_id
  * @var string $original_event_name
@@ -15,8 +15,12 @@
  * @var string $ticket_type_name
  * @var int    $num_tickets
  *
- * @version 4.5.1
+ * @since 4.5.1
+ * @since 5.9.1 Corrected template override filepath
+ *
+ * @version 5.9.1
  */
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">

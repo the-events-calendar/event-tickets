@@ -2,11 +2,12 @@
 /**
  * List of Tickets Commerce tickets orders.
  *
- * Override this template in your own theme by creating a file at [your-theme]/tribe-events/tickets/orders-tc-tickets.php
+ * Override this template in your own theme by creating a file at [your-theme]/tribe/tickets/orders-tc-tickets.php
  *
  * @since 5.2.0
+ * @since 5.9.1 Corrected template override filepath
  *
- * @version 5.2.0
+ * @version 5.9.1
  */
 
 $view      = Tribe__Tickets__Tickets_View::instance();
@@ -29,9 +30,12 @@ $title              = sprintf(
 	tribe_get_ticket_label_plural( 'orders_tickets_heading' )
 );
 
-$this->template( 'tickets/my-tickets', [ 
-	'title'    => $title,
-	'post_id'  => $post_id,
-	'orders'   => $orders,
-	'post'     => $post,
-] );
+$this->template(
+	'tickets/my-tickets',
+	[
+		'title'   => $title,
+		'post_id' => $post_id,
+		'orders'  => $orders,
+		'post'    => $post,
+	]
+);
