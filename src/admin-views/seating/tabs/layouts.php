@@ -40,25 +40,10 @@ use TEC\Tickets\Seating\Admin\Tabs\Layout_Card;
 	<div class="tec-tickets__seating-tab-heading__description">
 		<p>
 			<?php 
-			echo wp_kses(
-				sprintf(
-				/* translators: %1$s: Documentation link */
-					__(
-						'Seat layouts on top of your maps allow you to create different seating types. You can create a seat layout from one of the existing seating maps. %1$s',
-						'event-tickets' 
-					),
-					'<a href="https://evnt.is" target="_blank">'
-					. __( 'Learn more', 'event-tickets' )
-					. '</a>' 
-				),
-				[
-					'a' => [
-						'href'   => [],
-						'target' => [],
-						'title'  => [],
-					],
-				] 
-			); 
+			echo esc_html__(
+				'Seat layouts on top of your maps allow you to create different seating types. You can create a seat layout from one of the existing seating maps.',
+				'event-tickets'
+			);
 			?>
 		</p>
 	</div>
