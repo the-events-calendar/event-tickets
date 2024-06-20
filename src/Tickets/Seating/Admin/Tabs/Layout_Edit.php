@@ -11,6 +11,7 @@ namespace TEC\Tickets\Seating\Admin\Tabs;
 
 use TEC\Tickets\Seating\Admin\Template;
 use TEC\Tickets\Seating\Service\Service;
+use WP_Error;
 
 /**
  * Class Layout_Edit.
@@ -32,10 +33,10 @@ class Layout_Edit extends Tab {
 	/**
 	 * Layout_Edit constructor.
 	 *
-	 * since TBD
+	 * @since TBD
 	 *
 	 * @param Template $template A reference to the template handle used to render this tab.
-	 * @param Service $service A reference to the service object.
+	 * @param Service  $service A reference to the service object.
 	 */
 	public function __construct( Template $template, Service $service ) {
 		parent::__construct( $template );
@@ -73,10 +74,10 @@ class Layout_Edit extends Tab {
 	 * @return void The rendered HTML of this tab is passed to the output buffer.
 	 */
 	public function render(): void {
-		$layout_id = tribe_get_request_var( 'layoutId' );
+		$layout_id       = tribe_get_request_var( 'layoutId' );
 		$ephemeral_token = $this->service->get_ephemeral_token();
 		$token           = is_string( $ephemeral_token ) ? $ephemeral_token : '';
-		$iframe_url = $layout_id ? $this->service->get_layout_edit_url( $token, $layout_id )
+		$iframe_url      = $layout_id ? $this->service->get_layout_edit_url( $token, $layout_id )
 			: $this->service->get_layout_create_url( $token );
 		$context         = [
 			'iframe_url' => $iframe_url,

@@ -9,6 +9,9 @@
 
 namespace TEC\Tickets\Seating\Admin\Tabs;
 
+use TEC\Tickets\Seating\Admin;
+use TEC\Tickets\Seating\Service\Layouts as Layouts_Service;
+
 /**
  * The Layout_Card Class.
  *
@@ -134,5 +137,34 @@ class Layout_Card {
 	 */
 	public function get_screenshot_url(): string {
 		return $this->screenshot_url;
+	}
+	
+	/**
+	 * Returns the URL to edit the Layout.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The URL to edit the Layout.
+	 */
+	public function get_edit_url(): string {
+		return add_query_arg(
+			[
+				'page'     => Admin::get_menu_slug(),
+				'tab'      => Layout_Edit::get_id(),
+				'layoutId' => $this->get_id(),
+			],
+			admin_url( 'admin.php' )
+		);
+	}
+	
+	/**
+	 * Returns the number of associated posts.
+	 *
+	 * @since TBD
+	 *
+	 * @return int The number of associated posts.
+	 */
+	public function get_associated_posts_count(): int {
+		return Layouts_Service::get_associated_posts_by_id( $this->get_id() );
 	}
 }
