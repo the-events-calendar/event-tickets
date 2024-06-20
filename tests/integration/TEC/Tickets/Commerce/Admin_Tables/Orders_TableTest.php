@@ -26,13 +26,6 @@ class Orders_TableTest extends \Codeception\TestCase\WPTestCase {
 	protected static $modified_globals = [];
 
 	/**
-	 * Store global modifications.
-	 *
-	 * @var mixed
-	 */
-	protected static $modified_super_globals = [];
-
-	/**
 	 * Created orders.
 	 *
 	 * @var array
@@ -65,46 +58,14 @@ class Orders_TableTest extends \Codeception\TestCase\WPTestCase {
 	 * @after
 	 */
 	public function restore_global() {
+		// Upside down the array to restore the globals in the reverse order they were modified.
+		self::$modified_globals = array_reverse( self::$modified_globals );
+
 		foreach ( self::$modified_globals as $restore_global_callback ) {
 			$restore_global_callback();
 		}
 
-		foreach ( self::$modified_super_globals as $restore_super_global_callback ) {
-			$restore_super_global_callback();
-		}
-
 		self::$modified_globals = [];
-
-		self::$modified_super_globals = [];
-	}
-
-	/**
-	 * Set a super global value.
-	 *
-	 * @param string $super_global
-	 * @param array  $values
-	 */
-	private function set_super_global_offsets( &$super_global, array $values ) {
-		foreach ( $values as $key => $value ) {
-			$previous_value = empty( $super_global[ $key ] ) ? null : $super_global[ $key ];
-			if ( null === $previous_value ) {
-				$restore_callback = static function () use ( $super_global, $key ) {
-					$super_global[ $key ] = null;
-					Assert::assertTrue( empty( $super_global[ $key ] ) );
-				};
-			} else {
-				$restore_callback = static function () use ( $previous_value, $super_global, $key ) {
-					$super_global[ $key ] = $previous_value;
-					Assert::assertEquals( $previous_value, $super_global[ $key ] );
-				};
-			}
-
-			$super_global[ $key ] = $value;
-
-			$this->assertTrue( $value === $super_global[ $key ] );
-
-			self::$modified_super_globals[] = $restore_callback;
-		}
 	}
 
 	/**
@@ -119,6 +80,7 @@ class Orders_TableTest extends \Codeception\TestCase\WPTestCase {
 		// force set the $global offset.
 		$GLOBALS[ $global ] = $previous_value;
 		$previous_value     = $offset && ! empty( $previous_value[ $offset ] ) ? $previous_value[ $offset ] : $previous_value;
+
 
 		if ( null === $previous_value ) {
 			$restore_callback = static function () use ( $global, $offset ) {
@@ -167,6 +129,12 @@ class Orders_TableTest extends \Codeception\TestCase\WPTestCase {
 		$html = preg_replace(
 			'/<time datetime="(.*)" title="(.*)">(.*)<\/time>/',
 			'<time datetime="{{order_date}}" title="{{order_date}}">{{order_date}}</time>',
+			$html
+		);
+
+		$html = preg_replace(
+			'/Test TC ticket for ([0-9]+)/',
+			'Test TC ticket for {{ticket_id}}',
 			$html
 		);
 
@@ -274,31 +242,33 @@ class Orders_TableTest extends \Codeception\TestCase\WPTestCase {
 		$this->prepare_tests_and_overwrite_wp_query();
 		$orders_table = new Orders_Table();
 
-		add_filter( 'edit_posts_per_page', function () { return 1; } );
+		add_filter( 'edit_posts_per_page', [ $this, 'return_1' ] );
 
 		$orders_table->prepare_items();
 
-		$this->set_super_global_offsets( $_REQUEST, [ 'paged' => 0 ] );
+		remove_filter( 'edit_posts_per_page', [ $this, 'return_1' ], 10 );
+
+		$this->set_global_value( '_REQUEST', 0, 'paged' );
 
 		$this->assertEquals( 1, $orders_table->get_pagination_arg( 'per_page' ) );
 
 		$this->assertEquals( 1, $orders_table->get_pagenum() );
 
-		$this->set_super_global_offsets( $_REQUEST, [ 'paged' => 1 ] );
+		$this->set_global_value( '_REQUEST', 1, 'paged' );
 
 		$this->assertEquals( 1, $orders_table->get_pagenum() );
 
-		$this->set_super_global_offsets( $_REQUEST, [ 'paged' => 2 ] );
+		$this->set_global_value( '_REQUEST', 2, 'paged' );
 
 		$this->assertTrue( 2 === $_REQUEST['paged'] );
 
 		$this->assertEquals( 2, $orders_table->get_pagenum() );
 
-		$this->set_super_global_offsets( $_REQUEST, [ 'paged' => 100 ] );
+		$this->set_global_value( '_REQUEST', 100, 'paged' );
 
 		$this->assertEquals( $orders_table->get_pagination_arg( 'total_items' ), $orders_table->get_pagenum() );
 
-		$this->set_super_global_offsets( $_REQUEST, [ 'paged' => 1000 ] );
+		$this->set_global_value( '_REQUEST', 1000, 'paged' );
 
 		$this->assertEquals( $orders_table->get_pagination_arg( 'total_items' ), $orders_table->get_pagenum() );
 	}
@@ -309,12 +279,12 @@ class Orders_TableTest extends \Codeception\TestCase\WPTestCase {
 	public function it_should_match_current_action() {
 		$orders_table = new Orders_Table();
 
-		$this->set_super_global_offsets( $_REQUEST, [ 'filter_action' => true ] );
-		$this->set_super_global_offsets( $_REQUEST, [ 'action' => 'test' ] );
+		$this->set_global_value( '_REQUEST', true, 'filter_action' );
+		$this->set_global_value( '_REQUEST', 'test', 'action' );
 
 		$this->assertFalse( $orders_table->current_action() );
 
-		$this->set_super_global_offsets( $_REQUEST, [ 'filter_action' => false ] );
+		$this->set_global_value( '_REQUEST', false, 'filter_action' );
 
 		$this->assertTrue( 'test' === $orders_table->current_action() );
 	}
@@ -431,5 +401,9 @@ class Orders_TableTest extends \Codeception\TestCase\WPTestCase {
 		}
 
 		return $orders;
+	}
+
+	public function return_1() {
+		return 1;
 	}
 }
