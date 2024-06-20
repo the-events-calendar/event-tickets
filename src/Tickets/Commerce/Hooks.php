@@ -20,7 +20,7 @@ namespace TEC\Tickets\Commerce;
 use \TEC\Common\Contracts\Service_Provider;
 use TEC\Tickets\Commerce as Base_Commerce;
 use TEC\Tickets\Commerce\Admin\Orders_Page;
-use TEC\Tickets\Commerce\Admin_Tables\V2\Orders as Admin_Tables_V2_Orders;
+use TEC\Tickets\Commerce\Admin_Tables\Orders_Table;
 use TEC\Tickets\Commerce\Reports\Orders;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Status_Interface;
@@ -207,7 +207,7 @@ class Hooks extends Service_Provider {
 			return $class_name;
 		}
 
-		return Admin_Tables_V2_Orders::class;
+		return Orders_Table::class;
 	}
 
 	/**
