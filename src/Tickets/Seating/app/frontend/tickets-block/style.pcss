@@ -26,10 +26,15 @@
 	}
 }
 
-.tribe-common .tribe-dialog__wrapper.tec-tickets-seating__modal {
+.tribe-common .tribe-dialog__wrapper.tec-tickets-seating__modal,
+/* Deal with the AR/IAC modal here: this way we'll not have to update ET+ to follow the size of this modal. */
+.event-tickets .tribe-dialog__wrapper.tribe-modal__wrapper--ar.tec-tickets-seating__modal {
 	width: 80vw;
 	height: calc(100vh - 160px);
 
+}
+
+.tribe-common .tribe-dialog__wrapper.tec-tickets-seating__modal {
 	.tribe-dialog__content.tribe-modal__content {
 		padding: 0;
 		display: flex;

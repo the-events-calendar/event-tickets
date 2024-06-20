@@ -36,7 +36,7 @@ class Map_Edit extends Tab {
 	 * since TBD
 	 *
 	 * @param Template $template A reference to the template handle used to render this tab.
-	 * @param Service $service A reference to the service object.
+	 * @param Service  $service A reference to the service object.
 	 */
 	public function __construct( Template $template, Service $service ) {
 		parent::__construct( $template );
@@ -74,10 +74,10 @@ class Map_Edit extends Tab {
 	 * @return void The rendered HTML of this tab is passed to the output buffer.
 	 */
 	public function render(): void {
-		$map_id = tribe_get_request_var( 'mapId' );
+		$map_id          = tribe_get_request_var( 'mapId' );
 		$ephemeral_token = $this->service->get_ephemeral_token();
 		$token           = is_string( $ephemeral_token ) ? $ephemeral_token : '';
-		$iframe_url = $map_id ? $this->service->get_map_edit_url( $token, $map_id )
+		$iframe_url      = $map_id ? $this->service->get_map_edit_url( $token, $map_id )
 			: $this->service->get_map_create_url( $token );
 		$context         = [
 			'iframe_url' => $iframe_url,

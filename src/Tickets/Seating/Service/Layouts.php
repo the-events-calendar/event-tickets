@@ -9,6 +9,8 @@
 
 namespace TEC\Tickets\Seating\Service;
 
+use TEC\Common\StellarWP\DB\DB;
+use TEC\Tickets\Seating\Meta;
 use TEC\Tickets\Seating\Tables\Layouts as Layouts_Table;
 use TEC\Tickets\Seating\Admin\Tabs\Layout_Card;
 
@@ -205,5 +207,27 @@ class Layouts {
 	 */
 	public static function update_transient_expiration() {
 		return 12 * HOUR_IN_SECONDS;
+	}
+	
+	/**
+	 * Returns the number of events associated with the layout.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $layout_id The ID of the layout.
+	 *
+	 * @return int The number of posts associated with the layout.
+	 */
+	public static function get_associated_posts_by_id( string $layout_id ): int {
+		try {
+			$count = DB::table( 'posts', 'posts' )
+						->leftJoin( 'postmeta', 'posts.id', 'layout_meta.post_id', 'layout_meta' )
+						->where( 'meta_key', Meta::META_KEY_LAYOUT_ID )
+						->where( 'meta_value', $layout_id )
+						->count();
+		} catch ( \Exception $e ) {
+			$count = 0;
+		}
+		return $count;
 	}
 }
