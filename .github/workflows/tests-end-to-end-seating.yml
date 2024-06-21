@@ -7,7 +7,7 @@ on:
       - 'src/resources/**.js'
       - 'composer.json'
       - 'composer.lock'
-      - '.github/workflows/tests-end-to-end.yml'
+      - '.github/workflows/tests-end-to-end-seating.yml'
 jobs:
   test:
     strategy:
@@ -186,6 +186,37 @@ jobs:
         run: ${SLIC_BIN} playwright install chromium
         env:
           CI: 'true'
+      # ------------------------------------------------------------------------------
+      # Clone, init and spin up the Seating service
+      # ------------------------------------------------------------------------------
+      - name: Clone the Seating service
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+          repository: the-events-calendar/event-tickets-seating-service
+          ref: routes-local-development
+          path: event-tickets-seating-service
+          submodules: recursive
+      - name: Setup node
+        uses: actions/setup-node@v4
+        working-directory: ${GITHUB_WORKSPACE}/event-tickets-seating-service
+        with:
+          node-version-file: '.nvmrc'
+      - name: Init the Seating service
+        working-directory: ${GITHUB_WORKSPACE}/event-tickets-seating-service
+        run: |
+          npm ci
+          npm run build
+      - name: Install pm2
+        run: |
+          npm install -g pm2
+          pm2 -V
+          pm2 list
+      - name: Start the Seating service using pm2
+        working-directory: ${GITHUB_WORKSPACE}/event-tickets-seating-service
+        run: |
+          pm2 start npm --name "seating-ci" -- run local:up
+          pm2 list
       # ------------------------------------------------------------------------------
       # Run Playwright tests
       # ------------------------------------------------------------------------------
