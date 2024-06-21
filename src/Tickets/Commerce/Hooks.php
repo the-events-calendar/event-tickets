@@ -189,6 +189,8 @@ class Hooks extends Service_Provider {
 		}
 
 		$query->set( 'meta_query', $meta_query );
+
+		return $query;
 	}
 
 	/**

@@ -36,12 +36,12 @@ class Orders_Page {
 	public function add_orders_page() {
 		add_submenu_page(
 			static::$parent_slug,
-			esc_html__( 'Orders', 'event-tickets' ),
-			esc_html__( 'Orders', 'event-tickets' ),
-			Pages::get_capability(),
-			'edit.php?post_type=' . Order::POSTTYPE,
+			$this->get_page_title(),
+			$this->get_menu_title(),
+			$this->get_capability(),
+			$this->get_menu_slug(),
 			'',
-			1.7
+			$this->get_position()
 		);
 
 		tribe_asset(
@@ -52,6 +52,96 @@ class Orders_Page {
 			[ 'admin_enqueue_scripts' ],
 			[ 'conditionals' => [ $this, 'is_admin_orders_page' ] ]
 		);
+	}
+
+	/**
+	 * Get the title for the Orders page.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_page_title() {
+		/**
+		 * Filters the title for the Orders page.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $page_title The title for the Orders page.
+		 */
+		return apply_filters( 'tribe_tickets_admin_order_page_page_title', esc_html__( 'Orders', 'event-tickets' ) );
+	}
+
+	/**
+	 * Get the title for the Orders menu.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_menu_title() {
+		/**
+		 * Filters the title for the Orders menu.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $menu_title The title for the Orders menu.
+		 */
+		return apply_filters( 'tribe_tickets_admin_order_page_menu_title', $this->get_page_title() );
+	}
+
+	/**
+	 * Get the capability required to access the Orders page.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_capability() {
+		/**
+		 * Filters the capability required to access the Orders page.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $capability The capability required to access the Orders page.
+		 */
+		return apply_filters( 'tribe_tickets_admin_order_page_capability', Pages::get_capability() );
+	}
+
+	/**
+	 * Get the menu slug for the Orders page.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_menu_slug() {
+		/**
+		 * Filters the menu slug for the Orders page.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $menu_slug The menu slug for the Orders page.
+		 */
+		return apply_filters( 'tribe_tickets_admin_order_page_menu_slug', add_query_arg( 'post_type', Order::POSTTYPE, 'edit.php' ) );
+	}
+
+	/**
+	 * Get the position of the Orders page.
+	 *
+	 * @since TBD
+	 *
+	 * @return float
+	 */
+	public function get_position() {
+		/**
+		 * Filters the position of the Orders page.
+		 *
+		 * @since TBD
+		 *
+		 * @param float $position The position of the Orders page.
+		 */
+		return apply_filters( 'tribe_tickets_admin_order_page_position', 1.7 );
 	}
 
 	/**
