@@ -1,4 +1,4 @@
-name: 'end-to-end tests'
+name: 'End-to-End Tests - Seating'
 on:
   pull_request:
     paths:
@@ -199,9 +199,8 @@ jobs:
           submodules: recursive
       - name: Setup node
         uses: actions/setup-node@v4
-        working-directory: ${GITHUB_WORKSPACE}/event-tickets-seating-service
         with:
-          node-version-file: '.nvmrc'
+          node-version-file: ${GITHUB_WORKSPACE}/event-tickets-seating-service/.nvmrc
       - name: Init the Seating service
         working-directory: ${GITHUB_WORKSPACE}/event-tickets-seating-service
         run: |
