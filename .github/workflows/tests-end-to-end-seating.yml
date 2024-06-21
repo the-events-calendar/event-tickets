@@ -189,21 +189,23 @@ jobs:
       # ------------------------------------------------------------------------------
       # Clone, init and spin up the Seating service
       # ------------------------------------------------------------------------------
+      - name: Set the env var for the Seating service directory
+        run: echo "SEATING_SERVICE_DIR=$(realpath {GITHUB_WORKSPACE}/../event-tickets-seating-service)" >> $GITHUB_ENV
       - name: Clone the Seating service
         uses: actions/checkout@v2
         with:
           fetch-depth: 1
           repository: the-events-calendar/event-tickets-seating-service
           ref: routes-local-development
-          path: event-tickets-seating-service
+          path: ${{ SEATING_SERVICE_DIR }}
           submodules: recursive
           token: ${{ secrets.GH_BOT_TOKEN }}
       - name: Setup node
         uses: actions/setup-node@v4
         with:
-          node-version-file: ${GITHUB_WORKSPACE}/event-tickets-seating-service/.nvmrc
+          node-version-file: ${{ SEATING_SERVICE_DIR }}/.nvmrc
       - name: Init the Seating service
-        working-directory: ${GITHUB_WORKSPACE}/event-tickets-seating-service
+        working-directory: ${{ SEATING_SERVICE_DIR }}
         run: |
           npm ci
           npm run build
@@ -213,7 +215,7 @@ jobs:
           pm2 -V
           pm2 list
       - name: Start the Seating service using pm2
-        working-directory: ${GITHUB_WORKSPACE}/event-tickets-seating-service
+        working-directory: ${{ SEATING_SERVICE_DIR }}
         run: |
           pm2 start npm --name "seating-ci" -- run local:up
           pm2 list
