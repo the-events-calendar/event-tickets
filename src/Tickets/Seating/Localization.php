@@ -41,6 +41,8 @@ class Localization {
 		}
 
 		$strings = [
+			'general-admission-label'          => _x( 'General Admission', 'Capacity option label', 'event-tickets' ),
+			'seat-option-label'                => _x( 'Assigned Seating', 'Capacity option label', 'event-tickets' ),
 			'event-layouts-select-label'       => _x( 'Event layout:', 'Capacity form label', 'event-tickets' ),
 			'event-layouts-select-placeholder' => _x( 'Choose event layout', 'Capacity form label', 'event-tickets' ),
 			'view-layouts-link-label'          => _x( 'View layouts', 'Capacity form label', 'event-tickets' ),

@@ -122,8 +122,8 @@ export default function CapacityForm({ renderDefaultForm, clientId }) {
 				onChange={onToggleChange}
 				disabled={isLayoutLocked}
 				options={ [
-					{ label: 'General Admission', value: 'regular' },
-					{ label: 'Assigned Seating', value: 'seat' },
+					{ label: getString('general-admission-label'), value: 'regular' },
+					{ label: getString('seat-option-label'), value: 'seat' },
 				] }
 				selected={ isUsingAssignedSeating ? 'seat' : 'regular' }
 			/>
