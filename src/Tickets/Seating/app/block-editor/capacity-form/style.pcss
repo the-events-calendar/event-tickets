@@ -3,9 +3,10 @@
 	display: flex;
 	flex-direction: column;
 	justify-content: flex-end;
+	gap: 12px;
 
 	.tec-tickets-seating__capacity-radio {
-		padding: 15px 0;
+		margin-top: 15px;
 		.components-flex {
 			flex-direction: row;
 			gap: 20px;
@@ -38,6 +39,20 @@
 		font-weight: var(--tec-font-weight-regular);
 		line-height: normal;
 		text-decoration: underline;
+	}
+
+	.tec-tickets-seating-layouts-info {
+		display: flex;
+		flex-direction: row;
+		gap: 5px;
+
+		.tec-tickets-seating-layouts-info-text {
+			color: #8e8e8e;
+			font-size: var(--tec-font-size-2);
+			font-style: normal;
+			font-weight: var(--tec-font-weight-regular);
+			line-height: normal;
+		}
 	}
 }
 
