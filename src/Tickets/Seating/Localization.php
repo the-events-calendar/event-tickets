@@ -47,6 +47,7 @@ class Localization {
 			'view-layouts-link-label'          => _x( 'View layouts', 'Capacity form label', 'event-tickets' ),
 			'seat-types-select-placeholder'    => _x( 'Choose seat type', 'Capacity form label', 'event-tickets' ),
 			'event-layouts-capacity-info'      => _x( 'Capacity is defined by seat layout options.', 'Capacity form info', 'event-tickets' ),
+			'seat-layout-label'                => _x( 'Seat Layout', 'Capacity form label', 'event-tickets' ),
 		];
 
 		$this->built_strings['capacity-form'] = $strings;

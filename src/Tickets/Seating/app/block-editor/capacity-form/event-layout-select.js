@@ -16,14 +16,22 @@ const EventLayoutSelect = ({
 }) => {
 	return (
 		<Fragment>
-			<Select
-				id="tec-tickets-seating-layouts-select"
-				placeholder={getString('event-layouts-select-placeholder')}
-				options={layouts}
-				onChange={onLayoutChange}
-				value={currentLayout}
-				isDisabled={layoutLocked}
-			/>
+			{ layoutLocked && (
+				<div className="tec-tickets-seating-layouts-locked-info">
+					{getString('seat-layout-label')}: <b>{currentLayout.label}</b>
+				</div>
+			)}
+
+			<div style={{display: layoutLocked ? "none" : "block" }}>
+				<Select
+					id="tec-tickets-seating-layouts-select"
+					placeholder={getString('event-layouts-select-placeholder')}
+					options={layouts}
+					onChange={onLayoutChange}
+					value={currentLayout}
+					isDisabled={layoutLocked}
+				/>
+			</div>
 
 			{currentLayout && (
 				<Select
