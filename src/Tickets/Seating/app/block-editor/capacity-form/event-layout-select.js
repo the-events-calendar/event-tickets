@@ -16,48 +16,38 @@ const EventLayoutSelect = ({
 }) => {
 	return (
 		<Fragment>
-			<LabeledItem
-				className="tribe-editor__labeled-select-input tribe-editor__labeled-select-input--nested"
-				label={getString('event-layouts-select-label')}
-				for="tec-tickets-seating-layouts-select"
-				isLabel={true}
-			>
-				<Select
-					id="tec-tickets-seating-layouts-select"
-					placeholder={getString('event-layouts-select-placeholder')}
-					options={layouts}
-					onChange={onLayoutChange}
-					value={currentLayout}
-					isDisabled={layoutLocked}
-				/>
-			</LabeledItem>
+			<Select
+				id="tec-tickets-seating-layouts-select"
+				placeholder={getString('event-layouts-select-placeholder')}
+				options={layouts}
+				onChange={onLayoutChange}
+				value={currentLayout}
+				isDisabled={layoutLocked}
+			/>
 
 			{currentLayout && (
-				<LabeledItem
-					className="tribe-editor__labeled-select-input tribe-editor__labeled-select-input--nested"
-					label={getString('seat-types-select-label')}
-					for="tec-tickets-seating-seat-types-select"
-					A
-					isLabel={true}
-				>
-					<Select
-						id="tec-tickets-seating-layouts-select"
-						placeholder={getString('seat-types-select-placeholder')}
-						options={seatTypes}
-						onChange={onSeatTypeChange}
-						value={currentSeatType}
-					/>
-				</LabeledItem>
+				<Select
+					id="tec-tickets-seating-layouts-select"
+					placeholder={getString('seat-types-select-placeholder')}
+					options={seatTypes}
+					onChange={onSeatTypeChange}
+					value={currentSeatType}
+				/>
 			)}
+			<div className="tec-tickets-seating-layouts-info">
+				<span className="tec-tickets-seating-layouts-info-text">
+					{getString('event-layouts-capacity-info')}
+				</span>
+				<a
+					href={getLink('layouts')}
+					target="_blank"
+					className="button-link button-link--nested"
+					rel="noreferrer"
+				>
+					{getString('view-layouts-link-label')}
+				</a>
+			</div>
 
-			<a
-				href={getLink('layouts')}
-				target="_blank"
-				className="button-link button-link--nested"
-				rel="noreferrer"
-			>
-				{getString('view-layouts-link-label')}
-			</a>
 		</Fragment>
 	);
 };
