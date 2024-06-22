@@ -117,16 +117,23 @@ export default function CapacityForm({ renderDefaultForm, clientId }) {
 
 	return (
 		<div className="tec-tickets-seating__capacity-form">
-			<RadioControl
-				className="tec-tickets-seating__capacity-radio"
-				onChange={onToggleChange}
-				disabled={isLayoutLocked}
-				options={ [
-					{ label: getString('general-admission-label'), value: 'regular' },
-					{ label: getString('seat-option-label'), value: 'seat' },
-				] }
-				selected={ isUsingAssignedSeating ? 'seat' : 'regular' }
-			/>
+			{ isLayoutLocked ? (
+				<div className="tec-tickets-seating__capacity-locked-info">
+					{getString('seat-option-label')}
+				</div>
+			) : (
+				<RadioControl
+					className="tec-tickets-seating__capacity-radio"
+					onChange={onToggleChange}
+					disabled={isLayoutLocked}
+					options={ [
+						{ label: getString('general-admission-label'), value: 'regular' },
+						{ label: getString('seat-option-label'), value: 'seat' },
+					] }
+					selected={ isUsingAssignedSeating ? 'seat' : 'regular' }
+				/>
+			) }
+
 			{isUsingAssignedSeating ? (
 				<MemoizedEventLayoutSelect
 					layoutLocked={isLayoutLocked}
