@@ -5,6 +5,60 @@ import { getLink, getLocalizedString } from '@tec/tickets/seating/utils';
 
 const getString = (key) => getLocalizedString(key, 'capacity-form');
 
+function EmptyLayouts( props ) {
+	if ( props.layouts.length !== 0 ) {
+		return null;
+	}
+
+	return (
+		<div className="tec-tickets-seating-layouts-empty-info">
+			<span className="alert">{getString('no-layouts-available')} </span>
+			<span>{getString('no-layouts-available-info')}</span>
+			<a
+				href={getLink('layouts')}
+				target="_blank"
+				className="button-link button-link--nested"
+				rel="noreferrer"
+			>
+				{getString('no-layouts-available-link-label')}
+			</a>
+		</div>
+	);
+}
+
+function LockedLayout( props ) {
+	if ( ! props.layoutLocked ) {
+		return null;
+	}
+
+	return (
+		<div className="tec-tickets-seating-layouts-locked-info">
+			{getString('seat-layout-label')}: <b>{props.currentLayout.label}</b>
+		</div>
+	);
+}
+
+function LayoutsInfo( props ) {
+	if ( props.layouts.length === 0 )
+		return null;
+
+	return (
+		<div className="tec-tickets-seating-layouts-info">
+			<span className="tec-tickets-seating-layouts-info-text">
+				{getString('event-layouts-capacity-info')}
+			</span>
+			<a
+				href={getLink('layouts')}
+				target="_blank"
+				className="button-link button-link--nested"
+				rel="noreferrer"
+			>
+				{getString('view-layouts-link-label')}
+			</a>
+		</div>
+	);
+}
+
 const EventLayoutSelect = ({
 	layoutLocked,
 	layouts,
@@ -16,13 +70,10 @@ const EventLayoutSelect = ({
 }) => {
 	return (
 		<Fragment>
-			{ layoutLocked && (
-				<div className="tec-tickets-seating-layouts-locked-info">
-					{getString('seat-layout-label')}: <b>{currentLayout.label}</b>
-				</div>
-			)}
+			<EmptyLayouts layouts={layouts}/>
+			<LockedLayout layoutLocked={layoutLocked} currentLayout={currentLayout}/>
 
-			<div style={{display: layoutLocked ? "none" : "block" }}>
+			<div style={{display: layoutLocked || ! layouts.length ? "none" : "block"}}>
 				<Select
 					id="tec-tickets-seating-layouts-select"
 					placeholder={getString('event-layouts-select-placeholder')}
@@ -42,20 +93,7 @@ const EventLayoutSelect = ({
 					value={currentSeatType}
 				/>
 			)}
-			<div className="tec-tickets-seating-layouts-info">
-				<span className="tec-tickets-seating-layouts-info-text">
-					{getString('event-layouts-capacity-info')}
-				</span>
-				<a
-					href={getLink('layouts')}
-					target="_blank"
-					className="button-link button-link--nested"
-					rel="noreferrer"
-				>
-					{getString('view-layouts-link-label')}
-				</a>
-			</div>
-
+			<LayoutsInfo layouts={layouts} />
 		</Fragment>
 	);
 };
