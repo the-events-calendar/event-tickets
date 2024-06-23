@@ -117,7 +117,7 @@ export default function CapacityForm({ renderDefaultForm, clientId }) {
 
 	return (
 		<div className="tec-tickets-seating__capacity-form">
-			{ isLayoutLocked ? (
+			{ isUsingAssignedSeating && isLayoutLocked ? (
 				<div className="tec-tickets-seating__capacity-locked-info">
 					{getString('seat-option-label')}
 				</div>
