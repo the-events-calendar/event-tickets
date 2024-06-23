@@ -48,6 +48,9 @@ class Localization {
 			'seat-types-select-placeholder'    => _x( 'Choose seat type', 'Capacity form label', 'event-tickets' ),
 			'event-layouts-capacity-info'      => _x( 'Capacity is defined by seat layout options.', 'Capacity form info', 'event-tickets' ),
 			'seat-layout-label'                => _x( 'Seat Layout', 'Capacity form label', 'event-tickets' ),
+			'no-layouts-available'             => _x( 'No active Seat Layouts.', 'Capacity form empty layouts', 'event-tickets' ),
+			'no-layouts-available-info'        => _x( 'You must create a Seat Layout to use this feature.', 'Capacity form empty layouts info', 'event-tickets' ),
+			'no-layouts-available-link-label'  => _x( 'Go to Seat Layouts', 'Capacity form empty layouts label', 'event-tickets' ),
 		];
 
 		$this->built_strings['capacity-form'] = $strings;
