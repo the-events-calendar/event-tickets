@@ -166,7 +166,25 @@ class Hooks extends Service_Provider {
 
 		$current_status = $query->get( 'post_status' );
 
-		$query->set( 'post_status', tribe( Status_Handler::class )->get_group_of_statuses_by_slug( '', $current_status ) );
+		if ( 'any' !== $current_status || [ 'any' ] !== $current_status ) {
+			if ( is_array( $current_status ) ) {
+				$statuses = [];
+				foreach ( $current_status as $st ) {
+					if ( 'any' === $st ) {
+						$query->set( 'post_status', 'any' );
+						// No need to continue.
+						break;
+					}
+
+					$statuses = array_merge( $statuses, tribe( Status_Handler::class )->get_group_of_statuses_by_slug( '', $st ) );
+				}
+
+				$query->set( 'post_status', array_unique( $statuses ) );
+			} else {
+				$query->set( 'post_status', tribe( Status_Handler::class )->get_group_of_statuses_by_slug( '', $current_status ) );
+			}
+		}
+
 
 		$meta_query = $query->get( 'meta_query' );
 
@@ -189,6 +207,8 @@ class Hooks extends Service_Provider {
 		}
 
 		$query->set( 'meta_query', $meta_query );
+
+		return $query;
 	}
 
 	/**

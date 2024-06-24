@@ -121,15 +121,25 @@ class Orders_Table extends WP_Posts_List_Table {
 	 * @return array An associative array in the format [ <slug> => <title> ]
 	 */
 	public function get_columns() {
-		return [
-			'order'            => __( 'Order', 'event-tickets' ),
-			'date'             => __( 'Date', 'event-tickets' ),
-			'status'           => __( 'Status', 'event-tickets' ),
-			'items'            => __( 'Items', 'event-tickets' ),
-			'total'            => __( 'Total', 'event-tickets' ),
-			'gateway'          => __( 'Gateway', 'event-tickets' ),
-			'gateway_order_id' => __( 'Gateway ID', 'event-tickets' ),
-		];
+		/**
+		 * Filters the list of columns for the Tickets Commerce order report.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $columns List of columns.
+		 */
+		return apply_filters(
+			'tec_tickets_commerce_orders_table_columns',
+			[
+				'order'            => __( 'Order', 'event-tickets' ),
+				'date'             => __( 'Date', 'event-tickets' ),
+				'status'           => __( 'Status', 'event-tickets' ),
+				'items'            => __( 'Items', 'event-tickets' ),
+				'total'            => __( 'Total', 'event-tickets' ),
+				'gateway'          => __( 'Gateway', 'event-tickets' ),
+				'gateway_order_id' => __( 'Gateway ID', 'event-tickets' ),
+			]
+		);
 	}
 
 	/**
@@ -262,7 +272,14 @@ class Orders_Table extends WP_Posts_List_Table {
 			$status_links['trash'] = $trash;
 		}
 
-		return $this->get_views_links( $status_links );
+		/**
+		 * Filters the list of views available on the Tickets Commerce order report.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $status_links List of views.
+		 */
+		return $this->get_views_links( apply_filters( 'tec_tickets_commerce_orders_table_views', $status_links ) );
 	}
 
 	/**
@@ -273,7 +290,14 @@ class Orders_Table extends WP_Posts_List_Table {
 	 * @return void
 	 */
 	public function no_items() {
-		esc_html_e( 'No matching orders found.', 'event-tickets' );
+		/**
+		 * Filters the message to be displayed when there are no items in the Tickets Commerce order report.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $message The message to be displayed.
+		 */
+		apply_filters( 'tec_tickets_commerce_orders_table_no_items', esc_html_e( 'No matching orders found.', 'event-tickets' ) );
 	}
 
 	/**
@@ -466,6 +490,7 @@ class Orders_Table extends WP_Posts_List_Table {
 		if ( ! $gateway ) {
 			return $item->gateway;
 		}
+
 		return $gateway::get_label();
 	}
 
@@ -477,16 +502,26 @@ class Orders_Table extends WP_Posts_List_Table {
 	 * @return array
 	 */
 	public function get_sortable_columns() {
-		return [
-			'order'            => 'order_id',
-			'purchaser'        => 'purchaser_full_name',
-			'email'            => 'purchaser_email',
-			'date'             => 'purchase_time',
-			'gateway'          => 'gateway',
-			'gateway_order_id' => 'gateway_id',
-			'status'           => 'status',
-			'total'            => 'total_value',
-		];
+		/**
+		 * Filters the list of sortable columns for the Tickets Commerce order report.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $columns List of columns that can be sorted.
+		 */
+		return apply_filters(
+			'tec_tickets_commerce_orders_table_sortable_columns',
+			[
+				'order'            => 'order_id',
+				'purchaser'        => 'purchaser_full_name',
+				'email'            => 'purchaser_email',
+				'date'             => 'purchase_time',
+				'gateway'          => 'gateway',
+				'gateway_order_id' => 'gateway_id',
+				'status'           => 'status',
+				'total'            => 'total_value',
+			]
+		);
 	}
 
 	/**

@@ -31,6 +31,7 @@ class Status_Handler extends \TEC\Common\Contracts\Service_Provider {
 	 */
 	protected $default_statuses = [
 		Action_Required::class,
+		Approved::class,
 		Created::class,
 		Completed::class,
 		Denied::class,
@@ -125,7 +126,7 @@ class Status_Handler extends \TEC\Common\Contracts\Service_Provider {
 			$group[] = tribe( $original )->get_wp_slug();
 		}
 
-		return array_unique( $group );
+		return array_values( array_unique( $group ) );
 	}
 
 	/**
