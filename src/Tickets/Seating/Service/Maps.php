@@ -20,7 +20,7 @@ use TEC\Tickets\Seating\Tables\Maps as Maps_Table;
  * @package TEC\Controller\Service;
  */
 class Maps {
-	
+
 	/**
 	 * The URL to the service used to fetch the maps from the backend.
 	 *
@@ -29,7 +29,7 @@ class Maps {
 	 * @var string
 	 */
 	private string $service_fetch_url;
-	
+
 	/**
 	 * Maps constructor.
 	 *
@@ -40,7 +40,7 @@ class Maps {
 	public function __construct( string $backend_base_url ) {
 		$this->service_fetch_url = rtrim( $backend_base_url, '/' ) . '/api/v1/maps';
 	}
-	
+
 	/**
 	 * Fetches all the Maps from the database.
 	 *
@@ -52,10 +52,10 @@ class Maps {
 		if ( ! $this->update() ) {
 			return [];
 		}
-		
+
 		$cache_key = 'option_map_card_objects';
 		$map_cards = wp_cache_get( $cache_key, 'tec-tickets-seating' );
-		
+
 		if ( ! ( $map_cards && is_array( $map_cards ) ) ) {
 			$map_cards = [];
 			foreach ( Maps_Table::fetch_all() as $row ) {
@@ -66,7 +66,7 @@ class Maps {
 					$row->screenshot_url
 				);
 			}
-			
+
 			wp_cache_set(
 				$cache_key,
 				$map_cards,
@@ -74,10 +74,10 @@ class Maps {
 				self::update_transient_expiration() // phpcs:ignore
 			);
 		}
-		
+
 		return $map_cards;
 	}
-	
+
 	/**
 	 * Inserts multiple rows from the service into the table.
 	 *
@@ -100,30 +100,30 @@ class Maps {
 					$service_row['id'],
 					$service_row['name'],
 					$service_row['seats'],
-					$service_row['screenshotUrl']
+					// $service_row['screenshotUrl'] @todo still not provided by the service
 				) ) {
 					return $valid;
 				}
-				
+
 				$valid[] = [
 					'id'             => $service_row['id'],
 					'name'           => $service_row['name'],
 					'seats'          => $service_row['seats'],
-					'screenshot_url' => $service_row['screenshotUrl'],
+					'screenshot_url' => $service_row['screenshotUrl'] ?? '',
 				];
-				
+
 				return $valid;
 			},
 			[]
 		);
-		
+
 		if ( ! count( $valid ) ) {
 			return 0;
 		}
-		
+
 		return Maps_Table::insert_many( $valid );
 	}
-	
+
 	/**
 	 * Updates the Maps from the service by updating the caches and custom tables.
 	 *
@@ -135,7 +135,7 @@ class Maps {
 	 */
 	public function update( bool $force = false ) {
 		$updater = new Updater( $this->service_fetch_url, self::update_transient_name(), self::update_transient_expiration() );
-		
+
 		return $updater->check_last_update( $force )
 						->update_from_service(
 							function () {
@@ -145,7 +145,7 @@ class Maps {
 						)
 						->store_fetched_data( [ $this, 'insert_rows_from_service' ] );
 	}
-	
+
 	/**
 	 * Returns the transient name used to store the last update time.
 	 *
@@ -156,7 +156,7 @@ class Maps {
 	public static function update_transient_name(): string {
 		return 'tec_tickets_seating_maps_last_update';
 	}
-	
+
 	/**
 	 * Returns the expiration time in seconds.
 	 *
