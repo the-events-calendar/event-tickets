@@ -28,6 +28,7 @@ use TEC\Tickets\Commerce\Payments_Tab;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use WP_Admin_Bar;
 use Tribe__Date_Utils;
+use Tribe__Admin__Notices;
 
 /**
  * Class Hooks.
@@ -192,6 +193,14 @@ class Hooks extends Service_Provider {
 		$date_from = Tribe__Date_Utils::is_valid_date( $date_from ) ? $date_from : '';
 		$date_to   = Tribe__Date_Utils::is_valid_date( $date_to ) ? $date_to : '';
 
+		$date_range_valid = $this->is_valid_date_range( $date_from, $date_to );
+
+		if ( ! $date_range_valid ) {
+			// If invalid, adjust the to date to be the same as the from date.
+			// @todo show a message.
+			$date_to = $date_from;
+		}
+
 		$date_query = $query->get( 'date_query' );
 
 		if ( empty( $date_query ) || ! is_array( $date_query ) ) {
@@ -243,6 +252,31 @@ class Hooks extends Service_Provider {
 		$query->set( 'meta_query', $meta_query );
 
 		return $query;
+	}
+
+	/**
+	 * Validates a date range.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $date_from The start date.
+	 * @param string $date_to The end date.
+	 *
+	 * @return bool
+	 */
+	protected function is_valid_date_range( string $date_from = '', string $date_to = '' ): bool {
+		if ( empty( $date_from ) || empty( $date_to ) ) {
+			return true;
+		}
+
+		$date_from_ts = strtotime( $date_from );
+		$date_to_ts   = strtotime( $date_to );
+
+		if ( $date_to_ts >= $date_from_ts ) {
+			return true;
+		}
+
+		return false;
 	}
 
 	/**

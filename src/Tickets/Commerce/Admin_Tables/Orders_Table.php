@@ -627,13 +627,6 @@ class Orders_Table extends WP_Posts_List_Table {
 	 * @return void
 	 */
 	protected function date_range_dropdown( $post_type ) {
-		$date_from_errors = [
-			'is-less-or-equal-to' => __( 'Starting date cannot be greater than Ending date', 'event-tickets' ),
-		];
-		$date_to_errors = [
-			'is-greater-or-equal-to' => __( 'Ending date cannot be sooner than Starting date', 'event-tickets' ),
-		];
-
 		$date_from = sanitize_text_field( $_GET['tec_tc_date_range_from'] ?? '' ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$date_to   = sanitize_text_field( $_GET['tec_tc_date_range_to'] ?? '' ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
@@ -653,8 +646,6 @@ class Orders_Table extends WP_Posts_List_Table {
 			value="<?php echo esc_attr( $date_from ); ?>"
 			placeholder="<?php esc_attr_e( 'From date', 'event-tickets' ); ?>"
 			data-validation-type="datepicker"
-			data-validation-is-less-or-equal-to="#tec_tc_data-range-to"
-			data-validation-error="<?php echo esc_attr( wp_json_encode( $date_from_errors ) ); ?>"
 		/>
 		<label class="screen-reader-text" for="tec_tc_data-range-to">
 			<?php esc_html_e( 'To date:', 'event-tickets' ); ?>
@@ -669,8 +660,6 @@ class Orders_Table extends WP_Posts_List_Table {
 			value="<?php echo esc_attr( $date_to ); ?>"
 			placeholder="<?php esc_attr_e( 'To date', 'event-tickets' ); ?>"
 			data-validation-type="datepicker"
-			data-validation-is-greater-or-equal-to="#tec_tc_data-range-from"
-			data-validation-error="<?php echo esc_attr( wp_json_encode( $date_to_errors ) ); ?>"
 		/>
 		<?php
 	}
