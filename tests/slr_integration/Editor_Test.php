@@ -47,27 +47,31 @@ class Editor_Test extends Controller_Test_Case {
 
 	public function get_store_data_provider(): \Generator {
 		yield 'new post' => [
-			function (): void {
+			function (): array {
 				global $pagenow;
 				$pagenow = 'post-new.php';
 				$this->given_many_layouts_in_db( 3 );
 				$this->given_layouts_just_updated();
+
+				return [];
 			}
 		];
 
 		yield 'existing post, using meta not set' => [
-			function (): void {
+			function (): array {
 				$id = self::factory()->post->create();
 				global $pagenow, $post;
 				$pagenow = 'edit.php';
 				$post    = get_post( $id );
 				$this->given_many_layouts_in_db( 3 );
 				$this->given_layouts_just_updated();
+
+				return [];
 			}
 		];
 
 		yield 'existing post, using meta set, layout not set' => [
-			function (): void {
+			function (): array {
 				$id = self::factory()->post->create();
 				global $pagenow, $post;
 				$pagenow = 'edit.php';
@@ -76,11 +80,13 @@ class Editor_Test extends Controller_Test_Case {
 				$this->given_layouts_just_updated();
 				update_post_meta( $id, Meta::META_KEY_ENABLED, 'yes' );
 				delete_post_meta( $id, Meta::META_KEY_LAYOUT_ID );
+
+				return [];
 			}
 		];
 
 		yield 'existing post, using meta set, layout set' => [
-			function (): void {
+			function (): array {
 				$id = self::factory()->post->create();
 				global $pagenow, $post;
 				$pagenow = 'edit.php';
@@ -89,11 +95,13 @@ class Editor_Test extends Controller_Test_Case {
 				$this->given_layouts_just_updated();
 				update_post_meta( $id, Meta::META_KEY_ENABLED, 'yes' );
 				update_post_meta( $id, Meta::META_KEY_LAYOUT_ID, 'layout-1' );
+
+				return [];
 			}
 		];
 
 		yield 'existing post, using meta set, layout set, with tickets' => [
-			function (): void {
+			function (): array {
 				$id = self::factory()->post->create();
 				global $pagenow, $post;
 				$pagenow = 'edit.php';
@@ -108,22 +116,26 @@ class Editor_Test extends Controller_Test_Case {
 				update_post_meta( $ticket_2, Meta::META_KEY_SEAT_TYPE, 'uuid-forward-block' );
 				$ticket_3 = $this->create_tc_ticket( $id, 30.40 );
 				update_post_meta( $ticket_3, Meta::META_KEY_SEAT_TYPE, 'uuid-vip' );
+
+				return [$ticket_1, $ticket_2, $ticket_3];
 			}
 		];
 
 		yield 'new event' => [
-			function (): void {
+			function (): array {
 				$post_type = TEC::POSTTYPE;
 				global $pagenow;
 				$pagenow               = 'post-new.php';
 				$_REQUEST['post_type'] = $post_type;
 				$this->given_many_layouts_in_db( 3 );
 				$this->given_layouts_just_updated();
+
+				return [];
 			}
 		];
 
 		yield 'existing event, using meta not set' => [
-			function (): void {
+			function (): array {
 				$id = tribe_events()->set_args( [
 					'title'      => 'Test Event',
 					'start_date' => '+1 week',
@@ -134,11 +146,13 @@ class Editor_Test extends Controller_Test_Case {
 				$post    = get_post( $id );
 				$this->given_many_layouts_in_db( 3 );
 				$this->given_layouts_just_updated();
+
+				return [];
 			}
 		];
 
 		yield 'existing event, using meta set, layout not set' => [
-			function (): void {
+			function (): array {
 				$id = tribe_events()->set_args( [
 					'title'      => 'Test Event',
 					'start_date' => '+1 week',
@@ -151,11 +165,13 @@ class Editor_Test extends Controller_Test_Case {
 				$this->given_layouts_just_updated();
 				update_post_meta( $id, Meta::META_KEY_ENABLED, 'yes' );
 				delete_post_meta( $id, Meta::META_KEY_LAYOUT_ID );
+
+				return [];
 			}
 		];
 
 		yield 'existing event, using meta set, layout set' => [
-			function (): void {
+			function (): array {
 				$id = tribe_events()->set_args( [
 					'title'      => 'Test Event',
 					'start_date' => '+1 week',
@@ -168,11 +184,13 @@ class Editor_Test extends Controller_Test_Case {
 				$this->given_layouts_just_updated();
 				update_post_meta( $id, Meta::META_KEY_ENABLED, 'yes' );
 				update_post_meta( $id, Meta::META_KEY_LAYOUT_ID, 'layout-1' );
+
+				return [];
 			}
 		];
 
 		yield 'existing event, using meta set, layout set, with tickets' => [
-			function (): void {
+			function (): array {
 				$id = tribe_events()->set_args( [
 					'title'      => 'Test Event',
 					'start_date' => '+1 week',
@@ -191,6 +209,8 @@ class Editor_Test extends Controller_Test_Case {
 				update_post_meta( $ticket_2, Meta::META_KEY_SEAT_TYPE, 'uuid-forward-block' );
 				$ticket_3 = $this->create_tc_ticket( $id, 30.40 );
 				update_post_meta( $ticket_3, Meta::META_KEY_SEAT_TYPE, 'uuid-vip' );
+
+				return [ $ticket_1, $ticket_2, $ticket_3 ];
 			}
 		];
 	}
@@ -199,10 +219,15 @@ class Editor_Test extends Controller_Test_Case {
 	 * @dataProvider get_store_data_provider
 	 */
 	public function test_get_store_data( \Closure $fixture ): void {
-		$fixture();
+		$ticket_ids = $fixture();
 
 		$store_data = $this->make_controller()->get_store_data();
 
-		$this->assertMatchesJsonSnapshot( wp_json_encode( $store_data, JSON_SNAPSHOT_OPTIONS ) );
+		$json = str_replace(
+			$ticket_ids,
+			'{{ticket_id}}',
+			wp_json_encode( $store_data, JSON_SNAPSHOT_OPTIONS )
+		);
+		$this->assertMatchesJsonSnapshot( $json );
 	}
 }

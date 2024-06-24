@@ -125,7 +125,6 @@ export default function CapacityForm({ renderDefaultForm, clientId }) {
 				<RadioControl
 					className="tec-tickets-seating__capacity-radio"
 					onChange={onToggleChange}
-					disabled={isLayoutLocked}
 					options={ [
 						{ label: getString('general-admission-label'), value: 'regular' },
 						{ label: getString('seat-option-label'), value: 'seat' },

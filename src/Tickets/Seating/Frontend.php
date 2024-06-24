@@ -190,7 +190,7 @@ class Frontend extends Controller_Contract {
 		 */
 		$timeout = apply_filters( 'tec_tickets_seating_selection_timeout', 15 * 60, $post_id );
 
-		return $this->template->template(
+		$html = $this->template->template(
 			'tickets-block',
 			[
 				'cost_range'    => $cost_range,
@@ -200,6 +200,18 @@ class Frontend extends Controller_Contract {
 			],
 			false
 		);
+
+		/**
+		 * Filters the contents of the Tickets block.
+		 *
+		 * @since TBD
+		 *
+		 * @param string   $html     The HTML of the Tickets block.
+		 * @param Template $template A reference to the template object.
+		 */
+		$html = apply_filters( 'tec_tickets_seating_tickets_block_html', $html, $template );
+
+		return $html;
 	}
 
 	/**
@@ -232,7 +244,7 @@ class Frontend extends Controller_Contract {
 		$args        = [
 			'button_text'    => esc_html_x( 'Find Seats', 'Find seats button text', 'event-tickets' ),
 			'button_classes' => [ 'tribe-common-c-btn', 'tribe-common-c-btn--small' ],
-			'append_target'  => '.tec-tickets-seating__tickets-block__information',
+			'append_target'  => '.tec-tickets-seating__information',
 			'content_wrapper_classes' =>  'tribe-dialog__wrapper tec-tickets-seating__modal',
 		];
 
