@@ -80,11 +80,13 @@ class Orders_PageTest extends \Codeception\TestCase\WPTestCase {
 
 		$new_sub_menu = array( $orders_page->get_menu_title(), $orders_page->get_capability(), $orders_page->get_menu_slug(), $orders_page->get_page_title() );
 
+		$this->assertFalse( tribe( 'assets' )->exists( 'event-tickets-commerce-admin-orders-css' ) );
 		$this->assertFalse( tribe( 'assets' )->exists( 'event-tickets-commerce-admin-orders' ) );
 		$this->assertFalse( in_array( $new_sub_menu, $submenu[ Orders_Page::$parent_slug ], true ) );
 
 		$orders_page->add_orders_page();
 
+		$this->assertTrue( tribe( 'assets' )->exists( 'event-tickets-commerce-admin-orders-css' ) );
 		$this->assertTrue( tribe( 'assets' )->exists( 'event-tickets-commerce-admin-orders' ) );
 
 		$this->assertTrue( in_array( $new_sub_menu, $submenu[ Orders_Page::$parent_slug ], true ) );
