@@ -14,15 +14,10 @@
             ]
         }
     },
-    "currency": {
-        "symbol": "$",
-        "position": "prefix",
-        "decimalSeparator": ".",
-        "decimalNumbers": 2,
-        "thousandSeparator": ","
-    },
     "labels": {
         "oneTicket": "1 Ticket",
         "multipleTickets": "{count} Tickets"
-    }
+    },
+    "providerClass": "TEC\\Tickets\\Commerce\\Module",
+    "postId": {{post_id}}
 }

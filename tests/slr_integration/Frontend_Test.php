@@ -220,5 +220,4 @@ class Frontend_Test extends Controller_Test_Case {
 
 		$this->assertMatchesJsonSnapshot( $json );
 	}
-
 }
