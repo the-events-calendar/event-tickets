@@ -28,7 +28,6 @@ use TEC\Tickets\Commerce\Payments_Tab;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use WP_Admin_Bar;
 use Tribe__Date_Utils;
-use Tribe__Admin__Notices;
 
 /**
  * Class Hooks.
