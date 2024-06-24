@@ -16,6 +16,7 @@ use TEC\Tickets\Commerce\Order;
 use Tribe__Date_Utils;
 use Tribe__Field;
 use WP_Post;
+use Tribe__Tickets__Tickets;
 use WP_Posts_List_Table;
 
 if ( ! class_exists( 'WP_List_Table' ) || ! class_exists( 'WP_Posts_List_Table' ) ) {
@@ -137,6 +138,7 @@ class Orders_Table extends WP_Posts_List_Table {
 				'status'           => __( 'Status', 'event-tickets' ),
 				'items'            => __( 'Items', 'event-tickets' ),
 				'total'            => __( 'Total', 'event-tickets' ),
+				'post_parent'      => __( 'Event', 'event-tickets' ),
 				'gateway'          => __( 'Gateway', 'event-tickets' ),
 				'gateway_order_id' => __( 'Gateway ID', 'event-tickets' ),
 			]
@@ -397,7 +399,7 @@ class Orders_Table extends WP_Posts_List_Table {
 		}
 
 		foreach ( $item->items as $cart_item ) {
-			$ticket   = \Tribe__Tickets__Tickets::load_ticket_object( $cart_item['ticket_id'] );
+			$ticket   = Tribe__Tickets__Tickets::load_ticket_object( $cart_item['ticket_id'] );
 			$name     = esc_html( $ticket->name );
 			$quantity = esc_html( (int) $cart_item['quantity'] );
 			$output  .= "<div class='tribe-line-item'>{$quantity} - {$name}</div>";
@@ -438,6 +440,35 @@ class Orders_Table extends WP_Posts_List_Table {
 	 */
 	public function column_total( $item ) {
 		return $item->total_value->get_currency();
+	}
+
+	/**
+	 * Handler for the post parent column
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post $item The current item.
+	 *
+	 * @return string
+	 */
+	public function column_post_parent( $item ) {
+		$events = $item->events_in_order ?? [];
+
+		if ( empty( $events ) ) {
+			return '';
+		}
+
+		$output = '';
+
+		foreach ( $events as $event ) {
+			$output .= sprintf(
+				'<div><a href="%s">%s</a></div>',
+				esc_url( get_edit_post_link( $event ) ),
+				esc_html( get_the_title( $event ) )
+			);
+		}
+
+		return $output;
 	}
 
 	/**
@@ -518,6 +549,7 @@ class Orders_Table extends WP_Posts_List_Table {
 				'purchaser'        => 'purchaser_full_name',
 				'email'            => 'purchaser_email',
 				'date'             => 'purchase_time',
+				'post_parent'      => 'event',
 				'gateway'          => 'gateway',
 				'gateway_order_id' => 'gateway_id',
 				'status'           => 'status',

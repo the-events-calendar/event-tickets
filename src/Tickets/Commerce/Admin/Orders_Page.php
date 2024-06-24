@@ -46,8 +46,17 @@ class Orders_Page {
 
 		tribe_asset(
 			tribe( 'tickets.main' ),
-			'event-tickets-commerce-admin-orders',
+			'event-tickets-commerce-admin-orders-css',
 			'tickets-commerce/admin/orders/table.css',
+			[],
+			[ 'admin_enqueue_scripts' ],
+			[ 'conditionals' => [ $this, 'is_admin_orders_page' ] ]
+		);
+
+		tribe_asset(
+			tribe( 'tickets.main' ),
+			'event-tickets-commerce-admin-orders',
+			'commerce/admin/orders/table.js',
 			[],
 			[ 'admin_enqueue_scripts' ],
 			[ 'conditionals' => [ $this, 'is_admin_orders_page' ] ]
