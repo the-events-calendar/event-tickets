@@ -27,6 +27,7 @@ use TEC\Tickets\Commerce\Status\Status_Interface;
 use TEC\Tickets\Commerce\Payments_Tab;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use WP_Admin_Bar;
+use Tribe__Date_Utils;
 
 /**
  * Class Hooks.
@@ -185,6 +186,39 @@ class Hooks extends Service_Provider {
 			}
 		}
 
+		$date_from = sanitize_text_field( $_GET['tec_tc_date_range_from'] ?? '' ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$date_to   = sanitize_text_field( $_GET['tec_tc_date_range_to'] ?? '' ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+
+		$date_from = Tribe__Date_Utils::is_valid_date( $date_from ) ? $date_from : '';
+		$date_to   = Tribe__Date_Utils::is_valid_date( $date_to ) ? $date_to : '';
+
+		$date_query = $query->get( 'date_query' );
+
+		if ( empty( $date_query ) || ! is_array( $date_query ) ) {
+			$date_query = [];
+		}
+
+		if ( ! empty( $date_from ) ) {
+			$date_query[] = [
+				// We need to pass H:i:s to avoid bug in wp core.
+				'after'     => Tribe__Date_Utils::reformat( $date_from, 'Y-m-d 00:00:00' ),
+				'inclusive' => true,
+			];
+		}
+
+		if ( ! empty( $date_to ) ) {
+			$date_query[] = [
+				// We need to pass H:i:s to avoid bug in wp core.
+				'before'    => Tribe__Date_Utils::reformat( $date_to, 'Y-m-d 23:59:59' ),
+				'inclusive' => true,
+			];
+		}
+
+		if ( count( $date_query ) > 1 && empty( $date_query['relation'] ) ) {
+			$date_query['relation'] = 'AND';
+		}
+
+		$query->set( 'date_query', $date_query );
 
 		$meta_query = $query->get( 'meta_query' );
 

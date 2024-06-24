@@ -348,7 +348,8 @@ class Orders_Table extends WP_Posts_List_Table {
 	 * @return string
 	 */
 	public function column_date( $item ) {
-		$dt = $item->post_date;
+		// We work on GMT, we display on wp_timezone().
+		$dt = $item->post_date_gmt;
 
 		if ( ! $dt ) {
 			return '&ndash;';
