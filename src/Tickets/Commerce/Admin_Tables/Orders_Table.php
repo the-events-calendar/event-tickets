@@ -13,6 +13,7 @@ use TEC\Tickets\Commerce\Gateways\Manager;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Gateways\Free\Gateway as Free_Gateway;
 use TEC\Tickets\Commerce\Order;
+use Tribe__Date_Utils;
 use Tribe__Field;
 use WP_Post;
 use WP_Posts_List_Table;
@@ -561,12 +562,12 @@ class Orders_Table extends WP_Posts_List_Table {
 	 */
 	protected function extra_tablenav( $which ) {
 		?>
-		<div class="alignleft actions">
+		<div class="alignleft actions tribe-validation">
 		<?php
 		if ( 'top' === $which ) {
 			ob_start();
 
-			$this->months_dropdown( $this->screen->post_type );
+			$this->date_range_dropdown( $this->screen->post_type );
 			$this->gateways_dropdown( $this->screen->post_type );
 
 			/**
@@ -613,6 +614,64 @@ class Orders_Table extends WP_Posts_List_Table {
 		 * @param string $which The location of the extra table nav markup: 'top' or 'bottom'.
 		 */
 		do_action( 'manage_posts_extra_tablenav', $which );
+	}
+
+	/**
+	 * Displays a dropdown for filtering items in the list table by date range.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $post_type The post type.
+	 *
+	 * @return void
+	 */
+	protected function date_range_dropdown( $post_type ) {
+		$date_from_errors = [
+			'is-less-or-equal-to' => __( 'Starting date cannot be greater than Ending date', 'event-tickets' ),
+		];
+		$date_to_errors = [
+			'is-greater-or-equal-to' => __( 'Ending date cannot be sooner than Starting date', 'event-tickets' ),
+		];
+
+		$date_from = sanitize_text_field( $_GET['tec_tc_date_range_from'] ?? '' ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$date_to   = sanitize_text_field( $_GET['tec_tc_date_range_to'] ?? '' ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+
+		$date_from = Tribe__Date_Utils::is_valid_date( $date_from ) ? $date_from : '';
+		$date_to   = Tribe__Date_Utils::is_valid_date( $date_to ) ? $date_to : '';
+		?>
+		<label class="screen-reader-text" for="tec_tc_data-range-from">
+			<?php esc_html_e( 'From date:', 'event-tickets' ); ?>
+		</label>
+		<input
+			autocomplete="off"
+			type="text"
+			class="tribe-datepicker"
+			name="tec_tc_date_range_from"
+			id="tec_tc_data-range-from"
+			size="10"
+			value="<?php echo esc_attr( $date_from ); ?>"
+			placeholder="<?php esc_attr_e( 'From date', 'event-tickets' ); ?>"
+			data-validation-type="datepicker"
+			data-validation-is-less-or-equal-to="#tec_tc_data-range-to"
+			data-validation-error="<?php echo esc_attr( wp_json_encode( $date_from_errors ) ); ?>"
+		/>
+		<label class="screen-reader-text" for="tec_tc_data-range-to">
+			<?php esc_html_e( 'To date:', 'event-tickets' ); ?>
+		</label>
+		<input
+			autocomplete="off"
+			type="text"
+			class="tribe-datepicker"
+			name="tec_tc_date_range_to"
+			id="tec_tc_data-range-to"
+			size="10"
+			value="<?php echo esc_attr( $date_to ); ?>"
+			placeholder="<?php esc_attr_e( 'To date', 'event-tickets' ); ?>"
+			data-validation-type="datepicker"
+			data-validation-is-greater-or-equal-to="#tec_tc_data-range-from"
+			data-validation-error="<?php echo esc_attr( wp_json_encode( $date_to_errors ) ); ?>"
+		/>
+		<?php
 	}
 
 	/**
