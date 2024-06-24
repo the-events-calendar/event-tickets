@@ -1,20 +1,13 @@
 // Get the service base URL without the trailing slash.
-const baseUrl = tec.tickets.seating.service.baseUrl.replace(/\/$/, '');
-tec.tickets.seating.service.state =  tec.tickets.seating.service.state || {
-	ready: false,
-	establishingReadiness: false,
-	actionsMap: {
-		default: defaultMessageHandler,
-	},
-	token: null,
-};
-const state = tec.tickets.seating.service.state;
-
-export const INBOUND_APP_READY = 'app_postmessage_ready';
-export const INBOUND_APP_READY_FOR_DATA = 'app_postmessage_ready_for_data';
-export const OUTBOUND_HOST_READY = 'host_postmessage_ready';
-export const OUTBOUND_SEAT_TYPE_TICKETS = 'host_postmessage_seat_type_tickets';
-export const INBOUND_SEATS_SELECTED = 'app_postmessage_seats_selected';
+import { baseUrl } from './externals.js';
+import { state } from './state.js';
+import {
+	INBOUND_APP_READY,
+	INBOUND_APP_READY_FOR_DATA,
+	INBOUND_SEATS_SELECTED,
+	OUTBOUND_HOST_READY,
+	OUTBOUND_SEAT_TYPE_TICKETS,
+} from './service-actions.js';
 
 /**
  * Posts a message to the service iframe.

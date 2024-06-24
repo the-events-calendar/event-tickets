@@ -9,6 +9,7 @@
 
 namespace TEC\Tickets\Seating\Admin;
 
+use TEC\Tickets\Seating\Admin;
 use TEC\Tickets\Seating\Admin\Tabs\Layout_Edit;
 use TEC\Tickets\Seating\Admin\Tabs\Layouts;
 use TEC\Tickets\Seating\Admin\Tabs\Map_Edit;
@@ -105,5 +106,39 @@ class Maps_Layouts_Home_Page {
 			'tabs'    => $tabs,
 			'current' => $current,
 		] );
+	}
+
+	/**
+	 * Returns the URL of the Maps home page.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The URL of the Maps home page.
+	 */
+	public function get_maps_home_url(): string {
+		return add_query_arg(
+			[
+				'page' => Admin::get_menu_slug(),
+				'tab'  => Maps::get_id(),
+			],
+			admin_url( 'admin.php' )
+		);
+	}
+
+	/**
+	 * Returns the URL of the Layouts home page.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The URL of the Layouts home page.
+	 */
+	public function get_layouts_home_url(): string {
+		return add_query_arg(
+			[
+				'page' => Admin::get_menu_slug(),
+				'tab'  => Layouts::get_id(),
+			],
+			admin_url( 'admin.php' )
+		);
 	}
 }

@@ -74,7 +74,7 @@ class Layouts {
 
 				$created_date_in_ms = $service_row['createdDate'];
 				$created_date       = gmdate( 'Y-m-d H:i:s', $created_date_in_ms / 1000 );
-				
+
 				$valid[] = [
 					'id'             => $service_row['id'],
 					'name'           => $service_row['name'],
@@ -130,7 +130,7 @@ class Layouts {
 
 		return $layouts;
 	}
-	
+
 	/**
 	 * Fetches all the Layouts from the database.
 	 *
@@ -142,11 +142,11 @@ class Layouts {
 		if ( ! $this->update() ) {
 			return [];
 		}
-		
+
 		$mem_key      = 'option_layout_card_objects';
 		$cache        = tribe_cache();
 		$layout_cards = $cache[ $mem_key ];
-		
+
 		if ( ! ( $layout_cards && is_array( $layout_cards ) ) ) {
 			$layout_cards = [];
 			foreach ( Layouts_Table::fetch_all() as $row ) {
@@ -158,13 +158,13 @@ class Layouts {
 					$row->screenshot_url
 				);
 			}
-			
+
 			$cache[ $mem_key ] = $layout_cards;
 		}
-		
+
 		return $layout_cards;
 	}
-	
+
 	/**
 	 * Updates the layouts from the service by updating the caches and custom tables.
 	 *
@@ -178,13 +178,8 @@ class Layouts {
 		$updater = new Updater( $this->service_fetch_url, self::update_transient_name(), self::update_transient_expiration() );
 
 		return $updater->check_last_update( $force )
-							->update_from_service(
-								function () {
-									wp_cache_delete( 'option_format_layouts', 'tec-tickets-seating' );
-									Layouts_Table::truncate();
-								} 
-							)
-							->store_fetched_data( [ $this, 'insert_rows_from_service' ] );
+		               ->update_from_service( [ $this, 'invalidate_cache' ] )
+		               ->store_fetched_data( [ $this, 'insert_rows_from_service' ] );
 	}
 
 	/**
@@ -208,7 +203,7 @@ class Layouts {
 	public static function update_transient_expiration() {
 		return 12 * HOUR_IN_SECONDS;
 	}
-	
+
 	/**
 	 * Returns the number of events associated with the layout.
 	 *
@@ -229,5 +224,29 @@ class Layouts {
 			$count = 0;
 		}
 		return $count;
+	}
+
+	/**
+	 * Invalidates all the caches and custom tables storing information about Layouts.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public static function invalidate_cache(): bool {
+		delete_transient( self::update_transient_name() );
+		wp_cache_delete( 'option_format_layouts', 'tec-tickets-seating' );
+
+		$invalidated = Layouts_Table::truncate() !== false;
+
+		/**
+		 * Fires after the caches and custom tables storing information about Layouts have been
+		 * invalidated.
+		 *
+		 * @since TBD
+		 */
+		do_action( 'tec_tickets_seating_invalidate_layouts_cache' );
+
+		return $invalidated;
 	}
 }
