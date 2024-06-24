@@ -7,7 +7,7 @@ use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tests\Traits\With_Uopz;
-use PHPUnit\Framework\Assert;
+use Tribe\Tickets\Test\Traits\With_Globals;
 use WP_Screen;
 use WP_Query;
 
@@ -17,13 +17,7 @@ class Orders_TableTest extends \Codeception\TestCase\WPTestCase {
 	use Order_Maker;
 	use Ticket_Maker;
 	use With_Uopz;
-
-	/**
-	 * Store global modifications.
-	 *
-	 * @var mixed
-	 */
-	protected static $modified_globals = [];
+	use With_Globals;
 
 	/**
 	 * Created orders.
@@ -52,63 +46,6 @@ class Orders_TableTest extends \Codeception\TestCase\WPTestCase {
 	public function set_up() {
 		$this->set_global_value( 'current_screen', WP_Screen::get( 'edit-' . Order::POSTTYPE ) );
 		$this->set_global_value( 'typenow', Order::POSTTYPE );
-	}
-
-	/**
-	 * @after
-	 */
-	public function restore_global() {
-		// Upside down the array to restore the globals in the reverse order they were modified.
-		self::$modified_globals = array_reverse( self::$modified_globals );
-
-		foreach ( self::$modified_globals as $restore_global_callback ) {
-			$restore_global_callback();
-		}
-
-		self::$modified_globals = [];
-	}
-
-	/**
-	 * Set a global value.
-	 *
-	 * @param string $const
-	 * @param mixed  $value
-	 * @param int    $offset
-	 */
-	private function set_global_value( $global, $value, $offset = '' ) {
-		$previous_value     = empty( $GLOBALS[ $global ] ) ? null : $GLOBALS[ $global ];
-		// force set the $global offset.
-		$GLOBALS[ $global ] = $previous_value;
-		$previous_value     = $offset && ! empty( $previous_value[ $offset ] ) ? $previous_value[ $offset ] : $previous_value;
-
-
-		if ( null === $previous_value ) {
-			$restore_callback = static function () use ( $global, $offset ) {
-				if ( $offset ) {
-					$GLOBALS[ $global ][ $offset ] = null;
-				} else {
-					$GLOBALS[ $global ] = null;
-				}
-				Assert::assertTrue( $offset ? empty( $GLOBALS[ $global ][ $offset ] ) : empty( $GLOBALS[ $global ] ) );
-			};
-		} else {
-			$restore_callback = static function () use ( $previous_value, $global, $offset ) {
-				if ( $offset ) {
-					$GLOBALS[ $global ][ $offset ] = $previous_value;
-				} else {
-					$GLOBALS[ $global ] = $previous_value;
-				}
-				Assert::assertEquals( $previous_value, $offset ? $GLOBALS[ $global ][ $offset ] : $GLOBALS[ $global ] );
-			};
-		}
-
-		if ( $offset ) {
-			$GLOBALS[ $global ][ $offset ] = $value;
-		} else {
-			$GLOBALS[ $global ] = $value;
-		}
-
-		self::$modified_globals[] = $restore_callback;
 	}
 
 	/**
