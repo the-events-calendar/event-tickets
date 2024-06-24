@@ -143,6 +143,27 @@ class Orders_PageTest extends \Codeception\TestCase\WPTestCase {
 			$new_query->get( 'meta_query' )
 		);
 
+		$this->assertEmpty( $new_query->get( 'date_query' ) );
+
+		$this->set_global_value( '_GET', '2024-06-18', 'tec_tc_date_range_from' );
+		$this->set_global_value( '_GET', '2024-06-20', 'tec_tc_date_range_to' );
+
+		$new_query = tribe( Hooks::class )->pre_filter_admin_order_table( $query );
+
+		$this->assertEquals(
+			[
+				[
+					'after'     => '2024-06-18 00:00:00',
+					'inclusive' => true
+				],
+				[
+					'before'    => '2024-06-20 23:59:59',
+					'inclusive' => true
+				],
+				'relation' => 'AND',
+			],
+			$new_query->get( 'date_query' )
+		);
 		$status = [
 			Pending::class,
 			Completed::class,
