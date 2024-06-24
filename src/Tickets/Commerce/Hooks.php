@@ -171,7 +171,7 @@ class Hooks extends Service_Provider {
 				$statuses = [];
 				foreach ( $current_status as $st ) {
 					if ( 'any' === $st ) {
-						$query->set( 'post_status', 'any' );
+						$statuses = [ 'any' ];
 						// No need to continue.
 						break;
 					}
