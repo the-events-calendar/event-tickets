@@ -2,6 +2,7 @@ import { addFilter } from '@wordpress/hooks';
 import CapacityForm from './capacity-form';
 import { storeName } from './store';
 import { select, dispatch } from '@wordpress/data';
+import Seats from "./dashboard-actions/seats";
 
 const shouldRenderAssignedSeatingForm = true;
 
@@ -58,3 +59,21 @@ addFilter(
 	'tec.tickets.seating',
 	filterSetBodyDetails
 );
+
+function filterDashboardActions( actions, { clientId } ) {
+	const hasSeats = select(storeName).isUsingAssignedSeating(clientId);
+
+	if ( ! hasSeats ) {
+		return actions;
+	}
+
+	actions.push( <Seats /> );
+
+	return actions;
+}
+
+addFilter(
+	'tec.tickets.blocks.Tickets.TicketsDashboardAction.actions',
+	'tec.tickets.seating',
+	filterDashboardActions,
+)
