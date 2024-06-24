@@ -22,6 +22,7 @@ import NotSupportedMessage from '../not-supported-message/container';
 import { ActionDashboard } from '@moderntribe/tickets/elements';
 import { TICKET_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
 import './style.pcss';
+import {applyFilters} from "@wordpress/hooks";
 
 // eslint-disable-next-line no-undef
 const confirmLabel = sprintf(
@@ -38,6 +39,7 @@ class TicketsDashboardAction extends PureComponent {
 		onConfirmClick: PropTypes.func,
 		showConfirm: PropTypes.bool,
 		showNotSupportedMessage: PropTypes.bool,
+		clientId: PropTypes.string,
 	};
 
 	constructor(props) {
@@ -71,7 +73,7 @@ class TicketsDashboardAction extends PureComponent {
 			}
 		}
 
-		return actions;
+		return applyFilters( 'tec.tickets.blocks.Tickets.TicketsDashboardAction.actions', actions, this.props );
 	};
 
 	render() {
