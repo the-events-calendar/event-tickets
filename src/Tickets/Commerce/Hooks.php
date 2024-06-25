@@ -293,7 +293,7 @@ class Hooks extends Service_Provider {
 			];
 		}
 
-		$event_filter = absint( $_GET['tec_tc_events'] ?? 0 );
+		$event_filter = absint( $_GET['tec_tc_events'] ?? 0 ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
 		if ( $event_filter ) {
 			$meta_query[] = [
