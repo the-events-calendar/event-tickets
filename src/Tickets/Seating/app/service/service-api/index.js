@@ -80,13 +80,6 @@ export function catchMessage(event) {
 
 	const handler = getHandlerForAction(action, defaultMessageHandler);
 
-	console.log(
-		'calling handler for action',
-		action,
-		handler,
-		getRegisteredActions()
-	);
-
 	handler(event.data.data);
 }
 
