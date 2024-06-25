@@ -167,6 +167,9 @@ const store = createReduxStore(storeName, {
 		isLayoutLocked(state) {
 			return state?.isLayoutLocked || false;
 		},
+		getAllSeatTypes(state) {
+			return state?.seatTypes;
+		},
 	},
 	controls: {
 		FETCH_SEAT_TYPES_FOR_LAYOUT(action) {

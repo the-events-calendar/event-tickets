@@ -100,20 +100,15 @@ function filterHeaderDetails( items, clientId ) {
 		return items;
 	}
 
-	const layoutId = select(storeName).getCurrentLayoutId();
 	const seatTypeId = select(storeName).getTicketSeatType(clientId);
-	const seatTypes  = select(storeName).getSeatTypesForLayout(layoutId, true);
+	const seatTypes  = select(storeName).getAllSeatTypes();
 
-	const seatTypeName = Object.values(seatTypes).map(function (seatType) {
-		if ( seatType.id === seatTypeId ) {
-			return seatType.name;
-		}
-	});
+	const seatTypeName = Object.values(seatTypes).find(
+		(seatType) => seatType.id === seatTypeId
+	)?.name;
 
-	if ( seatTypeName.length ) {
-		items.push( (
-			<SeatType name={ seatTypeName } />
-		) );
+	if ( seatTypeName ) {
+		items.push(<SeatType name={seatTypeName} />);
 	}
 
 	return items;
