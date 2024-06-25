@@ -76,4 +76,21 @@ addFilter(
 	'tec.tickets.blocks.Tickets.TicketsDashboardAction.actions',
 	'tec.tickets.seating',
 	filterDashboardActions,
-)
+);
+
+function filterMoveButtonAction( actions, clientId ) {
+	const hasSeats = select(storeName).isUsingAssignedSeating(clientId);
+	if ( ! hasSeats ) {
+		return actions;
+	}
+
+	actions = actions.filter( action => action.key !== 'move' );
+
+	return actions;
+}
+
+addFilter(
+	'tec.tickets.blocks.Ticket.actionItems',
+	'tec.tickets.seating',
+	filterMoveButtonAction
+);
