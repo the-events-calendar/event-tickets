@@ -75,7 +75,7 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 		return [
 			'isUsingAssignedSeating' => $is_using_assigned_seating,
 			'layouts'                => $service->get_layouts_in_option_format(),
-			'seatTypes'              => $service->get_seat_types_by_layout( $layout_id ),
+			'seatTypes'              => $layout_id ? $service->get_seat_types_by_layout( $layout_id ) : [],
 			'currentLayoutId'        => $layout_id,
 			'seatTypesByPostId'      => $seat_types_by_post_id,
 			'isLayoutLocked'         => $is_layout_locked,
