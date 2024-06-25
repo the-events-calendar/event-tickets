@@ -47,13 +47,7 @@ class Layouts {
 	 *
 	 * @since TBD
 	 *
-	 * @param array<array{
-	 *     id?: string,
-	 *     name?: string,
-	 *     seats?: int,
-	 *     mapId?: string,
-	 *     createdDate?: string,
-	 * }> $service_rows The rows to insert.
+	 * @param array<array{ id?: string, name?: string, seats?: int, mapId?: string, createdDate?: string, screenshotUrl?: string}> $service_rows The rows to insert.
 	 *
 	 * @return bool|int The number of rows affected, or `false` on failure.
 	 */
@@ -178,8 +172,8 @@ class Layouts {
 		$updater = new Updater( $this->service_fetch_url, self::update_transient_name(), self::update_transient_expiration() );
 
 		return $updater->check_last_update( $force )
-		               ->update_from_service( [ $this, 'invalidate_cache' ] )
-		               ->store_fetched_data( [ $this, 'insert_rows_from_service' ] );
+						->update_from_service( [ $this, 'invalidate_cache' ] )
+						->store_fetched_data( [ $this, 'insert_rows_from_service' ] );
 	}
 
 	/**

@@ -62,7 +62,7 @@ class Ajax extends Controller_Contract {
 	/**
 	 * Ajax constructor.
 	 *
-	 * since TBD
+	 * @since TBD
 	 *
 	 * @param Container  $container  A reference to the DI container object.
 	 * @param Seat_Types $seat_types A reference to the Seat Types service object.
@@ -81,8 +81,10 @@ class Ajax extends Controller_Contract {
 	 */
 	public function unregister(): void {
 		remove_action( 'wp_ajax_seat_types_by_layout_id', [ $this, 'fetch_seat_types_by_layout_id' ] );
-		remove_action( 'wp_ajax_' . self::ACTION_INVALIDATE_MAPS_LAYOUTS_CACHE,
-			[ $this, 'invalidate_maps_layouts_cache' ] );
+		remove_action(
+			'wp_ajax_' . self::ACTION_INVALIDATE_MAPS_LAYOUTS_CACHE,
+			[ $this, 'invalidate_maps_layouts_cache' ]
+		);
 		remove_action( 'wp_ajax_' . self::ACTION_INVALIDATE_LAYOUTS_CACHE, [ $this, 'invalidate_layouts_cache' ] );
 	}
 
@@ -97,8 +99,8 @@ class Ajax extends Controller_Contract {
 		return [
 			'seatTypesByLayoutId' => add_query_arg(
 				[
-					'action' => 'seat_types_by_layout_id',
-					'_ajax_nonce'  => wp_create_nonce( 'seat_types_by_layout_id' ),
+					'action'      => 'seat_types_by_layout_id',
+					'_ajax_nonce' => wp_create_nonce( 'seat_types_by_layout_id' ),
 				],
 				admin_url( 'admin-ajax.php' )
 			),
@@ -115,9 +117,11 @@ class Ajax extends Controller_Contract {
 	 */
 	public function fetch_seat_types_by_layout_id(): void {
 		if ( ! check_ajax_referer( 'seat_types_by_layout_id', '_ajax_nonce', false ) ) {
-			wp_send_json_error( [
-				                    'error' => 'Nonce verification failed',
-			                    ] );
+			wp_send_json_error(
+				[
+					'error' => 'Nonce verification failed',
+				]
+			);
 
 			return;
 		}
@@ -142,8 +146,8 @@ class Ajax extends Controller_Contract {
 	 */
 	protected function do_register(): void {
 		add_action( 'wp_ajax_seat_types_by_layout_id', [ $this, 'fetch_seat_types_by_layout_id' ] );
-		add_action('wp_ajax_' . self::ACTION_INVALIDATE_MAPS_LAYOUTS_CACHE, [ $this, 'invalidate_maps_layouts_cache' ]);
-		add_action('wp_ajax_' . self::ACTION_INVALIDATE_LAYOUTS_CACHE, [ $this, 'invalidate_layouts_cache' ]);
+		add_action( 'wp_ajax_' . self::ACTION_INVALIDATE_MAPS_LAYOUTS_CACHE, [ $this, 'invalidate_maps_layouts_cache' ] );
+		add_action( 'wp_ajax_' . self::ACTION_INVALIDATE_LAYOUTS_CACHE, [ $this, 'invalidate_layouts_cache' ] );
 	}
 
 	/**
@@ -155,9 +159,12 @@ class Ajax extends Controller_Contract {
 	 */
 	public function invalidate_maps_layouts_cache(): void {
 		if ( ! check_ajax_referer( self::NONCE_ACTION, '_ajax_nonce', false ) ) {
-			wp_send_json_error( [
-				'error' => 'Nonce verification failed',
-			], 403 );
+			wp_send_json_error(
+				[
+					'error' => 'Nonce verification failed',
+				],
+				403
+			);
 
 			return;
 		}
@@ -183,9 +190,12 @@ class Ajax extends Controller_Contract {
 	 */
 	public function invalidate_layouts_cache(): void {
 		if ( ! check_ajax_referer( self::NONCE_ACTION, '_ajax_nonce', false ) ) {
-			wp_send_json_error( [
-				'error' => 'Nonce verification failed',
-			], 403 );
+			wp_send_json_error(
+				[
+					'error' => 'Nonce verification failed',
+				],
+				403
+			);
 
 			return;
 		}

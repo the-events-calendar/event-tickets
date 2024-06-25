@@ -113,9 +113,9 @@ class Assets extends Controller_Contract {
 			$this->built_asset_url( 'utils.js' ),
 			ET::VERSION
 		)
-		     ->add_localize_script( 'tec.tickets.seating.utils', [ $this, 'get_utils_data' ] )
-		     ->add_to_group( 'tec-tickets-seating' )
-		     ->register();
+			->add_localize_script( 'tec.tickets.seating.utils', [ $this, 'get_utils_data' ] )
+			->add_to_group( 'tec-tickets-seating' )
+			->register();
 	}
 
 	/**
@@ -139,7 +139,7 @@ class Assets extends Controller_Contract {
 				],
 				'localizedStrings' => [
 					'service-errors' => $this->container->get( Localization::class )->get_service_error_strings(),
-				]
+				],
 			];
 		};
 
@@ -148,14 +148,14 @@ class Assets extends Controller_Contract {
 			$this->built_asset_url( 'service.js' ),
 			ET::VERSION
 		)
-		     ->set_dependencies(
-			     'wp-i18n',
-			     'tribe-tickets-gutenberg-vendor', // Not actually about Block Editor, but transpiling.
-			     'tec-tickets-seating-utils'
-		     )
-		     ->add_to_group( 'tec-tickets-seating' )
-		     ->add_localize_script( 'tec.tickets.seating', $data )
-		     ->register();
+			->set_dependencies(
+				'wp-i18n',
+				'tribe-tickets-gutenberg-vendor', // Not actually about Block Editor, but transpiling.
+				'tec-tickets-seating-utils'
+			)
+			->add_to_group( 'tec-tickets-seating' )
+			->add_localize_script( 'tec.tickets.seating', $data )
+			->register();
 	}
 
 	/**
@@ -171,8 +171,8 @@ class Assets extends Controller_Contract {
 			$this->built_asset_url( 'currency.js' ),
 			ET::VERSION
 		)
-		     ->add_localize_script( 'tec.tickets.seating.currency', [ $this, 'get_currency_data' ] )
-		     ->add_to_group( 'tec-tickets-seating' )
-		     ->register();
+			->add_localize_script( 'tec.tickets.seating.currency', [ $this, 'get_currency_data' ] )
+			->add_to_group( 'tec-tickets-seating' )
+			->register();
 	}
 }

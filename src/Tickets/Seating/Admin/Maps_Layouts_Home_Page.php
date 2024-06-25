@@ -15,8 +15,6 @@ use TEC\Tickets\Seating\Admin\Tabs\Layouts;
 use TEC\Tickets\Seating\Admin\Tabs\Map_Edit;
 use TEC\Tickets\Seating\Admin\Tabs\Maps;
 use TEC\Tickets\Seating\Admin\Tabs\Tab;
-use TEC\Tickets\Seating\Logging;
-use TEC\Tickets\Seating\StellarWP\Assets\Assets;
 
 /**
  * Class Maps_Layouts_Home_Page.
@@ -38,7 +36,7 @@ class Maps_Layouts_Home_Page {
 	/**
 	 * Maps_Layouts_Home_Page constructor.
 	 *
-	 * since TBD
+	 * @since TBD
 	 *
 	 * @param Template $template The template instance.
 	 */
@@ -61,12 +59,13 @@ class Maps_Layouts_Home_Page {
 
 		$tab = tribe_get_request_var( 'tab', $maps_id );
 
-		if ( ! in_array( $tab,
+		if ( ! in_array(
+			$tab,
 			[
 				$maps_id,
 				$layouts_id,
 				$map_edit_id,
-				$layout_edit_id
+				$layout_edit_id,
 			],
 			true
 		) ) {
@@ -102,10 +101,13 @@ class Maps_Layouts_Home_Page {
 		 */
 		do_action( "tec_tickets_seating_tab_{$tab}", $this, $current, $tabs );
 
-		$this->template->template( 'maps-layouts-home', [
-			'tabs'    => $tabs,
-			'current' => $current,
-		] );
+		$this->template->template(
+			'maps-layouts-home',
+			[
+				'tabs'    => $tabs,
+				'current' => $current,
+			]
+		);
 	}
 
 	/**
