@@ -13,6 +13,7 @@ import TicketContainerHeaderPrice from './price/container';
 import TicketContainerHeaderQuantity from './quantity/container';
 import { SALE_PRICE_LABELS } from '@moderntribe/tickets/data/blocks/ticket/constants';
 import './style.pcss';
+import {applyFilters} from "@wordpress/hooks";
 
 const TicketContainerHeader = ( {
 	clientId,
@@ -37,12 +38,18 @@ const TicketContainerHeader = ( {
 		);
 	}
 
+	let defailsItems = [
+		<OnSaleLabel isOnSale={ isOnSale } />,
+		<TicketContainerHeaderTitle clientId={ clientId } isSelected={ isSelected } />,
+		<TicketContainerHeaderDescription clientId={ clientId } isSelected={ isSelected } />
+	];
+
+	defailsItems = applyFilters( 'tec.tickets.blocks.Ticket.header.detailItems', defailsItems, clientId )
+
 	return (
 		<Fragment>
 			<div className="tribe-editor__ticket__container-header-details">
-				<OnSaleLabel isOnSale={ isOnSale } />
-				<TicketContainerHeaderTitle clientId={ clientId } isSelected={ isSelected } />
-				<TicketContainerHeaderDescription clientId={ clientId } isSelected={ isSelected } />
+				{ defailsItems.map( ( item, index) => <Fragment key={index}>{item}</Fragment> ) }
 			</div>
 			<TicketContainerHeaderPrice clientId={ clientId } isSelected={ isSelected } />
 			<TicketContainerHeaderQuantity clientId={ clientId } isSelected={ isSelected } />
