@@ -5,6 +5,60 @@ import { getLink, getLocalizedString } from '@tec/tickets/seating/utils';
 
 const getString = (key) => getLocalizedString(key, 'capacity-form');
 
+function EmptyLayouts( props ) {
+	if ( props.layouts.length !== 0 ) {
+		return null;
+	}
+
+	return (
+		<div className="tec-tickets-seating-layouts-empty-info">
+			<span className="alert">{getString('no-layouts-available')} </span>
+			<span>{getString('no-layouts-available-info')}</span>
+			<a
+				href={getLink('layouts')}
+				target="_blank"
+				className="button-link button-link--nested"
+				rel="noreferrer"
+			>
+				{getString('no-layouts-available-link-label')}
+			</a>
+		</div>
+	);
+}
+
+function LockedLayout( props ) {
+	if ( ! props.layoutLocked ) {
+		return null;
+	}
+
+	return (
+		<div className="tec-tickets-seating-layouts-locked-info">
+			{getString('seat-layout-label')}: <b>{props.currentLayout.label}</b>
+		</div>
+	);
+}
+
+function LayoutsInfo( props ) {
+	if ( props.layouts.length === 0 )
+		return null;
+
+	return (
+		<div className="tec-tickets-seating-layouts-info">
+			<span className="tec-tickets-seating-layouts-info-text">
+				{getString('event-layouts-capacity-info')}
+			</span>
+			<a
+				href={getLink('layouts')}
+				target="_blank"
+				className="button-link button-link--nested"
+				rel="noreferrer"
+			>
+				{getString('view-layouts-link-label')}
+			</a>
+		</div>
+	);
+}
+
 const EventLayoutSelect = ({
 	layoutLocked,
 	layouts,
@@ -16,12 +70,10 @@ const EventLayoutSelect = ({
 }) => {
 	return (
 		<Fragment>
-			<LabeledItem
-				className="tribe-editor__labeled-select-input tribe-editor__labeled-select-input--nested"
-				label={getString('event-layouts-select-label')}
-				for="tec-tickets-seating-layouts-select"
-				isLabel={true}
-			>
+			<EmptyLayouts layouts={layouts}/>
+			<LockedLayout layoutLocked={layoutLocked} currentLayout={currentLayout}/>
+
+			<div style={{display: layoutLocked || ! layouts.length ? "none" : "block"}}>
 				<Select
 					id="tec-tickets-seating-layouts-select"
 					placeholder={getString('event-layouts-select-placeholder')}
@@ -30,34 +82,18 @@ const EventLayoutSelect = ({
 					value={currentLayout}
 					isDisabled={layoutLocked}
 				/>
-			</LabeledItem>
+			</div>
 
 			{currentLayout && (
-				<LabeledItem
-					className="tribe-editor__labeled-select-input tribe-editor__labeled-select-input--nested"
-					label={getString('seat-types-select-label')}
-					for="tec-tickets-seating-seat-types-select"
-					A
-					isLabel={true}
-				>
-					<Select
-						id="tec-tickets-seating-layouts-select"
-						placeholder={getString('seat-types-select-placeholder')}
-						options={seatTypes}
-						onChange={onSeatTypeChange}
-						value={currentSeatType}
-					/>
-				</LabeledItem>
+				<Select
+					id="tec-tickets-seating-layouts-select"
+					placeholder={getString('seat-types-select-placeholder')}
+					options={seatTypes}
+					onChange={onSeatTypeChange}
+					value={currentSeatType}
+				/>
 			)}
-
-			<a
-				href={getLink('layouts')}
-				target="_blank"
-				className="button-link button-link--nested"
-				rel="noreferrer"
-			>
-				{getString('view-layouts-link-label')}
-			</a>
+			<LayoutsInfo layouts={layouts} />
 		</Fragment>
 	);
 };

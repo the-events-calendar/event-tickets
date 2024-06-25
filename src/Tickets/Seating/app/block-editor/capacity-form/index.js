@@ -1,7 +1,7 @@
 import { Fragment, useCallback } from '@wordpress/element';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { useEntityProp } from '@wordpress/core-data';
-import { ToggleControl } from '@wordpress/components';
+import { RadioControl } from '@wordpress/components';
 import { store, storeName } from '../store';
 import PropTypes from 'prop-types';
 import './style.pcss';
@@ -75,11 +75,12 @@ export default function CapacityForm({ renderDefaultForm, clientId }) {
 		[]
 	);
 
-	const onToggleChange = useCallback(() => {
+	const onToggleChange = useCallback(( value ) => {
 		if (isLayoutLocked) {
 			return;
 		}
-		setUsingAssignedSeating(!isUsingAssignedSeating);
+
+		setUsingAssignedSeating(value === 'seat');
 	}, [isLayoutLocked, isUsingAssignedSeating, setUsingAssignedSeating]);
 
 	const [meta, setMeta] = useEntityProp('postType', postType, 'meta', postId);
@@ -116,13 +117,22 @@ export default function CapacityForm({ renderDefaultForm, clientId }) {
 
 	return (
 		<div className="tec-tickets-seating__capacity-form">
-			<ToggleControl
-				className="tec-tickets-seating__capacity-toggle"
-				label={getString('use-assigned-seating-toggle-label')}
-				checked={isUsingAssignedSeating}
-				onChange={onToggleChange}
-				disabled={isLayoutLocked}
-			/>
+			{ isUsingAssignedSeating && isLayoutLocked ? (
+				<div className="tec-tickets-seating__capacity-locked-info">
+					{getString('seat-option-label')}
+				</div>
+			) : (
+				<RadioControl
+					className="tec-tickets-seating__capacity-radio"
+					onChange={onToggleChange}
+					options={ [
+						{ label: getString('general-admission-label'), value: 'regular' },
+						{ label: getString('seat-option-label'), value: 'seat' },
+					] }
+					selected={ isUsingAssignedSeating ? 'seat' : 'regular' }
+				/>
+			) }
+
 			{isUsingAssignedSeating ? (
 				<MemoizedEventLayoutSelect
 					layoutLocked={isLayoutLocked}
