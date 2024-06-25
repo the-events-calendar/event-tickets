@@ -38,3 +38,95 @@ export const state = {
 	},
 	token: null,
 };
+
+/**
+ * Returns the handler for a given action, or the default handler if none is found.
+ *
+ * @since TBD
+ *
+ * @param {string}        action         The action to get the handler for.
+ * @param {Function|null} defaultHandler The default handler to use if none is found.
+ *
+ * @return {Function|null} The handler for the action, or the default handler if none is found.
+ */
+export function getHandlerForAction(action, defaultHandler) {
+	return state.actionsMap[action] || defaultHandler;
+}
+
+/**
+ * Registers an action and its callback.
+ *
+ * @since TBD
+ *
+ * @param {string}   action   The action to register the callback for.
+ * @param {Function} callback The callback to register for the action.
+ */
+export function registerAction(action, callback) {
+	state.actionsMap[action] = callback;
+}
+
+/**
+ * Removes an action and its callback form the actions map.
+ *
+ * @since TBD
+ *
+ * @param {string} action The action to remove form the actions map.
+ */
+export function removeAction(action) {
+	delete state.actionsMap[action];
+}
+
+/**
+ * Returns the actions map.
+ *
+ * @since TBD
+ *
+ * @return {Object} The actions map.
+ */
+export function getRegisteredActions() {
+	return state.actionsMap;
+}
+
+/**
+ * Sets the ready state of the Service.
+ *
+ * @since TBD
+ *
+ * @param {boolean} isReady Whether the Service is ready or not.
+ */
+export function setIsReady(isReady) {
+	state.ready = isReady;
+}
+
+/**
+ * Sets whether the Service is establishing readiness or not.
+ *
+ * @since TBD
+ *
+ * @param {boolean} establishingReadiness Whether the Service is establishing or not.
+ */
+export function setEstablishingReadiness(establishingReadiness) {
+	state.establishingReadiness = establishingReadiness;
+}
+
+/**
+ * Sets the token used to communicate with the service.
+ *
+ * @since TBD
+ *
+ * @param {string} token The token to set.
+ */
+export function setToken(token) {
+	state.token = token;
+}
+
+/**
+ * Returns the current ephemeral token used to communicate with the service.
+ *
+ * @since TBD
+ *
+ * @return {string} The current ephemeral token.
+ */
+export function getToken() {
+	return state.token;
+}

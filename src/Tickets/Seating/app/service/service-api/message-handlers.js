@@ -1,5 +1,19 @@
 import { ajaxNonce, ajaxUrl, layoutsHomeUrl, mapsHomeUrl } from './externals';
 
+
+/**
+ * The default message handler that will be called when a message is received from the service.
+ *
+ * @since TBD
+ *
+ * @param {MessageEvent} event The message event received from the service.
+ *
+ * @return {void}
+ */
+export function defaultMessageHandler(event) {
+	console.debug('Message received from service', event);
+}
+
 /**
  * Sends a POST request to the backend to invalidate the Maps and Layouts cache.
  *
