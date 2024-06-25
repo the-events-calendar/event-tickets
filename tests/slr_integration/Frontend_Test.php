@@ -79,8 +79,6 @@ class Frontend_Test extends Controller_Test_Case {
 				update_post_meta( $post_id, $capacity_meta_key, 100 );
 				$ticket = $this->create_tc_ticket( $post_id, 20 );
 
-				update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'yes' );
-
 				return [ $post_id, $ticket ];
 			}
 		];
@@ -111,7 +109,7 @@ class Frontend_Test extends Controller_Test_Case {
 					);
 				}
 
-				update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'yes' );
+				update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'some-layout-uuid' );
 
 				return [ $post_id, $ticket_1, $ticket_2 ];
 			}
@@ -147,7 +145,7 @@ class Frontend_Test extends Controller_Test_Case {
 					);
 				}
 
-				update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'yes' );
+				update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'some-layout-uuid' );
 
 				return [ $post_id, $ticket_1, $ticket_2, $ticket_3, $ticket_4, $ticket_5 ];
 			}
