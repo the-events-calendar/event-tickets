@@ -84,9 +84,7 @@ function filterMoveButtonAction( actions, clientId ) {
 		return actions;
 	}
 
-	actions = actions.filter( action => action.key !== 'move' );
-
-	return actions;
+	return actions.filter( action => action.key !== 'move' );
 }
 
 addFilter(
