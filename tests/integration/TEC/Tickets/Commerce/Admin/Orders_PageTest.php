@@ -80,12 +80,12 @@ class Orders_PageTest extends \Codeception\TestCase\WPTestCase {
 
 		$new_sub_menu = array( $orders_page->get_menu_title(), $orders_page->get_capability(), $orders_page->get_menu_slug(), $orders_page->get_page_title() );
 
-		$this->assertFalse( tribe( 'assets' )->exists( 'event-tickets-commerce-admin-orders' ) );
+		$this->assertFalse( tribe( 'assets' )->exists( 'event-tickets-commerce-admin-orders-css' ) );
 		$this->assertFalse( in_array( $new_sub_menu, $submenu[ Orders_Page::$parent_slug ], true ) );
 
 		$orders_page->add_orders_page();
 
-		$this->assertTrue( tribe( 'assets' )->exists( 'event-tickets-commerce-admin-orders' ) );
+		$this->assertTrue( tribe( 'assets' )->exists( 'event-tickets-commerce-admin-orders-css' ) );
 
 		$this->assertTrue( in_array( $new_sub_menu, $submenu[ Orders_Page::$parent_slug ], true ) );
 	}
@@ -128,6 +128,8 @@ class Orders_PageTest extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertSame( $query, $new_query );
 
+		$this->assertEmpty( $query->get( 'meta_query' ) );
+
 		$this->set_global_value( '_GET', 'free', 'tec_tc_gateway' );
 
 		$new_query = tribe( Hooks::class )->pre_filter_admin_order_table( $query );
@@ -139,6 +141,32 @@ class Orders_PageTest extends \Codeception\TestCase\WPTestCase {
 					'value'   => 'free',
 					'compare' => '=',
 				]
+			],
+			$new_query->get( 'meta_query' )
+		);
+
+		$query->set( 'meta_query', [] );
+
+		$this->assertEmpty( $query->get( 'meta_query' ) );
+
+		$this->set_global_value( '_GET', 'stripe', 'tec_tc_gateway' );
+		$this->set_global_value( '_GET', '6', 'tec_tc_events' );
+
+		$new_query = tribe( Hooks::class )->pre_filter_admin_order_table( $query );
+
+		$this->assertEquals(
+			[
+				[
+					'key'     => Order::$gateway_meta_key,
+					'value'   => 'stripe',
+					'compare' => '=',
+				],
+				[
+					'key'     => Order::$events_in_order_meta_key,
+					'value'   => 6,
+					'compare' => 'IN',
+				],
+				'relation' => 'AND',
 			],
 			$new_query->get( 'meta_query' )
 		);
@@ -185,7 +213,7 @@ class Orders_PageTest extends \Codeception\TestCase\WPTestCase {
 	 * Overwrite the global WP_Query.
 	 *
 	 * @param array $args The arguments to overwrite the query.
-	 * @return void
+	 * @return WP_Query
 	 */
 	protected function overwrite_global_wp_query( $args ) {
 		$overwrite_query = new WP_Query( $args );

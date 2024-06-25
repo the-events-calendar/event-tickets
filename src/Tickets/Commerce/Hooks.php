@@ -28,6 +28,7 @@ use TEC\Tickets\Commerce\Payments_Tab;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use WP_Admin_Bar;
 use Tribe__Date_Utils;
+use WP_Query;
 
 /**
  * Class Hooks.
@@ -144,6 +145,54 @@ class Hooks extends Service_Provider {
 		add_action( 'tribe_editor_config', [ $this, 'filter_tickets_editor_config' ] );
 
 		add_filter( 'wp_list_table_class_name', [ $this, 'filter_wp_list_table_class_name' ], 10, 2 );
+
+		add_filter( 'tribe_dropdown_tec_tc_order_table_events', [ $this, 'provide_events_results_to_ajax' ], 10, 2 );
+	}
+
+	/**
+	 * Provides the results for the events dropdown in the Orders table.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $results The results.
+	 * @param array $search The search.
+	 *
+	 * @return array
+	 */
+	public function provide_events_results_to_ajax( $results, $search ) {
+		if ( empty( $search['term'] ) ) {
+			return $results;
+		}
+
+		$term = $search['term'];
+
+		$args = [
+			'no_found_rows'          => true,
+			'update_post_meta_cache' => false,
+			'update_post_term_cache' => false,
+			'post_type'              => (array) tribe_get_option( 'ticket-enabled-post-types', [] ),
+			'post_status'            => 'any',
+			'posts_per_page'         => 10,
+			's'                      => $term,
+		];
+
+		$query = new WP_Query( $args );
+
+		if ( empty( $query->posts ) ) {
+			return $results;
+		}
+
+		$results = array_map(
+			function ( $r ) {
+				return [
+					'id'   => $r->ID,
+					'text' => apply_filters( 'the_title', $r->post_title ),
+				];
+			},
+			$query->posts
+		);
+
+		return [ 'results' => $results ];
 	}
 
 	/**
@@ -241,6 +290,16 @@ class Hooks extends Service_Provider {
 				'key'     => Order::$gateway_meta_key,
 				'value'   => $gateway,
 				'compare' => '=',
+			];
+		}
+
+		$event_filter = absint( $_GET['tec_tc_events'] ?? 0 ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+
+		if ( $event_filter ) {
+			$meta_query[] = [
+				'key'     => Order::$events_in_order_meta_key,
+				'value'   => $event_filter,
+				'compare' => 'IN',
 			];
 		}
 

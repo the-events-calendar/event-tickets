@@ -16,6 +16,7 @@ use TEC\Tickets\Commerce\Order;
 use Tribe__Date_Utils;
 use Tribe__Field;
 use WP_Post;
+use Tribe__Tickets__Tickets;
 use WP_Posts_List_Table;
 
 if ( ! class_exists( 'WP_List_Table' ) || ! class_exists( 'WP_Posts_List_Table' ) ) {
@@ -137,6 +138,7 @@ class Orders_Table extends WP_Posts_List_Table {
 				'status'           => __( 'Status', 'event-tickets' ),
 				'items'            => __( 'Items', 'event-tickets' ),
 				'total'            => __( 'Total', 'event-tickets' ),
+				'post_parent'      => __( 'Event', 'event-tickets' ),
 				'gateway'          => __( 'Gateway', 'event-tickets' ),
 				'gateway_order_id' => __( 'Gateway ID', 'event-tickets' ),
 			]
@@ -397,7 +399,7 @@ class Orders_Table extends WP_Posts_List_Table {
 		}
 
 		foreach ( $item->items as $cart_item ) {
-			$ticket   = \Tribe__Tickets__Tickets::load_ticket_object( $cart_item['ticket_id'] );
+			$ticket   = Tribe__Tickets__Tickets::load_ticket_object( $cart_item['ticket_id'] );
 			$name     = esc_html( $ticket->name );
 			$quantity = esc_html( (int) $cart_item['quantity'] );
 			$output  .= "<div class='tribe-line-item'>{$quantity} - {$name}</div>";
@@ -438,6 +440,35 @@ class Orders_Table extends WP_Posts_List_Table {
 	 */
 	public function column_total( $item ) {
 		return $item->total_value->get_currency();
+	}
+
+	/**
+	 * Handler for the post parent column
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post $item The current item.
+	 *
+	 * @return string
+	 */
+	public function column_post_parent( $item ) {
+		$events = $item->events_in_order ?? [];
+
+		if ( empty( $events ) ) {
+			return '';
+		}
+
+		$output = '';
+
+		foreach ( $events as $event ) {
+			$output .= sprintf(
+				'<div><a href="%s">%s</a></div>',
+				esc_url( get_edit_post_link( $event ) ),
+				esc_html( get_the_title( $event ) )
+			);
+		}
+
+		return $output;
 	}
 
 	/**
@@ -518,6 +549,7 @@ class Orders_Table extends WP_Posts_List_Table {
 				'purchaser'        => 'purchaser_full_name',
 				'email'            => 'purchaser_email',
 				'date'             => 'purchase_time',
+				'post_parent'      => 'event',
 				'gateway'          => 'gateway',
 				'gateway_order_id' => 'gateway_id',
 				'status'           => 'status',
@@ -570,6 +602,7 @@ class Orders_Table extends WP_Posts_List_Table {
 
 			$this->date_range_dropdown( $this->screen->post_type );
 			$this->gateways_dropdown( $this->screen->post_type );
+			$this->post_parent_dropdown( $this->screen->post_type );
 
 			/**
 			 * Fires before the Filter button on the Posts and Pages list tables.
@@ -627,6 +660,18 @@ class Orders_Table extends WP_Posts_List_Table {
 	 * @return void
 	 */
 	protected function date_range_dropdown( $post_type ) {
+		/**
+		 * Filters whether to remove the 'Date Range' drop-down from the order list table.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool   $disable   Whether to disable the drop-down. Default false.
+		 * @param string $post_type The post type.
+		 */
+		if ( apply_filters( 'tec_tc_orders_disable_date_range_dropdown', false, $post_type ) ) {
+			return;
+		}
+
 		$date_from = sanitize_text_field( $_GET['tec_tc_date_range_from'] ?? '' ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$date_to   = sanitize_text_field( $_GET['tec_tc_date_range_to'] ?? '' ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
@@ -675,7 +720,7 @@ class Orders_Table extends WP_Posts_List_Table {
 	 */
 	protected function gateways_dropdown( $post_type ) {
 		/**
-		 * Filters whether to remove the 'Months' drop-down from the post list table.
+		 * Filters whether to remove the 'Gateways' drop-down from the order list table.
 		 *
 		 * @since TBD
 		 *
@@ -687,12 +732,12 @@ class Orders_Table extends WP_Posts_List_Table {
 		}
 
 		/**
-		 * Filters whether to short-circuit performing the months dropdown query.
+		 * Filters whether to short-circuit performing the gateways dropdown query.
 		 *
 		 * @since TBD
 		 *
-		 * @param object[]|false $months   'Months' drop-down results. Default false.
-		 * @param string         $post_type The post type.
+		 * @param array|false $gateways  'Gateways' drop-down results. Default false.
+		 * @param string      $post_type The post type.
 		 */
 		$gateways = apply_filters( 'tec_tc_orders_pre_gateways_dropdown_query', false, $post_type );
 
@@ -725,13 +770,15 @@ class Orders_Table extends WP_Posts_List_Table {
 		$gateways_formatted = [
 			'' => esc_html__( 'All Gateways', 'event-tickets' ),
 		];
+
 		foreach ( $gateways as $gateway ) {
 			$gateways_formatted[ $gateway ] = ucfirst( $gateway );
 		}
 
 		$field = [
-			'type'    => 'dropdown',
-			'options' => $gateways_formatted,
+			'type'         => 'dropdown',
+			'options'      => $gateways_formatted,
+			'can_be_empty' => true,
 		];
 
 		add_filter( 'tribe_field_start', '__return_empty_string' );
@@ -742,6 +789,70 @@ class Orders_Table extends WP_Posts_List_Table {
 		<label for="tec_tc_gateway-select" class="screen-reader-text"><?php esc_html_e( 'Filter By Gateway', 'event-tickets' ); ?></label>
 		<?php
 		new Tribe__Field( 'tec_tc_gateway', $field, $g );
+		remove_filter( 'tribe_field_start', '__return_empty_string', 10 );
+		remove_filter( 'tribe_field_end', '__return_empty_string', 10 );
+		remove_filter( 'tribe_field_div_start', '__return_empty_string', 10 );
+		remove_filter( 'tribe_field_div_end', '__return_empty_string', 10 );
+	}
+
+	/**
+	 * Displays a dropdown for filtering items in the list table by month.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $post_type The post type.
+	 *
+	 * @return void
+	 */
+	protected function post_parent_dropdown( $post_type ) {
+		/**
+		 * Filters whether to remove the 'Event' drop-down from the order list table.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool   $disable   Whether to disable the drop-down. Default false.
+		 * @param string $post_type The post type.
+		 */
+		if ( apply_filters( 'tec_tc_orders_disable_post_parent_dropdown', false, $post_type ) ) {
+			return;
+		}
+
+		// Event options are being filtered in the Frontend after the user starts typing in the search box.
+		// Except for when the user has already filtered by an event. We take the event ID from the URL and add it to the dropdown.
+
+		$e = absint( $_GET['tec_tc_events'] ?? 0 ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+
+		$event = $e ? get_post( $e ) : null;
+
+		$event = $event instanceof WP_Post ? $event : null;
+
+		$events_formatted = [
+			'' => esc_html__( 'All Events', 'event-tickets' ),
+		];
+
+		$events_formatted += $event ? [ (string) $event->ID => apply_filters( 'the_title', $event->post_title ) ] : [];
+
+		$field = [
+			'type'         => 'dropdown',
+			'options'      => $events_formatted,
+			'allow_clear'  => true,
+			'can_be_empty' => true,
+			'attributes'   => [
+				'data-freeform'              => true,
+				'data-force-search'          => true,
+				'data-searching-placeholder' => esc_attr__( 'Searching...', 'event-tickets' ),
+				'data-source'                => 'tec_tc_order_table_events',
+			],
+		];
+
+		add_filter( 'tribe_field_start', '__return_empty_string' );
+		add_filter( 'tribe_field_end', '__return_empty_string' );
+		add_filter( 'tribe_field_div_start', '__return_empty_string' );
+		add_filter( 'tribe_field_div_end', '__return_empty_string' );
+		?>
+		<label for="tec_tc_events-select" class="screen-reader-text"><?php esc_html_e( 'Filter By Event', 'event-tickets' ); ?></label>
+		<?php
+		new Tribe__Field( 'tec_tc_events', $field, $e );
 		remove_filter( 'tribe_field_start', '__return_empty_string', 10 );
 		remove_filter( 'tribe_field_end', '__return_empty_string', 10 );
 		remove_filter( 'tribe_field_div_start', '__return_empty_string', 10 );
