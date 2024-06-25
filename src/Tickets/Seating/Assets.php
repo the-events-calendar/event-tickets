@@ -11,6 +11,8 @@ namespace TEC\Tickets\Seating;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\StellarWP\Assets\Asset;
+use TEC\Tickets\Seating\Admin\Ajax;
+use TEC\Tickets\Seating\Admin\Maps_Layouts_Home_Page;
 use TEC\Tickets\Seating\Admin\Tabs\Layouts;
 use Tribe__Tickets__Main as ET;
 use Tribe__Tickets__Tickets as Tickets;
@@ -36,19 +38,6 @@ class Assets extends Controller_Contract {
 	}
 
 	/**
-	 * Registers the controller by subscribing to WordPress hooks and binding implementations.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	protected function do_register(): void {
-		$this->register_utils_asset();
-		$this->register_service_bundle();
-		$this->register_currency_asset();
-	}
-
-	/**
 	 * Returns the utils data for the Seating feature.
 	 *
 	 * @since TBD
@@ -67,56 +56,6 @@ class Assets extends Controller_Contract {
 				'capacity-form' => $this->container->get( Localization::class )->get_capacity_form_strings(),
 			],
 		];
-	}
-
-	/**
-	 * Registers the utils asset.
-	 *
-	 * @since TBD
-	 *
-	 * @return void The utils asset is registered.
-	 */
-	private function register_utils_asset(): void {
-		Asset::add(
-			'tec-tickets-seating-utils',
-			$this->built_asset_url( 'utils.js' ),
-			ET::VERSION
-		)
-			->add_localize_script( 'tec.tickets.seating.utils', [ $this, 'get_utils_data' ] )
-			->add_to_group( 'tec-tickets-seating' )
-			->register();
-	}
-
-	/**
-	 * Registers the service bundle, used to communicate with the Service.
-	 *
-	 * @since TBD
-	 *
-	 * @return void The service bundle script and styles are registered.
-	 */
-	private function register_service_bundle(): void {
-		$data = fn() => [
-			'service'          => [
-				'baseUrl' => $this->container->get( Service\Service::class )->get_frontend_url(),
-			],
-			'localizedStrings' => [
-				'service-errors' => $this->container->get( Localization::class )->get_service_error_strings(),
-			]
-		];
-
-		Asset::add(
-			'tec-tickets-seating-service-bundle',
-			$this->built_asset_url( 'service.js' ),
-			ET::VERSION
-		)
-			->set_dependencies(
-				'wp-i18n',
-				'tribe-tickets-gutenberg-vendor', // Not actually about Block Editor, but transpiling.
-				'tec-tickets-seating-utils'
-			)
-			->add_to_group( 'tec-tickets-seating' )
-			->add_localize_script( 'tec.tickets.seating', $data )
-			->register();
 	}
 
 	/**
@@ -149,13 +88,84 @@ class Assets extends Controller_Contract {
 	}
 
 	/**
+	 * Registers the controller by subscribing to WordPress hooks and binding implementations.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	protected function do_register(): void {
+		$this->register_utils_asset();
+		$this->register_service_bundle();
+		$this->register_currency_asset();
+	}
+
+	/**
+	 * Registers the utils asset.
+	 *
+	 * @since TBD
+	 *
+	 * @return void The utils asset is registered.
+	 */
+	private function register_utils_asset(): void {
+		Asset::add(
+			'tec-tickets-seating-utils',
+			$this->built_asset_url( 'utils.js' ),
+			ET::VERSION
+		)
+			->add_localize_script( 'tec.tickets.seating.utils', [ $this, 'get_utils_data' ] )
+			->add_to_group( 'tec-tickets-seating' )
+			->register();
+	}
+
+	/**
+	 * Registers the service bundle, used to communicate with the Service.
+	 *
+	 * @since TBD
+	 *
+	 * @return void The service bundle script and styles are registered.
+	 */
+	private function register_service_bundle(): void {
+		$data = function () {
+			$maps_layouts_home_page = $this->container->get( Maps_Layouts_Home_Page::class );
+
+			return [
+				'service'          => [
+					'baseUrl'        => $this->container->get( Service\Service::class )->get_frontend_url(),
+					'mapsHomeUrl'    => $maps_layouts_home_page->get_maps_home_url(),
+					'layoutsHomeUrl' => $maps_layouts_home_page->get_layouts_home_url(),
+					'ajaxUrl'        => admin_url( 'admin-ajax.php' ),
+					'ajaxNonce'      => wp_create_nonce( Ajax::NONCE_ACTION ),
+				],
+				'localizedStrings' => [
+					'service-errors' => $this->container->get( Localization::class )->get_service_error_strings(),
+				],
+			];
+		};
+
+		Asset::add(
+			'tec-tickets-seating-service-bundle',
+			$this->built_asset_url( 'service.js' ),
+			ET::VERSION
+		)
+			->set_dependencies(
+				'wp-i18n',
+				'tribe-tickets-gutenberg-vendor', // Not actually about Block Editor, but transpiling.
+				'tec-tickets-seating-utils'
+			)
+			->add_to_group( 'tec-tickets-seating' )
+			->add_localize_script( 'tec.tickets.seating', $data )
+			->register();
+	}
+
+	/**
 	 * Registers the currency asset, used to format currency values.
 	 *
 	 * @since TBD
 	 *
 	 * @return void The currency asset is registered.
 	 */
-	private function register_currency_asset():void{
+	private function register_currency_asset(): void {
 		Asset::add(
 			'tec-tickets-seating-currency',
 			$this->built_asset_url( 'currency.js' ),

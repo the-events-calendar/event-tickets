@@ -1,20 +1,23 @@
 // Get the service base URL without the trailing slash.
-const baseUrl = tec.tickets.seating.service.baseUrl.replace(/\/$/, '');
-tec.tickets.seating.service.state =  tec.tickets.seating.service.state || {
-	ready: false,
-	establishingReadiness: false,
-	actionsMap: {
-		default: defaultMessageHandler,
-	},
-	token: null,
-};
-const state = tec.tickets.seating.service.state;
-
-export const INBOUND_APP_READY = 'app_postmessage_ready';
-export const INBOUND_APP_READY_FOR_DATA = 'app_postmessage_ready_for_data';
-export const OUTBOUND_HOST_READY = 'host_postmessage_ready';
-export const OUTBOUND_SEAT_TYPE_TICKETS = 'host_postmessage_seat_type_tickets';
-export const INBOUND_SEATS_SELECTED = 'app_postmessage_seats_selected';
+import { baseUrl } from './externals.js';
+import {
+	setIsReady,
+	setEstablishingReadiness,
+	registerAction,
+	removeAction,
+	getRegisteredActions,
+	getToken,
+	setToken,
+	getHandlerForAction,
+} from './state.js';
+import {
+	INBOUND_APP_READY,
+	INBOUND_APP_READY_FOR_DATA,
+	INBOUND_SEATS_SELECTED,
+	OUTBOUND_HOST_READY,
+	OUTBOUND_SEAT_TYPE_TICKETS,
+} from './service-actions.js';
+import { defaultMessageHandler } from './message-handlers';
 
 /**
  * Posts a message to the service iframe.
@@ -62,7 +65,7 @@ export function catchMessage(event) {
 		!(
 			event.origin === baseUrl &&
 			event.data.token &&
-			event.data.token === state.token
+			event.data.token === getToken()
 		)
 	) {
 		return;
@@ -75,9 +78,7 @@ export function catchMessage(event) {
 		return;
 	}
 
-	const handler = state.actionsMap[action]
-		? state.actionsMap[action]
-		: defaultMessageHandler;
+	const handler = getHandlerForAction(action, defaultMessageHandler);
 
 	handler(event.data.data);
 }
@@ -106,36 +107,9 @@ export function startListeningForServiceMessages(iframe) {
 		return;
 	}
 
-	state.token = token;
+	setToken(token);
 
 	window.addEventListener('message', catchMessage);
-}
-
-/**
- * Sets the callback for a specific action to the callback.
- *
- * @since TBD
- *
- * @param {string|string[]} action   The action, or actions, to set the callback for.
- * @param {Function}        callback The callback to set.
- *
- * @return {void}
- */
-export function registerAction(action, callback) {
-	state.actionsMap[action] = callback;
-}
-
-/**
- * The default message handler that will be called when a message is received from the service.
- *
- * @since TBD
- *
- * @param {MessageEvent} event The message event received from the service.
- *
- * @return {void}
- */
-function defaultMessageHandler(event) {
-	console.debug('Message received from service', event);
 }
 
 /**
@@ -159,8 +133,8 @@ export async function establishReadiness(iframe) {
 		const acknowledge = () => {
 			removeAction(INBOUND_APP_READY);
 
-			state.ready = true;
-			state.establishingReadiness = false;
+			setIsReady(true);
+			setEstablishingReadiness(false);
 
 			// Acknowledge the readiness, do not wait for a reply.
 			sendPostMessage(iframe, OUTBOUND_HOST_READY);
@@ -186,21 +160,6 @@ export async function establishReadiness(iframe) {
 	iframe.src = iframe.dataset.src;
 
 	return promise;
-}
-
-/**
- * Removes the listener for a specific action.
- *
- * @since TBD
- *
- * @param {string} action The action to remove the listener for.
- */
-export function removeAction(action) {
-	delete state.actionsMap[action];
-}
-
-export function getRegisteredActions() {
-	return state.actionsMap;
 }
 
 window.tec = window.tec || {};
