@@ -47,6 +47,9 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 	 *     isUsingAssignedSeating: bool,
 	 *     layouts: array<array{id: string, name: string, seats: int}>,
 	 *     seatTypes: array<array{id: string, name: string, seats: int}>,
+	 *     currentLayoutId: string,
+	 *     seatTypesByPostId: array<string, string>,
+	 *     isLayoutLocked: bool
 	 * }
 	 */
 	public function get_store_data(): array {
@@ -69,11 +72,10 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 
 		$service = $this->container->get( Service::class );
 
-
 		return [
 			'isUsingAssignedSeating' => $is_using_assigned_seating,
 			'layouts'                => $service->get_layouts_in_option_format(),
-			'seatTypes'              => [],
+			'seatTypes'              => $service->get_seat_types_by_layout( $layout_id ),
 			'currentLayoutId'        => $layout_id,
 			'seatTypesByPostId'      => $seat_types_by_post_id,
 			'isLayoutLocked'         => $is_layout_locked,
