@@ -122,7 +122,7 @@ class Maps {
 					$service_row['id'],
 					$service_row['name'],
 					$service_row['seats'],
-					$service_row['screenshotUrl']
+					// $service_row['screenshotUrl'] @todo still not provided by the service
 				) ) {
 					return $valid;
 				}
@@ -131,7 +131,7 @@ class Maps {
 					'id'             => $service_row['id'],
 					'name'           => $service_row['name'],
 					'seats'          => $service_row['seats'],
-					'screenshot_url' => $service_row['screenshotUrl'],
+					'screenshot_url' => $service_row['screenshotUrl'] ?? '',
 				];
 
 				return $valid;
