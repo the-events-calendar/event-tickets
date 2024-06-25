@@ -23,7 +23,11 @@ const TicketContainerHeader = ( {
 		return null;
 	}
 
-	function OnSaleLabel() {
+	function OnSaleLabel( { isOnSale } ) {
+		if ( ! isOnSale ) {
+			return null;
+		}
+
 		return (
 			<div className="tribe-editor__ticket__container-header__sale-label-container">
 				<span className="tribe-editor__ticket__container-header__sale-label">
@@ -36,7 +40,7 @@ const TicketContainerHeader = ( {
 	return (
 		<Fragment>
 			<div className="tribe-editor__ticket__container-header-details">
-				{ isOnSale && <OnSaleLabel /> }
+				<OnSaleLabel isOnSale={ isOnSale } />
 				<TicketContainerHeaderTitle clientId={ clientId } isSelected={ isSelected } />
 				<TicketContainerHeaderDescription clientId={ clientId } isSelected={ isSelected } />
 			</div>
