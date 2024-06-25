@@ -3,6 +3,7 @@ import CapacityForm from './capacity-form';
 import { storeName } from './store';
 import { select, dispatch } from '@wordpress/data';
 import Seats from "./dashboard-actions/seats";
+import SeatType from "./header/seat-type";
 
 const shouldRenderAssignedSeatingForm = true;
 
@@ -91,4 +92,35 @@ addFilter(
 	'tec.tickets.blocks.Ticket.actionItems',
 	'tec.tickets.seating',
 	filterMoveButtonAction
+);
+
+function filterHeaderDetails( items, clientId ) {
+	const hasSeats = select(storeName).isUsingAssignedSeating(clientId);
+	if ( ! hasSeats ) {
+		return items;
+	}
+
+	const layoutId = select(storeName).getCurrentLayoutId();
+	const seatTypeId = select(storeName).getTicketSeatType(clientId);
+	const seatTypes  = select(storeName).getSeatTypesForLayout(layoutId, true);
+
+	const seatTypeName = Object.values(seatTypes).map(function (seatType) {
+		if ( seatType.id === seatTypeId ) {
+			return seatType.name;
+		}
+	});
+
+	if ( seatTypeName.length ) {
+		items.push( (
+			<SeatType name={ seatTypeName } />
+		) );
+	}
+
+	return items;
+}
+
+addFilter(
+	'tec.tickets.blocks.Ticket.header.detailItems',
+	'tec.tickets.seating',
+	filterHeaderDetails
 );
