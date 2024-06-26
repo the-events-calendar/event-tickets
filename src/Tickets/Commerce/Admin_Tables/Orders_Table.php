@@ -14,7 +14,6 @@ use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Gateways\Free\Gateway as Free_Gateway;
 use TEC\Tickets\Commerce\Order;
 use Tribe__Date_Utils;
-use Tribe__Field;
 use WP_Post;
 use Tribe__Tickets__Tickets;
 use WP_Posts_List_Table;
@@ -775,24 +774,14 @@ class Orders_Table extends WP_Posts_List_Table {
 			$gateways_formatted[ $gateway ] = ucfirst( $gateway );
 		}
 
-		$field = [
-			'type'         => 'dropdown',
-			'options'      => $gateways_formatted,
-			'can_be_empty' => true,
-		];
-
-		add_filter( 'tribe_field_start', '__return_empty_string' );
-		add_filter( 'tribe_field_end', '__return_empty_string' );
-		add_filter( 'tribe_field_div_start', '__return_empty_string' );
-		add_filter( 'tribe_field_div_end', '__return_empty_string' );
 		?>
 		<label for="tec_tc_gateway-select" class="screen-reader-text"><?php esc_html_e( 'Filter By Gateway', 'event-tickets' ); ?></label>
+		<select name="tec_tc_gateway" id='tec_tc_gateway-select' class='tribe-dropdown' data-prevent-clear='true'>
+			<?php foreach ( $gateways_formatted as $key => $value ) : ?>
+				<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $g, $key ); ?>><?php echo esc_html( $value ); ?></option>
+			<?php endforeach; ?>
+		</select>
 		<?php
-		new Tribe__Field( 'tec_tc_gateway', $field, $g );
-		remove_filter( 'tribe_field_start', '__return_empty_string', 10 );
-		remove_filter( 'tribe_field_end', '__return_empty_string', 10 );
-		remove_filter( 'tribe_field_div_start', '__return_empty_string', 10 );
-		remove_filter( 'tribe_field_div_end', '__return_empty_string', 10 );
 	}
 
 	/**
@@ -830,7 +819,7 @@ class Orders_Table extends WP_Posts_List_Table {
 			'' => esc_html__( 'All Events', 'event-tickets' ),
 		];
 
-		$events_formatted += $event ? [ (string) $event->ID => apply_filters( 'the_title', $event->post_title ) ] : [];
+		$events_formatted += $event ? [ (string) $event->ID => get_the_title( $event->ID ) ] : [];
 
 		$field = [
 			'type'         => 'dropdown',
@@ -844,18 +833,13 @@ class Orders_Table extends WP_Posts_List_Table {
 				'data-source'                => 'tec_tc_order_table_events',
 			],
 		];
-
-		add_filter( 'tribe_field_start', '__return_empty_string' );
-		add_filter( 'tribe_field_end', '__return_empty_string' );
-		add_filter( 'tribe_field_div_start', '__return_empty_string' );
-		add_filter( 'tribe_field_div_end', '__return_empty_string' );
 		?>
 		<label for="tec_tc_events-select" class="screen-reader-text"><?php esc_html_e( 'Filter By Event', 'event-tickets' ); ?></label>
+		<select name="tec_tc_events" id='tec_tc_events-select' class='tribe-dropdown' data-freeform="1" data-force-search="1" data-searching-placeholder="<?php esc_attr_e( 'Searching...', 'event-tickets' ); ?>" data-source="tec_tc_order_table_events" data-source-nonce="<?php echo esc_attr( wp_create_nonce( 'tribe_dropdown' ) ); ?>">
+			<?php foreach ( $events_formatted as $key => $value ) : ?>
+				<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $e, $key ); ?>><?php echo esc_html( $value ); ?></option>
+			<?php endforeach; ?>
+		</select>
 		<?php
-		new Tribe__Field( 'tec_tc_events', $field, $e );
-		remove_filter( 'tribe_field_start', '__return_empty_string', 10 );
-		remove_filter( 'tribe_field_end', '__return_empty_string', 10 );
-		remove_filter( 'tribe_field_div_start', '__return_empty_string', 10 );
-		remove_filter( 'tribe_field_div_end', '__return_empty_string', 10 );
 	}
 }

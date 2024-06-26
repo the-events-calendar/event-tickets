@@ -29,6 +29,7 @@ use TEC\Tickets\Commerce\Status\Status_Handler;
 use WP_Admin_Bar;
 use Tribe__Date_Utils;
 use WP_Query;
+use WP_Post;
 
 /**
  * Class Hooks.
@@ -183,10 +184,10 @@ class Hooks extends Service_Provider {
 		}
 
 		$results = array_map(
-			function ( $r ) {
+			function ( WP_Post $result ) {
 				return [
-					'id'   => $r->ID,
-					'text' => apply_filters( 'the_title', $r->post_title ),
+					'id'   => $result->ID,
+					'text' => get_the_title( $result->ID ),
 				];
 			},
 			$query->posts
@@ -486,9 +487,9 @@ class Hooks extends Service_Provider {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param string   $new_status New post status.
-	 * @param string   $old_status Old post status.
-	 * @param \WP_Post $post       Post object.
+	 * @param string  $new_status New post status.
+	 * @param string  $old_status Old post status.
+	 * @param WP_Post $post       Post object.
 	 */
 	public function transition_order_post_status_hooks( $new_status, $old_status, $post ) {
 		$this->container->make( Status\Status_Handler::class )->transition_order_post_status_hooks( $new_status, $old_status, $post );
@@ -519,7 +520,7 @@ class Hooks extends Service_Provider {
 	 *
 	 * @param Status_Interface      $new_status New post status.
 	 * @param Status_Interface|null $old_status Old post status.
-	 * @param \WP_Post              $post       Post object.
+	 * @param WP_Post               $post       Post object.
 	 */
 	public function modify_tickets_counters_by_status( $new_status, $old_status, $post ) {
 		$this->container->make( Ticket::class )->modify_counters_by_status( $new_status, $old_status, $post );
