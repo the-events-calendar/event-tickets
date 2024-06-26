@@ -30,6 +30,7 @@ use WP_Admin_Bar;
 use Tribe__Date_Utils;
 use WP_Query;
 use WP_Post;
+use WP_User_Query;
 
 /**
  * Class Hooks.
@@ -148,6 +149,8 @@ class Hooks extends Service_Provider {
 		add_filter( 'wp_list_table_class_name', [ $this, 'filter_wp_list_table_class_name' ], 10, 2 );
 
 		add_filter( 'tribe_dropdown_tec_tc_order_table_events', [ $this, 'provide_events_results_to_ajax' ], 10, 2 );
+
+		add_filter( 'tribe_dropdown_tec_tc_order_table_customers', [ $this, 'provide_customers_results_to_ajax' ], 10, 2 );
 	}
 
 	/**
@@ -191,6 +194,52 @@ class Hooks extends Service_Provider {
 				];
 			},
 			$query->posts
+		);
+
+		return [ 'results' => $results ];
+	}
+
+	/**
+	 * Provides the results for the customers dropdown in the Orders table.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $results The results.
+	 * @param array $search The search.
+	 *
+	 * @return array
+	 */
+	public function provide_customers_results_to_ajax( $results, $search ) {
+		if ( empty( $search['term'] ) ) {
+			return $results;
+		}
+
+		$term = '*' . $search['term'] . '*';
+
+		$args = [
+			'count_total'    => false,
+			'number'         => 10,
+			'search'         => $term,
+			'search_columns' => [ 'ID', 'user_login', 'user_email', 'user_nicename', 'display_name' ],
+			'fields'         => [ 'ID', 'user_email', 'display_name' ],
+		];
+
+		$query = new WP_User_Query( $args );
+
+		$user_results = $query->get_results();
+
+		if ( empty( $user_results ) ) {
+			return $results;
+		}
+
+		$results = array_map(
+			function ( $user ) {
+				return [
+					'id'   => $user->ID,
+					'text' => $user->display_name . ' (' . $user->user_email . ')',
+				];
+			},
+			$user_results
 		);
 
 		return [ 'results' => $results ];
@@ -301,6 +350,17 @@ class Hooks extends Service_Provider {
 				'key'     => Order::$events_in_order_meta_key,
 				'value'   => $event_filter,
 				'compare' => 'IN',
+			];
+		}
+
+		$customer_filter = absint( tribe_get_request_var( 'tec_tc_customers', 0 ) );
+
+		// @todo needs tests.
+		if ( $customer_filter ) {
+			$meta_query[] = [
+				'key'     => Order::$purchaser_user_id_meta_key,
+				'value'   => $customer_filter,
+				'compare' => '=',
 			];
 		}
 

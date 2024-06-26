@@ -171,6 +171,36 @@ class Orders_PageTest extends \Codeception\TestCase\WPTestCase {
 			$new_query->get( 'meta_query' )
 		);
 
+		$query->set( 'meta_query', [] );
+
+		$this->assertEmpty( $query->get( 'meta_query' ) );
+
+		$this->set_global_value( '_GET', '1', 'tec_tc_customers' );
+
+		$new_query = tribe( Hooks::class )->pre_filter_admin_order_table( $query );
+
+		$this->assertEquals(
+			[
+				[
+					'key'     => Order::$gateway_meta_key,
+					'value'   => 'stripe',
+					'compare' => '=',
+				],
+				[
+					'key'     => Order::$events_in_order_meta_key,
+					'value'   => 6,
+					'compare' => 'IN',
+				],
+				[
+					'key'     => Order::$purchaser_user_id_meta_key,
+					'value'   => 1,
+					'compare' => '=',
+				],
+				'relation' => 'AND',
+			],
+			$new_query->get( 'meta_query' )
+		);
+
 		$this->assertEmpty( $new_query->get( 'date_query' ) );
 
 		$this->set_global_value( '_GET', '2024-06-18', 'tec_tc_date_range_from' );
