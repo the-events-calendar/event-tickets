@@ -158,7 +158,7 @@ class Hooks extends Service_Provider {
 	 * @param array<string,mixed> $results The results.
 	 * @param array<string,string> $search The search.
 	 *
-	 * @return array
+	 * @return array<string,mixed>
 	 */
 	public function provide_events_results_to_ajax( $results, $search ) {
 		if ( empty( $search['term'] ) ) {
