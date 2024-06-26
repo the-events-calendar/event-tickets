@@ -100,6 +100,11 @@ class Layout_Edit extends Tab {
 	 */
 	public static function get_edit_url_by_post( string $post_id ): string {
 		$layout_id = get_post_meta( $post_id, META::META_KEY_LAYOUT_ID, true );
+		
+		if ( empty( $layout_id ) ) {
+			return '';
+		}
+		
 		return add_query_arg(
 			[
 				'page'     => Admin::get_menu_slug(),

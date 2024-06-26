@@ -6,6 +6,12 @@ import { Seat } from '@moderntribe/tickets/icons';
 const getString = (key) => getLocalizedString( key, 'dashboard' );
 
 const Seats = () => {
+	const link = getLink( 'layout-edit' );
+
+	if ( ! link ) {
+		return null;
+	}
+
 	return (
 		<ActionButton
 			asLink={ true }
