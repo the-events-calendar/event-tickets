@@ -820,19 +820,6 @@ class Orders_Table extends WP_Posts_List_Table {
 		];
 
 		$events_formatted += $event ? [ (string) $event->ID => get_the_title( $event->ID ) ] : [];
-
-		$field = [
-			'type'         => 'dropdown',
-			'options'      => $events_formatted,
-			'allow_clear'  => true,
-			'can_be_empty' => true,
-			'attributes'   => [
-				'data-freeform'              => true,
-				'data-force-search'          => true,
-				'data-searching-placeholder' => esc_attr__( 'Searching...', 'event-tickets' ),
-				'data-source'                => 'tec_tc_order_table_events',
-			],
-		];
 		?>
 		<label for="tec_tc_events-select" class="screen-reader-text"><?php esc_html_e( 'Filter By Event', 'event-tickets' ); ?></label>
 		<select name="tec_tc_events" id='tec_tc_events-select' class='tribe-dropdown' data-freeform="1" data-force-search="1" data-searching-placeholder="<?php esc_attr_e( 'Searching...', 'event-tickets' ); ?>" data-source="tec_tc_order_table_events" data-source-nonce="<?php echo esc_attr( wp_create_nonce( 'tribe_dropdown' ) ); ?>">
