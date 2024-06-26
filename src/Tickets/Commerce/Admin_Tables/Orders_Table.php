@@ -883,7 +883,16 @@ class Orders_Table extends WP_Posts_List_Table {
 		$customers_formatted += $customer ? [ (string) $customer->ID => $customer->display_name . ' (' . $customer->user_email . ' )' ] : [];
 		?>
 		<label for="tec_tc_customers-select" class="screen-reader-text"><?php esc_html_e( 'Filter By Customer', 'event-tickets' ); ?></label>
-		<select name="tec_tc_customers" id='tec_tc_customers-select' class='tribe-dropdown' data-freeform="1" data-force-search="1" data-searching-placeholder="<?php esc_attr_e( 'Searching...', 'event-tickets' ); ?>" data-source="tec_tc_order_table_customers" data-source-nonce="<?php echo esc_attr( wp_create_nonce( 'tribe_dropdown' ) ); ?>">
+		<select
+			name="tec_tc_customers"
+			id='tec_tc_customers-select'
+			class='tribe-dropdown'
+			data-freeform="1"
+			data-force-search="1"
+			data-searching-placeholder="<?php esc_attr_e( 'Searching...', 'event-tickets' ); ?>"
+			data-source="tec_tc_order_table_customers"
+			data-source-nonce="<?php echo esc_attr( wp_create_nonce( 'tribe_dropdown' ) ); ?>"
+		>
 			<?php foreach ( $customers_formatted as $key => $value ) : ?>
 				<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $c, $key ); ?>><?php echo esc_html( $value ); ?></option>
 			<?php endforeach; ?>
