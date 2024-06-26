@@ -111,7 +111,7 @@ class Gateway extends Abstract_Gateway {
 				'slug'    => 'tc-stripe-account-disconnected',
 				'content' => sprintf(
 					// Translators: %1$s is the opening <a> tag for the Payments Tab page link. %2$s is the closing <a> tag.
-					__( 'Your stripe account was disconnected from the Stripe dashboard. If you believe this is an error, you can re-connect in the %1$sPayments Tab of the Settings Page%2$s.', 'event-tickets' ),
+					__( 'Your Stripe account was disconnected from the Stripe dashboard. If you believe this is an error, you can re-connect in the %1$sPayments Tab of the Settings Page%2$s.', 'event-tickets' ),
 					'<a href="' . tribe( Payments_Tab::class )->get_url( [ 'tc-section' => Gateway::get_key() ] ) . '">',
 					'</a>' ),
 				'type'    => 'error',
