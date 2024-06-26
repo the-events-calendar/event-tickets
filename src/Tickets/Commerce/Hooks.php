@@ -330,11 +330,7 @@ class Hooks extends Service_Provider {
 		$date_from_ts = strtotime( $date_from );
 		$date_to_ts   = strtotime( $date_to );
 
-		if ( $date_to_ts >= $date_from_ts ) {
-			return true;
-		}
-
-		return false;
+		return $date_to_ts >= $date_from_ts;
 	}
 
 	/**
