@@ -776,7 +776,12 @@ class Orders_Table extends WP_Posts_List_Table {
 
 		?>
 		<label for="tec_tc_gateway-select" class="screen-reader-text"><?php esc_html_e( 'Filter By Gateway', 'event-tickets' ); ?></label>
-		<select name="tec_tc_gateway" id='tec_tc_gateway-select' class='tribe-dropdown' data-prevent-clear='true'>
+		<select
+			name="tec_tc_gateway"
+			id='tec_tc_gateway-select'
+			class='tribe-dropdown'
+			data-prevent-clear='true'
+		>
 			<?php foreach ( $gateways_formatted as $key => $value ) : ?>
 				<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $g, $key ); ?>><?php echo esc_html( $value ); ?></option>
 			<?php endforeach; ?>
@@ -822,7 +827,16 @@ class Orders_Table extends WP_Posts_List_Table {
 		$events_formatted += $event ? [ (string) $event->ID => get_the_title( $event->ID ) ] : [];
 		?>
 		<label for="tec_tc_events-select" class="screen-reader-text"><?php esc_html_e( 'Filter By Event', 'event-tickets' ); ?></label>
-		<select name="tec_tc_events" id='tec_tc_events-select' class='tribe-dropdown' data-freeform="1" data-force-search="1" data-searching-placeholder="<?php esc_attr_e( 'Searching...', 'event-tickets' ); ?>" data-source="tec_tc_order_table_events" data-source-nonce="<?php echo esc_attr( wp_create_nonce( 'tribe_dropdown' ) ); ?>">
+		<select
+			name="tec_tc_events"
+			id='tec_tc_events-select'
+			class='tribe-dropdown'
+			data-freeform="1"
+			data-force-search="1"
+			data-searching-placeholder="<?php esc_attr_e( 'Searching...', 'event-tickets' ); ?>"
+			data-source="tec_tc_order_table_events"
+			data-source-nonce="<?php echo esc_attr( wp_create_nonce( 'tribe_dropdown' ) ); ?>"
+		>
 			<?php foreach ( $events_formatted as $key => $value ) : ?>
 				<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $e, $key ); ?>><?php echo esc_html( $value ); ?></option>
 			<?php endforeach; ?>
