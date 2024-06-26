@@ -443,7 +443,7 @@ class Orders_Table extends WP_Posts_List_Table {
 	}
 
 	/**
-	 * Handler for the post parent column
+	 * Handler for the post parent column.
 	 *
 	 * @since TBD
 	 *
