@@ -27,6 +27,9 @@ use TEC\Tickets\Commerce\Status\Status_Interface;
 use TEC\Tickets\Commerce\Payments_Tab;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use WP_Admin_Bar;
+use Tribe__Date_Utils;
+use WP_Query;
+use WP_Post;
 
 /**
  * Class Hooks.
@@ -143,6 +146,54 @@ class Hooks extends Service_Provider {
 		add_action( 'tribe_editor_config', [ $this, 'filter_tickets_editor_config' ] );
 
 		add_filter( 'wp_list_table_class_name', [ $this, 'filter_wp_list_table_class_name' ], 10, 2 );
+
+		add_filter( 'tribe_dropdown_tec_tc_order_table_events', [ $this, 'provide_events_results_to_ajax' ], 10, 2 );
+	}
+
+	/**
+	 * Provides the results for the events dropdown in the Orders table.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed>  $results The results.
+	 * @param array<string,string> $search The search.
+	 *
+	 * @return array<string,mixed>
+	 */
+	public function provide_events_results_to_ajax( $results, $search ) {
+		if ( empty( $search['term'] ) ) {
+			return $results;
+		}
+
+		$term = $search['term'];
+
+		$args = [
+			'no_found_rows'          => true,
+			'update_post_meta_cache' => false,
+			'update_post_term_cache' => false,
+			'post_type'              => (array) tribe_get_option( 'ticket-enabled-post-types', [] ),
+			'post_status'            => 'any',
+			'posts_per_page'         => 10,
+			's'                      => $term,
+		];
+
+		$query = new WP_Query( $args );
+
+		if ( empty( $query->posts ) ) {
+			return $results;
+		}
+
+		$results = array_map(
+			function ( WP_Post $result ) {
+				return [
+					'id'   => $result->ID,
+					'text' => get_the_title( $result->ID ),
+				];
+			},
+			$query->posts
+		);
+
+		return [ 'results' => $results ];
 	}
 
 	/**
@@ -171,7 +222,7 @@ class Hooks extends Service_Provider {
 				$statuses = [];
 				foreach ( $current_status as $st ) {
 					if ( 'any' === $st ) {
-						$query->set( 'post_status', 'any' );
+						$statuses = [ 'any' ];
 						// No need to continue.
 						break;
 					}
@@ -185,6 +236,47 @@ class Hooks extends Service_Provider {
 			}
 		}
 
+		$date_from = sanitize_text_field( tribe_get_request_var( 'tec_tc_date_range_from', '' ) );
+		$date_to   = sanitize_text_field( tribe_get_request_var( 'tec_tc_date_range_to', '' ) );
+
+		$date_from = Tribe__Date_Utils::is_valid_date( $date_from ) ? $date_from : '';
+		$date_to   = Tribe__Date_Utils::is_valid_date( $date_to ) ? $date_to : '';
+
+		$date_range_valid = $this->is_valid_date_range( $date_from, $date_to );
+
+		if ( ! $date_range_valid ) {
+			// If invalid, adjust the to date to be the same as the from date.
+			// @todo show a message.
+			$date_to = $date_from;
+		}
+
+		$date_query = $query->get( 'date_query' );
+
+		if ( empty( $date_query ) || ! is_array( $date_query ) ) {
+			$date_query = [];
+		}
+
+		if ( ! empty( $date_from ) ) {
+			$date_query[] = [
+				// We need to pass H:i:s to avoid bug in wp core.
+				'after'     => Tribe__Date_Utils::reformat( $date_from, 'Y-m-d 00:00:00' ),
+				'inclusive' => true,
+			];
+		}
+
+		if ( ! empty( $date_to ) ) {
+			$date_query[] = [
+				// We need to pass H:i:s to avoid bug in wp core.
+				'before'    => Tribe__Date_Utils::reformat( $date_to, 'Y-m-d 23:59:59' ),
+				'inclusive' => true,
+			];
+		}
+
+		if ( count( $date_query ) > 1 && empty( $date_query['relation'] ) ) {
+			$date_query['relation'] = 'AND';
+		}
+
+		$query->set( 'date_query', $date_query );
 
 		$meta_query = $query->get( 'meta_query' );
 
@@ -192,13 +284,23 @@ class Hooks extends Service_Provider {
 			$meta_query = [];
 		}
 
-		$gateway = sanitize_text_field( $_GET['tec_tc_gateway'] ?? '' ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$gateway = sanitize_text_field( tribe_get_request_var( 'tec_tc_gateway', '' ) );
 
 		if ( $gateway ) {
 			$meta_query[] = [
 				'key'     => Order::$gateway_meta_key,
 				'value'   => $gateway,
 				'compare' => '=',
+			];
+		}
+
+		$event_filter = absint( tribe_get_request_var( 'tec_tc_events', 0 ) );
+
+		if ( $event_filter ) {
+			$meta_query[] = [
+				'key'     => Order::$events_in_order_meta_key,
+				'value'   => $event_filter,
+				'compare' => 'IN',
 			];
 		}
 
@@ -209,6 +311,27 @@ class Hooks extends Service_Provider {
 		$query->set( 'meta_query', $meta_query );
 
 		return $query;
+	}
+
+	/**
+	 * Validates a date range.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $date_from The start date.
+	 * @param string $date_to The end date.
+	 *
+	 * @return bool
+	 */
+	protected function is_valid_date_range( string $date_from = '', string $date_to = '' ): bool {
+		if ( empty( $date_from ) || empty( $date_to ) ) {
+			return true;
+		}
+
+		$date_from_ts = strtotime( $date_from );
+		$date_to_ts   = strtotime( $date_to );
+
+		return $date_to_ts >= $date_from_ts;
 	}
 
 	/**
@@ -364,9 +487,9 @@ class Hooks extends Service_Provider {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param string   $new_status New post status.
-	 * @param string   $old_status Old post status.
-	 * @param \WP_Post $post       Post object.
+	 * @param string  $new_status New post status.
+	 * @param string  $old_status Old post status.
+	 * @param WP_Post $post       Post object.
 	 */
 	public function transition_order_post_status_hooks( $new_status, $old_status, $post ) {
 		$this->container->make( Status\Status_Handler::class )->transition_order_post_status_hooks( $new_status, $old_status, $post );
@@ -397,7 +520,7 @@ class Hooks extends Service_Provider {
 	 *
 	 * @param Status_Interface      $new_status New post status.
 	 * @param Status_Interface|null $old_status Old post status.
-	 * @param \WP_Post              $post       Post object.
+	 * @param WP_Post               $post       Post object.
 	 */
 	public function modify_tickets_counters_by_status( $new_status, $old_status, $post ) {
 		$this->container->make( Ticket::class )->modify_counters_by_status( $new_status, $old_status, $post );
