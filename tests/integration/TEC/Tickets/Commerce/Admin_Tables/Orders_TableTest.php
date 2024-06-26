@@ -7,6 +7,7 @@ use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tests\Traits\With_Uopz;
+use TEC\Tickets\Commerce\Hooks;
 use Tribe\Tickets\Test\Traits\With_Globals;
 use WP_Screen;
 use WP_Query;
@@ -39,6 +40,13 @@ class Orders_TableTest extends \Codeception\TestCase\WPTestCase {
 	 * @var array
 	 */
 	protected $event_ids;
+
+	/**
+	 * Created user IDs.
+	 *
+	 * @var array
+	 */
+	protected $user_ids = [];
 
 	/**
 	 * @before
@@ -228,6 +236,93 @@ class Orders_TableTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	/**
+	 * @test
+	 */
+	public function it_should_provide_results_to_ajax() {
+		$this->prepare_test_data( true );
+
+		$test_events = function ( $term ) {
+			return tribe( Hooks::class )->provide_events_results_to_ajax( [], [ 'term' => $term ] );
+		};
+
+		$test_customers = function ( $term ) {
+			return tribe( Hooks::class )->provide_customers_results_to_ajax( [], [ 'term' => $term ] );
+		};
+
+		$this->assertEmpty( $test_events( '' ) );
+		$this->assertEmpty( $test_customers( '' ) );
+
+		$expected_events = [
+			[
+				'id'   => $this->event_ids[0],
+				'text' => 'Event 1',
+			],
+			[
+				'id'   => $this->event_ids[1],
+				'text' => 'Event 2',
+			],
+			[
+				'id'   => $this->event_ids[2],
+				'text' => 'Event 3',
+			],
+		];
+
+		$this->assertEquals(
+			[
+				'results' => $expected_events,
+			],
+			$test_events( 'Event' )
+		);
+
+		$this->assertEquals(
+			[
+				'results' => [ $expected_events['1'] ],
+			],
+			$test_events( 'Event 2' )
+		);
+
+		$this->assertEmpty( $test_events( 'Does not Exists' ) );
+
+		// search user by email.
+		$expected_customers = [
+			[
+				'id' => '1',
+				'text' => 'admin (admin@wordpress.test)',
+			],
+		];
+		for ( $i = 1; $i <= 6; $i ++ ) {
+			$expected_customers[] = [
+				'id'   => $this->user_ids[ $i ],
+				'text' => 'Test Purchaser ' . $i . ' (test-' . $i . '@test.com)',
+			];
+		}
+
+		$this->assertEquals(
+			[
+				'results' => $expected_customers,
+			],
+			$test_customers( 'test' )
+		);
+
+		$this->assertEquals(
+			[
+				'results' => [ $expected_customers['2'] ],
+			],
+			$test_customers( 'Purchaser 2' )
+		);
+
+		$this->assertEquals(
+			[
+				'results' => [ $expected_customers['3'] ],
+			],
+			$test_customers( 'test-3' )
+		);
+
+		$this->assertEmpty( $test_customers( 'Does not Exists' ) );
+		$this->assertEmpty( $test_customers( 'Exists' ) );
+	}
+
+	/**
 	 * Prepare tests and overwrite the WP_Query.
 	 *
 	 * @return void
@@ -251,14 +346,14 @@ class Orders_TableTest extends \Codeception\TestCase\WPTestCase {
 	 *
 	 * @return array
 	 */
-	protected function prepare_test_data() {
+	protected function prepare_test_data( $with_wp_users = false ) {
 		if ( ! empty( $this->orders ) ) {
 			return [ $this->orders, $this->tickets, $this->event_ids ];
 		}
 
 		$this->event_ids  = $this->create_test_events();
 		$this->tickets    = $this->create_test_tickets( $this->event_ids );
-		$this->orders     = $this->create_test_orders( $this->tickets );
+		$this->orders     = $this->create_test_orders( $this->tickets, 2 , $with_wp_users );
 
 		return [ $this->orders, $this->tickets, $this->event_ids ];
 	}
@@ -318,20 +413,36 @@ class Orders_TableTest extends \Codeception\TestCase\WPTestCase {
 	 *
 	 * @return array
 	 */
-	protected function create_test_orders( $tickets, $number_of_orders_per_ticket = 2 ) {
+	protected function create_test_orders( $tickets, $number_of_orders_per_ticket = 2, $with_wp_users = false ) {
 		$orders = [];
 
 		$counter = 1;
 
 		foreach ( $tickets as $ticket ) {
 			for ( $i = 0; $i < $number_of_orders_per_ticket; $i ++ ) {
+				if ( $with_wp_users ) {
+					$user_id = wp_insert_user( [
+						'user_pass'    => 'TEST_PASS_' . $counter,
+						'user_login'   => 'test_user_' . $counter,
+						'user_email'   => 'test-' . $counter . '@test.com',
+						'display_name' => 'Test Purchaser ' . $counter,
+						'first_name'   => 'Test',
+						'last_name'    => 'Purchaser ' . $counter,
+						'role'         => 'contributor',
+					] );
+				}
+
 				$default_purchaser = [
-					'purchaser_user_id'    => $counter,
+					'purchaser_user_id'    => is_wp_error( $user_id ) ? $counter : $user_id,
 					'purchaser_full_name'  => 'Test Purchaser ' . $counter,
 					'purchaser_first_name' => 'Test',
 					'purchaser_last_name'  => 'Purchaser ' . $counter,
 					'purchaser_email'      => 'test-' . $counter . '@test.com',
 				];
+
+				if ( $with_wp_users && ! is_wp_error( $user_id ) ) {
+					$this->user_ids[ $counter ] = $user_id;
+				}
 
 				$orders[] = $this->create_order( [ $ticket => 1 ], $default_purchaser );
 				$counter++;

@@ -15,6 +15,7 @@ use TEC\Tickets\Commerce\Gateways\Free\Gateway as Free_Gateway;
 use TEC\Tickets\Commerce\Order;
 use Tribe__Date_Utils;
 use WP_Post;
+use WP_User;
 use Tribe__Tickets__Tickets;
 use WP_Posts_List_Table;
 
@@ -602,6 +603,7 @@ class Orders_Table extends WP_Posts_List_Table {
 			$this->date_range_dropdown( $this->screen->post_type );
 			$this->gateways_dropdown( $this->screen->post_type );
 			$this->post_parent_dropdown( $this->screen->post_type );
+			$this->customer_dropdown( $this->screen->post_type );
 
 			/**
 			 * Fires before the Filter button on the Posts and Pages list tables.
@@ -839,6 +841,51 @@ class Orders_Table extends WP_Posts_List_Table {
 		>
 			<?php foreach ( $events_formatted as $key => $value ) : ?>
 				<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $e, $key ); ?>><?php echo esc_html( $value ); ?></option>
+			<?php endforeach; ?>
+		</select>
+		<?php
+	}
+
+	/**
+	 * Displays a dropdown for filtering items in the list table by month.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $post_type The post type.
+	 *
+	 * @return void
+	 */
+	protected function customer_dropdown( $post_type ) {
+		/**
+		 * Filters whether to remove the 'Customer' drop-down from the order list table.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool   $disable   Whether to disable the drop-down. Default false.
+		 * @param string $post_type The post type.
+		 */
+		if ( apply_filters( 'tec_tc_orders_disable_customer_dropdown', false, $post_type ) ) {
+			return;
+		}
+
+		// Customer options are being filtered in the Frontend after the user starts typing in the search box.
+		// Except for when the user has already filtered by a customer. We take the customer ID from the URL and add it to the dropdown.
+
+		$c = absint( tribe_get_request_var( 'tec_tc_customers', 0 ) );
+
+		$customers_formatted = [
+			'' => esc_html__( 'All Customers', 'event-tickets' ),
+		];
+
+		$customer = $c ? get_user_by( 'ID', $c ) : null;
+		$customer = $customer instanceof WP_User ? $customer : null;
+
+		$customers_formatted += $customer ? [ (string) $customer->ID => $customer->display_name . ' (' . $customer->user_email . ' )' ] : [];
+		?>
+		<label for="tec_tc_customers-select" class="screen-reader-text"><?php esc_html_e( 'Filter By Customer', 'event-tickets' ); ?></label>
+		<select name="tec_tc_customers" id='tec_tc_customers-select' class='tribe-dropdown' data-freeform="1" data-force-search="1" data-searching-placeholder="<?php esc_attr_e( 'Searching...', 'event-tickets' ); ?>" data-source="tec_tc_order_table_customers" data-source-nonce="<?php echo esc_attr( wp_create_nonce( 'tribe_dropdown' ) ); ?>">
+			<?php foreach ( $customers_formatted as $key => $value ) : ?>
+				<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $c, $key ); ?>><?php echo esc_html( $value ); ?></option>
 			<?php endforeach; ?>
 		</select>
 		<?php
