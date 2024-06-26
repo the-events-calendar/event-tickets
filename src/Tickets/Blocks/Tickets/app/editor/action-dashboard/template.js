@@ -73,6 +73,14 @@ class TicketsDashboardAction extends PureComponent {
 			}
 		}
 
+		/**
+		 * Filters the actions that will be shown in the dashboard.
+		 *
+		 * @since TBD
+		 *
+		 * @param {Array} actions The actions list that will be shown in the dashboard.
+		 * @param {Object} props The component props.
+		 */
 		return applyFilters( 'tec.tickets.blocks.Tickets.TicketsDashboardAction.actions', actions, this.props );
 	};
 

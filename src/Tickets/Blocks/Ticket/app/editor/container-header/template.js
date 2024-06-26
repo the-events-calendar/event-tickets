@@ -44,6 +44,14 @@ const TicketContainerHeader = ( {
 		<TicketContainerHeaderDescription clientId={ clientId } isSelected={ isSelected } />
 	];
 
+	/**
+	 * Filter the header details of the ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param {Array} items The header details of the ticket.
+	 * @param {string} clientId The client ID of the ticket block.
+	 */
 	defailsItems = applyFilters( 'tec.tickets.blocks.Ticket.header.detailItems', defailsItems, clientId )
 
 	return (

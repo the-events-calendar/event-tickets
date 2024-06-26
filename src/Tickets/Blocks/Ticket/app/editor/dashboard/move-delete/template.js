@@ -51,6 +51,14 @@ const MoveDelete = ( {
 		},
 	];
 
+	/**
+	 * Filters the items to be added to the move/delete section.
+	 *
+	 * @since TBD
+	 *
+	 * @param {object[]} actions An array of action objects.
+	 * @param {number} clientId The client ID of the ticket block.
+	 */
 	actions = applyFilters( 'tec.tickets.blocks.Ticket.actionItems', actions, clientId );
 
 	return (

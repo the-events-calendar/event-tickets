@@ -94,7 +94,7 @@ addFilter(
  *
  * @since TBD
  *
- * @param {Array} actions The action items of the ticket.
+ * @param {Object[]} actions The action items of the ticket.
  * @param {string} clientId The client ID of the ticket block.
  *
  * @return {Array} The action items.
