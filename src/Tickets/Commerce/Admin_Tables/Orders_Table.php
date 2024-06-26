@@ -871,16 +871,16 @@ class Orders_Table extends WP_Posts_List_Table {
 		// Customer options are being filtered in the Frontend after the user starts typing in the search box.
 		// Except for when the user has already filtered by a customer. We take the customer ID from the URL and add it to the dropdown.
 
-		$c = absint( tribe_get_request_var( 'tec_tc_customers', 0 ) );
+		$customer = absint( tribe_get_request_var( 'tec_tc_customers', 0 ) );
 
 		$customers_formatted = [
 			'' => esc_html__( 'All Customers', 'event-tickets' ),
 		];
 
-		$customer = $c ? get_user_by( 'ID', $c ) : null;
-		$customer = $customer instanceof WP_User ? $customer : null;
+		$customer_instance = $customer ? get_user_by( 'ID', $customer ) : null;
+		$customer_instance = $customer_instance instanceof WP_User ? $customer_instance : null;
 
-		$customers_formatted += $customer ? [ (string) $customer->ID => $customer->display_name . ' (' . $customer->user_email . ' )' ] : [];
+		$customers_formatted += $customer_instance ? [ (string) $customer_instance->ID => $customer_instance->display_name . ' (' . $customer_instance->user_email . ' )' ] : [];
 		?>
 		<label for="tec_tc_customers-select" class="screen-reader-text"><?php esc_html_e( 'Filter By Customer', 'event-tickets' ); ?></label>
 		<select
@@ -894,7 +894,7 @@ class Orders_Table extends WP_Posts_List_Table {
 			data-source-nonce="<?php echo esc_attr( wp_create_nonce( 'tribe_dropdown' ) ); ?>"
 		>
 			<?php foreach ( $customers_formatted as $key => $value ) : ?>
-				<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $c, $key ); ?>><?php echo esc_html( $value ); ?></option>
+				<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $customer, $key ); ?>><?php echo esc_html( $value ); ?></option>
 			<?php endforeach; ?>
 		</select>
 		<?php
