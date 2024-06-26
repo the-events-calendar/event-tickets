@@ -61,6 +61,16 @@ addFilter(
 	filterSetBodyDetails
 );
 
+/**
+ * Filters the action items of the dashboard to add the seating actions.
+ *
+ * @since TBD
+ *
+ * @param {Array} actions The action items of the dashboard.
+ * @param {string} clientId The client ID of the ticket block.
+ *
+ * @return {Array} The action items.
+ */
 function filterDashboardActions( actions, { clientId } ) {
 	const hasSeats = select(storeName).isUsingAssignedSeating(clientId);
 	const layoutLocked = select(storeName).isLayoutLocked();
@@ -79,6 +89,16 @@ addFilter(
 	filterDashboardActions,
 );
 
+/**
+ * Filters the ticket edit action items to remove the move button for seated tickets.
+ *
+ * @since TBD
+ *
+ * @param {Array} actions The action items of the ticket.
+ * @param {string} clientId The client ID of the ticket block.
+ *
+ * @return {Array} The action items.
+ */
 function filterMoveButtonAction( actions, clientId ) {
 	const hasSeats = select(storeName).isUsingAssignedSeating(clientId);
 	if ( ! hasSeats ) {
@@ -94,6 +114,16 @@ addFilter(
 	filterMoveButtonAction
 );
 
+/**
+ * Filters the header details of the ticket to add the seating type name.
+ *
+ * @since TBD
+ *
+ * @param {Array} items The header details of the ticket.
+ * @param {string} clientId The client ID of the ticket block.
+ *
+ * @return {Array} The header details.
+ */
 function filterHeaderDetails( items, clientId ) {
 	const hasSeats = select(storeName).isUsingAssignedSeating(clientId);
 	if ( ! hasSeats ) {
