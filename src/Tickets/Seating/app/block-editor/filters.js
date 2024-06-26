@@ -63,12 +63,12 @@ addFilter(
 
 function filterDashboardActions( actions, { clientId } ) {
 	const hasSeats = select(storeName).isUsingAssignedSeating(clientId);
+	const layoutLocked = select(storeName).isLayoutLocked();
 
-	if ( ! hasSeats ) {
-		return actions;
+	// Only show if there are seats and the post is saved.
+	if ( hasSeats && layoutLocked ) {
+		actions.push( <Seats /> );
 	}
-
-	actions.push( <Seats /> );
 
 	return actions;
 }
