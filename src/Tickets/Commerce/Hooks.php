@@ -155,8 +155,8 @@ class Hooks extends Service_Provider {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $results The results.
-	 * @param array $search The search.
+	 * @param array<string,mixed> $results The results.
+	 * @param array<string,string> $search The search.
 	 *
 	 * @return array
 	 */
