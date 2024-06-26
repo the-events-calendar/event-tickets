@@ -672,8 +672,8 @@ class Orders_Table extends WP_Posts_List_Table {
 			return;
 		}
 
-		$date_from = sanitize_text_field( $_GET['tec_tc_date_range_from'] ?? '' ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		$date_to   = sanitize_text_field( $_GET['tec_tc_date_range_to'] ?? '' ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$date_from = sanitize_text_field( tribe_get_request_var( 'tec_tc_date_range_from', '' ) );
+		$date_to   = sanitize_text_field( tribe_get_request_var( 'tec_tc_date_range_to', '' ) );
 
 		$date_from = Tribe__Date_Utils::is_valid_date( $date_from ) ? $date_from : '';
 		$date_to   = Tribe__Date_Utils::is_valid_date( $date_to ) ? $date_to : '';
@@ -761,7 +761,7 @@ class Orders_Table extends WP_Posts_List_Table {
 			return;
 		}
 
-		$g = $_GET['tec_tc_gateway'] ?? ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		$g = tribe_get_request_var( 'tec_tc_gateway', '' );
 
 		if ( ! in_array( $g, $gateways, true ) ) {
 			$g = '';
@@ -820,7 +820,7 @@ class Orders_Table extends WP_Posts_List_Table {
 		// Event options are being filtered in the Frontend after the user starts typing in the search box.
 		// Except for when the user has already filtered by an event. We take the event ID from the URL and add it to the dropdown.
 
-		$e = absint( $_GET['tec_tc_events'] ?? 0 ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		$e = absint( tribe_get_request_var( 'tec_tc_events', 0 ) );
 
 		$event = $e ? get_post( $e ) : null;
 

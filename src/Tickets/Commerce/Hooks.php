@@ -235,8 +235,8 @@ class Hooks extends Service_Provider {
 			}
 		}
 
-		$date_from = sanitize_text_field( $_GET['tec_tc_date_range_from'] ?? '' ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		$date_to   = sanitize_text_field( $_GET['tec_tc_date_range_to'] ?? '' ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$date_from = sanitize_text_field( tribe_get_request_var( 'tec_tc_date_range_from', '' ) );
+		$date_to   = sanitize_text_field( tribe_get_request_var( 'tec_tc_date_range_to', '' ) );
 
 		$date_from = Tribe__Date_Utils::is_valid_date( $date_from ) ? $date_from : '';
 		$date_to   = Tribe__Date_Utils::is_valid_date( $date_to ) ? $date_to : '';
@@ -283,7 +283,7 @@ class Hooks extends Service_Provider {
 			$meta_query = [];
 		}
 
-		$gateway = sanitize_text_field( $_GET['tec_tc_gateway'] ?? '' ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$gateway = sanitize_text_field( tribe_get_request_var( 'tec_tc_gateway', '' ) );
 
 		if ( $gateway ) {
 			$meta_query[] = [
@@ -293,7 +293,7 @@ class Hooks extends Service_Provider {
 			];
 		}
 
-		$event_filter = absint( $_GET['tec_tc_events'] ?? 0 ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$event_filter = absint( tribe_get_request_var( 'tec_tc_events', 0 ) );
 
 		if ( $event_filter ) {
 			$meta_query[] = [
