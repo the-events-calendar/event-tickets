@@ -433,7 +433,7 @@ class Orders_TableTest extends \Codeception\TestCase\WPTestCase {
 				}
 
 				$default_purchaser = [
-					'purchaser_user_id'    => is_wp_error( $user_id ) ? $counter : $user_id,
+					'purchaser_user_id'    => ! $with_wp_users || is_wp_error( $user_id ) ? $counter : $user_id,
 					'purchaser_full_name'  => 'Test Purchaser ' . $counter,
 					'purchaser_first_name' => 'Test',
 					'purchaser_last_name'  => 'Purchaser ' . $counter,
