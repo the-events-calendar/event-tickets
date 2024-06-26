@@ -8,9 +8,9 @@ import {
 	INBOUND_SEATS_SELECTED,
 	OUTBOUND_SEAT_TYPE_TICKETS,
 	removeAction,
+	registerAction,
 	sendPostMessage,
 } from '@tec/tickets/seating/service';
-import { registerAction } from '../../service/service-api';
 import { TicketRow } from './ticket-row';
 import { formatWithCurrency } from '@tec/tickets/seating/currency';
 import { getCheckoutHandlerForProvider } from './checkout-handlers';

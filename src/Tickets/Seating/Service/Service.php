@@ -80,6 +80,13 @@ class Service {
 	 * Service constructor.
 	 *
 	 * @since TBD
+	 *
+	 * @param string          $backend_base_url The base URL of the service.
+	 * @param string          $frontend_base_url The base URL of the service for frontend requests.
+	 * @param Ephemeral_Token $ephemeral_token The ephemeral token handler.
+	 * @param Layouts         $layouts The Layouts handler.
+	 * @param Seat_Types      $seat_types The Seat Types handler.
+	 * @param Maps            $maps The Maps handler.
 	 */
 	public function __construct(
 		string $backend_base_url,
@@ -171,6 +178,7 @@ class Service {
 	 * @return bool Whether the access token is valid or not.
 	 */
 	public function is_access_token_valid(): bool {
+		// phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.wp_remote_get_wp_remote_get
 		$response = wp_remote_get(
 			$this->get_backend_url( '/api/v1/check' ),
 			[
@@ -221,6 +229,7 @@ class Service {
 	 * @since TBD
 	 *
 	 * @param string $token The ephemeral token used to secure the iframe communication with the service.
+	 * @param string $map_id ID of th Map to return the edit URL for.
 	 *
 	 * @return string The URL to load the Maps create and edit page.
 	 */
@@ -278,19 +287,21 @@ class Service {
 	 * @since TBD
 	 *
 	 * @param string $token   The ephemeral token used to secure the iframe communication with the service.
-	 * @param string $post_id The post ID of the post to purchase tickets for.
+	 * @param int    $post_id The post ID of the post to purchase tickets for.
 	 * @param int    $timeout The timeout in seconds.
 	 *
-	 * @return string
+	 * @return string The URL to load the Seat Selection page.
 	 */
 	public function get_seat_selection_url( string $token, int $post_id, int $timeout = 15 * 60 ): string {
 		$post_uuid = $this->get_post_uuid( $post_id );
+		$layout_id = get_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, true );
 
 		return add_query_arg(
 			[
-				'token'   => urlencode( $token ),
-				'eventId' => urlencode( $post_uuid ),
-				'timeout' => $timeout,
+				'token'    => urlencode( $token ),
+				'eventId'  => urlencode( $post_uuid ),
+				'layoutId' => urlencode( $layout_id ),
+				'timeout'  => $timeout,
 			],
 			$this->get_frontend_url( '/embed/purchasing/' )
 		);
