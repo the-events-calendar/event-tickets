@@ -2,6 +2,8 @@ import { addFilter } from '@wordpress/hooks';
 import CapacityForm from './capacity-form';
 import { storeName } from './store';
 import { select, dispatch } from '@wordpress/data';
+import Seats from "./dashboard-actions/seats";
+import SeatType from "./header/seat-type";
 
 const shouldRenderAssignedSeatingForm = true;
 
@@ -57,4 +59,93 @@ addFilter(
 	'tec.tickets.blocks.setBodyDetails',
 	'tec.tickets.seating',
 	filterSetBodyDetails
+);
+
+/**
+ * Filters the action items of the dashboard to add the seating actions.
+ *
+ * @since TBD
+ *
+ * @param {Array} actions The action items of the dashboard.
+ * @param {string} clientId The client ID of the ticket block.
+ *
+ * @return {Array} The action items.
+ */
+function filterDashboardActions( actions, { clientId } ) {
+	const hasSeats = select(storeName).isUsingAssignedSeating(clientId);
+	const layoutLocked = select(storeName).isLayoutLocked();
+
+	// Only show if there are seats and the post is saved.
+	if ( hasSeats && layoutLocked ) {
+		actions.push( <Seats /> );
+	}
+
+	return actions;
+}
+
+addFilter(
+	'tec.tickets.blocks.Tickets.TicketsDashboardAction.actions',
+	'tec.tickets.seating',
+	filterDashboardActions,
+);
+
+/**
+ * Filters the ticket edit action items to remove the move button for seated tickets.
+ *
+ * @since TBD
+ *
+ * @param {Object[]} actions The action items of the ticket.
+ * @param {string} clientId The client ID of the ticket block.
+ *
+ * @return {Array} The action items.
+ */
+function filterMoveButtonAction( actions, clientId ) {
+	const hasSeats = select(storeName).isUsingAssignedSeating(clientId);
+	if ( ! hasSeats ) {
+		return actions;
+	}
+
+	return actions.filter( action => action.key !== 'move' );
+}
+
+addFilter(
+	'tec.tickets.blocks.Ticket.actionItems',
+	'tec.tickets.seating',
+	filterMoveButtonAction
+);
+
+/**
+ * Filters the header details of the ticket to add the seating type name.
+ *
+ * @since TBD
+ *
+ * @param {Array} items The header details of the ticket.
+ * @param {string} clientId The client ID of the ticket block.
+ *
+ * @return {Array} The header details.
+ */
+function filterHeaderDetails( items, clientId ) {
+	const hasSeats = select(storeName).isUsingAssignedSeating(clientId);
+	if ( ! hasSeats ) {
+		return items;
+	}
+
+	const seatTypeId = select(storeName).getTicketSeatType(clientId);
+	const seatTypes  = select(storeName).getAllSeatTypes();
+
+	const seatTypeName = Object.values(seatTypes).find(
+		(seatType) => seatType.id === seatTypeId
+	)?.name;
+
+	if ( seatTypeName ) {
+		items.push(<SeatType name={seatTypeName} />);
+	}
+
+	return items;
+}
+
+addFilter(
+	'tec.tickets.blocks.Ticket.header.detailItems',
+	'tec.tickets.seating',
+	filterHeaderDetails
 );

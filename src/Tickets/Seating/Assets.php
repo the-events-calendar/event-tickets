@@ -13,6 +13,7 @@ use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\StellarWP\Assets\Asset;
 use TEC\Tickets\Seating\Admin\Ajax;
 use TEC\Tickets\Seating\Admin\Maps_Layouts_Home_Page;
+use TEC\Tickets\Seating\Admin\Tabs\Layout_Edit;
 use TEC\Tickets\Seating\Admin\Tabs\Layouts;
 use Tribe__Tickets__Main as ET;
 use Tribe__Tickets__Tickets as Tickets;
@@ -20,7 +21,7 @@ use Tribe__Tickets__Tickets as Tickets;
 /**
  * Class Assets.
  *
- * @since   TBD
+ * @since TBD
  *
  * @package TEC\Tickets\Seating;
  */
@@ -50,10 +51,12 @@ class Assets extends Controller_Contract {
 	public function get_utils_data(): array {
 		return [
 			'links'            => [
-				'layouts' => $this->container->get( Layouts::class )->get_url(),
+				'layouts'     => $this->container->get( Layouts::class )->get_url(),
+				'layout-edit' => Layout_Edit::get_edit_url_by_post( get_the_ID() ),
 			],
 			'localizedStrings' => [
 				'capacity-form' => $this->container->get( Localization::class )->get_capacity_form_strings(),
+				'dashboard'     => [ 'seats-action-label' => _x( 'Seats', 'Ticket Dashboard actions', 'event-tickets' ) ],
 			],
 		];
 	}

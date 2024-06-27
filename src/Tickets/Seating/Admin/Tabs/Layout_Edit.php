@@ -9,9 +9,11 @@
 
 namespace TEC\Tickets\Seating\Admin\Tabs;
 
+use TEC\Tickets\Seating\Admin;
 use TEC\Tickets\Seating\Admin\Template;
 use TEC\Tickets\Seating\Service\Service;
 use WP_Error;
+use TEC\Tickets\Seating\Meta;
 
 /**
  * Class Layout_Edit.
@@ -85,5 +87,31 @@ class Layout_Edit extends Tab {
 			'error'      => $ephemeral_token instanceof WP_Error ? $ephemeral_token->get_error_message() : '',
 		];
 		$this->template->template( 'tabs/layout-edit', $context );
+	}
+
+	/**
+	 * Returns the URL to edit the Layout.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $post_id The Post ID.
+	 *
+	 * @return string The URL to edit the Layout.
+	 */
+	public static function get_edit_url_by_post( string $post_id ): string {
+		$layout_id = get_post_meta( $post_id, META::META_KEY_LAYOUT_ID, true );
+		
+		if ( empty( $layout_id ) ) {
+			return '';
+		}
+		
+		return add_query_arg(
+			[
+				'page'     => Admin::get_menu_slug(),
+				'tab'      => self::get_id(),
+				'layoutId' => $layout_id,
+			],
+			admin_url( 'admin.php' )
+		);
 	}
 }

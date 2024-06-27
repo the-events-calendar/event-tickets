@@ -66,7 +66,7 @@ class Service {
 	 * @var Seat_Types
 	 */
 	private Seat_Types $seat_types;
-
+	
 	/**
 	 * A reference to the Maps handler.
 	 *
@@ -103,7 +103,7 @@ class Service {
 		$this->seat_types        = $seat_types;
 		$this->maps              = $maps;
 	}
-
+	
 	/**
 	 * Fetches all the Maps from the database.
 	 *
@@ -327,5 +327,18 @@ class Service {
 		}
 
 		return $post_uuid;
+	}
+	
+	/**
+	 * Returns the seat types for given Layout ID.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $layout_id The layout ID to get the seat types for.
+	 *
+	 * @return array<string, array{id: string, name: string, seats: int}> The seat types in option format.
+	 */
+	public function get_seat_types_by_layout( string $layout_id ): array {
+		return $this->seat_types->get_in_option_format( [ $layout_id ] );
 	}
 }

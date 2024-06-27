@@ -126,12 +126,16 @@ const store = createReduxStore(storeName, {
 				value: layout.id,
 			}));
 		},
-		getSeatTypesForLayout(state, layoutId) {
+		getSeatTypesForLayout(state, layoutId, onlyValue = false) {
 			const layoutSeatTypes =
 				state.seatTypesByLayoutId?.[layoutId] || null;
 
 			if (!layoutSeatTypes) {
 				return [];
+			}
+
+			if ( onlyValue ) {
+				return layoutSeatTypes;
 			}
 
 			return Object.values(layoutSeatTypes).map(function (seatType) {
@@ -162,6 +166,9 @@ const store = createReduxStore(storeName, {
 		},
 		isLayoutLocked(state) {
 			return state?.isLayoutLocked || false;
+		},
+		getAllSeatTypes(state) {
+			return state?.seatTypes || [];
 		},
 	},
 	controls: {
