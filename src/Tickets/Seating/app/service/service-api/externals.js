@@ -18,4 +18,8 @@ const layoutsHomeUrl = externals.layoutsHomeUrl.replace(/\/$/, '');
 const ajaxUrl = externals.ajaxUrl.replace(/\/$/, '');
 const ajaxNonce = externals.ajaxNonce;
 
+export function getBaseUrl(){
+	return baseUrl;
+}
+
 export { baseUrl, mapsHomeUrl, layoutsHomeUrl, ajaxUrl, ajaxNonce };
