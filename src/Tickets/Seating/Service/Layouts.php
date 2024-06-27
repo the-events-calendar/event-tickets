@@ -233,7 +233,7 @@ class Layouts {
 		wp_cache_delete( 'option_format_layouts', 'tec-tickets-seating' );
 
 		$invalidated = Layouts_Table::truncate() !== false &&
-		               Seat_Types_Table::truncate() !== false;
+						Seat_Types_Table::truncate() !== false;
 
 		/**
 		 * Fires after the caches and custom tables storing information about Layouts have been
