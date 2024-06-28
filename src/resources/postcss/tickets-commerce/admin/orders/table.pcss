@@ -7,36 +7,37 @@
 body.wp-admin.post-type-tec_tc_order {
 	div.tablenav.top {
 		.tribe-datepicker {
-			margin-right:8px;
+			margin-right: 8px;
 		}
 
 		[for="tec_tc_data-range-to"] {
-			margin-left:-4px;
-			margin-right:4px;
+			color: #333;
 			font-size: 13px;
 			font-weight: 400;
 			line-height: 16px;
+			margin-left: -4px;
+			margin-right: 4px;
 			text-align: left;
-			color: #333333;
 		}
 
 		div.actions.tribe-validation {
 			.select2-container {
 				margin-left: 16px;
-				min-width: 180px!important;
+				min-width: 180px !important;
+
 				.selection {
-					display:inline-block;
-					width:100%;
+					display: inline-block;
+					width: 100%;
 
 					.select2-selection {
-						width:100%;
+						width: 100%;
 					}
 				}
 			}
 		}
 
 		#post-query-submit {
-			margin-left:16px;
+			margin-left: 16px;
 		}
 	}
 
@@ -44,23 +45,24 @@ body.wp-admin.post-type-tec_tc_order {
 		.column-order {
 			min-width: 240px;
 		}
+
 		.column-date {
-			max-width:8%;
+			max-width: 8%;
 		}
 	}
 }
 
 .tribe-external-link {
-	display:flex;
+	align-items: center;
+	display: flex;
 	flex-flow: row nowrap;
 	justify-content: flex-start;
-	align-items: center;
 
-	&::after {
-		content: url(../../../../images/tribe-external-link.svg);
-		width: 16px;
+	&:after {
+		content: url("../../../../images/tribe-external-link.svg");
 		height: 16px;
-		padding-left:5px;
+		padding-left: 5px;
+		width: 16px;
 	}
 }
 
