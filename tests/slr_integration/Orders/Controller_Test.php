@@ -171,6 +171,8 @@ class Controller_Test extends Controller_Test_Case {
 		$this->set_fn_return( 'wp_create_nonce', '1234567890' );
 		$this->set_fn_return( 'is_admin', 'true' );
 		$this->set_fn_return( 'uniqid', 'xxxxxx' );
+		// Disable showing random notice from Upsell::show_on_attendees_page.
+		$this->set_fn_return( 'wp_rand', 0 );
 		
 		[ $post_id, $post_ids ] = $fixture();
 		
