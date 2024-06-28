@@ -36,7 +36,7 @@ class Attendee {
 	public function add_attendee_seat_column( array $columns, int $event_id ): array {
 		$event_layout_id = get_post_meta( $event_id, Meta::META_KEY_LAYOUT_ID, true );
 		
-		if ( empty( $event_layout_id ) ) {
+		if ( $event_id && empty( $event_layout_id ) ) {
 			return $columns;
 		}
 		
