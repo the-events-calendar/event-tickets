@@ -42,24 +42,6 @@ class Orders_Table extends WP_Posts_List_Table {
 	public $post_id;
 
 	/**
-	 * The name (what gets submitted to the server) of our search box input.
-	 *
-	 * @since TBD
-	 *
-	 * @var string $search_box_input_name
-	 */
-	private $search_box_input_name = 'search';
-
-	/**
-	 * The name of the search type slug.
-	 *
-	 * @since TBD
-	 *
-	 * @var string $search_type_slug
-	 */
-	private $search_type_slug = 'tec_tc_order_search_type';
-
-	/**
 	 * Orders Table constructor.
 	 *
 	 * @since TBD
@@ -72,6 +54,50 @@ class Orders_Table extends WP_Posts_List_Table {
 		];
 
 		parent::__construct( $args );
+	}
+
+	/**
+	 * Displays the search box.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $text     The 'submit' button label.
+	 * @param string $input_id ID attribute value for the search input field.
+	 */
+	public function search_box( $text, $input_id ) {
+		if ( empty( $_REQUEST['search'] ) && ! $this->has_items() ) {
+			return;
+		}
+
+		$input_id = $input_id . '-search-input';
+
+		if ( ! empty( $_REQUEST['orderby'] ) ) {
+			echo '<input type="hidden" name="orderby" value="' . esc_attr( $_REQUEST['orderby'] ) . '" />';
+		}
+		if ( ! empty( $_REQUEST['order'] ) ) {
+			echo '<input type="hidden" name="order" value="' . esc_attr( $_REQUEST['order'] ) . '" />';
+		}
+		if ( ! empty( $_REQUEST['post_mime_type'] ) ) {
+			echo '<input type="hidden" name="post_mime_type" value="' . esc_attr( $_REQUEST['post_mime_type'] ) . '" />';
+		}
+		if ( ! empty( $_REQUEST['detached'] ) ) {
+			echo '<input type="hidden" name="detached" value="' . esc_attr( $_REQUEST['detached'] ) . '" />';
+		}
+
+		$text = __( 'Search Orders', 'event-tickets' );
+		?>
+			<p class="search-box">
+				<label class="screen-reader-text" for="<?php echo esc_attr( $input_id ); ?>"><?php echo esc_html( $text ); ?>:</label>
+				<input
+					type="search"
+					id="<?php echo esc_attr( $input_id ); ?>"
+					name="search"
+					value="<?php echo esc_attr( wp_unslash( $_REQUEST['search'] ?? '' ) ); ?>"
+					placeholder="<?php esc_attr_e( 'ID or Email', 'event-tickets' ); ?>"
+				/>
+				<?php submit_button( $text, '', '', false, array( 'id' => 'search-submit' ) ); ?>
+			</p>
+		<?php
 	}
 
 	/**
@@ -140,7 +166,6 @@ class Orders_Table extends WP_Posts_List_Table {
 				'total'            => __( 'Total', 'event-tickets' ),
 				'post_parent'      => __( 'Event', 'event-tickets' ),
 				'gateway'          => __( 'Gateway', 'event-tickets' ),
-				'gateway_order_id' => __( 'Gateway ID', 'event-tickets' ),
 			]
 		);
 	}
@@ -402,7 +427,7 @@ class Orders_Table extends WP_Posts_List_Table {
 			$ticket   = Tribe__Tickets__Tickets::load_ticket_object( $cart_item['ticket_id'] );
 			$name     = esc_html( $ticket->name );
 			$quantity = esc_html( (int) $cart_item['quantity'] );
-			$output  .= "<div class='tribe-line-item'>{$quantity} - {$name}</div>";
+			$output  .= "<div class='tribe-line-item'>{$quantity} {$name}</div>";
 		}
 
 		return $output;
@@ -480,25 +505,25 @@ class Orders_Table extends WP_Posts_List_Table {
 	 *
 	 * @return string
 	 */
-	public function column_gateway_order_id( $item ) {
+	protected function column_gateway_order_id( $item ) {
 		$gateway = tribe( Manager::class )->get_gateway_by_key( $item->gateway );
 
 		if ( $gateway instanceof Free_Gateway ) {
-			return esc_html__( 'N\A', 'event-tickets' );
+			return '';
 		}
 
 		if ( ! $gateway ) {
-			return $item->gateway_order_id;
+			return '';
 		}
 
 		$order_url = $gateway->get_order_controller()->get_gateway_dashboard_url_by_order( $item );
 
 		if ( empty( $order_url ) ) {
-			return $item->gateway_order_id;
+			return '';
 		}
 
 		return sprintf(
-			'<a href="%s" target="_blank" rel="noopener noreferrer">%s</a>',
+			'<a class="tribe-external-link" href="%s" target="_blank" rel="noopener noreferrer">%s</a>',
 			$order_url,
 			$item->gateway_order_id
 		);
@@ -524,7 +549,7 @@ class Orders_Table extends WP_Posts_List_Table {
 			return $item->gateway;
 		}
 
-		return $gateway::get_label();
+		return $gateway::get_label() . $this->column_gateway_order_id( $item );
 	}
 
 	/**
@@ -551,7 +576,6 @@ class Orders_Table extends WP_Posts_List_Table {
 				'date'             => 'purchase_time',
 				'post_parent'      => 'event',
 				'gateway'          => 'gateway',
-				'gateway_order_id' => 'gateway_id',
 				'status'           => 'status',
 				'total'            => 'total_value',
 			]
@@ -626,7 +650,19 @@ class Orders_Table extends WP_Posts_List_Table {
 
 			if ( ! empty( $output ) ) {
 				echo $output; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped, StellarWP.XSS.EscapeOutput.OutputNotEscaped
-				submit_button( __( 'Filter' ), '', 'filter_action', false, [ 'id' => 'post-query-submit' ] );
+				submit_button(
+					__( 'Apply Filters', 'event-tickets' ),
+					'',
+					'filter_action',
+					false,
+					[
+						'id'       => 'post-query-submit',
+						// 'disabled' => 'true',
+					]
+				);
+				?>
+				<!--input type="reset" value="<?php esc_attr_e( 'Reset Filters', 'event-tickets' ); ?>" /-->
+				<?php
 			}
 		}
 
@@ -680,7 +716,7 @@ class Orders_Table extends WP_Posts_List_Table {
 		$date_to   = Tribe__Date_Utils::is_valid_date( $date_to ) ? $date_to : '';
 		?>
 		<label class="screen-reader-text" for="tec_tc_data-range-from">
-			<?php esc_html_e( 'From date:', 'event-tickets' ); ?>
+			<?php esc_html_e( 'From', 'event-tickets' ); ?>
 		</label>
 		<input
 			autocomplete="off"
@@ -690,11 +726,11 @@ class Orders_Table extends WP_Posts_List_Table {
 			id="tec_tc_data-range-from"
 			size="10"
 			value="<?php echo esc_attr( $date_from ); ?>"
-			placeholder="<?php esc_attr_e( 'From date', 'event-tickets' ); ?>"
+			placeholder="<?php esc_attr_e( 'YYYY-MM_DD', 'event-tickets' ); ?>"
 			data-validation-type="datepicker"
 		/>
-		<label class="screen-reader-text" for="tec_tc_data-range-to">
-			<?php esc_html_e( 'To date:', 'event-tickets' ); ?>
+		<label for="tec_tc_data-range-to">
+			<?php esc_html_e( 'to', 'event-tickets' ); ?>
 		</label>
 		<input
 			autocomplete="off"
@@ -704,7 +740,7 @@ class Orders_Table extends WP_Posts_List_Table {
 			id="tec_tc_data-range-to"
 			size="10"
 			value="<?php echo esc_attr( $date_to ); ?>"
-			placeholder="<?php esc_attr_e( 'To date', 'event-tickets' ); ?>"
+			placeholder="<?php esc_attr_e( 'YYYY-MM-DD', 'event-tickets' ); ?>"
 			data-validation-type="datepicker"
 		/>
 		<?php
@@ -838,6 +874,9 @@ class Orders_Table extends WP_Posts_List_Table {
 			data-searching-placeholder="<?php esc_attr_e( 'Searching...', 'event-tickets' ); ?>"
 			data-source="tec_tc_order_table_events"
 			data-source-nonce="<?php echo esc_attr( wp_create_nonce( 'tribe_dropdown' ) ); ?>"
+			data-ajax-delay="400"
+			data-ajax-cache="1"
+			data-minimum-input-length="3"
 		>
 			<?php foreach ( $events_formatted as $key => $value ) : ?>
 				<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $e, $key ); ?>><?php echo esc_html( $value ); ?></option>
@@ -892,6 +931,9 @@ class Orders_Table extends WP_Posts_List_Table {
 			data-searching-placeholder="<?php esc_attr_e( 'Searching...', 'event-tickets' ); ?>"
 			data-source="tec_tc_order_table_customers"
 			data-source-nonce="<?php echo esc_attr( wp_create_nonce( 'tribe_dropdown' ) ); ?>"
+			data-ajax-delay="400"
+			data-ajax-cache="1"
+			data-minimum-input-length="3"
 		>
 			<?php foreach ( $customers_formatted as $key => $value ) : ?>
 				<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $customer, $key ); ?>><?php echo esc_html( $value ); ?></option>

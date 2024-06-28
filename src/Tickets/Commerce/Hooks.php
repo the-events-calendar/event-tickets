@@ -363,6 +363,47 @@ class Hooks extends Service_Provider {
 			];
 		}
 
+		$search = sanitize_text_field( tribe_get_request_var( 'search', '' ) );
+
+		if ( ! empty( $search ) ) {
+			$test_search = false;
+
+			if ( is_numeric( $search ) ) {
+				// If the search term is numeric, we could assume they are searching by order id.
+				$test_search = get_post( absint( $search ) );
+				$test_search = $test_search instanceof WP_Post ? $test_search : null;
+				$test_search = $test_search ?
+					Order::POSTTYPE === $test_search->post_type && 'trash' !== $test_search->post_status :
+					false;
+
+				if ( $test_search ) {
+					$query->set( 'post__in', [ absint( $search ) ] );
+				}
+			}
+
+			if ( ! $test_search ) {
+				// In every other case create an OR meta query.
+				$meta_query[] = [
+					[
+						'key'     => Order::$purchaser_email_meta_key,
+						'value'   => $search,
+						'compare' => 'LIKE',
+					],
+					[
+						'key'     => Order::$purchaser_full_name_meta_key,
+						'value'   => $search,
+						'compare' => 'LIKE',
+					],
+					[
+						'key'     => Order::$gateway_order_id_meta_key,
+						'value'   => $search,
+						'compare' => '=',
+					],
+					'relation' => 'OR',
+				];
+			}
+		}
+
 		if ( count( $meta_query ) > 1 && empty( $meta_query['relation'] ) ) {
 			$meta_query['relation'] = 'AND';
 		}
