@@ -170,6 +170,7 @@ class Controller_Test extends Controller_Test_Case {
 		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
 		$this->set_fn_return( 'wp_create_nonce', '1234567890' );
 		$this->set_fn_return( 'is_admin', 'true' );
+		$this->set_fn_return( 'uniqid', 'xxxxxx' );
 		
 		[ $post_id, $post_ids ] = $fixture();
 		
