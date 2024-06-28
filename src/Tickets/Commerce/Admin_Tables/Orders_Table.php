@@ -65,23 +65,17 @@ class Orders_Table extends WP_Posts_List_Table {
 	 * @param string $input_id ID attribute value for the search input field.
 	 */
 	public function search_box( $text, $input_id ) {
-		if ( empty( $_REQUEST['search'] ) && ! $this->has_items() ) {
+		if ( empty( tribe_get_request_var( 'search', '' ) ) && ! $this->has_items() ) {
 			return;
 		}
 
 		$input_id = $input_id . '-search-input';
 
-		if ( ! empty( $_REQUEST['orderby'] ) ) {
-			echo '<input type="hidden" name="orderby" value="' . esc_attr( $_REQUEST['orderby'] ) . '" />';
+		if ( ! empty( tribe_get_request_var( 'orderby', '' ) ) ) {
+			echo '<input type="hidden" name="orderby" value="' . esc_attr( tribe_get_request_var( 'orderby', '' ) ) . '" />';
 		}
-		if ( ! empty( $_REQUEST['order'] ) ) {
-			echo '<input type="hidden" name="order" value="' . esc_attr( $_REQUEST['order'] ) . '" />';
-		}
-		if ( ! empty( $_REQUEST['post_mime_type'] ) ) {
-			echo '<input type="hidden" name="post_mime_type" value="' . esc_attr( $_REQUEST['post_mime_type'] ) . '" />';
-		}
-		if ( ! empty( $_REQUEST['detached'] ) ) {
-			echo '<input type="hidden" name="detached" value="' . esc_attr( $_REQUEST['detached'] ) . '" />';
+		if ( ! empty( tribe_get_request_var( 'order', '' ) ) ) {
+			echo '<input type="hidden" name="order" value="' . esc_attr( tribe_get_request_var( 'order', '' ) ) . '" />';
 		}
 
 		$text = __( 'Search Orders', 'event-tickets' );
@@ -92,10 +86,10 @@ class Orders_Table extends WP_Posts_List_Table {
 					type="search"
 					id="<?php echo esc_attr( $input_id ); ?>"
 					name="search"
-					value="<?php echo esc_attr( wp_unslash( $_REQUEST['search'] ?? '' ) ); ?>"
+					value="<?php echo esc_attr( wp_unslash( tribe_get_request_var( 'search', '' ) ) ); ?>"
 					placeholder="<?php esc_attr_e( 'ID or Email', 'event-tickets' ); ?>"
 				/>
-				<?php submit_button( $text, '', '', false, array( 'id' => 'search-submit' ) ); ?>
+				<?php submit_button( $text, '', '', false, [ 'id' => 'search-submit' ] ); ?>
 			</p>
 		<?php
 	}
@@ -656,8 +650,7 @@ class Orders_Table extends WP_Posts_List_Table {
 					'filter_action',
 					false,
 					[
-						'id'       => 'post-query-submit',
-						// 'disabled' => 'true',
+						'id' => 'post-query-submit',
 					]
 				);
 				?>
