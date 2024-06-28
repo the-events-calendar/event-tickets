@@ -46,6 +46,7 @@ tribe.tickets.admin.commerceSettings = {};
 		disconnectionSettingContainer: '#give-paypal-commerce-account-manager-field-wrap .disconnection-setting', // eslint-disable-line max-len
 		disconnectPayPalAccountButton: '#js-give-paypal-disconnect-paypal-account',
 		troubleNotice: '#give-paypal-onboarding-trouble-notice',
+		webHookSetUpLink: '#tec-tickets__admin-settings-webhook-set-up',
 	};
 
 	obj.observePayPalModal = function() {
@@ -232,6 +233,43 @@ tribe.tickets.admin.commerceSettings = {};
 			} );
 	};
 
+	obj.onWebHookSetUpLinkClick = function( evt ) {
+		evt.preventDefault();
+		const target = $( evt.target );
+
+		$document.find( '#tec-tickets-webhook-creation-update' ).remove();
+
+		$(
+			`<p id="tec-tickets-webhook-creation-update" class="tooltip description">
+			<span class="dashicons dashicons-update"></span>
+			<span>${ target.attr( 'data-loading-text' ) }</span>
+			</p>`,
+		).insertAfter( target.closest( 'p' ) );
+
+		fetch( target.attr( 'href' ) ).then( function( res ) {
+			return res.json();
+		} ).then( function( res ) {
+			const updateEle = $( '#tec-tickets-webhook-creation-update' );
+			const updateDashIcon = updateEle.find( 'span.dashicons' );
+			const updateText = updateEle.find( 'span:not(.dashicons)' );
+
+			updateText.text( res.data.status );
+
+			updateDashIcon.removeClass( 'dashicons-update' );
+
+			if ( true !== res.success ) {
+				updateDashIcon.addClass( 'dashicons-no' );
+				return;
+			}
+
+			updateDashIcon.addClass( 'dashicons-yes' );
+
+			setTimeout( function() {
+				window.location.reload();
+			}, 700 );
+		} );
+	};
+
 	/**
 	 * Handles the initialization of the gateway settings when Document is ready.
 	 *
@@ -241,6 +279,7 @@ tribe.tickets.admin.commerceSettings = {};
 	obj.ready = function() {
 		obj.onBoardingButton = $( obj.selectors.connectButton );
 		obj.disconnectButton = $( obj.selectors.disconnectPayPalAccountButton );
+		obj.setUpWebhookLink = $( obj.selectors.webHookSetUpLink );
 
 		if ( obj.onBoardingButton[ 0 ] ) {
 			obj.onBoardingButton.on( 'click', obj.handleConnectClick );
@@ -248,6 +287,10 @@ tribe.tickets.admin.commerceSettings = {};
 
 		if ( obj.disconnectButton[ 0 ] ) {
 			obj.disconnectButton.on( 'click', obj.handleDisconnectClick );
+		}
+
+		if ( obj.setUpWebhookLink[ 0 ] ) {
+			obj.setUpWebhookLink.on( 'click', obj.onWebHookSetUpLinkClick );
 		}
 
 		obj.maybeShowModalAfterConnection();

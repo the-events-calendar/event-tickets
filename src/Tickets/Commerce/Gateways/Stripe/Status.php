@@ -99,7 +99,7 @@ class Status {
 	/**
 	 * Default mapping from Stripe Status to Tickets Commerce
 	 *
-	 * This list MUST be kept in order of order stripe status progression, from creation to completion/refusal, as
+	 * This list MUST be kept in order of order Stripe status progression, from creation to completion/refusal, as
 	 * described in the link below:
 	 *
 	 * @link  https://stripe.com/docs/payments/intents
