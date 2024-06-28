@@ -3,11 +3,72 @@
  *
  * @since TBD
  */
+
+body.wp-admin.post-type-tec_tc_order {
+	div.tablenav.top {
+		.tribe-datepicker {
+			margin-right:8px;
+		}
+
+		[for="tec_tc_data-range-to"] {
+			margin-left:-4px;
+			margin-right:4px;
+			font-size: 13px;
+			font-weight: 400;
+			line-height: 16px;
+			text-align: left;
+			color: #333333;
+		}
+
+		div.actions.tribe-validation {
+			.select2-container {
+				margin-left: 16px;
+				min-width: 180px!important;
+				.selection {
+					display:inline-block;
+					width:100%;
+
+					.select2-selection {
+						width:100%;
+					}
+				}
+			}
+		}
+
+		#post-query-submit {
+			margin-left:16px;
+		}
+	}
+
+	#the-list {
+		.column-order {
+			min-width: 240px;
+		}
+		.column-date {
+			max-width:8%;
+		}
+	}
+}
+
+.tribe-external-link {
+	display:flex;
+	flex-flow: row nowrap;
+	justify-content: flex-start;
+	align-items: center;
+
+	&::after {
+		content: url(../../../../images/tribe-external-link.svg);
+		width: 16px;
+		height: 16px;
+		padding-left:5px;
+	}
+}
+
 .tribe-tickets-commerce-order-status {
-	background: #e5e5e5;
-	border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+	background: #c3c4c7;
+	border: 1px solid rgba(0, 0, 0, 0.05);
 	border-radius: 4px;
-	color: #777;
+	color: #2c3338;
 	cursor: inherit !important;
 	display: inline-flex;
 	line-height: 2.5em;
@@ -21,14 +82,24 @@
 		text-overflow: ellipsis;
 	}
 
+	&.status-pending {
+		background: #f5e6ab;
+		border-color: #f0c33c;
+	}
+
 	&.status-completed {
-		background: #c8d7e1;
-		color: #2e4453;
+		background: #b8e6bf;
+		border-color: #00a32a;
 	}
 
 	&.status-denied {
-		background: #eba3a3;
-		color: #761919;
+		border-color: #646970;
+	}
+
+	&.status-voided,
+	&.status-refunded {
+		background: #fff;
+		border-color: #c3c4c7;
 	}
 
 	&.status-trash {

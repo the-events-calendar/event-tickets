@@ -266,23 +266,23 @@ class Hooks extends Service_Provider {
 
 		$current_status = $query->get( 'post_status' );
 
-		if ( 'any' !== $current_status || [ 'any' ] !== $current_status ) {
-			if ( is_array( $current_status ) ) {
-				$statuses = [];
-				foreach ( $current_status as $st ) {
-					if ( 'any' === $st ) {
-						$statuses = [ 'any' ];
-						// No need to continue.
-						break;
-					}
-
-					$statuses = array_merge( $statuses, tribe( Status_Handler::class )->get_group_of_statuses_by_slug( '', $st ) );
+		if ( ! $current_status ) {
+			$query->set( 'post_status', 'any' );
+		} elseif ( is_array( $current_status ) ) {
+			$statuses = [];
+			foreach ( $current_status as $st ) {
+				if ( 'any' === $st ) {
+					$statuses = [ 'any' ];
+					// No need to continue.
+					break;
 				}
 
-				$query->set( 'post_status', array_unique( $statuses ) );
-			} else {
-				$query->set( 'post_status', tribe( Status_Handler::class )->get_group_of_statuses_by_slug( '', $current_status ) );
+				$statuses = array_merge( $statuses, tribe( Status_Handler::class )->get_group_of_statuses_by_slug( '', $st ) );
 			}
+
+			$query->set( 'post_status', array_unique( $statuses ) );
+		} else {
+			$query->set( 'post_status', tribe( Status_Handler::class )->get_group_of_statuses_by_slug( '', $current_status ) );
 		}
 
 		$date_from = sanitize_text_field( tribe_get_request_var( 'tec_tc_date_range_from', '' ) );
@@ -355,7 +355,6 @@ class Hooks extends Service_Provider {
 
 		$customer_filter = absint( tribe_get_request_var( 'tec_tc_customers', 0 ) );
 
-		// @todo needs tests.
 		if ( $customer_filter ) {
 			$meta_query[] = [
 				'key'     => Order::$purchaser_user_id_meta_key,
