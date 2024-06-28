@@ -82,6 +82,9 @@ class Controller_Test extends Controller_Test_Case {
 				
 				$ticket_id = $this->create_tc_ticket( $event_id, 10 );
 				
+				update_post_meta( $ticket_id, Meta::META_KEY_ENABLED, true );
+				update_post_meta( $ticket_id, Meta::META_KEY_LAYOUT_ID, 1 );
+				
 				$tribe_tickets_ar_data = wp_json_encode(
 					[
 						'tribe_tickets_tickets' => [
