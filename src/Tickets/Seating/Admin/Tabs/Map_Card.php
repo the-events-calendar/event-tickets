@@ -133,4 +133,22 @@ class Map_Card {
 			admin_url( 'admin.php' )
 		);
 	}
+	
+	/**
+	 * Returns the URL to create a new Layout for this Map.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The URL to create a new Layout.
+	 */
+	public function get_create_layout_url(): string {
+		return add_query_arg(
+			[
+				'page'  => Admin::get_menu_slug(),
+				'tab'   => Layout_Edit::get_id(),
+				'mapId' => $this->get_id(),
+			],
+			admin_url( 'admin.php' )
+		);
+	}
 }
