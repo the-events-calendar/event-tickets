@@ -249,13 +249,15 @@ class Service {
 	 * @since TBD
 	 *
 	 * @param string $token The ephemeral token used to secure the iframe communication with the service.
+	 * @param string $map_id ID of the Map to create the layout for.
 	 *
 	 * @return string The URL to load the service route to create a new seat layout.
 	 */
-	public function get_layout_create_url( string $token ): string {
+	public function get_layout_create_url( string $token, string $map_id ): string {
 		return add_query_arg(
 			[
 				'token' => urlencode( $token ),
+				'mapId' => urlencode( $map_id ),
 			],
 			$this->get_frontend_url( '/embed/seat-layout/' )
 		);
