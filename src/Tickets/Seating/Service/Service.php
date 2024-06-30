@@ -239,7 +239,7 @@ class Service {
 				'token' => urlencode( $token ),
 				'mapId' => urlencode( $map_id ),
 			],
-			$this->get_frontend_url( '/embed/seating-map/' )
+			$this->get_frontend_url( '/embed/edit-seat-map/' )
 		);
 	}
 
