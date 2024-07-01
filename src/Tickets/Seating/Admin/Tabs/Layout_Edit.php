@@ -76,18 +76,38 @@ class Layout_Edit extends Tab {
 	 * @return void The rendered HTML of this tab is passed to the output buffer.
 	 */
 	public function render(): void {
-		$layout_id       = tribe_get_request_var( 'layoutId' );
-		$map_id          = tribe_get_request_var( 'mapId' );
 		$ephemeral_token = $this->service->get_ephemeral_token();
 		$token           = is_string( $ephemeral_token ) ? $ephemeral_token : '';
-		$iframe_url      = $layout_id ? $this->service->get_layout_edit_url( $token, $layout_id )
-			: $this->service->get_layout_create_url( $token, $map_id );
 		$context         = [
-			'iframe_url' => $iframe_url,
+			'iframe_url' => $this->generate_iframe_url( $token ),
 			'token'      => $token,
 			'error'      => $ephemeral_token instanceof WP_Error ? $ephemeral_token->get_error_message() : '',
 		];
 		$this->template->template( 'tabs/layout-edit', $context );
+	}
+	
+	/**
+	 * Returns the URL to load the service route to edit a seat layout.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $token     The ephemeral token used to secure the iframe communication with the service.
+	 *
+	 * @return string The URL to load the service route to edit a seat layout.
+	 */
+	public function generate_iframe_url( string $token ): string {
+		$action    = tribe_get_request_var( 'action' );
+		$layout_id = tribe_get_request_var( 'layoutId' );
+		
+		switch ( $action ) {
+			case 'create':
+				$map_id = tribe_get_request_var( 'mapId' );
+				return $this->service->get_layout_create_url( $token, $map_id );
+			case 'delete':
+				return $this->service->get_layout_delete_url( $token, $layout_id );
+			default:
+				return $this->service->get_layout_edit_url( $token, $layout_id );
+		}
 	}
 
 	/**
