@@ -246,7 +246,7 @@ class Orders_Table extends WP_Posts_List_Table {
 		);
 
 		$is_post_status_any   = ! isset( $_REQUEST['post_status'] ) || in_array( $_REQUEST['post_status'], [ 'all', 'any' ], true ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		$is_post_status_all   = isset( $_REQUEST['all_posts'] ) && $_REQUEST['all_posts']; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$is_post_status_all   = isset( $_REQUEST['all_posts'] ) && $_REQUEST['all_posts']; // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 		$is_all_status_active = empty( $class ) && ( $this->is_base_request() || $is_post_status_all || $is_post_status_any );
 
 		$status_links['all'] = [
