@@ -144,9 +144,10 @@ class Map_Card {
 	public function get_create_layout_url(): string {
 		return add_query_arg(
 			[
-				'page'  => Admin::get_menu_slug(),
-				'tab'   => Layout_Edit::get_id(),
-				'mapId' => $this->get_id(),
+				'action' => 'create',
+				'page'   => Admin::get_menu_slug(),
+				'tab'    => Layout_Edit::get_id(),
+				'mapId'  => $this->get_id(),
 			],
 			admin_url( 'admin.php' )
 		);
