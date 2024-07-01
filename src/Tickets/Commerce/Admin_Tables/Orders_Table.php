@@ -245,7 +245,7 @@ class Orders_Table extends WP_Posts_List_Table {
 		$status_links['all'] = [
 			'url'     => esc_url( add_query_arg( $all_args, 'edit.php' ) ),
 			'label'   => $all_inner_html,
-			'current' => empty( $class ) && ( $this->is_base_request() || isset( $_REQUEST['all_posts'] ) ), // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			'current' => empty( $class ) && ( $this->is_base_request() || isset( $_REQUEST['all_posts'] ) ) || ( isset( $_REQUEST['post_status'] ) && in_array( $_REQUEST['post_status'], [ 'all', 'any' ], true ) ), // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		];
 
 		foreach ( get_post_stati( [ 'show_in_admin_status_list' => true ], 'objects' ) as $status ) {
@@ -654,7 +654,9 @@ class Orders_Table extends WP_Posts_List_Table {
 					]
 				);
 				?>
-				<!--input type="reset" value="<?php esc_attr_e( 'Reset Filters', 'event-tickets' ); ?>" /-->
+				<a href="<?php echo esc_url( remove_query_arg( [ 'tec_tc_date_range_from', 'tec_tc_date_range_to', 'tec_tc_gateway', 'tec_tc_events', 'tec_tc_customers' ] ) ); ?>">
+					<?php esc_html_e( 'Clear All', 'event-tickets' ); ?>
+				</a>
 				<?php
 			}
 		}
