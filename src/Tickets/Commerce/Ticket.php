@@ -960,7 +960,7 @@ class Ticket {
 	 * @since   5.1.9
 	 * @since   5.2.3 method signature changed to return an instance of Value instead of a string.
 	 *
-	 * @param int|\WP_Post $product 	The ticket post ID or object.
+	 * @param int|\WP_Post $product       The ticket post ID or object.
 	 * @param bool         $force_regular Whether to force the regular price.
 	 *
 	 * @return Commerce\Utils\Value;
