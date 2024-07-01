@@ -1,0 +1,33 @@
+.tec-tickets-seating__timer {
+	box-sizing: border-box;
+	background: var(--tec-color-background-primary-multiday);
+	border-radius: 6px;
+	padding: var(--tec-spacer-1) var(--tec-spacer-2) var(--tec-spacer-1) var(--tec-spacer-2);
+	display: flex;
+	flex-direction: row;
+	gap: var(--tec-spacer-1);
+	align-items: center;
+	justify-content: flex-start;
+	align-self: stretch;
+	flex-shrink: 0;
+	position: relative;
+
+	.dashicons.dashicons-clock {
+		color: var(--tec-color-text-primary);
+	}
+
+	.tec-tickets-seating__message {
+		text-align: left;
+		font-size: 12px;
+		line-height: 17px;
+		font-weight: var(--tec-font-weight-bold);
+
+		.tec-tickets-seating__message-text {
+			color: var(--tec-color-text-primary);
+		}
+
+		.tec-tickets-seating__message-time {
+			color: var(--tec-color-accent-primary);
+		}
+	}
+}

@@ -201,6 +201,18 @@ const targets = [
 				'build/Seating/frontend/tickets-block.css',
 		},
 	},
+	{
+		name: 'seating-frontend-timer-bundle',
+		entry: './src/Tickets/Seating/app/frontend/timer/index.js',
+		outputScript: './build/Seating/frontend/timer.min.js',
+		outputStyle: `build/Seating/frontend/timer.${postfix}`,
+		moveFromTo: {
+			'src/resources/js/app/seating-frontend-timer-bundle.js':
+				'build/Seating/frontend/timer.js',
+			'src/resources/css/app/seating-frontend-timer-bundle.css':
+				'build/Seating/frontend/timer.css',
+		},
+	},
 ];
 
 // A function cannot be spread directly, we need this temporary variable.

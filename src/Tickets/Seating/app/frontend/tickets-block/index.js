@@ -14,6 +14,7 @@ import {
 import { TicketRow } from './ticket-row';
 import { formatWithCurrency } from '@tec/tickets/seating/currency';
 import { getCheckoutHandlerForProvider } from './checkout-handlers';
+import { start as startTimer } from './timer';
 
 const { objectName, seatTypeMap, labels, providerClass, postId } =
 	window?.tec?.tickets?.seating?.frontend?.ticketsBlock;
@@ -262,11 +263,14 @@ function readTicketsFromSelection() {
 				ticket_id: ticketId,
 				quantity: 1,
 				optout: '1', // @todo: actually pull this from the Attendee data collection.
-				seat_labels: [ row.dataset.seatLabel ]
+				seat_labels: [row.dataset.seatLabel],
 			};
 		} else {
 			acc[ticketId].quantity++;
-			acc[ticketId].seat_labels = [ ...acc[ticketId].seat_labels, row.dataset.seatLabel ];
+			acc[ticketId].seat_labels = [
+				...acc[ticketId].seat_labels,
+				row.dataset.seatLabel,
+			];
 		}
 
 		return acc;
@@ -334,6 +338,8 @@ function addModalEventListeners() {
 	document
 		.querySelector(confirmSelector)
 		.addEventListener('click', proceedToCheckout);
+
+	startTimer();
 }
 
 /**

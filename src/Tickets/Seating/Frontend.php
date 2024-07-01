@@ -1,4 +1,5 @@
 <?php
+
 /**
  * The main front-end controller. This controller will directly, or by delegation, subscribe to
  * front-end related hooks.
@@ -13,6 +14,7 @@ namespace TEC\Tickets\Seating;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\lucatume\DI52\Container;
 use TEC\Common\StellarWP\Assets\Asset;
+use TEC\Tickets\Seating\Frontend\Timer;
 use TEC\Tickets\Seating\Service\Service;
 use Tribe__Template as Base_Template;
 use Tribe__Tickets__Main as ET;
@@ -92,48 +94,6 @@ class Frontend extends Controller_Contract {
 	}
 
 	/**
-	 * Registers the controller by subscribing to front-end hooks and binding implementations.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	protected function do_register(): void {
-		add_filter( 'tribe_template_pre_html:tickets/v2/tickets', [ $this, 'print_tickets_block' ], 10, 5 );
-
-		// Register the front-end JS.
-		Asset::add(
-			'tec-tickets-seating-frontend',
-			$this->built_asset_url( 'frontend/tickets-block.js' ),
-			ET::VERSION
-		)
-			->set_dependencies(
-				'tribe-dialog-js',
-				'tec-tickets-seating-service-bundle',
-				'tec-tickets-seating-currency',
-				'wp-hooks'
-			)
-			->add_localize_script( 'tec.tickets.seating.frontend.ticketsBlock',
-				fn() => $this->get_ticket_block_data( get_the_ID() ) )
-			->enqueue_on( 'wp_enqueue_scripts' )
-			->add_to_group( 'tec-tickets-seating-frontend' )
-			->add_to_group( 'tec-tickets-seating' )
-			->register();
-
-		// Register the front-end CSS.
-		Asset::add(
-			'tec-tickets-seating-frontend-style',
-			$this->built_asset_url( 'frontend/tickets-block.css' ),
-			ET::VERSION
-		)
-			->set_dependencies( 'tribe-dialog' )
-			->enqueue_on( 'wp_enqueue_scripts' )
-			->add_to_group( 'tec-tickets-seating-frontend' )
-			->add_to_group( 'tec-tickets-seating' )
-			->register();
-	}
-
-	/**
 	 * Replace the Tickets' block with the one starting the seat selection flow.
 	 *
 	 * @since TBD
@@ -180,15 +140,7 @@ class Frontend extends Controller_Contract {
 		$capacity_meta_key = $tickets_handler->key_capacity;
 		$inventory         = get_post_meta( $post_id, $capacity_meta_key, true );
 
-		/**
-		 * Filters the seat selection timeout.
-		 *
-		 * @since TBD
-		 *
-		 * @param int $timeout The timeout in seconds.
-		 * @param int $post_id The post ID the iframe is for.
-		 */
-		$timeout = apply_filters( 'tec_tickets_seating_selection_timeout', 15 * 60, $post_id );
+		$timeout = $this->container->get( Timer::class )->get_timeout( $post_id );
 
 		$html = $this->template->template(
 			'tickets-block',
@@ -227,28 +179,78 @@ class Frontend extends Controller_Contract {
 	private function get_seat_selection_modal_content( int $post_id, int $timeout ): string {
 		$ephemeral_token = $this->service->get_ephemeral_token();
 		$token           = is_string( $ephemeral_token ) ? $ephemeral_token : '';
-		$iframe_url      = $this->service->get_seat_selection_url( $token, $post_id, $timeout );
+
+		/*
+		 * While the user might have 15 minutes to purchase tickets, that timer will not start on page load,
+		 * but when the user starts the interaction withe the seat selection modal.
+		 * For this reason the token request is made with a TTL of 4 times the timeout.
+		 */
+		$ephemeral_token_ttl = $timeout * 4;
+		$iframe_url          = $this->service->get_seat_selection_url( $token, $post_id, $ephemeral_token_ttl );
+
 		/** @var \Tribe\Dialog\View $dialog_view */
 		$dialog_view = tribe( 'dialog.view' );
-		$provider = Tickets::get_event_ticket_provider_object( $post_id );
+		$provider    = Tickets::get_event_ticket_provider_object( $post_id );
 		/** @var \Tribe__Tickets__Commerce__Currency $currency */
-		$currency = tribe('tickets.commerce.currency');
-		$content     = $this->template->template( 'iframe-view', [
-			'iframe_url' => $iframe_url,
-			'token'      => $token,
-			'error'      => $ephemeral_token instanceof WP_Error ? $ephemeral_token->get_error_message() : '',
-			'initial_total_text' => _x('0 Tickets', 'Seat selection modal initial total string', 'event-tickets'),
-			'initial_total_price' => $currency->get_formatted_currency_with_symbol(0,$post_id,$provider,false),
+		$currency = tribe( 'tickets.commerce.currency' );
+		$content  = $this->template->template( 'iframe-view', [
+			'iframe_url'          => $iframe_url,
+			'token'               => $token,
+			'error'               => $ephemeral_token instanceof WP_Error ? $ephemeral_token->get_error_message() : '',
+			'initial_total_text'  => _x( '0 Tickets', 'Seat selection modal initial total string', 'event-tickets' ),
+			'initial_total_price' => $currency->get_formatted_currency_with_symbol( 0, $post_id, $provider, false ),
+			'post_id'             => $post_id,
 		], false );
 
-		$args        = [
-			'button_text'    => esc_html_x( 'Find Seats', 'Find seats button text', 'event-tickets' ),
-			'button_classes' => [ 'tribe-common-c-btn', 'tribe-common-c-btn--small' ],
-			'append_target'  => '.tec-tickets-seating__information',
-			'content_wrapper_classes' =>  'tribe-dialog__wrapper tec-tickets-seating__modal',
+		$args = [
+			'button_text'             => esc_html_x( 'Find Seats', 'Find seats button text', 'event-tickets' ),
+			'button_classes'          => [ 'tribe-common-c-btn', 'tribe-common-c-btn--small' ],
+			'append_target'           => '.tec-tickets-seating__information',
+			'content_wrapper_classes' => 'tribe-dialog__wrapper tec-tickets-seating__modal',
 		];
 
 		return $dialog_view->render_modal( $content, $args, self::MODAL_ID, false );
+	}
+
+	/**
+	 * Registers the controller by subscribing to front-end hooks and binding implementations.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	protected function do_register(): void {
+		add_filter( 'tribe_template_pre_html:tickets/v2/tickets', [ $this, 'print_tickets_block' ], 10, 5 );
+
+		// Register the front-end JS.
+		Asset::add(
+			'tec-tickets-seating-frontend',
+			$this->built_asset_url( 'frontend/tickets-block.js' ),
+			ET::VERSION
+		)
+		     ->set_dependencies(
+			     'tribe-dialog-js',
+			     'tec-tickets-seating-service-bundle',
+			     'tec-tickets-seating-currency',
+			     'wp-hooks'
+		     )
+		     ->add_localize_script( 'tec.tickets.seating.frontend.ticketsBlock',
+			     fn() => $this->get_ticket_block_data( get_the_ID() ) )
+		     ->enqueue_on( 'wp_enqueue_scripts' )
+		     ->add_to_group( 'tec-tickets-seating-frontend' )
+		     ->add_to_group( 'tec-tickets-seating' )
+		     ->register();
+
+		// Register the front-end CSS.
+		Asset::add(
+			'tec-tickets-seating-frontend-style',
+			$this->built_asset_url( 'frontend/tickets-block.css' ),
+			ET::VERSION
+		)
+		     ->enqueue_on( 'wp_enqueue_scripts' )
+		     ->add_to_group( 'tec-tickets-seating-frontend' )
+		     ->add_to_group( 'tec-tickets-seating' )
+		     ->register();
 	}
 
 	/**

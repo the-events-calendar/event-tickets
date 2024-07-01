@@ -26,15 +26,10 @@
 	}
 }
 
-.tribe-common .tribe-dialog__wrapper.tec-tickets-seating__modal,
-/* Deal with the AR/IAC modal here: this way we'll not have to update ET+ to follow the size of this modal. */
-.event-tickets .tribe-dialog__wrapper.tribe-modal__wrapper--ar.tec-tickets-seating__modal {
+.tribe-common .tribe-dialog__wrapper.tec-tickets-seating__modal {
 	width: 80vw;
 	height: calc(100vh - 160px);
 
-}
-
-.tribe-common .tribe-dialog__wrapper.tec-tickets-seating__modal {
 	.tribe-dialog__content.tribe-modal__content {
 		padding: 0;
 		display: flex;
@@ -68,40 +63,6 @@
 					line-height: var(--tec-line-height-3);
 					font-weight: var(--tec-font-weight-regular);
 					width: 100%;
-				}
-
-				.tec-tickets-seating__timer {
-					box-sizing: border-box;
-					background: var(--tec-color-background-primary-multiday);
-					border-radius: 6px;
-					padding: var(--tec-spacer-1) var(--tec-spacer-2) var(--tec-spacer-1) var(--tec-spacer-2);
-					display: flex;
-					flex-direction: row;
-					gap: var(--tec-spacer-1);
-					align-items: center;
-					justify-content: flex-start;
-					align-self: stretch;
-					flex-shrink: 0;
-					position: relative;
-
-					.dashicons.dashicons-clock {
-						color: var(--tec-color-text-primary);
-					}
-
-					.tec-tickets-seating__message {
-						text-align: left;
-						font-size: 12px;
-						line-height: 17px;
-						font-weight: var(--tec-font-weight-bold);
-
-						.tec-tickets-seating__message-text {
-							color: var(--tec-color-text-primary);
-						}
-
-						.tec-tickets-seating__message-time {
-							color: var(--tec-color-accent-primary);
-						}
-					}
 				}
 
 				.tec-tickets-seating__ticket-rows {
