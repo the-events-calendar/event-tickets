@@ -7,13 +7,13 @@ use TEC\Tickets\Commerce\Utils\Value;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 class TicketTest extends WPTestCase {
 	use Ticket_Maker;
-	
+
 	public function is_on_sale_provider(): \Generator {
 		yield 'regular ticket => false' => [
 			function (): array {
 				$post_id   = static::factory()->post->create();
 				$ticket_id = $this->create_tc_ticket( $post_id, 1 );
-				
+
 				return [
 					$post_id,
 					$ticket_id,
@@ -21,15 +21,15 @@ class TicketTest extends WPTestCase {
 				];
 			},
 		];
-		
+
 		yield 'ticket with sale price => true' => [
 			function (): array {
 				$post_id   = static::factory()->post->create();
 				$ticket_id = $this->create_tc_ticket( $post_id, 20 );
-				
+
 				update_post_meta( $ticket_id, Ticket::$sale_price_checked_key, true );
 				update_post_meta( $ticket_id, Ticket::$sale_price_key, 10 );
-				
+
 				return [
 					$post_id,
 					$ticket_id,
@@ -37,15 +37,15 @@ class TicketTest extends WPTestCase {
 				];
 			},
 		];
-		
+
 		yield 'ticket has sale price but inactive sale check => false' => [
 			function (): array {
 				$post_id   = static::factory()->post->create();
 				$ticket_id = $this->create_tc_ticket( $post_id, 20 );
-				
+
 				update_post_meta( $ticket_id, Ticket::$sale_price_checked_key, false );
 				update_post_meta( $ticket_id, Ticket::$sale_price_key, 10 );
-				
+
 				return [
 					$post_id,
 					$ticket_id,
@@ -53,16 +53,16 @@ class TicketTest extends WPTestCase {
 				];
 			},
 		];
-		
+
 		yield 'if sale start date is in past => true' => [
 			function (): array {
 				$post_id   = static::factory()->post->create();
 				$ticket_id = $this->create_tc_ticket( $post_id, 20 );
-				
+
 				update_post_meta( $ticket_id, Ticket::$sale_price_checked_key, true );
 				update_post_meta( $ticket_id, Ticket::$sale_price_key, 10 );
 				update_post_meta( $ticket_id, Ticket::$sale_price_start_date_key, '2010-03-01' );
-				
+
 				return [
 					$post_id,
 					$ticket_id,
@@ -70,16 +70,16 @@ class TicketTest extends WPTestCase {
 				];
 			},
 		];
-		
+
 		yield 'if sale start date is in future => false' => [
 			function (): array {
 				$post_id   = static::factory()->post->create();
 				$ticket_id = $this->create_tc_ticket( $post_id, 20 );
-				
+
 				update_post_meta( $ticket_id, Ticket::$sale_price_checked_key, true );
 				update_post_meta( $ticket_id, Ticket::$sale_price_key, 10 );
 				update_post_meta( $ticket_id, Ticket::$sale_price_start_date_key, '2040-03-01' );
-				
+
 				return [
 					$post_id,
 					$ticket_id,
@@ -87,16 +87,16 @@ class TicketTest extends WPTestCase {
 				];
 			},
 		];
-		
+
 		yield 'if sale end date is in past => false' => [
 			function (): array {
 				$post_id   = static::factory()->post->create();
 				$ticket_id = $this->create_tc_ticket( $post_id, 20 );
-				
+
 				update_post_meta( $ticket_id, Ticket::$sale_price_checked_key, true );
 				update_post_meta( $ticket_id, Ticket::$sale_price_key, 10 );
 				update_post_meta( $ticket_id, Ticket::$sale_price_end_date_key, '2010-03-01' );
-				
+
 				return [
 					$post_id,
 					$ticket_id,
@@ -104,16 +104,16 @@ class TicketTest extends WPTestCase {
 				];
 			},
 		];
-		
+
 		yield 'if sale end date is in future => true' => [
 			function (): array {
 				$post_id   = static::factory()->post->create();
 				$ticket_id = $this->create_tc_ticket( $post_id, 20 );
-				
+
 				update_post_meta( $ticket_id, Ticket::$sale_price_checked_key, true );
 				update_post_meta( $ticket_id, Ticket::$sale_price_key, 10 );
 				update_post_meta( $ticket_id, Ticket::$sale_price_end_date_key, '2040-03-01' );
-				
+
 				return [
 					$post_id,
 					$ticket_id,
@@ -121,17 +121,17 @@ class TicketTest extends WPTestCase {
 				];
 			},
 		];
-		
+
 		yield 'if sale start date is in past and end date is in future => true' => [
 			function (): array {
 				$post_id   = static::factory()->post->create();
 				$ticket_id = $this->create_tc_ticket( $post_id, 20 );
-				
+
 				update_post_meta( $ticket_id, Ticket::$sale_price_checked_key, true );
 				update_post_meta( $ticket_id, Ticket::$sale_price_key, 10 );
 				update_post_meta( $ticket_id, Ticket::$sale_price_start_date_key, '2010-03-01' );
 				update_post_meta( $ticket_id, Ticket::$sale_price_end_date_key, '2040-03-01' );
-				
+
 				return [
 					$post_id,
 					$ticket_id,
@@ -139,17 +139,17 @@ class TicketTest extends WPTestCase {
 				];
 			},
 		];
-		
+
 		yield 'sale start date and end date in past => false' => [
 			function (): array {
 				$post_id   = static::factory()->post->create();
 				$ticket_id = $this->create_tc_ticket( $post_id, 20 );
-				
+
 				update_post_meta( $ticket_id, Ticket::$sale_price_checked_key, true );
 				update_post_meta( $ticket_id, Ticket::$sale_price_key, 10 );
 				update_post_meta( $ticket_id, Ticket::$sale_price_start_date_key, '2010-03-01' );
 				update_post_meta( $ticket_id, Ticket::$sale_price_end_date_key, '2010-03-01' );
-				
+
 				return [
 					$post_id,
 					$ticket_id,
@@ -157,17 +157,17 @@ class TicketTest extends WPTestCase {
 				];
 			},
 		];
-		
+
 		yield 'sale start date in future, end date in past => false' => [
 			function (): array {
 				$post_id   = static::factory()->post->create();
 				$ticket_id = $this->create_tc_ticket( $post_id, 20 );
-				
+
 				update_post_meta( $ticket_id, Ticket::$sale_price_checked_key, true );
 				update_post_meta( $ticket_id, Ticket::$sale_price_key, 10 );
 				update_post_meta( $ticket_id, Ticket::$sale_price_start_date_key, '2040-03-01' );
 				update_post_meta( $ticket_id, Ticket::$sale_price_end_date_key, '2010-03-01' );
-				
+
 				return [
 					$post_id,
 					$ticket_id,
@@ -175,18 +175,20 @@ class TicketTest extends WPTestCase {
 				];
 			},
 		];
-		
+
 		yield 'sale start date and end date is today => true' => [
 			function (): array {
 				$post_id   = static::factory()->post->create();
 				$ticket_id = $this->create_tc_ticket( $post_id, 20 );
-				$today     = gmdate( 'Y-m-d' );
-				
+				$today     = gmdate( 'Y-m-d H:i:s' );
+
+				$today_in_an_hour = gmdate( 'Y-m-d H:i:s', strtotime( '+1 hour' ) );
+
 				update_post_meta( $ticket_id, Ticket::$sale_price_checked_key, true );
 				update_post_meta( $ticket_id, Ticket::$sale_price_key, 10 );
 				update_post_meta( $ticket_id, Ticket::$sale_price_start_date_key, $today );
-				update_post_meta( $ticket_id, Ticket::$sale_price_end_date_key, $today );
-				
+				update_post_meta( $ticket_id, Ticket::$sale_price_end_date_key, $today_in_an_hour );
+
 				return [
 					$post_id,
 					$ticket_id,
@@ -195,7 +197,7 @@ class TicketTest extends WPTestCase {
 			},
 		];
 	}
-	
+
 	/**
 	 * @test
 	 * @dataProvider is_on_sale_provider
@@ -204,14 +206,14 @@ class TicketTest extends WPTestCase {
 	 */
 	public function test_is_on_sale( \Closure $ticket_data_provider ): void {
 		[ $post_id, $ticket_id, $expected ] = $ticket_data_provider();
-		
+
 		$provider     = tribe( Module::class );
 		$ticket       = $provider->get_ticket( $post_id, $ticket_id );
 		$ticket_class = tribe( Ticket::class );
-		
+
 		$this->assertEquals( $expected, $ticket_class->is_on_sale( $ticket ) );
 	}
-	
+
 	/**
 	 * Provides data for the process_sale_price_data test.
 	 *
@@ -225,7 +227,7 @@ class TicketTest extends WPTestCase {
 					$post_id,
 					20,
 				);
-				
+
 				return [
 					$post_id,
 					$ticket_id,
@@ -236,7 +238,7 @@ class TicketTest extends WPTestCase {
 				];
 			},
 		];
-		
+
 		yield 'sale price data added' => [
 			function (): array {
 				$post_id   = static::factory()->post->create();
@@ -250,7 +252,7 @@ class TicketTest extends WPTestCase {
 						'ticket_sale_end_date'   => '2040-03-01',
 					]
 				);
-				
+
 				return [
 					$post_id,
 					$ticket_id,
@@ -261,7 +263,7 @@ class TicketTest extends WPTestCase {
 				];
 			},
 		];
-		
+
 		yield 'sale price data added but sale price option unchecked' => [
 			function (): array {
 				$post_id   = static::factory()->post->create();
@@ -274,7 +276,7 @@ class TicketTest extends WPTestCase {
 						'ticket_sale_end_date'   => '2040-03-01',
 					]
 				);
-				
+
 				return [
 					$post_id,
 					$ticket_id,
@@ -285,7 +287,7 @@ class TicketTest extends WPTestCase {
 				];
 			},
 		];
-		
+
 		yield 'sale price data is greater than regular price' => [
 			function (): array {
 				$post_id   = static::factory()->post->create();
@@ -299,7 +301,7 @@ class TicketTest extends WPTestCase {
 						'ticket_sale_end_date'   => '2040-03-01',
 					]
 				);
-				
+
 				// The sale price is greater than the regular price, so it should be ignored and not saved.
 				return [
 					$post_id,
@@ -311,7 +313,7 @@ class TicketTest extends WPTestCase {
 				];
 			},
 		];
-		
+
 		yield 'added a ticket with sale price then saved again with unchecked sale price' => [
 			function (): array {
 				$post_id   = static::factory()->post->create();
@@ -325,7 +327,7 @@ class TicketTest extends WPTestCase {
 						'ticket_sale_end_date'   => '2040-03-01',
 					]
 				);
-				
+
 				// Save the ticket again with the sale price option unchecked, this should remove all previously saved sale price data.
 				$this->create_tc_ticket(
 					$post_id,
@@ -337,7 +339,7 @@ class TicketTest extends WPTestCase {
 						'ticket_sale_end_date'   => '2040-03-01',
 					]
 				);
-				
+
 				return [
 					$post_id,
 					$ticket_id,
@@ -349,7 +351,7 @@ class TicketTest extends WPTestCase {
 			},
 		];
 	}
-	
+
 	/**
 	 * @test
 	 * @covers \TEC\Tickets\Commerce\Ticket::process_sale_price_data
@@ -359,7 +361,7 @@ class TicketTest extends WPTestCase {
 	 */
 	public function test_process_sale_price_data( \Closure $data ): void {
 		[ $post_id, $ticket_id, $expected_checked, $expected_price, $expected_start_date, $expected_end_date ] = $data();
-		
+
 		$this->assertEquals( $expected_checked, get_post_meta( $ticket_id, Ticket::$sale_price_checked_key, true ) );
 		$this->assertEquals( $expected_price, get_post_meta( $ticket_id, Ticket::$sale_price_key, true ) );
 		$this->assertEquals( $expected_start_date, get_post_meta( $ticket_id, Ticket::$sale_price_start_date_key, true ) );
