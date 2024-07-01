@@ -919,6 +919,7 @@ class Orders_Table extends WP_Posts_List_Table {
 			data-ajax-delay="400"
 			data-ajax-cache="1"
 			data-minimum-input-length="3"
+			data-tags="0"
 		>
 			<?php foreach ( $events_formatted as $key => $value ) : ?>
 				<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $e, $key ); ?>><?php echo esc_html( $value ); ?></option>
@@ -976,6 +977,7 @@ class Orders_Table extends WP_Posts_List_Table {
 			data-ajax-delay="400"
 			data-ajax-cache="1"
 			data-minimum-input-length="3"
+			data-tags="0"
 		>
 			<?php foreach ( $customers_formatted as $key => $value ) : ?>
 				<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $customer, $key ); ?>><?php echo esc_html( $value ); ?></option>
