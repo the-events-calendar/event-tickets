@@ -29,3 +29,5 @@ global.mount = mount;
 global.renderer = renderer;
 
 moment.tz.setDefault( 'UTC' );
+
+import '@tec/tickets/seating/tests/_bootstrap.js';

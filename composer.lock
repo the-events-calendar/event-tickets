@@ -4,8 +4,65 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "29a3d14fd7dd78b0ce5a09f2d1708510",
-    "packages": [],
+    "content-hash": "db9ed16069f2a9f1305129dca263cf5c",
+    "packages": [
+        {
+            "name": "stellarwp/assets",
+            "version": "dev-feat/callback-deps-support",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/stellarwp/assets.git",
+                "reference": "2dfd2dac862e9626055db1400612731ced018bb8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/stellarwp/assets/zipball/2dfd2dac862e9626055db1400612731ced018bb8",
+                "reference": "2dfd2dac862e9626055db1400612731ced018bb8",
+                "shasum": ""
+            },
+            "require-dev": {
+                "codeception/module-asserts": "^1.0",
+                "codeception/module-cli": "^1.0",
+                "codeception/module-db": "^1.0",
+                "codeception/module-filesystem": "^1.0",
+                "codeception/module-phpbrowser": "^1.0",
+                "codeception/module-rest": "^1.0",
+                "codeception/module-webdriver": "^1.0",
+                "codeception/util-universalframework": "^1.0",
+                "lucatume/wp-browser": "^3.0.14",
+                "phpunit/phpunit": "~6.0",
+                "symfony/event-dispatcher-contracts": "^2.5.1",
+                "symfony/string": "^5.4",
+                "szepeviktor/phpstan-wordpress": "^1.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "StellarWP\\Assets\\": "src/Assets/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "StellarWP",
+                    "email": "dev@stellarwp.com"
+                },
+                {
+                    "name": "Matthew Batchelder",
+                    "email": "matt.batchelder@stellarwp.com"
+                }
+            ],
+            "description": "A library for managing asset registration and enqueuing in WordPress.",
+            "support": {
+                "issues": "https://github.com/stellarwp/assets/issues",
+                "source": "https://github.com/stellarwp/assets/tree/feat/callback-deps-support"
+            },
+            "time": "2024-05-01T15:11:25+00:00"
+        }
+    ],
     "packages-dev": [
         {
             "name": "antecedent/patchwork",
@@ -10381,6 +10438,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
+        "stellarwp/assets": 20,
         "stellarwp/coding-standards": 20,
         "the-events-calendar/tec-testing-facilities": 20
     },
@@ -10391,5 +10449,5 @@
     "platform-overrides": {
         "php": "7.4"
     },
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.6.0"
 }

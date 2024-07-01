@@ -62,7 +62,7 @@ const targets = [
 	},
 	{
 		name: 'flexible-tickets-block-editor',
-		entry: './src/Tickets/Blocks/app/flexible-tickets/block-editor/index.js',
+		entry: './src/Tickets/Flexible_Tickets/app/block-editor/index.js',
 		outputScript: './build/FlexibleTickets/block-editor.min.js',
 		outputStyle: `build/FlexibleTickets/block-editor.${postfix}`,
 		moveFromTo: {
@@ -74,7 +74,7 @@ const targets = [
 	},
 	{
 		name: 'flexible-tickets-classic-editor',
-		entry: './src/Tickets/Blocks/app/flexible-tickets/classic-editor/index.js',
+		entry: './src/Tickets/Flexible_Tickets/app/classic-editor/index.js',
 		outputScript: './build/FlexibleTickets/classic-editor.min.js',
 		outputStyle: `build/FlexibleTickets/classic-editor.${postfix}`,
 		moveFromTo: {
@@ -82,6 +82,123 @@ const targets = [
 				'build/FlexibleTickets/classic-editor.js',
 			'src/resources/css/app/flexible-tickets-classic-editor.css':
 				'build/FlexibleTickets/classic-editor.css',
+		},
+	},
+	{
+		name: 'seating-utils',
+		entry: './src/Tickets/Seating/app/utils/index.js',
+		outputScript: './build/Seating/utils.min.js',
+		outputStyle: `build/Seating/utils.${postfix}`,
+		moveFromTo: {
+			'src/resources/js/app/seating-utils.js': 'build/Seating/utils.js',
+			'src/resources/css/app/seating-utils.css':
+				'build/Seating/utils.css',
+		},
+	},
+	{
+		name: 'seating-ajax',
+		entry: './src/Tickets/Seating/app/ajax/index.js',
+		outputScript: './build/Seating/ajax.min.js',
+		outputStyle: `build/Seating/ajax.${postfix}`,
+		moveFromTo: {
+			'src/resources/js/app/seating-ajax.js': 'build/Seating/ajax.js',
+			'src/resources/css/app/seating-ajax.css': 'build/Seating/ajax.css',
+		},
+	},
+	{
+		name: 'seating-currency',
+		entry: './src/Tickets/Seating/app/currency/index.js',
+		outputScript: './build/Seating/currency.min.js',
+		outputStyle: `build/Seating/currency.${postfix}`,
+		moveFromTo: {
+			'src/resources/js/app/seating-currency.js':
+				'build/Seating/currency.js',
+			'src/resources/css/app/seating-currency.css':
+				'build/Seating/currency.css',
+		},
+	},
+	{
+		name: 'seating-service-bundle',
+		entry: './src/Tickets/Seating/app/service/index.js',
+		outputScript: './build/Seating/service.min.js',
+		outputStyle: `build/Seating/service.${postfix}`,
+		moveFromTo: {
+			'src/resources/js/app/seating-service-bundle.js':
+				'build/Seating/service.js',
+			'src/resources/css/app/seating-service-bundle.css':
+				'build/Seating/service.css',
+		},
+	},
+	{
+		name: 'seating-maps-bundle',
+		entry: './src/Tickets/Seating/app/admin/maps/index.js',
+		outputScript: './build/Seating/admin/maps.min.js',
+		outputStyle: `build/Seating/admin/maps.${postfix}`,
+		moveFromTo: {
+			'src/resources/js/app/seating-maps-bundle.js':
+				'build/Seating/admin/maps.js',
+			'src/resources/css/app/seating-maps-bundle.css':
+				'build/Seating/admin/maps.css',
+		},
+	},
+	{
+		name: 'seating-layouts-bundle',
+		entry: './src/Tickets/Seating/app/admin/layouts/index.js',
+		outputScript: './build/Seating/admin/layouts.min.js',
+		outputStyle: `build/Seating/admin/layouts.${postfix}`,
+		moveFromTo: {
+			'src/resources/js/app/seating-layouts-bundle.js':
+				'build/Seating/admin/layouts.js',
+			'src/resources/css/app/seating-layouts-bundle.css':
+				'build/Seating/admin/layouts.css',
+		},
+	},
+	{
+		name: 'seating-map-edit-bundle',
+		entry: './src/Tickets/Seating/app/admin/map-edit/index.js',
+		outputScript: './build/Seating/admin/map-edit.min.js',
+		outputStyle: `build/Seating/admin/map-edit.${postfix}`,
+		moveFromTo: {
+			'src/resources/js/app/seating-map-edit-bundle.js':
+				'build/Seating/admin/map-edit.js',
+			'src/resources/css/app/seating-map-edit-bundle.css':
+				'build/Seating/admin/map-edit.css',
+		},
+	},
+	{
+		name: 'seating-layout-edit-bundle',
+		entry: './src/Tickets/Seating/app/admin/layout-edit/index.js',
+		outputScript: './build/Seating/admin/layout-edit.min.js',
+		outputStyle: `build/Seating/admin/layout-edit.${postfix}`,
+		moveFromTo: {
+			'src/resources/js/app/seating-layout-edit-bundle.js':
+				'build/Seating/admin/layout-edit.js',
+			'src/resources/css/app/seating-layout-edit-bundle.css':
+				'build/Seating/admin/layout-edit.css',
+		},
+	},
+	{
+		name: 'seating-block-editor-bundle',
+		entry: './src/Tickets/Seating/app/block-editor/index.js',
+		outputScript: './build/Seating/block-editor.min.js',
+		outputStyle: `build/Seating/block-editor.${postfix}`,
+		moveFromTo: {
+			'src/resources/js/app/seating-block-editor-bundle.js':
+				'build/Seating/block-editor.js',
+			'src/resources/css/app/seating-block-editor-bundle.css':
+				'build/Seating/block-editor.css',
+		},
+	},
+	{
+		name: 'seating-frontend-tickets-block-bundle',
+		entry: './src/Tickets/Seating/app/frontend/tickets-block/index.js',
+		outputScript: './build/Seating/frontend/tickets-block.min.js',
+		outputStyle: `build/Seating/frontend/tickets-block.${postfix}`,
+		moveFromTo: {
+			'src/resources/js/app/seating-frontend-tickets-block-bundle.js':
+				'build/Seating/frontend/tickets-block.js',
+			'src/resources/css/app/seating-frontend-tickets-block-bundle.css':
+				'build/Seating/frontend/tickets-block.css',
 		},
 	},
 ];
@@ -96,8 +213,21 @@ const targetEntries = reduce(
 	{}
 );
 
-// Configure multiple entry points.
 const config = merge(common, {
+	// Add externals missing from products-taskmaster.
+	externals: [
+		{
+			'@wordpress/core-data': 'wp.coreData',
+			'@tec/tickets/seating/iframe': 'tec.tickets.seating.iframe',
+			'@tec/tickets/seating/errors': 'tec.tickets.seating.errors',
+			'@tec/tickets/seating/notices': 'tec.tickets.seating.notices',
+			'@tec/tickets/seating/service': 'tec.tickets.seating.service',
+			'@tec/tickets/seating/utils': 'tec.tickets.seating.utils',
+			'@tec/tickets/seating/ajax': 'tec.tickets.seating.ajax',
+			'@tec/tickets/seating/currency': 'tec.tickets.seating.currency',
+		},
+	],
+	// Configure multiple entry points.
 	entry: targetEntries,
 });
 

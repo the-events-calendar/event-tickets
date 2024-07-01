@@ -4,6 +4,7 @@ on:
     paths:
       - 'src/modules/**.js'
       - 'src/resources/js/**.js'
+      - '.github/workflows/tests-js.yml'
 jobs:
   jest:
     runs-on: ubuntu-latest

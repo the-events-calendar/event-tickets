@@ -55,5 +55,8 @@
       "Tribe\\Tickets\\Events\\Views\\": "tests/views_integration/Tribe/Tickets/Events/Views",
       "TEC\\Tickets\\Flexible_Tickets\\Test\\": "tests/_support/Flexible_Tickets"
     }
+  },
+  "require": {
+    "stellarwp/assets": "dev-feat/callback-deps-support"
   }
 }
