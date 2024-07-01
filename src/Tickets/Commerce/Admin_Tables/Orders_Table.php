@@ -245,10 +245,14 @@ class Orders_Table extends WP_Posts_List_Table {
 			number_format_i18n( $total_posts )
 		);
 
+		$is_post_status_any   = ! isset( $_REQUEST['post_status'] ) || in_array( $_REQUEST['post_status'], [ 'all', 'any' ], true ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$is_post_status_all   = isset( $_REQUEST['all_posts'] ) && $_REQUEST['all_posts']; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$is_all_status_active = empty( $class ) && ( $this->is_base_request() || $is_post_status_all || $is_post_status_any );
+
 		$status_links['all'] = [
 			'url'     => esc_url( add_query_arg( $all_args, 'edit.php' ) ),
 			'label'   => $all_inner_html,
-			'current' => empty( $class ) && ( $this->is_base_request() || isset( $_REQUEST['all_posts'] ) || ! isset( $_REQUEST['post_status'] ) || ( isset( $_REQUEST['post_status'] ) && in_array( $_REQUEST['post_status'], [ 'all', 'any' ], true ) ) ), // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			'current' => $is_all_status_active,
 		];
 
 		foreach ( get_post_stati( [ 'show_in_admin_status_list' => true ], 'objects' ) as $status ) {
