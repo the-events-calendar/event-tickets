@@ -188,7 +188,7 @@ class Orders_Page {
 	 *
 	 * @return bool
 	 */
-	public function is_admin_orders_page_and_no_TEC() { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
+	public function is_admin_orders_page_and_no_TEC(): bool { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
 		if ( ! $this->is_admin_orders_page() ) {
 			return false;
 		}
