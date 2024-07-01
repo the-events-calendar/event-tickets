@@ -13,11 +13,14 @@ use TEC\Tickets\Commerce\Gateways\Manager;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Gateways\Free\Gateway as Free_Gateway;
 use TEC\Tickets\Commerce\Order;
+use TEC\Tickets\Commerce\Status\Refunded;
+use TEC\Tickets\Commerce\Status\Reversed;
 use Tribe__Date_Utils;
 use WP_Post;
 use WP_User;
 use Tribe__Tickets__Tickets;
 use WP_Posts_List_Table;
+use TEC\Tickets\Commerce\Utils\Value;
 
 if ( ! class_exists( 'WP_List_Table' ) || ! class_exists( 'WP_Posts_List_Table' ) ) {
 	require_once ABSPATH . 'wp-admin/includes/screen.php';
@@ -458,7 +461,28 @@ class Orders_Table extends WP_Posts_List_Table {
 	 * @return string
 	 */
 	public function column_total( $item ) {
-		return $item->total_value->get_currency();
+		$reversed = tribe( Reversed::class )->get_wp_slug();
+		$refunded = tribe( Refunded::class )->get_wp_slug();
+		if ( ! in_array( $item->post_status, [ $reversed, $refunded ], true ) ) {
+			return $item->total_value->get_currency();
+		}
+
+		if ( empty( $item->gateway_payload['refunded'] ) ) {
+			// The item was refunded but we don't know anything about it.
+			return $item->total_value->get_currency();
+		}
+
+		$refunds  = $item->gateway_payload['refunded'];
+		$refunded = max( wp_list_pluck( $refunds, 'amount_refunded' ) );
+		$total    = max( wp_list_pluck( $refunds, 'amount_captured' ) );
+
+		$total_value = $total - $refunded;
+
+		return sprintf(
+			'<p class="tec-tickets-commerce-price-container"><ins><span class="tec-tickets-commerce-price">%s</span></ins><del><span class="tec-tickets-commerce-price">%s</span></del></p>',
+			Value::create( $total_value / 100 )->get_currency(),
+			Value::create( $total / 100 )->get_currency()
+		);
 	}
 
 	/**
