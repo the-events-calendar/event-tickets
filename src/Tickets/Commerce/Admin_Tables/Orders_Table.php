@@ -248,7 +248,7 @@ class Orders_Table extends WP_Posts_List_Table {
 		$status_links['all'] = [
 			'url'     => esc_url( add_query_arg( $all_args, 'edit.php' ) ),
 			'label'   => $all_inner_html,
-			'current' => empty( $class ) && ( $this->is_base_request() || isset( $_REQUEST['all_posts'] ) ) || ( isset( $_REQUEST['post_status'] ) && in_array( $_REQUEST['post_status'], [ 'all', 'any' ], true ) ), // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			'current' => empty( $class ) && ( $this->is_base_request() || isset( $_REQUEST['all_posts'] ) || ! isset( $_REQUEST['post_status'] ) || ( isset( $_REQUEST['post_status'] ) && in_array( $_REQUEST['post_status'], [ 'all', 'any' ], true ) ) ), // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		];
 
 		foreach ( get_post_stati( [ 'show_in_admin_status_list' => true ], 'objects' ) as $status ) {
@@ -464,12 +464,35 @@ class Orders_Table extends WP_Posts_List_Table {
 		$reversed = tribe( Reversed::class )->get_wp_slug();
 		$refunded = tribe( Refunded::class )->get_wp_slug();
 		if ( ! in_array( $item->post_status, [ $reversed, $refunded ], true ) ) {
-			return $item->total_value->get_currency();
+			$regular = 0;
+			$total   = 0;
+
+			foreach ( $item->items as $cart_item ) {
+				$regular += $cart_item['regular_sub_total'] ?? 0;
+				$total   += $cart_item['sub_total'] ?? 0;
+			}
+
+			// Backwards compatible. We didnt use to store regular, so in most installs this is going to be diff cause regular is gonna be 0 mostly.
+			if ( $total !== $regular && $regular > $total ) {
+				return sprintf(
+					'<p class="tec-tickets-commerce-price-container"><ins><span class="tec-tickets-commerce-price">%s</span></ins><del><span class="tec-tickets-commerce-price">%s</span></del></p>',
+					Value::create( $total )->get_currency(),
+					Value::create( $regular )->get_currency()
+				);
+			}
+
+			return sprintf(
+				'<p class="tec-tickets-commerce-price-container"><ins><span class="tec-tickets-commerce-price">%s</span></ins></p>',
+				$item->total_value->get_currency()
+			);
 		}
 
 		if ( empty( $item->gateway_payload['refunded'] ) ) {
 			// The item was refunded but we don't know anything about it.
-			return $item->total_value->get_currency();
+			return sprintf(
+				'<p class="tec-tickets-commerce-price-container"><ins><span class="tec-tickets-commerce-price">%s</span></ins></p>',
+				$item->total_value->get_currency()
+			);
 		}
 
 		$refunds  = $item->gateway_payload['refunded'];

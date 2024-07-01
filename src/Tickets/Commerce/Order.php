@@ -359,7 +359,8 @@ class Order extends Abstract_Order {
 		$items      = array_filter( array_map(
 			static function ( $item ) {
 				/** @var Value $ticket_value */
-				$ticket_value = tribe( Ticket::class )->get_price_value( $item['ticket_id'] );
+				$ticket_value         = tribe( Ticket::class )->get_price_value( $item['ticket_id'] );
+				$ticket_regular_value = tribe( Ticket::class )->get_price_value( $item['ticket_id'], true );
 
 				if ( null === $ticket_value ) {
 					return null;
@@ -368,6 +369,9 @@ class Order extends Abstract_Order {
 				$item['price']     = $ticket_value->get_decimal();
 				$item['sub_total'] = $ticket_value->sub_total( $item['quantity'] )->get_decimal();
 				$item['event_id']  = tribe( Ticket::class )->get_related_event_id( $item['ticket_id'] );
+
+				$item['regular_price']     = $ticket_regular_value->get_decimal();
+				$item['regular_sub_total'] = $ticket_regular_value->sub_total( $item['quantity'] )->get_decimal();
 
 				return $item;
 			},
