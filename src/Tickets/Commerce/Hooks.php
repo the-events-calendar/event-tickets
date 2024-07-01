@@ -295,7 +295,6 @@ class Hooks extends Service_Provider {
 
 		if ( ! $date_range_valid ) {
 			// If invalid, adjust the to date to be the same as the from date.
-			// @todo show a message.
 			$date_to = $date_from;
 		}
 
