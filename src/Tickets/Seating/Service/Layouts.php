@@ -13,6 +13,7 @@ use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Seating\Meta;
 use TEC\Tickets\Seating\Tables\Layouts as Layouts_Table;
 use TEC\Tickets\Seating\Admin\Tabs\Layout_Card;
+use TEC\Tickets\Seating\Tables\Seat_Types as Seat_Types_Table;
 
 /**
  * Class Layouts.
@@ -231,7 +232,8 @@ class Layouts {
 		delete_transient( self::update_transient_name() );
 		wp_cache_delete( 'option_format_layouts', 'tec-tickets-seating' );
 
-		$invalidated = Layouts_Table::truncate() !== false;
+		$invalidated = Layouts_Table::truncate() !== false &&
+						Seat_Types_Table::truncate() !== false;
 
 		/**
 		 * Fires after the caches and custom tables storing information about Layouts have been

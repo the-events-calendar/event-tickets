@@ -20,74 +20,12 @@ class Ajax_Test extends Controller_Test_Case {
 
 	/**
 	 * @before
-	 */
-	protected function become_administator(): void {
-		wp_set_current_user( self::factory()->user->create( [ 'role' => 'administrator' ] ) );
-	}
-
-	/**
-	 * @before
 	 * @after
 	 */
 	public function truncate_tables(): void {
 		Maps::truncate();
 		Seat_Types_Table::truncate();
 		Layouts::truncate();
-	}
-
-	private function given_maps_in_db(): void {
-		\TEC\Tickets\Seating\Service\Maps::insert_rows_from_service( [
-			[
-				'id'            => 'some-map-1',
-				'name'          => 'Some Map 1',
-				'seats'         => 10,
-				'screenshotUrl' => 'https://example.com/some-map-1.png',
-			],
-			[
-				'id'            => 'some-map-2',
-				'name'          => 'Some Map 2',
-				'seats'         => 20,
-				'screenshotUrl' => 'https://example.com/some-map-2.png',
-			],
-			[
-				'id'            => 'some-map-3',
-				'name'          => 'Some Map 3',
-				'seats'         => 30,
-				'screenshotUrl' => 'https://example.com/some-map-3.png',
-			],
-		] );
-	}
-
-
-	private function given_maps_and_layouts_in_db(): void {
-		$this->given_maps_in_db();
-
-		\TEC\Tickets\Seating\Service\Layouts::insert_rows_from_service( [
-			[
-				'id'            => 'some-layouts-1',
-				'name'          => 'Some Layout 1',
-				'seats'         => 10,
-				'createdDate'   => time() * 1000,
-				'mapId'         => 'some-map-1',
-				'screenshotUrl' => 'https://example.com/some-layouts-1.png',
-			],
-			[
-				'id'            => 'some-layouts-2',
-				'name'          => 'Some Layout 2',
-				'seats'         => 20,
-				'createdDate'   => time() * 1000,
-				'mapId'         => 'some-map-2',
-				'screenshotUrl' => 'https://example.com/some-layouts-2.png',
-			],
-			[
-				'id'            => 'some-layouts-3',
-				'name'          => 'Some Layout 3',
-				'seats'         => 30,
-				'createdDate'   => time() * 1000,
-				'mapId'         => 'some-map-3',
-				'screenshotUrl' => 'https://example.com/some-layouts-3.png',
-			],
-		] );
 	}
 
 	/**
@@ -243,6 +181,91 @@ class Ajax_Test extends Controller_Test_Case {
 		$this->assertCount( 3, iterator_to_array( Layouts::fetch_all() ) );
 	}
 
+	private function given_maps_and_layouts_in_db(): void {
+		$this->given_maps_in_db();
+
+		\TEC\Tickets\Seating\Service\Layouts::insert_rows_from_service( [
+			[
+				'id'            => 'some-layout-1',
+				'name'          => 'Some Layout 1',
+				'seats'         => 10,
+				'createdDate'   => time() * 1000,
+				'mapId'         => 'some-map-1',
+				'screenshotUrl' => 'https://example.com/some-layouts-1.png',
+			],
+			[
+				'id'            => 'some-layout-2',
+				'name'          => 'Some Layout 2',
+				'seats'         => 20,
+				'createdDate'   => time() * 1000,
+				'mapId'         => 'some-map-2',
+				'screenshotUrl' => 'https://example.com/some-layouts-2.png',
+			],
+			[
+				'id'            => 'some-layout-3',
+				'name'          => 'Some Layout 3',
+				'seats'         => 30,
+				'createdDate'   => time() * 1000,
+				'mapId'         => 'some-map-3',
+				'screenshotUrl' => 'https://example.com/some-layouts-3.png',
+			],
+		] );
+
+		\TEC\Tickets\Seating\Tables\Seat_Types::insert_many( [
+			[
+				'id'     => 'some-seat-type-1',
+				'name'   => 'Some Seat Type 1',
+				'seats'  => 10,
+				'map'    => 'some-map-1',
+				'layout' => 'some-layout-1',
+			],
+			[
+				'id'     => 'some-seat-type-2',
+				'name'   => 'Some Seat Type 2',
+				'seats'  => 20,
+				'map'    => 'some-map-2',
+				'layout' => 'https://example.com/some-seat-types-2.png',
+			],
+			[
+				'id'     => 'some-seat-type-3',
+				'name'   => 'Some Seat Type 3',
+				'seats'  => 30,
+				'map'    => 'some-map-3',
+				'layout' => 'some-layout-3',
+			],
+		] );
+	}
+
+	/**
+	 * @before
+	 */
+	protected function become_administator(): void {
+		wp_set_current_user( self::factory()->user->create( [ 'role' => 'administrator' ] ) );
+	}
+
+	private function given_maps_in_db(): void {
+		\TEC\Tickets\Seating\Service\Maps::insert_rows_from_service( [
+			[
+				'id'            => 'some-map-1',
+				'name'          => 'Some Map 1',
+				'seats'         => 10,
+				'screenshotUrl' => 'https://example.com/some-map-1.png',
+			],
+			[
+				'id'            => 'some-map-2',
+				'name'          => 'Some Map 2',
+				'seats'         => 20,
+				'screenshotUrl' => 'https://example.com/some-map-2.png',
+			],
+			[
+				'id'            => 'some-map-3',
+				'name'          => 'Some Map 3',
+				'seats'         => 30,
+				'screenshotUrl' => 'https://example.com/some-map-3.png',
+			],
+		] );
+	}
+
 	public function test_invalidate_maps_layouts_cache_with_invalid_nonce(): void {
 		$this->given_maps_and_layouts_in_db();
 		$this->become_administator();
@@ -264,6 +287,7 @@ class Ajax_Test extends Controller_Test_Case {
 		$this->assertEquals( 403, $sent_code );
 		$this->assertCount( 3, iterator_to_array( Maps::fetch_all() ) );
 		$this->assertCount( 3, iterator_to_array( Layouts::fetch_all() ) );
+		$this->assertCount( 3, iterator_to_array( Seat_Types_Table::fetch_all() ) );
 	}
 
 	public function test_invalidate_maps_layouts_cache_with_valid_nonce(): void {
@@ -285,6 +309,7 @@ class Ajax_Test extends Controller_Test_Case {
 		$this->assertTrue( $success );
 		$this->assertCount( 0, iterator_to_array( Maps::fetch_all() ) );
 		$this->assertCount( 0, iterator_to_array( Layouts::fetch_all() ) );
+		$this->assertCount( 0, iterator_to_array( Seat_Types_Table::fetch_all() ) );
 	}
 
 	public function test_invalidate_maps_layouts_cache_with_maps_invalidation_failure(): void {
@@ -311,6 +336,7 @@ class Ajax_Test extends Controller_Test_Case {
 		$this->assertEquals( 403, $sent_code );
 		$this->assertCount( 3, iterator_to_array( Maps::fetch_all() ) );
 		$this->assertCount( 3, iterator_to_array( Layouts::fetch_all() ) );
+		$this->assertCount( 3, iterator_to_array( Seat_Types_Table::fetch_all() ) );
 	}
 
 	public function test_invalidate_maps_layouts_cache_with_layouts_invalidation_failure(): void {
@@ -337,6 +363,7 @@ class Ajax_Test extends Controller_Test_Case {
 		$this->assertEquals( 403, $sent_code );
 		$this->assertCount( 3, iterator_to_array( Maps::fetch_all() ) );
 		$this->assertCount( 3, iterator_to_array( Layouts::fetch_all() ) );
+		$this->assertCount( 3, iterator_to_array( Seat_Types_Table::fetch_all() ) );
 	}
 
 	public function test_invalidate_layouts_cache_without_nonce(): void {
@@ -359,12 +386,13 @@ class Ajax_Test extends Controller_Test_Case {
 		$this->assertEquals( 403, $sent_code );
 		$this->assertCount( 3, iterator_to_array( Maps::fetch_all() ) );
 		$this->assertCount( 3, iterator_to_array( Layouts::fetch_all() ) );
+		$this->assertCount( 3, iterator_to_array( Seat_Types_Table::fetch_all() ) );
 	}
 
 	public function test_invalidate_layouts_cache_with_invalid_nonce(): void {
 		$this->given_maps_and_layouts_in_db();
 		$this->become_administator();
-		$invalid_nonce         = wp_create_nonce( 'something_else' );
+		$invalid_nonce           = wp_create_nonce( 'something_else' );
 		$_REQUEST['_ajax_nonce'] = $invalid_nonce;
 		$_POST['_ajax_nonce']    = $invalid_nonce;
 		$sent_data               = null;
@@ -383,6 +411,7 @@ class Ajax_Test extends Controller_Test_Case {
 		$this->assertEquals( 403, $sent_code );
 		$this->assertCount( 3, iterator_to_array( Maps::fetch_all() ) );
 		$this->assertCount( 3, iterator_to_array( Layouts::fetch_all() ) );
+		$this->assertCount( 3, iterator_to_array( Seat_Types_Table::fetch_all() ) );
 	}
 
 	public function test_invalidate_layouts_cache_with_valid_nonce(): void {
@@ -404,6 +433,7 @@ class Ajax_Test extends Controller_Test_Case {
 		$this->assertTrue( $success );
 		$this->assertCount( 3, iterator_to_array( Maps::fetch_all() ) );
 		$this->assertCount( 0, iterator_to_array( Layouts::fetch_all() ) );
+		$this->assertCount( 0, iterator_to_array( Seat_Types_Table::fetch_all() ) );
 	}
 
 	public function test_invalidate_layouts_cache_with_layouts_invalidation_failure(): void {
@@ -430,5 +460,6 @@ class Ajax_Test extends Controller_Test_Case {
 		$this->assertEquals( 403, $sent_code );
 		$this->assertCount( 3, iterator_to_array( Maps::fetch_all() ) );
 		$this->assertCount( 3, iterator_to_array( Layouts::fetch_all() ) );
+		$this->assertCount( 3, iterator_to_array( Seat_Types_Table::fetch_all() ) );
 	}
 }

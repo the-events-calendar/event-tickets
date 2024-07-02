@@ -22,20 +22,25 @@ import {
  * @property {string}                    token                 The token used to authenticate the connection.
  */
 
+/*
+ * @type {Object.<string, Function>}
+ */
+const defaultActionsMap = {
+	default: defaultMessageHandler,
+	[MAP_CREATED_UPDATED]: onMapCreatedUpdated,
+	[LAYOUT_CREATED_UPDATED]: onLayoutCreatedUpdated,
+	[SEAT_TYPE_CREATED_UPDATED]: onSeatTypeCreatedUpdated,
+	[GO_TO_MAPS_HOME]: onGoToMapsHome,
+	[GO_TO_LAYOUTS_HOME]: onGoToLayoutsHome,
+};
+
 /**
  * @type {State}
  */
 export const state = {
 	ready: false,
 	establishingReadiness: false,
-	actionsMap: {
-		default: defaultMessageHandler,
-		[MAP_CREATED_UPDATED]: onMapCreatedUpdated,
-		[LAYOUT_CREATED_UPDATED]: onLayoutCreatedUpdated,
-		[SEAT_TYPE_CREATED_UPDATED]: onSeatTypeCreatedUpdated,
-		[GO_TO_MAPS_HOME]: onGoToMapsHome,
-		[GO_TO_LAYOUTS_HOME]: onGoToLayoutsHome,
-	},
+	actionsMap: defaultActionsMap,
 	token: null,
 };
 
@@ -44,13 +49,16 @@ export const state = {
  *
  * @since TBD
  *
- * @param {string}        action         The action to get the handler for.
- * @param {Function|null} defaultHandler The default handler to use if none is found.
+ * @param {string} action The action to get the handler for.
  *
  * @return {Function|null} The handler for the action, or the default handler if none is found.
  */
-export function getHandlerForAction(action, defaultHandler) {
-	return state.actionsMap[action] || defaultHandler;
+export function getHandlerForAction(action) {
+	return (
+		state.actionsMap[action] ||
+		state.actionsMap.default ||
+		defaultMessageHandler
+	);
 }
 
 /**
@@ -99,6 +107,17 @@ export function setIsReady(isReady) {
 }
 
 /**
+ * Returns whether the Service is ready or not.
+ *
+ * @since TBD
+ *
+ * @return {boolean} Whether the Service is ready or not.
+ */
+export function getIsReady() {
+	return state.ready;
+}
+
+/**
  * Sets whether the Service is establishing readiness or not.
  *
  * @since TBD
@@ -107,6 +126,17 @@ export function setIsReady(isReady) {
  */
 export function setEstablishingReadiness(establishingReadiness) {
 	state.establishingReadiness = establishingReadiness;
+}
+
+/**
+ * Returns whether the Service is establishing readiness or not.
+ *
+ * @since TBD
+ *
+ * @return {boolean} Whether the Service is establishing readiness or not.
+ */
+export function getEstablishingReadiness() {
+	return state.establishingReadiness;
 }
 
 /**
@@ -129,4 +159,20 @@ export function setToken(token) {
  */
 export function getToken() {
 	return state.token;
+}
+
+/**
+ * Resets the state to its default values.
+ *
+ * This is useful for testing and should not be used in production.
+ *
+ * @since TBD
+ *
+ * @return {void}
+ */
+export function reset() {
+	state.ready = false;
+	state.establishingReadiness = false;
+	state.actionsMap = defaultActionsMap;
+	state.token = null;
 }
