@@ -193,14 +193,6 @@ class Orders_Page {
 			return false;
 		}
 
-		try {
-			tribe( 'tec.main' );
-		} catch ( Exception $e ) {
-			// If the Tickets Events Calendar is not active, return true.
-			return true;
-		}
-
-		// If the Tickets Events Calendar is active, return false.
-		return false;
+		return ! defined( 'TRIBE_EVENTS_FILE' );
 	}
 }
