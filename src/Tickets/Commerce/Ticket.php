@@ -959,7 +959,7 @@ class Ticket {
 	 *
 	 * @since   5.1.9
 	 * @since   5.2.3 method signature changed to return an instance of Value instead of a string.
-	 *
+	 * @since TBD added new param to get regular price value.
 	 * @param int|\WP_Post $product       The ticket post ID or object.
 	 * @param bool         $force_regular Whether to force the regular price.
 	 *
