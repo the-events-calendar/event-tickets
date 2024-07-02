@@ -9,8 +9,10 @@
 
 namespace TEC\Tickets\Seating\Service;
 
+use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Seating\Admin\Tabs\Map_Card;
 use TEC\Tickets\Seating\Tables\Maps as Maps_Table;
+use TEC\Tickets\Seating\Tables\Layouts as Layouts_Table;
 
 /**
  * Class Maps.
@@ -183,5 +185,22 @@ class Maps {
 	 */
 	public static function update_transient_expiration() {
 		return 12 * HOUR_IN_SECONDS;
+	}
+	
+	/**
+	 * Checks if the map has layouts.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $map_id The ID of the map.
+	 *
+	 * @return bool The number of layouts.
+	 */
+	public function map_has_layouts( string $map_id ): bool {
+		$count = DB::table( Layouts_Table::table_name( false ) )
+					->where( 'map', $map_id )
+					->count();
+		
+		return $count > 0;
 	}
 }
