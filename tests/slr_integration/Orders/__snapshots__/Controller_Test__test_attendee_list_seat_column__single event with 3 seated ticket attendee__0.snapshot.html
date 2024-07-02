@@ -1,5 +1,7 @@
-<div  class="wrap tribe-report-page tec-tickets__admin-attendees tec-tickets__admin-attendees--event tec-tickets__admin-attendees--front-end" >
+<div  class="wrap tribe-report-page tec-tickets__admin-attendees tec-tickets__admin-attendees--event" >
 	
+<h1>
+	Attendees for: Event with single seated attendee [#POST_ID]</h1>
 
 <div id="tribe-attendees-summary" class="welcome-panel tribe-report-panel">
 	<div class="welcome-panel-content">
@@ -101,7 +103,29 @@
 	<div class="tec-tickets__admin-attendees-attendance-totals-amount">
 		Checked in <span id="total_checkedin">0</span> (<span id="percent_checkedin" data-total-attendees="3">0%</span>)
 	</div>
-</div></div>					</div>
+</div></div>			<div class="welcome-panel-column welcome-panel-extra"><div class="tribe-common">
+	<div  class="tec-admin__upsell tec-admin__upsell-tec-tickets-manual-attendees" >
+		<div class="tec-admin__upsell-content">
+			<div class="tec-admin__upsell-icon">
+	<img
+		class="tec-admin__upsell-icon-image"
+		src="http://wordpress.test/wp-content/plugins/the-events-calendar/common/src/resources/images/icons/circle-bolt.svg"
+		alt="The Events Calendar important notice icon"
+	/>
+</div>			<div class="tec-admin__upsell-text-wrap">
+				<span class="tec-admin__upsell-text">
+					Manually add attendees with 				</span>
+				<a 
+					 class="tec-admin__upsell-link tec-admin__upsell-link--underlined"  
+					href="https://evnt.is/et-in-app-manual-attendees" 
+					rel="noopener noreferrer"
+					target="_blank"
+				>
+					Event Tickets Plus				</a>
+			</div>
+		</div>
+	</div>
+</div></div>		</div>
 	</div>
 </div>
 
@@ -109,17 +133,17 @@
 	id="event-tickets__attendees-admin-form"
 	 class="topics-filter event-tickets__attendees-admin-form" 	method="post"
 >
-	<input type="hidden" name="tribe[page]" value="tickets-attendees" />
+	<input type="hidden" name="page" value="tickets-attendees" />
 
 	<input
 	type="hidden"
-	name="tribe[event_id]"
+	name="event_id"
 	id="event_id"
 	value="POST_ID"
 />
 <input
 	type="hidden"
-	name="tribe[post_type]"
+	name="post_type"
 	value="tribe_events"
 />
 
@@ -148,7 +172,7 @@
 			<option value="product_id">
 			Search by Product ID		</option>
 	</select>
-<input type="search" id="attendees-search-search-input" name="search" value="" />
+<input type="search" id="attendees-search-search-input" name="s" value="" />
 		<input type="submit" id="search-submit" class="button" value="Search attendees"  /></p>
 			<input type="hidden" id="_wpnonce" name="_wpnonce" value="1234567890" /><input type="hidden" name="_wp_http_referer" value="" />	<div class="tablenav top">
 
@@ -158,6 +182,7 @@
 	<option value="delete_attendee">Delete</option>
 	<option value="check_in">Check in</option>
 	<option value="uncheck_in">Undo Check in</option>
+	<option value="move">Move</option>
 </select>
 <input type="submit" id="doaction" class="button action" value="Apply"  />
 		</div>
@@ -172,18 +197,26 @@
 <span class="tablenav-pages-navspan button disabled" aria-hidden="true">&raquo;</span></span></div>
 		<br class="clear" />
 	</div>
-		<table class="wp-list-table widefat striped attendees tribe-attendees">
+		<table class="wp-list-table widefat striped attendees tribe-attendees fixed tec-tickets__admin-table-attendees">
 			<thead>
 	<tr>
 		<td  id='cb' class='manage-column column-cb check-column'  ><input id="cb-select-all-1" type="checkbox" />
-			<label for="cb-select-all-1"><span class="screen-reader-text">Select All</span></label></td><th scope="col" id='primary_info' class='manage-column column-primary_info column-primary'  >Attendee Information</th><th scope="col" id='ticket' class='manage-column column-ticket sortable desc'  ><a href="http://wordpress.test?orderby=id&#038;order=asc"><span>Ticket</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort ascending.</span></a></th><th scope="col" id='seat' class='manage-column column-seat sortable desc'  ><a href="http://wordpress.test?orderby=seat&#038;order=asc"><span>Seat</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort ascending.</span></a></th><th scope="col" id='security' class='manage-column column-security sortable desc'  ><a href="http://wordpress.test?orderby=security_code&#038;order=asc"><span>Security Code</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort ascending.</span></a></th><th scope="col" id='status' class='manage-column column-status'  >Status</th><th scope="col" id='check_in' class='manage-column column-check_in sortable desc'  ><a href="http://wordpress.test?orderby=check_in&#038;order=asc"><span>Check in</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort ascending.</span></a></th>	</tr>
+			<label for="cb-select-all-1"><span class="screen-reader-text">Select All</span></label></td><th scope="col" id='primary_info' class='manage-column column-primary_info column-primary'  >Attendee Information</th><th scope="col" id='ticket' class='manage-column column-ticket sortable desc'  ><a href="http://wordpress.test?orderby=id&#038;order=asc"><span>Ticket</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort ascending.</span></a></th><th scope="col" id='seat' class='manage-column column-seat sortable desc'  ><a href="http://wordpress.test?orderby=seat&#038;order=asc"><span>Seat</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort ascending.</span></a></th><th scope="col" id='status' class='manage-column column-status'  >Status</th><th scope="col" id='check_in' class='manage-column column-check_in sortable desc'  ><a href="http://wordpress.test?orderby=check_in&#038;order=asc"><span>Check in</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort ascending.</span></a></th>	</tr>
 	</thead>
 
 	<tbody id="the-list"
 		 data-wp-lists='list:attendee'		>
 		<tr class="Pending" data-ticket-type="default"><th scope="row" class="check-column"><input type="checkbox" name="attendee[]" value="TICKET_ID|TEC\Tickets\Commerce\Module" /></th><td class='primary_info column-primary_info has-row-actions column-primary' data-colname="Attendee Information">
 				<div class="purchaser_name tec-tickets__admin-table-attendees-purchaser-name">
-					<span class="row-title">HOLDER_NAME</span>
+					<span class="row-title"><button
+	class="button-link row-title"
+	 data-attendee-id="TICKET_ID" data-event-id="POST_ID" data-ticket-id="POST_ID" data-provider="TEC\Tickets\Commerce\Module" data-provider-slug="tc" data-modal-title="HOLDER_NAME" data-attendee-name="HOLDER_NAME" data-attendee-email="PURCHASER_EMAIL" 	data-content="dialog-content-tec-tickets__attendee-details-dialog"
+	data-js="trigger-dialog-tec-tickets__attendee-details-dialog"
+			id="tec-tickets__admin-attendee-details-xxxxxx"
+				name="tec-tickets-attendee-details"
+				type="button"
+			>HOLDER_NAME</button>
+</span>
 				</div>
 				<div class="purchaser_email tec-tickets__admin-table-attendees-purchaser-email">
 					#TICKET_ID &mdash;
@@ -192,7 +225,7 @@
 			<div class="row-actions"><span class="trash"><a href="?action=delete_attendee&#038;nonce=1234567890&#038;attendee=TICKET_ID|TECTicketsCommerceModule">Delete</a></span></div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class='ticket column-ticket' data-colname="Ticket">		<div class="tec-tickets__admin-table-attendees-ticket-name event-tickets-ticket-name">
 			TICKET_NAME		</div>
 
-		</td><td class='seat column-seat' data-colname="Seat">C-3</td><td class='security column-security' data-colname="Security Code">SECURITY_CODE</td><td class='status column-status' data-colname="Status"><div class="tec-tickets__admin-table-attendees-order-status-wrapper"><span class="tec-tickets__admin-table-attendees-order-status tec-tickets__admin-table-attendees-order-status--pending"><span class="dashicons dashicons-clock"></span>Pending</span></div></td><td class='check_in column-check_in' data-colname="Check in">
+		</td><td class='seat column-seat' data-colname="Seat">C-3</td><td class='status column-status' data-colname="Status"><div class="tec-tickets__admin-table-attendees-order-status-wrapper"><span class="tec-tickets__admin-table-attendees-order-status tec-tickets__admin-table-attendees-order-status--pending"><span class="dashicons dashicons-clock"></span>Pending</span></div></td><td class='check_in column-check_in' data-colname="Check in">
 <button
 	data-attendee-id="TICKET_ID"
 	data-provider="TEC\Tickets\Commerce\Module"
@@ -213,7 +246,15 @@
 </span>
 </td></tr><tr class="Pending" data-ticket-type="default"><th scope="row" class="check-column"><input type="checkbox" name="attendee[]" value="TICKET_ID|TEC\Tickets\Commerce\Module" /></th><td class='primary_info column-primary_info has-row-actions column-primary' data-colname="Attendee Information">
 				<div class="purchaser_name tec-tickets__admin-table-attendees-purchaser-name">
-					<span class="row-title">HOLDER_NAME</span>
+					<span class="row-title"><button
+	class="button-link row-title"
+	 data-attendee-id="TICKET_ID" data-event-id="POST_ID" data-ticket-id="POST_ID" data-provider="TEC\Tickets\Commerce\Module" data-provider-slug="tc" data-modal-title="HOLDER_NAME" data-attendee-name="HOLDER_NAME" data-attendee-email="PURCHASER_EMAIL" 	data-content="dialog-content-tec-tickets__attendee-details-dialog"
+	data-js="trigger-dialog-tec-tickets__attendee-details-dialog"
+			id="tec-tickets__admin-attendee-details-xxxxxx"
+				name="tec-tickets-attendee-details"
+				type="button"
+			>HOLDER_NAME</button>
+</span>
 				</div>
 				<div class="purchaser_email tec-tickets__admin-table-attendees-purchaser-email">
 					#TICKET_ID &mdash;
@@ -222,7 +263,7 @@
 			<div class="row-actions"><span class="trash"><a href="?action=delete_attendee&#038;nonce=1234567890&#038;attendee=TICKET_ID|TECTicketsCommerceModule">Delete</a></span></div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class='ticket column-ticket' data-colname="Ticket">		<div class="tec-tickets__admin-table-attendees-ticket-name event-tickets-ticket-name">
 			TICKET_NAME		</div>
 
-		</td><td class='seat column-seat' data-colname="Seat">D-1</td><td class='security column-security' data-colname="Security Code">SECURITY_CODE</td><td class='status column-status' data-colname="Status"><div class="tec-tickets__admin-table-attendees-order-status-wrapper"><span class="tec-tickets__admin-table-attendees-order-status tec-tickets__admin-table-attendees-order-status--pending"><span class="dashicons dashicons-clock"></span>Pending</span></div></td><td class='check_in column-check_in' data-colname="Check in">
+		</td><td class='seat column-seat' data-colname="Seat">D-1</td><td class='status column-status' data-colname="Status"><div class="tec-tickets__admin-table-attendees-order-status-wrapper"><span class="tec-tickets__admin-table-attendees-order-status tec-tickets__admin-table-attendees-order-status--pending"><span class="dashicons dashicons-clock"></span>Pending</span></div></td><td class='check_in column-check_in' data-colname="Check in">
 <button
 	data-attendee-id="TICKET_ID"
 	data-provider="TEC\Tickets\Commerce\Module"
@@ -243,7 +284,15 @@
 </span>
 </td></tr><tr class="Pending" data-ticket-type="default"><th scope="row" class="check-column"><input type="checkbox" name="attendee[]" value="TICKET_ID|TEC\Tickets\Commerce\Module" /></th><td class='primary_info column-primary_info has-row-actions column-primary' data-colname="Attendee Information">
 				<div class="purchaser_name tec-tickets__admin-table-attendees-purchaser-name">
-					<span class="row-title">HOLDER_NAME</span>
+					<span class="row-title"><button
+	class="button-link row-title"
+	 data-attendee-id="TICKET_ID" data-event-id="POST_ID" data-ticket-id="POST_ID" data-provider="TEC\Tickets\Commerce\Module" data-provider-slug="tc" data-modal-title="HOLDER_NAME" data-attendee-name="HOLDER_NAME" data-attendee-email="PURCHASER_EMAIL" 	data-content="dialog-content-tec-tickets__attendee-details-dialog"
+	data-js="trigger-dialog-tec-tickets__attendee-details-dialog"
+			id="tec-tickets__admin-attendee-details-xxxxxx"
+				name="tec-tickets-attendee-details"
+				type="button"
+			>HOLDER_NAME</button>
+</span>
 				</div>
 				<div class="purchaser_email tec-tickets__admin-table-attendees-purchaser-email">
 					#TICKET_ID &mdash;
@@ -252,7 +301,7 @@
 			<div class="row-actions"><span class="trash"><a href="?action=delete_attendee&#038;nonce=1234567890&#038;attendee=TICKET_ID|TECTicketsCommerceModule">Delete</a></span></div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class='ticket column-ticket' data-colname="Ticket">		<div class="tec-tickets__admin-table-attendees-ticket-name event-tickets-ticket-name">
 			TICKET_NAME		</div>
 
-		</td><td class='seat column-seat' data-colname="Seat">B-4</td><td class='security column-security' data-colname="Security Code">SECURITY_CODE</td><td class='status column-status' data-colname="Status"><div class="tec-tickets__admin-table-attendees-order-status-wrapper"><span class="tec-tickets__admin-table-attendees-order-status tec-tickets__admin-table-attendees-order-status--pending"><span class="dashicons dashicons-clock"></span>Pending</span></div></td><td class='check_in column-check_in' data-colname="Check in">
+		</td><td class='seat column-seat' data-colname="Seat">B-4</td><td class='status column-status' data-colname="Status"><div class="tec-tickets__admin-table-attendees-order-status-wrapper"><span class="tec-tickets__admin-table-attendees-order-status tec-tickets__admin-table-attendees-order-status--pending"><span class="dashicons dashicons-clock"></span>Pending</span></div></td><td class='check_in column-check_in' data-colname="Check in">
 <button
 	data-attendee-id="TICKET_ID"
 	data-provider="TEC\Tickets\Commerce\Module"
@@ -276,7 +325,7 @@
 	<tfoot>
 	<tr>
 		<td   class='manage-column column-cb check-column'  ><input id="cb-select-all-2" type="checkbox" />
-			<label for="cb-select-all-2"><span class="screen-reader-text">Select All</span></label></td><th scope="col"  class='manage-column column-primary_info column-primary'  >Attendee Information</th><th scope="col"  class='manage-column column-ticket sortable desc'  ><a href="http://wordpress.test?orderby=id&#038;order=asc"><span>Ticket</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort ascending.</span></a></th><th scope="col"  class='manage-column column-seat sortable desc'  ><a href="http://wordpress.test?orderby=seat&#038;order=asc"><span>Seat</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort ascending.</span></a></th><th scope="col"  class='manage-column column-security sortable desc'  ><a href="http://wordpress.test?orderby=security_code&#038;order=asc"><span>Security Code</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort ascending.</span></a></th><th scope="col"  class='manage-column column-status'  >Status</th><th scope="col"  class='manage-column column-check_in sortable desc'  ><a href="http://wordpress.test?orderby=check_in&#038;order=asc"><span>Check in</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort ascending.</span></a></th>	</tr>
+			<label for="cb-select-all-2"><span class="screen-reader-text">Select All</span></label></td><th scope="col"  class='manage-column column-primary_info column-primary'  >Attendee Information</th><th scope="col"  class='manage-column column-ticket sortable desc'  ><a href="http://wordpress.test?orderby=id&#038;order=asc"><span>Ticket</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort ascending.</span></a></th><th scope="col"  class='manage-column column-seat sortable desc'  ><a href="http://wordpress.test?orderby=seat&#038;order=asc"><span>Seat</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort ascending.</span></a></th><th scope="col"  class='manage-column column-status'  >Status</th><th scope="col"  class='manage-column column-check_in sortable desc'  ><a href="http://wordpress.test?orderby=check_in&#038;order=asc"><span>Check in</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">Sort ascending.</span></a></th>	</tr>
 	</tfoot>
 
 </table>
@@ -288,6 +337,7 @@
 	<option value="delete_attendee">Delete</option>
 	<option value="check_in">Check in</option>
 	<option value="uncheck_in">Undo Check in</option>
+	<option value="move">Move</option>
 </select>
 <input type="submit" id="doaction2" class="button action" value="Apply"  />
 		</div>

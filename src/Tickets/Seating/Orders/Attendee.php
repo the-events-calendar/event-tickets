@@ -36,7 +36,7 @@ class Attendee {
 	public function add_attendee_seat_column( array $columns, int $event_id ): array {
 		$event_layout_id = get_post_meta( $event_id, Meta::META_KEY_LAYOUT_ID, true );
 		
-		if ( empty( $event_layout_id ) ) {
+		if ( $event_id && empty( $event_layout_id ) ) {
 			return $columns;
 		}
 		
@@ -131,5 +131,30 @@ class Attendee {
 		$repository->filter_query->fields( "{$postmeta_table}.meta_value AS {$meta_alias}", $filter_id, true );
 		
 		return $query_args;
+	}
+	
+	/**
+	 * Remove move row action from attendee list for seated tickets.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $actions The list of actions.
+	 * @param array<string,mixed> $item    The item being acted upon.
+	 *
+	 * @return array<string,mixed> The filtered actions.
+	 */
+	public function remove_move_row_action( $actions, $item ) {
+		if ( ! isset( $actions['move-attendee'] ) ) {
+			return $actions;
+		}
+		
+		$ticket_id   = Arr::get( $item, 'product_id' );
+		$slr_enabled = get_post_meta( $ticket_id, Meta::META_KEY_ENABLED, true );
+		
+		if ( $slr_enabled ) {
+			unset( $actions['move-attendee'] );
+		}
+		
+		return $actions;
 	}
 }

@@ -82,6 +82,9 @@ class Controller_Test extends Controller_Test_Case {
 				
 				$ticket_id = $this->create_tc_ticket( $event_id, 10 );
 				
+				update_post_meta( $ticket_id, Meta::META_KEY_ENABLED, true );
+				update_post_meta( $ticket_id, Meta::META_KEY_LAYOUT_ID, 1 );
+				
 				$tribe_tickets_ar_data = wp_json_encode(
 					[
 						'tribe_tickets_tickets' => [
@@ -169,6 +172,10 @@ class Controller_Test extends Controller_Test_Case {
 		$this->make_controller()->register();
 		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
 		$this->set_fn_return( 'wp_create_nonce', '1234567890' );
+		$this->set_fn_return( 'is_admin', 'true' );
+		$this->set_fn_return( 'uniqid', 'xxxxxx' );
+		// Disable showing random notice from Upsell::show_on_attendees_page.
+		$this->set_fn_return( 'wp_rand', 0 );
 		
 		[ $post_id, $post_ids ] = $fixture();
 		

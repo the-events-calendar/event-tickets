@@ -76,6 +76,7 @@ class Controller extends Controller_Contract {
 			add_filter( 'tribe_events_tickets_attendees_table_column', [ $this, 'render_seat_column' ], 10, 3 );
 			add_filter( 'tec_tickets_attendees_table_sortable_columns', [ $this, 'include_seat_column_as_sortable' ] );
 			add_filter( 'tribe_repository_attendees_query_args', [ $this, 'handle_sorting_seat_column' ], 10, 3 );
+			add_filter( 'event_tickets_attendees_table_row_actions', [ $this, 'remove_move_row_action' ], 10, 2 );
 		}
 	}
 	
@@ -95,6 +96,7 @@ class Controller extends Controller_Contract {
 		remove_filter( 'tribe_events_tickets_attendees_table_column', [ $this, 'render_seat_column' ] );
 		remove_filter( 'tec_tickets_attendees_table_sortable_columns', [ $this, 'include_seat_column_as_sortable' ] );
 		remove_filter( 'tribe_repository_attendees_query_args', [ $this, 'handle_sorting_seat_column' ] );
+		remove_filter( 'event_tickets_attendees_table_row_actions', [ $this, 'remove_move_row_action' ] );
 	}
 	
 	/**
@@ -182,5 +184,19 @@ class Controller extends Controller_Contract {
 	 */
 	public function handle_sorting_seat_column( $query_args, $query, $repository ): array {
 		return $this->attendee->handle_sorting_seat_column( $query_args, $query, $repository );
+	}
+	
+	/**
+	 * Remove the move row action.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,mixed> $default_row_actions The default row actions list.
+	 * @param array<string,mixed> $item The attendee item array.
+	 *
+	 * @return array<string,mixed> The filtered row actions.
+	 */
+	public function remove_move_row_action( $default_row_actions, $item ) {
+		return $this->attendee->remove_move_row_action( $default_row_actions, $item );
 	}
 }

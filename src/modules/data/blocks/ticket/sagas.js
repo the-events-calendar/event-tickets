@@ -10,7 +10,7 @@ import { includes } from 'lodash';
 import { dispatch as wpDispatch, select as wpSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 import { createBlock } from '@wordpress/blocks';
-import {applyFilters, doAction} from '@wordpress/hooks';
+import { applyFilters, doAction } from '@wordpress/hooks';
 
 /**
  * Internal dependencies
@@ -392,11 +392,10 @@ export function* setBodyDetails( clientId ) {
 	 * The action will fire both when a ticket is being created and when an existing ticket is being updated.
 	 *
 	 * @since TBD
-	 *
 	 * @param {Object} body The body of the request.
 	 * @param {string} clientId The client ID of the ticket block that is being created or updated.
 	 */
-	body = applyFilters('tec.tickets.blocks.setBodyDetails', body, clientId);
+	body = applyFilters( 'tec.tickets.blocks.setBodyDetails', body, clientId );
 
 	return body;
 }
