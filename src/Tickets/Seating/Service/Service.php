@@ -282,26 +282,6 @@ class Service {
 			$this->get_frontend_url( '/embed/seat-layout/' )
 		);
 	}
-	
-	/**
-	 * Returns the URL to load the service route to delete a seat layout.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $token     The ephemeral token used to secure the iframe communication with the service.
-	 * @param string $layout_id The ID of the layout to delete.
-	 *
-	 * @return string The URL to load the service route to delete a seat layout.
-	 */
-	public function get_layout_delete_url( string $token, string $layout_id ): string {
-		return add_query_arg(
-			[
-				'token'    => urlencode( $token ),
-				'layoutId' => urlencode( $layout_id ),
-			],
-			$this->get_frontend_url( '/embed/delete-seat-layout/' )
-		);
-	}
 
 	/**
 	 * Returns the URL to load the service route to purchase tickets with assigned seating.
