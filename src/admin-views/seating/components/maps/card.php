@@ -31,7 +31,7 @@ use TEC\Tickets\Seating\Admin\Tabs\Map_Card;
 				?>
 		</div>
 		<div class="tec-tickets__seating-tab__card-actions">
-			<a class="button button-secondary add-map" href="#">
+			<a class="button button-secondary add-map" href="<?php echo esc_url( $card->get_create_layout_url() ); ?>">
 				<?php esc_html_e( 'Create Layout', 'event-tickets' ); ?>
 			</a>
 			<a class="button button-secondary edit-map" href="<?php echo esc_url( $card->get_edit_url() ); ?>">
