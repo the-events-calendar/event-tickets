@@ -158,25 +158,6 @@ class Layout_Card {
 	}
 	
 	/**
-	 * Returns the URL to delete the Layout.
-	 *
-	 * @since TBD
-	 *
-	 * @return string The URL to delete the Layout.
-	 */
-	public function get_delete_url(): string {
-		return add_query_arg(
-			[
-				'page'     => Admin::get_menu_slug(),
-				'tab'      => Layout_Edit::get_id(),
-				'action'   => 'delete',
-				'layoutId' => $this->get_id(),
-			],
-			admin_url( 'admin.php' )
-		);
-	}
-	
-	/**
 	 * Returns the number of associated posts.
 	 *
 	 * @since TBD

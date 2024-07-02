@@ -1,5 +1,5 @@
 // Get the service base URL without the trailing slash.
-import { baseUrl } from './externals.js';
+import { getBaseUrl } from './externals.js';
 import {
 	setIsReady,
 	setEstablishingReadiness,
@@ -17,7 +17,11 @@ import {
 	OUTBOUND_HOST_READY,
 	OUTBOUND_SEAT_TYPE_TICKETS,
 } from './service-actions.js';
-import { defaultMessageHandler } from './message-handlers';
+
+/**
+ * @type {[string, Function, MessageEvent][]}
+ */
+let handlerQueue = [];
 
 /**
  * Posts a message to the service iframe.
@@ -44,8 +48,49 @@ export function sendPostMessage(iframe, action, data) {
 			token,
 			data: data || {},
 		},
-		baseUrl
+		getBaseUrl()
 	);
+}
+
+/**
+ * Calls the next wrapper handler in the queue.
+ *
+ * A "wrapper handler" is a handler that will execute its own code and call the next handler
+ * in the queue or, if thenable, will resolve and then call the next handler.
+ *
+ * @since TBD
+ *
+ * @return {void}
+ */
+function callNextHandler() {
+	if (handlerQueue.length === 0) {
+		return;
+	}
+
+	const [action, handler, event] = handlerQueue[0];
+	const wrappedHandler = wrapHandlerForQueue(handler);
+
+	wrappedHandler(event.data.data);
+}
+
+/**
+ * Wraps a handler in a function that will call the next handler in the queue.
+ *
+ * Since all functions can be awaited, the wrapper will treat all functions as async functions.
+ *
+ * @since TBD
+ *
+ * @param {Function} handler The handler to wrap.
+ *
+ * @return {Function} The wrapped handler.
+ */
+function wrapHandlerForQueue(handler) {
+	return async (data) => {
+		await handler(data);
+		// Remove the first handler, this, from the queue.
+		handlerQueue.shift();
+		callNextHandler();
+	};
 }
 
 /**
@@ -63,7 +108,7 @@ export function sendPostMessage(iframe, action, data) {
 export function catchMessage(event) {
 	if (
 		!(
-			event.origin === baseUrl &&
+			event.origin === getBaseUrl() &&
 			event.data.token &&
 			event.data.token === getToken()
 		)
@@ -78,9 +123,16 @@ export function catchMessage(event) {
 		return;
 	}
 
-	const handler = getHandlerForAction(action, defaultMessageHandler);
+	const handler = getHandlerForAction(action);
+	handlerQueue.push([action, handler, event]);
 
-	handler(event.data.data);
+	if (handlerQueue.length > 1) {
+		// The handler will have to wait for the previous ones to finish.
+		return;
+	}
+
+	// Immediately call the handler.
+	callNextHandler();
 }
 
 /**
@@ -162,6 +214,28 @@ export async function establishReadiness(iframe) {
 	return promise;
 }
 
+/**
+ * Returns the handler queue for the service.
+ *
+ * @since TBD
+ *
+ * @return {Object<string, Function>} The handler queue for the service.
+ */
+export function getHandlerQueue() {
+	return handlerQueue;
+}
+
+/**
+ * Empties the handler queue.
+ *
+ * @since TBD
+ *
+ * @return {void}
+ */
+export function emptyHandlerQueue() {
+	handlerQueue = [];
+}
+
 window.tec = window.tec || {};
 window.tec.tickets.seating = window.tec.tickets.seating || {};
 window.tec.tickets.seating.service = {
@@ -177,4 +251,5 @@ window.tec.tickets.seating.service = {
 	registerAction,
 	removeAction,
 	getRegisteredActions,
+	getHandlerQueue,
 };
