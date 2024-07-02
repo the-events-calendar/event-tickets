@@ -11,7 +11,6 @@ namespace TEC\Tickets\Commerce\Admin;
 
 use TEC\Tickets\Commerce\Order;
 use Tribe\Admin\Pages;
-use Exception;
 
 /**
  * Class Orders_Page.
