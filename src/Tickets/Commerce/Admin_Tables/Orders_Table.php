@@ -13,11 +13,14 @@ use TEC\Tickets\Commerce\Gateways\Manager;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 use TEC\Tickets\Commerce\Gateways\Free\Gateway as Free_Gateway;
 use TEC\Tickets\Commerce\Order;
+use TEC\Tickets\Commerce\Status\Refunded;
+use TEC\Tickets\Commerce\Status\Reversed;
 use Tribe__Date_Utils;
 use WP_Post;
 use WP_User;
 use Tribe__Tickets__Tickets;
 use WP_Posts_List_Table;
+use TEC\Tickets\Commerce\Utils\Value;
 
 if ( ! class_exists( 'WP_List_Table' ) || ! class_exists( 'WP_Posts_List_Table' ) ) {
 	require_once ABSPATH . 'wp-admin/includes/screen.php';
@@ -42,24 +45,6 @@ class Orders_Table extends WP_Posts_List_Table {
 	public $post_id;
 
 	/**
-	 * The name (what gets submitted to the server) of our search box input.
-	 *
-	 * @since TBD
-	 *
-	 * @var string $search_box_input_name
-	 */
-	private $search_box_input_name = 'search';
-
-	/**
-	 * The name of the search type slug.
-	 *
-	 * @since TBD
-	 *
-	 * @var string $search_type_slug
-	 */
-	private $search_type_slug = 'tec_tc_order_search_type';
-
-	/**
 	 * Orders Table constructor.
 	 *
 	 * @since TBD
@@ -72,6 +57,44 @@ class Orders_Table extends WP_Posts_List_Table {
 		];
 
 		parent::__construct( $args );
+	}
+
+	/**
+	 * Displays the search box.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $text     The 'submit' button label.
+	 * @param string $input_id ID attribute value for the search input field.
+	 */
+	public function search_box( $text, $input_id ) {
+		if ( empty( tribe_get_request_var( 'search', '' ) ) && ! $this->has_items() ) {
+			return;
+		}
+
+		$input_id = $input_id . '-search-input';
+
+		if ( ! empty( tribe_get_request_var( 'orderby', '' ) ) ) {
+			echo '<input type="hidden" name="orderby" value="' . esc_attr( tribe_get_request_var( 'orderby', '' ) ) . '" />';
+		}
+		if ( ! empty( tribe_get_request_var( 'order', '' ) ) ) {
+			echo '<input type="hidden" name="order" value="' . esc_attr( tribe_get_request_var( 'order', '' ) ) . '" />';
+		}
+
+		$text = __( 'Search Orders', 'event-tickets' );
+		?>
+			<p class="search-box">
+				<label class="screen-reader-text" for="<?php echo esc_attr( $input_id ); ?>"><?php echo esc_html( $text ); ?>:</label>
+				<input
+					type="search"
+					id="<?php echo esc_attr( $input_id ); ?>"
+					name="search"
+					value="<?php echo esc_attr( wp_unslash( tribe_get_request_var( 'search', '' ) ) ); ?>"
+					placeholder="<?php esc_attr_e( 'ID or Email', 'event-tickets' ); ?>"
+				/>
+				<?php submit_button( $text, '', '', false, [ 'id' => 'search-submit' ] ); ?>
+			</p>
+		<?php
 	}
 
 	/**
@@ -140,7 +163,6 @@ class Orders_Table extends WP_Posts_List_Table {
 				'total'            => __( 'Total', 'event-tickets' ),
 				'post_parent'      => __( 'Event', 'event-tickets' ),
 				'gateway'          => __( 'Gateway', 'event-tickets' ),
-				'gateway_order_id' => __( 'Gateway ID', 'event-tickets' ),
 			]
 		);
 	}
@@ -223,10 +245,14 @@ class Orders_Table extends WP_Posts_List_Table {
 			number_format_i18n( $total_posts )
 		);
 
+		$is_post_status_any   = ! isset( $_REQUEST['post_status'] ) || in_array( $_REQUEST['post_status'], [ 'all', 'any' ], true ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$is_post_status_all   = isset( $_REQUEST['all_posts'] ) && $_REQUEST['all_posts']; // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		$is_all_status_active = empty( $class ) && ( $this->is_base_request() || $is_post_status_all || $is_post_status_any );
+
 		$status_links['all'] = [
 			'url'     => esc_url( add_query_arg( $all_args, 'edit.php' ) ),
 			'label'   => $all_inner_html,
-			'current' => empty( $class ) && ( $this->is_base_request() || isset( $_REQUEST['all_posts'] ) ), // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			'current' => $is_all_status_active,
 		];
 
 		foreach ( get_post_stati( [ 'show_in_admin_status_list' => true ], 'objects' ) as $status ) {
@@ -402,7 +428,7 @@ class Orders_Table extends WP_Posts_List_Table {
 			$ticket   = Tribe__Tickets__Tickets::load_ticket_object( $cart_item['ticket_id'] );
 			$name     = esc_html( $ticket->name );
 			$quantity = esc_html( (int) $cart_item['quantity'] );
-			$output  .= "<div class='tribe-line-item'>{$quantity} - {$name}</div>";
+			$output  .= "<div class='tribe-line-item'>{$quantity} {$name}</div>";
 		}
 
 		return $output;
@@ -439,7 +465,51 @@ class Orders_Table extends WP_Posts_List_Table {
 	 * @return string
 	 */
 	public function column_total( $item ) {
-		return $item->total_value->get_currency();
+		$reversed = tribe( Reversed::class )->get_wp_slug();
+		$refunded = tribe( Refunded::class )->get_wp_slug();
+		if ( ! in_array( $item->post_status, [ $reversed, $refunded ], true ) ) {
+			$regular = 0;
+			$total   = 0;
+
+			foreach ( $item->items as $cart_item ) {
+				$regular += $cart_item['regular_sub_total'] ?? 0;
+				$total   += $cart_item['sub_total'] ?? 0;
+			}
+
+			// Backwards compatible. We didnt use to store regular, so in most installs this is going to be diff cause regular is gonna be 0 mostly.
+			if ( $total !== $regular && $regular > $total ) {
+				return sprintf(
+					'<p class="tec-tickets-commerce-price-container"><ins><span class="tec-tickets-commerce-price">%s</span></ins><del><span class="tec-tickets-commerce-price">%s</span></del></p>',
+					Value::create( $total )->get_currency(),
+					Value::create( $regular )->get_currency()
+				);
+			}
+
+			return sprintf(
+				'<p class="tec-tickets-commerce-price-container"><ins><span class="tec-tickets-commerce-price">%s</span></ins></p>',
+				$item->total_value->get_currency()
+			);
+		}
+
+		if ( empty( $item->gateway_payload['refunded'] ) ) {
+			// The item was refunded but we don't know anything about it.
+			return sprintf(
+				'<p class="tec-tickets-commerce-price-container"><ins><span class="tec-tickets-commerce-price">%s</span></ins></p>',
+				$item->total_value->get_currency()
+			);
+		}
+
+		$refunds  = $item->gateway_payload['refunded'];
+		$refunded = max( wp_list_pluck( $refunds, 'amount_refunded' ) );
+		$total    = max( wp_list_pluck( $refunds, 'amount_captured' ) );
+
+		$total_value = $total - $refunded;
+
+		return sprintf(
+			'<p class="tec-tickets-commerce-price-container"><ins><span class="tec-tickets-commerce-price">%s</span></ins><del><span class="tec-tickets-commerce-price">%s</span></del></p>',
+			Value::create( $total_value / 100 )->get_currency(),
+			Value::create( $total / 100 )->get_currency()
+		);
 	}
 
 	/**
@@ -480,25 +550,25 @@ class Orders_Table extends WP_Posts_List_Table {
 	 *
 	 * @return string
 	 */
-	public function column_gateway_order_id( $item ) {
+	protected function column_gateway_order_id( $item ) {
 		$gateway = tribe( Manager::class )->get_gateway_by_key( $item->gateway );
 
 		if ( $gateway instanceof Free_Gateway ) {
-			return esc_html__( 'N\A', 'event-tickets' );
+			return '';
 		}
 
 		if ( ! $gateway ) {
-			return $item->gateway_order_id;
+			return '';
 		}
 
 		$order_url = $gateway->get_order_controller()->get_gateway_dashboard_url_by_order( $item );
 
 		if ( empty( $order_url ) ) {
-			return $item->gateway_order_id;
+			return '';
 		}
 
 		return sprintf(
-			'<a href="%s" target="_blank" rel="noopener noreferrer">%s</a>',
+			'<a class="tribe-external-link" href="%s" target="_blank" rel="noopener noreferrer">%s</a>',
 			$order_url,
 			$item->gateway_order_id
 		);
@@ -524,7 +594,7 @@ class Orders_Table extends WP_Posts_List_Table {
 			return $item->gateway;
 		}
 
-		return $gateway::get_label();
+		return $gateway::get_label() . $this->column_gateway_order_id( $item );
 	}
 
 	/**
@@ -551,7 +621,6 @@ class Orders_Table extends WP_Posts_List_Table {
 				'date'             => 'purchase_time',
 				'post_parent'      => 'event',
 				'gateway'          => 'gateway',
-				'gateway_order_id' => 'gateway_id',
 				'status'           => 'status',
 				'total'            => 'total_value',
 			]
@@ -626,7 +695,20 @@ class Orders_Table extends WP_Posts_List_Table {
 
 			if ( ! empty( $output ) ) {
 				echo $output; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped, StellarWP.XSS.EscapeOutput.OutputNotEscaped
-				submit_button( __( 'Filter' ), '', 'filter_action', false, [ 'id' => 'post-query-submit' ] );
+				submit_button(
+					__( 'Apply Filters', 'event-tickets' ),
+					'',
+					'filter_action',
+					false,
+					[
+						'id' => 'post-query-submit',
+					]
+				);
+				?>
+				<a href="<?php echo esc_url( remove_query_arg( [ 'tec_tc_date_range_from', 'tec_tc_date_range_to', 'tec_tc_gateway', 'tec_tc_events', 'tec_tc_customers' ] ) ); ?>">
+					<?php esc_html_e( 'Clear All', 'event-tickets' ); ?>
+				</a>
+				<?php
 			}
 		}
 
@@ -680,7 +762,7 @@ class Orders_Table extends WP_Posts_List_Table {
 		$date_to   = Tribe__Date_Utils::is_valid_date( $date_to ) ? $date_to : '';
 		?>
 		<label class="screen-reader-text" for="tec_tc_data-range-from">
-			<?php esc_html_e( 'From date:', 'event-tickets' ); ?>
+			<?php esc_html_e( 'From', 'event-tickets' ); ?>
 		</label>
 		<input
 			autocomplete="off"
@@ -690,11 +772,11 @@ class Orders_Table extends WP_Posts_List_Table {
 			id="tec_tc_data-range-from"
 			size="10"
 			value="<?php echo esc_attr( $date_from ); ?>"
-			placeholder="<?php esc_attr_e( 'From date', 'event-tickets' ); ?>"
+			placeholder="<?php esc_attr_e( 'YYYY-MM-DD', 'event-tickets' ); ?>"
 			data-validation-type="datepicker"
 		/>
-		<label class="screen-reader-text" for="tec_tc_data-range-to">
-			<?php esc_html_e( 'To date:', 'event-tickets' ); ?>
+		<label for="tec_tc_data-range-to">
+			<?php esc_html_e( 'to', 'event-tickets' ); ?>
 		</label>
 		<input
 			autocomplete="off"
@@ -704,7 +786,7 @@ class Orders_Table extends WP_Posts_List_Table {
 			id="tec_tc_data-range-to"
 			size="10"
 			value="<?php echo esc_attr( $date_to ); ?>"
-			placeholder="<?php esc_attr_e( 'To date', 'event-tickets' ); ?>"
+			placeholder="<?php esc_attr_e( 'YYYY-MM-DD', 'event-tickets' ); ?>"
 			data-validation-type="datepicker"
 		/>
 		<?php
@@ -838,6 +920,10 @@ class Orders_Table extends WP_Posts_List_Table {
 			data-searching-placeholder="<?php esc_attr_e( 'Searching...', 'event-tickets' ); ?>"
 			data-source="tec_tc_order_table_events"
 			data-source-nonce="<?php echo esc_attr( wp_create_nonce( 'tribe_dropdown' ) ); ?>"
+			data-ajax-delay="400"
+			data-ajax-cache="1"
+			data-minimum-input-length="3"
+			data-tags="0"
 		>
 			<?php foreach ( $events_formatted as $key => $value ) : ?>
 				<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $e, $key ); ?>><?php echo esc_html( $value ); ?></option>
@@ -892,6 +978,10 @@ class Orders_Table extends WP_Posts_List_Table {
 			data-searching-placeholder="<?php esc_attr_e( 'Searching...', 'event-tickets' ); ?>"
 			data-source="tec_tc_order_table_customers"
 			data-source-nonce="<?php echo esc_attr( wp_create_nonce( 'tribe_dropdown' ) ); ?>"
+			data-ajax-delay="400"
+			data-ajax-cache="1"
+			data-minimum-input-length="3"
+			data-tags="0"
 		>
 			<?php foreach ( $customers_formatted as $key => $value ) : ?>
 				<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $customer, $key ); ?>><?php echo esc_html( $value ); ?></option>

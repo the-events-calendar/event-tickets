@@ -175,7 +175,6 @@ class Orders_TableTest extends \Codeception\TestCase\WPTestCase {
 			'total'            => __( 'Total', 'event-tickets' ),
 			'post_parent'      => __( 'Event', 'event-tickets' ),
 			'gateway'          => __( 'Gateway', 'event-tickets' ),
-			'gateway_order_id' => __( 'Gateway ID', 'event-tickets' ),
 		];
 
 		$this->assertEquals( $expected_columns, $orders_table->get_columns() );

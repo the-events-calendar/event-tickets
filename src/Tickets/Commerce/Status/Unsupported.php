@@ -50,7 +50,7 @@ class Unsupported extends Status_Abstract {
 	protected $wp_arguments = [
 		'public'                    => false,
 		'exclude_from_search'       => false,
-		'show_in_admin_all_list'    => false,
+		'show_in_admin_all_list'    => true,
 		'show_in_admin_status_list' => false,
 	];
 }

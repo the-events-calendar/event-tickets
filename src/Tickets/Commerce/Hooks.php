@@ -266,23 +266,23 @@ class Hooks extends Service_Provider {
 
 		$current_status = $query->get( 'post_status' );
 
-		if ( 'any' !== $current_status || [ 'any' ] !== $current_status ) {
-			if ( is_array( $current_status ) ) {
-				$statuses = [];
-				foreach ( $current_status as $st ) {
-					if ( 'any' === $st ) {
-						$statuses = [ 'any' ];
-						// No need to continue.
-						break;
-					}
-
-					$statuses = array_merge( $statuses, tribe( Status_Handler::class )->get_group_of_statuses_by_slug( '', $st ) );
+		if ( ! $current_status ) {
+			$query->set( 'post_status', 'any' );
+		} elseif ( is_array( $current_status ) ) {
+			$statuses = [];
+			foreach ( $current_status as $st ) {
+				if ( 'any' === $st ) {
+					$statuses = [ 'any' ];
+					// No need to continue.
+					break;
 				}
 
-				$query->set( 'post_status', array_unique( $statuses ) );
-			} else {
-				$query->set( 'post_status', tribe( Status_Handler::class )->get_group_of_statuses_by_slug( '', $current_status ) );
+				$statuses = array_merge( $statuses, tribe( Status_Handler::class )->get_group_of_statuses_by_slug( '', $st ) );
 			}
+
+			$query->set( 'post_status', array_unique( $statuses ) );
+		} else {
+			$query->set( 'post_status', tribe( Status_Handler::class )->get_group_of_statuses_by_slug( '', $current_status ) );
 		}
 
 		$date_from = sanitize_text_field( tribe_get_request_var( 'tec_tc_date_range_from', '' ) );
@@ -295,7 +295,6 @@ class Hooks extends Service_Provider {
 
 		if ( ! $date_range_valid ) {
 			// If invalid, adjust the to date to be the same as the from date.
-			// @todo show a message.
 			$date_to = $date_from;
 		}
 
@@ -355,13 +354,53 @@ class Hooks extends Service_Provider {
 
 		$customer_filter = absint( tribe_get_request_var( 'tec_tc_customers', 0 ) );
 
-		// @todo needs tests.
 		if ( $customer_filter ) {
 			$meta_query[] = [
 				'key'     => Order::$purchaser_user_id_meta_key,
 				'value'   => $customer_filter,
 				'compare' => '=',
 			];
+		}
+
+		$search = sanitize_text_field( tribe_get_request_var( 'search', '' ) );
+
+		if ( ! empty( $search ) ) {
+			$test_search = false;
+
+			if ( is_numeric( $search ) ) {
+				// If the search term is numeric, we could assume they are searching by order id.
+				$test_search = get_post( absint( $search ) );
+				$test_search = $test_search instanceof WP_Post ? $test_search : null;
+				$test_search = $test_search ?
+					Order::POSTTYPE === $test_search->post_type && 'trash' !== $test_search->post_status :
+					false;
+
+				if ( $test_search ) {
+					$query->set( 'post__in', [ absint( $search ) ] );
+				}
+			}
+
+			if ( ! $test_search ) {
+				// In every other case create an OR meta query.
+				$meta_query[] = [
+					[
+						'key'     => Order::$purchaser_email_meta_key,
+						'value'   => $search,
+						'compare' => 'LIKE',
+					],
+					[
+						'key'     => Order::$purchaser_full_name_meta_key,
+						'value'   => $search,
+						'compare' => 'LIKE',
+					],
+					[
+						'key'     => Order::$gateway_order_id_meta_key,
+						'value'   => $search,
+						'compare' => '=',
+					],
+					'relation' => 'OR',
+				];
+			}
 		}
 
 		if ( count( $meta_query ) > 1 && empty( $meta_query['relation'] ) ) {
