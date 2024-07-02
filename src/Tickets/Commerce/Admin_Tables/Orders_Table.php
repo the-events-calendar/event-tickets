@@ -531,6 +531,35 @@ class Orders_Table extends WP_Posts_List_Table {
 		$output = '';
 
 		foreach ( $events as $event ) {
+			$event_post = get_post( $event );
+			if ( ! $event_post instanceof WP_Post ) {
+				continue;
+			}
+
+			if ( ! current_user_can( 'edit_post', $event ) ) {
+				$output .= sprintf(
+					'<div>%s</div>',
+					esc_html( get_the_title( $event ) )
+				);
+				continue;
+			}
+
+			if ( 'trash' === $event_post->post_status ) {
+				$output .= sprintf(
+					'<div>%s (trashed)</div>',
+					esc_html( get_the_title( $event ) )
+				);
+				continue;
+			}
+
+			if ( ( ! in_array( $event_post->post_type, get_post_types( [ 'show_ui' => true ] ), true ) ) ) {
+				$output .= sprintf(
+					'<div>%s</div>',
+					esc_html( get_the_title( $event ) )
+				);
+				continue;
+			}
+
 			$output .= sprintf(
 				'<div><a href="%s">%s</a></div>',
 				esc_url( get_edit_post_link( $event ) ),
