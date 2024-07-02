@@ -52,6 +52,21 @@ class Orders_Page {
 			[ 'admin_enqueue_scripts' ],
 			[ 'conditionals' => [ $this, 'is_admin_orders_page' ] ]
 		);
+
+		// We only want to load this script if The Events Calendar is not active.
+		tribe_asset(
+			tribe( 'tickets.main' ),
+			'event-tickets-commerce-admin-orders',
+			'admin/orders/table.js',
+			[
+				'jquery',
+				'jquery-ui-dialog',
+				'jquery-ui-datepicker',
+				'tribe-attrchange',
+			],
+			[ 'admin_enqueue_scripts' ],
+			[ 'conditionals' => [ $this, 'is_admin_orders_page_and_no_TEC' ] ]
+		);
 	}
 
 	/**
@@ -163,5 +178,20 @@ class Orders_Page {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Checks if the current screen is the orders page and the Tickets Events Calendar is not active.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function is_admin_orders_page_and_no_TEC(): bool { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
+		if ( ! $this->is_admin_orders_page() ) {
+			return false;
+		}
+
+		return ! defined( 'TRIBE_EVENTS_FILE' );
 	}
 }
