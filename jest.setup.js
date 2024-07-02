@@ -22,6 +22,9 @@ global.wp = {
 	blockEditor: {},
 	editor: {},
 	hooks: {},
+	i18n: {
+		_x: (input) => input,
+	},
 };
 global.shallow = shallow;
 global.render = render;

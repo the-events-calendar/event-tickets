@@ -230,9 +230,10 @@ const config = merge(common, {
 	externals: [
 		{
 			'@wordpress/core-data': 'wp.coreData',
-			'@tec/tickets/seating/iframe': 'tec.tickets.seating.iframe',
-			'@tec/tickets/seating/errors': 'tec.tickets.seating.errors',
-			'@tec/tickets/seating/notices': 'tec.tickets.seating.notices',
+			'@tec/tickets/seating/service/iframe': 'tec.tickets.seating.service.iframe',
+			'@tec/tickets/seating/service/errors': 'tec.tickets.seating.service.errors',
+			'@tec/tickets/seating/service/notices':
+				'tec.tickets.seating.service.notices',
 			'@tec/tickets/seating/service': 'tec.tickets.seating.service',
 			'@tec/tickets/seating/utils': 'tec.tickets.seating.utils',
 			'@tec/tickets/seating/ajax': 'tec.tickets.seating.ajax',
