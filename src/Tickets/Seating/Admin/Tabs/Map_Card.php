@@ -54,6 +54,15 @@ class Map_Card {
 	 * @var string
 	 */
 	protected string $screenshot_url;
+	
+	/**
+	 * Whether the map has layouts.
+	 *
+	 * @since TBD
+	 *
+	 * @var bool
+	 */
+	protected bool $has_layouts;
 
 	/**
 	 * Map_Card constructor.
@@ -64,12 +73,14 @@ class Map_Card {
 	 * @param string $name The map name.
 	 * @param int    $seats The number of seats in the map.
 	 * @param string $screen_shot_url The URL to the map's screen shot.
+	 * @param bool   $has_layouts Whether the map has layouts.
 	 */
-	public function __construct( string $id, string $name, int $seats, string $screen_shot_url ) {
+	public function __construct( string $id, string $name, int $seats, string $screen_shot_url, bool $has_layouts = false ) {
 		$this->id             = $id;
 		$this->name           = $name;
 		$this->seats          = $seats;
 		$this->screenshot_url = $screen_shot_url;
+		$this->has_layouts    = $has_layouts;
 	}
 
 	/**
@@ -151,5 +162,16 @@ class Map_Card {
 			],
 			admin_url( 'admin.php' )
 		);
+	}
+	
+	/**
+	 * Returns whether the map has layouts.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether the map has layouts.
+	 */
+	public function has_layouts(): bool {
+		return $this->has_layouts;
 	}
 }
