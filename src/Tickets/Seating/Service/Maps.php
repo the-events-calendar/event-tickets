@@ -92,7 +92,8 @@ class Maps {
 					$row->id,
 					$row->name,
 					$row->seats,
-					$row->screenshot_url
+					$row->screenshot_url,
+					$this->map_has_layouts( $row->id ),
 				);
 			}
 
