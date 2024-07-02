@@ -1,5 +1,5 @@
 /**
- * @typedef {Object} TimerData
+ * @typedef {Object} ExternalTimerData
  * @property {string} ajaxUrl          The URL to the service iframe.
  * @property {string} ajaxNonce        The AJAX nonce.
  * @property {string} ACTION_START     The action to start the timer.
@@ -8,6 +8,6 @@
  */
 
 /**
- * @type {TimerData}
+ * @type {ExternalTimerData}
  */
-export const externals = tec.tickets.seating.frontend.timer;
+export const localizedData = tec.tickets.seating.frontend.timer;

@@ -243,7 +243,7 @@ class Timer extends Controller_Contract {
 	 * @return void
 	 */
 	public function unregister(): void {
-		remove_action( 'tec_tickets_seating_seat_selection_timer', [ $this, 'render_seat_selection_timer' ], );
+		remove_action( 'tec_tickets_seating_seat_selection_timer', [ $this, 'render' ] );
 		remove_action( 'wp_ajax_nopriv_' . self::ACTION_START, [ $this, 'ajax_start' ] );
 		remove_action( 'wp_ajax_' . self::ACTION_START, [ $this, 'ajax_start' ] );
 	}
@@ -256,7 +256,7 @@ class Timer extends Controller_Contract {
 	 * @return void
 	 */
 	protected function do_register(): void {
-		add_action( 'tec_tickets_seating_seat_selection_timer', [ $this, 'render_seat_selection_timer' ], 10, 2 );
+		add_action( 'tec_tickets_seating_seat_selection_timer', [ $this, 'render' ], 10, 2 );
 		add_action( 'wp_ajax_nopriv_' . self::ACTION_START, [ $this, 'ajax_start' ] );
 		add_action( 'wp_ajax_' . self::ACTION_START, [ $this, 'ajax_start' ] );
 

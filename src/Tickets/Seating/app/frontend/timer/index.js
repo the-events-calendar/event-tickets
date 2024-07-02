@@ -1,8 +1,8 @@
-import { externals } from './externals';
+import { localizedData } from './localized-data';
 import './style.pcss';
 
 const { ajaxUrl, ajaxNonce, ACTION_START, ACTION_TIME_LEFT, ACTION_REDIRECT } =
-	externals;
+	localizedData;
 const selector = '.tec-tickets-seating__timer';
 
 /**

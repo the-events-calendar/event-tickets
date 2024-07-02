@@ -16,7 +16,7 @@ import { TicketRow } from './ticket-row';
 import { externals } from './externals';
 import { formatWithCurrency } from '@tec/tickets/seating/currency';
 import { getCheckoutHandlerForProvider } from './checkout-handlers';
-import { start as startTimer } from './timer';
+import { start as startTimer } from './../timer';
 
 const { objectName, seatTypeMap, labels, providerClass, postId } = externals;
 
