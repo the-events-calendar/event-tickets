@@ -5,6 +5,9 @@ use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Commerce\Ticket;
 use TEC\Tickets\Commerce\Utils\Value;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
+use Tribe__Tickets__Ticket_Object;
+use DateTime;
+
 class TicketTest extends WPTestCase {
 	use Ticket_Maker;
 
@@ -180,14 +183,17 @@ class TicketTest extends WPTestCase {
 			function (): array {
 				$post_id   = static::factory()->post->create();
 				$ticket_id = $this->create_tc_ticket( $post_id, 20 );
-				$today     = gmdate( 'Y-m-d H:i:s' );
 
-				$today_in_an_hour = gmdate( 'Y-m-d H:i:s', strtotime( '+1 hour' ) );
+				$today            = tribe( Tribe__Tickets__Ticket_Object::class )->get_date( 'today' );
+				$today_in_an_hour = $today + HOUR_IN_SECONDS;
+
+				$today_obj            = new DateTime( "@$today" );
+				$today_in_an_hour_obj = new DateTime( "@$today_in_an_hour" );
 
 				update_post_meta( $ticket_id, Ticket::$sale_price_checked_key, true );
 				update_post_meta( $ticket_id, Ticket::$sale_price_key, 10 );
-				update_post_meta( $ticket_id, Ticket::$sale_price_start_date_key, $today );
-				update_post_meta( $ticket_id, Ticket::$sale_price_end_date_key, $today_in_an_hour );
+				update_post_meta( $ticket_id, Ticket::$sale_price_start_date_key, $today_obj->format( 'Y-m-d H:i:s' ) );
+				update_post_meta( $ticket_id, Ticket::$sale_price_end_date_key, $today_in_an_hour_obj->format( 'Y-m-d H:i:s' ) );
 
 				return [
 					$post_id,
