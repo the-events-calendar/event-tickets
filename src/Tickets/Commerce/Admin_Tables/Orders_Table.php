@@ -552,7 +552,7 @@ class Orders_Table extends WP_Posts_List_Table {
 				continue;
 			}
 
-			if ( ( ! in_array( $event_post->post_type, get_post_types( array( 'show_ui' => true ) ), true ) ) ) {
+			if ( ( ! in_array( $event_post->post_type, get_post_types( [ 'show_ui' => true ] ), true ) ) ) {
 				$output .= sprintf(
 					'<div>%s</div>',
 					esc_html( get_the_title( $event ) )
