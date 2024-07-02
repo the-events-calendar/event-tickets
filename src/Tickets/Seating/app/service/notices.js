@@ -105,8 +105,9 @@ export function notifyUserOfWarning(message) {
 
 window.tec = window.tec || {};
 window.tec.tickets.seating = window.tec.tickets.seating || {};
-window.tec.tickets.seating.notices = {
-	...(window.tec.tickets.seating.notices || {}),
+window.tec.tickets.seating.service = window.tec.tickets.seating.service || {};
+window.tec.tickets.seating.service.notices = {
+	...(window.tec.tickets.seating.service.notices || {}),
 	notifyUserOfWarning,
 	notifyUserOfError,
 };

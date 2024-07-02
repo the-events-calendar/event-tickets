@@ -2,21 +2,22 @@ import './style.pcss';
 import {
 	getIframeElement,
 	initServiceIframe,
-} from '@tec/tickets/seating/iframe';
+} from '@tec/tickets/seating/service/iframe';
 import {
 	INBOUND_APP_READY_FOR_DATA,
 	INBOUND_SEATS_SELECTED,
 	OUTBOUND_SEAT_TYPE_TICKETS,
+	OUTBOUND_REMOVE_RESERVATIONS,
 	removeAction,
 	registerAction,
 	sendPostMessage,
 } from '@tec/tickets/seating/service';
 import { TicketRow } from './ticket-row';
+import { externals } from './externals';
 import { formatWithCurrency } from '@tec/tickets/seating/currency';
 import { getCheckoutHandlerForProvider } from './checkout-handlers';
 
-const { objectName, seatTypeMap, labels, providerClass, postId } =
-	window?.tec?.tickets?.seating?.frontend?.ticketsBlock;
+const { objectName, seatTypeMap, labels, providerClass, postId } = externals;
 
 let totalPriceElement = null;
 let totalTicketsElement = null;
@@ -225,14 +226,39 @@ async function bootstrapIframe() {
 }
 
 /**
+ * Dispatches a clear reservations message to the service through the iframe.
+ *
+ * @since TBD
+ *
+ * @param {HTMLElement} dialogElement the iframe element that should be used to communicate with the service.
+ */
+export function removeReservationsThroughIframe(dialogElement) {
+	const iframe = dialogElement.querySelector(
+		'.tec-tickets-seating__iframe-container iframe.tec-tickets-seating__iframe'
+	);
+
+	if (!iframe) {
+		return;
+	}
+
+	sendPostMessage(iframe, OUTBOUND_REMOVE_RESERVATIONS);
+}
+
+/**
  * Closes the modal element using its reference on the window object.
  *
  * @since TBD
  *
  * @return {void} The modal is closed.
  */
-function closeModal() {
-	window?.[objectName]?._hide();
+export function closeModal() {
+	const modal = window?.[objectName];
+
+	if (!modal) {
+		return;
+	}
+
+	modal._hide();
 }
 
 /**
@@ -262,11 +288,14 @@ function readTicketsFromSelection() {
 				ticket_id: ticketId,
 				quantity: 1,
 				optout: '1', // @todo: actually pull this from the Attendee data collection.
-				seat_labels: [ row.dataset.seatLabel ]
+				seat_labels: [row.dataset.seatLabel],
 			};
 		} else {
 			acc[ticketId].quantity++;
-			acc[ticketId].seat_labels = [ ...acc[ticketId].seat_labels, row.dataset.seatLabel ];
+			acc[ticketId].seat_labels = [
+				...acc[ticketId].seat_labels,
+				row.dataset.seatLabel,
+			];
 		}
 
 		return acc;
@@ -325,15 +354,24 @@ async function proceedToCheckout() {
  *
  * @return {void} Adds event listeners to the modal element once it's loaded.
  */
-function addModalEventListeners() {
+export function addModalEventListeners() {
 	document
 		.querySelector(
 			'.tec-tickets-seating__modal .tec-tickets-seating__sidebar-control--cancel'
 		)
-		.addEventListener('click', closeModal);
+		?.addEventListener('click', closeModal);
 	document
 		.querySelector(confirmSelector)
-		.addEventListener('click', proceedToCheckout);
+		?.addEventListener('click', proceedToCheckout);
+
+	const modal = window[objectName];
+
+	if (!modal) {
+		return;
+	}
+
+	modal.on('hide', removeReservationsThroughIframe);
+	modal.on('destroy', removeReservationsThroughIframe);
 }
 
 /**
