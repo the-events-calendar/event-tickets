@@ -772,7 +772,7 @@ class Orders_Table extends WP_Posts_List_Table {
 			id="tec_tc_data-range-from"
 			size="10"
 			value="<?php echo esc_attr( $date_from ); ?>"
-			placeholder="<?php esc_attr_e( 'YYYY-MM_DD', 'event-tickets' ); ?>"
+			placeholder="<?php esc_attr_e( 'YYYY-MM-DD', 'event-tickets' ); ?>"
 			data-validation-type="datepicker"
 		/>
 		<label for="tec_tc_data-range-to">
