@@ -77,10 +77,11 @@ class Layout_Edit extends Tab {
 	 */
 	public function render(): void {
 		$layout_id       = tribe_get_request_var( 'layoutId' );
+		$map_id          = tribe_get_request_var( 'mapId' );
 		$ephemeral_token = $this->service->get_ephemeral_token();
 		$token           = is_string( $ephemeral_token ) ? $ephemeral_token : '';
 		$iframe_url      = $layout_id ? $this->service->get_layout_edit_url( $token, $layout_id )
-			: $this->service->get_layout_create_url( $token );
+			: $this->service->get_layout_create_url( $token, $map_id );
 		$context         = [
 			'iframe_url' => $iframe_url,
 			'token'      => $token,
