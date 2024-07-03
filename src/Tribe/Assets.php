@@ -16,10 +16,7 @@ class Tribe__Tickets__Assets {
 		/** @var Tribe__Tickets__Main $tickets_main */
 		$tickets_main = tribe( 'tickets.main' );
 
-		$tickets_deps = [
-			'dashicons',
-			'event-tickets-reset-css',
-		];
+		$tickets_deps = [ 'dashicons' ];
 
 		if ( $this->should_enqueue_common_full() ) {
 			$tickets_deps[] = 'tribe-common-full-style';
@@ -33,11 +30,9 @@ class Tribe__Tickets__Assets {
 		tribe_assets(
 			$tickets_main,
 			[
-				[ 'event-tickets-reset-css', 'reset.css' ],
 				[ 'event-tickets-tickets-css', $tickets_stylesheet, $tickets_deps ],
 				[ 'event-tickets-tickets-rsvp-css', 'rsvp-v1.css', [ 'tec-variables-full' ] ],
 				[ 'event-tickets-tickets-rsvp-js', 'rsvp.js', [ 'jquery' ] ],
-				[ 'event-tickets-attendees-list-js', 'attendees-list.js', [ 'jquery' ] ],
 				[ 'event-tickets-details-js', 'ticket-details.js', [] ],
 			],
 			'wp_enqueue_scripts',
@@ -224,18 +219,10 @@ class Tribe__Tickets__Assets {
 
 		$ticket_js_deps = [ 'jquery-ui-datepicker', 'tribe-bumpdown', 'tribe-attrchange', 'underscore', 'tribe-validation', 'event-tickets-admin-accordion-js', 'tribe-timepicker' ];
 
-		// While TEC is active, make sure we are loading TEC admin JS as dependency.
-		if ( class_exists( 'Tribe__Events__Main' ) ) {
-			$ticket_js_deps[] = 'tribe-events-admin';
-		}
-
 		$assets = [
 			[ 'event-tickets-admin-css', 'tickets-admin.css', [ 'tribe-validation-style', 'tribe-jquery-timepicker-css', 'tribe-common-admin' ] ],
-			[ 'event-tickets-admin-refresh-css', 'tickets-refresh.css', [ 'event-tickets-admin-css', 'tribe-common-admin' ] ],
 			[ 'event-tickets-admin-tables-css', 'tickets-tables.css', [ 'tec-variables-full', 'event-tickets-admin-css' ] ],
-			[ 'event-tickets-attendees-list-js', 'attendees-list.js', [ 'jquery' ] ],
 			[ 'event-tickets-admin-accordion-js', 'accordion.js', [] ],
-			[ 'event-tickets-admin-accordion-css', 'accordion.css', [] ],
 			[ 'event-tickets-admin-js', 'tickets.js', $ticket_js_deps ],
 		];
 

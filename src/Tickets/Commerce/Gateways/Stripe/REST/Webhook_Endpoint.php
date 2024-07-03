@@ -115,11 +115,11 @@ class Webhook_Endpoint extends Abstract_REST_Endpoint {
 			return false;
 		}
 
-		if ( defined( 'TEC_TC_STRIPE_SIGNING_SECRET' ) && TEC_TC_STRIPE_SIGNING_SECRET )  {
+		if ( tribe( Webhooks::class )->is_signing_secret_const_defined() ) {
 			$signing_secret = TEC_TC_STRIPE_SIGNING_SECRET;
 		}
 
-		if ( empty ( $signing_secret ) ) {
+		if ( empty( $signing_secret ) ) {
 			$signing_secret = tribe_get_option( Webhooks::$option_webhooks_signing_key );
 		}
 
