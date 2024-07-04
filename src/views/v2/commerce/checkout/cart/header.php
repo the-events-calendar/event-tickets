@@ -34,4 +34,3 @@
 		</a>
 	</h4>
 </header>
-<?php do_action('tec_tickets_seating_seat_selection_timer'); ?>

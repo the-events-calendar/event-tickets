@@ -15,6 +15,6 @@ export const SEAT_TYPE_CREATED_UPDATED =
 export const GO_TO_MAPS_HOME = 'app_postmessage_goto_maps_home';
 export const GO_TO_LAYOUTS_HOME = 'app_postmessage_goto_layouts_home';
 
-// Reservations actions.
+// Sessions actions.
 export const OUTBOUND_REMOVE_RESERVATIONS =
 	'host_postmessage_remove_reservations';

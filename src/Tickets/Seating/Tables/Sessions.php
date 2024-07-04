@@ -1,6 +1,6 @@
 <?php
 /**
- * The Seat Selection Sessions table schema.
+ * The Seat Selection reservations table schema.
  *
  * @since   TBD
  *
@@ -66,31 +66,19 @@ class Sessions extends Table {
 	protected static $uid_column = 'token';
 
 	/**
-	 * Insert or updates a new row in the table depending on the existence of the token.
+	 * Removes all the expired sessions from the table.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $token                The token to insert or update.
-	 * @param int    $post_id              The post ID to insert or update the session for.
-	 * @param int    $expiration_timestamp The timestamp to set as the expiration date.
-	 *
-	 * @return bool|int The number of rows affected, or `false` on failure.
+	 * @return int The number of expired sessions removed.
 	 */
-	public static function upsert( string $token, int $post_id, int $expiration_timestamp ) {
-		$expiration_string = date( 'Y-m-d H:i:s', $expiration_timestamp );
+	public static function remove_expired_sessions(): int {
+		$query = DB::prepare( "DELETE FROM %i WHERE expiration < %d",
+			self::table_name(),
+			time()
+		);
 
-		return DB::query(
-				DB::prepare(
-					"INSERT INTO %i ('token', 'post_id', 'expiration') VALUES (%s, %d, %s)
-				ON DUPLICATE KEY UPDATE post_id = %s, expiration = %s",
-					self::table_name(),
-					$token,
-					$post_id,
-					$expiration_string,
-					$post_id,
-					$expiration_string
-				)
-			) !== false;
+		return (int) DB::query( $query );
 	}
 
 	/**
@@ -110,10 +98,130 @@ class Sessions extends Table {
 		return "
 			CREATE TABLE `{$table_name}` (
 				`token` varchar(255) NOT NULL,
-				`post_id` varchar(255) NOT NULL,
-				`expiration` DATETIME NOT NULL,
+				`object_id` bigint(20) NOT NULL,
+				`expiration` int(11) NOT NULL,
+				`reservations` longblob DEFAULT '',
 				PRIMARY KEY (`token`)
 			) {$charset_collate};
 		";
+	}
+
+	/**
+	 * Insert or updates a new row in the table depending on the existence of the token.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $token                The token to insert or update.
+	 * @param int    $object_id            The object ID to insert or update.
+	 * @param int    $expiration_timestamp The timestamp to set as the expiration date.
+	 *
+	 * @return bool|int The number of rows affected, or `false` on failure.
+	 */
+	public function upsert( string $token, int $object_id,int $expiration_timestamp ) {
+		$query = DB::prepare(
+			"INSERT INTO %i (token, object_id, expiration) VALUES (%s, %d, %d)
+				ON DUPLICATE KEY UPDATE object_id = %d, expiration = %d",
+			self::table_name(),
+			$token,
+			$object_id,
+			$expiration_timestamp,
+			$object_id,
+			$expiration_timestamp
+		);
+
+		return DB::query( $query ) !== false;
+	}
+
+	/**
+	 * Returns the number of seconds left in the timer for a given token.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $token The token to get the seconds left for.
+	 *
+	 * @return int The number of seconds left in the timer.
+	 */
+	public function get_seconds_left( $token ): int {
+		$query = DB::prepare( "SELECT expiration FROM %i WHERE token = %s",
+			self::table_name(),
+			$token
+		);
+
+		$expiration = DB::get_var( $query );
+
+		if ( empty( $expiration ) ) {
+			// Either the token is not found or the session has expired and was removed.
+			return 0;
+		}
+
+		return $expiration - time();
+	}
+
+	/**
+	 * Returns the list of reservations for a given token and object ID.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $token     The token to get the reservations for.
+	 *
+	 * @return string[] The list of reservations for the given object ID.
+	 */
+	public function get_reservations_for_token( string $token) {
+		$query = DB::prepare( "SELECT reservations FROM %i WHERE token = %s ",
+			self::table_name(),
+			$token
+		);
+
+		$reservations = DB::get_var( $query );
+
+		if ( empty( $reservations ) ) {
+			return [];
+		}
+
+		return (array) json_decode( $reservations, true );
+	}
+
+	/**
+	 * Updates, replacing them, the reservations for a given token.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $token        Temporary token to identify the reservations.
+	 * @param array  $reservations The list of reservations to replace the existing ones with.
+	 *
+	 * @return bool Whether the reservations were updated or not.
+	 */
+	public function update_reservations( string $token, array $reservations ): bool {
+		$reservationsJson = wp_json_encode( $reservations );
+
+		if ( $reservationsJson === false ) {
+			return false;
+		}
+
+		$query = DB::prepare( "UPDATE %i SET reservations = %s WHERE token = %s",
+			self::table_name(),
+			$reservationsJson,
+			$token
+		);
+
+		return DB::query( $query ) !== false;
+	}
+
+	/**
+	 * Deletes all the sessions for a given token.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $token The token to delete the sessions for.
+	 *
+	 * @return bool Whether the sessions werer deleted or not.
+	 */
+	public function delete_token_session( string $token ): bool {
+		$query = DB::prepare( "DELETE FROM %i WHERE token = %s",
+			self::table_name(),
+			$token
+		);
+
+		return DB::query( $query ) !== false;
 	}
 }

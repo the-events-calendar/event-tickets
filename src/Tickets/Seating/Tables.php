@@ -11,6 +11,7 @@ namespace TEC\Tickets\Seating;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\StellarWP\Schema\Register;
+use TEC\Tickets\Seating\Tables\Sessions;
 
 /**
  * Class Tables.
@@ -29,6 +30,8 @@ class Tables extends Controller_Contract {
 	 * @return void
 	 */
 	public function unregister(): void {
+		remove_actions( 'tec_tickets_seating_tables_cron', [ Sessions::class, 'remove_expired_sessions' ] );
+		wp_clear_scheduled_hook('tec_tickets_seating_tables_cron');
 	}
 
 	/**
@@ -43,5 +46,11 @@ class Tables extends Controller_Contract {
 		Register::table( Tables\Layouts::class );
 		Register::table( Tables\Seat_Types::class );
 		Register::table( Tables\Sessions::class );
+
+		if ( ! wp_next_scheduled( 'tec_tickets_seating_tables_cron' ) ) {
+			wp_schedule_event( time(), 'hourly', 'tec_tickets_seating_tables_cron' );
+		}
+
+		add_action( 'tec_tickets_seating_tables_cron', [ Sessions::class, 'remove_expired_sessions' ] );
 	}
 }

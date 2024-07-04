@@ -102,6 +102,11 @@ class Controller extends Controller_Contract {
 		$this->container->singleton( Template::class );
 		$this->container->singleton( Localization::class );
 		$this->container->singleton( Service\Service::class, fn() => $this->build_service_facade() );
+		$this->container->singleton( Service\Reservations::class, function () {
+			$this->build_service_facade();
+
+			return $this->container->make( Service\Reservations::class );
+		} );
 		$this->container->singleton( Meta::class );
 
 		$this->container->register( Tables::class );
@@ -174,6 +179,7 @@ class Controller extends Controller_Contract {
 				Service\Layouts::class,
 				Service\Seat_Types::class,
 				Service\Maps::class,
+				Service\Reservations::class,
 			] as $class
 		) {
 			$this->container->singleton( $class );

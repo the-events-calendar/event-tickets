@@ -14,6 +14,7 @@ namespace TEC\Tickets\Seating;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\lucatume\DI52\Container;
 use TEC\Common\StellarWP\Assets\Asset;
+use TEC\Tickets\Seating\Admin\Ajax;
 use TEC\Tickets\Seating\Frontend\Timer;
 use TEC\Tickets\Seating\Service\Service;
 use Tribe__Template as Base_Template;
@@ -232,7 +233,8 @@ class Frontend extends Controller_Contract {
 			     'tribe-dialog-js',
 			     'tec-tickets-seating-service-bundle',
 			     'tec-tickets-seating-currency',
-			     'wp-hooks'
+			     'wp-hooks',
+			     'tec-tickets-seating-timer'
 		     )
 		     ->add_localize_script( 'tec.tickets.seating.frontend.ticketsBlock',
 			     fn() => $this->get_ticket_block_data( get_the_ID() ) )
@@ -287,6 +289,10 @@ class Frontend extends Controller_Contract {
 			],
 			'providerClass' => esc_html( Tickets::get_event_ticket_provider( $post_id ) ),
 			'postId'        => $post_id,
+			'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+			'ajaxNonce' => wp_create_nonce( Ajax::NONCE_ACTION ),
+			'ACTION_POST_RESERVATIONS' => Ajax::ACTION_POST_RESERVATIONS,
+			'ACTION_REMOVE_RESERVATIONS' => Ajax::ACTION_REMOVE_RESERVATIONS,
 		];
 	}
 

@@ -254,4 +254,5 @@ window.tec.tickets.seating.service = {
 	removeAction,
 	getRegisteredActions,
 	getHandlerQueue,
+	getToken,
 };

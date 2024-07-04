@@ -230,14 +230,18 @@ const config = merge(common, {
 	externals: [
 		{
 			'@wordpress/core-data': 'wp.coreData',
-			'@tec/tickets/seating/service/iframe': 'tec.tickets.seating.service.iframe',
-			'@tec/tickets/seating/service/errors': 'tec.tickets.seating.service.errors',
+			'@tec/tickets/seating/service/iframe':
+				'tec.tickets.seating.service.iframe',
+			'@tec/tickets/seating/service/errors':
+				'tec.tickets.seating.service.errors',
 			'@tec/tickets/seating/service/notices':
 				'tec.tickets.seating.service.notices',
 			'@tec/tickets/seating/service': 'tec.tickets.seating.service',
 			'@tec/tickets/seating/utils': 'tec.tickets.seating.utils',
 			'@tec/tickets/seating/ajax': 'tec.tickets.seating.ajax',
 			'@tec/tickets/seating/currency': 'tec.tickets.seating.currency',
+			'@tec/tickets/seating/frontend/timer':
+				'tec.tickets.seating.frontend.timer',
 		},
 	],
 	// Configure multiple entry points.

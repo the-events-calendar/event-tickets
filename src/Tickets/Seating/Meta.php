@@ -51,8 +51,8 @@ class Meta {
 	 *
 	 * @var string
 	 */
-	const META_KEY_UUID = '_tec_slr_uuid';
-	
+	public const META_KEY_UUID = '_tec_slr_uuid';
+
 	/**
 	 * The meta key used to store the seat labels of a Ticket as attendee meta.
 	 *
