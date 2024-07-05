@@ -31,7 +31,7 @@ class Tables extends Controller_Contract {
 	 */
 	public function unregister(): void {
 		remove_actions( 'tec_tickets_seating_tables_cron', [ Sessions::class, 'remove_expired_sessions' ] );
-		wp_clear_scheduled_hook('tec_tickets_seating_tables_cron');
+		wp_clear_scheduled_hook( 'tec_tickets_seating_tables_cron' );
 	}
 
 	/**

@@ -26,16 +26,4 @@ class Cookie_Test extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertNull( $cookie->get_session_token_object_id() );
 	}
-
-	public function test_remove_ephemeral_token() {
-		$cookie = new Timer();
-
-		$_COOKIE[ Timer::COOKIE_NAME ] = $cookie->format_timer_cookie_string( 'test-token', 23 );
-
-		$this->assertEquals( [ 'test-token', 23 ], $cookie->get_session_token_object_id() );
-
-		$cookie->remove_timer_cookie();
-
-		$this->assertNull( $cookie->get_session_token_object_id() );
-	}
 }

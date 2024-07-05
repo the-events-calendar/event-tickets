@@ -102,11 +102,14 @@ class Controller extends Controller_Contract {
 		$this->container->singleton( Template::class );
 		$this->container->singleton( Localization::class );
 		$this->container->singleton( Service\Service::class, fn() => $this->build_service_facade() );
-		$this->container->singleton( Service\Reservations::class, function () {
-			$this->build_service_facade();
+		$this->container->singleton(
+			Service\Reservations::class,
+			function () {
+				$this->build_service_facade();
 
-			return $this->container->make( Service\Reservations::class );
-		} );
+				return $this->container->make( Service\Reservations::class );
+			} 
+		);
 		$this->container->singleton( Meta::class );
 
 		$this->container->register( Tables::class );
@@ -184,11 +187,11 @@ class Controller extends Controller_Contract {
 		) {
 			$this->container->singleton( $class );
 			$this->container->when( $class )
-			                ->needs( '$backend_base_url' )
-			                ->give( $backend_base_url );
+							->needs( '$backend_base_url' )
+							->give( $backend_base_url );
 			$this->container->when( $class )
-			                ->needs( '$frontend_base_url' )
-			                ->give( $frontend_base_url );
+							->needs( '$frontend_base_url' )
+							->give( $frontend_base_url );
 		}
 
 		return $this->container->get( Service\Service::class );

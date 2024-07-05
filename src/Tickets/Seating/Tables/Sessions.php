@@ -73,7 +73,8 @@ class Sessions extends Table {
 	 * @return int The number of expired sessions removed.
 	 */
 	public static function remove_expired_sessions(): int {
-		$query = DB::prepare( "DELETE FROM %i WHERE expiration < %d",
+		$query = DB::prepare(
+			'DELETE FROM %i WHERE expiration < %d',
 			self::table_name(),
 			time()
 		);
@@ -117,10 +118,10 @@ class Sessions extends Table {
 	 *
 	 * @return bool|int The number of rows affected, or `false` on failure.
 	 */
-	public function upsert( string $token, int $object_id,int $expiration_timestamp ) {
+	public function upsert( string $token, int $object_id, int $expiration_timestamp ) {
 		$query = DB::prepare(
-			"INSERT INTO %i (token, object_id, expiration) VALUES (%s, %d, %d)
-				ON DUPLICATE KEY UPDATE object_id = %d, expiration = %d",
+			'INSERT INTO %i (token, object_id, expiration) VALUES (%s, %d, %d)
+				ON DUPLICATE KEY UPDATE object_id = %d, expiration = %d',
 			self::table_name(),
 			$token,
 			$object_id,
@@ -142,7 +143,8 @@ class Sessions extends Table {
 	 * @return int The number of seconds left in the timer.
 	 */
 	public function get_seconds_left( $token ): int {
-		$query = DB::prepare( "SELECT expiration FROM %i WHERE token = %s",
+		$query = DB::prepare(
+			'SELECT expiration FROM %i WHERE token = %s',
 			self::table_name(),
 			$token
 		);
@@ -166,8 +168,9 @@ class Sessions extends Table {
 	 *
 	 * @return string[] The list of reservations for the given object ID.
 	 */
-	public function get_reservations_for_token( string $token) {
-		$query = DB::prepare( "SELECT reservations FROM %i WHERE token = %s ",
+	public function get_reservations_for_token( string $token ) {
+		$query = DB::prepare(
+			'SELECT reservations FROM %i WHERE token = %s ',
 			self::table_name(),
 			$token
 		);
@@ -192,15 +195,16 @@ class Sessions extends Table {
 	 * @return bool Whether the reservations were updated or not.
 	 */
 	public function update_reservations( string $token, array $reservations ): bool {
-		$reservationsJson = wp_json_encode( $reservations );
+		$reservations_json = wp_json_encode( $reservations );
 
-		if ( $reservationsJson === false ) {
+		if ( false === $reservations_json ) {
 			return false;
 		}
 
-		$query = DB::prepare( "UPDATE %i SET reservations = %s WHERE token = %s",
+		$query = DB::prepare(
+			'UPDATE %i SET reservations = %s WHERE token = %s',
 			self::table_name(),
-			$reservationsJson,
+			$reservations_json,
 			$token
 		);
 
@@ -217,7 +221,8 @@ class Sessions extends Table {
 	 * @return bool Whether the sessions werer deleted or not.
 	 */
 	public function delete_token_session( string $token ): bool {
-		$query = DB::prepare( "DELETE FROM %i WHERE token = %s",
+		$query = DB::prepare(
+			'DELETE FROM %i WHERE token = %s',
 			self::table_name(),
 			$token
 		);

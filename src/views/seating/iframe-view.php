@@ -16,6 +16,7 @@
  * @var string $initial_total_price The initial price of the tickets; already HTML-escaped.
  * @var int    $post_id             The post ID of the post to purchase tickets for.
  */
+
 ?>
 
 <div
@@ -27,7 +28,7 @@
 		data-src="<?php echo esc_url( $iframe_url ); ?>"
 		id="tec-tickets-seating-iframe-tickets-block"
 		class="tec-tickets-seating__iframe tec-tickets-seating__iframe--tickets-block"
-		title="<?php esc_html_e( 'Seat selection', 'event-tickets' ); ?>"
+		title="<?php echo esc_attr__( 'Seat selection', 'event-tickets' ); ?>"
 	>
 	</iframe>
 </div>
@@ -47,7 +48,8 @@
 		 * @param string $token The ephemeral token used to secure the iframe communication with the service.
 		 * @param int    $post_id The post ID of the post to purchase tickets for.
 		 */
-		do_action( 'tec_tickets_seating_seat_selection_timer', $token, $post_id ); ?>
+		do_action( 'tec_tickets_seating_seat_selection_timer', $token, $post_id );
+		?>
 
 		<div class="tec-tickets-seating__ticket-rows">
 		</div>

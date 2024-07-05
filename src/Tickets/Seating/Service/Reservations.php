@@ -48,7 +48,7 @@ class Reservations {
 	 *
 	 * @since TBD
 	 *
-	 * @param int $object_id The object ID to cancel the reservations for.
+	 * @param int      $object_id The object ID to cancel the reservations for.
 	 * @param string[] $reservations The reservations to cancel.
 	 *
 	 * @return bool Whether the reservations were cancelled or not.
@@ -60,7 +60,7 @@ class Reservations {
 
 		$object_uuid = get_post_meta( $object_id, Meta::META_KEY_UUID, true );
 
-		if( empty( $object_uuid ) ) {
+		if ( empty( $object_uuid ) ) {
 			return false;
 		}
 
@@ -70,10 +70,12 @@ class Reservations {
 				'headers' => [
 					'Authorization' => sprintf( 'Bearer %s', $this->get_oauth_token() ),
 				],
-				'body' => wp_json_encode( [
-					'eventId' => $object_uuid,
-					'ids' => $reservations
-				] ),
+				'body'    => wp_json_encode(
+					[
+						'eventId' => $object_uuid,
+						'ids'     => $reservations,
+					] 
+				),
 			]
 		);
 
@@ -115,7 +117,7 @@ class Reservations {
 				'Cancelling the reservations.',
 				[
 					'source' => __METHOD__,
-					'body'   => substr( wp_remote_retrieve_body( $response ), 0, 100 )
+					'body'   => substr( wp_remote_retrieve_body( $response ), 0, 100 ),
 				]
 			);
 
@@ -185,7 +187,7 @@ class Reservations {
 				'Confirming the reservations.',
 				[
 					'source' => __METHOD__,
-					'body'   => substr( wp_remote_retrieve_body( $response ), 0, 100 )
+					'body'   => substr( wp_remote_retrieve_body( $response ), 0, 100 ),
 				]
 			);
 

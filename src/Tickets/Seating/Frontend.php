@@ -1,5 +1,4 @@
 <?php
-
 /**
  * The main front-end controller. This controller will directly, or by delegation, subscribe to
  * front-end related hooks.
@@ -76,6 +75,7 @@ class Frontend extends Controller_Contract {
 	 *
 	 * @param Container $container A reference to the container object.
 	 * @param Template  $template  A reference to the template object.
+	 * @param Service   $service   A reference to the service object.
 	 */
 	public function __construct( Container $container, Template $template, Service $service ) {
 		parent::__construct( $container );
@@ -131,8 +131,8 @@ class Frontend extends Controller_Contract {
 		}
 
 		$cost_range = tribe_format_currency( min( $prices ), $post_id )
-		              . ' - '
-		              . tribe_format_currency( max( $prices ), $post_id );
+						. ' - '
+						. tribe_format_currency( max( $prices ), $post_id );
 
 		/**
 		 * @var Tickets_Handler $tickets_handler
@@ -194,14 +194,18 @@ class Frontend extends Controller_Contract {
 		$provider    = Tickets::get_event_ticket_provider_object( $post_id );
 		/** @var \Tribe__Tickets__Commerce__Currency $currency */
 		$currency = tribe( 'tickets.commerce.currency' );
-		$content  = $this->template->template( 'iframe-view', [
-			'iframe_url'          => $iframe_url,
-			'token'               => $token,
-			'error'               => $ephemeral_token instanceof WP_Error ? $ephemeral_token->get_error_message() : '',
-			'initial_total_text'  => _x( '0 Tickets', 'Seat selection modal initial total string', 'event-tickets' ),
-			'initial_total_price' => $currency->get_formatted_currency_with_symbol( 0, $post_id, $provider, false ),
-			'post_id'             => $post_id,
-		], false );
+		$content  = $this->template->template(
+			'iframe-view',
+			[
+				'iframe_url'          => $iframe_url,
+				'token'               => $token,
+				'error'               => $ephemeral_token instanceof WP_Error ? $ephemeral_token->get_error_message() : '',
+				'initial_total_text'  => _x( '0 Tickets', 'Seat selection modal initial total string', 'event-tickets' ),
+				'initial_total_price' => $currency->get_formatted_currency_with_symbol( 0, $post_id, $provider, false ),
+				'post_id'             => $post_id,
+			],
+			false
+		);
 
 		$args = [
 			'button_text'             => esc_html_x( 'Find Seats', 'Find seats button text', 'event-tickets' ),
@@ -229,19 +233,21 @@ class Frontend extends Controller_Contract {
 			$this->built_asset_url( 'frontend/tickets-block.js' ),
 			ET::VERSION
 		)
-		     ->set_dependencies(
-			     'tribe-dialog-js',
-			     'tec-tickets-seating-service-bundle',
-			     'tec-tickets-seating-currency',
-			     'wp-hooks',
-			     'tec-tickets-seating-timer'
-		     )
-		     ->add_localize_script( 'tec.tickets.seating.frontend.ticketsBlock',
-			     fn() => $this->get_ticket_block_data( get_the_ID() ) )
-		     ->enqueue_on( 'wp_enqueue_scripts' )
-		     ->add_to_group( 'tec-tickets-seating-frontend' )
-		     ->add_to_group( 'tec-tickets-seating' )
-		     ->register();
+			->set_dependencies(
+				'tribe-dialog-js',
+				'tec-tickets-seating-service-bundle',
+				'tec-tickets-seating-currency',
+				'wp-hooks',
+				'tec-tickets-seating-timer'
+			)
+			->add_localize_script(
+				'tec.tickets.seating.frontend.ticketsBlock',
+				fn() => $this->get_ticket_block_data( get_the_ID() )
+			)
+			->enqueue_on( 'wp_enqueue_scripts' )
+			->add_to_group( 'tec-tickets-seating-frontend' )
+			->add_to_group( 'tec-tickets-seating' )
+			->register();
 
 		// Register the front-end CSS.
 		Asset::add(
@@ -249,10 +255,10 @@ class Frontend extends Controller_Contract {
 			$this->built_asset_url( 'frontend/tickets-block.css' ),
 			ET::VERSION
 		)
-		     ->enqueue_on( 'wp_enqueue_scripts' )
-		     ->add_to_group( 'tec-tickets-seating-frontend' )
-		     ->add_to_group( 'tec-tickets-seating' )
-		     ->register();
+			->enqueue_on( 'wp_enqueue_scripts' )
+			->add_to_group( 'tec-tickets-seating-frontend' )
+			->add_to_group( 'tec-tickets-seating' )
+			->register();
 	}
 
 	/**
@@ -278,20 +284,20 @@ class Frontend extends Controller_Contract {
 	 */
 	public function get_ticket_block_data( $post_id ): array {
 		return [
-			'objectName'    => 'dialog_obj_' . self::MODAL_ID,
-			'modalId'       => self::MODAL_ID,
-			'seatTypeMap'   => $this->build_seat_type_map( $post_id ),
-			'labels'        => [
-				'oneTicket'       => esc_html( _x( "1 Ticket", 'Seat selection modal total string', 'event-tickets' ) ),
+			'objectName'                 => 'dialog_obj_' . self::MODAL_ID,
+			'modalId'                    => self::MODAL_ID,
+			'seatTypeMap'                => $this->build_seat_type_map( $post_id ),
+			'labels'                     => [
+				'oneTicket'       => esc_html( _x( '1 Ticket', 'Seat selection modal total string', 'event-tickets' ) ),
 				'multipleTickets' => esc_html(
 					_x( '{count} Tickets', 'Seat selection modal total string', 'event-tickets' )
 				),
 			],
-			'providerClass' => esc_html( Tickets::get_event_ticket_provider( $post_id ) ),
-			'postId'        => $post_id,
-			'ajaxUrl' => admin_url( 'admin-ajax.php' ),
-			'ajaxNonce' => wp_create_nonce( Ajax::NONCE_ACTION ),
-			'ACTION_POST_RESERVATIONS' => Ajax::ACTION_POST_RESERVATIONS,
+			'providerClass'              => esc_html( Tickets::get_event_ticket_provider( $post_id ) ),
+			'postId'                     => $post_id,
+			'ajaxUrl'                    => admin_url( 'admin-ajax.php' ),
+			'ajaxNonce'                  => wp_create_nonce( Ajax::NONCE_ACTION ),
+			'ACTION_POST_RESERVATIONS'   => Ajax::ACTION_POST_RESERVATIONS,
 			'ACTION_REMOVE_RESERVATIONS' => Ajax::ACTION_REMOVE_RESERVATIONS,
 		];
 	}
@@ -324,8 +330,8 @@ class Frontend extends Controller_Contract {
 		foreach ( tribe_tickets()->where( 'event', $post_id )->get_ids( true ) as $ticket_id ) {
 			// The provider will be the same for all tickets in the loop, just init once.
 			/** @var \Tribe__Tickets__Tickets $provider */
-			$provider = $provider ?? tribe_tickets_get_ticket_provider( $ticket_id );
-			$ticket   = $provider->get_ticket( $post_id, $ticket_id );
+			$provider ??= tribe_tickets_get_ticket_provider( $ticket_id );
+			$ticket     = $provider->get_ticket( $post_id, $ticket_id );
 
 			if ( ! $ticket instanceof \Tribe__Tickets__Ticket_Object ) {
 				continue;
@@ -348,7 +354,7 @@ class Frontend extends Controller_Contract {
 				'ticketId'    => $ticket_id,
 				'name'        => $ticket->name,
 				'price'       => $ticket->price,
-				'description' => $ticket->description
+				'description' => $ticket->description,
 			];
 		}
 

@@ -52,7 +52,6 @@ class Timer extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 *
 	 * @var string
 	 */
 	const ACTION_SYNC = 'tec_tickets_seating_timer_sync';
@@ -87,12 +86,12 @@ class Timer extends Controller_Contract {
 	/**
 	 * Timer constructor.
 	 *
-	 * since TBD
+	 * @since TBD
 	 *
-	 * @param Container    $container A reference to the container object.
-	 * @param Template     $template  A reference to the template object.
-	 * @param Sessions     $sessions  A reference to the Sessions table handler.
-	 * @param Reservations $service   A reference to the Reservations object.
+	 * @param Container    $container    A reference to the container object.
+	 * @param Template     $template     A reference to the template object.
+	 * @param Sessions     $sessions     A reference to the Sessions table handler.
+	 * @param Reservations $reservations A reference to the Reservations object.
 	 */
 	public function __construct(
 		Container $container,
@@ -104,24 +103,6 @@ class Timer extends Controller_Contract {
 		$this->template     = $template;
 		$this->sessions     = $sessions;
 		$this->reservations = $reservations;
-	}
-
-	/**
-	 * Removes the ephemeral token cookie.
-	 *
-	 * @since TBD
-	 *
-	 * @return void The ephemeral token cookie is removed.
-	 */
-	public function remove_timer_cookie(): void {
-		setcookie( self::COOKIE_NAME,
-			'',
-			time() - 3600,
-			COOKIEPATH,
-			COOKIE_DOMAIN,
-			true,
-			false );
-		unset( $_COOKIE[ self::COOKIE_NAME ] );
 	}
 
 	/**
@@ -144,7 +125,7 @@ class Timer extends Controller_Contract {
 			// Token and post ID did not come from the action, pull them from the cookie, if possible.
 			$cookie_timer_token_post_id = $this->get_session_token_object_id();
 
-			if ( $cookie_timer_token_post_id === null ) {
+			if ( null === $cookie_timer_token_post_id ) {
 				// The timer cannot be rendered.
 				return;
 			}
@@ -156,12 +137,15 @@ class Timer extends Controller_Contract {
 		wp_enqueue_style( 'tec-tickets-seating-timer-style' );
 
 		/** @noinspection UnusedFunctionResultInspection */
-		$this->template->template( 'seat-selection-timer', [
-			'token'        => $token,
-			'redirect_url' => get_post_permalink( $post_id ),
-			'post_id'      => $post_id,
-			'sync_on_load' => $sync_on_load,
-		] );
+		$this->template->template(
+			'seat-selection-timer',
+			[
+				'token'        => $token,
+				'redirect_url' => get_post_permalink( $post_id ),
+				'post_id'      => $post_id,
+				'sync_on_load' => $sync_on_load,
+			]
+		);
 	}
 
 	/**
@@ -261,11 +245,18 @@ class Timer extends Controller_Contract {
 		 * @param int $timeout The timeout in seconds.
 		 * @param int $post_id The post ID the iframe is for.
 		 */
-		$timeout = apply_filters( 'tec_tickets_seating_selection_timeout', 15 * 60, $post_id );
-
-		return $timeout;
+		return apply_filters( 'tec_tickets_seating_selection_timeout', 15 * 60, $post_id );
 	}
 
+	/**
+	 * Parses the cookie string into an array of object IDs and tokens.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $current The current cookie string.
+	 *
+	 * @return array<string,string> The parsed cookie string, a map from object ID to token.
+	 */
 	private function parse_cookie_string( string $current ): array {
 		$parsed = [];
 		foreach ( explode( '|||', $current ) as $entry ) {
@@ -294,10 +285,13 @@ class Timer extends Controller_Contract {
 		$entries               = $this->parse_cookie_string( $current );
 		$entries[ $object_id ] = $token;
 
-		return implode( '|||',
-			array_map( static fn( $object_id, $token ) => $object_id . '=' . $token,
+		return implode(
+			'|||',
+			array_map(
+				static fn( $object_id, $token ) => $object_id . '=' . $token,
 				array_keys( $entries ),
-				$entries )
+				$entries
+			)
 		);
 	}
 
@@ -314,8 +308,10 @@ class Timer extends Controller_Contract {
 		remove_action( 'wp_ajax_' . self::ACTION_START, [ $this, 'ajax_start' ] );
 		remove_action( 'wp_ajax_nopriv_' . self::ACTION_START, [ $this, 'ajax_sync' ] );
 		remove_action( 'wp_ajax_' . self::ACTION_START, [ $this, 'ajax_sync' ] );
-		remove_action( 'tribe_template_after_include:tickets/v2/commerce/checkout/cart/header',
-			[ $this, 'render_to_sync' ] );
+		remove_action(
+			'tribe_template_after_include:tickets/v2/commerce/checkout/cart/header',
+			[ $this, 'render_to_sync' ]
+		);
 	}
 
 	/**
@@ -334,9 +330,9 @@ class Timer extends Controller_Contract {
 	private function get_localized_data(): array {
 		return [
 			'ajaxUrl'      => admin_url( 'admin-ajax.php' ),
-			'ajaxNonce'    => wp_create_nonce( Timer::COOKIE_NAME ),
-			'ACTION_START' => Timer::ACTION_START,
-			'ACTION_SYNC'  => Timer::ACTION_SYNC,
+			'ajaxNonce'    => wp_create_nonce( self::COOKIE_NAME ),
+			'ACTION_START' => self::ACTION_START,
+			'ACTION_SYNC'  => self::ACTION_SYNC,
 		];
 	}
 
@@ -362,23 +358,27 @@ class Timer extends Controller_Contract {
 			0
 		);
 
-		Asset::add( 'tec-tickets-seating-timer',
+		Asset::add(
+			'tec-tickets-seating-timer',
 			$this->built_asset_url( 'frontend/timer.js' ),
-			ET::VERSION )
-		     ->set_dependencies( 'tribe-dialog-js', 'wp-hooks' )
-		     ->add_localize_script( 'tec.tickets.seating.frontend.timer', fn() => $this->get_localized_data() )
-		     ->enqueue_on( 'tec_tickets_seating_seat_selection_timer' )
-		     ->add_to_group( 'tec-tickets-seating-frontend' )
-		     ->add_to_group( 'tec-tickets-seating' )
-		     ->register();
+			ET::VERSION
+		)
+			->set_dependencies( 'tribe-dialog-js', 'wp-hooks' )
+			->add_localize_script( 'tec.tickets.seating.frontend.timer', fn() => $this->get_localized_data() )
+			->enqueue_on( 'tec_tickets_seating_seat_selection_timer' )
+			->add_to_group( 'tec-tickets-seating-frontend' )
+			->add_to_group( 'tec-tickets-seating' )
+			->register();
 
-		Asset::add( 'tec-tickets-seating-timer-style',
+		Asset::add(
+			'tec-tickets-seating-timer-style',
 			$this->built_asset_url( 'frontend/timer.css' ),
-			ET::VERSION )
-		     ->enqueue_on( 'tec_tickets_seating_seat_selection_timer' )
-		     ->add_to_group( 'tec-tickets-seating-frontend' )
-		     ->add_to_group( 'tec-tickets-seating' )
-		     ->register();
+			ET::VERSION
+		)
+			->enqueue_on( 'tec_tickets_seating_seat_selection_timer' )
+			->add_to_group( 'tec-tickets-seating-frontend' )
+			->add_to_group( 'tec-tickets-seating' )
+			->register();
 	}
 
 	/**
@@ -390,9 +390,12 @@ class Timer extends Controller_Contract {
 	 */
 	private function ajax_check_request() {
 		if ( ! check_ajax_referer( self::COOKIE_NAME, '_ajaxNonce', false ) ) {
-			wp_send_json_error( [
-				'error' => 'Nonce verification failed',
-			], 401 );
+			wp_send_json_error(
+				[
+					'error' => 'Nonce verification failed',
+				],
+				401
+			);
 
 			// This will never be reached, but we need to return something.
 			return false;
@@ -402,9 +405,12 @@ class Timer extends Controller_Contract {
 		$post_id = tribe_get_request_var( 'postId', null );
 
 		if ( ! ( $token && $post_id ) ) {
-			wp_send_json_error( [
-				'error' => 'Missing required parameters',
-			], 400 );
+			wp_send_json_error(
+				[
+					'error' => 'Missing required parameters',
+				],
+				400
+			);
 
 			// This will never be reached, but we need to return something.
 			return false;
@@ -434,25 +440,32 @@ class Timer extends Controller_Contract {
 		$now          = microtime( true );
 		$expiration   = (int) $now + $timeout;
 		$cookie_value = $this->add_cookie_entry( $_COOKIE[ self::COOKIE_NAME ] ?? '', $post_id, $token );
-		setcookie( self::COOKIE_NAME,
+		setcookie(
+			self::COOKIE_NAME,
 			$cookie_value,
 			$expiration,
 			COOKIEPATH,
 			COOKIE_DOMAIN,
 			true,
-			false );
+			false
+		);
 		$_COOKIE[ self::COOKIE_NAME ] = $cookie_value;
 
 		if ( ! $this->sessions->upsert( $token, $post_id, $expiration ) ) {
-			wp_send_json_error( [
-				'error' => 'Failed to start timer',
-			], 500 );
+			wp_send_json_error(
+				[
+					'error' => 'Failed to start timer',
+				],
+				500
+			);
 		}
 
-		wp_send_json_success( [
-			'secondsLeft' => $timeout,
-			'timestamp'   => $now,
-		] );
+		wp_send_json_success(
+			[
+				'secondsLeft' => $timeout,
+				'timestamp'   => $now,
+			]
+		);
 	}
 
 	/**
@@ -470,10 +483,12 @@ class Timer extends Controller_Contract {
 
 		$seconds_left = $this->sessions->get_seconds_left( $token );
 
-		wp_send_json_success( [
-			'secondsLeft' => $seconds_left,
-			'timestamp'   => microtime( true ),
-		] );
+		wp_send_json_success(
+			[
+				'secondsLeft' => $seconds_left,
+				'timestamp'   => microtime( true ),
+			]
+		);
 	}
 
 	/**

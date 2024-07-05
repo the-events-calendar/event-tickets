@@ -14,21 +14,22 @@
  * @var int    $post_id      The post ID of the post to purchase tickets for.
  * @var bool   $sync_on_load Whether to sync the timer with the backend on DOM ready or not.
  */
+
 ?>
 
 <div class="tec-tickets-seating__timer tec-tickets-seating__timer--hidden"
-	 data-token="<?php echo esc_attr( $token ); ?>"
-	 data-redirect-url="<?php echo esc_attr( $redirect_url ); ?>"
-	 data-post-id="<?php echo esc_attr( $post_id ); ?>"
-	 <?php if ( $sync_on_load ) : ?>
-		 data-sync-on-load
-	 <?php endif; ?>
+	data-token="<?php echo esc_attr( $token ); ?>"
+	data-redirect-url="<?php echo esc_url( $redirect_url ); ?>"
+	data-post-id="<?php echo esc_attr( $post_id ); ?>"
+	<?php if ( $sync_on_load ) : ?>
+		data-sync-on-load
+	<?php endif; ?>
 >
 	<div class="dashicons dashicons-clock"></div>
 	<div class="tec-tickets-seating__message">
 			<span>
 				<span class="tec-tickets-seating__message-text">
-					<?php echo esc_html_x('Seat selections reserved for ', 'Seat selection timer text', 'event-tickets'); ?>
+					<?php echo esc_html_x( 'Seat selections reserved for ', 'Seat selection timer text', 'event-tickets' ); ?>
 				</span>
 				<span class="tec-tickets-seating__message-time">
 					<span class="tec-tickets-seating__time-minutes">

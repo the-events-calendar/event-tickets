@@ -102,9 +102,9 @@ class Ajax extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param Container  $container  A reference to the DI container object.
-	 * @param Seat_Types $seat_types A reference to the Seat Types service object.
-	 * @param Sessions   $sessions    A reference to the Sessions table object.
+	 * @param Container    $container  A reference to the DI container object.
+	 * @param Seat_Types   $seat_types A reference to the Seat Types service object.
+	 * @param Sessions     $sessions    A reference to the Sessions table object.
 	 * @param Reservations $reservations A reference to the Reservations service object.
 	 */
 	public function __construct(
@@ -114,8 +114,8 @@ class Ajax extends Controller_Contract {
 		Reservations $reservations
 	) {
 		parent::__construct( $container );
-		$this->seat_types = $seat_types;
-		$this->sessions = $sessions;
+		$this->seat_types   = $seat_types;
+		$this->sessions     = $sessions;
 		$this->reservations = $reservations;
 	}
 
@@ -280,7 +280,12 @@ class Ajax extends Controller_Contract {
 			return;
 		}
 
-		$body = trim( file_get_contents( 'php://input' ) );
+		if ( function_exists( 'wpcom_vip_file_get_contents' ) ) {
+			$body = wpcom_vip_file_get_contents( 'php://input' );
+		} else {
+			// phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsRemoteFile
+			$body = trim( file_get_contents( 'php://input' ) );
+		}
 
 		$decoded = json_decode( $body, true );
 
@@ -319,7 +324,7 @@ class Ajax extends Controller_Contract {
 	 *
 	 * @return void The JSON response is sent to the client.
 	 */
-	public function remove_reservations(){
+	public function remove_reservations() {
 		if ( ! check_ajax_referer( self::NONCE_ACTION, '_ajax_nonce', false ) ) {
 			wp_send_json_error(
 				[
@@ -331,7 +336,7 @@ class Ajax extends Controller_Contract {
 			return;
 		}
 
-		$token = tribe_get_request_var( 'token' );
+		$token   = tribe_get_request_var( 'token' );
 		$post_id = tribe_get_request_var( 'postId' );
 
 		$reservations_cancelled = $this->reservations->cancel(
