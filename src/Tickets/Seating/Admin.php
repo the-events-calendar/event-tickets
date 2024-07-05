@@ -190,6 +190,7 @@ class Admin extends Controller_Contract {
 			$this->built_asset_url( 'admin/maps.js' ),
 			Tickets::VERSION
 		)
+			->add_dependency( 'tec-tickets-seating-service-bundle' )
 			->add_to_group( 'tec-tickets-seating-admin' )
 			->add_to_group( 'tec-tickets-seating' )
 			->enqueue_on( $action )
