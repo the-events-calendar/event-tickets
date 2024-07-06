@@ -11,6 +11,7 @@ namespace TEC\Tickets\Seating\Service;
 
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Seating\Admin\Tabs\Map_Card;
+use TEC\Tickets\Seating\Logging;
 use TEC\Tickets\Seating\Tables\Maps as Maps_Table;
 use TEC\Tickets\Seating\Tables\Layouts as Layouts_Table;
 
@@ -22,6 +23,7 @@ use TEC\Tickets\Seating\Tables\Layouts as Layouts_Table;
  * @package TEC\Controller\Service;
  */
 class Maps {
+	use Logging;
 
 	/**
 	 * The URL to the service used to fetch the maps from the backend.
@@ -203,5 +205,54 @@ class Maps {
 					->count();
 		
 		return $count > 0;
+	}
+	
+	/**
+	 * Deletes a map from the service.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $map_id The ID of the map.
+	 * @param string $token  The access token.
+	 *
+	 * @return bool Whether the map was deleted or not.
+	 */
+	public function delete( string $map_id, string $token ): bool {
+		$url = add_query_arg(
+			[
+				'mapId' => $map_id,
+			],
+			$this->service_fetch_url
+		);
+		
+		$args = [
+			'method'  => 'DELETE',
+			'headers' => [
+				'Authorization' => 'Bearer ' . $token,
+				'Content-Type'  => 'application/json',
+			],
+		];
+		
+		$response = wp_remote_request( $url, $args );
+		$code     = wp_remote_retrieve_response_code( $response );
+		
+		if ( ! is_wp_error( $response ) && 200 === $code ) {
+			self::invalidate_cache();
+			Layouts::invalidate_cache();
+			
+			return true;
+		}
+		
+		$this->log_error(
+			'Failed to delete the map from the service.',
+			[
+				'source'   => __METHOD__,
+				'code'     => $code,
+				'url'      => $url,
+				'response' => $response,
+			]
+		);
+		
+		return false;
 	}
 }
