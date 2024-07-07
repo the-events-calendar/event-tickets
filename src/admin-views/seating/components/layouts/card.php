@@ -42,7 +42,11 @@ use TEC\Tickets\Seating\Admin\Tabs\Layout_Card;
 				<?php esc_html_e( 'Edit', 'event-tickets' ); ?>
 			</a>
 			<?php if ( 0 === $count ) : ?>
-			<a class="delete-layout" href="#">
+			<a
+				class="delete-layout"
+				data-layout-id="<?php echo esc_attr( $card->get_id() ); ?>"
+				data-map-id="<?php echo esc_attr( $card->get_map() ); ?>"
+				href="#">
 				<?php esc_html_e( 'Delete', 'event-tickets' ); ?>
 			</a>
 			<?php endif; ?>
