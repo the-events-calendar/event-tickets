@@ -356,4 +356,18 @@ class Service {
 	public function delete_map( string $map_id ): bool {
 		return $this->maps->delete( $map_id, $this->get_oauth_token() );
 	}
+	
+	/**
+	 * Deletes a layout.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $layout_id The ID of the layout.
+	 * @param string $map_id The map ID of the layout.
+	 *
+	 * @return bool
+	 */
+	public function delete_layout( string $layout_id, string $map_id): bool {
+		return $this->layouts->delete( $layout_id, $map_id, $this->get_oauth_token() );
+	}
 }

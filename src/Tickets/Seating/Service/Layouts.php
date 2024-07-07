@@ -10,6 +10,7 @@
 namespace TEC\Tickets\Seating\Service;
 
 use TEC\Common\StellarWP\DB\DB;
+use TEC\Tickets\Seating\Logging;
 use TEC\Tickets\Seating\Meta;
 use TEC\Tickets\Seating\Tables\Layouts as Layouts_Table;
 use TEC\Tickets\Seating\Admin\Tabs\Layout_Card;
@@ -23,6 +24,8 @@ use TEC\Tickets\Seating\Tables\Seat_Types as Seat_Types_Table;
  * @package TEC\Controller\Service;
  */
 class Layouts {
+	use Logging;
+	
 	/**
 	 * The URL to the service used to fetch the layouts from the backend.
 	 *
@@ -244,5 +247,55 @@ class Layouts {
 		do_action( 'tec_tickets_seating_invalidate_layouts_cache' );
 
 		return $invalidated;
+	}
+	
+	/**
+	 * Deletes a layout from the service.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $layout_id The ID of the layout to delete.
+	 * @param string $map_id    The Map ID of the layout to delete.
+	 * @param string $token     The token used to authenticate the request.
+	 *
+	 * @return bool True on success, false on failure.
+	 */
+	public function delete( string $layout_id, string $map_id, string $token ): bool {
+		$url = add_query_arg(
+			[
+				'layoutId' => $layout_id,
+				'mapId'    => $map_id,
+			],
+			$this->service_fetch_url
+		);
+		
+		$args = [
+			'method'  => 'DELETE',
+			'headers' => [
+				'Authorization' => 'Bearer ' . $token,
+				'Content-Type'  => 'application/json',
+			],
+		];
+		
+		$response = wp_remote_request( $url, $args );
+		$code     = wp_remote_retrieve_response_code( $response );
+		
+		if ( ! is_wp_error( $response ) && 200 === $code ) {
+			self::invalidate_cache();
+			Maps::invalidate_cache();
+			return true;
+		}
+		
+		$this->log_error(
+			'Failed to delete the layout from the service.',
+			[
+				'source'   => __METHOD__,
+				'code'     => $code,
+				'url'      => $url,
+				'response' => $response,
+			]
+		);
+		
+		return false;
 	}
 }
