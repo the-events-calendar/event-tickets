@@ -221,7 +221,7 @@ class Admin extends Controller_Contract {
 			$this->built_asset_url( 'admin/layouts.js' ),
 			Tickets::VERSION
 		)
-			->set_dependencies( 'tribe-dialog-js' )
+			->set_dependencies( 'tec-tickets-seating-service-bundle', 'tribe-dialog-js' )
 			->add_to_group( 'tec-tickets-seating-admin' )
 			->add_to_group( 'tec-tickets-seating' )
 			->enqueue_on( $action )
