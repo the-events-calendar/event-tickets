@@ -1,1 +1,2 @@
-import './style.pcss'
+import './style.pcss';
+import './actions';
