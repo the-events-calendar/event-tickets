@@ -59,6 +59,15 @@ class Ajax extends Controller_Contract {
 	 * @var string
 	 */
 	const ACTION_DELETE_MAP = 'tec_tickets_seating_service_delete_map';
+	
+	/**
+	 * The action to delete a layout.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	const ACTION_DELETE_LAYOUT = 'tec_tickets_seating_service_delete_layout';
 
 	/**
 	 * A reference to the Seat Types service object.
@@ -96,6 +105,8 @@ class Ajax extends Controller_Contract {
 			[ $this, 'invalidate_maps_layouts_cache' ]
 		);
 		remove_action( 'wp_ajax_' . self::ACTION_INVALIDATE_LAYOUTS_CACHE, [ $this, 'invalidate_layouts_cache' ] );
+		remove_action( 'wp_ajax_' . self::ACTION_DELETE_MAP, [ $this, 'delete_map_from_service' ] );
+		remove_action( 'wp_ajax_' . self::ACTION_DELETE_LAYOUT, [ $this, 'delete_layout_from_service' ] );
 	}
 
 	/**
@@ -159,6 +170,7 @@ class Ajax extends Controller_Contract {
 		add_action( 'wp_ajax_' . self::ACTION_INVALIDATE_MAPS_LAYOUTS_CACHE, [ $this, 'invalidate_maps_layouts_cache' ] );
 		add_action( 'wp_ajax_' . self::ACTION_INVALIDATE_LAYOUTS_CACHE, [ $this, 'invalidate_layouts_cache' ] );
 		add_action( 'wp_ajax_' . self::ACTION_DELETE_MAP, [ $this, 'delete_map_from_service' ] );
+		add_action( 'wp_ajax_' . self::ACTION_DELETE_LAYOUT, [ $this, 'delete_layout_from_service' ] );
 	}
 
 	/**
@@ -243,6 +255,35 @@ class Ajax extends Controller_Contract {
 			wp_send_json_success();
 		}
 		
-		wp_send_json_error( [ 'error' => __( 'Failed to delete the map.', 'event-tickets' ) ] );
+		wp_send_json_error( [ 'error' => __( 'Failed to delete the map.', 'event-tickets' ) ], 500 );
+	}
+	
+	/**
+	 * Deletes a layout from the service.
+	 *
+	 * @since TBD
+	 *
+	 * @return void The function does not return a value but will send the JSON response.
+	 */
+	public function delete_layout_from_service(): void {
+		if ( ! check_ajax_referer( self::NONCE_ACTION, '_ajax_nonce', false ) ) {
+			wp_send_json_error(
+				[
+					'error' => __( 'Nonce verification failed', 'event-tickets' ),
+				],
+				403
+			);
+			
+			return;
+		}
+		
+		$layout_id = tribe_get_request_var( 'layoutId' );
+		$map_id    = tribe_get_request_var( 'mapId' );
+		
+		if ( tribe( Service::class )->delete_layout( $layout_id, $map_id ) ) {
+			wp_send_json_success();
+		}
+		
+		wp_send_json_error( [ 'error' => __( 'Failed to delete the layout.', 'event-tickets' ) ], 500 );
 	}
 }
