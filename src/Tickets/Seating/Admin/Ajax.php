@@ -14,6 +14,7 @@ use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Tickets\Seating\Service\Layouts;
 use TEC\Tickets\Seating\Service\Maps;
 use TEC\Tickets\Seating\Service\Seat_Types;
+use TEC\Tickets\Seating\Service\Service;
 
 /**
  * Class Ajax.
@@ -49,6 +50,15 @@ class Ajax extends Controller_Contract {
 	 * @var string
 	 */
 	const ACTION_INVALIDATE_LAYOUTS_CACHE = 'tec_tickets_seating_service_invalidate_layouts_cache';
+	
+	/**
+	 * The action to delete a map.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	const ACTION_DELETE_MAP = 'tec_tickets_seating_service_delete_map';
 
 	/**
 	 * A reference to the Seat Types service object.
@@ -148,6 +158,7 @@ class Ajax extends Controller_Contract {
 		add_action( 'wp_ajax_seat_types_by_layout_id', [ $this, 'fetch_seat_types_by_layout_id' ] );
 		add_action( 'wp_ajax_' . self::ACTION_INVALIDATE_MAPS_LAYOUTS_CACHE, [ $this, 'invalidate_maps_layouts_cache' ] );
 		add_action( 'wp_ajax_' . self::ACTION_INVALIDATE_LAYOUTS_CACHE, [ $this, 'invalidate_layouts_cache' ] );
+		add_action( 'wp_ajax_' . self::ACTION_DELETE_MAP, [ $this, 'delete_map_from_service' ] );
 	}
 
 	/**
@@ -205,5 +216,33 @@ class Ajax extends Controller_Contract {
 		}
 
 		wp_send_json_success();
+	}
+	
+	/**
+	 * Deletes a map from the service.
+	 *
+	 * @since TBD
+	 *
+	 * @return void The function does not return a value but will send the JSON response.
+	 */
+	public function delete_map_from_service(): void {
+		if ( ! check_ajax_referer( self::NONCE_ACTION, '_ajax_nonce', false ) ) {
+			wp_send_json_error(
+				[
+					'error' => __( 'Nonce verification failed', 'event-tickets' ),
+				],
+				403
+			);
+			
+			return;
+		}
+		
+		$map_id = tribe_get_request_var( 'mapId' );
+		
+		if ( tribe( Service::class )->delete_map( $map_id ) ) {
+			wp_send_json_success();
+		}
+		
+		wp_send_json_error( [ 'error' => __( 'Failed to delete the map.', 'event-tickets' ) ] );
 	}
 }
