@@ -1,6 +1,5 @@
 <?php
 
-
 namespace TEC\Tickets\Commerce\Gateways\Stripe;
 
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
@@ -9,7 +8,7 @@ use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tests\Traits\With_Uopz;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 
-class OrderTest extends \Codeception\TestCase\WPTestCase {
+class RefundTest extends \Codeception\TestCase\WPTestCase {
 
 	use Ticket_Maker;
 	use Attendee_Maker;
@@ -27,7 +26,7 @@ class OrderTest extends \Codeception\TestCase\WPTestCase {
 			[
 				'post_title'   => 'TEC-TC-T-5',
 				'post_content' => '',
-				'post_status'  => 'tec-tc-created',
+				'post_status'  => 'tec-tc-refunded',
 				'post_author'  => 0,
 				'post_type'    => 'tec_tc_order',
 			]
