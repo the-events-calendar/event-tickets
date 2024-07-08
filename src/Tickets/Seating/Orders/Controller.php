@@ -12,6 +12,7 @@ namespace TEC\Tickets\Seating\Orders;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\lucatume\DI52\Container;
 use TEC\Tickets\Admin\Attendees\Page as Attendee_Page;
+use Tribe__Tabbed_View as Tabbed_View;
 use TEC\Tickets\Commerce\Status\Status_Interface;
 use WP_Post;
 use Tribe__Tickets__Tickets;
@@ -78,6 +79,82 @@ class Controller extends Controller_Contract {
 			add_filter( 'tribe_repository_attendees_query_args', [ $this, 'handle_sorting_seat_column' ], 10, 3 );
 			add_filter( 'event_tickets_attendees_table_row_actions', [ $this, 'remove_move_row_action' ], 10, 2 );
 		}
+		
+		if ( is_admin() ) {
+			add_filter( 'tec_tickets_commerce_reports_tabbed_view_tab_map', [ $this, 'include_seats_tab' ] );
+			add_action( 'tec_tickets_commerce_reports_tabbed_view_after_register_tab', [ $this, 'register_seat_tab' ], 10, 2 );
+			add_action( 'tribe_tickets_orders_tabbed_view_register_tab_right', [ $this, 'register_seat_tab' ], 10, 2 );
+			add_action( 'init', [ $this, 'register_seat_reports' ] );
+			add_filter( 'tec_tickets_commerce_reports_tabbed_page_title', [ $this, 'filter_seat_tab_title' ], 10, 3 );
+		}
+	}
+	
+	/**
+	 * Filters the page title for the seat tab.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $title The page title.
+	 * @param int    $post_id The post ID.
+	 * @param string $page_type The page type.
+	 *
+	 * @return string
+	 */
+	public function filter_seat_tab_title( $title, $post_id, $page_type ): string {
+		if ( Seats_Report::$page_slug !== $page_type ) {
+			return $title;
+		}
+		// Translators: %1$s: the post/event title, %2$d: the post/event ID.
+		$title = _x( 'Seats for: %1$s [#%2$d]', 'seat report screen heading', 'event-tickets' );
+		
+		return sprintf( $title, get_the_title( $post_id ), $post_id );
+	}
+	
+	/**
+	 * Registers the seat reports.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function register_seat_reports() {
+		$this->container->make( Seats_Report::class )->hook();
+	}
+	
+	/**
+	 * Adds seat tab slug to the tab slug map.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,string> $tab_map The tab slug map.
+	 *
+	 * @return array<string,string>
+	 */
+	public function include_seats_tab( array $tab_map = [] ): array {
+		$tab_map[ Seats_Report::$page_slug ] = Seats_Report::$tab_slug;
+		return $tab_map;
+	}
+	
+	/**
+	 * Registers the seat tab.
+	 *
+	 * @since TBD
+	 *
+	 * @param Tabbed_View $tabbed_view The tabbed view.
+	 * @param WP_Post     $post The post.
+	 *
+	 * @return void
+	 */
+	public function register_seat_tab( $tabbed_view, $post ) {
+		if ( ! $post ) {
+			return;
+		}
+		
+		add_filter( 'tribe_tickets_attendees_show_title', '__return_false' );
+		
+		$report_tab = new Seats_Tab( $tabbed_view );
+		$report_tab->set_url( Seats_Report::get_link( $post ) );
+		$tabbed_view->register( $report_tab );
 	}
 	
 	/**
