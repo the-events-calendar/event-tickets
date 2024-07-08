@@ -3,7 +3,7 @@
  *
  * @param {string} link The slug of the link to return.
  *
- * @return {string} The link URL, or an empty string if it does not exist.
+ * @returc {string} The link URL, or an empty string if it does not exist.
  */
 export function getLink(link) {
 	return window?.tec?.tickets?.seating?.utils?.links?.[link] || '';
@@ -34,7 +34,7 @@ export function getLocalizedString(slug, group) {
  *
  * @since TBD
  *
- * @param {string} htmlTemplate The HTML template to use.
+ * @param {string} htmlTemplate The HTML template to use. Properties placeholder have the form `{propertyName}`.
  * @param {Object} props        The props to replace in the template.
  *
  * @return {HTMLElement} The HTML Element.

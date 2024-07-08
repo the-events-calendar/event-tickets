@@ -14,6 +14,7 @@ use TEC\Common\lucatume\DI52\Container;
 use TEC\Common\StellarWP\Assets\Asset;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Seating\Built_Assets;
+use TEC\Tickets\Seating\Frontend;
 use TEC\Tickets\Seating\Service\Reservations;
 use TEC\Tickets\Seating\Tables\Sessions;
 use TEC\Tickets\Seating\Template;
@@ -57,6 +58,15 @@ class Timer extends Controller_Contract {
 	const ACTION_SYNC = 'tec_tickets_seating_timer_sync';
 
 	/**
+	 * The AJAX action used from the JS code to get the data to render the redirection modal.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	const ACTION_INTERRUPT_GET_DATA = 'tec_tickets_seating_timer_interrupt_get_data';
+
+	/**
 	 * A reference to the template object.
 	 *
 	 * @since TBD
@@ -82,6 +92,15 @@ class Timer extends Controller_Contract {
 	 * @var Reservations
 	 */
 	private Reservations $reservations;
+
+	/**
+	 * Whether the redirection modal was already rendered in the context of this request or not.
+	 *
+	 * @since TBD
+	 *
+	 * @var bool
+	 */
+	private $did_render_interruppt_modal = false;
 
 	/**
 	 * Timer constructor.
@@ -312,6 +331,8 @@ class Timer extends Controller_Contract {
 			'tribe_template_after_include:tickets/v2/commerce/checkout/cart/header',
 			[ $this, 'render_to_sync' ]
 		);
+		remove_action( 'wp_ajax_nopriv_' . self::ACTION_INTERRUPT_GET_DATA, [ $this, 'ajax_interrupt_get_data' ] );
+		remove_action( 'wp_ajax_' . self::ACTION_INTERRUPT_GET_DATA, [ $this, 'ajax_interrupt_get_data' ] );
 	}
 
 	/**
@@ -324,15 +345,19 @@ class Timer extends Controller_Contract {
 	 *     ajaxNonce: string,
 	 *     ACTION_START: string,
 	 *     ACTION_TIME_LEFT: string,
-	 *     ACTION_REDIRECT: string
+	 *     ACTION_REDIRECT: string,
+	 *     ACTION_INTERRUPT_GET_DATA: string,
+	 *     TICKETS_BLOCK_DIALOG_NAME: string
 	 * } The data to be localized on the timer frontend.
 	 */
 	private function get_localized_data(): array {
 		return [
-			'ajaxUrl'      => admin_url( 'admin-ajax.php' ),
-			'ajaxNonce'    => wp_create_nonce( self::COOKIE_NAME ),
-			'ACTION_START' => self::ACTION_START,
-			'ACTION_SYNC'  => self::ACTION_SYNC,
+			'ajaxUrl'                   => admin_url( 'admin-ajax.php' ),
+			'ajaxNonce'                 => wp_create_nonce( self::COOKIE_NAME ),
+			'ACTION_START'              => self::ACTION_START,
+			'ACTION_SYNC'               => self::ACTION_SYNC,
+			'ACTION_INTERRUPT_GET_DATA' => self::ACTION_INTERRUPT_GET_DATA,
+			'TICKETS_BLOCK_DIALOG_NAME' => 'dialog_obj_' . Frontend::MODAL_ID,
 		];
 	}
 
@@ -349,6 +374,8 @@ class Timer extends Controller_Contract {
 		add_action( 'wp_ajax_' . self::ACTION_START, [ $this, 'ajax_start' ] );
 		add_action( 'wp_ajax_nopriv_' . self::ACTION_SYNC, [ $this, 'ajax_sync' ] );
 		add_action( 'wp_ajax_' . self::ACTION_SYNC, [ $this, 'ajax_sync' ] );
+		add_action( 'wp_ajax_nopriv_' . self::ACTION_INTERRUPT_GET_DATA, [ $this, 'ajax_interrupt_get_data' ] );
+		add_action( 'wp_ajax_' . self::ACTION_INTERRUPT_GET_DATA, [ $this, 'ajax_interrupt_get_data' ] );
 
 		// Tickets Commerce checkout page: here the timer should be hydrated from the cookie, no arguments are needed.
 		add_action(
@@ -363,22 +390,27 @@ class Timer extends Controller_Contract {
 			$this->built_asset_url( 'frontend/timer.js' ),
 			ET::VERSION
 		)
-			->set_dependencies( 'tribe-dialog-js', 'wp-hooks' )
-			->add_localize_script( 'tec.tickets.seating.frontend.timer', fn() => $this->get_localized_data() )
-			->enqueue_on( 'tec_tickets_seating_seat_selection_timer' )
-			->add_to_group( 'tec-tickets-seating-frontend' )
-			->add_to_group( 'tec-tickets-seating' )
-			->register();
+		     ->set_dependencies(
+			     'tribe-dialog-js',
+			     'wp-hooks',
+			     'wp-i18n',
+			     'tec-tickets-seating-utils'
+		     )
+		     ->add_localize_script( 'tec.tickets.seating.frontend.timer', fn() => $this->get_localized_data() )
+		     ->enqueue_on( 'tec_tickets_seating_seat_selection_timer' )
+		     ->add_to_group( 'tec-tickets-seating-frontend' )
+		     ->add_to_group( 'tec-tickets-seating' )
+		     ->register();
 
 		Asset::add(
 			'tec-tickets-seating-timer-style',
 			$this->built_asset_url( 'frontend/timer.css' ),
 			ET::VERSION
 		)
-			->enqueue_on( 'tec_tickets_seating_seat_selection_timer' )
-			->add_to_group( 'tec-tickets-seating-frontend' )
-			->add_to_group( 'tec-tickets-seating' )
-			->register();
+		     ->enqueue_on( 'tec_tickets_seating_seat_selection_timer' )
+		     ->add_to_group( 'tec-tickets-seating-frontend' )
+		     ->add_to_group( 'tec-tickets-seating' )
+		     ->register();
 	}
 
 	/**
@@ -520,5 +552,62 @@ class Timer extends Controller_Contract {
 
 		// Nothing to clear.
 		return true;
+	}
+
+	/**
+	 * Returns the data required to render the correct timer expiration modal on the frontend.
+	 *
+	 * @since TBD
+	 *
+	 * @return void  The AJAX response is sent back to the browser.
+	 */
+	public function ajax_interrupt_get_data(): void {
+		if ( ! check_ajax_referer( self::COOKIE_NAME, '_ajaxNonce', false ) ) {
+			wp_send_json_error(
+				[
+					'error' => 'Nonce verification failed',
+				],
+				401
+			);
+		}
+
+		$post_id               = tribe_get_request_var( 'postId', null );
+		$post_type_object      = get_post_type_object( $post_id );
+		$has_tickets_available = tribe_tickets()->where( 'event', $post_id )->where( 'is_available', true )->count();
+
+		if ( $has_tickets_available ) {
+			$content      = _x( 'Your seat selections are no longer reserved, but tickets are still available.',
+				'Seat selection expired timer content',
+				'event-tickets' );
+			$button_label = _x( 'Find Seats', 'Seat selection expired timer button label', 'event-tickets' );
+			$redirect_url = get_post_permalink( $post_id );
+		} else {
+			if ( $post_type_object ) {
+				$post_type_label = strtolower( get_post_type_labels( $post_type_object )['singular_name'] ) ?? 'event';
+			} else {
+				$post_type_label = 'event';
+			}
+
+			$content = sprintf(
+			// Translators: %s: The post type singular name.
+				_x( 'This %s is now sold out.', 'Seat selection expired timer content', 'event-tickets' ),
+				$post_type_label
+			);
+
+			$button_label = sprintf(
+			// Translators: %s: The post type singular name.
+				_x( 'Find another %s', 'Seat selection expired timer button label', 'event-tickets' ),
+				$post_type_label
+			);
+
+			$redirect_url = get_post_type_archive_link( $post_type_object->name );
+		}
+
+		wp_send_json_success( [
+			'title'       => esc_html_x( 'Time limit expired', 'Seat selection expired timer title', 'event-tickets' ),
+			'content'     => esc_html( $content ),
+			'buttonLabel' => esc_html( $button_label ),
+			'redirectUrl' => esc_url( $redirect_url ),
+		] );
 	}
 }

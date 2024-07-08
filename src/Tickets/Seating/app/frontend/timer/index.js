@@ -1,8 +1,17 @@
 import { localizedData } from './localized-data';
 import './style.pcss';
 import { doAction } from '@wordpress/hooks';
+import { InterruptDialogComponent } from './interrupt-dialog-component';
+import { _x } from '@wordpress/i18n';
 
-const { ajaxUrl, ajaxNonce, ACTION_START, ACTION_SYNC } = localizedData;
+const {
+	ajaxUrl,
+	ajaxNonce,
+	ACTION_START,
+	ACTION_SYNC,
+	ACTION_INTERRUPT_GET_DATA,
+	TICKETS_BLOCK_DIALOG_NAME,
+} = localizedData;
 
 /**
  * The selector used to find the timer elements on the page.
@@ -48,6 +57,15 @@ let healthCheckLoopId = null;
  * @type {boolean}
  */
 let started = false;
+
+/**
+ * The interrupt dialog HTML element.
+ *
+ * @since TBD
+ *
+ * @type {HTMLElement|null}
+ */
+let interruptDialogElement = null;
 
 /**
  * @typedef {Object} TimerData
@@ -140,21 +158,145 @@ function setTimerTimeLeft(timerElement, minutes, seconds) {
 }
 
 /**
+ * @typedef {Object} InterruptModalData
+ * @property {string} title       The title of the modal.
+ * @property {string} content     The content of the modal.
+ * @property {string} redirectUrl The URL to redirect the user to when the timer expires.
+ */
+
+/**
+ * Fetches the data required to render the correct timer expiration modal on the frontend.
+ *
+ * @since TBD
+ *
+ * @return {Promise<InterruptModalData>} The data required to render the correct timer expiration modal on the frontend.
+ */
+async function fetchInterruptModalData() {
+	const { postId } = findTimerData();
+	const requestUrl = new URL(ajaxUrl);
+	requestUrl.searchParams.set('_ajaxNonce', ajaxNonce);
+	requestUrl.searchParams.set('action', ACTION_INTERRUPT_GET_DATA);
+	requestUrl.searchParams.set('postId', postId);
+
+	const response = await fetch(requestUrl.toString(), {
+		method: 'GET',
+	});
+
+	const defaultData = {
+		title: _x(
+			'Time limit expired',
+			'Seat selection expired timer title',
+			'event-tickets'
+		),
+		content: _x(
+			'Your seat selections are no longer reserved, but tickets are still available.',
+			'Seat selection expired timer content',
+			'event-tickets'
+		),
+		buttonLabel: _x(
+			'Find Seats',
+			'Seat selection expired timer button label',
+			'event-tickets'
+		),
+		redirectUrl: '/',
+	};
+
+	if (!response.ok) {
+		console.error('Failed to fetch interrupt modal data');
+		return defaultData;
+	}
+
+	const responseJson = await response.json();
+
+	if (!(responseJson.success && responseJson.data)) {
+		console.error('Failed to fetch interrupt modal data');
+		return defaultData;
+	}
+
+	return {
+		title: responseJson.data.title || defaultData.title,
+		content: responseJson.data.content || defaultData.content,
+		buttonLabel: responseJson.data.buttonLabel || defaultData.buttonLabel,
+		redirectUrl: responseJson.data.redirectUrl || defaultData.redirectUrl,
+	};
+}
+
+/**
+ * Returns  the interrupt dialog element.
+ *
+ * @since TBD
+ *
+ * @return {A11yDialog|null} Either the interrupt dialog element or `null` if it could not be found.
+ */
+async function getInterruptDialogElement() {
+	const firstTimerElement = getTimerElements()?.[0];
+
+	if (!firstTimerElement) {
+		console.warn('No timer element found');
+		return null;
+	}
+
+	const dialogDataJSAttribute =
+		'dialog-content-tec-tickets-seating-timer-interrupt';
+
+	const { title, content, buttonLabel, redirectUrl } =
+		await fetchInterruptModalData();
+
+	// The `A11yDialog` library will read this data attribute to find the dialog element..
+	firstTimerElement.dataset.content = dialogDataJSAttribute;
+
+	// By default, attach the dialog to the first timer element.
+	let appendTarget = '.tec-tickets-seating__timer';
+
+	// Are we rendering inside another dialog?
+	const dialogParent = firstTimerElement.closest('.tribe-dialog');
+
+	if (dialogParent) {
+		// If the timer element is being rendered in the context of a dialog, then attach the dialog to that dialog parent.
+		appendTarget =
+			'.tribe-tickets__tickets-form, .tec-tickets-seating__tickets-block';
+	}
+
+	if (!interruptDialogElement) {
+		interruptDialogElement = InterruptDialogComponent({
+			dataJs: dialogDataJSAttribute,
+			title,
+			content,
+			buttonLabel,
+			redirectUrl,
+		});
+
+		document
+			.querySelector(appendTarget)
+			?.appendChild(interruptDialogElement);
+	}
+
+	// @see tec-a11y-dialog.js in Common.
+	return new A11yDialog({
+		trigger: '.tec-tickets-seating__timer',
+		appendTarget,
+		wrapperClasses: 'tribe-dialog',
+		overlayClasses: 'tribe-dialog__overlay tribe-modal__overlay',
+		contentClasses:
+			'tribe-dialog__wrapper tribe-tickets-seating__interrupt-wrapper',
+	});
+}
+
+/**
  * Interrupts the user triggering the user flow redirection when the time is up.
  *
  * @since TBD
  *
  * @return {void} The timer is interrupted.
  */
-function interrupt() {
+async function interrupt() {
 	getTimerElements().forEach((timerElement) => {
 		setTimerTimeLeft(timerElement, 0, 0);
 	});
 
 	clearTimeout(countdownLoopId);
 	clearTimeout(healthCheckLoopId);
-
-	console.log('Interrupting the timer');
+	const interruptDialog = await getInterruptDialogElement();
 
 	/**
 	 * Fires to trigger an interruption of the user flow due to the timer expiring.
@@ -162,6 +304,15 @@ function interrupt() {
 	 * @since TBD
 	 */
 	doAction('tec.tickets.seating.timer_interrupt');
+
+	// Close the seat selection dialog, if it exists.
+	if (window[TICKETS_BLOCK_DIALOG_NAME]) {
+		await window[TICKETS_BLOCK_DIALOG_NAME].hide();
+	}
+
+	if (interruptDialog) {
+		interruptDialog.show();
+	}
 }
 
 /**
@@ -176,6 +327,8 @@ function interrupt() {
 function startCountdownLoop(secondsLeft) {
 	if (secondsLeft <= 0) {
 		interrupt();
+
+		return;
 	}
 
 	countdownLoopId = setTimeout(() => {
@@ -395,5 +548,4 @@ window.tec.tickets.seating.frontend.timer = {
 	reset,
 	syncWithBackend,
 	interrupt,
-	getTimerElements,
 };

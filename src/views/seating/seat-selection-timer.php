@@ -40,5 +40,6 @@
 				</span>
 			</span>
 	</div>
+	<div class="tec-tickets-seating__dialog-append-target"></div>
 </div>
 
