@@ -16,16 +16,19 @@ const handleDelete = async ( event ) => {
 	const layoutId = event.target.getAttribute('data-layout-id');
 	const mapId = event.target.getAttribute('data-map-id');
 
+	const card = event.target.closest('.tec-tickets__seating-tab__card');
+	card.style.opacity = 0.5;
+
 	if ( confirm('Are you sure you want to delete this layout?') ) {
 		const result = await delete_layout( layoutId, mapId );
 		if ( result ) {
 			window.location.reload();
 		} else {
-			console.log('failed to delete');
+			card.style.opacity = 1;
 			alert( 'Failed to delete the layout' );
 		}
 	} else {
-		console.log('not deleted');
+		card.style.opacity = 1;
 	}
 }
 

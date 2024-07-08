@@ -14,16 +14,19 @@ const register_delete_action = () => {
 const handleDelete = async ( event ) => {
 	// get the data-map-id from the link.
 	const mapId = event.target.getAttribute('data-map-id');
+	const card = event.target.closest('.tec-tickets__seating-tab__card');
+	card.style.opacity = 0.5;
+
 	if ( confirm('Are you sure you want to delete this map?') ) {
 		const result = await delete_map( mapId );
 		if ( result ) {
 			window.location.reload();
 		} else {
-			console.log('failed to delete');
+			card.style.opacity = 1;
 			alert( 'Failed to delete the map' );
 		}
 	} else {
-		console.log('not deleted');
+		card.style.opacity = 1;
 	}
 }
 
