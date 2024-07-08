@@ -57,6 +57,14 @@ class Assets extends Controller_Contract {
 			'localizedStrings' => [
 				'capacity-form' => $this->container->get( Localization::class )->get_capacity_form_strings(),
 				'dashboard'     => [ 'seats-action-label' => _x( 'Seats', 'Ticket Dashboard actions', 'event-tickets' ) ],
+				'maps'          => [
+					'delete-confirmation' => _x( 'Are you sure you want to delete this map?', 'Confirmation message for deleting a map', 'event-tickets' ),
+					'delete-failed'       => _x( 'Failed to delete the map.', 'Error message for deleting a map', 'event-tickets' ),
+				],
+				'layouts'       => [
+					'delete-confirmation' => _x( 'Are you sure you want to delete this layout?', 'Confirmation message for deleting a layout', 'event-tickets' ),
+					'delete-failed'       => _x( 'Failed to delete the layout.', 'Error message for deleting a layout', 'event-tickets' ),
+				],
 			],
 		];
 	}

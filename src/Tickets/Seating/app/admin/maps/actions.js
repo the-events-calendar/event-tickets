@@ -1,5 +1,7 @@
 import {ajaxUrl, ajaxNonce} from "../../service/service-api/externals";
-import {onReady} from "../../utils";
+import {onReady, getLocalizedString} from "../../utils";
+
+const getString = (key) => getLocalizedString(key, 'maps');
 
 const register_delete_action = () => {
 	// add click listener to all links with class 'delete'
@@ -17,13 +19,13 @@ const handleDelete = async ( event ) => {
 	const card = event.target.closest('.tec-tickets__seating-tab__card');
 	card.style.opacity = 0.5;
 
-	if ( confirm('Are you sure you want to delete this map?') ) {
+	if ( confirm(getString('delete-confirmation')) ) {
 		const result = await delete_map( mapId );
 		if ( result ) {
 			window.location.reload();
 		} else {
 			card.style.opacity = 1;
-			alert( 'Failed to delete the map' );
+			alert( getString('delete-failed') );
 		}
 	} else {
 		card.style.opacity = 1;
