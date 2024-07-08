@@ -367,7 +367,7 @@ class Service {
 	 *
 	 * @return bool
 	 */
-	public function delete_layout( string $layout_id, string $map_id): bool {
+	public function delete_layout( string $layout_id, string $map_id ): bool {
 		return $this->layouts->delete( $layout_id, $map_id, $this->get_oauth_token() );
 	}
 }
