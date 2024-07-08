@@ -39,11 +39,13 @@ class Charge_Webhook implements Webhook_Event_Interface {
 		 * @link https://stellarwp.atlassian.net/browse/ET-1792
 		 *
 		 * @since 5.7.1
+		 * @since TBD - Process Refunds requests always.
 		 */
 		if (
 			$payment_intent
 			&& isset( $payment_intent['status'] )
 			&& Status::SUCCEEDED === $payment_intent['status']
+			&& Events::CHARGE_REFUNDED !== Arr::get( $event, 'type' )
 		) {
 				$response->set_status( 200 );
 				$response->set_data(
