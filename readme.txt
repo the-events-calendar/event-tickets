@@ -197,6 +197,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Fix - ensure Stripe refunds are recorded in WordPress. [ET-2142]
+
 = [5.11.0.3] 2024-06-14 =
 
 * Fix - Issue where scripts would not be enqueued as modules. [TECTRIA-86]
