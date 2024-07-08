@@ -279,6 +279,7 @@ async function getInterruptDialogElement() {
 		overlayClasses: 'tribe-dialog__overlay tribe-modal__overlay',
 		contentClasses:
 			'tribe-dialog__wrapper tribe-tickets-seating__interrupt-wrapper',
+		overlayClickCloses: false,
 	});
 }
 
@@ -312,6 +313,8 @@ async function interrupt() {
 
 	if (interruptDialog) {
 		interruptDialog.show();
+		// This is a  hack to prevent the user from closing the dialog.
+		interruptDialog.shown = false;
 	}
 }
 
