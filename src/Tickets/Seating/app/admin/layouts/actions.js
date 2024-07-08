@@ -6,16 +6,16 @@ import {onReady, getLocalizedString} from "@tec/tickets/seating/utils";
  *
  * @since TBD
  *
- * @param {string} key - The key to get the localized string for
+ * @param {string} key - The key to get the localized string for.
  *
- * @returns {string} - The localized string
+ * @returns {string} - The localized string.
  */
 export function getString(key) {
 	return getLocalizedString(key, 'layouts');
 }
 
 /**
- * Register delete action on all links with class 'delete-layout'
+ * Register delete action on all links with class 'delete-layout'.
  *
  * @since TBD
  */
