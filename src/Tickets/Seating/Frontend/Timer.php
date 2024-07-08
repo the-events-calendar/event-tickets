@@ -407,6 +407,7 @@ class Timer extends Controller_Contract {
 			$this->built_asset_url( 'frontend/timer.css' ),
 			ET::VERSION
 		)
+		     ->set_dependencies( 'tribe-dialog' )
 		     ->enqueue_on( 'tec_tickets_seating_seat_selection_timer' )
 		     ->add_to_group( 'tec-tickets-seating-frontend' )
 		     ->add_to_group( 'tec-tickets-seating' )
