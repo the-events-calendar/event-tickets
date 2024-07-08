@@ -1,12 +1,5 @@
 import {ajaxUrl, ajaxNonce} from "../../service/service-api/externals";
-
-const onReady = (domReadyCallback) => {
-	if (document.readyState !== 'loading') {
-		domReadyCallback();
-	} else {
-		document.addEventListener('DOMContentLoaded', domReadyCallback);
-	}
-};
+import { onReady } from "../../utils";
 
 const register_delete_action = () => {
 	// add click listener to all links with class 'delete'
@@ -49,6 +42,5 @@ const delete_layout = async (layoutId, mapId) => {
 
 	return response.status === 200;
 }
-onReady(() => {
-	register_delete_action();
-});
+
+onReady(register_delete_action);

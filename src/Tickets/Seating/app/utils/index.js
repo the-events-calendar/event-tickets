@@ -70,6 +70,14 @@ export function createHtmlComponentFromTemplateElement(templateId, props) {
 	return createHtmlComponentFromTemplateString(template.innerHTML, props);
 }
 
+export const onReady = (domReadyCallback) => {
+	if (document.readyState !== 'loading') {
+		domReadyCallback();
+	} else {
+		document.addEventListener('DOMContentLoaded', domReadyCallback);
+	}
+};
+
 window.tec = window.tec || {};
 window.tec.tickets.seating = window.tec.tickets.seating || {};
 window.tec.tickets.seating.utils = {
@@ -78,4 +86,5 @@ window.tec.tickets.seating.utils = {
 	getLocalizedString,
 	createHtmlComponentFromTemplateString,
 	createHtmlComponentFromTemplateElement,
+	onReady,
 };
