@@ -651,6 +651,18 @@ class Timer extends Controller_Contract {
 			$redirect_url = get_post_type_archive_link( $post_type_object->name );
 		}
 
+		/**
+		 * Fires when a seat selection session is interrupted due to the timer expiring or the seat selection session
+		 * being otherwise interrupted.
+		 *
+		 * @since TBD
+		 *
+		 * @param int    $post_id The post ID the session is being interrupted for.
+		 * @param string $token   The ephemeral token the session is being interrupted for.
+		 */
+		do_action( 'tec_tickets_seating_session_interrupt', $post_id, $token );
+
+		// Remove the seat selection session cookie entry.
 		$cookie_value = $this->remove_cookie_entry( $_COOKIE[ self::COOKIE_NAME ] ?? '', $post_id, $token );
 		setcookie(
 			self::COOKIE_NAME,
@@ -663,16 +675,15 @@ class Timer extends Controller_Contract {
 		);
 		$_COOKIE[ self::COOKIE_NAME ] = $cookie_value;
 
-		/**
-		 * Fires when a seat selection session is interrupted due to the timer expiring or the seat selection session
-		 * being otherwise interrupted.
-		 *
-		 * @since TBD
-		 *
-		 * @param int    $post_id The post ID the session is being interrupted for.
-		 * @param string $token   The ephemeral token the session is being interrupted for.
-		 */
-		do_action( 'tec_tickets_seating_session_interrupt', $post_id, $token );
+		// Cancel the reservations for the post ID and token.
+		if ( ! $this->reservations->cancel( $post_id, $this->sessions->get_reservations_for_token( $token ) ) ) {
+			wp_send_json_error(
+				[
+					'error' => 'Failed to cancel the reservations',
+				],
+				500
+			);
+		}
 
 		wp_send_json_success( [
 			'title'       => esc_html_x( 'Time limit expired', 'Seat selection expired timer title', 'event-tickets' ),
