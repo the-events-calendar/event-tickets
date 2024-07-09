@@ -11,11 +11,14 @@ namespace TEC\Tickets\Seating\Admin;
 
 use TEC\Common\Contracts\Container;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
+use TEC\Tickets\Commerce\Cart;
+use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Seating\Service\Layouts;
 use TEC\Tickets\Seating\Service\Maps;
 use TEC\Tickets\Seating\Service\Reservations;
 use TEC\Tickets\Seating\Service\Seat_Types;
 use TEC\Tickets\Seating\Tables\Sessions;
+use Tribe__Tickets__Tickets as Tickets;
 
 /**
  * Class Ajax.
@@ -132,6 +135,7 @@ class Ajax extends Controller_Contract {
 		add_action( 'wp_ajax_nopriv_' . self::ACTION_POST_RESERVATIONS, [ $this, 'update_reservations' ] );
 		add_action( 'wp_ajax_' . self::ACTION_REMOVE_RESERVATIONS, [ $this, 'remove_reservations' ] );
 		add_action( 'wp_ajax_nopriv_' . self::ACTION_REMOVE_RESERVATIONS, [ $this, 'remove_reservations' ] );
+		add_action( 'tec_tickets_seating_session_interrupt', [ $this, 'clear_commerce_cart_cookie' ] );
 	}
 
 
@@ -151,6 +155,7 @@ class Ajax extends Controller_Contract {
 		remove_action( 'wp_ajax_' . self::ACTION_INVALIDATE_LAYOUTS_CACHE, [ $this, 'invalidate_layouts_cache' ] );
 		remove_action( 'wp_ajax_' . self::ACTION_POST_RESERVATIONS, [ $this, 'update_reservations' ] );
 		remove_action( 'wp_ajax_nopriv_' . self::ACTION_POST_RESERVATIONS, [ $this, 'update_reservations' ] );
+		remove_action( 'tec_tickets_seating_session_interrupt', [ $this, 'clear_commerce_cart_cookie' ] );
 	}
 
 	/**
@@ -355,5 +360,32 @@ class Ajax extends Controller_Contract {
 		}
 
 		wp_send_json_success();
+	}
+
+
+	/**
+	 * Removes the Tribe Commerce cart cookie when a seat selection session is interrupted.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id The post ID the session is being interrupted for.
+	 *
+	 * @return void The cookie is cleared.
+	 */
+	public function clear_commerce_cart_cookie( int $post_id ): void {
+		if ( Tickets::get_event_ticket_provider( $post_id ) !== Module::class ) {
+			return;
+		}
+
+		// Remove the `tec-tickets-commerce-cart` cookie.
+		setcookie(
+			Cart::$cart_hash_cookie_name,
+			'',
+			time() - DAY_IN_SECONDS,
+			COOKIEPATH,
+			COOKIE_DOMAIN,
+			true,
+			true
+		);
 	}
 }

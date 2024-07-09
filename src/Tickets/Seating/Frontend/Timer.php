@@ -665,17 +665,16 @@ class Timer extends Controller_Contract {
 		);
 		$_COOKIE[ self::COOKIE_NAME ] = $cookie_value;
 
-		// @todo this should be moved somewhere else.
-		// Remove the `tec-tickets-commerce-cart` cookie.
-		setcookie(
-			'tec-tickets-commerce-cart',
-			'',
-			time() - DAY_IN_SECONDS,
-			COOKIEPATH,
-			COOKIE_DOMAIN,
-			true,
-			true
-		);
+		/**
+		 * Fires when a seat selection session is interrupted due to the timer expiring or the seat selection session
+		 * being otherwise interrupted.
+		 *
+		 * @since TBD
+		 *
+		 * @param int    $post_id The post ID the session is being interrupted for.
+		 * @param string $token   The ephemeral token the session is being interrupted for.
+		 */
+		do_action( 'tec_tickets_seating_session_interrupt', $post_id, $token );
 
 		wp_send_json_success( [
 			'title'       => esc_html_x( 'Time limit expired', 'Seat selection expired timer title', 'event-tickets' ),
