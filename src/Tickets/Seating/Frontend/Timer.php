@@ -215,6 +215,7 @@ class Timer extends Controller_Contract {
 		);
 		remove_action( 'wp_ajax_nopriv_' . self::ACTION_INTERRUPT_GET_DATA, [ $this, 'ajax_interrupt' ] );
 		remove_action( 'wp_ajax_' . self::ACTION_INTERRUPT_GET_DATA, [ $this, 'ajax_interrupt' ] );
+		add_action( 'tribe_template_before_include:tickets-plus/v2/modal/cart', [ $this, 'render_to_sync' ] );
 	}
 
 	/**
@@ -271,6 +272,8 @@ class Timer extends Controller_Contract {
 			10,
 			0
 		);
+
+		add_action( 'tribe_template_before_include:tickets-plus/v2/modal/cart', [ $this, 'render_to_sync' ], 10, 0 );
 
 		Asset::add(
 			'tec-tickets-seating-timer',
