@@ -315,6 +315,34 @@ class Timer extends Controller_Contract {
 	}
 
 	/**
+	 * Removes a cookie entry from the cookie string.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $current The current cookie string.
+	 * @param int    $post_id The post ID to remove the cookie entry for.
+	 * @param string $token   The token to remove the cookie entry for.
+	 *
+	 * @return string The updated cookie string.
+	 */
+	private function remove_cookie_entry( string $current, int $post_id, string $token ): string {
+		$entries = $this->parse_cookie_string( $current );
+
+		if ( isset( $entries[ $post_id ] ) && $entries[ $post_id ] === $token ) {
+			unset( $entries[ $post_id ] );
+		}
+
+		return implode(
+			'|||',
+			array_map(
+				static fn( $object_id, $token ) => $object_id . '=' . $token,
+				array_keys( $entries ),
+				$entries
+			)
+		);
+	}
+
+	/**
 	 * Unregisters the controller by unsubscribing from front-end hooks.
 	 *
 	 * @since TBD
@@ -331,8 +359,11 @@ class Timer extends Controller_Contract {
 			'tribe_template_after_include:tickets/v2/commerce/checkout/cart/header',
 			[ $this, 'render_to_sync' ]
 		);
-		remove_action( 'wp_ajax_nopriv_' . self::ACTION_INTERRUPT_GET_DATA, [ $this, 'ajax_interrupt_get_data' ] );
-		remove_action( 'wp_ajax_' . self::ACTION_INTERRUPT_GET_DATA, [ $this, 'ajax_interrupt_get_data' ] );
+		remove_action( 'tribe_template_after_include:tickets-plus/v2/attendee-registration/content/event/summary/title',
+			[ $this, 'render_to_sync' ],
+		);
+		remove_action( 'wp_ajax_nopriv_' . self::ACTION_INTERRUPT_GET_DATA, [ $this, 'ajax_interrupt' ] );
+		remove_action( 'wp_ajax_' . self::ACTION_INTERRUPT_GET_DATA, [ $this, 'ajax_interrupt' ] );
 	}
 
 	/**
@@ -374,12 +405,19 @@ class Timer extends Controller_Contract {
 		add_action( 'wp_ajax_' . self::ACTION_START, [ $this, 'ajax_start' ] );
 		add_action( 'wp_ajax_nopriv_' . self::ACTION_SYNC, [ $this, 'ajax_sync' ] );
 		add_action( 'wp_ajax_' . self::ACTION_SYNC, [ $this, 'ajax_sync' ] );
-		add_action( 'wp_ajax_nopriv_' . self::ACTION_INTERRUPT_GET_DATA, [ $this, 'ajax_interrupt_get_data' ] );
-		add_action( 'wp_ajax_' . self::ACTION_INTERRUPT_GET_DATA, [ $this, 'ajax_interrupt_get_data' ] );
+		add_action( 'wp_ajax_nopriv_' . self::ACTION_INTERRUPT_GET_DATA, [ $this, 'ajax_interrupt' ] );
+		add_action( 'wp_ajax_' . self::ACTION_INTERRUPT_GET_DATA, [ $this, 'ajax_interrupt' ] );
 
 		// Tickets Commerce checkout page: here the timer should be hydrated from the cookie, no arguments are needed.
 		add_action(
 			'tribe_template_after_include:tickets/v2/commerce/checkout/cart/header',
+			[ $this, 'render_to_sync' ],
+			10,
+			0
+		);
+
+		// Attendee Registration page: here the timer should be hydrated from the cookie, no arguments are needed.
+		add_action( 'tribe_template_after_include:tickets-plus/v2/attendee-registration/content/event/summary/title',
 			[ $this, 'render_to_sync' ],
 			10,
 			0
@@ -476,7 +514,7 @@ class Timer extends Controller_Contract {
 		setcookie(
 			self::COOKIE_NAME,
 			$cookie_value,
-			$expiration,
+			0, // Do not set the expiration here, there might be more than one element in the cookie.
 			COOKIEPATH,
 			COOKIE_DOMAIN,
 			true,
@@ -556,13 +594,13 @@ class Timer extends Controller_Contract {
 	}
 
 	/**
-	 * Returns the data required to render the correct timer expiration modal on the frontend.
+	 * Hnadles an AJAX requet to interrupt the user flow and clear the seat selection.
 	 *
 	 * @since TBD
 	 *
 	 * @return void  The AJAX response is sent back to the browser.
 	 */
-	public function ajax_interrupt_get_data(): void {
+	public function ajax_interrupt(): void {
 		if ( ! check_ajax_referer( self::COOKIE_NAME, '_ajaxNonce', false ) ) {
 			wp_send_json_error(
 				[
@@ -572,8 +610,19 @@ class Timer extends Controller_Contract {
 			);
 		}
 
-		$post_id               = tribe_get_request_var( 'postId', null );
-		$post_type_object      = get_post_type_object( $post_id );
+		$post_id = tribe_get_request_var( 'postId', null );
+		$token   = tribe_get_request_var( 'token', null );
+
+		if ( ! ( $post_id && $token ) ) {
+			wp_send_json_error(
+				[
+					'error' => 'Missing required parameters',
+				],
+				400
+			);
+		}
+
+		$post_type_object      = get_post_type_object( get_post_type( $post_id ) );
 		$has_tickets_available = tribe_tickets()->where( 'event', $post_id )->where( 'is_available', true )->count();
 
 		if ( $has_tickets_available ) {
@@ -603,6 +652,30 @@ class Timer extends Controller_Contract {
 
 			$redirect_url = get_post_type_archive_link( $post_type_object->name );
 		}
+
+		$cookie_value = $this->remove_cookie_entry( $_COOKIE[ self::COOKIE_NAME ] ?? '', $post_id, $token );
+		setcookie(
+			self::COOKIE_NAME,
+			$cookie_value,
+			0, // Do not set the expiration here, there might be more than one element in the cookie.
+			COOKIEPATH,
+			COOKIE_DOMAIN,
+			true,
+			false
+		);
+		$_COOKIE[ self::COOKIE_NAME ] = $cookie_value;
+
+		// @todo this should be moved somewhere else.
+		// Remove the `tec-tickets-commerce-cart` cookie.
+		setcookie(
+			'tec-tickets-commerce-cart',
+			'',
+			time() - DAY_IN_SECONDS,
+			COOKIEPATH,
+			COOKIE_DOMAIN,
+			true,
+			true
+		);
 
 		wp_send_json_success( [
 			'title'       => esc_html_x( 'Time limit expired', 'Seat selection expired timer title', 'event-tickets' ),

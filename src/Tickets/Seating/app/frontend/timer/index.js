@@ -172,11 +172,12 @@ function setTimerTimeLeft(timerElement, minutes, seconds) {
  * @return {Promise<InterruptModalData>} The data required to render the correct timer expiration modal on the frontend.
  */
 async function fetchInterruptModalData() {
-	const { postId } = findTimerData();
+	const { postId, token } = findTimerData();
 	const requestUrl = new URL(ajaxUrl);
 	requestUrl.searchParams.set('_ajaxNonce', ajaxNonce);
 	requestUrl.searchParams.set('action', ACTION_INTERRUPT_GET_DATA);
 	requestUrl.searchParams.set('postId', postId);
+	requestUrl.searchParams.set('token', token);
 
 	const response = await fetch(requestUrl.toString(), {
 		method: 'GET',
@@ -306,6 +307,8 @@ async function interrupt() {
 	 */
 	doAction('tec.tickets.seating.timer_interrupt');
 
+	// The session cookie will have been removed by the AJAX handler.
+
 	// Close the seat selection dialog, if it exists.
 	if (window[TICKETS_BLOCK_DIALOG_NAME]) {
 		await window[TICKETS_BLOCK_DIALOG_NAME].hide();
@@ -313,7 +316,7 @@ async function interrupt() {
 
 	if (interruptDialog) {
 		interruptDialog.show();
-		// This is a  hack to prevent the user from closing the dialog.
+		// This is a  hack to prevent the user from being able to dismiss or close the dialog.
 		interruptDialog.shown = false;
 	}
 }
@@ -389,7 +392,7 @@ export async function syncWithBackend() {
 }
 
 /**
- * Sends a request to the backend to either start or syncthe timer.
+ * Sends a request to the backend to either start or sync the timer.
  *
  * @since TBD
  *
@@ -474,8 +477,9 @@ export async function start() {
 	}
 
 	const secondsLeft = await requestToBackend(ACTION_START);
+	const { postId, token } = findTimerData();
 
-	if (!secondsLeft) {
+	if (!(secondsLeft && postId && token)) {
 		// The timer could not be started, communication with the backend failed. Restart the flow.
 		interrupt();
 		return;
