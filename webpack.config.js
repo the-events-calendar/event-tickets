@@ -91,7 +91,7 @@ const targets = [
 		outputStyle: `build/Seating/utils.${postfix}`,
 		moveFromTo: {
 			'src/resources/js/app/seating-utils.js': 'build/Seating/utils.js',
-			'src/resources/css/app/seating-utils.css':
+			'src`/resources/css/app/seating-utils.css`':
 				'build/Seating/utils.css',
 		},
 	},
@@ -175,6 +175,18 @@ const targets = [
 				'build/Seating/admin/layout-edit.js',
 			'src/resources/css/app/seating-layout-edit-bundle.css':
 				'build/Seating/admin/layout-edit.css',
+		},
+	},
+	{
+		name: 'seating-seats-report-bundle',
+		entry: './src/Tickets/Seating/app/admin/seats-report/index.js',
+		outputScript: './build/Seating/admin/seats-report.min.js',
+		outputStyle: `build/Seating/admin/seats-report.${postfix}`,
+		moveFromTo: {
+			'src/resources/js/app/seating-seats-report-bundle.js':
+				'build/Seating/admin/seats-report.js',
+			'src/resources/css/app/seating-seats-report-bundle.css':
+				'build/Seating/admin/seats-report.css',
 		},
 	},
 	{
