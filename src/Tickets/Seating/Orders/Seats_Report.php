@@ -4,6 +4,7 @@ namespace TEC\Tickets\Seating\Orders;
 
 use TEC\Tickets\Commerce\Reports\Report_Abstract;
 use TEC\Tickets\Commerce\Reports\Tabbed_View;
+use TEC\Tickets\Seating\Frontend;
 use TEC\Tickets\Seating\Service\Service;
 use WP_Error;
 use WP_Post;
@@ -149,5 +150,21 @@ class Seats_Report extends Report_Abstract {
 			],
 			admin_url( 'edit.php' )
 		);
+	}
+	
+	/**
+	 * Get the localized data for the report.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id The post ID.
+	 *
+	 * @return array
+	 */
+	public static function get_localized_data( $post_id ): array {
+		
+		return [
+			'seatTypeMap' => tribe( Frontend::class )->build_seat_type_map( $post_id ),
+		];
 	}
 }

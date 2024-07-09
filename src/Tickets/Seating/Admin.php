@@ -336,6 +336,12 @@ class Admin extends Controller_Contract {
 		)
 			->add_dependency( 'tec-tickets-seating-service-bundle' )
 			->enqueue_on( Seats_Report::$asset_action )
+			->add_localize_script(
+				'tec.tickets.seating.seatsReport.data',
+				fn() => Seats_Report::get_localized_data(
+					get_the_ID()
+				) 
+			)
 			->add_to_group( 'tec-tickets-seating-admin' )
 			->add_to_group( 'tec-tickets-seating' )
 			->register();
