@@ -71,7 +71,7 @@ class Ajax extends Controller_Contract {
 	 *
 	 * @var string
 	 */
-	const ACTION_REMOVE_RESERVATIONS = 'tec_tickets_seating_remove_reservations';
+	const ACTION_CLEAR_RESERVATIONS = 'tec_tickets_seating_clear_reservations';
 
 	/**
 	 * A reference to the Seat Types service object.
@@ -133,8 +133,8 @@ class Ajax extends Controller_Contract {
 		add_action( 'wp_ajax_' . self::ACTION_INVALIDATE_LAYOUTS_CACHE, [ $this, 'invalidate_layouts_cache' ] );
 		add_action( 'wp_ajax_' . self::ACTION_POST_RESERVATIONS, [ $this, 'update_reservations' ] );
 		add_action( 'wp_ajax_nopriv_' . self::ACTION_POST_RESERVATIONS, [ $this, 'update_reservations' ] );
-		add_action( 'wp_ajax_' . self::ACTION_REMOVE_RESERVATIONS, [ $this, 'remove_reservations' ] );
-		add_action( 'wp_ajax_nopriv_' . self::ACTION_REMOVE_RESERVATIONS, [ $this, 'remove_reservations' ] );
+		add_action( 'wp_ajax_' . self::ACTION_CLEAR_RESERVATIONS, [ $this, 'clear_reservations' ] );
+		add_action( 'wp_ajax_nopriv_' . self::ACTION_CLEAR_RESERVATIONS, [ $this, 'clear_reservations' ] );
 		add_action( 'tec_tickets_seating_session_interrupt', [ $this, 'clear_commerce_cart_cookie' ] );
 	}
 
@@ -155,6 +155,8 @@ class Ajax extends Controller_Contract {
 		remove_action( 'wp_ajax_' . self::ACTION_INVALIDATE_LAYOUTS_CACHE, [ $this, 'invalidate_layouts_cache' ] );
 		remove_action( 'wp_ajax_' . self::ACTION_POST_RESERVATIONS, [ $this, 'update_reservations' ] );
 		remove_action( 'wp_ajax_nopriv_' . self::ACTION_POST_RESERVATIONS, [ $this, 'update_reservations' ] );
+		remove_action( 'wp_ajax_' . self::ACTION_CLEAR_RESERVATIONS, [ $this, 'clear_reservations' ] );
+		remove_action( 'wp_ajax_nopriv_' . self::ACTION_CLEAR_RESERVATIONS, [ $this, 'clear_reservations' ] );
 		remove_action( 'tec_tickets_seating_session_interrupt', [ $this, 'clear_commerce_cart_cookie' ] );
 	}
 
@@ -329,7 +331,7 @@ class Ajax extends Controller_Contract {
 	 *
 	 * @return void The JSON response is sent to the client.
 	 */
-	public function remove_reservations() {
+	public function clear_reservations() {
 		if ( ! check_ajax_referer( self::NONCE_ACTION, '_ajax_nonce', false ) ) {
 			wp_send_json_error(
 				[
@@ -348,7 +350,7 @@ class Ajax extends Controller_Contract {
 			$post_id,
 			$this->sessions->get_reservations_for_token( $token )
 		);
-		$token_session_deleted  = $this->sessions->delete_token_session( $token );
+		$token_session_deleted  = $this->sessions->clear_token_reservations( $token );
 
 		if ( ! ( $reservations_cancelled && $token_session_deleted ) ) {
 			wp_send_json_error(

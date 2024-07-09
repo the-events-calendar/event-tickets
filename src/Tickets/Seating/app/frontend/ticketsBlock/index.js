@@ -31,7 +31,7 @@ const {
 	ajaxUrl,
 	ajaxNonce,
 	ACTION_POST_RESERVATIONS,
-	ACTION_REMOVE_RESERVATIONS,
+	ACTION_CLEAR_RESERVATIONS,
 } = localizedData;
 
 /**
@@ -358,7 +358,7 @@ async function cancelReservationsOnBackend() {
 
 	const requestUrl = new URL(ajaxUrl);
 	requestUrl.searchParams.set('_ajax_nonce', ajaxNonce);
-	requestUrl.searchParams.set('action', ACTION_REMOVE_RESERVATIONS);
+	requestUrl.searchParams.set('action', ACTION_CLEAR_RESERVATIONS);
 	requestUrl.searchParams.set('token', getToken());
 	requestUrl.searchParams.set('postId', postId);
 	let response = null;
@@ -404,19 +404,21 @@ function clearTicketSelection() {
  */
 export function cancelReservations(dialogElement) {
 	if (!shouldCancelReservations) {
+		console.error('Cancelling reservations is not enabled');
 		return;
 	}
+
+	console.log('Cancelling reservations');
 	const iframe = dialogElement.querySelector(
 		'.tec-tickets-seating__iframe-container iframe.tec-tickets-seating__iframe'
 	);
 
-	if (!iframe) {
-		return;
+	if (iframe) {
+		sendPostMessage(iframe, OUTBOUND_REMOVE_RESERVATIONS);
 	}
 
 	cancelReservationsOnBackend();
 	resetTimer();
-	sendPostMessage(iframe, OUTBOUND_REMOVE_RESERVATIONS);
 	clearTicketSelection();
 }
 
@@ -580,3 +582,12 @@ waitForModalElement().then((modalElement) => {
 		addModalEventListeners();
 	});
 });
+
+window.tec = window.tec || {};
+window.tec.tickets = window.tec.tickets || {};
+window.tec.tickets.seating = window.tec.tickets.seating || {};
+window.tec.tickets.seating.frontend = window.tec.tickets.seating.frontend || {};
+window.tec.tickets.seating.frontend.ticketsBlock = {
+	...(window.tec.tickets.seating.frontend.ticketsBlock || {}),
+	cancelReservations,
+};

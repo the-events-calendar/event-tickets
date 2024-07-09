@@ -229,4 +229,23 @@ class Sessions extends Table {
 
 		return DB::query( $query ) !== false;
 	}
+
+	/**
+	 * Clears the reservations for a given token.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $token The token to clear the reservations for.
+	 *
+	 * @return bool Whether the reservations were cleared or not.
+	 */
+	public function clear_token_reservations( string $token ): bool {
+		$query = DB::prepare(
+			"UPDATE %i SET reservations = '' WHERE token = %s",
+			self::table_name(),
+			$token
+		);
+
+		return DB::query( $query ) !== false;
+	}
 }

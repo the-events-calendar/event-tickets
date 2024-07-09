@@ -230,7 +230,7 @@ class Frontend extends Controller_Contract {
 		// Register the front-end JS.
 		Asset::add(
 			'tec-tickets-seating-frontend',
-			$this->built_asset_url( 'frontend/tickets-block.js' ),
+			$this->built_asset_url( 'frontend/ticketsBlock.js' ),
 			ET::VERSION
 		)
 			->set_dependencies(
@@ -252,7 +252,7 @@ class Frontend extends Controller_Contract {
 		// Register the front-end CSS.
 		Asset::add(
 			'tec-tickets-seating-frontend-style',
-			$this->built_asset_url( 'frontend/tickets-block.css' ),
+			$this->built_asset_url( 'frontend/ticketsBlock.css' ),
 			ET::VERSION
 		)
 			->enqueue_on( 'wp_enqueue_scripts' )
@@ -298,7 +298,7 @@ class Frontend extends Controller_Contract {
 			'ajaxUrl'                    => admin_url( 'admin-ajax.php' ),
 			'ajaxNonce'                  => wp_create_nonce( Ajax::NONCE_ACTION ),
 			'ACTION_POST_RESERVATIONS'   => Ajax::ACTION_POST_RESERVATIONS,
-			'ACTION_REMOVE_RESERVATIONS' => Ajax::ACTION_REMOVE_RESERVATIONS,
+			'ACTION_CLEAR_RESERVATIONS' => Ajax::ACTION_CLEAR_RESERVATIONS,
 		];
 	}
 

@@ -190,15 +190,15 @@ const targets = [
 		},
 	},
 	{
-		name: 'seating-frontend-tickets-block-bundle',
-		entry: './src/Tickets/Seating/app/frontend/tickets-block/index.js',
-		outputScript: './build/Seating/frontend/tickets-block.min.js',
-		outputStyle: `build/Seating/frontend/tickets-block.${postfix}`,
+		name: 'seating-frontend-ticketsBlock-bundle',
+		entry: './src/Tickets/Seating/app/frontend/ticketsBlock/index.js',
+		outputScript: './build/Seating/frontend/ticketsBlock.min.js',
+		outputStyle: `build/Seating/frontend/ticketsBlock.${postfix}`,
 		moveFromTo: {
-			'src/resources/js/app/seating-frontend-tickets-block-bundle.js':
-				'build/Seating/frontend/tickets-block.js',
-			'src/resources/css/app/seating-frontend-tickets-block-bundle.css':
-				'build/Seating/frontend/tickets-block.css',
+			'src/resources/js/app/seating-frontend-ticketsBlock-bundle.js':
+				'build/Seating/frontend/ticketsBlock.js',
+			'src/resources/css/app/seating-frontend-ticketsBlock-bundle.css':
+				'build/Seating/frontend/ticketsBlock.css',
 		},
 	},
 	{

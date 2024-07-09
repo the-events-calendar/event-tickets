@@ -273,7 +273,12 @@ class Timer extends Controller_Contract {
 			0
 		);
 
-		add_action( 'tribe_template_before_include:tickets-plus/v2/modal/cart', [ $this, 'render_to_sync' ], 10, 0 );
+		// Attendee Registration modal: here the timer should be hydrated from the cookie, no arguments are needed.
+		add_action( 'tribe_template_before_include:tickets-plus/v2/modal/cart',
+			[ $this, 'render_to_sync' ],
+			10,
+			0
+		);
 
 		Asset::add(
 			'tec-tickets-seating-timer',
