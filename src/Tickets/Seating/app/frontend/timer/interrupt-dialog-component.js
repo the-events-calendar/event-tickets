@@ -33,8 +33,9 @@ export function InterruptDialogComponent(props) {
 			<div class="tribe-dialog__content tribe-modal__content tribe-tickets-seating__interrupt-content">{content}</div>
 			<div class="tribe-tickets-seating__interrupt-footer">
 				<button
-				onclick="window.location.href='{redirectUrl}'"
-				class="tribe-common-c-btn tribe-common-c-btn--small"
+					type="button"
+					onclick="window.location.href='{redirectUrl}'"
+					class="tribe-common-c-btn tribe-common-c-btn--small"
 				>
 					{buttonLabel}
 				</button>
