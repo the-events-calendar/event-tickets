@@ -1,4 +1,10 @@
 <?php
+/**
+ * The Controller to set up the Uplink library.
+ *
+ * @since   TBD
+ * @package TEC\Tickets\Libraries\Uplink
+ */
 
 namespace TEC\Tickets\Libraries\Uplink;
 
