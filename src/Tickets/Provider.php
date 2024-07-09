@@ -79,6 +79,9 @@ class Provider extends Service_Provider {
 		// Loads admin area.
 		$this->container->register( Telemetry\Provider::class );
 
+		// Registers the Libraries controller.
+		$this->container->register( Libraries\Controller::class );
+
 		// Loads Integrations.
 		$this->container->register( Integrations\Provider::class );
 
