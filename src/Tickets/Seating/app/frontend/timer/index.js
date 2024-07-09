@@ -10,7 +10,6 @@ const {
 	ACTION_START,
 	ACTION_SYNC,
 	ACTION_INTERRUPT_GET_DATA,
-	TICKETS_BLOCK_DIALOG_NAME,
 } = localizedData;
 
 /**
@@ -306,13 +305,6 @@ async function interrupt() {
 	 * @since TBD
 	 */
 	doAction('tec.tickets.seating.timer_interrupt');
-
-	// The session cookie will have been removed by the AJAX handler.
-
-	// Close the seat selection dialog, if it exists.
-	if (window[TICKETS_BLOCK_DIALOG_NAME]) {
-		await window[TICKETS_BLOCK_DIALOG_NAME].hide();
-	}
 
 	if (interruptDialog) {
 		interruptDialog.show();

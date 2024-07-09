@@ -378,7 +378,6 @@ class Timer extends Controller_Contract {
 	 *     ACTION_TIME_LEFT: string,
 	 *     ACTION_REDIRECT: string,
 	 *     ACTION_INTERRUPT_GET_DATA: string,
-	 *     TICKETS_BLOCK_DIALOG_NAME: string
 	 * } The data to be localized on the timer frontend.
 	 */
 	private function get_localized_data(): array {
@@ -388,7 +387,6 @@ class Timer extends Controller_Contract {
 			'ACTION_START'              => self::ACTION_START,
 			'ACTION_SYNC'               => self::ACTION_SYNC,
 			'ACTION_INTERRUPT_GET_DATA' => self::ACTION_INTERRUPT_GET_DATA,
-			'TICKETS_BLOCK_DIALOG_NAME' => 'dialog_obj_' . Frontend::MODAL_ID,
 		];
 	}
 
