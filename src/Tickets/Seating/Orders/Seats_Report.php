@@ -117,9 +117,9 @@ class Seats_Report extends Report_Abstract {
 	 *
 	 * @since TBD
 	 *
-	 * @return array
+	 * @return array<string, mixed> The template variables.
 	 */
-	public function setup_template_vars() {
+	public function setup_template_vars(): array {
 		$post_id = tribe_get_request_var( 'post_id' );
 		$post_id = tribe_get_request_var( 'event_id', $post_id );
 		$post    = get_post( $post_id );
