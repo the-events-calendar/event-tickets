@@ -31,6 +31,15 @@ class Seats_Report extends Report_Abstract {
 	public static $tab_slug = 'tec-tickets-seats-report';
 	
 	/**
+	 * The action to register the assets for the report.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static $asset_action = 'tec-tickets-seats-report-assets';
+	
+	/**
 	 * Order Pages ID on the menu.
 	 *
 	 * @since TBD
@@ -71,6 +80,19 @@ class Seats_Report extends Report_Abstract {
 			static::$page_slug,
 			[ $this, 'render_page' ]
 		);
+		
+		add_action( 'load-' . $this->seats_page, [ $this, 'screen_setup' ] );
+	}
+	
+	/**
+	 * Screen setup.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function screen_setup(): void {
+		do_action( self::$asset_action );
 	}
 	
 	/**
