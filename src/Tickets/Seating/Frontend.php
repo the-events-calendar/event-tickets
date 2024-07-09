@@ -305,7 +305,7 @@ class Frontend extends Controller_Contract {
 	 *     }>
 	 * } The Seat Type map.
 	 */
-	private function build_seat_type_map( ?int $post_id = null ): array {
+	public function build_seat_type_map( ?int $post_id = null ): array {
 		if ( ! $post_id ) {
 			return [];
 		}
