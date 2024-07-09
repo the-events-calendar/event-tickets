@@ -259,14 +259,14 @@ class Session {
 	public function confirm_all_reservations(): bool {
 		$confirmed = true;
 
-		foreach ( $this->get_entries() as $token ) {
+		foreach ( $this->get_entries() as $post_id => $token ) {
 			$token_reservations = $this->sessions->get_reservations_for_token( $token );
 
 			if ( empty( $token_reservations ) ) {
 				continue;
 			}
 
-			$confirmed &= $this->reservations->confirm( $token_reservations )
+			$confirmed &= $this->reservations->confirm( $post_id, $token_reservations )
 				&& $this->sessions->delete_token_session( $token );
 		}
 

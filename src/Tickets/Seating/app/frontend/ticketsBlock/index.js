@@ -404,11 +404,9 @@ function clearTicketSelection() {
  */
 export function cancelReservations(dialogElement) {
 	if (!shouldCancelReservations) {
-		console.error('Cancelling reservations is not enabled');
 		return;
 	}
 
-	console.log('Cancelling reservations');
 	const iframe = dialogElement.querySelector(
 		'.tec-tickets-seating__iframe-container iframe.tec-tickets-seating__iframe'
 	);

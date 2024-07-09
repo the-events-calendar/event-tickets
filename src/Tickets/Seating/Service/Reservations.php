@@ -132,13 +132,20 @@ class Reservations {
 	 *
 	 * @since TBD
 	 *
+	 * @param int      $object_id    The object ID to confirm the reservations for.
 	 * @param string[] $reservations The reservations to confirm.
 	 *
 	 * @return bool Whether the reservations were confirmed or not.
 	 */
-	public function confirm( array $reservations ): bool {
+	public function confirm( int $object_id, array $reservations ): bool {
 		if ( empty( $reservations ) ) {
 			return true;
+		}
+
+		$object_uuid = get_post_meta( $object_id, Meta::META_KEY_UUID, true );
+
+		if ( empty( $object_uuid ) ) {
+			return false;
 		}
 
 		$response = wp_remote_post(
@@ -147,7 +154,10 @@ class Reservations {
 				'headers' => [
 					'Authorization' => sprintf( 'Bearer %s', $this->get_oauth_token() ),
 				],
-				'body'    => wp_json_encode( [ 'ids' => $reservations ] ),
+				'body'    => wp_json_encode( [
+					'eventId' => $object_uuid,
+					'ids' => $reservations
+				] ),
 			]
 		);
 
