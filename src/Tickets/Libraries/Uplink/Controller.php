@@ -4,7 +4,6 @@ namespace TEC\Tickets\Libraries\Uplink;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\StellarWP\Uplink\Register;
-use function TEC\Common\StellarWP\Uplink\render_authorize_button;
 use Tribe__Tickets__Main as Main;
 
 /**
@@ -20,21 +19,21 @@ class Controller extends Controller_Contract {
 	 *
 	 * @var string
 	 */
-	protected $et_slr_plugin_slug = 'event-tickets-slr';
+	protected string $et_slr_plugin_slug = 'event-tickets-slr';
 
 	/**
 	 * Plugin name.
 	 *
 	 * @var string
 	 */
-	protected $et_slr_plugin_name = 'Seat Layouts & Reservations';
+	protected string $et_slr_plugin_name = 'Seat Layouts & Reservations';
 
 	/**
 	 * Main plugin object.
 	 *
 	 * @var object
 	 */
-	protected $et_slr_main;
+	protected object $et_main;
 
 	/**
 	 * Register the controller.
@@ -42,7 +41,7 @@ class Controller extends Controller_Contract {
 	 * @since TBD
 	 */
 	public function do_register(): void {
-		$this->et_slr_main = tribe( 'tickets.main' );
+		$this->et_main = tribe( 'tickets.main' );
 		$this->add_actions();
 	}
 
@@ -64,7 +63,6 @@ class Controller extends Controller_Contract {
 	 */
 	public function add_actions(): void {
 		add_action( 'init', [ $this, 'register_plugin' ] );
-		add_action( 'tribe_license_fields', [ $this, 'add_slr_fields' ] );
 	}
 
 	/**
@@ -74,24 +72,6 @@ class Controller extends Controller_Contract {
 	 */
 	public function remove_actions(): void {
 		remove_action( 'init', [ $this, 'register_plugin' ] );
-		remove_action( 'tribe_license_fields', [ $this, 'add_slr_fields' ] );
-	}
-
-	/**
-	 * Add license fields to the licenses tab.
-	 *
-	 * @since TBD
-	 *
-	 * @param array $licenses_tab License Tab array.
-	 *
-	 * @return array
-	 */
-	public function add_slr_fields( $licenses_tab ) {
-		ob_start();
-		render_authorize_button( $this->et_slr_plugin_slug );
-		$button_html    = ob_get_clean();
-		$licenses_tab[] = $button_html;
-		return $licenses_tab;
 	}
 
 	/**
@@ -106,8 +86,8 @@ class Controller extends Controller_Contract {
 			$this->et_slr_plugin_slug,
 			$this->et_slr_plugin_name,
 			Main::VERSION,
-			"{$this->et_slr_main->plugin_path}",
-			$this->et_slr_main
+			"{$this->et_main->plugin_path}",
+			$this->et_main
 		);
 	}
 }
