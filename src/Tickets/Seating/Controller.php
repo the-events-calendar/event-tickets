@@ -11,6 +11,7 @@
 namespace TEC\Tickets\Seating;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
+use TEC\Tickets\Seating\Frontend\Session;
 
 /**
  * Class Controller
@@ -101,6 +102,7 @@ class Controller extends Controller_Contract {
 
 		$this->container->singleton( Template::class );
 		$this->container->singleton( Localization::class );
+		$this->container->singleton( Session::class );
 		$this->container->singleton( Service\Service::class, fn() => $this->build_service_facade() );
 		$this->container->singleton(
 			Service\Reservations::class,
@@ -108,7 +110,7 @@ class Controller extends Controller_Contract {
 				$this->build_service_facade();
 
 				return $this->container->make( Service\Reservations::class );
-			} 
+			}
 		);
 		$this->container->singleton( Meta::class );
 

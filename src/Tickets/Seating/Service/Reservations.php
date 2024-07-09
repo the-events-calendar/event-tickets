@@ -74,7 +74,7 @@ class Reservations {
 					[
 						'eventId' => $object_uuid,
 						'ids'     => $reservations,
-					] 
+					]
 				),
 			]
 		);
@@ -147,7 +147,7 @@ class Reservations {
 				'headers' => [
 					'Authorization' => sprintf( 'Bearer %s', $this->get_oauth_token() ),
 				],
-				'body'    => wp_json_encode( $reservations ),
+				'body'    => wp_json_encode( [ 'ids' => $reservations ] ),
 			]
 		);
 

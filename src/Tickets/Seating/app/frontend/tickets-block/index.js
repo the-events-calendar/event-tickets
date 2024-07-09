@@ -84,7 +84,24 @@ const tickets = Object.values(seatTypeMap).reduce((map, seatType) => {
 	return map;
 }, {});
 
+/**
+ * The current fetch signal handler.
+ *
+ * @since TBD
+ *
+ * @type {AbortController}
+ */
 let currentController = new AbortController();
+
+/**
+ * Whether the reservations should be cancelled on hide or destroy of the seat selection modal or not.
+ * By default, the reservations will be cancelled, but this flag will be set to `false` during checkout.
+ *
+ * @since TBD
+ *
+ * @type {boolean}
+ */
+let shouldCancelReservations = true;
 
 /**
  * Formats the text representing the total number of tickets selected.
@@ -385,7 +402,10 @@ function clearTicketSelection() {
  *
  * @param {HTMLElement} dialogElement the iframe element that should be used to communicate with the service.
  */
-export function cancelReserveations(dialogElement) {
+export function cancelReservations(dialogElement) {
+	if (!shouldCancelReservations) {
+		return;
+	}
 	const iframe = dialogElement.querySelector(
 		'.tec-tickets-seating__iframe-container iframe.tec-tickets-seating__iframe'
 	);
@@ -469,6 +489,8 @@ function readTicketsFromSelection() {
  *                          provider's checkout page.
  */
 async function proceedToCheckout() {
+	// The seat selection modal will be hidden or destroyed, so we should not cancel the reservations.
+	shouldCancelReservations = false;
 	const checkoutHandler = getCheckoutHandlerForProvider(providerClass);
 
 	if (!checkoutHandler) {
@@ -480,7 +502,6 @@ async function proceedToCheckout() {
 
 	const data = new FormData();
 	data.append('provider', providerClass);
-
 	data.append('attendee[optout]', '1');
 	data.append('tickets_tickets_ar', '1');
 
@@ -501,6 +522,8 @@ async function proceedToCheckout() {
 	if (!ok) {
 		console.error('Failed to proceed to checkout.');
 	}
+
+	shouldCancelReservations = true;
 }
 
 /**
@@ -528,8 +551,8 @@ export function addModalEventListeners() {
 		return;
 	}
 
-	modal.on('hide', cancelReserveations);
-	modal.on('destroy', cancelReserveations);
+	modal.on('hide', cancelReservations);
+	modal.on('destroy', cancelReservations);
 }
 
 /**
