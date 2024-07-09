@@ -1,5 +1,8 @@
 <?php
-	
+/**
+ * Seats Report class.
+ */
+
 namespace TEC\Tickets\Seating\Orders;
 
 use TEC\Tickets\Commerce\Reports\Report_Abstract;
@@ -157,11 +160,14 @@ class Seats_Report extends Report_Abstract {
 	 *
 	 * @since TBD
 	 *
-	 * @param int $post_id The post ID.
+	 * @param int|null $post_id The post ID.
 	 *
-	 * @return array
+	 * @return array<string, string> The localized data.
 	 */
-	public static function get_localized_data( $post_id ): array {
+	public static function get_localized_data( ?int $post_id = null ): array {
+		if ( ! $post_id ) {
+			return [];
+		}
 		
 		return [
 			'seatTypeMap' => tribe( Frontend::class )->build_seat_type_map( $post_id ),
