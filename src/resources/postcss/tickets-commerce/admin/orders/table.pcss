@@ -40,34 +40,67 @@ body.wp-admin.post-type-tec_tc_order {
 			margin-left: 16px;
 		}
 	}
+	table.tribe-tickets-commerce-orders {
+		@media screen and (max-width: 780px) {
+			display: flex;
+			flex-wrap: wrap;
+			background: none;
+			border: none;
 
-	#the-list {
-		.column-order {
-			min-width: 240px;
+			thead, tfoot {
+				display:none;
+			}
+
+			tbody {
+				width: 80%;
+			}
 		}
 
-		.column-date {
-			width: 15ch;
-		}
+		#the-list {
+			.column-order {
+				min-width: 240px;
+			}
 
-		.column-status {
-			width: 10ch;
-		}
+			.column-date {
+				width: 15ch;
+			}
 
-		.column-items {
-			width: 18ch;
-		}
+			.column-status {
+				width: 10ch;
+			}
 
-		.column-total {
-			width: 14ch;
-		}
+			.column-items {
+				width: 18ch;
+			}
 
-		.column-post_parent {
-			width: 20ch;
-		}
+			.column-total {
+				width: 14ch;
+			}
 
-		.column-gateway {
-			width: 20ch;
+			.column-post_parent {
+				width: 20ch;
+			}
+
+			.column-gateway {
+				width: 20ch;
+			}
+
+			@media screen and (max-width: 780px) {
+				tr {
+					display: flex;
+					flex-direction: column;
+					margin: 10px;
+					border: 1px solid #ccc;
+					padding: 10px;
+					width: 100%;
+					box-sizing: border-box;
+
+					td {
+						display: block!important;
+						border: none; /* Remove cell borders if needed */
+					}
+				}
+			}
 		}
 	}
 }
