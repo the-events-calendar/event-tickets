@@ -237,10 +237,14 @@ export function emptyHandlerQueue() {
 	handlerQueue = [];
 }
 
+// Re-export some functions from the state module.
+export { getToken };
+
 window.tec = window.tec || {};
 window.tec.tickets.seating = window.tec.tickets.seating || {};
-window.tec.tickets.seating.service = {
-	...(window.tec.tickets.seating.service || {}),
+window.tec.tickets.seating.service = window.tec.tickets.seating.service || {};
+window.tec.tickets.seating.service.api = {
+	...(window.tec.tickets.seating.service.api || {}),
 	INBOUND_APP_READY,
 	INBOUND_APP_READY_FOR_DATA,
 	OUTBOUND_HOST_READY,

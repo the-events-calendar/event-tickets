@@ -237,6 +237,8 @@ const config = merge(common, {
 			'@tec/tickets/seating/service/notices':
 				'tec.tickets.seating.service.notices',
 			'@tec/tickets/seating/service': 'tec.tickets.seating.service',
+			'@tec/tickets/seating/service/api':
+				'tec.tickets.seating.service.api',
 			'@tec/tickets/seating/utils': 'tec.tickets.seating.utils',
 			'@tec/tickets/seating/ajax': 'tec.tickets.seating.ajax',
 			'@tec/tickets/seating/currency': 'tec.tickets.seating.currency',

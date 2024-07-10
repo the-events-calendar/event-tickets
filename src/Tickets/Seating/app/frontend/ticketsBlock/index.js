@@ -12,7 +12,7 @@ import {
 	registerAction,
 	sendPostMessage,
 	getToken,
-} from '@tec/tickets/seating/service';
+} from '@tec/tickets/seating/service/api';
 import { TicketRow } from './ticket-row';
 import { localizedData } from './localized-data';
 import { formatWithCurrency } from '@tec/tickets/seating/currency';
