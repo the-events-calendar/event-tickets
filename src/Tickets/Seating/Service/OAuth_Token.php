@@ -10,13 +10,13 @@
 namespace TEC\Tickets\Seating\Service;
 
 /**
- * Trait oAuth_Token.
+ * Trait OAuth_Token.
  *
  * @since   TBD
  *
  * @package TEC\Controller\Service;
  */
-trait oAuth_Token {
+trait OAuth_Token {
 	/**
 	 * Returns the OAuth token used to authenticate the site in the service.
 	 *

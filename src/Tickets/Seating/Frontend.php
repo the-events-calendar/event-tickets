@@ -284,20 +284,20 @@ class Frontend extends Controller_Contract {
 	 */
 	public function get_ticket_block_data( $post_id ): array {
 		return [
-			'objectName'                 => 'dialog_obj_' . self::MODAL_ID,
-			'modalId'                    => self::MODAL_ID,
-			'seatTypeMap'                => $this->build_seat_type_map( $post_id ),
-			'labels'                     => [
+			'objectName'                => 'dialog_obj_' . self::MODAL_ID,
+			'modalId'                   => self::MODAL_ID,
+			'seatTypeMap'               => $this->build_seat_type_map( $post_id ),
+			'labels'                    => [
 				'oneTicket'       => esc_html( _x( '1 Ticket', 'Seat selection modal total string', 'event-tickets' ) ),
 				'multipleTickets' => esc_html(
 					_x( '{count} Tickets', 'Seat selection modal total string', 'event-tickets' )
 				),
 			],
-			'providerClass'              => esc_html( Tickets::get_event_ticket_provider( $post_id ) ),
-			'postId'                     => $post_id,
-			'ajaxUrl'                    => admin_url( 'admin-ajax.php' ),
-			'ajaxNonce'                  => wp_create_nonce( Ajax::NONCE_ACTION ),
-			'ACTION_POST_RESERVATIONS'   => Ajax::ACTION_POST_RESERVATIONS,
+			'providerClass'             => esc_html( Tickets::get_event_ticket_provider( $post_id ) ),
+			'postId'                    => $post_id,
+			'ajaxUrl'                   => admin_url( 'admin-ajax.php' ),
+			'ajaxNonce'                 => wp_create_nonce( Ajax::NONCE_ACTION ),
+			'ACTION_POST_RESERVATIONS'  => Ajax::ACTION_POST_RESERVATIONS,
 			'ACTION_CLEAR_RESERVATIONS' => Ajax::ACTION_CLEAR_RESERVATIONS,
 		];
 	}

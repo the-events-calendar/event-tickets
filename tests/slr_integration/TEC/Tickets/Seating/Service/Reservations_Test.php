@@ -8,7 +8,7 @@ use Tribe\Tickets\Test\Traits\WP_Remote_Mocks;
 
 class Reservations_Test extends \Codeception\TestCase\WPTestCase {
 	use WP_Remote_Mocks;
-	use oAuth_Token;
+	use OAuth_Token;
 	use With_Uopz;
 
 	public function test_confirm(): void {

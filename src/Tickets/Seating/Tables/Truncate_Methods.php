@@ -29,7 +29,7 @@ trait Truncate_Methods {
 	public static function truncate() {
 		return DB::query(
 			DB::prepare(
-				"TRUNCATE TABLE %i",
+				'TRUNCATE TABLE %i',
 				static::table_name( true )
 			)
 		);

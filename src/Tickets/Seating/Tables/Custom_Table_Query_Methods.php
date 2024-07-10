@@ -40,7 +40,7 @@ trait Custom_Table_Query_Methods {
 
 		do {
 			// On first iteration, we need to set the SQL_CALC_FOUND_ROWS flag.
-			$sql_calc_found_rows = $fetched === 0 ? 'SQL_CALC_FOUND_ROWS' : '';
+			$sql_calc_found_rows = 0 === $fetched ? 'SQL_CALC_FOUND_ROWS' : '';
 
 			$batch = DB::get_results(
 				DB::prepare(
@@ -53,7 +53,7 @@ trait Custom_Table_Query_Methods {
 			);
 
 			// We need to get the total number of rows, only after the first batch.
-			$total   = $total ?? DB::get_var( 'SELECT FOUND_ROWS()' );
+			$total  ??= DB::get_var( 'SELECT FOUND_ROWS()' );
 			$fetched += count( $batch );
 
 			yield from $batch;
@@ -65,7 +65,7 @@ trait Custom_Table_Query_Methods {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $entries
+	 * @param array<mixed> $entries The entries to insert.
 	 *
 	 * @return bool|int The number of rows affected, or `false` on failure.
 	 */

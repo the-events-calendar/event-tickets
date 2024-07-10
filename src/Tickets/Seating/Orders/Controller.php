@@ -63,6 +63,7 @@ class Controller extends Controller_Contract {
 	 * @param Container    $container    The DI container.
 	 * @param Attendee     $attendee     The Attendee data handler.
 	 * @param Cart         $cart         The Cart data handler.
+	 * @param Reservations $reservations The Reservations object.
 	 * @param Session      $session      The seat selection session handler.
 	 */
 	public function __construct(
@@ -73,10 +74,10 @@ class Controller extends Controller_Contract {
 		Session $session
 	) {
 		parent::__construct( $container );
-		$this->attendee = $attendee;
-		$this->cart     = $cart;
+		$this->attendee     = $attendee;
+		$this->cart         = $cart;
 		$this->reservations = $reservations;
-		$this->session = $session;
+		$this->session      = $session;
 	}
 
 	/**

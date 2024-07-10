@@ -12,7 +12,7 @@ use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Seating\Frontend\Session;
 use TEC\Tickets\Seating\Meta;
-use TEC\Tickets\Seating\Service\oAuth_Token;
+use TEC\Tickets\Seating\Service\OAuth_Token;
 use TEC\Tickets\Seating\Service\Reservations;
 use TEC\Tickets\Seating\Tables\Sessions;
 use Tribe\Tests\Traits\With_Uopz;
@@ -29,7 +29,7 @@ class Controller_Test extends Controller_Test_Case {
 	use Order_Maker;
 	use With_Tickets_Commerce;
 	use WP_Remote_Mocks;
-	use oAuth_Token;
+	use OAuth_Token;
 
 	protected string $controller_class = Controller::class;
 

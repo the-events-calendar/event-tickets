@@ -6,7 +6,7 @@ use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Seating\Meta;
-use TEC\Tickets\Seating\Service\oAuth_Token;
+use TEC\Tickets\Seating\Service\OAuth_Token;
 use TEC\Tickets\Seating\Service\Reservations;
 use TEC\Tickets\Seating\Service\Seat_Types;
 use TEC\Tickets\Seating\Tables\Layouts;
@@ -21,7 +21,7 @@ class Ajax_Test extends Controller_Test_Case {
 	use SnapshotAssertions;
 	use With_Uopz;
 	use Seat_Types_Factory;
-	use oAuth_Token;
+	use OAuth_Token;
 	use WP_Remote_Mocks;
 
 	protected string $controller_class = Ajax::class;

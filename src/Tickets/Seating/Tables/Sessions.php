@@ -228,12 +228,13 @@ class Sessions extends Table {
 		 * The result of this query might be 0 to indicate that the row was not updated.
 		 * We want to fail the update if the row was not updated.
 		 */
-		return DB::update( self::table_name(),
-				[ 'reservations' => $reservations_json, ],
-				[ 'token' => $token, ],
-				[ '%s' ],
-				[ '%s' ]
-			) !== false;
+		return DB::update(
+			self::table_name(),
+			[ 'reservations' => $reservations_json ],
+			[ 'token' => $token ],
+			[ '%s' ],
+			[ '%s' ]
+		) !== false;
 	}
 
 	/**

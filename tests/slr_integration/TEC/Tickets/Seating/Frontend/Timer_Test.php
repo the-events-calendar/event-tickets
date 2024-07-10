@@ -6,7 +6,7 @@ use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Seating\Meta;
-use TEC\Tickets\Seating\Service\oAuth_Token;
+use TEC\Tickets\Seating\Service\OAuth_Token;
 use TEC\Tickets\Seating\Service\Reservations;
 use TEC\Tickets\Seating\Tables\Sessions;
 use Tribe\Tests\Traits\With_Uopz;
@@ -19,7 +19,7 @@ class Timer_Test extends Controller_Test_Case {
 	use SnapshotAssertions;
 	use With_Uopz;
 	use WP_Remote_Mocks;
-	use oAuth_Token;
+	use OAuth_Token;
 	use Ticket_Maker;
 
 	protected string $controller_class = Timer::class;

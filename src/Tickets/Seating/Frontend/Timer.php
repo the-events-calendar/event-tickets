@@ -141,14 +141,16 @@ class Timer extends Controller_Contract {
 		);
 
 		// Attendee Registration page: here the timer should be hydrated from the cookie, no arguments are needed.
-		add_action( 'tribe_template_after_include:tickets-plus/v2/attendee-registration/content/event/summary/title',
+		add_action(
+			'tribe_template_after_include:tickets-plus/v2/attendee-registration/content/event/summary/title',
 			[ $this, 'render_to_sync' ],
 			10,
 			0
 		);
 
 		// Attendee Registration modal: here the timer should be hydrated from the cookie, no arguments are needed.
-		add_action( 'tribe_template_before_include:tickets-plus/v2/modal/cart',
+		add_action(
+			'tribe_template_before_include:tickets-plus/v2/modal/cart',
 			[ $this, 'render_to_sync' ],
 			10,
 			0
@@ -159,28 +161,28 @@ class Timer extends Controller_Contract {
 			$this->built_asset_url( 'frontend/session.js' ),
 			ET::VERSION
 		)
-		     ->set_dependencies(
-			     'tribe-dialog-js',
-			     'wp-hooks',
-			     'wp-i18n',
-			     'tec-tickets-seating-utils'
-		     )
-		     ->add_localize_script( 'tec.tickets.seating.frontend.session', fn() => $this->get_localized_data() )
-		     ->enqueue_on( 'tec_tickets_seating_seat_selection_timer' )
-		     ->add_to_group( 'tec-tickets-seating-frontend' )
-		     ->add_to_group( 'tec-tickets-seating' )
-		     ->register();
+			->set_dependencies(
+				'tribe-dialog-js',
+				'wp-hooks',
+				'wp-i18n',
+				'tec-tickets-seating-utils'
+			)
+			->add_localize_script( 'tec.tickets.seating.frontend.session', fn() => $this->get_localized_data() )
+			->enqueue_on( 'tec_tickets_seating_seat_selection_timer' )
+			->add_to_group( 'tec-tickets-seating-frontend' )
+			->add_to_group( 'tec-tickets-seating' )
+			->register();
 
 		Asset::add(
 			'tec-tickets-seating-session-style',
 			$this->built_asset_url( 'frontend/session.css' ),
 			ET::VERSION
 		)
-		     ->set_dependencies( 'tribe-dialog' )
-		     ->enqueue_on( 'tec_tickets_seating_seat_selection_timer' )
-		     ->add_to_group( 'tec-tickets-seating-frontend' )
-		     ->add_to_group( 'tec-tickets-seating' )
-		     ->register();
+			->set_dependencies( 'tribe-dialog' )
+			->enqueue_on( 'tec_tickets_seating_seat_selection_timer' )
+			->add_to_group( 'tec-tickets-seating-frontend' )
+			->add_to_group( 'tec-tickets-seating' )
+			->register();
 	}
 
 	/**
@@ -191,7 +193,7 @@ class Timer extends Controller_Contract {
 	 * @return void
 	 */
 	public function unregister(): void {
-		remove_action( 'tec_tickets_seating_seat_selection_timer', [ $this, 'render' ],   );
+		remove_action( 'tec_tickets_seating_seat_selection_timer', [ $this, 'render' ], );
 		remove_action( 'wp_ajax_nopriv_' . self::ACTION_START, [ $this, 'ajax_start' ] );
 		remove_action( 'wp_ajax_' . self::ACTION_START, [ $this, 'ajax_start' ] );
 		remove_action( 'wp_ajax_nopriv_' . self::ACTION_SYNC, [ $this, 'ajax_sync' ] );
@@ -206,12 +208,14 @@ class Timer extends Controller_Contract {
 		);
 
 		// Attendee Registration page: here the timer should be hydrated from the cookie, no arguments are needed.
-		remove_action( 'tribe_template_after_include:tickets-plus/v2/attendee-registration/content/event/summary/title',
+		remove_action(
+			'tribe_template_after_include:tickets-plus/v2/attendee-registration/content/event/summary/title',
 			[ $this, 'render_to_sync' ]
 		);
 
 		// Attendee Registration modal: here the timer should be hydrated from the cookie, no arguments are needed.
-		remove_action( 'tribe_template_before_include:tickets-plus/v2/modal/cart',
+		remove_action(
+			'tribe_template_before_include:tickets-plus/v2/modal/cart',
 			[ $this, 'render_to_sync' ]
 		);
 	}
@@ -366,7 +370,7 @@ class Timer extends Controller_Contract {
 	public function ajax_start(): void {
 		$token_and_post_id = $this->ajax_check_request();
 
-		if(! $token_and_post_id) {
+		if ( ! $token_and_post_id ) {
 			return;
 		}
 
@@ -378,8 +382,8 @@ class Timer extends Controller_Contract {
 		$this->session->cancel_previous_for_object( $post_id );
 
 		// We're in the context of an XHR/AJAX request: the browser will set the cookie for us.
-		$now          = microtime( true );
-		$expiration   = (int) $now + $timeout;
+		$now        = microtime( true );
+		$expiration = (int) $now + $timeout;
 		$this->session->add_entry( $post_id, $token );
 
 		if ( ! $this->sessions->upsert( $token, $post_id, $expiration ) ) {
@@ -434,7 +438,7 @@ class Timer extends Controller_Contract {
 	public function ajax_interrupt(): void {
 		$token_and_post_id = $this->ajax_check_request();
 
-		if(! $token_and_post_id) {
+		if ( ! $token_and_post_id ) {
 			return;
 		}
 
@@ -444,9 +448,11 @@ class Timer extends Controller_Contract {
 		$has_tickets_available = tribe_tickets()->where( 'event', $post_id )->where( 'is_available', true )->count();
 
 		if ( $has_tickets_available ) {
-			$content      = _x( 'Your seat selections are no longer reserved, but tickets are still available.',
+			$content      = _x(
+				'Your seat selections are no longer reserved, but tickets are still available.',
 				'Seat selection expired timer content',
-				'event-tickets' );
+				'event-tickets' 
+			);
 			$button_label = _x( 'Find Seats', 'Seat selection expired timer button label', 'event-tickets' );
 			$redirect_url = get_post_permalink( $post_id );
 		} else {
@@ -500,11 +506,13 @@ class Timer extends Controller_Contract {
 			return;
 		}
 
-		wp_send_json_success( [
-			'title'       => esc_html_x( 'Time limit expired', 'Seat selection expired timer title', 'event-tickets' ),
-			'content'     => esc_html( $content ),
-			'buttonLabel' => esc_html( $button_label ),
-			'redirectUrl' => esc_url( $redirect_url ),
-		] );
+		wp_send_json_success(
+			[
+				'title'       => esc_html_x( 'Time limit expired', 'Seat selection expired timer title', 'event-tickets' ),
+				'content'     => esc_html( $content ),
+				'buttonLabel' => esc_html( $button_label ),
+				'redirectUrl' => esc_url( $redirect_url ),
+			] 
+		);
 	}
 }

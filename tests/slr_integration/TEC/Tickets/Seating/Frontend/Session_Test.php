@@ -3,7 +3,7 @@
 namespace TEC\Tickets\Seating\Frontend;
 
 use TEC\Tickets\Seating\Meta;
-use TEC\Tickets\Seating\Service\oAuth_Token;
+use TEC\Tickets\Seating\Service\OAuth_Token;
 use TEC\Tickets\Seating\Service\Reservations;
 use TEC\Tickets\Seating\Tables\Sessions;
 use Tribe\Tests\Traits\With_Uopz;
@@ -12,7 +12,7 @@ use Tribe\Tickets\Test\Traits\WP_Remote_Mocks;
 class Session_Test extends \Codeception\TestCase\WPTestCase {
 	use WP_Remote_Mocks;
 	use With_Uopz;
-	use oauth_Token;
+	use OAuth_Token;
 
 	public function test_entry_manipulation(): void {
 		$session = tribe( Session::class );

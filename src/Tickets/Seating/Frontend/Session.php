@@ -69,7 +69,7 @@ class Session {
 	 * @return array<string,string> The parsed cookie string, a map from object ID to token.
 	 */
 	public function get_entries(): array {
-		$current = $_COOKIE[ Session::COOKIE_NAME ] ?? '';
+		$current = $_COOKIE[ self::COOKIE_NAME ] ?? '';
 		$parsed  = [];
 		foreach ( explode( '|||', $current ) as $entry ) {
 			[ $object_id, $token ] = array_replace( [ '', '' ], explode( '=', $entry, 2 ) );
@@ -104,7 +104,7 @@ class Session {
 		);
 
 		setcookie(
-			Session::COOKIE_NAME,
+			self::COOKIE_NAME,
 			$new_value,
 			0, // Do not set the expiration here, there might be more than one element in the cookie.
 			COOKIEPATH,
@@ -112,7 +112,7 @@ class Session {
 			true,
 			false
 		);
-		$_COOKIE[ Session::COOKIE_NAME ] = $new_value;
+		$_COOKIE[ self::COOKIE_NAME ] = $new_value;
 	}
 
 	/**
@@ -142,7 +142,7 @@ class Session {
 		);
 
 		setcookie(
-			Session::COOKIE_NAME,
+			self::COOKIE_NAME,
 			$new_value,
 			0, // Do not set the expiration here, there might be more than one element in the cookie.
 			COOKIEPATH,
@@ -150,7 +150,7 @@ class Session {
 			true,
 			false
 		);
-		$_COOKIE[ Session::COOKIE_NAME ] = $new_value;
+		$_COOKIE[ self::COOKIE_NAME ] = $new_value;
 
 		return true;
 	}
@@ -167,17 +167,17 @@ class Session {
 	 * @return bool Whether the previous sessions were deleted or not.
 	 */
 	public function cancel_previous_for_object( int $object_id ): bool {
-		if ( ! isset( $_COOKIE[ Session::COOKIE_NAME ] ) ) {
+		if ( ! isset( $_COOKIE[ self::COOKIE_NAME ] ) ) {
 			return true;
 		}
 
-		foreach ( $this->get_entries( $_COOKIE[ Session::COOKIE_NAME ] ) as $entry_object_id => $entry_token ) {
+		foreach ( $this->get_entries( $_COOKIE[ self::COOKIE_NAME ] ) as $entry_object_id => $entry_token ) {
 			if ( $entry_object_id === $object_id ) {
 				$reservations = $this->sessions->get_reservations_for_token( $entry_token );
 
 				return $this->reservations->cancel( $entry_object_id, $reservations )
-				       && $this->sessions->delete_token_session( $entry_token )
-				       && $this->remove_entry( $entry_object_id, $entry_token );
+						&& $this->sessions->delete_token_session( $entry_token )
+						&& $this->remove_entry( $entry_object_id, $entry_token );
 			}
 		}
 
@@ -225,7 +225,7 @@ class Session {
 	 * @return array{0: string, 1: int}|null The token and object ID from the cookie, or `null` if not found.
 	 */
 	public function get_session_token_object_id(): ?array {
-		$cookie = $_COOKIE[ Session::COOKIE_NAME ] ?? null;
+		$cookie = $_COOKIE[ self::COOKIE_NAME ] ?? null;
 
 		if ( ! $cookie ) {
 			return null;
