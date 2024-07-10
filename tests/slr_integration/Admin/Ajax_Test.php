@@ -34,13 +34,17 @@ class Ajax_Test extends Controller_Test_Case {
 	 * @test
 	 */
 	public function should_return_ur_ls(): void {
-		$this->set_fn_return( 'wp_create_nonce', function ( string $action ) {
-			if ( $action === 'seat_types_by_layout_id' ) {
-				return '8298ff6616';
-			}
+		$this->set_fn_return(
+			'wp_create_nonce',
+			function ( string $action ) {
+				if ( $action === 'seat_types_by_layout_id' ) {
+					return '8298ff6616';
+				}
 
-			return wp_create_nonce( $action );
-		}, true );
+				return wp_create_nonce( $action );
+			},
+			true 
+		);
 
 		$controller = $this->make_controller();
 
@@ -57,9 +61,13 @@ class Ajax_Test extends Controller_Test_Case {
 		$_REQUEST['action'] = 'seat_types_by_layout_id';
 		$_REQUEST['layout'] = 'foo-baz-bar';
 		$sent_data          = null;
-		$this->set_fn_return( 'wp_send_json_error', function ( $data ) use ( &$sent_data ) {
-			$sent_data = $data;
-		}, true );
+		$this->set_fn_return(
+			'wp_send_json_error',
+			function ( $data ) use ( &$sent_data ) {
+				$sent_data = $data;
+			},
+			true 
+		);
 
 		$this->make_controller()->register();
 
@@ -79,9 +87,13 @@ class Ajax_Test extends Controller_Test_Case {
 		$_REQUEST['layout']      = 'foo-baz-bar';
 		$_REQUEST['_ajax_nonce'] = wp_create_nonce( 'something_else' );
 		$sent_data               = null;
-		$this->set_fn_return( 'wp_send_json_error', function ( $data ) use ( &$sent_data ) {
-			$sent_data = $data;
-		}, true );
+		$this->set_fn_return(
+			'wp_send_json_error',
+			function ( $data ) use ( &$sent_data ) {
+				$sent_data = $data;
+			},
+			true 
+		);
 
 		$this->make_controller()->register();
 
@@ -100,9 +112,13 @@ class Ajax_Test extends Controller_Test_Case {
 		$_REQUEST['action']      = 'seat_types_by_layout_id';
 		$_REQUEST['_ajax_nonce'] = wp_create_nonce( 'seat_types_by_layout_id' );
 		$sent_data               = null;
-		$this->set_fn_return( 'wp_send_json_success', function ( $data ) use ( &$sent_data ) {
-			$sent_data = $data;
-		}, true );
+		$this->set_fn_return(
+			'wp_send_json_success',
+			function ( $data ) use ( &$sent_data ) {
+				$sent_data = $data;
+			},
+			true 
+		);
 
 		$this->make_controller()->register();
 
@@ -124,9 +140,13 @@ class Ajax_Test extends Controller_Test_Case {
 		$_REQUEST['_ajax_nonce'] = wp_create_nonce( 'seat_types_by_layout_id' );
 		$_REQUEST['layout']      = 'some-layout';
 		$sent_data               = null;
-		$this->set_fn_return( 'wp_send_json_success', function ( $data ) use ( &$sent_data ) {
-			$sent_data = $data;
-		}, true );
+		$this->set_fn_return(
+			'wp_send_json_success',
+			function ( $data ) use ( &$sent_data ) {
+				$sent_data = $data;
+			},
+			true 
+		);
 
 		$this->make_controller()->register();
 
@@ -147,9 +167,13 @@ class Ajax_Test extends Controller_Test_Case {
 		$_REQUEST['_ajax_nonce'] = wp_create_nonce( 'seat_types_by_layout_id' );
 		$_REQUEST['layout']      = 'some-layout';
 		$sent_data               = null;
-		$this->set_fn_return( 'wp_send_json_success', function ( $data ) use ( &$sent_data ) {
-			$sent_data = $data;
-		}, true );
+		$this->set_fn_return(
+			'wp_send_json_success',
+			function ( $data ) use ( &$sent_data ) {
+				$sent_data = $data;
+			},
+			true 
+		);
 		$this->given_many_seat_types_in_db_for_layout( 'some-layout', 10 );
 
 		$this->make_controller()->register();
@@ -168,10 +192,14 @@ class Ajax_Test extends Controller_Test_Case {
 
 		$this->make_controller()->register();
 
-		$this->set_fn_return( 'wp_send_json_error', function ( $data, $code ) use ( &$sent_data, &$sent_code ) {
-			$sent_data = $data;
-			$sent_code = $code;
-		}, true );
+		$this->set_fn_return(
+			'wp_send_json_error',
+			function ( $data, $code ) use ( &$sent_data, &$sent_code ) {
+				$sent_data = $data;
+				$sent_code = $code;
+			},
+			true 
+		);
 
 		do_action( 'wp_ajax_' . Ajax::ACTION_INVALIDATE_MAPS_LAYOUTS_CACHE );
 
@@ -184,56 +212,60 @@ class Ajax_Test extends Controller_Test_Case {
 	private function given_maps_and_layouts_in_db(): void {
 		$this->given_maps_in_db();
 
-		\TEC\Tickets\Seating\Service\Layouts::insert_rows_from_service( [
+		\TEC\Tickets\Seating\Service\Layouts::insert_rows_from_service(
 			[
-				'id'            => 'some-layout-1',
-				'name'          => 'Some Layout 1',
-				'seats'         => 10,
-				'createdDate'   => time() * 1000,
-				'mapId'         => 'some-map-1',
-				'screenshotUrl' => 'https://example.com/some-layouts-1.png',
-			],
-			[
-				'id'            => 'some-layout-2',
-				'name'          => 'Some Layout 2',
-				'seats'         => 20,
-				'createdDate'   => time() * 1000,
-				'mapId'         => 'some-map-2',
-				'screenshotUrl' => 'https://example.com/some-layouts-2.png',
-			],
-			[
-				'id'            => 'some-layout-3',
-				'name'          => 'Some Layout 3',
-				'seats'         => 30,
-				'createdDate'   => time() * 1000,
-				'mapId'         => 'some-map-3',
-				'screenshotUrl' => 'https://example.com/some-layouts-3.png',
-			],
-		] );
+				[
+					'id'            => 'some-layout-1',
+					'name'          => 'Some Layout 1',
+					'seats'         => 10,
+					'createdDate'   => time() * 1000,
+					'mapId'         => 'some-map-1',
+					'screenshotUrl' => 'https://example.com/some-layouts-1.png',
+				],
+				[
+					'id'            => 'some-layout-2',
+					'name'          => 'Some Layout 2',
+					'seats'         => 20,
+					'createdDate'   => time() * 1000,
+					'mapId'         => 'some-map-2',
+					'screenshotUrl' => 'https://example.com/some-layouts-2.png',
+				],
+				[
+					'id'            => 'some-layout-3',
+					'name'          => 'Some Layout 3',
+					'seats'         => 30,
+					'createdDate'   => time() * 1000,
+					'mapId'         => 'some-map-3',
+					'screenshotUrl' => 'https://example.com/some-layouts-3.png',
+				],
+			] 
+		);
 
-		\TEC\Tickets\Seating\Tables\Seat_Types::insert_many( [
+		\TEC\Tickets\Seating\Tables\Seat_Types::insert_many(
 			[
-				'id'     => 'some-seat-type-1',
-				'name'   => 'Some Seat Type 1',
-				'seats'  => 10,
-				'map'    => 'some-map-1',
-				'layout' => 'some-layout-1',
-			],
-			[
-				'id'     => 'some-seat-type-2',
-				'name'   => 'Some Seat Type 2',
-				'seats'  => 20,
-				'map'    => 'some-map-2',
-				'layout' => 'https://example.com/some-seat-types-2.png',
-			],
-			[
-				'id'     => 'some-seat-type-3',
-				'name'   => 'Some Seat Type 3',
-				'seats'  => 30,
-				'map'    => 'some-map-3',
-				'layout' => 'some-layout-3',
-			],
-		] );
+				[
+					'id'     => 'some-seat-type-1',
+					'name'   => 'Some Seat Type 1',
+					'seats'  => 10,
+					'map'    => 'some-map-1',
+					'layout' => 'some-layout-1',
+				],
+				[
+					'id'     => 'some-seat-type-2',
+					'name'   => 'Some Seat Type 2',
+					'seats'  => 20,
+					'map'    => 'some-map-2',
+					'layout' => 'https://example.com/some-seat-types-2.png',
+				],
+				[
+					'id'     => 'some-seat-type-3',
+					'name'   => 'Some Seat Type 3',
+					'seats'  => 30,
+					'map'    => 'some-map-3',
+					'layout' => 'some-layout-3',
+				],
+			] 
+		);
 	}
 
 	/**
@@ -244,26 +276,28 @@ class Ajax_Test extends Controller_Test_Case {
 	}
 
 	private function given_maps_in_db(): void {
-		\TEC\Tickets\Seating\Service\Maps::insert_rows_from_service( [
+		\TEC\Tickets\Seating\Service\Maps::insert_rows_from_service(
 			[
-				'id'            => 'some-map-1',
-				'name'          => 'Some Map 1',
-				'seats'         => 10,
-				'screenshotUrl' => 'https://example.com/some-map-1.png',
-			],
-			[
-				'id'            => 'some-map-2',
-				'name'          => 'Some Map 2',
-				'seats'         => 20,
-				'screenshotUrl' => 'https://example.com/some-map-2.png',
-			],
-			[
-				'id'            => 'some-map-3',
-				'name'          => 'Some Map 3',
-				'seats'         => 30,
-				'screenshotUrl' => 'https://example.com/some-map-3.png',
-			],
-		] );
+				[
+					'id'            => 'some-map-1',
+					'name'          => 'Some Map 1',
+					'seats'         => 10,
+					'screenshotUrl' => 'https://example.com/some-map-1.png',
+				],
+				[
+					'id'            => 'some-map-2',
+					'name'          => 'Some Map 2',
+					'seats'         => 20,
+					'screenshotUrl' => 'https://example.com/some-map-2.png',
+				],
+				[
+					'id'            => 'some-map-3',
+					'name'          => 'Some Map 3',
+					'seats'         => 30,
+					'screenshotUrl' => 'https://example.com/some-map-3.png',
+				],
+			] 
+		);
 	}
 
 	public function test_invalidate_maps_layouts_cache_with_invalid_nonce(): void {
@@ -276,10 +310,14 @@ class Ajax_Test extends Controller_Test_Case {
 
 		$this->make_controller()->register();
 
-		$this->set_fn_return( 'wp_send_json_error', function ( $data, $code ) use ( &$sent_data, &$sent_code ) {
-			$sent_data = $data;
-			$sent_code = $code;
-		}, true );
+		$this->set_fn_return(
+			'wp_send_json_error',
+			function ( $data, $code ) use ( &$sent_data, &$sent_code ) {
+				$sent_data = $data;
+				$sent_code = $code;
+			},
+			true 
+		);
 
 		do_action( 'wp_ajax_' . Ajax::ACTION_INVALIDATE_MAPS_LAYOUTS_CACHE );
 
@@ -300,9 +338,13 @@ class Ajax_Test extends Controller_Test_Case {
 
 		$this->make_controller()->register();
 
-		$this->set_fn_return( 'wp_send_json_success', function () use ( &$success ) {
-			$success = true;
-		}, true );
+		$this->set_fn_return(
+			'wp_send_json_success',
+			function () use ( &$success ) {
+				$success = true;
+			},
+			true 
+		);
 
 		do_action( 'wp_ajax_' . Ajax::ACTION_INVALIDATE_MAPS_LAYOUTS_CACHE );
 
@@ -325,10 +367,14 @@ class Ajax_Test extends Controller_Test_Case {
 		// Simulate a failure to invalidate the Maps cache.
 		$this->set_class_fn_return( \TEC\Tickets\Seating\Service\Maps::class, 'invalidate_cache', false );
 
-		$this->set_fn_return( 'wp_send_json_error', function ( $data, $code ) use ( &$sent_data, &$sent_code ) {
-			$sent_data = $data;
-			$sent_code = $code;
-		}, true );
+		$this->set_fn_return(
+			'wp_send_json_error',
+			function ( $data, $code ) use ( &$sent_data, &$sent_code ) {
+				$sent_data = $data;
+				$sent_code = $code;
+			},
+			true 
+		);
 
 		do_action( 'wp_ajax_' . Ajax::ACTION_INVALIDATE_MAPS_LAYOUTS_CACHE );
 
@@ -352,10 +398,14 @@ class Ajax_Test extends Controller_Test_Case {
 		// Simulate a failure to invalidate the Layouts cache.
 		$this->set_class_fn_return( \TEC\Tickets\Seating\Service\Layouts::class, 'invalidate_cache', false );
 
-		$this->set_fn_return( 'wp_send_json_error', function ( $data, $code ) use ( &$sent_data, &$sent_code ) {
-			$sent_data = $data;
-			$sent_code = $code;
-		}, true );
+		$this->set_fn_return(
+			'wp_send_json_error',
+			function ( $data, $code ) use ( &$sent_data, &$sent_code ) {
+				$sent_data = $data;
+				$sent_code = $code;
+			},
+			true 
+		);
 
 		do_action( 'wp_ajax_' . Ajax::ACTION_INVALIDATE_MAPS_LAYOUTS_CACHE );
 
@@ -375,10 +425,14 @@ class Ajax_Test extends Controller_Test_Case {
 
 		$this->make_controller()->register();
 
-		$this->set_fn_return( 'wp_send_json_error', function ( $data, $code ) use ( &$sent_data, &$sent_code ) {
-			$sent_data = $data;
-			$sent_code = $code;
-		}, true );
+		$this->set_fn_return(
+			'wp_send_json_error',
+			function ( $data, $code ) use ( &$sent_data, &$sent_code ) {
+				$sent_data = $data;
+				$sent_code = $code;
+			},
+			true 
+		);
 
 		do_action( 'wp_ajax_' . Ajax::ACTION_INVALIDATE_LAYOUTS_CACHE );
 
@@ -400,10 +454,14 @@ class Ajax_Test extends Controller_Test_Case {
 
 		$this->make_controller()->register();
 
-		$this->set_fn_return( 'wp_send_json_error', function ( $data, $code ) use ( &$sent_data, &$sent_code ) {
-			$sent_data = $data;
-			$sent_code = $code;
-		}, true );
+		$this->set_fn_return(
+			'wp_send_json_error',
+			function ( $data, $code ) use ( &$sent_data, &$sent_code ) {
+				$sent_data = $data;
+				$sent_code = $code;
+			},
+			true 
+		);
 
 		do_action( 'wp_ajax_' . Ajax::ACTION_INVALIDATE_LAYOUTS_CACHE );
 
@@ -424,9 +482,13 @@ class Ajax_Test extends Controller_Test_Case {
 
 		$this->make_controller()->register();
 
-		$this->set_fn_return( 'wp_send_json_success', function () use ( &$success ) {
-			$success = true;
-		}, true );
+		$this->set_fn_return(
+			'wp_send_json_success',
+			function () use ( &$success ) {
+				$success = true;
+			},
+			true 
+		);
 
 		do_action( 'wp_ajax_' . Ajax::ACTION_INVALIDATE_LAYOUTS_CACHE );
 
@@ -449,10 +511,14 @@ class Ajax_Test extends Controller_Test_Case {
 		// Simulate a failure to invalidate the Maps cache.
 		$this->set_class_fn_return( \TEC\Tickets\Seating\Service\Layouts::class, 'invalidate_cache', false );
 
-		$this->set_fn_return( 'wp_send_json_error', function ( $data, $code ) use ( &$sent_data, &$sent_code ) {
-			$sent_data = $data;
-			$sent_code = $code;
-		}, true );
+		$this->set_fn_return(
+			'wp_send_json_error',
+			function ( $data, $code ) use ( &$sent_data, &$sent_code ) {
+				$sent_data = $data;
+				$sent_code = $code;
+			},
+			true 
+		);
 
 		do_action( 'wp_ajax_' . Ajax::ACTION_INVALIDATE_LAYOUTS_CACHE );
 
