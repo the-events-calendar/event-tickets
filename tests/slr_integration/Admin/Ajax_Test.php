@@ -788,9 +788,9 @@ class Ajax_Test extends Controller_Test_Case {
 		$sent_code               = null;
 		$sent_data               = null;
 		
-		$this->make_controller()->register();
-		
 		tribe_update_option( 'events_tickets_seating_access_token', 'some-token' );
+		
+		$this->make_controller()->register();
 		
 		$this->set_fn_return(
 			'wp_send_json_error',

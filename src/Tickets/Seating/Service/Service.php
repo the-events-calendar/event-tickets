@@ -354,13 +354,7 @@ class Service {
 	 * @return bool
 	 */
 	public function delete_map( string $map_id ): bool {
-		$token = $this->get_oauth_token();
-		
-		if ( empty( $token ) ) {
-			return false;
-		}
-		
-		return $this->maps->delete( $map_id, $token );
+		return $this->maps->delete( $map_id );
 	}
 	
 	/**
@@ -374,12 +368,6 @@ class Service {
 	 * @return bool
 	 */
 	public function delete_layout( string $layout_id, string $map_id ): bool {
-		$token = $this->get_oauth_token();
-		
-		if ( empty( $token ) ) {
-			return false;
-		}
-		
-		return $this->layouts->delete( $layout_id, $map_id, $token );
+		return $this->layouts->delete( $layout_id, $map_id );
 	}
 }
