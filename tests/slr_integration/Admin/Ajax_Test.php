@@ -674,4 +674,152 @@ class Ajax_Test extends Controller_Test_Case {
 			)
 		);
 	}
+	
+	public function test_delete_layout_from_service_with_invalid_nonce() {
+		$this->become_administator();
+		$invalid_nonce           = wp_create_nonce( 'something_else' );
+		$_REQUEST['_ajax_nonce'] = $invalid_nonce;
+		$_POST['_ajax_nonce']    = $invalid_nonce;
+		$sent_data               = null;
+		$sent_code               = null;
+		
+		$this->make_controller()->register();
+		
+		$this->set_fn_return(
+			'wp_send_json_error',
+			function ( $data, $code ) use ( &$sent_data, &$sent_code ) {
+				$sent_data = $data;
+				$sent_code = $code;
+			},
+			true
+		);
+		
+		do_action( 'wp_ajax_' . Ajax::ACTION_DELETE_LAYOUT );
+		
+		$this->assertEquals( [ 'error' => 'Nonce verification failed' ], $sent_data );
+		$this->assertEquals( 403, $sent_code );
+	}
+	
+	public function test_delete_layout_from_service_with_invalid_params() {
+		$this->become_administator();
+		$nonce                   = Ajax::NONCE_ACTION;
+		$_REQUEST['_ajax_nonce'] = wp_create_nonce( $nonce );
+		$_POST['_ajax_nonce']    = wp_create_nonce( $nonce );
+		$sent_data               = null;
+		$sent_code               = null;
+		
+		$this->make_controller()->register();
+		
+		$this->set_fn_return(
+			'wp_send_json_error',
+			function ( $data, $code ) use ( &$sent_data, &$sent_code ) {
+				$sent_data = $data;
+				$sent_code = $code;
+			},
+			true
+		);
+		
+		do_action( 'wp_ajax_' . Ajax::ACTION_DELETE_LAYOUT );
+		
+		$this->assertEquals( [ 'error' => 'No layout ID or map ID provided.' ], $sent_data );
+		$this->assertEquals( 400, $sent_code );
+	}
+	
+	public function test_delete_layout_from_service_with_success() {
+		$this->given_maps_and_layouts_in_db();
+		$this->become_administator();
+		$nonce                   = Ajax::NONCE_ACTION;
+		$_REQUEST['_ajax_nonce'] = wp_create_nonce( $nonce );
+		$_POST['_ajax_nonce']    = wp_create_nonce( $nonce );
+		$_POST['mapId']          = 'some-map-1';
+		$_POST['layoutId']       = 'some-layout-1';
+		$success                 = null;
+		$fetch_url               = null;
+		$data                    = null;
+		
+		$this->set_fn_return(
+			'wp_send_json_success',
+			function () use ( &$success ) {
+				$success = true;
+			},
+			true
+		);
+		
+		add_filter(
+			'pre_http_request',
+			function ( $pre, $args, $url ) use ( &$fetch_url, &$data ) {
+				$fetch_url = $url;
+				$data      = $args;
+				return [ 'response' => [ 'code' => 200 ] ];
+			},
+			10,
+			3
+		);
+		
+		$this->make_controller()->register();
+		
+		tribe_update_option( 'events_tickets_seating_access_token', 'some-token' );
+		
+		do_action( 'wp_ajax_' . Ajax::ACTION_DELETE_LAYOUT );
+		
+		$this->assertTrue( $success );
+		$this->assertMatchesJsonSnapshot(
+			wp_json_encode(
+				[
+					'success'   => $success,
+					'fetch_url' => $fetch_url,
+					'method'    => $data['method'],
+					'headers'   => $data['headers'],
+				],
+				JSON_SNAPSHOT_OPTIONS
+			)
+		);
+	}
+	
+	public function test_delete_layout_from_service_with_failed() {
+		$this->given_maps_and_layouts_in_db();
+		$this->become_administator();
+		$nonce                   = Ajax::NONCE_ACTION;
+		$_REQUEST['_ajax_nonce'] = wp_create_nonce( $nonce );
+		$_POST['_ajax_nonce']    = wp_create_nonce( $nonce );
+		$_POST['mapId']          = 'some-map-1';
+		$_POST['layoutId']       = 'some-layout-1';
+		$success                 = null;
+		$sent_code               = null;
+		$sent_data               = null;
+		
+		$this->make_controller()->register();
+		
+		tribe_update_option( 'events_tickets_seating_access_token', 'some-token' );
+		
+		$this->set_fn_return(
+			'wp_send_json_error',
+			function ( $data, $code ) use ( &$sent_data, &$sent_code, &$success ) {
+				$sent_data = $data;
+				$sent_code = $code;
+				$success   = false;
+			},
+			true
+		);
+		
+		add_filter(
+			'pre_http_request',
+			function () {
+				return [ 'response' => [ 'code' => 500 ] ];
+			},
+		);
+		
+		do_action( 'wp_ajax_' . Ajax::ACTION_DELETE_LAYOUT );
+		
+		$this->assertMatchesJsonSnapshot(
+			wp_json_encode(
+				[
+					'success' => $success,
+					'data'    => $sent_data,
+					'code'    => $sent_code,
+				],
+				JSON_SNAPSHOT_OPTIONS
+			)
+		);
+	}
 }
