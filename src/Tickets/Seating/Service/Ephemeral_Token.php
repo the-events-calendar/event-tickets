@@ -20,7 +20,7 @@ use WP_Error;
  * @package TEC\Controller\Service;
  */
 class Ephemeral_Token {
-	use oAuth_Token;
+	use OAuth_Token;
 	use Logging;
 
 	/**
@@ -83,7 +83,7 @@ class Ephemeral_Token {
 					'site'       => urlencode_deep( $site_url ),
 					'expires_in' => $expiration * 1000, // In milliseconds.
 				],
-				$this->get_ephemeral_token_url() 
+				$this->get_ephemeral_token_url()
 			),
 			[
 				'headers' => [

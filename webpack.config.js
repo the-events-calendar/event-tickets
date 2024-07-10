@@ -190,15 +190,27 @@ const targets = [
 		},
 	},
 	{
-		name: 'seating-frontend-tickets-block-bundle',
-		entry: './src/Tickets/Seating/app/frontend/tickets-block/index.js',
-		outputScript: './build/Seating/frontend/tickets-block.min.js',
-		outputStyle: `build/Seating/frontend/tickets-block.${postfix}`,
+		name: 'seating-frontend-ticketsBlock-bundle',
+		entry: './src/Tickets/Seating/app/frontend/ticketsBlock/index.js',
+		outputScript: './build/Seating/frontend/ticketsBlock.min.js',
+		outputStyle: `build/Seating/frontend/ticketsBlock.${postfix}`,
 		moveFromTo: {
-			'src/resources/js/app/seating-frontend-tickets-block-bundle.js':
-				'build/Seating/frontend/tickets-block.js',
-			'src/resources/css/app/seating-frontend-tickets-block-bundle.css':
-				'build/Seating/frontend/tickets-block.css',
+			'src/resources/js/app/seating-frontend-ticketsBlock-bundle.js':
+				'build/Seating/frontend/ticketsBlock.js',
+			'src/resources/css/app/seating-frontend-ticketsBlock-bundle.css':
+				'build/Seating/frontend/ticketsBlock.css',
+		},
+	},
+	{
+		name: 'seating-frontend-session-bundle',
+		entry: './src/Tickets/Seating/app/frontend/session/index.js',
+		outputScript: './build/Seating/frontend/session.min.js',
+		outputStyle: `build/Seating/frontend/session.${postfix}`,
+		moveFromTo: {
+			'src/resources/js/app/seating-frontend-session-bundle.js':
+				'build/Seating/frontend/session.js',
+			'src/resources/css/app/seating-frontend-session-bundle.css':
+				'build/Seating/frontend/session.css',
 		},
 	},
 ];
@@ -218,13 +230,20 @@ const config = merge(common, {
 	externals: [
 		{
 			'@wordpress/core-data': 'wp.coreData',
-			'@tec/tickets/seating/iframe': 'tec.tickets.seating.iframe',
-			'@tec/tickets/seating/errors': 'tec.tickets.seating.errors',
-			'@tec/tickets/seating/notices': 'tec.tickets.seating.notices',
+			'@tec/tickets/seating/service/iframe':
+				'tec.tickets.seating.service.iframe',
+			'@tec/tickets/seating/service/errors':
+				'tec.tickets.seating.service.errors',
+			'@tec/tickets/seating/service/notices':
+				'tec.tickets.seating.service.notices',
 			'@tec/tickets/seating/service': 'tec.tickets.seating.service',
+			'@tec/tickets/seating/service/api':
+				'tec.tickets.seating.service.api',
 			'@tec/tickets/seating/utils': 'tec.tickets.seating.utils',
 			'@tec/tickets/seating/ajax': 'tec.tickets.seating.ajax',
 			'@tec/tickets/seating/currency': 'tec.tickets.seating.currency',
+			'@tec/tickets/seating/frontend/session':
+				'tec.tickets.seating.frontend.session',
 		},
 	],
 	// Configure multiple entry points.

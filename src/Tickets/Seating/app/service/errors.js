@@ -66,8 +66,9 @@ export function getErrorMessage(errorCode) {
 
 window.tec = window.tec || {};
 window.tec.tickets.seating = window.tec.tickets.seating || {};
-window.tec.tickets.seating.errors = {
-	...(window.tec.tickets.seating.errors || {}),
+window.tec.tickets.seating.service = window.tec.tickets.seating.service || {};
+window.tec.tickets.seating.service.errors = {
+	...(window.tec.tickets.seating.service.errors || {}),
 	BAD_SERVICE_RESPONSE,
 	MISSING_REQUEST_PARAMETERS,
 	MISSING_EPHEMERAL_TOKEN,

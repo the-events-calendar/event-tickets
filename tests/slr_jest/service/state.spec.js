@@ -9,7 +9,7 @@ import {
 	setIsReady,
 	setToken,
 	reset,
-} from '@tec/tickets/seating/service/service-api/state';
+} from '@tec/tickets/seating/service/api/state';
 import {
 	GO_TO_LAYOUTS_HOME,
 	GO_TO_MAPS_HOME,
@@ -21,7 +21,7 @@ import {
 	OUTBOUND_HOST_READY,
 	OUTBOUND_SEAT_TYPE_TICKETS,
 	SEAT_TYPE_CREATED_UPDATED,
-} from '@tec/tickets/seating/service/service-api/service-actions';
+} from '@tec/tickets/seating/service/api/service-actions';
 import {
 	defaultMessageHandler,
 	onGoToLayoutsHome,
@@ -29,7 +29,7 @@ import {
 	onLayoutCreatedUpdated,
 	onMapCreatedUpdated,
 	onSeatTypeCreatedUpdated,
-} from '@tec/tickets/seating/service/service-api/message-handlers';
+} from '@tec/tickets/seating/service/api/message-handlers';
 
 describe('State', () => {
 	beforeEach(() => {

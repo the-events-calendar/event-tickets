@@ -2,13 +2,13 @@ import {
 	registerAction,
 	reset,
 	setToken,
-} from '@tec/tickets/seating/service/service-api/state';
+} from '@tec/tickets/seating/service/api/state';
 import {
 	catchMessage,
 	getHandlerQueue,
 	sendPostMessage,
 	emptyHandlerQueue,
-} from '@tec/tickets/seating/service/service-api';
+} from '@tec/tickets/seating/service/api';
 
 describe('Service API', () => {
 	beforeEach(() => {

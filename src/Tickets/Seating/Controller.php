@@ -11,6 +11,7 @@
 namespace TEC\Tickets\Seating;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
+use TEC\Tickets\Seating\Frontend\Session;
 
 /**
  * Class Controller
@@ -23,15 +24,6 @@ class Controller extends Controller_Contract {
 	use Built_Assets;
 
 	/**
-	 * The action that will be fired when this Controller registers.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	public static string $registration_action = 'tec_tickets_seating_registered';
-
-	/**
 	 * The name of the constant that will be used to disable the feature.
 	 * Setting it to a truthy value will disable the feature.
 	 *
@@ -40,6 +32,14 @@ class Controller extends Controller_Contract {
 	 * @var string
 	 */
 	public const DISABLED = 'TEC_TICKETS_SEATING_DISABLED';
+	/**
+	 * The action that will be fired when this Controller registers.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public static string $registration_action = 'tec_tickets_seating_registered';
 
 	/**
 	 * Unregisters the Controller by unsubscribing from WordPress hooks.
@@ -51,6 +51,43 @@ class Controller extends Controller_Contract {
 	public function unregister(): void {
 		$this->container->get( Admin::class )->unregister();
 		$this->container->get( Frontend::class )->unregister();
+		$this->container->get( Editor::class )->unregister();
+		$this->container->get( Frontend\Timer::class )->unregister();
+	}
+
+	/**
+	 * Determines if the feature is enabled or not.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool Whether the feature is enabled or not.
+	 */
+	public function is_active(): bool {
+		if ( defined( self::DISABLED ) && constant( self::DISABLED ) ) {
+			// The constant to disable the feature is defined and it's truthy.
+			return false;
+		}
+
+		if ( getenv( self::DISABLED ) ) {
+			// The environment variable to disable the feature is truthy.
+			return false;
+		}
+
+		// Finally read an option value to determine if the feature should be active or not.
+		$active = (bool) get_option( 'tec_tickets_seating_active', true );
+
+		/**
+		 * Allows filtering whether the whole Seating feature
+		 * should be activated or not.
+		 *
+		 * Note: this filter will only apply if the disable constant or env var
+		 * are not set or are set to falsy values.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool $activate Defaults to `true`.
+		 */
+		return (bool) apply_filters( 'tec_tickets_seating_active', $active );
 	}
 
 	/**
@@ -65,15 +102,30 @@ class Controller extends Controller_Contract {
 
 		$this->container->singleton( Template::class );
 		$this->container->singleton( Localization::class );
+		$this->container->singleton( Session::class );
 		$this->container->singleton( Service\Service::class, fn() => $this->build_service_facade() );
+		$this->container->singleton(
+			Service\Reservations::class,
+			function () {
+				$this->build_service_facade();
+
+				return $this->container->make( Service\Reservations::class );
+			}
+		);
 		$this->container->singleton( Meta::class );
 
 		$this->container->register( Tables::class );
 		$this->container->register( Assets::class );
-		
+
 		// Manage Order and Attendee data.
 		$this->container->register( Orders\Controller::class );
-		
+
+		/*
+		 * The Timer will have to handle the AJAX and initial requests to handle and render the timer.
+		 * For this reason, it's always registered.
+		 */
+		$this->container->register( Frontend\Timer::class );
+
 		/*
 		 * The Editor will have to handle initial state requests, AJAX requests and REST requests from the Block Editor.
 		 * For this reason, it's always registered.
@@ -132,6 +184,7 @@ class Controller extends Controller_Contract {
 				Service\Layouts::class,
 				Service\Seat_Types::class,
 				Service\Maps::class,
+				Service\Reservations::class,
 			] as $class
 		) {
 			$this->container->singleton( $class );
@@ -144,40 +197,5 @@ class Controller extends Controller_Contract {
 		}
 
 		return $this->container->get( Service\Service::class );
-	}
-
-	/**
-	 * Determines if the feature is enabled or not.
-	 *
-	 * @since TBD
-	 *
-	 * @return bool Whether the feature is enabled or not.
-	 */
-	public function is_active(): bool {
-		if ( defined( self::DISABLED ) && constant( self::DISABLED ) ) {
-			// The constant to disable the feature is defined and it's truthy.
-			return false;
-		}
-
-		if ( getenv( self::DISABLED ) ) {
-			// The environment variable to disable the feature is truthy.
-			return false;
-		}
-
-		// Finally read an option value to determine if the feature should be active or not.
-		$active = (bool) get_option( 'tec_tickets_seating_active', true );
-
-		/**
-		 * Allows filtering whether the whole Seating feature
-		 * should be activated or not.
-		 *
-		 * Note: this filter will only apply if the disable constant or env var
-		 * are not set or are set to falsy values.
-		 *
-		 * @since TBD
-		 *
-		 * @param bool $activate Defaults to `true`.
-		 */
-		return (bool) apply_filters( 'tec_tickets_seating_active', $active );
 	}
 }

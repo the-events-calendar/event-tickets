@@ -36,11 +36,21 @@ class Admin_Test extends Controller_Test_Case {
 			'layouts tab'     => [
 				'tab' => Layouts::get_id(),
 			],
+			'map new tab'    => [
+				'tab' => Map_Edit::get_id(),
+			],
 			'map edit tab'    => [
 				'tab' => Map_Edit::get_id(),
+				'fixture' => function(){
+					$_GET['mapId'] = 'some-map-id';
+				}
 			],
 			'layout edit tab' => [
 				'tab' => Layout_Edit::get_id(),
+				'fixture' => function(){
+					$_GET['mapId'] = 'some-map-id';
+					$_GET['layoutId'] = 'some-layout-id';
+				}
 			],
 		];
 	}
@@ -51,7 +61,10 @@ class Admin_Test extends Controller_Test_Case {
 	 * @test
 	 * @dataProvider tabs_data_provider
 	 */
-	public function should_add_the_sub_menu_page( string $tab = null ): void {
+	public function should_add_the_sub_menu_page( string $tab = null, \Closure $fixture = null ): void {
+		if ( $fixture ) {
+			$fixture();
+		}
 		add_filter( 'tec_tickets_seating_ephemeral_token', static fn() => 'test-ephemeral-token' );
 
 		if ( $tab === null ) {

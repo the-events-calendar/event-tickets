@@ -1,5 +1,5 @@
-import { notifyUserOfError } from '@tec/tickets/seating/notices';
-import { establishReadiness} from './service-api';
+import { notifyUserOfError } from '@tec/tickets/seating/service/notices';
+import { establishReadiness } from './api';
 
 const { _x } = wp.i18n;
 
@@ -66,8 +66,9 @@ export async function initServiceIframe(iframe) {
 
 window.tec = window.tec || {};
 window.tec.tickets.seating = window.tec.tickets.seating || {};
-window.tec.tickets.seating.iframe = {
-	...(window.tec.tickets.seating.iframe || {}),
+window.tec.tickets.seating.service = window.tec.tickets.seating.service || {};
+window.tec.tickets.seating.service.iframe = {
+	...(window.tec.tickets.seating.service.iframe || {}),
 	getIframeElement,
 	initServiceIframe,
 };
