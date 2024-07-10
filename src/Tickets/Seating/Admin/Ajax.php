@@ -272,7 +272,7 @@ class Ajax extends Controller_Contract {
 		if ( ! check_ajax_referer( self::NONCE_ACTION, '_ajax_nonce', false ) ) {
 			wp_send_json_error(
 				[
-					'error' => 'Nonce verification failed',
+					'error' => __( 'Nonce verification failed', 'event-tickets' ),
 				],
 				403
 			);
@@ -296,7 +296,7 @@ class Ajax extends Controller_Contract {
 		) ) {
 			wp_send_json_error(
 				[
-					'error' => 'Invalid request body',
+					'error' => __('Invalid request body', 'event-tickets' ),
 				],
 				400
 			);
@@ -308,7 +308,7 @@ class Ajax extends Controller_Contract {
 		if ( ! ( $this->sessions->update_reservations( $token, $reservations ) ) ) {
 			wp_send_json_error(
 				[
-					'error' => 'Failed to update the reservations',
+					'error' => __( 'Failed to update the reservations', 'event-tickets' ),
 				],
 				500
 			);
@@ -328,7 +328,7 @@ class Ajax extends Controller_Contract {
 		if ( ! check_ajax_referer( self::NONCE_ACTION, '_ajax_nonce', false ) ) {
 			wp_send_json_error(
 				[
-					'error' => 'Nonce verification failed',
+					'error' =>__( 'Nonce verification failed', 'event-tickets' ),
 				],
 				403
 			);
@@ -348,7 +348,7 @@ class Ajax extends Controller_Contract {
 		if ( ! ( $reservations_cancelled && $token_session_deleted ) ) {
 			wp_send_json_error(
 				[
-					'error' => 'Failed to remove the reservations',
+					'error' => __( 'Failed to remove the reservations', 'event-tickets' ),
 				],
 				500
 			);

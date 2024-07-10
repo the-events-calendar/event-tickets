@@ -3,7 +3,7 @@
  *
  * @param {string} link The slug of the link to return.
  *
- * @returc {string} The link URL, or an empty string if it does not exist.
+ * @return {string} The link URL, or an empty string if it does not exist.
  */
 export function getLink(link) {
 	return window?.tec?.tickets?.seating?.utils?.links?.[link] || '';

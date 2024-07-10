@@ -213,9 +213,7 @@ async function postReservationsToBackend(reservationIds) {
 	const requestUrl = new URL(ajaxUrl);
 	requestUrl.searchParams.set('_ajax_nonce', ajaxNonce);
 	requestUrl.searchParams.set('action', ACTION_POST_RESERVATIONS);
-	let response = null;
-
-	response = await fetch(requestUrl.toString(), {
+	let response = await fetch(requestUrl.toString(), {
 		method: 'POST',
 		signal: newController.signal,
 		body: JSON.stringify({
