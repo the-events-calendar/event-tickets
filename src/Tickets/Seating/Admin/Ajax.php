@@ -249,10 +249,22 @@ class Ajax extends Controller_Contract {
 			return;
 		}
 		
-		$map_id = tribe_get_request_var( 'mapId' );
+		$map_id = (string) tribe_get_request_var( 'mapId' );
+		
+		if ( empty( $map_id ) ) {
+			wp_send_json_error(
+				[
+					'error' => __( 'No map ID provided', 'event-tickets' ),
+				],
+				400
+			);
+			
+			return;
+		}
 		
 		if ( tribe( Service::class )->delete_map( $map_id ) ) {
 			wp_send_json_success();
+			return;
 		}
 		
 		wp_send_json_error( [ 'error' => __( 'Failed to delete the map.', 'event-tickets' ) ], 500 );
@@ -277,11 +289,23 @@ class Ajax extends Controller_Contract {
 			return;
 		}
 		
-		$layout_id = tribe_get_request_var( 'layoutId' );
-		$map_id    = tribe_get_request_var( 'mapId' );
+		$layout_id = (string) tribe_get_request_var( 'layoutId' );
+		$map_id    = (string) tribe_get_request_var( 'mapId' );
+		
+		if ( empty( $layout_id ) || empty( $map_id ) ) {
+			wp_send_json_error(
+				[
+					'error' => __( 'No layout ID or map ID provided', 'event-tickets' ),
+				],
+				400
+			);
+			
+			return;
+		}
 		
 		if ( tribe( Service::class )->delete_layout( $layout_id, $map_id ) ) {
 			wp_send_json_success();
+			return;
 		}
 		
 		wp_send_json_error( [ 'error' => __( 'Failed to delete the layout.', 'event-tickets' ) ], 500 );
