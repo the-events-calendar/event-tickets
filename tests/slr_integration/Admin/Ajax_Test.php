@@ -628,4 +628,50 @@ class Ajax_Test extends Controller_Test_Case {
 			)
 		);
 	}
+	
+	public function test_delete_map_from_service_with_failed() {
+		$this->given_maps_and_layouts_in_db();
+		$this->become_administator();
+		$nonce                   = Ajax::NONCE_ACTION;
+		$_REQUEST['_ajax_nonce'] = wp_create_nonce( $nonce );
+		$_POST['_ajax_nonce']    = wp_create_nonce( $nonce );
+		$_POST['mapId']          = 'some-map-1';
+		$success                 = null;
+		$sent_code               = null;
+		$sent_data               = null;
+		
+		$this->make_controller()->register();
+		
+		tribe_update_option( 'events_tickets_seating_access_token', 'some-token' );
+		
+		$this->set_fn_return(
+			'wp_send_json_error',
+			function ( $data, $code ) use ( &$sent_data, &$sent_code, &$success ) {
+				$sent_data = $data;
+				$sent_code = $code;
+				$success   = false;
+			},
+			true
+		);
+		
+		add_filter(
+			'pre_http_request',
+			function () {
+				return [ 'response' => [ 'code' => 500 ] ];
+			},
+		);
+		
+		do_action( 'wp_ajax_' . Ajax::ACTION_DELETE_MAP );
+		
+		$this->assertMatchesJsonSnapshot(
+			wp_json_encode(
+				[
+					'success' => $success,
+					'data'    => $sent_data,
+					'code'    => $sent_code,
+				],
+				JSON_SNAPSHOT_OPTIONS
+			)
+		);
+	}
 }
