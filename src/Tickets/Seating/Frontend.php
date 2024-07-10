@@ -238,7 +238,7 @@ class Frontend extends Controller_Contract {
 				'tec-tickets-seating-service-bundle',
 				'tec-tickets-seating-currency',
 				'wp-hooks',
-				'tec-tickets-seating-timer'
+				'tec-tickets-seating-session'
 			)
 			->add_localize_script(
 				'tec.tickets.seating.frontend.ticketsBlock',

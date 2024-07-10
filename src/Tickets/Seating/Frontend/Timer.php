@@ -12,7 +12,6 @@ namespace TEC\Tickets\Seating\Frontend;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\lucatume\DI52\Container;
 use TEC\Common\StellarWP\Assets\Asset;
-use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Seating\Built_Assets;
 use TEC\Tickets\Seating\Service\Reservations;
 use TEC\Tickets\Seating\Tables\Sessions;
@@ -156,8 +155,8 @@ class Timer extends Controller_Contract {
 		);
 
 		Asset::add(
-			'tec-tickets-seating-timer',
-			$this->built_asset_url( 'frontend/timer.js' ),
+			'tec-tickets-seating-session',
+			$this->built_asset_url( 'frontend/session.js' ),
 			ET::VERSION
 		)
 		     ->set_dependencies(
@@ -166,15 +165,15 @@ class Timer extends Controller_Contract {
 			     'wp-i18n',
 			     'tec-tickets-seating-utils'
 		     )
-		     ->add_localize_script( 'tec.tickets.seating.frontend.timer', fn() => $this->get_localized_data() )
+		     ->add_localize_script( 'tec.tickets.seating.frontend.session', fn() => $this->get_localized_data() )
 		     ->enqueue_on( 'tec_tickets_seating_seat_selection_timer' )
 		     ->add_to_group( 'tec-tickets-seating-frontend' )
 		     ->add_to_group( 'tec-tickets-seating' )
 		     ->register();
 
 		Asset::add(
-			'tec-tickets-seating-timer-style',
-			$this->built_asset_url( 'frontend/timer.css' ),
+			'tec-tickets-seating-session-style',
+			$this->built_asset_url( 'frontend/session.css' ),
 			ET::VERSION
 		)
 		     ->set_dependencies( 'tribe-dialog' )
@@ -245,8 +244,8 @@ class Timer extends Controller_Contract {
 			[ $token, $post_id ] = $cookie_timer_token_post_id;
 		}
 
-		wp_enqueue_script( 'tec-tickets-seating-timer' );
-		wp_enqueue_style( 'tec-tickets-seating-timer-style' );
+		wp_enqueue_script( 'tec-tickets-seating-session' );
+		wp_enqueue_style( 'tec-tickets-seating-session-style' );
 
 		/** @noinspection UnusedFunctionResultInspection */
 		$this->template->template(

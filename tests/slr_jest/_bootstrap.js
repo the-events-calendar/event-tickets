@@ -20,6 +20,19 @@ global.tec.tickets.seating = {
 			labels: {},
 			providerClass: 'TEC\\Tickets\\Commerce\\Module',
 			postId: 23,
+			ajaxUrl: 'https://wordpress.test/wp-admin/admin-ajax.php',
+			ajaxNonce: '1234567890',
+			ACTION_POST_RESERVATIONS: 'tec_tickets_seating_post_reservations',
+			ACTION_CLEAR_RESERVATIONS: 'tec_tickets_seating_clear_reservations',
+		},
+		session: {
+			ajaxUrl: 'https://wordpress.test/wp-admin/admin-ajax.php',
+			ajaxNonce: '1234567890',
+			ACTION_START: 'tec_tickets_seating_session_start',
+			ACTION_SYNC: 'tec_tickets_seating_session_sync',
+			ACTION_INTERRUPT_GET_DATA:
+				'tec_tickets_seating_session_interrupt_get_data',
+			ACTION_INTERRUPT: 'tec_tickets_seating_session_interrupt',
 		},
 	},
 	currency: {

@@ -197,6 +197,10 @@ class Sessions extends Table {
 	 * @return bool Whether the reservations were updated or not.
 	 */
 	public function update_reservations( string $token, array $reservations ): bool {
+		if ( $reservations === $this->get_reservations_for_token( $token ) ) {
+			return true;
+		}
+
 		$reservations_json = wp_json_encode( $reservations );
 
 		if ( false === $reservations_json ) {

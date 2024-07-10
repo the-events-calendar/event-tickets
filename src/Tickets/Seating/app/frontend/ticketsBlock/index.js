@@ -20,7 +20,7 @@ import { getCheckoutHandlerForProvider } from './checkout-handlers';
 import {
 	start as startTimer,
 	reset as resetTimer,
-} from '@tec/tickets/seating/frontend/timer';
+} from '@tec/tickets/seating/frontend/session';
 
 const {
 	objectName,

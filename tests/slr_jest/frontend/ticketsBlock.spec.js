@@ -1,7 +1,7 @@
 import {
 	addModalEventListeners,
 	removeReservationsThroughIframe,
-} from '@tec/tickets/seating/frontend/tickets-block';
+} from '@tec/tickets/seating/frontend/ticketsBlock';
 import { OUTBOUND_REMOVE_RESERVATIONS } from '@tec/tickets/seating/service';
 const serviceModule = require('@tec/tickets/seating/service');
 

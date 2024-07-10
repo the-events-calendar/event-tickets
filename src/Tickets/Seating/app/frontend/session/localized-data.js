@@ -11,4 +11,4 @@
 /**
  * @type {LocalizedTimerData}
  */
-export const localizedData = tec.tickets.seating.frontend.timer;
+export const localizedData = tec.tickets.seating.frontend.session;

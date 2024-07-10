@@ -541,8 +541,8 @@ window.tec = window.tec || {};
 window.tec.tickets = window.tec.tickets || {};
 window.tec.tickets.seating = window.tec.tickets.seating || {};
 window.tec.tickets.seating.frontend = window.tec.tickets.seating.frontend || {};
-window.tec.tickets.seating.frontend.timer = {
-	...(window.tec.tickets.seating.frontend.timer || {}),
+window.tec.tickets.seating.frontend.session = {
+	...(window.tec.tickets.seating.frontend.session || {}),
 	start,
 	reset,
 	syncWithBackend,
