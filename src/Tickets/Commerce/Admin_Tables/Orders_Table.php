@@ -83,7 +83,7 @@ class Orders_Table extends WP_Posts_List_Table {
 
 		$text = __( 'Search Orders', 'event-tickets' );
 		?>
-			<p class="search-box">
+			<div class="search-box">
 				<label class="screen-reader-text" for="<?php echo esc_attr( $input_id ); ?>"><?php echo esc_html( $text ); ?>:</label>
 				<input
 					type="search"
@@ -110,7 +110,10 @@ class Orders_Table extends WP_Posts_List_Table {
 	 * @return string The HTML for the row actions.
 	 */
 	protected function row_actions( $actions, $always_visible = false ) {
-		return '';
+		return '<button type="button" class="toggle-row"><span class="screen-reader-text">' .
+			/* translators: Hidden accessibility text. */
+			__( 'Show more details' ) .
+		'</span></button>';
 	}
 
 	/**
@@ -157,10 +160,10 @@ class Orders_Table extends WP_Posts_List_Table {
 			'tec_tickets_commerce_orders_table_columns',
 			[
 				'order'            => __( 'Order', 'event-tickets' ),
-				'date'             => __( 'Date', 'event-tickets' ),
 				'status'           => __( 'Status', 'event-tickets' ),
 				'items'            => __( 'Items', 'event-tickets' ),
 				'total'            => __( 'Total', 'event-tickets' ),
+				'date'             => __( 'Date', 'event-tickets' ),
 				'post_parent'      => __( 'Event', 'event-tickets' ),
 				'gateway'          => __( 'Gateway', 'event-tickets' ),
 			]
@@ -476,17 +479,17 @@ class Orders_Table extends WP_Posts_List_Table {
 				$total   += $cart_item['sub_total'] ?? 0;
 			}
 
-			// Backwards compatible. We didnt use to store regular, so in most installs this is going to be diff cause regular is gonna be 0 mostly.
+			// Backwards compatible. We didn't use to store regular, so in most installs this is going to be diff cause regular is gonna be 0 mostly.
 			if ( $total !== $regular && $regular > $total ) {
 				return sprintf(
-					'<p class="tec-tickets-commerce-price-container"><ins><span class="tec-tickets-commerce-price">%s</span></ins><del><span class="tec-tickets-commerce-price">%s</span></del></p>',
+					'<div class="tec-tickets-commerce-price-container"><ins><span class="tec-tickets-commerce-price">%s</span></ins><del><span class="tec-tickets-commerce-price">%s</span></del></p>',
 					Value::create( $total )->get_currency(),
 					Value::create( $regular )->get_currency()
 				);
 			}
 
 			return sprintf(
-				'<p class="tec-tickets-commerce-price-container"><ins><span class="tec-tickets-commerce-price">%s</span></ins></p>',
+				'<div class="tec-tickets-commerce-price-container"><ins><span class="tec-tickets-commerce-price">%s</span></ins></p>',
 				$item->total_value->get_currency()
 			);
 		}
@@ -494,7 +497,7 @@ class Orders_Table extends WP_Posts_List_Table {
 		if ( empty( $item->gateway_payload['refunded'] ) ) {
 			// The item was refunded but we don't know anything about it.
 			return sprintf(
-				'<p class="tec-tickets-commerce-price-container"><ins><span class="tec-tickets-commerce-price">%s</span></ins></p>',
+				'<div class="tec-tickets-commerce-price-container"><ins><span class="tec-tickets-commerce-price">%s</span></ins></p>',
 				$item->total_value->get_currency()
 			);
 		}
@@ -506,7 +509,7 @@ class Orders_Table extends WP_Posts_List_Table {
 		$total_value = $total - $refunded;
 
 		return sprintf(
-			'<p class="tec-tickets-commerce-price-container"><ins><span class="tec-tickets-commerce-price">%s</span></ins><del><span class="tec-tickets-commerce-price">%s</span></del></p>',
+			'<div class="tec-tickets-commerce-price-container"><ins><span class="tec-tickets-commerce-price">%s</span></ins><del><span class="tec-tickets-commerce-price">%s</span></del></p>',
 			Value::create( $total_value / 100 )->get_currency(),
 			Value::create( $total / 100 )->get_currency()
 		);

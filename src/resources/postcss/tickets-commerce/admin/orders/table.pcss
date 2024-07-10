@@ -7,22 +7,22 @@
 body.wp-admin.post-type-tec_tc_order {
 	div.tablenav.top {
 		.tribe-datepicker {
-			margin-right: 8px;
+			margin-right: var(--tec-spacer-1);
 		}
 
 		[for="tec_tc_data-range-to"] {
 			color: #333;
-			font-size: 13px;
-			font-weight: 400;
-			line-height: 16px;
-			margin-left: -4px;
-			margin-right: 4px;
+			font-size: var(--tec-font-size-2);
+			font-weight: var(--tec-font-weight-regular);
+			line-height: 1.23;
+			margin-left: calc(-1 * var(--tec-spacer-0));
+			margin-right: var(--tec-spacer-0);
 			text-align: left;
 		}
 
 		div.actions.tribe-validation {
 			.select2-container {
-				margin-left: 16px;
+				margin-left: var(--tec-spacer-3);
 				min-width: 180px !important;
 
 				.selection {
@@ -37,68 +37,67 @@ body.wp-admin.post-type-tec_tc_order {
 		}
 
 		#post-query-submit {
-			margin-left: 16px;
+			margin-left: var(--tec-spacer-3);
 		}
 	}
+
 	table.tribe-tickets-commerce-orders {
 		@media screen and (max-width: 780px) {
-			display: flex;
-			flex-wrap: wrap;
 			background: none;
 			border: none;
 
-			thead, tfoot {
-				display:none;
+			thead,
+			tfoot {
+				display: none;
 			}
 
-			tbody {
-				width: 80%;
+			tr.is-expanded {
+				display: block;
+				padding: var(--tec-spacer-3) var(--tec-spacer-5);
 			}
 		}
 
 		#the-list {
-			.column-order {
-				min-width: 240px;
-			}
-
-			.column-date {
-				width: 15ch;
-			}
-
-			.column-status {
-				width: 10ch;
-			}
-
-			.column-items {
-				width: 18ch;
-			}
-
-			.column-total {
-				width: 14ch;
-			}
-
-			.column-post_parent {
-				width: 20ch;
-			}
-
-			.column-gateway {
-				width: 20ch;
-			}
-
 			@media screen and (max-width: 780px) {
-				tr {
-					display: flex;
-					flex-direction: column;
-					margin: 10px;
-					border: 1px solid #ccc;
-					padding: 10px;
-					width: 100%;
-					box-sizing: border-box;
+				td {
+					padding-bottom: var(--tec-spacer-0);
+					padding-top: var(--tec-spacer-0);
+				}
 
-					td {
-						display: block!important;
-						border: none; /* Remove cell borders if needed */
-					}
+				/* we hates important, my precious, but we musts override it. */
+				.column-gateway {
+					display: none !important;
+				}
+			}
+
+			@media screen and (min-width: 780px) {
+				.column-order {
+					min-width: 240px;
+				}
+
+				.column-status {
+					width: 10ch;
+				}
+
+				.column-items {
+					width: 18ch;
+				}
+
+				.column-total {
+					width: 14ch;
+				}
+
+				.column-date {
+					width: 15ch;
+				}
+
+				.column-post_parent {
+					width: 20ch;
+				}
+
+				.column-gateway {
+					display: table-cell;
+					width: 20ch;
 				}
 			}
 		}
@@ -106,7 +105,6 @@ body.wp-admin.post-type-tec_tc_order {
 }
 
 .tribe-external-link {
-
 	&--code {
 		font-family: monospace;
 	}
@@ -114,7 +112,7 @@ body.wp-admin.post-type-tec_tc_order {
 	&:after {
 		content: url("../../../../images/tribe-external-link.svg");
 		height: 16px;
-		padding-left: 5px;
+		padding-left: var(--tec-spacer-0);
 		width: 16px;
 	}
 }
@@ -122,12 +120,12 @@ body.wp-admin.post-type-tec_tc_order {
 .tribe-tickets-commerce-order-status {
 	background: #c3c4c7;
 	border: 1px solid rgba(0, 0, 0, 0.05);
-	border-radius: 4px;
+	border-radius: var(--tec-border-radius-default);
 	color: #2c3338;
 	cursor: inherit !important;
 	display: inline-flex;
 	line-height: 2.5em;
-	margin: -0.25em 0;
+	margin: calc(-1 * var(--tec-spacer-0)) 0;
 	max-width: 100%;
 	white-space: nowrap;
 
@@ -169,8 +167,12 @@ body.wp-admin.post-type-tec_tc_order {
 	flex-flow: row nowrap;
 	justify-content: flex-start;
 
+	@media screen and (max-width: 780px) {
+		margin-bottom: 0;
+	}
+
 	ins {
-		margin-right: 8px;
+		margin-right: var(--tec-spacer-1);
 		text-decoration: none;
 	}
 }
