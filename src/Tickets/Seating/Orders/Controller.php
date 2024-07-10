@@ -196,6 +196,12 @@ class Controller extends Controller_Contract {
 		remove_filter( 'tec_tickets_attendees_table_sortable_columns', [ $this, 'include_seat_column_as_sortable' ] );
 		remove_filter( 'tribe_repository_attendees_query_args', [ $this, 'handle_sorting_seat_column' ] );
 		remove_filter( 'event_tickets_attendees_table_row_actions', [ $this, 'remove_move_row_action' ] );
+		
+		remove_filter( 'tec_tickets_commerce_reports_tabbed_view_tab_map', [ $this, 'include_seats_tab' ] );
+		remove_action( 'tec_tickets_commerce_reports_tabbed_view_after_register_tab', [ $this, 'register_seat_tab' ] );
+		remove_action( 'tribe_tickets_orders_tabbed_view_register_tab_right', [ $this, 'register_seat_tab' ] );
+		remove_action( 'init', [ $this, 'register_seat_reports' ] );
+		remove_filter( 'tec_tickets_commerce_reports_tabbed_page_title', [ $this, 'filter_seat_tab_title' ] );
 
 		remove_action( 'tec_tickets_commerce_flag_action_generated_attendee', [ $this, 'confirm_all_reservations' ] );
 	}
