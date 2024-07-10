@@ -597,7 +597,7 @@ class Orders_Table extends WP_Posts_List_Table {
 		}
 
 		return sprintf(
-			'<a class="tribe-external-link" href="%s" target="_blank" rel="noopener noreferrer">%s</a>',
+			'<br><a class="tribe-external-link tribe-external-link--code" href="%s" target="_blank" rel="noopener noreferrer">%s</a>',
 			$order_url,
 			$item->gateway_order_id
 		);
