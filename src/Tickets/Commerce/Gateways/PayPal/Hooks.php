@@ -128,12 +128,20 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 	 * Handles the disconnecting of the merchant.
 	 *
 	 * @since 5.1.9
-	 *
 	 * @since 5.2.0 Display info on disconnect.
 	 */
 	public function handle_action_disconnect() {
-		$disconnected = $this->container->make( Merchant::class )->disconnect();
-		$notices      = $this->container->make( Notice_Handler::class );
+		$notices   = $this->container->make( Notice_Handler::class );
+		$merchant  = $this->container->make( Merchant::class );
+
+		$nonce = tribe_get_request_var( 'tc-nonce' );
+		if ( ! $nonce || ! wp_verify_nonce( $nonce, $merchant->get_disconnect_action() ) ) {
+			$notices->trigger_admin( 'tc-paypal-disconnect-failed' );
+
+			return;
+		}
+
+		$disconnected = $merchant->disconnect();
 
 		if ( ! $disconnected ) {
 			$notices->trigger_admin( 'tc-paypal-disconnect-failed' );

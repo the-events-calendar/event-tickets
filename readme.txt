@@ -197,6 +197,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [5.11.0.5] 2024-07-10 =
+
+* Security - Prevent an unauthorized disconnection of Payment Method for Tickets Commerce [SVUL-4]
+
 = [5.11.0.4] 2024-06-18 =
 
 * Fix - In installations where the plugins or wp-content directories were symbolic linked, assets would fail to be located.[TECTRIA-91]
