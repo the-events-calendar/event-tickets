@@ -34,7 +34,7 @@ export function getLocalizedString(slug, group) {
  *
  * @since TBD
  *
- * @param {string} htmlTemplate The HTML template to use.
+ * @param {string} htmlTemplate The HTML template to use. Properties placeholder have the form `{propertyName}`.
  * @param {Object} props        The props to replace in the template.
  *
  * @return {HTMLElement} The HTML Element.

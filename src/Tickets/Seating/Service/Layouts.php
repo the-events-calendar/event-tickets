@@ -24,6 +24,7 @@ use TEC\Tickets\Seating\Tables\Seat_Types as Seat_Types_Table;
  * @package TEC\Controller\Service;
  */
 class Layouts {
+	use oAuth_Token;
 	use Logging;
 	
 	/**
@@ -256,11 +257,10 @@ class Layouts {
 	 *
 	 * @param string $layout_id The ID of the layout to delete.
 	 * @param string $map_id    The Map ID of the layout to delete.
-	 * @param string $token     The token used to authenticate the request.
 	 *
 	 * @return bool True on success, false on failure.
 	 */
-	public function delete( string $layout_id, string $map_id, string $token ): bool {
+	public function delete( string $layout_id, string $map_id ): bool {
 		$url = add_query_arg(
 			[
 				'layoutId' => $layout_id,
@@ -272,7 +272,7 @@ class Layouts {
 		$args = [
 			'method'  => 'DELETE',
 			'headers' => [
-				'Authorization' => 'Bearer ' . $token,
+				'Authorization' => 'Bearer ' . $this->get_oauth_token(),
 				'Content-Type'  => 'application/json',
 			],
 		];

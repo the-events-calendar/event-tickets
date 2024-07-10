@@ -23,6 +23,7 @@ use TEC\Tickets\Seating\Tables\Layouts as Layouts_Table;
  * @package TEC\Controller\Service;
  */
 class Maps {
+	use oAuth_Token;
 	use Logging;
 
 	/**
@@ -213,11 +214,10 @@ class Maps {
 	 * @since TBD
 	 *
 	 * @param string $map_id The ID of the map.
-	 * @param string $token  The access token.
 	 *
 	 * @return bool Whether the map was deleted or not.
 	 */
-	public function delete( string $map_id, string $token ): bool {
+	public function delete( string $map_id ): bool {
 		$url = add_query_arg(
 			[
 				'mapId' => $map_id,
@@ -228,7 +228,7 @@ class Maps {
 		$args = [
 			'method'  => 'DELETE',
 			'headers' => [
-				'Authorization' => 'Bearer ' . $token,
+				'Authorization' => 'Bearer ' . $this->get_oauth_token(),
 				'Content-Type'  => 'application/json',
 			],
 		];

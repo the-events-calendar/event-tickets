@@ -16,6 +16,7 @@ import {
 	INBOUND_SEATS_SELECTED,
 	OUTBOUND_HOST_READY,
 	OUTBOUND_SEAT_TYPE_TICKETS,
+	OUTBOUND_REMOVE_RESERVATIONS,
 } from './service-actions.js';
 
 /**
@@ -236,14 +237,19 @@ export function emptyHandlerQueue() {
 	handlerQueue = [];
 }
 
+// Re-export some functions from the state module.
+export { getToken };
+
 window.tec = window.tec || {};
 window.tec.tickets.seating = window.tec.tickets.seating || {};
-window.tec.tickets.seating.service = {
-	...(window.tec.tickets.seating.service || {}),
+window.tec.tickets.seating.service = window.tec.tickets.seating.service || {};
+window.tec.tickets.seating.service.api = {
+	...(window.tec.tickets.seating.service.api || {}),
 	INBOUND_APP_READY,
 	INBOUND_APP_READY_FOR_DATA,
 	OUTBOUND_HOST_READY,
 	OUTBOUND_SEAT_TYPE_TICKETS,
+	OUTBOUND_REMOVE_RESERVATIONS,
 	INBOUND_SEATS_SELECTED,
 	sendPostMessage,
 	startListeningForServiceMessages,
@@ -252,4 +258,5 @@ window.tec.tickets.seating.service = {
 	removeAction,
 	getRegisteredActions,
 	getHandlerQueue,
+	getToken,
 };

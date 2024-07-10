@@ -14,7 +14,9 @@
  * @var string $error               The error message returned by the service.
  * @var string $initial_total_text  The initial text of the total; should be "0 Tickets".
  * @var string $initial_total_price The initial price of the tickets; already HTML-escaped.
+ * @var int    $post_id             The post ID of the post to purchase tickets for.
  */
+
 ?>
 
 <div
@@ -26,7 +28,7 @@
 		data-src="<?php echo esc_url( $iframe_url ); ?>"
 		id="tec-tickets-seating-iframe-tickets-block"
 		class="tec-tickets-seating__iframe tec-tickets-seating__iframe--tickets-block"
-		title="<?php esc_html_e( 'Seat selection', 'event-tickets' ); ?>"
+		title="<?php echo esc_attr__( 'Seat selection', 'event-tickets' ); ?>"
 	>
 	</iframe>
 </div>
@@ -37,15 +39,17 @@
 			Tickets
 		</h4>
 
-		<div class="tec-tickets-seating__timer">
-			<div class="dashicons dashicons-clock"></div>
-			<div class="tec-tickets-seating__message">
-			<span>
-				<span class="tec-tickets-seating__message-text">Seat selections reserved for </span>
-				<span class="tec-tickets-seating__message-time">9:55</span>
-			</span>
-			</div>
-		</div>
+		<?php
+		/**
+		 * Render the seat selection timer.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $token The ephemeral token used to secure the iframe communication with the service.
+		 * @param int    $post_id The post ID of the post to purchase tickets for.
+		 */
+		do_action( 'tec_tickets_seating_seat_selection_timer', $token, $post_id );
+		?>
 
 		<div class="tec-tickets-seating__ticket-rows">
 		</div>

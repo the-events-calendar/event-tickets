@@ -21,7 +21,7 @@ use WP_Error;
  * @package TEC\Controller\Service;
  */
 class Service {
-	use oAuth_Token;
+	use OAuth_Token;
 
 	/**
 	 * The base URL of the service.
@@ -66,7 +66,7 @@ class Service {
 	 * @var Seat_Types
 	 */
 	private Seat_Types $seat_types;
-	
+
 	/**
 	 * A reference to the Maps handler.
 	 *
@@ -103,7 +103,7 @@ class Service {
 		$this->seat_types        = $seat_types;
 		$this->maps              = $maps;
 	}
-	
+
 	/**
 	 * Fetches all the Maps from the database.
 	 *
@@ -330,7 +330,7 @@ class Service {
 
 		return $post_uuid;
 	}
-	
+
 	/**
 	 * Returns the seat types for given Layout ID.
 	 *
@@ -354,7 +354,7 @@ class Service {
 	 * @return bool
 	 */
 	public function delete_map( string $map_id ): bool {
-		return $this->maps->delete( $map_id, $this->get_oauth_token() );
+		return $this->maps->delete( $map_id );
 	}
 	
 	/**
@@ -368,7 +368,7 @@ class Service {
 	 * @return bool
 	 */
 	public function delete_layout( string $layout_id, string $map_id ): bool {
-		return $this->layouts->delete( $layout_id, $map_id, $this->get_oauth_token() );
+		return $this->layouts->delete( $layout_id, $map_id );
 	}
 	
 	/**
