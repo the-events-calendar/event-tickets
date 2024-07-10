@@ -528,4 +528,104 @@ class Ajax_Test extends Controller_Test_Case {
 		$this->assertCount( 3, iterator_to_array( Layouts::fetch_all() ) );
 		$this->assertCount( 3, iterator_to_array( Seat_Types_Table::fetch_all() ) );
 	}
+	
+	public function test_delete_map_from_service_with_invalid_nonce(): void {
+		$this->become_administator();
+		$invalid_nonce           = wp_create_nonce( 'something_else' );
+		$_REQUEST['_ajax_nonce'] = $invalid_nonce;
+		$_POST['_ajax_nonce']    = $invalid_nonce;
+		$sent_data               = null;
+		$sent_code               = null;
+		
+		$this->make_controller()->register();
+		
+		$this->set_fn_return(
+			'wp_send_json_error',
+			function ( $data, $code ) use ( &$sent_data, &$sent_code ) {
+				$sent_data = $data;
+				$sent_code = $code;
+			},
+			true
+		);
+		
+		do_action( 'wp_ajax_' . Ajax::ACTION_DELETE_MAP );
+		
+		$this->assertEquals( [ 'error' => 'Nonce verification failed' ], $sent_data );
+		$this->assertEquals( 403, $sent_code );
+	}
+	
+	public function test_delete_map_from_service_with_invalid_map_id(): void {
+		$this->become_administator();
+		$nonce                   = Ajax::NONCE_ACTION;
+		$_REQUEST['_ajax_nonce'] = wp_create_nonce( $nonce );
+		$_POST['_ajax_nonce']    = wp_create_nonce( $nonce );
+		$sent_data               = null;
+		$sent_code               = null;
+		
+		$this->make_controller()->register();
+		
+		$this->set_fn_return(
+			'wp_send_json_error',
+			function ( $data, $code ) use ( &$sent_data, &$sent_code ) {
+				$sent_data = $data;
+				$sent_code = $code;
+			},
+			true
+		);
+		
+		do_action( 'wp_ajax_' . Ajax::ACTION_DELETE_MAP );
+		
+		$this->assertEquals( [ 'error' => 'No map ID provided' ], $sent_data );
+		$this->assertEquals( 400, $sent_code );
+	}
+	
+	public function test_delete_map_from_service_with_success() {
+		$this->given_maps_and_layouts_in_db();
+		$this->become_administator();
+		$nonce                   = Ajax::NONCE_ACTION;
+		$_REQUEST['_ajax_nonce'] = wp_create_nonce( $nonce );
+		$_POST['_ajax_nonce']    = wp_create_nonce( $nonce );
+		$_POST['mapId']          = 'some-map-1';
+		$fetch_url               = null;
+		$data                    = null;
+		$success                 = null;
+		
+		$this->make_controller()->register();
+		
+		tribe_update_option( 'events_tickets_seating_access_token', 'some-token' );
+		
+		$this->set_fn_return(
+			'wp_send_json_success',
+			function () use ( &$success ) {
+				$success = true;
+			},
+			true
+		);
+		
+		add_filter(
+			'pre_http_request',
+			function ( $pre, $args, $url ) use ( &$fetch_url, &$data ) {
+				$fetch_url = $url;
+				$data      = $args;
+				return [ 'response' => [ 'code' => 200 ] ];
+			},
+			10,
+			3
+		);
+		
+		do_action( 'wp_ajax_' . Ajax::ACTION_DELETE_MAP );
+		
+		$this->assertTrue( $success );
+		$this->assertMatchesJsonSnapshot(
+			wp_json_encode(
+				[
+					'success'   => $success,
+					'fetch_url' => $fetch_url,
+					'method'    => $data['method'],
+					'headers'   => $data['headers'],
+				],
+				JSON_SNAPSHOT_OPTIONS 
+			)
+		);
+	}
 }
