@@ -122,8 +122,10 @@ class Session {
 	 *
 	 * @param int    $post_id The post ID to remove the cookie entry for.
 	 * @param string $token   The token to remove the cookie entry for.
+	 *
+	 * @return bool Also returns true.
 	 */
-	public function remove_entry( int $post_id, string $token ): void {
+	public function remove_entry( int $post_id, string $token ): bool {
 		$entries = $this->get_entries();
 
 		if ( isset( $entries[ $post_id ] ) && $entries[ $post_id ] === $token ) {
@@ -149,6 +151,8 @@ class Session {
 			false
 		);
 		$_COOKIE[ Session::COOKIE_NAME ] = $new_value;
+
+		return true;
 	}
 
 	/**
@@ -170,11 +174,10 @@ class Session {
 		foreach ( $this->get_entries( $_COOKIE[ Session::COOKIE_NAME ] ) as $entry_object_id => $entry_token ) {
 			if ( $entry_object_id === $object_id ) {
 				$reservations = $this->sessions->get_reservations_for_token( $entry_token );
-				if ( ! $this->reservations->cancel( $entry_object_id, $reservations ) ) {
-					return false;
-				}
 
-				return $this->sessions->delete_token_session( $entry_token );
+				return $this->reservations->cancel( $entry_object_id, $reservations )
+				       && $this->sessions->delete_token_session( $entry_token )
+				       && $this->remove_entry( $entry_object_id, $entry_token );
 			}
 		}
 

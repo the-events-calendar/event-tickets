@@ -20,6 +20,8 @@ use TEC\Common\StellarWP\Schema\Tables\Contracts\Table;
  * @package TEC\Tickets\Seating\Tables;
  */
 class Sessions extends Table {
+	use Truncate_Methods;
+
 	/**
 	 * The schema version.
 	 *
@@ -201,14 +203,33 @@ class Sessions extends Table {
 			return false;
 		}
 
-		$query = DB::prepare(
-			'UPDATE %i SET reservations = %s WHERE token = %s',
-			self::table_name(),
-			$reservations_json,
-			$token
+		/*
+		 * The UPDATE operation will return the number of updated rows.
+		 * A value of 0 means that the row was either not found, or it did not need to be updated.
+		 * We want to fail the update if the row did not exist in the first place.
+		 */
+		$exists = DB::get_var(
+			DB::prepare(
+				'SELECT token FROM %i WHERE token = %s',
+				self::table_name(),
+				$token
+			)
 		);
 
-		return DB::query( $query ) !== false;
+		if ( empty( $exists ) ) {
+			return false;
+		}
+
+		/*
+		 * The result of this query might be 0 to indicate that the row was not updated.
+		 * We want to fail the update if the row was not updated.
+		 */
+		return DB::update( self::table_name(),
+				[ 'reservations' => $reservations_json, ],
+				[ 'token' => $token, ],
+				[ '%s' ],
+				[ '%s' ]
+			) !== false;
 	}
 
 	/**
@@ -240,6 +261,23 @@ class Sessions extends Table {
 	 * @return bool Whether the reservations were cleared or not.
 	 */
 	public function clear_token_reservations( string $token ): bool {
+		/*
+		 * The UPDATE operation will return the number of updated rows.
+		 * A value of 0 means that the row was either not found, or it did not need to be updated.
+		 * We want to fail the update if the row did not exist in the first place.
+		 */
+		$exists = DB::get_var(
+			DB::prepare(
+				'SELECT token FROM %i WHERE token = %s',
+				self::table_name(),
+				$token
+			)
+		);
+
+		if ( empty( $exists ) ) {
+			return false;
+		}
+
 		$query = DB::prepare(
 			"UPDATE %i SET reservations = '' WHERE token = %s",
 			self::table_name(),

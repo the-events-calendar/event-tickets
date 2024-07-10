@@ -99,7 +99,7 @@ class Controller extends Controller_Contract {
 			add_filter( 'event_tickets_attendees_table_row_actions', [ $this, 'remove_move_row_action' ], 10, 2 );
 		}
 
-		add_action( 'tec_tickets_commerce_flag_action_generated_attendee', [ $this, 'confirm_reservations' ] );
+		add_action( 'tec_tickets_commerce_flag_action_generated_attendee', [ $this, 'confirm_all_reservations' ] );
 	}
 
 	/**
@@ -120,7 +120,7 @@ class Controller extends Controller_Contract {
 		remove_filter( 'tribe_repository_attendees_query_args', [ $this, 'handle_sorting_seat_column' ] );
 		remove_filter( 'event_tickets_attendees_table_row_actions', [ $this, 'remove_move_row_action' ] );
 
-		remove_action( 'tec_tickets_commerce_flag_action_generated_attendee', [ $this, 'confirm_reservations' ] );
+		remove_action( 'tec_tickets_commerce_flag_action_generated_attendee', [ $this, 'confirm_all_reservations' ] );
 	}
 
 	/**
@@ -231,7 +231,7 @@ class Controller extends Controller_Contract {
 	 *
 	 * @return void
 	 */
-	public function confirm_reservations(): void {
+	public function confirm_all_reservations(): void {
 		$this->session->confirm_all_reservations();
 	}
 }

@@ -65,7 +65,7 @@ class Reservations {
 		}
 
 		$response = wp_remote_post(
-			$this->service_fetch_url . '/cancel',
+			$this->get_cancel_url(),
 			[
 				'headers' => [
 					'Authorization' => sprintf( 'Bearer %s', $this->get_oauth_token() ),
@@ -149,7 +149,7 @@ class Reservations {
 		}
 
 		$response = wp_remote_post(
-			$this->service_fetch_url . '/confirm',
+			$this->get_confirm_url(),
 			[
 				'headers' => [
 					'Authorization' => sprintf( 'Bearer %s', $this->get_oauth_token() ),
@@ -205,5 +205,27 @@ class Reservations {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Returns the URL to the endpoint to cancel the reservations.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The URL to the endpoint to cancel the reservations.
+	 */
+	public function get_cancel_url(): string {
+		return $this->service_fetch_url . '/cancel';
+	}
+
+	/**
+	 * Returns the URL to the endpoint to confirm the reservations.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The URL to the endpoint to confirm the reservations.
+	 */
+	public function get_confirm_url(): string {
+		return $this->service_fetch_url . '/confirm';
 	}
 }

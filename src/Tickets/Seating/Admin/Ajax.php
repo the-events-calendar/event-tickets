@@ -300,6 +300,8 @@ class Ajax extends Controller_Contract {
 			$decoded
 			&& is_array( $decoded )
 			&& isset( $decoded['token'], $decoded['reservations'] )
+			&& is_string( $decoded['token'] )
+			&& is_array( $decoded['reservations'] )
 		) ) {
 			wp_send_json_error(
 				[
@@ -307,6 +309,8 @@ class Ajax extends Controller_Contract {
 				],
 				400
 			);
+
+			return;
 		}
 
 		$token        = $decoded['token'];
@@ -319,6 +323,8 @@ class Ajax extends Controller_Contract {
 				],
 				500
 			);
+
+			return;
 		}
 
 		wp_send_json_success();
@@ -346,19 +352,29 @@ class Ajax extends Controller_Contract {
 		$token   = tribe_get_request_var( 'token' );
 		$post_id = tribe_get_request_var( 'postId' );
 
-		$reservations_cancelled = $this->reservations->cancel(
-			$post_id,
-			$this->sessions->get_reservations_for_token( $token )
-		);
-		$token_session_deleted  = $this->sessions->clear_token_reservations( $token );
-
-		if ( ! ( $reservations_cancelled && $token_session_deleted ) ) {
+		if ( ! ( $token && $post_id ) ) {
 			wp_send_json_error(
 				[
-					'error' => 'Failed to remove the reservations',
+					'error' => 'Invalid request parameters',
+				],
+				400
+			);
+
+			return;
+		}
+
+		if ( ! (
+			$this->reservations->cancel( $post_id, $this->sessions->get_reservations_for_token( $token ) )
+			&& $this->sessions->clear_token_reservations( $token )
+		) ) {
+			wp_send_json_error(
+				[
+					'error' => 'Failed to clear the reservations',
 				],
 				500
 			);
+
+			return;
 		}
 
 		wp_send_json_success();

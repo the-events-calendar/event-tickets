@@ -20,6 +20,8 @@ use TEC\Common\StellarWP\DB\DB;
  * @package TEC\Controller\Tables;
  */
 trait Custom_Table_Query_Methods {
+	use Truncate_Methods;
+
 	/**
 	 * Fetches all the rows from the table using a batched query.
 	 *
@@ -56,22 +58,6 @@ trait Custom_Table_Query_Methods {
 
 			yield from $batch;
 		} while ( $fetched < $total );
-	}
-
-	/**
-	 * Truncates the table.
-	 *
-	 * @since TBD
-	 *
-	 * @return bool|int The number of rows affected, or `false` on failure.
-	 */
-	public static function truncate() {
-		return DB::query(
-			DB::prepare(
-				"TRUNCATE TABLE %i",
-				static::table_name( true )
-			)
-		);
 	}
 
 	/**

@@ -202,15 +202,15 @@ const targets = [
 		},
 	},
 	{
-		name: 'seating-frontend-timer-bundle',
-		entry: './src/Tickets/Seating/app/frontend/timer/index.js',
-		outputScript: './build/Seating/frontend/timer.min.js',
-		outputStyle: `build/Seating/frontend/timer.${postfix}`,
+		name: 'seating-frontend-session-bundle',
+		entry: './src/Tickets/Seating/app/frontend/session/index.js',
+		outputScript: './build/Seating/frontend/session.min.js',
+		outputStyle: `build/Seating/frontend/session.${postfix}`,
 		moveFromTo: {
-			'src/resources/js/app/seating-frontend-timer-bundle.js':
-				'build/Seating/frontend/timer.js',
-			'src/resources/css/app/seating-frontend-timer-bundle.css':
-				'build/Seating/frontend/timer.css',
+			'src/resources/js/app/seating-frontend-session-bundle.js':
+				'build/Seating/frontend/session.js',
+			'src/resources/css/app/seating-frontend-session-bundle.css':
+				'build/Seating/frontend/session.css',
 		},
 	},
 ];
@@ -240,8 +240,8 @@ const config = merge(common, {
 			'@tec/tickets/seating/utils': 'tec.tickets.seating.utils',
 			'@tec/tickets/seating/ajax': 'tec.tickets.seating.ajax',
 			'@tec/tickets/seating/currency': 'tec.tickets.seating.currency',
-			'@tec/tickets/seating/frontend/timer':
-				'tec.tickets.seating.frontend.timer',
+			'@tec/tickets/seating/frontend/session':
+				'tec.tickets.seating.frontend.session',
 		},
 	],
 	// Configure multiple entry points.
