@@ -11,26 +11,97 @@ import {
 	removeAction,
 	registerAction,
 	sendPostMessage,
-} from '@tec/tickets/seating/service';
+	getToken,
+} from '@tec/tickets/seating/service/api';
 import { TicketRow } from './ticket-row';
-import { externals } from './externals';
+import { localizedData } from './localized-data';
 import { formatWithCurrency } from '@tec/tickets/seating/currency';
 import { getCheckoutHandlerForProvider } from './checkout-handlers';
+import {
+	start as startTimer,
+	reset as resetTimer,
+} from '@tec/tickets/seating/frontend/session';
 
-const { objectName, seatTypeMap, labels, providerClass, postId } = externals;
+const {
+	objectName,
+	seatTypeMap,
+	labels,
+	providerClass,
+	postId,
+	ajaxUrl,
+	ajaxNonce,
+	ACTION_POST_RESERVATIONS,
+	ACTION_CLEAR_RESERVATIONS,
+} = localizedData;
 
+/**
+ * The total price element.
+ *
+ * @since TBD
+ *
+ * @type {HTMLElement|null}
+ */
 let totalPriceElement = null;
+
+/**
+ * The total tickets element.
+ *
+ * @since TBD
+ *
+ * @type {HTMLElement|null}
+ */
 let totalTicketsElement = null;
 
+/**
+ * The Confirm button selector.
+ *
+ * @since TBD
+ *
+ * @type {string}
+ */
 const confirmSelector =
 	'.tec-tickets-seating__modal .tec-tickets-seating__sidebar-control--confirm';
 
+/**
+ * @typedef {Object} SeatMapTicketEntry
+ * @property {string} ticketId    The ticket ID.
+ * @property {string} name        The ticket name.
+ * @property {number} price       The ticket price.
+ * @property {string} description The ticket description.
+ */
+
+/**
+ * The tickets map.
+ *
+ * @since TBD
+ *
+ * @type {Object<string, SeatMapTicketEntry>}
+ */
 const tickets = Object.values(seatTypeMap).reduce((map, seatType) => {
 	seatType.tickets.forEach((ticket) => {
 		map[ticket.ticketId] = ticket;
 	});
 	return map;
 }, {});
+
+/**
+ * The current fetch signal handler.
+ *
+ * @since TBD
+ *
+ * @type {AbortController}
+ */
+let currentController = new AbortController();
+
+/**
+ * Whether the reservations should be cancelled on hide or destroy of the seat selection modal or not.
+ * By default, the reservations will be cancelled, but this flag will be set to `false` during checkout.
+ *
+ * @since TBD
+ *
+ * @type {boolean}
+ */
+let shouldCancelReservations = true;
 
 /**
  * Formats the text representing the total number of tickets selected.
@@ -105,10 +176,11 @@ function updateTotals() {
 
 /**
  * @typedef {Object} TicketSelectionProps
- * @property {string} seatTypeId The seat type ID.
- * @property {string} ticketId   The ticket ID.
- * @property {string} seatColor  The seat type color.
- * @property {string} seatLabel  The seat type label.
+ * @property {string} reservationId The reservation UUID.
+ * @property {string} seatColor     The seat type color.
+ * @property {string} seatLabel     The seat type label.
+ * @property {string} seatTypeId    The seat type ID.
+ * @property {string} ticketId      The ticket ID.
  */
 
 /**
@@ -144,6 +216,42 @@ function addTicketToSelection(props) {
 }
 
 /**
+ * Posts the reservations to the backend replacing the existing ones.
+ *
+ * @since TBD
+ *
+ * @param {string[]} reservationIds The reservation IDs to post to the backend.
+ */
+async function postReservationsToBackend(reservationIds) {
+	// First of all, cancel any similar requests that might be in progress.
+	await currentController.abort('New reservations data');
+	const newController = new AbortController();
+
+	const requestUrl = new URL(ajaxUrl);
+	requestUrl.searchParams.set('_ajax_nonce', ajaxNonce);
+	requestUrl.searchParams.set('action', ACTION_POST_RESERVATIONS);
+	let response = null;
+
+	response = await fetch(requestUrl.toString(), {
+		method: 'POST',
+		signal: newController.signal,
+		body: JSON.stringify({
+			token: getToken(),
+			reservations: reservationIds,
+		}),
+	});
+
+	currentController = newController;
+
+	if (!response.ok) {
+		console.error('Failed to post reservations to backend');
+		return false;
+	}
+
+	return true;
+}
+
+/**
  * Updates the tickets selection.
  *
  * @since TBd
@@ -156,6 +264,10 @@ function updateTicketsSelection(items) {
 	items.forEach((item) => {
 		addTicketToSelection(item);
 	});
+
+	const reservationIds = items.map((item) => item.reservationId);
+
+	postReservationsToBackend(reservationIds);
 
 	updateTotals();
 }
@@ -170,7 +282,13 @@ function updateTicketsSelection(items) {
  * @return {boolean} True if the item is valid, false otherwise.
  */
 function validateSelectionItemFromService(item) {
-	return item.seatTypeId && item.ticketId && item.seatColor && item.seatLabel;
+	return (
+		item.seatTypeId &&
+		item.ticketId &&
+		item.seatColor &&
+		item.seatLabel &&
+		item.reservationId
+	);
 }
 
 /**
@@ -226,22 +344,80 @@ async function bootstrapIframe() {
 }
 
 /**
+ * Prompts the backend to cancel the reservations.
+ *
+ * @since TBD
+ *
+ * @return {Promise<boolean>} A promise that resolves to `true` if the reservations were removed successfully,
+ *                            `false` otherwise.
+ */
+async function cancelReservationsOnBackend() {
+	// First of all, cancel any similar requests that might be in progress.
+	await currentController.abort('New reservations data');
+	const newController = new AbortController();
+
+	const requestUrl = new URL(ajaxUrl);
+	requestUrl.searchParams.set('_ajax_nonce', ajaxNonce);
+	requestUrl.searchParams.set('action', ACTION_CLEAR_RESERVATIONS);
+	requestUrl.searchParams.set('token', getToken());
+	requestUrl.searchParams.set('postId', postId);
+	let response = null;
+
+	response = await fetch(requestUrl.toString(), {
+		signal: newController.signal,
+		method: 'POST',
+	});
+
+	currentController = newController;
+
+	if (!response.ok) {
+		console.error('Failed to remove reservations from backend');
+		return false;
+	}
+
+	return true;
+}
+
+/**
+ * Clears the ticket selection from the DOM.
+ *
+ * @since TBD
+ *
+ * @return {void} The ticket selection is cleared.
+ */
+function clearTicketSelection() {
+	Array.from(
+		document.querySelectorAll(
+			'.tec-tickets-seating__ticket-rows .tec-tickets-seating__ticket-row'
+		)
+	).forEach((row) => {
+		row.remove();
+	});
+}
+
+/**
  * Dispatches a clear reservations message to the service through the iframe.
  *
  * @since TBD
  *
  * @param {HTMLElement} dialogElement the iframe element that should be used to communicate with the service.
  */
-export function removeReservationsThroughIframe(dialogElement) {
+export function cancelReservations(dialogElement) {
+	if (!shouldCancelReservations) {
+		return;
+	}
+
 	const iframe = dialogElement.querySelector(
 		'.tec-tickets-seating__iframe-container iframe.tec-tickets-seating__iframe'
 	);
 
-	if (!iframe) {
-		return;
+	if (iframe) {
+		sendPostMessage(iframe, OUTBOUND_REMOVE_RESERVATIONS);
 	}
 
-	sendPostMessage(iframe, OUTBOUND_REMOVE_RESERVATIONS);
+	cancelReservationsOnBackend();
+	resetTimer();
+	clearTicketSelection();
 }
 
 /**
@@ -313,6 +489,8 @@ function readTicketsFromSelection() {
  *                          provider's checkout page.
  */
 async function proceedToCheckout() {
+	// The seat selection modal will be hidden or destroyed, so we should not cancel the reservations.
+	shouldCancelReservations = false;
 	const checkoutHandler = getCheckoutHandlerForProvider(providerClass);
 
 	if (!checkoutHandler) {
@@ -324,7 +502,6 @@ async function proceedToCheckout() {
 
 	const data = new FormData();
 	data.append('provider', providerClass);
-
 	data.append('attendee[optout]', '1');
 	data.append('tickets_tickets_ar', '1');
 
@@ -345,6 +522,8 @@ async function proceedToCheckout() {
 	if (!ok) {
 		console.error('Failed to proceed to checkout.');
 	}
+
+	shouldCancelReservations = true;
 }
 
 /**
@@ -364,14 +543,16 @@ export function addModalEventListeners() {
 		.querySelector(confirmSelector)
 		?.addEventListener('click', proceedToCheckout);
 
+	startTimer();
+
 	const modal = window[objectName];
 
 	if (!modal) {
 		return;
 	}
 
-	modal.on('hide', removeReservationsThroughIframe);
-	modal.on('destroy', removeReservationsThroughIframe);
+	modal.on('hide', cancelReservations);
+	modal.on('destroy', cancelReservations);
 }
 
 /**
@@ -399,3 +580,12 @@ waitForModalElement().then((modalElement) => {
 		addModalEventListeners();
 	});
 });
+
+window.tec = window.tec || {};
+window.tec.tickets = window.tec.tickets || {};
+window.tec.tickets.seating = window.tec.tickets.seating || {};
+window.tec.tickets.seating.frontend = window.tec.tickets.seating.frontend || {};
+window.tec.tickets.seating.frontend.ticketsBlock = {
+	...(window.tec.tickets.seating.frontend.ticketsBlock || {}),
+	cancelReservations,
+};

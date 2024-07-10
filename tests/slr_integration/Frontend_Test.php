@@ -11,12 +11,14 @@ use TEC\Tickets\Flexible_Tickets\Test\Traits\Series_Pass_Factory;
 use TEC\Tickets\Seating\Frontend;
 use TEC\Tickets\Seating\Meta;
 use TEC\Tickets\Seating\Service\Service;
+use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 
 class Frontend_Test extends Controller_Test_Case {
 	use SnapshotAssertions;
 	use Ticket_Maker;
 	use Series_Pass_Factory;
+	use With_Uopz;
 
 	protected string $controller_class = Frontend::class;
 
@@ -192,6 +194,7 @@ class Frontend_Test extends Controller_Test_Case {
 	 * @dataProvider seating_enabled_fixtures
 	 */
 	public function test_get_ticket_block_data( Closure $fixture ) {
+		$this->set_fn_return( 'wp_create_nonce', '1111111111' );
 		$ids     = $fixture();
 		$post_id = array_shift( $ids );
 		foreach ( $ids as $k => $id ) {

@@ -1,11 +1,21 @@
 import {
 	addModalEventListeners,
-	removeReservationsThroughIframe,
-} from '@tec/tickets/seating/frontend/tickets-block';
+	cancelReservations,
+} from '@tec/tickets/seating/frontend/ticketsBlock';
 import { OUTBOUND_REMOVE_RESERVATIONS } from '@tec/tickets/seating/service';
 const serviceModule = require('@tec/tickets/seating/service');
 
+let fetchMock;
+
 describe('Seat Selection Modal', () => {
+	beforeEach(() => {
+		global.fetch = jest.fn(() =>
+			Promise.resolve({
+				json: () => Promise.resolve({ test: 100 }),
+			}),
+		);
+	});
+
 	it('should listen for hide and destroy events to remove the reservations', () => {
 		window['tribe-tickets-seating-modal'] = {
 			on: jest.fn(),
@@ -18,11 +28,11 @@ describe('Seat Selection Modal', () => {
 		);
 		expect(window['tribe-tickets-seating-modal'].on).toHaveBeenCalledWith(
 			'hide',
-			removeReservationsThroughIframe
+			cancelReservations
 		);
 		expect(window['tribe-tickets-seating-modal'].on).toHaveBeenCalledWith(
 			'destroy',
-			removeReservationsThroughIframe
+			cancelReservations
 		);
 	});
 
@@ -30,7 +40,7 @@ describe('Seat Selection Modal', () => {
 		serviceModule.sendPostMessage = jest.fn();
 		const mockDialogElement = document.createElement('div');
 
-		removeReservationsThroughIframe(mockDialogElement);
+		cancelReservations(mockDialogElement);
 
 		expect(serviceModule.sendPostMessage).not.toHaveBeenCalled();
 	});
@@ -39,7 +49,7 @@ describe('Seat Selection Modal', () => {
 		serviceModule.sendPostMessage = jest.fn();
 		const mockDialogElement = document.createElement('div');
 		mockDialogElement.innerHTML = `
-			<div class="tec-tickets-seating__iframe-container">
+			<div class="tec-tickets-seating__iframe-container" data-token="test-token">
 				<iframe class="tec-tickets-seating__iframe"></iframe>
 			</div>
 		`;
@@ -47,7 +57,7 @@ describe('Seat Selection Modal', () => {
 			'.tec-tickets-seating__iframe-container iframe.tec-tickets-seating__iframe'
 		);
 
-		removeReservationsThroughIframe(mockDialogElement);
+		cancelReservations(mockDialogElement);
 
 		expect(serviceModule.sendPostMessage).toHaveBeenCalledTimes(1);
 		expect(serviceModule.sendPostMessage).toHaveBeenCalledWith(
