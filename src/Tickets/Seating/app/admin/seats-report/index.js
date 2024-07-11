@@ -7,9 +7,8 @@ import {
 	removeAction,
 	registerAction,
 	sendPostMessage,
-} from '@tec/tickets/seating/service';
+} from '@tec/tickets/seating/service/api';
 const { seatTypeMap } = window?.tec?.tickets?.seating?.seatsReport?.data;
-
 
 /**
  * Registers the handlers for the messages received from the service.
@@ -36,4 +35,6 @@ onReady( async () => {
 	// Register the actions before initializing the iframe to avoid race conditions.
 	registerActions(iframe);
 	await initServiceIframe(iframe);
+
+	sendPostMessage(iframe, OUTBOUND_SEAT_TYPE_TICKETS, seatTypeMap);
 })
