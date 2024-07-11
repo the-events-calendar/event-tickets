@@ -3,17 +3,12 @@ import {
 	cancelReservations,
 } from '@tec/tickets/seating/frontend/ticketsBlock';
 import { OUTBOUND_REMOVE_RESERVATIONS } from '@tec/tickets/seating/service';
-const serviceModule = require('@tec/tickets/seating/service');
+require('jest-fetch-mock').enableMocks();
 
-let fetchMock;
-
+const apiModule = require('@tec/tickets/seating/service/api');
 describe('Seat Selection Modal', () => {
 	beforeEach(() => {
-		global.fetch = jest.fn(() =>
-			Promise.resolve({
-				json: () => Promise.resolve({ test: 100 }),
-			}),
-		);
+		fetch.resetMocks();
 	});
 
 	it('should listen for hide and destroy events to remove the reservations', () => {
@@ -37,16 +32,22 @@ describe('Seat Selection Modal', () => {
 	});
 
 	it('should not dispatch message to remove reservations if iframe not found', () => {
-		serviceModule.sendPostMessage = jest.fn();
+		apiModule.sendPostMessage = jest.fn();
 		const mockDialogElement = document.createElement('div');
 
 		cancelReservations(mockDialogElement);
 
-		expect(serviceModule.sendPostMessage).not.toHaveBeenCalled();
+		expect(apiModule.sendPostMessage).not.toHaveBeenCalled();
 	});
 
-	it('should dispatch message to remove reservations if iframe', () => {
-		serviceModule.sendPostMessage = jest.fn();
+	it('should dispatch message to remove reservations if iframe found', () => {
+		apiModule.sendPostMessage = jest.fn();
+		fetch.mockIf(
+			/^https:\/\/wordpress\.test\/wp-admin\/admin-ajax\.php?.*$/,
+			JSON.stringify({ success: true })
+		);
+		// fetch.mockResponse( JSON.stringify({ success: true, data: { test: 100 } }) );
+
 		const mockDialogElement = document.createElement('div');
 		mockDialogElement.innerHTML = `
 			<div class="tec-tickets-seating__iframe-container" data-token="test-token">
@@ -59,8 +60,8 @@ describe('Seat Selection Modal', () => {
 
 		cancelReservations(mockDialogElement);
 
-		expect(serviceModule.sendPostMessage).toHaveBeenCalledTimes(1);
-		expect(serviceModule.sendPostMessage).toHaveBeenCalledWith(
+		expect(apiModule.sendPostMessage).toHaveBeenCalledTimes(1);
+		expect(apiModule.sendPostMessage).toHaveBeenCalledWith(
 			mockIframe,
 			OUTBOUND_REMOVE_RESERVATIONS
 		);

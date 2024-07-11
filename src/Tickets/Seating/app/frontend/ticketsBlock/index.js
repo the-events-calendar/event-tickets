@@ -361,9 +361,8 @@ async function cancelReservationsOnBackend() {
 	requestUrl.searchParams.set('action', ACTION_CLEAR_RESERVATIONS);
 	requestUrl.searchParams.set('token', getToken());
 	requestUrl.searchParams.set('postId', postId);
-	let response = null;
 
-	response = await fetch(requestUrl.toString(), {
+	const response = await fetch(requestUrl.toString(), {
 		signal: newController.signal,
 		method: 'POST',
 	});
