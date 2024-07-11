@@ -135,11 +135,11 @@ class Timer_Test extends Controller_Test_Case {
 		$sessions->upsert( 'test-token', $post_id, time() + 100 );
 		$sessions->update_reservations( 'test-token', [ '1234567890', '0987654321' ] );
 
-		$token   = 'test-token';
-		$post_id = 23;
+		$token = 'test-token';
 
 		ob_start();
-		$this->make_controller()->render_to_sync();
+		$controller = $this->make_controller();
+		$controller->render_to_sync();
 		$html = ob_get_clean();
 
 		$html = str_replace(
@@ -149,6 +149,33 @@ class Timer_Test extends Controller_Test_Case {
 		);
 
 		$this->assertMatchesHtmlSnapshot( $html );
+	}
+
+	public function test_render_to_sync_with_previous_render(): void {
+		$post_id = static::factory()->post->create();
+		update_post_meta( $post_id, Meta::META_KEY_UUID, 'test-post-uuid' );
+		$session  = tribe( Session::class );
+		$sessions = tribe( Sessions::class );
+
+		// Mock a previous session where the token and post ID were stored.
+		$session->add_entry( $post_id, 'previous-token' );
+		$sessions->upsert( 'previous-token', $post_id, time() + 100 );
+
+		$controller = $this->make_controller();
+
+		// Now render the timer a first time with a new token for the same post ID.
+		ob_start();
+		$controller->render( 'new-token', $post_id );
+		ob_end_clean();
+
+		// Now render to sync in the context of the same request.
+		ob_start();
+		$controller->render_to_sync();
+		$sync_html = ob_get_clean();
+
+		$sync_html = str_replace( $post_id, '{{post_id}}', $sync_html );
+
+		$this->assertMatchesHtmlSnapshot( $sync_html );
 	}
 
 	public function test_get_localized_data(): void {

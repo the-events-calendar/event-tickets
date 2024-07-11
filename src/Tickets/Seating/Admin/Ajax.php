@@ -396,8 +396,9 @@ class Ajax extends Controller_Contract {
 		}
 
 		// Remove the `tec-tickets-commerce-cart` cookie.
+		$cookie_name = Cart::$cart_hash_cookie_name;
 		setcookie(
-			Cart::$cart_hash_cookie_name,
+			$cookie_name,
 			'',
 			time() - DAY_IN_SECONDS,
 			COOKIEPATH,
@@ -405,5 +406,6 @@ class Ajax extends Controller_Contract {
 			true,
 			true
 		);
+		unset( $_COOKIE[ $cookie_name ] );
 	}
 }

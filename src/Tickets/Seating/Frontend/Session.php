@@ -83,6 +83,48 @@ class Session {
 	}
 
 	/**
+	 * Returns the cookie string from the entries.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<int,string> $entries The entries to convert to a cookie string.
+	 *
+	 * @return string The cookie string.
+	 */
+	public function get_cookie_string( array $entries ): string {
+		return implode(
+			'|||',
+			array_map(
+				static fn( $object_id, $token ) => $object_id . '=' . $token,
+				array_keys( $entries ),
+				$entries
+			)
+		);
+	}
+
+	/**
+	 * Returns the filtered expiration time of the Seating session cookie.
+	 *
+	 * Note the cookie will contain multiple tokens, each one with a possibly different expiration time.
+	 * For this reason, we set the cookie expiration time to 1 day, a value that should be large enough for any token
+	 * contained in it to expire.
+	 *
+	 * @since TBD
+	 *
+	 * @return int The expiration time of the Seating session cookie.
+	 */
+	public function get_cookie_expiration_time(): int {
+		/**
+		 * Filters the expiration time of the Seating session cookie.
+		 *
+		 * @since TBD
+		 *
+		 * @param int $expiration_time The expiration time of the Seating session cookie.
+		 */
+		return apply_filters( 'tec_tickets_seating_session_cookie_expiration_time', DAY_IN_SECONDS );
+	}
+
+	/**
 	 * Adds a new entry to the cookie string.
 	 *
 	 * @since TBD
@@ -94,23 +136,16 @@ class Session {
 		$entries               = $this->get_entries();
 		$entries[ $object_id ] = $token;
 
-		$new_value = implode(
-			'|||',
-			array_map(
-				static fn( $object_id, $token ) => $object_id . '=' . $token,
-				array_keys( $entries ),
-				$entries
-			)
-		);
+		$new_value = $this->get_cookie_string( $entries );
 
 		setcookie(
 			self::COOKIE_NAME,
 			$new_value,
-			0, // Do not set the expiration here, there might be more than one element in the cookie.
+			time() + $this->get_cookie_expiration_time(),
 			COOKIEPATH,
 			COOKIE_DOMAIN,
 			true,
-			false
+			true
 		);
 		$_COOKIE[ self::COOKIE_NAME ] = $new_value;
 	}
@@ -132,25 +167,27 @@ class Session {
 			unset( $entries[ $post_id ] );
 		}
 
-		$new_value = implode(
-			'|||',
-			array_map(
-				static fn( $object_id, $token ) => $object_id . '=' . $token,
-				array_keys( $entries ),
-				$entries
-			)
-		);
+		$new_value = $this->get_cookie_string( $entries );
 
-		setcookie(
-			self::COOKIE_NAME,
-			$new_value,
-			0, // Do not set the expiration here, there might be more than one element in the cookie.
-			COOKIEPATH,
-			COOKIE_DOMAIN,
-			true,
-			false
-		);
-		$_COOKIE[ self::COOKIE_NAME ] = $new_value;
+		if ( empty( $new_value ) ) {
+			setcookie( self::COOKIE_NAME, '', time() - DAY_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN, true, true );
+			unset( $_COOKIE[ self::COOKIE_NAME ] );
+		} else {
+			/*
+			 * Cookies will store more than one token, each with, possibly, a different expiration time.
+			 * We set the cookie expiration here to 1 day, to avoid the first expring token from removing it.
+			 */
+			setcookie(
+				self::COOKIE_NAME,
+				$new_value,
+				time() + $this->get_cookie_expiration_time(),
+				COOKIEPATH,
+				COOKIE_DOMAIN,
+				true,
+				true
+			);
+			$_COOKIE[ self::COOKIE_NAME ] = $new_value;
+		}
 
 		return true;
 	}
@@ -176,8 +213,8 @@ class Session {
 				$reservations = $this->sessions->get_reservations_for_token( $entry_token );
 
 				return $this->reservations->cancel( $entry_object_id, $reservations )
-						&& $this->sessions->delete_token_session( $entry_token )
-						&& $this->remove_entry( $entry_object_id, $entry_token );
+				       && $this->sessions->delete_token_session( $entry_token )
+				       && $this->remove_entry( $entry_object_id, $entry_token );
 			}
 		}
 
@@ -270,7 +307,7 @@ class Session {
 			}
 
 			$confirmed &= $this->reservations->confirm( $post_id, $token_reservations )
-				&& $this->sessions->delete_token_session( $token );
+			              && $this->sessions->delete_token_session( $token );
 		}
 
 		return $confirmed;

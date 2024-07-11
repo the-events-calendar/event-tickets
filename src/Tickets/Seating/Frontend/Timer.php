@@ -92,6 +92,26 @@ class Timer extends Controller_Contract {
 	private Session $session;
 
 	/**
+	 * The current token used to render the timer.
+	 * Set on explicit render requests.
+	 *
+	 * @since TBD
+	 *
+	 * @var string|null
+	 */
+	private ?string $current_token = null;
+
+	/**
+	 * The current post ID used to render the timer.
+	 * Set on explicit render requests.
+	 *
+	 * @since TBD
+	 *
+	 * @var int|null
+	 */
+	private ?int $current_post_id = null;
+
+	/**
 	 * Timer constructor.
 	 *
 	 * @since TBD
@@ -246,6 +266,10 @@ class Timer extends Controller_Contract {
 			}
 
 			[ $token, $post_id ] = $cookie_timer_token_post_id;
+		} else {
+			// If a cookie and token were passed, store them for later use.
+			$this->current_token   = $token;
+			$this->current_post_id = $post_id;
 		}
 
 		wp_enqueue_script( 'tec-tickets-seating-session' );
@@ -272,7 +296,7 @@ class Timer extends Controller_Contract {
 	 * @return void
 	 */
 	public function render_to_sync(): void {
-		$this->render( null, null, true );
+		$this->render( $this->current_token, $this->current_post_id, true );
 	}
 
 	/**
@@ -451,7 +475,7 @@ class Timer extends Controller_Contract {
 			$content      = _x(
 				'Your seat selections are no longer reserved, but tickets are still available.',
 				'Seat selection expired timer content',
-				'event-tickets' 
+				'event-tickets'
 			);
 			$button_label = _x( 'Find Seats', 'Seat selection expired timer button label', 'event-tickets' );
 			$redirect_url = get_post_permalink( $post_id );
@@ -512,7 +536,7 @@ class Timer extends Controller_Contract {
 				'content'     => esc_html( $content ),
 				'buttonLabel' => esc_html( $button_label ),
 				'redirectUrl' => esc_url( $redirect_url ),
-			] 
+			]
 		);
 	}
 }
