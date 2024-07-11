@@ -59,7 +59,7 @@
 			},
 			{
 				"file": "package.json",
-				"regex": "(\"version\": \")([^\"]+)"
+				"regex": "(\"version\": ?\")([^\"]+)"
 			},
 			{
 				"file": "readme.txt",
