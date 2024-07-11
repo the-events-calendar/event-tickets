@@ -24,6 +24,7 @@ use TEC\Tickets\Commerce\Shortcodes\Shortcode_Abstract;
 use TEC\Tickets\Commerce\Gateways\PayPal\Gateway;
 use TEC\Tickets\Commerce\Status\Completed;
 
+use Tribe\Admin\Pages;
 use Tribe__Utils__Array as Arr;
 
 
@@ -136,6 +137,12 @@ class Hooks extends \TEC\Common\Contracts\Service_Provider {
 
 		$nonce = tribe_get_request_var( 'tc-nonce' );
 		if ( ! $nonce || ! wp_verify_nonce( $nonce, $merchant->get_disconnect_action() ) ) {
+			$notices->trigger_admin( 'tc-paypal-disconnect-failed' );
+
+			return;
+		}
+
+		if ( ! current_user_can( Pages::get_capability() ) ) {
 			$notices->trigger_admin( 'tc-paypal-disconnect-failed' );
 
 			return;
