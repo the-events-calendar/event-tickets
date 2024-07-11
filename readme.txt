@@ -197,9 +197,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.11.0.5] 2024-07-10 =
+= [5.11.0.5] 2024-07-11 =
 
 * Security - Prevent an unauthorized disconnection of Payment Method for Tickets Commerce [SVUL-4]
+* Fix - Ensure compatibility with WordPress 6.6 for removed polyfill `regenerator-runtime`. [TECTRIA-149]
 
 = [5.11.0.4] 2024-06-18 =
 
