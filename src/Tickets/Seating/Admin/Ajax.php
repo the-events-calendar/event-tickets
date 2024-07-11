@@ -118,6 +118,24 @@ class Ajax extends Controller_Contract {
 	 * @var Reservations
 	 */
 	private Reservations $reservations;
+	
+	/**
+	 * A reference to the Maps service object.
+	 *
+	 * @since TBD
+	 *
+	 * @var Maps
+	 */
+	private Maps $maps;
+	
+	/**
+	 * A reference to the Layouts service object.
+	 *
+	 * @since TBD
+	 *
+	 * @var Layouts
+	 */
+	private Layouts $layouts;
 
 	/**
 	 * Ajax constructor.
@@ -128,17 +146,23 @@ class Ajax extends Controller_Contract {
 	 * @param Seat_Types   $seat_types A reference to the Seat Types service object.
 	 * @param Sessions     $sessions    A reference to the Sessions table object.
 	 * @param Reservations $reservations A reference to the Reservations service object.
+	 * @param Maps         $maps        A reference to the Maps service object.
+	 * @param Layouts      $layouts     A reference to the Layouts service object.
 	 */
 	public function __construct(
 		Container $container,
 		Seat_Types $seat_types,
 		Sessions $sessions,
-		Reservations $reservations
+		Reservations $reservations,
+		Maps $maps,
+		Layouts $layouts
 	) {
 		parent::__construct( $container );
 		$this->seat_types   = $seat_types;
 		$this->sessions     = $sessions;
 		$this->reservations = $reservations;
+		$this->maps         = $maps;
+		$this->layouts      = $layouts;
 	}
 
 	/**
@@ -322,7 +346,7 @@ class Ajax extends Controller_Contract {
 			return;
 		}
 		
-		if ( tribe( Service::class )->delete_map( $map_id ) ) {
+		if ( $this->maps->delete( $map_id ) ) {
 			wp_send_json_success();
 			return;
 		}
@@ -363,7 +387,7 @@ class Ajax extends Controller_Contract {
 			return;
 		}
 		
-		if ( tribe( Service::class )->delete_layout( $layout_id, $map_id ) ) {
+		if ( $this->layouts->delete( $layout_id, $map_id ) ) {
 			wp_send_json_success();
 			return;
 		}
