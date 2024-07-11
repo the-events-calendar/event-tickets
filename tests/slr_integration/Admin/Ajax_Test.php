@@ -2,9 +2,12 @@
 
 namespace TEC\Tickets\Seating\Admin;
 
+use PHPUnit\Framework\Assert;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
+use TEC\Tickets\Commerce\Cart;
+use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Seating\Meta;
 use TEC\Tickets\Seating\Service\OAuth_Token;
 use TEC\Tickets\Seating\Service\Reservations;
@@ -16,6 +19,7 @@ use TEC\Tickets\Seating\Tables\Sessions;
 use TEC\Tickets\Seating\Tests\Integration\Seat_Types_Factory;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Traits\WP_Remote_Mocks;
+use Tribe__Tickets__Data_API as Data_API;
 
 class Ajax_Test extends Controller_Test_Case {
 	use SnapshotAssertions;
@@ -25,6 +29,25 @@ class Ajax_Test extends Controller_Test_Case {
 	use WP_Remote_Mocks;
 
 	protected string $controller_class = Ajax::class;
+
+	/**
+	 * @before
+	 */
+	public function ensure_tickets_commerce_active(): void {
+		// Ensure the Tickets Commerce module is active.
+		add_filter( 'tec_tickets_commerce_is_enabled', '__return_true' );
+		add_filter(
+			'tribe_tickets_get_modules',
+			function ( $modules ) {
+				$modules[ Module::class ] = tribe( Module::class )->plugin_name;
+
+				return $modules;
+			} 
+		);
+
+		// Reset Data_API object, so it sees Tribe Commerce.
+		tribe_singleton( 'tickets.data_api', new Data_API() );
+	}
 
 	/**
 	 * @before
@@ -42,21 +65,26 @@ class Ajax_Test extends Controller_Test_Case {
 	 *
 	 * @test
 	 */
-	public function should_return_ur_ls(): void {
+	/**
+	 * It should return URLs
+	 *
+	 * @test
+	 */
+	public function should_return_urls(): void {
 		$this->set_fn_return(
 			'wp_create_nonce',
 			function ( string $action ) {
 				if ( $action === 'seat_types_by_layout_id' ) {
 					return '8298ff6616';
 				}
-
+			
 				return wp_create_nonce( $action );
 			},
 			true 
 		);
-
+		
 		$controller = $this->make_controller();
-
+		
 		$this->assertMatchesCodeSnapshot( var_export( $controller->get_urls(), true ) );
 	}
 
@@ -1369,5 +1397,50 @@ class Ajax_Test extends Controller_Test_Case {
 
 		$this->assertEquals( 400, $wp_send_json_error_code );
 		$this->assertEquals( [ 'error' => 'Invalid request parameters' ], $wp_send_json_error_data );
+	}
+
+	public function test_clear_commerce_cart_cookie(): void {
+		$cookie_name             = Cart::$cart_hash_cookie_name;
+		$_COOKIE[ $cookie_name ] = 'some-commerce-cart-hash';
+		$setcookie_call          = null;
+		$this->set_fn_return(
+			'setcookie',
+			function (
+				$name,
+				$value,
+				$expire,
+				$path,
+				$domain,
+				$secure,
+				$httponly
+			) use (
+				$cookie_name,
+				&$setcookie_call 
+			) {
+				$setcookie_call = true;
+
+				Assert::assertEquals( $cookie_name, $name );
+				Assert::assertEquals( '', $value );
+				Assert::assertEquals( time() - DAY_IN_SECONDS, $expire, '', 5 );
+				Assert::assertEquals( COOKIEPATH, $path );
+				Assert::assertEquals( COOKIE_DOMAIN, $domain );
+				Assert::assertTrue( $secure );
+				Assert::assertTrue( $httponly );
+
+				return true;
+			},
+			true 
+		);
+		$post_id = self::factory()->post->create();
+		/** @var \Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler = tribe( 'tickets.handler' );
+		update_post_meta( $post_id, $tickets_handler->key_provider_field, Module::class );
+
+		$this->make_controller()->register();
+
+		do_action( 'tec_tickets_seating_session_interrupt', $post_id );
+
+		$this->assertFalse( isset( $_COOKIE[ $cookie_name ] ) );
+		$this->assertTrue( $setcookie_call );
 	}
 }

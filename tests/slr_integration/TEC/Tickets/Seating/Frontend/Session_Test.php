@@ -2,6 +2,7 @@
 
 namespace TEC\Tickets\Seating\Frontend;
 
+use PHPUnit\Framework\Assert;
 use TEC\Tickets\Seating\Meta;
 use TEC\Tickets\Seating\Service\OAuth_Token;
 use TEC\Tickets\Seating\Service\Reservations;
@@ -15,7 +16,21 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 	use OAuth_Token;
 
 	public function test_entry_manipulation(): void {
-		$session = tribe( Session::class );
+		$session         = tribe( Session::class );
+		$expiration_time = $session->get_cookie_expiration_time();
+		$setcookie_value = null;
+		$this->set_fn_return( 'setcookie',
+			function ( $name, $value, $expire, $path, $domain, $secure, $httponly ) use ( &$setcookie_value, $expiration_time ) {
+				$setcookie_value = $value;
+				Assert::assertEquals( Session::COOKIE_NAME, $name );
+				Assert::assertEquals( time() + $expiration_time, $expire, '', 5 );
+				Assert::assertEquals( COOKIEPATH, $path );
+				Assert::assertEquals( COOKIE_DOMAIN, $domain );
+				Assert::assertTrue( $secure );
+				Assert::assertTrue( $httponly );
+			},
+			true
+		);
 
 		unset( $_COOKIE[ Session::COOKIE_NAME ] );
 
@@ -24,18 +39,37 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 		$session->add_entry( 23, 'test-token' );
 
 		$this->assertEquals( [ 23 => 'test-token' ], $session->get_entries() );
+		$this->assertEquals( $session->get_cookie_string( [ 23 => 'test-token' ] ), $setcookie_value );
 
 		$session->add_entry( 89, 'test-token-2' );
 
 		$this->assertEquals( [ 23 => 'test-token', 89 => 'test-token-2' ], $session->get_entries() );
+		$this->assertEquals( $session->get_cookie_string( [ 23 => 'test-token', 89 => 'test-token-2' ] ), $setcookie_value );
 
 		$session->remove_entry( 23, 'test-token' );
 
 		$this->assertEquals( [ 89 => 'test-token-2' ], $session->get_entries() );
+		$this->assertEquals( $session->get_cookie_string( [ 89 => 'test-token-2' ] ), $setcookie_value );
+
+		$this->unset_uopz_functions();
+		$this->set_fn_return( 'setcookie',
+			function ( $name, $value, $expire, $path, $domain, $secure, $httponly ) use ( &$setcookie_value) {
+				$setcookie_value = $value;
+				Assert::assertEquals( Session::COOKIE_NAME, $name );
+				Assert::assertEquals( time() - DAY_IN_SECONDS, $expire, '', 5 );
+				Assert::assertEquals( COOKIEPATH, $path );
+				Assert::assertEquals( COOKIE_DOMAIN, $domain );
+				Assert::assertTrue( $secure );
+				Assert::assertTrue( $httponly );
+			},
+			true
+		);
 
 		$session->remove_entry( 89, 'test-token-2' );
 
 		$this->assertEquals( [], $session->get_entries() );
+		$this->assertFalse( isset( $_COOKIE[ Session::COOKIE_NAME ] ) );
+		$this->assertEquals( '', $setcookie_value );
 	}
 
 	public function test_cancel_previous_for_object(): void {
