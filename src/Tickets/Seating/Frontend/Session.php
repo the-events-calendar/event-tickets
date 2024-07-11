@@ -51,7 +51,7 @@ class Session {
 	/**
 	 * Session constructor.
 	 *
-	 * since TBD
+	 * @since TBD
 	 *
 	 * @param Sessions     $sessions     A reference to the Sessions table handler.
 	 * @param Reservations $reservations A reference to the Reservations object.
@@ -69,7 +69,7 @@ class Session {
 	 * @return array<string,string> The parsed cookie string, a map from object ID to token.
 	 */
 	public function get_entries(): array {
-		$current = $_COOKIE[ self::COOKIE_NAME ] ?? '';
+		$current = sanitize_text_field( $_COOKIE[ self::COOKIE_NAME ] ?? '' );
 		$parsed  = [];
 		foreach ( explode( '|||', $current ) as $entry ) {
 			[ $object_id, $token ] = array_replace( [ '', '' ], explode( '=', $entry, 2 ) );
@@ -213,8 +213,8 @@ class Session {
 				$reservations = $this->sessions->get_reservations_for_token( $entry_token );
 
 				return $this->reservations->cancel( $entry_object_id, $reservations )
-				       && $this->sessions->delete_token_session( $entry_token )
-				       && $this->remove_entry( $entry_object_id, $entry_token );
+						&& $this->sessions->delete_token_session( $entry_token )
+						&& $this->remove_entry( $entry_object_id, $entry_token );
 			}
 		}
 
@@ -262,7 +262,7 @@ class Session {
 	 * @return array{0: string, 1: int}|null The token and object ID from the cookie, or `null` if not found.
 	 */
 	public function get_session_token_object_id(): ?array {
-		$cookie = $_COOKIE[ self::COOKIE_NAME ] ?? null;
+		$cookie = sanitize_text_field( $_COOKIE[ self::COOKIE_NAME ] ?? '' );
 
 		if ( ! $cookie ) {
 			return null;
@@ -307,7 +307,7 @@ class Session {
 			}
 
 			$confirmed &= $this->reservations->confirm( $post_id, $token_reservations )
-			              && $this->sessions->delete_token_session( $token );
+							&& $this->sessions->delete_token_session( $token );
 		}
 
 		return $confirmed;
