@@ -70,6 +70,15 @@ export function createHtmlComponentFromTemplateElement(templateId, props) {
 	return createHtmlComponentFromTemplateString(template.innerHTML, props);
 }
 
+/**
+ * Calls a callback when the DOM is ready.
+ *
+ * @since TBD
+ *
+ * @param {function} domReadyCallback The callback to call when the DOM is ready.
+ *
+ * @return {void}
+ */
 export const onReady = (domReadyCallback) => {
 	if (document.readyState !== 'loading') {
 		domReadyCallback();

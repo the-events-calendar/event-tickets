@@ -15,7 +15,7 @@ export function getString(key) {
 /**
  * Register delete action on all links with class 'delete-map'.
  */
-export function register_delete_action() {
+export function registerDeleteAction() {
 	// Add click listener to all links with class 'delete'.
 	document.querySelectorAll('.delete-map').forEach(function(link) {
 		link.addEventListener('click', async function(event) {
@@ -41,7 +41,7 @@ async function handleDelete(element) {
 	card.style.opacity = 0.5;
 
 	if (confirm(getString('delete-confirmation'))) {
-		const result = await delete_map(mapId);
+		const result = await deleteMap(mapId);
 		if (result) {
 			window.location.reload();
 		} else {
@@ -62,7 +62,7 @@ async function handleDelete(element) {
  *
  * @returns {Promise<boolean>} - Promise resolving to true if delete was successful, false otherwise.
  */
-async function delete_map(mapId) {
+async function deleteMap(mapId) {
 	const url = new URL(ajaxUrl);
 	url.searchParams.set('_ajax_nonce', ajaxNonce);
 	url.searchParams.set('mapId', mapId);
@@ -75,6 +75,6 @@ async function delete_map(mapId) {
 	return response.status === 200;
 }
 
-export { handleDelete, delete_map };
+export { handleDelete, deleteMap };
 
-onReady(register_delete_action);
+onReady(registerDeleteAction);
