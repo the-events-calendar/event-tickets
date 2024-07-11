@@ -93,7 +93,7 @@ class Orders_Table extends WP_Posts_List_Table {
 					placeholder="<?php esc_attr_e( 'ID or Email', 'event-tickets' ); ?>"
 				/>
 				<?php submit_button( $text, '', '', false, [ 'id' => 'search-submit' ] ); ?>
-			</p>
+			</div>
 		<?php
 	}
 
@@ -111,8 +111,8 @@ class Orders_Table extends WP_Posts_List_Table {
 	 */
 	protected function row_actions( $actions, $always_visible = false ) {
 		return '<button type="button" class="toggle-row"><span class="screen-reader-text">' .
-			/* translators: Hidden accessibility text. */
-			__( 'Show more details' ) .
+			/* translators: Hidden accessibility text for the row toggle. */
+			__( 'Show more details', 'event-tickets' ) .
 		'</span></button>';
 	}
 
@@ -159,13 +159,13 @@ class Orders_Table extends WP_Posts_List_Table {
 		return apply_filters(
 			'tec_tickets_commerce_orders_table_columns',
 			[
-				'order'            => __( 'Order', 'event-tickets' ),
-				'status'           => __( 'Status', 'event-tickets' ),
-				'items'            => __( 'Items', 'event-tickets' ),
-				'total'            => __( 'Total', 'event-tickets' ),
-				'date'             => __( 'Date', 'event-tickets' ),
-				'post_parent'      => __( 'Event', 'event-tickets' ),
-				'gateway'          => __( 'Gateway', 'event-tickets' ),
+				'order'       => __( 'Order', 'event-tickets' ),
+				'status'      => __( 'Status', 'event-tickets' ),
+				'items'       => __( 'Items', 'event-tickets' ),
+				'total'       => __( 'Total', 'event-tickets' ),
+				'date'        => __( 'Date', 'event-tickets' ),
+				'post_parent' => __( 'Event', 'event-tickets' ),
+				'gateway'     => __( 'Gateway', 'event-tickets' ),
 			]
 		);
 	}
@@ -482,14 +482,14 @@ class Orders_Table extends WP_Posts_List_Table {
 			// Backwards compatible. We didn't use to store regular, so in most installs this is going to be diff cause regular is gonna be 0 mostly.
 			if ( $total !== $regular && $regular > $total ) {
 				return sprintf(
-					'<div class="tec-tickets-commerce-price-container"><ins><span class="tec-tickets-commerce-price">%s</span></ins><del><span class="tec-tickets-commerce-price">%s</span></del></p>',
+					'<div class="tec-tickets-commerce-price-container"><ins><span class="tec-tickets-commerce-price">%s</span></ins><del><span class="tec-tickets-commerce-price">%s</span></del></div>',
 					Value::create( $total )->get_currency(),
 					Value::create( $regular )->get_currency()
 				);
 			}
 
 			return sprintf(
-				'<div class="tec-tickets-commerce-price-container"><ins><span class="tec-tickets-commerce-price">%s</span></ins></p>',
+				'<div class="tec-tickets-commerce-price-container"><ins><span class="tec-tickets-commerce-price">%s</span></ins></div>',
 				$item->total_value->get_currency()
 			);
 		}
@@ -497,7 +497,7 @@ class Orders_Table extends WP_Posts_List_Table {
 		if ( empty( $item->gateway_payload['refunded'] ) ) {
 			// The item was refunded but we don't know anything about it.
 			return sprintf(
-				'<div class="tec-tickets-commerce-price-container"><ins><span class="tec-tickets-commerce-price">%s</span></ins></p>',
+				'<div class="tec-tickets-commerce-price-container"><ins><span class="tec-tickets-commerce-price">%s</span></ins></div>',
 				$item->total_value->get_currency()
 			);
 		}
@@ -509,7 +509,7 @@ class Orders_Table extends WP_Posts_List_Table {
 		$total_value = $total - $refunded;
 
 		return sprintf(
-			'<div class="tec-tickets-commerce-price-container"><ins><span class="tec-tickets-commerce-price">%s</span></ins><del><span class="tec-tickets-commerce-price">%s</span></del></p>',
+			'<div class="tec-tickets-commerce-price-container"><ins><span class="tec-tickets-commerce-price">%s</span></ins><del><span class="tec-tickets-commerce-price">%s</span></del></div>',
 			Value::create( $total_value / 100 )->get_currency(),
 			Value::create( $total / 100 )->get_currency()
 		);
@@ -647,14 +647,14 @@ class Orders_Table extends WP_Posts_List_Table {
 		return apply_filters(
 			'tec_tickets_commerce_orders_table_sortable_columns',
 			[
-				'order'            => 'order_id',
-				'purchaser'        => 'purchaser_full_name',
-				'email'            => 'purchaser_email',
-				'date'             => 'purchase_time',
-				'post_parent'      => 'event',
-				'gateway'          => 'gateway',
-				'status'           => 'status',
-				'total'            => 'total_value',
+				'order'       => 'order_id',
+				'purchaser'   => 'purchaser_full_name',
+				'email'       => 'purchaser_email',
+				'date'        => 'purchase_time',
+				'post_parent' => 'event',
+				'gateway'     => 'gateway',
+				'status'      => 'status',
+				'total'       => 'total_value',
 			]
 		);
 	}
