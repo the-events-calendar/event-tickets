@@ -498,9 +498,10 @@ class Ajax extends Controller_Contract {
 			return;
 		}
 		// Remove the `tec-tickets-commerce-cart` cookie.
+		$cookie_name = Cart::$cart_hash_cookie_name;
 		// phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.cookies_setcookie
 		setcookie(
-			Cart::$cart_hash_cookie_name,
+			$cookie_name,
 			'',
 			time() - DAY_IN_SECONDS,
 			COOKIEPATH,
@@ -508,5 +509,8 @@ class Ajax extends Controller_Contract {
 			true,
 			true
 		);
+		
+		// phpcs:ignore WordPressVIPMinimum.Variables.RestrictedVariables.cache_constraints___COOKIE
+		unset( $_COOKIE[ $cookie_name ] );
 	}
 }

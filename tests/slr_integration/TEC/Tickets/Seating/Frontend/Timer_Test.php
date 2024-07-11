@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Seating\Frontend;
 
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use TEC\Common\StellarWP\DB\DB;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Seating\Meta;
@@ -135,11 +136,11 @@ class Timer_Test extends Controller_Test_Case {
 		$sessions->upsert( 'test-token', $post_id, time() + 100 );
 		$sessions->update_reservations( 'test-token', [ '1234567890', '0987654321' ] );
 
-		$token   = 'test-token';
-		$post_id = 23;
+		$token = 'test-token';
 
 		ob_start();
-		$this->make_controller()->render_to_sync();
+		$controller = $this->make_controller();
+		$controller->render_to_sync();
 		$html = ob_get_clean();
 
 		$html = str_replace(
@@ -149,6 +150,33 @@ class Timer_Test extends Controller_Test_Case {
 		);
 
 		$this->assertMatchesHtmlSnapshot( $html );
+	}
+
+	public function test_render_to_sync_with_previous_render(): void {
+		$post_id = static::factory()->post->create();
+		update_post_meta( $post_id, Meta::META_KEY_UUID, 'test-post-uuid' );
+		$session  = tribe( Session::class );
+		$sessions = tribe( Sessions::class );
+
+		// Mock a previous session where the token and post ID were stored.
+		$session->add_entry( $post_id, 'previous-token' );
+		$sessions->upsert( 'previous-token', $post_id, time() + 100 );
+
+		$controller = $this->make_controller();
+
+		// Now render the timer a first time with a new token for the same post ID.
+		ob_start();
+		$controller->render( 'new-token', $post_id );
+		ob_end_clean();
+
+		// Now render to sync in the context of the same request.
+		ob_start();
+		$controller->render_to_sync();
+		$sync_html = ob_get_clean();
+
+		$sync_html = str_replace( $post_id, '{{post_id}}', $sync_html );
+
+		$this->assertMatchesHtmlSnapshot( $sync_html );
 	}
 
 	public function test_get_localized_data(): void {
@@ -495,6 +523,16 @@ class Timer_Test extends Controller_Test_Case {
 		$this->assertEquals( 1, $service_cancellations );
 		$this->assertEquals( [], $sessions->get_reservations_for_token( 'test-token' ) );
 		$this->assertEquals( [], $session->get_entries() );
+		$this->assertNull(
+			DB::get_row(
+				DB::prepare(
+					"SELECT * FROM %i WHERE token = %s",
+					Sessions::table_name(),
+					'test-token'
+				)
+			),
+			'On interruption, the token session should have been removed from the database.'
+		);
 		$this->assertEquals( 200, $wp_send_json_success_code );
 		$this->assertMatchesJsonSnapshot(
 			str_replace(
@@ -579,7 +617,7 @@ class Timer_Test extends Controller_Test_Case {
 		$this->assertEquals( [ 'error' => 'Failed to cancel the reservations' ], $wp_send_json_error_data );
 	}
 
-	public function test_ajax_interrupt_fails_if_session_clearing_fails(): void {
+	public function test_ajax_interrupt_fails_if_token_session_deletion_fails(): void {
 		$post_id = static::factory()->post->create();
 		// Create a previous session.
 		$session      = tribe( Session::class );
@@ -639,7 +677,7 @@ class Timer_Test extends Controller_Test_Case {
 
 		// Mock the Sessions table dependency of the service to return `false` on the `clear_token_reservations` method.
 		$this->test_services->singleton( Sessions::class, $this->make( Sessions::class, [
-			'clear_token_reservations' => false
+			'delete_token_session' => false
 		] ) );
 
 		$timer = $this->make_controller();

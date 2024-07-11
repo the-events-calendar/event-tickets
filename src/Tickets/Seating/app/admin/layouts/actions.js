@@ -19,7 +19,7 @@ export function getString(key) {
  *
  * @since TBD
  */
-export function register_delete_action() {
+export function registerDeleteAction() {
 	// Add click listener to all links with class 'delete'.
 	document.querySelectorAll('.delete-layout').forEach(function(link) {
 		link.addEventListener('click', async function(event) {
@@ -46,7 +46,7 @@ async function handleDelete(element) {
 	card.style.opacity = 0.5;
 
 	if (confirm(getString('delete-confirmation'))) {
-		const result = await delete_layout(layoutId, mapId);
+		const result = await deleteLayout(layoutId, mapId);
 		if (result) {
 			window.location.reload();
 		} else {
@@ -68,7 +68,7 @@ async function handleDelete(element) {
  *
  * @returns {Promise<boolean>} - Promise resolving to true if delete was successful, false otherwise.
  */
-async function delete_layout(layoutId, mapId) {
+async function deleteLayout(layoutId, mapId) {
 	const url = new URL(ajaxUrl);
 	url.searchParams.set('_ajax_nonce', ajaxNonce);
 	url.searchParams.set('layoutId', layoutId);
@@ -82,6 +82,6 @@ async function delete_layout(layoutId, mapId) {
 	return response.status === 200;
 }
 
-export { handleDelete, delete_layout };
+export { handleDelete, deleteLayout };
 
-onReady(register_delete_action);
+onReady(registerDeleteAction);
