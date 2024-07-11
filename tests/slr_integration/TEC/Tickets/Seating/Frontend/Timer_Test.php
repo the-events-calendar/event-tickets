@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Seating\Frontend;
 
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use TEC\Common\StellarWP\DB\DB;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Seating\Meta;
@@ -522,6 +523,16 @@ class Timer_Test extends Controller_Test_Case {
 		$this->assertEquals( 1, $service_cancellations );
 		$this->assertEquals( [], $sessions->get_reservations_for_token( 'test-token' ) );
 		$this->assertEquals( [], $session->get_entries() );
+		$this->assertNull(
+			DB::get_row(
+				DB::prepare(
+					"SELECT * FROM %i WHERE token = %s",
+					Sessions::table_name(),
+					'test-token'
+				)
+			),
+			'On interruption, the token session should have been removed from the database.'
+		);
 		$this->assertEquals( 200, $wp_send_json_success_code );
 		$this->assertMatchesJsonSnapshot(
 			str_replace(
@@ -606,7 +617,7 @@ class Timer_Test extends Controller_Test_Case {
 		$this->assertEquals( [ 'error' => 'Failed to cancel the reservations' ], $wp_send_json_error_data );
 	}
 
-	public function test_ajax_interrupt_fails_if_session_clearing_fails(): void {
+	public function test_ajax_interrupt_fails_if_token_session_deletion_fails(): void {
 		$post_id = static::factory()->post->create();
 		// Create a previous session.
 		$session      = tribe( Session::class );
@@ -666,7 +677,7 @@ class Timer_Test extends Controller_Test_Case {
 
 		// Mock the Sessions table dependency of the service to return `false` on the `clear_token_reservations` method.
 		$this->test_services->singleton( Sessions::class, $this->make( Sessions::class, [
-			'clear_token_reservations' => false
+			'delete_token_session' => false
 		] ) );
 
 		$timer = $this->make_controller();

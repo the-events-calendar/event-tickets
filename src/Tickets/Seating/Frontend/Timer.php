@@ -515,10 +515,10 @@ class Timer extends Controller_Contract {
 		// Remove the seat selection session cookie entry.
 		$this->session->remove_entry( $post_id, $token );
 
-		// Cancel the reservations for the post ID and token.
+		// Cancel the reservations for the post ID and token, remove the session associated with the token from the database.
 		if ( ! (
 			$this->reservations->cancel( $post_id, $this->sessions->get_reservations_for_token( $token ) )
-			&& $this->sessions->clear_token_reservations( $token )
+			&& $this->sessions->delete_token_session( $token )
 		) ) {
 			wp_send_json_error(
 				[
