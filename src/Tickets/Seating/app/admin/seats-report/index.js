@@ -1,5 +1,5 @@
 import './style.pcss';
-import { initServiceIframe, getIframeElement } from '@tec/tickets/seating/iframe';
+import { initServiceIframe, getIframeElement } from '@tec/tickets/seating/service/iframe';
 import { onReady } from '@tec/tickets/seating/utils';
 import {
 	INBOUND_APP_READY_FOR_DATA,
