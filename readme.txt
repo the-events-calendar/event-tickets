@@ -191,9 +191,17 @@ The following add-ons are available for The Events Calendar:
 
 We've got a [LoopedIn](https://evnt.is/ideas) page where we're actively watching for feature ideas from the community. Vote up existing feature requests or add your own, and help us shape the future of the products business in a way that best meets the community's needs.
 
+= Found a security vulnerability? =
+
+Make sure you are reporting in a safe and responsible way. We take security very seriously. If you discover a security issue, please bring it to our attention right away! Below you will find all the methods to report security vulnerabilities:
+
+* [Report security bugs through the Patchstack Vulnerability Disclosure Program](https://patchstack.com/database/vdp/event-tickets)
+* Reach out directly to us on `security [at] stellarwp.com`.
+
 = I've still got questions. Where can I find answers? =
 
 Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on using, tweaking, and troubleshooting our plugins.
+
 
 == Changelog ==
 
