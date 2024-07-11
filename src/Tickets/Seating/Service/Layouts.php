@@ -230,6 +230,7 @@ class Layouts {
 	 */
 	public static function invalidate_cache(): bool {
 		delete_transient( self::update_transient_name() );
+		delete_transient( Seat_Types::update_transient_name() );
 		wp_cache_delete( 'option_format_layouts', 'tec-tickets-seating' );
 
 		$invalidated = Layouts_Table::truncate() !== false &&
