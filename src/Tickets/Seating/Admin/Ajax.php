@@ -2,7 +2,7 @@
 /**
  * Handles the AJAX requests for the Seating feature.
  *
- * @since   TBD
+ * @since TBD
  *
  * @package TEC\Tickets\Seating\Admin;
  */
@@ -11,19 +11,20 @@ namespace TEC\Tickets\Seating\Admin;
 
 use TEC\Common\Contracts\Container;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
-use TEC\Tickets\Commerce\Cart;
-use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Seating\Service\Layouts;
 use TEC\Tickets\Seating\Service\Maps;
-use TEC\Tickets\Seating\Service\Reservations;
 use TEC\Tickets\Seating\Service\Seat_Types;
+use TEC\Tickets\Seating\Service\Service;
 use TEC\Tickets\Seating\Tables\Sessions;
+use TEC\Tickets\Commerce\Cart;
+use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Seating\Service\Reservations;
 use Tribe__Tickets__Tickets as Tickets;
 
 /**
  * Class Ajax.
  *
- * @since   TBD
+ * @since TBD
  *
  * @package TEC\Tickets\Seating\Admin;
  */
@@ -54,6 +55,24 @@ class Ajax extends Controller_Contract {
 	 * @var string
 	 */
 	const ACTION_INVALIDATE_LAYOUTS_CACHE = 'tec_tickets_seating_service_invalidate_layouts_cache';
+	
+	/**
+	 * The action to delete a map.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	const ACTION_DELETE_MAP = 'tec_tickets_seating_service_delete_map';
+	
+	/**
+	 * The action to delete a layout.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	const ACTION_DELETE_LAYOUT = 'tec_tickets_seating_service_delete_layout';
 
 	/**
 	 * The action to push the reservations to the backend from the seat-selection frontend.
@@ -99,6 +118,24 @@ class Ajax extends Controller_Contract {
 	 * @var Reservations
 	 */
 	private Reservations $reservations;
+	
+	/**
+	 * A reference to the Maps service object.
+	 *
+	 * @since TBD
+	 *
+	 * @var Maps
+	 */
+	private Maps $maps;
+	
+	/**
+	 * A reference to the Layouts service object.
+	 *
+	 * @since TBD
+	 *
+	 * @var Layouts
+	 */
+	private Layouts $layouts;
 
 	/**
 	 * Ajax constructor.
@@ -109,17 +146,23 @@ class Ajax extends Controller_Contract {
 	 * @param Seat_Types   $seat_types A reference to the Seat Types service object.
 	 * @param Sessions     $sessions    A reference to the Sessions table object.
 	 * @param Reservations $reservations A reference to the Reservations service object.
+	 * @param Maps         $maps        A reference to the Maps service object.
+	 * @param Layouts      $layouts     A reference to the Layouts service object.
 	 */
 	public function __construct(
 		Container $container,
 		Seat_Types $seat_types,
 		Sessions $sessions,
-		Reservations $reservations
+		Reservations $reservations,
+		Maps $maps,
+		Layouts $layouts
 	) {
 		parent::__construct( $container );
 		$this->seat_types   = $seat_types;
 		$this->sessions     = $sessions;
 		$this->reservations = $reservations;
+		$this->maps         = $maps;
+		$this->layouts      = $layouts;
 	}
 
 	/**
@@ -131,13 +174,14 @@ class Ajax extends Controller_Contract {
 		add_action( 'wp_ajax_seat_types_by_layout_id', [ $this, 'fetch_seat_types_by_layout_id' ] );
 		add_action( 'wp_ajax_' . self::ACTION_INVALIDATE_MAPS_LAYOUTS_CACHE, [ $this, 'invalidate_maps_layouts_cache' ] );
 		add_action( 'wp_ajax_' . self::ACTION_INVALIDATE_LAYOUTS_CACHE, [ $this, 'invalidate_layouts_cache' ] );
+		add_action( 'wp_ajax_' . self::ACTION_DELETE_MAP, [ $this, 'delete_map_from_service' ] );
+		add_action( 'wp_ajax_' . self::ACTION_DELETE_LAYOUT, [ $this, 'delete_layout_from_service' ] );
 		add_action( 'wp_ajax_' . self::ACTION_POST_RESERVATIONS, [ $this, 'update_reservations' ] );
 		add_action( 'wp_ajax_nopriv_' . self::ACTION_POST_RESERVATIONS, [ $this, 'update_reservations' ] );
 		add_action( 'wp_ajax_' . self::ACTION_CLEAR_RESERVATIONS, [ $this, 'clear_reservations' ] );
 		add_action( 'wp_ajax_nopriv_' . self::ACTION_CLEAR_RESERVATIONS, [ $this, 'clear_reservations' ] );
 		add_action( 'tec_tickets_seating_session_interrupt', [ $this, 'clear_commerce_cart_cookie' ] );
 	}
-
 
 	/**
 	 * Unsubscribes the controller from WordPress hooks.
@@ -153,6 +197,8 @@ class Ajax extends Controller_Contract {
 			[ $this, 'invalidate_maps_layouts_cache' ]
 		);
 		remove_action( 'wp_ajax_' . self::ACTION_INVALIDATE_LAYOUTS_CACHE, [ $this, 'invalidate_layouts_cache' ] );
+		remove_action( 'wp_ajax_' . self::ACTION_DELETE_MAP, [ $this, 'delete_map_from_service' ] );
+		remove_action( 'wp_ajax_' . self::ACTION_DELETE_LAYOUT, [ $this, 'delete_layout_from_service' ] );
 		remove_action( 'wp_ajax_' . self::ACTION_POST_RESERVATIONS, [ $this, 'update_reservations' ] );
 		remove_action( 'wp_ajax_nopriv_' . self::ACTION_POST_RESERVATIONS, [ $this, 'update_reservations' ] );
 		remove_action( 'wp_ajax_' . self::ACTION_CLEAR_RESERVATIONS, [ $this, 'clear_reservations' ] );
@@ -267,7 +313,88 @@ class Ajax extends Controller_Contract {
 
 		wp_send_json_success();
 	}
-
+	
+	/**
+	 * Deletes a map from the service.
+	 *
+	 * @since TBD
+	 *
+	 * @return void The function does not return a value but will send the JSON response.
+	 */
+	public function delete_map_from_service(): void {
+		if ( ! check_ajax_referer( self::NONCE_ACTION, '_ajax_nonce', false ) ) {
+			wp_send_json_error(
+				[
+					'error' => __( 'Nonce verification failed', 'event-tickets' ),
+				],
+				403
+			);
+			
+			return;
+		}
+		
+		$map_id = (string) tribe_get_request_var( 'mapId' );
+		
+		if ( empty( $map_id ) ) {
+			wp_send_json_error(
+				[
+					'error' => __( 'No map ID provided', 'event-tickets' ),
+				],
+				400
+			);
+			
+			return;
+		}
+		
+		if ( $this->maps->delete( $map_id ) ) {
+			wp_send_json_success();
+			return;
+		}
+		
+		wp_send_json_error( [ 'error' => __( 'Failed to delete the map.', 'event-tickets' ) ], 500 );
+	}
+	
+	/**
+	 * Deletes a layout from the service.
+	 *
+	 * @since TBD
+	 *
+	 * @return void The function does not return a value but will send the JSON response.
+	 */
+	public function delete_layout_from_service(): void {
+		if ( ! check_ajax_referer( self::NONCE_ACTION, '_ajax_nonce', false ) ) {
+			wp_send_json_error(
+				[
+					'error' => __( 'Nonce verification failed', 'event-tickets' ),
+				],
+				403
+			);
+			
+			return;
+		}
+		
+		$layout_id = (string) tribe_get_request_var( 'layoutId' );
+		$map_id    = (string) tribe_get_request_var( 'mapId' );
+		
+		if ( empty( $layout_id ) || empty( $map_id ) ) {
+			wp_send_json_error(
+				[
+					'error' => __( 'No layout ID or map ID provided', 'event-tickets' ),
+				],
+				400
+			);
+			
+			return;
+		}
+		
+		if ( $this->layouts->delete( $layout_id, $map_id ) ) {
+			wp_send_json_success();
+			return;
+		}
+		
+		wp_send_json_error( [ 'error' => __( 'Failed to delete the layout.', 'event-tickets' ) ], 500 );
+	}
+	
 	/**
 	 * Handles the request to update reservations on the Service.
 	 *
@@ -394,9 +521,9 @@ class Ajax extends Controller_Contract {
 		if ( Tickets::get_event_ticket_provider( $post_id ) !== Module::class ) {
 			return;
 		}
-
 		// Remove the `tec-tickets-commerce-cart` cookie.
 		$cookie_name = Cart::$cart_hash_cookie_name;
+		// phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.cookies_setcookie
 		setcookie(
 			$cookie_name,
 			'',
@@ -406,6 +533,8 @@ class Ajax extends Controller_Contract {
 			true,
 			true
 		);
+		
+		// phpcs:ignore WordPressVIPMinimum.Variables.RestrictedVariables.cache_constraints___COOKIE
 		unset( $_COOKIE[ $cookie_name ] );
 	}
 }

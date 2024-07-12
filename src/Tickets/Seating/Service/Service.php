@@ -343,4 +343,31 @@ class Service {
 	public function get_seat_types_by_layout( string $layout_id ): array {
 		return $this->seat_types->get_in_option_format( [ $layout_id ] );
 	}
+	
+	/**
+	 * Deletes a map.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $map_id The ID of the map.
+	 *
+	 * @return bool
+	 */
+	public function delete_map( string $map_id ): bool {
+		return $this->maps->delete( $map_id );
+	}
+	
+	/**
+	 * Deletes a layout.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $layout_id The ID of the layout.
+	 * @param string $map_id The map ID of the layout.
+	 *
+	 * @return bool
+	 */
+	public function delete_layout( string $layout_id, string $map_id ): bool {
+		return $this->layouts->delete( $layout_id, $map_id );
+	}
 }

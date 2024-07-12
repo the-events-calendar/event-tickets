@@ -1,0 +1,9 @@
+{
+    "success": true,
+    "fetch_url": "https://evnt.is/api/v1/layouts?layoutId=some-layout-1&mapId=some-map-1",
+    "method": "DELETE",
+    "headers": {
+        "Authorization": "Bearer some-token",
+        "Content-Type": "application/json"
+    }
+}

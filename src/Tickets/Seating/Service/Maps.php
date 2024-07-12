@@ -9,8 +9,11 @@
 
 namespace TEC\Tickets\Seating\Service;
 
+use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Seating\Admin\Tabs\Map_Card;
+use TEC\Tickets\Seating\Logging;
 use TEC\Tickets\Seating\Tables\Maps as Maps_Table;
+use TEC\Tickets\Seating\Tables\Layouts as Layouts_Table;
 
 /**
  * Class Maps.
@@ -20,6 +23,8 @@ use TEC\Tickets\Seating\Tables\Maps as Maps_Table;
  * @package TEC\Controller\Service;
  */
 class Maps {
+	use oAuth_Token;
+	use Logging;
 
 	/**
 	 * The URL to the service used to fetch the maps from the backend.
@@ -90,7 +95,8 @@ class Maps {
 					$row->id,
 					$row->name,
 					$row->seats,
-					$row->screenshot_url
+					$row->screenshot_url,
+					$this->map_has_layouts( $row->id ),
 				);
 			}
 
@@ -183,5 +189,70 @@ class Maps {
 	 */
 	public static function update_transient_expiration() {
 		return 12 * HOUR_IN_SECONDS;
+	}
+	
+	/**
+	 * Checks if the map has layouts.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $map_id The ID of the map.
+	 *
+	 * @return bool The number of layouts.
+	 */
+	public function map_has_layouts( string $map_id ): bool {
+		$count = DB::table( Layouts_Table::table_name( false ) )
+					->where( 'map', $map_id )
+					->count();
+		
+		return $count > 0;
+	}
+	
+	/**
+	 * Deletes a map from the service.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $map_id The ID of the map.
+	 *
+	 * @return bool Whether the map was deleted or not.
+	 */
+	public function delete( string $map_id ): bool {
+		$url = add_query_arg(
+			[
+				'mapId' => $map_id,
+			],
+			$this->service_fetch_url
+		);
+		
+		$args = [
+			'method'  => 'DELETE',
+			'headers' => [
+				'Authorization' => 'Bearer ' . $this->get_oauth_token(),
+				'Content-Type'  => 'application/json',
+			],
+		];
+		
+		$response = wp_remote_request( $url, $args );
+		$code     = wp_remote_retrieve_response_code( $response );
+		
+		if ( ! is_wp_error( $response ) && 200 === $code ) {
+			self::invalidate_cache();
+			Layouts::invalidate_cache();
+			
+			return true;
+		}
+		
+		$this->log_error(
+			'Failed to delete the map from the service.',
+			[
+				'source'   => __METHOD__,
+				'code'     => $code,
+				'url'      => $url,
+				'response' => $response,
+			]
+		);
+		
+		return false;
 	}
 }

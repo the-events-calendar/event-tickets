@@ -36,14 +36,17 @@ class Ajax_Test extends Controller_Test_Case {
 	public function ensure_tickets_commerce_active(): void {
 		// Ensure the Tickets Commerce module is active.
 		add_filter( 'tec_tickets_commerce_is_enabled', '__return_true' );
-		add_filter( 'tribe_tickets_get_modules', function ( $modules ) {
-			$modules[ Module::class ] = tribe( Module::class )->plugin_name;
+		add_filter(
+			'tribe_tickets_get_modules',
+			function ( $modules ) {
+				$modules[ Module::class ] = tribe( Module::class )->plugin_name;
 
-			return $modules;
-		} );
+				return $modules;
+			} 
+		);
 
 		// Reset Data_API object, so it sees Tribe Commerce.
-		tribe_singleton( 'tickets.data_api', new Data_API );
+		tribe_singleton( 'tickets.data_api', new Data_API() );
 	}
 
 	/**
@@ -62,17 +65,26 @@ class Ajax_Test extends Controller_Test_Case {
 	 *
 	 * @test
 	 */
+	/**
+	 * It should return URLs
+	 *
+	 * @test
+	 */
 	public function should_return_urls(): void {
-		$this->set_fn_return( 'wp_create_nonce', function ( string $action ) {
-			if ( $action === 'seat_types_by_layout_id' ) {
-				return '8298ff6616';
-			}
-
-			return wp_create_nonce( $action );
-		}, true );
-
+		$this->set_fn_return(
+			'wp_create_nonce',
+			function ( string $action ) {
+				if ( $action === 'seat_types_by_layout_id' ) {
+					return '8298ff6616';
+				}
+			
+				return wp_create_nonce( $action );
+			},
+			true 
+		);
+		
 		$controller = $this->make_controller();
-
+		
 		$this->assertMatchesCodeSnapshot( var_export( $controller->get_urls(), true ) );
 	}
 
@@ -86,9 +98,13 @@ class Ajax_Test extends Controller_Test_Case {
 		$_REQUEST['action'] = 'seat_types_by_layout_id';
 		$_REQUEST['layout'] = 'foo-baz-bar';
 		$sent_data          = null;
-		$this->set_fn_return( 'wp_send_json_error', function ( $data ) use ( &$sent_data ) {
-			$sent_data = $data;
-		}, true );
+		$this->set_fn_return(
+			'wp_send_json_error',
+			function ( $data ) use ( &$sent_data ) {
+				$sent_data = $data;
+			},
+			true 
+		);
 
 		$this->make_controller()->register();
 
@@ -108,9 +124,13 @@ class Ajax_Test extends Controller_Test_Case {
 		$_REQUEST['layout']      = 'foo-baz-bar';
 		$_REQUEST['_ajax_nonce'] = wp_create_nonce( 'something_else' );
 		$sent_data               = null;
-		$this->set_fn_return( 'wp_send_json_error', function ( $data ) use ( &$sent_data ) {
-			$sent_data = $data;
-		}, true );
+		$this->set_fn_return(
+			'wp_send_json_error',
+			function ( $data ) use ( &$sent_data ) {
+				$sent_data = $data;
+			},
+			true 
+		);
 
 		$this->make_controller()->register();
 
@@ -129,9 +149,13 @@ class Ajax_Test extends Controller_Test_Case {
 		$_REQUEST['action']      = 'seat_types_by_layout_id';
 		$_REQUEST['_ajax_nonce'] = wp_create_nonce( 'seat_types_by_layout_id' );
 		$sent_data               = null;
-		$this->set_fn_return( 'wp_send_json_success', function ( $data ) use ( &$sent_data ) {
-			$sent_data = $data;
-		}, true );
+		$this->set_fn_return(
+			'wp_send_json_success',
+			function ( $data ) use ( &$sent_data ) {
+				$sent_data = $data;
+			},
+			true 
+		);
 
 		$this->make_controller()->register();
 
@@ -153,9 +177,13 @@ class Ajax_Test extends Controller_Test_Case {
 		$_REQUEST['_ajax_nonce'] = wp_create_nonce( 'seat_types_by_layout_id' );
 		$_REQUEST['layout']      = 'some-layout';
 		$sent_data               = null;
-		$this->set_fn_return( 'wp_send_json_success', function ( $data ) use ( &$sent_data ) {
-			$sent_data = $data;
-		}, true );
+		$this->set_fn_return(
+			'wp_send_json_success',
+			function ( $data ) use ( &$sent_data ) {
+				$sent_data = $data;
+			},
+			true 
+		);
 
 		$this->make_controller()->register();
 
@@ -176,9 +204,13 @@ class Ajax_Test extends Controller_Test_Case {
 		$_REQUEST['_ajax_nonce'] = wp_create_nonce( 'seat_types_by_layout_id' );
 		$_REQUEST['layout']      = 'some-layout';
 		$sent_data               = null;
-		$this->set_fn_return( 'wp_send_json_success', function ( $data ) use ( &$sent_data ) {
-			$sent_data = $data;
-		}, true );
+		$this->set_fn_return(
+			'wp_send_json_success',
+			function ( $data ) use ( &$sent_data ) {
+				$sent_data = $data;
+			},
+			true 
+		);
 		$this->given_many_seat_types_in_db_for_layout( 'some-layout', 10 );
 
 		$this->make_controller()->register();
@@ -197,10 +229,14 @@ class Ajax_Test extends Controller_Test_Case {
 
 		$this->make_controller()->register();
 
-		$this->set_fn_return( 'wp_send_json_error', function ( $data, $code ) use ( &$sent_data, &$sent_code ) {
-			$sent_data = $data;
-			$sent_code = $code;
-		}, true );
+		$this->set_fn_return(
+			'wp_send_json_error',
+			function ( $data, $code ) use ( &$sent_data, &$sent_code ) {
+				$sent_data = $data;
+				$sent_code = $code;
+			},
+			true 
+		);
 
 		do_action( 'wp_ajax_' . Ajax::ACTION_INVALIDATE_MAPS_LAYOUTS_CACHE );
 
@@ -213,56 +249,60 @@ class Ajax_Test extends Controller_Test_Case {
 	private function given_maps_and_layouts_in_db(): void {
 		$this->given_maps_in_db();
 
-		\TEC\Tickets\Seating\Service\Layouts::insert_rows_from_service( [
+		\TEC\Tickets\Seating\Service\Layouts::insert_rows_from_service(
 			[
-				'id'            => 'some-layout-1',
-				'name'          => 'Some Layout 1',
-				'seats'         => 10,
-				'createdDate'   => time() * 1000,
-				'mapId'         => 'some-map-1',
-				'screenshotUrl' => 'https://example.com/some-layouts-1.png',
-			],
-			[
-				'id'            => 'some-layout-2',
-				'name'          => 'Some Layout 2',
-				'seats'         => 20,
-				'createdDate'   => time() * 1000,
-				'mapId'         => 'some-map-2',
-				'screenshotUrl' => 'https://example.com/some-layouts-2.png',
-			],
-			[
-				'id'            => 'some-layout-3',
-				'name'          => 'Some Layout 3',
-				'seats'         => 30,
-				'createdDate'   => time() * 1000,
-				'mapId'         => 'some-map-3',
-				'screenshotUrl' => 'https://example.com/some-layouts-3.png',
-			],
-		] );
+				[
+					'id'            => 'some-layout-1',
+					'name'          => 'Some Layout 1',
+					'seats'         => 10,
+					'createdDate'   => time() * 1000,
+					'mapId'         => 'some-map-1',
+					'screenshotUrl' => 'https://example.com/some-layouts-1.png',
+				],
+				[
+					'id'            => 'some-layout-2',
+					'name'          => 'Some Layout 2',
+					'seats'         => 20,
+					'createdDate'   => time() * 1000,
+					'mapId'         => 'some-map-2',
+					'screenshotUrl' => 'https://example.com/some-layouts-2.png',
+				],
+				[
+					'id'            => 'some-layout-3',
+					'name'          => 'Some Layout 3',
+					'seats'         => 30,
+					'createdDate'   => time() * 1000,
+					'mapId'         => 'some-map-3',
+					'screenshotUrl' => 'https://example.com/some-layouts-3.png',
+				],
+			] 
+		);
 
-		\TEC\Tickets\Seating\Tables\Seat_Types::insert_many( [
+		\TEC\Tickets\Seating\Tables\Seat_Types::insert_many(
 			[
-				'id'     => 'some-seat-type-1',
-				'name'   => 'Some Seat Type 1',
-				'seats'  => 10,
-				'map'    => 'some-map-1',
-				'layout' => 'some-layout-1',
-			],
-			[
-				'id'     => 'some-seat-type-2',
-				'name'   => 'Some Seat Type 2',
-				'seats'  => 20,
-				'map'    => 'some-map-2',
-				'layout' => 'https://example.com/some-seat-types-2.png',
-			],
-			[
-				'id'     => 'some-seat-type-3',
-				'name'   => 'Some Seat Type 3',
-				'seats'  => 30,
-				'map'    => 'some-map-3',
-				'layout' => 'some-layout-3',
-			],
-		] );
+				[
+					'id'     => 'some-seat-type-1',
+					'name'   => 'Some Seat Type 1',
+					'seats'  => 10,
+					'map'    => 'some-map-1',
+					'layout' => 'some-layout-1',
+				],
+				[
+					'id'     => 'some-seat-type-2',
+					'name'   => 'Some Seat Type 2',
+					'seats'  => 20,
+					'map'    => 'some-map-2',
+					'layout' => 'https://example.com/some-seat-types-2.png',
+				],
+				[
+					'id'     => 'some-seat-type-3',
+					'name'   => 'Some Seat Type 3',
+					'seats'  => 30,
+					'map'    => 'some-map-3',
+					'layout' => 'some-layout-3',
+				],
+			] 
+		);
 	}
 
 	/**
@@ -273,26 +313,28 @@ class Ajax_Test extends Controller_Test_Case {
 	}
 
 	private function given_maps_in_db(): void {
-		\TEC\Tickets\Seating\Service\Maps::insert_rows_from_service( [
+		\TEC\Tickets\Seating\Service\Maps::insert_rows_from_service(
 			[
-				'id'            => 'some-map-1',
-				'name'          => 'Some Map 1',
-				'seats'         => 10,
-				'screenshotUrl' => 'https://example.com/some-map-1.png',
-			],
-			[
-				'id'            => 'some-map-2',
-				'name'          => 'Some Map 2',
-				'seats'         => 20,
-				'screenshotUrl' => 'https://example.com/some-map-2.png',
-			],
-			[
-				'id'            => 'some-map-3',
-				'name'          => 'Some Map 3',
-				'seats'         => 30,
-				'screenshotUrl' => 'https://example.com/some-map-3.png',
-			],
-		] );
+				[
+					'id'            => 'some-map-1',
+					'name'          => 'Some Map 1',
+					'seats'         => 10,
+					'screenshotUrl' => 'https://example.com/some-map-1.png',
+				],
+				[
+					'id'            => 'some-map-2',
+					'name'          => 'Some Map 2',
+					'seats'         => 20,
+					'screenshotUrl' => 'https://example.com/some-map-2.png',
+				],
+				[
+					'id'            => 'some-map-3',
+					'name'          => 'Some Map 3',
+					'seats'         => 30,
+					'screenshotUrl' => 'https://example.com/some-map-3.png',
+				],
+			] 
+		);
 	}
 
 	public function test_invalidate_maps_layouts_cache_with_invalid_nonce(): void {
@@ -305,10 +347,14 @@ class Ajax_Test extends Controller_Test_Case {
 
 		$this->make_controller()->register();
 
-		$this->set_fn_return( 'wp_send_json_error', function ( $data, $code ) use ( &$sent_data, &$sent_code ) {
-			$sent_data = $data;
-			$sent_code = $code;
-		}, true );
+		$this->set_fn_return(
+			'wp_send_json_error',
+			function ( $data, $code ) use ( &$sent_data, &$sent_code ) {
+				$sent_data = $data;
+				$sent_code = $code;
+			},
+			true 
+		);
 
 		do_action( 'wp_ajax_' . Ajax::ACTION_INVALIDATE_MAPS_LAYOUTS_CACHE );
 
@@ -329,9 +375,13 @@ class Ajax_Test extends Controller_Test_Case {
 
 		$this->make_controller()->register();
 
-		$this->set_fn_return( 'wp_send_json_success', function () use ( &$success ) {
-			$success = true;
-		}, true );
+		$this->set_fn_return(
+			'wp_send_json_success',
+			function () use ( &$success ) {
+				$success = true;
+			},
+			true 
+		);
 
 		do_action( 'wp_ajax_' . Ajax::ACTION_INVALIDATE_MAPS_LAYOUTS_CACHE );
 
@@ -354,10 +404,14 @@ class Ajax_Test extends Controller_Test_Case {
 		// Simulate a failure to invalidate the Maps cache.
 		$this->set_class_fn_return( \TEC\Tickets\Seating\Service\Maps::class, 'invalidate_cache', false );
 
-		$this->set_fn_return( 'wp_send_json_error', function ( $data, $code ) use ( &$sent_data, &$sent_code ) {
-			$sent_data = $data;
-			$sent_code = $code;
-		}, true );
+		$this->set_fn_return(
+			'wp_send_json_error',
+			function ( $data, $code ) use ( &$sent_data, &$sent_code ) {
+				$sent_data = $data;
+				$sent_code = $code;
+			},
+			true 
+		);
 
 		do_action( 'wp_ajax_' . Ajax::ACTION_INVALIDATE_MAPS_LAYOUTS_CACHE );
 
@@ -381,10 +435,14 @@ class Ajax_Test extends Controller_Test_Case {
 		// Simulate a failure to invalidate the Layouts cache.
 		$this->set_class_fn_return( \TEC\Tickets\Seating\Service\Layouts::class, 'invalidate_cache', false );
 
-		$this->set_fn_return( 'wp_send_json_error', function ( $data, $code ) use ( &$sent_data, &$sent_code ) {
-			$sent_data = $data;
-			$sent_code = $code;
-		}, true );
+		$this->set_fn_return(
+			'wp_send_json_error',
+			function ( $data, $code ) use ( &$sent_data, &$sent_code ) {
+				$sent_data = $data;
+				$sent_code = $code;
+			},
+			true 
+		);
 
 		do_action( 'wp_ajax_' . Ajax::ACTION_INVALIDATE_MAPS_LAYOUTS_CACHE );
 
@@ -404,10 +462,14 @@ class Ajax_Test extends Controller_Test_Case {
 
 		$this->make_controller()->register();
 
-		$this->set_fn_return( 'wp_send_json_error', function ( $data, $code ) use ( &$sent_data, &$sent_code ) {
-			$sent_data = $data;
-			$sent_code = $code;
-		}, true );
+		$this->set_fn_return(
+			'wp_send_json_error',
+			function ( $data, $code ) use ( &$sent_data, &$sent_code ) {
+				$sent_data = $data;
+				$sent_code = $code;
+			},
+			true 
+		);
 
 		do_action( 'wp_ajax_' . Ajax::ACTION_INVALIDATE_LAYOUTS_CACHE );
 
@@ -429,10 +491,14 @@ class Ajax_Test extends Controller_Test_Case {
 
 		$this->make_controller()->register();
 
-		$this->set_fn_return( 'wp_send_json_error', function ( $data, $code ) use ( &$sent_data, &$sent_code ) {
-			$sent_data = $data;
-			$sent_code = $code;
-		}, true );
+		$this->set_fn_return(
+			'wp_send_json_error',
+			function ( $data, $code ) use ( &$sent_data, &$sent_code ) {
+				$sent_data = $data;
+				$sent_code = $code;
+			},
+			true 
+		);
 
 		do_action( 'wp_ajax_' . Ajax::ACTION_INVALIDATE_LAYOUTS_CACHE );
 
@@ -453,9 +519,13 @@ class Ajax_Test extends Controller_Test_Case {
 
 		$this->make_controller()->register();
 
-		$this->set_fn_return( 'wp_send_json_success', function () use ( &$success ) {
-			$success = true;
-		}, true );
+		$this->set_fn_return(
+			'wp_send_json_success',
+			function () use ( &$success ) {
+				$success = true;
+			},
+			true 
+		);
 
 		do_action( 'wp_ajax_' . Ajax::ACTION_INVALIDATE_LAYOUTS_CACHE );
 
@@ -478,10 +548,14 @@ class Ajax_Test extends Controller_Test_Case {
 		// Simulate a failure to invalidate the Maps cache.
 		$this->set_class_fn_return( \TEC\Tickets\Seating\Service\Layouts::class, 'invalidate_cache', false );
 
-		$this->set_fn_return( 'wp_send_json_error', function ( $data, $code ) use ( &$sent_data, &$sent_code ) {
-			$sent_data = $data;
-			$sent_code = $code;
-		}, true );
+		$this->set_fn_return(
+			'wp_send_json_error',
+			function ( $data, $code ) use ( &$sent_data, &$sent_code ) {
+				$sent_data = $data;
+				$sent_code = $code;
+			},
+			true 
+		);
 
 		do_action( 'wp_ajax_' . Ajax::ACTION_INVALIDATE_LAYOUTS_CACHE );
 
@@ -491,26 +565,329 @@ class Ajax_Test extends Controller_Test_Case {
 		$this->assertCount( 3, iterator_to_array( Layouts::fetch_all() ) );
 		$this->assertCount( 3, iterator_to_array( Seat_Types_Table::fetch_all() ) );
 	}
-
+	
+	public function test_delete_map_from_service_with_invalid_nonce(): void {
+		$this->become_administator();
+		$invalid_nonce           = wp_create_nonce( 'something_else' );
+		$_REQUEST['_ajax_nonce'] = $invalid_nonce;
+		$_POST['_ajax_nonce']    = $invalid_nonce;
+		$sent_data               = null;
+		$sent_code               = null;
+		
+		$this->make_controller()->register();
+		
+		$this->set_fn_return(
+			'wp_send_json_error',
+			function ( $data, $code ) use ( &$sent_data, &$sent_code ) {
+				$sent_data = $data;
+				$sent_code = $code;
+			},
+			true
+		);
+		
+		do_action( 'wp_ajax_' . Ajax::ACTION_DELETE_MAP );
+		
+		$this->assertEquals( [ 'error' => 'Nonce verification failed' ], $sent_data );
+		$this->assertEquals( 403, $sent_code );
+	}
+	
+	public function test_delete_map_from_service_with_invalid_map_id(): void {
+		$this->become_administator();
+		$nonce                   = Ajax::NONCE_ACTION;
+		$_REQUEST['_ajax_nonce'] = wp_create_nonce( $nonce );
+		$_POST['_ajax_nonce']    = wp_create_nonce( $nonce );
+		$sent_data               = null;
+		$sent_code               = null;
+		
+		$this->make_controller()->register();
+		
+		$this->set_fn_return(
+			'wp_send_json_error',
+			function ( $data, $code ) use ( &$sent_data, &$sent_code ) {
+				$sent_data = $data;
+				$sent_code = $code;
+			},
+			true
+		);
+		
+		do_action( 'wp_ajax_' . Ajax::ACTION_DELETE_MAP );
+		
+		$this->assertEquals( [ 'error' => 'No map ID provided' ], $sent_data );
+		$this->assertEquals( 400, $sent_code );
+	}
+	
+	public function test_delete_map_from_service_with_success() {
+		$this->given_maps_and_layouts_in_db();
+		$this->become_administator();
+		$nonce                   = Ajax::NONCE_ACTION;
+		$_REQUEST['_ajax_nonce'] = wp_create_nonce( $nonce );
+		$_POST['_ajax_nonce']    = wp_create_nonce( $nonce );
+		$_POST['mapId']          = 'some-map-1';
+		$fetch_url               = null;
+		$data                    = null;
+		$success                 = null;
+		
+		$this->make_controller()->register();
+		
+		tribe_update_option( 'events_tickets_seating_access_token', 'some-token' );
+		
+		$this->set_fn_return(
+			'wp_send_json_success',
+			function () use ( &$success ) {
+				$success = true;
+			},
+			true
+		);
+		
+		add_filter(
+			'pre_http_request',
+			function ( $pre, $args, $url ) use ( &$fetch_url, &$data ) {
+				$fetch_url = $url;
+				$data      = $args;
+				return [ 'response' => [ 'code' => 200 ] ];
+			},
+			10,
+			3
+		);
+		
+		do_action( 'wp_ajax_' . Ajax::ACTION_DELETE_MAP );
+		
+		$this->assertTrue( $success );
+		$this->assertMatchesJsonSnapshot(
+			wp_json_encode(
+				[
+					'success'   => $success,
+					'fetch_url' => $fetch_url,
+					'method'    => $data['method'],
+					'headers'   => $data['headers'],
+				],
+				JSON_SNAPSHOT_OPTIONS 
+			)
+		);
+	}
+	
+	public function test_delete_map_from_service_with_failed() {
+		$this->given_maps_and_layouts_in_db();
+		$this->become_administator();
+		$nonce                   = Ajax::NONCE_ACTION;
+		$_REQUEST['_ajax_nonce'] = wp_create_nonce( $nonce );
+		$_POST['_ajax_nonce']    = wp_create_nonce( $nonce );
+		$_POST['mapId']          = 'some-map-1';
+		$success                 = null;
+		$sent_code               = null;
+		$sent_data               = null;
+		
+		$this->make_controller()->register();
+		
+		tribe_update_option( 'events_tickets_seating_access_token', 'some-token' );
+		
+		$this->set_fn_return(
+			'wp_send_json_error',
+			function ( $data, $code ) use ( &$sent_data, &$sent_code, &$success ) {
+				$sent_data = $data;
+				$sent_code = $code;
+				$success   = false;
+			},
+			true
+		);
+		
+		add_filter(
+			'pre_http_request',
+			function () {
+				return [ 'response' => [ 'code' => 500 ] ];
+			},
+		);
+		
+		do_action( 'wp_ajax_' . Ajax::ACTION_DELETE_MAP );
+		
+		$this->assertMatchesJsonSnapshot(
+			wp_json_encode(
+				[
+					'success' => $success,
+					'data'    => $sent_data,
+					'code'    => $sent_code,
+				],
+				JSON_SNAPSHOT_OPTIONS
+			)
+		);
+	}
+	
+	public function test_delete_layout_from_service_with_invalid_nonce() {
+		$this->become_administator();
+		$invalid_nonce           = wp_create_nonce( 'something_else' );
+		$_REQUEST['_ajax_nonce'] = $invalid_nonce;
+		$_POST['_ajax_nonce']    = $invalid_nonce;
+		$sent_data               = null;
+		$sent_code               = null;
+		
+		$this->make_controller()->register();
+		
+		$this->set_fn_return(
+			'wp_send_json_error',
+			function ( $data, $code ) use ( &$sent_data, &$sent_code ) {
+				$sent_data = $data;
+				$sent_code = $code;
+			},
+			true
+		);
+		
+		do_action( 'wp_ajax_' . Ajax::ACTION_DELETE_LAYOUT );
+		
+		$this->assertEquals( [ 'error' => 'Nonce verification failed' ], $sent_data );
+		$this->assertEquals( 403, $sent_code );
+	}
+	
+	public function test_delete_layout_from_service_with_invalid_params() {
+		$this->become_administator();
+		$nonce                   = Ajax::NONCE_ACTION;
+		$_REQUEST['_ajax_nonce'] = wp_create_nonce( $nonce );
+		$_POST['_ajax_nonce']    = wp_create_nonce( $nonce );
+		$sent_data               = null;
+		$sent_code               = null;
+		
+		$this->make_controller()->register();
+		
+		$this->set_fn_return(
+			'wp_send_json_error',
+			function ( $data, $code ) use ( &$sent_data, &$sent_code ) {
+				$sent_data = $data;
+				$sent_code = $code;
+			},
+			true
+		);
+		
+		do_action( 'wp_ajax_' . Ajax::ACTION_DELETE_LAYOUT );
+		
+		$this->assertEquals( [ 'error' => 'No layout ID or map ID provided.' ], $sent_data );
+		$this->assertEquals( 400, $sent_code );
+	}
+	
+	public function test_delete_layout_from_service_with_success() {
+		$this->given_maps_and_layouts_in_db();
+		$this->become_administator();
+		$nonce                   = Ajax::NONCE_ACTION;
+		$_REQUEST['_ajax_nonce'] = wp_create_nonce( $nonce );
+		$_POST['_ajax_nonce']    = wp_create_nonce( $nonce );
+		$_POST['mapId']          = 'some-map-1';
+		$_POST['layoutId']       = 'some-layout-1';
+		$success                 = null;
+		$fetch_url               = null;
+		$data                    = null;
+		
+		$this->set_fn_return(
+			'wp_send_json_success',
+			function () use ( &$success ) {
+				$success = true;
+			},
+			true
+		);
+		
+		add_filter(
+			'pre_http_request',
+			function ( $pre, $args, $url ) use ( &$fetch_url, &$data ) {
+				$fetch_url = $url;
+				$data      = $args;
+				return [ 'response' => [ 'code' => 200 ] ];
+			},
+			10,
+			3
+		);
+		
+		$this->make_controller()->register();
+		
+		tribe_update_option( 'events_tickets_seating_access_token', 'some-token' );
+		
+		do_action( 'wp_ajax_' . Ajax::ACTION_DELETE_LAYOUT );
+		
+		$this->assertTrue( $success );
+		$this->assertMatchesJsonSnapshot(
+			wp_json_encode(
+				[
+					'success'   => $success,
+					'fetch_url' => $fetch_url,
+					'method'    => $data['method'],
+					'headers'   => $data['headers'],
+				],
+				JSON_SNAPSHOT_OPTIONS
+			)
+		);
+	}
+	
+	public function test_delete_layout_from_service_with_failed() {
+		$this->given_maps_and_layouts_in_db();
+		$this->become_administator();
+		$nonce                   = Ajax::NONCE_ACTION;
+		$_REQUEST['_ajax_nonce'] = wp_create_nonce( $nonce );
+		$_POST['_ajax_nonce']    = wp_create_nonce( $nonce );
+		$_POST['mapId']          = 'some-map-1';
+		$_POST['layoutId']       = 'some-layout-1';
+		$success                 = null;
+		$sent_code               = null;
+		$sent_data               = null;
+		
+		tribe_update_option( 'events_tickets_seating_access_token', 'some-token' );
+		
+		$this->make_controller()->register();
+		
+		$this->set_fn_return(
+			'wp_send_json_error',
+			function ( $data, $code ) use ( &$sent_data, &$sent_code, &$success ) {
+				$sent_data = $data;
+				$sent_code = $code;
+				$success   = false;
+			},
+			true
+		);
+		
+		add_filter(
+			'pre_http_request',
+			function () {
+				return [ 'response' => [ 'code' => 500 ] ];
+			},
+		);
+		
+		do_action( 'wp_ajax_' . Ajax::ACTION_DELETE_LAYOUT );
+		
+		$this->assertMatchesJsonSnapshot(
+			wp_json_encode(
+				[
+					'success' => $success,
+					'data'    => $sent_data,
+					'code'    => $sent_code,
+				],
+				JSON_SNAPSHOT_OPTIONS
+			)
+		);
+	}
 	public function test_update_reservations(): void {
 		$this->given_maps_and_layouts_in_db();
-		$this->set_fn_return( 'file_get_contents', function ( string $file ) {
-			if ( $file !== 'php://input' ) {
-				return file_get_contents( $file );
-			}
+		$this->set_fn_return(
+			'file_get_contents',
+			function ( string $file ) {
+				if ( $file !== 'php://input' ) {
+					return file_get_contents( $file );
+				}
 
-			return json_encode( [
-				'token'        => 'test-token',
-				'reservations' => [
-					'1234567890',
-					'0987654321',
-				],
-			] );
-		}, true );
+				return json_encode(
+					[
+						'token'        => 'test-token',
+						'reservations' => [
+							'1234567890',
+							'0987654321',
+						],
+					] 
+				);
+			},
+			true 
+		);
 		$wp_send_json_success = null;
-		$this->set_fn_return( 'wp_send_json_success', function () use ( &$wp_send_json_success ) {
-			$wp_send_json_success = true;
-		}, true );
+		$this->set_fn_return(
+			'wp_send_json_success',
+			function () use ( &$wp_send_json_success ) {
+				$wp_send_json_success = true;
+			},
+			true 
+		);
 		$_REQUEST['_ajax_nonce'] = wp_create_nonce( Ajax::NONCE_ACTION );
 		$sessions                = tribe( Sessions::class );
 		$sessions->upsert( 'test-token', 23, time() + 10 );
@@ -520,35 +897,46 @@ class Ajax_Test extends Controller_Test_Case {
 		do_action( 'wp_ajax_nopriv_' . Ajax::ACTION_POST_RESERVATIONS );
 
 		$this->assertTrue( $wp_send_json_success );
-		$this->assertEquals( [
-			'1234567890',
-			'0987654321',
-		], $sessions->get_reservations_for_token( 'test-token' ) );
+		$this->assertEquals(
+			[
+				'1234567890',
+				'0987654321',
+			],
+			$sessions->get_reservations_for_token( 'test-token' ) 
+		);
 	}
 
 	public function test_update_reservations_will_return_403_on_bad_nonce(): void {
 		$this->given_maps_and_layouts_in_db();
-		$this->set_fn_return( 'file_get_contents', function ( string $file ) {
-			if ( $file !== 'php://input' ) {
-				return file_get_contents( $file );
-			}
+		$this->set_fn_return(
+			'file_get_contents',
+			function ( string $file ) {
+				if ( $file !== 'php://input' ) {
+					return file_get_contents( $file );
+				}
 
-			return json_encode( [
-				'token'        => 'test-token',
-				'reservations' => [
-					'1234567890',
-					'0987654321',
-				],
-			] );
-		}, true );
+				return json_encode(
+					[
+						'token'        => 'test-token',
+						'reservations' => [
+							'1234567890',
+							'0987654321',
+						],
+					] 
+				);
+			},
+			true 
+		);
 		$wp_send_json_error_data = null;
 		$wp_send_json_error_code = null;
-		$this->set_fn_return( 'wp_send_json_error',
+		$this->set_fn_return(
+			'wp_send_json_error',
 			function ( $data, $code ) use ( &$wp_send_json_error_data, &$wp_send_json_error_code ) {
 				$wp_send_json_error_data = $data;
 				$wp_send_json_error_code = $code;
 			},
-			true );
+			true 
+		);
 		$sessions = tribe( Sessions::class );
 		$sessions->upsert( 'test-token', 23, time() + 10 );
 
@@ -599,23 +987,29 @@ class Ajax_Test extends Controller_Test_Case {
 		$this->given_maps_and_layouts_in_db();
 		$wp_send_json_error_data = null;
 		$wp_send_json_error_code = null;
-		$this->set_fn_return( 'wp_send_json_error',
+		$this->set_fn_return(
+			'wp_send_json_error',
 			function ( $data, $code ) use ( &$wp_send_json_error_data, &$wp_send_json_error_code ) {
 				$wp_send_json_error_data = $data;
 				$wp_send_json_error_code = $code;
 			},
-			true );
+			true 
+		);
 		$sessions = tribe( Sessions::class );
 		$sessions->upsert( 'test-token', 23, time() + 10 );
 		$_REQUEST['_ajax_nonce'] = wp_create_nonce( Ajax::NONCE_ACTION );
 		$json_body               = null;
-		$this->set_fn_return( 'file_get_contents', function ( string $file ) use ( &$json_body ) {
-			if ( $file !== 'php://input' ) {
-				return file_get_contents( $file );
-			}
+		$this->set_fn_return(
+			'file_get_contents',
+			function ( string $file ) use ( &$json_body ) {
+				if ( $file !== 'php://input' ) {
+					return file_get_contents( $file );
+				}
 
-			return $json_body;
-		}, true );
+				return $json_body;
+			},
+			true 
+		);
 
 		$this->make_controller()->register();
 
@@ -628,12 +1022,14 @@ class Ajax_Test extends Controller_Test_Case {
 		$this->assertEquals( [ 'error' => 'Invalid request body' ], $wp_send_json_error_data );
 
 		// Send a JSON body that does not contain a token.
-		$json_body = json_encode( [
-			'reservations' => [
-				'1234567890',
-				'0987654321',
-			],
-		] );
+		$json_body = json_encode(
+			[
+				'reservations' => [
+					'1234567890',
+					'0987654321',
+				],
+			] 
+		);
 
 		do_action( 'wp_ajax_nopriv_' . Ajax::ACTION_POST_RESERVATIONS );
 
@@ -641,9 +1037,11 @@ class Ajax_Test extends Controller_Test_Case {
 		$this->assertEquals( [ 'error' => 'Invalid request body' ], $wp_send_json_error_data );
 
 		// Send a JSON body that does not contain a reservations array.
-		$json_body = json_encode( [
-			'token' => 'test-token',
-		] );
+		$json_body = json_encode(
+			[
+				'token' => 'test-token',
+			] 
+		);
 
 		do_action( 'wp_ajax_nopriv_' . Ajax::ACTION_POST_RESERVATIONS );
 
@@ -651,10 +1049,12 @@ class Ajax_Test extends Controller_Test_Case {
 		$this->assertEquals( [ 'error' => 'Invalid request body' ], $wp_send_json_error_data );
 
 		// Send a JSON body that does not contain a reservations array.
-		$json_body = json_encode( [
-			'token'        => 'test-token',
-			'reservations' => 'not-an-array',
-		] );
+		$json_body = json_encode(
+			[
+				'token'        => 'test-token',
+				'reservations' => 'not-an-array',
+			] 
+		);
 
 		do_action( 'wp_ajax_nopriv_' . Ajax::ACTION_POST_RESERVATIONS );
 
@@ -666,25 +1066,33 @@ class Ajax_Test extends Controller_Test_Case {
 		$this->given_maps_and_layouts_in_db();
 		$wp_send_json_error_data = null;
 		$wp_send_json_error_code = null;
-		$this->set_fn_return( 'wp_send_json_error',
+		$this->set_fn_return(
+			'wp_send_json_error',
 			function ( $data, $code ) use ( &$wp_send_json_error_data, &$wp_send_json_error_code ) {
 				$wp_send_json_error_data = $data;
 				$wp_send_json_error_code = $code;
 			},
-			true );
-		$this->set_fn_return( 'file_get_contents', function ( string $file ) {
-			if ( $file !== 'php://input' ) {
-				return file_get_contents( $file );
-			}
+			true 
+		);
+		$this->set_fn_return(
+			'file_get_contents',
+			function ( string $file ) {
+				if ( $file !== 'php://input' ) {
+					return file_get_contents( $file );
+				}
 
-			return json_encode( [
-				'token'        => 'test-token',
-				'reservations' => [
-					'1234567890',
-					'0987654321',
-				],
-			] );
-		}, true );
+				return json_encode(
+					[
+						'token'        => 'test-token',
+						'reservations' => [
+							'1234567890',
+							'0987654321',
+						],
+					] 
+				);
+			},
+			true 
+		);
 		$_REQUEST['_ajax_nonce'] = wp_create_nonce( Ajax::NONCE_ACTION );
 
 		// Do not create a session beforehand, this will cause the session update to fail.
@@ -702,16 +1110,20 @@ class Ajax_Test extends Controller_Test_Case {
 	public function test_clear_reservations(): void {
 		$this->given_maps_and_layouts_in_db();
 		$wp_send_json_success = null;
-		$this->set_fn_return( 'wp_send_json_success', function () use ( &$wp_send_json_success ) {
-			$wp_send_json_success = true;
-		}, true );
+		$this->set_fn_return(
+			'wp_send_json_success',
+			function () use ( &$wp_send_json_success ) {
+				$wp_send_json_success = true;
+			},
+			true 
+		);
 		$_REQUEST['_ajax_nonce'] = wp_create_nonce( Ajax::NONCE_ACTION );
 		$_REQUEST['token']       = 'test-token';
 		$_REQUEST['postId']      = 23;
 		update_post_meta( 23, Meta::META_KEY_UUID, 'test-post-uuid' );
 		DB::query(
 			DB::prepare(
-				"INSERT INTO %i (token, object_id, expiration, reservations) VALUES (%s, %d, %d, %s)",
+				'INSERT INTO %i (token, object_id, expiration, reservations) VALUES (%s, %d, %d, %s)',
 				Sessions::table_name(),
 				'test-token',
 				23,
@@ -720,10 +1132,13 @@ class Ajax_Test extends Controller_Test_Case {
 			)
 		);
 		$sessions = tribe( Sessions::class );
-		$this->assertEquals( [
-			'1234567890',
-			'0987654321',
-		], $sessions->get_reservations_for_token( 'test-token' ) );
+		$this->assertEquals(
+			[
+				'1234567890',
+				'0987654321',
+			],
+			$sessions->get_reservations_for_token( 'test-token' ) 
+		);
 		$this->set_oauth_token( 'auth-token' );
 		$this->mock_wp_remote(
 			'post',
@@ -732,10 +1147,12 @@ class Ajax_Test extends Controller_Test_Case {
 				'headers' => [
 					'Authorization' => 'Bearer auth-token',
 				],
-				'body'    => wp_json_encode( [
-					'eventId' => 'test-post-uuid',
-					'ids'     => [ '1234567890', '0987654321' ],
-				] ),
+				'body'    => wp_json_encode(
+					[
+						'eventId' => 'test-post-uuid',
+						'ids'     => [ '1234567890', '0987654321' ],
+					] 
+				),
 			],
 			[
 				'response' => [
@@ -757,19 +1174,21 @@ class Ajax_Test extends Controller_Test_Case {
 		$this->given_maps_and_layouts_in_db();
 		$wp_send_json_error_code = null;
 		$wp_send_json_error_data = null;
-		$this->set_fn_return( 'wp_send_json_error',
+		$this->set_fn_return(
+			'wp_send_json_error',
 			function ( $data, $code ) use ( &$wp_send_json_error_code, &$wp_send_json_error_data ) {
 				$wp_send_json_error_data = $data;
 				$wp_send_json_error_code = $code;
 			},
-			true );
+			true 
+		);
 		$_REQUEST['_ajax_nonce'] = wp_create_nonce( Ajax::NONCE_ACTION );
 		$_REQUEST['token']       = 'test-token';
 		$_REQUEST['postId']      = 23;
 		update_post_meta( 23, Meta::META_KEY_UUID, 'test-post-uuid' );
 		DB::query(
 			DB::prepare(
-				"INSERT INTO %i (token, object_id, expiration, reservations) VALUES (%s, %d, %d, %s)",
+				'INSERT INTO %i (token, object_id, expiration, reservations) VALUES (%s, %d, %d, %s)',
 				Sessions::table_name(),
 				'test-token',
 				23,
@@ -778,10 +1197,13 @@ class Ajax_Test extends Controller_Test_Case {
 			)
 		);
 		$sessions = tribe( Sessions::class );
-		$this->assertEquals( [
-			'1234567890',
-			'0987654321',
-		], $sessions->get_reservations_for_token( 'test-token' ) );
+		$this->assertEquals(
+			[
+				'1234567890',
+				'0987654321',
+			],
+			$sessions->get_reservations_for_token( 'test-token' ) 
+		);
 		$this->set_oauth_token( 'auth-token' );
 		$this->mock_wp_remote(
 			'post',
@@ -790,10 +1212,12 @@ class Ajax_Test extends Controller_Test_Case {
 				'headers' => [
 					'Authorization' => 'Bearer auth-token',
 				],
-				'body'    => wp_json_encode( [
-					'eventId' => 'test-post-uuid',
-					'ids'     => [ '1234567890', '0987654321' ],
-				] ),
+				'body'    => wp_json_encode(
+					[
+						'eventId' => 'test-post-uuid',
+						'ids'     => [ '1234567890', '0987654321' ],
+					] 
+				),
 			],
 			[
 				'response' => [
@@ -815,12 +1239,14 @@ class Ajax_Test extends Controller_Test_Case {
 		$this->given_maps_and_layouts_in_db();
 		$wp_send_json_error_code = null;
 		$wp_send_json_error_data = null;
-		$this->set_fn_return( 'wp_send_json_error',
+		$this->set_fn_return(
+			'wp_send_json_error',
 			function ( $data, $code ) use ( &$wp_send_json_error_code, &$wp_send_json_error_data ) {
 				$wp_send_json_error_data = $data;
 				$wp_send_json_error_code = $code;
 			},
-			true );
+			true 
+		);
 		$_REQUEST['_ajax_nonce'] = wp_create_nonce( Ajax::NONCE_ACTION );
 		$_REQUEST['token']       = 'test-token';
 		$_REQUEST['postId']      = 23;
@@ -835,10 +1261,12 @@ class Ajax_Test extends Controller_Test_Case {
 				'headers' => [
 					'Authorization' => 'Bearer auth-token',
 				],
-				'body'    => wp_json_encode( [
-					'eventId' => 'test-post-uuid',
-					'ids'     => [ '1234567890', '0987654321' ],
-				] ),
+				'body'    => wp_json_encode(
+					[
+						'eventId' => 'test-post-uuid',
+						'ids'     => [ '1234567890', '0987654321' ],
+					] 
+				),
 			],
 			[
 				'response' => [
@@ -859,12 +1287,14 @@ class Ajax_Test extends Controller_Test_Case {
 	public function test_clear_reservations_will_return_403_on_bad_nonce(): void {
 		$wp_send_json_error_code = null;
 		$wp_send_json_error_data = null;
-		$this->set_fn_return( 'wp_send_json_error',
+		$this->set_fn_return(
+			'wp_send_json_error',
 			function ( $data, $code ) use ( &$wp_send_json_error_code, &$wp_send_json_error_data ) {
 				$wp_send_json_error_data = $data;
 				$wp_send_json_error_code = $code;
 			},
-			true );
+			true 
+		);
 
 		$this->make_controller()->register();
 
@@ -912,17 +1342,19 @@ class Ajax_Test extends Controller_Test_Case {
 	public function test_clear_reservations_fails_on_bad_arguments(): void {
 		$wp_send_json_error_code = null;
 		$wp_send_json_error_data = null;
-		$this->set_fn_return( 'wp_send_json_error',
+		$this->set_fn_return(
+			'wp_send_json_error',
 			function ( $data, $code ) use ( &$wp_send_json_error_code, &$wp_send_json_error_data ) {
 				$wp_send_json_error_data = $data;
 				$wp_send_json_error_code = $code;
 			},
-			true );
+			true 
+		);
 		$_REQUEST['_ajax_nonce'] = wp_create_nonce( Ajax::NONCE_ACTION );
 		update_post_meta( 23, Meta::META_KEY_UUID, 'test-post-uuid' );
 		DB::query(
 			DB::prepare(
-				"INSERT INTO %i (token, object_id, expiration, reservations) VALUES (%s, %d, %d, %s)",
+				'INSERT INTO %i (token, object_id, expiration, reservations) VALUES (%s, %d, %d, %s)',
 				Sessions::table_name(),
 				'test-token',
 				23,
@@ -931,10 +1363,13 @@ class Ajax_Test extends Controller_Test_Case {
 			)
 		);
 		$sessions = tribe( Sessions::class );
-		$this->assertEquals( [
-			'1234567890',
-			'0987654321',
-		], $sessions->get_reservations_for_token( 'test-token' ) );
+		$this->assertEquals(
+			[
+				'1234567890',
+				'0987654321',
+			],
+			$sessions->get_reservations_for_token( 'test-token' ) 
+		);
 
 		$this->make_controller()->register();
 
@@ -968,27 +1403,34 @@ class Ajax_Test extends Controller_Test_Case {
 		$cookie_name             = Cart::$cart_hash_cookie_name;
 		$_COOKIE[ $cookie_name ] = 'some-commerce-cart-hash';
 		$setcookie_call          = null;
-		$this->set_fn_return( 'setcookie', function (
-			$name,
-			$value,
-			$expire,
-			$path,
-			$domain,
-			$secure,
-			$httponly
-		) use ( $cookie_name, &$setcookie_call ) {
-			$setcookie_call = true;
+		$this->set_fn_return(
+			'setcookie',
+			function (
+				$name,
+				$value,
+				$expire,
+				$path,
+				$domain,
+				$secure,
+				$httponly
+			) use (
+				$cookie_name,
+				&$setcookie_call 
+			) {
+				$setcookie_call = true;
 
-			Assert::assertEquals( $cookie_name, $name );
-			Assert::assertEquals( '', $value );
-			Assert::assertEquals( time() - DAY_IN_SECONDS, $expire,'', 5 );
-			Assert::assertEquals( COOKIEPATH, $path );
-			Assert::assertEquals( COOKIE_DOMAIN, $domain );
-			Assert::assertTrue( $secure );
-			Assert::assertTrue( $httponly );
+				Assert::assertEquals( $cookie_name, $name );
+				Assert::assertEquals( '', $value );
+				Assert::assertEquals( time() - DAY_IN_SECONDS, $expire, '', 5 );
+				Assert::assertEquals( COOKIEPATH, $path );
+				Assert::assertEquals( COOKIE_DOMAIN, $domain );
+				Assert::assertTrue( $secure );
+				Assert::assertTrue( $httponly );
 
-			return true;
-		}, true );
+				return true;
+			},
+			true 
+		);
 		$post_id = self::factory()->post->create();
 		/** @var \Tribe__Tickets__Tickets_Handler $tickets_handler */
 		$tickets_handler = tribe( 'tickets.handler' );
@@ -1002,4 +1444,3 @@ class Ajax_Test extends Controller_Test_Case {
 		$this->assertTrue( $setcookie_call );
 	}
 }
-
