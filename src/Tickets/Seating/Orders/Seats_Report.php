@@ -165,6 +165,8 @@ class Seats_Report extends Report_Abstract {
 	 * @return array<string, string> The localized data.
 	 */
 	public static function get_localized_data( ?int $post_id = null ): array {
+		$post_id = $post_id ?: tribe_get_request_var( 'post_id' );
+		
 		if ( ! $post_id ) {
 			return [];
 		}
