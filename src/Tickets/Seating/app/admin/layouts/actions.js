@@ -82,6 +82,45 @@ async function deleteLayout(layoutId, mapId) {
 	return response.status === 200;
 }
 
+/**
+ * Register destructive edit action on all links with class 'edit-layout'.
+ *
+ * @since TBD
+ */
+export function registerDestructiveEditAction() {
+	// Add click listener to all links with class 'delete'.
+	document.querySelectorAll('.edit-layout').forEach(function(link) {
+		link.addEventListener('click', async function(event) {
+			handleDestructiveEdit(event);
+		});
+	});
+}
+
+
+/**
+ * Handle destructive edit action.
+ *
+ * @since TBD
+ *
+ * @param {ClickEvent} event - The click event.
+ *
+ * @return {Promise<void>}
+ */
+async function handleDestructiveEdit(event) {
+	const associatedEvents = event.target.getAttribute('data-event-count');
+
+	if(associatedEvents && Number(associatedEvents) !== NaN && Number(associatedEvents) > 0) {
+		const card = event.target.closest('.tec-tickets__seating-tab__card');
+		card.style.opacity = 0.5;
+
+		if (!confirm(getString('edit-confirmation'))) {
+			card.style.opacity = 1;
+			event.preventDefault();
+		}
+	}
+}
+
 export { handleDelete, deleteLayout };
 
 onReady(registerDeleteAction);
+onReady(registerDestructiveEditAction);
