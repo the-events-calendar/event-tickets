@@ -61,4 +61,13 @@ class Meta {
 	 * @var string
 	 */
 	public const META_KEY_ATTENDEE_SEAT_LABEL = '_tec_slr_seat_label';
+	
+	/**
+	 * The meta key used to store the reservation ID of an attendee.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const META_KEY_RESERVATION_ID = '_tec_slr_reservation_id';
 }
