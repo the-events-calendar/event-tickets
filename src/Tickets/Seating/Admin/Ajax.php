@@ -249,18 +249,16 @@ class Ajax extends Controller_Contract {
 		}
 		
 		$current_page = (int) tribe_get_request_var( 'page', 0 );
-		$per_page     = (int) tribe_get_request_var( 'perPage', 50 );
-		
-		$total_count = tribe_attendees()->by( 'event', $event_id )->count();
+		$per_page     = (int) tribe_get_request_var( 'perPage', 0 );
 		
 		$args = [
 			'page'               => $current_page,
 			'per_page'           => $per_page,
-			'return_total_found' => false,
+			'return_total_found' => true,
 			'order'              => 'DESC',
 		];
 		
-		$data      = \Tribe__Tickets__Tickets::get_attendees_by_args( $args, $event_id );
+		$data      = Tickets::get_attendees_by_args( $args, $event_id );
 		$formatted = [];
 		
 		foreach ( $data['attendees'] as $attendee ) {
@@ -283,8 +281,8 @@ class Ajax extends Controller_Contract {
 		wp_send_json_success(
 			[
 				'attendees' => $formatted,
-				'total'     => $total_count,
-			] 
+				'total'     => $data['total_found'],
+			]
 		);
 	}
 
