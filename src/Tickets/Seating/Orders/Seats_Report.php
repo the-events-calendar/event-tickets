@@ -172,6 +172,7 @@ class Seats_Report extends Report_Abstract {
 		}
 		
 		return [
+			'postId'      => $post_id,
 			'seatTypeMap' => tribe( Frontend::class )->build_seat_type_map( $post_id ),
 		];
 	}

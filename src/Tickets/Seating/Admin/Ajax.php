@@ -235,7 +235,7 @@ class Ajax extends Controller_Contract {
 			return;
 		}
 		
-		$event_id = (int) tribe_get_request_var( 'event_id' );
+		$event_id = (int) tribe_get_request_var( 'postId' );
 		
 		if ( empty( $event_id ) ) {
 			wp_send_json_error(
