@@ -413,7 +413,7 @@ class Timer extends Controller_Contract {
 		$timeout = $this->get_timeout( $post_id );
 
 		// When starting a new session, we need to remove the previous sessions for the same post.
-		$this->session->cancel_previous_for_object( $post_id );
+		$this->session->cancel_previous_for_object( $post_id, $token );
 
 		// We're in the context of an XHR/AJAX request: the browser will set the cookie for us.
 		$now        = microtime( true );

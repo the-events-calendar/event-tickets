@@ -20,9 +20,13 @@ tribe_register_provider( Commerce_Provider::class );
 
 tribe()->get( \TEC\Tickets\Seating\Service\Service::class );
 
+tribe()->get( Maps::class )->update();
 tribe()->get( Maps::class )->truncate();
+tribe()->get( Layouts::class )->update();
 tribe()->get( Layouts::class )->truncate();
+tribe()->get( Seat_Types::class )->update();
 tribe()->get( Seat_Types::class )->truncate();
+tribe()->get( Sessions::class )->update();
 tribe()->get( Sessions::class )->truncate();
 
 define( 'JSON_SNAPSHOT_OPTIONS', JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES );
