@@ -236,8 +236,8 @@ class Service {
 	public function get_map_edit_url( string $token, string $map_id ): string {
 		return add_query_arg(
 			[
-				'token' => urlencode( $token ),
-				'mapId' => urlencode( $map_id ),
+				'token'            => urlencode( $token ),
+				'mapId'            => urlencode( $map_id ),
 			],
 			$this->get_frontend_url( '/embed/seat-map/' )
 		);
@@ -274,10 +274,12 @@ class Service {
 	 * @return string The URL to load the service route to edit a seat layout.
 	 */
 	public function get_layout_edit_url( string $token, string $layout_id ): string {
-		return add_query_arg(
-			[
+		$associated_posts = Layouts::get_associated_posts_by_id( $layout_id );
+
+		return add_query_arg( [
 				'token'    => urlencode( $token ),
 				'layoutId' => urlencode( $layout_id ),
+				'associatedEvents' => urlencode( $associated_posts ),
 			],
 			$this->get_frontend_url( '/embed/seat-layout/' )
 		);
@@ -343,7 +345,7 @@ class Service {
 	public function get_seat_types_by_layout( string $layout_id ): array {
 		return $this->seat_types->get_in_option_format( [ $layout_id ] );
 	}
-	
+
 	/**
 	 * Deletes a map.
 	 *
@@ -356,7 +358,7 @@ class Service {
 	public function delete_map( string $map_id ): bool {
 		return $this->maps->delete( $map_id );
 	}
-	
+
 	/**
 	 * Deletes a layout.
 	 *
