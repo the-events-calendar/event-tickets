@@ -11,6 +11,7 @@ namespace TEC\Tickets\Seating\Tables;
 
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Common\StellarWP\Schema\Tables\Contracts\Table;
+use TEC\Tickets\Seating\Logging;
 
 /**
  * Class Sessions.
@@ -21,6 +22,7 @@ use TEC\Common\StellarWP\Schema\Tables\Contracts\Table;
  */
 class Sessions extends Table {
 	use Truncate_Methods;
+	use Logging;
 
 	/**
 	 * The schema version.
@@ -75,13 +77,26 @@ class Sessions extends Table {
 	 * @return int The number of expired sessions removed.
 	 */
 	public static function remove_expired_sessions(): int {
-		$query = DB::prepare(
-			'DELETE FROM %i WHERE expiration < %d',
-			self::table_name(),
-			time()
-		);
+		try {
+			$query = DB::prepare(
+				'DELETE FROM %i WHERE expiration < %d',
+				self::table_name(),
+				time()
+			);
 
-		return (int) DB::query( $query );
+			return (int) DB::query( $query );
+		} catch ( \Exception $e ) {
+			( new self )->log_error(
+				'Failed to remove expired sessions.',
+				[
+					'source' => __METHOD__,
+					'code'   => $e->getCode(),
+					'error'  => $e->getMessage(),
+				]
+			);
+
+			return 0;
+		}
 	}
 
 	/**
@@ -121,18 +136,32 @@ class Sessions extends Table {
 	 * @return bool|int The number of rows affected, or `false` on failure.
 	 */
 	public function upsert( string $token, int $object_id, int $expiration_timestamp ) {
-		$query = DB::prepare(
-			'INSERT INTO %i (token, object_id, expiration) VALUES (%s, %d, %d)
-				ON DUPLICATE KEY UPDATE object_id = %d, expiration = %d',
-			self::table_name(),
-			$token,
-			$object_id,
-			$expiration_timestamp,
-			$object_id,
-			$expiration_timestamp
-		);
 
-		return DB::query( $query ) !== false;
+		try {
+			$query = DB::prepare(
+				'INSERT INTO %i (token, object_id, expiration) VALUES (%s, %d, %d)
+					ON DUPLICATE KEY UPDATE object_id = %d',
+				self::table_name(),
+				$token,
+				$object_id,
+				$expiration_timestamp,
+				$object_id
+			);
+
+			return DB::query( $query ) !== false;
+		} catch ( \Exception $e ) {
+			$this->log_error(
+				'Failed to upsert the session.',
+				[
+					'source' => __METHOD__,
+					'code'   => $e->getCode(),
+					'token'  => $token,
+					'error'  => $e->getMessage(),
+				]
+			);
+
+			return false;
+		}
 	}
 
 	/**
@@ -145,13 +174,27 @@ class Sessions extends Table {
 	 * @return int The number of seconds left in the timer.
 	 */
 	public function get_seconds_left( $token ): int {
-		$query = DB::prepare(
-			'SELECT expiration FROM %i WHERE token = %s',
-			self::table_name(),
-			$token
-		);
 
-		$expiration = DB::get_var( $query );
+		try {
+			$query      = DB::prepare(
+				'SELECT expiration FROM %i WHERE token = %s',
+				self::table_name(),
+				$token
+			);
+			$expiration = DB::get_var( $query );
+		} catch ( \Exception $e ) {
+			$this->log_error(
+				'Failed to get the seconds left for the token.',
+				[
+					'source' => __METHOD__,
+					'code'   => $e->getCode(),
+					'token'  => $token,
+					'error'  => $e->getMessage(),
+				]
+			);
+
+			return 0;
+		}
 
 		if ( empty( $expiration ) ) {
 			// Either the token is not found or the session has expired and was removed.
@@ -171,13 +214,27 @@ class Sessions extends Table {
 	 * @return string[] The list of reservations for the given object ID.
 	 */
 	public function get_reservations_for_token( string $token ) {
-		$query = DB::prepare(
-			'SELECT reservations FROM %i WHERE token = %s ',
-			self::table_name(),
-			$token
-		);
 
-		$reservations = DB::get_var( $query );
+		try {
+			$query        = DB::prepare(
+				'SELECT reservations FROM %i WHERE token = %s ',
+				self::table_name(),
+				$token
+			);
+			$reservations = DB::get_var( $query );
+		} catch ( \Exception $e ) {
+			$this->log_error(
+				'Failed to get the reservations for the token.',
+				[
+					'source' => __METHOD__,
+					'code'   => $e->getCode(),
+					'token'  => $token,
+					'error'  => $e->getMessage(),
+				]
+			);
+
+			return [];
+		}
 
 		if ( empty( $reservations ) ) {
 			return [];
@@ -207,34 +264,46 @@ class Sessions extends Table {
 			return false;
 		}
 
-		/*
+		try {/*
 		 * The UPDATE operation will return the number of updated rows.
 		 * A value of 0 means that the row was either not found, or it did not need to be updated.
 		 * We want to fail the update if the row did not exist in the first place.
 		 */
-		$exists = DB::get_var(
-			DB::prepare(
-				'SELECT token FROM %i WHERE token = %s',
-				self::table_name(),
-				$token
-			)
-		);
+			$exists = DB::get_var(
+				DB::prepare(
+					'SELECT token FROM %i WHERE token = %s',
+					self::table_name(),
+					$token
+				)
+			);
+			if ( empty( $exists ) ) {
+				return false;
+			}/*
+			 * The result of this query might be 0 to indicate that the row was not updated.
+			 * We want to fail the update if the row was not updated.
+			 */
 
-		if ( empty( $exists ) ) {
+			return DB::update(
+					self::table_name(),
+					[ 'reservations' => $reservations_json ],
+					[ 'token' => $token ],
+					[ '%s' ],
+					[ '%s' ]
+				) !== false;
+		} catch ( \Exception $e ) {
+			$this->log_error(
+				'Failed to update the reservations for the token.',
+				[
+					'source' => __METHOD__,
+					'code'   => $e->getCode(),
+					'token'  => $token,
+					'error'  => $e->getMessage(),
+				]
+			);
+
+
 			return false;
 		}
-
-		/*
-		 * The result of this query might be 0 to indicate that the row was not updated.
-		 * We want to fail the update if the row was not updated.
-		 */
-		return DB::update(
-			self::table_name(),
-			[ 'reservations' => $reservations_json ],
-			[ 'token' => $token ],
-			[ '%s' ],
-			[ '%s' ]
-		) !== false;
 	}
 
 	/**
@@ -247,13 +316,27 @@ class Sessions extends Table {
 	 * @return bool Whether the sessions werer deleted or not.
 	 */
 	public function delete_token_session( string $token ): bool {
-		$query = DB::prepare(
-			'DELETE FROM %i WHERE token = %s',
-			self::table_name(),
-			$token
-		);
+		try {
+			$query = DB::prepare(
+				'DELETE FROM %i WHERE token = %s',
+				self::table_name(),
+				$token
+			);
 
-		return DB::query( $query ) !== false;
+			return DB::query( $query ) !== false;
+		} catch ( \Exception $e ) {
+			$this->log_error(
+				'Failed to delete the sessions for the token.',
+				[
+					'source' => __METHOD__,
+					'code'   => $e->getCode(),
+					'token'  => $token,
+					'error'  => $e->getMessage(),
+				]
+			);
+
+			return false;
+		}
 	}
 
 	/**
@@ -266,29 +349,26 @@ class Sessions extends Table {
 	 * @return bool Whether the reservations were cleared or not.
 	 */
 	public function clear_token_reservations( string $token ): bool {
-		/*
-		 * The UPDATE operation will return the number of updated rows.
-		 * A value of 0 means that the row was either not found, or it did not need to be updated.
-		 * We want to fail the update if the row did not exist in the first place.
-		 */
-		$exists = DB::get_var(
-			DB::prepare(
-				'SELECT token FROM %i WHERE token = %s',
+		try {
+			$query = DB::prepare(
+				"UPDATE %i SET reservations = '' WHERE token = %s",
 				self::table_name(),
 				$token
-			)
-		);
+			);
 
-		if ( empty( $exists ) ) {
+			return DB::query( $query ) !== false;
+		} catch ( \Exception $e ) {
+			$this->log_error(
+				'Failed to clear the reservations for the token.',
+				[
+					'source' => __METHOD__,
+					'code'   => $e->getCode(),
+					'token'  => $token,
+					'error'  => $e->getMessage(),
+				]
+			);
+
 			return false;
 		}
-
-		$query = DB::prepare(
-			"UPDATE %i SET reservations = '' WHERE token = %s",
-			self::table_name(),
-			$token
-		);
-
-		return DB::query( $query ) !== false;
 	}
 }

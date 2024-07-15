@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Seating\Frontend;
 
 use PHPUnit\Framework\Assert;
+use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Seating\Meta;
 use TEC\Tickets\Seating\Service\OAuth_Token;
 use TEC\Tickets\Seating\Service\Reservations;
@@ -16,7 +17,7 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 	use OAuth_Token;
 
 	public function test_entry_manipulation(): void {
-		$session         = tribe( Session::class );
+		$session = tribe( Session::class );
 		$expiration_time = $session->get_cookie_expiration_time();
 		$setcookie_value = null;
 		$this->set_fn_return( 'setcookie',
@@ -44,7 +45,8 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 		$session->add_entry( 89, 'test-token-2' );
 
 		$this->assertEquals( [ 23 => 'test-token', 89 => 'test-token-2' ], $session->get_entries() );
-		$this->assertEquals( $session->get_cookie_string( [ 23 => 'test-token', 89 => 'test-token-2' ] ), $setcookie_value );
+		$this->assertEquals( $session->get_cookie_string( [ 23 => 'test-token', 89 => 'test-token-2' ] ),
+			$setcookie_value );
 
 		$session->remove_entry( 23, 'test-token' );
 
@@ -53,7 +55,7 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 
 		$this->unset_uopz_functions();
 		$this->set_fn_return( 'setcookie',
-			function ( $name, $value, $expire, $path, $domain, $secure, $httponly ) use ( &$setcookie_value) {
+			function ( $name, $value, $expire, $path, $domain, $secure, $httponly ) use ( &$setcookie_value ) {
 				$setcookie_value = $value;
 				Assert::assertEquals( Session::COOKIE_NAME, $name );
 				Assert::assertEquals( time() - DAY_IN_SECONDS, $expire, '', 5 );
@@ -74,15 +76,18 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 
 	public function test_cancel_previous_for_object(): void {
 		$session = tribe( Session::class );
-
 		$session->add_entry( 23, 'test-token' );
 
-		$this->assertTrue( $session->cancel_previous_for_object( 89 ) );
+		$this->assertTrue( $session->cancel_previous_for_object( 89, 'test-token' ) );
 
 		// Insert a previous session in the database for the token and object ID.
 		$sessions = tribe( Sessions::class );
 		$sessions->upsert( 'test-token', 23, time() + 100 );
 		$sessions->update_reservations( 'test-token', [ '1234567890', '0987654321' ] );
+		// Assign an UUID to the post.
+		update_post_meta( 23, Meta::META_KEY_UUID, 'test-post-uuid' );
+		// Set the oAuth token.
+		$this->set_oauth_token( 'auth-token' );
 		// Mock the remote request to cancel the reservations.
 		$this->mock_wp_remote(
 			'post',
@@ -103,14 +108,92 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 				'body'     => wp_json_encode( [ 'success' => true ] ),
 			]
 		);
+		$previous_token_expiration_timestamp = DB::get_var(
+			DB::prepare(
+				"SELECT expiration FROM %i WHERE token = %s",
+				Sessions::table_name(),
+				'test-token'
+			)
+		);
+
+		$this->assertTrue( $session->cancel_previous_for_object( 23, 'test-token' ) );
+		$this->assertEquals( [ 23 => 'test-token' ], $session->get_entries() );
+		$this->assertEquals( [], $sessions->get_reservations_for_token( 'test-token' ) );
+		$current_token_expiration_timestamp = DB::get_var(
+			DB::prepare(
+				"SELECT expiration FROM %i WHERE token = %s",
+				Sessions::table_name(),
+				'test-token'
+			)
+		);
+		$this->assertEquals(
+			$previous_token_expiration_timestamp,
+			$current_token_expiration_timestamp,
+			'Cancelling the session should not reset the token expiration timestamp.'
+		);
+	}
+
+	public function test_cancel_previous_reservation_for_object_with_diff_token_for_same_object_id(): void {
+		// Create a previous session for the object ID 23 in the cookie.
+		$session = tribe( Session::class );
+		$session->add_entry( 23, 'test-token' );
+		// Create a previous session for object ID 23 in the database.
+		$sessions = tribe( Sessions::class );
+		$sessions->upsert( 'test-token', 23, time() + 100 );
+		$sessions->update_reservations( 'test-token', [ '1234567890', '0987654321' ] );
 		// Assign an UUID to the post.
 		update_post_meta( 23, Meta::META_KEY_UUID, 'test-post-uuid' );
 		// Set the oAuth token.
 		$this->set_oauth_token( 'auth-token' );
+		// Mock the remote request to cancel the reservations.
+		$cancelled_on_service = null;
+		$this->mock_wp_remote(
+			'post',
+			tribe( Reservations::class )->get_cancel_url(),
+			[
+				'headers' => [
+					'Authorization' => 'Bearer auth-token',
+				],
+				'body'    => wp_json_encode( [
+					'eventId' => 'test-post-uuid',
+					'ids'     => [ '1234567890', '0987654321' ]
+				] ),
+			],
+			function () use ( &$cancelled_on_service ) {
+				$cancelled_on_service = true;
 
-		$this->assertTrue( $session->cancel_previous_for_object( 23 ) );
+				return [
+					'response' => [
+						'code' => 200,
+					],
+					'body'     => wp_json_encode( [ 'success' => true ] ),
+				];
+			}
+		);
+
+		// Sanity check.
+		$this->assertEquals( [ 23 => 'test-token' ], $session->get_entries() );
+		$this->assertEquals(
+			[ '1234567890', '0987654321' ],
+			$sessions->get_reservations_for_token( 'test-token' )
+		);
+
+		// Simulate a request to cancel the session for the same object ID, but with a different token.
+		$session->cancel_previous_for_object( 23, 'new-token' );
+
 		$this->assertEquals( [], $session->get_entries() );
 		$this->assertEquals( [], $sessions->get_reservations_for_token( 'test-token' ) );
+		$this->assertNull(
+			DB::get_row(
+				DB::prepare(
+					"SELECT * FROM %i WHERE token = %s",
+					Sessions::table_name(),
+					'test-token'
+				)
+			)
+		);
+		$this->assertEquals( [], $sessions->get_reservations_for_token( 'new-token' ) );
+		$this->assertTrue( $cancelled_on_service );
 	}
 
 	public function test_cancel_previous_for_object_fails_if_reservation_cancelation_fails(): void {
@@ -147,7 +230,7 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 		// Set the oAuth token.
 		$this->set_oauth_token( 'auth-token' );
 
-		$this->assertFalse( $session->cancel_previous_for_object( 23 ) );
+		$this->assertFalse( $session->cancel_previous_for_object( 23, 'test-token' ) );
 		$this->assertEquals( [ 23 => 'test-token' ], $session->get_entries() );
 		$this->assertEquals( [ '1234567890', '0987654321' ], $sessions->get_reservations_for_token( 'test-token' ) );
 	}
@@ -185,8 +268,8 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 		// Set the oAuth token.
 		$this->set_oauth_token( 'auth-token' );
 
-		$this->assertTrue( $session->cancel_previous_for_object( 23 ) );
-		$this->assertEquals( [], $session->get_entries() );
+		$this->assertTrue( $session->cancel_previous_for_object( 23, 'test-token' ) );
+		$this->assertEquals( [ 23 => 'test-token' ], $session->get_entries() );
 		$this->assertEquals( [], $sessions->get_reservations_for_token( 'test-token' ) );
 	}
 
