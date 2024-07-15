@@ -205,8 +205,9 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.11.1] TBD =
+= [TBD] TBD =
 
+* Fix - ensure Stripe refunds are recorded in WordPress. [ET-2142]
 
 = [5.11.0.5] 2024-07-11 =
 

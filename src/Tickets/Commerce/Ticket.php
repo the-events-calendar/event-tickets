@@ -959,14 +959,16 @@ class Ticket {
 	 *
 	 * @since   5.1.9
 	 * @since   5.2.3 method signature changed to return an instance of Value instead of a string.
+	 * @since   TBD   added new param to force regular price value return.
 	 *
-	 * @param int|\WP_Post $product
+	 * @param int|\WP_Post $product       The ticket post ID or object.
+	 * @param bool         $force_regular Whether to force the regular price.
 	 *
 	 * @return Commerce\Utils\Value;
 	 * @version 5.2.3
 	 *
 	 */
-	public function get_price_value( $product ) {
+	public function get_price_value( $product, $force_regular = false ) {
 		$ticket = Models\Ticket_Model::from_post( $product );
 
 		if ( ! $ticket instanceof Models\Ticket_Model ) {
@@ -974,6 +976,10 @@ class Ticket {
 		}
 
 		$ticket_object = $this->get_ticket( $product );
+
+		if ( $force_regular ) {
+			return $ticket->get_price_value();
+		}
 
 		return $ticket_object->on_sale ? $ticket->get_sale_price_value() : $ticket->get_price_value();
 	}
