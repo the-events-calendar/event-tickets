@@ -13,6 +13,14 @@ use Tribe__Utils__Array as Arr;
  * @package TEC\Tickets\Commerce\Gateways\Stripe
  */
 class Merchant extends Abstract_Merchant {
+	/**
+	 * Stores the nonce action for disconnecting Stripe.
+	 *
+	 * @since 5.11.0.5
+	 *
+	 * @var string
+	 */
+	protected string $disconnect_action = 'stripe-disconnect';
 
 	/**
 	 * List of countries that are unauthorized to work with the TEC Provider for regulatory reasons.
