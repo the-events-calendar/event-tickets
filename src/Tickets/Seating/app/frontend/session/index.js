@@ -353,7 +353,7 @@ function startHealthCheckLoop() {
 	healthCheckLoopId = setTimeout(async () => {
 		await syncWithBackend();
 		startHealthCheckLoop();
-	}, 60 * 1000);
+	}, 5 * 1000);
 }
 
 /**
