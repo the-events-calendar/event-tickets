@@ -1,3 +1,4 @@
+<?php
 /*
  * Plugin Name: Event Tickets
  * Plugin URI:  https://evnt.is/1acb
@@ -11,7 +12,7 @@
  * Domain Path: /lang/
  * Elementor tested up to: 3.21.4
  * Elementor Pro tested up to: 3.21.2
-*/
+ */
 /*
  Copyright 2010-2022 by The Events Calendar and the contributors
 
