@@ -26,7 +26,7 @@ use TEC\Tickets\Seating\Tables\Seat_Types as Seat_Types_Table;
 class Layouts {
 	use oAuth_Token;
 	use Logging;
-	
+
 	/**
 	 * The URL to the service used to fetch the layouts from the backend.
 	 *
@@ -213,15 +213,25 @@ class Layouts {
 	 * @return int The number of posts associated with the layout.
 	 */
 	public static function get_associated_posts_by_id( string $layout_id ): int {
+		global $wpdb;
 		try {
-			$count = DB::table( 'posts', 'posts' )
-						->leftJoin( 'postmeta', 'posts.id', 'layout_meta.post_id', 'layout_meta' )
-						->where( 'meta_key', Meta::META_KEY_LAYOUT_ID )
-						->where( 'meta_value', $layout_id )
-						->count();
+			$count = DB::get_var(
+				DB::prepare(
+					"SELECT COUNT(*) FROM %i AS posts
+					LEFT JOIN %i AS layout_meta
+					ON posts.ID = layout_meta.post_id
+					WHERE layout_meta.meta_key = %s
+					AND layout_meta.meta_value = %s",
+					$wpdb->posts,
+					$wpdb->postmeta,
+					Meta::META_KEY_LAYOUT_ID,
+					$layout_id
+				)
+			);
 		} catch ( \Exception $e ) {
 			$count = 0;
 		}
+
 		return $count;
 	}
 
@@ -250,7 +260,7 @@ class Layouts {
 
 		return $invalidated;
 	}
-	
+
 	/**
 	 * Deletes a layout from the service.
 	 *
@@ -269,7 +279,7 @@ class Layouts {
 			],
 			$this->service_fetch_url
 		);
-		
+
 		$args = [
 			'method'  => 'DELETE',
 			'headers' => [
@@ -277,16 +287,16 @@ class Layouts {
 				'Content-Type'  => 'application/json',
 			],
 		];
-		
+
 		$response = wp_remote_request( $url, $args );
 		$code     = wp_remote_retrieve_response_code( $response );
-		
+
 		if ( ! is_wp_error( $response ) && 200 === $code ) {
 			self::invalidate_cache();
 			Maps::invalidate_cache();
 			return true;
 		}
-		
+
 		$this->log_error(
 			'Failed to delete the layout from the service.',
 			[
@@ -296,7 +306,7 @@ class Layouts {
 				'response' => $response,
 			]
 		);
-		
+
 		return false;
 	}
 }
