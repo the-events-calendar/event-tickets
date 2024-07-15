@@ -20,6 +20,7 @@ use Tribe__Tickets__Attendee_Repository as Attendee_Repository;
 use Tribe__Tickets__Tickets;
 use WP_Post;
 use WP_Query;
+use TEC\Tickets\Seating\Tables\Sessions;
 
 /**
  * Class Controller
@@ -55,6 +56,13 @@ class Controller extends Controller_Contract {
 	 * @var Session
 	 */
 	private Session $session;
+	
+	/**
+	 * A reference to Sessions Table handler.
+	 *
+	 * @var Sessions
+	 */
+	private Sessions $sessions;
 
 	/**
 	 * Controller constructor.
@@ -66,19 +74,22 @@ class Controller extends Controller_Contract {
 	 * @param Cart         $cart         The Cart data handler.
 	 * @param Reservations $reservations The Reservations object.
 	 * @param Session      $session      The seat selection session handler.
+	 * @param Sessions     $sessions     A reference to the Sessions table handler.
 	 */
 	public function __construct(
 		Container $container,
 		Attendee $attendee,
 		Cart $cart,
 		Reservations $reservations,
-		Session $session
+		Session $session,
+		Sessions $sessions
 	) {
 		parent::__construct( $container );
 		$this->attendee     = $attendee;
 		$this->cart         = $cart;
 		$this->reservations = $reservations;
 		$this->session      = $session;
+		$this->sessions     = $sessions;
 	}
 
 	/**
@@ -203,7 +214,7 @@ class Controller extends Controller_Contract {
 		remove_action( 'init', [ $this, 'register_seat_reports' ] );
 		remove_filter( 'tec_tickets_commerce_reports_tabbed_page_title', [ $this, 'filter_seat_tab_title' ] );
 
-		remove_action( 'tec_tickets_commerce_flag_action_generated_attendee', [ $this, 'confirm_all_reservations' ] );
+		remove_action( 'tec_tickets_commerce_flag_action_generated_attendees', [ $this, 'confirm_all_reservations' ] );
 	}
 
 	/**
@@ -233,7 +244,7 @@ class Controller extends Controller_Contract {
 	 * @return void
 	 */
 	public function save_seat_data_for_attendee( $attendee, $ticket, $order, $new_status, $old_status, $item, $i ): void {
-		$this->cart->save_seat_data_for_attendee( $attendee, $ticket, $order, $new_status, $old_status, $item, $i );
+		$this->cart->save_seat_data_for_attendee( $attendee, $ticket, $order, $new_status, $old_status, $item, $i, $this->session, $this->sessions );
 	}
 
 	/**
