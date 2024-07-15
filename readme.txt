@@ -4,7 +4,7 @@ Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, raf
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
 Requires at least: 6.3
 Tested up to: 6.6
-Stable tag: 5.11.1
+Stable tag: 5.12.0
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -205,8 +205,9 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.11.1] TBD =
+= [5.12.0] TBD =
 
+* Fix - ensure Stripe refunds are recorded in WordPress. [ET-2142]
 
 = [5.11.0.5] 2024-07-11 =
 
@@ -217,6 +218,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 * Fix - In installations where the plugins or wp-content directories were symbolic linked, assets would fail to be located.[TECTRIA-91]
 * Language - 0 new strings added, 0 updated, 0 fuzzied, and 0 obsoleted
+
 
 = [5.11.0.3] 2024-06-14 =
 

@@ -1,46 +1,51 @@
 <?php
-namespace TEC\Tickets\Commerce\Status;
-
 /**
- * Class Created.
+ * Status: Unsupported
  *
- * This is the first Status any order will have.
- *
- * Used for handling the Orders that were Created in the Tickets Commerce System but never got to Pending.
- * Normally the change to Pending will depend on the Gateway.
- *
- * @since   5.1.9
+ * @since TBD
  *
  * @package TEC\Tickets\Commerce\Status
  */
-class Created extends Status_Abstract {
+
+namespace TEC\Tickets\Commerce\Status;
+
+/**
+ * Class Unsupported.
+ *
+ * A status that is not supported, but avoids fatals.
+ *
+ * @since   TBD
+ *
+ * @package TEC\Tickets\Commerce\Status
+ */
+class Unsupported extends Status_Abstract {
 	/**
 	 * Slug for this Status.
 	 *
-	 * @since 5.1.9
+	 * @since TBD
 	 *
 	 * @var string
 	 */
-	const SLUG = 'created';
+	const SLUG = 'unknown';
 
 	/**
 	 * {@inheritdoc}
 	 */
 	public function get_name() {
-		return __( 'Created', 'event-tickets' );
+		return __( 'Not Supported', 'event-tickets' );
 	}
 
 	/**
 	 * {@inheritdoc}
+	 *
+	 * @var string[]
 	 */
-	protected $flags = [
-		'incomplete',
-		'backfill_purchaser',
-		'trigger_option',
-	];
+	protected $flags = [];
 
 	/**
 	 * {@inheritdoc}
+	 *
+	 * @var array
 	 */
 	protected $wp_arguments = [
 		'public'                    => false,

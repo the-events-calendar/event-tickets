@@ -137,7 +137,8 @@ abstract class Status_Abstract implements Status_Interface {
 		$current_status = tribe( Status_Handler::class )->get_by_wp_slug( $order->post_status );
 
 		if ( $current_status->get_wp_slug() === $new_status->get_wp_slug() ) {
-			return false;
+			// Allow from refunded to refunded in order to support multiple refunds.
+			return 'refunded' === $current_status->get_slug();
 		}
 
 		if ( $current_status->is_final() ) {

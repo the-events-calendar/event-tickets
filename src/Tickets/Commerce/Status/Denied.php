@@ -45,7 +45,7 @@ class Denied extends Status_Abstract {
 	 * {@inheritdoc}
 	 */
 	public function get_name() {
-		return __( 'Denied', 'event-tickets' );
+		return __( 'Failed', 'event-tickets' );
 	}
 
 	/**
