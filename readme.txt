@@ -3,7 +3,7 @@
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, GeoffBel, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
 Requires at least: 6.3
-Tested up to: 6.5.3
+Tested up to: 6.6
 Stable tag: 5.11.1
 Requires PHP: 7.4
 License: GPLv2 or later
@@ -191,14 +191,37 @@ The following add-ons are available for The Events Calendar:
 
 We've got a [LoopedIn](https://evnt.is/ideas) page where we're actively watching for feature ideas from the community. Vote up existing feature requests or add your own, and help us shape the future of the products business in a way that best meets the community's needs.
 
+= Found a security vulnerability? =
+
+Make sure you are reporting in a safe and responsible way. We take security very seriously. If you discover a security issue, please bring it to our attention right away! Below you will find all the methods to report security vulnerabilities:
+
+* [Report security bugs through the Patchstack Vulnerability Disclosure Program](https://patchstack.com/database/vdp/event-tickets)
+* Reach out directly to us on `security [at] stellarwp.com`.
+
 = I've still got questions. Where can I find answers? =
 
 Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on using, tweaking, and troubleshooting our plugins.
 
+
 == Changelog ==
 
-
 = [5.11.1] TBD =
+
+
+= [5.11.0.5] 2024-07-11 =
+
+* Security - Prevent an unauthorized disconnection of Payment Method for Tickets Commerce [SVUL-4]
+* Fix - Ensure compatibility with WordPress 6.6 for removed polyfill `regenerator-runtime`. [TECTRIA-149]
+
+= [5.11.0.4] 2024-06-18 =
+
+* Fix - In installations where the plugins or wp-content directories were symbolic linked, assets would fail to be located.[TECTRIA-91]
+* Language - 0 new strings added, 0 updated, 0 fuzzied, and 0 obsoleted
+
+= [5.11.0.3] 2024-06-14 =
+
+* Fix - Issue where scripts would not be enqueued as modules. [TECTRIA-86]
+* Language - 0 new strings added, 22 updated, 0 fuzzied, and 0 obsoleted
 
 = [5.11.0.2] 2024-06-14 =
 
