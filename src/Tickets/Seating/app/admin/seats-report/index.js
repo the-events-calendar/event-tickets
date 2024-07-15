@@ -56,8 +56,8 @@ function registerActions(iframe) {
 			sendPostMessage(iframe, OUTBOUND_SEAT_TYPE_TICKETS, seatTypeMap);
 			seatTypeMapSent = true;
 		}
-		const attendees = await fetchAttendees();
-		sendPostMessage(iframe, OUTBOUND_EVENT_ATTENDEES, attendees);
+		const data = await fetchAttendees();
+		sendPostMessage(iframe, OUTBOUND_EVENT_ATTENDEES, data?.attendees || []);
 	});
 }
 
@@ -71,6 +71,4 @@ onReady( async () => {
 	// Register the actions before initializing the iframe to avoid race conditions.
 	registerActions(iframe);
 	await initServiceIframe(iframe);
-
-	sendPostMessage(iframe, OUTBOUND_SEAT_TYPE_TICKETS, seatTypeMap);
 })
