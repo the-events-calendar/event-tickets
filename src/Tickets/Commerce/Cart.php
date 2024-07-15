@@ -321,7 +321,7 @@ class Cart {
 			$expire = 1;
 		}
 
-		$is_cookie_set = setcookie( static::$cart_hash_cookie_name, $value ?? '', $expire, COOKIEPATH ?: '/', COOKIE_DOMAIN, is_ssl(), true );
+		$is_cookie_set = setcookie( static::$cart_hash_cookie_name, $value ?? '', $expire, COOKIEPATH ?: '/', COOKIE_DOMAIN, is_ssl(), true ); // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.cookies_setcookie
 
 		if ( $is_cookie_set ) {
 			// Overwrite local variable, so we can use it right away.
