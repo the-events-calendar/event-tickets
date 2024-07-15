@@ -137,6 +137,10 @@ class Controller extends Controller_Contract {
 		} else {
 			$this->container->register( Frontend::class );
 		}
+
+		if ( tec_tickets_commerce_is_enabled() ) {
+			$this->container->register( Commerce\Controller::class );
+		}
 	}
 
 	/**
