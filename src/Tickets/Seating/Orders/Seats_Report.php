@@ -129,7 +129,7 @@ class Seats_Report extends Report_Abstract {
 		$this->template_vars = [
 			'post'       => $post,
 			'post_id'    => $post_id,
-			'iframe_url' => tribe( Service::class )->get_seat_report_url( $post_id ),
+			'iframe_url' => tribe( Service::class )->get_seat_report_url( $token, $post_id ),
 			'token'      => $token,
 			'error'      => $ephemeral_token instanceof WP_Error ? $ephemeral_token->get_error_message() : '',
 		];

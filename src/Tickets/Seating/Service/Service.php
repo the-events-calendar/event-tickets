@@ -236,8 +236,8 @@ class Service {
 	public function get_map_edit_url( string $token, string $map_id ): string {
 		return add_query_arg(
 			[
-				'token'            => urlencode( $token ),
-				'mapId'            => urlencode( $map_id ),
+				'token' => urlencode( $token ),
+				'mapId' => urlencode( $map_id ),
 			],
 			$this->get_frontend_url( '/embed/seat-map/' )
 		);
@@ -276,9 +276,10 @@ class Service {
 	public function get_layout_edit_url( string $token, string $layout_id ): string {
 		$associated_posts = Layouts::get_associated_posts_by_id( $layout_id );
 
-		return add_query_arg( [
-				'token'    => urlencode( $token ),
-				'layoutId' => urlencode( $layout_id ),
+		return add_query_arg(
+			[
+				'token'            => urlencode( $token ),
+				'layoutId'         => urlencode( $layout_id ),
 				'associatedEvents' => urlencode( $associated_posts ),
 			],
 			$this->get_frontend_url( '/embed/seat-layout/' )
@@ -378,14 +379,15 @@ class Service {
 	 *
 	 * @since TBD
 	 *
-	 * @param int $post_id The post ID of the post to get the seat report for.
+	 * @param string $token   The ephemeral token used to secure the iframe communication with the service.
+	 * @param int    $post_id The post ID of the post to get the seat report for.
 	 *
 	 * @return string The seat report URL.
 	 */
-	public function get_seat_report_url( int $post_id ): string {
+	public function get_seat_report_url( string $token, int $post_id ): string {
 		return add_query_arg(
 			[
-				'token'    => urlencode( $this->get_ephemeral_token() ),
+				'token'    => urlencode( $token ),
 				'eventId'  => urlencode( $this->get_post_uuid( $post_id ) ),
 				'layoutId' => urlencode( get_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, true ) ),
 			],
