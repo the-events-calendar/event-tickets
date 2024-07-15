@@ -42,7 +42,7 @@ class Ajax_Test extends Controller_Test_Case {
 				$modules[ Module::class ] = tribe( Module::class )->plugin_name;
 
 				return $modules;
-			} 
+			}
 		);
 
 		// Reset Data_API object, so it sees Tribe Commerce.
@@ -77,14 +77,14 @@ class Ajax_Test extends Controller_Test_Case {
 				if ( $action === 'seat_types_by_layout_id' ) {
 					return '8298ff6616';
 				}
-			
+
 				return wp_create_nonce( $action );
 			},
-			true 
+			true
 		);
-		
+
 		$controller = $this->make_controller();
-		
+
 		$this->assertMatchesCodeSnapshot( var_export( $controller->get_urls(), true ) );
 	}
 
@@ -103,7 +103,7 @@ class Ajax_Test extends Controller_Test_Case {
 			function ( $data ) use ( &$sent_data ) {
 				$sent_data = $data;
 			},
-			true 
+			true
 		);
 
 		$this->make_controller()->register();
@@ -129,7 +129,7 @@ class Ajax_Test extends Controller_Test_Case {
 			function ( $data ) use ( &$sent_data ) {
 				$sent_data = $data;
 			},
-			true 
+			true
 		);
 
 		$this->make_controller()->register();
@@ -154,7 +154,7 @@ class Ajax_Test extends Controller_Test_Case {
 			function ( $data ) use ( &$sent_data ) {
 				$sent_data = $data;
 			},
-			true 
+			true
 		);
 
 		$this->make_controller()->register();
@@ -182,7 +182,7 @@ class Ajax_Test extends Controller_Test_Case {
 			function ( $data ) use ( &$sent_data ) {
 				$sent_data = $data;
 			},
-			true 
+			true
 		);
 
 		$this->make_controller()->register();
@@ -209,7 +209,7 @@ class Ajax_Test extends Controller_Test_Case {
 			function ( $data ) use ( &$sent_data ) {
 				$sent_data = $data;
 			},
-			true 
+			true
 		);
 		$this->given_many_seat_types_in_db_for_layout( 'some-layout', 10 );
 
@@ -235,7 +235,7 @@ class Ajax_Test extends Controller_Test_Case {
 				$sent_data = $data;
 				$sent_code = $code;
 			},
-			true 
+			true
 		);
 
 		do_action( 'wp_ajax_' . Ajax::ACTION_INVALIDATE_MAPS_LAYOUTS_CACHE );
@@ -275,7 +275,7 @@ class Ajax_Test extends Controller_Test_Case {
 					'mapId'         => 'some-map-3',
 					'screenshotUrl' => 'https://example.com/some-layouts-3.png',
 				],
-			] 
+			]
 		);
 
 		\TEC\Tickets\Seating\Tables\Seat_Types::insert_many(
@@ -301,7 +301,7 @@ class Ajax_Test extends Controller_Test_Case {
 					'map'    => 'some-map-3',
 					'layout' => 'some-layout-3',
 				],
-			] 
+			]
 		);
 	}
 
@@ -333,7 +333,7 @@ class Ajax_Test extends Controller_Test_Case {
 					'seats'         => 30,
 					'screenshotUrl' => 'https://example.com/some-map-3.png',
 				],
-			] 
+			]
 		);
 	}
 
@@ -353,7 +353,7 @@ class Ajax_Test extends Controller_Test_Case {
 				$sent_data = $data;
 				$sent_code = $code;
 			},
-			true 
+			true
 		);
 
 		do_action( 'wp_ajax_' . Ajax::ACTION_INVALIDATE_MAPS_LAYOUTS_CACHE );
@@ -380,7 +380,7 @@ class Ajax_Test extends Controller_Test_Case {
 			function () use ( &$success ) {
 				$success = true;
 			},
-			true 
+			true
 		);
 
 		do_action( 'wp_ajax_' . Ajax::ACTION_INVALIDATE_MAPS_LAYOUTS_CACHE );
@@ -410,7 +410,7 @@ class Ajax_Test extends Controller_Test_Case {
 				$sent_data = $data;
 				$sent_code = $code;
 			},
-			true 
+			true
 		);
 
 		do_action( 'wp_ajax_' . Ajax::ACTION_INVALIDATE_MAPS_LAYOUTS_CACHE );
@@ -441,7 +441,7 @@ class Ajax_Test extends Controller_Test_Case {
 				$sent_data = $data;
 				$sent_code = $code;
 			},
-			true 
+			true
 		);
 
 		do_action( 'wp_ajax_' . Ajax::ACTION_INVALIDATE_MAPS_LAYOUTS_CACHE );
@@ -468,7 +468,7 @@ class Ajax_Test extends Controller_Test_Case {
 				$sent_data = $data;
 				$sent_code = $code;
 			},
-			true 
+			true
 		);
 
 		do_action( 'wp_ajax_' . Ajax::ACTION_INVALIDATE_LAYOUTS_CACHE );
@@ -497,7 +497,7 @@ class Ajax_Test extends Controller_Test_Case {
 				$sent_data = $data;
 				$sent_code = $code;
 			},
-			true 
+			true
 		);
 
 		do_action( 'wp_ajax_' . Ajax::ACTION_INVALIDATE_LAYOUTS_CACHE );
@@ -524,7 +524,7 @@ class Ajax_Test extends Controller_Test_Case {
 			function () use ( &$success ) {
 				$success = true;
 			},
-			true 
+			true
 		);
 
 		do_action( 'wp_ajax_' . Ajax::ACTION_INVALIDATE_LAYOUTS_CACHE );
@@ -554,7 +554,7 @@ class Ajax_Test extends Controller_Test_Case {
 				$sent_data = $data;
 				$sent_code = $code;
 			},
-			true 
+			true
 		);
 
 		do_action( 'wp_ajax_' . Ajax::ACTION_INVALIDATE_LAYOUTS_CACHE );
@@ -565,7 +565,7 @@ class Ajax_Test extends Controller_Test_Case {
 		$this->assertCount( 3, iterator_to_array( Layouts::fetch_all() ) );
 		$this->assertCount( 3, iterator_to_array( Seat_Types_Table::fetch_all() ) );
 	}
-	
+
 	public function test_delete_map_from_service_with_invalid_nonce(): void {
 		$this->become_administator();
 		$invalid_nonce           = wp_create_nonce( 'something_else' );
@@ -573,9 +573,9 @@ class Ajax_Test extends Controller_Test_Case {
 		$_POST['_ajax_nonce']    = $invalid_nonce;
 		$sent_data               = null;
 		$sent_code               = null;
-		
+
 		$this->make_controller()->register();
-		
+
 		$this->set_fn_return(
 			'wp_send_json_error',
 			function ( $data, $code ) use ( &$sent_data, &$sent_code ) {
@@ -584,13 +584,13 @@ class Ajax_Test extends Controller_Test_Case {
 			},
 			true
 		);
-		
+
 		do_action( 'wp_ajax_' . Ajax::ACTION_DELETE_MAP );
-		
+
 		$this->assertEquals( [ 'error' => 'Nonce verification failed' ], $sent_data );
 		$this->assertEquals( 403, $sent_code );
 	}
-	
+
 	public function test_delete_map_from_service_with_invalid_map_id(): void {
 		$this->become_administator();
 		$nonce                   = Ajax::NONCE_ACTION;
@@ -598,9 +598,9 @@ class Ajax_Test extends Controller_Test_Case {
 		$_POST['_ajax_nonce']    = wp_create_nonce( $nonce );
 		$sent_data               = null;
 		$sent_code               = null;
-		
+
 		$this->make_controller()->register();
-		
+
 		$this->set_fn_return(
 			'wp_send_json_error',
 			function ( $data, $code ) use ( &$sent_data, &$sent_code ) {
@@ -609,13 +609,13 @@ class Ajax_Test extends Controller_Test_Case {
 			},
 			true
 		);
-		
+
 		do_action( 'wp_ajax_' . Ajax::ACTION_DELETE_MAP );
-		
+
 		$this->assertEquals( [ 'error' => 'No map ID provided' ], $sent_data );
 		$this->assertEquals( 400, $sent_code );
 	}
-	
+
 	public function test_delete_map_from_service_with_success() {
 		$this->given_maps_and_layouts_in_db();
 		$this->become_administator();
@@ -626,11 +626,11 @@ class Ajax_Test extends Controller_Test_Case {
 		$fetch_url               = null;
 		$data                    = null;
 		$success                 = null;
-		
+
 		$this->make_controller()->register();
-		
+
 		tribe_update_option( 'events_tickets_seating_access_token', 'some-token' );
-		
+
 		$this->set_fn_return(
 			'wp_send_json_success',
 			function () use ( &$success ) {
@@ -638,7 +638,7 @@ class Ajax_Test extends Controller_Test_Case {
 			},
 			true
 		);
-		
+
 		add_filter(
 			'pre_http_request',
 			function ( $pre, $args, $url ) use ( &$fetch_url, &$data ) {
@@ -649,9 +649,9 @@ class Ajax_Test extends Controller_Test_Case {
 			10,
 			3
 		);
-		
+
 		do_action( 'wp_ajax_' . Ajax::ACTION_DELETE_MAP );
-		
+
 		$this->assertTrue( $success );
 		$this->assertMatchesJsonSnapshot(
 			wp_json_encode(
@@ -661,11 +661,11 @@ class Ajax_Test extends Controller_Test_Case {
 					'method'    => $data['method'],
 					'headers'   => $data['headers'],
 				],
-				JSON_SNAPSHOT_OPTIONS 
+				JSON_SNAPSHOT_OPTIONS
 			)
 		);
 	}
-	
+
 	public function test_delete_map_from_service_with_failed() {
 		$this->given_maps_and_layouts_in_db();
 		$this->become_administator();
@@ -676,11 +676,11 @@ class Ajax_Test extends Controller_Test_Case {
 		$success                 = null;
 		$sent_code               = null;
 		$sent_data               = null;
-		
+
 		$this->make_controller()->register();
-		
+
 		tribe_update_option( 'events_tickets_seating_access_token', 'some-token' );
-		
+
 		$this->set_fn_return(
 			'wp_send_json_error',
 			function ( $data, $code ) use ( &$sent_data, &$sent_code, &$success ) {
@@ -690,16 +690,16 @@ class Ajax_Test extends Controller_Test_Case {
 			},
 			true
 		);
-		
+
 		add_filter(
 			'pre_http_request',
 			function () {
 				return [ 'response' => [ 'code' => 500 ] ];
 			},
 		);
-		
+
 		do_action( 'wp_ajax_' . Ajax::ACTION_DELETE_MAP );
-		
+
 		$this->assertMatchesJsonSnapshot(
 			wp_json_encode(
 				[
@@ -711,7 +711,7 @@ class Ajax_Test extends Controller_Test_Case {
 			)
 		);
 	}
-	
+
 	public function test_delete_layout_from_service_with_invalid_nonce() {
 		$this->become_administator();
 		$invalid_nonce           = wp_create_nonce( 'something_else' );
@@ -719,9 +719,9 @@ class Ajax_Test extends Controller_Test_Case {
 		$_POST['_ajax_nonce']    = $invalid_nonce;
 		$sent_data               = null;
 		$sent_code               = null;
-		
+
 		$this->make_controller()->register();
-		
+
 		$this->set_fn_return(
 			'wp_send_json_error',
 			function ( $data, $code ) use ( &$sent_data, &$sent_code ) {
@@ -730,13 +730,13 @@ class Ajax_Test extends Controller_Test_Case {
 			},
 			true
 		);
-		
+
 		do_action( 'wp_ajax_' . Ajax::ACTION_DELETE_LAYOUT );
-		
+
 		$this->assertEquals( [ 'error' => 'Nonce verification failed' ], $sent_data );
 		$this->assertEquals( 403, $sent_code );
 	}
-	
+
 	public function test_delete_layout_from_service_with_invalid_params() {
 		$this->become_administator();
 		$nonce                   = Ajax::NONCE_ACTION;
@@ -744,9 +744,9 @@ class Ajax_Test extends Controller_Test_Case {
 		$_POST['_ajax_nonce']    = wp_create_nonce( $nonce );
 		$sent_data               = null;
 		$sent_code               = null;
-		
+
 		$this->make_controller()->register();
-		
+
 		$this->set_fn_return(
 			'wp_send_json_error',
 			function ( $data, $code ) use ( &$sent_data, &$sent_code ) {
@@ -755,15 +755,16 @@ class Ajax_Test extends Controller_Test_Case {
 			},
 			true
 		);
-		
+
 		do_action( 'wp_ajax_' . Ajax::ACTION_DELETE_LAYOUT );
-		
-		$this->assertEquals( [ 'error' => 'No layout ID or map ID provided.' ], $sent_data );
+
+		$this->assertEquals( [ 'error' => 'No layout ID or map ID provided' ], $sent_data );
 		$this->assertEquals( 400, $sent_code );
 	}
-	
+
 	public function test_delete_layout_from_service_with_success() {
 		$this->given_maps_and_layouts_in_db();
+		$this->set_oauth_token( 'auth-token' );
 		$this->become_administator();
 		$nonce                   = Ajax::NONCE_ACTION;
 		$_REQUEST['_ajax_nonce'] = wp_create_nonce( $nonce );
@@ -773,7 +774,7 @@ class Ajax_Test extends Controller_Test_Case {
 		$success                 = null;
 		$fetch_url               = null;
 		$data                    = null;
-		
+
 		$this->set_fn_return(
 			'wp_send_json_success',
 			function () use ( &$success ) {
@@ -781,7 +782,7 @@ class Ajax_Test extends Controller_Test_Case {
 			},
 			true
 		);
-		
+
 		add_filter(
 			'pre_http_request',
 			function ( $pre, $args, $url ) use ( &$fetch_url, &$data ) {
@@ -792,13 +793,13 @@ class Ajax_Test extends Controller_Test_Case {
 			10,
 			3
 		);
-		
+
 		$this->make_controller()->register();
-		
+
 		tribe_update_option( 'events_tickets_seating_access_token', 'some-token' );
-		
+
 		do_action( 'wp_ajax_' . Ajax::ACTION_DELETE_LAYOUT );
-		
+
 		$this->assertTrue( $success );
 		$this->assertMatchesJsonSnapshot(
 			wp_json_encode(
@@ -812,7 +813,7 @@ class Ajax_Test extends Controller_Test_Case {
 			)
 		);
 	}
-	
+
 	public function test_delete_layout_from_service_with_failed() {
 		$this->given_maps_and_layouts_in_db();
 		$this->become_administator();
@@ -824,11 +825,11 @@ class Ajax_Test extends Controller_Test_Case {
 		$success                 = null;
 		$sent_code               = null;
 		$sent_data               = null;
-		
+
 		tribe_update_option( 'events_tickets_seating_access_token', 'some-token' );
-		
+
 		$this->make_controller()->register();
-		
+
 		$this->set_fn_return(
 			'wp_send_json_error',
 			function ( $data, $code ) use ( &$sent_data, &$sent_code, &$success ) {
@@ -838,16 +839,16 @@ class Ajax_Test extends Controller_Test_Case {
 			},
 			true
 		);
-		
+
 		add_filter(
 			'pre_http_request',
 			function () {
 				return [ 'response' => [ 'code' => 500 ] ];
 			},
 		);
-		
+
 		do_action( 'wp_ajax_' . Ajax::ACTION_DELETE_LAYOUT );
-		
+
 		$this->assertMatchesJsonSnapshot(
 			wp_json_encode(
 				[
@@ -875,10 +876,10 @@ class Ajax_Test extends Controller_Test_Case {
 							'1234567890',
 							'0987654321',
 						],
-					] 
+					]
 				);
 			},
-			true 
+			true
 		);
 		$wp_send_json_success = null;
 		$this->set_fn_return(
@@ -886,7 +887,7 @@ class Ajax_Test extends Controller_Test_Case {
 			function () use ( &$wp_send_json_success ) {
 				$wp_send_json_success = true;
 			},
-			true 
+			true
 		);
 		$_REQUEST['_ajax_nonce'] = wp_create_nonce( Ajax::NONCE_ACTION );
 		$sessions                = tribe( Sessions::class );
@@ -902,7 +903,7 @@ class Ajax_Test extends Controller_Test_Case {
 				'1234567890',
 				'0987654321',
 			],
-			$sessions->get_reservations_for_token( 'test-token' ) 
+			$sessions->get_reservations_for_token( 'test-token' )
 		);
 	}
 
@@ -922,10 +923,10 @@ class Ajax_Test extends Controller_Test_Case {
 							'1234567890',
 							'0987654321',
 						],
-					] 
+					]
 				);
 			},
-			true 
+			true
 		);
 		$wp_send_json_error_data = null;
 		$wp_send_json_error_code = null;
@@ -935,7 +936,7 @@ class Ajax_Test extends Controller_Test_Case {
 				$wp_send_json_error_data = $data;
 				$wp_send_json_error_code = $code;
 			},
-			true 
+			true
 		);
 		$sessions = tribe( Sessions::class );
 		$sessions->upsert( 'test-token', 23, time() + 10 );
@@ -993,7 +994,7 @@ class Ajax_Test extends Controller_Test_Case {
 				$wp_send_json_error_data = $data;
 				$wp_send_json_error_code = $code;
 			},
-			true 
+			true
 		);
 		$sessions = tribe( Sessions::class );
 		$sessions->upsert( 'test-token', 23, time() + 10 );
@@ -1008,7 +1009,7 @@ class Ajax_Test extends Controller_Test_Case {
 
 				return $json_body;
 			},
-			true 
+			true
 		);
 
 		$this->make_controller()->register();
@@ -1028,7 +1029,7 @@ class Ajax_Test extends Controller_Test_Case {
 					'1234567890',
 					'0987654321',
 				],
-			] 
+			]
 		);
 
 		do_action( 'wp_ajax_nopriv_' . Ajax::ACTION_POST_RESERVATIONS );
@@ -1040,7 +1041,7 @@ class Ajax_Test extends Controller_Test_Case {
 		$json_body = json_encode(
 			[
 				'token' => 'test-token',
-			] 
+			]
 		);
 
 		do_action( 'wp_ajax_nopriv_' . Ajax::ACTION_POST_RESERVATIONS );
@@ -1053,7 +1054,7 @@ class Ajax_Test extends Controller_Test_Case {
 			[
 				'token'        => 'test-token',
 				'reservations' => 'not-an-array',
-			] 
+			]
 		);
 
 		do_action( 'wp_ajax_nopriv_' . Ajax::ACTION_POST_RESERVATIONS );
@@ -1072,7 +1073,7 @@ class Ajax_Test extends Controller_Test_Case {
 				$wp_send_json_error_data = $data;
 				$wp_send_json_error_code = $code;
 			},
-			true 
+			true
 		);
 		$this->set_fn_return(
 			'file_get_contents',
@@ -1088,10 +1089,10 @@ class Ajax_Test extends Controller_Test_Case {
 							'1234567890',
 							'0987654321',
 						],
-					] 
+					]
 				);
 			},
-			true 
+			true
 		);
 		$_REQUEST['_ajax_nonce'] = wp_create_nonce( Ajax::NONCE_ACTION );
 
@@ -1115,7 +1116,7 @@ class Ajax_Test extends Controller_Test_Case {
 			function () use ( &$wp_send_json_success ) {
 				$wp_send_json_success = true;
 			},
-			true 
+			true
 		);
 		$_REQUEST['_ajax_nonce'] = wp_create_nonce( Ajax::NONCE_ACTION );
 		$_REQUEST['token']       = 'test-token';
@@ -1137,7 +1138,7 @@ class Ajax_Test extends Controller_Test_Case {
 				'1234567890',
 				'0987654321',
 			],
-			$sessions->get_reservations_for_token( 'test-token' ) 
+			$sessions->get_reservations_for_token( 'test-token' )
 		);
 		$this->set_oauth_token( 'auth-token' );
 		$this->mock_wp_remote(
@@ -1151,7 +1152,7 @@ class Ajax_Test extends Controller_Test_Case {
 					[
 						'eventId' => 'test-post-uuid',
 						'ids'     => [ '1234567890', '0987654321' ],
-					] 
+					]
 				),
 			],
 			[
@@ -1180,7 +1181,7 @@ class Ajax_Test extends Controller_Test_Case {
 				$wp_send_json_error_data = $data;
 				$wp_send_json_error_code = $code;
 			},
-			true 
+			true
 		);
 		$_REQUEST['_ajax_nonce'] = wp_create_nonce( Ajax::NONCE_ACTION );
 		$_REQUEST['token']       = 'test-token';
@@ -1202,7 +1203,7 @@ class Ajax_Test extends Controller_Test_Case {
 				'1234567890',
 				'0987654321',
 			],
-			$sessions->get_reservations_for_token( 'test-token' ) 
+			$sessions->get_reservations_for_token( 'test-token' )
 		);
 		$this->set_oauth_token( 'auth-token' );
 		$this->mock_wp_remote(
@@ -1216,7 +1217,7 @@ class Ajax_Test extends Controller_Test_Case {
 					[
 						'eventId' => 'test-post-uuid',
 						'ids'     => [ '1234567890', '0987654321' ],
-					] 
+					]
 				),
 			],
 			[
@@ -1245,7 +1246,7 @@ class Ajax_Test extends Controller_Test_Case {
 				$wp_send_json_error_data = $data;
 				$wp_send_json_error_code = $code;
 			},
-			true 
+			true
 		);
 		$_REQUEST['_ajax_nonce'] = wp_create_nonce( Ajax::NONCE_ACTION );
 		$_REQUEST['token']       = 'test-token';
@@ -1265,7 +1266,7 @@ class Ajax_Test extends Controller_Test_Case {
 					[
 						'eventId' => 'test-post-uuid',
 						'ids'     => [ '1234567890', '0987654321' ],
-					] 
+					]
 				),
 			],
 			[
@@ -1293,7 +1294,7 @@ class Ajax_Test extends Controller_Test_Case {
 				$wp_send_json_error_data = $data;
 				$wp_send_json_error_code = $code;
 			},
-			true 
+			true
 		);
 
 		$this->make_controller()->register();
@@ -1348,7 +1349,7 @@ class Ajax_Test extends Controller_Test_Case {
 				$wp_send_json_error_data = $data;
 				$wp_send_json_error_code = $code;
 			},
-			true 
+			true
 		);
 		$_REQUEST['_ajax_nonce'] = wp_create_nonce( Ajax::NONCE_ACTION );
 		update_post_meta( 23, Meta::META_KEY_UUID, 'test-post-uuid' );
@@ -1368,7 +1369,7 @@ class Ajax_Test extends Controller_Test_Case {
 				'1234567890',
 				'0987654321',
 			],
-			$sessions->get_reservations_for_token( 'test-token' ) 
+			$sessions->get_reservations_for_token( 'test-token' )
 		);
 
 		$this->make_controller()->register();
@@ -1415,7 +1416,7 @@ class Ajax_Test extends Controller_Test_Case {
 				$httponly
 			) use (
 				$cookie_name,
-				&$setcookie_call 
+				&$setcookie_call
 			) {
 				$setcookie_call = true;
 
@@ -1429,7 +1430,7 @@ class Ajax_Test extends Controller_Test_Case {
 
 				return true;
 			},
-			true 
+			true
 		);
 		$post_id = self::factory()->post->create();
 		/** @var \Tribe__Tickets__Tickets_Handler $tickets_handler */
