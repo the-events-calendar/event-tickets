@@ -86,7 +86,7 @@ class Sessions extends Table {
 
 			return (int) DB::query( $query );
 		} catch ( \Exception $e ) {
-			( new self )->log_error(
+			( new self() )->log_error(
 				'Failed to remove expired sessions.',
 				[
 					'source' => __METHOD__,
@@ -264,11 +264,12 @@ class Sessions extends Table {
 			return false;
 		}
 
-		try {/*
-		 * The UPDATE operation will return the number of updated rows.
-		 * A value of 0 means that the row was either not found, or it did not need to be updated.
-		 * We want to fail the update if the row did not exist in the first place.
-		 */
+		try {
+			/*
+			* The UPDATE operation will return the number of updated rows.
+			* A value of 0 means that the row was either not found, or it did not need to be updated.
+			* We want to fail the update if the row did not exist in the first place.
+			*/
 			$exists = DB::get_var(
 				DB::prepare(
 					'SELECT token FROM %i WHERE token = %s',
@@ -276,20 +277,22 @@ class Sessions extends Table {
 					$token
 				)
 			);
+
 			if ( empty( $exists ) ) {
 				return false;
-			}/*
+			}
+
+			/*
 			 * The result of this query might be 0 to indicate that the row was not updated.
 			 * We want to fail the update if the row was not updated.
 			 */
-
 			return DB::update(
-					self::table_name(),
-					[ 'reservations' => $reservations_json ],
-					[ 'token' => $token ],
-					[ '%s' ],
-					[ '%s' ]
-				) !== false;
+				self::table_name(),
+				[ 'reservations' => $reservations_json ],
+				[ 'token' => $token ],
+				[ '%s' ],
+				[ '%s' ]
+			) !== false;
 		} catch ( \Exception $e ) {
 			$this->log_error(
 				'Failed to update the reservations for the token.',
