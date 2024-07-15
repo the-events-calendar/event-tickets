@@ -9,11 +9,9 @@
 
 namespace TEC\Tickets\Seating\Commerce;
 
-use Closure;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Commerce\Cart;
-use TEC\Tickets\Commerce\Checkout;
 use TEC\Tickets\Commerce\Module;
 
 /**
@@ -57,11 +55,11 @@ class Controller extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @parma array<string,string> $session_entries The entries from the cookie. A map from object ID to token.
+	 * @param array<string,string> $session_entries The entries from the cookie. A map from object ID to token.
 	 *
 	 * @return array<string,string> The entries from the cookie. A map from object ID to token.
 	 */
-	public function filter_timer_token_object_id_entries( $session_entries ):array {
+	public function filter_timer_token_object_id_entries( $session_entries ): array {
 		$tickets_commerce = tribe( Module::class );
 
 		if ( empty( $session_entries ) || ! $tickets_commerce->is_checkout_page() ) {
@@ -72,10 +70,10 @@ class Controller extends Controller_Contract {
 		// Get the post IDs in the cart.
 		global $wpdb;
 		/** @var Cart $cart */
-		$cart          = tribe( Cart::class );
-		$cart_items    = array_keys( $cart->get_items_in_cart() );
+		$cart       = tribe( Cart::class );
+		$cart_items = array_keys( $cart->get_items_in_cart() );
 
-		if( empty( $cart_items ) ) {
+		if ( empty( $cart_items ) ) {
 			return [];
 		}
 
@@ -83,7 +81,7 @@ class Controller extends Controller_Contract {
 			implode( ',', array_fill( 0, count( $cart_items ), '%d' ) ),
 			...$cart_items
 		);
-		$cart_post_ids = DB::get_col(
+		$cart_post_ids       = DB::get_col(
 			DB::prepare(
 				"SELECT DISTINCT( meta_value ) FROM %i WHERE post_id IN ({$ticket_ids_interval}) AND meta_key = %s ",
 				$wpdb->postmeta,
@@ -104,9 +102,12 @@ class Controller extends Controller_Contract {
 
 		return array_combine(
 			$cart_and_session_ids,
-			array_map( static function ( $item ) use ( $session_entries ) {
-				return $session_entries[ $item ];
-			}, $cart_and_session_ids )
+			array_map(
+				static function ( $item ) use ( $session_entries ) {
+					return $session_entries[ $item ];
+				},
+				$cart_and_session_ids
+			)
 		);
 	}
 }
