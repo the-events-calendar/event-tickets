@@ -108,7 +108,7 @@ class Controller extends Controller_Contract {
 			add_action( 'init', [ $this, 'register_seat_reports' ] );
 			add_filter( 'tec_tickets_commerce_reports_tabbed_page_title', [ $this, 'filter_seat_tab_title' ], 10, 3 );
 		}
-		add_action( 'tec_tickets_commerce_flag_action_generated_attendee', [ $this, 'confirm_all_reservations' ] );
+		add_action( 'tec_tickets_commerce_flag_action_generated_attendees', [ $this, 'confirm_all_reservations' ] );
 	}
 	
 	/**
