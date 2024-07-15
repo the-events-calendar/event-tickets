@@ -234,13 +234,13 @@ class Service {
 	 * @return string The URL to load the Maps create and edit page.
 	 */
 	public function get_map_edit_url( string $token, string $map_id ): string {
-		$associated_posts = $this->layouts->get_associated_posts_by_id( $layout_id);
+		$associated_posts = $this->layouts->get_associated_posts_by_id( $layout_id );
 
 		return add_query_arg(
 			[
-				'token' => urlencode( $token ),
-				'mapId' => urlencode( $map_id ),
-				'associatedEvents' => urldecode( $associated_posts )
+				'token'            => urlencode( $token ),
+				'mapId'            => urlencode( $map_id ),
+				'associatedEvents' => urldecode( $associated_posts ),
 			],
 			$this->get_frontend_url( '/embed/seat-map/' )
 		);
