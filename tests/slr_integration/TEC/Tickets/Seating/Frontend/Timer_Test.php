@@ -61,6 +61,7 @@ class Timer_Test extends Controller_Test_Case {
 
 	public function test_render_with_args(): void {
 		$post_id = static::factory()->post->create();
+		update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'some-layout-id' );
 
 		$this->make_controller()->register();
 
@@ -72,7 +73,6 @@ class Timer_Test extends Controller_Test_Case {
 		$sessions->update_reservations( 'test-token', [ '1234567890', '0987654321' ] );
 
 		$token   = 'test-token';
-		$post_id = 23;
 
 		ob_start();
 		do_action( 'tec_tickets_seating_seat_selection_timer', $token, $post_id );
@@ -89,6 +89,7 @@ class Timer_Test extends Controller_Test_Case {
 
 	public function test_render_from_cookie_data(): void {
 		$post_id = static::factory()->post->create();
+		update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'some-layout-id' );
 
 		$this->make_controller()->register();
 
@@ -128,6 +129,7 @@ class Timer_Test extends Controller_Test_Case {
 
 	public function test_render_to_sync(): void {
 		$post_id = static::factory()->post->create();
+		update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'some-layout-id' );
 
 		$session = tribe( Session::class );
 		$session->add_entry( $post_id, 'test-token' );
@@ -155,6 +157,7 @@ class Timer_Test extends Controller_Test_Case {
 	public function test_render_to_sync_with_previous_render(): void {
 		$post_id = static::factory()->post->create();
 		update_post_meta( $post_id, Meta::META_KEY_UUID, 'test-post-uuid' );
+		update_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID, 'some-layout-id' );
 		$session  = tribe( Session::class );
 		$sessions = tribe( Sessions::class );
 
@@ -690,5 +693,102 @@ class Timer_Test extends Controller_Test_Case {
 		$this->assertEquals( [], $session->get_entries() );
 		$this->assertEquals( 500, $wp_send_json_error_code );
 		$this->assertEquals( [ 'error' => 'Failed to cancel the reservations' ], $wp_send_json_error_data );
+	}
+
+	public function test_will_not_render_if_post_not_ticketed(): void {
+		$post_id = self::factory()->post->create();
+
+		$controller = $this->make_controller();
+		$controller->register();
+		$this->assertEmpty( $controller->get_current_token() );
+		$this->assertEmpty( $controller->get_current_post_id() );
+
+		ob_start();
+		do_action( 'tec_tickets_seating_seat_selection_timer', 'test-token', $post_id );
+		$html = ob_get_clean();
+
+		$this->assertEmpty( $html );
+		$this->assertEmpty( $controller->get_current_token() );
+		$this->assertEmpty( $controller->get_current_post_id() );
+
+		ob_start();
+		// Render to sync.
+		$controller->render_to_sync();
+		$render_to_sync_html = ob_get_clean();
+
+		$this->assertEmpty( $render_to_sync_html );
+		$this->assertEmpty( $controller->get_current_token() );
+		$this->assertEmpty( $controller->get_current_post_id() );
+	}
+
+	public function test_will_not_render_if_seating_not_enabled_on_post(): void {
+		$post_id = self::factory()->post->create();
+		$ticket  = $this->create_tc_ticket( $post_id, 10 );
+		// Ensure Seat Selection is not enabled on the post.
+		delete_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID );
+
+		$controller = $this->make_controller();
+		$controller->register();
+		$this->assertEmpty( $controller->get_current_token() );
+		$this->assertEmpty( $controller->get_current_post_id() );
+
+		ob_start();
+		do_action( 'tec_tickets_seating_seat_selection_timer', 'test-token', $post_id );
+		$html = ob_get_clean();
+
+		$this->assertEmpty( $html );
+		$this->assertEmpty( $controller->get_current_token() );
+		$this->assertEmpty( $controller->get_current_post_id() );
+
+		// Render to sync.
+		ob_start();
+		$controller->render_to_sync();
+		$render_to_sync_html = ob_get_clean();
+
+		$this->assertEmpty( $render_to_sync_html );
+		$this->assertEmpty( $controller->get_current_token() );
+		$this->assertEmpty( $controller->get_current_post_id() );
+	}
+
+	public function test_will_not_render_if_seating_not_enabled_on_post_and_has_session(): void {
+		$post_id = self::factory()->post->create();
+		$ticket  = $this->create_tc_ticket( $post_id, 10 );
+		// Ensure Seat Selection is not enabled on the post.
+		delete_post_meta( $post_id, Meta::META_KEY_LAYOUT_ID );
+		// Create a session that contains information for another post.
+		$post_with_assigned_seating = self::factory()->post->create();
+		update_post_meta( $post_with_assigned_seating, Meta::META_KEY_LAYOUT_ID, 'some-layout-id' );
+		$session  = tribe( Session::class );
+		$sessions = tribe( Sessions::class );
+		$sessions->upsert( 'test-token', $post_with_assigned_seating, time() + 100 );
+		$sessions->update_reservations( 'test-token', [ '1234567890', '0987654321' ] );
+		$session->add_entry( $post_with_assigned_seating, 'test-token' );
+
+		$controller = $this->make_controller();
+		$controller->register();
+		$this->assertEmpty( $controller->get_current_token() );
+		$this->assertEmpty( $controller->get_current_post_id() );
+
+		ob_start();
+		do_action( 'tec_tickets_seating_seat_selection_timer', 'test-token', $post_id );
+		$html = ob_get_clean();
+
+		$this->assertEmpty( $html );
+		$this->assertEmpty( $controller->get_current_token() );
+		$this->assertEmpty( $controller->get_current_post_id() );
+
+		// Render to sync.
+		ob_start();
+		$controller->render_to_sync();
+		$render_to_sync_html = ob_get_clean();
+
+		$this->assertNotEmpty( $render_to_sync_html, 'Render to sync should render.' );
+		$this->assertStringContainsString(
+			'data-post-id="' . $post_with_assigned_seating . '"',
+			$render_to_sync_html,
+			'Render to sync should render for the correct post ID.'
+		);
+		$this->assertEmpty( $controller->get_current_token() );
+		$this->assertEmpty( $controller->get_current_post_id() );
 	}
 }

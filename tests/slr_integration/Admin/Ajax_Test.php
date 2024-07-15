@@ -1252,8 +1252,10 @@ class Ajax_Test extends Controller_Test_Case {
 		$_REQUEST['token']       = 'test-token';
 		$_REQUEST['postId']      = 23;
 		update_post_meta( 23, Meta::META_KEY_UUID, 'test-post-uuid' );
-		// Do not add a token entry in the sessions table: this will trigger a failure in the `clear_token_reservations` method.
-		$sessions = tribe( Sessions::class );
+		// Mock the session table to return false on clear_token_reservations.
+		$this->test_services->singleton( Sessions::class, $this->make( Sessions::class, [
+			'clear_token_reservations' => false
+		] ) );
 		$this->set_oauth_token( 'auth-token' );
 		$this->mock_wp_remote(
 			'post',

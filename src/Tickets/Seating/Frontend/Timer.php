@@ -267,9 +267,19 @@ class Timer extends Controller_Contract {
 
 			[ $token, $post_id ] = $cookie_timer_token_post_id;
 		} else {
+			if ( ! tec_tickets_seating_enabled( $post_id ) ) {
+				// The post is not using assigned seating, do not render the timer.
+				return;
+			}
+
 			// If a cookie and token were passed, store them for later use.
 			$this->current_token   = $token;
 			$this->current_post_id = $post_id;
+		}
+
+		if ( ! tec_tickets_seating_enabled( $post_id ) ) {
+			// The post is not using assigned seating, do not render the timer.
+			return;
 		}
 
 		wp_enqueue_script( 'tec-tickets-seating-session' );
@@ -403,7 +413,7 @@ class Timer extends Controller_Contract {
 		$timeout = $this->get_timeout( $post_id );
 
 		// When starting a new session, we need to remove the previous sessions for the same post.
-		$this->session->cancel_previous_for_object( $post_id );
+		$this->session->cancel_previous_for_object( $post_id, $token );
 
 		// We're in the context of an XHR/AJAX request: the browser will set the cookie for us.
 		$now        = microtime( true );
@@ -538,5 +548,27 @@ class Timer extends Controller_Contract {
 				'redirectUrl' => esc_url( $redirect_url ),
 			]
 		);
+	}
+
+	/**
+	 * Returns the current token set from a previous render in the context of this request.
+	 *
+	 * @since TBD
+	 *
+	 * @return string|null The current token, or `null` if not set.
+	 */
+	public function get_current_token(): ?string {
+		return $this->current_token;
+	}
+
+	/**
+	 * Returns the current post ID set from a previous render in the context of this request.
+	 *
+	 * @since TBD
+	 *
+	 * @return int|null The current post ID, or `null` if not set.
+	 */
+	public function get_current_post_id(): ?int {
+		return $this->current_post_id;
 	}
 }

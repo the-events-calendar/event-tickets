@@ -199,23 +199,40 @@ class Session {
 	 *
 	 * @since TBD
 	 *
-	 * @param int $object_id The object ID to delete the sessions for.
+	 * @param int    $object_id The object ID to delete the sessions for.
+	 * @param string $token     The token to cancel the previous session for.
 	 *
 	 * @return bool Whether the previous sessions were deleted or not.
 	 */
-	public function cancel_previous_for_object( int $object_id ): bool {
+	public function cancel_previous_for_object( int $object_id, string $token ): bool {
 		if ( ! isset( $_COOKIE[ self::COOKIE_NAME ] ) ) {
 			return true;
 		}
 
-		foreach ( $this->get_entries( $_COOKIE[ self::COOKIE_NAME ] ) as $entry_object_id => $entry_token ) {
-			if ( $entry_object_id === $object_id ) {
-				$reservations = $this->sessions->get_reservations_for_token( $entry_token );
-
-				return $this->reservations->cancel( $entry_object_id, $reservations )
-						&& $this->sessions->delete_token_session( $entry_token )
-						&& $this->remove_entry( $entry_object_id, $entry_token );
+		foreach ( $this->get_entries() as $entry_object_id => $cookie_token ) {
+			if ( $entry_object_id !== $object_id ) {
+				continue;
 			}
+
+			$reservations = $this->sessions->get_reservations_for_token( $cookie_token );
+
+			if ( $token === $cookie_token ) {
+				/*
+				 * A new session with the same token, e.g. when the seat selection modal is opened again after
+				 * closing it or cancelling the seat selection. Do not delete the token session, but cancel
+				 * its previous reservations.
+				 */
+				return $this->reservations->cancel( $entry_object_id, $reservations )
+						&& $this->sessions->clear_token_reservations( $token );
+			}
+
+			/*
+			 * Start with a new token, e.g. on page reload where a new ephemeral token will be issued for the
+			 * seat selection modal. Cancel the session and reservations for the previous token.
+			 */
+			return $this->reservations->cancel( $entry_object_id, $reservations )
+					&& $this->sessions->delete_token_session( $cookie_token )
+					&& $this->remove_entry( $entry_object_id, $cookie_token );
 		}
 
 		// Nothing to clear.
@@ -262,13 +279,24 @@ class Session {
 	 * @return array{0: string, 1: int}|null The token and object ID from the cookie, or `null` if not found.
 	 */
 	public function get_session_token_object_id(): ?array {
-		$cookie = sanitize_text_field( $_COOKIE[ self::COOKIE_NAME ] ?? '' );
+		$entries = $this->get_entries();
 
-		if ( ! $cookie ) {
+		/**
+		 * Filters the session entries used to get the token and object ID from the cookie for the purpose of
+		 * tracking the seat selection session.
+		 *
+		 * @since TBD
+		 *
+		 * @param array<string,string> $entries The entries from the cookie. A map from object ID to token.
+		 */
+		$entries = apply_filters(
+			'tec_tickets_seating_timer_token_object_id_entries',
+			$entries,
+		);
+
+		if ( empty( $entries ) ) {
 			return null;
 		}
-
-		$entries = $this->get_entries( $cookie );
 
 		/**
 		 * Filters the handler used to get the token and object ID from the cookie.

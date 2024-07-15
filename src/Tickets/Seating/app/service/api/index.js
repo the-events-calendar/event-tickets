@@ -182,8 +182,12 @@ export async function establishReadiness(iframe) {
 	// Before setting the iframe source, start listening for messages from the service.
 	startListeningForServiceMessages(iframe);
 
+	let promiseReject;
+
 	// Build a promise that will resolve when the Service sends the ready message.
-	const promise = new Promise((resolve) => {
+	const promise = new Promise((resolve, reject) => {
+		promiseReject = reject;
+
 		const acknowledge = () => {
 			removeAction(INBOUND_APP_READY);
 
@@ -207,7 +211,7 @@ export async function establishReadiness(iframe) {
 
 	// Seat a 10s timeout to reject the promise if the connection is not established.
 	const timeoutId = setTimeout(() => {
-		promise.reject(new Error('Connection to service timed out'));
+		promiseReject(new Error('Connection to service timed out'));
 	}, 10000);
 
 	// Finally start loading the service in the iframe and wait for its ready message.
