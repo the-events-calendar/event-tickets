@@ -264,7 +264,7 @@ class Ajax extends Controller_Contract {
 		foreach ( $data['attendees'] as $attendee ) {
 			$id = (int) $attendee['attendee_id'];
 			
-			$formatted[ $id ] = [
+			$formatted[] = [
 				'id'            => $id,
 				'name'          => $attendee['holder_name'],
 				'purchaser'     => [

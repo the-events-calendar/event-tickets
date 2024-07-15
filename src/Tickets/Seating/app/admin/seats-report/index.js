@@ -12,7 +12,6 @@ import {
 import {ajaxUrl, ajaxNonce} from "@tec/tickets/seating/service";
 
 const { seatTypeMap, postId } = window?.tec?.tickets?.seating?.seatsReport?.data;
-let seatTypeMapSent = false;
 
 async function fetchAttendees() {
 	const url = new URL(ajaxUrl);
@@ -52,12 +51,12 @@ async function fetchAttendees() {
 function registerActions(iframe) {
 	// When the service is ready for data, send the seat type map to the iframe.
 	registerAction(INBOUND_APP_READY_FOR_DATA, async () => {
-		if ( ! seatTypeMapSent ) {
-			sendPostMessage(iframe, OUTBOUND_SEAT_TYPE_TICKETS, seatTypeMap);
-			seatTypeMapSent = true;
-		}
-		const data = await fetchAttendees();
-		sendPostMessage(iframe, OUTBOUND_EVENT_ATTENDEES, data?.attendees || []);
+		removeAction(INBOUND_APP_READY_FOR_DATA);
+
+		sendPostMessage(iframe, OUTBOUND_SEAT_TYPE_TICKETS, seatTypeMap);
+
+		const attendeeData = await fetchAttendees();
+		sendPostMessage(iframe, OUTBOUND_EVENT_ATTENDEES, attendeeData?.attendees );
 	});
 }
 

@@ -17,6 +17,7 @@ import {
 	OUTBOUND_HOST_READY,
 	OUTBOUND_SEAT_TYPE_TICKETS,
 	OUTBOUND_REMOVE_RESERVATIONS,
+	OUTBOUND_EVENT_ATTENDEES,
 } from './service-actions.js';
 
 /**
@@ -250,6 +251,7 @@ window.tec.tickets.seating.service.api = {
 	OUTBOUND_HOST_READY,
 	OUTBOUND_SEAT_TYPE_TICKETS,
 	OUTBOUND_REMOVE_RESERVATIONS,
+	OUTBOUND_EVENT_ATTENDEES,
 	INBOUND_SEATS_SELECTED,
 	sendPostMessage,
 	startListeningForServiceMessages,
