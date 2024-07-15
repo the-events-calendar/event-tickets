@@ -25,7 +25,7 @@ class Controller extends Controller_Contract {
 	 *
 	 * @var string
 	 */
-	protected string $et_slr_plugin_slug = 'event-tickets-slr';
+	protected string $et_slr_plugin_slug = 'tec-seating';
 
 	/**
 	 * Plugin name.
@@ -93,7 +93,9 @@ class Controller extends Controller_Contract {
 			$this->et_slr_plugin_name,
 			Main::VERSION,
 			"{$this->et_main->plugin_path}",
-			$this->et_main
+			$this->et_main,
+			null,
+			true
 		);
 	}
 }
