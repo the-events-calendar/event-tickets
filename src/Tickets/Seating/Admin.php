@@ -201,7 +201,7 @@ class Admin extends Controller_Contract {
 		Asset::add(
 			'tec-tickets-seating-admin-maps-style',
 			$this->built_asset_url( 'admin/maps.css' ),
-			Tickets::VERSION 
+			Tickets::VERSION
 		)
 			->add_to_group( 'tec-tickets-seating-admin' )
 			->add_to_group( 'tec-tickets-seating' )
@@ -320,7 +320,7 @@ class Admin extends Controller_Contract {
 			->add_to_group( 'tec-tickets-seating' )
 			->register();
 	}
-	
+
 	/**
 	 * Registers the assets used by the Seats Report tab under individual event views.
 	 *
@@ -331,22 +331,22 @@ class Admin extends Controller_Contract {
 	private function register_seats_report_assets(): void {
 		Asset::add(
 			'tec-tickets-seating-admin-seats-report',
-			$this->built_asset_url( 'admin/seats-report.js' ),
+			$this->built_asset_url( 'admin/seatsReport.js' ),
 			Tickets::VERSION
 		)
 			->add_dependency( 'tec-tickets-seating-service-bundle' )
 			->enqueue_on( Seats_Report::$asset_action )
 			->add_localize_script(
-				'tec.tickets.seating.seatsReport.data',
+				'tec.tickets.seating.admin.seatsReport.data',
 				fn() => Seats_Report::get_localized_data( get_the_ID() )
 			)
 			->add_to_group( 'tec-tickets-seating-admin' )
 			->add_to_group( 'tec-tickets-seating' )
 			->register();
-		
+
 		Asset::add(
-			'tec-tickets-seating-admin-seats-styles',
-			$this->built_asset_url( 'admin/seats-report.css' ),
+			'tec-tickets-seating-admin-seats-report-style',
+			$this->built_asset_url( 'admin/seatsReport.css' ),
 			Tickets::VERSION
 		)
 			->add_to_group( 'tec-tickets-seating-admin' )
