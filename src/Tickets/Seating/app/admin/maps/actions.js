@@ -1,12 +1,12 @@
-import {ajaxUrl, ajaxNonce} from "@tec/tickets/seating/service";
-import {onReady, getLocalizedString} from "@tec/tickets/seating/utils";
+import { ajaxUrl, ajaxNonce } from '@tec/tickets/seating/service';
+import { onReady, getLocalizedString } from '@tec/tickets/seating/utils';
 
 /**
  * Get localized string for the given key.
  *
  * @param {string} key - The key to get the localized string for.
  *
- * @returns {string} - The localized string.
+ * @return {string} - The localized string.
  */
 export function getString(key) {
 	return getLocalizedString(key, 'maps');
@@ -17,8 +17,8 @@ export function getString(key) {
  */
 export function registerDeleteAction() {
 	// Add click listener to all links with class 'delete'.
-	document.querySelectorAll('.delete-map').forEach(function(link) {
-		link.addEventListener('click', async function(event) {
+	document.querySelectorAll('.delete-map').forEach(function (link) {
+		link.addEventListener('click', async function (event) {
 			event.preventDefault();
 			await handleDelete(event.target);
 		});
@@ -60,16 +60,13 @@ async function handleDelete(element) {
  *
  * @param {string} mapId - The map ID.
  *
- * @returns {Promise<boolean>} - Promise resolving to true if delete was successful, false otherwise.
+ * @return {Promise<boolean>} - Promise resolving to true if delete was successful, false otherwise.
  */
 async function deleteMap(mapId) {
 	const url = new URL(ajaxUrl);
 	url.searchParams.set('_ajax_nonce', ajaxNonce);
 	url.searchParams.set('mapId', mapId);
-	url.searchParams.set(
-		'action',
-		'tec_tickets_seating_service_delete_map'
-	);
+	url.searchParams.set('action', 'tec_tickets_seating_service_delete_map');
 	const response = await fetch(url.toString(), { method: 'POST' });
 
 	return response.status === 200;
