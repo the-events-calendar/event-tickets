@@ -179,14 +179,14 @@ const targets = [
 	},
 	{
 		name: 'seating-seats-report-bundle',
-		entry: './src/Tickets/Seating/app/admin/seats-report/index.js',
-		outputScript: './build/Seating/admin/seats-report.min.js',
-		outputStyle: `build/Seating/admin/seats-report.${postfix}`,
+		entry: './src/Tickets/Seating/app/admin/seatsReport/index.js',
+		outputScript: './build/Seating/admin/seatsReport.min.js',
+		outputStyle: `build/Seating/admin/seatsReport.${postfix}`,
 		moveFromTo: {
 			'src/resources/js/app/seating-seats-report-bundle.js':
-				'build/Seating/admin/seats-report.js',
+				'build/Seating/admin/seatsReport.js',
 			'src/resources/css/app/seating-seats-report-bundle.css':
-				'build/Seating/admin/seats-report.css',
+				'build/Seating/admin/seatsReport.css',
 		},
 	},
 	{
