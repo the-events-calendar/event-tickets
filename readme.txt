@@ -208,7 +208,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [5.12.0] TBD =
 
 * Fix - Ensure Stripe refunds are recorded in WordPress. [ET-2142]
-* Feature - Provide a site wide Order Management screen for seeing Tickets sales through Tickets Commerce. [ET-2117]
+* Feature - Added new Orders Management page to view and manage all Tickets Commerce orders from one location. [ET-2117]
 
 = [5.11.0.5] 2024-07-11 =
 
