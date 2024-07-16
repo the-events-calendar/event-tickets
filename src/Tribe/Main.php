@@ -147,7 +147,7 @@ class Tribe__Tickets__Main {
 	protected static $instance;
 
 	/**
-	 * Get (and instantiate, if necessary) the instance of the class
+	 * Get (and instantiate, if necessary) the instance of the class.
 	 *
 	 * @return self
 	 */
