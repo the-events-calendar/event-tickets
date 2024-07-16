@@ -6,6 +6,7 @@ import { OUTBOUND_REMOVE_RESERVATIONS } from '@tec/tickets/seating/service';
 require('jest-fetch-mock').enableMocks();
 
 const apiModule = require('@tec/tickets/seating/service/api');
+
 describe('Seat Selection Modal', () => {
 	beforeEach(() => {
 		fetch.resetMocks();
