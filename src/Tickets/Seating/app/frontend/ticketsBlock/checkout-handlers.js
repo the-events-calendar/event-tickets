@@ -3,6 +3,7 @@ import { applyFilters } from '@wordpress/hooks';
 /**
  * Checks out a ticket using the Tickets Commerce module.
  * This is the default checkout handler for the Tickets Commerce in the context of the Tickets Seating feature.
+ * This method call the backend to get the redirection URL with the cart data.
  *
  * @since TBD
  *
@@ -15,13 +16,14 @@ export async function checkoutWithTicketsCommerce(data) {
 	searchParams.append('tec-tc-cart', 'redirect');
 	const cartUrl = `${window.location.origin}${window.location.pathname}?${searchParams}`;
 
+	// Call the backend to get the redirection URL with the cart data.
 	const response = await fetch(cartUrl, {
 		method: 'POST',
 		body: data,
 	});
 
 	if (response.ok && response.url) {
-		// Redirect to the checkout page.
+		// We got a Checkout page URL back: redirect to it.
 		window.location.href = response.url;
 
 		// This return value might never be used, due to the previous redirection, but it's here to make the linter happy.
