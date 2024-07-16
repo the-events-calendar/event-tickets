@@ -1,5 +1,8 @@
 import './style.pcss';
-import { initServiceIframe, getIframeElement } from '@tec/tickets/seating/service/iframe';
+import {
+	initServiceIframe,
+	getIframeElement,
+} from '@tec/tickets/seating/service/iframe';
 import { onReady } from '@tec/tickets/seating/utils';
 import {
 	INBOUND_APP_READY_FOR_DATA,
@@ -9,33 +12,28 @@ import {
 	registerAction,
 	sendPostMessage,
 } from '@tec/tickets/seating/service/api';
-import {ajaxUrl, ajaxNonce} from "@tec/tickets/seating/service";
+import { ajaxUrl, ajaxNonce } from '@tec/tickets/seating/service';
+import { localizedData } from './localized-data';
 
-const { seatTypeMap, postId } = window?.tec?.tickets?.seating?.seatsReport?.data;
+const { seatTypeMap, postId } = localizedData;
 
 async function fetchAttendees() {
 	const url = new URL(ajaxUrl);
 	url.searchParams.set('_ajax_nonce', ajaxNonce);
 	url.searchParams.set('postId', postId);
-	url.searchParams.set(
-		'action',
-		'tec_tickets_seating_fetch_attendees'
-	);
-	const response = await fetch(
-		url.toString(),
-		{
-			method: 'POST',
-			headers: {
-				'Accept': 'application/json',
-			},
+	url.searchParams.set('action', 'tec_tickets_seating_fetch_attendees');
+	const response = await fetch(url.toString(), {
+		method: 'POST',
+		headers: {
+			Accept: 'application/json',
 		},
-		);
+	});
 
 	const json = await response.json();
 
 	if (response.status !== 200) {
 		throw new Error(
-			`Failed to fetch attendees for post ID ${postId}. Status: ${response.status} - ${json?.data?.error}`,
+			`Failed to fetch attendees for post ID ${postId}. Status: ${response.status} - ${json?.data?.error}`
 		);
 	}
 
@@ -56,11 +54,15 @@ function registerActions(iframe) {
 		sendPostMessage(iframe, OUTBOUND_SEAT_TYPE_TICKETS, seatTypeMap);
 
 		const attendeeData = await fetchAttendees();
-		sendPostMessage(iframe, OUTBOUND_EVENT_ATTENDEES, attendeeData?.attendees );
+		sendPostMessage(
+			iframe,
+			OUTBOUND_EVENT_ATTENDEES,
+			attendeeData?.attendees
+		);
 	});
 }
 
-onReady( async () => {
+onReady(async () => {
 	const iframe = getIframeElement();
 	if (!iframe) {
 		console.error('Iframe element not found.');
@@ -70,4 +72,4 @@ onReady( async () => {
 	// Register the actions before initializing the iframe to avoid race conditions.
 	registerActions(iframe);
 	await initServiceIframe(iframe);
-})
+});
