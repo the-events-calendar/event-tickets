@@ -21,6 +21,7 @@ import {
 	start as startTimer,
 	reset as resetTimer,
 } from '@tec/tickets/seating/frontend/session';
+import './filters';
 
 const {
 	objectName,

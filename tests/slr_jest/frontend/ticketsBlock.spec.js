@@ -4,6 +4,7 @@ import {
 } from '@tec/tickets/seating/frontend/ticketsBlock';
 import { OUTBOUND_REMOVE_RESERVATIONS } from '@tec/tickets/seating/service';
 require('jest-fetch-mock').enableMocks();
+import { applyFilters } from '@wordpress/hooks';
 
 const apiModule = require('@tec/tickets/seating/service/api');
 
@@ -66,5 +67,25 @@ describe('Seat Selection Modal', () => {
 			mockIframe,
 			OUTBOUND_REMOVE_RESERVATIONS
 		);
+	});
+
+	describe('filters', () => {
+		it('should filter getTickets IDs correctly with no IDs', () => {
+			const ids = applyFilters(
+				'tec.tickets.tickets-block.getTickets',
+				[]
+			);
+
+			expect(ids).toEqual([23, 89, 66]);
+		});
+
+		it('should filter getTickets IDs correctly when there are IDs', () => {
+			const ids = applyFilters(
+				'tec.tickets.tickets-block.getTickets',
+				[1,2,3]
+			);
+
+			expect(ids).toEqual([23, 89, 66]);
+		});
 	});
 });
