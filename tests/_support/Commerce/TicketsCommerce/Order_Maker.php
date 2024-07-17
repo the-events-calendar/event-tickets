@@ -36,10 +36,12 @@ trait Order_Maker {
 			'purchaser_email'      => 'test-'.uniqid().'@test.com',
 		];
 
+		$gateway = $overrides['gateway'] ?? tribe( Gateway::class );
+
 		$order_status = $overrides['order_status'] ?? Completed::SLUG;
 		$purchaser = wp_parse_args( $overrides, $default_purchaser );
 		$orders    = tribe( Order::class );
-		$order     = $orders->create_from_cart( tribe( Gateway::class ), $purchaser );
+		$order     = $orders->create_from_cart( $gateway, $purchaser );
 
 		if ( ! $orders->modify_status( $order->ID, Pending::SLUG ) ) {
 			return false;

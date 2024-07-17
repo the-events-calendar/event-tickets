@@ -13,7 +13,7 @@ class Tribe_Deprecated_Test extends WPTestCase {
 
 	public function setUp() {
 		parent::setUp();
-		add_action( 'deprecated_file_included', array( $this, 'deprecated_function_run' ) );
+		add_action( 'deprecated_file_included', array( $this, 'deprecated_function_run' ), 10, 3 );
 		add_filter( 'deprecated_file_trigger_error', '__return_false' );
 	}
 
@@ -39,8 +39,8 @@ class Tribe_Deprecated_Test extends WPTestCase {
 
 	public function deprecated_classes_5_6_5() {
 		return [
-			[ 'Tribe__Tickets__Cache__Abstract_Cache' ],
 			[ 'Tribe__Tickets__Cache__Cache_Interface' ],
+			[ 'Tribe__Tickets__Cache__Abstract_Cache' ],
 			[ 'Tribe__Tickets__Cache__Central' ],
 			[ 'Tribe__Tickets__Cache__Transient_Cache' ],
 		];

@@ -77,7 +77,7 @@ class Checkout_ShortcodeTest extends \Codeception\TestCase\WPTestCase {
 	 * @before
 	 */
 	public function create_event_and_tickets() {
-		$this->page_id = $this->factory->post->create( [
+		$this->page_id = $this->factory()->post->create( [
 			'post_title' => 'Page with Tickets',
 			'post_type'  => 'page',
 		] );
