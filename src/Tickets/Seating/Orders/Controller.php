@@ -2,7 +2,7 @@
 /**
  * The controller for the Seating Orders.
  *
- * @since TBD
+ * @since   TBD
  *
  * @package TEC/Tickets/Seating/Orders
  */
@@ -12,20 +12,20 @@ namespace TEC\Tickets\Seating\Orders;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\lucatume\DI52\Container;
 use TEC\Tickets\Admin\Attendees\Page as Attendee_Page;
-use Tribe__Tabbed_View as Tabbed_View;
 use TEC\Tickets\Commerce\Status\Status_Interface;
 use TEC\Tickets\Seating\Frontend\Session;
 use TEC\Tickets\Seating\Service\Reservations;
+use TEC\Tickets\Seating\Tables\Sessions;
+use Tribe__Tabbed_View as Tabbed_View;
 use Tribe__Tickets__Attendee_Repository as Attendee_Repository;
-use Tribe__Tickets__Tickets;
+use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use WP_Post;
 use WP_Query;
-use TEC\Tickets\Seating\Tables\Sessions;
 
 /**
  * Class Controller
  *
- * @since TBD
+ * @since   TBD
  *
  * @package TEC/Tickets/Seating/Orders
  */
@@ -56,7 +56,7 @@ class Controller extends Controller_Contract {
 	 * @var Session
 	 */
 	private Session $session;
-	
+
 	/**
 	 * A reference to Sessions Table handler.
 	 *
@@ -101,7 +101,10 @@ class Controller extends Controller_Contract {
 	 */
 	protected function do_register(): void {
 		add_filter( 'tec_tickets_commerce_cart_prepare_data', [ $this, 'handle_seat_selection' ] );
-		add_action( 'tec_tickets_commerce_flag_action_generated_attendee', [ $this, 'save_seat_data_for_attendee' ], 10, 7 );
+		add_action( 'tec_tickets_commerce_flag_action_generated_attendee',
+			[ $this, 'save_seat_data_for_attendee' ],
+			10,
+			7 );
 
 		// Add attendee seat data column to the attendee list.
 		if ( tribe_get_request_var( 'page' ) === 'tickets-attendees' || tribe( Attendee_Page::class )->is_on_page() ) {
@@ -111,24 +114,27 @@ class Controller extends Controller_Contract {
 			add_filter( 'tribe_repository_attendees_query_args', [ $this, 'handle_sorting_seat_column' ], 10, 3 );
 			add_filter( 'event_tickets_attendees_table_row_actions', [ $this, 'remove_move_row_action' ], 10, 2 );
 		}
-		
+
 		if ( is_admin() ) {
 			add_filter( 'tec_tickets_commerce_reports_tabbed_view_tab_map', [ $this, 'include_seats_tab' ] );
-			add_action( 'tec_tickets_commerce_reports_tabbed_view_after_register_tab', [ $this, 'register_seat_tab' ], 10, 2 );
+			add_action( 'tec_tickets_commerce_reports_tabbed_view_after_register_tab',
+				[ $this, 'register_seat_tab' ],
+				10,
+				2 );
 			add_action( 'tribe_tickets_orders_tabbed_view_register_tab_right', [ $this, 'register_seat_tab' ], 10, 2 );
 			add_action( 'init', [ $this, 'register_seat_reports' ] );
 			add_filter( 'tec_tickets_commerce_reports_tabbed_page_title', [ $this, 'filter_seat_tab_title' ], 10, 3 );
 		}
 		add_action( 'tec_tickets_commerce_flag_action_generated_attendees', [ $this, 'confirm_all_reservations' ] );
 	}
-	
+
 	/**
 	 * Filters the page title for the seat tab.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $title The page title.
-	 * @param int    $post_id The post ID.
+	 * @param string $title     The page title.
+	 * @param int    $post_id   The post ID.
 	 * @param string $page_type The page type.
 	 *
 	 * @return string
@@ -139,10 +145,10 @@ class Controller extends Controller_Contract {
 		}
 		// Translators: %1$s: the post/event title, %2$d: the post/event ID.
 		$title = _x( 'Seats for: %1$s [#%2$d]', 'seat report screen heading', 'event-tickets' );
-		
+
 		return sprintf( $title, get_the_title( $post_id ), $post_id );
 	}
-	
+
 	/**
 	 * Registers the seat reports.
 	 *
@@ -153,7 +159,7 @@ class Controller extends Controller_Contract {
 	public function register_seat_reports() {
 		$this->container->make( Seats_Report::class )->hook();
 	}
-	
+
 	/**
 	 * Adds seat tab slug to the tab slug map.
 	 *
@@ -165,16 +171,17 @@ class Controller extends Controller_Contract {
 	 */
 	public function include_seats_tab( array $tab_map = [] ): array {
 		$tab_map[ Seats_Report::$page_slug ] = Seats_Report::$tab_slug;
+
 		return $tab_map;
 	}
-	
+
 	/**
 	 * Registers the seat tab.
 	 *
 	 * @since TBD
 	 *
 	 * @param Tabbed_View $tabbed_view The tabbed view.
-	 * @param WP_Post     $post The post.
+	 * @param WP_Post     $post        The post.
 	 *
 	 * @return void
 	 */
@@ -182,9 +189,9 @@ class Controller extends Controller_Contract {
 		if ( ! $post ) {
 			return;
 		}
-		
+
 		add_filter( 'tribe_tickets_attendees_show_title', '__return_false' );
-		
+
 		$report_tab = new Seats_Tab( $tabbed_view );
 		$report_tab->set_url( Seats_Report::get_link( $post ) );
 		$tabbed_view->register( $report_tab );
@@ -199,7 +206,8 @@ class Controller extends Controller_Contract {
 	 */
 	public function unregister(): void {
 		remove_filter( 'tec_tickets_commerce_cart_prepare_data', [ $this, 'handle_seat_selection' ] );
-		remove_action( 'tec_tickets_commerce_flag_action_generated_attendee', [ $this, 'save_seat_data_for_attendee' ] );
+		remove_action( 'tec_tickets_commerce_flag_action_generated_attendee',
+			[ $this, 'save_seat_data_for_attendee' ] );
 
 		// Remove attendee seat data column from the attendee list.
 		remove_filter( 'tribe_tickets_attendee_table_columns', [ $this, 'add_attendee_seat_column' ] );
@@ -207,7 +215,7 @@ class Controller extends Controller_Contract {
 		remove_filter( 'tec_tickets_attendees_table_sortable_columns', [ $this, 'include_seat_column_as_sortable' ] );
 		remove_filter( 'tribe_repository_attendees_query_args', [ $this, 'handle_sorting_seat_column' ] );
 		remove_filter( 'event_tickets_attendees_table_row_actions', [ $this, 'remove_move_row_action' ] );
-		
+
 		remove_filter( 'tec_tickets_commerce_reports_tabbed_view_tab_map', [ $this, 'include_seats_tab' ] );
 		remove_action( 'tec_tickets_commerce_reports_tabbed_view_after_register_tab', [ $this, 'register_seat_tab' ] );
 		remove_action( 'tribe_tickets_orders_tabbed_view_register_tab_right', [ $this, 'register_seat_tab' ] );
@@ -233,18 +241,18 @@ class Controller extends Controller_Contract {
 	/**
 	 * Saves the seat data for the attendee.
 	 *
-	 * @param WP_Post                 $attendee               The generated attendee.
-	 * @param Tribe__Tickets__Tickets $ticket The ticket the attendee is generated for.
-	 * @param WP_Post                 $order              The order the attendee is generated for.
-	 * @param Status_Interface        $new_status      New post status.
-	 * @param Status_Interface|null   $old_status Old post status.
-	 * @param array                   $item Which cart item this was generated for.
-	 * @param int                     $i      Which Attendee index we are generating.
+	 * @param WP_Post               $attendee   The generated attendee.
+	 * @param Ticket_Object         $ticket     The ticket the attendee is generated for.
+	 * @param WP_Post               $order      The order the attendee is generated for.
+	 * @param Status_Interface      $new_status New post status.
+	 * @param Status_Interface|null $old_status Old post status.
+	 * @param array                 $item       Which cart item this was generated for.
+	 * @param int                   $i          Which Attendee index we are generating.
 	 *
 	 * @return void
 	 */
 	public function save_seat_data_for_attendee( $attendee, $ticket, $order, $new_status, $old_status, $item, $i ): void {
-		$this->cart->save_seat_data_for_attendee( $attendee, $ticket, $order, $new_status, $old_status, $item, $i, $this->session, $this->sessions );
+		$this->cart->save_seat_data_for_attendee( $attendee, $ticket, $order, $new_status, $old_status, $item, $i );
 	}
 
 	/**
@@ -252,7 +260,7 @@ class Controller extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param array<string,string> $columns The columns for the Attendees table.
+	 * @param array<string,string> $columns  The columns for the Attendees table.
 	 * @param int                  $event_id The event ID.
 	 *
 	 * @return array<string,string> The filtered columns for the Attendees table.
@@ -295,7 +303,7 @@ class Controller extends Controller_Contract {
 	 * @since TBD
 	 *
 	 * @param array<string,mixed> $query_args An array of the query arguments the query will be initialized with.
-	 * @param WP_Query            $query The query object, the query arguments have not been parsed yet.
+	 * @param WP_Query            $query      The query object, the query arguments have not been parsed yet.
 	 * @param Attendee_Repository $repository This repository instance.
 	 *
 	 * @return array<string,mixed> The query args.
@@ -310,7 +318,7 @@ class Controller extends Controller_Contract {
 	 * @since TBD
 	 *
 	 * @param array<string,mixed> $default_row_actions The default row actions list.
-	 * @param array<string,mixed> $item The attendee item array.
+	 * @param array<string,mixed> $item                The attendee item array.
 	 *
 	 * @return array<string,mixed> The filtered row actions.
 	 */

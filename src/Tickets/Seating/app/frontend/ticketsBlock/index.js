@@ -220,9 +220,9 @@ function addTicketToSelection(props) {
  *
  * @since TBD
  *
- * @param {string[]} reservationIds The reservation IDs to post to the backend.
+ * @param {Object} reservations The reservation IDs to post to the backend.
  */
-async function postReservationsToBackend(reservationIds) {
+async function postReservationsToBackend(reservations) {
 	// First of all, cancel any similar requests that might be in progress.
 	await currentController.abort('New reservations data');
 	const newController = new AbortController();
@@ -237,7 +237,7 @@ async function postReservationsToBackend(reservationIds) {
 		signal: newController.signal,
 		body: JSON.stringify({
 			token: getToken(),
-			reservations: reservationIds,
+			reservations,
 		}),
 	});
 
@@ -265,9 +265,17 @@ function updateTicketsSelection(items) {
 		addTicketToSelection(item);
 	});
 
-	const reservationIds = items.map((item) => item.reservationId);
+	const reservations = items.reduce((acc, item) => {
+		acc[item.ticketId] = acc[item.ticketId] || [];
+		acc[item.ticketId].push({
+			reservationId: item.reservationId,
+			seatTypeId: item.seatTypeId,
+			seatLabel: item.seatLabel,
+		});
+		return acc;
+	}, {});
 
-	postReservationsToBackend(reservationIds);
+	postReservationsToBackend(reservations);
 
 	updateTotals();
 }

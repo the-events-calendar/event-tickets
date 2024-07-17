@@ -209,9 +209,13 @@ class Sessions extends Table {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $token     The token to get the reservations for.
+	 * @param string $token The token to get the reservations for.
 	 *
-	 * @return string[] The list of reservations for the given object ID.
+	 * @return array<int,array{
+	 *     reservation_id: string,
+	 *     seat_type_id: string,
+	 *     seat_label: string,
+	 * }> The list of reservations for the given object ID. A map from ticket ID to a list of reservations for it.
 	 */
 	public function get_reservations_for_token( string $token ) {
 
@@ -244,12 +248,42 @@ class Sessions extends Table {
 	}
 
 	/**
+	 * Gets the reservation UUIDs for a given token.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $token The token to get the reservation UUIDs for.
+	 *
+	 * @return string[] The list of reservation UUIDs for the given token.
+	 */
+	public function get_reservation_uuids_for_token( string $token ): array {
+		$token_reservations = $this->get_reservations_for_token( $token );
+
+		if ( empty( $token_reservations ) ) {
+			return [];
+		}
+
+		return array_reduce(
+			$token_reservations,
+			static fn( $carry, $reservation ) => array_merge( $carry,
+				array_column( $reservation, 'reservation_id' ) ),
+			[]
+		);
+	}
+
+	/**
 	 * Updates, replacing them, the reservations for a given token.
 	 *
 	 * @since TBD
 	 *
 	 * @param string $token        Temporary token to identify the reservations.
-	 * @param array  $reservations The list of reservations to replace the existing ones with.
+	 * @param array<int,array{
+	 *     reservation_id: string,
+	 *     seat_type_id: string,
+	 *     seat_label: string,
+	 * }>            $reservations The list of reservations to replace the existing ones with. A map from ticket ID to a list of
+	 *                             reservations for it.
+	 *
 	 *
 	 * @return bool Whether the reservations were updated or not.
 	 */

@@ -214,7 +214,7 @@ class Session {
 				continue;
 			}
 
-			$reservations = $this->sessions->get_reservations_for_token( $cookie_token );
+			$reservations_uuids = $this->sessions->get_reservation_uuids_for_token( $cookie_token );
 
 			if ( $token === $cookie_token ) {
 				/*
@@ -222,7 +222,7 @@ class Session {
 				 * closing it or cancelling the seat selection. Do not delete the token session, but cancel
 				 * its previous reservations.
 				 */
-				return $this->reservations->cancel( $entry_object_id, $reservations )
+				return $this->reservations->cancel( $entry_object_id, $reservations_uuids )
 						&& $this->sessions->clear_token_reservations( $token );
 			}
 
@@ -230,7 +230,7 @@ class Session {
 			 * Start with a new token, e.g. on page reload where a new ephemeral token will be issued for the
 			 * seat selection modal. Cancel the session and reservations for the previous token.
 			 */
-			return $this->reservations->cancel( $entry_object_id, $reservations )
+			return $this->reservations->cancel( $entry_object_id, $reservations_uuids )
 					&& $this->sessions->delete_token_session( $cookie_token )
 					&& $this->remove_entry( $entry_object_id, $cookie_token );
 		}
@@ -328,13 +328,13 @@ class Session {
 		$confirmed = true;
 
 		foreach ( $this->get_entries() as $post_id => $token ) {
-			$token_reservations = $this->sessions->get_reservations_for_token( $token );
+			$reservation_uuids = $this->sessions->get_reservation_uuids_for_token( $token );
 
-			if ( empty( $token_reservations ) ) {
+			if ( empty( $reservation_uuids ) ) {
 				continue;
 			}
 
-			$confirmed &= $this->reservations->confirm( $post_id, $token_reservations )
+			$confirmed &= $this->reservations->confirm( $post_id, $reservation_uuids )
 							&& $this->sessions->delete_token_session( $token );
 		}
 

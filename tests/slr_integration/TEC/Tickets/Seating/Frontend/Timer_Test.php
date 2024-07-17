@@ -12,6 +12,7 @@ use TEC\Tickets\Seating\Service\Reservations;
 use TEC\Tickets\Seating\Tables\Sessions;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
+use Tribe\Tickets\Test\Traits\Reservations_Maker;
 use Tribe\Tickets\Test\Traits\WP_Remote_Mocks;
 use Tribe__Events__Main as TEC;
 use Tribe__Tickets__Data_API as Data_API;
@@ -22,6 +23,7 @@ class Timer_Test extends Controller_Test_Case {
 	use WP_Remote_Mocks;
 	use OAuth_Token;
 	use Ticket_Maker;
+	use Reservations_Maker;
 
 	protected string $controller_class = Timer::class;
 
@@ -269,7 +271,7 @@ class Timer_Test extends Controller_Test_Case {
 		$session->add_entry( 23, 'test-token' );
 		update_post_meta( 23, Meta::META_KEY_UUID, 'test-post-uuid' );
 		$sessions->upsert( 'test-token', 23, time() + 100 );
-		$sessions->update_reservations( 'test-token', [ '1234567890', '0987654321' ] );
+		$sessions->update_reservations( 'test-token', $this->create_mock_reservations_data( [ 23 ], 2 ) );
 
 		// Set up the request context.
 		$_REQUEST['_ajax_nonce'] = wp_create_nonce( Session::COOKIE_NAME );
@@ -292,7 +294,7 @@ class Timer_Test extends Controller_Test_Case {
 					'body'    => wp_json_encode(
 						[
 							'eventId' => 'test-post-uuid',
-							'ids'     => [ '1234567890', '0987654321' ],
+							'ids'     => [ 'reservation-id-1', 'reservation-id-2' ],
 						]
 					),
 				];
