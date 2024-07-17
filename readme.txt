@@ -209,6 +209,8 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 * Feature - Added new Orders Management page to view and manage all Tickets Commerce orders from one location. [ET-2117]
 * Fix - Ensure Stripe refunds are recorded in WordPress. [ET-2142]
+* Tweak - Added filters: `tribe_tickets_admin_order_page_page_title`, `tribe_tickets_admin_order_page_menu_title`, `tribe_tickets_admin_order_page_capability`, `tribe_tickets_admin_order_page_menu_slug`, `tribe_tickets_admin_order_page_position`, `tec_tickets_commerce_orders_table_classes`, `tec_tickets_commerce_orders_table_no_items`, `tec_tc_order_search_types`, `tec_tc_orders_disable_date_range_dropdown`, `tec_tc_orders_disable_gateways_dropdown`, `tec_tc_orders_pre_gateways_dropdown_query`, `tec_tc_orders_gateways_dropdown_results`, `tec_tc_orders_disable_post_parent_dropdown`, `tec_tc_orders_disable_customer_dropdown`
+* Tweak - Added actions: `restrict_manage_posts`, `manage_posts_extra_tablenav`
 
 = [5.11.0.5] 2024-07-11 =
 

@@ -31,7 +31,7 @@ class Orders_Page {
 	/**
 	 * Adds the Event Tickets Commerce Orders page.
 	 *
-	 * @since TBD
+	 * @since 5.13.0
 	 */
 	public function add_orders_page() {
 		add_submenu_page(
@@ -72,7 +72,7 @@ class Orders_Page {
 	/**
 	 * Get the title for the Orders page.
 	 *
-	 * @since TBD
+	 * @since 5.13.0
 	 *
 	 * @return string
 	 */
@@ -80,7 +80,7 @@ class Orders_Page {
 		/**
 		 * Filters the title for the Orders page.
 		 *
-		 * @since TBD
+		 * @since 5.13.0
 		 *
 		 * @param string $page_title The title for the Orders page.
 		 */
@@ -90,7 +90,7 @@ class Orders_Page {
 	/**
 	 * Get the title for the Orders menu.
 	 *
-	 * @since TBD
+	 * @since 5.13.0
 	 *
 	 * @return string
 	 */
@@ -98,7 +98,7 @@ class Orders_Page {
 		/**
 		 * Filters the title for the Orders menu.
 		 *
-		 * @since TBD
+		 * @since 5.13.0
 		 *
 		 * @param string $menu_title The title for the Orders menu.
 		 */
@@ -108,7 +108,7 @@ class Orders_Page {
 	/**
 	 * Get the capability required to access the Orders page.
 	 *
-	 * @since TBD
+	 * @since 5.13.0
 	 *
 	 * @return string
 	 */
@@ -116,7 +116,7 @@ class Orders_Page {
 		/**
 		 * Filters the capability required to access the Orders page.
 		 *
-		 * @since TBD
+		 * @since 5.13.0
 		 *
 		 * @param string $capability The capability required to access the Orders page.
 		 */
@@ -126,7 +126,7 @@ class Orders_Page {
 	/**
 	 * Get the menu slug for the Orders page.
 	 *
-	 * @since TBD
+	 * @since 5.13.0
 	 *
 	 * @return string
 	 */
@@ -134,7 +134,7 @@ class Orders_Page {
 		/**
 		 * Filters the menu slug for the Orders page.
 		 *
-		 * @since TBD
+		 * @since 5.13.0
 		 *
 		 * @param string $menu_slug The menu slug for the Orders page.
 		 */
@@ -144,7 +144,7 @@ class Orders_Page {
 	/**
 	 * Get the position of the Orders page.
 	 *
-	 * @since TBD
+	 * @since 5.13.0
 	 *
 	 * @return float
 	 */
@@ -152,7 +152,7 @@ class Orders_Page {
 		/**
 		 * Filters the position of the Orders page.
 		 *
-		 * @since TBD
+		 * @since 5.13.0
 		 *
 		 * @param float $position The position of the Orders page.
 		 */
@@ -162,7 +162,7 @@ class Orders_Page {
 	/**
 	 * Checks if the current screen is the orders page.
 	 *
-	 * @since TBD
+	 * @since 5.13.0
 	 *
 	 * @return bool
 	 */
@@ -183,7 +183,7 @@ class Orders_Page {
 	/**
 	 * Checks if the current screen is the orders page and the Tickets Events Calendar is not active.
 	 *
-	 * @since TBD
+	 * @since 5.13.0
 	 *
 	 * @return bool
 	 */
