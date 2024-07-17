@@ -129,6 +129,8 @@ class Cart {
 	/**
 	 * Saves the seat data for the attendee.
 	 *
+	 * @since TBD
+	 *
 	 * @param WP_Post               $attendee   The generated attendee.
 	 * @param Ticket_Object         $ticket     The ticket the attendee is generated for.
 	 * @param WP_Post               $order      The order the attendee is generated for.
@@ -144,12 +146,12 @@ class Cart {
 			$session_stack    = $this->get_session_stack( (string) $token, (int) $object_id, (int) $ticket->ID );
 			$reservation_data = $session_stack->current();
 			$session_stack->next();
-			$reservation_uuid = $reservation_data['reservation_id'] ?? '';
-			update_post_meta( $attendee->ID, Meta::META_KEY_RESERVATION_ID, $reservation_uuid );
+			$reservation_id = $reservation_data['reservation_id'] ?? '';
+			update_post_meta( $attendee->ID, Meta::META_KEY_RESERVATION_ID, $reservation_id );
 			$seat_label = $reservation_data['seat_label'] ?? '';
 			update_post_meta( $attendee->ID, Meta::META_KEY_ATTENDEE_SEAT_LABEL, $seat_label );
-			$seat_type = $reservation_data['seat_type_id'] ?? '';
-			update_post_meta( $attendee->ID, Meta::META_KEY_SEAT_TYPE, $seat_type );
+			$seat_type_id = $reservation_data['seat_type_id'] ?? '';
+			update_post_meta( $attendee->ID, Meta::META_KEY_SEAT_TYPE, $seat_type_id );
 		}
 
 		$object_id = get_post_meta( $ticket->ID, Attendee::$event_relation_meta_key, true );

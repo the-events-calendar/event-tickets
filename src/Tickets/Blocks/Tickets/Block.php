@@ -87,6 +87,7 @@ class Block extends Abstract_Block {
 				'jquery',
 				'wp-util',
 				'wp-i18n',
+				'wp-hooks',
 				'tribe-common',
 			],
 			null,
@@ -140,14 +141,13 @@ class Block extends Abstract_Block {
 	 *
 	 * @since 4.9
 	 *
-	 * @param array $tickets (IDs of tickets to check)
+	 * @param int[] $tickets The IDs of tickets to check.
 	 *
 	 * @return void
 	 */
 	public function ticket_availability( $tickets = [] ) {
-
 		$response = [ 'html' => '' ];
-		$tickets  = tribe_get_request_var( 'tickets', [] );
+		$tickets  = $tickets ?? tribe_get_request_var( 'tickets', [] );
 
 		// Bail if we receive no tickets.
 		if ( empty( $tickets ) ) {
