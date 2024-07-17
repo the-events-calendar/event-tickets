@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "29a3d14fd7dd78b0ce5a09f2d1708510",
+    "content-hash": "54a872d6901e5bb3bef8995b7080a9e4",
     "packages": [],
     "packages-dev": [
         {
@@ -54,6 +54,68 @@
                 "source": "https://github.com/antecedent/patchwork/tree/2.1.28"
             },
             "time": "2024-02-06T09:26:11+00:00"
+        },
+        {
+            "name": "automattic/jetpack-changelogger",
+            "version": "v4.2.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Automattic/jetpack-changelogger.git",
+                "reference": "72c219fa6e61bdcd760a68e8ff968a4365593f48"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Automattic/jetpack-changelogger/zipball/72c219fa6e61bdcd760a68e8ff968a4365593f48",
+                "reference": "72c219fa6e61bdcd760a68e8ff968a4365593f48",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0",
+                "symfony/console": "^3.4 || ^4.4 || ^5.2 || ^6.0 || ^7.0",
+                "symfony/process": "^3.4 || ^4.4 || ^5.2 || ^6.0 || ^7.0"
+            },
+            "require-dev": {
+                "wikimedia/testing-access-wrapper": "^1.0 || ^2.0 || ^3.0",
+                "yoast/phpunit-polyfills": "1.1.0"
+            },
+            "bin": [
+                "bin/changelogger"
+            ],
+            "type": "project",
+            "extra": {
+                "autotagger": true,
+                "branch-alias": {
+                    "dev-trunk": "4.2.x-dev"
+                },
+                "mirror-repo": "Automattic/jetpack-changelogger",
+                "version-constants": {
+                    "::VERSION": "src/Application.php"
+                },
+                "changelogger": {
+                    "link-template": "https://github.com/Automattic/jetpack-changelogger/compare/${old}...${new}"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Automattic\\Jetpack\\Changelog\\": "lib",
+                    "Automattic\\Jetpack\\Changelogger\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "description": "Jetpack Changelogger tool. Allows for managing changelogs by dropping change files into a changelog directory with each PR.",
+            "keywords": [
+                "changelog",
+                "cli",
+                "dev",
+                "keepachangelog"
+            ],
+            "support": {
+                "source": "https://github.com/Automattic/jetpack-changelogger/tree/v4.2.5"
+            },
+            "time": "2024-06-27T12:55:08+00:00"
         },
         {
             "name": "automattic/vipwpcs",
@@ -2784,12 +2846,12 @@
             "version": "v5.2.13",
             "source": {
                 "type": "git",
-                "url": "https://github.com/justinrainbow/json-schema.git",
+                "url": "https://github.com/jsonrainbow/json-schema.git",
                 "reference": "fbbe7e5d79f618997bc3332a6f49246036c45793"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/justinrainbow/json-schema/zipball/fbbe7e5d79f618997bc3332a6f49246036c45793",
+                "url": "https://api.github.com/repos/jsonrainbow/json-schema/zipball/fbbe7e5d79f618997bc3332a6f49246036c45793",
                 "reference": "fbbe7e5d79f618997bc3332a6f49246036c45793",
                 "shasum": ""
             },
@@ -2844,8 +2906,8 @@
                 "schema"
             ],
             "support": {
-                "issues": "https://github.com/justinrainbow/json-schema/issues",
-                "source": "https://github.com/justinrainbow/json-schema/tree/v5.2.13"
+                "issues": "https://github.com/jsonrainbow/json-schema/issues",
+                "source": "https://github.com/jsonrainbow/json-schema/tree/v5.2.13"
             },
             "time": "2023-09-26T02:20:38+00:00"
         },
@@ -7870,11 +7932,11 @@
             "require": {
                 "lucatume/wp-browser": "^2.0 || ^3.0",
                 "nilportugues/sql-query-formatter": "^1.2",
-                "php": ">=7.0"
+                "php": ">=7.4"
             },
             "require-dev": {
                 "codeception/codeception": "^3.0",
-                "dealerdirect/phpcodesniffer-composer-installer": "^0.5.0",
+                "dealerdirect/phpcodesniffer-composer-installer": "^0.7.2",
                 "phpunit/phpunit": "^6.0",
                 "vlucas/phpdotenv": "^3.0",
                 "wordpress/wordpress": "dev-master",
