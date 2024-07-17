@@ -1,0 +1,157 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Seat Selection Modal selection push to backend should add tickets to selection when receiving new tickets 1`] = `
+<div
+  class="event-tickets"
+>
+  
+					
+  <div
+    class="tec-tickets-seating__iframe-container"
+    data-token="test-token"
+  >
+    
+						
+    <iframe
+      class="tec-tickets-seating__iframe"
+    />
+    
+					
+  </div>
+  
+					
+  <div
+    class="tec-tickets-seating__ticket-rows"
+  >
+    <div
+      class="tec-tickets-seating__ticket-row"
+      data-price="50"
+      data-seat-label="A-1"
+      data-seat-type-id="uuid-seat-type-0"
+      data-ticket-id="23"
+    >
+      
+			
+      <div
+        class="tec-tickets-seating__seat-color"
+        style="background: #00ff00"
+      />
+      
+
+			
+      <div
+        class="tec-tickets-seating__label"
+      >
+        
+				
+        <div
+          class="tec-tickets-seating__ticket-name"
+        >
+          Adult
+        </div>
+        
+				
+        <div
+          class="tec-tickets-seating__seat-label"
+        >
+          A-1
+        </div>
+        
+			
+      </div>
+      
+
+			
+      <div
+        class="tec-tickets-seating__ticket-price"
+      >
+        $50
+      </div>
+      
+		
+    </div>
+    <div
+      class="tec-tickets-seating__ticket-row"
+      data-price="50"
+      data-seat-label="A-2"
+      data-seat-type-id="uuid-seat-type-0"
+      data-ticket-id="23"
+    >
+      
+			
+      <div
+        class="tec-tickets-seating__seat-color"
+        style="background: #ff0000"
+      />
+      
+
+			
+      <div
+        class="tec-tickets-seating__label"
+      >
+        
+				
+        <div
+          class="tec-tickets-seating__ticket-name"
+        >
+          Adult
+        </div>
+        
+				
+        <div
+          class="tec-tickets-seating__seat-label"
+        >
+          A-2
+        </div>
+        
+			
+      </div>
+      
+
+			
+      <div
+        class="tec-tickets-seating__ticket-price"
+      >
+        $50
+      </div>
+      
+		
+    </div>
+  </div>
+  
+					
+  <div>
+    
+						
+    <p
+      class="tec-tickets-seating__total-price"
+    />
+    
+						
+    <p
+      class="tec-tickets-seating__total-text"
+    />
+    
+					
+  </div>
+  
+					
+  <div
+    class="tec-tickets-seating__modal"
+  >
+    
+						
+    <button
+      class="tec-tickets-seating__sidebar-control--confirm"
+    >
+      
+							Check Out
+						
+    </button>
+    
+					
+  </div>
+  
+				
+</div>
+`;

@@ -46,7 +46,10 @@ global.tec.tickets.seating = {
 					],
 				},
 			],
-			labels: {},
+			labels: {
+				oneTicket: '1 Ticket',
+				multipleTickets: '{count} Tickets',
+			},
 			providerClass: 'TEC\\Tickets\\Commerce\\Module',
 			postId: 23,
 			ajaxUrl: 'https://wordpress.test/wp-admin/admin-ajax.php',
