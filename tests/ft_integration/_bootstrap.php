@@ -75,3 +75,6 @@ addListener( Events::TEST_BEFORE, function () use ( $custom_tables ) {
 // Deactivate logging.
 global $wp_filter;
 $wp_filter['tribe_log'] = new WP_Hook();
+
+update_option( 'theme', 'twentytwenty' );
+update_option( 'stylesheet', 'twentytwenty' );
