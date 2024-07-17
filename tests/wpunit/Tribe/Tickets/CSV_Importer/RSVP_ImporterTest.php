@@ -40,6 +40,7 @@ class RSVP_ImporterTest extends \Codeception\TestCase\WPTestCase {
 	 * it should import an RSVP ticket
 	 */
 	public function it_should_import_an_rsvp_ticket() {
+		$this->setExpectedDeprecated( 'get_page_by_title' );
 		$overrides = [
 			'event_name'             => 'Event 1',
 			'ticket_name'            => 'Ticket 1',
@@ -330,6 +331,8 @@ class RSVP_ImporterTest extends \Codeception\TestCase\WPTestCase {
 	 * it should mark record as invalid if referring recurring event
 	 */
 	public function it_should_mark_record_as_invalid_if_referring_recurring_event() {
+		$this->setExpectedDeprecated( 'get_page_by_title' );
+
 		$event_id = \Tribe__Events__API::createEvent( [ 'post_title' => 'Event 15' ] );
 		add_filter( 'tribe_is_recurring_event', function ( $recurring, $post_id ) use ( $event_id ) {
 			return $post_id ===$event_id ? true : $recurring;

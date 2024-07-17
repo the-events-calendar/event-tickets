@@ -234,7 +234,7 @@ class Orders_Table extends WP_Posts_List_Table {
 
 		// Subtract post types that are not included in the admin all list.
 		foreach ( get_post_stati( [ 'show_in_admin_all_list' => false ] ) as $state ) {
-			$total_posts -= isset( $num_posts->$state ) ? $num_posts->$state : 0;
+			$total_posts -= $num_posts->$state ?? 0;
 		}
 
 		$all_inner_html = sprintf(
@@ -268,7 +268,7 @@ class Orders_Table extends WP_Posts_List_Table {
 			$total_posts_in_status = 0;
 
 			foreach ( $all_grouped_statuses as $grouped_status ) {
-				$total_posts_in_status += isset( $num_posts->$grouped_status ) ? $num_posts->$grouped_status : 0;
+				$total_posts_in_status += $num_posts->$grouped_status ?? 0;
 			}
 
 			$num_posts->$status_name = $total_posts_in_status;
