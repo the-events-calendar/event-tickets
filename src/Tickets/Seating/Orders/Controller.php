@@ -118,7 +118,11 @@ class Controller extends Controller_Contract {
 			add_action( 'tribe_tickets_orders_tabbed_view_register_tab_right', [ $this, 'register_seat_tab' ], 10, 2 );
 			add_action( 'init', [ $this, 'register_seat_reports' ] );
 			add_filter( 'tec_tickets_commerce_reports_tabbed_page_title', [ $this, 'filter_seat_tab_title' ], 10, 3 );
+			
+			// Attendee delete handler.
+			add_filter( 'tec_tickets_commerce_attendee_to_delete', [ $this, 'handle_attendee_delete' ] );
 		}
+		
 		add_action( 'tec_tickets_commerce_flag_action_generated_attendees', [ $this, 'confirm_all_reservations' ] );
 	}
 	
@@ -215,6 +219,7 @@ class Controller extends Controller_Contract {
 		remove_filter( 'tec_tickets_commerce_reports_tabbed_page_title', [ $this, 'filter_seat_tab_title' ] );
 
 		remove_action( 'tec_tickets_commerce_flag_action_generated_attendees', [ $this, 'confirm_all_reservations' ] );
+		remove_action( 'tec_tickets_commerce_attendee_before_delete', [ $this, 'handle_attendee_delete' ] );
 	}
 
 	/**
@@ -327,5 +332,18 @@ class Controller extends Controller_Contract {
 	 */
 	public function confirm_all_reservations(): void {
 		$this->session->confirm_all_reservations();
+	}
+	
+	/**
+	 * Handle attendee delete.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $attendee_id The attendee ID.
+	 *
+	 * @return int The attendee ID.
+	 */
+	public function handle_attendee_delete( int $attendee_id ): int {
+		return $this->attendee->handle_attendee_delete( $attendee_id, $this->reservations );
 	}
 }
