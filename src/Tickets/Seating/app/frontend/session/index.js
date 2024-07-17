@@ -535,8 +535,8 @@ export function postponeHealthcheck() {
 		clearTimeout(healthCheckLoopId);
 	}
 
-	// Postpone the healthcheck for 5 seconds.
-	setTimeout(syncWithBackend, 5000);
+	// Postpone the healthcheck for 30 seconds.
+	setTimeout(syncWithBackend, 30000);
 }
 
 /**
@@ -611,7 +611,7 @@ export function setHealthcheckLoopId(id) {
 
 // On DOM ready check if any timer needs to be synced.
 onReady(syncOnLoad);
-onReady(watchCheckoutControls);
+onReady(() => watchCheckoutControls(document));
 
 window.tec = window.tec || {};
 window.tec.tickets = window.tec.tickets || {};

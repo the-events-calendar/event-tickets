@@ -16,8 +16,40 @@ global.tec.tickets.seating = {
 	frontend: {
 		ticketsBlock: {
 			objectName: 'tribe-tickets-seating-modal',
-			seatTypeMap: {},
-			labels: {},
+			seatTypeMap: [
+				{
+					id: 'general-admission-seat-type-uuid',
+					tickets: [
+						{
+							ticketId: 23,
+							name: 'Adult',
+							price: 50,
+							description: 'Adult, General Admission',
+						},
+						{
+							ticketId: 89,
+							name: 'Child',
+							price: 30,
+							description: 'Child, General Admission',
+						},
+					],
+				},
+				{
+					id: 'vip-seat-type-uuid',
+					tickets: [
+						{
+							ticketId: 66,
+							name: 'VIP',
+							price: 100,
+							description: 'Best seats',
+						},
+					],
+				},
+			],
+			labels: {
+				oneTicket: '1 Ticket',
+				multipleTickets: '{count} Tickets',
+			},
 			providerClass: 'TEC\\Tickets\\Commerce\\Module',
 			postId: 23,
 			ajaxUrl: 'https://wordpress.test/wp-admin/admin-ajax.php',

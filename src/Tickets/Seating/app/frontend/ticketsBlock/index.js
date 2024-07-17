@@ -21,6 +21,7 @@ import {
 	start as startTimer,
 	reset as resetTimer,
 } from '@tec/tickets/seating/frontend/session';
+import './filters';
 
 const {
 	objectName,
@@ -123,10 +124,13 @@ function formatTicketNumber(value) {
  *
  * @since TBD
  *
+ * @param {HTMLElement|null} parentElement The parent element to disable the checkout button for.
+ *
  * @return {void}
  */
-function enableCheckout() {
-	Array.from(document.querySelectorAll(confirmSelector)).forEach(
+function enableCheckout(parentElement) {
+	parentElement = parentElement || document;
+	Array.from(parentElement.querySelectorAll(confirmSelector)).forEach(
 		(confirm) => {
 			confirm.disabled = false;
 		}
@@ -138,10 +142,13 @@ function enableCheckout() {
  *
  * @since TBD
  *
+ * @param {HTMLElement|null} parentElement The parent element to enable the checkout button for.
+ *
  * @return {void}
  */
-function disableCheckout() {
-	Array.from(document.querySelectorAll(confirmSelector)).forEach(
+function disableCheckout(parentElement) {
+	parentElement = parentElement || document;
+	Array.from(parentElement.querySelectorAll(confirmSelector)).forEach(
 		(confirm) => {
 			confirm.disabled = true;
 		}
@@ -153,17 +160,20 @@ function disableCheckout() {
  *
  * @since TBD
  *
+ * @param {HTMLElement|null} parentElement The parent element to update the totals for.
+ *
  * @return {void} The total prices and number of tickets are updated.
  */
-function updateTotals() {
+function updateTotals(parentElement) {
+	parentElement = parentElement || document;
 	const rows = Array.from(
-		document.querySelectorAll('.tec-tickets-seating__ticket-row')
+		parentElement.querySelectorAll('.tec-tickets-seating__ticket-row')
 	);
 
 	if (rows.length) {
-		enableCheckout();
+		enableCheckout(parentElement);
 	} else {
-		disableCheckout();
+		disableCheckout(parentElement);
 	}
 
 	totalPriceElement.innerText = formatWithCurrency(
@@ -188,11 +198,13 @@ function updateTotals() {
  *
  * @since TBD
  *
- * @param {TicketSelectionProps} props The props for the Ticket Row component.
+ * @param {HTMLElement|null}     parentElement The parent element to add the ticket to.
+ * @param {TicketSelectionProps} props         The props for the Ticket Row component.
  *
  * @return {void} The ticket row is added to the DOM.
  */
-function addTicketToSelection(props) {
+function addTicketToSelection(parentElement, props) {
+	parentElement = parentElement || document;
 	const ticketPrice = tickets?.[props.ticketId]?.price || null;
 	const ticketName = tickets?.[props.ticketId].name || null;
 
@@ -210,7 +222,7 @@ function addTicketToSelection(props) {
 		formattedPrice: formatWithCurrency(ticketPrice),
 	};
 
-	document
+	parentElement
 		.querySelector('.tec-tickets-seating__ticket-rows')
 		.appendChild(TicketRow(ticketRowProps));
 }
@@ -220,9 +232,9 @@ function addTicketToSelection(props) {
  *
  * @since TBD
  *
- * @param {string[]} reservationIds The reservation IDs to post to the backend.
+ * @param {Object} reservations The reservation IDs to post to the backend.
  */
-async function postReservationsToBackend(reservationIds) {
+async function postReservationsToBackend(reservations) {
 	// First of all, cancel any similar requests that might be in progress.
 	await currentController.abort('New reservations data');
 	const newController = new AbortController();
@@ -237,7 +249,7 @@ async function postReservationsToBackend(reservationIds) {
 		signal: newController.signal,
 		body: JSON.stringify({
 			token: getToken(),
-			reservations: reservationIds,
+			reservations,
 		}),
 	});
 
@@ -256,20 +268,31 @@ async function postReservationsToBackend(reservationIds) {
  *
  * @since TBd
  *
- * @param {TicketSelectionProps[]} items
+ * @param {HTMLElement|null}       parentElement The parent element to add the tickets to.
+ * @param {TicketSelectionProps[]} items         The items to add to the selection.
  */
-function updateTicketsSelection(items) {
-	document.querySelector('.tec-tickets-seating__ticket-rows').innerHTML = '';
+function updateTicketsSelection(parentElement, items) {
+	parentElement = parentElement || document;
+	parentElement.querySelector('.tec-tickets-seating__ticket-rows').innerHTML =
+		'';
 
 	items.forEach((item) => {
-		addTicketToSelection(item);
+		addTicketToSelection(parentElement, item);
 	});
 
-	const reservationIds = items.map((item) => item.reservationId);
+	const reservations = items.reduce((acc, item) => {
+		acc[item.ticketId] = acc[item.ticketId] || [];
+		acc[item.ticketId].push({
+			reservationId: item.reservationId,
+			seatTypeId: item.seatTypeId,
+			seatLabel: item.seatLabel,
+		});
+		return acc;
+	}, {});
 
-	postReservationsToBackend(reservationIds);
+	postReservationsToBackend(reservations);
 
-	updateTotals();
+	updateTotals(parentElement);
 }
 
 /**
@@ -309,6 +332,7 @@ function registerActions(iframe) {
 	// When a seat is selected, add it to the selection.
 	registerAction(INBOUND_SEATS_SELECTED, (items) => {
 		updateTicketsSelection(
+			iframe.closest('.event-tickets'),
 			items.filter((item) => validateSelectionItemFromService(item))
 		);
 	});
@@ -319,10 +343,13 @@ function registerActions(iframe) {
  *
  * @since TBd
  *
+ * @param {HTMLDocument|null} dom The document to use to bootstrap the iframe.
+ *
  * @return {Promise<boolean>} A promise that resolves to true if the iframe is ready to communicate with the service.
  */
-async function bootstrapIframe() {
-	const iframe = getIframeElement();
+export async function bootstrapIframe(dom) {
+	dom = dom || document;
+	const iframe = getIframeElement(dom);
 
 	if (!iframe) {
 		console.error('Iframe element not found.');
@@ -334,13 +361,9 @@ async function bootstrapIframe() {
 
 	await initServiceIframe(iframe);
 
-	totalPriceElement = document.querySelector(
-		'.tec-tickets-seating__total-price'
-	);
+	totalPriceElement = dom.querySelector('.tec-tickets-seating__total-price');
 
-	totalTicketsElement = document.querySelector(
-		'.tec-tickets-seating__total-text'
-	);
+	totalTicketsElement = dom.querySelector('.tec-tickets-seating__total-text');
 }
 
 /**
@@ -401,7 +424,7 @@ function clearTicketSelection() {
  *
  * @param {HTMLElement} dialogElement the iframe element that should be used to communicate with the service.
  */
-export function cancelReservations(dialogElement) {
+export async function cancelReservations(dialogElement) {
 	if (!shouldCancelReservations) {
 		return;
 	}
@@ -414,7 +437,7 @@ export function cancelReservations(dialogElement) {
 		sendPostMessage(iframe, OUTBOUND_REMOVE_RESERVATIONS);
 	}
 
-	cancelReservationsOnBackend();
+	await cancelReservationsOnBackend();
 	resetTimer();
 	clearTicketSelection();
 }

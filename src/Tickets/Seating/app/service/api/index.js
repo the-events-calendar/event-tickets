@@ -243,7 +243,7 @@ export function emptyHandlerQueue() {
 }
 
 // Re-export some functions from the state module.
-export { getToken };
+export { getToken, registerAction, getHandlerForAction };
 
 window.tec = window.tec || {};
 window.tec.tickets.seating = window.tec.tickets.seating || {};

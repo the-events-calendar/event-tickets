@@ -18,6 +18,7 @@ use TEC\Tickets\Seating\Tables\Seat_Types as Seat_Types_Table;
 use TEC\Tickets\Seating\Tables\Sessions;
 use TEC\Tickets\Seating\Tests\Integration\Seat_Types_Factory;
 use Tribe\Tests\Traits\With_Uopz;
+use Tribe\Tickets\Test\Traits\Reservations_Maker;
 use Tribe\Tickets\Test\Traits\WP_Remote_Mocks;
 use Tribe__Tickets__Data_API as Data_API;
 
@@ -27,6 +28,7 @@ class Ajax_Test extends Controller_Test_Case {
 	use Seat_Types_Factory;
 	use OAuth_Token;
 	use WP_Remote_Mocks;
+	use Reservations_Maker;
 
 	protected string $controller_class = Ajax::class;
 
@@ -644,6 +646,7 @@ class Ajax_Test extends Controller_Test_Case {
 			function ( $pre, $args, $url ) use ( &$fetch_url, &$data ) {
 				$fetch_url = $url;
 				$data      = $args;
+
 				return [ 'response' => [ 'code' => 200 ] ];
 			},
 			10,
@@ -788,6 +791,7 @@ class Ajax_Test extends Controller_Test_Case {
 			function ( $pre, $args, $url ) use ( &$fetch_url, &$data ) {
 				$fetch_url = $url;
 				$data      = $args;
+
 				return [ 'response' => [ 'code' => 200 ] ];
 			},
 			10,
@@ -860,11 +864,13 @@ class Ajax_Test extends Controller_Test_Case {
 			)
 		);
 	}
+
 	public function test_update_reservations(): void {
 		$this->given_maps_and_layouts_in_db();
+		$mock_ajax_reservations_data = $this->create_mock_ajax_reservations_data( [ 23 ], 2 );
 		$this->set_fn_return(
 			'file_get_contents',
-			function ( string $file ) {
+			function ( string $file ) use ( $mock_ajax_reservations_data ) {
 				if ( $file !== 'php://input' ) {
 					return file_get_contents( $file );
 				}
@@ -872,10 +878,7 @@ class Ajax_Test extends Controller_Test_Case {
 				return json_encode(
 					[
 						'token'        => 'test-token',
-						'reservations' => [
-							'1234567890',
-							'0987654321',
-						],
+						'reservations' =>  $mock_ajax_reservations_data,
 					]
 				);
 			},
@@ -900,18 +903,19 @@ class Ajax_Test extends Controller_Test_Case {
 		$this->assertTrue( $wp_send_json_success );
 		$this->assertEquals(
 			[
-				'1234567890',
-				'0987654321',
+				'reservation-id-1',
+				'reservation-id-2',
 			],
-			$sessions->get_reservations_for_token( 'test-token' )
+			$sessions->get_reservation_uuids_for_token( 'test-token' )
 		);
 	}
 
 	public function test_update_reservations_will_return_403_on_bad_nonce(): void {
 		$this->given_maps_and_layouts_in_db();
+		$mock_ajax_reservations_data = $this->create_mock_ajax_reservations_data( [ 23 ], 2 );
 		$this->set_fn_return(
 			'file_get_contents',
-			function ( string $file ) {
+			function ( string $file ) use ( $mock_ajax_reservations_data ) {
 				if ( $file !== 'php://input' ) {
 					return file_get_contents( $file );
 				}
@@ -919,10 +923,7 @@ class Ajax_Test extends Controller_Test_Case {
 				return json_encode(
 					[
 						'token'        => 'test-token',
-						'reservations' => [
-							'1234567890',
-							'0987654321',
-						],
+						'reservations' => $mock_ajax_reservations_data,
 					]
 				);
 			},
@@ -1025,10 +1026,7 @@ class Ajax_Test extends Controller_Test_Case {
 		// Send a JSON body that does not contain a token.
 		$json_body = json_encode(
 			[
-				'reservations' => [
-					'1234567890',
-					'0987654321',
-				],
+				'reservations' => $this->create_mock_ajax_reservations_data( [ 23 ], 2 ),
 			]
 		);
 
@@ -1075,9 +1073,10 @@ class Ajax_Test extends Controller_Test_Case {
 			},
 			true
 		);
+		$mock_ajax_reservations_data = $this->create_mock_ajax_reservations_data( [ 23 ], 2 );
 		$this->set_fn_return(
 			'file_get_contents',
-			function ( string $file ) {
+			function ( string $file ) use ( $mock_ajax_reservations_data ) {
 				if ( $file !== 'php://input' ) {
 					return file_get_contents( $file );
 				}
@@ -1085,10 +1084,7 @@ class Ajax_Test extends Controller_Test_Case {
 				return json_encode(
 					[
 						'token'        => 'test-token',
-						'reservations' => [
-							'1234567890',
-							'0987654321',
-						],
+						'reservations' => $mock_ajax_reservations_data,
 					]
 				);
 			},
@@ -1129,16 +1125,16 @@ class Ajax_Test extends Controller_Test_Case {
 				'test-token',
 				23,
 				time() + 10,
-				wp_json_encode( [ '1234567890', '0987654321' ] )
+				wp_json_encode( $this->create_mock_reservations_data( [ 23 ], 2 ) )
 			)
 		);
 		$sessions = tribe( Sessions::class );
 		$this->assertEquals(
 			[
-				'1234567890',
-				'0987654321',
+				'reservation-id-1',
+				'reservation-id-2',
 			],
-			$sessions->get_reservations_for_token( 'test-token' )
+			$sessions->get_reservation_uuids_for_token( 'test-token' )
 		);
 		$this->set_oauth_token( 'auth-token' );
 		$this->mock_wp_remote(
@@ -1151,7 +1147,7 @@ class Ajax_Test extends Controller_Test_Case {
 				'body'    => wp_json_encode(
 					[
 						'eventId' => 'test-post-uuid',
-						'ids'     => [ '1234567890', '0987654321' ],
+						'ids'     => [ 'reservation-id-1', 'reservation-id-2' ],
 					]
 				),
 			],
@@ -1194,16 +1190,16 @@ class Ajax_Test extends Controller_Test_Case {
 				'test-token',
 				23,
 				time() + 10,
-				wp_json_encode( [ '1234567890', '0987654321' ] )
+				wp_json_encode( $this->create_mock_reservations_data( [ 23 ], 2 ) )
 			)
 		);
 		$sessions = tribe( Sessions::class );
 		$this->assertEquals(
 			[
-				'1234567890',
-				'0987654321',
+				'reservation-id-1',
+				'reservation-id-2',
 			],
-			$sessions->get_reservations_for_token( 'test-token' )
+			$sessions->get_reservation_uuids_for_token( 'test-token' )
 		);
 		$this->set_oauth_token( 'auth-token' );
 		$this->mock_wp_remote(
@@ -1216,7 +1212,7 @@ class Ajax_Test extends Controller_Test_Case {
 				'body'    => wp_json_encode(
 					[
 						'eventId' => 'test-post-uuid',
-						'ids'     => [ '1234567890', '0987654321' ],
+						'ids'     => [ 'reservation-id-1', 'reservation-id-2' ],
 					]
 				),
 			],
@@ -1252,6 +1248,9 @@ class Ajax_Test extends Controller_Test_Case {
 		$_REQUEST['token']       = 'test-token';
 		$_REQUEST['postId']      = 23;
 		update_post_meta( 23, Meta::META_KEY_UUID, 'test-post-uuid' );
+		$sessions = tribe( Sessions::class );
+		$sessions->upsert( 'test-token', 23, time() + 100 );
+		$sessions->update_reservations( 'test-token', $this->create_mock_reservations_data( [ 23 ], 2 ) );
 		// Mock the session table to return false on clear_token_reservations.
 		$this->test_services->singleton( Sessions::class, $this->make( Sessions::class, [
 			'clear_token_reservations' => false
@@ -1267,7 +1266,7 @@ class Ajax_Test extends Controller_Test_Case {
 				'body'    => wp_json_encode(
 					[
 						'eventId' => 'test-post-uuid',
-						'ids'     => [ '1234567890', '0987654321' ],
+						'ids'     => [ 'reservation-id-1', 'reservation-id-2' ],
 					]
 				),
 			],

@@ -12,6 +12,51 @@ namespace Tribe\Tickets\Test\Traits;
 use Generator;
 use PHPUnit\Framework\Assert;
 
+class WP_Remote_Mock_Spy {
+	private string $name;
+	private string $method;
+	private string $url;
+	private array $calls = [];
+	private $expects_calls = true;
+	private bool $was_verified = false;
+
+	public function __construct( string $method, string $url ) {
+		$this->name   = 'wp_remote_' . strtolower( $method );
+		$this->method = strtoupper( $method );
+		$this->url    = $url;
+	}
+
+	public function register_call( array $args ): void {
+		$this->calls[] = [ $args, microtime( true ) ];
+	}
+
+	public function expects_calls(): bool {
+		return $this->expects_calls;
+	}
+
+	public function was_called(): bool {
+		$this->was_verified = true;
+
+		return count( $this->calls ) > 0;
+	}
+
+	public function was_verified(): bool {
+		return $this->was_verified;
+	}
+
+	public function get_name(): string {
+		return $this->name;
+	}
+
+	public function get_url(): string {
+		return $this->url;
+	}
+
+	public function get_method(): string {
+		return $this->method;
+	}
+}
+
 /**
  * Class WP_Request_Mocking.
  *
@@ -20,6 +65,13 @@ use PHPUnit\Framework\Assert;
  * @package Traits;
  */
 trait WP_Remote_Mocks {
+	/**
+	 * A map from the hash of the mock function to the calls that were made to it.
+	 *
+	 * @var WP_Remote_Mock_Spy[]
+	 */
+	private array $wp_remote_spies = [];
+
 	/**
 	 * Mocks a `wp_remote_` function based on the URL.
 	 *
@@ -41,11 +93,11 @@ trait WP_Remote_Mocks {
 	 *                                                              returns a Generator, it will be called to get the response at each
 	 *                                                              step.
 	 *
-	 * @return void
+	 * @return WP_Remote_Mock_Spy The spy object that can be used to assert the calls.
 	 *
 	 * @throws \ReflectionException
 	 */
-	protected function mock_wp_remote( string $type, string $mock_url, $expected_args, $mock_response ): void {
+	protected function mock_wp_remote( string $type, string $mock_url, $expected_args, $mock_response ): object {
 		// Extract the expected arguments' generator.
 		if (
 			is_callable( $expected_args )
@@ -64,7 +116,10 @@ trait WP_Remote_Mocks {
 			$mock_response = $mock_response();
 		}
 
-		$mock = function ( string $url, array $args ) use ( $mock_url, $expected_args, $mock_response ) {
+		// Pass a pointer to a pointer to get around the unbound context in the `uopz` use of Closures.
+		$spy = new WP_Remote_Mock_Spy( $type, $mock_url );
+
+		$mock = function ( string $url, array $args ) use ( $mock_url, $expected_args, $mock_response, &$spy ) {
 			if ( $url !== $mock_url ) {
 				return wp_remote_post( $url, $args );
 			}
@@ -89,9 +144,35 @@ trait WP_Remote_Mocks {
 				$mock_response->next();
 			}
 
+			$spy->register_call( $args );
+
 			return $current_mock_response;
 		};
 
+		$this->wp_remote_spies[] = $spy;
+
 		$this->set_fn_return( "wp_remote_{$type}", $mock, true );
+
+		return $spy;
+	}
+
+	/**
+	 * @after
+	 */
+	public function assert_wp_remote_mocks_post_conditions(): void {
+		foreach ( $this->wp_remote_spies as $spy ) {
+			if ( ! $spy->was_verified() && $spy->expects_calls() ) {
+				$this->assertTrue( $spy->was_called(),
+					sprintf(
+						"The %s mock function for [%s %s] was not called.",
+						$spy->get_name(),
+						$spy->get_method(),
+						$spy->get_url(),
+					)
+				);
+			}
+		}
+
+		$this->wp_remote_spies = [];
 	}
 }

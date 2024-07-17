@@ -43,12 +43,16 @@ async function init(iframe) {
 /**
  * Returns the first iframe element in the document.
  *
+ * @since TBD
+ *
+ * @param {HTMLDocument|null} dom The document to use to get the iframe element.
+ *
  * @return {Element|null} The first iframe element in the document, or `null` if there is none.
  */
-export function getIframeElement() {
-	return document.querySelector(
-		'.tec-tickets-seating__iframe-container iframe'
-	);
+export function getIframeElement(dom) {
+	dom = dom || document;
+
+	return dom.querySelector('.tec-tickets-seating__iframe-container iframe');
 }
 
 /**

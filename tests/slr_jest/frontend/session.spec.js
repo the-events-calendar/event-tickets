@@ -40,7 +40,10 @@ describe('Seat Selection Session', () => {
 			dom.querySelector('.test-checkout-control').click();
 
 			expect(global.clearTimeout).toHaveBeenCalledWith(23);
-			expect(global.setTimeout).toHaveBeenCalledWith(syncWithBackend, 5000);
+			expect(global.setTimeout).toHaveBeenCalledWith(
+				syncWithBackend,
+				30000
+			);
 		});
 
 		it('should watch checkout controls to postpone timer backend sync on submit', () => {
@@ -48,7 +51,10 @@ describe('Seat Selection Session', () => {
 			dom.querySelector('.test-checkout-control-form').submit();
 
 			expect(global.clearTimeout).toHaveBeenCalledWith(23);
-			expect(global.setTimeout).toHaveBeenCalledWith(syncWithBackend, 5000);
+			expect(global.setTimeout).toHaveBeenCalledWith(
+				syncWithBackend,
+				30000
+			);
 		});
 	});
 

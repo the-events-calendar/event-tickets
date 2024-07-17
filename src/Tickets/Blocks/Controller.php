@@ -52,6 +52,11 @@ class Controller extends \TEC\Common\Contracts\Provider\Controller {
 
 		$this->register_for_blocks();
 
+		if ( wp_doing_ajax() ) {
+			// The Tickets Block editor will handle AJAX requests, register now if we're in an AJAX context.
+			tribe( 'tickets.editor.blocks.tickets' )->hook();
+		}
+
 		// Handle general non-block-specific instances.
 		tribe( 'tickets.editor.warnings' );
 	}
