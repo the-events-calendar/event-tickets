@@ -205,7 +205,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.12.0] TBD =
+= [5.12.0] 2024-07-18 =
 
 * Feature - Added new Orders Management page to view and manage all Tickets Commerce orders from one location. [ET-2117]
 * Fix - Ensure Stripe refunds are recorded in WordPress. [ET-2142]
