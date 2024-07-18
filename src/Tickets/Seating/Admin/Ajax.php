@@ -14,13 +14,12 @@ use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Tickets\Seating\Service\Layouts;
 use TEC\Tickets\Seating\Service\Maps;
 use TEC\Tickets\Seating\Service\Seat_Types;
-use TEC\Tickets\Seating\Service\Service;
 use TEC\Tickets\Seating\Tables\Sessions;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Seating\Service\Reservations;
 use Tribe__Tickets__Tickets as Tickets;
-
+use TEC\Tickets\Seating\Meta;
 /**
  * Class Ajax.
  *
@@ -55,7 +54,7 @@ class Ajax extends Controller_Contract {
 	 * @var string
 	 */
 	const ACTION_INVALIDATE_LAYOUTS_CACHE = 'tec_tickets_seating_service_invalidate_layouts_cache';
-	
+
 	/**
 	 * The action to delete a map.
 	 *
@@ -64,7 +63,7 @@ class Ajax extends Controller_Contract {
 	 * @var string
 	 */
 	const ACTION_DELETE_MAP = 'tec_tickets_seating_service_delete_map';
-	
+
 	/**
 	 * The action to delete a layout.
 	 *
@@ -93,6 +92,15 @@ class Ajax extends Controller_Contract {
 	const ACTION_CLEAR_RESERVATIONS = 'tec_tickets_seating_clear_reservations';
 
 	/**
+	 * The action to fetch attendees.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	const ACTION_FETCH_ATTENDEES = 'tec_tickets_seating_fetch_attendees';
+
+	/**
 	 * A reference to the Seat Types service object.
 	 *
 	 * @since TBD
@@ -118,7 +126,7 @@ class Ajax extends Controller_Contract {
 	 * @var Reservations
 	 */
 	private Reservations $reservations;
-	
+
 	/**
 	 * A reference to the Maps service object.
 	 *
@@ -127,7 +135,7 @@ class Ajax extends Controller_Contract {
 	 * @var Maps
 	 */
 	private Maps $maps;
-	
+
 	/**
 	 * A reference to the Layouts service object.
 	 *
@@ -181,6 +189,7 @@ class Ajax extends Controller_Contract {
 		add_action( 'wp_ajax_' . self::ACTION_CLEAR_RESERVATIONS, [ $this, 'clear_reservations' ] );
 		add_action( 'wp_ajax_nopriv_' . self::ACTION_CLEAR_RESERVATIONS, [ $this, 'clear_reservations' ] );
 		add_action( 'tec_tickets_seating_session_interrupt', [ $this, 'clear_commerce_cart_cookie' ] );
+		add_action( 'wp_ajax_' . self::ACTION_FETCH_ATTENDEES, [ $this, 'fetch_attendees_by_event' ] );
 	}
 
 	/**
@@ -204,6 +213,77 @@ class Ajax extends Controller_Contract {
 		remove_action( 'wp_ajax_' . self::ACTION_CLEAR_RESERVATIONS, [ $this, 'clear_reservations' ] );
 		remove_action( 'wp_ajax_nopriv_' . self::ACTION_CLEAR_RESERVATIONS, [ $this, 'clear_reservations' ] );
 		remove_action( 'tec_tickets_seating_session_interrupt', [ $this, 'clear_commerce_cart_cookie' ] );
+		remove_action( 'wp_ajax_' . self::ACTION_FETCH_ATTENDEES, [ $this, 'fetch_attendees_by_event' ] );
+	}
+
+	/**
+	 * Fetch attendees by event.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function fetch_attendees_by_event(): void {
+		if ( ! check_ajax_referer( self::NONCE_ACTION, '_ajax_nonce', false ) ) {
+			wp_send_json_error(
+				[
+					'error' => __( 'Nonce verification failed', 'event-tickets' ),
+				],
+				403
+			);
+
+			return;
+		}
+
+		$event_id = (int) tribe_get_request_var( 'postId' );
+
+		if ( empty( $event_id ) ) {
+			wp_send_json_error(
+				[
+					'error' => __( 'No event ID provided', 'event-tickets' ),
+				],
+				400
+			);
+
+			return;
+		}
+
+		$current_page = (int) tribe_get_request_var( 'page', 0 );
+		$per_page     = (int) tribe_get_request_var( 'perPage', 0 );
+
+		$args = [
+			'page'               => $current_page,
+			'per_page'           => $per_page,
+			'return_total_found' => true,
+			'order'              => 'DESC',
+		];
+
+		$data      = Tickets::get_attendees_by_args( $args, $event_id );
+		$formatted = [];
+
+		foreach ( $data['attendees'] as $attendee ) {
+			$id = (int) $attendee['attendee_id'];
+
+			$formatted[] = [
+				'id'            => $id,
+				'name'          => $attendee['holder_name'],
+				'purchaser'     => [
+					'id'   => $attendee['purchaser_id'],
+					'name' => $attendee['purchaser_name'],
+				],
+				'ticketId'      => $attendee['product_id'],
+				'seatTypeId'    => get_post_meta( $id, Meta::META_KEY_SEAT_TYPE, true ),
+				'seatLabel'     => get_post_meta( $id, Meta::META_KEY_ATTENDEE_SEAT_LABEL, true ),
+				'reservationId' => get_post_meta( $id, Meta::META_KEY_RESERVATION_ID, true ),
+			];
+		}
+
+		wp_send_json_success(
+			[
+				'attendees' => $formatted,
+				'total'     => $data['total_found'],
+			]
+		);
 	}
 
 	/**
@@ -313,7 +393,7 @@ class Ajax extends Controller_Contract {
 
 		wp_send_json_success();
 	}
-	
+
 	/**
 	 * Deletes a map from the service.
 	 *
@@ -329,12 +409,12 @@ class Ajax extends Controller_Contract {
 				],
 				403
 			);
-			
+
 			return;
 		}
-		
+
 		$map_id = (string) tribe_get_request_var( 'mapId' );
-		
+
 		if ( empty( $map_id ) ) {
 			wp_send_json_error(
 				[
@@ -342,18 +422,18 @@ class Ajax extends Controller_Contract {
 				],
 				400
 			);
-			
+
 			return;
 		}
-		
+
 		if ( $this->maps->delete( $map_id ) ) {
 			wp_send_json_success();
 			return;
 		}
-		
+
 		wp_send_json_error( [ 'error' => __( 'Failed to delete the map.', 'event-tickets' ) ], 500 );
 	}
-	
+
 	/**
 	 * Deletes a layout from the service.
 	 *
@@ -369,13 +449,13 @@ class Ajax extends Controller_Contract {
 				],
 				403
 			);
-			
+
 			return;
 		}
-		
+
 		$layout_id = (string) tribe_get_request_var( 'layoutId' );
 		$map_id    = (string) tribe_get_request_var( 'mapId' );
-		
+
 		if ( empty( $layout_id ) || empty( $map_id ) ) {
 			wp_send_json_error(
 				[
@@ -383,18 +463,18 @@ class Ajax extends Controller_Contract {
 				],
 				400
 			);
-			
+
 			return;
 		}
-		
+
 		if ( $this->layouts->delete( $layout_id, $map_id ) ) {
 			wp_send_json_success();
 			return;
 		}
-		
+
 		wp_send_json_error( [ 'error' => __( 'Failed to delete the layout.', 'event-tickets' ) ], 500 );
 	}
-	
+
 	/**
 	 * Handles the request to update reservations on the Service.
 	 *
@@ -440,8 +520,20 @@ class Ajax extends Controller_Contract {
 			return;
 		}
 
-		$token        = $decoded['token'];
-		$reservations = $decoded['reservations'];
+		$token             = $decoded['token'];
+		$json_reservations = $decoded['reservations'];
+
+		$reservations = [];
+		foreach ( $json_reservations as $ticket_id => $ticket_reservations ) {
+			$reservations[ $ticket_id ] = [];
+			foreach ( $ticket_reservations as $reservation ) {
+				$reservations[ $ticket_id ][] = [
+					'reservation_id' => $reservation['reservationId'],
+					'seat_type_id'   => $reservation['seatTypeId'],
+					'seat_label'     => $reservation['seatLabel'],
+				];
+			}
+		}
 
 		if ( ! ( $this->sessions->update_reservations( $token, $reservations ) ) ) {
 			wp_send_json_error(
@@ -491,7 +583,7 @@ class Ajax extends Controller_Contract {
 		}
 
 		if ( ! (
-			$this->reservations->cancel( $post_id, $this->sessions->get_reservations_for_token( $token ) )
+			$this->reservations->cancel( $post_id, $this->sessions->get_reservation_uuids_for_token( $token ) )
 			&& $this->sessions->clear_token_reservations( $token )
 		) ) {
 			wp_send_json_error(
@@ -533,7 +625,7 @@ class Ajax extends Controller_Contract {
 			true,
 			true
 		);
-		
+
 		// phpcs:ignore WordPressVIPMinimum.Variables.RestrictedVariables.cache_constraints___COOKIE
 		unset( $_COOKIE[ $cookie_name ] );
 	}

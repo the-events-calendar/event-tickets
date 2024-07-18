@@ -173,31 +173,40 @@ function handleControls(newState) {
 
 // Initialize the controls visibility based on the initial state.
 onReady(() => handleControls(state));
+const recurrenceControlsElement = document.querySelector(recurrenceControls);
 
-// Set up a mutation observer to detect when the recurrence rule is added or removed from the recurrence container.
-const recurrenceControlsObserver = new MutationObserver(() => {
-	const recurrenceRulesCount =
-		document.querySelectorAll(recurrenceRule).length;
-	updateState({ hasRecurrenceRules: recurrenceRulesCount > 0 });
-});
-recurrenceControlsObserver.observe(document.querySelector(recurrenceControls), {
-	childList: true,
-});
+if (recurrenceControlsElement) {
+	// Set up a mutation observer to detect when the recurrence rule is added or removed from the recurrence container.
+	const recurrenceControlsObserver = new MutationObserver(() => {
+		const recurrenceRulesCount =
+			document.querySelectorAll(recurrenceRule).length;
+		updateState({ hasRecurrenceRules: recurrenceRulesCount > 0 });
+	});
 
-/*
- * Set up a mutation observer to detect when tickets or RSVPs are added or removed from the tickets metabox.
- * Also: detect when the user is editing or creating a ticket.
- */
-const ticketsObserver = new MutationObserver(() => {
-	// Run the DOM queries only if required.
-	const hasOwnTickets =
-		document.querySelectorAll(rsvpTicketsSelector).length || // Has RSVP tickets or...
-		document.querySelectorAll(defaultTicketsSelector).length || // ...has default tickets or...
-		document.querySelectorAll(ticketEditPanelActiveSelector).length; // ...is editing a ticket.
-	updateState({ hasOwnTickets });
-});
-ticketsObserver.observe(document.getElementById(ticketsMetaboxId), {
-	childList: true,
-	subtree: true,
-	attributes: true,
-});
+	recurrenceControlsObserver.observe(recurrenceControlsElement, {
+		childList: true,
+	});
+}
+
+const ticketsMetaboxElement = document.getElementById(ticketsMetaboxId);
+
+if (ticketsMetaboxElement) {
+	/*
+	 * Set up a mutation observer to detect when tickets or RSVPs are added or removed from the tickets metabox.
+	 * Also: detect when the user is editing or creating a ticket.
+	 */
+	const ticketsObserver = new MutationObserver(() => {
+		// Run the DOM queries only if required.
+		const hasOwnTickets =
+			document.querySelectorAll(rsvpTicketsSelector).length || // Has RSVP tickets or...
+			document.querySelectorAll(defaultTicketsSelector).length || // ...has default tickets or...
+			document.querySelectorAll(ticketEditPanelActiveSelector).length; // ...is editing a ticket.
+		updateState({ hasOwnTickets });
+	});
+
+	ticketsObserver.observe(ticketsMetaboxElement, {
+		childList: true,
+		subtree: true,
+		attributes: true,
+	});
+}

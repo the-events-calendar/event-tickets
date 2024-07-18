@@ -58,7 +58,7 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 			$is_using_assigned_seating = true;
 			$layout_id                 = null;
 			$seat_types_by_post_id     = [];
-			$is_layout_locked =  false;
+			$is_layout_locked          = false;
 		} else {
 			$post_id                   = get_the_ID();
 			$is_using_assigned_seating = tribe_is_truthy( get_post_meta( $post_id, Meta::META_KEY_ENABLED, true ) );
@@ -95,27 +95,35 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 					Meta::META_KEY_LAYOUT_ID,
 				] as $meta_key
 			) {
-				register_post_meta( $ticket_type, $meta_key, [
-					'show_in_rest'  => true,
-					'single'        => true,
-					'type'          => 'string',
-					'auth_callback' => function () {
-						return current_user_can( 'edit_posts' );
-					},
-				] );
+				register_post_meta(
+					$ticket_type,
+					$meta_key,
+					[
+						'show_in_rest'  => true,
+						'single'        => true,
+						'type'          => 'string',
+						'auth_callback' => function () {
+							return current_user_can( 'edit_posts' );
+						},
+					] 
+				);
 			}
 		}
 
 		foreach ( (array) tribe_get_option( 'ticket-enabled-post-types', [] ) as $ticketable_type ) {
 			foreach ( [ Meta::META_KEY_ENABLED, Meta::META_KEY_LAYOUT_ID ] as $meta_key ) {
-				register_post_meta( $ticketable_type, $meta_key, [
-					'show_in_rest'  => true,
-					'single'        => true,
-					'type'          => 'string',
-					'auth_callback' => function () {
-						return current_user_can( 'edit_posts' );
-					},
-				] );
+				register_post_meta(
+					$ticketable_type,
+					$meta_key,
+					[
+						'show_in_rest'  => true,
+						'single'        => true,
+						'type'          => 'string',
+						'auth_callback' => function () {
+							return current_user_can( 'edit_posts' );
+						},
+					] 
+				);
 			}
 		}
 	}
@@ -156,11 +164,14 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 			)
 			->enqueue_on( 'enqueue_block_editor_assets' )
 			->add_localize_script( 'tec.tickets.seating.blockEditor', [ $this, 'get_store_data' ] )
-			->add_localize_script( 'tec.tickets.seating.meta', fn() => [
-				'META_KEY_ENABLED'   => Meta::META_KEY_ENABLED,
-				'META_KEY_LAYOUT_ID' => Meta::META_KEY_LAYOUT_ID,
-				'META_KEY_SEAT_TYPE' => Meta::META_KEY_SEAT_TYPE,
-			] )
+			->add_localize_script(
+				'tec.tickets.seating.meta',
+				fn() => [
+					'META_KEY_ENABLED'   => Meta::META_KEY_ENABLED,
+					'META_KEY_LAYOUT_ID' => Meta::META_KEY_LAYOUT_ID,
+					'META_KEY_SEAT_TYPE' => Meta::META_KEY_SEAT_TYPE,
+				] 
+			)
 			->add_to_group( 'tec-tickets-seating-editor' )
 			->add_to_group( 'tec-tickets-seating' )
 			->register();
@@ -192,7 +203,8 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 			$body['tribe-ticket'],
 			$body['tribe-ticket']['seating'],
 			$body['tribe-ticket']['seating']['enabled'],
-			$body['tribe-ticket']['seating']['seatType'] )
+			$body['tribe-ticket']['seating']['seatType'] 
+		)
 		) {
 			return;
 		}

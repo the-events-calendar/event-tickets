@@ -9,12 +9,14 @@ use TEC\Tickets\Seating\Service\OAuth_Token;
 use TEC\Tickets\Seating\Service\Reservations;
 use TEC\Tickets\Seating\Tables\Sessions;
 use Tribe\Tests\Traits\With_Uopz;
-use Tribe\Tickets\Test\Traits\WP_Remote_Mocks;
+use Tribe\Tests\Traits\WP_Remote_Mocks;
+use Tribe\Tickets\Test\Traits\Reservations_Maker;
 
 class Session_Test extends \Codeception\TestCase\WPTestCase {
 	use WP_Remote_Mocks;
 	use With_Uopz;
 	use OAuth_Token;
+	use Reservations_Maker;
 
 	public function test_entry_manipulation(): void {
 		$session = tribe( Session::class );
@@ -83,7 +85,7 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 		// Insert a previous session in the database for the token and object ID.
 		$sessions = tribe( Sessions::class );
 		$sessions->upsert( 'test-token', 23, time() + 100 );
-		$sessions->update_reservations( 'test-token', [ '1234567890', '0987654321' ] );
+		$sessions->update_reservations( 'test-token', $this->create_mock_reservations_data( [ 23 ], 2 ) );
 		// Assign an UUID to the post.
 		update_post_meta( 23, Meta::META_KEY_UUID, 'test-post-uuid' );
 		// Set the oAuth token.
@@ -98,7 +100,7 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 				],
 				'body'    => wp_json_encode( [
 					'eventId' => 'test-post-uuid',
-					'ids'     => [ '1234567890', '0987654321' ]
+					'ids'     => [ 'reservation-id-1', 'reservation-id-2' ]
 				] ),
 			],
 			[
@@ -140,7 +142,7 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 		// Create a previous session for object ID 23 in the database.
 		$sessions = tribe( Sessions::class );
 		$sessions->upsert( 'test-token', 23, time() + 100 );
-		$sessions->update_reservations( 'test-token', [ '1234567890', '0987654321' ] );
+		$sessions->update_reservations( 'test-token', $this->create_mock_reservations_data( [ 23 ], 2 ) );
 		// Assign an UUID to the post.
 		update_post_meta( 23, Meta::META_KEY_UUID, 'test-post-uuid' );
 		// Set the oAuth token.
@@ -156,7 +158,7 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 				],
 				'body'    => wp_json_encode( [
 					'eventId' => 'test-post-uuid',
-					'ids'     => [ '1234567890', '0987654321' ]
+					'ids'     => [ 'reservation-id-1', 'reservation-id-2' ]
 				] ),
 			],
 			function () use ( &$cancelled_on_service ) {
@@ -174,8 +176,8 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 		// Sanity check.
 		$this->assertEquals( [ 23 => 'test-token' ], $session->get_entries() );
 		$this->assertEquals(
-			[ '1234567890', '0987654321' ],
-			$sessions->get_reservations_for_token( 'test-token' )
+			[ 'reservation-id-1', 'reservation-id-2' ],
+			$sessions->get_reservation_uuids_for_token( 'test-token' )
 		);
 
 		// Simulate a request to cancel the session for the same object ID, but with a different token.
@@ -204,7 +206,7 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 		// Insert a previous session in the database for the token and object ID.
 		$sessions = tribe( Sessions::class );
 		$sessions->upsert( 'test-token', 23, time() + 100 );
-		$sessions->update_reservations( 'test-token', [ '1234567890', '0987654321' ] );
+		$sessions->update_reservations( 'test-token', $this->create_mock_reservations_data( [ 23 ], 2 ) );
 		// Mock the remote request to cancel the reservations.
 		$this->mock_wp_remote(
 			'post',
@@ -215,7 +217,7 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 				],
 				'body'    => wp_json_encode( [
 					'eventId' => 'test-post-uuid',
-					'ids'     => [ '1234567890', '0987654321' ]
+					'ids'     => [ 'reservation-id-1', 'reservation-id-2' ]
 				] ),
 			],
 			[
@@ -232,7 +234,7 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertFalse( $session->cancel_previous_for_object( 23, 'test-token' ) );
 		$this->assertEquals( [ 23 => 'test-token' ], $session->get_entries() );
-		$this->assertEquals( [ '1234567890', '0987654321' ], $sessions->get_reservations_for_token( 'test-token' ) );
+		$this->assertEquals( [ 'reservation-id-1', 'reservation-id-2' ], $sessions->get_reservation_uuids_for_token( 'test-token' ) );
 	}
 
 	public function test_cancel_previous_for_object_succeeds_if_session_missing(): void {
@@ -244,7 +246,7 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 		$sessions = tribe( Sessions::class );
 		// Do not insert a session for the token and object ID: this should not cause the session deletion to fail.
 		// Mock the remote request to cancel the reservations.
-		$this->mock_wp_remote(
+		$wp_remote_mock = $this->mock_wp_remote(
 			'post',
 			tribe( Reservations::class )->get_cancel_url(),
 			[
@@ -271,6 +273,7 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 		$this->assertTrue( $session->cancel_previous_for_object( 23, 'test-token' ) );
 		$this->assertEquals( [ 23 => 'test-token' ], $session->get_entries() );
 		$this->assertEquals( [], $sessions->get_reservations_for_token( 'test-token' ) );
+		$this->assertFalse( $wp_remote_mock->was_called() );
 	}
 
 	public function test_pick_earliest_expiring_token_object_id(): void {
@@ -279,7 +282,7 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 		$sessions = tribe( Sessions::class );
 		// The session for object 23 will expire in 100 seconds.
 		$sessions->upsert( 'test-token-1', 23, time() + 100 );
-		$sessions->update_reservations( 'test-token-1', [ '1234567890', '0987654321' ] );
+		$sessions->update_reservations( 'test-token-1', $this->create_mock_reservations_data( [ 23 ], 2 ) );
 
 		$this->assertEquals(
 			[ 'test-token-1', 23 ],
@@ -291,10 +294,10 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 		$session->add_entry( 66, 'test-token-2' );
 		// The session for object 89 will expire in 30 seconds.
 		$sessions->upsert( 'test-token-2', 89, time() + 30 );
-		$sessions->update_reservations( 'test-token-2', [ '1234567890', '0987654321' ] );
+		$sessions->update_reservations( 'test-token-2', $this->create_mock_reservations_data( [ 89 ], 2 ) );
 		// The session for object 66 will expire in 300 seconds.
 		$sessions->upsert( 'test-token-3', 66, time() + 300 );
-		$sessions->update_reservations( 'test-token-3', [ '1234567890', '0987654321' ] );
+		$sessions->update_reservations( 'test-token-3', $this->create_mock_reservations_data( [ 66 ], 2 ) );
 
 		$this->assertEquals(
 			[ 'test-token-2', 89 ],
@@ -345,12 +348,12 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 
 		$session->add_entry( 23, 'test-token-1' );
 		$sessions->upsert( 'test-token-1', 23, time() + 100 );
-		$sessions->update_reservations( 'test-token-1', [ '1234567890', '0987654321' ] );
+		$sessions->update_reservations( 'test-token-1', $this->create_mock_reservations_data( [ 23 ], 2 ) );
 		update_post_meta( 23, Meta::META_KEY_UUID, 'test-post-uuid' );
 
 		$session->add_entry( 89, 'test-token-2' );
 		$sessions->upsert( 'test-token-2', 89, time() + 30 );
-		$sessions->update_reservations( 'test-token-2', [ '891234567890', '890987654321' ] );
+		$sessions->update_reservations( 'test-token-2', $this->create_mock_reservations_data( [ 89 ], 2 ) );
 		update_post_meta( 89, Meta::META_KEY_UUID, 'test-post-uuid-2' );
 
 		$this->mock_wp_remote(
@@ -363,7 +366,7 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 					],
 					'body'    => wp_json_encode( [
 						'eventId' => 'test-post-uuid',
-						'ids'     => [ '1234567890', '0987654321' ]
+						'ids'     => [ 'reservation-id-1', 'reservation-id-2' ]
 					] ),
 				];
 				yield [
@@ -372,7 +375,7 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 					],
 					'body'    => wp_json_encode( [
 						'eventId' => 'test-post-uuid-2',
-						'ids'     => [ '891234567890', '890987654321' ]
+						'ids'     => [ 'reservation-id-3', 'reservation-id-4' ]
 					] ),
 				];
 			},
@@ -395,12 +398,12 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 
 		$session->add_entry( 23, 'test-token-1' );
 		$sessions->upsert( 'test-token-1', 23, time() + 100 );
-		$sessions->update_reservations( 'test-token-1', [ '1234567890', '0987654321' ] );
+		$sessions->update_reservations( 'test-token-1', $this->create_mock_reservations_data( [ 23 ], 2 ) );
 		update_post_meta( 23, Meta::META_KEY_UUID, 'test-post-uuid' );
 
 		$session->add_entry( 89, 'test-token-2' );
 		$sessions->upsert( 'test-token-2', 89, time() + 30 );
-		$sessions->update_reservations( 'test-token-2', [ '891234567890', '890987654321' ] );
+		$sessions->update_reservations( 'test-token-2', $this->create_mock_reservations_data( [ 89 ], 2 ) );
 		update_post_meta( 89, Meta::META_KEY_UUID, 'test-post-uuid-2' );
 
 		$this->mock_wp_remote(
@@ -413,7 +416,7 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 					],
 					'body'    => wp_json_encode( [
 						'eventId' => 'test-post-uuid',
-						'ids'     => [ '1234567890', '0987654321' ]
+						'ids'     => [ 'reservation-id-1', 'reservation-id-2' ]
 					] ),
 				];
 				yield [
@@ -422,7 +425,7 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 					],
 					'body'    => wp_json_encode( [
 						'eventId' => 'test-post-uuid-2',
-						'ids'     => [ '891234567890', '890987654321' ]
+						'ids'     => [ 'reservation-id-3', 'reservation-id-4' ]
 					] ),
 				];
 			},

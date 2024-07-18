@@ -1,8 +1,9 @@
 import { localizedData } from './localized-data';
 import './style.pcss';
-import { doAction } from '@wordpress/hooks';
+import { doAction, applyFilters } from '@wordpress/hooks';
 import { InterruptDialogComponent } from './interrupt-dialog-component';
 import { _x } from '@wordpress/i18n';
+import { onReady } from '@tec/tickets/seating/utils';
 
 const {
 	ajaxUrl,
@@ -65,6 +66,16 @@ let started = false;
  * @type {HTMLElement|null}
  */
 let interruptDialogElement = null;
+
+/**
+ * The selectors used to find the checkout controls on the page.
+ *
+ * @since TBD
+ *
+ * @type {string}
+ */
+export const checkoutControlsSelectors =
+	'.tribe-tickets__commerce-checkout-form-submit-button';
 
 /**
  * @typedef {Object} TimerData
@@ -513,6 +524,22 @@ export function reset() {
 }
 
 /**
+ * Postpones the healthcheck that will sync with the backend resetting its timer.
+ *
+ * @since TBD
+ *
+ * @return {void}
+ */
+export function postponeHealthcheck() {
+	if (healthCheckLoopId) {
+		clearTimeout(healthCheckLoopId);
+	}
+
+	// Postpone the healthcheck for 30 seconds.
+	setTimeout(syncWithBackend, 30000);
+}
+
+/**
  * Syncs the timer with the backend on DOM ready.
  *
  * @since TBD
@@ -533,12 +560,58 @@ function syncOnLoad() {
 	syncWithBackend();
 }
 
-// On DOM ready check if any timer needs to be synced.
-if (document.readyState !== 'loading') {
-	syncOnLoad();
-} else {
-	document.addEventListener('DOMContentLoaded', syncOnLoad);
+/**
+ * Watches for the checkout controls to be clicked or submitted and postpones the healthcheck.
+ *
+ * @since TBD
+ *
+ * @param {HTMLElement|null} parent The parent element to search the checkout controls in.
+ *
+ * @return {void}
+ */
+export function watchCheckoutControls(parent) {
+	/**
+	 * Filters the selectors used to find the checkout controls on the page.
+	 *
+	 * @since TBD
+	 *
+	 * @type {string} The `querySeelctorAll` selectors used to find the checkout controls on the page.
+	 */
+	const filteredCheckoutControls = applyFilters(
+		'tec.tickets.seating.frontend.session.checkoutControls',
+		checkoutControlsSelectors
+	);
+
+	parent = parent || document;
+
+	const checkoutControlElements = parent.querySelectorAll(
+		filteredCheckoutControls
+	);
+
+	checkoutControlElements.forEach((checkoutControlElement) => {
+		checkoutControlElement.addEventListener('click', postponeHealthcheck);
+		checkoutControlElement.addEventListener('submit', postponeHealthcheck);
+	});
 }
+
+/**
+ * Sets the healthcheck loop ID.
+ *
+ * @since TBD
+ *
+ * @param {number} id The ID of the healthcheck loop.
+ *
+ * @return {number} The updated healthcheck loop ID.
+ */
+export function setHealthcheckLoopId(id) {
+	healthCheckLoopId = id;
+
+	return healthCheckLoopId;
+}
+
+// On DOM ready check if any timer needs to be synced.
+onReady(syncOnLoad);
+onReady(() => watchCheckoutControls(document));
 
 window.tec = window.tec || {};
 window.tec.tickets = window.tec.tickets || {};

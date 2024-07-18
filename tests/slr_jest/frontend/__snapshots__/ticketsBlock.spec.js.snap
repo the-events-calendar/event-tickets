@@ -1,0 +1,1311 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Seat Selection Modal selection push to backend should handle adding seat selection correctly 1`] = `
+<div
+  class="event-tickets"
+>
+  
+					
+  <div
+    class="tec-tickets-seating__iframe-container"
+    data-token="test-token"
+  >
+    
+						
+    <iframe
+      class="tec-tickets-seating__iframe"
+    />
+    
+					
+  </div>
+  
+					
+  <div
+    class="tec-tickets-seating__ticket-rows"
+  />
+  
+					
+  <div>
+    
+						
+    <p
+      class="tec-tickets-seating__total-price"
+    />
+    
+						
+    <p
+      class="tec-tickets-seating__total-text"
+    />
+    
+					
+  </div>
+  
+					
+  <div
+    class="tec-tickets-seating__modal"
+  >
+    
+						
+    <button
+      class="tec-tickets-seating__sidebar-control--confirm"
+      disabled=""
+    >
+      
+							Check Out
+						
+    </button>
+    
+					
+  </div>
+  
+				
+</div>
+`;
+
+exports[`Seat Selection Modal selection push to backend should handle adding seat selection correctly 2`] = `
+<div
+  class="event-tickets"
+>
+  
+					
+  <div
+    class="tec-tickets-seating__iframe-container"
+    data-token="test-token"
+  >
+    
+						
+    <iframe
+      class="tec-tickets-seating__iframe"
+    />
+    
+					
+  </div>
+  
+					
+  <div
+    class="tec-tickets-seating__ticket-rows"
+  >
+    <div
+      class="tec-tickets-seating__ticket-row"
+      data-price="50"
+      data-seat-label="A-1"
+      data-seat-type-id="uuid-seat-type-0"
+      data-ticket-id="23"
+    >
+      
+			
+      <div
+        class="tec-tickets-seating__seat-color"
+        style="background: #00ff00"
+      />
+      
+
+			
+      <div
+        class="tec-tickets-seating__label"
+      >
+        
+				
+        <div
+          class="tec-tickets-seating__ticket-name"
+        >
+          Adult
+        </div>
+        
+				
+        <div
+          class="tec-tickets-seating__seat-label"
+        >
+          A-1
+        </div>
+        
+			
+      </div>
+      
+
+			
+      <div
+        class="tec-tickets-seating__ticket-price"
+      >
+        $50
+      </div>
+      
+		
+    </div>
+  </div>
+  
+					
+  <div>
+    
+						
+    <p
+      class="tec-tickets-seating__total-price"
+    />
+    
+						
+    <p
+      class="tec-tickets-seating__total-text"
+    />
+    
+					
+  </div>
+  
+					
+  <div
+    class="tec-tickets-seating__modal"
+  >
+    
+						
+    <button
+      class="tec-tickets-seating__sidebar-control--confirm"
+    >
+      
+							Check Out
+						
+    </button>
+    
+					
+  </div>
+  
+				
+</div>
+`;
+
+exports[`Seat Selection Modal selection push to backend should handle adding seat selection correctly 3`] = `
+<div
+  class="event-tickets"
+>
+  
+					
+  <div
+    class="tec-tickets-seating__iframe-container"
+    data-token="test-token"
+  >
+    
+						
+    <iframe
+      class="tec-tickets-seating__iframe"
+    />
+    
+					
+  </div>
+  
+					
+  <div
+    class="tec-tickets-seating__ticket-rows"
+  >
+    <div
+      class="tec-tickets-seating__ticket-row"
+      data-price="50"
+      data-seat-label="A-1"
+      data-seat-type-id="uuid-seat-type-0"
+      data-ticket-id="23"
+    >
+      
+			
+      <div
+        class="tec-tickets-seating__seat-color"
+        style="background: #00ff00"
+      />
+      
+
+			
+      <div
+        class="tec-tickets-seating__label"
+      >
+        
+				
+        <div
+          class="tec-tickets-seating__ticket-name"
+        >
+          Adult
+        </div>
+        
+				
+        <div
+          class="tec-tickets-seating__seat-label"
+        >
+          A-1
+        </div>
+        
+			
+      </div>
+      
+
+			
+      <div
+        class="tec-tickets-seating__ticket-price"
+      >
+        $50
+      </div>
+      
+		
+    </div>
+    <div
+      class="tec-tickets-seating__ticket-row"
+      data-price="50"
+      data-seat-label="A-2"
+      data-seat-type-id="uuid-seat-type-0"
+      data-ticket-id="23"
+    >
+      
+			
+      <div
+        class="tec-tickets-seating__seat-color"
+        style="background: #ff0000"
+      />
+      
+
+			
+      <div
+        class="tec-tickets-seating__label"
+      >
+        
+				
+        <div
+          class="tec-tickets-seating__ticket-name"
+        >
+          Adult
+        </div>
+        
+				
+        <div
+          class="tec-tickets-seating__seat-label"
+        >
+          A-2
+        </div>
+        
+			
+      </div>
+      
+
+			
+      <div
+        class="tec-tickets-seating__ticket-price"
+      >
+        $50
+      </div>
+      
+		
+    </div>
+  </div>
+  
+					
+  <div>
+    
+						
+    <p
+      class="tec-tickets-seating__total-price"
+    />
+    
+						
+    <p
+      class="tec-tickets-seating__total-text"
+    />
+    
+					
+  </div>
+  
+					
+  <div
+    class="tec-tickets-seating__modal"
+  >
+    
+						
+    <button
+      class="tec-tickets-seating__sidebar-control--confirm"
+    >
+      
+							Check Out
+						
+    </button>
+    
+					
+  </div>
+  
+				
+</div>
+`;
+
+exports[`Seat Selection Modal selection push to backend should handle adding seat selection correctly 4`] = `
+<div
+  class="event-tickets"
+>
+  
+					
+  <div
+    class="tec-tickets-seating__iframe-container"
+    data-token="test-token"
+  >
+    
+						
+    <iframe
+      class="tec-tickets-seating__iframe"
+    />
+    
+					
+  </div>
+  
+					
+  <div
+    class="tec-tickets-seating__ticket-rows"
+  >
+    <div
+      class="tec-tickets-seating__ticket-row"
+      data-price="50"
+      data-seat-label="A-1"
+      data-seat-type-id="uuid-seat-type-0"
+      data-ticket-id="23"
+    >
+      
+			
+      <div
+        class="tec-tickets-seating__seat-color"
+        style="background: #00ff00"
+      />
+      
+
+			
+      <div
+        class="tec-tickets-seating__label"
+      >
+        
+				
+        <div
+          class="tec-tickets-seating__ticket-name"
+        >
+          Adult
+        </div>
+        
+				
+        <div
+          class="tec-tickets-seating__seat-label"
+        >
+          A-1
+        </div>
+        
+			
+      </div>
+      
+
+			
+      <div
+        class="tec-tickets-seating__ticket-price"
+      >
+        $50
+      </div>
+      
+		
+    </div>
+    <div
+      class="tec-tickets-seating__ticket-row"
+      data-price="50"
+      data-seat-label="A-2"
+      data-seat-type-id="uuid-seat-type-0"
+      data-ticket-id="23"
+    >
+      
+			
+      <div
+        class="tec-tickets-seating__seat-color"
+        style="background: #ff0000"
+      />
+      
+
+			
+      <div
+        class="tec-tickets-seating__label"
+      >
+        
+				
+        <div
+          class="tec-tickets-seating__ticket-name"
+        >
+          Adult
+        </div>
+        
+				
+        <div
+          class="tec-tickets-seating__seat-label"
+        >
+          A-2
+        </div>
+        
+			
+      </div>
+      
+
+			
+      <div
+        class="tec-tickets-seating__ticket-price"
+      >
+        $50
+      </div>
+      
+		
+    </div>
+    <div
+      class="tec-tickets-seating__ticket-row"
+      data-price="30"
+      data-seat-label="B-15"
+      data-seat-type-id="uuid-seat-type-1"
+      data-ticket-id="89"
+    >
+      
+			
+      <div
+        class="tec-tickets-seating__seat-color"
+        style="background: #00ff00"
+      />
+      
+
+			
+      <div
+        class="tec-tickets-seating__label"
+      >
+        
+				
+        <div
+          class="tec-tickets-seating__ticket-name"
+        >
+          Child
+        </div>
+        
+				
+        <div
+          class="tec-tickets-seating__seat-label"
+        >
+          B-15
+        </div>
+        
+			
+      </div>
+      
+
+			
+      <div
+        class="tec-tickets-seating__ticket-price"
+      >
+        $30
+      </div>
+      
+		
+    </div>
+  </div>
+  
+					
+  <div>
+    
+						
+    <p
+      class="tec-tickets-seating__total-price"
+    />
+    
+						
+    <p
+      class="tec-tickets-seating__total-text"
+    />
+    
+					
+  </div>
+  
+					
+  <div
+    class="tec-tickets-seating__modal"
+  >
+    
+						
+    <button
+      class="tec-tickets-seating__sidebar-control--confirm"
+    >
+      
+							Check Out
+						
+    </button>
+    
+					
+  </div>
+  
+				
+</div>
+`;
+
+exports[`Seat Selection Modal selection push to backend should handle adding seat selection correctly 5`] = `
+<div
+  class="event-tickets"
+>
+  
+					
+  <div
+    class="tec-tickets-seating__iframe-container"
+    data-token="test-token"
+  >
+    
+						
+    <iframe
+      class="tec-tickets-seating__iframe"
+    />
+    
+					
+  </div>
+  
+					
+  <div
+    class="tec-tickets-seating__ticket-rows"
+  >
+    <div
+      class="tec-tickets-seating__ticket-row"
+      data-price="50"
+      data-seat-label="A-1"
+      data-seat-type-id="uuid-seat-type-0"
+      data-ticket-id="23"
+    >
+      
+			
+      <div
+        class="tec-tickets-seating__seat-color"
+        style="background: #00ff00"
+      />
+      
+
+			
+      <div
+        class="tec-tickets-seating__label"
+      >
+        
+				
+        <div
+          class="tec-tickets-seating__ticket-name"
+        >
+          Adult
+        </div>
+        
+				
+        <div
+          class="tec-tickets-seating__seat-label"
+        >
+          A-1
+        </div>
+        
+			
+      </div>
+      
+
+			
+      <div
+        class="tec-tickets-seating__ticket-price"
+      >
+        $50
+      </div>
+      
+		
+    </div>
+    <div
+      class="tec-tickets-seating__ticket-row"
+      data-price="50"
+      data-seat-label="A-2"
+      data-seat-type-id="uuid-seat-type-0"
+      data-ticket-id="23"
+    >
+      
+			
+      <div
+        class="tec-tickets-seating__seat-color"
+        style="background: #ff0000"
+      />
+      
+
+			
+      <div
+        class="tec-tickets-seating__label"
+      >
+        
+				
+        <div
+          class="tec-tickets-seating__ticket-name"
+        >
+          Adult
+        </div>
+        
+				
+        <div
+          class="tec-tickets-seating__seat-label"
+        >
+          A-2
+        </div>
+        
+			
+      </div>
+      
+
+			
+      <div
+        class="tec-tickets-seating__ticket-price"
+      >
+        $50
+      </div>
+      
+		
+    </div>
+    <div
+      class="tec-tickets-seating__ticket-row"
+      data-price="30"
+      data-seat-label="B-15"
+      data-seat-type-id="uuid-seat-type-1"
+      data-ticket-id="89"
+    >
+      
+			
+      <div
+        class="tec-tickets-seating__seat-color"
+        style="background: #00ff00"
+      />
+      
+
+			
+      <div
+        class="tec-tickets-seating__label"
+      >
+        
+				
+        <div
+          class="tec-tickets-seating__ticket-name"
+        >
+          Child
+        </div>
+        
+				
+        <div
+          class="tec-tickets-seating__seat-label"
+        >
+          B-15
+        </div>
+        
+			
+      </div>
+      
+
+			
+      <div
+        class="tec-tickets-seating__ticket-price"
+      >
+        $30
+      </div>
+      
+		
+    </div>
+    <div
+      class="tec-tickets-seating__ticket-row"
+      data-price="100"
+      data-seat-label="C-23"
+      data-seat-type-id="uuid-seat-type-2"
+      data-ticket-id="66"
+    >
+      
+			
+      <div
+        class="tec-tickets-seating__seat-color"
+        style="background: #00ff00"
+      />
+      
+
+			
+      <div
+        class="tec-tickets-seating__label"
+      >
+        
+				
+        <div
+          class="tec-tickets-seating__ticket-name"
+        >
+          VIP
+        </div>
+        
+				
+        <div
+          class="tec-tickets-seating__seat-label"
+        >
+          C-23
+        </div>
+        
+			
+      </div>
+      
+
+			
+      <div
+        class="tec-tickets-seating__ticket-price"
+      >
+        $100
+      </div>
+      
+		
+    </div>
+  </div>
+  
+					
+  <div>
+    
+						
+    <p
+      class="tec-tickets-seating__total-price"
+    />
+    
+						
+    <p
+      class="tec-tickets-seating__total-text"
+    />
+    
+					
+  </div>
+  
+					
+  <div
+    class="tec-tickets-seating__modal"
+  >
+    
+						
+    <button
+      class="tec-tickets-seating__sidebar-control--confirm"
+    >
+      
+							Check Out
+						
+    </button>
+    
+					
+  </div>
+  
+				
+</div>
+`;
+
+exports[`Seat Selection Modal selection push to backend should handle removing seat selection correctly 1`] = `
+<div
+  class="event-tickets"
+>
+  
+					
+  <div
+    class="tec-tickets-seating__iframe-container"
+    data-token="test-token"
+  >
+    
+						
+    <iframe
+      class="tec-tickets-seating__iframe"
+    />
+    
+					
+  </div>
+  
+					
+  <div
+    class="tec-tickets-seating__ticket-rows"
+  >
+    <div
+      class="tec-tickets-seating__ticket-row"
+      data-price="50"
+      data-seat-label="A-1"
+      data-seat-type-id="uuid-seat-type-0"
+      data-ticket-id="23"
+    >
+      
+			
+      <div
+        class="tec-tickets-seating__seat-color"
+        style="background: #00ff00"
+      />
+      
+
+			
+      <div
+        class="tec-tickets-seating__label"
+      >
+        
+				
+        <div
+          class="tec-tickets-seating__ticket-name"
+        >
+          Adult
+        </div>
+        
+				
+        <div
+          class="tec-tickets-seating__seat-label"
+        >
+          A-1
+        </div>
+        
+			
+      </div>
+      
+
+			
+      <div
+        class="tec-tickets-seating__ticket-price"
+      >
+        $50
+      </div>
+      
+		
+    </div>
+    <div
+      class="tec-tickets-seating__ticket-row"
+      data-price="30"
+      data-seat-label="B-15"
+      data-seat-type-id="uuid-seat-type-1"
+      data-ticket-id="89"
+    >
+      
+			
+      <div
+        class="tec-tickets-seating__seat-color"
+        style="background: #00ff00"
+      />
+      
+
+			
+      <div
+        class="tec-tickets-seating__label"
+      >
+        
+				
+        <div
+          class="tec-tickets-seating__ticket-name"
+        >
+          Child
+        </div>
+        
+				
+        <div
+          class="tec-tickets-seating__seat-label"
+        >
+          B-15
+        </div>
+        
+			
+      </div>
+      
+
+			
+      <div
+        class="tec-tickets-seating__ticket-price"
+      >
+        $30
+      </div>
+      
+		
+    </div>
+    <div
+      class="tec-tickets-seating__ticket-row"
+      data-price="100"
+      data-seat-label="C-23"
+      data-seat-type-id="uuid-seat-type-2"
+      data-ticket-id="66"
+    >
+      
+			
+      <div
+        class="tec-tickets-seating__seat-color"
+        style="background: #00ff00"
+      />
+      
+
+			
+      <div
+        class="tec-tickets-seating__label"
+      >
+        
+				
+        <div
+          class="tec-tickets-seating__ticket-name"
+        >
+          VIP
+        </div>
+        
+				
+        <div
+          class="tec-tickets-seating__seat-label"
+        >
+          C-23
+        </div>
+        
+			
+      </div>
+      
+
+			
+      <div
+        class="tec-tickets-seating__ticket-price"
+      >
+        $100
+      </div>
+      
+		
+    </div>
+  </div>
+  
+					
+  <div>
+    
+						
+    <p
+      class="tec-tickets-seating__total-price"
+    />
+    
+						
+    <p
+      class="tec-tickets-seating__total-text"
+    />
+    
+					
+  </div>
+  
+					
+  <div
+    class="tec-tickets-seating__modal"
+  >
+    
+						
+    <button
+      class="tec-tickets-seating__sidebar-control--confirm"
+    >
+      
+							Check Out
+						
+    </button>
+    
+					
+  </div>
+  
+				
+</div>
+`;
+
+exports[`Seat Selection Modal selection push to backend should handle removing seat selection correctly 2`] = `
+<div
+  class="event-tickets"
+>
+  
+					
+  <div
+    class="tec-tickets-seating__iframe-container"
+    data-token="test-token"
+  >
+    
+						
+    <iframe
+      class="tec-tickets-seating__iframe"
+    />
+    
+					
+  </div>
+  
+					
+  <div
+    class="tec-tickets-seating__ticket-rows"
+  >
+    <div
+      class="tec-tickets-seating__ticket-row"
+      data-price="50"
+      data-seat-label="A-1"
+      data-seat-type-id="uuid-seat-type-0"
+      data-ticket-id="23"
+    >
+      
+			
+      <div
+        class="tec-tickets-seating__seat-color"
+        style="background: #00ff00"
+      />
+      
+
+			
+      <div
+        class="tec-tickets-seating__label"
+      >
+        
+				
+        <div
+          class="tec-tickets-seating__ticket-name"
+        >
+          Adult
+        </div>
+        
+				
+        <div
+          class="tec-tickets-seating__seat-label"
+        >
+          A-1
+        </div>
+        
+			
+      </div>
+      
+
+			
+      <div
+        class="tec-tickets-seating__ticket-price"
+      >
+        $50
+      </div>
+      
+		
+    </div>
+    <div
+      class="tec-tickets-seating__ticket-row"
+      data-price="30"
+      data-seat-label="B-15"
+      data-seat-type-id="uuid-seat-type-1"
+      data-ticket-id="89"
+    >
+      
+			
+      <div
+        class="tec-tickets-seating__seat-color"
+        style="background: #00ff00"
+      />
+      
+
+			
+      <div
+        class="tec-tickets-seating__label"
+      >
+        
+				
+        <div
+          class="tec-tickets-seating__ticket-name"
+        >
+          Child
+        </div>
+        
+				
+        <div
+          class="tec-tickets-seating__seat-label"
+        >
+          B-15
+        </div>
+        
+			
+      </div>
+      
+
+			
+      <div
+        class="tec-tickets-seating__ticket-price"
+      >
+        $30
+      </div>
+      
+		
+    </div>
+  </div>
+  
+					
+  <div>
+    
+						
+    <p
+      class="tec-tickets-seating__total-price"
+    />
+    
+						
+    <p
+      class="tec-tickets-seating__total-text"
+    />
+    
+					
+  </div>
+  
+					
+  <div
+    class="tec-tickets-seating__modal"
+  >
+    
+						
+    <button
+      class="tec-tickets-seating__sidebar-control--confirm"
+    >
+      
+							Check Out
+						
+    </button>
+    
+					
+  </div>
+  
+				
+</div>
+`;
+
+exports[`Seat Selection Modal selection push to backend should handle removing seat selection correctly 3`] = `
+<div
+  class="event-tickets"
+>
+  
+					
+  <div
+    class="tec-tickets-seating__iframe-container"
+    data-token="test-token"
+  >
+    
+						
+    <iframe
+      class="tec-tickets-seating__iframe"
+    />
+    
+					
+  </div>
+  
+					
+  <div
+    class="tec-tickets-seating__ticket-rows"
+  >
+    <div
+      class="tec-tickets-seating__ticket-row"
+      data-price="30"
+      data-seat-label="B-15"
+      data-seat-type-id="uuid-seat-type-1"
+      data-ticket-id="89"
+    >
+      
+			
+      <div
+        class="tec-tickets-seating__seat-color"
+        style="background: #00ff00"
+      />
+      
+
+			
+      <div
+        class="tec-tickets-seating__label"
+      >
+        
+				
+        <div
+          class="tec-tickets-seating__ticket-name"
+        >
+          Child
+        </div>
+        
+				
+        <div
+          class="tec-tickets-seating__seat-label"
+        >
+          B-15
+        </div>
+        
+			
+      </div>
+      
+
+			
+      <div
+        class="tec-tickets-seating__ticket-price"
+      >
+        $30
+      </div>
+      
+		
+    </div>
+  </div>
+  
+					
+  <div>
+    
+						
+    <p
+      class="tec-tickets-seating__total-price"
+    />
+    
+						
+    <p
+      class="tec-tickets-seating__total-text"
+    />
+    
+					
+  </div>
+  
+					
+  <div
+    class="tec-tickets-seating__modal"
+  >
+    
+						
+    <button
+      class="tec-tickets-seating__sidebar-control--confirm"
+    >
+      
+							Check Out
+						
+    </button>
+    
+					
+  </div>
+  
+				
+</div>
+`;
+
+exports[`Seat Selection Modal selection push to backend should handle removing seat selection correctly 4`] = `
+<div
+  class="event-tickets"
+>
+  
+					
+  <div
+    class="tec-tickets-seating__iframe-container"
+    data-token="test-token"
+  >
+    
+						
+    <iframe
+      class="tec-tickets-seating__iframe"
+    />
+    
+					
+  </div>
+  
+					
+  <div
+    class="tec-tickets-seating__ticket-rows"
+  />
+  
+					
+  <div>
+    
+						
+    <p
+      class="tec-tickets-seating__total-price"
+    />
+    
+						
+    <p
+      class="tec-tickets-seating__total-text"
+    />
+    
+					
+  </div>
+  
+					
+  <div
+    class="tec-tickets-seating__modal"
+  >
+    
+						
+    <button
+      class="tec-tickets-seating__sidebar-control--confirm"
+      disabled=""
+    >
+      
+							Check Out
+						
+    </button>
+    
+					
+  </div>
+  
+				
+</div>
+`;

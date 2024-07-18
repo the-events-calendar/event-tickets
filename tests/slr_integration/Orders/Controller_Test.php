@@ -16,10 +16,11 @@ use TEC\Tickets\Seating\Service\OAuth_Token;
 use TEC\Tickets\Seating\Service\Reservations;
 use TEC\Tickets\Seating\Tables\Sessions;
 use Tribe\Tests\Traits\With_Uopz;
+use Tribe\Tests\Traits\WP_Remote_Mocks;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
+use Tribe\Tickets\Test\Traits\Reservations_Maker;
 use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
-use Tribe\Tickets\Test\Traits\WP_Remote_Mocks;
 use Tribe__Tickets__Attendees as Attendees;
 
 class Controller_Test extends Controller_Test_Case {
@@ -30,6 +31,7 @@ class Controller_Test extends Controller_Test_Case {
 	use With_Tickets_Commerce;
 	use WP_Remote_Mocks;
 	use OAuth_Token;
+	use Reservations_Maker;
 
 	protected string $controller_class = Controller::class;
 
@@ -38,15 +40,15 @@ class Controller_Test extends Controller_Test_Case {
 			$attendees,
 			function ( array $carry, array $attendee ): array {
 				foreach (
-				[
-					'ID',
-					'ticket_id',
-					'purchaser_name',
-					'purchaser_email',
-					'ticket_name',
-					'holder_name',
-					'security_code',
-				] as $key
+					[
+						'ID',
+						'ticket_id',
+						'purchaser_name',
+						'purchaser_email',
+						'ticket_name',
+						'holder_name',
+						'security_code',
+					] as $key
 				) {
 					if ( ! isset( $attendee[ $key ] ) ) {
 						continue;
@@ -98,7 +100,7 @@ class Controller_Test extends Controller_Test_Case {
 								'ticket_id'   => $ticket_id,
 								'quantity'    => 3,
 								'optout'      => '1',
-								'seat_labels' => [ 'B-4', 'D-1', 'C-3' ],
+								// 'seat_labels' => [ 'B-4', 'D-1', 'C-3' ],
 							],
 						],
 						'tribe_tickets_meta'    => [],
@@ -117,6 +119,17 @@ class Controller_Test extends Controller_Test_Case {
 					'_wpnonce'                       => '1234567890',
 					'tec-tc-cart'                    => 'test',
 				];
+
+				// Create a session cookie for the user on the event.
+				$session = tribe( Session::class );
+				$session->add_entry( $event_id, 'test-token' );
+				// Create a session in the database for user on the event.
+				$sessions = tribe( Sessions::class );
+				$sessions->upsert( 'test-token', $event_id, time() + DAY_IN_SECONDS );
+				$sessions->update_reservations(
+					'test-token',
+					$this->create_mock_reservations_data( [ $ticket_id ], 3 )
+				);
 
 				// Merge new data with existing $_POST data
 				$_POST = array_merge( $_POST, $data );
@@ -142,6 +155,7 @@ class Controller_Test extends Controller_Test_Case {
 				return [ $event_id, [ $event_id, $ticket_id ] ];
 			},
 		];
+
 		yield 'single event with 3 regular Ticket attendees' => [
 			function (): array {
 				$event_id = tribe_events()->set_args(
@@ -269,7 +283,12 @@ class Controller_Test extends Controller_Test_Case {
 					'body'    => wp_json_encode(
 						[
 							'eventId' => 'test-post-uuid',
-							'ids'     => [ '1234567890', '0987654321' ],
+							'ids'     => [
+								'reservation-id-1',
+								'reservation-id-2',
+								'reservation-id-3',
+								'reservation-id-4'
+							],
 						]
 					),
 				];
@@ -290,7 +309,7 @@ class Controller_Test extends Controller_Test_Case {
 		update_post_meta( 23, Meta::META_KEY_UUID, 'test-post-uuid' );
 		$sessions = tribe( Sessions::class );
 		$sessions->upsert( 'test-token', 23, time() + 100 );
-		$sessions->update_reservations( 'test-token', [ '1234567890', '0987654321' ] );
+		$sessions->update_reservations( 'test-token', $this->create_mock_reservations_data( [ 23, 89 ], 2 ) );
 		$this->set_oauth_token( 'auth-token' );
 
 		$controller = $this->make_controller();

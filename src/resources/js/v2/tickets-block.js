@@ -1,3 +1,5 @@
+const { applyFilters } = wp.hooks;
+
 /**
  * Makes sure we have all the required levels on the Tribe Object
  *
@@ -228,16 +230,29 @@ tribe.tickets.block = {
 	 * Get the tickets IDs.
 	 *
 	 * @since 5.0.3
-	 * @returns {Array} Array of tickets IDs.
+	 *
+	 * @returns {number[]} Array of tickets IDs.
 	 */
 	obj.getTickets = function() {
-		const $tickets = $( obj.selectors.item ).map(
+		let tickets = $( obj.selectors.item ).map(
 			function() {
 				return $( this ).data( 'ticket-id' );
 			},
 		).get();
 
-		return $tickets;
+		/**
+		 * Filters the tickets IDs to check availability for.
+		 *
+		 * @since TBD
+		 *
+		 * @param {number[]} tickets The tickets IDs to check availability for.
+		 */
+		tickets = applyFilters(
+			'tec.tickets.tickets-block.getTickets',
+			tickets,
+		);
+
+		return tickets;
 	};
 
 	/**
@@ -363,10 +378,16 @@ tribe.tickets.block = {
 	 * @since 5.0.3
 	 */
 	obj.checkAvailability = function() {
+		const tickets = obj.getTickets();
+
+		if(tickets.length === 0) {
+			return;
+		}
+
 		// We're checking availability for all the tickets at once.
 		const params = {
 			action: 'ticket_availability_check',
-			tickets: obj.getTickets(),
+			tickets,
 		};
 
 		$.post(
