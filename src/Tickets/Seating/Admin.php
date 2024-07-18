@@ -174,7 +174,7 @@ class Admin extends Controller_Contract {
 
 		add_action( 'admin_menu', [ $this, 'add_submenu_page' ], 1000 );
 
-		// TESTING STUFF
+		// @todo TEST STUFF remove when no more required.
 		add_action( 'admin_menu', [ $this, 'add_embed_submenu_page' ], 1000 );
 	}
 

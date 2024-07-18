@@ -217,11 +217,11 @@ class Layouts {
 		try {
 			$count = DB::get_var(
 				DB::prepare(
-					"SELECT COUNT(*) FROM %i AS posts
+					'SELECT COUNT(*) FROM %i AS posts
 					LEFT JOIN %i AS layout_meta
 					ON posts.ID = layout_meta.post_id
 					WHERE layout_meta.meta_key = %s
-					AND layout_meta.meta_value = %s",
+					AND layout_meta.meta_value = %s',
 					$wpdb->posts,
 					$wpdb->postmeta,
 					Meta::META_KEY_LAYOUT_ID,

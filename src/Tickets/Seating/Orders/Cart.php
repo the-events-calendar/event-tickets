@@ -11,7 +11,6 @@ namespace TEC\Tickets\Seating\Orders;
 
 use Generator;
 use TEC\Tickets\Commerce\Attendee;
-use TEC\Tickets\Commerce\Status\Status_Interface;
 use TEC\Tickets\Seating\Frontend\Session;
 use TEC\Tickets\Seating\Meta;
 use TEC\Tickets\Seating\Tables\Sessions;
@@ -63,14 +62,14 @@ class Cart {
 	/**
 	 * Cart constructor.
 	 *
-	 * since TBD
+	 * @since TBD
 	 *
-	 * @param Session $session A reference to the Session handler.
+	 * @param Session  $session A reference to the Session handler.
 	 * @param Sessions $sessions A reference to the Sessions table handler.
 	 */
-	public function __construct(Session $session, Sessions $sessions) {
+	public function __construct( Session $session, Sessions $sessions ) {
 		$this->sessions = $sessions;
-		$this->session = $session;
+		$this->session  = $session;
 	}
 
 	/**
@@ -119,7 +118,8 @@ class Cart {
 		if ( ! isset( $this->session_stacks[ $object_id ][ $ticket_id ] ) ) {
 			$reservations = $this->sessions->get_reservations_for_token( $token );
 			foreach ( $reservations as $reservation_ticket_id => $reservation_data ) {
-				$this->session_stacks[ $object_id ][ $reservation_ticket_id ] = ( static fn(): Generator => yield from $reservation_data )();
+				$generator = static fn(): Generator => yield from $reservation_data;
+				$this->session_stacks[ $object_id ][ $reservation_ticket_id ] = $generator();
 			}
 		}
 
@@ -131,15 +131,10 @@ class Cart {
 	 *
 	 * @since TBD
 	 *
-	 * @param WP_Post               $attendee   The generated attendee.
-	 * @param Ticket_Object         $ticket     The ticket the attendee is generated for.
-	 * @param WP_Post               $order      The order the attendee is generated for.
-	 * @param Status_Interface      $new_status New post status.
-	 * @param Status_Interface|null $old_status Old post status.
-	 * @param array                 $item       Which cart item this was generated for.
-	 * @param int                   $i          Which Attendee index we are generating.
+	 * @param WP_Post       $attendee   The generated attendee.
+	 * @param Ticket_Object $ticket     The ticket the attendee is generated for.
 	 */
-	public function save_seat_data_for_attendee( $attendee, $ticket, $order, $new_status, $old_status, $item, $i ) {
+	public function save_seat_data_for_attendee( $attendee, $ticket ) {
 		[ $token, $object_id ] = $this->session->get_session_token_object_id();
 
 		if ( (int) $attendee->event_id === (int) $object_id ) {

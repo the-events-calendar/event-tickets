@@ -65,7 +65,7 @@ class Updater {
 	 * since TBD
 	 *
 	 * @param string $transient The name of the transient to use to store the last update time.
-	 * @param int $expiration The expiration time in seconds.
+	 * @param int    $expiration The expiration time in seconds.
 	 */
 	public function __construct( string $fetch_url, string $transient, int $expiration ) {
 		$this->fetch_url  = $fetch_url;
@@ -140,17 +140,18 @@ class Updater {
 
 		$next = null;
 		do {
-			$response = wp_remote_get( add_query_arg(
-				[
-					'from' => $next,
-				],
-				$this->fetch_url
-			),
+			$response = wp_remote_get(
+				add_query_arg(
+					[
+						'from' => $next,
+					],
+					$this->fetch_url
+				),
 				[
 					'headers' => [
 						'Accept'        => 'application/json',
 						'Authorization' => sprintf( 'Bearer %s', $this->get_oauth_token() ),
-					]
+					],
 				]
 			);
 
@@ -177,7 +178,7 @@ class Updater {
 					'Decoding the service response body.',
 					[
 						'source' => __METHOD__,
-						'body'   => substr( $body, 0, 100 )
+						'body'   => substr( $body, 0, 100 ),
 					]
 				);
 
@@ -193,7 +194,7 @@ class Updater {
 					'Malformed response body from service.',
 					[
 						'source' => __METHOD__,
-						'body'   => substr( $body, 0, 100 )
+						'body'   => substr( $body, 0, 100 ),
 					]
 				);
 

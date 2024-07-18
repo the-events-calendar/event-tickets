@@ -12,7 +12,6 @@ namespace TEC\Tickets\Seating\Orders;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\lucatume\DI52\Container;
 use TEC\Tickets\Admin\Attendees\Page as Attendee_Page;
-use TEC\Tickets\Commerce\Status\Status_Interface;
 use TEC\Tickets\Seating\Frontend\Session;
 use TEC\Tickets\Seating\Service\Reservations;
 use TEC\Tickets\Seating\Tables\Sessions;
@@ -101,10 +100,12 @@ class Controller extends Controller_Contract {
 	 */
 	protected function do_register(): void {
 		add_filter( 'tec_tickets_commerce_cart_prepare_data', [ $this, 'handle_seat_selection' ] );
-		add_action( 'tec_tickets_commerce_flag_action_generated_attendee',
+		add_action(
+			'tec_tickets_commerce_flag_action_generated_attendee',
 			[ $this, 'save_seat_data_for_attendee' ],
 			10,
-			7 );
+			2
+		);
 
 		// Add attendee seat data column to the attendee list.
 		if ( tribe_get_request_var( 'page' ) === 'tickets-attendees' || tribe( Attendee_Page::class )->is_on_page() ) {
@@ -117,10 +118,12 @@ class Controller extends Controller_Contract {
 
 		if ( is_admin() ) {
 			add_filter( 'tec_tickets_commerce_reports_tabbed_view_tab_map', [ $this, 'include_seats_tab' ] );
-			add_action( 'tec_tickets_commerce_reports_tabbed_view_after_register_tab',
+			add_action(
+				'tec_tickets_commerce_reports_tabbed_view_after_register_tab',
 				[ $this, 'register_seat_tab' ],
 				10,
-				2 );
+				2
+			);
 			add_action( 'tribe_tickets_orders_tabbed_view_register_tab_right', [ $this, 'register_seat_tab' ], 10, 2 );
 			add_action( 'init', [ $this, 'register_seat_reports' ] );
 			add_filter( 'tec_tickets_commerce_reports_tabbed_page_title', [ $this, 'filter_seat_tab_title' ], 10, 3 );
@@ -206,8 +209,10 @@ class Controller extends Controller_Contract {
 	 */
 	public function unregister(): void {
 		remove_filter( 'tec_tickets_commerce_cart_prepare_data', [ $this, 'handle_seat_selection' ] );
-		remove_action( 'tec_tickets_commerce_flag_action_generated_attendee',
-			[ $this, 'save_seat_data_for_attendee' ] );
+		remove_action(
+			'tec_tickets_commerce_flag_action_generated_attendee',
+			[ $this, 'save_seat_data_for_attendee' ]
+		);
 
 		// Remove attendee seat data column from the attendee list.
 		remove_filter( 'tribe_tickets_attendee_table_columns', [ $this, 'add_attendee_seat_column' ] );
@@ -241,18 +246,13 @@ class Controller extends Controller_Contract {
 	/**
 	 * Saves the seat data for the attendee.
 	 *
-	 * @param WP_Post               $attendee   The generated attendee.
-	 * @param Ticket_Object         $ticket     The ticket the attendee is generated for.
-	 * @param WP_Post               $order      The order the attendee is generated for.
-	 * @param Status_Interface      $new_status New post status.
-	 * @param Status_Interface|null $old_status Old post status.
-	 * @param array                 $item       Which cart item this was generated for.
-	 * @param int                   $i          Which Attendee index we are generating.
+	 * @param WP_Post       $attendee   The generated attendee.
+	 * @param Ticket_Object $ticket     The ticket the attendee is generated for.
 	 *
 	 * @return void
 	 */
-	public function save_seat_data_for_attendee( $attendee, $ticket, $order, $new_status, $old_status, $item, $i ): void {
-		$this->cart->save_seat_data_for_attendee( $attendee, $ticket, $order, $new_status, $old_status, $item, $i );
+	public function save_seat_data_for_attendee( $attendee, $ticket ): void {
+		$this->cart->save_seat_data_for_attendee( $attendee, $ticket );
 	}
 
 	/**

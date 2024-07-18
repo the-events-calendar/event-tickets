@@ -135,8 +135,8 @@ class Seat_Types {
 		);
 
 		$updated = $updater->check_last_update( $force )
-		                   ->update_from_service( fn() => Seat_Types_Table::truncate() )
-		                   ->store_fetched_data( [ $this, 'insert_rows_from_service' ] );
+							->update_from_service( fn() => Seat_Types_Table::truncate() )
+							->store_fetched_data( [ $this, 'insert_rows_from_service' ] );
 
 		return $updated;
 	}

@@ -265,8 +265,10 @@ class Sessions extends Table {
 
 		return array_reduce(
 			$token_reservations,
-			static fn( $carry, $reservation ) => array_merge( $carry,
-				array_column( $reservation, 'reservation_id' ) ),
+			static fn( $carry, $reservation ) => array_merge(
+				$carry,
+				array_column( $reservation, 'reservation_id' )
+			),
 			[]
 		);
 	}
@@ -277,13 +279,11 @@ class Sessions extends Table {
 	 * @since TBD
 	 *
 	 * @param string $token        Temporary token to identify the reservations.
-	 * @param array<int,array{
-	 *     reservation_id: string,
-	 *     seat_type_id: string,
-	 *     seat_label: string,
-	 * }>            $reservations The list of reservations to replace the existing ones with. A map from ticket ID to a list of
-	 *                             reservations for it.
-	 *
+	 * @param array  $reservations { The list of reservations to replace the existing ones with.
+	 *    @type string $reservation_id The reservation ID.
+	 *    @type string $seat_type_id   The seat type ID.
+	 *    @type string $seat_label     The seat label.
+	 * }
 	 *
 	 * @return bool Whether the reservations were updated or not.
 	 */

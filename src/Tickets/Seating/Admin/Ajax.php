@@ -520,7 +520,7 @@ class Ajax extends Controller_Contract {
 			return;
 		}
 
-		$token        = $decoded['token'];
+		$token             = $decoded['token'];
 		$json_reservations = $decoded['reservations'];
 
 		$reservations = [];

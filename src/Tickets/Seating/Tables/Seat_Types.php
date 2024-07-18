@@ -9,7 +9,6 @@
 
 namespace TEC\Tickets\Seating\Tables;
 
-
 use TEC\Common\StellarWP\Schema\Tables\Contracts\Table;
 
 /**
