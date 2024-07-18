@@ -4,14 +4,18 @@ namespace TEC\Tickets\Libraries;
 
 use Spatie\Snapshots\MatchesSnapshots;
 use TEC\Common\StellarWP\Uplink\Resources\Collection;
-use TEC\Common\StellarWP\Uplink\Auth\Token\Token_Manager;
+use TEC\Common\StellarWP\Uplink\Auth\Token\Contracts\Token_Manager;
 use TEC\Common\Libraries\Provider as Libraries_Provider;
+use Tribe\Tests\Traits\With_Uopz;
+
 use function Code_Snippets\code_snippets;
 
 
 class ControllerTest extends \Codeception\TestCase\WPTestCase {
 
 	use MatchesSnapshots;
+
+	use With_Uopz;
 
 	/**
 	 * @var Token_Manager
@@ -51,12 +55,9 @@ class ControllerTest extends \Codeception\TestCase\WPTestCase {
 		$this->collection = tribe( Collection::class );
 		$this->resource   = $this->collection->get( $this->et_slr_plugin_slug );
 
-		$prefix = tribe( Libraries_Provider::class )->get_hook_prefix();
-
-		$this->token_manager = new Token_Manager( $prefix, $this->collection );
+		$this->token_manager = tribe( Token_Manager::class );
 
 		$test = $this->collection->offsetGet('tec-seating');
-		codecept_debug($test);
 
 	}
 
@@ -108,9 +109,12 @@ class ControllerTest extends \Codeception\TestCase\WPTestCase {
 		$option_license_value = get_option( $option_name );
 		$this->assertEquals( $test_license_key, $option_license_value );
 
+		$this->assertTrue( $this->resource->is_using_oauth() );
 		$token = '22222222222222222';
-		$this->assertTrue( $this->token_manager->store( $token, $this->et_slr_plugin_slug ) );
-		$this->assertEquals( $token, $this->token_manager->get( $this->et_slr_plugin_slug ) );
+		$this->assertTrue( $this->token_manager->store( $token, $this->resource ) );
+		$this->assertEquals( $token, $this->token_manager->get( $this->resource ) );
+
+		$this->set_fn_return( 'wp_create_nonce', '12345678' );
 
 		$license_fields = apply_filters( 'tribe_license_fields', [], 0, 999 );
 
