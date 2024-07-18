@@ -64,7 +64,8 @@ class Updater {
 	 *
 	 * since TBD
 	 *
-	 * @param string $transient The name of the transient to use to store the last update time.
+	 * @param string $fetch_url  The URL to fetch the services URL.
+	 * @param string $transient  The name of the transient to use to store the last update time.
 	 * @param int    $expiration The expiration time in seconds.
 	 */
 	public function __construct( string $fetch_url, string $transient, int $expiration ) {
@@ -140,6 +141,7 @@ class Updater {
 
 		$next = null;
 		do {
+			// phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.wp_remote_get_wp_remote_get
 			$response = wp_remote_get(
 				add_query_arg(
 					[
