@@ -12,14 +12,12 @@
  */
 const externals = window.tec.tickets.seating.service;
 
-const baseUrl = externals.baseUrl.replace(/\/$/, '');
-const mapsHomeUrl = externals.mapsHomeUrl.replace(/\/$/, '');
-const layoutsHomeUrl = externals.layoutsHomeUrl.replace(/\/$/, '');
-const ajaxUrl = externals.ajaxUrl.replace(/\/$/, '');
-const ajaxNonce = externals.ajaxNonce;
+export const baseUrl = externals.baseUrl.replace(/\/$/, '');
+export const mapsHomeUrl = externals.mapsHomeUrl.replace(/\/$/, '');
+export const layoutsHomeUrl = externals.layoutsHomeUrl.replace(/\/$/, '');
+export const ajaxUrl = externals.ajaxUrl.replace(/\/$/, '');
+export const ajaxNonce = externals.ajaxNonce;
 
 export function getBaseUrl() {
 	return baseUrl;
 }
-
-export { baseUrl, mapsHomeUrl, layoutsHomeUrl, ajaxUrl, ajaxNonce };

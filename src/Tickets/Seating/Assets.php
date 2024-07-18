@@ -64,7 +64,7 @@ class Assets extends Controller_Contract {
 				'layouts'       => [
 					'delete-confirmation' => _x( 'Are you sure you want to delete this layout?', 'Confirmation message for deleting a layout', 'event-tickets' ),
 					'delete-failed'       => _x( 'Failed to delete the layout.', 'Error message for deleting a layout', 'event-tickets' ),
-					'edit-confirmation'   => _x( 'This layout is associated with X events. Changes will impact all existing events and may affect the seating assignment of active ticket holders.', 'Confirmation message for editing a layout with events', 'event-tickets' ),
+					'edit-confirmation'   => _x( 'This layout is associated with {count} events. Changes will impact all existing events and may affect the seating assignment of active ticket holders.', 'Confirmation message for editing a layout with events', 'event-tickets' ),
 				],
 			],
 		];
