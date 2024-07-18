@@ -380,8 +380,7 @@ class Block extends Abstract_Block {
 			'tec-tickets-tickets-block-editor-style',
 			$plugin->plugin_url . "build/Tickets/Blocks/Tickets/editor{$min}.css",
 			[ 'tribe-tickets-gutenberg-main-styles' ],
-			Tickets_Main::VERSION,
-			[ 'in_footer' => false ]
+			Tickets_Main::VERSION
 		);
 	}
 }
