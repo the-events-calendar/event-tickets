@@ -10,10 +10,10 @@
     'label' => '',
     'html' => '
 <div class="uplink-authorize-container">
-	<a href="https://my.theeventscalendar.com/account-auth/?uplink_callback={STATIC_CALLBACK}"
-	   target="_blank"
-	   class="button uplink-authorize not-authorized"	>
-		Connect	</a>
+	<a href="http://wordpress.test/wp-admin/?uplink_disconnect=1&#038;uplink_slug=tec-seating&#038;_wpnonce=12345678"
+	   target="_self"
+	   class="button uplink-authorize authorized"	>
+		Disconnect	</a>
 </div>
 
 ',
