@@ -49,6 +49,26 @@ class ControllerTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * @test
 	 */
+	public function it_should_have_the_fields_for_seating_licenses_with_incorrect_permissions_snapshot(): void {
+		set_current_user( 0 );
+		$license_fields = apply_filters( 'tribe_license_fields', [], 0, 999 );
+		$this->assertIsArray( $license_fields );
+
+		$relevant_fields = $this->get_relevant_license_fields( $license_fields );
+
+		// Assert that the relevant keys exist.
+		$this->assertArrayHasKey( 'stellarwp-uplink_tec-seating-heading', $license_fields );
+		$this->assertArrayHasKey( 'stellarwp-uplink_tec-seating', $license_fields );
+
+		$this->assertStringContainsString( 'Contact your network administrator to connect', $relevant_fields['stellarwp-uplink_tec-seating']['html'] );
+
+		// Snapshot test only the relevant fields.
+		$this->assertMatchesSnapshot( $relevant_fields );
+	}
+
+	/**
+	 * @test
+	 */
 	public function it_should_have_the_fields_for_seating_licenses_with_no_license_snapshot(): void {
 		$license_fields = apply_filters( 'tribe_license_fields', [], 0, 999 );
 		$this->assertIsArray( $license_fields );
