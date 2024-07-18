@@ -167,14 +167,14 @@ const targets = [
 	},
 	{
 		name: 'seating-layout-edit-bundle',
-		entry: './src/Tickets/Seating/app/admin/layout-edit/index.js',
-		outputScript: './build/Seating/admin/layout-edit.min.js',
-		outputStyle: `build/Seating/admin/layout-edit.${postfix}`,
+		entry: './src/Tickets/Seating/app/admin/layoutEdit/index.js',
+		outputScript: './build/Seating/admin/layoutEdit.min.js',
+		outputStyle: `build/Seating/admin/layoutEdit.${postfix}`,
 		moveFromTo: {
 			'src/resources/js/app/seating-layout-edit-bundle.js':
-				'build/Seating/admin/layout-edit.js',
+				'build/Seating/admin/layoutEdit.js',
 			'src/resources/css/app/seating-layout-edit-bundle.css':
-				'build/Seating/admin/layout-edit.css',
+				'build/Seating/admin/layoutEdit.css',
 		},
 	},
 	{

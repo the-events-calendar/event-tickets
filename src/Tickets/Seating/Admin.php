@@ -284,7 +284,7 @@ class Admin extends Controller_Contract {
 		$action = 'tec_tickets_seating_tab_' . Layout_Edit::get_id();
 		Asset::add(
 			'tec-tickets-seating-admin-layout-edit',
-			$this->built_asset_url( 'admin/layout-edit.js' ),
+			$this->built_asset_url( 'admin/layoutEdit.js' ),
 			Tickets::VERSION
 		)
 			->add_dependency( 'tec-tickets-seating-service-bundle' )
@@ -295,7 +295,7 @@ class Admin extends Controller_Contract {
 
 		Asset::add(
 			'tec-tickets-seating-admin-layout-edit-style',
-			$this->built_asset_url( 'admin/layout-edit.css' ),
+			$this->built_asset_url( 'admin/layoutEdit.css' ),
 			Tickets::VERSION
 		)
 			->add_to_group( 'tec-tickets-seating-admin' )

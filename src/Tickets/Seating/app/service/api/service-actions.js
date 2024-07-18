@@ -11,6 +11,7 @@ export const MAP_CREATED_UPDATED = 'app_postmessage_map_created_updated';
 export const LAYOUT_CREATED_UPDATED = 'app_postmessage_layout_created_updated';
 export const SEAT_TYPE_CREATED_UPDATED =
 	'app_postmessage_seat_type_created_updated';
+export const RESERVATIONS_DELETED = 'app_postmessage_reservations_deleted';
 
 // Service-side redirection actions.
 export const GO_TO_MAPS_HOME = 'app_postmessage_goto_maps_home';
