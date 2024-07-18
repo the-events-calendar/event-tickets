@@ -136,7 +136,7 @@ describe('Seat Selection Modal', () => {
 		iframeModule.initServiceIframe = jest.fn(() => true);
 
 		// Fire the INBOUND_SEATS_SELECTED  action with correct payload.
-		it('should add tickets to selection when receiving new tickets', async () => {
+		it('should handle adding seat selection correctly', async () => {
 			const dom = getTestDocument();
 			setToken('test-token');
 			fetch.mockIf(
@@ -144,8 +144,64 @@ describe('Seat Selection Modal', () => {
 				JSON.stringify({ success: true })
 			);
 
-			// The first payload is for 2 tickets of the same type.
-			const firstPayload = [
+			await bootstrapIframe(dom);
+			const handler = getHandlerForAction(INBOUND_SEATS_SELECTED);
+
+			// No seats selected yet.
+			const firstPayload = [];
+
+			await handler(firstPayload);
+
+			expect(dom.querySelector('.event-tickets')).toMatchSnapshot();
+			expect(fetch).toBeCalledWith(
+				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&action=tec_tickets_seating_post_reservations',
+				{
+					method: 'POST',
+					body: JSON.stringify({
+						token: 'test-token',
+						reservations: {},
+					}),
+					signal: expect.any(AbortSignal),
+				}
+			);
+
+			// A first seat selection for A-1.
+			const secondPayload = [
+				{
+					seatTypeId: 'uuid-seat-type-0',
+					ticketId: 23,
+					seatColor: '#00ff00',
+					seatLabel: 'A-1',
+					reservationId: 'uuid-reservation-0',
+				},
+			];
+
+			fetch.resetMocks();
+			await handler(secondPayload);
+
+			expect(dom.querySelector('.event-tickets')).toMatchSnapshot();
+			expect(fetch).toBeCalledWith(
+				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&action=tec_tickets_seating_post_reservations',
+				{
+					method: 'POST',
+					body: JSON.stringify({
+						token: 'test-token',
+						reservations: {
+							23: [
+								{
+									reservationId: 'uuid-reservation-0',
+									seatTypeId: 'uuid-seat-type-0',
+									seatLabel: 'A-1',
+								},
+							],
+						},
+					}),
+					signal: expect.any(AbortSignal),
+				}
+			);
+
+			// A second seat selection for A-2.
+			const thirdPayload = [
 				{
 					seatTypeId: 'uuid-seat-type-0',
 					ticketId: 23,
@@ -162,9 +218,8 @@ describe('Seat Selection Modal', () => {
 				},
 			];
 
-			await bootstrapIframe(dom);
-			const handler = getHandlerForAction(INBOUND_SEATS_SELECTED);
-			await handler(firstPayload);
+			fetch.resetMocks();
+			await handler(thirdPayload);
 
 			expect(dom.querySelector('.event-tickets')).toMatchSnapshot();
 			expect(fetch).toBeCalledWith(
@@ -187,6 +242,355 @@ describe('Seat Selection Modal', () => {
 								},
 							],
 						},
+					}),
+					signal: expect.any(AbortSignal),
+				}
+			);
+
+			// A selection for B-15, a seat associated with a different ticket.
+			const fourthPayload = [
+				{
+					seatTypeId: 'uuid-seat-type-0',
+					ticketId: 23,
+					seatColor: '#00ff00',
+					seatLabel: 'A-1',
+					reservationId: 'uuid-reservation-0',
+				},
+				{
+					seatTypeId: 'uuid-seat-type-0',
+					ticketId: 23,
+					seatColor: '#ff0000',
+					seatLabel: 'A-2',
+					reservationId: 'uuid-reservation-1',
+				},
+				{
+					seatTypeId: 'uuid-seat-type-1',
+					ticketId: 89,
+					seatColor: '#00ff00',
+					seatLabel: 'B-15',
+					reservationId: 'uuid-reservation-3',
+				},
+			];
+
+			fetch.resetMocks();
+			await handler(fourthPayload);
+
+			expect(dom.querySelector('.event-tickets')).toMatchSnapshot();
+			expect(fetch).toBeCalledWith(
+				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&action=tec_tickets_seating_post_reservations',
+				{
+					method: 'POST',
+					body: JSON.stringify({
+						token: 'test-token',
+						reservations: {
+							23: [
+								{
+									reservationId: 'uuid-reservation-0',
+									seatTypeId: 'uuid-seat-type-0',
+									seatLabel: 'A-1',
+								},
+								{
+									reservationId: 'uuid-reservation-1',
+									seatTypeId: 'uuid-seat-type-0',
+									seatLabel: 'A-2',
+								},
+							],
+							89: [
+								{
+									reservationId: 'uuid-reservation-3',
+									seatTypeId: 'uuid-seat-type-1',
+									seatLabel: 'B-15',
+								},
+							],
+						},
+					}),
+					signal: expect.any(AbortSignal),
+				}
+			);
+
+			// Finally another seat selection for C-23.
+			const fifthPayload = [
+				{
+					seatTypeId: 'uuid-seat-type-0',
+					ticketId: 23,
+					seatColor: '#00ff00',
+					seatLabel: 'A-1',
+					reservationId: 'uuid-reservation-0',
+				},
+				{
+					seatTypeId: 'uuid-seat-type-0',
+					ticketId: 23,
+					seatColor: '#ff0000',
+					seatLabel: 'A-2',
+					reservationId: 'uuid-reservation-1',
+				},
+				{
+					seatTypeId: 'uuid-seat-type-1',
+					ticketId: 89,
+					seatColor: '#00ff00',
+					seatLabel: 'B-15',
+					reservationId: 'uuid-reservation-3',
+				},
+				{
+					seatTypeId: 'uuid-seat-type-2',
+					ticketId: 66,
+					seatColor: '#00ff00',
+					seatLabel: 'C-23',
+					reservationId: 'uuid-reservation-4',
+				},
+			];
+
+			fetch.resetMocks();
+			await handler(fifthPayload);
+
+			expect(dom.querySelector('.event-tickets')).toMatchSnapshot();
+			expect(fetch).toBeCalledWith(
+				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&action=tec_tickets_seating_post_reservations',
+				{
+					method: 'POST',
+					body: JSON.stringify({
+						token: 'test-token',
+						reservations: {
+							23: [
+								{
+									reservationId: 'uuid-reservation-0',
+									seatTypeId: 'uuid-seat-type-0',
+									seatLabel: 'A-1',
+								},
+								{
+									reservationId: 'uuid-reservation-1',
+									seatTypeId: 'uuid-seat-type-0',
+									seatLabel: 'A-2',
+								},
+							],
+							89: [
+								{
+									reservationId: 'uuid-reservation-3',
+									seatTypeId: 'uuid-seat-type-1',
+									seatLabel: 'B-15',
+								},
+							],
+							66: [
+								{
+									reservationId: 'uuid-reservation-4',
+									seatTypeId: 'uuid-seat-type-2',
+									seatLabel: 'C-23',
+								},
+							],
+						},
+					}),
+					signal: expect.any(AbortSignal),
+				}
+			);
+		});
+
+		it('should handle removing seat selection correctly', async () => {
+			const dom = getTestDocument();
+			setToken('test-token');
+			fetch.mockIf(
+				/^https:\/\/wordpress\.test\/wp-admin\/admin-ajax\.php?.*$/,
+				JSON.stringify({ success: true })
+			);
+
+			await bootstrapIframe(dom);
+			const handler = getHandlerForAction(INBOUND_SEATS_SELECTED);
+
+			// The first payload adds seats for A-1, A-2, B-15, C-23.
+			const setupPayload = [
+				{
+					seatTypeId: 'uuid-seat-type-0',
+					ticketId: 23,
+					seatColor: '#00ff00',
+					seatLabel: 'A-1',
+					reservationId: 'uuid-reservation-0',
+				},
+				{
+					seatTypeId: 'uuid-seat-type-0',
+					ticketId: 23,
+					seatColor: '#ff0000',
+					seatLabel: 'A-2',
+					reservationId: 'uuid-reservation-1',
+				},
+				{
+					seatTypeId: 'uuid-seat-type-1',
+					ticketId: 89,
+					seatColor: '#00ff00',
+					seatLabel: 'B-15',
+					reservationId: 'uuid-reservation-3',
+				},
+				{
+					seatTypeId: 'uuid-seat-type-2',
+					ticketId: 66,
+					seatColor: '#00ff00',
+					seatLabel: 'C-23',
+					reservationId: 'uuid-reservation-4',
+				},
+			];
+
+			await handler(setupPayload);
+			// The verification of this working correctly is done in the previous test; this is just setup code.
+
+			// The first payload removes A-2.
+			const firstPayload = [
+				{
+					seatTypeId: 'uuid-seat-type-0',
+					ticketId: 23,
+					seatColor: '#00ff00',
+					seatLabel: 'A-1',
+					reservationId: 'uuid-reservation-0',
+				},
+				{
+					seatTypeId: 'uuid-seat-type-1',
+					ticketId: 89,
+					seatColor: '#00ff00',
+					seatLabel: 'B-15',
+					reservationId: 'uuid-reservation-3',
+				},
+				{
+					seatTypeId: 'uuid-seat-type-2',
+					ticketId: 66,
+					seatColor: '#00ff00',
+					seatLabel: 'C-23',
+					reservationId: 'uuid-reservation-4',
+				},
+			];
+
+			fetch.resetMocks();
+			await handler(firstPayload);
+
+			expect(dom.querySelector('.event-tickets')).toMatchSnapshot();
+			expect(fetch).toBeCalledWith(
+				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&action=tec_tickets_seating_post_reservations',
+				{
+					method: 'POST',
+					body: JSON.stringify({
+						token: 'test-token',
+						reservations: {
+							23: [
+								{
+									reservationId: 'uuid-reservation-0',
+									seatTypeId: 'uuid-seat-type-0',
+									seatLabel: 'A-1',
+								},
+							],
+							89: [
+								{
+									reservationId: 'uuid-reservation-3',
+									seatTypeId: 'uuid-seat-type-1',
+									seatLabel: 'B-15',
+								},
+							],
+							66: [
+								{
+									reservationId: 'uuid-reservation-4',
+									seatTypeId: 'uuid-seat-type-2',
+									seatLabel: 'C-23',
+								},
+							],
+						},
+					}),
+					signal: expect.any(AbortSignal),
+				}
+			);
+
+			// The second payload removes C-23.
+			const secondPayload = [
+				{
+					seatTypeId: 'uuid-seat-type-0',
+					ticketId: 23,
+					seatColor: '#00ff00',
+					seatLabel: 'A-1',
+					reservationId: 'uuid-reservation-0',
+				},
+				{
+					seatTypeId: 'uuid-seat-type-1',
+					ticketId: 89,
+					seatColor: '#00ff00',
+					seatLabel: 'B-15',
+					reservationId: 'uuid-reservation-3',
+				},
+			];
+
+			fetch.resetMocks();
+			await handler(secondPayload);
+
+			expect(dom.querySelector('.event-tickets')).toMatchSnapshot();
+			expect(fetch).toBeCalledWith(
+				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&action=tec_tickets_seating_post_reservations',
+				{
+					method: 'POST',
+					body: JSON.stringify({
+						token: 'test-token',
+						reservations: {
+							23: [
+								{
+									reservationId: 'uuid-reservation-0',
+									seatTypeId: 'uuid-seat-type-0',
+									seatLabel: 'A-1',
+								},
+							],
+							89: [
+								{
+									reservationId: 'uuid-reservation-3',
+									seatTypeId: 'uuid-seat-type-1',
+									seatLabel: 'B-15',
+								},
+							],
+						},
+					}),
+					signal: expect.any(AbortSignal),
+				}
+			);
+
+			// The third payload removes A-1.
+			const thirdPayload = [
+				{
+					seatTypeId: 'uuid-seat-type-1',
+					ticketId: 89,
+					seatColor: '#00ff00',
+					seatLabel: 'B-15',
+					reservationId: 'uuid-reservation-3',
+				},
+			];
+
+			fetch.resetMocks();
+			await handler(thirdPayload);
+
+			expect(dom.querySelector('.event-tickets')).toMatchSnapshot();
+			expect(fetch).toBeCalledWith(
+				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&action=tec_tickets_seating_post_reservations',
+				{
+					method: 'POST',
+					body: JSON.stringify({
+						token: 'test-token',
+						reservations: {
+							89: [
+								{
+									reservationId: 'uuid-reservation-3',
+									seatTypeId: 'uuid-seat-type-1',
+									seatLabel: 'B-15',
+								},
+							],
+						},
+					}),
+					signal: expect.any(AbortSignal),
+				}
+			);
+
+			// The fourth payload removes B-15, the last selected ticket.
+			const fourthPayload = [];
+
+			fetch.resetMocks();
+			await handler(fourthPayload);
+
+			expect(dom.querySelector('.event-tickets')).toMatchSnapshot();
+			expect(fetch).toBeCalledWith(
+				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&action=tec_tickets_seating_post_reservations',
+				{
+					method: 'POST',
+					body: JSON.stringify({
+						token: 'test-token',
+						reservations: {},
 					}),
 					signal: expect.any(AbortSignal),
 				}
