@@ -260,16 +260,39 @@ class Ajax extends Controller_Contract {
 
 		$data      = Tickets::get_attendees_by_args( $args, $event_id );
 		$formatted = [];
+		$unknown_attendee_name = __( 'Unknown', 'event-tickets' );
+		$associated_attendees = array_reduce(
+			$data['attendees'],
+			function ( array $carry, array $attendee ): array {
+				$carry[ $attendee['purchaser_id'] ]++;
+				return $carry;
+			},
+			[]
+		);
 
 		foreach ( $data['attendees'] as $attendee ) {
-			$id = (int) $attendee['attendee_id'];
+			$id      = (int) $attendee['attendee_id'];
+			$user_id = (int) ( $attendee['user_id'] ?? 0 );
+			if ( $user_id > 0 ) {
+				$user                       = get_user_by( 'id', $user_id );
+				$attendee['purchaser_name'] = $user ? $user->display_name : $unknown_attendee_name;
+			} else {
+				$attendee['purchaser_name'] = $attendee['purchaser_name'] ?? $unknown_attendee_name;
+			}
 
-			$formatted[] = [
+			$name = trim( $attendee['holder_name'] ?? '' );
+			if ( ! $name ) {
+				$name = $attendee['purchaser_name'];
+			}
+			$purchaser_id = $attendee['purchaser_id'];
+
+			$formatted[]  = [
 				'id'            => $id,
-				'name'          => $attendee['holder_name'],
+				'name'          => $name,
 				'purchaser'     => [
-					'id'   => $attendee['purchaser_id'],
+					'id'   => $purchaser_id,
 					'name' => $attendee['purchaser_name'],
+					'associatedAttendees' => $associated_attendees[ $purchaser_id ],
 				],
 				'ticketId'      => $attendee['product_id'],
 				'seatTypeId'    => get_post_meta( $id, Meta::META_KEY_SEAT_TYPE, true ),
