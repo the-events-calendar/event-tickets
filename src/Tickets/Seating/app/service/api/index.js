@@ -1,5 +1,5 @@
 // Get the service base URL without the trailing slash.
-import { getBaseUrl } from './externals.js';
+import { getBaseUrl, ajaxUrl, ajaxNonce } from './externals.js';
 import {
 	setIsReady,
 	setEstablishingReadiness,
@@ -243,7 +243,7 @@ export function emptyHandlerQueue() {
 }
 
 // Re-export some functions from the state module.
-export { getToken, registerAction, getHandlerForAction };
+export { getToken, registerAction, getHandlerForAction, ajaxUrl, ajaxNonce };
 
 window.tec = window.tec || {};
 window.tec.tickets.seating = window.tec.tickets.seating || {};
@@ -265,4 +265,6 @@ window.tec.tickets.seating.service.api = {
 	getRegisteredActions,
 	getHandlerQueue,
 	getToken,
+	ajaxUrl,
+	ajaxNonce,
 };

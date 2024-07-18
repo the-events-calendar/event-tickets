@@ -1,14 +1,14 @@
-import {ajaxUrl, ajaxNonce} from "@tec/tickets/seating/service";
-import {onReady, getLocalizedString} from "@tec/tickets/seating/utils";
+import { ajaxUrl, ajaxNonce } from '@tec/tickets/seating/service/api';
+import { onReady, getLocalizedString } from '@tec/tickets/seating/utils';
 
 /**
  * Get localized string for the given key.
  *
  * @since TBD
  *
- * @param {string} key - The key to get the localized string for.
+ * @param {string} key The key to get the localized string for.
  *
- * @returns {string} - The localized string.
+ * @return {string} The localized string.
  */
 export function getString(key) {
 	return getLocalizedString(key, 'layouts');
@@ -18,11 +18,14 @@ export function getString(key) {
  * Register delete action on all links with class 'delete-layout'.
  *
  * @since TBD
+ *
+ * @param {HTMLDocument|null} dom The document to use to search for the delete buttons.
  */
-export function registerDeleteAction() {
+export function registerDeleteAction(dom) {
+	dom = dom || document;
 	// Add click listener to all links with class 'delete'.
-	document.querySelectorAll('.delete-layout').forEach(function(link) {
-		link.addEventListener('click', async function(event) {
+	dom.querySelectorAll('.delete-layout').forEach(function (link) {
+		link.addEventListener('click', async function (event) {
 			event.preventDefault();
 			await handleDelete(event.target);
 		});
@@ -34,7 +37,7 @@ export function registerDeleteAction() {
  *
  * @since TBD
  *
- * @param {HTMLElement} element - The target item.
+ * @param {HTMLElement} element The target item.
  *
  * @return {Promise<void>}
  */
@@ -42,20 +45,27 @@ async function handleDelete(element) {
 	const layoutId = element.getAttribute('data-layout-id');
 	const mapId = element.getAttribute('data-map-id');
 
+	if (!(layoutId && mapId)) {
+		return;
+	}
+
 	const card = element.closest('.tec-tickets__seating-tab__card');
 	card.style.opacity = 0.5;
 
 	if (confirm(getString('delete-confirmation'))) {
 		const result = await deleteLayout(layoutId, mapId);
+
 		if (result) {
 			window.location.reload();
-		} else {
-			card.style.opacity = 1;
-			alert(getString('delete-failed'));
+			return;
 		}
-	} else {
+
 		card.style.opacity = 1;
+		alert(getString('delete-failed'));
+		return;
 	}
+
+	card.style.opacity = 1;
 }
 
 /**
@@ -63,20 +73,17 @@ async function handleDelete(element) {
  *
  * @since TBD
  *
- * @param {string} layoutId - The layout ID.
- * @param {string} mapId - The map ID.
+ * @param {string} layoutId The layout ID.
+ * @param {string} mapId    The map ID.
  *
- * @returns {Promise<boolean>} - Promise resolving to true if delete was successful, false otherwise.
+ * @return {Promise<boolean>} Promise resolving to true if delete was successful, false otherwise.
  */
 async function deleteLayout(layoutId, mapId) {
 	const url = new URL(ajaxUrl);
 	url.searchParams.set('_ajax_nonce', ajaxNonce);
 	url.searchParams.set('layoutId', layoutId);
 	url.searchParams.set('mapId', mapId);
-	url.searchParams.set(
-		'action',
-		'tec_tickets_seating_service_delete_layout'
-	);
+	url.searchParams.set('action', 'tec_tickets_seating_service_delete_layout');
 	const response = await fetch(url.toString(), { method: 'POST' });
 
 	return response.status === 200;
@@ -86,34 +93,43 @@ async function deleteLayout(layoutId, mapId) {
  * Register destructive edit action on all links with class 'edit-layout'.
  *
  * @since TBD
+ *
+ * @param {HTMLDocument|null} dom The document to use to search for the edit buttons.
  */
-export function registerDestructiveEditAction() {
+export function registerDestructiveEditAction(dom) {
+	dom = dom || document;
 	// Add click listener to all links with class 'delete'.
-	document.querySelectorAll('.edit-layout').forEach(function(link) {
-		link.addEventListener('click', async function(event) {
+	dom.querySelectorAll('.edit-layout').forEach(function (link) {
+		link.addEventListener('click', async function (event) {
 			handleDestructiveEdit(event);
 		});
 	});
 }
-
 
 /**
  * Handle destructive edit action.
  *
  * @since TBD
  *
- * @param {ClickEvent} event - The click event.
+ * @param {ClickEvent} event The click event.
  *
  * @return {Promise<void>}
  */
 async function handleDestructiveEdit(event) {
 	const associatedEvents = event.target.getAttribute('data-event-count');
 
-	if(associatedEvents && Number(associatedEvents) !== NaN && Number(associatedEvents) > 0) {
+	if ( Number(associatedEvents) > 0 ) {
 		const card = event.target.closest('.tec-tickets__seating-tab__card');
 		card.style.opacity = 0.5;
 
-		if (!confirm(getString('edit-confirmation'))) {
+		if (
+			!confirm(
+				getString('edit-confirmation').replace(
+					'{count}',
+					associatedEvents
+				)
+			)
+		) {
 			card.style.opacity = 1;
 			event.preventDefault();
 		}
@@ -122,5 +138,5 @@ async function handleDestructiveEdit(event) {
 
 export { handleDelete, deleteLayout };
 
-onReady(registerDeleteAction);
-onReady(registerDestructiveEditAction);
+onReady(() => registerDeleteAction(document));
+onReady(() => registerDestructiveEditAction(document));
