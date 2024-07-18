@@ -5,7 +5,7 @@ namespace TEC\Tickets\Seating\Service;
 use TEC\Tickets\Seating\Tables\Layouts as Layouts_Table;
 use TEC\Tickets\Seating\Tables\Maps as Maps_Table;
 use TEC\Tickets\Seating\Tables\Seat_Types as Seat_Types_Table;
-use Tribe\Tickets\Test\Traits\WP_Remote_Mocks;
+use Tribe\Tests\Traits\WP_Remote_Mocks;
 
 class Layouts_Test extends \Codeception\TestCase\WPTestCase {
 	use WP_Remote_Mocks;

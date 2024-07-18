@@ -4,7 +4,7 @@ namespace TEC\Tickets\Seating\Service;
 
 use TEC\Tickets\Seating\Meta;
 use Tribe\Tests\Traits\With_Uopz;
-use Tribe\Tickets\Test\Traits\WP_Remote_Mocks;
+use Tribe\Tests\Traits\WP_Remote_Mocks;
 
 class Reservations_Test extends \Codeception\TestCase\WPTestCase {
 	use WP_Remote_Mocks;

@@ -11,9 +11,9 @@ use TEC\Tickets\Seating\Service\OAuth_Token;
 use TEC\Tickets\Seating\Service\Reservations;
 use TEC\Tickets\Seating\Tables\Sessions;
 use Tribe\Tests\Traits\With_Uopz;
+use Tribe\Tests\Traits\WP_Remote_Mocks;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Traits\Reservations_Maker;
-use Tribe\Tickets\Test\Traits\WP_Remote_Mocks;
 use Tribe__Events__Main as TEC;
 use Tribe__Tickets__Data_API as Data_API;
 

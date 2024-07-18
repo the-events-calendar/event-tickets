@@ -16,11 +16,11 @@ use TEC\Tickets\Seating\Service\OAuth_Token;
 use TEC\Tickets\Seating\Service\Reservations;
 use TEC\Tickets\Seating\Tables\Sessions;
 use Tribe\Tests\Traits\With_Uopz;
+use Tribe\Tests\Traits\WP_Remote_Mocks;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Traits\Reservations_Maker;
 use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
-use Tribe\Tickets\Test\Traits\WP_Remote_Mocks;
 use Tribe__Tickets__Attendees as Attendees;
 
 class Controller_Test extends Controller_Test_Case {

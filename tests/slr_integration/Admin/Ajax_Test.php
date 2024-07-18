@@ -18,8 +18,8 @@ use TEC\Tickets\Seating\Tables\Seat_Types as Seat_Types_Table;
 use TEC\Tickets\Seating\Tables\Sessions;
 use TEC\Tickets\Seating\Tests\Integration\Seat_Types_Factory;
 use Tribe\Tests\Traits\With_Uopz;
+use Tribe\Tests\Traits\WP_Remote_Mocks;
 use Tribe\Tickets\Test\Traits\Reservations_Maker;
-use Tribe\Tickets\Test\Traits\WP_Remote_Mocks;
 use Tribe__Tickets__Data_API as Data_API;
 
 class Ajax_Test extends Controller_Test_Case {
