@@ -5,6 +5,7 @@ use Tribe__Utils__Array as Arr;
 use Tribe__Tickets__Ticket_Object as Ticket;
 use Tribe__Tickets__Global_Stock as Global_Stock;
 use TEC\Tickets\Admin\Attendees\Page as Attendees_Page;
+use Tribe__Tickets__Tickets as Tickets;
 
 /**
  * Handles most actions related to an attendee or multiple attendees.
@@ -174,7 +175,7 @@ class Tribe__Tickets__Attendees {
 
 		$total_checked_in = $this->get_checkedin_total();
 		$check_in_percent = $this->get_checkedin_percentage( $post_id );
-		$total_attendees  = Tribe__Tickets__Tickets::get_event_attendees_count( $post_id );
+		$total_attendees  = Tickets::get_event_attendees_count( $post_id );
 
 		/** @var Tribe__Tickets__Admin__Views $admin_views */
 		$admin_views = tribe( 'tickets.admin.views' );
@@ -208,7 +209,7 @@ class Tribe__Tickets__Attendees {
 	 */
 	public function get_checkedin_percentage( $post_id ): string {
 		$total_checked_in = $this->get_checkedin_total();
-		$total            = Tribe__Tickets__Tickets::get_event_attendees_count( $post_id );
+		$total            = Tickets::get_event_attendees_count( $post_id );
 
 		// Remove the "Not Going" RSVPs.
 		$not_going = tribe( 'tickets.rsvp' )->get_attendees_count_not_going( $post_id );
@@ -278,7 +279,7 @@ class Tribe__Tickets__Attendees {
 			return $actions;
 		}
 
-		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post->ID );
+		$tickets = Tickets::get_event_tickets( $post->ID );
 
 		// Only proceed if there are tickets.
 		if ( empty( $tickets ) ) {
@@ -486,7 +487,7 @@ class Tribe__Tickets__Attendees {
 		} else {
 			$this->attendees_table = new Tribe__Tickets__Attendees_Table();
 
-			if ( isset($_GET['event_id']) && 'all' === $_GET['event_id'] ) {
+			if ( 'all' === ( $_GET['event_id'] ?? '' ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 				$this->export_csv_for_all();
 			} else {
 				$this->maybe_generate_csv();
@@ -579,7 +580,7 @@ class Tribe__Tickets__Attendees {
 		$filter_name = "manage_{$this->page_id}_columns";
 		add_filter( $filter_name, [ $this->attendees_table, 'get_columns' ], 15 );
 
-		$items = 'all' === $event_id ? Tribe__Tickets__Tickets::get_attendees_by_args()['attendees'] : Tribe__Tickets__Tickets::get_event_attendees( $event_id );
+		$items = 'all' === $event_id ? Tickets::get_attendees_by_args()['attendees'] : Tickets::get_event_attendees( $event_id );
 
 		// Add Handler for Community Tickets to Prevent Notices in Exports.
 		if ( ! is_admin() ) {
@@ -600,7 +601,7 @@ class Tribe__Tickets__Attendees {
 				'purchaser',
 				'status',
 				'attendee_actions',
-				'attendee_event'
+				'attendee_event',
 			]
 		);
 
@@ -758,11 +759,19 @@ class Tribe__Tickets__Attendees {
 	 *
 	 */
 	public function maybe_generate_csv() {
-		if ( empty( $_GET['attendees_csv'] ) || empty( $_GET['attendees_csv_nonce'] ) || empty( $_GET['event_id'] ) ) {
+		if ( empty( $_GET['attendees_csv'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			return;
 		}
 
-		$event_id = absint( $_GET['event_id'] );
+		if ( empty( $_GET['attendees_csv_nonce'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			return;
+		}
+
+		if ( empty( $_GET['event_id'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			return;
+		}
+
+		$event_id = absint( $_GET['event_id'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
 		$event_id = Event::filter_event_id( $event_id, 'attendee-csv-report' );
 
@@ -795,45 +804,56 @@ class Tribe__Tickets__Attendees {
 		 */
 		$items = apply_filters( 'tribe_events_tickets_attendees_csv_items', $items, $event_id );
 
-		if ( ! empty( $items ) ) {
-			$charset  = get_option( 'blog_charset' );
-			$filename = sanitize_file_name( $event->post_title . '-' . __( 'attendees', 'event-tickets' ) );
-
-			// Output headers so that the file is downloaded rather than displayed.
-			header( "Content-Type: text/csv; charset=$charset" );
-			header( "Content-Disposition: attachment; filename=$filename.csv" );
-
-			// Create the file pointer connected to the output stream.
-			$output = fopen( 'php://output', 'w' );
-
-			/**
-			 * Allow filtering the field delimiter used in the CSV export file.
-			 *
-			 * @since 5.1.3
-			 *
-			 * @param string $delimiter The field delimiter used in the CSV export file.
-			 */
-			$delimiter = apply_filters( 'tribe_tickets_attendees_csv_export_delimiter', ',' );
-
-			// Output the lines into the file.
-			foreach ( $items as $item ) {
-				fputcsv( $output, $item, $delimiter );
-			}
-
-			fclose( $output );
-			exit;
+		if ( empty( $items ) ) {
+			return;
 		}
+
+		$charset  = get_option( 'blog_charset' );
+		$filename = sanitize_file_name( $event->post_title . '-' . __( 'attendees', 'event-tickets' ) );
+
+		// Output headers so that the file is downloaded rather than displayed.
+		header( "Content-Type: text/csv; charset={$charset}" );
+		header( "Content-Disposition: attachment; filename={$filename}.csv" );
+
+		// Create the file pointer connected to the output stream.
+		$output = fopen( 'php://output', 'w' );
+
+		/**
+		 * Allow filtering the field delimiter used in the CSV export file.
+		 *
+		 * @since 5.1.3
+		 *
+		 * @param string $delimiter The field delimiter used in the CSV export file.
+		 */
+		$delimiter = apply_filters( 'tribe_tickets_attendees_csv_export_delimiter', ',' );
+
+		// Output the lines into the file.
+		foreach ( $items as $item ) {
+			fputcsv( $output, $item, $delimiter ); // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_fputcsv
+		}
+
+		fclose( $output );
+		exit;
 	}
 
 	/**
-	 * Admin requested a CSV export from the attendees table.
-	 * Generates the download and finishes the execution.
+	 * Export a CSV containing all attendees.
 	 *
+	 * Called when an Admin requested a CSV export from the attendees table. Generates
+	 * the download file and finishes the execution.
+	 * 
 	 * @since TBD
-	 *
 	 */
 	public function export_csv_for_all() {
-		if ( empty( $_GET['attendees_csv'] ) || empty( $_GET['attendees_csv_nonce'] ) || ! current_user_can( 'manage_options' ) ) {
+		if ( empty( $_GET['attendees_csv'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			return;
+		}
+
+		if ( empty( $_GET['attendees_csv_nonce'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			return;
+		}
+
+		if ( ! current_user_can( 'manage_options' ) ) {
 			return;
 		}
 
@@ -843,27 +863,36 @@ class Tribe__Tickets__Attendees {
 		// Sanitize items for CSV usage.
 		$items = $this->sanitize_csv_rows( $items );
 
-		if ( ! empty( $items ) ) {
-			$charset  = get_option( 'blog_charset' );
-			$filename = sanitize_file_name( __( 'All event attendees', 'event-tickets' ) );
-
-			// Output headers so that the file is downloaded rather than displayed.
-			header( "Content-Type: text/csv; charset=$charset" );
-			header( "Content-Disposition: attachment; filename=$filename.csv" );
-
-			// Create the file pointer connected to the output stream.
-			$output = fopen( 'php://output', 'w' );
-
-			$delimiter = apply_filters( 'tribe_tickets_attendees_csv_export_delimiter', ',' );
-
-			// Output the lines into the file.
-			foreach ( $items as $item ) {
-				fputcsv( $output, $item, $delimiter );
-			}
-
-			fclose( $output );
-			exit;
+		if ( empty( $items ) ) {
+			return;
 		}
+
+		$charset  = get_option( 'blog_charset' );
+		$filename = sanitize_file_name( __( 'All event attendees', 'event-tickets' ) );
+
+		// Output headers so that the file is downloaded rather than displayed.
+		header( "Content-Type: text/csv; charset={$charset}" );
+		header( "Content-Disposition: attachment; filename={$filename}.csv" );
+
+		// Create the file pointer connected to the output stream.
+		$output = fopen( 'php://output', 'w' );
+
+		/**
+		 * Allow filtering the field delimiter used in the CSV export file.
+		 *
+		 * @since 5.1.3
+		 *
+		 * @param string $delimiter The field delimiter used in the CSV export file.
+		 */
+		$delimiter = apply_filters( 'tribe_tickets_attendees_csv_export_delimiter', ',' );
+
+		// Output the lines into the file.
+		foreach ( $items as $item ) {
+			fputcsv( $output, $item, $delimiter ); // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_fputcsv
+		}
+
+		fclose( $output );
+		exit;
 	}
 
 	/**
@@ -1138,7 +1167,7 @@ class Tribe__Tickets__Attendees {
 			$provider = tribe_tickets_get_ticket_provider( (int) $attendee );
 		} elseif ( is_array( $attendee ) && isset( $attendee['provider'] ) ) {
 			// Try to get provider from the attendee data.
-			$provider = Tribe__Tickets__Tickets::get_ticket_provider_instance( $attendee['provider'] );
+			$provider = Tickets::get_ticket_provider_instance( $attendee['provider'] );
 		}
 
 		if ( ! $provider ) {
@@ -1222,7 +1251,7 @@ class Tribe__Tickets__Attendees {
 	 * @return array<string,mixed> The context used to render the Attendees page.
 	 */
 	public function get_render_context( int $post_id ): array {
-		$tickets         = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
+		$tickets         = Tickets::get_event_tickets( $post_id );
 		$tickets_by_type = [ 'rsvp' => [], 'default' => [] ];
 		$ticket_totals   = [
 			'sold'      => 0,
