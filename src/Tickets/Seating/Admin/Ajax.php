@@ -258,10 +258,10 @@ class Ajax extends Controller_Contract {
 			'order'              => 'DESC',
 		];
 
-		$data      = Tickets::get_attendees_by_args( $args, $event_id );
-		$formatted = [];
+		$data                  = Tickets::get_attendees_by_args( $args, $event_id );
+		$formatted             = [];
 		$unknown_attendee_name = __( 'Unknown', 'event-tickets' );
-		$associated_attendees = array_reduce(
+		$associated_attendees  = array_reduce(
 			$data['attendees'],
 			function ( array $carry, array $attendee ): array {
 				$carry[ $attendee['purchaser_id'] ]++;
@@ -277,7 +277,7 @@ class Ajax extends Controller_Contract {
 				$user                       = get_user_by( 'id', $user_id );
 				$attendee['purchaser_name'] = $user ? $user->display_name : $unknown_attendee_name;
 			} else {
-				$attendee['purchaser_name'] = $attendee['purchaser_name'] ?? $unknown_attendee_name;
+				$attendee['purchaser_name'] ??= $unknown_attendee_name;
 			}
 
 			$name = trim( $attendee['holder_name'] ?? '' );
@@ -286,12 +286,12 @@ class Ajax extends Controller_Contract {
 			}
 			$purchaser_id = $attendee['purchaser_id'];
 
-			$formatted[]  = [
+			$formatted[] = [
 				'id'            => $id,
 				'name'          => $name,
 				'purchaser'     => [
-					'id'   => $purchaser_id,
-					'name' => $attendee['purchaser_name'],
+					'id'                  => $purchaser_id,
+					'name'                => $attendee['purchaser_name'],
 					'associatedAttendees' => $associated_attendees[ $purchaser_id ],
 				],
 				'ticketId'      => $attendee['product_id'],
