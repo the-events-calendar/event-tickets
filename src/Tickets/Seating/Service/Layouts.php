@@ -214,14 +214,26 @@ class Layouts {
 	 */
 	public static function get_associated_posts_by_id( string $layout_id ): int {
 		global $wpdb;
+		$ticketable_post_types = tribe_get_option( 'ticket-enabled-post-types', [] );
+
+		if ( empty( $ticketable_post_types ) ) {
+			return 0;
+		}
+
+		$post_types = DB::prepare(
+			implode( ', ', array_fill( 0, count( $ticketable_post_types ), '%s' ) ),
+			...$ticketable_post_types
+		);
+
 		try {
 			$count = DB::get_var(
 				DB::prepare(
-					'SELECT COUNT(*) FROM %i AS posts
+					"SELECT COUNT(*) FROM %i AS posts
 					LEFT JOIN %i AS layout_meta
 					ON posts.ID = layout_meta.post_id
-					WHERE layout_meta.meta_key = %s
-					AND layout_meta.meta_value = %s',
+					WHERE posts.post_type IN ({$post_types})
+					AND layout_meta.meta_key = %s
+					AND layout_meta.meta_value = %s",
 					$wpdb->posts,
 					$wpdb->postmeta,
 					Meta::META_KEY_LAYOUT_ID,
