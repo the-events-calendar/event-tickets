@@ -486,7 +486,11 @@ class Tribe__Tickets__Attendees {
 		} else {
 			$this->attendees_table = new Tribe__Tickets__Attendees_Table();
 
-			$this->maybe_generate_csv();
+			if ( isset($_GET['event_id']) && 'all' === $_GET['event_id'] ) {
+				$this->export_csv_for_all();
+			} else {
+				$this->maybe_generate_csv();
+			}
 
 			add_filter( 'admin_title', [ $this, 'filter_admin_title' ], 10, 2 );
 			add_filter( 'admin_body_class', [ $this, 'filter_admin_body_class' ] );
@@ -575,7 +579,7 @@ class Tribe__Tickets__Attendees {
 		$filter_name = "manage_{$this->page_id}_columns";
 		add_filter( $filter_name, [ $this->attendees_table, 'get_columns' ], 15 );
 
-		$items = Tribe__Tickets__Tickets::get_event_attendees( $event_id );
+		$items = 'all' === $event_id ? Tribe__Tickets__Tickets::get_attendees_by_args()['attendees'] : Tribe__Tickets__Tickets::get_event_attendees( $event_id );
 
 		// Add Handler for Community Tickets to Prevent Notices in Exports.
 		if ( ! is_admin() ) {
@@ -596,6 +600,7 @@ class Tribe__Tickets__Attendees {
 				'purchaser',
 				'status',
 				'attendee_actions',
+				'attendee_event'
 			]
 		);
 
@@ -808,6 +813,47 @@ class Tribe__Tickets__Attendees {
 			 *
 			 * @param string $delimiter The field delimiter used in the CSV export file.
 			 */
+			$delimiter = apply_filters( 'tribe_tickets_attendees_csv_export_delimiter', ',' );
+
+			// Output the lines into the file.
+			foreach ( $items as $item ) {
+				fputcsv( $output, $item, $delimiter );
+			}
+
+			fclose( $output );
+			exit;
+		}
+	}
+
+	/**
+	 * Admin requested a CSV export from the attendees table.
+	 * Generates the download and finishes the execution.
+	 *
+	 * @since TBD
+	 *
+	 */
+	public function export_csv_for_all() {
+		if ( empty( $_GET['attendees_csv'] ) || empty( $_GET['attendees_csv_nonce'] ) || ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
+		// Generate filtered list of attendees.
+		$items = $this->generate_filtered_list( 'all' );
+
+		// Sanitize items for CSV usage.
+		$items = $this->sanitize_csv_rows( $items );
+
+		if ( ! empty( $items ) ) {
+			$charset  = get_option( 'blog_charset' );
+			$filename = sanitize_file_name( __( 'All event attendees', 'event-tickets' ) );
+
+			// Output headers so that the file is downloaded rather than displayed.
+			header( "Content-Type: text/csv; charset=$charset" );
+			header( "Content-Disposition: attachment; filename=$filename.csv" );
+
+			// Create the file pointer connected to the output stream.
+			$output = fopen( 'php://output', 'w' );
+
 			$delimiter = apply_filters( 'tribe_tickets_attendees_csv_export_delimiter', ',' );
 
 			// Output the lines into the file.
@@ -1114,6 +1160,7 @@ class Tribe__Tickets__Attendees {
 			[
 				'attendees_csv'       => true,
 				'attendees_csv_nonce' => wp_create_nonce( 'attendees_csv_nonce' ),
+				'event_id'            => tribe_get_request_var( 'event_id' ) ?? 'all',
 			]
 		);
 	}
