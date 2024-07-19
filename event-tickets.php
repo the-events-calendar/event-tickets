@@ -12,8 +12,8 @@
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: event-tickets
  * Domain Path: /lang/
- * Elementor tested up to: 3.21.4
- * Elementor Pro tested up to: 3.21.2
+ * Elementor tested up to: 3.23.1
+ * Elementor Pro tested up to: 3.23.0
  */
 
 /*
