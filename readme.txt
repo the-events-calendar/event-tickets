@@ -205,6 +205,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Fix - Added missing global property for javascript undefined error `Uncaught TypeError: format is undefined`. This happened during ticket checkout.
+
 = [5.11.0.5] 2024-07-11 =
 
 * Security - Prevent an unauthorized disconnection of Payment Method for Tickets Commerce [SVUL-4]
