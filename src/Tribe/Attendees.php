@@ -487,7 +487,7 @@ class Tribe__Tickets__Attendees {
 		} else {
 			$this->attendees_table = new Tribe__Tickets__Attendees_Table();
 
-			if ( 'all' === ( $_GET['event_id'] ?? '' ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			if ( 'all' === ( $_GET['event_id'] ?? '' ) ) { // phpcs:ignore WordPress.Security
 				$this->export_csv_for_all();
 			} else {
 				$this->maybe_generate_csv();
