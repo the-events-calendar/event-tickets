@@ -826,8 +826,14 @@ tribe.tickets.block = {
 		const $ticketsBlock = $document.find( obj.selectors.container );
 		// Bind events for each tickets block.
 		$ticketsBlock.each( function( index, block ) {
-			obj.bindEvents( $( block ) );
+			const $container = $( block );
+			obj.bindEvents( $container );
+
+			// Initialize provider we use for prices.
+			const $form = $container.find( obj.selectors.form );
+			obj.tribe_tickets_provider = $form.data( 'provider' );
 		} );
+
 	};
 
 	window.addEventListener( 'pageshow', function( event ) {
