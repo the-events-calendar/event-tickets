@@ -11,8 +11,13 @@ namespace TEC\Tickets\Seating\Orders;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\lucatume\DI52\Container;
+use TEC\Common\StellarWP\Assets\Asset;
 use TEC\Tickets\Admin\Attendees\Page as Attendee_Page;
+use TEC\Tickets\Seating\Ajax_Checks;
+use TEC\Tickets\Seating\Built_Assets;
+use TEC\Tickets\Seating\Frontend;
 use TEC\Tickets\Seating\Frontend\Session;
+use TEC\Tickets\Seating\Meta;
 use TEC\Tickets\Seating\Service\Reservations;
 use TEC\Tickets\Seating\Tables\Sessions;
 use Tribe__Tabbed_View as Tabbed_View;
@@ -20,6 +25,8 @@ use Tribe__Tickets__Attendee_Repository as Attendee_Repository;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
 use WP_Post;
 use WP_Query;
+use Tribe__Tickets__Main as Tickets_Main;
+use Tribe__Tickets__Tickets as Tickets;
 
 /**
  * Class Controller
@@ -29,6 +36,18 @@ use WP_Query;
  * @package TEC/Tickets/Seating/Orders
  */
 class Controller extends Controller_Contract {
+	use Built_Assets;
+	use Ajax_Checks;
+
+	/**
+	 * The action to fetch attendees.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const ACTION_FETCH_ATTENDEES = 'tec_tickets_seating_fetch_attendees';
+
 	/**
 	 * A reference to Attendee data handler
 	 *
@@ -129,6 +148,40 @@ class Controller extends Controller_Contract {
 			add_filter( 'tec_tickets_commerce_reports_tabbed_page_title', [ $this, 'filter_seat_tab_title' ], 10, 3 );
 		}
 		add_action( 'tec_tickets_commerce_flag_action_generated_attendees', [ $this, 'confirm_all_reservations' ] );
+		add_action( 'wp_ajax_' . self::ACTION_FETCH_ATTENDEES, [ $this, 'fetch_attendees_by_post' ] );
+
+		$this->register_assets();
+	}
+
+	/**
+	 * Unregisters all the hooks and implementations.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function unregister(): void {
+		remove_filter( 'tec_tickets_commerce_cart_prepare_data', [ $this, 'handle_seat_selection' ] );
+		remove_action(
+			'tec_tickets_commerce_flag_action_generated_attendee',
+			[ $this, 'save_seat_data_for_attendee' ]
+		);
+
+		// Remove attendee seat data column from the attendee list.
+		remove_filter( 'tribe_tickets_attendee_table_columns', [ $this, 'add_attendee_seat_column' ] );
+		remove_filter( 'tribe_events_tickets_attendees_table_column', [ $this, 'render_seat_column' ] );
+		remove_filter( 'tec_tickets_attendees_table_sortable_columns', [ $this, 'include_seat_column_as_sortable' ] );
+		remove_filter( 'tribe_repository_attendees_query_args', [ $this, 'handle_sorting_seat_column' ] );
+		remove_filter( 'event_tickets_attendees_table_row_actions', [ $this, 'remove_move_row_action' ] );
+
+		remove_filter( 'tec_tickets_commerce_reports_tabbed_view_tab_map', [ $this, 'include_seats_tab' ] );
+		remove_action( 'tec_tickets_commerce_reports_tabbed_view_after_register_tab', [ $this, 'register_seat_tab' ] );
+		remove_action( 'tribe_tickets_orders_tabbed_view_register_tab_right', [ $this, 'register_seat_tab' ] );
+		remove_action( 'init', [ $this, 'register_seat_reports' ] );
+		remove_filter( 'tec_tickets_commerce_reports_tabbed_page_title', [ $this, 'filter_seat_tab_title' ] );
+
+		remove_action( 'tec_tickets_commerce_flag_action_generated_attendees', [ $this, 'confirm_all_reservations' ] );
+		remove_action( 'wp_ajax_' . self::ACTION_FETCH_ATTENDEES, [ $this, 'fetch_attendees_by_post' ] );
 	}
 
 	/**
@@ -198,36 +251,6 @@ class Controller extends Controller_Contract {
 		$report_tab = new Seats_Tab( $tabbed_view );
 		$report_tab->set_url( Seats_Report::get_link( $post ) );
 		$tabbed_view->register( $report_tab );
-	}
-
-	/**
-	 * Unregisters all the hooks and implementations.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	public function unregister(): void {
-		remove_filter( 'tec_tickets_commerce_cart_prepare_data', [ $this, 'handle_seat_selection' ] );
-		remove_action(
-			'tec_tickets_commerce_flag_action_generated_attendee',
-			[ $this, 'save_seat_data_for_attendee' ]
-		);
-
-		// Remove attendee seat data column from the attendee list.
-		remove_filter( 'tribe_tickets_attendee_table_columns', [ $this, 'add_attendee_seat_column' ] );
-		remove_filter( 'tribe_events_tickets_attendees_table_column', [ $this, 'render_seat_column' ] );
-		remove_filter( 'tec_tickets_attendees_table_sortable_columns', [ $this, 'include_seat_column_as_sortable' ] );
-		remove_filter( 'tribe_repository_attendees_query_args', [ $this, 'handle_sorting_seat_column' ] );
-		remove_filter( 'event_tickets_attendees_table_row_actions', [ $this, 'remove_move_row_action' ] );
-
-		remove_filter( 'tec_tickets_commerce_reports_tabbed_view_tab_map', [ $this, 'include_seats_tab' ] );
-		remove_action( 'tec_tickets_commerce_reports_tabbed_view_after_register_tab', [ $this, 'register_seat_tab' ] );
-		remove_action( 'tribe_tickets_orders_tabbed_view_register_tab_right', [ $this, 'register_seat_tab' ] );
-		remove_action( 'init', [ $this, 'register_seat_reports' ] );
-		remove_filter( 'tec_tickets_commerce_reports_tabbed_page_title', [ $this, 'filter_seat_tab_title' ] );
-
-		remove_action( 'tec_tickets_commerce_flag_action_generated_attendees', [ $this, 'confirm_all_reservations' ] );
 	}
 
 	/**
@@ -335,5 +358,144 @@ class Controller extends Controller_Contract {
 	 */
 	public function confirm_all_reservations(): void {
 		$this->session->confirm_all_reservations();
+	}
+
+	/**
+	 * Get the localized data for the report.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|null $post_id The post ID.
+	 *
+	 * @return array<string, string> The localized data.
+	 */
+	public function get_localized_data( ?int $post_id = null ): array {
+		$post_id = $post_id ?: tribe_get_request_var( 'post_id' );
+
+		if ( ! $post_id ) {
+			return [];
+		}
+
+		return [
+			'postId'      => $post_id,
+			'seatTypeMap' => tribe( Frontend::class )->build_seat_type_map( $post_id ),
+			'fetchAttendeesAjaxUrl' => add_query_arg(
+				[
+					'_ajax_nonce' => wp_create_nonce( self::ACTION_FETCH_ATTENDEES ),
+					'action'      => self::ACTION_FETCH_ATTENDEES,
+					'postId'      => $post_id,
+				]
+			)
+		];
+	}
+
+	/**
+	 * Registers the assets used by the Seats Report tab under individual event views.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	private function register_assets(): void {
+		Asset::add(
+			'tec-tickets-seating-admin-seats-report',
+			$this->built_asset_url( 'admin/seatsReport.js' ),
+			Tickets_Main::VERSION
+		)
+		     ->add_dependency( 'tec-tickets-seating-service-bundle' )
+		     ->enqueue_on( Seats_Report::$asset_action )
+		     ->add_localize_script(
+			     'tec.tickets.seating.admin.seatsReport.data',
+			     fn() => $this->get_localized_data( get_the_ID() )
+		     )
+		     ->add_to_group( 'tec-tickets-seating-admin' )
+		     ->add_to_group( 'tec-tickets-seating' )
+		     ->register();
+
+		Asset::add(
+			'tec-tickets-seating-admin-seats-report-style',
+			$this->built_asset_url( 'admin/seatsReport.css' ),
+			Tickets_Main::VERSION
+		)
+		     ->add_to_group( 'tec-tickets-seating-admin' )
+		     ->add_to_group( 'tec-tickets-seating' )
+		     ->enqueue_on( Seats_Report::$asset_action )
+		     ->add_to_group( 'tec-tickets-seating-admin' )
+		     ->register();
+	}
+
+	/**
+	 * Fetch attendees by post.
+	 *
+	 * @since TBD
+	 *
+	 * @return void The function does not return a value but will send the JSON response.
+	 */
+	public function fetch_attendees_by_post(): void {
+		$post_id = (int) tribe_get_request_var( 'postId' );
+
+		if ( $this->check_current_ajax_user_can( 'edit_post', $post_id ) ) {
+			return;
+		}
+
+		$current_page = (int) tribe_get_request_var( 'page', 1 );
+
+		$args = [
+			'page'               => $current_page,
+			'per_page'           => 50,
+			'return_total_found' => true,
+			'order'              => 'DESC',
+		];
+
+		$data                  = Tickets::get_attendees_by_args( $args, $post_id );
+		$formatted             = [];
+		$unknown_attendee_name = __( 'Unknown', 'event-tickets' );
+		$associated_attendees  = array_reduce(
+			$data['attendees'],
+			function ( array $carry, array $attendee ): array {
+				$carry[ $attendee['purchaser_id'] ] ++;
+
+				return $carry;
+			},
+			[]
+		);
+
+		foreach ( $data['attendees'] as $attendee ) {
+			$id      = (int) $attendee['attendee_id'];
+			$user_id = (int) ( $attendee['user_id'] ?? 0 );
+			if ( $user_id > 0 ) {
+				$user                       = get_user_by( 'id', $user_id );
+				$attendee['purchaser_name'] = $user ? $user->display_name : $unknown_attendee_name;
+			} else {
+				$attendee['purchaser_name'] ??= $unknown_attendee_name;
+			}
+
+			$name = trim( $attendee['holder_name'] ?? '' );
+			if ( ! $name ) {
+				$name = $attendee['purchaser_name'];
+			}
+			$purchaser_id = $attendee['purchaser_id'];
+
+			$formatted[] = [
+				'id'            => $id,
+				'name'          => $name,
+				'purchaser'     => [
+					'id'                  => $purchaser_id,
+					'name'                => $attendee['purchaser_name'],
+					'associatedAttendees' => $associated_attendees[ $purchaser_id ],
+				],
+				'ticketId'      => $attendee['product_id'],
+				'seatTypeId'    => get_post_meta( $id, Meta::META_KEY_SEAT_TYPE, true ),
+				'seatLabel'     => get_post_meta( $id, Meta::META_KEY_ATTENDEE_SEAT_LABEL, true ),
+				'reservationId' => get_post_meta( $id, Meta::META_KEY_RESERVATION_ID, true ),
+			];
+		}
+
+		wp_send_json_success(
+			[
+				'attendees' => $formatted,
+				'total'     => $data['total_found'],
+			]
+		);
 	}
 }

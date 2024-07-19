@@ -7,9 +7,26 @@ import { onReady } from '@tec/tickets/seating/utils';
 import {
 	registerAction,
 	RESERVATIONS_DELETED,
+	ACTION_DELETE_RESERVATIONS
 } from '@tec/tickets/seating/service/api';
 
-function handleReservationsDeleted() {
+/**
+ * Handles the deletion of reservations.
+ *
+ * @since TBD
+ *
+ * @param {string[]} ids The IDs of the reservations that were deleted.
+ */
+export async function handleReservationsDeleted(ids) {
+	if (!(Array.isArray(ids) && ids.length > 0)) {
+		return;
+	}
+
+	const url = new URL(ajaxUrl);
+	url.searchParams.set('_ajax_nonce', ajaxNonce);
+	url.searchParams.set('action', ACTION_DELETE_RESERVATIONS);
+	url.searchParams.set('ids', ids.join(','));
+	await fetch(url.toString(), {method: 'POST'});
 	console.log(arguments);
 	console.log('Reservations deleted');
 }

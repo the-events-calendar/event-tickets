@@ -19,7 +19,6 @@ use TEC\Tickets\Seating\Admin\Tabs\Layout_Edit;
 use TEC\Tickets\Seating\Admin\Tabs\Layouts;
 use TEC\Tickets\Seating\Admin\Tabs\Map_Edit;
 use TEC\Tickets\Seating\Admin\Tabs\Maps;
-use TEC\Tickets\Seating\Orders\Seats_Report;
 use TEC\Tickets\Seating\Service\Service;
 use Tribe__Tickets__Main as Tickets;
 
@@ -134,21 +133,6 @@ class Admin extends Controller_Contract {
 	}
 
 	/**
-	 * Returns the Ajax data for the Seating feature.
-	 *
-	 * @since TBD
-	 *
-	 * @return array{
-	 *     urls: array<string, string>
-	 * } The Ajax data for the Seating feature.
-	 */
-	public function get_ajax_data(): array {
-		return [
-			'urls' => $this->container->get( Ajax::class )->get_urls(),
-		];
-	}
-
-	/**
 	 * Register the admin area bindings and hooks on the required hooks.
 	 *
 	 * @since TBD
@@ -169,8 +153,6 @@ class Admin extends Controller_Contract {
 		$this->reqister_layouts_assets();
 		$this->register_map_edit_assets();
 		$this->reqister_layout_edit_assets();
-		$this->register_ajax_assets();
-		$this->register_seats_report_assets();
 
 		add_action( 'admin_menu', [ $this, 'add_submenu_page' ], 1000 );
 
@@ -301,57 +283,6 @@ class Admin extends Controller_Contract {
 			->add_to_group( 'tec-tickets-seating-admin' )
 			->add_to_group( 'tec-tickets-seating' )
 			->enqueue_on( $action )
-			->add_to_group( 'tec-tickets-seating-admin' )
-			->register();
-	}
-
-	/**
-	 * Registers the assets used by the AJAX component.
-	 *
-	 * @since TBD
-	 */
-	private function register_ajax_assets(): void {
-		Asset::add(
-			'tec-tickets-seating-ajax',
-			$this->built_asset_url( 'ajax.js' ),
-			Tickets::VERSION
-		)
-			->add_localize_script( 'tec.tickets.seating.ajax', [ $this, 'get_ajax_data' ] )
-			->add_to_group( 'tec-tickets-seating' )
-			->register();
-	}
-
-	/**
-	 * Registers the assets used by the Seats Report tab under individual event views.
-	 *
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	private function register_seats_report_assets(): void {
-		Asset::add(
-			'tec-tickets-seating-admin-seats-report',
-			$this->built_asset_url( 'admin/seatsReport.js' ),
-			Tickets::VERSION
-		)
-			->add_dependency( 'tec-tickets-seating-service-bundle' )
-			->enqueue_on( Seats_Report::$asset_action )
-			->add_localize_script(
-				'tec.tickets.seating.admin.seatsReport.data',
-				fn() => Seats_Report::get_localized_data( get_the_ID() )
-			)
-			->add_to_group( 'tec-tickets-seating-admin' )
-			->add_to_group( 'tec-tickets-seating' )
-			->register();
-
-		Asset::add(
-			'tec-tickets-seating-admin-seats-report-style',
-			$this->built_asset_url( 'admin/seatsReport.css' ),
-			Tickets::VERSION
-		)
-			->add_to_group( 'tec-tickets-seating-admin' )
-			->add_to_group( 'tec-tickets-seating' )
-			->enqueue_on( Seats_Report::$asset_action )
 			->add_to_group( 'tec-tickets-seating-admin' )
 			->register();
 	}

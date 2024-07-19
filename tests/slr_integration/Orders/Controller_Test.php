@@ -333,4 +333,6 @@ class Controller_Test extends Controller_Test_Case {
 		$this->assertEquals( 1, $service_confirmations );
 		$this->assertEquals( [], $sessions->get_reservations_for_token( 'test-token' ) );
 	}
+
+
 }

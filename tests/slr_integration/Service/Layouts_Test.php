@@ -3,6 +3,7 @@
 namespace TEC\Tickets\Seating\Service;
 
 use TEC\Tickets\Seating\Meta;
+use TEC\Tickets\Seating\Service\Layouts;
 use TEC\Tickets\Seating\Tables\Layouts as Layouts_Table;
 use TEC\Tickets\Seating\Tables\Maps as Maps_Table;
 use TEC\Tickets\Seating\Tables\Seat_Types as Seat_Types_Table;

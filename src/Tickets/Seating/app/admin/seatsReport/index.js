@@ -13,16 +13,12 @@ import {
 	sendPostMessage,
 } from '@tec/tickets/seating/service/api';
 import { ajaxUrl, ajaxNonce } from '@tec/tickets/seating/service';
-import { localizedData } from './localized-data';
+import { localizedData, fetchAttendeesAjaxUrl } from './localized-data';
 
 const { seatTypeMap, postId } = localizedData;
 
 async function fetchAttendees() {
-	const url = new URL(ajaxUrl);
-	url.searchParams.set('_ajax_nonce', ajaxNonce);
-	url.searchParams.set('postId', postId);
-	url.searchParams.set('action', 'tec_tickets_seating_fetch_attendees');
-	const response = await fetch(url.toString(), {
+	const response = await fetch(fetchAttendeesAjaxUrl, {
 		method: 'POST',
 		headers: {
 			Accept: 'application/json',

@@ -4,6 +4,7 @@ namespace TEC\Tickets\Seating\Frontend;
 
 use PHPUnit\Framework\Assert;
 use TEC\Common\StellarWP\DB\DB;
+use TEC\Tickets\Seating\Frontend\Session;
 use TEC\Tickets\Seating\Meta;
 use TEC\Tickets\Seating\Service\OAuth_Token;
 use TEC\Tickets\Seating\Service\Reservations;

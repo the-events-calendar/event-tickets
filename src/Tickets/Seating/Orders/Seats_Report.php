@@ -14,7 +14,7 @@ use WP_Post;
 
 /**
  * Class Seats_Tab.
- * 
+ *
  * @since TBD
  *
  * @package TEC/Tickets/Seating/Orders
@@ -28,12 +28,12 @@ class Seats_Report extends Report_Abstract {
 	 * @var string
 	 */
 	public static $page_slug = 'tec-tickets-seats';
-	
+
 	/**
 	 * @var string
 	 */
 	public static $tab_slug = 'tec-tickets-seats-report';
-	
+
 	/**
 	 * The action to register the assets for the report.
 	 *
@@ -42,7 +42,7 @@ class Seats_Report extends Report_Abstract {
 	 * @var string
 	 */
 	public static $asset_action = 'tec-tickets-seats-report-assets';
-	
+
 	/**
 	 * Order Pages ID on the menu.
 	 *
@@ -51,7 +51,7 @@ class Seats_Report extends Report_Abstract {
 	 * @var string The menu slug of the orders page
 	 */
 	public $seats_page;
-	
+
 	/**
 	 * Hooks the actions and filter required by the class.
 	 *
@@ -60,13 +60,13 @@ class Seats_Report extends Report_Abstract {
 	public function hook() {
 		// Register before the default priority of 10 to avoid submenu hook issues.
 		add_action( 'admin_menu', [ $this, 'register_seats_page' ], 5 );
-		
+
 		// Register the tabbed view.
 		$tc_tabbed_view = new Tabbed_View();
 		$tc_tabbed_view->set_active( self::$tab_slug );
 		$tc_tabbed_view->register();
 	}
-	
+
 	/**
 	 * Registers the Seats page among those the tabbed view should render.
 	 *
@@ -84,10 +84,10 @@ class Seats_Report extends Report_Abstract {
 			static::$page_slug,
 			[ $this, 'render_page' ]
 		);
-		
+
 		add_action( 'load-' . $this->seats_page, [ $this, 'screen_setup' ] );
 	}
-	
+
 	/**
 	 * Screen setup.
 	 *
@@ -98,7 +98,7 @@ class Seats_Report extends Report_Abstract {
 	public function screen_setup(): void {
 		do_action( self::$asset_action );
 	}
-	
+
 	/**
 	 * Renders the order page
 	 *
@@ -108,10 +108,10 @@ class Seats_Report extends Report_Abstract {
 		$tc_tabbed_view = new Tabbed_View();
 		$tc_tabbed_view->set_active( self::$tab_slug );
 		$tc_tabbed_view->render();
-		
+
 		$this->get_template()->template( 'seats', $this->get_template_vars() );
 	}
-	
+
 	/**
 	 * Sets up the template variables used to render the Seats Report Page.
 	 *
@@ -123,7 +123,7 @@ class Seats_Report extends Report_Abstract {
 		$post_id = tribe_get_request_var( 'post_id' );
 		$post_id = tribe_get_request_var( 'event_id', $post_id );
 		$post    = get_post( $post_id );
-		
+
 		$ephemeral_token     = tribe( Service::class )->get_ephemeral_token();
 		$token               = is_string( $ephemeral_token ) ? $ephemeral_token : '';
 		$this->template_vars = [
@@ -133,10 +133,10 @@ class Seats_Report extends Report_Abstract {
 			'token'      => $token,
 			'error'      => $ephemeral_token instanceof WP_Error ? $ephemeral_token->get_error_message() : '',
 		];
-		
+
 		return $this->template_vars;
 	}
-	
+
 	/**
 	 * Get the report link.
 	 *
@@ -153,27 +153,5 @@ class Seats_Report extends Report_Abstract {
 			],
 			admin_url( 'edit.php' )
 		);
-	}
-	
-	/**
-	 * Get the localized data for the report.
-	 *
-	 * @since TBD
-	 *
-	 * @param int|null $post_id The post ID.
-	 *
-	 * @return array<string, string> The localized data.
-	 */
-	public static function get_localized_data( ?int $post_id = null ): array {
-		$post_id = $post_id ?: tribe_get_request_var( 'post_id' );
-		
-		if ( ! $post_id ) {
-			return [];
-		}
-		
-		return [
-			'postId'      => $post_id,
-			'seatTypeMap' => tribe( Frontend::class )->build_seat_type_map( $post_id ),
-		];
 	}
 }

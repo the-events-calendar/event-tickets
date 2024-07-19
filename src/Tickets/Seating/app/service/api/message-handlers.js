@@ -1,4 +1,4 @@
-import { ajaxNonce, ajaxUrl, layoutsHomeUrl, mapsHomeUrl } from './externals';
+import { ajaxNonce, ajaxUrl, layoutsHomeUrl, mapsHomeUrl } from './localized-data';
 
 
 /**
