@@ -1,9 +1,16 @@
 import './style.pcss';
-import {getIframeElement, initServiceIframe} from '@tec/tickets/seating/service/iframe';
-import {onReady} from '@tec/tickets/seating/utils';
-import {registerAction, RESERVATIONS_DELETED} from '@tec/tickets/seating/service/api';
+import {
+	getIframeElement,
+	initServiceIframe,
+} from '@tec/tickets/seating/service/iframe';
+import { onReady } from '@tec/tickets/seating/utils';
+import {
+	registerAction,
+	RESERVATIONS_DELETED,
+} from '@tec/tickets/seating/service/api';
 
 function handleReservationsDeleted() {
+	console.log(arguments);
 	console.log('Reservations deleted');
 }
 
