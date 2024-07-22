@@ -49,7 +49,7 @@ export function sendPostMessage(iframe, action, data) {
 		{
 			action,
 			token,
-			data: data || {},
+			data: data || null,
 		},
 		getBaseUrl()
 	);
