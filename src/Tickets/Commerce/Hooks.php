@@ -83,7 +83,7 @@ class Hooks extends Service_Provider {
 
 		add_action( 'tec_tickets_commerce_order_status_transition', [ $this, 'modify_tickets_counters_by_status', ], 15, 3 );
 
-		add_action( 'admin_bar_menu', [ $this, 'include_admin_bar_test_mode' ], 1000, 1 );
+		add_action( 'admin_bar_menu', [ $this, 'include_admin_bar_test_mode' ], 5, 1 );
 
 		add_action( 'tribe_template_before_include:tickets/v2/commerce/checkout', [ $this, 'include_assets_checkout_shortcode' ] );
 
