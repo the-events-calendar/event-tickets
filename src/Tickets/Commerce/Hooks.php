@@ -19,11 +19,18 @@ namespace TEC\Tickets\Commerce;
 
 use \TEC\Common\Contracts\Service_Provider;
 use TEC\Tickets\Commerce as Base_Commerce;
+use TEC\Tickets\Commerce\Admin\Orders_Page;
+use TEC\Tickets\Commerce\Admin_Tables\Orders_Table;
 use TEC\Tickets\Commerce\Reports\Orders;
 use TEC\Tickets\Commerce\Status\Completed;
 use TEC\Tickets\Commerce\Status\Status_Interface;
 use TEC\Tickets\Commerce\Payments_Tab;
+use TEC\Tickets\Commerce\Status\Status_Handler;
 use WP_Admin_Bar;
+use Tribe__Date_Utils;
+use WP_Query;
+use WP_Post;
+use WP_User_Query;
 
 /**
  * Class Hooks.
@@ -90,6 +97,10 @@ class Hooks extends Service_Provider {
 		add_action( 'tribe_tickets_ticket_moved', [ $this, 'handle_moved_ticket_updates' ], 10, 6 );
 
 		add_action( 'tribe_tickets_price_input_description', [ $this, 'render_sale_price_fields' ], 10, 3 );
+
+		add_action( 'pre_get_posts', [ $this, 'pre_filter_admin_order_table' ] );
+
+		add_action( 'admin_menu', tribe_callback( Orders_Page::class, 'add_orders_page' ), 15 );
 	}
 
 	/**
@@ -134,6 +145,311 @@ class Hooks extends Service_Provider {
 		add_filter( 'tec_tickets_editor_configuration_localized_data', [ $this, 'filter_block_editor_localized_data' ] );
 
 		add_action( 'tribe_editor_config', [ $this, 'filter_tickets_editor_config' ] );
+
+		add_filter( 'wp_list_table_class_name', [ $this, 'filter_wp_list_table_class_name' ], 10, 2 );
+
+		add_filter( 'tribe_dropdown_tec_tc_order_table_events', [ $this, 'provide_events_results_to_ajax' ], 10, 2 );
+
+		add_filter( 'tribe_dropdown_tec_tc_order_table_customers', [ $this, 'provide_customers_results_to_ajax' ], 10, 2 );
+	}
+
+	/**
+	 * Provides the results for the events dropdown in the Orders table.
+	 *
+	 * @since 5.13.0
+	 *
+	 * @param array<string,mixed>  $results The results.
+	 * @param array<string,string> $search The search.
+	 *
+	 * @return array<string,mixed>
+	 */
+	public function provide_events_results_to_ajax( $results, $search ) {
+		if ( empty( $search['term'] ) ) {
+			return $results;
+		}
+
+		$term = $search['term'];
+
+		$args = [
+			'no_found_rows'          => true,
+			'update_post_meta_cache' => false,
+			'update_post_term_cache' => false,
+			'post_type'              => (array) tribe_get_option( 'ticket-enabled-post-types', [] ),
+			'post_status'            => 'any',
+			'posts_per_page'         => 10,
+			's'                      => $term,
+		];
+
+		$query = new WP_Query( $args );
+
+		if ( empty( $query->posts ) ) {
+			return $results;
+		}
+
+		$results = array_map(
+			function ( WP_Post $result ) {
+				return [
+					'id'   => $result->ID,
+					'text' => get_the_title( $result->ID ),
+				];
+			},
+			$query->posts
+		);
+
+		return [ 'results' => $results ];
+	}
+
+	/**
+	 * Provides the results for the customers dropdown in the Orders table.
+	 *
+	 * @since 5.13.0
+	 *
+	 * @param array $results The results.
+	 * @param array $search The search.
+	 *
+	 * @return array
+	 */
+	public function provide_customers_results_to_ajax( $results, $search ) {
+		if ( empty( $search['term'] ) ) {
+			return $results;
+		}
+
+		$term = '*' . $search['term'] . '*';
+
+		$args = [
+			'count_total'    => false,
+			'number'         => 10,
+			'search'         => $term,
+			'search_columns' => [ 'ID', 'user_login', 'user_email', 'user_nicename', 'display_name' ],
+			'fields'         => [ 'ID', 'user_email', 'display_name' ],
+		];
+
+		$query = new WP_User_Query( $args );
+
+		$user_results = $query->get_results();
+
+		if ( empty( $user_results ) ) {
+			return $results;
+		}
+
+		$results = array_map(
+			function ( $user ) {
+				return [
+					'id'   => $user->ID,
+					'text' => $user->display_name . ' (' . $user->user_email . ')',
+				];
+			},
+			$user_results
+		);
+
+		return [ 'results' => $results ];
+	}
+
+	/**
+	 * Filters the admin order table to apply filters.
+	 *
+	 * @since 5.13.0
+	 *
+	 * @param WP_Query $query The WP_Query instance.
+	 * @return void
+	 */
+	public function pre_filter_admin_order_table( $query ) {
+		if ( ! $query->is_main_query() || ! $query->is_admin || Order::POSTTYPE !== $query->get( 'post_type' ) ) {
+			return;
+		}
+
+		$screen = get_current_screen();
+
+		if ( empty( $screen->id ) || 'edit-' . Order::POSTTYPE !== $screen->id ) {
+			return;
+		}
+
+		$current_status = $query->get( 'post_status' );
+
+		if ( ! $current_status ) {
+			$query->set( 'post_status', 'any' );
+		} elseif ( is_array( $current_status ) ) {
+			$statuses = [];
+			foreach ( $current_status as $st ) {
+				if ( 'any' === $st ) {
+					$statuses = [ 'any' ];
+					// No need to continue.
+					break;
+				}
+
+				$statuses = array_merge( $statuses, tribe( Status_Handler::class )->get_group_of_statuses_by_slug( '', $st ) );
+			}
+
+			$query->set( 'post_status', array_unique( $statuses ) );
+		} else {
+			$query->set( 'post_status', tribe( Status_Handler::class )->get_group_of_statuses_by_slug( '', $current_status ) );
+		}
+
+		$date_from = sanitize_text_field( tribe_get_request_var( 'tec_tc_date_range_from', '' ) );
+		$date_to   = sanitize_text_field( tribe_get_request_var( 'tec_tc_date_range_to', '' ) );
+
+		$date_from = Tribe__Date_Utils::is_valid_date( $date_from ) ? $date_from : '';
+		$date_to   = Tribe__Date_Utils::is_valid_date( $date_to ) ? $date_to : '';
+
+		$date_range_valid = $this->is_valid_date_range( $date_from, $date_to );
+
+		if ( ! $date_range_valid ) {
+			// If invalid, adjust the to date to be the same as the from date.
+			$date_to = $date_from;
+		}
+
+		$date_query = $query->get( 'date_query' );
+
+		if ( empty( $date_query ) || ! is_array( $date_query ) ) {
+			$date_query = [];
+		}
+
+		if ( ! empty( $date_from ) ) {
+			$date_query[] = [
+				// We need to pass H:i:s to avoid bug in wp core.
+				'after'     => Tribe__Date_Utils::reformat( $date_from, 'Y-m-d 00:00:00' ),
+				'inclusive' => true,
+			];
+		}
+
+		if ( ! empty( $date_to ) ) {
+			$date_query[] = [
+				// We need to pass H:i:s to avoid bug in wp core.
+				'before'    => Tribe__Date_Utils::reformat( $date_to, 'Y-m-d 23:59:59' ),
+				'inclusive' => true,
+			];
+		}
+
+		if ( count( $date_query ) > 1 && empty( $date_query['relation'] ) ) {
+			$date_query['relation'] = 'AND';
+		}
+
+		$query->set( 'date_query', $date_query );
+
+		$meta_query = $query->get( 'meta_query' );
+
+		if ( empty( $meta_query ) || ! is_array( $meta_query ) ) {
+			$meta_query = [];
+		}
+
+		$gateway = sanitize_text_field( tribe_get_request_var( 'tec_tc_gateway', '' ) );
+
+		if ( $gateway ) {
+			$meta_query[] = [
+				'key'     => Order::$gateway_meta_key,
+				'value'   => $gateway,
+				'compare' => '=',
+			];
+		}
+
+		$event_filter = absint( tribe_get_request_var( 'tec_tc_events', 0 ) );
+
+		if ( $event_filter ) {
+			$meta_query[] = [
+				'key'     => Order::$events_in_order_meta_key,
+				'value'   => $event_filter,
+				'compare' => 'IN',
+			];
+		}
+
+		$customer_filter = absint( tribe_get_request_var( 'tec_tc_customers', 0 ) );
+
+		if ( $customer_filter ) {
+			$meta_query[] = [
+				'key'     => Order::$purchaser_user_id_meta_key,
+				'value'   => $customer_filter,
+				'compare' => '=',
+			];
+		}
+
+		$search = sanitize_text_field( tribe_get_request_var( 'search', '' ) );
+
+		if ( ! empty( $search ) ) {
+			$test_search = false;
+
+			if ( is_numeric( $search ) ) {
+				// If the search term is numeric, we could assume they are searching by order id.
+				$test_search = get_post( absint( $search ) );
+				$test_search = $test_search instanceof WP_Post ? $test_search : null;
+				$test_search = $test_search ?
+					Order::POSTTYPE === $test_search->post_type && 'trash' !== $test_search->post_status :
+					false;
+
+				if ( $test_search ) {
+					$query->set( 'post__in', [ absint( $search ) ] );
+				}
+			}
+
+			if ( ! $test_search ) {
+				// In every other case create an OR meta query.
+				$meta_query[] = [
+					[
+						'key'     => Order::$purchaser_email_meta_key,
+						'value'   => $search,
+						'compare' => 'LIKE',
+					],
+					[
+						'key'     => Order::$purchaser_full_name_meta_key,
+						'value'   => $search,
+						'compare' => 'LIKE',
+					],
+					[
+						'key'     => Order::$gateway_order_id_meta_key,
+						'value'   => $search,
+						'compare' => '=',
+					],
+					'relation' => 'OR',
+				];
+			}
+		}
+
+		if ( count( $meta_query ) > 1 && empty( $meta_query['relation'] ) ) {
+			$meta_query['relation'] = 'AND';
+		}
+
+		$query->set( 'meta_query', $meta_query );
+
+		return $query;
+	}
+
+	/**
+	 * Validates a date range.
+	 *
+	 * @since 5.13.0
+	 *
+	 * @param string $date_from The start date.
+	 * @param string $date_to The end date.
+	 *
+	 * @return bool
+	 */
+	protected function is_valid_date_range( string $date_from = '', string $date_to = '' ): bool {
+		if ( empty( $date_from ) || empty( $date_to ) ) {
+			return true;
+		}
+
+		$date_from_ts = strtotime( $date_from );
+		$date_to_ts   = strtotime( $date_to );
+
+		return $date_to_ts >= $date_from_ts;
+	}
+
+	/**
+	 * Filters the WP List Table class name to use the new Orders table.
+	 *
+	 * @since 5.13.0
+	 *
+	 * @param string $class_name The class name.
+	 * @param array  $args The arguments.
+	 * @return string
+	 */
+	public function filter_wp_list_table_class_name( $class_name, $args ) {
+		$screen = get_current_screen();
+
+		if ( empty( $screen->id ) || 'edit-' . Order::POSTTYPE !== $screen->id ) {
+			return $class_name;
+		}
+
+		return Orders_Table::class;
 	}
 
 	/**
@@ -270,9 +586,9 @@ class Hooks extends Service_Provider {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param string   $new_status New post status.
-	 * @param string   $old_status Old post status.
-	 * @param \WP_Post $post       Post object.
+	 * @param string  $new_status New post status.
+	 * @param string  $old_status Old post status.
+	 * @param WP_Post $post       Post object.
 	 */
 	public function transition_order_post_status_hooks( $new_status, $old_status, $post ) {
 		$this->container->make( Status\Status_Handler::class )->transition_order_post_status_hooks( $new_status, $old_status, $post );
@@ -303,7 +619,7 @@ class Hooks extends Service_Provider {
 	 *
 	 * @param Status_Interface      $new_status New post status.
 	 * @param Status_Interface|null $old_status Old post status.
-	 * @param \WP_Post              $post       Post object.
+	 * @param WP_Post               $post       Post object.
 	 */
 	public function modify_tickets_counters_by_status( $new_status, $old_status, $post ) {
 		$this->container->make( Ticket::class )->modify_counters_by_status( $new_status, $old_status, $post );
