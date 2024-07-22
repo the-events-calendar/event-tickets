@@ -419,7 +419,7 @@ class Controller extends Controller_Contract {
 	public function fetch_attendees_by_post(): void {
 		$post_id = (int) tribe_get_request_var( 'postId' );
 
-		if ( $this->check_current_ajax_user_can( 'edit_post', $post_id ) ) {
+		if ( ! $this->check_current_ajax_user_can( 'edit_post', $post_id ) ) {
 			return;
 		}
 
