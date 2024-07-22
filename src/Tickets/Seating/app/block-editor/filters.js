@@ -4,6 +4,7 @@ import { storeName } from './store';
 import { select, dispatch } from '@wordpress/data';
 import Seats from "./dashboard-actions/seats";
 import SeatType from "./header/seat-type";
+import {__} from "@wordpress/i18n";
 
 const shouldRenderAssignedSeatingForm = true;
 
@@ -148,4 +149,33 @@ addFilter(
 	'tec.tickets.blocks.Ticket.header.detailItems',
 	'tec.tickets.seating',
 	filterHeaderDetails
+);
+
+function filterCapacityTableMappedProps(mappedProps) {
+	console.log('I was called');
+	const seatTypes = select(storeName).getAllSeatTypes();
+
+	if ( !seatTypes ) {
+		return mappedProps;
+	}
+
+	mappedProps.rowsAfter = mappedProps.rowsAfter || [];
+	const seatTypeLabels = seatTypes.map( s => s.name );
+	const seatTypeTotalCapacity = seatTypes.reduce( ( sum, type ) => sum + parseInt(type.seats), 0 );
+	mappedProps.rowsAfter.push({
+		label: __('Seated Tickets', 'event-tickets'),
+		items: seatTypeLabels ? `(${seatTypeLabels})` : '',
+		right: String(seatTypeTotalCapacity),
+	});
+
+	mappedProps.totalCapacity  = ( mappedProps.totalCapacity - mappedProps.sharedCapacity ) + seatTypeTotalCapacity;
+	mappedProps.sharedCapacity = '';
+
+	return mappedProps;
+}
+
+addFilter(
+	'tec.tickets.blocks.Tickets.CapacityTable.mappedProps',
+	'tec.tickets.flexibleTickets',
+	filterCapacityTableMappedProps
 );
