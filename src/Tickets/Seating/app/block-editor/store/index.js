@@ -1,7 +1,6 @@
 import { createReduxStore, register } from '@wordpress/data';
 import { getTicketIdFromCommonStore } from './common-store-bridge';
-
-const { fetchSeatTypesByLayoutId } = tec.tickets.seating.ajax;
+import { controls } from './controls';
 
 const storeName = 'tec-tickets-seating';
 
@@ -171,11 +170,7 @@ const store = createReduxStore(storeName, {
 			return state?.seatTypes || [];
 		},
 	},
-	controls: {
-		FETCH_SEAT_TYPES_FOR_LAYOUT(action) {
-			return fetchSeatTypesByLayoutId(action.layoutId);
-		},
-	},
+	controls,
 	resolvers: {
 		*getSeatTypesForLayout(layoutId) {
 			if (!layoutId) {

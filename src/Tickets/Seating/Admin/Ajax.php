@@ -117,6 +117,15 @@ class Ajax extends Controller_Contract {
 	public const ACTION_DELETE_RESERVATIONS = 'tec_tickets_seating_delete_reservations';
 
 	/**
+	 * The action to fetch attendees.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const ACTION_FETCH_ATTENDEES = 'tec_tickets_seating_fetch_attendees';
+
+	/**
 	 * A reference to the Seat Types service object.
 	 *
 	 * @since TBD
@@ -251,6 +260,8 @@ class Ajax extends Controller_Contract {
 			'ACTION_POST_RESERVATIONS'             => self::ACTION_POST_RESERVATIONS,
 			'ACTION_CLEAR_RESERVATIONS'            => self::ACTION_CLEAR_RESERVATIONS,
 			'ACTION_DELETE_RESERVATIONS'           => self::ACTION_DELETE_RESERVATIONS,
+			'ACTION_FETCH_ATTENDEES'               => self::ACTION_FETCH_ATTENDEES,
+			'ACTION_GET_SEAT_TYPES_BY_LAYOUT_ID'   => self::ACTION_GET_SEAT_TYPES_BY_LAYOUT_ID,
 		];
 	}
 
@@ -418,9 +429,20 @@ class Ajax extends Controller_Contract {
 	 * @return void The JSON response is sent to the client.
 	 */
 	public function update_reservations() {
+		if ( ! $this->check_current_ajax_user_can( 'exist' ) ) {
+			return;
+		}
+
 		$post_id = (int) tribe_get_request_var( 'postId', 0 );
 
-		if ( ! $this->check_current_ajax_user_can( 'read_post', $post_id ) ) {
+		if ( empty( $post_id ) ) {
+			wp_send_json_error(
+				[
+					'error' => 'No post ID provided',
+				],
+				400
+			);
+
 			return;
 		}
 
@@ -456,7 +478,33 @@ class Ajax extends Controller_Contract {
 		$reservations = [];
 		foreach ( $json_reservations as $ticket_id => $ticket_reservations ) {
 			$reservations[ $ticket_id ] = [];
+
+			if ( ! is_array( $ticket_reservations ) ) {
+				wp_send_json_error(
+					[
+						'error' => 'Reservation data is not in correct format',
+					],
+					400
+				);
+
+				return;
+			}
+
 			foreach ( $ticket_reservations as $reservation ) {
+				if ( ! (
+					is_array( $reservation )
+					&& isset( $reservation['reservationId'], $reservation['seatTypeId'], $reservation['seatLabel'] )
+				) ) {
+					wp_send_json_error(
+						[
+							'error' => 'Reservation data is not in correct format',
+						],
+						400
+					);
+
+					return;
+				}
+
 				$reservations[ $ticket_id ][] = [
 					'reservation_id' => $reservation['reservationId'],
 					'seat_type_id'   => $reservation['seatTypeId'],
@@ -487,15 +535,14 @@ class Ajax extends Controller_Contract {
 	 * @return void The JSON response is sent to the client.
 	 */
 	public function clear_reservations(): void {
-		$post_id = (int) tribe_get_request_var( 'postId', 0 );
-
-		if ( ! $this->check_current_ajax_user_can( 'read_post', $post_id ) ) {
+		if ( ! $this->check_current_ajax_user_can( 'exist') ) {
 			return;
 		}
 
+		$post_id = (int) tribe_get_request_var( 'postId', 0 );
 		$token = tribe_get_request_var( 'token' );
 
-		if ( ! ( $token && $post_id ) ) {
+		if ( ! ( $post_id && $token && is_string( $token ) ) ) {
 			wp_send_json_error(
 				[
 					'error' => __( 'Invalid request parameters', 'event-tickets' ),

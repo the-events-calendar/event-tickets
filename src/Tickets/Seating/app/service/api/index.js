@@ -1,5 +1,5 @@
 // Get the service base URL without the trailing slash.
-import { getBaseUrl, ajaxUrl, ajaxNonce } from './localized-data.js';
+import { getBaseUrl } from './localized-data.js';
 import {
 	setIsReady,
 	setEstablishingReadiness,
@@ -19,7 +19,6 @@ import {
 	OUTBOUND_REMOVE_RESERVATIONS,
 	OUTBOUND_EVENT_ATTENDEES,
 	RESERVATIONS_DELETED,
-	ACTION_DELETE_RESERVATIONS,
 } from './service-actions.js';
 
 /**
@@ -245,7 +244,7 @@ export function emptyHandlerQueue() {
 }
 
 // Re-export some functions from the state module.
-export { getToken, registerAction, getHandlerForAction, ajaxUrl, ajaxNonce };
+export { getToken, registerAction, getHandlerForAction };
 
 window.tec = window.tec || {};
 window.tec.tickets.seating = window.tec.tickets.seating || {};
@@ -260,7 +259,6 @@ window.tec.tickets.seating.service.api = {
 	OUTBOUND_EVENT_ATTENDEES,
 	INBOUND_SEATS_SELECTED,
 	RESERVATIONS_DELETED,
-	ACTION_DELETE_RESERVATIONS,
 	sendPostMessage,
 	startListeningForServiceMessages,
 	establishReadiness,
@@ -269,6 +267,4 @@ window.tec.tickets.seating.service.api = {
 	getRegisteredActions,
 	getHandlerQueue,
 	getToken,
-	ajaxUrl,
-	ajaxNonce,
 };

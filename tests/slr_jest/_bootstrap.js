@@ -10,6 +10,8 @@ global.tec.tickets.seating = {
 			'https://wordpress.test/wp-admin/admin.php?page=tec-tickets-seating&tab=layouts',
 		layoutsHomeUrl:
 			'https://wordpress.test/wp-admin/admin.php?page=tec-tickets-seating&tab=layouts',
+	},
+	ajax: {
 		ajaxUrl: 'https://wordpress.test/wp-admin/admin-ajax.php',
 		ajaxNonce: '1234567890',
 	},

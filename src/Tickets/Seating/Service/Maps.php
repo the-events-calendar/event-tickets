@@ -190,7 +190,7 @@ class Maps {
 	public static function update_transient_expiration() {
 		return 12 * HOUR_IN_SECONDS;
 	}
-	
+
 	/**
 	 * Checks if the map has layouts.
 	 *
@@ -204,10 +204,28 @@ class Maps {
 		$count = DB::table( Layouts_Table::table_name( false ) )
 					->where( 'map', $map_id )
 					->count();
-		
+
 		return $count > 0;
 	}
-	
+
+	/**
+	 * Returns the URL to delete a map.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $map_id The ID of the map to delete.
+	 *
+	 * @return string The URL to delete the map.
+	 */
+	public function get_delete_url( string $map_id ): string {
+		return add_query_arg(
+			[
+				'mapId' => $map_id,
+			],
+			$this->service_fetch_url
+		);
+	}
+
 	/**
 	 * Deletes a map from the service.
 	 *
@@ -218,13 +236,8 @@ class Maps {
 	 * @return bool Whether the map was deleted or not.
 	 */
 	public function delete( string $map_id ): bool {
-		$url = add_query_arg(
-			[
-				'mapId' => $map_id,
-			],
-			$this->service_fetch_url
-		);
-		
+		$url = $this->get_delete_url( $map_id );
+
 		$args = [
 			'method'  => 'DELETE',
 			'headers' => [
@@ -232,17 +245,17 @@ class Maps {
 				'Content-Type'  => 'application/json',
 			],
 		];
-		
+
 		$response = wp_remote_request( $url, $args );
 		$code     = wp_remote_retrieve_response_code( $response );
-		
+
 		if ( ! is_wp_error( $response ) && 200 === $code ) {
 			self::invalidate_cache();
 			Layouts::invalidate_cache();
-			
+
 			return true;
 		}
-		
+
 		$this->log_error(
 			'Failed to delete the map from the service.',
 			[
@@ -252,7 +265,7 @@ class Maps {
 				'response' => $response,
 			]
 		);
-		
+
 		return false;
 	}
 }

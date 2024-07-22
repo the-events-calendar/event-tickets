@@ -1,4 +1,4 @@
-import { Fragment, useCallback } from '@wordpress/element';
+import { useCallback } from '@wordpress/element';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { useEntityProp } from '@wordpress/core-data';
 import { RadioControl } from '@wordpress/components';
@@ -8,7 +8,7 @@ import './style.pcss';
 import {
 	setTicketsSharedCapacityInCommonStore,
 	setCappedTicketCapacityInCommonStore,
-} from '../common-store-bridge';
+} from '../store/common-store-bridge';
 import { META_KEY_ENABLED, META_KEY_LAYOUT_ID } from '../constants';
 import EventLayoutSelect from './event-layout-select';
 import { getLocalizedString } from '@tec/tickets/seating/utils';

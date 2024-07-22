@@ -154,7 +154,7 @@ describe('Seat Selection Modal', () => {
 
 			expect(dom.querySelector('.event-tickets')).toMatchSnapshot();
 			expect(fetch).toBeCalledWith(
-				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&action=tec_tickets_seating_post_reservations',
+				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&action=tec_tickets_seating_post_reservations&postId=23',
 				{
 					method: 'POST',
 					body: JSON.stringify({
@@ -181,7 +181,7 @@ describe('Seat Selection Modal', () => {
 
 			expect(dom.querySelector('.event-tickets')).toMatchSnapshot();
 			expect(fetch).toBeCalledWith(
-				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&action=tec_tickets_seating_post_reservations',
+				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&action=tec_tickets_seating_post_reservations&postId=23',
 				{
 					method: 'POST',
 					body: JSON.stringify({
@@ -223,7 +223,7 @@ describe('Seat Selection Modal', () => {
 
 			expect(dom.querySelector('.event-tickets')).toMatchSnapshot();
 			expect(fetch).toBeCalledWith(
-				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&action=tec_tickets_seating_post_reservations',
+				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&action=tec_tickets_seating_post_reservations&postId=23',
 				{
 					method: 'POST',
 					body: JSON.stringify({
@@ -277,7 +277,7 @@ describe('Seat Selection Modal', () => {
 
 			expect(dom.querySelector('.event-tickets')).toMatchSnapshot();
 			expect(fetch).toBeCalledWith(
-				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&action=tec_tickets_seating_post_reservations',
+				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&action=tec_tickets_seating_post_reservations&postId=23',
 				{
 					method: 'POST',
 					body: JSON.stringify({
@@ -345,7 +345,7 @@ describe('Seat Selection Modal', () => {
 
 			expect(dom.querySelector('.event-tickets')).toMatchSnapshot();
 			expect(fetch).toBeCalledWith(
-				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&action=tec_tickets_seating_post_reservations',
+				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&action=tec_tickets_seating_post_reservations&postId=23',
 				{
 					method: 'POST',
 					body: JSON.stringify({
@@ -460,7 +460,7 @@ describe('Seat Selection Modal', () => {
 
 			expect(dom.querySelector('.event-tickets')).toMatchSnapshot();
 			expect(fetch).toBeCalledWith(
-				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&action=tec_tickets_seating_post_reservations',
+				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&action=tec_tickets_seating_post_reservations&postId=23',
 				{
 					method: 'POST',
 					body: JSON.stringify({
@@ -516,7 +516,7 @@ describe('Seat Selection Modal', () => {
 
 			expect(dom.querySelector('.event-tickets')).toMatchSnapshot();
 			expect(fetch).toBeCalledWith(
-				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&action=tec_tickets_seating_post_reservations',
+				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&action=tec_tickets_seating_post_reservations&postId=23',
 				{
 					method: 'POST',
 					body: JSON.stringify({
@@ -558,7 +558,7 @@ describe('Seat Selection Modal', () => {
 
 			expect(dom.querySelector('.event-tickets')).toMatchSnapshot();
 			expect(fetch).toBeCalledWith(
-				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&action=tec_tickets_seating_post_reservations',
+				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&action=tec_tickets_seating_post_reservations&postId=23',
 				{
 					method: 'POST',
 					body: JSON.stringify({
@@ -585,7 +585,7 @@ describe('Seat Selection Modal', () => {
 
 			expect(dom.querySelector('.event-tickets')).toMatchSnapshot();
 			expect(fetch).toBeCalledWith(
-				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&action=tec_tickets_seating_post_reservations',
+				'https://wordpress.test/wp-admin/admin-ajax.php?_ajax_nonce=1234567890&action=tec_tickets_seating_post_reservations&postId=23',
 				{
 					method: 'POST',
 					body: JSON.stringify({

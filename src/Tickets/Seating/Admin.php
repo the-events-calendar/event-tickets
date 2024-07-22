@@ -13,7 +13,6 @@ use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\lucatume\DI52\Container;
 use TEC\Common\StellarWP\Assets\Asset;
 use TEC\Common\StellarWP\Assets\Assets;
-use TEC\Tickets\Seating\Admin\Ajax;
 use TEC\Tickets\Seating\Admin\Embed_Test;
 use TEC\Tickets\Seating\Admin\Tabs\Layout_Edit;
 use TEC\Tickets\Seating\Admin\Tabs\Layouts;
@@ -71,8 +70,6 @@ class Admin extends Controller_Contract {
 		$assets->remove( 'tec-tickets-seating-admin-map-edit-style' );
 		$assets->remove( 'tec-tickets-seating-admin-layout-edit' );
 		$assets->remove( 'tec-tickets-seating-admin-layout-edit-style' );
-
-		$this->container->get( Admin\Ajax::class )->unregister();
 
 		remove_action( 'admin_menu', [ $this, 'add_submenu_page' ], 1000 );
 		remove_action( 'admin_menu', [ $this, 'add_embed_submenu_page' ], 1000 );
@@ -146,8 +143,6 @@ class Admin extends Controller_Contract {
 		$this->container->singleton( Admin\Tabs\Map_Edit::class );
 		$this->container->singleton( Admin\Tabs\Layouts::class );
 		$this->container->singleton( Admin\Tabs\Layout_Edit::class );
-
-		$this->container->register( Admin\Ajax::class );
 
 		$this->register_maps_assets();
 		$this->reqister_layouts_assets();

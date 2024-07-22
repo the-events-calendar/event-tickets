@@ -98,6 +98,7 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 			[
 				'headers' => [
 					'Authorization' => 'Bearer auth-token',
+					'Content-Type'  => 'application/json',
 				],
 				'body'    => wp_json_encode( [
 					'eventId' => 'test-post-uuid',
@@ -156,6 +157,7 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 			[
 				'headers' => [
 					'Authorization' => 'Bearer auth-token',
+					'Content-Type'  => 'application/json',
 				],
 				'body'    => wp_json_encode( [
 					'eventId' => 'test-post-uuid',
@@ -215,6 +217,7 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 			[
 				'headers' => [
 					'Authorization' => 'Bearer auth-token',
+					'Content-Type'  => 'application/json',
 				],
 				'body'    => wp_json_encode( [
 					'eventId' => 'test-post-uuid',
@@ -253,6 +256,7 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 			[
 				'headers' => [
 					'Authorization' => 'Bearer auth-token',
+					'Content-Type'  => 'application/json',
 				],
 				'body'    => wp_json_encode( [
 					'eventId' => 'test-post-uuid',
@@ -364,6 +368,7 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 				yield [
 					'headers' => [
 						'Authorization' => 'Bearer auth-token',
+						'Content-Type'  => 'application/json',
 					],
 					'body'    => wp_json_encode( [
 						'eventId' => 'test-post-uuid',
@@ -373,6 +378,7 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 				yield [
 					'headers' => [
 						'Authorization' => 'Bearer auth-token',
+						'Content-Type'  => 'application/json',
 					],
 					'body'    => wp_json_encode( [
 						'eventId' => 'test-post-uuid-2',
@@ -414,6 +420,7 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 				yield [
 					'headers' => [
 						'Authorization' => 'Bearer auth-token',
+						'Content-Type'  => 'application/json',
 					],
 					'body'    => wp_json_encode( [
 						'eventId' => 'test-post-uuid',
@@ -423,6 +430,7 @@ class Session_Test extends \Codeception\TestCase\WPTestCase {
 				yield [
 					'headers' => [
 						'Authorization' => 'Bearer auth-token',
+						'Content-Type'  => 'application/json',
 					],
 					'body'    => wp_json_encode( [
 						'eventId' => 'test-post-uuid-2',

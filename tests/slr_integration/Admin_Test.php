@@ -62,6 +62,8 @@ class Admin_Test extends Controller_Test_Case {
 	 * @dataProvider tabs_data_provider
 	 */
 	public function should_add_the_sub_menu_page( string $tab = null, \Closure $fixture = null ): void {
+		unset( $_GET['tab'], $_GET['layout'], $_GET['mapId'], $_REQUEST['tab'], $_REQUEST['layoutId'], $_REQUEST['mapId'] );
+
 		if ( $fixture ) {
 			$fixture();
 		}
@@ -76,8 +78,6 @@ class Admin_Test extends Controller_Test_Case {
 		}
 
 		$controller = $this->make_controller();
-
-
 		$controller->register();
 
 		// Register the Admin controller sub-menu page.
@@ -86,11 +86,5 @@ class Admin_Test extends Controller_Test_Case {
 		ob_start();
 		do_action( 'tickets_page_tec-tickets-seating' );
 		$this->assertMatchesHtmlSnapshot( ob_get_clean() );
-	}
-
-	public function test_get_ajax_data(): void {
-		$this->set_fn_return( 'wp_create_nonce', '8298ff6616' );
-		$controller = $this->make_controller();
-		$this->assertMatchesJsonSnapshot( wp_json_encode( $controller->get_ajax_data(), JSON_SNAPSHOT_OPTIONS ) );
 	}
 }

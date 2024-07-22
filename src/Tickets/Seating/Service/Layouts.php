@@ -274,6 +274,28 @@ class Layouts {
 	}
 
 	/**
+	 * Returns the URL to delete a layout.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $layout_id The UUID of the layout to delete.
+	 * @param string $map_id    The UUID of the map the layout belongs to.
+	 *
+	 * @return string The URL to delete the layout.
+	 */
+	public function get_delete_url( string $layout_id, string $map_id ): string {
+		$url = add_query_arg(
+			[
+				'layoutId' => $layout_id,
+				'mapId'    => $map_id,
+			],
+			$this->service_fetch_url
+		);
+
+		return $url;
+	}
+
+	/**
 	 * Deletes a layout from the service.
 	 *
 	 * @since TBD
@@ -284,13 +306,7 @@ class Layouts {
 	 * @return bool True on success, false on failure.
 	 */
 	public function delete( string $layout_id, string $map_id ): bool {
-		$url = add_query_arg(
-			[
-				'layoutId' => $layout_id,
-				'mapId'    => $map_id,
-			],
-			$this->service_fetch_url
-		);
+		$url = $this->get_delete_url( $layout_id, $map_id );
 
 		$args = [
 			'method'  => 'DELETE',

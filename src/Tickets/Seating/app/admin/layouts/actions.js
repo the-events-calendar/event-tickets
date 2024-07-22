@@ -1,4 +1,4 @@
-import { ajaxUrl, ajaxNonce } from '@tec/tickets/seating/service/api';
+import { ajaxUrl, ajaxNonce } from '@tec/tickets/seating/ajax';
 import { onReady, getLocalizedString } from '@tec/tickets/seating/utils';
 
 /**

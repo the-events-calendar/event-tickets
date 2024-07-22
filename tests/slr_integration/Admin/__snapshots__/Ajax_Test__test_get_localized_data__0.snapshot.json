@@ -7,5 +7,7 @@
     "ACTION_DELETE_LAYOUT": "tec_tickets_seating_service_delete_layout",
     "ACTION_POST_RESERVATIONS": "tec_tickets_seating_post_reservations",
     "ACTION_CLEAR_RESERVATIONS": "tec_tickets_seating_clear_reservations",
-    "ACTION_DELETE_RESERVATIONS": "tec_tickets_seating_delete_reservations"
+    "ACTION_DELETE_RESERVATIONS": "tec_tickets_seating_delete_reservations",
+    "ACTION_FETCH_ATTENDEES": "tec_tickets_seating_fetch_attendees",
+    "ACTION_GET_SEAT_TYPES_BY_LAYOUT_ID": "tec_tickets_seating_get_seat_types_by_layout_id"
 }

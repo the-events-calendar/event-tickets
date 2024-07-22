@@ -13,6 +13,7 @@ use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\lucatume\DI52\Container;
 use TEC\Common\StellarWP\Assets\Asset;
 use TEC\Tickets\Admin\Attendees\Page as Attendee_Page;
+use TEC\Tickets\Seating\Admin\Ajax;
 use TEC\Tickets\Seating\Ajax_Checks;
 use TEC\Tickets\Seating\Built_Assets;
 use TEC\Tickets\Seating\Frontend;
@@ -38,15 +39,6 @@ use Tribe__Tickets__Tickets as Tickets;
 class Controller extends Controller_Contract {
 	use Built_Assets;
 	use Ajax_Checks;
-
-	/**
-	 * The action to fetch attendees.
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	public const ACTION_FETCH_ATTENDEES = 'tec_tickets_seating_fetch_attendees';
 
 	/**
 	 * A reference to Attendee data handler
@@ -148,7 +140,7 @@ class Controller extends Controller_Contract {
 			add_filter( 'tec_tickets_commerce_reports_tabbed_page_title', [ $this, 'filter_seat_tab_title' ], 10, 3 );
 		}
 		add_action( 'tec_tickets_commerce_flag_action_generated_attendees', [ $this, 'confirm_all_reservations' ] );
-		add_action( 'wp_ajax_' . self::ACTION_FETCH_ATTENDEES, [ $this, 'fetch_attendees_by_post' ] );
+		add_action( 'wp_ajax_' . Ajax::ACTION_FETCH_ATTENDEES, [ $this, 'fetch_attendees_by_post' ] );
 
 		$this->register_assets();
 	}
@@ -181,7 +173,7 @@ class Controller extends Controller_Contract {
 		remove_filter( 'tec_tickets_commerce_reports_tabbed_page_title', [ $this, 'filter_seat_tab_title' ] );
 
 		remove_action( 'tec_tickets_commerce_flag_action_generated_attendees', [ $this, 'confirm_all_reservations' ] );
-		remove_action( 'wp_ajax_' . self::ACTION_FETCH_ATTENDEES, [ $this, 'fetch_attendees_by_post' ] );
+		remove_action( 'wp_ajax_' . Ajax::ACTION_FETCH_ATTENDEES, [ $this, 'fetch_attendees_by_post' ] );
 	}
 
 	/**
@@ -379,13 +371,6 @@ class Controller extends Controller_Contract {
 		return [
 			'postId'      => $post_id,
 			'seatTypeMap' => tribe( Frontend::class )->build_seat_type_map( $post_id ),
-			'fetchAttendeesAjaxUrl' => add_query_arg(
-				[
-					'_ajax_nonce' => wp_create_nonce( self::ACTION_FETCH_ATTENDEES ),
-					'action'      => self::ACTION_FETCH_ATTENDEES,
-					'postId'      => $post_id,
-				]
-			)
 		];
 	}
 

@@ -1,2 +1,2 @@
-import './store.js';
+import './store';
 import './filters.js';

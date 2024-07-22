@@ -3,7 +3,6 @@
 namespace TEC\Tickets\Seating\Service;
 
 use TEC\Tickets\Seating\Meta;
-use TEC\Tickets\Seating\Service\OAuth_Token;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tests\Traits\WP_Remote_Mocks;
 
@@ -29,6 +28,7 @@ class Reservations_Test extends \Codeception\TestCase\WPTestCase {
 				return [
 					'headers' => [
 						'Authorization' => 'Bearer auth-token',
+						'Content-Type'  => 'application/json',
 					],
 					'body'    => wp_json_encode(
 						[
@@ -72,6 +72,7 @@ class Reservations_Test extends \Codeception\TestCase\WPTestCase {
 				return [
 					'headers' => [
 						'Authorization' => 'Bearer auth-token',
+						'Content-Type'  => 'application/json',
 					],
 					'body'    => wp_json_encode(
 						[
@@ -165,6 +166,7 @@ class Reservations_Test extends \Codeception\TestCase\WPTestCase {
 				return [
 					'headers' => [
 						'Authorization' => 'Bearer auth-token',
+						'Content-Type'  => 'application/json',
 					],
 					'body'    => wp_json_encode(
 						[
@@ -208,6 +210,7 @@ class Reservations_Test extends \Codeception\TestCase\WPTestCase {
 				return [
 					'headers' => [
 						'Authorization' => 'Bearer auth-token',
+						'Content-Type'  => 'application/json',
 					],
 					'body'    => wp_json_encode(
 						[
