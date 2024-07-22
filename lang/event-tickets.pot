@@ -2,20 +2,20 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Event Tickets 5.12.0\n"
+"Project-Id-Version: Event Tickets 5.13.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/event-tickets\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-07-17T07:49:35-07:00\n"
-"PO-Revision-Date: 2024-07-17 14:49\n"
+"POT-Creation-Date: 2024-07-22T06:30:20-07:00\n"
+"PO-Revision-Date: 2024-07-22 13:30\n"
 "X-Generator: WP-CLI 2.7.1\n"
 "X-Domain: event-tickets\n"
 
 #. Plugin Name of the plugin
-#: event-tickets.php:63
+#: event-tickets.php:66
 #: src/admin-views/admin-welcome-message.php:73
 #: src/Tickets/Site_Health/Info_Section.php:73
 #: src/Tribe/Admin/Notices.php:85
@@ -39,6 +39,14 @@ msgstr ""
 
 #. Author URI of the plugin
 msgid "https://evnt.is/1aor"
+msgstr ""
+
+#: src/admin-views/admin-welcome-message.php:23
+msgid "Tickets Commerce provides flexible online payments right out of the box."
+msgstr ""
+
+#: src/admin-views/admin-welcome-message.php:29
+msgid "Want to monetize your events?"
 msgstr ""
 
 #: src/admin-views/admin-welcome-message.php:42
@@ -115,8 +123,8 @@ msgid "Helpful Resources"
 msgstr ""
 
 #: src/admin-views/admin-welcome-message.php:139
-#: src/admin-views/admin-welcome-message.php:192
-#: src/admin-views/admin-welcome-message.php:214
+#: src/admin-views/admin-welcome-message.php:181
+#: src/admin-views/admin-welcome-message.php:203
 msgid "Illustration of a book with The Events Calendar logo"
 msgstr ""
 
@@ -165,32 +173,16 @@ msgstr ""
 msgid "Get started"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:170
-msgid "Illustration of a phone screen with a person's face"
-msgstr ""
-
-#: src/admin-views/admin-welcome-message.php:172
-msgid "Virtual Event Resources"
-msgstr ""
-
-#: src/admin-views/admin-welcome-message.php:173
-msgid "Tips and tools to help with planning online events, webinars, and more on WordPress and beyond."
-msgstr ""
-
-#: src/admin-views/admin-welcome-message.php:174
-msgid "Get started with online events"
-msgstr ""
-
-#: src/admin-views/admin-welcome-message.php:182
+#: src/admin-views/admin-welcome-message.php:171
 msgid "Illustration of a power plug and gears"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:184
+#: src/admin-views/admin-welcome-message.php:173
 msgid "Browse our library of free extensions for Event Tickets."
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:185
-#: src/admin-views/admin-welcome-message.php:205
+#: src/admin-views/admin-welcome-message.php:174
+#: src/admin-views/admin-welcome-message.php:194
 #: src/admin-views/settings/tickets-commerce/paypal/connect/non-ssl-notice.php:24
 #: src/Tickets/Commerce/Gateways/Stripe/Settings.php:194
 #: src/Tickets/Emails/Email/Completed_Order.php:117
@@ -205,53 +197,53 @@ msgstr ""
 msgid "Learn more"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:194
-#: src/admin-views/admin-welcome-message.php:216
+#: src/admin-views/admin-welcome-message.php:183
+#: src/admin-views/admin-welcome-message.php:205
 msgid "Want to take your events to the next level?"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:195
-#: src/admin-views/admin-welcome-message.php:217
+#: src/admin-views/admin-welcome-message.php:184
+#: src/admin-views/admin-welcome-message.php:206
 msgid "Check out our suite of add-ons"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:202
+#: src/admin-views/admin-welcome-message.php:191
 msgid "Illustration of a calendar"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:204
+#: src/admin-views/admin-welcome-message.php:193
 msgid "Add The Events Calendar (it's free!) to enhance Event Tickets."
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:224
+#: src/admin-views/admin-welcome-message.php:213
 msgid "Illustration of a hand holding a ticket and the WooCommerce logo"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:226
+#: src/admin-views/admin-welcome-message.php:215
 msgid "Add WooCommerce integration, advanced registration, and more."
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:227
+#: src/admin-views/admin-welcome-message.php:216
 msgid "Check out Event Tickets Plus"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:232
+#: src/admin-views/admin-welcome-message.php:221
 msgid "Want this emailed to you?"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:233
+#: src/admin-views/admin-welcome-message.php:222
 msgid "Keep this list of links on hand and stay subscribed to receive tips and tricks about The Events Calendar products."
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:236
+#: src/admin-views/admin-welcome-message.php:225
 msgid "Your email"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:238
+#: src/admin-views/admin-welcome-message.php:227
 msgid "Sign Up"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:251
+#: src/admin-views/admin-welcome-message.php:240
 msgid "The Events Calendar brand logo"
 msgstr ""
 
