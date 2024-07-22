@@ -44,7 +44,7 @@ $field_classes = [
 			required
 		/>
 		<div class="tribe-common-b3 tribe-tickets__form-field-description">
-			<?php esc_html_e( 'Your tickets will be sent to this address', 'event-tickets' ); ?>
+			<?php esc_html_e( 'Your tickets will be sent to this email address', 'event-tickets' ); ?>
 		</div>
 	</div>
 </div>

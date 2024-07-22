@@ -18,13 +18,34 @@
  * @var bool $must_login Global] Whether login is required to buy tickets or not.
  */
 
-if ( is_user_logged_in() || $must_login || empty( $items ) ) {
+if ( empty( $items ) ) {
 	return;
 }
-?>
 
+if ( ! is_user_logged_in() && $must_login ) {
+	return;
+}
+
+$show_address    = false;
+$info_title      = __( 'Purchaser info', 'event-tickets' );
+$payment_methods = ( new TEC\Tickets\Commerce\Gateways\Stripe\Merchant() )->get_payment_method_types();
+if ( ( 1 === count( $payment_methods ) && 'card' !== $payment_methods[0] ) || 1 < count( $payment_methods ) ) {
+	$show_address = true;
+	$info_title   = __( 'Billing info', 'event-tickets' );
+}
+
+?>
 <div class="tribe-tickets__form tribe-tickets__commerce-checkout-purchaser-info-wrapper tribe-common-b2">
-	<h4 class="tribe-common-h5 tribe-tickets__commerce-checkout-purchaser-info-title"><?php esc_html_e( 'Purchaser info', 'event-tickets' ); ?></h4>
-	<?php $this->template( 'checkout/purchaser-info/name' ); ?>
+	<h4 class="tribe-common-h5 tribe-tickets__commerce-checkout-purchaser-info-title"><?php echo esc_html( $info_title ); ?></h4>
+	<?php $this->template( 'checkout/purchaser-info/name', [ 'show_address' => $show_address ] ); ?>
 	<?php $this->template( 'checkout/purchaser-info/email' ); ?>
+	<?php if ( $show_address ) : ?>
+		<?php $this->template( 'checkout/purchaser-info/address' ); ?>
+		<div class="tribe-tickets__commerce-checkout-address-wrapper">
+			<?php $this->template( 'checkout/purchaser-info/city' ); ?>
+			<?php $this->template( 'checkout/purchaser-info/state' ); ?>
+			<?php $this->template( 'checkout/purchaser-info/zip' ); ?>
+			<?php $this->template( 'checkout/purchaser-info/country' ); ?>
+		</div>
+	<?php endif; ?>
 </div>
