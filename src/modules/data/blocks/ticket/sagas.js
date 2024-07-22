@@ -10,7 +10,7 @@ import { includes } from 'lodash';
 import { dispatch as wpDispatch, select as wpSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 import { createBlock } from '@wordpress/blocks';
-import { doAction } from '@wordpress/hooks';
+import { applyFilters, doAction } from '@wordpress/hooks';
 
 /**
  * Internal dependencies
@@ -329,7 +329,7 @@ export function* setTicketInitialState( action ) {
 }
 
 export function* setBodyDetails( clientId ) {
-	const body = new FormData();
+	let body = new FormData();
 	const props = { clientId };
 	const rootClientId = yield call(
 		[ wpSelect( 'core/editor' ), 'getBlockRootClientId' ],
@@ -386,6 +386,16 @@ export function* setBodyDetails( clientId ) {
 			yield select( selectors.getTicketTempSaleEndDate, props ),
 		);
 	}
+
+	/**
+	 * Fires after the body details have been set and before the request is sent.
+	 * The action will fire both when a ticket is being created and when an existing ticket is being updated.
+	 *
+	 * @since TBD
+	 * @param {Object} body The body of the request.
+	 * @param {string} clientId The client ID of the ticket block that is being created or updated.
+	 */
+	body = applyFilters( 'tec.tickets.blocks.setBodyDetails', body, clientId );
 
 	return body;
 }
