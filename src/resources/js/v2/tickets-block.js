@@ -833,7 +833,6 @@ tribe.tickets.block = {
 			const $form = $container.find( obj.selectors.form );
 			obj.tribe_tickets_provider = $form.data( 'provider' );
 		} );
-
 	};
 
 	window.addEventListener( 'pageshow', function( event ) {
