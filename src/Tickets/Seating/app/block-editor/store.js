@@ -170,6 +170,9 @@ const store = createReduxStore(storeName, {
 		getAllSeatTypes(state) {
 			return state?.seatTypes || [];
 		},
+		getSeatTypesByPostID(state) {
+			return state?.seatTypesByPostId || [];
+		}
 	},
 	controls: {
 		FETCH_SEAT_TYPES_FOR_LAYOUT(action) {
