@@ -7,7 +7,7 @@ import {
 	setTicketTempCapacityType,
 } from '@moderntribe/tickets/data/blocks/ticket/actions';
 import { getTicketId } from '@moderntribe/tickets/data/blocks/ticket/selectors';
-import { SHARED } from '@moderntribe/tickets/data/blocks/ticket/constants';
+import { CAPPED } from '@moderntribe/tickets/data/blocks/ticket/constants';
 
 function dispatchToCommonStore(action) {
 	window.__tribe_common_store__.dispatch(action);
@@ -29,6 +29,6 @@ export function getTicketIdFromCommonStore(clientId) {
 export function setCappedTicketCapacityInCommonStore(clientId, capacity) {
 	dispatchToCommonStore(setTicketCapacity(clientId, capacity));
 	dispatchToCommonStore(setTicketTempCapacity(clientId, capacity));
-	dispatchToCommonStore(setTicketCapacityType(clientId, SHARED));
-	dispatchToCommonStore(setTicketTempCapacityType(clientId, SHARED));
+	dispatchToCommonStore(setTicketCapacityType(clientId, CAPPED));
+	dispatchToCommonStore(setTicketTempCapacityType(clientId, CAPPED));
 }
