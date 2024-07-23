@@ -19,7 +19,7 @@ use Tribe__Tickets__Main as Main;
  *
  * @package TEC\Tickets\Libraries\Uplink
  */
-class Controller extends Controller_Contract {
+class SLRController extends Controller_Contract {
 	/**
 	 * Plugin slug.
 	 *

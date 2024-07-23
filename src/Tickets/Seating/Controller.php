@@ -12,6 +12,7 @@ namespace TEC\Tickets\Seating;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Tickets\Seating\Frontend\Session;
+use TEC\Tickets\Libraries\Uplink\SLRController as SLRUplinkController;
 
 /**
  * Class Controller
@@ -117,6 +118,8 @@ class Controller extends Controller_Contract {
 
 		$this->container->register( Tables::class );
 		$this->container->register( Assets::class );
+
+		$this->container->register( SLRUplinkController::class );
 
 		// Manage Order and Attendee data.
 		$this->container->register( Orders\Controller::class );
