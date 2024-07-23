@@ -205,6 +205,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Fix - Added missing global property for javascript undefined error `Uncaught TypeError: format is undefined`. This happened during ticket checkout.
+
 = [5.13.0] 2024-07-22 =
 
 * Feature - Included compatibility with Events Tickets Plus 6.0.0 for integrations with Zapier and Power Automate.
