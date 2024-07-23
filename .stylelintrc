@@ -6,5 +6,8 @@
 				"ignoreProperties": ["container-type"]
 			}
 		]
-	}
+	},
+	"ignoreFiles": [
+		"src/resources/postcss/utilities/**"
+	]
 }
