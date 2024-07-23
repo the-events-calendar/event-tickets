@@ -2,6 +2,8 @@
 
 namespace TEC\Tickets\Commerce\Gateways\Contracts;
 
+use TEC\Tickets\Commerce\Settings;
+
 /**
  * Abstract REST Endpoint Contract
  *
@@ -32,8 +34,9 @@ abstract class Abstract_REST_Endpoint implements REST_Endpoint_Interface, \Tribe
 	 */
 	public function get_route_url() {
 		$namespace = tribe( 'tickets.rest-v1.main' )->get_events_route_namespace();
+		$scheme    = Settings::is_test_mode() ? 'rest' : 'https';
 
-		return rest_url( '/' . $namespace . $this->get_endpoint_path(), 'https' );
+		return rest_url( '/' . $namespace . $this->get_endpoint_path(), $scheme );
 	}
 
 	/**
