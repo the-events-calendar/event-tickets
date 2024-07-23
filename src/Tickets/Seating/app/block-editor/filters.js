@@ -152,16 +152,24 @@ addFilter(
 );
 
 function filterCapacityTableMappedProps(mappedProps) {
-	console.log('I was called');
-	const seatTypes = select(storeName).getAllSeatTypes();
+	const hasSeats = select(storeName).isUsingAssignedSeating();
+	const layoutLocked = select(storeName).isLayoutLocked();
 
-	if ( !seatTypes ) {
+	if ( ! hasSeats || ! layoutLocked ) {
 		return mappedProps;
 	}
 
+	let layoutId  = select(storeName).getCurrentLayoutId();
+	if ( ! layoutId ) {
+		return mappedProps;
+	}
+
+	let seatTypes = select(storeName).getSeatTypesForLayout(layoutId, true);
+	let activeSeatTypes = Object.values( select(storeName).getSeatTypesByPostID() );
+
 	mappedProps.rowsAfter = mappedProps.rowsAfter || [];
-	const seatTypeLabels = seatTypes.map( s => s.name );
-	const seatTypeTotalCapacity = seatTypes.reduce( ( sum, type ) => sum + parseInt(type.seats), 0 );
+	const seatTypeLabels = activeSeatTypes.map( type => seatTypes[type].name );
+	const seatTypeTotalCapacity = activeSeatTypes.reduce( ( sum, type ) => sum + parseInt(seatTypes[type].seats), 0 );
 	mappedProps.rowsAfter.push({
 		label: __('Seated Tickets', 'event-tickets'),
 		items: seatTypeLabels ? `(${seatTypeLabels})` : '',
