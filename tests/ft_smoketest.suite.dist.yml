@@ -19,6 +19,7 @@ modules:
       reconnect: false
       url: '%WP_URL%'
       tablePrefix: 'wp_'
+      theme: twentytwenty
     WPBrowser:
       url: '%WP_URL%'
       adminUsername: %WP_ADMIN_USERNAME%

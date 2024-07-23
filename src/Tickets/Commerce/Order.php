@@ -190,11 +190,28 @@ class Order extends Abstract_Order {
 		$post_type_args = [
 			'label'           => __( 'Orders', 'event-tickets' ),
 			'public'          => false,
-			'show_ui'         => false,
+			'show_ui'         => true,
 			'show_in_menu'    => false,
 			'query_var'       => false,
 			'rewrite'         => false,
 			'capability_type' => 'post',
+			'capabilities'    => [
+				'edit_post'              => 'not-allowed-cap', // 'edit_post',
+				'read_post'              => 'read_post',
+				'delete_post'            => 'not-allowed-cap', // 'delete_post',
+				'edit_posts'             => 'edit_posts',
+				'edit_others_posts'      => 'edit_others_posts',
+				'delete_posts'           => 'not-allowed-cap', // 'delete_posts',
+				'publish_posts'          => 'not-allowed-cap', // 'publish_posts',
+				'read_private_posts'     => 'read_private_posts',
+				'read'                   => 'read',
+				'delete_private_posts'   => 'not-allowed-cap', // 'delete_private_posts',
+				'delete_published_posts' => 'not-allowed-cap', // 'delete_published_posts',
+				'delete_others_posts'    => 'not-allowed-cap', // 'delete_others_posts',
+				'edit_private_posts'     => 'not-allowed-cap', // 'edit_private_posts',
+				'edit_published_posts'   => 'not-allowed-cap', // 'edit_published_posts',
+				'create_posts'           => 'not-allowed-cap', // 'edit_posts',
+			],
 			'has_archive'     => false,
 			'hierarchical'    => false,
 		];
@@ -342,7 +359,8 @@ class Order extends Abstract_Order {
 		$items      = array_filter( array_map(
 			static function ( $item ) {
 				/** @var Value $ticket_value */
-				$ticket_value = tribe( Ticket::class )->get_price_value( $item['ticket_id'] );
+				$ticket_value         = tribe( Ticket::class )->get_price_value( $item['ticket_id'] );
+				$ticket_regular_value = tribe( Ticket::class )->get_price_value( $item['ticket_id'], true );
 
 				if ( null === $ticket_value ) {
 					return null;
@@ -351,6 +369,9 @@ class Order extends Abstract_Order {
 				$item['price']     = $ticket_value->get_decimal();
 				$item['sub_total'] = $ticket_value->sub_total( $item['quantity'] )->get_decimal();
 				$item['event_id']  = tribe( Ticket::class )->get_related_event_id( $item['ticket_id'] );
+
+				$item['regular_price']     = $ticket_regular_value->get_decimal();
+				$item['regular_sub_total'] = $ticket_regular_value->sub_total( $item['quantity'] )->get_decimal();
 
 				return $item;
 			},
