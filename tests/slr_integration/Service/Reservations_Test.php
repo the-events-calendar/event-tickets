@@ -5,11 +5,15 @@ namespace TEC\Tickets\Seating\Service;
 use TEC\Tickets\Seating\Meta;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tests\Traits\WP_Remote_Mocks;
+use Tribe\Tickets\Test\Commerce\Attendee_Maker;
+use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 
 class Reservations_Test extends \Codeception\TestCase\WPTestCase {
 	use WP_Remote_Mocks;
 	use OAuth_Token;
 	use With_Uopz;
+	use Attendee_Maker;
+	use Ticket_Maker;
 
 	public function test_confirm(): void {
 		$this->set_oauth_token( 'auth-token' );
@@ -285,5 +289,94 @@ class Reservations_Test extends \Codeception\TestCase\WPTestCase {
 		// Fifth call: unsuccessful response.
 		$this->assertFalse( $reservations->cancel( 23, [ '1234567890', '0987654321' ] ) );
 		$this->assertEquals( 5, $service_cancellations );
+	}
+
+	public function test_delete_reservations_from_attendees(): void {
+		// Create 3 Attendees and assign a reservation ID to each one of them.
+		$post_id = static::factory()->post->create();
+		$ticket_id = $this->create_tc_ticket( $post_id, 10 );
+		[
+			$attendee_1,
+			$attendee_2,
+			$attendee_3,
+			$attendee_4,
+			$attendee_5
+		] = $this->create_many_attendees_for_ticket( 6, $ticket_id, $post_id );
+		update_post_meta( $attendee_1, Meta::META_KEY_RESERVATION_ID, 'reservation-uuid-1' );
+		update_post_meta( $attendee_2, Meta::META_KEY_RESERVATION_ID, 'reservation-uuid-2' );
+		update_post_meta( $attendee_3, Meta::META_KEY_RESERVATION_ID, 'reservation-uuid-3' );
+		update_post_meta( $attendee_4, Meta::META_KEY_RESERVATION_ID, 'reservation-uuid-4' );
+		update_post_meta( $attendee_5, Meta::META_KEY_RESERVATION_ID, 'reservation-uuid-5' );
+		add_filter( 'tec_tickets_seating_delete_reservations_from_attendees_batch_size', fn() => 2 );
+		$deleted = [];
+		add_action( 'tec_tickets_seating_delete_reservations_from_attendees', function ( $map ) use ( &$deleted ) {
+			$deleted[] = $map;
+		} );
+
+		$reservations = tribe( Reservations::class );
+
+		// Empty list of reservation UUIDs.
+		$this->assertEquals( 0, $reservations->delete_reservations_from_attendees( [] ) );
+
+		// List of reservation UUIDs with no Attendees.
+		$this->assertEquals( 0,
+			$reservations->delete_reservations_from_attendees( [
+				'reservation-uuid-6',
+				'reservation-uuid-7',
+				'reservation-uuid-8'
+			] )
+		);
+		$this->assertEquals( [], $deleted );
+
+		// List of reservation UUIDs with some Attendees.
+		$deleted = [];
+		$this->assertEquals( 3,
+			$reservations->delete_reservations_from_attendees( [
+				'reservation-uuid-1',
+				'reservation-uuid-2',
+				'reservation-uuid-3',
+				'reservation-uuid-6',
+				'reservation-uuid-7',
+				'reservation-uuid-8'
+			] )
+		);
+		$this->assertEquals( '', get_post_meta( $attendee_1, Meta::META_KEY_RESERVATION_ID, true ) );
+		$this->assertEquals( '', get_post_meta( $attendee_2, Meta::META_KEY_RESERVATION_ID, true ) );
+		$this->assertEquals( '', get_post_meta( $attendee_3, Meta::META_KEY_RESERVATION_ID, true ) );
+		$this->assertEquals( 'reservation-uuid-4', get_post_meta( $attendee_4, Meta::META_KEY_RESERVATION_ID, true ) );
+		$this->assertEquals( 'reservation-uuid-5', get_post_meta( $attendee_5, Meta::META_KEY_RESERVATION_ID, true ) );
+		$this->assertEquals( [
+			[
+				'reservation-uuid-1' => $attendee_1,
+				'reservation-uuid-2' => $attendee_2,
+			],
+			[
+				'reservation-uuid-3' => $attendee_3,
+			]
+		], $deleted );
+
+		// A second request to delete the rest.
+		$deleted = [];
+		$this->assertEquals( 2,
+			$reservations->delete_reservations_from_attendees( [
+				'reservation-uuid-1',
+				'reservation-uuid-2',
+				'reservation-uuid-3',
+				'reservation-uuid-4',
+				'reservation-uuid-5',
+				'reservation-uuid-6',
+				'reservation-uuid-7',
+				'reservation-uuid-8'
+			] )
+		);
+		$this->assertEquals( '', get_post_meta( $attendee_1, Meta::META_KEY_RESERVATION_ID, true ) );
+		$this->assertEquals( '', get_post_meta( $attendee_2, Meta::META_KEY_RESERVATION_ID, true ) );
+		$this->assertEquals( '', get_post_meta( $attendee_3, Meta::META_KEY_RESERVATION_ID, true ) );
+		$this->assertEquals( '', get_post_meta( $attendee_4, Meta::META_KEY_RESERVATION_ID, true ) );
+		$this->assertEquals( '', get_post_meta( $attendee_5, Meta::META_KEY_RESERVATION_ID, true ) );
+		$this->assertEquals( [
+			[ 'reservation-uuid-4' => $attendee_4, ],
+			[ 'reservation-uuid-5' => $attendee_5 ],
+		], $deleted );
 	}
 }

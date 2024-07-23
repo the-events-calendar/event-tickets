@@ -16,6 +16,7 @@ use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Seating\Ajax_Checks;
 use TEC\Tickets\Seating\Built_Assets;
+use TEC\Tickets\Seating\Logging;
 use TEC\Tickets\Seating\Service\Layouts;
 use TEC\Tickets\Seating\Service\Maps;
 use TEC\Tickets\Seating\Service\Reservations;
@@ -34,6 +35,7 @@ use Tribe__Tickets__Main as Tickets_Main;
 class Ajax extends Controller_Contract {
 	use Ajax_Checks;
 	use Built_Assets;
+	use Logging;
 
 	/**
 	 * The nonce action.
@@ -215,6 +217,7 @@ class Ajax extends Controller_Contract {
 		add_action( 'wp_ajax_nopriv_' . self::ACTION_POST_RESERVATIONS, [ $this, 'update_reservations' ] );
 		add_action( 'wp_ajax_' . self::ACTION_CLEAR_RESERVATIONS, [ $this, 'clear_reservations' ] );
 		add_action( 'wp_ajax_nopriv_' . self::ACTION_CLEAR_RESERVATIONS, [ $this, 'clear_reservations' ] );
+		add_action( 'wp_ajax_' . self::ACTION_DELETE_RESERVATIONS, [ $this, 'delete_reservations' ] );
 
 		add_action( 'tec_tickets_seating_session_interrupt', [ $this, 'clear_commerce_cart_cookie' ] );
 	}
@@ -240,6 +243,7 @@ class Ajax extends Controller_Contract {
 		remove_action( 'wp_ajax_' . self::ACTION_CLEAR_RESERVATIONS, [ $this, 'clear_reservations' ] );
 		remove_action( 'wp_ajax_nopriv_' . self::ACTION_CLEAR_RESERVATIONS, [ $this, 'clear_reservations' ] );
 		remove_action( 'tec_tickets_seating_session_interrupt', [ $this, 'clear_commerce_cart_cookie' ] );
+		remove_action( 'wp_ajax_' . self::ACTION_DELETE_RESERVATIONS, [ $this, 'delete_reservations' ] );
 	}
 
 	/**
@@ -422,6 +426,24 @@ class Ajax extends Controller_Contract {
 	}
 
 	/**
+	 * Returns the request body.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The request body.
+	 */
+	protected function get_request_body(): string {
+		if ( function_exists( 'wpcom_vip_file_get_contents' ) ) {
+			$body = wpcom_vip_file_get_contents( 'php://input' );
+		} else {
+			// phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsRemoteFile
+			$body = trim( file_get_contents( 'php://input' ) );
+		}
+
+		return $body;
+	}
+
+	/**
 	 * Handles the request to update reservations on the Service.
 	 *
 	 * @since TBD
@@ -446,13 +468,7 @@ class Ajax extends Controller_Contract {
 			return;
 		}
 
-		if ( function_exists( 'wpcom_vip_file_get_contents' ) ) {
-			$body = wpcom_vip_file_get_contents( 'php://input' );
-		} else {
-			// phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsRemoteFile
-			$body = trim( file_get_contents( 'php://input' ) );
-		}
-
+		$body = $this->get_request_body();
 		$decoded = json_decode( $body, true );
 
 		if ( ! (
@@ -598,5 +614,73 @@ class Ajax extends Controller_Contract {
 
 		// phpcs:ignore WordPressVIPMinimum.Variables.RestrictedVariables.cache_constraints___COOKIE
 		unset( $_COOKIE[ $cookie_name ] );
+	}
+
+	/**
+	 * Handles the request to delete reservations from attendees.
+	 *
+	 * @since TBD
+	 *
+	 * @return void The function does not return a value but will send the JSON response.
+	 */
+	public function delete_reservations(): void {
+		if ( ! $this->check_current_ajax_user_can( 'manage_options' ) ) {
+			wp_send_json_error(
+				[
+					'error' => 'Nonce verification failed',
+				],
+				403
+			);
+
+			return;
+		}
+
+		$body = $this->get_request_body();
+		$json = json_decode( $body, true );
+
+		if ( ! ( is_array( $json ) ) ) {
+			wp_send_json_error(
+				[
+					'error' => 'Invalid request body',
+				],
+				400
+			);
+
+			return;
+		}
+
+		$reservation_ids = array_map( 'strval', array_filter( $json ) );
+
+		if ( empty( $reservation_ids ) ) {
+			wp_send_json_error(
+				[
+					'error' => 'Invalid request body',
+				],
+				400
+			);
+
+			return;
+		}
+
+		try {
+			$deleted = $this->reservations->delete_reservations_from_attendees( $reservation_ids );
+		} catch ( \Exception $e ) {
+			$this->log_error(
+				'Failed to delete reservations from attendees.',
+				[
+					'source' => __METHOD__,
+					'error'  => $e->getMessage(),
+				]
+			);
+
+			wp_send_json_error(
+				[
+					'error' => 'Failed to delete reservations from attendees',
+				],
+				500
+			);
+		}
+
+		wp_send_json_success( [ 'numberDeleted' => $deleted ] );
 	}
 }

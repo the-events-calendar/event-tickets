@@ -9,6 +9,7 @@
 
 namespace TEC\Tickets\Seating\Service;
 
+use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Seating\Logging;
 use TEC\Tickets\Seating\Meta;
 
@@ -48,7 +49,7 @@ class Reservations {
 	 *
 	 * @since TBD
 	 *
-	 * @param int      $object_id The object ID to cancel the reservations for.
+	 * @param int      $object_id    The object ID to cancel the reservations for.
 	 * @param string[] $reservations The reservations to cancel.
 	 *
 	 * @return bool Whether the reservations were cancelled or not.
@@ -126,6 +127,17 @@ class Reservations {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Returns the URL to the endpoint to cancel the reservations.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The URL to the endpoint to cancel the reservations.
+	 */
+	public function get_cancel_url(): string {
+		return $this->service_fetch_url . '/cancel';
 	}
 
 	/**
@@ -212,17 +224,6 @@ class Reservations {
 	}
 
 	/**
-	 * Returns the URL to the endpoint to cancel the reservations.
-	 *
-	 * @since TBD
-	 *
-	 * @return string The URL to the endpoint to cancel the reservations.
-	 */
-	public function get_cancel_url(): string {
-		return $this->service_fetch_url . '/cancel';
-	}
-
-	/**
 	 * Returns the URL to the endpoint to confirm the reservations.
 	 *
 	 * @since TBD
@@ -231,5 +232,132 @@ class Reservations {
 	 */
 	public function get_confirm_url(): string {
 		return $this->service_fetch_url . '/confirm';
+	}
+
+	/**
+	 * Deletes reservations from Attendees.
+	 *
+	 * @since TBD
+	 *
+	 * @param string[] $reservation_ids The IDs of the reservations to delete.
+	 *
+	 * @return int The number of Attendees whose reservations were deleted.
+	 *
+	 * @throws \Exception If the query fails.
+	 */
+	public function delete_reservations_from_attendees( array $reservation_ids ): int {
+		if ( empty( $reservation_ids ) ) {
+			return 0;
+		}
+
+		global $wpdb;
+		$attendee_post_types = tribe_attendees()->attendee_types();
+
+		if ( empty( $attendee_post_types ) ) {
+			return 0;
+		}
+
+		$attendee_post_types_list = DB::prepare(
+			implode( ', ', array_fill( 0, count( $attendee_post_types ), '%s' ) ),
+			...array_values( $attendee_post_types )
+		);
+
+		/**
+		 * Filters the batch size used to delete reservations from Attendees.
+		 * This value should be adjusted to make sure the query will not go over the limits imposed by the database
+		 * in its `max_allowed_packet` setting. Furthermore, security and performance plugins might also impose limits
+		 * on the size of the query.
+		 *
+		 * @since TBD
+		 *
+		 * @param int $batch_size The batch size.
+		 */
+		$batch_size = (int) apply_filters(
+			'tec_tickets_seating_delete_reservations_from_attendees_batch_size',
+			100
+		);
+
+		$removed = 0;
+		do {
+			$reservation_ids_batch = array_splice( $reservation_ids, 0, $batch_size );
+			$reservation_ids_list  = DB::prepare(
+				implode( ', ', array_fill( 0, count( $reservation_ids_batch ), '%s' ) ),
+				...$reservation_ids_batch
+			);
+
+			$affected = DB::get_results(
+				DB::prepare(
+					"SELECT pm.post_id, pm.meta_id, pm.meta_value FROM %i pm
+					JOIN %i p ON p.ID = pm.post_id AND p.post_type IN ({$attendee_post_types_list})
+					AND meta_key = %s AND meta_value IN ({$reservation_ids_list})
+					ORDER BY pm.meta_id",
+					$wpdb->postmeta,
+					$wpdb->posts,
+					Meta::META_KEY_RESERVATION_ID
+				),
+				ARRAY_A
+			);
+
+			/*
+			 * The number of affected Attendees might not match the number of reservation IDs in the batch
+			 * generating a potentially wasteful, sparse DELETE query. This should not be the case in most
+			 * instances and saves more queries while trying to prepare a dense DELETE query.
+			 */
+
+			if ( empty( $affected ) ) {
+				continue;
+			}
+
+			$reservation_to_attendee_map = array_combine(
+				array_column( $affected, 'meta_value' ),
+				array_column( $affected, 'post_id' )
+			);
+
+			/**
+			 * Fires before the reservation meta is removed from Attendees following a removal of that reservation
+			 * from the service.
+			 *
+			 * Note this action will fire multiple times, once for each batch of reservations.
+			 *
+			 * @since TBD
+			 *
+			 * @param array<string,int> $reservation_to_attendee_map The map from reservation UUIDs to Attendee IDs.
+			 */
+			do_action( 'tec_tickets_seating_delete_reservations_from_attendees', $reservation_to_attendee_map );
+
+			$meta_ids_list = DB::prepare(
+				implode( ', ', array_fill( 0, count( $affected ), '%d' ) ),
+				...array_column( $affected, 'meta_id' )
+			);
+
+			$removed_here = (int) DB::query(
+				DB::prepare(
+					"DELETE FROM %i where meta_id in ({$meta_ids_list})",
+					$wpdb->postmeta,
+					$wpdb->posts,
+					Meta::META_KEY_RESERVATION_ID
+				)
+			);
+
+			foreach ( array_column( $affected, 'post_id' ) as $attendee_post_id ) {
+				clean_post_cache( $attendee_post_id );
+			}
+
+			/**
+			 * Fires after the reservation meta is removed from Attendees following a removal of that reservation
+			 * from the service.
+			 *
+			 * Note this action will fire multiple times, once for each batch of reservations.
+			 *
+			 * @since TBD
+			 *
+			 * @param array<string,int> $reservation_to_attendee_map The map from reservation UUIDs to Attendee IDs.
+			 */
+			do_action( 'tec_tickets_seating_deleted_reservations_from_attendees', $reservation_to_attendee_map );
+
+			$removed += $removed_here;
+		} while ( count( $reservation_ids ) > 0 );
+
+		return $removed;
 	}
 }
