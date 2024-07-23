@@ -18,20 +18,28 @@
  * @var bool $must_login Global] Whether login is required to buy tickets or not.
  */
 
+// Bail if the cart is empty.
 if ( empty( $items ) ) {
 	return;
 }
 
+// Bail if user needs to login, but is not logged in.
 if ( ! is_user_logged_in() && $must_login ) {
 	return;
 }
 
-$show_address    = false;
-$info_title      = __( 'Purchaser info', 'event-tickets' );
-$payment_methods = ( new TEC\Tickets\Commerce\Gateways\Stripe\Merchant() )->get_payment_method_types();
-if ( ( 1 === count( $payment_methods ) && 'card' !== $payment_methods[0] ) || 1 < count( $payment_methods ) ) {
-	$show_address = true;
-	$info_title   = __( 'Billing info', 'event-tickets' );
+$info_title   = __( 'Purchaser info', 'event-tickets' );
+$show_address = false;
+foreach ( $gateways as $gateway ) {
+	// Check if Stripe is active and enabled.
+	if ( 'stripe' === $gateway::get_key() && $gateway::is_enabled() && $gateway::is_active() ) {
+		$payment_methods = ( new TEC\Tickets\Commerce\Gateways\Stripe\Merchant() )->get_payment_method_types();
+		// If more than one payment method, or if only one but not a card, we need to show the address fields.
+		if ( 1 < count( $payment_methods ) || ( 1 === count( $payment_methods ) && 'card' !== $payment_methods[0] ) ) {
+			$info_title   = __( 'Billing info', 'event-tickets' );
+			$show_address = true;
+		}
+	}
 }
 
 ?>
@@ -47,5 +55,8 @@ if ( ( 1 === count( $payment_methods ) && 'card' !== $payment_methods[0] ) || 1 
 			<?php $this->template( 'checkout/purchaser-info/zip' ); ?>
 			<?php $this->template( 'checkout/purchaser-info/country' ); ?>
 		</div>
+		<button id="tec-tc-gateway-stripe-render-payment" class="tribe-common-c-btn tribe-tickets__commerce-checkout-form-submit-button">
+			<?php esc_html_e( 'Proceed to payment', 'event-tickets' ); ?>
+		</button>
 	<?php endif; ?>
 </div>

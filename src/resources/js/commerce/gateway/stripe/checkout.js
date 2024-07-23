@@ -46,6 +46,8 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		cardErrors: '#tec-tc-gateway-stripe-errors',
 		paymentElement: '#tec-tc-gateway-stripe-payment-element',
 		paymentMessage: '#tec-tc-gateway-stripe-payment-message',
+		infoForm: '.tribe-tickets__commerce-checkout-purchaser-info-wrapper',
+		renderButton: '#tec-tc-gateway-stripe-render-payment',
 		submitButton: '#tec-tc-gateway-stripe-checkout-button',
 		hiddenElement: '.tribe-common-a11y-hidden'
 	};
@@ -504,19 +506,81 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * @since 5.3.0
 	 */
 	obj.setupPaymentElement = () => {
+		// Only if we don't have the address fields to collect
+		if ( obj.selectors.renderButton == null ) {
+			const walletSettings = obj.getWallets();
+			// Instantiate the PaymentElement
+			obj.paymentElement = obj.stripeElements.create( 'payment', {
+				fields: {
+					name: 'auto',
+					email: 'auto',
+					phone: 'auto',
+					address: 'auto'
+				},
+				wallets: walletSettings
+			} );
+			obj.paymentElement.mount( obj.selectors.paymentElement );
+		}
+	};
+
+	obj.renderPayment = () => {
+		const form = $( obj.selectors.infoForm );
+		const fields = form.find('input, select');
+		let valid = true;
+		fields.each((index, field) => {
+			field.classList.remove('error');
+			if (field.required && field.value === '') {
+				valid = false;
+				field.classList.add('error');
+			}
+		});
+
+		if (!valid) {
+			return;
+		}
+
+		$( obj.selectors.renderButton ).addClass( obj.selectors.hiddenElement.className() );
+		form.children('select, input').prop( 'disabled', true );
+		form.addClass( 'disabled' );
 		const walletSettings = obj.getWallets();
-		// Instantiate the PaymentElement
 		obj.paymentElement = obj.stripeElements.create( 'payment', {
-			fields: {
-				name: 'auto',
-				email: 'auto',
-				phone: 'auto',
-				address: 'auto'
+			defaultValues: {
+				billingDetails: {
+					name: $('#tec-tc-purchaser-name').val(),
+					email: $('#tec-tc-purchaser-email').val(),
+					phone: '',
+					address: {
+						line1: $('#tec-tc-purchaser-address1').val(),
+						line2: $('#tec-tc-purchaser-address2').val(),
+						city: $('#tec-tc-purchaser-city').val(),
+						state: $('tec-tc-purchaser-state').val(),
+						country: $('#tec-tc-purchaser-country').val(),
+						postal_code: $('#tec-tc-purchaser-zip').val()
+					}
+				},
+				shippingDetails: {
+					name: $('#tec-tc-purchaser-name').val(),
+					email: $('#tec-tc-purchaser-email').val(),
+					phone: '',
+					address: {
+						line1: $('#tec-tc-purchaser-address1').val(),
+						line2: $('#tec-tc-purchaser-address2').val(),
+						city: $('#tec-tc-purchaser-city').val(),
+						state: $('tec-tc-purchaser-state').val(),
+						country: $('#tec-tc-purchaser-country').val(),
+						postal_code: $('#tec-tc-purchaser-zip').val()
+					}
+				},
 			},
 			wallets: walletSettings
 		} );
 		obj.paymentElement.mount( obj.selectors.paymentElement );
-	};
+		setTimeout(() => {
+			$('.tribe-tickets__commerce-checkout-gateways').get(0).scrollIntoView({behavior: 'smooth'});
+			$( obj.selectors.submitButton ).removeClass( obj.selectors.hiddenElement.className() );
+		}, 2000);
+	}
+
 
 	/**
 	 * Setup and initialize Stripe API.
@@ -604,6 +668,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * @since 5.3.0
 	 */
 	obj.bindEvents = () => {
+		$( obj.selectors.renderButton ).on( 'click', obj.renderPayment );
 		$( obj.selectors.submitButton ).on( 'click', obj.handlePayment );
 	};
 
