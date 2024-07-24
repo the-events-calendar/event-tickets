@@ -19,6 +19,8 @@ import {
 	OUTBOUND_REMOVE_RESERVATIONS,
 	OUTBOUND_EVENT_ATTENDEES,
 	RESERVATIONS_DELETED,
+	RESERVATIONS_UPDATED,
+	SEAT_TYPES_UPDATED,
 } from './service-actions.js';
 
 /**
@@ -259,6 +261,8 @@ window.tec.tickets.seating.service.api = {
 	OUTBOUND_EVENT_ATTENDEES,
 	INBOUND_SEATS_SELECTED,
 	RESERVATIONS_DELETED,
+	RESERVATIONS_UPDATED,
+	SEAT_TYPES_UPDATED,
 	sendPostMessage,
 	startListeningForServiceMessages,
 	establishReadiness,
