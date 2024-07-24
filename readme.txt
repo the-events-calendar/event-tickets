@@ -208,6 +208,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [5.13.0.1] 2024-07-24 =
 
 * Fix - Stellar Sale's banner copy. [TECTRIA-204]
+* Fix - Added missing global property for javascript undefined error `Uncaught TypeError: format is undefined`. This happened during ticket checkout. [ET-2148]
 
 = [5.13.0] 2024-07-22 =
 
@@ -224,9 +225,6 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Tweak - Added filters: `tribe_tickets_admin_order_page_page_title`, `tribe_tickets_admin_order_page_menu_title`, `tribe_tickets_admin_order_page_capability`, `tribe_tickets_admin_order_page_menu_slug`, `tribe_tickets_admin_order_page_position`, `tec_tickets_commerce_orders_table_classes`, `tec_tickets_commerce_orders_table_no_items`, `tec_tc_order_search_types`, `tec_tc_orders_disable_date_range_dropdown`, `tec_tc_orders_disable_gateways_dropdown`, `tec_tc_orders_pre_gateways_dropdown_query`, `tec_tc_orders_gateways_dropdown_results`, `tec_tc_orders_disable_post_parent_dropdown`, `tec_tc_orders_disable_customer_dropdown`
 * Tweak - Added actions: `restrict_manage_posts`, `manage_posts_extra_tablenav`
 * Language - 18 new strings added, 26 updated, 1 fuzzied, and 2 obsoleted
-= [TBD] TBD =
-
-* Fix - Added missing global property for javascript undefined error `Uncaught TypeError: format is undefined`. This happened during ticket checkout.
 
 = [5.11.0.5] 2024-07-11 =
 
