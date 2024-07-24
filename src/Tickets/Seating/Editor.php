@@ -49,7 +49,8 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 	 *     seatTypes: array<array{id: string, name: string, seats: int}>,
 	 *     currentLayoutId: string,
 	 *     seatTypesByPostId: array<string, string>,
-	 *     isLayoutLocked: bool
+	 *     isLayoutLocked: bool,
+	 *     eventCapacity: number,
 	 * }
 	 */
 	public function get_store_data(): array {
