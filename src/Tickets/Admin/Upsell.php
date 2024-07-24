@@ -19,6 +19,7 @@ class Upsell {
 	 * Method to register Upsell-related hooks.
 	 *
 	 * @since 5.3.4
+	 * @since TBD Remove emails settings filter.
 	 */
 	public function hooks() {
 		add_action( 'tribe_events_tickets_pre_edit', [ $this, 'maybe_show_capacity_arf' ] );
@@ -30,8 +31,6 @@ class Upsell {
 			$this,
 			'render_ticket_type_upsell_notice'
 		], 20, 3 );
-
-		add_filter( 'tec_tickets_emails_settings_template_list', [ $this, 'show_on_emails_settings_page' ] );
 	}
 
 	/**
@@ -69,6 +68,7 @@ class Upsell {
 	 * Show upsell on Attendees page.
 	 *
 	 * @since 5.7.1
+	 * @since TBD Remove wallet plus notice.
 	 *
 	 * @return void
 	 */
@@ -79,28 +79,9 @@ class Upsell {
 		}
 
 		$has_tickets_plus = class_exists( '\Tribe__Tickets_Plus__Main', false );
-		$has_wallet_plus  = class_exists( '\TEC\Tickets_Wallet_Plus\Plugin', false );
 
-		// If both Tickets Plus and Wallet Plus are installed, then bail.
-		if ( $has_tickets_plus && $has_wallet_plus ) {
-			return;
-		}
-
-		// If Tickets Plus installed, but not Wallet Plus.
-		if ( $has_tickets_plus && ! $has_wallet_plus ) {
-			$this->show_wallet_plus();
-			return;
-		}
-
-		// If Wallet Plus installed, but not Tickets Plus.
-		if ( ! $has_tickets_plus && $has_wallet_plus ) {
-			$this->maybe_show_manual_attendees();
-			return;
-		}
-
-		// 50% chance of showing either upsell.
-		if ( wp_rand( 0, 1 ) ) {
-			$this->show_wallet_plus();
+		// If Tickets Plus is installed, then bail.
+		if ( $has_tickets_plus ) {
 			return;
 		}
 
@@ -142,31 +123,14 @@ class Upsell {
 	/**
 	 * Maybe show upsell for Wallet Plus.
 	 *
+	 * @deprecated TBD
+	 *
 	 * @since 5.7.1
 	 *
 	 * @return void
 	 */
 	public function show_wallet_plus() {
-
-		echo '<div class="welcome-panel-column welcome-panel-extra">';
-		tribe( Upsell_Notice\Main::class )->render( [
-			'classes' => [
-				'tec-admin__upsell-tec-tickets-wallet-plus'
-			],
-			'text'    => sprintf(
-				// Translators: %s: Link to "Wallet Plus" plugin.
-				esc_html__( 'Get additional ticketing flexibility including Apple Wallet and PDF tickets with %s' , 'event-tickets' ),
-				''
-			),
-			'link'    => [
-				'classes' => [
-					'tec-admin__upsell-link--underlined'
-				],
-				'text'    => 'Wallet Plus',
-				'url'     => 'https://evnt.is/1bd9',
-			],
-		] );
-		echo '</div>';
+		_deprecated_function( __METHOD__, 'TBD', '' );
 	}
 
 	/**
@@ -250,6 +214,8 @@ class Upsell {
 	/**
 	 * Show upsell on Emails Settings page.
 	 *
+	 * @deprecated TBD
+	 *
 	 * @since 5.7.1
 	 *
 	 * @param array $fields Template list settings fields.
@@ -257,32 +223,6 @@ class Upsell {
 	 * @return array Filtered template list settings fields.
 	 */
 	public function show_on_emails_settings_page( $fields ) {
-		// If they already have ET+ activated or are not within the admin area, then bail.
-		if ( class_exists( '\TEC\Tickets_Wallet_Plus\Plugin', false ) || ! is_admin() ) {
-			return $fields;
-		}
-
-		$fields[] = [
-			'type' => 'html',
-			'html'  => tribe( Upsell_Notice\Main::class )->render( [
-				'classes' => [
-					'tec-admin__upsell-tec-tickets-wallet-plus'
-				],
-				'text'    => sprintf(
-					// Translators: %s: Link to "Wallet Plus" plugin.
-					esc_html__( 'Get additional ticketing flexibility including Apple Wallet and PDF tickets with %s' , 'event-tickets' ),
-					''
-				),
-				'link'    => [
-					'classes' => [
-						'tec-admin__upsell-link--underlined'
-					],
-					'text'    => 'Wallet Plus',
-					'url'     => 'https://evnt.is/1bd8',
-				],
-			], false ),
-		];
-
-		return $fields;
+		_deprecated_function( __METHOD__, 'TBD', '' );
 	}
 }
