@@ -668,8 +668,8 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 * @since 5.3.0
 	 */
 	obj.bindEvents = () => {
-		$( obj.selectors.renderButton ).on( 'click', obj.renderPayment );
-		$( obj.selectors.submitButton ).on( 'click', obj.handlePayment );
+		$( document ).on( 'click', obj.selectors.renderButton, obj.renderPayment );
+		$( document ).on( 'click', obj.selectors.submitButton, obj.handlePayment );
 	};
 
 	/**

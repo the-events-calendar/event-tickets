@@ -32,7 +32,7 @@ if ( empty( $items ) || ! tribe_is_truthy( $gateways_active ) ) {
 }
 
 // Bail if user needs to login, but is not logged in.
-if ( ! is_user_logged_in() && $must_login ) {
+if ( $must_login && ! is_user_logged_in() ) {
 	return;
 }
 
