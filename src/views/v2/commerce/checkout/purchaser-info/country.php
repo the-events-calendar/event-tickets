@@ -49,7 +49,7 @@ foreach ( $countries as $k => $v ) {
 			<?php tribe_classes( $field_classes ); ?>
 			required
 		>
-			<?php echo $options; // phpcs:ignore WordPress.Security.EscapeOutput ?>
+			<?php echo $options; // phpcs:ignore WordPress.Security.EscapeOutput,StellarWP.XSS.EscapeOutput ?>
 		</select>
 	</div>
 </div>
