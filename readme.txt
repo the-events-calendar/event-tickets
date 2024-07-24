@@ -208,6 +208,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [TBD] TBD =
 
 * Fix - Ensure that users fill in all required billing address fields when Stripes advanced peyment methods are available. [ETP-934]
+* Fix - Added missing global property for javascript undefined error `Uncaught TypeError: format is undefined`. This happened during ticket checkout.
 
 = [5.13.0] 2024-07-22 =
 

@@ -76,8 +76,7 @@ class Block extends Abstract_Block {
 	public function assets() {
 		// Check whether we use v1 or v2. We need to update this when we deprecate tickets v1.
 		$tickets_js = tribe_tickets_new_views_is_enabled() ? 'v2/tickets-block.js' : 'tickets-block.js';
-
-		$plugin = Tickets_Main::instance();
+		$plugin     = Tickets_Main::instance();
 
 		tribe_asset(
 			$plugin,
