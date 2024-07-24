@@ -205,6 +205,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Fix - Ensure that users fill in all required billing address fields when Stripes advanced peyment methods are available. [ETP-934]
+
 = [5.13.0] 2024-07-22 =
 
 * Feature - Included compatibility with Events Tickets Plus 6.0.0 for integrations with Zapier and Power Automate.
