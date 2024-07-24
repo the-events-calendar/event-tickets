@@ -207,7 +207,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [5.13.0.1] 2024-07-24 =
 
-* Fix - Stellar Sale's banner copy. [TEC-5121]
+* Fix - Stellar Sale's banner links, details, and HTML tags handling. [TEC-5121]
 * Fix - Added missing global property for javascript undefined error `Uncaught TypeError: format is undefined`. This happened during ticket checkout. [ET-2148]
 
 = [5.13.0] 2024-07-22 =
