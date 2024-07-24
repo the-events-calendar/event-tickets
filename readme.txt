@@ -205,6 +205,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [5.13.0.1] 2024-07-24 =
+
+* Fix - Stellar Sale's banner copy. [TECTRIA-204]
+
 = [5.13.0] 2024-07-22 =
 
 * Feature - Included compatibility with Events Tickets Plus 6.0.0 for integrations with Zapier and Power Automate.
