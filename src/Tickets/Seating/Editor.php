@@ -155,7 +155,7 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 	private function register_block_editor_assets(): void {
 		Asset::add(
 			'tec-tickets-seating-block-editor',
-			$this->built_asset_url( 'block-editor.js' ),
+			$this->built_asset_url( 'blockEditor.js' ),
 			Tickets::VERSION
 		)
 			->set_dependencies(
@@ -182,7 +182,7 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 
 		Asset::add(
 			'tec-tickets-seating-block-editor-style',
-			$this->built_asset_url( 'block-editor.css' ),
+			$this->built_asset_url( 'blockEditor.css' ),
 			Tickets::VERSION
 		)
 			->enqueue_on( 'enqueue_block_editor_assets' )
