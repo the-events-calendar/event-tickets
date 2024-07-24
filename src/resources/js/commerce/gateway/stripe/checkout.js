@@ -507,7 +507,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 	 */
 	obj.setupPaymentElement = () => {
 		// Only if we don't have the address fields to collect
-		if ( obj.selectors.renderButton == null ) {
+		if ( 0 === $('#tec-tc-gateway-stripe-render-payment').length ) {
 			const walletSettings = obj.getWallets();
 			// Instantiate the PaymentElement
 			obj.paymentElement = obj.stripeElements.create( 'payment', {
