@@ -30,7 +30,7 @@ $field_classes = [
 ?>
 <div class="tribe-tickets__commerce-checkout-purchaser-info-field tribe-tickets__form-field tribe-tickets__form-field--text">
 	<label for="tec-tc-purchaser-address1" <?php tribe_classes( $label_classes ); ?>>
-		<?php esc_html_e( 'Address Line 1:', 'event-tickets' ); ?>
+		<?php esc_html_e( 'Address line 1', 'event-tickets' ); ?>
 	</label>
 	<div class="tribe-tickets__form-field-input-wrapper">
 		<input
@@ -38,22 +38,28 @@ $field_classes = [
 			id="tec-tc-purchaser-address1"
 			name="purchaser-address1"
 			autocomplete="off"
+			placeholder="<?php esc_attr_e( 'Street address', 'event-tickets' ); ?>"
 			<?php tribe_classes( $field_classes ); ?>
 			required
 		/>
+		<div class="tribe-common-b3 tribe-tickets__form-field-description tribe-common-a11y-hidden error">
+			<?php esc_html_e( 'Your address is required', 'event-tickets' ); ?>
+		</div>
 	</div>
 </div>
 <div class="tribe-tickets__commerce-checkout-purchaser-info-field tribe-tickets__form-field tribe-tickets__form-field--text">
 	<label for="tec-tc-purchaser-address2" <?php tribe_classes( $label_classes ); ?>>
-		<?php esc_html_e( 'Address Line 2 (optional):', 'event-tickets' ); ?>
+		<?php esc_html_e( 'Address line 2', 'event-tickets' ); ?>
 	</label>
 	<div class="tribe-tickets__form-field-input-wrapper">
 		<input
 			type="text"
 			id="tec-tc-purchaser-address2"
 			name="purchaser-address2"
+			placeholder="<?php esc_attr_e( 'Apt., suite, unit number, etc (optional)', 'event-tickets' ); ?>"
 			autocomplete="off"
 			<?php tribe_classes( $field_classes ); ?>
 		/>
+		<div class="tribe-common-b3 tribe-tickets__form-field-description tribe-common-a11y-hidden error"></div>
 	</div>
 </div>

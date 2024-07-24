@@ -529,9 +529,11 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		let valid = true;
 		fields.each((index, field) => {
 			field.classList.remove('error');
+			field.nextElementSibling.classList.add( obj.selectors.hiddenElement.className() );
 			if (field.required && field.value === '') {
 				valid = false;
 				field.classList.add('error');
+				field.nextElementSibling.classList.remove( obj.selectors.hiddenElement.className() );
 			}
 		});
 
@@ -578,6 +580,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 		setTimeout(() => {
 			$('.tribe-tickets__commerce-checkout-gateways').get(0).scrollIntoView({behavior: 'smooth'});
 			$( obj.selectors.submitButton ).removeClass( obj.selectors.hiddenElement.className() );
+			$('.tribe-tickets__commerce-checkout-section-header').removeClass( obj.selectors.hiddenElement.className() )
 		}, 2000);
 	}
 

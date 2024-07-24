@@ -38,7 +38,7 @@ foreach ( $countries as $k => $v ) {
 ?>
 <div class="tribe-tickets__commerce-checkout-purchaser-info-field tribe-tickets__form-field tribe-tickets__form-field--country">
 	<label for="tec-tc-purchaser-country" <?php tribe_classes( $label_classes ); ?>>
-		<?php esc_html_e( 'Country:', 'event-tickets' ); ?>
+		<?php esc_html_e( 'Country or region', 'event-tickets' ); ?>
 	</label>
 
 	<div class="tribe-tickets__form-field-input-wrapper">
@@ -51,5 +51,8 @@ foreach ( $countries as $k => $v ) {
 		>
 			<?php echo $options; // phpcs:ignore WordPress.Security.EscapeOutput,StellarWP.XSS.EscapeOutput ?>
 		</select>
+		<div class="tribe-common-b3 tribe-tickets__form-field-description tribe-common-a11y-hidden error">
+			<?php esc_html_e( 'Your country is required', 'event-tickets' ); ?>
+		</div>
 	</div>
 </div>

@@ -31,7 +31,7 @@ $field_classes = [
 ?>
 <div class="tribe-tickets__commerce-checkout-purchaser-info-field tribe-tickets__form-field tribe-tickets__form-field--state">
 	<label for="tec-tc-purchaser-state" <?php tribe_classes( $label_classes ); ?>>
-		<?php esc_html_e( 'State:', 'event-tickets' ); ?>
+		<?php esc_html_e( 'State', 'event-tickets' ); ?>
 	</label>
 
 	<div class="tribe-tickets__form-field-input-wrapper">
@@ -43,5 +43,8 @@ $field_classes = [
 			<?php tribe_classes( $field_classes ); ?>
 			required
 		/>
+		<div class="tribe-common-b3 tribe-tickets__form-field-description tribe-common-a11y-hidden error">
+			<?php esc_html_e( 'Your state is required', 'event-tickets' ); ?>
+		</div>
 	</div>
 </div>
