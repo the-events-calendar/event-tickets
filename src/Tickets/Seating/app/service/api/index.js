@@ -1,5 +1,5 @@
 // Get the service base URL without the trailing slash.
-import { getBaseUrl } from './externals.js';
+import { getBaseUrl } from './localized-data.js';
 import {
 	setIsReady,
 	setEstablishingReadiness,
@@ -18,6 +18,7 @@ import {
 	OUTBOUND_SEAT_TYPE_TICKETS,
 	OUTBOUND_REMOVE_RESERVATIONS,
 	OUTBOUND_EVENT_ATTENDEES,
+	RESERVATIONS_DELETED,
 } from './service-actions.js';
 
 /**
@@ -48,7 +49,7 @@ export function sendPostMessage(iframe, action, data) {
 		{
 			action,
 			token,
-			data: data || {},
+			data: data || null,
 		},
 		getBaseUrl()
 	);
@@ -257,6 +258,7 @@ window.tec.tickets.seating.service.api = {
 	OUTBOUND_REMOVE_RESERVATIONS,
 	OUTBOUND_EVENT_ATTENDEES,
 	INBOUND_SEATS_SELECTED,
+	RESERVATIONS_DELETED,
 	sendPostMessage,
 	startListeningForServiceMessages,
 	establishReadiness,

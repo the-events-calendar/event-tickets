@@ -10,8 +10,21 @@ global.tec.tickets.seating = {
 			'https://wordpress.test/wp-admin/admin.php?page=tec-tickets-seating&tab=layouts',
 		layoutsHomeUrl:
 			'https://wordpress.test/wp-admin/admin.php?page=tec-tickets-seating&tab=layouts',
+	},
+	ajax: {
 		ajaxUrl: 'https://wordpress.test/wp-admin/admin-ajax.php',
 		ajaxNonce: '1234567890',
+	},
+	utils: {
+		localizedStrings: {
+			layouts: {
+				'delete-confirmation':
+					'Are you sure you want to delete this layout?',
+				'delete-failed': 'Failed to delete the layout.',
+				'edit-confirmation':
+					'This layout is associated with {count} events. Changes will impact all existing events and may affect the seating assignment of active ticket holders.',
+			},
+		},
 	},
 	frontend: {
 		ticketsBlock: {

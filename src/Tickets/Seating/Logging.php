@@ -23,7 +23,7 @@ trait Logging {
 	 * @since TBD
 	 *
 	 * @param string $message The message to log.
-	 * @param array $context The context of the message.
+	 * @param array  $context The context of the message.
 	 *
 	 * @return void The message is logged.
 	 */

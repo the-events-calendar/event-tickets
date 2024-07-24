@@ -242,6 +242,7 @@ async function postReservationsToBackend(reservations) {
 	const requestUrl = new URL(ajaxUrl);
 	requestUrl.searchParams.set('_ajax_nonce', ajaxNonce);
 	requestUrl.searchParams.set('action', ACTION_POST_RESERVATIONS);
+	requestUrl.searchParams.set('postId', postId);
 	let response = null;
 
 	response = await fetch(requestUrl.toString(), {
@@ -598,7 +599,7 @@ async function waitForModalElement() {
 waitForModalElement().then((modalElement) => {
 	modalElement.on('show', () => {
 		disableCheckout();
-		bootstrapIframe();
+		bootstrapIframe(document);
 		addModalEventListeners();
 	});
 });
