@@ -1,7 +1,7 @@
 import { createReduxStore, register } from '@wordpress/data';
 import { getTicketIdFromCommonStore } from './common-store-bridge';
-
-const { fetchSeatTypesByLayoutId } = tec.tickets.seating.ajax;
+import { controls } from './controls';
+import { selectors } from './selectors';
 
 const storeName = 'tec-tickets-seating';
 
@@ -24,6 +24,12 @@ const actions = {
 		return {
 			type: 'SET_LAYOUT',
 			layoutId,
+		};
+	},
+	setEventCapacity(eventCapacity) {
+		return {
+			type: 'SET_EVENT_CAPACITY',
+			eventCapacity,
 		};
 	},
 	setSeatTypesForLayout(layoutId, seatTypes) {
@@ -53,7 +59,6 @@ const actions = {
 		};
 	},
 };
-
 const store = createReduxStore(storeName, {
 	reducer(state = DEFAULT_STATE, action) {
 		switch (action.type) {
@@ -66,6 +71,11 @@ const store = createReduxStore(storeName, {
 				return {
 					...state,
 					currentLayoutId: action.layoutId,
+				};
+			case 'SET_EVENT_CAPACITY':
+				return {
+					...state,
+					eventCapacity: action.eventCapacity,
 				};
 			case 'SET_SEAT_TYPES_FOR_LAYOUT':
 				const reduceSeatTypes = action.seatTypes.reduce(
@@ -107,78 +117,8 @@ const store = createReduxStore(storeName, {
 		return state;
 	},
 	actions,
-	selectors: {
-		isUsingAssignedSeating(state) {
-			return state.isUsingAssignedSeating;
-		},
-		getLayouts(state) {
-			return state.layouts;
-		},
-		getLayoutSeats(state, layoutId) {
-			return (
-				state.layouts.find((layout) => layout.id === layoutId)?.seats ||
-				0
-			);
-		},
-		getLayoutsInOptionFormat(state) {
-			return state.layouts.map((layout) => ({
-				label: layout.name,
-				value: layout.id,
-			}));
-		},
-		getSeatTypesForLayout(state, layoutId, onlyValue = false) {
-			const layoutSeatTypes =
-				state.seatTypesByLayoutId?.[layoutId] || null;
-
-			if (!layoutSeatTypes) {
-				return [];
-			}
-
-			if ( onlyValue ) {
-				return layoutSeatTypes;
-			}
-
-			return Object.values(layoutSeatTypes).map(function (seatType) {
-				return {
-					label: `${seatType.name} (${seatType.seats})`,
-					value: seatType.id,
-				};
-			});
-		},
-		getCurrentLayoutId(state) {
-			return state?.currentLayoutId || null;
-		},
-		getSeatTypeSeats(state, seatTypeId) {
-			return (
-				state?.seatTypesByLayoutId?.[state.currentLayoutId]?.[
-					seatTypeId
-				]?.seats || 0
-			);
-		},
-		getTicketSeatType(state, clientId) {
-			const ticketPostId = getTicketIdFromCommonStore(clientId);
-
-			return (
-				state?.seatTypesByPostId?.[ticketPostId] ||
-				state?.seatTypesByClientId?.[clientId] ||
-				null
-			);
-		},
-		isLayoutLocked(state) {
-			return state?.isLayoutLocked || false;
-		},
-		getAllSeatTypes(state) {
-			return state?.seatTypes || [];
-		},
-		getSeatTypesByPostID(state) {
-			return state?.seatTypesByPostId || [];
-		}
-	},
-	controls: {
-		FETCH_SEAT_TYPES_FOR_LAYOUT(action) {
-			return fetchSeatTypesByLayoutId(action.layoutId);
-		},
-	},
+	selectors,
+	controls,
 	resolvers: {
 		*getSeatTypesForLayout(layoutId) {
 			if (!layoutId) {

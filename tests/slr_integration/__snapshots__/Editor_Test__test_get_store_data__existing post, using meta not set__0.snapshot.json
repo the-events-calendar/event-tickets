@@ -20,5 +20,6 @@
     "seatTypes": [],
     "currentLayoutId": "",
     "seatTypesByPostId": [],
-    "isLayoutLocked": false
+    "isLayoutLocked": false,
+    "eventCapacity": 0
 }

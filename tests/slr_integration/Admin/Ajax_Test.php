@@ -9,28 +9,42 @@ use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Seating\Meta;
+use TEC\Tickets\Seating\Service\Layouts as Layouts_Service;
+use TEC\Tickets\Seating\Service\Maps as Maps_Service;
 use TEC\Tickets\Seating\Service\OAuth_Token;
 use TEC\Tickets\Seating\Service\Reservations;
-use TEC\Tickets\Seating\Service\Seat_Types;
 use TEC\Tickets\Seating\Tables\Layouts;
 use TEC\Tickets\Seating\Tables\Maps;
 use TEC\Tickets\Seating\Tables\Seat_Types as Seat_Types_Table;
 use TEC\Tickets\Seating\Tables\Sessions;
-use TEC\Tickets\Seating\Tests\Integration\Seat_Types_Factory;
 use Tribe\Tests\Traits\With_Uopz;
+use Tribe\Tests\Traits\WP_Remote_Mocks;
+use Tribe\Tests\Traits\WP_Send_Json_Mocks;
+use Tribe\Tickets\Test\Commerce\Attendee_Maker;
+use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Traits\Reservations_Maker;
-use Tribe\Tickets\Test\Traits\WP_Remote_Mocks;
 use Tribe__Tickets__Data_API as Data_API;
+
 
 class Ajax_Test extends Controller_Test_Case {
 	use SnapshotAssertions;
 	use With_Uopz;
-	use Seat_Types_Factory;
 	use OAuth_Token;
 	use WP_Remote_Mocks;
 	use Reservations_Maker;
+	use WP_Send_JSON_Mocks;
+	use Ticket_Maker;
+	use Attendee_Maker;
 
 	protected string $controller_class = Ajax::class;
+
+	/**
+	 * @before
+	 * @after
+	 */
+	public function reset_tribe_options_cache(): void {
+		tribe_unset_var( \Tribe__Settings_Manager::OPTION_CACHE_VAR_NAME );
+	}
 
 	/**
 	 * @before
@@ -62,196 +76,32 @@ class Ajax_Test extends Controller_Test_Case {
 		Sessions::truncate();
 	}
 
-	/**
-	 * It should return URLs
-	 *
-	 * @test
-	 */
-	/**
-	 * It should return URLs
-	 *
-	 * @test
-	 */
-	public function should_return_urls(): void {
-		$this->set_fn_return(
-			'wp_create_nonce',
-			function ( string $action ) {
-				if ( $action === 'seat_types_by_layout_id' ) {
-					return '8298ff6616';
-				}
-
-				return wp_create_nonce( $action );
-			},
-			true
+	private function given_maps_layouts_and_seat_types_in_db(): void {
+		\TEC\Tickets\Seating\Service\Maps::insert_rows_from_service(
+			[
+				[
+					'id'            => 'some-map-1',
+					'name'          => 'Some Map 1',
+					'seats'         => 10,
+					'screenshotUrl' => 'https://example.com/some-map-1.png',
+				],
+				[
+					'id'            => 'some-map-2',
+					'name'          => 'Some Map 2',
+					'seats'         => 20,
+					'screenshotUrl' => 'https://example.com/some-map-2.png',
+				],
+				[
+					'id'            => 'some-map-3',
+					'name'          => 'Some Map 3',
+					'seats'         => 30,
+					'screenshotUrl' => 'https://example.com/some-map-3.png',
+				],
+			]
 		);
+		set_transient( \TEC\Tickets\Seating\Service\Maps::update_transient_name(), time() );
 
-		$controller = $this->make_controller();
-
-		$this->assertMatchesCodeSnapshot( var_export( $controller->get_urls(), true ) );
-	}
-
-	/**
-	 * It should send JSON error if nonce missing from request
-	 *
-	 * @test
-	 */
-	public function should_send_json_error_if_nonce_missing_from_request(): void {
-		unset( $_REQUEST['_ajax_nonce'], $_REQUEST['layout'], $_REQUEST['_ajax_nonce'], $_POST['_ajax_nonce'] );
-		$_REQUEST['action'] = 'seat_types_by_layout_id';
-		$_REQUEST['layout'] = 'foo-baz-bar';
-		$sent_data          = null;
-		$this->set_fn_return(
-			'wp_send_json_error',
-			function ( $data ) use ( &$sent_data ) {
-				$sent_data = $data;
-			},
-			true
-		);
-
-		$this->make_controller()->register();
-
-		do_action( 'wp_ajax_seat_types_by_layout_id' );
-
-		$this->assertMatchesJsonSnapshot( wp_json_encode( $sent_data, JSON_SNAPSHOT_OPTIONS ) );
-	}
-
-	/**
-	 * It should send JSON error if nonce verification failed
-	 *
-	 * @test
-	 */
-	public function should_send_json_error_if_nonce_verification_failed(): void {
-		unset( $_REQUEST['_ajax_nonce'], $_REQUEST['layout'], $_REQUEST['_ajax_nonce'], $_POST['_ajax_nonce'] );
-		$_REQUEST['action']      = 'seat_types_by_layout_id';
-		$_REQUEST['layout']      = 'foo-baz-bar';
-		$_REQUEST['_ajax_nonce'] = wp_create_nonce( 'something_else' );
-		$sent_data               = null;
-		$this->set_fn_return(
-			'wp_send_json_error',
-			function ( $data ) use ( &$sent_data ) {
-				$sent_data = $data;
-			},
-			true
-		);
-
-		$this->make_controller()->register();
-
-		do_action( 'wp_ajax_seat_types_by_layout_id' );
-
-		$this->assertMatchesJsonSnapshot( wp_json_encode( $sent_data, JSON_SNAPSHOT_OPTIONS ) );
-	}
-
-	/**
-	 * It should return empty array if there are no layout ID specified
-	 *
-	 * @test
-	 */
-	public function should_return_empty_array_if_there_are_no_layout_id_specified(): void {
-		unset( $_REQUEST['_ajax_nonce'], $_REQUEST['layout'], $_REQUEST['_ajax_nonce'], $_POST['_ajax_nonce'] );
-		$_REQUEST['action']      = 'seat_types_by_layout_id';
-		$_REQUEST['_ajax_nonce'] = wp_create_nonce( 'seat_types_by_layout_id' );
-		$sent_data               = null;
-		$this->set_fn_return(
-			'wp_send_json_success',
-			function ( $data ) use ( &$sent_data ) {
-				$sent_data = $data;
-			},
-			true
-		);
-
-		$this->make_controller()->register();
-
-		do_action( 'wp_ajax_seat_types_by_layout_id' );
-
-		$this->assertMatchesJsonSnapshot( wp_json_encode( $sent_data, JSON_SNAPSHOT_OPTIONS ) );
-	}
-
-	/**
-	 * It should return empty array if there are no layout ID specified
-	 *
-	 * @test
-	 */
-	public function should_return_empty_array_if_there_are_no_seat_types_for_the_specified_layout(): void {
-		// Mark the Seat Types as just updated.
-		set_transient( Seat_Types::update_transient_name(), time() - 1 );
-		unset( $_REQUEST['_ajax_nonce'], $_REQUEST['layout'], $_REQUEST['_ajax_nonce'], $_POST['_ajax_nonce'] );
-		$_REQUEST['action']      = 'seat_types_by_layout_id';
-		$_REQUEST['_ajax_nonce'] = wp_create_nonce( 'seat_types_by_layout_id' );
-		$_REQUEST['layout']      = 'some-layout';
-		$sent_data               = null;
-		$this->set_fn_return(
-			'wp_send_json_success',
-			function ( $data ) use ( &$sent_data ) {
-				$sent_data = $data;
-			},
-			true
-		);
-
-		$this->make_controller()->register();
-
-		do_action( 'wp_ajax_seat_types_by_layout_id' );
-
-		$this->assertMatchesJsonSnapshot( wp_json_encode( $sent_data, JSON_SNAPSHOT_OPTIONS ) );
-	}
-
-	/**
-	 * It should return all seat types for the specified layout
-	 *
-	 * @test
-	 */
-	public function should_return_all_seat_types_for_the_specified_layout(): void {
-		$this->given_seat_types_just_updated();
-		unset( $_REQUEST['_ajax_nonce'], $_REQUEST['layout'], $_REQUEST['_ajax_nonce'], $_POST['_ajax_nonce'] );
-		$_REQUEST['action']      = 'seat_types_by_layout_id';
-		$_REQUEST['_ajax_nonce'] = wp_create_nonce( 'seat_types_by_layout_id' );
-		$_REQUEST['layout']      = 'some-layout';
-		$sent_data               = null;
-		$this->set_fn_return(
-			'wp_send_json_success',
-			function ( $data ) use ( &$sent_data ) {
-				$sent_data = $data;
-			},
-			true
-		);
-		$this->given_many_seat_types_in_db_for_layout( 'some-layout', 10 );
-
-		$this->make_controller()->register();
-
-		do_action( 'wp_ajax_seat_types_by_layout_id' );
-
-		$this->assertMatchesJsonSnapshot( wp_json_encode( $sent_data, JSON_SNAPSHOT_OPTIONS ) );
-	}
-
-	public function test_invalidate_maps_layouts_cache_without_nonce(): void {
-		$this->given_maps_and_layouts_in_db();
-		$this->become_administator();
-		unset( $_REQUEST['_ajax_nonce'], $_POST['_ajax_nonce'] );
-		$sent_data = null;
-		$sent_code = null;
-
-		$this->make_controller()->register();
-
-		$this->set_fn_return(
-			'wp_send_json_error',
-			function ( $data, $code ) use ( &$sent_data, &$sent_code ) {
-				$sent_data = $data;
-				$sent_code = $code;
-			},
-			true
-		);
-
-		do_action( 'wp_ajax_' . Ajax::ACTION_INVALIDATE_MAPS_LAYOUTS_CACHE );
-
-		$this->assertEquals( [ 'error' => 'Nonce verification failed' ], $sent_data );
-		$this->assertEquals( 403, $sent_code );
-		$this->assertCount( 3, iterator_to_array( Maps::fetch_all() ) );
-		$this->assertCount( 3, iterator_to_array( Layouts::fetch_all() ) );
-	}
-
-	private function given_maps_and_layouts_in_db(): void {
-		$this->given_maps_in_db();
-
-		\TEC\Tickets\Seating\Service\Layouts::insert_rows_from_service(
+		Layouts_Service::insert_rows_from_service(
 			[
 				[
 					'id'            => 'some-layout-1',
@@ -279,6 +129,7 @@ class Ajax_Test extends Controller_Test_Case {
 				],
 			]
 		);
+		set_transient( Layouts_Service::update_transient_name(), time() );
 
 		\TEC\Tickets\Seating\Tables\Seat_Types::insert_many(
 			[
@@ -294,7 +145,7 @@ class Ajax_Test extends Controller_Test_Case {
 					'name'   => 'Some Seat Type 2',
 					'seats'  => 20,
 					'map'    => 'some-map-2',
-					'layout' => 'https://example.com/some-seat-types-2.png',
+					'layout' => 'some-layout-2',
 				],
 				[
 					'id'     => 'some-seat-type-3',
@@ -303,1102 +154,804 @@ class Ajax_Test extends Controller_Test_Case {
 					'map'    => 'some-map-3',
 					'layout' => 'some-layout-3',
 				],
+				[
+					'id'     => 'some-seat-type-4',
+					'name'   => 'Some Seat Type 1',
+					'seats'  => 10,
+					'map'    => 'some-map-1',
+					'layout' => 'some-layout-1',
+				],
 			]
 		);
+		set_transient( \TEC\Tickets\Seating\Service\Seat_Types::update_transient_name(), time() );
 	}
 
-	/**
-	 * @before
-	 */
-	protected function become_administator(): void {
-		wp_set_current_user( self::factory()->user->create( [ 'role' => 'administrator' ] ) );
+	public function test_get_localized_data(): void {
+		$this->set_fn_return( 'wp_create_nonce', '88b1a4b166' );
+		$controller = $this->make_controller();
+
+		$this->assertMatchesJsonSnapshot( wp_json_encode( $controller->get_ajax_data(), JSON_SNAPSHOT_OPTIONS ) );
 	}
 
-	private function given_maps_in_db(): void {
-		\TEC\Tickets\Seating\Service\Maps::insert_rows_from_service(
+	private function set_up_ajax_request_context( int $user_id = null ): void {
+		if ( null === $user_id ) {
+			wp_set_current_user( self::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		}
+		$_REQUEST['action']      = Ajax::NONCE_ACTION;
+		$_REQUEST['_ajax_nonce'] = wp_create_nonce( Ajax::NONCE_ACTION );
+	}
+
+	public function test_fetch_seat_types_by_layout_id(): void {
+		$this->set_up_ajax_request_context();
+		$this->given_maps_layouts_and_seat_types_in_db();
+
+		$this->make_controller()->register();
+
+		// Call without specifying a layout ID.
+		$wp_send_json_success = $this->mock_wp_send_json_success();
+		do_action( 'wp_ajax_' . Ajax::ACTION_GET_SEAT_TYPES_BY_LAYOUT_ID );
+		$this->assertTrue( $wp_send_json_success->was_called_times_with( 1, [] ) );
+		$this->reset_wp_send_json_mocks();
+
+		// Call with an empty layout ID.
+		$_REQUEST['layout']   = '';
+		$wp_send_json_success = $this->mock_wp_send_json_success();
+		do_action( 'wp_ajax_' . Ajax::ACTION_GET_SEAT_TYPES_BY_LAYOUT_ID );
+		$this->assertTrue( $wp_send_json_success->was_called_times_with( 1, [] ) );
+		$this->reset_wp_send_json_mocks();
+
+		// Call with a layout ID that has no seat types.
+		$_REQUEST['layout']   = 'some-layout-4';
+		$wp_send_json_success = $this->mock_wp_send_json_success();
+		do_action( 'wp_ajax_' . Ajax::ACTION_GET_SEAT_TYPES_BY_LAYOUT_ID );
+		$this->assertTrue( $wp_send_json_success->was_called_times_with( 1, [] ) );
+		$this->reset_wp_send_json_mocks();
+
+		// Call with a layout ID that has no seat types.
+		$_REQUEST['layout']   = 'some-layout-4';
+		$wp_send_json_success = $this->mock_wp_send_json_success();
+		do_action( 'wp_ajax_' . Ajax::ACTION_GET_SEAT_TYPES_BY_LAYOUT_ID );
+		$this->assertTrue( $wp_send_json_success->was_called_times_with( 1, [] ) );
+		$this->reset_wp_send_json_mocks();
+
+		// Call with a layout ID that has seat types.
+		$_REQUEST['layout']   = 'some-layout-1';
+		$wp_send_json_success = $this->mock_wp_send_json_success();
+		do_action( 'wp_ajax_' . Ajax::ACTION_GET_SEAT_TYPES_BY_LAYOUT_ID );
+		$this->assertTrue( $wp_send_json_success->was_called_times_with(
+			1,
 			[
 				[
-					'id'            => 'some-map-1',
-					'name'          => 'Some Map 1',
-					'seats'         => 10,
-					'screenshotUrl' => 'https://example.com/some-map-1.png',
+					'id'    => 'some-seat-type-1',
+					'name'  => 'Some Seat Type 1',
+					'seats' => '10',
 				],
 				[
-					'id'            => 'some-map-2',
-					'name'          => 'Some Map 2',
-					'seats'         => 20,
-					'screenshotUrl' => 'https://example.com/some-map-2.png',
+					'id'    => 'some-seat-type-4',
+					'name'  => 'Some Seat Type 1',
+					'seats' => '10',
 				],
-				[
-					'id'            => 'some-map-3',
-					'name'          => 'Some Map 3',
-					'seats'         => 30,
-					'screenshotUrl' => 'https://example.com/some-map-3.png',
-				],
-			]
+			],
+		),
+			$wp_send_json_success->get_calls_as_string()
 		);
 	}
 
-	public function test_invalidate_maps_layouts_cache_with_invalid_nonce(): void {
-		$this->given_maps_and_layouts_in_db();
-		$this->become_administator();
-		$_REQUEST['_ajax_nonce'] = wp_create_nonce( 'something_else' );
-		$_POST['_ajax_nonce']    = wp_create_nonce( 'something_else' );
-		$sent_data               = null;
-		$sent_code               = null;
+	public function test_invalidate_maps_layouts_cache(): void {
+		$this->set_up_ajax_request_context();
+		$this->given_maps_layouts_and_seat_types_in_db();
 
 		$this->make_controller()->register();
 
-		$this->set_fn_return(
-			'wp_send_json_error',
-			function ( $data, $code ) use ( &$sent_data, &$sent_code ) {
-				$sent_data = $data;
-				$sent_code = $code;
-			},
-			true
-		);
-
+		// Layouts invalidation fail.
+		$this->set_class_fn_return( Layouts_Service::class, 'invalidate_cache', false );
+		$mock_wp_send_json_error = $this->mock_wp_send_json_error();
 		do_action( 'wp_ajax_' . Ajax::ACTION_INVALIDATE_MAPS_LAYOUTS_CACHE );
-
-		$this->assertEquals( [ 'error' => 'Nonce verification failed' ], $sent_data );
-		$this->assertEquals( 403, $sent_code );
+		$this->assertTrue(
+			$mock_wp_send_json_error->was_called_times_with( 1,
+				[ 'error' => 'Failed to invalidate the layouts cache.' ],
+				500
+			),
+			$mock_wp_send_json_error->get_calls_as_string()
+		);
 		$this->assertCount( 3, iterator_to_array( Maps::fetch_all() ) );
 		$this->assertCount( 3, iterator_to_array( Layouts::fetch_all() ) );
-		$this->assertCount( 3, iterator_to_array( Seat_Types_Table::fetch_all() ) );
-	}
+		$this->assertCount( 4, iterator_to_array( Seat_Types_Table::fetch_all() ) );
+		$this->reset_wp_send_json_mocks();
 
-	public function test_invalidate_maps_layouts_cache_with_valid_nonce(): void {
-		$this->given_maps_and_layouts_in_db();
-		$this->become_administator();
-		$nonce                   = Ajax::NONCE_ACTION;
-		$_REQUEST['_ajax_nonce'] = wp_create_nonce( $nonce );
-		$_POST['_ajax_nonce']    = wp_create_nonce( $nonce );
-		$success                 = null;
-
-		$this->make_controller()->register();
-
-		$this->set_fn_return(
-			'wp_send_json_success',
-			function () use ( &$success ) {
-				$success = true;
-			},
-			true
-		);
-
+		// Maps invalidation fail.
+		$this->set_class_fn_return( Layouts_Service::class, 'invalidate_cache', function (): bool {
+			return Layouts_Service::invalidate_cache();
+		}, true );
+		$this->set_class_fn_return( Maps_Service::class, 'invalidate_cache', false );
+		$mock_wp_send_json_error = $this->mock_wp_send_json_error();
 		do_action( 'wp_ajax_' . Ajax::ACTION_INVALIDATE_MAPS_LAYOUTS_CACHE );
+		$this->assertTrue(
+			$mock_wp_send_json_error->was_called_times_with( 1,
+				[ 'error' => 'Failed to invalidate the maps layouts cache.' ],
+				500
+			),
+			$mock_wp_send_json_error->get_calls_as_string()
+		);
+		$this->assertCount( 3, iterator_to_array( Maps::fetch_all() ) );
+		$this->assertCount( 0, iterator_to_array( Layouts::fetch_all() ) );
+		$this->assertCount( 0, iterator_to_array( Seat_Types_Table::fetch_all() ) );
+		$this->reset_wp_send_json_mocks();
 
-		$this->assertTrue( $success );
+		// All good.
+		$this->set_class_fn_return( Layouts_Service::class, 'invalidate_cache', function (): bool {
+			return Layouts_Service::invalidate_cache();
+		}, true );
+		$this->set_class_fn_return( Maps_Service::class, 'invalidate_cache', function (): bool {
+			return Maps_Service::invalidate_cache();
+		}, true );
+		$mock_wp_send_json_success = $this->mock_wp_send_json_success();
+		do_action( 'wp_ajax_' . Ajax::ACTION_INVALIDATE_MAPS_LAYOUTS_CACHE );
+		$this->assertTrue(
+			$mock_wp_send_json_success->was_called_times_with( 1, [] ),
+			$mock_wp_send_json_success->get_calls_as_string()
+		);
 		$this->assertCount( 0, iterator_to_array( Maps::fetch_all() ) );
 		$this->assertCount( 0, iterator_to_array( Layouts::fetch_all() ) );
 		$this->assertCount( 0, iterator_to_array( Seat_Types_Table::fetch_all() ) );
 	}
 
-	public function test_invalidate_maps_layouts_cache_with_maps_invalidation_failure(): void {
-		$this->given_maps_and_layouts_in_db();
-		$this->become_administator();
-		$_REQUEST['_ajax_nonce'] = wp_create_nonce( 'something_else' );
-		$_POST['_ajax_nonce']    = wp_create_nonce( 'something_else' );
-		$sent_data               = null;
-		$sent_code               = null;
+	public function test_invalidate_layouts_cache(): void {
+		$this->set_up_ajax_request_context();
+		$this->given_maps_layouts_and_seat_types_in_db();
 
 		$this->make_controller()->register();
 
-		// Simulate a failure to invalidate the Maps cache.
-		$this->set_class_fn_return( \TEC\Tickets\Seating\Service\Maps::class, 'invalidate_cache', false );
-
-		$this->set_fn_return(
-			'wp_send_json_error',
-			function ( $data, $code ) use ( &$sent_data, &$sent_code ) {
-				$sent_data = $data;
-				$sent_code = $code;
-			},
-			true
-		);
-
-		do_action( 'wp_ajax_' . Ajax::ACTION_INVALIDATE_MAPS_LAYOUTS_CACHE );
-
-		$this->assertEquals( [ 'error' => 'Nonce verification failed' ], $sent_data );
-		$this->assertEquals( 403, $sent_code );
-		$this->assertCount( 3, iterator_to_array( Maps::fetch_all() ) );
-		$this->assertCount( 3, iterator_to_array( Layouts::fetch_all() ) );
-		$this->assertCount( 3, iterator_to_array( Seat_Types_Table::fetch_all() ) );
-	}
-
-	public function test_invalidate_maps_layouts_cache_with_layouts_invalidation_failure(): void {
-		$this->given_maps_and_layouts_in_db();
-		$this->become_administator();
-		$_REQUEST['_ajax_nonce'] = wp_create_nonce( 'something_else' );
-		$_POST['_ajax_nonce']    = wp_create_nonce( 'something_else' );
-		$sent_data               = null;
-		$sent_code               = null;
-
-		$this->make_controller()->register();
-
-		// Simulate a failure to invalidate the Layouts cache.
-		$this->set_class_fn_return( \TEC\Tickets\Seating\Service\Layouts::class, 'invalidate_cache', false );
-
-		$this->set_fn_return(
-			'wp_send_json_error',
-			function ( $data, $code ) use ( &$sent_data, &$sent_code ) {
-				$sent_data = $data;
-				$sent_code = $code;
-			},
-			true
-		);
-
-		do_action( 'wp_ajax_' . Ajax::ACTION_INVALIDATE_MAPS_LAYOUTS_CACHE );
-
-		$this->assertEquals( [ 'error' => 'Nonce verification failed' ], $sent_data );
-		$this->assertEquals( 403, $sent_code );
-		$this->assertCount( 3, iterator_to_array( Maps::fetch_all() ) );
-		$this->assertCount( 3, iterator_to_array( Layouts::fetch_all() ) );
-		$this->assertCount( 3, iterator_to_array( Seat_Types_Table::fetch_all() ) );
-	}
-
-	public function test_invalidate_layouts_cache_without_nonce(): void {
-		$this->given_maps_and_layouts_in_db();
-		$this->become_administator();
-		unset( $_REQUEST['_ajax_nonce'], $_POST['_ajax_nonce'] );
-		$sent_data = null;
-		$sent_code = null;
-
-		$this->make_controller()->register();
-
-		$this->set_fn_return(
-			'wp_send_json_error',
-			function ( $data, $code ) use ( &$sent_data, &$sent_code ) {
-				$sent_data = $data;
-				$sent_code = $code;
-			},
-			true
-		);
-
+		// Layouts invalidation fail.
+		$this->set_class_fn_return( Layouts_Service::class, 'invalidate_cache', false );
+		$mock_wp_send_json_error = $this->mock_wp_send_json_error();
 		do_action( 'wp_ajax_' . Ajax::ACTION_INVALIDATE_LAYOUTS_CACHE );
-
-		$this->assertEquals( [ 'error' => 'Nonce verification failed' ], $sent_data );
-		$this->assertEquals( 403, $sent_code );
+		$this->assertTrue(
+			$mock_wp_send_json_error->was_called_times_with( 1,
+				[ 'error' => 'Failed to invalidate the layouts cache.' ],
+				500
+			),
+			$mock_wp_send_json_error->get_calls_as_string()
+		);
 		$this->assertCount( 3, iterator_to_array( Maps::fetch_all() ) );
 		$this->assertCount( 3, iterator_to_array( Layouts::fetch_all() ) );
-		$this->assertCount( 3, iterator_to_array( Seat_Types_Table::fetch_all() ) );
-	}
+		$this->assertCount( 4, iterator_to_array( Seat_Types_Table::fetch_all() ) );
+		$this->reset_wp_send_json_mocks();
 
-	public function test_invalidate_layouts_cache_with_invalid_nonce(): void {
-		$this->given_maps_and_layouts_in_db();
-		$this->become_administator();
-		$invalid_nonce           = wp_create_nonce( 'something_else' );
-		$_REQUEST['_ajax_nonce'] = $invalid_nonce;
-		$_POST['_ajax_nonce']    = $invalid_nonce;
-		$sent_data               = null;
-		$sent_code               = null;
-
-		$this->make_controller()->register();
-
-		$this->set_fn_return(
-			'wp_send_json_error',
-			function ( $data, $code ) use ( &$sent_data, &$sent_code ) {
-				$sent_data = $data;
-				$sent_code = $code;
-			},
-			true
-		);
-
+		// All good.
+		$this->set_class_fn_return( Layouts_Service::class, 'invalidate_cache', function (): bool {
+			return Layouts_Service::invalidate_cache();
+		}, true );
+		$mock_wp_send_json_success = $this->mock_wp_send_json_success();
 		do_action( 'wp_ajax_' . Ajax::ACTION_INVALIDATE_LAYOUTS_CACHE );
-
-		$this->assertEquals( [ 'error' => 'Nonce verification failed' ], $sent_data );
-		$this->assertEquals( 403, $sent_code );
-		$this->assertCount( 3, iterator_to_array( Maps::fetch_all() ) );
-		$this->assertCount( 3, iterator_to_array( Layouts::fetch_all() ) );
-		$this->assertCount( 3, iterator_to_array( Seat_Types_Table::fetch_all() ) );
-	}
-
-	public function test_invalidate_layouts_cache_with_valid_nonce(): void {
-		$this->given_maps_and_layouts_in_db();
-		$this->become_administator();
-		$nonce                   = Ajax::NONCE_ACTION;
-		$_REQUEST['_ajax_nonce'] = wp_create_nonce( $nonce );
-		$_POST['_ajax_nonce']    = wp_create_nonce( $nonce );
-		$success                 = null;
-
-		$this->make_controller()->register();
-
-		$this->set_fn_return(
-			'wp_send_json_success',
-			function () use ( &$success ) {
-				$success = true;
-			},
-			true
+		$this->assertTrue(
+			$mock_wp_send_json_success->was_called_times_with( 1, [] ),
+			$mock_wp_send_json_success->get_calls_as_string()
 		);
-
-		do_action( 'wp_ajax_' . Ajax::ACTION_INVALIDATE_LAYOUTS_CACHE );
-
-		$this->assertTrue( $success );
 		$this->assertCount( 3, iterator_to_array( Maps::fetch_all() ) );
 		$this->assertCount( 0, iterator_to_array( Layouts::fetch_all() ) );
 		$this->assertCount( 0, iterator_to_array( Seat_Types_Table::fetch_all() ) );
 	}
 
-	public function test_invalidate_layouts_cache_with_layouts_invalidation_failure(): void {
-		$this->given_maps_and_layouts_in_db();
-		$this->become_administator();
-		$_REQUEST['_ajax_nonce'] = wp_create_nonce( 'something_else' );
-		$_POST['_ajax_nonce']    = wp_create_nonce( 'something_else' );
-		$sent_data               = null;
-		$sent_code               = null;
+	public function test_delete_map_from_service(): void {
+		$this->set_up_ajax_request_context();
+		$this->given_maps_layouts_and_seat_types_in_db();
+		$maps_service = $this->test_services->get( Maps_Service::class );
+		$this->set_oauth_token( 'some-token' );
 
-		$this->make_controller()->register();
+		$controller = $this->make_controller();
+		$controller->register();
 
-		// Simulate a failure to invalidate the Maps cache.
-		$this->set_class_fn_return( \TEC\Tickets\Seating\Service\Layouts::class, 'invalidate_cache', false );
+		// Map ID is missing from request context.
+		unset( $_REQUEST['mapId'] );
+		$wp_send_json_error = $this->mock_wp_send_json_error();
 
-		$this->set_fn_return(
-			'wp_send_json_error',
-			function ( $data, $code ) use ( &$sent_data, &$sent_code ) {
-				$sent_data = $data;
-				$sent_code = $code;
-			},
-			true
+		do_action( 'wp_ajax_' . Ajax::ACTION_DELETE_MAP );
+
+		$this->assertTrue(
+			$wp_send_json_error->was_called_times_with( 1,
+				[ 'error' => 'No map ID provided' ],
+				400
+			),
+			$wp_send_json_error->get_calls_as_string()
 		);
-
-		do_action( 'wp_ajax_' . Ajax::ACTION_INVALIDATE_LAYOUTS_CACHE );
-
-		$this->assertEquals( [ 'error' => 'Nonce verification failed' ], $sent_data );
-		$this->assertEquals( 403, $sent_code );
 		$this->assertCount( 3, iterator_to_array( Maps::fetch_all() ) );
 		$this->assertCount( 3, iterator_to_array( Layouts::fetch_all() ) );
-		$this->assertCount( 3, iterator_to_array( Seat_Types_Table::fetch_all() ) );
-	}
+		$this->assertCount( 4, iterator_to_array( Seat_Types_Table::fetch_all() ) );
+		$this->reset_wp_send_json_mocks();
 
-	public function test_delete_map_from_service_with_invalid_nonce(): void {
-		$this->become_administator();
-		$invalid_nonce           = wp_create_nonce( 'something_else' );
-		$_REQUEST['_ajax_nonce'] = $invalid_nonce;
-		$_POST['_ajax_nonce']    = $invalid_nonce;
-		$sent_data               = null;
-		$sent_code               = null;
-
-		$this->make_controller()->register();
-
-		$this->set_fn_return(
-			'wp_send_json_error',
-			function ( $data, $code ) use ( &$sent_data, &$sent_code ) {
-				$sent_data = $data;
-				$sent_code = $code;
-			},
-			true
-		);
-
-		do_action( 'wp_ajax_' . Ajax::ACTION_DELETE_MAP );
-
-		$this->assertEquals( [ 'error' => 'Nonce verification failed' ], $sent_data );
-		$this->assertEquals( 403, $sent_code );
-	}
-
-	public function test_delete_map_from_service_with_invalid_map_id(): void {
-		$this->become_administator();
-		$nonce                   = Ajax::NONCE_ACTION;
-		$_REQUEST['_ajax_nonce'] = wp_create_nonce( $nonce );
-		$_POST['_ajax_nonce']    = wp_create_nonce( $nonce );
-		$sent_data               = null;
-		$sent_code               = null;
-
-		$this->make_controller()->register();
-
-		$this->set_fn_return(
-			'wp_send_json_error',
-			function ( $data, $code ) use ( &$sent_data, &$sent_code ) {
-				$sent_data = $data;
-				$sent_code = $code;
-			},
-			true
-		);
-
-		do_action( 'wp_ajax_' . Ajax::ACTION_DELETE_MAP );
-
-		$this->assertEquals( [ 'error' => 'No map ID provided' ], $sent_data );
-		$this->assertEquals( 400, $sent_code );
-	}
-
-	public function test_delete_map_from_service_with_success() {
-		$this->given_maps_and_layouts_in_db();
-		$this->become_administator();
-		$nonce                   = Ajax::NONCE_ACTION;
-		$_REQUEST['_ajax_nonce'] = wp_create_nonce( $nonce );
-		$_POST['_ajax_nonce']    = wp_create_nonce( $nonce );
-		$_POST['mapId']          = 'some-map-1';
-		$fetch_url               = null;
-		$data                    = null;
-		$success                 = null;
-
-		$this->make_controller()->register();
-
-		tribe_update_option( 'events_tickets_seating_access_token', 'some-token' );
-
-		$this->set_fn_return(
-			'wp_send_json_success',
-			function () use ( &$success ) {
-				$success = true;
-			},
-			true
-		);
-
-		add_filter(
-			'pre_http_request',
-			function ( $pre, $args, $url ) use ( &$fetch_url, &$data ) {
-				$fetch_url = $url;
-				$data      = $args;
-
-				return [ 'response' => [ 'code' => 200 ] ];
-			},
-			10,
-			3
-		);
-
-		do_action( 'wp_ajax_' . Ajax::ACTION_DELETE_MAP );
-
-		$this->assertTrue( $success );
-		$this->assertMatchesJsonSnapshot(
-			wp_json_encode(
-				[
-					'success'   => $success,
-					'fetch_url' => $fetch_url,
-					'method'    => $data['method'],
-					'headers'   => $data['headers'],
+		// Map deletion from  service fails.
+		$_REQUEST['mapId']  = 'some-map-1';
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+		$wp_remote          = $this->mock_wp_remote(
+			'delete',
+			$maps_service->get_delete_url( 'some-map-1' ),
+			[
+				'method'  => 'DELETE',
+				'headers' => [
+					'Authorization' => 'Bearer some-token',
+					'Content-Type'  => 'application/json',
 				],
-				JSON_SNAPSHOT_OPTIONS
-			)
-		);
-	}
-
-	public function test_delete_map_from_service_with_failed() {
-		$this->given_maps_and_layouts_in_db();
-		$this->become_administator();
-		$nonce                   = Ajax::NONCE_ACTION;
-		$_REQUEST['_ajax_nonce'] = wp_create_nonce( $nonce );
-		$_POST['_ajax_nonce']    = wp_create_nonce( $nonce );
-		$_POST['mapId']          = 'some-map-1';
-		$success                 = null;
-		$sent_code               = null;
-		$sent_data               = null;
-
-		$this->make_controller()->register();
-
-		tribe_update_option( 'events_tickets_seating_access_token', 'some-token' );
-
-		$this->set_fn_return(
-			'wp_send_json_error',
-			function ( $data, $code ) use ( &$sent_data, &$sent_code, &$success ) {
-				$sent_data = $data;
-				$sent_code = $code;
-				$success   = false;
-			},
-			true
-		);
-
-		add_filter(
-			'pre_http_request',
+			],
 			function () {
-				return [ 'response' => [ 'code' => 500 ] ];
-			},
+				return [
+					'response' => [
+						'code' => 400,
+					],
+					'body'     => wp_json_encode(
+						[
+							'success' => false,
+						]
+					),
+				];
+			}
 		);
 
 		do_action( 'wp_ajax_' . Ajax::ACTION_DELETE_MAP );
 
-		$this->assertMatchesJsonSnapshot(
-			wp_json_encode(
-				[
-					'success' => $success,
-					'data'    => $sent_data,
-					'code'    => $sent_code,
+		$this->assertTrue(
+			$wp_send_json_error->was_called_times_with( 1,
+				[ 'error' => 'Failed to delete the map.' ],
+				500
+			),
+			$wp_send_json_error->get_calls_as_string()
+		);
+		$this->assertCount( 3, iterator_to_array( Maps::fetch_all() ) );
+		$this->assertCount( 3, iterator_to_array( Layouts::fetch_all() ) );
+		$this->assertCount( 4, iterator_to_array( Seat_Types_Table::fetch_all() ) );
+		$this->assertTrue( $wp_remote->was_called() );
+		$this->reset_wp_send_json_mocks();
+		$wp_remote->tear_down();
+
+		// Map deletion succeeds.
+		$_REQUEST['mapId']    = 'some-map-1';
+		$wp_send_json_success = $this->mock_wp_send_json_success();
+		$wp_remote            = $this->mock_wp_remote(
+			'delete',
+			$maps_service->get_delete_url( 'some-map-1' ),
+			[
+				'method'  => 'DELETE',
+				'headers' => [
+					'Authorization' => 'Bearer some-token',
+					'Content-Type'  => 'application/json',
 				],
-				JSON_SNAPSHOT_OPTIONS
-			)
-		);
-	}
-
-	public function test_delete_layout_from_service_with_invalid_nonce() {
-		$this->become_administator();
-		$invalid_nonce           = wp_create_nonce( 'something_else' );
-		$_REQUEST['_ajax_nonce'] = $invalid_nonce;
-		$_POST['_ajax_nonce']    = $invalid_nonce;
-		$sent_data               = null;
-		$sent_code               = null;
-
-		$this->make_controller()->register();
-
-		$this->set_fn_return(
-			'wp_send_json_error',
-			function ( $data, $code ) use ( &$sent_data, &$sent_code ) {
-				$sent_data = $data;
-				$sent_code = $code;
-			},
-			true
-		);
-
-		do_action( 'wp_ajax_' . Ajax::ACTION_DELETE_LAYOUT );
-
-		$this->assertEquals( [ 'error' => 'Nonce verification failed' ], $sent_data );
-		$this->assertEquals( 403, $sent_code );
-	}
-
-	public function test_delete_layout_from_service_with_invalid_params() {
-		$this->become_administator();
-		$nonce                   = Ajax::NONCE_ACTION;
-		$_REQUEST['_ajax_nonce'] = wp_create_nonce( $nonce );
-		$_POST['_ajax_nonce']    = wp_create_nonce( $nonce );
-		$sent_data               = null;
-		$sent_code               = null;
-
-		$this->make_controller()->register();
-
-		$this->set_fn_return(
-			'wp_send_json_error',
-			function ( $data, $code ) use ( &$sent_data, &$sent_code ) {
-				$sent_data = $data;
-				$sent_code = $code;
-			},
-			true
-		);
-
-		do_action( 'wp_ajax_' . Ajax::ACTION_DELETE_LAYOUT );
-
-		$this->assertEquals( [ 'error' => 'No layout ID or map ID provided' ], $sent_data );
-		$this->assertEquals( 400, $sent_code );
-	}
-
-	public function test_delete_layout_from_service_with_success() {
-		$this->given_maps_and_layouts_in_db();
-		$this->set_oauth_token( 'auth-token' );
-		$this->become_administator();
-		$nonce                   = Ajax::NONCE_ACTION;
-		$_REQUEST['_ajax_nonce'] = wp_create_nonce( $nonce );
-		$_POST['_ajax_nonce']    = wp_create_nonce( $nonce );
-		$_POST['mapId']          = 'some-map-1';
-		$_POST['layoutId']       = 'some-layout-1';
-		$success                 = null;
-		$fetch_url               = null;
-		$data                    = null;
-
-		$this->set_fn_return(
-			'wp_send_json_success',
-			function () use ( &$success ) {
-				$success = true;
-			},
-			true
-		);
-
-		add_filter(
-			'pre_http_request',
-			function ( $pre, $args, $url ) use ( &$fetch_url, &$data ) {
-				$fetch_url = $url;
-				$data      = $args;
-
-				return [ 'response' => [ 'code' => 200 ] ];
-			},
-			10,
-			3
-		);
-
-		$this->make_controller()->register();
-
-		tribe_update_option( 'events_tickets_seating_access_token', 'some-token' );
-
-		do_action( 'wp_ajax_' . Ajax::ACTION_DELETE_LAYOUT );
-
-		$this->assertTrue( $success );
-		$this->assertMatchesJsonSnapshot(
-			wp_json_encode(
-				[
-					'success'   => $success,
-					'fetch_url' => $fetch_url,
-					'method'    => $data['method'],
-					'headers'   => $data['headers'],
-				],
-				JSON_SNAPSHOT_OPTIONS
-			)
-		);
-	}
-
-	public function test_delete_layout_from_service_with_failed() {
-		$this->given_maps_and_layouts_in_db();
-		$this->become_administator();
-		$nonce                   = Ajax::NONCE_ACTION;
-		$_REQUEST['_ajax_nonce'] = wp_create_nonce( $nonce );
-		$_POST['_ajax_nonce']    = wp_create_nonce( $nonce );
-		$_POST['mapId']          = 'some-map-1';
-		$_POST['layoutId']       = 'some-layout-1';
-		$success                 = null;
-		$sent_code               = null;
-		$sent_data               = null;
-
-		tribe_update_option( 'events_tickets_seating_access_token', 'some-token' );
-
-		$this->make_controller()->register();
-
-		$this->set_fn_return(
-			'wp_send_json_error',
-			function ( $data, $code ) use ( &$sent_data, &$sent_code, &$success ) {
-				$sent_data = $data;
-				$sent_code = $code;
-				$success   = false;
-			},
-			true
-		);
-
-		add_filter(
-			'pre_http_request',
+			],
 			function () {
-				return [ 'response' => [ 'code' => 500 ] ];
-			},
+				return [
+					'response' => [
+						'code' => 200,
+					],
+					'body'     => wp_json_encode(
+						[
+							'success' => true,
+						]
+					),
+				];
+			}
+		);
+
+		do_action( 'wp_ajax_' . Ajax::ACTION_DELETE_MAP );
+
+		$this->assertTrue(
+			$wp_send_json_success->was_called_times_with( 1 ),
+			$wp_send_json_success->get_calls_as_string()
+		);
+		// After a deletion the local seat type, maps and layouts caches should be invalidated.
+		$this->assertCount( 0, iterator_to_array( Maps::fetch_all() ) );
+		$this->assertCount( 0, iterator_to_array( Layouts::fetch_all() ) );
+		$this->assertCount( 0, iterator_to_array( Seat_Types_Table::fetch_all() ) );
+		$this->assertTrue( $wp_remote->was_called() );
+	}
+
+	public function test_delete_layout_from_service(): void {
+		$this->set_up_ajax_request_context();
+		$this->given_maps_layouts_and_seat_types_in_db();
+		$layouts_service = $this->test_services->get( Layouts_Service::class );
+		$this->set_oauth_token( 'some-token' );
+
+		$controller = $this->make_controller();
+		$controller->register();
+
+		// Layout ID is missing from request context.
+		unset( $_REQUEST['layoutId'] );
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+
+		do_action( 'wp_ajax_' . Ajax::ACTION_DELETE_LAYOUT );
+
+		$this->assertTrue(
+			$wp_send_json_error->was_called_times_with( 1,
+				[ 'error' => 'No layout ID or map ID provided' ],
+				400
+			),
+			$wp_send_json_error->get_calls_as_string()
+		);
+		$this->assertCount( 3, iterator_to_array( Maps::fetch_all() ) );
+		$this->assertCount( 3, iterator_to_array( Layouts::fetch_all() ) );
+		$this->assertCount( 4, iterator_to_array( Seat_Types_Table::fetch_all() ) );
+		$this->reset_wp_send_json_mocks();
+
+		// Map ID is missing from request context.
+		$_REQUEST['layoutId'] = 'some-layout-1';
+		unset( $_REQUEST['mapId'] );
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+
+		do_action( 'wp_ajax_' . Ajax::ACTION_DELETE_LAYOUT );
+
+		$this->assertTrue(
+			$wp_send_json_error->was_called_times_with( 1,
+				[ 'error' => 'No layout ID or map ID provided' ],
+				400
+			),
+			$wp_send_json_error->get_calls_as_string()
+		);
+		$this->assertCount( 3, iterator_to_array( Maps::fetch_all() ) );
+		$this->assertCount( 3, iterator_to_array( Layouts::fetch_all() ) );
+		$this->assertCount( 4, iterator_to_array( Seat_Types_Table::fetch_all() ) );
+		$this->reset_wp_send_json_mocks();
+
+		// Layout deletion from service fails.
+		$_REQUEST['layoutId'] = 'some-layout-1';
+		$_REQUEST['mapId']    = 'some-map-1';
+		$wp_send_json_error   = $this->mock_wp_send_json_error();
+		$wp_remote            = $this->mock_wp_remote(
+			'delete',
+			$layouts_service->get_delete_url( 'some-layout-1', 'some-map-1' ),
+			[
+				'method'  => 'DELETE',
+				'headers' => [
+					'Authorization' => 'Bearer some-token',
+					'Content-Type'  => 'application/json',
+				],
+			],
+			function () {
+				return [
+					'response' => [
+						'code' => 400,
+					],
+					'body'     => wp_json_encode(
+						[
+							'success' => false,
+						]
+					),
+				];
+			}
 		);
 
 		do_action( 'wp_ajax_' . Ajax::ACTION_DELETE_LAYOUT );
 
-		$this->assertMatchesJsonSnapshot(
-			wp_json_encode(
-				[
-					'success' => $success,
-					'data'    => $sent_data,
-					'code'    => $sent_code,
-				],
-				JSON_SNAPSHOT_OPTIONS
-			)
+		$this->assertTrue(
+			$wp_send_json_error->was_called_times_with( 1,
+				[ 'error' => 'Failed to delete the layout.' ],
+				500
+			),
+			$wp_send_json_error->get_calls_as_string()
 		);
+		$this->assertCount( 3, iterator_to_array( Maps::fetch_all() ) );
+		$this->assertCount( 3, iterator_to_array( Layouts::fetch_all() ) );
+		$this->assertCount( 4, iterator_to_array( Seat_Types_Table::fetch_all() ) );
+		$this->assertTrue( $wp_remote->was_called() );
+		$this->reset_wp_send_json_mocks();
+		$wp_remote->tear_down();
+
+		// Layout deletion succeeds.
+		$_REQUEST['layoutId'] = 'some-layout-1';
+		$_REQUEST['mapId']    = 'some-map-1';
+		$wp_send_json_success = $this->mock_wp_send_json_success();
+		$wp_remote            = $this->mock_wp_remote(
+			'delete',
+			$layouts_service->get_delete_url( 'some-layout-1', 'some-map-1' ),
+			[
+				'method'  => 'DELETE',
+				'headers' => [
+					'Authorization' => 'Bearer some-token',
+					'Content-Type'  => 'application/json',
+				],
+			],
+			function () {
+				return [
+					'response' => [
+						'code' => 200,
+					],
+					'body'     => wp_json_encode(
+						[
+							'success' => true,
+						]
+					),
+				];
+			}
+		);
+
+		do_action( 'wp_ajax_' . Ajax::ACTION_DELETE_LAYOUT );
+
+		$this->assertTrue(
+			$wp_send_json_success->was_called_times_with( 1 ),
+			$wp_send_json_success->get_calls_as_string()
+		);
+		// After a deletion the local seat type, maps and layouts caches should be invalidated.
+		$this->assertCount( 0, iterator_to_array( Maps::fetch_all() ) );
+		$this->assertCount( 0, iterator_to_array( Layouts::fetch_all() ) );
+		$this->assertCount( 0, iterator_to_array( Seat_Types_Table::fetch_all() ) );
+		$this->reset_wp_send_json_mocks();
 	}
 
 	public function test_update_reservations(): void {
-		$this->given_maps_and_layouts_in_db();
-		$mock_ajax_reservations_data = $this->create_mock_ajax_reservations_data( [ 23 ], 2 );
-		$this->set_fn_return(
-			'file_get_contents',
-			function ( string $file ) use ( $mock_ajax_reservations_data ) {
-				if ( $file !== 'php://input' ) {
-					return file_get_contents( $file );
-				}
+		$this->set_up_ajax_request_context( 0 );
+		$request_body = null;
+		$this->set_fn_return( 'file_get_contents', function ( $file, ...$args ) use ( &$request_body ) {
+			if ( $file !== 'php://input' ) {
+				return file_get_contents( $file, ...$args );
+			}
 
-				return json_encode(
-					[
-						'token'        => 'test-token',
-						'reservations' =>  $mock_ajax_reservations_data,
-					]
-				);
-			},
-			true
-		);
-		$wp_send_json_success = null;
-		$this->set_fn_return(
-			'wp_send_json_success',
-			function () use ( &$wp_send_json_success ) {
-				$wp_send_json_success = true;
-			},
-			true
-		);
-		$_REQUEST['_ajax_nonce'] = wp_create_nonce( Ajax::NONCE_ACTION );
-		$sessions                = tribe( Sessions::class );
-		$sessions->upsert( 'test-token', 23, time() + 10 );
+			return $request_body;
+		}, true );
+		$post_id   = self::factory()->post->create();
+		$ticket_id = $this->create_tc_ticket( $post_id, 23 );
+		$sessions  = tribe( Sessions::class );
+		$sessions->upsert( 'some-token', $post_id, time() + 100 );
 
-		$this->make_controller()->register();
+		$controller = $this->make_controller();
+		$controller->register();
+
+		// Missing post ID from request context.
+		unset( $_REQUEST['postId'] );
+		$wp_send_json_error = $this->mock_wp_send_json_error();
 
 		do_action( 'wp_ajax_nopriv_' . Ajax::ACTION_POST_RESERVATIONS );
 
-		$this->assertTrue( $wp_send_json_success );
-		$this->assertEquals(
+		$this->assertTrue(
+			$wp_send_json_error->was_called_times_with( 1,
+				[ 'error' => 'No post ID provided' ],
+				400
+			),
+			$wp_send_json_error->get_calls_as_string()
+		);
+		$this->reset_wp_send_json_mocks();
+
+		// Mangled request body.
+		$_REQUEST['postId'] = $post_id;
+		$request_body       = 'not-JSON';
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+
+		do_action( 'wp_ajax_nopriv_' . Ajax::ACTION_POST_RESERVATIONS );
+
+		$this->assertTrue(
+			$wp_send_json_error->was_called_times_with( 1,
+				[ 'error' => 'Invalid request body' ],
+				400
+			),
+			$wp_send_json_error->get_calls_as_string()
+		);
+		$this->reset_wp_send_json_mocks();
+
+		$reservations_data = $this->create_mock_ajax_reservations_data( [ $ticket_id ], 2 );
+
+		// Token missing from request context.
+		$_REQUEST['postId'] = $post_id;
+		$request_body       = wp_json_encode(
 			[
-				'reservation-id-1',
-				'reservation-id-2',
+				'reservations' => $reservations_data,
+			]
+		);
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+
+		do_action( 'wp_ajax_nopriv_' . Ajax::ACTION_POST_RESERVATIONS );
+
+		$this->assertTrue(
+			$wp_send_json_error->was_called_times_with( 1,
+				[ 'error' => 'Invalid request body' ],
+				400
+			),
+			$wp_send_json_error->get_calls_as_string()
+		);
+		$this->reset_wp_send_json_mocks();
+
+		// Reservations data missing from request context.
+		$_REQUEST['postId'] = $post_id;
+		$request_body       = wp_json_encode(
+			[
+				'token' => 'some-token',
+			]
+		);
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+
+		do_action( 'wp_ajax_nopriv_' . Ajax::ACTION_POST_RESERVATIONS );
+
+		$this->assertTrue(
+			$wp_send_json_error->was_called_times_with( 1,
+				[ 'error' => 'Invalid request body' ],
+				400
+			),
+			$wp_send_json_error->get_calls_as_string()
+		);
+		$this->reset_wp_send_json_mocks();
+
+		// Reservation data is not an array.
+		$_REQUEST['postId'] = $post_id;
+		$request_body       = wp_json_encode(
+			[
+				'token'        => 'some-token',
+				'reservations' => 'some-reservations',
+			]
+		);
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+
+		do_action( 'wp_ajax_nopriv_' . Ajax::ACTION_POST_RESERVATIONS );
+
+		$this->assertTrue(
+			$wp_send_json_error->was_called_times_with( 1,
+				[ 'error' => 'Invalid request body' ],
+				400
+			),
+			$wp_send_json_error->get_calls_as_string()
+		);
+		$this->reset_wp_send_json_mocks();
+
+		// Token is not a string.
+		$_REQUEST['postId'] = $post_id;
+		$request_body       = wp_json_encode(
+			[
+				'token'        => 123,
+				'reservations' => [],
+			]
+		);
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+
+		do_action( 'wp_ajax_nopriv_' . Ajax::ACTION_POST_RESERVATIONS );
+
+		$this->assertTrue(
+			$wp_send_json_error->was_called_times_with( 1,
+				[ 'error' => 'Invalid request body' ],
+				400
+			),
+			$wp_send_json_error->get_calls_as_string()
+		);
+		$this->reset_wp_send_json_mocks();
+
+		// Not all reservation entries are not arrays.
+		$_REQUEST['postId'] = $post_id;
+		$request_body       = wp_json_encode(
+			[
+				'token'        => 'some-token',
+				'reservations' => array_merge( $reservations_data, [ 'some-reservation' => 'not-an-array' ] ),
+			]
+		);
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+
+		do_action( 'wp_ajax_nopriv_' . Ajax::ACTION_POST_RESERVATIONS );
+
+		$this->assertTrue(
+			$wp_send_json_error->was_called_times_with( 1,
+				[ 'error' => 'Reservation data is not in correct format' ],
+				400
+			),
+			$wp_send_json_error->get_calls_as_string()
+		);
+		$this->reset_wp_send_json_mocks();
+
+		// Not all reservation entries have all the correct information.
+		$_REQUEST['postId'] = $post_id;
+		$request_body       = wp_json_encode(
+			[
+				'token'        => 'some-token',
+				'reservations' => array_merge( $reservations_data, [
+					[
+						89 => [
+							'reservationId' => 'some-reservation-id',
+							'seatTypeId'    => 'some-seat-type-id',
+						]
+					]
+				] ),
+			]
+		);
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+
+		do_action( 'wp_ajax_nopriv_' . Ajax::ACTION_POST_RESERVATIONS );
+
+		$this->assertTrue(
+			$wp_send_json_error->was_called_times_with( 1,
+				[ 'error' => 'Reservation data is not in correct format' ],
+				400
+			),
+			$wp_send_json_error->get_calls_as_string()
+		);
+		$this->reset_wp_send_json_mocks();
+
+		// Update of reservations fails.
+		// Delete the token entry in the sessions table, failing the update.
+		DB::query(
+			DB::prepare(
+				"DELETE FROM %i WHERE token = %s",
+				Sessions::table_name(),
+				'some-token'
+			)
+		);
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+		$request_body       = wp_json_encode(
+			[
+				'token'        => 'some-token',
+				'reservations' => $reservations_data,
+			]
+		);
+
+		do_action( 'wp_ajax_nopriv_' . Ajax::ACTION_POST_RESERVATIONS );
+
+		$this->assertTrue(
+			$wp_send_json_error->was_called_times_with( 1,
+				[ 'error' => 'Failed to update the reservations' ],
+				500
+			),
+			$wp_send_json_error->get_calls_as_string()
+		);
+		$this->reset_wp_send_json_mocks();
+
+		// Update of reservations succeeds.
+		// Re-insert the token entry in the sessions table, making the update possible.
+		$sessions->upsert( 'some-token', $post_id, time() + 100 );
+		$wp_send_json_success = $this->mock_wp_send_json_success();
+		$request_body         = wp_json_encode(
+			[
+				'token'        => 'some-token',
+				'reservations' => $reservations_data,
+			]
+		);
+
+		do_action( 'wp_ajax_nopriv_' . Ajax::ACTION_POST_RESERVATIONS );
+
+		$this->assertTrue(
+			$wp_send_json_success->was_called_times_with( 1 ),
+			$wp_send_json_success->get_calls_as_string()
+		);
+		codecept_debug( $sessions->get_reservations_for_token( 'some-token' ) );
+		$this->assertEquals( [
+			$ticket_id => [
+				[
+					'reservation_id' => 'reservation-id-1',
+					'seat_type_id'   => 'seat-type-id-0',
+					'seat_label'     => 'seat-label-0-1',
+				],
+				[
+					'reservation_id' => 'reservation-id-2',
+					'seat_type_id'   => 'seat-type-id-0',
+					'seat_label'     => 'seat-label-0-2',
+				],
 			],
-			$sessions->get_reservation_uuids_for_token( 'test-token' )
-		);
-	}
-
-	public function test_update_reservations_will_return_403_on_bad_nonce(): void {
-		$this->given_maps_and_layouts_in_db();
-		$mock_ajax_reservations_data = $this->create_mock_ajax_reservations_data( [ 23 ], 2 );
-		$this->set_fn_return(
-			'file_get_contents',
-			function ( string $file ) use ( $mock_ajax_reservations_data ) {
-				if ( $file !== 'php://input' ) {
-					return file_get_contents( $file );
-				}
-
-				return json_encode(
-					[
-						'token'        => 'test-token',
-						'reservations' => $mock_ajax_reservations_data,
-					]
-				);
-			},
-			true
-		);
-		$wp_send_json_error_data = null;
-		$wp_send_json_error_code = null;
-		$this->set_fn_return(
-			'wp_send_json_error',
-			function ( $data, $code ) use ( &$wp_send_json_error_data, &$wp_send_json_error_code ) {
-				$wp_send_json_error_data = $data;
-				$wp_send_json_error_code = $code;
-			},
-			true
-		);
-		$sessions = tribe( Sessions::class );
-		$sessions->upsert( 'test-token', 23, time() + 10 );
-
-		$this->make_controller()->register();
-
-		// Start by not sending the nonce.
-		unset( $_REQUEST['_ajax_nonce'] );
-
-		do_action( 'wp_ajax_nopriv_' . Ajax::ACTION_POST_RESERVATIONS );
-
-		$this->assertEquals( 403, $wp_send_json_error_code );
-		$this->assertEquals( [ 'error' => 'Nonce verification failed' ], $wp_send_json_error_data );
-
-		// Send a wrong nonce.
-		$wp_send_json_error_data = null;
-		$wp_send_json_error_code = null;
-		$_REQUEST['_ajax_nonce'] = 'not-valid-nonce';
-
-		do_action( 'wp_ajax_nopriv_' . Ajax::ACTION_POST_RESERVATIONS );
-
-		$this->assertEquals( 403, $wp_send_json_error_code );
-		$this->assertEquals( [ 'error' => 'Nonce verification failed' ], $wp_send_json_error_data );
-
-		// Send a correct nonce for another action
-		$wp_send_json_error_data = null;
-		$wp_send_json_error_code = null;
-		$_REQUEST['_ajax_nonce'] = wp_create_nonce( 'another-action' );
-
-		do_action( 'wp_ajax_nopriv_' . Ajax::ACTION_POST_RESERVATIONS );
-
-		$this->assertEquals( 403, $wp_send_json_error_code );
-		$this->assertEquals( [ 'error' => 'Nonce verification failed' ], $wp_send_json_error_data );
-
-		// Send a correct nonce for the action from another user.
-		$wp_send_json_error_data = null;
-		$wp_send_json_error_code = null;
-		wp_set_current_user( self::factory()->user->create( [ 'role' => 'subscriber' ] ) );
-		$_REQUEST['_ajax_nonce'] = wp_create_nonce( Ajax::NONCE_ACTION );
-
-		wp_set_current_user( self::factory()->user->create( [ 'role' => 'subscriber' ] ) );
-		do_action( 'wp_ajax_nopriv_' . Ajax::ACTION_POST_RESERVATIONS );
-
-		$this->assertEquals( 403, $wp_send_json_error_code );
-		$this->assertEquals( [ 'error' => 'Nonce verification failed' ], $wp_send_json_error_data );
-	}
-
-	public function test_update_reservations_will_return_400_on_bad_json(): void {
-		$this->given_maps_and_layouts_in_db();
-		$wp_send_json_error_data = null;
-		$wp_send_json_error_code = null;
-		$this->set_fn_return(
-			'wp_send_json_error',
-			function ( $data, $code ) use ( &$wp_send_json_error_data, &$wp_send_json_error_code ) {
-				$wp_send_json_error_data = $data;
-				$wp_send_json_error_code = $code;
-			},
-			true
-		);
-		$sessions = tribe( Sessions::class );
-		$sessions->upsert( 'test-token', 23, time() + 10 );
-		$_REQUEST['_ajax_nonce'] = wp_create_nonce( Ajax::NONCE_ACTION );
-		$json_body               = null;
-		$this->set_fn_return(
-			'file_get_contents',
-			function ( string $file ) use ( &$json_body ) {
-				if ( $file !== 'php://input' ) {
-					return file_get_contents( $file );
-				}
-
-				return $json_body;
-			},
-			true
-		);
-
-		$this->make_controller()->register();
-
-		// Start by not sending the JSON body.
-		$json_body = '';
-
-		do_action( 'wp_ajax_nopriv_' . Ajax::ACTION_POST_RESERVATIONS );
-
-		$this->assertEquals( 400, $wp_send_json_error_code );
-		$this->assertEquals( [ 'error' => 'Invalid request body' ], $wp_send_json_error_data );
-
-		// Send a JSON body that does not contain a token.
-		$json_body = json_encode(
-			[
-				'reservations' => $this->create_mock_ajax_reservations_data( [ 23 ], 2 ),
-			]
-		);
-
-		do_action( 'wp_ajax_nopriv_' . Ajax::ACTION_POST_RESERVATIONS );
-
-		$this->assertEquals( 400, $wp_send_json_error_code );
-		$this->assertEquals( [ 'error' => 'Invalid request body' ], $wp_send_json_error_data );
-
-		// Send a JSON body that does not contain a reservations array.
-		$json_body = json_encode(
-			[
-				'token' => 'test-token',
-			]
-		);
-
-		do_action( 'wp_ajax_nopriv_' . Ajax::ACTION_POST_RESERVATIONS );
-
-		$this->assertEquals( 400, $wp_send_json_error_code );
-		$this->assertEquals( [ 'error' => 'Invalid request body' ], $wp_send_json_error_data );
-
-		// Send a JSON body that does not contain a reservations array.
-		$json_body = json_encode(
-			[
-				'token'        => 'test-token',
-				'reservations' => 'not-an-array',
-			]
-		);
-
-		do_action( 'wp_ajax_nopriv_' . Ajax::ACTION_POST_RESERVATIONS );
-
-		$this->assertEquals( 400, $wp_send_json_error_code );
-		$this->assertEquals( [ 'error' => 'Invalid request body' ], $wp_send_json_error_data );
-	}
-
-	public function test_update_reservations_fails_if_session_does_not_exist(): void {
-		$this->given_maps_and_layouts_in_db();
-		$wp_send_json_error_data = null;
-		$wp_send_json_error_code = null;
-		$this->set_fn_return(
-			'wp_send_json_error',
-			function ( $data, $code ) use ( &$wp_send_json_error_data, &$wp_send_json_error_code ) {
-				$wp_send_json_error_data = $data;
-				$wp_send_json_error_code = $code;
-			},
-			true
-		);
-		$mock_ajax_reservations_data = $this->create_mock_ajax_reservations_data( [ 23 ], 2 );
-		$this->set_fn_return(
-			'file_get_contents',
-			function ( string $file ) use ( $mock_ajax_reservations_data ) {
-				if ( $file !== 'php://input' ) {
-					return file_get_contents( $file );
-				}
-
-				return json_encode(
-					[
-						'token'        => 'test-token',
-						'reservations' => $mock_ajax_reservations_data,
-					]
-				);
-			},
-			true
-		);
-		$_REQUEST['_ajax_nonce'] = wp_create_nonce( Ajax::NONCE_ACTION );
-
-		// Do not create a session beforehand, this will cause the session update to fail.
-
-		$this->make_controller()->register();
-
-		codecept_debug( DB::get_results( 'SELECT * FROM ' . Sessions::table_name() ) );
-
-		do_action( 'wp_ajax_nopriv_' . Ajax::ACTION_POST_RESERVATIONS );
-
-		$this->assertEquals( 500, $wp_send_json_error_code );
-		$this->assertEquals( [ 'error' => 'Failed to update the reservations' ], $wp_send_json_error_data );
+		], $sessions->get_reservations_for_token( 'some-token' ) );
 	}
 
 	public function test_clear_reservations(): void {
-		$this->given_maps_and_layouts_in_db();
-		$wp_send_json_success = null;
-		$this->set_fn_return(
-			'wp_send_json_success',
-			function () use ( &$wp_send_json_success ) {
-				$wp_send_json_success = true;
-			},
-			true
-		);
-		$_REQUEST['_ajax_nonce'] = wp_create_nonce( Ajax::NONCE_ACTION );
-		$_REQUEST['token']       = 'test-token';
-		$_REQUEST['postId']      = 23;
-		update_post_meta( 23, Meta::META_KEY_UUID, 'test-post-uuid' );
-		DB::query(
-			DB::prepare(
-				'INSERT INTO %i (token, object_id, expiration, reservations) VALUES (%s, %d, %d, %s)',
-				Sessions::table_name(),
-				'test-token',
-				23,
-				time() + 10,
-				wp_json_encode( $this->create_mock_reservations_data( [ 23 ], 2 ) )
-			)
-		);
+		$this->set_up_ajax_request_context( 0 );
 		$sessions = tribe( Sessions::class );
-		$this->assertEquals(
-			[
-				'reservation-id-1',
-				'reservation-id-2',
-			],
-			$sessions->get_reservation_uuids_for_token( 'test-token' )
-		);
-		$this->set_oauth_token( 'auth-token' );
-		$this->mock_wp_remote(
-			'post',
-			tribe( Reservations::class )->get_cancel_url(),
-			[
-				'headers' => [
-					'Authorization' => 'Bearer auth-token',
-				],
-				'body'    => wp_json_encode(
-					[
-						'eventId' => 'test-post-uuid',
-						'ids'     => [ 'reservation-id-1', 'reservation-id-2' ],
-					]
-				),
-			],
-			[
-				'response' => [
-					'code' => 200,
-				],
-				'body'     => wp_json_encode( [ 'success' => true ] ),
-			]
-		);
+		$sessions->upsert( 'some-token', self::factory()->post->create(), time() + 100 );
+		$reservations_data = $this->create_mock_reservations_data( [ 23 ], 2 );
+		$sessions->update_reservations( 'some-token', $reservations_data );
+		$post_id = self::factory()->post->create();
+		update_post_meta( $post_id, Meta::META_KEY_UUID, 'some-post-uuid' );
+		$this->set_oauth_token( 'some-token' );
 
-		$this->make_controller()->register();
+		$controller = $this->make_controller();
+		$controller->register();
+
+		// Missing post ID from request context.
+		unset( $_REQUEST['postId'] );
+		$_REQUEST['token']  = 'some-token';
+		$wp_send_json_error = $this->mock_wp_send_json_error();
 
 		do_action( 'wp_ajax_nopriv_' . Ajax::ACTION_CLEAR_RESERVATIONS );
 
-		$this->assertTrue( $wp_send_json_success );
-		$this->assertEquals( [], $sessions->get_reservations_for_token( 'test-token' ) );
-	}
-
-	public function test_clear_reservations_fails_if_cancel_request_fails(): void {
-		$this->given_maps_and_layouts_in_db();
-		$wp_send_json_error_code = null;
-		$wp_send_json_error_data = null;
-		$this->set_fn_return(
-			'wp_send_json_error',
-			function ( $data, $code ) use ( &$wp_send_json_error_code, &$wp_send_json_error_data ) {
-				$wp_send_json_error_data = $data;
-				$wp_send_json_error_code = $code;
-			},
-			true
+		$this->assertTrue(
+			$wp_send_json_error->was_called_times_with( 1,
+				[ 'error' => 'Invalid request parameters' ],
+				400
+			),
+			$wp_send_json_error->get_calls_as_string()
 		);
-		$_REQUEST['_ajax_nonce'] = wp_create_nonce( Ajax::NONCE_ACTION );
-		$_REQUEST['token']       = 'test-token';
-		$_REQUEST['postId']      = 23;
-		update_post_meta( 23, Meta::META_KEY_UUID, 'test-post-uuid' );
-		DB::query(
-			DB::prepare(
-				'INSERT INTO %i (token, object_id, expiration, reservations) VALUES (%s, %d, %d, %s)',
-				Sessions::table_name(),
-				'test-token',
-				23,
-				time() + 10,
-				wp_json_encode( $this->create_mock_reservations_data( [ 23 ], 2 ) )
-			)
-		);
-		$sessions = tribe( Sessions::class );
-		$this->assertEquals(
-			[
-				'reservation-id-1',
-				'reservation-id-2',
-			],
-			$sessions->get_reservation_uuids_for_token( 'test-token' )
-		);
-		$this->set_oauth_token( 'auth-token' );
-		$this->mock_wp_remote(
-			'post',
-			tribe( Reservations::class )->get_cancel_url(),
-			[
-				'headers' => [
-					'Authorization' => 'Bearer auth-token',
-				],
-				'body'    => wp_json_encode(
-					[
-						'eventId' => 'test-post-uuid',
-						'ids'     => [ 'reservation-id-1', 'reservation-id-2' ],
-					]
-				),
-			],
-			[
-				'response' => [
-					'code' => 400,
-				],
-				'body'     => wp_json_encode( [ 'success' => false ] ),
-			]
-		);
+		$this->reset_wp_send_json_mocks();
 
-		$this->make_controller()->register();
-
-		do_action( 'wp_ajax_nopriv_' . Ajax::ACTION_CLEAR_RESERVATIONS );
-
-		$this->assertEquals( 500, $wp_send_json_error_code );
-		$this->assertEquals( [ 'error' => 'Failed to clear the reservations' ], $wp_send_json_error_data );
-	}
-
-	public function test_clear_reservations_fails_if_session_token_clearing_fails(): void {
-		$this->given_maps_and_layouts_in_db();
-		$wp_send_json_error_code = null;
-		$wp_send_json_error_data = null;
-		$this->set_fn_return(
-			'wp_send_json_error',
-			function ( $data, $code ) use ( &$wp_send_json_error_code, &$wp_send_json_error_data ) {
-				$wp_send_json_error_data = $data;
-				$wp_send_json_error_code = $code;
-			},
-			true
-		);
-		$_REQUEST['_ajax_nonce'] = wp_create_nonce( Ajax::NONCE_ACTION );
-		$_REQUEST['token']       = 'test-token';
-		$_REQUEST['postId']      = 23;
-		update_post_meta( 23, Meta::META_KEY_UUID, 'test-post-uuid' );
-		$sessions = tribe( Sessions::class );
-		$sessions->upsert( 'test-token', 23, time() + 100 );
-		$sessions->update_reservations( 'test-token', $this->create_mock_reservations_data( [ 23 ], 2 ) );
-		// Mock the session table to return false on clear_token_reservations.
-		$this->test_services->singleton( Sessions::class, $this->make( Sessions::class, [
-			'clear_token_reservations' => false
-		] ) );
-		$this->set_oauth_token( 'auth-token' );
-		$this->mock_wp_remote(
-			'post',
-			tribe( Reservations::class )->get_cancel_url(),
-			[
-				'headers' => [
-					'Authorization' => 'Bearer auth-token',
-				],
-				'body'    => wp_json_encode(
-					[
-						'eventId' => 'test-post-uuid',
-						'ids'     => [ 'reservation-id-1', 'reservation-id-2' ],
-					]
-				),
-			],
-			[
-				'response' => [
-					'code' => 200,
-				],
-				'body'     => wp_json_encode( [ 'success' => true ] ),
-			]
-		);
-
-		$this->make_controller()->register();
-
-		do_action( 'wp_ajax_nopriv_' . Ajax::ACTION_CLEAR_RESERVATIONS );
-
-		$this->assertEquals( 500, $wp_send_json_error_code );
-		$this->assertEquals( [ 'error' => 'Failed to clear the reservations' ], $wp_send_json_error_data );
-	}
-
-	public function test_clear_reservations_will_return_403_on_bad_nonce(): void {
-		$wp_send_json_error_code = null;
-		$wp_send_json_error_data = null;
-		$this->set_fn_return(
-			'wp_send_json_error',
-			function ( $data, $code ) use ( &$wp_send_json_error_code, &$wp_send_json_error_data ) {
-				$wp_send_json_error_data = $data;
-				$wp_send_json_error_code = $code;
-			},
-			true
-		);
-
-		$this->make_controller()->register();
-
-		// Start by not sending the nonce.
-		unset( $_REQUEST['_ajax_nonce'] );
-
-		do_action( 'wp_ajax_nopriv_' . Ajax::ACTION_CLEAR_RESERVATIONS );
-
-		$this->assertEquals( 403, $wp_send_json_error_code );
-		$this->assertEquals( [ 'error' => 'Nonce verification failed' ], $wp_send_json_error_data );
-
-		// Send a wrong nonce.
-		$wp_send_json_error_data = null;
-		$wp_send_json_error_code = null;
-		$_REQUEST['_ajax_nonce'] = 'not-valid-nonce';
-
-		do_action( 'wp_ajax_nopriv_' . Ajax::ACTION_CLEAR_RESERVATIONS );
-
-		$this->assertEquals( 403, $wp_send_json_error_code );
-		$this->assertEquals( [ 'error' => 'Nonce verification failed' ], $wp_send_json_error_data );
-
-		// Send a correct nonce for another action.
-		$wp_send_json_error_data = null;
-		$wp_send_json_error_code = null;
-		$_REQUEST['_ajax_nonce'] = wp_create_nonce( 'another-action' );
-
-		do_action( 'wp_ajax_nopriv_' . Ajax::ACTION_POST_RESERVATIONS );
-
-		$this->assertEquals( 403, $wp_send_json_error_code );
-		$this->assertEquals( [ 'error' => 'Nonce verification failed' ], $wp_send_json_error_data );
-
-		// Send a correct nonce for the action from another user.
-		$wp_send_json_error_data = null;
-		$wp_send_json_error_code = null;
-		wp_set_current_user( self::factory()->user->create( [ 'role' => 'subscriber' ] ) );
-		$_REQUEST['_ajax_nonce'] = wp_create_nonce( Ajax::NONCE_ACTION );
-
-		wp_set_current_user( self::factory()->user->create( [ 'role' => 'subscriber' ] ) );
-		do_action( 'wp_ajax_nopriv_' . Ajax::ACTION_POST_RESERVATIONS );
-
-		$this->assertEquals( 403, $wp_send_json_error_code );
-		$this->assertEquals( [ 'error' => 'Nonce verification failed' ], $wp_send_json_error_data );
-	}
-
-	public function test_clear_reservations_fails_on_bad_arguments(): void {
-		$wp_send_json_error_code = null;
-		$wp_send_json_error_data = null;
-		$this->set_fn_return(
-			'wp_send_json_error',
-			function ( $data, $code ) use ( &$wp_send_json_error_code, &$wp_send_json_error_data ) {
-				$wp_send_json_error_data = $data;
-				$wp_send_json_error_code = $code;
-			},
-			true
-		);
-		$_REQUEST['_ajax_nonce'] = wp_create_nonce( Ajax::NONCE_ACTION );
-		update_post_meta( 23, Meta::META_KEY_UUID, 'test-post-uuid' );
-		DB::query(
-			DB::prepare(
-				'INSERT INTO %i (token, object_id, expiration, reservations) VALUES (%s, %d, %d, %s)',
-				Sessions::table_name(),
-				'test-token',
-				23,
-				time() + 10,
-				wp_json_encode( [ '1234567890', '0987654321' ] )
-			)
-		);
-		$sessions = tribe( Sessions::class );
-		$this->assertEquals(
-			[
-				'1234567890',
-				'0987654321',
-			],
-			$sessions->get_reservations_for_token( 'test-token' )
-		);
-
-		$this->make_controller()->register();
-
-		// Start by not sending any parameters.
-		unset( $_REQUEST['token'], $_REQUEST['postId'] );
-
-		do_action( 'wp_ajax_nopriv_' . Ajax::ACTION_CLEAR_RESERVATIONS );
-
-		$this->assertEquals( 400, $wp_send_json_error_code );
-		$this->assertEquals( [ 'error' => 'Invalid request parameters' ], $wp_send_json_error_data );
-
-		// Now send only a token.
-		$_REQUEST['token'] = 'test-token';
-
-		do_action( 'wp_ajax_nopriv_' . Ajax::ACTION_CLEAR_RESERVATIONS );
-
-		$this->assertEquals( 400, $wp_send_json_error_code );
-		$this->assertEquals( [ 'error' => 'Invalid request parameters' ], $wp_send_json_error_data );
-
-		// Now send only a post ID.
+		// Missing token from request context.
+		$_REQUEST['postId'] = $post_id;
 		unset( $_REQUEST['token'] );
-		$_REQUEST['postId'] = 23;
+		$wp_send_json_error = $this->mock_wp_send_json_error();
 
 		do_action( 'wp_ajax_nopriv_' . Ajax::ACTION_CLEAR_RESERVATIONS );
 
-		$this->assertEquals( 400, $wp_send_json_error_code );
-		$this->assertEquals( [ 'error' => 'Invalid request parameters' ], $wp_send_json_error_data );
+		$this->assertTrue(
+			$wp_send_json_error->was_called_times_with( 1,
+				[ 'error' => 'Invalid request parameters' ],
+				400
+			),
+			$wp_send_json_error->get_calls_as_string()
+		);
+		$this->reset_wp_send_json_mocks();
+
+		// Reservations cancellation fails.
+		$_REQUEST['postId'] = $post_id;
+		$_REQUEST['token']  = 'some-token';
+		$reservations = tribe( Reservations::class );
+		$wp_remote            = $this->mock_wp_remote(
+			'post',
+			$reservations->get_cancel_url(),
+			[
+				'headers' => [
+					'Authorization' => 'Bearer some-token',
+					'Content-Type'  => 'application/json',
+				],
+				'body' => wp_json_encode(
+					[
+						'eventId' => 'some-post-uuid',
+						'ids'     =>  $sessions->get_reservation_uuids_for_token( 'some-token' ),
+					]
+				),
+			],
+			function () {
+				return [
+					'response' => [
+						'code' => 400,
+					],
+					'body'     => wp_json_encode(
+						[
+							'success' => false,
+						]
+					),
+				];
+			}
+		);
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+
+		do_action( 'wp_ajax_nopriv_' . Ajax::ACTION_CLEAR_RESERVATIONS );
+
+		$this->assertTrue( $wp_remote->was_called() );
+		$this->assertTrue(
+			$wp_send_json_error->was_called_times_with( 1,
+				[ 'error' => 'Failed to clear the reservations' ],
+				500
+			),
+			$wp_send_json_error->get_calls_as_string()
+		);
+		$this->reset_wp_send_json_mocks();
+
+		// Reservation cancellation succeeds.
+		$_REQUEST['postId'] = $post_id;
+		$_REQUEST['token']  = 'some-token';
+		$reservations = tribe( Reservations::class );
+		$wp_remote            = $this->mock_wp_remote(
+			'post',
+			$reservations->get_cancel_url(),
+			[
+				'headers' => [
+					'Authorization' => 'Bearer some-token',
+					'Content-Type'  => 'application/json',
+				],
+				'body' => wp_json_encode(
+					[
+						'eventId' => 'some-post-uuid',
+						'ids'     =>  $sessions->get_reservation_uuids_for_token( 'some-token' ),
+					]
+				),
+			],
+			function () {
+				return [
+					'response' => [
+						'code' => 200,
+					],
+					'body'     => wp_json_encode(
+						[
+							'success' => true,
+						]
+					),
+				];
+			}
+		);
+		$wp_send_json_success = $this->mock_wp_send_json_success();
+
+		do_action( 'wp_ajax_nopriv_' . Ajax::ACTION_CLEAR_RESERVATIONS );
+
+		$this->assertTrue( $wp_remote->was_called() );
+		$this->assertTrue(
+			$wp_send_json_success->was_called_times_with( 1 ),
+			$wp_send_json_success->get_calls_as_string()
+		);
+		$this->assertEmpty( $sessions->get_reservations_for_token( 'some-token' ) );
+		$this->reset_wp_send_json_mocks();
 	}
 
 	public function test_clear_commerce_cart_cookie(): void {
@@ -1444,5 +997,108 @@ class Ajax_Test extends Controller_Test_Case {
 
 		$this->assertFalse( isset( $_COOKIE[ $cookie_name ] ) );
 		$this->assertTrue( $setcookie_call );
+	}
+
+	public function test_delete_reservations(): void {
+		$this->set_up_ajax_request_context();
+		// Create 3 Attendees and assign a reservation ID to each one of them.
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->create_tc_ticket( $post_id, 10 );
+		[ $attendee_1, $attendee_2, $attendee_3 ] = $this->create_many_attendees_for_ticket( 3, $ticket_id, $post_id );
+		update_post_meta( $attendee_1, Meta::META_KEY_RESERVATION_ID, 'reservation-uuid-1' );
+		update_post_meta( $attendee_2, Meta::META_KEY_RESERVATION_ID, 'reservation-uuid-2' );
+		update_post_meta( $attendee_3, Meta::META_KEY_RESERVATION_ID, 'reservation-uuid-3' );
+		$this->set_oauth_token( 'auth-token' );
+		$request_body = null;
+		$this->set_fn_return( 'file_get_contents', function ( $file, ...$args ) use ( &$request_body ) {
+			if ( $file !== 'php://input' ) {
+				return file_get_contents( $file, ...$args );
+			}
+
+			return $request_body;
+		}, true );
+
+		$controller = $this->make_controller();
+		$controller->register();
+
+		// Request body is empty.
+		$request_body = '';
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+
+		do_action( 'wp_ajax_' . Ajax::ACTION_DELETE_RESERVATIONS );
+
+		$this->assertTrue( $wp_send_json_error->was_called_times_with( 1,
+			[
+				'error' => 'Invalid request body',
+			],
+			400
+		) );
+		$this->reset_wp_send_json_mocks();
+
+		// Request body is not valid JSON.
+		$request_body = 'not-json';
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+
+		do_action( 'wp_ajax_' . Ajax::ACTION_DELETE_RESERVATIONS );
+
+		$this->assertTrue( $wp_send_json_error->was_called_times_with( 1,
+			[
+				'error' => 'Invalid request body',
+			],
+			400
+		) );
+		$this->reset_wp_send_json_mocks();
+
+		// Request body is valid JSON but not an array of non-empty strings.
+		$request_body = '["", ""]';
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+
+		do_action( 'wp_ajax_' . Ajax::ACTION_DELETE_RESERVATIONS );
+
+		$this->assertTrue( $wp_send_json_error->was_called_times_with( 1,
+			[
+				'error' => 'Invalid request body',
+			],
+			400
+		) );
+		$this->reset_wp_send_json_mocks();
+
+		// Deletion succeeds.
+		$request_body         = '["reservation-uuid-1", "reservation-uuid-4"]';
+		$wp_send_json_success = $this->mock_wp_send_json_success();
+		$delete_map = [];
+		add_action( 'tec_tickets_seating_delete_reservations_from_attendees', function ( $map ) use ( &$delete_map ) {
+			$delete_map = $map;
+		} );
+
+		do_action( 'wp_ajax_' . Ajax::ACTION_DELETE_RESERVATIONS );
+
+		$this->assertTrue( $wp_send_json_success->was_called_times_with( 1,
+			[
+				'numberDeleted' => 1,
+			],
+		) );
+		$this->reset_wp_send_json_mocks();
+		$this->assertEquals( $delete_map, [ 'reservation-uuid-1' => $attendee_1 ] );
+		$this->assertEquals('', get_post_meta( $attendee_1, Meta::META_KEY_RESERVATION_ID, true ) );
+
+		// Send a second request to delete the rest.
+		$request_body         = '["reservation-uuid-2", "reservation-uuid-3"]';
+		$wp_send_json_success = $this->mock_wp_send_json_success();
+		$delete_map = [];
+		add_action( 'tec_tickets_seating_delete_reservations_from_attendees', function ( $map ) use ( &$delete_map ) {
+			$delete_map = $map;
+		} );
+
+		do_action( 'wp_ajax_' . Ajax::ACTION_DELETE_RESERVATIONS );
+
+		$this->assertTrue( $wp_send_json_success->was_called_times_with( 1,
+			[
+				'numberDeleted' => 2,
+			],
+		) );
+		$this->assertEquals( $delete_map, [ 'reservation-uuid-2' => $attendee_2, 'reservation-uuid-3' => $attendee_3 ] );
+		$this->assertEquals('', get_post_meta( $attendee_2, Meta::META_KEY_RESERVATION_ID, true ) );
+		$this->assertEquals('', get_post_meta( $attendee_3, Meta::META_KEY_RESERVATION_ID, true ) );
 	}
 }

@@ -24,5 +24,6 @@
         "{{ticket_id}}": "uuid-forward-block",
         "{{ticket_id}}": "uuid-vip"
     },
-    "isLayoutLocked": true
+    "isLayoutLocked": true,
+    "eventCapacity": 300
 }

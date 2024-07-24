@@ -1,42 +1,47 @@
+import { localizedData } from './localized-data';
+
+const {
+	ajaxUrl,
+	ajaxNonce,
+	ACTION_GET_SEAT_TYPES_BY_LAYOUT_ID,
+	ACTION_INVALIDATE_MAPS_LAYOUTS_CACHE,
+	ACTION_INVALIDATE_LAYOUTS_CACHE,
+	ACTION_DELETE_MAP,
+	ACTION_DELETE_LAYOUT,
+	ACTION_POST_RESERVATIONS,
+	ACTION_CLEAR_RESERVATIONS,
+	ACTION_FETCH_ATTENDEES,
+	ACTION_DELETE_RESERVATIONS,
+} = localizedData;
+
+export {
+	ajaxUrl,
+	ajaxNonce,
+	ACTION_GET_SEAT_TYPES_BY_LAYOUT_ID,
+	ACTION_INVALIDATE_MAPS_LAYOUTS_CACHE,
+	ACTION_INVALIDATE_LAYOUTS_CACHE,
+	ACTION_DELETE_MAP,
+	ACTION_DELETE_LAYOUT,
+	ACTION_POST_RESERVATIONS,
+	ACTION_CLEAR_RESERVATIONS,
+	ACTION_FETCH_ATTENDEES,
+	ACTION_DELETE_RESERVATIONS,
+};
+
 window.tec = window.tec || {};
 window.tec.tickets.seating = window.tec.tickets.seating || {};
 window.tec.tickets.seating.ajax = window.tec.tickets.seating.ajax || {};
-window.tec.tickets.seating.ajax.urls = window.tec.tickets.seating.ajax.urls || {};
-
-const {seatTypesByLayoutId} = window.tec.tickets.seating.ajax.urls;
-
-/**
- * Fetches seat types for a given layout ID.
- *
- * @since TBD
- *
- * @param {string} layoutId The layout ID to fetch seat types for.
- *
- * @return {Promise<void>} A promise that will be resolved when the seat types are fetched.
- */
-async function fetchSeatTypesByLayoutId(layoutId) {
-	const response = await fetch(
-		`${seatTypesByLayoutId}&layout=${layoutId}`,
-		{
-			method: 'GET',
-			headers: {
-				'Accept': 'application/json',
-			},
-		},
-	);
-
-	if (response.status !== 200) {
-		throw new Error(
-			`Failed to fetch seat types for layout ID ${layoutId}. Status: ${response.status}`,
-		);
-	}
-
-	const json = await response.json();
-
-	return json?.data || [];
-}
-
 window.tec.tickets.seating.ajax = {
 	...window.tec.tickets.seating.ajax,
-	fetchSeatTypesByLayoutId,
+	ajaxUrl,
+	ajaxNonce,
+	ACTION_GET_SEAT_TYPES_BY_LAYOUT_ID,
+	ACTION_INVALIDATE_MAPS_LAYOUTS_CACHE,
+	ACTION_INVALIDATE_LAYOUTS_CACHE,
+	ACTION_DELETE_MAP,
+	ACTION_DELETE_LAYOUT,
+	ACTION_POST_RESERVATIONS,
+	ACTION_CLEAR_RESERVATIONS,
+	ACTION_FETCH_ATTENDEES,
+	ACTION_DELETE_RESERVATIONS,
 };

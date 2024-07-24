@@ -214,13 +214,25 @@ class Layouts {
 	 */
 	public static function get_associated_posts_by_id( string $layout_id ): int {
 		global $wpdb;
+		$ticketable_post_types = tribe_get_option( 'ticket-enabled-post-types', [] );
+
+		if ( empty( $ticketable_post_types ) ) {
+			return 0;
+		}
+
+		$post_types = DB::prepare(
+			implode( ', ', array_fill( 0, count( $ticketable_post_types ), '%s' ) ),
+			...$ticketable_post_types
+		);
+
 		try {
 			$count = DB::get_var(
 				DB::prepare(
 					"SELECT COUNT(*) FROM %i AS posts
 					LEFT JOIN %i AS layout_meta
 					ON posts.ID = layout_meta.post_id
-					WHERE layout_meta.meta_key = %s
+					WHERE posts.post_type IN ({$post_types})
+					AND layout_meta.meta_key = %s
 					AND layout_meta.meta_value = %s",
 					$wpdb->posts,
 					$wpdb->postmeta,
@@ -262,6 +274,28 @@ class Layouts {
 	}
 
 	/**
+	 * Returns the URL to delete a layout.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $layout_id The UUID of the layout to delete.
+	 * @param string $map_id    The UUID of the map the layout belongs to.
+	 *
+	 * @return string The URL to delete the layout.
+	 */
+	public function get_delete_url( string $layout_id, string $map_id ): string {
+		$url = add_query_arg(
+			[
+				'layoutId' => $layout_id,
+				'mapId'    => $map_id,
+			],
+			$this->service_fetch_url
+		);
+
+		return $url;
+	}
+
+	/**
 	 * Deletes a layout from the service.
 	 *
 	 * @since TBD
@@ -272,13 +306,7 @@ class Layouts {
 	 * @return bool True on success, false on failure.
 	 */
 	public function delete( string $layout_id, string $map_id ): bool {
-		$url = add_query_arg(
-			[
-				'layoutId' => $layout_id,
-				'mapId'    => $map_id,
-			],
-			$this->service_fetch_url
-		);
+		$url = $this->get_delete_url( $layout_id, $map_id );
 
 		$args = [
 			'method'  => 'DELETE',

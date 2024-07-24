@@ -53,6 +53,7 @@ class Controller extends Controller_Contract {
 		$this->container->get( Frontend::class )->unregister();
 		$this->container->get( Editor::class )->unregister();
 		$this->container->get( Frontend\Timer::class )->unregister();
+		$this->container->get( Admin\Ajax::class )->unregister();
 	}
 
 	/**
@@ -131,6 +132,11 @@ class Controller extends Controller_Contract {
 		 * For this reason, it's always registered.
 		 */
 		$this->container->register( Editor::class );
+
+		/*
+		 * AJAX will power both frontend and backend, always register it.
+		 */
+		$this->container->register( Admin\Ajax::class );
 
 		if ( is_admin() ) {
 			$this->container->register( Admin::class );

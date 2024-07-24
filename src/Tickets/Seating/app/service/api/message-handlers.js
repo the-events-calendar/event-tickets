@@ -1,5 +1,5 @@
-import { ajaxNonce, ajaxUrl, layoutsHomeUrl, mapsHomeUrl } from './externals';
-
+import { ajaxUrl, ajaxNonce } from '@tec/tickets/seating/ajax';
+import { layoutsHomeUrl, mapsHomeUrl } from './localized-data';
 
 /**
  * The default message handler that will be called when a message is received from the service.

@@ -2,7 +2,7 @@
 /**
  * Handles the AJAX requests for the Seating feature.
  *
- * @since TBD
+ * @since   TBD
  *
  * @package TEC\Tickets\Seating\Admin;
  */
@@ -11,23 +11,32 @@ namespace TEC\Tickets\Seating\Admin;
 
 use TEC\Common\Contracts\Container;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
-use TEC\Tickets\Seating\Service\Layouts;
-use TEC\Tickets\Seating\Service\Maps;
-use TEC\Tickets\Seating\Service\Seat_Types;
-use TEC\Tickets\Seating\Tables\Sessions;
+use TEC\Common\StellarWP\Assets\Asset;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Module;
+use TEC\Tickets\Seating\Ajax_Checks;
+use TEC\Tickets\Seating\Built_Assets;
+use TEC\Tickets\Seating\Logging;
+use TEC\Tickets\Seating\Service\Layouts;
+use TEC\Tickets\Seating\Service\Maps;
 use TEC\Tickets\Seating\Service\Reservations;
+use TEC\Tickets\Seating\Service\Seat_Types;
+use TEC\Tickets\Seating\Tables\Sessions;
 use Tribe__Tickets__Tickets as Tickets;
-use TEC\Tickets\Seating\Meta;
+use Tribe__Tickets__Main as Tickets_Main;
+
 /**
  * Class Ajax.
  *
- * @since TBD
+ * @since   TBD
  *
  * @package TEC\Tickets\Seating\Admin;
  */
 class Ajax extends Controller_Contract {
+	use Ajax_Checks;
+	use Built_Assets;
+	use Logging;
+
 	/**
 	 * The nonce action.
 	 *
@@ -35,7 +44,16 @@ class Ajax extends Controller_Contract {
 	 *
 	 * @var string
 	 */
-	const NONCE_ACTION = 'tec-tickets-seating-service-ajax';
+	public const NONCE_ACTION = 'tec-tickets-seating-service-ajax';
+
+	/**
+	 * The action to get the seat types for a given layout ID.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const ACTION_GET_SEAT_TYPES_BY_LAYOUT_ID = 'tec_tickets_seating_get_seat_types_by_layout_id';
 
 	/**
 	 * The action to invalidate the maps and layouts cache.
@@ -44,7 +62,7 @@ class Ajax extends Controller_Contract {
 	 *
 	 * @var string
 	 */
-	const ACTION_INVALIDATE_MAPS_LAYOUTS_CACHE = 'tec_tickets_seating_service_invalidate_maps_layouts_cache';
+	public const ACTION_INVALIDATE_MAPS_LAYOUTS_CACHE = 'tec_tickets_seating_service_invalidate_maps_layouts_cache';
 
 	/**
 	 * The action to invalidate the layouts cache.
@@ -53,7 +71,7 @@ class Ajax extends Controller_Contract {
 	 *
 	 * @var string
 	 */
-	const ACTION_INVALIDATE_LAYOUTS_CACHE = 'tec_tickets_seating_service_invalidate_layouts_cache';
+	public const ACTION_INVALIDATE_LAYOUTS_CACHE = 'tec_tickets_seating_service_invalidate_layouts_cache';
 
 	/**
 	 * The action to delete a map.
@@ -62,7 +80,7 @@ class Ajax extends Controller_Contract {
 	 *
 	 * @var string
 	 */
-	const ACTION_DELETE_MAP = 'tec_tickets_seating_service_delete_map';
+	public const ACTION_DELETE_MAP = 'tec_tickets_seating_service_delete_map';
 
 	/**
 	 * The action to delete a layout.
@@ -71,7 +89,7 @@ class Ajax extends Controller_Contract {
 	 *
 	 * @var string
 	 */
-	const ACTION_DELETE_LAYOUT = 'tec_tickets_seating_service_delete_layout';
+	public const ACTION_DELETE_LAYOUT = 'tec_tickets_seating_service_delete_layout';
 
 	/**
 	 * The action to push the reservations to the backend from the seat-selection frontend.
@@ -80,7 +98,7 @@ class Ajax extends Controller_Contract {
 	 *
 	 * @var string
 	 */
-	const ACTION_POST_RESERVATIONS = 'tec_tickets_seating_post_reservations';
+	public const ACTION_POST_RESERVATIONS = 'tec_tickets_seating_post_reservations';
 
 	/**
 	 * The action to remove the reservations from the backend from the seat-selection frontend.
@@ -89,7 +107,16 @@ class Ajax extends Controller_Contract {
 	 *
 	 * @var string
 	 */
-	const ACTION_CLEAR_RESERVATIONS = 'tec_tickets_seating_clear_reservations';
+	public const ACTION_CLEAR_RESERVATIONS = 'tec_tickets_seating_clear_reservations';
+
+	/**
+	 * The action to delete reservations.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const ACTION_DELETE_RESERVATIONS = 'tec_tickets_seating_delete_reservations';
 
 	/**
 	 * The action to fetch attendees.
@@ -98,7 +125,7 @@ class Ajax extends Controller_Contract {
 	 *
 	 * @var string
 	 */
-	const ACTION_FETCH_ATTENDEES = 'tec_tickets_seating_fetch_attendees';
+	public const ACTION_FETCH_ATTENDEES = 'tec_tickets_seating_fetch_attendees';
 
 	/**
 	 * A reference to the Seat Types service object.
@@ -150,12 +177,12 @@ class Ajax extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param Container    $container  A reference to the DI container object.
-	 * @param Seat_Types   $seat_types A reference to the Seat Types service object.
-	 * @param Sessions     $sessions    A reference to the Sessions table object.
+	 * @param Container    $container    A reference to the DI container object.
+	 * @param Seat_Types   $seat_types   A reference to the Seat Types service object.
+	 * @param Sessions     $sessions     A reference to the Sessions table object.
 	 * @param Reservations $reservations A reference to the Reservations service object.
-	 * @param Maps         $maps        A reference to the Maps service object.
-	 * @param Layouts      $layouts     A reference to the Layouts service object.
+	 * @param Maps         $maps         A reference to the Maps service object.
+	 * @param Layouts      $layouts      A reference to the Layouts service object.
 	 */
 	public function __construct(
 		Container $container,
@@ -179,8 +206,10 @@ class Ajax extends Controller_Contract {
 	 * @since TBD
 	 */
 	protected function do_register(): void {
-		add_action( 'wp_ajax_seat_types_by_layout_id', [ $this, 'fetch_seat_types_by_layout_id' ] );
-		add_action( 'wp_ajax_' . self::ACTION_INVALIDATE_MAPS_LAYOUTS_CACHE, [ $this, 'invalidate_maps_layouts_cache' ] );
+		$this->register_assets();
+		add_action( 'wp_ajax_' . self::ACTION_GET_SEAT_TYPES_BY_LAYOUT_ID, [ $this, 'fetch_seat_types_by_layout_id' ] );
+		add_action( 'wp_ajax_' . self::ACTION_INVALIDATE_MAPS_LAYOUTS_CACHE,
+			[ $this, 'invalidate_maps_layouts_cache' ] );
 		add_action( 'wp_ajax_' . self::ACTION_INVALIDATE_LAYOUTS_CACHE, [ $this, 'invalidate_layouts_cache' ] );
 		add_action( 'wp_ajax_' . self::ACTION_DELETE_MAP, [ $this, 'delete_map_from_service' ] );
 		add_action( 'wp_ajax_' . self::ACTION_DELETE_LAYOUT, [ $this, 'delete_layout_from_service' ] );
@@ -188,8 +217,9 @@ class Ajax extends Controller_Contract {
 		add_action( 'wp_ajax_nopriv_' . self::ACTION_POST_RESERVATIONS, [ $this, 'update_reservations' ] );
 		add_action( 'wp_ajax_' . self::ACTION_CLEAR_RESERVATIONS, [ $this, 'clear_reservations' ] );
 		add_action( 'wp_ajax_nopriv_' . self::ACTION_CLEAR_RESERVATIONS, [ $this, 'clear_reservations' ] );
+		add_action( 'wp_ajax_' . self::ACTION_DELETE_RESERVATIONS, [ $this, 'delete_reservations' ] );
+
 		add_action( 'tec_tickets_seating_session_interrupt', [ $this, 'clear_commerce_cart_cookie' ] );
-		add_action( 'wp_ajax_' . self::ACTION_FETCH_ATTENDEES, [ $this, 'fetch_attendees_by_event' ] );
 	}
 
 	/**
@@ -200,7 +230,7 @@ class Ajax extends Controller_Contract {
 	 * @return void
 	 */
 	public function unregister(): void {
-		remove_action( 'wp_ajax_seat_types_by_layout_id', [ $this, 'fetch_seat_types_by_layout_id' ] );
+		remove_action( 'wp_ajax_' . self::ACTION_GET_SEAT_TYPES_BY_LAYOUT_ID, [ $this, 'fetch_seat_types_by_layout_id' ] );
 		remove_action(
 			'wp_ajax_' . self::ACTION_INVALIDATE_MAPS_LAYOUTS_CACHE,
 			[ $this, 'invalidate_maps_layouts_cache' ]
@@ -213,114 +243,57 @@ class Ajax extends Controller_Contract {
 		remove_action( 'wp_ajax_' . self::ACTION_CLEAR_RESERVATIONS, [ $this, 'clear_reservations' ] );
 		remove_action( 'wp_ajax_nopriv_' . self::ACTION_CLEAR_RESERVATIONS, [ $this, 'clear_reservations' ] );
 		remove_action( 'tec_tickets_seating_session_interrupt', [ $this, 'clear_commerce_cart_cookie' ] );
-		remove_action( 'wp_ajax_' . self::ACTION_FETCH_ATTENDEES, [ $this, 'fetch_attendees_by_event' ] );
+		remove_action( 'wp_ajax_' . self::ACTION_DELETE_RESERVATIONS, [ $this, 'delete_reservations' ] );
 	}
 
 	/**
-	 * Fetch attendees by event.
+	 * Returns the Ajax data for the Seating feature.
 	 *
 	 * @since TBD
 	 *
-	 * @return void
+	 * @return array<string,string> The Ajax data for the Seating feature.
 	 */
-	public function fetch_attendees_by_event(): void {
-		if ( ! check_ajax_referer( self::NONCE_ACTION, '_ajax_nonce', false ) ) {
-			wp_send_json_error(
-				[
-					'error' => __( 'Nonce verification failed', 'event-tickets' ),
-				],
-				403
-			);
-
-			return;
-		}
-
-		$event_id = (int) tribe_get_request_var( 'postId' );
-
-		if ( empty( $event_id ) ) {
-			wp_send_json_error(
-				[
-					'error' => __( 'No event ID provided', 'event-tickets' ),
-				],
-				400
-			);
-
-			return;
-		}
-
-		$current_page = (int) tribe_get_request_var( 'page', 0 );
-		$per_page     = (int) tribe_get_request_var( 'perPage', 0 );
-
-		$args = [
-			'page'               => $current_page,
-			'per_page'           => $per_page,
-			'return_total_found' => true,
-			'order'              => 'DESC',
-		];
-
-		$data      = Tickets::get_attendees_by_args( $args, $event_id );
-		$formatted = [];
-
-		foreach ( $data['attendees'] as $attendee ) {
-			$id = (int) $attendee['attendee_id'];
-
-			$formatted[] = [
-				'id'            => $id,
-				'name'          => $attendee['holder_name'],
-				'purchaser'     => [
-					'id'   => $attendee['purchaser_id'],
-					'name' => $attendee['purchaser_name'],
-				],
-				'ticketId'      => $attendee['product_id'],
-				'seatTypeId'    => get_post_meta( $id, Meta::META_KEY_SEAT_TYPE, true ),
-				'seatLabel'     => get_post_meta( $id, Meta::META_KEY_ATTENDEE_SEAT_LABEL, true ),
-				'reservationId' => get_post_meta( $id, Meta::META_KEY_RESERVATION_ID, true ),
-			];
-		}
-
-		wp_send_json_success(
-			[
-				'attendees' => $formatted,
-				'total'     => $data['total_found'],
-			]
-		);
-	}
-
-	/**
-	 * Returns the set of URLs to be used for the AJAX requests.
-	 *
-	 * @since TBD
-	 *
-	 * @return array<string, string> The set of URLs to be used for the AJAX requests.
-	 */
-	public function get_urls(): array {
+	public function get_ajax_data(): array {
 		return [
-			'seatTypesByLayoutId' => add_query_arg(
-				[
-					'action'      => 'seat_types_by_layout_id',
-					'_ajax_nonce' => wp_create_nonce( 'seat_types_by_layout_id' ),
-				],
-				admin_url( 'admin-ajax.php' )
-			),
+			'ajaxUrl'                              => admin_url( 'admin-ajax.php' ),
+			'ajaxNonce'                            => wp_create_nonce( self::NONCE_ACTION ),
+			'ACTION_INVALIDATE_MAPS_LAYOUTS_CACHE' => self::ACTION_INVALIDATE_MAPS_LAYOUTS_CACHE,
+			'ACTION_INVALIDATE_LAYOUTS_CACHE'      => self::ACTION_INVALIDATE_LAYOUTS_CACHE,
+			'ACTION_DELETE_MAP'                    => self::ACTION_DELETE_MAP,
+			'ACTION_DELETE_LAYOUT'                 => self::ACTION_DELETE_LAYOUT,
+			'ACTION_POST_RESERVATIONS'             => self::ACTION_POST_RESERVATIONS,
+			'ACTION_CLEAR_RESERVATIONS'            => self::ACTION_CLEAR_RESERVATIONS,
+			'ACTION_DELETE_RESERVATIONS'           => self::ACTION_DELETE_RESERVATIONS,
+			'ACTION_FETCH_ATTENDEES'               => self::ACTION_FETCH_ATTENDEES,
+			'ACTION_GET_SEAT_TYPES_BY_LAYOUT_ID'   => self::ACTION_GET_SEAT_TYPES_BY_LAYOUT_ID,
 		];
 	}
 
 	/**
-	 * Hooked to the `wp_ajax_seat_types_by_layout_id` action, this method will return the seat types in option format
-	 * for the given layout IDs.
+	 * Registers the assets used by the AJAX component.
+	 *
+	 * @since TBD
+	 */
+	private function register_assets(): void {
+		Asset::add(
+			'tec-tickets-seating-ajax',
+			$this->built_asset_url( 'ajax.js' ),
+			Tickets_Main::VERSION
+		)
+		     ->add_localize_script( 'tec.tickets.seating.ajax', [ $this, 'get_ajax_data' ] )
+		     ->add_to_group( 'tec-tickets-seating' )
+		     ->register();
+	}
+
+	/**
+	 * Returns the seat types in option format for the given layout IDs.
 	 *
 	 * @since TBD
 	 *
 	 * @return void The seat types in option format for the given layout IDs are returned as JSON.
 	 */
 	public function fetch_seat_types_by_layout_id(): void {
-		if ( ! check_ajax_referer( 'seat_types_by_layout_id', '_ajax_nonce', false ) ) {
-			wp_send_json_error(
-				[
-					'error' => 'Nonce verification failed',
-				]
-			);
-
+		if ( ! $this->check_current_ajax_user_can( 'edit_posts' ) ) {
 			return;
 		}
 
@@ -345,25 +318,21 @@ class Ajax extends Controller_Contract {
 	 * @return void The function does not return a value but will echo the JSON response.
 	 */
 	public function invalidate_maps_layouts_cache(): void {
-		if ( ! check_ajax_referer( self::NONCE_ACTION, '_ajax_nonce', false ) ) {
-			wp_send_json_error(
-				[
-					'error' => 'Nonce verification failed',
-				],
-				403
-			);
+		if ( ! $this->check_current_ajax_user_can( 'manage_options' ) ) {
+			return;
+		}
+
+		if ( ! Layouts::invalidate_cache() ) {
+			wp_send_json_error( [ 'error' => 'Failed to invalidate the layouts cache.' ], 500 );
 
 			return;
 		}
 
-		if ( ! ( Layouts::invalidate_cache() ) ) {
-			wp_send_json_error( [ 'error' => 'Failed to invalidate the layouts cache.' ], 500 );
-		}
-
 		if ( ! ( Maps::invalidate_cache() ) ) {
 			wp_send_json_error( [ 'error' => 'Failed to invalidate the maps layouts cache.' ], 500 );
-		}
 
+			return;
+		}
 
 		wp_send_json_success();
 	}
@@ -376,14 +345,7 @@ class Ajax extends Controller_Contract {
 	 * @return void The function does not return a value but will echo the JSON response.
 	 */
 	public function invalidate_layouts_cache(): void {
-		if ( ! check_ajax_referer( self::NONCE_ACTION, '_ajax_nonce', false ) ) {
-			wp_send_json_error(
-				[
-					'error' => 'Nonce verification failed',
-				],
-				403
-			);
-
+		if ( ! $this->check_current_ajax_user_can( 'manage_options' ) ) {
 			return;
 		}
 
@@ -402,14 +364,7 @@ class Ajax extends Controller_Contract {
 	 * @return void The function does not return a value but will send the JSON response.
 	 */
 	public function delete_map_from_service(): void {
-		if ( ! check_ajax_referer( self::NONCE_ACTION, '_ajax_nonce', false ) ) {
-			wp_send_json_error(
-				[
-					'error' => __( 'Nonce verification failed', 'event-tickets' ),
-				],
-				403
-			);
-
+		if ( ! $this->check_current_ajax_user_can( 'manage_options' ) ) {
 			return;
 		}
 
@@ -428,6 +383,7 @@ class Ajax extends Controller_Contract {
 
 		if ( $this->maps->delete( $map_id ) ) {
 			wp_send_json_success();
+
 			return;
 		}
 
@@ -442,14 +398,7 @@ class Ajax extends Controller_Contract {
 	 * @return void The function does not return a value but will send the JSON response.
 	 */
 	public function delete_layout_from_service(): void {
-		if ( ! check_ajax_referer( self::NONCE_ACTION, '_ajax_nonce', false ) ) {
-			wp_send_json_error(
-				[
-					'error' => __( 'Nonce verification failed', 'event-tickets' ),
-				],
-				403
-			);
-
+		if ( ! $this->check_current_ajax_user_can( 'manage_options' ) ) {
 			return;
 		}
 
@@ -469,10 +418,29 @@ class Ajax extends Controller_Contract {
 
 		if ( $this->layouts->delete( $layout_id, $map_id ) ) {
 			wp_send_json_success();
+
 			return;
 		}
 
 		wp_send_json_error( [ 'error' => __( 'Failed to delete the layout.', 'event-tickets' ) ], 500 );
+	}
+
+	/**
+	 * Returns the request body.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The request body.
+	 */
+	protected function get_request_body(): string {
+		if ( function_exists( 'wpcom_vip_file_get_contents' ) ) {
+			$body = wpcom_vip_file_get_contents( 'php://input' );
+		} else {
+			// phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsRemoteFile
+			$body = trim( file_get_contents( 'php://input' ) );
+		}
+
+		return $body;
 	}
 
 	/**
@@ -483,24 +451,24 @@ class Ajax extends Controller_Contract {
 	 * @return void The JSON response is sent to the client.
 	 */
 	public function update_reservations() {
-		if ( ! check_ajax_referer( self::NONCE_ACTION, '_ajax_nonce', false ) ) {
+		if ( ! $this->check_current_ajax_user_can( 'exist' ) ) {
+			return;
+		}
+
+		$post_id = (int) tribe_get_request_var( 'postId', 0 );
+
+		if ( empty( $post_id ) ) {
 			wp_send_json_error(
 				[
-					'error' => 'Nonce verification failed',
+					'error' => 'No post ID provided',
 				],
-				403
+				400
 			);
 
 			return;
 		}
 
-		if ( function_exists( 'wpcom_vip_file_get_contents' ) ) {
-			$body = wpcom_vip_file_get_contents( 'php://input' );
-		} else {
-			// phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsRemoteFile
-			$body = trim( file_get_contents( 'php://input' ) );
-		}
-
+		$body = $this->get_request_body();
 		$decoded = json_decode( $body, true );
 
 		if ( ! (
@@ -520,13 +488,39 @@ class Ajax extends Controller_Contract {
 			return;
 		}
 
-		$token        = $decoded['token'];
+		$token             = $decoded['token'];
 		$json_reservations = $decoded['reservations'];
 
 		$reservations = [];
 		foreach ( $json_reservations as $ticket_id => $ticket_reservations ) {
 			$reservations[ $ticket_id ] = [];
+
+			if ( ! is_array( $ticket_reservations ) ) {
+				wp_send_json_error(
+					[
+						'error' => 'Reservation data is not in correct format',
+					],
+					400
+				);
+
+				return;
+			}
+
 			foreach ( $ticket_reservations as $reservation ) {
+				if ( ! (
+					is_array( $reservation )
+					&& isset( $reservation['reservationId'], $reservation['seatTypeId'], $reservation['seatLabel'] )
+				) ) {
+					wp_send_json_error(
+						[
+							'error' => 'Reservation data is not in correct format',
+						],
+						400
+					);
+
+					return;
+				}
+
 				$reservations[ $ticket_id ][] = [
 					'reservation_id' => $reservation['reservationId'],
 					'seat_type_id'   => $reservation['seatTypeId'],
@@ -556,25 +550,18 @@ class Ajax extends Controller_Contract {
 	 *
 	 * @return void The JSON response is sent to the client.
 	 */
-	public function clear_reservations() {
-		if ( ! check_ajax_referer( self::NONCE_ACTION, '_ajax_nonce', false ) ) {
-			wp_send_json_error(
-				[
-					'error' => 'Nonce verification failed',
-				],
-				403
-			);
-
+	public function clear_reservations(): void {
+		if ( ! $this->check_current_ajax_user_can( 'exist') ) {
 			return;
 		}
 
-		$token   = tribe_get_request_var( 'token' );
-		$post_id = tribe_get_request_var( 'postId' );
+		$post_id = (int) tribe_get_request_var( 'postId', 0 );
+		$token = tribe_get_request_var( 'token' );
 
-		if ( ! ( $token && $post_id ) ) {
+		if ( ! ( $post_id && $token && is_string( $token ) ) ) {
 			wp_send_json_error(
 				[
-					'error' => 'Invalid request parameters',
+					'error' => __( 'Invalid request parameters', 'event-tickets' ),
 				],
 				400
 			);
@@ -588,7 +575,7 @@ class Ajax extends Controller_Contract {
 		) ) {
 			wp_send_json_error(
 				[
-					'error' => 'Failed to clear the reservations',
+					'error' => __( 'Failed to clear the reservations', 'event-tickets' ),
 				],
 				500
 			);
@@ -598,7 +585,6 @@ class Ajax extends Controller_Contract {
 
 		wp_send_json_success();
 	}
-
 
 	/**
 	 * Removes the Tribe Commerce cart cookie when a seat selection session is interrupted.
@@ -628,5 +614,73 @@ class Ajax extends Controller_Contract {
 
 		// phpcs:ignore WordPressVIPMinimum.Variables.RestrictedVariables.cache_constraints___COOKIE
 		unset( $_COOKIE[ $cookie_name ] );
+	}
+
+	/**
+	 * Handles the request to delete reservations from attendees.
+	 *
+	 * @since TBD
+	 *
+	 * @return void The function does not return a value but will send the JSON response.
+	 */
+	public function delete_reservations(): void {
+		if ( ! $this->check_current_ajax_user_can( 'manage_options' ) ) {
+			wp_send_json_error(
+				[
+					'error' => 'Nonce verification failed',
+				],
+				403
+			);
+
+			return;
+		}
+
+		$body = $this->get_request_body();
+		$json = json_decode( $body, true );
+
+		if ( ! ( is_array( $json ) ) ) {
+			wp_send_json_error(
+				[
+					'error' => 'Invalid request body',
+				],
+				400
+			);
+
+			return;
+		}
+
+		$reservation_ids = array_map( 'strval', array_filter( $json ) );
+
+		if ( empty( $reservation_ids ) ) {
+			wp_send_json_error(
+				[
+					'error' => 'Invalid request body',
+				],
+				400
+			);
+
+			return;
+		}
+
+		try {
+			$deleted = $this->reservations->delete_reservations_from_attendees( $reservation_ids );
+		} catch ( \Exception $e ) {
+			$this->log_error(
+				'Failed to delete reservations from attendees.',
+				[
+					'source' => __METHOD__,
+					'error'  => $e->getMessage(),
+				]
+			);
+
+			wp_send_json_error(
+				[
+					'error' => 'Failed to delete reservations from attendees',
+				],
+				500
+			);
+		}
+
+		wp_send_json_success( [ 'numberDeleted' => $deleted ] );
 	}
 }

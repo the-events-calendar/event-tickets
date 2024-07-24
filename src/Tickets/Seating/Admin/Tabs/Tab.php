@@ -46,10 +46,13 @@ abstract class Tab {
 	 * @param Template $template A reference to the template handle used to render this tab.
 	 */
 	public function __construct( Template $template ) {
-		$this->url      = add_query_arg( [
-			'page' => Admin::get_menu_slug(),
-			'tab'  => static::get_id()
-		], admin_url( 'admin.php' ) );
+		$this->url      = add_query_arg(
+			[
+				'page' => Admin::get_menu_slug(),
+				'tab'  => static::get_id(),
+			],
+			admin_url( 'admin.php' ) 
+		);
 		$this->template = $template;
 	}
 

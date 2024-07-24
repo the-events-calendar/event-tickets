@@ -2,10 +2,12 @@
 
 namespace TEC\Tickets\Seating\Service;
 
+use TEC\Tickets\Seating\Meta;
+use TEC\Tickets\Seating\Service\Layouts;
 use TEC\Tickets\Seating\Tables\Layouts as Layouts_Table;
 use TEC\Tickets\Seating\Tables\Maps as Maps_Table;
 use TEC\Tickets\Seating\Tables\Seat_Types as Seat_Types_Table;
-use Tribe\Tickets\Test\Traits\WP_Remote_Mocks;
+use Tribe\Tests\Traits\WP_Remote_Mocks;
 
 class Layouts_Test extends \Codeception\TestCase\WPTestCase {
 	use WP_Remote_Mocks;
@@ -117,5 +119,47 @@ class Layouts_Test extends \Codeception\TestCase\WPTestCase {
 		$this->assertEmpty( get_transient( Layouts::update_transient_name() ) );
 		$this->assertEmpty( get_transient( Seat_Types::update_transient_name() ) );
 		$this->assertEqualsWithDelta( time(), get_transient( Maps::update_transient_name() ), 5 );
+	}
+
+	public function test_get_associated_posts_by_id(): void {
+		wp_set_current_user( self::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		register_post_type( 'test_venue' );
+		tribe_update_option( 'ticket-enabled-post-types', [ 'post', 'page' ] );
+
+		$this->assertEquals( 0, Layouts::get_associated_posts_by_id( 'some-layout-1' ) );
+		$this->assertEquals( 0, Layouts::get_associated_posts_by_id( 'some-layout-2' ) );
+		$this->assertEquals( 0, Layouts::get_associated_posts_by_id( 'some-layout-3' ) );
+
+		$venue_1 = self::factory()->post->create( [ 'post_type' => 'test_venue' ] );
+		update_post_meta( $venue_1, Meta::META_KEY_LAYOUT_ID, 'some-layout-1' );
+		$venue_2 = self::factory()->post->create( [ 'post_type' => 'test_venue' ] );
+		update_post_meta( $venue_2, Meta::META_KEY_LAYOUT_ID, 'some-layout-1' );
+		$venue_3 = self::factory()->post->create( [ 'post_type' => 'test_venue' ] );
+		update_post_meta( $venue_3, Meta::META_KEY_LAYOUT_ID, 'some-layout-2' );
+		$venue_4 = self::factory()->post->create( [ 'post_type' => 'test_venue' ] );
+		update_post_meta( $venue_4, Meta::META_KEY_LAYOUT_ID, 'some-layout-1' );
+
+		$this->assertEquals( 0, Layouts::get_associated_posts_by_id( 'some-layout-1' ) );
+		$this->assertEquals( 0, Layouts::get_associated_posts_by_id( 'some-layout-2' ) );
+		$this->assertEquals( 0, Layouts::get_associated_posts_by_id( 'some-layout-3' ) );
+
+		$post_1 = self::factory()->post->create( [ 'post_type' => 'post' ] );
+		update_post_meta( $post_1, Meta::META_KEY_LAYOUT_ID, 'some-layout-1' );
+		$post_2 = self::factory()->post->create( [ 'post_type' => 'post' ] );
+		update_post_meta( $post_2, Meta::META_KEY_LAYOUT_ID, 'some-layout-1' );
+		$post_3 = self::factory()->post->create( [ 'post_type' => 'post' ] );
+		update_post_meta( $post_3, Meta::META_KEY_LAYOUT_ID, 'some-layout-2' );
+		$post_4 = self::factory()->post->create( [ 'post_type' => 'post' ] );
+		update_post_meta( $post_4, Meta::META_KEY_LAYOUT_ID, 'some-layout-1' );
+
+		$this->assertEquals( 3, Layouts::get_associated_posts_by_id( 'some-layout-1' ) );
+		$this->assertEquals( 1, Layouts::get_associated_posts_by_id( 'some-layout-2' ) );
+		$this->assertEquals( 0, Layouts::get_associated_posts_by_id( 'some-layout-3' ) );
+
+		tribe_update_option( 'ticket-enabled-post-types', [ 'post', 'page', 'test_venue' ] );
+
+		$this->assertEquals( 6, Layouts::get_associated_posts_by_id( 'some-layout-1' ) );
+		$this->assertEquals( 2, Layouts::get_associated_posts_by_id( 'some-layout-2' ) );
+		$this->assertEquals( 0, Layouts::get_associated_posts_by_id( 'some-layout-3' ) );
 	}
 }

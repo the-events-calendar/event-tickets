@@ -9,7 +9,6 @@
 
 namespace TEC\Tickets\Seating\Admin;
 
-use TEC\Tickets\Seating\Controller;
 use Tribe__Tickets__Main as Tickets;
 
 /**

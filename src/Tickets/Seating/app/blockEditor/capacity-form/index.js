@@ -1,4 +1,4 @@
-import { Fragment, useCallback } from '@wordpress/element';
+import { useCallback } from '@wordpress/element';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { useEntityProp } from '@wordpress/core-data';
 import { RadioControl } from '@wordpress/components';
@@ -8,7 +8,7 @@ import './style.pcss';
 import {
 	setTicketsSharedCapacityInCommonStore,
 	setCappedTicketCapacityInCommonStore,
-} from '../common-store-bridge';
+} from '../store/common-store-bridge';
 import { META_KEY_ENABLED, META_KEY_LAYOUT_ID } from '../constants';
 import EventLayoutSelect from './event-layout-select';
 import { getLocalizedString } from '@tec/tickets/seating/utils';
@@ -32,8 +32,12 @@ function getCurrentSeatTypeOption(seatTypeId, seatTypes) {
 const MemoizedEventLayoutSelect = React.memo(EventLayoutSelect);
 
 export default function CapacityForm({ renderDefaultForm, clientId }) {
-	const { setUsingAssignedSeating, setLayout, setTicketSeatType } =
-		useDispatch(store);
+	const {
+		setUsingAssignedSeating,
+		setLayout,
+		setEventCapacity,
+		setTicketSeatType,
+	} = useDispatch(store);
 	const getLayoutSeats = useSelect((select) => {
 		return select(storeName).getLayoutSeats;
 	}, []);
@@ -75,13 +79,16 @@ export default function CapacityForm({ renderDefaultForm, clientId }) {
 		[]
 	);
 
-	const onToggleChange = useCallback(( value ) => {
-		if (isLayoutLocked) {
-			return;
-		}
+	const onToggleChange = useCallback(
+		(value) => {
+			if (isLayoutLocked) {
+				return;
+			}
 
-		setUsingAssignedSeating(value === 'seat');
-	}, [isLayoutLocked, isUsingAssignedSeating, setUsingAssignedSeating]);
+			setUsingAssignedSeating(value === 'seat');
+		},
+		[isLayoutLocked, setUsingAssignedSeating]
+	);
 
 	const [meta, setMeta] = useEntityProp('postType', postType, 'meta', postId);
 	const updateEventMeta = useCallback(
@@ -102,8 +109,9 @@ export default function CapacityForm({ renderDefaultForm, clientId }) {
 			setTicketsSharedCapacityInCommonStore(layoutSeats);
 			updateEventMeta(choice.value);
 			setLayout(choice.value);
+			setEventCapacity(layoutSeats);
 		},
-		[getLayoutSeats, setLayout, updateEventMeta]
+		[getLayoutSeats, setEventCapacity, setLayout, updateEventMeta]
 	);
 
 	const onSeatTypeChange = useCallback(
@@ -117,7 +125,7 @@ export default function CapacityForm({ renderDefaultForm, clientId }) {
 
 	return (
 		<div className="tec-tickets-seating__capacity-form">
-			{ isUsingAssignedSeating && isLayoutLocked ? (
+			{isUsingAssignedSeating && isLayoutLocked ? (
 				<div className="tec-tickets-seating__capacity-locked-info">
 					{getString('seat-option-label')}
 				</div>
@@ -125,13 +133,19 @@ export default function CapacityForm({ renderDefaultForm, clientId }) {
 				<RadioControl
 					className="tec-tickets-seating__capacity-radio"
 					onChange={onToggleChange}
-					options={ [
-						{ label: getString('general-admission-label'), value: 'regular' },
-						{ label: getString('seat-option-label'), value: 'seat' },
-					] }
-					selected={ isUsingAssignedSeating ? 'seat' : 'regular' }
+					options={[
+						{
+							label: getString('general-admission-label'),
+							value: 'regular',
+						},
+						{
+							label: getString('seat-option-label'),
+							value: 'seat',
+						},
+					]}
+					selected={isUsingAssignedSeating ? 'seat' : 'regular'}
 				/>
-			) }
+			)}
 
 			{isUsingAssignedSeating ? (
 				<MemoizedEventLayoutSelect

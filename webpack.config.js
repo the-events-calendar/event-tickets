@@ -167,14 +167,14 @@ const targets = [
 	},
 	{
 		name: 'seating-layout-edit-bundle',
-		entry: './src/Tickets/Seating/app/admin/layout-edit/index.js',
-		outputScript: './build/Seating/admin/layout-edit.min.js',
-		outputStyle: `build/Seating/admin/layout-edit.${postfix}`,
+		entry: './src/Tickets/Seating/app/admin/layoutEdit/index.js',
+		outputScript: './build/Seating/admin/layoutEdit.min.js',
+		outputStyle: `build/Seating/admin/layoutEdit.${postfix}`,
 		moveFromTo: {
 			'src/resources/js/app/seating-layout-edit-bundle.js':
-				'build/Seating/admin/layout-edit.js',
+				'build/Seating/admin/layoutEdit.js',
 			'src/resources/css/app/seating-layout-edit-bundle.css':
-				'build/Seating/admin/layout-edit.css',
+				'build/Seating/admin/layoutEdit.css',
 		},
 	},
 	{
@@ -191,14 +191,14 @@ const targets = [
 	},
 	{
 		name: 'seating-block-editor-bundle',
-		entry: './src/Tickets/Seating/app/block-editor/index.js',
+		entry: './src/Tickets/Seating/app/blockEditor/index.js',
 		outputScript: './build/Seating/block-editor.min.js',
-		outputStyle: `build/Seating/block-editor.${postfix}`,
+		outputStyle: `build/Seating/blockEditor.${postfix}`,
 		moveFromTo: {
 			'src/resources/js/app/seating-block-editor-bundle.js':
-				'build/Seating/block-editor.js',
+				'build/Seating/blockEditor.js',
 			'src/resources/css/app/seating-block-editor-bundle.css':
-				'build/Seating/block-editor.css',
+				'build/Seating/blockEditor.css',
 		},
 	},
 	{

@@ -23,6 +23,15 @@ class Maps_Layout_Homepage_Test extends WPTestCase {
 		wp_set_current_user( self::factory()->user->create( [ 'role' => 'administrator' ] ) );
 	}
 
+	/**
+	 * @before
+	 */
+	public function ensure_post_ticketable(): void {
+		$ticketable   = tribe_get_option( 'ticket-enabled-post-types', [] );
+		$ticketable[] = 'post';
+		tribe_update_option( 'ticket-enabled-post-types', array_values( array_unique( $ticketable ) ) );
+	}
+
 	public function test_empty_seating_configurations(): void {
 		ob_start();
 		tribe( Maps_Layouts_Home_Page::class )->render();
@@ -128,7 +137,7 @@ class Maps_Layout_Homepage_Test extends WPTestCase {
 		Layouts_Service::insert_rows_from_service(
 			[
 				[
-					'id'            => '1',
+					'id'            => 'layout-uuid-1',
 					'name'          => 'Layout 1',
 					'mapId'         => 'a',
 					'seats'         => 100,
@@ -136,7 +145,7 @@ class Maps_Layout_Homepage_Test extends WPTestCase {
 					'createdDate'   => '1716901924',
 				],
 				[
-					'id'            => '2',
+					'id'            => 'layout-uuid-2',
 					'name'          => 'Layout 2',
 					'mapId'         => 'b',
 					'seats'         => 200,
@@ -144,7 +153,7 @@ class Maps_Layout_Homepage_Test extends WPTestCase {
 					'createdDate'   => '1716901924',
 				],
 				[
-					'id'            => '3',
+					'id'            => 'layout-uuid-3',
 					'name'          => 'Layout 3',
 					'mapId'         => 'c',
 					'seats'         => 300,
@@ -160,13 +169,13 @@ class Maps_Layout_Homepage_Test extends WPTestCase {
 
 		// Layout 2 is associated with 1 event.
 		update_post_meta( $post_a, Meta::META_KEY_ENABLED, true );
-		update_post_meta( $post_a, Meta::META_KEY_LAYOUT_ID, '2' );
+		update_post_meta( $post_a, Meta::META_KEY_LAYOUT_ID, 'layout-uuid-2' );
 
 		// Layout 3 is associated with 2 events.
 		update_post_meta( $post_b, Meta::META_KEY_ENABLED, true );
-		update_post_meta( $post_b, Meta::META_KEY_LAYOUT_ID, '3' );
+		update_post_meta( $post_b, Meta::META_KEY_LAYOUT_ID, 'layout-uuid-3' );
 		update_post_meta( $post_c, Meta::META_KEY_ENABLED, true );
-		update_post_meta( $post_c, Meta::META_KEY_LAYOUT_ID, '3' );
+		update_post_meta( $post_c, Meta::META_KEY_LAYOUT_ID, 'layout-uuid-3' );
 
 		ob_start();
 		tribe( Layouts_Tab::class )->render();

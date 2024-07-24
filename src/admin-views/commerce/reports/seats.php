@@ -8,6 +8,7 @@
  * @var string $token The ephemeral token used to secure the iframe communication with the service.
  * @var string $error The error message returned by the service.
  */
+
 ?>
 
 <div class="tec-tickets__seating-tab-wrapper">

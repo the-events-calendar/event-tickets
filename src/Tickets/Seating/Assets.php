@@ -49,13 +49,15 @@ class Assets extends Controller_Contract {
 	 * } The utils data for the Seating feature.
 	 */
 	public function get_utils_data(): array {
+		$localization = $this->container->get( Localization::class );
+
 		return [
 			'links'            => [
 				'layouts'     => $this->container->get( Layouts::class )->get_url(),
 				'layout-edit' => Layout_Edit::get_edit_url_by_post( get_the_ID() ),
 			],
 			'localizedStrings' => [
-				'capacity-form' => $this->container->get( Localization::class )->get_capacity_form_strings(),
+				'capacity-form' => $localization->get_capacity_form_strings(),
 				'dashboard'     => [ 'seats-action-label' => _x( 'Seats', 'Ticket Dashboard actions', 'event-tickets' ) ],
 				'maps'          => [
 					'delete-confirmation' => _x( 'Are you sure you want to delete this map?', 'Confirmation message for deleting a map', 'event-tickets' ),
@@ -64,8 +66,9 @@ class Assets extends Controller_Contract {
 				'layouts'       => [
 					'delete-confirmation' => _x( 'Are you sure you want to delete this layout?', 'Confirmation message for deleting a layout', 'event-tickets' ),
 					'delete-failed'       => _x( 'Failed to delete the layout.', 'Error message for deleting a layout', 'event-tickets' ),
-					'edit-confirmation'   => _x( 'This layout is associated with X events. Changes will impact all existing events and may affect the seating assignment of active ticket holders.', 'Confirmation message for editing a layout with events', 'event-tickets' ),
+					'edit-confirmation'   => _x( 'This layout is associated with {count} events. Changes will impact all existing events and may affect the seating assignment of active ticket holders.', 'Confirmation message for editing a layout with events', 'event-tickets' ),
 				],
+				'service-errors' => $localization->get_service_error_strings(),
 			],
 		];
 	}
@@ -146,11 +149,6 @@ class Assets extends Controller_Contract {
 					'baseUrl'        => $this->container->get( Service\Service::class )->get_frontend_url(),
 					'mapsHomeUrl'    => $maps_layouts_home_page->get_maps_home_url(),
 					'layoutsHomeUrl' => $maps_layouts_home_page->get_layouts_home_url(),
-					'ajaxUrl'        => admin_url( 'admin-ajax.php' ),
-					'ajaxNonce'      => wp_create_nonce( Ajax::NONCE_ACTION ),
-				],
-				'localizedStrings' => [
-					'service-errors' => $this->container->get( Localization::class )->get_service_error_strings(),
 				],
 			];
 		};
@@ -163,7 +161,8 @@ class Assets extends Controller_Contract {
 			->set_dependencies(
 				'wp-i18n',
 				'tribe-tickets-gutenberg-vendor', // Not actually about Block Editor, but transpiling.
-				'tec-tickets-seating-utils'
+				'tec-tickets-seating-utils',
+				'tec-tickets-seating-ajax'
 			)
 			->add_to_group( 'tec-tickets-seating' )
 			->add_localize_script( 'tec.tickets.seating', $data )

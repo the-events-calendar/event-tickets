@@ -47,8 +47,10 @@ addFilter(
  */
 function filterSetBodyDetails(body, clientId) {
 	const seatType = select(storeName).getTicketSeatType(clientId);
+	const eventCapacity = select(storeName).getEventCapacity();
 	body.append('ticket[seating][enabled]', seatType ? '1' : '0');
 	body.append('ticket[seating][seatType]', seatType);
+	body.append('ticket[event_capacity]', eventCapacity);
 
 	// On first save of a ticket, lock the Layout.
 	dispatch(storeName).setIsLayoutLocked(true);
@@ -67,18 +69,18 @@ addFilter(
  *
  * @since TBD
  *
- * @param {Array} actions The action items of the dashboard.
+ * @param {Array}  actions  The action items of the dashboard.
  * @param {string} clientId The client ID of the ticket block.
  *
  * @return {Array} The action items.
  */
-function filterDashboardActions( actions, { clientId } ) {
+function filterDashboardActions(actions, { clientId }) {
 	const hasSeats = select(storeName).isUsingAssignedSeating(clientId);
 	const layoutLocked = select(storeName).isLayoutLocked();
 
 	// Only show if there are seats and the post is saved.
-	if ( hasSeats && layoutLocked ) {
-		actions.push( <Seats /> );
+	if (hasSeats && layoutLocked) {
+		actions.push(<Seats />);
 	}
 
 	return actions;
@@ -87,7 +89,7 @@ function filterDashboardActions( actions, { clientId } ) {
 addFilter(
 	'tec.tickets.blocks.Tickets.TicketsDashboardAction.actions',
 	'tec.tickets.seating',
-	filterDashboardActions,
+	filterDashboardActions
 );
 
 /**
@@ -95,18 +97,18 @@ addFilter(
  *
  * @since TBD
  *
- * @param {Object[]} actions The action items of the ticket.
- * @param {string} clientId The client ID of the ticket block.
+ * @param {Object[]} actions  The action items of the ticket.
+ * @param {string}   clientId The client ID of the ticket block.
  *
  * @return {Array} The action items.
  */
-function filterMoveButtonAction( actions, clientId ) {
+function filterMoveButtonAction(actions, clientId) {
 	const hasSeats = select(storeName).isUsingAssignedSeating(clientId);
-	if ( ! hasSeats ) {
+	if (!hasSeats) {
 		return actions;
 	}
 
-	return actions.filter( action => action.key !== 'move' );
+	return actions.filter((action) => action.key !== 'move');
 }
 
 addFilter(
@@ -120,25 +122,25 @@ addFilter(
  *
  * @since TBD
  *
- * @param {Array} items The header details of the ticket.
+ * @param {Array}  items    The header details of the ticket.
  * @param {string} clientId The client ID of the ticket block.
  *
  * @return {Array} The header details.
  */
-function filterHeaderDetails( items, clientId ) {
+function filterHeaderDetails(items, clientId) {
 	const hasSeats = select(storeName).isUsingAssignedSeating(clientId);
-	if ( ! hasSeats ) {
+	if (!hasSeats) {
 		return items;
 	}
 
 	const seatTypeId = select(storeName).getTicketSeatType(clientId);
-	const seatTypes  = select(storeName).getAllSeatTypes();
+	const seatTypes = select(storeName).getAllSeatTypes();
 
 	const seatTypeName = Object.values(seatTypes).find(
 		(seatType) => seatType.id === seatTypeId
 	)?.name;
 
-	if ( seatTypeName ) {
+	if (seatTypeName) {
 		items.push(<SeatType name={seatTypeName} />);
 	}
 

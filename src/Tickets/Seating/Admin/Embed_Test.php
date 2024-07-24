@@ -63,12 +63,14 @@ class Embed_Test {
 		$ephemeral_token = $this->service->get_ephemeral_token();
 		$token           = is_string( $ephemeral_token ) ? $ephemeral_token : '';
 		$iframe_url      = add_query_arg(
-			array_filter( [
-				'token'    => $token,
-				'mapId'    => $map_id,
-				'layoutId' => $layout_id,
-				'eventId'  => $event_id,
-			] ),
+			array_filter(
+				[
+					'token'    => $token,
+					'mapId'    => $map_id,
+					'layoutId' => $layout_id,
+					'eventId'  => $event_id,
+				] 
+			),
 			$this->service->get_frontend_url( '/embed/' . ltrim( $route, '/' ) )
 		);
 
