@@ -24,7 +24,7 @@ if ( empty( $items ) ) {
 }
 
 // Bail if user needs to login, but is not logged in.
-if ( ! is_user_logged_in() && $must_login ) {
+if ( $must_login && ! is_user_logged_in() ) {
 	return;
 }
 
@@ -32,10 +32,20 @@ $info_title   = __( 'Purchaser info', 'event-tickets' );
 $show_address = false;
 foreach ( $gateways as $gateway ) {
 	// Check if Stripe is active and enabled.
-	if ( 'stripe' === $gateway::get_key() && $gateway::is_enabled() && $gateway::is_active() ) {
+	if (
+		'stripe' === $gateway::get_key()
+		&& $gateway::is_enabled()
+		&& $gateway::is_active()
+	) {
 		$payment_methods = ( new TEC\Tickets\Commerce\Gateways\Stripe\Merchant() )->get_payment_method_types();
 		// If more than one payment method, or if only one but not a card, we need to show the address fields.
-		if ( 1 < count( $payment_methods ) || ( 1 === count( $payment_methods ) && 'card' !== $payment_methods[0] ) ) {
+		if (
+			1 < count( $payment_methods )
+			|| (
+				1 === count( $payment_methods )
+				&& 'card' !== $payment_methods[0]
+			)
+		) {
 			$info_title   = __( 'Billing info', 'event-tickets' );
 			$show_address = true;
 		}
