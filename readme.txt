@@ -207,6 +207,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [TBD] TBD =
 
+* Tweak - Update notices for legacy Wallet Plus and point to the new Event Tickets Plus plugin.
 * Fix - Ensure that users fill in all required billing address fields when Stripe advanced payment methods are available. [ETP-934]
 * Fix - Added missing global property for javascript undefined error `Uncaught TypeError: format is undefined`. This happened during ticket checkout.
 
