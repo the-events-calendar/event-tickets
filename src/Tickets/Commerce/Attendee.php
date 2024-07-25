@@ -291,7 +291,7 @@ class Attendee {
 		 * @param int     $attendee_id The Attendee ID
 		 * @param boolean $force       Force the deletion.
 		 */
-		$attendee_id = apply_filters( 'tec_tickets_commerce_attendee_to_delete', $attendee_id, $force );
+		$attendee_id = (int) apply_filters( 'tec_tickets_commerce_attendee_to_delete', $attendee_id, $force );
 
 		// Bail if we don't have a valid ID.
 		if ( ! $attendee_id ) {
