@@ -9,6 +9,7 @@ use Tribe__Template as Template;
 /**
  * Class Upsell
  *
+ * @since TBD Updated Wallet Plus notices to be Event Tickets Plus.
  * @since 5.3.4
  *
  * @package TEC\Tickets\Admin
@@ -68,6 +69,7 @@ class Upsell {
 	/**
 	 * Show upsell on Attendees page.
 	 *
+	 * @since TBD Update notice logic.
 	 * @since 5.7.1
 	 *
 	 * @return void
@@ -129,6 +131,7 @@ class Upsell {
 	/**
 	 * Maybe show upsell for Wallet Plus.
 	 *
+	 * @since TBD Update plugin name and URL.
 	 * @since 5.7.1
 	 *
 	 * @return void
@@ -237,6 +240,7 @@ class Upsell {
 	/**
 	 * Show upsell on Emails Settings page.
 	 *
+	 * @since TBD Update notice logic, plugin name and URL.
 	 * @since 5.7.1
 	 *
 	 * @param array $fields Template list settings fields.
@@ -245,7 +249,7 @@ class Upsell {
 	 */
 	public function show_on_emails_settings_page( $fields ) {
 		// If they already have ET+ activated or are not within the admin area, then bail.
-		if ( class_exists( '\TEC\Tickets_Wallet_Plus\Plugin', false ) || ! is_admin() ) {
+		if ( class_exists( '\Tribe__Tickets_Plus__Main', false ) || ! is_admin() ) {
 			return $fields;
 		}
 
