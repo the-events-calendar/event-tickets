@@ -1,4 +1,4 @@
-// eslint-disable-next-line no-undef
+/* global wp */
 const { applyFilters } = wp.hooks;
 
 /**
