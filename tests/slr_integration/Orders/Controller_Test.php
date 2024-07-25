@@ -417,6 +417,7 @@ class Controller_Test extends Controller_Test_Case {
 			[
 				'headers' => [
 					'Authorization' => 'Bearer auth-token',
+					'Content-Type' => 'application/json',
 				],
 				'body'    => wp_json_encode(
 					[
@@ -497,6 +498,7 @@ class Controller_Test extends Controller_Test_Case {
 			[
 				'headers' => [
 					'Authorization' => 'Bearer auth-token',
+					'Content-Type' => 'application/json',
 				],
 				'body'    => wp_json_encode(
 					[
