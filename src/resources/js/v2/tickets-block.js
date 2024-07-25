@@ -230,7 +230,6 @@ tribe.tickets.block = {
 	 * Get the tickets IDs.
 	 *
 	 * @since 5.0.3
-	 *
 	 * @returns {number[]} Array of tickets IDs.
 	 */
 	obj.getTickets = function() {
@@ -244,7 +243,6 @@ tribe.tickets.block = {
 		 * Filters the tickets IDs to check availability for.
 		 *
 		 * @since TBD
-		 *
 		 * @param {number[]} tickets The tickets IDs to check availability for.
 		 */
 		tickets = applyFilters(
@@ -380,7 +378,7 @@ tribe.tickets.block = {
 	obj.checkAvailability = function() {
 		const tickets = obj.getTickets();
 
-		if(tickets.length === 0) {
+		if ( tickets.length === 0 ) {
 			return;
 		}
 
@@ -401,11 +399,8 @@ tribe.tickets.block = {
 					return;
 				}
 
-				// Get the tickets response with availability.
-				const tickets = response.data.tickets;
-
-				// Make DOM updates.
-				obj.updateAvailability( tickets );
+				// Get the tickets response with availability and make DOM updates.
+				obj.updateAvailability( response.data.tickets );
 			},
 		);
 
