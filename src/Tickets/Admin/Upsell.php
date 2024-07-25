@@ -150,7 +150,7 @@ class Upsell {
 					'tec-admin__upsell-link--underlined'
 				],
 				'text'    => 'Event Tickets Plus',
-				'url'     => 'https://evnt.is/1bd9',
+				'url'     => 'https://evnt.is/1bdz',
 			],
 		] );
 		echo '</div>';
@@ -265,7 +265,7 @@ class Upsell {
 						'tec-admin__upsell-link--underlined'
 					],
 					'text'    => 'Event Tickets Plus',
-					'url'     => 'https://evnt.is/1bd8',
+					'url'     => 'https://evnt.is/1bdz',
 				],
 			], false ),
 		];
