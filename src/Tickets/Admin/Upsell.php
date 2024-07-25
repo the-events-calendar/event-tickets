@@ -264,7 +264,7 @@ class Upsell {
 					'classes' => [
 						'tec-admin__upsell-link--underlined'
 					],
-					'text'    => 'Wallet Plus',
+					'text'    => 'Event Tickets Plus',
 					'url'     => 'https://evnt.is/1bd8',
 				],
 			], false ),
