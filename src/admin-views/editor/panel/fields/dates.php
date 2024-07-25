@@ -18,8 +18,16 @@
  * @var array  $end_date_errors The errors for the end date.
  * @var string $timepicker_step The timepicker step.
  * @var string $timepicker_round The timepicker round.
+ * @var string $datepicker_format the date picker format.
  * @var array<string,mixed> $ticket The ticket.
  */
+
+// Default values for the Start date & time fields.
+$datepicker_format  = Tribe__Date_Utils::datepicker_formats( Tribe__Date_Utils::get_datepicker_format_index() );
+$default_start_date = '';
+$default_start_time = '00:00:00';
+$default_end_date   = '';
+$default_end_time   = '00:00:00';
 
 ?>
 <div class="input_block">
@@ -32,8 +40,8 @@
 			type="text"
 			class="tribe-datepicker tribe-field-start_date ticket_field"
 			name="ticket_start_date"
-			id="ticket_start_date"
-			value="<?php echo esc_attr( $ticket ? $ticket_start_date : null ); ?>"
+			iad="ticket_start_date"
+			value="<?php echo esc_attr( $ticket ? $ticket_start_date : $default_start_date ); ?>"
 			data-validation-type="datepicker"
 			data-validation-is-less-or-equal-to="#ticket_end_date"
 			data-validation-error="<?php echo esc_attr( wp_json_encode( $start_date_errors ) ); ?>"
@@ -49,7 +57,7 @@
 			<?php echo Tribe__View_Helpers::is_24hr_format() ? 'data-format="H:i"' : ''; ?>
 			data-step="<?php echo esc_attr( $timepicker_step ); ?>"
 			data-round="<?php echo esc_attr( $timepicker_round ); ?>"
-			value="<?php echo esc_attr( $ticket_start_time ); ?>"
+			value="<?php echo esc_attr( $ticket ? $ticket_start_time : $default_start_time ); ?>"
 			aria-label="<?php echo esc_attr( $ticket_start_date_aria_label ); ?>"
 		/>
 		<span class="helper-text hide-if-js"><?php esc_html_e( 'HH:MM', 'event-tickets' ); ?></span>
@@ -67,7 +75,7 @@
 			class="tribe-datepicker tribe-field-end_date ticket_field"
 			name="ticket_end_date"
 			id="ticket_end_date"
-			value="<?php echo esc_attr( $ticket ? $ticket_end_date : null ); ?>"
+			value="<?php echo esc_attr( $ticket ? $ticket_end_date : $default_end_date ); ?>"
 		/>
 		<span class="helper-text hide-if-js"><?php esc_html_e( 'YYYY-MM-DD', 'event-tickets' ); ?></span>
 		<span class="datetime_seperator"> <?php esc_html_e( 'at', 'event-tickets' ); ?> </span>
@@ -80,7 +88,7 @@
 			<?php echo Tribe__View_Helpers::is_24hr_format() ? 'data-format="H:i"' : ''; ?>
 			data-step="<?php echo esc_attr( $timepicker_step ); ?>"
 			data-round="<?php echo esc_attr( $timepicker_round ); ?>"
-			value="<?php echo esc_attr( $ticket_end_time ); ?>"
+			value="<?php echo esc_attr( $ticket ? $ticket_end_time : $default_end_time ); ?>"
 			aria-label="<?php echo esc_attr( $ticket_end_date_aria_label ); ?>"
 		/>
 		<span class="helper-text hide-if-js"><?php esc_html_e( 'HH:MM', 'event-tickets' ); ?></span>
