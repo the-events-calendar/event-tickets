@@ -80,7 +80,7 @@ class Upsell {
 
 		$has_tickets_plus = class_exists( '\Tribe__Tickets_Plus__Main', false );
 
-		// If both Tickets Plus and Wallet Plus are installed, then bail.
+		// If Tickets Plus is installed, then bail.
 		if ( $has_tickets_plus ) {
 			return;
 		}
