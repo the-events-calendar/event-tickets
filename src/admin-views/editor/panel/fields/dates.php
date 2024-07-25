@@ -18,7 +18,6 @@
  * @var array  $end_date_errors The errors for the end date.
  * @var string $timepicker_step The timepicker step.
  * @var string $timepicker_round The timepicker round.
- * @var string $datepicker_format the date picker format.
  * @var array<string,mixed> $ticket The ticket.
  */
 
