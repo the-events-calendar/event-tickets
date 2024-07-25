@@ -38,8 +38,8 @@ if ( $must_login && ! is_user_logged_in() ) {
 
 ?>
 <div class="tribe-tickets__commerce-checkout-gateways">
-	<h4 class="tribe-common-h5 tribe-tickets__commerce-checkout-section-header">
-		<?php esc_html_e( 'Payment', 'event-tickets' ); ?>
+	<h4 class="tribe-common-h5 tribe-tickets__commerce-checkout-section-header tribe-common-a11y-hidden">
+		<?php esc_html_e( 'Payment info', 'event-tickets' ); ?>
 	</h4>
 	<?php
 	foreach ( $gateways as $gateway ) {
