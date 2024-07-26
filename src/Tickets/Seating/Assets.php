@@ -11,7 +11,6 @@ namespace TEC\Tickets\Seating;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\StellarWP\Assets\Asset;
-use TEC\Tickets\Seating\Admin\Ajax;
 use TEC\Tickets\Seating\Admin\Maps_Layouts_Home_Page;
 use TEC\Tickets\Seating\Admin\Tabs\Layout_Edit;
 use TEC\Tickets\Seating\Admin\Tabs\Layouts;
@@ -57,13 +56,14 @@ class Assets extends Controller_Contract {
 				'layout-edit' => Layout_Edit::get_edit_url_by_post( get_the_ID() ),
 			],
 			'localizedStrings' => [
-				'capacity-form' => $localization->get_capacity_form_strings(),
-				'dashboard'     => [ 'seats-action-label' => _x( 'Seats', 'Ticket Dashboard actions', 'event-tickets' ) ],
-				'maps'          => [
+				'capacity-form'  => $localization->get_capacity_form_strings(),
+				'capacity-table' => [ 'seats-row-label' => _x( 'Assigned Seating', 'Capacity table row label for assigned seating tickets', 'event-tickets' ) ],
+				'dashboard'      => [ 'seats-action-label' => _x( 'Seats', 'Ticket Dashboard actions', 'event-tickets' ) ],
+				'maps'           => [
 					'delete-confirmation' => _x( 'Are you sure you want to delete this map?', 'Confirmation message for deleting a map', 'event-tickets' ),
 					'delete-failed'       => _x( 'Failed to delete the map.', 'Error message for deleting a map', 'event-tickets' ),
 				],
-				'layouts'       => [
+				'layouts'        => [
 					'delete-confirmation' => _x( 'Are you sure you want to delete this layout?', 'Confirmation message for deleting a layout', 'event-tickets' ),
 					'delete-failed'       => _x( 'Failed to delete the layout.', 'Error message for deleting a layout', 'event-tickets' ),
 					'edit-confirmation'   => _x( 'This layout is associated with {count} events. Changes will impact all existing events and may affect the seating assignment of active ticket holders.', 'Confirmation message for editing a layout with events', 'event-tickets' ),
@@ -145,7 +145,7 @@ class Assets extends Controller_Contract {
 			$maps_layouts_home_page = $this->container->get( Maps_Layouts_Home_Page::class );
 
 			return [
-				'service'          => [
+				'service' => [
 					'baseUrl'        => $this->container->get( Service\Service::class )->get_frontend_url(),
 					'mapsHomeUrl'    => $maps_layouts_home_page->get_maps_home_url(),
 					'layoutsHomeUrl' => $maps_layouts_home_page->get_layouts_home_url(),
