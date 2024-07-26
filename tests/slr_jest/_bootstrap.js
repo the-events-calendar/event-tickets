@@ -24,6 +24,9 @@ global.tec.tickets.seating = {
 				'edit-confirmation':
 					'This layout is associated with {count} events. Changes will impact all existing events and may affect the seating assignment of active ticket holders.',
 			},
+			'capacity-table': {
+				'seats-row-label': 'Assigned seating',
+			},
 		},
 	},
 	frontend: {
