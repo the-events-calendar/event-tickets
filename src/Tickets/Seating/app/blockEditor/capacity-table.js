@@ -1,5 +1,5 @@
 import {select} from "@wordpress/data";
-import {storeName} from "./store";
+import {storeName} from '@tec/tickets/seating/blockEditor/store';
 import {addFilter} from "@wordpress/hooks";
 import { getLocalizedString } from '@tec/tickets/seating/utils';
 
