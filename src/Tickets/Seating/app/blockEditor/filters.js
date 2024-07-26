@@ -4,7 +4,7 @@ import { storeName } from './store';
 import { select, dispatch } from '@wordpress/data';
 import Seats from "./dashboard-actions/seats";
 import SeatType from "./header/seat-type";
-import {__} from "@wordpress/i18n";
+import { getLocalizedString } from '@tec/tickets/seating/utils';
 
 const shouldRenderAssignedSeatingForm = true;
 
@@ -173,13 +173,14 @@ function filterCapacityTableMappedProps(mappedProps) {
 	const seatTypeLabels = activeSeatTypes.map( type => seatTypes[type].name );
 	const seatTypeTotalCapacity = activeSeatTypes.reduce( ( sum, type ) => sum + parseInt(seatTypes[type].seats), 0 );
 	mappedProps.rowsAfter.push({
-		label: __('Seated Tickets', 'event-tickets'),
+		label: getLocalizedString( 'seats-row-label', 'capacity-table' ),
 		items: seatTypeLabels ? `(${seatTypeLabels})` : '',
 		right: String(seatTypeTotalCapacity),
 	});
 
 	mappedProps.totalCapacity  = ( mappedProps.totalCapacity - mappedProps.sharedCapacity ) + seatTypeTotalCapacity;
 	mappedProps.sharedCapacity = '';
+	mappedProps.sharedTicketItems = '';
 
 	return mappedProps;
 }
