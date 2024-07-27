@@ -149,6 +149,7 @@ class Cart {
 			update_post_meta( $attendee->ID, Meta::META_KEY_SEAT_TYPE, $seat_type_id );
 		}
 
+		// @todo: check if valid before adding meta to attendee.
 		$object_id = get_post_meta( $ticket->ID, Attendee::$event_relation_meta_key, true );
 		$layout_id = get_post_meta( $object_id, Meta::META_KEY_LAYOUT_ID, true );
 		update_post_meta( $attendee->ID, Meta::META_KEY_LAYOUT_ID, $layout_id );
