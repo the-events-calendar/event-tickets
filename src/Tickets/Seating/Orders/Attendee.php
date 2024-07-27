@@ -221,7 +221,7 @@ class Attendee {
 				esc_html( $seat_label ) 
 			),
 			[
-				'div'  => [ 'class' => [] ],
+				'div' => [ 'class' => [] ],
 			]
 		);
 	}

@@ -97,9 +97,9 @@ class Controller_Test extends Controller_Test_Case {
 					[
 						'tribe_tickets_tickets' => [
 							[
-								'ticket_id'   => $ticket_id,
-								'quantity'    => 3,
-								'optout'      => '1',
+								'ticket_id' => $ticket_id,
+								'quantity'  => 3,
+								'optout'    => '1',
 								// 'seat_labels' => [ 'B-4', 'D-1', 'C-3' ],
 							],
 						],
@@ -274,7 +274,7 @@ class Controller_Test extends Controller_Test_Case {
 			'post',
 			$reservations->get_confirm_url(),
 			function () use ( &$service_confirmations ) {
-				$service_confirmations ++;
+				$service_confirmations++;
 
 				return [
 					'headers' => [
@@ -288,7 +288,7 @@ class Controller_Test extends Controller_Test_Case {
 								'reservation-id-1',
 								'reservation-id-2',
 								'reservation-id-3',
-								'reservation-id-4'
+								'reservation-id-4',
 							],
 						]
 					),
