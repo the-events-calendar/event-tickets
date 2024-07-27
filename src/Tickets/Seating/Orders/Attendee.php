@@ -14,6 +14,7 @@ use Tribe__Main as Common;
 use WP_Query;
 use Tribe__Tickets__Attendee_Repository as Attendee_Repository;
 use Tribe__Utils__Array as Arr;
+use WP_Post;
 
 /**
  * Class Attendee
@@ -156,5 +157,42 @@ class Attendee {
 		}
 		
 		return $actions;
+	}
+	
+	/**
+	 * Include seating data into the attendee object.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post $post   The attendee post object, decorated with a set of custom properties.
+	 *
+	 * @return WP_Post
+	 */
+	public function include_seating_data( $post ) {
+		$seating_ticket = get_post_meta( $post->product_id, Meta::META_KEY_ENABLED, true );
+		
+		if ( ! $seating_ticket ) {
+			return $post;
+		}
+		
+		$seat_label = get_post_meta( $post->ID, Meta::META_KEY_ATTENDEE_SEAT_LABEL, true );
+		
+		if ( $seat_label ) {
+			$post->seat_label = $seat_label;
+		}
+		
+		$seat_type_id = get_post_meta( $post->ID, Meta::META_KEY_SEAT_TYPE, true );
+		
+		if ( $seat_type_id ) {
+			$post->seat_type_id = $seat_type_id;
+		}
+		
+		$layout_id = get_post_meta( $post->ID, Meta::META_KEY_LAYOUT_ID, true );
+		
+		if ( $layout_id ) {
+			$post->layout_id = $layout_id;
+		}
+		
+		return $post;
 	}
 }

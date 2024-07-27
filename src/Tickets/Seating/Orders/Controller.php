@@ -141,6 +141,8 @@ class Controller extends Controller_Contract {
 		}
 		add_action( 'tec_tickets_commerce_flag_action_generated_attendees', [ $this, 'confirm_all_reservations' ] );
 		add_action( 'wp_ajax_' . Ajax::ACTION_FETCH_ATTENDEES, [ $this, 'fetch_attendees_by_post' ] );
+		
+		add_filter( 'tec_tickets_commerce_get_attendee', [ $this, 'filter_attendee_object' ] );
 
 		$this->register_assets();
 	}
@@ -174,6 +176,8 @@ class Controller extends Controller_Contract {
 
 		remove_action( 'tec_tickets_commerce_flag_action_generated_attendees', [ $this, 'confirm_all_reservations' ] );
 		remove_action( 'wp_ajax_' . Ajax::ACTION_FETCH_ATTENDEES, [ $this, 'fetch_attendees_by_post' ] );
+		
+		remove_filter( 'tec_tickets_commerce_get_attendee', [ $this, 'filter_attendee_object' ] );
 	}
 
 	/**
@@ -482,5 +486,18 @@ class Controller extends Controller_Contract {
 				'total'     => $data['total_found'],
 			]
 		);
+	}
+	
+	/**
+	 * Filters the default Attendee object to include seating data.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post $post   The attendee post object, decorated with a set of custom properties.
+	 *
+	 * @return WP_Post
+	 */
+	public function filter_attendee_object( WP_Post $post ) {
+		return $this->attendee->include_seating_data( $post );
 	}
 }
