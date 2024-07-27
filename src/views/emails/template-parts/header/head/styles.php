@@ -383,7 +383,7 @@
 	}
 
 	.tec-tickets__email-table-content-ticket-security-code {
-		color: <?php echo $ticket_text_color; ?>AA;
+		color: <?php echo esc_attr( $ticket_text_color ); ?>;
 	}
 
 	table.tec-tickets__email-table-content-ticket-table {
