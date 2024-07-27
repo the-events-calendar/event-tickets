@@ -8,6 +8,7 @@ use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Gateways\PayPal\Gateway;
+use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Seating\Frontend\Session;
@@ -334,6 +335,54 @@ class Controller_Test extends Controller_Test_Case {
 		$this->assertEquals( 1, $service_confirmations );
 		$this->assertEquals( [], $sessions->get_reservations_for_token( 'test-token' ) );
 	}
-
-
+	
+	public function test_ticket_emails_has_seat_info() {
+		$this->set_class_fn_return( 'Tribe__Tickets__Tickets', 'generate_security_code', 'SECURITY_CODE' );
+		
+		$event_id = tribe_events()->set_args(
+			[
+				'title'      => 'Event with single seated attendee',
+				'status'     => 'publish',
+				'start_date' => '2020-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
+		
+		update_post_meta( $event_id, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $event_id, Meta::META_KEY_LAYOUT_ID, 'layout-id' );
+		
+		$ticket_id = $this->create_tc_ticket( $event_id, 10 );
+		
+		update_post_meta( $ticket_id, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $ticket_id, Meta::META_KEY_LAYOUT_ID, 'layout-id' );
+		
+		$order    = $this->create_order(
+			[ $ticket_id => 1 ],
+			[
+				'purchaser_email' => 'test-purchaser@test.com',
+			] 
+		);
+		$attendee = tribe_attendees()->by( 'event_id', $event_id )->by( 'order_status', [ 'completed' ] )->first();
+		
+		update_post_meta( $attendee->ID, Meta::META_KEY_ATTENDEE_SEAT_LABEL, 'A-1' );
+		
+		$html = '';
+		
+		add_filter(
+			'tec_tickets_emails_dispatcher_content',
+			function ( $content ) use ( &$html ) {
+				$html = $content;
+				
+				// skip sending the email.
+				return '';
+			}
+		);
+		
+		$this->make_controller()->register();
+		
+		$send = tribe( Module::class )->send_tickets_email_for_attendees( [ $attendee->ID ] );
+		$html = str_replace( [ $event_id, $order->ID, $attendee->ID ], [ 'EVENT_ID', 'ORDER_ID', 'ATTENDEE_ID' ], $html );
+		
+		$this->assertMatchesHtmlSnapshot( $html );
+	}
 }
