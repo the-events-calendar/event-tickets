@@ -391,26 +391,26 @@ class Controller extends Controller_Contract {
 			$this->built_asset_url( 'admin/seatsReport.js' ),
 			Tickets_Main::VERSION
 		)
-		     ->add_dependency( 'tec-tickets-seating-service-bundle' )
-		     ->enqueue_on( Seats_Report::$asset_action )
-		     ->add_localize_script(
-			     'tec.tickets.seating.admin.seatsReport.data',
-			     fn() => $this->get_localized_data( get_the_ID() )
-		     )
-		     ->add_to_group( 'tec-tickets-seating-admin' )
-		     ->add_to_group( 'tec-tickets-seating' )
-		     ->register();
+			->add_dependency( 'tec-tickets-seating-service-bundle' )
+			->enqueue_on( Seats_Report::$asset_action )
+			->add_localize_script(
+				'tec.tickets.seating.admin.seatsReport.data',
+				fn() => $this->get_localized_data( get_the_ID() )
+			)
+			->add_to_group( 'tec-tickets-seating-admin' )
+			->add_to_group( 'tec-tickets-seating' )
+			->register();
 
 		Asset::add(
 			'tec-tickets-seating-admin-seats-report-style',
 			$this->built_asset_url( 'admin/seatsReport.css' ),
 			Tickets_Main::VERSION
 		)
-		     ->add_to_group( 'tec-tickets-seating-admin' )
-		     ->add_to_group( 'tec-tickets-seating' )
-		     ->enqueue_on( Seats_Report::$asset_action )
-		     ->add_to_group( 'tec-tickets-seating-admin' )
-		     ->register();
+			->add_to_group( 'tec-tickets-seating-admin' )
+			->add_to_group( 'tec-tickets-seating' )
+			->enqueue_on( Seats_Report::$asset_action )
+			->add_to_group( 'tec-tickets-seating-admin' )
+			->register();
 	}
 
 	/**
@@ -442,7 +442,7 @@ class Controller extends Controller_Contract {
 		$associated_attendees  = array_reduce(
 			$data['attendees'],
 			function ( array $carry, array $attendee ): array {
-				$carry[ $attendee['purchaser_id'] ] ++;
+				$carry[ $attendee['purchaser_id'] ]++;
 
 				return $carry;
 			},
