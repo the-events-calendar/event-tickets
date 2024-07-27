@@ -28,6 +28,7 @@ use WP_Post;
 use WP_Query;
 use Tribe__Tickets__Main as Tickets_Main;
 use Tribe__Tickets__Tickets as Tickets;
+use Tribe__Template as Template;
 
 /**
  * Class Controller
@@ -143,6 +144,7 @@ class Controller extends Controller_Contract {
 		add_action( 'wp_ajax_' . Ajax::ACTION_FETCH_ATTENDEES, [ $this, 'fetch_attendees_by_post' ] );
 		
 		add_filter( 'tec_tickets_commerce_get_attendee', [ $this, 'filter_attendee_object' ] );
+		add_action( 'tribe_template_before_include:tickets/emails/template-parts/body/ticket/ticket-name', [ $this, 'include_seat_info_in_email' ], 10, 3 );
 
 		$this->register_assets();
 	}
@@ -178,6 +180,7 @@ class Controller extends Controller_Contract {
 		remove_action( 'wp_ajax_' . Ajax::ACTION_FETCH_ATTENDEES, [ $this, 'fetch_attendees_by_post' ] );
 		
 		remove_filter( 'tec_tickets_commerce_get_attendee', [ $this, 'filter_attendee_object' ] );
+		remove_action( 'tribe_template_before_include:tickets/emails/template-parts/body/ticket/ticket-name', [ $this, 'include_seat_info_in_email' ], 10, 3 );
 	}
 
 	/**
@@ -499,5 +502,20 @@ class Controller extends Controller_Contract {
 	 */
 	public function filter_attendee_object( WP_Post $post ) {
 		return $this->attendee->include_seating_data( $post );
+	}
+	
+	/**
+	 * Includes seating data in the email.
+	 *
+	 * @since TBD
+	 *
+	 * @param string                $file   The email file.
+	 * @param array<string, string> $name   The email name.
+	 * @param Template              $template The email context.
+	 *
+	 * @return void
+	 */
+	public function include_seat_info_in_email( $file, $name, $template ): void {
+		$this->attendee->include_seat_info_in_email( $template );
 	}
 }
