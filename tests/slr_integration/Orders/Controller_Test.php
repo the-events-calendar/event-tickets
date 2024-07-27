@@ -336,6 +336,80 @@ class Controller_Test extends Controller_Test_Case {
 		$this->assertEquals( [], $sessions->get_reservations_for_token( 'test-token' ) );
 	}
 	
+	/**
+	 * @test
+	 * @covers Attendee::include_seating_data
+	 */
+	public function test_attendee_has_seat_data() {
+		$event_id = tribe_events()->set_args(
+			[
+				'title'      => 'Event with single seated attendee',
+				'status'     => 'publish',
+				'start_date' => '2020-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
+		
+		update_post_meta( $event_id, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $event_id, Meta::META_KEY_LAYOUT_ID, 'layout-id' );
+		
+		$ticket_id = $this->create_tc_ticket( $event_id, 10 );
+	
+		$order     = $this->create_order(
+			[ $ticket_id => 4 ],
+			[
+				'purchaser_email' => 'test-purchaser@test.com',
+			]
+		);
+		$attendees = tribe_attendees()->by( 'event_id', $event_id )->by( 'order_status', [ 'completed' ] )->all();
+		
+		$this->make_controller()->register();
+		// This is a regular attendee.
+		$attendee_a = tec_tc_get_attendee( $attendees[0]->ID, ARRAY_A );
+		// It should not have any seating data.
+		$this->assertFalse( isset( $attendee_a['seat_label'] ) );
+		$this->assertFalse( isset( $attendee_a['seat_type_id'] ) );
+		$this->assertFalse( isset( $attendee_a['layout_id'] ) );
+
+		// Make the ticket assigned seating.
+		update_post_meta( $ticket_id, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $ticket_id, Meta::META_KEY_LAYOUT_ID, 'layout-id' );
+		
+		// Inject seating data into the attendee_b.
+		update_post_meta( $attendees[1]->ID, Meta::META_KEY_ATTENDEE_SEAT_LABEL, 'A-1' );
+		
+		$attendee_b = tec_tc_get_attendee( $attendees[1]->ID, ARRAY_A );
+		
+		$this->assertEquals( 'A-1', $attendee_b['seat_label'] );
+		$this->assertFalse( isset( $attendee_b['seat_type_id'] ) );
+		$this->assertFalse( isset( $attendee_b['layout_id'] ) );
+
+		// Inject seating data into the attendee_c.
+		update_post_meta( $attendees[2]->ID, Meta::META_KEY_ATTENDEE_SEAT_LABEL, 'B-1' );
+		update_post_meta( $attendees[2]->ID, Meta::META_KEY_SEAT_TYPE, 'vip-hash' );
+		
+		$attendee_c = tec_tc_get_attendee( $attendees[2]->ID, ARRAY_A );
+		
+		$this->assertEquals( 'B-1', $attendee_c['seat_label'] );
+		$this->assertEquals( 'vip-hash', $attendee_c['seat_type_id'] );
+		$this->assertFalse( isset( $attendee_c['layout_id'] ) );
+		
+		// Inject seating data into the attendee_d.
+		update_post_meta( $attendees[3]->ID, Meta::META_KEY_ATTENDEE_SEAT_LABEL, 'C-1' );
+		update_post_meta( $attendees[3]->ID, Meta::META_KEY_SEAT_TYPE, 'general-admission-hash' );
+		update_post_meta( $attendees[3]->ID, Meta::META_KEY_LAYOUT_ID, 'layout-id' );
+		
+		$attendee_d = tec_tc_get_attendee( $attendees[3]->ID, ARRAY_A );
+		
+		$this->assertEquals( 'C-1', $attendee_d['seat_label'] );
+		$this->assertEquals( 'general-admission-hash', $attendee_d['seat_type_id'] );
+		$this->assertEquals( 'layout-id', $attendee_d['layout_id'] );
+	}
+	
+	/**
+	 * @test
+	 * @covers Attendee::include_seat_info_in_email
+	 */
 	public function test_ticket_emails_has_seat_info() {
 		$this->set_class_fn_return( 'Tribe__Tickets__Tickets', 'generate_security_code', 'SECURITY_CODE' );
 		
