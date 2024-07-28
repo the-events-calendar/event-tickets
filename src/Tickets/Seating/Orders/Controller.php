@@ -145,7 +145,8 @@ class Controller extends Controller_Contract {
 		
 		add_filter( 'tec_tickets_commerce_get_attendee', [ $this, 'filter_attendee_object' ] );
 		add_action( 'tribe_template_before_include:tickets/emails/template-parts/body/ticket/ticket-name', [ $this, 'include_seat_info_in_email' ], 10, 3 );
-
+		add_filter( 'tribe_template_html:tickets/tickets/my-tickets/ticket-information', [ $this, 'inject_seat_info_in_my_tickets' ], 10, 4 );
+		
 		$this->register_assets();
 	}
 
@@ -181,6 +182,7 @@ class Controller extends Controller_Contract {
 		
 		remove_filter( 'tec_tickets_commerce_get_attendee', [ $this, 'filter_attendee_object' ] );
 		remove_action( 'tribe_template_before_include:tickets/emails/template-parts/body/ticket/ticket-name', [ $this, 'include_seat_info_in_email' ], 10, 3 );
+		remove_filter( 'tribe_template_html:tickets/tickets/my-tickets/ticket-information', [ $this, 'inject_seat_info_in_my_tickets' ], 10, 4 );
 	}
 
 	/**
@@ -517,5 +519,21 @@ class Controller extends Controller_Contract {
 	 */
 	public function include_seat_info_in_email( $file, $name, $template ): void {
 		$this->attendee->include_seat_info_in_email( $template );
+	}
+	
+	/**
+	 * Inject seating label with ticket name on My Tickets page.
+	 *
+	 * @since TBD
+	 *
+	 * @param string              $html The HTML content of ticket information.
+	 * @param string              $file Complete path to include the PHP File.
+	 * @param array<string,mixed> $name Template name.
+	 * @param Template            $template Current instance of the Tribe__Template.
+	 *
+	 * @return string
+	 */
+	public function inject_seat_info_in_my_tickets( $html, $file, $name, $template ): string {
+		return $this->attendee->inject_seat_info_in_my_tickets( $html, $template );
 	}
 }
