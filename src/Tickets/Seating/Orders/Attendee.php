@@ -225,4 +225,28 @@ class Attendee {
 			]
 		);
 	}
+	
+	/**
+	 * Inject seating label with ticket name on My Tickets page.
+	 *
+	 * @since TBD
+	 *
+	 * @param string   $html The HTML content of ticket information.
+	 * @param Template $template The email template instance.
+	 *
+	 * @return string
+	 */
+	public function inject_seat_info_in_my_tickets( string $html, Template $template ): string {
+		$context    = $template->get_local_values();
+		$seat_label = Arr::get( $context, [ 'attendee', 'seat_label' ], false );
+		
+		if ( ! $seat_label ) {
+			return $html;
+		}
+		$head_div = '<div class="tribe-ticket-information">';
+		$label    = $head_div . sprintf( '<span class="tec-tickets__ticket-information__seat-label">%s</span>', esc_html( $seat_label ) );
+		$html     = str_replace( $head_div, $label, $html );
+		
+		return $html;
+	}
 }
