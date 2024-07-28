@@ -241,12 +241,18 @@ class Attendee {
 		$seat_label = Arr::get( $context, [ 'attendee', 'seat_label' ], false );
 		
 		if ( ! $seat_label ) {
+			$ticket_id   = Arr::get( $context, [ 'attendee', 'product_id' ] );
+			$slr_enabled = get_post_meta( $ticket_id, Meta::META_KEY_ENABLED, true );
+			$seat_label  = $slr_enabled ? __( 'No assigned seat', 'event-tickets' ) : '';
+		}
+		
+		if ( empty( $seat_label ) ) {
 			return $html;
 		}
+		
 		$head_div = '<div class="tribe-ticket-information">';
 		$label    = $head_div . sprintf( '<span class="tec-tickets__ticket-information__seat-label">%s</span>', esc_html( $seat_label ) );
-		$html     = str_replace( $head_div, $label, $html );
 		
-		return $html;
+		return str_replace( $head_div, $label, $html );
 	}
 }
