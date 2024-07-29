@@ -80,7 +80,7 @@ class Upsell {
 			return;
 		}
 
-		$has_tickets_plus = class_exists( '\Tribe__Tickets_Plus__Main', false );
+		$has_tickets_plus = did_action( 'tec_container_registered_provider_Tribe__Tickets_Plus__Service_Provider' );
 
 		// If Tickets Plus is installed, then bail.
 		if ( $has_tickets_plus ) {
@@ -249,7 +249,10 @@ class Upsell {
 	 */
 	public function show_on_emails_settings_page( $fields ) {
 		// If they already have ET+ activated or are not within the admin area, then bail.
-		if ( class_exists( '\Tribe__Tickets_Plus__Main', false ) || ! is_admin() ) {
+		if (
+			did_action( 'tec_container_registered_provider_Tribe__Tickets_Plus__Service_Provider' )
+			|| ! is_admin()
+		) {
 			return $fields;
 		}
 
