@@ -74,6 +74,13 @@ class Controller extends Controller_Contract {
 	 * @var Sessions
 	 */
 	private Sessions $sessions;
+	
+	/**
+	 * A reference to Seats Report handler.
+	 *
+	 * @var Seats_Report
+	 */
+	private Seats_Report $seats_report;
 
 	/**
 	 * Controller constructor.
@@ -86,6 +93,7 @@ class Controller extends Controller_Contract {
 	 * @param Reservations $reservations The Reservations object.
 	 * @param Session      $session      The seat selection session handler.
 	 * @param Sessions     $sessions     A reference to the Sessions table handler.
+	 * @param Seats_Report $seats_report The seats report handler.
 	 */
 	public function __construct(
 		Container $container,
@@ -93,7 +101,8 @@ class Controller extends Controller_Contract {
 		Cart $cart,
 		Reservations $reservations,
 		Session $session,
-		Sessions $sessions
+		Sessions $sessions,
+		Seats_Report $seats_report
 	) {
 		parent::__construct( $container );
 		$this->attendee     = $attendee;
@@ -101,6 +110,7 @@ class Controller extends Controller_Contract {
 		$this->reservations = $reservations;
 		$this->session      = $session;
 		$this->sessions     = $sessions;
+		$this->seats_report = $seats_report;
 	}
 
 	/**
@@ -214,7 +224,7 @@ class Controller extends Controller_Contract {
 	 * @return void
 	 */
 	public function register_seat_reports() {
-		$this->container->make( Seats_Report::class )->hook();
+		$this->seats_report->hook();
 	}
 
 	/**
