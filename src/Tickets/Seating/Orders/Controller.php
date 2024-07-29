@@ -149,6 +149,8 @@ class Controller extends Controller_Contract {
 			add_action( 'tribe_tickets_orders_tabbed_view_register_tab_right', [ $this, 'register_seat_tab' ], 10, 2 );
 			add_action( 'init', [ $this, 'register_seat_reports' ] );
 			add_filter( 'tec_tickets_commerce_reports_tabbed_page_title', [ $this, 'filter_seat_tab_title' ], 10, 3 );
+			
+			add_filter( 'post_row_actions', [ $this, 'add_seats_row_action' ], 10, 2 );
 		}
 		add_action( 'tec_tickets_commerce_flag_action_generated_attendees', [ $this, 'confirm_all_reservations' ] );
 		add_action( 'wp_ajax_' . Ajax::ACTION_FETCH_ATTENDEES, [ $this, 'fetch_attendees_by_post' ] );
@@ -186,6 +188,7 @@ class Controller extends Controller_Contract {
 		remove_action( 'tribe_tickets_orders_tabbed_view_register_tab_right', [ $this, 'register_seat_tab' ] );
 		remove_action( 'init', [ $this, 'register_seat_reports' ] );
 		remove_filter( 'tec_tickets_commerce_reports_tabbed_page_title', [ $this, 'filter_seat_tab_title' ] );
+		remove_filter( 'post_row_actions', [ $this, 'add_seats_row_action' ] );
 
 		remove_action( 'tec_tickets_commerce_flag_action_generated_attendees', [ $this, 'confirm_all_reservations' ] );
 		remove_action( 'wp_ajax_' . Ajax::ACTION_FETCH_ATTENDEES, [ $this, 'fetch_attendees_by_post' ] );
@@ -545,5 +548,17 @@ class Controller extends Controller_Contract {
 	 */
 	public function inject_seat_info_in_my_tickets( $html, $file, $name, $template ): string {
 		return $this->attendee->inject_seat_info_in_my_tickets( $html, $template );
+	}
+	
+	/**
+	 * Display row actions in the post listing for seats.
+	 *
+	 * @param array<string,string> $actions The action items.
+	 * @param WP_Post              $post The post object.
+	 *
+	 * @return array<string,string> The action items.
+	 */
+	public function add_seats_row_action( array $actions, $post ): array {
+		return $this->seats_report->add_seats_row_action( $actions, $post );
 	}
 }
