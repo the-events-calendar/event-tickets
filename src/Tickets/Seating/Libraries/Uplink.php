@@ -6,7 +6,7 @@
  * @package TEC\Tickets\Libraries\Uplink
  */
 
-namespace TEC\Tickets\Libraries\Uplink;
+namespace TEC\Tickets\Seating\Libraries;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\StellarWP\Uplink\Register;
@@ -19,7 +19,7 @@ use Tribe__Tickets__Main as Main;
  *
  * @package TEC\Tickets\Libraries\Uplink
  */
-class SLR_Controller extends Controller_Contract {
+class Uplink extends Controller_Contract {
 	/**
 	 * Plugin slug.
 	 *
