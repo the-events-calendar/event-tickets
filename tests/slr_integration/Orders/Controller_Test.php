@@ -22,6 +22,7 @@ use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Traits\Reservations_Maker;
 use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
+use Tribe__Date_Utils;
 use Tribe__Tickets__Attendees as Attendees;
 use Tribe__Tickets__Tickets_View as Tickets_View;
 
@@ -574,6 +575,9 @@ class Controller_Test extends Controller_Test_Case {
 		);
 		
 		$html = str_replace( $post_ids, array_fill( 0, count( $post_ids ), '{{ID}}' ), $html );
+		
+		$order_date = esc_html( Tribe__Date_Utils::reformat( current_time( 'mysql' ), Tribe__Date_Utils::DATEONLYFORMAT ) );
+		$html       = str_replace( $order_date, '{{order_date}}', $html );
 		
 		$this->assertMatchesHtmlSnapshot( $html );
 	}
