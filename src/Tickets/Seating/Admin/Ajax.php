@@ -12,6 +12,7 @@ namespace TEC\Tickets\Seating\Admin;
 use TEC\Common\Contracts\Container;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\StellarWP\Assets\Asset;
+use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Seating\Ajax_Checks;
@@ -138,6 +139,15 @@ class Ajax extends Controller_Contract {
 	public const ACTION_SEAT_TYPES_UPDATED = 'tec_tickets_seating_seat_types_updated';
 
 	/**
+	 * The action to update a set of reservations following a seat type update.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const ACTION_RESERVATIONS_UPDATED_FROM_SEAT_TYPES = 'tec_tickets_seating_reservations_updated_from_seat_types';
+
+	/**
 	 * A reference to the Seat Types service object.
 	 *
 	 * @since TBD
@@ -229,6 +239,8 @@ class Ajax extends Controller_Contract {
 		add_action( 'wp_ajax_nopriv_' . self::ACTION_CLEAR_RESERVATIONS, [ $this, 'clear_reservations' ] );
 		add_action( 'wp_ajax_' . self::ACTION_DELETE_RESERVATIONS, [ $this, 'delete_reservations' ] );
 		add_action( 'wp_ajax_' . self::ACTION_SEAT_TYPES_UPDATED, [ $this, 'update_seat_types' ] );
+		add_action( 'wp_ajax_' . self::ACTION_RESERVATIONS_UPDATED_FROM_SEAT_TYPES,
+			[ $this, 'update_reservations_from_seat_types' ] );
 
 		add_action( 'tec_tickets_seating_session_interrupt', [ $this, 'clear_commerce_cart_cookie' ] );
 	}
@@ -256,6 +268,8 @@ class Ajax extends Controller_Contract {
 		remove_action( 'tec_tickets_seating_session_interrupt', [ $this, 'clear_commerce_cart_cookie' ] );
 		remove_action( 'wp_ajax_' . self::ACTION_DELETE_RESERVATIONS, [ $this, 'delete_reservations' ] );
 		remove_action( 'wp_ajax_' . self::ACTION_SEAT_TYPES_UPDATED, [ $this, 'update_seat_types' ] );
+		remove_action( 'wp_ajax_' . self::ACTION_RESERVATIONS_UPDATED_FROM_SEAT_TYPES,
+			[ $this, 'update_reservations_from_seat_types' ] );
 	}
 
 	/**
@@ -279,6 +293,7 @@ class Ajax extends Controller_Contract {
 			'ACTION_FETCH_ATTENDEES'               => self::ACTION_FETCH_ATTENDEES,
 			'ACTION_GET_SEAT_TYPES_BY_LAYOUT_ID'   => self::ACTION_GET_SEAT_TYPES_BY_LAYOUT_ID,
 			'ACTION_SEAT_TYPES_UPDATED'            => self::ACTION_SEAT_TYPES_UPDATED,
+			'ACTION_RESERVATIONS_UPDATED_FROM_SEAT_TYPES' => self::ACTION_RESERVATIONS_UPDATED_FROM_SEAT_TYPES,
 		];
 	}
 
@@ -697,8 +712,15 @@ class Ajax extends Controller_Contract {
 		wp_send_json_success( [ 'numberDeleted' => $deleted ] );
 	}
 
+	/**
+	 * Handles the update of seat types from the service.
+	 *
+	 * @since TBD
+	 *
+	 * @return void The function does not return a value but will echo the JSON response.
+	 */
 	public function update_seat_types(): void {
-		if(!$this->check_current_ajax_user_can( 'manage_options' ) ) {
+		if ( ! $this->check_current_ajax_user_can( 'manage_options' ) ) {
 			wp_send_json_error(
 				[
 					'error' => 'Nonce verification failed'
@@ -709,7 +731,7 @@ class Ajax extends Controller_Contract {
 			return;
 		}
 
-		$body    = $this->get_request_body();
+		$body = $this->get_request_body();
 		$decoded = json_decode( $body, true );
 
 		if ( ! ( $decoded && is_array( $decoded ) ) ) {
@@ -719,11 +741,13 @@ class Ajax extends Controller_Contract {
 				],
 				400
 			);
+
+			return;
 		}
 
 		$valid = array_filter(
 			$decoded,
-			function ( $updated_seat_type ) {
+			static function ( $updated_seat_type ) {
 				return is_array( $updated_seat_type )
 				       && isset(
 					       $updated_seat_type['id'],
@@ -743,10 +767,105 @@ class Ajax extends Controller_Contract {
 				],
 				400
 			);
+
+			return;
 		}
 
-		// @todo: update capacity of all tickets for the seat types. (need a seat type ID => seats count map).
-		// @todo update all attendees if their seat type changed (need a reservation ID => seat type map). -- missing
-		// @todo: update capacity of all posts for the layout (need a layout ID => seats count map).
+		$updated_seat_types = $this->seat_types->update_from_service( $valid );
+
+		if ( $updated_seat_types === false ) {
+			wp_send_json_error(
+				[
+					'error' => 'Failed to update the seat types from the service.'
+				],
+				500
+			);
+
+			return;
+		}
+
+		$seat_type_to_capacity_map = array_reduce(
+			$valid,
+			static function ( array $carry, array $seat_type ): array {
+				return $carry + [ $seat_type['id'] => $seat_type['seatsCount'] ];
+			},
+			[]
+		);
+
+		$updated_tickets = $this->seat_types->update_tickets_capacity( $seat_type_to_capacity_map );
+
+		$layout_to_seats_map = array_reduce(
+			$valid,
+			static function ( array $carry, array $seat_type ): array {
+				$layout_id = $seat_type['layoutId'];
+				if ( isset( $carry[ $layout_id ] ) ) {
+					$carry[ $layout_id ] += $seat_type['seatsCount'];
+				} else {
+					$carry[ $layout_id ] = $seat_type['seatsCount'];
+				}
+
+				return $carry;
+			},
+			[]
+		);
+
+		$updated_posts = $this->layouts->update_posts_capacity( $layout_to_seats_map );
+
+		wp_send_json_success(
+			[
+				'updatedSeatTypes' => $updated_seat_types,
+				'updatedTickets'   => $updated_tickets,
+				'updatedPosts'     => $updated_posts,
+			]
+		);
+	}
+
+	/**
+	 * Updates the seat type of Attendees following based on their reservation.
+	 *
+	 * @since TBD
+	 *
+	 * @return void The function does not return a value but will send the JSON response.
+	 */
+	public function update_reservations_from_seat_types(): void {
+		if ( ! $this->check_current_ajax_user_can( 'manage_options' ) ) {
+			wp_send_json_error(
+				[
+					'error' => 'Nonce verification failed'
+				],
+				403
+			);
+
+			return;
+		}
+
+		$body = $this->get_request_body();
+		$decoded = json_decode( $body, true );
+
+		if ( ! ( $decoded && is_array( $decoded ) ) ) {
+			wp_send_json_error(
+				[
+					'error' => 'Invalid request body'
+				],
+				400
+			);
+
+			return;
+		}
+
+		$valid = array_filter( $decoded, 'is_array' );
+
+		if ( empty( $valid ) ) {
+			wp_send_json_error(
+				[
+					'error' => 'Invalid request body'
+				],
+				400
+			);
+		}
+
+		$updated = $this->reservations->update_attendees_seat_type( $valid );
+
+		wp_send_json_success( [ 'updatedAttendees' => $updated ] );
 	}
 }

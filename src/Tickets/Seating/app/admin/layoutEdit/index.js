@@ -8,10 +8,12 @@ import {
 	registerAction,
 	RESERVATIONS_DELETED,
 	SEAT_TYPES_UPDATED,
+	RESERVATIONS_UPDATED_FOLLOWING_SEAT_TYPES,
 } from '@tec/tickets/seating/service/api';
 import {
 	ACTION_DELETE_RESERVATIONS,
 	ACTION_SEAT_TYPES_UPDATED,
+	ACTION_RESERVATIONS_UPDATED_FROM_SEAT_TYPES,
 	ajaxNonce,
 	ajaxUrl,
 } from '@tec/tickets/seating/ajax';
@@ -59,13 +61,21 @@ export async function handleReservationsDeleted(ids) {
  */
 
 /**
+ * @typedef {Object} SeatTypesUpdateResponseData
+ * @property {number} updatedSeatTypes The number of seat types updated.
+ * @property {number} updatedTickets   The number of tickets updated.
+ * @property {number} updatedPosts     The number of posts updated.
+ */
+
+/**
  * Handles the seat types updated action.
  *
  * @since TBD
  *
  * @param {UpdatedSeatType[]} updatedSeatTypes The updated seat types.
  *
- * @return {Promise<number|false>} A promise that will resolve to the number of seat types updated or `false` on failure.
+ * @return {Promise<SeatTypesUpdateResponseData|false>} A promise that will resolve to the seat types update response
+ *                                                      data or `false` on failure.
  */
 export async function handleSeatTypesUpdated(updatedSeatTypes) {
 	if (!(Array.isArray(updatedSeatTypes) && updatedSeatTypes.length > 0)) {
@@ -81,13 +91,59 @@ export async function handleSeatTypesUpdated(updatedSeatTypes) {
 	});
 
 	if (!response.ok) {
-		console.error('Failed to update seat types');
 		return false;
 	}
 
 	const json = await response.json();
 
-	return json?.data?.numberUpdated || 0;
+	return (
+		json?.data || {
+			updatedSeatTypes: 0,
+			updatedTickets: 0,
+			updatedPosts: 0,
+		}
+	);
+}
+
+/**
+ * @typedef {Object} ReservationsUpdateResponseData
+ * @property {number} updatedAttendees The number of Attendees updated.
+ */
+
+/**
+ * Handles the update of Reservations following a Seat Type update.
+ *
+ * @since TBD
+ *
+ * @param {Map<string,string[]>} updated The updated reservations.
+ *
+ * @return {Promise<ReservationsUpdateResponseData|false>} A promise that will resolve to the reservations update
+ *                                                         response data or `false` on failure.
+ */
+export async function handleReservationsUpdatedFollowingSeatTypes(updated) {
+	if (!updated || Object.keys(updated).length === 0) {
+		return 0;
+	}
+
+	const url = new URL(ajaxUrl);
+	url.searchParams.set('_ajax_nonce', ajaxNonce);
+	url.searchParams.set('action', ACTION_RESERVATIONS_UPDATED_FROM_SEAT_TYPES);
+	const response = await fetch(url.toString(), {
+		method: 'POST',
+		body: JSON.stringify(updated),
+	});
+
+	if (!response.ok) {
+		return false;
+	}
+
+	const json = await response.json();
+
+	return (
+		json?.data || {
+			updatedattendees: 0,
+		}
+	);
 }
 
 /**
@@ -108,6 +164,10 @@ export async function init(dom) {
 
 	registerAction(SEAT_TYPES_UPDATED, (data) =>
 		handleSeatTypesUpdated(data.seatTypes || [])
+	);
+
+	registerAction(RESERVATIONS_UPDATED_FOLLOWING_SEAT_TYPES, (data) =>
+		handleReservationsUpdatedFollowingSeatTypes(data.updated || {})
 	);
 
 	await initServiceIframe(getIframeElement(dom));

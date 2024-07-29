@@ -360,4 +360,36 @@ class Reservations {
 
 		return $removed;
 	}
+
+	/**
+	 * Updates the seat type of all attendees for the given reservations.
+	 *
+	 * Note: the following code assumes a one-to-one relationship between a reservation and an Attendee.
+	 * An Attendee can have zero or one Reservations, a Reservation can be related to zero or one Attendees.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,string[]> $map A map from seat type IDs to reservation IDs.
+	 *
+	 * @return int The number of attendees whose seat type was updated.
+	 */
+	public function update_attendees_seat_type( array $map ): int {
+		$total_updated = 0;
+
+		foreach ( $map as $seat_type_id => $reservation_ids ) {
+			foreach ( $reservation_ids as $reservation_id ) {
+				$attendee_id = tribe_attendees()->where( 'meta_equals', Meta::META_KEY_RESERVATION_ID, $reservation_id )
+				                                ->first_id();
+				if ( ! $attendee_id ) {
+					continue;
+				}
+
+				update_post_meta( $attendee_id, Meta::META_KEY_SEAT_TYPE, $seat_type_id );
+				clean_post_cache( $attendee_id );
+				$total_updated ++;
+			}
+		}
+
+		return $total_updated;
+	}
 }

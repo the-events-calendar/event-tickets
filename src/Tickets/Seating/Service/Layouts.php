@@ -15,6 +15,7 @@ use TEC\Tickets\Seating\Meta;
 use TEC\Tickets\Seating\Tables\Layouts as Layouts_Table;
 use TEC\Tickets\Seating\Admin\Tabs\Layout_Card;
 use TEC\Tickets\Seating\Tables\Seat_Types as Seat_Types_Table;
+use Tribe__Tickets__Global_Stock as Global_Stock;
 
 /**
  * Class Layouts.
@@ -252,23 +253,30 @@ class Layouts {
 	 *
 	 * @since TBD
 	 *
-	 * @return bool
+	 * @param boolean $truncate Whether to truncate the caches and custom tables storing information about Layouts.
+	 *
+	 * @return bool Whether the caches and custom tables storing information about Layouts were invalidated.
 	 */
-	public static function invalidate_cache(): bool {
+	public static function invalidate_cache( bool $truncate = true ): bool {
 		delete_transient( self::update_transient_name() );
 		delete_transient( Seat_Types::update_transient_name() );
 		wp_cache_delete( 'option_format_layouts', 'tec-tickets-seating' );
+		$invalidated = true;
 
-		$invalidated = Layouts_Table::truncate() !== false &&
-						Seat_Types_Table::truncate() !== false;
+		if ( $truncate ) {
+			$invalidated &= Layouts_Table::truncate() !== false &&
+			                Seat_Types_Table::truncate() !== false;
+		}
 
 		/**
 		 * Fires after the caches and custom tables storing information about Layouts have been
 		 * invalidated.
 		 *
 		 * @since TBD
+		 *
+		 * @param boolean $truncate Whether to truncate the caches and custom tables storing information about Layouts.
 		 */
-		do_action( 'tec_tickets_seating_invalidate_layouts_cache' );
+		do_action( 'tec_tickets_seating_invalidate_layouts_cache', $truncate );
 
 		return $invalidated;
 	}
@@ -336,5 +344,77 @@ class Layouts {
 		);
 
 		return false;
+	}
+
+	/**
+	 * Updates the capacity of all posts for the given layout IDs.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,int> $updates The layout ID to seats count map.
+	 *
+	 * @return int|false The number of posts updated, or `false` on failure.
+	 */
+	public function update_posts_capacity( array $updates ) {
+		if ( empty( $updates ) ) {
+			return 0;
+		}
+
+		$total_updated = 0;
+
+		$ticketable_post_types = (array) tribe_get_option( 'ticket-enabled-post-types', [] );
+		/** @var \Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler   = tribe( 'tickets.handler' );
+		$capacity_meta_key = $tickets_handler->key_capacity;
+
+		/*
+		 * The number of posts to update is not known in advance: we cannot run an unbounded query to fetch the IDs to
+		 * update.
+		 * The Repository provides a query-behind-a-generator API that will allow us to write a readable, not unbounded,
+		 * query to the database to fetch the IDs to update.
+		 * The list of ticketable post types, though, is not known in advance.
+		 * Here we create a Repository class that will be used to query the database for those post type.
+		 * Thanks PHP 7+.
+		 */
+		$repository = new class( $ticketable_post_types ) extends \Tribe__Repository {
+			/**
+			 * @param string[] $post_types The list of ticketable post types.
+			 */
+			public function __construct( array $post_types ) {
+				$this->default_args['post_type'] = $post_types;
+				parent::__construct();
+			}
+		};
+
+		foreach ( $updates as $layout_id => $seats ) {
+			foreach (
+				$repository->where( 'meta_equals', Meta::META_KEY_LAYOUT_ID, $layout_id )
+				           ->get_ids( true ) as $post_id
+			) {
+				$previous_capacity = get_post_meta( $post_id, $capacity_meta_key, true );
+				$capacity_delta    = $seats - $previous_capacity;
+				$previous_stock    = get_post_meta( $post_id, Global_Stock::GLOBAL_STOCK_LEVEL, true );
+				$new_stock         = max( 0, $previous_stock + $capacity_delta );
+				update_post_meta( $post_id, $capacity_meta_key, $seats );
+				update_post_meta( $post_id, Global_Stock::GLOBAL_STOCK_LEVEL, $new_stock );
+				$total_updated ++;
+				// The reason we're not running a batch update is to have per-post cache control.
+				clean_post_cache( $post_id );
+			}
+
+			// Update the Layout seats in the database.
+			DB::update(
+				Layouts_Table::table_name(),
+				[ 'seats' => $seats, ],
+				[ 'id' => $layout_id, ],
+				[ '%d', ],
+				[ '%s', ]
+			);
+		}
+
+		// Finally, soft invalidate the layouts' caches.
+		self::invalidate_cache( false );
+
+		return $total_updated;
 	}
 }
