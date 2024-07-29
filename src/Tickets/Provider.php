@@ -98,7 +98,7 @@ class Provider extends Service_Provider {
 		$this->container->register( Blocks\Controller::class );
 
 		// Seating.
-		 $this->container->register( Seating\Controller::class );
+		$this->container->register( Seating\Controller::class );
 
 		$this->has_registered = true;
 
