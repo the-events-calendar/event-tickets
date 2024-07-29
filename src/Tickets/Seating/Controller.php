@@ -12,7 +12,7 @@ namespace TEC\Tickets\Seating;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Tickets\Seating\Frontend\Session;
-use TEC\Tickets\Libraries\Uplink\SLRController as SLRUplinkController;
+use TEC\Tickets\Libraries\Uplink\SLR_Controller as SLR_Uplink_Controller;
 
 /**
  * Class Controller
