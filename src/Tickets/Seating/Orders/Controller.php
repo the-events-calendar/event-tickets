@@ -500,7 +500,7 @@ class Controller extends Controller_Contract {
 	 *
 	 * @return WP_Post
 	 */
-	public function filter_attendee_object( WP_Post $post ) {
+	public function filter_attendee_object( WP_Post $post ): WP_Post {
 		return $this->attendee->include_seating_data( $post );
 	}
 	

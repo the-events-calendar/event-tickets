@@ -165,11 +165,11 @@ class Attendee {
 	 *
 	 * @since TBD
 	 *
-	 * @param WP_Post $post   The attendee post object, decorated with a set of custom properties.
+	 * @param WP_Post $post The attendee post object, decorated with a set of custom properties.
 	 *
 	 * @return WP_Post
 	 */
-	public function include_seating_data( $post ) {
+	public function include_seating_data( WP_Post $post ): WP_Post {
 		$seating_ticket = get_post_meta( $post->product_id, Meta::META_KEY_ENABLED, true );
 		
 		if ( ! $seating_ticket ) {
