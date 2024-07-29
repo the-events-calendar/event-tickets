@@ -1,13 +1,13 @@
 <?php
 
-namespace TEC\Tickets\Libraries;
+namespace TEC\Tickets\Seating\Libraries;
 
 use Spatie\Snapshots\MatchesSnapshots;
 use TEC\Common\StellarWP\Uplink\Resources\Collection;
 use TEC\Common\StellarWP\Uplink\Auth\Token\Contracts\Token_Manager;
 use Tribe\Tests\Traits\With_Uopz;
 
-class ControllerTest extends \Codeception\TestCase\WPTestCase {
+class UplinkTest extends \Codeception\TestCase\WPTestCase {
 
 	use MatchesSnapshots;
 	use With_Uopz;
