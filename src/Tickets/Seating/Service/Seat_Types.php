@@ -36,7 +36,7 @@ class Seat_Types {
 	/**
 	 * Layouts constructor.
 	 *
-	 * since TBD
+	 * @since TBD
 	 *
 	 * @param string $backend_base_url The base URL of the service from the site backend.
 	 */
@@ -49,13 +49,15 @@ class Seat_Types {
 	 *
 	 * @since TBD
 	 *
-	 * @param array<array{
-	 *     id?: string,
-	 *     name?: string,
-	 *     mapId?: string,
-	 *     layoutId?: string,
-	 *     seats?: int
-	 * }> $service_rows
+	 * @param array $service_rows {
+	 *    The list of seat types to insert.
+	 *
+	 *      @type string $id The seat type ID.
+	 *      @type string $name The seat type name.
+	 *      @type string $mapId The map ID the seat type belongs to.
+	 *      @type string $layoutId The layout ID the seat type belongs to.
+	 *      @type int $seats The number of seats in the seat type.
+	 * }
 	 *
 	 * @return bool|int The number of rows affected, or `false` on failure.
 	 */
@@ -187,7 +189,7 @@ class Seat_Types {
 			try {
 				$updated = DB::query(
 					DB::prepare(
-						"UPDATE %i SET name = %s, seats = %d WHERE id = %s",
+						'UPDATE %i SET name = %s, seats = %d WHERE id = %s',
 						Seat_Types_Table::table_name(),
 						$name,
 						$seats,
@@ -205,7 +207,7 @@ class Seat_Types {
 				return false;
 			}
 
-			if ( $updated === false ) {
+			if ( false === $updated ) {
 				return false;
 			}
 
@@ -225,7 +227,7 @@ class Seat_Types {
 	 * @return int The number of tickets updated, or `false` on failure.
 	 */
 	public function update_tickets_capacity( array $updates ): int {
-		if( empty( $updates ) ) {
+		if ( empty( $updates ) ) {
 			return 0;
 		}
 
@@ -250,7 +252,7 @@ class Seat_Types {
 			update_post_meta( $ticket_id, $capacity_meta_key, $new_capacity );
 			update_post_meta( $ticket_id, '_stock', $new_stock );
 			clean_post_cache( $ticket_id );
-			$total_updated ++;
+			++$total_updated;
 		}
 
 		return $total_updated;

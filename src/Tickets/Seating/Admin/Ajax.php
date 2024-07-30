@@ -12,7 +12,6 @@ namespace TEC\Tickets\Seating\Admin;
 use TEC\Common\Contracts\Container;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\StellarWP\Assets\Asset;
-use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Seating\Ajax_Checks;
@@ -25,7 +24,6 @@ use TEC\Tickets\Seating\Service\Seat_Types;
 use TEC\Tickets\Seating\Tables\Sessions;
 use Tribe__Tickets__Tickets as Tickets;
 use Tribe__Tickets__Main as Tickets_Main;
-use Tribe__Utils__Array as Arr;
 
 /**
  * Class Ajax.
@@ -228,8 +226,10 @@ class Ajax extends Controller_Contract {
 	protected function do_register(): void {
 		$this->register_assets();
 		add_action( 'wp_ajax_' . self::ACTION_GET_SEAT_TYPES_BY_LAYOUT_ID, [ $this, 'fetch_seat_types_by_layout_id' ] );
-		add_action( 'wp_ajax_' . self::ACTION_INVALIDATE_MAPS_LAYOUTS_CACHE,
-			[ $this, 'invalidate_maps_layouts_cache' ] );
+		add_action(
+			'wp_ajax_' . self::ACTION_INVALIDATE_MAPS_LAYOUTS_CACHE,
+			[ $this, 'invalidate_maps_layouts_cache' ]
+		);
 		add_action( 'wp_ajax_' . self::ACTION_INVALIDATE_LAYOUTS_CACHE, [ $this, 'invalidate_layouts_cache' ] );
 		add_action( 'wp_ajax_' . self::ACTION_DELETE_MAP, [ $this, 'delete_map_from_service' ] );
 		add_action( 'wp_ajax_' . self::ACTION_DELETE_LAYOUT, [ $this, 'delete_layout_from_service' ] );
@@ -239,8 +239,10 @@ class Ajax extends Controller_Contract {
 		add_action( 'wp_ajax_nopriv_' . self::ACTION_CLEAR_RESERVATIONS, [ $this, 'clear_reservations' ] );
 		add_action( 'wp_ajax_' . self::ACTION_DELETE_RESERVATIONS, [ $this, 'delete_reservations' ] );
 		add_action( 'wp_ajax_' . self::ACTION_SEAT_TYPES_UPDATED, [ $this, 'update_seat_types' ] );
-		add_action( 'wp_ajax_' . self::ACTION_RESERVATIONS_UPDATED_FROM_SEAT_TYPES,
-			[ $this, 'update_reservations_from_seat_types' ] );
+		add_action(
+			'wp_ajax_' . self::ACTION_RESERVATIONS_UPDATED_FROM_SEAT_TYPES,
+			[ $this, 'update_reservations_from_seat_types' ]
+		);
 
 		add_action( 'tec_tickets_seating_session_interrupt', [ $this, 'clear_commerce_cart_cookie' ] );
 	}
@@ -268,8 +270,10 @@ class Ajax extends Controller_Contract {
 		remove_action( 'tec_tickets_seating_session_interrupt', [ $this, 'clear_commerce_cart_cookie' ] );
 		remove_action( 'wp_ajax_' . self::ACTION_DELETE_RESERVATIONS, [ $this, 'delete_reservations' ] );
 		remove_action( 'wp_ajax_' . self::ACTION_SEAT_TYPES_UPDATED, [ $this, 'update_seat_types' ] );
-		remove_action( 'wp_ajax_' . self::ACTION_RESERVATIONS_UPDATED_FROM_SEAT_TYPES,
-			[ $this, 'update_reservations_from_seat_types' ] );
+		remove_action(
+			'wp_ajax_' . self::ACTION_RESERVATIONS_UPDATED_FROM_SEAT_TYPES,
+			[ $this, 'update_reservations_from_seat_types' ]
+		);
 	}
 
 	/**
@@ -281,18 +285,18 @@ class Ajax extends Controller_Contract {
 	 */
 	public function get_ajax_data(): array {
 		return [
-			'ajaxUrl'                              => admin_url( 'admin-ajax.php' ),
-			'ajaxNonce'                            => wp_create_nonce( self::NONCE_ACTION ),
-			'ACTION_INVALIDATE_MAPS_LAYOUTS_CACHE' => self::ACTION_INVALIDATE_MAPS_LAYOUTS_CACHE,
-			'ACTION_INVALIDATE_LAYOUTS_CACHE'      => self::ACTION_INVALIDATE_LAYOUTS_CACHE,
-			'ACTION_DELETE_MAP'                    => self::ACTION_DELETE_MAP,
-			'ACTION_DELETE_LAYOUT'                 => self::ACTION_DELETE_LAYOUT,
-			'ACTION_POST_RESERVATIONS'             => self::ACTION_POST_RESERVATIONS,
-			'ACTION_CLEAR_RESERVATIONS'            => self::ACTION_CLEAR_RESERVATIONS,
-			'ACTION_DELETE_RESERVATIONS'           => self::ACTION_DELETE_RESERVATIONS,
-			'ACTION_FETCH_ATTENDEES'               => self::ACTION_FETCH_ATTENDEES,
-			'ACTION_GET_SEAT_TYPES_BY_LAYOUT_ID'   => self::ACTION_GET_SEAT_TYPES_BY_LAYOUT_ID,
-			'ACTION_SEAT_TYPES_UPDATED'            => self::ACTION_SEAT_TYPES_UPDATED,
+			'ajaxUrl'                                     => admin_url( 'admin-ajax.php' ),
+			'ajaxNonce'                                   => wp_create_nonce( self::NONCE_ACTION ),
+			'ACTION_INVALIDATE_MAPS_LAYOUTS_CACHE'        => self::ACTION_INVALIDATE_MAPS_LAYOUTS_CACHE,
+			'ACTION_INVALIDATE_LAYOUTS_CACHE'             => self::ACTION_INVALIDATE_LAYOUTS_CACHE,
+			'ACTION_DELETE_MAP'                           => self::ACTION_DELETE_MAP,
+			'ACTION_DELETE_LAYOUT'                        => self::ACTION_DELETE_LAYOUT,
+			'ACTION_POST_RESERVATIONS'                    => self::ACTION_POST_RESERVATIONS,
+			'ACTION_CLEAR_RESERVATIONS'                   => self::ACTION_CLEAR_RESERVATIONS,
+			'ACTION_DELETE_RESERVATIONS'                  => self::ACTION_DELETE_RESERVATIONS,
+			'ACTION_FETCH_ATTENDEES'                      => self::ACTION_FETCH_ATTENDEES,
+			'ACTION_GET_SEAT_TYPES_BY_LAYOUT_ID'          => self::ACTION_GET_SEAT_TYPES_BY_LAYOUT_ID,
+			'ACTION_SEAT_TYPES_UPDATED'                   => self::ACTION_SEAT_TYPES_UPDATED,
 			'ACTION_RESERVATIONS_UPDATED_FROM_SEAT_TYPES' => self::ACTION_RESERVATIONS_UPDATED_FROM_SEAT_TYPES,
 		];
 	}
@@ -308,9 +312,9 @@ class Ajax extends Controller_Contract {
 			$this->built_asset_url( 'ajax.js' ),
 			Tickets_Main::VERSION
 		)
-		     ->add_localize_script( 'tec.tickets.seating.ajax', [ $this, 'get_ajax_data' ] )
-		     ->add_to_group( 'tec-tickets-seating' )
-		     ->register();
+			->add_localize_script( 'tec.tickets.seating.ajax', [ $this, 'get_ajax_data' ] )
+			->add_to_group( 'tec-tickets-seating' )
+			->register();
 	}
 
 	/**
@@ -496,7 +500,7 @@ class Ajax extends Controller_Contract {
 			return;
 		}
 
-		$body = $this->get_request_body();
+		$body    = $this->get_request_body();
 		$decoded = json_decode( $body, true );
 
 		if ( ! (
@@ -579,12 +583,12 @@ class Ajax extends Controller_Contract {
 	 * @return void The JSON response is sent to the client.
 	 */
 	public function clear_reservations(): void {
-		if ( ! $this->check_current_ajax_user_can( 'exist') ) {
+		if ( ! $this->check_current_ajax_user_can( 'exist' ) ) {
 			return;
 		}
 
 		$post_id = (int) tribe_get_request_var( 'postId', 0 );
-		$token = tribe_get_request_var( 'token' );
+		$token   = tribe_get_request_var( 'token' );
 
 		if ( ! ( $post_id && $token && is_string( $token ) ) ) {
 			wp_send_json_error(
@@ -723,7 +727,7 @@ class Ajax extends Controller_Contract {
 		if ( ! $this->check_current_ajax_user_can( 'manage_options' ) ) {
 			wp_send_json_error(
 				[
-					'error' => 'Nonce verification failed'
+					'error' => 'Nonce verification failed',
 				],
 				403
 			);
@@ -731,13 +735,13 @@ class Ajax extends Controller_Contract {
 			return;
 		}
 
-		$body = $this->get_request_body();
+		$body    = $this->get_request_body();
 		$decoded = json_decode( $body, true );
 
 		if ( ! ( $decoded && is_array( $decoded ) ) ) {
 			wp_send_json_error(
 				[
-					'error' => 'Invalid request body'
+					'error' => 'Invalid request body',
 				],
 				400
 			);
@@ -749,21 +753,21 @@ class Ajax extends Controller_Contract {
 			$decoded,
 			static function ( $updated_seat_type ) {
 				return is_array( $updated_seat_type )
-				       && isset(
-					       $updated_seat_type['id'],
-					       $updated_seat_type['name'],
-					       $updated_seat_type['mapId'],
-					       $updated_seat_type['layoutId'],
-					       $updated_seat_type['description'],
-					       $updated_seat_type['seatsCount'],
-				       );
+						&& isset(
+							$updated_seat_type['id'],
+							$updated_seat_type['name'],
+							$updated_seat_type['mapId'],
+							$updated_seat_type['layoutId'],
+							$updated_seat_type['description'],
+							$updated_seat_type['seatsCount'],
+						);
 			}
 		);
 
 		if ( empty( $valid ) ) {
 			wp_send_json_error(
 				[
-					'error' => 'Invalid request body'
+					'error' => 'Invalid request body',
 				],
 				400
 			);
@@ -773,10 +777,10 @@ class Ajax extends Controller_Contract {
 
 		$updated_seat_types = $this->seat_types->update_from_service( $valid );
 
-		if ( $updated_seat_types === false ) {
+		if ( false === $updated_seat_types ) {
 			wp_send_json_error(
 				[
-					'error' => 'Failed to update the seat types from the service.'
+					'error' => 'Failed to update the seat types from the service.',
 				],
 				500
 			);
@@ -831,7 +835,7 @@ class Ajax extends Controller_Contract {
 		if ( ! $this->check_current_ajax_user_can( 'manage_options' ) ) {
 			wp_send_json_error(
 				[
-					'error' => 'Nonce verification failed'
+					'error' => 'Nonce verification failed',
 				],
 				403
 			);
@@ -839,13 +843,13 @@ class Ajax extends Controller_Contract {
 			return;
 		}
 
-		$body = $this->get_request_body();
+		$body    = $this->get_request_body();
 		$decoded = json_decode( $body, true );
 
 		if ( ! ( $decoded && is_array( $decoded ) ) ) {
 			wp_send_json_error(
 				[
-					'error' => 'Invalid request body'
+					'error' => 'Invalid request body',
 				],
 				400
 			);
@@ -858,7 +862,7 @@ class Ajax extends Controller_Contract {
 		if ( empty( $valid ) ) {
 			wp_send_json_error(
 				[
-					'error' => 'Invalid request body'
+					'error' => 'Invalid request body',
 				],
 				400
 			);

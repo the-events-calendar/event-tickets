@@ -265,7 +265,7 @@ class Layouts {
 
 		if ( $truncate ) {
 			$invalidated &= Layouts_Table::truncate() !== false &&
-			                Seat_Types_Table::truncate() !== false;
+							Seat_Types_Table::truncate() !== false;
 		}
 
 		/**
@@ -292,15 +292,13 @@ class Layouts {
 	 * @return string The URL to delete the layout.
 	 */
 	public function get_delete_url( string $layout_id, string $map_id ): string {
-		$url = add_query_arg(
+		return add_query_arg(
 			[
 				'layoutId' => $layout_id,
 				'mapId'    => $map_id,
 			],
 			$this->service_fetch_url
 		);
-
-		return $url;
 	}
 
 	/**
@@ -389,7 +387,7 @@ class Layouts {
 		foreach ( $updates as $layout_id => $seats ) {
 			foreach (
 				$repository->where( 'meta_equals', Meta::META_KEY_LAYOUT_ID, $layout_id )
-				           ->get_ids( true ) as $post_id
+							->get_ids( true ) as $post_id
 			) {
 				$previous_capacity = get_post_meta( $post_id, $capacity_meta_key, true );
 				$capacity_delta    = $seats - $previous_capacity;
@@ -397,7 +395,7 @@ class Layouts {
 				$new_stock         = max( 0, $previous_stock + $capacity_delta );
 				update_post_meta( $post_id, $capacity_meta_key, $seats );
 				update_post_meta( $post_id, Global_Stock::GLOBAL_STOCK_LEVEL, $new_stock );
-				$total_updated ++;
+				++$total_updated;
 				// The reason we're not running a batch update is to have per-post cache control.
 				clean_post_cache( $post_id );
 			}
@@ -405,10 +403,10 @@ class Layouts {
 			// Update the Layout seats in the database.
 			DB::update(
 				Layouts_Table::table_name(),
-				[ 'seats' => $seats, ],
-				[ 'id' => $layout_id, ],
-				[ '%d', ],
-				[ '%s', ]
+				[ 'seats' => $seats ],
+				[ 'id' => $layout_id ],
+				[ '%d' ],
+				[ '%s' ]
 			);
 		}
 
