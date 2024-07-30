@@ -20,29 +20,39 @@ describe('filterCapacityTableMappedProps', () => {
 	});
 
 	it('returns original mappedProps if hasSeats is false', () => {
-		select.mockReturnValue({ isUsingAssignedSeating: () => false, isLayoutLocked: () => true });
+		select.mockReturnValue({
+			isUsingAssignedSeating: () => false,
+			isLayoutLocked: () => true,
+		});
 		const mappedProps = { foo: 'bar' };
-		const newMappedProps = applyFilters('tec.tickets.blocks.Tickets.CapacityTable.mappedProps', mappedProps);
+		const newMappedProps = filterCapacityTableMappedProps(mappedProps);
 		expect(newMappedProps).toEqual(mappedProps);
 	});
 
 	it('returns original mappedProps if layoutLocked is false', () => {
-		select.mockReturnValue({ isUsingAssignedSeating: () => true, isLayoutLocked: () => false });
+		select.mockReturnValue({
+			isUsingAssignedSeating: () => true,
+			isLayoutLocked: () => false,
+		});
 		const mappedProps = { foo: 'bar' };
-		const newMappedProps = applyFilters('tec.tickets.blocks.Tickets.CapacityTable.mappedProps', mappedProps);
+		const newMappedProps = filterCapacityTableMappedProps(mappedProps);
 		expect(newMappedProps).toEqual(mappedProps);
 	});
 
 	it('returns original mappedProps if layoutId is null', () => {
-		select.mockReturnValue({ isUsingAssignedSeating: () => true, isLayoutLocked: () => true, getCurrentLayoutId: () => null });
+		select.mockReturnValue({
+			isUsingAssignedSeating: () => true,
+			isLayoutLocked: () => true,
+			getCurrentLayoutId: () => null,
+		});
 		const mappedProps = { foo: 'bar' };
-		const newMappedProps = applyFilters('tec.tickets.blocks.Tickets.CapacityTable.mappedProps', mappedProps);
+		const newMappedProps = filterCapacityTableMappedProps(mappedProps);
 		expect(newMappedProps).toEqual(mappedProps);
 	});
 
 	it('adds rowsAfter and updates totalCapacity if hasSeats and layoutLocked are true', () => {
 		const seatTypes = {
-			'vip': { name: 'VIP', seats: 20 },
+			vip: { name: 'VIP', seats: 20 },
 			'general-admission': { name: 'General Admission', seats: 20 },
 		};
 		const activeSeatTypes = {
@@ -64,13 +74,13 @@ describe('filterCapacityTableMappedProps', () => {
 			sharedTicketItems: 'items',
 		};
 
-		const result = applyFilters('tec.tickets.blocks.Tickets.CapacityTable.mappedProps', mappedProps);
+		const result = filterCapacityTableMappedProps(mappedProps);
 		expect(result).toMatchSnapshot();
 	});
 
 	it('adds rowsAfter and updates totalCapacity if has multiple seat types', () => {
 		const seatTypes = {
-			'vip': { name: 'VIP', seats: 20 },
+			vip: { name: 'VIP', seats: 20 },
 			'general-admission': { name: 'General Admission', seats: 20 },
 		};
 		const activeSeatTypes = {
@@ -93,7 +103,7 @@ describe('filterCapacityTableMappedProps', () => {
 			sharedTicketItems: 'items',
 		};
 
-		const result = applyFilters('tec.tickets.blocks.Tickets.CapacityTable.mappedProps', mappedProps);
+		const result = filterCapacityTableMappedProps(mappedProps);
 		expect(result).toMatchSnapshot();
 	});
 });

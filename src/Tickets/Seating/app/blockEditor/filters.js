@@ -2,9 +2,9 @@ import { addFilter } from '@wordpress/hooks';
 import CapacityForm from './capacity-form';
 import { storeName } from './store';
 import { select, dispatch } from '@wordpress/data';
-import Seats from "./dashboard-actions/seats";
-import SeatType from "./header/seat-type";
-import { getLocalizedString } from '@tec/tickets/seating/utils';
+import Seats from './dashboard-actions/seats';
+import SeatType from './header/seat-type';
+import { filterCapacityTableMappedProps } from './capacity-table';
 
 const shouldRenderAssignedSeatingForm = true;
 
@@ -151,4 +151,10 @@ addFilter(
 	'tec.tickets.blocks.Ticket.header.detailItems',
 	'tec.tickets.seating',
 	filterHeaderDetails
+);
+
+addFilter(
+	'tec.tickets.blocks.Tickets.CapacityTable.mappedProps',
+	'tec.tickets.flexibleTickets',
+	filterCapacityTableMappedProps
 );
