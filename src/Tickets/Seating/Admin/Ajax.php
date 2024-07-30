@@ -866,6 +866,8 @@ class Ajax extends Controller_Contract {
 				],
 				400
 			);
+
+			return;
 		}
 
 		$updated = $this->reservations->update_attendees_seat_type( $valid );
