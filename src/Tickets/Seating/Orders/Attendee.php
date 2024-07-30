@@ -14,6 +14,8 @@ use Tribe__Main as Common;
 use WP_Query;
 use Tribe__Tickets__Attendee_Repository as Attendee_Repository;
 use Tribe__Utils__Array as Arr;
+use TEC\Tickets\Commerce\Attendee as Commerce_Attendee;
+use TEC\Tickets\Seating\Service\Reservations;
 
 /**
  * Class Attendee
@@ -156,5 +158,31 @@ class Attendee {
 		}
 		
 		return $actions;
+	}
+	
+	/**
+	 * Handle attendee delete.
+	 *
+	 * @param int          $attendee_id The Attendee ID.
+	 * @param Reservations $reservations The Reservations object.
+	 *
+	 * @return int The attendee ID.
+	 */
+	public function handle_attendee_delete( int $attendee_id, Reservations $reservations ): int {
+		$event_id       = get_post_meta( $attendee_id, Commerce_Attendee::$event_relation_meta_key, true );
+		$reservation_id = get_post_meta( $attendee_id, Meta::META_KEY_RESERVATION_ID, true );
+		
+		if ( ! $event_id || ! $reservation_id ) {
+			return $attendee_id;
+		}
+		
+		$cancelled = $reservations->cancel( $event_id, [ $reservation_id ] );
+		
+		// Bail attendee deletion by returning 0, if the reservation was not cancelled.
+		if ( ! $cancelled ) {
+			return 0;
+		}
+		
+		return $attendee_id;
 	}
 }
