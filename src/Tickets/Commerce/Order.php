@@ -214,6 +214,7 @@ class Order extends Abstract_Order {
 			],
 			'has_archive'     => false,
 			'hierarchical'    => false,
+			'supports'        => [ 'title' ],
 		];
 
 		/**
