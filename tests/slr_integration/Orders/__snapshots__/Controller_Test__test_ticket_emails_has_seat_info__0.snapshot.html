@@ -1,4 +1,201 @@
-<?php return '<style type="text/css">
+<!DOCTYPE html>
+	<html lang="" xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office">
+	<head>
+		<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="x-apple-disable-message-reformatting">
+		<title></title>
+		<!--[if mso]>
+<noscript>
+	<xml>
+		<o:OfficeDocumentSettings>
+			<o:PixelsPerInch>96</o:PixelsPerInch>
+		</o:OfficeDocumentSettings>
+	</xml>
+</noscript>
+<![endif]-->
+		<script type="application/ld+json">
+	[{"@context":"https:\/\/schema.org","@type":"EventReservation","reservationNumber":ORDER_ID,"reservationStatus":"https:\/\/schema.org\/Confirmed","underName":{"@type":"Person","name":"Test Purchaser","email":"test-purchaser@test.com"},"reservationFor":{"@type":"Event","name":"Event with single seated attendee","url":"http:\/\/wordpress.test\/?tribe_events=event-with-single-seated-attendee","description":"","startDate":"2020-01-01T00:00:00+00:00","endDate":"2020-01-01T02:00:00+00:00"},"ticketToken":"SECURITY_CODE","ticketNumber":ATTENDEE_ID,"numSeats":"1"}]</script>
+		<style type="text/css">
+	td.tec-tickets__email-table-content-event-links-container,
+	td.tec-tickets__email-table-content-event-date-container,
+	td.tec-tickets__email-table-content-event-image-container {
+		padding: 0;
+	}
+
+	table.tec-tickets__email-table-content-event-links-table {
+		border: 0;
+		border-collapse: collapse;
+		border-spacing: 0;
+		margin-bottom: 30px;
+		width: 100%;
+	}
+
+	td.tec-tickets__email-table-content-event-links-table-data {
+		padding: 0 10px;
+		text-align: center;
+		width: 100%;
+	}
+
+	a.tec-tickets__email-table-content-event-links-ical-link,
+	a.tec-tickets__email-table-content-event-links-gcal-link {
+		padding: 0 8px;
+	}
+
+	.tec-tickets__email-table-content-event-date {
+		color: #141827;
+		font-size: 14px;
+		font-weight: 400;
+		letter-spacing: 0px;
+		line-height: 23px;
+		margin: 0;
+		padding: 15px 0 0;
+		text-align: left;
+	}
+
+	img.tec-tickets__email-table-content-event-image {
+		display: block;
+		margin: 0;
+		width: 100%;
+	}
+
+	td.tec-tickets__email-table-content-event-venue-title-container {
+		padding: 54px 0 12px 0;
+	}
+
+	.tec-tickets__email-table-content-event-venue-title {
+		background: transparent;
+		color: #141827;
+		font-size: 16px;
+		font-weight: 700 !important;
+		margin: 0;
+		padding: 0;
+	}
+
+	td.tec-tickets__email-table-content-event-venue-container {
+		border: 1px solid #d5d5d5;
+		display: block;
+		padding: 25px;
+		margin-bottom: 30px;
+	}
+
+	.tec-tickets__email-table-content-event-venue-name {
+		background: transparent;
+		color: #141827;
+		font-size: 18px;
+		font-weight: 700 !important;
+		margin: 0;
+		padding: 0;
+	}
+
+	.tec-tickets__email-table-content-event-venue-table {
+		border: 0;
+		border-collapse: collapse;
+		border-spacing: 0;
+		width: 100%;
+	}
+
+	td.tec-tickets__email-table-content-event-venue-address-table-container {
+		padding: 12px 0 0 0;
+		vertical-align: top;
+		width: 50%;
+	}
+
+	td.tec-tickets__email-table-content-event-venue-phone-website-container {
+		padding: 12px 0 0;
+		vertical-align: top;
+		width: 50%;
+	}
+
+	.tec-tickets__email-table-content-event-venue-address-table {
+		border: 0;
+		border-collapse: collapse;
+		border-spacing:0;
+		width: 100%;
+	}
+
+	td.tec-tickets__email-table-content-event-venue-address-pin-container {
+		padding-right: 14px;
+		text-align: left;
+		vertical-align: top;
+		width: 34px;
+	}
+
+	img.tec-tickets__email-table-content-event-venue-address-pin {
+		display: block;
+		height: 28px;
+		width: 20px;
+	}
+
+	td.tec-tickets__email-table-content-event-venue-address-container {
+		color: #141827;
+		padding: 0;
+		text-align: left;
+	}
+
+	table.tec-tickets__email-table-content-event-venue-address-table {
+		border: 0;
+		border-collapse: collapse;
+		border-spacing: 0;
+		margin-bottom: 18px;
+		width: 100%;
+	}
+
+	td.tec-tickets__email-table-content-event-venue-phone-icon-container {
+		padding-right: 14px;
+		text-align: left;
+		vertical-align: top;
+		width: 39px;
+	}
+
+	.tec-tickets__email-table-content-event-venue-phone-icon-image {
+		display: block;
+		height: 24px;
+		width: 25px;
+	}
+
+	td.tec-tickets__email-table-content-event-venue-phone-container {
+		color: #141827;
+		padding: 0;
+	}
+
+	table.tec-tickets__email-table-content-event-venue-website-table {
+		border: 0;
+		border-collapse: collapse;
+		border-spacing: 0;
+		width: 100%;
+	}
+
+	td.tec-tickets__email-table-content-event-venue-website-icon-container {
+		padding-right: 14px;
+		text-align: left;
+		vertical-align: top;
+		width: 38px;
+	}
+
+	.tec-tickets__email-table-content-event-venue-website-icon-image {
+		display: block;
+		height: 23px;
+		width: 24px;
+	}
+
+	td.tec-tickets__email-table-content-event-venue-website-container {
+		color: #141827;
+		padding: 0;
+	}
+
+	@media screen and ( max-width: 500px ) {
+		td.tec-tickets__email-table-content-event-venue-address-table-container,
+		td.tec-tickets__email-table-content-event-venue-phone-website-container {
+			display: block;
+			width: 100%;
+		}
+
+		td.tec-tickets__email-table-content-event-venue-phone-website-container {
+			padding-top: 0;
+		}
+	}
+</style><style type="text/css">
 	body {
 		color: #3C434A;
 		margin: 0;
@@ -56,9 +253,9 @@
 	}
 
 	td.tec-tickets__email-table-main-header {
-		background: #000000;
+		background: #ffffff;
 		padding: 5px 5px 0px 5px;
-		text-align: center;
+		text-align: left;
 	}
 
 	table.tec-tickets__email-table-content {
@@ -93,7 +290,7 @@
 	}
 
 	.tec-tickets__email-table-content-tickets-total {
-		background-color: #000000;
+		background-color: #ffffff;
 		color: #000000;
 		font-weight: 700;
 		padding:10px;
@@ -105,7 +302,7 @@
 	}
 
 	td.tec-tickets__email-table-content-ticket {
-		background:#000000;
+		background:#007363;
 		border-bottom: 1px solid rgba(0,0,0,.08);
 		padding: 20px 25px;
 	}
@@ -166,7 +363,7 @@
 	}
 
 	td.tec-tickets__email-table-main-footer {
-		background-color: #000000;
+		background-color: #ffffff;
 		border-top: 1px solid #efefef;
 		padding: 0px 20px 10px 20px;
 	}
@@ -401,128 +598,93 @@
 		}
 	}
 </style>
-<div class="tec-tickets__email-body">
-
+	</head>
+	<body class="tec-tickets__email-body">
 		
 		<table role="presentation" class="tec-tickets__email-table-main">
-
 			<tr>
 	<td
 		class="tec-tickets__email-table-main-header"
-		align="center"
+		align="left"
 	>
 			</td>
 </tr>
-
 			<tr>
 				<td>
 					<table role="presentation" class="tec-tickets__email-table-content">
 <tr>
 	<td>
 		<h1 class="tec-tickets__email-table-content-title">
-					</h1>
+			Here&#039;s your tickets, Test Purchaser!		</h1>
 	</td>
 </tr>
 <tr>
-	<td class="tec-tickets__email-table-content-greeting-container">
-		<div>
-			Hi, John Doe!		</div>
-		<div>&nbsp;</div>
-		<div>
-					</div>
+	<td class="tec-tickets__email-table-content-event-date-container">
+		<p class="tec-tickets__email-table-content-event-date">
+			<span class="tribe-event-date-start">January 1, 2020 @ 12:00 am</span> - <span class="tribe-event-time">2:00 am</span>		</p>
 	</td>
 </tr>
 <tr>
-	<td>
-		<table>
-			<tr>
-				<td class="tec-tickets__email-table-content-order-purchaser-details-top tec-tickets__email-table-content-align-left" align="left">
-	Order #-99</td>
-				<td class="tec-tickets__email-table-content-order-purchaser-details-top tec-tickets__email-table-content-align-right" align="right">
-	John Doe</td>
+	<td class="tec-tickets__email-table-content-post-title-container">
+		<h3 class="tec-tickets__email-table-content-post-title">
+			<a href="http://wordpress.test/?tribe_events=event-with-single-seated-attendee" target="_blank" rel="noopener noreferrer">
+				Event with single seated attendee			</a>
+		</h3>
+	</td>
+</tr>
+<tr>
+	<td style="padding:0;">
+		<table class="tec-tickets__email-table-content-tickets" role="presentation">
+								<tr>
+				<td class="tec-tickets__email-table-content-ticket">
+					<table class="tec-tickets__email-table-content-ticket-table">
+						<tr>
+							<td class="tec-tickets__email-table-content-ticket-holder-name-container">
+	<h2 class="tec-tickets__email-table-content-ticket-holder-name">
+		Test Purchaser	</h2>
+							<div class="tec-tickets__email-table-content-ticket-seat-label">A-1</div>
+				<div class="tec-tickets__email-table-content-ticket-seat-label-separator">|</div>	<div class="tec-tickets__email-table-content-ticket-type-name">
+		Test TC ticket for EVENT_ID	</div>
+</td>
+						</tr>
+						<tr>
+							<td class="tec-tickets__email-table-content-ticket-security-code-container">
+	<div class="tec-tickets__email-table-content-ticket-security-code">
+		SECURITY_CODE	</div>
+</td>
+						</tr>
+					</table>
+									</td>
 			</tr>
+				</table>
+	</td>
+</tr>
+<tr>
+	<td class="tec-tickets__email-table-content-event-links-container">
+		<table role="presentation" class="tec-tickets__email-table-content-event-links-table">
 			<tr>
-				<td class="tec-tickets__email-table-content-order-purchaser-details-bottom tec-tickets__email-table-content-align-left" align="left">
-	April 17, 2023</td>
-				<td class="tec-tickets__email-table-content-order-purchaser-details-bottom tec-tickets__email-table-content-align-right" align="right">
-	john@doe.com</td>
+				<td class="tec-tickets__email-table-content-event-links-table-data" align="center">
+
+					<a
+	target="_blank"
+	rel="noopener noreferrer"
+	href="http://wordpress.test/?tribe_events=event-with-single-seated-attendee&#038;ical=1"
+	class="tec-tickets__email-table-content-event-links-ical-link"
+>
+	Add event to iCal</a>
+
+					
+<a
+	target="_blank"
+	rel="noopener noreferrer"
+	href="https://www.google.com/calendar/event?action=TEMPLATE&#038;dates=20200101T000000/20200101T020000&#038;text=Event%20with%20single%20seated%20attendee&#038;trp=false&#038;ctz=UTC&#038;sprop=website:http://wordpress.test"
+	class="tec-tickets__email-table-content-event-links-gcal-link"
+>
+	Add event to Google Calendar</a>
+
+				</td>
 			</tr>
 		</table>
-	</td>
-</tr>
-<tr>
-	<td>
-		<table style="border-collapse:collapse;margin-top:10px">
-			<tr class="tec-tickets__email-table-content-order-ticket-totals-header-row">
-	<th style="width: 80%" class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-left" align="left">
-		Ticket	</th>
-	<th class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-center" align="center">
-		Qty	</th>
-	<th class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-right" align="right">
-		Price	</th>
-</tr>
-							<tr class="tec-tickets__email-table-content-order-ticket-totals-ticket-row">
-	<td class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-left" align="left">
-	General Admission</td>
-	<td class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-center" align="center">
-	2</td>
-	<td class="tec-tickets__email-table-content-order-ticket-totals-cell tec-tickets__email-table-content-order-align-right" align="right">
-	&#x24;50.00</td>
-</tr>
-					</table>
-	</td>
-</tr>
-<tr>
-	<td class="tec-tickets__email-table-content-order-total-container" align="right">
-		<table class="tec-tickets__email-table-content-order-total-table">
-			<tr>
-				<td class="tec-tickets__email-table-content-order-total-left-cell">
-					Order Total				</td>
-				<td class="tec-tickets__email-table-content-order-total-right-cell">
-					&#x24;100.00				</td>
-			</tr>
-		</table>
-	</td>
-</tr><tr>
-	<td class="tec-tickets__email-table-content-order-payment-info-container" align="right">
-		Payment completed with Manually Generated	</td>
-</tr>
-<tr>
-	<td class="tec-tickets__email-table-content-order-attendees-table-container">
-		<table class="tec-tickets__email-table-content-order-attendees-table">
-			<tr class="tec-tickets__email-table-content-order-attendees-table-header-row">
-	<td class="tec-tickets__email-table-content-order-attendees-table-header-cell tec-tickets__email-table-content-align-left" align="left">
-		Attendee	</td>
-	<td class="tec-tickets__email-table-content-order-attendees-table-header-cell tec-tickets__email-table-content-align-center" align="center">
-		Name	</td>
-	<td class="tec-tickets__email-table-content-order-attendees-table-header-cell tec-tickets__email-table-content-align-right" align="right">
-		Ticket ID	</td>
-</tr>
-							<tr class="tec-tickets__email-table-content-order-attendee-info-row">
-	<td class="tec-tickets__email-table-content-order-attendee-info tec-tickets__email-table-content-align-left" align="left">
-		<div>
-	John Doe</div>
-		<div>
-	john@doe.com</div>
-			</td>
-	<td class="tec-tickets__email-table-content-order-attendee-info tec-tickets__email-table-content-align-center" align="center">
-	General Admission</td>
-	<td class="tec-tickets__email-table-content-order-attendee-info tec-tickets__email-table-content-align-right" align="right">
-	abcde12345</td>
-</tr>
-							<tr class="tec-tickets__email-table-content-order-attendee-info-row">
-	<td class="tec-tickets__email-table-content-order-attendee-info tec-tickets__email-table-content-align-left" align="left">
-		<div>
-	Jane Doe</div>
-		<div>
-	jane@doe.com</div>
-			</td>
-	<td class="tec-tickets__email-table-content-order-attendee-info tec-tickets__email-table-content-align-center" align="center">
-	General Admission</td>
-	<td class="tec-tickets__email-table-content-order-attendee-info tec-tickets__email-table-content-align-right" align="right">
-	12345abcde</td>
-</tr>
-					</table>
 	</td>
 </tr>
 					</table>
@@ -533,11 +695,11 @@
 		<table role="presentation" class="tec-tickets__email-table-main-footer-table">
 						<tr>
 	<td class="tec-tickets__email-table-main-footer-credit-container" align="right">
-		<a href="http://wordpress.test" class="tec-tickets__email-table-main-footer-credit-link">Event Tickets Tests</a> tickets are powered by <a href="https://evnt.is/et-in-app-email-credit" class="tec-tickets__email-table-main-footer-credit-link">Event Tickets</a>	</td>
+		<a href="http://wordpress.test" class="tec-tickets__email-table-main-footer-credit-link">Event Tickets SLR Tests</a> tickets are powered by <a href="https://evnt.is/et-in-app-email-credit" class="tec-tickets__email-table-main-footer-credit-link">Event Tickets</a>	</td>
 </tr>
 		</table>
 	</td>
 </tr>
 		</table>
-</div>
-';
+	</body>
+</html>
