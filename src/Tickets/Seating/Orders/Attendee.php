@@ -172,7 +172,7 @@ class Attendee {
 		$event_id       = get_post_meta( $attendee_id, Commerce_Attendee::$event_relation_meta_key, true );
 		$reservation_id = get_post_meta( $attendee_id, Meta::META_KEY_RESERVATION_ID, true );
 		
-		if ( ! $reservation_id ) {
+		if ( ! $event_id || ! $reservation_id ) {
 			return $attendee_id;
 		}
 		
