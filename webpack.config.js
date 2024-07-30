@@ -191,14 +191,14 @@ const targets = [
 	},
 	{
 		name: 'seating-block-editor-bundle',
-		entry: './src/Tickets/Seating/app/block-editor/index.js',
+		entry: './src/Tickets/Seating/app/blockEditor/index.js',
 		outputScript: './build/Seating/block-editor.min.js',
-		outputStyle: `build/Seating/block-editor.${postfix}`,
+		outputStyle: `build/Seating/blockEditor.${postfix}`,
 		moveFromTo: {
 			'src/resources/js/app/seating-block-editor-bundle.js':
-				'build/Seating/block-editor.js',
+				'build/Seating/blockEditor.js',
 			'src/resources/css/app/seating-block-editor-bundle.css':
-				'build/Seating/block-editor.css',
+				'build/Seating/blockEditor.css',
 		},
 	},
 	{

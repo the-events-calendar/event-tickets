@@ -9,9 +9,9 @@ import {
 	RESERVATIONS_DELETED,
 } from '@tec/tickets/seating/service/api';
 import {
-	ajaxUrl,
-	ajaxNonce,
 	ACTION_DELETE_RESERVATIONS,
+	ajaxNonce,
+	ajaxUrl,
 } from '@tec/tickets/seating/ajax';
 
 /**
@@ -20,19 +20,30 @@ import {
  * @since TBD
  *
  * @param {string[]} ids The IDs of the reservations that were deleted.
+ *
+ * @return {Promise<boolean|number>} A promise that will resolve to the number of
+ *                                   reservations that were deleted or `false` on failure.
  */
 export async function handleReservationsDeleted(ids) {
 	if (!(Array.isArray(ids) && ids.length > 0)) {
-		return;
+		return 0;
 	}
 
 	const url = new URL(ajaxUrl);
 	url.searchParams.set('_ajax_nonce', ajaxNonce);
 	url.searchParams.set('action', ACTION_DELETE_RESERVATIONS);
-	url.searchParams.set('ids', ids.join(','));
-	await fetch(url.toString(), { method: 'POST' });
-	console.log(arguments);
-	console.log('Reservations deleted');
+	const response = await fetch(url.toString(), {
+		method: 'POST',
+		body: JSON.stringify(ids),
+	});
+
+	if (!response.ok) {
+		return false;
+	}
+
+	const json = await response.json();
+
+	return json?.data?.numberDeleted || 0;
 }
 
 /**
@@ -47,7 +58,9 @@ export async function handleReservationsDeleted(ids) {
 export async function init(dom) {
 	dom = dom || document;
 
-	registerAction(RESERVATIONS_DELETED, handleReservationsDeleted);
+	registerAction(RESERVATIONS_DELETED, (data) =>
+		handleReservationsDeleted(data.ids || [])
+	);
 
 	await initServiceIframe(getIframeElement(dom));
 }

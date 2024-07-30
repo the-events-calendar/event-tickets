@@ -49,7 +49,8 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 	 *     seatTypes: array<array{id: string, name: string, seats: int}>,
 	 *     currentLayoutId: string,
 	 *     seatTypesByPostId: array<string, string>,
-	 *     isLayoutLocked: bool
+	 *     isLayoutLocked: bool,
+	 *     eventCapacity: number,
 	 * }
 	 */
 	public function get_store_data(): array {
@@ -59,6 +60,7 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 			$layout_id                 = null;
 			$seat_types_by_post_id     = [];
 			$is_layout_locked          = false;
+			$event_capacity            = 0;
 		} else {
 			$post_id                   = get_the_ID();
 			$is_using_assigned_seating = tribe_is_truthy( get_post_meta( $post_id, Meta::META_KEY_ENABLED, true ) );
@@ -68,6 +70,7 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 			foreach ( tribe_tickets()->where( 'event', $post_id )->get_ids( true ) as $ticket_id ) {
 				$seat_types_by_post_id[ $ticket_id ] = get_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, true );
 			}
+			$event_capacity = tribe_get_event_capacity( $post_id );
 		}
 
 		$service = $this->container->get( Service::class );
@@ -79,6 +82,7 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 			'currentLayoutId'        => $layout_id,
 			'seatTypesByPostId'      => $seat_types_by_post_id,
 			'isLayoutLocked'         => $is_layout_locked,
+			'eventCapacity'          => $event_capacity,
 		];
 	}
 
@@ -105,7 +109,7 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 						'auth_callback' => function () {
 							return current_user_can( 'edit_posts' );
 						},
-					] 
+					]
 				);
 			}
 		}
@@ -122,7 +126,7 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 						'auth_callback' => function () {
 							return current_user_can( 'edit_posts' );
 						},
-					] 
+					]
 				);
 			}
 		}
@@ -151,7 +155,7 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 	private function register_block_editor_assets(): void {
 		Asset::add(
 			'tec-tickets-seating-block-editor',
-			$this->built_asset_url( 'block-editor.js' ),
+			$this->built_asset_url( 'blockEditor.js' ),
 			Tickets::VERSION
 		)
 			->set_dependencies(
@@ -170,7 +174,7 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 					'META_KEY_ENABLED'   => Meta::META_KEY_ENABLED,
 					'META_KEY_LAYOUT_ID' => Meta::META_KEY_LAYOUT_ID,
 					'META_KEY_SEAT_TYPE' => Meta::META_KEY_SEAT_TYPE,
-				] 
+				]
 			)
 			->add_to_group( 'tec-tickets-seating-editor' )
 			->add_to_group( 'tec-tickets-seating' )
@@ -178,7 +182,7 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 
 		Asset::add(
 			'tec-tickets-seating-block-editor-style',
-			$this->built_asset_url( 'block-editor.css' ),
+			$this->built_asset_url( 'blockEditor.css' ),
 			Tickets::VERSION
 		)
 			->enqueue_on( 'enqueue_block_editor_assets' )
@@ -203,7 +207,7 @@ class Editor extends \TEC\Common\Contracts\Provider\Controller {
 			$body['tribe-ticket'],
 			$body['tribe-ticket']['seating'],
 			$body['tribe-ticket']['seating']['enabled'],
-			$body['tribe-ticket']['seating']['seatType'] 
+			$body['tribe-ticket']['seating']['seatType']
 		)
 		) {
 			return;

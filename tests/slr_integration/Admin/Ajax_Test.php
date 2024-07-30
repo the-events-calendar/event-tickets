@@ -20,6 +20,7 @@ use TEC\Tickets\Seating\Tables\Sessions;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tests\Traits\WP_Remote_Mocks;
 use Tribe\Tests\Traits\WP_Send_Json_Mocks;
+use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Traits\Reservations_Maker;
 use Tribe__Tickets__Data_API as Data_API;
@@ -33,6 +34,7 @@ class Ajax_Test extends Controller_Test_Case {
 	use Reservations_Maker;
 	use WP_Send_JSON_Mocks;
 	use Ticket_Maker;
+	use Attendee_Maker;
 
 	protected string $controller_class = Ajax::class;
 
@@ -995,5 +997,108 @@ class Ajax_Test extends Controller_Test_Case {
 
 		$this->assertFalse( isset( $_COOKIE[ $cookie_name ] ) );
 		$this->assertTrue( $setcookie_call );
+	}
+
+	public function test_delete_reservations(): void {
+		$this->set_up_ajax_request_context();
+		// Create 3 Attendees and assign a reservation ID to each one of them.
+		$post_id   = static::factory()->post->create();
+		$ticket_id = $this->create_tc_ticket( $post_id, 10 );
+		[ $attendee_1, $attendee_2, $attendee_3 ] = $this->create_many_attendees_for_ticket( 3, $ticket_id, $post_id );
+		update_post_meta( $attendee_1, Meta::META_KEY_RESERVATION_ID, 'reservation-uuid-1' );
+		update_post_meta( $attendee_2, Meta::META_KEY_RESERVATION_ID, 'reservation-uuid-2' );
+		update_post_meta( $attendee_3, Meta::META_KEY_RESERVATION_ID, 'reservation-uuid-3' );
+		$this->set_oauth_token( 'auth-token' );
+		$request_body = null;
+		$this->set_fn_return( 'file_get_contents', function ( $file, ...$args ) use ( &$request_body ) {
+			if ( $file !== 'php://input' ) {
+				return file_get_contents( $file, ...$args );
+			}
+
+			return $request_body;
+		}, true );
+
+		$controller = $this->make_controller();
+		$controller->register();
+
+		// Request body is empty.
+		$request_body = '';
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+
+		do_action( 'wp_ajax_' . Ajax::ACTION_DELETE_RESERVATIONS );
+
+		$this->assertTrue( $wp_send_json_error->was_called_times_with( 1,
+			[
+				'error' => 'Invalid request body',
+			],
+			400
+		) );
+		$this->reset_wp_send_json_mocks();
+
+		// Request body is not valid JSON.
+		$request_body = 'not-json';
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+
+		do_action( 'wp_ajax_' . Ajax::ACTION_DELETE_RESERVATIONS );
+
+		$this->assertTrue( $wp_send_json_error->was_called_times_with( 1,
+			[
+				'error' => 'Invalid request body',
+			],
+			400
+		) );
+		$this->reset_wp_send_json_mocks();
+
+		// Request body is valid JSON but not an array of non-empty strings.
+		$request_body = '["", ""]';
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+
+		do_action( 'wp_ajax_' . Ajax::ACTION_DELETE_RESERVATIONS );
+
+		$this->assertTrue( $wp_send_json_error->was_called_times_with( 1,
+			[
+				'error' => 'Invalid request body',
+			],
+			400
+		) );
+		$this->reset_wp_send_json_mocks();
+
+		// Deletion succeeds.
+		$request_body         = '["reservation-uuid-1", "reservation-uuid-4"]';
+		$wp_send_json_success = $this->mock_wp_send_json_success();
+		$delete_map = [];
+		add_action( 'tec_tickets_seating_delete_reservations_from_attendees', function ( $map ) use ( &$delete_map ) {
+			$delete_map = $map;
+		} );
+
+		do_action( 'wp_ajax_' . Ajax::ACTION_DELETE_RESERVATIONS );
+
+		$this->assertTrue( $wp_send_json_success->was_called_times_with( 1,
+			[
+				'numberDeleted' => 1,
+			],
+		) );
+		$this->reset_wp_send_json_mocks();
+		$this->assertEquals( $delete_map, [ 'reservation-uuid-1' => $attendee_1 ] );
+		$this->assertEquals('', get_post_meta( $attendee_1, Meta::META_KEY_RESERVATION_ID, true ) );
+
+		// Send a second request to delete the rest.
+		$request_body         = '["reservation-uuid-2", "reservation-uuid-3"]';
+		$wp_send_json_success = $this->mock_wp_send_json_success();
+		$delete_map = [];
+		add_action( 'tec_tickets_seating_delete_reservations_from_attendees', function ( $map ) use ( &$delete_map ) {
+			$delete_map = $map;
+		} );
+
+		do_action( 'wp_ajax_' . Ajax::ACTION_DELETE_RESERVATIONS );
+
+		$this->assertTrue( $wp_send_json_success->was_called_times_with( 1,
+			[
+				'numberDeleted' => 2,
+			],
+		) );
+		$this->assertEquals( $delete_map, [ 'reservation-uuid-2' => $attendee_2, 'reservation-uuid-3' => $attendee_3 ] );
+		$this->assertEquals('', get_post_meta( $attendee_2, Meta::META_KEY_RESERVATION_ID, true ) );
+		$this->assertEquals('', get_post_meta( $attendee_3, Meta::META_KEY_RESERVATION_ID, true ) );
 	}
 }

@@ -33,7 +33,7 @@ class Meta {
 	 *
 	 * @var string
 	 */
-	public const META_KEY_LAYOUT_ID = '_tec_slr_layout_id';
+	public const META_KEY_LAYOUT_ID = '_tec_slr_layout';
 
 	/**
 	 * The meta key used to store the seat type of a Ticket.
@@ -61,7 +61,7 @@ class Meta {
 	 * @var string
 	 */
 	public const META_KEY_ATTENDEE_SEAT_LABEL = '_tec_slr_seat_label';
-	
+
 	/**
 	 * The meta key used to store the reservation ID of an attendee.
 	 *
