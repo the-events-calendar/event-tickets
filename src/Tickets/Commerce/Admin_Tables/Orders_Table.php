@@ -361,6 +361,30 @@ class Orders_Table extends WP_Posts_List_Table {
 		ob_start();
 		?>
 		<mark class="tribe-tickets-commerce-order-status status-<?php echo esc_attr( $status->get_slug() ); ?>">
+			<?php
+			switch ( $status->get_slug() ) {
+				case 'completed':
+					?>
+					<span class="dashicons dashicons-yes"></span>
+					<?php
+					break;
+				case 'refunded':
+					?>
+					<span class="dashicons dashicons-undo"></span>
+					<?php
+					break;
+				case 'failed':
+					?>
+					<span class="dashicons dashicons-no-alt"></span>
+					<?php
+					break;
+				case 'pending':
+					?>
+					<span class="dashicons dashicons-clock"></span>
+					<?php
+					break;
+			}
+			?>
 			<span>
 				<?php echo esc_html( $status->get_name() ); ?>
 			</span>
@@ -455,7 +479,12 @@ class Orders_Table extends WP_Posts_List_Table {
 			return $item->ID;
 		}
 
-		return sprintf( '#%1$s %2$s (%3$s)', $item->ID, $item->purchaser['full_name'], $item->purchaser['email'] );
+		return sprintf(
+			'<a href="%3$s">#%1$s - %2$s</a>',
+			esc_html( $item->ID ),
+			esc_html( $item->purchaser['email'] ),
+			esc_url( get_edit_post_link( $item->ID ) )
+		);
 	}
 
 	/**
@@ -577,32 +606,22 @@ class Orders_Table extends WP_Posts_List_Table {
 	 * Handler for gateway order id.
 	 *
 	 * @since 5.13.0
+	 * @since TBD Added the order URL parameter.
 	 *
 	 * @param WP_Post $item The current item.
+	 * @param string  $order_url The order URL.
 	 *
 	 * @return string
 	 */
-	protected function column_gateway_order_id( $item ) {
-		$gateway = tribe( Manager::class )->get_gateway_by_key( $item->gateway );
-
-		if ( $gateway instanceof Free_Gateway ) {
-			return '';
-		}
-
-		if ( ! $gateway ) {
-			return '';
-		}
-
-		$order_url = $gateway->get_order_controller()->get_gateway_dashboard_url_by_order( $item );
-
+	protected function column_gateway_order_id( $item, $order_url = '' ) {
 		if ( empty( $order_url ) ) {
 			return '';
 		}
 
 		return sprintf(
-			'<br><a class="tribe-external-link tribe-external-link--code" href="%s" target="_blank" rel="noopener noreferrer">%s</a>',
-			$order_url,
-			$item->gateway_order_id
+			'<br><span class="tribe-dashicons">%s<a href="javascript:void" data-text="%s" class="tribe-copy-to-clipboard dashicons dashicons-admin-page"></a></span>',
+			esc_html( $item->gateway_order_id ),
+			esc_attr( $item->gateway_order_id ),
 		);
 	}
 
@@ -626,7 +645,20 @@ class Orders_Table extends WP_Posts_List_Table {
 			return $item->gateway;
 		}
 
-		return $gateway::get_label() . $this->column_gateway_order_id( $item );
+		$order_url = $gateway->get_order_controller()->get_gateway_dashboard_url_by_order( $item );
+
+		if ( empty( $order_url ) ) {
+			return $gateway::get_label() . $this->column_gateway_order_id( $item );
+		}
+
+		return sprintf(
+			'%1$s%2$s%3$s%4$s%5$s',
+			'<a class="tribe-dashicons" href="' . esc_url( $order_url ) . '" target="_blank" rel="noopener noreferrer">',
+			esc_html( $gateway::get_label() ),
+			'<span class="dashicons dashicons-external"></span>',
+			'</a>',
+			$this->column_gateway_order_id( $item, $order_url )
+		);
 	}
 
 	/**
