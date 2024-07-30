@@ -4,6 +4,7 @@ namespace TEC\Tickets\Seating\Admin;
 
 use Codeception\TestCase\WPTestCase;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Seating\Admin\Tabs\Maps as Maps_Tab;
 use TEC\Tickets\Seating\Meta;
 use Tribe\Tests\Traits\With_Uopz;
@@ -13,6 +14,7 @@ use TEC\Tickets\Seating\Admin\Tabs\Layouts as Layouts_Tab;
 use TEC\Tickets\Seating\Tables\Maps as Maps_Table;
 use TEC\Tickets\Seating\Tables\Layouts as Layouts_Table;
 use TEC\Tickets\Seating\Tables\Seat_Types as Seat_Types_Table;
+use Tribe__Tickets__Data_API as Data_API;
 
 class Maps_Layout_Homepage_Test extends WPTestCase {
 	use SnapshotAssertions;
@@ -24,15 +26,6 @@ class Maps_Layout_Homepage_Test extends WPTestCase {
 	public function mock_user() {
 		// Become administrator.
 		wp_set_current_user( self::factory()->user->create( [ 'role' => 'administrator' ] ) );
-	}
-
-	/**
-	 * @before
-	 */
-	public function ensure_post_ticketable(): void {
-		$ticketable   = tribe_get_option( 'ticket-enabled-post-types', [] );
-		$ticketable[] = 'post';
-		tribe_update_option( 'ticket-enabled-post-types', array_values( array_unique( $ticketable ) ) );
 	}
 
 	/**
