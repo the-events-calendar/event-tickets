@@ -134,10 +134,11 @@ class Cart {
 	 * @param WP_Post       $attendee   The generated attendee.
 	 * @param Ticket_Object $ticket     The ticket the attendee is generated for.
 	 */
-	public function save_seat_data_for_attendee( $attendee, $ticket ) {
+	public function save_seat_data_for_attendee( WP_Post $attendee, Ticket_Object $ticket ): void {
 		[ $token, $object_id ] = $this->session->get_session_token_object_id();
-
-		if ( (int) $attendee->event_id === (int) $object_id ) {
+		$event_id              = (int) $attendee->event_id;
+		
+		if ( $event_id === (int) $object_id ) {
 			$session_stack    = $this->get_session_stack( (string) $token, (int) $object_id, (int) $ticket->ID );
 			$reservation_data = $session_stack->current();
 			$session_stack->next();
@@ -148,9 +149,12 @@ class Cart {
 			$seat_type_id = $reservation_data['seat_type_id'] ?? '';
 			update_post_meta( $attendee->ID, Meta::META_KEY_SEAT_TYPE, $seat_type_id );
 		}
-
-		$object_id = get_post_meta( $ticket->ID, Attendee::$event_relation_meta_key, true );
-		$layout_id = get_post_meta( $object_id, Meta::META_KEY_LAYOUT_ID, true );
-		update_post_meta( $attendee->ID, Meta::META_KEY_LAYOUT_ID, $layout_id );
+		
+		$layout_id = $attendee->product_id ? get_post_meta( $attendee->product_id, Meta::META_KEY_LAYOUT_ID, true ) : false;
+		
+		// Add the layout ID to the attendee if it exists for the attendee product.
+		if ( $layout_id ) {
+			update_post_meta( $attendee->ID, Meta::META_KEY_LAYOUT_ID, $layout_id );
+		}
 	}
 }

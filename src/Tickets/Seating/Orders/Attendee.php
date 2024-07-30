@@ -9,13 +9,15 @@
 
 namespace TEC\Tickets\Seating\Orders;
 
-use TEC\Tickets\Seating\Meta;
 use Tribe__Main as Common;
-use WP_Query;
 use Tribe__Tickets__Attendee_Repository as Attendee_Repository;
 use Tribe__Utils__Array as Arr;
+use Tribe__Template as Template;
 use TEC\Tickets\Commerce\Attendee as Commerce_Attendee;
 use TEC\Tickets\Seating\Service\Reservations;
+use TEC\Tickets\Seating\Meta;
+use WP_Query;
+use WP_Post;
 
 /**
  * Class Attendee
@@ -184,5 +186,71 @@ class Attendee {
 		}
 		
 		return $attendee_id;
+	}
+	
+	/**
+	 * Include seating data into the attendee object.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post $post The attendee post object, decorated with a set of custom properties.
+	 *
+	 * @return WP_Post
+	 */
+	public function include_seating_data( WP_Post $post ): WP_Post {
+		$seating_ticket = get_post_meta( $post->product_id, Meta::META_KEY_ENABLED, true );
+		
+		if ( ! $seating_ticket ) {
+			return $post;
+		}
+		
+		$seat_label = get_post_meta( $post->ID, Meta::META_KEY_ATTENDEE_SEAT_LABEL, true );
+		
+		if ( $seat_label ) {
+			$post->seat_label = $seat_label;
+		}
+		
+		$seat_type_id = get_post_meta( $post->ID, Meta::META_KEY_SEAT_TYPE, true );
+		
+		if ( $seat_type_id ) {
+			$post->seat_type_id = $seat_type_id;
+		}
+		
+		$layout_id = get_post_meta( $post->ID, Meta::META_KEY_LAYOUT_ID, true );
+		
+		if ( $layout_id ) {
+			$post->layout_id = $layout_id;
+		}
+		
+		return $post;
+	}
+	
+	/**
+	 * Include seat info in email.
+	 *
+	 * @since TBD
+	 *
+	 * @param Template $template The email template instance.
+	 *
+	 * @return void
+	 */
+	public function include_seat_info_in_email( Template $template ): void {
+		$context    = $template->get_local_values();
+		$seat_label = Arr::get( $context, [ 'tickets', 0, 'seat_label' ], false );
+		
+		if ( ! $seat_label ) {
+			return;
+		}
+		
+		echo wp_kses(
+			sprintf(
+				'<div class="tec-tickets__email-table-content-ticket-seat-label">%s</div>
+				<div class="tec-tickets__email-table-content-ticket-seat-label-separator">|</div>',
+				esc_html( $seat_label ) 
+			),
+			[
+				'div' => [ 'class' => [] ],
+			]
+		);
 	}
 }
