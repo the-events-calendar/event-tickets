@@ -28,6 +28,7 @@ use WP_Post;
 use WP_Query;
 use Tribe__Tickets__Main as Tickets_Main;
 use Tribe__Tickets__Tickets as Tickets;
+use Tribe__Template as Template;
 
 /**
  * Class Controller
@@ -139,8 +140,14 @@ class Controller extends Controller_Contract {
 			add_action( 'init', [ $this, 'register_seat_reports' ] );
 			add_filter( 'tec_tickets_commerce_reports_tabbed_page_title', [ $this, 'filter_seat_tab_title' ], 10, 3 );
 		}
+		// Attendee delete handler.
+		add_filter( 'tec_tickets_commerce_attendee_to_delete', [ $this, 'handle_attendee_delete' ] );
+		
 		add_action( 'tec_tickets_commerce_flag_action_generated_attendees', [ $this, 'confirm_all_reservations' ] );
 		add_action( 'wp_ajax_' . Ajax::ACTION_FETCH_ATTENDEES, [ $this, 'fetch_attendees_by_post' ] );
+		
+		add_filter( 'tec_tickets_commerce_get_attendee', [ $this, 'filter_attendee_object' ] );
+		add_action( 'tribe_template_before_include:tickets/emails/template-parts/body/ticket/ticket-name', [ $this, 'include_seat_info_in_email' ], 10, 3 );
 
 		$this->register_assets();
 	}
@@ -174,6 +181,10 @@ class Controller extends Controller_Contract {
 
 		remove_action( 'tec_tickets_commerce_flag_action_generated_attendees', [ $this, 'confirm_all_reservations' ] );
 		remove_action( 'wp_ajax_' . Ajax::ACTION_FETCH_ATTENDEES, [ $this, 'fetch_attendees_by_post' ] );
+		
+		remove_filter( 'tec_tickets_commerce_get_attendee', [ $this, 'filter_attendee_object' ] );
+		remove_action( 'tribe_template_before_include:tickets/emails/template-parts/body/ticket/ticket-name', [ $this, 'include_seat_info_in_email' ], 10, 3 );
+		remove_filter( 'tec_tickets_commerce_attendee_to_delete', [ $this, 'handle_attendee_delete' ] );
 	}
 
 	/**
@@ -351,7 +362,20 @@ class Controller extends Controller_Contract {
 	public function confirm_all_reservations(): void {
 		$this->session->confirm_all_reservations();
 	}
-
+	
+	/**
+	 * Handle attendee delete.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $attendee_id The attendee ID.
+	 *
+	 * @return int The attendee ID.
+	 */
+	public function handle_attendee_delete( int $attendee_id ): int {
+		return $this->attendee->handle_attendee_delete( $attendee_id, $this->reservations );
+	}
+	
 	/**
 	 * Get the localized data for the report.
 	 *
@@ -387,26 +411,26 @@ class Controller extends Controller_Contract {
 			$this->built_asset_url( 'admin/seatsReport.js' ),
 			Tickets_Main::VERSION
 		)
-		     ->add_dependency( 'tec-tickets-seating-service-bundle' )
-		     ->enqueue_on( Seats_Report::$asset_action )
-		     ->add_localize_script(
-			     'tec.tickets.seating.admin.seatsReport.data',
-			     fn() => $this->get_localized_data( get_the_ID() )
-		     )
-		     ->add_to_group( 'tec-tickets-seating-admin' )
-		     ->add_to_group( 'tec-tickets-seating' )
-		     ->register();
+			->add_dependency( 'tec-tickets-seating-service-bundle' )
+			->enqueue_on( Seats_Report::$asset_action )
+			->add_localize_script(
+				'tec.tickets.seating.admin.seatsReport.data',
+				fn() => $this->get_localized_data( get_the_ID() )
+			)
+			->add_to_group( 'tec-tickets-seating-admin' )
+			->add_to_group( 'tec-tickets-seating' )
+			->register();
 
 		Asset::add(
 			'tec-tickets-seating-admin-seats-report-style',
 			$this->built_asset_url( 'admin/seatsReport.css' ),
 			Tickets_Main::VERSION
 		)
-		     ->add_to_group( 'tec-tickets-seating-admin' )
-		     ->add_to_group( 'tec-tickets-seating' )
-		     ->enqueue_on( Seats_Report::$asset_action )
-		     ->add_to_group( 'tec-tickets-seating-admin' )
-		     ->register();
+			->add_to_group( 'tec-tickets-seating-admin' )
+			->add_to_group( 'tec-tickets-seating' )
+			->enqueue_on( Seats_Report::$asset_action )
+			->add_to_group( 'tec-tickets-seating-admin' )
+			->register();
 	}
 
 	/**
@@ -438,7 +462,7 @@ class Controller extends Controller_Contract {
 		$associated_attendees  = array_reduce(
 			$data['attendees'],
 			function ( array $carry, array $attendee ): array {
-				$carry[ $attendee['purchaser_id'] ] ++;
+				$carry[ $attendee['purchaser_id'] ]++;
 
 				return $carry;
 			},
@@ -482,5 +506,33 @@ class Controller extends Controller_Contract {
 				'total'     => $data['total_found'],
 			]
 		);
+	}
+	
+	/**
+	 * Filters the default Attendee object to include seating data.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post $post   The attendee post object, decorated with a set of custom properties.
+	 *
+	 * @return WP_Post
+	 */
+	public function filter_attendee_object( WP_Post $post ): WP_Post {
+		return $this->attendee->include_seating_data( $post );
+	}
+	
+	/**
+	 * Includes seating data in the email.
+	 *
+	 * @since TBD
+	 *
+	 * @param string                $file   The email file.
+	 * @param array<string, string> $name   The email name.
+	 * @param Template              $template The email context.
+	 *
+	 * @return void
+	 */
+	public function include_seat_info_in_email( $file, $name, $template ): void {
+		$this->attendee->include_seat_info_in_email( $template );
 	}
 }

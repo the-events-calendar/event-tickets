@@ -6,8 +6,10 @@ use Closure;
 use Generator;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
+use TEC\Tickets\Commerce\Attendee;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Gateways\PayPal\Gateway;
+use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Seating\Frontend\Session;
@@ -97,9 +99,9 @@ class Controller_Test extends Controller_Test_Case {
 					[
 						'tribe_tickets_tickets' => [
 							[
-								'ticket_id'   => $ticket_id,
-								'quantity'    => 3,
-								'optout'      => '1',
+								'ticket_id' => $ticket_id,
+								'quantity'  => 3,
+								'optout'    => '1',
 								// 'seat_labels' => [ 'B-4', 'D-1', 'C-3' ],
 							],
 						],
@@ -274,7 +276,7 @@ class Controller_Test extends Controller_Test_Case {
 			'post',
 			$reservations->get_confirm_url(),
 			function () use ( &$service_confirmations ) {
-				$service_confirmations ++;
+				$service_confirmations++;
 
 				return [
 					'headers' => [
@@ -288,7 +290,7 @@ class Controller_Test extends Controller_Test_Case {
 								'reservation-id-1',
 								'reservation-id-2',
 								'reservation-id-3',
-								'reservation-id-4'
+								'reservation-id-4',
 							],
 						]
 					),
@@ -334,6 +336,334 @@ class Controller_Test extends Controller_Test_Case {
 		$this->assertEquals( 1, $service_confirmations );
 		$this->assertEquals( [], $sessions->get_reservations_for_token( 'test-token' ) );
 	}
-
-
+	
+	public function test_deleting_attendee_without_seats() {
+		$controller = $this->make_controller();
+		$controller->register();
+		
+		$event_id = tribe_events()->set_args(
+			[
+				'title'      => 'Event with seated attendees',
+				'status'     => 'publish',
+				'start_date' => '2020-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
+		
+		// create ticket with default capacity of 100.
+		$ticket_a_id = $this->create_tc_ticket( $event_id, 10 );
+		
+		// get ticket.
+		$ticket = tribe( Module::class )->get_ticket( $event_id, $ticket_a_id );
+		$this->assertEquals( 100, $ticket->available(), 'There should be 100 tickets available' );
+		
+		// create order.
+		$order = $this->create_order( [ $ticket_a_id => 2 ] );
+		
+		//get attendees.
+		$attendees = tribe_attendees()->where( 'event_id', $event_id )->all();
+		
+		$this->assertEquals( 2, count( $attendees ), 'There should be 2 attendees' );
+		
+		// delete attendee.
+		$attendee = $attendees[0];
+		$deleted  = tribe( Attendee::class )->delete( $attendee->ID );
+		
+		$new_count = tec_tc_attendees()->by( 'event_id', $event_id )->count();
+		$this->assertEquals( 1, $new_count, 'There should be 1 attendee' );
+		
+		// get ticket.
+		$ticket = tribe( Module::class )->get_ticket( $event_id, $ticket_a_id );
+		$this->assertEquals( 99, $ticket->available(), 'There should be 99 tickets available' );
+	}
+	
+	public function test_deleting_attendee_with_seats_but_reservation_cancel_failed() {
+		$controller = $this->make_controller();
+		$controller->register();
+		
+		$event_id = tribe_events()->set_args(
+			[
+				'title'      => 'Event with seated attendees',
+				'status'     => 'publish',
+				'start_date' => '2020-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
+		
+		// setup mock data for reservation api call.
+		update_post_meta( $event_id, Meta::META_KEY_UUID, 'test-post-uuid' );
+		$this->set_oauth_token( 'auth-token' );
+		
+		// create ticket with default capacity of 100.
+		$ticket_a_id = $this->create_tc_ticket( $event_id, 10 );
+		
+		// get ticket.
+		$ticket = tribe( Module::class )->get_ticket( $event_id, $ticket_a_id );
+		$this->assertEquals( 100, $ticket->available(), 'There should be 100 tickets available' );
+		
+		// create order.
+		$order = $this->create_order( [ $ticket_a_id => 2 ] );
+		
+		//get attendees.
+		$attendees = tribe_attendees()->where( 'event_id', $event_id )->all();
+		
+		$this->assertEquals( 2, count( $attendees ), 'There should be 2 attendees' );
+		
+		$reservations = tribe( Reservations::class );
+		
+		$mock_reservation_cancel_failed = $this->mock_wp_remote(
+			'post',
+			$reservations->get_cancel_url(),
+			[
+				'headers' => [
+					'Authorization' => 'Bearer auth-token',
+					'Content-Type'  => 'application/json',
+				],
+				'body'    => wp_json_encode(
+					[
+						'eventId' => 'test-post-uuid',
+						'ids'     => [
+							'seat-reservation-id',
+						],
+					]
+				),
+			],
+			[
+				'response' => [
+					'code' => 400,
+				],
+				'body'     => wp_json_encode(
+					[
+						'success' => false,
+					]
+				),
+			]
+		);
+		
+		// delete attendee.
+		$attendee = $attendees[0];
+		
+		update_post_meta( $attendee->ID, Meta::META_KEY_RESERVATION_ID, 'seat-reservation-id' );
+		update_post_meta( $attendee->ID, Meta::META_KEY_SEAT_TYPE, 'seat-type-id' );
+		
+		// Try to delete the attendee.
+		$deleted = tribe( Attendee::class )->delete( $attendee->ID );
+		
+		// As the attendee deletion failed it should be same as original.
+		$new_count = tec_tc_attendees()->by( 'event_id', $event_id )->count();
+		$this->assertEquals( 2, $new_count, 'There should be 2 attendees' );
+		
+		// get ticket.
+		$ticket = tribe( Module::class )->get_ticket( $event_id, $ticket_a_id );
+		$this->assertEquals( 98, $ticket->available(), 'There should be 98 tickets available' );
+	}
+	
+	public function test_deleting_attendee_with_seats_and_reservation_cancel_success() {
+		$controller = $this->make_controller();
+		$controller->register();
+		
+		$event_id = tribe_events()->set_args(
+			[
+				'title'      => 'Event with seated attendees',
+				'status'     => 'publish',
+				'start_date' => '2020-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
+		
+		// setup mock data for reservation api call.
+		update_post_meta( $event_id, Meta::META_KEY_UUID, 'test-post-uuid' );
+		$this->set_oauth_token( 'auth-token' );
+		
+		// create ticket with default capacity of 100.
+		$ticket_a_id = $this->create_tc_ticket( $event_id, 10 );
+		
+		// get ticket.
+		$ticket = tribe( Module::class )->get_ticket( $event_id, $ticket_a_id );
+		$this->assertEquals( 100, $ticket->available(), 'There should be 100 tickets available' );
+		
+		// create order.
+		$order = $this->create_order( [ $ticket_a_id => 2 ] );
+		
+		//get attendees.
+		$attendees = tribe_attendees()->where( 'event_id', $event_id )->all();
+		
+		$this->assertEquals( 2, count( $attendees ), 'There should be 2 attendees' );
+		
+		$reservations = tribe( Reservations::class );
+		
+		$mock_reservation_cancel_failed = $this->mock_wp_remote(
+			'post',
+			$reservations->get_cancel_url(),
+			[
+				'headers' => [
+					'Authorization' => 'Bearer auth-token',
+					'Content-Type'  => 'application/json',
+				],
+				'body'    => wp_json_encode(
+					[
+						'eventId' => 'test-post-uuid',
+						'ids'     => [
+							'seat-reservation-id',
+						],
+					]
+				),
+			],
+			[
+				'response' => [
+					'code' => 200,
+				],
+				'body'     => wp_json_encode(
+					[
+						'success' => true,
+					]
+				),
+			]
+		);
+		
+		// delete attendee.
+		$attendee = $attendees[0];
+		
+		update_post_meta( $attendee->ID, Meta::META_KEY_RESERVATION_ID, 'seat-reservation-id' );
+		update_post_meta( $attendee->ID, Meta::META_KEY_SEAT_TYPE, 'seat-type-id' );
+		
+		// Try to delete the attendee.
+		$deleted = tribe( Attendee::class )->delete( $attendee->ID );
+		
+		// As the attendee deletion failed it should be same as original.
+		$new_count = tec_tc_attendees()->by( 'event_id', $event_id )->count();
+		$this->assertEquals( 1, $new_count, 'There should be 1 attendees' );
+		
+		// get ticket.
+		$ticket = tribe( Module::class )->get_ticket( $event_id, $ticket_a_id );
+		$this->assertEquals( 99, $ticket->available(), 'There should be 99 tickets available' );
+	}
+	
+	/**
+	 * @test
+	 * @covers Attendee::include_seating_data
+	 */
+	public function test_attendee_has_seat_data() {
+		$event_id = tribe_events()->set_args(
+			[
+				'title'      => 'Event with single seated attendee',
+				'status'     => 'publish',
+				'start_date' => '2020-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
+		
+		update_post_meta( $event_id, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $event_id, Meta::META_KEY_LAYOUT_ID, 'layout-id' );
+		
+		$ticket_id = $this->create_tc_ticket( $event_id, 10 );
+		
+		$order     = $this->create_order(
+			[ $ticket_id => 4 ],
+			[
+				'purchaser_email' => 'test-purchaser@test.com',
+			]
+		);
+		$attendees = tribe_attendees()->by( 'event_id', $event_id )->by( 'order_status', [ 'completed' ] )->all();
+		
+		$this->make_controller()->register();
+		// This is a regular attendee.
+		$attendee_a = tec_tc_get_attendee( $attendees[0]->ID, ARRAY_A );
+		// It should not have any seating data.
+		$this->assertFalse( isset( $attendee_a['seat_label'] ) );
+		$this->assertFalse( isset( $attendee_a['seat_type_id'] ) );
+		$this->assertFalse( isset( $attendee_a['layout_id'] ) );
+		
+		// Make the ticket assigned seating.
+		update_post_meta( $ticket_id, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $ticket_id, Meta::META_KEY_LAYOUT_ID, 'layout-id' );
+		
+		// Inject seating data into the attendee_b.
+		update_post_meta( $attendees[1]->ID, Meta::META_KEY_ATTENDEE_SEAT_LABEL, 'A-1' );
+		
+		$attendee_b = tec_tc_get_attendee( $attendees[1]->ID, ARRAY_A );
+		
+		$this->assertEquals( 'A-1', $attendee_b['seat_label'] );
+		$this->assertFalse( isset( $attendee_b['seat_type_id'] ) );
+		$this->assertFalse( isset( $attendee_b['layout_id'] ) );
+		
+		// Inject seating data into the attendee_c.
+		update_post_meta( $attendees[2]->ID, Meta::META_KEY_ATTENDEE_SEAT_LABEL, 'B-1' );
+		update_post_meta( $attendees[2]->ID, Meta::META_KEY_SEAT_TYPE, 'vip-hash' );
+		
+		$attendee_c = tec_tc_get_attendee( $attendees[2]->ID, ARRAY_A );
+		
+		$this->assertEquals( 'B-1', $attendee_c['seat_label'] );
+		$this->assertEquals( 'vip-hash', $attendee_c['seat_type_id'] );
+		$this->assertFalse( isset( $attendee_c['layout_id'] ) );
+		
+		// Inject seating data into the attendee_d.
+		update_post_meta( $attendees[3]->ID, Meta::META_KEY_ATTENDEE_SEAT_LABEL, 'C-1' );
+		update_post_meta( $attendees[3]->ID, Meta::META_KEY_SEAT_TYPE, 'general-admission-hash' );
+		update_post_meta( $attendees[3]->ID, Meta::META_KEY_LAYOUT_ID, 'layout-id' );
+		
+		$attendee_d = tec_tc_get_attendee( $attendees[3]->ID, ARRAY_A );
+		
+		$this->assertEquals( 'C-1', $attendee_d['seat_label'] );
+		$this->assertEquals( 'general-admission-hash', $attendee_d['seat_type_id'] );
+		$this->assertEquals( 'layout-id', $attendee_d['layout_id'] );
+	}
+	
+	/**
+	 * @test
+	 * @covers Attendee::include_seat_info_in_email
+	 */
+	public function test_ticket_emails_has_seat_info() {
+		$this->set_class_fn_return( 'Tribe__Tickets__Tickets', 'generate_security_code', 'SECURITY_CODE' );
+		
+		$event_id = tribe_events()->set_args(
+			[
+				'title'      => 'Event with single seated attendee',
+				'status'     => 'publish',
+				'start_date' => '2020-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
+		
+		update_post_meta( $event_id, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $event_id, Meta::META_KEY_LAYOUT_ID, 'layout-id' );
+		
+		$ticket_id = $this->create_tc_ticket( $event_id, 10 );
+		
+		update_post_meta( $ticket_id, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $ticket_id, Meta::META_KEY_LAYOUT_ID, 'layout-id' );
+		
+		$order    = $this->create_order(
+			[ $ticket_id => 1 ],
+			[
+				'purchaser_email' => 'test-purchaser@test.com',
+			]
+		);
+		$attendee = tribe_attendees()->by( 'event_id', $event_id )->by( 'order_status', [ 'completed' ] )->first();
+		
+		update_post_meta( $attendee->ID, Meta::META_KEY_ATTENDEE_SEAT_LABEL, 'A-1' );
+		
+		$html = '';
+		
+		add_filter(
+			'tec_tickets_emails_dispatcher_content',
+			function ( $content ) use ( &$html ) {
+				$html = $content;
+				
+				// skip sending the email.
+				return '';
+			}
+		);
+		
+		$this->make_controller()->register();
+		
+		$send = tribe( Module::class )->send_tickets_email_for_attendees( [ $attendee->ID ] );
+		$html = str_replace( [ $event_id, $order->ID, $attendee->ID ], [
+			'EVENT_ID',
+			'ORDER_ID',
+			'ATTENDEE_ID'
+		], $html );
+		
+		$this->assertMatchesHtmlSnapshot( $html );
+	}
 }
