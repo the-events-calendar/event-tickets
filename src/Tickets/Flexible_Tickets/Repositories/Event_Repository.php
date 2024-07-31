@@ -93,14 +93,12 @@ class Event_Repository extends Repository_Decorator {
 
 		// Include Events that are either directly related to a Ticket (Single and Series Tickets) or
 		// are related to a Series that is related to a Ticket (Series Passes).
-		return $wpdb->prepare( "
+		return "
 			{$alias}.meta_value = {$wpdb->posts}.ID
 			OR
 			{$alias}.meta_value IN (
 				SELECT sr.series_post_id FROM $series_relationships sr WHERE sr.event_post_id = {$wpdb->posts}.ID
-			)",
-			Series::POSTTYPE
-		);
+			)";
 	}
 
 	/**
