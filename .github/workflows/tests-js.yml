@@ -4,6 +4,8 @@ on:
     paths:
       - 'src/modules/**.js'
       - 'src/resources/js/**.js'
+      - 'src/Tickets/Seating/app/**.js'
+      - 'tests/slr_jest/**.js'
       - '.github/workflows/tests-js.yml'
 jobs:
   jest:
