@@ -37,9 +37,9 @@ class Uplink extends Controller_Contract {
 	/**
 	 * Main plugin object.
 	 *
-	 * @var object
+	 * @var Main
 	 */
-	protected object $et_main;
+	protected Main $et_main;
 
 	/**
 	 * Register the controller.
@@ -92,8 +92,8 @@ class Uplink extends Controller_Contract {
 			$this->et_slr_plugin_slug,
 			$this->et_slr_plugin_name,
 			Main::VERSION,
-			"{$this->et_main->plugin_path}",
-			$this->et_main,
+			"{$this->et_main->plugin_dir}/event-tickets.php",
+			Main::class,
 			null,
 			true
 		);
