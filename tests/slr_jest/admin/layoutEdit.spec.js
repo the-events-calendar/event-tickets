@@ -148,7 +148,7 @@ describe('Layouts Edit', () => {
 			const result = await handler([]);
 
 			expect(fetch).not.toBeCalled();
-			expect(result).toBe(0);
+			expect(result).toBe(false);
 		});
 	});
 
