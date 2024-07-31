@@ -50,7 +50,7 @@ class Orders_Page {
 			'tickets-commerce/admin/orders/table.css',
 			[],
 			[ 'admin_enqueue_scripts' ],
-			[ 'conditionals' => [ $this, 'is_admin_orders_page' ] ]
+			[ 'conditionals' => [ $this, 'is_admin_orders_page_or_admin_single_page' ] ]
 		);
 
 		// We only want to load this script if The Events Calendar is not active.
@@ -178,6 +178,38 @@ class Orders_Page {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Checks if the current screen is a single admin order page.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function is_admin_single_page() {
+		if ( ! is_admin() ) {
+			return false;
+		}
+
+		$screen = get_current_screen();
+
+		if ( empty( $screen->id ) || Order::POSTTYPE !== $screen->id ) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Checks if the current screen is the admin orders page or a single admin order page.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function is_admin_orders_page_or_admin_single_page() {
+		return $this->is_admin_orders_page() || $this->is_admin_single_page();
 	}
 
 	/**

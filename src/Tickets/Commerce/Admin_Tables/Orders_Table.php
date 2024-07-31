@@ -648,7 +648,7 @@ class Orders_Table extends WP_Posts_List_Table {
 		$order_url = $gateway->get_order_controller()->get_gateway_dashboard_url_by_order( $item );
 
 		if ( empty( $order_url ) ) {
-			return $gateway::get_label() . $this->column_gateway_order_id( $item );
+			return $gateway::get_label();
 		}
 
 		return sprintf(
