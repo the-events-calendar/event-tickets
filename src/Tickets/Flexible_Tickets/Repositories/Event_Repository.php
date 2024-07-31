@@ -15,7 +15,6 @@
 
 namespace TEC\Tickets\Flexible_Tickets\Repositories;
 
-use TEC\Events_Pro\Custom_Tables\V1\Series\Post_Type as Series;
 use TEC\Events_Pro\Custom_Tables\V1\Tables\Series_Relationships;
 use Tribe\Tickets\Repositories\Traits\Post_Attendees;
 use Tribe\Tickets\Repositories\Traits\Post_Tickets;
@@ -86,6 +85,15 @@ class Event_Repository extends Repository_Decorator {
 		return new Tickets_Event_Repository();
 	}
 
+	/**
+	 * Returns the SQL to include Series in the meta value comparison.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $alias The post meta table alias used in the context SQL.
+	 *
+	 * @return string The SQL to include Series in the meta value comparison.
+	 */
 	private function include_series_in_meta_value_compare( string $alias ): string {
 		global $wpdb;
 
