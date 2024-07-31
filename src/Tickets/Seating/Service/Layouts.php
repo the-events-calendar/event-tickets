@@ -16,6 +16,7 @@ use TEC\Tickets\Seating\Tables\Layouts as Layouts_Table;
 use TEC\Tickets\Seating\Admin\Tabs\Layout_Card;
 use TEC\Tickets\Seating\Tables\Seat_Types as Seat_Types_Table;
 use Tribe__Tickets__Global_Stock as Global_Stock;
+use Tribe__Tickets__Main as Tickets;
 
 /**
  * Class Layouts.
@@ -360,7 +361,7 @@ class Layouts {
 
 		$total_updated = 0;
 
-		$ticketable_post_types = (array) tribe_get_option( 'ticket-enabled-post-types', [] );
+		$ticketable_post_types = Tickets::instance()->post_types();
 		/** @var \Tribe__Tickets__Tickets_Handler $tickets_handler */
 		$tickets_handler   = tribe( 'tickets.handler' );
 		$capacity_meta_key = $tickets_handler->key_capacity;
