@@ -4,12 +4,17 @@ namespace TEC\Tickets\Seating\Admin;
 
 use Codeception\TestCase\WPTestCase;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Seating\Admin\Tabs\Maps as Maps_Tab;
 use TEC\Tickets\Seating\Meta;
 use Tribe\Tests\Traits\With_Uopz;
 use TEC\Tickets\Seating\Service\Maps as Maps_Service;
 use TEC\Tickets\Seating\Service\Layouts as Layouts_Service;
 use TEC\Tickets\Seating\Admin\Tabs\Layouts as Layouts_Tab;
+use TEC\Tickets\Seating\Tables\Maps as Maps_Table;
+use TEC\Tickets\Seating\Tables\Layouts as Layouts_Table;
+use TEC\Tickets\Seating\Tables\Seat_Types as Seat_Types_Table;
+use Tribe__Tickets__Data_API as Data_API;
 
 class Maps_Layout_Homepage_Test extends WPTestCase {
 	use SnapshotAssertions;
@@ -25,11 +30,12 @@ class Maps_Layout_Homepage_Test extends WPTestCase {
 
 	/**
 	 * @before
+	 * @after
 	 */
-	public function ensure_post_ticketable(): void {
-		$ticketable   = tribe_get_option( 'ticket-enabled-post-types', [] );
-		$ticketable[] = 'post';
-		tribe_update_option( 'ticket-enabled-post-types', array_values( array_unique( $ticketable ) ) );
+	public function truncate_tables():void{
+		Maps_Table::truncate();
+		Layouts_Table::truncate();
+		Seat_Types_Table::truncate();
 	}
 
 	public function test_empty_seating_configurations(): void {
@@ -73,25 +79,30 @@ class Maps_Layout_Homepage_Test extends WPTestCase {
 		Maps_Service::insert_rows_from_service(
 			[
 				[
-					'id'            => '1',
+					'id'            => 'map-uuid-1',
 					'name'          => 'Map 1',
 					'seats'         => 10,
 					'screenshotUrl' => 'https://example.com/map-1-thumbnail',
 				],
 				[
-					'id'            => '2',
+					'id'            => 'map-uuid-2',
 					'name'          => 'Map 2',
 					'seats'         => 20,
 					'screenshotUrl' => 'https://example.com/map-2-thumbnail',
 				],
 				[
-					'id'            => '3',
+					'id'            => 'map-uuid-3',
 					'name'          => 'Map 3',
 					'seats'         => 100,
 					'screenshotUrl' => 'https://example.com/map-3-thumbnail',
 				],
 			]
 		);
+		// Create posts associated with the maps: 1 for layout-uuid-1, 2 for layout-uuid-2, 0 for layout-uuid-2.
+		[$post_1, $post_2, $post_3] = self::factory()->post->create_many(5);
+		update_post_meta( $post_1, Meta::META_KEY_LAYOUT_ID, 'layout-uuid-1' );
+		update_post_meta( $post_2, Meta::META_KEY_LAYOUT_ID, 'layout-uuid-2' );
+		update_post_meta( $post_3, Meta::META_KEY_LAYOUT_ID, 'layout-uuid-2' );
 		// We've just updated the Maps, no need to run the update against the service.
 		set_transient( Maps_Service::update_transient_name(), time() - 1 );
 
@@ -165,7 +176,7 @@ class Maps_Layout_Homepage_Test extends WPTestCase {
 		// We've just updated the Layouts, no need to run the update against the service.
 		set_transient( Layouts_Service::update_transient_name(), time() - 1 );
 
-		[ $post_a, $post_b, $post_c ] = $this->factory()->post->create_many( 3 );
+		[ $post_a, $post_b, $post_c ] = static::factory()->post->create_many( 3 );
 
 		// Layout 2 is associated with 1 event.
 		update_post_meta( $post_a, Meta::META_KEY_ENABLED, true );
