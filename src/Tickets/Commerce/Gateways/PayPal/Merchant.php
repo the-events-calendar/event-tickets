@@ -5,7 +5,6 @@ namespace TEC\Tickets\Commerce\Gateways\PayPal;
 use TEC\Tickets\Commerce\Gateways\Contracts\Abstract_Merchant;
 use Tribe__Utils__Array as Arr;
 use Tribe__Date_Utils as Dates;
-use TEC\Tickets\Commerce\Traits\Has_Mode;
 
 /**
  * Class Merchant.
@@ -15,6 +14,15 @@ use TEC\Tickets\Commerce\Traits\Has_Mode;
  * @package TEC\Tickets\Commerce\Gateways\PayPal
  */
 class Merchant extends Abstract_Merchant {
+
+	/**
+	 * Stores the nonce action for disconnecting paypal.
+	 *
+	 * @since 5.11.0.5
+	 *
+	 * @var string
+	 */
+	protected string $disconnect_action = 'paypal-disconnect';
 
 	/**
 	 * All account Props we use for the merchant

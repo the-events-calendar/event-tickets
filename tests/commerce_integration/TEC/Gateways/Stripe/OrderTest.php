@@ -7,7 +7,6 @@ use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tests\Traits\With_Uopz;
-use TEC\Tickets\Commerce\Order as Commerce_Order;
 use TEC\Tickets\Commerce\Status\Status_Handler;
 
 class OrderTest extends \Codeception\TestCase\WPTestCase {

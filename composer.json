@@ -28,7 +28,8 @@
     "spatie/phpunit-snapshot-assertions": "^1.4.2",
     "stellarwp/coding-standards": "dev-main",
     "the-events-calendar/tec-testing-facilities": "dev-master",
-    "lucatume/codeception-snapshot-assertions": "^0.4.0"
+    "lucatume/codeception-snapshot-assertions": "^0.4.0",
+    "automattic/jetpack-changelogger": "^4.2"
   },
   "minimum-stability": "stable",
   "prefer-stable": true,
@@ -40,6 +41,27 @@
     "allow-plugins": {
       "kylekatarnls/update-helper": true,
       "dealerdirect/phpcodesniffer-composer-installer": true
+    }
+  },
+  "extra": {
+    "changelogger": {
+      "changelog": "changelog.md",
+      "types": {
+        "version" : "Version",
+        "feat" : "Feature",
+        "tweak" : "Tweak",
+        "fix" : "Fix",
+        "performance" : "Performance",
+        "security" : "Security",
+        "accessibility" : "Accessibility",
+        "compatibility" : "Compatibility",
+        "deprecated" : "Deprecated",
+        "language" : "Language"
+      },
+      "formatter": {
+        "filename": "bin/class-tec-changelog-formatter.php"
+      },
+      "changes-dir": "changelog"
     }
   },
   "autoload": {
