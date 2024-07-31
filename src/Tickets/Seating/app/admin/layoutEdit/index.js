@@ -79,7 +79,7 @@ export async function handleReservationsDeleted(ids) {
  */
 export async function handleSeatTypesUpdated(updatedSeatTypes) {
 	if (!(Array.isArray(updatedSeatTypes) && updatedSeatTypes.length > 0)) {
-		return 0;
+		return false;
 	}
 
 	const url = new URL(ajaxUrl);
