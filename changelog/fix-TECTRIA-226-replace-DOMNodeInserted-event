@@ -1,4 +1,4 @@
 Significance: patch
 Type: fix
 
-Replaces `DOMNodeInserted` event with a custom built one. [TECTRIA-226]
+Replaces `DOMNodeInserted` event with a custom built one. [ET-2171]
