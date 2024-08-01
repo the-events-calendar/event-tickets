@@ -682,7 +682,7 @@ class Ticket {
 			$data['stock'] = - 1;
 		}
 
-		$mode = isset( $data['mode'] ) ? $data['mode'] : 'own';
+		$mode = ! empty( $data['mode'] ) ? $data['mode'] : 'own';
 
 		if ( '' !== $mode ) {
 			if ( 'update' === $save_type ) {
@@ -917,7 +917,7 @@ class Ticket {
 			$updated_total_sales
 		);
 
-		if (  'own' !== $shared_capacity && $global_stock instanceof \Tribe__Tickets__Global_Stock ) {
+		if ( ! empty( $shared_capacity ) && 'own' !== $shared_capacity && $global_stock instanceof \Tribe__Tickets__Global_Stock ) {
 			$this->update_global_stock( $global_stock, $quantity );
 		}
 
