@@ -27,6 +27,7 @@ class MetaboxTest extends WPTestCase {
 		$ticketable[] = 'post';
 		$ticketable[] = TEC::POSTTYPE;
 		tribe_update_option( 'ticket-enabled-post-types', array_values( array_unique( $ticketable ) ) );
+		$this->set_fn_return( 'gmdate', '7/25/2024' );
 	}
 
 	/**
@@ -42,7 +43,7 @@ class MetaboxTest extends WPTestCase {
 				$modules[ Commerce::class ] = 'Tickets Commerce';
 
 				return $modules;
-			} 
+			}
 		);
 		// Regenerate the Tickets Data API to pick up the filtered providers.
 		tribe()->singleton( 'tickets.data_api', new \Tribe__Tickets__Data_API() );
@@ -75,7 +76,7 @@ class MetaboxTest extends WPTestCase {
 						'status'     => 'publish',
 						'start_date' => '2021-01-01 10:00:00',
 						'end_date'   => '2021-01-01 12:00:00',
-					] 
+					]
 				)->create()->ID;
 				$ticket_id = null;
 
@@ -91,7 +92,7 @@ class MetaboxTest extends WPTestCase {
 						'status'     => 'publish',
 						'start_date' => '2021-01-01 10:00:00',
 						'end_date'   => '2021-01-01 12:00:00',
-					] 
+					]
 				)->create()->ID;
 				$ticket_id = $this->create_tc_ticket( $post_id, 23 );
 
@@ -109,7 +110,7 @@ class MetaboxTest extends WPTestCase {
 							'_ticket_start_date' => '2021-01-01 10:00:00',
 							'_ticket_end_date'   => '2021-01-31 12:00:00',
 						],
-					] 
+					]
 				);
 
 				return [ $post_id, $ticket_id ];
@@ -124,7 +125,7 @@ class MetaboxTest extends WPTestCase {
 						'status'     => 'publish',
 						'start_date' => '2021-01-01 10:00:00',
 						'end_date'   => '2021-01-01 12:00:00',
-					] 
+					]
 				)->create()->ID;
 				$ticket_id = $this->create_rsvp_ticket(
 					$post_id,
@@ -133,13 +134,13 @@ class MetaboxTest extends WPTestCase {
 							'_ticket_start_date' => '2021-01-01 10:00:00',
 							'_ticket_end_date'   => '2021-01-31 12:00:00',
 						],
-					] 
+					]
 				);
 
 				return [ $post_id, $ticket_id ];
 			},
 		];
-		
+
 		yield 'post with ticket and sale price' => [
 			function (): array {
 				$post_id   = $this->factory()->post->create();
@@ -157,7 +158,7 @@ class MetaboxTest extends WPTestCase {
 				return [ $post_id, $ticket_id ];
 			},
 		];
-		
+
 		yield 'event with ticket and sale price' => [
 			function (): array {
 				$post_id = tribe_events()->set_args(
@@ -168,7 +169,7 @@ class MetaboxTest extends WPTestCase {
 						'duration'   => 2 * HOUR_IN_SECONDS,
 					]
 				)->create()->ID;
-				
+
 				$ticket_id = $this->create_tc_ticket(
 					$post_id,
 					20,
@@ -179,7 +180,7 @@ class MetaboxTest extends WPTestCase {
 						'ticket_sale_end_date'   => '2040-03-01',
 					]
 				);
-				
+
 				return [ $post_id, $ticket_id ];
 			},
 		];
@@ -208,7 +209,7 @@ class MetaboxTest extends WPTestCase {
 			[
 				'post_id'   => $post_id,
 				'ticket_id' => $ticket_id,
-			] 
+			]
 		);
 		// Depending on the Common versions, the assets might be loaded from ET or TEC; this should not break the tests.
 		$html = str_replace( 'the-events-calendar/common', 'event-tickets/common', $html );
@@ -231,7 +232,7 @@ class MetaboxTest extends WPTestCase {
 						'status'     => 'publish',
 						'start_date' => '2022-10-01 10:00:00',
 						'duration'   => 2 * HOUR_IN_SECONDS,
-					] 
+					]
 				)->create()->ID;
 			},
 		];
@@ -253,7 +254,7 @@ class MetaboxTest extends WPTestCase {
 			$html,
 			[
 				'post_id' => $post_id,
-			] 
+			]
 		);
 		// Depending on the Common versions, the assets might be loaded from ET or TEC; this should not break the tests.
 		$html = str_replace( 'the-events-calendar/common', 'event-tickets/common', $html );
