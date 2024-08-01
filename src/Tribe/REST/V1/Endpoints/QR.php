@@ -287,6 +287,23 @@ implements Tribe__REST__Endpoints__READ_Endpoint_Interface, Tribe__Documentation
 		// Get the attendee data to populate the response.
 		$attendee_data = tribe( 'tickets.rest-v1.attendee-repository' )->format_item( $attendee_id );
 
+		/**
+		 * Filters the Attendee data for the QR check-in.
+		 *
+		 * @since TBD
+		 *
+		 * @param array<string,mixed> $attendee_data The Attendee data.
+		 * @param int                 $attendee_id   The Attendee ID.
+		 * @param int                 $event_id      The ID of the post this Attendee is being checked into.
+		 * @param Tickets             $ticket_provider The Ticket provider.
+		 */
+		$attendee_data = apply_filters( 'tec_tickets_qr_checkin_attendee_data',
+			$attendee_data,
+			$attendee_id,
+			$event_id,
+			$ticket_provider
+		);
+
 		/** @var Tribe__Tickets__Status__Manager $status */
 		$status = tribe( 'tickets.status' );
 
