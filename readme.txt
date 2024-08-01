@@ -205,6 +205,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [5.13.0.2] 2024-08-01 =
+
+* Fix - Replaces deprecated `DOMNodeInserted` event, fixing TicketsCommerce checkout with PayPal. [ET-2171]
+
 = [5.13.0.1] 2024-07-24 =
 
 * Fix - Stellar Sale's banner links, details, and HTML tags handling. [TEC-5121]
