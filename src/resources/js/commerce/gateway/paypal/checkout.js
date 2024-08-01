@@ -544,7 +544,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @since TBD Replaced DOMNodeInserted with animationstart event.
 	 */
 	obj.buttonsLoaded = function ( event ) {
-		if ( event.originalEvent.animationName !== 'nodeInserted' ) {
+		if ( event.originalEvent.animationName !== 'node_inserted' ) {
 			return;
 		}
 
