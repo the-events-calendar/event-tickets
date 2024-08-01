@@ -918,7 +918,7 @@ class Ticket {
 			$updated_total_sales
 		);
 
-		if ( ! empty( $shared_capacity ) && 'own' !== $shared_capacity && $global_stock instanceof \Tribe__Tickets__Global_Stock ) {
+		if ( $shared_capacity && $global_stock instanceof \Tribe__Tickets__Global_Stock ) {
 			$this->update_global_stock( $global_stock, $quantity );
 		}
 
