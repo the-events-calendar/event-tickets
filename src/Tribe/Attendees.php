@@ -762,7 +762,7 @@ class Tribe__Tickets__Attendees {
 		}
 
 		if ( ! $all ) {
-			$event_id = absint( $_GET['event_id'] );
+			$event_id = absint( sanitize_key( $_GET['event_id'] ) );
 			$event_id = Event::filter_event_id( $event_id, 'attendee-csv-report' );
 			$event    = get_post( $event_id );
 
@@ -773,7 +773,7 @@ class Tribe__Tickets__Attendees {
 			$items = $this->generate_filtered_list( $event_id );
 		} else {
 			$event_id = 'all';
-			$items = $this->generate_filtered_list( 'all' );
+			$items    = $this->generate_filtered_list( 'all' );
 		}
 
 		// Sanitize items for CSV usage.
