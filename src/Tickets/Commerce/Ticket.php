@@ -682,7 +682,7 @@ class Ticket {
 			$data['stock'] = - 1;
 		}
 
-		$mode = ! empty( $data['mode'] ) ? $data['mode'] : 'own';
+		$mode = isset( $data['mode'] ) ? $data['mode'] : 'own';
 
 		if ( '' !== $mode ) {
 			if ( 'update' === $save_type ) {
