@@ -660,16 +660,44 @@ class Controller_Test extends Controller_Test_Case {
 		$this->make_controller()->register();
 		
 		$send = tribe( Module::class )->send_tickets_email_for_attendees( [ $attendee->ID ] );
-		$html = str_replace( [ $event_id, $order->ID, $attendee->ID ], [
-			'EVENT_ID',
-			'ORDER_ID',
-			'ATTENDEE_ID'
-		], $html );
+		$html = str_replace(
+			[ $event_id, $order->ID, $attendee->ID ],
+			[
+				'EVENT_ID',
+				'ORDER_ID',
+				'ATTENDEE_ID',
+			],
+			$html 
+		);
 		
 		$this->assertMatchesHtmlSnapshot( $html );
 	}
 	
 	public function my_tickets_page_data_provider(): Generator {
+		yield 'regular post with tickets' => [
+			function (): array {
+				tribe_update_option( 'ticket-enabled-post-types', [ 'post', 'tribe-events' ] );
+				
+				$post_id = static::factory()->post->create(
+					[
+						'post_type' => 'post',
+					] 
+				);
+				
+				$ticket_id = $this->create_tc_ticket( $post_id, 10 );
+				$order     = $this->create_order(
+					[ $ticket_id => 1 ],
+					[
+						'purchaser_email' => 'test-purchaser@test.com',
+					]
+				);
+				
+				$attendee = tribe_attendees()->by( 'event_id', $post_id )->by( 'order_status', [ 'completed' ] )->first();
+				
+				return [ $post_id, [ $post_id, $ticket_id, $order->ID, $attendee->ID ] ];
+			},
+		];
+		
 		yield 'order with 1 regular tickets' => [
 			function (): array {
 				$event_id = tribe_events()->set_args(
@@ -688,7 +716,10 @@ class Controller_Test extends Controller_Test_Case {
 						'purchaser_email' => 'test-purchaser@test.com',
 					]
 				);
-				return [ $event_id, [ $event_id, $order->ID, $ticket_id ] ];
+				
+				$attendee = tribe_attendees()->by( 'event_id', $event_id )->by( 'order_status', [ 'completed' ] )->first();
+				
+				return [ $event_id, [ $event_id, $order->ID, $ticket_id, $attendee->ID ] ];
 			},
 		];
 		
@@ -718,7 +749,9 @@ class Controller_Test extends Controller_Test_Case {
 					]
 				);
 				
-				return [ $event_id, [ $event_id, $order->ID, $ticket_id ] ];
+				$attendee = tribe_attendees()->by( 'event_id', $event_id )->by( 'order_status', [ 'completed' ] )->first();
+				
+				return [ $event_id, [ $event_id, $order->ID, $ticket_id, $attendee->ID ] ];
 			},
 		];
 		
@@ -781,8 +814,7 @@ class Controller_Test extends Controller_Test_Case {
 			false
 		);
 		
-		$html = str_replace( $post_ids, array_fill( 0, count( $post_ids ), '{{ID}}' ), $html );
-		
+		$html       = str_replace( $post_ids, array_fill( 0, count( $post_ids ), '{{ID}}' ), $html );
 		$order_date = esc_html( Tribe__Date_Utils::reformat( current_time( 'mysql' ), Tribe__Date_Utils::DATEONLYFORMAT ) );
 		$html       = str_replace( $order_date, '{{order_date}}', $html );
 		
