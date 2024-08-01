@@ -205,6 +205,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [5.13.0.3] 2024-08-01 =
+
+* Fix - Ticket Commerce fails to load on checkout when both Stripe and Paypal are active. [ET-2172]
+
 = [5.13.0.2] 2024-08-01 =
 
 * Fix - Replaces deprecated `DOMNodeInserted` event, fixing TicketsCommerce checkout with PayPal. [ET-2171]
