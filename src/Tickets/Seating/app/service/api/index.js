@@ -19,6 +19,9 @@ import {
 	OUTBOUND_REMOVE_RESERVATIONS,
 	OUTBOUND_EVENT_ATTENDEES,
 	RESERVATIONS_DELETED,
+	RESERVATIONS_UPDATED,
+	SEAT_TYPES_UPDATED,
+	RESERVATIONS_UPDATED_FOLLOWING_SEAT_TYPES,
 } from './service-actions.js';
 
 /**
@@ -244,7 +247,24 @@ export function emptyHandlerQueue() {
 }
 
 // Re-export some functions from the state module.
-export { getToken, registerAction, getHandlerForAction };
+export {
+	INBOUND_APP_READY,
+	INBOUND_APP_READY_FOR_DATA,
+	INBOUND_SEATS_SELECTED,
+	OUTBOUND_EVENT_ATTENDEES,
+	OUTBOUND_HOST_READY,
+	OUTBOUND_REMOVE_RESERVATIONS,
+	OUTBOUND_SEAT_TYPE_TICKETS,
+	RESERVATIONS_DELETED,
+	RESERVATIONS_UPDATED,
+	RESERVATIONS_UPDATED_FOLLOWING_SEAT_TYPES,
+	SEAT_TYPES_UPDATED,
+	getHandlerForAction,
+	getRegisteredActions,
+	getToken,
+	registerAction,
+	removeAction,
+};
 
 window.tec = window.tec || {};
 window.tec.tickets.seating = window.tec.tickets.seating || {};
@@ -253,18 +273,22 @@ window.tec.tickets.seating.service.api = {
 	...(window.tec.tickets.seating.service.api || {}),
 	INBOUND_APP_READY,
 	INBOUND_APP_READY_FOR_DATA,
-	OUTBOUND_HOST_READY,
-	OUTBOUND_SEAT_TYPE_TICKETS,
-	OUTBOUND_REMOVE_RESERVATIONS,
-	OUTBOUND_EVENT_ATTENDEES,
 	INBOUND_SEATS_SELECTED,
+	OUTBOUND_EVENT_ATTENDEES,
+	OUTBOUND_HOST_READY,
+	OUTBOUND_REMOVE_RESERVATIONS,
+	OUTBOUND_SEAT_TYPE_TICKETS,
 	RESERVATIONS_DELETED,
-	sendPostMessage,
-	startListeningForServiceMessages,
+	RESERVATIONS_UPDATED,
+	RESERVATIONS_UPDATED_FOLLOWING_SEAT_TYPES,
+	SEAT_TYPES_UPDATED,
 	establishReadiness,
+	getHandlerForAction,
+	getHandlerQueue,
+	getRegisteredActions,
+	getToken,
 	registerAction,
 	removeAction,
-	getRegisteredActions,
-	getHandlerQueue,
-	getToken,
+	sendPostMessage,
+	startListeningForServiceMessages,
 };

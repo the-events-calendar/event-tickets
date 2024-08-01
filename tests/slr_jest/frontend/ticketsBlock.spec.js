@@ -6,8 +6,8 @@ import {
 import {
 	INBOUND_SEATS_SELECTED,
 	OUTBOUND_REMOVE_RESERVATIONS,
-} from '@tec/tickets/seating/service';
-import { getHandlerForAction } from '@tec/tickets/seating/service/api';
+	getHandlerForAction,
+} from '@tec/tickets/seating/service/api';
 import { setToken } from '@tec/tickets/seating/service/api/state';
 import { applyFilters } from '@wordpress/hooks';
 

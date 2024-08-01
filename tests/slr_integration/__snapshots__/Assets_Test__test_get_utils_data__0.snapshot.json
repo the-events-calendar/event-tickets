@@ -16,6 +16,9 @@
             "no-layouts-available-info": "You must create a Seat Layout to use this feature.",
             "no-layouts-available-link-label": "Go to Seat Layouts"
         },
+        "capacity-table": {
+            "seats-row-label": "Assigned Seating"
+        },
         "dashboard": {
             "seats-action-label": "Seats"
         },

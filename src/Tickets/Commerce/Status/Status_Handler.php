@@ -31,6 +31,7 @@ class Status_Handler extends \TEC\Common\Contracts\Service_Provider {
 	 */
 	protected $default_statuses = [
 		Action_Required::class,
+		Approved::class,
 		Created::class,
 		Completed::class,
 		Denied::class,
@@ -40,6 +41,27 @@ class Status_Handler extends \TEC\Common\Contracts\Service_Provider {
 		Reversed::class,
 		Undefined::class,
 		Voided::class,
+	];
+
+	/**
+	 * Map of which status will be set when a given status is transitioned to.
+	 *
+	 * @since 5.13.0
+	 *
+	 * @var string[]
+	 */
+	protected const STATUS_MAP = [
+		Action_Required::class => Pending::class,
+		Approved::class        => Pending::class,
+		Completed::class       => Completed::class,
+		Created::class         => Pending::class,
+		Denied::class          => Denied::class,
+		Not_Completed::class   => Pending::class,
+		Pending::class         => Pending::class,
+		Refunded::class        => Refunded::class,
+		Reversed::class        => Refunded::class,
+		Undefined::class       => Denied::class,
+		Voided::class          => Voided::class,
 	];
 
 	/**
@@ -72,6 +94,42 @@ class Status_Handler extends \TEC\Common\Contracts\Service_Provider {
 	}
 
 	/**
+	 * Fetches the group of statuses that a given status belongs to.
+	 *
+	 * @since 5.13.0
+	 *
+	 * @param string $slug Which status we are looking for.
+	 * @param string $wp_slug Which status we are looking for.
+	 *
+	 * @return array A group of wp slugs.
+	 */
+	public function get_group_of_statuses_by_slug( string $slug = '', string $wp_slug = '' ) {
+		if ( $slug ) {
+			$status = $this->get_by_slug( $slug );
+		} elseif ( $wp_slug ) {
+			$status = $this->get_by_wp_slug( $wp_slug );
+		} else {
+			return [ tribe( Unsupported::class )->get_wp_slug() ];
+		}
+
+		if ( ! $status instanceof Status_Interface ) {
+			return [ tribe( Unsupported::class )->get_wp_slug() ];
+		}
+
+		$group = [ $status->get_wp_slug() ];
+
+		foreach ( self::STATUS_MAP as $original => $mapped_to ) {
+			if ( get_class( $status ) !== $mapped_to ) {
+				continue;
+			}
+
+			$group[] = tribe( $original )->get_wp_slug();
+		}
+
+		return array_values( array_unique( $group ) );
+	}
+
+	/**
 	 * Which status an order will be created with.
 	 *
 	 * @since 5.1.9
@@ -97,38 +155,59 @@ class Status_Handler extends \TEC\Common\Contracts\Service_Provider {
 	 * Fetches the first status registered with a given slug.
 	 *
 	 * @since 5.1.9
+	 * @since 5.13.0 Added `$ignore_map` parameter.
 	 *
-	 * @param string $slug
+	 * @param string $slug Which status we are looking for.
+	 * @param bool   $ignore_map Whether to ignore the map or not.
 	 *
 	 * @return Status_Interface|null
 	 */
-	public function get_by_slug( $slug ) {
+	public function get_by_slug( $slug, $ignore_map = true ) {
+		if ( 'trash' === $slug ) {
+			return tribe( Trashed::class );
+		}
+
 		foreach ( $this->get_all() as $status ) {
 			if ( $status->get_slug() === $slug ) {
+				if ( ! $ignore_map && isset( self::STATUS_MAP[ get_class( $status ) ] ) ) {
+					return tribe( self::STATUS_MAP[ get_class( $status ) ] );
+				}
+
 				return $status;
 			}
 		}
 
-		return null;
+		return tribe( Unsupported::class );
 	}
 
 	/**
 	 * Fetches the first status registered with a given wp slug.
 	 *
 	 * @since 5.1.9
+	 * @since 5.13.0 Added `$ignore_map` parameter.
 	 *
-	 * @param string $slug
+	 * @param string $slug Which status we are looking for.
+	 * @param bool   $ignore_map Whether to ignore the map or not.
 	 *
 	 * @return Status_Interface
 	 */
-	public function get_by_wp_slug( $slug ) {
+	public function get_by_wp_slug( $slug, $ignore_map = true ) {
+		if ( 'trash' === $slug ) {
+			return tribe( Trashed::class );
+		}
+
 		foreach ( $this->get_all() as $status ) {
 			if ( $status->get_wp_slug() === $slug ) {
+				if ( ! $ignore_map && isset( self::STATUS_MAP[ get_class( $status ) ] ) ) {
+					return tribe( self::STATUS_MAP[ get_class( $status ) ] );
+				}
+
 				return $status;
 			}
 		}
 
-		return null;
+		// Avoid fatals.
+		return tribe( Unsupported::class );
 	}
 
 	/**

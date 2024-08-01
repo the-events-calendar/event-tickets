@@ -280,6 +280,7 @@ class Reservations {
 		$removed = 0;
 		do {
 			$reservation_ids_batch = array_splice( $reservation_ids, 0, $batch_size );
+			$left                  = count( $reservation_ids );
 			$reservation_ids_list  = DB::prepare(
 				implode( ', ', array_fill( 0, count( $reservation_ids_batch ), '%s' ) ),
 				...$reservation_ids_batch
@@ -356,8 +357,41 @@ class Reservations {
 			do_action( 'tec_tickets_seating_deleted_reservations_from_attendees', $reservation_to_attendee_map );
 
 			$removed += $removed_here;
-		} while ( count( $reservation_ids ) > 0 );
+			$left     = count( $reservation_ids );
+		} while ( $left > 0 );
 
 		return $removed;
+	}
+
+	/**
+	 * Updates the seat type of all attendees for the given reservations.
+	 *
+	 * Note: the following code assumes a one-to-one relationship between a reservation and an Attendee.
+	 * An Attendee can have zero or one Reservations, a Reservation can be related to zero or one Attendees.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,string[]> $map A map from seat type IDs to reservation IDs.
+	 *
+	 * @return int The number of attendees whose seat type was updated.
+	 */
+	public function update_attendees_seat_type( array $map ): int {
+		$total_updated = 0;
+
+		foreach ( $map as $seat_type_id => $reservation_ids ) {
+			foreach ( $reservation_ids as $reservation_id ) {
+				$attendee_id = tribe_attendees()->where( 'meta_equals', Meta::META_KEY_RESERVATION_ID, $reservation_id )
+												->first_id();
+				if ( ! $attendee_id ) {
+					continue;
+				}
+
+				update_post_meta( $attendee_id, Meta::META_KEY_SEAT_TYPE, $seat_type_id );
+				clean_post_cache( $attendee_id );
+				++$total_updated;
+			}
+		}
+
+		return $total_updated;
 	}
 }

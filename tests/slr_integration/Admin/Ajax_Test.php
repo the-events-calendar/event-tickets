@@ -9,11 +9,13 @@ use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Seating\Meta;
+use TEC\Tickets\Seating\Service\Layouts;
 use TEC\Tickets\Seating\Service\Layouts as Layouts_Service;
 use TEC\Tickets\Seating\Service\Maps as Maps_Service;
 use TEC\Tickets\Seating\Service\OAuth_Token;
 use TEC\Tickets\Seating\Service\Reservations;
-use TEC\Tickets\Seating\Tables\Layouts;
+use TEC\Tickets\Seating\Service\Seat_Types;
+use TEC\Tickets\Seating\Tables\Layouts as Layouts_Table;
 use TEC\Tickets\Seating\Tables\Maps;
 use TEC\Tickets\Seating\Tables\Seat_Types as Seat_Types_Table;
 use TEC\Tickets\Seating\Tables\Sessions;
@@ -24,7 +26,7 @@ use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Traits\Reservations_Maker;
 use Tribe__Tickets__Data_API as Data_API;
-
+use Tribe__Tickets__Global_Stock as Global_Stock;
 
 class Ajax_Test extends Controller_Test_Case {
 	use SnapshotAssertions;
@@ -49,20 +51,21 @@ class Ajax_Test extends Controller_Test_Case {
 	/**
 	 * @before
 	 */
-	public function ensure_tickets_commerce_active(): void {
+	public function set_up_tickets_commerce(): void {
 		// Ensure the Tickets Commerce module is active.
 		add_filter( 'tec_tickets_commerce_is_enabled', '__return_true' );
-		add_filter(
-			'tribe_tickets_get_modules',
-			function ( $modules ) {
-				$modules[ Module::class ] = tribe( Module::class )->plugin_name;
+		add_filter( 'tribe_tickets_get_modules', function ( $modules ) {
+			$modules[ Module::class ] = tribe( Module::class )->plugin_name;
 
-				return $modules;
-			}
-		);
+			return $modules;
+		} );
 
 		// Reset Data_API object, so it sees Tribe Commerce.
-		tribe_singleton( 'tickets.data_api', new Data_API() );
+		tribe_singleton( 'tickets.data_api', new Data_API );
+
+		$ticketable   = tribe_get_option( 'ticket-enabled-post-types', [] );
+		$ticketable[] = 'post';
+		tribe_update_option( 'ticket-enabled-post-types', array_values( array_unique( $ticketable ) ) );
 	}
 
 	/**
@@ -72,8 +75,79 @@ class Ajax_Test extends Controller_Test_Case {
 	public function truncate_tables(): void {
 		Maps::truncate();
 		Seat_Types_Table::truncate();
-		Layouts::truncate();
+		Layouts_Table::truncate();
 		Sessions::truncate();
+	}
+
+	public function test_get_localized_data(): void {
+		$this->set_fn_return( 'wp_create_nonce', '88b1a4b166' );
+		$controller = $this->make_controller();
+
+		$this->assertMatchesJsonSnapshot( wp_json_encode( $controller->get_ajax_data(), JSON_SNAPSHOT_OPTIONS ) );
+	}
+
+	public function test_fetch_seat_types_by_layout_id(): void {
+		$this->set_up_ajax_request_context();
+		$this->given_maps_layouts_and_seat_types_in_db();
+
+		$this->make_controller()->register();
+
+		// Call without specifying a layout ID.
+		$wp_send_json_success = $this->mock_wp_send_json_success();
+		do_action( 'wp_ajax_' . Ajax::ACTION_GET_SEAT_TYPES_BY_LAYOUT_ID );
+		$this->assertTrue( $wp_send_json_success->was_called_times_with( 1, [] ) );
+		$this->reset_wp_send_json_mocks();
+
+		// Call with an empty layout ID.
+		$_REQUEST['layout']   = '';
+		$wp_send_json_success = $this->mock_wp_send_json_success();
+		do_action( 'wp_ajax_' . Ajax::ACTION_GET_SEAT_TYPES_BY_LAYOUT_ID );
+		$this->assertTrue( $wp_send_json_success->was_called_times_with( 1, [] ) );
+		$this->reset_wp_send_json_mocks();
+
+		// Call with a layout ID that has no seat types.
+		$_REQUEST['layout']   = 'some-layout-4';
+		$wp_send_json_success = $this->mock_wp_send_json_success();
+		do_action( 'wp_ajax_' . Ajax::ACTION_GET_SEAT_TYPES_BY_LAYOUT_ID );
+		$this->assertTrue( $wp_send_json_success->was_called_times_with( 1, [] ) );
+		$this->reset_wp_send_json_mocks();
+
+		// Call with a layout ID that has no seat types.
+		$_REQUEST['layout']   = 'some-layout-4';
+		$wp_send_json_success = $this->mock_wp_send_json_success();
+		do_action( 'wp_ajax_' . Ajax::ACTION_GET_SEAT_TYPES_BY_LAYOUT_ID );
+		$this->assertTrue( $wp_send_json_success->was_called_times_with( 1, [] ) );
+		$this->reset_wp_send_json_mocks();
+
+		// Call with a layout ID that has seat types.
+		$_REQUEST['layout']   = 'some-layout-1';
+		$wp_send_json_success = $this->mock_wp_send_json_success();
+		do_action( 'wp_ajax_' . Ajax::ACTION_GET_SEAT_TYPES_BY_LAYOUT_ID );
+		$this->assertTrue( $wp_send_json_success->was_called_times_with(
+			1,
+			[
+				[
+					'id'    => 'some-seat-type-1',
+					'name'  => 'Some Seat Type 1',
+					'seats' => '10',
+				],
+				[
+					'id'    => 'some-seat-type-4',
+					'name'  => 'Some Seat Type 1',
+					'seats' => '10',
+				],
+			],
+		),
+			$wp_send_json_success->get_calls_as_string()
+		);
+	}
+
+	private function set_up_ajax_request_context( int $user_id = null ): void {
+		if ( null === $user_id ) {
+			wp_set_current_user( self::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		}
+		$_REQUEST['action']      = Ajax::NONCE_ACTION;
+		$_REQUEST['_ajax_nonce'] = wp_create_nonce( Ajax::NONCE_ACTION );
 	}
 
 	private function given_maps_layouts_and_seat_types_in_db(): void {
@@ -166,77 +240,6 @@ class Ajax_Test extends Controller_Test_Case {
 		set_transient( \TEC\Tickets\Seating\Service\Seat_Types::update_transient_name(), time() );
 	}
 
-	public function test_get_localized_data(): void {
-		$this->set_fn_return( 'wp_create_nonce', '88b1a4b166' );
-		$controller = $this->make_controller();
-
-		$this->assertMatchesJsonSnapshot( wp_json_encode( $controller->get_ajax_data(), JSON_SNAPSHOT_OPTIONS ) );
-	}
-
-	private function set_up_ajax_request_context( int $user_id = null ): void {
-		if ( null === $user_id ) {
-			wp_set_current_user( self::factory()->user->create( [ 'role' => 'administrator' ] ) );
-		}
-		$_REQUEST['action']      = Ajax::NONCE_ACTION;
-		$_REQUEST['_ajax_nonce'] = wp_create_nonce( Ajax::NONCE_ACTION );
-	}
-
-	public function test_fetch_seat_types_by_layout_id(): void {
-		$this->set_up_ajax_request_context();
-		$this->given_maps_layouts_and_seat_types_in_db();
-
-		$this->make_controller()->register();
-
-		// Call without specifying a layout ID.
-		$wp_send_json_success = $this->mock_wp_send_json_success();
-		do_action( 'wp_ajax_' . Ajax::ACTION_GET_SEAT_TYPES_BY_LAYOUT_ID );
-		$this->assertTrue( $wp_send_json_success->was_called_times_with( 1, [] ) );
-		$this->reset_wp_send_json_mocks();
-
-		// Call with an empty layout ID.
-		$_REQUEST['layout']   = '';
-		$wp_send_json_success = $this->mock_wp_send_json_success();
-		do_action( 'wp_ajax_' . Ajax::ACTION_GET_SEAT_TYPES_BY_LAYOUT_ID );
-		$this->assertTrue( $wp_send_json_success->was_called_times_with( 1, [] ) );
-		$this->reset_wp_send_json_mocks();
-
-		// Call with a layout ID that has no seat types.
-		$_REQUEST['layout']   = 'some-layout-4';
-		$wp_send_json_success = $this->mock_wp_send_json_success();
-		do_action( 'wp_ajax_' . Ajax::ACTION_GET_SEAT_TYPES_BY_LAYOUT_ID );
-		$this->assertTrue( $wp_send_json_success->was_called_times_with( 1, [] ) );
-		$this->reset_wp_send_json_mocks();
-
-		// Call with a layout ID that has no seat types.
-		$_REQUEST['layout']   = 'some-layout-4';
-		$wp_send_json_success = $this->mock_wp_send_json_success();
-		do_action( 'wp_ajax_' . Ajax::ACTION_GET_SEAT_TYPES_BY_LAYOUT_ID );
-		$this->assertTrue( $wp_send_json_success->was_called_times_with( 1, [] ) );
-		$this->reset_wp_send_json_mocks();
-
-		// Call with a layout ID that has seat types.
-		$_REQUEST['layout']   = 'some-layout-1';
-		$wp_send_json_success = $this->mock_wp_send_json_success();
-		do_action( 'wp_ajax_' . Ajax::ACTION_GET_SEAT_TYPES_BY_LAYOUT_ID );
-		$this->assertTrue( $wp_send_json_success->was_called_times_with(
-			1,
-			[
-				[
-					'id'    => 'some-seat-type-1',
-					'name'  => 'Some Seat Type 1',
-					'seats' => '10',
-				],
-				[
-					'id'    => 'some-seat-type-4',
-					'name'  => 'Some Seat Type 1',
-					'seats' => '10',
-				],
-			],
-		),
-			$wp_send_json_success->get_calls_as_string()
-		);
-	}
-
 	public function test_invalidate_maps_layouts_cache(): void {
 		$this->set_up_ajax_request_context();
 		$this->given_maps_layouts_and_seat_types_in_db();
@@ -255,7 +258,7 @@ class Ajax_Test extends Controller_Test_Case {
 			$mock_wp_send_json_error->get_calls_as_string()
 		);
 		$this->assertCount( 3, iterator_to_array( Maps::fetch_all() ) );
-		$this->assertCount( 3, iterator_to_array( Layouts::fetch_all() ) );
+		$this->assertCount( 3, iterator_to_array( Layouts_Table::fetch_all() ) );
 		$this->assertCount( 4, iterator_to_array( Seat_Types_Table::fetch_all() ) );
 		$this->reset_wp_send_json_mocks();
 
@@ -274,7 +277,7 @@ class Ajax_Test extends Controller_Test_Case {
 			$mock_wp_send_json_error->get_calls_as_string()
 		);
 		$this->assertCount( 3, iterator_to_array( Maps::fetch_all() ) );
-		$this->assertCount( 0, iterator_to_array( Layouts::fetch_all() ) );
+		$this->assertCount( 0, iterator_to_array( Layouts_Table::fetch_all() ) );
 		$this->assertCount( 0, iterator_to_array( Seat_Types_Table::fetch_all() ) );
 		$this->reset_wp_send_json_mocks();
 
@@ -292,7 +295,7 @@ class Ajax_Test extends Controller_Test_Case {
 			$mock_wp_send_json_success->get_calls_as_string()
 		);
 		$this->assertCount( 0, iterator_to_array( Maps::fetch_all() ) );
-		$this->assertCount( 0, iterator_to_array( Layouts::fetch_all() ) );
+		$this->assertCount( 0, iterator_to_array( Layouts_Table::fetch_all() ) );
 		$this->assertCount( 0, iterator_to_array( Seat_Types_Table::fetch_all() ) );
 	}
 
@@ -314,7 +317,7 @@ class Ajax_Test extends Controller_Test_Case {
 			$mock_wp_send_json_error->get_calls_as_string()
 		);
 		$this->assertCount( 3, iterator_to_array( Maps::fetch_all() ) );
-		$this->assertCount( 3, iterator_to_array( Layouts::fetch_all() ) );
+		$this->assertCount( 3, iterator_to_array( Layouts_Table::fetch_all() ) );
 		$this->assertCount( 4, iterator_to_array( Seat_Types_Table::fetch_all() ) );
 		$this->reset_wp_send_json_mocks();
 
@@ -329,7 +332,7 @@ class Ajax_Test extends Controller_Test_Case {
 			$mock_wp_send_json_success->get_calls_as_string()
 		);
 		$this->assertCount( 3, iterator_to_array( Maps::fetch_all() ) );
-		$this->assertCount( 0, iterator_to_array( Layouts::fetch_all() ) );
+		$this->assertCount( 0, iterator_to_array( Layouts_Table::fetch_all() ) );
 		$this->assertCount( 0, iterator_to_array( Seat_Types_Table::fetch_all() ) );
 	}
 
@@ -356,7 +359,7 @@ class Ajax_Test extends Controller_Test_Case {
 			$wp_send_json_error->get_calls_as_string()
 		);
 		$this->assertCount( 3, iterator_to_array( Maps::fetch_all() ) );
-		$this->assertCount( 3, iterator_to_array( Layouts::fetch_all() ) );
+		$this->assertCount( 3, iterator_to_array( Layouts_Table::fetch_all() ) );
 		$this->assertCount( 4, iterator_to_array( Seat_Types_Table::fetch_all() ) );
 		$this->reset_wp_send_json_mocks();
 
@@ -397,7 +400,7 @@ class Ajax_Test extends Controller_Test_Case {
 			$wp_send_json_error->get_calls_as_string()
 		);
 		$this->assertCount( 3, iterator_to_array( Maps::fetch_all() ) );
-		$this->assertCount( 3, iterator_to_array( Layouts::fetch_all() ) );
+		$this->assertCount( 3, iterator_to_array( Layouts_Table::fetch_all() ) );
 		$this->assertCount( 4, iterator_to_array( Seat_Types_Table::fetch_all() ) );
 		$this->assertTrue( $wp_remote->was_called() );
 		$this->reset_wp_send_json_mocks();
@@ -438,7 +441,7 @@ class Ajax_Test extends Controller_Test_Case {
 		);
 		// After a deletion the local seat type, maps and layouts caches should be invalidated.
 		$this->assertCount( 0, iterator_to_array( Maps::fetch_all() ) );
-		$this->assertCount( 0, iterator_to_array( Layouts::fetch_all() ) );
+		$this->assertCount( 0, iterator_to_array( Layouts_Table::fetch_all() ) );
 		$this->assertCount( 0, iterator_to_array( Seat_Types_Table::fetch_all() ) );
 		$this->assertTrue( $wp_remote->was_called() );
 	}
@@ -466,7 +469,7 @@ class Ajax_Test extends Controller_Test_Case {
 			$wp_send_json_error->get_calls_as_string()
 		);
 		$this->assertCount( 3, iterator_to_array( Maps::fetch_all() ) );
-		$this->assertCount( 3, iterator_to_array( Layouts::fetch_all() ) );
+		$this->assertCount( 3, iterator_to_array( Layouts_Table::fetch_all() ) );
 		$this->assertCount( 4, iterator_to_array( Seat_Types_Table::fetch_all() ) );
 		$this->reset_wp_send_json_mocks();
 
@@ -485,7 +488,7 @@ class Ajax_Test extends Controller_Test_Case {
 			$wp_send_json_error->get_calls_as_string()
 		);
 		$this->assertCount( 3, iterator_to_array( Maps::fetch_all() ) );
-		$this->assertCount( 3, iterator_to_array( Layouts::fetch_all() ) );
+		$this->assertCount( 3, iterator_to_array( Layouts_Table::fetch_all() ) );
 		$this->assertCount( 4, iterator_to_array( Seat_Types_Table::fetch_all() ) );
 		$this->reset_wp_send_json_mocks();
 
@@ -527,7 +530,7 @@ class Ajax_Test extends Controller_Test_Case {
 			$wp_send_json_error->get_calls_as_string()
 		);
 		$this->assertCount( 3, iterator_to_array( Maps::fetch_all() ) );
-		$this->assertCount( 3, iterator_to_array( Layouts::fetch_all() ) );
+		$this->assertCount( 3, iterator_to_array( Layouts_Table::fetch_all() ) );
 		$this->assertCount( 4, iterator_to_array( Seat_Types_Table::fetch_all() ) );
 		$this->assertTrue( $wp_remote->was_called() );
 		$this->reset_wp_send_json_mocks();
@@ -569,7 +572,7 @@ class Ajax_Test extends Controller_Test_Case {
 		);
 		// After a deletion the local seat type, maps and layouts caches should be invalidated.
 		$this->assertCount( 0, iterator_to_array( Maps::fetch_all() ) );
-		$this->assertCount( 0, iterator_to_array( Layouts::fetch_all() ) );
+		$this->assertCount( 0, iterator_to_array( Layouts_Table::fetch_all() ) );
 		$this->assertCount( 0, iterator_to_array( Seat_Types_Table::fetch_all() ) );
 		$this->reset_wp_send_json_mocks();
 	}
@@ -866,8 +869,8 @@ class Ajax_Test extends Controller_Test_Case {
 		// Reservations cancellation fails.
 		$_REQUEST['postId'] = $post_id;
 		$_REQUEST['token']  = 'some-token';
-		$reservations = tribe( Reservations::class );
-		$wp_remote            = $this->mock_wp_remote(
+		$reservations       = tribe( Reservations::class );
+		$wp_remote          = $this->mock_wp_remote(
 			'post',
 			$reservations->get_cancel_url(),
 			[
@@ -875,10 +878,10 @@ class Ajax_Test extends Controller_Test_Case {
 					'Authorization' => 'Bearer some-token',
 					'Content-Type'  => 'application/json',
 				],
-				'body' => wp_json_encode(
+				'body'    => wp_json_encode(
 					[
 						'eventId' => 'some-post-uuid',
-						'ids'     =>  $sessions->get_reservation_uuids_for_token( 'some-token' ),
+						'ids'     => $sessions->get_reservation_uuids_for_token( 'some-token' ),
 					]
 				),
 			],
@@ -910,9 +913,9 @@ class Ajax_Test extends Controller_Test_Case {
 		$this->reset_wp_send_json_mocks();
 
 		// Reservation cancellation succeeds.
-		$_REQUEST['postId'] = $post_id;
-		$_REQUEST['token']  = 'some-token';
-		$reservations = tribe( Reservations::class );
+		$_REQUEST['postId']   = $post_id;
+		$_REQUEST['token']    = 'some-token';
+		$reservations         = tribe( Reservations::class );
 		$wp_remote            = $this->mock_wp_remote(
 			'post',
 			$reservations->get_cancel_url(),
@@ -921,10 +924,10 @@ class Ajax_Test extends Controller_Test_Case {
 					'Authorization' => 'Bearer some-token',
 					'Content-Type'  => 'application/json',
 				],
-				'body' => wp_json_encode(
+				'body'    => wp_json_encode(
 					[
 						'eventId' => 'some-post-uuid',
-						'ids'     =>  $sessions->get_reservation_uuids_for_token( 'some-token' ),
+						'ids'     => $sessions->get_reservation_uuids_for_token( 'some-token' ),
 					]
 				),
 			],
@@ -1022,7 +1025,7 @@ class Ajax_Test extends Controller_Test_Case {
 		$controller->register();
 
 		// Request body is empty.
-		$request_body = '';
+		$request_body       = '';
 		$wp_send_json_error = $this->mock_wp_send_json_error();
 
 		do_action( 'wp_ajax_' . Ajax::ACTION_DELETE_RESERVATIONS );
@@ -1036,7 +1039,7 @@ class Ajax_Test extends Controller_Test_Case {
 		$this->reset_wp_send_json_mocks();
 
 		// Request body is not valid JSON.
-		$request_body = 'not-json';
+		$request_body       = 'not-json';
 		$wp_send_json_error = $this->mock_wp_send_json_error();
 
 		do_action( 'wp_ajax_' . Ajax::ACTION_DELETE_RESERVATIONS );
@@ -1050,7 +1053,7 @@ class Ajax_Test extends Controller_Test_Case {
 		$this->reset_wp_send_json_mocks();
 
 		// Request body is valid JSON but not an array of non-empty strings.
-		$request_body = '["", ""]';
+		$request_body       = '["", ""]';
 		$wp_send_json_error = $this->mock_wp_send_json_error();
 
 		do_action( 'wp_ajax_' . Ajax::ACTION_DELETE_RESERVATIONS );
@@ -1066,7 +1069,7 @@ class Ajax_Test extends Controller_Test_Case {
 		// Deletion succeeds.
 		$request_body         = '["reservation-uuid-1", "reservation-uuid-4"]';
 		$wp_send_json_success = $this->mock_wp_send_json_success();
-		$delete_map = [];
+		$delete_map           = [];
 		add_action( 'tec_tickets_seating_delete_reservations_from_attendees', function ( $map ) use ( &$delete_map ) {
 			$delete_map = $map;
 		} );
@@ -1080,12 +1083,12 @@ class Ajax_Test extends Controller_Test_Case {
 		) );
 		$this->reset_wp_send_json_mocks();
 		$this->assertEquals( $delete_map, [ 'reservation-uuid-1' => $attendee_1 ] );
-		$this->assertEquals('', get_post_meta( $attendee_1, Meta::META_KEY_RESERVATION_ID, true ) );
+		$this->assertEquals( '', get_post_meta( $attendee_1, Meta::META_KEY_RESERVATION_ID, true ) );
 
 		// Send a second request to delete the rest.
 		$request_body         = '["reservation-uuid-2", "reservation-uuid-3"]';
 		$wp_send_json_success = $this->mock_wp_send_json_success();
-		$delete_map = [];
+		$delete_map           = [];
 		add_action( 'tec_tickets_seating_delete_reservations_from_attendees', function ( $map ) use ( &$delete_map ) {
 			$delete_map = $map;
 		} );
@@ -1097,8 +1100,380 @@ class Ajax_Test extends Controller_Test_Case {
 				'numberDeleted' => 2,
 			],
 		) );
-		$this->assertEquals( $delete_map, [ 'reservation-uuid-2' => $attendee_2, 'reservation-uuid-3' => $attendee_3 ] );
-		$this->assertEquals('', get_post_meta( $attendee_2, Meta::META_KEY_RESERVATION_ID, true ) );
-		$this->assertEquals('', get_post_meta( $attendee_3, Meta::META_KEY_RESERVATION_ID, true ) );
+		$this->assertEquals( $delete_map,
+			[ 'reservation-uuid-2' => $attendee_2, 'reservation-uuid-3' => $attendee_3 ] );
+		$this->assertEquals( '', get_post_meta( $attendee_2, Meta::META_KEY_RESERVATION_ID, true ) );
+		$this->assertEquals( '', get_post_meta( $attendee_3, Meta::META_KEY_RESERVATION_ID, true ) );
+	}
+
+	public function test_update_seat_types(): void {
+		// Create the layouts.
+		Layouts::insert_rows_from_service( [
+			[
+				'id'            => 'layout-uuid-1',
+				'name'          => 'Layout 1',
+				'seats'         => 40,
+				'mapId'         => 'map-uuid-1',
+				'screenshotUrl' => 'https://example.com/layout-1.png',
+			],
+			[
+				'id'            => 'layout-uuid-2',
+				'name'          => 'Layout 2',
+				'seats'         => 20,
+				'mapId'         => 'map-uuid-1',
+				'screenshotUrl' => 'https://example.com/layout-2.png',
+			],
+		] );
+		// Create the seat types.
+		Seat_Types::insert_rows_from_service( [
+			[
+				'id'       => 'seat-type-uuid-1',
+				'name'     => 'Seat Type 1',
+				'mapId'    => 'map-uuid-1',
+				'layoutId' => 'layout-uuid-1',
+				'seats'    => 10,
+			],
+			[
+				'id'       => 'seat-type-uuid-2',
+				'name'     => 'Seat Type 2',
+				'mapId'    => 'map-uuid-1',
+				'layoutId' => 'layout-uuid-1',
+				'seats'    => 30,
+			],
+			[
+				'id'       => 'seat-type-uuid-3',
+				'name'     => 'Seat Type 3',
+				'mapId'    => 'map-uuid-2',
+				'layoutId' => 'layout-uuid-2',
+				'seats'    => 20,
+			],
+		] );
+		/** @var \Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler   = tribe( 'tickets.handler' );
+		$capacity_meta_key = $tickets_handler->key_capacity;
+		// Create 2 tickets, each one using one of the seat types.
+		$post_1 = self::factory()->post->create();
+		update_post_meta( $post_1, Meta::META_KEY_LAYOUT_ID, 'layout-uuid-1' );
+		update_post_meta( $post_1, $capacity_meta_key, 40 );
+		update_post_meta( $post_1, Global_Stock::GLOBAL_STOCK_LEVEL, 40 );
+		$post_1_ticket_1 = $this->create_tc_ticket( $post_1, 10 );
+		update_post_meta( $post_1_ticket_1, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-1' );
+		$post_1_ticket_2 = $this->create_tc_ticket( $post_1, 20 );
+		update_post_meta( $post_1_ticket_2, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-1' );
+		$post_1_ticket_3 = $this->create_tc_ticket( $post_1, 30 );
+		update_post_meta( $post_1_ticket_3, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-2' );
+		$post_1_ticket_4 = $this->create_tc_ticket( $post_1, 40 );
+		update_post_meta( $post_1_ticket_4, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-2' );
+		$post_2 = self::factory()->post->create();
+		update_post_meta( $post_2, Meta::META_KEY_LAYOUT_ID, 'layout-uuid-2' );
+		update_post_meta( $post_2, $capacity_meta_key, 20 );
+		update_post_meta( $post_2, Global_Stock::GLOBAL_STOCK_LEVEL, 20 );
+		$post_2_ticket_1 = $this->create_tc_ticket( $post_2, 30 );
+		update_post_meta( $post_2_ticket_1, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-3' );
+		$post_2_ticket_2 = $this->create_tc_ticket( $post_2, 40 );
+		update_post_meta( $post_2_ticket_2, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-3' );
+		// Create 2 Attendees for each ticket.
+		[ $post_1_attendee_1, $post_1_attendee_2 ] = $this->create_many_attendees_for_ticket( 2,
+			$post_1_ticket_1,
+			$post_1 );
+		update_post_meta( $post_1_attendee_1, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-1' );
+		update_post_meta( $post_1_attendee_1, Meta::META_KEY_RESERVATION_ID, 'reservation-uuid-1' );
+		update_post_meta( $post_1_attendee_2, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-1' );
+		update_post_meta( $post_1_attendee_2, Meta::META_KEY_RESERVATION_ID, 'reservation-uuid-2' );
+		[ $post_1_attendee_3, $post_1_attendee_4 ] = $this->create_many_attendees_for_ticket( 2,
+			$post_1_ticket_2,
+			$post_1 );
+		update_post_meta( $post_1_attendee_3, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-1' );
+		update_post_meta( $post_1_attendee_3, Meta::META_KEY_RESERVATION_ID, 'reservation-uuid-3' );
+		update_post_meta( $post_1_attendee_4, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-1' );
+		update_post_meta( $post_1_attendee_4, Meta::META_KEY_RESERVATION_ID, 'reservation-uuid-4' );
+		[ $post_1_attendee_5, $post_1_attendee_6 ] = $this->create_many_attendees_for_ticket( 2,
+			$post_1_ticket_3,
+			$post_1 );
+		update_post_meta( $post_1_attendee_5, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-2' );
+		update_post_meta( $post_1_attendee_5, Meta::META_KEY_RESERVATION_ID, 'reservation-uuid-5' );
+		update_post_meta( $post_1_attendee_6, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-2' );
+		update_post_meta( $post_1_attendee_6, Meta::META_KEY_RESERVATION_ID, 'reservation-uuid-6' );
+		[ $post_1_attendee_7, $post_1_attendee_8 ] = $this->create_many_attendees_for_ticket( 2,
+			$post_1_ticket_4,
+			$post_1 );
+		update_post_meta( $post_1_attendee_7, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-2' );
+		update_post_meta( $post_1_attendee_7, Meta::META_KEY_RESERVATION_ID, 'reservation-uuid-7' );
+		update_post_meta( $post_1_attendee_8, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-2' );
+		update_post_meta( $post_1_attendee_8, Meta::META_KEY_RESERVATION_ID, 'reservation-uuid-8' );
+		[ $post_2_attendee_1, $post_2_attendee_2 ] = $this->create_many_attendees_for_ticket( 2,
+			$post_2_ticket_1,
+			$post_2 );
+		update_post_meta( $post_2_attendee_1, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-3' );
+		update_post_meta( $post_2_attendee_1, Meta::META_KEY_RESERVATION_ID, 'reservation-uuid-9' );
+		update_post_meta( $post_2_attendee_2, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-3' );
+		update_post_meta( $post_2_attendee_2, Meta::META_KEY_RESERVATION_ID, 'reservation-uuid-10' );
+		[ $post_2_attendee_3, $post_2_attendee_4 ] = $this->create_many_attendees_for_ticket( 2,
+			$post_2_ticket_2,
+			$post_2 );
+		update_post_meta( $post_2_attendee_3, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-3' );
+		update_post_meta( $post_2_attendee_3, Meta::META_KEY_RESERVATION_ID, 'reservation-uuid-11' );
+		update_post_meta( $post_2_attendee_4, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-3' );
+		update_post_meta( $post_2_attendee_4, Meta::META_KEY_RESERVATION_ID, 'reservation-uuid-12' );
+		$this->set_up_ajax_request_context();
+		$this->set_oauth_token( 'auth-token' );
+		$request_body = null;
+		$this->set_fn_return( 'file_get_contents', function ( $file, ...$args ) use ( &$request_body ) {
+			if ( $file !== 'php://input' ) {
+				return file_get_contents( $file, ...$args );
+			}
+
+			return $request_body;
+		}, true );
+
+		$this->make_controller()->register();
+
+		// Empty request body.
+		$request_body       = '';
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+		do_action( 'wp_ajax_' . Ajax::ACTION_SEAT_TYPES_UPDATED );
+		$this->assertTrue( $wp_send_json_error->was_called_times_with( 1,
+			[
+				'error' => 'Invalid request body',
+			],
+			400
+		) );
+		$this->reset_wp_send_json_mocks();
+
+		// Request body is not valid JSON.
+		$request_body       = 'not-json';
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+		do_action( 'wp_ajax_' . Ajax::ACTION_SEAT_TYPES_UPDATED );
+		$this->assertTrue( $wp_send_json_error->was_called_times_with( 1,
+			[
+				'error' => 'Invalid request body',
+			],
+			400
+		) );
+		$this->reset_wp_send_json_mocks();
+
+		// Request body is valid JSON, but it's an empty array.
+		$request_body       = '{}';
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+		do_action( 'wp_ajax_' . Ajax::ACTION_SEAT_TYPES_UPDATED );
+		$this->assertTrue( $wp_send_json_error->was_called_times_with( 1,
+			[
+				'error' => 'Invalid request body',
+			],
+			400
+		) );
+		$this->reset_wp_send_json_mocks();
+
+		// Request body does not contain the required fields.
+		$request_body       = '[{"id": "some-seat-type-1", "name": "Some Seat Type 1", "mapId": "some-map-id"}]';
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+		do_action( 'wp_ajax_' . Ajax::ACTION_SEAT_TYPES_UPDATED );
+		$this->assertTrue( $wp_send_json_error->was_called_times_with( 1,
+			[
+				'error' => 'Invalid request body',
+			],
+			400
+		) );
+		$this->reset_wp_send_json_mocks();
+
+		$valid_payload = [
+			[
+				'id'          => 'seat-type-uuid-1',
+				'name'        => 'Updated Seat Type 1',
+				'mapId'       => 'map-uuid-1',
+				'layoutId'    => 'layout-uuid-1',
+				'description' => 'Updated Seat Type 1 description',
+				'seatsCount'  => 23,
+			],
+			[
+				'id'          => 'seat-type-uuid-2',
+				'name'        => 'Updated Seat Type 2',
+				'mapId'       => 'map-uuid-1',
+				'layoutId'    => 'layout-uuid-1',
+				'description' => 'Updated Seat Type 2 description',
+				'seatsCount'  => 89,
+			]
+		];
+
+		// Seat types update from service fails.
+		global $wpdb;
+		$wpdb->suppress_errors  = true; // We know we're going to get an error, no need to pollute the output.
+		$failing_query_callback = function ( string $query ) use ( &$failing_query_callback ) {
+			if ( preg_match( '/UPDATE.*' . preg_quote( Seat_Types_Table::table_name(), '/' ) . '/i', $query ) ) {
+				return 'BORKED';
+			}
+
+			return $query;
+		};
+		add_filter( 'query', $failing_query_callback );
+		$request_body       = wp_json_encode( $valid_payload );
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+		do_action( 'wp_ajax_' . Ajax::ACTION_SEAT_TYPES_UPDATED );
+		$this->assertTrue( $wp_send_json_error->was_called_times_with( 1,
+			[
+				'error' => 'Failed to update the seat types from the service.',
+			],
+			500
+		) );
+		$this->reset_wp_send_json_mocks();
+		remove_filter( 'query', $failing_query_callback );
+
+		// Seat types update succeeds.
+		$request_body         = wp_json_encode( $valid_payload );
+		$wp_send_json_success = $this->mock_wp_send_json_success();
+		do_action( 'wp_ajax_' . Ajax::ACTION_SEAT_TYPES_UPDATED );
+		$this->assertTrue( $wp_send_json_success->was_called_times_with( 1, [
+			'updatedSeatTypes' => 2,
+			'updatedTickets'   => 4,
+			'updatedPosts'     => 1,
+		] ), $wp_send_json_success->get_calls_as_string() );
+		$this->reset_wp_send_json_mocks();
+	}
+
+	public function test_update_reservations_from_seat_types(): void {
+		$this->set_up_ajax_request_context();
+		$this->set_oauth_token( 'auth-token' );
+		// Create the seat types.
+		Seat_Types::insert_rows_from_service( [
+			[
+				'id'       => 'seat-type-uuid-1',
+				'name'     => 'Seat Type 1',
+				'mapId'    => 'map-uuid-1',
+				'layoutId' => 'layout-uuid-1',
+				'seats'    => 10,
+			],
+			[
+				'id'       => 'seat-type-uuid-2',
+				'name'     => 'Seat Type 2',
+				'mapId'    => 'map-uuid-1',
+				'layoutId' => 'layout-uuid-1',
+				'seats'    => 30,
+			],
+			[
+				'id'       => 'seat-type-uuid-3',
+				'name'     => 'Seat Type 3',
+				'mapId'    => 'map-uuid-2',
+				'layoutId' => 'layout-uuid-2',
+				'seats'    => 20,
+			],
+		] );
+		/** @var \Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler   = tribe( 'tickets.handler' );
+		$capacity_meta_key = $tickets_handler->key_capacity;
+		// Create 2 tickets, each one using one of the seat types.
+		$post_1 = self::factory()->post->create();
+		update_post_meta( $post_1, Meta::META_KEY_LAYOUT_ID, 'layout-uuid-1' );
+		update_post_meta( $post_1, $capacity_meta_key, 40 );
+		update_post_meta( $post_1, Global_Stock::GLOBAL_STOCK_LEVEL, 40 );
+		$post_1_ticket_1 = $this->create_tc_ticket( $post_1, 10 );
+		update_post_meta( $post_1_ticket_1, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-1' );
+		$post_1_ticket_2 = $this->create_tc_ticket( $post_1, 20 );
+		update_post_meta( $post_1_ticket_2, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-1' );
+		$post_1_ticket_3 = $this->create_tc_ticket( $post_1, 30 );
+		update_post_meta( $post_1_ticket_3, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-2' );
+		$post_1_ticket_4 = $this->create_tc_ticket( $post_1, 40 );
+		update_post_meta( $post_1_ticket_4, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-2' );
+		// Create 2 Attendees for each ticket.
+		[ $attendee_1, $attendee_2 ] = $this->create_many_attendees_for_ticket( 2, $post_1_ticket_1, $post_1 );
+		update_post_meta( $attendee_1, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-1' );
+		update_post_meta( $attendee_1, Meta::META_KEY_RESERVATION_ID, 'reservation-uuid-1' );
+		update_post_meta( $attendee_2, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-1' );
+		update_post_meta( $attendee_2, Meta::META_KEY_RESERVATION_ID, 'reservation-uuid-2' );
+		[ $attendee_3, $attendee_4 ] = $this->create_many_attendees_for_ticket( 2, $post_1_ticket_2, $post_1 );
+		update_post_meta( $attendee_3, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-1' );
+		update_post_meta( $attendee_3, Meta::META_KEY_RESERVATION_ID, 'reservation-uuid-3' );
+		update_post_meta( $attendee_4, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-1' );
+		update_post_meta( $attendee_4, Meta::META_KEY_RESERVATION_ID, 'reservation-uuid-4' );
+		[ $attendee_5, $attendee_6 ] = $this->create_many_attendees_for_ticket( 2, $post_1_ticket_3, $post_1 );
+		update_post_meta( $attendee_5, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-2' );
+		update_post_meta( $attendee_5, Meta::META_KEY_RESERVATION_ID, 'reservation-uuid-5' );
+		update_post_meta( $attendee_6, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-2' );
+		update_post_meta( $attendee_6, Meta::META_KEY_RESERVATION_ID, 'reservation-uuid-6' );
+		[ $attendee_7, $attendee_8 ] = $this->create_many_attendees_for_ticket( 2, $post_1_ticket_4, $post_1 );
+		update_post_meta( $attendee_7, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-2' );
+		update_post_meta( $attendee_7, Meta::META_KEY_RESERVATION_ID, 'reservation-uuid-7' );
+		update_post_meta( $attendee_8, Meta::META_KEY_SEAT_TYPE, 'seat-type-uuid-2' );
+		update_post_meta( $attendee_8, Meta::META_KEY_RESERVATION_ID, 'reservation-uuid-8' );
+		$request_body = null;
+		$this->set_fn_return( 'file_get_contents', function ( $file, ...$args ) use ( &$request_body ) {
+			if ( $file !== 'php://input' ) {
+				return file_get_contents( $file, ...$args );
+			}
+
+			return $request_body;
+		}, true );
+
+		$this->make_controller()->register();
+
+		// Empty request body.
+		$request_body       = '';
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+		do_action( 'wp_ajax_' . Ajax::ACTION_RESERVATIONS_UPDATED_FROM_SEAT_TYPES );
+		$this->assertTrue( $wp_send_json_error->was_called_times_with( 1,
+			[
+				'error' => 'Invalid request body',
+			],
+			400
+		) );
+		$this->reset_wp_send_json_mocks();
+
+		// Request body is not valid JSON.
+		$request_body       = 'not-json';
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+		do_action( 'wp_ajax_' . Ajax::ACTION_RESERVATIONS_UPDATED_FROM_SEAT_TYPES );
+		$this->assertTrue( $wp_send_json_error->was_called_times_with( 1,
+			[
+				'error' => 'Invalid request body',
+			],
+			400
+		) );
+		$this->reset_wp_send_json_mocks();
+
+		// Request body is valid JSON, but it's an empty array.
+		$request_body       = '{}';
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+		do_action( 'wp_ajax_' . Ajax::ACTION_RESERVATIONS_UPDATED_FROM_SEAT_TYPES );
+		$this->assertTrue( $wp_send_json_error->was_called_times_with( 1,
+			[
+				'error' => 'Invalid request body',
+			],
+			400
+		) );
+		$this->reset_wp_send_json_mocks();
+
+		// Attendees update succeeds: reservations are moved from seat type 1 to 2.
+		$request_body         = wp_json_encode( [
+			'seat-type-uuid-1' => [
+				'reservation-uuid-5',
+				'reservation-uuid-6',
+				'reservation-uuid-7',
+				'reservation-uuid-8',
+			]
+		] );
+		$wp_send_json_success = $this->mock_wp_send_json_success();
+		do_action( 'wp_ajax_' . Ajax::ACTION_RESERVATIONS_UPDATED_FROM_SEAT_TYPES );
+		$this->assertTrue( $wp_send_json_success->was_called_times_with( 1,
+			[
+				'updatedAttendees' => 4,
+			],
+		),
+			$wp_send_json_success->get_calls_as_string() );
+		$this->assertEquals( 'seat-type-uuid-1', get_post_meta( $attendee_1, Meta::META_KEY_SEAT_TYPE, true ) );
+		$this->assertEquals( 'reservation-uuid-1', get_post_meta( $attendee_1, Meta::META_KEY_RESERVATION_ID, true ) );
+		$this->assertEquals( 'seat-type-uuid-1', get_post_meta( $attendee_2, Meta::META_KEY_SEAT_TYPE, true ) );
+		$this->assertEquals( 'reservation-uuid-2', get_post_meta( $attendee_2, Meta::META_KEY_RESERVATION_ID, true ) );
+		$this->assertEquals( 'seat-type-uuid-1', get_post_meta( $attendee_3, Meta::META_KEY_SEAT_TYPE, true ) );
+		$this->assertEquals( 'reservation-uuid-3', get_post_meta( $attendee_3, Meta::META_KEY_RESERVATION_ID, true ) );
+		$this->assertEquals( 'seat-type-uuid-1', get_post_meta( $attendee_4, Meta::META_KEY_SEAT_TYPE, true ) );
+		$this->assertEquals( 'reservation-uuid-4', get_post_meta( $attendee_4, Meta::META_KEY_RESERVATION_ID, true ) );
+		$this->assertEquals( 'seat-type-uuid-1', get_post_meta( $attendee_5, Meta::META_KEY_SEAT_TYPE, true ) );
+		$this->assertEquals( 'reservation-uuid-5', get_post_meta( $attendee_5, Meta::META_KEY_RESERVATION_ID, true ) );
+		$this->assertEquals( 'seat-type-uuid-1', get_post_meta( $attendee_6, Meta::META_KEY_SEAT_TYPE, true ) );
+		$this->assertEquals( 'reservation-uuid-6', get_post_meta( $attendee_6, Meta::META_KEY_RESERVATION_ID, true ) );
+		$this->assertEquals( 'seat-type-uuid-1', get_post_meta( $attendee_7, Meta::META_KEY_SEAT_TYPE, true ) );
+		$this->assertEquals( 'reservation-uuid-7', get_post_meta( $attendee_7, Meta::META_KEY_RESERVATION_ID, true ) );
+		$this->assertEquals( 'seat-type-uuid-1', get_post_meta( $attendee_8, Meta::META_KEY_SEAT_TYPE, true ) );
+		$this->assertEquals( 'reservation-uuid-8', get_post_meta( $attendee_8, Meta::META_KEY_RESERVATION_ID, true ) );
+
 	}
 }

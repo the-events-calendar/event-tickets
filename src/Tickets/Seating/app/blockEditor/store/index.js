@@ -59,7 +59,6 @@ const actions = {
 		};
 	},
 };
-
 const store = createReduxStore(storeName, {
 	reducer(state = DEFAULT_STATE, action) {
 		switch (action.type) {

@@ -22,6 +22,7 @@ jobs:
           - views_integration
           - commerce_integration
           - wpunit
+          - slr_integration
     runs-on: ubuntu-latest
     steps:
       # ------------------------------------------------------------------------------
