@@ -860,5 +860,13 @@ class Controller_Test extends Controller_Test_Case {
 		
 		$row_actions = apply_filters( 'post_row_actions', [], $post );
 		$this->assertNotContains( 'tickets_seats', array_keys( $row_actions ) );
+		
+		$json = str_replace(
+			$event_id,
+			'{{EVENT_ID}}',
+			wp_json_encode( $row_actions, JSON_SNAPSHOT_OPTIONS )
+		);
+		
+		$this->assertMatchesJsonSnapshot( $json );
 	}
 }
