@@ -18,7 +18,4 @@ modules:
       plugins:
         - the-events-calendar/the-events-calendar.php
         - event-tickets/event-tickets.php
-      activatePlugins:
-        - the-events-calendar/the-events-calendar.php
-        - event-tickets/event-tickets.php
       theme: twentytwenty

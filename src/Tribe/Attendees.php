@@ -7,7 +7,7 @@ use Tribe__Tickets__Global_Stock as Global_Stock;
 use TEC\Tickets\Admin\Attendees\Page as Attendees_Page;
 
 /**
- * Handles most actions related to an Attendees or Multiple ones
+ * Handles most actions related to an attendee or multiple attendees.
  */
 class Tribe__Tickets__Attendees {
 	/**

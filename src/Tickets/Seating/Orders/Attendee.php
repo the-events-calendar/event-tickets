@@ -9,13 +9,15 @@
 
 namespace TEC\Tickets\Seating\Orders;
 
-use TEC\Tickets\Seating\Meta;
 use Tribe__Main as Common;
-use WP_Query;
 use Tribe__Tickets__Attendee_Repository as Attendee_Repository;
 use Tribe__Utils__Array as Arr;
-use WP_Post;
 use Tribe__Template as Template;
+use TEC\Tickets\Commerce\Attendee as Commerce_Attendee;
+use TEC\Tickets\Seating\Service\Reservations;
+use TEC\Tickets\Seating\Meta;
+use WP_Query;
+use WP_Post;
 
 /**
  * Class Attendee
@@ -161,15 +163,41 @@ class Attendee {
 	}
 	
 	/**
+	 * Handle attendee delete.
+	 *
+	 * @param int          $attendee_id The Attendee ID.
+	 * @param Reservations $reservations The Reservations object.
+	 *
+	 * @return int The attendee ID.
+	 */
+	public function handle_attendee_delete( int $attendee_id, Reservations $reservations ): int {
+		$event_id       = get_post_meta( $attendee_id, Commerce_Attendee::$event_relation_meta_key, true );
+		$reservation_id = get_post_meta( $attendee_id, Meta::META_KEY_RESERVATION_ID, true );
+		
+		if ( ! $event_id || ! $reservation_id ) {
+			return $attendee_id;
+		}
+		
+		$cancelled = $reservations->cancel( $event_id, [ $reservation_id ] );
+		
+		// Bail attendee deletion by returning 0, if the reservation was not cancelled.
+		if ( ! $cancelled ) {
+			return 0;
+		}
+		
+		return $attendee_id;
+	}
+	
+	/**
 	 * Include seating data into the attendee object.
 	 *
 	 * @since TBD
 	 *
-	 * @param WP_Post $post   The attendee post object, decorated with a set of custom properties.
+	 * @param WP_Post $post The attendee post object, decorated with a set of custom properties.
 	 *
 	 * @return WP_Post
 	 */
-	public function include_seating_data( $post ) {
+	public function include_seating_data( WP_Post $post ): WP_Post {
 		$seating_ticket = get_post_meta( $post->product_id, Meta::META_KEY_ENABLED, true );
 		
 		if ( ! $seating_ticket ) {
@@ -234,7 +262,7 @@ class Attendee {
 	 * @param string   $html The HTML content of ticket information.
 	 * @param Template $template The email template instance.
 	 *
-	 * @return string
+	 * @return string The HTML content of ticket information.
 	 */
 	public function inject_seat_info_in_my_tickets( string $html, Template $template ): string {
 		$context    = $template->get_local_values();

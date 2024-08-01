@@ -17,6 +17,10 @@ Codeception\Util\Autoload::addNamespace( 'Tribe\Events\Test', $tec_support );
 putenv( 'TEC_TICKETS_COMMERCE=1' );
 putenv( 'TEC_DISABLE_LOGGING=1' );
 tribe_register_provider( Commerce_Provider::class );
+// Ensure `post` is a ticketable post type.
+$ticketable   = tribe_get_option( 'ticket-enabled-post-types', [] );
+$ticketable[] = 'post';
+tribe_update_option( 'ticket-enabled-post-types', array_values( array_unique( $ticketable ) ) );
 
 tribe()->get( \TEC\Tickets\Seating\Service\Service::class );
 

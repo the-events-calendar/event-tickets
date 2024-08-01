@@ -2,6 +2,11 @@
 
 namespace TEC\Tickets\Flexible_Tickets;
 
+class Mock_WP_CLI {
+	public static function add_hook( $hook, $callback ): void {
+	}
+}
+
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use Tribe\Tests\Traits\With_Uopz;
 
@@ -9,6 +14,15 @@ class WP_CliTest extends Controller_Test_Case {
 	use With_Uopz;
 
 	protected $controller_class = WP_Cli::class;
+
+	/**
+	 * @before
+	 */
+	public function mock_wpcli_class(): void {
+		if ( ! class_exists( \WP_CLI::class ) ) {
+			class_alias( Mock_WP_CLI::class, '\WP_CLI' );
+		}
+	}
 
 	/**
 	 * It should not be active if not WP CLI context

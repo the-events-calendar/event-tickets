@@ -10,6 +10,8 @@
 namespace TEC\Tickets\Seating\Service;
 
 use TEC\Common\StellarWP\DB\DB;
+use TEC\Tickets\Seating\Logging;
+use TEC\Tickets\Seating\Meta;
 use TEC\Tickets\Seating\Tables\Seat_Types as Seat_Types_Table;
 
 /**
@@ -20,6 +22,8 @@ use TEC\Tickets\Seating\Tables\Seat_Types as Seat_Types_Table;
  * @package TEC\Controller\Service;
  */
 class Seat_Types {
+	use Logging;
+
 	/**
 	 * The URL to the service used to fetch the layouts from the backend.
 	 *
@@ -32,7 +36,7 @@ class Seat_Types {
 	/**
 	 * Layouts constructor.
 	 *
-	 * since TBD
+	 * @since TBD
 	 *
 	 * @param string $backend_base_url The base URL of the service from the site backend.
 	 */
@@ -45,13 +49,15 @@ class Seat_Types {
 	 *
 	 * @since TBD
 	 *
-	 * @param array<array{
-	 *     id?: string,
-	 *     name?: string,
-	 *     mapId?: string,
-	 *     layoutId?: string,
-	 *     seats?: int
-	 * }> $service_rows
+	 * @param array $service_rows {
+	 *    The list of seat types to insert.
+	 *
+	 *      @type string $id The seat type ID.
+	 *      @type string $name The seat type name.
+	 *      @type string $mapId The map ID the seat type belongs to.
+	 *      @type string $layoutId The layout ID the seat type belongs to.
+	 *      @type int $seats The number of seats in the seat type.
+	 * }
 	 *
 	 * @return bool|int The number of rows affected, or `false` on failure.
 	 */
@@ -161,5 +167,94 @@ class Seat_Types {
 	 */
 	public static function update_transient_expiration(): int {
 		return 12 * HOUR_IN_SECONDS;
+	}
+
+	/**
+	 * Updates the seat types from the service by updating the custom table.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<array<string,string>> $seat_types The data of the seat types to update.
+	 *
+	 * @return int|false The number of seat types updated, or `false` on failure.
+	 */
+	public function update_from_service( array $seat_types ) {
+		$total_updated = 0;
+
+		foreach ( $seat_types as $seat_type ) {
+			$id    = $seat_type['id'];
+			$name  = $seat_type['name'];
+			$seats = $seat_type['seatsCount'];
+
+			try {
+				$updated = DB::query(
+					DB::prepare(
+						'UPDATE %i SET name = %s, seats = %d WHERE id = %s',
+						Seat_Types_Table::table_name(),
+						$name,
+						$seats,
+						$id
+					),
+				);
+			} catch ( \Exception $e ) {
+				$this->log_error(
+					'Failed to update the seat types from the service.',
+					[
+						'source' => __METHOD__,
+						'error'  => $e->getMessage(),
+					]
+				);
+				return false;
+			}
+
+			if ( false === $updated ) {
+				return false;
+			}
+
+			$total_updated += $updated;
+		}
+
+		return $total_updated;
+	}
+
+	/**
+	 * Updates the capacity of all tickets for the seat types.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,int> $updates The seat type ID to capacity map.
+	 *
+	 * @return int The number of tickets updated, or `false` on failure.
+	 */
+	public function update_tickets_capacity( array $updates ): int {
+		if ( empty( $updates ) ) {
+			return 0;
+		}
+
+		$total_updated = 0;
+
+		$seat_types = array_keys( $updates );
+		/** @var \Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler   = tribe( 'tickets.handler' );
+		$capacity_meta_key = $tickets_handler->key_capacity;
+
+		foreach (
+			tribe_tickets()
+				->where( 'meta_in', Meta::META_KEY_SEAT_TYPE, $seat_types )
+				->get_ids( true ) as $ticket_id
+		) {
+			$seat_type_id      = get_post_meta( $ticket_id, Meta::META_KEY_SEAT_TYPE, true );
+			$new_capacity      = $updates[ $seat_type_id ];
+			$previous_capacity = get_post_meta( $ticket_id, $capacity_meta_key, true );
+			$capacity_delta    = $new_capacity - $previous_capacity;
+			$previous_stock    = get_post_meta( $ticket_id, '_stock', true );
+			$new_stock         = max( 0, $previous_stock + $capacity_delta );
+			update_post_meta( $ticket_id, $capacity_meta_key, $new_capacity );
+			update_post_meta( $ticket_id, '_stock', $new_stock );
+			clean_post_cache( $ticket_id );
+			++$total_updated;
+		}
+
+		return $total_updated;
 	}
 }

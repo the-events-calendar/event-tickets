@@ -2,7 +2,7 @@
 /**
  * The controller for the Seating Orders.
  *
- * @since   TBD
+ * @since TBD
  *
  * @package TEC/Tickets/Seating/Orders
  */
@@ -33,7 +33,7 @@ use Tribe__Template as Template;
 /**
  * Class Controller
  *
- * @since   TBD
+ * @since TBD
  *
  * @package TEC/Tickets/Seating/Orders
  */
@@ -152,6 +152,9 @@ class Controller extends Controller_Contract {
 			
 			add_filter( 'post_row_actions', [ $this, 'add_seats_row_action' ], 10, 2 );
 		}
+		// Attendee delete handler.
+		add_filter( 'tec_tickets_commerce_attendee_to_delete', [ $this, 'handle_attendee_delete' ] );
+		
 		add_action( 'tec_tickets_commerce_flag_action_generated_attendees', [ $this, 'confirm_all_reservations' ] );
 		add_action( 'wp_ajax_' . Ajax::ACTION_FETCH_ATTENDEES, [ $this, 'fetch_attendees_by_post' ] );
 		
@@ -196,6 +199,7 @@ class Controller extends Controller_Contract {
 		remove_filter( 'tec_tickets_commerce_get_attendee', [ $this, 'filter_attendee_object' ] );
 		remove_action( 'tribe_template_before_include:tickets/emails/template-parts/body/ticket/ticket-name', [ $this, 'include_seat_info_in_email' ], 10, 3 );
 		remove_filter( 'tribe_template_html:tickets/tickets/my-tickets/ticket-information', [ $this, 'inject_seat_info_in_my_tickets' ], 10, 4 );
+		remove_filter( 'tec_tickets_commerce_attendee_to_delete', [ $this, 'handle_attendee_delete' ] );
 	}
 
 	/**
@@ -373,7 +377,20 @@ class Controller extends Controller_Contract {
 	public function confirm_all_reservations(): void {
 		$this->session->confirm_all_reservations();
 	}
-
+	
+	/**
+	 * Handle attendee delete.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $attendee_id The attendee ID.
+	 *
+	 * @return int The attendee ID.
+	 */
+	public function handle_attendee_delete( int $attendee_id ): int {
+		return $this->attendee->handle_attendee_delete( $attendee_id, $this->reservations );
+	}
+	
 	/**
 	 * Get the localized data for the report.
 	 *
@@ -515,7 +532,7 @@ class Controller extends Controller_Contract {
 	 *
 	 * @return WP_Post
 	 */
-	public function filter_attendee_object( WP_Post $post ) {
+	public function filter_attendee_object( WP_Post $post ): WP_Post {
 		return $this->attendee->include_seating_data( $post );
 	}
 	
@@ -539,12 +556,12 @@ class Controller extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param string              $html The HTML content of ticket information.
-	 * @param string              $file Complete path to include the PHP File.
-	 * @param array<string,mixed> $name Template name.
-	 * @param Template            $template Current instance of the Tribe__Template.
+	 * @param string        $html The HTML content of ticket information.
+	 * @param string        $file Complete path to include the PHP File.
+	 * @param array<string> $name Template name.
+	 * @param Template      $template Current instance of the Tribe__Template.
 	 *
-	 * @return string
+	 * @return string The HTML content of ticket information.
 	 */
 	public function inject_seat_info_in_my_tickets( $html, $file, $name, $template ): string {
 		return $this->attendee->inject_seat_info_in_my_tickets( $html, $template );

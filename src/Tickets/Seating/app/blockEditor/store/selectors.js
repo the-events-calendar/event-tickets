@@ -63,4 +63,7 @@ export const selectors = {
 	getEventCapacity(state) {
 		return state?.eventCapacity || 0;
 	},
+	getSeatTypesByPostID(state) {
+		return state?.seatTypesByPostId || [];
+	}
 };

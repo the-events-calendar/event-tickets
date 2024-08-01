@@ -27,6 +27,7 @@ const { seatTypeMap, postId } = localizedData;
  * @property {string} name                          The attendee name.
  * @property {Object} purchaser                     The attendee purchaser data.
  * @property {number} purchaser.id                  The attendee purchaser ID.
+ * @property {number} purchaser.name                The attendee name.
  * @property {number} purchaser.associatedAttendees The number of attendees associated with the purchaser.
  * @property {number} ticketId                      The attendee ticket ID.
  * @property {string} seatTypeId                    The attendee seat type UUID.

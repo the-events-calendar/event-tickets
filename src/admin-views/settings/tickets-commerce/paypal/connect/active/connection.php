@@ -17,21 +17,12 @@
  * @var string                                        $gateway_key           [Global] Key for gateway.
  */
 
-use Tribe\Tickets\Admin\Settings;
-use TEC\Tickets\Commerce\Payments_Tab;
-
 if ( empty( $is_merchant_connected ) ) {
 	return;
 }
 
 $name           = $merchant->get_merchant_id();
-$disconnect_url = tribe( Settings::class )->get_url(
-	[
-		'tab'       => Payments_Tab::$slug,
-		Payments_Tab::$key_current_section_get_var => $gateway_key,
-		'tc-action' => 'paypal-disconnect'
-	]
-);
+$disconnect_url = $merchant->get_disconnect_url();
 
 ?>
 <div class="tec-tickets__admin-settings-tickets-commerce-gateway-connected-row">
