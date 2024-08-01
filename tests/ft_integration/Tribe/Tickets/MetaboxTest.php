@@ -36,6 +36,7 @@ class MetaboxTest extends WPTestCase {
 		tribe_update_option( 'ticket-enabled-post-types', $ticketable_post_types );
 		// To be able to edit the posts.
 		wp_set_current_user( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		$this->set_fn_return( 'gmdate', '7/25/2024' );
 	}
 
 	public function get_panels_provider(): Generator {
