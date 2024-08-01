@@ -543,12 +543,12 @@ class Controller extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param string              $html The HTML content of ticket information.
-	 * @param string              $file Complete path to include the PHP File.
-	 * @param array<string,mixed> $name Template name.
-	 * @param Template            $template Current instance of the Tribe__Template.
+	 * @param string        $html The HTML content of ticket information.
+	 * @param string        $file Complete path to include the PHP File.
+	 * @param array<string> $name Template name.
+	 * @param Template      $template Current instance of the Tribe__Template.
 	 *
-	 * @return string
+	 * @return string The HTML content of ticket information.
 	 */
 	public function inject_seat_info_in_my_tickets( $html, $file, $name, $template ): string {
 		return $this->attendee->inject_seat_info_in_my_tickets( $html, $template );

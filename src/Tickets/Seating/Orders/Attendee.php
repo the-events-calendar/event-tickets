@@ -262,7 +262,7 @@ class Attendee {
 	 * @param string   $html The HTML content of ticket information.
 	 * @param Template $template The email template instance.
 	 *
-	 * @return string
+	 * @return string The HTML content of ticket information.
 	 */
 	public function inject_seat_info_in_my_tickets( string $html, Template $template ): string {
 		$context    = $template->get_local_values();
