@@ -87,7 +87,6 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 		checkoutScript: '.tec-tc-gateway-paypal-checkout-script',
 		activePayment: '.tec-tc-gateway-paypal-payment-active',
 		buttons: '#tec-tc-gateway-paypal-checkout-buttons',
-		animatedElement: '.paypal-buttons-context-iframe',
 		advancedPayments: {
 			container: '.tribe-tickets__commerce-checkout-paypal-advanced-payments-container',
 			form: '.tribe-tickets__commerce-checkout-paypal-advanced-payments-form',
@@ -543,15 +542,9 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * @since 5.1.10
 	 * @since 5.13.0.2 Replaced DOMNodeInserted with animationstart event.
 	 */
-	obj.buttonsLoaded = function ( event ) {
-		if ( event.originalEvent.animationName !== 'node_inserted' ) {
-			return;
-		}
-
+	obj.buttonsLoaded = function () {
 		$document.trigger( tribe.tickets.commerce.customEvents.hideLoader );
-		$( tribe.tickets.commerce.selectors.checkoutContainer ).off( 'animationstart', obj.selectors.animatedElement, obj.buttonsLoaded );
-		$( tribe.tickets.commerce.selectors.checkoutContainer ).off( 'MSAnimationStart', obj.selectors.animatedElement, obj.buttonsLoaded );
-		$( tribe.tickets.commerce.selectors.checkoutContainer ).off( 'webkitAnimationStart', obj.selectors.animatedElement, obj.buttonsLoaded );
+		$( tribe.tickets.commerce.selectors.checkoutContainer ).off( 'DOMNodeInserted', obj.selectors.buttons, obj.buttonsLoaded );
 	};
 
 	/**
@@ -602,9 +595,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 		$document.trigger( tribe.tickets.commerce.customEvents.showLoader );
 
 		// Hide loader when Paypal buttons are added.
-		$( tribe.tickets.commerce.selectors.checkoutContainer ).on( 'animationstart', obj.selectors.animatedElement, obj.buttonsLoaded );
-		$( tribe.tickets.commerce.selectors.checkoutContainer ).on( 'MSAnimationStart', obj.selectors.animatedElement, obj.buttonsLoaded );
-		$( tribe.tickets.commerce.selectors.checkoutContainer ).on( 'webkitAnimationStart', obj.selectors.animatedElement, obj.buttonsLoaded );
+		$( tribe.tickets.commerce.selectors.checkoutContainer ).on( 'DOMNodeInserted', obj.selectors.buttons, obj.buttonsLoaded );
 	};
 
 	/**
