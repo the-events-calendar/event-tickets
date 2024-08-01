@@ -2,7 +2,7 @@
 
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, GeoffBel, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
-Stable tag: 5.13.0.3
+Stable tag: 5.13.1
 Requires at least: 6.3
 Tested up to: 6.6.1
 Requires PHP: 7.4
@@ -204,6 +204,11 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 
 == Changelog ==
+
+= [TBD] TBD =
+
+* Fix - Ensure that users fill in all required billing address fields when Stripe advanced payment methods are available. [ETP-934]
+* Fix - Added missing global property for javascript undefined error `Uncaught TypeError: format is undefined`. This happened during ticket checkout.
 
 = [5.13.0.3] 2024-08-01 =
 

@@ -26,15 +26,20 @@
  * @var int                $gateways_connected [Global] The number of connected gateways.
  */
 
-// Bail if user needs to login, the cart is empty or if there are no active gateways.
-if ( $must_login || empty( $items ) || ! tribe_is_truthy( $gateways_active ) ) {
+// Bail if the cart is empty or if there are no active gateways.
+if ( empty( $items ) || ! tribe_is_truthy( $gateways_active ) ) {
+	return;
+}
+
+// Bail if user needs to login, but is not logged in.
+if ( $must_login && ! is_user_logged_in() ) {
 	return;
 }
 
 ?>
 <div class="tribe-tickets__commerce-checkout-gateways">
-	<h4 class="tribe-common-h5 tribe-tickets__commerce-checkout-section-header">
-		<?php esc_html_e( 'Payment', 'event-tickets' ); ?>
+	<h4 class="tribe-common-h5 tribe-tickets__commerce-checkout-section-header tribe-common-a11y-hidden">
+		<?php esc_html_e( 'Payment info', 'event-tickets' ); ?>
 	</h4>
 	<?php
 	foreach ( $gateways as $gateway ) {
