@@ -4,12 +4,7 @@ Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, raf
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
 Stable tag: 5.13.1
 Requires at least: 6.3
-<<<<<<< HEAD
-Tested up to: 6.6
-Stable tag: 5.13.0
-=======
 Tested up to: 6.6.1
->>>>>>> 95108a254941cae47659e825bbe7c1a80b05d7ae
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
