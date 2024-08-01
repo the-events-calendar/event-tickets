@@ -44,7 +44,7 @@ class Charge_Webhook implements Webhook_Event_Interface {
 		 * @link https://github.com/the-events-calendar/event-tickets/pull/3095
 		 *
 		 * @since 5.7.1
-		 * @since TBD - Process Refunds requests always.
+		 * @since 5.13.0 - Process Refunds requests always.
 		 */
 		if (
 			$payment_intent

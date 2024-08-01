@@ -320,18 +320,45 @@
 
 		.tribe-tickets__form-field-description {
 			color: var(--tec-color-icon-primary-alt);
-			margin: var(--tec-spacer-1) 0;
+			margin: var(--tec-spacer-1) 0 0;
+
+			&.error {
+				color: red;
+			}
+		}
+
+		&.disabled {
+			opacity: 0.5;
 		}
 	}
 
+	.tribe-tickets__commerce-checkout-purchaser-info-form-field.error {
+		border: 1px solid red !important;
+	}
+
+	.tribe-tickets__commerce-checkout-address-wrapper {
+		display: grid;
+		grid-gap: 1rem;
+		grid-template-columns: 1fr 1fr;
+	}
+
 	.tribe-tickets__commerce-checkout-purchaser-info-title {
-		margin-bottom: var(--tec-spacer-3);
+		margin: var(--tec-spacer-3) 0;
 	}
 
 	.tribe-tickets__commerce-checkout-form-submit-button {
 		height: 55px;
 		margin-top: 24px;
 		width: 100%;
+	}
+
+	.tribe-tickets__form-field-input-wrapper {
+
+		input::placeholder {
+			color: var(--tec-color-border-tertiary);
+			font-size: var(--tec-font-size-2);
+			opacity: 1;
+		}
 	}
 
 	/* -------------------------------------------------------------------------
@@ -342,8 +369,7 @@
 
 		h1,
 		h2,
-		h3,
-		h4 {
+		h3 {
 			margin: initial;
 		}
 

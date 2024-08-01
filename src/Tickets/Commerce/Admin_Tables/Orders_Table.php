@@ -2,7 +2,7 @@
 /**
  * Orders Table V2
  *
- * @since TBD
+ * @since 5.13.0
  *
  * @package Tribe\Tickets\Commerce\Admin_Tables
  */
@@ -31,14 +31,14 @@ if ( ! class_exists( 'WP_List_Table' ) || ! class_exists( 'WP_Posts_List_Table' 
 /**
  * Class Admin Tables for Orders.
  *
- * @since TBD
+ * @since 5.13.0
  */
 class Orders_Table extends WP_Posts_List_Table {
 
 	/**
 	 * The current post ID
 	 *
-	 * @since TBD
+	 * @since 5.13.0
 	 *
 	 * @var int
 	 */
@@ -47,7 +47,7 @@ class Orders_Table extends WP_Posts_List_Table {
 	/**
 	 * Orders Table constructor.
 	 *
-	 * @since TBD
+	 * @since 5.13.0
 	 */
 	public function __construct() {
 		$args = [
@@ -62,7 +62,7 @@ class Orders_Table extends WP_Posts_List_Table {
 	/**
 	 * Displays the search box.
 	 *
-	 * @since TBD
+	 * @since 5.13.0
 	 *
 	 * @param string $text     The 'submit' button label.
 	 * @param string $input_id ID attribute value for the search input field.
@@ -100,7 +100,7 @@ class Orders_Table extends WP_Posts_List_Table {
 	/**
 	 * Generates the required HTML for a list of row action links.
 	 *
-	 * @since TBD
+	 * @since 5.13.0
 	 *
 	 * Remove method to let the actions be displayed.
 	 *
@@ -120,7 +120,7 @@ class Orders_Table extends WP_Posts_List_Table {
 	 * Overrides the list of CSS classes for the WP_List_Table table tag.
 	 * This function is not hookable in core, so it needs to be overridden!
 	 *
-	 * @since TBD
+	 * @since 5.13.0
 	 *
 	 * @return array List of CSS classes for the table tag.
 	 */
@@ -134,7 +134,7 @@ class Orders_Table extends WP_Posts_List_Table {
 		/**
 		 * Filters the default classes added to the Tickets Commerce order report `WP_List_Table`.
 		 *
-		 * @since TBD
+		 * @since 5.13.0
 		 *
 		 * @param array $classes The array of classes to be applied.
 		 */
@@ -144,7 +144,7 @@ class Orders_Table extends WP_Posts_List_Table {
 	/**
 	 * Returns the  list of columns.
 	 *
-	 * @since TBD
+	 * @since 5.13.0
 	 *
 	 * @return array An associative array in the format [ <slug> => <title> ]
 	 */
@@ -152,7 +152,7 @@ class Orders_Table extends WP_Posts_List_Table {
 		/**
 		 * Filters the list of columns for the Tickets Commerce order report.
 		 *
-		 * @since TBD
+		 * @since 5.13.0
 		 *
 		 * @param array $columns List of columns.
 		 */
@@ -173,7 +173,7 @@ class Orders_Table extends WP_Posts_List_Table {
 	/**
 	 * Generates content for a single row of the table
 	 *
-	 * @since TBD
+	 * @since 5.13.0
 	 *
 	 * @param WP_Post $item The current item.
 	 * @param int     $level The current level Not used for non hierarchical CPTs.
@@ -199,7 +199,7 @@ class Orders_Table extends WP_Posts_List_Table {
 	/**
 	 * Get the list of bulk actions available.
 	 *
-	 * @since TBD
+	 * @since 5.13.0
 	 *
 	 * @return array
 	 */
@@ -210,7 +210,7 @@ class Orders_Table extends WP_Posts_List_Table {
 	/**
 	 * Get the views available on the table.
 	 *
-	 * @since TBD
+	 * @since 5.13.0
 	 *
 	 * @global array $locked_post_status This seems to be deprecated.
 	 * @global array $avail_post_stati
@@ -307,7 +307,7 @@ class Orders_Table extends WP_Posts_List_Table {
 		/**
 		 * Filters the list of views available on the Tickets Commerce order report.
 		 *
-		 * @since TBD
+		 * @since 5.13.0
 		 *
 		 * @param array $status_links List of views.
 		 */
@@ -317,7 +317,7 @@ class Orders_Table extends WP_Posts_List_Table {
 	/**
 	 * Message to be displayed when there are no items
 	 *
-	 * @since TBD
+	 * @since 5.13.0
 	 *
 	 * @return void
 	 */
@@ -325,7 +325,7 @@ class Orders_Table extends WP_Posts_List_Table {
 		/**
 		 * Filters the message to be displayed when there are no items in the Tickets Commerce order report.
 		 *
-		 * @since TBD
+		 * @since 5.13.0
 		 *
 		 * @param string $message The message to be displayed.
 		 */
@@ -335,7 +335,7 @@ class Orders_Table extends WP_Posts_List_Table {
 	/**
 	 * Handler for the columns that don't have a specific column_{name} handler function.
 	 *
-	 * @since TBD
+	 * @since 5.13.0
 	 *
 	 * @param WP_Post $item  The current item.
 	 * @param string  $column The current column.
@@ -349,7 +349,7 @@ class Orders_Table extends WP_Posts_List_Table {
 	/**
 	 * Returns the order status.
 	 *
-	 * @since TBD
+	 * @since 5.13.0
 	 *
 	 * @param WP_Post $item The current item.
 	 *
@@ -372,7 +372,7 @@ class Orders_Table extends WP_Posts_List_Table {
 	/**
 	 * Handler for the date column
 	 *
-	 * @since TBD
+	 * @since 5.13.0
 	 *
 	 * @param WP_Post $item The current item.
 	 *
@@ -414,7 +414,7 @@ class Orders_Table extends WP_Posts_List_Table {
 	/**
 	 * Handler for the items column
 	 *
-	 * @since TBD
+	 * @since 5.13.0
 	 *
 	 * @param WP_Post $item The current item.
 	 *
@@ -440,7 +440,7 @@ class Orders_Table extends WP_Posts_List_Table {
 	/**
 	 * Handler for the order column
 	 *
-	 * @since TBD
+	 * @since 5.13.0
 	 *
 	 * @param WP_Post $item The current item.
 	 *
@@ -461,7 +461,7 @@ class Orders_Table extends WP_Posts_List_Table {
 	/**
 	 * Handler for the total column
 	 *
-	 * @since TBD
+	 * @since 5.13.0
 	 *
 	 * @param WP_Post $item The current item.
 	 *
@@ -518,7 +518,7 @@ class Orders_Table extends WP_Posts_List_Table {
 	/**
 	 * Handler for the post parent column.
 	 *
-	 * @since TBD
+	 * @since 5.13.0
 	 *
 	 * @param WP_Post $item The current item.
 	 *
@@ -576,7 +576,7 @@ class Orders_Table extends WP_Posts_List_Table {
 	/**
 	 * Handler for gateway order id.
 	 *
-	 * @since TBD
+	 * @since 5.13.0
 	 *
 	 * @param WP_Post $item The current item.
 	 *
@@ -609,7 +609,7 @@ class Orders_Table extends WP_Posts_List_Table {
 	/**
 	 * Handler for gateway column
 	 *
-	 * @since TBD
+	 * @since 5.13.0
 	 *
 	 * @param WP_Post $item The current item.
 	 *
@@ -632,7 +632,7 @@ class Orders_Table extends WP_Posts_List_Table {
 	/**
 	 * List of sortable columns.
 	 *
-	 * @since TBD
+	 * @since 5.13.0
 	 *
 	 * @return array
 	 */
@@ -640,7 +640,7 @@ class Orders_Table extends WP_Posts_List_Table {
 		/**
 		 * Filters the list of sortable columns for the Tickets Commerce order report.
 		 *
-		 * @since TBD
+		 * @since 5.13.0
 		 *
 		 * @param array $columns List of columns that can be sorted.
 		 */
@@ -664,7 +664,7 @@ class Orders_Table extends WP_Posts_List_Table {
 	 *
 	 * @see \TEC\Tickets\Commerce\Repositories\Order_Repository for a List of valid ORM args.
 	 *
-	 * @since TBD
+	 * @since 5.13.0
 	 *
 	 * @return array
 	 */
@@ -678,7 +678,7 @@ class Orders_Table extends WP_Posts_List_Table {
 		/**
 		 * Filters the search types to be shown in the search box for filtering orders.
 		 *
-		 * @since TBD
+		 * @since 5.13.0
 		 *
 		 * @param array $options List of ORM search types and their labels.
 		 */
@@ -688,7 +688,7 @@ class Orders_Table extends WP_Posts_List_Table {
 	/**
 	 * Get the extra table navigation placed above or below or both the table.
 	 *
-	 * @since TBD
+	 * @since 5.13.0
 	 *
 	 * @param string $which The location of the extra table nav markup: 'top' or 'bottom'.
 	 *
@@ -714,7 +714,7 @@ class Orders_Table extends WP_Posts_List_Table {
 			 *
 			 * !!This is a wp core action!!
 			 *
-			 * @since TBD
+			 * @since 5.13.0
 			 *
 			 * @param string $post_type The post type slug.
 			 * @param string $which     The location of the extra table nav markup:
@@ -758,7 +758,7 @@ class Orders_Table extends WP_Posts_List_Table {
 		 *
 		 * !!This is a wp core action!!
 		 *
-		 * @since TBD
+		 * @since 5.13.0
 		 *
 		 * @param string $which The location of the extra table nav markup: 'top' or 'bottom'.
 		 */
@@ -768,7 +768,7 @@ class Orders_Table extends WP_Posts_List_Table {
 	/**
 	 * Displays a dropdown for filtering items in the list table by date range.
 	 *
-	 * @since TBD
+	 * @since 5.13.0
 	 *
 	 * @param string $post_type The post type.
 	 *
@@ -778,7 +778,7 @@ class Orders_Table extends WP_Posts_List_Table {
 		/**
 		 * Filters whether to remove the 'Date Range' drop-down from the order list table.
 		 *
-		 * @since TBD
+		 * @since 5.13.0
 		 *
 		 * @param bool   $disable   Whether to disable the drop-down. Default false.
 		 * @param string $post_type The post type.
@@ -827,7 +827,7 @@ class Orders_Table extends WP_Posts_List_Table {
 	/**
 	 * Displays a dropdown for filtering items in the list table by month.
 	 *
-	 * @since TBD
+	 * @since 5.13.0
 	 *
 	 * @param string $post_type The post type.
 	 *
@@ -837,7 +837,7 @@ class Orders_Table extends WP_Posts_List_Table {
 		/**
 		 * Filters whether to remove the 'Gateways' drop-down from the order list table.
 		 *
-		 * @since TBD
+		 * @since 5.13.0
 		 *
 		 * @param bool   $disable   Whether to disable the drop-down. Default false.
 		 * @param string $post_type The post type.
@@ -849,7 +849,7 @@ class Orders_Table extends WP_Posts_List_Table {
 		/**
 		 * Filters whether to short-circuit performing the gateways dropdown query.
 		 *
-		 * @since TBD
+		 * @since 5.13.0
 		 *
 		 * @param array|false $gateways  'Gateways' drop-down results. Default false.
 		 * @param string      $post_type The post type.
@@ -863,7 +863,7 @@ class Orders_Table extends WP_Posts_List_Table {
 		/**
 		 * Filters the 'Gateways' drop-down results.
 		 *
-		 * @since TBD
+		 * @since 5.13.0
 		 *
 		 * @param array    $gateways  Array of gateways.
 		 * @param string   $post_type The post type.
@@ -908,7 +908,7 @@ class Orders_Table extends WP_Posts_List_Table {
 	/**
 	 * Displays a dropdown for filtering items in the list table by month.
 	 *
-	 * @since TBD
+	 * @since 5.13.0
 	 *
 	 * @param string $post_type The post type.
 	 *
@@ -918,7 +918,7 @@ class Orders_Table extends WP_Posts_List_Table {
 		/**
 		 * Filters whether to remove the 'Event' drop-down from the order list table.
 		 *
-		 * @since TBD
+		 * @since 5.13.0
 		 *
 		 * @param bool   $disable   Whether to disable the drop-down. Default false.
 		 * @param string $post_type The post type.
@@ -967,7 +967,7 @@ class Orders_Table extends WP_Posts_List_Table {
 	/**
 	 * Displays a dropdown for filtering items in the list table by month.
 	 *
-	 * @since TBD
+	 * @since 5.13.0
 	 *
 	 * @param string $post_type The post type.
 	 *
@@ -977,7 +977,7 @@ class Orders_Table extends WP_Posts_List_Table {
 		/**
 		 * Filters whether to remove the 'Customer' drop-down from the order list table.
 		 *
-		 * @since TBD
+		 * @since 5.13.0
 		 *
 		 * @param bool   $disable   Whether to disable the drop-down. Default false.
 		 * @param string $post_type The post type.
