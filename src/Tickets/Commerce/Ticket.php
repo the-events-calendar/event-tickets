@@ -893,6 +893,7 @@ class Ticket {
 	 * @todo  TribeCommerceLegacy: This should be moved into using a Flag Action.
 	 *
 	 * @since 5.1.9
+	 * @since TBD Added a check to make sure shared capacity is not empty before updating global stock.
 	 *
 	 * @param int                                $ticket_id       The ticket post ID.
 	 * @param int                                $quantity        The quantity to increase the ticket sales by.
