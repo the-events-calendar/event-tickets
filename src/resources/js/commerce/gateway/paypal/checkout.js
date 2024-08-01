@@ -600,6 +600,13 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 		obj.startCheckoutObserving();
 	};
 
+	/**
+	 * Setup the MutationObserver omn the checkout container.
+	 *
+	 * @since 5.13.0.3
+	 *
+	 * @return {void}
+	 */
 	obj.startCheckoutObserving = () => {
 		const targetNode = $( tribe.tickets.commerce.selectors.checkoutContainer )[ 0 ];
 
@@ -623,6 +630,13 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 		obj.checkoutContainerObserver.observe(targetNode, config);
 	};
 
+	/**
+	 * Stop the MutationObserver on the checkout container.
+	 *
+	 * @since 5.13.0.3
+	 *
+	 * @return {void}
+	 */
 	obj.stopCheckoutObserving = () => {
 		if ( ! obj.checkoutContainerObserver) {
 			return;
