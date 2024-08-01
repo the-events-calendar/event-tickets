@@ -68,9 +68,11 @@ class QR extends Controller_Contract {
 		}
 
 		$attendee_data['asc_ticket'] = true;
-		$attendee_data['seat_label'] = ( (string) get_post_meta( $attendee_id,
+		$attendee_data['seat_label'] = ( (string) get_post_meta(
+			$attendee_id,
 			Meta::META_KEY_ATTENDEE_SEAT_LABEL,
-			true )
+			true 
+		)
 		);
 
 		return $attendee_data;
