@@ -754,11 +754,15 @@ class Tribe__Tickets__Attendees {
 	 * @since 4.6.2
 	 *
 	 * @param bool $all Whether to generate a CSV for attendees of all events or just the current one.
+	 *
+	 * @return void
 	 */
 	public function maybe_generate_csv( $all = false ) {
-
-		if ( ! isset( $_GET['attendees_csv_nonce'] ) || ! wp_verify_nonce( sanitize_key( $_GET['attendees_csv_nonce'] ), 'attendees_csv_nonce' ) || empty( $_GET['attendees_csv'] ) || ! current_user_can( 'manage_options' ) ) {
-			return false;
+		if ( ! isset( $_GET['attendees_csv_nonce'] )
+				|| ! wp_verify_nonce( sanitize_key( $_GET['attendees_csv_nonce'] ), 'attendees_csv_nonce' )
+				|| empty( $_GET['attendees_csv'] )
+				|| ! current_user_can( 'manage_options' ) ) {
+			return;
 		}
 
 		if ( ! $all ) {
@@ -835,7 +839,6 @@ class Tribe__Tickets__Attendees {
 	 *                               Accepts 'user' or 'email'.
 	 * @param ?string|?int $send_to  The recipient's ID or email.
 	 *                               If $type is 'user', this should be the user ID.
-	 *
 	 *
 	 * @return true|WP_Error
 	 */
