@@ -65,7 +65,11 @@ class Increase_Sales extends Flag_Action_Abstract {
 
 			$global_stock = new \Tribe__Tickets__Global_Stock( $ticket->get_event_id() );
 
-			tribe( Ticket::class )->increase_ticket_sales_by( $ticket->ID, $quantity, $ticket->global_stock_mode(), $global_stock );
+			// Is ticket shared capacity?
+			$global_stock_mode  = $ticket->global_stock_mode();
+			$is_shared_capacity = ! empty( $global_stock_mode ) && 'own' !== $global_stock_mode;
+
+			tribe( Ticket::class )->increase_ticket_sales_by( $ticket->ID, $quantity, $is_shared_capacity, $global_stock );
 		}
 	}
 }
