@@ -1,4 +1,0 @@
-Significance: patch
-Type: fix
-
-Replaces deprecated `DOMNodeInserted` event, fixing TicketsCommerce checkout with PayPal. [ET-2171]
