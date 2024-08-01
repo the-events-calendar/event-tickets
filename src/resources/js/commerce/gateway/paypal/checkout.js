@@ -87,7 +87,6 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 		checkoutScript: '.tec-tc-gateway-paypal-checkout-script',
 		activePayment: '.tec-tc-gateway-paypal-payment-active',
 		buttons: '#tec-tc-gateway-paypal-checkout-buttons',
-		animatedElement: '.paypal-buttons-context-iframe',
 		advancedPayments: {
 			container: '.tribe-tickets__commerce-checkout-paypal-advanced-payments-container',
 			form: '.tribe-tickets__commerce-checkout-paypal-advanced-payments-form',
@@ -542,16 +541,11 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 *
 	 * @since 5.1.10
 	 * @since 5.13.0.2 Replaced DOMNodeInserted with animationstart event.
+	 * @since 5.13.0.3 Added MutationObserver to handle the checkout container.
 	 */
-	obj.buttonsLoaded = function ( event ) {
-		if ( event.originalEvent.animationName !== 'node_inserted' ) {
-			return;
-		}
-
+	obj.buttonsLoaded = function () {
 		$document.trigger( tribe.tickets.commerce.customEvents.hideLoader );
-		$( tribe.tickets.commerce.selectors.checkoutContainer ).off( 'animationstart', obj.selectors.animatedElement, obj.buttonsLoaded );
-		$( tribe.tickets.commerce.selectors.checkoutContainer ).off( 'MSAnimationStart', obj.selectors.animatedElement, obj.buttonsLoaded );
-		$( tribe.tickets.commerce.selectors.checkoutContainer ).off( 'webkitAnimationStart', obj.selectors.animatedElement, obj.buttonsLoaded );
+		obj.stopCheckoutObserving();
 	};
 
 	/**
@@ -595,6 +589,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 *
 	 * @since 5.1.10
 	 * @since 5.13.0.2 Replaced DOMNodeInserted with animationstart event.
+	 * @since 5.13.0.3 Added MutationObserver to handle the checkout container.
 	 *
 	 * @return {void}
 	 */
@@ -602,9 +597,38 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 		$document.trigger( tribe.tickets.commerce.customEvents.showLoader );
 
 		// Hide loader when Paypal buttons are added.
-		$( tribe.tickets.commerce.selectors.checkoutContainer ).on( 'animationstart', obj.selectors.animatedElement, obj.buttonsLoaded );
-		$( tribe.tickets.commerce.selectors.checkoutContainer ).on( 'MSAnimationStart', obj.selectors.animatedElement, obj.buttonsLoaded );
-		$( tribe.tickets.commerce.selectors.checkoutContainer ).on( 'webkitAnimationStart', obj.selectors.animatedElement, obj.buttonsLoaded );
+		obj.startCheckoutObserving();
+	};
+
+	obj.startCheckoutObserving = () => {
+		const targetNode = $( tribe.tickets.commerce.selectors.checkoutContainer )[ 0 ];
+
+		obj.checkoutContainerObserver = new MutationObserver( ( mutationsList ) => {
+			for ( const mutation of mutationsList ) {
+				if ( mutation.type !== 'childList' || mutation.addedNodes.length === 0 ) {
+					continue;
+				}
+
+				for ( const node of mutation.addedNodes ) {
+					if ( $( obj.selectors.buttons ).find( 'iframe' ).length <= 0 ) {
+						continue;
+					}
+
+					obj.buttonsLoaded.call( node );
+				}
+			}
+		} );
+
+		const config = { childList: true, subtree: true };
+		obj.checkoutContainerObserver.observe(targetNode, config);
+	};
+
+	obj.stopCheckoutObserving = () => {
+		if ( ! obj.checkoutContainerObserver) {
+			return;
+		}
+
+		obj.checkoutContainerObserver.disconnect();
 	};
 
 	/**

@@ -75,7 +75,7 @@ if ( tribe_is_not_min_php_version() ) {
 	return false;
 }
 
-// The main plugin class.
+// Require the main plugin class.
 require_once EVENT_TICKETS_DIR . '/src/Tribe/Main.php';
 
 Tribe__Tickets__Main::instance();
