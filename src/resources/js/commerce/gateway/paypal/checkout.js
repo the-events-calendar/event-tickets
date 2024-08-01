@@ -541,10 +541,11 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 *
 	 * @since 5.1.10
 	 * @since 5.13.0.2 Replaced DOMNodeInserted with animationstart event.
+	 * @since 5.13.0.3 Added MutationObserver to handle the checkout container.
 	 */
 	obj.buttonsLoaded = function () {
 		$document.trigger( tribe.tickets.commerce.customEvents.hideLoader );
-		$( tribe.tickets.commerce.selectors.checkoutContainer ).off( 'DOMNodeInserted', obj.selectors.buttons, obj.buttonsLoaded );
+		obj.stopCheckoutObserving();
 	};
 
 	/**
@@ -588,6 +589,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 *
 	 * @since 5.1.10
 	 * @since 5.13.0.2 Replaced DOMNodeInserted with animationstart event.
+	 * @since 5.13.0.3 Added MutationObserver to handle the checkout container.
 	 *
 	 * @return {void}
 	 */
@@ -595,7 +597,38 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 		$document.trigger( tribe.tickets.commerce.customEvents.showLoader );
 
 		// Hide loader when Paypal buttons are added.
-		$( tribe.tickets.commerce.selectors.checkoutContainer ).on( 'DOMNodeInserted', obj.selectors.buttons, obj.buttonsLoaded );
+		obj.startCheckoutObserving();
+	};
+
+	obj.startCheckoutObserving = () => {
+		const targetNode = $( tribe.tickets.commerce.selectors.checkoutContainer )[ 0 ];
+
+		obj.checkoutContainerObserver = new MutationObserver( ( mutationsList ) => {
+			for ( const mutation of mutationsList ) {
+				if ( mutation.type !== 'childList' || mutation.addedNodes.length === 0 ) {
+					continue;
+				}
+
+				for ( const node of mutation.addedNodes ) {
+					if ( $( obj.selectors.buttons ).find( 'iframe' ).length <= 0 ) {
+						continue;
+					}
+
+					obj.buttonsLoaded.call( node );
+				}
+			}
+		} );
+
+		const config = { childList: true, subtree: true };
+		obj.checkoutContainerObserver.observe(targetNode, config);
+	};
+
+	obj.stopCheckoutObserving = () => {
+		if ( ! obj.checkoutContainerObserver) {
+			return;
+		}
+
+		obj.checkoutContainerObserver.disconnect();
 	};
 
 	/**
