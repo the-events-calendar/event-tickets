@@ -541,7 +541,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * Handle actions when checkout buttons are loaded.
 	 *
 	 * @since 5.1.10
-	 * @since TBD Replaced DOMNodeInserted with animationstart event.
+	 * @since 5.13.0.2 Replaced DOMNodeInserted with animationstart event.
 	 */
 	obj.buttonsLoaded = function ( event ) {
 		if ( event.originalEvent.animationName !== 'node_inserted' ) {
@@ -594,7 +594,7 @@ tribe.tickets.commerce.gateway.paypal.checkout = {};
 	 * Setup the triggers for Ticket Commerce loader view.
 	 *
 	 * @since 5.1.10
-	 * @since TBD Replaced DOMNodeInserted with animationstart event.
+	 * @since 5.13.0.2 Replaced DOMNodeInserted with animationstart event.
 	 *
 	 * @return {void}
 	 */
