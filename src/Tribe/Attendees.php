@@ -487,7 +487,7 @@ class Tribe__Tickets__Attendees {
 		} else {
 			$this->attendees_table = new Tribe__Tickets__Attendees_Table();
 
-			$this->maybe_generate_csv( 'all' === ( $_GET['event_id'] ?? '' ) ); // phpcs:ignore WordPress.Security
+			$this->maybe_generate_csv( 'all' === tribe_get_request_var( 'event_id' ) );
 
 			add_filter( 'admin_title', [ $this, 'filter_admin_title' ], 10, 2 );
 			add_filter( 'admin_body_class', [ $this, 'filter_admin_body_class' ] );
@@ -556,7 +556,7 @@ class Tribe__Tickets__Attendees {
 	 *
 	 * @since 4.6.2
 	 *
-	 * @param $event_id
+	 * @param mixed $event_id The ID of the event to export the list for or 'all' for all events.
 	 *
 	 * @return array
 	 */
@@ -564,7 +564,7 @@ class Tribe__Tickets__Attendees {
 		/**
 		 * Fire immediately prior to the generation of a filtered (exportable) attendee list.
 		 *
-		 * @param int $event_id
+		 * @param mixed $event_id The ID of the event to export the list for or 'all' for all events.
 		 */
 		do_action( 'tribe_events_tickets_generate_filtered_attendees_list', $event_id );
 
@@ -751,70 +751,47 @@ class Tribe__Tickets__Attendees {
 	 * Checks if the user requested a CSV export from the attendees list.
 	 * If so, generates the download and finishes the execution.
 	 *
-	 * @since 4.6.2
+	 * @param bool $all Whether to generate a CSV for attendees of all events or just the current one.
 	 *
+	 * @since 4.6.2
 	 */
 	public function maybe_generate_csv( $all = false ) {
-		if ( empty( $_GET['attendees_csv'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-			return;
-		}
 
-		if ( empty( $_GET['attendees_csv_nonce'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-			return;
-		}
-
-		if ( ! current_user_can( 'manage_options' ) ) {
-			return;
+		if ( ! isset( $_GET['attendees_csv_nonce'] ) || ! wp_verify_nonce( sanitize_key( $_GET['attendees_csv_nonce'] ), 'attendees_csv_nonce' ) || empty( $_GET['attendees_csv'] ) || ! current_user_can( 'manage_options' ) ) {
+			return false;
 		}
 
 		if ( ! $all ) {
-			if ( empty( $_GET['event_id'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-				return;
-			}
-
-			$event_id = absint( $_GET['event_id'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-
+			$event_id = absint( $_GET['event_id'] );
 			$event_id = Event::filter_event_id( $event_id, 'attendee-csv-report' );
+			$event    = get_post( $event_id );
 
-			// Verify event ID is a valid integer and the nonce is accepted.
-			if ( empty( $event_id ) || ! wp_verify_nonce( $_GET['attendees_csv_nonce'], 'attendees_csv_nonce' ) ) {
-				return;
-			}
-
-			$event = get_post( $event_id );
-
-			// Verify event exists and current user has access to it.
-			if (
-				! $event instanceof WP_Post
-				|| ! $this->user_can( 'edit_posts', $event_id )
-			) {
+			if ( is_null( $event ) ) {
 				return;
 			}
 
 			$items = $this->generate_filtered_list( $event_id );
 		} else {
-
+			$event_id = 'all';
 			$items = $this->generate_filtered_list( 'all' );
 		}
 
 		// Sanitize items for CSV usage.
 		$items = $this->sanitize_csv_rows( $items );
 
-		if ( ! $all ) {
-			/**
-			 * Allow for filtering and modifying the list of attendees that will be exported via CSV for a given event.
-			 *
-			 * @param array $items    The array of attendees that will be exported in this CSV file.
-			 * @param int   $event_id The ID of the event these attendees are associated with.
-			 */
-			$items = apply_filters( 'tribe_events_tickets_attendees_csv_items', $items, $event_id );
-		}
+		/**
+		 * Allow for filtering and modifying the list of attendees that will be exported via CSV for a given event.
+		 *
+		 * @param array $items    The array of attendees that will be exported in this CSV file.
+		 * @param mixed $event_id The ID of the event these attendees are associated with or 'all' for all events.
+		 */
+		$items = apply_filters( 'tribe_events_tickets_attendees_csv_items', $items, $event_id );
 
 		if ( empty( $items ) ) {
 			return;
 		}
 
-		$charset  = get_option( 'blog_charset' );
+		$charset = get_option( 'blog_charset' );
 
 		if ( ! $all ) {
 			$filename = sanitize_file_name( $event->post_title . '-' . _x( 'attendees', 'CSV export file name', 'event-tickets' ) );
