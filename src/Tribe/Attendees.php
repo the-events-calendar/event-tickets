@@ -751,9 +751,9 @@ class Tribe__Tickets__Attendees {
 	 * Checks if the user requested a CSV export from the attendees list.
 	 * If so, generates the download and finishes the execution.
 	 *
-	 * @param bool $all Whether to generate a CSV for attendees of all events or just the current one.
-	 *
 	 * @since 4.6.2
+	 *
+	 * @param bool $all Whether to generate a CSV for attendees of all events or just the current one.
 	 */
 	public function maybe_generate_csv( $all = false ) {
 
@@ -762,7 +762,7 @@ class Tribe__Tickets__Attendees {
 		}
 
 		if ( ! $all ) {
-			$event_id = absint( sanitize_key( $_GET['event_id'] ) );
+			$event_id = isset( $_GET['event_id'] ) ? absint( sanitize_key( $_GET['event_id'] ) ) : 0;
 			$event_id = Event::filter_event_id( $event_id, 'attendee-csv-report' );
 			$event    = get_post( $event_id );
 
