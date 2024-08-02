@@ -208,6 +208,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 = [TBD] TBD =
 
 * Fix - Ensure that users fill in all required billing address fields when Stripe advanced payment methods are available. [ETP-934]
+* Fix - Exporting all Attendees as a CSV file in new Tickets Attendees Page. [ET-2094]
 * Fix - Added missing global property for javascript undefined error `Uncaught TypeError: format is undefined`. This happened during ticket checkout.
 
 = [5.13.0.1] 2024-07-24 =
