@@ -211,6 +211,14 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 * Fix - Exporting all Attendees as a CSV file in new Tickets Attendees Page. [ET-2094]
 * Fix - Added missing global property for javascript undefined error `Uncaught TypeError: format is undefined`. This happened during ticket checkout.
 
+= [5.13.0.3] 2024-08-01 =
+
+* Fix - Ticket Commerce fails to load on checkout when both Stripe and PayPal are active. [ET-2172]
+
+= [5.13.0.2] 2024-08-01 =
+
+* Fix - Replaces deprecated `DOMNodeInserted` event, fixing TicketsCommerce checkout with PayPal. [ET-2171]
+
 = [5.13.0.1] 2024-07-24 =
 
 * Fix - Stellar Sale's banner links, details, and HTML tags handling. [TEC-5121]
