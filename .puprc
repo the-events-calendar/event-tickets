@@ -18,10 +18,7 @@
 	},
 	"checks": {
 		"tbd": {
-			"dirs": [
-				"src",
-				"common/src"
-			]
+			"dirs": [ "src" ]
 		},
 		"version-conflict": {}
 	},
@@ -34,20 +31,12 @@
 	],
 	"paths": {
 		"changelog": "readme.txt",
-		"css": [
-			"src/resources/postcss",
-			"common/src/resources/postcss"
-		],
+		"css": [ "src/resources/postcss" ],
 		"js": [
 			"src/resources/js",
-			"src/modules",
-			"common/src/resources/js",
-			"common/src/modules"
+			"src/modules"
 		],
-		"sync_files": [
-			"common/.distfiles",
-			"common/.gitattributes"
-		],
+		"sync_files": [],
 		"versions": [
 			{
 				"file": "src/Tribe/Main.php",
@@ -66,10 +55,7 @@
 				"regex": "(Stable tag: )(.+)"
 			}
 		],
-		"views": [
-			"src/views",
-			"common/src/views"
-		]
+		"views": [ "src/views" ]
 	},
 	"zip_name": "event-tickets"
 }
