@@ -61,6 +61,9 @@
       "formatter": {
         "filename": "bin/class-tec-changelog-formatter.php"
       },
+      "versioning": {
+        "filename": "bin/ModifiedSemverVersioning.php"
+      },
       "changes-dir": "changelog"
     }
   },
