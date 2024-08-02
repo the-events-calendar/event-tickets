@@ -7,19 +7,12 @@ use Spatie\Snapshots\MatchesSnapshots;
 use tad\WP\Snapshots\WPHtmlOutputDriver;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Cart\Unmanaged_Cart;
-use TEC\Tickets\Commerce\Checkout;
 use TEC\Tickets\Commerce\Gateways\Manual\Gateway;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Ticket;
-use TEC\Tickets\Commerce\Utils\Value;
 use Tribe\Shortcode\Manager;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
-use Tribe__Template;
-use Tribe__Tickets__Main;
-use Tribe__Tickets__Ticket_Object;
-
-use function Codeception\Extension\codecept_log;
 
 class Checkout_ShortcodeTest extends \Codeception\TestCase\WPTestCase {
 
@@ -71,13 +64,18 @@ class Checkout_ShortcodeTest extends \Codeception\TestCase\WPTestCase {
 
 		tribe_singleton( Cart::class, new Cart() );
 		tribe_singleton( Unmanaged_Cart::class, new Unmanaged_Cart() );
+		tribe_update_option( 'tickets-commerce-currency-code', 'USD' );
+		tribe_update_option( 'tickets-commerce-currency-decimal-separator', '.' );
+		tribe_update_option( 'tickets-commerce-currency-thousands-separator', ',' );
+		tribe_update_option( 'tickets-commerce-currency-number-of-decimals', '2' );
+		tribe_update_option( 'tickets-commerce-currency-position', 'prefix' );
 	}
 
 	/**
 	 * @before
 	 */
 	public function create_event_and_tickets() {
-		$this->page_id = $this->factory->post->create( [
+		$this->page_id = static::factory()->post->create( [
 			'post_title' => 'Page with Tickets',
 			'post_type'  => 'page',
 		] );
@@ -85,15 +83,6 @@ class Checkout_ShortcodeTest extends \Codeception\TestCase\WPTestCase {
 		$this->ticket_id2 = $this->create_tc_ticket( $this->page_id, 20 );
 		update_post_meta( $this->ticket_id2, Ticket::$sale_price_checked_key, '1');
 		update_post_meta( $this->ticket_id2, Ticket::$sale_price_key, '10');
-	}
-
-	/**
-	 * @after
-	 */
-	public function remove_event_and_tickets() {
-		wp_delete_post( $this->page_id, true );
-		wp_delete_post( $this->ticket_id1, true );
-		wp_delete_post( $this->ticket_id2, true );
 	}
 
 	/**
@@ -108,13 +97,21 @@ class Checkout_ShortcodeTest extends \Codeception\TestCase\WPTestCase {
 
 		$html = do_shortcode( '[tec_tickets_checkout]' );
 
-		$driver = new WPHtmlOutputDriver( home_url(), TRIBE_TESTS_HOME_URL );
-		$driver->setTolerableDifferences( [
-			$this->page_id,
-			$this->ticket_id2,
-		] );
+		$html = str_replace(
+			[
+				$this->page_id,
+				$this->ticket_id1,
+				$this->ticket_id2,
+			],
+			[
+				'{{page_id}}',
+				'{{ticket_id1}}',
+				'{{ticket_id2}}',
+			],
+			$html
+		);
 
-		$this->assertMatchesSnapshot( $html, $driver );
+		$this->assertMatchesSnapshot( $html );
 	}
 
 	/**

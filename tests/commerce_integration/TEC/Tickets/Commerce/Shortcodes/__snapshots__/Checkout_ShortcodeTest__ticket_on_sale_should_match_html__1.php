@@ -1,4 +1,13 @@
-<?php return '<div class="tribe-common event-tickets">
+<?php return '<link rel=\'stylesheet\' id=\'tec-variables-skeleton-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/common/src/resources/css/variables-skeleton.min.css?ver=6.1.0.0-dev\' type=\'text/css\' media=\'all\' />
+<link rel=\'stylesheet\' id=\'tribe-common-skeleton-style-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/common/src/resources/css/common-skeleton.min.css?ver=6.1.0.0-dev\' type=\'text/css\' media=\'all\' />
+<link rel=\'stylesheet\' id=\'tec-variables-full-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/common/src/resources/css/variables-full.min.css?ver=6.1.0.0-dev\' type=\'text/css\' media=\'all\' />
+<link rel=\'stylesheet\' id=\'tribe-common-full-style-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/common/src/resources/css/common-full.min.css?ver=6.1.0.0-dev\' type=\'text/css\' media=\'all\' />
+<link rel=\'stylesheet\' id=\'tribe-tickets-commerce-paypal-style-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/src/resources/css/tickets-commerce/gateway/paypal.min.css?ver=5.14.0.0-dev\' type=\'text/css\' media=\'all\' />
+<link rel=\'stylesheet\' id=\'tribe-common-responsive-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/src/resources/css/common-responsive.min.css?ver=5.14.0.0-dev\' type=\'text/css\' media=\'all\' />
+<link rel=\'stylesheet\' id=\'tribe-tickets-commerce-style-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/src/resources/css/tickets-commerce.min.css?ver=5.14.0.0-dev\' type=\'text/css\' media=\'all\' />
+<link rel=\'stylesheet\' id=\'tribe-tickets-commerce-stripe-style-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/src/resources/css/tickets-commerce/gateway/stripe.min.css?ver=5.14.0.0-dev\' type=\'text/css\' media=\'all\' />
+<link rel=\'stylesheet\' id=\'tribe-tickets-commerce-free-style-css\' href=\'http://wordpress.test/wp-content/plugins/event-tickets/src/resources/css/tickets-commerce/gateway/free.min.css?ver=5.14.0.0-dev\' type=\'text/css\' media=\'all\' />
+<div class="tribe-common event-tickets">
 	<section
 		class="tribe-tickets__commerce-checkout"
 		 data-js="tec-tickets-commerce-notice" data-notice-default-title="Checkout Unavailable!" data-notice-default-content="Checkout is not available at this time because a payment method has not been set up for this event. Please notify the site administrator." 	>
@@ -9,7 +18,7 @@
 	
 <a
 	class="tribe-common-anchor-alt tribe-tickets__commerce-checkout-header-link-back-to-event"
-	href="http://wordpress.test/?page_id=5096"
+	href="http://wordpress.test/page-with-tickets"
 >back to event</a>
 </div>
 </header>
@@ -18,25 +27,25 @@
 
 	<header class="tribe-tickets__commerce-checkout-cart-header">
 	<h4 class="tribe-common-h4 tribe-common-h--alt tribe-tickets__commerce-checkout-cart-header-title">
-		<a href="http://wordpress.test/?page_id=5096">
+		<a href="http://wordpress.test/page-with-tickets">
 			Page with Tickets		</a>
 	</h4>
 </header>
 
 	<div class="tribe-tickets__commerce-checkout-cart-items">
 					<article
-	 class="tribe-tickets__commerce-checkout-cart-item post-5098 tec_tc_ticket type-tec_tc_ticket status-publish hentry tribe-common-b1" 	 data-ticket-id="5098" data-ticket-quantity="1" data-ticket-price="10.00" >
+	 class="tribe-tickets__commerce-checkout-cart-item post-{{ticket_id2}} tec_tc_ticket type-tec_tc_ticket status-publish hentry tribe-common-b1" 	 data-ticket-id="{{ticket_id2}}" data-ticket-quantity="1" data-ticket-price="10.00" >
 
 	<div class="tribe-tickets__commerce-checkout-cart-item-details">
 
 	<div class="tribe-common-h6 tribe-tickets__commerce-checkout-cart-item-details-title">
-	Test TC ticket for 5096</div>
+	Test TC ticket for {{page_id}}</div>
 
 	<div class="tribe-tickets__commerce-checkout-cart-item-details-toggle">
 	<button
 		type="button"
 		class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__commerce-checkout-cart-item-details-button--more"
-		aria-controls="tribe-tickets__commerce-checkout-cart-item-details-description--5098"
+		aria-controls="tribe-tickets__commerce-checkout-cart-item-details-description--{{ticket_id2}}"
 	>
 		<span class="screen-reader-text tribe-common-a11y-visual-hide">
 			Open the ticket description in checkout.		</span>
@@ -46,7 +55,7 @@
 	<button
 		type="button"
 		class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__commerce-checkout-cart-item-details-button--less"
-		aria-controls="tribe-tickets__commerce-checkout-cart-item-details-description--5098"
+		aria-controls="tribe-tickets__commerce-checkout-cart-item-details-description--{{ticket_id2}}"
 	>
 		<span class="screen-reader-text tribe-common-a11y-visual-hide">
 			Close the ticket description in checkout.		</span>
@@ -55,8 +64,8 @@
 	</button>
 </div>
 
-	<div id="tribe-tickets__commerce-checkout-cart-item-details-description--5098"  class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__commerce-checkout-cart-item-details-description tribe-common-a11y-hidden" >
-	Test TC ticket description for 5096
+	<div id="tribe-tickets__commerce-checkout-cart-item-details-description--{{ticket_id2}}"  class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__commerce-checkout-cart-item-details-description tribe-common-a11y-hidden" >
+	Test TC ticket description for {{page_id}}
 	</div>
 
 </div>
@@ -98,12 +107,12 @@
 </footer>
 
 </div>
-				<div  class="tribe-tickets-loader__dots tribe-common-c-loader tribe-common-a11y-hidden" >
+				<div  class="tribe-tickets-loader__dots tribe-common-c-loader tribe-common-a11y-hidden tec-tickets__admin-settings-tickets-commerce-gateway-connected-resync-button-icon" >
 	<svg  class="tribe-common-c-svgicon tribe-common-c-svgicon--dot tribe-common-c-loader__dot tribe-common-c-loader__dot--first"  viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg"><circle cx="7.5" cy="7.5" r="7.5"/></svg>
 	<svg  class="tribe-common-c-svgicon tribe-common-c-svgicon--dot tribe-common-c-loader__dot tribe-common-c-loader__dot--second"  viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg"><circle cx="7.5" cy="7.5" r="7.5"/></svg>
 	<svg  class="tribe-common-c-svgicon tribe-common-c-svgicon--dot tribe-common-c-loader__dot tribe-common-c-loader__dot--third"  viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg"><circle cx="7.5" cy="7.5" r="7.5"/></svg>
 </div>
-		<div id=""  class="tribe-tickets__notice tribe-tickets__notice--error tribe-tickets__commerce-checkout-notice" >
+		<div id="tribe-tickets__commerce-checkout-footer-notice-error--no-gateway"  class="tribe-tickets__notice tribe-tickets__notice--error tribe-tickets__commerce-checkout-notice" >
 			<h3 class="tribe-common-h7 tribe-tickets-notice__title">Checkout Error!</h3>
 	
 	<div  class="tribe-common-b2 tribe-tickets-notice__content tribe-tickets__commerce-checkout-notice-content" >

@@ -9,7 +9,7 @@
 	
 <a
 	class="tribe-common-anchor-alt tribe-tickets__commerce-checkout-header-link-back-to-event"
-	href="http://wordpress.test/?page_id=5099"
+	href="http://wordpress.test/page-with-tickets-2"
 >back to event</a>
 </div>
 </header>
@@ -18,7 +18,7 @@
 
 	<header class="tribe-tickets__commerce-checkout-cart-header">
 	<h4 class="tribe-common-h4 tribe-common-h--alt tribe-tickets__commerce-checkout-cart-header-title">
-		<a href="http://wordpress.test/?page_id=5099">
+		<a href="http://wordpress.test/page-with-tickets-2">
 			Page with Tickets		</a>
 	</h4>
 </header>

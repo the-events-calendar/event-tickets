@@ -4,6 +4,7 @@ namespace TEC\Tickets\Commerce\Shortcodes;
 
 use Codeception\TestCase\WPTestCase;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Success;
 use Tribe\Tests\Traits\With_Uopz;
@@ -41,6 +42,7 @@ class Success_Shortcode_Test extends WPTestCase {
 		tribe_update_option( 'tickets-commerce-currency-thousands-separator', ',' );
 		tribe_update_option( 'tickets-commerce-currency-number-of-decimals', '2' );
 		tribe_update_option( 'tickets-commerce-currency-position', 'prefix' );
+		tribe( Cart::class )->clear_cart();
 	}
 
 	/**
