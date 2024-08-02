@@ -1,4 +1,4 @@
-## Changelog
+# Changelog
 
 ### [5.10.0] 2024-05-14
 
@@ -40,7 +40,7 @@
 * Feature - Add new Attendees page. [ET-1707]
 * Tweak - Added filters: `tec_tickets_attendees_page_url`, `tec_tickets_attendees_table_column_check_in`, `tec_tickets_attendees_table_query_args`, `tec_tickets_attendees_page_is_enabled`
 * Tweak - Changed views: `emails/template-parts/body/ticket/number-from-total`, `emails/template-parts/body/tickets-total`, `tickets/attendees-email`, `tickets/email-non-attendance`, `tickets/email-ticket-type-moved`, `tickets/email-tickets-moved`, `tickets/email`, `tickets/my-tickets`, `tickets/my-tickets/attendee-label`, `tickets/my-tickets/orders-list`, `tickets/my-tickets/ticket-information`, `tickets/my-tickets/tickets-list`, `tickets/my-tickets/title`, `tickets/my-tickets/user-details`, `tickets/orders-pp-tickets`, `tickets/orders-rsvp`, `tickets/orders-tc-tickets`, `tickets/orders`, `tickets/rsvp`, `tickets/tpp-return-to-cart`, `tickets/tpp-success`, `tickets/tpp`, `tickets/view-link`
-* Language -18 new strings added, 163 updated, 1 fuzzied, and 2 obsoleted
+* Language - 18 new strings added, 163 updated, 1 fuzzied, and 2 obsoleted
 
 ### [5.9.0] 2024-04-04
 
@@ -1127,7 +1127,7 @@
 * Fix - Prevent multiple clicks on `Confirm RSVP` from submitting entries [132961]
 * Fix - Make 'Not going' available to translate in RSVP dropdown [134358]
 * Fix - Update how we intercept the singular event template when The Events Calendar is active, on events created using the Block editor so that you can view 'My Tickets' correctly [134583]
-* Language: 101 new strings added, 158 updated, 48 fuzzied, and 104 obsoleted
+* Language - 101 new strings added, 158 updated, 48 fuzzied, and 104 obsoleted
 
 ### [4.10.8] 2019-09-16
 
@@ -1710,8 +1710,7 @@
 
 * Fix - Improved get_ticket_counts() to account for tickets with global stock enabled  [82684]
 * Fix - Improved tribe_events_count_available_tickets() to account for tickets with global stock enabled (thanks to Florian for reporting this) [81967]
-* Fix — Fixed some PHP notices that would show up when buying EDD tickets [83277]
-
+* Fix - Fixed some PHP notices that would show up when buying EDD tickets [83277]
 
 ### [4.5.2] 2017-07-13
 
@@ -1763,11 +1762,11 @@
 
 ### [4.4.7] 2017-05-04
 
-* Fix — Fixed "Email attendees" modal window display on mobile devices [72558]
+* Fix - Fixed "Email attendees" modal window display on mobile devices [72558]
 
 ### [4.4.6] 2017-04-19
 
-* Tweak — Some corrections on and tweaks of the welcome screen [75575]
+* Tweak - Some corrections on and tweaks of the welcome screen [75575]
 * Tweak - Added filters for adjusting the register post type arguments
 
 ### [4.4.5] 2017-03-23
@@ -1865,7 +1864,7 @@
 
 ### [4.2.6] 2016-08-31
 
-* Add - Utilize new tribe_is_event_past() conditional to display better messaging when tickets are not available (Thank you to @Jonathan here for reporting this in the forums.)
+* Feature - Utilize new tribe_is_event_past() conditional to display better messaging when tickets are not available (Thank you to @Jonathan here for reporting this in the forums.)
 
 ### [4.2.5] 2016-08-17
 
@@ -1955,7 +1954,7 @@
 
 ### [4.0.5] 2016-02-17
 
-* Add - Add a loading graphic after clicking send email for the attendee's report
+* Feature - Add a loading graphic after clicking send email for the attendee's report
 
 ### [4.0.4] 2015-12-23
 
@@ -1980,4 +1979,4 @@
 
 ### [4.0] 2015-12-02
 
-* Initial release
+* Feature - Initial release
