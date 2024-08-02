@@ -2,8 +2,10 @@
 
 namespace TEC\Tickets\Commerce\Admin_Tables;
 
+use SlopeIt\ClockMock\ClockMock;
 use TEC\Tickets\Commerce\Order;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
+use Tribe\Tests\Traits\With_Clock_Mock;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tests\Traits\With_Uopz;
@@ -11,47 +13,48 @@ use TEC\Tickets\Commerce\Hooks;
 use Tribe\Tickets\Test\Traits\With_Globals;
 use WP_Screen;
 use WP_Query;
+use Tribe__Date_Utils as Dates;
 
 class Orders_TableTest extends \Codeception\TestCase\WPTestCase {
-
 	use SnapshotAssertions;
 	use Order_Maker;
 	use Ticket_Maker;
 	use With_Uopz;
 	use With_Globals;
+	use With_Clock_Mock;
 
 	/**
 	 * Created orders.
 	 *
-	 * @var array
+	 * @var array<\WP_Post>
 	 */
 	protected $orders;
 
 	/**
 	 * Created tickets.
 	 *
-	 * @var array
+	 * @var array<int>
 	 */
 	protected $tickets;
 
 	/**
 	 * Created event IDs.
 	 *
-	 * @var array
+	 * @var array<int>
 	 */
 	protected $event_ids;
 
 	/**
 	 * Created user IDs.
 	 *
-	 * @var array
+	 * @var array<int>
 	 */
 	protected $user_ids = [];
 
 	/**
 	 * @before
 	 */
-	public function set_up() {
+	public function set_up_test_case() {
 		$this->set_global_value( 'current_screen', WP_Screen::get( 'edit-' . Order::POSTTYPE ) );
 		$this->set_global_value( 'typenow', Order::POSTTYPE );
 	}
@@ -60,6 +63,7 @@ class Orders_TableTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 */
 	public function it_should_match_single_row() {
+		$this->freeze_time( Dates::immutable( '2024-06-18 10:00:00' ) );
 		$this->prepare_tests_and_overwrite_wp_query();
 		$orders_table = new Orders_Table();
 
@@ -71,15 +75,15 @@ class Orders_TableTest extends \Codeception\TestCase\WPTestCase {
 
 		$html = str_replace( $this->orders['0']->ID, '{{order_id}}', $html );
 
-		$html = preg_replace(
-			'/<time datetime="(.*)" title="(.*)">(.*)<\/time>/',
-			'<time datetime="{{order_date}}" title="{{order_date}}">{{order_date}}</time>',
+		$html = str_replace(
+			wp_list_pluck( $this->orders, 'ID' ),
+			'{{order_id}}',
 			$html
 		);
 
-		$html = preg_replace(
-			'/Test TC ticket for ([0-9]+)/',
-			'Test TC ticket for {{ticket_id}}',
+		$html = str_replace(
+			$this->event_ids,
+			'{{event_id}}',
 			$html
 		);
 
@@ -125,6 +129,7 @@ class Orders_TableTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 */
 	public function it_should_match_display() {
+		$this->freeze_time( Dates::immutable( '2024-06-18 10:00:00' ) );
 		$this->prepare_tests_and_overwrite_wp_query();
 		$orders_table = new Orders_Table();
 
@@ -137,24 +142,15 @@ class Orders_TableTest extends \Codeception\TestCase\WPTestCase {
 
 		$html = ob_get_clean();
 
-		$html = preg_replace(
-			'/<time datetime="(.*)" title="(.*)">(.*)<\/time>/',
-			'<time datetime="{{order_date}}" title="{{order_date}}">{{order_date}}</time>',
+		$html = str_replace(
+			wp_list_pluck( $this->orders, 'ID' ),
+			'{{order_id}}',
 			$html
 		);
-		$html = preg_replace(
-			'/id="tec_tc_order-([0-9]+)"/',
-			'id="tec_tc_order-{{order_id}}"',
-			$html
-		);
-		$html = preg_replace(
-			'/#([0-9]+) Test Purchaser/',
-			'#{{order_id}} Test Purchaser',
-			$html
-		);
-		$html = preg_replace(
-			'/Test TC ticket for ([0-9]+)/',
-			'Test TC ticket for {{order_id}}',
+
+		$html = str_replace(
+			$this->event_ids,
+			'{{event_id}}',
 			$html
 		);
 
