@@ -758,7 +758,7 @@ class Tribe__Tickets__Attendees {
 	 * @return void
 	 */
 	public function maybe_generate_csv( $all = false ) {
-		if ( 
+		if (
 				! isset( $_GET['attendees_csv_nonce'] )
 				|| ! wp_verify_nonce( sanitize_key( $_GET['attendees_csv_nonce'] ), 'attendees_csv_nonce' )
 				|| empty( $_GET['attendees_csv'] )
