@@ -556,7 +556,7 @@ class Tribe__Tickets__Attendees {
 	 *
 	 * @since 4.6.2
 	 *
-	 * @param mixed $event_id The ID of the event to export the list for or 'all' for all events.
+	 * @param int|string $event_id The ID of the event to export the list for or 'all' for all events.
 	 *
 	 * @return array
 	 */
@@ -564,7 +564,7 @@ class Tribe__Tickets__Attendees {
 		/**
 		 * Fire immediately prior to the generation of a filtered (exportable) attendee list.
 		 *
-		 * @param mixed $event_id The ID of the event to export the list for or 'all' for all events.
+		 * @param int|string $event_id The ID of the event to export the list for or 'all' for all events.
 		 */
 		do_action( 'tribe_events_tickets_generate_filtered_attendees_list', $event_id );
 
@@ -758,7 +758,8 @@ class Tribe__Tickets__Attendees {
 	 * @return void
 	 */
 	public function maybe_generate_csv( $all = false ) {
-		if ( ! isset( $_GET['attendees_csv_nonce'] )
+		if ( 
+				! isset( $_GET['attendees_csv_nonce'] )
 				|| ! wp_verify_nonce( sanitize_key( $_GET['attendees_csv_nonce'] ), 'attendees_csv_nonce' )
 				|| empty( $_GET['attendees_csv'] )
 				|| ! current_user_can( 'manage_options' ) ) {
@@ -787,7 +788,7 @@ class Tribe__Tickets__Attendees {
 		 * Allow for filtering and modifying the list of attendees that will be exported via CSV for a given event.
 		 *
 		 * @param array $items    The array of attendees that will be exported in this CSV file.
-		 * @param mixed $event_id The ID of the event these attendees are associated with or 'all' for all events.
+		 * @param int|string $event_id The ID of the event these attendees are associated with or 'all' for all events.
 		 */
 		$items = apply_filters( 'tribe_events_tickets_attendees_csv_items', $items, $event_id );
 
