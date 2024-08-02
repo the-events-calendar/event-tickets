@@ -10,10 +10,10 @@
     'label' => '',
     'html' => '
 <div class="uplink-authorize-container">
-	<a href="https://my.theeventscalendar.com/account-auth/?uplink_callback={STATIC_CALLBACK}"
-	   target="_blank"
+	<a href="http://wordpress.test/wp-admin/network/"
+	   target="_self"
 	   class="button uplink-authorize not-authorized"	>
-		Connect	</a>
+		Contact your network administrator to connect	</a>
 </div>
 
 ',
