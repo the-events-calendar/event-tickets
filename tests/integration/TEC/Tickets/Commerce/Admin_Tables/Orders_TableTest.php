@@ -2,7 +2,6 @@
 
 namespace TEC\Tickets\Commerce\Admin_Tables;
 
-use SlopeIt\ClockMock\ClockMock;
 use TEC\Tickets\Commerce\Order;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use Tribe\Tests\Traits\With_Clock_Mock;
