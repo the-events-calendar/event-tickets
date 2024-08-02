@@ -88,7 +88,12 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 			return self::$ticket_name_cache[ $cache_key ];
 		}
 
-		$ticket_post = get_page_by_title( $ticket_name, OBJECT, $this->rsvp_tickets->ticket_object );
+		$ticket_post = ( new WP_Query( [
+			'post_type'      => $this->rsvp_tickets->ticket_object,
+			'post_name'      => $ticket_name,
+			'posts_per_page' => 1,
+		] ) )->get_posts()[0] ?? false;
+
 		if ( empty( $ticket_post ) ) {
 			return false;
 		}
