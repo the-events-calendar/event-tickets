@@ -854,13 +854,6 @@ class Controller_Test extends Controller_Test_Case {
 		$row_actions = apply_filters( 'post_row_actions', [], $post );
 		
 		$this->assertContains( 'tickets_seats', array_keys( $row_actions ) );
-		
-		// Removing the layout enabled meta should remove the row action.
-		delete_post_meta( $event_id, Meta::META_KEY_ENABLED );
-		
-		$row_actions = apply_filters( 'post_row_actions', [], $post );
-		$this->assertNotContains( 'tickets_seats', array_keys( $row_actions ) );
-		
 		$json = str_replace(
 			$event_id,
 			'{{EVENT_ID}}',
@@ -868,5 +861,11 @@ class Controller_Test extends Controller_Test_Case {
 		);
 		
 		$this->assertMatchesJsonSnapshot( $json );
+		
+		// Removing the layout enabled meta should remove the row action.
+		delete_post_meta( $event_id, Meta::META_KEY_ENABLED );
+		
+		$row_actions = apply_filters( 'post_row_actions', [], $post );
+		$this->assertNotContains( 'tickets_seats', array_keys( $row_actions ) );
 	}
 }
