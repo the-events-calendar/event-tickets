@@ -60,10 +60,7 @@ class Seats_Report extends Report_Abstract {
 	 *
 	 * @since TBD
 	 */
-	public function hook() {
-		// Register before the default priority of 10 to avoid submenu hook issues.
-		add_action( 'admin_menu', [ $this, 'register_seats_page' ], 5 );
-
+	public function register_tab() {
 		// Register the tabbed view.
 		$tc_tabbed_view = new Tabbed_View();
 		$tc_tabbed_view->set_active( self::$tab_slug );

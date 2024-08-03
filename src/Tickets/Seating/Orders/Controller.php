@@ -147,9 +147,9 @@ class Controller extends Controller_Contract {
 				2
 			);
 			add_action( 'tribe_tickets_orders_tabbed_view_register_tab_right', [ $this, 'register_seat_tab' ], 10, 2 );
-			add_action( 'init', [ $this, 'register_seat_reports' ] );
+			add_action( 'init', [ $this, 'register_seats_report_tab' ] );
+			add_action( 'admin_menu', [ $this, 'register_seats_report_page' ] );
 			add_filter( 'tec_tickets_commerce_reports_tabbed_page_title', [ $this, 'filter_seat_tab_title' ], 10, 3 );
-			
 			add_filter( 'post_row_actions', [ $this, 'add_seats_row_action' ], 10, 2 );
 		}
 		// Attendee delete handler.
@@ -189,7 +189,8 @@ class Controller extends Controller_Contract {
 		remove_filter( 'tec_tickets_commerce_reports_tabbed_view_tab_map', [ $this, 'include_seats_tab' ] );
 		remove_action( 'tec_tickets_commerce_reports_tabbed_view_after_register_tab', [ $this, 'register_seat_tab' ] );
 		remove_action( 'tribe_tickets_orders_tabbed_view_register_tab_right', [ $this, 'register_seat_tab' ] );
-		remove_action( 'init', [ $this, 'register_seat_reports' ] );
+		remove_action( 'init', [ $this, 'register_seats_report_tab' ] );
+		remove_action( 'admin_menu', [ $this, 'register_seats_report_page' ] );
 		remove_filter( 'tec_tickets_commerce_reports_tabbed_page_title', [ $this, 'filter_seat_tab_title' ] );
 		remove_filter( 'post_row_actions', [ $this, 'add_seats_row_action' ] );
 
@@ -230,8 +231,19 @@ class Controller extends Controller_Contract {
 	 *
 	 * @return void
 	 */
-	public function register_seat_reports() {
-		$this->seats_report->hook();
+	public function register_seats_report_tab() {
+		$this->seats_report->register_tab();
+	}
+	
+	/**
+	 * Registers the seat report page.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function register_seats_report_page() {
+		$this->seats_report->register_seats_page();
 	}
 
 	/**
