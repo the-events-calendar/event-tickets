@@ -1,6 +1,6 @@
 <?php
 /**
- * Hadles the integration of the Seating feature with tje QR code functionality.
+ * Handles the integration of the Seating feature with the QR code functionality.
  *
  * @since   TBD
  *
