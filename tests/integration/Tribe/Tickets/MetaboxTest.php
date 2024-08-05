@@ -12,6 +12,7 @@ use Tribe__Tickets__Metabox as Metabox;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 use TEC\Tickets\Commerce\Module as Commerce;
 use Tribe__Events__Main as TEC;
+use Tribe__Date_Utils as Date_Utils;
 
 class MetaboxTest extends WPTestCase {
 	use SnapshotAssertions;
@@ -27,7 +28,17 @@ class MetaboxTest extends WPTestCase {
 		$ticketable[] = 'post';
 		$ticketable[] = TEC::POSTTYPE;
 		tribe_update_option( 'ticket-enabled-post-types', array_values( array_unique( $ticketable ) ) );
-		$this->set_fn_return( 'gmdate', '7/25/2024' );
+		// Set up a fake "now".
+		$date = new \DateTime( '2019-09-11 22:00:00', new \DateTimeZone( 'America/New_York' ) );
+		$now  = $date->getTimestamp();
+		// Alter the concept of the `now` timestamp to return the timestamp for `2019-09-11 22:00:00` in NY timezone.
+		uopz_set_return(
+			'strtotime', static function ( $str ) use ( $now ) {
+			return $str === 'now' ? $now : strtotime( $str );
+		},  true
+		);
+		// Make sure that `now` (string) will be resolved to the fake date object.
+		uopz_set_return( Date_Utils::class, 'build_date_object', $date );
 	}
 
 	/**
@@ -260,5 +271,11 @@ class MetaboxTest extends WPTestCase {
 		$html = str_replace( 'the-events-calendar/common', 'event-tickets/common', $html );
 
 		$this->assertMatchesHtmlSnapshot( $html );
+	}
+
+	public function tearDown() {
+		parent::tearDown();
+		uopz_unset_return( 'strtotime' );
+		uopz_unset_return( Date_Utils::class, 'build_date_object' );
 	}
 }
