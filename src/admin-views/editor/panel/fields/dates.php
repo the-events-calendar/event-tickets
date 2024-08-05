@@ -22,11 +22,13 @@
  */
 
 // Default values for the Start date & time fields.
-$datepicker_format  = Tribe__Date_Utils::datepicker_formats( Tribe__Date_Utils::get_datepicker_format_index() );
-$default_start_date = gmdate( $datepicker_format );
+$datepicker_format = Tribe__Date_Utils::datepicker_formats( Tribe__Date_Utils::get_datepicker_format_index() );
+//phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date
+$default_start_date = date( $datepicker_format );
 $default_start_time = '00:00:00';
-$default_end_date   = gmdate( $datepicker_format, strtotime( '+1 day' ) );
-$default_end_time   = '00:00:00';
+//phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date
+$default_end_date = date( $datepicker_format, strtotime( '+1 day' ) );
+$default_end_time = '00:00:00';
 
 ?>
 <div class="input_block">
