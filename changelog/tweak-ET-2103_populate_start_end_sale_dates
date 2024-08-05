@@ -1,0 +1,4 @@
+Significance: minor
+Type: tweak
+
+Start Sale and End Sale date will autopopulate when creating a new ticket. [ET-2103]
