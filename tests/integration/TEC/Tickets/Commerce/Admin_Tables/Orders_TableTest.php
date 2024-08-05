@@ -75,12 +75,6 @@ class Orders_TableTest extends \Codeception\TestCase\WPTestCase {
 		$html = str_replace( $this->orders['0']->ID, '{{order_id}}', $html );
 
 		$html = str_replace(
-			wp_list_pluck( $this->orders, 'ID' ),
-			'{{order_id}}',
-			$html
-		);
-
-		$html = str_replace(
 			$this->event_ids,
 			'{{event_id}}',
 			$html
