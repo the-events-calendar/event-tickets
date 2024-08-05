@@ -2,9 +2,9 @@
 
 namespace TEC\Tickets\Commerce\Shortcodes;
 
+use Codeception\TestCase\WPTestCase;
 use Illuminate\Support\Arr;
 use Spatie\Snapshots\MatchesSnapshots;
-use tad\WP\Snapshots\WPHtmlOutputDriver;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Cart\Unmanaged_Cart;
 use TEC\Tickets\Commerce\Gateways\Manual\Gateway;
@@ -13,15 +13,16 @@ use TEC\Tickets\Commerce\Ticket;
 use Tribe\Shortcode\Manager;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
+use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
 
-class Checkout_ShortcodeTest extends \Codeception\TestCase\WPTestCase {
-
+class Checkout_ShortcodeTest extends WPTestCase {
 	use MatchesSnapshots;
 	use Ticket_Maker;
 	use With_Uopz;
+	use With_Tickets_Commerce;
 
 	/**
-	 * @var WP_Post
+	 * @var int
 	 */
 	public $page_id;
 
@@ -102,11 +103,13 @@ class Checkout_ShortcodeTest extends \Codeception\TestCase\WPTestCase {
 				$this->page_id,
 				$this->ticket_id1,
 				$this->ticket_id2,
+				'wp-content/plugins/the-events-calendar/common',
 			],
 			[
 				'{{page_id}}',
 				'{{ticket_id1}}',
 				'{{ticket_id2}}',
+				'wp-content/plugins/event-tickets/common',
 			],
 			$html
 		);
@@ -126,12 +129,20 @@ class Checkout_ShortcodeTest extends \Codeception\TestCase\WPTestCase {
 
 		$html = do_shortcode( '[tec_tickets_checkout]' );
 
-		$driver = new WPHtmlOutputDriver( home_url(), TRIBE_TESTS_HOME_URL );
-		$driver->setTolerableDifferences( [
-			$this->page_id,
-			$this->ticket_id1,
-		] );
+		$html = str_replace(
+			[
+				$this->page_id,
+				$this->ticket_id1,
+				'wp-content/plugins/the-events-calendar/common',
+			],
+			[
+				'{{page_id}}',
+				'{{ticket_id1}}',
+				'wp-content/plugins/event-tickets/common',
+			],
+			$html
+		);
 
-		$this->assertMatchesSnapshot( $html, $driver );
+		$this->assertMatchesSnapshot( $html );
 	}
 }

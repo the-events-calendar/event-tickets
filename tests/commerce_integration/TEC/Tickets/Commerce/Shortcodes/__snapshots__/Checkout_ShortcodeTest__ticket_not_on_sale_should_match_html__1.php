@@ -25,18 +25,18 @@
 
 	<div class="tribe-tickets__commerce-checkout-cart-items">
 					<article
-	 class="tribe-tickets__commerce-checkout-cart-item post-5100 tec_tc_ticket type-tec_tc_ticket status-publish hentry tribe-common-b1" 	 data-ticket-id="5100" data-ticket-quantity="1" data-ticket-price="10.00" >
+	 class="tribe-tickets__commerce-checkout-cart-item post-{{ticket_id1}} tec_tc_ticket type-tec_tc_ticket status-publish hentry tribe-common-b1" 	 data-ticket-id="{{ticket_id1}}" data-ticket-quantity="1" data-ticket-price="10.00" >
 
 	<div class="tribe-tickets__commerce-checkout-cart-item-details">
 
 	<div class="tribe-common-h6 tribe-tickets__commerce-checkout-cart-item-details-title">
-	Test TC ticket for 5099</div>
+	Test TC ticket for {{page_id}}</div>
 
 	<div class="tribe-tickets__commerce-checkout-cart-item-details-toggle">
 	<button
 		type="button"
 		class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__commerce-checkout-cart-item-details-button--more"
-		aria-controls="tribe-tickets__commerce-checkout-cart-item-details-description--5100"
+		aria-controls="tribe-tickets__commerce-checkout-cart-item-details-description--{{ticket_id1}}"
 	>
 		<span class="screen-reader-text tribe-common-a11y-visual-hide">
 			Open the ticket description in checkout.		</span>
@@ -46,7 +46,7 @@
 	<button
 		type="button"
 		class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__commerce-checkout-cart-item-details-button--less"
-		aria-controls="tribe-tickets__commerce-checkout-cart-item-details-description--5100"
+		aria-controls="tribe-tickets__commerce-checkout-cart-item-details-description--{{ticket_id1}}"
 	>
 		<span class="screen-reader-text tribe-common-a11y-visual-hide">
 			Close the ticket description in checkout.		</span>
@@ -55,8 +55,8 @@
 	</button>
 </div>
 
-	<div id="tribe-tickets__commerce-checkout-cart-item-details-description--5100"  class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__commerce-checkout-cart-item-details-description tribe-common-a11y-hidden" >
-	Test TC ticket description for 5099
+	<div id="tribe-tickets__commerce-checkout-cart-item-details-description--{{ticket_id1}}"  class="tribe-common-b2 tribe-common-b3--min-medium tribe-tickets__commerce-checkout-cart-item-details-description tribe-common-a11y-hidden" >
+	Test TC ticket description for {{page_id}}
 	</div>
 
 </div>
