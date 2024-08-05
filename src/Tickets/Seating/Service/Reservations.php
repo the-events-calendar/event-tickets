@@ -334,9 +334,7 @@ class Reservations {
 			$removed_here = (int) DB::query(
 				DB::prepare(
 					"DELETE FROM %i where meta_id in ({$meta_ids_list})",
-					$wpdb->postmeta,
-					$wpdb->posts,
-					Meta::META_KEY_RESERVATION_ID
+					$wpdb->postmeta
 				)
 			);
 
