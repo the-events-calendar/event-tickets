@@ -23,7 +23,9 @@ use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Traits\Reservations_Maker;
 use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
+use Tribe__Date_Utils;
 use Tribe__Tickets__Attendees as Attendees;
+use Tribe__Tickets__Tickets_View as Tickets_View;
 
 class Controller_Test extends Controller_Test_Case {
 	use SnapshotAssertions;
@@ -680,11 +682,163 @@ class Controller_Test extends Controller_Test_Case {
 		$this->make_controller()->register();
 
 		$send = tribe( Module::class )->send_tickets_email_for_attendees( [ $attendee->ID ] );
-		$html = str_replace( [ $event_id, $order->ID, $attendee->ID ], [
-			'EVENT_ID',
-			'ORDER_ID',
-			'ATTENDEE_ID'
-		], $html );
+		$html = str_replace(
+			[ $event_id, $order->ID, $attendee->ID ],
+			[
+				'EVENT_ID',
+				'ORDER_ID',
+				'ATTENDEE_ID',
+			],
+			$html
+		);
+
+		$this->assertMatchesHtmlSnapshot( $html );
+	}
+
+	public function my_tickets_page_data_provider(): Generator {
+		yield 'regular post with tickets' => [
+			function (): array {
+				tribe_update_option( 'ticket-enabled-post-types', [ 'post', 'tribe-events' ] );
+
+				$post_id = static::factory()->post->create(
+					[
+						'post_type' => 'post',
+					]
+				);
+
+				$ticket_id = $this->create_tc_ticket( $post_id, 10 );
+				$order     = $this->create_order(
+					[ $ticket_id => 1 ],
+					[
+						'purchaser_email' => 'test-purchaser@test.com',
+					]
+				);
+
+				$attendee = tribe_attendees()->by( 'event_id', $post_id )->by( 'order_status', [ 'completed' ] )->first();
+
+				return [ $post_id, [ $post_id, $ticket_id, $order->ID, $attendee->ID ] ];
+			},
+		];
+
+		yield 'order with 1 regular tickets' => [
+			function (): array {
+				$event_id = tribe_events()->set_args(
+					[
+						'title'      => 'Event with single seated attendee',
+						'status'     => 'publish',
+						'start_date' => '2020-01-01 00:00:00',
+						'duration'   => 2 * HOUR_IN_SECONDS,
+					]
+				)->create()->ID;
+
+				$ticket_id = $this->create_tc_ticket( $event_id, 10 );
+				$order     = $this->create_order(
+					[ $ticket_id => 1 ],
+					[
+						'purchaser_email' => 'test-purchaser@test.com',
+					]
+				);
+
+				$attendee = tribe_attendees()->by( 'event_id', $event_id )->by( 'order_status', [ 'completed' ] )->first();
+
+				return [ $event_id, [ $event_id, $order->ID, $ticket_id, $attendee->ID ] ];
+			},
+		];
+
+		yield 'order with 1 seated tickets without assigned seat' => [
+			function (): array {
+				$event_id = tribe_events()->set_args(
+					[
+						'title'      => 'Event with single seated attendee',
+						'status'     => 'publish',
+						'start_date' => '2020-01-01 00:00:00',
+						'duration'   => 2 * HOUR_IN_SECONDS,
+					]
+				)->create()->ID;
+
+				update_post_meta( $event_id, Meta::META_KEY_ENABLED, true );
+				update_post_meta( $event_id, Meta::META_KEY_LAYOUT_ID, 'layout-id' );
+
+				$ticket_id = $this->create_tc_ticket( $event_id, 10 );
+
+				update_post_meta( $ticket_id, Meta::META_KEY_ENABLED, true );
+				update_post_meta( $ticket_id, Meta::META_KEY_LAYOUT_ID, 'layout-id' );
+
+				$order = $this->create_order(
+					[ $ticket_id => 1 ],
+					[
+						'purchaser_email' => 'test-purchaser@test.com',
+					]
+				);
+
+				$attendee = tribe_attendees()->by( 'event_id', $event_id )->by( 'order_status', [ 'completed' ] )->first();
+
+				return [ $event_id, [ $event_id, $order->ID, $ticket_id, $attendee->ID ] ];
+			},
+		];
+
+		yield 'order with 1 seated tickets with assigned seat' => [
+			function (): array {
+				$event_id = tribe_events()->set_args(
+					[
+						'title'      => 'Event with single seated attendee',
+						'status'     => 'publish',
+						'start_date' => '2020-01-01 00:00:00',
+						'duration'   => 2 * HOUR_IN_SECONDS,
+					]
+				)->create()->ID;
+
+				update_post_meta( $event_id, Meta::META_KEY_ENABLED, true );
+				update_post_meta( $event_id, Meta::META_KEY_LAYOUT_ID, 'layout-id' );
+
+				$ticket_id = $this->create_tc_ticket( $event_id, 10 );
+
+				update_post_meta( $ticket_id, Meta::META_KEY_ENABLED, true );
+				update_post_meta( $ticket_id, Meta::META_KEY_LAYOUT_ID, 'layout-id' );
+
+				$order = $this->create_order(
+					[ $ticket_id => 1 ],
+					[
+						'purchaser_email' => 'test-purchaser@test.com',
+					]
+				);
+
+				$attendee = tribe_attendees()->by( 'event_id', $event_id )->by( 'order_status', [ 'completed' ] )->first();
+
+				update_post_meta( $attendee->ID, Meta::META_KEY_ATTENDEE_SEAT_LABEL, 'A-1' );
+
+				return [ $event_id, [ $event_id, $order->ID, $ticket_id, $attendee->ID ] ];
+			},
+		];
+	}
+
+	/**
+	 * @dataProvider my_tickets_page_data_provider
+	 *
+	 * @covers Attendee::inject_seat_info_in_my_tickets
+	 */
+	public function test_my_tickets_page_has_seat_info( Closure $fixture ): void {
+		[ $event_id, $post_ids ] = $fixture();
+
+		$this->make_controller()->register();
+		$view   = Tickets_View::instance();
+		$orders = $view->get_event_attendees_by_order( $event_id, 0 );
+
+		$template = tribe( 'tickets.editor.template' );
+		$html     = $template->template(
+			'tickets/my-tickets',
+			[
+				'title'   => 'Test My Tickets Page',
+				'post_id' => $event_id,
+				'orders'  => $orders,
+				'post'    => get_post( $event_id ),
+			],
+			false
+		);
+
+		$html       = str_replace( $post_ids, array_fill( 0, count( $post_ids ), '{{ID}}' ), $html );
+		$order_date = esc_html( Tribe__Date_Utils::reformat( current_time( 'mysql' ), Tribe__Date_Utils::DATEONLYFORMAT ) );
+		$html       = str_replace( $order_date, '{{order_date}}', $html );
 
 		$this->assertMatchesHtmlSnapshot( $html );
 	}
