@@ -2,6 +2,7 @@
 
 namespace TEC\Tickets\Commerce\Admin_Tables;
 
+use Codeception\TestCase\WPTestCase;
 use TEC\Tickets\Commerce\Order;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use Tribe\Tests\Traits\With_Clock_Mock;
@@ -9,17 +10,15 @@ use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tests\Traits\With_Uopz;
 use TEC\Tickets\Commerce\Hooks;
-use Tribe\Tickets\Test\Traits\With_Globals;
 use WP_Screen;
 use WP_Query;
 use Tribe__Date_Utils as Dates;
 
-class Orders_TableTest extends \Codeception\TestCase\WPTestCase {
+class Orders_TableTest extends WPTestCase {
 	use SnapshotAssertions;
 	use Order_Maker;
 	use Ticket_Maker;
 	use With_Uopz;
-	use With_Globals;
 	use With_Clock_Mock;
 
 	/**
@@ -54,8 +53,9 @@ class Orders_TableTest extends \Codeception\TestCase\WPTestCase {
 	 * @before
 	 */
 	public function set_up_test_case() {
-		$this->set_global_value( 'current_screen', WP_Screen::get( 'edit-' . Order::POSTTYPE ) );
-		$this->set_global_value( 'typenow', Order::POSTTYPE );
+		global $current_screen, $typenow;
+		$current_screen = WP_Screen::get( 'edit-' . Order::POSTTYPE );
+		$typenow        = Order::POSTTYPE;
 	}
 
 	/**
@@ -182,27 +182,27 @@ class Orders_TableTest extends \Codeception\TestCase\WPTestCase {
 
 		remove_filter( 'edit_posts_per_page', [ $this, 'return_1' ], 10 );
 
-		$this->set_global_value( '_REQUEST', 0, 'paged' );
+		$_REQUEST['paged'] = 0;
 
 		$this->assertEquals( 1, $orders_table->get_pagination_arg( 'per_page' ) );
 
 		$this->assertEquals( 1, $orders_table->get_pagenum() );
 
-		$this->set_global_value( '_REQUEST', 1, 'paged' );
+		$_REQUEST['paged'] = 1;
 
 		$this->assertEquals( 1, $orders_table->get_pagenum() );
 
-		$this->set_global_value( '_REQUEST', 2, 'paged' );
+		$_REQUEST['paged'] = 2;
 
 		$this->assertTrue( 2 === $_REQUEST['paged'] );
 
 		$this->assertEquals( 2, $orders_table->get_pagenum() );
 
-		$this->set_global_value( '_REQUEST', 100, 'paged' );
+		$_REQUEST['paged'] = 100;
 
 		$this->assertEquals( $orders_table->get_pagination_arg( 'total_items' ), $orders_table->get_pagenum() );
 
-		$this->set_global_value( '_REQUEST', 1000, 'paged' );
+		$_REQUEST['paged'] = 1000;
 
 		$this->assertEquals( $orders_table->get_pagination_arg( 'total_items' ), $orders_table->get_pagenum() );
 	}
@@ -213,12 +213,12 @@ class Orders_TableTest extends \Codeception\TestCase\WPTestCase {
 	public function it_should_match_current_action() {
 		$orders_table = new Orders_Table();
 
-		$this->set_global_value( '_REQUEST', true, 'filter_action' );
-		$this->set_global_value( '_REQUEST', 'test', 'action' );
+		$_REQUEST['filter_action'] = true;
+		$_REQUEST['action']        = 'test';
 
 		$this->assertFalse( $orders_table->current_action() );
 
-		$this->set_global_value( '_REQUEST', false, 'filter_action' );
+		$_REQUEST['filter_action'] = false;
 
 		$this->assertTrue( 'test' === $orders_table->current_action() );
 	}
@@ -326,7 +326,8 @@ class Orders_TableTest extends \Codeception\TestCase\WPTestCase {
 			'orderby'     => 'ID',
 		] );
 
-		$this->set_global_value( 'wp_query', $overwrite_query );
+		global $wp_query;
+		$wp_query = $overwrite_query;
 	}
 
 	/**
