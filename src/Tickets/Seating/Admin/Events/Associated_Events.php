@@ -10,15 +10,20 @@ if ( ! class_exists( 'WP_List_Table' ) || ! class_exists( 'WP_Posts_List_Table' 
 
 use WP_Posts_List_Table;
 use WP_Query;
+use WP_Post;
 
+/**
+ * Associated Events list table.
+ *
+ * @since TBD
+ */
 class Associated_Events extends WP_Posts_List_Table {
-	
 	/**
-	 * @var string
+	 * The constructor.
+	 *
+	 * @since TBD
 	 */
-	public static $slug = 'tec-tickets-seating-events';
-	
-	function __construct() {
+	public function __construct() {
 		parent::__construct(
 			[
 				'singular' => 'Event',
@@ -27,26 +32,50 @@ class Associated_Events extends WP_Posts_List_Table {
 		);
 	}
 	
-	function get_columns() {
+	/**
+	 * Get the columns.
+	 *
+	 * @since TBD
+	 *
+	 * @return string[]
+	 */
+	public function get_columns() {
 		return [
 			'title'  => __( 'Title', 'event-tickets' ),
 			'status' => __( 'Status', 'event-tickets' ),
 			'date'   => __( 'Date', 'event-tickets' ),
 		];
 	}
-
-	function column_default( $item, $column_name ) {
+	
+	/**
+	 * Get the default column.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post $item The current WP_Post object.
+	 * @param string  $column_name The column name.
+	 *
+	 * @return string
+	 */
+	public function column_default( $item, $column_name ) {
 		switch ( $column_name ) {
 			case 'status':
 				return $item->post_status;
 			case 'date':
 				return $item->post_date;
 			default:
-				return print_r( $item, true );
+				return $item->post_title;
 		}
 	}
-
-	function get_sortable_columns() {
+	
+	/**
+	 * The sortable columns.
+	 *
+	 * @since TBD
+	 *
+	 * @return array[]
+	 */
+	public function get_sortable_columns() {
 		return [
 			'title'  => [ 'title', true ],
 			'date'   => [ 'date', true ],
@@ -54,7 +83,14 @@ class Associated_Events extends WP_Posts_List_Table {
 		];
 	}
 	
-	function prepare_items() {
+	/**
+	 * Prepare the items.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function prepare_items() {
 		$per_page     = 10;
 		$current_page = $this->get_pagenum();
 		$offset       = ( $current_page - 1 ) * $per_page;
