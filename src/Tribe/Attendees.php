@@ -435,6 +435,7 @@ class Tribe__Tickets__Attendees {
 	 * Sets up the Attendees screen data.
 	 *
 	 * @since 4.6.2
+	 * @since TBD Included param $all to allow for CSV export of all attendees.
 	 */
 	public function screen_setup() {
 		$page   = tribe_get_request_var( 'page', false );
@@ -555,6 +556,7 @@ class Tribe__Tickets__Attendees {
 	 * It's used both for the Email functionality, as well as the CSV export.
 	 *
 	 * @since 4.6.2
+	 * @since TBD Included param $all to allow for CSV export of all attendees.
 	 *
 	 * @param int|string $event_id The ID of the event to export the list for or 'all' for all events.
 	 *
@@ -752,6 +754,7 @@ class Tribe__Tickets__Attendees {
 	 * If so, generates the download and finishes the execution.
 	 *
 	 * @since 4.6.2
+	 * @since TBD Included param $all to allow for CSV export of all attendees.
 	 *
 	 * @param bool $all Whether to generate a CSV for attendees of all events or just the current one.
 	 *
@@ -1114,6 +1117,7 @@ class Tribe__Tickets__Attendees {
 	 * Generate the export URL for exporting attendees.
 	 *
 	 * @since 5.1.7
+	 * @since TBD Included param $all to allow for CSV export of all attendees.
 	 *
 	 * @return string Relative URL for the export.
 	 */
