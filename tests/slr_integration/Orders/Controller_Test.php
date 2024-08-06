@@ -12,6 +12,7 @@ use TEC\Tickets\Commerce\Gateways\PayPal\Gateway;
 use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Status\Pending;
+use TEC\Tickets\Seating\Admin\Ajax;
 use TEC\Tickets\Seating\Frontend\Session;
 use TEC\Tickets\Seating\Meta;
 use TEC\Tickets\Seating\Service\OAuth_Token;
@@ -19,12 +20,15 @@ use TEC\Tickets\Seating\Service\Reservations;
 use TEC\Tickets\Seating\Tables\Sessions;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tests\Traits\WP_Remote_Mocks;
+use Tribe\Tests\Traits\WP_Send_Json_Mocks;
+use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Order_Maker;
 use Tribe\Tickets\Test\Commerce\TicketsCommerce\Ticket_Maker;
 use Tribe\Tickets\Test\Traits\Reservations_Maker;
 use Tribe\Tickets\Test\Traits\With_Tickets_Commerce;
 use Tribe__Date_Utils;
 use Tribe__Tickets__Attendees as Attendees;
+use Tribe__Tickets__Tickets as Tickets;
 use Tribe__Tickets__Tickets_View as Tickets_View;
 
 class Controller_Test extends Controller_Test_Case {
@@ -36,6 +40,8 @@ class Controller_Test extends Controller_Test_Case {
 	use WP_Remote_Mocks;
 	use OAuth_Token;
 	use Reservations_Maker;
+	use Attendee_Maker;
+	use WP_Send_Json_Mocks;
 
 	protected string $controller_class = Controller::class;
 
@@ -300,7 +306,7 @@ class Controller_Test extends Controller_Test_Case {
 			'post',
 			$reservations->get_confirm_url(),
 			function () use ( &$service_confirmations ) {
-				$service_confirmations++;
+				$service_confirmations ++;
 
 				return [
 					'headers' => [
@@ -714,7 +720,10 @@ class Controller_Test extends Controller_Test_Case {
 					]
 				);
 
-				$attendee = tribe_attendees()->by( 'event_id', $post_id )->by( 'order_status', [ 'completed' ] )->first();
+				$attendee = tribe_attendees()
+					->by( 'event_id', $post_id )
+					->by( 'order_status', [ 'completed' ] )
+					->first();
 
 				return [ $post_id, [ $post_id, $ticket_id, $order->ID, $attendee->ID ] ];
 			},
@@ -739,7 +748,10 @@ class Controller_Test extends Controller_Test_Case {
 					]
 				);
 
-				$attendee = tribe_attendees()->by( 'event_id', $event_id )->by( 'order_status', [ 'completed' ] )->first();
+				$attendee = tribe_attendees()
+					->by( 'event_id', $event_id )
+					->by( 'order_status', [ 'completed' ] )
+					->first();
 
 				return [ $event_id, [ $event_id, $order->ID, $ticket_id, $attendee->ID ] ];
 			},
@@ -771,7 +783,10 @@ class Controller_Test extends Controller_Test_Case {
 					]
 				);
 
-				$attendee = tribe_attendees()->by( 'event_id', $event_id )->by( 'order_status', [ 'completed' ] )->first();
+				$attendee = tribe_attendees()
+					->by( 'event_id', $event_id )
+					->by( 'order_status', [ 'completed' ] )
+					->first();
 
 				return [ $event_id, [ $event_id, $order->ID, $ticket_id, $attendee->ID ] ];
 			},
@@ -803,7 +818,10 @@ class Controller_Test extends Controller_Test_Case {
 					]
 				);
 
-				$attendee = tribe_attendees()->by( 'event_id', $event_id )->by( 'order_status', [ 'completed' ] )->first();
+				$attendee = tribe_attendees()
+					->by( 'event_id', $event_id )
+					->by( 'order_status', [ 'completed' ] )
+					->first();
 
 				update_post_meta( $attendee->ID, Meta::META_KEY_ATTENDEE_SEAT_LABEL, 'A-1' );
 
@@ -815,7 +833,7 @@ class Controller_Test extends Controller_Test_Case {
 	/**
 	 * @dataProvider my_tickets_page_data_provider
 	 *
-	 * @covers Attendee::inject_seat_info_in_my_tickets
+	 * @covers       Attendee::inject_seat_info_in_my_tickets
 	 */
 	public function test_my_tickets_page_has_seat_info( Closure $fixture ): void {
 		[ $event_id, $post_ids ] = $fixture();
@@ -837,9 +855,166 @@ class Controller_Test extends Controller_Test_Case {
 		);
 
 		$html       = str_replace( $post_ids, array_fill( 0, count( $post_ids ), '{{ID}}' ), $html );
-		$order_date = esc_html( Tribe__Date_Utils::reformat( current_time( 'mysql' ), Tribe__Date_Utils::DATEONLYFORMAT ) );
+		$order_date = esc_html( Tribe__Date_Utils::reformat( current_time( 'mysql' ),
+			Tribe__Date_Utils::DATEONLYFORMAT ) );
 		$html       = str_replace( $order_date, '{{order_date}}', $html );
 
 		$this->assertMatchesHtmlSnapshot( $html );
+	}
+
+	public function test_fetch_attendees_by_post(): void {
+		// Create a post with Tickets and Attendees, create a User to assign to the Attendees.
+		$post_id  = self::factory()->post->create();
+		$ticket_1 = $this->create_tc_ticket( $post_id, 10 );
+		$ticket_2 = $this->create_tc_ticket( $post_id, 20 );
+		// Create an Order for 3 of Ticket 1, visitor user.
+		$this->create_order( [ $ticket_1 => 3 ] );
+		// Create an Order for 3 of Ticket 2.
+		$purchaser = self::factory()->user->create( [ 'role' => 'subscriber' ] );
+		wp_set_current_user( $purchaser );
+		$this->create_order( [ $ticket_2 => 3 ] );
+		$data      = Tickets::get_attendees_by_args( [
+			'per_page'           => 10,
+			'return_total_found' => false,
+			'order'              => 'DESC',
+		], $post_id );
+		$attendees = $data['attendees'];
+		[
+			$attendee_6,
+			$attendee_5,
+			$attendee_4,
+			$attendee_3,
+			$attendee_2,
+			$attendee_1,
+		] = $attendees;
+		update_post_meta( $attendee_1, Meta::META_KEY_RESERVATION_ID, 'reservation-uuid-1' );
+		update_post_meta( $attendee_1, Meta::META_KEY_SEAT_TYPE, 'seat-type-1-uuid' );
+		update_post_meta( $attendee_1, Meta::META_KEY_ATTENDEE_SEAT_LABEL, 'A-1' );
+		update_post_meta( $attendee_2, Meta::META_KEY_RESERVATION_ID, 'reservation-uuid-2' );
+		update_post_meta( $attendee_2, Meta::META_KEY_SEAT_TYPE, 'seat-type-1-uuid' );
+		update_post_meta( $attendee_2, Meta::META_KEY_ATTENDEE_SEAT_LABEL, 'A-2' );
+		update_post_meta( $attendee_3, Meta::META_KEY_RESERVATION_ID, 'reservation-uuid-3' );
+		update_post_meta( $attendee_3, Meta::META_KEY_SEAT_TYPE, 'seat-type-1-uuid' );
+		update_post_meta( $attendee_3, Meta::META_KEY_ATTENDEE_SEAT_LABEL, 'A-3' );
+		update_post_meta( $attendee_4, Meta::META_KEY_RESERVATION_ID, 'reservation-uuid-4' );
+		update_post_meta( $attendee_4, Meta::META_KEY_SEAT_TYPE, 'seat-type-2-uuid' );
+		update_post_meta( $attendee_4, Meta::META_KEY_ATTENDEE_SEAT_LABEL, 'B-1' );
+		update_post_meta( $attendee_5, Meta::META_KEY_RESERVATION_ID, 'reservation-uuid-5' );
+		update_post_meta( $attendee_5, Meta::META_KEY_SEAT_TYPE, 'seat-type-2-uuid' );
+		update_post_meta( $attendee_5, Meta::META_KEY_ATTENDEE_SEAT_LABEL, 'B-2' );
+		update_post_meta( $attendee_6, Meta::META_KEY_RESERVATION_ID, 'reservation-uuid-6' );
+		update_post_meta( $attendee_6, Meta::META_KEY_SEAT_TYPE, 'seat-type-2-uuid' );
+		update_post_meta( $attendee_6, Meta::META_KEY_ATTENDEE_SEAT_LABEL, 'B-3' );
+		// Return 2 Attendees per page.
+		add_filter( 'tec_tickets_seating_fetch_attendees_per_page', fn() => 2 );
+
+		// Set up the request context.
+		wp_set_current_user( self::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		$_REQUEST['action']      = Ajax::ACTION_FETCH_ATTENDEES;
+		$_REQUEST['_ajax_nonce'] = wp_create_nonce( Ajax::NONCE_ACTION );
+
+		$controller = $this->make_controller();
+		$controller->register();
+
+		// Missing post ID.
+		unset( $_REQUEST['postId'] );
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+		do_action( 'wp_ajax_' . Ajax::ACTION_FETCH_ATTENDEES );
+		$this->assertTrue(
+			$wp_send_json_error->was_called_times_with( 1,
+				[
+					'error' => 'You do not have permission to perform this action.',
+				],
+				403
+			),
+			$wp_send_json_error->get_calls_as_string()
+		);
+		$this->reset_wp_send_json_mocks();
+
+		// Request Attendees for a post that has none.
+		$_REQUEST['postId']   = self::factory()->post->create();
+		$wp_send_json_success = $this->mock_wp_send_json_success();
+		do_action( 'wp_ajax_' . Ajax::ACTION_FETCH_ATTENDEES );
+		$this->assertTrue(
+			$wp_send_json_success->was_called_times_with( 1,
+				[
+					'attendees'    => [],
+					'totalBatches' => 0,
+					'currentBatch' => 1,
+					'nextBatch'    => false,
+				],
+			),
+			$wp_send_json_success->get_calls_as_string()
+		);
+		$this->reset_wp_send_json_mocks();
+
+		// Request first batch of Attendees, but do not specify the current batch.
+		$_REQUEST['postId'] = $post_id;
+		unset( $_REQUEST['currentBatch'] );
+		$wp_send_json_success = $this->mock_wp_send_json_success();
+		do_action( 'wp_ajax_' . Ajax::ACTION_FETCH_ATTENDEES );
+		$this->assertTrue(
+			$wp_send_json_success->was_called_times_with( 1,
+				[
+					'attendees'    => $controller->get_formatted_attendees( [ $attendee_6, $attendee_5 ] ),
+					'totalBatches' => 3,
+					'currentBatch' => 1,
+					'nextBatch'    => 2,
+				],
+			),
+			$wp_send_json_success->get_calls_as_string()
+		);
+		$this->reset_wp_send_json_mocks();
+
+		// Fetch second batch.
+		$_REQUEST['currentBatch'] = 2;
+		$wp_send_json_success     = $this->mock_wp_send_json_success();
+		do_action( 'wp_ajax_' . Ajax::ACTION_FETCH_ATTENDEES );
+		$this->assertTrue(
+			$wp_send_json_success->was_called_times_with( 1,
+				[
+					'attendees'    => $controller->get_formatted_attendees( [ $attendee_4, $attendee_3 ] ),
+					'totalBatches' => 3,
+					'currentBatch' => 2,
+					'nextBatch'    => 3,
+				],
+			),
+			$wp_send_json_success->get_calls_as_string()
+		);
+		$this->reset_wp_send_json_mocks();
+
+		// Fetch third batch.
+		$_REQUEST['currentBatch'] = 3;
+		$wp_send_json_success     = $this->mock_wp_send_json_success();
+		do_action( 'wp_ajax_' . Ajax::ACTION_FETCH_ATTENDEES );
+		$this->assertTrue(
+			$wp_send_json_success->was_called_times_with( 1,
+				[
+					'attendees'    => $controller->get_formatted_attendees( [ $attendee_2, $attendee_1 ] ),
+					'totalBatches' => 3,
+					'currentBatch' => 3,
+					'nextBatch'    => false,
+				],
+			),
+			$wp_send_json_success->get_calls_as_string()
+		);
+		$this->reset_wp_send_json_mocks();
+
+		// Try to fetch a 4th batch.
+		$_REQUEST['currentBatch'] = 4;
+		$wp_send_json_success     = $this->mock_wp_send_json_success();
+		do_action( 'wp_ajax_' . Ajax::ACTION_FETCH_ATTENDEES );
+		$this->assertTrue(
+			$wp_send_json_success->was_called_times_with( 1,
+				[
+					'attendees'    => [],
+					'totalBatches' => 0,
+					'currentBatch' => 4,
+					'nextBatch'    => false,
+				],
+			),
+			$wp_send_json_success->get_calls_as_string()
+		);
+		$this->reset_wp_send_json_mocks();
 	}
 }

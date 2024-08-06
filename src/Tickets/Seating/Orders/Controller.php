@@ -142,14 +142,14 @@ class Controller extends Controller_Contract {
 		}
 		// Attendee delete handler.
 		add_filter( 'tec_tickets_commerce_attendee_to_delete', [ $this, 'handle_attendee_delete' ] );
-		
+
 		add_action( 'tec_tickets_commerce_flag_action_generated_attendees', [ $this, 'confirm_all_reservations' ] );
 		add_action( 'wp_ajax_' . Ajax::ACTION_FETCH_ATTENDEES, [ $this, 'fetch_attendees_by_post' ] );
-		
+
 		add_filter( 'tec_tickets_commerce_get_attendee', [ $this, 'filter_attendee_object' ] );
 		add_action( 'tribe_template_before_include:tickets/emails/template-parts/body/ticket/ticket-name', [ $this, 'include_seat_info_in_email' ], 10, 3 );
 		add_filter( 'tribe_template_html:tickets/tickets/my-tickets/ticket-information', [ $this, 'inject_seat_info_in_my_tickets' ], 10, 4 );
-		
+
 		$this->register_assets();
 	}
 
@@ -182,7 +182,7 @@ class Controller extends Controller_Contract {
 
 		remove_action( 'tec_tickets_commerce_flag_action_generated_attendees', [ $this, 'confirm_all_reservations' ] );
 		remove_action( 'wp_ajax_' . Ajax::ACTION_FETCH_ATTENDEES, [ $this, 'fetch_attendees_by_post' ] );
-		
+
 		remove_filter( 'tec_tickets_commerce_get_attendee', [ $this, 'filter_attendee_object' ] );
 		remove_action( 'tribe_template_before_include:tickets/emails/template-parts/body/ticket/ticket-name', [ $this, 'include_seat_info_in_email' ], 10, 3 );
 		remove_filter( 'tribe_template_html:tickets/tickets/my-tickets/ticket-information', [ $this, 'inject_seat_info_in_my_tickets' ], 10, 4 );
@@ -364,7 +364,7 @@ class Controller extends Controller_Contract {
 	public function confirm_all_reservations(): void {
 		$this->session->confirm_all_reservations();
 	}
-	
+
 	/**
 	 * Handle attendee delete.
 	 *
@@ -377,7 +377,7 @@ class Controller extends Controller_Contract {
 	public function handle_attendee_delete( int $attendee_id ): int {
 		return $this->attendee->handle_attendee_delete( $attendee_id, $this->reservations );
 	}
-	
+
 	/**
 	 * Get the localized data for the report.
 	 *
@@ -416,7 +416,7 @@ class Controller extends Controller_Contract {
 			->add_dependency( 'tec-tickets-seating-service-bundle' )
 			->enqueue_on( Seats_Report::$asset_action )
 			->add_localize_script(
-				'tec.tickets.seating.admin.seatsReport.data',
+				'tec.tickets.seating.admin.seatsReport',
 				fn() => $this->get_localized_data( get_the_ID() )
 			)
 			->add_to_group( 'tec-tickets-seating-admin' )
@@ -449,67 +449,54 @@ class Controller extends Controller_Contract {
 			return;
 		}
 
-		$current_page = (int) tribe_get_request_var( 'page', 1 );
+		$current_batch = (int) tribe_get_request_var( 'currentBatch', 1 );
 
-		$args = [
-			'page'               => $current_page,
-			'per_page'           => 50,
+		/**
+		 * Filters the number of Attendees to fetch per page when replying to the Fetch Attendees AJAX request.
+		 *
+		 * @since TBD
+		 *
+		 * @param int $per_page The number of attendees to fetch per page.
+		 * @param int $post_id  The post ID.
+		 */
+		$per_page = apply_filters( 'tec_tickets_seating_fetch_attendees_per_page', 50, $post_id );
+
+		$data = Tickets::get_attendees_by_args( [
+			'page'               => $current_batch,
+			'per_page'           => $per_page,
 			'return_total_found' => true,
 			'order'              => 'DESC',
-		];
+		], $post_id );
 
-		$data                  = Tickets::get_attendees_by_args( $args, $post_id );
-		$formatted             = [];
-		$unknown_attendee_name = __( 'Unknown', 'event-tickets' );
-		$associated_attendees  = array_reduce(
-			$data['attendees'],
-			function ( array $carry, array $attendee ): array {
-				$carry[ $attendee['purchaser_id'] ]++;
+		$total_found = $data['total_found'] ?? 0;
+		$total_batches = (int) ( ceil( $total_found / $per_page ) );
+		$attendees   = $data['attendees'] ?? [];
 
-				return $carry;
-			},
-			[]
-		);
+		if ( $total_found === 0 ) {
+			wp_send_json_success(
+				[
+					'attendees'    => [],
+					'totalBatches' => $total_batches,
+					'currentBatch' => $current_batch,
+					'nextBatch'    => false,
+				]
+			);
 
-		foreach ( $data['attendees'] as $attendee ) {
-			$id      = (int) $attendee['attendee_id'];
-			$user_id = (int) ( $attendee['user_id'] ?? 0 );
-			if ( $user_id > 0 ) {
-				$user                       = get_user_by( 'id', $user_id );
-				$attendee['purchaser_name'] = $user ? $user->display_name : $unknown_attendee_name;
-			} else {
-				$attendee['purchaser_name'] ??= $unknown_attendee_name;
-			}
-
-			$name = trim( $attendee['holder_name'] ?? '' );
-			if ( ! $name ) {
-				$name = $attendee['purchaser_name'];
-			}
-			$purchaser_id = $attendee['purchaser_id'];
-
-			$formatted[] = [
-				'id'            => $id,
-				'name'          => $name,
-				'purchaser'     => [
-					'id'                  => $purchaser_id,
-					'name'                => $attendee['purchaser_name'],
-					'associatedAttendees' => $associated_attendees[ $purchaser_id ],
-				],
-				'ticketId'      => $attendee['product_id'],
-				'seatTypeId'    => get_post_meta( $id, Meta::META_KEY_SEAT_TYPE, true ),
-				'seatLabel'     => get_post_meta( $id, Meta::META_KEY_ATTENDEE_SEAT_LABEL, true ),
-				'reservationId' => get_post_meta( $id, Meta::META_KEY_RESERVATION_ID, true ),
-			];
+			return;
 		}
+
+		$formatted_attendees = $this->get_formatted_attendees( $attendees );
 
 		wp_send_json_success(
 			[
-				'attendees' => $formatted,
-				'total'     => $data['total_found'],
+				'attendees'    => $formatted_attendees,
+				'totalBatches' => $total_batches,
+				'currentBatch' => $current_batch,
+				'nextBatch'    => $current_batch === $total_batches ? false : $current_batch + 1,
 			]
 		);
 	}
-	
+
 	/**
 	 * Filters the default Attendee object to include seating data.
 	 *
@@ -522,7 +509,7 @@ class Controller extends Controller_Contract {
 	public function filter_attendee_object( WP_Post $post ): WP_Post {
 		return $this->attendee->include_seating_data( $post );
 	}
-	
+
 	/**
 	 * Includes seating data in the email.
 	 *
@@ -537,7 +524,7 @@ class Controller extends Controller_Contract {
 	public function include_seat_info_in_email( $file, $name, $template ): void {
 		$this->attendee->include_seat_info_in_email( $template );
 	}
-	
+
 	/**
 	 * Inject seating label with ticket name on My Tickets page.
 	 *
@@ -553,4 +540,66 @@ class Controller extends Controller_Contract {
 	public function inject_seat_info_in_my_tickets( $html, $file, $name, $template ): string {
 		return $this->attendee->inject_seat_info_in_my_tickets( $html, $template );
 	}
+
+	/**
+	 * Formats a  set of Attendees to the format expected by the Seats Report AJAX request.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<array<string,mixed>> $attendees The Attendees to format.
+	 *
+	 * @return array<array<string,mixed>> The formatted Attendees.
+	 */
+	public function get_formatted_attendees( array $attendees ): array {
+		$unknown_attendee_name = __( 'Unknown', 'event-tickets' );
+		$associated_attendees  = array_reduce(
+			$attendees,
+			static function ( array $carry, array $attendee ): array {
+				$purchaser_id = $attendee['purchaser_id'];
+
+				if ( ! isset( $carry[ $purchaser_id ] ) ) {
+					$carry[ $purchaser_id ] = 1;
+				} else {
+					$carry[ $purchaser_id ] ++;
+				}
+
+				return $carry;
+			},
+			[]
+		);
+
+		$formatted_attendees = [];
+		foreach ( $attendees as $attendee ) {
+			$id      = (int) $attendee['attendee_id'];
+			$user_id = (int) ( $attendee['user_id'] ?? 0 );
+			if ( $user_id > 0 ) {
+				$user                       = get_user_by( 'id', $user_id );
+				$attendee['purchaser_name'] = $user ? $user->display_name : $unknown_attendee_name;
+			} else {
+				$attendee['purchaser_name'] ??= $unknown_attendee_name;
+			}
+
+			$name = trim( $attendee['holder_name'] ?? '' );
+			if ( ! $name ) {
+				$name = $attendee['purchaser_name'];
+			}
+			$purchaser_id = $attendee['purchaser_id'];
+
+			$formatted_attendees[] = [
+				'id'            => $id,
+				'name'          => $name,
+				'purchaser'     => [
+					'id'                  => $purchaser_id,
+					'name'                => $attendee['purchaser_name'],
+					'associatedAttendees' => $associated_attendees[ $purchaser_id ],
+				],
+				'ticketId'      => $attendee['product_id'],
+				'seatTypeId'    => get_post_meta( $id, Meta::META_KEY_SEAT_TYPE, true ),
+				'seatLabel'     => get_post_meta( $id, Meta::META_KEY_ATTENDEE_SEAT_LABEL, true ),
+				'reservationId' => get_post_meta( $id, Meta::META_KEY_RESERVATION_ID, true ),
+			];
+		}
+
+		return $formatted_attendees;
+}
 }

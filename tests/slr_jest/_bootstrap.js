@@ -14,6 +14,7 @@ global.tec.tickets.seating = {
 	ajax: {
 		ajaxUrl: 'https://wordpress.test/wp-admin/admin-ajax.php',
 		ajaxNonce: '1234567890',
+		ACTION_FETCH_ATTENDEES: 'tec_tickets_seating_fetch_attendees',
 	},
 	utils: {
 		localizedStrings: {
@@ -89,5 +90,40 @@ global.tec.tickets.seating = {
 		thousandSeparator: ',',
 		position: 'prefix',
 		symbol: '$',
+	},
+	admin: {
+		seatsReport: {
+			postId: 17,
+			seatTypeMap: [
+				{
+					id: 'general-admission-seat-type-uuid',
+					tickets: [
+						{
+							ticketId: 23,
+							name: 'Adult',
+							price: 50,
+							description: 'Adult, General Admission',
+						},
+						{
+							ticketId: 89,
+							name: 'Child',
+							price: 30,
+							description: 'Child, General Admission',
+						},
+					],
+				},
+				{
+					id: 'vip-seat-type-uuid',
+					tickets: [
+						{
+							ticketId: 66,
+							name: 'VIP',
+							price: 100,
+							description: 'Best seats',
+						},
+					],
+				},
+			],
+		},
 	},
 };
