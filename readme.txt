@@ -207,7 +207,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 = [TBD] TBD =
 
-* Fix - Exporting all Attendees as a CSV file in new Tickets Attendees Page. [ET-2094]
+* Fix - Exporting all Attendees as a CSV file in the new Tickets Attendees Page. [ET-2094]
 
 = [5.13.0.1] 2024-07-24 =
 
