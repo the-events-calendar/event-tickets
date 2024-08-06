@@ -3,12 +3,12 @@
 namespace slr_integration;
 
 use TEC\Tickets\Seating\Admin\Ajax;
-use TEC\Tickets\Seating\Ajax_Checks;
+use TEC\Tickets\Seating\Ajax_Methods;
 use Tribe\Tests\Traits\With_Uopz;
 use Tribe\Tests\Traits\WP_Send_Json_Mocks;
 
 class Ajax_Checks_Test extends \Codeception\TestCase\WPTestCase {
-	use Ajax_Checks;
+	use Ajax_Methods;
 	use WP_Send_Json_Mocks;
 	use With_Uopz;
 

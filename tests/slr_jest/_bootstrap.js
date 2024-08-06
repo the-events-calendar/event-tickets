@@ -73,6 +73,10 @@ global.tec.tickets.seating = {
 			ajaxNonce: '1234567890',
 			ACTION_POST_RESERVATIONS: 'tec_tickets_seating_post_reservations',
 			ACTION_CLEAR_RESERVATIONS: 'tec_tickets_seating_clear_reservations',
+			ACTION_RESERVATION_CREATED:
+				'tec_tickets_seating_reservation_created',
+			ACTION_RESERVATION_UPDATED:
+				'tec_tickets_seating_reservation_updated',
 		},
 		session: {
 			ajaxUrl: 'https://wordpress.test/wp-admin/admin-ajax.php',

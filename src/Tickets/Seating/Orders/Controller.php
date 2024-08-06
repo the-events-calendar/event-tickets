@@ -2,7 +2,7 @@
 /**
  * The controller for the Seating Orders.
  *
- * @since TBD
+ * @since   TBD
  *
  * @package TEC/Tickets/Seating/Orders
  */
@@ -12,9 +12,10 @@ namespace TEC\Tickets\Seating\Orders;
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\lucatume\DI52\Container;
 use TEC\Common\StellarWP\Assets\Asset;
+use TEC\Common\StellarWP\DB\DB;
 use TEC\Tickets\Admin\Attendees\Page as Attendee_Page;
 use TEC\Tickets\Seating\Admin\Ajax;
-use TEC\Tickets\Seating\Ajax_Checks;
+use TEC\Tickets\Seating\Ajax_Methods;
 use TEC\Tickets\Seating\Built_Assets;
 use TEC\Tickets\Seating\Frontend;
 use TEC\Tickets\Seating\Frontend\Session;
@@ -22,24 +23,24 @@ use TEC\Tickets\Seating\Meta;
 use TEC\Tickets\Seating\Service\Reservations;
 use TEC\Tickets\Seating\Tables\Sessions;
 use Tribe__Tabbed_View as Tabbed_View;
+use Tribe__Template as Template;
 use Tribe__Tickets__Attendee_Repository as Attendee_Repository;
+use Tribe__Tickets__Main as Tickets_Main;
 use Tribe__Tickets__Ticket_Object as Ticket_Object;
+use Tribe__Tickets__Tickets as Tickets;
 use WP_Post;
 use WP_Query;
-use Tribe__Tickets__Main as Tickets_Main;
-use Tribe__Tickets__Tickets as Tickets;
-use Tribe__Template as Template;
 
 /**
  * Class Controller
  *
- * @since TBD
+ * @since   TBD
  *
  * @package TEC/Tickets/Seating/Orders
  */
 class Controller extends Controller_Contract {
 	use Built_Assets;
-	use Ajax_Checks;
+	use Ajax_Methods;
 
 	/**
 	 * A reference to Attendee data handler
@@ -145,10 +146,18 @@ class Controller extends Controller_Contract {
 
 		add_action( 'tec_tickets_commerce_flag_action_generated_attendees', [ $this, 'confirm_all_reservations' ] );
 		add_action( 'wp_ajax_' . Ajax::ACTION_FETCH_ATTENDEES, [ $this, 'fetch_attendees_by_post' ] );
+		add_action( 'wp_ajax_' . Ajax::ACTION_RESERVATION_CREATED, [ $this, 'update_reservation' ] );
+		add_action( 'wp_ajax_' . Ajax::ACTION_RESERVATION_UPDATED, [ $this, 'update_reservation' ] );
 
 		add_filter( 'tec_tickets_commerce_get_attendee', [ $this, 'filter_attendee_object' ] );
-		add_action( 'tribe_template_before_include:tickets/emails/template-parts/body/ticket/ticket-name', [ $this, 'include_seat_info_in_email' ], 10, 3 );
-		add_filter( 'tribe_template_html:tickets/tickets/my-tickets/ticket-information', [ $this, 'inject_seat_info_in_my_tickets' ], 10, 4 );
+		add_action( 'tribe_template_before_include:tickets/emails/template-parts/body/ticket/ticket-name',
+			[ $this, 'include_seat_info_in_email' ],
+			10,
+			3 );
+		add_filter( 'tribe_template_html:tickets/tickets/my-tickets/ticket-information',
+			[ $this, 'inject_seat_info_in_my_tickets' ],
+			10,
+			4 );
 
 		$this->register_assets();
 	}
@@ -182,10 +191,18 @@ class Controller extends Controller_Contract {
 
 		remove_action( 'tec_tickets_commerce_flag_action_generated_attendees', [ $this, 'confirm_all_reservations' ] );
 		remove_action( 'wp_ajax_' . Ajax::ACTION_FETCH_ATTENDEES, [ $this, 'fetch_attendees_by_post' ] );
+		remove_action( 'wp_ajax_' . Ajax::ACTION_RESERVATION_CREATED, [ $this, 'update_reservation' ] );
+		remove_action( 'wp_ajax_' . Ajax::ACTION_RESERVATION_UPDATED, [ $this, 'update_reservation' ] );
 
 		remove_filter( 'tec_tickets_commerce_get_attendee', [ $this, 'filter_attendee_object' ] );
-		remove_action( 'tribe_template_before_include:tickets/emails/template-parts/body/ticket/ticket-name', [ $this, 'include_seat_info_in_email' ], 10, 3 );
-		remove_filter( 'tribe_template_html:tickets/tickets/my-tickets/ticket-information', [ $this, 'inject_seat_info_in_my_tickets' ], 10, 4 );
+		remove_action( 'tribe_template_before_include:tickets/emails/template-parts/body/ticket/ticket-name',
+			[ $this, 'include_seat_info_in_email' ],
+			10,
+			3 );
+		remove_filter( 'tribe_template_html:tickets/tickets/my-tickets/ticket-information',
+			[ $this, 'inject_seat_info_in_my_tickets' ],
+			10,
+			4 );
 		remove_filter( 'tec_tickets_commerce_attendee_to_delete', [ $this, 'handle_attendee_delete' ] );
 	}
 
@@ -274,8 +291,8 @@ class Controller extends Controller_Contract {
 	/**
 	 * Saves the seat data for the attendee.
 	 *
-	 * @param WP_Post       $attendee   The generated attendee.
-	 * @param Ticket_Object $ticket     The ticket the attendee is generated for.
+	 * @param WP_Post       $attendee The generated attendee.
+	 * @param Ticket_Object $ticket   The ticket the attendee is generated for.
 	 *
 	 * @return void
 	 */
@@ -413,26 +430,26 @@ class Controller extends Controller_Contract {
 			$this->built_asset_url( 'admin/seatsReport.js' ),
 			Tickets_Main::VERSION
 		)
-			->add_dependency( 'tec-tickets-seating-service-bundle' )
-			->enqueue_on( Seats_Report::$asset_action )
-			->add_localize_script(
-				'tec.tickets.seating.admin.seatsReport',
-				fn() => $this->get_localized_data( get_the_ID() )
-			)
-			->add_to_group( 'tec-tickets-seating-admin' )
-			->add_to_group( 'tec-tickets-seating' )
-			->register();
+		     ->add_dependency( 'tec-tickets-seating-service-bundle' )
+		     ->enqueue_on( Seats_Report::$asset_action )
+		     ->add_localize_script(
+			     'tec.tickets.seating.admin.seatsReport',
+			     fn() => $this->get_localized_data( get_the_ID() )
+		     )
+		     ->add_to_group( 'tec-tickets-seating-admin' )
+		     ->add_to_group( 'tec-tickets-seating' )
+		     ->register();
 
 		Asset::add(
 			'tec-tickets-seating-admin-seats-report-style',
 			$this->built_asset_url( 'admin/seatsReport.css' ),
 			Tickets_Main::VERSION
 		)
-			->add_to_group( 'tec-tickets-seating-admin' )
-			->add_to_group( 'tec-tickets-seating' )
-			->enqueue_on( Seats_Report::$asset_action )
-			->add_to_group( 'tec-tickets-seating-admin' )
-			->register();
+		     ->add_to_group( 'tec-tickets-seating-admin' )
+		     ->add_to_group( 'tec-tickets-seating' )
+		     ->enqueue_on( Seats_Report::$asset_action )
+		     ->add_to_group( 'tec-tickets-seating-admin' )
+		     ->register();
 	}
 
 	/**
@@ -468,9 +485,9 @@ class Controller extends Controller_Contract {
 			'order'              => 'DESC',
 		], $post_id );
 
-		$total_found = $data['total_found'] ?? 0;
+		$total_found   = $data['total_found'] ?? 0;
 		$total_batches = (int) ( ceil( $total_found / $per_page ) );
-		$attendees   = $data['attendees'] ?? [];
+		$attendees     = $data['attendees'] ?? [];
 
 		if ( $total_found === 0 ) {
 			wp_send_json_success(
@@ -485,7 +502,7 @@ class Controller extends Controller_Contract {
 			return;
 		}
 
-		$formatted_attendees = $this->get_formatted_attendees( $attendees );
+		$formatted_attendees = $this->attendee->format_many( $attendees );
 
 		wp_send_json_success(
 			[
@@ -502,7 +519,7 @@ class Controller extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param WP_Post $post   The attendee post object, decorated with a set of custom properties.
+	 * @param WP_Post $post The attendee post object, decorated with a set of custom properties.
 	 *
 	 * @return WP_Post
 	 */
@@ -515,8 +532,8 @@ class Controller extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param string                $file   The email file.
-	 * @param array<string, string> $name   The email name.
+	 * @param string                $file     The email file.
+	 * @param array<string, string> $name     The email name.
 	 * @param Template              $template The email context.
 	 *
 	 * @return void
@@ -530,9 +547,9 @@ class Controller extends Controller_Contract {
 	 *
 	 * @since TBD
 	 *
-	 * @param string        $html The HTML content of ticket information.
-	 * @param string        $file Complete path to include the PHP File.
-	 * @param array<string> $name Template name.
+	 * @param string        $html     The HTML content of ticket information.
+	 * @param string        $file     Complete path to include the PHP File.
+	 * @param array<string> $name     Template name.
 	 * @param Template      $template Current instance of the Tribe__Template.
 	 *
 	 * @return string The HTML content of ticket information.
@@ -542,64 +559,124 @@ class Controller extends Controller_Contract {
 	}
 
 	/**
-	 * Formats a  set of Attendees to the format expected by the Seats Report AJAX request.
+	 * Updates an Attendee reservation from AJAX data.
 	 *
 	 * @since TBD
 	 *
-	 * @param array<array<string,mixed>> $attendees The Attendees to format.
-	 *
-	 * @return array<array<string,mixed>> The formatted Attendees.
+	 * @return void The function does not return a value but will send the JSON response.
 	 */
-	public function get_formatted_attendees( array $attendees ): array {
-		$unknown_attendee_name = __( 'Unknown', 'event-tickets' );
-		$associated_attendees  = array_reduce(
-			$attendees,
-			static function ( array $carry, array $attendee ): array {
-				$purchaser_id = $attendee['purchaser_id'];
+	public function update_reservation(): void {
+		$post_id = (int) tribe_get_request_var( 'postId' );
 
-				if ( ! isset( $carry[ $purchaser_id ] ) ) {
-					$carry[ $purchaser_id ] = 1;
-				} else {
-					$carry[ $purchaser_id ] ++;
-				}
-
-				return $carry;
-			},
-			[]
-		);
-
-		$formatted_attendees = [];
-		foreach ( $attendees as $attendee ) {
-			$id      = (int) $attendee['attendee_id'];
-			$user_id = (int) ( $attendee['user_id'] ?? 0 );
-			if ( $user_id > 0 ) {
-				$user                       = get_user_by( 'id', $user_id );
-				$attendee['purchaser_name'] = $user ? $user->display_name : $unknown_attendee_name;
-			} else {
-				$attendee['purchaser_name'] ??= $unknown_attendee_name;
-			}
-
-			$name = trim( $attendee['holder_name'] ?? '' );
-			if ( ! $name ) {
-				$name = $attendee['purchaser_name'];
-			}
-			$purchaser_id = $attendee['purchaser_id'];
-
-			$formatted_attendees[] = [
-				'id'            => $id,
-				'name'          => $name,
-				'purchaser'     => [
-					'id'                  => $purchaser_id,
-					'name'                => $attendee['purchaser_name'],
-					'associatedAttendees' => $associated_attendees[ $purchaser_id ],
-				],
-				'ticketId'      => $attendee['product_id'],
-				'seatTypeId'    => get_post_meta( $id, Meta::META_KEY_SEAT_TYPE, true ),
-				'seatLabel'     => get_post_meta( $id, Meta::META_KEY_ATTENDEE_SEAT_LABEL, true ),
-				'reservationId' => get_post_meta( $id, Meta::META_KEY_RESERVATION_ID, true ),
-			];
+		if ( ! $this->check_current_ajax_user_can( 'edit_post', $post_id ) ) {
+			return;
 		}
 
-		return $formatted_attendees;
-}
+		$json = $this->get_request_json();
+
+		if ( ! (
+			is_array( $json )
+			&& tribe_sanitize_deep( $json )
+			&& isset(
+				$json['attendeeId'],
+				$json['reservationId'],
+				$json['seatTypeId'],
+				$json['seatLabel']
+			)
+		) ) {
+			wp_send_json_error(
+				[
+					'error' => 'Invalid request body',
+				],
+				400
+			);
+
+			return;
+		}
+
+		$attendee_id = (int) $json['attendeeId'];
+
+		if ( isset( $json['ticketId'] ) ) {
+			$new_ticket_id           = $json['ticketId'];
+			$attendee_to_ticket_keys = array_values( tribe_attendees()->attendee_to_ticket_keys() );
+			global $wpdb;
+			$attendee_to_ticket_keys_list = DB::prepare(
+				implode( ',', array_fill( 0, count( $attendee_to_ticket_keys ), '%s' ) ),
+				$attendee_to_ticket_keys
+			);
+			$current_ticket_id            = DB::get_var(
+				DB::prepare(
+					"SELECT meta_value FROM %i WHERE post_id = %d AND meta_key IN ({$attendee_to_ticket_keys_list})",
+					$wpdb->postmeta,
+					$attendee_id
+				)
+			);
+
+			if ( $current_ticket_id != $new_ticket_id ) {
+				$move_tickets = Tickets_Main::instance()->move_tickets();
+				$moved        = $move_tickets->move_tickets(
+					[ $attendee_id ],
+					$new_ticket_id,
+					$post_id,
+					$post_id
+				);
+
+				if ( ! $moved ) {
+					wp_send_json_error(
+						[
+							'message' => 'Failed to move the attendee to the new ticket.',
+						],
+						500
+					);
+
+					return;
+				}
+			}
+		}
+
+		update_post_meta( $attendee_id, Meta::META_KEY_RESERVATION_ID, $json['reservationId'] );
+		update_post_meta( $attendee_id, Meta::META_KEY_SEAT_TYPE, $json['seatTypeId'] );
+		update_post_meta( $attendee_id, Meta::META_KEY_ATTENDEE_SEAT_LABEL, $json['seatLabel'] );
+
+		$send_update_to_attendee = ! empty( $json['sendUpdateToAttendee'] );
+
+		if ( $send_update_to_attendee ) {
+			$provider = tribe_tickets_get_ticket_provider( $attendee_id );
+			if ( $provider ) {
+				$sent = $provider->send_tickets_email_for_attendees( [ $attendee_id ], [
+					'post_id' => $post_id,
+				] );
+
+				if ( empty( $sent ) ) {
+					wp_send_json_error(
+						[
+							'error' => 'Failed to send the update mail.'
+						]
+					);
+
+					return;
+				}
+			}
+		}
+
+		$attendees = Tickets::get_attendees_by_args( [
+			'page'     => 1,
+			'per_page' => 1,
+			'by'       => [ 'id' => $attendee_id ],
+		], $post_id );
+		$formatted = $this->attendee->format_many( $attendees['attendees'] ?? [] );
+
+		if(empty($formatted)){
+			wp_send_json_error(
+				[
+					'error' => 'Failed to get formatted Attendee',
+				],
+				500
+			);
+
+			return;
+		}
+
+		wp_send_json_success( $formatted[0] );
+	}
 }

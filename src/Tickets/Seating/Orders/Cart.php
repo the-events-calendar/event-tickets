@@ -127,6 +127,31 @@ class Cart {
 	}
 
 	/**
+	 * Returns the memoized session token and object ID.
+	 *
+	 * If the values are not memoized, they will be memoized and returned.
+	 *
+	 * @since TBD
+	 *
+	 * @return array{0: string, 1: int} The memoized session token and object ID.
+	 */
+	private function get_session_token_object_id(): array {
+		$cache                = tribe_cache();
+		$cached_session_token = $cache['tec_tc_session_token_object_id_session_token'] ?? null;
+		$cached_object_id     = $cache['tec_tc_session_token_object_id_object_id'] ?? null;
+
+		if ( $cached_session_token === null || $cached_object_id === null ) {
+			[ $token, $object_id ] = $this->session->get_session_token_object_id();
+			$cached_session_token                                  = $token;
+			$cached_object_id                                      = $object_id;
+			$cache['tec_tc_session_token_object_id_session_token'] = $cached_session_token;
+			$cache['tec_tc_session_token_object_id_object_id']     = $cached_object_id;
+		}
+
+		return [ $cached_session_token, $cached_object_id ];
+	}
+
+	/**
 	 * Saves the seat data for the attendee.
 	 *
 	 * @since TBD
@@ -135,9 +160,9 @@ class Cart {
 	 * @param Ticket_Object $ticket     The ticket the attendee is generated for.
 	 */
 	public function save_seat_data_for_attendee( WP_Post $attendee, Ticket_Object $ticket ): void {
-		[ $token, $object_id ] = $this->session->get_session_token_object_id();
+		[ $token, $object_id ] = $this->get_session_token_object_id();
 		$event_id              = (int) $attendee->event_id;
-		
+
 		if ( $event_id === (int) $object_id ) {
 			$session_stack    = $this->get_session_stack( (string) $token, (int) $object_id, (int) $ticket->ID );
 			$reservation_data = $session_stack->current();
@@ -149,9 +174,9 @@ class Cart {
 			$seat_type_id = $reservation_data['seat_type_id'] ?? '';
 			update_post_meta( $attendee->ID, Meta::META_KEY_SEAT_TYPE, $seat_type_id );
 		}
-		
+
 		$layout_id = $attendee->product_id ? get_post_meta( $attendee->product_id, Meta::META_KEY_LAYOUT_ID, true ) : false;
-		
+
 		// Add the layout ID to the attendee if it exists for the attendee product.
 		if ( $layout_id ) {
 			update_post_meta( $attendee->ID, Meta::META_KEY_LAYOUT_ID, $layout_id );

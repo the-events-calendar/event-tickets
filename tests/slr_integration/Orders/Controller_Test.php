@@ -30,6 +30,7 @@ use Tribe__Date_Utils;
 use Tribe__Tickets__Attendees as Attendees;
 use Tribe__Tickets__Tickets as Tickets;
 use Tribe__Tickets__Tickets_View as Tickets_View;
+use TEC\Tickets\Seating\Orders\Attendee as Orders_Attendee;
 
 class Controller_Test extends Controller_Test_Case {
 	use SnapshotAssertions;
@@ -956,7 +957,7 @@ class Controller_Test extends Controller_Test_Case {
 		$this->assertTrue(
 			$wp_send_json_success->was_called_times_with( 1,
 				[
-					'attendees'    => $controller->get_formatted_attendees( [ $attendee_6, $attendee_5 ] ),
+					'attendees'    => tribe(Orders_Attendee::class)->format_many( [ $attendee_6, $attendee_5 ] ),
 					'totalBatches' => 3,
 					'currentBatch' => 1,
 					'nextBatch'    => 2,
@@ -973,7 +974,7 @@ class Controller_Test extends Controller_Test_Case {
 		$this->assertTrue(
 			$wp_send_json_success->was_called_times_with( 1,
 				[
-					'attendees'    => $controller->get_formatted_attendees( [ $attendee_4, $attendee_3 ] ),
+					'attendees'    => tribe(Orders_Attendee::class)->format_many( [ $attendee_4, $attendee_3 ] ),
 					'totalBatches' => 3,
 					'currentBatch' => 2,
 					'nextBatch'    => 3,
@@ -990,7 +991,7 @@ class Controller_Test extends Controller_Test_Case {
 		$this->assertTrue(
 			$wp_send_json_success->was_called_times_with( 1,
 				[
-					'attendees'    => $controller->get_formatted_attendees( [ $attendee_2, $attendee_1 ] ),
+					'attendees'    => tribe(Orders_Attendee::class)->format_many( [ $attendee_2, $attendee_1 ] ),
 					'totalBatches' => 3,
 					'currentBatch' => 3,
 					'nextBatch'    => false,

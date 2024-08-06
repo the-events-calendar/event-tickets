@@ -9,6 +9,8 @@ import {
 	OUTBOUND_SEAT_TYPE_TICKETS,
 	OUTBOUND_EVENT_ATTENDEES,
 	OUTBOUND_ATTENDEE_UPDATE,
+	RESERVATION_UPDATED,
+	RESERVATION_CREATED,
 	removeAction,
 	registerAction,
 	sendPostMessage,
@@ -17,6 +19,8 @@ import {
 	ajaxUrl,
 	ajaxNonce,
 	ACTION_FETCH_ATTENDEES,
+	ACTION_RESERVATION_CREATED,
+	ACTION_RESERVATION_UPDATED,
 } from '@tec/tickets/seating/ajax';
 import { localizedData } from './localized-data';
 
@@ -142,6 +146,102 @@ export async function sendAttendeesToService(iframe) {
 }
 
 /**
+ * @typedef {Object} ReservationUpdatedProps
+ * @property {string}  reservationId        The reservation UUID.
+ * @property {string}  attendeeId           The Attendee ID.
+ * @property {string}  seatTypeId           The seat type UUID.A
+ * @property {string}  seatLabel            The seat label.
+ * @property {string}  seatColor            The seat color.
+ * @property {boolean} sendUpdateToAttendee Whether to send the updated Attendee to the service
+ *
+ * @typedef {ReservationUpdatedProps} ReservationCreatedProps
+ * @property {number}  ticketId             The ticket ID.
+ */
+
+/**
+ * Updates the Attendee with the new reservation data.
+ *
+ * @since TBD
+ *
+ * @param {ReservationCreatedProps|ReservationUpdatedProps} props The update/create properties.
+ *
+ * @return {SeatReportAttendee} The updated Attendee data.
+ */
+async function updateAttendeeReservation(props) {
+	const url = new URL(ajaxUrl);
+	url.searchParams.set('_ajax_nonce', ajaxNonce);
+	const action = props.ticketId
+		? ACTION_RESERVATION_CREATED
+		: ACTION_RESERVATION_UPDATED;
+	url.searchParams.set('action', action);
+	url.searchParams.set('postId', postId);
+	const response = await fetch(url.toString(), {
+		method: 'POST',
+		body: JSON.stringify(props),
+	});
+
+	if (!response.ok) {
+		return false;
+	}
+
+	const json = await response.json();
+
+	if (!json.data) {
+		return false;
+	}
+
+	return json.data;
+}
+
+/**
+ * Handles the action to create an Attendee reservation.
+ *
+ * @since TBD
+ *
+ * @param {HTMLElement}             iframe The service iframe element to send messages to.
+ * @param {ReservationCreatedProps} props  The action properties.
+ *
+ * @return {Promise<boolean>} A promise that will resolve to `true` if the Attendee reservation was created, `false` otherwise.
+ */
+export async function handleReservationCreated(iframe, props) {
+	const updatedAttendee = await updateAttendeeReservation(props);
+
+	if (!updatedAttendee) {
+		return false;
+	}
+
+	sendPostMessage(iframe, OUTBOUND_ATTENDEE_UPDATE, {
+		attendee: updatedAttendee,
+	});
+
+	return true;
+}
+
+/**
+ * Handles the action to update an Attendee reservation.
+ *
+ * @since TBD
+ *
+ * @param {HTMLElement}             iframe The service iframe element to send messages to.
+ * @param {ReservationUpdatedProps} props  The action properties.
+ *
+ * @return {Promise<boolean>} A promise that will resolve to `true` if the Attendee reservation was updated, `false` otherwise.
+ */
+export async function handleReservationUpdated(iframe, props) {
+	const updatedAttendee = await updateAttendeeReservation(props);
+
+	if (!updatedAttendee) {
+		return false;
+	}
+
+	sendPostMessage(iframe, OUTBOUND_ATTENDEE_UPDATE, {
+		attendee: updatedAttendee,
+	});
+
+	return true;
+}
+
+/**
  * Registers the handlers for the messages received from the service.
  *
  * @since TBD
@@ -155,6 +255,13 @@ function registerActions(iframe) {
 		sendPostMessage(iframe, OUTBOUND_SEAT_TYPE_TICKETS, seatTypeMap);
 		await sendAttendeesToService(iframe);
 	});
+
+	registerAction(RESERVATION_CREATED, (props) =>
+		handleReservationCreated(iframe, props)
+	);
+	registerAction(RESERVATION_UPDATED, (props) =>
+		handleReservationUpdated(iframe, props)
+	);
 }
 
 /**

@@ -15,6 +15,8 @@ export const RESERVATIONS_UPDATED = 'app_postmessage_reservations_updated';
 export const SEAT_TYPES_UPDATED = 'app_postmessage_seat_types_updated';
 export const RESERVATIONS_UPDATED_FOLLOWING_SEAT_TYPES =
 	'app_postmessage_reservations_updated_following_seat_types';
+export const RESERVATION_UPDATED = 'app_postmessage_reservation_updated';
+export const RESERVATION_CREATED = 'app_postmessage_reservation_created';
 
 // Service-side redirection actions.
 export const GO_TO_MAPS_HOME = 'app_postmessage_goto_maps_home';
