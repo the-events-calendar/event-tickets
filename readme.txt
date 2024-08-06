@@ -205,7 +205,7 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [5.13.1] 2024-08-05 =
+= [5.13.1] 2024-08-06 =
 
 * Fix - Ensure that users fill in all required billing address fields when Stripe advanced payment methods are available. [ETP-934]
 * Fix - Added missing global property for javascript undefined error `Uncaught TypeError: format is undefined`. This happened during ticket checkout. [ET-2148]
