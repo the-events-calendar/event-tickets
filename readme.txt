@@ -205,6 +205,10 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Fix - Exporting all Attendees as a CSV file in new Tickets Attendees Page. [ET-2094]
+
 = [5.13.0.1] 2024-07-24 =
 
 * Fix - Stellar Sale's banner links, details, and HTML tags handling. [TEC-5121]
