@@ -312,7 +312,8 @@ class Attendee {
 					return $carry;
 				}
 
-				$carry[ $order_id ] = tribe_attendees()->where( 'order_id', $order_id )->count();
+				$provider           = tribe_tickets_get_ticket_provider( $attendee['product_id'] );
+				$carry[ $order_id ] = count( $provider->get_attendees_by_order_id( $order_id ) );
 
 				return $carry;
 			},
@@ -334,7 +335,6 @@ class Attendee {
 			if ( ! $name ) {
 				$name = $attendee['purchaser_name'];
 			}
-			$purchaser_id = $attendee['purchaser_id'] ?? false;
 			$order_id = $attendee['order_id'] ?? false;
 
 			$formatted_attendees[] = [
