@@ -10,7 +10,6 @@
 namespace TEC\Tickets\Seating\Orders;
 
 use Generator;
-use TEC\Tickets\Commerce\Attendee;
 use TEC\Tickets\Seating\Frontend\Session;
 use TEC\Tickets\Seating\Meta;
 use TEC\Tickets\Seating\Tables\Sessions;
@@ -163,7 +162,7 @@ class Cart {
 		[ $token, $object_id ] = $this->get_session_token_object_id();
 		$event_id              = (int) $attendee->event_id;
 
-		if ( $event_id === (int) $object_id ) {
+		if ($event_id && $event_id === (int) $object_id ) {
 			$session_stack    = $this->get_session_stack( (string) $token, (int) $object_id, (int) $ticket->ID );
 			$reservation_data = $session_stack->current();
 			$session_stack->next();
