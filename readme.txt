@@ -2,7 +2,7 @@
 
 Contributors: theeventscalendar, brianjessee, camwynsp, redscar, tribalmike, rafsuntaskin, aguseo, bordoni, borkweb, GeoffBel, jentheo, leahkoerper, lucatume, neillmcshea, vicskf, zbtirrell, juanfra
 Tags: tickets, event registration, RSVP, ticket sales, attendee management
-Stable tag: 5.13.0.1
+Stable tag: 5.13.1
 Requires at least: 6.3
 Tested up to: 6.6.1
 Requires PHP: 7.4
@@ -204,6 +204,21 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 
 == Changelog ==
+
+= [5.13.1] 2024-08-06 =
+
+* Fix - Ensure that users fill in all required billing address fields when Stripe advanced payment methods are available. [ETP-934]
+* Fix - Added missing global property for javascript undefined error `Uncaught TypeError: format is undefined`. This happened during ticket checkout. [ET-2148]
+* Tweak - Changed views: `v2/commerce/checkout/gateways`, `v2/commerce/checkout/purchaser-info`, `v2/commerce/checkout/purchaser-info/address`, `v2/commerce/checkout/purchaser-info/city`, `v2/commerce/checkout/purchaser-info/country`, `v2/commerce/checkout/purchaser-info/email`, `v2/commerce/checkout/purchaser-info/name`, `v2/commerce/checkout/purchaser-info/state`, `v2/commerce/checkout/purchaser-info/zip`, `v2/commerce/gateway/stripe/payment-element`
+* Language - 23 new strings added, 14 updated, 3 fuzzied, and 3 obsoleted
+
+= [5.13.0.3] 2024-08-01 =
+
+* Fix - Ticket Commerce fails to load on checkout when both Stripe and PayPal are active. [ET-2172]
+
+= [5.13.0.2] 2024-08-01 =
+
+* Fix - Replaces deprecated `DOMNodeInserted` event, fixing TicketsCommerce checkout with PayPal. [ET-2171]
 
 = [5.13.0.1] 2024-07-24 =
 
