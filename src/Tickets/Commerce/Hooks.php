@@ -1134,4 +1134,20 @@ class Hooks extends Service_Provider {
 
 		return $data;
 	}
+
+	/**
+	 * Runs the callbacks registered by the Hooks object on the `init` action.
+	 *
+	 * This method is useful for a late registration of the Commerce functionality after the `init` action has already
+	 * been fired.
+	 *
+	 * @since TBD
+	 */
+	public function run_init_hooks(): void {
+		$this->register_post_types();
+		$this->register_order_statuses();
+		$this->register_order_reports();
+		$this->register_attendee_reports();
+		$this->register_event_compatibility_hooks();
+	}
 }

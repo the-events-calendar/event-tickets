@@ -149,6 +149,8 @@ class Controller extends Controller_Contract {
 		if ( tec_tickets_commerce_is_enabled() ) {
 			$this->container->register( Commerce\Controller::class );
 		}
+
+		$this->container->register( QR::class );
 	}
 
 	/**

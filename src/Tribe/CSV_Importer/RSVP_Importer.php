@@ -88,7 +88,13 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 			return self::$ticket_name_cache[ $cache_key ];
 		}
 
-		$ticket_post = get_page_by_title( $ticket_name, OBJECT, $this->rsvp_tickets->ticket_object );
+		$ticket_post = ( new WP_Query( [
+			'post_type'      => $this->rsvp_tickets->ticket_object,
+			'post_title'      => $ticket_name,
+			'posts_per_page' => 1,
+			'post_status'    => 'any',
+		] ) )->get_posts()[0] ?? false;
+
 		if ( empty( $ticket_post ) ) {
 			return false;
 		}
@@ -164,14 +170,24 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 			return self::$event_name_cache[ $event_name ];
 		}
 
-		// by title
-		$event = get_page_by_title( $event_name, OBJECT, Tribe__Events__Main::POSTTYPE );
+		// By title.
+		global $wpdb;
+		$row = $wpdb->get_row(
+			$wpdb->prepare(
+				"SELECT * FROM %i WHERE post_type = %s AND post_title = %s LIMIT 1",
+				$wpdb->posts,
+				Tribe__Events__Main::POSTTYPE,
+				$event_name
+			)
+		);
+		$event = $row ? get_post( $row ) : false;
+
 		if ( empty( $event ) ) {
-			// by slug
+			// By slug.
 			$event = get_page_by_path( $event_name, OBJECT, Tribe__Events__Main::POSTTYPE );
 		}
 		if ( empty( $event ) ) {
-			// by ID
+			// By ID.
 			$event = get_post( $event_name );
 		}
 
