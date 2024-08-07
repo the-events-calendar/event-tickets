@@ -225,6 +225,12 @@ class Attendees_Test extends WPTestCase {
 				return [ $post_id, false ];
 			}
 		];
+
+		yield '`all` instead of event_id' => [
+			function () {
+				return 'all';
+			}
+		];
 	}
 
 	/**
@@ -246,6 +252,55 @@ class Attendees_Test extends WPTestCase {
 		} else {
 			$this->assertEquals( '', $html );
 		}
+	}
+
+	/**
+	 * @test
+	 */
+	public function test_generate_filtered_list() {
+		$post_id = tribe_events()->set_args( [
+			'title'      => 'Test Event 1',
+			'status'     => 'publish',
+			'start_date' => '2020-01-01 09:00:00',
+			'end_date'   => '2020-01-01 11:30:00',
+		] )->create()->ID;
+
+		$rsvp_ticket_id = $this->create_rsvp_ticket( $post_id );
+
+		$this->create_attendee_for_ticket( $rsvp_ticket_id, $post_id, [
+			'full_name' => 'John Doe',
+		] );
+
+		$post_id = tribe_events()->set_args( [
+			'title'      => 'Test Event 2',
+			'status'     => 'publish',
+			'start_date' => '2020-01-02 09:00:00',
+			'end_date'   => '2020-01-02 11:30:00',
+		] )->create()->ID;
+
+		$rsvp_ticket_id = $this->create_rsvp_ticket( $post_id );
+
+		$this->create_attendee_for_ticket( $rsvp_ticket_id, $post_id, [
+			'full_name' => 'Jane Doe',
+		] );
+
+		$attendees = new Attendees();
+		$attendees->attendees_table = new Tribe__Tickets__Attendees_Table();
+
+		// Generate filtered list of attendees for the latter event.
+		$items = $attendees->generate_filtered_list( $post_id );
+
+		// Get the 'Ticket Holder Name' column from the arrays.
+		$this->assertEquals( $items[0][5], 'Ticket Holder Name' );
+		$this->assertEquals( $items[1][5], 'Jane Doe' );
+
+		// Generate filtered list of attendees for all events.
+		$items = $attendees->generate_filtered_list( 'all' );
+
+		// Get the 'Ticket Holder Name' column from the arrays.
+		$this->assertEquals( $items[0][5], 'Ticket Holder Name' );
+		$this->assertEquals( $items[1][5], 'John Doe' );
+		$this->assertEquals( $items[2][5], 'Jane Doe' );
 	}
 
 	/**

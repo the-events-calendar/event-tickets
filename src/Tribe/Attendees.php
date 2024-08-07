@@ -562,7 +562,7 @@ class Tribe__Tickets__Attendees {
 	 *
 	 * @return array
 	 */
-	private function generate_filtered_list( $event_id ) {
+	public function generate_filtered_list( $event_id ) {
 		/**
 		 * Fire immediately prior to the generation of a filtered (exportable) attendee list.
 		 *
