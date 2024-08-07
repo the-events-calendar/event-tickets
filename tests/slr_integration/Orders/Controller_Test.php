@@ -4,6 +4,7 @@ namespace TEC\Tickets\Seating\Orders;
 
 use Closure;
 use Generator;
+use PHPUnit\Framework\AssertionFailedError;
 use tad\Codeception\SnapshotAssertions\SnapshotAssertions;
 use TEC\Common\Tests\Provider\Controller_Test_Case;
 use TEC\Tickets\Commerce\Attendee;
@@ -15,6 +16,7 @@ use TEC\Tickets\Commerce\Status\Pending;
 use TEC\Tickets\Seating\Admin\Ajax;
 use TEC\Tickets\Seating\Frontend\Session;
 use TEC\Tickets\Seating\Meta;
+use TEC\Tickets\Seating\Orders\Attendee as Orders_Attendee;
 use TEC\Tickets\Seating\Service\OAuth_Token;
 use TEC\Tickets\Seating\Service\Reservations;
 use TEC\Tickets\Seating\Tables\Sessions;
@@ -30,7 +32,6 @@ use Tribe__Date_Utils;
 use Tribe__Tickets__Attendees as Attendees;
 use Tribe__Tickets__Tickets as Tickets;
 use Tribe__Tickets__Tickets_View as Tickets_View;
-use TEC\Tickets\Seating\Orders\Attendee as Orders_Attendee;
 
 class Controller_Test extends Controller_Test_Case {
 	use SnapshotAssertions;
@@ -957,7 +958,7 @@ class Controller_Test extends Controller_Test_Case {
 		$this->assertTrue(
 			$wp_send_json_success->was_called_times_with( 1,
 				[
-					'attendees'    => tribe(Orders_Attendee::class)->format_many( [ $attendee_6, $attendee_5 ] ),
+					'attendees'    => tribe( Orders_Attendee::class )->format_many( [ $attendee_6, $attendee_5 ] ),
 					'totalBatches' => 3,
 					'currentBatch' => 1,
 					'nextBatch'    => 2,
@@ -974,7 +975,7 @@ class Controller_Test extends Controller_Test_Case {
 		$this->assertTrue(
 			$wp_send_json_success->was_called_times_with( 1,
 				[
-					'attendees'    => tribe(Orders_Attendee::class)->format_many( [ $attendee_4, $attendee_3 ] ),
+					'attendees'    => tribe( Orders_Attendee::class )->format_many( [ $attendee_4, $attendee_3 ] ),
 					'totalBatches' => 3,
 					'currentBatch' => 2,
 					'nextBatch'    => 3,
@@ -991,7 +992,7 @@ class Controller_Test extends Controller_Test_Case {
 		$this->assertTrue(
 			$wp_send_json_success->was_called_times_with( 1,
 				[
-					'attendees'    => tribe(Orders_Attendee::class)->format_many( [ $attendee_2, $attendee_1 ] ),
+					'attendees'    => tribe( Orders_Attendee::class )->format_many( [ $attendee_2, $attendee_1 ] ),
 					'totalBatches' => 3,
 					'currentBatch' => 3,
 					'nextBatch'    => false,
@@ -1017,5 +1018,297 @@ class Controller_Test extends Controller_Test_Case {
 			$wp_send_json_success->get_calls_as_string()
 		);
 		$this->reset_wp_send_json_mocks();
+	}
+
+	public function test_update_reservation(): void {
+		// Set up the request context.
+		$administrator = self::factory()->user->create( [ 'role' => 'administrator' ] );
+		wp_set_current_user( $administrator );
+		$_REQUEST['_ajax_nonce'] = wp_create_nonce( Ajax::NONCE_ACTION );
+		$_REQUEST['action']      = Ajax::ACTION_RESERVATION_CREATED;
+		// Set up to mock the request body.
+		$request_body = '';
+		$this->set_fn_return( 'file_get_contents', function ( $file ) use ( &$request_body ) {
+			if ( $file === 'php://input' ) {
+				return $request_body;
+			}
+
+			return file_get_contents( $file );
+		}, true );
+		// Set up post, ticket, and attendees. Do that as visitor.
+		$post_id = self::factory()->post->create();
+		$ticket  = $this->create_tc_ticket( $post_id );
+		$order   = $this->create_order( [ $ticket => 3 ] )->ID;
+		[ $attendee_1, $attendee_2, $attendee_3 ] = tribe_attendees()->by( 'event_id', $post_id )->get_ids();
+
+		$controller = $this->make_controller();
+		$controller->register();
+
+		// Missing post ID from request context.
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+		do_action( 'wp_ajax_' . Ajax::ACTION_RESERVATION_CREATED );
+		$this->assertTrue(
+			$wp_send_json_error->was_called_times_with( 1,
+				[
+					'error' => 'You do not have permission to perform this action.',
+				],
+				403
+			),
+			$wp_send_json_error->get_calls_as_string()
+		);
+		$this->reset_wp_send_json_mocks();
+
+		// Body is empty.
+		$_REQUEST['postId'] = $post_id;
+		$request_body       = '';
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+		do_action( 'wp_ajax_' . Ajax::ACTION_RESERVATION_CREATED );
+		$this->assertTrue(
+			$wp_send_json_error->was_called_times_with( 1,
+				[
+					'error' => 'Invalid request body',
+				],
+				400
+			),
+			$wp_send_json_error->get_calls_as_string()
+		);
+		$this->reset_wp_send_json_mocks();
+
+		// Body is not json.
+		$request_body       = 'not-json';
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+		do_action( 'wp_ajax_' . Ajax::ACTION_RESERVATION_CREATED );
+		$this->assertTrue(
+			$wp_send_json_error->was_called_times_with( 1,
+				[
+					'error' => 'Invalid request body',
+				],
+				400
+			),
+			$wp_send_json_error->get_calls_as_string()
+		);
+		$this->reset_wp_send_json_mocks();
+
+		// Body is not valid json.
+		$request_body       = '{"foo":"bar"}';
+		$wp_send_json_error = $this->mock_wp_send_json_error();
+		do_action( 'wp_ajax_' . Ajax::ACTION_RESERVATION_CREATED );
+		$this->assertTrue(
+			$wp_send_json_error->was_called_times_with( 1,
+				[
+					'error' => 'Invalid request body',
+				],
+				400
+			),
+			$wp_send_json_error->get_calls_as_string()
+		);
+		$this->reset_wp_send_json_mocks();
+
+		// Create attendee, do not send update to Attendee.
+		$unset_tribe_tickets_get_ticket_provider_return = $this->set_fn_return(
+			'tribe_tickets_get_ticket_provider',
+			function ( $id ) use ( $attendee_1 ) {
+				if ( $id === $attendee_1 ) {
+					return new class {
+						public function send_tickets_email_for_attendees() {
+							throw new AssertionFailedError( 'Should not send email' );
+						}
+					};
+				}
+
+				return tribe_tickets_get_ticket_provider( $id );
+			},
+			true
+		);
+		$request_body                                   = wp_json_encode( [
+			'attendeeId'           => $attendee_1,
+			'reservationId'        => 'reservation-uuid-1',
+			'seatTypeId'           => 'seat-type-uuid-1',
+			'seatLabel'            => 'A-1',
+			'sendUpdateToAttendee' => false,
+		] );
+		$wp_send_json_success                           = $this->mock_wp_send_json_success();
+		do_action( 'wp_ajax_' . Ajax::ACTION_RESERVATION_CREATED );
+		$this->assertTrue(
+			$wp_send_json_success->was_called_times_with( 1,
+				[
+					'id'            => $attendee_1,
+					'name'          => 'Test Purchaser',
+					'purchaser'     =>
+						[
+							'id'                  => $order,
+							'name'                => 'Test Purchaser',
+							'associatedAttendees' => 3,
+						],
+					'ticketId'      => $ticket,
+					'seatTypeId'    => 'seat-type-uuid-1',
+					'seatLabel'     => 'A-1',
+					'reservationId' => 'reservation-uuid-1',
+				],
+			),
+			$wp_send_json_success->get_calls_as_string()
+		);
+		$this->assertEquals( 'reservation-uuid-1', get_post_meta( $attendee_1, Meta::META_KEY_RESERVATION_ID, true ) );
+		$this->assertEquals( 'seat-type-uuid-1', get_post_meta( $attendee_1, Meta::META_KEY_SEAT_TYPE, true ) );
+		$this->assertEquals( 'A-1', get_post_meta( $attendee_1, Meta::META_KEY_ATTENDEE_SEAT_LABEL, true ) );
+		$this->reset_wp_send_json_mocks();
+		$unset_tribe_tickets_get_ticket_provider_return();
+
+		// Create attendee, do send update to Attendee.
+		$request_body         = wp_json_encode( [
+			'attendeeId'           => $attendee_2,
+			'reservationId'        => 'reservation-uuid-2',
+			'seatTypeId'           => 'seat-type-uuid-1',
+			'seatLabel'            => 'A-2',
+			'sendUpdateToAttendee' => true,
+		] );
+		$wp_send_json_success = $this->mock_wp_send_json_success();
+		do_action( 'wp_ajax_' . Ajax::ACTION_RESERVATION_CREATED );
+		$this->assertTrue(
+			$wp_send_json_success->was_called_times_with( 1,
+				[
+					'id'            => $attendee_2,
+					'name'          => 'Test Purchaser',
+					'purchaser'     =>
+						[
+							'id'                  => $order,
+							'name'                => 'Test Purchaser',
+							'associatedAttendees' => 3,
+						],
+					'ticketId'      => $ticket,
+					'seatTypeId'    => 'seat-type-uuid-1',
+					'seatLabel'     => 'A-2',
+					'reservationId' => 'reservation-uuid-2',
+				],
+			),
+			$wp_send_json_success->get_calls_as_string()
+		);
+		$this->reset_wp_send_json_mocks();
+		$this->assertEquals( 'reservation-uuid-2', get_post_meta( $attendee_2, Meta::META_KEY_RESERVATION_ID, true ) );
+		$this->assertEquals( 'seat-type-uuid-1', get_post_meta( $attendee_2, Meta::META_KEY_SEAT_TYPE, true ) );
+		$this->assertEquals( 'A-2', get_post_meta( $attendee_2, Meta::META_KEY_ATTENDEE_SEAT_LABEL, true ) );
+
+		// Failure to send update to Attendee.
+		$request_body                                   = wp_json_encode( [
+			'attendeeId'           => $attendee_3,
+			'reservationId'        => 'reservation-uuid-3',
+			'seatTypeId'           => 'seat-type-uuid-1',
+			'seatLabel'            => 'A-3',
+			'sendUpdateToAttendee' => true,
+		] );
+		$unset_tribe_tickets_get_ticket_provider_return = $this->set_fn_return(
+			'tribe_tickets_get_ticket_provider',
+			function ( $id ) use ( $attendee_3 ) {
+				if ( $id === $attendee_3 ) {
+					return new class {
+						public function send_tickets_email_for_attendees() {
+							return false;
+						}
+					};
+				}
+
+				return tribe_tickets_get_ticket_provider( $id );
+			},
+			true
+		);
+		$wp_send_json_error                             = $this->mock_wp_send_json_error();
+		do_action( 'wp_ajax_' . Ajax::ACTION_RESERVATION_CREATED );
+		$this->assertTrue(
+			$wp_send_json_error->was_called_times_with( 1,
+				[
+					'error' => 'Failed to send the update mail.'
+				]
+			),
+			$wp_send_json_error->get_calls_as_string()
+		);
+		$this->reset_wp_send_json_mocks();
+		$this->assertEquals( 'reservation-uuid-3', get_post_meta( $attendee_3, Meta::META_KEY_RESERVATION_ID, true ) );
+		$this->assertEquals( 'seat-type-uuid-1', get_post_meta( $attendee_3, Meta::META_KEY_SEAT_TYPE, true ) );
+		$this->assertEquals( 'A-3', get_post_meta( $attendee_3, Meta::META_KEY_ATTENDEE_SEAT_LABEL, true ) );
+		$unset_tribe_tickets_get_ticket_provider_return();
+
+		// Update Attendee 1 reservation, do not send the update to Attendee.
+		$request_body                                   = wp_json_encode( [
+			'attendeeId'           => $attendee_1,
+			'reservationId'        => 'reservation-uuid-1',
+			'seatTypeId'           => 'seat-type-uuid-2',
+			'seatLabel'            => 'B-4',
+			'sendUpdateToAttendee' => false,
+		] );
+		$unset_tribe_tickets_get_ticket_provider_return = $this->set_fn_return(
+			'tribe_tickets_get_ticket_provider',
+			function ( $id ) use ( $attendee_1 ) {
+				if ( $id === $attendee_1 ) {
+					return new class {
+						public function send_tickets_email_for_attendees() {
+							throw new AssertionFailedError( 'Should not send email' );
+						}
+					};
+				}
+
+				return tribe_tickets_get_ticket_provider( $id );
+			},
+			true
+		);
+		$wp_send_json_success                           = $this->mock_wp_send_json_success();
+		do_action( 'wp_ajax_' . Ajax::ACTION_RESERVATION_UPDATED );
+		$this->assertTrue(
+			$wp_send_json_success->was_called_times_with( 1,
+				[
+					'id'            => $attendee_1,
+					'name'          => 'Test Purchaser',
+					'purchaser'     =>
+						[
+							'id'                  => $order,
+							'name'                => 'Test Purchaser',
+							'associatedAttendees' => 3,
+						],
+					'ticketId'      => $ticket,
+					'seatTypeId'    => 'seat-type-uuid-2',
+					'seatLabel'     => 'B-4',
+					'reservationId' => 'reservation-uuid-1',
+				]
+			),
+			$wp_send_json_success->get_calls_as_string()
+		);
+		$this->reset_wp_send_json_mocks();
+		$this->assertEquals( 'reservation-uuid-1', get_post_meta( $attendee_1, Meta::META_KEY_RESERVATION_ID, true ) );
+		$this->assertEquals( 'seat-type-uuid-2', get_post_meta( $attendee_1, Meta::META_KEY_SEAT_TYPE, true ) );
+		$this->assertEquals( 'B-4', get_post_meta( $attendee_1, Meta::META_KEY_ATTENDEE_SEAT_LABEL, true ) );
+		$unset_tribe_tickets_get_ticket_provider_return();
+
+		// Update Attendee 1 reservation again, this time send the update to Attendee.
+		$request_body                                   = wp_json_encode( [
+			'attendeeId'           => $attendee_1,
+			'reservationId'        => 'reservation-uuid-1',
+			'seatTypeId'           => 'seat-type-uuid-3',
+			'seatLabel'            => 'C-5',
+			'sendUpdateToAttendee' => true,
+		] );
+		$wp_send_json_success                           = $this->mock_wp_send_json_success();
+		do_action( 'wp_ajax_' . Ajax::ACTION_RESERVATION_UPDATED );
+		$this->assertTrue(
+			$wp_send_json_success->was_called_times_with( 1,
+				[
+					'id'            => $attendee_1,
+					'name'          => 'Test Purchaser',
+					'purchaser'     =>
+						[
+							'id'                  => $order,
+							'name'                => 'Test Purchaser',
+							'associatedAttendees' => 3,
+						],
+					'ticketId'      => $ticket,
+					'seatTypeId'    => 'seat-type-uuid-3',
+					'seatLabel'     => 'C-5',
+					'reservationId' => 'reservation-uuid-1',
+				]
+			),
+			$wp_send_json_success->get_calls_as_string()
+		);
+		$this->reset_wp_send_json_mocks();
+		$this->assertEquals( 'reservation-uuid-1', get_post_meta( $attendee_1, Meta::META_KEY_RESERVATION_ID, true ) );
+		$this->assertEquals( 'seat-type-uuid-3', get_post_meta( $attendee_1, Meta::META_KEY_SEAT_TYPE, true ) );
+		$this->assertEquals( 'C-5', get_post_meta( $attendee_1, Meta::META_KEY_ATTENDEE_SEAT_LABEL, true ) );
 	}
 }

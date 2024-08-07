@@ -638,9 +638,7 @@ class Controller extends Controller_Contract {
 		update_post_meta( $attendee_id, Meta::META_KEY_SEAT_TYPE, $json['seatTypeId'] );
 		update_post_meta( $attendee_id, Meta::META_KEY_ATTENDEE_SEAT_LABEL, $json['seatLabel'] );
 
-		$send_update_to_attendee = ! empty( $json['sendUpdateToAttendee'] );
-
-		if ( $send_update_to_attendee ) {
+		if ( ! empty( $json['sendUpdateToAttendee'] ) ) {
 			$provider = tribe_tickets_get_ticket_provider( $attendee_id );
 			if ( $provider ) {
 				$sent = $provider->send_tickets_email_for_attendees( [ $attendee_id ], [
@@ -665,17 +663,6 @@ class Controller extends Controller_Contract {
 			'by'       => [ 'id' => $attendee_id ],
 		], $post_id );
 		$formatted = $this->attendee->format_many( $attendees['attendees'] ?? [] );
-
-		if(empty($formatted)){
-			wp_send_json_error(
-				[
-					'error' => 'Failed to get formatted Attendee',
-				],
-				500
-			);
-
-			return;
-		}
 
 		wp_send_json_success( $formatted[0] );
 	}

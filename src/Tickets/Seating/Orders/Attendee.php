@@ -301,13 +301,18 @@ class Attendee {
 		$associated_attendees  = array_reduce(
 			$attendees,
 			static function ( array $carry, array $attendee ): array {
-				$purchaser_id = $attendee['purchaser_id'];
-
-				if ( ! isset( $carry[ $purchaser_id ] ) ) {
-					$carry[ $purchaser_id ] = 1;
-				} else {
-					$carry[ $purchaser_id ] ++;
+				if ( ! isset( $attendee['order_id'] ) ) {
+					// Can't work out the associated attendees.
+					return $carry;
 				}
+
+				$order_id = $attendee['order_id'];
+				if ( isset( $carry[ $order_id ] ) ) {
+					// Already processed this Order ID.
+					return $carry;
+				}
+
+				$carry[ $order_id ] = tribe_attendees()->where( 'order_id', $order_id )->count();
 
 				return $carry;
 			},
@@ -329,15 +334,16 @@ class Attendee {
 			if ( ! $name ) {
 				$name = $attendee['purchaser_name'];
 			}
-			$purchaser_id = $attendee['purchaser_id'];
+			$purchaser_id = $attendee['purchaser_id'] ?? false;
+			$order_id = $attendee['order_id'] ?? false;
 
 			$formatted_attendees[] = [
 				'id'            => $id,
 				'name'          => $name,
 				'purchaser'     => [
-					'id'                  => $purchaser_id,
+					'id'                  => $order_id,
 					'name'                => $attendee['purchaser_name'],
-					'associatedAttendees' => $associated_attendees[ $purchaser_id ],
+					'associatedAttendees' => $order_id ? $associated_attendees[ $order_id ] : 0,
 				],
 				'ticketId'      => $attendee['product_id'],
 				'seatTypeId'    => get_post_meta( $id, Meta::META_KEY_SEAT_TYPE, true ),

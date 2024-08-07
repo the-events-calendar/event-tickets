@@ -2,9 +2,15 @@ import {
 	fetchAttendees,
 	fetchAndSendAttendeeBatch,
 	sendAttendeesToService,
+	updateAttendeeReservation,
+	handleReservationUpdated,
+	handleReservationCreated,
 } from '@tec/tickets/seating/admin/seatsReport';
 import { ACTION_FETCH_ATTENDEES } from '@tec/tickets/seating/ajax';
-import { OUTBOUND_EVENT_ATTENDEES } from '@tec/tickets/seating/service/api/service-actions';
+import {
+	OUTBOUND_EVENT_ATTENDEES,
+	OUTBOUND_ATTENDEE_UPDATE,
+} from '@tec/tickets/seating/service/api/service-actions';
 
 const apiModule = require('@tec/tickets/seating/service/api');
 
@@ -30,6 +36,43 @@ function getMockAttendees(count) {
 	}
 
 	return attendees;
+}
+
+function getAttendeeUpdatedMockData() {
+	return {
+		messageData: {
+			reservationId: 'reservation-uuid-1',
+			attendeeId: 23,
+			seatTypeId: 'seat-type-uuid-1',
+			seatLabel: 'A-1',
+			seatColor: '#00ff00',
+			sendUpdateToAttendee: true,
+		},
+		updatedAttendee: {
+			id: 23,
+			name: 'Test Purchaser 1',
+			purchaser: {
+				id: 89,
+				email: 'test-purchaser@test.com',
+				associatedAttendees: 17,
+			},
+			ticketId: 66,
+			seatTypeId: 'seat-type-uuid-1',
+			seatLabel: 'A-1',
+			reservationId: 'reservation-uuid-1',
+		},
+	};
+}
+
+function getAttendeeCreatedMockData() {
+	const data = getAttendeeUpdatedMockData();
+	return {
+		messageData: {
+			...data.messageData,
+			ticketId: 66,
+		},
+		updatedAttendee: data.updatedAttendee,
+	};
 }
 
 describe('Seats Report', () => {
@@ -441,6 +484,164 @@ describe('Seats Report', () => {
 				},
 				'https://wordpress.test'
 			);
+		});
+	});
+
+	describe('updateAttendeeReservation', () => {
+		it('should post and return updated attendee data on create', async () => {
+			const { messageData, updatedAttendee } =
+				getAttendeeCreatedMockData();
+			fetch.mockIf(
+				/^https:\/\/wordpress\.test\/wp-admin\/admin-ajax\.php?.*$/,
+				JSON.stringify({ data: updatedAttendee })
+			);
+
+			const result = await updateAttendeeReservation(messageData);
+
+			expect(result).toMatchObject(updatedAttendee);
+		});
+
+		it('should post and return updated attendee data on update', async () => {
+			const { messageData, updatedAttendee } =
+				getAttendeeUpdatedMockData();
+			fetch.mockIf(
+				/^https:\/\/wordpress\.test\/wp-admin\/admin-ajax\.php?.*$/,
+				JSON.stringify({ data: updatedAttendee })
+			);
+
+			const result = await updateAttendeeReservation({ ...messageData });
+
+			expect(result).toMatchObject(updatedAttendee);
+		});
+
+		it('should return false if response not ok', async () => {
+			const { messageData } = getAttendeeUpdatedMockData();
+			fetch.mockIf(
+				/^https:\/\/wordpress\.test\/wp-admin\/admin-ajax\.php?.*$/,
+				JSON.stringify({ success: false }, { status: 500 })
+			);
+			apiModule.sendPostMessage = jest.fn();
+
+			const result = await updateAttendeeReservation(messageData);
+
+			expect(result).toBe(false);
+		});
+
+		it('should return false if response json not valid', async () => {
+			const { messageData } = getAttendeeUpdatedMockData();
+			fetch.mockIf(
+				/^https:\/\/wordpress\.test\/wp-admin\/admin-ajax\.php?.*$/,
+				JSON.stringify({ data: false })
+			);
+			apiModule.sendPostMessage = jest.fn();
+
+			const result = await updateAttendeeReservation(messageData);
+
+			expect(result).toBe(false);
+		});
+	});
+
+	describe('handleReservationCreated', () => {
+		it('should handle created reservation correctly', async () => {
+			const { messageData, updatedAttendee } =
+				getAttendeeCreatedMockData();
+			fetch.mockIf(
+				/^https:\/\/wordpress\.test\/wp-admin\/admin-ajax\.php?.*$/,
+				JSON.stringify({ data: updatedAttendee })
+			);
+			const iframe = {
+				closest: jest.fn().mockReturnValue({
+					dataset: {
+						token: 'test-token',
+					},
+				})
+			};
+			apiModule.sendPostMessage = jest.fn();
+
+			const handled = await handleReservationCreated(iframe, messageData);
+
+			expect(handled).toBe(true);
+			expect(apiModule.sendPostMessage).toHaveBeenCalledTimes(1);
+			expect(apiModule.sendPostMessage).toHaveBeenCalledWith(
+				iframe,
+				OUTBOUND_ATTENDEE_UPDATE,
+				{
+					attendee: updatedAttendee,
+				}
+			);
+		});
+
+		it('should return false if attendee update fails in backend', async () => {
+			const { messageData } = getAttendeeCreatedMockData();
+			fetch.mockIf(
+				/^https:\/\/wordpress\.test\/wp-admin\/admin-ajax\.php?.*$/,
+				JSON.stringify({ success: false }, { status: 500 })
+			);
+			apiModule.sendPostMessage = jest.fn();
+			const iframe = {
+				closest: jest.fn().mockReturnValue({
+					dataset: {
+						token: 'test-token',
+					},
+				})
+			};
+
+			const handled = await handleReservationCreated(iframe, messageData);
+
+			expect(handled).toBe(false);
+			expect(apiModule.sendPostMessage).not.toHaveBeenCalled();
+		});
+	});
+
+	describe('handleReservationUpdated', () => {
+		it('should handle updated reservation correctly', async () => {
+			const { messageData, updatedAttendee } =
+				getAttendeeUpdatedMockData();
+			fetch.mockIf(
+				/^https:\/\/wordpress\.test\/wp-admin\/admin-ajax\.php?.*$/,
+				JSON.stringify({ data: updatedAttendee })
+			);
+			const iframe = {
+				closest: jest.fn().mockReturnValue({
+					dataset: {
+						token: 'test-token',
+					},
+				})
+			};
+			apiModule.sendPostMessage = jest.fn();
+
+			const handled = await handleReservationUpdated(iframe, messageData);
+
+			expect(handled).toBe(true);
+			expect(apiModule.sendPostMessage).toHaveBeenCalledTimes(1);
+			expect(apiModule.sendPostMessage).toHaveBeenCalledWith(
+				iframe,
+				OUTBOUND_ATTENDEE_UPDATE,
+				{
+					attendee: updatedAttendee,
+				}
+			);
+		});
+
+		it('should return false if attendee update fails in backend', async () => {
+			const { messageData } = getAttendeeUpdatedMockData();
+			fetch.mockIf(
+				/^https:\/\/wordpress\.test\/wp-admin\/admin-ajax\.php?.*$/,
+				JSON.stringify({ success: false }, { status: 500 })
+			);
+			apiModule.sendPostMessage = jest.fn();
+			const iframe = {
+				closest: jest.fn().mockReturnValue({
+					dataset: {
+						token: 'test-token',
+					},
+				})
+			};
+
+			const handled = await handleReservationUpdated(iframe, messageData);
+
+			expect(handled).toBe(false);
+			expect(apiModule.sendPostMessage).not.toHaveBeenCalled();
 		});
 	});
 });

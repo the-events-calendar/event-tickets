@@ -167,7 +167,7 @@ export async function sendAttendeesToService(iframe) {
  *
  * @return {SeatReportAttendee} The updated Attendee data.
  */
-async function updateAttendeeReservation(props) {
+export async function updateAttendeeReservation(props) {
 	const url = new URL(ajaxUrl);
 	url.searchParams.set('_ajax_nonce', ajaxNonce);
 	const action = props.ticketId
