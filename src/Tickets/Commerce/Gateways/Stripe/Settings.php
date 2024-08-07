@@ -196,14 +196,14 @@ class Settings extends Abstract_Settings {
 
 		$checkout_type_tooltip = sprintf(
 			// Translators: %1$s: Opening `<a>` tag for KB article link. %2$s: Closing `<a>` tag.
-			__( 'Additional payment methods are available based on currency and location and must be enabled individually within your Stripe account. %1$sLearn more%2$s', 'event-tickets' ),
+			__( 'Additional payment methods are available based on currency and location and must be enabled individually within your Stripe account. Some payment methods require additional billing information to be collected. %1$sLearn more%2$s', 'event-tickets' ),
 			'<a href="https://evnt.is/1axw" target="_blank" rel="noopener noreferrer">',
 			'</a>'
 		);
 
 		$payment_methods_tooltip = sprintf(
 		// Translators: %1$s: Opening `<span>` tag. %2$s: The currency name. %3$s: Closing `</span>` tag. %4$s: Opening `<a>` tag for Stripe link. %5$s: Closing `</a>` tag.
-			__( '%1$sPayment methods available for %2$s%3$s.<br /><br /> The payment methods listed here are dependent on the currency selected for Tickets Commerce and the currency each payment method support. You can review the payment methods and their availablity for each currency on %4$sStripe\'s documentation%5$s.<br /><br />', 'event-tickets' ),
+			__( '%1$sPayment methods available for %2$s%3$s.<br /><br /> The payment methods listed here depend on the currency selected for Tickets Commerce and the currency supported by each payment method. If you select a payment provider other than Credit Cards, additional billing information fields will be displayed at checkout as required by Stripe. You can review the payment methods and their availablity for each currency on %4$sStripe\'s documentation%5$s.<br /><br />', 'event-tickets' ),
 			'<span class="tec-tickets__admin-settings-tickets-commerce-gateway-currency">',
 			$currency_name,
 			'</span>',
