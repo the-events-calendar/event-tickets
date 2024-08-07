@@ -815,6 +815,7 @@ class Tribe__Tickets__Attendees {
 				fputcsv( $output, $item, $delimiter );
 			}
 
+
 			fclose( $output );
 			exit;
 		}
