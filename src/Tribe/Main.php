@@ -8,7 +8,7 @@ use Tribe\Tickets\Promoter\Service_Provider as Promoter_Service_Provider;
 use Tribe\Tickets\Admin\Settings;
 
 /**
- * Class Tribe__Tickets__Main
+ * Class Tribe__Tickets__Main.
  */
 class Tribe__Tickets__Main {
 
