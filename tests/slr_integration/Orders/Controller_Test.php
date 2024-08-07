@@ -842,4 +842,52 @@ class Controller_Test extends Controller_Test_Case {
 
 		$this->assertMatchesHtmlSnapshot( $html );
 	}
+	
+	public function tests_seats_row_actions_added() {
+		$this->set_fn_return( 'is_admin', true );
+		$this->make_controller()->register();
+		
+		$event_id = tribe_events()->set_args(
+			[
+				'title'      => 'Event with single seated attendee',
+				'status'     => 'publish',
+				'start_date' => '2020-01-01 00:00:00',
+				'duration'   => 2 * HOUR_IN_SECONDS,
+			]
+		)->create()->ID;
+		
+		update_post_meta( $event_id, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $event_id, Meta::META_KEY_LAYOUT_ID, 'layout-id' );
+		
+		$ticket_id = $this->create_tc_ticket( $event_id, 10 );
+		
+		update_post_meta( $ticket_id, Meta::META_KEY_ENABLED, true );
+		update_post_meta( $ticket_id, Meta::META_KEY_LAYOUT_ID, 'layout-id' );
+		
+		$order = $this->create_order(
+			[ $ticket_id => 1 ],
+			[
+				'purchaser_email' => 'test-purchaser@test.com',
+			]
+		);
+		global $post;
+		$post = get_post( $event_id );
+		
+		$row_actions = apply_filters( 'post_row_actions', [], $post );
+		
+		$this->assertContains( 'tickets_seats', array_keys( $row_actions ) );
+		$json = str_replace(
+			$event_id,
+			'{{EVENT_ID}}',
+			wp_json_encode( $row_actions, JSON_SNAPSHOT_OPTIONS )
+		);
+		
+		$this->assertMatchesJsonSnapshot( $json );
+		
+		// Removing the layout enabled meta should remove the row action.
+		delete_post_meta( $event_id, Meta::META_KEY_ENABLED );
+		
+		$row_actions = apply_filters( 'post_row_actions', [], $post );
+		$this->assertNotContains( 'tickets_seats', array_keys( $row_actions ) );
+	}
 }
