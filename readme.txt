@@ -205,10 +205,6 @@ Check out our extensive [knowledgebase](https://evnt.is/18wm) for articles on us
 
 == Changelog ==
 
-= [TBD] TBD =
-
-* Fix - Exporting all Attendees as a CSV file in the new Tickets Attendees Page. [ET-2094]
-
 = [5.13.1] 2024-08-06 =
 
 * Fix - Ensure that users fill in all required billing address fields when Stripe advanced payment methods are available. [ETP-934]
