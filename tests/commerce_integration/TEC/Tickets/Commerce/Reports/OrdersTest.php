@@ -1,9 +1,8 @@
 <?php
 
-namespace Tribe\Tickets\Commerce\Reports;
+namespace TEC\Tickets\Commerce\Reports;
 
 use Codeception\TestCase\WPTestCase;
-use TEC\Tickets\Commerce\Reports\Orders;
 use Tribe\Events\Test\Factories\Event;
 
 class OrdersTest extends WPTestCase {

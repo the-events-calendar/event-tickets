@@ -5,12 +5,14 @@ namespace TEC\Tickets\Seating\Libraries;
 use Spatie\Snapshots\MatchesSnapshots;
 use TEC\Common\StellarWP\Uplink\Resources\Collection;
 use TEC\Common\StellarWP\Uplink\Auth\Token\Contracts\Token_Manager;
+use TEC\Common\StellarWP\Uplink\Storage\Contracts\Storage;
 use Tribe\Tests\Traits\With_Uopz;
+use Tribe\Tests\Traits\WP_Remote_Mocks;
 
 class UplinkTest extends \Codeception\TestCase\WPTestCase {
-
 	use MatchesSnapshots;
 	use With_Uopz;
+	use WP_Remote_Mocks;
 
 	/**
 	 * @var Token_Manager
@@ -38,19 +40,26 @@ class UplinkTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	protected $resource;
 
-	public function setUp(): void {
-		parent::setUp();
-		set_current_user( 1 );
+	/**
+	 * @before
+	 */
+	public function before_each(): void {
+		wp_set_current_user( 1 );
 		$this->collection    = tribe( Collection::class );
 		$this->resource      = $this->collection->get( $this->et_slr_plugin_slug );
 		$this->token_manager = tribe( Token_Manager::class );
+		$storage = tribe( Storage::class );
+		$storage->set(
+			'stellarwp_auth_url_tec_seating',
+			'https://my.theeventscalendar.com/account-auth/?uplink_callback=aHR0cHM6Ly90ZWNkZXYubG5kby5zaXRlL3dwLWFkbWluL2FkbWluLnBocD9wYWdlPXRlYy10aWNrZXRzLXNldHRpbmdzJnRhYj1saWNlbnNlcyZ1cGxpbmtfc2x1Zz10ZWMtc2VhdGluZyZfdXBsaW5rX25vbmNlPU1zb3ptQlZJVUp4aFh6c0Q%3D'
+		);
 	}
 
 	/**
 	 * @test
 	 */
 	public function it_should_have_the_fields_for_seating_licenses_with_incorrect_permissions_snapshot(): void {
-		set_current_user( 0 );
+		wp_set_current_user( 0 );
 		$license_fields = apply_filters( 'tribe_license_fields', [], 0, 999 );
 		$this->assertIsArray( $license_fields );
 

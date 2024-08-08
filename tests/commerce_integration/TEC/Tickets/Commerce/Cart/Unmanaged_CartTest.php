@@ -1,9 +1,8 @@
 <?php
 
-namespace Tribe\Tickets\Commerce\Cart;
+namespace TEC\Tickets\Commerce\Cart;
 
 use TEC\Tickets\Commerce\Cart;
-use TEC\Tickets\Commerce\Cart\Unmanaged_Cart;
 
 class Unmanaged_CartTest extends \Codeception\TestCase\WPTestCase {
 

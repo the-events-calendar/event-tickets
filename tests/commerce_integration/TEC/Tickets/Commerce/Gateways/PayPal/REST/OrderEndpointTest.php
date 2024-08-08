@@ -1,8 +1,6 @@
 <?php
 
-namespace Tribe\Tickets\Commerce\Gateways\PayPal\REST;
-
-use TEC\Tickets\Commerce\Gateways\PayPal\REST\Order_Endpoint;
+namespace TEC\Tickets\Commerce\Gateways\PayPal\REST;
 
 class OrderEndpointTest extends \Codeception\TestCase\WPTestCase {
 
