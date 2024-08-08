@@ -183,4 +183,15 @@ class Associated_Events extends WP_Posts_List_Table {
 	public function no_items() {
 		echo esc_html__( 'No Associated Events found.', 'event-tickets' );
 	}
+	
+	/**
+	 * Get the slug.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function get_slug(): string {
+		return 'tec-tickets-seating-events';
+	}
 }

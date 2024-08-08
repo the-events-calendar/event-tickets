@@ -74,7 +74,7 @@ class Controller extends Controller_Contract {
 			__( 'Events', 'event-tickets' ),
 			'',
 			'manage_options',
-			'tec-tickets-seating-events',
+			Associated_Events::get_slug(),
 			[ $this, 'render' ]
 		);
 	}
