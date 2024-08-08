@@ -28,9 +28,6 @@ class Provider extends Service_Provider {
 	public function register() {
 		$this->register_hooks();
 		$this->register_assets();
-
-		// Register the SP on the container.
-		$this->container->register( static::class, $this );
 	}
 
 	/**
@@ -43,7 +40,7 @@ class Provider extends Service_Provider {
 		$hooks->register();
 
 		// Allow Hooks to be removed, by having the them registered to the container.
-		$this->container->register( Hooks::class, $hooks );
+		$this->container->singleton( Hooks::class, $hooks );
 	}
 
 	/**
