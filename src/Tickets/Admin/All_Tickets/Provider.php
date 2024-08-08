@@ -43,7 +43,7 @@ class Provider extends Service_Provider {
 		$hooks->register();
 
 		// Allow Hooks to be removed, by having the them registered to the container.
-		$this->container->singleton( Hooks::class, $hooks );
+		$this->container->register( Hooks::class, $hooks );
 	}
 
 	/**
