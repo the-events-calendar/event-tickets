@@ -38,7 +38,13 @@ class Singular_Order_Page extends Service_Provider {
 	/**
 	 * ET Template class instance.
 	 *
-	 * @return Tribe__Template
+	 * @since TBD
+	 *
+	 * @param string $name    The name of the template to load.
+	 * @param array  $context The context to pass to the template.
+	 * @param bool   $echo    Whether to echo the template or return it.
+	 *
+	 * @return string|void
 	 */
 	public function template( $name, $context = [], $echo = true ) { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.echoFound
 		if ( ! $this->template ) {
@@ -52,7 +58,17 @@ class Singular_Order_Page extends Service_Provider {
 		return $this->template->template( $name, $context, $echo );
 	}
 
-	public function add_meta_boxes( $post_type, $post ) {
+	/**
+	 * Adds the metaboxes to the order post type.
+	 *
+	 * @since TBD
+	 *
+	 * @param string  $post_type The post type.
+	 * @param WP_Post $post The post object.
+	 *
+	 * @return void
+	 */
+	public function add_meta_boxes( $post_type, $post ): void {
 		if ( Order::POSTTYPE !== $post_type ) {
 			return;
 		}
@@ -98,7 +114,16 @@ class Singular_Order_Page extends Service_Provider {
 		);
 	}
 
-	public function render_actions( $post ) {
+	/**
+	 * Renders the actions metabox.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post $post The post object.
+	 *
+	 * @return void
+	 */
+	public function render_actions( $post ): void {
 		ob_start();
 		post_submit_meta_box( $post );
 		$submit = ob_get_clean();
@@ -112,10 +137,20 @@ class Singular_Order_Page extends Service_Provider {
 			false
 		);
 
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped, StellarWP.XSS.EscapeOutput.OutputNotEscaped
 		echo str_replace( '<div class="submitbox" id="submitpost">', '<div class="submitbox" id="submitpost">' . $template, $submit );
 	}
 
-	public function render_order_details( $post ) {
+	/**
+	 * Renders the order details metabox.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post $post The post object.
+	 *
+	 * @return void
+	 */
+	public function render_order_details( $post ): void {
 		$this->template(
 			'order-details-metabox',
 			[
@@ -125,7 +160,16 @@ class Singular_Order_Page extends Service_Provider {
 		);
 	}
 
-	public function render_order_items( $post ) {
+	/**
+	 * Renders the order items metabox.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post $post The post object.
+	 *
+	 * @return void
+	 */
+	public function render_order_items( $post ): void {
 		$this->template(
 			'order-items-metabox',
 			[
@@ -135,7 +179,16 @@ class Singular_Order_Page extends Service_Provider {
 		);
 	}
 
-	public function get_gateway_label( $order) {
+	/**
+	 * Get the gateway label for the order.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post|int $order The order post object or ID.
+	 *
+	 * @return string
+	 */
+	public function get_gateway_label( $order ): string {
 		if ( is_numeric( $order ) ) {
 			$order = tec_tc_get_order( $order );
 		}
