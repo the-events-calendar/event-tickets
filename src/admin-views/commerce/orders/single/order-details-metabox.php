@@ -13,7 +13,12 @@ $post_date .= ' ' . esc_html__( 'at', 'event-ticktets' ) . ' ';
 $post_date .= Tribe__Date_Utils::reformat( $ts, 'g:i A' );
 
 ?>
-<h2><?php printf( esc_html__( 'Order #%d details', 'event-tickets' ), (int) $order->ID ); ?></h2>
+<h2>
+	<?php
+	// translators: %d is the order ID.
+	printf( esc_html__( 'Order #%d details', 'event-tickets' ), (int) $order->ID );
+	?>
+</h2>
 <div class="tec-tickets-commerce-single-order tec-tickets-commerce-single-order--details">
 	<div class="tec-tickets-commerce-single-order--details--item">
 		<div class="tec-tickets-commerce-single-order--details--item--label">
