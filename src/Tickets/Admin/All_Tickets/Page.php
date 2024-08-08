@@ -9,6 +9,8 @@
 
 namespace TEC\Tickets\Admin\All_Tickets;
 
+use phpDocumentor\Reflection\PseudoTypes\List_;
+
 /**
  * Class Page.
  *
@@ -117,7 +119,9 @@ class Page {
 		/** @var Tribe__Tickets__Admin__Views $admin_views */
 		$admin_views = tribe( 'tickets.admin.views' );
 
-		$context = [];
+		$context = [
+			'tickets_table' => tribe( List_Table::class ),
+		];
 
 		$admin_views->template( 'all-tickets', $context );
 	}
