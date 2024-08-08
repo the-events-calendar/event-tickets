@@ -67,6 +67,27 @@ class Orders_Page {
 			[ 'admin_enqueue_scripts' ],
 			[ 'conditionals' => [ $this, 'is_admin_orders_page_and_no_TEC' ] ]
 		);
+
+		tribe_asset(
+			tribe( 'tickets.main' ),
+			'event-tickets-commerce-admin-orders-single-css',
+			'tickets-commerce/admin/orders/single.css',
+			[],
+			[ 'admin_enqueue_scripts' ],
+			[ 'conditionals' => [ $this, 'is_admin_single_page' ] ]
+		);
+
+		tribe_asset(
+			tribe( 'tickets.main' ),
+			'event-tickets-commerce-admin-orders-single',
+			'admin/orders/single.js',
+			[
+				'jquery',
+				'tribe-datatables',
+			],
+			[ 'admin_enqueue_scripts' ],
+			[ 'conditionals' => [ $this, 'is_admin_single_page' ] ]
+		);
 	}
 
 	/**

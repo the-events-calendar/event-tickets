@@ -1,11 +1,16 @@
 <?php
-use Tribe__Date_Utils;
+/**
+ * Single order - Details metabox.
+ *
+ * @var WP_Post                                         $order             The current post object.
+ * @var \TEC\Tickets\Commerce\Admin\Singular_Order_Page $single_page       The orders table output.
+ */
 
 $ts = strtotime( $order->post_date_gmt );
 
 $post_date  = Tribe__Date_Utils::reformat( $ts, Tribe__Date_Utils::DATEONLYFORMAT );
 $post_date .= ' ' . esc_html__( 'at', 'event-ticktets' ) . ' ';
-$post_date .= Tribe__Date_Utils::reformat( $ts, 'g:iA' );
+$post_date .= Tribe__Date_Utils::reformat( $ts, 'g:i A' );
 
 ?>
 <h2><?php printf( esc_html__( 'Order #%d details', 'event-tickets' ), (int) $order->ID ); ?></h2>
@@ -21,7 +26,7 @@ $post_date .= Tribe__Date_Utils::reformat( $ts, 'g:iA' );
 	<div class="tec-tickets-commerce-single-order--details--item">
 		<div class="tec-tickets-commerce-single-order--details--item--label">
 			<?php esc_html_e( 'Purchaser', 'event-tickets' ); ?>
-			<a class="tribe-dashicons" href="javascript:void">
+			<a class="tribe-dashicons" href="javascript:void(0)">
 				<span class="dashicons dashicons-edit"></span>
 				<?php esc_html_e( 'Edit', 'event-tickets' ); ?>
 			</a>
@@ -45,7 +50,7 @@ $post_date .= Tribe__Date_Utils::reformat( $ts, 'g:iA' );
 		</div>
 		<div class="tec-tickets-commerce-single-order--details--item--value">
 			<?php
-			echo $single_page->get_gateway_label(); // phpcs:ignore StellarWP.XSS.EscapeOutput.OutputNotEscaped, WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo $single_page->get_gateway_label( $order ); // phpcs:ignore StellarWP.XSS.EscapeOutput.OutputNotEscaped, WordPress.Security.EscapeOutput.OutputNotEscaped
 			?>
 		</div>
 	</div>
