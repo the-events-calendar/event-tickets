@@ -717,7 +717,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			$parent = untrailingslashit( $wp->request ) . '/';
 		}
 
-		$email_link = Tribe__Settings::instance()->get_url( [
+		$email_link = tribe( 'settings' )->get_url( [
 			'page'      => 'tickets-attendees',
 			'action'    => 'email',
 			'event_id'  => $event_id,
