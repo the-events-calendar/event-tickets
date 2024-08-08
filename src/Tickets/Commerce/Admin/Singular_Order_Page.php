@@ -1,4 +1,11 @@
 <?php
+/**
+ * Singular order page.
+ *
+ * @since TBD
+ *
+ * @package TEC\Tickets\Commerce\Admin
+ */
 
 namespace TEC\Tickets\Commerce\Admin;
 
