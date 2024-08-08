@@ -3,6 +3,7 @@
  * The main service provider for the Tickets Admin Attendees page.
  *
  * @since   TBD
+ *
  * @package TEC\Tickets\Admin
  */
 
