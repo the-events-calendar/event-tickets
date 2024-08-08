@@ -497,50 +497,20 @@ class Orders_Table extends WP_Posts_List_Table {
 	 * @return string
 	 */
 	public function column_total( $item ) {
-		$reversed = tribe( Reversed::class )->get_wp_slug();
-		$refunded = tribe( Refunded::class )->get_wp_slug();
-		if ( ! in_array( $item->post_status, [ $reversed, $refunded ], true ) ) {
-			$regular = 0;
-			$total   = 0;
+		$original = tribe( Order::class )->get_value( $item->ID, true );
+		$current  = tribe( Order::class )->get_value( $item->ID );
 
-			foreach ( $item->items as $cart_item ) {
-				$regular += $cart_item['regular_sub_total'] ?? 0;
-				$total   += $cart_item['sub_total'] ?? 0;
-			}
-
-			// Backwards compatible. We didn't use to store regular, so in most installs this is going to be diff cause regular is gonna be 0 mostly.
-			if ( $total !== $regular && $regular > $total ) {
-				return sprintf(
-					'<div class="tec-tickets-commerce-price-container"><ins><span class="tec-tickets-commerce-price">%s</span></ins><del><span class="tec-tickets-commerce-price">%s</span></del></div>',
-					Value::create( $total )->get_currency(),
-					Value::create( $regular )->get_currency()
-				);
-			}
-
+		if ( $original !== $current ) {
 			return sprintf(
-				'<div class="tec-tickets-commerce-price-container"><ins><span class="tec-tickets-commerce-price">%s</span></ins></div>',
-				$item->total_value->get_currency()
+				'<div class="tec-tickets-commerce-price-container"><ins><span class="tec-tickets-commerce-price">%s</span></ins><del><span class="tec-tickets-commerce-price">%s</span></del></div>',
+				esc_html( $current ),
+				esc_html( $original )
 			);
 		}
-
-		if ( empty( $item->gateway_payload['refunded'] ) ) {
-			// The item was refunded but we don't know anything about it.
-			return sprintf(
-				'<div class="tec-tickets-commerce-price-container"><ins><span class="tec-tickets-commerce-price">%s</span></ins></div>',
-				$item->total_value->get_currency()
-			);
-		}
-
-		$refunds  = $item->gateway_payload['refunded'];
-		$refunded = max( wp_list_pluck( $refunds, 'amount_refunded' ) );
-		$total    = max( wp_list_pluck( $refunds, 'amount_captured' ) );
-
-		$total_value = $total - $refunded;
 
 		return sprintf(
-			'<div class="tec-tickets-commerce-price-container"><ins><span class="tec-tickets-commerce-price">%s</span></ins><del><span class="tec-tickets-commerce-price">%s</span></del></div>',
-			Value::create( $total_value / 100 )->get_currency(),
-			Value::create( $total / 100 )->get_currency()
+			'<div class="tec-tickets-commerce-price-container"><ins><span class="tec-tickets-commerce-price">%s</span></ins></div>',
+			esc_html( $current )
 		);
 	}
 
@@ -554,7 +524,7 @@ class Orders_Table extends WP_Posts_List_Table {
 	 * @return string
 	 */
 	public function column_post_parent( $item ) {
-		$events = $item->events_in_order ?? [];
+		$events = tribe( Order::class )->get_events( $item->ID );
 
 		if ( empty( $events ) ) {
 			return '';
@@ -563,39 +533,34 @@ class Orders_Table extends WP_Posts_List_Table {
 		$output = '';
 
 		foreach ( $events as $event ) {
-			$event_post = get_post( $event );
-			if ( ! $event_post instanceof WP_Post ) {
-				continue;
-			}
-
-			if ( ! current_user_can( 'edit_post', $event ) ) {
+			if ( ! current_user_can( 'edit_post', $event->ID ) ) {
 				$output .= sprintf(
 					'<div>%s</div>',
-					esc_html( get_the_title( $event ) )
+					esc_html( get_the_title( $event->ID ) )
 				);
 				continue;
 			}
 
-			if ( 'trash' === $event_post->post_status ) {
+			if ( 'trash' === $event->post_status ) {
 				$output .= sprintf(
 					'<div>%s (trashed)</div>',
-					esc_html( get_the_title( $event ) )
+					esc_html( get_the_title( $event->ID ) )
 				);
 				continue;
 			}
 
-			if ( ( ! in_array( $event_post->post_type, get_post_types( [ 'show_ui' => true ] ), true ) ) ) {
+			if ( ( ! in_array( $event->post_type, get_post_types( [ 'show_ui' => true ] ), true ) ) ) {
 				$output .= sprintf(
 					'<div>%s</div>',
-					esc_html( get_the_title( $event ) )
+					esc_html( get_the_title( $event->ID ) )
 				);
 				continue;
 			}
 
 			$output .= sprintf(
 				'<div><a href="%s">%s</a></div>',
-				esc_url( get_edit_post_link( $event ) ),
-				esc_html( get_the_title( $event ) )
+				esc_url( get_edit_post_link( $event->ID ) ),
+				esc_html( get_the_title( $event->ID ) )
 			);
 		}
 
@@ -619,7 +584,7 @@ class Orders_Table extends WP_Posts_List_Table {
 		}
 
 		return sprintf(
-			'<br><span class="tribe-dashicons">%s<a href="javascript:void" data-text="%s" class="tribe-copy-to-clipboard dashicons dashicons-admin-page"></a></span>',
+			'<br><span class="tribe-dashicons">%s<a href="javascript:void(0)" data-text="%s" class="tribe-copy-to-clipboard dashicons dashicons-admin-page"></a></span>',
 			esc_html( $item->gateway_order_id ),
 			esc_attr( $item->gateway_order_id ),
 		);

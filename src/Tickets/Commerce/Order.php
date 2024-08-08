@@ -3,8 +3,11 @@
 namespace TEC\Tickets\Commerce;
 
 use TEC\Tickets\Commerce\Gateways\Contracts\Gateway_Interface;
+use TEC\Tickets\Commerce\Status\Refunded;
+use TEC\Tickets\Commerce\Status\Reversed;
 use TEC\Tickets\Commerce\Utils\Value;
 use Tribe__Date_Utils as Dates;
+use WP_Post;
 
 /**
  * Class Order
@@ -351,7 +354,7 @@ class Order extends Abstract_Order {
 	 *
 	 * @throws \Tribe__Repository__Usage_Error
 	 *
-	 * @return false|\WP_Post
+	 * @return false|WP_Post
 	 */
 	public function create_from_cart( Gateway_Interface $gateway, $purchaser = null ) {
 		$cart = tribe( Cart::class );
@@ -414,7 +417,7 @@ class Order extends Abstract_Order {
 	 *
 	 * @throws \Tribe__Repository__Usage_Error
 	 *
-	 * @return false|\WP_Post
+	 * @return false|WP_Post
 	 */
 	public function create( Gateway_Interface $gateway, $args ) {
 		$gateway_key = $gateway::get_key();
@@ -469,7 +472,7 @@ class Order extends Abstract_Order {
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param int|\WP_Post $order Order Object.
+	 * @param int|WP_Post $order Order Object.
 	 *
 	 * @return string
 	 */
@@ -519,11 +522,11 @@ class Order extends Abstract_Order {
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param \WP_Post $order the order object.
+	 * @param WP_Post $order the order object.
 	 *
-	 * @return \WP_Post|\WP_Post[]
+	 * @return WP_Post|WP_Post[]
 	 */
-	public function get_attendees( \WP_Post $order ) {
+	public function get_attendees( WP_Post $order ) {
 		$order->attendees = tribe( Module::class )->get_attendees_by_order_id( $order->ID );
 
 		if ( empty( $order->attendees ) ) {
@@ -536,7 +539,90 @@ class Order extends Abstract_Order {
 		}
 
 		return $order;
+	}
 
+	/**
+	 * Returns the events associated with the order.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post|int $order The order object or ID.
+	 *
+	 * @return WP_Post[]
+	 */
+	public function get_events( $order ): array {
+		if ( is_numeric( $order ) ) {
+			$order = tec_tc_get_order( $order );
+		}
+
+		if ( ! $order instanceof WP_Post ) {
+			return [];
+		}
+
+		$events = $order->events_in_order ?? [];
+
+		if ( empty( $events ) ) {
+			return [];
+		}
+
+		return array_filter(
+			array_map( 'get_post', $events ),
+			function ( $event ) {
+				return $event instanceof WP_Post;
+			}
+		);
+	}
+
+	/**
+	 * Returns the total value of the order.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post|int $order    The order object or ID.
+	 * @param bool        $original Whether to get the original value or the current value.
+	 *
+	 * @return ?string
+	 */
+	public function get_value( $order, $original = false ): ?string {
+		if ( is_numeric( $order ) ) {
+			$order = tec_tc_get_order( $order );
+		}
+
+		if ( ! $order instanceof WP_Post ) {
+			return null;
+		}
+
+		$reversed = tribe( Reversed::class )->get_wp_slug();
+		$refunded = tribe( Refunded::class )->get_wp_slug();
+		if ( ! in_array( $order->post_status, [ $reversed, $refunded ], true ) ) {
+			$regular = 0;
+			$total   = 0;
+
+			foreach ( $order->items as $cart_item ) {
+				$regular += $cart_item['regular_sub_total'] ?? 0;
+				$total   += $cart_item['sub_total'] ?? 0;
+			}
+
+			// Backwards compatible. We didn't use to store regular, so in most installs this is going to be diff cause regular is gonna be 0 mostly.
+			if ( $total !== $regular && $regular > $total ) {
+				return Value::create( $original ? $regular : $total )->get_currency();
+			}
+
+			return $order->total_value->get_currency();
+		}
+
+		if ( empty( $order->gateway_payload['refunded'] ) ) {
+			// The item was refunded but we don't know anything about it.
+			return $order->total_value->get_currency();
+		}
+
+		$refunds  = $order->gateway_payload['refunded'];
+		$refunded = max( wp_list_pluck( $refunds, 'amount_refunded' ) );
+		$total    = max( wp_list_pluck( $refunds, 'amount_captured' ) );
+
+		$total_value = $total - $refunded;
+
+		return Value::create( ( $original ? $total : $total_value ) / 100 )->get_currency();
 	}
 
 	/**
@@ -544,11 +630,11 @@ class Order extends Abstract_Order {
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param \WP_Post $attendee the attendee object.
+	 * @param WP_Post $attendee the attendee object.
 	 *
 	 * @return mixed
 	 */
-	public function get_ticket_id( \WP_Post $attendee ) {
+	public function get_ticket_id( WP_Post $attendee ) {
 		return get_post_meta( $attendee->ID, static::$tickets_in_order_meta_key, true );
 	}
 
@@ -557,7 +643,7 @@ class Order extends Abstract_Order {
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param int|\WP_Post $order The Order object to check.
+	 * @param int|WP_Post $order The Order object to check.
 	 *
 	 * @return bool
 	 */
@@ -578,7 +664,7 @@ class Order extends Abstract_Order {
 	 *
 	 * @param string $gateway_order_id The gateway order id.
 	 *
-	 * @return mixed|\WP_Post|null
+	 * @return mixed|WP_Post|null
 	 */
 	public function get_from_gateway_order_id( string $gateway_order_id ) {
 		return tec_tc_orders()->by_args( [

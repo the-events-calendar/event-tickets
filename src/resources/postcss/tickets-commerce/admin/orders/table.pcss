@@ -6,24 +6,6 @@
 
 body.wp-admin.post-type-tec_tc_order {
 
-	input#title, #post-body-content {
-		display:none;
-	}
-
-	#tribe-tickets-order-details {
-		.postbox-header {
-			display:none;
-		}
-
-		h2 {
-			font-size: var( --tec-font-size-5 );
-			line-height: var( --tec-line-height-2 );
-			font-weight: var( --tec-font-weight-regular );
-			padding: 10px 0;
-			margin-left: var(--tec-spacer-1)
-		}
-	}
-
 	div.tablenav.top {
 		.tribe-datepicker {
 			margin-right: var(--tec-spacer-1);
@@ -123,58 +105,6 @@ body.wp-admin.post-type-tec_tc_order {
 	}
 }
 
-.tec-tickets-commerce-single-order{
-	&--details {
-		display: flex;
-		flex-flow: row wrap;
-		justify-content: flex-start;
-		width:100%;
-
-		&--item {
-			display:flex;
-			flex: 1 1 auto;
-			flex-flow: column nowrap;
-			margin: var(--tec-spacer-1);
-
-			.dashicons {
-				font-size: 16px;
-				text-decoration: none;
-			}
-
-			&--label {
-				font-size: var(--tec-font-size-2);
-				font-weight: var(--tec-font-weight-bold);
-				line-height: var(--tec-line-height-1);
-				margin: var(--tec-spacer-2) 0;
-
-				a.tribe-dashicons {
-					font-weight: var(--tec-font-weight-regular);
-				}
-			}
-
-			&--value {
-				line-height: var( --tec-line-height-3 );
-
-				a.tribe-dashicons {
-					text-decoration: none;
-				}
-
-				span.tribe-dashicons {
-					margin-top:var(--tec-spacer-1);
-					display:flex;
-					flex-flow: row nowrap;
-					justify-content: flex-start;
-					align-items: center;
-				}
-
-				input[readonly] {
-					padding:var(--tec-spacer-0) var(--tec-spacer-1);
-				}
-			}
-		}
-	}
-}
-
 .tribe-dashicons {
 	&--code {
 		font-family: monospace;
@@ -184,6 +114,12 @@ body.wp-admin.post-type-tec_tc_order {
 		height: 16px;
 		padding-left: var(--tec-spacer-0);
 		width: 16px;
+	}
+
+	.tribe-icon-trash {
+		background-image: url( ../../../../images/admin/trash.svg );
+		background-size: contain;
+		background-repeat: no-repeat;
 	}
 }
 

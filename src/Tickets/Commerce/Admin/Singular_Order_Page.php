@@ -8,6 +8,7 @@ use Tribe__Template;
 use TEC\Tickets\Commerce\Gateways\Manager;
 use TEC\Tickets\Commerce\Gateways\Free\Gateway as Free_Gateway;
 use Tribe__Tickets__Main;
+use WP_Post;
 
 /**
  * Class Singular_Order_Page
@@ -40,11 +41,13 @@ class Singular_Order_Page extends Service_Provider {
 	 * @return Tribe__Template
 	 */
 	public function template( $name, $context = [], $echo = true ) { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.echoFound
-		$this->template = new Tribe__Template();
-		$this->template->set_template_origin( Tribe__Tickets__Main::instance() );
-		$this->template->set_template_folder( 'src/admin-views/commerce/orders/single' );
-		$this->template->set_template_context_extract( true );
-		$this->template->set_template_folder_lookup( true );
+		if ( ! $this->template ) {
+			$this->template = new Tribe__Template();
+			$this->template->set_template_origin( Tribe__Tickets__Main::instance() );
+			$this->template->set_template_folder( 'src/admin-views/commerce/orders/single' );
+			$this->template->set_template_context_extract( true );
+			$this->template->set_template_folder_lookup( true );
+		}
 
 		return $this->template->template( $name, $context, $echo );
 	}
@@ -71,42 +74,99 @@ class Singular_Order_Page extends Service_Provider {
 			'normal',
 			'high'
 		);
+
+
+		if ( ! function_exists( 'post_submit_meta_box' ) ) {
+			// Something changes in wp core. Let's bail instead of causing fatal.
+			return;
+		}
+
+		global $wp_meta_boxes;
+
+		$meta_box = $wp_meta_boxes[ get_current_screen()->id ]['side']['core']['submitdiv'] ?? false;
+
+		// Remove core's Publish metabox and add our own.
+		remove_meta_box( 'submitdiv', $post_type, 'side' );
+		add_meta_box(
+			'submitdiv',
+			__( 'Actions', 'event-tickets' ),
+			[ $this, 'render_actions' ],
+			$post_type,
+			'side',
+			'high',
+			$meta_box['args'] ?? []
+		);
+	}
+
+	public function render_actions( $post ) {
+		ob_start();
+		post_submit_meta_box( $post );
+		$submit = ob_get_clean();
+
+		$template = $this->template(
+			'order-actions-metabox',
+			[
+				'order'       => tec_tc_get_order( $post ),
+				'single_page' => $this,
+			],
+			false
+		);
+
+		echo str_replace( '<div class="submitbox" id="submitpost">', '<div class="submitbox" id="submitpost">' . $template, $submit );
 	}
 
 	public function render_order_details( $post ) {
-		$this->template( 'order-details-metabox', [ 'order' => tec_tc_get_order( $post ), 'single_page' => $this ] );
+		$this->template(
+			'order-details-metabox',
+			[
+				'order'       => tec_tc_get_order( $post ),
+				'single_page' => $this,
+			]
+		);
 	}
 
 	public function render_order_items( $post ) {
-		// $this->template( 'order-items-metabox', [ 'order' => tec_tc_get_order( $post ) ] );
+		$this->template(
+			'order-items-metabox',
+			[
+				'order'       => tec_tc_get_order( $post ),
+				'single_page' => $this,
+			]
+		);
 	}
 
-	public function get_gateway_label() {
-		$item = tec_tc_get_order( get_the_ID() );
+	public function get_gateway_label( $order) {
+		if ( is_numeric( $order ) ) {
+			$order = tec_tc_get_order( $order );
+		}
 
-		$gateway = tribe( Manager::class )->get_gateway_by_key( $item->gateway );
+		if ( ! $order instanceof WP_Post ) {
+			return '';
+		}
+
+		$gateway = tribe( Manager::class )->get_gateway_by_key( $order->gateway );
 
 		if ( $gateway instanceof Free_Gateway ) {
 			return esc_html__( 'Free', 'event-tickets' );
 		}
 
 		if ( ! $gateway ) {
-			return esc_html( $item->gateway );
+			return esc_html( $order->gateway );
 		}
 
-		$order_url = $gateway->get_order_controller()->get_gateway_dashboard_url_by_order( $item );
+		$order_url = $gateway->get_order_controller()->get_gateway_dashboard_url_by_order( $order );
 
 		if ( empty( $order_url ) ) {
 			return esc_html( $gateway::get_label() );
 		}
 
 		return sprintf(
-			'%1$s%2$s%3$s%4$s<br><span class="tribe-dashicons"><input type="text" readonly value="%5$s" /><a href="javascript:void" data-text="%5$s" class="tribe-copy-to-clipboard dashicons dashicons-admin-page"></a></span>',
+			'%1$s%2$s%3$s%4$s<br><span class="tribe-dashicons"><input type="text" readonly value="%5$s" /><a href="javascript:void(0)" data-text="%5$s" class="tribe-copy-to-clipboard dashicons dashicons-admin-page"></a></span>',
 			'<a class="tribe-dashicons" href="' . esc_url( $order_url ) . '" target="_blank" rel="noopener noreferrer">',
 			esc_html( $gateway::get_label() ),
 			'<span class="dashicons dashicons-external"></span>',
 			'</a>',
-			esc_attr( $item->gateway_order_id )
+			esc_attr( $order->gateway_order_id )
 		);
 	}
 }
