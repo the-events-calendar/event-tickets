@@ -50,6 +50,5 @@ class Hooks extends Service_Provider {
 	 * @since TBD
 	 */
 	protected function add_filters() {
-
 	}
 }

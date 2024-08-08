@@ -52,9 +52,5 @@ class Provider extends Service_Provider {
 	 * @since TBD
 	 */
 	protected function register_assets() {
-		// $assets = new Assets( $this->container );
-		// $assets->register();
-
-		// $this->container->singleton( Assets::class, $assets );
 	}
 }
