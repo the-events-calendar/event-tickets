@@ -30,7 +30,7 @@ class Provider extends Service_Provider {
 		$this->register_assets();
 
 		// Register the SP on the container.
-		$this->container->singleton( static::class, $this );
+		$this->container->register( static::class, $this );
 	}
 
 	/**
