@@ -6,6 +6,10 @@
 namespace TEC\Tickets\Seating\Admin\Events;
 
 use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
+use TEC\Tickets\Seating\Admin\Template;
+use TEC\Common\lucatume\DI52\Container;
+use TEC\Tickets\Seating\Tables\Layouts;
+use TEC\Common\StellarWP\DB\DB;
 
 /**
  * Class Events Controller.
@@ -13,6 +17,27 @@ use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
  * @since TBD
  */
 class Controller extends Controller_Contract {
+	/**
+	 * A reference to the template instance used to render the templates.
+	 *
+	 * @since TBD
+	 *
+	 * @var Template
+	 */
+	private Template $template;
+	
+	/**
+	 * Events Controller constructor.
+	 *
+	 * @since TBD
+	 *
+	 * @param Container $container The container instance.
+	 * @param Template  $template The template instance.
+	 */
+	public function __construct( Container $container, Template $template ) {
+		parent::__construct( $container );
+		$this->template = $template;
+	}
 	
 	/**
 	 * Register actions.
@@ -65,12 +90,26 @@ class Controller extends Controller_Contract {
 		$events_table = new Associated_Events();
 		$events_table->prepare_items();
 		
-		echo '<div class="wrap">';
-		echo '<h1 class="wp-heading-inline">Events Associated with Layout: {{NAME}}</h1>';
-		echo '<form method="post">';
-		$events_table->search_box( 'search', 'search_id' );
-		$events_table->display();
-		echo '</form>';
-		echo '</div>';
+		$layout_id = tribe_get_request_var( 'layout', false );
+		$layout    = DB::table( Layouts::table_name( false ) )->where( 'id', $layout_id )->get();
+		
+		if ( empty( $layout ) ) {
+			echo esc_html__( 'Layout ID is not valid!', 'event-tickets' );
+			return;
+		}
+		
+		$header = sprintf(
+			/* translators: %s: Layout name. */
+			__( 'Associated Events for %s', 'event-tickets' ),
+			$layout->name
+		);
+		
+		$this->template->template(
+			'events/list',
+			[
+				'header'       => $header,
+				'events_table' => $events_table,
+			]
+		);
 	}
 }
