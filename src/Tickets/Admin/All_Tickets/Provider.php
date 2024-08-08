@@ -14,6 +14,7 @@ use TEC\Common\Contracts\Service_Provider;
  * Service provider for the Tickets Admin All Tickets
  *
  * @since   TBD
+ *
  * @package TEC\Tickets\Admin
  */
 class Provider extends Service_Provider {
