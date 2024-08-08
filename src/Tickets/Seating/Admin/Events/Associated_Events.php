@@ -8,8 +8,9 @@ if ( ! class_exists( 'WP_List_Table' ) || ! class_exists( 'WP_Posts_List_Table' 
 	require_once ABSPATH . 'wp-admin/includes/class-wp-posts-list-table.php';
 }
 
+use TEC\Tickets\Seating\Meta;
+use Tribe__Tickets__Main as Tickets;
 use WP_Posts_List_Table;
-use WP_Query;
 use WP_Post;
 
 /**
@@ -18,6 +19,10 @@ use WP_Post;
  * @since TBD
  */
 class Associated_Events extends WP_Posts_List_Table {
+	/**
+	 * @var int Items count.
+	 */
+	private int $item_count = 0;
 	/**
 	 * The constructor.
 	 *
@@ -84,6 +89,22 @@ class Associated_Events extends WP_Posts_List_Table {
 	}
 	
 	/**
+	 * The screen setup.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function screen_setup() {
+		$columns               = $this->get_columns();
+		$hidden                = [];
+		$sortable              = $this->get_sortable_columns();
+		$this->_column_headers = [ $columns, $hidden, $sortable ];
+		
+		add_filter( 'quick_edit_enabled_for_post_type', '__return_false' );
+	}
+	
+	/**
 	 * Prepare the items.
 	 *
 	 * @since TBD
@@ -91,43 +112,42 @@ class Associated_Events extends WP_Posts_List_Table {
 	 * @return void
 	 */
 	public function prepare_items() {
+		$this->screen_setup();
+		
+		$layout_id    = tribe_get_request_var( 'layout' );
 		$per_page     = 10;
 		$current_page = $this->get_pagenum();
 		$offset       = ( $current_page - 1 ) * $per_page;
 		
-		$columns  = $this->get_columns();
-		$hidden   = [];
-		$sortable = $this->get_sortable_columns();
+		$ticketable_post_types = Tickets::instance()->post_types();
+		$repository            = new class( $ticketable_post_types ) extends \Tribe__Repository {
+			/**
+			 * @param string[] $post_types The list of post types.
+			 */
+			public function __construct( array $post_types ) {
+				$this->default_args['post_type'] = $post_types;
+				parent::__construct();
+			}
+		};
 		
-		$this->_column_headers = [ $columns, $hidden, $sortable ];
-		
-		add_filter( 'quick_edit_enabled_for_post_type', '__return_false' );
-		
-		$args = [
-			'post_type'      => 'tribe_events',
-			'posts_per_page' => $per_page,
-			'offset'         => $offset,
-		];
-		
-		$query       = new WP_Query( $args );
-		$total_items = $query->found_posts;
+		$this->item_count = $repository->where( 'meta_equals', Meta::META_KEY_LAYOUT_ID, $layout_id )->count();
 		
 		$this->set_pagination_args(
 			[
-				'total_items' => $total_items,
+				'total_items' => $this->item_count,
 				'per_page'    => $per_page,
-				'total_pages' => ceil( $total_items / $per_page ),
+				'total_pages' => ceil( $this->item_count / $per_page ),
 			]
 		);
 		
-		$this->items = $query->posts;
+		$this->items = $repository->where( 'meta_equals', Meta::META_KEY_LAYOUT_ID, $layout_id )->all( true );
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
-	public function has_items() {
-		return count( $this->items );
+	public function has_items(): bool {
+		return $this->item_count > 0;
 	}
 	
 	/**
@@ -153,7 +173,14 @@ class Associated_Events extends WP_Posts_List_Table {
 	 *
 	 * @return array
 	 */
-	public function get_bulk_actions() {
+	public function get_bulk_actions(): array {
 		return [];
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function no_items() {
+		echo esc_html__( 'No Associated Events found.', 'event-tickets' );
 	}
 }
