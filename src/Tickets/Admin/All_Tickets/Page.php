@@ -1,6 +1,6 @@
 <?php
 /**
- * Handles hooking all the actions and filters used by the admin area.
+ * Handles registering the admin menu and rendering of the All Tickets page.
  *
  * @since   TBD
  *
@@ -15,10 +15,6 @@ namespace TEC\Tickets\Admin\All_Tickets;
  * @since   TBD
  *
  * @package TEC\Tickets\Admin
- */
-
-/**
- * Manages the admin settings UI in relation to ticket configuration.
  */
 class Page {
 
@@ -124,16 +120,5 @@ class Page {
 		$context = [];
 
 		$admin_views->template( 'all-tickets', $context );
-	}
-
-	/**
-	 * Return if the page can be accessed.
-	 *
-	 * @since TBD
-	 *
-	 * @return bool True if the page can be accessed.
-	 */
-	public function can_access_page() {
-		return is_user_logged_in();
 	}
 }
