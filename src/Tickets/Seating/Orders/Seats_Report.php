@@ -5,12 +5,15 @@
 
 namespace TEC\Tickets\Seating\Orders;
 
+use TEC\Tickets\Commerce\Module;
 use TEC\Tickets\Commerce\Reports\Report_Abstract;
 use TEC\Tickets\Commerce\Reports\Tabbed_View;
-use TEC\Tickets\Seating\Frontend;
+use TEC\Tickets\Seating\Meta;
 use TEC\Tickets\Seating\Service\Service;
+use Tribe__Main;
 use WP_Error;
 use WP_Post;
+use Tribe__Tickets__Main as Tickets_Main;
 
 /**
  * Class Seats_Tab.
@@ -57,10 +60,7 @@ class Seats_Report extends Report_Abstract {
 	 *
 	 * @since TBD
 	 */
-	public function hook() {
-		// Register before the default priority of 10 to avoid submenu hook issues.
-		add_action( 'admin_menu', [ $this, 'register_seats_page' ], 5 );
-
+	public function register_tab() {
 		// Register the tabbed view.
 		$tc_tabbed_view = new Tabbed_View();
 		$tc_tabbed_view->set_active( self::$tab_slug );
@@ -153,5 +153,63 @@ class Seats_Report extends Report_Abstract {
 			],
 			admin_url( 'edit.php' )
 		);
+	}
+	
+	/**
+	 * Include seats action row.
+	 *
+	 * @since TBD
+	 *
+	 * @param array<string,string> $actions The action items.
+	 * @param WP_Post              $post The post object.
+	 *
+	 * @return array<string,string> The action items.
+	 */
+	public function add_seats_row_action( $actions, $post ): array {
+		$post_id     = Tribe__Main::post_id_helper( $post );
+		$slr_enabled = get_post_meta( $post_id, Meta::META_KEY_ENABLED, true );
+		
+		if ( ! $slr_enabled ) {
+			return $actions;
+		}
+		
+		$post = get_post( $post_id );
+		
+		if ( ! in_array( $post->post_type, Tickets_Main::instance()->post_types(), true ) ) {
+			return $actions;
+		}
+		
+		if ( ! $this->can_access_page( $post_id ) ) {
+			return $actions;
+		}
+		
+		$commerce = tribe( Module::class );
+		
+		if ( ! $commerce->post_has_tickets( $post ) ) {
+			return $actions;
+		}
+		
+		$has_attendees = tec_tc_attendees()->by( 'event_id', $post_id )->count();
+		
+		if ( ! $has_attendees ) {
+			return $actions;
+		}
+		
+		$url         = self::get_link( $post );
+		$post_labels = get_post_type_labels( get_post_type_object( $post->post_type ) );
+		$post_type   = strtolower( $post_labels->singular_name );
+		
+		$actions['tickets_seats'] = sprintf(
+			'<a title="%s" href="%s">%s</a>',
+			sprintf(
+				/* translators: %s: post type */
+				esc_html__( 'See seats purchased for this %s', 'event-tickets' ),
+				$post_type
+			),
+			esc_url( $url ),
+			esc_html__( 'Seats', 'event-tickets' )
+		);
+		
+		return $actions;
 	}
 }

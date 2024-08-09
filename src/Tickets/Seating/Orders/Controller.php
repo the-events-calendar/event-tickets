@@ -77,6 +77,13 @@ class Controller extends Controller_Contract {
 	private Sessions $sessions;
 
 	/**
+	 * A reference to Seats Report handler.
+	 *
+	 * @var Seats_Report
+	 */
+	private Seats_Report $seats_report;
+
+	/**
 	 * Controller constructor.
 	 *
 	 * @since TBD
@@ -87,6 +94,7 @@ class Controller extends Controller_Contract {
 	 * @param Reservations $reservations The Reservations object.
 	 * @param Session      $session      The seat selection session handler.
 	 * @param Sessions     $sessions     A reference to the Sessions table handler.
+	 * @param Seats_Report $seats_report The seats report handler.
 	 */
 	public function __construct(
 		Container $container,
@@ -94,7 +102,8 @@ class Controller extends Controller_Contract {
 		Cart $cart,
 		Reservations $reservations,
 		Session $session,
-		Sessions $sessions
+		Sessions $sessions,
+		Seats_Report $seats_report
 	) {
 		parent::__construct( $container );
 		$this->attendee     = $attendee;
@@ -102,6 +111,7 @@ class Controller extends Controller_Contract {
 		$this->reservations = $reservations;
 		$this->session      = $session;
 		$this->sessions     = $sessions;
+		$this->seats_report = $seats_report;
 	}
 
 	/**
@@ -138,8 +148,10 @@ class Controller extends Controller_Contract {
 				2
 			);
 			add_action( 'tribe_tickets_orders_tabbed_view_register_tab_right', [ $this, 'register_seat_tab' ], 10, 2 );
-			add_action( 'init', [ $this, 'register_seat_reports' ] );
+			add_action( 'init', [ $this, 'register_seats_report_tab' ] );
+			add_action( 'admin_menu', [ $this, 'register_seats_report_page' ] );
 			add_filter( 'tec_tickets_commerce_reports_tabbed_page_title', [ $this, 'filter_seat_tab_title' ], 10, 3 );
+			add_filter( 'post_row_actions', [ $this, 'add_seats_row_action' ], 10, 2 );
 		}
 		// Attendee delete handler.
 		add_filter( 'tec_tickets_commerce_attendee_to_delete', [ $this, 'handle_attendee_delete' ] );
@@ -186,8 +198,10 @@ class Controller extends Controller_Contract {
 		remove_filter( 'tec_tickets_commerce_reports_tabbed_view_tab_map', [ $this, 'include_seats_tab' ] );
 		remove_action( 'tec_tickets_commerce_reports_tabbed_view_after_register_tab', [ $this, 'register_seat_tab' ] );
 		remove_action( 'tribe_tickets_orders_tabbed_view_register_tab_right', [ $this, 'register_seat_tab' ] );
-		remove_action( 'init', [ $this, 'register_seat_reports' ] );
+		remove_action( 'init', [ $this, 'register_seats_report_tab' ] );
+		remove_action( 'admin_menu', [ $this, 'register_seats_report_page' ] );
 		remove_filter( 'tec_tickets_commerce_reports_tabbed_page_title', [ $this, 'filter_seat_tab_title' ] );
+		remove_filter( 'post_row_actions', [ $this, 'add_seats_row_action' ] );
 
 		remove_action( 'tec_tickets_commerce_flag_action_generated_attendees', [ $this, 'confirm_all_reservations' ] );
 		remove_action( 'wp_ajax_' . Ajax::ACTION_FETCH_ATTENDEES, [ $this, 'fetch_attendees_by_post' ] );
@@ -234,8 +248,19 @@ class Controller extends Controller_Contract {
 	 *
 	 * @return void
 	 */
-	public function register_seat_reports() {
-		$this->container->make( Seats_Report::class )->hook();
+	public function register_seats_report_tab() {
+		$this->seats_report->register_tab();
+	}
+
+	/**
+	 * Registers the seat report page.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	public function register_seats_report_page() {
+		$this->seats_report->register_seats_page();
 	}
 
 	/**
@@ -665,5 +690,17 @@ class Controller extends Controller_Contract {
 		$formatted = $this->attendee->format_many( $attendees['attendees'] ?? [] );
 
 		wp_send_json_success( $formatted[0] );
+	}
+
+	/**
+	 * Display row actions in the post listing for seats.
+	 *
+	 * @param array<string,string> $actions The action items.
+	 * @param WP_Post              $post The post object.
+	 *
+	 * @return array<string,string> The action items.
+	 */
+	public function add_seats_row_action( array $actions, $post ): array {
+		return $this->seats_report->add_seats_row_action( $actions, $post );
 	}
 }
