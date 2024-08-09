@@ -420,7 +420,7 @@ class Singular_Order_Page extends Service_Provider {
 		// Success.
 		add_filter(
 			'redirect_post_location',
-			function( $location, $pid ) use ( $post_id, $message_code ) {
+			function ( $location, $pid ) use ( $post_id, $message_code ) {
 				if ( (int) $pid !== $post_id ) {
 					return $location;
 				}
