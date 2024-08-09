@@ -306,9 +306,9 @@ class Status_Handler extends \TEC\Common\Contracts\Service_Provider {
 	 *
 	 * @since 5.1.9
 	 *
-	 * @param string   $new_status New post status.
-	 * @param string   $old_status Old post status.
-	 * @param WP_Post  $post       Post object.
+	 * @param string  $new_status New post status.
+	 * @param string  $old_status Old post status.
+	 * @param WP_Post $post       Post object.
 	 */
 	public function transition_order_post_status_hooks( $new_status, $old_status, $post ) {
 		if ( Order::POSTTYPE !== $post->post_type ) {
