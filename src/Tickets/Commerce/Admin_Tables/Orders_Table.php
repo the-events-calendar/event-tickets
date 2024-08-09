@@ -453,9 +453,16 @@ class Orders_Table extends WP_Posts_List_Table {
 
 		foreach ( $item->items as $cart_item ) {
 			$ticket   = Tribe__Tickets__Tickets::load_ticket_object( $cart_item['ticket_id'] );
-			$name     = esc_html( $ticket->name );
 			$quantity = esc_html( (int) $cart_item['quantity'] );
-			$output  .= "<div class='tribe-line-item'>{$quantity} {$name}</div>";
+
+			if ( ! $ticket ) {
+				$name    = _n( 'Ticket', 'Tickets', $quantity, 'event-tickets' );
+				$output .= "<div class='tribe-line-item'>{$quantity} {$name}</div>";
+				continue;
+			}
+
+			$name    = esc_html( $ticket->name );
+			$output .= "<div class='tribe-line-item'>{$quantity} {$name}</div>";
 		}
 
 		return $output;
