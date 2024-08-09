@@ -6,19 +6,27 @@
  * @var \TEC\Tickets\Commerce\Admin\Singular_Order_Page $single_page       The orders table output.
  */
 
+use TEC\Tickets\Commerce\Status\Status_Handler;
+
+$possible_statuses = tribe( Status_Handler::class )->get_orders_possible_status( $order );
+
 ?>
-<div>
+<div class="tec-tickets-commerce-single-order--actions">
 	<button class="button button-secondary"><?php esc_html_e( 'Email order details to purchaser', 'event-tickets' ); ?></button>
-	<div>
-		<label for="tribe-tickets-commerce-status-selector">
-			<?php esc_html_e( 'Status', 'event-tickets' ); ?>
-		</label>
-		<select id="tribe-tickets-commerce-status-selector" name="tribe-tickets-commerce-status">
-			<option value=""><?php esc_html_e( 'Select status', 'event-tickets' ); ?></option>
-			<option value="completed"><?php esc_html_e( 'Completed', 'event-tickets' ); ?></option>
-			<option value="refunded"><?php esc_html_e( 'Refunded', 'event-tickets' ); ?></option>
-			<option value="cancelled"><?php esc_html_e( 'Cancelled', 'event-tickets' ); ?></option>
-		</select>
-	</div>
+	<?php if ( ! empty( $possible_statuses ) ) : ?>
+		<div class="tec-tickets-commerce-single-order--actions--status">
+			<label for="tribe-tickets-commerce-status-selector">
+				<?php esc_html_e( 'Status', 'event-tickets' ); ?>
+			</label>
+			<select id="tribe-tickets-commerce-status-selector" name="tribe-tickets-commerce-status">
+				<option value=""><?php esc_html_e( 'Select status', 'event-tickets' ); ?></option>
+				<?php foreach ( $possible_statuses as $possible_status ) : ?>
+					<option <?php selected( $order->post_status, $possible_status->get_wp_slug() ); ?>value="<?php echo esc_attr( $possible_status->get_slug() ); ?>">
+						<?php echo esc_html( $possible_status->get_name() ); ?>
+					</option>
+				<?php endforeach; ?>
+			</select>
+		</div>
+	<?php endif; ?>
 </div>
 <?php

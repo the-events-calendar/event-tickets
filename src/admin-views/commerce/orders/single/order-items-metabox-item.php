@@ -14,7 +14,7 @@ use TEC\Tickets\Commerce\Utils\Value;
 <tr class="tec-tickets-commerce-single-order--items--table--row">
 	<td><?php echo esc_html( $ticket->name ); ?></td>
 	<td><?php echo 'series_pass' === $ticket->type ? esc_html__( 'Series Pass', 'event-tickets' ) : esc_html__( 'Standard Ticket', 'event-tickets' ); ?></td>
-	<td class="tec-tickets-commerce-single-order--items--table--row--info-column">Refunded</td>
+	<td class="tec-tickets-commerce-single-order--items--table--row--info-column"><!-- @todo dpan: this is were Refunded would go --></td>
 	<td style="padding-left:0;"><?php echo esc_html( Value::create( $item['regular_price'] )->get_currency() ); ?></td>
 	<td>
 		<div class="tec-tickets-commerce-single-order--items--table--row--actions">

@@ -4,6 +4,7 @@ namespace TEC\Tickets\Commerce\Status;
 
 use TEC\Tickets\Commerce\Order;
 use TEC\Tickets\Commerce\Settings;
+use WP_Post;
 
 /**
  * Class Status_Handler
@@ -91,6 +92,31 @@ class Status_Handler extends \TEC\Common\Contracts\Service_Provider {
 		}
 
 		$this->container->singleton( static::class, $this );
+	}
+
+	/**
+	 * Fetches the possible statuses that a given order can be transitioned to.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post $order The order we are checking.
+	 *
+	 * @return Status_Interface[]
+	 */
+	public function get_orders_possible_status( WP_Post $order ): array {
+		$possible = array_unique( array_values( self::STATUS_MAP ) );
+
+		$current_status = $this->get_by_wp_slug( $order->post_status );
+
+		$final = [];
+		foreach ( $possible as $status ) {
+			if ( ! $current_status->can_apply_to( $order, tribe( $status ) ) ) {
+				continue;
+			}
+			$final[] = tribe( $status );
+		}
+
+		return $final;
 	}
 
 	/**
@@ -282,7 +308,7 @@ class Status_Handler extends \TEC\Common\Contracts\Service_Provider {
 	 *
 	 * @param string   $new_status New post status.
 	 * @param string   $old_status Old post status.
-	 * @param \WP_Post $post       Post object.
+	 * @param WP_Post  $post       Post object.
 	 */
 	public function transition_order_post_status_hooks( $new_status, $old_status, $post ) {
 		if ( Order::POSTTYPE !== $post->post_type ) {
@@ -303,7 +329,7 @@ class Status_Handler extends \TEC\Common\Contracts\Service_Provider {
 		 *
 		 * @param Status_Interface      $new_status New post status.
 		 * @param Status_Interface|null $old_status Old post status.
-		 * @param \WP_Post              $post       Post object.
+		 * @param WP_Post               $post       Post object.
 		 */
 		do_action( 'tec_tickets_commerce_order_status_transition', $new_status, $old_status, $post );
 
@@ -318,7 +344,7 @@ class Status_Handler extends \TEC\Common\Contracts\Service_Provider {
 			 *
 			 * @param Status_Interface      $new_status New post status.
 			 * @param Status_Interface|null $old_status Old post status.
-			 * @param \WP_Post              $post       Post object.
+			 * @param WP_Post               $post       Post object.
 			 */
 			do_action( "tec_tickets_commerce_order_status_{$old_status->get_slug()}_to_{$new_status->get_slug()}", $new_status, $old_status, $post );
 		}
@@ -332,7 +358,7 @@ class Status_Handler extends \TEC\Common\Contracts\Service_Provider {
 		 *
 		 * @param Status_Interface      $new_status New post status.
 		 * @param Status_Interface|null $old_status Old post status.
-		 * @param \WP_Post              $post       Post object.
+		 * @param WP_Post               $post       Post object.
 		 */
 		do_action( "tec_tickets_commerce_order_status_{$new_status->get_slug()}", $new_status, $old_status, $post );
 
@@ -351,7 +377,7 @@ class Status_Handler extends \TEC\Common\Contracts\Service_Provider {
 	 *
 	 * @param Status_Interface      $new_status New post status.
 	 * @param Status_Interface|null $old_status Old post status.
-	 * @param \WP_Post              $post       Post object.
+	 * @param WP_Post               $post       Post object.
 	 */
 	public function trigger_status_hooks_by_flags( Status_Interface $new_status, $old_status, $post ) {
 		$flags = $new_status->get_flags();
@@ -366,7 +392,7 @@ class Status_Handler extends \TEC\Common\Contracts\Service_Provider {
 			 *
 			 * @param Status_Interface      $new_status New post status.
 			 * @param Status_Interface|null $old_status Old post status.
-			 * @param \WP_Post              $post       Post object.
+			 * @param WP_Post               $post       Post object.
 			 */
 			do_action( "tec_tickets_commerce_order_status_flag_{$flag}", $new_status, $old_status, $post );
 
@@ -380,7 +406,7 @@ class Status_Handler extends \TEC\Common\Contracts\Service_Provider {
 			 *
 			 * @param Status_Interface      $new_status New post status.
 			 * @param Status_Interface|null $old_status Old post status.
-			 * @param \WP_Post              $post       Post object.
+			 * @param WP_Post               $post       Post object.
 			 */
 			do_action( "tec_tickets_commerce_order_status_{$new_status->get_slug()}_flag_{$flag}", $new_status, $old_status, $post );
 		}
