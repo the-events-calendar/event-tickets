@@ -643,5 +643,7 @@ describe('Seats Report', () => {
 			expect(handled).toBe(false);
 			expect(apiModule.sendPostMessage).not.toHaveBeenCalled();
 		});
+
+		// The `
 	});
 });

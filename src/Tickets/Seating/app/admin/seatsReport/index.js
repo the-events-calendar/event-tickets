@@ -9,6 +9,7 @@ import {
 	OUTBOUND_SEAT_TYPE_TICKETS,
 	OUTBOUND_EVENT_ATTENDEES,
 	OUTBOUND_ATTENDEE_UPDATE,
+	RESERVATIONS_DELETED,
 	RESERVATION_UPDATED,
 	RESERVATION_CREATED,
 	removeAction,
@@ -23,6 +24,7 @@ import {
 	ACTION_RESERVATION_UPDATED,
 } from '@tec/tickets/seating/ajax';
 import { localizedData } from './localized-data';
+import { handleReservationsDeleted } from '../action-handlers';
 
 const { seatTypeMap, postId } = localizedData;
 
@@ -259,8 +261,13 @@ function registerActions(iframe) {
 	registerAction(RESERVATION_CREATED, (props) =>
 		handleReservationCreated(iframe, props)
 	);
+
 	registerAction(RESERVATION_UPDATED, (props) =>
 		handleReservationUpdated(iframe, props)
+	);
+
+	registerAction(RESERVATIONS_DELETED, (data) =>
+		handleReservationsDeleted(data.ids || [])
 	);
 }
 
