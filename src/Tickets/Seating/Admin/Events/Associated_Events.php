@@ -48,6 +48,7 @@ class Associated_Events extends WP_Posts_List_Table {
 	public function get_columns() {
 		return [
 			'title'   => __( 'Title', 'event-tickets' ),
+			'tags'    => __( 'Tags', 'event-tickets' ),
 			'tickets' => __( 'Attendees', 'event-tickets' ),
 			'date'    => __( 'Date', 'event-tickets' ),
 		];
@@ -67,6 +68,52 @@ class Associated_Events extends WP_Posts_List_Table {
 		switch ( $column_name ) {
 			default:
 				return $item->post_title;
+		}
+	}
+	
+	/**
+	 * Render the tags column.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post $post The current WP_Post object.
+	 *
+	 * @return void
+	 */
+	public function column_tags( WP_Post $post ): void {
+		$taxonomy        = 'post_tag';
+		$taxonomy_object = get_taxonomy( $taxonomy );
+		$terms           = get_the_terms( $post->ID, $taxonomy );
+		if ( is_array( $terms ) ) {
+			$term_links = [];
+			
+			foreach ( $terms as $t ) {
+				$posts_in_term_qv = [];
+				
+				if ( 'post' !== $post->post_type ) {
+					$posts_in_term_qv['post_type'] = $post->post_type;
+				}
+				
+				if ( $taxonomy_object->query_var ) {
+					$posts_in_term_qv[ $taxonomy_object->query_var ] = $t->slug;
+				} else {
+					$posts_in_term_qv['taxonomy'] = $taxonomy;
+					$posts_in_term_qv['term']     = $t->slug;
+				}
+				
+				$label = esc_html( sanitize_term_field( 'name', $t->name, $t->term_id, $taxonomy, 'display' ) );
+				
+				$term_links[] = $this->get_edit_link( $posts_in_term_qv, $label );
+			}
+			
+			echo wp_kses(
+				implode( wp_get_list_item_separator(), $term_links ),
+				[
+					'a' => [
+						'href' => [],
+					],
+				]
+			);
 		}
 	}
 	
