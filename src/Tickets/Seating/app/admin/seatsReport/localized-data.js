@@ -17,4 +17,4 @@
  * @type {SeatsReportLocalizedData}
  */
 export const localizedData =
-	window?.tec?.tickets?.seating?.admin?.seatsReport?.data;
+	window?.tec?.tickets?.seating?.admin?.seatsReport;

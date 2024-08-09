@@ -14,7 +14,7 @@ use TEC\Common\Contracts\Provider\Controller as Controller_Contract;
 use TEC\Common\StellarWP\Assets\Asset;
 use TEC\Tickets\Commerce\Cart;
 use TEC\Tickets\Commerce\Module;
-use TEC\Tickets\Seating\Ajax_Checks;
+use TEC\Tickets\Seating\Ajax_Methods;
 use TEC\Tickets\Seating\Built_Assets;
 use TEC\Tickets\Seating\Logging;
 use TEC\Tickets\Seating\Service\Layouts;
@@ -33,7 +33,7 @@ use Tribe__Tickets__Main as Tickets_Main;
  * @package TEC\Tickets\Seating\Admin;
  */
 class Ajax extends Controller_Contract {
-	use Ajax_Checks;
+	use Ajax_Methods;
 	use Built_Assets;
 	use Logging;
 
@@ -144,6 +144,24 @@ class Ajax extends Controller_Contract {
 	 * @var string
 	 */
 	public const ACTION_RESERVATIONS_UPDATED_FROM_SEAT_TYPES = 'tec_tickets_seating_reservations_updated_from_seat_types';
+
+	/**
+	 * The action to create a new reservation from the Seats Report page.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const ACTION_RESERVATION_CREATED = 'tec_tickets_seating_reservation_created';
+
+	/**
+	 * The action to update an existing reservation from the Seats Report page.
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public const ACTION_RESERVATION_UPDATED = 'tec_tickets_seating_reservation_updated';
 
 	/**
 	 * A reference to the Seat Types service object.
@@ -298,6 +316,8 @@ class Ajax extends Controller_Contract {
 			'ACTION_GET_SEAT_TYPES_BY_LAYOUT_ID'          => self::ACTION_GET_SEAT_TYPES_BY_LAYOUT_ID,
 			'ACTION_SEAT_TYPES_UPDATED'                   => self::ACTION_SEAT_TYPES_UPDATED,
 			'ACTION_RESERVATIONS_UPDATED_FROM_SEAT_TYPES' => self::ACTION_RESERVATIONS_UPDATED_FROM_SEAT_TYPES,
+			'ACTION_RESERVATION_CREATED'                  => self::ACTION_RESERVATION_CREATED,
+			'ACTION_RESERVATION_UPDATED'                  => self::ACTION_RESERVATION_UPDATED,
 		];
 	}
 
@@ -455,24 +475,6 @@ class Ajax extends Controller_Contract {
 		}
 
 		wp_send_json_error( [ 'error' => __( 'Failed to delete the layout.', 'event-tickets' ) ], 500 );
-	}
-
-	/**
-	 * Returns the request body.
-	 *
-	 * @since TBD
-	 *
-	 * @return string The request body.
-	 */
-	protected function get_request_body(): string {
-		if ( function_exists( 'wpcom_vip_file_get_contents' ) ) {
-			$body = wpcom_vip_file_get_contents( 'php://input' );
-		} else {
-			// phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsRemoteFile
-			$body = trim( file_get_contents( 'php://input' ) );
-		}
-
-		return $body;
 	}
 
 	/**

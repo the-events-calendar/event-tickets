@@ -11,5 +11,7 @@
     "ACTION_FETCH_ATTENDEES": "tec_tickets_seating_fetch_attendees",
     "ACTION_GET_SEAT_TYPES_BY_LAYOUT_ID": "tec_tickets_seating_get_seat_types_by_layout_id",
     "ACTION_SEAT_TYPES_UPDATED": "tec_tickets_seating_seat_types_updated",
-    "ACTION_RESERVATIONS_UPDATED_FROM_SEAT_TYPES": "tec_tickets_seating_reservations_updated_from_seat_types"
+    "ACTION_RESERVATIONS_UPDATED_FROM_SEAT_TYPES": "tec_tickets_seating_reservations_updated_from_seat_types",
+    "ACTION_RESERVATION_CREATED": "tec_tickets_seating_reservation_created",
+    "ACTION_RESERVATION_UPDATED": "tec_tickets_seating_reservation_updated"
 }

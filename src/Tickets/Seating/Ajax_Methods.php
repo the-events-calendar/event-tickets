@@ -12,13 +12,13 @@ namespace TEC\Tickets\Seating;
 use TEC\Tickets\Seating\Admin\Ajax;
 
 /**
- * Class Ajax_Checks.
+ * Class Ajax_Methods.
  *
  * @since   TBD
  *
  * @package TEC\Tickets\Seating;
  */
-trait Ajax_Checks {
+trait Ajax_Methods {
 	/**
 	 * Checks if the current user can perform the requested AJAX action.
 	 *
@@ -53,5 +53,41 @@ trait Ajax_Checks {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Returns the request body.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The request body.
+	 */
+	private function get_request_body(): string {
+		if ( function_exists( 'wpcom_vip_file_get_contents' ) ) {
+			$body = wpcom_vip_file_get_contents( 'php://input' );
+		} else {
+			// phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsRemoteFile
+			$body = trim( file_get_contents( 'php://input' ) );
+		}
+
+		return $body;
+	}
+
+	/**
+	 * Returns the request body as JSON.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<mixed>|null Either the request body as JSON or `null` if the request body is empty
+	 *                           or invalid JSON.
+	 */
+	private function get_request_json(): ?array {
+		$body = $this->get_request_body();
+
+		if ( empty( $body ) ) {
+			return null;
+		}
+
+		return json_decode( $body, true );
 	}
 }
