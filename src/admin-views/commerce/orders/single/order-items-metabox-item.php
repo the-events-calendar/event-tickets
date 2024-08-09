@@ -13,14 +13,14 @@ use TEC\Tickets\Commerce\Utils\Value;
 ?>
 <tr class="tec-tickets-commerce-single-order--items--table--row">
 	<td><?php echo esc_html( $ticket->name ); ?></td>
-	<td><?php echo 'series_pass' === $ticket->type ? esc_html__( 'Series Pass', 'event-tickets' ) : esc_html__( 'Standard Ticket', 'event-tickets' ); ?></td>
+	<td class="tribe-desktop-only"><?php echo 'series_pass' === $ticket->type ? esc_html__( 'Series Pass', 'event-tickets' ) : esc_html__( 'Standard Ticket', 'event-tickets' ); ?></td>
 	<td class="tec-tickets-commerce-single-order--items--table--row--info-column"><!-- @todo dpan: this is were Refunded would go --></td>
 	<td style="padding-left:0;"><?php echo esc_html( Value::create( $item['regular_price'] )->get_currency() ); ?></td>
 	<td>
 		<div class="tec-tickets-commerce-single-order--items--table--row--actions">
 			<a href="javascript:void(0)" class="tribe-dashicons">
 				<span class="dashicons tribe-icon-trash"></span>
-				<?php esc_html_e( 'Delete', 'event-tickets' ); ?>
+				<span class="tribe-mobile-hidden"><?php esc_html_e( 'Delete', 'event-tickets' ); ?></span>
 			</a>
 			<?php if ( ! empty( $attendee ) ) : ?>
 			<button type="button" class="tribe-tickets-commerce-extend-order-row" aria-disabled="false">
@@ -35,7 +35,7 @@ use TEC\Tickets\Commerce\Utils\Value;
 if ( ! empty( $attendee ) ) :
 	?>
 	<tr class="tec-tickets-commerce-single-order--items--table--attendee-row tec-tickets-commerce-single-order--items--table--row--gray-bg">
-		<td colspan="5">
+		<td colspan="4">
 			<div class="tec-tickets-commerce-single-order--items--table--attendee-row--column">
 				<div class="tec-tickets-commerce-single-order--items--table--attendee-row--column--row">
 					<div class="tec-tickets-commerce-single-order--items--table--attendee-row--column--row--label">
@@ -109,6 +109,7 @@ if ( ! empty( $attendee ) ) :
 				</div>
 			</div>
 		</td>
+		<td class="tribe-desktop-only"></td>
 	</tr>
 	<?php
 endif;
