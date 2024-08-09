@@ -15,7 +15,7 @@ use TEC\Tickets\Commerce\Order;
 		<thead>
 			<tr>
 				<th><?php esc_html_e( 'Item name', 'event-tickets' ); ?></th>
-				<th><?php esc_html_e( 'Type', 'event-tickets' ); ?></th>
+				<th class="tribe-desktop-only"><?php esc_html_e( 'Type', 'event-tickets' ); ?></th>
 				<th class="tec-tickets-commerce-single-order--items--table--row--info-column"></th>
 				<th style="padding-left:0;"><?php esc_html_e( 'Price', 'event-tickets' ); ?></th>
 				<th></th>
@@ -63,11 +63,12 @@ use TEC\Tickets\Commerce\Order;
 		</tbody>
 		<tfoot>
 			<tr class="tec-tickets-commerce-single-order--items--table--row tec-tickets-commerce-single-order--items--table--row--gray-bg">
-				<td colspan="2">
+				<td>
 					<button type="button" class="button button-secodnary">
 						<?php esc_html_e( 'Refund', 'event-tickets' ); ?>
 					</button>
 				</td>
+				<td class="tribe-desktop-only"></td>
 				<td class="tec-tickets-commerce-single-order--items--table--row--info-column">
 					<strong><?php esc_html_e( 'Total', 'event-tickets' ); ?></strong>
 				</td>

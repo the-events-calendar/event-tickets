@@ -6,6 +6,26 @@
 
 body.wp-admin.post-type-tec_tc_order {
 
+	@media screen and (max-width: 782px) {
+		.tribe-mobile-hidden {
+			display: none;
+		}
+	}
+
+	@media screen and (max-width:1100px) {
+		.tribe-desktop-only {
+			display: none;
+		}
+	}
+
+	.tribe-mobile-only {
+		display: none;
+
+		@media screen and (max-width: 782px) {
+			display: inline-block;
+		}
+	}
+
 	input#title,
 	#post-body-content,
 	.dataTables_info,
