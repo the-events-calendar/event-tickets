@@ -5,14 +5,13 @@
  */
 
 body.wp-admin.post-type-tec_tc_order {
-
 	@media screen and (max-width: 782px) {
 		.tribe-mobile-hidden {
 			display: none;
 		}
 	}
 
-	@media screen and (max-width:1100px) {
+	@media screen and (max-width: 1100px) {
 		.tribe-desktop-only {
 			display: none;
 		}
@@ -35,23 +34,23 @@ body.wp-admin.post-type-tec_tc_order {
 
 	#tribe-tickets-order-details {
 		.postbox-header {
-			display:none;
+			display: none;
 		}
 
 		h2 {
-			font-size: var( --tec-font-size-5 );
-			line-height: var( --tec-line-height-2 );
-			font-weight: var( --tec-font-weight-regular );
+			color: #172b4d;
+			font-size: var(--tec-font-size-5);
+			font-weight: var(--tec-font-weight-regular);
+			line-height: var(--tec-line-height-2);
+			margin-left: var(--tec-spacer-1);
 			padding: 10px 0;
-			margin-left: var( --tec-spacer-1 );
-			color:#172b4d;
 		}
 	}
 
 	#tribe-tickets-order-items {
 		.inside {
-			margin-top:0;
-			padding:0;
+			margin-top: 0;
+			padding: 0;
 		}
 
 		.postbox-header {
@@ -64,44 +63,44 @@ body.wp-admin.post-type-tec_tc_order {
 	}
 
 	.tribe-tickets-commerce-extend-order-row {
+		background: none;
+		border: 0;
+		color: #787c82;
+		cursor: pointer;
 		height: 1.62rem;
 		margin: 0;
 		padding: 0;
-		border: 0;
-		background: none;
-		cursor: pointer;
-		color: #787c82;
 		width: 1.62rem;
 
 		.tribe-tickets-commerce-order-extend-indicator {
 			&:before {
-				display: inline-block;
-				font-family: dashicons;
-				font-style: normal;
-				font-size: 20px;
-				line-height: 1;
-				text-decoration: none;
-				position: relative;
-				top: 0.11rem;
-				width: 20px;
-				height: 20px;
-				content: "\f347";
 				color: #3c434a;
-				transition: var( --tec-transition-transform )
+				content: "\f347";
+				display: inline-block;
+				font-family: dashicons; /* stylelint-disable-line */
+				font-size: 20px;
+				font-style: normal;
+				height: 20px;
+				line-height: 1;
+				position: relative;
+				text-decoration: none;
+				top: 0.11rem;
+				transition: var(--tec-transition-transform);
+				width: 20px;
 			}
 		}
 	}
 }
 
-.tec-tickets-commerce-single-order{
+.tec-tickets-commerce-single-order {
 	&--details {
 		display: flex;
 		flex-flow: row wrap;
 		justify-content: flex-start;
-		width:100%;
+		width: 100%;
 
 		&--item {
-			display:flex;
+			display: flex;
 			flex: 1 1 auto;
 			flex-flow: column nowrap;
 			margin: var(--tec-spacer-1);
@@ -112,11 +111,11 @@ body.wp-admin.post-type-tec_tc_order {
 			}
 
 			&--label {
+				color: #333;
 				font-size: var(--tec-font-size-2);
 				font-weight: var(--tec-font-weight-bold);
 				line-height: var(--tec-line-height-1);
 				margin: var(--tec-spacer-2) 0;
-				color: #333333;
 
 				a.tribe-dashicons {
 					font-weight: var(--tec-font-weight-regular);
@@ -124,23 +123,23 @@ body.wp-admin.post-type-tec_tc_order {
 			}
 
 			&--value {
-				line-height: var( --tec-line-height-3 );
 				color: #172b4d;
+				line-height: var(--tec-line-height-3);
 
 				a.tribe-dashicons {
 					text-decoration: none;
 				}
 
 				span.tribe-dashicons {
-					margin-top:var(--tec-spacer-1);
-					display:flex;
+					align-items: center;
+					display: flex;
 					flex-flow: row nowrap;
 					justify-content: flex-start;
-					align-items: center;
+					margin-top: var(--tec-spacer-1);
 				}
 
 				input[readonly] {
-					padding:var(--tec-spacer-0) var(--tec-spacer-1);
+					padding: var(--tec-spacer-0) var(--tec-spacer-1);
 				}
 			}
 		}
@@ -158,8 +157,8 @@ body.wp-admin.post-type-tec_tc_order {
 
 			tfoot {
 				td {
-					font-size: var( --tec-font-size-3 );
-					line-height: var( --tec-line-height-3 );
+					font-size: var(--tec-font-size-3);
+					line-height: var(--tec-line-height-3);
 				}
 			}
 
@@ -171,90 +170,91 @@ body.wp-admin.post-type-tec_tc_order {
 				&--gray-bg {
 					background: #f6f7f7;
 				}
+
 				td {
 					border-bottom: 1px solid #c3c4c7;
-					font-size: var(--tec-font-size-2);
 					color: #2c3338;
+					font-size: var(--tec-font-size-2);
 					line-height: var(--tec-line-height-2);
 					padding: var(--tec-spacer-5);
 				}
 
 				&--info-column {
 					max-width: 80px;
-					width: 80px;
 					padding-right: 0 !important;
+					width: 80px;
 				}
 
 				&--actions {
-					display:flex;
+					align-items: center;
+					display: flex;
 					flex-flow: row nowrap;
 					justify-content: flex-start;
-					align-items: center;
 
 					a {
+						align-items: center;
 						color: #b32d2e;
-						text-decoration: underline;
 						display: inline-flex;
 						flex-flow: row nowrap;
-						align-items: center;
 						margin-right: var(--tec-spacer-2);
+						text-decoration: underline;
 					}
 				}
 
 				&.tec-row-expanded {
 					background: #f6f7f7;
+
 					td {
-						border-bottom:none;
+						border-bottom: none;
 					}
 
-					.tribe-tickets-commerce-order-extend-indicator {
-						&:before {
-							transform: rotate(180deg);
-						}
+					.tribe-tickets-commerce-order-extend-indicator:before {
+						transform: rotate(180deg);
 					}
 				}
 			}
 
 			&--attendee-row {
-				display:none;
+				display: none;
 
 				&.tec-row-expanded {
 					display: table-row;
 				}
 
 				&--column {
-					display:flex;
-					flex-flow:column nowrap;
-					justify-content: flex-start;
-					padding: var( --tec-spacer-4 ) 0;
-					margin: 0 var( --tec-spacer-4 );
 					border-top: 1px solid #c3c4c7;
+					display: flex;
+					flex-flow: column nowrap;
+					justify-content: flex-start;
+					margin: 0 var(--tec-spacer-4);
+					padding: var(--tec-spacer-4) 0;
 
 					&--row {
-						display:flex;
-						flex-flow:row nowrap;
-						justify-content: flex-start;
 						align-items: flex-start;
+						display: flex;
+						flex-flow: row nowrap;
+						justify-content: flex-start;
 
-						&--label {
-							font-size: var(--tec-font-size-2);
+						&--label { /* stylelint-disable-line */
 							color: #1d2327;
+							font-size: var(--tec-font-size-2);
 							font-weight: var(--tec-font-weight-bold);
 							line-height: var(--tec-line-height-2);
 							margin: var(--tec-spacer-2) var(--tec-spacer-2) var(--tec-spacer-2) 0;
-							min-width:20ch;
+							min-width: 20ch;
 						}
 
-						&--value {
-							margin: var(--tec-spacer-2);
+						&--value { /* stylelint-disable-line */
+							color: #2c3338;
 							font-size: var(--tec-font-size-2);
 							line-height: var(--tec-line-height-2);
-							color: #2c3338;
+							margin: var(--tec-spacer-2);
 
-							.tribe-dashicons {
+							.tribe-dashicons { /* stylelint-disable-line */
 								margin-left: var(--tec-spacer-0);
 								text-decoration: underline;
-								.dashicons {
+
+								.dashicons { /* stylelint-disable-line */
 									margin: 0 var(--tec-spacer-0);
 									text-decoration: none;
 								}
@@ -267,19 +267,19 @@ body.wp-admin.post-type-tec_tc_order {
 	}
 
 	&--actions {
-		padding: var( --tec-spacer-3 );
+		padding: var(--tec-spacer-3);
 
 		&--status {
-			margin-top: var( --tec-spacer-3 );
-			display:flex;
+			display: flex;
 			flex-flow: column nowrap;
+			margin-top: var(--tec-spacer-3);
 
 			label {
-				margin-bottom: var( --tec-spacer-1 );
+				margin-bottom: var(--tec-spacer-1);
 			}
 
 			select {
-				padding: var( --tec-spacer-0 ) var( --tec-spacer-1 );
+				padding: var(--tec-spacer-0) var(--tec-spacer-1);
 			}
 		}
 	}
