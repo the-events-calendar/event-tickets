@@ -220,13 +220,17 @@ class Singular_Order_Page extends Service_Provider {
 			return esc_html( $gateway::get_label() );
 		}
 
+		ob_start();
+		tribe_copy_to_clipboard_button( $order->gateway_order_id );
+		$copy_button = ob_get_clean();
+
 		return sprintf(
-			'%1$s%2$s%3$s%4$s<br><span class="tribe-dashicons"><input type="text" readonly value="%5$s" /><a href="javascript:void(0)" data-text="%5$s" class="tribe-copy-to-clipboard dashicons dashicons-admin-page"></a></span>',
+			'%1$s%2$s%3$s%4$s<br>%5$s',
 			'<a class="tribe-dashicons" href="' . esc_url( $order_url ) . '" target="_blank" rel="noopener noreferrer">',
 			esc_html( $gateway::get_label() ),
 			'<span class="dashicons dashicons-external"></span>',
 			'</a>',
-			esc_attr( $order->gateway_order_id )
+			$copy_button
 		);
 	}
 }
