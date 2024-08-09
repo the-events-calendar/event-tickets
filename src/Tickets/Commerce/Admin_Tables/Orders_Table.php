@@ -591,12 +591,13 @@ class Orders_Table extends WP_Posts_List_Table {
 		}
 
 		ob_start();
-		$copy_button_target = tribe_copy_to_clipboard_button( $item->gateway_order_id, false, __( 'Copy Payment\'s Gateway Transaction ID to your Clipboard', 'event-tickets' ) );
+		$copy_button_target = tribe_copy_to_clipboard_button( $item->gateway_order_id, false );
 		$copy_button        = ob_get_clean();
 
 		return sprintf(
-			'<br><span class="tribe-dashicons">%s<a href="javascript:void(0)" data-clipboard-action="copy" data-clipboard-target=".%s" data-notice-target=".%s" class="tribe-copy-to-clipboard dashicons dashicons-admin-page"></a>%s</span>',
+			'<br><span class="tribe-dashicons">%s<a title="%s" href="javascript:void(0)" data-clipboard-action="copy" data-clipboard-target=".%s" data-notice-target=".%s" class="tribe-copy-to-clipboard dashicons dashicons-admin-page"></a>%s</span>',
 			esc_html( $item->gateway_order_id ),
+			__( 'Copy Payment\'s Gateway Transaction ID to your Clipboard', 'event-tickets' ),
 			$copy_button_target,
 			str_replace( 'tec-copy-text-target-', 'tec-copy-to-clipboard-notice-content-', $copy_button_target ),
 			$copy_button,
