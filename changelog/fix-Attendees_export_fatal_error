@@ -1,0 +1,4 @@
+Significance: patch
+Type: fix
+
+Exporting all Attendees as a CSV file in the new Tickets Attendees Page. [ET-2094]
