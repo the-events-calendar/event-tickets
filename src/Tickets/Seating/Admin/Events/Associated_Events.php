@@ -9,6 +9,7 @@ if ( ! class_exists( 'WP_List_Table' ) || ! class_exists( 'WP_Posts_List_Table' 
 }
 
 use TEC\Tickets\Seating\Meta;
+use Tribe__Tickets__Admin__Columns__Tickets;
 use Tribe__Tickets__Main as Tickets;
 use WP_Posts_List_Table;
 use WP_Post;
@@ -46,9 +47,9 @@ class Associated_Events extends WP_Posts_List_Table {
 	 */
 	public function get_columns() {
 		return [
-			'title'  => __( 'Title', 'event-tickets' ),
-			'status' => __( 'Status', 'event-tickets' ),
-			'date'   => __( 'Date', 'event-tickets' ),
+			'title'   => __( 'Title', 'event-tickets' ),
+			'tickets' => __( 'Attendees', 'event-tickets' ),
+			'date'    => __( 'Date', 'event-tickets' ),
 		];
 	}
 	
@@ -64,13 +65,23 @@ class Associated_Events extends WP_Posts_List_Table {
 	 */
 	public function column_default( $item, $column_name ) {
 		switch ( $column_name ) {
-			case 'status':
-				return $item->post_status;
-			case 'date':
-				return $item->post_date;
 			default:
 				return $item->post_title;
 		}
+	}
+	
+	/**
+	 * Render the attendee count column.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_Post $item The current WP_Post object.
+	 *
+	 * @return void
+	 */
+	public function column_tickets( $item ): void {
+		$attendee_column = new Tribe__Tickets__Admin__Columns__Tickets( $item->ID );
+		$attendee_column->render_column( 'tickets', $item->ID );
 	}
 	
 	/**
@@ -82,9 +93,8 @@ class Associated_Events extends WP_Posts_List_Table {
 	 */
 	public function get_sortable_columns() {
 		return [
-			'title'  => [ 'title', true ],
-			'date'   => [ 'date', true ],
-			'status' => [ 'status', true ],
+			'title' => [ 'title', true ],
+			'date'  => [ 'date', true ],
 		];
 	}
 	
