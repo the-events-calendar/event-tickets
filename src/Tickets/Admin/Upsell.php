@@ -9,7 +9,7 @@ use Tribe__Template as Template;
 /**
  * Class Upsell
  *
- * @since TBD Updated Wallet Plus notices to be Event Tickets Plus.
+ * @since 5.13.1 Updated Wallet Plus notices to be Event Tickets Plus.
  * @since 5.3.4
  *
  * @package TEC\Tickets\Admin
@@ -69,7 +69,7 @@ class Upsell {
 	/**
 	 * Show upsell on Attendees page.
 	 *
-	 * @since TBD Update notice logic.
+	 * @since 5.13.1 Update notice logic.
 	 * @since 5.7.1
 	 *
 	 * @return void
@@ -131,7 +131,7 @@ class Upsell {
 	/**
 	 * Maybe show upsell for Wallet Plus.
 	 *
-	 * @since TBD Update plugin name and URL.
+	 * @since 5.13.1 Update plugin name and URL.
 	 * @since 5.7.1
 	 *
 	 * @return void
@@ -240,7 +240,7 @@ class Upsell {
 	/**
 	 * Show upsell on Emails Settings page.
 	 *
-	 * @since TBD Update notice logic, plugin name and URL.
+	 * @since 5.13.1 Update notice logic, plugin name and URL.
 	 * @since 5.7.1
 	 *
 	 * @param array $fields Template list settings fields.

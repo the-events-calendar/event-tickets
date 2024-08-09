@@ -331,7 +331,19 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 			elements: obj.stripeElements,
 			redirect: 'if_required',
 			confirmParams: {
-				return_url: order.redirect_url
+				return_url: order.redirect_url,
+				shipping: {
+					name: obj.getPurchaserData().name,
+					phone: obj.getPurchaserData().phone,
+					address: {
+						line1: $('#tec-tc-purchaser-address1').val(),
+						line2: $('#tec-tc-purchaser-address2').val(),
+						city: $('#tec-tc-purchaser-city').val(),
+						state: $('#tec-tc-purchaser-state').val(),
+						postal_code: $('#tec-tc-purchaser-zip').val(),
+						country: $('#tec-tc-purchaser-country').val()
+					}
+				}
 			}
 		} ).then( obj.handleConfirmPayment );
 	};
@@ -555,7 +567,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 						line1: $('#tec-tc-purchaser-address1').val(),
 						line2: $('#tec-tc-purchaser-address2').val(),
 						city: $('#tec-tc-purchaser-city').val(),
-						state: $('tec-tc-purchaser-state').val(),
+						state: $('#tec-tc-purchaser-state').val(),
 						country: $('#tec-tc-purchaser-country').val(),
 						postal_code: $('#tec-tc-purchaser-zip').val()
 					}
@@ -568,7 +580,7 @@ tribe.tickets.commerce.gateway.stripe.checkout = {};
 						line1: $('#tec-tc-purchaser-address1').val(),
 						line2: $('#tec-tc-purchaser-address2').val(),
 						city: $('#tec-tc-purchaser-city').val(),
-						state: $('tec-tc-purchaser-state').val(),
+						state: $('#tec-tc-purchaser-state').val(),
 						country: $('#tec-tc-purchaser-country').val(),
 						postal_code: $('#tec-tc-purchaser-zip').val()
 					}

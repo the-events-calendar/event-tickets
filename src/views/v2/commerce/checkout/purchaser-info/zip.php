@@ -9,9 +9,9 @@
  *
  * @link    https://evnt.is/1amp Help article for RSVP & Ticket template files.
  *
- * @since   TBD
+ * @since   5.13.1
  *
- * @version TBD
+ * @version 5.13.1
  *
  * @var \Tribe__Template $this [Global] Template object.
  */
