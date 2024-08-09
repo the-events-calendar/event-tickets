@@ -533,6 +533,14 @@ class Orders_Table extends WP_Posts_List_Table {
 		$output = '';
 
 		foreach ( $events as $event ) {
+			if ( ( ! in_array( $event->post_type, get_post_types( [ 'show_ui' => true ] ), true ) ) ) {
+				$output .= sprintf(
+					'<div>%s</div>',
+					esc_html( get_the_title( $event->ID ) )
+				);
+				continue;
+			}
+
 			if ( ! current_user_can( 'edit_post', $event->ID ) ) {
 				$output .= sprintf(
 					'<div>%s</div>',
@@ -544,14 +552,6 @@ class Orders_Table extends WP_Posts_List_Table {
 			if ( 'trash' === $event->post_status ) {
 				$output .= sprintf(
 					'<div>%s (trashed)</div>',
-					esc_html( get_the_title( $event->ID ) )
-				);
-				continue;
-			}
-
-			if ( ( ! in_array( $event->post_type, get_post_types( [ 'show_ui' => true ] ), true ) ) ) {
-				$output .= sprintf(
-					'<div>%s</div>',
 					esc_html( get_the_title( $event->ID ) )
 				);
 				continue;
