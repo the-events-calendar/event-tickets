@@ -591,7 +591,7 @@ class Orders_Table extends WP_Posts_List_Table {
 		}
 
 		ob_start();
-		$copy_button_target = tribe_copy_to_clipboard_button( $item->gateway_order_id, false );
+		$copy_button_target = tribe_copy_to_clipboard_button( $item->gateway_order_id, false, __( 'Copy Payment\'s Gateway Transaction ID to your Clipboard', 'event-tickets' ) );
 		$copy_button        = ob_get_clean();
 
 		return sprintf(
