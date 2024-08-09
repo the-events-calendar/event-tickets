@@ -156,12 +156,6 @@ class Singular_Order_Page extends Service_Provider {
 			'high'
 		);
 
-
-		if ( ! function_exists( 'post_submit_meta_box' ) ) {
-			// Something changes in wp core. Let's bail instead of causing fatal.
-			return;
-		}
-
 		global $wp_meta_boxes;
 
 		$meta_box = $wp_meta_boxes[ get_current_screen()->id ]['side']['core']['submitdiv'] ?? false;
@@ -189,21 +183,13 @@ class Singular_Order_Page extends Service_Provider {
 	 * @return void
 	 */
 	public function render_actions( $post ): void {
-		ob_start();
-		post_submit_meta_box( $post );
-		$submit = ob_get_clean();
-
-		$template = $this->template(
+		$this->template(
 			'order-actions-metabox',
 			[
 				'order'       => tec_tc_get_order( $post ),
 				'single_page' => $this,
-			],
-			false
+			]
 		);
-
-		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped, StellarWP.XSS.EscapeOutput.OutputNotEscaped
-		echo str_replace( '<div class="submitbox" id="submitpost">', '<div class="submitbox" id="submitpost">' . $template, $submit );
 	}
 
 	/**
