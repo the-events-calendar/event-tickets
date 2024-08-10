@@ -254,59 +254,225 @@ class Attendees_Test extends WPTestCase {
 		}
 	}
 
+	public function get_single_event_with_attendees(): Generator {
+		yield 'no attendees' => [
+			function () {
+				$post_id = tribe_events()->set_args( [
+					'title'      => 'Test Event with no attendees',
+					'status'     => 'publish',
+					'start_date' => '2020-01-01 09:00:00',
+					'end_date'   => '2020-01-01 11:30:00',
+				] )->create()->ID;
+
+				return [ $post_id, [] ];
+			}
+		];
+
+		yield 'one attendee' => [
+			function () {
+				$post_id = tribe_events()->set_args( [
+					'title'      => 'Test Event with one attendee',
+					'status'     => 'publish',
+					'start_date' => '2020-01-01 09:00:00',
+					'end_date'   => '2020-01-01 11:30:00',
+				] )->create()->ID;
+
+				$rsvp_ticket_id = $this->create_rsvp_ticket( $post_id );
+
+				$this->create_attendee_for_ticket( $rsvp_ticket_id, $post_id, [
+					'full_name' => 'John Doe',
+				] );
+
+				return [ $post_id, [ 'John Doe' ] ];
+			}
+		];
+
+		yield 'two attendees' => [
+			function () {
+				$post_id = tribe_events()->set_args( [
+					'title'      => 'Test Event with two attendees',
+					'status'     => 'publish',
+					'start_date' => '2020-01-01 09:00:00',
+					'end_date'   => '2020-01-01 11:30:00',
+				] )->create()->ID;
+
+				$rsvp_ticket_id = $this->create_rsvp_ticket( $post_id );
+
+				$this->create_attendee_for_ticket( $rsvp_ticket_id, $post_id, [
+					'full_name' => 'John Doe',
+				] );
+				$this->create_attendee_for_ticket( $rsvp_ticket_id, $post_id, [
+					'full_name' => 'Jane Doe',
+				] );
+
+				return [ $post_id, [ 'John Doe', 'Jane Doe' ] ];
+			}
+		];
+	}
+
 	/**
+	 * It should generate lists of Attendees for a specific event.
+	 *
 	 * @test
+	 * @dataProvider get_single_event_with_attendees
 	 */
-	public function test_generate_filtered_list() {
-		$post_id = tribe_events()->set_args( [
-			'title'      => 'Test Event 1',
-			'status'     => 'publish',
-			'start_date' => '2020-01-01 09:00:00',
-			'end_date'   => '2020-01-01 11:30:00',
-		] )->create()->ID;
-
-		$rsvp_ticket_id = $this->create_rsvp_ticket( $post_id );
-
-		$this->create_attendee_for_ticket( $rsvp_ticket_id, $post_id, [
-			'full_name' => 'John Doe',
-		] );
-
-		$post_id = tribe_events()->set_args( [
-			'title'      => 'Test Event 2',
-			'status'     => 'publish',
-			'start_date' => '2020-01-02 09:00:00',
-			'end_date'   => '2020-01-02 11:30:00',
-		] )->create()->ID;
-
-		$rsvp_ticket_id = $this->create_rsvp_ticket( $post_id );
-
-		$this->create_attendee_for_ticket( $rsvp_ticket_id, $post_id, [
-			'full_name' => 'Jane Doe',
-		] );
+	public function should_generate_list_of_attendees_for_specific_event( Closure $fixture ) {
+		[ $post_id, $expected_attendees ] = $fixture();
+		$fixture = $this->get_single_event_with_attendees();
 
 		$attendees = new Attendees();
 		$attendees->attendees_table = new Tribe__Tickets__Attendees_Table();
 
-		// Generate filtered list of attendees for the latter event.
-		$items = $attendees->generate_filtered_list( $post_id );
+		$attendees_list = $attendees->generate_filtered_list( $post_id );
+		array_shift( $attendees_list ); // Remove the header row.
 
-		// Test the number of tickets.
-		$this->assertCount( 2, $items, 'Should have 2 rows' );
+		$this->assertCount( count( $expected_attendees ), $attendees_list, 'Should have the correct number of attendees' );
 
-		// Get the 'Ticket Holder Name' column from the arrays.
-		$this->assertEquals( $items[0][5], 'Ticket Holder Name', 'First row should be the header' );
-		$this->assertEquals( $items[1][5], 'Jane Doe', 'Second row should be the attendee name' );
+		$attendee_names = wp_list_pluck( $attendees_list, 5 );
 
-		// Generate filtered list of attendees for all events.
-		$items = $attendees->generate_filtered_list( 'all' );
+		$this->assertEquals( $expected_attendees, $attendee_names, 'Should have the correct attendee names' );
+	}
 
-		// Test the number of tickets.
-		$this->assertCount( 3, $items, 'Should have 3 rows' );
+	public function get_multiple_events_with_attendees(): Generator {
+		yield 'two events but none have attendees' => [
+			function () {
+				$post_id = tribe_events()->set_args( [
+					'title'      => 'Test Event 1 with no attendees',
+					'status'     => 'publish',
+					'start_date' => '2020-01-01 09:00:00',
+					'end_date'   => '2020-01-01 11:30:00',
+				] )->create()->ID;
 
-		// Get the 'Ticket Holder Name' column from the arrays.
-		$this->assertEquals( $items[0][5], 'Ticket Holder Name', 'First row should be the header' );
-		$this->assertEquals( $items[1][5], 'John Doe', 'Second row should be the first attendee name' );
-		$this->assertEquals( $items[2][5], 'Jane Doe', 'Third row should be the second attendee name' );
+				$post_id_2 = tribe_events()->set_args( [
+					'title'      => 'Test Event 2 with no attendees',
+					'status'     => 'publish',
+					'start_date' => '2020-01-02 09:00:00',
+					'end_date'   => '2020-01-02 11:30:00',
+				] )->create()->ID;
+
+				return [ [ $post_id, $post_id_2 ], [] ];
+			}
+		];
+
+		yield 'one event with attendees and one without' => [
+			function () {
+				$post_id = tribe_events()->set_args( [
+					'title'      => 'Test Event 1 with one attendee',
+					'status'     => 'publish',
+					'start_date' => '2020-01-01 09:00:00',
+					'end_date'   => '2020-01-01 11:30:00',
+				] )->create()->ID;
+
+				$rsvp_ticket_id = $this->create_rsvp_ticket( $post_id );
+
+				$this->create_attendee_for_ticket( $rsvp_ticket_id, $post_id, [
+					'full_name' => 'John Doe',
+				] );
+
+				$post_id_2 = tribe_events()->set_args( [
+					'title'      => 'Test Event 2 with no attendees',
+					'status'     => 'publish',
+					'start_date' => '2020-01-02 09:00:00',
+					'end_date'   => '2020-01-02 11:30:00',
+				] )->create()->ID;
+
+				return [ [ $post_id, $post_id_2 ], [ 'John Doe' ] ];
+			}
+		];
+
+		yield 'two events, all with attendees' => [
+			function () {
+				$post_id = tribe_events()->set_args( [
+					'title'      => 'Test Event 1 with one attendee',
+					'status'     => 'publish',
+					'start_date' => '2020-01-01 09:00:00',
+					'end_date'   => '2020-01-01 11:30:00',
+				] )->create()->ID;
+
+				$rsvp_ticket_id = $this->create_rsvp_ticket( $post_id );
+
+				$this->create_attendee_for_ticket( $rsvp_ticket_id, $post_id, [
+					'full_name' => 'John Doe',
+				] );
+
+				$post_id_2 = tribe_events()->set_args( [
+					'title'      => 'Test Event 2 with one attendee',
+					'status'     => 'publish',
+					'start_date' => '2020-01-02 09:00:00',
+					'end_date'   => '2020-01-02 11:30:00',
+				] )->create()->ID;
+
+				$rsvp_ticket_id_2 = $this->create_rsvp_ticket( $post_id_2 );
+
+				$this->create_attendee_for_ticket( $rsvp_ticket_id_2, $post_id_2, [
+					'full_name' => 'Jane Doe',
+				] );
+
+				return [ [ $post_id, $post_id_2 ], [ 'John Doe', 'Jane Doe' ] ];
+			}
+		];
+
+		yield 'two events with attendees and one without' => [
+			function () {
+				$post_id = tribe_events()->set_args( [
+					'title'      => 'Test Event 1 with one attendee',
+					'status'     => 'publish',
+					'start_date' => '2020-01-01 09:00:00',
+					'end_date'   => '2020-01-01 11:30:00',
+				] )->create()->ID;
+
+				$rsvp_ticket_id = $this->create_rsvp_ticket( $post_id );
+
+				$this->create_attendee_for_ticket( $rsvp_ticket_id, $post_id, [
+					'full_name' => 'John Doe',
+				] );
+
+				$post_id_2 = tribe_events()->set_args( [
+					'title'      => 'Test Event 2 with one attendee',
+					'status'     => 'publish',
+					'start_date' => '2020-01-02 09:00:00',
+					'end_date'   => '2020-01-02 11:30:00',
+				] )->create()->ID;
+
+				$rsvp_ticket_id_2 = $this->create_rsvp_ticket( $post_id_2 );
+
+				$this->create_attendee_for_ticket( $rsvp_ticket_id_2, $post_id_2, [
+					'full_name' => 'Jane Doe',
+				] );
+
+				$post_id_3 = tribe_events()->set_args( [
+					'title'      => 'Test Event 3 with no attendees',
+					'status'     => 'publish',
+					'start_date' => '2020-01-03 09:00:00',
+					'end_date'   => '2020-01-03 11:30:00',
+				] )->create()->ID;
+
+				return [ [ $post_id, $post_id_2, $post_id_3 ], [ 'John Doe', 'Jane Doe' ] ];
+			}
+		];
+	}
+
+	/**
+	 * It should generate lists of Attendees for all events.
+	 *
+	 * @test
+	 * @dataProvider get_multiple_events_with_attendees
+	 */
+	public function should_generate_list_of_attendees_for_all_events( Closure $fixture ) {
+		[ $post_id, $expected_attendees ] = $fixture();
+		$fixture = $this->get_multiple_events_with_attendees();
+
+		$attendees = new Attendees();
+		$attendees->attendees_table = new Tribe__Tickets__Attendees_Table();
+
+		$attendees_list = $attendees->generate_filtered_list( 'all' );
+		array_shift( $attendees_list ); // Remove the header row.
+
+		$this->assertCount( count( $expected_attendees ), $attendees_list, 'Should have the correct number of attendees' );
+
+		$attendee_names = wp_list_pluck( $attendees_list, 5 );
+
+		$this->assertEquals( $expected_attendees, $attendee_names, 'Should have the correct attendee names' );
 	}
 
 	/**
