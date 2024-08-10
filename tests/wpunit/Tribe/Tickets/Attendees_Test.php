@@ -290,17 +290,23 @@ class Attendees_Test extends WPTestCase {
 		// Generate filtered list of attendees for the latter event.
 		$items = $attendees->generate_filtered_list( $post_id );
 
+		// Test the number of tickets.
+		$this->assertCount( 2, $items, 'Should have 2 rows' );
+
 		// Get the 'Ticket Holder Name' column from the arrays.
-		$this->assertEquals( $items[0][5], 'Ticket Holder Name' );
-		$this->assertEquals( $items[1][5], 'Jane Doe' );
+		$this->assertEquals( $items[0][5], 'Ticket Holder Name', 'First row should be the header' );
+		$this->assertEquals( $items[1][5], 'Jane Doe', 'Second row should be the attendee name' );
 
 		// Generate filtered list of attendees for all events.
 		$items = $attendees->generate_filtered_list( 'all' );
 
+		// Test the number of tickets.
+		$this->assertCount( 3, $items, 'Should have 3 rows' );
+
 		// Get the 'Ticket Holder Name' column from the arrays.
-		$this->assertEquals( $items[0][5], 'Ticket Holder Name' );
-		$this->assertEquals( $items[1][5], 'John Doe' );
-		$this->assertEquals( $items[2][5], 'Jane Doe' );
+		$this->assertEquals( $items[0][5], 'Ticket Holder Name', 'First row should be the header' );
+		$this->assertEquals( $items[1][5], 'John Doe', 'Second row should be the first attendee name' );
+		$this->assertEquals( $items[2][5], 'Jane Doe', 'Third row should be the second attendee name' );
 	}
 
 	/**
