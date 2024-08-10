@@ -629,6 +629,17 @@ class MetaboxTest extends WPTestCase {
 		// Make sure the Blocks Controller is registered with a ticketable post type.
 		tribe( \TEC\Tickets\Blocks\Controller::class )->do_register();
 		$this->set_fn_return( 'wp_create_nonce', '33333333' );
+		// Set up a fake "now".
+		$date = new \DateTime( '2019-09-11 22:00:00', new \DateTimeZone( 'America/New_York' ) );
+		$now  = $date->getTimestamp();
+		// Alter the concept of the `now` timestamp to return the timestamp for `2019-09-11 22:00:00` in NY timezone.
+		uopz_set_return(
+			'strtotime', static function ( $str ) use ( $now ) {
+			return $str === 'now' ? $now : strtotime( $str );
+		},  true
+		);
+		// Make sure that `now` (string) will be resolved to the fake date object.
+		uopz_set_return( Date_Utils::class, 'build_date_object', $date );
 
 		$metabox = tribe( Metabox::class );
 		// Rend for a new ticket.
