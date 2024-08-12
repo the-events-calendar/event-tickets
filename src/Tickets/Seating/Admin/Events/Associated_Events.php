@@ -171,10 +171,30 @@ class Associated_Events extends WP_Posts_List_Table {
 	public function prepare_items() {
 		$this->screen_setup();
 		
-		$layout_id    = tribe_get_request_var( 'layout' );
-		$per_page     = 10;
-		$current_page = $this->get_pagenum();
-		$offset       = ( $current_page - 1 ) * $per_page;
+		$per_page  = 20;
+		$layout_id = tribe_get_request_var( 'layout' );
+		$page      = absint( tribe_get_request_var( 'paged', 0 ) );
+		$orderby   = tribe_get_request_var( 'orderby' );
+		$order     = tribe_get_request_var( 'order' );
+		$search    = tribe_get_request_var( 's' );
+		
+		$arguments = [
+			'status'         => 'any',
+			'paged'          => $page,
+			'posts_per_page' => $per_page,
+		];
+		
+		if ( ! empty( $orderby ) ) {
+			$arguments['orderby'] = $orderby;
+		}
+		
+		if ( ! empty( $order ) ) {
+			$arguments['order'] = $order;
+		}
+		
+		if ( ! empty( $search ) ) {
+			$arguments['s'] = $search;
+		}
 		
 		$ticketable_post_types = Tickets::instance()->post_types();
 		$repository            = new class( $ticketable_post_types ) extends \Tribe__Repository {
@@ -187,17 +207,22 @@ class Associated_Events extends WP_Posts_List_Table {
 			}
 		};
 		
-		$this->item_count = $repository->where( 'meta_equals', Meta::META_KEY_LAYOUT_ID, $layout_id )->count();
+		$this->item_count = $repository
+			->where( 'meta_equals', Meta::META_KEY_LAYOUT_ID, $layout_id )
+			->by_args( $arguments )
+			->count();
+		
+		$this->items = $repository
+			->where( 'meta_equals', Meta::META_KEY_LAYOUT_ID, $layout_id )
+			->by_args( $arguments )
+			->all( true );
 		
 		$this->set_pagination_args(
 			[
 				'total_items' => $this->item_count,
 				'per_page'    => $per_page,
-				'total_pages' => ceil( $this->item_count / $per_page ),
-			]
+			] 
 		);
-		
-		$this->items = $repository->where( 'meta_equals', Meta::META_KEY_LAYOUT_ID, $layout_id )->all( true );
 	}
 	
 	/**
