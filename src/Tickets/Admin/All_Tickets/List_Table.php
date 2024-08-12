@@ -11,6 +11,13 @@ namespace TEC\Tickets\Admin\All_Tickets;
 
 use WP_List_Table;
 
+/**
+ * Class List_Table.
+ *
+ * @since  TBD
+ *
+ * @package TEC\Tickets\Admin
+ */
 class List_Table extends WP_List_Table {
 	/**
 	 * The constructor.
