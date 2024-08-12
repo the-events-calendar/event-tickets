@@ -121,6 +121,8 @@ class Singular_Order_PageTest extends \Codeception\TestCase\WPTestCase {
 		$this->prepare_test_data();
 		$singular_page = tribe( Singular_Order_Page::class );
 
+		$counter = did_action( 'tec_tickets_commerce_order_status_transition' ) ? did_action( 'tec_tickets_commerce_order_status_transition' ) : 1;
+
 		foreach ( $this->orders as $order ) {
 			// Set is_admin to true.
 			$this->set_global_value( 'current_screen', WP_Screen::get( 'edit-' . Order::POSTTYPE ) );
@@ -130,6 +132,8 @@ class Singular_Order_PageTest extends \Codeception\TestCase\WPTestCase {
 			$this->set_global_value( '_REQUEST', tribe( Denied::class )->get_slug(), 'tribe-tickets-commerce-status' );
 
 			$singular_page->update_order_status( $order->ID, $order );
+
+			$this->assertEquals( ++$counter, did_action( 'tec_tickets_commerce_order_status_transition' ) );
 
 			$this->assertEquals( tribe( Denied::class )->get_wp_slug(), get_post_status( $order->ID ) );
 		}

@@ -2,6 +2,8 @@
 /**
  * Single order - Items metabox - SingleItem.
  *
+ * @since TBD
+ *
  * @var WP_Post                       $order    The current post object.
  * @var array                         $item     The current order item.
  * @var Tribe__Tickets__Ticket_Object $ticket   The ticket object.
