@@ -7,7 +7,7 @@
 ?>
 <div class="wrap">
 	<h1 class="wp-heading-inline"><?php echo esc_html( $header ); ?></h1>
-	<form method="post">
+	<form id="event-tickets__seating-events-form" method="post">
 		<?php
 		$events_table->search_box( 'search', 'search_id' );
 		$events_table->display();
