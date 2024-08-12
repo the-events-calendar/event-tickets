@@ -362,27 +362,24 @@ class Orders_Table extends WP_Posts_List_Table {
 		?>
 		<mark class="tribe-tickets-commerce-order-status status-<?php echo esc_attr( $status->get_slug() ); ?>">
 			<?php
+			$dashicon = '';
 			switch ( $status->get_slug() ) {
 				case 'completed':
-					?>
-					<span class="dashicons dashicons-yes"></span>
-					<?php
+					$dashicon = 'yes';
 					break;
 				case 'refunded':
-					?>
-					<span class="dashicons dashicons-undo"></span>
-					<?php
+					$dashicon = 'undo';
 					break;
 				case 'failed':
-					?>
-					<span class="dashicons dashicons-no-alt"></span>
-					<?php
+					$dashicon = 'no-alt';
 					break;
 				case 'pending':
-					?>
-					<span class="dashicons dashicons-clock"></span>
-					<?php
+					$dashicon = 'clock';
 					break;
+			}
+
+			if ( $dashicon ) {
+				printf( '<span class="dashicons dashicons-%s"></span>', esc_attr( $dashicon ) );
 			}
 			?>
 			<span>
