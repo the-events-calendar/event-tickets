@@ -9,8 +9,6 @@
 
 namespace TEC\Tickets\Admin\All_Tickets;
 
-use phpDocumentor\Reflection\PseudoTypes\List_;
-
 /**
  * Class Page.
  *
